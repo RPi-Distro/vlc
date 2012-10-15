@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
   <data>
     <int key="IBDocument.SystemTarget">1050</int>
-    <string key="IBDocument.SystemVersion">11C74</string>
+    <string key="IBDocument.SystemVersion">11G56</string>
     <string key="IBDocument.InterfaceBuilderVersion">851</string>
-    <string key="IBDocument.AppKitVersion">1138.23</string>
-    <string key="IBDocument.HIToolboxVersion">567.00</string>
+    <string key="IBDocument.AppKitVersion">1138.51</string>
+    <string key="IBDocument.HIToolboxVersion">569.00</string>
     <object class="NSMutableDictionary" key="IBDocument.PluginVersions">
       <bool key="EncodedWithXMLCoder">YES</bool>
       <object class="NSArray" key="dict.sortedKeys">
@@ -21,7 +21,7 @@
     </object>
     <object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
       <bool key="EncodedWithXMLCoder">YES</bool>
-      <integer value="1"/>
+      <integer value="340"/>
     </object>
     <object class="NSArray" key="IBDocument.PluginDependencies">
       <bool key="EncodedWithXMLCoder">YES</bool>
@@ -1792,6 +1792,30 @@ AADzUQABAAAAARbMY3VydgAAAAAAAAABAc0AAA</bytes>
                           <int key="BGButtonType">3</int>
                         </object>
                       </object>
+                      <object class="NSButton" id="660611513">
+                        <reference key="NSNextResponder" ref="195046814"/>
+                        <int key="NSvFlags">268</int>
+                        <string key="NSFrame">{{14, 70}, {335, 18}}</string>
+                        <reference key="NSSuperview" ref="195046814"/>
+                        <bool key="NSEnabled">YES</bool>
+                        <object class="BGHUDButtonCell" key="NSCell" id="343695949">
+                          <int key="NSCellFlags">67239424</int>
+                          <int key="NSCellFlags2">131072</int>
+                          <string key="NSContents">Karaoke</string>
+                          <reference key="NSSupport" ref="26"/>
+                          <reference key="NSControlView" ref="660611513"/>
+                          <int key="NSButtonFlags">1211912703</int>
+                          <int key="NSButtonFlags2">2</int>
+                          <reference key="NSNormalImage" ref="805441668"/>
+                          <reference key="NSAlternateImage" ref="9271868"/>
+                          <string key="NSAlternateContents"/>
+                          <string key="NSKeyEquivalent"/>
+                          <int key="NSPeriodicDelay">200</int>
+                          <int key="NSPeriodicInterval">25</int>
+                          <string key="themeKey">gradientTheme</string>
+                          <int key="BGButtonType">3</int>
+                        </object>
+                      </object>
                     </object>
                     <string key="NSFrame">{{10, 33}, {404, 177}}</string>
                     <reference key="NSSuperview" ref="876119583"/>
@@ -2586,6 +2610,22 @@ AADzUQABAAAAARbMY3VydgAAAAAAAAABAc0AAA</bytes>
             <reference key="destination" ref="188755332"/>
           </object>
           <int key="connectionID">663</int>
+        </object>
+        <object class="IBConnectionRecord">
+          <object class="IBOutletConnection" key="connection">
+            <string key="label">o_filter_karaoke_ckb</string>
+            <reference key="source" ref="687991793"/>
+            <reference key="destination" ref="660611513"/>
+          </object>
+          <int key="connectionID">703</int>
+        </object>
+        <object class="IBConnectionRecord">
+          <object class="IBActionConnection" key="connection">
+            <string key="label">filter_enableKaraoke:</string>
+            <reference key="source" ref="687991793"/>
+            <reference key="destination" ref="660611513"/>
+          </object>
+          <int key="connectionID">704</int>
         </object>
       </object>
       <object class="IBMutableOrderedSet" key="objectRecords">
@@ -3829,6 +3869,7 @@ AADzUQABAAAAARbMY3VydgAAAAAAAAABAc0AAA</bytes>
               <reference ref="955449777"/>
               <reference ref="743541601"/>
               <reference ref="150505351"/>
+              <reference ref="660611513"/>
             </object>
             <reference key="parent" ref="305143588"/>
           </object>
@@ -3925,6 +3966,20 @@ AADzUQABAAAAARbMY3VydgAAAAAAAAABAc0AAA</bytes>
             <int key="objectID">622</int>
             <reference key="object" ref="846216840"/>
             <reference key="parent" ref="235290804"/>
+          </object>
+          <object class="IBObjectRecord">
+            <int key="objectID">701</int>
+            <reference key="object" ref="660611513"/>
+            <object class="NSMutableArray" key="children">
+              <bool key="EncodedWithXMLCoder">YES</bool>
+              <reference ref="343695949"/>
+            </object>
+            <reference key="parent" ref="195046814"/>
+          </object>
+          <object class="IBObjectRecord">
+            <int key="objectID">702</int>
+            <reference key="object" ref="343695949"/>
+            <reference key="parent" ref="660611513"/>
           </object>
         </object>
       </object>
@@ -4250,6 +4305,9 @@ AADzUQABAAAAARbMY3VydgAAAAAAAAABAc0AAA</bytes>
           <string>621.IBPluginDependency</string>
           <string>621.IBViewBoundsToFrameTransform</string>
           <string>622.IBPluginDependency</string>
+          <string>701.IBPluginDependency</string>
+          <string>701.IBViewBoundsToFrameTransform</string>
+          <string>702.IBPluginDependency</string>
           <string>80.IBAttributePlaceholdersKey</string>
           <string>80.IBPluginDependency</string>
           <string>80.IBViewBoundsToFrameTransform</string>
@@ -4737,6 +4795,11 @@ AADzUQABAAAAARbMY3VydgAAAAAAAAABAc0AAA</bytes>
             <bytes key="NSTransformStruct">P4AAAL+AAABDsAAAwxcAAA</bytes>
           </object>
           <string>com.binarymethod.BGHUDAppKitPlugin</string>
+          <string>com.binarymethod.BGHUDAppKitPlugin</string>
+          <object class="NSAffineTransform">
+            <bytes key="NSTransformStruct">P4AAAL+AAADCzgAAwqQAAA</bytes>
+          </object>
+          <string>com.binarymethod.BGHUDAppKitPlugin</string>
           <object class="NSMutableDictionary">
             <string key="NS.key.0">InitialTabViewItem</string>
             <object class="IBInitialTabViewItemAttribute" key="NS.object.0">
@@ -4810,7 +4873,7 @@ AADzUQABAAAAARbMY3VydgAAAAAAAAABAc0AAA</bytes>
         </object>
       </object>
       <nil key="sourceID"/>
-      <int key="maxID">700</int>
+      <int key="maxID">704</int>
     </object>
     <object class="IBClassDescriber" key="IBDocument.Classes">
       <object class="NSMutableArray" key="referencedPartialClassDescriptionsV3.1+">
@@ -4830,6 +4893,7 @@ AADzUQABAAAAARbMY3VydgAAAAAAAAABAc0AAA</bytes>
               <string>eq_preampSliderUpdated:</string>
               <string>eq_twopass:</string>
               <string>filter_enableHeadPhoneVirt:</string>
+              <string>filter_enableKaraoke:</string>
               <string>filter_enableVolumeNorm:</string>
               <string>filter_volNormSliderUpdated:</string>
               <string>resetCompressorValues:</string>
@@ -4840,6 +4904,7 @@ AADzUQABAAAAARbMY3VydgAAAAAAAAABAc0AAA</bytes>
             </object>
             <object class="NSMutableArray" key="dict.values">
               <bool key="EncodedWithXMLCoder">YES</bool>
+              <string>id</string>
               <string>id</string>
               <string>id</string>
               <string>id</string>
@@ -4869,6 +4934,7 @@ AADzUQABAAAAARbMY3VydgAAAAAAAAABAc0AAA</bytes>
               <string>eq_preampSliderUpdated:</string>
               <string>eq_twopass:</string>
               <string>filter_enableHeadPhoneVirt:</string>
+              <string>filter_enableKaraoke:</string>
               <string>filter_enableVolumeNorm:</string>
               <string>filter_volNormSliderUpdated:</string>
               <string>resetCompressorValues:</string>
@@ -4909,6 +4975,10 @@ AADzUQABAAAAARbMY3VydgAAAAAAAAABAc0AAA</bytes>
               </object>
               <object class="IBActionInfo">
                 <string key="name">filter_enableHeadPhoneVirt:</string>
+                <string key="candidateClassName">id</string>
+              </object>
+              <object class="IBActionInfo">
+                <string key="name">filter_enableKaraoke:</string>
                 <string key="candidateClassName">id</string>
               </object>
               <object class="IBActionInfo">
@@ -4984,6 +5054,7 @@ AADzUQABAAAAARbMY3VydgAAAAAAAAABAc0AAA</bytes>
               <string>o_eq_presets_popup</string>
               <string>o_eq_twopass_ckb</string>
               <string>o_filter_headPhone_ckb</string>
+              <string>o_filter_karaoke_ckb</string>
               <string>o_filter_normLevel_ckb</string>
               <string>o_filter_normLevel_lbl</string>
               <string>o_filter_normLevel_sld</string>
@@ -5009,6 +5080,7 @@ AADzUQABAAAAARbMY3VydgAAAAAAAAABAc0AAA</bytes>
             </object>
             <object class="NSMutableArray" key="dict.values">
               <bool key="EncodedWithXMLCoder">YES</bool>
+              <string>id</string>
               <string>id</string>
               <string>id</string>
               <string>id</string>
@@ -5115,6 +5187,7 @@ AADzUQABAAAAARbMY3VydgAAAAAAAAABAc0AAA</bytes>
               <string>o_eq_presets_popup</string>
               <string>o_eq_twopass_ckb</string>
               <string>o_filter_headPhone_ckb</string>
+              <string>o_filter_karaoke_ckb</string>
               <string>o_filter_normLevel_ckb</string>
               <string>o_filter_normLevel_lbl</string>
               <string>o_filter_normLevel_sld</string>
@@ -5297,6 +5370,10 @@ AADzUQABAAAAARbMY3VydgAAAAAAAAABAc0AAA</bytes>
                 <string key="candidateClassName">id</string>
               </object>
               <object class="IBToOneOutletInfo">
+                <string key="name">o_filter_karaoke_ckb</string>
+                <string key="candidateClassName">id</string>
+              </object>
+              <object class="IBToOneOutletInfo">
                 <string key="name">o_filter_normLevel_ckb</string>
                 <string key="candidateClassName">id</string>
               </object>
@@ -5416,8 +5493,8 @@ AADzUQABAAAAARbMY3VydgAAAAAAAAABAc0AAA</bytes>
       </object>
       <object class="NSMutableArray" key="dict.values">
         <bool key="EncodedWithXMLCoder">YES</bool>
-        <string>{9, 8}</string>
-        <string>{7, 2}</string>
+        <string>{11, 11}</string>
+        <string>{10, 3}</string>
         <string>{15, 15}</string>
       </object>
     </object>

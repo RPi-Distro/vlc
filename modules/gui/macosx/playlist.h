@@ -2,7 +2,7 @@
  * playlist.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 778327c819ed4c7257fce9e6942f2ccdeefe53d3 $
+ * $Id: 50a2b9210e8667b00e2b8a9e3f84c43e0bffd825 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -127,7 +127,6 @@
 
 - (BOOL)isSelectionEmpty;
 
-- (IBAction)servicesChange:(id)sender;
 - (IBAction)playItem:(id)sender;
 - (IBAction)revealItemInFinder:(id)sender;
 - (IBAction)preparseItem:(id)sender;

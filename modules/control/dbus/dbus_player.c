@@ -4,7 +4,7 @@
  * Copyright © 2006-2011 Rafaël Carré
  * Copyright © 2007-2011 Mirsal Ennaime
  * Copyright © 2009-2011 The VideoLAN team
- * $Id: 5cf35036cd27d7d9877b6dcd0367876cacc0ae15 $
+ * $Id: e134cbf40702ed4b8c1278066bf5998ad7f087e1 $
  *
  * Authors:    Mirsal Ennaime <mirsal at mirsal fr>
  *             Rafaël Carré <funman at videolanorg>
@@ -45,9 +45,9 @@ DBUS_METHOD( Position )
     REPLY_INIT;
     OUT_ARGUMENTS;
     DBusMessageIter v;
-    dbus_int32_t i_pos;
+    dbus_int64_t i_pos;
 
-    if( !dbus_message_iter_open_container( &args, DBUS_TYPE_VARIANT, "i", &v ) )
+    if( !dbus_message_iter_open_container( &args, DBUS_TYPE_VARIANT, "x", &v ) )
         return DBUS_HANDLER_RESULT_NEED_MEMORY;
 
     input_thread_t *p_input = playlist_CurrentInput( PL );
@@ -61,7 +61,7 @@ DBUS_METHOD( Position )
         vlc_object_release( p_input );
     }
 
-    if( !dbus_message_iter_append_basic( &v, DBUS_TYPE_INT32, &i_pos ) )
+    if( !dbus_message_iter_append_basic( &v, DBUS_TYPE_INT64, &i_pos ) )
         return DBUS_HANDLER_RESULT_NEED_MEMORY;
 
     if( !dbus_message_iter_close_container( &args, &v ) )
@@ -74,7 +74,7 @@ DBUS_METHOD( SetPosition )
 { /* set position in microseconds */
 
     REPLY_INIT;
-    dbus_int32_t i_pos;
+    dbus_int64_t i_pos;
     vlc_value_t position;
     char *psz_trackid, *psz_dbus_trackid;
     input_item_t *p_item;
@@ -419,6 +419,9 @@ DBUS_METHOD( CanSeek )
         return DBUS_HANDLER_RESULT_NEED_MEMORY;
 
     MarshalCanSeek( p_this, &v );
+
+    if( !dbus_message_iter_close_container( &args, &v ) )
+        return DBUS_HANDLER_RESULT_NEED_MEMORY;
 
     REPLY_SEND;
 }

@@ -2,7 +2,7 @@
  * variables.c: routines for object variables handling
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: 5e32323847146a56d56eb9639f5b39357ef9c1f9 $
+ * $Id: bcbce8d1a9a4d4426a3a7658fe6c7a4c8011a3b8 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -1091,8 +1091,10 @@ cleanup:
 
 #undef var_LocationParse
 /**
- * Parses a set of colon-separated <variable name>=<value> pairs. Some access
- * (or access_demux) plugins uses this scheme in media resource location.
+ * Parses a set of colon-separated or semicolon-separated
+ * <variable name>=<value> pairs.
+ * Some access (or access_demux) plugins uses this scheme
+ * in media resource location.
  * @note Only trusted/safe variables are allowed. This is intended.
  *
  * @warning Only use this for plugins implementing VLC-specific resource
@@ -1112,9 +1114,9 @@ int var_LocationParse (vlc_object_t *obj, const char *mrl, const char *pref)
     assert(mrl != NULL);
     while (*mrl != '\0')
     {
-        mrl += strspn (mrl, ":"); /* skip leading colon(s) */
+        mrl += strspn (mrl, ":;"); /* skip leading colon(s) */
 
-        size_t len = strcspn (mrl, ":");
+        size_t len = strcspn (mrl, ":;");
         char *buf = malloc (preflen + len);
 
         if (likely(buf != NULL))

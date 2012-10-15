@@ -2,7 +2,7 @@
  * httplive.c: HTTP Live Streaming stream filter
  *****************************************************************************
  * Copyright (C) 2010-2012 M2X BV
- * $Id: 97d1adf9dc98c3925d4495481b36b1768f9c8a19 $
+ * $Id: 3180e2c2602d8a86e61ede353d81f3a4c56ed4ad $
  *
  * Author: Jean-Paul Saman <jpsaman _AT_ videolan _DOT_ org>
  *
@@ -530,7 +530,7 @@ static int string_to_IV(char *string_hexa, uint8_t iv[AES_BLOCK_SIZE])
             return VLC_EGENERIC;
     }
 
-    for (int i = 8; i ; --i) {
+    for (int i = 7; i >= 0 ; --i) {
         iv[  i] = iv_hi & 0xff;
         iv[8+i] = iv_lo & 0xff;
         iv_hi >>= 8;
@@ -954,6 +954,8 @@ static int parse_M3U8(stream_t *s, vlc_array_t *streams, uint8_t *buffer, const 
 
         /* M3U8 Meta Index file */
         do {
+            bool failed_to_download_stream_m3u8 = false;
+
             /* Next line */
             line = ReadLine(p_begin, &p_read, p_end - p_begin);
             if (line == NULL)
@@ -976,15 +978,29 @@ static int parse_M3U8(stream_t *s, vlc_array_t *streams, uint8_t *buffer, const 
                     }
                     else
                     {
+                        bool new_stream_added = false;
                         hls_stream_t *hls = NULL;
                         err = parse_StreamInformation(s, &streams, &hls, line, uri);
+                        if (err == VLC_SUCCESS)
+                            new_stream_added = true;
+
                         free(uri);
 
                         /* Download playlist file from server */
                         uint8_t *buf = NULL;
                         ssize_t len = read_M3U8_from_url(s, hls->url, &buf);
                         if (len < 0)
-                            err = VLC_EGENERIC;
+                        {
+                            msg_Warn(s, "failed to read %s, continue for other streams", hls->url);
+                            failed_to_download_stream_m3u8 = true;
+
+                            /* remove stream just added */
+                            if (new_stream_added)
+                                vlc_array_remove(streams, vlc_array_count(streams) - 1);
+
+                            /* ignore download error, so we have chance to try other streams */
+                            err = VLC_SUCCESS;
+                        }
                         else
                         {
                             /* Parse HLS m3u8 content. */
@@ -1011,6 +1027,13 @@ static int parse_M3U8(stream_t *s, vlc_array_t *streams, uint8_t *buffer, const 
 
         } while (err == VLC_SUCCESS);
 
+        size_t stream_count = vlc_array_count(streams);
+        msg_Dbg(s, "%d streams loaded in Meta playlist", (int)stream_count);
+        if (stream_count == 0)
+        {
+            msg_Err(s, "No playable streams found in Meta playlist");
+            err = VLC_EGENERIC;
+        }
     }
     else
     {
@@ -1046,6 +1069,7 @@ static int parse_M3U8(stream_t *s, vlc_array_t *streams, uint8_t *buffer, const 
         assert(hls);
 
         /* */
+        bool media_sequence_loaded = false;
         int segment_duration = -1;
         do
         {
@@ -1060,7 +1084,15 @@ static int parse_M3U8(stream_t *s, vlc_array_t *streams, uint8_t *buffer, const 
             else if (strncmp(line, "#EXT-X-TARGETDURATION", 21) == 0)
                 err = parse_TargetDuration(s, hls, line);
             else if (strncmp(line, "#EXT-X-MEDIA-SEQUENCE", 21) == 0)
-                err = parse_MediaSequence(s, hls, line);
+            {
+                /* A Playlist file MUST NOT contain more than one EXT-X-MEDIA-SEQUENCE tag. */
+                /* We only care about first one */
+                if (!media_sequence_loaded)
+                {
+                    err = parse_MediaSequence(s, hls, line);
+                    media_sequence_loaded = true;
+                }
+            }
             else if (strncmp(line, "#EXT-X-KEY", 10) == 0)
                 err = parse_Key(s, hls, line);
             else if (strncmp(line, "#EXT-X-PROGRAM-DATE-TIME", 24) == 0)

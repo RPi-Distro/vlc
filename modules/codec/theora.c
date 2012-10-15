@@ -2,7 +2,7 @@
  * theora.c: theora decoder module making use of libtheora.
  *****************************************************************************
  * Copyright (C) 1999-2012 the VideoLAN team
- * $Id: 7413da0acd634a554da9624d9f71d37836145562 $
+ * $Id: b3c7b7406cf5713595711f1f8d5650ed7d3c184a $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -454,7 +454,9 @@ static picture_t *DecodePacket( decoder_t *p_dec, ogg_packet *p_oggpacket )
 
     /* TODO: Implement _granpos (3rd parameter here) and add the
      * call to TH_DECCTL_SET_GRANDPOS after seek */
-    if (th_decode_packetin( p_sys->tcx, p_oggpacket, NULL )) /* 0 on success */
+    /* TODO: If the return is TH_DUPFRAME, we don't need to display a new
+     * frame, but we do need to keep displaying the previous one. */
+    if (th_decode_packetin( p_sys->tcx, p_oggpacket, NULL ) < 0)
         return NULL; /* bad packet */
 
     /* Check for keyframe */

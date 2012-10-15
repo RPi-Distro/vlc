@@ -2,7 +2,7 @@
  * asf.c: asf muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2003-2004, 2006 the VideoLAN team
- * $Id: edc51b545dd96c95cd34f25f788e845c1581afb0 $
+ * $Id: c2d91e07142d3a9ccd4e534398cf8dee3fd45b49 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -575,7 +575,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
                 }
             }
 
-            tk->i_extra = 11 + sizeof( BITMAPINFOHEADER ) + i_codec_extra;
+            tk->i_extra = 11 + sizeof( VLC_BITMAPINFOHEADER ) + i_codec_extra;
             tk->p_extra = malloc( tk->i_extra );
             if( !tk->p_extra )
             {
@@ -586,8 +586,8 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
             bo_addle_u32( &bo, p_input->p_fmt->video.i_width );
             bo_addle_u32( &bo, p_input->p_fmt->video.i_height );
             bo_add_u8   ( &bo, 0x02 );  /* flags */
-            bo_addle_u16( &bo, sizeof( BITMAPINFOHEADER ) + i_codec_extra );
-            bo_addle_u32( &bo, sizeof( BITMAPINFOHEADER ) + i_codec_extra );
+            bo_addle_u16( &bo, sizeof( VLC_BITMAPINFOHEADER ) + i_codec_extra );
+            bo_addle_u32( &bo, sizeof( VLC_BITMAPINFOHEADER ) + i_codec_extra );
             bo_addle_u32( &bo, p_input->p_fmt->video.i_width );
             bo_addle_u32( &bo, p_input->p_fmt->video.i_height );
             bo_addle_u16( &bo, 1 );
@@ -980,7 +980,7 @@ static block_t *asf_header_create( sout_mux_t *p_mux, bool b_broadcast )
         bo_addle_u32( &bo, p_fmt->i_bitrate );  /* Alternate Bitrate */
         bo_addle_u32( &bo, 0 );                 /* Alternate Buffer size */
         bo_addle_u32( &bo, 0 );                 /* Alternate Initial buffer fullness */
-        bo_addle_u32( &bo, 0 );                 /* Maximum object size (0 = unkown) */
+        bo_addle_u32( &bo, 0 );                 /* Maximum object size (0 = unknown) */
         bo_addle_u32( &bo, 0x02 );              /* Flags (seekable) */
         bo_addle_u16( &bo, p_track->i_id ); /* Stream number */
         bo_addle_u16( &bo, 0 ); /* Stream language index */

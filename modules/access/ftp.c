@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
  * Copyright © 2006 Rémi Denis-Courmont
- * $Id: ba16ea9eeecf50561b34953fdecbe067c738d946 $
+ * $Id: d76ba19b6a35630dc3fa7cac1d2e0aa372ca6960 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr> - original code
  *          Rémi Denis-Courmont <rem # videolan.org> - EPSV support
@@ -639,8 +639,10 @@ static int ftp_SendCommand( vlc_object_t *p_access, access_sys_t *p_sys,
     if( net_Printf( p_access, p_sys->fd_cmd, NULL, "%s\r\n", psz_cmd ) < 0 )
     {
         msg_Err( p_access, "failed to send command" );
+        free( psz_cmd );
         return VLC_EGENERIC;
     }
+    free( psz_cmd );
     return VLC_SUCCESS;
 }
 

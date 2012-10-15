@@ -2,7 +2,7 @@
  * fspanel.h: MacOS X full screen panel
  *****************************************************************************
  * Copyright (C) 2006-2011 VLC authors and VideoLAN
- * $Id: b6c32db90e04207fe86ffc84cd6465b1385948dc $
+ * $Id: a3d7dd462479b29558261a3198a05eb50d8270ec $
  *
  * Authors: Jérôme Decoodt <djc at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -80,6 +80,8 @@
     NSTextField *o_streamTitle_txt, *o_streamPosition_txt;
     NSSlider *o_fs_timeSlider, *o_fs_volumeSlider;
     NSImage *o_background_img, *o_vol_sld_img, *o_vol_mute_img, *o_vol_max_img, *o_time_sld_img;
+    NSTimeInterval last_fwd_event;
+    NSTimeInterval last_bwd_event;
 }
 - (id)initWithFrame: (NSRect)frameRect;
 - (void)drawRect: (NSRect)rect;

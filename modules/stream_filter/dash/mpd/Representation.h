@@ -49,7 +49,7 @@ namespace dash
                  *  @return The bitrate required for this representation
                  *          in Bytes per seconds.
                  *          Will be a valid value, as the parser refuses Representation
-                 *          without bandwith.
+                 *          without bandwidth.
                  */
                 int                 getBandwidth            () const;
                 void                setBandwidth            ( int bandwidth );

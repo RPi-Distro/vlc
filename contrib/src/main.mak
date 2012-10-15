@@ -115,8 +115,6 @@ endif
 
 ifdef HAVE_MACOSX
 MIN_OSX_VERSION=10.5
-MACOSX_SDK=/Developer/SDKs/MacOSX$(OSX_VERSION).sdk
-PATH :=$(abspath ../../extras/tools/build/bin):$(abspath ../$(BUILD)/bin):$(PATH)
 CC=gcc-4.2
 CXX=g++-4.2
 AR=ar
@@ -158,8 +156,8 @@ cppcheck = $(shell $(CC) $(CFLAGS) -E -dM - < /dev/null | grep -E $(1))
 
 EXTRA_CFLAGS += -I$(PREFIX)/include
 CPPFLAGS := $(CPPFLAGS) $(EXTRA_CFLAGS)
-CFLAGS := $(CFLAGS) $(EXTRA_CFLAGS)
-CXXFLAGS := $(CXXFLAGS) $(EXTRA_CFLAGS)
+CFLAGS := $(CFLAGS) $(EXTRA_CFLAGS) -g
+CXXFLAGS := $(CXXFLAGS) $(EXTRA_CFLAGS) -g
 EXTRA_LDFLAGS += -L$(PREFIX)/lib
 LDFLAGS := $(LDFLAGS) $(EXTRA_LDFLAGS)
 # Do not export those! Use HOSTVARS.

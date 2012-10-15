@@ -4,7 +4,7 @@
  * Copyright © 2006-2011 Rafaël Carré
  * Copyright © 2007-2011 Mirsal Ennaime
  * Copyright © 2009-2011 The VideoLAN team
- * $Id: ff84c38d2f4d8fa94c581068ddadd131067e99fa $
+ * $Id: de9ec159198e8ba69bf38568b7eab2c61133ecb9 $
  *
  * Authors:    Mirsal Ennaime <mirsal at mirsal fr>
  *             Rafaël Carré <funman at videolanorg>
@@ -88,7 +88,7 @@ static const char* psz_introspection_xml =
 "    <method name=\"Pause\" />\n"
 "    <method name=\"PlayPause\" />\n"
 "    <method name=\"Seek\">\n"
-"      <arg type=\"x\" direction=\"out\" />\n"
+"      <arg type=\"x\" direction=\"in\" />\n"
 "    </method>"
 "    <method name=\"OpenUri\">\n"
 "      <arg type=\"s\" direction=\"in\" />\n"

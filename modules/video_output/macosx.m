@@ -2,7 +2,7 @@
  * macosx.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2012 the VideoLAN team
- * $Id: 0f81da79a8ca12ab506ca484979b342bd29e7d98 $
+ * $Id: 7bd43feeba93508c109a644ca9a9f29c20457d3c $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -47,10 +47,6 @@
 #include <vlc_opengl.h>
 #include <vlc_dialog.h>
 #include "opengl.h"
-
-@interface NSWindow (VLCCustomCode)
-- (BOOL)isFullscreen;
-@end
 
 /* compilation support for 10.5 and 10.6 */
 #define OSX_LION NSAppKitVersionNumber >= 1115.2
@@ -232,6 +228,7 @@ static int Open (vlc_object_t *this)
     info.has_pictures_invalid = false;
     info.has_event_thread = true;
     info.subpicture_chromas = subpicture_chromas;
+    info.has_hide_mouse = true;
 
     /* Setup vout_display_t once everything is fine */
     vd->info = info;
@@ -256,9 +253,6 @@ void Close (vlc_object_t *this)
 {
     vout_display_t *vd = (vout_display_t *)this;
     vout_display_sys_t *sys = vd->sys;
-
-    if ([[sys->glView window] level] != NSNormalWindowLevel)
-        [[sys->glView window] setLevel: NSNormalWindowLevel];
 
     [sys->glView setVoutDisplay:nil];
 
@@ -333,11 +327,8 @@ static int Control (vout_display_t *vd, int query, va_list ap)
         }
         case VOUT_DISPLAY_CHANGE_WINDOW_STATE:
         {
-            NSAutoreleasePool * o_pool = [[NSAutoreleasePool alloc] init];
             unsigned state = va_arg (ap, unsigned);
-            [sys->glView performSelectorOnMainThread:@selector(setWindowLevel:) withObject:[NSNumber numberWithUnsignedInt:state] waitUntilDone:NO];
-            [o_pool release];
-            return VLC_SUCCESS;
+            return vout_window_SetState (sys->embed, state);            
         }
         case VOUT_DISPLAY_CHANGE_DISPLAY_FILLED:
         case VOUT_DISPLAY_CHANGE_ZOOM:
@@ -436,6 +427,9 @@ static int Control (vout_display_t *vd, int query, va_list ap)
 static int OpenglLock (vlc_gl_t *gl)
 {
     vout_display_sys_t *sys = (vout_display_sys_t *)gl->sys;
+    if (!sys->glView || ![sys->glView respondsToSelector:@selector(openGLContext)])
+        return 1;
+
     NSOpenGLContext *context = [sys->glView openGLContext];
     CGLError err = CGLLockContext ([context CGLContextObj]);
     if (kCGLNoError == err)
@@ -707,14 +701,6 @@ static void OpenglSwap (vlc_gl_t *gl)
 - (BOOL)isOpaque
 {
     return YES;
-}
-
-- (void)setWindowLevel:(NSNumber*)state
-{
-    if ([state unsignedIntValue] & VOUT_WINDOW_STATE_ABOVE)
-        [[self window] setLevel: NSStatusWindowLevel];
-    else
-        [[self window] setLevel: NSNormalWindowLevel];
 }
 
 #pragma mark -

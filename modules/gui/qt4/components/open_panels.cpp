@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: c828943c09e1d9879d25095fe7d9e1e551c38f40 $
+ * $Id: ceacf7fc6d532673c76b263eb26bf5b8facf1bdc $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -338,7 +338,7 @@ DiscOpenPanel::DiscOpenPanel( QWidget *_parent, intf_thread_t *_p_intf ) :
     ui.deviceCombo->setToolTip( qtr(I_DEVICE_TOOLTIP) );
     ui.deviceCombo->setInsertPolicy( QComboBox::InsertAtTop );
 
-#ifndef WIN32
+#if !defined( WIN32 ) && !defined( __OS2__ )
     char const * const ppsz_discdevices[] = {
         "sr*",
         "sg*",
@@ -404,6 +404,47 @@ void DiscOpenPanel::onFocus()
         SetErrorMode(oldMode);
     }
 }
+#elif defined( __OS2__ ) /* Disc drives probing for OS/2 */
+void DiscOpenPanel::onFocus()
+{
+
+    ui.deviceCombo->clear();
+
+#define IOCTL_CDROMDISK2        0x82
+#define CDROMDISK2_DRIVELETTERS 0x60
+
+    HFILE hcd2;
+    ULONG ulAction;
+    ULONG ulParamLen;
+    ULONG ulData;
+    ULONG ulDataLen;
+
+    if( DosOpen(( PSZ )"CD-ROM2$", ( PHFILE )&hcd2, &ulAction, 0, FILE_NORMAL,
+                OPEN_ACTION_OPEN_IF_EXISTS | OPEN_ACTION_FAIL_IF_NEW,
+                OPEN_ACCESS_READONLY | OPEN_SHARE_DENYNONE,
+                NULL ))
+        return;
+
+    if( !DosDevIOCtl( hcd2, IOCTL_CDROMDISK2, CDROMDISK2_DRIVELETTERS,
+                      NULL, 0, &ulParamLen, &ulData, sizeof( ulData ), &ulDataLen ))
+    {
+        char szDriveName[] = "X:\\";
+
+        int count = LOUSHORT( ulData );
+        int drive = HIUSHORT( ulData );
+
+        for( ; count; --count, ++drive )
+        {
+            szDriveName[ 0 ] = 'A' + drive;
+
+            QString name = qfu( szDriveName );
+
+            ui.deviceCombo->addItem( name, name );
+        }
+    }
+
+    DosClose( hcd2 );
+}
 #endif
 
 DiscOpenPanel::~DiscOpenPanel()
@@ -422,7 +463,7 @@ void DiscOpenPanel::clear()
     m_discType = None;
 }
 
-#ifdef WIN32
+#if defined( WIN32 ) || defined( __OS2__ )
     #define setDrive( psz_name ) {\
     int index = ui.deviceCombo->findText( qfu( psz_name ) ); \
     if( index != -1 ) ui.deviceCombo->setCurrentIndex( index );}
@@ -925,7 +966,7 @@ void CaptureOpenPanel::initialize()
 
     dvbCard = new QSpinBox;
     dvbCard->setAlignment( Qt::AlignRight );
-#ifdef __linux__
+#ifdef __unix__
     dvbCard->setPrefix( "/dev/dvb/adapter" );
 #endif
     dvbDevLayout->addWidget( dvbDeviceLabel, 0, 0 );

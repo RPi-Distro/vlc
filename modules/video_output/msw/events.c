@@ -2,7 +2,7 @@
  * events.c: Windows DirectX video output events handler
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 51de721f644aa533f3bccc2aa55a70cd5017aa02 $
+ * $Id: 004f841b58ac0f4a586b35e52156ed509426fe98 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -473,7 +473,44 @@ static void *EventThread( void *p_this )
     return NULL;
 }
 
+#ifdef MODULE_NAME_IS_direct3d
+static int CALLBACK
+enumWindowsProc(HWND hwnd, LPARAM lParam)
+{
+    HWND *wnd = (HWND *)lParam;
 
+    char name[128];
+    name[0] = '\0';
+    GetClassNameA( hwnd, name, 128 );
+
+    if( !strcasecmp( name, "WorkerW" ) )
+    {
+        hwnd = FindWindowEx( hwnd, NULL, _T("SHELLDLL_DefView"), NULL );
+        if( hwnd ) hwnd = FindWindowEx( hwnd, NULL, _T("SysListView32"), NULL );
+        if( hwnd )
+        {
+            *wnd = hwnd;
+            return false;
+        }
+    }
+    return true;
+}
+
+static HWND GetDesktopHandle(vout_display_t *vd)
+{
+    /* Find Program Manager */
+    HWND hwnd = FindWindow( _T("Progman"), NULL );
+    if( hwnd ) hwnd = FindWindowEx( hwnd, NULL, _T("SHELLDLL_DefView"), NULL );
+    if( hwnd ) hwnd = FindWindowEx( hwnd, NULL, _T("SysListView32"), NULL );
+    if( hwnd )
+        return hwnd;
+
+    msg_Dbg( vd, "Couldn't find desktop icon window,. Trying the hard way." );
+
+    EnumWindows( enumWindowsProc, (LPARAM)&hwnd );
+    return hwnd;
+}
+#endif
 /* following functions are local */
 
 /*****************************************************************************
@@ -512,14 +549,8 @@ static int DirectXCreateWindow( event_thread_t *p_event )
     }
     else
     {
-        /* Find Program Manager */
-        HWND hwnd = FindWindow( _T("Progman"), NULL );
-        if( hwnd ) hwnd = FindWindowEx( hwnd, NULL, _T("SHELLDLL_DefView"), NULL );
-        if( hwnd ) hwnd = FindWindowEx( hwnd, NULL, _T("SysListView32"), NULL );
-        if( !hwnd )
-            msg_Err( vd, "Couldn't find desktop icon window. Desktop mode can't be established." );
         p_event->parent_window = NULL;
-        p_event->hparent = hwnd;
+        p_event->hparent = GetDesktopHandle(vd);
     }
     #endif
     p_event->cursor_arrow = LoadCursor(NULL, IDC_ARROW);

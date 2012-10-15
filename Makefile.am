@@ -24,7 +24,6 @@ EXTRA_DIST = \
 	extras/package/win32/vlc.win32.nsi.in \
 	extras/package/win32/spad.nsi.in \
 	extras/package/win32/UAC.nsh \
-	extras/package/win32/UAC.dll \
 	extras/package/win32/languages/declaration.nsh \
 	extras/package/win32/languages/bengali.nsh \
 	extras/package/win32/languages/basque.nsh \
@@ -90,7 +89,7 @@ AUTOMAKE_OPTIONS = \
 ChangeLog: Makefile.am
 	rm -f -- "$@"
 	cd doc && $(MAKE) $(AM_MAKEFLAGS) changelogs
-	$(LN_S) -f doc/ChangeLog-2009 "$@"
+	$(LN_S) -f doc/ChangeLog-2012 "$@"
 
 ###############################################################################
 # Mac OS X project
@@ -309,6 +308,8 @@ EXTRA_DIST += \
 	extras/package/macosx/Resources/mainwindow_dark/effects-double-buttons_dark@2x.png \
 	extras/package/macosx/Resources/mainwindow_dark/effects-one-button-blue_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/effects-one-button-blue_dark@2x.png \
+	extras/package/macosx/Resources/mainwindow_dark/effects-one-button-pressed-dark.png \
+	extras/package/macosx/Resources/mainwindow_dark/effects-one-button-pressed-dark@2x.png \
 	extras/package/macosx/Resources/mainwindow_dark/effects-one-button_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/effects-one-button_dark@2x.png \
 	extras/package/macosx/Resources/mainwindow_dark/forward-pressed_dark.png \

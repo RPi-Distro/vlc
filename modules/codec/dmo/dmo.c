@@ -2,7 +2,7 @@
  * dmo.c : DirectMedia Object decoder module for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: 8880a79d846fdec6dd74cb0fd56ab86725860e7c $
+ * $Id: 662f8552b18bb04572821a3b2bdcd60a5f8460db $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -32,6 +32,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
+#include <vlc_codecs.h>
 #include <vlc_aout.h>
 
 #ifndef WIN32
@@ -175,6 +176,9 @@ static const GUID guid_wmv_enc = { 0x3181343b, 0x94a2, 0x4feb, { 0xad, 0xef, 0x3
 static const GUID guid_wmv_enc2 = { 0x96b57cdd, 0x8966, 0x410c,{ 0xbb, 0x1f, 0xc9, 0x7e, 0xea, 0x76, 0x5c, 0x04 } };
 static const GUID guid_wma_enc = { 0x70f598e9, 0xf4ab, 0x495a, { 0x99, 0xe2, 0xa7, 0xc4, 0xd3, 0xd8, 0x9a, 0xbf } };
 
+#define VLC_CODEC_MSS1      VLC_FOURCC('M','S','S','1')
+#define VLC_CODEC_MSS2      VLC_FOURCC('M','S','S','2')
+
 typedef struct
 {
     vlc_fourcc_t i_fourcc;
@@ -194,10 +198,10 @@ static const codec_dll decoders_table[] =
     /* WMV1 */
     { VLC_CODEC_WMV1,   "wmvdmod.dll", &guid_wmv },
     /* Screen codecs */
-    { VLC_FOURCC('M','S','S','2'), "wmsdmod.dll", &guid_wms },
-    { VLC_FOURCC('m','s','s','2'), "wmsdmod.dll", &guid_wms },
-    { VLC_FOURCC('M','S','S','1'), "wmsdmod.dll", &guid_wms },
-    { VLC_FOURCC('m','s','s','1'), "wmsdmod.dll", &guid_wms },
+    { VLC_CODEC_MSS2,   "WMVSDECD.DLL", &guid_wms },
+    { VLC_CODEC_MSS2,   "wmsdmod.dll",  &guid_wms },
+    { VLC_CODEC_MSS1,   "WMVSDECD.DLL", &guid_wms },
+    { VLC_CODEC_MSS1,   "wmsdmod.dll",  &guid_wms },
     /* Windows Media Video Adv */
     { VLC_CODEC_WMVA,   "wmvadvd.dll", &guid_wmva },
 
@@ -420,7 +424,7 @@ static int DecOpen( decoder_t *p_dec )
     }
     else
     {
-        BITMAPINFOHEADER *p_bih;
+        VLC_BITMAPINFOHEADER *p_bih;
 
         int i_size = sizeof(VIDEOINFOHEADER) + p_dec->fmt_in.i_extra;
         p_vih = malloc( i_size );
@@ -436,7 +440,7 @@ static int DecOpen( decoder_t *p_dec )
         p_bih->biBitCount = p_dec->fmt_in.video.i_bits_per_pixel;
         p_bih->biPlanes = 1;
         p_bih->biSize = i_size - sizeof(VIDEOINFOHEADER) +
-            sizeof(BITMAPINFOHEADER);
+            sizeof(VLC_BITMAPINFOHEADER);
 
         p_vih->rcSource.left = p_vih->rcSource.top = 0;
         p_vih->rcSource.right = p_dec->fmt_in.video.i_width;
@@ -496,7 +500,7 @@ static int DecOpen( decoder_t *p_dec )
     }
     else
     {
-        BITMAPINFOHEADER *p_bih;
+        VLC_BITMAPINFOHEADER *p_bih;
         DMO_MEDIA_TYPE mt;
         unsigned i_chroma = VLC_CODEC_YUYV;
         int i_bpp = 16;
@@ -509,13 +513,21 @@ static int DecOpen( decoder_t *p_dec )
             {
                 i_chroma = mt.subtype.Data1;
                 i_bpp = 12;
+                DMOFreeMediaType( &mt );
+                break;
+            }
+            else if( (p_dec->fmt_in.i_codec == VLC_CODEC_MSS1 ||
+                      p_dec->fmt_in.i_codec == VLC_CODEC_MSS2 ) &&
+                      guidcmp( &mt.subtype, &MEDIASUBTYPE_RGB24 ) )
+            {
+                i_chroma = VLC_CODEC_RGB24;
+                i_bpp = 24;
             }
 
             DMOFreeMediaType( &mt );
         }
-
-        p_dec->fmt_out.i_codec = i_chroma == VLC_CODEC_YV12 ?
-            VLC_CODEC_I420 : i_chroma;
+        
+        p_dec->fmt_out.i_codec = i_chroma == VLC_CODEC_YV12 ? VLC_CODEC_I420 : i_chroma;
         p_dec->fmt_out.video.i_width = p_dec->fmt_in.video.i_width;
         p_dec->fmt_out.video.i_height = p_dec->fmt_in.video.i_height;
         p_dec->fmt_out.video.i_bits_per_pixel = i_bpp;
@@ -534,7 +546,7 @@ static int DecOpen( decoder_t *p_dec )
         }
 
         p_bih = &p_vih->bmiHeader;
-        p_bih->biCompression = i_chroma;
+        p_bih->biCompression = i_chroma == VLC_CODEC_RGB24 ? BI_RGB : i_chroma;
         p_bih->biHeight *= -1;
         p_bih->biBitCount = p_dec->fmt_out.video.i_bits_per_pixel;
         p_bih->biSizeImage = p_dec->fmt_in.video.i_width *
@@ -542,12 +554,19 @@ static int DecOpen( decoder_t *p_dec )
             (p_dec->fmt_in.video.i_bits_per_pixel + 7) / 8;
 
         p_bih->biPlanes = 1; /* http://msdn.microsoft.com/en-us/library/dd183376%28v=vs.85%29.aspx */
-        p_bih->biSize = sizeof(BITMAPINFOHEADER);
+        p_bih->biSize = sizeof(VLC_BITMAPINFOHEADER);
 
         dmo_output_type.majortype = MEDIATYPE_Video;
         dmo_output_type.formattype = FORMAT_VideoInfo;
-        dmo_output_type.subtype = dmo_output_type.majortype;
-        dmo_output_type.subtype.Data1 = p_bih->biCompression;
+        if( i_chroma == VLC_CODEC_RGB24 )
+        {
+            dmo_output_type.subtype = MEDIASUBTYPE_RGB24;
+        }
+        else 
+        {
+            dmo_output_type.subtype = dmo_output_type.majortype;
+            dmo_output_type.subtype.Data1 = p_bih->biCompression;
+        }
         dmo_output_type.bFixedSizeSamples = true;
         dmo_output_type.bTemporalCompression = 0;
         dmo_output_type.lSampleSize = p_bih->biSizeImage;
@@ -1108,7 +1127,7 @@ static int EncoderSetVideoType( encoder_t *p_enc, IMediaObject *p_dmo )
     int i, i_selected, i_err;
     DMO_MEDIA_TYPE dmo_type;
     VIDEOINFOHEADER vih, *p_vih;
-    BITMAPINFOHEADER *p_bih;
+    VLC_BITMAPINFOHEADER *p_bih;
 
     /* FIXME */
     p_enc->fmt_in.video.i_bits_per_pixel =
@@ -1142,7 +1161,7 @@ static int EncoderSetVideoType( encoder_t *p_enc, IMediaObject *p_dmo )
     p_bih->biSizeImage = p_enc->fmt_in.video.i_width *
         p_enc->fmt_in.video.i_height * p_enc->fmt_in.video.i_bits_per_pixel /8;
     p_bih->biPlanes = 3;
-    p_bih->biSize = sizeof(BITMAPINFOHEADER);
+    p_bih->biSize = sizeof(VLC_BITMAPINFOHEADER);
 
     vih.rcSource.left = vih.rcSource.top = 0;
     vih.rcSource.right = p_enc->fmt_in.video.i_width;

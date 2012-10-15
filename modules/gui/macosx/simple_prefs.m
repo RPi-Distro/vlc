@@ -2,7 +2,7 @@
 * simple_prefs.m: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2012 VLC authors and VideoLAN
-* $Id: 56c941e5ee674ece81042cb85284988c9c346b25 $
+* $Id: a3a1b75b6a3cbbfcfe4d6dbdf4dcd83b85d2eda4 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -738,6 +738,12 @@ static inline char * __config_GetLabel( vlc_object_t *p_this, const char *psz_na
     [o_sprefs_win makeKeyAndOrderFront: self];
 }
 
+- (void)showSimplePrefsWithLevel:(NSInteger)i_window_level
+{
+    [o_sprefs_win setLevel: i_window_level];
+    [self showSimplePrefs];
+}
+
 - (IBAction)buttonAction:(id)sender
 {
     if( sender == o_sprefs_cancel_btn )
@@ -756,7 +762,7 @@ static inline char * __config_GetLabel( vlc_object_t *p_this, const char *psz_na
     else if( sender == o_sprefs_showAll_btn )
     {
         [o_sprefs_win orderOut: self];
-        [[[VLCMain sharedInstance] preferences] showPrefs];
+        [[[VLCMain sharedInstance] preferences] showPrefsWithLevel:[o_sprefs_win level]];
     }
     else
         msg_Warn( p_intf, "unknown buttonAction sender" );
@@ -768,9 +774,14 @@ static inline char * __config_GetLabel( vlc_object_t *p_this, const char *psz_na
 {
     if( i_return == NSAlertAlternateReturn )
     {
+        /* reset VLC's config */
         config_ResetAll( p_intf );
         [self resetControls];
         config_SaveConfigFile( p_intf );
+
+        /* reset OS X defaults */
+        [NSUserDefaults resetStandardUserDefaults];
+        [[NSUserDefaults standardUserDefaults] synchronize];
     }
 }
 

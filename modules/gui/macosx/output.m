@@ -2,7 +2,7 @@
  * output.m: MacOS X Output Dialog
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: 5271cf34ec7341f21dd95b65ece33b0f80b93309 $
+ * $Id: 08d5b509d2abed81510d28ff48be1c9648719f21 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -372,8 +372,7 @@
         {
             NSMutableArray * o_sout_options;
             o_sout_options = [NSArray arrayWithObjects:
-                                    [NSString stringWithString:
-                                    @":demux=dump"],
+                                    @":demux=dump",
                                     [NSString stringWithFormat:
                                     @":demuxdump-file=%@",
                                     [o_file_field stringValue]],

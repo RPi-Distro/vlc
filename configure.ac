@@ -2,10 +2,10 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2012 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 2.0.3)
+AC_INIT(vlc, 2.0.4)
 VERSION_MAJOR=2
 VERSION_MINOR=0
-VERSION_REVISION=3
+VERSION_REVISION=4
 VERSION_EXTRA=0
 VERSION_DEV=
 
@@ -639,7 +639,7 @@ AC_CHECK_FUNC(getopt_long,, [
 AC_SUBST(GNUGETOPT_LIBS)
 
 AC_CHECK_LIB(m,cos,[
-  VLC_ADD_LIBS([adjust wave ripple psychedelic gradient a52tofloat32 dtstofloat32 x264 goom visual panoramix rotate noise grain scene kate flac lua chorus_flanger freetype avcodec avformat access_avio swscale postproc i420_rgb faad twolame equalizer spatializer param_eq samplerate freetype mod mpc dmo quicktime realvideo qt4 compressor headphone_channel_mixer normvol audiobargraph_a speex mono colorthres extract ball access_imem hotkeys mosaic gaussianblur dbus x264 hqdn3d],[-lm])
+  VLC_ADD_LIBS([adjust wave ripple psychedelic gradient a52tofloat32 dtstofloat32 x264 goom visual panoramix rotate noise grain scene kate flac lua chorus_flanger freetype avcodec avformat access_avio swscale postproc i420_rgb faad twolame equalizer spatializer param_eq samplerate freetype mod mpc dmo quicktime realvideo qt4 compressor headphone_channel_mixer normvol audiobargraph_a speex opus mono colorthres extract ball access_imem hotkeys mosaic gaussianblur dbus x264 hqdn3d],[-lm])
   LIBM="-lm"
 ], [
   LIBM=""
@@ -2811,6 +2811,11 @@ AS_IF([test "${enable_speex}" != "no"], [
 AM_CONDITIONAL([HAVE_SPEEXDSP], [test "$have_speexdsp" = "yes"])
 
 dnl
+dnl  Opus plugin
+dnl
+PKG_ENABLE_MODULES_VLC([OPUS], [], [ogg opus], [Opus support], [auto])
+
+dnl
 dnl  theora decoder plugin
 dnl
 PKG_ENABLE_MODULES_VLC([THEORA], [], [ogg theoradec >= 1.0 theoraenc], [experimental theora codec], [auto])
@@ -3796,31 +3801,19 @@ dnl
 dnl  ncurses module
 dnl
 AC_ARG_ENABLE(ncurses,
-  [  --disable-ncurses       ncurses interface support (default disabled)],
-  [if test "${enable_ncurses}" != "no"; then
-    AC_CHECK_HEADER(ncurses.h,
-      [AC_CHECK_LIB(ncursesw, mvprintw,
-        [VLC_ADD_PLUGIN([ncurses])
-        VLC_ADD_LIBS([ncurses],[-lncursesw])
-        ALIASES="${ALIASES} nvlc"
-        AC_CHECK_LIB(ncursesw, tgetent, [],
-          AC_CHECK_LIB(tinfow, tgetent, [VLC_ADD_LIBS([ncurses],[-ltinfow])],
-            [AC_CHECK_LIB(tinfo, tgetent, [VLC_ADD_LIBS([ncurses],[-ltinfo])],
-              [AS_IF([test "${enable_ncurses}" = "yes"],
-                [AC_MSG_ERROR([tgetent not found in ncursesw tinfow tinfo]
-               )])])
-            ]
-          )
-        )
-        ],
-          [AS_IF([test "${enable_ncurses}" = "yes"], [
-            AC_MSG_ERROR([libncursesw not found])])]
-        )],
-        [AS_IF([test "${enable_ncurses}" = "yes"], [
-          AC_MSG_ERROR([ncurses.h not found])])]
-        )
-  fi]
-)
+[AS_HELP_STRING([--disable-ncurses],[ncurses text-based interface (default auto)])])
+AS_IF([test "${enable_ncurses}" != "no"] ,[
+  PKG_CHECK_MODULES([NCURSES], [ncursesw], [
+    VLC_ADD_PLUGIN([ncurses])
+    VLC_ADD_CFLAGS([ncurses],[${NCURSES_CFLAGS}])
+    VLC_ADD_LIBS([ncurses],[${NCURSES_LIBS}])
+    ALIASES="${ALIASES} nvlc"
+  ], [
+    AS_IF([test -n "${enable_ncurses}"], [
+      AC_MSG_ERROR([${NCURSES_PKG_ERRORS}.])
+    ])
+  ])
+])
 
 dnl
 dnl  XOSD plugin
