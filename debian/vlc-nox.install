@@ -76,6 +76,7 @@ usr/lib/vlc/plugins/codec/liblibmpeg2_plugin.so
 usr/lib/vlc/plugins/codec/liblpcm_plugin.so
 usr/lib/vlc/plugins/codec/libmpeg_audio_plugin.so
 usr/lib/vlc/plugins/codec/libomxil_plugin.so
+usr/lib/vlc/plugins/codec/libopus_plugin.so
 usr/lib/vlc/plugins/codec/libpng_plugin.so
 usr/lib/vlc/plugins/codec/librawvideo_plugin.so
 usr/lib/vlc/plugins/codec/libschroedinger_plugin.so
