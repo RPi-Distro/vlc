@@ -2,7 +2,7 @@
  * qt4.cpp : QT4 interface
  ****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: 0c69a724d8d78a1f90f63cab3cb36c47b710bfc6 $
+ * $Id: 7ff935fc934d7a3e35201c34cbae8ef6a7a2614d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -231,8 +231,8 @@ vlc_module_begin ()
 #ifdef UPDATE_CHECK
     add_bool( "qt-updates-notif", true, UPDATER_TEXT,
               UPDATER_LONGTEXT, false )
-    add_integer( "qt-updates-days", 3, UPDATER_DAYS_TEXT,
-                 UPDATER_DAYS_TEXT, false )
+    add_integer_with_range( "qt-updates-days", 3, 0, 180,
+              UPDATER_DAYS_TEXT, UPDATER_DAYS_TEXT, false )
 #endif
 
     add_bool( "qt-autosave-volume", true, SAVEVOL_TEXT,

@@ -2,7 +2,7 @@
  * VideoView.m: MacOS X video output module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: b191bc7d8ea9232ef0f10ab53308da416fe69f84 $
+ * $Id: 55d52040e5c1b245d2daddd0a62104a8465df0ad $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Eric Petit <titer@m0k.org>
@@ -109,7 +109,7 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 - (void)closeVout
 {
     vout_thread_t * p_vout = getVout();
-    if( !p_vout )
+    if( p_vout )
     {
         var_DelCallback( p_vout, "video-device", DeviceCallback, NULL );
         vlc_object_release( p_vout );
@@ -166,10 +166,12 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
                 val.i_int |= (int)CocoaKeyToVLC( key );
                 var_Set( p_vout->p_libvlc, "key-pressed", val );
             }
-            vlc_object_release( p_vout );
         }
         else
             msg_Dbg( VLCIntf, "could not send keyevent to VLC core" );
+
+        if (p_vout)
+            vlc_object_release( p_vout );
     }
     else
         [super keyDown: o_event];

@@ -31,13 +31,14 @@ François Cartegnie
 Olivier Aubert
 Jakob Leben
 Benjamin Pracht
-Jean-Philippe André
 Pavlov Konstantin
-Steve Lhomme
+Jean-Philippe André
 Hugo Beauzée-Luyssen
+Steve Lhomme
 Stéphane Borel
 JP Dinger
 Geoffroy Couprie
+David Fuhrmann
 Marian Ďurkovič
 Yoann Peronneau
 Jon Lech Johansen
@@ -47,9 +48,8 @@ Jérôme Decoodt
 Faustino Osuna
 Loïc Minier
 KO Myung-Hun
-David Flynn
-David Fuhrmann
 Ludovic Fauvet
+David Flynn
 Mark Moriarty
 Fabio Ritrovato
 Tony Castley
@@ -64,19 +64,19 @@ Martin Storsjö
 Simon Latapie
 Bernie Purcell
 Henri Fallon
+Denis Charmet
 Emmanuel Puig
 Sebastien Zwickert
 Adrien Maglo
-Denis Charmet
 Renaud Dartus
 Alexis de Lattre
+Edward Wang
 Vincent Penquerc'h
 Arnaud de Bossoreille de Ribou
 Mohammed Adnène Trojette
 Boris Dorès
 Jai Menon
 Anil Daoud
-Edward Wang
 Pierre Baillet
 Daniel Mierswa
 Dominique Leuenberger
@@ -88,38 +88,33 @@ Anthony Loiseau
 Lukas Durfina
 Xavier Marchesini
 Cyril Mathé
+Éric Lassauge
 Juha Jeronen
 Juho Vähä-Herttua
 Ken Self
-Dean Lee
 Richard Hosking
-Éric Lassauge
 Alexis Ballier
+Fumio Nakayama
 Marc Ariberti
 Benoit Steiner
 Michel Lespinasse
-Vincenzo Reale
 Carlo Calabrò
+Damien Erambert
+Naohiro Koriyama
 Nicolas Chauvet
 Cheng Sun
-Fumio Nakayama
+Christoph Miebach
 Alexey Sokolov
 Basos G
 Brad Smith
-Marián Hikaník
-Michał Trzebiatowski
-Mihkel Kirjutas
-Naohiro Koriyama
 Philippe Morin
+Tobias Güntner
 Vicente Jimenez Aguilar
 Yuval Tze
 Brendon Justin
-Sidney Doria
-Tobias Güntner
 Yves Duret
-Gonçalo Cordeiro
+Frédéric Yhuel
 Michael Hanselmann
-Damien Erambert
 Damien Lucas
 Richard Shepherd
 Sébastien Toque
@@ -130,7 +125,6 @@ Adrien Grand
 Colin Guthrie
 David Menestrina
 Dominique Martinet
-Frédéric Yhuel
 Jason Luka
 Luc Saillard
 Mindaugas Baranauskas
@@ -140,10 +134,8 @@ Steinar H. Gunderson
 Alexander Law
 Can Wu
 Christophe Courtaut
-Gaëtan Rousseaux
 Hannes Domani
 Manol Manolov
-A S Alam
 Antoine Lejeune
 Arnaud Schauly
 Branko Kokanovic
@@ -152,7 +144,6 @@ Florian G. Pflug
 G Finch
 Keary Griffin
 Konstanty Bialkowski
-Myckel Habets
 Przemyslaw Fiala
 Tanguy Krotoff
 Benjamin Drung
@@ -168,27 +159,25 @@ Søren Bøg
 Toralf Niebuhr
 Austin Burrow
 Bill C. Riemers
-Christoph Miebach
+Casian Andrei
+Chris Smowton
 Colin Delacroix
 Cristian Maglie
 Elminster2031
 Fabian Keil
-Gabor Kelemen
 Jakub Wieczorek
-Khoem Sokhem
+John Peterson
 Martin Briza
 Mike Houben
 Romain Goyet
+Adrian Yanes
+Arai/Fujisawa Tooru
 Aurélien Nephtali
 Barry Wardell
 Ben Hutchings
 Besnard Jean-Baptiste
 Brian Weaver
-Casian Andrei
 Clement Chesnin
-Eirik U. Birkeland
-FUJISAWA Tooru
-Jamil Ahmed
 Jonathan Rosser
 Joris van Rooij
 Kaloyan Kovachev
@@ -200,12 +189,11 @@ Michael Feurstein
 Miguel Angel Cabrera Moya
 Ming Hu
 Niles Bindel
-Otto Kekäläinen
 Pauline Castets
+Rui Zhang
 Scott Caudle
 Simon Hailes
 Xavier Martin
-Adrian Yanes
 Alex Converse
 Alexander Bethke
 Andres Krapf
@@ -215,7 +203,6 @@ Anuradha Suraparaju
 Benjamin Poulain
 Brieuc Jeunhomme
 Chris Clayton
-Chris Smowton
 Christopher Mueller
 Cédric Cocquebert
 Danny Wood
@@ -233,6 +220,7 @@ Kai Lauterbach
 Konstantin Bogdanov
 Kuan-Chung Chiu
 Mark Hassman
+Mark Lee
 Matthias Dahl
 Michael McEll
 Michael Ploujnikov
@@ -244,6 +232,7 @@ Ron Frederick
 Ronald Wright
 Rov Juvano
 Sabourin Gilles
+Sam Lade
 Sasha Koruga
 Sreng Jean
 Sven Petai
@@ -287,7 +276,6 @@ Dan Rosenberg
 Daniel Dreibrodt
 Daniel Marth
 Daniel Tisza
-David Planella
 Detlef Schroeder
 Diego Fernando Nieto
 Dominic Spitaler
@@ -301,9 +289,9 @@ Fargier Sylvain
 Fathi Boudra
 Felix Geyer
 Filipe Azevedo
-Florian Hubold
 Frank Enderle
 François Revol
+Frode Tennebø
 Frédéric Crozat
 Gaurav Narula
 Georg Seifert
@@ -323,6 +311,7 @@ Jarmo Torvinen
 Jason Scheunemann
 Jeff Lu
 Jeroen Ost
+Joe Taber
 Johann Ransay
 Johannes Weißl
 John Hendrikx
@@ -333,6 +322,7 @@ Julien / Gellule
 Julien Humbert
 Kamil Baldyga
 Kamil Klimek
+Karlheinz Wohlmuth
 Kelly Anderson
 Kevin DuBois
 Lari Natri
@@ -341,7 +331,6 @@ Lucas C. Villa Real
 Lukáš Lalinský
 Mal Graty
 Malte Tancred
-Mark Lee
 Martin Pöhlmann
 Marton Balint
 Mathew King
@@ -358,16 +347,15 @@ Nick Pope
 Peter Bak Nielsen
 Phil Roffe and David Grellscheid
 Pierre Souchay
+Piotr Fusik
 Pádraig Brady
 R.M
 Ralph Giles
-Ricardo Pérez López
 Robert Jedrzejczyk
 Robert Paciorek
 Rolf Ahrenberg
 Roman Pen
 Ruud Althuizen
-Sam Lade
 Samuli Suominen
 Scott Lyons
 Sebastian Birk
@@ -387,7 +375,6 @@ Tristan Heaven
 Yannick Bréhon
 Yavor Doganov
 Yohann Martineau
-bbcallen
 dharani.prabhu.s
 suheaven
 wucan
@@ -402,7 +389,6 @@ Andrea Guzzo
 Andrew Flintham
 Andrew Zaikin
 Andy Lindsay
-Arai/Fujisawa Tooru
 Arkadiusz Miskiewicz
 Arnaud Gomes-do-Vale
 Arwed v. Merkatz
@@ -440,6 +426,7 @@ Eren Türkay
 Eric Dudiak
 Espen Skoglund
 Ethan C. Baldridge
+Florian Hubold
 François Seingier
 Frans van Veen
 Frédéric Ruget
@@ -584,7 +571,7 @@ airplanez - Korean
 Ajith Manjula - Sinhala
 Alexander Didebulidze - Georgian
 Alexander Henket - Dutch
-Alexander Law - Russian
+Alexander Lakhin - Russian
 Alexey Lugin - Ukrainian
 Alexey Salmin - Russian
 Alfred John - Acoli
@@ -604,11 +591,13 @@ Bayarsaikhan Enkhtaivan Баярсайхан Энхтайван - Mongolian
 Bruno Queirós - Portuguese
 Bruno Vella - Italian
 Carlo Calabrò - Italian
+Chandan Kumar - Hindi
 Christoph Miebach - German
 Circo Radu - Romanian
 Cristian Secară - Romanian
 Daniel Nylander - Swedish
 David González - Spanish
+David Planella - Catalan
 Dean Lee - Chinese
 Denis Arnaud - Breton
 Derk-Jan Hartman - Dutch
@@ -654,7 +643,7 @@ Jon Stødle - Norwegian Nynorsk
 Jouni Kähkönen - Finnish
 Juha Jeronen - Finnish
 Kai Hermann - German
-Kamil Páral -  Czech
+Kamil Páral - Czech
 Kang Jeong-Hee - Korean
 Kaya Zeren - Turkish
 Khin Mi Mi Aung - Burmese
@@ -676,7 +665,7 @@ Mathias C. Berens, welcome-soft - German
 Mattias Põldaru - Estonian
 Md. Rezwan Shahid - Bengali
 Meelad Zakaria - Persian
-Michael Bauer -  Gaelic
+Michael Bauer - Gaelic; Scottish Gaelic
 Michał Trzebiatowski - Polish
 Mihkel Kirjutas - Estonian
 Mindaugas Baranauskas - Lithuanian
@@ -687,7 +676,7 @@ Namhyung Kim - Korean
 Niels Fanøe - Danish
 Niklas 'Nille' Åkerström - Swedish
 Olav Dahlum - Norwegian
-Oleksandr Natalenko - Ukranian
+Oleksandr Natalenko - Ukrainian
 Omer Ensari - Kurmanji (Kurdish)
 Osama Khalid - Arabic
 Otto Kekäläinen - Finnish
@@ -697,17 +686,23 @@ Philipp Weissenbacher - German
 Pittayakom Saingtong - Thai
 Praveen Illa - Telugu
 Predrag Ljubenović - Serbian
+Rajnikant Kumbhar - Marathi
+Ricardo Pérez López - Spanish
 Roustam Ghizdatov - Russian
 Sadia Afroz - Bengali
 Said Marjan Zazai - Pashto
 Salar Khalilzadeh - Persian
 Sam Hocevar - British
 Samuel Hocevar - French
+Sayan Chowdhury - Hindi
 Seanán Ó Coistín - Irish
+Shashi Ranjan - Hindi
+Siarhei Daryichau Дар'ічаў Сяргей - Belarusian
 Sidney Doria - Brazilian Portuguese
 Sigmund Augdal - Norwegian
 Simos Xenitellis - Greek
 Sipho Sibiya - Zulu
+Sok Sophea - Khmer
 Solomon Gizaw - Amharic
 Sreejith P - Malayalam
 Sveinn í Felli - Icelandic
@@ -718,6 +713,7 @@ Thomas De Rocker - Dutch
 Thomas Graf - gettext support, German
 Tomáš Chvátal - Czech
 Tòni Galhard - Occitan
+Umidjon Almasov - Uzbek
 Václav Pavlíček - Czech
 Valek Filippov - Russian
 Vicente Jimenez Aguilar - Spanish
@@ -736,4 +732,3 @@ Yoyo - Simplified Chinese
 Yuksel Yildirim - Turkish
 Zabeeh Khan - Pashto
 Zhang Tong - Chinese
-Сергей Дарьичев - Belarusian

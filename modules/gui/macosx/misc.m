@@ -2,7 +2,7 @@
  * misc.m: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003-2011 VLC authors and VideoLAN
- * $Id: 09018beeb460e771fbd5b3cb00511a7d37ce0ca3 $
+ * $Id: 9c313b0c3f228ec587e9cb9bda7f0ebadf546677 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -513,10 +513,13 @@ void _drawFrameInRect(NSRect frameRect)
 
 - (void)awakeFromNib
 {
-    if (config_GetInt( VLCIntf, "macosx-interfacestyle" ))
+    if (config_GetInt( VLCIntf, "macosx-interfacestyle" )) {
         o_knob_img = [NSImage imageNamed:@"progression-knob_dark"];
-    else
+        b_dark = YES;
+    } else {
         o_knob_img = [NSImage imageNamed:@"progression-knob"];
+        b_dark = NO;
+    }
     img_rect.size = [o_knob_img size];
     img_rect.origin.x = img_rect.origin.y = 0;
 }
@@ -554,7 +557,10 @@ void _drawFrameInRect(NSRect frameRect)
     [[NSGraphicsContext currentContext] restoreGraphicsState];
 
     NSRect knobRect = [[self cell] knobRectFlipped:NO];
-    knobRect.origin.y+=1;
+    if (b_dark)
+        knobRect.origin.y+=2;
+    else
+        knobRect.origin.y+=1;
     [self drawKnobInRect: knobRect];
 }
 

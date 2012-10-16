@@ -1,7 +1,7 @@
 # qt4
 
-QT4_VERSION = 4.7.4
-QT4_URL := http://download.qt.nokia.com/qt/source/qt-everywhere-opensource-src-$(QT4_VERSION).tar.gz
+QT4_VERSION = 4.8.2
+QT4_URL := http://releases.qt-project.org/qt4/source/qt-everywhere-opensource-src-$(QT4_VERSION).tar.gz
 
 ifdef HAVE_MACOSX
 #PKGS += qt4
@@ -21,12 +21,12 @@ $(TARBALLS)/qt-$(QT4_VERSION).tar.gz:
 
 qt4: qt-$(QT4_VERSION).tar.gz .sum-qt4
 	$(UNPACK)
-	patch -p0 < $(SRC)/qt4/cross.patch
-	patch -p0 < $(SRC)/qt4/styles.patch
-	patch -p0 < $(SRC)/qt4/chroot.patch
-	patch -p0 < $(SRC)/qt4/imageformats.patch
-	patch -p0 < $(SRC)/qt4/mingw32.patch
-	mv qt-everywhere-opensource-src-4.7.4 $@ && touch $@
+	cd qt-everywhere-opensource-src-$(QT4_VERSION) && \
+		patch -p0 < ../$(SRC)/qt4/cross.patch && \
+		patch -p0 < ../$(SRC)/qt4/styles.patch && \
+		patch -p0 < ../$(SRC)/qt4/chroot.patch && \
+		patch -p0 < ../$(SRC)/qt4/imageformats.patch
+	mv qt-everywhere-opensource-src-$(QT4_VERSION) $@ && touch $@
 
 XTOOLS := XCC="$(CC)" XCXX="$(CXX)" XSTRIP="$(STRIP)" XAR="$(AR)"
 

@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
   <data>
     <int key="IBDocument.SystemTarget">1050</int>
-    <string key="IBDocument.SystemVersion">11G15</string>
+    <string key="IBDocument.SystemVersion">11E53</string>
     <string key="IBDocument.InterfaceBuilderVersion">851</string>
     <string key="IBDocument.AppKitVersion">1138.47</string>
     <string key="IBDocument.HIToolboxVersion">569.00</string>
@@ -21,15 +21,15 @@
     </object>
     <object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
       <bool key="EncodedWithXMLCoder">YES</bool>
-      <integer value="4596"/>
-      <integer value="915"/>
-      <integer value="1617"/>
       <integer value="2770"/>
-      <integer value="81"/>
+      <integer value="915"/>
       <integer value="2730"/>
       <integer value="4850"/>
-      <integer value="4948"/>
       <integer value="4756"/>
+      <integer value="24"/>
+      <integer value="4948"/>
+      <integer value="1617"/>
+      <integer value="4596"/>
       <integer value="4722"/>
     </object>
     <object class="NSArray" key="IBDocument.PluginDependencies">
@@ -2317,8 +2317,8 @@
                 <object class="NSMenuItem" id="355945594">
                   <reference key="NSMenu" ref="1016637396"/>
                   <string key="NSTitle">Playback Window</string>
-                  <string key="NSKeyEquiv">c</string>
-                  <int key="NSKeyEquivModMask">1572864</int>
+                  <string key="NSKeyEquiv">C</string>
+                  <int key="NSKeyEquivModMask">1048576</int>
                   <int key="NSMnemonicLoc">2147483647</int>
                   <reference key="NSOnImage" ref="447396056"/>
                   <reference key="NSMixedImage" ref="100133332"/>
@@ -2326,8 +2326,8 @@
                 <object class="NSMenuItem" id="302191520">
                   <reference key="NSMenu" ref="1016637396"/>
                   <string key="NSTitle">Playlist</string>
-                  <string key="NSKeyEquiv">p</string>
-                  <int key="NSKeyEquivModMask">1572864</int>
+                  <string key="NSKeyEquiv">P</string>
+                  <int key="NSKeyEquivModMask">1048576</int>
                   <int key="NSMnemonicLoc">2147483647</int>
                   <reference key="NSOnImage" ref="447396056"/>
                   <reference key="NSMixedImage" ref="100133332"/>
@@ -4461,7 +4461,7 @@ LCAuLi4</string>
           <object class="NSButton" id="880009621">
             <reference key="NSNextResponder" ref="661733562"/>
             <int key="NSvFlags">268</int>
-            <string key="NSFrame">{{48, 1}, {14, 16}}</string>
+            <string key="NSFrame">{{48, 3}, {14, 16}}</string>
             <reference key="NSSuperview" ref="661733562"/>
             <string key="NSReuseIdentifierKey">_NS:610</string>
             <bool key="NSEnabled">YES</bool>
@@ -4483,7 +4483,7 @@ LCAuLi4</string>
           <object class="NSButton" id="297736534">
             <reference key="NSNextResponder" ref="661733562"/>
             <int key="NSvFlags">268</int>
-            <string key="NSFrame">{{28, 1}, {14, 16}}</string>
+            <string key="NSFrame">{{28, 3}, {14, 16}}</string>
             <reference key="NSSuperview" ref="661733562"/>
             <string key="NSReuseIdentifierKey">_NS:610</string>
             <bool key="NSEnabled">YES</bool>
@@ -4505,7 +4505,7 @@ LCAuLi4</string>
           <object class="NSButton" id="425279991">
             <reference key="NSNextResponder" ref="661733562"/>
             <int key="NSvFlags">268</int>
-            <string key="NSFrame">{{8, 1}, {14, 16}}</string>
+            <string key="NSFrame">{{8, 3}, {14, 16}}</string>
             <reference key="NSSuperview" ref="661733562"/>
             <string key="NSReuseIdentifierKey">_NS:610</string>
             <bool key="NSEnabled">YES</bool>
@@ -11812,7 +11812,7 @@ LCAuLi4</string>
           <boolean value="YES"/>
           <string>com.apple.InterfaceBuilder.CocoaPlugin</string>
           <boolean value="YES"/>
-          <string>{{780, 573}, {251, 163}}</string>
+          <string>{{907, 573}, {251, 163}}</string>
           <string>com.apple.InterfaceBuilder.CocoaPlugin</string>
           <boolean value="YES"/>
           <string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -11996,7 +11996,7 @@ LCAuLi4</string>
           <boolean value="YES"/>
           <string>com.apple.InterfaceBuilder.CocoaPlugin</string>
           <boolean value="YES"/>
-          <string>{{653, 166}, {243, 283}}</string>
+          <string>{{836, 453}, {243, 283}}</string>
           <string>com.apple.InterfaceBuilder.CocoaPlugin</string>
           <boolean value="YES"/>
           <string>com.apple.InterfaceBuilder.CocoaPlugin</string>

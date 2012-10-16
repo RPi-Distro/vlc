@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: 9817bcaee8476d2961f98ecf033dd8a673810caf $
+ * $Id: ffbffd701ee05147c09b220a863a9f826809f4d0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -1244,12 +1244,13 @@ static int Request( access_t *p_access, uint64_t i_tell )
     const char *psz_path = p_sys->url.psz_path;
     if( !psz_path || !*psz_path )
         psz_path = "/";
-    net_Write( p_access, p_sys->fd, pvs, "GET ", 4 );
     if( p_sys->b_proxy && pvs == NULL )
-        net_Printf( p_access, p_sys->fd, NULL, "http://%s:%d",
-                    p_sys->url.psz_host, p_sys->url.i_port );
-    net_Printf( p_access, p_sys->fd, pvs, "%s HTTP/1.%d\r\n",
-                psz_path, p_sys->i_version );
+        net_Printf( p_access, p_sys->fd, NULL,
+                    "GET http://%s:%d HTTP/1.%d\r\n",
+                    p_sys->url.psz_host, p_sys->url.i_port, p_sys->i_version );
+    else
+        net_Printf( p_access, p_sys->fd, pvs, "GET %s HTTP/1.%d\r\n",
+                    psz_path, p_sys->i_version );
     if( p_sys->url.i_port != (pvs ? 443 : 80) )
         net_Printf( p_access, p_sys->fd, pvs, "Host: %s:%d\r\n",
                     p_sys->url.psz_host, p_sys->url.i_port );
@@ -1257,14 +1258,12 @@ static int Request( access_t *p_access, uint64_t i_tell )
         net_Printf( p_access, p_sys->fd, pvs, "Host: %s\r\n",
                     p_sys->url.psz_host );
     /* User Agent */
-    net_Printf( p_access, p_sys->fd, pvs,
-                "User-Agent: %s\r\n",
+    net_Printf( p_access, p_sys->fd, pvs, "User-Agent: %s\r\n",
                 p_sys->psz_user_agent );
     /* Referrer */
     if (p_sys->psz_referrer)
     {
-        net_Printf( p_access, p_sys->fd, pvs,
-                    "Referer: %s\r\n",
+        net_Printf( p_access, p_sys->fd, pvs, "Referer: %s\r\n",
                     p_sys->psz_referrer);
     }
     /* Offset */
