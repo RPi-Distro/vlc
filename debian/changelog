@@ -1,3 +1,12 @@
+vlc (2.0.4-0ubuntu0.12.04.1) precise-proposed; urgency=low
+
+  * New bug-fixing upstream release.
+    - Fix hang caused by the notify plugin. (Closes: #662628, LP: #970447)
+    - Fix crashes (LP: #947156, #958462, #960020, #979490, #1033682)
+    - Correct default encoding for Hebrew subtitles (LP: #1051552)
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Tue, 16 Oct 2012 22:18:14 +0200
+
 vlc (2.0.3-0ubuntu0.12.04.1) precise-security; urgency=low
 
   * New bug-fixing upstream release (LP: #1025713).
