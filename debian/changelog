@@ -1,3 +1,14 @@
+vlc (2.0.3-0ubuntu0.12.04.1) precise-security; urgency=low
+
+  * New bug-fixing upstream release (LP: #1025713).
+  * SECURITY UPDATE: Heap-based buffer overflow in the Ogg_DecodePacket function
+    in the OGG demuxer (modules/demux/ogg.c) in VideoLAN VLC media player before
+    2.0.2 allows remote attackers to cause a denial of service (application
+    crash) and possibly execute arbitrary code via a crafted OGG file.
+    - CVE-2012-3377
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Tue, 24 Jul 2012 00:44:39 +0200
+
 vlc (2.0.2-2) unstable; urgency=low
 
   * Add missing epoch to libqt4-dev build dependency.
