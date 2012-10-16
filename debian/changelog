@@ -4,7 +4,7 @@ vlc (2.0.4-1~bpo60+1) squeeze-backports; urgency=low
   * New upstream release.
     - Fix crashes (LP: #947156, #958462, #960020, #979490, #1033682)
     - Correct default encoding for Hebrew subtitles (LP: #1051552)
-    - Build the sftp access plugin and add them to vlc-nox.
+    - Build the sftp access plugin and add it to vlc-nox.
     - debian/vlc.postinst: Fix directory to symlink upgrade in postinst.
       Thanks to David Prévot <taffit@debian.org> (Closes: #687657)
     - debian/vlc.preinst: Remove insufficient fix to #613121 (similar issue).
