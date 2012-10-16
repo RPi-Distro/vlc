@@ -4,7 +4,7 @@
  *   (http://developers.videolan.org/libdca.html).
  *****************************************************************************
  * Copyright (C) 2001, 2002libdca the VideoLAN team
- * $Id: 9f3fd02f92bbe0b8b74659b1af3fc19d13e17fee $
+ * $Id: 84a900cb9d3e57e005ed4cac420f0f8dd3f64ae7 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -315,6 +315,7 @@ static block_t *Convert( filter_t *p_filter, block_t *p_in_buf )
         }
     }
 
+    p_out_buf->i_buffer = p_in_buf->i_nb_samples * 4 * p_sys->i_nb_channels;
     p_out_buf->i_nb_samples = p_in_buf->i_nb_samples;
     p_out_buf->i_dts = p_in_buf->i_dts;
     p_out_buf->i_pts = p_in_buf->i_pts;

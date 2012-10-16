@@ -2,7 +2,7 @@
  * theme_loader.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e7825d000d4434775500190c09a584788d89eb9d $
+ * $Id: 144f48953ad69aaba1aeedaef0537829693d32ef $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -235,6 +235,7 @@ bool ThemeLoader::extractFileInZip( unzFile file, const string &rootDir,
             if( n < 0 )
             {
                 msg_Err( getIntf(), "error while reading zip file" );
+                fclose(fout);
                 free( pBuffer );
                 return false;
             }
@@ -244,6 +245,7 @@ bool ThemeLoader::extractFileInZip( unzFile file, const string &rootDir,
                 {
                     msg_Err( getIntf(), "error while writing %s",
                              fullPath.c_str() );
+                    fclose(fout);
                     free( pBuffer );
                     return false;
                 }

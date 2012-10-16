@@ -2,7 +2,7 @@
  * menus.cpp : Qt menus
  *****************************************************************************
  * Copyright © 2006-2011 the VideoLAN team
- * $Id: 177dd4f159bd3fc86af3d8c93656893d6f80f4c0 $
+ * $Id: 10819888b495fa347966fc6d5667a3b07fc07d5c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -950,6 +950,7 @@ void VLCMenuBar::MiscPopupMenu( intf_thread_t *p_intf, bool show )
 {
     POPUP_BOILERPLATE
 
+    menu = new QMenu();
     if( p_input )
     {
         varnames.append( "audio-es" );
@@ -957,7 +958,6 @@ void VLCMenuBar::MiscPopupMenu( intf_thread_t *p_intf, bool show )
         menu->addSeparator();
     }
 
-    menu = new QMenu();
     Populate( p_intf, menu, varnames, objects );
 
     menu->addSeparator();

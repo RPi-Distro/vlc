@@ -4,7 +4,7 @@
  * Copyright (C) 2006-2009 the VideoLAN team
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
- * $Id: 51c65ff51453873b8a1deb9f39b2e1f1fc21b78c $
+ * $Id: 5a86ffcbb2c9a67132e9df5b5dbc07b8bf19ec2d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -174,7 +174,7 @@ public:
     virtual ~DiscOpenPanel();
     virtual void clear() ;
     virtual void accept() ;
-#ifdef WIN32
+#if defined( WIN32 ) || defined( __OS2__ )
     void onFocus();
 #endif
 private:

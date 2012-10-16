@@ -2,7 +2,7 @@
  * croppadd.c: Crop/Padd image filter
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 3072637375eceb25f45a7e410a0e5011d4f39a46 $
+ * $Id: 6381114a49abadacff0da8cd8e00caf365023cc2 $
  *
  * Authors: Antoine Cellerier <dionoea @t videolan dot org>
  *
@@ -189,6 +189,9 @@ static int OpenFilter( vlc_object_t *p_this )
              p_filter->fmt_in.video.i_height,
              p_filter->fmt_out.video.i_width,
              p_filter->fmt_out.video.i_height );
+
+    p_filter->fmt_out.video.i_sar_num = p_filter->fmt_in.video.i_sar_num * p_filter->fmt_out.video.i_visible_height;
+    p_filter->fmt_out.video.i_sar_den = p_filter->fmt_in.video.i_sar_den * p_filter->fmt_out.video.i_visible_width;
 
     return VLC_SUCCESS;
 }

@@ -2,7 +2,7 @@
  * subsdec.c : text subtitles decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 5b587b183334a2f9434b48de73504ad65391121f $
+ * $Id: 73d6c643180bae9a661772621f60d67cef1a2866 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -661,6 +661,10 @@ static char *CreateHtmlSubtitle( int *pi_align, char *psz_subtitle )
                 HtmlCopy( &psz_html, &psz_subtitle, "<font " );
                 strcat( psz_tag, "f" );
 
+                /* <font       color= */
+                while (*psz_subtitle == ' ')
+                    psz_subtitle++;
+
                 while( *psz_subtitle != '>' )
                 {
                     int  k;
@@ -674,6 +678,10 @@ static char *CreateHtmlSubtitle( int *pi_align, char *psz_subtitle )
                             /* */
                             HtmlPut( &psz_html, psz_attribs[k] );
                             psz_subtitle += i_len;
+
+                            /* <font       color=   red */
+                            while (*psz_subtitle == ' ')
+                                psz_subtitle++;
 
                             /* */
                             if( *psz_subtitle == '"' )
@@ -712,15 +720,16 @@ static char *CreateHtmlSubtitle( int *pi_align, char *psz_subtitle )
                         }
                         /* Not a tag, something else we do not understand */
                         if( i_len == 0 )
-                            *psz_subtitle++;
+                            psz_subtitle++;
 
                         psz_subtitle += i_len;
                     }
+
                     while (*psz_subtitle == ' ')
                         *psz_html++ = *psz_subtitle++;
                 }
                 *psz_html++ = '>';
-                *psz_subtitle++;
+                psz_subtitle++;
             }
             else if( !strncmp( psz_subtitle, "</", 2 ))
             {

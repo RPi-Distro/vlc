@@ -2,7 +2,7 @@
  * utils.c: helper functions
  *****************************************************************************
  * Copyright (C) 2010 the VideoLAN team
- * $Id: 94435e59c35ff5baa86b5b95164ba3129b2cb517 $
+ * $Id: 8d8096fcbbc67af89e3fa9005d6f5e3fa14e0293 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -244,7 +244,7 @@ const char *ErrorToString(OMX_ERRORTYPE error)
         "OMX_ErrorFormatNotDetected", "OMX_ErrorContentPipeOpenFailed",
         "OMX_ErrorContentPipeCreationFailed", "OMX_ErrorSeperateTablesUsed",
         "OMX_ErrorTunnelingUnsupported",
-        "OMX_Error unkown"
+        "OMX_Error unknown"
     };
 
     if(error == OMX_ErrorNone) return "OMX_ErrorNone";

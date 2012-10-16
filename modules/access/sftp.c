@@ -2,7 +2,7 @@
  * sftp.c: SFTP input module
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 2e8cc57148a2592e515aa2d434c02413ff493fa4 $
+ * $Id: 0dba0fc5fa25db16029d8574618d59cb7183ce28 $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *
@@ -187,7 +187,7 @@ static int Open( vlc_object_t* p_this )
 
     libssh2_knownhost_free( ssh_knownhosts );
 
-    /* Check that it does match or at least that the host is unkown */
+    /* Check that it does match or at least that the host is unknown */
     switch(check)
     {
     case LIBSSH2_KNOWNHOST_CHECK_FAILURE:

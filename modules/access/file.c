@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: 293f6d3c6f9659488a790ee8433f21daebb41b2c $
+ * $Id: 9350e6230b9dce5728a5039ca2d076c053cc802c $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan # org>
@@ -193,10 +193,15 @@ int FileOpen( vlc_object_t *p_this )
         goto error;
     }
 
-#ifdef S_ISSOCK
-    if (!S_ISFIFO (st.st_mode) && !S_ISSOCK (st.st_mode))
-        /* Clear non-blocking mode when not useful or not specified */
-        fcntl (fd, F_SETFL, fcntl (fd, F_GETFL) & ~O_NONBLOCK);
+#if O_NONBLOCK
+    int flags = fcntl (fd, F_GETFL);
+    if (S_ISFIFO (st.st_mode) || S_ISSOCK (st.st_mode))
+        /* Force non-blocking mode where applicable (fd://) */
+        flags |= O_NONBLOCK;
+    else
+        /* Force blocking mode when not useful or not specified */
+        flags &= ~O_NONBLOCK;
+    fcntl (fd, F_SETFL, flags);
 #endif
 
     /* Directories can be opened and read from, but only readdir() knows

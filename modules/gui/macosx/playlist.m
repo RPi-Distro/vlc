@@ -2,7 +2,7 @@
  * playlist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: bfbcb81a5e9e7a41d43a8c236e92807093514b6f $
+ * $Id: db07adbca05e1924f5a0a03f623d7eec33862d5c $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>
@@ -615,14 +615,13 @@
    deleted. We don't do it when not required since this verification takes
    quite a long time on big playlists (yes, pretty hacky). */
 
-- (BOOL)isItem: (playlist_item_t *)p_item
-                    inNode: (playlist_item_t *)p_node
-                    checkItemExistence:(BOOL)b_check
-                    locked:(BOOL)b_locked
-
+- (BOOL)isItem: (playlist_item_t *)p_item inNode: (playlist_item_t *)p_node checkItemExistence:(BOOL)b_check locked:(BOOL)b_locked
 {
     playlist_t * p_playlist = pl_Get( VLCIntf );
     playlist_item_t *p_temp_item = p_item;
+
+    if (!p_node)
+        return NO;
 
     if( p_node == p_item )
         return YES;
@@ -642,7 +641,8 @@
            in the playlist. Any cleaner solution welcomed. */
             for( i = 0; i < p_playlist->all_items.i_size; i++ )
             {
-                if( ARRAY_VAL( p_playlist->all_items, i) == p_item ) break;
+                if( ARRAY_VAL( p_playlist->all_items, i) == p_item )
+                    break;
                 else if ( i == p_playlist->all_items.i_size - 1 )
                 {
                     if(!b_locked) PL_UNLOCK;
@@ -663,13 +663,6 @@
         if(!b_locked) PL_UNLOCK;
     }
     return NO;
-}
-
-- (BOOL)isItem: (playlist_item_t *)p_item
-                    inNode: (playlist_item_t *)p_node
-                    checkItemExistence:(BOOL)b_check
-{
-    return [self isItem:p_item inNode:p_node checkItemExistence:b_check locked:NO];
 }
 
 /* This method is useful for instance to remove the selected children of an
@@ -940,6 +933,10 @@
 
         PL_LOCK;
         playlist_item_t *p_item = [o_item pointerValue];
+        if (!p_item || !p_item->p_input) {
+            PL_UNLOCK;
+            continue;
+        }
 #ifndef NDEBUG
         msg_Dbg( p_intf, "deleting item %i (of %i) with id \"%i\", pointerValue \"%p\" and %i children", i+1, i_count,
                 p_item->p_input->i_id, [o_item pointerValue], p_item->i_children +1 );
@@ -985,12 +982,11 @@
     if( [o_outline_view selectedRow] > -1 )
     {
         p_item = [[o_outline_view itemAtRow: [o_outline_view selectedRow]] pointerValue];
+        if (!p_item)
+            return;
     }
     else
-    /*If no item is selected, sort the whole playlist*/
-    {
-        p_item = [self currentPlaylistRoot];
-    }
+        p_item = [self currentPlaylistRoot]; // If no item is selected, sort the whole playlist
 
     PL_LOCK;
     if( p_item->i_children > -1 ) // the item is a node
@@ -1110,15 +1106,14 @@
         o_one_item = [o_array objectAtIndex: i_item];
         p_input = [self createItem: o_one_item];
         if( !p_input )
-        {
             continue;
-        }
 
         /* Add the item */
-        /* FIXME: playlist_AddInput() can fail */
-
-        playlist_AddInput( p_playlist, p_input, PLAYLIST_INSERT, i_position == -1 ? PLAYLIST_END : i_position + i_item, b_usingPlaylist,
-         pl_Locked );
+        int returnValue = playlist_AddInput( p_playlist, p_input, PLAYLIST_INSERT, i_position == -1 ? PLAYLIST_END : i_position + i_item, b_usingPlaylist, pl_Locked );
+        if (returnValue != VLC_SUCCESS) {
+            vlc_gc_decref( p_input );
+            continue;
+        }
 
         if( i_item == 0 && !b_enqueue )
         {
@@ -1309,7 +1304,7 @@
 
     pt = [o_outline_view convertPoint: [o_event locationInWindow] fromView: nil];
     int row = [o_outline_view rowAtPoint:pt];
-    if( row != -1 && [o_outline_view selectedRow] == -1)
+    if( row != -1 && ![[o_outline_view selectedRowIndexes] containsIndex: row] )
         [o_outline_view selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
 
     b_item_sel = ( row != -1 && [o_outline_view selectedRow] != -1 );
@@ -1414,8 +1409,7 @@
     o_playing_item = [o_outline_dict objectForKey: [NSString stringWithFormat:@"%p",  playlist_CurrentPlayingItem( p_playlist )]];
     PL_UNLOCK;
 
-    if( [self isItem: [o_playing_item pointerValue] inNode:
-                        [item pointerValue] checkItemExistence: YES]
+    if( [self isItem: [o_playing_item pointerValue] inNode: [item pointerValue] checkItemExistence:YES locked:NO]
                         || [o_playing_item isEqual: item] )
     {
         [cell setFont: [[NSFontManager sharedFontManager] convertFont:[cell font] toHaveTrait:NSBoldFontMask]];
@@ -1513,8 +1507,8 @@
     /* We refuse to drop an item in anything else than a child of the General
        Node. We still accept items that would be root nodes of the outlineview
        however, to allow drop in an empty playlist. */
-    if( !( ([self isItem: [item pointerValue] inNode: p_playlist->p_local_category checkItemExistence: NO] ||
-        ( var_CreateGetBool( p_playlist, "media-library" ) && [self isItem: [item pointerValue] inNode: p_playlist->p_ml_category checkItemExistence: NO] ) ) || item == nil ) )
+    if( !( ([self isItem: [item pointerValue] inNode: p_playlist->p_local_category checkItemExistence: NO locked: NO] ||
+            ( var_CreateGetBool( p_playlist, "media-library" ) && [self isItem: [item pointerValue] inNode: p_playlist->p_ml_category checkItemExistence: NO locked: NO] ) ) || item == nil ) )
     {
         return NSDragOperationNone;
     }
@@ -1526,9 +1520,7 @@
         for( NSUInteger i = 0 ; i < count ; i++ )
         {
             /* We refuse to Drop in a child of an item we are moving */
-            if( [self isItem: [item pointerValue] inNode:
-                    [[o_nodes_array objectAtIndex: i] pointerValue]
-                    checkItemExistence: NO] )
+            if( [self isItem: [item pointerValue] inNode: [[o_nodes_array objectAtIndex: i] pointerValue] checkItemExistence: NO locked:NO] )
             {
                 return NSDragOperationNone;
             }

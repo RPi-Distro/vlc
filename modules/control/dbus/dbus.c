@@ -4,7 +4,7 @@
  * Copyright © 2006-2008 Rafaël Carré
  * Copyright © 2007-2010 Mirsal Ennaime
  * Copyright © 2009-2010 The VideoLAN team
- * $Id: d0c5741090a40c433f620bc917d7e5782c1266eb $
+ * $Id: 462567dea26a1999fbbe9f84efca768239ec95b8 $
  *
  * Authors:    Rafaël Carré <funman at videolanorg>
  *             Mirsal Ennaime <mirsal at mirsal fr>
@@ -134,11 +134,6 @@ static void DispatchDBusMessages( intf_thread_t *p_intf );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-#define DBUS_UNIQUE_TEXT N_("Unique DBUS service id (org.mpris.vlc-<pid>)")
-#define DBUS_UNIQUE_LONGTEXT N_( \
-    "Use a unique dbus service id to identify this VLC instance on the DBUS bus. " \
-    "The process identifier (PID) is added to the service name: org.mpris.vlc-<pid>" )
-
 vlc_module_begin ()
     set_shortname( N_("DBus"))
     set_category( CAT_INTERFACE )
@@ -146,8 +141,6 @@ vlc_module_begin ()
     set_description( N_("D-Bus control interface") )
     set_capability( "interface", 0 )
     set_callbacks( Open, Close )
-    add_bool( "dbus-unique-service-id", false,
-              DBUS_UNIQUE_TEXT, DBUS_UNIQUE_LONGTEXT, true )
 vlc_module_end ()
 
 /*****************************************************************************
@@ -178,13 +171,6 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    char psz_service_name[sizeof(DBUS_MPRIS_BUS_NAME) + 12];
-    if( var_InheritBool( p_intf, "dbus-unique-service-id" ) )
-        snprintf( psz_service_name, sizeof( psz_service_name ),
-                  DBUS_MPRIS_BUS_NAME"-%d", getpid() );
-    else
-        strcpy( psz_service_name, DBUS_MPRIS_BUS_NAME );
-
     DBusError error;
     dbus_error_init( &error );
 
@@ -204,16 +190,21 @@ static int Open( vlc_object_t *p_this )
     dbus_connection_set_exit_on_disconnect( p_conn, FALSE );
 
     /* register a well-known name on the bus */
-    dbus_bus_request_name( p_conn, psz_service_name, 0, &error );
+    char unique_service[sizeof (DBUS_MPRIS_BUS_NAME) + 10];
+    snprintf( unique_service, sizeof (unique_service),
+              DBUS_MPRIS_BUS_NAME"-%"PRIu32, (uint32_t)getpid() );
+    dbus_bus_request_name( p_conn, unique_service, 0, &error );
     if( dbus_error_is_set( &error ) )
     {
-        msg_Err( p_this, "Error requesting service %s: %s",
-                 psz_service_name, error.message );
+        msg_Err( p_this, "Error requesting service name %s: %s",
+                 unique_service, error.message );
         dbus_error_free( &error );
         free( p_sys );
         return VLC_EGENERIC;
     }
-    msg_Info( p_intf, "listening on dbus as: %s", psz_service_name );
+    msg_Dbg( p_intf, "listening on dbus as: %s", unique_service );
+
+    dbus_bus_request_name( p_conn, DBUS_MPRIS_BUS_NAME, 0, NULL );
 
     /* Register the entry point object path */
     dbus_connection_register_object_path( p_conn, DBUS_MPRIS_OBJECT_PATH,
@@ -326,15 +317,7 @@ static void dispatch_status_cb( DBusConnection *p_conn,
                                 void *p_data)
 {
     (void) p_conn;
-    intf_thread_t *p_intf = (intf_thread_t*) p_data;
 
-    static const char *p_statuses[] = { "DATA_REMAINS",
-                                        "COMPLETE",
-                                        "NEED_MEMORY" };
-
-    msg_Dbg( p_intf,
-             "DBus dispatch status changed to %s.",
-             p_statuses[i_status]);
 }
 
 static dbus_bool_t add_timeout( DBusTimeout *p_timeout, void *p_data )
@@ -372,28 +355,14 @@ static void timeout_toggled( DBusTimeout *p_timeout, void *p_data )
 {
     intf_thread_t *p_intf = (intf_thread_t*) p_data;
 
-    msg_Dbg( p_intf, "Toggling dbus timeout" );
-
     if( dbus_timeout_get_enabled( p_timeout ) )
-    {
-        msg_Dbg( p_intf, "Timeout is enabled, main loop needs to wake up" );
         wakeup_main_loop( p_intf );
-    }
 }
 
 static dbus_bool_t add_watch( DBusWatch *p_watch, void *p_data )
 {
     intf_thread_t *p_intf = (intf_thread_t*) p_data;
     intf_sys_t    *p_sys  = (intf_sys_t*) p_intf->p_sys;
-    int            i_fd   = dbus_watch_get_unix_fd( p_watch );
-
-    msg_Dbg( p_intf, "Adding dbus watch on fd %d", i_fd );
-
-    if( dbus_watch_get_flags( p_watch ) & DBUS_WATCH_READABLE )
-        msg_Dbg( p_intf, "Watching fd %d for readability", i_fd );
-
-    if( dbus_watch_get_flags( p_watch ) & DBUS_WATCH_WRITABLE )
-        msg_Dbg( p_intf, "Watching fd %d for writeability", i_fd );
 
     vlc_mutex_lock( &p_sys->lock );
     vlc_array_append( p_sys->p_watches, p_watch );
@@ -407,9 +376,6 @@ static void remove_watch( DBusWatch *p_watch, void *p_data )
     intf_thread_t *p_intf = (intf_thread_t*) p_data;
     intf_sys_t    *p_sys  = (intf_sys_t*) p_intf->p_sys;
 
-    msg_Dbg( p_intf, "Removing dbus watch on fd %d",
-              dbus_watch_get_unix_fd( p_watch ) );
-
     vlc_mutex_lock( &p_sys->lock );
 
     vlc_array_remove( p_sys->p_watches,
@@ -422,18 +388,8 @@ static void watch_toggled( DBusWatch *p_watch, void *p_data )
 {
     intf_thread_t *p_intf = (intf_thread_t*) p_data;
 
-    msg_Dbg( p_intf, "Toggling dbus watch on fd %d",
-             dbus_watch_get_unix_fd( p_watch ) );
-
     if( dbus_watch_get_enabled( p_watch ) )
-    {
-        msg_Dbg( p_intf,
-                  "Watch on fd %d has been enabled, "
-                  "the main loops needs to wake up",
-                  dbus_watch_get_unix_fd( p_watch ) );
-
         wakeup_main_loop( p_intf );
-    }
 }
 
 /**
@@ -666,39 +622,21 @@ static void ProcessWatches( intf_thread_t *p_intf,
 
             int i_flags   = 0;
             int i_revents = p_fds[j].revents;
-            int i_fd      = p_fds[j].fd;
 
             if( i_revents & POLLIN )
-            {
-                msg_Dbg( p_intf, "fd %d is ready for reading", i_fd );
                 i_flags |= DBUS_WATCH_READABLE;
-            }
 
             if( i_revents & POLLOUT )
-            {
-                msg_Dbg( p_intf, "fd %d is ready for writing", i_fd );
                 i_flags |= DBUS_WATCH_WRITABLE;
-            }
 
             if( i_revents & POLLERR )
-            {
-                msg_Dbg( p_intf, "error when polling fd %d", i_fd );
                 i_flags |= DBUS_WATCH_ERROR;
-            }
 
             if( i_revents & POLLHUP )
-            {
-                msg_Dbg( p_intf, "Hangup signal on fd %d", i_fd );
                 i_flags |= DBUS_WATCH_HANGUP;
-            }
 
             if( i_flags )
-            {
-                msg_Dbg( p_intf, "Handling dbus watch on fd %d", i_fd );
                 dbus_watch_handle( p_watch, i_flags );
-            }
-            else
-                msg_Dbg( p_intf, "Nothing happened on fd %d", i_fd );
         }
     }
 }
@@ -752,17 +690,13 @@ static void DispatchDBusMessages( intf_thread_t *p_intf )
     status = dbus_connection_get_dispatch_status( p_sys->p_conn );
     while( status != DBUS_DISPATCH_COMPLETE )
     {
-        msg_Dbg( p_intf, "Dispatching incoming dbus message" );
         dbus_connection_dispatch( p_sys->p_conn );
         status = dbus_connection_get_dispatch_status( p_sys->p_conn );
     }
 
     /* Send outgoing data */
     if( dbus_connection_has_messages_to_send( p_sys->p_conn ) )
-    {
-        msg_Dbg( p_intf, "Sending outgoing data" );
         dbus_connection_flush( p_sys->p_conn );
-    }
 }
 
 /**
@@ -799,10 +733,6 @@ MPRISEntryPoint ( DBusConnection *p_conn, DBusMessage *p_from, void *p_this )
             return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
         }
     }
-
-    msg_Dbg( (vlc_object_t*) p_this, "Routing %s.%s D-Bus method call to %s",
-                                     psz_interface, psz_method,
-                                     psz_target_interface );
 
     if( !strcmp( psz_target_interface, DBUS_INTERFACE_INTROSPECTABLE ) )
         return handle_introspect( p_conn, p_from, p_this );
@@ -841,18 +771,10 @@ static void Run          ( intf_thread_t *p_intf )
 
         mtime_t i_now = mdate(), i_loop_interval = i_now - i_last_run;
 
-        msg_Dbg( p_intf,
-                 "%lld µs elapsed since last wakeup",
-                 (long long) i_loop_interval );
-
         int i_next_timeout = UpdateTimeouts( p_intf, i_loop_interval );
         i_last_run = i_now;
 
         vlc_mutex_unlock( &p_sys->lock );
-
-        if( -1 != i_next_timeout )
-            msg_Dbg( p_intf, "next timeout is in %d ms", i_next_timeout );
-        msg_Dbg( p_intf, "Sleeping until something happens" );
 
         /* thread cancellation is allowed while the main loop sleeps */
         vlc_restorecancel( canc );
@@ -860,8 +782,6 @@ static void Run          ( intf_thread_t *p_intf )
         int i_pollres = poll( fds, i_fds, i_next_timeout );
 
         canc = vlc_savecancel();
-
-        msg_Dbg( p_intf, "the main loop has been woken up" );
 
         if( -1 == i_pollres )
         { /* XXX: What should we do when poll() fails ? */
@@ -874,7 +794,6 @@ static void Run          ( intf_thread_t *p_intf )
         if( 0 < i_pollres && ( fds[0].revents & POLLIN ) )
         {
             char buf;
-            msg_Dbg( p_intf, "Removing a byte from the self-pipe" );
             (void)read( fds[0].fd, &buf, 1 );
         }
 
@@ -931,12 +850,8 @@ static void   wakeup_main_loop( void *p_data )
 {
     intf_thread_t *p_intf = (intf_thread_t*) p_data;
 
-    msg_Dbg( p_intf, "Sending wakeup signal to the main loop" );
-
     if( !write( p_intf->p_sys->p_pipe_fds[PIPE_IN], "\0", 1 ) )
-    {
         msg_Err( p_intf, "Could not wake up the main loop: %m" );
-    }
 }
 
 /* InputIntfEventCallback() fills a callback_info_t data structure in response
@@ -991,20 +906,32 @@ static int InputIntfEventCallback( intf_thread_t   *p_intf,
         case INPUT_EVENT_POSITION:
             /* Detect seeks
              * XXX: This is way more convoluted than it should be... */
+            i_pos = var_GetTime( p_input, "time" );
+
             if( !p_intf->p_sys->i_last_input_pos_event ||
                 !( var_GetInteger( p_input, "state" ) == PLAYING_S ) )
+            {
+                p_intf->p_sys->i_last_input_pos_event = i_now;
+                p_intf->p_sys->i_last_input_pos = i_pos;
                 break;
-            i_pos = var_GetTime( p_input, "time" );
+            }
+
             f_current_rate = var_GetFloat( p_input, "rate" );
             i_interval = ( i_now - p_intf->p_sys->i_last_input_pos_event );
-            i_projected_pos = p_intf->p_sys->i_last_input_pos + ( i_interval * f_current_rate );
+
+            i_projected_pos = p_intf->p_sys->i_last_input_pos +
+                ( i_interval * f_current_rate );
+
             p_intf->p_sys->i_last_input_pos_event = i_now;
             p_intf->p_sys->i_last_input_pos = i_pos;
+
             if( ABS( i_pos - i_projected_pos ) < SEEK_THRESHOLD )
                 break;
+
             p_info->signal = SIGNAL_SEEK;
             p_info->i_item = input_GetItem( p_input )->i_id;
             break;
+
         default:
             return VLC_EGENERIC;
     }
@@ -1091,10 +1018,6 @@ static int AllCallback( vlc_object_t *p_this, const char *psz_var,
     // Append the event
     vlc_array_append( p_intf->p_sys->p_events, info );
     vlc_mutex_unlock( &p_intf->p_sys->lock );
-
-    msg_Dbg( p_intf,
-             "Got a VLC event on %s. The main loop needs to wake up "
-             "in order to process it", psz_var );
 
     wakeup_main_loop( p_intf );
 

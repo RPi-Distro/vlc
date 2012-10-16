@@ -2,7 +2,7 @@
  * tls.c
  *****************************************************************************
  * Copyright © 2004-2007 Rémi Denis-Courmont
- * $Id: 93892aaf4dcf8c4c151a363581819123b8c18fcc $
+ * $Id: db723af0360856c3ebfbc0e48b6f824e6605f0f8 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -29,6 +29,11 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+
+#ifdef HAVE_POLL
+# include <poll.h>
+#endif
+#include <assert.h>
 
 #include <vlc_common.h>
 #include "libvlc.h"
@@ -181,11 +186,29 @@ vlc_tls_ClientCreate (vlc_object_t *obj, int fd, const char *hostname)
         return NULL;
     }
 
-    /* TODO: do this directly in the TLS plugin */
+    mtime_t deadline = mdate ();
+    deadline += var_InheritInteger (obj, "ipv4-timeout") * 1000;
+
+    struct pollfd ufd[1];
+    ufd[0].fd = fd;
+
     int val;
-    do
-        val = cl->handshake (cl);
-    while (val > 0);
+    while ((val = cl->handshake (cl)) > 0)
+    {
+        mtime_t now = mdate ();
+        if (now > deadline)
+           now = deadline;
+
+        assert (val <= 2);
+        ufd[0] .events = (val == 1) ? POLLIN : POLLOUT;
+
+        if (poll (ufd, 1, (deadline - now) / 1000) == 0)
+        {
+            msg_Err (cl, "TLS client session handshake timeout");
+            val = -1;
+            break;
+        }
+    }
 
     if (val != 0)
     {

@@ -2,7 +2,7 @@
  * avcodec.c: video and audio decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: 187ab89a7ce5da9c9558f17e442734f2dbed0bc6 $
+ * $Id: db1edd4adfc5c1d18ec1a290c2ecf7bdb1b992c9 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -37,6 +37,7 @@
 
 /* ffmpeg header */
 #define HAVE_MMX 1
+#include <libavutil/mem.h>
 #ifdef HAVE_LIBAVCODEC_AVCODEC_H
 #   include <libavcodec/avcodec.h>
 #else
@@ -131,7 +132,7 @@ vlc_module_begin ()
     add_bool( "ffmpeg-hw", false, HW_TEXT, HW_LONGTEXT, false )
 #endif
 #if defined(FF_THREAD_FRAME)
-    add_integer( "ffmpeg-threads", 0, THREADS_TEXT, THREADS_LONGTEXT, true );
+    add_integer( "ffmpeg-threads", 1, THREADS_TEXT, THREADS_LONGTEXT, true );
 #endif
 
 
@@ -162,7 +163,7 @@ vlc_module_begin ()
                  ENC_VT_LONGTEXT, true )
     add_bool( ENC_CFG_PREFIX "pre-me", false, ENC_PRE_ME_TEXT,
               ENC_PRE_ME_LONGTEXT, true )
-    add_integer( ENC_CFG_PREFIX "rc-buffer-size", 224*1024*8,
+    add_integer( ENC_CFG_PREFIX "rc-buffer-size", 0,
                  ENC_RC_BUF_TEXT, ENC_RC_BUF_LONGTEXT, true )
     add_float( ENC_CFG_PREFIX "rc-buffer-aggressivity", 1.0,
                ENC_RC_BUF_AGGR_TEXT, ENC_RC_BUF_AGGR_LONGTEXT, true )

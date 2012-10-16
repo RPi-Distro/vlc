@@ -2,7 +2,7 @@
  * notify.c : libnotify notification plugin
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 0dc494d07fc5f9e20de189da3dd00b647f82075c $
+ * $Id: 198221c84d8d87d6a290b5e85c4715d81bbc3611 $
  *
  * Authors: Christophe Mutricy <xtophe -at- videolan -dot- org>
  *
@@ -122,7 +122,6 @@ static int Open( vlc_object_t *p_this )
 
     /* */
     var_AddCallback( pl_Get( p_intf ), "item-current", ItemChange, p_intf );
-    var_AddCallback( pl_Get( p_intf ), "item-change", ItemChange, p_intf );
 
     return VLC_SUCCESS;
 }
@@ -136,7 +135,6 @@ static void Close( vlc_object_t *p_this )
     intf_sys_t      *p_sys  = p_intf->p_sys;
 
     var_DelCallback( pl_Get( p_this ), "item-current", ItemChange, p_this );
-    var_DelCallback( pl_Get( p_this ), "item-change", ItemChange, p_this );
 
     if( p_sys->notification )
     {

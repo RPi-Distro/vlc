@@ -2,7 +2,7 @@
  * directx.c: Windows DirectX audio output method
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 6945ce8f2abca137a25eb91896683fe3285168df $
+ * $Id: 96a56509af47644652b9f77a93b0606d7c8d5774 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -458,10 +458,12 @@ static void Probe( audio_output_t * p_aout )
     switch( DSSPEAKER_CONFIG(ui_speaker_config) )
     {
     case DSSPEAKER_7POINT1:
+    case DSSPEAKER_7POINT1_SURROUND:
         msg_Dbg( p_aout, "Windows says your SpeakerConfig is 7.1" );
         val.i_int = AOUT_VAR_7_1;
         break;
     case DSSPEAKER_5POINT1:
+    case DSSPEAKER_5POINT1_SURROUND:
         msg_Dbg( p_aout, "Windows says your SpeakerConfig is 5.1" );
         val.i_int = AOUT_VAR_5_1;
         break;

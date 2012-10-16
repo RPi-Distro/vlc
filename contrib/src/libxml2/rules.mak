@@ -1,6 +1,6 @@
 # libxml2
 
-LIBXML2_VERSION := 2.7.8
+LIBXML2_VERSION := 2.8.0
 LIBXML2_URL := http://xmlsoft.org/sources/libxml2-$(LIBXML2_VERSION).tar.gz
 
 PKGS += libxml2
@@ -18,6 +18,7 @@ XMLCONF = --with-minimal --with-catalog --with-reader --with-tree --with-push --
 libxml2: libxml2-$(LIBXML2_VERSION).tar.gz .sum-libxml2
 	$(UNPACK)
 	$(APPLY) $(SRC)/libxml2/no-tests.patch
+	$(APPLY) $(SRC)/libxml2/pthread.patch
 	$(MOVE)
 
 .libxml2: libxml2

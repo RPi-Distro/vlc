@@ -2,7 +2,7 @@
  * vlc_fourcc.h: Definition of various FOURCC and helpers
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: b3a9b1c0fbd7619774bb863cd5832882547b2d52 $
+ * $Id: 0d09519fa6b4693e908e551ca653e3b3c3da1bcc $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ com>
  *
@@ -246,6 +246,7 @@
 #define VLC_CODEC_TRUEHD    VLC_FOURCC('t','r','h','d')
 #define VLC_CODEC_DVAUDIO   VLC_FOURCC('d','v','a','u')
 #define VLC_CODEC_SPEEX     VLC_FOURCC('s','p','x',' ')
+#define VLC_CODEC_OPUS      VLC_FOURCC('O','p','u','s')
 #define VLC_CODEC_VORBIS    VLC_FOURCC('v','o','r','b')
 #define VLC_CODEC_MACE3     VLC_FOURCC('M','A','C','3')
 #define VLC_CODEC_MACE6     VLC_FOURCC('M','A','C','6')

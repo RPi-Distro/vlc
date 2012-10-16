@@ -2,7 +2,7 @@
  * x11_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 76b24affd29f21f8054a49dacf8a0b25f205274d $
+ * $Id: 6473c21a6793e460bc94a52ae2ac984520f26035 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -36,6 +36,7 @@
 #include "x11_factory.hpp"
 
 #include <assert.h>
+#include <limits.h>
 
 X11Window::X11Window( intf_thread_t *pIntf, GenericWindow &rWindow,
                       X11Display &rDisplay, bool dragDrop, bool playOnDrop,

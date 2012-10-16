@@ -62,9 +62,6 @@ DialogHandler::DialogHandler (intf_thread_t *intf, QObject *_parent)
     connect (&progressBar, SIGNAL(pointerChanged(vlc_object_t *, void *)),
              SLOT(startProgressBar(vlc_object_t *, void *)),
              Qt::BlockingQueuedConnection);
-    connect (this,
-             SIGNAL(progressBarDestroyed(QWidget *)),
-             SLOT(stopProgressBar(QWidget *)));
 
     dialog_Register (intf);
 }
@@ -184,17 +181,13 @@ void DialogHandler::requestAnswer (vlc_object_t *, void *value)
 
 QVLCProgressDialog::QVLCProgressDialog (DialogHandler *parent,
                                         struct dialog_progress_bar_t *data)
-    : QProgressDialog ( ),
+    : QProgressDialog (qfu(data->message),
+                       data->cancel ? ("&" + qfu(data->cancel)) : 0, 0, 1000),
       handler (parent),
       cancelled (false)
 {
-    setLabelText( qfu(data->message) );
-    setRange( 0, 0 );
-    if ( data->cancel )
-        setWindowModality ( Qt::ApplicationModal );
-
-    if( data->cancel )
-        setCancelButton( new QPushButton( "&" + qfu(data->cancel) ) );
+    if (data->cancel)
+        setWindowModality (Qt::ApplicationModal);
     if (data->title != NULL)
         setWindowTitle (qfu(data->title));
 
@@ -205,6 +198,7 @@ QVLCProgressDialog::QVLCProgressDialog (DialogHandler *parent,
     connect (this, SIGNAL(described(const QString&)),
                    SLOT(setLabelText(const QString&)));
     connect (this, SIGNAL(canceled(void)), SLOT(saveCancel(void)));
+    connect (this, SIGNAL(released(void)), SLOT(deleteLater(void)));
 
     data->pf_update = update;
     data->pf_check = check;
@@ -212,12 +206,10 @@ QVLCProgressDialog::QVLCProgressDialog (DialogHandler *parent,
     data->p_sys = this;
 }
 
-
 void QVLCProgressDialog::update (void *priv, const char *text, float value)
 {
     QVLCProgressDialog *self = static_cast<QVLCProgressDialog *>(priv);
-    if( value > 0 )
-        self->setRange( 0, 1000 );
+
     if (text != NULL)
         emit self->described (qfu(text));
     emit self->progressed ((int)(value * 1000.));
@@ -236,7 +228,7 @@ void QVLCProgressDialog::destroy (void *priv)
 {
     QVLCProgressDialog *self = static_cast<QVLCProgressDialog *>(priv);
 
-    emit self->handler->progressBarDestroyed (self);
+    emit self->released ();
 }
 
 void QVLCProgressDialog::saveCancel (void)
