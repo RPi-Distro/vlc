@@ -1,3 +1,27 @@
+vlc (2.0.4-1~bpo60+1) squeeze-backports; urgency=low
+
+  [ Benjamin Drung ]
+  * New upstream release.
+    - Fix crashes (LP: #947156, #958462, #960020, #979490, #1033682)
+    - Correct default encoding for Hebrew subtitles (LP: #1051552)
+    - Build the sftp access plugin and add them to vlc-nox.
+    - debian/vlc.postinst: Fix directory to symlink upgrade in postinst.
+      Thanks to David Prévot <taffit@debian.org> (Closes: #687657)
+    - debian/vlc.preinst: Remove insufficient fix to #613121 (similar issue).
+      Thanks to David Prévot for the patch.
+    - Fix for VLC hang caused by the notify plugin. (Closes: #662628,
+      LP: #970447)
+    - debian/rules: Use xz compression for binary packages.
+      Thanks to Ansgar Burchardt <ansgar@debian.org> (Closes: #683836)
+    - Add version to vlc-nox dependency of vlc-plugin-sdl (consistent with other
+      plug-ins).
+
+  [ Edward Wang ]
+  * Rebuild for Squeeze.
+  * Fix ncurses detection on Squeeze.
+
+ -- Edward Wang <edward.c.wang@compdigitec.com>  Mon, 15 Oct 2012 20:44:51 -0400
+
 vlc (2.0.3-1~bpo60+1) squeeze-backports; urgency=low
 
   [ Edward Wang ]
