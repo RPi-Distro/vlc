@@ -166,7 +166,7 @@ Description: base library for VLC and its modules
 
 Package: vlc
 Architecture: any
-Depends: fonts-freefont-ttf | ttf-freefont,
+Depends: ttf-freefont,
          vlc-nox (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
