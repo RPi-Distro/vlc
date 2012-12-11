@@ -117,10 +117,7 @@ Package: libvlc-dev
 Section: libdevel
 Architecture: any
 Pre-Depends: dpkg (>= 1.15.6~)
-Depends: libvlc5 (= ${binary:Version}),
-         libvlccore-dev,
-         pkg-config,
-         ${misc:Depends}
+Depends: libvlc5 (= ${binary:Version}), pkg-config, ${misc:Depends}
 Replaces: libvlc0-dev
 Description: development files for libvlc
  This package contains headers and a static library required to build
