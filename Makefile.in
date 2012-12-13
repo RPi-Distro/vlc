@@ -1044,6 +1044,7 @@ EXTRA_DIST = extras/package/win32/vlc.exe.manifest \
 	extras/package/win32/languages/brazilian_portuguese.nsh \
 	extras/package/win32/languages/bulgarian.nsh \
 	extras/package/win32/languages/catalan.nsh \
+	extras/package/win32/languages/croatian.nsh \
 	extras/package/win32/languages/danish.nsh \
 	extras/package/win32/languages/dutch.nsh \
 	extras/package/win32/languages/english.nsh \
@@ -1174,6 +1175,8 @@ EXTRA_DIST = extras/package/win32/vlc.exe.manifest \
 	extras/package/macosx/Resources/mainwindow/effects-one-button-blue@2x.png \
 	extras/package/macosx/Resources/mainwindow/effects-one-button.png \
 	extras/package/macosx/Resources/mainwindow/effects-one-button@2x.png \
+	extras/package/macosx/Resources/mainwindow/effects-one-button-pressed.png \
+	extras/package/macosx/Resources/mainwindow/effects-one-button-pressed@2x.png \
 	extras/package/macosx/Resources/mainwindow/forward-pressed.png \
 	extras/package/macosx/Resources/mainwindow/forward-pressed@2x.png \
 	extras/package/macosx/Resources/mainwindow/forward.png \
@@ -2096,11 +2099,13 @@ uninstall-am: uninstall-binSCRIPTS
 
 	extras/package/win32/languages/romanian.nsh \
 	extras/package/win32/languages/schinese.nsh \
+	extras/package/win32/languages/serbian.nsh \
 	extras/package/win32/languages/slovak.nsh \
 	extras/package/win32/languages/slovenian.nsh \
 	extras/package/win32/languages/sorani.nsh \
 	extras/package/win32/languages/spanish.nsh \
-	extras/package/win32/languages/swedish.nsh
+	extras/package/win32/languages/swedish.nsh \
+	extras/package/win32/languages/ukrainian.nsh
 #	std-options
 
 ChangeLog: Makefile.am
@@ -2421,9 +2426,9 @@ package-win32-crx: package-win32-webplugin-common
 # nsis is a 32-bits installer, we need to build a 32bits DLL
 $(win32_destdir)/NSIS/UAC.dll: extras/package/win32/UAC/runas.cpp extras/package/win32/UAC/uac.cpp
 	mkdir -p "$(win32_destdir)/NSIS/"
-@HAVE_WIN64_TRUE@	i686-w64-mingw32-g++ $^ -shared -o $@ -lole32
+@HAVE_WIN64_TRUE@	i686-w64-mingw32-g++ $^ -shared -o $@ -lole32 -static-libstdc++ -static-libgcc
 @HAVE_WIN64_TRUE@	i686-w64-mingw32-strip $@
-@HAVE_WIN64_FALSE@	$(CXX) $^ -D_WIN32_IE=0x0601 -D__forceinline=inline -shared -o $@ -lole32
+@HAVE_WIN64_FALSE@	$(CXX) $^ -D_WIN32_IE=0x0601 -D__forceinline=inline -shared -o $@ -lole32 -static-libstdc++ -static-libgcc
 @HAVE_WIN64_FALSE@	$(STRIP) $@
 
 package-win32-exe: package-win-strip $(win32_destdir)/NSIS/UAC.dll

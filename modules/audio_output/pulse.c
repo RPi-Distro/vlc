@@ -72,8 +72,9 @@ struct aout_sys_t
     pa_time_event *trigger; /**< Deferred stream trigger */
     pa_volume_t base_volume; /**< 0dB reference volume */
     pa_cvolume cvolume; /**< actual sink input volume */
+    mtime_t first_pts; /**< Play time of buffer start */
+    mtime_t last_pts; /**< Play time of buffer write offset */
     mtime_t paused; /**< Time when (last) paused */
-    mtime_t pts; /**< Play time of buffer write offset */
     mtime_t desync; /**< Measured desynchronization */
     unsigned rate; /**< Current stream sample rate */
 };
@@ -189,7 +190,8 @@ static void stream_reset_sync(pa_stream *s, audio_output_t *aout)
     aout_sys_t *sys = aout->sys;
     const unsigned rate = aout->format.i_rate;
 
-    sys->pts = VLC_TS_INVALID;
+    sys->first_pts = VLC_TS_INVALID;
+    sys->last_pts = VLC_TS_INVALID;
     sys->desync = 0;
     pa_operation *op = pa_stream_update_sample_rate(s, rate, NULL, NULL);
     if (unlikely(op == NULL))
@@ -198,7 +200,7 @@ static void stream_reset_sync(pa_stream *s, audio_output_t *aout)
     sys->rate = rate;
 }
 
-static void stream_start(pa_stream *s, audio_output_t *aout)
+static void stream_start_now(pa_stream *s, audio_output_t *aout)
 {
     aout_sys_t *sys = aout->sys;
     pa_operation *op;
@@ -239,7 +241,7 @@ static void stream_trigger_cb(pa_mainloop_api *api, pa_time_event *e,
     msg_Dbg(aout, "starting deferred");
     vlc_pa_rttime_free(sys->mainloop, sys->trigger);
     sys->trigger = NULL;
-    stream_start(sys->stream, aout);
+    stream_start_now(sys->stream, aout);
     (void) api; (void) e; (void) tv;
 }
 
@@ -249,12 +251,12 @@ static void stream_trigger_cb(pa_mainloop_api *api, pa_time_event *e,
  * in order to minimize desync and resampling during early playback.
  * @note PulseAudio lock required.
  */
-static void stream_resync(audio_output_t *aout, pa_stream *s)
+static void stream_start(pa_stream *s, audio_output_t *aout)
 {
     aout_sys_t *sys = aout->sys;
     mtime_t delta;
 
-    assert (sys->pts != VLC_TS_INVALID);
+    assert (sys->first_pts != VLC_TS_INVALID);
 
     if (sys->trigger != NULL) {
         vlc_pa_rttime_free(sys->mainloop, sys->trigger);
@@ -267,7 +269,7 @@ static void stream_resync(audio_output_t *aout, pa_stream *s)
         delta = 0; /* screwed */
     }
 
-    delta = (sys->pts - mdate()) - delta;
+    delta = (sys->first_pts - mdate()) - delta;
     if (delta > 0) {
         msg_Dbg(aout, "deferring start (%"PRId64" us)", delta);
         delta += pa_rtclock_now();
@@ -275,7 +277,7 @@ static void stream_resync(audio_output_t *aout, pa_stream *s)
                                              stream_trigger_cb, aout);
     } else {
         msg_Warn(aout, "starting late (%"PRId64" us)", delta);
-        stream_start(s, aout);
+        stream_start_now(s, aout);
     }
 }
 
@@ -287,12 +289,13 @@ static void stream_latency_cb(pa_stream *s, void *userdata)
 
     if (sys->paused != VLC_TS_INVALID)
         return; /* nothing to do while paused */
-    if (sys->pts == VLC_TS_INVALID) {
-        msg_Dbg(aout, "missing latency from input");
+    if (sys->last_pts == VLC_TS_INVALID) {
+        msg_Dbg(aout, "nothing to play");
+        assert (sys->first_pts == VLC_TS_INVALID);
         return;
     }
     if (pa_stream_is_corked(s) > 0) {
-        stream_resync(aout, s);
+        stream_start(s, aout);
         return;
     }
 
@@ -301,7 +304,7 @@ static void stream_latency_cb(pa_stream *s, void *userdata)
     if (delta == VLC_TS_INVALID)
         return;
 
-    delta = (sys->pts - mdate()) - delta;
+    delta = (sys->last_pts - mdate()) - delta;
     change = delta - sys->desync;
     sys->desync = delta;
     //msg_Dbg(aout, "desync: %+"PRId64" us (variation: %+"PRId64" us)",
@@ -449,7 +452,7 @@ static void stream_suspended_cb(pa_stream *s, void *userdata)
     audio_output_t *aout = userdata;
 
     msg_Dbg(aout, "suspended");
-    stream_reset_sync(s, aout);
+    (void) s;
 }
 
 static void stream_underflow_cb(pa_stream *s, void *userdata)
@@ -550,9 +553,12 @@ static void Play(audio_output_t *aout, block_t *block)
         pa_threaded_mainloop_lock(sys->mainloop);
     }
 
-    sys->pts = pts;
+    if (sys->first_pts == VLC_TS_INVALID)
+        sys->first_pts = block->i_pts;
+    sys->last_pts = pts;
+
     if (pa_stream_is_corked(s) > 0)
-        stream_resync(aout, s);
+        stream_start(s, aout);
 
 #if 0 /* Fault injector to test underrun recovery */
     static volatile unsigned u = 0;
@@ -591,8 +597,12 @@ static void Pause(audio_output_t *aout, bool paused, mtime_t date)
         date -= sys->paused;
         msg_Dbg(aout, "resuming after %"PRId64" us", date);
         sys->paused = VLC_TS_INVALID;
-        sys->pts += date;
-        stream_resync(aout, s);
+
+        if (sys->last_pts != VLC_TS_INVALID) {
+            sys->first_pts += date;
+            sys->last_pts += date;
+            stream_start(s, aout);
+        }
     }
 
     pa_threaded_mainloop_unlock(sys->mainloop);
@@ -838,7 +848,7 @@ static int Open(vlc_object_t *obj)
      * TODO? tlength could be adaptively increased to reduce wakeups. */
     attr.tlength = pa_usec_to_bytes(AOUT_MIN_PREPARE_TIME, &ss);
     attr.prebuf = 0; /* trigger manually */
-    attr.minreq = -1;
+    attr.minreq = attr.tlength / 3;
     attr.fragsize = 0; /* not used for output */
 
     /* Allocate structures */
@@ -857,8 +867,9 @@ static int Open(vlc_object_t *obj)
     sys->stream = NULL;
     sys->context = ctx;
     sys->trigger = NULL;
+    sys->first_pts = VLC_TS_INVALID;
+    sys->last_pts = VLC_TS_INVALID;
     sys->paused = VLC_TS_INVALID;
-    sys->pts = VLC_TS_INVALID;
     sys->desync = 0;
     sys->rate = ss.rate;
 

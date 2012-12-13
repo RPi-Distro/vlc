@@ -2,7 +2,7 @@
  * dmo.c : DirectMedia Object decoder module for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: 662f8552b18bb04572821a3b2bdcd60a5f8460db $
+ * $Id: 189cc1a6588b0c6cbd3d1c91101e9e2dabf25c6c $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -178,6 +178,10 @@ static const GUID guid_wma_enc = { 0x70f598e9, 0xf4ab, 0x495a, { 0x99, 0xe2, 0xa
 
 #define VLC_CODEC_MSS1      VLC_FOURCC('M','S','S','1')
 #define VLC_CODEC_MSS2      VLC_FOURCC('M','S','S','2')
+
+#ifndef BI_RGB
+# define BI_RGB 0x0
+#endif
 
 typedef struct
 {
@@ -526,7 +530,7 @@ static int DecOpen( decoder_t *p_dec )
 
             DMOFreeMediaType( &mt );
         }
-        
+
         p_dec->fmt_out.i_codec = i_chroma == VLC_CODEC_YV12 ? VLC_CODEC_I420 : i_chroma;
         p_dec->fmt_out.video.i_width = p_dec->fmt_in.video.i_width;
         p_dec->fmt_out.video.i_height = p_dec->fmt_in.video.i_height;
@@ -562,7 +566,7 @@ static int DecOpen( decoder_t *p_dec )
         {
             dmo_output_type.subtype = MEDIASUBTYPE_RGB24;
         }
-        else 
+        else
         {
             dmo_output_type.subtype = dmo_output_type.majortype;
             dmo_output_type.subtype.Data1 = p_bih->biCompression;

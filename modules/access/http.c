@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: 392a189e5089c0709f907485abe89a75521ecb71 $
+ * $Id: d662b4e697ec7b36be7f5d718636e27104a4cdee $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -1266,9 +1266,6 @@ static int Request( access_t *p_access, uint64_t i_tell )
         net_Printf( p_access, p_sys->fd, pvs, "Referer: %s\r\n",
                     p_sys->psz_referrer);
     }
-#ifdef HAVE_ZLIB_H
-    net_Printf( p_access, p_sys->fd, pvs, "Accept-Encoding: gzip, deflate\r\n" );
-#endif
     /* Offset */
     if( p_sys->i_version == 1 && ! p_sys->b_continuous )
     {

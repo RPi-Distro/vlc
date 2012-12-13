@@ -2,7 +2,7 @@
  * playlist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: db07adbca05e1924f5a0a03f623d7eec33862d5c $
+ * $Id: a97bc14ea41f68675b0adf93f7f9384ca54f5a1c $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>
@@ -826,16 +826,18 @@
         if(! p_item || !p_item->p_input )
             continue;
 
-        o_mrl = [[NSMutableString alloc] initWithFormat: @"%s", decode_URI( input_item_GetURI( p_item->p_input ))];
+        char * psz_url = decode_URI(input_item_GetURI(p_item->p_input));
+        o_mrl = [[NSMutableString alloc] initWithString: [NSString stringWithUTF8String: psz_url ? psz_url : ""]];
+        if (psz_url != NULL)
+            free( psz_url );
 
         /* perform some checks whether it is a file and if it is local at all... */
-        if ([o_mrl length] > 0)
-        {
+        if ([o_mrl length] > 0) {
             NSRange prefix_range = [o_mrl rangeOfString: @"file:"];
-            if( prefix_range.location != NSNotFound )
+            if (prefix_range.location != NSNotFound)
                 [o_mrl deleteCharactersInRange: prefix_range];
 
-            if( [o_mrl characterAtIndex:0] == '/' )
+            if ([o_mrl characterAtIndex:0] == '/')
                 [[NSWorkspace sharedWorkspace] selectFile: o_mrl inFileViewerRootedAtPath: o_mrl];
         }
 
@@ -1542,8 +1544,10 @@
     NSPasteboard *o_pasteboard = [info draggingPasteboard];
 
     /* Drag & Drop inside the playlist */
-    if( [[o_pasteboard types] containsObject: @"VLCPlaylistItemPboardType"] )
-    {
+    if ([[o_pasteboard types] containsObject: @"VLCPlaylistItemPboardType"]) {
+        if (index == -1) // this is no valid target, sanitize to top of table
+            index = 0;
+
         int i_row = 0;
         playlist_item_t *p_new_parent, *p_item = NULL;
         NSArray *o_all_items = [o_nodes_array arrayByAddingObjectsFromArray: o_items_array];

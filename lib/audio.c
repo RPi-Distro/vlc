@@ -2,7 +2,7 @@
  * libvlc_audio.c: New libvlc audio control API
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: c0c8cf79c67ab8925277ea1069850dcb9b0907fe $
+ * $Id: 597de213909dd7a5f81a0db57e3f8e21b72b7c18 $
  *
  * Authors: Filippo Carone <filippo@carone.org>
  *          Jean-Paul Saman <jpsaman _at_ m2x _dot_ nl>
@@ -384,33 +384,12 @@ libvlc_track_description_t *
 int libvlc_audio_get_track( libvlc_media_player_t *p_mi )
 {
     input_thread_t *p_input_thread = libvlc_get_input_thread( p_mi );
-    vlc_value_t val_list;
-    vlc_value_t val;
-    int i_track = -1;
-    int i;
-
     if( !p_input_thread )
         return -1;
 
-    if( var_Get( p_input_thread, "audio-es", &val ) < 0 )
-    {
-        vlc_object_release( p_input_thread );
-        libvlc_printerr( "Audio track information not found" );
-        return -1;
-    }
-
-    var_Change( p_input_thread, "audio-es", VLC_VAR_GETCHOICES, &val_list, NULL );
-    for( i = 0; i < val_list.p_list->i_count; i++ )
-    {
-        if( val_list.p_list->p_values[i].i_int == val.i_int )
-        {
-            i_track = i;
-            break;
-        }
-    }
-    var_FreeList( &val_list, NULL );
+    int id = var_GetInteger( p_input_thread, "audio-es" );
     vlc_object_release( p_input_thread );
-    return i_track;
+    return id;
 }
 
 /*****************************************************************************
@@ -420,30 +399,23 @@ int libvlc_audio_set_track( libvlc_media_player_t *p_mi, int i_track )
 {
     input_thread_t *p_input_thread = libvlc_get_input_thread( p_mi );
     vlc_value_t val_list;
-    vlc_value_t newval;
     int i_ret;
 
     if( !p_input_thread )
         return -1;
 
     var_Change( p_input_thread, "audio-es", VLC_VAR_GETCHOICES, &val_list, NULL );
-    if( (i_track < 0) || (i_track > val_list.p_list->i_count) )
+    for( int i = 0; i < val_list.p_list->i_count; i++ )
     {
-        libvlc_printerr( "Audio track out of range" );
-        i_ret = -1;
-        goto end;
+        if( i_track == val_list.p_list->p_values[i].i_int )
+        {
+            if( var_SetInteger( p_input_thread, "audio-es", i_track ) < 0 )
+                break;
+            i_ret = 0;
+            goto end;
+        }
     }
-
-    newval = val_list.p_list->p_values[i_track];
-    i_ret = var_Set( p_input_thread, "audio-es", newval );
-    if( i_ret < 0 )
-    {
-        libvlc_printerr( "Audio track out of range" ); /* Race... */
-        i_ret = -1;
-        goto end;
-    }
-    i_ret = 0;
-
+    libvlc_printerr( "Track identifier not found" );
 end:
     var_FreeList( &val_list, NULL );
     vlc_object_release( p_input_thread );

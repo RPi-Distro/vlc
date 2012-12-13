@@ -1,0 +1,80 @@
+diff -ruN ffmpeg.old/libavformat/swfdec.c ffmpeg/libavformat/swfdec.c
+--- ffmpeg.old/libavformat/swfdec.c	2012-12-11 02:25:55.000000000 +0100
++++ ffmpeg/libavformat/swfdec.c	2012-12-11 02:26:50.000000000 +0100
+@@ -100,6 +100,10 @@
+         tag = get_swf_tag(pb, &len);
+         if (tag < 0)
+             return AVERROR(EIO);
++        if (len < 0) {
++            av_log(s, AV_LOG_ERROR, "invalid tag length: %d\n", len);
++            return AVERROR_INVALIDDATA;
++        }
+         if (tag == TAG_VIDEOSTREAM) {
+             int ch_id = avio_rl16(pb);
+             len -= 2;
+@@ -155,7 +159,10 @@
+                 st = s->streams[i];
+                 if (st->codec->codec_type == AVMEDIA_TYPE_VIDEO && st->id == ch_id) {
+                     frame = avio_rl16(pb);
+-                    if ((res = av_get_packet(pb, pkt, len-2)) < 0)
++                    len -= 2;
++                    if (len <= 0)
++                        goto skip;
++                    if ((res = av_get_packet(pb, pkt, len)) < 0)
+                         return res;
+                     pkt->pos = pos;
+                     pkt->pts = frame;
+@@ -167,17 +174,22 @@
+             for (i = 0; i < s->nb_streams; i++) {
+                 st = s->streams[i];
+                 if (st->codec->codec_type == AVMEDIA_TYPE_AUDIO && st->id == -1) {
+-            if (st->codec->codec_id == AV_CODEC_ID_MP3) {
+-                avio_skip(pb, 4);
+-                if ((res = av_get_packet(pb, pkt, len-4)) < 0)
+-                    return res;
+-            } else { // ADPCM, PCM
+-                if ((res = av_get_packet(pb, pkt, len)) < 0)
+-                    return res;
+-            }
+-            pkt->pos = pos;
+-            pkt->stream_index = st->index;
+-            return pkt->size;
++                    if (st->codec->codec_id == AV_CODEC_ID_MP3) {
++                        avio_skip(pb, 4);
++                        len -= 4;
++                        if (len <= 0)
++                            goto skip;
++                        if ((res = av_get_packet(pb, pkt, len)) < 0)
++                            return res;
++                    } else { // ADPCM, PCM
++                        if (len <= 0)
++                            goto skip;
++                        if ((res = av_get_packet(pb, pkt, len)) < 0)
++                            return res;
++                    }
++                    pkt->pos = pos;
++                    pkt->stream_index = st->index;
++                    return pkt->size;
+                 }
+             }
+         } else if (tag == TAG_JPEG2) {
+@@ -197,7 +209,10 @@
+                 st = vst;
+             }
+             avio_rl16(pb); /* BITMAP_ID */
+-            if ((res = av_new_packet(pkt, len-2)) < 0)
++            len -= 2;
++            if (len < 4)
++                goto skip;
++            if ((res = av_new_packet(pkt, len)) < 0)
+                 return res;
+             avio_read(pb, pkt->data, 4);
+             if (AV_RB32(pkt->data) == 0xffd8ffd9 ||
+@@ -214,6 +229,7 @@
+             return pkt->size;
+         }
+     skip:
++        len = FFMAX(0, len);
+         avio_skip(pb, len);
+     }
+ }
