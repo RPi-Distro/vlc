@@ -25,6 +25,7 @@
 #endif
 
 #include <vlc_common.h>
+#include <vlc_fs.h>
 
 #include <errno.h>
 #include <assert.h>
@@ -173,7 +174,7 @@ static int dvb_open_adapter (uint8_t adapter)
     char dir[20];
 
     snprintf (dir, sizeof (dir), "/dev/dvb/adapter%"PRIu8, adapter);
-    return open (dir, O_SEARCH|O_DIRECTORY|O_CLOEXEC);
+    return vlc_open (dir, O_SEARCH|O_DIRECTORY);
 }
 
 /** Opens the DVB device node of the specified type */
@@ -183,7 +184,7 @@ static int dvb_open_node (dvb_device_t *d, const char *type, int flags)
     char path[strlen (type) + 4];
 
     snprintf (path, sizeof (path), "%s%u", type, d->device);
-    fd = openat (d->dir, path, flags|O_CLOEXEC);
+    fd = vlc_openat (d->dir, path, flags);
     if (fd != -1)
         fcntl (fd, F_SETFL, fcntl (fd, F_GETFL) | O_NONBLOCK);
     return fd;
@@ -916,7 +917,12 @@ int dvb_set_isdbs (dvb_device_t *d, uint64_t freq_Hz, uint16_t ts_id)
         return -1;
     return dvb_set_props (d, 5, DTV_CLEAR, 0, DTV_DELIVERY_SYSTEM, SYS_ISDBS,
                           DTV_FREQUENCY, freq,
-                          DTV_ISDBS_TS_ID, (uint32_t)ts_id);
+#if DVBv5(8)
+                          DTV_STREAM_ID,
+#else
+                          DTV_ISDBS_TS_ID,
+#endif
+                          (uint32_t)ts_id);
 #else
 # warning ISDB-S needs Linux DVB version 5.1 or later.
     msg_Err (d->obj, "ISDB-S support not compiled-in");

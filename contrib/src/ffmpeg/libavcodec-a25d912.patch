@@ -1,0 +1,28 @@
+From: =?utf8?q?Rafa=C3=ABl=20Carr=C3=A9?= <funman@videolan.org>
+Date: Mon, 15 Oct 2012 18:41:55 +0200
+Subject: [PATCH] avcodec_encode_audio(): fix invalid free
+
+Since 2bc0de385, AVFrame needs to be initialized
+before calling avcodec_get_frame_defaults().
+
+Signed-off-by: Anton Khirnov <anton@khirnov.net>
+---
+ libavcodec/utils.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/libavcodec/utils.c b/libavcodec/utils.c
+index bb99a5a..836d953 100644
+--- a/libavcodec/utils.c
++++ b/libavcodec/utils.c
+@@ -1073,7 +1073,7 @@ int attribute_align_arg avcodec_encode_audio(AVCodecContext *avctx,
+                                              const short *samples)
+ {
+     AVPacket pkt;
+-    AVFrame frame0;
++    AVFrame frame0 = { 0 };
+     AVFrame *frame;
+     int ret, samples_size, got_packet;
+ 
+-- 
+1.7.2.5
+
