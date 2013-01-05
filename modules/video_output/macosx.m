@@ -2,7 +2,7 @@
  * macosx.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2012 the VideoLAN team
- * $Id: 7bd43feeba93508c109a644ca9a9f29c20457d3c $
+ * $Id: c25112a734bf8f1dc2da36ee4ae79e391b0be607 $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -266,10 +266,10 @@ void Close (vlc_object_t *this)
     [(id)sys->container performSelectorOnMainThread:@selector(release) withObject:nil waitUntilDone:NO];
     [sys->glView performSelectorOnMainThread:@selector(removeFromSuperview) withObject:nil waitUntilDone:NO];
 
-    [sys->glView release];
-
     if (sys->gl.sys != NULL)
         vout_display_opengl_Delete (sys->vgl);
+
+    [sys->glView release];
 
     if (sys->embed)
         vout_display_DeleteWindow (vd, sys->embed);

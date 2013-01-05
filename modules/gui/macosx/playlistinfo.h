@@ -2,7 +2,7 @@
  * playlistinfo.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2008 VLC authors and VideoLAN
- * $Id: 7c5a4cdbb3aeb4d3379e870f7c5cfc874fca9556 $
+ * $Id: bdb2ba94b862e68d693afab49296ce8f23f914c2 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -100,6 +100,7 @@
     input_item_t * p_item;
 
     BOOL b_awakeFromNib;
+    BOOL b_stats;
 }
 
 - (void)initPanel;

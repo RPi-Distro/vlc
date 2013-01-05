@@ -30,6 +30,7 @@ EXTRA_DIST = \
 	extras/package/win32/languages/brazilian_portuguese.nsh \
 	extras/package/win32/languages/bulgarian.nsh \
 	extras/package/win32/languages/catalan.nsh \
+	extras/package/win32/languages/croatian.nsh \
 	extras/package/win32/languages/danish.nsh \
 	extras/package/win32/languages/dutch.nsh \
 	extras/package/win32/languages/english.nsh \
@@ -49,11 +50,13 @@ EXTRA_DIST = \
 	extras/package/win32/languages/russian.nsh
 	extras/package/win32/languages/romanian.nsh \
 	extras/package/win32/languages/schinese.nsh \
+	extras/package/win32/languages/serbian.nsh \
 	extras/package/win32/languages/slovak.nsh \
 	extras/package/win32/languages/slovenian.nsh \
 	extras/package/win32/languages/sorani.nsh \
 	extras/package/win32/languages/spanish.nsh \
-	extras/package/win32/languages/swedish.nsh
+	extras/package/win32/languages/swedish.nsh \
+	extras/package/win32/languages/ukrainian.nsh
 
 dist_noinst_SCRIPTS = bootstrap
 nodist_noinst_SCRIPTS = compile
@@ -209,6 +212,8 @@ EXTRA_DIST += \
 	extras/package/macosx/Resources/mainwindow/effects-one-button-blue@2x.png \
 	extras/package/macosx/Resources/mainwindow/effects-one-button.png \
 	extras/package/macosx/Resources/mainwindow/effects-one-button@2x.png \
+	extras/package/macosx/Resources/mainwindow/effects-one-button-pressed.png \
+	extras/package/macosx/Resources/mainwindow/effects-one-button-pressed@2x.png \
 	extras/package/macosx/Resources/mainwindow/forward-pressed.png \
 	extras/package/macosx/Resources/mainwindow/forward-pressed@2x.png \
 	extras/package/macosx/Resources/mainwindow/forward.png \

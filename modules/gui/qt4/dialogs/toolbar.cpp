@@ -2,7 +2,7 @@
  * ToolbarEdit.cpp : ToolbarEdit dialog
  ****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: df509221720228698bc28198335947b3baaf6ec0 $
+ * $Id: ab11b2f75e721ceb0b50c63f0458b2891cdeb251 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -722,11 +722,6 @@ void DroppingController::dropEvent( QDropEvent *event )
 {
     int i = getParentPosInLayout( event->pos() );
 
-    /* Workaround: do not let the item move to its current
-       position + 1 as it breaks the widgetList */
-    if ( i - 1 == i_dragIndex )
-        --i;
-
     QByteArray data = event->mimeData()->data( "vlc/button-bar" );
     QDataStream dataStream(&data, QIODevice::ReadOnly);
 
@@ -800,11 +795,11 @@ bool DroppingController::eventFilter( QObject *obj, QEvent *event )
             /* Remove before the drag to not mess DropEvent,
                that will createAndAddWidget */
             widgetList.removeAt( i );
+            controlLayout->removeWidget( widg );
+            widg->hide();
 
             /* Start the effective drag */
             drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::MoveAction);
-            widg->hide();
-            controlLayout->removeWidget( widg );
             b_draging = false;
             }
             return true;

@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 the VideoLAN team
- * $Id: 311c08d7689bf14cf7cc669a4039c68d20a7dab1 $
+ * $Id: bc99aa631812e7c6eb5fd90ee5d6e5a1e2525f5a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -728,11 +728,11 @@ void matroska_segment_c::Seek( mtime_t i_date, mtime_t i_time_offset, int64_t i_
         }
     }
 
-#ifndef WIN32
     /* Don't try complex seek if we seek to 0 */
     if( i_date == 0 )
     {
-        es_out_Control( sys.demuxer.out, ES_OUT_SET_NEXT_DISPLAY_TIME, 0 );
+        es_out_Control( sys.demuxer.out, ES_OUT_SET_NEXT_DISPLAY_TIME,
+                        INT64_C(0) );
         es_out_Control( sys.demuxer.out, ES_OUT_SET_PCR, VLC_TS_0 );
         es.I_O().setFilePointer( i_start_pos );
 
@@ -744,7 +744,6 @@ void matroska_segment_c::Seek( mtime_t i_date, mtime_t i_time_offset, int64_t i_
         sys.i_pcr = 0;
         return;       
     }
-#endif
 
     int i_idx = 0;
     if ( i_index > 0 )
