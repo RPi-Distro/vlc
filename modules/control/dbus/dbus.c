@@ -4,7 +4,7 @@
  * Copyright © 2006-2008 Rafaël Carré
  * Copyright © 2007-2010 Mirsal Ennaime
  * Copyright © 2009-2010 The VideoLAN team
- * $Id: 462567dea26a1999fbbe9f84efca768239ec95b8 $
+ * $Id: 8fe2eae0264f392b94db77c5e34624396062c858 $
  *
  * Authors:    Rafaël Carré <funman at videolanorg>
  *             Mirsal Ennaime <mirsal at mirsal fr>
@@ -137,7 +137,6 @@ static void DispatchDBusMessages( intf_thread_t *p_intf );
 vlc_module_begin ()
     set_shortname( N_("DBus"))
     set_category( CAT_INTERFACE )
-    set_subcategory( SUBCAT_INTERFACE_CONTROL )
     set_description( N_("D-Bus control interface") )
     set_capability( "interface", 0 )
     set_callbacks( Open, Close )

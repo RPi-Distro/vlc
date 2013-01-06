@@ -27,7 +27,7 @@ endif
 	#$(RECONF)
 	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) \
 		--enable-ciphers=aes,des,rfc2268,arcfour \
-		--enable-digests=sha1,md5,rmd160,sha512 \
+		--enable-digests=sha1,md5,rmd160,sha256,sha512 \
 		--enable-pubkey-ciphers=dsa,rsa,ecc \
 		$(CONFIGURE_OPTS)
 	cd $< && $(MAKE) install

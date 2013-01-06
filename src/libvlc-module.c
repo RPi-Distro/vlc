@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the main (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 VLC authors and VideoLAN
- * $Id: 920ba520fed77c1bc429e82a6ba6bfffc9f4ec00 $
+ * $Id: a7c995d72b90b881831b7098e8458794d0141c20 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -50,6 +50,7 @@ static const char *const ppsz_language[] =
     "auto",
     "en",
     "ar",
+    "ast",
     "be",
     "bg",
     "bn",
@@ -65,6 +66,7 @@ static const char *const ppsz_language[] =
     "et",
     "eu",
     "fa",
+    "ff",
     "fi",
     "fr",
     "ga",
@@ -117,6 +119,7 @@ static const char *const ppsz_language_text[] =
     N_("Auto"),
     "American English",
     "ﻉﺮﺒﻳ",
+    "Asturianu",
     "Беларуская",
     "български език",
     "বাংলা",
@@ -132,6 +135,7 @@ static const char *const ppsz_language_text[] =
     "eesti keel",
     "Euskara",
     "ﻑﺍﺮﺳی",
+    "Pulaar-Fulfulde",
     "Suomi",
     "Français",
     "Gaeilge",

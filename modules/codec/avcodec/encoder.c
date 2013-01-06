@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 8b72e4c17a9bab1e034633126704061de03e5add $
+ * $Id: f1357cb14284dc0ee3853f6a588212c5dc151565 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -590,8 +590,11 @@ int OpenEncoder( vlc_object_t *p_this )
         else
         {
             p_context->rc_qsquish = 1.0;
-            p_context->rc_max_rate = p_enc->fmt_out.i_bitrate;
-            p_context->rc_min_rate = p_enc->fmt_out.i_bitrate;
+            if( p_sys->i_rc_buffer_size )
+            {
+                p_context->rc_max_rate = p_enc->fmt_out.i_bitrate;
+                p_context->rc_min_rate = p_enc->fmt_out.i_bitrate;
+            }
             p_context->rc_buffer_size = p_sys->i_rc_buffer_size;
             /* This is from ffmpeg's ffmpeg.c : */
             p_context->rc_initial_buffer_occupancy

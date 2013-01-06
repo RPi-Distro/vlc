@@ -2,7 +2,7 @@
  * vout_display.c: "vout display" -> "video output" wrapper
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: d3a2855f41ee82b4a31900fc71202859ab2a8397 $
+ * $Id: a190f4c30407a2c0078d5b17d7034b75d6a26834 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -150,6 +150,8 @@ int vout_InitWrapper(vout_thread_t *vout)
             picture_pool_NewFromFormat(&source,
                                        __MAX(VOUT_MAX_PICTURES,
                                              reserved_picture + decoder_picture - DISPLAY_PICTURE_COUNT));
+        if (!sys->decoder_pool)
+            return VLC_EGENERIC;
         if (allow_dr) {
             msg_Warn(vout, "Not enough direct buffers, using system memory");
             sys->dpb_size = 0;

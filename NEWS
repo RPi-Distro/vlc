@@ -1,8 +1,55 @@
+Changes between 2.0.4 and 2.0.5:
+--------------------------------
+
+Access:
+ * Fix DVB-S delivery system detection
+
+Audio Output:
+ * Fix playback initial synchronization with PulseAudio
+   (however similar bugs in PulseAudio version 2.0 and later still exist)
+ * Fix file output bug affecting floating point on big endian systems
+
+Demuxers:
+ * Fix crash with some embedded subtitle fonts
+ * Fix buffer overflow in HTML subtitles parser
+ * Fix koreus lua parser
+ * Improve reliability for RTSP streams sent by some IP cameras
+ * Fix division by 0 in AIFF demuxer
+ * Fix some MKV crashes when ordered editions have empty or broken links
+ * Fix SWF potential crash on malformed files.
+
+Video filters:
+ * Fix crash in Freetype with embedded fonts
+ * Fix wrong aspect ratio in some cases
+
+Encoders:
+ * Fix Mpeg-2 audio and video encoders initialization
+
+Mac OS X:
+ * Fix Reveal-in-Finder for files with non-Western file names
+ * Fix crash with local statistics disabled
+ * Fix Time counter UI look
+
+Win32:
+ * Fix https streaming
+
+libVLC:
+ * Fix audio and video track selection:
+   The constant track identifier is now always used. Some functions previously
+   incorrectly used the (moving) index of the track in the table of tracks.
+
+Translations:
+ * Update of Asturian, Bengali (India), Bosnian, Croatian, Czech, Danish,
+   Dutch, Estonian, French, Galician, Scottish Gaelic, German, Hebrew,
+   Italian, Japanese, Khmer, Malayalam, Polish, Slovak, Simplified Chinese,
+   Traditional Chinese, Brazilian Portuguese, Turkish, Thai translations
+ * Initial translations for Welsh and Interlingua
+
+
 Changes between 2.0.3 and 2.0.4:
 --------------------------------
 
 Audio Output:
- * Improve playback synchronization with PulseAudio.
  * Fix ALSA digital pass-through ("S/PDIF").
  * Fix live audio device selection on Mac OS X
  * Fix detection of some 5.1 and 7.1 kits on Windows.

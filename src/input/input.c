@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: 792fd0534c79d1aff31ffa92b271964de588114f $
+ * $Id: f649bd8a7e32a53a9e4e0ca385fc4ddfab62094d $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -2356,7 +2356,7 @@ static int InputSourceInit( input_thread_t *p_input,
                             input_source_t *in, const char *psz_mrl,
                             const char *psz_forced_demux, bool b_in_can_fail )
 {
-    const char *psz_access, *psz_demux, *psz_path, *psz_anchor;
+    const char *psz_access, *psz_demux, *psz_path, *psz_anchor = NULL;
     char *psz_var_demux = NULL;
     double f_fps;
 

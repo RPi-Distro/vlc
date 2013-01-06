@@ -2,7 +2,7 @@
  * dec.c : audio output API towards decoders
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: ab612141eb54e64df0c610e0f9aa460cdecc8b54 $
+ * $Id: 3c7772383d6237b93a1552a2ef3da0b4f3aee61b $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -208,7 +208,10 @@ static void aout_CheckRestart (audio_output_t *aout)
     const aout_request_vout_t request_vout = owner->input->request_vout;
 
     if (likely(owner->input != NULL))
+    {
         aout_InputDelete (aout, owner->input);
+        free (owner->input);
+    }
     owner->input = NULL;
 
     /* Reinitializes the output */
