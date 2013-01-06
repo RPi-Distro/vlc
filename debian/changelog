@@ -1,3 +1,13 @@
+vlc (2.0.5-0ubuntu0.12.10.1) quantal-security; urgency=low
+
+   * New bug-fixing upstream release.
+   * SECURITY UPDATE: Buffer overflows in freetype renderer and HTML subtitle
+     parser can cause a denial of service (process termination) and possibly
+     execute arbitrary code.
+     - VideoLAN-SA-1301
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Sun, 06 Jan 2013 01:53:20 +0100
+
 vlc (2.0.4-0ubuntu1) quantal; urgency=low
 
   * New upstream release (LP: #1067064).
