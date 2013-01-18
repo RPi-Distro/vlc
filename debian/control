@@ -106,8 +106,8 @@ Build-Depends: autopoint,
                zlib1g-dev
 Standards-Version: 3.9.3
 Homepage: http://www.videolan.org/vlc/
-Vcs-Git: git://git.debian.org/git/pkg-multimedia/vlc.git
-Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/vlc.git;a=summary
+Vcs-Git: git://anonscm.debian.org/pkg-multimedia/vlc.git
+Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-multimedia/vlc.git
 
 Package: libvlc-dev
 Section: libdevel
