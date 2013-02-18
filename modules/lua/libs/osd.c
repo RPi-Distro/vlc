@@ -2,7 +2,7 @@
  * intf.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: b8ce9ce484df9ad2387593edfce4186331db31a9 $
+ * $Id: 9843a0dcbc2d74795748007dcaa2f4d7a58eb191 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -95,9 +95,9 @@ static int vlc_osd_position_from_string( const char *psz_name )
         int i_position;
         const char *psz_name;
     } pp_icons[] =
-        { { SUBPICTURE_ALIGN_MASK,                          "center"       },
+        { { 0,                                              "center"       },
           { SUBPICTURE_ALIGN_LEFT,                          "left"         },
-          { SUBPICTURE_ALIGN_RIGHT,                         "rigth"        },
+          { SUBPICTURE_ALIGN_RIGHT,                         "right"        },
           { SUBPICTURE_ALIGN_TOP,                           "top"          },
           { SUBPICTURE_ALIGN_BOTTOM,                        "bottom"       },
           { SUBPICTURE_ALIGN_TOP   |SUBPICTURE_ALIGN_LEFT,  "top-left"     },

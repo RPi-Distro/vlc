@@ -2,7 +2,7 @@
  * demux.c: demuxer using libavformat
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: ada3849c194d510df289397a887940643b511d2b $
+ * $Id: 10956d22d5a598fa105ba26c378e8f2aac2b9ba0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -241,15 +241,16 @@ int OpenDemux( vlc_object_t *p_this )
     error = av_open_input_stream(&p_sys->ic, &p_sys->io, psz_url, p_sys->fmt, NULL);
 #endif
 
-    free( psz_url );
     if( error < 0 )
     {
         errno = AVUNERROR(error);
         msg_Err( p_demux, "Could not open %s: %m", psz_url );
         p_sys->ic = NULL;
+        free( psz_url );
         CloseDemux( p_this );
         return VLC_EGENERIC;
     }
+    free( psz_url );
 
     vlc_avcodec_lock(); /* avformat calls avcodec behind our back!!! */
 #if LIBAVFORMAT_VERSION_INT >= ((53<<16)+(26<<8)+0)
@@ -276,6 +277,12 @@ int OpenDemux( vlc_object_t *p_this )
 
         if( !GetVlcFourcc( cc->codec_id, NULL, &fcc, NULL ) )
             fcc = VLC_FOURCC( 'u', 'n', 'd', 'f' );
+
+#if LIBAVFORMAT_VERSION_INT >= ((54<<16)+(2<<8)+0)
+        /* Do not use the cover art as a stream */
+        if( s->disposition == AV_DISPOSITION_ATTACHED_PIC )
+            continue;
+#endif
 
         switch( cc->codec_type )
         {

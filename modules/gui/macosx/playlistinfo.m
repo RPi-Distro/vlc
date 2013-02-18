@@ -2,7 +2,7 @@
  r playlistinfo.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: be2a2018fc479b28246bb3a3871fc0443ca43957 $
+ * $Id: 08c5955fdc6f98375e17563dcddecffb80f008f7 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -140,14 +140,14 @@ static VLCInfo *_o_sharedInstance = nil;
 
 - (void)initPanel
 {
-    BOOL b_stats = config_GetInt(VLCIntf, "stats");
-    if( !b_stats )
-    {
+    b_stats = config_GetInt(VLCIntf, "stats");
+    if( !b_stats ) {
         if( [o_tab_view numberOfTabViewItems] > 2 )
             [o_tab_view removeTabViewItem: [o_tab_view tabViewItemAtIndex: 2]];
     }
+    else
+        [self initMediaPanelStats];
 
-    [self initMediaPanelStats];
     [o_info_window makeKeyAndOrderFront: self];
 }
 
@@ -280,7 +280,7 @@ static VLCInfo *_o_sharedInstance = nil;
 
 - (void)updateStatistics
 {
-    if (!b_awakeFromNib)
+    if (!b_awakeFromNib || !b_stats)
         return;
 
     if ([o_info_window isVisible])

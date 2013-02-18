@@ -2,7 +2,7 @@
  * misc.m: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003-2011 VLC authors and VideoLAN
- * $Id: a134f5b27c9d51b8d992d239c29f81f8f34a7cbc $
+ * $Id: ef8ee5c550406701b1cf1c58d2478b66ba36efe8 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -646,7 +646,7 @@ void _drawFrameInRect(NSRect frameRect)
     {
         o_string_shadow = [[NSShadow alloc] init];
         [o_string_shadow setShadowColor: [NSColor colorWithCalibratedWhite:1.0 alpha:0.5]];
-        [o_string_shadow setShadowOffset:NSMakeSize(0.0, -1.5)];
+        [o_string_shadow setShadowOffset:NSMakeSize(0.0, -1.0)];
         [o_string_shadow setShadowBlurRadius:0.0];
     }
 
