@@ -162,7 +162,7 @@ removeplugins += \
 endif
 
 # Linux and kFreeBSD specific flags
-ifneq ($(filter $(DEB_HOST_ARCH_OS),linux kfreebsd),)
+ifeq (,$(filter-out linux kfreebsd,$(DEB_HOST_ARCH_OS)))
 confflags += --enable-v4l2
 else
 confflags += --disable-v4l2
@@ -170,7 +170,7 @@ removeplugins += libv4l2
 endif
 
 # Linux amd64 and i386 specific flags
-ifneq ($(filter $(DEB_HOST_ARCH),amd64 i386),)
+ifeq (,$(filter-out amd64 i386,$(DEB_HOST_ARCH)))
 confflags += --enable-crystalhd
 else
 confflags += --disable-crystalhd
@@ -178,7 +178,7 @@ removeplugins += libcrystalhd
 endif
 
 # amd64 and i386 specific optimizations
-ifneq ($(filter $(DEB_HOST_ARCH_CPU),amd64 i386),)
+ifeq (,$(filter-out amd64 i386,$(DEB_HOST_ARCH_CPU)))
 confflags += --enable-mmx --enable-sse
 else
 confflags += --disable-mmx --disable-sse
@@ -186,7 +186,7 @@ removeplugins += 3dn mmx mmxext sse2
 endif
 
 # ARM specific optimizations
-ifneq ($(filter $(DEB_HOST_ARCH_CPU),armhf),)
+ifeq (,$(filter-out armhf,$(DEB_HOST_ARCH_CPU)))
 confflags += --enable-neon
 else
 confflags += --disable-neon
@@ -230,8 +230,8 @@ override_dh_auto_configure:
 	dh_auto_configure -- $(confflags)
 
 override_dh_auto_test:
-ifeq ($(filter nocheck,$(DEB_BUILD_OPTIONS)),)
-ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+ifeq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
 	# Check which plugins were built and whether they load properly.
 	@if test $$( id -u ) -eq 0 ; then \
 	   echo "Not runing the test as you are compiling as root"; \
