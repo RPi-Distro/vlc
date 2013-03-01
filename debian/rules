@@ -193,12 +193,17 @@ confflags += --disable-neon
 removeplugins += neon
 endif
 
-# PowerPC specific optimizations
-ifneq ($(filter $(DEB_HOST_ARCH_CPU),powerpc),)
+# PowerPC specific optimizations (excluding powerpcspe)
+ifeq (,$(filter-out powerpc,$(DEB_HOST_ARCH_CPU))$(filter powerpcspe,$(DEB_HOST_ARCH)))
 confflags += --enable-altivec
 else
 confflags += --disable-altivec
 removeplugins += altivec
+endif
+
+# PowerPCSPE specific optimizations
+ifeq (,$(filter-out powerpcspe,$(DEB_HOST_ARCH))
+confflags += --with-tuning=8548
 endif
 
 %:
