@@ -255,6 +255,7 @@ Depends: fluid-soundfont-gm | musescore-soundfont-gm,
          vlc-nox (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
+Breaks: vlc-nox (<< 2.0.0)
 Description: FluidSynth plugin for VLC
  This plugin adds support for playing MIDI file via the FluidSynth software
  synthesizer to the VLC media player.
@@ -267,6 +268,7 @@ Package: vlc-plugin-jack
 Architecture: any
 Pre-Depends: dpkg (>= 1.15.6~)
 Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Breaks: vlc-nox (<< 2.0.0)
 Description: Jack audio plugins for VLC
  These plugins add support for JACK to the VLC media player. To
  activate the audio output module, use the `--aout jack' flag or
@@ -281,7 +283,7 @@ Package: vlc-plugin-notify
 Architecture: any
 Pre-Depends: dpkg (>= 1.15.6~)
 Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
-Breaks: vlc-nox (<< 1.1.2)
+Breaks: vlc-nox (<< 2.0.0)
 Replaces: vlc-nox (<< 1.1.2)
 Description: LibNotify plugin for VLC
  This plugin adds support for libnotify track change notification to the
@@ -295,6 +297,7 @@ Package: vlc-plugin-pulse
 Architecture: any
 Pre-Depends: dpkg (>= 1.15.6~)
 Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Breaks: vlc-nox (<< 2.0.0)
 Description: PulseAudio plugin for VLC
  This plugin adds support for PulseAudio to the VLC media player. To
  activate the audio output module, use the `--aout pulse' flag or
@@ -308,6 +311,7 @@ Package: vlc-plugin-sdl
 Architecture: any
 Pre-Depends: dpkg (>= 1.15.6~)
 Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Breaks: vlc-nox (<< 2.0.0)
 Description: SDL video and audio output plugin for VLC
  This plugin adds support for the Simple DirectMedia Layer library to
  the VLC media player. To activate it, use the `--vout sdl' or
@@ -322,6 +326,7 @@ Package: vlc-plugin-svg
 Architecture: any
 Pre-Depends: dpkg (>= 1.15.6~)
 Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Breaks: vlc-nox (<< 2.0.0)
 Description: SVG plugin for VLC
  This plugin allows you to render SVG graphics on top of the video. It is a text
  renderer, and must be activated through the '--text-renderer svg' option. When
@@ -336,6 +341,7 @@ Package: vlc-plugin-zvbi
 Architecture: any
 Pre-Depends: dpkg (>= 1.15.6~)
 Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Breaks: vlc-nox (<< 2.0.0)
 Description: VBI teletext plugin for VLC
  This plugin adds support for VBI teletext to the VLC media player.
  .
