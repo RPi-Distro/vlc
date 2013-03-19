@@ -1,11 +1,4 @@
-vlc (2.0.5-1~bpo60+1) squeeze-backports; urgency=low
-
-  * Rebuild for Squeeze.
-  * New upstream release.
-
- -- Edward Wang <edward.c.wang@compdigitec.com>  Sun, 17 Feb 2013 22:14:03 -0500
-
-vlc (2.0.4-1~bpo60+1) squeeze-backports; urgency=low
+vlc (2.0.5-1~bpo60+1) squeeze-backports-sloppy; urgency=low
 
   [ Benjamin Drung ]
   * New upstream release.
@@ -25,9 +18,13 @@ vlc (2.0.4-1~bpo60+1) squeeze-backports; urgency=low
 
   [ Edward Wang ]
   * Rebuild for Squeeze.
+  * New upstream release.
   * Fix ncurses detection on Squeeze.
+  
+  [ Reinhard Tartler ]
+  * Revert "debian/rules: Use xz compression for binary packages."
 
- -- Edward Wang <edward.c.wang@compdigitec.com>  Mon, 15 Oct 2012 20:44:51 -0400
+ -- Reinhard Tartler <siretart@tauware.de>  Tue, 19 Mar 2013 08:28:03 +0100
 
 vlc (2.0.3-1~bpo60+1) squeeze-backports; urgency=low
 
