@@ -4,6 +4,8 @@
 Author: Brian Murray <brian@ubuntu.com>
 '''
 
+from apport.hookutils import attach_related_packages
+
 def add_info(report):
 	attach_related_packages(report, [
 		"libaa1",
