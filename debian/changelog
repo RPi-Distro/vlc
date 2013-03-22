@@ -1,3 +1,13 @@
+vlc (2.0.5-2) unstable; urgency=low
+
+  * Bump Standards-Version to 3.9.4 (no changes needed).
+  * Override false positive hardening-no-fortify-functions lintian warnings.
+  * Fix build failure on powerpcspe. Thanks to Roland Stigge. (Closes: #701830)
+  * Backport man page update to correct title DVD syntax. (Closes: #691957)
+  * Fix apport hook. Thanks to Dmitry Shachnev. (Closes: #702942)
+
+ -- Benjamin Drung <bdrung@debian.org>  Fri, 22 Mar 2013 13:37:54 +0100
+
 vlc (2.0.5-1) unstable; urgency=low
 
   * New upstream release.
