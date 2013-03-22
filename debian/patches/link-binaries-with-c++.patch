@@ -10,9 +10,19 @@ Subject: [PATCH] Link vlc-cache-gen with the C++ standard library to avoid
 Origin: upstream, http://git.videolan.org/?p=vlc.git;a=commitdiff;h=07d38617832be934896fa7a14fe52f1a65c901ab
 Bug-Debian: http://bugs.debian.org/660934
 Bug-Debian: http://bugs.debian.org/660935
+Bug-Debian: http://bugs.debian.org/661819
 
 --- a/bin/Makefile.am
 +++ b/bin/Makefile.am
+@@ -16,7 +16,7 @@
+ if !HAVE_WIN32
+ if !HAVE_WINCE
+ bin_PROGRAMS += vlc-wrapper
+-vlc_SOURCES = vlc.c override.c
++vlc_SOURCES = vlc.c override.c dummy.cpp
+ endif
+ endif
+ 
 @@ -59,7 +59,7 @@
  vlc_win32_rc.$(OBJEXT): vlc_win32_rc.rc
  	$(WINDRES) --include-dir $(top_srcdir)/share/icons -i $< -o $@
