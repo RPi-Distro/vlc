@@ -2,7 +2,7 @@
  * prefs_widgets.m: Preferences controls
  *****************************************************************************
  * Copyright (C) 2002-2011 VLC authors and VideoLAN
- * $Id: dc10bec4a927c6421ed64c40217417c8c15bc913 $
+ * $Id: ac4791f78606babacc8ef804229df7eb4cf82883 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Jérôme Decoodt <djc at videolan.org>
@@ -2156,6 +2156,28 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
                 [o_modulearray addObject:[NSMutableArray
                                           arrayWithObjects: o_modulename, o_modulelongname,
                                           o_moduleenabled, nil]];
+            }
+
+            /* Parental Advisory HACK:
+             * Selecting HTTP, RC and Telnet interfaces is difficult now
+             * since they are just the lua interface module */
+            if (p_config->i_type == CONFIG_SUBCATEGORY &&
+               !strcmp(module_get_object(p_parser), "lua") &&
+               !strcmp(_p_item->psz_name, "extraintf") &&
+               p_config->value.i == _p_item->min.i) {
+
+#define addLuaIntf(shortname, longname) \
+                if (_p_item->value.psz && strstr(_p_item->value.psz, shortname))\
+                    o_moduleenabled = [NSNumber numberWithBool:YES];\
+                else\
+                    o_moduleenabled = [NSNumber numberWithBool:NO];\
+                [o_modulearray addObject:[NSMutableArray arrayWithObjects: @shortname, _NS(longname), o_moduleenabled, nil]]
+
+                addLuaIntf("http", "Web");
+                addLuaIntf("telnet", "Telnet");
+                addLuaIntf("cli", "Console");
+
+#undef addLuaIntf
             }
         }
         module_config_free( p_configlist );

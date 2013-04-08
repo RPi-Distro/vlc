@@ -36,6 +36,9 @@
 #if !PA_CHECK_VERSION(0,9,22)
 # include <vlc_xlib.h>
 #endif
+#if !PA_CHECK_VERSION(3,0,0)
+# include <vlc_dialog.h>
+#endif
 
 static int  Open        ( vlc_object_t * );
 static void Close       ( vlc_object_t * );
@@ -315,7 +318,25 @@ static void stream_latency_cb(pa_stream *s, void *userdata)
     bool sync = false;
 
     if (delta < -AOUT_MAX_PTS_DELAY)
+    {
         msg_Warn(aout, "too late by %"PRId64" us", -delta);
+#if !PA_CHECK_VERSION(3,0,0)
+        if (delta < -CLOCK_FREQ)
+        {
+            var_Create (aout->p_libvlc, "pulse-broken", VLC_VAR_BOOL);
+            if (!var_GetBool (aout->p_libvlc, "pulse-broken"))
+            {
+                var_SetBool (aout->p_libvlc, "pulse-broken", true);
+                dialog_Fatal (aout, "Potential PulseAudio version problem",
+                    "PulseAudio is streaming with an excessive latency. "
+                    "Sound may be lost or quality degraded.\n"
+                    "To address that issue, upgrade the PulseAudio daemon "
+                    "to version 3.0, or disable the alternate sampling rate "
+                    "in its configuration.");
+            }
+        }
+#endif
+    }
     else if (delta > +AOUT_MAX_PTS_ADVANCE)
         msg_Warn(aout, "too early by %"PRId64" us", delta);
     else if (outrate  == inrate)

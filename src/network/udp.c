@@ -4,7 +4,7 @@
  * Copyright (C) 2004-2006 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
  *
- * $Id: d30f4e99368334e23657e89bd667971ce1046c57 $
+ * $Id: d88e18d6579e091e9fd29f4d00685aeb0753b97f $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -259,7 +259,7 @@ static int net_SetMcastOut (vlc_object_t *p_this, int fd, int family,
 #ifdef IPV6_MULTICAST_IF
         case AF_INET6:
             if (setsockopt (fd, SOL_IPV6, IPV6_MULTICAST_IF,
-                            &scope, sizeof (scope) == 0))
+                            &scope, sizeof (scope)) == 0)
                 return 0;
 #endif
 

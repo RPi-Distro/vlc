@@ -1,0 +1,10 @@
+--- flac/src/libFLAC/flac.pc.in	2013-01-04 00:05:04.000000000 +0100
++++ flac.new/src/libFLAC/flac.pc.in	2013-03-19 00:54:54.000000000 +0100
+@@ -6,6 +6,6 @@
+ Name: FLAC
+ Description: Free Lossless Audio Codec Library
+ Version: @VERSION@
+-Libs: -L${libdir} -lFLAC -logg -lm
++Libs: -L${libdir} -lFLAC -logg -lm -lws2_32
+ Cflags: -I${includedir}/FLAC
+ Requires.private: ogg

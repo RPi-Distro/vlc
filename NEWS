@@ -1,3 +1,58 @@
+Changes between 2.0.5 and 2.0.6:
+--------------------------------
+
+Access:
+ * Fix HTTPS playback with some certificates previously rejected
+
+Audio Output:
+ * Fix lookup for device names in auhal plugin
+
+Demuxers:
+ * Fix crash with broken asf files (SA-1302)
+ * Fix MKV behaviour with unknown or new ebml elements
+ * Fix use-after-free crash in Ogg demuxer, found by Tomi Juntunen
+ * Fix regression on some paletted codecs in AVI
+ * Fix ALAC in mp4 regression
+ * Improvements to the vimeo playlist parser
+
+Decoders:
+ * Fix GPU decoding on Intel HD 2000/3000 cards on Windows
+ * Fix FLAC 6.1 and 7.1 channel layout
+ * Fix crashes in HTML srt subtitles
+ * 3rd party codecs updates
+
+Mac OS X:
+ * Fix subtitle rendering resolution when using OS X's native fullscreen mode
+ * Improve fullscreen controller time slider with larger click target
+ * Fix listing of the lua interfaces (web, telnet and console)
+   in the advanced preferences panel
+ * Fix spatializer audio filter panel
+ * Fix crash within the video output code
+ * Fix BDMV folder selection issue on OS X Mountain Lion, which treats such
+   folders as a AVCHD file as soon as they include an item named INDEX.BDM
+ * Fix bug which caused a hidden fullscreen panel
+ * Allow VLC to be associated with .dvdmedia packages
+ * Fix various interface rendering issues
+
+Qt:
+ * Fix clearing of Media Info panel on dialog exit
+
+GNU/Linux:
+ * Numerous D-Bus and MPRIS2 improvements
+ * Reject broken versions of PulseAudio
+
+Windows:
+ * Fix uninstallation in different location than C:\
+
+Translations:
+ * Update of Brazilian Portuguese, Traditional Chinese, Thai, Portuguese,
+   Japanese, Italian, Hebrew, Estonian, Spanish, Czech, Catalan, Bosnian,
+   Asturian, French, Romanian, Serbian, Russian, Hindi, Estonian, German
+   Slovenian Norwegian Bokmål, Khmer, Icelandic, Interlingua, Welsh, Ukrainian,
+   Dutch, Danish, translations
+ * New Gujarati, Aragonese translations
+
+
 Changes between 2.0.4 and 2.0.5:
 --------------------------------
 
@@ -29,6 +84,7 @@ Mac OS X:
  * Fix Reveal-in-Finder for files with non-Western file names
  * Fix crash with local statistics disabled
  * Fix Time counter UI look
+ * Fix system sleep issue on OS X 10.5
 
 Win32:
  * Fix https streaming
@@ -50,6 +106,7 @@ Changes between 2.0.3 and 2.0.4:
 --------------------------------
 
 Audio Output:
+ * Improve playback synchronization with PulseAudio.
  * Fix ALSA digital pass-through ("S/PDIF").
  * Fix live audio device selection on Mac OS X
  * Fix detection of some 5.1 and 7.1 kits on Windows.

@@ -2,7 +2,7 @@
  * flac.c: flac decoder/encoder module making use of libflac
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 519d4c2278d7e87c0ac899108ea3b131f037b8e6 $
+ * $Id: 67ece6ac866d6b0fc8abb886cd295e96bc3e2b17 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -81,8 +81,8 @@ static const int pi_channels_maps[9] =
     AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
      | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT | AOUT_CHAN_LFE,
     AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
-     | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT | AOUT_CHAN_MIDDLELEFT
-     | AOUT_CHAN_MIDDLERIGHT,
+     | AOUT_CHAN_REARCENTER | AOUT_CHAN_MIDDLELEFT| AOUT_CHAN_MIDDLERIGHT
+     | AOUT_CHAN_LFE,
     AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER | AOUT_CHAN_REARLEFT
      | AOUT_CHAN_REARRIGHT | AOUT_CHAN_MIDDLELEFT | AOUT_CHAN_MIDDLERIGHT
      | AOUT_CHAN_LFE
@@ -191,9 +191,8 @@ DecoderWriteCallback( const FLAC__StreamDecoder *decoder,
         { 0, 1, 2, 3 },
         { 0, 1, 3, 4, 2 },
         { 0, 1, 4, 5, 2, 3 },
-
-        { 0, 1, 6, 4, 5, 2, 3 },    /* 7.0 Unspecified by flac, but following SMPTE */
-        { 0, 1, 6, 7, 4, 5, 2, 3 }, /* 7.1 Unspecified by flac, but following SMPTE */
+        { 0, 1, 5, 6, 4, 2, 3 },
+        { 0, 1, 6, 7, 4, 5, 2, 3 },
     };
 
     VLC_UNUSED(decoder);

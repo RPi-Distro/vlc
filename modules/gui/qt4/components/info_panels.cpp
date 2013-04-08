@@ -2,7 +2,7 @@
  * infopanels.cpp : Panels for the information dialogs
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: cdcc6baf6361da783687d2bbada111338a1239b4 $
+ * $Id: 5e433b2ee323b1e123a4e0c7a3f4556f09c3c639 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -326,6 +326,8 @@ void MetaPanel::clear()
     language_text->clear();
     nowplaying_text->clear();
     publisher_text->clear();
+    encodedby_text->clear();
+    art_cover->clear();
 
     setEditMode( false );
     emit uriSet( "" );

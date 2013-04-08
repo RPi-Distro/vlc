@@ -2,7 +2,7 @@
  * puzzle.c : Puzzle game
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: b9b6bf8742ca8b6040d4867335e60df17e3aa8c1 $
+ * $Id: 6062e7e4b7993615d7c1a8aa493dedf366fd5d46 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -364,11 +364,11 @@ static int PuzzleCallback( vlc_object_t *p_this, char const *psz_var,
     vlc_mutex_lock( &p_sys->lock );
     if( !strcmp( psz_var, CFG_PREFIX "rows" ) )
     {
-        p_sys->change.i_rows = __MAX( 1, newval.i_int );
+        p_sys->change.i_rows = __MAX( 2, newval.i_int );
     }
     else if( !strcmp( psz_var, CFG_PREFIX "cols" ) )
     {
-        p_sys->change.i_cols = __MAX( 1, newval.i_int );
+        p_sys->change.i_cols = __MAX( 2, newval.i_int );
     }
     else if( !strcmp( psz_var, CFG_PREFIX "black-slot" ) )
     {

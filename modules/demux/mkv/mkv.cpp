@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2005, 2008, 2010 the VideoLAN team
- * $Id: 0c983678198780cc0751fc3503a632203677281c $
+ * $Id: d17849b2e9e731b39e266dd97d2626da33d09cbc $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -245,6 +245,8 @@ static int Open( vlc_object_t * p_this )
         msg_Err( p_demux, "cannot use the segment" );
         goto error;
     }
+
+    p_sys->FreeUnused();
 
     p_sys->InitUi();
 

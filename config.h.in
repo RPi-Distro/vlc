@@ -110,6 +110,9 @@
 /* Define if avcodec has to be built with VAAPI support. */
 #undef HAVE_AVCODEC_VAAPI
 
+/* Define if libav* use planar audio formats */
+#undef HAVE_AVUTIL_PLANAR
+
 /* Define to 1 if you have the `backtrace' function. */
 #undef HAVE_BACKTRACE
 

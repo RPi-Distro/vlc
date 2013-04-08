@@ -3,7 +3,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: d863bb703196ef8feb061082d1168c5264f6b331 $
+ * $Id: 47c0f99f9cbb659f05f37bbfc8fa508dc54300f0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -689,6 +689,38 @@ bool demux_sys_t::PreloadLinked()
     // TODO decide which segment should be first used (VMG for DVD)
 
     return true;
+}
+
+void demux_sys_t::FreeUnused()
+{
+    size_t i;
+    for( i = 0; i < streams.size(); i++ )
+    {
+        bool used = false;
+        struct matroska_stream_c *p_s = streams[i];
+        for( size_t j = 0; j < p_s->segments.size(); j++ )
+        {
+            if( p_s->segments[j]->b_preloaded )
+            {
+                used = true;
+                break;
+            }
+        }
+        if( !used )
+        {
+            streams[i] = NULL;
+            delete p_s;
+        }
+        
+    }
+    for( i = 0; i < opened_segments.size(); i++)
+    {
+        if( !opened_segments[i]->b_preloaded )
+        {
+            delete opened_segments[i];
+            opened_segments[i] = NULL;
+        }
+    }
 }
 
 virtual_segment_c *demux_sys_t::VirtualFromSegments( std::vector<matroska_segment_c*> *p_segments ) const

@@ -2,7 +2,7 @@
  * VideoEffects.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: 74424495ded96e23fc15518096f29760c82950b2 $
+ * $Id: be824843abf00a35ceb04a36739e749195dc740b $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -77,8 +77,10 @@
     IBOutlet id o_puzzle_ckb;
     IBOutlet id o_puzzle_rows_lbl;
     IBOutlet id o_puzzle_rows_fld;
+    IBOutlet id o_puzzle_rows_stp;
     IBOutlet id o_puzzle_columns_lbl;
     IBOutlet id o_puzzle_columns_fld;
+    IBOutlet id o_puzzle_columns_stp;
     IBOutlet id o_puzzle_blackslot_ckb;
 
     /* color */
@@ -92,6 +94,7 @@
     IBOutlet id o_sepia_ckb;
     IBOutlet id o_sepia_lbl;
     IBOutlet id o_sepia_fld;
+    IBOutlet id o_sepia_stp;
     IBOutlet id o_noise_ckb;
     IBOutlet id o_gradient_ckb;
     IBOutlet id o_gradient_mode_lbl;
@@ -105,6 +108,7 @@
     IBOutlet id o_posterize_ckb;
     IBOutlet id o_posterize_lbl;
     IBOutlet id o_posterize_fld;
+    IBOutlet id o_posterize_stp;
     IBOutlet id o_blur_ckb;
     IBOutlet id o_blur_sld;
     IBOutlet id o_blur_lbl;

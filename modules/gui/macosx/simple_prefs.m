@@ -2,7 +2,7 @@
 * simple_prefs.m: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2012 VLC authors and VideoLAN
-* $Id: a3a1b75b6a3cbbfcfe4d6dbdf4dcd83b85d2eda4 $
+* $Id: 99e6eb7f731815dd0ccb4aa4511d881cd7e94a69 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -448,7 +448,7 @@ static inline char * __config_GetLabel( vlc_object_t *p_this, const char *psz_na
 - (void)setupButton: (NSButton *)object forBoolValue: (const char *)name
 {
     [object setState: config_GetInt( p_intf, name )];
-    [object setToolTip: _NS(config_GetLabel( p_intf, name ) ?: "")];
+    [object setToolTip: _NS(config_GetLabel( p_intf, name ))];
 }
 
 - (void)setupField:(NSTextField *)o_object forOption:(const char *)psz_option

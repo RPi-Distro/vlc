@@ -2,7 +2,7 @@
  * fspanel.m: MacOS X full screen panel
  *****************************************************************************
  * Copyright (C) 2006-2011 VLC authors and VideoLAN
- * $Id: ad7658851ca3ea0d96dbe142f66f03ab5794caf7 $
+ * $Id: 05fa310ba702c523571a59f06d6534d98b511fc2 $
  *
  * Authors: Jérôme Decoodt <djc at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -422,7 +422,7 @@
     NSRect s_rc = [self frame];
     addButton( o_prev, @"fs_skip_previous" , @"fs_skip_previous_highlight", 174, 15, prev );
     addButton( o_bwd, @"fs_rewind"        , @"fs_rewind_highlight"       , 211, 14, backward );
-    addButton( o_play, @"fs_play"          , @"fs_play_highlight"         , 267, 10, play );
+    addButton( o_play, @"fs_play"          , @"fs_play_highlight"         , 265, 10, play );
     addButton( o_fwd, @"fs_forward"       , @"fs_forward_highlight"      , 313, 14, forward );
     addButton( o_next, @"fs_skip_next"     , @"fs_skip_next_highlight"    , 365, 15, next );
     addButton( o_fullscreen, @"fs_exit_fullscreen", @"fs_exit_fullscreen_hightlight", 507, 13, toggleFullscreen );
@@ -435,9 +435,9 @@
     /* time slider */
     s_rc = [self frame];
     s_rc.origin.x = 15;
-    s_rc.origin.y = 55;
+    s_rc.origin.y = 45;
     s_rc.size.width = 518;
-    s_rc.size.height = 9;
+    s_rc.size.height = 13;
     o_fs_timeSlider = [[VLCFSTimeSlider alloc] initWithFrame: s_rc];
     [o_fs_timeSlider setMinValue:0];
     [o_fs_timeSlider setMaxValue:10000];
@@ -452,7 +452,7 @@
     s_rc.origin.x = 26;
     s_rc.origin.y = 20;
     s_rc.size.width = 95;
-    s_rc.size.height = 10;
+    s_rc.size.height = 12;
     o_fs_volumeSlider = [[VLCFSVolumeSlider alloc] initWithFrame: s_rc];
     [o_fs_volumeSlider setMinValue:0];
     [o_fs_volumeSlider setMaxValue:AOUT_VOLUME_MAX];
@@ -618,7 +618,7 @@
     addImage( o_vol_sld_img, 26, 23, NSCompositeSourceOver );
     addImage( o_vol_mute_img, 16, 18, NSCompositeSourceOver );
     addImage( o_vol_max_img, 124, 18, NSCompositeSourceOver );
-    addImage( o_time_sld_img, 15, 53, NSCompositeSourceOver );
+    addImage( o_time_sld_img, 15, 45, NSCompositeSourceOver );
 }
 
 @end
@@ -649,7 +649,7 @@
     [[NSGraphicsContext currentContext] restoreGraphicsState];
 
     NSRect knobRect = [[self cell] knobRectFlipped:NO];
-    knobRect.origin.y+=7.5;
+    knobRect.origin.y+=4;
     [[[NSColor blackColor] colorWithAlphaComponent:0.6] set];
     [self drawKnobInRect: knobRect];
 }
@@ -682,7 +682,7 @@
     [[NSGraphicsContext currentContext] restoreGraphicsState];
 
     NSRect knobRect = [[self cell] knobRectFlipped:NO];
-    knobRect.origin.y+=6;
+    knobRect.origin.y+=7.5;
     [[[NSColor blackColor] colorWithAlphaComponent:0.6] set];
     [self drawKnobInRect: knobRect];
 }

@@ -2105,13 +2105,30 @@ uninstall-am: uninstall-binSCRIPTS
 	extras/package/win32/languages/sorani.nsh \
 	extras/package/win32/languages/spanish.nsh \
 	extras/package/win32/languages/swedish.nsh \
-	extras/package/win32/languages/ukrainian.nsh
+	extras/package/win32/languages/ukrainian.nsh \
+	extras/package/win32/UAC/examples \
+	extras/package/win32/UAC/examples/UAC_AllowLUA.nsi \
+	extras/package/win32/UAC/examples/UAC_AdminOnly.nsi \
+	extras/package/win32/UAC/examples/UAC_Uninstaller.nsi \
+	extras/package/win32/UAC/examples/UAC.nsh \
+	extras/package/win32/UAC/examples/UAC_GetUserShellFolderPath.nsi \
+	extras/package/win32/UAC/examples/UAC_RealWorldFullyLoadedDualModeExample.nsi \
+	extras/package/win32/UAC/History.txt \
+	extras/package/win32/UAC/License.txt \
+	extras/package/win32/UAC/nsisutil.h \
+	extras/package/win32/UAC/resource.h \
+	extras/package/win32/UAC/resource.rc \
+	extras/package/win32/UAC/runas.cpp \
+	extras/package/win32/UAC/uac.cpp \
+	extras/package/win32/UAC/uac.h \
+	extras/package/win32/UAC/Readme.html \
+	extras/package/win32/UAC.nsh
 #	std-options
 
 ChangeLog: Makefile.am
 	rm -f -- "$@"
 	cd doc && $(MAKE) $(AM_MAKEFLAGS) changelogs
-	$(LN_S) -f doc/ChangeLog-2012 "$@"
+	$(LN_S) -f doc/ChangeLog-2013 "$@"
 
 # Shortcut for developers to rebuild the core (libvlc + vlc)
 # Don't use it if you don't know what it is about.
@@ -2296,10 +2313,6 @@ package-translations:
 
 @HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@build-npapi: stamp-npapi-build
 
-@HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@stamp-gecko-fetch:
-@HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@	svn export http://npapi-sdk.googlecode.com/svn/trunk/headers gecko -r HEAD
-@HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@	touch $@
-
 @HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@stamp-npapi-fetch:
 @HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@	rm -Rf npapi-vlc
 @HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@	git clone git://git.videolan.org/npapi-vlc.git npapi-vlc
@@ -2311,7 +2324,7 @@ package-translations:
 @HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@	$(SHELL) ./autogen.sh
 @HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@	touch $@
 
-@HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@stamp-npapi-configure: stamp-npapi-autogen stamp-gecko-fetch
+@HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@stamp-npapi-configure: stamp-npapi-autogen
 @HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@	cd npapi-vlc && \
 @HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@	$(SHELL) ./configure \
 @HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@		--prefix=/ \
@@ -2320,7 +2333,6 @@ package-translations:
 @HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@		CC="$(CC)" CFLAGS="$(CFLAGS)" \
 @HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@		CXX="$(CXX)" CXXFLAGS="$(CXXFLAGS)" \
 @HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@		LD="$(LD)" LDFLAGS="$(LDFLAGS)" \
-@HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@		MOZILLA_CFLAGS="-I$(abs_builddir)/gecko" \
 @HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@		SHELL="$(SHELL)" \
 @HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@		PKG_CONFIG_LIBDIR="../$(srcdir)/extras/contrib/lib/pkgconfig:../lib"
 @HAVE_WIN32_TRUE@@HAVE_WINCE_FALSE@	touch $@
@@ -2368,7 +2380,7 @@ package-win-common: package-win-install build-npapi
 
 @HAVE_WINCE_FALSE@	cp "$(top_builddir)/npapi-vlc/activex/axvlc.dll.manifest" "$(win32_destdir)/"
 @HAVE_WINCE_FALSE@	cp "$(top_builddir)/npapi-vlc/installed/lib/axvlc.dll" "$(win32_destdir)/"
-@HAVE_WINCE_FALSE@	cp "$(top_builddir)/npapi-vlc/npapi/npvlc.dll.manifest" "$(win32_destdir)/"
+@HAVE_WINCE_FALSE@	cp "$(top_builddir)/npapi-vlc/npapi/package/npvlc.dll.manifest" "$(win32_destdir)/"
 @HAVE_WINCE_FALSE@	cp "$(top_builddir)/npapi-vlc/installed/lib/npvlc.dll" "$(win32_destdir)/"
 
 # Compiler shared DLLs, when using compilers built with --enable-shared
@@ -2385,7 +2397,7 @@ package-win-common: package-win-install build-npapi
 @HAVE_WINCE_FALSE@	$(DLLTOOL) -D libvlccore.dll -l "$(win32_destdir)/sdk/lib/libvlccore.lib" -d "$(top_builddir)/src/.libs/libvlccore.dll.def" "$(prefix)/bin/libvlccore.dll"
 
 @HAVE_WINCE_FALSE@	mkdir -p "$(win32_destdir)/sdk/activex/"
-@HAVE_WINCE_FALSE@	cd $(top_builddir)/npapi-vlc && cp activex/README.TXT share/test.html $(win32_destdir)/sdk/activex/
+@HAVE_WINCE_FALSE@	cd $(top_builddir)/npapi-vlc && cp activex/README.TXT share/test/test.html $(win32_destdir)/sdk/activex/
 
 # Convert to DOS line endings
 	find $(win32_destdir) -type f \( -name "*xml" -or -name "*html" -or -name '*js' -or -name '*css' -or -name '*hosts' -or -iname '*txt' -or -name '*.cfg' -or -name '*.lua' \) -exec $(U2D) {} \;
@@ -2410,16 +2422,16 @@ package-win32-webplugin-common: package-win-strip
 	mkdir -p "$(win32_xpi_destdir)/"
 	cp -r $(win32_destdir)/plugins/ "$(win32_xpi_destdir)/"
 	find $(prefix) -maxdepth 4 -name "*$(LIBEXT)" -exec cp {} "$(win32_xpi_destdir)/" \;
-	cp $(top_builddir)/npapi-vlc/npapi/npvlc.dll.manifest "$(win32_xpi_destdir)/plugins/"
+	cp $(top_builddir)/npapi-vlc/npapi/package/npvlc.dll.manifest "$(win32_xpi_destdir)/plugins/"
 	cp "$(top_srcdir)/extras/package/win32/libvlc.dll.manifest" "$(win32_xpi_destdir)/plugins/"
 	rm -rf "$(win32_xpi_destdir)/plugins/gui/"
 
 package-win32-xpi: package-win32-webplugin-common
-	cp $(top_builddir)/npapi-vlc/npapi/install.rdf "$(win32_xpi_destdir)/"
+	cp $(top_builddir)/npapi-vlc/npapi/package/install.rdf "$(win32_xpi_destdir)/"
 	cd $(win32_xpi_destdir) && zip -r -9 "../vlc-$(VERSION).xpi" install.rdf plugins
 
 package-win32-crx: package-win32-webplugin-common
-	cp $(top_builddir)/npapi-vlc/npapi/manifest.json "$(win32_xpi_destdir)/"
+	cp $(top_builddir)/npapi-vlc/npapi/package/manifest.json "$(win32_xpi_destdir)/"
 	crxmake --pack-extension "$(win32_xpi_destdir)" \
 		--extension-output "$(win32_destdir)/vlc-$(VERSION).crx" --ignore-file install.rdf
 

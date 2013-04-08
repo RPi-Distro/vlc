@@ -2,7 +2,7 @@
  * open.m: Open dialogues for VLC's MacOS X port
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: bed249557062f55814a83bebb6c720427a1b2fd7 $
+ * $Id: 88b96146786525b0e67660000faab709213b249d $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -929,10 +929,14 @@ static VLCOpen *_o_sharedMainInstance = nil;
     NSOpenPanel *o_open_panel = [NSOpenPanel openPanel];
 
     [o_open_panel setAllowsMultipleSelection: NO];
-    [o_open_panel setCanChooseFiles: NO];
     [o_open_panel setCanChooseDirectories: YES];
     [o_open_panel setTitle: [sender title]];
     [o_open_panel setPrompt: _NS("Open")];
+
+    /* work-around for Mountain Lion, which treats folders called "BDMV" including an item named "INDEX.BDM"
+     * as a _FILE_. Don't ask, move on. There is nothing to see here */
+    [o_open_panel setCanChooseFiles: YES];
+    [o_open_panel setAllowedFileTypes:[NSArray arrayWithObjects:@"public.directory", nil]];
 
     if ([o_open_panel runModal] == NSOKButton)
     {

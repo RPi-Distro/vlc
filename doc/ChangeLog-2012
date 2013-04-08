@@ -1,3 +1,242 @@
+commit 33dfaa8a863507d584a41e276cfbde5d37c4d6a2
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Mon Dec 31 13:28:48 2012 +0100
+
+    update NEWS
+
+commit 823041974db256f9b70e1d882bee9f41b92ae8af
+Author: David Fuhrmann <david.fuhrmann@googlemail.com>
+Date:   Thu Dec 27 20:52:05 2012 +0100
+
+    puzzle: row and col values of 1 are not supported
+    (cherry picked from commit 05f9c0acdbf2832d507724d644d32aa06c47cf65)
+    
+    Conflicts:
+    	modules/video_filter/puzzle.c
+
+commit 303a06f0c04f9ca32c59c09e03c704157b24cfae
+Author: David Fuhrmann <david.fuhrmann@googlemail.com>
+Date:   Sun Dec 30 16:02:53 2012 +0100
+
+    macosx: show lua intfs in advanced preferences
+    
+    hack adapted from the qt interface.
+    
+    close #7876
+    (cherry picked from commit 3b4128149119c6b0f9575a6ec16f7d585ac7a388)
+    
+    Signed-off-by: David Fuhrmann <david.fuhrmann@googlemail.com>
+
+commit 120934306d80655cae490bc444df159a80ac72ba
+Author: Denis Charmet <typx@dinauz.org>
+Date:   Wed Dec 26 18:58:41 2012 +0100
+
+    Handle with resilience unknown ebml elements
+    
+    Fix #7884 and #7887 by implementing the first proposition.
+    (cherry picked from commit 6f8e8326ef82029d868d3c4729c9fd64e41a06f2)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 4f4a5d6e56477155c6b2ba1b836dba048994a6d8
+Author: David Fuhrmann <david.fuhrmann@googlemail.com>
+Date:   Thu Dec 27 21:12:52 2012 +0100
+
+    macosx: video effects: limit puzzle settings from 2 - 16
+    
+    (not cherry picked from 970ff89b610e5cf4e91a1941f353c9edf68a9169)
+
+commit 8dff4d3b5557e93c3adda163d0f863c89dc4cc9e
+Author: David Fuhrmann <david.fuhrmann@googlemail.com>
+Date:   Thu Dec 27 16:06:35 2012 +0100
+
+    macosx: video effects: fix text field / stepper syncronisation, fix enabled state of steppers
+    
+    (not cherry picked from not yet done commit)
+
+commit d4526f98e26b51056a0188729a8eda51d9be72b4
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Thu Dec 27 00:24:11 2012 +0100
+
+    macosx: adapt fspanel layout to update time slider graphics
+    (cherry picked from commit 59d6ab773e2fcb7b112cee692ce34996491ce4b2)
+    
+    Conflicts:
+    	NEWS
+    	modules/gui/macosx/fspanel.m
+
+commit a80779ade7e5c5aadfd753b6dc20ec82fbf83d0e
+Author: Damien Erambert <damien.erambert@me.com>
+Date:   Thu Dec 27 00:00:58 2012 +0100
+
+    macosx: re-worked fullscreen time slider graphics to achieve a bigger click target
+    
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+    (cherry picked from commit a62d893368a156f7b705f9c37d569e0e53e7fddb)
+
+commit 5b9bf21dcdd07d98c31979d47408200659849860
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Wed Dec 26 12:18:33 2012 +0100
+
+    macosx: simplify ea98fcfc
+    
+    thanks to David for the feedback
+    (cherry picked from commit 9322e135d79228221a0f52d4a745b43cb087be3f)
+    
+    Conflicts:
+    	modules/gui/macosx/MainWindow.m
+    	modules/gui/macosx/VideoView.m
+
+commit cab9d6cb04488f57382d12da7d2abaada20936fc
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Tue Dec 25 15:25:01 2012 +0100
+
+    macosx: fixed subtitle rendering resolution when using the native fullscreen mode (close #7946)
+    
+    bug was triggered only when using controls provided by the OS like NSWindow's fullscreen button
+    (cherry picked from commit ea98fcfc60555b5f06a7149b8142be0bfcfb2be8)
+    
+    Conflicts:
+    	modules/gui/macosx/VideoView.m
+    	modules/gui/macosx/intf.m
+
+commit a1f97b91767bb820cf9bf44aef700ba97809705a
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Dec 21 20:15:46 2012 +0200
+
+    audio format: fix FI32 -> S16N conversion
+    
+    (cherry picked from commit 84fab3ddd6f554d922df1c18ae4ab1266598d383)
+
+commit 75f7915e33e031ba51d4909a4db3589b82099a34
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Dec 21 02:01:53 2012 +0100
+
+    Fix DxVA2 decoding on HD2000/3000
+    
+    Close #6243
+    (cherry picked from commit 7f4f09b56e1943c866c243a3a981c3050566c923)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 14e8d8a7f5719fa45024d657e8038dd2c358eb53
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Dec 19 22:18:29 2012 +0200
+
+    format: fix typo, conversion from S32N to S16N
+    
+    (cherry picked from commit 1d5cbf26f50d5e5067a5baee2e045a4ca4577fc5)
+
+commit 9a3277e8226cf6661da16719dac8b84ba6255989
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Wed Dec 19 18:08:23 2012 +0100
+
+    npapi packaging: we don't need to fetch gecko headers anymore
+    (cherry picked from commit 4c1beff0eab8fc5b97cc75bf52e9679f771b2d6b)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 3308b699e30c5c45262802370f461399ffa3f76c
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Dec 18 15:34:36 2012 +0100
+
+    Contrib: update live555
+    
+    Close #7786
+    (cherry picked from commit 03f571782b24d486ab5c75cfb748dca736bc448e)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 52157cf528851c7766b72222eac7ada382133110
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Dec 14 21:30:41 2012 +0200
+
+    XCB/XVideo: fix flawed logic for adaptor selection
+    
+    (cherry picked from commit 45ab9b93592068dfb8380f6c99b062b1b7c34574)
+
+commit 0e00f5e468c0c2ddb810338b49f2efc17d61e30e
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Mon Dec 17 01:08:51 2012 +0100
+
+    Fix EXTRA_DIST list
+
+commit 2c6e48652a39be6b0fb031f560ecbe9d22dcc58d
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Sat Dec 15 11:58:27 2012 +0100
+
+    UAC: distribute source code (and doc+examples)
+    (cherry picked from commit ed810a5693cac334050c06fe453eae44fb6eb868)
+    
+    Conflicts:
+    	Makefile.am
+    
+    Signed-off-by: Rafaël Carré <funman@videolan.org>
+
+commit a252b5059c8ef3cb67b267f52f1ebd7703bd5429
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Sun Dec 16 11:06:42 2012 +0100
+
+    UAC: rename file to get rid of spaces
+
+commit b3500d99050f795447205ecc102d12c5e7367207
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Sun Dec 16 11:04:29 2012 +0100
+
+    contrib: we use libav nowadays.
+    
+    stay tuned.
+
+commit 304b08cc5f99e4e5f40257679a847d33ad99d0c9
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Tue Oct 30 11:21:02 2012 +0100
+
+    taglib: fix windows static build
+    (cherry picked from commit 2b004056c340aba439ea497449b823629d906264)
+    
+    Signed-off-by: Rafaël Carré <funman@videolan.org>
+
+commit c8ab67f32cd3b5f8ebdcd8c3bc5b4b54c873aa3f
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Dec 15 15:19:43 2012 +0100
+
+    Fix win32 plugins packaging
+    (cherry picked from commit 1a3286356e0677c984d23bf5ba93f99efc134746)
+    (cherry picked from commit 915f956bbfeda539a00fbc8dcd8d4a8bffbb0140)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 055b516e76389fa5fcc6d9e7fffa5e41acab6d5e
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Dec 15 16:47:16 2012 +0100
+
+    Merge NEWS from git
+
+commit d9bf7d0d39b66b3924996171ef62fc10b88e872f
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sat Dec 15 13:23:40 2012 +0100
+
+    add missing 2.0.5 news item
+
+commit 38721d041c19fe20ed3c5c276b2b5249c96c7e43
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Dec 15 12:37:19 2012 +0100
+
+    On the road to 2.0.6
+
+commit 64d151e0779388722c5cea179830e9e6c9c0408d
+Author: Kelly Anderson <kelly@silka.with-linux.com>
+Date:   Thu Jan 5 06:23:35 2012 -0700
+
+    Cleanup lua script escape sequences for lua 5.2.
+    
+    Converting \ to %, since 5.2 no longer accepts \.
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit a957114421fd2e875432e5fde0448ffc1ae60cfd)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
 commit 1661b7d6198b2201f938131e64d90ed8024f7f94
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Tue Dec 11 15:40:59 2012 +0100
@@ -18828,15 +19067,3 @@ Date:   Thu Dec 29 18:09:58 2011 -0500
     (cherry picked from commit 0accbd7955c0b4448137482362801cbed6ada750)
     
     Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
-
-commit 3d4f924e6d9c4e197161854ef10d12b8a1d50530
-Author: Pierre Ynard <linkfanel@yahoo.fr>
-Date:   Sun Jan 1 16:56:01 2012 +0100
-
-    NEWS: --http-host expects URL-style bracket-enclosed IPv6 addresses
-    
-    Unfortunately there is not much we can do until we ditch the legacy
-    <host>:<port> syntax for good
-    (cherry picked from commit f4ef5cd57b7086b2d2bd32f831ce63f8273c6d57)
-    
-    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>

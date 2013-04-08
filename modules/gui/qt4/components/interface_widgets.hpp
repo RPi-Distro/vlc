@@ -238,6 +238,7 @@ public slots:
         requestUpdate();
     }
     void showArtUpdate( const QString& );
+    void clear();
 
 private slots:
     void askForUpdate();

@@ -17,6 +17,9 @@ flac: flac-$(FLAC_VERSION).tar.gz .sum-flac
 	$(UNPACK)
 	$(APPLY) $(SRC)/flac/flac-win32.patch
 	$(APPLY) $(SRC)/flac/libFLAC-pc.patch
+ifdef HAVE_WIN32
+	$(APPLY) $(SRC)/flac/libFLAC-pc-win32.patch
+endif
 ifdef HAVE_MACOSX
 	cd $(UNPACK_DIR) && sed -e 's,-dynamiclib,-dynamiclib -arch $(ARCH),' -i.orig configure
 endif

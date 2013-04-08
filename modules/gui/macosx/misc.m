@@ -2,7 +2,7 @@
  * misc.m: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003-2011 VLC authors and VideoLAN
- * $Id: ef8ee5c550406701b1cf1c58d2478b66ba36efe8 $
+ * $Id: fc0b3bfc11915ad3cd48269cb5436d09ba61626a $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -546,10 +546,7 @@ void _drawFrameInRect(NSRect frameRect)
     [[NSGraphicsContext currentContext] restoreGraphicsState];
 
     NSRect knobRect = [[self cell] knobRectFlipped:NO];
-    if (b_dark)
-        knobRect.origin.y+=2;
-    else
-        knobRect.origin.y+=1;
+    knobRect.origin.y+=1;
     [self drawKnobInRect: knobRect];
 }
 

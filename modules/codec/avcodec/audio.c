@@ -2,7 +2,7 @@
  * audio.c: audio decoder using ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2003 the VideoLAN team
- * $Id: c782bb9ffaf83db123f48e471a6e2c65ac4d2cc1 $
+ * $Id: ecbbcad5324c36f50ba063cb6672f6e5f35f7e6c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -28,6 +28,8 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+
+#include <assert.h>
 
 #include <vlc_common.h>
 #include <vlc_aout.h>
@@ -65,12 +67,6 @@ struct decoder_sys_t
     audio_sample_format_t aout_format;
     date_t                end_date;
 
-    /*
-     *
-     */
-    uint8_t *p_samples;
-    int     i_samples;
-
     /* */
     int     i_reject_count;
 
@@ -80,6 +76,42 @@ struct decoder_sys_t
     int     i_previous_channels;
     int64_t i_previous_layout;
 };
+
+/**
+ * Interleaves audio samples within a block of samples.
+ * \param dst destination buffer for interleaved samples
+ * \param src source buffer with consecutive planes of samples
+ * \param samples number of samples (per channel/per plane)
+ * \param chans channels/planes count
+ * \param fourcc sample format (must be a linear sample format)
+ * \note The samples must be naturally aligned in memory.
+ * \warning Destination and source buffers MUST NOT overlap.
+ */
+static void Interleave( void *restrict dst, const void *restrict src,
+                      unsigned samples, unsigned chans, vlc_fourcc_t fourcc )
+{
+#define INTERLEAVE_TYPE(type) \
+do { \
+    type *d = dst; \
+    const type *s = src; \
+    for( size_t i = 0; i < chans; i++ ) { \
+        for( size_t j = 0, k = 0; j < samples; j++, k += chans ) \
+            d[k] = *(s++); \
+        d++; \
+    } \
+} while(0)
+
+    switch( fourcc )
+    {
+        case VLC_CODEC_U8:   INTERLEAVE_TYPE(uint8_t);  break;
+        case VLC_CODEC_S16N: INTERLEAVE_TYPE(uint16_t); break;
+        case VLC_CODEC_FL32: INTERLEAVE_TYPE(float);    break;
+        case VLC_CODEC_S32N: INTERLEAVE_TYPE(int32_t);  break;
+        case VLC_CODEC_FL64: INTERLEAVE_TYPE(double);   break;
+        default:             assert(0);
+    }
+#undef INTERLEAVE_TYPE
+}
 
 #define BLOCK_FLAG_PRIVATE_REALLOCATED (1 << BLOCK_FLAG_PRIVATE_SHIFT)
 
@@ -196,13 +228,11 @@ int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
         p_sys->i_output_max = 0;
         break;
     }
-    if( p_sys->i_output_max < AVCODEC_MAX_AUDIO_FRAME_SIZE )
-        p_sys->i_output_max = AVCODEC_MAX_AUDIO_FRAME_SIZE;
+    if( p_sys->i_output_max < 2 * AVCODEC_MAX_AUDIO_FRAME_SIZE )
+        p_sys->i_output_max = 2 * AVCODEC_MAX_AUDIO_FRAME_SIZE;
     msg_Dbg( p_dec, "Using %d bytes output buffer", p_sys->i_output_max );
     p_sys->p_output = av_malloc( p_sys->i_output_max );
 
-    p_sys->p_samples = NULL;
-    p_sys->i_samples = 0;
     p_sys->i_reject_count = 0;
     p_sys->b_extract = false;
     p_sys->i_previous_channels = 0;
@@ -223,51 +253,18 @@ int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
 }
 
 /*****************************************************************************
- * SplitBuffer: Needed because aout really doesn't like big audio chunk and
- * wma produces easily > 30000 samples...
- *****************************************************************************/
-static aout_buffer_t *SplitBuffer( decoder_t *p_dec )
-{
-    decoder_sys_t *p_sys = p_dec->p_sys;
-    int i_samples = __MIN( p_sys->i_samples, 4096 );
-    aout_buffer_t *p_buffer;
-
-    if( i_samples == 0 ) return NULL;
-
-    if( ( p_buffer = decoder_NewAudioBuffer( p_dec, i_samples ) ) == NULL )
-        return NULL;
-
-    p_buffer->i_pts = date_Get( &p_sys->end_date );
-    p_buffer->i_length = date_Increment( &p_sys->end_date, i_samples )
-                         - p_buffer->i_pts;
-
-    if( p_sys->b_extract )
-        aout_ChannelExtract( p_buffer->p_buffer, p_dec->fmt_out.audio.i_channels,
-                             p_sys->p_samples, p_sys->p_context->channels, i_samples,
-                             p_sys->pi_extraction, p_dec->fmt_out.audio.i_bitspersample );
-    else
-        memcpy( p_buffer->p_buffer, p_sys->p_samples, p_buffer->i_buffer );
-
-    p_sys->p_samples += i_samples * p_sys->p_context->channels * ( p_dec->fmt_out.audio.i_bitspersample / 8 );
-    p_sys->i_samples -= i_samples;
-
-    return p_buffer;
-}
-
-/*****************************************************************************
  * DecodeAudio: Called to decode one frame
  *****************************************************************************/
 aout_buffer_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     int i_used, i_output;
-    aout_buffer_t *p_buffer;
-    block_t *p_block;
     AVPacket pkt;
 
     if( !pp_block || !*pp_block ) return NULL;
 
-    p_block = *pp_block;
+    block_t *p_block = *pp_block;
+    pp_block = NULL;
 
     if( !p_sys->p_context->extradata_size && p_dec->fmt_in.i_extra &&
         p_sys->b_delayed_open)
@@ -276,48 +273,30 @@ aout_buffer_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
         if( ffmpeg_OpenCodec( p_dec ) )
             msg_Err( p_dec, "Cannot open decoder %s", p_sys->psz_namecodec );
     }
+
     if( p_sys->b_delayed_open )
-    {
-        block_Release( p_block );
-        return NULL;
-    }
+        goto end;
 
     if( p_block->i_flags & (BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
     {
-        block_Release( p_block );
         avcodec_flush_buffers( p_sys->p_context );
-        p_sys->i_samples = 0;
         date_Set( &p_sys->end_date, 0 );
 
         if( p_sys->i_codec_id == CODEC_ID_MP2 || p_sys->i_codec_id == CODEC_ID_MP3 )
             p_sys->i_reject_count = 3;
-        return NULL;
-    }
 
-    if( p_sys->i_samples > 0 )
-    {
-        /* More data */
-        p_buffer = SplitBuffer( p_dec );
-        if( !p_buffer ) block_Release( p_block );
-        return p_buffer;
+        goto end;
     }
 
     if( !date_Get( &p_sys->end_date ) && !p_block->i_pts )
-    {
-        /* We've just started the stream, wait for the first PTS. */
-        block_Release( p_block );
-        return NULL;
-    }
+        goto end;
 
     if( p_block->i_buffer <= 0 )
-    {
-        block_Release( p_block );
-        return NULL;
-    }
+        goto end;
 
     if( (p_block->i_flags & BLOCK_FLAG_PRIVATE_REALLOCATED) == 0 )
     {
-        *pp_block = p_block = block_Realloc( p_block, 0, p_block->i_buffer + FF_INPUT_BUFFER_PADDING_SIZE );
+        p_block = block_Realloc( p_block, 0, p_block->i_buffer + FF_INPUT_BUFFER_PADDING_SIZE );
         if( !p_block )
             return NULL;
         p_block->i_buffer -= FF_INPUT_BUFFER_PADDING_SIZE;
@@ -348,8 +327,7 @@ aout_buffer_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
                 msg_Warn( p_dec, "cannot decode one frame (%zu bytes)",
                           p_block->i_buffer );
 
-            block_Release( p_block );
-            return NULL;
+            goto end;
         }
         else if( (size_t)i_used > p_block->i_buffer )
         {
@@ -366,29 +344,21 @@ aout_buffer_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
     {
         msg_Warn( p_dec, "invalid audio properties channels count %d, sample rate %d",
                   p_sys->p_context->channels, p_sys->p_context->sample_rate );
-        block_Release( p_block );
-        return NULL;
+        goto end;
     }
 
     if( p_dec->fmt_out.audio.i_rate != (unsigned int)p_sys->p_context->sample_rate )
-    {
         date_Init( &p_sys->end_date, p_sys->p_context->sample_rate, 1 );
-        date_Set( &p_sys->end_date, p_block->i_pts );
-    }
-
-    /* **** Set audio output parameters **** */
-    SetupOutputFormat( p_dec, true );
 
     if( p_block->i_pts != 0 &&
         p_block->i_pts != date_Get( &p_sys->end_date ) )
     {
         date_Set( &p_sys->end_date, p_block->i_pts );
     }
-    p_block->i_pts = 0;
 
-    /* **** Now we can output these samples **** */
-    p_sys->i_samples = i_output / (p_dec->fmt_out.audio.i_bitspersample / 8) / p_sys->p_context->channels;
-    p_sys->p_samples = p_sys->p_output;
+    //block_Release( p_block );
+
+    SetupOutputFormat( p_dec, true );
 
     /* Silent unwanted samples */
     if( p_sys->i_reject_count > 0 )
@@ -397,9 +367,34 @@ aout_buffer_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
         p_sys->i_reject_count--;
     }
 
-    p_buffer = SplitBuffer( p_dec );
-    if( !p_buffer ) block_Release( p_block );
+    int i_samples = i_output / (p_dec->fmt_out.audio.i_bitspersample / 8) / p_sys->p_context->channels;
+    if (i_samples == 0)
+        return NULL;
+
+    block_t *p_buffer = decoder_NewAudioBuffer( p_dec, i_samples );
+    if (!p_buffer)
+        return NULL;
+
+    p_buffer->i_pts = date_Get( &p_sys->end_date );
+    p_buffer->i_length = date_Increment( &p_sys->end_date, i_samples ) - p_buffer->i_pts;
+
+    int sample_planar = av_sample_fmt_is_planar( p_sys->p_context->sample_fmt );
+    if( sample_planar )
+        Interleave( p_buffer->p_buffer, p_sys->p_output, i_samples, p_sys->p_context->channels, p_dec->fmt_out.audio.i_format );
+
+    if( p_sys->b_extract == !!sample_planar )
+        memcpy( p_sys->p_output, p_buffer->p_buffer, p_buffer->i_buffer );
+
+    if (p_sys->b_extract)
+        aout_ChannelExtract( p_buffer->p_buffer, p_dec->fmt_out.audio.i_channels,
+                             p_sys->p_output, p_sys->p_context->channels, i_samples,
+                             p_sys->pi_extraction, p_dec->fmt_out.audio.i_bitspersample );
+
     return p_buffer;
+
+end:
+    block_Release(p_block);
+    return NULL;
 }
 
 /*****************************************************************************
@@ -416,33 +411,25 @@ void EndAudioDec( decoder_t *p_dec )
  *
  *****************************************************************************/
 
-void GetVlcAudioFormat( vlc_fourcc_t *pi_codec, unsigned *pi_bits, int i_sample_fmt )
+vlc_fourcc_t GetVlcAudioFormat( int fmt )
 {
-    switch( i_sample_fmt )
-    {
-    case AV_SAMPLE_FMT_U8:
-        *pi_codec = VLC_CODEC_U8;
-        *pi_bits = 8;
-        break;
-    case AV_SAMPLE_FMT_S32:
-        *pi_codec = VLC_CODEC_S32N;
-        *pi_bits = 32;
-        break;
-    case AV_SAMPLE_FMT_FLT:
-        *pi_codec = VLC_CODEC_FL32;
-        *pi_bits = 32;
-        break;
-    case AV_SAMPLE_FMT_DBL:
-        *pi_codec = VLC_CODEC_FL64;
-        *pi_bits = 64;
-        break;
-
-    case AV_SAMPLE_FMT_S16:
-    default:
-        *pi_codec = VLC_CODEC_S16N;
-        *pi_bits = 16;
-        break;
-    }
+    static const vlc_fourcc_t fcc[] = {
+        [AV_SAMPLE_FMT_U8]    = VLC_CODEC_U8,
+        [AV_SAMPLE_FMT_S16]   = VLC_CODEC_S16N,
+        [AV_SAMPLE_FMT_S32]   = VLC_CODEC_S32N,
+        [AV_SAMPLE_FMT_FLT]   = VLC_CODEC_FL32,
+        [AV_SAMPLE_FMT_DBL]   = VLC_CODEC_FL64,
+#ifdef HAVE_AVUTIL_PLANAR
+        [AV_SAMPLE_FMT_U8P]   = VLC_CODEC_U8,
+        [AV_SAMPLE_FMT_S16P]  = VLC_CODEC_S16N,
+        [AV_SAMPLE_FMT_S32P]  = VLC_CODEC_S32N,
+        [AV_SAMPLE_FMT_FLTP]  = VLC_CODEC_FL32,
+        [AV_SAMPLE_FMT_DBLP]  = VLC_CODEC_FL64,
+#endif
+    };
+    if( (sizeof(fcc) / sizeof(fcc[0])) > (unsigned)fmt )
+        return fcc[fmt];
+    return VLC_CODEC_S16N;
 }
 
 static const uint64_t pi_channels_map[][2] =
@@ -473,9 +460,8 @@ static void SetupOutputFormat( decoder_t *p_dec, bool b_trust )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    GetVlcAudioFormat( &p_dec->fmt_out.i_codec,
-                       &p_dec->fmt_out.audio.i_bitspersample,
-                       p_sys->p_context->sample_fmt );
+    p_dec->fmt_out.i_codec = GetVlcAudioFormat( p_sys->p_context->sample_fmt );
+    p_dec->fmt_out.audio.i_format = p_dec->fmt_out.i_codec;
     p_dec->fmt_out.audio.i_rate = p_sys->p_context->sample_rate;
 
     /* */
@@ -527,6 +513,6 @@ static void SetupOutputFormat( decoder_t *p_dec, bool b_trust )
 
     p_dec->fmt_out.audio.i_physical_channels =
     p_dec->fmt_out.audio.i_original_channels = i_layout_dst;
-    p_dec->fmt_out.audio.i_channels = i_channels_dst;
+    aout_FormatPrepare( &p_dec->fmt_out.audio );
 }
 
