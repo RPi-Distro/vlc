@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 601e89b98afcfc6cda1d641bbe277ea65054ddaf $
+ * $Id: 85edc8a476cba255ccdc2e1b6089a63c6b63906a $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -1366,8 +1366,6 @@ unsigned int CocoaKeyToVLC( unichar i_key )
                 case NSBackspaceCharacter:
                 case NSUpArrowFunctionKey:
                 case NSDownArrowFunctionKey:
-                case NSRightArrowFunctionKey:
-                case NSLeftArrowFunctionKey:
                 case NSEnterCharacter:
                 case NSCarriageReturnCharacter:
                     return NO;
@@ -1709,6 +1707,9 @@ unsigned int CocoaKeyToVLC( unichar i_key )
 
 - (void)setWindowLevel:(NSNumber*)state
 {
+    if ([[VLCMainWindow sharedInstance] isFullscreen])
+        return;
+
     if ([state unsignedIntValue] & VOUT_WINDOW_STATE_ABOVE)
         [[[[VLCMainWindow sharedInstance] videoView] window] setLevel: NSStatusWindowLevel];
     else

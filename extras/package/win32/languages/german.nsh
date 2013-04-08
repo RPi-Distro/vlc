@@ -24,29 +24,29 @@ StrCpy $Desc_Section04 \
 StrCpy $Desc_Section05 \
     "DVD und CD Wiedergabe Registrierung"
 StrCpy $Desc_Section06 \
-    "Setzt den VLC Media-Player als Standard-Anwendung für die ausgewählten Dateitypen"
+    "Setzt VLC media player als Standard-Anwendung für die ausgewählten Dateitypen"
 StrCpy $Desc_Section07 \
     "Fügt Kontextmenü-Einträge hinzu ('Wiedergabe mit VLC' und 'Zur VLC-Wiedergabeliste hinzufügen')"
 StrCpy $Desc_Section08 \
     "Löscht die VLC media player Einstellungen und übergebliebenen Cache-Dateien der alten Installation"
 
 StrCpy $Message_AlreadyInstalled  \
-"Der VLC Media Player ist schon installiert. $\nWollen Sie vor \
-dem Installieren des $(^Name) die alte Version entfernen?"
+"Der VLC media player ist schon installiert. $\nMöchten Sie vor \
+dem Installieren des $(^Name) die vorherige Version entfernen?"
 
 StrCpy $Name_Section91 "Deinstallieren"
 StrCpy $Name_Section92 "Einstellungen und Cache löschen"
 
 StrCpy $Desc_Section91 \
-"VLC Media Player und alle Komponenten deinstallieren"
+"VLC media player und alle Komponenten deinstallieren"
 StrCpy $Desc_Section92 \
-"VLC Media Player Einstellungen und Cache-Dateien löschen"
+"VLC media player Einstellungen und Cache-Dateien löschen"
 
 StrCpy $ShellAssociation_Play "Wiedergabe"
-StrCpy $ContextMenuEntry_PlayWith "Mit VLC Media Player wiedergeben"
-StrCpy $ContextMenuEntry_AddToPlaylist "Zur VLC Media Player Wiedergabeliste hinzufügen"
+StrCpy $ContextMenuEntry_PlayWith "Mit VLC media player wiedergeben"
+StrCpy $ContextMenuEntry_AddToPlaylist "Zur VLC media player Wiedergabeliste hinzufügen"
 
-StrCpy $Link_VisitWebsite "Besuchen Sie die VideoLAN VLC Media Player Webseite"
+StrCpy $Link_VisitWebsite "Besuchen Sie die VideoLAN VLC media player Webseite"
 
 StrCpy $Name_InstTypeRecommended "Empfohlen"
 StrCpy $Name_InstTypeMinimum "Minimal"

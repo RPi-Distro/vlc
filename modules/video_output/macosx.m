@@ -2,7 +2,7 @@
  * macosx.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2012 the VideoLAN team
- * $Id: c25112a734bf8f1dc2da36ee4ae79e391b0be607 $
+ * $Id: 336541adda5d09cba19f10e83ee07fa992c49ab5 $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -708,10 +708,13 @@ static void OpenglSwap (vlc_gl_t *gl)
 
 - (void)mouseDown:(NSEvent *)o_event
 {
-    if ([o_event type] == NSLeftMouseDown && !([o_event modifierFlags] &  NSControlKeyMask))
-    {
-        if ([o_event clickCount] <= 1)
-            vout_display_SendEventMousePressed (vd, MOUSE_BUTTON_LEFT);
+    @synchronized (self) {
+        if (vd) {
+            if ([o_event type] == NSLeftMouseDown && !([o_event modifierFlags] &  NSControlKeyMask)) {
+                if ([o_event clickCount] <= 1)
+                    vout_display_SendEventMousePressed (vd, MOUSE_BUTTON_LEFT);
+            }
+        }
     }
 
     [super mouseDown:o_event];
@@ -719,22 +722,32 @@ static void OpenglSwap (vlc_gl_t *gl)
 
 - (void)otherMouseDown:(NSEvent *)o_event
 {
-    vout_display_SendEventMousePressed (vd, MOUSE_BUTTON_CENTER);
+    @synchronized (self) {
+        if (vd)
+            vout_display_SendEventMousePressed (vd, MOUSE_BUTTON_CENTER);
+    }
 
     [super otherMouseDown: o_event];
 }
 
 - (void)mouseUp:(NSEvent *)o_event
 {
-    if ([o_event type] == NSLeftMouseUp)
-        vout_display_SendEventMouseReleased (vd, MOUSE_BUTTON_LEFT);
+    @synchronized (self) {
+        if (vd) {
+            if ([o_event type] == NSLeftMouseUp)
+                vout_display_SendEventMouseReleased (vd, MOUSE_BUTTON_LEFT);
+        }
+    }
 
     [super mouseUp: o_event];
 }
 
 - (void)otherMouseUp:(NSEvent *)o_event
 {
-    vout_display_SendEventMouseReleased (vd, MOUSE_BUTTON_CENTER);
+    @synchronized (self) {
+        if (vd)
+            vout_display_SendEventMouseReleased (vd, MOUSE_BUTTON_CENTER);
+    }
 
     [super otherMouseUp: o_event];
 }

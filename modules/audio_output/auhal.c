@@ -2,7 +2,7 @@
  * auhal.c: AUHAL and Coreaudio output plugin
  *****************************************************************************
  * Copyright (C) 2005, 2011 the VideoLAN team
- * $Id: 2a73ebfe3ed21cf22e2eaf67681fcea6e05217e8 $
+ * $Id: 4ef7a94be692785dfc663e20372777cd25469ebc $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -1005,21 +1005,30 @@ static void Probe( audio_output_t * p_aout )
     text.psz_string = (char*)_("Audio Device");
     var_Change( p_aout, "audio-device", VLC_VAR_SETTEXT, &text, NULL );
 
-    AudioObjectPropertyAddress deviceNameAddress = { kAudioDevicePropertyDeviceName, kAudioDevicePropertyScopeOutput, kAudioObjectPropertyElementMaster };
+    AudioObjectPropertyAddress deviceNameAddress = { kAudioObjectPropertyName, kAudioObjectPropertyScopeGlobal, kAudioObjectPropertyElementMaster };
 
     for( unsigned int i = 0; i < p_sys->i_devices; i++ )
     {
+        CFStringRef device_name_ref;
         char *psz_name;
-        i_param_size = 0;
+        CFIndex length;
+
 
         /* Retrieve the length of the device name */
         err = AudioObjectGetPropertyDataSize( p_devices[i], &deviceNameAddress, 0, NULL, &i_param_size );
-        if( err ) goto error;
+        if (err != noErr) {
+            goto error;
+        }
 
         /* Retrieve the name of the device */
-        psz_name = (char *)malloc( i_param_size );
-        err = AudioObjectGetPropertyData( p_devices[i], &deviceNameAddress, 0, NULL, &i_param_size, psz_name );
-        if( err ) goto error;
+        err = AudioObjectGetPropertyData( p_devices[i], &deviceNameAddress, 0, NULL, &i_param_size, &device_name_ref );
+        if (err != noErr) {
+            goto error;
+        }
+        length = CFStringGetLength(device_name_ref);
+        length++;
+        psz_name = (char *)malloc(length);
+        CFStringGetCString(device_name_ref, psz_name, length, kCFStringEncodingUTF8);
 
         msg_Dbg( p_aout, "DevID: %u DevName: %s", (unsigned)p_devices[i], psz_name );
 
@@ -1060,7 +1069,8 @@ static void Probe( audio_output_t * p_aout )
             }
         }
 
-        free( psz_name);
+        CFRelease(device_name_ref);
+        free(psz_name);
     }
 
     /* If a device is already "preselected", then use this device */

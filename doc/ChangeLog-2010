@@ -38586,30 +38586,3 @@ Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Fri Jan 1 23:55:10 2010 +0100
 
     Win32: Be sure to strip axvlc.dll and npvlc.dll
-
-commit f40ec470c9a04e91c9102c764db5b92828ad1849
-Author: Pierre d'Herbemont <pdherbemont@free.fr>
-Date:   Fri Jan 1 18:42:30 2010 +0100
-
-    macosx/framework: contrib are fat now.
-
-commit 5a20b90e8c6920a79d7d7b7ca56fb011b97dfc73
-Author: Pierre d'Herbemont <pdherbemont@free.fr>
-Date:   Thu Dec 31 20:36:00 2009 +0100
-
-    macosx/framework: Support multiple architectures.
-    
-    Warning, building fat are not supported by automake if dependency-tracking is enabled.
-    That's why this fat build is disabled by default.
-
-commit 65ed93af7b623248bae389f656698248fe52bf8f
-Author: Pierre d'Herbemont <pdherbemont@free.fr>
-Date:   Thu Dec 31 19:33:06 2009 +0100
-
-    configure: Detect fat contribs.
-
-commit 2e024847e1bbfad3ddf4aa9fcb01c90c0e41c854
-Author: Pierre d'Herbemont <pdherbemont@free.fr>
-Date:   Thu Dec 31 19:30:49 2009 +0100
-
-    contrib: Build fat binary using binary contrib on Mac OS X.

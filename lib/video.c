@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005-2010 VLC authors and VideoLAN
  *
- * $Id: c5035b49bbb61e570c57c5fa26aa83156aa9f0a6 $
+ * $Id: 121d80cd517d2ccecf6c05e4f3331f38dea0c984 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Filippo Carone <littlejohn@videolan.org>
@@ -277,11 +277,6 @@ void libvlc_video_set_aspect_ratio( libvlc_media_player_t *p_mi,
 int libvlc_video_get_spu( libvlc_media_player_t *p_mi )
 {
     input_thread_t *p_input_thread = libvlc_get_input_thread( p_mi );
-    vlc_value_t val_list;
-    vlc_value_t val;
-    int i_spu = -1;
-    int i_ret = -1;
-    int i;
 
     if( !p_input_thread )
     {
@@ -289,24 +284,7 @@ int libvlc_video_get_spu( libvlc_media_player_t *p_mi )
         return -1;
     }
 
-    i_ret = var_Get( p_input_thread, "spu-es", &val );
-    if( i_ret < 0 )
-    {
-        vlc_object_release( p_input_thread );
-        libvlc_printerr( "Subtitle information not found" );
-        return -1;
-    }
-
-    var_Change( p_input_thread, "spu-es", VLC_VAR_GETCHOICES, &val_list, NULL );
-    for( i = 0; i < val_list.p_list->i_count; i++ )
-    {
-        if( val.i_int == val_list.p_list->p_values[i].i_int )
-        {
-            i_spu = i;
-            break;
-        }
-    }
-    var_FreeList( &val_list, NULL );
+    int i_spu = var_GetInteger( p_input_thread, "spu-es" );
     vlc_object_release( p_input_thread );
     return i_spu;
 }
@@ -330,26 +308,27 @@ libvlc_track_description_t *
     return libvlc_get_track_description( p_mi, "spu-es" );
 }
 
-int libvlc_video_set_spu( libvlc_media_player_t *p_mi, unsigned i_spu )
+int libvlc_video_set_spu( libvlc_media_player_t *p_mi, int i_spu )
 {
     input_thread_t *p_input_thread = libvlc_get_input_thread( p_mi );
     vlc_value_t list;
-    int i_ret = 0;
+    int i_ret = -1;
 
     if( !p_input_thread )
         return -1;
 
     var_Change (p_input_thread, "spu-es", VLC_VAR_GETCHOICES, &list, NULL);
-
-    if (i_spu > (unsigned)list.p_list->i_count)
+    for (int i = 0; i < list.p_list->i_count; i++)
     {
-        libvlc_printerr( "Subtitle number out of range (%u/%u)",
-                         i_spu, list.p_list->i_count );
-        i_ret = -1;
-        goto end;
+        if( i_spu == list.p_list->p_values[i].i_int )
+        {
+            if( var_SetInteger( p_input_thread, "spu-es", i_spu ) < 0 )
+                break;
+            i_ret = 0;
+            goto end;
+        }
     }
-    var_SetInteger (p_input_thread, "spu-es",
-                    list.p_list->p_values[i_spu].i_int);
+    libvlc_printerr( "Track identifier not found" );
 end:
     vlc_object_release (p_input_thread);
     var_FreeList (&list, NULL);

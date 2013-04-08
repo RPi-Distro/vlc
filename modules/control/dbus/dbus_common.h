@@ -4,7 +4,7 @@
  * Copyright © 2006-2008 Rafaël Carré
  * Copyright © 2007-2010 Mirsal Ennaime
  * Copyright © 2009-2010 The VideoLAN team
- * $Id: dd1f0119137466c1d0aac99e612b6a5ecadaf313 $
+ * $Id: c494af04eca61cb2f4f0c01312caf74ec42b8322 $
  *
  * Authors:    Mirsal Ennaime <mirsal dot ennaime at gmailcom>
  *             Rafaël Carré <funman at videolanorg>
@@ -101,8 +101,9 @@ struct intf_sys_t
     int             p_pipe_fds[2];
     vlc_mutex_t     lock;
     input_thread_t *p_input;
-    mtime_t         i_last_input_pos; /* Only access it from the input thread */
-    mtime_t         i_last_input_pos_event; /* idem */
+
+    mtime_t         i_last_input_pos; /* Only access from input thread */
+    mtime_t         i_last_input_pos_event; /* Same as above */
 };
 
 enum

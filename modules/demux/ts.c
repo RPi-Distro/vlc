@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: 5628e359af8bdf2525beab63e834fac5d0d56eb0 $
+ * $Id: 82bdba4b94c25086d7402b0d223688a1b2672aac $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -4454,16 +4454,17 @@ static void PATCallBack( demux_t *p_demux, dvbpsi_pat_t *p_pat )
         /* Delete PMT pid */
         for( int i = 0; i < i_pmt_rm; i++ )
         {
-            SetPIDFilter( p_demux, pmt_rm[i]->i_pid, false );
+            ts_pid_t *pid = pmt_rm[i];
+            SetPIDFilter( p_demux, pid->i_pid, false );
 
-            for( int i_prg = 0; i_prg < pmt_rm[i]->psi->i_prg; i_prg++ )
+            for( int i_prg = 0; i_prg < pid->psi->i_prg; i_prg++ )
             {
-                const int i_number = pmt_rm[i]->psi->prg[i_prg]->i_number;
+                const int i_number = pid->psi->prg[i_prg]->i_number;
                 es_out_Control( p_demux->out, ES_OUT_DEL_GROUP, i_number );
             }
 
-            PIDClean( p_demux, &p_sys->pid[pmt_rm[i]->i_pid] );
-            TAB_REMOVE( p_sys->i_pmt, p_sys->pmt, pmt_rm[i] );
+            PIDClean( p_demux, &p_sys->pid[pid->i_pid] );
+            TAB_REMOVE( p_sys->i_pmt, p_sys->pmt, pid );
         }
 
         free( pmt_rm );

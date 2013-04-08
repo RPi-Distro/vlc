@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 2339a74073dedbaa0ef041a02da5229bb040f9d9 $
+ * $Id: 3fa595658d332eeb862088a02296261504a8463e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -554,6 +554,11 @@ void CoverArtLabel::showArtUpdate( const QString& url )
 void CoverArtLabel::askForUpdate()
 {
     THEMIM->getIM()->requestArtUpdate();
+}
+
+void CoverArtLabel::clear()
+{
+    showArtUpdate( "" );
 }
 
 TimeLabel::TimeLabel( intf_thread_t *_p_intf, TimeLabel::Display _displayType  )

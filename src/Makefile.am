@@ -59,6 +59,7 @@ pluginsinclude_HEADERS = \
 	../include/vlc_inhibit.h \
 	../include/vlc_input.h \
 	../include/vlc_input_item.h \
+	../include/vlc_keys.h \
 	../include/vlc_main.h \
 	../include/vlc_md5.h \
 	../include/vlc_messages.h \
@@ -107,7 +108,6 @@ noinst_HEADERS = \
 	../include/vlc_interface.h \
 	../include/vlc_intf_strings.h \
 	../include/vlc_iso_lang.h \
-	../include/vlc_keys.h \
 	../include/vlc_memory.h \
 	../include/vlc_osd.h \
 	../include/vlc_pgpkey.h \
@@ -179,7 +179,7 @@ libvlccore_la_LDFLAGS = \
 	$(LDFLAGS_libvlccore) \
 	-no-undefined \
 	-export-symbols $(srcdir)/libvlccore.sym \
-	-version-info 6:0:1
+	-version-info 6:1:1
 libvlccore_la_LIBADD = $(LIBS_libvlccore) \
 	$(LTLIBINTL) $(LTLIBICONV) \
 	$(SOCKET_LIBS) $(LIBDL) $(LIBM) \

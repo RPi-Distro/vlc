@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 44e26ffc50d6834a2cf5bc10673fdeda5a5f2d84 $
+ * $Id: 8a1dcf6a0038e2d2ce9f2abea2d651fd867a690b $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -393,7 +393,7 @@ static block_t *Fi32toS16(filter_t *filter, block_t *b)
         else if (v <= -FIXED32_ONE)
             *dst++ = INT16_MIN;
         else
-            *dst++ = v >> (32 - FIXED32_FRACBITS);
+            *dst++ = v >> (FIXED32_FRACBITS - 15);
     }
     b->i_buffer /= 2;
     return b;
@@ -527,7 +527,7 @@ static const struct {
     { VLC_CODEC_S32N, VLC_CODEC_FL32,   S32toFl32 },
 
     { VLC_CODEC_S24N, VLC_CODEC_S16N,   S24toS16 },
-    { VLC_CODEC_S32N, VLC_CODEC_S32N,   S32toS16 },
+    { VLC_CODEC_S32N, VLC_CODEC_S16N,   S32toS16 },
     { VLC_CODEC_FL32, VLC_CODEC_S16N,   Fl32toS16 },
 
     { VLC_CODEC_S16N, VLC_CODEC_S8,     S16toS8 },

@@ -2,7 +2,7 @@
  * libvlc_audio.c: New libvlc audio control API
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: 597de213909dd7a5f81a0db57e3f8e21b72b7c18 $
+ * $Id: 414580f5f15d0f21dbe17fb1697d86baf3046811 $
  *
  * Authors: Filippo Carone <filippo@carone.org>
  *          Jean-Paul Saman <jpsaman _at_ m2x _dot_ nl>
@@ -399,7 +399,7 @@ int libvlc_audio_set_track( libvlc_media_player_t *p_mi, int i_track )
 {
     input_thread_t *p_input_thread = libvlc_get_input_thread( p_mi );
     vlc_value_t val_list;
-    int i_ret;
+    int i_ret = -1;
 
     if( !p_input_thread )
         return -1;

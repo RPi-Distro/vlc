@@ -38,6 +38,8 @@ the type of VLC Lua script your are in.
 
 Access lists
 ------------
+/!\ ACL functions are deprecated and will be removed in future versions.
+
 local a = vlc.acl(true) -> new ACL with default set to allow
 a:check("10.0.0.1") -> 0 == allow, 1 == deny, -1 == error
 a("10.0.0.1") -> same as a:check("10.0.0.1")
@@ -109,6 +111,8 @@ local h = vlc.httpd( "localhost", 8080 )
 h:handler( url, user, password, acl, callback, data ) -- add a handler for given url. If user and password are non nil, they will be used to authenticate connecting clients. If acl is non nil, it will be used to restrict access. callback will be called to handle connections. The callback function takes 7 arguments: data, url, request, type, in, addr, host. It returns the reply as a string.
 h:file( url, mime, user, password, acl, callback, data ) -- add a file for given url with given mime type. If user and password are non nil, they will be used to authenticate connecting clients. If acl is non nil, it will be used to restrict access. callback will be called to handle connections. The callback function takes 2 arguments: data and request. It returns the reply as a string.
 h:redirect( url_dst, url_src ): Redirect all connections from url_src to url_dst.
+/!\ The "acl" parameter will be removed in future versions.
+
 
 Input
 -----
@@ -167,14 +171,16 @@ misc.action_id( name ): get the id of the given action.
 misc.mdate(): Get the current date (in microseconds).
 misc.mwait(): Wait for the given date (in microseconds).
 
-misc.lock_and_wait(): Lock our object thread and wait for a wake up signal.
-
 misc.should_die(): Returns true if the interface should quit.
 misc.quit(): Quit VLC.
+
+misc.lock_and_wait(): Lock our object thread and wait for a wake up signal.
+/!\ This function is deprecated and will be removed in future versions.
 
 misc.timer(callback): Create a timer which call the callback function
   :schedule(relative, value, interval): schedule the timer
   :getoverrun(): number of time the timer got overrun (normally 0)
+/!\ This function is deprecated and will be removed in future versions.
 
 Net
 ---
@@ -347,6 +353,7 @@ sd.remove_item( item ): remove the item.
 n = vlc.sd.add_node( {title="Node"} )
 n:add_subitem( ... ): Same as sd.add_item(), but as a subitem of n.
 n:add_node( ... ): Same as sd.add_node(), but as a subnode of n.
+/!\ This function will be renamed to add_subnode() in future versions.
 
 d = vlc.sd.add_item( ... ) Get an item object to perform following set operations on it:
 d:set_name(): the item's name in playlist
@@ -410,9 +417,11 @@ var.create( object, name, value ): Create and set the object's variable "name"
 var.add_callback( object, name, function, data ): Add a callback to the
   object's "name" variable. Callback functions take 4 arguments: the
   variable name, the old value, the new value and data.
+/!\ This function is deprecated and will be removed in future versions.
 var.del_callback( object, name, function, data ): Delete a callback to
   the object's "name" variable. "function" and "data" must be the same as
   when add_callback() was called.
+/!\ This function is deprecated and will be removed in future versions.
 var.trigger_callback( object, name ): Trigger the callbacks associated with the
   object's "name" variable.
 

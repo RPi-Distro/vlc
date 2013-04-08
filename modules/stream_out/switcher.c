@@ -2,7 +2,7 @@
  * switcher.c: MPEG2 video switcher module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 18301329e33fe413b3d8f4da18966d6205581274 $
+ * $Id: 4a33792c68982d79785afeff719bf78ca7ec511e $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -50,6 +50,8 @@
 #else
 #   include <avcodec.h>
 #endif
+
+#include <libavutil/mem.h>
 
 #include "../codec/avcodec/avcodec.h"
 

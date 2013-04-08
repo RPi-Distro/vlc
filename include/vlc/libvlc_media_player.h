@@ -2,7 +2,7 @@
  * libvlc_media_player.h:  libvlc_media_player external API
  *****************************************************************************
  * Copyright (C) 1998-2010 VLC authors and VideoLAN
- * $Id: ef7035f15de847f07d0a14ad837e502a7d860e05 $
+ * $Id: c36381f813092895244d1615ab8ba1f8b632b520 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -1025,10 +1025,10 @@ LIBVLC_API libvlc_track_description_t *
  * Set new video subtitle.
  *
  * \param p_mi the media player
- * \param i_spu new video subtitle to select
+ * \param i_spu video subtitle track to select (i_id from track description)
  * \return 0 on success, -1 if out of range
  */
-LIBVLC_API int libvlc_video_set_spu( libvlc_media_player_t *p_mi, unsigned i_spu );
+LIBVLC_API int libvlc_video_set_spu( libvlc_media_player_t *p_mi, int i_spu );
 
 /**
  * Set new video subtitle file.

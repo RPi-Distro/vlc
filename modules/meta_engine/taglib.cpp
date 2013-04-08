@@ -2,7 +2,7 @@
  * taglib.cpp: Taglib tag parser/writer
  *****************************************************************************
  * Copyright (C) 2003-2011 the VideoLAN team
- * $Id: e3b3c4e55d100c0a3db965b60d7615c4d0e2dad5 $
+ * $Id: 158ef3029f17f3910f68c5b1e36d5d578d6bd064 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rafaël Carré <funman@videolanorg>
@@ -42,6 +42,9 @@
 
 
 // Taglib headers
+#ifdef WIN32
+# define TAGLIB_STATIC
+#endif
 #include <taglib.h>
 #define VERSION_INT(a, b, c) ((a)<<16 | (b)<<8 | (c))
 #define TAGLIB_VERSION VERSION_INT(TAGLIB_MAJOR_VERSION, \

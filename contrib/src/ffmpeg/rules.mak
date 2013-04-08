@@ -1,12 +1,14 @@
 # FFmpeg
 
-FFMPEG_SNAPURL := http://git.videolan.org/?p=ffmpeg.git;a=snapshot;h=82db8ee;sf=tgz
-#FFMPEG_SNAPURL := http://git.libav.org/?p=libav.git;a=snapshot;h=1a8c6917f68;sf=tgz
+#FFMPEG_SNAPURL := http://git.videolan.org/?p=ffmpeg.git;a=snapshot;h=23eed00;sf=tgz
+FFMPEG_SNAPURL := http://git.libav.org/?p=libav.git;a=snapshot;h=eae0879;sf=tgz
 
 FFMPEGCONF = \
 	--cc="$(CC)" \
 	--disable-doc \
 	--disable-decoder=libvpx \
+	--disable-decoder=libvpx_vp8 \
+	--disable-decoder=libvpx_vp9 \
 	--disable-decoder=bink \
 	--enable-libgsm \
 	--enable-libopenjpeg \
@@ -126,8 +128,6 @@ ffmpeg: ffmpeg-$(FFMPEG_VERSION).tar.gz .sum-ffmpeg
 ifdef HAVE_WIN32
 	sed -i "s/std=c99/std=gnu99/" $@-$(FFMPEG_VERSION)/configure
 endif
-	$(APPLY) $(SRC)/ffmpeg/libavcodec-a25d912.patch
-	$(APPLY) $(SRC)/ffmpeg/swfdec.patch
 	$(MOVE)
 
 .ffmpeg: ffmpeg
