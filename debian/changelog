@@ -1,3 +1,10 @@
+vlc (2.0.6-1) unstable; urgency=low
+
+  * New upstream release (LP: #1166189).
+  * Drop backported man page patch.
+
+ -- Benjamin Drung <bdrung@debian.org>  Mon, 08 Apr 2013 15:47:10 +0200
+
 vlc (2.0.5-2) unstable; urgency=low
 
   * Bump Standards-Version to 3.9.4 (no changes needed).
