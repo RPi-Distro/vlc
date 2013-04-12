@@ -111,6 +111,7 @@ Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/vlc.git;a=summary
 Package: libvlc-dev
 Section: libdevel
 Architecture: any
+Pre-Depends: dpkg (>= 1.15.6~)
 Depends: libvlc5 (= ${binary:Version}),
          libvlccore-dev,
          pkg-config,
@@ -127,6 +128,7 @@ Description: development files for libvlc
 Package: libvlc5
 Section: libs
 Architecture: any
+Pre-Depends: dpkg (>= 1.15.6~)
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Replaces: vlc (<< 0.8.6.c-6)
 Description: multimedia player and streamer library
@@ -140,6 +142,7 @@ Description: multimedia player and streamer library
 Package: libvlccore-dev
 Section: libdevel
 Architecture: any
+Pre-Depends: dpkg (>= 1.15.6~)
 Depends: libvlccore5 (= ${binary:Version}), pkg-config, ${misc:Depends}
 Description: development files for libvlccore
  This package contains headers and a static library required to build plugins
@@ -152,6 +155,7 @@ Description: development files for libvlccore
 Package: libvlccore5
 Section: libs
 Architecture: any
+Pre-Depends: dpkg (>= 1.15.6~)
 Depends: vlc-data (= ${source:Version}), ${misc:Depends}, ${shlibs:Depends}
 Description: base library for VLC and its modules
  This package contains the shared library required by VLC modules and libvlc.
@@ -162,7 +166,8 @@ Description: base library for VLC and its modules
 
 Package: vlc
 Architecture: any
-Depends: fonts-freefont-ttf | ttf-freefont,
+Pre-Depends: dpkg (>= 1.15.6~)
+Depends: fonts-freefont-ttf,
          vlc-nox (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
@@ -189,6 +194,7 @@ Description: multimedia player and streamer
  or video plugins (vlc-plugin-sdl).
 
 Package: vlc-data
+Pre-Depends: dpkg (>= 1.15.6~)
 Depends: ${misc:Depends}
 Architecture: all
 Breaks: vlc-nox (<< 2.0.1-3)
@@ -206,6 +212,7 @@ Package: vlc-dbg
 Section: debug
 Priority: extra
 Architecture: any
+Pre-Depends: dpkg (>= 1.15.6~)
 Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}
 Description: debugging symbols for vlc
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
@@ -216,6 +223,7 @@ Description: debugging symbols for vlc
 
 Package: vlc-nox
 Architecture: any
+Pre-Depends: dpkg (>= 1.15.6~)
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Replaces: vlc (<< 1.1.0)
 Provides: mp3-decoder
@@ -239,10 +247,12 @@ Description: multimedia player and streamer (without X support)
 
 Package: vlc-plugin-fluidsynth
 Architecture: any
+Pre-Depends: dpkg (>= 1.15.6~)
 Depends: fluid-soundfont-gm | musescore-soundfont-gm,
          vlc-nox (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
+Breaks: vlc-nox (<< 2.0.0)
 Description: FluidSynth plugin for VLC
  This plugin adds support for playing MIDI file via the FluidSynth software
  synthesizer to the VLC media player.
@@ -253,7 +263,9 @@ Description: FluidSynth plugin for VLC
 
 Package: vlc-plugin-jack
 Architecture: any
+Pre-Depends: dpkg (>= 1.15.6~)
 Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Breaks: vlc-nox (<< 2.0.0)
 Description: Jack audio plugins for VLC
  These plugins add support for JACK to the VLC media player. To
  activate the audio output module, use the `--aout jack' flag or
@@ -266,8 +278,9 @@ Description: Jack audio plugins for VLC
 
 Package: vlc-plugin-notify
 Architecture: any
+Pre-Depends: dpkg (>= 1.15.6~)
 Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
-Breaks: vlc-nox (<< 1.1.2)
+Breaks: vlc-nox (<< 2.0.0)
 Replaces: vlc-nox (<< 1.1.2)
 Description: LibNotify plugin for VLC
  This plugin adds support for libnotify track change notification to the
@@ -279,7 +292,9 @@ Description: LibNotify plugin for VLC
 
 Package: vlc-plugin-pulse
 Architecture: any
+Pre-Depends: dpkg (>= 1.15.6~)
 Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Breaks: vlc-nox (<< 2.0.0)
 Description: PulseAudio plugin for VLC
  This plugin adds support for PulseAudio to the VLC media player. To
  activate the audio output module, use the `--aout pulse' flag or
@@ -291,7 +306,9 @@ Description: PulseAudio plugin for VLC
 
 Package: vlc-plugin-sdl
 Architecture: any
-Depends: vlc-nox, ${misc:Depends}, ${shlibs:Depends}
+Pre-Depends: dpkg (>= 1.15.6~)
+Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Breaks: vlc-nox (<< 2.0.0)
 Description: SDL video and audio output plugin for VLC
  This plugin adds support for the Simple DirectMedia Layer library to
  the VLC media player. To activate it, use the `--vout sdl' or
@@ -304,7 +321,9 @@ Description: SDL video and audio output plugin for VLC
 
 Package: vlc-plugin-svg
 Architecture: any
+Pre-Depends: dpkg (>= 1.15.6~)
 Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Breaks: vlc-nox (<< 2.0.0)
 Description: SVG plugin for VLC
  This plugin allows you to render SVG graphics on top of the video. It is a text
  renderer, and must be activated through the '--text-renderer svg' option. When
@@ -317,7 +336,9 @@ Description: SVG plugin for VLC
 
 Package: vlc-plugin-zvbi
 Architecture: any
+Pre-Depends: dpkg (>= 1.15.6~)
 Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Breaks: vlc-nox (<< 2.0.0)
 Description: VBI teletext plugin for VLC
  This plugin adds support for VBI teletext to the VLC media player.
  .
