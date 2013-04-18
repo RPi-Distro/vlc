@@ -1,3 +1,9 @@
+vlc (2.0.3-5~bpo60+2) squeeze-backports; urgency=low
+
+  * Revert "Drop alternative dependency on transitional ttf-freefont."
+
+ -- Reinhard Tartler <siretart@tauware.de>  Thu, 18 Apr 2013 07:57:26 +0200
+
 vlc (2.0.3-5~bpo60+1) squeeze-backports; urgency=low
 
   * Rebuild for squeeze-backports.
