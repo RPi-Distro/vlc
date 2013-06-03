@@ -2,7 +2,7 @@
  * avi.c
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: f418914fee3ff7b5734b97f865cfb6e9bc277764 $
+ * $Id: 665b05b9ceeb9d79b8f2a1752961b824a6613e4b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -222,6 +222,16 @@ static void Close( vlc_object_t * p_this )
     p_hdr = avi_HeaderCreateRIFF( p_mux );
     sout_AccessOutSeek( p_mux->p_access, 0 );
     sout_AccessOutWrite( p_mux->p_access, p_hdr );
+
+    for( i_stream = 0; i_stream < p_sys->i_streams; i_stream++ )
+    {
+        avi_stream_t *p_stream;
+        p_stream = &p_sys->stream[i_stream];
+        free( p_stream->p_bih );
+        free( p_stream->p_wf );
+    }
+    free( p_sys->idx1.entry );
+    free( p_sys );
 }
 
 static int Control( sout_mux_t *p_mux, int i_query, va_list args )

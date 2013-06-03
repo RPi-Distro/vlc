@@ -3,15 +3,14 @@
 # This file is distributed under the same license as the VLC package.
 #
 # Translators:
-# Oleksandr Natalenko <pfactum@gmail.com>, 2009-2012.
-# Андрій Бандура <andriykopanytsia@gmail.com>, 2013.
-#
+# Oleksandr Natalenko <oleksandr@natalenko.name>, 2009-2012
+# Андрій Бандура <andriykopanytsia@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2013-04-07 22:23+0200\n"
-"PO-Revision-Date: 2013-03-16 16:47+0000\n"
+"POT-Creation-Date: 2013-05-26 20:55+0200\n"
+"PO-Revision-Date: 2013-04-29 19:40+0000\n"
 "Last-Translator: Андрій Бандура <andriykopanytsia@gmail.com>\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/vlc-trans/"
 "language/uk/)\n"
@@ -51,11 +50,11 @@ msgstr "Інтерфейс"
 
 #: include/vlc_config_cat.h:38
 msgid "Settings for VLC's interfaces"
-msgstr "Настройки інтерфейсів VLC"
+msgstr "Налаштування інтерфейсів VLC"
 
 #: include/vlc_config_cat.h:40
 msgid "Main interfaces settings"
-msgstr "Настройки головних інтерфейсів"
+msgstr "Налаштування головних інтерфейсів"
 
 #: include/vlc_config_cat.h:42
 msgid "Main interfaces"
@@ -63,7 +62,7 @@ msgstr "Головні інтерфейси"
 
 #: include/vlc_config_cat.h:43
 msgid "Settings for the main interface"
-msgstr "Настройки головного інтерфейсу"
+msgstr "Налаштування головного інтерфейсу"
 
 #: include/vlc_config_cat.h:45 src/libvlc-module.c:220
 msgid "Control interfaces"
@@ -71,12 +70,12 @@ msgstr "Інтерфейси елементів керування"
 
 #: include/vlc_config_cat.h:46
 msgid "Settings for VLC's control interfaces"
-msgstr "Настройки інтерфейсів елементів керування VLC"
+msgstr "Налаштування інтерфейсів елементів керування VLC"
 
 #: include/vlc_config_cat.h:48 include/vlc_config_cat.h:49
 #: modules/gui/macosx/simple_prefs.m:198
 msgid "Hotkeys settings"
-msgstr "Настройки гарячих клавіш"
+msgstr "Налаштування гарячих клавіш"
 
 #: include/vlc_config_cat.h:52 src/input/es_out.c:2893 src/input/es_out.c:2934
 #: src/libvlc-module.c:1615 modules/access/imem.c:64
@@ -88,17 +87,16 @@ msgstr "Настройки гарячих клавіш"
 #: modules/services_discovery/mediadirs.c:77 modules/stream_out/es.c:93
 #: modules/stream_out/transcode/transcode.c:191
 #: share/lua/http/dialogs/create_stream.html:150
-#: modules/gui/qt4/ui/profiles.h:494
 msgid "Audio"
 msgstr "Звук"
 
 #: include/vlc_config_cat.h:53
 msgid "Audio settings"
-msgstr "Настройки звуку"
+msgstr "Налаштування звуку"
 
 #: include/vlc_config_cat.h:55
 msgid "General audio settings"
-msgstr "Загальні настройки звуку"
+msgstr "Загальні налаштування звуку"
 
 #: include/vlc_config_cat.h:57 include/vlc_config_cat.h:79
 msgid "Filters"
@@ -123,7 +121,7 @@ msgstr "Модулі виведення"
 
 #: include/vlc_config_cat.h:64
 msgid "General settings for audio output modules."
-msgstr "Загальні настройки модулів виведення звуку."
+msgstr "Загальні налаштування модулів виведення звуку."
 
 #: include/vlc_config_cat.h:66 src/libvlc-module.c:2128
 #: modules/gui/macosx/VideoEffects.m:73
@@ -133,7 +131,7 @@ msgstr "Інше"
 
 #: include/vlc_config_cat.h:67
 msgid "Miscellaneous audio settings and modules."
-msgstr "Інші модулі й настройки звуку."
+msgstr "Інші модулі й налаштування звуку."
 
 #: include/vlc_config_cat.h:70 src/input/es_out.c:2896 src/input/es_out.c:2981
 #: src/libvlc-module.c:1666 modules/access/imem.c:64
@@ -145,17 +143,16 @@ msgstr "Інші модулі й настройки звуку."
 #: modules/services_discovery/mediadirs.c:70 modules/stream_out/es.c:101
 #: modules/stream_out/transcode/transcode.c:161
 #: share/lua/http/dialogs/create_stream.html:147
-#: modules/gui/qt4/ui/profiles.h:476 modules/gui/qt4/ui/sprefs_video.h:348
 msgid "Video"
 msgstr "Відео"
 
 #: include/vlc_config_cat.h:71
 msgid "Video settings"
-msgstr "Настройки відео"
+msgstr "Налаштування відео"
 
 #: include/vlc_config_cat.h:73
 msgid "General video settings"
-msgstr "Загальні настройки відео"
+msgstr "Загальні налаштування відео"
 
 #: include/vlc_config_cat.h:77
 msgid "Choose your preferred video output and configure it here."
@@ -172,7 +169,7 @@ msgstr "Субтитри/OSD"
 #: include/vlc_config_cat.h:84
 msgid ""
 "Settings related to On-Screen-Display, subtitles and \"overlay subpictures\""
-msgstr "Настройки, пов’язані з OSD, субтитрами й «оверлейними шарами»."
+msgstr "Налаштування, пов’язані з OSD, субтитрами й „оверлейними шарами“."
 
 #: include/vlc_config_cat.h:93
 msgid "Input / Codecs"
@@ -180,7 +177,7 @@ msgstr "Введення / Кодеки"
 
 #: include/vlc_config_cat.h:94
 msgid "Settings for input, demultiplexing, decoding and encoding"
-msgstr "Настройки введення, демультиплексування, декодування й кодування"
+msgstr "Налаштування введення, демультиплексування, декодування й кодування"
 
 #: include/vlc_config_cat.h:97
 msgid "Access modules"
@@ -191,8 +188,8 @@ msgid ""
 "Settings related to the various access methods. Common settings you may want "
 "to alter are HTTP proxy or caching settings."
 msgstr ""
-"Настройки різних методів доступу. Зазвичай змінюється проксі HTTP або "
-"настройки кешування."
+"Налаштування різних методів доступу. Зазвичай змінюється проксі HTTP або "
+"налаштування кешування."
 
 #: include/vlc_config_cat.h:103
 msgid "Stream filters"
@@ -221,7 +218,7 @@ msgstr "Відеокодеки"
 
 #: include/vlc_config_cat.h:112
 msgid "Settings for the video, images or video+audio decoders and encoders."
-msgstr "Настройки декодерів і кодерів відео, зображень або відео та звуку."
+msgstr "Налаштування декодерів і кодерів відео, зображень або відео та звуку."
 
 #: include/vlc_config_cat.h:114
 msgid "Audio codecs"
@@ -229,7 +226,7 @@ msgstr "Звукові кодеки"
 
 #: include/vlc_config_cat.h:115
 msgid "Settings for the audio-only decoders and encoders."
-msgstr "Настройки декодерів і кодерів звуку."
+msgstr "Налаштування декодерів і кодерів звуку."
 
 #: include/vlc_config_cat.h:117
 msgid "Subtitles codecs"
@@ -365,7 +362,6 @@ msgstr "Реалізація VLC послуги «відео за вимогою
 #: modules/gui/qt4/components/playlist/playlist.cpp:191
 #: modules/gui/qt4/components/playlist/selector.cpp:190
 #: modules/gui/qt4/dialogs/playlist.cpp:41 modules/gui/qt4/menus.cpp:1082
-#: modules/gui/qt4/ui/sprefs_interface.h:519
 msgid "Playlist"
 msgstr "Список відтворення"
 
@@ -394,7 +390,6 @@ msgstr ""
 "Модулі пошуку служб автоматично додають елементи до списку відтворення."
 
 #: include/vlc_config_cat.h:186 src/libvlc-module.c:1961
-#: modules/gui/qt4/ui/video_effects.h:1395
 msgid "Advanced"
 msgstr "Додатково"
 
@@ -419,7 +414,6 @@ msgstr "Додаткові настройки"
 
 #: include/vlc_config_cat.h:198 modules/gui/macosx/open.m:112
 #: modules/gui/macosx/open.m:481 modules/gui/macosx/simple_prefs.m:259
-#: modules/gui/qt4/ui/sprefs_input.h:348
 msgid "Network"
 msgstr "Мережа"
 
@@ -550,7 +544,6 @@ msgstr "&Про програму"
 #: modules/gui/macosx/playlist.m:476
 #: modules/gui/qt4/components/controller.hpp:114
 #: modules/gui/qt4/dialogs/vlm.cpp:550 modules/gui/qt4/menus.cpp:788
-#: modules/gui/qt4/ui/open.h:244
 msgid "Play"
 msgstr "Відтворити"
 
@@ -692,7 +685,6 @@ msgstr ""
 "Збільшити частину відео. Можна вибрати частину відео, яку потрібно збільшити."
 
 #: include/vlc_intf_strings.h:117 modules/gui/macosx/VideoEffects.m:141
-#: modules/gui/qt4/ui/video_effects.h:1394
 msgid "Waves"
 msgstr "Хвилі"
 
@@ -863,9 +855,6 @@ msgstr "Стерео"
 #: modules/video_filter/audiobargraph_v.c:73 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:136 modules/video_filter/mosaic.c:170
 #: modules/video_filter/osdmenu.c:84 modules/video_filter/rss.c:173
-#: modules/gui/qt4/ui/video_effects.h:1313
-#: modules/gui/qt4/ui/video_effects.h:1356
-#: modules/gui/qt4/ui/video_effects.h:1366
 msgid "Left"
 msgstr "Лівий"
 
@@ -879,7 +868,6 @@ msgstr "Лівий"
 #: modules/video_filter/audiobargraph_v.c:73 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:136 modules/video_filter/mosaic.c:170
 #: modules/video_filter/osdmenu.c:84 modules/video_filter/rss.c:173
-#: modules/gui/qt4/ui/video_effects.h:1314
 msgid "Right"
 msgstr "Правий"
 
@@ -1056,9 +1044,9 @@ msgid "decoder"
 msgstr "декодер"
 
 #: src/input/decoder.c:276 src/input/decoder.c:467
-#: modules/codec/avcodec/encoder.c:275 modules/codec/avcodec/encoder.c:283
-#: modules/codec/avcodec/encoder.c:320 modules/codec/avcodec/encoder.c:811
-#: modules/codec/avcodec/encoder.c:820 modules/stream_out/es.c:363
+#: modules/codec/avcodec/encoder.c:276 modules/codec/avcodec/encoder.c:284
+#: modules/codec/avcodec/encoder.c:321 modules/codec/avcodec/encoder.c:814
+#: modules/codec/avcodec/encoder.c:823 modules/stream_out/es.c:363
 #: modules/stream_out/es.c:378
 msgid "Streaming / Transcoding failed"
 msgstr "Помилка потокового виведення або перекодування"
@@ -1134,14 +1122,13 @@ msgid "Original ID"
 msgstr "Оригінальний ID"
 
 #: src/input/es_out.c:2918 src/input/es_out.c:2921 modules/access/imem.c:67
-#: modules/gui/macosx/wizard.m:388 modules/gui/qt4/ui/profiles.h:477
-#: modules/gui/qt4/ui/profiles.h:496
+#: modules/gui/macosx/wizard.m:388
 msgid "Codec"
 msgstr "Кодек"
 
 #: src/input/es_out.c:2925 src/input/meta.c:65 src/libvlc-module.c:247
 #: modules/access/imem.c:71 modules/gui/macosx/simple_prefs.m:273
-#: modules/stream_out/setid.c:49 modules/gui/qt4/ui/sprefs_interface.h:517
+#: modules/stream_out/setid.c:49
 msgid "Language"
 msgstr "Мова"
 
@@ -1151,7 +1138,7 @@ msgid "Description"
 msgstr "Опис"
 
 #: src/input/es_out.c:2937 src/input/es_out.c:2940
-#: modules/gui/macosx/output.m:176 modules/gui/qt4/ui/profiles.h:499
+#: modules/gui/macosx/output.m:176
 msgid "Channels"
 msgstr "Канали"
 
@@ -1172,7 +1159,6 @@ msgstr "Біт на семпл"
 #: src/input/es_out.c:2960 modules/access_output/shout.c:92
 #: modules/access/pvr.c:90 modules/demux/playlist/shoutcast.c:334
 #: modules/gui/qt4/components/open_panels.cpp:935
-#: modules/gui/qt4/ui/profiles.h:478 modules/gui/qt4/ui/profiles.h:497
 msgid "Bitrate"
 msgstr "Бітрейт"
 
@@ -1194,7 +1180,7 @@ msgstr "Автонормалізація гучності альбому"
 msgid "%.2f dB"
 msgstr "%.2f дБ"
 
-#: src/input/es_out.c:2984 modules/gui/qt4/ui/profiles.h:483
+#: src/input/es_out.c:2984
 msgid "Resolution"
 msgstr "Роздільна здатність"
 
@@ -1212,22 +1198,22 @@ msgstr "Частота кадрів"
 msgid "Decoded format"
 msgstr "Декодований формат"
 
-#: src/input/input.c:2465
+#: src/input/input.c:2467
 msgid "Your input can't be opened"
 msgstr "Не вдалося відкрити введення"
 
-#: src/input/input.c:2466
+#: src/input/input.c:2468
 #, c-format
 msgid "VLC is unable to open the MRL '%s'. Check the log for details."
 msgstr ""
 "VLC не вдалося відкрити MRL «%s». Щоб отримати докладнішу інформацію, "
 "дивіться журнал."
 
-#: src/input/input.c:2583
+#: src/input/input.c:2585
 msgid "VLC can't recognize the input's format"
 msgstr "VLC не вдалося розпізнати формат введення"
 
-#: src/input/input.c:2584
+#: src/input/input.c:2586
 #, c-format
 msgid ""
 "The format of '%s' cannot be detected. Have a look at the log for details."
@@ -1241,7 +1227,6 @@ msgstr ""
 #: modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/open_panels.cpp:485
 #: modules/gui/qt4/components/open_panels.cpp:499 modules/mux/asf.c:56
-#: modules/gui/qt4/ui/open_disk.h:310
 msgid "Title"
 msgstr "Назва"
 
@@ -1279,7 +1264,6 @@ msgid "Setting"
 msgstr "Настройка"
 
 #: src/input/meta.c:64 modules/gui/macosx/open.m:159
-#: modules/gui/qt4/ui/podcast_configuration.h:103
 msgid "URL"
 msgstr "URL"
 
@@ -1313,7 +1297,7 @@ msgstr "Програми"
 
 #: src/input/var.c:182 modules/gui/macosx/MainMenu.m:289
 #: modules/gui/macosx/MainMenu.m:290 modules/gui/macosx/open.m:148
-#: modules/gui/macosx/open.m:150 modules/gui/qt4/ui/open_disk.h:311
+#: modules/gui/macosx/open.m:150
 msgid "Chapter"
 msgstr "Частина"
 
@@ -1591,7 +1575,6 @@ msgstr ""
 "автоматично вибирати найкращий доступний метод."
 
 #: src/libvlc-module.c:287 modules/stream_out/display.c:40
-#: modules/gui/qt4/ui/sprefs_audio.h:430
 msgid "Enable audio"
 msgstr "Увімкнути звук"
 
@@ -1685,7 +1668,6 @@ msgstr ""
 "(тобто, якщо обладнання й відтворюваний потік його підтримують)."
 
 #: src/libvlc-module.c:332 modules/gui/macosx/simple_prefs.m:233
-#: modules/gui/qt4/ui/sprefs_audio.h:439
 msgid "Use S/PDIF when available"
 msgstr "Використовувати S/PDIF, якщо він доступний"
 
@@ -1823,7 +1805,6 @@ msgstr ""
 "найкращий доступний метод вибирається автоматично."
 
 #: src/libvlc-module.c:406 modules/stream_out/display.c:42
-#: modules/gui/qt4/ui/sprefs_video.h:335
 msgid "Enable video"
 msgstr "Увімкнути відео"
 
@@ -1929,9 +1910,6 @@ msgstr "По центру"
 #: modules/video_filter/audiobargraph_v.c:73 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:136 modules/video_filter/mosaic.c:170
 #: modules/video_filter/osdmenu.c:84 modules/video_filter/rss.c:173
-#: modules/gui/qt4/ui/video_effects.h:1311
-#: modules/gui/qt4/ui/video_effects.h:1354
-#: modules/gui/qt4/ui/video_effects.h:1365
 msgid "Top"
 msgstr "Зверху"
 
@@ -1942,7 +1920,6 @@ msgstr "Зверху"
 #: modules/video_filter/audiobargraph_v.c:73 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:136 modules/video_filter/mosaic.c:170
 #: modules/video_filter/osdmenu.c:84 modules/video_filter/rss.c:173
-#: modules/gui/qt4/ui/video_effects.h:1315
 msgid "Bottom"
 msgstr "Знизу"
 
@@ -2032,7 +2009,7 @@ msgstr ""
 "спосіб як стандартний."
 
 #: src/libvlc-module.c:468 src/video_output/vout_intf.c:292
-#: modules/gui/macosx/simple_prefs.m:308 modules/gui/qt4/ui/sprefs_video.h:338
+#: modules/gui/macosx/simple_prefs.m:308
 msgid "Always on top"
 msgstr "Завжди над іншими вікнами"
 
@@ -2157,7 +2134,6 @@ msgstr ""
 "запобігання переходу комп’ютера в режим сну внаслідок неактивності."
 
 #: src/libvlc-module.c:531 modules/gui/macosx/simple_prefs.m:307
-#: modules/gui/qt4/ui/sprefs_video.h:340
 msgid "Window decorations"
 msgstr "Оформлення вікна"
 
@@ -2520,7 +2496,6 @@ msgstr "Стандартно"
 
 #: src/libvlc-module.c:697 modules/gui/macosx/AudioEffects.m:66
 #: modules/gui/macosx/MainWindow.m:2439 modules/gui/macosx/wizard.m:357
-#: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:290
 msgid "Enable"
 msgstr "Увімкнути"
 
@@ -2591,7 +2566,7 @@ msgstr ""
 "Використовуйте тільки якщо потрібно переглянути потік із кількома програмами "
 "(наприклад, потік DVB)."
 
-#: src/libvlc-module.c:735 modules/gui/qt4/ui/open_disk.h:313
+#: src/libvlc-module.c:735
 msgid "Audio track"
 msgstr "Звукова доріжка"
 
@@ -2599,7 +2574,7 @@ msgstr "Звукова доріжка"
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "Використовуваний номер потоку звукової доріжки (від 0 до n)."
 
-#: src/libvlc-module.c:740 modules/gui/qt4/ui/open_disk.h:314
+#: src/libvlc-module.c:740
 msgid "Subtitles track"
 msgstr "Доріжка субтитрів"
 
@@ -2774,7 +2749,6 @@ msgstr ""
 "time=необов’язковий-зсув-часу,bytes=необов’язковий-зсув-у-байтах},{…}»"
 
 #: src/libvlc-module.c:818 modules/gui/macosx/simple_prefs.m:249
-#: modules/gui/qt4/ui/sprefs_input.h:344
 msgid "Record directory or filename"
 msgstr "Каталог або назва файлу для записування"
 
@@ -2843,7 +2817,7 @@ msgstr ""
 "налаштуйте їх у розділі модулів «Фільтри шарів». Також можна задати інші "
 "опції шарів."
 
-#: src/libvlc-module.c:850 modules/gui/qt4/ui/sprefs_subtitles.h:286
+#: src/libvlc-module.c:850
 msgid "Force subtitle position"
 msgstr "Примусово задати позицію субтитрів"
 
@@ -2866,7 +2840,6 @@ msgstr "Можна повністю вимкнути обробку шарів."
 #: src/libvlc-module.c:859 src/libvlc-module.c:1796 src/text/iso-639_def.h:145
 #: modules/gui/macosx/simple_prefs.m:294
 #: modules/stream_out/transcode/transcode.c:219
-#: modules/gui/qt4/ui/sprefs_subtitles.h:271
 msgid "On Screen Display"
 msgstr "OSD"
 
@@ -3828,7 +3801,7 @@ msgid "Enable this option to load the SQL-based Media Library at VLC startup"
 msgstr ""
 "Увімкніть цю опцію для завантаження медіатеки SQL під час відкривання VLC"
 
-#: src/libvlc-module.c:1342 modules/gui/qt4/ui/sprefs_interface.h:520
+#: src/libvlc-module.c:1342
 msgid "Display playlist tree"
 msgstr "Показувати дерево списку відтворення"
 
@@ -3851,7 +3824,6 @@ msgstr ""
 #: modules/gui/macosx/MainMenu.m:1220 modules/gui/macosx/MainMenu.m:1238
 #: modules/gui/macosx/simple_prefs.m:306
 #: modules/gui/qt4/components/controller.hpp:115
-#: modules/gui/qt4/ui/sprefs_video.h:337
 msgid "Fullscreen"
 msgstr "Повноекранний режим"
 
@@ -3934,8 +3906,6 @@ msgstr "Повільніше (точно)"
 #: modules/gui/macosx/MainMenu.m:1165 modules/gui/macosx/wizard.m:312
 #: modules/gui/macosx/wizard.m:324 modules/gui/macosx/wizard.m:1617
 #: modules/gui/qt4/components/controller.hpp:119 modules/notify/notify.c:339
-#: modules/gui/qt4/ui/sout.h:327 modules/gui/qt4/ui/sout.h:338
-#: modules/gui/qt4/ui/streampanel.h:182
 msgid "Next"
 msgstr "Наступний"
 
@@ -3950,7 +3920,6 @@ msgstr ""
 #: modules/gui/macosx/MainMenu.m:366 modules/gui/macosx/MainMenu.m:372
 #: modules/gui/macosx/MainMenu.m:1164
 #: modules/gui/qt4/components/controller.hpp:119 modules/notify/notify.c:337
-#: modules/gui/qt4/ui/sout.h:337 modules/gui/qt4/ui/sout.h:346
 msgid "Previous"
 msgstr "Попередній"
 
@@ -3965,7 +3934,6 @@ msgstr ""
 #: modules/gui/macosx/MainMenu.m:1156 modules/gui/macosx/MainWindow.m:185
 #: modules/gui/qt4/components/controller.hpp:114
 #: modules/gui/qt4/dialogs/vlm.cpp:556 modules/notify/xosd.c:234
-#: modules/gui/qt4/ui/streampanel.h:181
 msgid "Stop"
 msgstr "Зупинити"
 
@@ -3977,8 +3945,7 @@ msgstr "Виберіть гарячу клавішу для зупинення �
 #: modules/gui/macosx/bookmarks.m:96 modules/gui/macosx/bookmarks.m:105
 #: modules/gui/macosx/MainWindow.m:196 modules/gui/macosx/VideoEffects.m:146
 #: modules/gui/macosx/VideoEffects.m:168 modules/video_filter/marq.c:157
-#: modules/video_filter/rss.c:200 modules/gui/qt4/ui/sprefs_subtitles.h:274
-#: modules/gui/qt4/ui/video_effects.h:1362
+#: modules/video_filter/rss.c:200
 msgid "Position"
 msgstr "Позиція"
 
@@ -4637,7 +4604,6 @@ msgstr "Шари"
 #: src/libvlc-module.c:1805 modules/codec/subsdec.c:181
 #: modules/demux/kate_categories.c:41 modules/demux/kate_categories.c:54
 #: modules/demux/subtitle.c:73 share/lua/http/dialogs/create_stream.html:153
-#: modules/gui/qt4/ui/profiles.h:502 modules/gui/qt4/ui/profiles.h:504
 msgid "Subtitles"
 msgstr "Субтитри"
 
@@ -5575,7 +5541,6 @@ msgstr "Пост-обробка"
 #: src/video_output/vout_intf.c:215 modules/gui/macosx/MainMenu.m:317
 #: modules/gui/macosx/MainMenu.m:318 modules/gui/macosx/VideoEffects.m:70
 #: modules/video_filter/crop.c:105 modules/video_filter/croppadd.c:86
-#: modules/gui/qt4/ui/video_effects.h:1321
 msgid "Crop"
 msgstr "Обрізати"
 
@@ -5753,7 +5718,7 @@ msgstr ""
 "Використовувати меню Blu-ray. Якщо вимкнено, почнеться відтворення "
 "безпосередньо відео"
 
-#: modules/access/bluray.c:60 modules/gui/qt4/ui/open_disk.h:300
+#: modules/access/bluray.c:60
 msgid "BluRay"
 msgstr "Blu-ray"
 
@@ -5816,7 +5781,6 @@ msgid "Blu-Ray error"
 msgstr "Сталася помилка Blu-ray"
 
 #: modules/access/cdda.c:62 modules/gui/macosx/open.m:135
-#: modules/gui/qt4/ui/open_disk.h:301
 msgid "Audio CD"
 msgstr "Audio CD"
 
@@ -6839,7 +6803,6 @@ msgstr ""
 
 #: modules/access/fs.c:42 modules/codec/dirac.c:79 modules/codec/x264.c:413
 #: modules/codec/x264.c:418 share/lua/http/dialogs/create_stream.html:196
-#: modules/gui/qt4/ui/video_effects.h:1360
 msgid "none"
 msgstr "нічого"
 
@@ -6883,7 +6846,7 @@ msgstr "Введення з файлів"
 msgid "File"
 msgstr "Файл"
 
-#: modules/access/fs.c:62 modules/gui/qt4/ui/sprefs_video.h:354
+#: modules/access/fs.c:62
 msgid "Directory"
 msgstr "Каталог"
 
@@ -7130,7 +7093,6 @@ msgstr "Кількість звукових каналів елементарн�
 #: modules/gui/macosx/AudioEffects.m:91
 #: modules/gui/qt4/components/extended_panels.cpp:1351
 #: modules/video_filter/mosaic.c:94 modules/video_output/vmem.c:42
-#: modules/gui/qt4/ui/profiles.h:486
 msgid "Width"
 msgstr "Ширина"
 
@@ -7141,7 +7103,6 @@ msgstr "Ширина відео або субтитрів елементарни
 #: modules/access/imem.c:86 modules/access/pvr.c:72
 #: modules/access/v4l2/video.c:78 modules/demux/rawvid.c:52
 #: modules/video_filter/mosaic.c:92 modules/video_output/vmem.c:45
-#: modules/gui/qt4/ui/profiles.h:489
 msgid "Height"
 msgstr "Висота"
 
@@ -7758,7 +7719,7 @@ msgstr "Бітова маска, використовувана звуковою
 
 #: modules/access/pvr.c:103 modules/access/vcdx/info.c:69
 #: modules/gui/macosx/MainWindow.m:193 modules/gui/qt4/dialogs/toolbar.cpp:363
-#: modules/stream_out/raop.c:150 modules/gui/qt4/ui/sprefs_audio.h:431
+#: modules/stream_out/raop.c:150
 msgid "Volume"
 msgstr "Гучність"
 
@@ -8340,7 +8301,6 @@ msgstr "Скинути настройки елементів керування 
 
 #: modules/access/v4l2/video.c:93 modules/gui/macosx/VideoEffects.m:78
 #: modules/video_filter/atmo/atmo.cpp:262
-#: modules/gui/qt4/ui/video_effects.h:1299
 msgid "Brightness"
 msgstr "Яскравість"
 
@@ -8357,7 +8317,6 @@ msgid "Automatically adjust the picture brightness."
 msgstr "Автоматично змінювати яскравість зображення."
 
 #: modules/access/v4l2/video.c:98 modules/gui/macosx/VideoEffects.m:77
-#: modules/gui/qt4/ui/video_effects.h:1301
 msgid "Contrast"
 msgstr "Контрастність"
 
@@ -8367,8 +8326,6 @@ msgstr "Контрастність зображення або підсилен�
 
 #: modules/access/v4l2/video.c:100 modules/gui/macosx/VideoEffects.m:80
 #: modules/gui/macosx/VideoEffects.m:116
-#: modules/gui/qt4/ui/video_effects.h:1302
-#: modules/gui/qt4/ui/video_effects.h:1334
 msgid "Saturation"
 msgstr "Насиченість"
 
@@ -8377,7 +8334,6 @@ msgid "Picture saturation or chroma gain."
 msgstr "Насиченість зображення або підсилення сигналу насиченості."
 
 #: modules/access/v4l2/video.c:102 modules/gui/macosx/VideoEffects.m:76
-#: modules/gui/qt4/ui/video_effects.h:1298
 msgid "Hue"
 msgstr "Відтінок"
 
@@ -8430,7 +8386,6 @@ msgid "Blue chroma balance."
 msgstr "Баланс синього кольору."
 
 #: modules/access/v4l2/video.c:120 modules/gui/macosx/VideoEffects.m:81
-#: modules/gui/qt4/ui/video_effects.h:1303
 msgid "Gamma"
 msgstr "Гама"
 
@@ -8560,7 +8515,7 @@ msgid "Black & white"
 msgstr "Чорно-білий"
 
 #: modules/access/v4l2/video.c:172 modules/gui/macosx/VideoEffects.m:118
-#: modules/video_filter/sepia.c:64 modules/gui/qt4/ui/video_effects.h:1336
+#: modules/video_filter/sepia.c:64
 msgid "Sepia"
 msgstr "Сепія"
 
@@ -8816,7 +8771,7 @@ msgstr "Системний ID"
 msgid "Entries"
 msgstr "Записи"
 
-#: modules/access/vcdx/info.c:75 modules/gui/qt4/ui/sprefs_audio.h:447
+#: modules/access/vcdx/info.c:75
 msgid "Tracks"
 msgstr "Доріжки"
 
@@ -10607,17 +10562,17 @@ msgstr ""
 "потоку. Приймає наступні параметри: «main», «low», «ssr» (не підтримується) "
 "та ltp (стандартно: «main»)"
 
-#: modules/codec/avcodec/encoder.c:276
+#: modules/codec/avcodec/encoder.c:277
 #, c-format
 msgid "\"%s\" is no video encoder."
 msgstr "«%s» не є кодером відео."
 
-#: modules/codec/avcodec/encoder.c:284
+#: modules/codec/avcodec/encoder.c:285
 #, c-format
 msgid "\"%s\" is no audio encoder."
 msgstr "«%s» не є кодером звуку."
 
-#: modules/codec/avcodec/encoder.c:325
+#: modules/codec/avcodec/encoder.c:326
 #, c-format
 msgid ""
 "It seems your FFMPEG (libavcodec) installation lacks the following encoder:\n"
@@ -10634,7 +10589,7 @@ msgstr ""
 "Це не внутрішня помилка медіаплеєру VLC.\n"
 "Не зв’язуйтеся з проектом VideoLAN з приводу цієї проблеми.\n"
 
-#: modules/codec/avcodec/encoder.c:812 modules/codec/avcodec/encoder.c:821
+#: modules/codec/avcodec/encoder.c:815 modules/codec/avcodec/encoder.c:824
 msgid "VLC could not open the encoder."
 msgstr "VLC не зміг відкрити кодер."
 
@@ -11680,8 +11635,6 @@ msgstr "Кодер звуку MP3 з фіксованою комою"
 
 #: modules/codec/speex.c:57 modules/codec/speex.c:797
 #: modules/gui/macosx/open.m:165 modules/gui/macosx/VideoEffects.m:122
-#: modules/gui/qt4/ui/sprefs_video.h:351
-#: modules/gui/qt4/ui/video_effects.h:1328
 msgid "Mode"
 msgstr "Режим"
 
@@ -12973,7 +12926,6 @@ msgid "Quiet mode"
 msgstr "Тихий режим"
 
 #: modules/codec/x264.c:378 modules/gui/macosx/playlistinfo.m:84
-#: modules/gui/qt4/ui/streampanel.h:171
 msgid "Statistics"
 msgstr "Статистика"
 
@@ -13216,7 +13168,7 @@ msgstr "Керування гучністю"
 msgid "Position Control"
 msgstr "Керування позицією"
 
-#: modules/control/hotkeys.c:97 modules/gui/macosx/intf.m:2063
+#: modules/control/hotkeys.c:97 modules/gui/macosx/intf.m:2067
 msgid "Ignore"
 msgstr "Ігнорувати"
 
@@ -14482,7 +14434,6 @@ msgid "Use chapter codecs found in the segment."
 msgstr "Використовувати кодеки розділу, знайдені в сегменті."
 
 #: modules/demux/mkv/mkv.cpp:62 modules/gui/macosx/simple_prefs.m:263
-#: modules/gui/qt4/ui/sprefs_input.h:347
 msgid "Preload MKV files in the same directory"
 msgstr "Попередньо завантажувати файли MKV у тому ж каталозі"
 
@@ -14835,7 +14786,6 @@ msgstr "Нова хвиля"
 
 #: modules/demux/mp4/id3genres.h:95 modules/gui/macosx/VideoEffects.m:142
 #: modules/video_filter/psychedelic.c:55
-#: modules/gui/qt4/ui/video_effects.h:1385
 msgid "Psychedelic"
 msgstr "Психоделія"
 
@@ -15632,7 +15582,6 @@ msgstr ""
 
 #: modules/gui/fbosd.c:119 modules/gui/macosx/VideoEffects.m:145
 #: modules/misc/logger.c:109 modules/video_filter/marq.c:86
-#: modules/gui/qt4/ui/video_effects.h:1363
 msgid "Text"
 msgstr "Текст"
 
@@ -15700,9 +15649,7 @@ msgstr ""
 #: modules/gui/macosx/VideoEffects.m:115 modules/gui/macosx/VideoEffects.m:130
 #: modules/gui/macosx/VideoEffects.m:133 modules/notify/xosd.c:83
 #: modules/video_filter/colorthres.c:54 modules/video_filter/marq.c:122
-#: modules/video_filter/rss.c:154 modules/gui/qt4/ui/video_effects.h:1323
-#: modules/gui/qt4/ui/video_effects.h:1329
-#: modules/gui/qt4/ui/video_effects.h:1332
+#: modules/video_filter/rss.c:154
 msgid "Color"
 msgstr "Колір"
 
@@ -15756,7 +15703,6 @@ msgstr ""
 #: modules/notify/xosd.c:81 modules/text_renderer/freetype.c:125
 #: modules/text_renderer/quartztext.c:90 modules/text_renderer/win32text.c:59
 #: modules/video_filter/marq.c:163 modules/video_filter/rss.c:206
-#: modules/gui/qt4/ui/sprefs_subtitles.h:279
 msgid "Font"
 msgstr "Шрифт"
 
@@ -15794,11 +15740,11 @@ msgstr "Допомога медіаплеєра VLC"
 msgid "Index"
 msgstr "Індекс"
 
-#: modules/gui/macosx/AudioEffects.m:67 modules/gui/qt4/ui/equalizer.h:134
+#: modules/gui/macosx/AudioEffects.m:67
 msgid "2 Pass"
 msgstr "2 проходи"
 
-#: modules/gui/macosx/AudioEffects.m:68 modules/gui/qt4/ui/equalizer.h:136
+#: modules/gui/macosx/AudioEffects.m:68
 msgid "Preamp"
 msgstr "Попередній підсилювач"
 
@@ -15859,15 +15805,13 @@ msgid "Bookmarks"
 msgstr "Закладки"
 
 #: modules/gui/macosx/bookmarks.m:88
-#: modules/gui/qt4/ui/podcast_configuration.h:104
-#: modules/gui/qt4/ui/sout.h:331 modules/gui/qt4/ui/vlm.h:300
 msgid "Add"
 msgstr "Додати"
 
 #: modules/gui/macosx/bookmarks.m:89 modules/gui/macosx/MainMenu.m:262
 #: modules/gui/macosx/simple_prefs.m:243
 #: modules/gui/qt4/dialogs/bookmarks.cpp:51
-#: modules/gui/qt4/dialogs/sout.cpp:70 modules/gui/qt4/ui/vlm.h:301
+#: modules/gui/qt4/dialogs/sout.cpp:70
 msgid "Clear"
 msgstr "Очистити"
 
@@ -15880,7 +15824,7 @@ msgstr "Редагування"
 msgid "Extract"
 msgstr "Витягти"
 
-#: modules/gui/macosx/bookmarks.m:92 modules/gui/qt4/ui/open_file.h:169
+#: modules/gui/macosx/bookmarks.m:92
 msgid "Remove"
 msgstr "Видалити"
 
@@ -16010,8 +15954,6 @@ msgid "(no item is being played)"
 msgstr "(нічого не відтворюється)"
 
 #: modules/gui/macosx/intf.m:701 modules/gui/qt4/dialogs/messages.cpp:75
-#: modules/gui/qt4/ui/messages_panel.h:141
-#: modules/gui/qt4/ui/messages_panel.h:146
 msgid "Messages"
 msgstr "Повідомлення"
 
@@ -16061,32 +16003,32 @@ msgstr ""
 "Буде відправлено лише вашу стандартну адресу електронної пошти без подальшої "
 "інформації."
 
-#: modules/gui/macosx/intf.m:2022
+#: modules/gui/macosx/intf.m:2026
 msgid "No CrashLog found"
 msgstr "Журнал збою не знайдено"
 
-#: modules/gui/macosx/intf.m:2022 modules/gui/macosx/prefs.m:230
+#: modules/gui/macosx/intf.m:2026 modules/gui/macosx/prefs.m:230
 #: modules/gui/macosx/simple_prefs.m:758
 msgid "Continue"
 msgstr "Продовжити"
 
-#: modules/gui/macosx/intf.m:2022
+#: modules/gui/macosx/intf.m:2026
 msgid "Couldn't find any trace of a previous crash."
 msgstr "Не можу знайти нічого від попереднього збою."
 
-#: modules/gui/macosx/intf.m:2061
+#: modules/gui/macosx/intf.m:2065
 msgid "Remove old preferences?"
 msgstr "Видалити старі параметри?"
 
-#: modules/gui/macosx/intf.m:2062
+#: modules/gui/macosx/intf.m:2066
 msgid "We just found an older version of VLC's preferences files."
 msgstr "Ми щойно знайшли присутність старих файлів VLC."
 
-#: modules/gui/macosx/intf.m:2063
+#: modules/gui/macosx/intf.m:2067
 msgid "Move To Trash and Relaunch VLC"
 msgstr "Перемістити до кошика та перезапустити VLC"
 
-#: modules/gui/macosx/intf.m:2178
+#: modules/gui/macosx/intf.m:2182
 #, c-format
 msgid "VLC Debug Log (%s).rtfd"
 msgstr "Журнал відлагоджування VLC (%s).rtfd"
@@ -16513,7 +16455,6 @@ msgid "Shuffle"
 msgstr "Перемішати"
 
 #: modules/gui/macosx/MainWindow.m:189 modules/gui/macosx/simple_prefs.m:226
-#: modules/gui/qt4/ui/sprefs_audio.h:440
 msgid "Effects"
 msgstr "Ефекти"
 
@@ -16597,9 +16538,6 @@ msgstr "Вибрати файл"
 #: modules/gui/qt4/components/preferences_widgets.cpp:269
 #: modules/gui/qt4/components/simple_preferences.cpp:288
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:102
-#: modules/gui/qt4/ui/open.h:264 modules/gui/qt4/ui/open_disk.h:308
-#: modules/gui/qt4/ui/open_file.h:177 modules/gui/qt4/ui/sprefs_audio.h:438
-#: modules/gui/qt4/ui/sprefs_input.h:345 modules/gui/qt4/ui/sprefs_video.h:353
 msgid "Browse..."
 msgstr "Огляд…"
 
@@ -16613,7 +16551,7 @@ msgstr "Відтворити синхронно інше медіа"
 
 #: modules/gui/macosx/open.m:122 modules/gui/macosx/open.m:305
 #: modules/gui/macosx/simple_prefs.m:288 modules/gui/macosx/wizard.m:349
-#: modules/gui/macosx/wizard.m:417 modules/gui/qt4/ui/sprefs_interface.h:540
+#: modules/gui/macosx/wizard.m:417
 msgid "Choose..."
 msgstr "Вибрати…"
 
@@ -16811,7 +16749,7 @@ msgstr "FPS"
 msgid "Subtitles encoding"
 msgstr "Кодування субтитрів"
 
-#: modules/gui/macosx/open.m:314 modules/gui/qt4/ui/sprefs_subtitles.h:280
+#: modules/gui/macosx/open.m:314
 msgid "Font size"
 msgstr "Розмір шрифту"
 
@@ -16828,7 +16766,7 @@ msgid "Subtitle File"
 msgstr "Файл субтитрів"
 
 #: modules/gui/macosx/open.m:624 modules/gui/macosx/open.m:1162
-#: modules/gui/macosx/open.m:1415 modules/gui/qt4/ui/open_file.h:162
+#: modules/gui/macosx/open.m:1415
 msgid "Open File"
 msgstr "Відкрити файл"
 
@@ -16874,7 +16812,7 @@ msgstr "Зберегти вхідний потік"
 msgid "Encapsulation Method"
 msgstr "Метод інкапсуляції"
 
-#: modules/gui/macosx/output.m:159 modules/gui/qt4/ui/sout.h:335
+#: modules/gui/macosx/output.m:159
 msgid "Transcoding options"
 msgstr "Параметри перекодування"
 
@@ -16883,7 +16821,7 @@ msgstr "Параметри перекодування"
 msgid "Bitrate (kb/s)"
 msgstr "Бітрейт (кб/с)"
 
-#: modules/gui/macosx/output.m:166 modules/gui/qt4/ui/profiles.h:485
+#: modules/gui/macosx/output.m:166
 msgid "Scale"
 msgstr "Масштаб"
 
@@ -16891,7 +16829,7 @@ msgstr "Масштаб"
 msgid "Stream Announcing"
 msgstr "Повідомлення про потік"
 
-#: modules/gui/macosx/output.m:181 modules/gui/qt4/ui/sout.h:342
+#: modules/gui/macosx/output.m:181
 msgid "SAP announce"
 msgstr "Повідомлення по SAP"
 
@@ -16923,7 +16861,6 @@ msgstr "Зберегти файл"
 #: modules/gui/macosx/output.m:519 modules/gui/macosx/playlist.m:704
 #: modules/gui/macosx/prefs.m:207 modules/gui/macosx/simple_prefs.m:325
 #: modules/gui/qt4/components/sout/profile_selector.cpp:252
-#: modules/gui/qt4/ui/vlm.h:302
 msgid "Save"
 msgstr "Зберегти"
 
@@ -17028,8 +16965,6 @@ msgid "Save Playlist..."
 msgstr "Зберегти список відтворення…"
 
 #: modules/gui/macosx/playlist.m:477 modules/gui/qt4/dialogs/bookmarks.cpp:48
-#: modules/gui/qt4/ui/podcast_configuration.h:105
-#: modules/gui/qt4/ui/streampanel.h:173
 msgid "Delete"
 msgstr "Видалити"
 
@@ -17178,11 +17113,11 @@ msgstr "Увімкнути публікацію на Last.fm"
 msgid "Visualization"
 msgstr "Візуалізація"
 
-#: modules/gui/macosx/simple_prefs.m:235 modules/gui/qt4/ui/sprefs_audio.h:432
+#: modules/gui/macosx/simple_prefs.m:235
 msgid "Keep audio level between sessions"
 msgstr "Витримувати рівень звуку між сесіями"
 
-#: modules/gui/macosx/simple_prefs.m:236 modules/gui/qt4/ui/sprefs_audio.h:433
+#: modules/gui/macosx/simple_prefs.m:236
 msgid "Always reset audio start level to:"
 msgstr "Завжди скидати початковий рівень звуку до:"
 
@@ -17215,7 +17150,7 @@ msgstr "Виправити AVI-файли"
 msgid "Default Caching Level"
 msgstr "Стандартний рівень кешування"
 
-#: modules/gui/macosx/simple_prefs.m:254 modules/gui/qt4/ui/open.h:249
+#: modules/gui/macosx/simple_prefs.m:254
 msgid "Caching"
 msgstr "Кешування"
 
@@ -17268,7 +17203,6 @@ msgid "Show Fullscreen Controller"
 msgstr "Показати керування повноекранним режимом"
 
 #: modules/gui/macosx/simple_prefs.m:274
-#: modules/gui/qt4/ui/sprefs_interface.h:507
 msgid "Privacy / Network Interaction"
 msgstr "Приватність/мережева взаємодія"
 
@@ -17325,7 +17259,6 @@ msgid "Black screens in Fullscreen mode"
 msgstr "Робити чорним екран для повноекранного режиму"
 
 #: modules/gui/macosx/simple_prefs.m:304 modules/stream_out/display.c:53
-#: modules/gui/qt4/ui/sprefs_video.h:336
 msgid "Display"
 msgstr "Дисплей"
 
@@ -17337,7 +17270,7 @@ msgstr "Увімкнути відео"
 msgid "Output module"
 msgstr "Модуль виводу"
 
-#: modules/gui/macosx/simple_prefs.m:311 modules/gui/qt4/ui/sprefs_video.h:352
+#: modules/gui/macosx/simple_prefs.m:311
 msgid "Video snapshots"
 msgstr "Стоп-кадри"
 
@@ -17345,15 +17278,15 @@ msgstr "Стоп-кадри"
 msgid "Folder"
 msgstr "Каталог"
 
-#: modules/gui/macosx/simple_prefs.m:314 modules/gui/qt4/ui/sprefs_video.h:357
+#: modules/gui/macosx/simple_prefs.m:314
 msgid "Format"
 msgstr "Формат"
 
-#: modules/gui/macosx/simple_prefs.m:315 modules/gui/qt4/ui/sprefs_video.h:355
+#: modules/gui/macosx/simple_prefs.m:315
 msgid "Prefix"
 msgstr "Префікс"
 
-#: modules/gui/macosx/simple_prefs.m:316 modules/gui/qt4/ui/sprefs_video.h:358
+#: modules/gui/macosx/simple_prefs.m:316
 msgid "Sequential numbering"
 msgstr "Послідовна нумерація"
 
@@ -17506,7 +17439,6 @@ msgid "Basic"
 msgstr "Основне"
 
 #: modules/gui/macosx/VideoEffects.m:71
-#: modules/gui/qt4/ui/video_effects.h:1350
 msgid "Geometry"
 msgstr "Геометрія"
 
@@ -17515,53 +17447,42 @@ msgid "Image Adjust"
 msgstr "Параметри зображення"
 
 #: modules/gui/macosx/VideoEffects.m:79
-#: modules/gui/qt4/ui/video_effects.h:1300
 msgid "Brightness Threshold"
 msgstr "Поріг яскравості"
 
 #: modules/gui/macosx/VideoEffects.m:83 modules/video_filter/sharpen.c:67
-#: modules/gui/qt4/ui/video_effects.h:1304
 msgid "Sharpen"
 msgstr "Чіткість"
 
 #: modules/gui/macosx/VideoEffects.m:84
-#: modules/gui/qt4/ui/video_effects.h:1305
-#: modules/gui/qt4/ui/video_effects.h:1392
 msgid "Sigma"
 msgstr "Сигма"
 
 #: modules/gui/macosx/VideoEffects.m:85
-#: modules/gui/qt4/ui/video_effects.h:1306
 msgid "Banding removal"
 msgstr "Видалення стиснення"
 
 #: modules/gui/macosx/VideoEffects.m:86 modules/video_filter/gradfun.c:47
-#: modules/gui/qt4/ui/video_effects.h:1307
 msgid "Radius"
 msgstr "Радіус"
 
 #: modules/gui/macosx/VideoEffects.m:87
-#: modules/gui/qt4/ui/video_effects.h:1308
 msgid "Film Grain"
 msgstr "Зернистість плівки"
 
 #: modules/gui/macosx/VideoEffects.m:88 modules/video_filter/grain.c:53
-#: modules/gui/qt4/ui/video_effects.h:1309
 msgid "Variance"
 msgstr "Дисперсія"
 
 #: modules/gui/macosx/VideoEffects.m:93
-#: modules/gui/qt4/ui/video_effects.h:1317
 msgid "Synchronize top and bottom"
 msgstr "Синхронізувати вгорі та знизу"
 
 #: modules/gui/macosx/VideoEffects.m:94
-#: modules/gui/qt4/ui/video_effects.h:1318
 msgid "Synchronize left and right"
 msgstr "Синхронізувати ліворуч та праворуч"
 
 #: modules/gui/macosx/VideoEffects.m:96
-#: modules/gui/qt4/ui/video_effects.h:1343
 msgid "Transform"
 msgstr "Трансформація"
 
@@ -17590,19 +17511,14 @@ msgid "Magnification/Zoom"
 msgstr "Збільшення/масштаб"
 
 #: modules/gui/macosx/VideoEffects.m:109
-#: modules/gui/qt4/ui/video_effects.h:1346
 msgid "Puzzle game"
 msgstr "Гра «Пазл»"
 
 #: modules/gui/macosx/VideoEffects.m:110
-#: modules/gui/qt4/ui/video_effects.h:1341
-#: modules/gui/qt4/ui/video_effects.h:1347
 msgid "Rows"
 msgstr "Рядки"
 
 #: modules/gui/macosx/VideoEffects.m:111
-#: modules/gui/qt4/ui/video_effects.h:1342
-#: modules/gui/qt4/ui/video_effects.h:1348
 msgid "Columns"
 msgstr "Стовпці"
 
@@ -17611,23 +17527,19 @@ msgid "Black Slot"
 msgstr "Чорний слот"
 
 #: modules/gui/macosx/VideoEffects.m:114 modules/video_filter/colorthres.c:70
-#: modules/gui/qt4/ui/video_effects.h:1331
 msgid "Color threshold"
 msgstr "Поріг кольору"
 
 #: modules/gui/macosx/VideoEffects.m:117
-#: modules/gui/qt4/ui/video_effects.h:1335
 msgid "Similarity"
 msgstr "Подібність"
 
 #: modules/gui/macosx/VideoEffects.m:119
-#: modules/gui/qt4/ui/video_effects.h:1337
 msgid "Intensity"
 msgstr "Інтенсивність"
 
 #: modules/gui/macosx/VideoEffects.m:121 modules/gui/macosx/VideoEffects.m:124
 #: modules/video_filter/gradient.c:76 modules/video_filter/gradient.c:82
-#: modules/gui/qt4/ui/video_effects.h:1327
 msgid "Gradient"
 msgstr "Градієнт"
 
@@ -17640,12 +17552,10 @@ msgid "Hough"
 msgstr "Жижки"
 
 #: modules/gui/macosx/VideoEffects.m:131
-#: modules/gui/qt4/ui/video_effects.h:1330
 msgid "Cartoon"
 msgstr "Мультфільм"
 
 #: modules/gui/macosx/VideoEffects.m:132
-#: modules/gui/qt4/ui/video_effects.h:1322
 msgid "Color extraction"
 msgstr "Виділення кольору"
 
@@ -17654,7 +17564,6 @@ msgid "Invert colors"
 msgstr "Інверсія кольорів"
 
 #: modules/gui/macosx/VideoEffects.m:135 modules/video_filter/posterize.c:67
-#: modules/gui/qt4/ui/video_effects.h:1326
 msgid "Posterize"
 msgstr "Постеризація"
 
@@ -17663,12 +17572,10 @@ msgid "Posterize level"
 msgstr "Рівень постеризації"
 
 #: modules/gui/macosx/VideoEffects.m:137 modules/video_filter/motionblur.c:58
-#: modules/gui/qt4/ui/video_effects.h:1382
 msgid "Motion blur"
 msgstr "Розмиття рухом"
 
 #: modules/gui/macosx/VideoEffects.m:138
-#: modules/gui/qt4/ui/video_effects.h:1383
 msgid "Factor"
 msgstr "Множник"
 
@@ -17678,28 +17585,23 @@ msgid "Motion Detect"
 msgstr "Визначення руху"
 
 #: modules/gui/macosx/VideoEffects.m:140
-#: modules/gui/qt4/ui/video_effects.h:1390
 msgid "Water effect"
 msgstr "Ефект води"
 
 #: modules/gui/macosx/VideoEffects.m:144
-#: modules/gui/qt4/ui/video_effects.h:1361
 msgid "Add text"
 msgstr "Додати текст"
 
 #: modules/gui/macosx/VideoEffects.m:166
-#: modules/gui/qt4/ui/video_effects.h:1351
 msgid "Add logo"
 msgstr "Додати лого"
 
 #: modules/gui/macosx/VideoEffects.m:167
-#: modules/gui/qt4/ui/video_effects.h:1352
 msgid "Logo"
 msgstr "Лого"
 
 #: modules/gui/macosx/VideoEffects.m:188
 #: modules/stream_out/mosaic_bridge.c:128 modules/video_filter/mosaic.c:87
-#: modules/gui/qt4/ui/video_effects.h:1359
 msgid "Transparency"
 msgstr "Прозорість"
 
@@ -18077,7 +17979,6 @@ msgid "In this page, a few additional streaming parameters can be set."
 msgstr "Тут можуть бути задані кілька додаткових параметрів."
 
 #: modules/gui/macosx/wizard.m:404 modules/gui/macosx/wizard.m:1859
-#: modules/gui/qt4/ui/sout.h:344
 msgid "Time-To-Live (TTL)"
 msgstr "«Час життя» (TTL)"
 
@@ -18882,7 +18783,6 @@ msgstr "дБ"
 
 #: modules/gui/qt4/components/extended_panels.cpp:1194
 #: modules/gui/qt4/components/extended_panels.cpp:1195
-#: modules/gui/qt4/ui/open.h:253
 msgid " ms"
 msgstr " мс"
 
@@ -19078,8 +18978,6 @@ msgid "File names:"
 msgstr "Імена файлів:"
 
 #: modules/gui/qt4/components/open_panels.cpp:161
-#: modules/gui/qt4/ui/messages_panel.h:144
-#: modules/gui/qt4/ui/sprefs_interface.h:510
 msgid "Filter:"
 msgstr "Фільтри:"
 
@@ -19431,7 +19329,6 @@ msgid "File/Folder"
 msgstr "Файл/Каталог"
 
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:46
-#: modules/gui/qt4/ui/sout.h:328
 msgid "Source"
 msgstr "Джерело"
 
@@ -19551,7 +19448,6 @@ msgid "Convert"
 msgstr "Конвертувати"
 
 #: modules/gui/qt4/dialogs/convert.cpp:58
-#: modules/gui/qt4/ui/sprefs_audio.h:437
 msgid "Destination file:"
 msgstr "Файл призначення:"
 
@@ -19657,7 +19553,6 @@ msgid "Go to time"
 msgstr "Перейти до часу"
 
 #: modules/gui/qt4/dialogs/help.cpp:89 modules/gui/qt4/dialogs/plugins.cpp:498
-#: modules/gui/qt4/ui/about.h:183
 msgid "About"
 msgstr "Про програму"
 
@@ -19715,7 +19610,7 @@ msgstr "Так"
 msgid "&No"
 msgstr "&Ні"
 
-#: modules/gui/qt4/dialogs/help.cpp:165 modules/gui/qt4/ui/update.h:148
+#: modules/gui/qt4/dialogs/help.cpp:165
 msgid "VLC media player updates"
 msgstr "Поновлення медіаплеєру VLC"
 
@@ -19877,7 +19772,7 @@ msgstr "Більше інформації…"
 msgid "Reload extensions"
 msgstr "Перезавантажити розширення"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:527 modules/gui/qt4/ui/about.h:184
+#: modules/gui/qt4/dialogs/plugins.cpp:527
 msgid "Version"
 msgstr "Версія"
 
@@ -19977,7 +19872,7 @@ msgstr "Файли субтитрів"
 msgid "All Files"
 msgstr "Усі файли"
 
-#: modules/gui/qt4/dialogs/sout.cpp:43 modules/gui/qt4/ui/sout.h:326
+#: modules/gui/qt4/dialogs/sout.cpp:43
 msgid "Stream Output"
 msgstr "Вивід потоку"
 
@@ -20079,7 +19974,7 @@ msgstr "Видалити поточний профіль"
 msgid "Cl&ose"
 msgstr "Закрити"
 
-#: modules/gui/qt4/dialogs/toolbar.cpp:228 modules/gui/qt4/ui/profiles.h:461
+#: modules/gui/qt4/dialogs/toolbar.cpp:228
 msgid "Profile Name"
 msgstr "Ім’я профілю"
 
@@ -20148,7 +20043,6 @@ msgid "Repeat delay:"
 msgstr "Затримка повторення:"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:111
-#: modules/gui/qt4/ui/sprefs_interface.h:508
 msgid " days"
 msgstr " дні"
 
@@ -20504,7 +20398,7 @@ msgstr "Сховати медіаплеєр VLC у треї"
 msgid "Show VLC media player"
 msgstr "Показати медіаплеєр VLC"
 
-#: modules/gui/qt4/menus.cpp:1548 modules/gui/qt4/ui/messages_panel.h:143
+#: modules/gui/qt4/menus.cpp:1548
 msgid "&Clear"
 msgstr "Очистити"
 
@@ -21851,7 +21745,6 @@ msgid "MTP Device"
 msgstr "Пристрій MTP"
 
 #: modules/services_discovery/podcast.c:57
-#: modules/gui/qt4/ui/podcast_configuration.h:102
 msgid "Podcast URLs list"
 msgstr "Список URL’ів подкасту"
 
@@ -21966,7 +21859,7 @@ msgstr "Диски"
 msgid "CD"
 msgstr "CD"
 
-#: modules/services_discovery/udev.c:613 modules/gui/qt4/ui/open_disk.h:299
+#: modules/services_discovery/udev.c:613
 msgid "DVD"
 msgstr "DVD"
 
@@ -22831,7 +22724,7 @@ msgstr ""
 msgid "Standard stream output"
 msgstr "Стандартний вивід потоку"
 
-#: modules/stream_out/switcher.c:88 modules/gui/qt4/ui/sprefs_input.h:343
+#: modules/stream_out/switcher.c:88
 msgid "Files"
 msgstr "Файли"
 
@@ -23201,12 +23094,10 @@ msgid "Outline opacity"
 msgstr "Непрозорість контура"
 
 #: modules/text_renderer/freetype.c:154
-#: modules/gui/qt4/ui/sprefs_subtitles.h:283
 msgid "Outline color"
 msgstr "Колір контура"
 
 #: modules/text_renderer/freetype.c:155
-#: modules/gui/qt4/ui/sprefs_subtitles.h:282
 msgid "Outline thickness"
 msgstr "Товщина обведення"
 
@@ -23410,7 +23301,7 @@ msgstr "Вкажіть гаму зображення від 0.01 до 10. Ста
 msgid "Image properties filter"
 msgstr "Фільтр властивостей зображення"
 
-#: modules/video_filter/adjust.c:83 modules/gui/qt4/ui/video_effects.h:1297
+#: modules/video_filter/adjust.c:83
 msgid "Image adjust"
 msgstr "Параметри зображення"
 
@@ -23805,7 +23696,6 @@ msgid "Sat windowing"
 msgstr "Кадрування Sat"
 
 #: modules/video_filter/atmo/atmo.cpp:273
-#: modules/gui/qt4/ui/video_effects.h:1378
 msgid "Filter length (ms)"
 msgstr "Довжина фільтру (мс)"
 
@@ -23992,8 +23882,6 @@ msgid "AtmoLight Filter"
 msgstr "Фільтр AtmoLight"
 
 #: modules/video_filter/atmo/atmo.cpp:366
-#: modules/gui/qt4/ui/video_effects.h:1372
-#: modules/gui/qt4/ui/video_effects.h:1381
 msgid "AtmoLight"
 msgstr "AtmoLight"
 
@@ -24362,7 +24250,7 @@ msgstr "Відеофільтр полотна"
 msgid "Video filtering using a chain of video filter modules"
 msgstr "Відеофіотрування, використовуючи ланцюжок модулів відеофільтрів"
 
-#: modules/video_filter/clone.c:39 modules/gui/qt4/ui/video_effects.h:1389
+#: modules/video_filter/clone.c:39
 msgid "Number of clones"
 msgstr "Кількість клонів"
 
@@ -24390,7 +24278,7 @@ msgstr "Дублювати відео у декілька вікон та/чи �
 msgid "Clone video filter"
 msgstr "Відеофільтр клонування"
 
-#: modules/video_filter/clone.c:57 modules/gui/qt4/ui/video_effects.h:1388
+#: modules/video_filter/clone.c:57
 msgid "Clone"
 msgstr "Клонування"
 
@@ -24729,7 +24617,6 @@ msgstr "Динамічний відеооверлей"
 
 #: modules/video_filter/dynamicoverlay/dynamicoverlay.c:69
 #: share/lua/http/dialogs/create_stream.html:245
-#: modules/gui/qt4/ui/video_effects.h:1371
 msgid "Overlay"
 msgstr "Оверлей"
 
@@ -25928,7 +25815,7 @@ msgstr "Кут у градусах (від 0 до 359)"
 msgid "Rotate video filter"
 msgstr "Відеофільтр повороту"
 
-#: modules/video_filter/rotate.c:67 modules/gui/qt4/ui/video_effects.h:1344
+#: modules/video_filter/rotate.c:67
 msgid "Rotate"
 msgstr "Повернути"
 
@@ -26529,7 +26416,7 @@ msgstr "Відеовивід OpenGL (експериментально)"
 msgid "iOS OpenGL ES video output (requires UIView)"
 msgstr "Відеовивід iOS OpenGL ES (вимагає UIView)"
 
-#: modules/video_output/kva.c:50 modules/gui/qt4/ui/sprefs_video.h:347
+#: modules/video_output/kva.c:50
 msgid "Enable a workaround for T23"
 msgstr "Увімкнути тимчасове рішення для T23"
 
@@ -26541,7 +26428,7 @@ msgstr ""
 "Увімкніть цю опцію за відображення діагональних смуг, якщо розмір вікна "
 "рівний або менший за розмір фільму."
 
-#: modules/video_output/kva.c:55 modules/gui/qt4/ui/sprefs_video.h:346
+#: modules/video_output/kva.c:55
 msgid "Video mode"
 msgstr "Режим відео"
 
@@ -26620,7 +26507,7 @@ msgstr "Рекомендований відеовивід для Windows Vista �
 msgid "Direct3D video output"
 msgstr "Відеовивід через Direct3D"
 
-#: modules/video_output/msw/directx.c:61 modules/gui/qt4/ui/sprefs_video.h:342
+#: modules/video_output/msw/directx.c:61
 msgid "Use hardware YUV->RGB conversions"
 msgstr "Використовувати апаратне перетворення YUV->RGB"
 
@@ -27160,7 +27047,6 @@ msgid "Stream Name"
 msgstr "Назва потоку"
 
 #: share/lua/http/dialogs/create_stream.html:156
-#: modules/gui/qt4/ui/sprefs_audio.h:435 modules/gui/qt4/ui/sprefs_video.h:339
 msgid "Output"
 msgstr "Вивід"
 
@@ -27367,876 +27253,659 @@ msgstr "Справді створити потік?"
 msgid "Preamp: "
 msgstr "Попереднє підсилення:"
 
-#: modules/gui/qt4/ui/about.h:185
-msgid "Authors"
-msgstr "Автори"
-
-#: modules/gui/qt4/ui/about.h:186
-msgid ""
-"We would like to thank the whole VLC community, the testers, our users and "
-"the following people (and the missing ones...) for their collaboration to "
-"create the best free software."
-msgstr ""
-"Ми хотіли б подякувати усій спільноті VLC, тестерам, нашим користувачам та "
-"наступним людям (і тим, кого забули…) за їх внесок у створення кращого "
-"вільного програмного забезпечення."
-
-#: modules/gui/qt4/ui/about.h:187
-msgid "Thanks"
-msgstr "Подяки"
-
-#: modules/gui/qt4/ui/about.h:188
-msgid "Licence"
-msgstr "Ліцензія"
-
-#: modules/gui/qt4/ui/equalizer.h:132 modules/gui/qt4/ui/open_disk.h:297
-#: modules/gui/qt4/ui/open_net.h:91 modules/gui/qt4/ui/profiles.h:460
-#: modules/gui/qt4/ui/sprefs_audio.h:429 modules/gui/qt4/ui/sprefs_input.h:334
-#: modules/gui/qt4/ui/sprefs_interface.h:503
-#: modules/gui/qt4/ui/sprefs_subtitles.h:270
-#: modules/gui/qt4/ui/sprefs_video.h:334 modules/gui/qt4/ui/streampanel.h:168
-msgid "Form"
-msgstr "Форма"
-
-#: modules/gui/qt4/ui/equalizer.h:135
-msgid "Preset"
-msgstr "Попереднє встановлення"
-
-#: modules/gui/qt4/ui/messages_panel.h:142
-msgid "Verbosity:"
-msgstr "Рівень подробиць:"
-
-#: modules/gui/qt4/ui/messages_panel.h:145
-msgid "&Save as..."
-msgstr "Зберегти як…"
-
-#: modules/gui/qt4/ui/messages_panel.h:147
-msgid "Modules Tree"
-msgstr "Дерево модулів"
-
-#: modules/gui/qt4/ui/open.h:243
-#: modules/gui/qt4/ui/podcast_configuration.h:101
-msgid "Dialog"
-msgstr "Діалог"
-
-#: modules/gui/qt4/ui/open.h:246
-msgid "Show extended options"
-msgstr "Показати додаткові параметри"
-
-#: modules/gui/qt4/ui/open.h:248
-msgid "Show &more options"
-msgstr "Показати більше параметрів"
-
-#: modules/gui/qt4/ui/open.h:251
-msgid "Change the caching for the media"
-msgstr "Змінити кешування для медіа"
-
-#: modules/gui/qt4/ui/open.h:254
-msgid "MRL"
-msgstr "MRL"
-
-#: modules/gui/qt4/ui/open.h:255
-msgid "Start Time"
-msgstr "Час початку"
-
-#: modules/gui/qt4/ui/open.h:256
-msgid "Edit Options"
-msgstr "Редагувати параметри"
-
-#: modules/gui/qt4/ui/open.h:257
-msgid "Extra media"
-msgstr "Додаткове медіа"
-
-#: modules/gui/qt4/ui/open.h:259
-msgid "Complete MRL for VLC internal"
-msgstr "Повний MRL для VLC"
-
-#: modules/gui/qt4/ui/open.h:262
-msgid "Select the file"
-msgstr "Виберіть файл"
-
-#: modules/gui/qt4/ui/open.h:266
-msgid "Change the start time for the media"
-msgstr "Змінити початковий час для медіа"
-
-#: modules/gui/qt4/ui/open.h:268
-msgid "HH'H':mm'm':ss's'.zzz"
-msgstr "HH'H':mm'm':ss's'.zzz"
-
-#: modules/gui/qt4/ui/open.h:269
-msgid "Play another media synchronously (extra audio file, ...)"
-msgstr "Відтворити синхронно інше медіа (зовнішній звуковий файл тощо)"
-
-#: modules/gui/qt4/ui/open_capture.h:98
-msgid "Capture mode"
-msgstr "Режим захоплення"
-
-#: modules/gui/qt4/ui/open_capture.h:100
-msgid "Select the capture device type"
-msgstr "Оберіть тип пристрою захоплення"
-
-#: modules/gui/qt4/ui/open_capture.h:102
-msgid "Device Selection"
-msgstr "Вибір пристрою"
-
-#: modules/gui/qt4/ui/open_capture.h:103
-msgid "Options"
-msgstr "Параметри"
-
-#: modules/gui/qt4/ui/open_capture.h:105
-msgid "Access advanced options to tweak the device"
-msgstr "Додаткові параметри для детальної настройки пристрою"
-
-#: modules/gui/qt4/ui/open_capture.h:107
-msgid "Advanced options..."
-msgstr "Додаткові параметри…"
-
-#: modules/gui/qt4/ui/open_disk.h:298
-msgid "Disc Selection"
-msgstr "Вибір диску"
-
-#: modules/gui/qt4/ui/open_disk.h:302
-msgid "SVCD/VCD"
-msgstr "SVCD/VCD"
-
-#: modules/gui/qt4/ui/open_disk.h:304
-msgid "Disable Disc Menus"
-msgstr "Вимкнути меню диска"
-
-#: modules/gui/qt4/ui/open_disk.h:306
-msgid "No disc menus"
-msgstr "Немає меню диска"
-
-#: modules/gui/qt4/ui/open_disk.h:307
-msgid "Disc device"
-msgstr "Пристрій диску"
-
-#: modules/gui/qt4/ui/open_disk.h:309
-msgid "Starting Position"
-msgstr "Початкова позиція"
-
-#: modules/gui/qt4/ui/open_disk.h:312
-msgid "Audio and Subtitles"
-msgstr "Звук та субтитри"
-
-#: modules/gui/qt4/ui/open_file.h:164
-msgid "Choose one or more media file to open"
-msgstr "Оберіть один чи більше медіафайлів для відкриття"
-
-#: modules/gui/qt4/ui/open_file.h:166
-msgid "File Selection"
-msgstr "Вибір файлу"
-
-#: modules/gui/qt4/ui/open_file.h:167
-msgid "You can select local files with the following list and buttons."
-msgstr ""
-"Ви можете обрати локальні файли за допомогою наступного списку та кнопок."
-
-#: modules/gui/qt4/ui/open_file.h:168
-msgid "Add..."
-msgstr "Додати…"
-
-#: modules/gui/qt4/ui/open_file.h:171
-msgid "Add a subtitles file"
-msgstr "Додати файл субтитрів"
-
-#: modules/gui/qt4/ui/open_file.h:173
-msgid "Use a sub&titles file"
-msgstr "Використовувати файл субтитрів"
-
-#: modules/gui/qt4/ui/open_file.h:175
-msgid "Select the subtitles file"
-msgstr "Оберіть файл субтитрів"
-
-#: modules/gui/qt4/ui/open_net.h:92
-msgid "Network Protocol"
-msgstr "Мережевий протокол"
-
-#: modules/gui/qt4/ui/open_net.h:93
-msgid "Please enter a network URL:"
-msgstr "Будь ласка, введіть мережевий URL:"
-
-#: modules/gui/qt4/ui/open_net.h:94
-msgid ""
-"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-"REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"p { margin: 0; -qt-block-indent: 0; text-indent: 0;}\n"
-"body { font-family: 'sans'; font-size: 8pt; font-weight: 400; }\n"
-"p > span { color: #838383; }\n"
-"</style></head><body>\n"
-"<p><span>http://www.example.com/stream.avi</span></p>\n"
-"<p><span>rtp://@:1234</span></p>\n"
-"<p><span>mms://mms.examples.com/stream.asx</span></p>\n"
-"<p><span>rtsp://server.example.org:8080/test.sdp</span></p>\n"
-"<p><span>http://www.yourtube.com/watch?v=gg64x</span></p></body></html>"
-msgstr ""
-"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-"REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"p { margin: 0; -qt-block-indent: 0; text-indent: 0;}\n"
-"body { font-family: 'sans'; font-size: 8pt; font-weight: 400; }\n"
-"p > span { color: #838383; }\n"
-"</style></head><body>\n"
-"<p><span>http://www.example.com/stream.avi</span></p>\n"
-"<p><span>rtp://@:1234</span></p>\n"
-"<p><span>mms://mms.examples.com/stream.asx</span></p>\n"
-"<p><span>rtsp://server.example.org:8080/test.sdp</span></p>\n"
-"<p><span>http://www.yourtube.com/watch?v=gg64x</span></p></body></html>"
-
-#: modules/gui/qt4/ui/profiles.h:462
-msgid "MPEG-TS"
-msgstr "MPEG-TS"
-
-#: modules/gui/qt4/ui/profiles.h:463
-msgid "MPEG-PS"
-msgstr "MPEG-PS"
-
-#: modules/gui/qt4/ui/profiles.h:464
-msgid "WAV"
-msgstr "WAV"
-
-#: modules/gui/qt4/ui/profiles.h:465
-msgid "Webm"
-msgstr "Webm"
-
-#: modules/gui/qt4/ui/profiles.h:466
-msgid "ASF/WMV"
-msgstr "ASF/WMV"
-
-#: modules/gui/qt4/ui/profiles.h:467
-msgid "Ogg/Ogm"
-msgstr "Ogg/Ogm"
-
-#: modules/gui/qt4/ui/profiles.h:468
-msgid "RAW"
-msgstr "RAW"
-
-#: modules/gui/qt4/ui/profiles.h:469
-msgid "MPEG 1"
-msgstr "MPEG 1"
-
-#: modules/gui/qt4/ui/profiles.h:470
-msgid "FLV"
-msgstr "FLV"
-
-#: modules/gui/qt4/ui/profiles.h:471
-msgid "AVI"
-msgstr "AVI"
-
-#: modules/gui/qt4/ui/profiles.h:472
-msgid "MP4/MOV"
-msgstr "MP4/MOV"
-
-#: modules/gui/qt4/ui/profiles.h:473
-msgid "MJPEG"
-msgstr "MJPEG"
-
-#: modules/gui/qt4/ui/profiles.h:474
-msgid "MKV"
-msgstr "MKV"
-
-#: modules/gui/qt4/ui/profiles.h:475
-msgid "Encapsulation"
-msgstr "Формат контейнера"
-
-#: modules/gui/qt4/ui/profiles.h:479 modules/gui/qt4/ui/profiles.h:498
-msgid " kb/s"
-msgstr " кб/с"
-
-#: modules/gui/qt4/ui/profiles.h:480
-msgid "Frame Rate"
-msgstr "Частота кадрів"
-
-#: modules/gui/qt4/ui/profiles.h:482
-msgid " fps"
-msgstr " к/с"
-
-#: modules/gui/qt4/ui/profiles.h:484
-msgid ""
-"You just need to fill one of the three following parameters, VLC will "
-"autodetect the other using the original aspect ratio"
-msgstr ""
-"Вам лише треба заповнити один із трьох наступних параметрів, VLC автоматично "
-"визначить інші, використовуючи оригінальне співвідношення сторін"
-
-#: modules/gui/qt4/ui/profiles.h:487 modules/gui/qt4/ui/profiles.h:490
-msgid "00000; "
-msgstr "00000; "
-
-#: modules/gui/qt4/ui/profiles.h:492
-msgid "Keep original video track"
-msgstr "Тримати оригінальну відеодоріжку"
-
-#: modules/gui/qt4/ui/profiles.h:493
-msgid "Video codec"
-msgstr "Відеокодек"
-
-#: modules/gui/qt4/ui/profiles.h:495
-msgid "Keep original audio track"
-msgstr "Тримати оригінальну звукову доріжку"
-
-#: modules/gui/qt4/ui/profiles.h:500
-msgid "Sample Rate"
-msgstr "Частота дискретизації"
-
-#: modules/gui/qt4/ui/profiles.h:501
-msgid "Audio codec"
-msgstr "Звуковий кодек"
-
-#: modules/gui/qt4/ui/profiles.h:503
-msgid "Overlay subtitles on the video"
-msgstr "Помістити субтитри на відео"
-
-#: modules/gui/qt4/ui/sout.h:329
-msgid "Destinations"
-msgstr "Призначення"
-
-#: modules/gui/qt4/ui/sout.h:330
-msgid "New destination"
-msgstr "Нове призначення"
-
-#: modules/gui/qt4/ui/sout.h:332
-msgid ""
-"Add destinations following the streaming methods you need. Be sure to check "
-"with transcoding that the format is compatible with the method used."
-msgstr ""
-"Додати призначення відповідно методам мовлення, які Вам потрібні. Впевніться "
-"перевіркою перекодуванням, що формат сумісний із використовуваним методом."
-
-#: modules/gui/qt4/ui/sout.h:333
-msgid "Display locally"
-msgstr "Показувати локально"
-
-#: modules/gui/qt4/ui/sout.h:336
-msgid "Activate Transcoding"
-msgstr "Активувати перекодування"
-
-#: modules/gui/qt4/ui/sout.h:339
-msgid "Destination Setup"
-msgstr "Установлення призначення"
-
-#: modules/gui/qt4/ui/sout.h:340
-msgid "Miscellaneous Options"
-msgstr "Інші параметри"
-
-#: modules/gui/qt4/ui/sout.h:341
-msgid "Stream all elementary streams"
-msgstr "Надсилати усі елементарні потоки"
-
-#: modules/gui/qt4/ui/sout.h:343
-msgid "Group name"
-msgstr "Ім'я групи"
-
-#: modules/gui/qt4/ui/sout.h:345
-msgid "Generated stream output string"
-msgstr "Генерований рядок вихідного потоку"
-
-#: modules/gui/qt4/ui/sout.h:347
-msgid "Option Setup"
-msgstr "Настройка опції"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:434
-msgid " %"
-msgstr " %"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:436
-msgid "Output module:"
-msgstr "Модуль виводу:"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:441
-msgid "Visualization:"
-msgstr "Візуалізація:"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:442
-msgid "Enable Time-Stretching audio"
-msgstr "Включити часове розтягнення звуку"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:443
-msgid "Dolby Surround:"
-msgstr "Dolby Surround:"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:444
-msgid "Replay gain mode:"
-msgstr "Режим автонормалізації гучності звуку:"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:445
-msgid "Headphone surround effect"
-msgstr "Ефект оточення для навушників"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:446
-msgid "Normalize volume to:"
-msgstr "Нормалізувати гучність до:"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:448
-msgid "Preferred audio language:"
-msgstr "Бажана мова звуку:"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:449
-msgid "Password:"
-msgstr "Пароль:"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:450
-msgid "Username:"
-msgstr "Ім'я користувача:"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:451
-msgid "Submit played tracks stats to Last.fm"
-msgstr "Публікація відтворених пісень на Last.fm"
-
-#: modules/gui/qt4/ui/sprefs_input.h:335
-msgid "Codecs"
-msgstr "Кодеки"
-
-#: modules/gui/qt4/ui/sprefs_input.h:336
-msgid "x264 profile and level selection"
-msgstr "вибір профілю й рівня x264"
-
-#: modules/gui/qt4/ui/sprefs_input.h:337
-msgid "x264 preset and tuning selection"
-msgstr "вибір попередньої настройки й параметрів x264"
-
-#: modules/gui/qt4/ui/sprefs_input.h:338
-msgid "Use GPU accelerated decoding"
-msgstr "Використовувати прискорення GPU для декодування"
-
-#: modules/gui/qt4/ui/sprefs_input.h:339
-msgid "Skip H.264 in-loop deblocking filter"
-msgstr "Пропускати неблокуючий фільтр H.264 у циклі"
-
-#: modules/gui/qt4/ui/sprefs_input.h:340
-msgid "Video quality post-processing level"
-msgstr "Рівень якості постобробки відео"
-
-#: modules/gui/qt4/ui/sprefs_input.h:341
-msgid "Optical drive"
-msgstr "Оптичний накопичувач"
-
-#: modules/gui/qt4/ui/sprefs_input.h:342
-msgid "Default optical device"
-msgstr "Стандартний оптичний накопичувач"
-
-#: modules/gui/qt4/ui/sprefs_input.h:346
-msgid "Damaged or incomplete AVI file"
-msgstr "Пошкоджений чи неповний AVI-файл"
-
-#: modules/gui/qt4/ui/sprefs_input.h:349
-msgid "HTTP proxy URL"
-msgstr "URL HTTP-проксі"
-
-#: modules/gui/qt4/ui/sprefs_input.h:350
-msgid "HTTP (default)"
-msgstr "HTTP (стандартно)"
-
-#: modules/gui/qt4/ui/sprefs_input.h:351
-msgid "RTP over RTSP (TCP)"
-msgstr "RTP поверх RTSP (TCP)"
-
-#: modules/gui/qt4/ui/sprefs_input.h:352
-msgid "Live555 stream transport"
-msgstr "Транспорт потоку Live555"
-
-#: modules/gui/qt4/ui/sprefs_input.h:353
-msgid "Default caching policy"
-msgstr "Стандартна політика кешування"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:504
-msgid "Instances"
-msgstr "Копії"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:505
-msgid "Allow only one instance"
-msgstr "Дозволяти тільки одну копію"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:506
-msgid "Enqueue files when in one instance mode"
-msgstr "Додавати елементи до черги у режимі однієї копії"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:509
-msgid "Every "
-msgstr "Кожні "
-
-#: modules/gui/qt4/ui/sprefs_interface.h:512
-msgid "Separate words by | (without space)"
-msgstr "Розділюйте слова за допомогою «|» (без пробілу)"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:514
-msgid "Save recently played items"
-msgstr "Зберегти недавно відтворювані елементи"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:515
-msgid "Album art download policy:"
-msgstr "Політика завантаження альбомного мистецтва:"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:516
-msgid "Activate updates notifier"
-msgstr "Активувати сповіщення про поновлення"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:518
-msgid "Menus language:"
-msgstr "Мова меню:"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:521
-msgid "Pause on the last frame of a video"
-msgstr "Призупиняти на останньому кадрі відео"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:522
-msgid "File extensions association"
-msgstr "Асоціації розширень файлів"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:523
-msgid "Set up associations..."
-msgstr "Встановити асоціації…"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:524
-msgid "Configure Media Library"
-msgstr "Конфігурувати медіатеку"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:525
-msgid "Look and feel"
-msgstr "Зовнішній вигляд"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:526
-msgid "Use custom skin"
-msgstr "Використовувати довільну обкладинку"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:528
-msgid "This is VLC's default interface, with a native look and feel."
-msgstr "Це стадартний інтерфейс VLC із рідним виглядом."
-
-#: modules/gui/qt4/ui/sprefs_interface.h:530
-msgid "Use native style"
-msgstr "Використовувати рідний стиль"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:531
-msgid "Show controls in full screen mode"
-msgstr "Показувати елементи керування у повноекранному режимі"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:532
-msgid "Start in minimal view mode"
-msgstr "Запускати з мінімальним виглядом"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:533
-msgid "Pause playback when minimized"
-msgstr "Призупиняти відтворювання, якщо вікно мінімізовано"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:534
-msgid "Integrate video in interface"
-msgstr "Вбудувати відео в інтерфейс"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:535
-msgid "Resize interface to video size"
-msgstr "Змінити розмір інтерфейсу до розміру відео"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:536
-msgid "Show systray icon"
-msgstr "Показувати піктограму в області сповіщень"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:537
-msgid "Systray popup when minimized"
-msgstr " Спливаючі вікна у області сповіщення, якщо мінімізовано"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:538
-msgid "Force window style:"
-msgstr "Вимушений стиль вікна:"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:539
-msgid "Skin resource file:"
-msgstr "Файл обкладинки:"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:272
-msgid "Enable On Screen Display (OSD)"
-msgstr "Включити OSD"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:273
-msgid "Show media title on video start"
-msgstr "Показувати заголовок медіа на початку відтворення"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:275
-msgid "Subtitles Language"
-msgstr "Мова субтитрів"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:276
-msgid "Preferred subtitles language"
-msgstr "Бажана мова субтитрів"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:277
-msgid "Default encoding"
-msgstr "Стандартне кодування"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:278
-msgid "Subtitles effects"
-msgstr "Ефекти субтитрів"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:281
-msgid "Font color"
-msgstr "Колір шрифту"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:284
-msgid "Add a shadow"
-msgstr "Додати тінь"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:285
-msgid "Add a background"
-msgstr "Додати тло"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:287
-#: modules/gui/qt4/ui/video_effects.h:1312
-#: modules/gui/qt4/ui/video_effects.h:1316
-#: modules/gui/qt4/ui/video_effects.h:1319
-#: modules/gui/qt4/ui/video_effects.h:1320
-#: modules/gui/qt4/ui/video_effects.h:1355
-#: modules/gui/qt4/ui/video_effects.h:1357
-#: modules/gui/qt4/ui/video_effects.h:1367
-#: modules/gui/qt4/ui/video_effects.h:1368
-msgid " px"
-msgstr " px"
-
-#: modules/gui/qt4/ui/sprefs_video.h:341
-msgid "Accelerated video output (Overlay)"
-msgstr "Прискорений вивід відео (оверлей)"
-
-#: modules/gui/qt4/ui/sprefs_video.h:343
-msgid "DirectX"
-msgstr "DirectX"
-
-#: modules/gui/qt4/ui/sprefs_video.h:344
-msgid "Display device"
-msgstr "Пристрій відображення"
-
-#: modules/gui/qt4/ui/sprefs_video.h:345
-msgid "KVA"
-msgstr "KVA"
-
-#: modules/gui/qt4/ui/sprefs_video.h:349
-msgid "Deinterlacing"
-msgstr "Деінтерлейсинг"
-
-#: modules/gui/qt4/ui/sprefs_video.h:350
-msgid "Force Aspect Ratio"
-msgstr "Вимушене співвідношення сторін"
-
-#: modules/gui/qt4/ui/sprefs_video.h:356
-msgid "vlc-snap"
-msgstr "vlc-snap"
-
-#: modules/gui/qt4/ui/streampanel.h:170
-msgid "1"
-msgstr "1"
-
-#: modules/gui/qt4/ui/streampanel.h:172
-msgid "Stuff"
-msgstr "Речі"
-
-#: modules/gui/qt4/ui/streampanel.h:174
-msgid "Edit settings"
-msgstr "Редагувати параметри"
-
-#: modules/gui/qt4/ui/streampanel.h:175
-msgid "Control"
-msgstr "Контроль"
-
-#: modules/gui/qt4/ui/streampanel.h:176
-msgid "Run manually"
-msgstr "Запустити вручну"
-
-#: modules/gui/qt4/ui/streampanel.h:177
-msgid "Setup schedule"
-msgstr "Встановити планування"
-
-#: modules/gui/qt4/ui/streampanel.h:178
-msgid "Run on schedule"
-msgstr "Запустити по плану"
-
-#: modules/gui/qt4/ui/streampanel.h:179
-msgid "Status"
-msgstr "Статус"
-
-#: modules/gui/qt4/ui/streampanel.h:180
-msgid "P/P"
-msgstr "P/P"
-
-#: modules/gui/qt4/ui/streampanel.h:183
-msgid "Prev"
-msgstr "Попередній"
-
-#: modules/gui/qt4/ui/streampanel.h:184
-msgid "Add Input"
-msgstr "Додати ввід"
-
-#: modules/gui/qt4/ui/streampanel.h:185
-msgid "Edit Input"
-msgstr "Редагувати ввід"
-
-#: modules/gui/qt4/ui/streampanel.h:186
-msgid "Clear List"
-msgstr "Очистити список"
-
-#: modules/gui/qt4/ui/update.h:149
-msgid "Check for VLC updates"
-msgstr "Перевірити оновлення VLC"
-
-#: modules/gui/qt4/ui/update.h:150
-msgid "Launching an update request..."
-msgstr "Запуск запиту поновлення…"
-
-#: modules/gui/qt4/ui/update.h:151
-msgid "Do you want to download it ?"
-msgstr "Завантажити його?"
-
-#: modules/gui/qt4/ui/video_effects.h:1310
-msgid "Essential"
-msgstr "Основне"
-
-#: modules/gui/qt4/ui/video_effects.h:1324
-#: modules/gui/qt4/ui/video_effects.h:1333
-msgid ">HHHHHH;#"
-msgstr ">HHHHHH;#"
-
-#: modules/gui/qt4/ui/video_effects.h:1325
-msgid "Negate colors"
-msgstr "Інверсія кольорів"
-
-#: modules/gui/qt4/ui/video_effects.h:1338
-msgid "Colors"
-msgstr "Кольори"
-
-#: modules/gui/qt4/ui/video_effects.h:1339
-msgid "Interactive Zoom"
-msgstr "Інтерактивне масштабування"
-
-#: modules/gui/qt4/ui/video_effects.h:1340
-msgid "Wall"
-msgstr "Стіна"
-
-#: modules/gui/qt4/ui/video_effects.h:1345
-msgid "Angle"
-msgstr "Кут"
-
-#: modules/gui/qt4/ui/video_effects.h:1349
-msgid "Black slot"
-msgstr "Чорний слот"
-
-#: modules/gui/qt4/ui/video_effects.h:1353
-#: modules/gui/qt4/ui/video_effects.h:1370
-msgid "..."
-msgstr "…"
-
-#: modules/gui/qt4/ui/video_effects.h:1358
-msgid "full"
-msgstr "повно"
-
-#: modules/gui/qt4/ui/video_effects.h:1364
-msgid "Logo erase"
-msgstr "Видалити логотип"
-
-#: modules/gui/qt4/ui/video_effects.h:1369
-msgid "Mask"
-msgstr "Маска"
-
-#: modules/gui/qt4/ui/video_effects.h:1373
-msgid "Edge weightning"
-msgstr "Вага краю"
-
-#: modules/gui/qt4/ui/video_effects.h:1374
-msgid "Output Color Filtermode"
-msgstr "Режим фільтру вихідного кольору"
-
-#: modules/gui/qt4/ui/video_effects.h:1375
-msgid "Brightness (%)"
-msgstr "Яскравість (%)"
-
-#: modules/gui/qt4/ui/video_effects.h:1376
-msgid "Darkness limit"
-msgstr "Ліміт темноти"
-
-#: modules/gui/qt4/ui/video_effects.h:1377
-msgid "Mark analyzed Pixels"
-msgstr "Помічати проаналізовані пікселі"
-
-#: modules/gui/qt4/ui/video_effects.h:1379
-msgid "Filter threshold (%)"
-msgstr "Поріг фільтру (%)"
-
-#: modules/gui/qt4/ui/video_effects.h:1380
-msgid "Filter smoothness (%)"
-msgstr "Гладкість фільтру (%)"
-
-#: modules/gui/qt4/ui/video_effects.h:1384
-msgid "Motion detect"
-msgstr "Детектор руху"
-
-#: modules/gui/qt4/ui/video_effects.h:1386
-msgid "Anti-Flickering"
-msgstr "Усунення блимання"
-
-#: modules/gui/qt4/ui/video_effects.h:1387
-msgid "Soften"
-msgstr "Пом’якшити"
-
-#: modules/gui/qt4/ui/video_effects.h:1391
-msgid "Spatial blur"
-msgstr "Просторове розмиття"
-
-#: modules/gui/qt4/ui/video_effects.h:1393
-msgid "Mirror"
-msgstr "Дзеркало"
-
-#: modules/gui/qt4/ui/vlm.h:287
-msgid "VLM configurator"
-msgstr "Конфігуратор VLM"
-
-#: modules/gui/qt4/ui/vlm.h:288
-msgid "Media Manager Edition"
-msgstr "Випуск медіаменеджеру"
-
-#: modules/gui/qt4/ui/vlm.h:289
-msgid "Name:"
-msgstr "Ім’я:"
-
-#: modules/gui/qt4/ui/vlm.h:291
-msgid "Input:"
-msgstr "Вхід:"
-
-#: modules/gui/qt4/ui/vlm.h:292
-msgid "Select Input"
-msgstr "Оберіть вхід:"
-
-#: modules/gui/qt4/ui/vlm.h:293
-msgid "Output:"
-msgstr "Вивід:"
-
-#: modules/gui/qt4/ui/vlm.h:294
-msgid "Select Output"
-msgstr "Оберіть вивід:"
-
-#: modules/gui/qt4/ui/vlm.h:295
-msgid "Time Control"
-msgstr "Керування часом"
-
-#: modules/gui/qt4/ui/vlm.h:296
-msgid "Mux Control"
-msgstr "Керування мікшуванням"
-
-#: modules/gui/qt4/ui/vlm.h:297
-msgid "Muxer:"
-msgstr "Мультиплексор:"
-
-#: modules/gui/qt4/ui/vlm.h:298
-msgid "AAAA; "
-msgstr "AAAA; "
-
-#: modules/gui/qt4/ui/vlm.h:299
-msgid "Loop"
-msgstr "Цикл"
-
-#: modules/gui/qt4/ui/vlm.h:303
-msgid "Media Manager List"
-msgstr "Список медіаменеджеру"
+#~ msgid "Authors"
+#~ msgstr "Автори"
+
+#~ msgid ""
+#~ "We would like to thank the whole VLC community, the testers, our users "
+#~ "and the following people (and the missing ones...) for their "
+#~ "collaboration to create the best free software."
+#~ msgstr ""
+#~ "Ми хотіли б подякувати усій спільноті VLC, тестерам, нашим користувачам "
+#~ "та наступним людям (і тим, кого забули…) за їх внесок у створення кращого "
+#~ "вільного програмного забезпечення."
+
+#~ msgid "Thanks"
+#~ msgstr "Подяки"
+
+#~ msgid "Licence"
+#~ msgstr "Ліцензія"
+
+#~ msgid "Form"
+#~ msgstr "Форма"
+
+#~ msgid "Preset"
+#~ msgstr "Попереднє встановлення"
+
+#~ msgid "Verbosity:"
+#~ msgstr "Рівень подробиць:"
+
+#~ msgid "&Save as..."
+#~ msgstr "Зберегти як…"
+
+#~ msgid "Modules Tree"
+#~ msgstr "Дерево модулів"
+
+#~ msgid "Dialog"
+#~ msgstr "Діалог"
+
+#~ msgid "Show extended options"
+#~ msgstr "Показати додаткові параметри"
+
+#~ msgid "Show &more options"
+#~ msgstr "Показати більше параметрів"
+
+#~ msgid "Change the caching for the media"
+#~ msgstr "Змінити кешування для медіа"
+
+#~ msgid "MRL"
+#~ msgstr "MRL"
+
+#~ msgid "Start Time"
+#~ msgstr "Час початку"
+
+#~ msgid "Edit Options"
+#~ msgstr "Редагувати параметри"
+
+#~ msgid "Extra media"
+#~ msgstr "Додаткове медіа"
+
+#~ msgid "Complete MRL for VLC internal"
+#~ msgstr "Повний MRL для VLC"
+
+#~ msgid "Select the file"
+#~ msgstr "Виберіть файл"
+
+#~ msgid "Change the start time for the media"
+#~ msgstr "Змінити початковий час для медіа"
+
+#~ msgid "HH'H':mm'm':ss's'.zzz"
+#~ msgstr "HH'H':mm'm':ss's'.zzz"
+
+#~ msgid "Play another media synchronously (extra audio file, ...)"
+#~ msgstr "Відтворити синхронно інше медіа (зовнішній звуковий файл тощо)"
+
+#~ msgid "Capture mode"
+#~ msgstr "Режим захоплення"
+
+#~ msgid "Select the capture device type"
+#~ msgstr "Оберіть тип пристрою захоплення"
+
+#~ msgid "Device Selection"
+#~ msgstr "Вибір пристрою"
+
+#~ msgid "Options"
+#~ msgstr "Параметри"
+
+#~ msgid "Access advanced options to tweak the device"
+#~ msgstr "Додаткові параметри для детальної настройки пристрою"
+
+#~ msgid "Advanced options..."
+#~ msgstr "Додаткові параметри…"
+
+#~ msgid "Disc Selection"
+#~ msgstr "Вибір диску"
+
+#~ msgid "SVCD/VCD"
+#~ msgstr "SVCD/VCD"
+
+#~ msgid "Disable Disc Menus"
+#~ msgstr "Вимкнути меню диска"
+
+#~ msgid "No disc menus"
+#~ msgstr "Немає меню диска"
+
+#~ msgid "Disc device"
+#~ msgstr "Пристрій диску"
+
+#~ msgid "Starting Position"
+#~ msgstr "Початкова позиція"
+
+#~ msgid "Audio and Subtitles"
+#~ msgstr "Звук та субтитри"
+
+#~ msgid "Choose one or more media file to open"
+#~ msgstr "Оберіть один чи більше медіафайлів для відкриття"
+
+#~ msgid "File Selection"
+#~ msgstr "Вибір файлу"
+
+#~ msgid "You can select local files with the following list and buttons."
+#~ msgstr ""
+#~ "Ви можете обрати локальні файли за допомогою наступного списку та кнопок."
+
+#~ msgid "Add..."
+#~ msgstr "Додати…"
+
+#~ msgid "Add a subtitles file"
+#~ msgstr "Додати файл субтитрів"
+
+#~ msgid "Use a sub&titles file"
+#~ msgstr "Використовувати файл субтитрів"
+
+#~ msgid "Select the subtitles file"
+#~ msgstr "Оберіть файл субтитрів"
+
+#~ msgid "Network Protocol"
+#~ msgstr "Мережевий протокол"
+
+#~ msgid "Please enter a network URL:"
+#~ msgstr "Будь ласка, введіть мережевий URL:"
+
+#~ msgid ""
+#~ "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
+#~ "REC-html40/strict.dtd\">\n"
+#~ "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+#~ "css\">\n"
+#~ "p, li { white-space: pre-wrap; }\n"
+#~ "p { margin: 0; -qt-block-indent: 0; text-indent: 0;}\n"
+#~ "body { font-family: 'sans'; font-size: 8pt; font-weight: 400; }\n"
+#~ "p > span { color: #838383; }\n"
+#~ "</style></head><body>\n"
+#~ "<p><span>http://www.example.com/stream.avi</span></p>\n"
+#~ "<p><span>rtp://@:1234</span></p>\n"
+#~ "<p><span>mms://mms.examples.com/stream.asx</span></p>\n"
+#~ "<p><span>rtsp://server.example.org:8080/test.sdp</span></p>\n"
+#~ "<p><span>http://www.yourtube.com/watch?v=gg64x</span></p></body></html>"
+#~ msgstr ""
+#~ "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
+#~ "REC-html40/strict.dtd\">\n"
+#~ "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+#~ "css\">\n"
+#~ "p, li { white-space: pre-wrap; }\n"
+#~ "p { margin: 0; -qt-block-indent: 0; text-indent: 0;}\n"
+#~ "body { font-family: 'sans'; font-size: 8pt; font-weight: 400; }\n"
+#~ "p > span { color: #838383; }\n"
+#~ "</style></head><body>\n"
+#~ "<p><span>http://www.example.com/stream.avi</span></p>\n"
+#~ "<p><span>rtp://@:1234</span></p>\n"
+#~ "<p><span>mms://mms.examples.com/stream.asx</span></p>\n"
+#~ "<p><span>rtsp://server.example.org:8080/test.sdp</span></p>\n"
+#~ "<p><span>http://www.yourtube.com/watch?v=gg64x</span></p></body></html>"
+
+#~ msgid "MPEG-TS"
+#~ msgstr "MPEG-TS"
+
+#~ msgid "MPEG-PS"
+#~ msgstr "MPEG-PS"
+
+#~ msgid "WAV"
+#~ msgstr "WAV"
+
+#~ msgid "Webm"
+#~ msgstr "Webm"
+
+#~ msgid "ASF/WMV"
+#~ msgstr "ASF/WMV"
+
+#~ msgid "Ogg/Ogm"
+#~ msgstr "Ogg/Ogm"
+
+#~ msgid "RAW"
+#~ msgstr "RAW"
+
+#~ msgid "MPEG 1"
+#~ msgstr "MPEG 1"
+
+#~ msgid "FLV"
+#~ msgstr "FLV"
+
+#~ msgid "AVI"
+#~ msgstr "AVI"
+
+#~ msgid "MP4/MOV"
+#~ msgstr "MP4/MOV"
+
+#~ msgid "MJPEG"
+#~ msgstr "MJPEG"
+
+#~ msgid "MKV"
+#~ msgstr "MKV"
+
+#~ msgid "Encapsulation"
+#~ msgstr "Формат контейнера"
+
+#~ msgid " kb/s"
+#~ msgstr " кб/с"
+
+#~ msgid "Frame Rate"
+#~ msgstr "Частота кадрів"
+
+#~ msgid " fps"
+#~ msgstr " к/с"
+
+#~ msgid ""
+#~ "You just need to fill one of the three following parameters, VLC will "
+#~ "autodetect the other using the original aspect ratio"
+#~ msgstr ""
+#~ "Вам лише треба заповнити один із трьох наступних параметрів, VLC "
+#~ "автоматично визначить інші, використовуючи оригінальне співвідношення "
+#~ "сторін"
+
+#~ msgid "00000; "
+#~ msgstr "00000; "
+
+#~ msgid "Keep original video track"
+#~ msgstr "Тримати оригінальну відеодоріжку"
+
+#~ msgid "Video codec"
+#~ msgstr "Відеокодек"
+
+#~ msgid "Keep original audio track"
+#~ msgstr "Тримати оригінальну звукову доріжку"
+
+#~ msgid "Sample Rate"
+#~ msgstr "Частота дискретизації"
+
+#~ msgid "Audio codec"
+#~ msgstr "Звуковий кодек"
+
+#~ msgid "Overlay subtitles on the video"
+#~ msgstr "Помістити субтитри на відео"
+
+#~ msgid "Destinations"
+#~ msgstr "Призначення"
+
+#~ msgid "New destination"
+#~ msgstr "Нове призначення"
+
+#~ msgid ""
+#~ "Add destinations following the streaming methods you need. Be sure to "
+#~ "check with transcoding that the format is compatible with the method used."
+#~ msgstr ""
+#~ "Додати призначення відповідно методам мовлення, які Вам потрібні. "
+#~ "Впевніться перевіркою перекодуванням, що формат сумісний із "
+#~ "використовуваним методом."
+
+#~ msgid "Display locally"
+#~ msgstr "Показувати локально"
+
+#~ msgid "Activate Transcoding"
+#~ msgstr "Активувати перекодування"
+
+#~ msgid "Destination Setup"
+#~ msgstr "Установлення призначення"
+
+#~ msgid "Miscellaneous Options"
+#~ msgstr "Інші параметри"
+
+#~ msgid "Stream all elementary streams"
+#~ msgstr "Надсилати усі елементарні потоки"
+
+#~ msgid "Group name"
+#~ msgstr "Ім'я групи"
+
+#~ msgid "Generated stream output string"
+#~ msgstr "Генерований рядок вихідного потоку"
+
+#~ msgid "Option Setup"
+#~ msgstr "Настройка опції"
+
+#~ msgid " %"
+#~ msgstr " %"
+
+#~ msgid "Output module:"
+#~ msgstr "Модуль виводу:"
+
+#~ msgid "Visualization:"
+#~ msgstr "Візуалізація:"
+
+#~ msgid "Enable Time-Stretching audio"
+#~ msgstr "Включити часове розтягнення звуку"
+
+#~ msgid "Dolby Surround:"
+#~ msgstr "Dolby Surround:"
+
+#~ msgid "Replay gain mode:"
+#~ msgstr "Режим автонормалізації гучності звуку:"
+
+#~ msgid "Headphone surround effect"
+#~ msgstr "Ефект оточення для навушників"
+
+#~ msgid "Normalize volume to:"
+#~ msgstr "Нормалізувати гучність до:"
+
+#~ msgid "Preferred audio language:"
+#~ msgstr "Бажана мова звуку:"
+
+#~ msgid "Password:"
+#~ msgstr "Пароль:"
+
+#~ msgid "Username:"
+#~ msgstr "Ім'я користувача:"
+
+#~ msgid "Submit played tracks stats to Last.fm"
+#~ msgstr "Публікація відтворених пісень на Last.fm"
+
+#~ msgid "Codecs"
+#~ msgstr "Кодеки"
+
+#~ msgid "x264 profile and level selection"
+#~ msgstr "вибір профілю й рівня x264"
+
+#~ msgid "x264 preset and tuning selection"
+#~ msgstr "вибір попередньої настройки й параметрів x264"
+
+#~ msgid "Use GPU accelerated decoding"
+#~ msgstr "Використовувати прискорення GPU для декодування"
+
+#~ msgid "Skip H.264 in-loop deblocking filter"
+#~ msgstr "Пропускати неблокуючий фільтр H.264 у циклі"
+
+#~ msgid "Video quality post-processing level"
+#~ msgstr "Рівень якості постобробки відео"
+
+#~ msgid "Optical drive"
+#~ msgstr "Оптичний накопичувач"
+
+#~ msgid "Default optical device"
+#~ msgstr "Стандартний оптичний накопичувач"
+
+#~ msgid "Damaged or incomplete AVI file"
+#~ msgstr "Пошкоджений чи неповний AVI-файл"
+
+#~ msgid "HTTP proxy URL"
+#~ msgstr "URL HTTP-проксі"
+
+#~ msgid "HTTP (default)"
+#~ msgstr "HTTP (стандартно)"
+
+#~ msgid "RTP over RTSP (TCP)"
+#~ msgstr "RTP поверх RTSP (TCP)"
+
+#~ msgid "Live555 stream transport"
+#~ msgstr "Транспорт потоку Live555"
+
+#~ msgid "Default caching policy"
+#~ msgstr "Стандартна політика кешування"
+
+#~ msgid "Instances"
+#~ msgstr "Копії"
+
+#~ msgid "Allow only one instance"
+#~ msgstr "Дозволяти тільки одну копію"
+
+#~ msgid "Enqueue files when in one instance mode"
+#~ msgstr "Додавати елементи до черги у режимі однієї копії"
+
+#~ msgid "Every "
+#~ msgstr "Кожні "
+
+#~ msgid "Separate words by | (without space)"
+#~ msgstr "Розділюйте слова за допомогою «|» (без пробілу)"
+
+#~ msgid "Save recently played items"
+#~ msgstr "Зберегти недавно відтворювані елементи"
+
+#~ msgid "Album art download policy:"
+#~ msgstr "Політика завантаження альбомного мистецтва:"
+
+#~ msgid "Activate updates notifier"
+#~ msgstr "Активувати сповіщення про поновлення"
+
+#~ msgid "Menus language:"
+#~ msgstr "Мова меню:"
+
+#~ msgid "Pause on the last frame of a video"
+#~ msgstr "Призупиняти на останньому кадрі відео"
+
+#~ msgid "File extensions association"
+#~ msgstr "Асоціації розширень файлів"
+
+#~ msgid "Set up associations..."
+#~ msgstr "Встановити асоціації…"
+
+#~ msgid "Configure Media Library"
+#~ msgstr "Конфігурувати медіатеку"
+
+#~ msgid "Look and feel"
+#~ msgstr "Зовнішній вигляд"
+
+#~ msgid "Use custom skin"
+#~ msgstr "Використовувати довільну обкладинку"
+
+#~ msgid "This is VLC's default interface, with a native look and feel."
+#~ msgstr "Це стадартний інтерфейс VLC із рідним виглядом."
+
+#~ msgid "Use native style"
+#~ msgstr "Використовувати рідний стиль"
+
+#~ msgid "Show controls in full screen mode"
+#~ msgstr "Показувати елементи керування у повноекранному режимі"
+
+#~ msgid "Start in minimal view mode"
+#~ msgstr "Запускати з мінімальним виглядом"
+
+#~ msgid "Pause playback when minimized"
+#~ msgstr "Призупиняти відтворювання, якщо вікно мінімізовано"
+
+#~ msgid "Integrate video in interface"
+#~ msgstr "Вбудувати відео в інтерфейс"
+
+#~ msgid "Resize interface to video size"
+#~ msgstr "Змінити розмір інтерфейсу до розміру відео"
+
+#~ msgid "Show systray icon"
+#~ msgstr "Показувати піктограму в області сповіщень"
+
+#~ msgid "Systray popup when minimized"
+#~ msgstr " Спливаючі вікна у області сповіщення, якщо мінімізовано"
+
+#~ msgid "Force window style:"
+#~ msgstr "Вимушений стиль вікна:"
+
+#~ msgid "Skin resource file:"
+#~ msgstr "Файл обкладинки:"
+
+#~ msgid "Enable On Screen Display (OSD)"
+#~ msgstr "Включити OSD"
+
+#~ msgid "Show media title on video start"
+#~ msgstr "Показувати заголовок медіа на початку відтворення"
+
+#~ msgid "Subtitles Language"
+#~ msgstr "Мова субтитрів"
+
+#~ msgid "Preferred subtitles language"
+#~ msgstr "Бажана мова субтитрів"
+
+#~ msgid "Default encoding"
+#~ msgstr "Стандартне кодування"
+
+#~ msgid "Subtitles effects"
+#~ msgstr "Ефекти субтитрів"
+
+#~ msgid "Font color"
+#~ msgstr "Колір шрифту"
+
+#~ msgid "Add a shadow"
+#~ msgstr "Додати тінь"
+
+#~ msgid "Add a background"
+#~ msgstr "Додати тло"
+
+#~ msgid " px"
+#~ msgstr " px"
+
+#~ msgid "Accelerated video output (Overlay)"
+#~ msgstr "Прискорений вивід відео (оверлей)"
+
+#~ msgid "DirectX"
+#~ msgstr "DirectX"
+
+#~ msgid "Display device"
+#~ msgstr "Пристрій відображення"
+
+#~ msgid "KVA"
+#~ msgstr "KVA"
+
+#~ msgid "Deinterlacing"
+#~ msgstr "Деінтерлейсинг"
+
+#~ msgid "Force Aspect Ratio"
+#~ msgstr "Вимушене співвідношення сторін"
+
+#~ msgid "vlc-snap"
+#~ msgstr "vlc-snap"
+
+#~ msgid "1"
+#~ msgstr "1"
+
+#~ msgid "Stuff"
+#~ msgstr "Речі"
+
+#~ msgid "Edit settings"
+#~ msgstr "Редагувати параметри"
+
+#~ msgid "Control"
+#~ msgstr "Контроль"
+
+#~ msgid "Run manually"
+#~ msgstr "Запустити вручну"
+
+#~ msgid "Setup schedule"
+#~ msgstr "Встановити планування"
+
+#~ msgid "Run on schedule"
+#~ msgstr "Запустити по плану"
+
+#~ msgid "Status"
+#~ msgstr "Статус"
+
+#~ msgid "P/P"
+#~ msgstr "P/P"
+
+#~ msgid "Prev"
+#~ msgstr "Попередній"
+
+#~ msgid "Add Input"
+#~ msgstr "Додати ввід"
+
+#~ msgid "Edit Input"
+#~ msgstr "Редагувати ввід"
+
+#~ msgid "Clear List"
+#~ msgstr "Очистити список"
+
+#~ msgid "Check for VLC updates"
+#~ msgstr "Перевірити оновлення VLC"
+
+#~ msgid "Launching an update request..."
+#~ msgstr "Запуск запиту поновлення…"
+
+#~ msgid "Do you want to download it ?"
+#~ msgstr "Завантажити його?"
+
+#~ msgid "Essential"
+#~ msgstr "Основне"
+
+#~ msgid ">HHHHHH;#"
+#~ msgstr ">HHHHHH;#"
+
+#~ msgid "Negate colors"
+#~ msgstr "Інверсія кольорів"
+
+#~ msgid "Colors"
+#~ msgstr "Кольори"
+
+#~ msgid "Interactive Zoom"
+#~ msgstr "Інтерактивне масштабування"
+
+#~ msgid "Wall"
+#~ msgstr "Стіна"
+
+#~ msgid "Angle"
+#~ msgstr "Кут"
+
+#~ msgid "Black slot"
+#~ msgstr "Чорний слот"
+
+#~ msgid "..."
+#~ msgstr "…"
+
+#~ msgid "full"
+#~ msgstr "повно"
+
+#~ msgid "Logo erase"
+#~ msgstr "Видалити логотип"
+
+#~ msgid "Mask"
+#~ msgstr "Маска"
+
+#~ msgid "Edge weightning"
+#~ msgstr "Вага краю"
+
+#~ msgid "Output Color Filtermode"
+#~ msgstr "Режим фільтру вихідного кольору"
+
+#~ msgid "Brightness (%)"
+#~ msgstr "Яскравість (%)"
+
+#~ msgid "Darkness limit"
+#~ msgstr "Ліміт темноти"
+
+#~ msgid "Mark analyzed Pixels"
+#~ msgstr "Помічати проаналізовані пікселі"
+
+#~ msgid "Filter threshold (%)"
+#~ msgstr "Поріг фільтру (%)"
+
+#~ msgid "Filter smoothness (%)"
+#~ msgstr "Гладкість фільтру (%)"
+
+#~ msgid "Motion detect"
+#~ msgstr "Детектор руху"
+
+#~ msgid "Anti-Flickering"
+#~ msgstr "Усунення блимання"
+
+#~ msgid "Soften"
+#~ msgstr "Пом’якшити"
+
+#~ msgid "Spatial blur"
+#~ msgstr "Просторове розмиття"
+
+#~ msgid "Mirror"
+#~ msgstr "Дзеркало"
+
+#~ msgid "VLM configurator"
+#~ msgstr "Конфігуратор VLM"
+
+#~ msgid "Media Manager Edition"
+#~ msgstr "Випуск медіаменеджеру"
+
+#~ msgid "Name:"
+#~ msgstr "Ім’я:"
+
+#~ msgid "Input:"
+#~ msgstr "Вхід:"
+
+#~ msgid "Select Input"
+#~ msgstr "Оберіть вхід:"
+
+#~ msgid "Output:"
+#~ msgstr "Вивід:"
+
+#~ msgid "Select Output"
+#~ msgstr "Оберіть вивід:"
+
+#~ msgid "Time Control"
+#~ msgstr "Керування часом"
+
+#~ msgid "Mux Control"
+#~ msgstr "Керування мікшуванням"
+
+#~ msgid "Muxer:"
+#~ msgstr "Мультиплексор:"
+
+#~ msgid "AAAA; "
+#~ msgstr "AAAA; "
+
+#~ msgid "Loop"
+#~ msgstr "Цикл"
+
+#~ msgid "Media Manager List"
+#~ msgstr "Список медіаменеджеру"
 
 #~ msgid "Probe DVB card for capabilities"
 #~ msgstr "Опитувати доступні функції картки DVB"
@@ -30912,7 +30581,7 @@ msgstr "Список медіаменеджеру"
 
 #, fuzzy
 #~ msgid "POSIX signals handling interface"
-#~ msgstr "Настройки головного інтерфейсу"
+#~ msgstr "Налаштування головного інтерфейсу"
 
 #, fuzzy
 #~ msgid "VLM remote control interface"
@@ -30972,7 +30641,7 @@ msgstr "Список медіаменеджеру"
 
 #, fuzzy
 #~ msgid "General editing filters"
-#~ msgstr "Загальні настройки звуку"
+#~ msgstr "Загальні налаштування звуку"
 
 #, fuzzy
 #~ msgid "Distortion filters"
@@ -31020,7 +30689,7 @@ msgstr "Список медіаменеджеру"
 
 #, fuzzy
 #~ msgid "Keep current Equalizer settings"
-#~ msgstr "Загальні настройки відео"
+#~ msgstr "Загальні налаштування відео"
 
 #, fuzzy
 #~ msgid ""
@@ -31496,7 +31165,7 @@ msgstr "Список медіаменеджеру"
 
 #, fuzzy
 #~ msgid "Settings for audio+video and miscellaneous decoders and encoders."
-#~ msgstr "Настройки декодерів і кодерів звуку."
+#~ msgstr "Налаштування декодерів і кодерів звуку."
 
 #, fuzzy
 #~ msgid "Random off"

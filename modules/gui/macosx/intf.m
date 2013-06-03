@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 85edc8a476cba255ccdc2e1b6089a63c6b63906a $
+ * $Id: 448e7380d6e07667346cc5bb9f5fbb4903b87d3c $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -749,6 +749,10 @@ static VLCMain *_o_sharedMainInstance = nil;
     config_PutInt( p_intf, "repeat", var_GetBool( p_playlist, "repeat" ) );
 
     msg_Dbg( p_intf, "Terminating" );
+
+    /* HACK: the playlist will re-start on quit because of a core vs. UI module limitation
+     * in turn, items created by transcoding can and will be over-written with garbage */
+    playlist_Clear(p_playlist, false);
 
     /* unsubscribe from the interactive dialogues */
     dialog_Unregister( p_intf );
