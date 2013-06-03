@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 1d89008a921ec60d78d082a2bdf0edccc59fc179 $
+ * $Id: 854cd5d16ba0f834357ff903ef1d6b7d83af558e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -105,6 +105,7 @@ struct encoder_sys_t
      */
     char *p_buffer;
     uint8_t *p_buffer_out;
+    uint8_t *p_interleave_buffer;
     size_t i_buffer_out;
 
     /*
@@ -343,6 +344,7 @@ int OpenEncoder( vlc_object_t *p_this )
 
     p_sys->p_buffer = NULL;
     p_sys->p_buffer_out = NULL;
+    p_sys->p_interleave_buffer = NULL;
     p_sys->i_buffer_out = 0;
 
 #if LIBAVCODEC_VERSION_MAJOR < 54
@@ -518,6 +520,7 @@ int OpenEncoder( vlc_object_t *p_this )
                    p_enc->fmt_in.video.i_sar_den, 1 << 30 );
 
         p_sys->p_buffer_out = NULL;
+
 
         p_enc->fmt_in.i_codec = VLC_CODEC_I420;
         p_enc->fmt_in.video.i_chroma = p_enc->fmt_in.i_codec;
@@ -890,6 +893,13 @@ int OpenEncoder( vlc_object_t *p_this )
         {
             goto error;
         }
+        if( av_sample_fmt_is_planar( p_sys->p_context->sample_fmt ) )
+        {
+            p_sys->p_interleave_buffer = malloc( p_sys->i_buffer_out );
+            if( p_sys->p_interleave_buffer == NULL )
+                goto error;
+        }
+
     }
 
     msg_Dbg( p_enc, "found encoder %s", psz_namecodec );
@@ -899,6 +909,7 @@ error:
     free( p_enc->fmt_out.p_extra );
     free( p_sys->p_buffer );
     free( p_sys->p_buffer_out );
+    free( p_sys->p_interleave_buffer );
     free( p_sys );
     return VLC_ENOMEM;
 }
@@ -1145,16 +1156,23 @@ static block_t *EncodeAudio( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
                          p_sys->i_sample_bytes;
 
             if( av_sample_fmt_is_planar( p_sys->p_context->sample_fmt ) )
-                Deinterleave( &p_sys->p_buffer[i_delay_size * p_sys->i_sample_bytes],
-                        p_buffer, p_sys->i_frame_size - i_delay_size, p_enc->fmt_in.audio.i_channels, p_enc->fmt_in.i_codec );
-            else
+            {
                 memcpy( p_sys->p_buffer + i_delay_size * p_sys->i_sample_bytes,
                         p_buffer, i_size );
+                Deinterleave( p_sys->p_interleave_buffer, p_sys->p_buffer,
+                        p_sys->i_frame_size, p_enc->fmt_in.audio.i_channels, p_enc->fmt_in.i_codec );
+                p_samples = p_sys->p_interleave_buffer;
+            }
+            else
+            {
+                memcpy( p_sys->p_buffer + i_delay_size * p_sys->i_sample_bytes,
+                        p_buffer, i_size );
+                p_samples = p_sys->p_buffer;
+            }
             p_buffer -= i_delay_size * p_sys->i_sample_bytes;
             i_samples += i_samples_delay;
             i_samples_delay = 0;
 
-            p_samples = p_sys->p_buffer;
         }
         else
         {
@@ -1198,13 +1216,8 @@ static block_t *EncodeAudio( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
     /* Backup the remaining raw samples */
     if( i_samples )
     {
-        if( av_sample_fmt_is_planar( p_sys->p_context->sample_fmt ) )
-            Deinterleave( &p_sys->p_buffer[i_samples_delay * p_sys->i_sample_bytes],
-                    p_buffer, i_samples, p_enc->fmt_in.audio.i_channels, p_enc->fmt_in.i_codec );
-        else
-            memcpy( &p_sys->p_buffer[i_samples_delay * p_sys->i_sample_bytes],
-                    p_buffer,
-                    i_samples * p_sys->i_sample_bytes );
+        memcpy( &p_sys->p_buffer[i_samples_delay * p_sys->i_sample_bytes],
+                    p_buffer, i_samples * p_sys->i_sample_bytes );
     }
 
     return p_chain;
@@ -1224,6 +1237,7 @@ void CloseEncoder( vlc_object_t *p_this )
     av_free( p_sys->p_context );
 
     free( p_sys->p_buffer );
+    free( p_sys->p_interleave_buffer );
     free( p_sys->p_buffer_out );
 
     free( p_sys );

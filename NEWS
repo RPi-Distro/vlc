@@ -1,3 +1,33 @@
+Changes between 2.0.6 and 2.0.7:
+--------------------------------
+
+Input:
+ * Fix playback termination when switching ES tracks (PowerPC only)
+ * Fix memory exhaustion vulnerability when playing specifically crafted
+   playlist files
+
+Decoders:
+ * Fix WMA Pro, MPEG 4 ALS, APE, MLP and ADPCM-IMA4 playback
+
+Encoders:
+ * Fix audio encoding for numerous codecs, notably mp3 and aac
+
+Muxers:
+ * Fix noticeable memory leak when creating AVI files
+
+Video output:
+ * Fix crash when using libvlc in 3rd party applications (Mac only)
+
+Mac OS X Interface
+ * Minor improvements
+ * Fix issue which could lead to loss of media files created through transcoding
+
+Translations:
+ * Update Basque, Simplified Chinese, Ukrainian, Turkish, Portuguese, Norwegian Bokmål,
+   Burmese, Lithuanian, Italian, Hindi, Spanish, German, Czech, Danish, Welsh translations
+ * New Azerbaijani, Kirgyz, Oriya translations
+
+
 Changes between 2.0.5 and 2.0.6:
 --------------------------------
 
@@ -5,7 +35,7 @@ Access:
  * Fix HTTPS playback with some certificates previously rejected
 
 Audio Output:
- * Fix lookup for device names in auhal plugin
+ * Improve lookup of human readable device names in AUHAL plugin (OS X)
 
 Demuxers:
  * Fix crash with broken asf files (SA-1302)
@@ -31,8 +61,9 @@ Mac OS X:
  * Fix BDMV folder selection issue on OS X Mountain Lion, which treats such
    folders as a AVCHD file as soon as they include an item named INDEX.BDM
  * Fix bug which caused a hidden fullscreen panel
+ * Fix various minor UI drawing issues (main window, fullscreen controller,
+   lua extensions, ...)
  * Allow VLC to be associated with .dvdmedia packages
- * Fix various interface rendering issues
 
 Qt:
  * Fix clearing of Media Info panel on dialog exit

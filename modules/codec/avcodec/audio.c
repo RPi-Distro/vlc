@@ -2,7 +2,7 @@
  * audio.c: audio decoder using ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2003 the VideoLAN team
- * $Id: ecbbcad5324c36f50ba063cb6672f6e5f35f7e6c $
+ * $Id: e7050c7711bff28289801bb4d7f80c42e5728e2b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -351,7 +351,7 @@ aout_buffer_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
         date_Init( &p_sys->end_date, p_sys->p_context->sample_rate, 1 );
 
     if( p_block->i_pts != 0 &&
-        p_block->i_pts != date_Get( &p_sys->end_date ) )
+        p_block->i_pts > date_Get( &p_sys->end_date ) )
     {
         date_Set( &p_sys->end_date, p_block->i_pts );
     }

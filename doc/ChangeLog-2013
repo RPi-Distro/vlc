@@ -1,3 +1,439 @@
+commit 7dd7e4d22d74227fb2d732f009fe39855dad6cc4
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun May 26 19:40:15 2013 +0200
+
+    Basque fix
+
+commit 5bca2bdea8640c51a8c5c8f510824a56e48630b9
+Author: Christoph Miebach <christoph.miebach@web.de>
+Date:   Sun May 26 19:23:27 2013 +0200
+
+    l10n: translating C into eu
+
+commit 12dd70776c520ba8f014c95a6b4180a6b4b43d98
+Author: Aled Powell <aled@aledpowell.com>
+Date:   Sun May 26 19:22:18 2013 +0200
+
+    l10n: Welsh update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 61524b2ce893c9ec0fd338fcb5aaa90f42666b11
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun May 26 19:15:09 2013 +0200
+
+    Update NEWS for l10n
+
+commit 7287985151fed31d2bcdb49cebbbc57b626e2739
+Author: Christoph Miebach <christoph.miebach@web.de>
+Date:   Sun May 26 18:13:24 2013 +0200
+
+    l10n: adding Azerbaijani, Kirgyz and Oriya to LINGUAS
+
+commit 00d404c11818fb67b6fc727e97b14cf23119c835
+Author: Julen Ruiz Aizpuru <julenx@gmail.com>
+Date:   Sun May 26 18:08:50 2013 +0200
+
+    l10n: Basque update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit ad2b71712fda0220e1907e2c4fd967926f20519e
+Author: Dean Lee <xslidian@gmail.com>
+Date:   Sun May 26 17:12:17 2013 +0200
+
+    l10n: Simplified Chinese update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 5e3e700df957bf062bc474007f706eddc929ddb6
+Author: Andriy Bandura <andriykopanytsia@gmail.com>
+Date:   Sun May 26 17:07:14 2013 +0200
+
+    l10n: Ukrainian update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 26cace0076436791606bde78270ac01a04150ff8
+Author: Kaya Zeren <kayazeren@gmail.com>
+Date:   Sun May 26 17:05:54 2013 +0200
+
+    l10n: Turkish update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 1f438a498e0d1aae1c7d1c7ebd2fcf52b9e11d34
+Author: Bruno Miguel Queiros <bqueiros@gmail.com>
+Date:   Sun May 26 17:02:34 2013 +0200
+
+    l10n: Portuguese update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 2b398e7d1b93d2db2cdac156011ad29701d6485f
+Author: Prasannajit Acharya <holmessherlock21@gmail.com>
+Date:   Sun May 26 16:58:40 2013 +0200
+
+    l10n: Initial Oriya translation
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit ffb24ea6e746e50353d54313475d68f1ac9c6410
+Author: Stian Jørgensrud <stianahj@gmail.com>
+Date:   Sun May 26 16:57:00 2013 +0200
+
+    l10n: Norwegian Bokmål update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 949b7fce83ccd756cf20976994fea260fbe2dad9
+Author: Yhal Htet Aung <jumoun@gmail.com>
+Date:   Sun May 26 16:55:57 2013 +0200
+
+    l10n: Burmese update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 941010ad1cf1d2b7c80a23894ca030d0130a55ba
+Author: Mindaugas Baranauskas <embar@super.lt>
+Date:   Sun May 26 16:46:24 2013 +0200
+
+    l10n: Lithuanian update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit ac4fa06511ddfb942c31e8a1fc35cad3a5fbda60
+Author: Chynggyz Jumaliev <translatorky@lavabit.com>
+Date:   Sun May 26 16:35:59 2013 +0200
+
+    l10n: Initial Kirgyz translation
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit ba7d6bb70c0d21b190b5ec0c8376ca52d3c3636d
+Author: Vincenzo Reale <smart2128@baslug.org>
+Date:   Sun May 26 16:27:27 2013 +0200
+
+    l10n: Italian update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 03dd22a835446f7640ccdca46cec3d11d752f909
+Author: Chandan Kumar <chandankumar.093047@gmail.com>
+Date:   Sun May 26 16:25:03 2013 +0200
+
+    l10n: Hindi update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 5db9bb093ea412d3b65f0b937de8c5e852356467
+Author: David González <pico.dev@gmail.com>
+Date:   Sun May 26 16:20:25 2013 +0200
+
+    l10n: Spanish update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 95f9c26f288a8d43997d550076fee7f3ab3dc372
+Author: Mario Siegmann <mario_siegmann@web.de>
+Date:   Sun May 26 16:17:43 2013 +0200
+
+    l10n: German update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 17579b2bd01cce8753f2216b05d6915f6846d8e1
+Author: Tomáš Chvátal <tomas.chvatal@gmail.com>
+Date:   Sun May 26 16:14:44 2013 +0200
+
+    l10n: Czech update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 1ce367859d2e7faf71c1cddc715f98f61a4ed052
+Author: Emin Mastizada <emin@mastizada.tk>
+Date:   Sun May 26 16:10:25 2013 +0200
+
+    l10n: Initial Azerbaijani translation
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 64b44ef496b555376c9382c1421aa60ec62258d8
+Author: Aputsiaĸ Niels Janussen <aj@isit.gl>
+Date:   Sun May 26 14:27:38 2013 +0200
+
+    l10n: Danish update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 53d8ad6e766f6daecbba4561d3d2b162d7430ef9
+Author: Aled Powell <aled@aledpowell.com>
+Date:   Sun May 26 14:25:18 2013 +0200
+
+    l10n: Welsh update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit bd211ba9e468bfa5d4f5ae0e9a7fda611acf59fc
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Fri May 24 16:23:09 2013 +0200
+
+    Add last OSX fix
+
+commit 20b913411e74779f934cccf9f541f914430d6737
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Fri May 24 16:21:38 2013 +0200
+
+    macosx: add work-around to prevent freshly created media files from being over-written (close #8685)
+    
+    The core may restart playback on termination and in turn over-write created files with garbage. The less hacky approach 7f52b2ae is 2.1-only and thus can't be backported. A proper solution is covered by #8353 and depends on future core modifications scheduled for 2.2
+
+commit c60486f2e4ea273eb588d6b7a45f6beaa65f6835
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri May 24 12:28:37 2013 +0200
+
+    Add NEWS about audio encoding fix
+
+commit 1e88bae7322f0a78f80c38bff1ade198725a3e16
+Author: Ilkka Ollakka <ileoo@videolan.org>
+Date:   Thu May 23 23:54:24 2013 +0300
+
+    avcodec: store leftover-samples in interleaved format
+    
+    Doesn't break deinterleave and Fixes #8615 and #8570 for 2.0
+    
+    (cherry-picked by hand from af3f8759a874eeda1af2ccd50d61028809bd3161)
+
+commit d139f1930acf25b032c19219fc0fb20fc81a40f9
+Author: David Fuhrmann <david.fuhrmann@googlemail.com>
+Date:   Tue May 21 21:47:31 2013 +0200
+
+    vout_macosx: add error messages on failure
+    (cherry picked from commit 696e5db02b5d7355a4576e2dd9176f9bf5961faa)
+    
+    Conflicts:
+    	modules/video_output/macosx.m
+
+commit c70a7e4763b93baaa3202fec186ed7b50af764c2
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Mon May 20 19:34:04 2013 +0200
+
+    macosx/SPMediaKeyTap: update list of collaborating apps (close #8644)
+    (cherry picked from commit 4eaf633347e554cb83121b06623dbcba1ea36c3f)
+    
+    Conflicts:
+    	modules/gui/macosx/SPMediaKeyTap.m
+
+commit a19cc901b320b6433b58f9a1788b18874ff4b067
+Author: David Fuhrmann <david.fuhrmann@googlemail.com>
+Date:   Sat May 11 20:02:55 2013 +0200
+
+    macosx: fix size, position and style of dark detached window close/min/max buttons (close #8613)
+    
+    (backport of a071518a14d7700e88ff7e595bbb48a39d7f3d3e)
+
+commit b90201c6c0b278e00ec734e2a054c0b39f36caa7
+Author: David Fuhrmann <david.fuhrmann@googlemail.com>
+Date:   Sat May 11 18:34:49 2013 +0200
+
+    macosx: fix color tint change notification (fixes #8612)
+    (cherry picked from commit 1ebd37d31bef640885b1d9fc8a769649ff2908e5)
+    
+    Signed-off-by: David Fuhrmann <david.fuhrmann@googlemail.com>
+
+commit e3a41f91ae98c11e771824ef4de920bfb22c3059
+Author: David Fuhrmann <david.fuhrmann@googlemail.com>
+Date:   Sat May 11 18:19:40 2013 +0200
+
+    macosx: fix display issue of pressed window buttons (fixes #8542)
+    
+    (backport of 6f8cfc401849763436031fc52d9cffe0f49cdc67)
+
+commit f0728106114449327a0f7c4881774603effeb802
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sat May 4 17:20:54 2013 +0200
+
+    Add items for a 2.0.7 release
+
+commit 803e907be4c176a0fafe5f595c7eecc354d4fcc4
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat May 4 17:20:58 2013 +0300
+
+    input: fix changing ES on big-endian (fixes #6163)
+    
+    int64_t != int
+    (cherry picked from commit ecf6d12f439132e4ffde0b70387a2da31b8a9d42)
+
+commit 0731d12c31b6a964e0c5445183263192f2064b15
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Wed Apr 10 17:07:08 2013 +0200
+
+    vout_macosx: fix prerequisite check in Control() (close #7937)
+    (cherry picked from commit ba534e5c56e1d4d3d3bb37fe23b32615e36171ff)
+
+commit 42eaf8ca95b60ffe2260033c780abbb6c5522862
+Author: David Fuhrmann <david.fuhrmann@googlemail.com>
+Date:   Sat Apr 27 10:49:19 2013 +0200
+
+    macosx: activate playlist when playback finishes (close #6693)
+    
+    backport of (334e48a3e85e6127be03b2293b9c4233c73b1d4c)
+
+commit 573bf233a459115e2464a17172de364614545654
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Apr 26 23:32:17 2013 +0300
+
+    demux: fix path extension on non-local inputs (fixes #8115)
+    
+    (cherry picked from commit d9c8170226a76420644ff1819fb3e6c4ee792e6f)
+
+commit d70eac525d4d789f099c0bf3c1a284601a61e653
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Apr 25 22:40:42 2013 +0300
+
+    xcb: fix X11 key table ordering
+    
+    (cherry picked from commit 711e7b044cd0d49010117c543c8c60c30fca6b71)
+
+commit 62e9da1477b7e6ceb6aaaa91022f5c850832d8dc
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Apr 25 18:04:07 2013 +0300
+
+    stream_ReadLine: correctly return an error on overflow (fixes #7361)
+    (cherry picked from commit 5e7e45dead26528d648a645b907df877100ecc31)
+    
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 9defa225775870e73d6bd3ac65ddedf10460d0d8
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Tue Apr 23 18:27:18 2013 +0200
+
+    avcodec audio decoder: stricter PTS output
+    
+    Only trust demuxer PTS if it is higher than what we expected
+    Fix demuxers that send several packets with identical PTS
+    Close #8453
+    
+    Manual Cherry-Pick from a3898d68fd7a06d516a3feb3f11e2403dc741b81
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 48915cf06702c7037b428769b1a13bfff8f34d8d
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Apr 16 14:47:20 2013 +0200
+
+    AVI: free p_sys resources on Close (WTF?)
+    
+    Close #8448
+    (cherry picked from commit 005aff8b753064933ce6d2dd2862324e5056f165)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 373ec9ed90c79b09d1b9e74851daa2757ee2af48
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Thu Apr 25 10:56:54 2013 +0200
+
+    contrib: fix videolan URL
+    (cherry picked from commit fb772d0f76d99f04179670ed4ef51a91113e8b0c)
+    
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 27bbe4623600a8722b719750688ee760b1aa475a
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Tue Apr 23 00:50:41 2013 +0200
+
+    macosx: allow drag and drop of disks on the VLC icon in the Dock and in the Finder (close #8377)
+    (cherry picked from commit f8374c73f502e9befee05539db08ca9147bf8724)
+
+commit 07699ed80a6358fdcdbb85b023d0edd00a36c819
+Author: Christoph Miebach <christoph.miebach@web.de>
+Date:   Mon Apr 22 18:25:24 2013 +0200
+
+    Updating translators
+
+commit 485d987191fd2f1b6475dcc515327bd0ad1ca473
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Apr 11 13:41:20 2013 +0200
+
+    On the road to 2.0.7
+
+commit da489c12add0aa4a592e142e7afbaa373ef9d227
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Tue Apr 9 18:51:39 2013 +0200
+
+    contrib: sanitize default OSX environment settings
+
+commit 2460084edfbc74273d3b9b9369018e66418ba5b4
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Thu Mar 21 17:40:10 2013 +0100
+
+    Minor NEWS fixes
+
+commit 729aa7ae66cd56011fd1dd8909a92b9fdcf003be
+Author: Benjamin Drung <bdrung@debian.org>
+Date:   Mon Apr 8 23:10:47 2013 +0300
+
+    Fix typo: priviledge -> privilege
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 2339bb72f92e884904b519098027cce453666bde)
+
+commit 6f3b544ce923533bfcd0afbdc1a0cae716cd15a7
+Author: David Fuhrmann <david.fuhrmann@googlemail.com>
+Date:   Mon Apr 8 18:29:03 2013 +0200
+
+    macosx: fix appearance default values for main window controls bar
+    
+    and syncronize with xcode 3 project
+    close #8382
+    
+    (not cherry-picked from 4065770e62dfe240c597c4154079a21c6ce3f7fe)
+
+commit d8b8b9c90113cb19d592bd2d6a7e94b4ea85f610
+Author: Ludovic Fauvet <etix@videolan.org>
+Date:   Mon Apr 8 14:10:50 2013 +0200
+
+    lua http: fix two xss vulnerabilities
+    (cherry picked from commit bf02b8dd211d5a52aa301a9a2ff4e73ed8195881)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 26787244c773bb35b9e490ade0b93777ea72792b
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Mon Oct 1 16:18:35 2012 +0200
+
+    update: constify
+    (cherry picked from commit 32bfb8dc02f755d46761268f5674eb56671c81f5)
+    
+    Signed-off-by: Rafaël Carré <funman@videolan.org>
+
+commit e912df7e83d9798524fbb8d6f0afd904a2da2ef0
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Mon Oct 1 16:16:45 2012 +0200
+
+    update: do not modify base64 input to add \0 terminators
+    
+    It is not needed anymore since ce6521381b , parsing will
+    stop at first unrecognized character (like \r or \n)
+    (cherry picked from commit 6841a105dad5bf416fe7e1b906bf4abdce21fbe9)
+    
+    Signed-off-by: Rafaël Carré <funman@videolan.org>
+
+commit a38fc7e1f282665d72856d93070708979501d95c
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Mon Apr 8 00:29:01 2013 +0200
+
+    contrib: upnp: fix build
+    (cherry picked from commit 3b1ecaf7ae893a53b1d8e4928824e10ca20ac2e9)
+    
+    Signed-off-by: Rafaël Carré <funman@videolan.org>
+
+commit 426218b68501eff21b7542e20f81cd65cd19317a
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Mon Feb 18 15:16:31 2013 +0100
+
+    contrib: remove obsolete dvdread patch
+
 commit be9623cd17649db2fa2691e29aa0a7f3b0472bcc
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Sun Apr 7 22:24:55 2013 +0200
