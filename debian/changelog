@@ -2,7 +2,7 @@ vlc (2.0.7-2) unstable; urgency=medium
 
   * Fix FTBFS with FLAC 1.3, Closes: #712687
 
- -- Reinhard Tartler <siretart@sandy.tauware.de>  Wed, 19 Jun 2013 07:38:18 +0200
+ -- Reinhard Tartler <siretart@tauware.de>  Wed, 19 Jun 2013 07:38:18 +0200
 
 vlc (2.0.7-1) unstable; urgency=low
 
