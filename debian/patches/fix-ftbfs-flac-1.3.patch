@@ -18,13 +18,11 @@ http://lists.xiph.org/pipermail/flac-dev/2012-April/003355.html
 Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
 ---
 
-diff --git a/modules/codec/flac.c b/modules/codec/flac.c
-index 4cfbfa9..543e8bb 100644
 --- a/modules/codec/flac.c
 +++ b/modules/codec/flac.c
-@@ -37,8 +37,8 @@
- #include <vlc_plugin.h>
+@@ -38,8 +38,8 @@
  #include <vlc_codec.h>
+ #include <vlc_aout.h>
  
 -#include <stream_decoder.h>
 -#include <stream_encoder.h>
