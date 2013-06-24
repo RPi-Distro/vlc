@@ -1,3 +1,10 @@
+vlc (2.0.7-3) unstable; urgency=low
+
+  * Drop unused build-dependencies on libglib2.0-0, libsvga1-dev,
+    libx11-xcb-dev, and libxt-dev. (Closes: #713989)
+
+ -- Benjamin Drung <bdrung@debian.org>  Mon, 24 Jun 2013 23:07:03 +0200
+
 vlc (2.0.7-2) unstable; urgency=medium
 
   * Fix FTBFS with FLAC 1.3, Closes: #712687
