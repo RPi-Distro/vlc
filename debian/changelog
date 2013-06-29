@@ -1,3 +1,9 @@
+vlc (2.0.7-3+exp1) experimental; urgency=low
+
+  * Upload to experimental
+
+ -- Reinhard Tartler <siretart@tauware.de>  Sat, 29 Jun 2013 17:08:24 +0200
+
 vlc (2.0.7-3) unstable; urgency=low
 
   * Drop unused build-dependencies on libglib2.0-0, libsvga1-dev,
