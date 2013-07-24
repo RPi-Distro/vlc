@@ -1,0 +1,16 @@
+Description: Guard m4_undefine with m4_ifdef
+ Otherwise m4 fails with m4_undefine: undefined macro: AC_DEPLIBS_CHECK_METHOD.
+Author: Sebastian Ramacher <sramacher@debian.org>
+Last-Update: 2013-07-24
+
+--- vlc-2.0.7.orig/configure.ac
++++ vlc-2.0.7/configure.ac
+@@ -411,7 +411,7 @@ LT_INIT([dlopen win32-dll shared disable
+ LT_LANG([C++])
+ LT_LANG([Windows Resource])
+ 
+-m4_undefine([AC_DEPLIBS_CHECK_METHOD])
++m4_ifdef([AC_DEPLIBS_CHECK_METHOD], [m4_undefine([AC_DEPLIBS_CHECK_METHOD])])
+ m4_defun([AC_DEPLIBS_CHECK_METHOD],[])
+ 
+ lt_cv_deplibs_check_method=pass_all
