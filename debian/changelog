@@ -1,4 +1,6 @@
-vlc (2.0.7-4) UNRELEASED; urgency=low
+vlc (2.0.7-4) unstable; urgency=low
+
+  * Team upload.
 
   [ Reinhard Tartler ]
   * Remove Sam Hocevar from uploaders on his request
@@ -9,7 +11,7 @@ vlc (2.0.7-4) UNRELEASED; urgency=low
   * debian/patches/configure-m4-undefine.patch: Prevent m4 errors during
     dh_autoreconf.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Wed, 24 Jul 2013 15:45:48 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 24 Jul 2013 16:24:06 +0200
 
 vlc (2.0.7-3) unstable; urgency=low
 
