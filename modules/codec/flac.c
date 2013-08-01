@@ -2,7 +2,7 @@
  * flac.c: flac decoder/encoder module making use of libflac
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 67ece6ac866d6b0fc8abb886cd295e96bc3e2b17 $
+ * $Id: d429c53d7de20baf8fae24174c23662b288bd852 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -38,8 +38,8 @@
 #include <vlc_codec.h>
 #include <vlc_aout.h>
 
-#include <stream_decoder.h>
-#include <stream_encoder.h>
+#include <FLAC/stream_decoder.h>
+#include <FLAC/stream_encoder.h>
 
 #include <vlc_block_helper.h>
 #include <vlc_bits.h>

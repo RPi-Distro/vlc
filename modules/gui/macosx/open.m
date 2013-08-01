@@ -2,7 +2,7 @@
  * open.m: Open dialogues for VLC's MacOS X port
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 88b96146786525b0e67660000faab709213b249d $
+ * $Id: 00781f2a6c14b2ebd381abf17e32821da75f68ed $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -278,10 +278,14 @@ static VLCOpen *_o_sharedMainInstance = nil;
 
 - (void)setMRL:(NSString *)newMRL
 {
-    [o_mrl release];
+    if (!newMRL)
+        newMRL = @"";
+    if (o_mrl)
+        [o_mrl release];
+
     o_mrl = newMRL;
     [o_mrl retain];
-    [o_mrl_fld setStringValue: newMRL];
+    [o_mrl_fld performSelectorOnMainThread:@selector(setStringValue:) withObject:o_mrl waitUntilDone:NO];
     if ([o_mrl length] > 0)
         [o_btn_ok setEnabled: YES];
     else

@@ -1,6 +1,6 @@
 /*****************************************************************************
  * Copyright © 2011-2012 VideoLAN
- * $Id: 281b38383d06f11c4bc341330b019abd2aa4c3ef $
+ * $Id: d14e0f7ac9f4b846cbcf0750840093a5e5e621f9 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -56,11 +56,18 @@ TimeTooltip::TimeTooltip( QWidget *parent ) :
     // Set default text
     setText( "00:00:00", "" );
 
-    mInitialized = false;
+    // By default the widget is unintialized and should not be displayed
+    resize( 0, 0 );
 }
 
 void TimeTooltip::buildPath()
 {
+    if( mDisplayedText.isEmpty() )
+    {
+        resize( 0, 0 );
+        return;
+    }
+
     QFontMetrics metrics( mFont );
 
     // Get the bounding box required to print the text and add some padding
@@ -110,7 +117,6 @@ void TimeTooltip::buildPath()
 
 void TimeTooltip::setText( const QString& time, const QString& text )
 {
-    mInitialized = true;
     mDisplayedText = time;
     if ( !text.isEmpty() )
         mDisplayedText.append( " - " ).append( text );
@@ -121,18 +127,13 @@ void TimeTooltip::setText( const QString& time, const QString& text )
     mTime = time;
     mText = text;
     update();
+    raise();
 }
 
 void TimeTooltip::show()
 {
-    QWidget::setVisible( mInitialized );
-#ifdef Q_WS_PM
-    // Bring a tooltip on the top
-    // Without this, tooltip does not appear on fullscreen
-    // from the second fullscreen state change
-    if( mInitialized )
-        QWidget::raise();
-#endif
+    setVisible( true );
+    raise();
 }
 
 void TimeTooltip::paintEvent( QPaintEvent * )

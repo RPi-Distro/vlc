@@ -19067,3 +19067,15 @@ Date:   Thu Dec 29 18:09:58 2011 -0500
     (cherry picked from commit 0accbd7955c0b4448137482362801cbed6ada750)
     
     Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 3d4f924e6d9c4e197161854ef10d12b8a1d50530
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Sun Jan 1 16:56:01 2012 +0100
+
+    NEWS: --http-host expects URL-style bracket-enclosed IPv6 addresses
+    
+    Unfortunately there is not much we can do until we ditch the legacy
+    <host>:<port> syntax for good
+    (cherry picked from commit f4ef5cd57b7086b2d2bd32f831ce63f8273c6d57)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>

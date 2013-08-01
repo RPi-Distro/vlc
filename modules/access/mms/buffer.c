@@ -2,7 +2,7 @@
  * buffer.c: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: b1e874704e2db00e131730fb620f00e2675cf313 $
+ * $Id: c908e272297321e1c9e5ab6cef0c89cd5fe94b5d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -194,7 +194,7 @@ int var_buffer_getmemory ( var_buffer_t *p_buf, void *p_mem, int64_t i_mem )
     i_copy = __MIN( i_mem, p_buf->i_size - p_buf->i_data );
     if( i_copy > 0 && p_mem != NULL)
     {
-        memcpy( p_mem, p_buf + p_buf->i_data, i_copy );
+        memcpy( p_mem, p_buf->p_data + p_buf->i_data , i_copy );
     }
     if( i_copy < 0 )
     {

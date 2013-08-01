@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2013-04-07 22:23+0200\n"
+"POT-Creation-Date: 2013-07-31 13:09+0200\n"
 "PO-Revision-Date: 2010-09-21 15:58+0400\n"
 "Last-Translator: Eduard Babayan <edo248@gmail.com>\n"
 "Language-Team: VLC Armenian <edo248@gmail.com>\n"
@@ -449,7 +449,7 @@ msgid "Advanced settings"
 msgstr "Ընդլայնված կարգավորումներ"
 
 #: include/vlc_config_cat.h:198 modules/gui/macosx/open.m:112
-#: modules/gui/macosx/open.m:481 modules/gui/macosx/simple_prefs.m:259
+#: modules/gui/macosx/open.m:485 modules/gui/macosx/simple_prefs.m:259
 #: modules/gui/qt4/ui/sprefs_input.h:348
 msgid "Network"
 msgstr "Ցանց"
@@ -1120,9 +1120,9 @@ msgid "decoder"
 msgstr "դեկոդեր"
 
 #: src/input/decoder.c:276 src/input/decoder.c:467
-#: modules/codec/avcodec/encoder.c:275 modules/codec/avcodec/encoder.c:283
-#: modules/codec/avcodec/encoder.c:320 modules/codec/avcodec/encoder.c:811
-#: modules/codec/avcodec/encoder.c:820 modules/stream_out/es.c:363
+#: modules/codec/avcodec/encoder.c:276 modules/codec/avcodec/encoder.c:284
+#: modules/codec/avcodec/encoder.c:321 modules/codec/avcodec/encoder.c:814
+#: modules/codec/avcodec/encoder.c:823 modules/stream_out/es.c:363
 #: modules/stream_out/es.c:378
 #, fuzzy
 msgid "Streaming / Transcoding failed"
@@ -1274,7 +1274,7 @@ msgid "Display resolution"
 msgstr "Ցույց տալ բանաձեւ"
 
 #: src/input/es_out.c:2999 src/input/es_out.c:3002 modules/access/imem.c:93
-#: modules/access/screen/screen.c:41 modules/access/screen/xcb.c:34
+#: modules/access/screen/screen.c:42 modules/access/screen/xcb.c:34
 #: modules/access/shm.c:40 modules/access/vdr.c:93 modules/demux/image.c:66
 msgid "Frame rate"
 msgstr "Կադրերի արագութուն"
@@ -1284,23 +1284,23 @@ msgstr "Կադրերի արագութուն"
 msgid "Decoded format"
 msgstr "Ապակոդավորված"
 
-#: src/input/input.c:2465
+#: src/input/input.c:2467
 msgid "Your input can't be opened"
 msgstr "Ձեր գրածը չի կարող բացվել"
 
-#: src/input/input.c:2466
+#: src/input/input.c:2468
 #, fuzzy, c-format
 msgid "VLC is unable to open the MRL '%s'. Check the log for details."
 msgstr ""
 "VLC չի կարողանում բացել MRL '%s'. Ստուգեք տեղեկամատյանում Մանրամասների համար"
 "\"."
 
-#: src/input/input.c:2583
+#: src/input/input.c:2585
 #, fuzzy
 msgid "VLC can't recognize the input's format"
 msgstr "VLC չի կարող ճանաչել մուտքագրման ի ֆորմատ"
 
-#: src/input/input.c:2584
+#: src/input/input.c:2586
 #, fuzzy, c-format
 msgid ""
 "The format of '%s' cannot be detected. Have a look at the log for details."
@@ -7394,7 +7394,7 @@ msgstr "Ֆայլ մուտք"
 
 #: modules/access/fs.c:53 modules/access_output/file.c:73
 #: modules/audio_output/file.c:109 modules/gui/macosx/open.m:110
-#: modules/gui/macosx/open.m:473 modules/gui/macosx/output.m:142
+#: modules/gui/macosx/open.m:477 modules/gui/macosx/output.m:142
 #: modules/gui/macosx/output.m:230 modules/gui/macosx/output.m:369
 #: modules/gui/qt4/dialogs/plugins.cpp:560 modules/gui/qt4/dialogs/sout.cpp:76
 #: modules/gui/qt4/dialogs/sout.cpp:154
@@ -8664,18 +8664,18 @@ msgstr "որոնվածը ձախողվեց"
 msgid "The requested RTSP session could not be established."
 msgstr "Հարցված RTSP նստաշրջանը չի կարող ստեղծվել\"."
 
-#: modules/access/screen/screen.c:43
+#: modules/access/screen/screen.c:44
 #: modules/gui/qt4/components/open_panels.cpp:1087
 #, fuzzy
 msgid "Desired frame rate for the capture."
 msgstr "Ցանկալի շրջանակ տոկոսադրույքը համար գերում."
 
-#: modules/access/screen/screen.c:46
+#: modules/access/screen/screen.c:47
 #, fuzzy
 msgid "Capture fragment size"
 msgstr "Վերցնել հատված չափսի"
 
-#: modules/access/screen/screen.c:48
+#: modules/access/screen/screen.c:49
 #, fuzzy
 msgid ""
 "Optimize the capture by fragmenting the screen in chunks of predefined "
@@ -8684,53 +8684,53 @@ msgstr ""
 "օպտիմալացնել է գրավել է fragmenting էկրանին է կտորների է predefined "
 "բարձրություն (16 կարող է լինել լավ արժեք, եւ 0 նշանակում է հաշմանդամ)."
 
-#: modules/access/screen/screen.c:53 modules/access/screen/screen.c:57
+#: modules/access/screen/screen.c:54 modules/access/screen/screen.c:58
 msgid "Subscreen top left corner"
 msgstr "Ենթաէկրանի վերեւի ձախ անկյուն"
 
-#: modules/access/screen/screen.c:55
+#: modules/access/screen/screen.c:56
 msgid "Top coordinate of the subscreen top left corner."
 msgstr "Ենթաէկրանի վերեւի ձախ անկյունի Վերևի կորդինատ"
 
-#: modules/access/screen/screen.c:59
+#: modules/access/screen/screen.c:60
 msgid "Left coordinate of the subscreen top left corner."
 msgstr "Ենթաէկրանի վերեւի ձախ անկյունի Ձախ կորդինատ"
 
-#: modules/access/screen/screen.c:61
+#: modules/access/screen/screen.c:62
 msgid "Subscreen width"
 msgstr "Ենթաէկրանի լայնությունը"
 
-#: modules/access/screen/screen.c:63
+#: modules/access/screen/screen.c:64
 msgid "Subscreen height"
 msgstr "Ենթաէկրանի բարձրություն"
 
-#: modules/access/screen/screen.c:65 modules/access/screen/xcb.c:54
+#: modules/access/screen/screen.c:66 modules/access/screen/xcb.c:54
 #: modules/gui/macosx/open.m:191
 msgid "Follow the mouse"
 msgstr "Հետեւել մկնիկին"
 
-#: modules/access/screen/screen.c:67 modules/access/screen/xcb.c:56
+#: modules/access/screen/screen.c:68 modules/access/screen/xcb.c:56
 msgid "Follow the mouse when capturing a subscreen."
 msgstr "Հետեւել մկնիկին, երբ նկարում եմ ենթաէկրան"
 
-#: modules/access/screen/screen.c:71
+#: modules/access/screen/screen.c:72
 #, fuzzy
 msgid "Mouse pointer image"
 msgstr "Մկնիկի ցուցիչ պատկերը"
 
-#: modules/access/screen/screen.c:73
+#: modules/access/screen/screen.c:74
 #, fuzzy
 msgid ""
 "If specified, will use the image to draw the mouse pointer on the capture."
 msgstr "Եթե նշված, կօգտագործի պատկերը կազմել մկնիկը ցուցիչ է գերում."
 
-#: modules/access/screen/screen.c:87
+#: modules/access/screen/screen.c:88
 msgid "Screen Input"
 msgstr "Էկրանի մուտք"
 
-#: modules/access/screen/screen.c:88 modules/access/screen/xcb.c:65
+#: modules/access/screen/screen.c:89 modules/access/screen/xcb.c:65
 #: modules/gui/macosx/MainMenu.m:509 modules/gui/macosx/open.m:182
-#: modules/gui/macosx/open.m:424 modules/gui/macosx/open.m:1234
+#: modules/gui/macosx/open.m:428 modules/gui/macosx/open.m:1238
 #: modules/gui/macosx/simple_prefs.m:594
 msgid "Screen"
 msgstr "Էկրան"
@@ -9542,7 +9542,7 @@ msgid "Segments"
 msgstr "Սկավառակներ"
 
 #: modules/access/vcdx/access.c:414 modules/access/vcdx/access.c:693
-#: modules/access/vcdx/info.c:232 modules/demux/mkv/demux.cpp:681
+#: modules/access/vcdx/info.c:232 modules/demux/mkv/demux.cpp:700
 #, fuzzy
 msgid "Segment"
 msgstr "հատվածի"
@@ -9552,7 +9552,7 @@ msgid "LID"
 msgstr "LID"
 
 #: modules/access/vcdx/info.c:54 modules/gui/macosx/open.m:111
-#: modules/gui/macosx/open.m:477
+#: modules/gui/macosx/open.m:481
 msgid "Disc"
 msgstr "Սկավառակ"
 
@@ -10087,7 +10087,7 @@ msgstr "Ձայնային զտիչ համար չնչին ալիքը mixing"
 msgid "Sound Delay"
 msgstr "Ձայնային Սենատի"
 
-#: modules/audio_filter/chorus_flanger.c:78 modules/gui/macosx/open.m:308
+#: modules/audio_filter/chorus_flanger.c:78 modules/gui/macosx/open.m:312
 #: modules/stream_out/bridge.c:51 modules/stream_out/delay.c:54
 #: modules/video_filter/mosaic.c:154
 #, fuzzy
@@ -11641,17 +11641,17 @@ msgstr ""
 "Այն է ունենում հետեւյալ տարբերակները` հիմնական, ցածր, ՀԽՍՀ (չի ապահովում) եւ "
 "ԼՏՊ (լռությամբ `հիմնական)"
 
-#: modules/codec/avcodec/encoder.c:276
+#: modules/codec/avcodec/encoder.c:277
 #, fuzzy, c-format
 msgid "\"%s\" is no video encoder."
 msgstr "\"%s  \"չկա վիդեո կոդավորիչ\"."
 
-#: modules/codec/avcodec/encoder.c:284
+#: modules/codec/avcodec/encoder.c:285
 #, fuzzy, c-format
 msgid "\"%s\" is no audio encoder."
 msgstr "\"%s  \"չկա ձայն կոդավորիչ\"."
 
-#: modules/codec/avcodec/encoder.c:325
+#: modules/codec/avcodec/encoder.c:326
 #, fuzzy, c-format
 msgid ""
 "It seems your FFMPEG (libavcodec) installation lacks the following encoder:\n"
@@ -11669,7 +11669,7 @@ msgstr ""
 " Սա ոչ թե սխալ ներսում VLC մեդիա նվագարկիչ. \n"
 " չեն դիմել VideoLAN ծրագրի մասին: Այս հարցը. \n"
 
-#: modules/codec/avcodec/encoder.c:812 modules/codec/avcodec/encoder.c:821
+#: modules/codec/avcodec/encoder.c:815 modules/codec/avcodec/encoder.c:824
 msgid "VLC could not open the encoder."
 msgstr "VLCն չի կարող բացել  կոդավորիչը"
 
@@ -14583,7 +14583,7 @@ msgstr "Ձայնի վերահսկում"
 msgid "Position Control"
 msgstr "Դիրքի Վերահսկում"
 
-#: modules/control/hotkeys.c:97 modules/gui/macosx/intf.m:2063
+#: modules/control/hotkeys.c:97 modules/gui/macosx/intf.m:2074
 msgid "Ignore"
 msgstr "Անտեսել"
 
@@ -17539,7 +17539,7 @@ msgstr "Ժամանակ"
 #: modules/gui/macosx/bookmarks.m:214 modules/gui/macosx/bookmarks.m:265
 #: modules/gui/macosx/bookmarks.m:270 modules/gui/macosx/controls.m:54
 #: modules/gui/macosx/coredialogs.m:63 modules/gui/macosx/coredialogs.m:100
-#: modules/gui/macosx/coredialogs.m:158 modules/gui/macosx/open.m:318
+#: modules/gui/macosx/coredialogs.m:158 modules/gui/macosx/open.m:322
 #: modules/gui/macosx/output.m:138 modules/gui/macosx/playlistinfo.m:363
 #: modules/gui/macosx/simple_prefs.m:242 modules/gui/macosx/wizard.m:603
 #: modules/gui/macosx/wizard.m:666 modules/gui/macosx/wizard.m:1039
@@ -17658,34 +17658,34 @@ msgstr ""
 msgid "(no item is being played)"
 msgstr "(ոչինչ միացված չէ)"
 
-#: modules/gui/macosx/intf.m:701 modules/gui/qt4/dialogs/messages.cpp:75
+#: modules/gui/macosx/intf.m:708 modules/gui/qt4/dialogs/messages.cpp:75
 #: modules/gui/qt4/ui/messages_panel.h:141
 #: modules/gui/qt4/ui/messages_panel.h:146
 msgid "Messages"
 msgstr "Հաղորդագրություններ"
 
-#: modules/gui/macosx/intf.m:702
+#: modules/gui/macosx/intf.m:709
 msgid "Open CrashLog..."
 msgstr "Բացել CrashLog ..."
 
-#: modules/gui/macosx/intf.m:703
+#: modules/gui/macosx/intf.m:710
 msgid "Save this Log..."
 msgstr "Պահել այս Լոգը..."
 
-#: modules/gui/macosx/intf.m:706
+#: modules/gui/macosx/intf.m:713
 msgid "Send"
 msgstr "Ուղարկել"
 
-#: modules/gui/macosx/intf.m:707
+#: modules/gui/macosx/intf.m:714
 msgid "Don't Send"
 msgstr "Չուղարկել նամակ"
 
-#: modules/gui/macosx/intf.m:708 modules/gui/macosx/intf.m:709
+#: modules/gui/macosx/intf.m:715 modules/gui/macosx/intf.m:716
 #, fuzzy
 msgid "VLC crashed previously"
 msgstr "VLC վթարի է ենթարկվել նախկինում"
 
-#: modules/gui/macosx/intf.m:710
+#: modules/gui/macosx/intf.m:717
 #, fuzzy
 msgid ""
 "Do you want to send details on the crash to VLC's development team?\n"
@@ -17700,12 +17700,12 @@ msgstr ""
 "մինչեւ VLC վթարի է ենթարկվել հետ միասին այլ օգտակար տեղեկություններ` ա որոնք "
 "հղում են դեպի բեռնել նմուշը ֆայլ, մի URL մի ցանցի առու, ... "
 
-#: modules/gui/macosx/intf.m:711
+#: modules/gui/macosx/intf.m:718
 #, fuzzy
 msgid "I agree to be possibly contacted about this bugreport."
 msgstr "Ես համաձայն եմ լինել հնարավորինս դիմել մասին այս bugreport\"."
 
-#: modules/gui/macosx/intf.m:712
+#: modules/gui/macosx/intf.m:719
 #, fuzzy
 msgid ""
 "Only your default E-Mail address will be submitted, including no further "
@@ -17714,36 +17714,36 @@ msgstr ""
 "Միայն ձեր նախնական E-Mail հասցեն կներկայացվի, այդ թվում, ոչ մի լրացուցիչ "
 "տեղեկություն."
 
-#: modules/gui/macosx/intf.m:2022
+#: modules/gui/macosx/intf.m:2033
 msgid "No CrashLog found"
 msgstr "CrashLog չի հայտնաբերվել"
 
-#: modules/gui/macosx/intf.m:2022 modules/gui/macosx/prefs.m:230
+#: modules/gui/macosx/intf.m:2033 modules/gui/macosx/prefs.m:230
 #: modules/gui/macosx/simple_prefs.m:758
 msgid "Continue"
 msgstr "Շարունակել"
 
-#: modules/gui/macosx/intf.m:2022
+#: modules/gui/macosx/intf.m:2033
 #, fuzzy
 msgid "Couldn't find any trace of a previous crash."
 msgstr " msgstr \"Հնարավոր չէ գտնել որեւէ հետք է նախորդ վթարի."
 
-#: modules/gui/macosx/intf.m:2061
+#: modules/gui/macosx/intf.m:2072
 msgid "Remove old preferences?"
 msgstr "Ջնջե՞լ հին նախընտրանքները"
 
-#: modules/gui/macosx/intf.m:2062
+#: modules/gui/macosx/intf.m:2073
 #, fuzzy
 msgid "We just found an older version of VLC's preferences files."
 msgstr ""
 "Մենք պարզապես գտել ավելի հին տարբերակ է VLC ի նախընտրությունների ֆայլեր."
 
-#: modules/gui/macosx/intf.m:2063
+#: modules/gui/macosx/intf.m:2074
 #, fuzzy
 msgid "Move To Trash and Relaunch VLC"
 msgstr "Թափոն փոխադրել եւ Relaunch VLC"
 
-#: modules/gui/macosx/intf.m:2178
+#: modules/gui/macosx/intf.m:2194
 #, fuzzy, c-format
 msgid "VLC Debug Log (%s).rtfd"
 msgstr "VLC Debug Մուտք (%s). Rtfd`"
@@ -18257,23 +18257,23 @@ msgid "Media Resource Locator (MRL)"
 msgstr "Media Resource Locator (MRL)"
 
 #: modules/gui/macosx/open.m:107 modules/gui/macosx/open.m:163
-#: modules/gui/macosx/open.m:625 modules/gui/macosx/open.m:934
-#: modules/gui/macosx/open.m:1163 modules/gui/macosx/open.m:1416
+#: modules/gui/macosx/open.m:629 modules/gui/macosx/open.m:938
+#: modules/gui/macosx/open.m:1167 modules/gui/macosx/open.m:1420
 #: modules/gui/qt4/components/controller.hpp:114
 msgid "Open"
 msgstr "Բացել"
 
-#: modules/gui/macosx/open.m:113 modules/gui/macosx/open.m:422
-#: modules/gui/macosx/open.m:485
+#: modules/gui/macosx/open.m:113 modules/gui/macosx/open.m:426
+#: modules/gui/macosx/open.m:489
 msgid "Capture"
 msgstr "Գրանցում"
 
-#: modules/gui/macosx/open.m:116 modules/gui/macosx/open.m:302
+#: modules/gui/macosx/open.m:116 modules/gui/macosx/open.m:306
 #, fuzzy
 msgid "Choose a file"
 msgstr "Ընտրեք ֆայլը"
 
-#: modules/gui/macosx/open.m:118 modules/gui/macosx/open.m:306
+#: modules/gui/macosx/open.m:118 modules/gui/macosx/open.m:310
 #: modules/gui/macosx/output.m:145 modules/gui/macosx/prefs_widgets.m:1197
 #: modules/gui/macosx/simple_prefs.m:250 modules/gui/macosx/simple_prefs.m:312
 #: modules/gui/qt4/components/preferences_widgets.cpp:269
@@ -18294,7 +18294,7 @@ msgstr "վերաբերում են որպես խողովակի եւ ոչ թե ո�
 msgid "Play another media synchronously"
 msgstr "Զուգահեռ ուրիշ ֆայլ միացնել"
 
-#: modules/gui/macosx/open.m:122 modules/gui/macosx/open.m:305
+#: modules/gui/macosx/open.m:122 modules/gui/macosx/open.m:309
 #: modules/gui/macosx/simple_prefs.m:288 modules/gui/macosx/wizard.m:349
 #: modules/gui/macosx/wizard.m:417 modules/gui/qt4/ui/sprefs_interface.h:540
 msgid "Choose..."
@@ -18388,20 +18388,20 @@ msgstr "Պրոտոկոլ"
 msgid "Address"
 msgstr "Հասցե"
 
-#: modules/gui/macosx/open.m:169 modules/gui/macosx/open.m:1059
-#: modules/gui/macosx/open.m:1117
+#: modules/gui/macosx/open.m:169 modules/gui/macosx/open.m:1063
+#: modules/gui/macosx/open.m:1121
 #, fuzzy
 msgid "Unicast"
 msgstr "Unicast"
 
-#: modules/gui/macosx/open.m:170 modules/gui/macosx/open.m:1074
-#: modules/gui/macosx/open.m:1132
+#: modules/gui/macosx/open.m:170 modules/gui/macosx/open.m:1078
+#: modules/gui/macosx/open.m:1136
 #, fuzzy
 msgid "Multicast"
 msgstr "Multicast"
 
-#: modules/gui/macosx/open.m:178 modules/gui/macosx/open.m:436
-#: modules/gui/macosx/open.m:1245
+#: modules/gui/macosx/open.m:178 modules/gui/macosx/open.m:440
+#: modules/gui/macosx/open.m:1249
 #, fuzzy
 msgid "Capture Device"
 msgstr "Նկարող &Սարք"
@@ -18445,7 +18445,7 @@ msgstr "Նախորդ կանալ"
 msgid "Next Channel"
 msgstr "Հաջորդ կանալ"
 
-#: modules/gui/macosx/open.m:195 modules/gui/macosx/open.m:1343
+#: modules/gui/macosx/open.m:195 modules/gui/macosx/open.m:1347
 msgid "Retrieving Channel Info..."
 msgstr "Ստացվում են կանալի տվյալները..."
 
@@ -18496,55 +18496,55 @@ msgstr "Պատկերի լայնությունը"
 msgid "Image height:"
 msgstr "Պատկերի բարձրություն"
 
-#: modules/gui/macosx/open.m:301
+#: modules/gui/macosx/open.m:305
 #, fuzzy
 msgid "Load subtitles file:"
 msgstr "ՀԻշողության տեքստային բացատրություններով ֆայլը:"
 
-#: modules/gui/macosx/open.m:307
+#: modules/gui/macosx/open.m:311
 #, fuzzy
 msgid "Override parameters"
 msgstr "Վերագրել parametters"
 
-#: modules/gui/macosx/open.m:310
+#: modules/gui/macosx/open.m:314
 msgid "FPS"
 msgstr " Կադր/վ"
 
-#: modules/gui/macosx/open.m:312
+#: modules/gui/macosx/open.m:316
 msgid "Subtitles encoding"
 msgstr "Ենթագրերի  կոդավորում"
 
-#: modules/gui/macosx/open.m:314 modules/gui/qt4/ui/sprefs_subtitles.h:280
+#: modules/gui/macosx/open.m:318 modules/gui/qt4/ui/sprefs_subtitles.h:280
 msgid "Font size"
 msgstr "Տառատեսակի չափը"
 
-#: modules/gui/macosx/open.m:316
+#: modules/gui/macosx/open.m:320
 msgid "Subtitles alignment"
 msgstr "Ենթագրերի  հավասարեցում"
 
-#: modules/gui/macosx/open.m:319
+#: modules/gui/macosx/open.m:323
 msgid "Font Properties"
 msgstr "Տառատեսակի հատկություններ"
 
-#: modules/gui/macosx/open.m:320
+#: modules/gui/macosx/open.m:324
 msgid "Subtitle File"
 msgstr "Ենթագրերով Ֆայլ"
 
-#: modules/gui/macosx/open.m:624 modules/gui/macosx/open.m:1162
-#: modules/gui/macosx/open.m:1415 modules/gui/qt4/ui/open_file.h:162
+#: modules/gui/macosx/open.m:628 modules/gui/macosx/open.m:1166
+#: modules/gui/macosx/open.m:1419 modules/gui/qt4/ui/open_file.h:162
 msgid "Open File"
 msgstr "Բացել Ֆայլ"
 
-#: modules/gui/macosx/open.m:854
+#: modules/gui/macosx/open.m:858
 #, fuzzy, c-format
 msgid "%i tracks"
 msgstr "Ձայնային գիծ"
 
-#: modules/gui/macosx/open.m:1349
+#: modules/gui/macosx/open.m:1353
 msgid "Composite input"
 msgstr "Խառը մուտք"
 
-#: modules/gui/macosx/open.m:1352
+#: modules/gui/macosx/open.m:1356
 msgid "S-Video input"
 msgstr "S-Video մուտք"
 

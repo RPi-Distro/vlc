@@ -3,22 +3,22 @@
 # This file is distributed under the same license as the VLC package.
 #
 # Translators:
-# Simos Xenitellis <simos74@gmx.net>, 2005.
+# Chandan kumar <chandankumar.093047@gmail.com>, 2012
+# Gaurav Kumar <aavrug@gmail.com>, 2012
 # L. Balasubramaniam <l.balasubramaniam at gmail dot com>, 2005
-# Chandan Kumar <chandankumar.093047@gmail.com>, 2012.
-# Gaurav Kumar <aavrug@gmail.com>, 2012.
-# Shashi Ranjan <rshashi906@gmail.com>, 2012.
-# Sayan Chowdhury <sayan.chowdhury2012@gmail.com>, 2012.
-# Shambhu Kumar <shambhuray.sam@gmail.com>, 2013.
-# Tarsem Singh <tarsemsinghtarsemsingh@gmail.com>, 2013.
-#
+# Shashi Ranjan <rshashi906@gmail.com>, 2012
+# Sayan Chowdhury <sayan.chowdhury2012@gmail.com>, 2012
+# Shambhu Kumar <shambhuray.sam@gmail.com>, 2013
+# shantanusarkar <shantanusarkar.me@gmail.com>, 2013
+# sheeshmohsin <sheeshmohsin@gmail.com>, 2013
+# Tarsem Singh <tarsemsinghtarsemsingh@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2013-04-07 22:23+0200\n"
-"PO-Revision-Date: 2013-03-26 08:02+0000\n"
-"Last-Translator: Tarsem <tarsemsinghtarsemsingh@gmail.com>\n"
+"POT-Creation-Date: 2013-07-31 13:09+0200\n"
+"PO-Revision-Date: 2013-04-29 08:19+0000\n"
+"Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hindi (http://www.transifex.com/projects/p/vlc-trans/language/"
 "hi/)\n"
 "Language: hi\n"
@@ -55,7 +55,7 @@ msgstr "इंटरफ़ेस"
 
 #: include/vlc_config_cat.h:38
 msgid "Settings for VLC's interfaces"
-msgstr "VLC के इंटरफेस के लि सेटिंग्स"
+msgstr "VLC के इंटरफेस के लिए सेटिंग्स"
 
 #: include/vlc_config_cat.h:40
 msgid "Main interfaces settings"
@@ -372,6 +372,8 @@ msgid ""
 "Settings related to playlist behaviour (e.g. playback mode) and to modules "
 "that automatically add items to the playlist (\"service discovery\" modules)."
 msgstr ""
+"प्लेलिस्ट व्यवहार (जैसे प्लेबैक मोड) के लिए और स्वचालित रूप से प्लेलिस्ट (\"सेवा खोज\" मॉड्यूल) "
+"के लिए आइटम जोड़ने कि मॉड्यूल से संबंधित सेटिंग्स."
 
 #: include/vlc_config_cat.h:180
 msgid "General playlist behaviour"
@@ -385,7 +387,7 @@ msgstr "सेवाओं की खोज"
 msgid ""
 "Services discovery modules are facilities that automatically add items to "
 "playlist."
-msgstr ""
+msgstr "सेवाओं की खोज का भाग वो सुविधा हैं जो अपने आप से चीज़ों को गीत-सूची में जोड़ देता है!"
 
 #: include/vlc_config_cat.h:186 src/libvlc-module.c:1961
 #: modules/gui/qt4/ui/video_effects.h:1395
@@ -403,21 +405,21 @@ msgstr "CPU सुविधाएँ"
 #: include/vlc_config_cat.h:190
 msgid ""
 "You can choose to disable some CPU accelerations here. Use with extreme care!"
-msgstr ""
+msgstr "आप यहाँ कुछ CPU accelerations अक्षम कर सकते हैं. चरम सावधानी के साथ प्रयोग करें!"
 
 #: include/vlc_config_cat.h:193
 msgid "Advanced settings"
 msgstr "विस्तृत सेटिंग"
 
 #: include/vlc_config_cat.h:198 modules/gui/macosx/open.m:112
-#: modules/gui/macosx/open.m:481 modules/gui/macosx/simple_prefs.m:259
+#: modules/gui/macosx/open.m:485 modules/gui/macosx/simple_prefs.m:259
 #: modules/gui/qt4/ui/sprefs_input.h:348
 msgid "Network"
 msgstr "संजाल"
 
 #: include/vlc_config_cat.h:199
 msgid "These modules provide network functions to all other parts of VLC."
-msgstr ""
+msgstr "ये भाग VLC के अन्य भाग को नेटवर्क प्रदान करता है!"
 
 #: include/vlc_config_cat.h:202
 msgid "Chroma modules settings"
@@ -425,7 +427,7 @@ msgstr "क्रोमा मॉड्यूल सेटिंग"
 
 #: include/vlc_config_cat.h:203
 msgid "These settings affect chroma transformation modules."
-msgstr ""
+msgstr "ये सेटिंग्स क्रोमा परिवर्तन मॉड्यूल प्रभावित करते हैं."
 
 #: include/vlc_config_cat.h:205
 msgid "Packetizer modules settings"
@@ -437,7 +439,7 @@ msgstr "एनकोडर सेटिंग"
 
 #: include/vlc_config_cat.h:211
 msgid "These are general settings for video/audio/subtitles encoding modules."
-msgstr ""
+msgstr "वीडियो / ऑडियो / उपशीर्षक encoding मॉड्यूल के लिए यह सामान्य सेटिंग कर रहे हैं."
 
 #: include/vlc_config_cat.h:214
 msgid "Dialog providers settings"
@@ -456,6 +458,8 @@ msgid ""
 "In this section you can force the behavior of the subtitle demuxer, for "
 "example by setting the subtitles type or file name."
 msgstr ""
+"इस भाग में आप उपशीर्षक demuxer के व्यवहार के लिए मजबूर कर सकते हैं, उदाहरण के लिए "
+"उपशीर्षक प्रकार या फ़ाइल नाम निर्धारित करके."
 
 #: include/vlc_config_cat.h:227
 msgid "No help available"
@@ -471,6 +475,9 @@ msgid ""
 "Warning: if you cannot access the GUI anymore, open a command-line window, "
 "go to the directory where you installed VLC and run \"vlc -I qt\"\n"
 msgstr ""
+"\n"
+"चेतावनी: यदि आप अब GUI का उपयोग नहीं कर सकते हैं, एक कमांड लाइन विंडो खोलें, VLC "
+"स्थापित डाइरेक्टरी में जाएँ और \"vlc -I qt\" चलाएँ\n"
 
 #: include/vlc_intf_strings.h:46
 msgid "Quick &Open File..."
@@ -478,11 +485,11 @@ msgstr "और जल्दी फ़ाइल खोलें ... (&O)"
 
 #: include/vlc_intf_strings.h:47
 msgid "&Advanced Open..."
-msgstr ""
+msgstr "&उन्नत खुला..."
 
 #: include/vlc_intf_strings.h:48
 msgid "Open D&irectory..."
-msgstr ""
+msgstr "फ़ोल्डर खोले... "
 
 #: include/vlc_intf_strings.h:49
 msgid "Open &Folder..."
@@ -514,7 +521,7 @@ msgstr "&संदेश"
 
 #: include/vlc_intf_strings.h:58
 msgid "Jump to Specific &Time"
-msgstr ""
+msgstr "विशिष्ट समय के लिए कूदें"
 
 #: include/vlc_intf_strings.h:59
 msgid "&Bookmarks"
@@ -619,7 +626,7 @@ msgstr "फ़ाइल जोड़ें..."
 
 #: include/vlc_intf_strings.h:91
 msgid "Advanced Open..."
-msgstr ""
+msgstr "उन्नत खुला..."
 
 #: include/vlc_intf_strings.h:92
 msgid "Add Directory..."
@@ -631,11 +638,11 @@ msgstr "फ़ोल्डर जोड़ें..."
 
 #: include/vlc_intf_strings.h:95
 msgid "Save Playlist to &File..."
-msgstr ""
+msgstr "प्लेलिस्ट को फ़ाइल मे सहेजें..."
 
 #: include/vlc_intf_strings.h:96
 msgid "Open Play&list..."
-msgstr ""
+msgstr "प्लेलिस्ट खोजें..."
 
 #: include/vlc_intf_strings.h:98 modules/gui/macosx/MainWindow.m:192
 #: modules/gui/qt4/components/preferences_widgets.cpp:1320
@@ -655,6 +662,7 @@ msgid ""
 "Some options are available but hidden. Check \"Advanced options\" to see "
 "them."
 msgstr ""
+"कुछ विकल्प उपलब्ध है, लेकिन छिपे हुए हैं. उन्हें देखने के लिए \"उन्नत विकल्प\" की जाँच करें."
 
 #: include/vlc_intf_strings.h:110
 msgid "Image clone"
@@ -662,7 +670,7 @@ msgstr "छवि क्लोन"
 
 #: include/vlc_intf_strings.h:111
 msgid "Clone the image"
-msgstr ""
+msgstr "छवि को क्लोन करें"
 
 #: include/vlc_intf_strings.h:113
 msgid "Magnification"
@@ -673,6 +681,7 @@ msgid ""
 "Magnify a part of the video. You can select which part of the image should "
 "be magnified."
 msgstr ""
+"वीडियो का एक हिस्सा बढ़ाएँ. आप छवि का जो भाग बढ़ाना चाहते हैं उसका चयन कर सकते हैं."
 
 #: include/vlc_intf_strings.h:117 modules/gui/macosx/VideoEffects.m:141
 #: modules/gui/qt4/ui/video_effects.h:1394
@@ -681,31 +690,35 @@ msgstr "लहरें"
 
 #: include/vlc_intf_strings.h:118
 msgid "\"Waves\" video distortion effect"
-msgstr ""
+msgstr "\"लहरें\" वीडियो विकृति का परिणाम"
 
 #: include/vlc_intf_strings.h:120
 msgid "\"Water surface\" video distortion effect"
-msgstr ""
+msgstr "\"पानी की सतह\" वीडियो विकृति का परिणाम"
 
 #: include/vlc_intf_strings.h:122
 msgid "Image colors inversion"
-msgstr ""
+msgstr "छवि रंग पलटना"
 
 #: include/vlc_intf_strings.h:124
 msgid "Split the image to make an image wall"
-msgstr ""
+msgstr "चित्र का दीवार बनाने के लिए चित्र को विभाजित करें"
 
 #: include/vlc_intf_strings.h:126
 msgid ""
 "Create a \"puzzle game\" with the video.\n"
 "The video gets split in parts that you must sort."
 msgstr ""
+"इस वीडियो से एक \"पहेली का खेल\" बनाएँ! \n"
+"यह वीडियो भागों में विभाजित हो जाएगा जिसे आपको ज़रूरी से क्रमबद्ध करना होगा!"
 
 #: include/vlc_intf_strings.h:129
 msgid ""
 "\"Edge detection\" video distortion effect.\n"
 "Try changing the various settings for different effects"
 msgstr ""
+"\"एज डिटेक्सन\" वीडियो विरूपण प्रभाव.\n"
+"अलग अलग प्रभाव के लिए विभिन्न सेटिंग्स को बदलने की कोशिश करें"
 
 #: include/vlc_intf_strings.h:132
 msgid ""
@@ -713,6 +726,8 @@ msgid ""
 "white, except the parts that are of the color that you select in the "
 "settings."
 msgstr ""
+"\"रंग डिटेक्सन\" प्रभाव. आपके सेटिंग्स में चयन कि गई रंग की भागों को छोड़कर, पूरी छवि काला "
+"और सफेद कर दिया जाएगा."
 
 #: include/vlc_intf_strings.h:136
 msgid ""
@@ -742,6 +757,29 @@ msgid ""
 "code. You can also give funds and material to help us. And of course, you "
 "can <b>promote</b> VLC media player.</p></body></html>"
 msgstr ""
+"<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; "
+"charset=utf-8\" /></head><body><h2>VLC मीडिया प्लेयर हेल्प में आपका स्वागत है</"
+"h2><h3>प्रलेखीकरण</h3><p>आप VLC पर प्रलेखन पा सकते हैं VideoLAN की <a href=\"http://"
+"wiki.videolan.org\">wiki</a> वेबसाइट.</p><p>अगर आप VLC मीडिया प्लेयर के लिए एक "
+"नए हैं, तो कृपया पढ़ें<br><a href=\"http://wiki.videolan.org/Documentation:"
+"VLC_for_dummies\"><em>VLC मीडिया प्लेयर का परिचय</em></a>.</p><p>आप को प्लेयर का "
+"उपयोग करने के बारे में कुछ जानकारी मिल जाएगी <br>\"<a href=\"http://wiki.videolan."
+"org/Documentation:Play_HowTo\"><em>VLC मीडिया प्लेयर के साथ फाइल को कैसे खेलें</em></"
+"a>\" डॉक्युमेंट.</p><p>सभी सहेज, परिवर्तन, ट्रांसकोडिंग, एन्कोडिंग, muxing और स्ट्रीमिंग "
+"कार्य के लिए, आप उपयोगी जानकारी का पता लगा सकते हैं<a href=\"http://wiki.videolan."
+"org/Documentation:Streaming_HowTo\">स्ट्रीमिंग प्रलेखन</a>.</p><p>अगर आप शब्दों के "
+"बारे में अनिश्चित हैं, तो कृपया सलाह लें <a href=\"http://wiki.videolan.org/"
+"Knowledge_Base\">ज्ञान का आधार</a>.</p><p>मुख्य कीबोर्ड शॉर्टकट समझने के लिए, पढ़ें <a "
+"href=\"http://wiki.videolan.org/Hotkeys\">शॉर्टकट</a> पेज.</p><h3>हेल्प</"
+"h3><p>किसी भी सवाल पूछने से पहले, कृपया देखें <a href=\"http://www.videolan.org/"
+"support/faq.html\">FAQ</a>.</p><p>You might then get (and give) help on the "
+"<a href=\"http://forum.videolan.org\">Forums</a>, the <a href=\"http://www."
+"videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC channel "
+"(<em>#videolan</em> on irc.freenode.net).</p><h3>Contribute to the project</"
+"h3><p>You can help the VideoLAN project giving some of your time to help the "
+"community, to design skins, to translate the documentation, to test and to "
+"code. You can also give funds and material to help us. And of course, you "
+"can <b>promote</b> VLC media player.</p></body></html>"
 
 #: src/audio_output/common.c:85 src/audio_output/common.c:125
 #: src/input/es_out.c:934 src/libvlc-module.c:697
@@ -764,7 +802,7 @@ msgstr "स्पेक्ट्रम"
 
 #: src/audio_output/common.c:97
 msgid "Vu meter"
-msgstr ""
+msgstr "Vu मीटर"
 
 #: src/audio_output/common.c:122 modules/audio_filter/equalizer.c:76
 #: modules/gui/macosx/AudioEffects.m:103
@@ -781,19 +819,19 @@ msgstr "पुनरावृत्ति लाभ"
 
 #: src/audio_output/filters.c:142
 msgid "Audio filtering failed"
-msgstr ""
+msgstr "ऑडियो फ़िल्टरिंग विफल रहा"
 
 #: src/audio_output/filters.c:143
 #, c-format
 msgid "The maximum number of filters (%u) was reached."
-msgstr ""
+msgstr "फिल्टर की अधिकतम संख्या (%u) तक पहुँच गया था."
 
 #: src/audio_output/output.c:100 src/audio_output/output.c:128
 #: modules/access/vcdx/info.c:86 modules/gui/macosx/MainMenu.m:298
 #: modules/gui/macosx/MainMenu.m:299
 #: share/lua/http/dialogs/create_stream.html:316
 msgid "Audio Channels"
-msgstr ""
+msgstr "ऑडियो चैनलें"
 
 #: src/audio_output/output.c:103 src/audio_output/output.c:139
 #: modules/access/alsa.c:69 modules/access/oss.c:64
@@ -802,7 +840,7 @@ msgstr ""
 #: modules/audio_output/oss.c:194 modules/audio_output/portaudio.c:400
 #: modules/audio_output/waveout.c:413 modules/codec/twolame.c:70
 msgid "Stereo"
-msgstr ""
+msgstr "स्टेरीयो"
 
 #: src/audio_output/output.c:105 src/audio_output/output.c:142
 #: src/libvlc-module.c:443 src/libvlc-module.c:521
@@ -836,27 +874,27 @@ msgstr "दाएँ"
 
 #: src/audio_output/output.c:134
 msgid "Dolby Surround"
-msgstr ""
+msgstr "डोल्बी सराउंड"
 
 #: src/audio_output/output.c:146
 msgid "Reverse stereo"
-msgstr ""
+msgstr "रिवर्स स्टेरीयो"
 
 #: src/config/file.c:531
 msgid "boolean"
-msgstr ""
+msgstr "बूलियन"
 
 #: src/config/file.c:531 src/config/help.c:467
 msgid "integer"
-msgstr ""
+msgstr "इंटिजर"
 
 #: src/config/file.c:539 src/config/help.c:497
 msgid "float"
-msgstr ""
+msgstr "फ्लोट"
 
 #: src/config/file.c:552 src/config/help.c:446
 msgid "string"
-msgstr ""
+msgstr "स्ट्रिंग"
 
 #: src/config/help.c:125
 msgid "To get exhaustive help, use '-H'."
@@ -905,7 +943,7 @@ msgstr " (डिफ़ॉल्ट सक्षम हैं)"
 
 #: src/config/help.c:514
 msgid " (default disabled)"
-msgstr ""
+msgstr "(डिफ़ॉल्ट अक्षम)"
 
 #: src/config/help.c:679 src/config/help.c:682 src/config/help.c:690
 #: src/config/help.c:695
@@ -920,28 +958,30 @@ msgstr ""
 #, c-format
 msgid ""
 "%d module(s) were not displayed because they only have advanced options.\n"
-msgstr ""
+msgstr "%d मॉड्यूल (ओं) को प्रदर्शित नहीं किया गया क्योंकि वे केवल उन्नत विकल्प हैं.\n"
 
 #: src/config/help.c:703 src/config/help.c:707
 msgid ""
 "No matching module found. Use --list or --list-verbose to list available "
 "modules."
 msgstr ""
+"मॅचिंग मॉड्यूल नहीं मिला. उपलब्ध मॉड्यूल को सूचीबद्ध करने के लिए उपयोग करें --सूची या --सूची-"
+"व्र्बस."
 
 #: src/config/help.c:789
 #, c-format
 msgid "VLC version %s (%s)\n"
-msgstr ""
+msgstr "VLC संस्करण %s(%s)\n"
 
 #: src/config/help.c:791
 #, c-format
 msgid "Compiled by %s on %s (%s)\n"
-msgstr ""
+msgstr "%s के द्वारा संकलित %s में (%s)\n"
 
 #: src/config/help.c:793
 #, c-format
 msgid "Compiler: %s\n"
-msgstr ""
+msgstr "संकलक: %s\n"
 
 #: src/config/help.c:825
 msgid ""
@@ -954,6 +994,8 @@ msgid ""
 "\n"
 "Press the RETURN key to continue...\n"
 msgstr ""
+"\n"
+"जारी रखने के लिए RETURN कुंजी दबाएँ...\n"
 
 #: src/input/control.c:217
 #, c-format
@@ -962,32 +1004,32 @@ msgstr "पृष्ठ स्मृति %i"
 
 #: src/input/decoder.c:267
 msgid "packetizer"
-msgstr ""
+msgstr "packetizers"
 
 #: src/input/decoder.c:267
 msgid "decoder"
 msgstr "विसंकेतक"
 
 #: src/input/decoder.c:276 src/input/decoder.c:467
-#: modules/codec/avcodec/encoder.c:275 modules/codec/avcodec/encoder.c:283
-#: modules/codec/avcodec/encoder.c:320 modules/codec/avcodec/encoder.c:811
-#: modules/codec/avcodec/encoder.c:820 modules/stream_out/es.c:363
+#: modules/codec/avcodec/encoder.c:276 modules/codec/avcodec/encoder.c:284
+#: modules/codec/avcodec/encoder.c:321 modules/codec/avcodec/encoder.c:814
+#: modules/codec/avcodec/encoder.c:823 modules/stream_out/es.c:363
 #: modules/stream_out/es.c:378
 msgid "Streaming / Transcoding failed"
-msgstr ""
+msgstr "स्ट्रीमिंग / ट्रांसकोडिंग विफल रहा"
 
 #: src/input/decoder.c:277
 #, c-format
 msgid "VLC could not open the %s module."
-msgstr ""
+msgstr "VLC %s मॉड्यूल नहीं खोल सकता है"
 
 #: src/input/decoder.c:468
 msgid "VLC could not open the decoder module."
-msgstr ""
+msgstr "VLC विसंकेतक मॉड्यूल नहीं खोल सकता है."
 
 #: src/input/decoder.c:722
 msgid "No suitable decoder module"
-msgstr ""
+msgstr "कोई उपयुक्त डिकोडर मॉड्यूल नहीं"
 
 #: src/input/decoder.c:723
 #, c-format
@@ -995,6 +1037,8 @@ msgid ""
 "VLC does not support the audio or video format \"%4.4s\". Unfortunately "
 "there is no way for you to fix this."
 msgstr ""
+"VLC ऑडियो या वीडियो फॉर्मॅट का समर्थन नहीं करता \"%4.4s\". दुर्भाग्य से आप के पास इसे "
+"ठीक करने के लिए कोई रास्ता नहीं है"
 
 #: src/input/es_out.c:954 src/input/es_out.c:959 src/libvlc-module.c:387
 #: modules/access/vcdx/access.c:458 modules/access/vcdx/info.c:226
@@ -1024,31 +1068,31 @@ msgstr "हाँ"
 #: src/input/es_out.c:2023
 #, c-format
 msgid "Closed captions %u"
-msgstr ""
+msgstr "बंद कैप्शन %u"
 
 #: src/input/es_out.c:2883
 #, c-format
 msgid "Stream %d"
-msgstr ""
+msgstr "स्ट्रीम %d"
 
 #: src/input/es_out.c:2899 src/input/es_out.c:3017 modules/access/imem.c:64
 msgid "Subtitle"
-msgstr ""
+msgstr "उपशीर्षक"
 
 #: src/input/es_out.c:2907 src/input/es_out.c:2934 src/input/es_out.c:2981
 #: src/input/es_out.c:3017 modules/gui/macosx/output.m:153
 msgid "Type"
-msgstr ""
+msgstr "टाइप"
 
 #: src/input/es_out.c:2910
 msgid "Original ID"
-msgstr ""
+msgstr "मूल पहचान पत्र"
 
 #: src/input/es_out.c:2918 src/input/es_out.c:2921 modules/access/imem.c:67
 #: modules/gui/macosx/wizard.m:388 modules/gui/qt4/ui/profiles.h:477
 #: modules/gui/qt4/ui/profiles.h:496
 msgid "Codec"
-msgstr ""
+msgstr "कोडेक"
 
 #: src/input/es_out.c:2925 src/input/meta.c:65 src/libvlc-module.c:247
 #: modules/access/imem.c:71 modules/gui/macosx/simple_prefs.m:273
@@ -1064,83 +1108,85 @@ msgstr "विवरण"
 #: src/input/es_out.c:2937 src/input/es_out.c:2940
 #: modules/gui/macosx/output.m:176 modules/gui/qt4/ui/profiles.h:499
 msgid "Channels"
-msgstr ""
+msgstr "चैनलें"
 
 #: src/input/es_out.c:2945 modules/access/imem.c:75
 #: modules/audio_output/amem.c:45
 msgid "Sample rate"
-msgstr ""
+msgstr "रेट नमूना"
 
 #: src/input/es_out.c:2945
 #, c-format
 msgid "%u Hz"
-msgstr ""
+msgstr "%u हर्ट्ज"
 
 #: src/input/es_out.c:2955
 msgid "Bits per sample"
-msgstr ""
+msgstr "नमूना प्रति बिट्स"
 
 #: src/input/es_out.c:2960 modules/access_output/shout.c:92
 #: modules/access/pvr.c:90 modules/demux/playlist/shoutcast.c:334
 #: modules/gui/qt4/components/open_panels.cpp:935
 #: modules/gui/qt4/ui/profiles.h:478 modules/gui/qt4/ui/profiles.h:497
 msgid "Bitrate"
-msgstr ""
+msgstr "बिटरेट"
 
 #: src/input/es_out.c:2960
 #, c-format
 msgid "%u kb/s"
-msgstr ""
+msgstr "%u kb/s"
 
 #: src/input/es_out.c:2972
 msgid "Track replay gain"
-msgstr ""
+msgstr "ट्रैक पुनरावृत्ति लाभ"
 
 #: src/input/es_out.c:2974
 msgid "Album replay gain"
-msgstr ""
+msgstr "आल्बम पुनरावृत्ति लाभ"
 
 #: src/input/es_out.c:2975
 #, c-format
 msgid "%.2f dB"
-msgstr ""
+msgstr "%.2f डेसिबेल"
 
 #: src/input/es_out.c:2984 modules/gui/qt4/ui/profiles.h:483
 msgid "Resolution"
-msgstr ""
+msgstr "स्थिरता"
 
 #: src/input/es_out.c:2989
 msgid "Display resolution"
-msgstr ""
+msgstr "प्रदर्शित स्थिरता"
 
 #: src/input/es_out.c:2999 src/input/es_out.c:3002 modules/access/imem.c:93
-#: modules/access/screen/screen.c:41 modules/access/screen/xcb.c:34
+#: modules/access/screen/screen.c:42 modules/access/screen/xcb.c:34
 #: modules/access/shm.c:40 modules/access/vdr.c:93 modules/demux/image.c:66
 msgid "Frame rate"
-msgstr ""
+msgstr "फ़्रेम दर"
 
 #: src/input/es_out.c:3010
 msgid "Decoded format"
-msgstr ""
+msgstr "डीकोड प्रारूप"
 
-#: src/input/input.c:2465
+#: src/input/input.c:2467
 msgid "Your input can't be opened"
-msgstr ""
+msgstr "आपका निवेश नही खुल सकता है!"
 
-#: src/input/input.c:2466
+#: src/input/input.c:2468
 #, c-format
 msgid "VLC is unable to open the MRL '%s'. Check the log for details."
-msgstr ""
+msgstr "VLC MRL खोलने में असमर्थ है '%s'. जानकारी के लिए लॉग की जाँच करें."
 
-#: src/input/input.c:2583
+#: src/input/input.c:2585
 msgid "VLC can't recognize the input's format"
-msgstr ""
+msgstr "VLC आपके निवेश संरूप को नही पहचान सकता है!"
 
-#: src/input/input.c:2584
+#: src/input/input.c:2586
 #, c-format
 msgid ""
 "The format of '%s' cannot be detected. Have a look at the log for details."
 msgstr ""
+"'%s' के संरूप को पता नही लगाया जा सकता है! अधिक जानकारी के लिए लॉग पर एक नज़र डाल "
+"लें!"
 
 #: src/input/meta.c:54 src/input/var.c:177 modules/gui/macosx/MainMenu.m:287
 #: modules/gui/macosx/MainMenu.m:288 modules/gui/macosx/open.m:147
@@ -1163,19 +1209,19 @@ msgstr "शैली"
 
 #: src/input/meta.c:57 modules/mux/asf.c:60
 msgid "Copyright"
-msgstr ""
+msgstr "सर्वाधिकार"
 
 #: src/input/meta.c:58 src/libvlc-module.c:387 modules/access/vcdx/info.c:63
 msgid "Album"
-msgstr ""
+msgstr "एल्बम"
 
 #: src/input/meta.c:59
 msgid "Track number"
-msgstr ""
+msgstr "रील का नंबर"
 
 #: src/input/meta.c:61 modules/mux/asf.c:64
 msgid "Rating"
-msgstr ""
+msgstr "मूल्यांकन"
 
 #: src/input/meta.c:62
 msgid "Date"
@@ -1183,16 +1229,16 @@ msgstr "तिथि"
 
 #: src/input/meta.c:63
 msgid "Setting"
-msgstr ""
+msgstr "सेट्टिंग"
 
 #: src/input/meta.c:64 modules/gui/macosx/open.m:159
 #: modules/gui/qt4/ui/podcast_configuration.h:103
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: src/input/meta.c:66 modules/notify/notify.c:318
 msgid "Now Playing"
-msgstr ""
+msgstr "अभी बज रहा है"
 
 #: src/input/meta.c:67 modules/access/vcdx/info.c:70
 msgid "Publisher"
@@ -1200,23 +1246,23 @@ msgstr "प्रकाशक"
 
 #: src/input/meta.c:68
 msgid "Encoded by"
-msgstr ""
+msgstr "द्वारा एनकोडेड"
 
 #: src/input/meta.c:69
 msgid "Artwork URL"
-msgstr ""
+msgstr "चित्रकला URL"
 
 #: src/input/meta.c:70
 msgid "Track ID"
-msgstr ""
+msgstr "रील की पहचान"
 
 #: src/input/var.c:158
 msgid "Bookmark"
-msgstr ""
+msgstr "बुक्मार्क"
 
 #: src/input/var.c:172 src/libvlc-module.c:727
 msgid "Programs"
-msgstr ""
+msgstr "प्रोग्राम"
 
 #: src/input/var.c:182 modules/gui/macosx/MainMenu.m:289
 #: modules/gui/macosx/MainMenu.m:290 modules/gui/macosx/open.m:148
@@ -1226,23 +1272,23 @@ msgstr "अध्याय"
 
 #: src/input/var.c:187 modules/access/vcdx/info.c:238
 msgid "Navigation"
-msgstr ""
+msgstr "नेविगेशन"
 
 #: src/input/var.c:200 modules/gui/macosx/MainMenu.m:313
 #: modules/gui/macosx/MainMenu.m:314
 msgid "Video Track"
-msgstr ""
+msgstr "वीडियो रील"
 
 #: src/input/var.c:205 modules/gui/macosx/MainMenu.m:296
 #: modules/gui/macosx/MainMenu.m:297
 msgid "Audio Track"
-msgstr ""
+msgstr "ऑडियो रील"
 
 #: src/input/var.c:210 modules/gui/macosx/MainMenu.m:321
 #: modules/gui/macosx/MainMenu.m:322 modules/gui/macosx/MainMenu.m:993
 #: modules/gui/macosx/MainMenu.m:1046 modules/gui/macosx/MainMenu.m:1094
 msgid "Subtitles Track"
-msgstr ""
+msgstr "उपशीर्षक रील"
 
 #: src/input/var.c:273
 msgid "Next title"
@@ -1255,12 +1301,12 @@ msgstr "पिछला शीर्षक"
 #: src/input/var.c:312
 #, c-format
 msgid "Title %i%s"
-msgstr ""
+msgstr "शीर्षक %i%s"
 
 #: src/input/var.c:338 src/input/var.c:397
 #, c-format
 msgid "Chapter %i"
-msgstr ""
+msgstr "अध्याय %i"
 
 #: src/input/var.c:376 modules/gui/qt4/dialogs/toolbar.cpp:400
 msgid "Next chapter"
@@ -1273,32 +1319,32 @@ msgstr "पिछला अध्याय"
 #: src/input/vlm.c:654 src/input/vlm.c:1037
 #, c-format
 msgid "Media: %s"
-msgstr ""
+msgstr "मीडिया: %s"
 
 #: src/interface/interface.c:84 modules/gui/macosx/MainMenu.m:241
 #: modules/gui/macosx/MainMenu.m:242
 msgid "Add Interface"
-msgstr ""
+msgstr "इंटरफ़ेस जोड़ें"
 
 #: src/interface/interface.c:91
 msgid "Console"
-msgstr ""
+msgstr "कॉन्सोल"
 
 #: src/interface/interface.c:95
 msgid "Telnet"
-msgstr ""
+msgstr "टेलनेट"
 
 #: src/interface/interface.c:98
 msgid "Web"
-msgstr ""
+msgstr "वेब"
 
 #: src/interface/interface.c:101
 msgid "Debug logging"
-msgstr ""
+msgstr "डिबग लॉगिंग"
 
 #: src/interface/interface.c:104
 msgid "Mouse Gestures"
-msgstr ""
+msgstr "माउस के इशारें"
 
 #. xgettext: Translate "C" to the language code: "fr", "en_GB", "nl", "ru"...
 #: src/libvlc.c:291
@@ -1310,11 +1356,13 @@ msgid ""
 "Running vlc with the default interface. Use 'cvlc' to use vlc without "
 "interface."
 msgstr ""
+"डिफ़ॉल्ट इंटरफेस के साथ VLC चल रहा है. इंटरफ़ेस बिना VLC का उपयोग करने के लिए 'cvlc' का "
+"प्रयोग करें"
 
 #: src/libvlc.h:154 src/libvlc-module.c:1540 src/libvlc-module.c:1541
 #: src/libvlc-module.c:2690 src/video_output/vout_intf.c:182
 msgid "Zoom"
-msgstr ""
+msgstr "ज़ूम"
 
 #: src/libvlc.h:155 src/libvlc-module.c:1464 src/video_output/vout_intf.c:83
 msgid "1:4 Quarter"
@@ -1326,7 +1374,7 @@ msgstr "1:2 आधा"
 
 #: src/libvlc.h:157 src/libvlc-module.c:1466 src/video_output/vout_intf.c:85
 msgid "1:1 Original"
-msgstr ""
+msgstr "मूल 1:1"
 
 #: src/libvlc.h:158 src/libvlc-module.c:1467 src/video_output/vout_intf.c:86
 msgid "2:1 Double"
@@ -1343,10 +1391,13 @@ msgid ""
 "select the main interface, additional interface modules, and define various "
 "related options."
 msgstr ""
+"ये विकल्प आपको VLC द्वारा प्रयोग किये जाने वाले इंटरफेस को कन्फिगर करने की अनुमति देता है. "
+"आप मुख्य इंटरफेस, अतिरिक्त इंटरफेस मॉड्यूल का चयन कर सकते हैं, और संबंधित विभिन्न विकल्पों को "
+"परिभाषित कर सकते हैं."
 
 #: src/libvlc-module.c:207
 msgid "Interface module"
-msgstr ""
+msgstr "इंटरफेस मॉड्यूल"
 
 #: src/libvlc-module.c:209
 msgid ""
@@ -1356,7 +1407,7 @@ msgstr ""
 
 #: src/libvlc-module.c:213 modules/control/ntservice.c:57
 msgid "Extra interface modules"
-msgstr ""
+msgstr "अतिरिक्त इंटरफेस मॉड्यूल"
 
 #: src/libvlc-module.c:215
 msgid ""
@@ -1368,11 +1419,11 @@ msgstr ""
 
 #: src/libvlc-module.c:222
 msgid "You can select control interfaces for VLC."
-msgstr ""
+msgstr "आप VLC के लिए नियंत्रण इंटरफेस का चयन कर सकते हैं."
 
 #: src/libvlc-module.c:224
 msgid "Verbosity (0,1,2)"
-msgstr ""
+msgstr "शब्दाडंबर (0,1,2)"
 
 #: src/libvlc-module.c:226
 msgid ""
@@ -1404,7 +1455,7 @@ msgstr ""
 
 #: src/libvlc-module.c:243
 msgid "Default stream"
-msgstr ""
+msgstr "डिफॉल्ट स्ट्रीम"
 
 #: src/libvlc-module.c:245
 msgid "This stream will always be opened at VLC startup."
@@ -1428,7 +1479,7 @@ msgstr ""
 
 #: src/libvlc-module.c:257
 msgid "Show advanced options"
-msgstr ""
+msgstr "उन्नत विकल्प दिखाएं"
 
 #: src/libvlc-module.c:259
 msgid ""
@@ -1438,7 +1489,7 @@ msgstr ""
 
 #: src/libvlc-module.c:263
 msgid "Interface interaction"
-msgstr ""
+msgstr "इंटरफ़ेस पारस्पर"
 
 #: src/libvlc-module.c:265
 msgid ""
@@ -1456,7 +1507,7 @@ msgstr ""
 
 #: src/libvlc-module.c:281
 msgid "Audio output module"
-msgstr ""
+msgstr "ऑडियो आउटपुट मॉड्यूल"
 
 #: src/libvlc-module.c:283
 msgid ""
@@ -6311,7 +6362,7 @@ msgstr ""
 
 #: modules/access/fs.c:53 modules/access_output/file.c:73
 #: modules/audio_output/file.c:109 modules/gui/macosx/open.m:110
-#: modules/gui/macosx/open.m:473 modules/gui/macosx/output.m:142
+#: modules/gui/macosx/open.m:477 modules/gui/macosx/output.m:142
 #: modules/gui/macosx/output.m:230 modules/gui/macosx/output.m:369
 #: modules/gui/qt4/dialogs/plugins.cpp:560 modules/gui/qt4/dialogs/sout.cpp:76
 #: modules/gui/qt4/dialogs/sout.cpp:154
@@ -7372,66 +7423,66 @@ msgstr ""
 msgid "The requested RTSP session could not be established."
 msgstr ""
 
-#: modules/access/screen/screen.c:43
+#: modules/access/screen/screen.c:44
 #: modules/gui/qt4/components/open_panels.cpp:1087
 msgid "Desired frame rate for the capture."
 msgstr ""
 
-#: modules/access/screen/screen.c:46
+#: modules/access/screen/screen.c:47
 msgid "Capture fragment size"
 msgstr ""
 
-#: modules/access/screen/screen.c:48
+#: modules/access/screen/screen.c:49
 msgid ""
 "Optimize the capture by fragmenting the screen in chunks of predefined "
 "height (16 might be a good value, and 0 means disabled)."
 msgstr ""
 
-#: modules/access/screen/screen.c:53 modules/access/screen/screen.c:57
+#: modules/access/screen/screen.c:54 modules/access/screen/screen.c:58
 msgid "Subscreen top left corner"
 msgstr ""
 
-#: modules/access/screen/screen.c:55
+#: modules/access/screen/screen.c:56
 msgid "Top coordinate of the subscreen top left corner."
 msgstr ""
 
-#: modules/access/screen/screen.c:59
+#: modules/access/screen/screen.c:60
 msgid "Left coordinate of the subscreen top left corner."
 msgstr ""
 
-#: modules/access/screen/screen.c:61
+#: modules/access/screen/screen.c:62
 msgid "Subscreen width"
 msgstr ""
 
-#: modules/access/screen/screen.c:63
+#: modules/access/screen/screen.c:64
 msgid "Subscreen height"
 msgstr ""
 
-#: modules/access/screen/screen.c:65 modules/access/screen/xcb.c:54
+#: modules/access/screen/screen.c:66 modules/access/screen/xcb.c:54
 #: modules/gui/macosx/open.m:191
 msgid "Follow the mouse"
 msgstr ""
 
-#: modules/access/screen/screen.c:67 modules/access/screen/xcb.c:56
+#: modules/access/screen/screen.c:68 modules/access/screen/xcb.c:56
 msgid "Follow the mouse when capturing a subscreen."
 msgstr ""
 
-#: modules/access/screen/screen.c:71
+#: modules/access/screen/screen.c:72
 msgid "Mouse pointer image"
 msgstr ""
 
-#: modules/access/screen/screen.c:73
+#: modules/access/screen/screen.c:74
 msgid ""
 "If specified, will use the image to draw the mouse pointer on the capture."
 msgstr ""
 
-#: modules/access/screen/screen.c:87
+#: modules/access/screen/screen.c:88
 msgid "Screen Input"
 msgstr ""
 
-#: modules/access/screen/screen.c:88 modules/access/screen/xcb.c:65
+#: modules/access/screen/screen.c:89 modules/access/screen/xcb.c:65
 #: modules/gui/macosx/MainMenu.m:509 modules/gui/macosx/open.m:182
-#: modules/gui/macosx/open.m:424 modules/gui/macosx/open.m:1234
+#: modules/gui/macosx/open.m:428 modules/gui/macosx/open.m:1238
 #: modules/gui/macosx/simple_prefs.m:594
 msgid "Screen"
 msgstr ""
@@ -8119,7 +8170,7 @@ msgid "Segments"
 msgstr ""
 
 #: modules/access/vcdx/access.c:414 modules/access/vcdx/access.c:693
-#: modules/access/vcdx/info.c:232 modules/demux/mkv/demux.cpp:681
+#: modules/access/vcdx/info.c:232 modules/demux/mkv/demux.cpp:700
 msgid "Segment"
 msgstr ""
 
@@ -8128,7 +8179,7 @@ msgid "LID"
 msgstr ""
 
 #: modules/access/vcdx/info.c:54 modules/gui/macosx/open.m:111
-#: modules/gui/macosx/open.m:477
+#: modules/gui/macosx/open.m:481
 msgid "Disc"
 msgstr ""
 
@@ -8539,7 +8590,7 @@ msgstr ""
 msgid "Sound Delay"
 msgstr ""
 
-#: modules/audio_filter/chorus_flanger.c:78 modules/gui/macosx/open.m:308
+#: modules/audio_filter/chorus_flanger.c:78 modules/gui/macosx/open.m:312
 #: modules/stream_out/bridge.c:51 modules/stream_out/delay.c:54
 #: modules/video_filter/mosaic.c:154
 msgid "Delay"
@@ -9786,17 +9837,17 @@ msgid ""
 "(default: main)"
 msgstr ""
 
-#: modules/codec/avcodec/encoder.c:276
+#: modules/codec/avcodec/encoder.c:277
 #, c-format
 msgid "\"%s\" is no video encoder."
 msgstr ""
 
-#: modules/codec/avcodec/encoder.c:284
+#: modules/codec/avcodec/encoder.c:285
 #, c-format
 msgid "\"%s\" is no audio encoder."
 msgstr ""
 
-#: modules/codec/avcodec/encoder.c:325
+#: modules/codec/avcodec/encoder.c:326
 #, c-format
 msgid ""
 "It seems your FFMPEG (libavcodec) installation lacks the following encoder:\n"
@@ -9807,7 +9858,7 @@ msgid ""
 "Do not contact the VideoLAN project about this issue.\n"
 msgstr ""
 
-#: modules/codec/avcodec/encoder.c:812 modules/codec/avcodec/encoder.c:821
+#: modules/codec/avcodec/encoder.c:815 modules/codec/avcodec/encoder.c:824
 msgid "VLC could not open the encoder."
 msgstr ""
 
@@ -12169,7 +12220,7 @@ msgstr ""
 msgid "Position Control"
 msgstr ""
 
-#: modules/control/hotkeys.c:97 modules/gui/macosx/intf.m:2063
+#: modules/control/hotkeys.c:97 modules/gui/macosx/intf.m:2074
 msgid "Ignore"
 msgstr ""
 
@@ -14657,7 +14708,7 @@ msgstr ""
 #: modules/gui/macosx/bookmarks.m:214 modules/gui/macosx/bookmarks.m:265
 #: modules/gui/macosx/bookmarks.m:270 modules/gui/macosx/controls.m:54
 #: modules/gui/macosx/coredialogs.m:63 modules/gui/macosx/coredialogs.m:100
-#: modules/gui/macosx/coredialogs.m:158 modules/gui/macosx/open.m:318
+#: modules/gui/macosx/coredialogs.m:158 modules/gui/macosx/open.m:322
 #: modules/gui/macosx/output.m:138 modules/gui/macosx/playlistinfo.m:363
 #: modules/gui/macosx/simple_prefs.m:242 modules/gui/macosx/wizard.m:603
 #: modules/gui/macosx/wizard.m:666 modules/gui/macosx/wizard.m:1039
@@ -14765,33 +14816,33 @@ msgstr ""
 msgid "(no item is being played)"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:701 modules/gui/qt4/dialogs/messages.cpp:75
+#: modules/gui/macosx/intf.m:708 modules/gui/qt4/dialogs/messages.cpp:75
 #: modules/gui/qt4/ui/messages_panel.h:141
 #: modules/gui/qt4/ui/messages_panel.h:146
 msgid "Messages"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:702
+#: modules/gui/macosx/intf.m:709
 msgid "Open CrashLog..."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:703
+#: modules/gui/macosx/intf.m:710
 msgid "Save this Log..."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:706
+#: modules/gui/macosx/intf.m:713
 msgid "Send"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:707
+#: modules/gui/macosx/intf.m:714
 msgid "Don't Send"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:708 modules/gui/macosx/intf.m:709
+#: modules/gui/macosx/intf.m:715 modules/gui/macosx/intf.m:716
 msgid "VLC crashed previously"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:710
+#: modules/gui/macosx/intf.m:717
 msgid ""
 "Do you want to send details on the crash to VLC's development team?\n"
 "\n"
@@ -14800,42 +14851,42 @@ msgid ""
 "URL of a network stream, ..."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:711
+#: modules/gui/macosx/intf.m:718
 msgid "I agree to be possibly contacted about this bugreport."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:712
+#: modules/gui/macosx/intf.m:719
 msgid ""
 "Only your default E-Mail address will be submitted, including no further "
 "information."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2022
+#: modules/gui/macosx/intf.m:2033
 msgid "No CrashLog found"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2022 modules/gui/macosx/prefs.m:230
+#: modules/gui/macosx/intf.m:2033 modules/gui/macosx/prefs.m:230
 #: modules/gui/macosx/simple_prefs.m:758
 msgid "Continue"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2022
+#: modules/gui/macosx/intf.m:2033
 msgid "Couldn't find any trace of a previous crash."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2061
+#: modules/gui/macosx/intf.m:2072
 msgid "Remove old preferences?"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2062
+#: modules/gui/macosx/intf.m:2073
 msgid "We just found an older version of VLC's preferences files."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2063
+#: modules/gui/macosx/intf.m:2074
 msgid "Move To Trash and Relaunch VLC"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2178
+#: modules/gui/macosx/intf.m:2194
 #, c-format
 msgid "VLC Debug Log (%s).rtfd"
 msgstr ""
@@ -15302,22 +15353,22 @@ msgid "Media Resource Locator (MRL)"
 msgstr ""
 
 #: modules/gui/macosx/open.m:107 modules/gui/macosx/open.m:163
-#: modules/gui/macosx/open.m:625 modules/gui/macosx/open.m:934
-#: modules/gui/macosx/open.m:1163 modules/gui/macosx/open.m:1416
+#: modules/gui/macosx/open.m:629 modules/gui/macosx/open.m:938
+#: modules/gui/macosx/open.m:1167 modules/gui/macosx/open.m:1420
 #: modules/gui/qt4/components/controller.hpp:114
 msgid "Open"
 msgstr ""
 
-#: modules/gui/macosx/open.m:113 modules/gui/macosx/open.m:422
-#: modules/gui/macosx/open.m:485
+#: modules/gui/macosx/open.m:113 modules/gui/macosx/open.m:426
+#: modules/gui/macosx/open.m:489
 msgid "Capture"
 msgstr ""
 
-#: modules/gui/macosx/open.m:116 modules/gui/macosx/open.m:302
+#: modules/gui/macosx/open.m:116 modules/gui/macosx/open.m:306
 msgid "Choose a file"
 msgstr ""
 
-#: modules/gui/macosx/open.m:118 modules/gui/macosx/open.m:306
+#: modules/gui/macosx/open.m:118 modules/gui/macosx/open.m:310
 #: modules/gui/macosx/output.m:145 modules/gui/macosx/prefs_widgets.m:1197
 #: modules/gui/macosx/simple_prefs.m:250 modules/gui/macosx/simple_prefs.m:312
 #: modules/gui/qt4/components/preferences_widgets.cpp:269
@@ -15337,7 +15388,7 @@ msgstr ""
 msgid "Play another media synchronously"
 msgstr ""
 
-#: modules/gui/macosx/open.m:122 modules/gui/macosx/open.m:305
+#: modules/gui/macosx/open.m:122 modules/gui/macosx/open.m:309
 #: modules/gui/macosx/simple_prefs.m:288 modules/gui/macosx/wizard.m:349
 #: modules/gui/macosx/wizard.m:417 modules/gui/qt4/ui/sprefs_interface.h:540
 msgid "Choose..."
@@ -15415,18 +15466,18 @@ msgstr ""
 msgid "Address"
 msgstr ""
 
-#: modules/gui/macosx/open.m:169 modules/gui/macosx/open.m:1059
-#: modules/gui/macosx/open.m:1117
+#: modules/gui/macosx/open.m:169 modules/gui/macosx/open.m:1063
+#: modules/gui/macosx/open.m:1121
 msgid "Unicast"
 msgstr ""
 
-#: modules/gui/macosx/open.m:170 modules/gui/macosx/open.m:1074
-#: modules/gui/macosx/open.m:1132
+#: modules/gui/macosx/open.m:170 modules/gui/macosx/open.m:1078
+#: modules/gui/macosx/open.m:1136
 msgid "Multicast"
 msgstr ""
 
-#: modules/gui/macosx/open.m:178 modules/gui/macosx/open.m:436
-#: modules/gui/macosx/open.m:1245
+#: modules/gui/macosx/open.m:178 modules/gui/macosx/open.m:440
+#: modules/gui/macosx/open.m:1249
 msgid "Capture Device"
 msgstr ""
 
@@ -15468,7 +15519,7 @@ msgstr ""
 msgid "Next Channel"
 msgstr ""
 
-#: modules/gui/macosx/open.m:195 modules/gui/macosx/open.m:1343
+#: modules/gui/macosx/open.m:195 modules/gui/macosx/open.m:1347
 msgid "Retrieving Channel Info..."
 msgstr ""
 
@@ -15505,53 +15556,53 @@ msgstr ""
 msgid "Image height:"
 msgstr ""
 
-#: modules/gui/macosx/open.m:301
+#: modules/gui/macosx/open.m:305
 msgid "Load subtitles file:"
 msgstr ""
 
-#: modules/gui/macosx/open.m:307
+#: modules/gui/macosx/open.m:311
 msgid "Override parameters"
 msgstr ""
 
-#: modules/gui/macosx/open.m:310
+#: modules/gui/macosx/open.m:314
 msgid "FPS"
 msgstr ""
 
-#: modules/gui/macosx/open.m:312
+#: modules/gui/macosx/open.m:316
 msgid "Subtitles encoding"
 msgstr ""
 
-#: modules/gui/macosx/open.m:314 modules/gui/qt4/ui/sprefs_subtitles.h:280
+#: modules/gui/macosx/open.m:318 modules/gui/qt4/ui/sprefs_subtitles.h:280
 msgid "Font size"
 msgstr ""
 
-#: modules/gui/macosx/open.m:316
+#: modules/gui/macosx/open.m:320
 msgid "Subtitles alignment"
 msgstr ""
 
-#: modules/gui/macosx/open.m:319
+#: modules/gui/macosx/open.m:323
 msgid "Font Properties"
 msgstr ""
 
-#: modules/gui/macosx/open.m:320
+#: modules/gui/macosx/open.m:324
 msgid "Subtitle File"
 msgstr ""
 
-#: modules/gui/macosx/open.m:624 modules/gui/macosx/open.m:1162
-#: modules/gui/macosx/open.m:1415 modules/gui/qt4/ui/open_file.h:162
+#: modules/gui/macosx/open.m:628 modules/gui/macosx/open.m:1166
+#: modules/gui/macosx/open.m:1419 modules/gui/qt4/ui/open_file.h:162
 msgid "Open File"
 msgstr ""
 
-#: modules/gui/macosx/open.m:854
+#: modules/gui/macosx/open.m:858
 #, c-format
 msgid "%i tracks"
 msgstr ""
 
-#: modules/gui/macosx/open.m:1349
+#: modules/gui/macosx/open.m:1353
 msgid "Composite input"
 msgstr ""
 
-#: modules/gui/macosx/open.m:1352
+#: modules/gui/macosx/open.m:1356
 msgid "S-Video input"
 msgstr ""
 
@@ -26254,10 +26305,6 @@ msgstr "मीडिया प्रबंधन सूची"
 #~ msgstr "िवडीयो"
 
 #, fuzzy
-#~ msgid "Surround 7.1"
-#~ msgstr "डाल्बी साउण्ड"
-
-#, fuzzy
 #~ msgid "Session groupname"
 #~ msgstr "विवरण"
 
@@ -26282,10 +26329,6 @@ msgstr "मीडिया प्रबंधन सूची"
 #~ msgstr "िदखावो"
 
 #, fuzzy
-#~ msgid "Media Browser"
-#~ msgstr "बांये"
-
-#, fuzzy
 #~ msgid "Full Screen"
 #~ msgstr "पूरा सक्रीन"
 
@@ -26298,20 +26341,12 @@ msgstr "मीडिया प्रबंधन सूची"
 #~ msgstr "आवाज़ "
 
 #, fuzzy
-#~ msgid "Create Stream"
-#~ msgstr "स्टिरियो"
-
-#, fuzzy
 #~ msgid "Close"
 #~ msgstr "कोडेक"
 
 #, fuzzy
 #~ msgid "Create New Stream"
 #~ msgstr "नेटवर्क"
-
-#, fuzzy
-#~ msgid "Delete All Streams"
-#~ msgstr "ऑडियो फिल्टेर"
 
 #, fuzzy
 #~ msgid "Left front"
@@ -26351,10 +26386,6 @@ msgstr "मीडिया प्रबंधन सूची"
 
 #, fuzzy
 #~ msgid "Extended Controls..."
-#~ msgstr "सी डि डि बी"
-
-#, fuzzy
-#~ msgid "Default Server Port"
 #~ msgstr "सी डि डि बी"
 
 #, fuzzy
@@ -26402,16 +26433,8 @@ msgstr "मीडिया प्रबंधन सूची"
 #~ msgstr "स्कोप"
 
 #, fuzzy
-#~ msgid "Dummy interface function"
-#~ msgstr "सामान्य इंटरफ़ेस विन्यास"
-
-#, fuzzy
 #~ msgid "Dump decoder function"
 #~ msgstr "विवरण"
-
-#, fuzzy
-#~ msgid "Lua Interface Module (shortcuts)"
-#~ msgstr "इंटरफ़ेस"
 
 #, fuzzy
 #~ msgid "Server"
@@ -26426,16 +26449,8 @@ msgstr "मीडिया प्रबंधन सूची"
 #~ msgstr "ऑडियो फिल्टेर"
 
 #, fuzzy
-#~ msgid "Default port (server mode)"
-#~ msgstr "सी डि डि बी"
-
-#, fuzzy
 #~ msgid "SessionManager"
 #~ msgstr "फैल"
-
-#, fuzzy
-#~ msgid "Set"
-#~ msgstr "समायोजन"
 
 #, fuzzy
 #~ msgid "SDL video driver name"
@@ -26498,10 +26513,6 @@ msgstr "मीडिया प्रबंधन सूची"
 #~ msgstr "यूआरएल"
 
 #, fuzzy
-#~ msgid "Announce Channel:"
-#~ msgstr "आवाज़"
-
-#, fuzzy
 #~ msgid " Cancel "
 #~ msgstr "कोडेक क नाम"
 
@@ -26524,10 +26535,6 @@ msgstr "मीडिया प्रबंधन सूची"
 #, fuzzy
 #~ msgid "textFormat"
 #~ msgstr "फिल्टर"
-
-#, fuzzy
-#~ msgid "&Load Playlist File..."
-#~ msgstr "गीत-सूची"
 
 #~ msgid "Chinese Traditional"
 #~ msgstr "चीनी (परम्परिक)"
@@ -26552,10 +26559,6 @@ msgstr "मीडिया प्रबंधन सूची"
 #~ msgstr "ऑडियो फिल्टेर"
 
 #, fuzzy
-#~ msgid "16:9 subtitles"
-#~ msgstr "फैल"
-
-#, fuzzy
 #~ msgid "2.21:1 subtitles"
 #~ msgstr "फैल"
 
@@ -26564,16 +26567,8 @@ msgstr "मीडिया प्रबंधन सूची"
 #~ msgstr "फैल"
 
 #, fuzzy
-#~ msgid "Open playlist file"
-#~ msgstr "गीत-सूची"
-
-#, fuzzy
 #~ msgid "Sphere"
 #~ msgstr "स्टिरियो"
-
-#, fuzzy
-#~ msgid "Audio CD - Track "
-#~ msgstr "आवाज़ "
 
 #, fuzzy
 #~ msgid "Seam Carving"
@@ -26626,10 +26621,6 @@ msgstr "मीडिया प्रबंधन सूची"
 #, fuzzy
 #~ msgid "Open &Network Stream...\tCtrl-N"
 #~ msgstr "नेटवर्क"
-
-#, fuzzy
-#~ msgid "&Playlist...\tCtrl-P"
-#~ msgstr "गीत-सूची"
 
 #, fuzzy
 #~ msgid "VideoLAN's Website"
@@ -26740,8 +26731,68 @@ msgstr "मीडिया प्रबंधन सूची"
 #~ msgstr "बीच में"
 
 #, fuzzy
+#~ msgid "Surround 7.1"
+#~ msgstr "डोल्बी सराउंड"
+
+#, fuzzy
+#~ msgid "Media Browser"
+#~ msgstr "मीडिया: %s"
+
+#, fuzzy
+#~ msgid "Create Stream"
+#~ msgstr "डिफॉल्ट स्ट्रीम"
+
+#, fuzzy
+#~ msgid "Delete All Streams"
+#~ msgstr "डिफॉल्ट स्ट्रीम"
+
+#, fuzzy
+#~ msgid "Default Server Port"
+#~ msgstr "डिफॉल्ट स्ट्रीम"
+
+#, fuzzy
+#~ msgid "Dummy interface function"
+#~ msgstr "इंटरफ़ेस पारस्पर"
+
+#, fuzzy
+#~ msgid "Lua Interface Module (shortcuts)"
+#~ msgstr "इंटरफेस मॉड्यूल"
+
+#, fuzzy
+#~ msgid "Default port (server mode)"
+#~ msgstr "डिफॉल्ट स्ट्रीम"
+
+#, fuzzy
+#~ msgid "Set"
+#~ msgstr "सेट्टिंग"
+
+#, fuzzy
+#~ msgid "Announce Channel:"
+#~ msgstr "ऑडियो चैनलें"
+
+#, fuzzy
+#~ msgid "&Load Playlist File..."
+#~ msgstr "प्लेलिस्ट को फ़ाइल मे सहेजें..."
+
+#, fuzzy
+#~ msgid "16:9 subtitles"
+#~ msgstr "उपशीर्षक"
+
+#, fuzzy
+#~ msgid "Open playlist file"
+#~ msgstr "प्लेलिस्ट खोजें..."
+
+#, fuzzy
+#~ msgid "Audio CD - Track "
+#~ msgstr "ऑडियो रील"
+
+#, fuzzy
+#~ msgid "&Playlist...\tCtrl-P"
+#~ msgstr "प्लेलिस्ट खोजें..."
+
+#, fuzzy
 #~ msgid "Display on &Desktop"
-#~ msgstr "सदैव शीर्ष पर"
+#~ msgstr "प्रदर्शित स्थिरता"
 
 #, fuzzy
 #~ msgid "Left rear"
@@ -26825,7 +26876,7 @@ msgstr "मीडिया प्रबंधन सूची"
 
 #, fuzzy
 #~ msgid "Default Volume"
-#~ msgstr "डिफ़ॉल्ट ऑप्टिकल युक्ति"
+#~ msgstr "डिफॉल्ट स्ट्रीम"
 
 #, fuzzy
 #~ msgid "Open a Media"
@@ -26869,7 +26920,7 @@ msgstr "मीडिया प्रबंधन सूची"
 
 #, fuzzy
 #~ msgid "Media File"
-#~ msgstr "खोज फ़िल्टर करें"
+#~ msgstr "मीडिया: %s"
 
 #, fuzzy
 #~ msgid "Capture Screen"
@@ -26933,7 +26984,7 @@ msgstr "मीडिया प्रबंधन सूची"
 
 #, fuzzy
 #~ msgid "Audio Channel"
-#~ msgstr "ऑडियो कोडेक"
+#~ msgstr "ऑडियो चैनलें"
 
 #, fuzzy
 #~ msgid "Decimation"
@@ -27070,7 +27121,7 @@ msgstr "मीडिया प्रबंधन सूची"
 
 #, fuzzy
 #~ msgid "Lua Interface Module"
-#~ msgstr "इंटरफ़ेस"
+#~ msgstr "इंटरफेस मॉड्यूल"
 
 #, fuzzy
 #~ msgid "OpenGL Provider"
@@ -27126,7 +27177,7 @@ msgstr "मीडिया प्रबंधन सूची"
 
 #, fuzzy
 #~ msgid "Advanced open..."
-#~ msgstr "उन्नत विकल्प..."
+#~ msgstr "उन्नत खुला..."
 
 #, fuzzy
 #~ msgid "CD reading failed"
@@ -27138,7 +27189,7 @@ msgstr "मीडिया प्रबंधन सूची"
 
 #, fuzzy
 #~ msgid "Deinterlace mode: %s"
-#~ msgstr "स्ट्रीमिंग deinterlace मोड"
+#~ msgstr "इंटरफेस मॉड्यूल"
 
 #, fuzzy
 #~ msgid "Select None"
@@ -27174,7 +27225,7 @@ msgstr "मीडिया प्रबंधन सूची"
 
 #, fuzzy
 #~ msgid "Channel:"
-#~ msgstr "चैनल 3: शीर्ष"
+#~ msgstr "चैनलें"
 
 #, fuzzy
 #~ msgid "Decimation:"
@@ -27210,7 +27261,7 @@ msgstr "मीडिया प्रबंधन सूची"
 
 #, fuzzy
 #~ msgid "Audio Port"
-#~ msgstr "ऑडियो कोडेक"
+#~ msgstr "ऑडियो रील"
 
 #, fuzzy
 #~ msgid "Video Port"
@@ -27226,7 +27277,7 @@ msgstr "मीडिया प्रबंधन सूची"
 
 #, fuzzy
 #~ msgid "Default volume"
-#~ msgstr "डिफ़ॉल्ट ऑप्टिकल युक्ति"
+#~ msgstr "डिफॉल्ट स्ट्रीम"
 
 #, fuzzy
 #~ msgid ""
@@ -27349,7 +27400,7 @@ msgstr "मीडिया प्रबंधन सूची"
 
 #, fuzzy
 #~ msgid "4:3 subtitles"
-#~ msgstr "उपशीर्षक/ओएसडी"
+#~ msgstr "उपशीर्षक"
 
 #, fuzzy
 #~ msgid "Quick Open File..."
@@ -27377,7 +27428,7 @@ msgstr "मीडिया प्रबंधन सूची"
 
 #, fuzzy
 #~ msgid "Play&list..."
-#~ msgstr "गीत-सूची"
+#~ msgstr "प्लेलिस्ट खोजें..."
 
 #, fuzzy
 #~ msgid "&Preferences..."
@@ -27393,7 +27444,7 @@ msgstr "मीडिया प्रबंधन सूची"
 
 #, fuzzy
 #~ msgid "WinCE interface module"
-#~ msgstr "स्ट्रीमिंग deinterlace मोड"
+#~ msgstr "अतिरिक्त इंटरफेस मॉड्यूल"
 
 #, fuzzy
 #~ msgid "RRD output file"
@@ -27421,11 +27472,11 @@ msgstr "मीडिया प्रबंधन सूची"
 
 #, fuzzy
 #~ msgid "Undock from Interface"
-#~ msgstr "नियंत्रण इंटरफेस"
+#~ msgstr "इंटरफ़ेस जोड़ें"
 
 #, fuzzy
 #~ msgid "Add Interfaces"
-#~ msgstr "इंटरफ़ेस"
+#~ msgstr "इंटरफ़ेस जोड़ें"
 
 #, fuzzy
 #~ msgid "Get Stream Information"
@@ -27493,7 +27544,7 @@ msgstr "मीडिया प्रबंधन सूची"
 
 #, fuzzy
 #~ msgid "Channel name"
-#~ msgstr "चैनल 1: बाएँ"
+#~ msgstr "चैनलें"
 
 #, fuzzy
 #~ msgid "Open file"
@@ -27509,7 +27560,7 @@ msgstr "मीडिया प्रबंधन सूची"
 
 #, fuzzy
 #~ msgid "Image inversion"
-#~ msgstr "रंग व्युत्क्रमण"
+#~ msgstr "छवि रंग पलटना"
 
 #, fuzzy
 #~ msgid "Video Options"
@@ -27527,7 +27578,7 @@ msgstr "मीडिया प्रबंधन सूची"
 
 #, fuzzy
 #~ msgid "Playing"
-#~ msgstr "प्ले"
+#~ msgstr "अभी बज रहा है"
 
 #, fuzzy
 #~ msgid "Quick &Open File...\tCtrl-O"
@@ -27539,7 +27590,7 @@ msgstr "मीडिया प्रबंधन सूची"
 
 #, fuzzy
 #~ msgid "Open Dir&ectory...\tCtrl-E"
-#~ msgstr "निर्देशिका बनाएँ..."
+#~ msgstr "फ़ोल्डर खोले... "
 
 #, fuzzy
 #~ msgid "Play faster"
@@ -27555,7 +27606,7 @@ msgstr "मीडिया प्रबंधन सूची"
 
 #, fuzzy
 #~ msgid "Show/Hide Interface"
-#~ msgstr "इंटरफ़ेस"
+#~ msgstr "इंटरफ़ेस जोड़ें"
 
 #, fuzzy
 #~ msgid "Media &Info..."

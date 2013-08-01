@@ -196,11 +196,9 @@ vlc_module_end ()
 
 - (void)freeAudioMem
 {
-    @synchronized (self)
-    {
-        if (rawAudioData) {
-            free(rawAudioData);
-        }
+    @synchronized (self) {
+        if (rawAudioData)
+            block_Release(rawAudioData);
     }
 }
 

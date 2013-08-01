@@ -3,15 +3,14 @@
 # This file is distributed under the same license as the VLC package.
 #
 # Translators:
-# Oleksandr Natalenko <pfactum@gmail.com>, 2009-2012.
-# Андрій Бандура <andriykopanytsia@gmail.com>, 2013.
-#
+# Oleksandr Natalenko <oleksandr@natalenko.name>, 2009-2012
+# Андрій Бандура <andriykopanytsia@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2013-04-07 22:23+0200\n"
-"PO-Revision-Date: 2013-03-16 16:47+0000\n"
+"POT-Creation-Date: 2013-07-31 13:09+0200\n"
+"PO-Revision-Date: 2013-04-29 19:40+0000\n"
 "Last-Translator: Андрій Бандура <andriykopanytsia@gmail.com>\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/vlc-trans/"
 "language/uk/)\n"
@@ -51,11 +50,11 @@ msgstr "Інтерфейс"
 
 #: include/vlc_config_cat.h:38
 msgid "Settings for VLC's interfaces"
-msgstr "Настройки інтерфейсів VLC"
+msgstr "Налаштування інтерфейсів VLC"
 
 #: include/vlc_config_cat.h:40
 msgid "Main interfaces settings"
-msgstr "Настройки головних інтерфейсів"
+msgstr "Налаштування головних інтерфейсів"
 
 #: include/vlc_config_cat.h:42
 msgid "Main interfaces"
@@ -63,7 +62,7 @@ msgstr "Головні інтерфейси"
 
 #: include/vlc_config_cat.h:43
 msgid "Settings for the main interface"
-msgstr "Настройки головного інтерфейсу"
+msgstr "Налаштування головного інтерфейсу"
 
 #: include/vlc_config_cat.h:45 src/libvlc-module.c:220
 msgid "Control interfaces"
@@ -71,12 +70,12 @@ msgstr "Інтерфейси елементів керування"
 
 #: include/vlc_config_cat.h:46
 msgid "Settings for VLC's control interfaces"
-msgstr "Настройки інтерфейсів елементів керування VLC"
+msgstr "Налаштування інтерфейсів елементів керування VLC"
 
 #: include/vlc_config_cat.h:48 include/vlc_config_cat.h:49
 #: modules/gui/macosx/simple_prefs.m:198
 msgid "Hotkeys settings"
-msgstr "Настройки гарячих клавіш"
+msgstr "Налаштування гарячих клавіш"
 
 #: include/vlc_config_cat.h:52 src/input/es_out.c:2893 src/input/es_out.c:2934
 #: src/libvlc-module.c:1615 modules/access/imem.c:64
@@ -94,11 +93,11 @@ msgstr "Звук"
 
 #: include/vlc_config_cat.h:53
 msgid "Audio settings"
-msgstr "Настройки звуку"
+msgstr "Налаштування звуку"
 
 #: include/vlc_config_cat.h:55
 msgid "General audio settings"
-msgstr "Загальні настройки звуку"
+msgstr "Загальні налаштування звуку"
 
 #: include/vlc_config_cat.h:57 include/vlc_config_cat.h:79
 msgid "Filters"
@@ -123,7 +122,7 @@ msgstr "Модулі виведення"
 
 #: include/vlc_config_cat.h:64
 msgid "General settings for audio output modules."
-msgstr "Загальні настройки модулів виведення звуку."
+msgstr "Загальні налаштування модулів виведення звуку."
 
 #: include/vlc_config_cat.h:66 src/libvlc-module.c:2128
 #: modules/gui/macosx/VideoEffects.m:73
@@ -133,7 +132,7 @@ msgstr "Інше"
 
 #: include/vlc_config_cat.h:67
 msgid "Miscellaneous audio settings and modules."
-msgstr "Інші модулі й настройки звуку."
+msgstr "Інші модулі й налаштування звуку."
 
 #: include/vlc_config_cat.h:70 src/input/es_out.c:2896 src/input/es_out.c:2981
 #: src/libvlc-module.c:1666 modules/access/imem.c:64
@@ -151,11 +150,11 @@ msgstr "Відео"
 
 #: include/vlc_config_cat.h:71
 msgid "Video settings"
-msgstr "Настройки відео"
+msgstr "Налаштування відео"
 
 #: include/vlc_config_cat.h:73
 msgid "General video settings"
-msgstr "Загальні настройки відео"
+msgstr "Загальні налаштування відео"
 
 #: include/vlc_config_cat.h:77
 msgid "Choose your preferred video output and configure it here."
@@ -172,7 +171,7 @@ msgstr "Субтитри/OSD"
 #: include/vlc_config_cat.h:84
 msgid ""
 "Settings related to On-Screen-Display, subtitles and \"overlay subpictures\""
-msgstr "Настройки, пов’язані з OSD, субтитрами й «оверлейними шарами»."
+msgstr "Налаштування, пов’язані з OSD, субтитрами й „оверлейними шарами“."
 
 #: include/vlc_config_cat.h:93
 msgid "Input / Codecs"
@@ -180,7 +179,7 @@ msgstr "Введення / Кодеки"
 
 #: include/vlc_config_cat.h:94
 msgid "Settings for input, demultiplexing, decoding and encoding"
-msgstr "Настройки введення, демультиплексування, декодування й кодування"
+msgstr "Налаштування введення, демультиплексування, декодування й кодування"
 
 #: include/vlc_config_cat.h:97
 msgid "Access modules"
@@ -191,8 +190,8 @@ msgid ""
 "Settings related to the various access methods. Common settings you may want "
 "to alter are HTTP proxy or caching settings."
 msgstr ""
-"Настройки різних методів доступу. Зазвичай змінюється проксі HTTP або "
-"настройки кешування."
+"Налаштування різних методів доступу. Зазвичай змінюється проксі HTTP або "
+"налаштування кешування."
 
 #: include/vlc_config_cat.h:103
 msgid "Stream filters"
@@ -221,7 +220,7 @@ msgstr "Відеокодеки"
 
 #: include/vlc_config_cat.h:112
 msgid "Settings for the video, images or video+audio decoders and encoders."
-msgstr "Настройки декодерів і кодерів відео, зображень або відео та звуку."
+msgstr "Налаштування декодерів і кодерів відео, зображень або відео та звуку."
 
 #: include/vlc_config_cat.h:114
 msgid "Audio codecs"
@@ -229,7 +228,7 @@ msgstr "Звукові кодеки"
 
 #: include/vlc_config_cat.h:115
 msgid "Settings for the audio-only decoders and encoders."
-msgstr "Настройки декодерів і кодерів звуку."
+msgstr "Налаштування декодерів і кодерів звуку."
 
 #: include/vlc_config_cat.h:117
 msgid "Subtitles codecs"
@@ -418,7 +417,7 @@ msgid "Advanced settings"
 msgstr "Додаткові настройки"
 
 #: include/vlc_config_cat.h:198 modules/gui/macosx/open.m:112
-#: modules/gui/macosx/open.m:481 modules/gui/macosx/simple_prefs.m:259
+#: modules/gui/macosx/open.m:485 modules/gui/macosx/simple_prefs.m:259
 #: modules/gui/qt4/ui/sprefs_input.h:348
 msgid "Network"
 msgstr "Мережа"
@@ -1056,9 +1055,9 @@ msgid "decoder"
 msgstr "декодер"
 
 #: src/input/decoder.c:276 src/input/decoder.c:467
-#: modules/codec/avcodec/encoder.c:275 modules/codec/avcodec/encoder.c:283
-#: modules/codec/avcodec/encoder.c:320 modules/codec/avcodec/encoder.c:811
-#: modules/codec/avcodec/encoder.c:820 modules/stream_out/es.c:363
+#: modules/codec/avcodec/encoder.c:276 modules/codec/avcodec/encoder.c:284
+#: modules/codec/avcodec/encoder.c:321 modules/codec/avcodec/encoder.c:814
+#: modules/codec/avcodec/encoder.c:823 modules/stream_out/es.c:363
 #: modules/stream_out/es.c:378
 msgid "Streaming / Transcoding failed"
 msgstr "Помилка потокового виведення або перекодування"
@@ -1203,7 +1202,7 @@ msgid "Display resolution"
 msgstr "Роздільна здатність дисплея"
 
 #: src/input/es_out.c:2999 src/input/es_out.c:3002 modules/access/imem.c:93
-#: modules/access/screen/screen.c:41 modules/access/screen/xcb.c:34
+#: modules/access/screen/screen.c:42 modules/access/screen/xcb.c:34
 #: modules/access/shm.c:40 modules/access/vdr.c:93 modules/demux/image.c:66
 msgid "Frame rate"
 msgstr "Частота кадрів"
@@ -1212,22 +1211,22 @@ msgstr "Частота кадрів"
 msgid "Decoded format"
 msgstr "Декодований формат"
 
-#: src/input/input.c:2465
+#: src/input/input.c:2467
 msgid "Your input can't be opened"
 msgstr "Не вдалося відкрити введення"
 
-#: src/input/input.c:2466
+#: src/input/input.c:2468
 #, c-format
 msgid "VLC is unable to open the MRL '%s'. Check the log for details."
 msgstr ""
 "VLC не вдалося відкрити MRL «%s». Щоб отримати докладнішу інформацію, "
 "дивіться журнал."
 
-#: src/input/input.c:2583
+#: src/input/input.c:2585
 msgid "VLC can't recognize the input's format"
 msgstr "VLC не вдалося розпізнати формат введення"
 
-#: src/input/input.c:2584
+#: src/input/input.c:2586
 #, c-format
 msgid ""
 "The format of '%s' cannot be detected. Have a look at the log for details."
@@ -6873,7 +6872,7 @@ msgstr "Введення з файлів"
 
 #: modules/access/fs.c:53 modules/access_output/file.c:73
 #: modules/audio_output/file.c:109 modules/gui/macosx/open.m:110
-#: modules/gui/macosx/open.m:473 modules/gui/macosx/output.m:142
+#: modules/gui/macosx/open.m:477 modules/gui/macosx/output.m:142
 #: modules/gui/macosx/output.m:230 modules/gui/macosx/output.m:369
 #: modules/gui/qt4/dialogs/plugins.cpp:560 modules/gui/qt4/dialogs/sout.cpp:76
 #: modules/gui/qt4/dialogs/sout.cpp:154
@@ -8001,16 +8000,16 @@ msgstr "Сталася помилка сесії"
 msgid "The requested RTSP session could not be established."
 msgstr "Не вдалося встановити потрібну сесію RTSP."
 
-#: modules/access/screen/screen.c:43
+#: modules/access/screen/screen.c:44
 #: modules/gui/qt4/components/open_panels.cpp:1087
 msgid "Desired frame rate for the capture."
 msgstr "Бажана частота кадрів захоплення."
 
-#: modules/access/screen/screen.c:46
+#: modules/access/screen/screen.c:47
 msgid "Capture fragment size"
 msgstr "Розмір фрагмента захоплення"
 
-#: modules/access/screen/screen.c:48
+#: modules/access/screen/screen.c:49
 msgid ""
 "Optimize the capture by fragmenting the screen in chunks of predefined "
 "height (16 might be a good value, and 0 means disabled)."
@@ -8018,53 +8017,53 @@ msgstr ""
 "Можна оптимізувати захоплення розбиванням екрана на фрагменти визначеної "
 "висоти (рекомендоване значення: 16, вимикання: 0)"
 
-#: modules/access/screen/screen.c:53 modules/access/screen/screen.c:57
+#: modules/access/screen/screen.c:54 modules/access/screen/screen.c:58
 msgid "Subscreen top left corner"
 msgstr "Верхній лівий кут підекрана"
 
-#: modules/access/screen/screen.c:55
+#: modules/access/screen/screen.c:56
 msgid "Top coordinate of the subscreen top left corner."
 msgstr "Верхня координата верхнього лівого кута підекрана."
 
-#: modules/access/screen/screen.c:59
+#: modules/access/screen/screen.c:60
 msgid "Left coordinate of the subscreen top left corner."
 msgstr "Ліва координата верхнього лівого кута підекрана."
 
-#: modules/access/screen/screen.c:61
+#: modules/access/screen/screen.c:62
 msgid "Subscreen width"
 msgstr "Ширина підекрана"
 
-#: modules/access/screen/screen.c:63
+#: modules/access/screen/screen.c:64
 msgid "Subscreen height"
 msgstr "Висота підекрана"
 
-#: modules/access/screen/screen.c:65 modules/access/screen/xcb.c:54
+#: modules/access/screen/screen.c:66 modules/access/screen/xcb.c:54
 #: modules/gui/macosx/open.m:191
 msgid "Follow the mouse"
 msgstr "Слідувати за мишкою"
 
-#: modules/access/screen/screen.c:67 modules/access/screen/xcb.c:56
+#: modules/access/screen/screen.c:68 modules/access/screen/xcb.c:56
 msgid "Follow the mouse when capturing a subscreen."
 msgstr "Слідувати за мишкою під час захоплення підекрана."
 
-#: modules/access/screen/screen.c:71
+#: modules/access/screen/screen.c:72
 msgid "Mouse pointer image"
 msgstr "Зображення курсора мишки"
 
-#: modules/access/screen/screen.c:73
+#: modules/access/screen/screen.c:74
 msgid ""
 "If specified, will use the image to draw the mouse pointer on the capture."
 msgstr ""
 "Якщо вказано, використовуватиметься зображення для промальовування курсору "
 "мишки на захоплюваному відео."
 
-#: modules/access/screen/screen.c:87
+#: modules/access/screen/screen.c:88
 msgid "Screen Input"
 msgstr "Введення з екрана"
 
-#: modules/access/screen/screen.c:88 modules/access/screen/xcb.c:65
+#: modules/access/screen/screen.c:89 modules/access/screen/xcb.c:65
 #: modules/gui/macosx/MainMenu.m:509 modules/gui/macosx/open.m:182
-#: modules/gui/macosx/open.m:424 modules/gui/macosx/open.m:1234
+#: modules/gui/macosx/open.m:428 modules/gui/macosx/open.m:1238
 #: modules/gui/macosx/simple_prefs.m:594
 msgid "Screen"
 msgstr "Екран"
@@ -8771,7 +8770,7 @@ msgid "Segments"
 msgstr "Сегменти"
 
 #: modules/access/vcdx/access.c:414 modules/access/vcdx/access.c:693
-#: modules/access/vcdx/info.c:232 modules/demux/mkv/demux.cpp:681
+#: modules/access/vcdx/info.c:232 modules/demux/mkv/demux.cpp:700
 msgid "Segment"
 msgstr "Сегмент"
 
@@ -8780,7 +8779,7 @@ msgid "LID"
 msgstr "LID"
 
 #: modules/access/vcdx/info.c:54 modules/gui/macosx/open.m:111
-#: modules/gui/macosx/open.m:477
+#: modules/gui/macosx/open.m:481
 msgid "Disc"
 msgstr "Диск"
 
@@ -9232,7 +9231,7 @@ msgstr "Звуковий фільтр для простого мікшуванн
 msgid "Sound Delay"
 msgstr "Затримка звуку"
 
-#: modules/audio_filter/chorus_flanger.c:78 modules/gui/macosx/open.m:308
+#: modules/audio_filter/chorus_flanger.c:78 modules/gui/macosx/open.m:312
 #: modules/stream_out/bridge.c:51 modules/stream_out/delay.c:54
 #: modules/video_filter/mosaic.c:154
 msgid "Delay"
@@ -10607,17 +10606,17 @@ msgstr ""
 "потоку. Приймає наступні параметри: «main», «low», «ssr» (не підтримується) "
 "та ltp (стандартно: «main»)"
 
-#: modules/codec/avcodec/encoder.c:276
+#: modules/codec/avcodec/encoder.c:277
 #, c-format
 msgid "\"%s\" is no video encoder."
 msgstr "«%s» не є кодером відео."
 
-#: modules/codec/avcodec/encoder.c:284
+#: modules/codec/avcodec/encoder.c:285
 #, c-format
 msgid "\"%s\" is no audio encoder."
 msgstr "«%s» не є кодером звуку."
 
-#: modules/codec/avcodec/encoder.c:325
+#: modules/codec/avcodec/encoder.c:326
 #, c-format
 msgid ""
 "It seems your FFMPEG (libavcodec) installation lacks the following encoder:\n"
@@ -10634,7 +10633,7 @@ msgstr ""
 "Це не внутрішня помилка медіаплеєру VLC.\n"
 "Не зв’язуйтеся з проектом VideoLAN з приводу цієї проблеми.\n"
 
-#: modules/codec/avcodec/encoder.c:812 modules/codec/avcodec/encoder.c:821
+#: modules/codec/avcodec/encoder.c:815 modules/codec/avcodec/encoder.c:824
 msgid "VLC could not open the encoder."
 msgstr "VLC не зміг відкрити кодер."
 
@@ -13216,7 +13215,7 @@ msgstr "Керування гучністю"
 msgid "Position Control"
 msgstr "Керування позицією"
 
-#: modules/control/hotkeys.c:97 modules/gui/macosx/intf.m:2063
+#: modules/control/hotkeys.c:97 modules/gui/macosx/intf.m:2074
 msgid "Ignore"
 msgstr "Ігнорувати"
 
@@ -15894,7 +15893,7 @@ msgstr "Час"
 #: modules/gui/macosx/bookmarks.m:214 modules/gui/macosx/bookmarks.m:265
 #: modules/gui/macosx/bookmarks.m:270 modules/gui/macosx/controls.m:54
 #: modules/gui/macosx/coredialogs.m:63 modules/gui/macosx/coredialogs.m:100
-#: modules/gui/macosx/coredialogs.m:158 modules/gui/macosx/open.m:318
+#: modules/gui/macosx/coredialogs.m:158 modules/gui/macosx/open.m:322
 #: modules/gui/macosx/output.m:138 modules/gui/macosx/playlistinfo.m:363
 #: modules/gui/macosx/simple_prefs.m:242 modules/gui/macosx/wizard.m:603
 #: modules/gui/macosx/wizard.m:666 modules/gui/macosx/wizard.m:1039
@@ -16009,33 +16008,33 @@ msgstr ""
 msgid "(no item is being played)"
 msgstr "(нічого не відтворюється)"
 
-#: modules/gui/macosx/intf.m:701 modules/gui/qt4/dialogs/messages.cpp:75
+#: modules/gui/macosx/intf.m:708 modules/gui/qt4/dialogs/messages.cpp:75
 #: modules/gui/qt4/ui/messages_panel.h:141
 #: modules/gui/qt4/ui/messages_panel.h:146
 msgid "Messages"
 msgstr "Повідомлення"
 
-#: modules/gui/macosx/intf.m:702
+#: modules/gui/macosx/intf.m:709
 msgid "Open CrashLog..."
 msgstr "Відкрити журнал збоїв…"
 
-#: modules/gui/macosx/intf.m:703
+#: modules/gui/macosx/intf.m:710
 msgid "Save this Log..."
 msgstr "Зберегти цей журнал…"
 
-#: modules/gui/macosx/intf.m:706
+#: modules/gui/macosx/intf.m:713
 msgid "Send"
 msgstr "Надіслати"
 
-#: modules/gui/macosx/intf.m:707
+#: modules/gui/macosx/intf.m:714
 msgid "Don't Send"
 msgstr "Не надсилати"
 
-#: modules/gui/macosx/intf.m:708 modules/gui/macosx/intf.m:709
+#: modules/gui/macosx/intf.m:715 modules/gui/macosx/intf.m:716
 msgid "VLC crashed previously"
 msgstr "Перед цим VLC потерпів аварію"
 
-#: modules/gui/macosx/intf.m:710
+#: modules/gui/macosx/intf.m:717
 msgid ""
 "Do you want to send details on the crash to VLC's development team?\n"
 "\n"
@@ -16049,11 +16048,11 @@ msgstr ""
 "впав, заодно вкажіть іншу корисну інформацію: посилання на файл прикладу, "
 "URL мережевого потоку,…"
 
-#: modules/gui/macosx/intf.m:711
+#: modules/gui/macosx/intf.m:718
 msgid "I agree to be possibly contacted about this bugreport."
 msgstr "Я погоджуюся з тим, що зі мною можуть зв’язатися щодо цього звіту."
 
-#: modules/gui/macosx/intf.m:712
+#: modules/gui/macosx/intf.m:719
 msgid ""
 "Only your default E-Mail address will be submitted, including no further "
 "information."
@@ -16061,32 +16060,32 @@ msgstr ""
 "Буде відправлено лише вашу стандартну адресу електронної пошти без подальшої "
 "інформації."
 
-#: modules/gui/macosx/intf.m:2022
+#: modules/gui/macosx/intf.m:2033
 msgid "No CrashLog found"
 msgstr "Журнал збою не знайдено"
 
-#: modules/gui/macosx/intf.m:2022 modules/gui/macosx/prefs.m:230
+#: modules/gui/macosx/intf.m:2033 modules/gui/macosx/prefs.m:230
 #: modules/gui/macosx/simple_prefs.m:758
 msgid "Continue"
 msgstr "Продовжити"
 
-#: modules/gui/macosx/intf.m:2022
+#: modules/gui/macosx/intf.m:2033
 msgid "Couldn't find any trace of a previous crash."
 msgstr "Не можу знайти нічого від попереднього збою."
 
-#: modules/gui/macosx/intf.m:2061
+#: modules/gui/macosx/intf.m:2072
 msgid "Remove old preferences?"
 msgstr "Видалити старі параметри?"
 
-#: modules/gui/macosx/intf.m:2062
+#: modules/gui/macosx/intf.m:2073
 msgid "We just found an older version of VLC's preferences files."
 msgstr "Ми щойно знайшли присутність старих файлів VLC."
 
-#: modules/gui/macosx/intf.m:2063
+#: modules/gui/macosx/intf.m:2074
 msgid "Move To Trash and Relaunch VLC"
 msgstr "Перемістити до кошика та перезапустити VLC"
 
-#: modules/gui/macosx/intf.m:2178
+#: modules/gui/macosx/intf.m:2194
 #, c-format
 msgid "VLC Debug Log (%s).rtfd"
 msgstr "Журнал відлагоджування VLC (%s).rtfd"
@@ -16576,22 +16575,22 @@ msgid "Media Resource Locator (MRL)"
 msgstr "Шукач медіаресурсів (MRL)"
 
 #: modules/gui/macosx/open.m:107 modules/gui/macosx/open.m:163
-#: modules/gui/macosx/open.m:625 modules/gui/macosx/open.m:934
-#: modules/gui/macosx/open.m:1163 modules/gui/macosx/open.m:1416
+#: modules/gui/macosx/open.m:629 modules/gui/macosx/open.m:938
+#: modules/gui/macosx/open.m:1167 modules/gui/macosx/open.m:1420
 #: modules/gui/qt4/components/controller.hpp:114
 msgid "Open"
 msgstr "Відкрити"
 
-#: modules/gui/macosx/open.m:113 modules/gui/macosx/open.m:422
-#: modules/gui/macosx/open.m:485
+#: modules/gui/macosx/open.m:113 modules/gui/macosx/open.m:426
+#: modules/gui/macosx/open.m:489
 msgid "Capture"
 msgstr "Заголовок"
 
-#: modules/gui/macosx/open.m:116 modules/gui/macosx/open.m:302
+#: modules/gui/macosx/open.m:116 modules/gui/macosx/open.m:306
 msgid "Choose a file"
 msgstr "Вибрати файл"
 
-#: modules/gui/macosx/open.m:118 modules/gui/macosx/open.m:306
+#: modules/gui/macosx/open.m:118 modules/gui/macosx/open.m:310
 #: modules/gui/macosx/output.m:145 modules/gui/macosx/prefs_widgets.m:1197
 #: modules/gui/macosx/simple_prefs.m:250 modules/gui/macosx/simple_prefs.m:312
 #: modules/gui/qt4/components/preferences_widgets.cpp:269
@@ -16611,7 +16610,7 @@ msgstr "Вважати трубою замість файлу"
 msgid "Play another media synchronously"
 msgstr "Відтворити синхронно інше медіа"
 
-#: modules/gui/macosx/open.m:122 modules/gui/macosx/open.m:305
+#: modules/gui/macosx/open.m:122 modules/gui/macosx/open.m:309
 #: modules/gui/macosx/simple_prefs.m:288 modules/gui/macosx/wizard.m:349
 #: modules/gui/macosx/wizard.m:417 modules/gui/qt4/ui/sprefs_interface.h:540
 msgid "Choose..."
@@ -16698,18 +16697,18 @@ msgstr "Протокол"
 msgid "Address"
 msgstr "Адреса"
 
-#: modules/gui/macosx/open.m:169 modules/gui/macosx/open.m:1059
-#: modules/gui/macosx/open.m:1117
+#: modules/gui/macosx/open.m:169 modules/gui/macosx/open.m:1063
+#: modules/gui/macosx/open.m:1121
 msgid "Unicast"
 msgstr "Негруповий"
 
-#: modules/gui/macosx/open.m:170 modules/gui/macosx/open.m:1074
-#: modules/gui/macosx/open.m:1132
+#: modules/gui/macosx/open.m:170 modules/gui/macosx/open.m:1078
+#: modules/gui/macosx/open.m:1136
 msgid "Multicast"
 msgstr "Груповий"
 
-#: modules/gui/macosx/open.m:178 modules/gui/macosx/open.m:436
-#: modules/gui/macosx/open.m:1245
+#: modules/gui/macosx/open.m:178 modules/gui/macosx/open.m:440
+#: modules/gui/macosx/open.m:1249
 msgid "Capture Device"
 msgstr "Пристрій захоплення"
 
@@ -16753,7 +16752,7 @@ msgstr "Попередній канал"
 msgid "Next Channel"
 msgstr "Наступний канал"
 
-#: modules/gui/macosx/open.m:195 modules/gui/macosx/open.m:1343
+#: modules/gui/macosx/open.m:195 modules/gui/macosx/open.m:1347
 msgid "Retrieving Channel Info..."
 msgstr "Отримання інформації каналу…"
 
@@ -16795,53 +16794,53 @@ msgstr "Ширина зображення:"
 msgid "Image height:"
 msgstr "Висота зображення:"
 
-#: modules/gui/macosx/open.m:301
+#: modules/gui/macosx/open.m:305
 msgid "Load subtitles file:"
 msgstr "Завантажити файл субтитрів:"
 
-#: modules/gui/macosx/open.m:307
+#: modules/gui/macosx/open.m:311
 msgid "Override parameters"
 msgstr "Призначити параметри з вищим пріоритетом"
 
-#: modules/gui/macosx/open.m:310
+#: modules/gui/macosx/open.m:314
 msgid "FPS"
 msgstr "FPS"
 
-#: modules/gui/macosx/open.m:312
+#: modules/gui/macosx/open.m:316
 msgid "Subtitles encoding"
 msgstr "Кодування субтитрів"
 
-#: modules/gui/macosx/open.m:314 modules/gui/qt4/ui/sprefs_subtitles.h:280
+#: modules/gui/macosx/open.m:318 modules/gui/qt4/ui/sprefs_subtitles.h:280
 msgid "Font size"
 msgstr "Розмір шрифту"
 
-#: modules/gui/macosx/open.m:316
+#: modules/gui/macosx/open.m:320
 msgid "Subtitles alignment"
 msgstr "Вирівнювання субтитрів"
 
-#: modules/gui/macosx/open.m:319
+#: modules/gui/macosx/open.m:323
 msgid "Font Properties"
 msgstr "Властивості шрифту"
 
-#: modules/gui/macosx/open.m:320
+#: modules/gui/macosx/open.m:324
 msgid "Subtitle File"
 msgstr "Файл субтитрів"
 
-#: modules/gui/macosx/open.m:624 modules/gui/macosx/open.m:1162
-#: modules/gui/macosx/open.m:1415 modules/gui/qt4/ui/open_file.h:162
+#: modules/gui/macosx/open.m:628 modules/gui/macosx/open.m:1166
+#: modules/gui/macosx/open.m:1419 modules/gui/qt4/ui/open_file.h:162
 msgid "Open File"
 msgstr "Відкрити файл"
 
-#: modules/gui/macosx/open.m:854
+#: modules/gui/macosx/open.m:858
 #, c-format
 msgid "%i tracks"
 msgstr "Доріжка %i"
 
-#: modules/gui/macosx/open.m:1349
+#: modules/gui/macosx/open.m:1353
 msgid "Composite input"
 msgstr "Композитний вхід"
 
-#: modules/gui/macosx/open.m:1352
+#: modules/gui/macosx/open.m:1356
 msgid "S-Video input"
 msgstr "Вхід S-Video"
 
@@ -30912,7 +30911,7 @@ msgstr "Список медіаменеджеру"
 
 #, fuzzy
 #~ msgid "POSIX signals handling interface"
-#~ msgstr "Настройки головного інтерфейсу"
+#~ msgstr "Налаштування головного інтерфейсу"
 
 #, fuzzy
 #~ msgid "VLM remote control interface"
@@ -30972,7 +30971,7 @@ msgstr "Список медіаменеджеру"
 
 #, fuzzy
 #~ msgid "General editing filters"
-#~ msgstr "Загальні настройки звуку"
+#~ msgstr "Загальні налаштування звуку"
 
 #, fuzzy
 #~ msgid "Distortion filters"
@@ -31020,7 +31019,7 @@ msgstr "Список медіаменеджеру"
 
 #, fuzzy
 #~ msgid "Keep current Equalizer settings"
-#~ msgstr "Загальні настройки відео"
+#~ msgstr "Загальні налаштування відео"
 
 #, fuzzy
 #~ msgid ""
@@ -31496,7 +31495,7 @@ msgstr "Список медіаменеджеру"
 
 #, fuzzy
 #~ msgid "Settings for audio+video and miscellaneous decoders and encoders."
-#~ msgstr "Настройки декодерів і кодерів звуку."
+#~ msgstr "Налаштування декодерів і кодерів звуку."
 
 #, fuzzy
 #~ msgid "Random off"

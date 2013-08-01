@@ -2,7 +2,7 @@
  * audio.c: audio decoder using ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2003 the VideoLAN team
- * $Id: ecbbcad5324c36f50ba063cb6672f6e5f35f7e6c $
+ * $Id: a60b45fe469490c5e301534fb0c3ec853fffda07 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -264,7 +264,6 @@ aout_buffer_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
     if( !pp_block || !*pp_block ) return NULL;
 
     block_t *p_block = *pp_block;
-    pp_block = NULL;
 
     if( !p_sys->p_context->extradata_size && p_dec->fmt_in.i_extra &&
         p_sys->b_delayed_open)
@@ -299,6 +298,7 @@ aout_buffer_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
         p_block = block_Realloc( p_block, 0, p_block->i_buffer + FF_INPUT_BUFFER_PADDING_SIZE );
         if( !p_block )
             return NULL;
+        *pp_block = p_block;
         p_block->i_buffer -= FF_INPUT_BUFFER_PADDING_SIZE;
         memset( &p_block->p_buffer[p_block->i_buffer], 0, FF_INPUT_BUFFER_PADDING_SIZE );
 
@@ -351,7 +351,7 @@ aout_buffer_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
         date_Init( &p_sys->end_date, p_sys->p_context->sample_rate, 1 );
 
     if( p_block->i_pts != 0 &&
-        p_block->i_pts != date_Get( &p_sys->end_date ) )
+        p_block->i_pts > date_Get( &p_sys->end_date ) )
     {
         date_Set( &p_sys->end_date, p_block->i_pts );
     }
