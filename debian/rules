@@ -227,6 +227,7 @@ override_dh_auto_configure:
 	mkdir -p tmp
 	cp src/.libs/libvlccore.a tmp/libvlccore.a
 	cp lib/.libs/libvlc.a tmp/libvlc.a
+	$(MAKE) distclean
 	dh_auto_configure -- $(confflags)
 
 override_dh_auto_test:
