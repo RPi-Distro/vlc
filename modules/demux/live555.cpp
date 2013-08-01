@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: e75b2fbbfa8f0a4a3b38ed746defd06850796b34 $
+ * $Id: f8f040d0c650722639e6ef3a5d19752e359db8dc $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -536,7 +536,7 @@ static void continueAfterOPTIONS( RTSPClient* client, int result_code,
       // If OPTIONS fails, assume GET_PARAMETER is not supported but
       // still continue on with the stream.  Some servers (foscam)
       // return 501/not implemented for OPTIONS.
-      result_code != 0
+      result_code == 0
       && result_string != NULL
       && strstr( result_string, "GET_PARAMETER" ) != NULL;
     client->sendDescribeCommand( continueAfterDESCRIBE );

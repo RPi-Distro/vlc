@@ -2,7 +2,7 @@
  * MainWindow.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 193782390fc9a8f71f332fb079f9568b347be04b $
+ * $Id: 8f01969054126386b6e979b4326769892d7b1a4f $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -773,7 +773,7 @@ static VLCMainWindow *_o_sharedInstance = nil;
 
     [o_video_view setHidden: YES];
     [o_split_view setHidden: NO];
-    [self makeFirstResponder: nil];
+    [self makeFirstResponder: o_playlist_table];
 
 }
 
@@ -1626,10 +1626,13 @@ static VLCMainWindow *_o_sharedInstance = nil;
 
     if (p_vout)
     {
-        if( var_GetBool( p_vout, "video-on-top" ) )
-            [[o_video_view window] setLevel: NSStatusWindowLevel];
-        else
-            [[o_video_view window] setLevel: NSNormalWindowLevel];
+        if( !b_fullscreen )
+        {
+            if( var_GetBool( p_vout, "video-on-top" ) )
+                [[o_video_view window] setLevel: NSStatusWindowLevel];
+            else
+                [[o_video_view window] setLevel: NSNormalWindowLevel];
+        }
         vlc_object_release( p_vout );
     }
 }
@@ -1645,7 +1648,7 @@ static VLCMainWindow *_o_sharedInstance = nil;
     }
     else
     {
-        [self makeFirstResponder: nil];
+        [self makeFirstResponder: o_playlist_table];
         [o_detached_video_window orderOut: nil];
 
         if( [self level] != NSNormalWindowLevel )
@@ -2252,6 +2255,15 @@ static VLCMainWindow *_o_sharedInstance = nil;
 
     [o_fspanel setVoutWasUpdated: (int)[[self screen] displayID]];
     [o_fspanel setActive: nil];
+
+    NSArray *subviews = [[self videoView] subviews];
+    NSUInteger count = [subviews count];
+
+    for (NSUInteger x = 0; x < count; x++) {
+        if ([[subviews objectAtIndex:x] respondsToSelector:@selector(reshape)])
+            [[subviews objectAtIndex:x] reshape];
+    }
+
 }
 
 - (void)windowWillExitFullScreen:(NSNotification *)notification

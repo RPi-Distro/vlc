@@ -2,7 +2,7 @@
  * vlc_demux.h: Demuxer descriptor, queries and methods
  *****************************************************************************
  * Copyright (C) 1999-2005 VLC authors and VideoLAN
- * $Id: 2ae2f841961977db764eef08ea502b60a07c160b $
+ * $Id: 7af6a2ff2f59b04a37084f6e7653058a9d80ccb2 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -170,10 +170,9 @@ VLC_API int demux_vaControlHelper( stream_t *, int64_t i_start, int64_t i_end, i
 VLC_USED
 static inline bool demux_IsPathExtension( demux_t *p_demux, const char *psz_extension )
 {
-    if( !p_demux->psz_file )
-        return false;
-
-    const char *psz_ext = strrchr ( p_demux->psz_file, '.' );
+    const char *name = (p_demux->psz_file != NULL) ? p_demux->psz_file
+                                                   : p_demux->psz_location;
+    const char *psz_ext = strrchr ( name, '.' );
     if( !psz_ext || strcasecmp( psz_ext, psz_extension ) )
         return false;
     return true;

@@ -2,7 +2,7 @@
  * ogg.c : ogg stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 29b65bc33c89e53ce95f34f9084dda846560a902 $
+ * $Id: 8a041c6e31ed458225a858f2919538ca2fe37b84 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Andre Pang <Andre.Pang@csiro.au> (Annodex support)
@@ -135,7 +135,7 @@ static bool Ogg_LogicalStreamResetEsFormat( demux_t *p_demux, logical_stream_t *
 
 /* */
 static void Ogg_ExtractMeta( demux_t *p_demux, vlc_fourcc_t i_codec, const uint8_t *p_headers, int i_headers );
-static int64_t Ogg_GetLastPacket( demux_t *p_demux, logical_stream_t *p_stream, ogg_packet *p_oggpacket, double f_rate );
+static int64_t Ogg_GetLastPacket( demux_t *p_demux, logical_stream_t *p_stream, double f_rate );
 
 /* Logical bitstream headers */
 static void Ogg_ReadTheoraHeader( demux_t *, logical_stream_t *, ogg_packet * );
@@ -1827,15 +1827,9 @@ static void Ogg_ExtractMeta( demux_t *p_demux, vlc_fourcc_t i_codec, const uint8
 }
 
 static int64_t Ogg_GetLastPacket( demux_t *p_demux, logical_stream_t *p_stream,
-                                  ogg_packet *p_oggpacket, double f_rate )
+                                  double f_rate )
 {
     int64_t last_packet = oggseek_get_last_frame( p_demux, p_stream );
-    /*
-     * Since there's quite a good chance that ogg_stream_packetout was called,
-     * the given p_oggpacket may point to invalid data. Fill it with some valid ones
-     */
-    ogg_stream_packetpeek( &p_stream->os, p_oggpacket );
-
     return ( last_packet >= 0 ) ? last_packet / f_rate : -1;
 }
 
@@ -1907,7 +1901,7 @@ static void Ogg_ReadTheoraHeader( demux_t *p_demux, logical_stream_t *p_stream,
     }
     if ( p_demux->p_sys->i_length < 0 )
     {
-        int64_t last_packet = Ogg_GetLastPacket( p_demux, p_stream, p_oggpacket, p_stream->f_rate );
+        int64_t last_packet = Ogg_GetLastPacket( p_demux, p_stream, p_stream->f_rate );
         if ( last_packet >= 0 )
             p_demux->p_sys->i_length = last_packet;
     }
@@ -1938,7 +1932,7 @@ static void Ogg_ReadVorbisHeader( demux_t *p_demux, logical_stream_t *p_stream,
 
     if ( p_demux->p_sys->i_length < 0 )
     {
-        int64_t last_packet = Ogg_GetLastPacket( p_demux, p_stream, p_oggpacket, p_stream->f_rate );
+        int64_t last_packet = Ogg_GetLastPacket( p_demux, p_stream, p_stream->f_rate );
         if ( last_packet >= 0 )
             p_demux->p_sys->i_length = last_packet;
     }
@@ -1997,7 +1991,7 @@ static void Ogg_ReadOpusHeader( demux_t *p_demux,
 
     if ( p_demux->p_sys->i_length < 0 )
     {
-        int64_t last_packet = Ogg_GetLastPacket( p_demux, p_stream, p_oggpacket, p_stream->f_rate );
+        int64_t last_packet = Ogg_GetLastPacket( p_demux, p_stream, p_stream->f_rate );
         if ( last_packet >= 0 )
             p_demux->p_sys->i_length = last_packet;
     }

@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: f1357cb14284dc0ee3853f6a588212c5dc151565 $
+ * $Id: 854cd5d16ba0f834357ff903ef1d6b7d83af558e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -31,6 +31,8 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+
+#include <assert.h>
 
 #include <vlc_common.h>
 #include <vlc_aout.h>
@@ -103,6 +105,7 @@ struct encoder_sys_t
      */
     char *p_buffer;
     uint8_t *p_buffer_out;
+    uint8_t *p_interleave_buffer;
     size_t i_buffer_out;
 
     /*
@@ -187,6 +190,42 @@ static const uint16_t mpeg4_default_non_intra_matrix[64] = {
  22, 23, 24, 26, 27, 28, 30, 31,
  23, 24, 25, 27, 28, 30, 31, 33,
 };
+
+/**
+ * Deinterleaves audio samples within a block of samples.
+ * \param dst destination buffer for planar samples
+ * \param src source buffer with interleaved samples
+ * \param samples number of samples (per channel/per plane)
+ * \param chans channels/planes count
+ * \param fourcc sample format (must be a linear sample format)
+ * \note The samples must be naturally aligned in memory.
+ * \warning Destination and source buffers MUST NOT overlap.
+ */
+static void Deinterleave( void *restrict dst, const void *restrict src,
+                      unsigned samples, unsigned chans, vlc_fourcc_t fourcc )
+{
+#define DEINTERLEAVE_TYPE(type) \
+do { \
+    type *d = dst; \
+    const type *s = src; \
+    for( size_t i = 0; i < chans; i++ ) { \
+        for( size_t j = 0, k = 0; j < samples; j++, k += chans ) \
+            *(d++) = s[k]; \
+        s++; \
+    } \
+} while(0)
+
+    switch( fourcc )
+    {
+        case VLC_CODEC_U8:   DEINTERLEAVE_TYPE(uint8_t);  break;
+        case VLC_CODEC_S16N: DEINTERLEAVE_TYPE(uint16_t); break;
+        case VLC_CODEC_FL32: DEINTERLEAVE_TYPE(float);    break;
+        case VLC_CODEC_S32N: DEINTERLEAVE_TYPE(int32_t);  break;
+        case VLC_CODEC_FL64: DEINTERLEAVE_TYPE(double);   break;
+        default:             assert(0);
+    }
+#undef DEINTERLEAVE_TYPE
+}
 
 /*****************************************************************************
  * OpenEncoder: probe the encoder
@@ -305,6 +344,7 @@ int OpenEncoder( vlc_object_t *p_this )
 
     p_sys->p_buffer = NULL;
     p_sys->p_buffer_out = NULL;
+    p_sys->p_interleave_buffer = NULL;
     p_sys->i_buffer_out = 0;
 
 #if LIBAVCODEC_VERSION_MAJOR < 54
@@ -481,6 +521,7 @@ int OpenEncoder( vlc_object_t *p_this )
 
         p_sys->p_buffer_out = NULL;
 
+
         p_enc->fmt_in.i_codec = VLC_CODEC_I420;
         p_enc->fmt_in.video.i_chroma = p_enc->fmt_in.i_codec;
         GetFfmpegChroma( &p_context->pix_fmt, p_enc->fmt_in.video );
@@ -612,7 +653,8 @@ int OpenEncoder( vlc_object_t *p_this )
         p_context->sample_fmt  = p_codec->sample_fmts ?
                                     p_codec->sample_fmts[0] :
                                     AV_SAMPLE_FMT_S16;
-        p_enc->fmt_in.i_codec  = VLC_CODEC_S16N;
+        p_enc->fmt_in.i_codec  = GetVlcAudioFormat( p_context->sample_fmt );
+
         p_context->sample_rate = p_enc->fmt_out.audio.i_rate;
         p_context->time_base.num = 1;
         p_context->time_base.den = p_context->sample_rate;
@@ -826,9 +868,9 @@ int OpenEncoder( vlc_object_t *p_this )
 
     if( p_enc->fmt_in.i_cat == AUDIO_ES )
     {
-        GetVlcAudioFormat( &p_enc->fmt_in.i_codec,
-                           &p_enc->fmt_in.audio.i_bitspersample,
-                           p_sys->p_context->sample_fmt );
+        p_enc->fmt_in.i_codec = GetVlcAudioFormat( p_sys->p_context->sample_fmt );
+        p_enc->fmt_in.audio.i_bitspersample = aout_BitsPerSample( p_enc->fmt_in.i_codec );
+
         p_sys->i_sample_bytes = (p_enc->fmt_in.audio.i_bitspersample / 8) *
                                 p_context->channels;
         p_sys->i_frame_size = p_context->frame_size > 1 ?
@@ -851,6 +893,13 @@ int OpenEncoder( vlc_object_t *p_this )
         {
             goto error;
         }
+        if( av_sample_fmt_is_planar( p_sys->p_context->sample_fmt ) )
+        {
+            p_sys->p_interleave_buffer = malloc( p_sys->i_buffer_out );
+            if( p_sys->p_interleave_buffer == NULL )
+                goto error;
+        }
+
     }
 
     msg_Dbg( p_enc, "found encoder %s", psz_namecodec );
@@ -860,6 +909,7 @@ error:
     free( p_enc->fmt_out.p_extra );
     free( p_sys->p_buffer );
     free( p_sys->p_buffer_out );
+    free( p_sys->p_interleave_buffer );
     free( p_sys );
     return VLC_ENOMEM;
 }
@@ -1105,17 +1155,35 @@ static block_t *EncodeAudio( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
             int i_size = (p_sys->i_frame_size - i_delay_size) *
                          p_sys->i_sample_bytes;
 
-            memcpy( p_sys->p_buffer + i_delay_size * p_sys->i_sample_bytes,
-                    p_buffer, i_size );
+            if( av_sample_fmt_is_planar( p_sys->p_context->sample_fmt ) )
+            {
+                memcpy( p_sys->p_buffer + i_delay_size * p_sys->i_sample_bytes,
+                        p_buffer, i_size );
+                Deinterleave( p_sys->p_interleave_buffer, p_sys->p_buffer,
+                        p_sys->i_frame_size, p_enc->fmt_in.audio.i_channels, p_enc->fmt_in.i_codec );
+                p_samples = p_sys->p_interleave_buffer;
+            }
+            else
+            {
+                memcpy( p_sys->p_buffer + i_delay_size * p_sys->i_sample_bytes,
+                        p_buffer, i_size );
+                p_samples = p_sys->p_buffer;
+            }
             p_buffer -= i_delay_size * p_sys->i_sample_bytes;
             i_samples += i_samples_delay;
             i_samples_delay = 0;
 
-            p_samples = p_sys->p_buffer;
         }
         else
         {
-            p_samples = p_buffer;
+            if( av_sample_fmt_is_planar( p_sys->p_context->sample_fmt ) ) {
+                Deinterleave( p_sys->p_buffer,
+                        p_buffer, p_sys->i_frame_size,
+                        p_enc->fmt_in.audio.i_channels,
+                        p_enc->fmt_in.i_codec );
+                p_samples = p_sys->p_buffer;
+            } else
+                p_samples = p_buffer;
         }
 
         i_out = avcodec_encode_audio( p_sys->p_context, p_sys->p_buffer_out,
@@ -1149,8 +1217,7 @@ static block_t *EncodeAudio( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
     if( i_samples )
     {
         memcpy( &p_sys->p_buffer[i_samples_delay * p_sys->i_sample_bytes],
-                p_buffer,
-                i_samples * p_sys->i_sample_bytes );
+                    p_buffer, i_samples * p_sys->i_sample_bytes );
     }
 
     return p_chain;
@@ -1170,6 +1237,7 @@ void CloseEncoder( vlc_object_t *p_this )
     av_free( p_sys->p_context );
 
     free( p_sys->p_buffer );
+    free( p_sys->p_interleave_buffer );
     free( p_sys->p_buffer_out );
 
     free( p_sys );

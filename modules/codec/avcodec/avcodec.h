@@ -2,7 +2,7 @@
  * avcodec.h: decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: 59f3bb5a2279a39246c2c4755fe33d10763915fb $
+ * $Id: a5599477639ac8f96b561d5c63a65015452a1aa3 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -21,13 +21,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#ifndef HAVE_AVUTIL_PLANAR
+# define av_sample_fmt_is_planar(x) (0)
+#endif
+
+
 #include "chroma.h"
 /* VLC <-> avcodec tables */
 int GetFfmpegCodec( vlc_fourcc_t i_fourcc, int *pi_cat,
                     int *pi_ffmpeg_codec, const char **ppsz_name );
 int GetVlcFourcc( int i_ffmpeg_codec, int *pi_cat,
                   vlc_fourcc_t *pi_fourcc, const char **ppsz_name );
-void GetVlcAudioFormat( vlc_fourcc_t *, unsigned *pi_bits, int i_sample_fmt );
+vlc_fourcc_t GetVlcAudioFormat( int i_sample_fmt );
 
 picture_t * DecodeVideo    ( decoder_t *, block_t ** );
 aout_buffer_t * DecodeAudio( decoder_t *, block_t ** );

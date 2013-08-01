@@ -4,7 +4,7 @@
  * Copyright © 2006-2008 Rafaël Carré
  * Copyright © 2007-2010 Mirsal Ennaime
  * Copyright © 2009-2010 The VideoLAN team
- * $Id: 8fe2eae0264f392b94db77c5e34624396062c858 $
+ * $Id: 0ed15c2f2be01e3ab31a99dd28e8338b58b290ef $
  *
  * Authors:    Rafaël Carré <funman at videolanorg>
  *             Mirsal Ennaime <mirsal at mirsal fr>
@@ -97,6 +97,7 @@ static void Run     ( intf_thread_t * );
 
 static int TrackChange( intf_thread_t * );
 static int AllCallback( vlc_object_t*, const char*, vlc_value_t, vlc_value_t, void* );
+static int InputCallback( vlc_object_t*, const char*, vlc_value_t, vlc_value_t, void* );
 
 static void dispatch_status_cb( DBusConnection *p_conn,
                                 DBusDispatchStatus i_status,
@@ -137,6 +138,7 @@ static void DispatchDBusMessages( intf_thread_t *p_intf );
 vlc_module_begin ()
     set_shortname( N_("DBus"))
     set_category( CAT_INTERFACE )
+    set_subcategory( SUBCAT_INTERFACE_CONTROL )
     set_description( N_("D-Bus control interface") )
     set_capability( "interface", 0 )
     set_callbacks( Open, Close )
@@ -287,7 +289,7 @@ static void Close   ( vlc_object_t *p_this )
 
     if( p_sys->p_input )
     {
-        var_DelCallback( p_sys->p_input, "intf-event", AllCallback, p_intf );
+        var_DelCallback( p_sys->p_input, "intf-event", InputCallback, p_intf );
         var_DelCallback( p_sys->p_input, "can-pause", AllCallback, p_intf );
         var_DelCallback( p_sys->p_input, "can-seek", AllCallback, p_intf );
         vlc_object_release( p_sys->p_input );
@@ -505,6 +507,11 @@ static void ProcessEvents( intf_thread_t *p_intf,
         {
         case SIGNAL_ITEM_CURRENT:
             TrackChange( p_intf );
+
+            // rate depends on current item
+            if( !vlc_dictionary_has_key( &tracklist_properties, "Rate" ) )
+                vlc_dictionary_insert( &player_properties, "Rate", NULL );
+
             vlc_dictionary_insert( &player_properties, "Metadata", NULL );
             break;
         case SIGNAL_INTF_CHANGE:
@@ -853,30 +860,27 @@ static void   wakeup_main_loop( void *p_data )
         msg_Err( p_intf, "Could not wake up the main loop: %m" );
 }
 
-/* InputIntfEventCallback() fills a callback_info_t data structure in response
+/* Flls a callback_info_t data structure in response
  * to an "intf-event" input event.
  *
- * Caution: This function executes in the input thread
+ * @warning This function executes in the input thread.
  *
- * This function must be called with p_sys->lock locked
- *
- * @return int VLC_SUCCESS on success, VLC_E* on error
- * @param intf_thread_t *p_intf the interface thread
- * @param input_thread_t *p_input This input thread
- * @param const int i_event input event type
- * @param callback_info_t *p_info Location of the callback info to fill
+ * @return VLC_SUCCESS on success, VLC_E* on error.
  */
-static int InputIntfEventCallback( intf_thread_t   *p_intf,
-                                   input_thread_t  *p_input,
-                                   const int        i_event,
-                                   callback_info_t *p_info )
+static int InputCallback( vlc_object_t *p_this, const char *psz_var,
+                          vlc_value_t oldval, vlc_value_t newval, void *data )
 {
-    dbus_int32_t i_state = PLAYBACK_STATE_INVALID;
-    assert(!p_info->signal);
-    mtime_t i_now = mdate(), i_pos, i_projected_pos, i_interval;
-    float f_current_rate;
+    input_thread_t *p_input = (input_thread_t *)p_this;
+    intf_thread_t *p_intf = data;
+    intf_sys_t *p_sys = p_intf->p_sys;
 
-    switch( i_event )
+    dbus_int32_t i_state = PLAYBACK_STATE_INVALID;
+
+    callback_info_t *p_info = calloc( 1, sizeof( callback_info_t ) );
+    if( unlikely(p_info == NULL) )
+        return VLC_ENOMEM;
+
+    switch( newval.i_int )
     {
         case INPUT_EVENT_DEAD:
         case INPUT_EVENT_ABORT:
@@ -898,11 +902,15 @@ static int InputIntfEventCallback( intf_thread_t   *p_intf,
             break;
         case INPUT_EVENT_ITEM_META:
             p_info->signal = SIGNAL_INPUT_METADATA;
-            return VLC_SUCCESS;
+            break;
         case INPUT_EVENT_RATE:
             p_info->signal = SIGNAL_RATE;
-            return VLC_SUCCESS;
+            break;
         case INPUT_EVENT_POSITION:
+        {
+            mtime_t i_now = mdate(), i_pos, i_projected_pos, i_interval;
+            float f_current_rate;
+
             /* Detect seeks
              * XXX: This is way more convoluted than it should be... */
             i_pos = var_GetTime( p_input, "time" );
@@ -930,19 +938,30 @@ static int InputIntfEventCallback( intf_thread_t   *p_intf,
             p_info->signal = SIGNAL_SEEK;
             p_info->i_item = input_GetItem( p_input )->i_id;
             break;
-
+        }
         default:
-            return VLC_EGENERIC;
+            free( p_info );
+            return VLC_SUCCESS; /* don't care */
     }
 
+    vlc_mutex_lock( &p_sys->lock );
     if( i_state != PLAYBACK_STATE_INVALID &&
-        i_state != p_intf->p_sys->i_playing_state )
+        i_state != p_sys->i_playing_state )
     {
-        p_intf->p_sys->i_playing_state = i_state;
+        p_sys->i_playing_state = i_state;
         p_info->signal = SIGNAL_STATE;
     }
+    if( p_info->signal )
+        vlc_array_append( p_intf->p_sys->p_events, p_info );
+    else
+        free( p_info );
+    vlc_mutex_unlock( &p_intf->p_sys->lock );
 
-    return p_info->signal ? VLC_SUCCESS : VLC_EGENERIC;
+    wakeup_main_loop( p_intf );
+
+    (void)psz_var;
+    (void)oldval;
+    return VLC_SUCCESS;
 }
 
 // Get all the callbacks
@@ -957,8 +976,6 @@ static int AllCallback( vlc_object_t *p_this, const char *psz_var,
 
     if( !info )
         return VLC_ENOMEM;
-
-    vlc_mutex_lock( &p_intf->p_sys->lock );
 
     // Wich event is it ?
     if( !strcmp( "item-current", psz_var ) )
@@ -991,20 +1008,6 @@ static int AllCallback( vlc_object_t *p_this, const char *psz_var,
     else if( !strcmp( "loop", psz_var ) )
         info->signal = SIGNAL_LOOP;
 
-    else if( !strcmp( "intf-event", psz_var ) )
-    {
-        int i_res = InputIntfEventCallback( p_intf,
-                                            (input_thread_t*) p_this,
-                                            newval.i_int, info );
-        if( VLC_SUCCESS != i_res )
-        {
-            vlc_mutex_unlock( &p_intf->p_sys->lock );
-            free( info );
-
-            return i_res;
-        }
-    }
-
     else if( !strcmp( "can-seek", psz_var ) )
         info->signal = SIGNAL_CAN_SEEK;
 
@@ -1015,6 +1018,7 @@ static int AllCallback( vlc_object_t *p_this, const char *psz_var,
         assert(0);
 
     // Append the event
+    vlc_mutex_lock( &p_intf->p_sys->lock );
     vlc_array_append( p_intf->p_sys->p_events, info );
     vlc_mutex_unlock( &p_intf->p_sys->lock );
 
@@ -1038,7 +1042,7 @@ static int TrackChange( intf_thread_t *p_intf )
 
     if( p_sys->p_input )
     {
-        var_DelCallback( p_sys->p_input, "intf-event", AllCallback, p_intf );
+        var_DelCallback( p_sys->p_input, "intf-event", InputCallback, p_intf );
         var_DelCallback( p_sys->p_input, "can-pause", AllCallback, p_intf );
         var_DelCallback( p_sys->p_input, "can-seek", AllCallback, p_intf );
         vlc_object_release( p_sys->p_input );
@@ -1064,7 +1068,7 @@ static int TrackChange( intf_thread_t *p_intf )
         p_sys->b_meta_read = true;
 
     p_sys->p_input = p_input;
-    var_AddCallback( p_input, "intf-event", AllCallback, p_intf );
+    var_AddCallback( p_input, "intf-event", InputCallback, p_intf );
     var_AddCallback( p_input, "can-pause", AllCallback, p_intf );
     var_AddCallback( p_input, "can-seek", AllCallback, p_intf );
 
@@ -1126,10 +1130,32 @@ int DemarshalSetPropertyValue( DBusMessage *p_msg, void *p_arg )
         free( psz ); \
     }
 
+#define ADD_META_SINGLETON_STRING_LIST( entry, item ) \
+    { \
+        char * psz = input_item_Get##item( p_input );\
+        if( psz ) { \
+            dbus_message_iter_open_container( &dict, DBUS_TYPE_DICT_ENTRY, \
+                    NULL, &dict_entry ); \
+            dbus_message_iter_append_basic( &dict_entry, DBUS_TYPE_STRING, \
+                    &ppsz_meta_items[entry] ); \
+            dbus_message_iter_open_container( &dict_entry, DBUS_TYPE_VARIANT, \
+                    "as", &variant ); \
+            dbus_message_iter_open_container( &variant, DBUS_TYPE_ARRAY, "s", \
+                                              &list ); \
+            dbus_message_iter_append_basic( &list, \
+                    DBUS_TYPE_STRING, \
+                    &psz ); \
+            dbus_message_iter_close_container( &variant, &list ); \
+            dbus_message_iter_close_container( &dict_entry, &variant ); \
+            dbus_message_iter_close_container( &dict, &dict_entry ); \
+        } \
+        free( psz ); \
+    }
+
 int GetInputMeta( input_item_t* p_input,
                   DBusMessageIter *args )
 {
-    DBusMessageIter dict, dict_entry, variant;
+    DBusMessageIter dict, dict_entry, variant, list;
     /** The duration of the track can be expressed in second, milli-seconds and
         µ-seconds */
     dbus_int64_t i_mtime = input_item_GetDuration( p_input );
@@ -1156,19 +1182,19 @@ int GetInputMeta( input_item_t* p_input,
     ADD_META( 0, DBUS_TYPE_OBJECT_PATH, psz_trackid );
     ADD_VLC_META_STRING( 1,  URI );
     ADD_VLC_META_STRING( 2,  Title );
-    ADD_VLC_META_STRING( 3,  Artist );
+    ADD_META_SINGLETON_STRING_LIST( 3,  Artist );
     ADD_VLC_META_STRING( 4,  Album );
     ADD_VLC_META_STRING( 5,  TrackNum );
     ADD_META( 6, DBUS_TYPE_UINT32, i_time );
     ADD_META( 7, DBUS_TYPE_INT64,  i_mtime );
-    ADD_VLC_META_STRING( 8,  Genre );
-    ADD_VLC_META_STRING( 9,  Rating );
-    ADD_VLC_META_STRING( 10, Date );
+    ADD_META_SINGLETON_STRING_LIST( 8,  Genre );
+    //ADD_META( 9, DBUS_TYPE_DOUBLE, rating );
+    ADD_VLC_META_STRING( 10, Date ); // this is supposed to be in ISO 8601 extended format
     ADD_VLC_META_STRING( 11, ArtURL );
     ADD_VLC_META_STRING( 12, TrackID );
 
     ADD_VLC_META_STRING( 17, Copyright );
-    ADD_VLC_META_STRING( 18, Description );
+    ADD_META_SINGLETON_STRING_LIST( 18, Description );
     ADD_VLC_META_STRING( 19, EncodedBy );
     ADD_VLC_META_STRING( 20, Language );
     ADD_META( 21, DBUS_TYPE_INT64, i_length );

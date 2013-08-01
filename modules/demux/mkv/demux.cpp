@@ -3,7 +3,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: d863bb703196ef8feb061082d1168c5264f6b331 $
+ * $Id: 2035d82e4f9eabc4cf94b2e5e0c4475ee0498dfa $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -462,17 +462,24 @@ matroska_stream_c *demux_sys_t::AnalyseAllSegmentsFound( demux_t *p_demux, EbmlS
     EbmlElement *p_l0, *p_l1, *p_l2;
     bool b_keep_stream = false, b_keep_segment = false;
 
-    // verify the EBML Header
-    vlc_stream_io_callback & io_stream = (vlc_stream_io_callback &) p_estream->I_O();
-    p_l0 = p_estream->FindNextID(EBML_INFO(EbmlHead), UINT64_MAX);
+    /* verify the EBML Header... it shouldn't be bigger than 1kB */
+    p_l0 = p_estream->FindNextID(EBML_INFO(EbmlHead), 1024);
     if (p_l0 == NULL)
     {
         msg_Err( p_demux, "No EBML header found" );
         return NULL;
     }
 
-    // verify we can read this Segment, we only support Matroska version 1 for now
-    p_l0->Read(*p_estream, EBML_CLASS_CONTEXT(EbmlHead), i_upper_lvl, p_l0, true);
+    /* verify we can read this Segment */
+    try
+    {
+        p_l0->Read(*p_estream, EBML_CLASS_CONTEXT(EbmlHead), i_upper_lvl, p_l0, true);
+    }
+    catch(...)
+    {
+        msg_Err(p_demux, "EBML Header Read failed");
+        return NULL;
+    }
 
     EDocType doc_type = GetChild<EDocType>(*static_cast<EbmlHead*>(p_l0));
     if (std::string(doc_type) != "matroska" && std::string(doc_type) != "webm" )
@@ -518,8 +525,20 @@ matroska_stream_c *demux_sys_t::AnalyseAllSegmentsFound( demux_t *p_demux, EbmlS
                     // find the families of this segment
                     KaxInfo *p_info = static_cast<KaxInfo*>(p_l1);
                     b_keep_segment = b_initial;
-
-                    p_info->Read(*p_estream, EBML_CLASS_CONTEXT(KaxInfo), i_upper_lvl, p_l2, true);
+                    if( unlikely( p_info->GetSize() >= SIZE_MAX ) )
+                    {
+                        msg_Err( p_demux, "KaxInfo too big aborting" );
+                        break;
+                    }
+                    try
+                    {
+                        p_info->Read(*p_estream, EBML_CLASS_CONTEXT(KaxInfo), i_upper_lvl, p_l2, true);
+                    }
+                    catch (...)
+                    {
+                        msg_Err( p_demux, "KaxInfo found but corrupted");
+                        break;
+                    }
                     for( size_t i = 0; i < p_info->ListSize(); i++ )
                     {
                         EbmlElement *l = (*p_info)[i];
@@ -689,6 +708,38 @@ bool demux_sys_t::PreloadLinked()
     // TODO decide which segment should be first used (VMG for DVD)
 
     return true;
+}
+
+void demux_sys_t::FreeUnused()
+{
+    size_t i;
+    for( i = 0; i < streams.size(); i++ )
+    {
+        bool used = false;
+        struct matroska_stream_c *p_s = streams[i];
+        for( size_t j = 0; j < p_s->segments.size(); j++ )
+        {
+            if( p_s->segments[j]->b_preloaded )
+            {
+                used = true;
+                break;
+            }
+        }
+        if( !used )
+        {
+            streams[i] = NULL;
+            delete p_s;
+        }
+        
+    }
+    for( i = 0; i < opened_segments.size(); i++)
+    {
+        if( !opened_segments[i]->b_preloaded )
+        {
+            delete opened_segments[i];
+            opened_segments[i] = NULL;
+        }
+    }
 }
 
 virtual_segment_c *demux_sys_t::VirtualFromSegments( std::vector<matroska_segment_c*> *p_segments ) const

@@ -4,10 +4,12 @@
  * Copyright © 2006-2011 Rafaël Carré
  * Copyright © 2007-2011 Mirsal Ennaime
  * Copyright © 2009-2011 The VideoLAN team
- * $Id: e134cbf40702ed4b8c1278066bf5998ad7f087e1 $
+ * Copyright © 2013      Alex Merry
+ * $Id: bd3b93cb8cef796d81a2ce1a4c2801eee314f8b6 $
  *
  * Authors:    Mirsal Ennaime <mirsal at mirsal fr>
  *             Rafaël Carré <funman at videolanorg>
+ *             Alex Merry <dev at randomguy3 me uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -523,7 +525,7 @@ MarshalRate( intf_thread_t *p_intf, DBusMessageIter *container )
         vlc_object_release( (vlc_object_t*) p_input );
     }
     else
-        d_rate = 0.;
+        d_rate = 1.0;
 
     dbus_message_iter_append_basic( container, DBUS_TYPE_DOUBLE, &d_rate );
 }
@@ -676,30 +678,54 @@ DBUS_METHOD( LoopStatusSet )
     REPLY_SEND;
 }
 
+static int
+MarshalMetadata( intf_thread_t *p_intf, DBusMessageIter *container )
+{
+    DBusMessageIter a;
+    input_thread_t *p_input = NULL;
+    input_item_t   *p_item  = NULL;
+
+    if( ( p_input = playlist_CurrentInput( p_intf->p_sys->p_playlist ) ) )
+    {
+        p_item = input_GetItem( p_input );
+
+        if( p_item )
+        {
+            int result = GetInputMeta( p_item, container );
+
+            if (result != VLC_SUCCESS)
+            {
+                vlc_object_release( (vlc_object_t*) p_input );
+                return result;
+            }
+        }
+
+        vlc_object_release( (vlc_object_t*) p_input );
+    }
+
+    if (!p_item)
+    {
+        // avoid breaking the type marshalling
+        if( !dbus_message_iter_open_container( container, DBUS_TYPE_ARRAY, "{sv}", &a ) ||
+              !dbus_message_iter_close_container( container, &a ) )
+            return VLC_ENOMEM;
+    }
+
+    return VLC_SUCCESS;
+}
+
 DBUS_METHOD( Metadata )
 {
     REPLY_INIT;
     OUT_ARGUMENTS;
 
-    DBusMessageIter v, a;
-    playlist_t *p_playlist = PL;
+    DBusMessageIter v;
 
     if( !dbus_message_iter_open_container( &args, DBUS_TYPE_VARIANT,
                                            "a{sv}", &v ) )
         return DBUS_HANDLER_RESULT_NEED_MEMORY;
 
-    PL_LOCK;
-    playlist_item_t* p_item =  playlist_CurrentPlayingItem( p_playlist );
-
-    if( p_item )
-        GetInputMeta( p_item->p_input, &v );
-
-    PL_UNLOCK;
-
-    if( ( !p_item &&
-        ( !dbus_message_iter_open_container( &v, DBUS_TYPE_ARRAY, "{sv}", &a ) ||
-          !dbus_message_iter_close_container( &v, &a ) ) ) ||
-
+    if( MarshalMetadata( p_this, &v ) != VLC_SUCCESS ||
         !dbus_message_iter_close_container( &args, &v ) ) {
         return DBUS_HANDLER_RESULT_NEED_MEMORY;
     }
@@ -891,20 +917,10 @@ PropertiesChangedSignal( intf_thread_t    *p_intf,
 
         if( !strcmp( ppsz_properties[i], "Metadata" ) )
         {
-            input_thread_t *p_input;
-            p_input = playlist_CurrentInput( p_intf->p_sys->p_playlist );
-
             dbus_message_iter_open_container( &entry,
                                               DBUS_TYPE_VARIANT, "a{sv}",
                                               &variant );
-
-            if( p_input )
-            {
-                input_item_t *p_item = input_GetItem( p_input );
-                GetInputMeta( p_item, &variant );
-                vlc_object_release( p_input );
-            }
-
+            MarshalMetadata( p_intf, &variant );
             dbus_message_iter_close_container( &entry, &variant );
         }
         else if( !strcmp( ppsz_properties[i], "PlaybackStatus" ) )

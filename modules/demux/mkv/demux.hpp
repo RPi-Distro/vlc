@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: ce7c966a8e28950b8cf7bc8e7eaf8ecc39f996d1 $
+ * $Id: a4fb495906814a4103d64a30b052ae5721e473ff $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -382,6 +382,7 @@ public:
 
     void PreloadFamily( const matroska_segment_c & of_segment );
     bool PreloadLinked();
+    void FreeUnused();
     bool PreparePlayback( virtual_segment_c *p_new_segment );
     matroska_stream_c *AnalyseAllSegmentsFound( demux_t *p_demux, EbmlStream *p_estream, bool b_initial = false );
     void JumpTo( virtual_segment_c & p_segment, virtual_chapter_c * p_chapter );

@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 217b1b81954f1e703ca64458e02007dd323f039d $
+ * $Id: 5bd427603656f9798cf054337d7f3829166750ee $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -530,7 +530,7 @@ static int Open( vlc_object_t * p_this )
                 fmt.video.i_frame_rate = tk->i_rate;
                 fmt.video.i_frame_rate_base = tk->i_scale;
                 fmt.i_extra =
-                    __MIN( p_vids->p_bih->biSize - sizeof( VLC_BITMAPINFOHEADER ),
+                    __MAX( p_vids->p_bih->biSize - sizeof( VLC_BITMAPINFOHEADER ),
                            p_vids->i_chunk_size - sizeof(VLC_BITMAPINFOHEADER) );
                 if( fmt.i_extra > 0 )
                 {

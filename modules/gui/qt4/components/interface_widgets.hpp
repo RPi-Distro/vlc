@@ -2,7 +2,7 @@
  * interface_widgets.hpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: cd952761bfc4365b2ff0775f80ec0ea21c953b58 $
+ * $Id: 72ce2955a3cd3d32b60b1e45bcbc126ac1fc19d2 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -238,6 +238,7 @@ public slots:
         requestUpdate();
     }
     void showArtUpdate( const QString& );
+    void clear();
 
 private slots:
     void askForUpdate();

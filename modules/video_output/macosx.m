@@ -2,7 +2,7 @@
  * macosx.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2012 the VideoLAN team
- * $Id: c25112a734bf8f1dc2da36ee4ae79e391b0be607 $
+ * $Id: d9c08711fd83968e0042222d8cb113faf1665298 $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -168,7 +168,7 @@ static int Open (vlc_object_t *this)
 
         if (!container)
         {
-            msg_Dbg(vd, "No drawable-nsobject nor vout_window_t found, passing over.");
+            msg_Err(vd, "No drawable-nsobject nor vout_window_t found, passing over.");
             goto error;
         }
     }
@@ -219,6 +219,7 @@ static int Open (vlc_object_t *this)
     sys->vgl = vout_display_opengl_New (&vd->fmt, &subpicture_chromas, &sys->gl);
     if (!sys->vgl)
     {
+        msg_Err(vd, "Error while initializing opengl display.");
         sys->gl.sys = NULL;
         goto error;
     }
@@ -315,6 +316,12 @@ static int Control (vout_display_t *vd, int query, va_list ap)
 {
     vout_display_sys_t *sys = vd->sys;
 
+    if (!vd->sys)
+        return VLC_EGENERIC;
+
+    if (!sys->embed)
+        return VLC_EGENERIC;
+
     switch (query)
     {
         case VOUT_DISPLAY_CHANGE_FULLSCREEN:
@@ -336,9 +343,6 @@ static int Control (vout_display_t *vd, int query, va_list ap)
         case VOUT_DISPLAY_CHANGE_SOURCE_CROP:
         case VOUT_DISPLAY_CHANGE_DISPLAY_SIZE:
         {
-            if (!vd->sys)
-                return VLC_EGENERIC;
-
             NSAutoreleasePool * o_pool = [[NSAutoreleasePool alloc] init];
 
             id o_window = [sys->glView window];
@@ -708,10 +712,13 @@ static void OpenglSwap (vlc_gl_t *gl)
 
 - (void)mouseDown:(NSEvent *)o_event
 {
-    if ([o_event type] == NSLeftMouseDown && !([o_event modifierFlags] &  NSControlKeyMask))
-    {
-        if ([o_event clickCount] <= 1)
-            vout_display_SendEventMousePressed (vd, MOUSE_BUTTON_LEFT);
+    @synchronized (self) {
+        if (vd) {
+            if ([o_event type] == NSLeftMouseDown && !([o_event modifierFlags] &  NSControlKeyMask)) {
+                if ([o_event clickCount] <= 1)
+                    vout_display_SendEventMousePressed (vd, MOUSE_BUTTON_LEFT);
+            }
+        }
     }
 
     [super mouseDown:o_event];
@@ -719,22 +726,32 @@ static void OpenglSwap (vlc_gl_t *gl)
 
 - (void)otherMouseDown:(NSEvent *)o_event
 {
-    vout_display_SendEventMousePressed (vd, MOUSE_BUTTON_CENTER);
+    @synchronized (self) {
+        if (vd)
+            vout_display_SendEventMousePressed (vd, MOUSE_BUTTON_CENTER);
+    }
 
     [super otherMouseDown: o_event];
 }
 
 - (void)mouseUp:(NSEvent *)o_event
 {
-    if ([o_event type] == NSLeftMouseUp)
-        vout_display_SendEventMouseReleased (vd, MOUSE_BUTTON_LEFT);
+    @synchronized (self) {
+        if (vd) {
+            if ([o_event type] == NSLeftMouseUp)
+                vout_display_SendEventMouseReleased (vd, MOUSE_BUTTON_LEFT);
+        }
+    }
 
     [super mouseUp: o_event];
 }
 
 - (void)otherMouseUp:(NSEvent *)o_event
 {
-    vout_display_SendEventMouseReleased (vd, MOUSE_BUTTON_CENTER);
+    @synchronized (self) {
+        if (vd)
+            vout_display_SendEventMouseReleased (vd, MOUSE_BUTTON_CENTER);
+    }
 
     [super otherMouseUp: o_event];
 }

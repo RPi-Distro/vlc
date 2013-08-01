@@ -2,7 +2,7 @@
  * VideoEffects.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: 5bcd6f14df5511935a7be1e2ccca2ac3280eb789 $
+ * $Id: 8c46512507d1f5dda65029e821b45b09ec65ba24 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -285,12 +285,16 @@ static VLCVideoEffects *_o_sharedInstance = nil;
     FREENULL( tmpChar );
     [o_transform_pop setEnabled: [o_transform_ckb state]];
     [o_puzzle_rows_fld setIntValue: config_GetInt( p_intf, "puzzle-rows" )];
+    [o_puzzle_rows_stp setIntValue: config_GetInt( p_intf, "puzzle-rows" )];
     [o_puzzle_columns_fld setIntValue: config_GetInt( p_intf, "puzzle-cols" )];
+    [o_puzzle_columns_stp setIntValue: config_GetInt( p_intf, "puzzle-cols" )];
     [o_puzzle_blackslot_ckb setState: config_GetInt( p_intf, "puzzle-black-slot" )];
     b_state = [o_puzzle_ckb state];
     [o_puzzle_rows_fld setEnabled: b_state];
+    [o_puzzle_rows_stp setEnabled: b_state];
     [o_puzzle_rows_lbl setEnabled: b_state];
     [o_puzzle_columns_fld setEnabled: b_state];
+    [o_puzzle_columns_stp setEnabled: b_state];
     [o_puzzle_columns_lbl setEnabled: b_state];
     [o_puzzle_blackslot_ckb setEnabled: b_state];
 
@@ -307,7 +311,9 @@ static VLCVideoEffects *_o_sharedInstance = nil;
     [o_threshold_similarity_sld setEnabled: b_state];
     [o_threshold_similarity_lbl setEnabled: b_state];
     [o_sepia_fld setIntValue: config_GetInt( p_intf, "sepia-intensity" )];
+    [o_sepia_stp setIntValue: config_GetInt( p_intf, "sepia-intensity" )];
     [o_sepia_fld setEnabled: [o_sepia_ckb state]];
+    [o_sepia_stp setEnabled: [o_sepia_ckb state]];
     [o_sepia_lbl setEnabled: [o_sepia_ckb state]];
     tmpChar = config_GetPsz( p_intf, "gradient-mode" );
     tmpString = [NSString stringWithUTF8String: tmpChar];
@@ -329,7 +335,9 @@ static VLCVideoEffects *_o_sharedInstance = nil;
     [o_extract_fld setEnabled: [o_extract_ckb state]];
     [o_extract_lbl setEnabled: [o_extract_ckb state]];
     [o_posterize_fld setIntValue: config_GetInt( p_intf, "posterize-level" )];
+    [o_posterize_stp setIntValue: config_GetInt( p_intf, "posterize-level" )];
     [o_posterize_fld setEnabled: [o_posterize_ckb state]];
+    [o_posterize_stp setEnabled: [o_posterize_ckb state]];
     [o_posterize_lbl setEnabled: [o_posterize_ckb state]];
     [o_blur_sld setIntValue: config_GetInt( p_intf, "blur-factor" )];
     [o_blur_sld setToolTip: [NSString stringWithFormat:@"%lli", config_GetInt( p_intf, "blur-factor" )]];
@@ -576,6 +584,7 @@ static VLCVideoEffects *_o_sharedInstance = nil;
         var_SetBool( p_filter, psz_name, b_value );
         config_PutInt( p_intf, psz_name, b_value );
         vlc_object_release( p_vout );
+        vlc_object_release( p_filter );
     }
 }
 
@@ -740,8 +749,6 @@ static VLCVideoEffects *_o_sharedInstance = nil;
     }
 }
 
-#undef updateopposite
-
 #pragma mark -
 #pragma mark geometry
 - (IBAction)enableTransform:(id)sender
@@ -773,17 +780,24 @@ static VLCVideoEffects *_o_sharedInstance = nil;
 
     [self setVideoFilter: "puzzle" on: b_state];
     [o_puzzle_columns_fld setEnabled: b_state];
+    [o_puzzle_columns_stp setEnabled: b_state];
     [o_puzzle_columns_lbl setEnabled: b_state];
     [o_puzzle_rows_fld setEnabled: b_state];
+    [o_puzzle_rows_stp setEnabled: b_state];
     [o_puzzle_rows_lbl setEnabled: b_state];
     [o_puzzle_blackslot_ckb setEnabled: b_state];
 }
 
 - (IBAction)puzzleModifierChanged:(id)sender
 {
+    updateopposite(o_puzzle_columns_fld, o_puzzle_columns_stp);
+    updateopposite(o_puzzle_columns_stp, o_puzzle_columns_fld);
+    updateopposite(o_puzzle_rows_fld, o_puzzle_rows_stp);
+    updateopposite(o_puzzle_rows_stp, o_puzzle_rows_fld);
+	
     if( sender == o_puzzle_blackslot_ckb )
         [self setVideoFilterProperty: "puzzle-black-slot" forFilter: "puzzle" boolean: [o_puzzle_blackslot_ckb state]];
-    else if( sender == o_puzzle_columns_fld )
+    else if( sender == o_puzzle_columns_fld || sender == o_puzzle_columns_stp )
         [self setVideoFilterProperty: "puzzle-cols" forFilter: "puzzle" integer: [o_puzzle_columns_fld intValue]];
     else
         [self setVideoFilterProperty: "puzzle-rows" forFilter: "puzzle" integer: [o_puzzle_rows_fld intValue]];
@@ -827,11 +841,15 @@ static VLCVideoEffects *_o_sharedInstance = nil;
 
     [self setVideoFilter: "sepia" on: b_state];
     [o_sepia_fld setEnabled: b_state];
+    [o_sepia_stp setEnabled: b_state];
     [o_sepia_lbl setEnabled: b_state];
 }
 
 - (IBAction)sepiaModifierChanged:(id)sender
 {
+    updateopposite(o_sepia_fld, o_sepia_stp);
+    updateopposite(o_sepia_stp, o_sepia_fld);
+	
     [self setVideoFilterProperty: "sepia-intensity" forFilter: "sepia" integer: [o_sepia_fld intValue]];
 }
 
@@ -891,11 +909,15 @@ static VLCVideoEffects *_o_sharedInstance = nil;
 
     [self setVideoFilter: "posterize" on: b_state];
     [o_posterize_fld setEnabled: b_state];
+    [o_posterize_stp setEnabled: b_state];
     [o_posterize_lbl setEnabled: b_state];
 }
 
 - (IBAction)posterizeModifierChanged:(id)sender
 {
+    updateopposite(o_posterize_fld, o_posterize_stp);
+    updateopposite(o_posterize_stp, o_posterize_fld);
+	
     [self setVideoFilterProperty: "posterize-level" forFilter: "posterize" integer: [o_extract_fld intValue]];
 }
 

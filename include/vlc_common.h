@@ -402,6 +402,8 @@ typedef struct meta_engine_t meta_engine_t;
 
 # ifndef UNDER_CE
 struct _stati64;
+#  undef stat
+#  undef fstat
 #  define stat _stati64
 #  define fstat _fstati64
 #endif
@@ -659,7 +661,7 @@ static inline uint16_t bswap16 (uint16_t x)
 VLC_USED
 static inline uint32_t bswap32 (uint32_t x)
 {
-#if VLC_GCC_VERSION(4,3)
+#if VLC_GCC_VERSION(4,3) || defined(__clang__)
     return __builtin_bswap32 (x);
 #else
     return ((x & 0x000000FF) << 24)
@@ -673,7 +675,7 @@ static inline uint32_t bswap32 (uint32_t x)
 VLC_USED
 static inline uint64_t bswap64 (uint64_t x)
 {
-#if VLC_GCC_VERSION(4,3)
+#if VLC_GCC_VERSION(4,3) || defined(__clang__)
     return __builtin_bswap64 (x);
 #elif !defined (__cplusplus)
     return ((x & 0x00000000000000FF) << 56)

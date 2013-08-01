@@ -2,7 +2,7 @@
  * vlm.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2005 VLC authors and VideoLAN
- * $Id: dd55037352cd845fb67586e9735139edaeda8acd $
+ * $Id: 0b9082f36631c772f673dd9d5bdfae0e56040c0b $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -702,13 +702,11 @@ static int ExecuteMediaProperty( vlm_t *p_vlm, int64_t id, bool b_new,
         }
         else if( !strcmp( psz_option, "inputdeln" ) )
         {
-            int i_index;
-
             MISSING( "inputdeln" );
  
-            i_index = atoi( psz_value );
-            if( i_index > 0 && i_index <= p_cfg->i_input )
-                TAB_REMOVE( p_cfg->i_input, p_cfg->ppsz_input, p_cfg->ppsz_input[i_index-1] );
+            int idx = atoi( psz_value );
+            if( idx > 0 && idx <= p_cfg->i_input )
+                TAB_REMOVE( p_cfg->i_input, p_cfg->ppsz_input, p_cfg->ppsz_input[idx-1] );
             i++;
         }
         else if( !strcmp( psz_option, "output" ) )
