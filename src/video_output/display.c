@@ -2,7 +2,7 @@
  * display.c: "vout display" managment
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 50599d0db1783e62a3592ba99424a84a3457da1c $
+ * $Id: 1e4495b5ec7bd5568111d47f1f4cee99b703bc5e $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -755,7 +755,7 @@ static void VoutDisplayCropRatio(int *left, int *top, int *right, int *bottom,
     }
 }
 
-void vout_ManageDisplay(vout_display_t *vd, bool allow_reset_pictures)
+bool vout_ManageDisplay(vout_display_t *vd, bool allow_reset_pictures)
 {
     vout_display_owner_sys_t *osys = vd->owner.sys;
 
@@ -1055,6 +1055,8 @@ void vout_ManageDisplay(vout_display_t *vd, bool allow_reset_pictures)
     }
     if (reset_render)
         VoutDisplayResetRender(vd);
+
+    return reset_render;
 }
 
 bool vout_AreDisplayPicturesInvalid(vout_display_t *vd)

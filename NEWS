@@ -1,3 +1,29 @@
+Changes between 2.0.7 and 2.0.8:
+--------------------------------
+
+Access:
+ * Fix ISDB-S tuning
+ * Fix crash in QTsound
+ * Fix screen mouse file location
+ * Fix invalid memcpy in MMS access
+
+Demux:
+ * Fix use after free in sgimb
+ * Improve resistance and checking against malformed MKV files
+
+Decoders:
+ * Fix crash in the libavcodec module
+
+Mac OS X:
+ * Fix interface crashes
+ * Fix autostart playback option
+ * Respect "playlist-autostart" option
+
+Translations:
+ * update Welsh translation
+ * New Kannada translation
+
+
 Changes between 2.0.6 and 2.0.7:
 --------------------------------
 
@@ -21,6 +47,9 @@ Video output:
 Mac OS X Interface
  * Minor improvements
  * Fix issue which could lead to loss of media files created through transcoding
+
+HTTP Interface
+ * Fix two xss vulnerabilities (CVE-2013-3565)
 
 Translations:
  * Update Basque, Simplified Chinese, Ukrainian, Turkish, Portuguese, Norwegian Bokmål,

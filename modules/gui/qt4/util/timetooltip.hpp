@@ -1,6 +1,6 @@
 /*****************************************************************************
  * Copyright © 2011 VideoLAN
- * $Id: 4e74286037d358bf6769c9ccb49689b1c6d33cca $
+ * $Id: dffb226bf220c1413ffe05235b9c629d211a7858 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -52,7 +52,6 @@ private:
     QPainterPath mPainterPath;
     QBitmap mMask;
     int mPreviousMetricsWidth;
-    bool mInitialized;
 };
 
 #endif // TIMETOOLTIP_H

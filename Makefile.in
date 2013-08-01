@@ -2128,7 +2128,7 @@ uninstall-am: uninstall-binSCRIPTS
 ChangeLog: Makefile.am
 	rm -f -- "$@"
 	cd doc && $(MAKE) $(AM_MAKEFLAGS) changelogs
-	$(LN_S) -f doc/ChangeLog-2013 "$@"
+	$(LN_S) -f doc/ChangeLog-2012 "$@"
 
 # Shortcut for developers to rebuild the core (libvlc + vlc)
 # Don't use it if you don't know what it is about.

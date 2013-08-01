@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 the VideoLAN team
- * $Id: bc99aa631812e7c6eb5fd90ee5d6e5a1e2525f5a $
+ * $Id: e820cfb9d61692993edfb12d9aca40c4ba018b56 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -120,6 +120,7 @@ matroska_segment_c::~matroska_segment_c()
  *****************************************************************************/
 void matroska_segment_c::LoadCues( KaxCues *cues )
 {
+    bool b_invalid_cue;
     EbmlParser  *ep;
     EbmlElement *el;
 
@@ -134,6 +135,7 @@ void matroska_segment_c::LoadCues( KaxCues *cues )
     {
         if( MKV_IS_ID( el, KaxCuePoint ) )
         {
+            b_invalid_cue = false;
 #define idx p_indexes[i_index]
 
             idx.i_track       = -1;
@@ -148,41 +150,71 @@ void matroska_segment_c::LoadCues( KaxCues *cues )
                 if( MKV_IS_ID( el, KaxCueTime ) )
                 {
                     KaxCueTime &ctime = *(KaxCueTime*)el;
-
-                    ctime.ReadData( es.I_O() );
-
+                    try
+                    {
+                        if( unlikely( ctime.GetSize() >= SIZE_MAX ) )
+                        {
+                            msg_Err( &sys.demuxer, "CueTime size too big");
+                            b_invalid_cue = true;
+                            break;
+                        }
+                        ctime.ReadData( es.I_O() );
+                    }
+                    catch(...)
+                    {
+                        msg_Err( &sys.demuxer, "Error while reading CueTime" );
+                        b_invalid_cue = true;
+                        break;
+                    }
                     idx.i_time = uint64( ctime ) * i_timescale / (mtime_t)1000;
                 }
                 else if( MKV_IS_ID( el, KaxCueTrackPositions ) )
                 {
                     ep->Down();
-                    while( ( el = ep->Get() ) != NULL )
+                    try
                     {
-                        if( MKV_IS_ID( el, KaxCueTrack ) )
+                        while( ( el = ep->Get() ) != NULL )
                         {
-                            KaxCueTrack &ctrack = *(KaxCueTrack*)el;
+                            if( unlikely( el->GetSize() >= SIZE_MAX ) )
+                            {
+                                ep->Up();
+                                msg_Err( &sys.demuxer, "Error %s too big, aborting", typeid(*el).name() );
+                                b_invalid_cue = true;
+                                break;
+                            }
 
-                            ctrack.ReadData( es.I_O() );
-                            idx.i_track = uint16( ctrack );
-                        }
-                        else if( MKV_IS_ID( el, KaxCueClusterPosition ) )
-                        {
-                            KaxCueClusterPosition &ccpos = *(KaxCueClusterPosition*)el;
+                            if( MKV_IS_ID( el, KaxCueTrack ) )
+                            {
+                                KaxCueTrack &ctrack = *(KaxCueTrack*)el;
+                                ctrack.ReadData( es.I_O() );
+                                idx.i_track = uint16( ctrack );
+                            }
+                            else if( MKV_IS_ID( el, KaxCueClusterPosition ) )
+                            {
+                                KaxCueClusterPosition &ccpos = *(KaxCueClusterPosition*)el;
 
-                            ccpos.ReadData( es.I_O() );
-                            idx.i_position = segment->GetGlobalPosition( uint64( ccpos ) );
-                        }
-                        else if( MKV_IS_ID( el, KaxCueBlockNumber ) )
-                        {
-                            KaxCueBlockNumber &cbnum = *(KaxCueBlockNumber*)el;
+                                ccpos.ReadData( es.I_O() );
+                                idx.i_position = segment->GetGlobalPosition( uint64( ccpos ) );
+                            }
+                            else if( MKV_IS_ID( el, KaxCueBlockNumber ) )
+                            {
+                                KaxCueBlockNumber &cbnum = *(KaxCueBlockNumber*)el;
 
-                            cbnum.ReadData( es.I_O() );
-                            idx.i_block_number = uint32( cbnum );
+                                cbnum.ReadData( es.I_O() );
+                                idx.i_block_number = uint32( cbnum );
+                            }
+                            else
+                            {
+                                msg_Dbg( &sys.demuxer, "         * Unknown (%s)", typeid(*el).name() );
+                            }
                         }
-                        else
-                        {
-                            msg_Dbg( &sys.demuxer, "         * Unknown (%s)", typeid(*el).name() );
-                        }
+                    }
+                    catch(...)
+                    {
+                        ep->Up();   
+                        msg_Err( &sys.demuxer, "Error while reading %s", typeid(*el).name() );
+                        b_invalid_cue = true;
+                        break;
                     }
                     ep->Up();
                 }
@@ -198,13 +230,15 @@ void matroska_segment_c::LoadCues( KaxCues *cues )
                      " track=%d bnum=%d", idx.i_time, idx.i_position,
                      idx.i_track, idx.i_block_number );
 #endif
-
-            i_index++;
-            if( i_index >= i_index_max )
+            if( likely( !b_invalid_cue ) )
             {
-                i_index_max += 1024;
-                p_indexes = (mkv_index_t*)xrealloc( p_indexes,
-                                        sizeof( mkv_index_t ) * i_index_max );
+                i_index++;
+                if( i_index >= i_index_max )
+                {
+                    i_index_max += 1024;
+                    p_indexes = (mkv_index_t*)xrealloc( p_indexes,
+                                                        sizeof( mkv_index_t ) * i_index_max );
+                }
             }
 #undef idx
         }
@@ -254,20 +288,39 @@ void matroska_segment_c::ParseSimpleTags( KaxTagSimple *tag )
         sys.meta = vlc_meta_New();
 
     msg_Dbg( &sys.demuxer, "|   + Simple Tag ");
-    while( ( el = ep->Get() ) != NULL )
+    try
     {
-        if( MKV_IS_ID( el, KaxTagName ) )
+        while( ( el = ep->Get() ) != NULL )
         {
-            KaxTagName &key = *(KaxTagName*)el;
-            key.ReadData( es.I_O(), SCOPE_ALL_DATA );
-            k = strdup( UTFstring( key ).GetUTF8().c_str() );
+            if( unlikely( el->GetSize() >= SIZE_MAX ) )
+            {
+                msg_Err( &sys.demuxer, "Error %s too big ignoring the tag", typeid(*el).name() );
+                delete ep;
+                free(k);
+                free(v);
+                return ;
+            }
+            if( MKV_IS_ID( el, KaxTagName ) )
+            {
+                KaxTagName &key = *(KaxTagName*)el;
+                key.ReadData( es.I_O(), SCOPE_ALL_DATA );
+                k = strdup( UTFstring( key ).GetUTF8().c_str() );
+            }
+            else if( MKV_IS_ID( el, KaxTagString ) )
+            {
+                KaxTagString &value = *(KaxTagString*)el;
+                value.ReadData( es.I_O(), SCOPE_ALL_DATA );
+                v = strdup( UTFstring( value ).GetUTF8().c_str() );
+            }
         }
-        if( MKV_IS_ID( el, KaxTagString ) )
-        {
-            KaxTagString &value = *(KaxTagString*)el;
-            value.ReadData( es.I_O(), SCOPE_ALL_DATA );
-            v = strdup( UTFstring( value ).GetUTF8().c_str() );
-        }
+    }
+    catch(...)
+    {
+        msg_Err( &sys.demuxer, "Error while reading Tag ");
+        free(k);
+        free(v);
+        delete ep;
+        return;
     }
     delete ep;
 
@@ -1502,109 +1555,129 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
         }
 
         /* do parsing */
-        switch ( i_level )
+        try
         {
-        case 1:
-            if( MKV_IS_ID( el, KaxCluster ) )
+            switch ( i_level )
             {
-                cluster = (KaxCluster*)el;
-                i_cluster_pos = cluster->GetElementPosition();
-
-                // reset silent tracks
-                for (size_t i=0; i<tracks.size(); i++)
-                {
-                    tracks[i]->b_silent = false;
-                }
-
-                ep->Down();
-            }
-            else if( MKV_IS_ID( el, KaxCues ) )
-            {
-                msg_Warn( &sys.demuxer, "find KaxCues FIXME" );
-                return VLC_EGENERIC;
-            }
-            else
-            {
-                msg_Dbg( &sys.demuxer, "unknown (%s)", typeid( el ).name() );
-            }
-            break;
-        case 2:
-            if( MKV_IS_ID( el, KaxClusterTimecode ) )
-            {
-                KaxClusterTimecode &ctc = *(KaxClusterTimecode*)el;
-
-                ctc.ReadData( es.I_O(), SCOPE_ALL_DATA );
-                cluster->InitTimecode( uint64( ctc ), i_timescale );
- 
-                /* add it to the index */
-                if( i_index == 0 ||
-                    ( i_index > 0 &&
-                      p_indexes[i_index - 1].i_position < (int64_t)cluster->GetElementPosition() ) )
-                    IndexAppendCluster( cluster );
-            }
-            else if( MKV_IS_ID( el, KaxClusterSilentTracks ) )
-            {
-                ep->Down();
-            }
-            else if( MKV_IS_ID( el, KaxBlockGroup ) )
-            {
-                i_block_pos = el->GetElementPosition();
-                ep->Down();
-            }
-            else if( MKV_IS_ID( el, KaxSimpleBlock ) )
-            {
-                pp_simpleblock = (KaxSimpleBlock*)el;
-
-                pp_simpleblock->ReadData( es.I_O() );
-                pp_simpleblock->SetParent( *cluster );
-            }
-            break;
-        case 3:
-            if( MKV_IS_ID( el, KaxBlock ) )
-            {
-                pp_block = (KaxBlock*)el;
-
-                pp_block->ReadData( es.I_O() );
-                pp_block->SetParent( *cluster );
-
-                ep->Keep();
-            }
-            else if( MKV_IS_ID( el, KaxBlockDuration ) )
-            {
-                KaxBlockDuration &dur = *(KaxBlockDuration*)el;
-
-                dur.ReadData( es.I_O() );
-                *pi_duration = uint64( dur );
-            }
-            else if( MKV_IS_ID( el, KaxReferenceBlock ) )
-            {
-                KaxReferenceBlock &ref = *(KaxReferenceBlock*)el;
-
-                ref.ReadData( es.I_O() );
-
-                if( *pb_key_picture )
-                    *pb_key_picture = false;
-                else if( int64( ref ) > 0 )
-                    *pb_discardable_picture = true;
-            }
-            else if( MKV_IS_ID( el, KaxClusterSilentTrackNumber ) )
-            {
-                KaxClusterSilentTrackNumber &track_num = *(KaxClusterSilentTrackNumber*)el;
-                track_num.ReadData( es.I_O() );
-                // find the track
-                for (size_t i=0; i<tracks.size(); i++)
-                {
-                    if ( tracks[i]->i_number == uint32(track_num))
+                case 1:
+                    if( MKV_IS_ID( el, KaxCluster ) )
                     {
-                        tracks[i]->b_silent = true;
+                        cluster = (KaxCluster*)el;
+                        i_cluster_pos = cluster->GetElementPosition();
+
+                        // reset silent tracks
+                        for (size_t i=0; i<tracks.size(); i++)
+                        {
+                            tracks[i]->b_silent = false;
+                        }
+
+                        ep->Down();
+                    }
+                    else if( MKV_IS_ID( el, KaxCues ) )
+                    {
+                        msg_Warn( &sys.demuxer, "find KaxCues FIXME" );
+                        return VLC_EGENERIC;
+                    }
+                    else
+                    {
+                        msg_Dbg( &sys.demuxer, "unknown (%s)", typeid( el ).name() );
+                    }
+                    break;
+                case 2:
+                    if( unlikely( el->GetSize() >= SIZE_MAX ) )
+                    {
+                        msg_Err( &sys.demuxer, "Error while reading %s... upping level", typeid(*el).name());
+                        ep->Up();
                         break;
                     }
-                }
+                    if( MKV_IS_ID( el, KaxClusterTimecode ) )
+                    {
+                        KaxClusterTimecode &ctc = *(KaxClusterTimecode*)el;
+
+                        ctc.ReadData( es.I_O(), SCOPE_ALL_DATA );
+                        cluster->InitTimecode( uint64( ctc ), i_timescale );
+
+                        /* add it to the index */
+                        if( i_index == 0 ||
+                            ( i_index > 0 &&
+                              p_indexes[i_index - 1].i_position < (int64_t)cluster->GetElementPosition() ) )
+                            IndexAppendCluster( cluster );
+                    }
+                    else if( MKV_IS_ID( el, KaxClusterSilentTracks ) )
+                    {
+                        ep->Down();
+                    }
+                    else if( MKV_IS_ID( el, KaxBlockGroup ) )
+                    {
+                        i_block_pos = el->GetElementPosition();
+                        ep->Down();
+                    }
+                    else if( MKV_IS_ID( el, KaxSimpleBlock ) )
+                    {
+                        pp_simpleblock = (KaxSimpleBlock*)el;
+
+                        pp_simpleblock->ReadData( es.I_O() );
+                        pp_simpleblock->SetParent( *cluster );
+                    }
+                    break;
+                case 3:
+                    if( unlikely( el->GetSize() >= SIZE_MAX ) )
+                    {
+                        msg_Err( &sys.demuxer, "Error while reading %s... upping level", typeid(*el).name());
+                        ep->Up();
+                        break;
+                    }
+                    if( MKV_IS_ID( el, KaxBlock ) )
+                    {
+                        pp_block = (KaxBlock*)el;
+
+                        pp_block->ReadData( es.I_O() );
+                        pp_block->SetParent( *cluster );
+
+                        ep->Keep();
+                    }
+                    else if( MKV_IS_ID( el, KaxBlockDuration ) )
+                    {
+                        KaxBlockDuration &dur = *(KaxBlockDuration*)el;
+
+                        dur.ReadData( es.I_O() );
+                        *pi_duration = uint64( dur );
+                    }
+                    else if( MKV_IS_ID( el, KaxReferenceBlock ) )
+                    {
+                        KaxReferenceBlock &ref = *(KaxReferenceBlock*)el;
+
+                        ref.ReadData( es.I_O() );
+
+                        if( *pb_key_picture )
+                            *pb_key_picture = false;
+                        else if( int64( ref ) > 0 )
+                            *pb_discardable_picture = true;
+                    }
+                    else if( MKV_IS_ID( el, KaxClusterSilentTrackNumber ) )
+                    {
+                        KaxClusterSilentTrackNumber &track_num = *(KaxClusterSilentTrackNumber*)el;
+                        track_num.ReadData( es.I_O() );
+                        // find the track
+                        for (size_t i=0; i<tracks.size(); i++)
+                        {
+                            if ( tracks[i]->i_number == uint32(track_num))
+                            {
+                                tracks[i]->b_silent = true;
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    msg_Err( &sys.demuxer, "invalid level = %d", i_level );
+                    return VLC_EGENERIC;
             }
-            break;
-        default:
-            msg_Err( &sys.demuxer, "invalid level = %d", i_level );
-            return VLC_EGENERIC;
+        }
+        catch(...)
+        {
+            msg_Err( &sys.demuxer, "Error while reading %s... upping level", typeid(*el).name());
+            ep->Up();
         }
     }
 }
