@@ -2,7 +2,7 @@
  * vaapi.c: VAAPI helpers for the ffmpeg decoder
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 30d5094ce8ab038d48a64469b231addc193fe0a7 $
+ * $Id: 7036768918a5af695cb2cdc3cae8524cadf5cd76 $
  *
  * Authors: Laurent Aimar <fenrir_AT_ videolan _DOT_ org>
  *
@@ -47,6 +47,11 @@
 
 #include <X11/Xlib.h>
 #include <va/va_x11.h>
+
+#ifndef VA_SURFACE_ATTRIB_SETTABLE
+#define vaCreateSurfaces(d, f, w, h, s, ns, a, na) \
+    vaCreateSurfaces(d, w, h, f, ns, s)
+#endif
 
 typedef struct
 {
@@ -246,8 +251,8 @@ static int CreateSurfaces( vlc_va_vaapi_t *p_va, void **pp_hw_ctx, vlc_fourcc_t 
 
     /* Create surfaces */
     VASurfaceID pi_surface_id[p_va->i_surface_count];
-    if( vaCreateSurfaces( p_va->p_display, i_width, i_height, VA_RT_FORMAT_YUV420,
-                          p_va->i_surface_count, pi_surface_id ) )
+    if( vaCreateSurfaces( p_va->p_display, VA_RT_FORMAT_YUV420, i_width, i_height,
+                          pi_surface_id, p_va->i_surface_count, NULL, 0 ) )
     {
         for( int i = 0; i < p_va->i_surface_count; i++ )
             p_va->p_surface[i].i_id = VA_INVALID_SURFACE;

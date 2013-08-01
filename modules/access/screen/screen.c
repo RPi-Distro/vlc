@@ -2,7 +2,7 @@
  * screen.c: Screen capture module.
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: 73a279e1d962cf89ddac49aaa7c6e021de463dc6 $
+ * $Id: 76f466cdad25124bb2cb08f63f06f33f9adc95c9 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan dot org>
@@ -33,6 +33,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_modules.h>                 /* module_need for "video blending" */
+#include <vlc_url.h>
 #include "screen.h"
 
 /*****************************************************************************
@@ -190,13 +191,14 @@ static int Open( vlc_object_t *p_this )
 #endif
 
 #ifdef SCREEN_MOUSE
-    char * psz_mouse = var_CreateGetNonEmptyString( p_demux,
-                                                    "screen-mouse-image" );
-    if( psz_mouse )
+    char *mousefile = var_InheritString( p_demux, "screen-mouse-image" );
+    char *mouseurl = mousefile ? make_URI( mousefile, NULL ) : NULL;
+    free( mousefile );
+    if( mouseurl )
     {
         image_handler_t *p_image;
         video_format_t fmt_in, fmt_out;
-        msg_Dbg( p_demux, "Using %s for the mouse pointer image", psz_mouse );
+        msg_Dbg( p_demux, "Using %s for the mouse pointer image", mouseurl );
         memset( &fmt_in, 0, sizeof( fmt_in ) );
         memset( &fmt_out, 0, sizeof( fmt_out ) );
         fmt_out.i_chroma = VLC_CODEC_RGBA;
@@ -204,13 +206,13 @@ static int Open( vlc_object_t *p_this )
         if( p_image )
         {
             p_sys->p_mouse =
-                image_ReadUrl( p_image, psz_mouse, &fmt_in, &fmt_out );
+                image_ReadUrl( p_image, mouseurl, &fmt_in, &fmt_out );
             image_HandlerDelete( p_image );
         }
         if( !p_sys->p_mouse )
             msg_Err( p_demux, "Failed to open mouse pointer image (%s)",
-                     psz_mouse );
-        free( psz_mouse );
+                     mouseurl );
+        free( mouseurl );
     }
 #endif
 

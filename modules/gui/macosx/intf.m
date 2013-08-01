@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 448e7380d6e07667346cc5bb9f5fbb4903b87d3c $
+ * $Id: 654c554291a2918a9a81517bd26dd98563b046c6 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -691,6 +691,13 @@ static VLCMain *_o_sharedMainInstance = nil;
     [o_mainwindow updateWindow];
     [o_mainwindow updateTimeSlider];
     [o_mainwindow updateVolumeSlider];
+
+    playlist_t * p_playlist = pl_Get(VLCIntf);
+    PL_LOCK;
+    BOOL kidsAround = p_playlist->p_local_category->i_children;
+    PL_UNLOCK;
+    if (kidsAround && var_GetBool(p_playlist, "playlist-autostart"))
+        [[self playlist] playItem:nil];
 }
 
 - (void)initStrings
@@ -2158,6 +2165,11 @@ unsigned int CocoaKeyToVLC( unichar i_key )
             [o_msg_arr removeObjectAtIndex: 0];
             [o_msg_arr removeObjectAtIndex: 1];
         }
+        if (!item->psz_module)
+            return;
+        if (!str)
+            return;
+
         firstString = [NSString stringWithFormat:@"%s%s", item->psz_module, ppsz_type[i_type]];
         secondString = [NSString stringWithFormat:@"%@%s\n", firstString, str];
 

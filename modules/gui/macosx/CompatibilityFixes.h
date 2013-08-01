@@ -2,7 +2,7 @@
  * CompatibilityFixes.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 VLC authors and VideoLAN
- * $Id: be538c8c3e935ced6fb47365c3b90913cbf6bfd3 $
+ * $Id: 43c4b75fe3f5757f3ddfb9763269e83a8a88c9a5 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -29,6 +29,7 @@
 #define OSX_SNOW_LEOPARD (NSAppKitVersionNumber < 1115 && NSAppKitVersionNumber >= 1038)
 #define OSX_LION (NSAppKitVersionNumber >= 1115.2)
 #define OSX_MOUNTAIN_LION NSAppKitVersionNumber >= 1162
+#define OSX_REDACTED NSAppKitVersionNumber >= 1244
 
 #pragma mark -
 #pragma Fixes for OS X Leopard (10.5)
