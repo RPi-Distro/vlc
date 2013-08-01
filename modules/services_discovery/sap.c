@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 38775e0d03687e529c6156b452012e1349d42180 $
+ * $Id: 5bfacbed842bcc204164d3dbf170d9c8f9e3f9c5 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rémi Denis-Courmont
@@ -348,7 +348,7 @@ static int OpenDemux( vlc_object_t *p_this )
     for( i_len = 0, psz_sdp = NULL; i_len < 65536; )
     {
         const int i_read_max = 1024;
-        char *psz_sdp_new = realloc( psz_sdp, i_len + i_read_max );
+        char *psz_sdp_new = realloc( psz_sdp, i_len + i_read_max + 1 );
         size_t i_read;
         if( psz_sdp_new == NULL )
         {

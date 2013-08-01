@@ -56,7 +56,24 @@ EXTRA_DIST = \
 	extras/package/win32/languages/sorani.nsh \
 	extras/package/win32/languages/spanish.nsh \
 	extras/package/win32/languages/swedish.nsh \
-	extras/package/win32/languages/ukrainian.nsh
+	extras/package/win32/languages/ukrainian.nsh \
+	extras/package/win32/UAC/examples \
+	extras/package/win32/UAC/examples/UAC_AllowLUA.nsi \
+	extras/package/win32/UAC/examples/UAC_AdminOnly.nsi \
+	extras/package/win32/UAC/examples/UAC_Uninstaller.nsi \
+	extras/package/win32/UAC/examples/UAC.nsh \
+	extras/package/win32/UAC/examples/UAC_GetUserShellFolderPath.nsi \
+	extras/package/win32/UAC/examples/UAC_RealWorldFullyLoadedDualModeExample.nsi \
+	extras/package/win32/UAC/History.txt \
+	extras/package/win32/UAC/License.txt \
+	extras/package/win32/UAC/nsisutil.h \
+	extras/package/win32/UAC/resource.h \
+	extras/package/win32/UAC/resource.rc \
+	extras/package/win32/UAC/runas.cpp \
+	extras/package/win32/UAC/uac.cpp \
+	extras/package/win32/UAC/uac.h \
+	extras/package/win32/UAC/Readme.html \
+	extras/package/win32/UAC.nsh
 
 dist_noinst_SCRIPTS = bootstrap
 nodist_noinst_SCRIPTS = compile
@@ -92,7 +109,7 @@ AUTOMAKE_OPTIONS = \
 ChangeLog: Makefile.am
 	rm -f -- "$@"
 	cd doc && $(MAKE) $(AM_MAKEFLAGS) changelogs
-	$(LN_S) -f doc/ChangeLog-2012 "$@"
+	$(LN_S) -f doc/ChangeLog-2013 "$@"
 
 ###############################################################################
 # Mac OS X project

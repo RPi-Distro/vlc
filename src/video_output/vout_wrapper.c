@@ -2,7 +2,7 @@
  * vout_display.c: "vout display" -> "video output" wrapper
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: a190f4c30407a2c0078d5b17d7034b75d6a26834 $
+ * $Id: bb017eb951730b79e084ec9e831acec6f681c0db $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -190,8 +190,8 @@ void vout_ManageWrapper(vout_thread_t *vout)
     vout_thread_sys_t *sys = vout->p;
     vout_display_t *vd = sys->display.vd;
 
-    bool reset_display_pool = sys->display.use_dr && vout_AreDisplayPicturesInvalid(vd);
-    vout_ManageDisplay(vd, !sys->display.use_dr || reset_display_pool);
+    bool reset_display_pool = vout_AreDisplayPicturesInvalid(vd);
+    reset_display_pool |= vout_ManageDisplay(vd, !sys->display.use_dr || reset_display_pool);
 
     if (reset_display_pool) {
         NoDrClean(vout);

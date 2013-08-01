@@ -24,7 +24,7 @@ VPATH := $(TARBALLS)
 GNU := http://ftp.gnu.org/gnu
 SF := http://heanet.dl.sourceforge.net/sourceforge
 VIDEOLAN := http://downloads.videolan.org/pub/videolan
-CONTRIB_VIDEOLAN := $(VIDEOLAN)/testing/contrib
+CONTRIB_VIDEOLAN := http://downloads.videolan.org/pub/contrib
 
 #
 # Machine-dependent variables
@@ -115,12 +115,12 @@ endif
 
 ifdef HAVE_MACOSX
 MIN_OSX_VERSION=10.5
-CC=gcc-4.2
-CXX=g++-4.2
-AR=ar
-LD=ld
-STRIP=strip
-RANLIB=ranlib
+CC=xcrun llvm-gcc-4.2
+CXX=xcrun llvm-g++-4.2
+AR=xcrun ar
+LD=xcrun ld
+STRIP=xcrun strip
+RANLIB=xcrun ranlib
 EXTRA_CFLAGS += -isysroot $(MACOSX_SDK) -mmacosx-version-min=$(MIN_OSX_VERSION) -DMACOSX_DEPLOYMENT_TARGET=$(MIN_OSX_VERSION)
 EXTRA_LDFLAGS += -Wl,-syslibroot,$(MACOSX_SDK) -mmacosx-version-min=$(MIN_OSX_VERSION) -isysroot $(MACOSX_SDK) -DMACOSX_DEPLOYMENT_TARGET=$(MIN_OSX_VERSION)
 ifeq ($(ARCH),x86_64)
@@ -335,7 +335,7 @@ vlc-contrib-$(HOST)-latest.tar.bz2:
 
 prebuilt: vlc-contrib-$(HOST)-latest.tar.bz2
 	$(UNPACK) && mv $(HOST) $(TOPDST)
-	cd $(TOPDST)/$(HOST) && ./change_prefix.sh
+	cd $(TOPDST)/$(HOST) && $(SRC)/change_prefix.sh
 
 package: install
 	rm -Rf tmp/
@@ -345,8 +345,7 @@ package: install
 	cd tmp/$(notdir $(PREFIX)); \
 		cd share; rm -Rf man doc gtk-doc info lua projectM gettext; cd ..; \
 		rm -Rf man sbin etc lib/lua lib/sidplay
-	cp $(SRC)/change_prefix.sh tmp/$(notdir $(PREFIX))/
-	cd tmp/$(notdir $(PREFIX)) && ./change_prefix.sh $(PREFIX) @@CONTRIB_PREFIX@@
+	cd tmp/$(notdir $(PREFIX)) && $(abspath $(SRC))/change_prefix.sh $(PREFIX) @@CONTRIB_PREFIX@@
 	(cd tmp && tar c $(notdir $(PREFIX))/) | bzip2 -c > ../vlc-contrib-$(HOST)-$(DATE).tar.bz2
 
 list:

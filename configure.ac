@@ -1,11 +1,11 @@
 dnl Autoconf settings for vlc
 
-AC_COPYRIGHT([Copyright 2002-2012 VLC authors and VideoLAN])
+AC_COPYRIGHT([Copyright 2002-2013 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 2.0.5)
+AC_INIT(vlc, 2.0.8)
 VERSION_MAJOR=2
 VERSION_MINOR=0
-VERSION_REVISION=5
+VERSION_REVISION=8
 VERSION_EXTRA=0
 VERSION_DEV=
 
@@ -14,7 +14,7 @@ AC_SUBST(PKGDIR)
 
 CONFIGURE_LINE="`echo "$0 $ac_configure_args" | sed -e 's/\\\/\\\\\\\/g'`"
 CODENAME="Twoflower"
-COPYRIGHT_YEARS="1996-2012"
+COPYRIGHT_YEARS="1996-2013"
 
 AC_CONFIG_SRCDIR(src/libvlc.c)
 AC_CONFIG_AUX_DIR(autotools)
@@ -25,7 +25,7 @@ AC_CANONICAL_HOST
 AC_PRESERVE_HELP_ORDER
 
 AM_INIT_AUTOMAKE(tar-ustar color-tests)
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADER(config.h)
 
 # Disable with "./configure --disable-silent-rules" or "make V=1"
 AM_SILENT_RULES([yes])
@@ -2415,23 +2415,28 @@ dnl
 AC_ARG_ENABLE(avcodec,
 [  --enable-avcodec        libavcodec codec (default enabled)])
 AS_IF([test "${enable_avcodec}" != "no"], [
-  PKG_CHECK_MODULES(AVCODEC,[libavcodec >= 52.25.0 libavutil],
-    [
-      VLC_SAVE_FLAGS
-      CPPFLAGS="${CPPFLAGS} ${AVCODEC_CFLAGS}"
-      CFLAGS="${CFLAGS} ${AVCODEC_CFLAGS}"
-      AC_CHECK_HEADERS(libavcodec/avcodec.h)
-      AC_CHECK_HEADERS(libavutil/avutil.h)
-      VLC_ADD_PLUGIN([avcodec])
-      VLC_ADD_LIBS([avcodec],[$AVCODEC_LIBS])
-      AS_IF([test "${ac_cv_ld_bsymbolic}" != "no"], [
-        VLC_ADD_LIBS([avcodec],[-Wl,-Bsymbolic])
-      ])
-      VLC_ADD_CFLAGS([avcodec],[$AVCODEC_CFLAGS])
-      VLC_RESTORE_FLAGS
-      have_avcodec="yes"
-    ],[
-      AC_MSG_ERROR([${AVCODEC_PKG_ERRORS}. Pass --disable-avcodec to ignore this error.])
+  PKG_CHECK_MODULES(AVCODEC,[libavcodec >= 52.25.0 libavutil], [
+    PKG_CHECK_EXISTS([libavcodec < 55],, [
+      AC_MSG_ERROR([libavcodec versions 55 and later are not supported yet.])
+    ])
+    VLC_SAVE_FLAGS
+    CPPFLAGS="${CPPFLAGS} ${AVCODEC_CFLAGS}"
+    CFLAGS="${CFLAGS} ${AVCODEC_CFLAGS}"
+    LIBS="${LIBS} ${AVCODEC_LIBS}"
+    AC_CHECK_LIB(avutil, av_sample_fmt_is_planar,
+        AC_DEFINE([HAVE_AVUTIL_PLANAR], [1], [Define if libav* use planar audio formats]))
+    AC_CHECK_HEADERS(libavcodec/avcodec.h)
+    AC_CHECK_HEADERS(libavutil/avutil.h)
+    VLC_ADD_PLUGIN([avcodec])
+    VLC_ADD_LIBS([avcodec],[$AVCODEC_LIBS])
+    AS_IF([test "${ac_cv_ld_bsymbolic}" != "no"], [
+      VLC_ADD_LIBS([avcodec],[-Wl,-Bsymbolic])
+    ])
+    VLC_ADD_CFLAGS([avcodec],[$AVCODEC_CFLAGS])
+    VLC_RESTORE_FLAGS
+    have_avcodec="yes"
+  ],[
+    AC_MSG_ERROR([${AVCODEC_PKG_ERRORS}. Pass --disable-avcodec to ignore this error.])
   ])
 ], [
   have_avcodec="no"
@@ -3545,7 +3550,7 @@ if test "x${enable_macosx_audio}" != "xno" &&
 then
   AC_CHECK_HEADERS(CoreAudio/CoreAudio.h,
     [ VLC_ADD_PLUGIN([auhal])
-      VLC_ADD_LIBS([auhal],[-Wl,-framework,CoreAudio,-framework,AudioUnit,-framework,AudioToolbox,-framework,Carbon])
+      VLC_ADD_LIBS([auhal],[-Wl,-framework,CoreAudio,-framework,AudioUnit,-framework,AudioToolbox,-framework,Carbon,-framework,CoreServices])
     ], [ AC_MSG_ERROR([cannot find CoreAudio headers]) ])
 fi
 

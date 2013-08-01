@@ -2,7 +2,7 @@
  * avcodec.c: video and audio decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: db1edd4adfc5c1d18ec1a290c2ecf7bdb1b992c9 $
+ * $Id: cd811e944adca768c6ba83d9787bdbf3fa70ebe4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -132,7 +132,7 @@ vlc_module_begin ()
     add_bool( "ffmpeg-hw", false, HW_TEXT, HW_LONGTEXT, false )
 #endif
 #if defined(FF_THREAD_FRAME)
-    add_integer( "ffmpeg-threads", 1, THREADS_TEXT, THREADS_LONGTEXT, true );
+    add_integer( "ffmpeg-threads", 0, THREADS_TEXT, THREADS_LONGTEXT, true );
 #endif
 
 

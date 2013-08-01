@@ -2,7 +2,7 @@
  * misc.m: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003-2011 VLC authors and VideoLAN
- * $Id: ef8ee5c550406701b1cf1c58d2478b66ba36efe8 $
+ * $Id: bb8c687284dfb897c76e9b15bbd72b072a0167cc $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -92,7 +92,10 @@ static NSMutableArray *blackoutWindows = NULL;
 
 - (BOOL)isMainScreen
 {
-    return ([self displayID] == [[[NSScreen screens] objectAtIndex:0] displayID]);
+    if (OSX_REDACTED)
+        return YES;
+    else
+        return ([self displayID] == [[[NSScreen screens] objectAtIndex:0] displayID]);
 }
 
 - (BOOL)isScreen: (NSScreen*)screen
@@ -546,10 +549,7 @@ void _drawFrameInRect(NSRect frameRect)
     [[NSGraphicsContext currentContext] restoreGraphicsState];
 
     NSRect knobRect = [[self cell] knobRectFlipped:NO];
-    if (b_dark)
-        knobRect.origin.y+=2;
-    else
-        knobRect.origin.y+=1;
+    knobRect.origin.y+=1;
     [self drawKnobInRect: knobRect];
 }
 

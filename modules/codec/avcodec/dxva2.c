@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 0af77c6633657d4a700a3f60e5ff7c417086822f $
+ * $Id: edbc5014c5b496cc3aa735b77a06ed78d6567d3e $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -65,6 +65,7 @@
 #include <commctrl.h>
 #include <shlwapi.h>
 #include <d3d9.h>
+#include <dxva2api.h>
 
 #include <initguid.h> /* must be last included to not redefine existing GUIDs */
 
@@ -84,6 +85,8 @@
 #  undef MS_GUID
 #  define MS_GUID DEFINE_GUID /* dxva2api.h fails to declare those, redefine as static */
 #  define DXVA2_E_NEW_VIDEO_DEVICE MAKE_HRESULT(1, 4, 4097)
+# else
+#  include <dxva.h>
 # endif
 
 #endif /* __MINGW32__ */
@@ -153,8 +156,8 @@ static const dxva2_mode_t dxva2_modes[] = {
 
     /* H.264 */
     { "H.264 variable-length decoder, film grain technology",                         &DXVA2_ModeH264_F,                      CODEC_ID_H264 },
-    { "H.264 variable-length decoder, no film grain technology",                      &DXVA2_ModeH264_E,                      CODEC_ID_H264 },
     { "H.264 variable-length decoder, no film grain technology (Intel ClearVideo)",   &DXVADDI_Intel_ModeH264_E,              CODEC_ID_H264 },
+    { "H.264 variable-length decoder, no film grain technology",                      &DXVA2_ModeH264_E,                      CODEC_ID_H264 },
     { "H.264 variable-length decoder, no film grain technology, FMO/ASO",             &DXVA_ModeH264_VLD_WithFMOASO_NoFGT,    CODEC_ID_H264 },
     { "H.264 variable-length decoder, no film grain technology, Flash",               &DXVA_ModeH264_VLD_NoFGT_Flash,         CODEC_ID_H264 },
 

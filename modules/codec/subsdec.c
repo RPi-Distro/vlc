@@ -2,7 +2,7 @@
  * subsdec.c : text subtitles decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: ed4d1f7b08ab74c99ed9f9e9a92e85ab1e3170fb $
+ * $Id: 241340f831f1eb82ec956742abc563a1791410ff $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -671,13 +671,13 @@ static char *CreateHtmlSubtitle( int *pi_align, char *psz_subtitle )
                 HtmlCopy( &psz_html, &psz_subtitle, "<font " );
                 HtmlPut( &psz_tag, "f" );
 
-                /* <font       color= */
-                while (*psz_subtitle == ' ')
-                    psz_subtitle++;
-
                 while( *psz_subtitle != '>' )
                 {
                     int  k;
+
+                    /* <font       color= */
+                    while (*psz_subtitle == ' ')
+                        psz_subtitle++;
 
                     for( k=0; psz_attribs[ k ]; k++ )
                     {

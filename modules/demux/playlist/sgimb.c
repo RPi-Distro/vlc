@@ -2,7 +2,7 @@
  * sgimb.c: a meta demux to parse sgimb referrer files
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: a2bcb64c50d920becb917c3e387e0388212e88e4 $
+ * $Id: d98f4a8b74e4e1d7237dc4ecd3061ca423247e36 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -367,13 +367,12 @@ static int Demux ( demux_t *p_demux )
             return -1;
         }
 
-        free( p_sys->psz_uri );
-        if( asprintf( &p_sys->psz_uri, "%s%%3FMeDiAbAsEshowingId=%d%%26MeDiAbAsEconcert%%3FMeDiAbAsE",
-                p_sys->psz_uri, p_sys->i_sid ) == -1 )
-        {
-            p_sys->psz_uri = NULL;
+        char *uri;
+        if( asprintf( &uri, "%s%%3FMeDiAbAsEshowingId=%d%%26MeDiAbAsEconcert"
+                      "%%3FMeDiAbAsE", p_sys->psz_uri, p_sys->i_sid ) == -1 )
             return -1;
-        }
+        free( p_sys->psz_uri );
+        p_sys->psz_uri = uri;
     }
 
     p_child = input_item_NewWithType( p_sys->psz_uri,

@@ -1,3 +1,118 @@
+Changes between 2.0.7 and 2.0.8:
+--------------------------------
+
+Access:
+ * Fix ISDB-S tuning
+ * Fix crash in QTsound
+ * Fix screen mouse file location
+ * Fix invalid memcpy in MMS access
+
+Demux:
+ * Fix use after free in sgimb
+ * Improve resistance and checking against malformed MKV files
+
+Decoders:
+ * Fix crash in the libavcodec module
+
+Mac OS X:
+ * Fix interface crashes
+ * Fix autostart playback option
+ * Respect "playlist-autostart" option
+
+Translations:
+ * update Welsh translation
+ * New Kannada translation
+
+
+Changes between 2.0.6 and 2.0.7:
+--------------------------------
+
+Input:
+ * Fix playback termination when switching ES tracks (PowerPC only)
+ * Fix memory exhaustion vulnerability when playing specifically crafted
+   playlist files
+
+Decoders:
+ * Fix WMA Pro, MPEG 4 ALS, APE, MLP and ADPCM-IMA4 playback
+
+Encoders:
+ * Fix audio encoding for numerous codecs, notably mp3 and aac
+
+Muxers:
+ * Fix noticeable memory leak when creating AVI files
+
+Video output:
+ * Fix crash when using libvlc in 3rd party applications (Mac only)
+
+Mac OS X Interface
+ * Minor improvements
+ * Fix issue which could lead to loss of media files created through transcoding
+
+HTTP Interface
+ * Fix two xss vulnerabilities (CVE-2013-3565)
+
+Translations:
+ * Update Basque, Simplified Chinese, Ukrainian, Turkish, Portuguese, Norwegian Bokmål,
+   Burmese, Lithuanian, Italian, Hindi, Spanish, German, Czech, Danish, Welsh translations
+ * New Azerbaijani, Kirgyz, Oriya translations
+
+
+Changes between 2.0.5 and 2.0.6:
+--------------------------------
+
+Access:
+ * Fix HTTPS playback with some certificates previously rejected
+
+Audio Output:
+ * Improve lookup of human readable device names in AUHAL plugin (OS X)
+
+Demuxers:
+ * Fix crash with broken asf files (SA-1302)
+ * Fix MKV behaviour with unknown or new ebml elements
+ * Fix use-after-free crash in Ogg demuxer, found by Tomi Juntunen
+ * Fix regression on some paletted codecs in AVI
+ * Fix ALAC in mp4 regression
+ * Improvements to the vimeo playlist parser
+
+Decoders:
+ * Fix GPU decoding on Intel HD 2000/3000 cards on Windows
+ * Fix FLAC 6.1 and 7.1 channel layout
+ * Fix crashes in HTML srt subtitles
+ * 3rd party codecs updates
+
+Mac OS X:
+ * Fix subtitle rendering resolution when using OS X's native fullscreen mode
+ * Improve fullscreen controller time slider with larger click target
+ * Fix listing of the lua interfaces (web, telnet and console)
+   in the advanced preferences panel
+ * Fix spatializer audio filter panel
+ * Fix crash within the video output code
+ * Fix BDMV folder selection issue on OS X Mountain Lion, which treats such
+   folders as a AVCHD file as soon as they include an item named INDEX.BDM
+ * Fix bug which caused a hidden fullscreen panel
+ * Fix various minor UI drawing issues (main window, fullscreen controller,
+   lua extensions, ...)
+ * Allow VLC to be associated with .dvdmedia packages
+
+Qt:
+ * Fix clearing of Media Info panel on dialog exit
+
+GNU/Linux:
+ * Numerous D-Bus and MPRIS2 improvements
+ * Reject broken versions of PulseAudio
+
+Windows:
+ * Fix uninstallation in different location than C:\
+
+Translations:
+ * Update of Brazilian Portuguese, Traditional Chinese, Thai, Portuguese,
+   Japanese, Italian, Hebrew, Estonian, Spanish, Czech, Catalan, Bosnian,
+   Asturian, French, Romanian, Serbian, Russian, Hindi, Estonian, German
+   Slovenian Norwegian Bokmål, Khmer, Icelandic, Interlingua, Welsh, Ukrainian,
+   Dutch, Danish, translations
+ * New Gujarati, Aragonese translations
+
+
 Changes between 2.0.4 and 2.0.5:
 --------------------------------
 
@@ -29,6 +144,7 @@ Mac OS X:
  * Fix Reveal-in-Finder for files with non-Western file names
  * Fix crash with local statistics disabled
  * Fix Time counter UI look
+ * Fix system sleep issue on OS X 10.5
 
 Win32:
  * Fix https streaming
@@ -50,6 +166,7 @@ Changes between 2.0.3 and 2.0.4:
 --------------------------------
 
 Audio Output:
+ * Improve playback synchronization with PulseAudio.
  * Fix ALSA digital pass-through ("S/PDIF").
  * Fix live audio device selection on Mac OS X
  * Fix detection of some 5.1 and 7.1 kits on Windows.

@@ -3,7 +3,7 @@
  * EbmlParser for the matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 6c3aa67415753aa6b9a520b454298f61bd52814c $
+ * $Id: fd8e7c6646c5c2f35f9d8ec4b8a0712b7412fe17 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -30,6 +30,7 @@
  * Ebml Stream parser
  *****************************************************************************/
 EbmlParser::EbmlParser( EbmlStream *es, EbmlElement *el_start, demux_t *p_demux ) :
+    p_demux( p_demux ),
     m_es( es ),
     mi_level( 1 ),
     m_got( NULL ),
@@ -103,7 +104,7 @@ void EbmlParser::Up( void )
 {
     if( mi_user_level == mi_level )
     {
-        fprintf( stderr,"MKV/Ebml Parser: Up cannot escape itself\n" );
+        msg_Warn( p_demux, "MKV/Ebml Parser: Up cannot escape itself" );
     }
 
     mi_user_level--;
@@ -133,15 +134,17 @@ void EbmlParser::Reset( demux_t *p_demux )
         m_el[mi_level] = NULL;
         mi_level--;
     }
+    this->p_demux = p_demux;
     mi_user_level = mi_level = 1;
     // a little faster and cleaner
     m_es->I_O().setFilePointer( static_cast<KaxSegment*>(m_el[0])->GetGlobalPosition(0) );
     mb_dummy = var_InheritBool( p_demux, "mkv-use-dummy" );
 }
 
-EbmlElement *EbmlParser::Get( void )
+EbmlElement *EbmlParser::Get( int n_call )
 {
     int i_ulev = 0;
+    EbmlElement *p_prev = NULL;
 
     if( mi_user_level != mi_level )
     {
@@ -155,24 +158,29 @@ EbmlElement *EbmlParser::Get( void )
         return ret;
     }
 
+    p_prev = m_el[mi_level];
     if( m_el[mi_level] )
     {
         m_el[mi_level]->SkipData( *m_es, EBML_CONTEXT(m_el[mi_level]) );
-        if( !mb_keep )
-        {
-            if( MKV_IS_ID( m_el[mi_level], KaxBlockVirtual ) )
-                static_cast<KaxBlockVirtualWorkaround*>(m_el[mi_level])->Fix();
-            delete m_el[mi_level];
-        }
-        mb_keep = false;
+
     }
-    vlc_stream_io_callback & io_stream = (vlc_stream_io_callback &) m_es->I_O();
-    uint64 i_size = io_stream.toRead();
+
+    /* Ignore unknown level 0 or 1 elements */
     m_el[mi_level] = m_es->FindNextElement( EBML_CONTEXT(m_el[mi_level - 1]),
-                                            i_ulev, i_size, mb_dummy, 1 );
-//    mi_remain_size[mi_level] = m_el[mi_level]->GetSize();
+                                            i_ulev, UINT64_MAX,
+                                            (  mb_dummy | (mi_level > 1) ), 1 );
     if( i_ulev > 0 )
     {
+        if( p_prev )
+        {
+            if( !mb_keep )
+            {
+                if( MKV_IS_ID( p_prev, KaxBlockVirtual ) )
+                    static_cast<KaxBlockVirtualWorkaround*>(p_prev)->Fix();
+                delete p_prev;
+            }
+            mb_keep = false;
+        }
         while( i_ulev > 0 )
         {
             if( mi_level == 1 )
@@ -192,9 +200,72 @@ EbmlElement *EbmlParser::Get( void )
     }
     else if( m_el[mi_level] == NULL )
     {
-        fprintf( stderr,"MKV/Ebml Parser: m_el[mi_level] == NULL\n" );
+        msg_Warn( p_demux,"MKV/Ebml Parser: m_el[mi_level] == NULL\n" );
+    }
+    else if( m_el[mi_level]->IsDummy() && !mb_dummy )
+    {
+        bool b_bad_position = false;
+        /* We got a dummy element but don't want those...
+         * perform a sanity check */
+        if( !mi_level )
+        {
+            msg_Err(p_demux, "Got invalid lvl 0 element... Aborting");
+            return NULL;
+        }
+
+        if( p_prev && p_prev->IsFiniteSize() &&
+            p_prev->GetEndPosition() != m_el[mi_level]->GetElementPosition() &&
+            mi_level > 1 )
+        {
+            msg_Err( p_demux, "Dummy Element at unexpected position... corrupted file?" );
+            b_bad_position = true;
+        }
+
+        if( n_call < 10 && !b_bad_position && m_el[mi_level]->IsFiniteSize() &&
+            ( !m_el[mi_level-1]->IsFiniteSize() ||
+              m_el[mi_level]->GetEndPosition() <= m_el[mi_level-1]->GetEndPosition() ) )
+        {
+            /* The element fits inside its upper element */
+            msg_Warn( p_demux, "Dummy element found %"PRIu64"... skipping it",
+                      m_el[mi_level]->GetElementPosition() );
+            return Get( ++n_call );
+        }
+        else
+        {
+            /* Too large, misplaced or 10 successive dummy elements */
+            msg_Err( p_demux,
+                     "Dummy element too large or misplaced at %"PRIu64"... skipping to next upper element",
+                     m_el[mi_level]->GetElementPosition() );
+
+            if( mi_level >= 1 &&
+                m_el[mi_level]->GetElementPosition() >= m_el[mi_level-1]->GetEndPosition() )
+            {
+                msg_Err(p_demux, "This element is outside its known parent... upping level");
+                delete m_el[mi_level - 1];
+                m_got = m_el[mi_level -1] = m_el[mi_level];
+                m_el[mi_level] = NULL;
+
+                mi_level--;
+                return NULL;
+            }
+
+            delete m_el[mi_level];
+            m_el[mi_level] = NULL;
+            m_el[mi_level - 1]->SkipData( *m_es, EBML_CONTEXT(m_el[mi_level - 1]) );
+            return Get();
+        }
     }
 
+    if( p_prev )
+    {
+        if( !mb_keep )
+        {
+            if( MKV_IS_ID( p_prev, KaxBlockVirtual ) )
+                static_cast<KaxBlockVirtualWorkaround*>(p_prev)->Fix();
+            delete p_prev;
+        }
+        mb_keep = false;
+    }
     return m_el[mi_level];
 }
 

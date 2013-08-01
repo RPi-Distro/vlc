@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: f649bd8a7e32a53a9e4e0ca385fc4ddfab62094d $
+ * $Id: 82b0c45ab91950ade0621b8a958965a67532ec1e $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -1902,11 +1902,13 @@ static bool Control( input_thread_t *p_input,
 
         case INPUT_CONTROL_SET_ES:
             /* No need to force update, es_out does it if needed */
-            es_out_Control( p_input->p->p_es_out_display, ES_OUT_SET_ES_BY_ID, val.i_int );
+            es_out_Control( p_input->p->p_es_out_display,
+                            ES_OUT_SET_ES_BY_ID, (int)val.i_int );
             break;
 
         case INPUT_CONTROL_RESTART_ES:
-            es_out_Control( p_input->p->p_es_out_display, ES_OUT_RESTART_ES_BY_ID, val.i_int );
+            es_out_Control( p_input->p->p_es_out_display,
+                            ES_OUT_RESTART_ES_BY_ID, (int)val.i_int );
             break;
 
         case INPUT_CONTROL_SET_AUDIO_DELAY:

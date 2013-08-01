@@ -24,29 +24,29 @@ StrCpy $Desc_Section04 \
 StrCpy $Desc_Section05 \
     "Dvd- en cd-afspeelregistratie"
 StrCpy $Desc_Section06 \
-    "Stelt VLC Media Player als de standaardtoepassing in voor de opgegeven bestandstypen"
+    "Stelt VLC media player als de standaardtoepassing in voor de opgegeven bestandstypen"
 StrCpy $Desc_Section07 \
-    "Contextmenu-ingangen toevoegen ('Afspelen met VLC Media Player',...)"
+    "Contextmenu-ingangen toevoegen ('Afspelen met VLC media player',...)"
 StrCpy $Desc_Section08 \
-    "Verwijdert voorkeuren en bufferbestanden die van vorige installaties van VLC Media Player overgebleven zijn"
+    "Verwijdert voorkeuren en bufferbestanden die van vorige installaties van VLC media player overgebleven zijn"
 
 StrCpy $Message_AlreadyInstalled  \
-"VLC Media Player is al geïnstalleerd. $\nWilt u de vorige versie \
+"VLC media player is al geïnstalleerd. $\nWilt u de vorige versie \
 verwijderen voordat u $(^Name) installeert ?"
 
 StrCpy $Name_Section91 "Deïnstalleren"
 StrCpy $Name_Section92 "Voorkeuren en buffers wissen"
 
 StrCpy $Desc_Section91 \
-"VLC Media Player en al zijn componenten deïnstalleren"
+"VLC media player en al zijn componenten deïnstalleren"
 StrCpy $Desc_Section92 \
-"Verwijdert de voorkeuren en bufferbestanden van VLC Media Player"
+"Verwijdert de voorkeuren en bufferbestanden van VLC media player"
 
 StrCpy $ShellAssociation_Play "Afspelen"
-StrCpy $ContextMenuEntry_PlayWith "VLC Media Player - Afspelen"
-StrCpy $ContextMenuEntry_AddToPlaylist "VLC Media Player - Aan afspeellijst toevoegen"
+StrCpy $ContextMenuEntry_PlayWith "VLC media player - Afspelen"
+StrCpy $ContextMenuEntry_AddToPlaylist "VLC media player - Aan afspeellijst toevoegen"
 
-StrCpy $Link_VisitWebsite "Bezoek de website van VLC Media Player"
+StrCpy $Link_VisitWebsite "Bezoek de website van VLC media player"
 
 StrCpy $Name_InstTypeRecommended "Aanbevolen"
 StrCpy $Name_InstTypeMinimum "Minimaal"

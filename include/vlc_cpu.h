@@ -40,7 +40,7 @@
 
 # if defined (__MMX__)
 #  define VLC_MMX
-# elif VLC_GCC_VERSION(4, 4)
+# elif VLC_GCC_VERSION(4, 4) || defined(__clang__)
 #  define VLC_MMX __attribute__ ((__target__ ("mmx")))
 # else
 #  define VLC_MMX VLC_MMX_is_not_implemented_on_this_compiler
@@ -48,7 +48,7 @@
 
 # if defined (__SSE__)
 #  define VLC_SSE
-# elif VLC_GCC_VERSION(4, 4)
+# elif VLC_GCC_VERSION(4, 4) || defined(__clang__)
 #  define VLC_SSE __attribute__ ((__target__ ("sse")))
 # else
 #  define VLC_SSE VLC_SSE_is_not_implemented_on_this_compiler

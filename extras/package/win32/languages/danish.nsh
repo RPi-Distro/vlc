@@ -24,29 +24,29 @@ StrCpy $Desc_Section04 \
 StrCpy $Desc_Section05 \
     "DVD og CD-afspilning registrering"
 StrCpy $Desc_Section06 \
-    "Sætter VLC Media Player som standard program for de angivne filtype"
+    "Sætter VLC media player som standard program for de angivne filtype"
 StrCpy $Desc_Section07 \
-    "Tilføj kontekst menu artikler ('Afspil med VLC Media Player' og 'Tilføj til VLC's Afspilningsliste')"
+    "Tilføj kontekst menu artikler ('Afspil med VLC media player' og 'Tilføj til VLC's Afspilningsliste')"
 StrCpy $Desc_Section08 \
-    "Sletter VLC Media Player præferencer og cache filer, levn fra tidligere installationer"
+    "Sletter VLC media player præferencer og cache filer, levn fra tidligere installationer"
 
 StrCpy $Message_AlreadyInstalled  \
-"VLC Media Player er allerede blevet installeret. $\nVil du fjerne \
+"VLC media player er allerede blevet installeret. $\nVil du fjerne \
 den tidligere version, før du installerer $(^Name) ?"
 
 StrCpy $Name_Section91 "Afinstaller"
 StrCpy $Name_Section92 "Slet præferencer og cache"
 
 StrCpy $Desc_Section91 \
-"Afinstaller VLC Media Player og alle dens komponenter"
+"Afinstaller VLC media player og alle dens komponenter"
 StrCpy $Desc_Section92 \
-"Sletter VLC Media Player præferencer og cache filer"
+"Sletter VLC media player præferencer og cache filer"
 
 StrCpy $ShellAssociation_Play "Afspil"
-StrCpy $ContextMenuEntry_PlayWith "Afspil med VLC Media Player"
+StrCpy $ContextMenuEntry_PlayWith "Afspil med VLC media player"
 StrCpy $ContextMenuEntry_AddToPlaylist "Tilføj til VLC's Afspilningsliste"
 
-StrCpy $Link_VisitWebsite "Besøg VideoLAN VLC Media Player Webside"
+StrCpy $Link_VisitWebsite "Besøg VideoLAN VLC media player Webside"
 
 StrCpy $Name_InstTypeRecommended "Anbefalet"
 StrCpy $Name_InstTypeMinimum "Minimum"
