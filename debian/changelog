@@ -1,3 +1,15 @@
+vlc (2.0.8-0ubuntu0.13.04.1) raring-security; urgency=low
+
+  * New bug-fixing upstream release (LP: #1186780).
+  * SECURITY UPDATE: Denial of service (crash) and possibly execute arbitrary
+    code via a crafted MKV file (disputed).
+    - Improve resistance and checking against malformed MKV files.
+    - CVE-2013-3245
+  * SECURITY UPDATE: Two xss vulnerabilities.
+    - CVE-2013-3565
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Thu, 01 Aug 2013 14:47:07 +0200
+
 vlc (2.0.6-1) unstable; urgency=low
 
   * New upstream release (LP: #1166189).
