@@ -1,3 +1,19 @@
+vlc (2.1.0-1) unstable; urgency=low
+
+  * New major upstream release.
+  * Drop configure-m4-undefine.patch. (code in question doesn't exist)
+  * Drop dvbpsi.patch. (no longer needed)
+  * Drop v4l-kfreebsd.patch. (no longer needed)
+  * pnap-grammar.patch: Fix spelling/grammar in 2.1's PNAP dialog.
+  * Remove static dependency on libproxy and add runtime dependency for
+    libproxy as per upstream changes.
+  * Use -mtune instead of --with-tuning, as it was removed.
+  * SONAME bump for libvlccore5 to libvlccore7.
+  * Update symbols for libvlc5 and libvlccore7.
+  * Update file lists to account for new/renamed/removed modules.
+
+ -- Edward Wang <edward.c.wang@compdigitec.com>  Sun, 06 Oct 2013 11:12:25 -0400
+
 vlc (2.0.8-1) unstable; urgency=low
 
   * New upstream release.
