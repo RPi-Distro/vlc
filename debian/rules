@@ -46,6 +46,7 @@ confflags += \
 	--enable-bluray \
 	--enable-bonjour \
 	--enable-caca \
+	--enable-chromaprint \
 	--enable-dbus \
 	--enable-dca \
 	--enable-dirac \
@@ -55,6 +56,7 @@ confflags += \
 	--enable-faad \
 	--enable-flac \
 	--enable-fluidsynth \
+	--enable-freerdp \
 	--enable-freetype \
 	--enable-fribidi \
 	--enable-gnutls \
