@@ -174,7 +174,6 @@ ifeq (,$(filter-out amd64 i386,$(DEB_HOST_ARCH_CPU)))
 confflags += --enable-mmx --enable-sse
 else
 confflags += --disable-mmx --disable-sse
-removeplugins += 3dn mmx mmxext sse2
 endif
 
 # ARM specific optimizations
