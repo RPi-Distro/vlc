@@ -2,7 +2,7 @@
  * preferences.hpp : Preferences
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 9ae0fd4e682b6fe3e2fb6eb740347aea2c8a134e $
+ * $Id: ea71af8d95edb735842508289f08db1c7c18fca6 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -33,14 +33,14 @@ class AdvPrefsPanel;
 class SPrefsPanel;
 class QTreeWidgetItem;
 class QTreeWidget;
-class QHBoxLayout;
-class QVBoxLayout;
 class QGroupBox;
 class QRadioButton;
 class QWidget;
 class QCheckBox;
 class QLabel;
 class SearchLineEdit;
+class QStackedWidget;
+class QSplitter;
 
 class PrefsDialog : public QVLCDialog
 {
@@ -54,32 +54,37 @@ public:
 #endif
 
 private:
-    QWidget *main_panel;
-    QHBoxLayout *main_panel_l;
+    enum { SIMPLE, ADVANCED };
+    QStackedWidget *stack;
 
-    AdvPrefsPanel *advanced_panel;
-    SPrefsPanel *current_simple_panel;
+    QWidget *simple_split_widget;
+    QSplitter *advanced_split_widget;
+
+    QStackedWidget *advanced_panels_stack;
+    QStackedWidget *simple_panels_stack;
     SPrefsPanel *simple_panels[SPrefsMax];
 
-    QWidget *tree_panel;
-    QVBoxLayout *tree_panel_l;
+    QWidget *simple_tree_panel;
+    QWidget *advanced_tree_panel;
 
     SPrefsCatList *simple_tree;
     PrefsTree *advanced_tree;
     SearchLineEdit *tree_filter;
+    QCheckBox *current_filter;
 
     QGroupBox *types;
-    QRadioButton *small,*all;
+    QRadioButton *simple,*all;
 
     bool b_small;
 
 private slots:
     void setAdvanced();
-    void setSmall();
+    void setSimple();
 
     void changeAdvPanel( QTreeWidgetItem * );
     void changeSimplePanel( int );
     void advancedTreeFilterChanged( const QString & );
+    void onlyLoadedToggled();
 
     void save();
     void cancel();

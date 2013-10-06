@@ -2,7 +2,7 @@
  * dec.c : audio output API towards decoders
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: 8e3f3ee0e7c4f5311dc8c247089117ffe2a0b47f $
+ * $Id: 57d292fe0a9123beb2c557fd98e19816c3980805 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -33,13 +33,9 @@
 #include <vlc_common.h>
 #include <vlc_aout.h>
 #include <vlc_input.h>
-#include <vlc_atomic.h>
 
 #include "aout_internal.h"
 #include "libvlc.h"
-
-static int ReplayGainCallback (vlc_object_t *, char const *,
-                               vlc_value_t, vlc_value_t, void *);
 
 /**
  * Creates an audio output
@@ -50,24 +46,13 @@ int aout_DecNew( audio_output_t *p_aout,
                  const aout_request_vout_t *p_request_vout )
 {
     /* Sanitize audio format */
-    if( p_format->i_channels > 32 )
-    {
-        msg_Err( p_aout, "too many audio channels (%u)",
-                 p_format->i_channels );
-        return -1;
-    }
-    if( p_format->i_channels <= 0 )
-    {
-        msg_Err( p_aout, "no audio channels" );
-        return -1;
-    }
     if( p_format->i_channels != aout_FormatNbChannels( p_format ) )
     {
         msg_Err( p_aout, "incompatible audio channels count with layout mask" );
         return -1;
     }
 
-    if( p_format->i_rate > 192000 )
+    if( p_format->i_rate > 352800 )
     {
         msg_Err( p_aout, "excessive audio sample frequency (%u)",
                  p_format->i_rate );
@@ -81,179 +66,117 @@ int aout_DecNew( audio_output_t *p_aout,
     }
 
     aout_owner_t *owner = aout_owner(p_aout);
-#ifdef RECYCLE
-    /* Calling decoder is responsible for serializing aout_DecNew() and
-     * aout_DecDelete(). So no need to lock to _read_ those properties. */
-    if (owner->module != NULL) /* <- output exists */
-    {   /* Check if we can recycle the existing output and pipelines */
-        if (AOUT_FMTS_IDENTICAL(&owner->input_format, p_format))
-            return 0;
-
-        /* TODO? If the new input format is closer to the output format than
-         * the old input format was, then the output could be recycled. The
-         * input pipeline however would need to be restarted. */
-
-        /* No recycling: delete everything and restart from scratch */
-        aout_Shutdown (p_aout);
-    }
-#endif
-    int ret = 0;
 
     /* TODO: reduce lock scope depending on decoder's real need */
-    aout_lock( p_aout );
-    assert (owner->module == NULL);
+    aout_OutputLock (p_aout);
+
+    var_Destroy( p_aout, "stereo-mode" );
 
     /* Create the audio output stream */
-    var_Destroy( p_aout, "audio-device" );
-    var_Destroy( p_aout, "audio-channels" );
+    owner->volume = aout_volume_New (p_aout, p_replay_gain);
 
+    atomic_store (&owner->restart, 0);
     owner->input_format = *p_format;
-    vlc_atomic_set (&owner->restart, 0);
-    if( aout_OutputNew( p_aout, p_format ) < 0 )
-    {
-        ret = -1;
+    owner->mixer_format = owner->input_format;
+    owner->request_vout = *p_request_vout;
+
+    if (aout_OutputNew (p_aout, &owner->mixer_format))
         goto error;
-    }
-
-    /* Allocate a software mixer */
-    assert (owner->volume.mixer == NULL);
-    owner->volume.mixer = aout_MixerNew (p_aout, owner->mixer_format.i_format);
-
-    aout_ReplayGainInit (&owner->gain.data, p_replay_gain);
-    var_AddCallback (p_aout, "audio-replay-gain-mode",
-                     ReplayGainCallback, owner);
-    var_TriggerCallback (p_aout, "audio-replay-gain-mode");
+    aout_volume_SetFormat (owner->volume, owner->mixer_format.i_format);
 
     /* Create the audio filtering "input" pipeline */
-    date_Init (&owner->sync.date, owner->mixer_format.i_rate, 1);
-    date_Set (&owner->sync.date, VLC_TS_INVALID);
-
-    assert (owner->input == NULL);
-    owner->input = aout_InputNew (p_aout, p_format, &owner->mixer_format,
-                                  p_request_vout);
-    if (owner->input == NULL)
+    owner->filters = aout_FiltersNew (p_aout, p_format, &owner->mixer_format,
+                                      &owner->request_vout);
+    if (owner->filters == NULL)
     {
-        struct audio_mixer *mixer = owner->volume.mixer;
-
-        owner->volume.mixer = NULL;
         aout_OutputDelete (p_aout);
-        aout_unlock (p_aout);
-        aout_MixerDelete (mixer);
+error:
+        aout_volume_Delete (owner->volume);
+        aout_OutputUnlock (p_aout);
         return -1;
     }
-error:
-    aout_unlock( p_aout );
-    return ret;
+
+    owner->sync.end = VLC_TS_INVALID;
+    owner->sync.resamp_type = AOUT_RESAMPLING_NONE;
+    owner->sync.discontinuity = true;
+    aout_OutputUnlock (p_aout);
+
+    atomic_init (&owner->buffers_lost, 0);
+    return 0;
 }
 
 /**
  * Stops all plugins involved in the audio output.
  */
-void aout_Shutdown (audio_output_t *p_aout)
-{
-    aout_owner_t *owner = aout_owner (p_aout);
-    aout_input_t *input;
-    struct audio_mixer *mixer;
-
-    aout_lock( p_aout );
-    /* Remove the input. */
-    input = owner->input;
-    if (likely(input != NULL))
-        aout_InputDelete (p_aout, input);
-    owner->input = NULL;
-
-    mixer = owner->volume.mixer;
-    owner->volume.mixer = NULL;
-
-    var_DelCallback (p_aout, "audio-replay-gain-mode",
-                     ReplayGainCallback, owner);
-
-    aout_OutputDelete( p_aout );
-    var_Destroy( p_aout, "audio-device" );
-    var_Destroy( p_aout, "audio-channels" );
-
-    aout_unlock( p_aout );
-
-    aout_MixerDelete (mixer);
-    free (input);
-}
-
-/**
- * Stops the decoded audio input.
- * @note Due to output recycling, this function is esssentially a stub.
- */
 void aout_DecDelete (audio_output_t *aout)
-{
-#ifdef RECYCLE
-    (void) aout;
-#else
-    aout_Shutdown (aout);
-#endif
-}
-
-#define AOUT_RESTART_OUTPUT 1
-#define AOUT_RESTART_INPUT  2
-static void aout_CheckRestart (audio_output_t *aout)
 {
     aout_owner_t *owner = aout_owner (aout);
 
-    aout_assert_locked (aout);
-
-    int restart = vlc_atomic_swap (&owner->restart, 0);
-    if (likely(restart == 0))
-        return;
-
-    assert (restart & AOUT_RESTART_INPUT);
-
-    const aout_request_vout_t request_vout = owner->input->request_vout;
-
-    if (likely(owner->input != NULL))
+    aout_OutputLock (aout);
+    if (owner->mixer_format.i_format)
     {
-        aout_InputDelete (aout, owner->input);
-        free (owner->input);
-    }
-    owner->input = NULL;
-
-    /* Reinitializes the output */
-    if (restart & AOUT_RESTART_OUTPUT)
-    {
-        aout_MixerDelete (owner->volume.mixer);
-        owner->volume.mixer = NULL;
+        aout_FiltersDelete (aout, owner->filters);
         aout_OutputDelete (aout);
-
-        if (aout_OutputNew (aout, &owner->input_format))
-            return; /* we are officially screwed */
-        owner->volume.mixer = aout_MixerNew (aout,
-                                             owner->mixer_format.i_format);
     }
+    aout_volume_Delete (owner->volume);
+    aout_OutputUnlock (aout);
+    var_Destroy (aout, "stereo-mode");
+}
 
-    owner->input = aout_InputNew (aout, &owner->input_format,
-                                  &owner->mixer_format, &request_vout);
+static int aout_CheckReady (audio_output_t *aout)
+{
+    aout_owner_t *owner = aout_owner (aout);
+
+    int restart = atomic_exchange (&owner->restart, 0);
+    if (unlikely(restart))
+    {
+        if (owner->mixer_format.i_format)
+            aout_FiltersDelete (aout, owner->filters);
+
+        if (restart & AOUT_RESTART_OUTPUT)
+        {   /* Reinitializes the output */
+            msg_Dbg (aout, "restarting output...");
+            if (owner->mixer_format.i_format)
+                aout_OutputDelete (aout);
+            owner->mixer_format = owner->input_format;
+            if (aout_OutputNew (aout, &owner->mixer_format))
+                owner->mixer_format.i_format = 0;
+            aout_volume_SetFormat (owner->volume,
+                                   owner->mixer_format.i_format);
+        }
+
+        msg_Dbg (aout, "restarting filters...");
+        owner->sync.end = VLC_TS_INVALID;
+        owner->sync.resamp_type = AOUT_RESAMPLING_NONE;
+
+        if (owner->mixer_format.i_format)
+        {
+            owner->filters = aout_FiltersNew (aout, &owner->input_format,
+                                              &owner->mixer_format,
+                                              &owner->request_vout);
+            if (owner->filters == NULL)
+            {
+                aout_OutputDelete (aout);
+                owner->mixer_format.i_format = 0;
+            }
+        }
+        /* TODO: This would be a good time to call clean up any video output
+         * left over by an audio visualization:
+        input_resource_TerminatVout(MAGIC HERE); */
+    }
+    return (owner->mixer_format.i_format) ? 0 : -1;
 }
 
 /**
  * Marks the audio output for restart, to update any parameter of the output
  * plug-in (e.g. output device or channel mapping).
  */
-void aout_RequestRestart (audio_output_t *aout)
+void aout_RequestRestart (audio_output_t *aout, unsigned mode)
 {
     aout_owner_t *owner = aout_owner (aout);
-
-    /* DO NOT remove AOUT_RESTART_INPUT. You need to change the atomic ops. */
-    vlc_atomic_set (&owner->restart, AOUT_RESTART_OUTPUT|AOUT_RESTART_INPUT);
+    atomic_fetch_or (&owner->restart, mode);
+    msg_Dbg (aout, "restart requested (%u)", mode);
 }
-
-/**
- * This function will safely mark aout input to be restarted as soon as
- * possible to take configuration changes into account
- */
-void aout_InputRequestRestart (audio_output_t *aout)
-{
-    aout_owner_t *owner = aout_owner (aout);
-
-    vlc_atomic_compare_swap (&owner->restart, 0, AOUT_RESTART_INPUT);
-}
-
 
 /*
  * Buffer management
@@ -284,169 +207,263 @@ block_t *aout_DecNewBuffer (audio_output_t *aout, size_t samples)
 void aout_DecDeleteBuffer (audio_output_t *aout, block_t *block)
 {
     (void) aout;
-    aout_BufferFree (block);
+    block_Release (block);
+}
+
+static void aout_StopResampling (audio_output_t *aout)
+{
+    aout_owner_t *owner = aout_owner (aout);
+
+    owner->sync.resamp_type = AOUT_RESAMPLING_NONE;
+    aout_FiltersAdjustResampling (owner->filters, 0);
+}
+
+static void aout_DecSilence (audio_output_t *aout, mtime_t length, mtime_t pts)
+{
+    aout_owner_t *owner = aout_owner (aout);
+    const audio_sample_format_t *fmt = &owner->mixer_format;
+    size_t frames = (fmt->i_rate * length) / CLOCK_FREQ;
+    block_t *block;
+
+    if (AOUT_FMT_SPDIF(fmt))
+        block = block_Alloc (4 * frames);
+    else
+        block = block_Alloc (frames * fmt->i_bytes_per_frame);
+    if (unlikely(block == NULL))
+        return; /* uho! */
+
+    msg_Dbg (aout, "inserting %zu zeroes", frames);
+    memset (block->p_buffer, 0, block->i_buffer);
+    block->i_nb_samples = frames;
+    block->i_pts = pts;
+    block->i_dts = pts;
+    block->i_length = length;
+    aout_OutputPlay (aout, block);
+}
+
+static void aout_DecSynchronize (audio_output_t *aout, mtime_t dec_pts,
+                                 int input_rate)
+{
+    aout_owner_t *owner = aout_owner (aout);
+    mtime_t drift;
+
+    /**
+     * Depending on the drift between the actual and intended playback times,
+     * the audio core may ignore the drift, trigger upsampling or downsampling,
+     * insert silence or even discard samples.
+     * Future VLC versions may instead adjust the input rate.
+     *
+     * The audio output plugin is responsible for estimating its actual
+     * playback time, or rather the estimated time when the next sample will
+     * be played. (The actual playback time is always the current time, that is
+     * to say mdate(). It is not an useful statistic.)
+     *
+     * Most audio output plugins can estimate the delay until playback of
+     * the next sample to be written to the buffer, or equally the time until
+     * all samples in the buffer will have been played. Then:
+     *    pts = mdate() + delay
+     */
+    if (aout_OutputTimeGet (aout, &drift) != 0)
+        return; /* nothing can be done if timing is unknown */
+    drift += mdate () - dec_pts;
+
+    /* Late audio output.
+     * This can happen due to insufficient caching, scheduling jitter
+     * or bug in the decoder. Ideally, the output would seek backward. But that
+     * is not portable, not supported by some hardware and often unsafe/buggy
+     * where supported. The other alternative is to flush the buffers
+     * completely. */
+    if (drift > (owner->sync.discontinuity ? 0
+                  : +3 * input_rate * AOUT_MAX_PTS_DELAY / INPUT_RATE_DEFAULT))
+    {
+        if (!owner->sync.discontinuity)
+            msg_Warn (aout, "playback way too late (%"PRId64"): "
+                      "flushing buffers", drift);
+        else
+            msg_Dbg (aout, "playback too late (%"PRId64"): "
+                     "flushing buffers", drift);
+        aout_OutputFlush (aout, false);
+
+        aout_StopResampling (aout);
+        owner->sync.end = VLC_TS_INVALID;
+        owner->sync.discontinuity = true;
+
+        /* Now the output might be too early... Recheck. */
+        if (aout_OutputTimeGet (aout, &drift) != 0)
+            return; /* nothing can be done if timing is unknown */
+        drift += mdate () - dec_pts;
+    }
+
+    /* Early audio output.
+     * This is rare except at startup when the buffers are still empty. */
+    if (drift < (owner->sync.discontinuity ? 0
+                : -3 * input_rate * AOUT_MAX_PTS_ADVANCE / INPUT_RATE_DEFAULT))
+    {
+        if (!owner->sync.discontinuity)
+            msg_Warn (aout, "playback way too early (%"PRId64"): "
+                      "playing silence", drift);
+        aout_DecSilence (aout, -drift, dec_pts);
+
+        aout_StopResampling (aout);
+        owner->sync.discontinuity = true;
+        drift = 0;
+    }
+
+    /* Resampling */
+    if (drift > +AOUT_MAX_PTS_DELAY
+     && owner->sync.resamp_type != AOUT_RESAMPLING_UP)
+    {
+        msg_Warn (aout, "playback too late (%"PRId64"): up-sampling",
+                  drift);
+        owner->sync.resamp_type = AOUT_RESAMPLING_UP;
+        owner->sync.resamp_start_drift = +drift;
+    }
+    if (drift < -AOUT_MAX_PTS_ADVANCE
+     && owner->sync.resamp_type != AOUT_RESAMPLING_DOWN)
+    {
+        msg_Warn (aout, "playback too early (%"PRId64"): down-sampling",
+                  drift);
+        owner->sync.resamp_type = AOUT_RESAMPLING_DOWN;
+        owner->sync.resamp_start_drift = -drift;
+    }
+
+    if (owner->sync.resamp_type == AOUT_RESAMPLING_NONE)
+        return; /* Everything is fine. Nothing to do. */
+
+    if (llabs (drift) > 2 * owner->sync.resamp_start_drift)
+    {   /* If the drift is ever increasing, then something is seriously wrong.
+         * Cease resampling and hope for the best. */
+        msg_Warn (aout, "timing screwed (drift: %"PRId64" us): "
+                  "stopping resampling", drift);
+        aout_StopResampling (aout);
+        return;
+    }
+
+    /* Resampling has been triggered earlier. This checks if it needs to be
+     * increased or decreased. Resampling rate changes must be kept slow for
+     * the comfort of listeners. */
+    int adj = (owner->sync.resamp_type == AOUT_RESAMPLING_UP) ? +2 : -2;
+
+    if (2 * llabs (drift) <= owner->sync.resamp_start_drift)
+        /* If the drift has been reduced from more than half its initial
+         * value, then it is time to switch back the resampling direction. */
+        adj *= -1;
+
+    if (!aout_FiltersAdjustResampling (owner->filters, adj))
+    {   /* Everything is back to normal: stop resampling. */
+        owner->sync.resamp_type = AOUT_RESAMPLING_NONE;
+        msg_Dbg (aout, "resampling stopped (drift: %"PRId64" us)", drift);
+    }
 }
 
 /*****************************************************************************
  * aout_DecPlay : filter & mix the decoded buffer
  *****************************************************************************/
-int aout_DecPlay (audio_output_t *p_aout, block_t *p_buffer, int i_input_rate)
+int aout_DecPlay (audio_output_t *aout, block_t *block, int input_rate)
 {
-    aout_owner_t *owner = aout_owner (p_aout);
-    aout_input_t *input;
+    aout_owner_t *owner = aout_owner (aout);
 
-    assert( i_input_rate >= INPUT_RATE_DEFAULT / AOUT_MAX_INPUT_RATE &&
-            i_input_rate <= INPUT_RATE_DEFAULT * AOUT_MAX_INPUT_RATE );
-    assert( p_buffer->i_pts > 0 );
+    assert (input_rate >= INPUT_RATE_DEFAULT / AOUT_MAX_INPUT_RATE);
+    assert (input_rate <= INPUT_RATE_DEFAULT * AOUT_MAX_INPUT_RATE);
+    assert (block->i_pts >= VLC_TS_0);
 
-    p_buffer->i_length = (mtime_t)p_buffer->i_nb_samples * 1000000
-                                / owner->input_format.i_rate;
+    block->i_length = CLOCK_FREQ * block->i_nb_samples
+                                 / owner->input_format.i_rate;
 
-    aout_lock( p_aout );
-    aout_CheckRestart( p_aout );
+    aout_OutputLock (aout);
+    if (unlikely(aout_CheckReady (aout)))
+        goto drop; /* Pipeline is unrecoverably broken :-( */
 
-    input = owner->input;
-    if (unlikely(input == NULL)) /* can happen due to restart */
-    {
-        aout_unlock( p_aout );
-        aout_BufferFree( p_buffer );
-        return -1;
+    const mtime_t now = mdate (), advance = block->i_pts - now;
+    if (advance < -AOUT_MAX_PTS_DELAY)
+    {   /* Late buffer can be caused by bugs in the decoder, by scheduling
+         * latency spikes (excessive load, SIGSTOP, etc.) or if buffering is
+         * insufficient. We assume the PTS is wrong and play the buffer anyway:
+         * Hopefully video has encountered a similar PTS problem as audio. */
+        msg_Warn (aout, "buffer too late (%"PRId64" us): dropped", advance);
+        goto drop;
     }
-
-    /* Input */
-    p_buffer = aout_InputPlay (p_aout, input, p_buffer, i_input_rate,
-                               &owner->sync.date);
-    if( p_buffer != NULL )
-    {
-        date_Increment (&owner->sync.date, p_buffer->i_nb_samples);
-
-        /* Mixer */
-        if (owner->volume.mixer != NULL)
-        {
-            float amp = owner->volume.multiplier
-                      * vlc_atomic_getf (&owner->gain.multiplier);
-            aout_MixerRun (owner->volume.mixer, p_buffer, amp);
-        }
-
-        /* Output */
-        aout_OutputPlay( p_aout, p_buffer );
+    if (advance > AOUT_MAX_ADVANCE_TIME)
+    {   /* Early buffers can only be caused by bugs in the decoder. */
+        msg_Err (aout, "buffer too early (%"PRId64" us): dropped", advance);
+        goto drop;
     }
+    if (block->i_flags & BLOCK_FLAG_DISCONTINUITY)
+        owner->sync.discontinuity = true;
 
-    aout_unlock( p_aout );
-#ifdef __unix__
-    sched_yield();
-#endif
+    block = aout_FiltersPlay (owner->filters, block, input_rate);
+    if (block == NULL)
+        goto lost;
+
+    /* Software volume */
+    aout_volume_Amplify (owner->volume, block);
+
+    /* Drift correction */
+    aout_DecSynchronize (aout, block->i_pts, input_rate);
+
+    /* Output */
+    owner->sync.end = block->i_pts + block->i_length + 1;
+    owner->sync.discontinuity = false;
+    aout_OutputPlay (aout, block);
+out:
+    aout_OutputUnlock (aout);
     return 0;
+drop:
+    owner->sync.discontinuity = true;
+    block_Release (block);
+lost:
+    atomic_fetch_add(&owner->buffers_lost, 1);
+    goto out;
 }
 
 int aout_DecGetResetLost (audio_output_t *aout)
 {
     aout_owner_t *owner = aout_owner (aout);
-    aout_input_t *input = owner->input;
-    int val;
-
-    aout_lock (aout);
-    if (likely(input != NULL))
-    {
-        val = input->i_buffer_lost;
-        input->i_buffer_lost = 0;
-    }
-    else
-        val = 0; /* if aout_CheckRestart() failed */
-    aout_unlock (aout);
-
-    return val;
+    return atomic_exchange(&owner->buffers_lost, 0);
 }
 
 void aout_DecChangePause (audio_output_t *aout, bool paused, mtime_t date)
 {
     aout_owner_t *owner = aout_owner (aout);
 
-    aout_lock (aout);
-    /* XXX: Should the date be offset by the pause duration instead? */
-    date_Set (&owner->sync.date, VLC_TS_INVALID);
-    aout_OutputPause (aout, paused, date);
-    aout_unlock (aout);
+    aout_OutputLock (aout);
+    if (owner->sync.end != VLC_TS_INVALID)
+    {
+        if (paused)
+            owner->sync.end -= date;
+        else
+            owner->sync.end += date;
+    }
+    if (owner->mixer_format.i_format)
+        aout_OutputPause (aout, paused, date);
+    aout_OutputUnlock (aout);
 }
 
 void aout_DecFlush (audio_output_t *aout)
 {
     aout_owner_t *owner = aout_owner (aout);
 
-    aout_lock (aout);
-    date_Set (&owner->sync.date, VLC_TS_INVALID);
-    aout_OutputFlush (aout, false);
-    aout_unlock (aout);
+    aout_OutputLock (aout);
+    owner->sync.end = VLC_TS_INVALID;
+    if (owner->mixer_format.i_format)
+        aout_OutputFlush (aout, false);
+    aout_OutputUnlock (aout);
 }
 
 bool aout_DecIsEmpty (audio_output_t *aout)
 {
     aout_owner_t *owner = aout_owner (aout);
-    mtime_t end_date, now = mdate ();
-    bool empty;
+    mtime_t now = mdate ();
+    bool empty = true;
 
-    aout_lock (aout);
-    end_date = date_Get (&owner->sync.date);
-    empty = end_date == VLC_TS_INVALID || end_date <= now;
-    if (empty)
+    aout_OutputLock (aout);
+    if (owner->sync.end != VLC_TS_INVALID)
+        empty = owner->sync.end <= now;
+    if (empty && owner->mixer_format.i_format)
         /* The last PTS has elapsed already. So the underlying audio output
          * buffer should be empty or almost. Thus draining should be fast
          * and will not block the caller too long. */
         aout_OutputFlush (aout, true);
-    aout_unlock (aout);
+    aout_OutputUnlock (aout);
     return empty;
-}
-
-/**
- * Notifies the audio input of the drift from the requested audio
- * playback timestamp (@ref block_t.i_pts) to the anticipated playback time
- * as reported by the audio output hardware.
- * Depending on the drift amplitude, the input core may ignore the drift
- * trigger upsampling or downsampling, or even discard samples.
- * Future VLC versions may instead adjust the input decoding speed.
- *
- * The audio output plugin is responsible for estimating the ideal current
- * playback time defined as follows:
- *  ideal time = buffer timestamp - (output latency + pending buffer duration)
- *
- * Practically, this is the PTS (block_t.i_pts) of the current buffer minus
- * the latency reported by the output programming interface.
- * Computing the estimated drift directly would probably be more intuitive.
- * However the use of an absolute time value does not introduce extra
- * measurement errors due to the CPU scheduling jitter and clock resolution.
- * Furthermore, the ideal while it is an abstract value, is easy for most
- * audio output plugins to compute.
- * The following definition is equivalent but depends on the clock time:
- *  ideal time = real time + drift
-
- * @note If aout_LatencyReport() is never called, the core will assume that
- * there is no drift.
- *
- * @param ideal estimated ideal time as defined above.
- */
-void aout_TimeReport (audio_output_t *aout, mtime_t ideal)
-{
-    mtime_t delta = mdate() - ideal /* = -drift */;
-
-    aout_assert_locked (aout);
-    if (delta < -AOUT_MAX_PTS_ADVANCE || +AOUT_MAX_PTS_DELAY < delta)
-    {
-        aout_owner_t *owner = aout_owner (aout);
-
-        msg_Warn (aout, "not synchronized (%"PRId64" us), resampling",
-                  delta);
-        if (date_Get (&owner->sync.date) != VLC_TS_INVALID)
-            date_Move (&owner->sync.date, delta);
-    }
-}
-
-static int ReplayGainCallback (vlc_object_t *obj, char const *var,
-                               vlc_value_t oldval, vlc_value_t val, void *data)
-{
-    aout_owner_t *owner = data;
-    float multiplier = aout_ReplayGainSelect (obj, val.psz_string,
-                                              &owner->gain.data);
-    vlc_atomic_setf (&owner->gain.multiplier, multiplier);
-    VLC_UNUSED(var); VLC_UNUSED(oldval);
-    return VLC_SUCCESS;
 }

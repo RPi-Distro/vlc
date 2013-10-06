@@ -2,7 +2,7 @@
  * playlist_fetcher.h:
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 348ebc2fd5932c414c7bda5df6ea6f52f0c012a1 $
+ * $Id: 9d7cae110ea83cb11b710ddee097c9e82e7f1572 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -36,7 +36,7 @@ typedef struct playlist_fetcher_t playlist_fetcher_t;
 /**
  * This function creates the fetcher object and thread.
  */
-playlist_fetcher_t *playlist_fetcher_New( playlist_t * );
+playlist_fetcher_t *playlist_fetcher_New( vlc_object_t * );
 
 /**
  * This function enqueues the provided item to be art fetched.

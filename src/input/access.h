@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1998-2008 VLC authors and VideoLAN
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 1b7de91565332cceb9abe8b5266cd38bdde27437 $
+ * $Id: d16d27b89871484abdaaa1be427c99190bb03fea $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -33,6 +33,8 @@ access_t *access_New( vlc_object_t *p_obj, input_thread_t *p_input,
                       const char *psz_path );
 #define access_New( a, b, c, d, e ) access_New(VLC_OBJECT(a), b, c, d, e )
 void access_Delete( access_t * );
+
+char *get_path(const char *location);
 
 #endif
 

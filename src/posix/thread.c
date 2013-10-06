@@ -33,31 +33,26 @@
 
 #include "libvlc.h"
 #include <stdarg.h>
-#include <assert.h>
-#include <unistd.h> /* fsync() */
 #include <signal.h>
 #include <errno.h>
 #include <time.h>
+#include <assert.h>
 
+#include <sys/types.h>
+#include <unistd.h> /* fsync() */
 #include <pthread.h>
 #include <sched.h>
-#include <sys/time.h> /* gettimeofday() */
 
 #ifdef __linux__
 # include <sys/syscall.h> /* SYS_gettid */
 #endif
-
 #ifdef HAVE_EXECINFO_H
 # include <execinfo.h>
 #endif
-
 #ifdef __APPLE__
 # include <mach/mach_init.h> /* mach_task_self in semaphores */
 #endif
-
 #if defined(__SunOS)
-# include <unistd.h>
-# include <sys/types.h>
 # include <sys/processor.h>
 # include <sys/pset.h>
 #endif
@@ -148,7 +143,7 @@ static inline unsigned long vlc_threadid (void)
 {
 #if defined (__linux__)
      /* glibc does not provide a call for this */
-     return syscall (SYS_gettid);
+     return syscall (__NR_gettid);
 
 #else
      union { pthread_t th; unsigned long int i; } v = { };
@@ -159,11 +154,9 @@ static inline unsigned long vlc_threadid (void)
 }
 
 #ifndef NDEBUG
-/*****************************************************************************
- * vlc_thread_fatal: Report an error from the threading layer
- *****************************************************************************
- * This is mostly meant for debugging.
- *****************************************************************************/
+/**
+ * Reports a fatal error from the threading layer, for debugging purposes.
+ */
 static void
 vlc_thread_fatal (const char *action, int error,
                   const char *function, const char *file, unsigned line)
@@ -210,14 +203,9 @@ vlc_thread_fatal (const char *action, int error,
 # define VLC_THREAD_ASSERT( action ) ((void)val)
 #endif
 
-#if defined (__GLIBC__) && (__GLIBC_MINOR__ < 6)
-/* This is not prototyped under glibc, though it exists. */
-int pthread_mutexattr_setkind_np( pthread_mutexattr_t *attr, int kind );
-#endif
-
-/*****************************************************************************
- * vlc_mutex_init: initialize a mutex
- *****************************************************************************/
+/**
+ * Initializes a fast mutex.
+ */
 void vlc_mutex_init( vlc_mutex_t *p_mutex )
 {
     pthread_mutexattr_t attr;
@@ -225,34 +213,26 @@ void vlc_mutex_init( vlc_mutex_t *p_mutex )
     if (unlikely(pthread_mutexattr_init (&attr)))
         abort();
 #ifdef NDEBUG
-    pthread_mutexattr_settype( &attr, PTHREAD_MUTEX_NORMAL );
+    pthread_mutexattr_settype (&attr, PTHREAD_MUTEX_DEFAULT);
 #else
-    /* Create error-checking mutex to detect problems more easily. */
-# if defined (__GLIBC__) && (__GLIBC__ == 2) && (__GLIBC_MINOR__ < 6)
-    pthread_mutexattr_setkind_np( &attr, PTHREAD_MUTEX_ERRORCHECK_NP );
-# else
-    pthread_mutexattr_settype( &attr, PTHREAD_MUTEX_ERRORCHECK );
-# endif
+    pthread_mutexattr_settype (&attr, PTHREAD_MUTEX_ERRORCHECK);
 #endif
     if (unlikely(pthread_mutex_init (p_mutex, &attr)))
         abort();
     pthread_mutexattr_destroy( &attr );
 }
 
-/*****************************************************************************
- * vlc_mutex_init: initialize a recursive mutex (Do not use)
- *****************************************************************************/
+/**
+ * Initializes a recursive mutex.
+ * \warning This is strongly discouraged. Please use normal mutexes.
+ */
 void vlc_mutex_init_recursive( vlc_mutex_t *p_mutex )
 {
     pthread_mutexattr_t attr;
 
     if (unlikely(pthread_mutexattr_init (&attr)))
         abort();
-#if defined (__GLIBC__) && (__GLIBC__ == 2) && (__GLIBC_MINOR__ < 6)
-    pthread_mutexattr_setkind_np( &attr, PTHREAD_MUTEX_RECURSIVE_NP );
-#else
-    pthread_mutexattr_settype( &attr, PTHREAD_MUTEX_RECURSIVE );
-#endif
+    pthread_mutexattr_settype (&attr, PTHREAD_MUTEX_RECURSIVE);
     if (unlikely(pthread_mutex_init (p_mutex, &attr)))
         abort();
     pthread_mutexattr_destroy( &attr );
@@ -278,6 +258,9 @@ void vlc_mutex_destroy (vlc_mutex_t *p_mutex)
 #  define RUNNING_ON_VALGRIND (0)
 # endif
 
+/**
+ * Asserts that a mutex is locked by the calling thread.
+ */
 void vlc_assert_locked (vlc_mutex_t *p_mutex)
 {
     if (RUNNING_ON_VALGRIND > 0)
@@ -342,10 +325,10 @@ void vlc_cond_init (vlc_cond_t *p_condvar)
 {
     pthread_condattr_t attr;
 
-    vlc_clock_setup ();
     if (unlikely(pthread_condattr_init (&attr)))
         abort ();
 #if (_POSIX_CLOCK_SELECTION > 0)
+    vlc_clock_setup ();
     pthread_condattr_setclock (&attr, vlc_clock_id);
 #endif
     if (unlikely(pthread_cond_init (p_condvar, &attr)))
@@ -561,6 +544,7 @@ void vlc_rwlock_destroy (vlc_rwlock_t *lock)
 
 /**
  * Acquires a read/write lock for reading. Recursion is allowed.
+ * @note This function may be a point of cancellation.
  */
 void vlc_rwlock_rdlock (vlc_rwlock_t *lock)
 {
@@ -570,6 +554,7 @@ void vlc_rwlock_rdlock (vlc_rwlock_t *lock)
 
 /**
  * Acquires a read/write lock for writing. Recursion is not allowed.
+ * @note This function may be a point of cancellation.
  */
 void vlc_rwlock_wrlock (vlc_rwlock_t *lock)
 {
@@ -828,7 +813,7 @@ int vlc_set_priority (vlc_thread_t th, int priority)
             return VLC_EGENERIC;
     }
 #else
-    (void) priority;
+    (void) th; (void) priority;
 #endif
     return VLC_SUCCESS;
 }
@@ -843,9 +828,6 @@ int vlc_set_priority (vlc_thread_t th, int priority)
 void vlc_cancel (vlc_thread_t thread_id)
 {
     pthread_cancel (thread_id);
-#ifdef HAVE_MAEMO
-    pthread_kill (thread_id, SIGRTMIN);
-#endif
 }
 
 /**
@@ -986,165 +968,6 @@ void msleep (mtime_t delay)
 }
 
 
-struct vlc_timer
-{
-    vlc_thread_t thread;
-    vlc_cond_t   reschedule;
-    vlc_mutex_t  lock;
-    void       (*func) (void *);
-    void        *data;
-    mtime_t      value, interval;
-    vlc_atomic_t overruns;
-};
-
-VLC_NORETURN
-static void *vlc_timer_thread (void *data)
-{
-    struct vlc_timer *timer = data;
-
-    vlc_mutex_lock (&timer->lock);
-    mutex_cleanup_push (&timer->lock);
-
-    for (;;)
-    {
-        while (timer->value == 0)
-            vlc_cond_wait (&timer->reschedule, &timer->lock);
-
-        if (vlc_cond_timedwait (&timer->reschedule, &timer->lock,
-                                timer->value) == 0)
-            continue;
-        if (timer->interval == 0)
-            timer->value = 0; /* disarm */
-        vlc_mutex_unlock (&timer->lock);
-
-        int canc = vlc_savecancel ();
-        timer->func (timer->data);
-        vlc_restorecancel (canc);
-
-        mtime_t now = mdate ();
-        unsigned misses;
-
-        vlc_mutex_lock (&timer->lock);
-        if (timer->interval == 0)
-            continue;
-
-        misses = (now - timer->value) / timer->interval;
-        timer->value += timer->interval;
-        /* Try to compensate for one miss (mwait() will return immediately)
-         * but no more. Otherwise, we might busy loop, after extended periods
-         * without scheduling (suspend, SIGSTOP, RT preemption, ...). */
-        if (misses > 1)
-        {
-            misses--;
-            timer->value += misses * timer->interval;
-            vlc_atomic_add (&timer->overruns, misses);
-        }
-    }
-
-    vlc_cleanup_pop ();
-    assert (0);
-}
-
-/**
- * Initializes an asynchronous timer.
- * @warning Asynchronous timers are processed from an unspecified thread.
- * Multiple occurences of a single interval timer are serialized; they cannot
- * run concurrently.
- *
- * @param id pointer to timer to be initialized
- * @param func function that the timer will call
- * @param data parameter for the timer function
- * @return 0 on success, a system error code otherwise.
- */
-int vlc_timer_create (vlc_timer_t *id, void (*func) (void *), void *data)
-{
-    struct vlc_timer *timer = malloc (sizeof (*timer));
-
-    if (unlikely(timer == NULL))
-        return ENOMEM;
-    vlc_mutex_init (&timer->lock);
-    vlc_cond_init (&timer->reschedule);
-    assert (func);
-    timer->func = func;
-    timer->data = data;
-    timer->value = 0;
-    timer->interval = 0;
-    vlc_atomic_set(&timer->overruns, 0);
-
-    if (vlc_clone (&timer->thread, vlc_timer_thread, timer,
-                   VLC_THREAD_PRIORITY_INPUT))
-    {
-        vlc_cond_destroy (&timer->reschedule);
-        vlc_mutex_destroy (&timer->lock);
-        free (timer);
-        return ENOMEM;
-    }
-
-    *id = timer;
-    return 0;
-}
-
-/**
- * Destroys an initialized timer. If needed, the timer is first disarmed.
- * This function is undefined if the specified timer is not initialized.
- *
- * @warning This function <b>must</b> be called before the timer data can be
- * freed and before the timer callback function can be unloaded.
- *
- * @param timer timer to destroy
- */
-void vlc_timer_destroy (vlc_timer_t timer)
-{
-    vlc_cancel (timer->thread);
-    vlc_join (timer->thread, NULL);
-    vlc_cond_destroy (&timer->reschedule);
-    vlc_mutex_destroy (&timer->lock);
-    free (timer);
-}
-
-/**
- * Arm or disarm an initialized timer.
- * This functions overrides any previous call to itself.
- *
- * @note A timer can fire later than requested due to system scheduling
- * limitations. An interval timer can fail to trigger sometimes, either because
- * the system is busy or suspended, or because a previous iteration of the
- * timer is still running. See also vlc_timer_getoverrun().
- *
- * @param timer initialized timer
- * @param absolute the timer value origin is the same as mdate() if true,
- *                 the timer value is relative to now if false.
- * @param value zero to disarm the timer, otherwise the initial time to wait
- *              before firing the timer.
- * @param interval zero to fire the timer just once, otherwise the timer
- *                 repetition interval.
- */
-void vlc_timer_schedule (vlc_timer_t timer, bool absolute,
-                         mtime_t value, mtime_t interval)
-{
-    if (!absolute && value != 0)
-        value += mdate();
-
-    vlc_mutex_lock (&timer->lock);
-    timer->value = value;
-    timer->interval = interval;
-    vlc_cond_signal (&timer->reschedule);
-    vlc_mutex_unlock (&timer->lock);
-}
-
-/**
- * Fetch and reset the overrun counter for a timer.
- * @param timer initialized timer
- * @return the timer overrun counter, i.e. the number of times that the timer
- * should have run but did not since the last actual run. If all is well, this
- * is zero.
- */
-unsigned vlc_timer_getoverrun (vlc_timer_t timer)
-{
-    return vlc_atomic_swap (&timer->overruns, 0);
-}
-
-
 /**
  * Count CPUs.
  * @return number of available (logical) CPUs.
@@ -1155,7 +978,7 @@ unsigned vlc_GetCPUCount(void)
     cpu_set_t cpu;
 
     CPU_ZERO(&cpu);
-    if (sched_getaffinity (getpid(), sizeof (cpu), &cpu) < 0)
+    if (sched_getaffinity (0, sizeof (cpu), &cpu) < 0)
         return 1;
 
     return CPU_COUNT (&cpu);

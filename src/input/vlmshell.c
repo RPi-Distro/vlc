@@ -1,8 +1,8 @@
 /*****************************************************************************
- * vlm.c: VLM interface plugin
+ * vlmshell.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2005 VLC authors and VideoLAN
- * $Id: 0b9082f36631c772f673dd9d5bdfae0e56040c0b $
+ * $Id: 97edd9032ebd86d6a3b4e445beffb1570c537794 $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -525,7 +525,7 @@ error:
 
 static int ExecuteLoad( vlm_t *p_vlm, const char *psz_path, vlm_message_t **pp_status )
 {
-    char *psz_url = make_URI( psz_path, NULL );
+    char *psz_url = vlc_path2uri( psz_path, NULL );
     stream_t *p_stream = stream_UrlNew( p_vlm, psz_url );
     free( psz_url );
     uint64_t i_size;

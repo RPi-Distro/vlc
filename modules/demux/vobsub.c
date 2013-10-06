@@ -1,25 +1,25 @@
 /*****************************************************************************
- * subtitle.c: Demux vobsub files.
+ * vobsub.c: Demux vobsub files.
  *****************************************************************************
- * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 86423ad0103e85aeff3beafb827350b493ae2bfd $
+ * Copyright (C) 1999-2004 VLC authors and VideoLAN
+ * $Id: 780da72da0832168dc738d59385d40dca461caba $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -75,7 +75,6 @@ typedef struct
 
 typedef struct
 {
-    es_format_t fmt;
     es_out_id_t *p_es;
     int         i_track_id;
 
@@ -388,7 +387,7 @@ static int Demux( demux_t *p_demux )
             }
 
             /* allocate a packet */
-            if( ( p_block = block_New( p_demux, i_size ) ) == NULL )
+            if( ( p_block = block_Alloc( i_size ) ) == NULL )
             {
                 tk.i_current_subtitle++;
                 continue;
@@ -522,38 +521,41 @@ static int ParseVobSubIDX( demux_t *p_demux )
 
             /* Lets start a new track */
             if( sscanf( line, "id: %32[^ ,], index: %d",
-                        language, &i_track_id ) == 2 )
+                        language, &i_track_id ) != 2 )
             {
-                p_sys->i_tracks++;
-                p_sys->track = xrealloc( p_sys->track,
-                          sizeof( vobsub_track_t ) * (p_sys->i_tracks + 1 ) );
-
-                /* Init the track */
-                current_tk = &p_sys->track[p_sys->i_tracks - 1];
-                memset( current_tk, 0, sizeof( vobsub_track_t ) );
-                current_tk->i_current_subtitle = 0;
-                current_tk->i_subtitles = 0;
-                current_tk->p_subtitles = xmalloc( sizeof( subtitle_t ) );
-                current_tk->i_track_id = i_track_id;
-                current_tk->i_delay = (int64_t)0;
-
-                es_format_Init( &fmt, SPU_ES, VLC_CODEC_SPU );
-                fmt.subs.spu.i_original_frame_width = p_sys->i_original_frame_width;
-                fmt.subs.spu.i_original_frame_height = p_sys->i_original_frame_height;
-                fmt.psz_language = language;
-                if( p_sys->b_palette )
+                if( sscanf( line, "id: , index: %d", &i_track_id ) != 1 )
                 {
-                    fmt.subs.spu.palette[0] = 0xBeef;
-                    memcpy( &fmt.subs.spu.palette[1], p_sys->palette, 16 * sizeof( uint32_t ) );
+                    msg_Warn( p_demux, "reading new track failed" );
+                    continue;
                 }
+                language[0] = '\0';
+            }
 
-                current_tk->p_es = es_out_Add( p_demux->out, &fmt );
-                msg_Dbg( p_demux, "new vobsub track detected" );
-            }
-            else
+            p_sys->i_tracks++;
+            p_sys->track = xrealloc( p_sys->track,
+                    sizeof( vobsub_track_t ) * (p_sys->i_tracks + 1 ) );
+
+            /* Init the track */
+            current_tk = &p_sys->track[p_sys->i_tracks - 1];
+            memset( current_tk, 0, sizeof( vobsub_track_t ) );
+            current_tk->i_current_subtitle = 0;
+            current_tk->i_subtitles = 0;
+            current_tk->p_subtitles = xmalloc( sizeof( subtitle_t ) );
+            current_tk->i_track_id = i_track_id;
+            current_tk->i_delay = (int64_t)0;
+
+            es_format_Init( &fmt, SPU_ES, VLC_CODEC_SPU );
+            fmt.subs.spu.i_original_frame_width = p_sys->i_original_frame_width;
+            fmt.subs.spu.i_original_frame_height = p_sys->i_original_frame_height;
+            fmt.psz_language = language;
+            if( p_sys->b_palette )
             {
-                msg_Warn( p_demux, "reading new track failed" );
+                fmt.subs.spu.palette[0] = 0xBeef;
+                memcpy( &fmt.subs.spu.palette[1], p_sys->palette, 16 * sizeof( uint32_t ) );
             }
+
+            current_tk->p_es = es_out_Add( p_demux->out, &fmt );
+            msg_Dbg( p_demux, "new vobsub track detected" );
         }
         else if( !strncmp( line, "timestamp:", 10 ) )
         {
@@ -672,7 +674,9 @@ static int DemuxVobSub( demux_t *p_demux, block_t *p_bk )
         }
 
         /* Create a block */
-        p_pkt = block_New( p_demux, i_size );
+        p_pkt = block_Alloc( i_size );
+        if( unlikely(p_pkt == NULL) )
+            break;
         memcpy( p_pkt->p_buffer, p, i_size);
         p += i_size;
 

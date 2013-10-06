@@ -1,9 +1,9 @@
 /*****************************************************************************
- * customwidgets.cpp: Custom widgets
+ * searchlineedit.cpp: Custom widgets
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id: 9cce9396d6d20255db2829a051eb41428db1f3e4 $
+ * $Id: a0a6f4f493baacbe24c4d1a801ea5ef91a74d0b4 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin
@@ -103,7 +103,7 @@ void ClickLineEdit::focusOutEvent( QFocusEvent *ev )
 }
 #endif
 
-#ifndef Q_WS_MAC
+#ifndef Q_OS_MAC
 SearchLineEdit::SearchLineEdit( QWidget *parent ) : QLineEdit( parent )
 {
     clearButton = new QFramelessButton( this );
@@ -152,6 +152,8 @@ void SearchLineEdit::setMessageVisible( bool on )
 
 void SearchLineEdit::updateText( const QString& text )
 {
+    /* if reset() won't be focused out */
+    if ( !text.isEmpty() ) setMessageVisible( false );
     clearButton->setVisible( !text.isEmpty() );
 }
 

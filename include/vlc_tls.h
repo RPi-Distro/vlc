@@ -29,25 +29,27 @@
 
 # include <vlc_network.h>
 
+typedef struct vlc_tls vlc_tls_t;
 typedef struct vlc_tls_sys vlc_tls_sys_t;
+typedef struct vlc_tls_creds vlc_tls_creds_t;
+typedef struct vlc_tls_creds_sys vlc_tls_creds_sys_t;
 
-typedef struct vlc_tls
+/** TLS session */
+struct vlc_tls
 {
     VLC_COMMON_MEMBERS
 
-    union {
-        module_t *module; /**< Plugin handle (client) */
-        void    (*close) (struct vlc_tls *); /**< Close callback (server) */
-    } u;
     vlc_tls_sys_t *sys;
 
     struct virtual_socket_t sock;
-    int  (*handshake) (struct vlc_tls *);
-} vlc_tls_t;
+    int  (*handshake) (vlc_tls_t *, const char *host, const char *service);
+};
 
-VLC_API vlc_tls_t *vlc_tls_ClientCreate (vlc_object_t *, int fd,
-                                         const char *hostname);
-VLC_API void vlc_tls_ClientDelete (vlc_tls_t *);
+VLC_API vlc_tls_t *vlc_tls_ClientSessionCreate (vlc_tls_creds_t *, int fd,
+                                        const char *host, const char *service);
+vlc_tls_t *vlc_tls_SessionCreate (vlc_tls_creds_t *, int fd, const char *host);
+int vlc_tls_SessionHandshake (vlc_tls_t *, const char *host, const char *serv);
+VLC_API void vlc_tls_SessionDelete (vlc_tls_t *);
 
 /* NOTE: It is assumed that a->sock.p_sys = a */
 # define tls_Send( a, b, c ) (((vlc_tls_t *)a)->sock.pf_send (a, b, c))
@@ -55,30 +57,26 @@ VLC_API void vlc_tls_ClientDelete (vlc_tls_t *);
 # define tls_Recv( a, b, c ) (((vlc_tls_t *)a)->sock.pf_recv (a, b, c))
 
 
-typedef struct vlc_tls_creds_sys vlc_tls_creds_sys_t;
-
-/** TLS (server-side) credentials */
-typedef struct vlc_tls_creds
+/** TLS credentials (certificate, private and trust settings) */
+struct vlc_tls_creds
 {
     VLC_COMMON_MEMBERS
 
     module_t  *module;
     vlc_tls_creds_sys_t *sys;
 
-    int (*add_CA) (struct vlc_tls_creds *, const char *path);
-    int (*add_CRL) (struct vlc_tls_creds *, const char *path);
+    int (*add_CA) (vlc_tls_creds_t *, const char *path);
+    int (*add_CRL) (vlc_tls_creds_t *, const char *path);
 
-    vlc_tls_t *(*open) (struct vlc_tls_creds *, int fd);
-} vlc_tls_creds_t;
+    int (*open) (vlc_tls_creds_t *, vlc_tls_t *, int fd, const char *host);
+    void (*close) (vlc_tls_creds_t *, vlc_tls_t *);
+};
 
+VLC_API vlc_tls_creds_t *vlc_tls_ClientCreate (vlc_object_t *);
 vlc_tls_creds_t *vlc_tls_ServerCreate (vlc_object_t *,
                                        const char *cert, const char *key);
-void vlc_tls_ServerDelete (vlc_tls_creds_t *);
+VLC_API void vlc_tls_Delete (vlc_tls_creds_t *);
 int vlc_tls_ServerAddCA (vlc_tls_creds_t *srv, const char *path);
 int vlc_tls_ServerAddCRL (vlc_tls_creds_t *srv, const char *path);
-
-vlc_tls_t *vlc_tls_ServerSessionCreate (vlc_tls_creds_t *, int fd);
-int vlc_tls_ServerSessionHandshake (vlc_tls_t *);
-void vlc_tls_ServerSessionDelete (vlc_tls_t *);
 
 #endif

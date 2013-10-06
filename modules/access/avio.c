@@ -2,23 +2,23 @@
  * avio.c: access using libavformat library
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: ddfe86fc31c93962d22ec66281c7798f70a0152e $
+ * $Id: ddd7988f831a086be0ffc437360173dd321bf737 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -33,6 +33,7 @@
 #include <vlc_avcodec.h>
 
 #include "avio.h"
+#include "../codec/avcodec/avcommon.h"
 
 #if LIBAVFORMAT_VERSION_MAJOR < 54
 # define AVIOContext URLContext
@@ -137,9 +138,7 @@ int OpenAvio(vlc_object_t *object)
     }
 
     /* */
-    vlc_avcodec_lock();
-    av_register_all();
-    vlc_avcodec_unlock();
+    vlc_init_avformat();
 
     int ret;
 #if LIBAVFORMAT_VERSION_MAJOR < 54
@@ -149,7 +148,17 @@ int OpenAvio(vlc_object_t *object)
         .callback = UrlInterruptCallback,
         .opaque = access,
     };
-    ret = avio_open2(&sys->context, url, AVIO_FLAG_READ, &cb, NULL /* options */);
+    AVDictionary *options = NULL;
+    char *psz_opts = var_InheritString(access, "avio-options");
+    if (psz_opts && *psz_opts) {
+        options = vlc_av_get_options(psz_opts);
+        free(psz_opts);
+    }
+    ret = avio_open2(&sys->context, url, AVIO_FLAG_READ, &cb, &options);
+    AVDictionaryEntry *t = NULL;
+    while ((t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX)))
+        msg_Err( access, "unknown option \"%s\"", t->key );
+    av_dict_free(&options);
 #endif
     if (ret < 0) {
         errno = AVUNERROR(ret);
@@ -195,18 +204,25 @@ error:
 }
 
 /* */
+
+static const char *const ppsz_sout_options[] = {
+    "options",
+    NULL,
+};
+
 int OutOpenAvio(vlc_object_t *object)
 {
     sout_access_out_t *access = (sout_access_out_t*)object;
+
+    config_ChainParse( access, "sout-avio-", ppsz_sout_options, access->p_cfg );
+
     sout_access_out_sys_t *sys = malloc(sizeof(*sys));
     if (!sys)
         return VLC_ENOMEM;
     sys->context = NULL;
 
     /* */
-    vlc_avcodec_lock();
-    av_register_all();
-    vlc_avcodec_unlock();
+    vlc_init_avformat();
 
     if (!access->psz_path)
         goto error;
@@ -219,8 +235,18 @@ int OutOpenAvio(vlc_object_t *object)
         .callback = UrlInterruptCallback,
         .opaque = access,
     };
+    AVDictionary *options = NULL;
+    char *psz_opts = var_InheritString(access, "sout-avio-options");
+    if (psz_opts && *psz_opts) {
+        options = vlc_av_get_options(psz_opts);
+        free(psz_opts);
+    }
     ret = avio_open2(&sys->context, access->psz_path, AVIO_FLAG_WRITE,
-                     &cb, NULL /* options */);
+                     &cb, &options);
+    AVDictionaryEntry *t = NULL;
+    while ((t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX)))
+        msg_Err( access, "unknown option \"%s\"", t->key );
+    av_dict_free(&options);
 #endif
     if (ret < 0) {
         errno = AVUNERROR(ret);

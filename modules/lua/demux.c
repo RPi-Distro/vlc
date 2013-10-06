@@ -2,7 +2,7 @@
  * demux.c :  Lua playlist demux module
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 169d668a80273890fefc8d48d27c1cea388af617 $
+ * $Id: a84fd663ebaeb96f5357670f229b35f572012b1f $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -161,7 +161,7 @@ static int probe_luascript( vlc_object_t *p_this, const char * psz_filename,
     lua_pop( L, 1 );
 
     /* Setup the module search path */
-    if( vlclua_add_modules_path( p_demux, L, psz_filename ) )
+    if( vlclua_add_modules_path( L, psz_filename ) )
     {
         msg_Warn( p_demux, "Error while setting the module search path for %s",
                   psz_filename );
@@ -254,7 +254,6 @@ static int Demux( demux_t *p_demux )
 
     input_thread_t *p_input_thread = demux_GetParentInput( p_demux );
     input_item_t *p_current_input = input_GetItem( p_input_thread );
-    playlist_t *p_playlist = pl_Get( p_demux );
 
     luaL_register( L, "vlc", p_reg_parse );
 
@@ -278,8 +277,7 @@ static int Demux( demux_t *p_demux )
     }
 
     if( lua_gettop( L ) )
-        vlclua_playlist_add_internal( p_demux, L, p_playlist,
-                                      p_current_input, 0 );
+        vlclua_playlist_add_internal( p_demux, L, NULL, p_current_input, 0 );
     else
         msg_Err( p_demux, "Script went completely foobar" );
 

@@ -2,7 +2,7 @@
  * interface_widgets.hpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 72ce2955a3cd3d32b60b1e45bcbc126ac1fc19d2 $
+ * $Id: d4be935f82d11b2016afa897470dec1fe90013a6 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -42,6 +42,8 @@
 #include <QFrame>
 #include <QLabel>
 #include <QMouseEvent>
+#include <QPropertyAnimation>
+#include <QLinkedList>
 
 class ResizeEvent;
 class QPixmap;
@@ -59,7 +61,6 @@ public:
 
     WId request( int *, int *, unsigned int *, unsigned int *, bool );
     void  release( void );
-    int   control( void *, int, va_list );
     void  sync( void );
 
 protected:
@@ -93,13 +94,51 @@ private:
     QString pixmapUrl;
     bool b_expandPixmap;
     bool b_withart;
-    virtual void contextMenuEvent( QContextMenuEvent *event );
+    QPropertyAnimation *fadeAnimation;
+    virtual void contextMenuEvent( QContextMenuEvent *event ); 
 protected:
     void paintEvent( QPaintEvent *e );
+    virtual void showEvent( QShowEvent * e );
     static const int MARGIN = 5;
+    QString defaultArt;
 public slots:
     void toggle(){ TOGGLEV( this ); }
     void updateArt( const QString& );
+};
+
+class EasterEggBackgroundWidget : public BackgroundWidget
+{
+    Q_OBJECT
+
+public:
+    EasterEggBackgroundWidget( intf_thread_t * );
+    virtual ~EasterEggBackgroundWidget();
+
+public slots:
+    void animate();
+
+protected:
+    void paintEvent( QPaintEvent *e );
+    void showEvent( QShowEvent *e );
+    void hideEvent( QHideEvent * );
+    void resizeEvent( QResizeEvent * );
+
+private slots:
+    void spawnFlakes();
+    void reset();
+
+private:
+    struct flake
+    {
+        QPoint point;
+        bool b_fat;
+    };
+    QTimer *timer;
+    QLinkedList<flake *> *flakes;
+    int i_rate;
+    int i_speed;
+    bool b_enabled;
+    static const int MAX_FLAKES = 1000;
 };
 
 #if 0
@@ -118,7 +157,20 @@ private slots:
 };
 #endif
 
-class TimeLabel : public QLabel
+class ClickableQLabel : public QLabel
+{
+    Q_OBJECT
+public:
+    virtual void mouseDoubleClickEvent( QMouseEvent *event )
+    {
+        Q_UNUSED( event );
+        emit doubleClicked();
+    }
+signals:
+    void doubleClicked();
+};
+
+class TimeLabel : public ClickableQLabel
 {
     Q_OBJECT
 public:
@@ -142,7 +194,7 @@ protected:
         if( displayType != TimeLabel::Both ) return;
         event->accept();
         toggleTimeDisplay();
-        emit timeLabelDoubleClicked();
+        ClickableQLabel::mouseDoubleClickEvent( event );
     }
 private:
     intf_thread_t *p_intf;
@@ -159,8 +211,6 @@ private:
     char psz_time[MSTRTIME_MAX_SIZE];
     void toggleTimeDisplay();
     void paintEvent( QPaintEvent* );
-signals:
-    void timeLabelDoubleClicked();
 private slots:
     void setDisplayPosition( float pos, int64_t time, int length );
     void setDisplayPosition( float pos );
@@ -217,12 +267,13 @@ class CoverArtLabel : public QLabel
     Q_OBJECT
 public:
     CoverArtLabel( QWidget *parent, intf_thread_t * );
+    void setItem( input_item_t * );
     virtual ~CoverArtLabel();
 
 protected:
     virtual void mouseDoubleClickEvent( QMouseEvent *event )
     {
-        if( qobject_cast<MetaPanel *>(this->window()) == NULL )
+        if( ! p_item && qobject_cast<MetaPanel *>(this->window()) == NULL )
         {
             THEDP->mediaInfoDialog();
         }
@@ -230,21 +281,14 @@ protected:
     }
 private:
     intf_thread_t *p_intf;
+    input_item_t *p_item;
 
 public slots:
-    void requestUpdate() { emit updateRequested(); }
-    void update( )
-    {
-        requestUpdate();
-    }
     void showArtUpdate( const QString& );
-    void clear();
-
-private slots:
+    void showArtUpdate( input_item_t * );
     void askForUpdate();
-
-signals:
-    void updateRequested();
+    void setArtFromFile();
+    void clear();
 };
 
 #endif

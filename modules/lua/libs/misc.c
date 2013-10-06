@@ -2,7 +2,7 @@
  * misc.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 2d0fdd2314baaacde8b9416b7a823a3db0f8d84a $
+ * $Id: b2e0839ae03569d14ca1b701fba4729773290a91 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -37,13 +37,8 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_meta.h>
-#include <vlc_aout.h>
 #include <vlc_interface.h>
 #include <vlc_keys.h>
-
-#include <lua.h>        /* Low level lua C API */
-#include <lauxlib.h>    /* Higher level C API */
-#include <lualib.h>     /* Lua libs */
 
 #include "../vlc.h"
 #include "../libs.h"
@@ -78,16 +73,6 @@ vlc_object_t * vlclua_get_this( lua_State *L )
     return vlclua_get_object( L, vlclua_set_this );
 }
 
-void vlclua_set_intf( lua_State *L, intf_sys_t *p_intf )
-{
-    vlclua_set_object( L, vlclua_set_intf, p_intf );
-}
-
-static intf_sys_t * vlclua_get_intf( lua_State *L )
-{
-    return vlclua_get_object( L, vlclua_set_intf );
-}
-
 /*****************************************************************************
  * VLC error code translation
  *****************************************************************************/
@@ -107,26 +92,11 @@ static int vlclua_version( lua_State *L )
     return 1;
 }
 
-static int vlclua_version_ext( lua_State *L )
-{
-    msg_Warn( vlclua_get_this( L ),
-            "This function misc.version() is DEPRECATED, please update your script" );
-    lua_pushstring( L, VERSION_MESSAGE );
-    return 1;
-}
 /*****************************************************************************
  * Get the VLC copyright
  *****************************************************************************/
 static int vlclua_copyright( lua_State *L )
 {
-    lua_pushliteral( L, COPYRIGHT_MESSAGE );
-    return 1;
-}
-static int vlclua_copyright_ext( lua_State *L )
-{
-    msg_Warn( vlclua_get_this( L ),
-            "This function misc.copyright() is DEPRECATED, please update your script" );
-
     lua_pushliteral( L, COPYRIGHT_MESSAGE );
     return 1;
 }
@@ -152,119 +122,17 @@ static int vlclua_quit( lua_State *L )
     return 0;
 }
 
-/*****************************************************************************
- * Global properties getters
- *****************************************************************************/
-static int vlclua_datadir( lua_State *L )
-{
-    msg_Warn( vlclua_get_this( L ), "This function is DEPRECATED, use vlc.config.datadir() instead" );
-    char *psz_data = config_GetDataDir( vlclua_get_this( L ) );
-    lua_pushstring( L, psz_data );
-    free( psz_data );
-    return 1;
-}
-
-static int vlclua_userdatadir( lua_State *L )
-{
-    msg_Warn( vlclua_get_this( L ), "This function is DEPRECATED, use vlc.config.userdatadir() instead" );
-    char *dir = config_GetUserDir( VLC_DATA_DIR );
-    lua_pushstring( L, dir );
-    free( dir );
-    return 1;
-}
-
-static int vlclua_homedir( lua_State *L )
-{
-    msg_Warn( vlclua_get_this( L ), "This function is DEPRECATED, use vlc.config.homedir() instead" );
-    char *home = config_GetUserDir( VLC_HOME_DIR );
-    lua_pushstring( L, home );
-    free( home );
-    return 1;
-}
-
-static int vlclua_configdir( lua_State *L )
-{
-    msg_Warn( vlclua_get_this( L ), "This function is DEPRECATED, use vlc.config.configdir() instead" );
-    char *dir = config_GetUserDir( VLC_CONFIG_DIR );
-    lua_pushstring( L, dir );
-    free( dir );
-    return 1;
-}
-
-static int vlclua_cachedir( lua_State *L )
-{
-    msg_Warn( vlclua_get_this( L ), "This function is DEPRECATED, use vlc.config.cachedir() instead" );
-    char *dir = config_GetUserDir( VLC_CACHE_DIR );
-    lua_pushstring( L, dir );
-    free( dir );
-    return 1;
-}
-
-static int vlclua_datadir_list( lua_State *L )
-{
-    msg_Warn( vlclua_get_this( L ), "This function is DEPRECATED, use vlc.config.datadir_list instead" );
-    const char *psz_dirname = luaL_checkstring( L, 1 );
-    char **ppsz_dir_list = NULL;
-    int i = 1;
-
-    if( vlclua_dir_list( vlclua_get_this( L ), psz_dirname, &ppsz_dir_list )
-        != VLC_SUCCESS )
-        return 0;
-    lua_newtable( L );
-    for( char **ppsz_dir = ppsz_dir_list; *ppsz_dir; ppsz_dir++ )
-    {
-        lua_pushstring( L, *ppsz_dir );
-        lua_rawseti( L, -2, i );
-        i ++;
-    }
-    vlclua_dir_list_free( ppsz_dir_list );
-    return 1;
-}
-
-/*****************************************************************************
- *
- *****************************************************************************/
-static int vlclua_lock_and_wait( lua_State *L )
-{
-    intf_sys_t *p_sys = vlclua_get_intf( L );
-
-    vlc_mutex_lock( &p_sys->lock );
-    mutex_cleanup_push( &p_sys->lock );
-    while( !p_sys->exiting )
-        vlc_cond_wait( &p_sys->wait, &p_sys->lock );
-    vlc_cleanup_run();
-    lua_pushboolean( L, 1 );
-    return 1;
-}
-
 static int vlclua_mdate( lua_State *L )
 {
     lua_pushnumber( L, mdate() );
     return 1;
 }
 
-static int vlclua_mdate_ext( lua_State *L )
-{
-    msg_Warn( vlclua_get_this( L ),
-            "This function misc.mdate() is DEPRECATED, please update your script" );
-
-    lua_pushnumber( L, mdate() );
-    return 1;
-}
-
-
 static int vlclua_mwait( lua_State *L )
 {
     double f = luaL_checknumber( L, 1 );
     mwait( (int64_t)f );
     return 0;
-}
-
-static int vlclua_intf_should_die( lua_State *L )
-{
-    intf_sys_t *p_sys = vlclua_get_intf( L );
-    lua_pushboolean( L, p_sys->exiting );
-    return 1;
 }
 
 static int vlclua_action_id( lua_State *L )
@@ -277,154 +145,19 @@ static int vlclua_action_id( lua_State *L )
 }
 
 /*****************************************************************************
- * Timer functions
- *****************************************************************************/
-static int vlclua_timer_schedule( lua_State *L );
-static int vlclua_timer_getoverrun( lua_State *L);
-
-static const luaL_Reg vlclua_timer_reg[] = {
-    { "schedule",   vlclua_timer_schedule   },
-    { "getoverrun", vlclua_timer_getoverrun },
-    { NULL,         NULL                    }
-};
-
-typedef struct
-{
-    lua_State *L;
-    vlc_timer_t timer;
-    char *psz_callback;
-} vlclua_timer_t;
-
-static int vlclua_timer_schedule( lua_State *L )
-{
-    vlclua_timer_t **pp_timer = (vlclua_timer_t**)luaL_checkudata( L, 1, "timer" );
-    if( !pp_timer || !*pp_timer )
-        luaL_error( L, "Can't get pointer to timer" );
-
-    bool b_relative = luaL_checkboolean( L, 2 );
-    mtime_t i_value = luaL_checkinteger( L, 3 );
-    mtime_t i_interval = luaL_checkinteger( L, 4 );
-
-    vlc_timer_schedule( (*pp_timer)->timer, b_relative, i_value, i_interval );
-    return 0;
-}
-
-static int vlclua_timer_getoverrun( lua_State *L )
-{
-    vlclua_timer_t **pp_timer = (vlclua_timer_t**)luaL_checkudata(L, 1, "timer" );
-    if( !pp_timer || !*pp_timer )
-        luaL_error( L, "Can't get pointer to timer" );
-
-    lua_pushinteger( L, vlc_timer_getoverrun( (*pp_timer)->timer ) );
-    return 1;
-}
-
-static void vlclua_timer_callback( void *data )
-{
-    vlclua_timer_t *p_timer = (vlclua_timer_t*)data;
-    lua_State *L = p_timer->L;
-
-    lua_getglobal( L, p_timer->psz_callback );
-    if( lua_pcall( L, 0, 0, 0 ) )
-    {
-        const char *psz_err = lua_tostring( L, -1 );
-        msg_Err( vlclua_get_this( L ), "Error while running the timer callback: '%s'", psz_err );
-        lua_settop( L, 0 );
-    }
-}
-
-static int vlclua_timer_delete( lua_State *L )
-{
-    vlclua_timer_t **pp_timer = (vlclua_timer_t**)luaL_checkudata( L, 1, "timer" );
-    if( !pp_timer || !*pp_timer )
-        luaL_error( L, "Can't get pointer to timer" );
-
-    vlc_timer_destroy( (*pp_timer)->timer );
-    free( (*pp_timer)->psz_callback );
-    free( (*pp_timer) );
-    return 0;
-}
-
-static int vlclua_timer_create( lua_State *L )
-{
-    if( !lua_isstring( L, 1 ) )
-        return luaL_error( L, "timer(function_name)" );
-
-    vlclua_timer_t *p_timer = malloc( sizeof( vlclua_timer_t ) );
-    if( vlc_timer_create( &p_timer->timer, vlclua_timer_callback, p_timer ) )
-    {
-        free( p_timer );
-        return luaL_error( L, "Cannot initialize the timer" );
-    }
-
-    p_timer->L = L;
-    p_timer->psz_callback = strdup( luaL_checkstring( L, 1 ) );
-
-    vlclua_timer_t **pp_timer = lua_newuserdata( L, sizeof( vlclua_timer_t* ) );
-    *pp_timer = p_timer;
-
-    /* Create the object */
-    if( luaL_newmetatable( L, "timer" ) )
-    {
-        lua_newtable( L );
-        luaL_register( L, NULL, vlclua_timer_reg );
-        lua_setfield( L, -2, "__index" );
-        lua_pushcfunction( L, vlclua_timer_delete );
-        lua_setfield( L, -2, "__gc" );
-    }
-    lua_setmetatable( L, -2 );
-
-    return 1;
-}
-
-/*****************************************************************************
  *
  *****************************************************************************/
-static const luaL_Reg vlclua_misc_ext_reg[] = {
-    { "version", vlclua_version_ext },
-    { "copyright", vlclua_copyright_ext },
-
-    { "datadir", vlclua_datadir },
-    { "userdatadir", vlclua_userdatadir },
-    { "homedir", vlclua_homedir },
-    { "configdir", vlclua_configdir },
-    { "cachedir", vlclua_cachedir },
-
-    { "mdate", vlclua_mdate_ext },
-
-    { NULL, NULL }
-};
-
-void luaopen_misc_extensions( lua_State *L )
-{
-    lua_newtable( L );
-    luaL_register( L, NULL, vlclua_misc_ext_reg );
-    lua_setfield( L, -2, "misc" );
-}
-
 static const luaL_Reg vlclua_misc_reg[] = {
     { "version", vlclua_version },
     { "copyright", vlclua_copyright },
     { "license", vlclua_license },
-
-    { "datadir", vlclua_datadir },
-    { "userdatadir", vlclua_userdatadir },
-    { "homedir", vlclua_homedir },
-    { "configdir", vlclua_configdir },
-    { "cachedir", vlclua_cachedir },
-    { "datadir_list", vlclua_datadir_list },
 
     { "action_id", vlclua_action_id },
 
     { "mdate", vlclua_mdate },
     { "mwait", vlclua_mwait },
 
-    { "lock_and_wait", vlclua_lock_and_wait },
-
-    { "should_die", vlclua_intf_should_die },
     { "quit", vlclua_quit },
-
-    { "timer", vlclua_timer_create },
 
     { NULL, NULL }
 };

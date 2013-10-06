@@ -1,8 +1,8 @@
 /*****************************************************************************
  * vlc_es.h: Elementary stream formats descriptions
  *****************************************************************************
- * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: d80ec4d0bdf24100fcafd3536cee346e8dbd060d $
+ * Copyright (C) 1999-2012 VLC authors and VideoLAN
+ * $Id: 4c3bc9378da24e7bc56f276f2c933925dcbf712c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -71,7 +71,7 @@ struct audio_format_t
 
     /* Describes the channels configuration of the samples (ie. number of
      * channels which are available in the buffer, and positions). */
-    uint32_t     i_physical_channels;
+    uint16_t     i_physical_channels;
 
     /* Describes from which original channels, before downmixing, the
      * buffer is derived. */
@@ -94,6 +94,85 @@ struct audio_format_t
     unsigned     i_blockalign;
     uint8_t      i_channels; /* must be <=32 */
 };
+
+/* Values available for audio channels */
+#define AOUT_CHAN_CENTER            0x1
+#define AOUT_CHAN_LEFT              0x2
+#define AOUT_CHAN_RIGHT             0x4
+#define AOUT_CHAN_REARCENTER        0x10
+#define AOUT_CHAN_REARLEFT          0x20
+#define AOUT_CHAN_REARRIGHT         0x40
+#define AOUT_CHAN_MIDDLELEFT        0x100
+#define AOUT_CHAN_MIDDLERIGHT       0x200
+#define AOUT_CHAN_LFE               0x1000
+
+#define AOUT_CHANS_FRONT  (AOUT_CHAN_LEFT       | AOUT_CHAN_RIGHT)
+#define AOUT_CHANS_MIDDLE (AOUT_CHAN_MIDDLELEFT | AOUT_CHAN_MIDDLERIGHT)
+#define AOUT_CHANS_REAR   (AOUT_CHAN_REARLEFT   | AOUT_CHAN_REARRIGHT)
+#define AOUT_CHANS_CENTER (AOUT_CHAN_CENTER     | AOUT_CHAN_REARCENTER)
+
+#define AOUT_CHANS_STEREO AOUT_CHANS_2_0
+#define AOUT_CHANS_2_0    (AOUT_CHANS_FRONT)
+#define AOUT_CHANS_2_1    (AOUT_CHANS_FRONT | AOUT_CHAN_LFE)
+#define AOUT_CHANS_3_0    (AOUT_CHANS_FRONT | AOUT_CHAN_CENTER)
+#define AOUT_CHANS_3_1    (AOUT_CHANS_3_0   | AOUT_CHAN_LFE)
+#define AOUT_CHANS_4_0    (AOUT_CHANS_FRONT | AOUT_CHANS_REAR)
+#define AOUT_CHANS_4_1    (AOUT_CHANS_4_0   | AOUT_CHAN_LFE)
+#define AOUT_CHANS_5_0    (AOUT_CHANS_4_0   | AOUT_CHAN_CENTER)
+#define AOUT_CHANS_5_1    (AOUT_CHANS_5_0   | AOUT_CHAN_LFE)
+#define AOUT_CHANS_6_0    (AOUT_CHANS_4_0   | AOUT_CHANS_MIDDLE)
+#define AOUT_CHANS_7_0    (AOUT_CHANS_6_0   | AOUT_CHAN_CENTER)
+#define AOUT_CHANS_7_1    (AOUT_CHANS_5_1   | AOUT_CHANS_MIDDLE)
+#define AOUT_CHANS_8_1    (AOUT_CHANS_7_1   | AOUT_CHAN_REARCENTER)
+
+#define AOUT_CHANS_4_0_MIDDLE (AOUT_CHANS_FRONT | AOUT_CHANS_MIDDLE)
+#define AOUT_CHANS_4_CENTER_REAR (AOUT_CHANS_FRONT | AOUT_CHANS_CENTER)
+#define AOUT_CHANS_5_0_MIDDLE (AOUT_CHANS_4_0_MIDDLE | AOUT_CHAN_CENTER)
+#define AOUT_CHANS_6_1_MIDDLE (AOUT_CHANS_5_0_MIDDLE | AOUT_CHAN_REARCENTER | AOUT_CHAN_LFE)
+
+/* Values available for original channels only */
+#define AOUT_CHAN_DOLBYSTEREO       0x10000
+#define AOUT_CHAN_DUALMONO          0x20000
+#define AOUT_CHAN_REVERSESTEREO     0x40000
+
+#define AOUT_CHAN_PHYSMASK          0xFFFF
+#define AOUT_CHAN_MAX               9
+
+/**
+ * Picture orientation.
+ */
+typedef enum video_orientation_t
+{
+    ORIENT_TOP_LEFT = 0, /**< Top line represents top, left column left. */
+    ORIENT_TOP_RIGHT, /**< Flipped horizontally */
+    ORIENT_BOTTOM_LEFT, /**< Flipped vertically */
+    ORIENT_BOTTOM_RIGHT, /**< Rotated 180 degrees */
+    ORIENT_LEFT_TOP, /**< Transposed */
+    ORIENT_LEFT_BOTTOM, /**< Rotated 90 degrees clockwise */
+    ORIENT_RIGHT_TOP, /**< Rotated 90 degrees anti-clockwise */
+    ORIENT_RIGHT_BOTTOM, /**< Anti-transposed */
+
+    ORIENT_NORMAL      = ORIENT_TOP_LEFT,
+    ORIENT_HFLIPPED    = ORIENT_TOP_RIGHT,
+    ORIENT_VFLIPPED    = ORIENT_BOTTOM_LEFT,
+    ORIENT_ROTATED_180 = ORIENT_BOTTOM_RIGHT,
+    ORIENT_ROTATED_270 = ORIENT_LEFT_BOTTOM,
+    ORIENT_ROTATED_90  = ORIENT_RIGHT_TOP,
+} video_orientation_t;
+/** Convert EXIF orientation to enum video_orientation_t */
+#define ORIENT_FROM_EXIF(exif) ((0x01324675U >> (4 * ((exif) - 1))) & 7)
+/** Convert enum video_orientation_t to EXIF */
+#define ORIENT_TO_EXIF(orient) ((0x12435867U >> (4 * (orient))) & 15)
+/** If the orientation is natural or mirrored */
+#define ORIENT_IS_MIRROR(orient) parity(orient)
+/** If the orientation swaps dimensions */
+#define ORIENT_IS_SWAP(orient) (((orient) & 4) != 0)
+/** Applies horizontal flip to an orientation */
+#define ORIENT_HFLIP(orient) ((orient) ^ 1)
+/** Applies vertical flip to an orientation */
+#define ORIENT_VFLIP(orient) ((orient) ^ 2)
+/** Applies horizontal flip to an orientation */
+#define ORIENT_ROTATE_180(orient) ((orient) ^ 3)
 
 /**
  * video format description
@@ -122,6 +201,7 @@ struct video_format_t
     int i_rgshift, i_lgshift;
     int i_rbshift, i_lbshift;
     video_palette_t *p_palette;              /**< video palette from demuxer */
+    video_orientation_t orientation;                /**< picture orientation */
 };
 
 /**
@@ -273,7 +353,7 @@ struct es_format_t
     int      i_profile;       /**< codec specific information (like real audio flavor, mpeg audio layer, h264 profile ...) */
     int      i_level;         /**< codec specific information: indicates maximum restrictions on the stream (resolution, bitrate, codec features ...) */
 
-    bool     b_packetized;  /**< wether the data is packetized (ie. not truncated) */
+    bool     b_packetized;  /**< whether the data is packetized (ie. not truncated) */
     int     i_extra;        /**< length in bytes of extra data pointer */
     void    *p_extra;       /**< extra data needed by some decoders or muxers */
 

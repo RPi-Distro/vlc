@@ -1,24 +1,24 @@
 /*****************************************************************************
  * asx.c : ASX playlist format import
  *****************************************************************************
- * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: 03bac21fe73d80ffda0798ca0664c565484336c6 $
+ * Copyright (C) 2005-2006 VLC authors and VideoLAN
+ * $Id: 50dedfa339c104af8763369e8955c12081f2e912 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /* See also: http://msdn.microsoft.com/library/en-us/wmplay10/mmp_sdk/windowsmediametafilereference.asp
@@ -52,7 +52,6 @@ struct demux_sys_t
  * Local prototypes
  *****************************************************************************/
 static int Demux( demux_t *p_demux);
-static int Control( demux_t *p_demux, int i_query, va_list args );
 
 static int StoreString( demux_t *p_demux, char **ppsz_string,
                         const char *psz_source_start,
@@ -771,10 +770,4 @@ static int Demux( demux_t *p_demux )
 
     vlc_gc_decref(p_current_input);
     return 0; /* Needed for correct operation of go back */
-}
-
-static int Control( demux_t *p_demux, int i_query, va_list args )
-{
-    VLC_UNUSED(p_demux); VLC_UNUSED(i_query); VLC_UNUSED(args);
-    return VLC_EGENERIC;
 }

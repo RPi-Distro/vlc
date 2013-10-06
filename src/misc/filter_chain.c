@@ -2,7 +2,7 @@
  * filter_chain.c : Handle chains of filter_t objects.
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
- * $Id: e58551be0456f6c751bdd5b3275d1397b0eab410 $
+ * $Id: d4c09410393001737ab08116c49e4b6f5b9585f4 $
  *
  * Author: Antoine Cellerier <dionoea at videolan dot org>
  *
@@ -26,8 +26,8 @@
 #endif
 
 #include <vlc_filter.h>
-#include <vlc_osd.h>
 #include <vlc_modules.h>
+#include <vlc_spu.h>
 #include <libvlc.h>
 #include <assert.h>
 

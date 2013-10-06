@@ -1,8 +1,8 @@
 /*****************************************************************************
- * EPGWidget.h : EPGWidget
+ * EPGWidget.cpp : EPGWidget
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: ddb10d458680619fd2d3ab4309f3c80b9dfe08a9 $
+ * $Id: 23730941a5381f2ed00fed19545098c03afecbac $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -36,12 +36,6 @@
 #include "input_manager.hpp"
 #include <vlc_common.h>
 #include <vlc_epg.h>
-
-enum
-{
-    EPGVIEW_WIDGET = 0,
-    NOEPG_WIDGET = 1
-};
 
 EPGWidget::EPGWidget( QWidget *parent ) : QWidget( parent )
 {

@@ -1,24 +1,24 @@
 /*****************************************************************************
  * opus.c: opus decoder/encoder module making use of libopus.
  *****************************************************************************
- * Copyright (C) 2003-2009, 2012 the VideoLAN team
+ * Copyright (C) 2003-2009, 2012 VLC authors and VideoLAN
  *
  * Authors: Gregory Maxwell <greg@xiph.org>
  * Based on speex.c by: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*
@@ -263,7 +263,6 @@ end:
 static int ProcessInitialHeader( decoder_t *p_dec, ogg_packet *p_oggpacket )
 {
     int err;
-    int pi_chan_table[AOUT_CHAN_MAX];
     unsigned char new_stream_map[8];
     decoder_sys_t *p_sys = p_dec->p_sys;
 
@@ -296,9 +295,10 @@ static int ProcessInitialHeader( decoder_t *p_dec, ogg_packet *p_oggpacket )
         static const uint32_t *pi_ch[6] = { pi_3channels_in, pi_4channels_in,
                                             pi_5channels_in, pi_6channels_in,
                                             pi_7channels_in, pi_8channels_in };
+        uint8_t pi_chan_table[AOUT_CHAN_MAX];
+
         aout_CheckChannelReorder( pi_ch[p_header->channels-3], NULL,
                                   p_dec->fmt_out.audio.i_physical_channels,
-                                  p_header->channels,
                                   pi_chan_table );
         for(int i=0;i<p_header->channels;i++)
             new_stream_map[pi_chan_table[i]]=p_header->stream_map[i];

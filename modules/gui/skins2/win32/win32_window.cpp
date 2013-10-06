@@ -2,7 +2,7 @@
  * win32_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 6eb2b0c75999f027535b832b394b3d216e5c5128 $
+ * $Id: adb939d864c85d66bdf93bf76dfe81a9237aca23 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -55,8 +55,8 @@ Win32Window::Win32Window( intf_thread_t *pIntf, GenericWindow &rWindow,
     (void)hParentWindow;
     Win32Factory *pFactory = (Win32Factory*)Win32Factory::instance( getIntf() );
 
-    const char* vlc_name =  "VlC Media Player";
-    const char* vlc_class =  "SkinWindowClass";
+    LPCTSTR vlc_name =  TEXT("VlC Media Player");
+    LPCTSTR vlc_class = TEXT("SkinWindowClass");
 
     // Create the window
     if( type == GenericWindow::VoutWindow )

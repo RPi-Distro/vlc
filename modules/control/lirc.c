@@ -2,7 +2,7 @@
  * lirc.c : lirc module for vlc
  *****************************************************************************
  * Copyright (C) 2003-2005 the VideoLAN team
- * $Id: 03e15aee2a59f33739c30e585ed66cfcf0dee49c $
+ * $Id: 94841071398aea3b5dbdcd66589bfad41938f37c $
  *
  * Author: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -35,7 +35,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_interface.h>
-#include <vlc_osd.h>
 #include <vlc_keys.h>
 
 #ifdef HAVE_POLL
@@ -73,14 +72,14 @@ vlc_module_end ()
 struct intf_sys_t
 {
     struct lirc_config *config;
-
+    vlc_thread_t thread;
     int i_fd;
 };
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static void Run( intf_thread_t * );
+static void *Run( void * );
 
 static void Process( intf_thread_t * );
 
@@ -91,40 +90,43 @@ static int Open( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
     intf_sys_t *p_sys;
-    char *psz_file;
 
     /* Allocate instance and initialize some members */
     p_intf->p_sys = p_sys = malloc( sizeof( intf_sys_t ) );
     if( p_sys == NULL )
         return VLC_ENOMEM;
 
-    p_intf->pf_run = Run;
-
     p_sys->i_fd = lirc_init( "vlc", 1 );
     if( p_sys->i_fd == -1 )
     {
         msg_Err( p_intf, "lirc initialisation failed" );
-        goto exit;
+        goto error;
     }
 
     /* We want polling */
     fcntl( p_sys->i_fd, F_SETFL, fcntl( p_sys->i_fd, F_GETFL ) | O_NONBLOCK );
 
     /* Read the configuration file */
-    psz_file = var_CreateGetNonEmptyString( p_intf, "lirc-file" );
-    if( lirc_readconfig( psz_file, &p_sys->config, NULL ) != 0 )
+    char *psz_file = var_InheritString( p_intf, "lirc-file" );
+    int val = lirc_readconfig( psz_file, &p_sys->config, NULL );
+    free( psz_file );
+    if( val != 0 )
     {
         msg_Err( p_intf, "failure while reading lirc config" );
-        free( psz_file );
-        goto exit;
+        lirc_deinit();
+        goto error;
     }
-    free( psz_file );
+
+    if( vlc_clone( &p_sys->thread, Run, p_intf, VLC_THREAD_PRIORITY_LOW ) )
+    {
+        lirc_freeconfig( p_sys->config );
+        lirc_deinit();
+        goto error;
+    }
 
     return VLC_SUCCESS;
 
-exit:
-    if( p_sys->i_fd != -1 )
-        lirc_deinit();
+error:
     free( p_sys );
     return VLC_EGENERIC;
 }
@@ -137,6 +139,9 @@ static void Close( vlc_object_t *p_this )
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
     intf_sys_t *p_sys = p_intf->p_sys;
 
+    vlc_cancel( p_sys->thread );
+    vlc_join( p_sys->thread, NULL );
+
     /* Destroy structure */
     lirc_freeconfig( p_sys->config );
     lirc_deinit();
@@ -146,20 +151,23 @@ static void Close( vlc_object_t *p_this )
 /*****************************************************************************
  * Run: main loop
  *****************************************************************************/
-static void Run( intf_thread_t *p_intf )
+static void *Run( void *data )
 {
+    intf_thread_t *p_intf = data;
     intf_sys_t *p_sys = p_intf->p_sys;
+
+    struct pollfd ufd;
+    ufd.fd = p_sys->i_fd;
+    ufd.events = POLLIN;
 
     for( ;; )
     {
         /* Wait for data */
-        struct pollfd ufd = { .fd = p_sys->i_fd, .events = POLLIN, .revents = 0 };
         if( poll( &ufd, 1, -1 ) == -1 )
         {
             if( errno == EINTR )
                 continue;
-            else
-                break;
+            break;
         }
 
         /* Process */
@@ -167,6 +175,7 @@ static void Run( intf_thread_t *p_intf )
         Process( p_intf );
         vlc_restorecancel(canc);
     }
+    return NULL;
 }
 
 static void Process( intf_thread_t *p_intf )
@@ -180,8 +189,7 @@ static void Process( intf_thread_t *p_intf )
         if( code == NULL )
             return;
 
-        while( vlc_object_alive( p_intf )
-                && (lirc_code2char( p_intf->p_sys->config, code, &c ) == 0)
+        while( (lirc_code2char( p_intf->p_sys->config, code, &c ) == 0)
                 && (c != NULL) )
         {
             if( !strncmp( "key-", c, 4 ) )
@@ -191,31 +199,6 @@ static void Process( intf_thread_t *p_intf )
                     var_SetInteger( p_intf->p_libvlc, "key-action", i_key );
                 else
                     msg_Err( p_intf, "Unknown hotkey '%s'", c );
-            }
-            else if( !strncmp( "menu ", c, 5)  )
-            {
-                if( !strncmp( c, "menu on", 7 ) ||
-                    !strncmp( c, "menu show", 9 ))
-                    osd_MenuShow( VLC_OBJECT(p_intf) );
-                else if( !strncmp( c, "menu off", 8 ) ||
-                         !strncmp( c, "menu hide", 9 ) )
-                    osd_MenuHide( VLC_OBJECT(p_intf) );
-                else if( !strncmp( c, "menu up", 7 ) )
-                    osd_MenuUp( VLC_OBJECT(p_intf) );
-                else if( !strncmp( c, "menu down", 9 ) )
-                    osd_MenuDown( VLC_OBJECT(p_intf) );
-                else if( !strncmp( c, "menu left", 9 ) )
-                    osd_MenuPrev( VLC_OBJECT(p_intf) );
-                else if( !strncmp( c, "menu right", 10 ) )
-                    osd_MenuNext( VLC_OBJECT(p_intf) );
-                else if( !strncmp( c, "menu select", 11 ) )
-                    osd_MenuActivate( VLC_OBJECT(p_intf) );
-                else
-                {
-                    msg_Err( p_intf, "Please provide one of the following parameters:" );
-                    msg_Err( p_intf, "[on|off|up|down|left|right|select]" );
-                    break;
-                }
             }
             else
             {

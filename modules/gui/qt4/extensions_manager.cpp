@@ -2,7 +2,7 @@
  * extensions_manager.cpp: Extensions manager for Qt
  ****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 29538dc771baab1e4e3d8e70956f3ae68f52b81a $
+ * $Id: a77bdcbac735ff535fa4992cbc5da7a02519c9c9 $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -226,6 +226,7 @@ void ExtensionsManager::triggerMenu( int id )
     {
         msg_Dbg( p_intf, "can't trigger extension with wrong id %d",
                  (int) i_ext );
+        vlc_mutex_unlock( &p_extensions_manager->lock );
         return;
     }
 

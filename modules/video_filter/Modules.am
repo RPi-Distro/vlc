@@ -1,5 +1,3 @@
-SUBDIRS = dynamicoverlay
-
 SOURCES_mosaic = mosaic.c mosaic.h
 SOURCES_transform = transform.c
 SOURCES_invert = invert.c
@@ -7,11 +5,17 @@ SOURCES_mirror = mirror.c
 SOURCES_adjust = adjust.c adjust_sat_hue.c adjust_sat_hue.h
 SOURCES_wall = wall.c
 SOURCES_clone = clone.c
-SOURCES_crop = crop.c
 SOURCES_motionblur = motionblur.c
 SOURCES_logo = logo.c
 SOURCES_audiobargraph_v = audiobargraph_v.c
-SOURCES_deinterlace = deinterlace/deinterlace.c deinterlace/deinterlace.h \
+SOURCES_blend = blend.cpp
+SOURCES_scale = scale.c
+SOURCES_marq = marq.c
+SOURCES_rss = rss.c
+SOURCES_motiondetect = motiondetect.c
+
+libdeinterlace_plugin_la_SOURCES = \
+	deinterlace/deinterlace.c deinterlace/deinterlace.h \
 	deinterlace/mmx.h deinterlace/common.h \
 	deinterlace/merge.c deinterlace/merge.h \
 	deinterlace/helpers.c deinterlace/helpers.h \
@@ -21,27 +25,43 @@ SOURCES_deinterlace = deinterlace/deinterlace.c deinterlace/deinterlace.h \
 	deinterlace/yadif.h deinterlace/yadif_template.h \
 	deinterlace/algo_phosphor.c deinterlace/algo_phosphor.h \
 	deinterlace/algo_ivtc.c deinterlace/algo_ivtc.h
-SOURCES_blend = blend.cpp
-SOURCES_scale = scale.c
-SOURCES_marq = marq.c
-SOURCES_rss = rss.c
-SOURCES_motiondetect = motiondetect.c
+# inline ASM doesn't build with -O0
+libdeinterlace_plugin_la_CFLAGS = $(AM_CFLAGS) -O2
+libdeinterlace_plugin_la_LIBADD = $(AM_LIBADD)
+if HAVE_NEON
+libdeinterlace_plugin_la_SOURCES += deinterlace/merge_arm.S
+libdeinterlace_plugin_la_CFLAGS += -DCAN_COMPILE_ARM
+endif
+libvlc_LTLIBRARIES += libdeinterlace_plugin.la
 
-libosdmenu_plugin_la_SOURCES = osdmenu.c
-libosdmenu_plugin_la_CFLAGS = $(AM_CFLAGS) -DPKGDATADIR=\"$(vlcdatadir)\"
-libosdmenu_plugin_la_LIBADD = $(AM_LIBADD)
-libosdmenu_plugin_la_DEPENDENCIES =
-if BUILD_OSDMENU
-libvlc_LTLIBRARIES += libosdmenu_plugin.la
+libdynamicoverlay_plugin_la_SOURCES = \
+	dynamicoverlay/dynamicoverlay_buffer.c \
+	dynamicoverlay/dynamicoverlay_queue.c \
+	dynamicoverlay/dynamicoverlay_list.c \
+	dynamicoverlay/dynamicoverlay_commands.c \
+	dynamicoverlay/dynamicoverlay.c dynamicoverlay/dynamicoverlay.h
+libdynamicoverlay_plugin_la_CFLAGS = $(AM_CFLAGS)
+libdynamicoverlay_plugin_la_LIBADD = $(AM_LIBADD)
+if !HAVE_WIN32
+libvlc_LTLIBRARIES += libdynamicoverlay_plugin.la
 endif
 
 libremoteosd_plugin_la_SOURCES = remoteosd.c remoteosd_rfbproto.h
 libremoteosd_plugin_la_CFLAGS = $(AM_CFLAGS) $(GCRYPT_CFLAGS)
 libremoteosd_plugin_la_LIBADD = $(AM_LIBADD) $(GCRYPT_LIBS) $(LIBS_remoteosd)
-libremoteosd_plugin_la_DEPENDENCIES =
 if HAVE_GCRYPT
 libvlc_LTLIBRARIES += libremoteosd_plugin.la
 endif
+
+libpuzzle_plugin_la_SOURCES = \
+	puzzle.c puzzle.h \
+	puzzle_bezier.c puzzle_bezier.h \
+	puzzle_lib.c puzzle_lib.h \
+	puzzle_mgt.c puzzle_mgt.h \
+	puzzle_pce.c puzzle_pce.h
+libpuzzle_plugin_la_CFLAGS = $(AM_CFLAGS)
+libpuzzle_plugin_la_LIBADD = $(AM_LIBADD)
+libvlc_LTLIBRARIES += libpuzzle_plugin.la
 
 SOURCES_magnify = magnify.c
 SOURCES_wave = wave.c
@@ -52,9 +72,20 @@ SOURCES_gradient = gradient.c
 SOURCES_ball = ball.c
 SOURCES_panoramix = panoramix.c
 SOURCES_opencv_wrapper = opencv_wrapper.c
-SOURCES_opencv_example = opencv_example.c filter_event_info.h
-SOURCES_rotate = rotate.c
-SOURCES_puzzle = puzzle.c
+SOURCES_opencv_example = opencv_example.cpp filter_event_info.h
+
+if HAVE_DARWIN
+motion_extra = ../control/unimotion.c ../control/unimotion.h
+else
+motion_extra = $(NULL)
+endif
+SOURCES_rotate = \
+	rotate.c \
+	../control/motionlib.c \
+	../control/motionlib.h \
+	$(motion_extra) \
+	$(NULL)
+
 SOURCES_colorthres = colorthres.c
 SOURCES_extract = extract.c
 SOURCES_sharpen = sharpen.c
@@ -97,6 +128,7 @@ SOURCES_atmo = atmo/atmo.cpp \
 SOURCES_gradfun = gradfun.c gradfun.h
 SOURCES_subsdelay = subsdelay.c
 SOURCES_hqdn3d = hqdn3d.c hqdn3d.h
+SOURCES_anaglyph = anaglyph.c
 noinst_HEADERS = filter_picture.h
 
 libvlc_LTLIBRARIES += \
@@ -112,7 +144,6 @@ libvlc_LTLIBRARIES += \
 	libclone_plugin.la \
 	libcolorthres_plugin.la \
 	libcroppadd_plugin.la \
-	libdeinterlace_plugin.la \
 	liberase_plugin.la \
 	libextract_plugin.la \
 	libgradient_plugin.la \
@@ -128,7 +159,6 @@ libvlc_LTLIBRARIES += \
 	libmotiondetect_plugin.la \
 	libposterize_plugin.la \
 	libpsychedelic_plugin.la \
-	libpuzzle_plugin.la \
 	libripple_plugin.la \
 	librotate_plugin.la \
 	librss_plugin.la \
@@ -143,4 +173,5 @@ libvlc_LTLIBRARIES += \
 	libgradfun_plugin.la \
 	libyuvp_plugin.la \
 	libantiflicker_plugin.la \
-	libhqdn3d_plugin.la
+	libhqdn3d_plugin.la \
+	libanaglyph_plugin.la

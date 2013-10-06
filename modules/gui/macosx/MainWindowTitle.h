@@ -2,7 +2,7 @@
  * MainWindowTitle.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: f3f8b11dfdac40fc8385b92a056505002e680e78 $
+ * $Id: 035099342b1aa8f27deee281c5dc89a20ce25479 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -48,6 +48,9 @@
     IBOutlet id o_fullscreen_btn;
     IBOutlet id o_title_lbl;
 }
+@property (readonly) NSButton * closeButton;
+@property (readonly) NSButton * minimizeButton;
+@property (readonly) NSButton * zoomButton;
 
 - (void)loadButtonIcons;
 - (IBAction)buttonAction:(id)sender;
@@ -56,30 +59,21 @@
 - (void)setWindowButtonOver:(BOOL)b_value;
 - (void)setWindowFullscreenButtonOver:(BOOL)b_value;
 
-- (NSButton*)closeButton;
-- (NSButton*)minimizeButton;
-- (NSButton*)zoomButton;
-
 @end
 
 @interface VLCWindowButtonCell : NSButtonCell
-{
-}
+
 @end
 
 @interface VLCResizeControl : NSImageView
-{
-}
+
 @end
 
 @interface VLCColorView : NSView
-{
-}
+
 @end
 
 @interface VLCCustomWindowButtonPrototype: NSButton
-{
-}
 - (NSArray*)extendedAccessibilityAttributeNames: (NSArray*)theAttributeNames;
 - (id)extendedAccessibilityAttributeValue: (NSString*)theAttributeName;
 - (NSNumber*)extendedAccessibilityIsAttributeSettable: (NSString*)theAttributeName;
@@ -87,25 +81,21 @@
 @end
 
 @interface VLCCustomWindowCloseButton: VLCCustomWindowButtonPrototype
-{
-}
+
 @end
 
 
 @interface VLCCustomWindowMinimizeButton: VLCCustomWindowButtonPrototype
-{
-}
+
 @end
 
 
 @interface VLCCustomWindowZoomButton: VLCCustomWindowButtonPrototype
-{
-}
+
 @end
 
 @interface VLCCustomWindowFullscreenButton : VLCCustomWindowButtonPrototype
-{
-}
+
 @end
 
 @interface VLCWindowTitleTextField : NSTextField

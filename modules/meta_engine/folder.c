@@ -1,24 +1,24 @@
 /*****************************************************************************
  * folder.c
  *****************************************************************************
- * Copyright (C) 2006 the VideoLAN team
- * $Id: 46337908c49728e8d524b96397a3de288edac661 $
+ * Copyright (C) 2006 VLC authors and VideoLAN
+ * $Id: 5cdb6eabb148fcc6fa805594e01762d50188aa7b $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -29,6 +29,8 @@
 # include "config.h"
 #endif
 
+#include <sys/stat.h>
+
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_art_finder.h>
@@ -36,15 +38,14 @@
 #include <vlc_url.h>
 #include <vlc_input_item.h>
 
-#ifdef HAVE_SYS_STAT_H
-#   include <sys/stat.h>
-#endif
-
 static const char* cover_files[] = {
     "Folder.jpg",           /* Windows */
     "AlbumArtSmall.jpg",    /* Windows */
+    "AlbumArt.jpg",         /* Windows */
+    "Album.jpg",
     ".folder.png",          /* KDE?    */
     "cover.jpg",            /* rockbox */
+    "thumb.jpg",
 };
 
 static const int i_covers = (sizeof(cover_files)/sizeof(cover_files[0]));
@@ -120,7 +121,7 @@ static int FindMeta( vlc_object_t *p_this )
         struct stat dummy;
         if( vlc_stat( filepath, &dummy ) == 0 )
         {
-            char *psz_uri = make_URI( filepath, "file" );
+            char *psz_uri = vlc_path2uri( filepath, "file" );
             if( psz_uri )
             {
                 input_item_SetArtURL( p_item, psz_uri );

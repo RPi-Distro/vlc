@@ -2,7 +2,7 @@
  * ctrl_generic.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 7bded8c3b29bb64679013df125ba8a2b8ef0a608 $
+ * $Id: c821b0823c1546566aaf8853c7c0eb11dff439cd $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -76,12 +76,12 @@ void CtrlGeneric::unsetLayout()
 void CtrlGeneric::notifyLayout( int width, int height,
                                 int xOffSet, int yOffSet )
 {
-    width = ( width > 0 ) ? width : m_pPosition->getWidth();
-    height = ( height > 0 ) ? height : m_pPosition->getHeight();
-
     // Notify the layout
     if( m_pLayout )
     {
+        width = ( width > 0 ) ? width : m_pPosition->getWidth();
+        height = ( height > 0 ) ? height : m_pPosition->getHeight();
+
         m_pLayout->onControlUpdate( *this, width, height, xOffSet, yOffSet );
     }
 }

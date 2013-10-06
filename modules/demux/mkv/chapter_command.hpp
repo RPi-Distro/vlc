@@ -1,25 +1,25 @@
 /*****************************************************************************
- * mkv.cpp : matroska demuxer
+ * chapter_command.hpp : matroska demuxer
  *****************************************************************************
- * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: b334616489a26fe43a62cd73837ba71769949cf2 $
+ * Copyright (C) 2003-2004 VLC authors and VideoLAN
+ * $Id: 7c8a3c185aaaddc829831035a00d579da763be40 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef _CHAPTER_COMMAND_H_
@@ -61,7 +61,7 @@ public:
 
     void AddCommand( const KaxChapterProcessCommand & command );
 
-    /// \return wether the codec has seeked in the files or not
+    /// \return whether the codec has seeked in the files or not
     virtual bool Enter() { return false; }
     virtual bool Leave() { return false; }
     virtual std::string GetCodecName( bool ) const { return ""; }
@@ -190,7 +190,7 @@ protected:
     // DVD command IDs
 
     // Tests
-    // wether it's a comparison on the value or register
+    // whether it's a comparison on the value or register
     static const uint16 CMD_DVD_TEST_VALUE          = 0x80;
     static const uint16 CMD_DVD_IF_GPREG_AND        = (1 << 4);
     static const uint16 CMD_DVD_IF_GPREG_EQUAL      = (2 << 4);

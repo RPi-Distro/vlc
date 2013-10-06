@@ -2,7 +2,7 @@
  * cpu.c: CPU detection code
  *****************************************************************************
  * Copyright (C) 1998-2004 VLC authors and VideoLAN
- * $Id: 112d91960d939a591b915b1ebbde44d77b7d41dd $
+ * $Id: eca79b5911178ec05fd82c46f7c368b4c7d83ff7 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -32,19 +32,25 @@
 
 #include <vlc_common.h>
 #include <vlc_cpu.h>
+#include "libvlc.h"
 
+#include <assert.h>
+
+#ifndef __linux__
 #include <sys/types.h>
-#ifndef WIN32
+#ifndef _WIN32
 #include <unistd.h>
 #include <sys/wait.h>
 #include <signal.h>
 #else
 #include <errno.h>
 #endif
-#include <assert.h>
 
 #ifdef __APPLE__
 #include <sys/sysctl.h>
+#endif
+#ifdef __ANDROID__
+#include <cpu-features.h>
 #endif
 
 #if defined(__OpenBSD__) && defined(__powerpc__)
@@ -53,13 +59,11 @@
 #include <machine/cpu.h>
 #endif
 
-#include "libvlc.h"
-
 static uint32_t cpu_flags;
 
 #if defined (__i386__) || defined (__x86_64__) || defined (__powerpc__) \
  || defined (__ppc__) || defined (__ppc64__) || defined (__powerpc64__)
-# if !defined (WIN32) && !defined (__OS2__)
+# if !defined (_WIN32) && !defined (__OS2__)
 static bool vlc_CPU_check (const char *name, void (*func) (void))
 {
     pid_t pid = fork();
@@ -95,37 +99,7 @@ VLC_SSE static void SSE_test (void)
     asm volatile ("xorps %%xmm0,%%xmm0\n" : : : "xmm0", "xmm1");
 }
 #endif
-#if defined (CAN_COMPILE_SSE2) && !defined (__SSE2__)
-VLC_SSE static void SSE2_test (void)
-{
-    asm volatile ("movupd %%xmm0, %%xmm0\n" : : : "xmm0", "xmm1");
-}
-#endif
-#if defined (CAN_COMPILE_SSE3) && !defined (__SSE3__)
-VLC_SSE static void SSE3_test (void)
-{
-    asm volatile ("movsldup %%xmm1, %%xmm0\n" : : : "xmm0", "xmm1");
-}
-#endif
-#if defined (CAN_COMPILE_SSSE3) && !defined (__SSSE3__)
-VLC_SSE static void SSSE3_test (void)
-{
-    asm volatile ("pabsw %%xmm1, %%xmm0\n" : : : "xmm0", "xmm1");
-}
-#endif
-#if defined (CAN_COMPILE_SSE4_1) && !defined (__SSE4_1__)
-VLC_SSE static void SSE4_1_test (void)
-{
-    asm volatile ("pmaxsb %%xmm1, %%xmm0\n" : : : "xmm0", "xmm1");
-}
-#endif
-#if defined (CAN_COMPILE_SSE4_2) && !defined (__SSE4_2__)
-VLC_SSE static void SSE4_2_test (void)
-{
-    asm volatile ("pcmpgtq %%xmm1, %%xmm0\n" : : : "xmm0", "xmm1");
-}
-#endif
-#if defined (CAN_COMPILE_3DNOW) && !defined (__3dNOW__)
+#if defined (CAN_COMPILE_3DNOW)
 VLC_MMX static void ThreeD_Now_test (void)
 {
     asm volatile ("pfadd %%mm0,%%mm0\n" "femms\n" : : : "mm0");
@@ -139,7 +113,7 @@ static void Altivec_test (void)
 }
 #endif
 
-#else /* WIN32 || __OS2__ */
+#else /* _WIN32 || __OS2__ */
 # define vlc_CPU_check(name, func) (1)
 #endif
 #endif
@@ -217,56 +191,27 @@ void vlc_CPU_init (void)
     if( ! (i_edx & 0x00800000) )
         goto out;
 # endif
-    i_capabilities |= CPU_CAPABILITY_MMX;
+    i_capabilities |= VLC_CPU_MMX;
 
-# if defined (__SSE__)
-    i_capabilities |= CPU_CAPABILITY_MMXEXT | CPU_CAPABILITY_SSE;
-# else
     if( i_edx & 0x02000000 )
+        i_capabilities |= VLC_CPU_MMXEXT;
+# if defined (CAN_COMPILE_SSE) && !defined (__SSE__)
+    if (( i_edx & 0x02000000 ) && vlc_CPU_check ("SSE", SSE_test))
+# endif
     {
-        i_capabilities |= CPU_CAPABILITY_MMXEXT;
-
-#   ifdef CAN_COMPILE_SSE
-        if (vlc_CPU_check ("SSE", SSE_test))
-            i_capabilities |= CPU_CAPABILITY_SSE;
-#   endif
+        /*if( i_edx & 0x02000000 )*/
+            i_capabilities |= VLC_CPU_SSE;
+        if (i_edx & 0x04000000)
+            i_capabilities |= VLC_CPU_SSE2;
+        if (i_ecx & 0x00000001)
+            i_capabilities |= VLC_CPU_SSE3;
+        if (i_ecx & 0x00000200)
+            i_capabilities |= VLC_CPU_SSSE3;
+        if (i_ecx & 0x00080000)
+            i_capabilities |= VLC_CPU_SSE4_1;
+        if (i_ecx & 0x00100000)
+            i_capabilities |= VLC_CPU_SSE4_2;
     }
-# endif
-
-# if defined (__SSE2__)
-    i_capabilities |= CPU_CAPABILITY_SSE2;
-# elif defined (CAN_COMPILE_SSE2)
-    if ((i_edx & 0x04000000) && vlc_CPU_check ("SSE2", SSE2_test))
-        i_capabilities |= CPU_CAPABILITY_SSE2;
-# endif
-
-# if defined (__SSE3__)
-    i_capabilities |= CPU_CAPABILITY_SSE3;
-# elif defined (CAN_COMPILE_SSE3)
-    if ((i_ecx & 0x00000001) && vlc_CPU_check ("SSE3", SSE3_test))
-        i_capabilities |= CPU_CAPABILITY_SSE3;
-# endif
-
-# if defined (__SSSE3__)
-    i_capabilities |= CPU_CAPABILITY_SSSE3;
-# elif defined (CAN_COMPILE_SSSE3)
-    if ((i_ecx & 0x00000200) && vlc_CPU_check ("SSSE3", SSSE3_test))
-        i_capabilities |= CPU_CAPABILITY_SSSE3;
-# endif
-
-# if defined (__SSE4_1__)
-    i_capabilities |= CPU_CAPABILITY_SSE4_1;
-# elif defined (CAN_COMPILE_SSE4_1)
-    if ((i_ecx & 0x00080000) && vlc_CPU_check ("SSE4.1", SSE4_1_test))
-        i_capabilities |= CPU_CAPABILITY_SSE4_1;
-# endif
-
-# if defined (__SSE4_2__)
-    i_capabilities |= CPU_CAPABILITY_SSE4_2;
-# elif defined (CAN_COMPILE_SSE4_2)
-    if ((i_ecx & 0x00100000) && vlc_CPU_check ("SSE4.2", SSE4_2_test))
-        i_capabilities |= CPU_CAPABILITY_SSE4_2;
-# endif
 
     /* test for additional capabilities */
     cpuid( 0x80000000 );
@@ -277,57 +222,14 @@ void vlc_CPU_init (void)
     /* list these additional capabilities */
     cpuid( 0x80000001 );
 
-# if defined (__3dNOW__)
-    i_capabilities |= CPU_CAPABILITY_3DNOW;
-# elif defined (CAN_COMPILE_3DNOW)
+# if defined (CAN_COMPILE_3DNOW) && !defined (__3dNOW__)
     if ((i_edx & 0x80000000) && vlc_CPU_check ("3D Now!", ThreeD_Now_test))
-        i_capabilities |= CPU_CAPABILITY_3DNOW;
 # endif
+        i_capabilities |= VLC_CPU_3dNOW;
 
     if( b_amd && ( i_edx & 0x00400000 ) )
-    {
-        i_capabilities |= CPU_CAPABILITY_MMXEXT;
-    }
+        i_capabilities |= VLC_CPU_MMXEXT;
 out:
-
-#elif defined (__arm__)
-
-# if defined (__ARM_NEON__)
-    i_capabilities |= CPU_CAPABILITY_NEON;
-# elif defined (CAN_COMPILE_NEON)
-#  define NEED_RUNTIME_CPU_CHECK 1
-# endif
-
-# ifdef NEED_RUNTIME_CPU_CHECK
-#  if defined (__linux__)
-    FILE *info = fopen ("/proc/cpuinfo", "rt");
-    if (info != NULL)
-    {
-        char *line = NULL;
-        size_t linelen = 0;
-
-        while (getline (&line, &linelen, info) != -1)
-        {
-            const char *cap;
-
-            if (strncmp (line, "Features\t:", 10))
-                continue;
-
-            /* TODO: detect other CPU features when we use them */
-#   if defined (CAN_COMPILE_NEON) && !defined (__ARM_NEON__)
-                cap = strstr (line + 10, " neon");
-            if (cap != NULL && (cap[5] == '\0' || cap[5] == ' '))
-                i_capabilities |= CPU_CAPABILITY_NEON;
-#   endif
-            break;
-        }
-        fclose (info);
-        free (line);
-    }
-#  else
-#   warning Run-time CPU detection missing: optimizations disabled!
-#  endif
-# endif
 
 #elif defined( __powerpc__ ) || defined( __ppc__ ) || defined( __powerpc64__ ) \
     || defined( __ppc64__ )
@@ -343,13 +245,19 @@ out:
     int i_error = sysctl( selectors, 2, &i_has_altivec, &i_length, NULL, 0);
 
     if( i_error == 0 && i_has_altivec != 0 )
-        i_capabilities |= CPU_CAPABILITY_ALTIVEC;
+        i_capabilities |= VLC_CPU_ALTIVEC;
 
 #   elif defined( CAN_COMPILE_ALTIVEC )
     if (vlc_CPU_check ("Altivec", Altivec_test))
-        i_capabilities |= CPU_CAPABILITY_ALTIVEC;
+        i_capabilities |= VLC_CPU_ALTIVEC;
 
 #   endif
+
+#elif defined ( __arm__)
+# ifdef __ANDROID__
+    if (android_getCpuFeatures() & ANDROID_CPU_ARM_FEATURE_NEON)
+        i_capabilities |= VLC_CPU_ARM_NEON;
+# endif
 
 #endif
 
@@ -363,39 +271,39 @@ unsigned vlc_CPU (void)
 {
 /* On Windows and OS/2,
  * initialized from DllMain() and _DLL_InitTerm() respectively, instead */
-#if !defined(WIN32) && !defined(__OS2__)
+#if !defined(_WIN32) && !defined(__OS2__)
     static pthread_once_t once = PTHREAD_ONCE_INIT;
     pthread_once (&once, vlc_CPU_init);
 #endif
     return cpu_flags;
 }
+#endif
 
 void vlc_CPU_dump (vlc_object_t *obj)
 {
-    const unsigned flags = vlc_CPU();
     char buf[200], *p = buf;
 
-#define PRINT_CAPABILITY( capability, string ) \
-    if (flags & (capability)) \
-        p += sprintf (p, "%s ", (string) )
-
 #if defined (__i386__) || defined (__x86_64__)
-    PRINT_CAPABILITY(CPU_CAPABILITY_MMX, "MMX");
-    PRINT_CAPABILITY(CPU_CAPABILITY_3DNOW, "3DNow!");
-    PRINT_CAPABILITY(CPU_CAPABILITY_MMXEXT, "MMXEXT");
-    PRINT_CAPABILITY(CPU_CAPABILITY_SSE, "SSE");
-    PRINT_CAPABILITY(CPU_CAPABILITY_SSE2, "SSE2");
-    PRINT_CAPABILITY(CPU_CAPABILITY_SSE3, "SSE3");
-    PRINT_CAPABILITY(CPU_CAPABILITY_SSSE3, "SSSE3");
-    PRINT_CAPABILITY(CPU_CAPABILITY_SSE4_1, "SSE4.1");
-    PRINT_CAPABILITY(CPU_CAPABILITY_SSE4_2, "SSE4.2");
-    PRINT_CAPABILITY(CPU_CAPABILITY_SSE4A,  "SSE4A");
+    if (vlc_CPU_MMX()) p += sprintf (p, "MMX ");
+    if (vlc_CPU_MMXEXT()) p += sprintf (p, "MMXEXT ");
+    if (vlc_CPU_SSE()) p += sprintf (p, "SSE ");
+    if (vlc_CPU_SSE2()) p += sprintf (p, "SSE2 ");
+    if (vlc_CPU_SSE3()) p += sprintf (p, "SSE3 ");
+    if (vlc_CPU_SSSE3()) p += sprintf (p, "SSSE3 ");
+    if (vlc_CPU_SSE4_1()) p += sprintf (p, "SSE4.1 ");
+    if (vlc_CPU_SSE4_2()) p += sprintf (p, "SSE4.2 ");
+    if (vlc_CPU_SSE4A()) p += sprintf (p, "SSE4A ");
+    if (vlc_CPU_AVX()) p += sprintf (p, "AVX ");
+    if (vlc_CPU_AVX2()) p += sprintf (p, "AVX ");
+    if (vlc_CPU_3dNOW()) p += sprintf (p, "3DNow! ");
+    if (vlc_CPU_XOP()) p += sprintf (p, "XOP ");
+    if (vlc_CPU_FMA4()) p += sprintf (p, "FMA4 ");
 
 #elif defined (__powerpc__) || defined (__ppc__) || defined (__ppc64__)
-    PRINT_CAPABILITY(CPU_CAPABILITY_ALTIVEC, "AltiVec");
+    if (vlc_CPU_ALTIVEC())  p += sprintf (p, "AltiVec");
 
 #elif defined (__arm__)
-    PRINT_CAPABILITY(CPU_CAPABILITY_NEON, "NEONv1");
+    if (vlc_CPU_ARM_NEON()) p += sprintf (p, "ARM_NEON ");
 
 #endif
 
@@ -405,21 +313,4 @@ void vlc_CPU_dump (vlc_object_t *obj)
 
     if (p > buf)
         msg_Dbg (obj, "CPU has capabilities %s", buf);
-}
-
-
-static vlc_memcpy_t pf_vlc_memcpy = memcpy;
-
-void vlc_fastmem_register (vlc_memcpy_t cpy)
-{
-    assert (cpy != NULL);
-    pf_vlc_memcpy = cpy;
-}
-
-/**
- * vlc_memcpy: fast CPU-dependent memcpy
- */
-void *vlc_memcpy (void *tgt, const void *src, size_t n)
-{
-    return pf_vlc_memcpy (tgt, src, n);
 }

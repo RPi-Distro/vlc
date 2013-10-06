@@ -1,26 +1,34 @@
 /*****************************************************************************
- * decoder.c: AAC decoder using libfaad2
+ * faad.c: AAC decoder using libfaad2
  *****************************************************************************
- * Copyright (C) 2001, 2003 the VideoLAN team
- * $Id: 94c7d110a13dcbb2eab8df3d3423031cff3eb55e $
+ * Copyright (C) 2001, 2003 VLC authors and VideoLAN
+ * $Id: 9b7b791ad21f12f5aa8413256f1ae2b3864d1a94 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+/*****************************************************************************
+ * NOTA BENE: this module requires the linking against a library which is
+ * known to require licensing under the GNU General Public License version 2
+ * (or later). Therefore, the result of compiling this module will normally
+ * be subject to the terms of that later license.
+ *****************************************************************************/
+
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -29,7 +37,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_input.h>
-#include <vlc_aout.h>
 #include <vlc_codec.h>
 #include <vlc_cpu.h>
 
@@ -52,7 +59,7 @@ vlc_module_end ()
 /****************************************************************************
  * Local prototypes
  ****************************************************************************/
-static aout_buffer_t *DecodeBlock( decoder_t *, block_t ** );
+static block_t *DecodeBlock( decoder_t *, block_t ** );
 static void DoReordering( uint32_t *, uint32_t *, int, int, uint32_t * );
 
 #define MAX_CHANNEL_POSITIONS 9
@@ -139,10 +146,7 @@ static int Open( vlc_object_t *p_this )
     date_Set( &p_sys->date, 0 );
     p_dec->fmt_out.i_cat = AUDIO_ES;
 
-    if (HAVE_FPU)
-        p_dec->fmt_out.i_codec = VLC_CODEC_FL32;
-    else
-        p_dec->fmt_out.i_codec = VLC_CODEC_S16N;
+    p_dec->fmt_out.i_codec = HAVE_FPU ? VLC_CODEC_FL32 : VLC_CODEC_S16N;
     p_dec->pf_decode_audio = DecodeBlock;
 
     p_dec->fmt_out.audio.i_physical_channels =
@@ -175,15 +179,14 @@ static int Open( vlc_object_t *p_this )
     {
         /* Will be initalised from first frame */
         p_dec->fmt_out.audio.i_rate = 0;
-        p_dec->fmt_out.audio.i_channels = 0;
+        /*FIXME: Try to guess channel count, so transcode module doesn't burb and do funny stuff
+            Revert back to 0 when transcode module/audio encoders can reinit stuff after Open()*/
+        p_dec->fmt_out.audio.i_channels = p_dec->fmt_in.audio.i_channels;
     }
 
     /* Set the faad config */
     cfg = faacDecGetCurrentConfiguration( p_sys->hfaad );
-    if (HAVE_FPU)
-        cfg->outputFormat = FAAD_FMT_FLOAT;
-    else
-        cfg->outputFormat = FAAD_FMT_16BIT;
+    cfg->outputFormat = HAVE_FPU ? FAAD_FMT_FLOAT : FAAD_FMT_16BIT;
     faacDecSetConfiguration( p_sys->hfaad, cfg );
 
     /* buffer */
@@ -200,7 +203,7 @@ static int Open( vlc_object_t *p_this )
 /*****************************************************************************
  * DecodeBlock:
  *****************************************************************************/
-static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
+static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     block_t *p_block;
@@ -250,7 +253,7 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
     if( p_block->i_buffer > 0 )
     {
-        vlc_memcpy( &p_sys->p_buffer[p_sys->i_buffer],
+        memcpy( &p_sys->p_buffer[p_sys->i_buffer],
                      p_block->p_buffer, p_block->i_buffer );
         p_sys->i_buffer += p_block->i_buffer;
         p_block->i_buffer = 0;
@@ -315,8 +318,7 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     {
         void *samples;
         faacDecFrameInfo frame;
-        aout_buffer_t *p_out;
-        int i, j;
+        block_t *p_out;
 
         samples = faacDecDecode( p_sys->hfaad, &frame,
                                  p_sys->p_buffer, p_sys->i_buffer );
@@ -325,10 +327,11 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         {
             msg_Warn( p_dec, "%s", faacDecGetErrorMessage( frame.error ) );
 
-            if( frame.error == 21 )
+            if( frame.error == 21 || frame.error == 12 )
             {
                 /*
-                 * Once an "Unexpected channel configuration change" error
+                 * Once an "Unexpected channel configuration change"
+                 * or a "Invalid number of channels" error
                  * occurs, it will occurs afterwards, and we got no sound.
                  * Reinitialization of the decoder is required.
                  */
@@ -412,9 +415,6 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
         p_dec->fmt_out.audio.i_rate = frame.samplerate;
         p_dec->fmt_out.audio.i_channels = frame.channels;
-        p_dec->fmt_out.audio.i_physical_channels
-            = p_dec->fmt_out.audio.i_original_channels
-            = pi_channels_guessed[frame.channels];
 
         /* Adjust stream info when dealing with SBR/PS */
         bool b_sbr = (frame.sbr == 1) || (frame.sbr == 2);
@@ -438,7 +438,8 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         /* Convert frame.channel_position to our own channel values */
         p_dec->fmt_out.audio.i_physical_channels = 0;
         const uint32_t nbChannels = frame.channels;
-        for( i = 0; i < nbChannels; i++ )
+        unsigned j;
+        for( unsigned i = 0; i < nbChannels; i++ )
         {
             /* Find the channel code */
             for( j = 0; j < MAX_CHANNEL_POSITIONS; j++ )

@@ -17,10 +17,9 @@ libdummy_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dummy)
 libdummy_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_dummy)
 libdummy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_dummy)
 libdummy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_dummy)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libdummy_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_dummy)
 libdummy_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_dummy)
-libdummy_plugin_la_DEPENDENCIES =
 
 # The gestures plugin
 libgestures_plugin_la_SOURCES = $(SOURCES_gestures)
@@ -30,10 +29,9 @@ libgestures_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_gestures)
 libgestures_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_gestures)
 libgestures_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_gestures)
 libgestures_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_gestures)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libgestures_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_gestures)
 libgestures_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_gestures)
-libgestures_plugin_la_DEPENDENCIES =
 
 # The hotkeys plugin
 libhotkeys_plugin_la_SOURCES = $(SOURCES_hotkeys)
@@ -43,10 +41,9 @@ libhotkeys_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_hotkeys)
 libhotkeys_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_hotkeys)
 libhotkeys_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_hotkeys)
 libhotkeys_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_hotkeys)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libhotkeys_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_hotkeys)
 libhotkeys_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_hotkeys)
-libhotkeys_plugin_la_DEPENDENCIES =
 
 # The lirc plugin
 liblirc_plugin_la_SOURCES = $(SOURCES_lirc)
@@ -56,10 +53,9 @@ liblirc_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_lirc)
 liblirc_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_lirc)
 liblirc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_lirc)
 liblirc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_lirc)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 liblirc_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_lirc)
 liblirc_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_lirc)
-liblirc_plugin_la_DEPENDENCIES =
 
 # The motion plugin
 libmotion_plugin_la_SOURCES = $(SOURCES_motion)
@@ -69,10 +65,9 @@ libmotion_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_motion)
 libmotion_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_motion)
 libmotion_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_motion)
 libmotion_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_motion)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libmotion_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_motion)
 libmotion_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_motion)
-libmotion_plugin_la_DEPENDENCIES =
 
 # The netsync plugin
 libnetsync_plugin_la_SOURCES = $(SOURCES_netsync)
@@ -82,10 +77,9 @@ libnetsync_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_netsync)
 libnetsync_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_netsync)
 libnetsync_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_netsync)
 libnetsync_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_netsync)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libnetsync_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_netsync)
 libnetsync_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_netsync)
-libnetsync_plugin_la_DEPENDENCIES =
 
 # The ntservice plugin
 libntservice_plugin_la_SOURCES = $(SOURCES_ntservice)
@@ -95,10 +89,9 @@ libntservice_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_ntservice)
 libntservice_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_ntservice)
 libntservice_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_ntservice)
 libntservice_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_ntservice)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libntservice_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_ntservice)
 libntservice_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_ntservice)
-libntservice_plugin_la_DEPENDENCIES =
 
 # The oldrc plugin
 liboldrc_plugin_la_SOURCES = $(SOURCES_oldrc)
@@ -108,8 +101,7 @@ liboldrc_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_oldrc)
 liboldrc_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_oldrc)
 liboldrc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_oldrc)
 liboldrc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_oldrc)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 liboldrc_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_oldrc)
 liboldrc_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_oldrc)
-liboldrc_plugin_la_DEPENDENCIES =
 

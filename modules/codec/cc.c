@@ -5,19 +5,19 @@
  *
  * Authors: Laurent Aimar < fenrir # via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -135,15 +135,12 @@ typedef struct
 static void         Eia608Init( eia608_t * );
 static bool   Eia608Parse( eia608_t *h, int i_channel_selected, const uint8_t data[2] );
 static char        *Eia608Text( eia608_t *h, bool b_html );
-static void         Eia608Exit( eia608_t * );
 
 /* It will be enough up to 63 B frames, which is far too high for
  * broadcast environment */
 #define CC_MAX_REORDER_SIZE (64)
 struct decoder_sys_t
 {
-    int i;
-
     int     i_block;
     block_t *pp_block[CC_MAX_REORDER_SIZE];
 
@@ -243,11 +240,9 @@ static void Close( vlc_object_t *p_this )
 {
     decoder_t *p_dec = (decoder_t *)p_this;
     decoder_sys_t *p_sys = p_dec->p_sys;
-    int i;
 
-    for( i = 0; i < p_sys->i_block; i++ )
+    for( int i = 0; i < p_sys->i_block; i++ )
         block_Release( p_sys->pp_block[i] );
-    Eia608Exit( &p_sys->eia608 );
     free( p_sys );
 }
 
@@ -271,7 +266,6 @@ static block_t *Pop( decoder_t *p_dec )
     decoder_sys_t *p_sys = p_dec->p_sys;
     block_t *p_block;
     int i_index;
-    int i;
     /* XXX Cc captions data are OUT OF ORDER (because we receive them in the bitstream
      * order (ie ordered by video picture dts) instead of the display order.
      *  We will simulate a simple IPB buffer scheme
@@ -288,7 +282,7 @@ static block_t *Pop( decoder_t *p_dec )
     p_block = p_sys->pp_block[i_index = 0];
     if( p_block->i_pts > VLC_TS_INVALID )
     {
-        for( i = 1; i < p_sys->i_block-1; i++ )
+        for( int i = 1; i < p_sys->i_block-1; i++ )
         {
             if( p_sys->pp_block[i]->i_pts > VLC_TS_INVALID && p_block->i_pts > VLC_TS_INVALID &&
                 p_sys->pp_block[i]->i_pts < p_block->i_pts )
@@ -311,6 +305,8 @@ static subpicture_t *Subtitle( decoder_t *p_dec, char *psz_subtitle, char *psz_h
     if( i_pts <= VLC_TS_INVALID )
     {
         msg_Warn( p_dec, "subtitle without a date" );
+        free( psz_subtitle );
+        free( psz_html );
         return NULL;
     }
 
@@ -333,9 +329,13 @@ static subpicture_t *Subtitle( decoder_t *p_dec, char *psz_subtitle, char *psz_h
 
     subpicture_updater_sys_t *p_spu_sys = p_spu->updater.p_sys;
 
-    p_spu_sys->align = SUBPICTURE_ALIGN_BOTTOM;
+    /* The "leavetext" alignment is a special mode where the subpicture
+       region itself gets aligned, but the text inside it does not */
+    p_spu_sys->align = SUBPICTURE_ALIGN_LEAVETEXT;
     p_spu_sys->text  = psz_subtitle;
     p_spu_sys->html  = psz_html;
+    p_spu_sys->i_font_height_percent = 5;
+    p_spu_sys->renderbg = true;
 
     return p_spu;
 }
@@ -363,7 +363,7 @@ static subpicture_t *Convert( decoder_t *p_dec, block_t *p_block )
     if( b_changed )
     {
         char *psz_subtitle = Eia608Text( &p_sys->eia608, false );
-        char *psz_html     = NULL;//Eia608Text( &p_sys->eia608, true );
+        char *psz_html = Eia608Text( &p_sys->eia608, true );
         return Subtitle( p_dec, psz_subtitle, psz_html, i_pts );
     }
     return NULL;
@@ -426,7 +426,6 @@ static void Eia608Cursor( eia608_t *h, int dx )
 static void Eia608ClearScreenRowX( eia608_t *h, int i_screen, int i_row, int x )
 {
     eia608_screen *screen = &h->screen[i_screen];
-    int i;
 
     if( x == 0 )
     {
@@ -435,7 +434,7 @@ static void Eia608ClearScreenRowX( eia608_t *h, int i_screen, int i_row, int x )
     else
     {
         screen->row_used[i_row] = false;
-        for( i = 0; i < x; i++ )
+        for( int i = 0; i < x; i++ )
         {
             if( screen->characters[i_row][i] != ' ' ||
                 screen->colors[i_row][i] != EIA608_COLOR_DEFAULT ||
@@ -462,8 +461,7 @@ static void Eia608ClearScreenRow( eia608_t *h, int i_screen, int i_row )
 
 static void Eia608ClearScreen( eia608_t *h, int i_screen )
 {
-    int i;
-    for( i = 0; i < EIA608_SCREEN_ROWS; i++ )
+    for( int i = 0; i < EIA608_SCREEN_ROWS; i++ )
         Eia608ClearScreenRow( h, i_screen, i );
 }
 
@@ -542,7 +540,6 @@ static void Eia608RollUp( eia608_t *h )
     eia608_screen *screen = &h->screen[i_screen];
 
     int keep_lines;
-    int i;
 
     /* Window size */
     if( h->mode == EIA608_MODE_ROLLUP_2 )
@@ -558,11 +555,11 @@ static void Eia608RollUp( eia608_t *h )
     h->cursor.i_column = 0;
 
     /* Erase lines above our window */
-    for( i = 0; i < h->cursor.i_row - keep_lines; i++ )
+    for( int i = 0; i < h->cursor.i_row - keep_lines; i++ )
         Eia608ClearScreenRow( h, i_screen, i );
 
     /* Move up */
-    for( i = 0; i < keep_lines-1; i++ )
+    for( int i = 0; i < keep_lines-1; i++ )
     {
         const int i_row = h->cursor.i_row - keep_lines + i + 1;
         if( i_row < 0 )
@@ -906,23 +903,14 @@ static void Eia608TextUtf8( char *psz_utf8, uint8_t c ) // Returns number of byt
 #undef E2
 #undef E1
 
-    static const int i_c2utf8 = sizeof(c2utf8)/sizeof(*c2utf8);
-    int i;
+    for( size_t i = 0; i < ARRAY_SIZE(c2utf8) ; i++ )
+        if( c2utf8[i].c == c ) {
+            strcpy( psz_utf8, c2utf8[i].utf8 );
+            return;
+        }
 
-    for( i = 0; i < i_c2utf8; i++ )
-    {
-        if( c2utf8[i].c == c )
-            break;
-    }
-    if( i >= i_c2utf8 )
-    {
-        psz_utf8[0] = c < 0x80 ? c : '?';   /* Normal : Unsupported */
-        psz_utf8[1] = '\0';
-    }
-    else
-    {
-        strcpy( psz_utf8, c2utf8[i].utf8 );
-    }
+    psz_utf8[0] = c < 0x80 ? c : '?';   /* Normal : Unsupported */
+    psz_utf8[1] = '\0';
 }
 
 static void Eia608Strlcat( char *d, const char *s, int i_max )
@@ -932,6 +920,8 @@ static void Eia608Strlcat( char *d, const char *s, int i_max )
     if( i_max > 0 )
         d[i_max-1] = '\0';
 }
+
+#define CAT(t) Eia608Strlcat( psz_text, t, i_text_max )
 
 static void Eia608TextLine( struct eia608_screen *screen, char *psz_text, int i_text_max, int i_row, bool b_html )
 {
@@ -944,11 +934,22 @@ static void Eia608TextLine( struct eia608_screen *screen, char *psz_text, int i_
     eia608_color_t last_color = EIA608_COLOR_DEFAULT;
     bool     b_last_italics = false;
     bool     b_last_underline = false;
+    char utf8[4];
 
     /* Search the start */
     i_start = 0;
-    while( i_start < EIA608_SCREEN_COLUMNS-1 && p_char[i_start] == ' ' )
+
+    /* Ensure we get a monospaced font (required for accurate positioning */
+    if( b_html )
+        CAT( "<tt>" );
+
+    /* Convert leading spaces to non-breaking so that they don't get
+       stripped by the RenderHtml routine as regular whitespace */
+    while( i_start < EIA608_SCREEN_COLUMNS && p_char[i_start] == ' ' ) {
+        Eia608TextUtf8( utf8, 0x89 );
+        CAT( utf8 );
         i_start++;
+    }
 
     /* Search the end */
     i_end = EIA608_SCREEN_COLUMNS-1;
@@ -956,13 +957,11 @@ static void Eia608TextLine( struct eia608_screen *screen, char *psz_text, int i_
         i_end--;
 
     /* */
-#define CAT(t) Eia608Strlcat( psz_text, t, i_text_max )
     for( x = i_start; x <= i_end; x++ )
     {
         eia608_color_t color = p_color[x];
         bool b_italics = p_font[x] & EIA608_FONT_ITALICS;
         bool b_underline = p_font[x] & EIA608_FONT_UNDERLINE;
-        char utf8[4];
 
         /* */
         if( b_html )
@@ -997,9 +996,9 @@ static void Eia608TextLine( struct eia608_screen *screen, char *psz_text, int i_
                     "#ff00ff",  // magenta
                     "#ffffff",  // user defined XXX we use white
                 };
-                CAT( "<font color=" );
+                CAT( "<font color=\"" );
                 CAT( ppsz_color[color] );
-                CAT( ">" );
+                CAT( "\">" );
             }
             if( ( b_close_italics && b_italics ) || ( b_italics && !b_last_italics ) )
                 CAT( "<i>" );
@@ -1007,9 +1006,34 @@ static void Eia608TextLine( struct eia608_screen *screen, char *psz_text, int i_
                 CAT( "<u>" );
         }
 
-        /* */ 
-        Eia608TextUtf8( utf8, p_char[x] );
-        CAT( utf8 );
+        if( b_html ) {
+            /* Escape XML reserved characters
+               http://www.w3.org/TR/xml/#syntax */
+            switch (p_char[x]) {
+            case '>':
+                CAT( "&gt;" );
+                break;
+            case '<':
+                CAT( "&lt;" );
+                break;
+            case '"':
+                CAT( "&quot;" );
+                break;
+            case '\'':
+                CAT( "&apos;" );
+                break;
+            case '&':
+                CAT( "&amp;" );
+                break;
+            default:
+                Eia608TextUtf8( utf8, p_char[x] );
+                CAT( utf8 );
+                break;
+            }
+        } else {
+            Eia608TextUtf8( utf8, p_char[x] );
+            CAT( utf8 );
+        }
 
         /* */
         b_last_underline = b_underline;
@@ -1024,6 +1048,7 @@ static void Eia608TextLine( struct eia608_screen *screen, char *psz_text, int i_
             CAT( "</i>" );
         if( last_color != EIA608_COLOR_DEFAULT )
             CAT( "</font>" );
+        CAT( "</tt>" );
     }
 #undef CAT
 }
@@ -1083,11 +1108,10 @@ static bool Eia608Parse( eia608_t *h, int i_channel_selected, const uint8_t data
 
 static char *Eia608Text( eia608_t *h, bool b_html )
 {
-    const int i_size = EIA608_SCREEN_ROWS * 3 * EIA608_SCREEN_COLUMNS+1;
+    const int i_size = EIA608_SCREEN_ROWS * 10 * EIA608_SCREEN_COLUMNS+1;
     struct eia608_screen *screen = &h->screen[h->i_screen];
     bool b_first = true;
     char *psz;
-    int i;
 
     /* We allocate a buffer big enough for normal case */
     psz = malloc( i_size );
@@ -1096,11 +1120,8 @@ static char *Eia608Text( eia608_t *h, bool b_html )
     *psz = '\0';
     if( b_html )
         Eia608Strlcat( psz, "<text>", i_size );
-    for( i = 0; i < EIA608_SCREEN_ROWS; i++ )
+    for( int i = 0; i < EIA608_SCREEN_ROWS; i++ )
     {
-        if( !screen->row_used[i] )
-            continue;
-
         if( !b_first )
             Eia608Strlcat( psz, b_html ? "<br />" : "\n", i_size );
         b_first = false;
@@ -1111,9 +1132,3 @@ static char *Eia608Text( eia608_t *h, bool b_html )
         Eia608Strlcat( psz, "</text>", i_size );
     return psz;
 }
-
-static void Eia608Exit( eia608_t *h )
-{
-    VLC_UNUSED( h );
-}
-

@@ -14,7 +14,7 @@ CLEANFILES = $(BUILT_SOURCES)
 LTLIBVLCCORE = $(top_builddir)/src/libvlccore.la
 
 # Module name from object or executable file name.
-MODULE_NAME = `p="$@"; p="$${p\#\#*/}"; p="$${p\#lib}"; echo "$${p%_plugin*}"`
+MODULE_NAME = $$(p="$@"; p="$${p\#\#*/}"; p="$${p\#lib}"; echo "$${p%_plugin*}")
 
 AM_CPPFLAGS = \
 	-DMODULE_NAME=$(MODULE_NAME) \
@@ -26,12 +26,13 @@ endif
 AM_CFLAGS =
 AM_CXXFLAGS =
 AM_OBJCFLAGS =
+AM_LIBADD = $(LIBPTHREAD)
 AM_LDFLAGS = -rpath '$(libvlcdir)' \
 	-avoid-version -module \
 	-export-symbols-regex ^vlc_entry \
 	-shrext $(LIBEXT) \
-	-no-undefined
-AM_LIBADD = $(LTLIBVLCCORE) $(top_builddir)/compat/libcompat.la $(LIBS_plugin)
+	-no-undefined \
+	$(LTLIBVLCCORE) $(top_builddir)/compat/libcompat.la
 
 include $(srcdir)/Modules.am
 

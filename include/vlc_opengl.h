@@ -1,5 +1,5 @@
 /*****************************************************************************
- * vlc_gl.h: VLC GL API
+ * vlc_opengl.h: VLC GL API
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
  * Copyright (C) 2011 Rémi Denis-Courmont
@@ -45,6 +45,7 @@ struct vlc_gl_t
     void *sys;
 
     int  (*makeCurrent)(vlc_gl_t *);
+    void (*releaseCurrent)(vlc_gl_t *);
     void (*swap)(vlc_gl_t *);
     int  (*lock)(vlc_gl_t *);
     void (*unlock)(vlc_gl_t *);
@@ -63,6 +64,11 @@ VLC_API void vlc_gl_Destroy(vlc_gl_t *);
 static inline int vlc_gl_MakeCurrent(vlc_gl_t *gl)
 {
     return gl->makeCurrent(gl);
+}
+
+static inline void vlc_gl_ReleaseCurrent(vlc_gl_t *gl)
+{
+    gl->releaseCurrent(gl);
 }
 
 static inline int vlc_gl_Lock(vlc_gl_t *gl)

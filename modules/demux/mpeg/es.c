@@ -1,25 +1,25 @@
 /*****************************************************************************
  * es.c : Generic audio ES input module for vlc
  *****************************************************************************
- * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: 6f3c4e9a891eb4545de82c1b6aeb1128019b20a7 $
+ * Copyright (C) 2001-2008 VLC authors and VideoLAN
+ * $Id: 8b4b7d2bcf469e3275feb105be3afcfedcfb463f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -38,6 +38,7 @@
 #include <vlc_input.h>
 
 #include "../../codec/a52.h"
+#include "../../codec/dts_header.h"
 
 /*****************************************************************************
  * Module descriptor
@@ -140,6 +141,7 @@ static int DtsProbe( demux_t *p_demux, int64_t *pi_offset );
 static int DtsInit( demux_t *p_demux );
 
 static int MlpProbe( demux_t *p_demux, int64_t *pi_offset );
+static int ThdProbe( demux_t *p_demux, int64_t *pi_offset );
 static int MlpInit( demux_t *p_demux );
 
 static bool Parse( demux_t *p_demux, block_t **pp_output );
@@ -150,7 +152,8 @@ static const codec_t p_codecs[] = {
     { VLC_CODEC_A52, true,  "a52 audio",  A52Probe,  A52Init },
     { VLC_CODEC_EAC3, true,  "eac3 audio", EA52Probe, A52Init },
     { VLC_CODEC_DTS, false, "dts audio",  DtsProbe,  DtsInit },
-    { VLC_CODEC_TRUEHD, false, "mlp audio",  MlpProbe,  MlpInit },
+    { VLC_CODEC_MLP, false, "mlp audio",  MlpProbe,  MlpInit },
+    { VLC_CODEC_TRUEHD, false, "TrueHD audio",  ThdProbe,  MlpInit },
 
     { 0, false, NULL, NULL, NULL }
 };
@@ -338,11 +341,13 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         case DEMUX_HAS_UNSUPPORTED_META:
             pb_bool = (bool*)va_arg( args, bool* );
             *pb_bool = true;
+            va_end( args_save );
             return VLC_SUCCESS;
 
         case DEMUX_GET_TIME:
             pi64 = (int64_t*)va_arg( args, int64_t * );
             *pi64 = p_sys->i_pts + p_sys->i_time_offset;
+            va_end( args_save );
             return VLC_SUCCESS;
 
         case DEMUX_GET_LENGTH:
@@ -359,10 +364,14 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                  * don't bother trying ... Too bad */
                 if( f_pos < 0.01 ||
                     (p_sys->i_pts + p_sys->i_time_offset) < 8000000 )
+                {
+                    va_end( args_save );
                     return VLC_EGENERIC;
+                }
 
                 pi64 = (int64_t *)va_arg( args_save, int64_t * );
                 *pi64 = (p_sys->i_pts + p_sys->i_time_offset) / f_pos;
+                va_end( args_save );
                 return VLC_SUCCESS;
             }
             va_end( args_save );
@@ -375,6 +384,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             i_ret = demux_vaControlHelper( p_demux->s, p_sys->i_stream_offset, -1,
                                             p_sys->i_bitrate_avg, 1, i_query,
                                             args );
+            va_end( args_save );
             if( !i_ret && p_sys->i_bitrate_avg > 0 &&
                 (i_query == DEMUX_SET_POSITION || i_query == DEMUX_SET_TIME) )
             {
@@ -633,8 +643,9 @@ static int MpgaCheckSync( const uint8_t *p_peek )
     uint32_t h = GetDWBE( p_peek );
 
     if( ((( h >> 21 )&0x07FF) != 0x07FF )   /* header sync */
+        || (((h >> 19)&0x03) == 1 )         /* valid version ID ? */
         || (((h >> 17)&0x03) == 0 )         /* valid layer ?*/
-        || (((h >> 12)&0x0F) == 0x0F )      /* valid bitrate ? */
+        || (((h >> 12)&0x0F) == 0x0F )      /* valid bitrate ?*/
         || (((h >> 10) & 0x03) == 0x03 )    /* valide sampling freq ? */
         || ((h & 0x03) == 0x02 ))           /* valid emphasis ? */
     {
@@ -918,37 +929,22 @@ static int A52Init( demux_t *p_demux )
  *****************************************************************************/
 static int DtsCheckSync( const uint8_t *p_peek, int *pi_samples )
 {
-    /* TODO return frame size for robustness */
-
-    /* 14 bits, little endian version of the bitstream */
-    if( p_peek[0] == 0xff && p_peek[1] == 0x1f &&
-        p_peek[2] == 0x00 && p_peek[3] == 0xe8 &&
-        (p_peek[4] & 0xf0) == 0xf0 && p_peek[5] == 0x07 )
-    {
-        return 0;
-    }
-    /* 14 bits, big endian version of the bitstream */
-    else if( p_peek[0] == 0x1f && p_peek[1] == 0xff &&
-             p_peek[2] == 0xe8 && p_peek[3] == 0x00 &&
-             p_peek[4] == 0x07 && (p_peek[5] & 0xf0) == 0xf0)
-    {
-        return 0;
-    }
-    /* 16 bits, big endian version of the bitstream */
-    else if( p_peek[0] == 0x7f && p_peek[1] == 0xfe &&
-             p_peek[2] == 0x80 && p_peek[3] == 0x01 )
-    {
-        return 0;
-    }
-    /* 16 bits, little endian version of the bitstream */
-    else if( p_peek[0] == 0xfe && p_peek[1] == 0x7f &&
-             p_peek[2] == 0x01 && p_peek[3] == 0x80 )
-    {
-        return 0;
-    }
+    unsigned int i_sample_rate, i_bit_rate, i_frame_length, i_audio_mode;
+    bool b_dts_hd;
 
     VLC_UNUSED(pi_samples);
-    return VLC_EGENERIC;
+
+    int i_frame_size = GetSyncInfo( p_peek,
+                                    &b_dts_hd,
+                                    &i_sample_rate,
+                                    &i_bit_rate,
+                                    &i_frame_length,
+                                    &i_audio_mode );
+
+    if( i_frame_size != VLC_EGENERIC && i_frame_size <= 8192 )
+        return VLC_SUCCESS;
+    else
+        return VLC_EGENERIC;
 }
 
 static int DtsProbe( demux_t *p_demux, int64_t *pi_offset )
@@ -975,7 +971,19 @@ static int MlpCheckSync( const uint8_t *p_peek, int *pi_samples )
     if( p_peek[4+0] != 0xf8 || p_peek[4+1] != 0x72 || p_peek[4+2] != 0x6f )
         return -1;
 
-    if( p_peek[4+3] != 0xba && p_peek[4+3] != 0xbb )
+    if( p_peek[4+3] != 0xbb )
+        return -1;
+
+    /* TODO checksum and real size for robustness */
+    VLC_UNUSED(pi_samples);
+    return 0;
+}
+static int ThdCheckSync( const uint8_t *p_peek, int *pi_samples )
+{
+    if( p_peek[4+0] != 0xf8 || p_peek[4+1] != 0x72 || p_peek[4+2] != 0x6f )
+        return -1;
+
+    if( p_peek[4+3] != 0xba )
         return -1;
 
     /* TODO checksum and real size for robustness */
@@ -984,10 +992,17 @@ static int MlpCheckSync( const uint8_t *p_peek, int *pi_samples )
 }
 static int MlpProbe( demux_t *p_demux, int64_t *pi_offset )
 {
-    const char *ppsz_name[] = { "mlp", "thd", NULL };
+    const char *ppsz_name[] = { "mlp", NULL };
     const int pi_wav[] = { WAVE_FORMAT_PCM, WAVE_FORMAT_UNKNOWN };
 
     return GenericProbe( p_demux, pi_offset, ppsz_name, MlpCheckSync, 4+28+16*4, pi_wav );
+}
+static int ThdProbe( demux_t *p_demux, int64_t *pi_offset )
+{
+    const char *ppsz_name[] = { "thd", NULL };
+    const int pi_wav[] = { WAVE_FORMAT_PCM, WAVE_FORMAT_UNKNOWN };
+
+    return GenericProbe( p_demux, pi_offset, ppsz_name, ThdCheckSync, 4+28+16*4, pi_wav );
 }
 static int MlpInit( demux_t *p_demux )
 

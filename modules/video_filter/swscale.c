@@ -1,25 +1,25 @@
 /*****************************************************************************
  * swscale.c: scaling and chroma conversion using libswscale
  *****************************************************************************
- * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: 278dccf181356318a7653d84a6b96bfa7809e4af $
+ * Copyright (C) 1999-2008 VLC authors and VideoLAN
+ * $Id: 91562ceca707b77dc95d84807d133e01bf63b3ef $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -36,6 +36,10 @@
 #include <vlc_cpu.h>
 
 #include <libswscale/swscale.h>
+
+#ifdef __APPLE__
+# include <TargetConditionals.h>
+#endif
 
 #include "../codec/avcodec/chroma.h" // Chroma Avutil <-> VLC conversion
 
@@ -75,8 +79,6 @@ vlc_module_end ()
 /****************************************************************************
  * Local prototypes
  ****************************************************************************/
-
-void *( *swscale_fast_memcpy )( void *, const void *, size_t );
 
 /**
  * Internal swscale filter structure.
@@ -156,9 +158,6 @@ static int OpenScaler( vlc_object_t *p_this )
     if( ( p_filter->p_sys = p_sys = malloc(sizeof(filter_sys_t)) ) == NULL )
         return VLC_ENOMEM;
 
-    /* FIXME pointer assignment may not be atomic */
-    swscale_fast_memcpy = vlc_memcpy;
-
     /* Set CPU capabilities */
     p_sys->i_cpu_mask = GetSwsCpuMask();
 
@@ -230,20 +229,21 @@ static void CloseScaler( vlc_object_t *p_this )
  *****************************************************************************/
 static int GetSwsCpuMask(void)
 {
-    const unsigned int i_cpu = vlc_CPU();
     int i_sws_cpu = 0;
 
-    if( i_cpu & CPU_CAPABILITY_MMX )
+#if defined(__i386__) || defined(__x86_64__)
+    if( vlc_CPU_MMX() )
         i_sws_cpu |= SWS_CPU_CAPS_MMX;
 #if (LIBSWSCALE_VERSION_INT >= ((0<<16)+(5<<8)+0))
-    if( i_cpu & CPU_CAPABILITY_MMXEXT )
+    if( vlc_CPU_MMXEXT() )
         i_sws_cpu |= SWS_CPU_CAPS_MMX2;
 #endif
-    if( i_cpu & CPU_CAPABILITY_3DNOW )
+    if( vlc_CPU_3dNOW() )
         i_sws_cpu |= SWS_CPU_CAPS_3DNOW;
-
-    if( i_cpu & CPU_CAPABILITY_ALTIVEC )
+#elif defined(__ppc__) || defined(__ppc64__) || defined(__powerpc__)
+    if( vlc_CPU_ALTIVEC() )
         i_sws_cpu |= SWS_CPU_CAPS_ALTIVEC;
+#endif
 
     return i_sws_cpu;
 }
@@ -293,8 +293,8 @@ static int GetParameters( ScalerConfiguration *p_cfg,
     bool b_swap_uvi = false;
     bool b_swap_uvo = false;
 
-    GetFfmpegChroma( &i_fmti, *p_fmti );
-    GetFfmpegChroma( &i_fmto, *p_fmto );
+    GetFfmpegChroma( &i_fmti, p_fmti );
+    GetFfmpegChroma( &i_fmto, p_fmto );
 
     if( p_fmti->i_chroma == p_fmto->i_chroma )
     {
@@ -308,7 +308,7 @@ static int GetParameters( ScalerConfiguration *p_cfg,
     FixParameters( &i_fmti, &b_has_ai, &b_swap_uvi, p_fmti->i_chroma );
     FixParameters( &i_fmto, &b_has_ao, &b_swap_uvo, p_fmto->i_chroma );
 
-#ifndef __ANDROID__
+#if !defined (__ANDROID__) && !defined(TARGET_OS_IPHONE)
     /* FIXME TODO removed when ffmpeg is fixed
      * Without SWS_ACCURATE_RND the quality is really bad for some conversions */
     switch( i_fmto )

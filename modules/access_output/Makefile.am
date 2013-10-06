@@ -3,7 +3,7 @@
 
 basedir = access_output
 dir = access_output
-mods = access_output_dummy access_output_file access_output_http access_output_livehttp access_output_shout access_output_udp
+mods = access_output_dummy access_output_file access_output_http access_output_shout access_output_udp
 libvlc_LTLIBRARIES =  $(LTLIBaccess_output_shout)
 EXTRA_LTLIBRARIES =  libaccess_output_shout_plugin.la
 
@@ -17,10 +17,9 @@ libaccess_output_dummy_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_out
 libaccess_output_dummy_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_output_dummy)
 libaccess_output_dummy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_output_dummy)
 libaccess_output_dummy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_output_dummy)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaccess_output_dummy_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_output_dummy)
 libaccess_output_dummy_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_output_dummy)
-libaccess_output_dummy_plugin_la_DEPENDENCIES =
 
 # The access_output_file plugin
 libaccess_output_file_plugin_la_SOURCES = $(SOURCES_access_output_file)
@@ -30,10 +29,9 @@ libaccess_output_file_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_outp
 libaccess_output_file_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_output_file)
 libaccess_output_file_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_output_file)
 libaccess_output_file_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_output_file)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaccess_output_file_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_output_file)
 libaccess_output_file_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_output_file)
-libaccess_output_file_plugin_la_DEPENDENCIES =
 
 # The access_output_http plugin
 libaccess_output_http_plugin_la_SOURCES = $(SOURCES_access_output_http)
@@ -43,23 +41,9 @@ libaccess_output_http_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_outp
 libaccess_output_http_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_output_http)
 libaccess_output_http_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_output_http)
 libaccess_output_http_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_output_http)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaccess_output_http_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_output_http)
 libaccess_output_http_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_output_http)
-libaccess_output_http_plugin_la_DEPENDENCIES =
-
-# The access_output_livehttp plugin
-libaccess_output_livehttp_plugin_la_SOURCES = $(SOURCES_access_output_livehttp)
-nodist_libaccess_output_livehttp_plugin_la_SOURCES = $(nodist_SOURCES_access_output_livehttp)
-# Force per-target objects:
-libaccess_output_livehttp_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_output_livehttp)
-libaccess_output_livehttp_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_output_livehttp)
-libaccess_output_livehttp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_output_livehttp)
-libaccess_output_livehttp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_output_livehttp)
-# Set LIBADD and DEPENDENCIES manually:
-libaccess_output_livehttp_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_output_livehttp)
-libaccess_output_livehttp_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_output_livehttp)
-libaccess_output_livehttp_plugin_la_DEPENDENCIES =
 
 # The access_output_shout plugin
 libaccess_output_shout_plugin_la_SOURCES = $(SOURCES_access_output_shout)
@@ -69,10 +53,9 @@ libaccess_output_shout_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_out
 libaccess_output_shout_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_output_shout)
 libaccess_output_shout_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_output_shout)
 libaccess_output_shout_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_output_shout)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaccess_output_shout_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_output_shout)
 libaccess_output_shout_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_output_shout)
-libaccess_output_shout_plugin_la_DEPENDENCIES =
 
 # The access_output_udp plugin
 libaccess_output_udp_plugin_la_SOURCES = $(SOURCES_access_output_udp)
@@ -82,8 +65,7 @@ libaccess_output_udp_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_outpu
 libaccess_output_udp_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_output_udp)
 libaccess_output_udp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_output_udp)
 libaccess_output_udp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_output_udp)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaccess_output_udp_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_output_udp)
 libaccess_output_udp_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_output_udp)
-libaccess_output_udp_plugin_la_DEPENDENCIES =
 

@@ -1,25 +1,29 @@
 /*****************************************************************************
- * omxil_utils.h: helper functions
+ * omxil.h: helper functions
  *****************************************************************************
- * Copyright (C) 2010 the VideoLAN team
- * $Id: f57feeecabbaadee186d8ca3c1d39f04b584729a $
+ * Copyright (C) 2010 VLC authors and VideoLAN
+ * $Id: c040d3bc0ea3f80e8d65941fdbd7b8d8122b068e $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+#ifdef RPI_OMX
+#define OMX_SKIP64BIT
+#endif
 
 /*****************************************************************************
  * Includes
@@ -30,11 +34,7 @@
 #include "OMX_Video.h"
 
 #include "omxil_utils.h"
-
-/*****************************************************************************
- * defines
- *****************************************************************************/
-#define MAX_COMPONENTS_LIST_SIZE 32
+#include "omxil_core.h"
 
 /*****************************************************************************
  * decoder_sys_t : omxil decoder descriptor
@@ -69,6 +69,7 @@ typedef struct OmxPort
     OmxFormatParam format_param;
 
     OMX_BOOL b_reconfigure;
+    OMX_BOOL b_update_def;
     OMX_BOOL b_direct;
     OMX_BOOL b_flushed;
 
@@ -79,18 +80,12 @@ struct decoder_sys_t
     OMX_HANDLETYPE omx_handle;
 
     bool b_enc;
-    bool b_init;
-    vlc_mutex_t lock;
 
     char psz_component[OMX_MAX_STRINGNAME_SIZE];
     char ppsz_components[MAX_COMPONENTS_LIST_SIZE][OMX_MAX_STRINGNAME_SIZE];
     unsigned int components;
 
-    struct OmxEvent *p_events;
-    struct OmxEvent **pp_last_event;
-
-    vlc_mutex_t mutex;
-    vlc_cond_t cond;
+    OmxEventQueue event_queue;
 
     OmxPort *p_ports;
     unsigned int ports;
@@ -101,7 +96,7 @@ struct decoder_sys_t
 
     date_t end_date;
 
-    int i_nal_size_length; /* Length of the NAL size field for H264 */
+    size_t i_nal_size_length; /* Length of the NAL size field for H264 */
+    int b_use_pts;
 
-    OMX_BUFFERHEADERTYPE sentinel_buffer;
 };

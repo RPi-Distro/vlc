@@ -2,7 +2,7 @@
  * vlc_services_discovery.h : Services Discover functions
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 22df2fc8fd77c2036763a6202c784006dd6c44d7 $
+ * $Id: d9c231b28f3ec075343e0f8016792b8fa33f60f5 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -157,6 +157,7 @@ VLC_API vlc_event_manager_t * services_discovery_EventManager( services_discover
      * for more options, directly set the (meta) data on the input item */
 VLC_API void services_discovery_AddItem( services_discovery_t * p_this, input_item_t * p_item, const char * psz_category );
 VLC_API void services_discovery_RemoveItem( services_discovery_t * p_this, input_item_t * p_item );
+VLC_API void services_discovery_RemoveAll( services_discovery_t * p_sd );
 
 
 /* SD probing */

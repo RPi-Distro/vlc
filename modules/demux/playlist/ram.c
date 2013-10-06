@@ -1,24 +1,24 @@
 /*****************************************************************************
  * ram.c : RAM playlist format import
  *****************************************************************************
- * Copyright (C) 2009 the VideoLAN team
- * $Id: 65fe3e586ceee398c53c1f516aa657daae1fa734 $
+ * Copyright (C) 2009 VLC authors and VideoLAN
+ * $Id: 8c8de7184586077338f5a8b8fcae77426944b432 $
  *
  * Authors: Srikanth Raju <srikiraju@gmail.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*
@@ -47,6 +47,8 @@ http://service.real.com/help/library/guides/realone/IntroGuide/HTML/htmfiles/ram
 # include "config.h"
 #endif
 
+#include <ctype.h>
+
 #include <vlc_common.h>
 #include <vlc_demux.h>
 #include <vlc_url.h>
@@ -63,7 +65,6 @@ struct demux_sys_t
  * Local prototypes
  *****************************************************************************/
 static int Demux( demux_t *p_demux);
-static int Control( demux_t *p_demux, int i_query, va_list args );
 static void ParseClipInfo( const char * psz_clipinfo, char **ppsz_artist, char **ppsz_title,
                            char **ppsz_album, char **ppsz_genre, char **ppsz_year,
                            char **ppsz_cdnum, char **ppsz_comments );
@@ -215,7 +216,6 @@ static int Demux( demux_t *p_demux )
     char       *psz_line;
     char       *psz_artist = NULL, *psz_album = NULL, *psz_genre = NULL, *psz_year = NULL;
     char       *psz_author = NULL, *psz_title = NULL, *psz_copyright = NULL, *psz_cdnum = NULL, *psz_comments = NULL;
-    int        i_parsed_duration = 0;
     mtime_t    i_duration = -1;
     const char **ppsz_options = NULL;
     int        i_options = 0, i_start = 0, i_stop = 0;
@@ -373,7 +373,6 @@ static int Demux( demux_t *p_demux )
             FREENULL( psz_cdnum );
             FREENULL( psz_comments );
             i_options = 0;
-            i_parsed_duration = 0;
             i_duration = -1;
             i_start = 0;
             i_stop = 0;
@@ -384,17 +383,6 @@ static int Demux( demux_t *p_demux )
     vlc_gc_decref(p_current_input);
     var_Destroy( p_demux, "m3u-extvlcopt" );
     return 0; /* Needed for correct operation of go back */
-}
-
-/**
- * @param p_demux: This object
- * @param i_query:
- * @param args: List of arguments
- */
-static int Control( demux_t *p_demux, int i_query, va_list args )
-{
-    VLC_UNUSED(p_demux); VLC_UNUSED(i_query); VLC_UNUSED(args);
-    return VLC_EGENERIC;
 }
 
 /**

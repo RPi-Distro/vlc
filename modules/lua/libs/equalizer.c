@@ -2,7 +2,7 @@
  * equalizer.c
  *****************************************************************************
  * Copyright (C) 2011 VideoLAN and VLC authors
- * $Id: 02ebbf9cfd638223fc813422392c4727327d825f $
+ * $Id: e2e8aa36120b53b7def30c635aaf3f4a24caadc2 $
  *
  * Authors: Akash Mehrotra < mehrotra <dot> akash <at> gmail <dot> com >
  *
@@ -34,12 +34,8 @@
 
 #include <vlc_common.h>
 #include <vlc_aout.h>
-#include <vlc_aout_intf.h>
 #include <vlc_input.h>
 #include <vlc_charset.h>
-
-#include <lua.h>        /* Low level lua C API */
-#include <lauxlib.h>    /* Higher level C API */
 
 #include "input.h"
 #include "../libs.h"
@@ -47,7 +43,7 @@
 #include "playlist.h"
 #include "../../audio_filter/equalizer_presets.h"
 
-#if !defined WIN32
+#if !defined _WIN32
 # include <locale.h>
 #else
 # include <windows.h>
@@ -64,14 +60,9 @@
 *****************************************************************************/
 static int vlclua_preamp_get( lua_State *L )
 {
-    input_thread_t *p_input = vlclua_get_input_internal( L );
-    if( !p_input )
-        return 0;
-
-    audio_output_t *p_aout = input_GetAout( p_input );
-    vlc_object_release( p_input );
-
-    if( !p_aout)
+    playlist_t *p_playlist = vlclua_get_playlist_internal( L );
+    audio_output_t *p_aout = playlist_GetAout( p_playlist );
+    if( p_aout == NULL )
         return 0;
 
     char *psz_af = var_GetNonEmptyString( p_aout, "audio-filter" );
@@ -94,13 +85,9 @@ static int vlclua_preamp_get( lua_State *L )
 *****************************************************************************/
 static int vlclua_preamp_set( lua_State *L )
 {
-    input_thread_t *p_input = vlclua_get_input_internal( L );
-    if( !p_input )
-        return 0;
-
-    audio_output_t *p_aout = input_GetAout( p_input );
-    vlc_object_release( p_input );
-    if( !p_aout )
+    playlist_t *p_playlist = vlclua_get_playlist_internal( L );
+    audio_output_t *p_aout = playlist_GetAout( p_playlist );
+    if( p_aout == NULL )
         return 0;
 
     char *psz_af = var_GetNonEmptyString( p_aout, "audio-filter" );
@@ -137,12 +124,10 @@ Band 9: 16 kHz
 static int vlclua_equalizer_get( lua_State *L )
 {
     const unsigned bands = 10;
-    input_thread_t *p_input = vlclua_get_input_internal( L );
-    if( !p_input )
-        return 0;
-    audio_output_t *p_aout = input_GetAout( p_input );
-    vlc_object_release( p_input );
-    if( !p_aout )
+
+    playlist_t *p_playlist = vlclua_get_playlist_internal( L );
+    audio_output_t *p_aout = playlist_GetAout( p_playlist );
+    if( p_aout == NULL )
         return 0;
 
     char *psz_af = var_GetNonEmptyString( p_aout, "audio-filter" );
@@ -205,13 +190,10 @@ static int vlclua_equalizer_set( lua_State *L )
     int bandid = luaL_checknumber( L, 1 );
     if( bandid < 0 || bandid > 9)
         return 0;
-    input_thread_t *p_input = vlclua_get_input_internal( L );
-    if( !p_input )
-        return 0;
 
-    audio_output_t *p_aout = input_GetAout( p_input );
-    vlc_object_release( p_input );
-    if( !p_aout )
+    playlist_t *p_playlist = vlclua_get_playlist_internal( L );
+    audio_output_t *p_aout = playlist_GetAout( p_playlist );
+    if( p_aout == NULL )
         return 0;
 
     char *psz_af = var_GetNonEmptyString( p_aout, "audio-filter" );
@@ -265,39 +247,22 @@ static int vlclua_equalizer_setpreset( lua_State *L )
     int presetid = luaL_checknumber( L, 1 );
     if( presetid >= NB_PRESETS || presetid < 0 )
         return 0;
-    input_thread_t *p_input = vlclua_get_input_internal( L );
-    if( p_input )
+
+    playlist_t *p_playlist = vlclua_get_playlist_internal( L );
+    audio_output_t *p_aout = playlist_GetAout( p_playlist );
+    if( p_aout == NULL )
+        return 0;
+
+    int ret = 0;
+    char *psz_af = var_InheritString( p_aout, "audio-filter" );
+    if( psz_af != NULL && strstr ( psz_af, "equalizer" ) != NULL )
     {
-        audio_output_t *p_aout = input_GetAout( p_input );
-        vlc_object_release( p_input );
-        if( !p_aout )
-        {
-            return 0;
-        }
-        char *psz_af = var_GetNonEmptyString( p_aout, "audio-filter" );
-        if( !psz_af || strstr ( psz_af, "equalizer" ) == NULL )
-        {
-            free( psz_af );
-            vlc_object_release( p_aout );
-            return 0;
-        }
-        free( psz_af );
-        char *newstr;
-        if( asprintf( &newstr , "%6.1f" , eqz_preset_10b[presetid].f_amp[0] ) == -1 )
-            return 0;
-        for ( int i = 1 ; i < 10 ; i++ )
-        {
-            if( asprintf( &newstr, "%s%6.1f",newstr ,eqz_preset_10b[presetid].f_amp[i]) == -1 )
-                return 0;
-        }
-        var_SetString( p_aout, "equalizer-bands",newstr );
-        var_SetFloat( p_aout, "equalizer-preamp", eqz_preset_10b[presetid].f_preamp );
         var_SetString( p_aout , "equalizer-preset" , preset_list[presetid] );
-        vlc_object_release( p_aout );
-        free( newstr );
-        return 1;
+        ret = 1;
     }
-    return 0;
+    free( psz_af );
+    vlc_object_release( p_aout );
+    return ret;
 }
  
 /****************************************************************************
@@ -307,7 +272,7 @@ static int vlclua_equalizer_enable ( lua_State *L )
 {
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
     bool state = luaL_checkboolean ( L , 1 );
-    aout_EnableFilter( p_playlist, "equalizer", state );
+    playlist_EnableAudioFilter( p_playlist, "equalizer", state );
     return 0;
 }
 /*****************************************************************************

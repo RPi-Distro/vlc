@@ -2,7 +2,7 @@
  * cmd_audio.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f83de1a1452a0f2a7f8657b45425b47c4fd5ffd5 $
+ * $Id: a74198da201259c7bb4083093b341a65015fca89 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -25,15 +25,13 @@
 #include "../src/vlcproc.hpp"
 #include <vlc_playlist.h>
 #include <vlc_input.h>
-#include <vlc_aout_intf.h>
 #include <string>
 
 void CmdSetEqualizer::execute()
 {
     playlist_t* pPlaylist = getIntf()->p_sys->p_playlist;
 
-    aout_EnableFilter( pPlaylist, "equalizer", m_enable );
-    VlcProc::instance( getIntf() )->update_equalizer();
+    playlist_EnableAudioFilter( pPlaylist, "equalizer", m_enable );
 }
 
 

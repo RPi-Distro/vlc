@@ -3,25 +3,33 @@
  *   This plugin makes use of libdca to do the actual decoding
  *   (http://developers.videolan.org/libdca.html).
  *****************************************************************************
- * Copyright (C) 2001, 2002libdca the VideoLAN team
- * $Id: 84a900cb9d3e57e005ed4cac420f0f8dd3f64ae7 $
+ * Copyright (C) 2001, 2002libdca VLC authors and VideoLAN
+ * $Id: 7b7641789f6e11ef679f945127dadb137ea776db $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+/*****************************************************************************
+ * NOTA BENE: this module requires the linking against a library which is
+ * known to require licensing under the GNU General Public License version 2
+ * (or later). Therefore, the result of compiling this module will normally
+ * be subject to the terms of that later license.
+ *****************************************************************************/
+
 
 /*****************************************************************************
  * Preamble
@@ -66,7 +74,7 @@ struct filter_sys_t
     bool b_dontwarn;
     int i_nb_channels; /* number of float32 per sample */
 
-    int pi_chan_table[AOUT_CHAN_MAX]; /* channel reordering */
+    uint8_t pi_chan_table[AOUT_CHAN_MAX]; /* channel reordering */
 };
 
 /*****************************************************************************
@@ -86,7 +94,7 @@ vlc_module_begin ()
     set_shortname( "DCA" )
     set_description( N_("DTS Coherent Acoustics audio decoder") )
     add_bool( "dts-dynrng", true, DYNRNG_TEXT, DYNRNG_LONGTEXT, false )
-    set_capability( "audio filter", 100 )
+    set_capability( "audio converter", 100 )
     set_callbacks( OpenFilter, CloseFilter )
 vlc_module_end ()
 
@@ -102,8 +110,7 @@ static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
 
     /* We'll do our own downmixing, thanks. */
     p_sys->i_nb_channels = aout_FormatNbChannels( output );
-    switch ( (output->i_physical_channels & AOUT_CHAN_PHYSMASK)
-              & ~AOUT_CHAN_LFE )
+    switch ( output->i_physical_channels & ~AOUT_CHAN_LFE )
     {
     case AOUT_CHAN_CENTER:
         if ( (output->i_original_channels & AOUT_CHAN_CENTER)
@@ -176,8 +183,7 @@ static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
     }
 
     aout_CheckChannelReorder( pi_channels_in, NULL,
-                              output->i_physical_channels & AOUT_CHAN_PHYSMASK,
-                              p_sys->i_nb_channels,
+                              output->i_physical_channels,
                               p_sys->pi_chan_table );
 
     return VLC_SUCCESS;
@@ -187,7 +193,7 @@ static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
  * Interleave: helper function to interleave channels
  *****************************************************************************/
 static void Interleave( float * p_out, const float * p_in, int i_nb_channels,
-                        int *pi_chan_table )
+                        uint8_t *pi_chan_table )
 {
     /* We do not only have to interleave, but also reorder the channels. */
 

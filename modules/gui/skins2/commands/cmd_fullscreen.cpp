@@ -2,7 +2,7 @@
  * cmd_fullscreen.cpp
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: a2ef8f9b386a5e8a636fa499ae4e62f7f870fb08 $
+ * $Id: 7dcfe7923c70ab72edb8f9154802109a71137350 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -30,15 +30,22 @@
 
 void CmdFullscreen::execute()
 {
-    bool fs = var_ToggleBool( pl_Get( getIntf() ), "fullscreen" );
-
-    if( getIntf()->p_sys->p_input == NULL )
-        return;
-    vout_thread_t *pVout = input_GetVout( getIntf()->p_sys->p_input );
-    if( pVout )
+    bool fs;
+    bool hasVout = false;
+    if( getIntf()->p_sys->p_input != NULL )
     {
-        // Switch fullscreen
-        var_SetBool( pVout, "fullscreen", fs );
-        vlc_object_release( pVout );
+        vout_thread_t *pVout = input_GetVout( getIntf()->p_sys->p_input );
+        if( pVout )
+        {
+            // Toggle fullscreen
+            fs = var_ToggleBool( pVout, "fullscreen" );
+            vlc_object_release( pVout );
+            hasVout = true;
+        }
     }
+
+    if( hasVout )
+        var_SetBool( pl_Get( getIntf() ), "fullscreen", fs );
+    else
+        var_ToggleBool( pl_Get( getIntf() ), "fullscreen" );
 }

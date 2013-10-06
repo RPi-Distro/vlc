@@ -1,24 +1,24 @@
 /*****************************************************************************
  * gnomevfs.c: GnomeVFS input
  *****************************************************************************
- * Copyright (C) 2005 the VideoLAN team
- * $Id: f65815210ba3bebd6d2748647458381f4f84c482 $
+ * Copyright (C) 2005 VLC authors and VideoLAN
+ * $Id: 4b63ee456cc8698cc64c342137fbe0deca2ec3c6 $
  *
  * Authors: Benjamin Pracht <bigben -AT- videolan -DOT- org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -35,8 +35,6 @@
 
 #include <libgnomevfs/gnome-vfs.h>
 
-
-#include <vlc_charset.h>
 #include <vlc_url.h>
 
 /*****************************************************************************
@@ -65,7 +63,6 @@ static int     Control( access_t *, int, va_list );
 
 struct access_sys_t
 {
-    unsigned int i_nb_reads;
     char *psz_name;
 
     GnomeVFSHandle *p_handle;
@@ -87,7 +84,6 @@ static int Open( vlc_object_t *p_this )
     access_t       *p_access = (access_t*)p_this;
     access_sys_t   *p_sys = NULL;
     char           *psz_name = NULL;
-    char           *psz = NULL;
     char           *psz_uri = NULL;
     char           *psz_unescaped = NULL;
     char           *psz_expand_tilde = NULL;
@@ -108,7 +104,6 @@ static int Open( vlc_object_t *p_this )
     STANDARD_READ_ACCESS_INIT;
 
     p_sys->p_handle = p_handle;
-    p_sys->i_nb_reads = 0;
     p_sys->b_pace_control = true;
 
     if( strcmp( "gnomevfs", p_access->psz_access ) &&
@@ -121,9 +116,7 @@ static int Open( vlc_object_t *p_this )
     {
         psz_name = strdup( p_access->psz_location );
     }
-    psz = ToLocale( psz_name );
-    psz_expand_tilde = gnome_vfs_expand_initial_tilde( psz );
-    LocaleFree( psz );
+    psz_expand_tilde = gnome_vfs_expand_initial_tilde( psz_name );
 
     psz_unescaped = gnome_vfs_make_uri_from_shell_arg( psz_expand_tilde );
 
@@ -293,35 +286,19 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
                                     gnome_vfs_result_to_string( i_ret ) );
         }
     }
-    else
-    {
-        p_sys->i_nb_reads++;
-        if( p_access->info.i_size != 0 &&
-            (p_sys->i_nb_reads % INPUT_FSTAT_NB_READS) == 0 &&
-            p_sys->b_local )
-        {
-            gnome_vfs_file_info_clear( p_sys->p_file_info );
-            i_ret = gnome_vfs_get_file_info_from_handle( p_sys->p_handle,
-                                                p_sys->p_file_info, 8 );
-            if( i_ret )
-            {
-                msg_Warn( p_access, "couldn't get file properties again (%s)",
-                                        gnome_vfs_result_to_string( i_ret ) );
-            }
-            else
-            {
-                p_access->info.i_size = (int64_t)(p_sys->p_file_info->size);
-            }
-        }
-    }
 
     p_access->info.i_pos += (int64_t)i_read_len;
-
-    /* Some Acces (http) never return EOF and loop on the file */
-    if( p_access->info.i_pos > p_access->info.i_size )
+    if( p_access->info.i_pos >= p_access->info.i_size
+     && p_access->info.i_size != 0 && p_sys->b_local )
     {
-        p_access->info.b_eof = true;
-        return 0;
+        gnome_vfs_file_info_clear( p_sys->p_file_info );
+        i_ret = gnome_vfs_get_file_info_from_handle( p_sys->p_handle,
+                                                     p_sys->p_file_info, 8 );
+        if( i_ret )
+            msg_Warn( p_access, "couldn't get file properties again (%s)",
+                      gnome_vfs_result_to_string( i_ret ) );
+        else
+            p_access->info.i_size = (int64_t)(p_sys->p_file_info->size);
     }
     return (int)i_read_len;
 }

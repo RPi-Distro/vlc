@@ -91,22 +91,104 @@ enum vlc_module_properties
     VLC_CONFIG_DESC,
     /* description (args=const char *, const char *, const char *) */
 
-    VLC_CONFIG_LIST,
-    /* possible values list
-     * (args=const char *, size_t, const <type> *, const char *const *) */
+    VLC_CONFIG_LIST_OBSOLETE,
+    /* unused (ignored) */
 
-    VLC_CONFIG_ADD_ACTION,
-    /* add value change callback
-     * (args=const char *, vlc_callback_t, const char *) */
+    VLC_CONFIG_ADD_ACTION_OBSOLETE,
+    /* unused (ignored) */
+
+    VLC_CONFIG_LIST,
+    /* list of suggested values
+     * (args=size_t, const <type> *, const char *const *) */
+
+    VLC_CONFIG_LIST_CB,
+    /* callback for suggested values
+     * (args=size_t (*)(vlc_object_t *, <type> **, char ***)) */
 
     /* Insert new VLC_CONFIG_* here */
 };
 
+/* Configuration hint types */
+#define CONFIG_HINT_CATEGORY                0x02  /* Start of new category */
+#define CONFIG_HINT_SUBCATEGORY             0x03  /* Start of sub-category */
+#define CONFIG_HINT_SUBCATEGORY_END         0x04  /* End of sub-category */
+#define CONFIG_HINT_USAGE                   0x05  /* Usage information */
+
+#define CONFIG_CATEGORY                     0x06 /* Set category */
+#define CONFIG_SUBCATEGORY                  0x07 /* Set subcategory */
+#define CONFIG_SECTION                      0x08 /* Start of new section */
+
+/* Configuration item types */
+#define CONFIG_ITEM_FLOAT                   0x20  /* Float option */
+#define CONFIG_ITEM_INTEGER                 0x40  /* Integer option */
+#define CONFIG_ITEM_RGB                     0x41  /* RGB color option */
+#define CONFIG_ITEM_BOOL                    0x60  /* Bool option */
+#define CONFIG_ITEM_STRING                  0x80  /* String option */
+#define CONFIG_ITEM_PASSWORD                0x81  /* Password option (*) */
+#define CONFIG_ITEM_KEY                     0x82  /* Hot key option */
+#define CONFIG_ITEM_MODULE                  0x84  /* Module option */
+#define CONFIG_ITEM_MODULE_CAT              0x85  /* Module option */
+#define CONFIG_ITEM_MODULE_LIST             0x86  /* Module option */
+#define CONFIG_ITEM_MODULE_LIST_CAT         0x87  /* Module option */
+#define CONFIG_ITEM_LOADFILE                0x8C  /* Read file option */
+#define CONFIG_ITEM_SAVEFILE                0x8D  /* Written file option */
+#define CONFIG_ITEM_DIRECTORY               0x8E  /* Directory option */
+#define CONFIG_ITEM_FONT                    0x8F  /* Font option */
+
+#define CONFIG_ITEM(x) (((x) & ~0xF) != 0)
+
+/* Categories and subcategories */
+#define CAT_INTERFACE 1
+#define SUBCAT_INTERFACE_GENERAL 101
+#define SUBCAT_INTERFACE_MAIN 102
+#define SUBCAT_INTERFACE_CONTROL 103
+#define SUBCAT_INTERFACE_HOTKEYS 104
+
+#define CAT_AUDIO 2
+#define SUBCAT_AUDIO_GENERAL 201
+#define SUBCAT_AUDIO_AOUT 202
+#define SUBCAT_AUDIO_AFILTER 203
+#define SUBCAT_AUDIO_VISUAL 204
+#define SUBCAT_AUDIO_MISC 205
+
+#define CAT_VIDEO 3
+#define SUBCAT_VIDEO_GENERAL 301
+#define SUBCAT_VIDEO_VOUT 302
+#define SUBCAT_VIDEO_VFILTER 303
+#define SUBCAT_VIDEO_SUBPIC 305
+
+#define CAT_INPUT 4
+#define SUBCAT_INPUT_GENERAL 401
+#define SUBCAT_INPUT_ACCESS 402
+#define SUBCAT_INPUT_DEMUX 403
+#define SUBCAT_INPUT_VCODEC 404
+#define SUBCAT_INPUT_ACODEC 405
+#define SUBCAT_INPUT_SCODEC 406
+#define SUBCAT_INPUT_STREAM_FILTER 407
+
+#define CAT_SOUT 5
+#define SUBCAT_SOUT_GENERAL 501
+#define SUBCAT_SOUT_STREAM 502
+#define SUBCAT_SOUT_MUX 503
+#define SUBCAT_SOUT_ACO 504
+#define SUBCAT_SOUT_PACKETIZER 505
+#define SUBCAT_SOUT_VOD 507
+
+#define CAT_ADVANCED 6
+#define SUBCAT_ADVANCED_MISC 602
+#define SUBCAT_ADVANCED_NETWORK 603
+
+#define CAT_PLAYLIST 7
+#define SUBCAT_PLAYLIST_GENERAL 701
+#define SUBCAT_PLAYLIST_SD 702
+#define SUBCAT_PLAYLIST_EXPORT 703
+
+
 /**
  * Current plugin ABI version
  */
-# define MODULE_SYMBOL 1_2_0l
-# define MODULE_SUFFIX "__1_2_0l"
+# define MODULE_SYMBOL 2_1_0a
+# define MODULE_SUFFIX "__2_1_0a"
 
 /*****************************************************************************
  * Add a few defines. You do not want to read this section. Really.
@@ -134,7 +216,7 @@ enum vlc_module_properties
 
 #define CDECL_SYMBOL
 #if defined (__PLUGIN__)
-# if defined (WIN32)
+# if defined (_WIN32)
 #   define DLL_SYMBOL              __declspec(dllexport)
 #   undef CDECL_SYMBOL
 #   define CDECL_SYMBOL            __cdecl
@@ -386,19 +468,23 @@ VLC_METADATA_EXPORTS
 #define change_short( ch ) \
     vlc_config_set (VLC_CONFIG_SHORTCUT, (int)(ch));
 
-#define change_string_list( list, list_text, list_update_func ) \
+#define change_string_list( list, list_text ) \
     vlc_config_set (VLC_CONFIG_LIST, \
                     (size_t)(sizeof (list) / sizeof (char *)), \
                     (const char *const *)(list), \
-                    (const char *const *)(list_text), \
-                    (vlc_callback_t)(list_update_func));
+                    (const char *const *)(list_text));
+
+#define change_string_cb( cb ) \
+    vlc_config_set (VLC_CONFIG_LIST_CB, (cb));
 
 #define change_integer_list( list, list_text ) \
     vlc_config_set (VLC_CONFIG_LIST, \
                     (size_t)(sizeof (list) / sizeof (int)), \
                     (const int *)(list), \
-                    (const char *const *)(list_text), \
-                    (vlc_callback_t)(NULL));
+                    (const char *const *)(list_text));
+
+#define change_integer_cb( cb ) \
+    vlc_config_set (VLC_CONFIG_LIST_CB, (cb));
 
 #define change_integer_range( minv, maxv ) \
     vlc_config_set (VLC_CONFIG_RANGE, (int64_t)(minv), (int64_t)(maxv));
@@ -407,8 +493,7 @@ VLC_METADATA_EXPORTS
     vlc_config_set (VLC_CONFIG_RANGE, (double)(minv), (double)(maxv));
 
 #define change_action_add( pf_action, text ) \
-    vlc_config_set (VLC_CONFIG_ADD_ACTION, \
-                    (vlc_callback_t)(pf_action), (const char *)(text));
+    (void)(pf_action, text);
 
 /* For options that are saved but hidden from the preferences panel */
 #define change_private() \
@@ -438,15 +523,21 @@ VLC_METADATA_EXPORTS
     "\x65\x20\x56\x69\x64\x65\x6f\x4c\x41\x4e\x20\x56\x4c\x43\x20\x6d" \
     "\x65\x64\x69\x61\x20\x70\x6c\x61\x79\x65\x72\x20\x64\x65\x76\x65" \
     "\x6c\x6f\x70\x65\x72\x73" )
-#elif !defined (VLC_COPYRIGHT_EXPORT)
-# define VLC_COPYRIGHT_EXPORT
-#endif
-#define VLC_LICENSE_EXPORT VLC_META_EXPORT (license, \
+# define VLC_LICENSE_EXPORT VLC_META_EXPORT (license, \
     "\x4c\x69\x63\x65\x6e\x73\x65\x64\x20\x75\x6e\x64\x65\x72\x20\x74" \
     "\x68\x65\x20\x74\x65\x72\x6d\x73\x20\x6f\x66\x20\x74\x68\x65\x20" \
-    "\x47\x4e\x55\x20\x47\x65\x6e\x65\x72\x61\x6c\x20\x50\x75\x62\x6c" \
-    "\x69\x63\x20\x4c\x69\x63\x65\x6e\x73\x65\x2c\x20\x76\x65\x72\x73" \
-    "\x69\x6f\x6e\x20\x32\x20\x6f\x72\x20\x6c\x61\x74\x65\x72\x2e" )
+    "\x47\x4e\x55\x20\x4c\x65\x73\x73\x65\x72\x20\x47\x65\x6e\x65\x72" \
+    "\x61\x6c\x20\x50\x75\x62\x6c\x69\x63\x20\x4c\x69\x63\x65\x6e\x73" \
+    "\x65\x2c\x20\x76\x65\x72\x73\x69\x6f\x6e\x20\x32\x2e\x31\x20\x6f" \
+    "\x72\x20\x6c\x61\x74\x65\x72\x2e" )
+#else
+# if !defined (VLC_COPYRIGHT_EXPORT)
+#  define VLC_COPYRIGHT_EXPORT
+# endif
+# if !defined (VLC_LICENSE_EXPORT)
+#  define VLC_LICENSE_EXPORT
+# endif
+#endif
 
 #define VLC_METADATA_EXPORTS \
     VLC_COPYRIGHT_EXPORT \

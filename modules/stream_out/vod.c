@@ -2,7 +2,7 @@
  * vod.c: rtsp VoD server module
  *****************************************************************************
  * Copyright (C) 2003-2006, 2010 the VideoLAN team
- * $Id: dd611d5fa4f581471eedbdbc64e2a78d75a0cbd7 $
+ * $Id: 41c8d254253babfd4b3e28d08b29325a4b1f5f8c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -339,7 +339,7 @@ static void CommandPush( vod_t *p_vod, rtsp_cmd_type_t i_type,
     else
         cmd.psz_arg = NULL;
 
-    p_cmd = block_New( p_vod, sizeof(rtsp_cmd_t) );
+    p_cmd = block_Alloc( sizeof(rtsp_cmd_t) );
     memcpy( p_cmd->p_buffer, &cmd, sizeof(cmd) );
 
     block_FifoPut( p_vod->p_sys->p_fifo_cmd, p_cmd );

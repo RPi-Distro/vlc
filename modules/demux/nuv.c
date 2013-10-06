@@ -1,25 +1,25 @@
 /*****************************************************************************
  * nuv.c:
  *****************************************************************************
- * Copyright (C) 2005 the VideoLAN team
- * $Id: 028e07159568c5409b704920619668c5de5c030f $
+ * Copyright (C) 2005 VLC authors and VideoLAN
+ * $Id: 9d534e4c6d3cd3d8c0db1baec82a865453d39553 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gertjan Van Droogenbroeck <gertjanvd _PLUS_ vlc _AT_ gmail _DOT_ com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -769,8 +769,8 @@ static int SeekTableLoad( demux_t *p_demux, demux_sys_t *p_sys )
     const int32_t i_seek_elements = fh.i_length / 12;
 
     /* Get keyframe adjust offsets */
-    int32_t i_kfa_elements;
-    uint8_t *p_kfa_table;
+    int32_t i_kfa_elements = 0;
+    uint8_t *p_kfa_table = NULL;
 
     if( p_sys->exh.i_keyframe_adjust_offset > 0 )
     {
@@ -806,16 +806,7 @@ static int SeekTableLoad( demux_t *p_demux, demux_sys_t *p_sys )
 
             i_kfa_elements = fh.i_length / 8;
         }
-        else
-        {
-            i_kfa_elements = 0;
-        }
     }
-    else
-    {
-        i_kfa_elements = 0;
-    }
-
 
     if( i_kfa_elements > 0 )
         msg_Warn( p_demux, "untested keyframe adjust support, upload samples" );

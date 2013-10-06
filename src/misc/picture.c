@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2000-2010 VLC authors and VideoLAN
  * Copyright (C) 2009-2010 Laurent Aimar
- * $Id: cb106a70d144b4bb5dc220fed9961774636ba2bc $
+ * $Id: 093d7c0a358ec4220cbaea493d0362cb2d15fc15 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -37,6 +37,7 @@
 #include <vlc_picture.h>
 #include <vlc_image.h>
 #include <vlc_block.h>
+#include <vlc_atomic.h>
 
 /**
  * Allocate a new picture in the heap.
@@ -45,16 +46,8 @@
  * used exactly like a video buffer. The video output thread then manages
  * how it gets displayed.
  */
-static int vout_AllocatePicture( picture_t *p_pic,
-                                 vlc_fourcc_t i_chroma,
-                                 int i_width, int i_height,
-                                 int i_sar_num, int i_sar_den )
+static int AllocatePicture( picture_t *p_pic )
 {
-    /* Make sure the real dimensions are a multiple of 16 */
-    if( picture_Setup( p_pic, i_chroma, i_width, i_height,
-                       i_sar_num, i_sar_den ) != VLC_SUCCESS )
-        return VLC_EGENERIC;
-
     /* Calculate how big the new image should be */
     size_t i_bytes = 0;
     for( int i = 0; i < p_pic->i_planes; i++ )
@@ -76,7 +69,7 @@ static int vout_AllocatePicture( picture_t *p_pic,
         p_pic->i_planes = 0;
         return VLC_EGENERIC;
     }
-    p_pic->p_data_orig = p_data; /* TODO: get rid of this */
+    p_pic->gc.p_sys = (void *)p_data;
 
     /* Fill the p_pixels field for each plane */
     p_pic->p[0].p_pixels = p_data;
@@ -92,11 +85,14 @@ static int vout_AllocatePicture( picture_t *p_pic,
 /*****************************************************************************
  *
  *****************************************************************************/
-static void PictureReleaseCallback( picture_t *p_picture )
+static void PictureDestroy( picture_t *p_picture )
 {
-    if( --p_picture->i_refcount > 0 )
-        return;
-    picture_Delete( p_picture );
+    assert( p_picture &&
+            vlc_atomic_get( &p_picture->gc.refcount ) == 0 );
+
+    vlc_free( p_picture->gc.p_sys );
+    free( p_picture->p_sys );
+    free( p_picture );
 }
 
 /*****************************************************************************
@@ -110,7 +106,6 @@ void picture_Reset( picture_t *p_picture )
     p_picture->b_progressive = false;
     p_picture->i_nb_fields = 2;
     p_picture->b_top_field_first = false;
-    picture_CleanupQuant( p_picture );
 }
 
 /*****************************************************************************
@@ -133,15 +128,11 @@ int picture_Setup( picture_t *p_picture, vlc_fourcc_t i_chroma,
         p->i_pixel_pitch = 0;
     }
 
-    p_picture->pf_release = NULL;
-    p_picture->p_release_sys = NULL;
-    p_picture->i_refcount = 0;
+    vlc_atomic_set( &p_picture->gc.refcount, 0 );
+    p_picture->gc.pf_destroy = NULL;
+    p_picture->gc.p_sys = NULL;
 
     p_picture->i_nb_fields = 2;
-
-    p_picture->i_qtype = QTYPE_NONE;
-    p_picture->i_qstride = 0;
-    p_picture->p_q = NULL;
 
     video_format_Setup( &p_picture->format, i_chroma, i_width, i_height,
                         i_sar_num, i_sar_den );
@@ -211,15 +202,18 @@ picture_t *picture_NewFromResource( const video_format_t *p_fmt, const picture_r
     if( !p_picture )
         return NULL;
 
+    /* Make sure the real dimensions are a multiple of 16 */
+    if( picture_Setup( p_picture, fmt.i_chroma, fmt.i_width, fmt.i_height,
+                       fmt.i_sar_num, fmt.i_sar_den ) )
+    {
+        free( p_picture );
+        return NULL;
+    }
+
     if( p_resource )
     {
-        if( picture_Setup( p_picture, fmt.i_chroma, fmt.i_width, fmt.i_height,
-                           fmt.i_sar_num, fmt.i_sar_den ) )
-        {
-            free( p_picture );
-            return NULL;
-        }
         p_picture->p_sys = p_resource->p_sys;
+        assert( p_picture->gc.p_sys == NULL );
 
         for( int i = 0; i < p_picture->i_planes; i++ )
         {
@@ -230,18 +224,18 @@ picture_t *picture_NewFromResource( const video_format_t *p_fmt, const picture_r
     }
     else
     {
-        if( vout_AllocatePicture( p_picture,
-                                  fmt.i_chroma, fmt.i_width, fmt.i_height,
-                                  fmt.i_sar_num, fmt.i_sar_den ) )
+        if( AllocatePicture( p_picture ) )
         {
             free( p_picture );
             return NULL;
         }
+        assert( p_picture->gc.p_sys != NULL );
     }
     /* */
     p_picture->format = fmt;
-    p_picture->i_refcount = 1;
-    p_picture->pf_release = PictureReleaseCallback;
+
+    vlc_atomic_set( &p_picture->gc.refcount, 1 );
+    p_picture->gc.pf_destroy = PictureDestroy;
 
     return p_picture;
 }
@@ -263,28 +257,28 @@ picture_t *picture_New( vlc_fourcc_t i_chroma, int i_width, int i_height, int i_
 /*****************************************************************************
  *
  *****************************************************************************/
-void picture_Delete( picture_t *p_picture )
-{
-    assert( p_picture && p_picture->i_refcount == 0 );
-    assert( p_picture->p_release_sys == NULL );
 
-    free( p_picture->p_q );
-    vlc_free( p_picture->p_data_orig );
-    free( p_picture->p_sys );
-    free( p_picture );
+picture_t *picture_Hold( picture_t *p_picture )
+{
+    vlc_atomic_inc( &p_picture->gc.refcount );
+    return p_picture;
+}
+
+void picture_Release( picture_t *p_picture )
+{
+    if( vlc_atomic_dec( &p_picture->gc.refcount ) == 0 &&
+        p_picture->gc.pf_destroy )
+        p_picture->gc.pf_destroy( p_picture );
+}
+
+bool picture_IsReferenced( picture_t *p_picture )
+{
+    return vlc_atomic_get( &p_picture->gc.refcount ) > 1;
 }
 
 /*****************************************************************************
  *
  *****************************************************************************/
-void picture_CopyPixels( picture_t *p_dst, const picture_t *p_src )
-{
-    int i;
-
-    for( i = 0; i < p_src->i_planes ; i++ )
-        plane_CopyPixels( p_dst->p+i, p_src->p+i );
-}
-
 void plane_CopyPixels( plane_t *p_dst, const plane_t *p_src )
 {
     const unsigned i_width  = __MIN( p_dst->i_visible_pitch,
@@ -300,7 +294,7 @@ void plane_CopyPixels( plane_t *p_dst, const plane_t *p_src )
         p_src->i_pitch < 2*p_src->i_visible_pitch )
     {
         /* There are margins, but with the same width : perfect ! */
-        vlc_memcpy( p_dst->p_pixels, p_src->p_pixels,
+        memcpy( p_dst->p_pixels, p_src->p_pixels,
                     p_src->i_pitch * i_height );
     }
     else
@@ -315,12 +309,37 @@ void plane_CopyPixels( plane_t *p_dst, const plane_t *p_src )
 
         for( i_line = i_height; i_line--; )
         {
-            vlc_memcpy( p_out, p_in, i_width );
+            memcpy( p_out, p_in, i_width );
             p_in += p_src->i_pitch;
             p_out += p_dst->i_pitch;
         }
     }
 }
+
+void picture_CopyProperties( picture_t *p_dst, const picture_t *p_src )
+{
+    p_dst->date = p_src->date;
+    p_dst->b_force = p_src->b_force;
+
+    p_dst->b_progressive = p_src->b_progressive;
+    p_dst->i_nb_fields = p_src->i_nb_fields;
+    p_dst->b_top_field_first = p_src->b_top_field_first;
+}
+
+void picture_CopyPixels( picture_t *p_dst, const picture_t *p_src )
+{
+    int i;
+
+    for( i = 0; i < p_src->i_planes ; i++ )
+        plane_CopyPixels( p_dst->p+i, p_src->p+i );
+}
+
+void picture_Copy( picture_t *p_dst, const picture_t *p_src )
+{
+    picture_CopyPixels( p_dst, p_src );
+    picture_CopyProperties( p_dst, p_src );
+}
+
 
 /*****************************************************************************
  *

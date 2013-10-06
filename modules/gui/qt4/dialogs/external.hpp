@@ -21,9 +21,13 @@
 #ifndef QVLC_DIALOGS_EXTERNAL_H_
 #define QVLC_DIALOGS_EXTERNAL_H_ 1
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <QObject>
 #include <vlc_common.h>
-#include "variables.hpp"
+#include "adapters/variables.hpp"
 
 struct intf_thread_t;
 class QProgressDialog;
@@ -51,10 +55,10 @@ signals:
 
 private slots:
     void displayError (const QString&, const QString&);
-    void displayCritical (vlc_object_t *, void *);
-    void requestLogin (vlc_object_t *, void *);
-    void requestAnswer (vlc_object_t *, void *);
-    void startProgressBar (vlc_object_t *, void *);
+    void displayCritical (void *);
+    void requestLogin (void *);
+    void requestAnswer (void *);
+    void startProgressBar (void *);
     void stopProgressBar (QWidget *);
 };
 

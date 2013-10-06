@@ -5,7 +5,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 37c6950df74e2137e2647c71c8ecf9507f1d99c8 $
+ * $Id: cf91c7f61afad7bf61d2fc1051d6accfc9b9de29 $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -137,7 +137,7 @@ void CAtmoExternalCaptureInput::DeliverNewSourceDataPaket(VLC_BITMAPINFOHEADER *
 
 DWORD CAtmoExternalCaptureInput::Execute(void)
 {
-    while ((this->m_bTerminated == ATMO_FALSE)) {
+    while (this->m_bTerminated == ATMO_FALSE) {
           vlc_mutex_lock( &m_WakeupLock );
           vlc_cond_timedwait(&m_WakeupCond, &m_WakeupLock, mdate() + 75000 );
 

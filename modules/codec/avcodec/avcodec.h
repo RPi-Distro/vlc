@@ -1,36 +1,29 @@
 /*****************************************************************************
  * avcodec.h: decoder and encoder using libavcodec
  *****************************************************************************
- * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: a5599477639ac8f96b561d5c63a65015452a1aa3 $
+ * Copyright (C) 2001-2008 VLC authors and VideoLAN
+ * $Id: 388798322f1b91f364586b5e9520d352632e0e3e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#ifndef HAVE_AVUTIL_PLANAR
-# define av_sample_fmt_is_planar(x) (0)
-#endif
-
-
 #include "chroma.h"
+#include "avcommon.h"
+
 /* VLC <-> avcodec tables */
 int GetFfmpegCodec( vlc_fourcc_t i_fourcc, int *pi_cat,
                     int *pi_ffmpeg_codec, const char **ppsz_name );
@@ -38,8 +31,8 @@ int GetVlcFourcc( int i_ffmpeg_codec, int *pi_cat,
                   vlc_fourcc_t *pi_fourcc, const char **ppsz_name );
 vlc_fourcc_t GetVlcAudioFormat( int i_sample_fmt );
 
-picture_t * DecodeVideo    ( decoder_t *, block_t ** );
-aout_buffer_t * DecodeAudio( decoder_t *, block_t ** );
+picture_t * DecodeVideo( decoder_t *, block_t ** );
+block_t * DecodeAudio( decoder_t *, block_t ** );
 subpicture_t *DecodeSubtitle( decoder_t *p_dec, block_t ** );
 
 /* Video encoder module */
@@ -54,8 +47,6 @@ void CloseAudioEncoder( vlc_object_t * );
 int  OpenDeinterlace( vlc_object_t * );
 void CloseDeinterlace( vlc_object_t * );
 
-void InitLibavcodec( vlc_object_t *p_object );
-
 /* Video Decoder */
 int InitVideoDec( decoder_t *p_dec, AVCodecContext *p_context,
                   AVCodec *p_codec, int i_codec_id, const char *psz_namecodec );
@@ -64,12 +55,10 @@ void EndVideoDec( decoder_t *p_dec );
 /* Audio Decoder */
 int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
                   AVCodec *p_codec, int i_codec_id, const char *psz_namecodec );
-void EndAudioDec( decoder_t *p_dec );
 
 /* Subtitle Decoder */
 int InitSubtitleDec( decoder_t *p_dec, AVCodecContext *p_context,
                      AVCodec *p_codec, int i_codec_id, const char *psz_namecodec );
-void EndSubtitleDec( decoder_t *p_dec );
 
 /* Initialize decoder */
 int ffmpeg_OpenCodec( decoder_t *p_dec );
@@ -79,11 +68,10 @@ int ffmpeg_OpenCodec( decoder_t *p_dec );
  *****************************************************************************/
 #define DR_TEXT N_("Direct rendering")
 /* FIXME Does somebody who knows what it does, explain */
-#define DR_LONGTEXT N_("Direct rendering")
 
 #define ERROR_TEXT N_("Error resilience")
 #define ERROR_LONGTEXT N_( \
-    "FFmpeg can do error resilience.\n" \
+    "libavcodec can do error resilience.\n" \
     "However, with a buggy encoder (such as the ISO MPEG-4 encoder from M$) " \
     "this can produce a lot of errors.\n" \
     "Valid values range from 0 to 4 (0 disables all errors resilience).")
@@ -118,8 +106,11 @@ int ffmpeg_OpenCodec( decoder_t *p_dec );
 
 #define SKIP_IDCT_TEXT N_("Skip idct (default=0)")
 #define SKIP_IDCT_LONGTEXT N_( \
-    "Force skipping of idct to speed up decoding for frame types" \
+    "Force skipping of idct to speed up decoding for frame types " \
     "(-1=None, 0=Default, 1=B-frames, 2=P-frames, 3=B+P frames, 4=all frames)." )
+
+#define IGNORECROP_TEXT N_("Discard cropping information")
+#define IGNORECROP_LONGTEXT N_("Discard internal cropping parameters (e.g. from H.264 SPS)." )
 
 #define DEBUG_TEXT N_( "Debug mask" )
 #define DEBUG_LONGTEXT N_( "Set FFmpeg debug mask" )
@@ -137,10 +128,6 @@ int ffmpeg_OpenCodec( decoder_t *p_dec );
     "4 - visualize backward predicted MVs of B frames\n" \
     "To visualize all vectors, the value should be 7." )
 
-#define LOWRES_TEXT N_( "Low resolution decoding" )
-#define LOWRES_LONGTEXT N_( "Only decode a low resolution version of " \
-    "the video. This requires less processing power" )
-
 #define SKIPLOOPF_TEXT N_( "Skip the loop filter for H.264 decoding" )
 #define SKIPLOOPF_LONGTEXT N_( "Skipping the loop filter (aka deblocking) " \
     "usually has a detrimental effect on quality. However it provides a big " \
@@ -149,13 +136,16 @@ int ffmpeg_OpenCodec( decoder_t *p_dec );
 #define HW_TEXT N_("Hardware decoding")
 #define HW_LONGTEXT N_("This allows hardware decoding when available.")
 
+#define VDA_PIX_FMT_TEXT N_("VDA output pixel format")
+#define VDA_PIX_FMT_LONGTEXT N_("The pixel format for output image buffers.")
+
 #define THREADS_TEXT N_( "Threads" )
 #define THREADS_LONGTEXT N_( "Number of threads used for decoding, 0 meaning auto" )
 
 /*
  * Encoder options
  */
-#define ENC_CFG_PREFIX "sout-ffmpeg-"
+#define ENC_CFG_PREFIX "sout-avcodec-"
 
 #define ENC_KEYINT_TEXT N_( "Ratio of key frames" )
 #define ENC_KEYINT_LONGTEXT N_( "Number of frames " \
@@ -266,7 +256,8 @@ int ffmpeg_OpenCodec( decoder_t *p_dec );
 #define ENC_PROFILE_TEXT N_( "Specify AAC audio profile to use" )
 #define ENC_PROFILE_LONGTEXT N_( "Specify the AAC audio profile to use " \
    "for encoding the audio bitstream. It takes the following options: " \
-   "main, low, ssr (not supported) and ltp (default: main)" )
+   "main, low, ssr (not supported),ltp, hev1, hev2 (default: low). " \
+   "hev1 and hev2 are currently supported only with libfdk-aac enabled libavcodec" )
 
 #define AVCODEC_COMMON_MEMBERS   \
     int i_cat;                  \
@@ -284,116 +275,3 @@ int ffmpeg_OpenCodec( decoder_t *p_dec );
 #   define HAVE_AVCODEC_MT
 #endif
 
-/* Uncomment it to enable compilation with vaapi/dxva2 (you also must change the build
- * system) */
-//#define HAVE_AVCODEC_VAAPI 1
-//#define HAVE_AVCODEC_DXVA2 1
-
-/* Ugly ifdefinitions to provide backwards compatibility with older ffmpeg/libav
- * versions */
-#ifndef AV_CPU_FLAG_FORCE
-#   define AV_CPU_FLAG_FORCE       FF_MM_FORCE
-#   define AV_CPU_FLAG_MMX         FF_MM_MMX
-#   define AV_CPU_FLAG_3DNOW       FF_MM_3DNOW
-#   define AV_CPU_FLAG_MMX2        FF_MM_MMX2
-#   define AV_CPU_FLAG_SSE         FF_MM_SSE
-#   define AV_CPU_FLAG_SSE2        FF_MM_SSE2
-#   define AV_CPU_FLAG_SSE2SLOW    FF_MM_SSE2SLOW
-#   define AV_CPU_FLAG_3DNOWEXT    FF_MM_3DNOWEXT
-#   define AV_CPU_FLAG_SSE3        FF_MM_SSE3
-#   define AV_CPU_FLAG_SSE3SLOW    FF_MM_SSE3SLOW
-#   define AV_CPU_FLAG_SSSE3       FF_MM_SSSE3
-#   define AV_CPU_FLAG_SSE4        FF_MM_SSE4
-#   define AV_CPU_FLAG_SSE42       FF_MM_SSE42
-#   define AV_CPU_FLAG_IWMMXT      FF_MM_IWMMXT
-#   define AV_CPU_FLAG_ALTIVEC     FF_MM_ALTIVEC
-#endif
-
-#if LIBAVCODEC_VERSION_MAJOR < 53
-#   define AVMediaType             CodecType
-#   define AVMEDIA_TYPE_AUDIO      CODEC_TYPE_AUDIO
-#   define AVMEDIA_TYPE_VIDEO      CODEC_TYPE_VIDEO
-#   define AVMEDIA_TYPE_SUBTITLE   CODEC_TYPE_SUBTITLE
-#   define AVMEDIA_TYPE_DATA       CODEC_TYPE_DATA
-#   define AVMEDIA_TYPE_ATTACHMENT CODEC_TYPE_ATTACHMENT
-#endif
-
-#if LIBAVCODEC_VERSION_MAJOR < 54
-#   define AV_PICTURE_TYPE_B        FF_B_TYPE
-#   define AV_PICTURE_TYPE_I        FF_I_TYPE
-#   define AV_PICTURE_TYPE_P        FF_P_TYPE
-
-#   define AV_SAMPLE_FMT_NONE       SAMPLE_FMT_NONE
-#   define AV_SAMPLE_FMT_U8         SAMPLE_FMT_U8
-#   define AV_SAMPLE_FMT_S16        SAMPLE_FMT_S16
-#   define AV_SAMPLE_FMT_S32        SAMPLE_FMT_S32
-#   define AV_SAMPLE_FMT_FLT        SAMPLE_FMT_FLT
-#   define AV_SAMPLE_FMT_DBL        SAMPLE_FMT_DBL
-
-#ifndef AV_CH_FRONT_LEFT
-#   define AV_CH_FRONT_LEFT         CH_FRONT_LEFT
-#endif
-#ifndef AV_CH_FRONT_RIGHT
-#   define AV_CH_FRONT_RIGHT        CH_FRONT_RIGHT
-#endif
-#ifndef AV_CH_FRONT_CENTER
-#   define AV_CH_FRONT_CENTER       CH_FRONT_CENTER
-#endif
-#ifndef AV_CH_LOW_FREQUENCY
-#   define AV_CH_LOW_FREQUENCY      CH_LOW_FREQUENCY
-#endif
-#ifndef AV_CH_BACK_LEFT
-#   define AV_CH_BACK_LEFT          CH_BACK_LEFT
-#endif
-#ifndef AV_CH_BACK_RIGHT
-#   define AV_CH_BACK_RIGHT         CH_BACK_RIGHT
-#endif
-#ifndef AV_CH_FRONT_LEFT_OF_CENTER
-#   define AV_CH_FRONT_LEFT_OF_CENTER  CH_FRONT_LEFT_OF_CENTER
-#endif
-#ifndef AV_CH_FRONT_RIGHT_OF_CENTER
-#   define AV_CH_FRONT_RIGHT_OF_CENTER CH_FRONT_RIGHT_OF_CENTER
-#endif
-#ifndef AV_CH_BACK_CENTER
-#   define AV_CH_BACK_CENTER        CH_BACK_CENTER
-#endif
-#ifndef AV_CH_SIDE_LEFT
-#   define AV_CH_SIDE_LEFT          CH_SIDE_LEFT
-#endif
-#ifndef AV_CH_SIDE_RIGHT
-#   define AV_CH_SIDE_RIGHT         CH_SIDE_RIGHT
-#endif
-#ifndef AV_CH_TOP_CENTER
-#   define AV_CH_TOP_CENTER         CH_TOP_CENTER
-#endif
-#ifndef AV_CH_TOP_FRONT_LEFT
-#   define AV_CH_TOP_FRONT_LEFT     CH_TOP_FRONT_LEFT
-#endif
-#ifndef AV_CH_TOP_FRONT_CENTER
-#   define AV_CH_TOP_FRONT_CENTER   CH_TOP_FRONT_CENTER
-#endif
-#ifndef AV_CH_TOP_FRONT_RIGHT
-#   define AV_CH_TOP_FRONT_RIGHT    CH_TOP_FRONT_RIGHT
-#endif
-#ifndef AV_CH_TOP_BACK_LEFT
-#   define AV_CH_TOP_BACK_LEFT      CH_TOP_BACK_LEFT
-#endif
-#ifndef AV_CH_TOP_BACK_CENTER
-#   define AV_CH_TOP_BACK_CENTER    CH_TOP_BACK_CENTER
-#endif
-#ifndef AV_CH_TOP_BACK_RIGHT
-#   define AV_CH_TOP_BACK_RIGHT     CH_TOP_BACK_RIGHT
-#endif
-#ifndef AV_CH_STEREO_LEFT
-#   define AV_CH_STEREO_LEFT        CH_STEREO_LEFT
-#endif
-#ifndef AV_CH_STEREO_RIGHT
-#   define AV_CH_STEREO_RIGHT       CH_STEREO_RIGHT
-#endif
-
-
-#endif
-
-#ifndef AV_PKT_FLAG_KEY
-#   define AV_PKT_FLAG_KEY         PKT_FLAG_KEY
-#endif

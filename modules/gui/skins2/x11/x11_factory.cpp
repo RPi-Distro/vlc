@@ -2,7 +2,7 @@
  * x11_factory.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 1e2330012fb2b485606435957aa2e879c565a649 $
+ * $Id: bfd5033e9dbd78771242645a82a29572a79b8e64 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -87,12 +87,25 @@ bool X11Factory::init()
     m_resourcePath.push_back( (string)datadir + "/skins2" );
     free( datadir );
     m_resourcePath.push_back( (string)"share/skins2" );
-    datadir = config_GetDataDir( getIntf() );
+    datadir = config_GetDataDir();
     m_resourcePath.push_back( (string)datadir + "/skins2" );
     free( datadir );
 
     // Determine the monitor geometry
     getDefaultGeometry( &m_screenWidth, &m_screenHeight );
+
+    // list all available monitors
+    int num_screen;
+    XineramaScreenInfo* info = XineramaQueryScreens( pDisplay, &num_screen );
+    if( info )
+    {
+        msg_Dbg( getIntf(), "number of monitors detected : %i", num_screen );
+        for( int i = 0; i < num_screen; i++ )
+            msg_Dbg( getIntf(), "  monitor #%i : %ix%i at +%i+%i",
+                                i, info[i].width, info[i].height,
+                                info[i].x_org, info[i].y_org );
+        XFree( info );
+    }
 
     return true;
 }
@@ -212,7 +225,7 @@ void X11Factory::getMonitorInfo( const GenericWindow &rWindow,
     if( info )
     {
         Region reg1 = XCreateRegion();
-        XRectangle rect1 = { x, y, w, h };
+        XRectangle rect1 = { (short)x, (short)y, (unsigned short)w, (unsigned short)h };
         XUnionRectWithRegion( &rect1, reg1, reg1 );
 
         unsigned int surface = 0;
@@ -220,7 +233,7 @@ void X11Factory::getMonitorInfo( const GenericWindow &rWindow,
         {
             Region reg2 = XCreateRegion();
             XRectangle rect2 = { info[i].x_org, info[i].y_org,
-                                 info[i].width, info[i].height };
+                                 (unsigned short)info[i].width, (unsigned short)info[i].height };
             XUnionRectWithRegion( &rect2, reg2, reg2 );
 
             Region reg = XCreateRegion();

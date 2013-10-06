@@ -2,7 +2,7 @@
  * mp4.c: mp4/mov muxer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2003, 2006 the VideoLAN team
- * $Id: 728a4e2019597f65345ed8ad81c0425256a1009f $
+ * $Id: a74bf79a510dd9532910171b2c96061ba58368aa $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin at videolan dot org>
@@ -165,7 +165,7 @@ static void  box_gather  ( bo_t *box, bo_t *box2 );
 
 static void box_send( sout_mux_t *p_mux,  bo_t *box );
 
-static block_t *bo_to_sout( sout_instance_t *p_sout,  bo_t *box );
+static block_t *bo_to_sout( bo_t *box );
 
 static bo_t *GetMoovBox( sout_mux_t *p_mux );
 
@@ -266,7 +266,7 @@ static void Close( vlc_object_t * p_this )
         bo_add_32be  ( &bo, p_sys->i_pos - p_sys->i_mdat_pos - 8 );
         bo_add_fourcc( &bo, "mdat" );
     }
-    p_hdr = bo_to_sout( p_mux->p_sout, &bo );
+    p_hdr = bo_to_sout( &bo );
     free( bo.p_buffer );
 
     sout_AccessOutSeek( p_mux->p_access, p_sys->i_mdat_pos );
@@ -290,7 +290,7 @@ static void Close( vlc_object_t * p_this )
         while( i_size > 0 )
         {
             i_chunk = __MIN( 32768, i_size );
-            p_buf = block_New( p_mux, i_chunk );
+            p_buf = block_Alloc( i_chunk );
             sout_AccessOutSeek( p_mux->p_access,
                                 p_sys->i_mdat_pos + i_size - i_chunk );
             if( sout_AccessOutRead( p_mux->p_access, p_buf ) < i_chunk )
@@ -596,7 +596,7 @@ again:
                 p_stream->i_last_dts += i_length;
 
                 /* Write a " " */
-                p_data = block_New( p_mux, 3 );
+                p_data = block_Alloc( 3 );
                 p_data->p_buffer[0] = 0;
                 p_data->p_buffer[1] = 1;
                 p_data->p_buffer[2] = ' ';
@@ -964,7 +964,6 @@ static bo_t *GetUdtaTag( sout_mux_t *p_mux )
 {
     sout_mux_sys_t *p_sys = p_mux->p_sys;
     bo_t *udta = box_new( "udta" );
-    vlc_meta_t *p_meta = p_mux->p_sout->p_meta;
     int i_track;
 
     /* Requirements */
@@ -998,8 +997,9 @@ static bo_t *GetUdtaTag( sout_mux_t *p_mux )
         box_fix( box );
         box_gather( udta, box );
     }
-
+#if 0
     /* Misc atoms */
+    vlc_meta_t *p_meta = p_mux->p_sout->p_meta;
     if( p_meta )
     {
 #define ADD_META_BOX( type, box_string ) { \
@@ -1024,7 +1024,7 @@ static bo_t *GetUdtaTag( sout_mux_t *p_mux )
         ADD_META_BOX( URL, "url" );
 #undef ADD_META_BOX
     }
-
+#endif
     box_fix( udta );
     return udta;
 }
@@ -1392,7 +1392,7 @@ static bo_t *GetStblBox( sout_mux_t *p_mux, mp4_stream_t *p_stream )
     if( p_stream->fmt.i_cat == AUDIO_ES )
         i_timescale = p_stream->fmt.audio.i_rate;
     else
-        i_timescale = 1001;
+        i_timescale = CLOCK_FREQ;
 
     /* first, create quantified length */
     for( i = 0, i_dts = 0, i_dts_q = 0; i < p_stream->i_entry_count; i++ )
@@ -1560,7 +1560,7 @@ static bo_t *GetMoovBox( sout_mux_t *p_mux )
         if( p_stream->fmt.i_cat == AUDIO_ES )
             i_timescale = p_stream->fmt.audio.i_rate;
         else
-            i_timescale = 1001;
+            i_timescale = CLOCK_FREQ;
 
         /* *** add /moov/trak *** */
         trak = box_new( "trak" );
@@ -2039,12 +2039,11 @@ static void box_gather ( bo_t *box, bo_t *box2 )
     box_free( box2 );
 }
 
-static block_t * bo_to_sout( sout_instance_t *p_sout,  bo_t *box )
+static block_t * bo_to_sout( bo_t *box )
 {
-    (void)p_sout;
     block_t *p_buf;
 
-    p_buf = block_New( p_sout, box->i_buffer );
+    p_buf = block_Alloc( box->i_buffer );
     if( box->i_buffer > 0 )
     {
         memcpy( p_buf->p_buffer, box->p_buffer, box->i_buffer );
@@ -2057,7 +2056,7 @@ static void box_send( sout_mux_t *p_mux,  bo_t *box )
 {
     block_t *p_buf;
 
-    p_buf = bo_to_sout( p_mux->p_sout, box );
+    p_buf = bo_to_sout( box );
     box_free( box );
 
     sout_AccessOutWrite( p_mux->p_access, p_buf );

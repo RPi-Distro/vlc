@@ -4,8 +4,8 @@
 basedir = text_renderer
 dir = text_renderer
 mods = freetype quartztext svg tdummy win32text
-libvlc_LTLIBRARIES =  $(LTLIBfreetype) $(LTLIBquartztext) $(LTLIBsvg)
-EXTRA_LTLIBRARIES =  libfreetype_plugin.la libquartztext_plugin.la libsvg_plugin.la
+libvlc_LTLIBRARIES =  $(LTLIBfreetype) $(LTLIBquartztext) $(LTLIBsvg) $(LTLIBwin32text)
+EXTRA_LTLIBRARIES =  libfreetype_plugin.la libquartztext_plugin.la libsvg_plugin.la libwin32text_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -17,10 +17,9 @@ libfreetype_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_freetype)
 libfreetype_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_freetype)
 libfreetype_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_freetype)
 libfreetype_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_freetype)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libfreetype_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_freetype)
 libfreetype_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_freetype)
-libfreetype_plugin_la_DEPENDENCIES =
 
 # The quartztext plugin
 libquartztext_plugin_la_SOURCES = $(SOURCES_quartztext)
@@ -30,10 +29,9 @@ libquartztext_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_quartztext)
 libquartztext_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_quartztext)
 libquartztext_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_quartztext)
 libquartztext_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_quartztext)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libquartztext_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_quartztext)
 libquartztext_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_quartztext)
-libquartztext_plugin_la_DEPENDENCIES =
 
 # The svg plugin
 libsvg_plugin_la_SOURCES = $(SOURCES_svg)
@@ -43,10 +41,9 @@ libsvg_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_svg)
 libsvg_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_svg)
 libsvg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_svg)
 libsvg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_svg)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libsvg_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_svg)
 libsvg_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_svg)
-libsvg_plugin_la_DEPENDENCIES =
 
 # The tdummy plugin
 libtdummy_plugin_la_SOURCES = $(SOURCES_tdummy)
@@ -56,10 +53,9 @@ libtdummy_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_tdummy)
 libtdummy_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_tdummy)
 libtdummy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_tdummy)
 libtdummy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_tdummy)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libtdummy_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_tdummy)
 libtdummy_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_tdummy)
-libtdummy_plugin_la_DEPENDENCIES =
 
 # The win32text plugin
 libwin32text_plugin_la_SOURCES = $(SOURCES_win32text)
@@ -69,8 +65,7 @@ libwin32text_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_win32text)
 libwin32text_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_win32text)
 libwin32text_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_win32text)
 libwin32text_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_win32text)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libwin32text_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_win32text)
 libwin32text_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_win32text)
-libwin32text_plugin_la_DEPENDENCIES =
 

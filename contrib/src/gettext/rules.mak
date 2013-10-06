@@ -1,5 +1,5 @@
 # gettext
-GETTEXT_VERSION=0.18.2.1
+GETTEXT_VERSION=0.18.3
 GETTEXT_URL=$(GNU)/gettext/gettext-$(GETTEXT_VERSION).tar.gz
 
 PKGS += gettext
@@ -34,7 +34,7 @@ else
 endif
 ifdef HAVE_MACOSX
 	# detect libintl correctly in configure for static library
-	(cd $(PREFIX)/share/aclocal; sed -i.orig  '184s/$$LIBINTL/$$LIBINTL $$INTL_MACOSX_LIBS/' gettext.m4)
+	sed -i.orig  's/$$LIBS $$LIBINTL/$$LIBS $$LIBINTL $$INTL_MACOSX_LIBS/' "$(PREFIX)"/share/aclocal/gettext.m4
 endif
 	touch $@
 

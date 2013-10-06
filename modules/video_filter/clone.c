@@ -1,24 +1,24 @@
 /*****************************************************************************
  * clone.c : Clone video plugin for vlc
  *****************************************************************************
- * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: cb8790c616ef565afca1f00a3876507cf14736fa $
+ * Copyright (C) 2002-2009 VLC authors and VideoLAN
+ * $Id: 284ff8adb663e20e12cb3430d144e93c3c39082c $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -60,7 +60,8 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_VIDEO_VFILTER )
 
     add_integer( CFG_PREFIX "count", 2, COUNT_TEXT, COUNT_LONGTEXT, false )
-    add_string ( CFG_PREFIX "vout-list", NULL, VOUTLIST_TEXT, VOUTLIST_LONGTEXT, true )
+    add_module_list( CFG_PREFIX "vout-list", "vout display", NULL,
+                     VOUTLIST_TEXT, VOUTLIST_LONGTEXT, true )
 
     add_shortcut( "clone" )
     set_callbacks( Open, Close )
@@ -73,7 +74,7 @@ static const char *const ppsz_filter_options[] = {
     "count", "vout-list", NULL
 };
 
-#define VOUTSEPARATOR ','
+#define VOUTSEPARATOR ':'
 
 static int Filter( video_splitter_t *, picture_t *pp_dst[], picture_t * );
 

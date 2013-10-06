@@ -1,25 +1,25 @@
 /*****************************************************************************
  * shoutcast.c: Winamp >=5.2 shoutcast demuxer
  *****************************************************************************
- * Copyright (C) 2006 the VideoLAN team
- * $Id: 211612eac37144db991b365d369011ef5d3b85e6 $
+ * Copyright (C) 2006 VLC authors and VideoLAN
+ * $Id: 9348819bbdfd6b5716de061ad6cf19eaf0ad3a93 $
  *
  * Authors: Antoine Cellerier <dionoea -@t- videolan -Dot- org>
  *          based on b4s.c by Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -45,7 +45,6 @@
  * Local prototypes
  *****************************************************************************/
 static int Demux( demux_t *p_demux);
-static int Control( demux_t *p_demux, int i_query, va_list args );
 
 static int DemuxGenre( demux_t *p_demux, xml_reader_t *p_xml_reader,
                        input_item_node_t *p_input_node );
@@ -67,14 +66,6 @@ int Import_Shoutcast( vlc_object_t *p_this )
     msg_Dbg( p_demux, "using shoutcast playlist reader" );
 
     return VLC_SUCCESS;
-}
-
-/*****************************************************************************
- * Deactivate: frees unused data
- *****************************************************************************/
-void Close_Shoutcast( vlc_object_t *p_this )
-{
-    (void)p_this;
 }
 
 static int Demux( demux_t *p_demux )
@@ -358,10 +349,4 @@ static int DemuxStation( demux_t *p_demux, xml_reader_t *p_xml_reader,
     }
     /* FIXME: leaks on missing ENDELEMENT? */
     return 0;
-}
-
-static int Control( demux_t *p_demux, int i_query, va_list args )
-{
-    VLC_UNUSED(p_demux); VLC_UNUSED(i_query); VLC_UNUSED(args);
-    return VLC_EGENERIC;
 }

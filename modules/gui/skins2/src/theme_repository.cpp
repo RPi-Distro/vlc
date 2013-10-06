@@ -2,7 +2,7 @@
  * theme_repository.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 51cf89fa5d985fcde8113b9893f06352df15363c $
+ * $Id: 7f7dfe6467d06e0fdfe41dab6e97efada8edb662 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -27,7 +27,7 @@
 #include "../commands/cmd_dialogs.hpp"
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
-#elif defined( WIN32 ) && !defined( UNDER_CE )
+#elif defined( _WIN32 )
 #   include <direct.h>
 #endif
 

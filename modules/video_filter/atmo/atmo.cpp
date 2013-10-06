@@ -1,25 +1,25 @@
 /*****************************************************************************
-* atmo.cpp : "Atmo Light" video filter
-*****************************************************************************
-* Copyright (C) 2000-2006 the VideoLAN team
-* $Id: 52f3d1833ddf0457d6927eebaaa87264defc9ab0 $
-*
-* Authors: André Weber (WeberAndre@gmx.de)
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
-*****************************************************************************/
+ * atmo.cpp : "Atmo Light" video filter
+ *****************************************************************************
+ * Copyright (C) 2000-2006 VLC authors and VideoLAN
+ * $Id: cbcbec1d275519cc0b895cef0a70ceb58d7f67cc $
+ *
+ * Authors: André Weber (WeberAndre@gmx.de)
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -44,6 +44,7 @@
 #include <vlc_playlist.h>
 #include <vlc_filter.h>
 #include <vlc_atomic.h>
+#include <vlc_charset.h>
 
 #include "filter_picture.h"
 
@@ -137,7 +138,7 @@ strings for settings menus and hints
                                   "process - with more options")
 
 static const int pi_device_type_values[] = {
-#if defined( WIN32 )
+#if defined( _WIN32 )
      0, /* use AtmoWinA.exe userspace driver */
 #endif
      1, /* AtmoLight classic */
@@ -147,7 +148,7 @@ static const int pi_device_type_values[] = {
      5  /* fnordlicht */
 };
 static const char *const ppsz_device_type_descriptions[] = {
-#if defined( WIN32 )
+#if defined( _WIN32 )
         N_("AtmoWin Software"),
 #endif
         N_("Classic AtmoLight"),
@@ -173,7 +174,7 @@ static const char *const ppsz_device_type_descriptions[] = {
                                    "fnordlicht hardware " \
                                    "choose 1 to 254 channels")
 
-#if defined( WIN32 )
+#if defined( _WIN32 )
 #  define DEFAULT_DEVICE   0
 #else
 #  define DEFAULT_DEVICE   1
@@ -256,12 +257,12 @@ static const char *const ppsz_device_type_descriptions[] = {
                                 "On Windows usually something like COM1 or " \
                                 "COM2. On Linux /dev/ttyS01 f.e.")
 
-#define EDGE_TEXT            N_("Edge Weightning")
+#define EDGE_TEXT            N_("Edge weightning")
 #define EDGE_LONGTEXT        N_("Increasing this value will result in color "\
                                 "more depending on the border of the frame.")
 #define BRIGHTNESS_TEXT     N_("Brightness")
 #define BRIGHTNESS_LONGTEXT N_("Overall brightness of your LED stripes")
-#define DARKNESS_TEXT       N_("Darkness Limit")
+#define DARKNESS_TEXT       N_("Darkness limit")
 #define DARKNESS_LONGTEXT   N_("Pixels with a saturation lower than this will "\
                                "be ignored. Should be greater than one for "\
                                "letterboxed videos.")
@@ -276,7 +277,7 @@ static const char *const ppsz_device_type_descriptions[] = {
 #define MEANTHRESHOLD_TEXT     N_("Filter threshold")
 #define MEANTHRESHOLD_LONGTEXT N_("How much a color has to be changed for an "\
                                   "immediate color change.")
-#define MEANPERCENTNEW_TEXT     N_("Filter Smoothness (in %)")
+#define MEANPERCENTNEW_TEXT     N_("Filter smoothness (%)")
 #define MEANPERCENTNEW_LONGTEXT N_("Filter Smoothness")
 
 #define FILTERMODE_TEXT        N_("Output Color filter mode")
@@ -348,7 +349,7 @@ static const char *const ppsz_zone_assignment_descriptions[] = {
     "bitmaps, put them as zone_0.bmp, zone_1.bmp etc. into one folder and "\
     "set the foldername here")
 
-#if defined( WIN32 )
+#if defined( _WIN32 )
 #   define ATMOWINEXE_TEXT      N_("Filename of AtmoWin*.exe")
 #   define ATMOWINEXE_LONGTEXT  N_("if you want the AtmoLight control "\
                                    "software to be launched by VLC, enter the "\
@@ -377,7 +378,7 @@ add_integer( CFG_PREFIX "device", DEFAULT_DEVICE,
 change_integer_list( pi_device_type_values,
                      ppsz_device_type_descriptions )
 
-#if defined(WIN32)
+#if defined(_WIN32)
 add_string(CFG_PREFIX "serialdev", "COM1",
            SERIALDEV_TEXT, SERIALDEV_LONGTEXT, false )
 /*
@@ -672,7 +673,7 @@ static const char *const ppsz_filter_options[] = {
         "momo-channels",
         "fnordlicht-amount",
 
-#if defined(WIN32 )
+#if defined(_WIN32 )
         "atmowinexe",
 #endif
 #if defined(__ATMO_DEBUG__)
@@ -792,7 +793,7 @@ struct filter_sys_t
         picture_t *p_inpic,
         uint8_t *p_transfer_dest);
 
-#if defined( WIN32 )
+#if defined( _WIN32 )
     /* External Library as wrapper arround COM Stuff */
     HINSTANCE h_AtmoCtrl;
     int32_t (*pf_ctrl_atmo_initialize) (void);
@@ -835,7 +836,7 @@ static int32_t AtmoInitialize(filter_t *p_filter, bool b_for_thread)
                                   "some other software/driver may use it?");
             }
         }
-#if defined(WIN32)
+#if defined(_WIN32)
     } else if(p_sys->pf_ctrl_atmo_initialize)
     {
         /* on win32 with active ctrl dll */
@@ -907,7 +908,7 @@ static void AtmoFinalize(filter_t *p_filter, int32_t what)
                 p_atmo_dyndata->UnLockCriticalSection();
             }
         }
-#if defined(WIN32)
+#if defined(_WIN32)
     } else if(p_sys->pf_ctrl_atmo_finalize)
     {
         /* on win32 with active ctrl dll */
@@ -928,7 +929,7 @@ static int32_t AtmoSwitchEffect(filter_t *p_filter, int32_t newMode)
     if(p_sys->p_atmo_config)
     {
        return CAtmoTools::SwitchEffect(p_sys->p_atmo_dyndata, emLivePicture);
-#if defined(WIN32)
+#if defined(_WIN32)
     } else if(p_sys->pf_ctrl_atmo_switch_effect)
     {
         /* on win32 with active ctrl dll */
@@ -958,7 +959,7 @@ static int32_t AtmoSetLiveSource(filter_t *p_filter, int32_t newSource)
         function call would just do nothing special
         in this case
         */
-#if defined(WIN32)
+#if defined(_WIN32)
     } else if(p_sys->pf_ctrl_atmo_set_live_source)
     {
         /* on win32 with active ctrl dll */
@@ -999,7 +1000,7 @@ static void AtmoCreateTransferBuffers(filter_t *p_filter,
         p_sys->mini_image_format.biBitCount = bytePerPixel*8;
         p_sys->mini_image_format.biCompression = FourCC;
 
-#if defined(WIN32)
+#if defined(_WIN32)
     } else if(p_sys->pf_ctrl_atmo_create_transfer_buffers)
     {
         /* on win32 with active ctrl dll */
@@ -1023,7 +1024,7 @@ static uint8_t* AtmoLockTransferBuffer(filter_t *p_filter)
     if(p_sys->p_atmo_config)
     {
         return p_sys->p_atmo_transfer_buffer;
-#if defined(WIN32)
+#if defined(_WIN32)
     } else if(p_sys->pf_ctrl_atmo_lock_transfer_buffer)
     {
         /* on win32 with active ctrl dll */
@@ -1070,7 +1071,7 @@ static void AtmoSendPixelData(filter_t *p_filter)
                                                p_sys->p_atmo_transfer_buffer);
             }
         }
-#if defined(WIN32)
+#if defined(_WIN32)
     } else if(p_sys->pf_ctrl_atmo_send_pixel_data)
     {
         /* on win32 with active ctrl dll */
@@ -1181,7 +1182,7 @@ static void Atmo_SetupImageSize(filter_t *p_filter)
 
     if(p_sys->p_atmo_config)
     {
-#if defined(WIN32)
+#if defined(_WIN32)
     } else if(p_sys->pf_ctrl_atmo_get_image_size)
     {
         /* on win32 with active ctrl dll */
@@ -1585,9 +1586,9 @@ static void Atmo_SetupParameters(filter_t *p_filter)
     */
 
 
-#if defined(WIN32)
+#if defined(_WIN32)
     /*
-    only on WIN32 the user has the choice between
+    only on _WIN32 the user has the choice between
     internal driver and external
     */
 
@@ -1598,7 +1599,7 @@ static void Atmo_SetupParameters(filter_t *p_filter)
         if(p_sys->h_AtmoCtrl == NULL)
         {
             /*
-              be clever if the location of atmowina.exe is set
+              be clever if the location of atmowin.exe is set
               try to load the dll from the same folder :-)
             */
             char *psz_path = var_CreateGetStringCommand( p_filter,
@@ -1617,7 +1618,9 @@ static void Atmo_SetupParameters(filter_t *p_filter)
                     if( psz_dllname )
                     {
                         msg_Dbg( p_filter, "Try Loading '%s'", psz_dllname );
-                        p_sys->h_AtmoCtrl = LoadLibraryA( psz_dllname );
+                        TCHAR* ptsz_dllname = ToT(psz_dllname);
+                        p_sys->h_AtmoCtrl = LoadLibrary( ptsz_dllname );
+                        free(ptsz_dllname);
                     }
                     free( psz_dllname );
                 }
@@ -1773,7 +1776,7 @@ static void Atmo_SetupParameters(filter_t *p_filter)
     if(psz_path != NULL)
     {
         strcpy(p_sys->sz_framepath, psz_path);
-#if defined( WIN32 ) || defined( __OS2__ )
+#if defined( _WIN32 ) || defined( __OS2__ )
         size_t i_strlen = strlen(p_sys->sz_framepath);
         if((i_strlen>0) && (p_sys->sz_framepath[i_strlen-1] != '\\'))
         {
@@ -1840,7 +1843,7 @@ static void Atmo_SetupParameters(filter_t *p_filter)
     */
     int i = AtmoInitialize(p_filter, false);
 
-#if defined( WIN32 )
+#if defined( _WIN32 )
     if((i != 1) && (p_sys->i_device_type == 0))
     {
         /*
@@ -1849,16 +1852,17 @@ static void Atmo_SetupParameters(filter_t *p_filter)
         */
         char *psz_path = var_CreateGetStringCommand( p_filter,
                                                CFG_PREFIX "atmowinexe" );
+        LPTSTR ptsz_path = ToT(psz_path);
         if(psz_path != NULL)
         {
             STARTUPINFO startupinfo;
             PROCESS_INFORMATION pinfo;
             memset(&startupinfo, 0, sizeof(STARTUPINFO));
             startupinfo.cb = sizeof(STARTUPINFO);
-            if(CreateProcess(psz_path, NULL, NULL, NULL,
+            if(CreateProcess(ptsz_path, NULL, NULL, NULL,
                 FALSE, 0, NULL, NULL, &startupinfo, &pinfo) == TRUE)
             {
-                msg_Dbg(p_filter,"launched AtmoWin from %s",psz_path);
+                msg_Dbg(p_filter,"launched AtmoWin from %s", psz_path);
                 WaitForInputIdle(pinfo.hProcess, 5000);
                 /*
                   retry to initialize the library COM ... functionality
@@ -1869,6 +1873,7 @@ static void Atmo_SetupParameters(filter_t *p_filter)
                 msg_Err(p_filter,"failed to launch AtmoWin from %s", psz_path);
             }
             free(psz_path);
+            free(ptsz_path);
         }
     }
 #endif
@@ -1981,7 +1986,7 @@ static void DestroyFilter( vlc_object_t *p_this )
 
     Atmo_Shutdown(p_filter);
 
-#if defined( WIN32 )
+#if defined( _WIN32 )
     if(p_sys->h_AtmoCtrl != NULL)
     {
         FreeLibrary(p_sys->h_AtmoCtrl);
@@ -2062,7 +2067,7 @@ static void ExtractMiniImage_YUV(filter_sys_t *p_sys,
 
     /*  these two ugly loops extract the small image - goes it faster? how?
     the loops are so designed that there is a small border around the extracted
-    image so we wont get column and row - zero from the frame, and not the most
+    image so we won't get column and row - zero from the frame, and not the most
     right and bottom pixels --- which may be clipped on computers useing TV out
     - through overscan!
 

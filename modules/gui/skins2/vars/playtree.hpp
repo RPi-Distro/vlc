@@ -2,7 +2,7 @@
  * playtree.hpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 78d33fe0b0cec02c48df7bfa56fa32728f8b2bb6 $
+ * $Id: cb952e5c127c437181f1305e4dad849c54f757e1 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -79,6 +79,9 @@ private:
 
     /// Update Node's children
     void buildNode( playlist_item_t *p_node, VarTree &m_pNode );
+
+    /// title for an item
+    UString* getTitle( input_item_t *pItem );
 };
 
 #endif

@@ -2,7 +2,7 @@
  * modules.h : Module management functions.
  *****************************************************************************
  * Copyright (C) 2001 VLC authors and VideoLAN
- * $Id: e9b1297d697c994ccad5e81ba6b58c7aad318092 $
+ * $Id: bad964ff3a67f8110c9452d34ad470ec612c97a1 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -110,6 +110,8 @@ size_t module_LoadPlugins( vlc_object_t * );
 void module_EndBank (bool);
 int module_Map (vlc_object_t *, module_t *);
 
+ssize_t module_list_cap (module_t ***, const char *);
+
 int vlc_bindtextdomain (const char *);
 
 /* Low-level OS-dependent handler */
@@ -121,6 +123,9 @@ void module_Unload (module_handle_t);
 void   CacheMerge (vlc_object_t *, module_t *, module_t *);
 void   CacheDelete(vlc_object_t *, const char *);
 size_t CacheLoad  (vlc_object_t *, const char *, module_cache_t **);
+
+struct stat;
+
 int CacheAdd (module_cache_t **, size_t *,
               const char *, const struct stat *, module_t *);
 void CacheSave  (vlc_object_t *, const char *, module_cache_t *, size_t);

@@ -17,10 +17,9 @@ libfolder_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_folder)
 libfolder_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_folder)
 libfolder_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_folder)
 libfolder_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_folder)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libfolder_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_folder)
 libfolder_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_folder)
-libfolder_plugin_la_DEPENDENCIES =
 
 # The taglib plugin
 libtaglib_plugin_la_SOURCES = $(SOURCES_taglib)
@@ -30,8 +29,7 @@ libtaglib_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_taglib)
 libtaglib_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_taglib)
 libtaglib_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_taglib)
 libtaglib_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_taglib)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libtaglib_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_taglib)
 libtaglib_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_taglib)
-libtaglib_plugin_la_DEPENDENCIES =
 

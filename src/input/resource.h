@@ -2,7 +2,7 @@
  * resource.h
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 339116d95bf70fadee8b0cce3ffdac18beb3354f $
+ * $Id: f1ae4ef5dd18f22beab0f2e0081f8b89599496ad $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
@@ -37,16 +37,14 @@ void input_resource_SetInput( input_resource_t *, input_thread_t * );
 sout_instance_t *input_resource_RequestSout( input_resource_t *, sout_instance_t *, const char *psz_sout );
 
 /**
- * This function handles aout request.
+ * This function creates or recycles an audio output.
  */
-audio_output_t *input_resource_RequestAout( input_resource_t *, audio_output_t * );
+audio_output_t *input_resource_GetAout( input_resource_t * );
 
 /**
- * This function returns the current aout if any.
- *
- * You must call vlc_object_release on the value returned (if non NULL).
+ * This function retains or destroys an audio output.
  */
-audio_output_t *input_resource_HoldAout( input_resource_t *p_resource );
+void input_resource_PutAout( input_resource_t *, audio_output_t * );
 
 /**
  * This function handles vout request.

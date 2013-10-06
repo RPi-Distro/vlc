@@ -2,23 +2,23 @@
  * en50221.c : implementation of the transport, session and applications
  * layers of EN 50 221
  *****************************************************************************
- * Copyright (C) 2004-2005 the VideoLAN team
+ * Copyright (C) 2004-2005 VLC authors and VideoLAN
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  * Based on code from libdvbci Copyright (C) 2000 Klaus Schmidinger
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.    See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA    02111, USA.
  *****************************************************************************/
 
@@ -57,6 +57,8 @@
 
 #include "../demux/dvb-text.h"
 #include "dtv/en50221.h"
+
+#include "../mux/mpeg/dvbpsi_compat.h"
 
 typedef struct en50221_session_t
 {
@@ -939,6 +941,7 @@ static void ResourceManagerOpen( cam_t * p_cam, unsigned i_session_id )
  * Application Information
  */
 
+#ifdef ENABLE_HTTPD
 /*****************************************************************************
  * ApplicationInformationEnterMenu
  *****************************************************************************/
@@ -950,6 +953,7 @@ static void ApplicationInformationEnterMenu( cam_t * p_cam, int i_session_id )
     APDUSend( p_cam, i_session_id, AOT_ENTER_MENU, NULL, 0 );
     p_cam->pb_slot_mmi_expected[i_slot] = true;
 }
+#endif
 
 /*****************************************************************************
  * ApplicationInformationHandle
@@ -1610,7 +1614,7 @@ static void MMIFree( mmi_t *p_object )
     }
 }
 
-
+#ifdef ENABLE_HTTPD
 /*****************************************************************************
  * MMISendObject
  *****************************************************************************/
@@ -1660,6 +1664,7 @@ static void MMISendClose( cam_t *p_cam, int i_session_id )
 
     p_cam->pb_slot_mmi_expected[i_slot] = true;
 }
+#endif
 
 /*****************************************************************************
  * MMIDisplayReply
@@ -2282,6 +2287,7 @@ int en50221_SetCAPMT( cam_t * p_cam, dvbpsi_pmt_t *p_pmt )
     return VLC_SUCCESS;
 }
 
+#ifdef ENABLE_HTTPD
 /*****************************************************************************
  * en50221_OpenMMI :
  *****************************************************************************/
@@ -2394,7 +2400,6 @@ static void en50221_SendMMIObject( cam_t * p_cam, unsigned i_slot,
     msg_Err( p_cam->obj, "SendMMIObject when no MMI session is opened !" );
 }
 
-#ifdef ENABLE_HTTPD
 char *en50221_Status( cam_t *p_cam, char *psz_request )
 {
     if( psz_request != NULL && *psz_request )

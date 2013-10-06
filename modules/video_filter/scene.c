@@ -1,25 +1,25 @@
 /*****************************************************************************
  * scene.c : scene video filter (based on modules/video_output/image.c)
  *****************************************************************************
- * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: 86749936f68cd83bfeea1699397f7d600a05a269 $
+ * Copyright (C) 2004-2008 VLC authors and VideoLAN
+ * $Id: 4f68a7ec22a4fa5d81ee1ccd6ae423f6515e9558 $
  *
  * Authors: Jean-Paul Saman <jpsaman@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -29,6 +29,8 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+
+#include <limits.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
@@ -77,7 +79,7 @@ static void SavePicture( filter_t *, picture_t * );
                             "form if replace is not true." )
 
 #define PATH_TEXT N_( "Directory path prefix" )
-#define PATH_LONGTEXT N_( "Directory path where images files should be saved." \
+#define PATH_LONGTEXT N_( "Directory path where images files should be saved. " \
                           "If not set, then images will be automatically saved in " \
                           "users homedir." )
 
@@ -94,7 +96,7 @@ vlc_module_begin ()
     set_description( N_( "Scene video filter" ) )
     set_help(SCENE_HELP)
     set_category( CAT_VIDEO )
-    set_subcategory( SUBCAT_VIDEO_VOUT )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
     set_capability( "video filter2", 0 )
 
     /* General options */
@@ -112,8 +114,8 @@ vlc_module_begin ()
                  REPLACE_TEXT, REPLACE_LONGTEXT, false )
 
     /* Snapshot method */
-    add_integer( CFG_PREFIX "ratio", 50,
-                 RATIO_TEXT, RATIO_LONGTEXT, false )
+    add_integer_with_range( CFG_PREFIX "ratio", 50, 1, INT_MAX,
+                            RATIO_TEXT, RATIO_LONGTEXT, false )
 
     set_callbacks( Create, Destroy )
 vlc_module_end ()
@@ -183,6 +185,8 @@ static int Create( vlc_object_t *p_this )
     p_sys->i_width = var_CreateGetInteger( p_this, CFG_PREFIX "width" );
     p_sys->i_height = var_CreateGetInteger( p_this, CFG_PREFIX "height" );
     p_sys->i_ratio = var_CreateGetInteger( p_this, CFG_PREFIX "ratio" );
+    if( p_sys->i_ratio <= 0)
+        p_sys->i_ratio = 1;
     p_sys->b_replace = var_CreateGetBool( p_this, CFG_PREFIX "replace" );
     p_sys->psz_prefix = var_CreateGetString( p_this, CFG_PREFIX "prefix" );
     p_sys->psz_path = var_GetNonEmptyString( p_this, CFG_PREFIX "path" );
@@ -319,7 +323,7 @@ static void SavePicture( filter_t *p_filter, picture_t *p_pic )
     else
     {
         /* switch to the final destination */
-#if defined (WIN32) || defined(__OS2__)
+#if defined (_WIN32) || defined(__OS2__)
         vlc_unlink( psz_filename );
 #endif
         i_ret = vlc_rename( psz_temp, psz_filename );

@@ -1,25 +1,25 @@
 /*****************************************************************************
  * demux.c: demuxer using libavformat
  *****************************************************************************
- * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: cf6aae237b8267a42416e56826058e21dfa9a4cc $
+ * Copyright (C) 2004-2009 VLC authors and VideoLAN
+ * $Id: 106d7965da670f0aecfa3025d2ba821986ff46c9 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -42,6 +42,7 @@
 
 #include "../../codec/avcodec/avcodec.h"
 #include "../../codec/avcodec/chroma.h"
+#include "../../codec/avcodec/avcommon.h"
 #include "avformat.h"
 #include "../xiph.h"
 #include "../vobsub.h"
@@ -58,19 +59,13 @@
 /* Version checking */
 #if defined(HAVE_FFMPEG_AVFORMAT_H) || defined(HAVE_LIBAVFORMAT_AVFORMAT_H)
 
-#if (LIBAVCODEC_VERSION_INT >= ((51<<16)+(50<<8)+0) )
-#   define HAVE_AVUTIL_CODEC_ATTACHMENT 1
-#endif
+# define HAVE_AVUTIL_CODEC_ATTACHMENT 1
 
 /*****************************************************************************
  * demux_sys_t: demux descriptor
  *****************************************************************************/
 struct demux_sys_t
 {
-#if LIBAVFORMAT_VERSION_INT < ((53<<16)+(2<<8)+0)
-    ByteIOContext   io;
-#endif
-
     int             io_buffer_size;
     uint8_t        *io_buffer;
 
@@ -137,14 +132,12 @@ int OpenDemux( vlc_object_t *p_this )
     }
     stream_Control( p_demux->s, STREAM_CAN_SEEK, &b_can_seek );
 
-    vlc_avcodec_lock();
-    av_register_all(); /* Can be called several times */
-    vlc_avcodec_unlock();
+    vlc_init_avformat();
 
-    char *psz_format = var_InheritString( p_this, "ffmpeg-format" );
+    char *psz_format = var_InheritString( p_this, "avformat-format" );
     if( psz_format )
     {
-        if( fmt = av_find_input_format(psz_format) )
+        if( (fmt = av_find_input_format(psz_format)) )
             msg_Dbg( p_demux, "forcing format: %s", fmt->name );
         free( psz_format );
     }
@@ -225,21 +218,11 @@ int OpenDemux( vlc_object_t *p_this )
     p_sys->io_buffer_size = 32768;  /* FIXME */
     p_sys->io_buffer = malloc( p_sys->io_buffer_size );
 
-#if LIBAVFORMAT_VERSION_INT >= ((53<<16)+(2<<8)+0)
     p_sys->ic = avformat_alloc_context();
     p_sys->ic->pb = avio_alloc_context( p_sys->io_buffer,
         p_sys->io_buffer_size, 0, p_demux, IORead, NULL, IOSeek );
     p_sys->ic->pb->seekable = b_can_seek ? AVIO_SEEKABLE_NORMAL : 0;
     error = avformat_open_input(&p_sys->ic, psz_url, p_sys->fmt, NULL);
-#else
-    init_put_byte( &p_sys->io, p_sys->io_buffer, p_sys->io_buffer_size, 0,
-        p_demux, IORead, NULL, IOSeek );
-    p_sys->io.is_streamed = !b_can_seek;
-# if defined(AVIO_SEEKABLE_NORMAL)
-    p_sys->io.seekable = !!b_can_seek;
-# endif
-    error = av_open_input_stream(&p_sys->ic, &p_sys->io, psz_url, p_sys->fmt, NULL);
-#endif
 
     if( error < 0 )
     {
@@ -252,18 +235,43 @@ int OpenDemux( vlc_object_t *p_this )
     }
     free( psz_url );
 
-    vlc_avcodec_lock(); /* avformat calls avcodec behind our back!!! */
 #if LIBAVFORMAT_VERSION_INT >= ((53<<16)+(26<<8)+0)
-    error = avformat_find_stream_info( p_sys->ic, NULL /* options */ );
+    char *psz_opts = var_InheritString( p_demux, "avformat-options" );
+    AVDictionary *options[p_sys->ic->nb_streams ? p_sys->ic->nb_streams : 1];
+    options[0] = NULL;
+    unsigned int nb_streams = p_sys->ic->nb_streams;
+    for (unsigned i = 1; i < nb_streams; i++)
+        options[i] = NULL;
+    if (psz_opts && *psz_opts) {
+        options[0] = vlc_av_get_options(psz_opts);
+        for (unsigned i = 1; i < nb_streams; i++) {
+            av_dict_copy(&options[i], options[0], 0);
+        }
+    }
+    free(psz_opts);
+    vlc_avcodec_lock(); /* avformat calls avcodec behind our back!!! */
+    error = avformat_find_stream_info( p_sys->ic, options );
+    /* FIXME: what if nb_streams change after that call? */
+    vlc_avcodec_unlock();
+    AVDictionaryEntry *t = NULL;
+    while ((t = av_dict_get(options[0], "", t, AV_DICT_IGNORE_SUFFIX))) {
+        msg_Err( p_demux, "Unknown option \"%s\"", t->key );
+    }
+    av_dict_free(&options[0]);
+    for (unsigned i = 1; i < nb_streams; i++) {
+        av_dict_free(&options[i]);
+    }
 #else
+    vlc_avcodec_lock(); /* avformat calls avcodec behind our back!!! */
     error = av_find_stream_info( p_sys->ic );
+    vlc_avcodec_unlock();
 #endif
+
     if( error < 0 )
     {
         errno = AVUNERROR(error);
         msg_Warn( p_demux, "Could not find stream info: %m" );
     }
-    vlc_avcodec_unlock();
 
     for( i = 0; i < p_sys->ic->nb_streams; i++ )
     {
@@ -300,7 +308,7 @@ int OpenDemux( vlc_object_t *p_this )
             es_format_Init( &fmt, VIDEO_ES, fcc );
 
             /* Special case for raw video data */
-            if( cc->codec_id == CODEC_ID_RAWVIDEO )
+            if( cc->codec_id == AV_CODEC_ID_RAWVIDEO )
             {
                 msg_Dbg( p_demux, "raw video, pixel format: %i", cc->pix_fmt );
                 if( GetVlcChroma( &fmt.video, cc->pix_fmt ) != VLC_SUCCESS)
@@ -311,7 +319,7 @@ int OpenDemux( vlc_object_t *p_this )
                     fmt.i_codec = fmt.video.i_chroma;
             }
             /* We need this for the h264 packetizer */
-            else if( cc->codec_id == CODEC_ID_H264 && ( p_sys->fmt == av_find_input_format("flv") ||
+            else if( cc->codec_id == AV_CODEC_ID_H264 && ( p_sys->fmt == av_find_input_format("flv") ||
                 p_sys->fmt == av_find_input_format("matroska") || p_sys->fmt == av_find_input_format("mp4") ) )
                 fmt.i_original_fourcc = VLC_FOURCC( 'a', 'v', 'c', '1' );
 
@@ -334,7 +342,7 @@ int OpenDemux( vlc_object_t *p_this )
         case AVMEDIA_TYPE_SUBTITLE:
             es_format_Init( &fmt, SPU_ES, fcc );
             if( strncmp( p_sys->ic->iformat->name, "matroska", 8 ) == 0 &&
-                cc->codec_id == CODEC_ID_DVD_SUBTITLE &&
+                cc->codec_id == AV_CODEC_ID_DVD_SUBTITLE &&
                 cc->extradata != NULL &&
                 cc->extradata_size > 0 )
             {
@@ -386,7 +394,7 @@ int OpenDemux( vlc_object_t *p_this )
                 input_attachment_t *p_attachment;
 
                 psz_type = "attachment";
-                if( cc->codec_id == CODEC_ID_TTF )
+                if( cc->codec_id == AV_CODEC_ID_TTF )
                 {
                     AVDictionaryEntry *filename = av_dict_get( s->metadata, "filename", NULL, 0 );
                     if( filename && filename->value )
@@ -427,7 +435,7 @@ int OpenDemux( vlc_object_t *p_this )
             const uint8_t *p_extra = cc->extradata;
             unsigned      i_extra  = cc->extradata_size;
 
-            if( cc->codec_id == CODEC_ID_THEORA && b_ogg )
+            if( cc->codec_id == AV_CODEC_ID_THEORA && b_ogg )
             {
                 unsigned pi_size[3];
                 const void *pp_data[3];
@@ -451,7 +459,7 @@ int OpenDemux( vlc_object_t *p_this )
                     fmt.p_extra = NULL;
                 }
             }
-            else if( cc->codec_id == CODEC_ID_SPEEX && b_ogg )
+            else if( cc->codec_id == AV_CODEC_ID_SPEEX && b_ogg )
             {
                 const uint8_t p_dummy_comment[] = {
                     0, 0, 0, 0,
@@ -487,8 +495,8 @@ int OpenDemux( vlc_object_t *p_this )
                 es_out_Control( p_demux->out, ES_OUT_SET_ES_DEFAULT, es );
             es_format_Clean( &fmt );
 
-            msg_Dbg( p_demux, "adding es: %s codec = %4.4s",
-                     psz_type, (char*)&fcc );
+            msg_Dbg( p_demux, "adding es: %s codec = %4.4s (%d)",
+                     psz_type, (char*)&fcc, cc->codec_id  );
             TAB_APPEND( p_sys->i_tk, p_sys->tk, es );
         }
     }
@@ -546,9 +554,7 @@ void CloseDemux( vlc_object_t *p_this )
 
     if( p_sys->ic )
     {
-#if LIBAVFORMAT_VERSION_INT >= ((53<<16)+(2<<8)+0)
         av_free( p_sys->ic->pb );
-#endif
 #if LIBAVFORMAT_VERSION_INT >= ((53<<16)+(26<<8)+0)
         avformat_close_input( &p_sys->ic );
 #else
@@ -599,7 +605,7 @@ static int Demux( demux_t *p_demux )
         av_free_packet( &pkt );
         return 1;
     }
-    if( p_stream->codec->codec_id == CODEC_ID_SSA )
+    if( p_stream->codec->codec_id == AV_CODEC_ID_SSA )
     {
         p_frame = BuildSsaFrame( &pkt, p_sys->i_ssa_order++ );
         if( !p_frame )
@@ -610,7 +616,7 @@ static int Demux( demux_t *p_demux )
     }
     else
     {
-        if( ( p_frame = block_New( p_demux, pkt.size ) ) == NULL )
+        if( ( p_frame = block_Alloc( pkt.size ) ) == NULL )
         {
             av_free_packet( &pkt );
             return 0;
@@ -657,7 +663,7 @@ static int Demux( demux_t *p_demux )
             p_stream->time_base.num /
             p_stream->time_base.den;
 
-    if( pkt.dts != AV_NOPTS_VALUE && pkt.dts == pkt.pts &&
+    if( pkt.dts != (int64_t)AV_NOPTS_VALUE && pkt.dts == pkt.pts &&
         p_stream->codec->codec_type == AVMEDIA_TYPE_VIDEO )
     {
         /* Add here notoriously bugged file formats/samples regarding PTS */
@@ -761,7 +767,7 @@ static block_t *BuildSsaFrame( const AVPacket *p_pkt, unsigned i_order )
     if( asprintf( &p, "%u,%d,%.*s", i_order, i_layer, p_pkt->size - i_position, p_pkt->data + i_position ) < 0 )
         return NULL;
 
-    block_t *p_frame = block_heap_Alloc( p, p, strlen(p) + 1 );
+    block_t *p_frame = block_heap_Alloc( p, strlen(p) + 1 );
     if( p_frame )
         p_frame->i_length = CLOCK_FREQ * ((h1-h0) * 3600 +
                                           (m1-m0) * 60 +
@@ -908,7 +914,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 return VLC_EGENERIC;
 
             *pi_int = p_sys->i_attachments;;
-            *ppp_attach = malloc( sizeof(input_attachment_t**) * p_sys->i_attachments );
+            *ppp_attach = malloc( sizeof(input_attachment_t*) * p_sys->i_attachments );
             for( i = 0; i < p_sys->i_attachments; i++ )
                 (*ppp_attach)[i] = vlc_input_attachment_Duplicate( p_sys->attachments[i] );
             return VLC_SUCCESS;
@@ -925,7 +931,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 return VLC_EGENERIC;
 
             *pi_int = 1;
-            *ppp_title = malloc( sizeof( input_title_t**) );
+            *ppp_title = malloc( sizeof( input_title_t*) );
             (*ppp_title)[0] = vlc_input_title_Duplicate( p_sys->p_title );
             *pi_title_offset = 0;
             *pi_seekpoint_offset = 0;

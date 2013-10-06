@@ -17,8 +17,7 @@ liblua_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_lua)
 liblua_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_lua)
 liblua_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_lua)
 liblua_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_lua)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 liblua_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_lua)
 liblua_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_lua)
-liblua_plugin_la_DEPENDENCIES =
 

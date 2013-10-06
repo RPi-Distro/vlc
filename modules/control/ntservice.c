@@ -2,7 +2,7 @@
  * ntservice.c: Windows NT/2K/XP service interface
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 8850f5d511f15a043a8944fb46b37f5d2ae701d9 $
+ * $Id: c0602aeed53067782de566ec7823a7356559f248 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -31,6 +31,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_interface.h>
+#include <vlc_charset.h>
 
 #define VLCSERVICENAME "VLC media player"
 
@@ -86,12 +87,13 @@ struct intf_sys_t
     SERVICE_STATUS_HANDLE hStatus;
     SERVICE_STATUS status;
     char *psz_service;
+    vlc_thread_t thread;
 };
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static void Run( intf_thread_t *p_intf );
+static void *Run( void * );
 static int NTServiceInstall( intf_thread_t *p_intf );
 static int NTServiceUninstall( intf_thread_t *p_intf );
 static void WINAPI ServiceDispatch( DWORD numArgs, char **args );
@@ -106,8 +108,15 @@ static intf_thread_t *p_global_intf;
 static int Activate( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t*)p_this;
+    intf_sys_t *p_sys = malloc( sizeof( *p_sys ) );
+    if( unlikely(p_sys == NULL) )
+        return VLC_ENOMEM;
 
-    p_intf->pf_run = Run;
+    p_intf->p_sys = p_sys;
+
+    if( vlc_clone( &p_sys->thread, Run, p_intf, VLC_THREAD_PRIORITY_LOW ) )
+        return VLC_ENOMEM;
+
     return VLC_SUCCESS;
 }
 
@@ -116,24 +125,26 @@ static int Activate( vlc_object_t *p_this )
  *****************************************************************************/
 void Close( vlc_object_t *p_this )
 {
-    (void)p_this;
+    intf_thread_t *p_intf = (intf_thread_t*)p_this;
+    intf_sys_t *p_sys = p_intf->p_sys;
+
+    vlc_join( p_sys->thread, NULL );
+    free( p_sys );
 }
 
 /*****************************************************************************
  * Run: interface thread
  *****************************************************************************/
-static void Run( intf_thread_t *p_intf )
+static void *Run( void *data )
 {
-    intf_sys_t sys;
+    intf_thread_t *p_intf = data;
     SERVICE_TABLE_ENTRY dispatchTable[] =
     {
-        { (LPTSTR)VLCSERVICENAME, &ServiceDispatch },
+        { TEXT(VLCSERVICENAME), &ServiceDispatch },
         { NULL, NULL }
     };
 
-    int canc = vlc_savecancel();
     p_global_intf = p_intf;
-    p_intf->p_sys = &sys;
     p_intf->p_sys->psz_service = var_InheritString( p_intf, "ntservice-name" );
     p_intf->p_sys->psz_service = p_intf->p_sys->psz_service ?
         p_intf->p_sys->psz_service : strdup(VLCSERVICENAME);
@@ -141,13 +152,13 @@ static void Run( intf_thread_t *p_intf )
     if( var_InheritBool( p_intf, "ntservice-install" ) )
     {
         NTServiceInstall( p_intf );
-        return;
+        return NULL;
     }
 
     if( var_InheritBool( p_intf, "ntservice-uninstall" ) )
     {
         NTServiceUninstall( p_intf );
-        return;
+        return NULL;
     }
 
     if( StartServiceCtrlDispatcher( dispatchTable ) == 0 )
@@ -159,7 +170,7 @@ static void Run( intf_thread_t *p_intf )
 
     /* Make sure we exit (In case other interfaces have been spawned) */
     libvlc_Quit( p_intf->p_libvlc );
-    vlc_restorecancel( canc );
+    return NULL;
 }
 
 /*****************************************************************************
@@ -168,7 +179,9 @@ static void Run( intf_thread_t *p_intf )
 static int NTServiceInstall( intf_thread_t *p_intf )
 {
     intf_sys_t *p_sys  = p_intf->p_sys;
-    char psz_path[10*MAX_PATH], psz_pathtmp[MAX_PATH], *psz_extra;
+    char psz_path[10*MAX_PATH], *psz_extra;
+    TCHAR psz_pathtmp[MAX_PATH];
+
     SC_HANDLE handle = OpenSCManager( NULL, NULL, SC_MANAGER_ALL_ACCESS );
     if( handle == NULL )
     {
@@ -180,7 +193,7 @@ static int NTServiceInstall( intf_thread_t *p_intf )
     /* Find out the filename of ourselves so we can install it to the
      * service control manager */
     GetModuleFileName( NULL, psz_pathtmp, MAX_PATH );
-    sprintf( psz_path, "\"%s\" -I "MODULE_STRING, psz_pathtmp );
+    sprintf( psz_path, "\"%s\" -I "MODULE_STRING, FromT(psz_pathtmp) );
 
     psz_extra = var_InheritString( p_intf, "ntservice-extraintf" );
     if( psz_extra )
@@ -199,7 +212,7 @@ static int NTServiceInstall( intf_thread_t *p_intf )
     }
 
     SC_HANDLE service =
-        CreateService( handle, p_sys->psz_service, p_sys->psz_service,
+        CreateServiceA( handle, p_sys->psz_service, p_sys->psz_service,
                        GENERIC_READ | GENERIC_EXECUTE,
                        SERVICE_WIN32_OWN_PROCESS,
                        SERVICE_AUTO_START, SERVICE_ERROR_IGNORE,
@@ -243,7 +256,7 @@ static int NTServiceUninstall( intf_thread_t *p_intf )
     }
 
     /* First, open a handle to the service */
-    SC_HANDLE service = OpenService( handle, p_sys->psz_service, DELETE );
+    SC_HANDLE service = OpenServiceA( handle, p_sys->psz_service, DELETE );
     if( service == NULL )
     {
         msg_Err( p_intf, "could not open service" );
@@ -283,7 +296,7 @@ static void WINAPI ServiceDispatch( DWORD numArgs, char **args )
     p_sys->status.dwControlsAccepted = SERVICE_ACCEPT_STOP;
 
     p_sys->hStatus =
-        RegisterServiceCtrlHandler( p_sys->psz_service, &ServiceCtrlHandler );
+        RegisterServiceCtrlHandlerA( p_sys->psz_service, &ServiceCtrlHandler );
     if( p_sys->hStatus == (SERVICE_STATUS_HANDLE)0 )
     {
         msg_Err( p_intf, "failed to register service control handler" );

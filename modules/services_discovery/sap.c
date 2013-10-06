@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 5bfacbed842bcc204164d3dbf170d9c8f9e3f9c5 $
+ * $Id: 07003240c8717589b91b554f2f36d14889b7936c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rémi Denis-Courmont
@@ -54,7 +54,7 @@
 #   include <zlib.h>
 #endif
 
-#ifndef WIN32
+#ifndef _WIN32
 #   include <net/if.h>
 #endif
 
@@ -171,6 +171,9 @@ struct  sdp_t
 
     /* s= field */
     char *psz_sessionname;
+
+    /* i= field */
+    char *psz_sessioninfo;
 
     /* old cruft */
     /* "computed" URI */
@@ -470,7 +473,7 @@ static void *Run( void *data )
     InitSocket( p_sd, SAP_V4_LINK_ADDRESS, SAP_PORT );
 
     char psz_address[NI_MAXNUMERICHOST] = "ff02::2:7ffe%";
-#ifndef WIN32
+#ifndef _WIN32
     struct if_nameindex *l = if_nameindex ();
     if (l != NULL)
     {
@@ -849,6 +852,9 @@ sap_announce_t *CreateAnnounce( services_discovery_t *p_sd, uint32_t *i_source, 
     p_input = input_item_NewWithType( p_sap->p_sdp->psz_uri,
                                       p_sdp->psz_sessionname,
                                       0, NULL, 0, -1, ITEM_TYPE_NET );
+    vlc_meta_t *p_meta = vlc_meta_New();
+    vlc_meta_Set( p_meta, vlc_meta_Description, p_sdp->psz_sessioninfo );
+    p_input->p_meta = p_meta;
     p_sap->p_item = p_input;
     if( !p_input )
     {
@@ -1269,9 +1275,20 @@ static sdp_t *ParseSDP (vlc_object_t *p_obj, const char *psz_sdp)
             }
 
             case 'I':
+            {
                 expect = 'U';
+                /* optional (and may be empty) */
                 if (cat == 'i')
+                {
+                    assert (p_sdp->psz_sessioninfo == NULL);
+                    p_sdp->psz_sessioninfo = strdup (data);
+                    if (p_sdp->psz_sessioninfo == NULL)
+                        goto error;
+                    EnsureUTF8 (p_sdp->psz_sessioninfo);
                     break;
+                }
+            }
+
             case 'U':
                 expect = 'E';
                 if (cat == 'u')
@@ -1509,6 +1526,7 @@ static int Decompress( const unsigned char *psz_src, unsigned char **_dst, int i
 static void FreeSDP( sdp_t *p_sdp )
 {
     free( p_sdp->psz_sessionname );
+    free( p_sdp->psz_sessioninfo );
     free( p_sdp->psz_uri );
 
     for (unsigned j = 0; j < p_sdp->mediac; j++)

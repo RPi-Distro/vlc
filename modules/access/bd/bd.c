@@ -1,24 +1,24 @@
 /*****************************************************************************
  * bd.c: BluRay Disc support (uncrypted)
  *****************************************************************************
- * Copyright (C) 2009 the VideoLAN team
- * $Id: 536d0111105c148fb378d37319cfe277fd97d57c $
+ * Copyright (C) 2009 VLC authors and VideoLAN
+ * $Id: a73c88c39986ee3811ed8480fbefa8e076dcbda7 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -29,10 +29,8 @@
 # include "config.h"
 #endif
 
-#ifdef HAVE_SYS_STAT_H
-#   include <sys/stat.h>
-#endif
 #include <limits.h>
+#include <sys/stat.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
@@ -54,7 +52,7 @@ static void Close( vlc_object_t * );
 
 vlc_module_begin ()
     set_shortname( N_("BD") )
-    set_description( N_("Blu-Ray Disc Input") )
+    set_description( N_("Blu-ray Disc Input") )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACCESS )
     set_capability( "access_demux", 60 )
@@ -320,7 +318,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
         /* Duplicate title infos */
         *pi_int = p_sys->i_title;
-        *ppp_title = calloc( p_sys->i_title, sizeof(input_title_t **) );
+        *ppp_title = calloc( p_sys->i_title, sizeof(input_title_t *) );
         for( int i = 0; i < p_sys->i_title; i++ )
             (*ppp_title)[i] = vlc_input_title_Duplicate( p_sys->pp_title[i] );
 
@@ -411,7 +409,7 @@ static int Demux( demux_t *p_demux )
     /* XXX
      * we ensure that the TS packet start at the begining of the buffer,
      * it ensure proper TS parsing */
-    block_t *p_block = block_New( p_demux, i_packets * BD_TS_PACKET_SIZE + BD_TS_PACKET_HEADER );
+    block_t *p_block = block_Alloc( i_packets * BD_TS_PACKET_SIZE + BD_TS_PACKET_HEADER );
     if( !p_block )
         return -1;
 

@@ -1,25 +1,25 @@
 /*****************************************************************************
- * dynamicoverlay_buffer.h : dynamic overlay buffer
+ * dynamicoverlay_buffer.c : dynamic overlay buffer
  *****************************************************************************
- * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: 45f63740f1d06907a5e5c2a31850aff7e79d83ff $
+ * Copyright (C) 2008-2009 VLC authors and VideoLAN
+ * $Id: 9d0fc34cd5409e4c311e6eb2f3d1b727cd8b7b38 $
  *
  * Author: Søren Bøg <avacore@videolan.org>
  *         Jean-Paul Saman <jpsaman@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -27,7 +27,6 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_osd.h>
 #include <vlc_filter.h>
 
 #include <ctype.h>

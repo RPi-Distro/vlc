@@ -3,9 +3,9 @@
 
 basedir = video_output
 dir = video_output
-mods = aa android_surface directfb fb vmem vout_ios vout_macosx vout_sdl yuv
-libvlc_LTLIBRARIES =  $(LTLIBaa) $(LTLIBandroid_surface) $(LTLIBdirectfb) $(LTLIBfb) $(LTLIBvout_ios) $(LTLIBvout_macosx) $(LTLIBvout_sdl)
-EXTRA_LTLIBRARIES =  libaa_plugin.la libandroid_surface_plugin.la libdirectfb_plugin.la libfb_plugin.la libvout_ios_plugin.la libvout_macosx_plugin.la libvout_sdl_plugin.la
+mods = aa android_surface directfb fb vmem vout_ios vout_ios2 vout_macosx vout_sdl yuv
+libvlc_LTLIBRARIES =  $(LTLIBaa) $(LTLIBandroid_surface) $(LTLIBdirectfb) $(LTLIBfb) $(LTLIBvout_ios) $(LTLIBvout_ios2) $(LTLIBvout_macosx) $(LTLIBvout_sdl)
+EXTRA_LTLIBRARIES =  libaa_plugin.la libandroid_surface_plugin.la libdirectfb_plugin.la libfb_plugin.la libvout_ios_plugin.la libvout_ios2_plugin.la libvout_macosx_plugin.la libvout_sdl_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -17,10 +17,9 @@ libaa_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_aa)
 libaa_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_aa)
 libaa_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_aa)
 libaa_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_aa)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaa_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_aa)
 libaa_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_aa)
-libaa_plugin_la_DEPENDENCIES =
 
 # The android_surface plugin
 libandroid_surface_plugin_la_SOURCES = $(SOURCES_android_surface)
@@ -30,10 +29,9 @@ libandroid_surface_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_android_surfac
 libandroid_surface_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_android_surface)
 libandroid_surface_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_android_surface)
 libandroid_surface_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_android_surface)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libandroid_surface_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_android_surface)
 libandroid_surface_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_android_surface)
-libandroid_surface_plugin_la_DEPENDENCIES =
 
 # The directfb plugin
 libdirectfb_plugin_la_SOURCES = $(SOURCES_directfb)
@@ -43,10 +41,9 @@ libdirectfb_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_directfb)
 libdirectfb_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_directfb)
 libdirectfb_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_directfb)
 libdirectfb_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_directfb)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libdirectfb_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_directfb)
 libdirectfb_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_directfb)
-libdirectfb_plugin_la_DEPENDENCIES =
 
 # The fb plugin
 libfb_plugin_la_SOURCES = $(SOURCES_fb)
@@ -56,10 +53,9 @@ libfb_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_fb)
 libfb_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_fb)
 libfb_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_fb)
 libfb_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_fb)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libfb_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_fb)
 libfb_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_fb)
-libfb_plugin_la_DEPENDENCIES =
 
 # The vmem plugin
 libvmem_plugin_la_SOURCES = $(SOURCES_vmem)
@@ -69,10 +65,9 @@ libvmem_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_vmem)
 libvmem_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_vmem)
 libvmem_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_vmem)
 libvmem_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_vmem)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libvmem_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_vmem)
 libvmem_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_vmem)
-libvmem_plugin_la_DEPENDENCIES =
 
 # The vout_ios plugin
 libvout_ios_plugin_la_SOURCES = $(SOURCES_vout_ios)
@@ -82,10 +77,21 @@ libvout_ios_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_vout_ios)
 libvout_ios_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_vout_ios)
 libvout_ios_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_vout_ios)
 libvout_ios_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_vout_ios)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libvout_ios_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_vout_ios)
 libvout_ios_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_vout_ios)
-libvout_ios_plugin_la_DEPENDENCIES =
+
+# The vout_ios2 plugin
+libvout_ios2_plugin_la_SOURCES = $(SOURCES_vout_ios2)
+nodist_libvout_ios2_plugin_la_SOURCES = $(nodist_SOURCES_vout_ios2)
+# Force per-target objects:
+libvout_ios2_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_vout_ios2)
+libvout_ios2_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_vout_ios2)
+libvout_ios2_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_vout_ios2)
+libvout_ios2_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_vout_ios2)
+# Set LIBADD manually:
+libvout_ios2_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_vout_ios2)
+libvout_ios2_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_vout_ios2)
 
 # The vout_macosx plugin
 libvout_macosx_plugin_la_SOURCES = $(SOURCES_vout_macosx)
@@ -95,10 +101,9 @@ libvout_macosx_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_vout_macosx)
 libvout_macosx_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_vout_macosx)
 libvout_macosx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_vout_macosx)
 libvout_macosx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_vout_macosx)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libvout_macosx_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_vout_macosx)
 libvout_macosx_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_vout_macosx)
-libvout_macosx_plugin_la_DEPENDENCIES =
 
 # The vout_sdl plugin
 libvout_sdl_plugin_la_SOURCES = $(SOURCES_vout_sdl)
@@ -108,10 +113,9 @@ libvout_sdl_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_vout_sdl)
 libvout_sdl_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_vout_sdl)
 libvout_sdl_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_vout_sdl)
 libvout_sdl_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_vout_sdl)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libvout_sdl_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_vout_sdl)
 libvout_sdl_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_vout_sdl)
-libvout_sdl_plugin_la_DEPENDENCIES =
 
 # The yuv plugin
 libyuv_plugin_la_SOURCES = $(SOURCES_yuv)
@@ -121,8 +125,7 @@ libyuv_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_yuv)
 libyuv_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_yuv)
 libyuv_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_yuv)
 libyuv_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_yuv)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libyuv_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_yuv)
 libyuv_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_yuv)
-libyuv_plugin_la_DEPENDENCIES =
 

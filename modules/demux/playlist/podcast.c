@@ -1,24 +1,24 @@
 /*****************************************************************************
  * podcast.c : podcast playlist imports
  *****************************************************************************
- * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: f346a0b07721fa99b529a40bd5316e850d9eea61 $
+ * Copyright (C) 2005-2009 VLC authors and VideoLAN
+ * $Id: 6af712b6357933fa9574b0160f5d081164488b4a $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -38,7 +38,6 @@
  * Local prototypes
  *****************************************************************************/
 static int Demux( demux_t *p_demux);
-static int Control( demux_t *p_demux, int i_query, va_list args );
 static mtime_t strTimeToMTime( const char *psz );
 
 /*****************************************************************************
@@ -56,14 +55,6 @@ int Import_podcast( vlc_object_t *p_this )
     msg_Dbg( p_demux, "using podcast reader" );
 
     return VLC_SUCCESS;
-}
-
-/*****************************************************************************
- * Deactivate: frees unused data
- *****************************************************************************/
-void Close_podcast( vlc_object_t *p_this )
-{
-    (void)p_this;
 }
 
 /* "specs" : http://phobos.apple.com/static/iTunesRSS.html */
@@ -239,8 +230,24 @@ static int Demux( demux_t *p_demux )
                 {
                     if( psz_item_mrl == NULL )
                     {
-                        msg_Err( p_demux, "invalid XML (no enclosure markup)" );
-                        goto error;
+                        if (psz_item_name)
+                            msg_Warn( p_demux, "invalid XML item, skipping %s",
+                                      psz_item_name );
+                        else
+                            msg_Warn( p_demux, "invalid XML item, skipped" );
+                        FREENULL( psz_item_name );
+                        FREENULL( psz_item_size );
+                        FREENULL( psz_item_type );
+                        FREENULL( psz_item_date );
+                        FREENULL( psz_item_author );
+                        FREENULL( psz_item_category );
+                        FREENULL( psz_item_duration );
+                        FREENULL( psz_item_keywords );
+                        FREENULL( psz_item_subtitle );
+                        FREENULL( psz_item_summary );
+                        FREENULL( psz_art_url );
+                        FREENULL( psz_elname );
+                        continue;
                     }
 
                     p_input = input_item_New( psz_item_mrl, psz_item_name );
@@ -330,12 +337,6 @@ error:
 
     vlc_gc_decref(p_current_input);
     return -1;
-}
-
-static int Control( demux_t *p_demux, int i_query, va_list args )
-{
-    VLC_UNUSED(p_demux); VLC_UNUSED(i_query); VLC_UNUSED(args);
-    return VLC_EGENERIC;
 }
 
 static mtime_t strTimeToMTime( const char *psz )

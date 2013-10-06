@@ -1,7 +1,7 @@
 /*****************************************************************************
  * linux_specific.c: Linux-specific initialization
  *****************************************************************************
- * Copyright © 2008 Rémi Denis-Courmont
+ * Copyright © 2008-2012 Rémi Denis-Courmont
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -26,12 +26,13 @@
 #include <string.h>
 
 #include <vlc_common.h>
-#include "../libvlc.h"
+#include "libvlc.h"
+#include "config/configuration.h"
 
-static const char default_path[] = PKGLIBDIR;
-
-static void set_libvlc_path (void)
+char *config_GetLibDir (void)
 {
+    char *path = NULL;
+
     /* Find the path to libvlc (i.e. ourselves) */
     FILE *maps = fopen ("/proc/self/maps", "rt");
     if (maps == NULL)
@@ -39,7 +40,7 @@ static void set_libvlc_path (void)
 
     char *line = NULL;
     size_t linelen = 0;
-    uintptr_t needle = (uintptr_t)set_libvlc_path;
+    uintptr_t needle = (uintptr_t)config_GetLibDir;
 
     for (;;)
     {
@@ -50,76 +51,56 @@ static void set_libvlc_path (void)
         void *start, *end;
         if (sscanf (line, "%p-%p", &start, &end) < 2)
             continue;
+        /* This mapping contains the address of this function. */
         if (needle < (uintptr_t)start || (uintptr_t)end <= needle)
             continue;
+
         char *dir = strchr (line, '/');
         if (dir == NULL)
             continue;
+
         char *file = strrchr (line, '/');
         if (end == NULL)
             continue;
         *file = '\0';
-        if (asprintf (&psz_vlcpath, "%s/"PACKAGE, dir) == -1)
-            goto error;
+
+        if (asprintf (&path, "%s/"PACKAGE, dir) == -1)
+            path = NULL;
         break;
     }
+
     free (line);
     fclose (maps);
-    return;
-
 error:
-    psz_vlcpath = (char *)default_path; /* default, cannot fail */
+    return (path != NULL) ? path : strdup (PKGLIBDIR);
 }
 
-static void unset_libvlc_path (void)
+char *config_GetDataDir (void)
 {
-    if (psz_vlcpath != default_path)
-        free (psz_vlcpath);
-}
+    const char *path = getenv ("VLC_DATA_PATH");
+    if (path != NULL)
+        return strdup (path);
 
-static struct
-{
-    vlc_mutex_t lock;
-    unsigned refs;
-} once = { VLC_STATIC_MUTEX, 0 };
+    char *libdir = config_GetLibDir ();
+    if (libdir == NULL)
+        return NULL; /* OOM */
 
-#ifdef __GLIBC__
-# include <gnu/libc-version.h>
-# include <stdlib.h>
-#endif
+    char *datadir = NULL;
 
-void system_Init (void)
-{
-#ifdef __GLIBC__
-    const char *glcv = gnu_get_libc_version ();
-
-    /* gettext in glibc 2.5-2.7 is not thread-safe. LibVLC keeps crashing,
-     * especially in sterror_r(). Even if we have NLS disabled, the calling
-     * process might have called setlocale(). */
-    if (strverscmp (glcv, "2.5") >= 0 && strverscmp (glcv, "2.8") < 0)
+    /* There are no clean ways to do this, are there?
+     * Due to multilibs, we cannot simply append ../share/. */
+    char *p = strstr (libdir, "/lib/");
+    if (p != NULL)
     {
-        fputs ("LibVLC has detected an unusable buggy GNU/libc version.\n"
-               "Please update to version 2.8 or newer.\n", stderr);
-        fflush (stderr);
+        char *p2;
+        /* Deal with nested "lib" directories. Grmbl. */
+        while ((p2 = strstr (p + 4, "/lib/")) != NULL)
+            p = p2;
+        *p = '\0';
+
+        if (unlikely(asprintf (&datadir, "%s/share/"PACKAGE, libdir) == -1))
+            datadir = NULL;
     }
-#endif
-
-    vlc_mutex_lock (&once.lock);
-    if (once.refs++ == 0)
-        set_libvlc_path ();
-    vlc_mutex_unlock (&once.lock);
-}
-
-void system_Configure (libvlc_int_t *libvlc,
-                       int argc, const char *const argv[])
-{
-    (void)libvlc; (void)argc; (void)argv;
-}
-
-void system_End (void)
-{
-    vlc_mutex_lock (&once.lock);
-    if (--once.refs == 0)
-        unset_libvlc_path ();
-    vlc_mutex_unlock (&once.lock);
+    free (libdir);
+    return (datadir != NULL) ? datadir : strdup (PKGDATADIR);
 }

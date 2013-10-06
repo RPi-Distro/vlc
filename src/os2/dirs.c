@@ -30,9 +30,20 @@
 #include <vlc_charset.h>
 #include "config/configuration.h"
 
-static char *config_GetVlcDir (void)
+char *config_GetLibDir (void)
 {
-    return FromLocaleDup (psz_vlcpath);
+    HMODULE hmod;
+    CHAR    psz_path[CCHMAXPATH + 4];
+
+    DosQueryModFromEIP( &hmod, NULL, 0, NULL, NULL, ( ULONG )system_Init );
+    DosQueryModuleName( hmod, sizeof( psz_path ), psz_path );
+
+    /* remove the DLL name */
+    char *slash = strrchr( psz_path, '\\');
+    if( slash == NULL )
+        abort();
+    strcpy(slash + 1, PACKAGE);
+    return FromLocaleDup(psz_path);
 }
 
 /**
@@ -40,35 +51,26 @@ static char *config_GetVlcDir (void)
  *
  * @return a nul-terminated string or NULL. Use free() to release it.
  */
-char *config_GetDataDirDefault (void)
+char *config_GetDataDir (void)
 {
-    char *datadir = config_GetVlcDir();
+    const char *path = getenv ("VLC_DATA_PATH");
+    if (path)
+        return strdup (path);
 
+    char *datadir = config_GetLibDir();
     if (datadir)
         /* replace last lib\vlc with share */
         strcpy ( datadir + strlen (datadir) - 7, "share");
-
     return datadir;
 }
 
-/**
- * Determines the architecture-dependent data directory
- *
- * @return a string (always succeeds).
- */
-const char *config_GetLibDir (void)
+static char *config_GetHomeDir (void)
 {
-    abort ();
-}
+    const char *home = getenv ("HOME");
+    if (home != NULL)
+        return FromLocaleDup (home);
 
-/**
- * Determines the system configuration directory.
- *
- * @return a string (always succeeds).
- */
-const char *config_GetConfDir( void )
-{
-    return config_GetVlcDir ();
+    return config_GetLibDir();
 }
 
 char *config_GetUserDir (vlc_userdir_t type)
@@ -89,5 +91,5 @@ char *config_GetUserDir (vlc_userdir_t type)
         case VLC_VIDEOS_DIR:
             break;
     }
-    return config_GetVlcDir ();
+    return config_GetHomeDir ();
 }

@@ -2,7 +2,7 @@
  * bookmarks.hpp : bookmarks
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 119960c55329d8db27c884714ebd2cd42ba09dad $
+ * $Id: ad81bc2c7009a09adf0f0f985cbabc99e5c0f05a $
  *
  * Authors: Antoine Lejeune <phytos@via.ecp.fr>
  *
@@ -30,6 +30,7 @@
 #include <QTreeView>
 #include <QTreeWidget>
 #include "util/singleton.hpp"
+class QPushButton;
 
 class BookmarksDialog : public QVLCFrame, public Singleton<BookmarksDialog>
 {
@@ -39,6 +40,9 @@ private:
     virtual ~BookmarksDialog();
 
     QTreeWidget *bookmarksList;
+    QPushButton *clearButton;
+    QPushButton *delButton;
+    bool b_ignore_updates;
 
 private slots:
     void update();
@@ -48,6 +52,7 @@ private slots:
     void edit( QTreeWidgetItem *item, int column );
     void extract();
     void activateItem( QModelIndex index );
+    void updateButtons();
 
     friend class    Singleton<BookmarksDialog>;
 };

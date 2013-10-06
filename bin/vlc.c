@@ -2,7 +2,7 @@
  * vlc.c: the VLC player
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: 4d20f89069d686e20a4f5cb5451cf9b9d7073a42 $
+ * $Id: 3f8cf3c97409abb78dbbaa404a3cc85474f4c5f1 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include <locale.h>
 #include <signal.h>
 #ifdef HAVE_PTHREAD_H
@@ -40,27 +41,45 @@
 #endif
 #include <unistd.h>
 
-#ifdef __APPLE__
-#include <string.h>
-#endif
-
 #ifdef __OS2__
+# include <iconv.h>
+
 # define pthread_t      int
 # define pthread_self() _gettid()
-#endif
 
-
-/* Explicit HACK */
-extern void LocaleFree (const char *);
-extern char *FromLocale (const char *);
-extern void vlc_enable_override (void);
-
-#ifdef HAVE_MAEMO
-static void dummy_handler (int signum)
+static char *FromSystem(const void *str)
 {
-    (void) signum;
+    iconv_t handle = iconv_open ("UTF-8", "");
+    if (handle == (iconv_t)(-1))
+        return NULL;
+
+    size_t str_len = strlen (str);
+    char *out = NULL;
+    for (unsigned mul = 4; mul < 8; mul++)
+    {
+        size_t in_size = str_len;
+        const char *in = str;
+        size_t out_max = mul * str_len;
+        char *tmp = out = malloc (1 + out_max);
+        if (!out)
+            break;
+
+        if (iconv (handle, &in, &in_size, &tmp, &out_max) != (size_t)(-1)) {
+            *tmp = '\0';
+            break;
+        }
+        free(out);
+        out = NULL;
+
+        if (errno != E2BIG)
+            break;
+    }
+    iconv_close(handle);
+    return out;
 }
 #endif
+
+extern void vlc_enable_override (void);
 
 static bool signal_ignored (int signum)
 {
@@ -113,6 +132,7 @@ int main( int i_argc, const char *ppsz_argv[] )
 
 #ifdef TOP_BUILDDIR
     setenv ("VLC_PLUGIN_PATH", TOP_BUILDDIR"/modules", 1);
+    setenv ("VLC_DATA_PATH", TOP_SRCDIR"/share", 1);
 #endif
 
     /* Clear the X.Org startup notification ID. Otherwise the UI might try to
@@ -177,38 +197,36 @@ int main( int i_argc, const char *ppsz_argv[] )
      * block SIGCHLD in all threads, and dequeue it below. */
     sigaddset (&set, SIGCHLD);
 
-#ifdef HAVE_MAEMO
-    sigaddset (&set, SIGRTMIN);
-    {
-        struct sigaction act = { .sa_handler = dummy_handler, };
-        sigaction (SIGRTMIN, &act, NULL);
-    }
-#endif
     /* Block all these signals */
+    pthread_t self = pthread_self ();
     pthread_sigmask (SIG_SETMASK, &set, NULL);
 
-    /* Note that FromLocale() can be used before libvlc is initialized */
-    const char *argv[i_argc + 3];
+    const char *argv[i_argc + 2];
     int argc = 0;
 
     argv[argc++] = "--no-ignore-config";
     argv[argc++] = "--media-library";
-#ifdef TOP_SRCDIR
-    argv[argc++] = FromLocale ("--data-path="TOP_SRCDIR"/share");
-#endif
-
-    int i = 1;
+    ppsz_argv++; i_argc--; /* skip executable path */
 #ifdef __APPLE__
     /* When VLC.app is run by double clicking in Mac OS X, the 2nd arg
      * is the PSN - process serial number (a unique PID-ish thingie)
      * still ok for real Darwin & when run from command line
      * for example -psn_0_9306113 */
-    if(i_argc >= 2 && !strncmp( ppsz_argv[1] , "-psn" , 4 ))
-        i = 2;
+    if (i_argc >= 1 && !strncmp (*ppsz_argv, "-psn" , 4))
+        ppsz_argv++, i_argc--;
 #endif
-    for (; i < i_argc; i++)
-        if ((argv[argc++] = FromLocale (ppsz_argv[i])) == NULL)
-            return 1; // BOOM!
+#ifdef __OS2__
+    for (int i = 0; i < i_argc; i++)
+        if ((argv[argc++] = FromSystem (ppsz_argv[i])) == NULL)
+        {
+            fprintf (stderr, "Converting '%s' to UTF-8 failed.\n",
+                     ppsz_argv[i]);
+            return 1;
+        }
+#else
+    memcpy (argv + argc, ppsz_argv, i_argc * sizeof (*argv));
+    argc += i_argc;
+#endif
     argv[argc] = NULL;
 
     vlc_enable_override ();
@@ -216,21 +234,24 @@ int main( int i_argc, const char *ppsz_argv[] )
     /* Initialize libvlc */
     libvlc_instance_t *vlc = libvlc_new (argc, argv);
     if (vlc == NULL)
-        goto out;
+        return 1;
 
+    int ret = 1;
+    libvlc_set_exit_handler (vlc, vlc_kill, &self);
+    libvlc_set_app_id (vlc, "org.VideoLAN.VLC", PACKAGE_VERSION, PACKAGE_NAME);
     libvlc_set_user_agent (vlc, "VLC media player", "VLC/"PACKAGE_VERSION);
 
-#if !defined (HAVE_MAEMO) && !defined __APPLE__ && !defined (__OS2__)
+    libvlc_add_intf (vlc, "hotkeys,none");
+#if !defined __APPLE__ && !defined (__OS2__)
     libvlc_add_intf (vlc, "globalhotkeys,none");
+#endif
+#ifdef HAVE_DBUS
+    libvlc_add_intf (vlc, "dbus,none");
 #endif
     if (libvlc_add_intf (vlc, NULL))
         goto out;
 
     libvlc_playlist_play (vlc, -1, 0, NULL);
-
-    /* Wait for a termination signal */
-    pthread_t self = pthread_self ();
-    libvlc_set_exit_handler (vlc, vlc_kill, &self);
 
     /* Qt4 insists on catching SIGCHLD via signal handler. To work around that,
      * unblock it after all our child threads are created. */
@@ -255,12 +276,13 @@ int main( int i_argc, const char *ppsz_argv[] )
     pthread_sigmask (SIG_UNBLOCK, &set, NULL);
     alarm (3);
 
+    ret = 0;
     /* Cleanup */
 out:
-    if (vlc != NULL)
-        libvlc_release (vlc);
+    libvlc_release (vlc);
+#ifdef __OS2__
     for (int i = 2; i < argc; i++)
-        LocaleFree (argv[i]);
-
-    return 0;
+        free (argv[i]);
+#endif
+    return ret;
 }

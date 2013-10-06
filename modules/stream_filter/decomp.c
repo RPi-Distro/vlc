@@ -10,7 +10,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -52,27 +52,43 @@ static int  OpenXZ (vlc_object_t *);
 static void Close (vlc_object_t *);
 
 vlc_module_begin ()
-    set_description (N_("Decompression"))
     set_category (CAT_INPUT)
     set_subcategory (SUBCAT_INPUT_STREAM_FILTER)
     set_capability ("stream_filter", 20)
+
+    set_description (N_("LZMA decompression"))
     set_callbacks (OpenXZ, Close)
 
     add_submodule ()
+    set_description (N_("Burrows-Wheeler decompression"))
     set_callbacks (OpenBzip2, Close)
     /* TODO: access shortnames for stream_UrlNew() */
 
     add_submodule ()
+    set_description (N_("gzip decompression"))
     set_callbacks (OpenGzip, Close)
 vlc_module_end ()
 
 struct stream_sys_t
 {
-    block_t      *peeked;
-    uint64_t     offset;
+    /* Thread data */
+    int          write_fd;
+
+    /* Shared data */
+    vlc_cond_t   wait;
+    vlc_mutex_t  lock;
+    bool         paused;
+
+    /* Caller data */
     vlc_thread_t thread;
     pid_t        pid;
-    int          write_fd, read_fd;
+
+    uint64_t     offset;
+    block_t      *peeked;
+
+    int          read_fd;
+    bool         can_pace;
+    bool         can_pause;
 };
 
 extern char **environ;
@@ -112,7 +128,12 @@ static void *Thread (void *data)
         vlc_cleanup_push (free, buf);
 #endif
 
+        vlc_mutex_lock (&p_sys->lock);
+        while (p_sys->paused) /* practically always false, but... */
+            vlc_cond_wait (&p_sys->wait, &p_sys->lock);
         len = stream_Read (stream->p_source, buf, bufsize);
+        vlc_mutex_unlock (&p_sys->lock);
+
         vlc_restorecancel (canc);
         error = len <= 0;
 
@@ -243,12 +264,29 @@ static int Control (stream_t *stream, int query, va_list args)
         case STREAM_CAN_FASTSEEK:
             *(va_arg (args, bool *)) = false;
             break;
+        case STREAM_CAN_PAUSE:
+             *(va_arg (args, bool *)) = p_sys->can_pause;
+            break;
+        case STREAM_CAN_CONTROL_PACE:
+            *(va_arg (args, bool *)) = p_sys->can_pace;
+            break;
         case STREAM_GET_POSITION:
             *(va_arg (args, uint64_t *)) = p_sys->offset;
             break;
         case STREAM_GET_SIZE:
             *(va_arg (args, uint64_t *)) = 0;
             break;
+        case STREAM_SET_PAUSE_STATE:
+        {
+            bool paused = va_arg (args, unsigned);
+
+            vlc_mutex_lock (&p_sys->lock);
+            stream_Control (stream->p_source, STREAM_SET_PAUSE_STATE, paused);
+            p_sys->paused = paused;
+            vlc_cond_signal (&p_sys->wait);
+            vlc_mutex_unlock (&p_sys->lock);
+            break;
+        }
         default:
             return VLC_EGENERIC;
     }
@@ -269,9 +307,16 @@ static int Open (stream_t *stream, const char *path)
     stream->pf_read = Read;
     stream->pf_peek = Peek;
     stream->pf_control = Control;
-    p_sys->peeked = NULL;
-    p_sys->offset = 0;
+
+    vlc_cond_init (&p_sys->wait);
+    vlc_mutex_init (&p_sys->lock);
+    p_sys->paused = false;
     p_sys->pid = -1;
+    p_sys->offset = 0;
+    p_sys->peeked = NULL;
+    stream_Control (stream->p_source, STREAM_CAN_PAUSE, &p_sys->can_pause);
+    stream_Control (stream->p_source, STREAM_CAN_CONTROL_PACE,
+                    &p_sys->can_pace);
 
     /* I am not a big fan of the pyramid style, but I cannot think of anything
      * better here. There are too many failure cases. */
@@ -334,12 +379,17 @@ static int Open (stream_t *stream, const char *path)
         }
         close (comp[0]);
         if (ret != VLC_SUCCESS)
-        {
             close (comp[1]);
-            if (p_sys->pid != -1)
-                while (waitpid (p_sys->pid, &(int){ 0 }, 0) == -1);
-        }
     }
+
+    if (ret == VLC_SUCCESS)
+        return VLC_SUCCESS;
+
+    if (p_sys->pid != -1)
+        while (waitpid (p_sys->pid, &(int){ 0 }, 0) == -1);
+    vlc_mutex_destroy (&p_sys->lock);
+    vlc_cond_destroy (&p_sys->wait);
+    free (p_sys);
     return ret;
 }
 
@@ -366,6 +416,8 @@ static void Close (vlc_object_t *obj)
 
     if (p_sys->peeked)
         block_Release (p_sys->peeked);
+    vlc_mutex_destroy (&p_sys->lock);
+    vlc_cond_destroy (&p_sys->wait);
     free (p_sys);
 }
 

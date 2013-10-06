@@ -2,7 +2,7 @@
  * playlist_preparser.h:
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 4c10e6878a7aa2c180d1aa28b20d001700c0e2ca $
+ * $Id: 0fecead5341713088bb337f717468c900ac45b7a $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -37,7 +37,8 @@ typedef struct playlist_preparser_t playlist_preparser_t;
 /**
  * This function creates the preparser object and thread.
  */
-playlist_preparser_t *playlist_preparser_New( playlist_t *, playlist_fetcher_t * );
+playlist_preparser_t *playlist_preparser_New( vlc_object_t *,
+                                              playlist_fetcher_t * );
 
 /**
  * This function enqueues the provided item to be preparsed.

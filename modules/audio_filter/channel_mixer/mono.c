@@ -2,7 +2,7 @@
  * mono.c : stereo2mono downmixsimple channel mixer plug-in
  *****************************************************************************
  * Copyright (C) 2006 M2X
- * $Id: 9610ba3a6a23f57550dcddab8d370f69b6a83e44 $
+ * $Id: fa86589814217d08f10f453d6baa20f882494b0c $
  *
  * Authors: Jean-Paul Saman <jpsaman at m2x dot nl>
  *
@@ -49,11 +49,9 @@ static void CloseFilter   ( vlc_object_t * );
 
 static block_t *Convert( filter_t *p_filter, block_t *p_block );
 
-static unsigned int stereo_to_mono( filter_t *, aout_buffer_t *,
-                                    aout_buffer_t * );
-static unsigned int mono( filter_t *, aout_buffer_t *, aout_buffer_t * );
-static void stereo2mono_downmix( filter_t *, aout_buffer_t *,
-                                 aout_buffer_t * );
+static unsigned int stereo_to_mono( filter_t *, block_t *, block_t * );
+static unsigned int mono( filter_t *, block_t *, block_t * );
+static void stereo2mono_downmix( filter_t *, block_t *, block_t * );
 
 /*****************************************************************************
  * Local structures
@@ -95,15 +93,6 @@ static const char *const ppsz_pos_descriptions[] =
   N_("Rear left"), N_("Rear right"),
   N_("Center"), N_("Low-frequency effects"),
   N_("Side left"), N_("Side right"), N_("Rear center") };
-
-/* our internal channel order (WG-4 order)
-static const uint32_t pi_vlc_chan_order_wg4[] =
-{
-    AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT,
-    AOUT_CHAN_MIDDLELEFT, AOUT_CHAN_MIDDLERIGHT,
-    AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT, AOUT_CHAN_REARCENTER,
-    AOUT_CHAN_CENTER, AOUT_CHAN_LFE, 0
-}; */
 
 #define MONO_CFG "sout-mono-"
 /*****************************************************************************
@@ -362,19 +351,9 @@ static int OpenFilter( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    if( (p_filter->fmt_in.i_codec != VLC_CODEC_S16N) ||
-        (p_filter->fmt_out.i_codec != VLC_CODEC_S16N) )
-    {
-        /*msg_Err( p_this, "filter discarded (invalid format)" );*/
-        return VLC_EGENERIC;
-    }
-
     if( (p_filter->fmt_in.audio.i_format != p_filter->fmt_out.audio.i_format) ||
-        (p_filter->fmt_in.audio.i_rate != p_filter->fmt_out.audio.i_rate) ||
         (p_filter->fmt_in.audio.i_format != VLC_CODEC_S16N) ||
-        (p_filter->fmt_out.audio.i_format != VLC_CODEC_S16N) ||
-        (p_filter->fmt_in.audio.i_bitspersample !=
-                                    p_filter->fmt_out.audio.i_bitspersample))
+        (p_filter->fmt_out.audio.i_format != VLC_CODEC_S16N) )
     {
         /*msg_Err( p_this, "couldn't load mono filter" );*/
         return VLC_EGENERIC;
@@ -385,26 +364,8 @@ static int OpenFilter( vlc_object_t *p_this )
     if( p_sys == NULL )
         return VLC_EGENERIC;
 
-    p_sys->b_downmix = var_CreateGetBool( p_this, MONO_CFG "downmix" );
-    p_sys->i_channel_selected =
-            (unsigned int) var_CreateGetInteger( p_this, MONO_CFG "channel" );
-
-    if( p_sys->b_downmix )
-    {
-        msg_Dbg( p_this, "using stereo to mono downmix" );
-        p_filter->fmt_out.audio.i_physical_channels = AOUT_CHAN_CENTER;
-        p_filter->fmt_out.audio.i_channels = 1;
-    }
-    else
-    {
-        msg_Dbg( p_this, "using pseudo mono" );
-        p_filter->fmt_out.audio.i_physical_channels =
-                            (AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT);
-        p_filter->fmt_out.audio.i_channels = 2;
-    }
-
-    p_filter->fmt_out.audio.i_rate = p_filter->fmt_in.audio.i_rate;
-    p_filter->fmt_out.audio.i_format = p_filter->fmt_out.i_codec;
+    p_sys->b_downmix = var_InheritBool( p_this, MONO_CFG "downmix" );
+    p_sys->i_channel_selected = var_InheritInteger( p_this, MONO_CFG "channel" );
 
     p_sys->i_nb_channels = aout_FormatNbChannels( &(p_filter->fmt_in.audio) );
     p_sys->i_bitspersample = p_filter->fmt_out.audio.i_bitspersample;
@@ -419,12 +380,23 @@ static int OpenFilter( vlc_object_t *p_this )
               p_filter->fmt_in.audio.i_physical_channels,
               p_filter->fmt_in.audio.i_rate ) < 0 )
     {
-        var_Destroy( p_this, MONO_CFG "channel" );
-        var_Destroy( p_this, MONO_CFG "downmix" );
         free( p_sys );
         return VLC_EGENERIC;
     }
 
+    if( p_sys->b_downmix )
+    {
+        msg_Dbg( p_this, "using stereo to mono downmix" );
+        p_filter->fmt_out.audio.i_physical_channels = AOUT_CHAN_CENTER;
+        p_filter->fmt_out.audio.i_channels = 1;
+    }
+    else
+    {
+        msg_Dbg( p_this, "using pseudo mono" );
+        p_filter->fmt_out.audio.i_physical_channels = AOUT_CHANS_STEREO;
+        p_filter->fmt_out.audio.i_channels = 2;
+    }
+    p_filter->fmt_out.audio.i_rate = p_filter->fmt_in.audio.i_rate;
     p_filter->pf_audio_filter = Convert;
 
     msg_Dbg( p_this, "%4.4s->%4.4s, channels %d->%d, bits per sample: %i->%i",
@@ -446,8 +418,6 @@ static void CloseFilter( vlc_object_t *p_this)
     filter_t *p_filter = (filter_t *) p_this;
     filter_sys_t *p_sys = p_filter->p_sys;
 
-    var_Destroy( p_this, MONO_CFG "channel" );
-    var_Destroy( p_this, MONO_CFG "downmix" );
     free( p_sys->p_atomic_operations );
     free( p_sys->p_overflow_buffer );
     free( p_sys );
@@ -513,7 +483,7 @@ static block_t *Convert( filter_t *p_filter, block_t *p_block )
  * Written by Boris Dorès <babal@via.ecp.fr>
  */
 static void stereo2mono_downmix( filter_t * p_filter,
-                            aout_buffer_t * p_in_buf, aout_buffer_t * p_out_buf )
+                                 block_t * p_in_buf, block_t * p_out_buf )
 {
     filter_sys_t *p_sys = (filter_sys_t *)p_filter->p_sys;
 
@@ -616,7 +586,7 @@ static void stereo2mono_downmix( filter_t * p_filter,
 
 /* Simple stereo to mono mixing. */
 static unsigned int mono( filter_t *p_filter,
-                          aout_buffer_t *p_output, aout_buffer_t *p_input )
+                          block_t *p_output, block_t *p_input )
 {
     filter_sys_t *p_sys = (filter_sys_t *)p_filter->p_sys;
     int16_t *p_in, *p_out;
@@ -636,7 +606,7 @@ static unsigned int mono( filter_t *p_filter,
 
 /* Simple stereo to mono mixing. */
 static unsigned int stereo_to_mono( filter_t *p_filter,
-                                    aout_buffer_t *p_output, aout_buffer_t *p_input )
+                                    block_t *p_output, block_t *p_input )
 {
     filter_sys_t *p_sys = (filter_sys_t *)p_filter->p_sys;
     int16_t *p_in, *p_out;

@@ -2,7 +2,7 @@
  * ctrl_radialslider.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e17852b0a23aa82bbb689a41c8b985622fe334f0 $
+ * $Id: b7d427b797184b67e323f2277b74187fb263b22b $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -76,9 +76,7 @@ private:
     /// The last received event
     EvtGeneric *m_pEvt;
     /// Sequence of images
-    OSGraphics *m_pImgSeq;
-    /// Last saved position
-    int m_lastPos;
+    const OSGraphics * const m_pImgSeq;
 
     /// Callback objects
     DEFINE_CALLBACK( CtrlRadialSlider, UpDown )

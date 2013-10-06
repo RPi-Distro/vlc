@@ -2,7 +2,7 @@
  * core.c: Core libvlc new API functions : initialization
  *****************************************************************************
  * Copyright (C) 2005 VLC authors and VideoLAN
- * $Id: b115d37ff72e06a7dfd069251bcfe9ec925810a4 $
+ * $Id: 486829ddb472b774222a9235bfbe197a40670b96 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -40,11 +40,11 @@ static const char nomemstr[] = "Insufficient memory";
 
 libvlc_instance_t * libvlc_new( int argc, const char *const *argv )
 {
+    libvlc_threads_init ();
+
     libvlc_instance_t *p_new = malloc (sizeof (*p_new));
     if (unlikely(p_new == NULL))
         return NULL;
-
-    libvlc_init_threads ();
 
     const char *my_argv[argc + 2];
     my_argv[0] = "libvlc"; /* dummy arg0, skipped by getopt() et al */
@@ -69,13 +69,11 @@ libvlc_instance_t * libvlc_new( int argc, const char *const *argv )
     p_new->ref_count = 1;
     p_new->p_callback_list = NULL;
     vlc_mutex_init(&p_new->instance_lock);
-    var_Create( p_libvlc_int, "http-user-agent",
-                VLC_VAR_STRING|VLC_VAR_DOINHERIT );
     return p_new;
 
 error:
-    libvlc_deinit_threads ();
     free (p_new);
+    libvlc_threads_deinit ();
     return NULL;
 }
 
@@ -107,26 +105,8 @@ void libvlc_release( libvlc_instance_t *p_instance )
         libvlc_InternalCleanup( p_instance->p_libvlc_int );
         libvlc_InternalDestroy( p_instance->p_libvlc_int );
         free( p_instance );
-        libvlc_deinit_threads ();
+        libvlc_threads_deinit ();
     }
-}
-
-int libvlc_add_intf( libvlc_instance_t *p_i, const char *name )
-{
-    if( libvlc_InternalAddIntf( p_i->p_libvlc_int, name ))
-    {
-        if( name )
-        {
-            libvlc_printerr("interface \"%s\" initialization failed",
-                name );
-        }
-        else
-        {
-            libvlc_printerr("default interface initialization failed");
-        }
-        return -1;
-    }
-    return 0;
 }
 
 void libvlc_set_exit_handler( libvlc_instance_t *p_i, void (*cb) (void *),
@@ -136,10 +116,20 @@ void libvlc_set_exit_handler( libvlc_instance_t *p_i, void (*cb) (void *),
     libvlc_SetExitHandler( p_libvlc, cb, data );
 }
 
+static void libvlc_wait_wakeup( void *data )
+{
+    vlc_sem_post( data );
+}
+
 void libvlc_wait( libvlc_instance_t *p_i )
 {
-    libvlc_int_t *p_libvlc = p_i->p_libvlc_int;
-    libvlc_InternalWait( p_libvlc );
+    vlc_sem_t sem;
+
+    vlc_sem_init( &sem, 0 );
+    libvlc_set_exit_handler( p_i, libvlc_wait_wakeup, &sem );
+    vlc_sem_wait( &sem );
+    libvlc_set_exit_handler( p_i, NULL, NULL );
+    vlc_sem_destroy( &sem );
 }
 
 void libvlc_set_user_agent (libvlc_instance_t *p_i,
@@ -155,6 +145,16 @@ void libvlc_set_user_agent (libvlc_instance_t *p_i,
         var_SetString (p_libvlc, "http-user-agent", str);
         free (str);
     }
+}
+
+void libvlc_set_app_id(libvlc_instance_t *p_i, const char *id,
+                       const char *version, const char *icon)
+{
+    libvlc_int_t *p_libvlc = p_i->p_libvlc_int;
+
+    var_SetString(p_libvlc, "app-id", id ? id : "");
+    var_SetString(p_libvlc, "app-version", version ? version : "");
+    var_SetString(p_libvlc, "app-version", icon ? icon : "");
 }
 
 const char * libvlc_get_version(void)
@@ -181,13 +181,13 @@ void libvlc_free( void *ptr )
 static libvlc_module_description_t *module_description_list_get(
                 libvlc_instance_t *p_instance, const char *capability )
 {
-    VLC_UNUSED( p_instance );
     libvlc_module_description_t *p_list = NULL,
                           *p_actual = NULL,
                           *p_previous = NULL;
-    module_t **module_list = module_list_get( NULL );
+    size_t count;
+    module_t **module_list = module_list_get( &count );
 
-    for (size_t i = 0; module_list[i]; i++)
+    for (size_t i = 0; i < count; i++)
     {
         module_t *p_module = module_list[i];
 
@@ -222,6 +222,7 @@ static libvlc_module_description_t *module_description_list_get(
     }
 
     module_list_free( module_list );
+    VLC_UNUSED( p_instance );
     return p_list;
 }
 

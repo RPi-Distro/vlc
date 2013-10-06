@@ -1,24 +1,24 @@
 /*****************************************************************************
  * svg.c : Put SVG on the video
  *****************************************************************************
- * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: 5e7de1be55684262afbc7c013ab2935068dc9ee4 $
+ * Copyright (C) 2002, 2003 VLC authors and VideoLAN
+ * $Id: c30223fd8e5e8cf1d566bfaf1d261e5e664e124a $
  *
  * Authors: Olivier Aubert <oaubert@lisi.univ-lyon1.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option ) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -38,7 +38,7 @@
 
 #ifdef HAVE_UNISTD_H
 #    include <unistd.h>
-#elif defined( WIN32 ) && !defined( UNDER_CE )
+#elif defined( _WIN32 )
 #   include <io.h>
 #endif
 
@@ -432,6 +432,8 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
                        subpicture_region_t *p_region_in,
                        const vlc_fourcc_t *p_chroma_list )
 {
+    VLC_UNUSED(p_chroma_list);
+
     filter_sys_t *p_sys = p_filter->p_sys;
     svg_rendition_t *p_svg = NULL;
     char *psz_string;

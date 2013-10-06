@@ -2,7 +2,7 @@
  * standard.c: standard stream output module
  *****************************************************************************
  * Copyright (C) 2003-2011 the VideoLAN team
- * $Id: 8795afeb61e139e4830d851edad0357a9673d4a6 $
+ * $Id: ec5c47cb0c5565d2c8dc77f58b5807b2af09cd1e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -157,7 +157,7 @@ static void create_SDP(sout_stream_t *p_stream, sout_access_out_t *p_access)
         .ai_family = AF_UNSPEC,
         .ai_socktype = SOCK_DGRAM,
         .ai_protocol = 0,
-        .ai_flags = AI_NUMERICHOST | AI_NUMERICSERV
+        .ai_flags = AI_NUMERICHOST | AI_NUMERICSERV | AI_IDN,
     };
     char *shost = var_GetNonEmptyString (p_access, "src-addr");
     char *dhost = var_GetNonEmptyString (p_access, "dst-addr");
@@ -167,13 +167,13 @@ static void create_SDP(sout_stream_t *p_stream, sout_access_out_t *p_access)
     socklen_t srclen = 0, dstlen = 0;
     struct addrinfo *res;
 
-    if (!vlc_getaddrinfo ( VLC_OBJECT(p_stream), dhost, dport, &hints, &res))
+    if (!vlc_getaddrinfo (dhost, dport, &hints, &res))
     {
         memcpy (&dst, res->ai_addr, dstlen = res->ai_addrlen);
         freeaddrinfo (res);
     }
 
-    if (!vlc_getaddrinfo ( VLC_OBJECT(p_stream), shost, sport, &hints, &res))
+    if (!vlc_getaddrinfo (shost, sport, &hints, &res))
     {
         memcpy (&src, res->ai_addr, srclen = res->ai_addrlen);
         freeaddrinfo (res);
@@ -197,7 +197,7 @@ static void create_SDP(sout_stream_t *p_stream, sout_access_out_t *p_access)
         {
             msg_Dbg (p_stream, "Generated SDP:\n%s", psz_sdp);
             p_sys->p_session =
-                sout_AnnounceRegisterSDP (p_stream->p_sout, psz_sdp, dhost);
+                sout_AnnounceRegisterSDP (p_stream, psz_sdp, dhost);
             free( psz_sdp );
         }
     }
@@ -227,9 +227,9 @@ static const char *getMuxFromAlias( const char *psz_alias )
         { "ps",  "ps" },
         { "mpeg1","mpeg1" },
         { "wav", "wav" },
-        { "flv", "ffmpeg{mux=flv}" },
-        { "mkv", "ffmpeg{mux=matroska}"},
-        { "webm", "ffmpeg{mux=webm}"},
+        { "flv", "avformat{mux=flv}" },
+        { "mkv", "avformat{mux=matroska}"},
+        { "webm", "avformat{mux=webm}"},
     };
 
     if( !psz_alias )
@@ -303,9 +303,9 @@ static void checkAccessMux( sout_stream_t *p_stream, char *psz_access,
         msg_Err( p_stream, "mov and mp4 mux are only valid with file output" );
     else if( !strncmp( psz_access, "udp", 3 ) )
     {
-        if( !strncmp( psz_mux, "ffmpeg", 6 ) )
+        if( !strncmp( psz_mux, "ffmpeg", 6 ) || !strncmp( psz_mux, "avformat", 8 ) )
         {   /* why would you use ffmpeg's ts muxer ? YOU DON'T LOVE VLC ??? */
-            char *psz_ffmpeg_mux = var_CreateGetString( p_stream, "ffmpeg-mux" );
+            char *psz_ffmpeg_mux = var_CreateGetString( p_stream, "sout-avformat-mux" );
             if( !psz_ffmpeg_mux || strncmp( psz_ffmpeg_mux, "mpegts", 6 ) )
                 msg_Err( p_stream, "UDP output is only valid with TS mux" );
             free( psz_ffmpeg_mux );
@@ -321,7 +321,6 @@ static void checkAccessMux( sout_stream_t *p_stream, char *psz_access,
 static int Open( vlc_object_t *p_this )
 {
     sout_stream_t       *p_stream = (sout_stream_t*)p_this;
-    sout_instance_t     *p_sout = p_stream->p_sout;
     sout_stream_sys_t   *p_sys;
     char *psz_mux, *psz_access, *psz_url;
     sout_access_out_t   *p_access;
@@ -375,7 +374,7 @@ static int Open( vlc_object_t *p_this )
 
     checkAccessMux( p_stream, psz_access, psz_mux );
 
-    p_access = sout_AccessOutNew( p_sout, psz_access, psz_url );
+    p_access = sout_AccessOutNew( p_stream, psz_access, psz_url );
     if( p_access == NULL )
     {
         msg_Err( p_stream, "no suitable sout access module for `%s/%s://%s'",
@@ -383,7 +382,7 @@ static int Open( vlc_object_t *p_this )
         goto end;
     }
 
-    p_sys->p_mux = sout_MuxNew( p_sout, psz_mux, p_access );
+    p_sys->p_mux = sout_MuxNew( p_stream->p_sout, psz_mux, p_access );
     if( !p_sys->p_mux )
     {
         const char *psz_mux_guess = getMuxFromAlias( psz_mux );
@@ -391,7 +390,7 @@ static int Open( vlc_object_t *p_this )
         {
             msg_Dbg( p_stream, "Couldn't open mux `%s', trying `%s' instead",
                 psz_mux, psz_mux_guess );
-            p_sys->p_mux = sout_MuxNew( p_sout, psz_mux_guess, p_access );
+            p_sys->p_mux = sout_MuxNew( p_stream->p_sout, psz_mux_guess, p_access );
         }
 
         if( !p_sys->p_mux )
@@ -407,12 +406,11 @@ static int Open( vlc_object_t *p_this )
     if( var_GetBool( p_stream, SOUT_CFG_PREFIX"sap" ) )
         create_SDP( p_stream, p_access );
 
-    if( !sout_AccessOutCanControlPace( p_access ) )
-        p_sout->i_out_pace_nocontrol++;
-
     p_stream->pf_add    = Add;
     p_stream->pf_del    = Del;
     p_stream->pf_send   = Send;
+    if( !sout_AccessOutCanControlPace( p_access ) )
+        p_stream->pace_nocontrol = true;
 
     ret = VLC_SUCCESS;
 
@@ -438,11 +436,9 @@ static void Close( vlc_object_t * p_this )
     sout_access_out_t *p_access = p_sys->p_mux->p_access;
 
     if( p_sys->p_session != NULL )
-        sout_AnnounceUnRegister( p_stream->p_sout, p_sys->p_session );
+        sout_AnnounceUnRegister( p_stream, p_sys->p_session );
 
     sout_MuxDelete( p_sys->p_mux );
-    if( !sout_AccessOutCanControlPace( p_access ) )
-        p_stream->p_sout->i_out_pace_nocontrol--;
     sout_AccessOutDelete( p_access );
 
     free( p_sys );

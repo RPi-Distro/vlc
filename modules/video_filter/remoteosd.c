@@ -2,23 +2,23 @@
  * remoteosd.c: remote osd over vnc filter module
  *****************************************************************************
  * Copyright (C) 2007-2008 Matthias Bauer
- * $Id: dd53f3d30d9b7e48c4364a1509cce4a14fb6960c $
+ * $Id: 09593c2a66b1a9142d50bc30670efe3efec36b14 $
  *
  * Authors: Matthias Bauer <matthias dot bauer #_at_# gmx dot ch>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implid warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -370,10 +370,6 @@ static void stop_osdvnc ( filter_t *p_filter )
 {
     filter_sys_t *p_sys = p_filter->p_sys;
 
-    /* It will unlock socket reading */
-    vlc_object_kill( p_filter );
-
-    /* */
     msg_Dbg( p_filter, "joining worker_thread" );
     vlc_cancel( p_sys->worker_thread );
     vlc_join( p_sys->worker_thread, NULL );
@@ -652,7 +648,7 @@ static void* vnc_worker_thread( void *obj )
 
     if( !handshaking ( p_filter ) )
     {
-        msg_Err( p_filter, "Error occured while handshaking vnc host" );
+        msg_Err( p_filter, "Error occurred while handshaking vnc host" );
         goto exit;
     }
 

@@ -2,7 +2,7 @@
  * input_slider.cpp : VolumeSlider and SeekSlider
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: ea6d4355a04ebfd2377bca0d3e1bcc4f1a3b1ebb $
+ * $Id: 3a92a7809d299a336ad3fa35bacec95870a99871 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -31,12 +31,10 @@
 
 #include "util/input_slider.hpp"
 #include "adapters/seekpoints.hpp"
-#include <vlc_aout_intf.h>
 
 #include <QPaintEvent>
 #include <QPainter>
 #include <QBitmap>
-#include <QPainter>
 #include <QStyleOptionSlider>
 #include <QLinearGradient>
 #include <QTimer>
@@ -62,6 +60,39 @@ SeekSlider::SeekSlider( Qt::Orientation q, QWidget *_parent, bool _static )
     f_buffering = 1.0;
     mHandleOpacity = 1.0;
     chapters = NULL;
+    mHandleLength = -1;
+    b_seekable = true;
+    alternativeStyle = NULL;
+
+    // prepare some static colors
+    QPalette p = palette();
+    QColor background = p.color( QPalette::Active, QPalette::Window );
+    tickpointForeground = p.color( QPalette::Active, QPalette::WindowText );
+    tickpointForeground.setHsv( tickpointForeground.hue(),
+            ( background.saturation() + tickpointForeground.saturation() ) / 2,
+            ( background.value() + tickpointForeground.value() ) / 2 );
+
+    // set the background color and gradient
+    QColor backgroundBase( p.window().color() );
+    backgroundGradient.setColorAt( 0.0, backgroundBase.darker( 140 ) );
+    backgroundGradient.setColorAt( 1.0, backgroundBase );
+
+    // set the foreground color and gradient
+    QColor foregroundBase( 50, 156, 255 );
+    foregroundGradient.setColorAt( 0.0,  foregroundBase );
+    foregroundGradient.setColorAt( 1.0,  foregroundBase.darker( 140 ) );
+
+    // prepare the handle's gradient
+    handleGradient.setColorAt( 0.0, p.window().color().lighter( 120 ) );
+    handleGradient.setColorAt( 0.9, p.window().color().darker( 120 ) );
+
+    // prepare the handle's shadow gradient
+    QColor shadowBase = p.shadow().color();
+    if( shadowBase.lightness() > 100 )
+        shadowBase = QColor( 60, 60, 60 ); // Palette's shadow is too bright
+    shadowDark = shadowBase.darker( 150 );
+    shadowLight = shadowBase.lighter( 180 );
+    shadowLight.setAlpha( 50 );
 
     /* Timer used to fire intermediate updatePos() when sliding */
     seekLimitTimer = new QTimer( this );
@@ -78,6 +109,13 @@ SeekSlider::SeekSlider( Qt::Orientation q, QWidget *_parent, bool _static )
     setMouseTracking( true );
     setTracking( true );
     setFocusPolicy( Qt::NoFocus );
+
+    /* Use the new/classic style */
+    if( !b_classic )
+    {
+        alternativeStyle = new SeekStyle;
+        setStyle( alternativeStyle );
+    }
 
     /* Init to 0 */
     setPosition( -1.0, 0, 0 );
@@ -101,6 +139,8 @@ SeekSlider::SeekSlider( Qt::Orientation q, QWidget *_parent, bool _static )
 SeekSlider::~SeekSlider()
 {
     delete chapters;
+    if ( alternativeStyle )
+        delete alternativeStyle;
 }
 
 /***
@@ -128,10 +168,11 @@ void SeekSlider::setPosition( float pos, int64_t time, int length )
     if( pos == -1.0 )
     {
         setEnabled( false );
+        mTimeTooltip->hide();
         isSliding = false;
     }
     else
-        setEnabled( true );
+        setEnabled( b_seekable );
 
     if( !isSliding )
         setValue( (int)( pos * 1000.0 ) );
@@ -158,25 +199,38 @@ void SeekSlider::updateBuffering( float f_buffering_ )
     repaint();
 }
 
-void SeekSlider::mouseReleaseEvent( QMouseEvent *event )
+void SeekSlider::processReleasedButton()
 {
-    event->accept();
+    if ( !isSliding && !isJumping ) return;
     isSliding = false;
+    bool b_seekPending = seekLimitTimer->isActive();
     seekLimitTimer->stop(); /* We're not sliding anymore: only last seek on release */
     if ( isJumping )
     {
         isJumping = false;
         return;
     }
-    QSlider::mouseReleaseEvent( event );
-    updatePos();
+    if( b_seekPending && isEnabled() )
+        updatePos();
+}
+
+void SeekSlider::mouseReleaseEvent( QMouseEvent *event )
+{
+    if ( event->button() != Qt::LeftButton && event->button() != Qt::MidButton )
+    {
+        QSlider::mouseReleaseEvent( event );
+        return;
+    }
+    event->accept();
+    processReleasedButton();
 }
 
 void SeekSlider::mousePressEvent( QMouseEvent* event )
 {
     /* Right-click */
-    if( event->button() != Qt::LeftButton &&
-        event->button() != Qt::MidButton )
+    if ( !isEnabled() ||
+         ( event->button() != Qt::LeftButton && event->button() != Qt::MidButton )
+       )
     {
         QSlider::mousePressEvent( event );
         return;
@@ -221,22 +275,33 @@ void SeekSlider::mousePressEvent( QMouseEvent* event )
     }
 
     isSliding = true ;
-    setValue( QStyle::sliderValueFromPosition( MINIMUM, MAXIMUM, event->x(), width(), false ) );
+
+    setValue( QStyle::sliderValueFromPosition( MINIMUM, MAXIMUM, event->x() - handleLength() / 2, width() - handleLength(), false ) );
+    emit sliderMoved( value() );
     event->accept();
 }
 
 void SeekSlider::mouseMoveEvent( QMouseEvent *event )
 {
+    if ( ! ( event->buttons() & ( Qt::LeftButton | Qt::MidButton ) ) )
+    {
+        /* Handle button release when mouserelease has been hijacked by popup */
+        processReleasedButton();
+    }
+
+    if ( !isEnabled() ) return event->accept();
+
     if( isSliding )
     {
-        setValue( QStyle::sliderValueFromPosition( MINIMUM, MAXIMUM, event->x(), width(), false) );
+        setValue( QStyle::sliderValueFromPosition( MINIMUM, MAXIMUM, event->x() - handleLength() / 2, width() - handleLength(), false) );
         emit sliderMoved( value() );
     }
 
     /* Tooltip */
     if ( inputLength > 0 )
     {
-        int posX = qMax( rect().left(), qMin( rect().right(), event->x() ) );
+        int margin = handleLength() / 2;
+        int posX = qMax( rect().left() + margin, qMin( rect().right() - margin, event->x() ) );
 
         QString chapterLabel;
 
@@ -257,12 +322,12 @@ void SeekSlider::mouseMoveEvent( QMouseEvent *event )
                     chapterLabel = points.at( i_selected ).name;
         }
 
-        secstotimestr( psz_length, ( posX * inputLength ) / size().width() );
-        mTimeTooltip->setText( psz_length, chapterLabel );
-
-        QPoint p( event->globalX() - ( event->x() - posX ) - ( mTimeTooltip->width() / 2 ),
-                  QWidget::mapToGlobal( QPoint( 0, 0 ) ).y() - ( mTimeTooltip->height() - 2 ) );
-        mTimeTooltip->move( p );
+        QPoint target( event->globalX() - ( event->x() - posX ),
+                  QWidget::mapToGlobal( QPoint( 0, 0 ) ).y() );
+        if( likely( size().width() > handleLength() ) ) {
+            secstotimestr( psz_length, ( ( posX - margin ) * inputLength ) / ( size().width() - handleLength() ) );
+            mTimeTooltip->setTip( target, psz_length, chapterLabel );
+        }
     }
     event->accept();
 }
@@ -270,7 +335,7 @@ void SeekSlider::mouseMoveEvent( QMouseEvent *event )
 void SeekSlider::wheelEvent( QWheelEvent *event )
 {
     /* Don't do anything if we are for somehow reason sliding */
-    if( !isSliding )
+    if( !isSliding && isEnabled() )
     {
         setValue( value() + event->delta() / 12 ); /* 12 = 8 * 15 / 10
          Since delta is in 1/8 of ° and mouse have steps of 15 °
@@ -286,7 +351,7 @@ void SeekSlider::enterEvent( QEvent * )
     /* Cancel the fade-out timer */
     hideHandleTimer->stop();
     /* Only start the fade-in if needed */
-    if( animHandle->direction() != QAbstractAnimation::Forward )
+    if( isEnabled() && animHandle->direction() != QAbstractAnimation::Forward )
     {
         /* If pause is called while not running Qt will complain */
         if( animHandle->state() == QAbstractAnimation::Running )
@@ -337,196 +402,10 @@ bool SeekSlider::eventFilter( QObject *obj, QEvent *event )
 
 QSize SeekSlider::sizeHint() const
 {
+    if ( b_classic )
+        return QSlider::sizeHint();
     return ( orientation() == Qt::Horizontal ) ? QSize( 100, 18 )
                                                : QSize( 18, 100 );
-}
-
-QSize SeekSlider::handleSize() const
-{
-    const int size = ( orientation() == Qt::Horizontal ? height() : width() );
-    return QSize( size, size );
-}
-
-void SeekSlider::paintEvent( QPaintEvent *event )
-{
-    if( b_classic )
-        return QSlider::paintEvent( event );
-
-    QStyleOptionSlider option;
-    initStyleOption( &option );
-
-    /* */
-    QPainter painter( this );
-    painter.setRenderHints( QPainter::Antialiasing );
-
-    // draw bar
-    const int barCorner = 3;
-    qreal sliderPos     = -1;
-    int range           = MAXIMUM;
-    QRect barRect       = rect();
-
-    // adjust positions based on the current orientation
-    if ( option.sliderPosition != 0 )
-    {
-        switch ( orientation() )
-        {
-            case Qt::Horizontal:
-                sliderPos = ( ( (qreal)width() ) / (qreal)range )
-                        * (qreal)option.sliderPosition;
-                break;
-            case Qt::Vertical:
-                sliderPos = ( ( (qreal)height() ) / (qreal)range )
-                        * (qreal)option.sliderPosition;
-                break;
-        }
-    }
-
-    switch ( orientation() )
-    {
-        case Qt::Horizontal:
-            barRect.setHeight( height() /2 );
-            break;
-        case Qt::Vertical:
-            barRect.setWidth( width() /2 );
-            break;
-    }
-
-    barRect.moveCenter( rect().center() );
-
-    // set the background color and gradient
-    QColor backgroundBase( palette().window().color() );
-    QLinearGradient backgroundGradient( 0, 0, 0, height() );
-    backgroundGradient.setColorAt( 0.0, backgroundBase.darker( 140 ) );
-    backgroundGradient.setColorAt( 1.0, backgroundBase );
-
-    // set the foreground color and gradient
-    QColor foregroundBase( 50, 156, 255 );
-    QLinearGradient foregroundGradient( 0, 0, 0, height() );
-    foregroundGradient.setColorAt( 0.0,  foregroundBase );
-    foregroundGradient.setColorAt( 1.0,  foregroundBase.darker( 140 ) );
-
-    // draw a slight 3d effect on the bottom
-    painter.setPen( QColor( 230, 230, 230 ) );
-    painter.setBrush( Qt::NoBrush );
-    painter.drawRoundedRect( barRect.adjusted( 0, 2, 0, 0 ), barCorner, barCorner );
-
-    // draw background
-    painter.setPen( Qt::NoPen );
-    painter.setBrush( backgroundGradient );
-    painter.drawRoundedRect( barRect, barCorner, barCorner );
-
-    // adjusted foreground rectangle
-    QRect valueRect = barRect.adjusted( 1, 1, -1, 0 );
-
-    switch ( orientation() )
-    {
-        case Qt::Horizontal:
-            valueRect.setWidth( qMin( width(), int( sliderPos ) ) );
-            break;
-        case Qt::Vertical:
-            valueRect.setHeight( qMin( height(), int( sliderPos ) ) );
-            valueRect.moveBottom( rect().bottom() );
-            break;
-    }
-
-    if ( option.sliderPosition > minimum() && option.sliderPosition <= maximum() )
-    {
-        // draw foreground
-        painter.setPen( Qt::NoPen );
-        painter.setBrush( foregroundGradient );
-        painter.drawRoundedRect( valueRect, barCorner, barCorner );
-    }
-
-    // draw buffering overlay
-    if ( f_buffering < 1.0 )
-    {
-        QRect innerRect = barRect.adjusted( 1, 1,
-                            barRect.width() * ( -1.0 + f_buffering ) - 1, 0 );
-        QColor overlayColor = QColor( "Orange" );
-        overlayColor.setAlpha( 128 );
-        painter.setBrush( overlayColor );
-        painter.drawRoundedRect( innerRect, barCorner, barCorner );
-    }
-
-    if ( option.state & QStyle::State_MouseOver || isAnimationRunning() )
-    {
-        /* draw chapters tickpoints */
-        if ( chapters && inputLength && size().width() )
-        {
-            QColor background = palette().color( QPalette::Active, QPalette::Background );
-            QColor foreground = palette().color( QPalette::Active, QPalette::WindowText );
-            foreground.setHsv( foreground.hue(),
-                            ( background.saturation() + foreground.saturation() ) / 2,
-                            ( background.value() + foreground.value() ) / 2 );
-            if ( orientation() == Qt::Horizontal ) /* TODO: vertical */
-            {
-                QList<SeekPoint> points = chapters->getPoints();
-                foreach( SeekPoint point, points )
-                {
-                    int x = point.time / 1000000.0 / inputLength * size().width();
-                    painter.setPen( foreground );
-                    painter.setBrush( Qt::NoBrush );
-                    painter.drawLine( x, height(), x, height() - CHAPTERSSPOTSIZE );
-                }
-            }
-        }
-
-        // draw handle
-        if ( sliderPos != -1 )
-        {
-            const int margin = 0;
-            QSize hSize = handleSize() - QSize( 6, 6 );
-            QPoint pos;
-
-            switch ( orientation() )
-            {
-                case Qt::Horizontal:
-                    pos = QPoint( sliderPos - ( hSize.width() / 2 ), 2 );
-                    pos.rx() = qMax( margin, pos.x() );
-                    pos.rx() = qMin( width() - hSize.width() - margin, pos.x() );
-                    break;
-                case Qt::Vertical:
-                    pos = QPoint( 2, height() - ( sliderPos + ( hSize.height() / 2 ) ) );
-                    pos.ry() = qMax( margin, pos.y() );
-                    pos.ry() = qMin( height() - hSize.height() - margin, pos.y() );
-                    break;
-            }
-
-            QPalette p;
-            QPoint shadowPos( pos - QPoint( 2, 2 ) );
-            QSize sSize( handleSize() - QSize( 2, 2 ) );
-
-            // prepare the handle's gradient
-            QLinearGradient handleGradient( 0, 0, 0, hSize.height() );
-            handleGradient.setColorAt( 0.0, p.window().color().lighter( 120 ) );
-            handleGradient.setColorAt( 0.9, p.window().color().darker( 120 ) );
-
-            // prepare the handle's shadow gradient
-            QColor shadowBase = p.shadow().color();
-            if( shadowBase.lightness() > 100 )
-                shadowBase = QColor( 60, 60, 60 ); // Palette's shadow is too bright
-            QColor shadowDark( shadowBase.darker( 150 ) );
-            QColor shadowLight( shadowBase.lighter( 180 ) );
-            shadowLight.setAlpha( 50 );
-
-            QRadialGradient shadowGradient( shadowPos.x() + ( sSize.width() / 2 ),
-                                            shadowPos.y() + ( sSize.height() / 2 ),
-                                            qMax( sSize.width(), sSize.height() ) / 2 );
-            shadowGradient.setColorAt( 0.4, shadowDark );
-            shadowGradient.setColorAt( 1.0, shadowLight );
-
-            painter.setPen( Qt::NoPen );
-            painter.setOpacity( mHandleOpacity );
-
-            // draw the handle's shadow
-            painter.setBrush( shadowGradient );
-            painter.drawEllipse( shadowPos.x(), shadowPos.y() + 1, sSize.width(), sSize.height() );
-
-            // finally draw the handle
-            painter.setBrush( handleGradient );
-            painter.drawEllipse( pos.x(), pos.y(), hSize.width(), hSize.height() );
-        }
-    }
 }
 
 qreal SeekSlider::handleOpacity() const
@@ -539,6 +418,18 @@ void SeekSlider::setHandleOpacity(qreal opacity)
     mHandleOpacity = opacity;
     /* Request a new paintevent */
     update();
+}
+
+inline int SeekSlider::handleLength()
+{
+    if ( mHandleLength > 0 )
+        return mHandleLength;
+
+    /* Ask for the length of the handle to the underlying style */
+    QStyleOptionSlider option;
+    initStyleOption( &option );
+    mHandleLength = style()->pixelMetric( QStyle::PM_SliderLength, &option );
+    return mHandleLength;
 }
 
 void SeekSlider::hideHandle()
@@ -557,6 +448,7 @@ bool SeekSlider::isAnimationRunning() const
             || hideHandleTimer->isActive();
 }
 
+
 /* This work is derived from Amarok's work under GPLv2+
     - Mark Kretschmann
     - Gábor Lehel
@@ -564,14 +456,14 @@ bool SeekSlider::isAnimationRunning() const
 #define WLENGTH   80 // px
 #define WHEIGHT   22  // px
 #define SOUNDMIN  0   // %
-#define SOUNDMAX  200 // % OR 400 ?
 
-SoundSlider::SoundSlider( QWidget *_parent, int _i_step, bool b_hard,
-                          char *psz_colors )
+SoundSlider::SoundSlider( QWidget *_parent, float _i_step,
+                          char *psz_colors, int max )
                         : QAbstractSlider( _parent )
 {
-    f_step = ( _i_step * 100 ) / AOUT_VOLUME_MAX ;
-    setRange( SOUNDMIN, b_hard ? (2 * SOUNDMAX) : SOUNDMAX  );
+    f_step = (float)(_i_step * 10000)
+           / (float)((max - SOUNDMIN) * AOUT_VOLUME_DEFAULT);
+    setRange( SOUNDMIN, max);
     setMouseTracking( true );
     isSliding = false;
     b_mouseOutside = true;
@@ -599,6 +491,15 @@ SoundSlider::SoundSlider( QWidget *_parent, int _i_step, bool b_hard,
         for( int i = colorList.count(); i < 12; i++)
             colorList.append( "255" );
 
+    background = palette().color( QPalette::Active, QPalette::Window );
+    foreground = palette().color( QPalette::Active, QPalette::WindowText );
+    foreground.setHsv( foreground.hue(),
+                    ( background.saturation() + foreground.saturation() ) / 2,
+                    ( background.value() + foreground.value() ) / 2 );
+
+    textfont.setPixelSize( 9 );
+    textrect.setRect( 0, 0, 34, 15 );
+
     /* Regular colors */
 #define c(i) colorList.at(i).toInt()
 #define add_color(gradient, range, c1, c2, c3) \
@@ -616,13 +517,14 @@ SoundSlider::SoundSlider( QWidget *_parent, int _i_step, bool b_hard,
     add_color( gradient1, range, c1, c2, c3 ); \
     add_desaturated_color( gradient2, range, c1, c2, c3 );
 
+    float f_mid_point = ( 100.0 / maximum() );
     QColor * foo;
     add_colors( gradient, gradient2, 0.0, 0, 1, 2 );
-    add_colors( gradient, gradient2, 0.45, 3, 4, 5 );
-    add_colors( gradient, gradient2, 0.55, 6, 7, 8 );
+    add_colors( gradient, gradient2, f_mid_point - 0.05, 3, 4, 5 );
+    add_colors( gradient, gradient2, f_mid_point + 0.05, 6, 7, 8 );
     add_colors( gradient, gradient2, 1.0, 9, 10, 11 );
 
-    QPainter painter( &pixGradient );
+    painter.begin( &pixGradient );
     painter.setPen( Qt::NoPen );
     painter.setBrush( gradient );
     painter.drawRect( pixGradient.rect() );
@@ -660,23 +562,30 @@ void SoundSlider::mousePressEvent( QMouseEvent *event )
     }
 }
 
+void SoundSlider::processReleasedButton()
+{
+    if( !b_mouseOutside && value() != i_oldvalue )
+    {
+        emit sliderReleased();
+        setValue( value() );
+        emit sliderMoved( value() );
+    }
+    isSliding = false;
+    b_mouseOutside = false;
+}
+
 void SoundSlider::mouseReleaseEvent( QMouseEvent *event )
 {
     if( event->button() != Qt::RightButton )
-    {
-        if( !b_mouseOutside && value() != i_oldvalue )
-        {
-            emit sliderReleased();
-            setValue( value() );
-            emit sliderMoved( value() );
-        }
-        isSliding = false;
-        b_mouseOutside = false;
-    }
+        processReleasedButton();
 }
 
 void SoundSlider::mouseMoveEvent( QMouseEvent *event )
 {
+    /* handle mouserelease hijacking */
+    if ( isSliding && ( event->buttons() & ~Qt::RightButton ) == Qt::NoButton )
+        processReleasedButton();
+
     if( isSliding )
     {
         QRect rect( paddingL - 15,    -1,
@@ -698,7 +607,7 @@ void SoundSlider::mouseMoveEvent( QMouseEvent *event )
     {
         int i = ( ( event->x() - paddingL ) * maximum() + 40 ) / WLENGTH;
         i = __MIN( __MAX( 0, i ), maximum() );
-        setToolTip( QString("%1  \%" ).arg( i ) );
+        setToolTip( QString("%1  %" ).arg( i ) );
     }
 }
 
@@ -715,31 +624,25 @@ void SoundSlider::setMuted( bool m )
 
 void SoundSlider::paintEvent( QPaintEvent *e )
 {
-    QPainter painter( this );
-    QPixmap *pixGradient;
+    QPixmap *paintGradient;
     if (b_isMuted)
-        pixGradient = &this->pixGradient2;
+        paintGradient = &this->pixGradient2;
     else
-        pixGradient = &this->pixGradient;
+        paintGradient = &this->pixGradient;
+
+    painter.begin( this );
 
     const int offset = int( ( WLENGTH * value() + 100 ) / maximum() ) + paddingL;
 
-    const QRectF boundsG( 0, 0, offset , pixGradient->height() );
-    painter.drawPixmap( boundsG, *pixGradient, boundsG );
+    const QRectF boundsG( 0, 0, offset , paintGradient->height() );
+    painter.drawPixmap( boundsG, *paintGradient, boundsG );
 
     const QRectF boundsO( 0, 0, pixOutside.width(), pixOutside.height() );
     painter.drawPixmap( boundsO, pixOutside, boundsO );
 
-    QColor background = palette().color( QPalette::Active, QPalette::Background );
-    QColor foreground = palette().color( QPalette::Active, QPalette::WindowText );
-    foreground.setHsv( foreground.hue(),
-                    ( background.saturation() + foreground.saturation() ) / 2,
-                    ( background.value() + foreground.value() ) / 2 );
     painter.setPen( foreground );
-    QFont font; font.setPixelSize( 9 );
-    painter.setFont( font );
-    const QRect rect( 0, 0, 34, 15 );
-    painter.drawText( rect, Qt::AlignRight | Qt::AlignVCenter,
+    painter.setFont( textfont );
+    painter.drawText( textrect, Qt::AlignRight | Qt::AlignVCenter,
                       QString::number( value() ) + '%' );
 
     painter.end();

@@ -65,8 +65,8 @@
 # define IPPROTO_UDPLITE 136
 #endif
 
+#include <ctype.h>
 #include <errno.h>
-
 #include <assert.h>
 
 /*****************************************************************************
@@ -218,7 +218,7 @@ vlc_module_begin ()
 
     add_string( SOUT_CFG_PREFIX "proto", "udp", PROTO_TEXT,
                 PROTO_LONGTEXT, false )
-        change_string_list( ppsz_protos, ppsz_protocols, NULL )
+        change_string_list( ppsz_protos, ppsz_protocols )
     add_integer( SOUT_CFG_PREFIX "port", 5004, PORT_TEXT,
                  PORT_LONGTEXT, true )
     add_integer( SOUT_CFG_PREFIX "port-audio", 0, PORT_AUDIO_TEXT,
@@ -397,7 +397,6 @@ struct sout_stream_id_t
 static int Open( vlc_object_t *p_this )
 {
     sout_stream_t       *p_stream = (sout_stream_t*)p_this;
-    sout_instance_t     *p_sout = p_stream->p_sout;
     sout_stream_sys_t   *p_sys = NULL;
     config_chain_t      *p_cfg = NULL;
     char                *psz;
@@ -571,7 +570,7 @@ static int Open( vlc_object_t *p_this )
         }
 
         p_sys->p_grab = GrabberCreate( p_stream );
-        p_sys->p_mux = sout_MuxNew( p_sout, psz, p_sys->p_grab );
+        p_sys->p_mux = sout_MuxNew( p_stream->p_sout, psz, p_sys->p_grab );
         free( psz );
 
         if( p_sys->p_mux == NULL )
@@ -602,6 +601,7 @@ static int Open( vlc_object_t *p_this )
         p_stream->pf_del    = Del;
         p_stream->pf_send   = Send;
     }
+    p_stream->pace_nocontrol = true;
 
     if( var_GetBool( p_stream, SOUT_CFG_PREFIX"sap" ) )
         SDPHandleUrl( p_stream, "sap" );
@@ -630,9 +630,6 @@ static int Open( vlc_object_t *p_this )
         free( psz );
     }
 
-    /* update p_sout->i_out_pace_nocontrol */
-    p_stream->p_sout->i_out_pace_nocontrol++;
-
     if( p_sys->p_mux != NULL )
     {
         sout_stream_id_t *id = Add( p_stream, NULL );
@@ -653,9 +650,6 @@ static void Close( vlc_object_t * p_this )
 {
     sout_stream_t     *p_stream = (sout_stream_t*)p_this;
     sout_stream_sys_t *p_sys = p_stream->p_sys;
-
-    /* update p_sout->i_out_pace_nocontrol */
-    p_stream->p_sout->i_out_pace_nocontrol--;
 
     if( p_sys->p_mux )
     {
@@ -1306,17 +1300,16 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_t *id,
 static int SapSetup( sout_stream_t *p_stream )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
-    sout_instance_t   *p_sout = p_stream->p_sout;
 
     /* Remove the previous session */
     if( p_sys->p_session != NULL)
     {
-        sout_AnnounceUnRegister( p_sout, p_sys->p_session);
+        sout_AnnounceUnRegister( p_stream, p_sys->p_session);
         p_sys->p_session = NULL;
     }
 
     if( p_sys->i_es > 0 && p_sys->psz_sdp && *p_sys->psz_sdp )
-        p_sys->p_session = sout_AnnounceRegisterSDP( p_sout,
+        p_sys->p_session = sout_AnnounceRegisterSDP( p_stream,
                                                      p_sys->psz_sdp,
                                                      p_sys->psz_destination );
 
@@ -1364,7 +1357,7 @@ static int HttpSetup( sout_stream_t *p_stream, const vlc_url_t *url)
         p_sys->p_httpd_file = httpd_FileNew( p_sys->p_httpd_host,
                                              url->psz_path ? url->psz_path : "/",
                                              "application/sdp",
-                                             NULL, NULL, NULL,
+                                             NULL, NULL,
                                              HttpCallback, (void*)p_sys );
     }
     if( p_sys->p_httpd_file == NULL )
@@ -1403,12 +1396,7 @@ static int  HttpCallback( httpd_file_sys_t *p_args,
  ****************************************************************************/
 static void* ThreadSend( void *data )
 {
-#ifdef WIN32
-# define ECONNREFUSED WSAECONNREFUSED
-# define ENOPROTOOPT  WSAENOPROTOOPT
-# define EHOSTUNREACH WSAEHOSTUNREACH
-# define ENETUNREACH  WSAENETUNREACH
-# define ENETDOWN     WSAENETDOWN
+#ifdef _WIN32
 # define ENOBUFS      WSAENOBUFS
 # define EAGAIN       WSAEWOULDBLOCK
 # define EWOULDBLOCK  WSAEWOULDBLOCK
@@ -1581,7 +1569,7 @@ static int64_t rtp_init_ts( const vod_media_t *p_media,
     /* As per RFC 2326, session identifiers are at least 8 bytes long */
     strncpy((char *)&i_ts_init, psz_vod_session, sizeof(uint64_t));
     i_ts_init ^= (uintptr_t)p_media;
-    /* Limit the timestamp to 48 bytes, this is enough and allows us
+    /* Limit the timestamp to 48 bits, this is enough and allows us
      * to stay away from overflows */
     i_ts_init &= 0xFFFFFFFFFFFF;
     return i_ts_init;
@@ -1754,7 +1742,7 @@ static ssize_t AccessOutGrabberWriteBuffer( sout_stream_t *p_stream,
         if( p_sys->packet == NULL )
         {
             /* allocate a new packet */
-            p_sys->packet = block_New( p_stream, id->i_mtu );
+            p_sys->packet = block_Alloc( id->i_mtu );
             rtp_packetize_common( id, p_sys->packet, 1, i_dts );
             p_sys->packet->i_dts = i_dts;
             p_sys->packet->i_length = p_buffer->i_length / i_packet;

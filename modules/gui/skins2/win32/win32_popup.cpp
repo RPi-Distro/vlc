@@ -2,7 +2,7 @@
  * win32_popup.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e2ac6a89f740103f3c38373fead67a9f2ab23f08 $
+ * $Id: 05b009413ad9dc1fe5d7bb79c2e60bb9602afebc $
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *
@@ -74,7 +74,7 @@ void Win32Popup::addItem( const string &rLabel, int pos )
 //     menuItem.fType = MFT_STRING;
     menuItem.fMask = MIIM_ID | MIIM_STRING;
     menuItem.wID = pos;
-    menuItem.dwTypeData = (char*)rLabel.c_str();
+    menuItem.dwTypeData = ToT(rLabel.c_str());
     menuItem.cch = rLabel.size();
 
     InsertMenuItem( m_hMenu, findInsertionPoint( pos ), TRUE, &menuItem );

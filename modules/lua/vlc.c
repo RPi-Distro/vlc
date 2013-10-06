@@ -2,7 +2,7 @@
  * vlc.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 30d40390a116388cf7e64d1ed199d79e9ee71182 $
+ * $Id: 6f9b50528db293c636fa55e534fa4231899a8a8d $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -25,29 +25,20 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#ifndef  _GNU_SOURCE
-#   define  _GNU_SOURCE
-#endif
-
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
 #include <assert.h>
+#include <sys/stat.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_meta.h>
 #include <vlc_charset.h>
 #include <vlc_fs.h>
-#include <vlc_aout.h>
 #include <vlc_services_discovery.h>
 #include <vlc_stream.h>
-#include <sys/stat.h>
-
-#include <lua.h>        /* Low level lua C API */
-#include <lauxlib.h>    /* Higher level C API */
-#include <lualib.h>     /* Lua libs */
 
 #include "vlc.h"
 
@@ -59,6 +50,9 @@
 
 #define CONFIG_TEXT N_("Lua interface configuration")
 #define CONFIG_LONGTEXT N_("Lua interface configuration string. Format is: '[\"<interface module name>\"] = { <option> = <value>, ...}, ...'.")
+#define PASS_TEXT N_( "Password" )
+#define PASS_LONGTEXT N_( "A single password restricts access " \
+    "to this interface." )
 #define SRC_TEXT N_( "Source directory" )
 #define SRC_LONGTEXT N_( "Source directory" )
 #define INDEX_TEXT N_( "Directory index" )
@@ -73,9 +67,8 @@
 #define TELNETPORT_LONGTEXT N_( "This is the TCP port on which this " \
     "interface will listen. It defaults to 4212." )
 #define TELNETPWD_TEXT N_( "Password" )
-#define TELNETPWD_LONGTEXT N_( "A single administration password is used " \
-    "to protect this interface. The default value is \"admin\"." )
-#define TELNETPWD_DEFAULT "admin"
+#define TELNETPWD_LONGTEXT N_( "A single password restricts access " \
+    "to this interface." )
 #define RCHOST_TEXT N_("TCP command input")
 #define RCHOST_LONGTEXT N_("Accept commands over a socket rather than stdin. " \
             "You can set the address and port the interface will bind to." )
@@ -101,6 +94,7 @@ vlc_module_begin ()
 
     add_submodule ()
         set_section( N_("Lua HTTP"), 0 )
+            add_password ( "http-password", NULL, PASS_TEXT, PASS_LONGTEXT, false )
             add_string ( "http-src",  NULL, SRC_TEXT,  SRC_LONGTEXT,  true )
             add_bool   ( "http-index", false, INDEX_TEXT, INDEX_LONGTEXT, true )
         set_capability( "interface", 0 )
@@ -113,9 +107,9 @@ vlc_module_begin ()
             add_string( "rc-host", NULL, RCHOST_TEXT, RCHOST_LONGTEXT, true )
             add_string( "cli-host", NULL, CLIHOST_TEXT, CLIHOST_LONGTEXT, true )
         set_capability( "interface", 25 )
-        set_description( N_("Remote control interface") )
+        set_description( N_("Command-line interface") )
         set_callbacks( Open_LuaCLI, Close_LuaIntf )
-#ifndef WIN32
+#ifndef _WIN32
         add_shortcut( "luacli", "luarc", "cli", "rc" )
 #else
         add_shortcut( "luacli", "luarc" )
@@ -127,16 +121,14 @@ vlc_module_begin ()
                         TELNETHOST_LONGTEXT, true )
             add_integer( "telnet-port", TELNETPORT_DEFAULT, TELNETPORT_TEXT,
                          TELNETPORT_LONGTEXT, true )
-            add_password( "telnet-password", TELNETPWD_DEFAULT, TELNETPWD_TEXT,
+                change_integer_range( 1, 65535 )
+            add_password( "telnet-password", NULL, TELNETPWD_TEXT,
 
                           TELNETPWD_LONGTEXT, true )
         set_capability( "interface", 0 )
         set_callbacks( Open_LuaTelnet, Close_LuaIntf )
         set_description( N_("Lua Telnet") )
         add_shortcut( "luatelnet", "telnet" )
-
-        /* add_shortcut( "luahotkeys" ) */
-        /* add_shortcut( "hotkeys" ) */
 
     add_submodule ()
         set_shortname( N_( "Lua Meta Fetcher" ) )
@@ -180,18 +172,6 @@ vlc_module_begin ()
             change_volatile()
         set_callbacks( Open_LuaSD, Close_LuaSD )
 
-    add_submodule ()
-        set_description( N_("Freebox TV") )
-        add_shortcut( "freebox" )
-        set_capability( "services_discovery", 0 )
-        set_callbacks( Open_LuaSD, Close_LuaSD )
-
-    add_submodule ()
-        set_description( N_("French TV") )
-        add_shortcut( "frenchtv" )
-        set_capability( "services_discovery", 0 )
-        set_callbacks( Open_LuaSD, Close_LuaSD )
-
     VLC_SD_PROBE_SUBMODULE
 
 vlc_module_end ()
@@ -218,8 +198,7 @@ static int file_compare( const char **a, const char **b )
     return strcmp( *a, *b );
 }
 
-int vlclua_dir_list( vlc_object_t *p_this, const char *luadirname,
-                     char ***pppsz_dir_list )
+int vlclua_dir_list( const char *luadirname, char ***pppsz_dir_list )
 {
 #define MAX_DIR_LIST_SIZE 5
     *pppsz_dir_list = malloc(MAX_DIR_LIST_SIZE*sizeof(char *));
@@ -236,13 +215,18 @@ int vlclua_dir_list( vlc_object_t *p_this, const char *luadirname,
         i++;
     free( datadir );
 
-#if !(defined(__APPLE__) || defined(WIN32) || defined(__OS2__))
-    if( likely(asprintf( &ppsz_dir_list[i], "%s"DIR_SEP"lua"DIR_SEP"%s",
-                         config_GetLibDir(), luadirname ) != -1) )
+#if !(defined(__APPLE__) || defined(_WIN32) || defined(__OS2__))
+    char *psz_libpath = config_GetLibDir();
+    if( likely(psz_libpath != NULL) )
+    {
+        if( likely(asprintf( &ppsz_dir_list[i], "%s"DIR_SEP"lua"DIR_SEP"%s",
+                             psz_libpath, luadirname ) != -1) )
             i++;
+        free( psz_libpath );
+    }
 #endif
 
-    char *psz_datapath = config_GetDataDir( p_this );
+    char *psz_datapath = config_GetDataDir();
     if( likely(psz_datapath != NULL) )
     {
         if( likely(asprintf( &ppsz_dir_list[i], "%s"DIR_SEP"lua"DIR_SEP"%s",
@@ -284,7 +268,7 @@ int vlclua_scripts_batch_execute( vlc_object_t *p_this,
     char **ppsz_dir_list = NULL;
     int i_ret;
 
-    if( (i_ret = vlclua_dir_list( p_this, luadirname, &ppsz_dir_list )) != VLC_SUCCESS)
+    if( (i_ret = vlclua_dir_list( luadirname, &ppsz_dir_list )) != VLC_SUCCESS)
         return i_ret;
 
     i_ret = VLC_EGENERIC;
@@ -332,10 +316,10 @@ int vlclua_scripts_batch_execute( vlc_object_t *p_this,
     return i_ret;
 }
 
-char *vlclua_find_file( vlc_object_t *p_this, const char *psz_luadirname, const char *psz_name )
+char *vlclua_find_file( const char *psz_luadirname, const char *psz_name )
 {
     char **ppsz_dir_list = NULL;
-    vlclua_dir_list( p_this, psz_luadirname, &ppsz_dir_list );
+    vlclua_dir_list( psz_luadirname, &ppsz_dir_list );
 
     for( char **ppsz_dir = ppsz_dir_list; *ppsz_dir; ppsz_dir++ )
     {
@@ -502,6 +486,7 @@ int vlclua_playlist_add_internal( vlc_object_t *p_this, lua_State *L,
                 /* playlist key item path */
                 if( lua_isstring( L, -1 ) )
                 {
+                    char         *psz_oldurl   = NULL;
                     const char   *psz_path     = NULL;
                     char         *psz_u8path   = NULL;
                     const char   *psz_name     = NULL;
@@ -511,6 +496,10 @@ int vlclua_playlist_add_internal( vlc_object_t *p_this, lua_State *L,
                     input_item_t *p_input;
 
                     /* Read path and name */
+                    if (p_parent) {
+                        psz_oldurl = input_item_GetURI( p_parent );
+                        msg_Dbg( p_this, "old path: %s", psz_oldurl );
+                    }
                     psz_path = lua_tostring( L, -1 );
                     msg_Dbg( p_this, "Path: %s", psz_path );
                     lua_getfield( L, -2, "name" );
@@ -557,6 +546,23 @@ int vlclua_playlist_add_internal( vlc_object_t *p_this, lua_State *L,
 
                     /* Read meta data: item must be on top of stack */
                     vlclua_read_meta_data( p_this, L, p_input );
+
+                    /* copy the original URL to the meta data, if "URL" is still empty */
+                    char* url = input_item_GetURL( p_input );
+                    if( url == NULL && p_parent)
+                    {
+                        EnsureUTF8( psz_oldurl );
+                        msg_Dbg( p_this, "meta-URL: %s", psz_oldurl );
+                        input_item_SetURL ( p_input, psz_oldurl );
+                    }
+                    free( psz_oldurl );
+                    free( url );
+
+                    /* copy the psz_name to the meta data, if "Title" is still empty */
+                    char* title = input_item_GetTitle( p_input );
+                    if( title == NULL )
+                        input_item_SetTitle ( p_input, psz_name );
+                    free( title );
 
                     /* Read custom meta data: item must be on top of stack*/
                     vlclua_read_custom_meta_data( p_this, L, p_input );
@@ -621,7 +627,7 @@ static int vlc_sd_probe_Open( vlc_object_t *obj )
     char **ppsz_dir_list = NULL;
     char **ppsz_dir;
     lua_State *L = NULL;
-    vlclua_dir_list( obj, "sd", &ppsz_dir_list );
+    vlclua_dir_list( "sd", &ppsz_dir_list );
     for( ppsz_dir = ppsz_dir_list; *ppsz_dir; ppsz_dir++ )
     {
         int i_files;
@@ -653,7 +659,7 @@ static int vlc_sd_probe_Open( vlc_object_t *obj )
                 goto error;
             }
             luaL_openlibs( L );
-            if( vlclua_add_modules_path( probe, L, psz_filename ) )
+            if( vlclua_add_modules_path( L, psz_filename ) )
             {
                 msg_Err( probe, "Error while setting the module search path for %s",
                           psz_filename );
@@ -752,8 +758,7 @@ static int vlclua_add_modules_path_inner( lua_State *L, const char *psz_path )
     return count;
 }
 
-#undef vlclua_add_modules_path
-int vlclua_add_modules_path( vlc_object_t *obj, lua_State *L, const char *psz_filename )
+int vlclua_add_modules_path( lua_State *L, const char *psz_filename )
 {
     /* Setup the module search path:
      *   * "The script's directory"/modules
@@ -793,7 +798,7 @@ int vlclua_add_modules_path( vlc_object_t *obj, lua_State *L, const char *psz_fi
     count += vlclua_add_modules_path_inner( L, psz_path );
 
     char **ppsz_dir_list = NULL;
-    vlclua_dir_list( obj, psz_char+1/* gruik? */, &ppsz_dir_list );
+    vlclua_dir_list( psz_char+1/* gruik? */, &ppsz_dir_list );
     char **ppsz_dir = ppsz_dir_list;
 
     for( ; *ppsz_dir && strcmp( *ppsz_dir, psz_path ); ppsz_dir++ );

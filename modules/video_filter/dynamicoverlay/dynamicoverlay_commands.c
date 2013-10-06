@@ -1,25 +1,25 @@
 /*****************************************************************************
  * dynamicoverlay_commands.c : dynamic overlay plugin commands
  *****************************************************************************
- * Copyright (C) 2008 the VideoLAN team
- * $Id: 73254720070ef3a8db9e5f65e28dd97e15fa5ed4 $
+ * Copyright (C) 2008 VLC authors and VideoLAN
+ * $Id: 855b9d62d8b8e1046e6c2e44495c5309c50fbb62 $
  *
  * Author: Søren Bøg <avacore@videolan.org>
  *         Jean-Paul Saman <jpsaman@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -30,7 +30,6 @@
 #include <vlc_arrays.h>
 #include <vlc_vout.h>
 #include <vlc_filter.h>
-#include <vlc_osd.h>
 
 #include <string.h>
 #include <ctype.h>
@@ -526,7 +525,7 @@ static int exec_DataSharedMem( filter_t *p_filter,
                  i_line < (size_t)p_ovl->data.p_pic->p[i_plane].i_visible_lines;
                  ++i_line )
             {
-                vlc_memcpy( p_out, p_in,
+                memcpy( p_out, p_in,
                             p_ovl->data.p_pic->p[i_plane].i_visible_pitch );
                 p_out += p_ovl->data.p_pic->p[i_plane].i_pitch;
                 p_in += p_ovl->data.p_pic->p[i_plane].i_visible_pitch;

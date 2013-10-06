@@ -2,7 +2,7 @@
  * input_slider.hpp : VolumeSlider and SeekSlider
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: ccd20ab5dfc60e5cdf54aeb43180419045bb115b $
+ * $Id: 00b7b19daf5c48a10936a4d8b8943f1d2f8b48ae $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -26,10 +26,16 @@
 #ifndef _INPUTSLIDER_H_
 #define _INPUTSLIDER_H_
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <vlc_common.h>
 #include "timetooltip.hpp"
+#include "styles/seekstyle.hpp"
 
 #include <QSlider>
+#include <QPainter>
 
 #define MSTRTIME_MAX_SIZE 22
 
@@ -39,6 +45,8 @@ class QHideEvent;
 class QTimer;
 class SeekPoints;
 class QPropertyAnimation;
+class QStyleOption;
+class QCommonStyle;
 
 /* Input Slider derived from QSlider */
 class SeekSlider : public QSlider
@@ -59,15 +67,15 @@ protected:
     virtual void leaveEvent( QEvent * );
     virtual void hideEvent( QHideEvent * );
 
-    virtual void paintEvent( QPaintEvent* event );
     virtual bool eventFilter( QObject *obj, QEvent *event );
 
-    QSize handleSize() const;
     virtual QSize sizeHint() const;
 
+    void processReleasedButton();
     bool isAnimationRunning() const;
     qreal handleOpacity() const;
     void setHandleOpacity( qreal opacity );
+    int handleLength();
 
 private:
     bool isSliding;        /* Whether we are currently sliding by user action */
@@ -79,6 +87,18 @@ private:
     float f_buffering;
     SeekPoints* chapters;
     bool b_classic;
+    bool b_seekable;
+    int mHandleLength;
+
+    /* Colors & gradients */
+    QSize gradientsTargetSize;
+    QLinearGradient backgroundGradient;
+    QLinearGradient foregroundGradient;
+    QLinearGradient handleGradient;
+    QColor tickpointForeground;
+    QColor shadowDark;
+    QColor shadowLight;
+    QCommonStyle *alternativeStyle;
 
     /* Handle's animation */
     qreal mHandleOpacity;
@@ -87,6 +107,7 @@ private:
 
 public slots:
     void setPosition( float, int64_t, int );
+    void setSeekable( bool b ) { b_seekable = b ; }
     void updateBuffering( float );
     void hideHandle();
 
@@ -96,17 +117,21 @@ private slots:
 
 signals:
     void sliderDragged( float );
-};
 
+
+    friend class SeekStyle;
+};
 
 /* Sound Slider inherited directly from QAbstractSlider */
 class QPaintEvent;
+
+#define SOUNDMAX  125 // % (+6dB)
 
 class SoundSlider : public QAbstractSlider
 {
     Q_OBJECT
 public:
-    SoundSlider( QWidget *_parent, int _i_step, bool b_softamp, char * );
+    SoundSlider(QWidget *_parent, float _i_step, char *psz_colors, int max = SOUNDMAX );
     void setMuted( bool ); /* Set Mute status */
 
 protected:
@@ -119,6 +144,8 @@ protected:
     virtual void mouseMoveEvent( QMouseEvent * );
     virtual void mouseReleaseEvent( QMouseEvent * );
 
+    void processReleasedButton();
+
 private:
     bool isSliding; /* Whether we are currently sliding by user action */
     bool b_mouseOutside; /* Whether the mouse is outside or inside the Widget */
@@ -129,6 +156,11 @@ private:
     QPixmap pixGradient; /* Gradient pix storage */
     QPixmap pixGradient2; /* Muted Gradient pix storage */
     QPixmap pixOutside; /* OutLine pix storage */
+    QPainter painter;
+    QColor background;
+    QColor foreground;
+    QFont textfont;
+    QRect textrect;
 
     void changeValue( int x ); /* Function to modify the value from pixel x() */
 };

@@ -1,9 +1,9 @@
 /*****************************************************************************
- * customwidgets.h: Custom widgets
+ * customwidgets.hpp: Custom widgets
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id: d1fcec66b1219c1298b85ce43b62c077ce683db0 $
+ * $Id: e7ccf4643f3c3c5f9ce184244573797808494698 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin
@@ -32,11 +32,14 @@
 #include <QLabel>
 #include <QStackedWidget>
 #include <QSpinBox>
+#include <QCheckBox>
 #include <QList>
 #include <QTimer>
 #include <QToolButton>
+#include <QAbstractAnimation>
 
 class QPixmap;
+class QWidget;
 
 class QFramelessButton : public QPushButton
 {
@@ -99,75 +102,60 @@ protected:
     virtual int valueFromText( const QString& ) const { return -1; }
 };
 
-class AnimatedIcon : public QLabel
-{
-    /** An animated pixmap
+/** An animated pixmap
      * Use this widget to display an animated icon based on a series of
      * pixmaps. The pixmaps will be stored in memory and should be kept small.
      * First, create the widget, add frames and then start playing. Looping
      * is supported.
-     * Frames #1 to #n are displayed at regular intervals when playing.
-     * Frame #0 is the idle frame, displayed when the icon is not animated.
-     * If not #0 frame has been specified, the last frame will be shown when
-     * idle.
      **/
-
+class PixmapAnimator : public QAbstractAnimation
+{
     Q_OBJECT
 
 public:
-    /** Create an empty AnimatedIcon */
-    AnimatedIcon( QWidget *parent );
-    virtual ~AnimatedIcon();
-
-    /** Adds a frame to play in the loop.
-     * @param pixmap The QPixmap to display. Data will be copied internally.
-     * @param index If -1, append the frame. If 0, replace the idle frame.
-     *              Otherwise, insert the frame at the given position.
-     **/
-    void addFrame( const QPixmap &pixmap, int index = -1 );
-
-    /** Play the animation (or restart it)
-     * @param loops Number of times to play the loop. 0 means stop, while -1
-     *              means play forever. When stopped, the frame #0 will be
-     *              displayed until play() is called again.
-     * @param interval Delay between frames, in milliseconds (minimum 20ms)
-     * @note If isPlaying() is true, then restart the animation from frame #1
-     **/
-    void play( int loops = 1, int interval = 200 );
-
-    /** Stop playback. Same as play(0). */
-    inline void stop()
-    {
-        play( 0 );
-    }
-
-    /** Is the animation currently running? */
-    inline bool isPlaying()
-    {
-        return mTimer.isActive();
-    }
-
-private:
-    QTimer mTimer;
-    QPixmap *mIdleFrame;
-    QList<QPixmap*> mFrames; // Keeps deep copies of all the frames
-    int mCurrentFrame, mRemainingLoops;
-
-private slots:
-    /** Slot connected to the timeout() signal of our internal timer */
-    void onTimerTick();
+    PixmapAnimator( QWidget *parent, QList<QString> _frames );
+    void setFps( int _fps ) { fps = _fps; interval = 1000.0 / fps; };
+    virtual int duration() const { return interval * pixmaps.count(); };
+    virtual ~PixmapAnimator() { qDeleteAll( pixmaps ); };
+    QPixmap *getPixmap() { return currentPixmap; }
+protected:
+    virtual void updateCurrentTime ( int msecs );
+    QList<QPixmap *> pixmaps;
+    QPixmap *currentPixmap;
+    int fps;
+    int interval;
+    int lastframe_msecs;
+    int current_frame;
+signals:
+    void pixmapReady( const QPixmap & );
 };
 
-class SpinningIcon : public AnimatedIcon
+/** This spinning icon, to the colors of the VLC cone, will show
+ * that there is some background activity running
+ **/
+class SpinningIcon : public QLabel
 {
-    /** This spinning icon, to the colors of the VLC cone, will show
-     * that there is some background activity running
-     **/
-
     Q_OBJECT
 
 public:
-    SpinningIcon( QWidget *parent, bool noIdleFrame = false );
+    SpinningIcon( QWidget *parent );
+    void play( int loops = -1, int fps = 0 )
+    {
+        animator->setLoopCount( loops );
+        if ( fps ) animator->setFps( fps );
+        animator->start();
+    }
+    void stop() { animator->stop(); }
+    bool isPlaying() { return animator->state() == PixmapAnimator::Running; }
+private:
+    PixmapAnimator *animator;
+};
+
+class YesNoCheckBox : public QCheckBox
+{
+    Q_OBJECT
+public:
+    YesNoCheckBox( QWidget *parent );
 };
 
 /* VLC Key/Wheel hotkeys interactions */

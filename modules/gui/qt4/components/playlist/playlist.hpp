@@ -1,8 +1,8 @@
 /*****************************************************************************
- * interface_widgets.hpp : Playlist Widgets
+ * playlist.hpp : Playlist Widgets
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: bf79faacb91f47ba4a801803d3a3215c628bee93 $
+ * $Id: f34feec5f1f534301ab3a45e40a1d91f40a76c38 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -52,19 +52,18 @@ class PlaylistWidget : public QWidget
 {
     Q_OBJECT
 public:
-    PlaylistWidget( intf_thread_t *_p_i, QWidget * );
     virtual ~PlaylistWidget();
 
     void forceHide();
     void forceShow();
     QStackedWidget *artContainer;
+    StandardPLPanel      *mainView;
+
 private:
     QSplitter            *leftSplitter;
     QSplitter            *split;
-    StandardPLPanel      *mainView;
-    PLSelector           *selector;
 
-    QAction *viewActions[ 4 /* StandardPLPanel::VIEW_COUNT*/ ];
+    PLSelector           *selector;
 
     LocationBar          *locationBar;
     SearchLineEdit       *searchEdit;
@@ -72,15 +71,18 @@ private:
     intf_thread_t *p_intf;
 
 protected:
+    PlaylistWidget( intf_thread_t *_p_i, QWidget * );
     virtual void dropEvent( QDropEvent *);
     virtual void dragEnterEvent( QDragEnterEvent * );
     virtual void closeEvent( QCloseEvent * );
 private slots:
     void changeView( const QModelIndex& index );
     void clearPlaylist();
+
+    friend class PlaylistDialog;
 };
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 class PlaylistSplitter : public QSplitter
 {
 public:
@@ -92,7 +94,7 @@ protected:
  #define PlaylistSplitter QSplitter
 #endif
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 class SplitterHandle : public QSplitterHandle
 {
 public:

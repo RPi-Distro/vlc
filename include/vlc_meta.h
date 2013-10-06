@@ -2,7 +2,7 @@
  * vlc_meta.h: Stream meta-data
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: 3f8c091bdd0a00434c6d5689419541232f5481d5 $
+ * $Id: db9f58af4b68976c9fd31aaa431b9ec52cd41717 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -48,10 +48,11 @@ typedef enum vlc_meta_type_t
     vlc_meta_Publisher,
     vlc_meta_EncodedBy,
     vlc_meta_ArtworkURL,
-    vlc_meta_TrackID
+    vlc_meta_TrackID,
+    vlc_meta_TrackTotal
 } vlc_meta_type_t;
 
-#define VLC_META_TYPE_COUNT 17
+#define VLC_META_TYPE_COUNT 18
 
 #define ITEM_PREPARSED       1
 #define ITEM_ARTURL_FETCHED  2
@@ -105,7 +106,7 @@ typedef struct meta_export_t
 VLC_API int input_item_WriteMeta(vlc_object_t *, input_item_t *);
 
 /* Setters for meta.
- * Warning: Make sure to use the input_item meta setters (defined in vlc_input.h)
+ * Warning: Make sure to use the input_item meta setters (defined in vlc_input_item.h)
  * instead of those one. */
 #define vlc_meta_SetTitle( meta, b )       vlc_meta_Set( meta, vlc_meta_Title, b )
 #define vlc_meta_SetArtist( meta, b )      vlc_meta_Set( meta, vlc_meta_Artist, b )

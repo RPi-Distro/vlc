@@ -2,7 +2,7 @@
  * display.c: "vout display" managment
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 1e4495b5ec7bd5568111d47f1f4cee99b703bc5e $
+ * $Id: 33734f16365f11824abcfedee5b0ebdde8c0faf9 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -1420,7 +1420,7 @@ static void SplitterEvent(vout_display_t *vd, int event, va_list args)
         break;
 
     default:
-        msg_Err(vd, "SplitterEvent TODO");
+        msg_Err(vd, "splitter event not implemented: %d", event);
         break;
     }
 }

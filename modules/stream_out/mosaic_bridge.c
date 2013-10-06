@@ -2,7 +2,7 @@
  * mosaic_bridge.c:
  *****************************************************************************
  * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: b2e07a7439526587bcc0552b90a13cfa99e370c9 $
+ * $Id: dc3fcc805ea505e8e7662d539290aa2412e9d7f1 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -249,8 +249,7 @@ static int Open( vlc_object_t *p_this )
     p_stream->pf_add    = Add;
     p_stream->pf_del    = Del;
     p_stream->pf_send   = Send;
-
-    p_stream->p_sout->i_out_pace_nocontrol++;
+    p_stream->pace_nocontrol = true;
 
     return VLC_SUCCESS;
 }
@@ -269,8 +268,6 @@ static void Close( vlc_object_t * p_this )
     var_DelCallback( p_stream, CFG_PREFIX "alpha", alphaCallback, p_stream );
     var_DelCallback( p_stream, CFG_PREFIX "x", xCallback, p_stream );
     var_DelCallback( p_stream, CFG_PREFIX "y", yCallback, p_stream );
-
-    p_stream->p_sout->i_out_pace_nocontrol--;
 
     free( p_sys->psz_id );
 

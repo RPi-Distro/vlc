@@ -2,7 +2,7 @@
  * stream_memory.c: stream_t wrapper around memory buffer
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 43b8f4e752ec2e6a91feff44f7ec14e0f865496e $
+ * $Id: 87b7f1bb6863ae87b3e13c7e4dda24f636897d56 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -95,7 +95,6 @@ static int Control( stream_t *s, int i_query, va_list args )
 {
     stream_sys_t *p_sys = s->p_sys;
 
-    bool *p_bool;
     uint64_t   *pi_64, i_64;
 
     switch( i_query )
@@ -106,13 +105,10 @@ static int Control( stream_t *s, int i_query, va_list args )
             break;
 
         case STREAM_CAN_SEEK:
-            p_bool = (bool*)va_arg( args, bool * );
-            *p_bool = true;
-            break;
-
         case STREAM_CAN_FASTSEEK:
-            p_bool = (bool*)va_arg( args, bool * );
-            *p_bool = true;
+        case STREAM_CAN_PAUSE:
+        case STREAM_CAN_CONTROL_PACE:
+            *va_arg( args, bool * ) = true;
             break;
 
         case STREAM_GET_POSITION:
@@ -126,8 +122,16 @@ static int Control( stream_t *s, int i_query, va_list args )
             p_sys->i_pos = i_64;
             break;
 
+        case STREAM_GET_TITLE_INFO:
+        case STREAM_GET_META:
         case STREAM_GET_CONTENT_TYPE:
+        case STREAM_GET_SIGNAL:
+        case STREAM_SET_TITLE:
+        case STREAM_SET_SEEKPOINT:
             return VLC_EGENERIC;
+
+        case STREAM_SET_PAUSE_STATE:
+            break; /* nothing to do */
 
         case STREAM_CONTROL_ACCESS:
             msg_Err( s, "Hey, what are you thinking ?"

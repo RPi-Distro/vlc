@@ -2,10 +2,12 @@ SOURCES_equalizer = equalizer.c equalizer_presets.h
 SOURCES_compressor = compressor.c
 SOURCES_karaoke = karaoke.c
 SOURCES_normvol = normvol.c
+SOURCES_gain = gain.c
 SOURCES_audiobargraph_a = audiobargraph_a.c
 SOURCES_param_eq = param_eq.c
 SOURCES_scaletempo = scaletempo.c
 SOURCES_chorus_flanger = chorus_flanger.c
+SOURCES_stereo_widen = stereo_widen.c
 SOURCES_spatializer = \
 	spatializer/allpass.cpp spatializer/allpass.hpp \
 	spatializer/comb.cpp spatializer/comb.hpp \
@@ -21,9 +23,11 @@ libvlc_LTLIBRARIES += \
 	libequalizer_plugin.la \
 	libkaraoke_plugin.la \
 	libnormvol_plugin.la \
+	libgain_plugin.la \
 	libparam_eq_plugin.la \
 	libscaletempo_plugin.la \
-	libspatializer_plugin.la
+	libspatializer_plugin.la \
+	libstereo_widen_plugin.la
 
 # Channel mixers
 SOURCES_trivial_channel_mixer = channel_mixer/trivial.c
@@ -31,27 +35,29 @@ SOURCES_simple_channel_mixer = channel_mixer/simple.c
 SOURCES_headphone_channel_mixer = channel_mixer/headphone.c
 SOURCES_dolby_surround_decoder = channel_mixer/dolby.c
 SOURCES_mono = channel_mixer/mono.c
+SOURCES_remap = channel_mixer/remap.c
 
 libvlc_LTLIBRARIES += \
 	libdolby_surround_decoder_plugin.la \
 	libheadphone_channel_mixer_plugin.la \
 	libmono_plugin.la \
+	libremap_plugin.la \
 	libsimple_channel_mixer_plugin.la \
 	libtrivial_channel_mixer_plugin.la
 
 # Converters
-SOURCES_converter_fixed = converter/fixed.c
 SOURCES_a52tospdif = converter/a52tospdif.c
 SOURCES_a52tofloat32 = converter/a52tofloat32.c
 SOURCES_dtstospdif = converter/dtstospdif.c
 SOURCES_dtstofloat32 = converter/dtstofloat32.c
 SOURCES_mpgatofixed32 = converter/mpgatofixed32.c
-SOURCES_audio_format = converter/format.c
+libaudio_format_plugin_la_SOURCES = converter/format.c
+libaudio_format_plugin_la_CFLAGS = $(AM_CFLAGS)
+libaudio_format_plugin_la_LIBADD = $(AM_LIBADD) $(LIBM)
 
 libvlc_LTLIBRARIES += \
 	liba52tospdif_plugin.la \
 	libaudio_format_plugin.la \
-	libconverter_fixed_plugin.la \
 	libdtstospdif_plugin.la
 
 # Resamplers
@@ -68,7 +74,6 @@ EXTRA_LTLIBRARIES += \
 libspeex_resampler_plugin_la_SOURCES = resampler/speex.c
 libspeex_resampler_plugin_la_CFLAGS = $(AM_CFLAGS) $(SPEEXDSP_CFLAGS)
 libspeex_resampler_plugin_la_LIBADD = $(AM_LIBADD) $(SPEEXDSP_LIBS)
-libspeex_resampler_plugin_la_DEPENDENCIES =
 if HAVE_SPEEXDSP
 libvlc_LTLIBRARIES += libspeex_resampler_plugin.la
 endif

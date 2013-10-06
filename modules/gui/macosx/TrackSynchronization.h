@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2011-2012 VLC authors and VideoLAN
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: d74371dda9e2853935825fe3359c53105ed78f56 $
+ * $Id: 9599a5250afcde8b2ede9a9723a344a08da7e928 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -52,6 +52,8 @@
 
 /* generic */
 + (VLCTrackSynchronization *)sharedInstance;
+
+- (void)updateCocoaWindowLevel:(NSInteger)i_level;
 - (IBAction)toggleWindow:(id)sender;
 - (IBAction)resetValues:(id)sender;
 - (void)updateValues;

@@ -1,10 +1,11 @@
 /*****************************************************************************
  * prefs_widgets.h: Preferences controls
  *****************************************************************************
- * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: c0b35a2dbffc57c83329d9e4aee1a446fa095b88 $
+ * Copyright (C) 2002-2012 VLC authors and VideoLAN
+ * $Id: ab5be7c12b6ce730ecc9b93e20bb87e076a40abf $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
+ *          Felix Paul Kühne <fkuehne at videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,23 +39,26 @@ static NSMenu   *o_keys_menu = nil;
     bool      b_advanced;
 }
 
+@property (readonly) NSString * name;
+@property (readonly) int type;
+@property (readonly) int viewType;
+@property (readonly) bool advanced;
+@property (readonly) int intValue;
+@property (readonly) float floatValue;
+@property (readonly) char * stringValue;
+@property (readonly) int labelSize;
+
 + (VLCConfigControl *)newControl: (module_config_t *)_p_item
         withView: (NSView *)o_parent_view;
++ (int)calcVerticalMargin: (int)i_curItem lastItem:(int)i_lastItem;
+
 - (id)initWithFrame: (NSRect)frame item: (module_config_t *)p_item;
-- (NSString *)name;
-- (int)type;
-- (int)viewType;
-- (BOOL)isAdvanced;
+
 - (void)setYPos:(int)i_yPos;
-- (int)intValue;
-- (float)floatValue;
-- (char *)stringValue;
+- (void)alignWithXPosition:(int)i_xPos;
+
 - (void)applyChanges;
 - (void)resetValues;
-- (int)labelSize;
-- (void) alignWithXPosition:(int)i_xPos;
-
-+ (int)calcVerticalMargin: (int)i_curItem lastItem:(int)i_lastItem;
 
 @end
 
@@ -68,9 +72,9 @@ static NSMenu   *o_keys_menu = nil;
 
 @end
 
-@interface StringListConfigControl : VLCConfigControl <NSComboBoxDataSource>
+@interface StringListConfigControl : VLCConfigControl
 {
-    NSComboBox      *o_combo;
+    NSPopUpButton      *o_popup;
 }
 
 - (id) initWithItem: (module_config_t *)_p_item
@@ -89,7 +93,6 @@ static NSMenu   *o_keys_menu = nil;
            withView: (NSView *)o_parent_view;
 
 - (IBAction)openFileDialog: (id)sender;
-- (void)pathChosenInPanel:(NSOpenPanel *)o_sheet withReturn:(int)i_return_code contextInfo:(void  *)o_context_info;
 
 @end
 
@@ -117,9 +120,9 @@ static NSMenu   *o_keys_menu = nil;
 
 @end
 
-@interface IntegerListConfigControl : VLCConfigControl <NSComboBoxDataSource>
+@interface IntegerListConfigControl : VLCConfigControl
 {
-    NSComboBox      *o_combo;
+    NSPopUpButton      *o_popup;
 }
 
 - (id) initWithItem: (module_config_t *)_p_item
@@ -198,6 +201,15 @@ static NSMenu   *o_keys_menu = nil;
     NSTextField     *o_textfield;
     NSScrollView    *o_scrollview;
     NSMutableArray  *o_modulearray;
+}
+
+- (id) initWithItem: (module_config_t *)_p_item
+           withView: (NSView *)o_parent_view;
+
+@end
+
+@interface SectionControl : VLCConfigControl
+{
 }
 
 - (id) initWithItem: (module_config_t *)_p_item

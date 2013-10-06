@@ -2,7 +2,7 @@
  * sap.c : SAP announce handler
  *****************************************************************************
  * Copyright (C) 2002-2008 VLC authors and VideoLAN
- * $Id: aa4ded33a03809f076ea5465927daac9f87397ec $
+ * $Id: a9eb65b5d6415ec8b7d5cca4e62b76bc0e5501f3 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -232,7 +232,7 @@ int SAP_Add (sap_handler_t *p_sap, session_descriptor_t *p_session)
 
     switch (addr.a.sa_family)
     {
-#if defined (HAVE_INET_PTON) || defined (WIN32)
+#if defined (HAVE_INET_PTON) || defined (_WIN32)
         case AF_INET6:
         {
             /* See RFC3513 for list of valid IPv6 scopes */

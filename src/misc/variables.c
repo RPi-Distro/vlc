@@ -2,7 +2,7 @@
  * variables.c: routines for object variables handling
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: bcbce8d1a9a4d4426a3a7658fe6c7a4c8011a3b8 $
+ * $Id: e3d56b70097d994d5b2f3278b7fe9d4e53d1d981 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -28,23 +28,21 @@
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
-#include <vlc_charset.h>
-#include "variables.h"
-
 #ifdef HAVE_SEARCH_H
 # include <search.h>
 #endif
-
-#include "libvlc.h"
-#include "config/configuration.h"
-
 #include <assert.h>
 #include <math.h>
 #include <limits.h>
 #ifdef __GLIBC__
 # include <dlfcn.h>
 #endif
+
+#include <vlc_common.h>
+#include <vlc_charset.h>
+#include "libvlc.h"
+#include "variables.h"
+#include "config/configuration.h"
 
 /*****************************************************************************
  * Private types
@@ -266,20 +264,17 @@ int var_Create( vlc_object_t *p_this, const char *psz_name, int i_type )
             p_var->ops = &addr_ops;
             p_var->val.p_address = NULL;
             break;
-        default:
+        case VLC_VAR_VOID:
             p_var->ops = &void_ops;
-#ifndef NDEBUG
-            if( (i_type & VLC_VAR_CLASS) != VLC_VAR_VOID )
-                msg_Err( p_this, "Creating the variable '%s' without a type",
-                          psz_name );
-#endif
+            break;
+        default:
+            assert (0);
     }
 
-    if( i_type & VLC_VAR_DOINHERIT )
+    if( (i_type & VLC_VAR_DOINHERIT)
+     && var_Inherit( p_this, psz_name, i_type, &p_var->val ) == 0 )
     {
-        if( var_Inherit( p_this, psz_name, i_type, &p_var->val ) )
-            msg_Err( p_this, "cannot inherit value for %s", psz_name );
-        else if( i_type & VLC_VAR_HASCHOICE )
+        if( i_type & VLC_VAR_HASCHOICE )
         {
             /* We must add the inherited value to our choice list */
             p_var->i_default = 0;
@@ -302,17 +297,11 @@ int var_Create( vlc_object_t *p_this, const char *psz_name, int i_type )
     pp_var = tsearch( p_var, &p_priv->var_root, varcmp );
     if( unlikely(pp_var == NULL) )
         ret = VLC_ENOMEM;
-    else if( (p_oldvar = *pp_var) == p_var )
-        p_var = NULL;
-    else if( unlikely((i_type ^ p_oldvar->i_type) & VLC_VAR_CLASS) )
-    {    /* If the types differ, variable creation failed. */
-         msg_Err( p_this, "Variable '%s' (0x%04x) already exist "
-                  "but with a different type (0x%04x)",
-                  psz_name, p_oldvar->i_type, i_type );
-         ret = VLC_EBADVAR;
-    }
-    else
+    else if( (p_oldvar = *pp_var) == p_var ) /* Variable create */
+        p_var = NULL; /* Variable created */
+    else /* Variable already exists */
     {
+        assert (((i_type ^ p_oldvar->i_type) & VLC_VAR_CLASS) == 0);
         p_oldvar->i_usage++;
         p_oldvar->i_type |= i_type & (VLC_VAR_ISCOMMAND|VLC_VAR_HASCHOICE);
     }
@@ -390,7 +379,6 @@ void var_DestroyAll( vlc_object_t *obj )
 int var_Change( vlc_object_t *p_this, const char *psz_name,
                 int i_action, vlc_value_t *p_val, vlc_value_t *p_val2 )
 {
-    int i;
     int ret = VLC_SUCCESS;
     variable_t *p_var;
     vlc_value_t oldval;
@@ -460,7 +448,8 @@ int var_Change( vlc_object_t *p_this, const char *psz_name,
                 ret = VLC_EGENERIC;
             break;
         case VLC_VAR_ADDCHOICE:
-            i = p_var->choices.i_count;
+        {
+            int i = p_var->choices.i_count;
 
             INSERT_ELEM( p_var->choices.p_values, p_var->choices.i_count,
                          i, *p_val );
@@ -473,14 +462,14 @@ int var_Change( vlc_object_t *p_this, const char *psz_name,
 
             CheckValue( p_var, &p_var->val );
             break;
+        }
         case VLC_VAR_DELCHOICE:
+        {
+            int i;
+
             for( i = 0 ; i < p_var->choices.i_count ; i++ )
-            {
                 if( p_var->ops->pf_cmp( p_var->choices.p_values[i], *p_val ) == 0 )
-                {
                     break;
-                }
-            }
 
             if( i == p_var->choices.i_count )
             {
@@ -490,13 +479,9 @@ int var_Change( vlc_object_t *p_this, const char *psz_name,
             }
 
             if( p_var->i_default > i )
-            {
                 p_var->i_default--;
-            }
             else if( p_var->i_default == i )
-            {
                 p_var->i_default = -1;
-            }
 
             p_var->ops->pf_free( &p_var->choices.p_values[i] );
             free( p_var->choices_text.p_values[i].psz_string );
@@ -506,15 +491,14 @@ int var_Change( vlc_object_t *p_this, const char *psz_name,
 
             CheckValue( p_var, &p_var->val );
             break;
+        }
         case VLC_VAR_CHOICESCOUNT:
             p_val->i_int = p_var->choices.i_count;
             break;
         case VLC_VAR_CLEARCHOICES:
-            for( i = 0 ; i < p_var->choices.i_count ; i++ )
-            {
+            for( int i = 0 ; i < p_var->choices.i_count ; i++ )
                 p_var->ops->pf_free( &p_var->choices.p_values[i] );
-            }
-            for( i = 0 ; i < p_var->choices_text.i_count ; i++ )
+            for( int i = 0 ; i < p_var->choices_text.i_count ; i++ )
                 free( p_var->choices_text.p_values[i].psz_string );
 
             if( p_var->choices.i_count ) free( p_var->choices.p_values );
@@ -527,24 +511,21 @@ int var_Change( vlc_object_t *p_this, const char *psz_name,
             p_var->i_default = -1;
             break;
         case VLC_VAR_SETDEFAULT:
+        {
+            int i;
             /* FIXME: the list is sorted, dude. Use something cleverer. */
             for( i = 0 ; i < p_var->choices.i_count ; i++ )
-            {
                 if( p_var->ops->pf_cmp( p_var->choices.p_values[i], *p_val ) == 0 )
-                {
                     break;
-                }
-            }
 
             if( i == p_var->choices.i_count )
-            {
                 /* Not found */
                 break;
-            }
 
             p_var->i_default = i;
             CheckValue( p_var, &p_var->val );
             break;
+        }
         case VLC_VAR_SETVALUE:
             /* Duplicate data if needed */
             newval = *p_val;
@@ -578,7 +559,7 @@ int var_Change( vlc_object_t *p_this, const char *psz_name,
             }
             p_val->p_list->i_count = p_var->choices.i_count;
             if( p_val2 ) p_val2->p_list->i_count = p_var->choices.i_count;
-            for( i = 0 ; i < p_var->choices.i_count ; i++ )
+            for( int i = 0 ; i < p_var->choices.i_count ; i++ )
             {
                 p_val->p_list->p_values[i] = p_var->choices.p_values[i];
                 p_val->p_list->pi_types[i] = p_var->i_type;
@@ -741,12 +722,7 @@ int var_SetChecked( vlc_object_t *p_this, const char *psz_name,
 
     assert( expected_type == 0 ||
             (p_var->i_type & VLC_VAR_CLASS) == expected_type );
-#ifndef NDEBUG
-        /* Alert if the type is VLC_VAR_VOID */
-        if( ( p_var->i_type & VLC_VAR_TYPE ) == VLC_VAR_VOID )
-            msg_Warn( p_this, "Calling var_Set on the void variable '%s' (0x%04x)", psz_name, p_var->i_type );
-#endif
-
+    assert ((p_var->i_type & VLC_VAR_CLASS) != VLC_VAR_VOID);
 
     WaitUnused( p_this, p_var );
 
@@ -803,15 +779,10 @@ int var_GetChecked( vlc_object_t *p_this, const char *psz_name,
     {
         assert( expected_type == 0 ||
                 (p_var->i_type & VLC_VAR_CLASS) == expected_type );
+        assert ((p_var->i_type & VLC_VAR_CLASS) != VLC_VAR_VOID);
 
         /* Really get the variable */
         *p_val = p_var->val;
-
-#ifndef NDEBUG
-        /* Alert if the type is VLC_VAR_VOID */
-        if( ( p_var->i_type & VLC_VAR_TYPE ) == VLC_VAR_VOID )
-            msg_Warn( p_this, "Calling var_Get on the void variable '%s' (0x%04x)", psz_name, p_var->i_type );
-#endif
 
         /* Duplicate value if needed */
         p_var->ops->pf_dup( p_val );
@@ -872,11 +843,9 @@ int var_AddCallback( vlc_object_t *p_this, const char *psz_name,
     p_var = Lookup( p_this, psz_name );
     if( p_var == NULL )
     {
-#ifndef NDEBUG
-        msg_Warn( p_this, "Failed to add a callback to the non-existing "
-                          "variable '%s'", psz_name );
-#endif
         vlc_mutex_unlock( &p_priv->var_lock );
+        msg_Err( p_this, "cannot add callback %p to nonexistent "
+                         "variable '%s'", pf_callback, psz_name );
         return VLC_ENOVAR;
     }
 
@@ -1239,28 +1208,11 @@ static void CheckValue ( variable_t *p_var, vlc_value_t *p_val )
 int var_Inherit( vlc_object_t *p_this, const char *psz_name, int i_type,
                  vlc_value_t *p_val )
 {
-#ifndef NDEBUG
-    if (p_this != VLC_OBJECT(p_this->p_libvlc)
-     && unlikely(p_this->p_parent == NULL))
-    {
-        msg_Info (p_this, "%s(%s) on detached object", __func__, psz_name);
-        //vlc_backtrace ();
-    }
-#endif
     i_type &= VLC_VAR_CLASS;
     for( vlc_object_t *obj = p_this; obj != NULL; obj = obj->p_parent )
     {
         if( var_GetChecked( obj, psz_name, i_type, p_val ) == VLC_SUCCESS )
             return VLC_SUCCESS;
-#ifndef NDEBUG
-        if (obj != p_this && obj != VLC_OBJECT(p_this->p_libvlc)
-         && unlikely(obj->p_parent == NULL))
-        {
-            msg_Info (p_this, "%s(%s) on detached tree [%p] %s", __func__,
-                      psz_name, obj, obj->psz_object_type);
-            //vlc_backtrace ();
-        }
-#endif
     }
 
     /* else take value from config */
@@ -1279,14 +1231,11 @@ int var_Inherit( vlc_object_t *p_this, const char *psz_name, int i_type,
         case VLC_VAR_BOOL:
             p_val->b_bool = config_GetInt( p_this, psz_name );
             break;
+        default:
+            assert(0);
         case VLC_VAR_ADDRESS:
             return VLC_ENOOBJ;
-        default:
-            msg_Warn( p_this, "Could not inherit value for var %s "
-                              "from config. Invalid Type", psz_name );
-            return VLC_ENOOBJ;
     }
-    /*msg_Dbg( p_this, "Inherited value for var %s from config", psz_name );*/
     return VLC_SUCCESS;
 }
 
@@ -1376,66 +1325,6 @@ static int TriggerCallback( vlc_object_t *p_this, variable_t *p_var,
 
     return VLC_SUCCESS;
 }
-
-#undef var_Command
-/**********************************************************************
- * Execute a var command on an object identified by its name
- **********************************************************************/
-int var_Command( vlc_object_t *p_this, const char *psz_name,
-                 const char *psz_cmd, const char *psz_arg, char **psz_msg )
-{
-    vlc_object_t *p_obj = vlc_object_find_name( p_this->p_libvlc,
-                                                psz_name );
-    int i_type, i_ret;
-
-    if( !p_obj )
-    {
-        if( psz_msg )
-            *psz_msg = strdup( "Unknown destination object." );
-        return VLC_ENOOBJ;
-    }
-
-    i_type = var_Type( p_obj, psz_cmd );
-    if( !( i_type&VLC_VAR_ISCOMMAND ) )
-    {
-        vlc_object_release( p_obj );
-        if( psz_msg )
-            *psz_msg = strdup( "Variable doesn't exist or isn't a command." );
-        return VLC_EGENERIC;
-    }
-
-    i_type &= VLC_VAR_CLASS;
-    switch( i_type )
-    {
-        case VLC_VAR_INTEGER:
-            i_ret = var_SetInteger( p_obj, psz_cmd, atoi( psz_arg ) );
-            break;
-        case VLC_VAR_FLOAT:
-            i_ret = var_SetFloat( p_obj, psz_cmd, us_atof( psz_arg ) );
-            break;
-        case VLC_VAR_STRING:
-            i_ret = var_SetString( p_obj, psz_cmd, psz_arg );
-            break;
-        case VLC_VAR_BOOL:
-            i_ret = var_SetBool( p_obj, psz_cmd, atoi( psz_arg ) );
-            break;
-        default:
-            i_ret = VLC_EGENERIC;
-            break;
-    }
-
-    vlc_object_release( p_obj );
-
-    if( psz_msg )
-    {
-        if( asprintf( psz_msg, "%s on object %s returned %i (%s)",
-                  psz_cmd, psz_name, i_ret, vlc_error( i_ret ) ) == -1)
-            *psz_msg = NULL;
-    }
-
-    return i_ret;
-}
-
 
 /**
  * Free a list and the associated strings

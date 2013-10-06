@@ -1,7 +1,7 @@
 /*****************************************************************************
  * alsa.c : alsa plugin for vlc
  *****************************************************************************
- * Copyright (C) 2000-2010 the VideoLAN team
+ * Copyright (C) 2000-2010 VLC authors and VideoLAN
  * Copyright (C) 2009-2011 Rémi Denis-Courmont
  *
  * Authors: Henri Fallon <henri@videolan.org> - Original Author
@@ -9,19 +9,19 @@
  *          John Paul Lorenti <jpl31@columbia.edu> - Device selection
  *          Arnaud de Bossoreille de Ribou <bozo@via.ecp.fr> - S/PDIF and aout3
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -43,36 +43,38 @@
 struct aout_sys_t
 {
     snd_pcm_t *pcm;
+    unsigned rate; /**< Sample rate */
+    vlc_fourcc_t format; /**< Sample format */
+    uint8_t chans_table[AOUT_CHAN_MAX]; /**< Channels order table */
+    uint8_t chans_to_reorder; /**< Number of channels to reorder */
+
+    bool soft_mute;
+    float soft_gain;
+    char *device;
 };
+
+#include "volume.h"
 
 #define A52_FRAME_NB 1536
 
 static int Open (vlc_object_t *);
 static void Close (vlc_object_t *);
-static int FindDevicesCallback( vlc_object_t *p_this, char const *psz_name,
-                                vlc_value_t newval, vlc_value_t oldval, void *p_unused );
-static void GetDevices (vlc_object_t *, module_config_t *, const char *);
+static int EnumDevices (vlc_object_t *, char const *, char ***, char ***);
 
 #define AUDIO_DEV_TEXT N_("Audio output device")
 #define AUDIO_DEV_LONGTEXT N_("Audio output device (using ALSA syntax).")
-static const char *const devices[] = {
-    "default",
-};
-static const char *const devices_text[] = {
-    N_("Default"),
-};
 
 #define AUDIO_CHAN_TEXT N_("Audio output channels")
-#define AUDIO_CHAN_LONGTEXT N_("Channels available for audio output." \
-    "If the input has more channels than the output, it will be down-mixed." \
+#define AUDIO_CHAN_LONGTEXT N_("Channels available for audio output. " \
+    "If the input has more channels than the output, it will be down-mixed. " \
     "This parameter is ignored when digital pass-through is active.")
 static const int channels[] = {
     AOUT_CHAN_CENTER, AOUT_CHANS_STEREO, AOUT_CHANS_4_0, AOUT_CHANS_4_1,
-    AOUT_CHANS_5_0, AOUT_CHANS_5_1,
+    AOUT_CHANS_5_0, AOUT_CHANS_5_1, AOUT_CHANS_7_1,
 };
 static const char *const channels_text[] = {
     N_("Mono"), N_("Stereo"), N_("Surround 4.0"), N_("Surround 4.1"),
-    N_("Surround 5.0"), N_("Surround 5.1"),
+    N_("Surround 5.0"), N_("Surround 5.1"), N_("Surround 7.1"),
 };
 
 vlc_module_begin ()
@@ -82,11 +84,11 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_AUDIO_AOUT )
     add_string ("alsa-audio-device", "default",
                 AUDIO_DEV_TEXT, AUDIO_DEV_LONGTEXT, false)
-        change_string_list( devices, devices_text, FindDevicesCallback )
-        change_action_add( FindDevicesCallback, N_("Refresh list") )
+        change_string_cb (EnumDevices)
     add_integer ("alsa-audio-channels", AOUT_CHANS_FRONT,
                  AUDIO_CHAN_TEXT, AUDIO_CHAN_LONGTEXT, false)
         change_integer_list (channels, channels_text)
+    add_sw_gain ()
     set_capability( "audio output", 150 )
     set_callbacks( Open, Close )
 vlc_module_end ()
@@ -143,140 +145,193 @@ static void DumpDeviceStatus (vlc_object_t *obj, snd_pcm_t *pcm)
 }
 #define DumpDeviceStatus(o, p) DumpDeviceStatus(VLC_OBJECT(o), p)
 
-/**
- * Initializes list of devices.
- */
-static void Probe (vlc_object_t *obj, const char *dev)
+#if (SND_LIB_VERSION >= 0x01001B)
+static const uint16_t vlc_chans[] = {
+    [SND_CHMAP_MONO] = AOUT_CHAN_CENTER,
+    [SND_CHMAP_FL]   = AOUT_CHAN_LEFT,
+    [SND_CHMAP_FR]   = AOUT_CHAN_RIGHT,
+    [SND_CHMAP_RL]   = AOUT_CHAN_REARLEFT,
+    [SND_CHMAP_RR]   = AOUT_CHAN_REARRIGHT,
+    [SND_CHMAP_FC]   = AOUT_CHAN_CENTER,
+    [SND_CHMAP_LFE]  = AOUT_CHAN_LFE,
+    [SND_CHMAP_SL]   = AOUT_CHAN_MIDDLELEFT,
+    [SND_CHMAP_SR]   = AOUT_CHAN_MIDDLERIGHT,
+    [SND_CHMAP_RC]   = AOUT_CHAN_REARCENTER,
+};
+
+static int Map2Mask (vlc_object_t *obj, const snd_pcm_chmap_t *restrict map)
 {
-    vlc_value_t text;
+    uint16_t mask = 0;
 
-    var_Create (obj, "audio-device", VLC_VAR_STRING | VLC_VAR_HASCHOICE);
-    text.psz_string = _("Audio Device");
-    var_Change (obj, "audio-device", VLC_VAR_SETTEXT, &text, NULL);
+    for (unsigned i = 0; i < map->channels; i++)
+    {
+        const unsigned pos = map->pos[i];
+        uint_fast16_t vlc_chan = 0;
 
-    GetDevices (obj, NULL, dev);
-
-    var_AddCallback (obj, "audio-device", aout_ChannelsRestart, NULL);
-    var_TriggerCallback (obj, "intf-change");
+        if (pos < sizeof (vlc_chans) / sizeof (vlc_chans[0]))
+            vlc_chan = vlc_chans[pos];
+        if (vlc_chan == 0)
+        {
+            msg_Dbg (obj, " %s channel %u position %u", "unsupported", i, pos);
+            return -1;
+        }
+        if (mask & vlc_chan)
+        {
+            msg_Dbg (obj, " %s channel %u position %u", "duplicate", i, pos);
+            return -1;
+        }
+        mask |= vlc_chan;
+    }
+    return mask;
 }
 
+/**
+ * Compares a fixed ALSA channels map with the VLC channels order.
+ */
+static unsigned SetupChannelsFixed(const snd_pcm_chmap_t *restrict map,
+                               uint16_t *restrict maskp, uint8_t *restrict tab)
+{
+    uint32_t chans_out[AOUT_CHAN_MAX];
+    uint16_t mask = 0;
 
-static void Play  (audio_output_t *, block_t *);
+    for (unsigned i = 0; i < map->channels; i++)
+    {
+        uint_fast16_t vlc_chan = vlc_chans[map->pos[i]];
+
+        chans_out[i] = vlc_chan;
+        mask |= vlc_chan;
+    }
+
+    *maskp = mask;
+    return aout_CheckChannelReorder(NULL, chans_out, mask, tab);
+}
+
+/**
+ * Negotiate channels mapping.
+ */
+static unsigned SetupChannels (vlc_object_t *obj, snd_pcm_t *pcm,
+                               uint16_t *restrict mask, uint8_t *restrict tab)
+{
+    snd_pcm_chmap_query_t **maps = snd_pcm_query_chmaps (pcm);
+    if (maps == NULL)
+    {   /* Fallback to default order if unknown */
+        msg_Dbg(obj, "channels map not provided");
+        return 0;
+    }
+
+    /* Find most appropriate available channels map */
+    unsigned best_offset, best_score = 0, to_reorder = 0;
+
+    for (snd_pcm_chmap_query_t *const *p = maps; *p != NULL; p++)
+    {
+        snd_pcm_chmap_query_t *map = *p;
+
+        switch (map->type)
+        {
+            case SND_CHMAP_TYPE_FIXED:
+            case SND_CHMAP_TYPE_PAIRED:
+            case SND_CHMAP_TYPE_VAR:
+                break;
+            default:
+                msg_Err (obj, "unknown channels map type %u", map->type);
+                continue;
+        }
+
+        int chans = Map2Mask (obj, &map->map);
+        if (chans == -1)
+            continue;
+
+        unsigned score = (popcount (chans & *mask) << 8)
+                       | (255 - popcount (chans));
+        if (score > best_score)
+        {
+            best_offset = p - maps;
+            best_score = score;
+        }
+    }
+
+    if (best_score == 0)
+    {
+        msg_Err (obj, "cannot find supported channels map");
+        goto out;
+    }
+
+    const snd_pcm_chmap_t *map = &maps[best_offset]->map;
+    msg_Dbg (obj, "using channels map %u, type %u, %u channel(s)", best_offset,
+             maps[best_offset]->type, map->channels);
+
+    /* Setup channels map */
+    to_reorder = SetupChannelsFixed(map, mask, tab);
+
+    /* TODO: avoid reordering for PAIRED and VAR types */
+    //snd_pcm_set_chmap (pcm, ...)
+out:
+    snd_pcm_free_chmaps (maps);
+    return to_reorder;
+}
+#else /* (SND_LIB_VERSION < 0x01001B) */
+# define SetupChannels(obj, pcm, mask, tab) (0)
+#endif
+
+static int TimeGet (audio_output_t *aout, mtime_t *);
+static void Play (audio_output_t *, block_t *);
 static void Pause (audio_output_t *, bool, mtime_t);
 static void PauseDummy (audio_output_t *, bool, mtime_t);
 static void Flush (audio_output_t *, bool);
 
 /** Initializes an ALSA playback stream */
-static int Open (vlc_object_t *obj)
+static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
 {
-    audio_output_t *aout = (audio_output_t *)obj;
-
-    /* Get device name */
-    char *device = var_InheritString (aout, "alsa-audio-device");
-    if (unlikely(device == NULL))
-        return VLC_ENOMEM;
-
+    aout_sys_t *sys = aout->sys;
     snd_pcm_format_t pcm_format; /* ALSA sample format */
-    vlc_fourcc_t fourcc = aout->format.i_format;
     bool spdif = false;
 
-    switch (fourcc)
+    switch (fmt->i_format)
     {
-        case VLC_CODEC_F64B:
-            pcm_format = SND_PCM_FORMAT_FLOAT64_BE;
+        case VLC_CODEC_FL64:
+            pcm_format = SND_PCM_FORMAT_FLOAT64;
             break;
-        case VLC_CODEC_F64L:
-            pcm_format = SND_PCM_FORMAT_FLOAT64_LE;
-            break;
-        case VLC_CODEC_F32B:
-            pcm_format = SND_PCM_FORMAT_FLOAT_BE;
-            break;
-        case VLC_CODEC_F32L:
-            pcm_format = SND_PCM_FORMAT_FLOAT_LE;
-            break;
-        case VLC_CODEC_FI32:
-            fourcc = VLC_CODEC_FL32;
+        case VLC_CODEC_FL32:
             pcm_format = SND_PCM_FORMAT_FLOAT;
             break;
-        case VLC_CODEC_S32B:
-            pcm_format = SND_PCM_FORMAT_S32_BE;
+        case VLC_CODEC_S32N:
+            pcm_format = SND_PCM_FORMAT_S32;
             break;
-        case VLC_CODEC_S32L:
-            pcm_format = SND_PCM_FORMAT_S32_LE;
-            break;
-        case VLC_CODEC_S24B:
-            pcm_format = SND_PCM_FORMAT_S24_3BE;
-            break;
-        case VLC_CODEC_S24L:
-            pcm_format = SND_PCM_FORMAT_S24_3LE;
-            break;
-        case VLC_CODEC_U24B:
-            pcm_format = SND_PCM_FORMAT_U24_3BE;
-            break;
-        case VLC_CODEC_U24L:
-            pcm_format = SND_PCM_FORMAT_U24_3LE;
-            break;
-        case VLC_CODEC_S16B:
-            pcm_format = SND_PCM_FORMAT_S16_BE;
-            break;
-        case VLC_CODEC_S16L:
-            pcm_format = SND_PCM_FORMAT_S16_LE;
-            break;
-        case VLC_CODEC_U16B:
-            pcm_format = SND_PCM_FORMAT_U16_BE;
-            break;
-        case VLC_CODEC_U16L:
-            pcm_format = SND_PCM_FORMAT_U16_LE;
-            break;
-        case VLC_CODEC_S8:
-            pcm_format = SND_PCM_FORMAT_S8;
+        case VLC_CODEC_S16N:
+            pcm_format = SND_PCM_FORMAT_S16;
             break;
         case VLC_CODEC_U8:
             pcm_format = SND_PCM_FORMAT_U8;
             break;
         default:
-            if (AOUT_FMT_SPDIF(&aout->format))
+            if (AOUT_FMT_SPDIF(fmt))
                 spdif = var_InheritBool (aout, "spdif");
             if (spdif)
             {
-                fourcc = VLC_CODEC_SPDIFL;
+                fmt->i_format = VLC_CODEC_SPDIFL;
                 pcm_format = SND_PCM_FORMAT_S16;
             }
             else
             if (HAVE_FPU)
             {
-                fourcc = VLC_CODEC_FL32;
+                fmt->i_format = VLC_CODEC_FL32;
                 pcm_format = SND_PCM_FORMAT_FLOAT;
             }
             else
             {
-                fourcc = VLC_CODEC_S16N;
+                fmt->i_format = VLC_CODEC_S16N;
                 pcm_format = SND_PCM_FORMAT_S16;
             }
     }
 
-    /* ALSA channels */
-    /* XXX: maybe this should be shared with other dumb outputs */
-    uint32_t map = var_InheritInteger (aout, "alsa-audio-channels");
-    map &= aout->format.i_physical_channels;
-    if (unlikely(map == 0)) /* WTH? */
-        map = AOUT_CHANS_STEREO;
-
-    unsigned channels = popcount (map);
-    if (channels < aout_FormatNbChannels (&aout->format))
-        msg_Dbg (aout, "downmixing from %u to %u channels",
-                 aout_FormatNbChannels (&aout->format), channels);
-    else
-        msg_Dbg (aout, "keeping %u channels", channels);
-
-    /* Choose the IEC device for S/PDIF output:
-       if the device is overridden by the user then it will be the one.
-       Otherwise we compute the default device based on the output format. */
+    const char *device = sys->device;
+    char *devbuf = NULL;
+    /* Choose the IEC device for S/PDIF output */
     if (spdif && !strcmp (device, "default"))
     {
         unsigned aes3;
 
-        switch (aout->format.i_rate)
+        switch (fmt->i_rate)
         {
 #define FS(freq) \
             case freq: aes3 = IEC958_AES3_CON_FS_ ## freq; break;
@@ -290,23 +345,14 @@ static int Open (vlc_object_t *obj)
                 break;
         }
 
-        free (device);
-        if (asprintf (&device,
+        if (asprintf (&devbuf,
                       "iec958:AES0=0x%x,AES1=0x%x,AES2=0x%x,AES3=0x%x",
                       IEC958_AES0_CON_EMPHASIS_NONE | IEC958_AES0_NONAUDIO,
                       IEC958_AES1_CON_ORIGINAL | IEC958_AES1_CON_PCM_CODER,
                       0, aes3) == -1)
             return VLC_ENOMEM;
+        device = devbuf;
     }
-
-    /* Allocate structures */
-    aout_sys_t *sys = malloc (sizeof (*sys));
-    if (unlikely(sys == NULL))
-    {
-        free (device);
-        return VLC_ENOMEM;
-    }
-    aout->sys = sys;
 
     /* Open the device */
     snd_pcm_t *pcm;
@@ -314,43 +360,20 @@ static int Open (vlc_object_t *obj)
     const int mode = SND_PCM_NO_AUTO_RESAMPLE;
 
     int val = snd_pcm_open (&pcm, device, SND_PCM_STREAM_PLAYBACK, mode);
-#if (SND_LIB_VERSION <= 0x010015)
-# warning Please update alsa-lib to version > 1.0.21a.
-    var_Create (aout->p_libvlc, "alsa-working", VLC_VAR_BOOL);
-    if (val != 0 && var_GetBool (aout->p_libvlc, "alsa-working"))
-        dialog_Fatal (aout, "ALSA version problem",
-            "VLC failed to re-initialize your audio output device.\n"
-            "Please update alsa-lib to version 1.0.22 or higher "
-            "to fix this issue.");
-    var_SetBool (aout->p_libvlc, "alsa-working", !val);
-#endif
+    free (devbuf);
     if (val != 0)
     {
-#if (SND_LIB_VERSION <= 0x010017)
-# warning Please update alsa-lib to version > 1.0.23.
-        var_Create (aout->p_libvlc, "alsa-broken", VLC_VAR_BOOL);
-        if (!var_GetBool (aout->p_libvlc, "alsa-broken"))
-        {
-            var_SetBool (aout->p_libvlc, "alsa-broken", true);
-            dialog_Fatal (aout, "Potential ALSA version problem",
-                "VLC failed to initialize your audio output device (if any).\n"
-                "Please update alsa-lib to version 1.0.24 or higher "
-                "to try to fix this issue.");
-        }
-#endif
-        msg_Err (aout, "cannot open ALSA device \"%s\": %s", device,
+        msg_Err (aout, "cannot open ALSA device \"%s\": %s", sys->device,
                  snd_strerror (val));
         dialog_Fatal (aout, _("Audio output failed"),
                       _("The audio device \"%s\" could not be used:\n%s."),
-                      device, snd_strerror (val));
-        free (device);
-        free (sys);
+                      sys->device, snd_strerror (val));
         return VLC_EGENERIC;
     }
     sys->pcm = pcm;
 
     /* Print some potentially useful debug */
-    msg_Dbg (aout, "using ALSA device: %s", device);
+    msg_Dbg (aout, "using ALSA device: %s", sys->device);
     DumpDevice (VLC_OBJECT(aout), pcm);
 
     /* Get Initial hardware parameters */
@@ -382,19 +405,19 @@ static int Open (vlc_object_t *obj)
     else
     if (snd_pcm_hw_params_test_format (pcm, hw, SND_PCM_FORMAT_FLOAT) == 0)
     {
-        fourcc = VLC_CODEC_FL32;
+        fmt->i_format = VLC_CODEC_FL32;
         pcm_format = SND_PCM_FORMAT_FLOAT;
     }
     else
     if (snd_pcm_hw_params_test_format (pcm, hw, SND_PCM_FORMAT_S32) == 0)
     {
-        fourcc = VLC_CODEC_S32N;
+        fmt->i_format = VLC_CODEC_S32N;
         pcm_format = SND_PCM_FORMAT_S32;
     }
     else
     if (snd_pcm_hw_params_test_format (pcm, hw, SND_PCM_FORMAT_S16) == 0)
     {
-        fourcc = VLC_CODEC_S16N;
+        fmt->i_format = VLC_CODEC_S16N;
         pcm_format = SND_PCM_FORMAT_S16;
     }
     else
@@ -411,6 +434,23 @@ static int Open (vlc_object_t *obj)
     }
 
     /* Set channels count */
+    unsigned channels;
+    if (!spdif)
+    {
+        uint16_t map = var_InheritInteger (aout, "alsa-audio-channels");
+
+        sys->chans_to_reorder = SetupChannels (VLC_OBJECT(aout), pcm, &map,
+                                               sys->chans_table);
+        fmt->i_physical_channels = map;
+        fmt->i_original_channels = map;
+        channels = popcount (map);
+    }
+    else
+    {
+        sys->chans_to_reorder = 0;
+        channels = 2;
+    }
+
     /* By default, ALSA plug will pad missing channels with zeroes, which is
      * usually fine. However, it will also discard extraneous channels, which
      * is not acceptable. Thus the user must configure the physically
@@ -424,17 +464,23 @@ static int Open (vlc_object_t *obj)
     }
 
     /* Set sample rate */
-    unsigned rate = aout->format.i_rate;
-    val = snd_pcm_hw_params_set_rate_near (pcm, hw, &rate, NULL);
+    val = snd_pcm_hw_params_set_rate_near (pcm, hw, &fmt->i_rate, NULL);
     if (val)
     {
         msg_Err (aout, "cannot set sample rate: %s", snd_strerror (val));
         goto error;
     }
-    if (aout->format.i_rate != rate)
-        msg_Dbg (aout, "resampling from %d Hz to %d Hz",
-                 aout->format.i_rate, rate);
+    sys->rate = fmt->i_rate;
 
+#if 1 /* work-around for period-long latency outputs (e.g. PulseAudio): */
+    param = AOUT_MIN_PREPARE_TIME;
+    val = snd_pcm_hw_params_set_period_time_near (pcm, hw, &param, NULL);
+    if (val)
+    {
+        msg_Err (aout, "cannot set period: %s", snd_strerror (val));
+        goto error;
+    }
+#endif
     /* Set buffer size */
     param = AOUT_MAX_ADVANCE_TIME;
     val = snd_pcm_hw_params_set_buffer_time_near (pcm, hw, &param, NULL);
@@ -452,15 +498,13 @@ static int Open (vlc_object_t *obj)
     }
     else
         param /= 2;
-#else /* work-around for period-long latency outputs (e.g. PulseAudio): */
-    param = AOUT_MIN_PREPARE_TIME;
-#endif
     val = snd_pcm_hw_params_set_period_time_near (pcm, hw, &param, NULL);
     if (val)
     {
         msg_Err (aout, "cannot set period: %s", snd_strerror (val));
         goto error;
     }
+#endif
 
     /* Commit hardware parameters */
     val = snd_pcm_hw_params (pcm, hw);
@@ -509,40 +553,44 @@ static int Open (vlc_object_t *obj)
     }
 
     /* Setup audio_output_t */
-    aout->format.i_format = fourcc;
-    aout->format.i_rate = rate;
     if (spdif)
     {
-        aout->format.i_bytes_per_frame = AOUT_SPDIF_SIZE;
-        aout->format.i_frame_length = A52_FRAME_NB;
-        aout_VolumeNoneInit (aout);
+        fmt->i_bytes_per_frame = AOUT_SPDIF_SIZE;
+        fmt->i_frame_length = A52_FRAME_NB;
     }
-    else
-    {
-        aout->format.i_original_channels =
-        aout->format.i_physical_channels = map;
-        aout_VolumeSoftInit (aout);
-    }
+    sys->format = fmt->i_format;
 
-    aout->pf_play = Play;
+    aout->time_get = TimeGet;
+    aout->play = Play;
     if (snd_pcm_hw_params_can_pause (hw))
-        aout->pf_pause = Pause;
+        aout->pause = Pause;
     else
     {
-        aout->pf_pause = PauseDummy;
+        aout->pause = PauseDummy;
         msg_Warn (aout, "device cannot be paused");
     }
-    aout->pf_flush = Flush;
-
-    Probe (obj, device);
-    free (device);
+    aout->flush = Flush;
+    aout_SoftVolumeStart (aout);
     return 0;
 
 error:
     snd_pcm_close (pcm);
-    free (device);
-    free (sys);
     return VLC_EGENERIC;
+}
+
+static int TimeGet (audio_output_t *aout, mtime_t *restrict delay)
+{
+    aout_sys_t *sys = aout->sys;
+    snd_pcm_sframes_t frames;
+
+    int val = snd_pcm_delay (sys->pcm, &frames);
+    if (val)
+    {
+        msg_Err (aout, "cannot estimate delay: %s", snd_strerror (val));
+        return -1;
+    }
+    *delay = frames * CLOCK_FREQ / sys->rate;
+    return 0;
 }
 
 /**
@@ -551,51 +599,20 @@ error:
 static void Play (audio_output_t *aout, block_t *block)
 {
     aout_sys_t *sys = aout->sys;
+
+    if (sys->chans_to_reorder != 0)
+        aout_ChannelReorder(block->p_buffer, block->i_buffer,
+                           sys->chans_to_reorder, sys->chans_table, sys->format);
+
     snd_pcm_t *pcm = sys->pcm;
-    snd_pcm_sframes_t frames;
-    snd_pcm_state_t state = snd_pcm_state (pcm);
-
-    if (snd_pcm_delay (pcm, &frames) == 0)
-    {
-        mtime_t delay = frames * CLOCK_FREQ / aout->format.i_rate;
-
-        if (state != SND_PCM_STATE_RUNNING)
-        {
-            delay = block->i_pts - (mdate () + delay);
-            if (delay > 0)
-            {
-                if (aout->format.i_format != VLC_CODEC_SPDIFL)
-                {
-                    frames = (delay * aout->format.i_rate) / CLOCK_FREQ;
-                    msg_Dbg (aout, "prepending %ld zeroes", frames);
-
-                    void *z = calloc (frames, aout->format.i_bytes_per_frame);
-                    if (likely(z != NULL))
-                    {
-                        snd_pcm_writei (pcm, z, frames);
-                        free (z);
-                        delay = 0;
-                    }
-                }
-                /* Lame fallback if zero padding does not work */
-                if (delay > 0)
-                {
-                    msg_Dbg (aout, "deferring start (%"PRId64" us)", delay);
-                    msleep (delay);
-                }
-            }
-            else
-                msg_Dbg (aout, "starting late (%"PRId64" us)", delay);
-        }
-        else
-            aout_TimeReport (aout, block->i_pts - delay);
-    }
 
     /* TODO: better overflow handling */
     /* TODO: no period wake ups */
 
     while (block->i_nb_samples > 0)
     {
+        snd_pcm_sframes_t frames;
+
         frames = snd_pcm_writei (pcm, block->p_buffer, block->i_nb_samples);
         if (frames >= 0)
         {
@@ -663,80 +680,29 @@ static void Flush (audio_output_t *aout, bool wait)
 /**
  * Releases the audio output.
  */
-static void Close (vlc_object_t *obj)
+static void Stop (audio_output_t *aout)
 {
-    audio_output_t *aout = (audio_output_t *)obj;
     aout_sys_t *sys = aout->sys;
-    snd_pcm_t *pcm = aout->sys->pcm;
+    snd_pcm_t *pcm = sys->pcm;
 
-    /* FIXME: ugly hack so selected ALSA device survives restart */
-    char *device = var_InheritString (obj, "audio-device");
-    if (device != NULL)
-    {
-        if (!var_Type (obj, "alsa-audio-device"))
-            var_Create (obj, "alsa-audio-device", VLC_VAR_STRING);
-        var_SetString (obj, "alsa-audio-device", device);
-        free (device);
-    }
-
-    var_DelCallback (obj, "audio-device", aout_ChannelsRestart, NULL);
-    var_Destroy (obj, "audio-device");
     snd_pcm_drop (pcm);
     snd_pcm_close (pcm);
-    free (sys);
 }
 
-/*****************************************************************************
- * config variable callback
- *****************************************************************************/
-static int FindDevicesCallback( vlc_object_t *p_this, char const *psz_name,
-                               vlc_value_t newval, vlc_value_t oldval, void *p_unused )
-{
-    module_config_t *p_item;
-    (void)newval;
-    (void)oldval;
-    (void)p_unused;
-
-    p_item = config_FindConfig( p_this, psz_name );
-    if( !p_item ) return VLC_SUCCESS;
-
-    /* Clear-up the current list */
-    if( p_item->i_list )
-    {
-        int i;
-
-        /* Keep the first entrie */
-        for( i = 1; i < p_item->i_list; i++ )
-        {
-            free( (char *)p_item->ppsz_list[i] );
-            free( (char *)p_item->ppsz_list_text[i] );
-        }
-        /* TODO: Remove when no more needed */
-        p_item->ppsz_list[i] = NULL;
-        p_item->ppsz_list_text[i] = NULL;
-    }
-    p_item->i_list = 1;
-
-    GetDevices (p_this, p_item, "default");
-
-    /* Signal change to the interface */
-    p_item->b_dirty = true;
-
-    return VLC_SUCCESS;
-}
-
-
-static void GetDevices (vlc_object_t *obj, module_config_t *item,
-                        const char *prefs_dev)
+/**
+ * Enumerates ALSA output devices.
+ */
+static int EnumDevices(vlc_object_t *obj, char const *varname,
+                       char ***restrict idp, char ***restrict namep)
 {
     void **hints;
-    bool hinted_default = false;
-    bool hinted_prefs = !strcmp (prefs_dev, "default");
 
-    msg_Dbg(obj, "Available ALSA PCM devices:");
-
+    msg_Dbg (obj, "Available ALSA PCM devices:");
     if (snd_device_name_hint(-1, "pcm", &hints) < 0)
-        return;
+        return -1;
+
+    char **ids = NULL, **names = NULL;
+    unsigned n = 0;
 
     for (size_t i = 0; hints[i] != NULL; i++)
     {
@@ -750,61 +716,81 @@ static void GetDevices (vlc_object_t *obj, module_config_t *item,
         if (desc != NULL)
             for (char *lf = strchr(desc, '\n'); lf; lf = strchr(lf, '\n'))
                  *lf = ' ';
-        msg_Dbg(obj, "%s (%s)", (desc != NULL) ? desc : name, name);
+        msg_Dbg (obj, "%s (%s)", (desc != NULL) ? desc : name, name);
 
-        if (!strcmp (name, "default"))
-            hinted_default = true;
-        if (!strcmp (name, prefs_dev))
-            hinted_prefs = true;
-
-        if (item != NULL)
-        {
-            item->ppsz_list = xrealloc(item->ppsz_list,
-                                       (item->i_list + 2) * sizeof(char *));
-            item->ppsz_list_text = xrealloc(item->ppsz_list_text,
-                                          (item->i_list + 2) * sizeof(char *));
-            item->ppsz_list[item->i_list] = name;
-            if (desc == NULL)
-                desc = strdup(name);
-            item->ppsz_list_text[item->i_list] = desc;
-            item->i_list++;
-        }
-        else
-        {
-            vlc_value_t val, text;
-
-            val.psz_string = name;
-            text.psz_string = desc;
-            var_Change(obj, "audio-device", VLC_VAR_ADDCHOICE, &val, &text);
-            free(desc);
-            free(name);
-        }
+        ids = xrealloc (ids, (n + 1) * sizeof (*ids));
+        names = xrealloc (names, (n + 1) * sizeof (*names));
+        ids[n] = name;
+        names[n] = desc;
+        n++;
     }
 
     snd_device_name_free_hint(hints);
+    *idp = ids;
+    *namep = names;
+    (void) varname;
+    return n;
+}
 
-    if (item != NULL)
+static int DeviceSelect (audio_output_t *aout, const char *id)
+{
+    aout_sys_t *sys = aout->sys;
+
+    char *device = strdup (id ? id : "default");
+    if (unlikely(device == NULL))
+        return -1;
+
+    free (sys->device);
+    sys->device = device;
+    aout_DeviceReport (aout, device);
+    aout_RestartRequest (aout, AOUT_RESTART_OUTPUT);
+    return 0;
+}
+
+static int Open(vlc_object_t *obj)
+{
+    audio_output_t *aout = (audio_output_t *)obj;
+    aout_sys_t *sys = malloc (sizeof (*sys));
+
+    if (unlikely(sys == NULL))
+        return VLC_ENOMEM;
+    sys->device = var_InheritString (aout, "alsa-audio-device");
+    if (unlikely(sys->device == NULL))
+        goto error;
+
+    aout->sys = sys;
+    aout->start = Start;
+    aout->stop = Stop;
+    aout_SoftVolumeInit (aout);
+    aout->device_select = DeviceSelect;
+    aout_DeviceReport (aout, sys->device);
+
+    /* ALSA does not support hot-plug events so list devices at startup */
+    char **ids, **names;
+    int count = EnumDevices (VLC_OBJECT(aout), NULL, &ids, &names);
+    if (count >= 0)
     {
-        item->ppsz_list[item->i_list] = NULL;
-        item->ppsz_list_text[item->i_list] = NULL;
-    }
-    else
-    {
-        vlc_value_t val, text;
-
-        if (!hinted_default)
+        for (int i = 0; i < count; i++)
         {
-            val.psz_string = (char *)"default";
-            text.psz_string = (char *)N_("Default");
-            var_Change(obj, "audio-device", VLC_VAR_ADDCHOICE, &val, &text);
+            aout_HotplugReport (aout, ids[i], names[i]);
+            free (names[i]);
+            free (ids[i]);
         }
-
-        val.psz_string = (char *)prefs_dev;
-        if (!hinted_prefs)
-        {
-            text.psz_string = (char *)N_("VLC preferences");
-            var_Change(obj, "audio-device", VLC_VAR_ADDCHOICE, &val, &text);
-        }
-        var_Change(obj, "audio-device", VLC_VAR_SETVALUE, &val, NULL);
+        free (names);
+        free (ids);
     }
+
+    return VLC_SUCCESS;
+error:
+    free (sys);
+    return VLC_ENOMEM;
+}
+
+static void Close(vlc_object_t *obj)
+{
+    audio_output_t *aout = (audio_output_t *)obj;
+    aout_sys_t *sys = aout->sys;
+
+    free (sys->device);
+    free (sys);
 }

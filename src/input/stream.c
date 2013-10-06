@@ -2,7 +2,7 @@
  * stream.c
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: e41670d2b554aa7583e6b738e2f5effa2d0112a3 $
+ * $Id: d3c4d9ec1132627879cb75c74ee9036528d9b9f9 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -200,7 +200,6 @@ static int  AReadStream( stream_t *s, void *p_read, unsigned int i_read );
 /* Common */
 static int AStreamControl( stream_t *s, int i_query, va_list );
 static void AStreamDestroy( stream_t *s );
-static void UStreamDestroy( stream_t *s );
 static int  ASeek( stream_t *s, uint64_t i_pos );
 
 /****************************************************************************
@@ -249,7 +248,6 @@ stream_t *stream_UrlNew( vlc_object_t *p_parent, const char *psz_url )
 {
     const char *psz_access, *psz_demux, *psz_path, *psz_anchor;
     access_t *p_access;
-    stream_t *p_res;
 
     if( !psz_url )
         return NULL;
@@ -266,14 +264,7 @@ stream_t *stream_UrlNew( vlc_object_t *p_parent, const char *psz_url )
         return NULL;
     }
 
-    if( !( p_res = stream_AccessNew( p_access, NULL ) ) )
-    {
-        access_Delete( p_access );
-        return NULL;
-    }
-
-    p_res->pf_destroy = UStreamDestroy;
-    return p_res;
+    return stream_AccessNew( p_access, NULL );
 }
 
 stream_t *stream_AccessNew( access_t *p_access, char **ppsz_list )
@@ -450,6 +441,7 @@ error:
     free( p_sys->list );
     free( s->p_sys );
     stream_CommonDelete( s );
+    access_Delete( p_access );
     return NULL;
 }
 
@@ -475,18 +467,11 @@ static void AStreamDestroy( stream_t *s )
         free( p_sys->list[p_sys->i_list]->psz_path );
         free( p_sys->list[p_sys->i_list] );
     }
-
     free( p_sys->list );
-    free( p_sys );
 
     stream_CommonDelete( s );
-}
-
-static void UStreamDestroy( stream_t *s )
-{
-    access_t *p_access = (access_t *)s->p_parent;
-    AStreamDestroy( s );
-    access_Delete( p_access );
+    access_Delete( p_sys->p_access );
+    free( p_sys );
 }
 
 /****************************************************************************
@@ -563,9 +548,7 @@ static int AStreamControl( stream_t *s, int i_query, va_list args )
     stream_sys_t *p_sys = s->p_sys;
     access_t     *p_access = p_sys->p_access;
 
-    bool     *p_bool;
     uint64_t *pi_64, i_64;
-    int      i_int;
 
     switch( i_query )
     {
@@ -583,14 +566,13 @@ static int AStreamControl( stream_t *s, int i_query, va_list args )
             break;
 
         case STREAM_CAN_SEEK:
-            p_bool = (bool*)va_arg( args, bool * );
-            access_Control( p_access, ACCESS_CAN_SEEK, p_bool );
-            break;
-
+            return access_vaControl( p_access, ACCESS_CAN_SEEK, args );
         case STREAM_CAN_FASTSEEK:
-            p_bool = (bool*)va_arg( args, bool * );
-            access_Control( p_access, ACCESS_CAN_FASTSEEK, p_bool );
-            break;
+            return access_vaControl( p_access, ACCESS_CAN_FASTSEEK, args );
+        case STREAM_CAN_PAUSE:
+            return access_vaControl( p_access, ACCESS_CAN_PAUSE, args );
+        case STREAM_CAN_CONTROL_PACE:
+            return access_vaControl( p_access, ACCESS_CAN_CONTROL_PACE, args );
 
         case STREAM_GET_POSITION:
             pi_64 = va_arg( args, uint64_t * );
@@ -612,30 +594,48 @@ static int AStreamControl( stream_t *s, int i_query, va_list args )
 
         case STREAM_CONTROL_ACCESS:
         {
-            i_int = (int) va_arg( args, int );
+            int i_int = (int) va_arg( args, int );
             if( i_int != ACCESS_SET_PRIVATE_ID_STATE &&
                 i_int != ACCESS_SET_PRIVATE_ID_CA &&
-                i_int != ACCESS_GET_PRIVATE_ID_STATE &&
-                i_int != ACCESS_SET_TITLE &&
-                i_int != ACCESS_SET_SEEKPOINT )
+                i_int != ACCESS_GET_PRIVATE_ID_STATE )
             {
                 msg_Err( s, "Hey, what are you thinking ?"
                             "DON'T USE STREAM_CONTROL_ACCESS !!!" );
                 return VLC_EGENERIC;
             }
-            int i_ret = access_vaControl( p_access, i_int, args );
-            if( i_int == ACCESS_SET_TITLE || i_int == ACCESS_SET_SEEKPOINT )
-                AStreamControlReset( s );
-            return i_ret;
+            return access_vaControl( p_access, i_int, args );
         }
 
         case STREAM_UPDATE_SIZE:
             AStreamControlUpdate( s );
             return VLC_SUCCESS;
 
+        case STREAM_GET_TITLE_INFO:
+            return access_vaControl( p_access, ACCESS_GET_TITLE_INFO, args );
+        case STREAM_GET_META:
+            return access_vaControl( p_access, ACCESS_GET_META, args );
         case STREAM_GET_CONTENT_TYPE:
-            return access_Control( p_access, ACCESS_GET_CONTENT_TYPE,
-                                    va_arg( args, char ** ) );
+            return access_vaControl( p_access, ACCESS_GET_CONTENT_TYPE, args );
+        case STREAM_GET_SIGNAL:
+            return access_vaControl( p_access, ACCESS_GET_SIGNAL, args );
+
+        case STREAM_SET_PAUSE_STATE:
+            return access_vaControl( p_access, ACCESS_SET_PAUSE_STATE, args );
+        case STREAM_SET_TITLE:
+        {
+            int ret = access_vaControl( p_access, ACCESS_SET_TITLE, args );
+            if( ret == VLC_SUCCESS )
+                AStreamControlReset( s );
+            return ret;
+        }
+        case STREAM_SET_SEEKPOINT:
+        {
+            int ret = access_vaControl( p_access, ACCESS_SET_SEEKPOINT, args );
+            if( ret == VLC_SUCCESS )
+                AStreamControlReset( s );
+            return ret;
+        }
+
         case STREAM_SET_RECORD_STATE:
         default:
             msg_Err( s, "invalid stream_vaControl query=0x%x", i_query );
@@ -662,7 +662,7 @@ static void AStreamPrebufferBlock( stream_t *s )
         bool b_eof;
         block_t *b;
 
-        if( s->b_die || p_sys->block.i_size > STREAM_CACHE_PREBUFFER_SIZE )
+        if( !vlc_object_alive(s) || p_sys->block.i_size > STREAM_CACHE_PREBUFFER_SIZE )
         {
             int64_t i_byterate;
 
@@ -1000,7 +1000,7 @@ static int AStreamRefillBlock( stream_t *s )
     {
         bool b_eof;
 
-        if( s->b_die )
+        if( !vlc_object_alive(s) )
             return VLC_EGENERIC;
 
         /* Fetch a block */
@@ -1260,7 +1260,7 @@ static int AStreamSeekStream( stream_t *s, uint64_t i_pos )
         if( p_sys->stream.i_used < STREAM_READ_ATONCE / 2 )
             p_sys->stream.i_used = STREAM_READ_ATONCE / 2;
 
-        if( AStreamRefillStream( s ) && i_pos == tk->i_end )
+        if( AStreamRefillStream( s ) && i_pos >= tk->i_end )
             return VLC_EGENERIC;
     }
     return VLC_SUCCESS;
@@ -1356,7 +1356,7 @@ static int AStreamRefillStream( stream_t *s )
         int i_off = tk->i_end % STREAM_CACHE_TRACK_SIZE;
         int i_read;
 
-        if( s->b_die )
+        if( !vlc_object_alive(s) )
             return VLC_EGENERIC;
 
         i_read = __MIN( i_toread, STREAM_CACHE_TRACK_SIZE - i_off );
@@ -1417,7 +1417,7 @@ static void AStreamPrebufferStream( stream_t *s )
         int i_read;
         int i_buffered = tk->i_end - tk->i_start;
 
-        if( s->b_die || i_buffered >= STREAM_CACHE_PREBUFFER_SIZE )
+        if( !vlc_object_alive(s) || i_buffered >= STREAM_CACHE_PREBUFFER_SIZE )
         {
             int64_t i_byterate;
 
@@ -1485,58 +1485,28 @@ char *stream_ReadLine( stream_t *s )
 
         /* BOM detection */
         i_pos = stream_Tell( s );
-        if( i_pos == 0 && i_data >= 3 )
+        if( i_pos == 0 && i_data >= 2 )
         {
-            int i_bom_size = 0;
             const char *psz_encoding = NULL;
 
-            if( !memcmp( p_data, "\xEF\xBB\xBF", 3 ) )
-            {
-                psz_encoding = "UTF-8";
-                i_bom_size = 3;
-            }
-            else if( !memcmp( p_data, "\xFF\xFE", 2 ) )
+            if( !memcmp( p_data, "\xFF\xFE", 2 ) )
             {
                 psz_encoding = "UTF-16LE";
                 s->p_text->b_little_endian = true;
-                s->p_text->i_char_width = 2;
-                i_bom_size = 2;
             }
             else if( !memcmp( p_data, "\xFE\xFF", 2 ) )
             {
                 psz_encoding = "UTF-16BE";
-                s->p_text->i_char_width = 2;
-                i_bom_size = 2;
-            }
-
-            /* Seek past the BOM */
-            if( i_bom_size )
-            {
-                stream_Seek( s, i_bom_size );
-                p_data += i_bom_size;
-                i_data -= i_bom_size;
             }
 
             /* Open the converter if we need it */
             if( psz_encoding != NULL )
             {
-                msg_Dbg( s, "%s BOM detected", psz_encoding );
-                if( s->p_text->i_char_width > 1 )
-                {
-                    s->p_text->conv = vlc_iconv_open( "UTF-8", psz_encoding );
-                    if( s->p_text->conv == (vlc_iconv_t)-1 )
-                    {
-                        msg_Err( s, "iconv_open failed" );
-                    }
-                }
-
-                /* FIXME that's UGLY */
-                input_thread_t *p_input = s->p_input;
-                if( p_input != NULL)
-                {
-                    var_Create( p_input, "subsdec-encoding", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
-                    var_SetString( p_input, "subsdec-encoding", "UTF-8" );
-                }
+                msg_Dbg( s, "UTF-16 BOM detected" );
+                s->p_text->i_char_width = 2;
+                s->p_text->conv = vlc_iconv_open( "UTF-8", psz_encoding );
+                if( s->p_text->conv == (vlc_iconv_t)-1 )
+                    msg_Err( s, "iconv_open failed" );
             }
         }
 
@@ -1687,21 +1657,18 @@ static int AReadStream( stream_t *s, void *p_read, unsigned int i_read )
     access_t *p_access = p_sys->p_access;
     input_thread_t *p_input = s->p_input;
     int i_read_orig = i_read;
-    int i_total = 0;
 
     if( !p_sys->i_list )
     {
         i_read = p_access->pf_read( p_access, p_read, i_read );
-        if( p_access->b_die )
-            vlc_object_kill( s );
         if( p_input )
         {
+            uint64_t total;
+
             vlc_mutex_lock( &p_input->p->counters.counters_lock );
-            stats_UpdateInteger( s, p_input->p->counters.p_read_bytes, i_read,
-                             &i_total );
-            stats_UpdateFloat( s, p_input->p->counters.p_input_bitrate,
-                           (float)i_total, NULL );
-            stats_UpdateInteger( s, p_input->p->counters.p_read_packets, 1, NULL );
+            stats_Update( p_input->p->counters.p_read_bytes, i_read, &total );
+            stats_Update( p_input->p->counters.p_input_bitrate, total, NULL );
+            stats_Update( p_input->p->counters.p_read_packets, 1, NULL );
             vlc_mutex_unlock( &p_input->p->counters.counters_lock );
         }
         return i_read;
@@ -1709,8 +1676,6 @@ static int AReadStream( stream_t *s, void *p_read, unsigned int i_read )
 
     i_read = p_sys->p_list_access->pf_read( p_sys->p_list_access, p_read,
                                             i_read );
-    if( p_access->b_die )
-        vlc_object_kill( s );
 
     /* If we reached an EOF then switch to the next stream in the list */
     if( i_read == 0 && p_sys->i_list_index + 1 < p_sys->i_list )
@@ -1736,11 +1701,12 @@ static int AReadStream( stream_t *s, void *p_read, unsigned int i_read )
     /* Update read bytes in input */
     if( p_input )
     {
+        uint64_t total;
+
         vlc_mutex_lock( &p_input->p->counters.counters_lock );
-        stats_UpdateInteger( s, p_input->p->counters.p_read_bytes, i_read, &i_total );
-        stats_UpdateFloat( s, p_input->p->counters.p_input_bitrate,
-                       (float)i_total, NULL );
-        stats_UpdateInteger( s, p_input->p->counters.p_read_packets, 1, NULL );
+        stats_Update( p_input->p->counters.p_read_bytes, i_read, &total );
+        stats_Update( p_input->p->counters.p_input_bitrate, total, NULL );
+        stats_Update( p_input->p->counters.p_read_packets, 1, NULL );
         vlc_mutex_unlock( &p_input->p->counters.counters_lock );
     }
     return i_read;
@@ -1753,30 +1719,27 @@ static block_t *AReadBlock( stream_t *s, bool *pb_eof )
     input_thread_t *p_input = s->p_input;
     block_t *p_block;
     bool b_eof;
-    int i_total = 0;
 
     if( !p_sys->i_list )
     {
         p_block = p_access->pf_block( p_access );
-        if( p_access->b_die )
-            vlc_object_kill( s );
         if( pb_eof ) *pb_eof = p_access->info.b_eof;
         if( p_input && p_block && libvlc_stats (p_access) )
         {
+            uint64_t total;
+
             vlc_mutex_lock( &p_input->p->counters.counters_lock );
-            stats_UpdateInteger( s, p_input->p->counters.p_read_bytes,
-                                 p_block->i_buffer, &i_total );
-            stats_UpdateFloat( s, p_input->p->counters.p_input_bitrate,
-                              (float)i_total, NULL );
-            stats_UpdateInteger( s, p_input->p->counters.p_read_packets, 1, NULL );
+            stats_Update( p_input->p->counters.p_read_bytes,
+                          p_block->i_buffer, &total );
+            stats_Update( p_input->p->counters.p_input_bitrate,
+                          total, NULL );
+            stats_Update( p_input->p->counters.p_read_packets, 1, NULL );
             vlc_mutex_unlock( &p_input->p->counters.counters_lock );
         }
         return p_block;
     }
 
     p_block = p_sys->p_list_access->pf_block( p_sys->p_list_access );
-    if( p_access->b_die )
-        vlc_object_kill( s );
     b_eof = p_sys->p_list_access->info.b_eof;
     if( pb_eof ) *pb_eof = b_eof;
 
@@ -1804,13 +1767,13 @@ static block_t *AReadBlock( stream_t *s, bool *pb_eof )
     {
         if( p_input )
         {
+            uint64_t total;
+
             vlc_mutex_lock( &p_input->p->counters.counters_lock );
-            stats_UpdateInteger( s, p_input->p->counters.p_read_bytes,
-                                 p_block->i_buffer, &i_total );
-            stats_UpdateFloat( s, p_input->p->counters.p_input_bitrate,
-                              (float)i_total, NULL );
-            stats_UpdateInteger( s, p_input->p->counters.p_read_packets,
-                                 1 , NULL);
+            stats_Update( p_input->p->counters.p_read_bytes,
+                          p_block->i_buffer, &total );
+            stats_Update( p_input->p->counters.p_input_bitrate, total, NULL );
+            stats_Update( p_input->p->counters.p_read_packets, 1 , NULL);
             vlc_mutex_unlock( &p_input->p->counters.counters_lock );
         }
     }
@@ -1940,7 +1903,7 @@ block_t *stream_Block( stream_t *s, int i_size )
     if( i_size <= 0 ) return NULL;
 
     /* emulate block read */
-    block_t *p_bk = block_New( s, i_size );
+    block_t *p_bk = block_Alloc( i_size );
     if( p_bk )
     {
         int i_read = stream_Read( s, p_bk->p_buffer, i_size );
@@ -1978,7 +1941,7 @@ block_t *stream_BlockRemaining( stream_t *s, int i_max_size )
     if( i_allocate <= 0 )
         return NULL;
 
-    block_t *p_block = block_New( s, i_allocate );
+    block_t *p_block = block_Alloc( i_allocate );
     int i_index = 0;
     while( p_block )
     {

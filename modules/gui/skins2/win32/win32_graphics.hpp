@@ -2,7 +2,7 @@
  * win32_graphics.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: b3cbd95430a036203912426564340dd6feed6ff7 $
+ * $Id: 83f575a40a8333804ae54e5e92fa2fce2b7efcc2 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -95,6 +95,11 @@ private:
 
     /// Add a segment in a region
     void addSegmentInRegion( HRGN &rMask, int start, int end, int line );
+
+    /// check boundaries for graphics and bitmaps
+    bool checkBoundaries( int x_src, int y_src, int w_src, int h_src,
+                          int& x_target, int& y_target,
+                          int& w_target, int& h_target );
 };
 
 

@@ -20,14 +20,13 @@ OPTIONS="
       --enable-shout
       --enable-goom
       --enable-caca
-      --disable-portaudio
       --disable-sdl
-      --enable-qt4
+      --enable-qt
       --enable-skins2
       --enable-sse --enable-mmx
       --enable-libcddb
       --enable-zvbi --disable-telx
-      --enable-sqlite
+      --enable-nls
       --disable-dirac"
 
 if gcc -v 2>/dev/null -a echo | gcc -mno-cygwin -E -2>/dev/null 2>&1

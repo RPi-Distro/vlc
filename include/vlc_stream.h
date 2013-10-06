@@ -2,7 +2,7 @@
  * vlc_stream.h: Stream (between access and demux) descriptor and methods
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: c9298367b3249ea233e62262695d09bc450a28e4 $
+ * $Id: f77a843dc28d2731404f1d8d2dafc71c095bbea6 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -90,6 +90,8 @@ enum stream_query_e
     /* capabilities */
     STREAM_CAN_SEEK,            /**< arg1= bool *   res=cannot fail*/
     STREAM_CAN_FASTSEEK,        /**< arg1= bool *   res=cannot fail*/
+    STREAM_CAN_PAUSE,           /**< arg1= bool *   res=cannot fail*/
+    STREAM_CAN_CONTROL_PACE,    /**< arg1= bool *   res=cannot fail*/
 
     /* */
     STREAM_SET_POSITION,        /**< arg1= uint64_t       res=can fail  */
@@ -107,7 +109,14 @@ enum stream_query_e
     STREAM_UPDATE_SIZE,
 
     /* */
+    STREAM_GET_TITLE_INFO = 0x102, /**< arg1=input_title_t*** arg2=int* res=can fail */
+    STREAM_GET_META,        /**< arg1= vlc_meta_t **       res=can fail */
     STREAM_GET_CONTENT_TYPE,    /**< arg1= char **         res=can fail */
+    STREAM_GET_SIGNAL,      /**< arg1=double *pf_quality, arg2=double *pf_strength   res=can fail */
+
+    STREAM_SET_PAUSE_STATE = 0x200, /**< arg1= bool        res=can fail */
+    STREAM_SET_TITLE,       /**< arg1= int          res=can fail */
+    STREAM_SET_SEEKPOINT,   /**< arg1= int          res=can fail */
 
     /* XXX only data read through stream_Read/Block will be recorded */
     STREAM_SET_RECORD_STATE,     /**< arg1=bool, arg2=const char *psz_ext (if arg1 is true)  res=can fail */
@@ -170,9 +179,26 @@ static inline char *stream_ContentType( stream_t *s )
 VLC_API stream_t * stream_DemuxNew( demux_t *p_demux, const char *psz_demux, es_out_t *out );
 
 /**
- * Send data to a stream_t handle created by stream_DemuxNew.
+ * Send data to a stream handle created by stream_DemuxNew().
  */
 VLC_API void stream_DemuxSend( stream_t *s, block_t *p_block );
+
+/**
+ * Perform a <b>demux</b> (i.e. DEMUX_...) control request on a stream handle
+ * created by stream_DemuxNew().
+ */
+VLC_API int stream_DemuxControlVa( stream_t *s, int, va_list );
+
+static inline int stream_DemuxControl( stream_t *s, int query, ... )
+{
+    va_list ap;
+    int ret;
+
+    va_start( ap, query );
+    ret = stream_DemuxControlVa( s, query, ap );
+    va_end( ap );
+    return ret;
+}
 
 /**
  * Create a stream_t reading from memory.

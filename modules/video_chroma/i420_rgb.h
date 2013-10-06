@@ -1,24 +1,24 @@
 /*****************************************************************************
  * i420_rgb.h : YUV to bitmap RGB conversion module for vlc
  *****************************************************************************
- * Copyright (C) 2000, 2004 the VideoLAN team
- * $Id: 66171fbeee5ad0e40355391250d0c691739100b9 $
+ * Copyright (C) 2000, 2004 VLC authors and VideoLAN
+ * $Id: 5af725b278c411df3dd4878a5cea387291efb9ee $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /** Number of entries in RGB palette/colormap */
@@ -283,7 +283,7 @@ void I420_A8B8G8R8     ( filter_t *, picture_t *, picture_t * );
         while( (i_scale_count -= p_filter->fmt_in.video.i_height) > 0 )       \
         {                                                                     \
             /* Height increment: copy previous picture line */                \
-            vlc_memcpy( p_pic, p_pic_start, p_filter->fmt_out.video.i_width * BPP ); \
+            memcpy( p_pic, p_pic_start, p_filter->fmt_out.video.i_width * BPP ); \
             p_pic = (void*)((uint8_t*)p_pic + p_dest->p->i_pitch );           \
         }                                                                     \
         i_scale_count += p_filter->fmt_out.video.i_height;                    \

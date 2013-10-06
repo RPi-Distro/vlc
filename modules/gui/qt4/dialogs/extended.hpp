@@ -2,7 +2,7 @@
  * extended.hpp : Extended controls - Undocked
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: ae5be3fe6fbbc3dbd847c88fff9c0d6b1e6bc27d $
+ * $Id: 3fd359651ad557ab8031034747f5331a14e01756 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -35,6 +35,13 @@ class ExtendedDialog : public QVLCDialog, public Singleton<ExtendedDialog>
 {
     Q_OBJECT
 public:
+    enum
+    {
+        AUDIO_TAB = 0,
+        VIDEO_TAB,
+        SYNCHRO_TAB,
+        V4L2_TAB
+    };
     void showTab( int i );
     int currentTab();
 private:
@@ -45,8 +52,10 @@ private:
     ExtVideo *videoEffect;
     Equalizer *equal;
     QTabWidget *mainTabW;
+    QCheckBox *writeChangesBox;
 private slots:
     void changedItem( int );
+    void currentTabChanged( int );
 
     friend class    Singleton<ExtendedDialog>;
 };

@@ -3,26 +3,34 @@
  *   This plugin makes use of liba52 to decode A/52 audio
  *   (http://liba52.sf.net/).
  *****************************************************************************
- * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 50760614dccbb470b03daa873260fb6465dbf8ad $
+ * Copyright (C) 2001-2009 VLC authors and VideoLAN
+ * $Id: 346a36dd8a11a9aa9eea2e1ed1c4d8985968c497 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+/*****************************************************************************
+ * NOTA BENE: this module requires the linking against a library which is
+ * known to require licensing under the GNU General Public License version 2
+ * (or later). Therefore, the result of compiling this module will normally
+ * be subject to the terms of that later license.
+ *****************************************************************************/
+
 
 /*****************************************************************************
  * Preamble
@@ -37,9 +45,6 @@
 
 #include <stdint.h>                                         /* int16_t .. */
 
-#if !HAVE_FPU
-# define LIBA52_FIXED
-#endif
 #ifdef USE_A52DEC_TREE                                 /* liba52 header file */
 #   include "include/a52.h"
 #else
@@ -73,7 +78,7 @@ struct filter_sys_t
     bool b_dontwarn;
     int i_nb_channels; /* number of float32 per sample */
 
-    int pi_chan_table[AOUT_CHAN_MAX]; /* channel reordering */
+    uint8_t pi_chan_table[AOUT_CHAN_MAX]; /* channel reordering */
 };
 
 /*****************************************************************************
@@ -97,7 +102,7 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_INPUT_ACODEC )
     add_bool( "a52-dynrng", true, DYNRNG_TEXT, DYNRNG_LONGTEXT, false )
     add_bool( "a52-upmix", false, UPMIX_TEXT, UPMIX_LONGTEXT, true )
-    set_capability( "audio filter", 100 )
+    set_capability( "audio converter", 100 )
     set_callbacks( OpenFilter, CloseFilter )
 vlc_module_end ()
 
@@ -123,8 +128,7 @@ static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
 
     /* We'll do our own downmixing, thanks. */
     p_sys->i_nb_channels = aout_FormatNbChannels( output );
-    switch ( (output->i_physical_channels & AOUT_CHAN_PHYSMASK)
-              & ~AOUT_CHAN_LFE )
+    switch ( output->i_physical_channels & ~AOUT_CHAN_LFE )
     {
     case AOUT_CHAN_CENTER:
         if ( (output->i_original_channels & AOUT_CHAN_CENTER)
@@ -214,8 +218,7 @@ static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
     }
 
     aout_CheckChannelReorder( pi_channels_in, NULL,
-                              output->i_physical_channels & AOUT_CHAN_PHYSMASK,
-                              p_sys->i_nb_channels,
+                              output->i_physical_channels,
                               p_sys->pi_chan_table );
 
     return VLC_SUCCESS;
@@ -224,17 +227,19 @@ static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
 /*****************************************************************************
  * Interleave: helper function to interleave channels
  *****************************************************************************/
-static void Interleave( sample_t * p_out, const sample_t * p_in,
-                        int i_nb_channels, int *pi_chan_table )
+static void Interleave( sample_t *restrict p_out, const sample_t *restrict p_in,
+                        unsigned i_nb_channels, uint8_t *restrict pi_chan_table )
 {
     /* We do not only have to interleave, but also reorder the channels */
-
-    int i, j;
-    for ( j = 0; j < i_nb_channels; j++ )
+    for( unsigned j = 0; j < i_nb_channels; j++ )
     {
-        for ( i = 0; i < 256; i++ )
+        for( unsigned i = 0; i < 256; i++ )
         {
+#ifdef LIBA52_FIXED
+            p_out[i * i_nb_channels + pi_chan_table[j]] = p_in[j * 256 + i] << 4;
+#else
             p_out[i * i_nb_channels + pi_chan_table[j]] = p_in[j * 256 + i];
+#endif
         }
     }
 }
@@ -242,31 +247,37 @@ static void Interleave( sample_t * p_out, const sample_t * p_in,
 /*****************************************************************************
  * Duplicate: helper function to duplicate a unique channel
  *****************************************************************************/
-static void Duplicate( sample_t * p_out, const sample_t * p_in )
+static void Duplicate( sample_t *restrict p_out, const sample_t *restrict p_in )
 {
-    int i;
-
-    for ( i = 256; i--; )
+    for( unsigned i = 256; i--; )
     {
-        *p_out++ = *p_in;
-        *p_out++ = *p_in;
-        p_in++;
+#ifdef LIBA52_FIXED
+        sample_t s = *(p_in++) << 4;
+#else
+        sample_t s = *(p_in++);
+#endif
+        *p_out++ = s;
+        *p_out++ = s;
     }
 }
 
 /*****************************************************************************
  * Exchange: helper function to exchange left & right channels
  *****************************************************************************/
-static void Exchange( sample_t * p_out, const sample_t * p_in )
+static void Exchange( sample_t *restrict p_out, const sample_t *restrict p_in )
 {
-    int i;
-    const sample_t * p_first = p_in + 256;
-    const sample_t * p_second = p_in;
+    const sample_t *p_first = p_in + 256;
+    const sample_t *p_second = p_in;
 
-    for ( i = 0; i < 256; i++ )
+    for( unsigned i = 0; i < 256; i++ )
     {
+#ifdef LIBA52_FIXED
+        *p_out++ = *p_first++ << 4;
+        *p_out++ = *p_second++ << 4;
+#else
         *p_out++ = *p_first++;
         *p_out++ = *p_second++;
+#endif
     }
 }
 
@@ -285,7 +296,7 @@ static block_t *Convert( filter_t *p_filter, block_t *p_in_buf )
     int i_flags = p_sys->i_flags;
     size_t i_bytes_per_block = 256 * p_sys->i_nb_channels * sizeof(sample_t);
 
-    block_t *p_out_buf = filter_NewAudioBuffer( p_filter, 6 * i_bytes_per_block );
+    block_t *p_out_buf = block_Alloc( 6 * i_bytes_per_block );
     if( unlikely(p_out_buf == NULL) )
         goto out;
 
@@ -364,7 +375,7 @@ static int OpenFilter( vlc_object_t *p_this )
     if( p_filter->fmt_in.i_codec != VLC_CODEC_A52 )
         return VLC_EGENERIC;
 #ifdef LIBA52_FIXED
-    if( p_filter->fmt_out.audio.i_format != VLC_CODEC_FI32 )
+    if( p_filter->fmt_out.audio.i_format != VLC_CODEC_S32N )
 #else
     if( p_filter->fmt_out.audio.i_format != VLC_CODEC_FL32 )
 #endif

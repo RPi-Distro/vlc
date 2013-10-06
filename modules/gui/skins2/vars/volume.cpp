@@ -2,10 +2,11 @@
  * volume.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 6882c1467048e21008aaf7b00658ec5c161a5a22 $
+ * $Id: 27887fba23ef87c72822f6bdd6c865f79a87a895 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
+ *          Erwan Tulou      <erwan10 aT videolan Dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,56 +28,56 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_aout_intf.h>
 #include <vlc_playlist.h>
 #include "volume.hpp"
+#include <math.h>
 
 Volume::Volume( intf_thread_t *pIntf ): VarPercent( pIntf )
 {
-    m_step = (float)config_GetInt( pIntf, "volume-step" ) / AOUT_VOLUME_MAX;
-    if( var_InheritBool( pIntf, "qt-volume-complete" ) )
-    {
-        m_max = AOUT_VOLUME_MAX * 100 / AOUT_VOLUME_DEFAULT;
-        m_volumeMax = AOUT_VOLUME_MAX;
-    }
-    else
-    {
-        m_max = 200;
-        m_volumeMax = AOUT_VOLUME_DEFAULT * 2;
-    }
+    // compute preferred step in [0.,1.] range
+    m_step = config_GetFloat( pIntf, "volume-step" )
+             / (float)AOUT_VOLUME_MAX;
 
-    // Initial value
-    audio_volume_t val = aout_VolumeGet( getIntf()->p_sys->p_playlist );
-    set( val, false );
+    // set current volume from the playlist
+    playlist_t* pPlaylist = pIntf->p_sys->p_playlist;
+    setVolume( var_GetFloat( pPlaylist, "volume" ), false );
 }
 
 
 void Volume::set( float percentage, bool updateVLC )
 {
-    // Avoid looping forever...
-    if( (int)(get() * AOUT_VOLUME_MAX) !=
-        (int)(percentage * AOUT_VOLUME_MAX) )
+    VarPercent::set( percentage );
+    if( updateVLC )
     {
-        VarPercent::set( percentage );
-        if( updateVLC )
-            aout_VolumeSet( getIntf()->p_sys->p_playlist,
-                            (int)(get() * m_volumeMax) );
+        playlist_t* pPlaylist = getIntf()->p_sys->p_playlist;
+        playlist_VolumeSet( pPlaylist, getVolume() );
     }
 }
 
 
-void Volume::set( int val, bool updateVLC )
+void Volume::setVolume( float volume, bool updateVLC )
 {
-    set( (float)val / m_volumeMax, updateVLC );
+    // translate from [0.,AOUT_VOLUME_MAX/AOUT_VOLUME_DEFAULT] into [0.,1.]
+    float percentage = (volume > 0.f ) ?
+                       volume * AOUT_VOLUME_DEFAULT / AOUT_VOLUME_MAX :
+                       0.f;
+    set( percentage, updateVLC );
+}
+
+
+float Volume::getVolume() const
+{
+    // translate from [0.,1.] into [0.,AOUT_VOLUME_MAX/AOUT_VOLUME_DEFAULT]
+    return get() * AOUT_VOLUME_MAX / AOUT_VOLUME_DEFAULT;
 }
 
 
 string Volume::getAsStringPercent() const
 {
-    int value = (int)(m_max * VarPercent::get());
-    // 0 <= value <= 400, so we need 4 chars
+    int value = lround( getVolume() * 100. );
+    // 0 <= value <= 200, so we need 4 chars
     char str[4];
-    snprintf( str, 4, "%d", value );
+    snprintf( str, 4, "%i", value );
     return string(str);
 }
 

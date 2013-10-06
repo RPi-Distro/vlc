@@ -2,7 +2,7 @@
  * media_discoverer.c: libvlc new API media discoverer functions
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: fcfb4b738f8f9a230501047608442a49614ba0f7 $
+ * $Id: b126c95fa346d3e6821dbd647f5bf581ccc1d063 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -129,6 +129,23 @@ static void services_discovery_item_removed( const vlc_event_t * p_event,
 }
 
 /**************************************************************************
+ *       services_discovery_removeall (Private) (VLC event callback)
+ **************************************************************************/
+static void services_discovery_removeall( const vlc_event_t * p_event,
+                                             void * user_data )
+{
+    VLC_UNUSED(p_event);
+    libvlc_media_discoverer_t * p_mdis = user_data;
+
+    libvlc_media_list_lock( p_mdis->p_mlist );
+    for( int i = 0; i < libvlc_media_list_count( p_mdis->p_mlist ); i++ )
+    {
+        _libvlc_media_list_remove_index( p_mdis->p_mlist, i );
+    }
+    libvlc_media_list_unlock( p_mdis->p_mlist );
+}
+
+/**************************************************************************
  *       services_discovery_started (Private) (VLC event callback)
  **************************************************************************/
 
@@ -171,9 +188,11 @@ libvlc_media_discoverer_t *
 libvlc_media_discoverer_new_from_name( libvlc_instance_t * p_inst,
                                        const char * psz_name )
 {
-    libvlc_media_discoverer_t * p_mdis;
+    /* podcast SD is a hack and only works with custom playlist callbacks. */
+    if( !strncasecmp( psz_name, "podcast", 7 ) )
+        return NULL;
 
-    p_mdis = malloc(sizeof(libvlc_media_discoverer_t));
+    libvlc_media_discoverer_t *p_mdis = malloc(sizeof(*p_mdis));
     if( unlikely(!p_mdis) )
     {
         libvlc_printerr( "Not enough memory" );
@@ -226,6 +245,10 @@ libvlc_media_discoverer_new_from_name( libvlc_instance_t * p_inst,
                       vlc_ServicesDiscoveryEnded,
                       services_discovery_ended,
                       p_mdis );
+    vlc_event_attach( services_discovery_EventManager( p_mdis->p_sd ),
+                      vlc_ServicesDiscoveryItemRemoveAll,
+                      services_discovery_removeall,
+                      p_mdis );
 
     /* Here we go */
     if( !vlc_sd_Start( p_mdis->p_sd ) )
@@ -264,6 +287,10 @@ libvlc_media_discoverer_release( libvlc_media_discoverer_t * p_mdis )
     vlc_event_detach( services_discovery_EventManager( p_mdis->p_sd ),
                      vlc_ServicesDiscoveryEnded,
                      services_discovery_ended,
+                     p_mdis );
+    vlc_event_detach( services_discovery_EventManager( p_mdis->p_sd ),
+                     vlc_ServicesDiscoveryItemRemoveAll,
+                     services_discovery_removeall,
                      p_mdis );
 
     libvlc_media_list_release( p_mdis->p_mlist );

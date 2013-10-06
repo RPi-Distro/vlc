@@ -4,7 +4,7 @@
  * VLC specific code:
  *
  * Copyright © 2008,2011,2012 the VideoLAN team
- * $Id: c3bf25f6c05a209908396b19758664901455122f $
+ * $Id: d9dae02e2a4e3a1c50f092b835741271fea3d5ba $
  *
  * Authors: Rafaël Carré <funman@videolanorg>
  *          Felix Paul Kühne <fkuehne@videolan.org
@@ -125,7 +125,7 @@ static int Open( vlc_object_t *p_this )
 
     p_playlist = pl_Get( p_intf );
     var_AddCallback( p_playlist, "item-change", ItemChange, p_intf );
-    var_AddCallback( p_playlist, "item-current", ItemChange, p_intf );
+    var_AddCallback( p_playlist, "activity", ItemChange, p_intf );
 
     [p_sys->o_growl_delegate registerToGrowl];
     return VLC_SUCCESS;
@@ -141,7 +141,7 @@ static void Close( vlc_object_t *p_this )
     intf_sys_t *p_sys = p_intf->p_sys;
 
     var_DelCallback( p_playlist, "item-change", ItemChange, p_intf );
-    var_DelCallback( p_playlist, "item-current", ItemChange, p_intf );
+    var_DelCallback( p_playlist, "activity", ItemChange, p_intf );
 
     [p_sys->o_growl_delegate release];
     free( p_sys );
@@ -162,16 +162,23 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
     char *psz_album         = NULL;
     input_item_t *p_item = newval.p_address;
 
-    bool b_is_item_current = !strcmp( "item-current", psz_var );
+    bool b_is_item_current = !strcmp( "activity", psz_var );
 
     /* Don't update each time an item has been preparsed */
     if( b_is_item_current )
     { /* stores the current input item id */
+        input_thread_t *p_input = playlist_CurrentInput( (playlist_t*)p_this );
+        if( !p_input )
+            return VLC_SUCCESS;
+
+        p_item = input_GetItem( p_input );
         if( p_intf->p_sys->i_id != p_item->i_id )
         {
             p_intf->p_sys->i_id = p_item->i_id;
             p_intf->p_sys->i_item_changes = 0;
         }
+
+        vlc_object_release( p_input );
         return VLC_SUCCESS;
     }
     /* ignore items which weren't pre-parsed yet */

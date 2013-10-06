@@ -2,7 +2,7 @@
  * vlm.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2005 VLC authors and VideoLAN
- * $Id: 4dce5ec2fbf10423ca963e3bcbb05778efc17fc7 $
+ * $Id: 5c781797b580f9f3707540adbbac04c0cdd3817e $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -34,24 +34,13 @@
 
 #include <stdio.h>
 #include <ctype.h>                                              /* tolower() */
+#include <time.h>                                                 /* ctime() */
+#include <limits.h>
 #include <assert.h>
+#include <sys/time.h>                                      /* gettimeofday() */
 
 #include <vlc_vlm.h>
 #include <vlc_modules.h>
-
-#ifndef WIN32
-#   include <sys/time.h>                                   /* gettimeofday() */
-#endif
-
-#ifdef UNDER_CE
-#include <sys/time.h>                                      /* gettimeofday() */
-#endif
-
-#include <time.h>                                                 /* ctime() */
-#if defined (WIN32) && !defined (UNDER_CE)
-#include <sys/timeb.h>                                            /* ftime() */
-#endif
-#include <limits.h>
 
 #include <vlc_input.h>
 #include <vlc_stream.h>
@@ -233,7 +222,7 @@ void vlm_Delete( vlm_t *p_vlm )
     TAB_CLEAN( p_vlm->i_schedule, p_vlm->schedule );
     vlc_mutex_unlock( &p_vlm->lock );
 
-    vlc_object_kill( p_vlm );
+    vlc_cancel( p_vlm->thread );
 
     if( p_vlm->p_vod )
     {
@@ -244,12 +233,6 @@ void vlm_Delete( vlm_t *p_vlm )
     libvlc_priv(p_vlm->p_libvlc)->p_vlm = NULL;
     vlc_mutex_unlock( &vlm_mutex );
 
-    vlc_mutex_lock( &p_vlm->lock_manage );
-    p_vlm->input_state_changed = true;
-    vlc_cond_signal( &p_vlm->wait_manage );
-    vlc_mutex_unlock( &p_vlm->lock_manage );
-
-    /*vlc_cancel( p_vlm->thread ); */
     vlc_join( p_vlm->thread, NULL );
 
     vlc_cond_destroy( &p_vlm->wait_manage );
@@ -276,17 +259,10 @@ int vlm_ExecuteCommand( vlm_t *p_vlm, const char *psz_command,
 
 int64_t vlm_Date(void)
 {
-#if defined (WIN32) && !defined (UNDER_CE)
-    struct timeb tm;
-    ftime( &tm );
-    return ((int64_t)tm.time) * 1000000 + ((int64_t)tm.millitm) * 1000;
-#else
-    struct timeval tv_date;
+    struct timeval tv;
 
-    /* gettimeofday() cannot fail given &tv_date is a valid address */
-    (void)gettimeofday( &tv_date, NULL );
-    return (mtime_t) tv_date.tv_sec * 1000000 + (mtime_t) tv_date.tv_usec;
-#endif
+    (void)gettimeofday( &tv, NULL );
+    return tv.tv_sec * INT64_C(1000000) + tv.tv_usec;
 }
 
 
@@ -418,16 +394,16 @@ static void* Manage( void* p_object )
     mtime_t i_time;
     mtime_t i_nextschedule = 0;
 
-    int canc = vlc_savecancel ();
     i_lastcheck = vlm_Date();
 
-    while( !vlm->b_die )
+    for( ;; )
     {
         char **ppsz_scheduled_commands = NULL;
         int    i_scheduled_commands = 0;
         bool scheduled_command = false;
 
         vlc_mutex_lock( &vlm->lock_manage );
+        mutex_cleanup_push( &vlm->lock_manage );
         while( !vlm->input_state_changed && !scheduled_command )
         {
             if( i_nextschedule )
@@ -436,7 +412,9 @@ static void* Manage( void* p_object )
                 vlc_cond_wait( &vlm->wait_manage, &vlm->lock_manage );
         }
         vlm->input_state_changed = false;
-        vlc_mutex_unlock( &vlm->lock_manage );
+        vlc_cleanup_run( );
+
+        int canc = vlc_savecancel ();
         /* destroy the inputs that wants to die, and launch the next input */
         vlc_mutex_lock( &vlm->lock );
         for( i = 0; i < vlm->i_media; i++ )
@@ -536,10 +514,9 @@ static void* Manage( void* p_object )
 
         i_lastcheck = i_time;
         vlc_mutex_unlock( &vlm->lock );
-
+        vlc_restorecancel (canc);
     }
 
-    vlc_restorecancel (canc);
     return NULL;
 }
 
@@ -628,9 +605,16 @@ static int vlm_OnMediaUpdate( vlm_t *p_vlm, vlm_media_sys_t *p_media )
 
             vlc_gc_decref( p_media->vod.p_item );
 
-            char *psz_uri = make_URI( p_cfg->ppsz_input[0], NULL );
-            p_media->vod.p_item = input_item_New( psz_uri, p_cfg->psz_name );
-            free( psz_uri );
+            if( strstr( p_cfg->ppsz_input[0], "://" ) == NULL )
+            {
+                char *psz_uri = vlc_path2uri( p_cfg->ppsz_input[0], NULL );
+                p_media->vod.p_item = input_item_New( psz_uri,
+                                                      p_cfg->psz_name );
+                free( psz_uri );
+            }
+            else
+                p_media->vod.p_item = input_item_New( p_cfg->ppsz_input[0],
+                                                      p_cfg->psz_name );
 
             if( p_cfg->psz_output )
             {
@@ -911,7 +895,7 @@ static vlm_media_instance_sys_t *vlm_MediaInstanceNew( vlm_t *p_vlm, const char 
     p_instance->b_sout_keep = false;
     p_instance->p_parent = vlc_object_create( p_vlm, sizeof (vlc_object_t) );
     p_instance->p_input = NULL;
-    p_instance->p_input_resource = NULL;
+    p_instance->p_input_resource = input_resource_New( p_instance->p_parent );
 
     return p_instance;
 }
@@ -927,11 +911,8 @@ static void vlm_MediaInstanceDelete( vlm_t *p_vlm, int64_t id, vlm_media_instanc
 
         vlm_SendEventMediaInstanceStopped( p_vlm, id, p_media->cfg.psz_name );
     }
-    if( p_instance->p_input_resource )
-    {
-        input_resource_Terminate( p_instance->p_input_resource );
-        input_resource_Release( p_instance->p_input_resource );
-    }
+    input_resource_Terminate( p_instance->p_input_resource );
+    input_resource_Release( p_instance->p_input_resource );
     vlc_object_release( p_instance->p_parent );
 
     TAB_REMOVE( p_media->i_instance, p_media->instance, p_instance );
@@ -1029,16 +1010,18 @@ static int vlm_ControlMediaInstanceStart( vlm_t *p_vlm, int64_t id, const char *
 
     /* Start new one */
     p_instance->i_index = i_input_index;
-    char *psz_uri = make_URI( p_media->cfg.ppsz_input[p_instance->i_index],
-                              NULL );
-    input_item_SetURI( p_instance->p_item, psz_uri ) ;
-    free( psz_uri );
+    if( strstr( p_media->cfg.ppsz_input[p_instance->i_index], "://" ) == NULL )
+    {
+        char *psz_uri = vlc_path2uri(
+                          p_media->cfg.ppsz_input[p_instance->i_index], NULL );
+        input_item_SetURI( p_instance->p_item, psz_uri ) ;
+        free( psz_uri );
+    }
+    else
+        input_item_SetURI( p_instance->p_item, p_media->cfg.ppsz_input[p_instance->i_index] ) ;
 
     if( asprintf( &psz_log, _("Media: %s"), p_media->cfg.psz_name ) != -1 )
     {
-        if( !p_instance->p_input_resource )
-            p_instance->p_input_resource = input_resource_New( p_instance->p_parent );
-
         p_instance->p_input = input_Create( p_instance->p_parent,
                                             p_instance->p_item, psz_log,
                                             p_instance->p_input_resource );

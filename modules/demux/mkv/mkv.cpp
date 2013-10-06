@@ -1,25 +1,25 @@
 /*****************************************************************************
  * mkv.cpp : matroska demuxer
  *****************************************************************************
- * Copyright (C) 2003-2005, 2008, 2010 the VideoLAN team
- * $Id: d17849b2e9e731b39e266dd97d2626da33d09cbc $
+ * Copyright (C) 2003-2005, 2008, 2010 VLC authors and VideoLAN
+ * $Id: 63984094d4e004a2acf30bb96f93aa39118aad85 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #include "mkv.hpp"
@@ -173,7 +173,7 @@ static int Open( vlc_object_t * p_this )
                     {
                         s_filename = s_path + DIR_SEP_CHAR + psz_file;
 
-#if defined(WIN32) || defined(__OS2__)
+#if defined(_WIN32) || defined(__OS2__)
                         if (!strcasecmp(s_filename.c_str(), p_demux->psz_file))
 #else
                         if (!s_filename.compare(p_demux->psz_file))
@@ -186,10 +186,11 @@ static int Open( vlc_object_t * p_this )
                         if (!s_filename.compare(s_filename.length() - 3, 3, "mkv") ||
                             !s_filename.compare(s_filename.length() - 3, 3, "mka"))
                         {
-                            // test wether this file belongs to our family
+                            // test whether this file belongs to our family
                             const uint8_t *p_peek;
                             bool          file_ok = false;
-                            std::string   s_url = make_URI( s_filename.c_str(), "file" );
+#warning Memory leak!
+                            std::string   s_url = vlc_path2uri( s_filename.c_str(), "file" );
                             stream_t      *p_file_stream = stream_UrlNew(
                                                             p_demux,
                                                             s_url.c_str() );
@@ -300,7 +301,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 return VLC_EGENERIC;
 
             *pi_int = p_sys->stored_attachments.size();
-            *ppp_attach = (input_attachment_t**)malloc( sizeof(input_attachment_t**) *
+            *ppp_attach = (input_attachment_t**)malloc( sizeof(input_attachment_t*) *
                                                         p_sys->stored_attachments.size() );
             if( !(*ppp_attach) )
                 return VLC_ENOMEM;
@@ -353,22 +354,27 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 int *pi_int    = (int*)va_arg( args, int* );
 
                 *pi_int = p_sys->titles.size();
-                *ppp_title = (input_title_t**)malloc( sizeof( input_title_t**) * p_sys->titles.size() );
+                *ppp_title = (input_title_t**)malloc( sizeof( input_title_t* ) * p_sys->titles.size() );
 
                 for( size_t i = 0; i < p_sys->titles.size(); i++ )
-                {
                     (*ppp_title)[i] = vlc_input_title_Duplicate( p_sys->titles[i] );
-                }
                 return VLC_SUCCESS;
             }
             return VLC_EGENERIC;
 
         case DEMUX_SET_TITLE:
-            /* TODO handle editions as titles */
+            /* handle editions as titles */
             i_idx = (int)va_arg( args, int );
-            if( i_idx < p_sys->used_segments.size() )
+            if(i_idx <  p_sys->titles.size() && p_sys->titles[i_idx]->i_seekpoint)
             {
-                p_sys->JumpTo( *p_sys->used_segments[i_idx], NULL );
+                p_sys->p_current_segment->i_current_edition = i_idx;
+                p_sys->i_current_title = i_idx;
+                p_sys->p_current_segment->p_current_chapter = p_sys->p_current_segment->editions[p_sys->p_current_segment->i_current_edition]->getChapterbyTimecode(0);
+
+                Seek( p_demux, (int64_t)p_sys->titles[i_idx]->seekpoint[0]->i_time_offset, -1, NULL);
+                p_demux->info.i_update |= INPUT_UPDATE_SEEKPOINT;
+                p_demux->info.i_seekpoint = 0;
+                p_sys->f_duration = (float) p_sys->titles[i_idx]->i_length / 1000.f;
                 return VLC_SUCCESS;
             }
             return VLC_EGENERIC;
@@ -380,7 +386,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             if( p_sys->titles.size() && i_skp < p_sys->titles[p_sys->i_current_title]->i_seekpoint)
             {
                 Seek( p_demux, (int64_t)p_sys->titles[p_sys->i_current_title]->seekpoint[i_skp]->i_time_offset, -1, NULL);
-                p_demux->info.i_seekpoint |= INPUT_UPDATE_SEEKPOINT;
+                p_demux->info.i_update |= INPUT_UPDATE_SEEKPOINT;
                 p_demux->info.i_seekpoint = i_skp;
                 return VLC_SUCCESS;
             }
@@ -470,20 +476,6 @@ static void Seek( demux_t *p_demux, mtime_t i_date, double f_percent, virtual_ch
     p_vsegment->Seek( *p_demux, i_date, i_time_offset, p_chapter, i_global_position );
 }
 
-/* Utility function for BlockDecode */
-static block_t *MemToBlock( uint8_t *p_mem, size_t i_mem, size_t offset)
-{
-    if( unlikely( i_mem > SIZE_MAX - offset ) )
-        return NULL;
-
-    block_t *p_block = block_New( p_demux, i_mem + offset );
-    if( likely(p_block != NULL) )
-    {
-        memcpy( p_block->p_buffer + offset, p_mem, i_mem );
-    }
-    return p_block;
-}
-
 /* Needed by matroska_segment::Seek() and Seek */
 void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock,
                          mtime_t i_pts, mtime_t i_duration, bool f_mandatory )
@@ -520,6 +512,8 @@ void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock
         if( !b )
         {
             tk->b_inited = false;
+            if( tk->fmt.i_cat == VIDEO_ES || tk->fmt.i_cat == AUDIO_ES )
+                tk->i_last_dts = i_pts;
             return;
         }
     }
@@ -569,8 +563,12 @@ void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock
             break;
         }
 
-        if( tk->i_compression_type == MATROSKA_COMPRESSION_HEADER && tk->p_compression_data != NULL )
+        if( tk->i_compression_type == MATROSKA_COMPRESSION_HEADER &&
+            tk->p_compression_data != NULL &&
+            tk->i_encoding_scope & MATROSKA_ENCODING_SCOPE_ALL_FRAMES )
             p_block = MemToBlock( data->Buffer(), data->Size(), tk->p_compression_data->GetSize() );
+        else if( unlikely( tk->fmt.i_codec == VLC_CODEC_WAVPACK ) )
+            p_block = packetize_wavpack(tk, data->Buffer(), data->Size());
         else
             p_block = MemToBlock( data->Buffer(), data->Size(), 0 );
 
@@ -580,7 +578,8 @@ void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock
         }
 
 #if defined(HAVE_ZLIB_H)
-        if( tk->i_compression_type == MATROSKA_COMPRESSION_ZLIB )
+        if( tk->i_compression_type == MATROSKA_COMPRESSION_ZLIB &&
+            tk->i_encoding_scope & MATROSKA_ENCODING_SCOPE_ALL_FRAMES )
         {
             p_block = block_zlib_decompress( VLC_OBJECT(p_demux), p_block );
             if( p_block == NULL )
@@ -588,9 +587,21 @@ void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock
         }
         else
 #endif
-        if( tk->i_compression_type == MATROSKA_COMPRESSION_HEADER )
+        if( tk->i_compression_type == MATROSKA_COMPRESSION_HEADER &&
+            tk->i_encoding_scope & MATROSKA_ENCODING_SCOPE_ALL_FRAMES )
         {
             memcpy( p_block->p_buffer, tk->p_compression_data->GetBuffer(), tk->p_compression_data->GetSize() );
+        }
+
+        if( tk->fmt.i_codec == VLC_CODEC_COOK ||
+            tk->fmt.i_codec == VLC_CODEC_ATRAC3 )
+        {
+            handle_real_audio(p_demux, tk, p_block, i_pts);
+            block_Release(p_block);
+            i_pts = ( tk->i_default_duration )?
+                i_pts + ( mtime_t )( tk->i_default_duration / 1000 ):
+                VLC_TS_INVALID;
+            continue;
         }
 
         if ( tk->fmt.i_cat == NAV_ES )
@@ -626,14 +637,15 @@ void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock
                     p_block->i_dts = min( i_pts, tk->i_last_dts + ( mtime_t )( tk->i_default_duration / 1000 ) );
             }
         }
-        tk->i_last_dts = p_block->i_dts;
+        if( tk->fmt.i_cat == VIDEO_ES || tk->fmt.i_cat == AUDIO_ES )
+            tk->i_last_dts = p_block->i_dts;
 
 #if 0
 msg_Dbg( p_demux, "block i_dts: %"PRId64" / i_pts: %"PRId64, p_block->i_dts, p_block->i_pts);
 #endif
         if( strcmp( tk->psz_codec, "S_VOBSUB" ) )
         {
-            p_block->i_length = i_duration * 1000;
+            p_block->i_length = i_duration * tk-> f_timecodescale * (double) p_segment->i_timescale / 1000.0;
         }
 
         /* FIXME remove when VLC_TS_INVALID work is done */
@@ -664,15 +676,16 @@ static int Demux( demux_t *p_demux)
 
     virtual_segment_c  *p_vsegment = p_sys->p_current_segment;
     matroska_segment_c *p_segment = p_vsegment->CurrentSegment();
-    if ( p_segment == NULL ) return 0;
+    if ( p_segment == NULL )
+    {
+        vlc_mutex_unlock( &p_sys->lock_demuxer );
+        return 0;
+    }
     int                i_block_count = 0;
     int                i_return = 0;
 
     for( ;; )
     {
-        if ( p_sys->demuxer.b_die )
-            break;
-
         if( p_sys->i_pts >= p_sys->i_start_pts  )
             if ( p_vsegment->UpdateCurrentToChapter( *p_demux ) )
             {
@@ -717,15 +730,20 @@ static int Demux( demux_t *p_demux)
         }
 
         if( simpleblock != NULL )
-            p_sys->i_pts = p_sys->i_chapter_time + ( simpleblock->GlobalTimecode() / (mtime_t) 1000 );
+            p_sys->i_pts = p_sys->i_chapter_time + ( (mtime_t)simpleblock->GlobalTimecode() / INT64_C(1000) );
         else
-            p_sys->i_pts = p_sys->i_chapter_time + ( block->GlobalTimecode() / (mtime_t) 1000 );
+            p_sys->i_pts = p_sys->i_chapter_time + ( (mtime_t)block->GlobalTimecode() / INT64_C(1000) );
 
-        /* The blocks are in coding order so we can safely consider that only references are in chronological order */
-        if( p_sys->i_pts > p_sys->i_pcr + 300000 )
+        mtime_t i_pcr = VLC_TS_INVALID;
+        for( size_t i = 0; i < p_segment->tracks.size(); i++)
+            if( p_segment->tracks[i]->i_last_dts > VLC_TS_INVALID &&
+                ( p_segment->tracks[i]->i_last_dts < i_pcr || i_pcr == VLC_TS_INVALID ))
+                i_pcr = p_segment->tracks[i]->i_last_dts;
+
+        if( i_pcr > p_sys->i_pcr + 300000 )
         {
             es_out_Control( p_demux->out, ES_OUT_SET_PCR, VLC_TS_0 + p_sys->i_pcr );
-            p_sys->i_pcr = p_sys->i_pts;
+            p_sys->i_pcr = i_pcr;
         }
 
         if( p_sys->i_pts >= p_sys->i_start_pts  )

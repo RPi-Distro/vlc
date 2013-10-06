@@ -3,7 +3,7 @@
 
 basedir = services_discovery
 dir = services_discovery
-mods = bonjour mediadirs mtp podcast sap upnp
+mods = bonjour mediadirs mtp podcast upnp
 libvlc_LTLIBRARIES =  $(LTLIBbonjour) $(LTLIBmtp) $(LTLIBupnp)
 EXTRA_LTLIBRARIES =  libbonjour_plugin.la libmtp_plugin.la libupnp_plugin.la
 
@@ -17,10 +17,9 @@ libbonjour_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_bonjour)
 libbonjour_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_bonjour)
 libbonjour_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_bonjour)
 libbonjour_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_bonjour)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libbonjour_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_bonjour)
 libbonjour_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_bonjour)
-libbonjour_plugin_la_DEPENDENCIES =
 
 # The mediadirs plugin
 libmediadirs_plugin_la_SOURCES = $(SOURCES_mediadirs)
@@ -30,10 +29,9 @@ libmediadirs_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mediadirs)
 libmediadirs_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mediadirs)
 libmediadirs_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mediadirs)
 libmediadirs_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mediadirs)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libmediadirs_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mediadirs)
 libmediadirs_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mediadirs)
-libmediadirs_plugin_la_DEPENDENCIES =
 
 # The mtp plugin
 libmtp_plugin_la_SOURCES = $(SOURCES_mtp)
@@ -43,10 +41,9 @@ libmtp_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mtp)
 libmtp_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mtp)
 libmtp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mtp)
 libmtp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mtp)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libmtp_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mtp)
 libmtp_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mtp)
-libmtp_plugin_la_DEPENDENCIES =
 
 # The podcast plugin
 libpodcast_plugin_la_SOURCES = $(SOURCES_podcast)
@@ -56,23 +53,9 @@ libpodcast_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_podcast)
 libpodcast_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_podcast)
 libpodcast_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_podcast)
 libpodcast_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_podcast)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libpodcast_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_podcast)
 libpodcast_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_podcast)
-libpodcast_plugin_la_DEPENDENCIES =
-
-# The sap plugin
-libsap_plugin_la_SOURCES = $(SOURCES_sap)
-nodist_libsap_plugin_la_SOURCES = $(nodist_SOURCES_sap)
-# Force per-target objects:
-libsap_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_sap)
-libsap_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_sap)
-libsap_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_sap)
-libsap_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_sap)
-# Set LIBADD and DEPENDENCIES manually:
-libsap_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_sap)
-libsap_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_sap)
-libsap_plugin_la_DEPENDENCIES =
 
 # The upnp plugin
 libupnp_plugin_la_SOURCES = $(SOURCES_upnp)
@@ -82,8 +65,7 @@ libupnp_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_upnp)
 libupnp_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_upnp)
 libupnp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_upnp)
 libupnp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_upnp)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libupnp_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_upnp)
 libupnp_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_upnp)
-libupnp_plugin_la_DEPENDENCIES =
 

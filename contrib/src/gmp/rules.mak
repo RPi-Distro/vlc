@@ -13,10 +13,13 @@ $(TARBALLS)/gmp-$(GMP_VERSION).tar.bz2:
 
 gmp: gmp-$(GMP_VERSION).tar.bz2 .sum-gmp
 	$(UNPACK)
-	$(UPDATE_AUTOCONFIG)
+	$(APPLY) $(SRC)/gmp/inline.diff
+	$(APPLY) $(SRC)/gmp/ansitest.diff
+	$(APPLY) $(SRC)/gmp/ansi2knr.diff
 	$(MOVE)
 
 .gmp: gmp
+	$(RECONF)
 	cd $< && $(HOSTVARS) ./configure $(HOSTCONF)
 	cd $< && $(MAKE) install
 	touch $@

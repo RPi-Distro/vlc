@@ -1,25 +1,25 @@
 /*****************************************************************************
  * gradient.c : Gradient and edge detection video effects plugin for vlc
  *****************************************************************************
- * Copyright (C) 2000-2008 the VideoLAN team
- * $Id: 77b4387a16b1e40707df32db63a70dc945d73761 $
+ * Copyright (C) 2000-2008 VLC authors and VideoLAN
+ * $Id: 0c3d5158372eaa04d85b6c4204eb8aac65fb2ba9 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -87,7 +87,7 @@ vlc_module_begin ()
 
     add_string( FILTER_PREFIX "mode", "gradient",
                 MODE_TEXT, MODE_LONGTEXT, false )
-        change_string_list( mode_list, mode_list_text, 0 )
+        change_string_list( mode_list, mode_list_text )
 
     add_integer_with_range( FILTER_PREFIX "type", 0, 0, 1,
                 GRADIENT_TEXT, GRADIENT_LONGTEXT, false )
@@ -365,9 +365,9 @@ static void FilterGradient( filter_t *p_filter, picture_t *p_inpic,
     }
     else
     {
-        vlc_memset( p_outpic->p[U_PLANE].p_pixels, 0x80,
+        memset( p_outpic->p[U_PLANE].p_pixels, 0x80,
             p_outpic->p[U_PLANE].i_lines * p_outpic->p[U_PLANE].i_pitch );
-        vlc_memset( p_outpic->p[V_PLANE].p_pixels, 0x80,
+        memset( p_outpic->p[V_PLANE].p_pixels, 0x80,
             p_outpic->p[V_PLANE].i_lines * p_outpic->p[V_PLANE].i_pitch );
     }
 
@@ -505,11 +505,11 @@ static void FilterEdge( filter_t *p_filter, picture_t *p_inpic,
     }
     else
     {
-        vlc_memset( p_outpic->p[Y_PLANE].p_pixels, 0xff,
+        memset( p_outpic->p[Y_PLANE].p_pixels, 0xff,
               p_outpic->p[Y_PLANE].i_lines * p_outpic->p[Y_PLANE].i_pitch );
-        vlc_memset( p_outpic->p[U_PLANE].p_pixels, 0x80,
+        memset( p_outpic->p[U_PLANE].p_pixels, 0x80,
             p_outpic->p[U_PLANE].i_lines * p_outpic->p[U_PLANE].i_pitch );
-        vlc_memset( p_outpic->p[V_PLANE].p_pixels, 0x80,
+        memset( p_outpic->p[V_PLANE].p_pixels, 0x80,
             p_outpic->p[V_PLANE].i_lines * p_outpic->p[V_PLANE].i_pitch );
     }
 
@@ -677,7 +677,7 @@ static void FilterHough( filter_t *p_filter, picture_t *p_inpic,
         msg_Dbg(p_filter, "Precalculation done");
     }
 
-    vlc_memset( p_hough, 0, i_diag * i_nb_steps * sizeof(int) );
+    memset( p_hough, 0, i_diag * i_nb_steps * sizeof(int) );
 
     plane_CopyPixels( &p_outpic->p[Y_PLANE], &p_inpic->p[Y_PLANE] );
     plane_CopyPixels( &p_outpic->p[U_PLANE], &p_inpic->p[U_PLANE] );

@@ -12,7 +12,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -30,7 +30,7 @@
 
 #include <xcb/xcb.h>
 #include <vlc_common.h>
-#include "xcb_vlc.h"
+#include "events.h"
 
 #ifdef HAVE_XCB_KEYSYMS
 #include <xcb/xcb_keysyms.h>
@@ -53,7 +53,8 @@ struct key_handler_t
  * @param conn XCB connection to the X server (to fetch key mappings)
  * @return NULL on error, or a key handling context.
  */
-key_handler_t *CreateKeyHandler (vlc_object_t *obj, xcb_connection_t *conn)
+key_handler_t *XCB_keyHandler_Create (vlc_object_t *obj,
+                                      xcb_connection_t *conn)
 {
     key_handler_t *ctx = malloc (sizeof (*ctx));
     if (!ctx)
@@ -64,7 +65,7 @@ key_handler_t *CreateKeyHandler (vlc_object_t *obj, xcb_connection_t *conn)
     return ctx;
 }
 
-void DestroyKeyHandler (key_handler_t *ctx)
+void XCB_keyHandler_Destroy (key_handler_t *ctx)
 {
     xcb_key_symbols_free (ctx->syms);
     free (ctx);
@@ -136,7 +137,7 @@ static uint_fast32_t ConvertKeySym (xcb_keysym_t sym)
  * @param ev XCB event to process
  * @return 0 if the event was handled and free()'d, non-zero otherwise
  */
-int ProcessKeyEvent (key_handler_t *ctx, xcb_generic_event_t *ev)
+int XCB_keyHandler_Process (key_handler_t *ctx, xcb_generic_event_t *ev)
 {
     assert (ctx);
 
@@ -148,7 +149,8 @@ int ProcessKeyEvent (key_handler_t *ctx, xcb_generic_event_t *ev)
             xcb_keysym_t sym = xcb_key_press_lookup_keysym (ctx->syms, e, 0);
             uint_fast32_t vk = ConvertKeySym (sym);
 
-            msg_Dbg (ctx->obj, "key: 0x%08"PRIxFAST32, vk);
+            msg_Dbg (ctx->obj, "key: 0x%08"PRIxFAST32" (X11: 0x%04"PRIx32")",
+                     vk, sym);
             if (vk == KEY_UNSET)
                 break;
             if (e->state & XCB_MOD_MASK_SHIFT)
@@ -184,20 +186,21 @@ int ProcessKeyEvent (key_handler_t *ctx, xcb_generic_event_t *ev)
 
 #else /* HAVE_XCB_KEYSYMS */
 
-key_handler_t *CreateKeyHandler (vlc_object_t *obj, xcb_connection_t *conn)
+key_handler_t *XCB_keyHandler_Create (vlc_object_t *obj,
+                                      xcb_connection_t *conn)
 {
     msg_Err (obj, "X11 key press support not compiled-in");
     (void) conn;
     return NULL;
 }
 
-void DestroyKeyHandler (key_handler_t *ctx)
+void XCB_keyHandler_Destroy (key_handler_t *ctx)
 {
     (void) ctx;
     abort ();
 }
 
-int ProcessKeyEvent (key_handler_t *ctx, xcb_generic_event_t *ev)
+int XCB_keyHandler_Process (key_handler_t *ctx, xcb_generic_event_t *ev)
 {
     (void) ctx;
     (void) ev;

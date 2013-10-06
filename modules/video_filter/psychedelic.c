@@ -1,25 +1,25 @@
 /*****************************************************************************
- * Psychedelic.c : Psychedelic video effect plugin for vlc
+ * psychedelic.c : Psychedelic video effect plugin for vlc
  *****************************************************************************
- * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 6a8510c3c116fbada50e7968ca80b270888b0a6f $
+ * Copyright (C) 2000-2006 VLC authors and VideoLAN
+ * $Id: fa7cce4bfbd815f6aaed38860c7f10b30d3f4fe9 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -164,10 +164,10 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     v = p_filter->p_sys->v;
     for( y = 0; y<p_outpic->p[U_PLANE].i_lines; y++)
     {
-        vlc_memset(
+        memset(
                 p_outpic->p[U_PLANE].p_pixels+y*p_outpic->p[U_PLANE].i_pitch,
                 u, p_outpic->p[U_PLANE].i_pitch );
-        vlc_memset(
+        memset(
                 p_outpic->p[V_PLANE].p_pixels+y*p_outpic->p[V_PLANE].i_pitch,
                 v, p_outpic->p[V_PLANE].i_pitch );
         if( v == 0 && u != 0 )

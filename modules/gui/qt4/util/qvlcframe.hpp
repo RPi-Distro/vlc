@@ -2,7 +2,7 @@
  * qvlcframe.hpp : A few helpers
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 832a5bdcfb34e76ae75713e531e8b3d46c6fc0ac $
+ * $Id: 2747a4a332b6d98ccdc9721cdfd5c7ae8ab27ecc $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -113,14 +113,14 @@ public:
 protected:
     intf_thread_t *p_intf;
 
-    void readSettings( const QString& name,
+    void restoreWidgetPosition( const QString& name,
                        QSize defSize = QSize( 1, 1 ),
                        QPoint defPos = QPoint( 0, 0 ) )
     {
         QVLCTools::restoreWidgetPosition(p_intf, name, this, defSize, defPos);
     }
 
-    void writeSettings( const QString& name )
+    void saveWidgetPosition( const QString& name )
     {
         QVLCTools::saveWidgetPosition( p_intf, name, this);
     }

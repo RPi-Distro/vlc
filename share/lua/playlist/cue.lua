@@ -25,16 +25,21 @@ function probe()
 		return false
 	end
 	header = vlc.peek( 2048 )
-	return string.match( header, "FILE.*WAVE%s[\r\n]+" ) or
-	       string.match( header, "FILE.*AIFF%s[\r\n]+" ) or
-	       string.match( header, "FILE.*MP3%s[\r\n]+" ) or
-	       string.match( header, "FILE.*WAVE%s*[\n]+" ) or
-	       string.match( header, "FILE.*AIFF%s*[\n]+" ) or
-	       string.match( header, "FILE.*MP3%s*[\n]+" )
+	return string.match( header, "FILE.*WAVE%s*[\r\n]+" ) or
+	       string.match( header, "FILE.*AIFF%s*[\r\n]+" ) or
+	       string.match( header, "FILE.*MP3%s*[\r\n]+" )
 end
 
 -- Helpers
+function is_utf8( src )
+    return vlc.strings.from_charset( "UTF-8", src ) == src
+end
+
 function cue_string( src )
+	if not is_utf8( src ) then
+		-- Convert to UTF-8 since it's probably Latin1
+		src = vlc.strings.from_charset( "ISO_8859-1", src )
+	end
 	local sub = string.match( src, "^\"(.*)\".*$" );
 	if( sub ) then
 		return sub

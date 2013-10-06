@@ -1046,5 +1046,4 @@ extern const GUID MEDIASUBTYPE_MPEG2_TRANSPORT;
 extern const GUID MEDIASUBTYPE_None;
 extern const GUID FORMAT_None;
 
-
 };

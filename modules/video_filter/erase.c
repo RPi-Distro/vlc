@@ -1,24 +1,24 @@
 /*****************************************************************************
  * erase.c : logo erase video filter
  *****************************************************************************
- * Copyright (C) 2007 the VideoLAN team
- * $Id: 4bcb02090cfeb886502dc110e1832f1f1cac0cbe $
+ * Copyright (C) 2007 VLC authors and VideoLAN
+ * $Id: 21074f8646067cd426541be2144afe0f17756976 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -105,7 +105,7 @@ static void LoadMask( filter_t *p_filter, const char *psz_filename )
     memset( &fmt_out, 0, sizeof( video_format_t ) );
     fmt_out.i_chroma = VLC_CODEC_YUVA;
     p_image = image_HandlerCreate( p_filter );
-    char *psz_url = make_URI( psz_filename, NULL );
+    char *psz_url = vlc_path2uri( psz_filename, NULL );
     p_filter->p_sys->p_mask =
         image_ReadUrl( p_image, psz_url, &fmt_in, &fmt_out );
     free( psz_url );

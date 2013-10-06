@@ -4,7 +4,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 06c16c9b7679f2196d0146df2d63d79d50bfd23b $
+ * $Id: 9c39a3bddd0f3a7b436e9a90f1e2b990c6e945b9 $
  */
 
 #ifndef _AtmoDefs_h_
@@ -52,7 +52,7 @@
 #define ATMO_MAX(X, Y)  ((X) > (Y) ? (X) : (Y))
 
 
-#if !defined(WIN32)
+#if !defined(_WIN32)
 
 #define INVALID_HANDLE_VALUE -1
 typedef int HANDLE;

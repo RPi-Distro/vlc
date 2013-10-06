@@ -59,12 +59,11 @@ httpd_file_sys_t *httpd_FileDelete (httpd_file_t *file)
 httpd_file_t *httpd_FileNew (httpd_host_t *host,
                              const char *url, const char *content_type,
                              const char *login, const char *password,
-                             const vlc_acl_t *acl,
                              httpd_file_callback_t cb, httpd_file_sys_t *data)
 {
     (void) host;
     (void) url; (void) content_type;
-    (void) login; (void) password; (void) acl;
+    (void) login; (void) password;
     (void) cb; (void) data;
     assert (0);
 }
@@ -77,12 +76,11 @@ httpd_handler_sys_t *httpd_HandlerDelete (httpd_handler_t *handler)
 
 httpd_handler_t *httpd_HandlerNew (httpd_host_t *host, const char *url,
                                    const char *login, const char *password,
-                                   const vlc_acl_t *acl,
                                    httpd_handler_callback_t cb,
                                    httpd_handler_sys_t *data)
 {
     (void) host; (void) url;
-    (void) login; (void) password; (void) acl;
+    (void) login; (void) password;
     (void) cb; (void) data;
     assert (0);
 }
@@ -156,11 +154,10 @@ int httpd_StreamHeader (httpd_stream_t *stream, uint8_t *data, int count)
 
 httpd_stream_t *httpd_StreamNew (httpd_host_t *host,
                                  const char *url, const char *content_type,
-                                 const char *login, const char *password,
-                                 const vlc_acl_t *acl)
+                                 const char *login, const char *password)
 {
     (void) host; (void) url; (void) content_type;
-    (void) login; (void) password; (void) acl;
+    (void) login; (void) password;
     assert (0);
 }
 
@@ -184,18 +181,9 @@ void httpd_UrlDelete (httpd_url_t *url)
 }
 
 httpd_url_t *httpd_UrlNew (httpd_host_t *host, const char *url,
-                           const char *login, const char *password,
-                           const vlc_acl_t *acl)
+                           const char *login, const char *password)
 {
-    (void) host; (void) url; (void) login; (void) password; (void) acl;
-    assert (0);
-}
-
-httpd_url_t *httpd_UrlNewUnique (httpd_host_t *host, const char *url,
-                                 const char *login, const char *password,
-                                 const vlc_acl_t *acl)
-{
-    (void) host; (void) url; (void) login; (void) password; (void) acl;
+    (void) host; (void) url; (void) login; (void) password;
     assert (0);
 }
 #endif /* !ENABLE_HTTPD */
@@ -380,95 +368,3 @@ vlm_t *vlm_New (vlc_object_t *obj)
      return NULL;
 }
 #endif /* !ENABLE_VLM */
-
-#ifndef MEDIA_LIBRARY
-#include<vlc_media_library.h>
-
-#undef ml_Get
-media_library_t* ml_Get ( vlc_object_t* p_this )
-{
-    VLC_UNUSED( p_this );
-    return NULL;
-}
-
-media_library_t* ml_Create ( vlc_object_t *p_this, char* psz_name )
-{
-    VLC_UNUSED( p_this );
-    VLC_UNUSED( psz_name );
-    return NULL;
-}
-
-void ml_Destroy( vlc_object_t * p_this )
-{
-    VLC_UNUSED( p_this );
-    assert( 0 );
-}
-
-ml_media_t* media_New( media_library_t* p_ml, int id, ml_select_e select, bool reload )
-{
-    VLC_UNUSED( p_ml );
-    VLC_UNUSED( id );
-    VLC_UNUSED( select );
-    VLC_UNUSED( reload );
-    assert( 0 );
-    return NULL;
-}
-
-#undef ml_UpdateSimple
-int ml_UpdateSimple( media_library_t *p_media_library, ml_select_e selected_type,
-                                     const char* psz_lvalue, int id, ... )
-{
-    VLC_UNUSED( p_media_library );
-    VLC_UNUSED( selected_type );
-    VLC_UNUSED( psz_lvalue );
-    VLC_UNUSED( id );
-    assert( 0 );
-    return 0;
-}
-
-ml_ftree_t* ml_OpConnectChilds( ml_op_e op, ml_ftree_t* left, ml_ftree_t* right )
-{
-    VLC_UNUSED( op );
-    VLC_UNUSED( left );
-    VLC_UNUSED( right );
-    assert( 0 );
-    return NULL;
-}
-
-ml_ftree_t* ml_FtreeSpec( ml_ftree_t* tree, ml_select_e crit, int limit,
-                                          char* sort )
-{
-    VLC_UNUSED( tree );
-    VLC_UNUSED( crit );
-    VLC_UNUSED( limit );
-    VLC_UNUSED( sort );
-    assert( 0 );
-    return NULL;
-}
-
-void ml_PlaySmartPlaylistBasedOn( media_library_t* p_ml,
-                                                ml_ftree_t* p_tree )
-{
-    VLC_UNUSED( p_ml );
-    VLC_UNUSED( p_tree );
-    assert( 0 );
-}
-
-void ml_DeletePersonTypeFromMedia( ml_media_t* p_media, const char *psz_role )
-{
-    VLC_UNUSED( p_media );
-    VLC_UNUSED( psz_role );
-    assert( 0 );
-}
-
-ml_person_t*  ml_GetPersonsFromMedia( media_library_t* p_ml,
-                                                    ml_media_t* p_media,
-                                                    const char *psz_role )
-{
-    VLC_UNUSED( p_ml );
-    VLC_UNUSED( p_media );
-    VLC_UNUSED( psz_role );
-    assert( 0 );
-    return NULL;
-}
-#endif /* !MEDIA_LIBRARY */

@@ -1,8 +1,8 @@
 /*****************************************************************************
- * Controller_widget.cpp : Controller Widget for the controllers
+ * controller_widget.cpp : Controller Widget for the controllers
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 5b5e62bf5631b94da26aaa11c53c075501892192 $
+ * $Id: 1b3f4782dc3620531ee6eb25ea43ef782047a372 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -31,7 +31,7 @@
 #include "input_manager.hpp"         /* Get notification of Volume Change */
 #include "util/input_slider.hpp"     /* SoundSlider */
 
-#include <vlc_aout_intf.h>           /* Volume functions */
+#include <math.h>
 
 #include <QLabel>
 #include <QHBoxLayout>
@@ -88,9 +88,9 @@ SoundWidget::SoundWidget( QWidget *_parent, intf_thread_t * _p_intf,
     if( b_shiny )
     {
         volumeSlider = new SoundSlider( this,
-            config_GetInt( p_intf, "volume-step" ),
-            false,
-            var_InheritString( p_intf, "qt-slider-colours" ) );
+            config_GetFloat( p_intf, "volume-step" ),
+            var_InheritString( p_intf, "qt-slider-colours" ),
+            var_InheritInteger( p_intf, "qt-max-volume") );
     }
     else
     {
@@ -108,16 +108,18 @@ SoundWidget::SoundWidget( QWidget *_parent, intf_thread_t * _p_intf,
         layout->addWidget( volumeSlider, 0, Qt::AlignBottom  );
 
     /* Set the volume from the config */
-    libUpdateVolume();
-    /* Force the update at build time in order to have a muted icon if needed */
-    updateMuteStatus();
+    float volume = playlist_VolumeGet( THEPL );
+    libUpdateVolume( (volume >= 0.f) ? volume : 1.f );
+    /* Sync mute status */
+    if( playlist_MuteGet( THEPL ) > 0 )
+        updateMuteStatus( true );
 
     /* Volume control connection */
     volumeSlider->setTracking( true );
     CONNECT( volumeSlider, valueChanged( int ), this, valueChangedFilter( int ) );
     CONNECT( this, valueReallyChanged( int ), this, userUpdateVolume( int ) );
-    CONNECT( THEMIM, volumeChanged( void ), this, libUpdateVolume( void ) );
-    CONNECT( THEMIM, soundMuteChanged( void ), this, updateMuteStatus( void ) );
+    CONNECT( THEMIM, volumeChanged( float ), this, libUpdateVolume( float ) );
+    CONNECT( THEMIM, soundMuteChanged( bool ), this, updateMuteStatus( bool ) );
 }
 
 SoundWidget::~SoundWidget()
@@ -150,23 +152,15 @@ void SoundWidget::userUpdateVolume( int i_sliderVolume )
 {
     /* Only if volume is set by user action on slider */
     setMuted( false );
-    playlist_t *p_playlist = pl_Get( p_intf );
-    int i_res = i_sliderVolume * (AOUT_VOLUME_DEFAULT * 2) / VOLUME_MAX;
-    aout_VolumeSet( p_playlist, i_res );
+    playlist_VolumeSet( THEPL, i_sliderVolume / 100.f );
     refreshLabels();
 }
 
 /* libvlc changed value event slot */
-void SoundWidget::libUpdateVolume()
+void SoundWidget::libUpdateVolume( float volume )
 {
-    /* Audio part */
-    audio_volume_t i_volume;
-    playlist_t *p_playlist = pl_Get( p_intf );
-
-    i_volume = aout_VolumeGet( p_playlist );
-    i_volume = (i_volume * VOLUME_MAX ) / (AOUT_VOLUME_DEFAULT * 2);
-
-    if ( i_volume - volumeSlider->value() != 0 )
+    long i_volume = lroundf(volume * 100.f);
+    if( i_volume != volumeSlider->value()  )
     {
         b_ignore_valuechanged = true;
         volumeSlider->setValue( i_volume );
@@ -182,14 +176,13 @@ void SoundWidget::valueChangedFilter( int i_val )
 }
 
 /* libvlc mute/unmute event slot */
-void SoundWidget::updateMuteStatus()
+void SoundWidget::updateMuteStatus( bool mute )
 {
-    playlist_t *p_playlist = pl_Get( p_intf );
-    b_is_muted = aout_IsMuted( VLC_OBJECT(p_playlist) );
+    b_is_muted = mute;
 
     SoundSlider *soundSlider = qobject_cast<SoundSlider *>(volumeSlider);
     if( soundSlider )
-        soundSlider->setMuted( b_is_muted );
+        soundSlider->setMuted( mute );
     refreshLabels();
 }
 
@@ -204,7 +197,7 @@ void SoundWidget::setMuted( bool mute )
 {
     b_is_muted = mute;
     playlist_t *p_playlist = pl_Get( p_intf );
-    aout_SetMute( VLC_OBJECT(p_playlist), NULL, mute );
+    playlist_MuteSet( p_playlist, mute );
 }
 
 bool SoundWidget::eventFilter( QObject *obj, QEvent *e )
@@ -213,7 +206,7 @@ bool SoundWidget::eventFilter( QObject *obj, QEvent *e )
     if( e->type() == QEvent::MouseButtonPress )
     {
         QMouseEvent *event = static_cast<QMouseEvent*>(e);
-        if( event->button() != Qt::RightButton )
+        if( event->button() == Qt::LeftButton )
         {
             if( volumeSlider->orientation() ==  Qt::Vertical )
             {
@@ -298,7 +291,8 @@ void AspectRatioComboBox::updateAspectRatio( int x )
     if( p_vout && x >= 0 )
     {
         var_SetString( p_vout, "aspect-ratio", qtu( itemData(x).toString() ) );
-        vlc_object_release( p_vout );
     }
+    if( p_vout )
+        vlc_object_release( p_vout );
 }
 

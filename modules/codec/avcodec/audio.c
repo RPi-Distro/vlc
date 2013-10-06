@@ -1,25 +1,25 @@
 /*****************************************************************************
- * audio.c: audio decoder using ffmpeg library
+ * audio.c: audio decoder using libavcodec library
  *****************************************************************************
- * Copyright (C) 1999-2003 the VideoLAN team
- * $Id: a60b45fe469490c5e301534fb0c3ec853fffda07 $
+ * Copyright (C) 1999-2003 VLC authors and VideoLAN
+ * $Id: 571bf5d5dbb59c5e1ba175ed5b97a3993b7937f6 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -36,17 +36,10 @@
 #include <vlc_codec.h>
 #include <vlc_avcodec.h>
 
-/* ffmpeg header */
+#include <libavcodec/avcodec.h>
 #include <libavutil/mem.h>
-#ifdef HAVE_LIBAVCODEC_AVCODEC_H
-#   include <libavcodec/avcodec.h>
-#else
-#   include <avcodec.h>
-#endif
 
-#if LIBAVUTIL_VERSION_INT >= ((50<<16)+(38<<8)+0)
-# include "libavutil/audioconvert.h"
-#endif
+#include <libavutil/audioconvert.h>
 
 #include "avcodec.h"
 
@@ -56,10 +49,6 @@
 struct decoder_sys_t
 {
     AVCODEC_COMMON_MEMBERS
-
-    /* Temporary buffer for libavcodec */
-    int     i_output_max;
-    uint8_t *p_output;
 
     /*
      * Output properties
@@ -77,60 +66,21 @@ struct decoder_sys_t
     int64_t i_previous_layout;
 };
 
-/**
- * Interleaves audio samples within a block of samples.
- * \param dst destination buffer for interleaved samples
- * \param src source buffer with consecutive planes of samples
- * \param samples number of samples (per channel/per plane)
- * \param chans channels/planes count
- * \param fourcc sample format (must be a linear sample format)
- * \note The samples must be naturally aligned in memory.
- * \warning Destination and source buffers MUST NOT overlap.
- */
-static void Interleave( void *restrict dst, const void *restrict src,
-                      unsigned samples, unsigned chans, vlc_fourcc_t fourcc )
-{
-#define INTERLEAVE_TYPE(type) \
-do { \
-    type *d = dst; \
-    const type *s = src; \
-    for( size_t i = 0; i < chans; i++ ) { \
-        for( size_t j = 0, k = 0; j < samples; j++, k += chans ) \
-            d[k] = *(s++); \
-        d++; \
-    } \
-} while(0)
-
-    switch( fourcc )
-    {
-        case VLC_CODEC_U8:   INTERLEAVE_TYPE(uint8_t);  break;
-        case VLC_CODEC_S16N: INTERLEAVE_TYPE(uint16_t); break;
-        case VLC_CODEC_FL32: INTERLEAVE_TYPE(float);    break;
-        case VLC_CODEC_S32N: INTERLEAVE_TYPE(int32_t);  break;
-        case VLC_CODEC_FL64: INTERLEAVE_TYPE(double);   break;
-        default:             assert(0);
-    }
-#undef INTERLEAVE_TYPE
-}
-
 #define BLOCK_FLAG_PRIVATE_REALLOCATED (1 << BLOCK_FLAG_PRIVATE_SHIFT)
 
 static void SetupOutputFormat( decoder_t *p_dec, bool b_trust );
+static int GetAudioBuf( struct AVCodecContext *, AVFrame * );
 
 static void InitDecoderConfig( decoder_t *p_dec, AVCodecContext *p_context )
 {
     if( p_dec->fmt_in.i_extra > 0 )
     {
         const uint8_t * const p_src = p_dec->fmt_in.p_extra;
-        int i_offset;
-        int i_size;
 
-        if( p_dec->fmt_in.i_codec == VLC_CODEC_FLAC )
-        {
-            i_offset = 8;
-            i_size = p_dec->fmt_in.i_extra - 8;
-        }
-        else if( p_dec->fmt_in.i_codec == VLC_CODEC_ALAC )
+        int i_offset = 0;
+        int i_size = p_dec->fmt_in.i_extra;
+
+        if( p_dec->fmt_in.i_codec == VLC_CODEC_ALAC )
         {
             static const uint8_t p_pattern[] = { 0, 0, 0, 36, 'a', 'l', 'a', 'c' };
             /* Find alac atom XXX it is a bit ugly */
@@ -142,11 +92,6 @@ static void InitDecoderConfig( decoder_t *p_dec, AVCodecContext *p_context )
             i_size = __MIN( p_dec->fmt_in.i_extra - i_offset, 36 );
             if( i_size < 36 )
                 i_size = 0;
-        }
-        else
-        {
-            i_offset = 0;
-            i_size = p_dec->fmt_in.i_extra;
         }
 
         if( i_size > 0 )
@@ -174,7 +119,7 @@ static void InitDecoderConfig( decoder_t *p_dec, AVCodecContext *p_context )
 /*****************************************************************************
  * InitAudioDec: initialize audio decoder
  *****************************************************************************
- * The ffmpeg codec will be opened, some memory allocated.
+ * The avcodec codec will be opened, some memory allocated.
  *****************************************************************************/
 int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
                       AVCodec *p_codec, int i_codec_id, const char *psz_namecodec )
@@ -190,6 +135,7 @@ int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
     p_codec->type = AVMEDIA_TYPE_AUDIO;
     p_context->codec_type = AVMEDIA_TYPE_AUDIO;
     p_context->codec_id = i_codec_id;
+    p_context->get_buffer = GetAudioBuf;
     p_sys->p_context = p_context;
     p_sys->p_codec = p_codec;
     p_sys->i_codec_id = i_codec_id;
@@ -207,31 +153,6 @@ int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
         free( p_sys );
         return VLC_EGENERIC;
     }
-
-    switch( i_codec_id )
-    {
-    case CODEC_ID_WAVPACK:
-        p_sys->i_output_max = 8 * sizeof(int32_t) * 131072;
-        break;
-    case CODEC_ID_TTA:
-        p_sys->i_output_max = p_sys->p_context->channels * sizeof(int32_t) * p_sys->p_context->sample_rate * 2;
-        break;
-    case CODEC_ID_FLAC:
-        p_sys->i_output_max = 8 * sizeof(int32_t) * 65535;
-        break;
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 35, 0 )
-    case CODEC_ID_WMAPRO:
-        p_sys->i_output_max = 8 * sizeof(float) * 6144; /* (1 << 12) * 3/2 */
-        break;
-#endif
-    default:
-        p_sys->i_output_max = 0;
-        break;
-    }
-    if( p_sys->i_output_max < 2 * AVCODEC_MAX_AUDIO_FRAME_SIZE )
-        p_sys->i_output_max = 2 * AVCODEC_MAX_AUDIO_FRAME_SIZE;
-    msg_Dbg( p_dec, "Using %d bytes output buffer", p_sys->i_output_max );
-    p_sys->p_output = av_malloc( p_sys->i_output_max );
 
     p_sys->i_reject_count = 0;
     p_sys->b_extract = false;
@@ -252,23 +173,67 @@ int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
     return VLC_SUCCESS;
 }
 
+/**
+ * Allocates decoded audio buffer for libavcodec to use.
+ */
+static int GetAudioBuf( AVCodecContext *ctx, AVFrame *buf )
+{
+    block_t *block;
+    bool planar = av_sample_fmt_is_planar( ctx->sample_fmt );
+    unsigned channels = planar ? 1 : ctx->channels;
+    unsigned planes = planar ? ctx->channels : 1;
+
+    int bytes = av_samples_get_buffer_size( &buf->linesize[0], channels,
+                                            buf->nb_samples, ctx->sample_fmt,
+                                            16 );
+    assert( bytes >= 0 );
+    block = block_Alloc( bytes * planes );
+    if( unlikely(block == NULL) )
+        return AVERROR(ENOMEM);
+
+    block->i_nb_samples = buf->nb_samples;
+    buf->opaque = block;
+
+    if( planes > AV_NUM_DATA_POINTERS )
+    {
+        uint8_t **ext = malloc( sizeof( *ext ) * planes );
+        if( unlikely(ext == NULL) )
+        {
+            block_Release( block );
+            return AVERROR(ENOMEM);
+        }
+        buf->extended_data = ext;
+    }
+    else
+        buf->extended_data = buf->data;
+
+    uint8_t *buffer = block->p_buffer;
+    for( unsigned i = 0; i < planes; i++ )
+    {
+        buf->linesize[i] = buf->linesize[0];
+        buf->extended_data[i] = buffer;
+        buffer += bytes;
+    }
+
+    return 0;
+}
+
 /*****************************************************************************
  * DecodeAudio: Called to decode one frame
  *****************************************************************************/
-aout_buffer_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
+block_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    int i_used, i_output;
-    AVPacket pkt;
+    AVCodecContext *ctx = p_sys->p_context;
 
-    if( !pp_block || !*pp_block ) return NULL;
+    if( !pp_block || !*pp_block )
+        return NULL;
 
     block_t *p_block = *pp_block;
 
-    if( !p_sys->p_context->extradata_size && p_dec->fmt_in.i_extra &&
-        p_sys->b_delayed_open)
+    if( !ctx->extradata_size && p_dec->fmt_in.i_extra && p_sys->b_delayed_open)
     {
-        InitDecoderConfig( p_dec, p_sys->p_context);
+        InitDecoderConfig( p_dec, ctx );
         if( ffmpeg_OpenCodec( p_dec ) )
             msg_Err( p_dec, "Cannot open decoder %s", p_sys->psz_namecodec );
     }
@@ -278,16 +243,17 @@ aout_buffer_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
 
     if( p_block->i_flags & (BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
     {
-        avcodec_flush_buffers( p_sys->p_context );
+        avcodec_flush_buffers( ctx );
         date_Set( &p_sys->end_date, 0 );
 
-        if( p_sys->i_codec_id == CODEC_ID_MP2 || p_sys->i_codec_id == CODEC_ID_MP3 )
+        if( p_sys->i_codec_id == AV_CODEC_ID_MP2 || p_sys->i_codec_id == AV_CODEC_ID_MP3 )
             p_sys->i_reject_count = 3;
 
         goto end;
     }
 
-    if( !date_Get( &p_sys->end_date ) && !p_block->i_pts )
+    /* We've just started the stream, wait for the first PTS. */
+    if( !date_Get( &p_sys->end_date ) && p_block->i_pts <= VLC_TS_INVALID )
         goto end;
 
     if( p_block->i_buffer <= 0 )
@@ -305,106 +271,126 @@ aout_buffer_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
         p_block->i_flags |= BLOCK_FLAG_PRIVATE_REALLOCATED;
     }
 
-    do
-    {
-        i_output = __MAX( p_block->i_buffer, p_sys->i_output_max );
-        if( i_output > p_sys->i_output_max )
-        {
-            /* Grow output buffer if necessary (eg. for PCM data) */
-            p_sys->p_output = av_realloc( p_sys->p_output, i_output );
-        }
+    AVFrame frame;
+    memset( &frame, 0, sizeof( frame ) );
 
+    for( int got_frame = 0; !got_frame; )
+    {
+        if( p_block->i_buffer == 0 )
+            goto end;
+
+        AVPacket pkt;
         av_init_packet( &pkt );
         pkt.data = p_block->p_buffer;
         pkt.size = p_block->i_buffer;
-        i_used = avcodec_decode_audio3( p_sys->p_context,
-                                       (int16_t*)p_sys->p_output, &i_output,
-                                       &pkt );
 
-        if( i_used < 0 || i_output < 0 )
+        int used = avcodec_decode_audio4( ctx, &frame, &got_frame, &pkt );
+        if( used < 0 )
         {
-            if( i_used < 0 )
-                msg_Warn( p_dec, "cannot decode one frame (%zu bytes)",
-                          p_block->i_buffer );
-
+            msg_Warn( p_dec, "cannot decode one frame (%zu bytes)",
+                      p_block->i_buffer );
             goto end;
         }
-        else if( (size_t)i_used > p_block->i_buffer )
-        {
-            i_used = p_block->i_buffer;
-        }
 
-        p_block->i_buffer -= i_used;
-        p_block->p_buffer += i_used;
+        assert( p_block->i_buffer >= (unsigned)used );
+        p_block->p_buffer += used;
+        p_block->i_buffer -= used;
+    }
 
-    } while( p_block->i_buffer > 0 && i_output <= 0 );
-
-    if( p_sys->p_context->channels <= 0 || p_sys->p_context->channels > 8 ||
-        p_sys->p_context->sample_rate <= 0 )
+    if( ctx->channels <= 0 || ctx->channels > 8 || ctx->sample_rate <= 0 )
     {
         msg_Warn( p_dec, "invalid audio properties channels count %d, sample rate %d",
-                  p_sys->p_context->channels, p_sys->p_context->sample_rate );
+                  ctx->channels, ctx->sample_rate );
         goto end;
     }
 
-    if( p_dec->fmt_out.audio.i_rate != (unsigned int)p_sys->p_context->sample_rate )
-        date_Init( &p_sys->end_date, p_sys->p_context->sample_rate, 1 );
+    if( p_dec->fmt_out.audio.i_rate != (unsigned int)ctx->sample_rate )
+        date_Init( &p_sys->end_date, ctx->sample_rate, 1 );
 
-    if( p_block->i_pts != 0 &&
+    if( p_block->i_pts > VLC_TS_INVALID &&
         p_block->i_pts > date_Get( &p_sys->end_date ) )
     {
         date_Set( &p_sys->end_date, p_block->i_pts );
     }
 
-    //block_Release( p_block );
+    if( p_block->i_buffer == 0 )
+    {   /* Done with this buffer */
+        block_Release( p_block );
+        *pp_block = NULL;
+    }
 
+    /* NOTE WELL: Beyond this point, p_block now refers to the DECODED block */
+    p_block = frame.opaque;
     SetupOutputFormat( p_dec, true );
 
     /* Silent unwanted samples */
     if( p_sys->i_reject_count > 0 )
     {
-        memset( p_sys->p_output, 0, i_output );
+        memset( p_block->p_buffer, 0, p_block->i_buffer );
         p_sys->i_reject_count--;
     }
 
-    int i_samples = i_output / (p_dec->fmt_out.audio.i_bitspersample / 8) / p_sys->p_context->channels;
-    if (i_samples == 0)
-        return NULL;
-
-    block_t *p_buffer = decoder_NewAudioBuffer( p_dec, i_samples );
+    block_t *p_buffer = decoder_NewAudioBuffer( p_dec, p_block->i_nb_samples );
     if (!p_buffer)
+    {
+        block_Release( p_block );
+        if( av_sample_fmt_is_planar( ctx->sample_fmt )
+         && ctx->channels > AV_NUM_DATA_POINTERS )
+            free( frame.extended_data );
         return NULL;
+    }
+    assert( p_block->i_nb_samples >= (unsigned)frame.nb_samples );
+    assert( p_block->i_nb_samples == p_buffer->i_nb_samples );
+    p_block->i_buffer = p_buffer->i_buffer; /* drop buffer padding */
 
-    p_buffer->i_pts = date_Get( &p_sys->end_date );
-    p_buffer->i_length = date_Increment( &p_sys->end_date, i_samples ) - p_buffer->i_pts;
+    /* Interleave audio if required */
+    if( av_sample_fmt_is_planar( ctx->sample_fmt ) )
+    {
+        const void *planes[ctx->channels];
+        for( int i = 0; i < ctx->channels; i++)
+            planes[i] = frame.extended_data[i];
 
-    int sample_planar = av_sample_fmt_is_planar( p_sys->p_context->sample_fmt );
-    if( sample_planar )
-        Interleave( p_buffer->p_buffer, p_sys->p_output, i_samples, p_sys->p_context->channels, p_dec->fmt_out.audio.i_format );
+        aout_Interleave( p_buffer->p_buffer, planes, frame.nb_samples,
+                         ctx->channels, p_dec->fmt_out.audio.i_format );
 
-    if( p_sys->b_extract == !!sample_planar )
-        memcpy( p_sys->p_output, p_buffer->p_buffer, p_buffer->i_buffer );
+        if( ctx->channels > AV_NUM_DATA_POINTERS )
+            free( frame.extended_data );
+        block_Release( p_block );
+        p_block = p_buffer;
+    }
+    else /* FIXME: improve decoder_NewAudioBuffer(), avoid useless buffer... */
+        block_Release( p_buffer );
 
     if (p_sys->b_extract)
-        aout_ChannelExtract( p_buffer->p_buffer, p_dec->fmt_out.audio.i_channels,
-                             p_sys->p_output, p_sys->p_context->channels, i_samples,
-                             p_sys->pi_extraction, p_dec->fmt_out.audio.i_bitspersample );
+    {   /* TODO: do not drop channels... at least not here */
+        p_buffer = block_Alloc( p_dec->fmt_out.audio.i_bytes_per_frame
+                                * frame.nb_samples );
+        if( unlikely(p_buffer == NULL) )
+        {
+            block_Release( p_block );
+            return NULL;
+        }
+        aout_ChannelExtract( p_buffer->p_buffer,
+                             p_dec->fmt_out.audio.i_channels,
+                             p_block->p_buffer, ctx->channels,
+                             frame.nb_samples, p_sys->pi_extraction,
+                             p_dec->fmt_out.audio.i_bitspersample );
+        block_Release( p_block );
+        p_block = p_buffer;
+    }
 
-    return p_buffer;
+    p_block->i_nb_samples = frame.nb_samples;
+    p_block->i_buffer = frame.nb_samples
+                        * p_dec->fmt_out.audio.i_bytes_per_frame;
+    p_block->i_pts = date_Get( &p_sys->end_date );
+    p_block->i_length = date_Increment( &p_sys->end_date, frame.nb_samples )
+                        - p_block->i_pts;
+    return p_block;
 
 end:
     block_Release(p_block);
+    *pp_block = NULL;
     return NULL;
-}
-
-/*****************************************************************************
- * EndAudioDec: audio decoder destruction
- *****************************************************************************/
-void EndAudioDec( decoder_t *p_dec )
-{
-    decoder_sys_t *p_sys = p_dec->p_sys;
-
-    av_free( p_sys->p_output );
 }
 
 /*****************************************************************************
@@ -419,13 +405,11 @@ vlc_fourcc_t GetVlcAudioFormat( int fmt )
         [AV_SAMPLE_FMT_S32]   = VLC_CODEC_S32N,
         [AV_SAMPLE_FMT_FLT]   = VLC_CODEC_FL32,
         [AV_SAMPLE_FMT_DBL]   = VLC_CODEC_FL64,
-#ifdef HAVE_AVUTIL_PLANAR
         [AV_SAMPLE_FMT_U8P]   = VLC_CODEC_U8,
         [AV_SAMPLE_FMT_S16P]  = VLC_CODEC_S16N,
         [AV_SAMPLE_FMT_S32P]  = VLC_CODEC_S32N,
         [AV_SAMPLE_FMT_FLTP]  = VLC_CODEC_FL32,
         [AV_SAMPLE_FMT_DBLP]  = VLC_CODEC_FL64,
-#endif
     };
     if( (sizeof(fcc) / sizeof(fcc[0])) > (unsigned)fmt )
         return fcc[fmt];

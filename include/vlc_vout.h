@@ -1,8 +1,8 @@
 /*****************************************************************************
- * vlc_video.h: common video definitions
+ * vlc_vout.h: common video definitions
  *****************************************************************************
  * Copyright (C) 1999 - 2008 VLC authors and VideoLAN
- * $Id: d3995508b243fe9aec8b6983b928bf12a0e2f8c3 $
+ * $Id: 2d6c180bfc1dcdf2d57277a44508dcda5d8f17de $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>

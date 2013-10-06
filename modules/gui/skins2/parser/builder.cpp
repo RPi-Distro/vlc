@@ -2,7 +2,7 @@
  * builder.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 1de4e2021805f7d9aa1163c86cdf27ba1982b296 $
+ * $Id: ece673f65bbade320e318bd8fd50a6a4377580d7 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -142,6 +142,27 @@ Theme *Builder::build()
         } \
     }
 
+// macro to check bitmap size consistency for button and checkbox
+#define CHECK_BMP( pBmp, pBmpRef, id) \
+    if( pBmp != pBmpRef ) \
+    { \
+        int w_ref = pBmpRef->getWidth(); \
+        int h_ref = pBmpRef->getHeight() / pBmpRef->getNbFrames(); \
+        int w = pBmp->getWidth(); \
+        int h = pBmp->getHeight() / pBmp->getNbFrames(); \
+        if( w != w_ref || h != h_ref ) \
+            msg_Err( getIntf(), "pls, check bitmap sizes for id: %s", id.c_str() ); \
+    }
+
+// macro to check resize policy of button and checkbox
+#define CHECK_RESIZE_POLICY( lefttop, rightbottom, xkeepratio, ykeepratio, id )\
+    if( (!xkeepratio && lefttop != rightbottom) || \
+        (!ykeepratio && lefttop != rightbottom) ) \
+    { \
+        msg_Err( getIntf(), "pls, check resize policy for id: %s", \
+                            id.c_str() ); \
+        rightbottom = lefttop; \
+    }
 
 // Macro to get the parent box of a control, given the panel ID
 #define GET_BOX( pRect, id, pLayout ) \
@@ -467,15 +488,27 @@ void Builder::addButton( const BuilderData::Button &rData )
         UString( getIntf(), rData.m_help.c_str() ), pVisible );
     m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pButton );
 
+    // width and height are set up from the 'up' bitmap size
+    int width = pBmpUp->getWidth();
+    int height = pBmpUp->getHeight() / pBmpUp->getNbFrames();
+    bool xkeepratio = rData.m_xKeepRatio;
+    bool ykeepratio = rData.m_yKeepRatio;
+    string lefttop( rData.m_leftTop );
+    string rightbottom( rData.m_rightBottom );
+
+    // various checks to help skin developers debug their skin
+    CHECK_BMP( pBmpDown, pBmpUp, rData.m_id );
+    CHECK_BMP( pBmpOver, pBmpUp, rData.m_id );
+    CHECK_RESIZE_POLICY( lefttop, rightbottom, xkeepratio, ykeepratio,
+                         rData.m_id );
+
     // Compute the position of the control
     // XXX (we suppose all the images have the same size...)
     const GenericRect *pRect;
     GET_BOX( pRect, rData.m_panelId , pLayout);
-    const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
-                             rData.m_xPos, rData.m_yPos,
-                             pBmpUp->getWidth(),
-                             pBmpUp->getHeight() / pBmpUp->getNbFrames(),
-                             *pRect, rData.m_xKeepRatio, rData.m_yKeepRatio );
+    const Position pos = makePosition( lefttop, rightbottom,
+                             rData.m_xPos, rData.m_yPos, width, height,
+                             *pRect, xkeepratio, ykeepratio );
 
     pLayout->addControl( pButton, pos, rData.m_layer );
 }
@@ -536,6 +569,24 @@ void Builder::addCheckbox( const BuilderData::Checkbox &rData )
     // XXX check when it is null
     VarBool *pVisible = pInterpreter->getVarBool( rData.m_visible, m_pTheme );
 
+    // width and height are set up from the 'up1' bitmap size
+    int width = pBmpUp1->getWidth();
+    int height = pBmpUp1->getHeight() / pBmpUp1->getNbFrames();
+    bool xkeepratio = rData.m_xKeepRatio;
+    bool ykeepratio = rData.m_yKeepRatio;
+    string lefttop( rData.m_leftTop );
+    string rightbottom( rData.m_rightBottom );
+
+
+    // various checks to help skin developers debug their skin
+    CHECK_BMP( pBmpDown1, pBmpUp1, rData.m_id );
+    CHECK_BMP( pBmpOver1, pBmpUp1, rData.m_id );
+    CHECK_BMP( pBmpUp2, pBmpUp1, rData.m_id );
+    CHECK_BMP( pBmpDown2, pBmpUp1, rData.m_id );
+    CHECK_BMP( pBmpOver2, pBmpUp1, rData.m_id );
+    CHECK_RESIZE_POLICY( lefttop, rightbottom, xkeepratio, ykeepratio,
+                         rData.m_id );
+
     // Create the control
     CtrlCheckbox *pCheckbox = new CtrlCheckbox( getIntf(), *pBmpUp1,
         *pBmpOver1, *pBmpDown1, *pBmpUp2, *pBmpOver2, *pBmpDown2, *pCommand1,
@@ -548,11 +599,9 @@ void Builder::addCheckbox( const BuilderData::Checkbox &rData )
     // XXX (we suppose all the images have the same size...)
     const GenericRect *pRect;
     GET_BOX( pRect, rData.m_panelId , pLayout);
-    const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
-                            rData.m_xPos, rData.m_yPos,
-                            pBmpUp1->getWidth(),
-                            pBmpUp1->getHeight() / pBmpUp1->getNbFrames(),
-                            *pRect, rData.m_xKeepRatio, rData.m_yKeepRatio );
+    const Position pos = makePosition( lefttop, rightbottom,
+                             rData.m_xPos, rData.m_yPos, width, height,
+                             *pRect, xkeepratio, ykeepratio );
 
     pLayout->addControl( pCheckbox, pos, rData.m_layer );
 }
@@ -814,10 +863,7 @@ void Builder::addSlider( const BuilderData::Slider &rData )
 
     // Get the bitmaps of the background
     GenericBitmap *pBgImage = NULL;
-    if( rData.m_imageId != "none" )
-    {
-        GET_BMP( pBgImage, rData.m_imageId );
-    }
+    GET_BMP( pBgImage, rData.m_imageId );
 
     GenericLayout *pLayout = m_pTheme->getLayoutById( rData.m_layoutId );
     if( pLayout == NULL )
@@ -856,12 +902,13 @@ void Builder::addSlider( const BuilderData::Slider &rData )
     m_pTheme->m_controls[rData.m_id + "_bg"] = CtrlGenericPtr( pBackground );
 
     // Compute the position of the control
+    int width = (rData.m_width > 0) ? rData.m_width : pCurve->getWidth();
+    int height = (rData.m_height > 0) ? rData.m_height : pCurve->getHeight();
     const GenericRect *pRect;
     GET_BOX( pRect, rData.m_panelId , pLayout);
     const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
                                        rData.m_xPos, rData.m_yPos,
-                                       pCurve->getWidth(), pCurve->getHeight(),
-                                       *pRect,
+                                       width, height, *pRect,
                                        rData.m_xKeepRatio, rData.m_yKeepRatio );
 
     pLayout->addControl( pBackground, pos, rData.m_layer );
@@ -1037,6 +1084,13 @@ void Builder::addVideo( const BuilderData::Video &rData )
             Data.m_autoResize = false;
         }
     }
+    if( !(Data.m_width > 0 && Data.m_height > 0) )
+    {
+        msg_Err( getIntf(),
+            "pls, provide a valid size for the video control id: %s "
+             "(dropping the video control)", Data.m_id.c_str() );
+        return;
+    }
 
     // Get the visibility variable
     // XXX check when it is null
@@ -1198,7 +1252,7 @@ string Builder::getFilePath( const string &rFileName ) const
            file[pos] = '/';
     }
 
-#ifdef WIN32
+#if defined( _WIN32 ) || defined( __OS2__ )
     string::size_type pos;
     while( ( pos = file.find( "/" ) ) != string::npos )
        file.replace( pos, 1, sep );

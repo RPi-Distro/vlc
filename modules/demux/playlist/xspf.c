@@ -1,25 +1,25 @@
 /*******************************************************************************
  * xspf.c : XSPF playlist import functions
  *******************************************************************************
- * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 6edee56f5ec7832fe48661b63de436001f6aab7a $
+ * Copyright (C) 2006-2011 VLC authors and VideoLAN
+ * $Id: 86067596a87a0fa82b4085bf719a8a096dad839b $
  *
  * Authors: Daniel Stränger <vlc at schmaller dot de>
  *          Yoann Peronneau <yoann@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  ******************************************************************************/
 /**
  * \file modules/demux/playlist/xspf.c
@@ -77,7 +77,6 @@ struct demux_sys_t
     char * psz_base;
 };
 
-static int Control(demux_t *, int, va_list);
 static int Demux(demux_t *);
 
 /**
@@ -157,13 +156,6 @@ end:
     if (p_xml_reader)
         xml_ReaderDelete(p_xml_reader);
     return i_ret; /* Needed for correct operation of go back */
-}
-
-/** \brief dummy function for demux callback interface */
-static int Control(demux_t *p_demux, int i_query, va_list args)
-{
-    VLC_UNUSED(p_demux); VLC_UNUSED(i_query); VLC_UNUSED(args);
-    return VLC_EGENERIC;
 }
 
 static const xml_elem_hnd_t *get_handler(const xml_elem_hnd_t *tab, size_t n, const char *name)
@@ -363,7 +355,7 @@ static bool parse_track_node COMPLEX_INTERFACE
           {"title",        {.smpl = set_item_info}, false },
           {"creator",      {.smpl = set_item_info}, false },
           {"annotation",   {.smpl = set_item_info}, false },
-          {"info",         {NULL}, false },
+          {"info",         {.smpl = set_item_info}, false },
           {"image",        {.smpl = set_item_info}, false },
           {"album",        {.smpl = set_item_info}, false },
           {"trackNum",     {.smpl = set_item_info}, false },
@@ -553,6 +545,8 @@ static bool set_item_info SIMPLE_INTERFACE
     }
     else if (!strcmp(psz_name, "annotation"))
         input_item_SetDescription(p_input, psz_value);
+    else if (!strcmp(psz_name, "info"))
+        input_item_SetURL(p_input, psz_value);
     else if (!strcmp(psz_name, "image"))
         input_item_SetArtURL(p_input, psz_value);
     return true;

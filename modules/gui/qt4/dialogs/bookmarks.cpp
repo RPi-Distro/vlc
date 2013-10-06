@@ -31,9 +31,11 @@
 #include <QSpacerItem>
 #include <QPushButton>
 #include <QDialogButtonBox>
+#include <QModelIndexList>
 
 BookmarksDialog::BookmarksDialog( intf_thread_t *_p_intf ):QVLCFrame( _p_intf )
 {
+    b_ignore_updates = false;
     setWindowFlags( Qt::Tool );
     setWindowOpacity( var_InheritFloat( p_intf, "qt-opacity" ) );
     setWindowTitle( qtr( "Edit Bookmarks" ) );
@@ -45,10 +47,10 @@ BookmarksDialog::BookmarksDialog( intf_thread_t *_p_intf ):QVLCFrame( _p_intf )
     QPushButton *addButton = new QPushButton( qtr( "Create" ) );
     addButton->setToolTip( qtr( "Create a new bookmark" ) );
     buttonsBox->addButton( addButton, QDialogButtonBox::ActionRole );
-    QPushButton *delButton = new QPushButton( qtr( "Delete" ) );
+    delButton = new QPushButton( qtr( "Delete" ) );
     delButton->setToolTip( qtr( "Delete the selected item" ) );
     buttonsBox->addButton( delButton, QDialogButtonBox::ActionRole );
-    QPushButton *clearButton = new QPushButton( qtr( "Clear" ) );
+    clearButton = new QPushButton( qtr( "Clear" ) );
     clearButton->setToolTip( qtr( "Delete all the bookmarks" ) );
     buttonsBox->addButton( clearButton, QDialogButtonBox::ResetRole );
 #if 0
@@ -85,26 +87,40 @@ BookmarksDialog::BookmarksDialog( intf_thread_t *_p_intf ):QVLCFrame( _p_intf )
              activateItem( QModelIndex ) );
     CONNECT( bookmarksList, itemChanged( QTreeWidgetItem*, int ),
              this, edit( QTreeWidgetItem*, int ) );
-
+    CONNECT( bookmarksList->model(), rowsInserted( const QModelIndex &, int, int ),
+             this, updateButtons() );
+    CONNECT( bookmarksList->model(), rowsRemoved( const QModelIndex &, int, int ),
+             this, updateButtons() );
+    CONNECT( bookmarksList->selectionModel(), selectionChanged( const QItemSelection &, const QItemSelection & ),
+             this, updateButtons() );
     BUTTONACT( addButton, add() );
     BUTTONACT( delButton, del() );
     BUTTONACT( clearButton, clear() );
+
 #if 0
     BUTTONACT( extractButton, extract() );
 #endif
     CONNECT( buttonsBox, rejected(), this, close() );
+    updateButtons();
 
-    readSettings( "Bookmarks", QSize( 435, 280 ) );
+    restoreWidgetPosition( "Bookmarks", QSize( 435, 280 ) );
     updateGeometry();
 }
 
 BookmarksDialog::~BookmarksDialog()
 {
-    writeSettings( "Bookmarks" );
+    saveWidgetPosition( "Bookmarks" );
+}
+
+void BookmarksDialog::updateButtons()
+{
+    clearButton->setEnabled( bookmarksList->model()->rowCount() > 0 );
+    delButton->setEnabled( bookmarksList->selectionModel()->hasSelection() );
 }
 
 void BookmarksDialog::update()
 {
+    if ( b_ignore_updates ) return;
     input_thread_t *p_input = THEMIM->getInput();
     if( !p_input ) return;
 
@@ -150,7 +166,7 @@ void BookmarksDialog::add()
 
     if( !input_Control( p_input, INPUT_GET_BOOKMARK, &bookmark ) )
     {
-        QString name = THEMIM->getIM()->getName()
+        QString name = THEMIM->getIM()->getName() + " #"
                      + QString::number( bookmarksList->topLevelItemCount() );
         bookmark.psz_name = const_cast<char *>qtu( name );
 
@@ -163,11 +179,22 @@ void BookmarksDialog::del()
     input_thread_t *p_input = THEMIM->getInput();
     if( !p_input ) return;
 
-    int i_focused = bookmarksList->currentIndex().row();
-
-    if( i_focused >= 0 )
+    QModelIndexList selected = bookmarksList->selectionModel()->selectedIndexes();
+    if ( !selected.empty() )
     {
-        input_Control( p_input, INPUT_DEL_BOOKMARK, i_focused );
+        b_ignore_updates = true;
+        QModelIndexList::Iterator it = selected.end();
+        for( --it; it != selected.begin(); it-- )
+        {
+            /* FIXME: Find out why selectedIndexes() doesn't follow the
+            SelectRows selectionBehavior() and returns all columns */
+            if ( (*it).column() == 0 )
+                input_Control( p_input, INPUT_DEL_BOOKMARK, (*it).row() );
+        }
+        if ( (*it).column() == 0 )
+            input_Control( p_input, INPUT_DEL_BOOKMARK, (*it).row() );
+        b_ignore_updates = false;
+        update();
     }
 }
 

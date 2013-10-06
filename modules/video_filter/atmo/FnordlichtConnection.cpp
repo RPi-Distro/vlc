@@ -1,25 +1,25 @@
 /*
- * FnordlichtConnection.h: class to access a FnordlichtLight Hardware
+ * FnordlichtConnection.cpp: class to access a FnordlichtLight Hardware
  * - the description could be found
  * here: http://github.com/fd0/fnordlicht/raw/master/doc/PROTOCOL
  *
  * (C) Kai Lauterbach (klaute at gmail.com)
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *
- * $Id: 73a6ff09311196a8e944641570c13843291109a9 $
+ * $Id: 799bdf2ba8dcbdb5301c46356d97a6f51eb92994 $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -36,7 +36,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 
-#if !defined(WIN32)
+#if !defined(_WIN32)
 #include <termios.h>
 #include <unistd.h>
 #endif
@@ -71,9 +71,9 @@ ATMO_BOOL CFnordlichtConnection::OpenConnection()
     sprintf(serdevice,"com%d",portNummer);
 #endif
 
-#if defined(WIN32)
+#if defined(_WIN32)
 
-    m_hComport = CreateFile(serdevice,
+    m_hComport = CreateFileA(serdevice,
                     GENERIC_WRITE, 0, NULL,
                     OPEN_EXISTING, 0, NULL);
     if ( m_hComport == INVALID_HANDLE_VALUE )
@@ -132,7 +132,7 @@ void CFnordlichtConnection::CloseConnection()
     {
         reset(255);
 
-#if defined(WIN32)
+#if defined(_WIN32)
         CloseHandle(m_hComport);
 #else
         close(m_hComport);
@@ -194,7 +194,7 @@ ATMO_BOOL CFnordlichtConnection::SendData(pColorPacket data)
             buffer[6] = data->zone[idx].b;
         }
 
-#if defined(WIN32)
+#if defined(_WIN32)
         // send to COM-Port
         WriteFile( m_hComport, buffer, sizeof(buffer),
                     (DWORD*)&iBytesWritten, NULL );
@@ -237,7 +237,7 @@ int CFnordlichtConnection::getAmountFnordlichter()
 
 /*
     def sync(addr = 0)
-       1.upto(15) do
+       1.up to(15) do
           $dev.write "\e"
        end
        $dev.write addr.chr
@@ -260,7 +260,7 @@ ATMO_BOOL CFnordlichtConnection::sync(void)
 
     buffer[sizeof(buffer)-1] = 0x00; // append one zero byte
 
-#if defined(WIN32)
+#if defined(_WIN32)
         // send to COM-Port
         WriteFile( m_hComport, buffer, sizeof(buffer),
                     (DWORD*)&iBytesWritten, NULL );
@@ -302,7 +302,7 @@ ATMO_BOOL CFnordlichtConnection::stop(unsigned char addr)
     buffer[1] = 0x08; // stop command
     buffer[2] = 1;    // fading
 
-#if defined(WIN32)
+#if defined(_WIN32)
         // send to COM-Port
         WriteFile( m_hComport, buffer, sizeof(buffer),
                     (DWORD*)&iBytesWritten, NULL );
@@ -367,7 +367,7 @@ ATMO_BOOL CFnordlichtConnection::start_bootloader(unsigned char addr)
     buffer[4] = 0x27;
     buffer[5] = 0xfc;
 
-#if defined(WIN32)
+#if defined(_WIN32)
         // send to COM-Port
         WriteFile( m_hComport, buffer, sizeof(buffer),
                     (DWORD*)&iBytesWritten, NULL );
@@ -404,7 +404,7 @@ ATMO_BOOL CFnordlichtConnection::boot_enter_application(unsigned char addr)
     buffer[0] = addr; // fnordlicht address (255 = broadcast)
     buffer[1] = 0x87; // boot_ender_application command
 
-#if defined(WIN32)
+#if defined(_WIN32)
         // send to COM-Port
         WriteFile( m_hComport, buffer, sizeof(buffer),
                     (DWORD*)&iBytesWritten, NULL );

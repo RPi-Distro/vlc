@@ -17,10 +17,9 @@ libgrey_yuv_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_grey_yuv)
 libgrey_yuv_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_grey_yuv)
 libgrey_yuv_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_grey_yuv)
 libgrey_yuv_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_grey_yuv)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libgrey_yuv_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_grey_yuv)
 libgrey_yuv_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_grey_yuv)
-libgrey_yuv_plugin_la_DEPENDENCIES =
 
 # The i420_rgb plugin
 libi420_rgb_plugin_la_SOURCES = $(SOURCES_i420_rgb)
@@ -30,10 +29,9 @@ libi420_rgb_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_i420_rgb)
 libi420_rgb_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_i420_rgb)
 libi420_rgb_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_i420_rgb)
 libi420_rgb_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_i420_rgb)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libi420_rgb_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_i420_rgb)
 libi420_rgb_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_i420_rgb)
-libi420_rgb_plugin_la_DEPENDENCIES =
 
 # The i420_yuy2 plugin
 libi420_yuy2_plugin_la_SOURCES = $(SOURCES_i420_yuy2)
@@ -43,10 +41,9 @@ libi420_yuy2_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_i420_yuy2)
 libi420_yuy2_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_i420_yuy2)
 libi420_yuy2_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_i420_yuy2)
 libi420_yuy2_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_i420_yuy2)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libi420_yuy2_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_i420_yuy2)
 libi420_yuy2_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_i420_yuy2)
-libi420_yuy2_plugin_la_DEPENDENCIES =
 
 # The i422_i420 plugin
 libi422_i420_plugin_la_SOURCES = $(SOURCES_i422_i420)
@@ -56,10 +53,9 @@ libi422_i420_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_i422_i420)
 libi422_i420_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_i422_i420)
 libi422_i420_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_i422_i420)
 libi422_i420_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_i422_i420)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libi422_i420_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_i422_i420)
 libi422_i420_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_i422_i420)
-libi422_i420_plugin_la_DEPENDENCIES =
 
 # The i422_yuy2 plugin
 libi422_yuy2_plugin_la_SOURCES = $(SOURCES_i422_yuy2)
@@ -69,10 +65,9 @@ libi422_yuy2_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_i422_yuy2)
 libi422_yuy2_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_i422_yuy2)
 libi422_yuy2_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_i422_yuy2)
 libi422_yuy2_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_i422_yuy2)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libi422_yuy2_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_i422_yuy2)
 libi422_yuy2_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_i422_yuy2)
-libi422_yuy2_plugin_la_DEPENDENCIES =
 
 # The rv32 plugin
 librv32_plugin_la_SOURCES = $(SOURCES_rv32)
@@ -82,10 +77,9 @@ librv32_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_rv32)
 librv32_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_rv32)
 librv32_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_rv32)
 librv32_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_rv32)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 librv32_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_rv32)
 librv32_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_rv32)
-librv32_plugin_la_DEPENDENCIES =
 
 # The yuy2_i420 plugin
 libyuy2_i420_plugin_la_SOURCES = $(SOURCES_yuy2_i420)
@@ -95,10 +89,9 @@ libyuy2_i420_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_yuy2_i420)
 libyuy2_i420_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_yuy2_i420)
 libyuy2_i420_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_yuy2_i420)
 libyuy2_i420_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_yuy2_i420)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libyuy2_i420_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_yuy2_i420)
 libyuy2_i420_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_yuy2_i420)
-libyuy2_i420_plugin_la_DEPENDENCIES =
 
 # The yuy2_i422 plugin
 libyuy2_i422_plugin_la_SOURCES = $(SOURCES_yuy2_i422)
@@ -108,8 +101,7 @@ libyuy2_i422_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_yuy2_i422)
 libyuy2_i422_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_yuy2_i422)
 libyuy2_i422_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_yuy2_i422)
 libyuy2_i422_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_yuy2_i422)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libyuy2_i422_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_yuy2_i422)
 libyuy2_i422_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_yuy2_i422)
-libyuy2_i422_plugin_la_DEPENDENCIES =
 

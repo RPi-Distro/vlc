@@ -1,23 +1,23 @@
 /*****************************************************************************
  * libavi.h : LibAVI library
  ******************************************************************************
- * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: 96df03dcfc0d3b88121f56722fd05e5e81d6d883 $
+ * Copyright (C) 2001-2003 VLC authors and VideoLAN
+ * $Id: 4ae9aa6579f0864ed5361fa4eb83d20609d08bbe $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /* flags for use in <dwFlags> in AVIFileHdr */
@@ -38,10 +38,10 @@
                                         /* the keyframe flag isn't a true flag */
                                         /* but have to be verified */
 
-#define AVI_CHUNK_COMMON            \
-    vlc_fourcc_t i_chunk_fourcc;    \
-    uint64_t i_chunk_size;          \
-    uint64_t i_chunk_pos;           \
+#define AVI_CHUNK_COMMON           \
+    vlc_fourcc_t i_chunk_fourcc;   \
+    uint64_t i_chunk_size;         \
+    uint64_t i_chunk_pos;          \
     union  avi_chunk_u *p_next;    \
     union  avi_chunk_u *p_father;  \
     union  avi_chunk_u *p_first;   \
@@ -57,6 +57,7 @@ typedef struct idx1_entry_s
     uint32_t i_length;
 
 } idx1_entry_t;
+
 typedef struct avi_chunk_common_s
 {
     AVI_CHUNK_COMMON
@@ -145,6 +146,40 @@ typedef struct avi_chunk_strd_s
     uint8_t  *p_data;
 } avi_chunk_strd_t;
 
+typedef struct avi_chunk_vprp_s
+{
+    AVI_CHUNK_COMMON
+    uint32_t i_video_format_token;
+    uint32_t i_video_standard;
+    uint32_t i_vertical_refresh;
+    uint32_t i_h_total_in_t;
+    uint32_t i_v_total_in_lines;
+    uint32_t i_frame_aspect_ratio;
+    uint32_t i_frame_width_in_pixels;
+    uint32_t i_frame_height_in_pixels;
+    uint32_t i_nb_fields_per_frame;
+    struct
+    {
+        uint32_t i_compressed_bm_height;
+        uint32_t i_compressed_bm_width;
+        uint32_t i_valid_bm_height;
+        uint32_t i_valid_bm_width;
+        uint32_t i_valid_bm_x_offset;
+        uint32_t i_valid_bm_y_offset;
+        uint32_t i_video_x_offset_in_t;
+        uint32_t i_video_y_valid_start_line;
+    } field_info[2];
+
+} avi_chunk_vprp_t;
+
+typedef struct avi_chunk_dmlh_s
+{
+    AVI_CHUNK_COMMON
+    uint32_t dwTotalFrames;
+} avi_chunk_dmlh_t;
+
+#define AVI_STRD_ZERO_CHUNK     0xFF
+#define AVI_ZERO_FOURCC         0xFE
 
 #define AVI_INDEX_OF_INDEXES    0x00
 #define AVI_INDEX_OF_CHUNKS     0x01
@@ -206,6 +241,7 @@ typedef union avi_chunk_u
     avi_chunk_strh_t    strh;
     avi_chunk_strf_t    strf;
     avi_chunk_strd_t    strd;
+    avi_chunk_vprp_t    vprp;
     avi_chunk_indx_t    indx;
     avi_chunk_STRING_t  strz;
 } avi_chunk_t;
@@ -213,28 +249,23 @@ typedef union avi_chunk_u
 /****************************************************************************
  * Stream(input) access functions
  ****************************************************************************/
-int     _AVI_ChunkRead( stream_t *,
-                        avi_chunk_t *p_chk,
-                        avi_chunk_t *p_father );
-void    _AVI_ChunkFree( stream_t *, avi_chunk_t * );
+int     AVI_ChunkRead( stream_t *,
+                       avi_chunk_t *p_chk,
+                       avi_chunk_t *p_father );
+void    AVI_ChunkFree( stream_t *, avi_chunk_t * );
 
 int     _AVI_ChunkCount( avi_chunk_t *, vlc_fourcc_t );
 void   *_AVI_ChunkFind ( avi_chunk_t *, vlc_fourcc_t, int );
 
 int     AVI_ChunkReadRoot( stream_t *, avi_chunk_t *p_root );
-void    AVI_ChunkFreeRoot( stream_t *, avi_chunk_t  *p_chk );
+void    AVI_ChunkFreeRoot( stream_t *, avi_chunk_t *p_chk  );
 
-#define AVI_ChunkRead( s, p_chk, p_father ) \
-    _AVI_ChunkRead( s, p_chk, (avi_chunk_t*)p_father )
 #define AVI_ChunkCount( p_chk, i_fourcc ) \
-    _AVI_ChunkCount( (avi_chunk_t*)p_chk, i_fourcc )
+    _AVI_ChunkCount( AVI_CHUNK(p_chk), i_fourcc )
 #define AVI_ChunkFind( p_chk, i_fourcc, i_number ) \
-    _AVI_ChunkFind( (avi_chunk_t*)p_chk, i_fourcc, i_number )
-#define AVI_ChunkFree( a, b ) \
-    _AVI_ChunkFree( (a), (avi_chunk_t*)(b) )
+    _AVI_ChunkFind( AVI_CHUNK(p_chk), i_fourcc, i_number )
 
-
-    /* *** avi stuff *** */
+/* *** avi stuff *** */
 
 #define AVIFOURCC_RIFF         VLC_FOURCC('R','I','F','F')
 #define AVIFOURCC_ON2          VLC_FOURCC('O','N','2',' ')
@@ -258,6 +289,8 @@ void    AVI_ChunkFreeRoot( stream_t *, avi_chunk_t  *p_chk );
 #define AVIFOURCC_strd         VLC_FOURCC('s','t','r','d')
 #define AVIFOURCC_strn         VLC_FOURCC('s','t','r','n')
 #define AVIFOURCC_indx         VLC_FOURCC('i','n','d','x')
+#define AVIFOURCC_vprp         VLC_FOURCC('v','p','r','p')
+#define AVIFOURCC_dmlh         VLC_FOURCC('d','m','l','h')
 
 #define AVIFOURCC_rec          VLC_FOURCC('r','e','c',' ')
 #define AVIFOURCC_auds         VLC_FOURCC('a','u','d','s')
@@ -278,6 +311,7 @@ void    AVI_ChunkFreeRoot( stream_t *, avi_chunk_t  *p_chk );
 #define AVIFOURCC_IDPI         VLC_FOURCC('I','D','P','I')
 #define AVIFOURCC_IENG         VLC_FOURCC('I','E','N','G')
 #define AVIFOURCC_IGNR         VLC_FOURCC('I','G','N','R')
+#define AVIFOURCC_ISGN         VLC_FOURCC('I','S','G','N')
 #define AVIFOURCC_IKEY         VLC_FOURCC('I','K','E','Y')
 #define AVIFOURCC_ILGT         VLC_FOURCC('I','L','G','T')
 #define AVIFOURCC_IMED         VLC_FOURCC('I','M','E','D')
@@ -292,8 +326,24 @@ void    AVI_ChunkFreeRoot( stream_t *, avi_chunk_t  *p_chk );
 #define AVIFOURCC_ITCH         VLC_FOURCC('I','T','C','H')
 #define AVIFOURCC_ISMP         VLC_FOURCC('I','S','M','P')
 #define AVIFOURCC_IDIT         VLC_FOURCC('I','D','I','T')
+#define AVIFOURCC_ILNG         VLC_FOURCC('I','L','N','G')
+#define AVIFOURCC_IRTD         VLC_FOURCC('I','R','T','D')
+#define AVIFOURCC_IWEB         VLC_FOURCC('I','W','E','B')
+#define AVIFOURCC_IPRT         VLC_FOURCC('I','P','R','T')
+#define AVIFOURCC_IWRI         VLC_FOURCC('I','W','R','I')
+#define AVIFOURCC_IPRO         VLC_FOURCC('I','P','R','O')
+#define AVIFOURCC_ICNM         VLC_FOURCC('I','C','N','M')
+#define AVIFOURCC_IPDS         VLC_FOURCC('I','P','D','S')
+#define AVIFOURCC_IEDT         VLC_FOURCC('I','E','D','T')
+#define AVIFOURCC_ICDS         VLC_FOURCC('I','C','D','S')
+#define AVIFOURCC_IMUS         VLC_FOURCC('I','M','U','S')
+#define AVIFOURCC_ISTD         VLC_FOURCC('I','S','T','D')
+#define AVIFOURCC_IDST         VLC_FOURCC('I','D','S','T')
+#define AVIFOURCC_ICNT         VLC_FOURCC('I','C','N','T')
+#define AVIFOURCC_ISTR         VLC_FOURCC('I','S','T','R')
+#define AVIFOURCC_IFRM         VLC_FOURCC('I','F','R','M')
 
- 
+
 #define AVITWOCC_wb            VLC_TWOCC('w','b')
 #define AVITWOCC_db            VLC_TWOCC('d','b')
 #define AVITWOCC_dc            VLC_TWOCC('d','c')
@@ -302,9 +352,9 @@ void    AVI_ChunkFreeRoot( stream_t *, avi_chunk_t  *p_chk );
 #define AVITWOCC_tx            VLC_TWOCC('t','x')
 #define AVITWOCC_sb            VLC_TWOCC('s','b')
 
-    /* *** codex stuff ***  */
+/* *** codex stuff ***  */
 
-    /* DV */
+/* DV */
 #define FOURCC_dvsd         VLC_FOURCC('d','v','s','d')
 #define FOURCC_dvhd         VLC_FOURCC('d','v','h','d')
 #define FOURCC_dvsl         VLC_FOURCC('d','v','s','l')

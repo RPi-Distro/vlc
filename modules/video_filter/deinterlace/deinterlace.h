@@ -1,8 +1,8 @@
 /*****************************************************************************
  * deinterlace.h : deinterlacer plugin for vlc
  *****************************************************************************
- * Copyright (C) 2000-2011 the VideoLAN team
- * $Id: 844a59d68c0d184d118d0fb897a84d585c6559bc $
+ * Copyright (C) 2000-2011 VLC authors and VideoLAN
+ * $Id: 7fc036d7f3f440a844f039d008c59befebd0b253 $
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *         Christophe Massiot <massiot@via.ecp.fr>
@@ -10,19 +10,19 @@
  *         Juha Jeronen <juha.jeronen@jyu.fi>
  *         ...and others
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_DEINTERLACE_H
@@ -89,7 +89,9 @@ typedef struct {
  */
 struct filter_sys_t
 {
-    int  i_mode;              /**< Deinterlace mode */
+    const vlc_chroma_description_t *chroma;
+
+    uint8_t  i_mode;              /**< Deinterlace mode */
 
     /* Algorithm behaviour flags */
     bool b_double_rate;       /**< Shall we double the framerate? */
@@ -98,8 +100,10 @@ struct filter_sys_t
 
     /** Merge routine: C, MMX, SSE, ALTIVEC, NEON, ... */
     void (*pf_merge) ( void *, const void *, const void *, size_t );
-    /** Merge finalization routine: C, MMX, SSE, ALTIVEC, NEON, ... */
+#if defined (__i386__) || defined (__x86_64__)
+    /** Merge finalization routine for SSE */
     void (*pf_end_merge) ( void );
+#endif
 
     /**
      * Metadata history (PTS, nb_fields, TFF). Used for framerate doublers.
@@ -118,53 +122,6 @@ struct filter_sys_t
     phosphor_sys_t phosphor; /**< Phosphor algorithm state. */
     ivtc_sys_t ivtc;         /**< IVTC algorithm state. */
 };
-
-/*****************************************************************************
- * Filter control related internal functions for the deinterlace filter
- *****************************************************************************/
-
-/**
- * Setup the deinterlace method to use.
- *
- * FIXME: extract i_chroma from p_filter automatically?
- *
- * @param p_filter The filter instance.
- * @param psz_method Desired method. See mode_list for available choices.
- * @param i_chroma Input chroma. Set this to p_filter->fmt_in.video.i_chroma.
- * @see mode_list
- */
-void SetFilterMethod( filter_t *p_filter, const char *psz_method,
-                      vlc_fourcc_t i_chroma );
-
-/**
- * Get the output video format of the chosen deinterlace method
- * for the given input video format.
- *
- * Note that each algorithm is allowed to specify its output format,
- * which may (for some input formats) differ from the input format.
- *
- * @param p_filter The filter instance.
- * @param[out] p_dst Output video format. The structure must be allocated by caller.
- * @param[in] p_src Input video format.
- * @see SetFilterMethod()
- */
-void GetOutputFormat( filter_t *p_filter,
-                      video_format_t *p_dst,
-                      const video_format_t *p_src );
-
-/**
- * Returns whether the specified chroma is implemented in the deinterlace
- * filter.
- *
- * Currently, supported chromas are I420, J420 (4:2:0 full scale),
- * YV12 (like I420, but YVU), I422 and J422.
- *
- * Note for deinterlace hackers: adding support for a new chroma typically
- * requires changes to all low-level functions across all the algorithms.
- *
- * @see vlc_fourcc_t
- */
-bool IsChromaSupported( vlc_fourcc_t i_chroma );
 
 /*****************************************************************************
  * video filter2 functions

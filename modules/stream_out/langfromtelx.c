@@ -2,7 +2,7 @@
  * langfromtelx.c: dynamic language setting from telx
  *****************************************************************************
  * Copyright © 2009-2011 VLC authors and VideoLAN
- * $Id: f6129c0b6649dd230c5a3f216594d3ab61bb71f8 $
+ * $Id: 4e6c78fbae878e4d944b640b419e29428a62fa6b $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -24,11 +24,11 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <ctype.h>
-
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+
+#include <ctype.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>

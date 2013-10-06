@@ -2,24 +2,24 @@
  * compressor.c: dynamic range compressor, ported from plugins from LADSPA SWH
  *****************************************************************************
  * Copyright (C) 2010 Ronald Wright
- * $Id: d73b1543d1773fb7892d6a2a8674ce26d86ab5dd $
+ * $Id: 29f819cb63f926e41563750560d7a9a583c49c13 $
  *
  * Author: Ronald Wright <logiconcepts819@gmail.com>
  * Original author: Steve Harris <steve@plugin.org.uk>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -209,27 +209,10 @@ static int Open( vlc_object_t *p_this )
     filter_t *p_filter = (filter_t*)p_this;
     vlc_object_t *p_aout = p_filter->p_parent;
     float f_sample_rate = p_filter->fmt_in.audio.i_rate;
-    filter_sys_t *p_sys;
     float f_num;
 
-    if( p_filter->fmt_in.audio.i_format != VLC_CODEC_FL32 ||
-        p_filter->fmt_out.audio.i_format != VLC_CODEC_FL32 )
-    {
-        p_filter->fmt_in.audio.i_format = VLC_CODEC_FL32;
-        p_filter->fmt_out.audio.i_format = VLC_CODEC_FL32;
-        msg_Warn( p_filter, "bad input or output format" );
-        return VLC_EGENERIC;
-    }
-    if( !AOUT_FMTS_SIMILAR( &p_filter->fmt_in.audio,
-                            &p_filter->fmt_out.audio ) )
-    {
-        p_filter->fmt_out.audio = p_filter->fmt_in.audio;
-        msg_Warn( p_filter, "input and output formats are not similar" );
-        return VLC_EGENERIC;
-    }
-
     /* Initialize the filter parameter structure */
-    p_sys = p_filter->p_sys = calloc( 1, sizeof(*p_sys) );
+    filter_sys_t *p_sys = p_filter->p_sys = calloc( 1, sizeof(*p_sys) );
     if( !p_sys )
     {
         return VLC_ENOMEM;
@@ -273,6 +256,8 @@ static int Open( vlc_object_t *p_this )
     var_AddCallback( p_aout, "compressor-makeup-gain", MakeupGainCallback, p_sys );
 
     /* Set the filter function */
+    p_filter->fmt_in.audio.i_format = VLC_CODEC_FL32;
+    p_filter->fmt_out.audio = p_filter->fmt_in.audio;
     p_filter->pf_audio_filter = DoWork;
 
     /* At this stage, we are ready! */

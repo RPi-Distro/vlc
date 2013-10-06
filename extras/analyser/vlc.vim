@@ -23,7 +23,7 @@ function VlcSyntax()
   syn keyword cConstant VLC_ESTATUS VLC_EEXIT VLC_EMODULE VLC_EOBJECT
   syn keyword cConstant VLC_ENOOBJ VLC_ENOMOD VLC_VAR_ADDRESS
   " custom types
-  syn keyword cType vlc_fixed_t mtime_t byte_t dctelem_t count_t ssize_t off_t
+  syn keyword cType vlc_fixed_t mtime_t byte_t dctelem_t ssize_t off_t
   syn keyword cType vlc_bool_t vlc_fourcc_t vlc_value_t
   " Core custom structures
   syn keyword cType vlc_t libvlc_t vlc_object_t vlc_error_t vlc_status_t 
@@ -33,7 +33,7 @@ function VlcSyntax()
   syn keyword cType module_bank_t module_t module_config_t module_symbols_t
   syn keyword cType module_cache_t config_category_t
   " Playlist
-  syn keyword cType playlist_t playlist_item_t playlist_view_t 
+  syn keyword cType playlist_t playlist_item_t
   syn keyword cType services_discovery_t services_discovery_sys_t
   syn keyword cType playlist_add_t playlist_preparse_t
   syn keyword cType item_info_t item_info_category_t 
@@ -53,7 +53,7 @@ function VlcSyntax()
   syn keyword cType es_format_t video_palette_t
   " Aout
   syn keyword cType audio_output_t aout_sys_t
-  syn keyword cType aout_fifo_t aout_input_t aout_buffer_t audio_sample_format_t
+  syn keyword cType aout_fifo_t audio_sample_format_t
   syn keyword cType aout_mixer_sys_t aout_filter_sys_t audio_volume_t
   syn keyword cType aout_mixer_t aout_output_t audio_date_t 
   syn keyword cType aout_filter_t
@@ -62,12 +62,12 @@ function VlcSyntax()
   syn keyword cType chroma_sys_t picture_t picture_sys_t picture_heap_t
   syn keyword cType video_frame_format_t
   " SPU
-  syn keyword cType spu_t subpicture_t subpicture_sys_t 
+  syn keyword cType spu_t subpicture_t
   syn keyword cType subpicture_region_t text_style_t
   " Images
   syn keyword cType image_handler_t
   " Sout
-  syn keyword cType sout_instance_t sout_instance_sys_t sout_cfg_t
+  syn keyword cType sout_instance_t sout_cfg_t
   syn keyword cType sout_input_t sout_packetizer_input_t
   syn keyword cType sout_access_out_t sout_access_out_sys_t 
   syn keyword cType sout_mux_t sout_mux_sys_t
@@ -96,9 +96,6 @@ function VlcSyntax()
   syn keyword cType xml_t xml_sys_t xml_reader_t xml_reader_sys_t
   " VoD
   syn keyword cType vod_t vod_sys_t vod_media_t
-  " OSD
-  syn keyword cType osd_menu_t osd_state_t osd_event_t osd_button_t
-  syn keyword cType osd_menu_state_t
   " OpenGL
   syn keyword cType opengl_t opengl_sys_t
   " VLM

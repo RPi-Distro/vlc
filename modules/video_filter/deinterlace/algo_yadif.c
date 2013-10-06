@@ -1,25 +1,25 @@
 /*****************************************************************************
  * algo_yadif.c : Wrapper for FFmpeg's Yadif algorithm
  *****************************************************************************
- * Copyright (C) 2000-2011 the VideoLAN team
- * $Id: 0a9efdbba2ff6150b305e26d84a44ce951b581b9 $
+ * Copyright (C) 2000-2011 VLC authors and VideoLAN
+ * $Id: da3470dde63c88aaddf8ed61ad831076ee8fd074 $
  *
  * Author: Laurent Aimar <fenrir@videolan.org>
  *         Juha Jeronen  <juha.jeronen@jyu.fi> (soft field repeat hack)
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -108,19 +108,25 @@ int RenderYadif( filter_t *p_filter, picture_t *p_dst, picture_t *p_src,
         void (*filter)(uint8_t *dst, uint8_t *prev, uint8_t *cur, uint8_t *next,
                        int w, int prefs, int mrefs, int parity, int mode);
 
-        filter = yadif_filter_line_c;
-#if defined(HAVE_YADIF_MMX)
-        if( vlc_CPU() & CPU_CAPABILITY_MMX )
-            filter = yadif_filter_line_mmx;
+#if defined(HAVE_YADIF_SSSE3)
+        if( vlc_CPU_SSSE3() )
+            filter = yadif_filter_line_ssse3;
+        else
 #endif
 #if defined(HAVE_YADIF_SSE2)
-        if( vlc_CPU() & CPU_CAPABILITY_SSE2 )
+        if( vlc_CPU_SSE2() )
             filter = yadif_filter_line_sse2;
+        else
 #endif
-#if defined(HAVE_YADIF_SSSE3)
-        if( vlc_CPU() & CPU_CAPABILITY_SSSE3 )
-            filter = yadif_filter_line_ssse3;
+#if defined(HAVE_YADIF_MMX)
+        if( vlc_CPU_MMX() )
+            filter = yadif_filter_line_mmx;
+        else
 #endif
+            filter = yadif_filter_line_c;
+
+        if( p_sys->chroma->pixel_size == 2 )
+            filter = yadif_filter_line_c_16bit;
 
         for( int n = 0; n < p_dst->i_planes; n++ )
         {
@@ -133,7 +139,7 @@ int RenderYadif( filter_t *p_filter, picture_t *p_dst, picture_t *p_src,
             {
                 if( (y % 2) == i_field  ||  yadif_parity == 2 )
                 {
-                    vlc_memcpy( &dstp->p_pixels[y * dstp->i_pitch],
+                    memcpy( &dstp->p_pixels[y * dstp->i_pitch],
                                 &curp->p_pixels[y * curp->i_pitch], dstp->i_visible_pitch );
                 }
                 else
@@ -156,11 +162,11 @@ int RenderYadif( filter_t *p_filter, picture_t *p_dst, picture_t *p_src,
 
                 /* We duplicate the first and last lines */
                 if( y == 1 )
-                    vlc_memcpy(&dstp->p_pixels[(y-1) * dstp->i_pitch],
+                    memcpy(&dstp->p_pixels[(y-1) * dstp->i_pitch],
                                &dstp->p_pixels[ y    * dstp->i_pitch],
                                dstp->i_pitch);
                 else if( y == dstp->i_visible_lines - 2 )
-                    vlc_memcpy(&dstp->p_pixels[(y+1) * dstp->i_pitch],
+                    memcpy(&dstp->p_pixels[(y+1) * dstp->i_pitch],
                                &dstp->p_pixels[ y    * dstp->i_pitch],
                                dstp->i_pitch);
             }

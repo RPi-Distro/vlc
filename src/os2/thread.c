@@ -39,6 +39,12 @@
 #include <errno.h>
 #include <time.h>
 
+#include <sys/types.h>
+#include <sys/socket.h>
+
+#include <sys/time.h>
+#include <sys/select.h>
+
 static vlc_threadvar_t thread_key;
 
 /**
@@ -49,6 +55,7 @@ struct vlc_thread
     TID            tid;
     HEV            cancel_event;
     HEV            done_event;
+    int            cancel_sock;
 
     bool           detached;
     bool           killable;
@@ -119,9 +126,9 @@ static ULONG vlc_Sleep (ULONG ulTimeout)
     return ( rc != ERROR_TIMEOUT ) ? rc : 0;
 }
 
-vlc_mutex_t super_mutex;
-vlc_cond_t  super_variable;
-extern vlc_rwlock_t config_lock, msg_lock;
+static vlc_mutex_t super_mutex;
+static vlc_cond_t  super_variable;
+extern vlc_rwlock_t config_lock;
 
 int _CRT_init(void);
 void _CRT_term(void);
@@ -142,13 +149,11 @@ unsigned long _System _DLL_InitTerm(unsigned long hmod, unsigned long flag)
             vlc_cond_init (&super_variable);
             vlc_threadvar_create (&thread_key, NULL);
             vlc_rwlock_init (&config_lock);
-            vlc_rwlock_init (&msg_lock);
             vlc_CPU_init ();
 
             return 1;
 
         case 1 :    /* Termination */
-            vlc_rwlock_destroy (&msg_lock);
             vlc_rwlock_destroy (&config_lock);
             vlc_threadvar_delete (&thread_key);
             vlc_cond_destroy (&super_variable);
@@ -246,6 +251,8 @@ void vlc_mutex_unlock (vlc_mutex_t *p_mutex)
 }
 
 /*** Condition variables ***/
+#undef CLOCK_REALTIME
+#undef CLOCK_MONOTONIC
 enum
 {
     CLOCK_REALTIME=0, /* must be zero for VLC_STATIC_COND */
@@ -326,7 +333,7 @@ int vlc_cond_timedwait (vlc_cond_t *p_condvar, vlc_mutex_t *p_mutex,
     if (!p_condvar->hev)
     {   /* FIXME FIXME FIXME */
         msleep (50000);
-        return;
+        return 0;
     }
 
     do
@@ -360,160 +367,6 @@ int vlc_cond_timedwait (vlc_cond_t *p_condvar, vlc_mutex_t *p_mutex,
     return rc ? ETIMEDOUT : 0;
 }
 
-/*** Semaphore ***/
-void vlc_sem_init (vlc_sem_t *sem, unsigned value)
-{
-    if (DosCreateEventSem(NULL, &sem->hev, 0, value > 0 ? TRUE : FALSE))
-        abort ();
-
-    if (DosCreateMutexSem(NULL, &sem->wait_mutex, 0, FALSE))
-        abort ();
-
-    if (DosCreateMutexSem(NULL, &sem->count_mutex, 0, FALSE))
-        abort ();
-
-    sem->count = value;
-}
-
-void vlc_sem_destroy (vlc_sem_t *sem)
-{
-    DosCloseEventSem (sem->hev);
-    DosCloseMutexSem (sem->wait_mutex);
-    DosCloseMutexSem (sem->count_mutex);
-}
-
-int vlc_sem_post (vlc_sem_t *sem)
-{
-    DosRequestMutexSem(sem->count_mutex, SEM_INDEFINITE_WAIT);
-
-    if (sem->count < 0x7FFFFFFF)
-    {
-        sem->count++;
-        DosPostEventSem(sem->hev);
-    }
-
-    DosReleaseMutexSem(sem->count_mutex);
-
-    return 0; /* FIXME */
-}
-
-void vlc_sem_wait (vlc_sem_t *sem)
-{
-    ULONG rc;
-
-    do
-    {
-        vlc_testcancel ();
-
-        DosRequestMutexSem(sem->wait_mutex, SEM_INDEFINITE_WAIT);
-
-        rc = vlc_WaitForSingleObject (sem->hev, SEM_INDEFINITE_WAIT );
-
-        if (!rc)
-        {
-            DosRequestMutexSem(sem->count_mutex, SEM_INDEFINITE_WAIT);
-
-            sem->count--;
-            if (sem->count == 0)
-            {
-                ULONG ulPost;
-
-                DosResetEventSem(sem->hev, &ulPost);
-            }
-
-            DosReleaseMutexSem(sem->count_mutex);
-        }
-
-        DosReleaseMutexSem(sem->wait_mutex);
-    } while (rc == ERROR_INTERRUPT);
-}
-
-/*** Read/write locks */
-void vlc_rwlock_init (vlc_rwlock_t *lock)
-{
-    vlc_mutex_init (&lock->mutex);
-    vlc_cond_init (&lock->wait);
-    lock->readers = 0; /* active readers */
-    lock->writers = 0; /* waiting or active writers */
-    lock->writer = 0; /* ID of active writer */
-}
-
-void vlc_rwlock_destroy (vlc_rwlock_t *lock)
-{
-    vlc_cond_destroy (&lock->wait);
-    vlc_mutex_destroy (&lock->mutex);
-}
-
-void vlc_rwlock_rdlock (vlc_rwlock_t *lock)
-{
-    vlc_mutex_lock (&lock->mutex);
-    /* Recursive read-locking is allowed. With the infos available:
-     *  - the loosest possible condition (no active writer) is:
-     *     (lock->writer != 0)
-     *  - the strictest possible condition is:
-     *     (lock->writer != 0 || (lock->readers == 0 && lock->writers > 0))
-     *  or (lock->readers == 0 && (lock->writer != 0 || lock->writers > 0))
-     */
-    while (lock->writer != 0)
-    {
-        assert (lock->readers == 0);
-        vlc_cond_wait (&lock->wait, &lock->mutex);
-    }
-    if (unlikely(lock->readers == ULONG_MAX))
-        abort ();
-    lock->readers++;
-    vlc_mutex_unlock (&lock->mutex);
-}
-
-static void vlc_rwlock_rdunlock (vlc_rwlock_t *lock)
-{
-    vlc_mutex_lock (&lock->mutex);
-    assert (lock->readers > 0);
-
-    /* If there are no readers left, wake up a writer. */
-    if (--lock->readers == 0 && lock->writers > 0)
-        vlc_cond_signal (&lock->wait);
-    vlc_mutex_unlock (&lock->mutex);
-}
-
-void vlc_rwlock_wrlock (vlc_rwlock_t *lock)
-{
-    vlc_mutex_lock (&lock->mutex);
-    if (unlikely(lock->writers == ULONG_MAX))
-        abort ();
-    lock->writers++;
-    /* Wait until nobody owns the lock in either way. */
-    while ((lock->readers > 0) || (lock->writer != 0))
-        vlc_cond_wait (&lock->wait, &lock->mutex);
-    lock->writers--;
-    assert (lock->writer == 0);
-    lock->writer = _gettid ();
-    vlc_mutex_unlock (&lock->mutex);
-}
-
-static void vlc_rwlock_wrunlock (vlc_rwlock_t *lock)
-{
-    vlc_mutex_lock (&lock->mutex);
-    assert (lock->writer == _gettid ());
-    assert (lock->readers == 0);
-    lock->writer = 0; /* Write unlock */
-
-    /* Let reader and writer compete. Scheduler decides who wins. */
-    vlc_cond_broadcast (&lock->wait);
-    vlc_mutex_unlock (&lock->mutex);
-}
-
-void vlc_rwlock_unlock (vlc_rwlock_t *lock)
-{
-    /* Note: If the lock is held for reading, lock->writer is nul.
-     * If the lock is held for writing, only this thread can store a value to
-     * lock->writer. Either way, lock->writer is safe to fetch here. */
-    if (lock->writer != 0)
-        vlc_rwlock_wrunlock (lock);
-    else
-        vlc_rwlock_rdunlock (lock);
-}
-
 /*** Thread-specific variables (TLS) ***/
 struct vlc_threadvar
 {
@@ -535,7 +388,7 @@ int vlc_threadvar_create (vlc_threadvar_t *p_tls, void (*destr) (void *))
     if( rc )
     {
         free (var);
-        return ENOMEM;
+        return EAGAIN;
     }
 
     var->destroy = destr;
@@ -544,6 +397,9 @@ int vlc_threadvar_create (vlc_threadvar_t *p_tls, void (*destr) (void *))
 
     vlc_mutex_lock (&super_mutex);
     var->prev = vlc_threadvar_last;
+    if (var->prev)
+        var->prev->next = var;
+
     vlc_threadvar_last = var;
     vlc_mutex_unlock (&super_mutex);
     return 0;
@@ -556,10 +412,12 @@ void vlc_threadvar_delete (vlc_threadvar_t *p_tls)
     vlc_mutex_lock (&super_mutex);
     if (var->prev != NULL)
         var->prev->next = var->next;
-    else
-        vlc_threadvar_last = var->next;
+
     if (var->next != NULL)
         var->next->prev = var->prev;
+    else
+        vlc_threadvar_last = var->prev;
+
     vlc_mutex_unlock (&super_mutex);
 
     DosFreeThreadLocalMemory( var->id );
@@ -608,6 +466,9 @@ retry:
     {
         DosCloseEventSem (th->cancel_event);
         DosCloseEventSem (th->done_event );
+
+        soclose (th->cancel_sock);
+
         free (th);
     }
 }
@@ -641,6 +502,10 @@ static int vlc_clone_attr (vlc_thread_t *p_handle, bool detached,
     if( DosCreateEventSem (NULL, &th->done_event, 0, FALSE))
         goto error;
 
+    th->cancel_sock = socket (AF_LOCAL, SOCK_STREAM, 0);
+    if( th->cancel_sock < 0 )
+        goto error;
+
     th->tid = _beginthread (vlc_entry, NULL, 1024 * 1024, th);
     if((int)th->tid == -1)
         goto error;
@@ -657,6 +522,7 @@ static int vlc_clone_attr (vlc_thread_t *p_handle, bool detached,
     return 0;
 
 error:
+    soclose (th->cancel_sock);
     DosCloseEventSem (th->cancel_event);
     DosCloseEventSem (th->done_event);
     free (th);
@@ -685,6 +551,8 @@ void vlc_join (vlc_thread_t th, void **result)
 
     DosCloseEventSem( th->cancel_event );
     DosCloseEventSem( th->done_event );
+
+    soclose( th->cancel_sock );
 
     free( th );
 }
@@ -723,6 +591,7 @@ static void vlc_cancel_self (PVOID self)
 void vlc_cancel (vlc_thread_t thread_id)
 {
     DosPostEventSem( thread_id->cancel_event );
+    so_cancel( thread_id->cancel_sock );
 }
 
 int vlc_savecancel (void)
@@ -759,7 +628,7 @@ void vlc_testcancel (void)
     /* This check is needed for the case that vlc_cancel() is followed by
      * vlc_testcancel() without any cancellation point */
     if( DosWaitEventSem( th->cancel_event, 0 ) == NO_ERROR )
-        vlc_cancel_self( NULL );
+        vlc_cancel_self( th );
 
     if (th->killable && th->killed)
     {
@@ -803,6 +672,82 @@ void vlc_control_cancel (int cmd, ...)
         }
     }
     va_end (ap);
+}
+
+static int vlc_select( int nfds, fd_set *rdset, fd_set *wrset, fd_set *exset,
+                       struct timeval *timeout )
+{
+    struct vlc_thread *th = vlc_threadvar_get( thread_key );
+
+    int rc;
+
+    if( th )
+    {
+        FD_SET( th->cancel_sock, rdset );
+
+        nfds = MAX( nfds, th->cancel_sock + 1 );
+    }
+
+    rc = select( nfds, rdset, wrset, exset, timeout );
+
+    vlc_testcancel();
+
+    return rc;
+
+}
+
+int vlc_poll( struct pollfd *fds, unsigned nfds, int timeout )
+{
+    fd_set rdset, wrset, exset;
+
+    struct timeval tv = { 0, 0 };
+
+    int val = -1;
+
+    FD_ZERO( &rdset );
+    FD_ZERO( &wrset );
+    FD_ZERO( &exset );
+    for( unsigned i = 0; i < nfds; i++ )
+    {
+        int fd = fds[ i ].fd;
+        if( val < fd )
+            val = fd;
+
+        if(( unsigned )fd >= FD_SETSIZE )
+        {
+            errno = EINVAL;
+            return -1;
+        }
+
+        if( fds[ i ].events & POLLIN )
+            FD_SET( fd, &rdset );
+        if( fds[ i ].events & POLLOUT )
+            FD_SET( fd, &wrset );
+        if( fds[ i ].events & POLLPRI )
+            FD_SET( fd, &exset );
+    }
+
+    if( timeout >= 0 )
+    {
+        div_t d    = div( timeout, 1000 );
+        tv.tv_sec  = d.quot;
+        tv.tv_usec = d.rem * 1000;
+    }
+
+    val = vlc_select( val + 1, &rdset, &wrset, &exset,
+                      ( timeout >= 0 ) ? &tv : NULL );
+    if( val == -1 )
+        return -1;
+
+    for( unsigned i = 0; i < nfds; i++ )
+    {
+        int fd = fds[ i ].fd;
+        fds[ i ].revents = ( FD_ISSET( fd, &rdset ) ? POLLIN  : 0 )
+                         | ( FD_ISSET( fd, &wrset ) ? POLLOUT : 0 )
+                         | ( FD_ISSET( fd, &exset ) ? POLLPRI : 0 );
+    }
+
+    return val;
 }
 
 #define Q2LL( q )   ( *( long long * )&( q ))

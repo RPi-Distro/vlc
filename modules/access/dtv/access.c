@@ -12,7 +12,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -36,7 +36,7 @@
 #define ADAPTER_TEXT N_("DVB adapter")
 #define ADAPTER_LONGTEXT N_( \
     "If there is more than one digital broadcasting adapter, " \
-    "the adapter number must be selected. Numbering start from zero.")
+    "the adapter number must be selected. Numbering starts from zero.")
 
 #define DEVICE_TEXT N_("DVB device")
 #define DEVICE_LONGTEXT N_( \
@@ -141,6 +141,8 @@ static const char *const hierarchy_user[] = { N_("Automatic"),
     N_("None"), "1", "2", "4",
 };
 
+#define PLP_ID_TEXT N_("DVB-T2 Physical Layer Pipe")
+
 #define SEGMENT_COUNT_A_TEXT N_("Layer A segments count")
 #define SEGMENT_COUNT_B_TEXT N_("Layer B segments count")
 #define SEGMENT_COUNT_C_TEXT N_("Layer C segments count")
@@ -204,6 +206,14 @@ static const char *const satno_user[] = { N_("Unspecified"),
     "A/1", "B/2", "C/3", "D/4" };
 #endif
 
+#define UNCOMMITTED_TEXT N_("Uncommitted DiSEqC LNB number")
+#define UNCOMMITTED_LONGTEXT N_( \
+    "If the satellite receiver is connected to multiple " \
+    "low noise block-downconverters (LNB) through a cascade formed from " \
+    "DiSEqC 1.1 uncommitted switch and DiSEqC 1.0 committed switch, " \
+    "the correct uncommitted LNB can be selected (1 to 4). " \
+    "If there is no uncommitted switch, this parameter should be 0.")
+
 /* BDA module additional DVB-S Parameters */
 #define NETID_TEXT N_("Network identifier")
 #define AZIMUTH_TEXT N_("Satellite azimuth")
@@ -237,7 +247,7 @@ vlc_module_begin ()
                   "cable", "dvb-c", "cqam", "isdb-c",
                   "satellite", "dvb-s", "dvb-s2", "isdb-s",
                   "terrestrial", "dvb-t", "dvb-t2", "isdb-t", "atsc"
-#ifdef WIN32
+#ifdef _WIN32
                   ,"dvbt"
 #endif
                  )
@@ -251,7 +261,7 @@ vlc_module_begin ()
         change_safe ()
     add_bool ("dvb-budget-mode", false, BUDGET_TEXT, BUDGET_LONGTEXT, true)
 #endif
-#ifdef WIN32
+#ifdef _WIN32
     add_integer ("dvb-adapter", -1, ADAPTER_TEXT, ADAPTER_LONGTEXT, true)
         change_safe ()
     add_string ("dvb-network-name", "", NAME_TEXT, NAME_LONGTEXT, true)
@@ -275,29 +285,32 @@ vlc_module_begin ()
         change_integer_list (transmission_vlc, transmission_user)
         change_safe ()
     add_string ("dvb-guard", "", GUARD_TEXT, GUARD_TEXT, true)
-        change_string_list (guard_vlc, guard_user, NULL)
+        change_string_list (guard_vlc, guard_user)
         change_safe ()
 
     set_section (N_("DVB-T reception parameters"), NULL)
     add_string ("dvb-code-rate-hp", "",
                 CODE_RATE_HP_TEXT, CODE_RATE_LONGTEXT, true)
-        change_string_list (code_rate_vlc, code_rate_user, NULL)
+        change_string_list (code_rate_vlc, code_rate_user)
         change_safe ()
     add_string ("dvb-code-rate-lp", "",
                 CODE_RATE_LP_TEXT, CODE_RATE_LONGTEXT, true)
-        change_string_list (code_rate_vlc, code_rate_user, NULL)
+        change_string_list (code_rate_vlc, code_rate_user)
         change_safe ()
     add_integer ("dvb-hierarchy", -1, HIERARCHY_TEXT, HIERARCHY_TEXT, true)
         change_integer_list (hierarchy_vlc, hierarchy_user)
+        change_safe ()
+    add_integer ("dvb-plp-id", 0, PLP_ID_TEXT, PLP_ID_TEXT, false)
+        change_integer_range (0, 0xFFFFFFFF)
         change_safe ()
 
     set_section (N_("ISDB-T reception parameters"), NULL)
     add_string ("dvb-a-modulation", NULL,
                 MODULATION_A_TEXT, MODULATION_LONGTEXT, true)
-        change_string_list (modulation_vlc, modulation_user, NULL)
+        change_string_list (modulation_vlc, modulation_user)
         change_safe ()
     add_string ("dvb-a-fec", NULL, CODE_RATE_A_TEXT, CODE_RATE_LONGTEXT, true)
-        change_string_list (code_rate_vlc, code_rate_user, NULL)
+        change_string_list (code_rate_vlc, code_rate_user)
         change_safe ()
     add_integer ("dvb-a-count", 0, SEGMENT_COUNT_A_TEXT, NULL, true)
         change_integer_range (0, 13)
@@ -307,10 +320,10 @@ vlc_module_begin ()
         change_safe ()
     add_string ("dvb-b-modulation", NULL,
                 MODULATION_B_TEXT, MODULATION_LONGTEXT, true)
-        change_string_list (modulation_vlc, modulation_user, NULL)
+        change_string_list (modulation_vlc, modulation_user)
         change_safe ()
     add_string ("dvb-b-fec", NULL, CODE_RATE_B_TEXT, CODE_RATE_LONGTEXT, true)
-        change_string_list (code_rate_vlc, code_rate_user, NULL)
+        change_string_list (code_rate_vlc, code_rate_user)
         change_safe ()
     add_integer ("dvb-b-count", 0, SEGMENT_COUNT_B_TEXT, NULL, true)
         change_integer_range (0, 13)
@@ -320,10 +333,10 @@ vlc_module_begin ()
         change_safe ()
     add_string ("dvb-c-modulation", NULL,
                 MODULATION_C_TEXT, MODULATION_LONGTEXT, true)
-        change_string_list (modulation_vlc, modulation_user, NULL)
+        change_string_list (modulation_vlc, modulation_user)
         change_safe ()
     add_string ("dvb-c-fec", NULL, CODE_RATE_C_TEXT, CODE_RATE_LONGTEXT, true)
-        change_string_list (code_rate_vlc, code_rate_user, NULL)
+        change_string_list (code_rate_vlc, code_rate_user)
         change_safe ()
     add_integer ("dvb-c-count", 0, SEGMENT_COUNT_C_TEXT, NULL, true)
         change_integer_range (0, 13)
@@ -335,13 +348,13 @@ vlc_module_begin ()
     set_section (N_("Cable and satellite reception parameters"), NULL)
     add_string ("dvb-modulation", NULL,
                  MODULATION_TEXT, MODULATION_LONGTEXT, false)
-        change_string_list (modulation_vlc, modulation_user, NULL)
+        change_string_list (modulation_vlc, modulation_user)
         change_safe ()
     add_integer ("dvb-srate", 0, SRATE_TEXT, SRATE_LONGTEXT, false)
         change_integer_range (0, UINT64_C(0xffffffff))
         change_safe ()
     add_string ("dvb-fec", "", CODE_RATE_TEXT, CODE_RATE_LONGTEXT, true)
-        change_string_list (code_rate_vlc, code_rate_user, NULL)
+        change_string_list (code_rate_vlc, code_rate_user)
         change_safe ()
 
     set_section (N_("DVB-S2 parameters"), NULL)
@@ -360,7 +373,7 @@ vlc_module_begin ()
     set_section (N_("Satellite equipment control"), NULL)
     add_string ("dvb-polarization", "",
                 POLARIZATION_TEXT, POLARIZATION_LONGTEXT, false)
-        change_string_list (polarization_vlc, polarization_user, NULL)
+        change_string_list (polarization_vlc, polarization_user)
         change_safe ()
     add_integer ("dvb-voltage", 13, "", "", true)
         change_integer_range (0, 18)
@@ -384,10 +397,13 @@ vlc_module_begin ()
     add_integer ("dvb-satno", 0, SATNO_TEXT, SATNO_LONGTEXT, true)
         change_integer_list (satno_vlc, satno_user)
         change_safe ()
+    add_integer ("dvb-uncommitted", 0, UNCOMMITTED_TEXT, UNCOMMITTED_LONGTEXT, true)
+        change_integer_list (satno_vlc, satno_user)
+        change_safe ()
     add_integer ("dvb-tone", -1, TONE_TEXT, TONE_LONGTEXT, true)
         change_integer_list (auto_off_on_vlc, auto_off_on_user)
 #endif
-#ifdef WIN32
+#ifdef _WIN32
     add_integer ("dvb-network-id", 0, NETID_TEXT, NETID_TEXT, true)
     add_integer ("dvb-azimuth", 0, AZIMUTH_TEXT, AZIMUTH_LONGTEXT, true)
     add_integer ("dvb-elevation", 0, ELEVATION_TEXT, ELEVATION_LONGTEXT, true)
@@ -599,25 +615,7 @@ static int Control (access_t *access, int query, va_list args)
 /** Determines which delivery system to use. */
 static const delsys_t *GuessSystem (const char *scheme, dvb_device_t *dev)
 {
-    /* NOTE: We should guess the delivery system for the "cable", "satellite"
-     * and "terrestrial" shortcuts (i.e. DVB, ISDB, ATSC...). But there is
-     * seemingly no sane way to do get the info with Linux DVB version 5.2.
-     * In particular, the frontend infos distinguish only the modulator class
-     * (QPSK, QAM, OFDM or ATSC).
-     *
-     * Furthermore, if the demodulator supports 2G, we cannot guess whether
-     * 1G or 2G is intended. For backward compatibility, 1G is assumed
-     * (this is not a limitation of Linux DVB). We will probably need something
-     * smarter when 2G (semi automatic) scanning is implemented. */
-    if (!strcasecmp (scheme, "cable"))
-        scheme = "dvb-c";
-    else
-    if (!strcasecmp (scheme, "satellite"))
-        scheme = "dvb-s";
-    else
-    if (!strcasecmp (scheme, "terrestrial"))
-        scheme = "dvb-t";
-
+    /* Specific delivery system is specified */
     if (!strcasecmp (scheme, "atsc"))
         return &atsc;
     if (!strcasecmp (scheme, "cqam"))
@@ -639,15 +637,48 @@ static const delsys_t *GuessSystem (const char *scheme, dvb_device_t *dev)
     if (!strcasecmp (scheme, "isdb-t"))
         return &isdbt;
 
+    /* If the demodulator supports 2G, we cannot guess whether
+     * 1G or 2G is intended. For backward compatibility, 1G is assumed
+     * (this is not a limitation of Linux DVB). We will probably need something
+     * smarter when 2G (semi automatic) scanning is implemented. */
     unsigned systems = dvb_enum_systems (dev);
-    if (systems & ATSC)
-        return &atsc;
+
+    /* Only wave carrier is specified */
+    if (!strcasecmp (scheme, "cable"))
+    {
+        if (systems & DVB_C)
+            return &dvbc;
+        if (systems & CQAM)
+            return &cqam;
+        if (systems & ISDB_C)
+            return &isdbc;
+    }
+    if (!strcasecmp (scheme, "satellite"))
+    {
+        if (systems & DVB_S)
+            return &dvbs;
+        if (systems & ISDB_S)
+            return &isdbs;
+    }
+    if (!strcasecmp (scheme, "terrestrial"))
+    {
+        if (systems & DVB_T)
+            return &dvbc;
+        if (systems & ATSC)
+            return &cqam;
+        if (systems & ISDB_T)
+            return &isdbt;
+    }
+
+    /* Only standards family or nothing is specified */
     if (systems & DVB_C)
         return &dvbc;
     if (systems & DVB_S)
         return &dvbs;
     if (systems & DVB_T)
         return &dvbt;
+    if (systems & ATSC)
+        return &atsc;
     return NULL;
 }
 
@@ -831,14 +862,14 @@ static char var_InheritPolarization (vlc_object_t *obj)
     return pol;
 }
 
-static int sec_setup (vlc_object_t *obj, dvb_device_t *dev, uint64_t freq)
+static void sec_setup (vlc_object_t *obj, dvb_device_t *dev, uint64_t freq)
 {
     char pol = var_InheritPolarization (obj);
     unsigned lowf = var_InheritInteger (obj, "dvb-lnb-low");
     unsigned highf = var_InheritInteger (obj, "dvb-lnb-high");
     unsigned switchf = var_InheritInteger (obj, "dvb-lnb-switch");
 
-    return dvb_set_sec (dev, freq, pol, lowf, highf, switchf);
+    dvb_set_sec (dev, freq, pol, lowf, highf, switchf);
 }
 
 static int dvbs_setup (vlc_object_t *obj, dvb_device_t *dev, uint64_t freq)
@@ -848,7 +879,7 @@ static int dvbs_setup (vlc_object_t *obj, dvb_device_t *dev, uint64_t freq)
 
     int ret = dvb_set_dvbs (dev, freq, srate, fec);
     if (ret == 0)
-        ret = sec_setup (obj, dev, freq);
+        sec_setup (obj, dev, freq);
     return ret;
 }
 
@@ -862,7 +893,7 @@ static int dvbs2_setup (vlc_object_t *obj, dvb_device_t *dev, uint64_t freq)
 
     int ret = dvb_set_dvbs2 (dev, freq, mod, srate, fec, pilot, rolloff);
     if (ret == 0)
-        ret = sec_setup (obj, dev, freq);
+        sec_setup (obj, dev, freq);
     return ret;
 }
 
@@ -890,9 +921,10 @@ static int dvbt2_setup (vlc_object_t *obj, dvb_device_t *dev, uint64_t freq)
     uint32_t fec = var_InheritCodeRate (obj, "dvb-fec");
     uint32_t guard = var_InheritGuardInterval (obj);
     uint32_t bw = var_InheritInteger (obj, "dvb-bandwidth");
+    uint32_t plp = var_InheritInteger (obj, "dvb-plp-id");
     int tx = var_InheritInteger (obj, "dvb-transmission");
 
-    return dvb_set_dvbt2 (dev, freq, mod, fec, bw, tx, guard);
+    return dvb_set_dvbt2 (dev, freq, mod, fec, bw, tx, guard, plp);
 }
 
 static const delsys_t dvbt = { .setup = dvbt_setup };
@@ -919,7 +951,7 @@ static int isdbs_setup (vlc_object_t *obj, dvb_device_t *dev, uint64_t freq)
 
     int ret = dvb_set_isdbs (dev, freq, ts_id);
     if (ret == 0)
-        ret = sec_setup (obj, dev, freq);
+        sec_setup (obj, dev, freq);
     return ret;
 }
 

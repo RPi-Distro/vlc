@@ -1,25 +1,25 @@
 /*****************************************************************************
  * fb.c : framebuffer plugin for vlc
  *****************************************************************************
- * Copyright (C) 2000-2009 the VideoLAN team
- * $Id: 4c4cef1f0140771cb10862e1a1b904a8e066f55b $
+ * Copyright (C) 2000-2009 VLC authors and VideoLAN
+ * $Id: d09f1c49893be9d571deb71cf74c33d408da721a $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Jean-Paul Saman
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -190,7 +190,7 @@ static int Open(vlc_object_t *object)
     /* Set tty and fb devices */
     sys->tty = 0; /* 0 == /dev/tty0 == current console */
     sys->is_tty = var_InheritBool(vd, "fb-tty");
-#if !defined(WIN32) &&  defined(HAVE_ISATTY)
+#if !defined(_WIN32) &&  defined(HAVE_ISATTY)
     /* Check that stdin is a TTY */
     if (sys->is_tty && !isatty(0)) {
         msg_Warn(vd, "standard input is not a TTY");

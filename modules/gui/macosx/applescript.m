@@ -1,10 +1,11 @@
 /*****************************************************************************
  * applescript.m: MacOS X AppleScript support
  *****************************************************************************
- * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: 3ac23b5370b2442d7d8ed360197cd380ad095888 $
+ * Copyright (C) 2002-2013 VLC authors and VideoLAN
+ * $Id: ddedffcd860cb9e0f9eb02da14d895f1912a58b9 $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
+ *          Felix Paul Kühne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,10 +25,10 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include "intf.h"
-#include "applescript.h"
-#include "CoreInteraction.h"
-#include "vlc_aout_intf.h"
+#import "intf.h"
+#import "applescript.h"
+#import "CoreInteraction.h"
+#import "playlist.h"
 
 /*****************************************************************************
  * VLGetURLScriptCommand implementation
@@ -38,33 +39,19 @@
     NSString *o_command = [[self commandDescription] commandName];
     NSString *o_urlString = [self directParameter];
 
-    if ( [o_command isEqualToString:@"GetURL"] || [o_command isEqualToString:@"OpenURL"] )
-    {
-        intf_thread_t * p_intf = VLCIntf;
-        playlist_t * p_playlist = pl_Get( p_intf );
-
-        if ( o_urlString )
-        {
-            NSURL * o_url;
-            input_item_t *p_input;
-            int returnValue;
-
-            p_input = input_item_New( [o_urlString fileSystemRepresentation],
-                                    [[[NSFileManager defaultManager]
-                                    displayNameAtPath: o_urlString] UTF8String] );
-            if (!p_input)
-                return nil;
-
-            returnValue = playlist_AddInput( p_playlist, p_input, PLAYLIST_INSERT,
-                               PLAYLIST_END, true, pl_Unlocked );
-            vlc_gc_decref( p_input );
-
-            if (returnValue != VLC_SUCCESS)
-                return nil;
-
-            o_url = [NSURL fileURLWithPath: o_urlString];
-            if( o_url != nil )
+    if ([o_command isEqualToString:@"GetURL"] || [o_command isEqualToString:@"OpenURL"]) {
+        if (o_urlString) {
+            BOOL b_autoplay = config_GetInt(VLCIntf, "macosx-autoplay");
+            NSURL * o_url = [NSURL fileURLWithPath: o_urlString];
+            if (o_url != nil)
                 [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL: o_url];
+
+            NSArray *o_result = [NSArray arrayWithObject:[NSDictionary dictionaryWithObject:o_urlString forKey: @"ITEM_URL"]];
+
+            if (b_autoplay)
+                [[[VLCMain sharedInstance] playlist] appendArray: o_result atPos: -1 enqueue: NO];
+            else
+                [[[VLCMain sharedInstance] playlist] appendArray: o_result atPos: -1 enqueue: YES];
         }
     }
     return nil;
@@ -87,52 +74,29 @@
     NSString *o_parameter = [self directParameter];
 
     intf_thread_t * p_intf = VLCIntf;
-    playlist_t * p_playlist = pl_Get( p_intf );
-    if( p_playlist == NULL )
-    {
-        return nil;
-    }
- 
-    if ( [o_command isEqualToString:@"play"] )
-    {
-        [[VLCCoreInteraction sharedInstance] play];
-    }
-    else if ( [o_command isEqualToString:@"stop"] )
-    {
+    playlist_t * p_playlist = pl_Get(p_intf);
+
+    if ([o_command isEqualToString:@"play"])
+        [[VLCCoreInteraction sharedInstance] playOrPause];
+    else if ([o_command isEqualToString:@"stop"])
         [[VLCCoreInteraction sharedInstance] stop];
-    }
-    else if ( [o_command isEqualToString:@"previous"] )
-    {
+    else if ([o_command isEqualToString:@"previous"])
         [[VLCCoreInteraction sharedInstance] previous];
-    }
-    else if ( [o_command isEqualToString:@"next"] )
-    {
+    else if ([o_command isEqualToString:@"next"])
         [[VLCCoreInteraction sharedInstance] next];
-    }
-    else if ( [o_command isEqualToString:@"fullscreen"] )
-    {
+    else if ([o_command isEqualToString:@"fullscreen"])
         [[VLCCoreInteraction sharedInstance] toggleFullscreen];
-    }
-    else if ( [o_command isEqualToString:@"mute"] )
-    {
-        [[VLCCoreInteraction sharedInstance] mute];
-    }
-    else if ( [o_command isEqualToString:@"volumeUp"] )
-    {
+    else if ([o_command isEqualToString:@"mute"])
+        [[VLCCoreInteraction sharedInstance] setMute: YES];
+    else if ([o_command isEqualToString:@"volumeUp"])
         [[VLCCoreInteraction sharedInstance] volumeUp];
-    }
-    else if ( [o_command isEqualToString:@"volumeDown"] )
-    {
+    else if ([o_command isEqualToString:@"volumeDown"])
         [[VLCCoreInteraction sharedInstance] volumeDown];
-    }
-        else if ( [o_command isEqualToString:@"stepForward"] )
-    {
+    else if ([o_command isEqualToString:@"stepForward"]) {
         //default: forwardShort
-        if (o_parameter)
-        {
+        if (o_parameter) {
             int i_parameter = [o_parameter intValue];
-            switch (i_parameter)
-            {
+            switch (i_parameter) {
                 case 1:
                     [[VLCCoreInteraction sharedInstance] forwardExtraShort];
                     break;
@@ -149,20 +113,13 @@
                     [[VLCCoreInteraction sharedInstance] forwardShort];
                     break;
             }
-        }
-        else
-        {
+        } else
             [[VLCCoreInteraction sharedInstance] forwardShort];
-        }
-    }
-    else if ( [o_command isEqualToString:@"stepBackward"] )
-    {
+    } else if ([o_command isEqualToString:@"stepBackward"]) {
         //default: backwardShort
-        if (o_parameter)
-        {
+        if (o_parameter) {
             int i_parameter = [o_parameter intValue];
-            switch (i_parameter)
-            {
+            switch (i_parameter) {
                 case 1:
                     [[VLCCoreInteraction sharedInstance] backwardExtraShort];
                     break;
@@ -179,11 +136,8 @@
                     [[VLCCoreInteraction sharedInstance] backwardShort];
                     break;
             }
-        }
-        else
-        {
+        } else
             [[VLCCoreInteraction sharedInstance] backwardShort];
-        }
     }
    return nil;
 }
@@ -195,54 +149,81 @@
  *****************************************************************************/
 @implementation NSApplication(ScriptSupport)
 
-- (BOOL) scriptFullscreenMode {
-    vout_thread_t * p_vout = getVout();
-    if( !p_vout )
+- (BOOL)scriptFullscreenMode {
+    vout_thread_t * p_vout = getVoutForActiveWindow();
+    if (!p_vout)
         return NO;
-    BOOL b_value = var_GetBool( p_vout, "fullscreen");
-    vlc_object_release( p_vout );
+    BOOL b_value = var_GetBool(p_vout, "fullscreen");
+    vlc_object_release(p_vout);
     return b_value;
 }
-- (void) setScriptFullscreenMode: (BOOL) mode {
-    vout_thread_t * p_vout = getVout();
-    if( !p_vout )
+
+- (void)setScriptFullscreenMode:(BOOL)mode {
+    vout_thread_t * p_vout = getVoutForActiveWindow();
+    if (!p_vout)
         return;
-    if (var_GetBool( p_vout, "fullscreen") == mode)
-    {
-        vlc_object_release( p_vout );
+    if (var_GetBool(p_vout, "fullscreen") == mode) {
+        vlc_object_release(p_vout);
         return;
     }
-    vlc_object_release( p_vout );
+    vlc_object_release(p_vout);
     [[VLCCoreInteraction sharedInstance] toggleFullscreen];
 }
 
 - (BOOL) muted {
-    return [[VLCCoreInteraction sharedInstance] isMuted];
+    return [[VLCCoreInteraction sharedInstance] mute];
 }
 
 - (BOOL) playing {
-    return [[VLCCoreInteraction sharedInstance] isPlaying];
+    intf_thread_t *p_intf = VLCIntf;
+    if (!p_intf)
+        return NO;
+
+    input_thread_t * p_input = pl_CurrentInput(p_intf);
+    if (!p_input)
+        return NO;
+
+    input_state_e i_state = ERROR_S;
+    input_Control(p_input, INPUT_GET_STATE, &i_state);
+    vlc_object_release(p_input);
+
+    return ((i_state == OPENING_S) || (i_state == PLAYING_S));
 }
 
 - (int) audioVolume {
-    return ( [[VLCCoreInteraction sharedInstance] volume] );
+    return ([[VLCCoreInteraction sharedInstance] volume]);
 }
 
-- (void) setAudioVolume: (int) i_audioVolume {
+- (void) setAudioVolume:(int)i_audioVolume {
     [[VLCCoreInteraction sharedInstance] setVolume:(int)i_audioVolume];
 }
 
 - (int) currentTime {
-    return [[VLCCoreInteraction sharedInstance] currentTime];
+    input_thread_t * p_input = pl_CurrentInput(VLCIntf);
+    int64_t i_currentTime = -1;
+
+    if (!p_input)
+        return i_currentTime;
+
+    input_Control(p_input, INPUT_GET_TIME, &i_currentTime);
+    vlc_object_release(p_input);
+
+    return (int)(i_currentTime / 1000000);
 }
 
-- (void) setCurrentTime: (int) i_currentTime {
-    if (i_currentTime)
-        [[VLCCoreInteraction sharedInstance] setCurrentTime:i_currentTime];
+- (void) setCurrentTime:(int)i_currentTime {
+    if (i_currentTime) {
+        int64_t i64_value = (int64_t)i_currentTime;
+        input_thread_t * p_input = pl_CurrentInput(VLCIntf);
+
+        if (!p_input)
+            return;
+
+        input_Control(p_input, INPUT_SET_TIME, (int64_t)(i64_value * 1000000));
+        vlc_object_release(p_input);
+    }
 }
 
-#pragma mark -
-//TODO:whenever VLC should implement NSDocument, the methods below should move or be additionaly implemented in the NSDocument category
 - (int) durationOfCurrentItem {
     return [[VLCCoreInteraction sharedInstance] durationOfCurrentPlaylistItem];
 }

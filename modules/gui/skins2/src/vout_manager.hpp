@@ -2,7 +2,7 @@
  * vout_manager.hpp
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 3d0bf39cf3b951f9d2fc75d62f2aadae7db85711 $
+ * $Id: 6d01ca0a3b38bfcd63ec154a2b5e597b948f6bee $
  *
  * Authors: Erwan Tulou < brezhoneg1 at yahoo.fr r>
  *
@@ -71,7 +71,7 @@ public:
     }
     virtual ~VoutMainWindow() { }
 
-#ifdef WIN32
+#if defined( _WIN32 ) || defined( __OS2__ )
 
     virtual void processEvent( EvtKey &rEvtKey )
     {

@@ -2,7 +2,7 @@
  * profile_selector.hpp : A small profile selector and editor
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 65ff9739682502ac4df066d714f94c5b9f3d8c54 $
+ * $Id: 5afcc13bf26aa872b69f49f6c365039ebc3ca028 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -27,11 +27,14 @@
 #include "qt4.hpp"
 
 #include <QWidget>
+#include <QSet>
+#include <QHash>
 
 #include "util/qvlcframe.hpp"
 #include "ui/profiles.h"
 
 class QComboBox;
+
 class VLCProfileSelector : public QWidget
 {
     Q_OBJECT
@@ -52,6 +55,7 @@ private slots:
     void editProfile();
     void deleteProfile();
     void updateOptions( int i );
+    void updateOptionsOldFormat( int i );
 signals:
     void optionsChanged();
 };
@@ -67,15 +71,24 @@ public:
     QString name;
     QString muxValue;
     QString transcodeValue();
+    QStringList qpcodecsList;
 private:
     void registerCodecs();
+    void registerFilters();
     void fillProfile( const QString& qs );
+    void fillProfileOldFormat( const QString& qs );
+    typedef QSet<QString> resultset;
+    QHash<QString, resultset> caps;
+    void loadCapabilities();
+    void reset();
 protected slots:
     virtual void close();
 private slots:
-    void setVTranscodeOptions( bool );
-    void setATranscodeOptions( bool );
-    void setSTranscodeOptions( bool );
+    void muxSelected();
+    void codecSelected();
+    void activatePanels();
+    void fixBirateState();
+    void fixQPState();
 };
 
 #endif

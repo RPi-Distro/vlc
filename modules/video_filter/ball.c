@@ -1,7 +1,7 @@
 /*****************************************************************************
  * ball.c : Augmented reality ball video filter module
  *****************************************************************************
- * Copyright (C) 2000-2009 the VideoLAN team
+ * Copyright (C) 2000-2009 VLC authors and VideoLAN
  *
  * Author: Adrien Maglo <magsoft@videolan.org>
  *
@@ -10,19 +10,19 @@
  *         Samuel Hocevar <sam@zoy.org>
  *         Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 
@@ -129,7 +129,7 @@ vlc_module_begin ()
 
     add_string( FILTER_PREFIX "color", "red",
                 BALL_COLOR_TEXT, BALL_COLOR_TEXT, false )
-    change_string_list( mode_list, mode_list_text, 0 )
+    change_string_list( mode_list, mode_list_text )
 
     add_integer_with_range( FILTER_PREFIX "speed", 4, 1, 15,
                             BALL_SPEED_TEXT, BALL_SPEED_LONGTEXT, false )
@@ -595,11 +595,11 @@ static void FilterBall( filter_t *p_filter, picture_t *p_inpic,
 
     if( !p_smooth || !p_grad_x || !p_grad_y ) return;
 
-    vlc_memcpy( p_outpic->p[0].p_pixels, p_inpic->p[0].p_pixels,
+    memcpy( p_outpic->p[0].p_pixels, p_inpic->p[0].p_pixels,
                 p_outpic->p[0].i_lines * p_outpic->p[0].i_pitch );
-    vlc_memcpy( p_outpic->p[1].p_pixels, p_inpic->p[1].p_pixels,
+    memcpy( p_outpic->p[1].p_pixels, p_inpic->p[1].p_pixels,
                 p_outpic->p[1].i_lines * p_outpic->p[1].i_pitch );
-    vlc_memcpy( p_outpic->p[2].p_pixels, p_inpic->p[2].p_pixels,
+    memcpy( p_outpic->p[2].p_pixels, p_inpic->p[2].p_pixels,
                 p_outpic->p[2].i_lines * p_outpic->p[2].i_pitch );
 
     GaussianConvolution( p_converted, p_smooth );

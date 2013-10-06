@@ -12,7 +12,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -25,12 +25,13 @@
 #endif
 
 #include <stdarg.h>
+#include <math.h>
 #include <fcntl.h>
+#include <unistd.h>
 #ifdef HAVE_SYS_SHM_H
 # include <sys/ipc.h>
 # include <sys/shm.h>
 #endif
-#include <sys/mman.h>
 
 #include <vlc_common.h>
 #include <vlc_demux.h>
@@ -41,17 +42,17 @@
 #define FPS_LONGTEXT N_( \
     "How many times the screen content should be refreshed per second.")
 
+#define DEPTH_TEXT N_("Frame buffer depth")
+#define DEPTH_LONGTEXT N_( \
+    "Pixel depth of the frame buffer, or zero for XWD file")
+
 #define WIDTH_TEXT N_("Frame buffer width")
 #define WIDTH_LONGTEXT N_( \
-    "Pixel width of the frame buffer")
+    "Pixel width of the frame buffer (ignored for XWD file)")
 
 #define HEIGHT_TEXT N_("Frame buffer height")
 #define HEIGHT_LONGTEXT N_( \
-    "Pixel height of the frame buffer")
-
-#define DEPTH_TEXT N_("Frame buffer depth")
-#define DEPTH_LONGTEXT N_( \
-    "Pixel depth of the frame buffer")
+    "Pixel height of the frame buffer (ignored for XWD file)")
 
 #define ID_TEXT N_("Frame buffer segment ID")
 #define ID_LONGTEXT N_( \
@@ -66,10 +67,11 @@ static int  Open (vlc_object_t *);
 static void Close (vlc_object_t *);
 
 static const int depths[] = {
-    8, 15, 16, 24, 32,
+    0, 8, 15, 16, 24, 32,
 };
 
 static const char *const depth_texts[] = {
+    N_("XWD file (autodetect)"),
     N_("8 bits"), N_("15 bits"), N_("16 bits"), N_("24 bits"), N_("32 bits"),
 };
 
@@ -85,14 +87,14 @@ vlc_module_begin ()
     set_callbacks (Open, Close)
 
     add_float ("shm-fps", 10.0, FPS_TEXT, FPS_LONGTEXT, true)
+    add_integer ("shm-depth", 0, DEPTH_TEXT, DEPTH_LONGTEXT, true)
+        change_integer_list (depths, depth_texts)
+        change_safe ()
     add_integer ("shm-width", 800, WIDTH_TEXT, WIDTH_LONGTEXT, false)
         change_integer_range (0, 65535)
         change_safe ()
     add_integer ("shm-height", 480, HEIGHT_TEXT, HEIGHT_LONGTEXT, false)
         change_integer_range (0, 65535)
-        change_safe ()
-    add_integer ("shm-depth", 32, DEPTH_TEXT, DEPTH_LONGTEXT, true)
-        change_integer_list (depths, depth_texts)
         change_safe ()
 
     /* We need to "trust" the memory segment. If it were shrunk while we copy
@@ -107,23 +109,28 @@ vlc_module_begin ()
     add_shortcut ("shm")
 vlc_module_end ()
 
-static void Demux (void *);
 static int Control (demux_t *, int, va_list);
-static void map_detach (demux_sys_t *);
+static void DemuxFile (void *);
+static void CloseFile (demux_sys_t *);
 #ifdef HAVE_SYS_SHM_H
-static void sysv_detach (demux_sys_t *);
+static void DemuxIPC (void *);
+static void CloseIPC (demux_sys_t *);
 #endif
 static void no_detach (demux_sys_t *);
 
 struct demux_sys_t
 {
-    const void  *addr;
-    size_t       length;
-    size_t       size;
+    /* Everything is read-only when timer is armed. */
+    union
+    {
+        int fd;
+        struct
+        {
+             const void  *addr;
+             size_t       length;
+        } mem;
+    };
     es_out_id_t *es;
-    mtime_t      pts, interval;
-    /* pts is protected by the lock. The rest is read-only. */
-    vlc_mutex_t  lock;
     vlc_timer_t  timer;
     void (*detach) (demux_sys_t *);
 };
@@ -131,19 +138,13 @@ struct demux_sys_t
 static int Open (vlc_object_t *obj)
 {
     demux_t *demux = (demux_t *)obj;
-
-    long pagesize = sysconf (_SC_PAGE_SIZE);
-    if (pagesize == -1)
-        return VLC_EGENERIC;
-    
     demux_sys_t *sys = malloc (sizeof (*sys));
     if (unlikely(sys == NULL))
         return VLC_ENOMEM;
     sys->detach = no_detach;
 
-    uint16_t width = var_InheritInteger (demux, "shm-width");
-    uint16_t height = var_InheritInteger (demux, "shm-height");
     uint32_t chroma;
+    uint16_t width = 0, height = 0;
     uint8_t bpp;
     switch (var_InheritInteger (demux, "shm-depth"))
     {
@@ -162,42 +163,40 @@ static int Open (vlc_object_t *obj)
         case 8:
             chroma = VLC_CODEC_RGB8; bpp = 8;
             break;
+        case 0:
+            chroma = VLC_CODEC_XWD; bpp = 0;
+            break;
         default:
             goto error;
     }
+    if (bpp != 0)
+    {
+        width = var_InheritInteger (demux, "shm-width");
+        height = var_InheritInteger (demux, "shm-height");
+    }
 
-    sys->length = width * height * (bpp >> 3);
-    if (sys->length == 0)
-        goto error;
-    pagesize--;
-    sys->size = (sys->length + pagesize) & ~pagesize; /* pad */
+    static void (*Demux) (void *);
 
     char *path = var_InheritString (demux, "shm-file");
     if (path != NULL)
     {
-        int fd = vlc_open (path, O_RDONLY);
-        if (fd == -1)
-        {
+        sys->fd = vlc_open (path, O_RDONLY);
+        if (sys->fd == -1)
             msg_Err (demux, "cannot open file %s: %m", path);
-            free (path);
-            goto error;
-        }
-
-        void *mem = mmap (NULL, sys->size, PROT_READ, MAP_SHARED, fd, 0);
-        close (fd);
-        if (mem == MAP_FAILED)
-        {
-            msg_Err (demux, "cannot map file %s: %m", path);
-            free (path);
-            goto error;
-        }
         free (path);
-        sys->addr = mem;
-        sys->detach = map_detach;
+        if (sys->fd == -1)
+            goto error;
+
+        sys->detach = CloseFile;
+        Demux = DemuxFile;
     }
     else
     {
 #ifdef HAVE_SYS_SHM_H
+        sys->mem.length = width * height * (bpp >> 3);
+        if (sys->mem.length == 0)
+            goto error;
+
         int id = var_InheritInteger (demux, "shm-id");
         if (id == IPC_PRIVATE)
             goto error;
@@ -208,8 +207,9 @@ static int Open (vlc_object_t *obj)
             msg_Err (demux, "cannot attach segment %d: %m", id);
             goto error;
         }
-        sys->addr = mem;
-        sys->detach = sysv_detach;
+        sys->mem.addr = mem;
+        sys->detach = CloseIPC;
+        Demux = DemuxIPC;
 #else
         goto error;
 #endif
@@ -220,10 +220,9 @@ static int Open (vlc_object_t *obj)
     if (rate <= 0.)
         goto error;
 
-    sys->interval = (float)CLOCK_FREQ / rate;
-    if (!sys->interval)
+    mtime_t interval = llroundf((float)CLOCK_FREQ / rate);
+    if (!interval)
         goto error;
-    sys->pts = VLC_TS_INVALID;
 
     es_format_t fmt;
     es_format_Init (&fmt, VIDEO_ES, chroma);
@@ -238,10 +237,9 @@ static int Open (vlc_object_t *obj)
     sys->es = es_out_Add (demux->out, &fmt);
 
     /* Initializes demux */
-    vlc_mutex_init (&sys->lock);
     if (vlc_timer_create (&sys->timer, Demux, demux))
         goto error;
-    vlc_timer_schedule (sys->timer, false, 1, sys->interval);
+    vlc_timer_schedule (sys->timer, false, 1, interval);
 
     demux->p_sys = sys;
     demux->pf_demux   = NULL;
@@ -264,23 +262,9 @@ static void Close (vlc_object_t *obj)
     demux_sys_t *sys = demux->p_sys;
 
     vlc_timer_destroy (sys->timer);
-    vlc_mutex_destroy (&sys->lock);
     sys->detach (sys);
     free (sys);
 }
-
-
-static void map_detach (demux_sys_t *sys)
-{
-    munmap ((void *)sys->addr, sys->size);
-}
-
-#ifdef HAVE_SYS_SHM_H
-static void sysv_detach (demux_sys_t *sys)
-{
-    shmdt (sys->addr);
-}
-#endif
 
 static void no_detach (demux_sys_t *sys)
 {
@@ -292,8 +276,6 @@ static void no_detach (demux_sys_t *sys)
  */
 static int Control (demux_t *demux, int query, va_list args)
 {
-    demux_sys_t *sys = demux->p_sys;
-
     switch (query)
     {
         case DEMUX_GET_POSITION:
@@ -319,65 +301,66 @@ static int Control (demux_t *demux, int query, va_list args)
         }
 
         case DEMUX_CAN_PAUSE:
-        {
-            bool *v = (bool *)va_arg (args, bool *);
-            *v = true;
-            return VLC_SUCCESS;
-        }
-
-        case DEMUX_SET_PAUSE_STATE:
-        {
-            bool pausing = va_arg (args, int);
-
-            if (!pausing)
-            {
-                vlc_mutex_lock (&sys->lock);
-                sys->pts = VLC_TS_INVALID;
-                es_out_Control (demux->out, ES_OUT_RESET_PCR);
-                vlc_mutex_unlock (&sys->lock);
-            }
-            vlc_timer_schedule (sys->timer, false,
-                                pausing ? 0 : 1, sys->interval);
-            return VLC_SUCCESS;
-        }
-
         case DEMUX_CAN_CONTROL_PACE:
         case DEMUX_CAN_CONTROL_RATE:
         case DEMUX_CAN_SEEK:
         {
-            bool *v = (bool *)va_arg (args, bool *);
+            bool *v = va_arg (args, bool *);
             *v = false;
             return VLC_SUCCESS;
         }
+
+        case DEMUX_SET_PAUSE_STATE:
+            return VLC_SUCCESS; /* should not happen */
     }
 
     return VLC_EGENERIC;
 }
 
-
 /**
  * Processing callback
  */
-static void Demux (void *data)
+static void DemuxFile (void *data)
 {
     demux_t *demux = data;
     demux_sys_t *sys = demux->p_sys;
 
     /* Copy frame */
-    block_t *block = block_Alloc (sys->length);
+    block_t *block = block_File (sys->fd);
     if (block == NULL)
         return;
-
-    vlc_memcpy (block->p_buffer, sys->addr, sys->length);
+    block->i_pts = block->i_dts = mdate ();
 
     /* Send block */
-    vlc_mutex_lock (&sys->lock);
-    if (sys->pts == VLC_TS_INVALID)
-        sys->pts = mdate ();
-    block->i_pts = block->i_dts = sys->pts;
-
-    es_out_Control (demux->out, ES_OUT_SET_PCR, sys->pts);
+    es_out_Control (demux->out, ES_OUT_SET_PCR, block->i_pts);
     es_out_Send (demux->out, sys->es, block);
-    sys->pts += sys->interval;
-    vlc_mutex_unlock (&sys->lock);
 }
+
+static void CloseFile (demux_sys_t *sys)
+{
+    close (sys->fd);
+}
+
+#ifdef HAVE_SYS_SHM_H
+static void DemuxIPC (void *data)
+{
+    demux_t *demux = data;
+    demux_sys_t *sys = demux->p_sys;
+
+    /* Copy frame */
+    block_t *block = block_Alloc (sys->mem.length);
+    if (block == NULL)
+        return;
+    memcpy (block->p_buffer, sys->mem.addr, sys->mem.length);
+    block->i_pts = block->i_dts = mdate ();
+
+    /* Send block */
+    es_out_Control (demux->out, ES_OUT_SET_PCR, block->i_pts);
+    es_out_Send (demux->out, sys->es, block);
+}
+
+static void CloseIPC (demux_sys_t *sys)
+{
+    shmdt (sys->mem.addr);
+}
+#endif

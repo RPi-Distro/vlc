@@ -17,8 +17,7 @@ libmacosx_dialog_provider_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_macosx_
 libmacosx_dialog_provider_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_macosx_dialog_provider)
 libmacosx_dialog_provider_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_macosx_dialog_provider)
 libmacosx_dialog_provider_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_macosx_dialog_provider)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libmacosx_dialog_provider_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_macosx_dialog_provider)
 libmacosx_dialog_provider_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_macosx_dialog_provider)
-libmacosx_dialog_provider_plugin_la_DEPENDENCIES =
 

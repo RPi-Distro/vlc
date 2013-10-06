@@ -2,7 +2,7 @@
  * pes.h
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 818c82d54ec8ce7e4acb6c933d0a9516b3a3f504 $
+ * $Id: 3e4709bb18fe3423505ee63d7804ef5b059d78af $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -35,7 +35,7 @@
 
 #define PES_PAYLOAD_SIZE_MAX 65500
 
-int  EStoPES ( sout_instance_t *p_sout, block_t **pp_pes, block_t *p_es,
+int  EStoPES ( block_t **pp_pes, block_t *p_es,
                    es_format_t *p_fmt, int i_stream_id,
                    int b_mpeg2, int b_data_alignment, int i_header_size,
                    int i_max_pes_size );

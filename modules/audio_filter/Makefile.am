@@ -3,7 +3,7 @@
 
 basedir = audio_filter
 dir = audio_filter
-mods = a52tofloat32 a52tospdif audiobargraph_a audio_format bandlimited_resampler chorus_flanger compressor converter_fixed dolby_surround_decoder dtstofloat32 dtstospdif equalizer headphone_channel_mixer karaoke mono mpgatofixed32 normvol param_eq samplerate scaletempo simple_channel_mixer spatializer trivial_channel_mixer ugly_resampler
+mods = a52tofloat32 a52tospdif audiobargraph_a bandlimited_resampler chorus_flanger compressor dolby_surround_decoder dtstofloat32 dtstospdif equalizer gain headphone_channel_mixer karaoke mono mpgatofixed32 normvol param_eq remap samplerate scaletempo simple_channel_mixer spatializer stereo_widen trivial_channel_mixer ugly_resampler
 libvlc_LTLIBRARIES =  $(LTLIBa52tofloat32) $(LTLIBdtstofloat32) $(LTLIBmpgatofixed32) $(LTLIBsamplerate)
 EXTRA_LTLIBRARIES =  liba52tofloat32_plugin.la libdtstofloat32_plugin.la libmpgatofixed32_plugin.la libsamplerate_plugin.la
 
@@ -17,10 +17,9 @@ liba52tofloat32_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_a52tofloat32)
 liba52tofloat32_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_a52tofloat32)
 liba52tofloat32_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_a52tofloat32)
 liba52tofloat32_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_a52tofloat32)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 liba52tofloat32_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_a52tofloat32)
 liba52tofloat32_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_a52tofloat32)
-liba52tofloat32_plugin_la_DEPENDENCIES =
 
 # The a52tospdif plugin
 liba52tospdif_plugin_la_SOURCES = $(SOURCES_a52tospdif)
@@ -30,10 +29,9 @@ liba52tospdif_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_a52tospdif)
 liba52tospdif_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_a52tospdif)
 liba52tospdif_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_a52tospdif)
 liba52tospdif_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_a52tospdif)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 liba52tospdif_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_a52tospdif)
 liba52tospdif_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_a52tospdif)
-liba52tospdif_plugin_la_DEPENDENCIES =
 
 # The audiobargraph_a plugin
 libaudiobargraph_a_plugin_la_SOURCES = $(SOURCES_audiobargraph_a)
@@ -43,23 +41,9 @@ libaudiobargraph_a_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_audiobargraph_
 libaudiobargraph_a_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_audiobargraph_a)
 libaudiobargraph_a_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_audiobargraph_a)
 libaudiobargraph_a_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_audiobargraph_a)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaudiobargraph_a_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_audiobargraph_a)
 libaudiobargraph_a_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_audiobargraph_a)
-libaudiobargraph_a_plugin_la_DEPENDENCIES =
-
-# The audio_format plugin
-libaudio_format_plugin_la_SOURCES = $(SOURCES_audio_format)
-nodist_libaudio_format_plugin_la_SOURCES = $(nodist_SOURCES_audio_format)
-# Force per-target objects:
-libaudio_format_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_audio_format)
-libaudio_format_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_audio_format)
-libaudio_format_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_audio_format)
-libaudio_format_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_audio_format)
-# Set LIBADD and DEPENDENCIES manually:
-libaudio_format_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_audio_format)
-libaudio_format_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_audio_format)
-libaudio_format_plugin_la_DEPENDENCIES =
 
 # The bandlimited_resampler plugin
 libbandlimited_resampler_plugin_la_SOURCES = $(SOURCES_bandlimited_resampler)
@@ -69,10 +53,9 @@ libbandlimited_resampler_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_bandlimi
 libbandlimited_resampler_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_bandlimited_resampler)
 libbandlimited_resampler_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_bandlimited_resampler)
 libbandlimited_resampler_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_bandlimited_resampler)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libbandlimited_resampler_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_bandlimited_resampler)
 libbandlimited_resampler_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_bandlimited_resampler)
-libbandlimited_resampler_plugin_la_DEPENDENCIES =
 
 # The chorus_flanger plugin
 libchorus_flanger_plugin_la_SOURCES = $(SOURCES_chorus_flanger)
@@ -82,10 +65,9 @@ libchorus_flanger_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_chorus_flanger)
 libchorus_flanger_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_chorus_flanger)
 libchorus_flanger_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_chorus_flanger)
 libchorus_flanger_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_chorus_flanger)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libchorus_flanger_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_chorus_flanger)
 libchorus_flanger_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_chorus_flanger)
-libchorus_flanger_plugin_la_DEPENDENCIES =
 
 # The compressor plugin
 libcompressor_plugin_la_SOURCES = $(SOURCES_compressor)
@@ -95,23 +77,9 @@ libcompressor_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_compressor)
 libcompressor_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_compressor)
 libcompressor_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_compressor)
 libcompressor_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_compressor)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libcompressor_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_compressor)
 libcompressor_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_compressor)
-libcompressor_plugin_la_DEPENDENCIES =
-
-# The converter_fixed plugin
-libconverter_fixed_plugin_la_SOURCES = $(SOURCES_converter_fixed)
-nodist_libconverter_fixed_plugin_la_SOURCES = $(nodist_SOURCES_converter_fixed)
-# Force per-target objects:
-libconverter_fixed_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_converter_fixed)
-libconverter_fixed_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_converter_fixed)
-libconverter_fixed_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_converter_fixed)
-libconverter_fixed_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_converter_fixed)
-# Set LIBADD and DEPENDENCIES manually:
-libconverter_fixed_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_converter_fixed)
-libconverter_fixed_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_converter_fixed)
-libconverter_fixed_plugin_la_DEPENDENCIES =
 
 # The dolby_surround_decoder plugin
 libdolby_surround_decoder_plugin_la_SOURCES = $(SOURCES_dolby_surround_decoder)
@@ -121,10 +89,9 @@ libdolby_surround_decoder_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dolby_s
 libdolby_surround_decoder_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_dolby_surround_decoder)
 libdolby_surround_decoder_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_dolby_surround_decoder)
 libdolby_surround_decoder_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_dolby_surround_decoder)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libdolby_surround_decoder_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_dolby_surround_decoder)
 libdolby_surround_decoder_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_dolby_surround_decoder)
-libdolby_surround_decoder_plugin_la_DEPENDENCIES =
 
 # The dtstofloat32 plugin
 libdtstofloat32_plugin_la_SOURCES = $(SOURCES_dtstofloat32)
@@ -134,10 +101,9 @@ libdtstofloat32_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dtstofloat32)
 libdtstofloat32_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_dtstofloat32)
 libdtstofloat32_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_dtstofloat32)
 libdtstofloat32_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_dtstofloat32)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libdtstofloat32_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_dtstofloat32)
 libdtstofloat32_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_dtstofloat32)
-libdtstofloat32_plugin_la_DEPENDENCIES =
 
 # The dtstospdif plugin
 libdtstospdif_plugin_la_SOURCES = $(SOURCES_dtstospdif)
@@ -147,10 +113,9 @@ libdtstospdif_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dtstospdif)
 libdtstospdif_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_dtstospdif)
 libdtstospdif_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_dtstospdif)
 libdtstospdif_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_dtstospdif)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libdtstospdif_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_dtstospdif)
 libdtstospdif_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_dtstospdif)
-libdtstospdif_plugin_la_DEPENDENCIES =
 
 # The equalizer plugin
 libequalizer_plugin_la_SOURCES = $(SOURCES_equalizer)
@@ -160,10 +125,21 @@ libequalizer_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_equalizer)
 libequalizer_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_equalizer)
 libequalizer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_equalizer)
 libequalizer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_equalizer)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libequalizer_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_equalizer)
 libequalizer_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_equalizer)
-libequalizer_plugin_la_DEPENDENCIES =
+
+# The gain plugin
+libgain_plugin_la_SOURCES = $(SOURCES_gain)
+nodist_libgain_plugin_la_SOURCES = $(nodist_SOURCES_gain)
+# Force per-target objects:
+libgain_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_gain)
+libgain_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_gain)
+libgain_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_gain)
+libgain_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_gain)
+# Set LIBADD manually:
+libgain_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_gain)
+libgain_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_gain)
 
 # The headphone_channel_mixer plugin
 libheadphone_channel_mixer_plugin_la_SOURCES = $(SOURCES_headphone_channel_mixer)
@@ -173,10 +149,9 @@ libheadphone_channel_mixer_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_headph
 libheadphone_channel_mixer_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_headphone_channel_mixer)
 libheadphone_channel_mixer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_headphone_channel_mixer)
 libheadphone_channel_mixer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_headphone_channel_mixer)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libheadphone_channel_mixer_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_headphone_channel_mixer)
 libheadphone_channel_mixer_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_headphone_channel_mixer)
-libheadphone_channel_mixer_plugin_la_DEPENDENCIES =
 
 # The karaoke plugin
 libkaraoke_plugin_la_SOURCES = $(SOURCES_karaoke)
@@ -186,10 +161,9 @@ libkaraoke_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_karaoke)
 libkaraoke_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_karaoke)
 libkaraoke_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_karaoke)
 libkaraoke_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_karaoke)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libkaraoke_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_karaoke)
 libkaraoke_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_karaoke)
-libkaraoke_plugin_la_DEPENDENCIES =
 
 # The mono plugin
 libmono_plugin_la_SOURCES = $(SOURCES_mono)
@@ -199,10 +173,9 @@ libmono_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mono)
 libmono_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mono)
 libmono_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mono)
 libmono_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mono)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libmono_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mono)
 libmono_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mono)
-libmono_plugin_la_DEPENDENCIES =
 
 # The mpgatofixed32 plugin
 libmpgatofixed32_plugin_la_SOURCES = $(SOURCES_mpgatofixed32)
@@ -212,10 +185,9 @@ libmpgatofixed32_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mpgatofixed32)
 libmpgatofixed32_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mpgatofixed32)
 libmpgatofixed32_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mpgatofixed32)
 libmpgatofixed32_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mpgatofixed32)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libmpgatofixed32_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mpgatofixed32)
 libmpgatofixed32_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mpgatofixed32)
-libmpgatofixed32_plugin_la_DEPENDENCIES =
 
 # The normvol plugin
 libnormvol_plugin_la_SOURCES = $(SOURCES_normvol)
@@ -225,10 +197,9 @@ libnormvol_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_normvol)
 libnormvol_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_normvol)
 libnormvol_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_normvol)
 libnormvol_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_normvol)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libnormvol_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_normvol)
 libnormvol_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_normvol)
-libnormvol_plugin_la_DEPENDENCIES =
 
 # The param_eq plugin
 libparam_eq_plugin_la_SOURCES = $(SOURCES_param_eq)
@@ -238,10 +209,21 @@ libparam_eq_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_param_eq)
 libparam_eq_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_param_eq)
 libparam_eq_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_param_eq)
 libparam_eq_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_param_eq)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libparam_eq_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_param_eq)
 libparam_eq_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_param_eq)
-libparam_eq_plugin_la_DEPENDENCIES =
+
+# The remap plugin
+libremap_plugin_la_SOURCES = $(SOURCES_remap)
+nodist_libremap_plugin_la_SOURCES = $(nodist_SOURCES_remap)
+# Force per-target objects:
+libremap_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_remap)
+libremap_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_remap)
+libremap_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_remap)
+libremap_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_remap)
+# Set LIBADD manually:
+libremap_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_remap)
+libremap_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_remap)
 
 # The samplerate plugin
 libsamplerate_plugin_la_SOURCES = $(SOURCES_samplerate)
@@ -251,10 +233,9 @@ libsamplerate_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_samplerate)
 libsamplerate_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_samplerate)
 libsamplerate_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_samplerate)
 libsamplerate_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_samplerate)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libsamplerate_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_samplerate)
 libsamplerate_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_samplerate)
-libsamplerate_plugin_la_DEPENDENCIES =
 
 # The scaletempo plugin
 libscaletempo_plugin_la_SOURCES = $(SOURCES_scaletempo)
@@ -264,10 +245,9 @@ libscaletempo_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_scaletempo)
 libscaletempo_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_scaletempo)
 libscaletempo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_scaletempo)
 libscaletempo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_scaletempo)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libscaletempo_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_scaletempo)
 libscaletempo_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_scaletempo)
-libscaletempo_plugin_la_DEPENDENCIES =
 
 # The simple_channel_mixer plugin
 libsimple_channel_mixer_plugin_la_SOURCES = $(SOURCES_simple_channel_mixer)
@@ -277,10 +257,9 @@ libsimple_channel_mixer_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_simple_ch
 libsimple_channel_mixer_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_simple_channel_mixer)
 libsimple_channel_mixer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_simple_channel_mixer)
 libsimple_channel_mixer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_simple_channel_mixer)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libsimple_channel_mixer_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_simple_channel_mixer)
 libsimple_channel_mixer_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_simple_channel_mixer)
-libsimple_channel_mixer_plugin_la_DEPENDENCIES =
 
 # The spatializer plugin
 libspatializer_plugin_la_SOURCES = $(SOURCES_spatializer)
@@ -290,10 +269,21 @@ libspatializer_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_spatializer)
 libspatializer_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_spatializer)
 libspatializer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_spatializer)
 libspatializer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_spatializer)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libspatializer_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_spatializer)
 libspatializer_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_spatializer)
-libspatializer_plugin_la_DEPENDENCIES =
+
+# The stereo_widen plugin
+libstereo_widen_plugin_la_SOURCES = $(SOURCES_stereo_widen)
+nodist_libstereo_widen_plugin_la_SOURCES = $(nodist_SOURCES_stereo_widen)
+# Force per-target objects:
+libstereo_widen_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_stereo_widen)
+libstereo_widen_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_stereo_widen)
+libstereo_widen_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_stereo_widen)
+libstereo_widen_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_stereo_widen)
+# Set LIBADD manually:
+libstereo_widen_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_stereo_widen)
+libstereo_widen_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_stereo_widen)
 
 # The trivial_channel_mixer plugin
 libtrivial_channel_mixer_plugin_la_SOURCES = $(SOURCES_trivial_channel_mixer)
@@ -303,10 +293,9 @@ libtrivial_channel_mixer_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_trivial_
 libtrivial_channel_mixer_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_trivial_channel_mixer)
 libtrivial_channel_mixer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_trivial_channel_mixer)
 libtrivial_channel_mixer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_trivial_channel_mixer)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libtrivial_channel_mixer_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_trivial_channel_mixer)
 libtrivial_channel_mixer_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_trivial_channel_mixer)
-libtrivial_channel_mixer_plugin_la_DEPENDENCIES =
 
 # The ugly_resampler plugin
 libugly_resampler_plugin_la_SOURCES = $(SOURCES_ugly_resampler)
@@ -316,8 +305,7 @@ libugly_resampler_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_ugly_resampler)
 libugly_resampler_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_ugly_resampler)
 libugly_resampler_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_ugly_resampler)
 libugly_resampler_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_ugly_resampler)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libugly_resampler_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_ugly_resampler)
 libugly_resampler_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_ugly_resampler)
-libugly_resampler_plugin_la_DEPENDENCIES =
 

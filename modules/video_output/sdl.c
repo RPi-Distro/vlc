@@ -1,27 +1,27 @@
 /*****************************************************************************
  * sdl.c: SDL video output display method
  *****************************************************************************
- * Copyright (C) 1998-2009 the VideoLAN team
- * $Id: 78dfde40390ea1ce2db5a14247f1fbcf42447ca4 $
+ * Copyright (C) 1998-2009 VLC authors and VideoLAN
+ * $Id: 5520bb24ae68061c542777a3cdffebd55f2aa47f $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Pierre Baillet <oct@zoy.org>
  *          Arnaud de Bossoreille de Ribou <bozo@via.ecp.fr>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -40,7 +40,7 @@
 
 #include <SDL.h>
 
-#if !defined(WIN32) && !defined(__OS2__)
+#if !defined(_WIN32) && !defined(__OS2__)
 # ifdef X_DISPLAY_MISSING
 #  error Xlib required due to XInitThreads
 # endif
@@ -116,7 +116,7 @@ static int Open(vlc_object_t *object)
     vout_display_t *vd = (vout_display_t *)object;
     vout_display_sys_t *sys;
 
-#if !defined(WIN32) && !defined(__OS2__)
+#if !defined(_WIN32) && !defined(__OS2__)
     if (!vlc_xlib_init (object))
         return VLC_EGENERIC;
 #endif
@@ -138,7 +138,7 @@ static int Open(vlc_object_t *object)
 
     /* */
     int sdl_flags = SDL_INIT_VIDEO;
-#ifndef WIN32
+#ifndef _WIN32
     /* Win32 SDL implementation doesn't support SDL_INIT_EVENTTHREAD yet*/
     sdl_flags |= SDL_INIT_EVENTTHREAD;
 #endif

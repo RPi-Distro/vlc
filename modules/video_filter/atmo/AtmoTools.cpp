@@ -3,7 +3,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 45dfca6a1929a43f6514eceda43096061a929399 $
+ * $Id: 6775351cbd6781267c81e211ea94e2dd9b17d19b $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -541,6 +541,7 @@ void CAtmoTools::SaveBitmap(HDC hdc,HBITMAP hBmp,char *fileName) {
      fwrite(&bmpInfo.bmiHeader,sizeof(BITMAPINFOHEADER),1,fp);
      fwrite(pBuf,bmpInfo.bmiHeader.biSizeImage,1,fp);
      fclose(fp);
+     free(pBuf);
 }
 
 

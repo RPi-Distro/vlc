@@ -5,20 +5,20 @@
 /*****************************************************************************
  * Copyright © 2009 Rémi Denis-Courmont
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- ****************************************************************************/
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -35,7 +35,8 @@
 #include <vlc_vout_display.h>
 #include <vlc_picture_pool.h>
 
-#include "xcb_vlc.h"
+#include "pictures.h"
+#include "events.h"
 
 static int  Open (vlc_object_t *);
 static void Close (vlc_object_t *);
@@ -115,7 +116,8 @@ static int Open (vlc_object_t *obj)
     /* Get window, connect to X server */
     xcb_connection_t *conn;
     const xcb_screen_t *scr;
-    sys->embed = GetWindow (vd, &conn, &scr, &(uint8_t){ 0 });
+    uint16_t width, height;
+    sys->embed = XCB_parent_Create (vd, &conn, &scr, &width, &height);
     if (sys->embed == NULL)
     {
         free (sys);
@@ -249,10 +251,6 @@ found_format:;
         cmap = scr->default_colormap;
 
     /* Create window */
-    unsigned width, height;
-    if (GetWindowSize (sys->embed, conn, &width, &height))
-        goto error;
-
     sys->window = xcb_generate_id (conn);
     sys->gc = xcb_generate_id (conn);
     xcb_pixmap_t pixmap = xcb_generate_id (conn);
@@ -290,15 +288,15 @@ found_format:;
         /* Create graphic context (I wonder why the heck do we need this) */
         xcb_create_gc (conn, sys->gc, sys->window, 0, NULL);
 
-        if (CheckError (vd, conn, "cannot create X11 window", c))
+        if (XCB_error_Check (vd, conn, "cannot create X11 window", c))
             goto error;
     }
     msg_Dbg (vd, "using X11 window %08"PRIx32, sys->window);
     msg_Dbg (vd, "using X11 graphic context %08"PRIx32, sys->gc);
 
-    sys->cursor = CreateBlankCursor (conn, scr);
+    sys->cursor = XCB_cursor_Create (conn, scr);
     sys->visible = false;
-    sys->shm = CheckSHM (obj, conn);
+    sys->shm = XCB_shm_Check (obj, conn);
 
 
     /* Setup vout_display_t once everything is fine */
@@ -385,13 +383,13 @@ static picture_pool_t *Pool (vout_display_t *vd, unsigned requested_count)
 
         res->p->i_lines = pic->p->i_lines;
         res->p->i_pitch = pic->p->i_pitch;
-        if (PictureResourceAlloc (vd, res, res->p->i_pitch * res->p->i_lines,
-                                  sys->conn, sys->shm))
+        if (XCB_pictures_Alloc (vd, res, res->p->i_pitch * res->p->i_lines,
+                                sys->conn, sys->shm))
             break;
         pic_array[count] = picture_NewFromResource (&vd->fmt, res);
         if (!pic_array[count])
         {
-            PictureResourceFree (res, sys->conn);
+            XCB_pictures_Free (res, sys->conn);
             memset (res, 0, sizeof(*res));
             break;
         }
@@ -477,11 +475,17 @@ static int Control (vout_display_t *vd, int query, va_list ap)
             (const vout_display_cfg_t*)va_arg (ap, const vout_display_cfg_t *);
         const bool is_forced = (bool)va_arg (ap, int);
 
-        if (is_forced
-         && vout_window_SetSize (sys->embed,
-                                 p_cfg->display.width,
-                                 p_cfg->display.height))
+        if (is_forced)
+        {   /* Changing the dimensions of the parent window takes place
+             * asynchronously (in the X server). Also it might fail or result
+             * in different dimensions than requested. Request the size change
+             * and return a failure since the size is not (yet) changed.
+             * If the change eventually succeeds, HandleParentStructure()
+             * will trigger a non-forced display size change later. */
+            vout_window_SetSize (sys->embed, p_cfg->display.width,
+                                 p_cfg->display.height);
             return VLC_EGENERIC;
+        }
 
         vout_display_place_t place;
         vout_display_PlacePicture (&place, &vd->source, p_cfg, false);
@@ -549,7 +553,7 @@ static void Manage (vout_display_t *vd)
 {
     vout_display_sys_t *sys = vd->sys;
 
-    ManageEvent (vd, sys->conn, &sys->visible);
+    XCB_Manage (vd, sys->conn, &sys->visible);
 }
 
 static void ResetPictures (vout_display_t *vd)
@@ -565,7 +569,7 @@ static void ResetPictures (vout_display_t *vd)
 
         if (!res->p->p_pixels)
             break;
-        PictureResourceFree (res, sys->conn);
+        XCB_pictures_Free (res, sys->conn);
     }
     picture_pool_Delete (sys->pool);
     sys->pool = NULL;

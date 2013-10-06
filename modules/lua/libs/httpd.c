@@ -2,7 +2,7 @@
  * httpd.c: HTTPd wrapper
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: b4520d913e1d16b63a5c309a37c964ad053d39ab $
+ * $Id: 12051027630aae8000ff6d9f62a52c6794599e9e $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -35,10 +35,6 @@
 #include <vlc_common.h>
 #include <vlc_httpd.h>
 
-#include <lua.h>        /* Low level lua C API */
-#include <lauxlib.h>    /* Higher level C API */
-#include <lualib.h>     /* Lua libs */
-
 #include "../vlc.h"
 #include "../libs.h"
 
@@ -64,6 +60,24 @@ static const luaL_Reg vlclua_httpd_reg[] = {
     { "redirect", vlclua_httpd_redirect_new },
     { NULL, NULL }
 };
+
+static const char no_password_fmt[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
+"<html xmlns=\"http://www.w3.org/1999/xhtml\">"
+"<head>"
+"<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />"
+"<title>%s</title>"
+"</head>"
+"<body>"
+"%s"
+"<!-- VLC_PASSWORD_NOT_SET --></body></html>";
+
+static const char no_password_body[] = N_(
+"<p>Password for Web interface has not been set.</p>"
+"<p>Please use --http-password, or set a password in </p>"
+"<p>Preferences &gt; All &gt; Main interfaces &gt; Lua &gt; Lua HTTP &gt; Password.</p>"
+);
+
+static const char no_password_title[] = N_("VLC media player");
 
 static int vlclua_httpd_tls_host_new( lua_State *L )
 {
@@ -101,6 +115,7 @@ static int vlclua_httpd_host_delete( lua_State *L )
 struct httpd_handler_sys_t
 {
     lua_State *L;
+    bool password;
     int ref;
 };
 
@@ -142,6 +157,24 @@ static int vlclua_httpd_handler_callback(
     }
     /* function data outdata */
     *pp_data = vlclua_todata( L, -1, pi_data );
+    if (!p_sys->password)
+    {
+        free(*pp_data);
+        char *no_password = NULL;
+        if (asprintf(&no_password, no_password_fmt,
+                _(no_password_title), _(no_password_body)) < 0) {
+            *pi_data = 0;
+        } else {
+            size_t s = strlen(no_password);
+            if (asprintf((char**)pp_data, "Status: 403\n"
+                        "Content-Length: %zu\n"
+                        "Content-Type: text/html\n\n%s", s, no_password) < 0)
+                *pi_data = 0;
+            else
+                *pi_data = strlen((char*)*pp_data);
+            free(no_password);
+        }
+    }
     lua_pop( L, 1 );
     /* function data */
     return VLC_SUCCESS;
@@ -153,23 +186,22 @@ static int vlclua_httpd_handler_new( lua_State * L )
     const char *psz_url = luaL_checkstring( L, 2 );
     const char *psz_user = luaL_nilorcheckstring( L, 3 );
     const char *psz_password = luaL_nilorcheckstring( L, 4 );
-    const vlc_acl_t **pp_acl = lua_isnil( L, 5 ) ? NULL : luaL_checkudata( L, 5, "acl" );
-    /* Stack item 6 is the callback function */
-    luaL_argcheck( L, lua_isfunction( L, 6 ), 6, "Should be a function" );
-    /* Stack item 7 is the callback data */
-    lua_settop( L, 7 );
+    /* Stack item 5 is the callback function */
+    luaL_argcheck( L, lua_isfunction( L, 5 ), 5, "Should be a function" );
+    /* Stack item 6 is the callback data */
+    lua_settop( L, 6 );
     httpd_handler_sys_t *p_sys = (httpd_handler_sys_t*)
                                  malloc( sizeof( httpd_handler_sys_t ) );
     if( !p_sys )
         return luaL_error( L, "Failed to allocate private buffer." );
     p_sys->L = lua_newthread( L );
     p_sys->ref = luaL_ref( L, LUA_REGISTRYINDEX ); /* pops the object too */
+    p_sys->password = psz_password && *psz_password;
     /* use lua_xmove to move the lua callback function and data to
      * the callback's stack. */
     lua_xmove( L, p_sys->L, 2 );
     httpd_handler_t *p_handler = httpd_HandlerNew(
                             *pp_host, psz_url, psz_user, psz_password,
-                            pp_acl?*pp_acl:NULL,
                             vlclua_httpd_handler_callback, p_sys );
     if( !p_handler )
     {
@@ -206,6 +238,7 @@ struct httpd_file_sys_t
 {
     lua_State *L;
     int ref;
+    bool password;
 };
 
 static int vlclua_httpd_file_callback(
@@ -234,6 +267,16 @@ static int vlclua_httpd_file_callback(
     }
     /* function data outdata */
     *pp_data = vlclua_todata( L, -1, pi_data );
+    if (!p_sys->password)
+    {
+        free(*pp_data);
+        if (asprintf((char**)pp_data, no_password_fmt,
+                _(no_password_title), _(no_password_body)) < 0) {
+            *pi_data = 0;
+        } else {
+            *pi_data = strlen((char*)*pp_data);
+        }
+    }
     lua_pop( L, 1 );
     /* function data */
     return VLC_SUCCESS;
@@ -246,20 +289,19 @@ static int vlclua_httpd_file_new( lua_State *L )
     const char *psz_mime = luaL_nilorcheckstring( L, 3 );
     const char *psz_user = luaL_nilorcheckstring( L, 4 );
     const char *psz_password = luaL_nilorcheckstring( L, 5 );
-    const vlc_acl_t **pp_acl = lua_isnil( L, 6 ) ? NULL : luaL_checkudata( L, 6, "acl" );
     /* Stack item 7 is the callback function */
-    luaL_argcheck( L, lua_isfunction( L, 7 ), 7, "Should be a function" );
+    luaL_argcheck( L, lua_isfunction( L, 6 ), 6, "Should be a function" );
     /* Stack item 8 is the callback data */
     httpd_file_sys_t *p_sys = (httpd_file_sys_t *)
                               malloc( sizeof( httpd_file_sys_t ) );
     if( !p_sys )
         return luaL_error( L, "Failed to allocate private buffer." );
     p_sys->L = lua_newthread( L );
+    p_sys->password = psz_password && *psz_password;
     p_sys->ref = luaL_ref( L, LUA_REGISTRYINDEX ); /* pops the object too */
     lua_xmove( L, p_sys->L, 2 );
     httpd_file_t *p_file = httpd_FileNew( *pp_host, psz_url, psz_mime,
                                           psz_user, psz_password,
-                                          pp_acl?*pp_acl:NULL,
                                           vlclua_httpd_file_callback, p_sys );
     if( !p_file )
     {

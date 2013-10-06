@@ -38,30 +38,26 @@
 #include <QPushButton>
 #include <QTimer>
 
-DialogHandler::DialogHandler (intf_thread_t *intf, QObject *_parent)
-    : QObject( _parent ), intf (intf),
-      critical (VLC_OBJECT(intf), "dialog-critical"),
-      login (VLC_OBJECT(intf), "dialog-login"),
-      question (VLC_OBJECT(intf), "dialog-question"),
-      progressBar (VLC_OBJECT(intf), "dialog-progress-bar")
+DialogHandler::DialogHandler (intf_thread_t *p_intf, QObject *_parent)
+    : QObject( _parent ), intf (p_intf),
+      critical (VLC_OBJECT(p_intf), "dialog-critical"),
+      login (VLC_OBJECT(p_intf), "dialog-login"),
+      question (VLC_OBJECT(p_intf), "dialog-question"),
+      progressBar (VLC_OBJECT(p_intf), "dialog-progress-bar")
 {
     var_Create (intf, "dialog-error", VLC_VAR_ADDRESS);
     var_AddCallback (intf, "dialog-error", error, this);
     connect (this, SIGNAL(error(const QString &, const QString &)),
              SLOT(displayError(const QString &, const QString &)));
 
-    connect (&critical, SIGNAL(pointerChanged(vlc_object_t *, void *)),
-             SLOT(displayCritical(vlc_object_t *, void *)),
-             Qt::BlockingQueuedConnection);
-    connect (&login, SIGNAL(pointerChanged(vlc_object_t *, void *)),
-             SLOT(requestLogin(vlc_object_t *, void *)),
-             Qt::BlockingQueuedConnection);
-    connect (&question, SIGNAL(pointerChanged(vlc_object_t *, void *)),
-             SLOT(requestAnswer(vlc_object_t *, void *)),
-             Qt::BlockingQueuedConnection);
-    connect (&progressBar, SIGNAL(pointerChanged(vlc_object_t *, void *)),
-             SLOT(startProgressBar(vlc_object_t *, void *)),
-             Qt::BlockingQueuedConnection);
+    critical.addCallback(this, SLOT(displayCritical(void *)),
+                         Qt::BlockingQueuedConnection);
+    login.addCallback(this, SLOT(requestLogin(void *)),
+                      Qt::BlockingQueuedConnection);
+    question.addCallback(this, SLOT(requestAnswer(void *)),
+                         Qt::BlockingQueuedConnection);
+    progressBar.addCallback(this, SLOT(startProgressBar(void *)),
+                            Qt::BlockingQueuedConnection);
 
     dialog_Register (intf);
 }
@@ -90,7 +86,7 @@ void DialogHandler::displayError (const QString& title, const QString& message)
     ErrorsDialog::getInstance (intf)->addError(title, message);
 }
 
-void DialogHandler::displayCritical (vlc_object_t *, void *value)
+void DialogHandler::displayCritical (void *value)
 {
     const dialog_fatal_t *dialog = (const dialog_fatal_t *)value;
 
@@ -98,7 +94,7 @@ void DialogHandler::displayCritical (vlc_object_t *, void *value)
                            QMessageBox::Ok);
 }
 
-void DialogHandler::requestLogin (vlc_object_t *, void *value)
+void DialogHandler::requestLogin (void *value)
 {
     dialog_login_t *data = (dialog_login_t *)value;
     QDialog *dialog = new QDialog;
@@ -150,7 +146,7 @@ void DialogHandler::requestLogin (vlc_object_t *, void *value)
     delete dialog;
 }
 
-void DialogHandler::requestAnswer (vlc_object_t *, void *value)
+void DialogHandler::requestAnswer (void *value)
 {
     dialog_question_t *data = (dialog_question_t *)value;
 
@@ -237,7 +233,7 @@ void QVLCProgressDialog::saveCancel (void)
     cancelled = true;
 }
 
-void DialogHandler::startProgressBar (vlc_object_t *, void *value)
+void DialogHandler::startProgressBar (void *value)
 {
     dialog_progress_bar_t *data = (dialog_progress_bar_t *)value;
     QWidget *dlg = new QVLCProgressDialog (this, data);

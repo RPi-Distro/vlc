@@ -2,7 +2,7 @@
  * aout_internal.h : internal defines for audio output
  *****************************************************************************
  * Copyright (C) 2002 VLC authors and VideoLAN
- * $Id: 14ade82656b79a5d911cc4e03fab72ee8b7ccbfe $
+ * $Id: abe65132caf58961cd0814f59f9b33a3956c545f $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -24,6 +24,8 @@
 #ifndef LIBVLC_AOUT_INTERNAL_H
 # define LIBVLC_AOUT_INTERNAL_H 1
 
+# include <vlc_atomic.h>
+
 /* Max input rate factor (1/4 -> 4) */
 # define AOUT_MAX_INPUT_RATE (4)
 
@@ -33,80 +35,53 @@ enum {
     AOUT_RESAMPLING_DOWN
 };
 
-typedef struct
+struct aout_request_vout
 {
     struct vout_thread_t  *(*pf_request_vout)( void *, struct vout_thread_t *,
                                                video_format_t *, bool );
     void *p_private;
-} aout_request_vout_t;
-
-struct filter_owner_sys_t
-{
-    audio_output_t *p_aout;
-    aout_input_t    *p_input;
 };
 
-/** an input stream for the audio output */
-struct aout_input_t
-{
-    unsigned            samplerate; /**< Input sample rate */
-
-    /* pre-filters */
-    filter_t *              pp_filters[AOUT_MAX_FILTERS];
-    int                     i_nb_filters;
-
-    filter_t *              p_playback_rate_filter;
-
-    /* resamplers */
-    filter_t *              pp_resamplers[AOUT_MAX_FILTERS];
-    int                     i_nb_resamplers;
-    int                     i_resampling_type;
-    mtime_t                 i_resamp_start_date;
-    int                     i_resamp_start_drift;
-
-    /* last rate from input */
-    int               i_last_input_rate;
-
-    /* */
-    int               i_buffer_lost;
-
-    /* */
-    bool                b_recycle_vout;
-    aout_request_vout_t request_vout;
-};
+typedef struct aout_volume aout_volume_t;
+typedef struct aout_dev aout_dev_t;
 
 typedef struct
 {
     vlc_mutex_t lock;
     module_t *module; /**< Output plugin (or NULL if inactive) */
-    aout_input_t *input;
-
-    struct
-    {
-        date_t date;
-    } sync;
+    aout_filters_t *filters;
+    aout_volume_t *volume;
 
     struct
     {
         vlc_mutex_t lock;
-        float multiplier; /**< Software volume amplification multiplier */
-        struct audio_mixer *mixer; /**< Software volume plugin */
-    } volume;
+        char *device;
+        float volume;
+        signed char mute;
+    } req;
 
     struct
     {
-        vlc_atomic_t multiplier;
-        audio_replay_gain_t data;
-    } gain;
+        vlc_mutex_t lock;
+        aout_dev_t *list;
+        unsigned count;
+    } dev;
 
-    audio_sample_format_t mixer_format;
+    struct
+    {
+        mtime_t end; /**< Last seen PTS */
+        unsigned resamp_start_drift; /**< Resampler drift absolute value */
+        int resamp_type; /**< Resampler mode (FIXME: redundant / resampling) */
+        bool discontinuity;
+    } sync;
+
     audio_sample_format_t input_format;
+    audio_sample_format_t mixer_format;
 
-    /* Filters between mixer and output */
-    filter_t *filters[AOUT_MAX_FILTERS];
-    int       nb_filters;
+    aout_request_vout_t request_vout;
 
-    vlc_atomic_t restart;
+    atomic_uint buffers_lost;
+    atomic_uchar restart;
 } aout_owner_t;
 
 typedef struct
@@ -124,64 +99,31 @@ static inline aout_owner_t *aout_owner (audio_output_t *aout)
  * Prototypes
  *****************************************************************************/
 
-/* From input.c : */
-aout_input_t *aout_InputNew(audio_output_t *, const audio_sample_format_t *,
-                            const audio_sample_format_t *,
-                            const aout_request_vout_t *);
-int aout_InputDelete( audio_output_t * p_aout, aout_input_t * p_input );
-block_t *aout_InputPlay( audio_output_t *p_aout, aout_input_t *p_input,
-                         block_t *p_buffer, int i_input_rate, date_t * );
-
-/* From filters.c : */
-int aout_FiltersCreatePipeline( vlc_object_t *, filter_t **, int *,
-    const audio_sample_format_t *, const audio_sample_format_t * );
-#define aout_FiltersCreatePipeline(o, pv, pc, inf, outf) \
-        aout_FiltersCreatePipeline(VLC_OBJECT(o), pv, pc, inf, outf)
-void aout_FiltersDestroyPipeline( filter_t *const *, unsigned );
-void aout_FiltersPlay( filter_t *const *, unsigned, aout_buffer_t ** );
-
 /* From mixer.c : */
-struct audio_mixer *aout_MixerNew(vlc_object_t *, vlc_fourcc_t);
-#define aout_MixerNew(o, f) aout_MixerNew(VLC_OBJECT(o), f)
-void aout_MixerDelete(struct audio_mixer *);
-void aout_MixerRun(struct audio_mixer *, block_t *, float);
-float aout_ReplayGainSelect(vlc_object_t *, const char *,
-                            const audio_replay_gain_t *);
-#define aout_ReplayGainSelect(o, s, g) \
-        aout_ReplayGainSelect(VLC_OBJECT(o), s, g)
-
-static inline void aout_ReplayGainInit(audio_replay_gain_t *restrict d,
-                                       const audio_replay_gain_t *restrict s)
-{
-    if (s != NULL)
-        *d = *s;
-    else
-        memset (d, 0, sizeof (*d));
-}
+aout_volume_t *aout_volume_New(vlc_object_t *, const audio_replay_gain_t *);
+#define aout_volume_New(o, g) aout_volume_New(VLC_OBJECT(o), g)
+int aout_volume_SetFormat(aout_volume_t *, vlc_fourcc_t);
+void aout_volume_SetVolume(aout_volume_t *, float);
+int aout_volume_Amplify(aout_volume_t *, block_t *);
+void aout_volume_Delete(aout_volume_t *);
 
 
 /* From output.c : */
-int aout_OutputNew( audio_output_t * p_aout,
-                    const audio_sample_format_t * p_format );
-void aout_OutputPlay( audio_output_t * p_aout, aout_buffer_t * p_buffer );
-void aout_OutputPause( audio_output_t * p_aout, bool, mtime_t );
-void aout_OutputFlush( audio_output_t * p_aout, bool );
-void aout_OutputDelete( audio_output_t * p_aout );
-
-
-/* From common.c : */
 audio_output_t *aout_New (vlc_object_t *);
 #define aout_New(a) aout_New(VLC_OBJECT(a))
 void aout_Destroy (audio_output_t *);
 
-void aout_FifoInit( vlc_object_t *, aout_fifo_t *, uint32_t );
-mtime_t aout_FifoFirstDate( const aout_fifo_t * ) VLC_USED;
-#define aout_FifoInit(o, f, r) aout_FifoInit(VLC_OBJECT(o), f, r)
-void aout_FifoPush( aout_fifo_t *, aout_buffer_t * );
-aout_buffer_t *aout_FifoPop( aout_fifo_t * p_fifo ) VLC_USED;
-void aout_FifoReset( aout_fifo_t * );
-void aout_FifoMoveDates( aout_fifo_t *, mtime_t );
-void aout_FifoDestroy( aout_fifo_t * p_fifo );
+int aout_OutputNew(audio_output_t *, audio_sample_format_t *);
+int aout_OutputTimeGet(audio_output_t *, mtime_t *);
+void aout_OutputPlay(audio_output_t *, block_t *);
+void aout_OutputPause( audio_output_t * p_aout, bool, mtime_t );
+void aout_OutputFlush( audio_output_t * p_aout, bool );
+void aout_OutputDelete( audio_output_t * p_aout );
+void aout_OutputLock(audio_output_t *);
+void aout_OutputUnlock(audio_output_t *);
+
+
+/* From common.c : */
 void aout_FormatsPrint(vlc_object_t *, const char *,
                        const audio_sample_format_t *,
                        const audio_sample_format_t *);
@@ -201,58 +143,11 @@ int aout_DecGetResetLost(audio_output_t *);
 void aout_DecChangePause(audio_output_t *, bool b_paused, mtime_t i_date);
 void aout_DecFlush(audio_output_t *);
 bool aout_DecIsEmpty(audio_output_t *);
+void aout_RequestRestart (audio_output_t *, unsigned);
 
-void aout_InputRequestRestart(audio_output_t *);
-void aout_RequestRestart(audio_output_t *);
-void aout_Shutdown (audio_output_t *);
-
-/* Audio output locking */
-
-#if !defined (NDEBUG) \
- && defined __linux__ && (defined (__i386__) || defined (__x86_64__))
-# define AOUT_DEBUG 1
-#endif
-
-#ifdef AOUT_DEBUG
-enum
+static inline void aout_InputRequestRestart(audio_output_t *aout)
 {
-    OUTPUT_LOCK=1,
-    VOLUME_LOCK=2,
-};
-
-void aout_lock_check (unsigned);
-void aout_unlock_check (unsigned);
-
-#else
-# define aout_lock_check( i )   (void)0
-# define aout_unlock_check( i ) (void)0
-#endif
-
-static inline void aout_lock( audio_output_t *p_aout )
-{
-    aout_lock_check( OUTPUT_LOCK );
-    vlc_mutex_lock( &aout_owner(p_aout)->lock );
+    aout_RequestRestart(aout, AOUT_RESTART_FILTERS);
 }
-
-static inline void aout_unlock( audio_output_t *p_aout )
-{
-    aout_unlock_check( OUTPUT_LOCK );
-    vlc_mutex_unlock( &aout_owner(p_aout)->lock );
-}
-
-static inline void aout_lock_volume( audio_output_t *p_aout )
-{
-    aout_lock_check( VOLUME_LOCK );
-    vlc_mutex_lock( &aout_owner(p_aout)->volume.lock );
-}
-
-static inline void aout_unlock_volume( audio_output_t *p_aout )
-{
-    aout_unlock_check( VOLUME_LOCK );
-    vlc_mutex_unlock( &aout_owner(p_aout)->volume.lock );
-}
-
-#define aout_assert_locked( aout ) \
-        vlc_assert_locked( &aout_owner(aout)->lock )
 
 #endif /* !LIBVLC_AOUT_INTERNAL_H */

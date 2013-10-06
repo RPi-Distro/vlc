@@ -1,26 +1,34 @@
 /*****************************************************************************
  * dvdread.c : DvdRead input module for vlc
  *****************************************************************************
- * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: d0c2bff2ffd1e7461ec87a594dd48294ff8a81c5 $
+ * Copyright (C) 2001-2006 VLC authors and VideoLAN
+ * $Id: a239053f0c3183029d46d394127dc5ad4f07c721 $
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+/*****************************************************************************
+ * NOTA BENE: this module requires the linking against a library which is
+ * known to require licensing under the GNU General Public License version 2
+ * (or later). Therefore, the result of compiling this module will normally
+ * be subject to the terms of that later license.
+ *****************************************************************************/
+
 
 /*****************************************************************************
  * Preamble
@@ -171,7 +179,7 @@ static int Open( vlc_object_t *p_this )
     else
         psz_file = strdup( p_demux->psz_file );
 
-#if defined( WIN32 ) || defined( __OS2__ )
+#if defined( _WIN32 ) || defined( __OS2__ )
     if( psz_file != NULL )
     {
         size_t flen = strlen( psz_file );
@@ -557,7 +565,7 @@ static int DemuxBlock( demux_t *p_demux, const uint8_t *p, int len )
         }
 
         /* Create a block */
-        block_t *p_pkt = block_New( p_demux, i_size );
+        block_t *p_pkt = block_Alloc( i_size );
         memcpy( p_pkt->p_buffer, p, i_size);
 
         /* Parse it and send it */
@@ -746,6 +754,12 @@ static int DvdReadSetArea( demux_t *p_demux, int i_title, int i_chapter,
         pgc_id = p_vts->vts_ptt_srpt->title[p_sys->i_ttn - 1].ptt[0].pgcn;
         pgn = p_vts->vts_ptt_srpt->title[p_sys->i_ttn - 1].ptt[0].pgn;
         p_pgc = p_vts->vts_pgcit->pgci_srp[pgc_id - 1].pgc;
+
+        if( p_pgc->cell_playback == NULL )
+        {
+            msg_Err( p_demux, "Invalid PGC (cell_playback_offset)" );
+            return VLC_EGENERIC;
+        }
 
         p_sys->i_title_start_cell =
             i_start_cell = p_pgc->program_map[pgn - 1] - 1;
@@ -991,6 +1005,8 @@ static int DvdReadSetArea( demux_t *p_demux, int i_title, int i_chapter,
                   p_sys->i_ttn - 1].ptt[i_chapter].pgn;
 
         p_pgc = p_vts->vts_pgcit->pgci_srp[pgc_id - 1].pgc;
+        if( p_pgc->cell_playback == NULL )
+            return VLC_EGENERIC; /* Couldn't set chapter */
 
         p_sys->i_cur_cell = p_pgc->program_map[pgn - 1] - 1;
         p_sys->i_chapter = i_chapter;

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * AudioEffects.h: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2004-2011 VLC authors and VideoLAN
- * $Id: e56fd4c66adc28036662cfd01aae4fb0f2272397 $
+ * Copyright (C) 2004-2012 VLC authors and VideoLAN
+ * $Id: 143bb864b648a2502bd68b3be632de9ee8dee3aa $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jérôme Decoodt <djc@videolan.org>
@@ -29,6 +29,8 @@
     IBOutlet id o_tableView;
     IBOutlet id o_window;
     intf_thread_t *p_intf;
+    IBOutlet id o_profile_pop;
+    BOOL b_genericAudioProfileInInteraction;
 
     /* Equalizer */
     IBOutlet id o_eq_enable_ckb;
@@ -97,18 +99,25 @@
     IBOutlet id o_filter_normLevel_sld;
     IBOutlet id o_filter_normLevel_lbl;
     IBOutlet id o_filter_karaoke_ckb;
+
+    NSInteger i_old_profile_index;
 }
 
 /* generic */
 + (VLCAudioEffects *)sharedInstance;
+
+- (void)updateCocoaWindowLevel:(NSInteger)i_level;
 - (IBAction)toggleWindow:(id)sender;
 - (void)setAudioFilter: (char *)psz_name on:(BOOL)b_on;
+- (IBAction)profileSelectorAction:(id)sender;
+- (IBAction)addAudioEffectsProfile:(id)sender;
+- (IBAction)removeAudioEffectsProfile:(id)sender;
+
+- (void)saveCurrentProfile;
 
 /* Equalizer */
 - (void)setupEqualizer;
 - (void)equalizerUpdated;
-- (void)setBandSlidersValues:(float *)values;
-- (void)initBandSliders;
 - (void)setValue:(float)value forSlider:(int)index;
 - (IBAction)eq_bandSliderUpdated:(id)sender;
 - (IBAction)eq_changePreset:(id)sender;

@@ -18,6 +18,11 @@ download = rm -f $@.tmp && \
 	wget --passive -c -p -O $@.tmp "$(1)" && \
 	touch $@.tmp && \
 	mv $@.tmp $@
+else ifeq ($(which fetch >/dev/null 2>&1 || echo FAIL),)
+download = rm -f $@.tmp && \
+	fetch -p -o $@.tmp "$(1)" && \
+	touch $@.tmp && \
+	mv $@.tmp $@
 else
 download = $(error Neither curl nor wget found!)
 endif
@@ -63,6 +68,7 @@ cmake: cmake-$(CMAKE_VERSION).tar.gz
 	$(MOVE)
 
 .cmake: cmake
+	$(APPLY) cmake-backport-curl-bug-1192.patch
 	(cd $<; ./configure --prefix=$(PREFIX) && make && make install)
 	touch $@
 
@@ -138,7 +144,7 @@ autoconf: autoconf-$(AUTOCONF_VERSION).tar.gz
 
 CLEAN_FILE += .autoconf
 CLEAN_PKG += autoconf
-DISTCLEAN_PKG += autoconf-$(AUTOCONF_VERSION).tar.bz2
+DISTCLEAN_PKG += autoconf-$(AUTOCONF_VERSION).tar.gz
 
 # automake
 
@@ -157,6 +163,23 @@ CLEAN_FILE += .automake
 CLEAN_PKG += automake
 DISTCLEAN_PKG += automake-$(AUTOMAKE_VERSION).tar.gz
 
+# m4
+
+m4-$(M4_VERSION).tar.gz:
+	$(call download,$(M4_URL))
+
+m4: m4-$(M4_VERSION).tar.gz
+	$(UNPACK)
+	$(MOVE)
+
+.m4: m4
+	(cd $<; ./configure --prefix=$(PREFIX) && make && make install)
+	touch $@
+
+CLEAN_FILE += .m4
+CLEAN_PKG += m4
+DISTCLEAN_PKG += m4-$(M4_VERSION).tar.gz
+
 # pkg-config
 
 pkg-config-$(PKGCFG_VERSION).tar.gz:
@@ -164,6 +187,7 @@ pkg-config-$(PKGCFG_VERSION).tar.gz:
 
 pkgconfig: pkg-config-$(PKGCFG_VERSION).tar.gz
 	$(UNPACK)
+	mv pkg-config-lite-$(PKGCFG_VERSION) pkg-config-$(PKGCFG_VERSION)
 	$(MOVE)
 
 .pkg-config: pkgconfig
@@ -191,6 +215,39 @@ openssl: openssl-$(OPENSSL_VERSION).tar.gz
 CLEAN_FILE += .openssl
 CLEAN_PKG += openssl
 DISTCLEAN_PKG += openssl-$(OPENSSL_VERSION).tar.gz
+
+# gas-preprocessor
+gas-preprocessor-$(GAS_VERSION).tar.gz:
+	$(call download,$(GAS_URL))
+
+gas: gas-preprocessor-$(GAS_VERSION).tar.gz
+	$(UNPACK)
+	$(MOVE)
+
+.gas: gas
+	cp gas/gas-preprocessor.pl build/bin/
+	touch $@
+
+CLEAN_FILE += .gas
+CLEAN_PKG += gas
+DISTCLEAN_PKG += yuvi-gas-preprocessor-$(GAS_VERSION).tar.gz
+
+# Ragel State Machine Compiler
+ragel-$(RAGEL_VERSION).tar.gz:
+	$(call download,$(RAGEL_URL))
+
+ragel: ragel-$(RAGEL_VERSION).tar.gz
+	$(UNPACK)
+	$(MOVE)
+
+.ragel: ragel
+	$(APPLY) ragel-6.8-javacodegen.patch
+	(cd ragel; ./configure --prefix=$(PREFIX) --disable-shared --enable-static && make && make install)
+	touch $@
+
+CLEAN_FILE += .ragel
+CLEAN_PKG += ragel
+DISTCLEAN_PKG += ragel-$(RAGEL_VERSION).tar.gz
 
 #
 #

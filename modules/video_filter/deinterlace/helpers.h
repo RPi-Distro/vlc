@@ -1,24 +1,24 @@
 /*****************************************************************************
  * helpers.h : Generic helper functions for the VLC deinterlacer
  *****************************************************************************
- * Copyright (C) 2011 the VideoLAN team
- * $Id: d3740412c531fdb0da80f006cb01f75a8ad6a882 $
+ * Copyright (C) 2011 VLC authors and VideoLAN
+ * $Id: 1a7638695765cb30e22ada76f47380a99546c8aa $
  *
  * Author: Juha Jeronen <juha.jeronen@jyu.fi>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_DEINTERLACE_HELPERS_H
@@ -89,13 +89,15 @@ typedef enum { CC_ALTLINE, CC_UPCONVERT, CC_SOURCE_TOP, CC_SOURCE_BOTTOM,
  * @param p_inpic_top Picture to extract the top field from.
  * @param p_inpic_bottom Picture to extract the bottom field from.
  * @param i_output_chroma Chroma operation mode for 4:2:0 (see function doc)
+ * @param swapped_uv_conversion Swap UV while up converting (for YV12)
  * @see compose_chroma_t
  * @see RenderPhosphor()
  * @see RenderIVTC()
  */
-void ComposeFrame( filter_t *p_filter, picture_t *p_outpic,
+void ComposeFrame( filter_t *p_filter,
+                   picture_t *p_outpic,
                    picture_t *p_inpic_top, picture_t *p_inpic_bottom,
-                   compose_chroma_t i_output_chroma );
+                   compose_chroma_t i_output_chroma, bool swapped_uv_conversion );
 
 /**
  * Helper function: Estimates the number of 8x8 blocks which have motion

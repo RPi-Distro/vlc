@@ -7,19 +7,19 @@
  * Authors: Christopher Mueller <christopher.mueller@itec.uni-klu.ac.at>
  *          Christian Timmerer  <christian.timmerer@itec.uni-klu.ac.at>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published
  * by the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef ABSTRACTADAPTATIONLOGIC_H_
@@ -33,7 +33,8 @@
 #include "mpd/Period.h"
 #include "mpd/Representation.h"
 #include "mpd/Segment.h"
-#include "exceptions/EOFException.h"
+
+struct stream_t;
 
 namespace dash
 {
@@ -42,18 +43,23 @@ namespace dash
         class AbstractAdaptationLogic : public IAdaptationLogic
         {
             public:
-                AbstractAdaptationLogic             (dash::mpd::IMPDManager *mpdManager);
+                AbstractAdaptationLogic             (dash::mpd::IMPDManager *mpdManager, stream_t *stream);
                 virtual ~AbstractAdaptationLogic    ();
 
-                virtual void                downloadRateChanged     (long bpsAvg, long bpsLastChunk);
+                virtual void                downloadRateChanged     (uint64_t bpsAvg, uint64_t bpsLastChunk);
+                virtual void                bufferLevelChanged      (mtime_t bufferedMicroSec, int bufferedPercent);
 
-                long                        getBpsAvg               ();
-                long                        getBpsLastChunk         ();
+                uint64_t                    getBpsAvg               () const;
+                uint64_t                    getBpsLastChunk         () const;
+                int                         getBufferPercent        () const;
 
             private:
                 int                     bpsAvg;
                 long                    bpsLastChunk;
                 dash::mpd::IMPDManager  *mpdManager;
+                stream_t                *stream;
+                mtime_t                 bufferedMicroSec;
+                int                     bufferedPercent;
         };
     }
 }

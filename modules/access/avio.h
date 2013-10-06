@@ -2,23 +2,23 @@
  * avio.h: access using libavformat library
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 80e23f44dd674a2a068df204101d096389f78679 $
+ * $Id: 24f07d0f2f312dd70be27d032e874e307bf77f97 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /* ffmpeg header */
@@ -41,8 +41,10 @@ void OutCloseAvio(vlc_object_t *);
     set_category(CAT_INPUT)                 \
     set_subcategory(SUBCAT_INPUT_ACCESS)    \
     set_capability("access", -1)            \
-    add_shortcut("avio", "rtmp")            \
+    add_shortcut("avio", "rtmp", "rtmpe", "rtmps", "rtmpt", "rtmpte", "rtmpts") \
     set_callbacks(OpenAvio, CloseAvio) \
+    set_section(N_("Input"), NULL ) \
+    add_string("avio-options", NULL, AV_OPTIONS_TEXT, AV_OPTIONS_LONGTEXT, true) \
     add_submodule () \
         set_shortname( "libavformat" ) \
         set_description( N_("libavformat access output") ) \
@@ -50,4 +52,6 @@ void OutCloseAvio(vlc_object_t *);
         set_category( CAT_SOUT ) \
         set_subcategory( SUBCAT_SOUT_ACO ) \
         add_shortcut( "avio", "rtmp" ) \
-        set_callbacks( OutOpenAvio, OutCloseAvio)
+        set_callbacks( OutOpenAvio, OutCloseAvio) \
+        set_section(N_("Stream output"), NULL ) \
+        add_string("sout-avio-options", NULL, AV_OPTIONS_TEXT, AV_OPTIONS_LONGTEXT, true)

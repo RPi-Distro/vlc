@@ -1,24 +1,24 @@
 /*****************************************************************************
  * b4s.c : B4S playlist format import
  *****************************************************************************
- * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: cbf7bebc85f54f88c4a50ccc8205826a2835f4f3 $
+ * Copyright (C) 2005-2009 VLC authors and VideoLAN
+ * $Id: 7009195a35e193a321f4302aaca235e9ed802ee5 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -35,15 +35,10 @@
 
 #include "playlist.h"
 
-struct demux_sys_t
-{
-};
-
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
 static int Demux( demux_t *p_demux);
-static int Control( demux_t *p_demux, int i_query, va_list args );
 static bool IsWhitespace( const char *psz_string );
 
 /*****************************************************************************
@@ -51,20 +46,16 @@ static bool IsWhitespace( const char *psz_string );
  *****************************************************************************/
 int Import_B4S( vlc_object_t *p_this )
 {
-    DEMUX_BY_EXTENSION_OR_FORCED_MSG( ".b4s", "b4s-open",
-                                      "using B4S playlist reader" );
+    demux_t *demux = (demux_t *)p_this;
+
+    if( !demux_IsPathExtension( demux, ".b4s" )
+     && !demux_IsForced( demux, "b4s-open" ) )
+        return VLC_EGENERIC;
+
+    demux->pf_demux = Demux;
+    demux->pf_control = Control;
+
     return VLC_SUCCESS;
-}
-
-/*****************************************************************************
- * Deactivate: frees unused data
- *****************************************************************************/
-void Close_B4S( vlc_object_t *p_this )
-{
-    demux_t *p_demux = (demux_t *)p_this;
-    demux_sys_t *p_sys = p_demux->p_sys;
-
-    free( p_sys );
 }
 
 static int Demux( demux_t *p_demux )
@@ -240,12 +231,6 @@ end:
     if( p_xml_reader )
         xml_ReaderDelete( p_xml_reader );
     return i_ret;
-}
-
-static int Control( demux_t *p_demux, int i_query, va_list args )
-{
-    VLC_UNUSED(p_demux); VLC_UNUSED(i_query); VLC_UNUSED(args);
-    return VLC_EGENERIC;
 }
 
 static bool IsWhitespace( const char *psz_string )

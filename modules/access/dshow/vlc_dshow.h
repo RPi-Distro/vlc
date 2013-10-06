@@ -1,24 +1,24 @@
 /*****************************************************************************
  * vlc_dshow.h : DirectShow access module for vlc
  *****************************************************************************
- * Copyright (C) 2002, 2004, 2010-2011 the VideoLAN team
- * $Id: 40402dd0f9ee3e677ee94873ec0664444eae9148 $
+ * Copyright (C) 2002, 2004, 2010-2011 VLC authors and VideoLAN
+ * $Id: 816884eb37cb7d2882e9804edb5c427bc76f91ca $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -39,13 +39,7 @@
 #include <ksmedia.h>
 #include <ddraw.h>
 
-#ifdef __MINGW64_VERSION_MAJOR
-
-#if __MINGW64_VERSION_MAJOR < 3
-DEFINE_GUID(MEDIASUBTYPE_I420,0x30323449,0x0000,0x0010,0x80,0x00,0x00,0xaa,0x00,0x38,0x9b,0x71);
-#endif
-
-#else /* !__MINGW64_VERSION_MAJOR */
+#ifndef __MINGW64_VERSION_MAJOR
 
 #include <dshow.h>
 

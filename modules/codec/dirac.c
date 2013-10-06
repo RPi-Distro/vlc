@@ -6,25 +6,25 @@
  *          ## offers superior encoding quality than dirac-research
  *          ##
  *****************************************************************************
- * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: 6301535d0b68d9638c4a4d07b3b0e4fd4db61156 $
+ * Copyright (C) 2004-2008 VLC authors and VideoLAN
+ * $Id: 89ba0dc3fbb82c1492fc574ff017d985955a6de2 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  * Rewritten: David Flynn <davidf at rd.bbc.co.uk>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -76,7 +76,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pict );
 static const char *const enc_prefilter_list[] =
   { "none", "cwm", "rectlp", "diaglp" };
 static const char *const enc_prefilter_list_text[] =
-  { N_("none"), N_("Centre Weighted Median"),
+  { N_("None"), N_("Centre Weighted Median"),
     N_("Rectangular Linear Phase"), N_("Diagonal Linear Phase") };
 
 #define ENC_PREFILTER_STRENGTH "prefilter-strength"
@@ -221,7 +221,7 @@ vlc_module_begin()
 
     add_string( ENC_CFG_PREFIX ENC_PREFILTER, "diaglp",
                 ENC_PREFILTER_TEXT, ENC_PREFILTER_LONGTEXT, false )
-    change_string_list( enc_prefilter_list, enc_prefilter_list_text, 0 );
+    change_string_list( enc_prefilter_list, enc_prefilter_list_text );
 
     add_integer( ENC_CFG_PREFIX ENC_PREFILTER_STRENGTH, 1,
                  ENC_PREFILTER_STRENGTH_TEXT, ENC_PREFILTER_STRENGTH_LONGTEXT, false )
@@ -229,7 +229,7 @@ vlc_module_begin()
 
     add_string( ENC_CFG_PREFIX ENC_CHROMAFMT, "420",
                 ENC_CHROMAFMT_TEXT, ENC_CHROMAFMT_LONGTEXT, false )
-    change_string_list( enc_chromafmt_list, enc_chromafmt_list_text, 0 );
+    change_string_list( enc_chromafmt_list, enc_chromafmt_list_text );
 
     add_integer( ENC_CFG_PREFIX ENC_L1SEP, -1,
                  ENC_L1SEP_TEXT, ENC_L1SEP_LONGTEXT, false )
@@ -241,11 +241,11 @@ vlc_module_begin()
 
     add_string( ENC_CFG_PREFIX ENC_CODINGMODE, "auto",
                 ENC_CODINGMODE_TEXT, ENC_CODINGMODE_LONGTEXT, false )
-    change_string_list( enc_codingmode_list, enc_codingmode_list_text, 0 );
+    change_string_list( enc_codingmode_list, enc_codingmode_list_text );
 
     add_string( ENC_CFG_PREFIX ENC_MVPREC, "1/2",
                 ENC_MVPREC_TEXT, ENC_MVPREC_LONGTEXT, false )
-    change_string_list( enc_mvprec_list, enc_mvprec_list, 0 );
+    change_string_list( enc_mvprec_list, enc_mvprec_list );
 
     add_integer( ENC_CFG_PREFIX ENC_MCBLK_WIDTH, -1,
                  ENC_MCBLK_WIDTH_TEXT, ENC_MCBLK_WIDTH_LONGTEXT, false )
@@ -289,13 +289,13 @@ vlc_module_begin()
     change_integer_range(-1, 4);
 
     /* advanced option only */
-    /* NB, unforunately vlc doesn't have a concept of 'dont care' */
+    /* NB, unforunately vlc doesn't have a concept of 'don't care' */
     add_integer( ENC_CFG_PREFIX ENC_MULTIQUANT, -1,
                  ENC_MULTIQUANT_TEXT, ENC_MULTIQUANT_LONGTEXT, true )
     change_integer_range(-1, 1);
 
     /* advanced option only */
-    /* NB, unforunately vlc doesn't have a concept of 'dont care' */
+    /* NB, unforunately vlc doesn't have a concept of 'don't care' */
     add_integer( ENC_CFG_PREFIX ENC_SPARTITION, -1,
                  ENC_SPARTITION_TEXT, ENC_SPARTITION_LONGTEXT, true )
     change_integer_range(-1, 1);
@@ -834,7 +834,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pic )
 
         for( i_line = 0; i_line < p_pic->p[i_plane].i_visible_lines; i_line++ )
         {
-            vlc_memcpy( p_dst, p_src, i_width );
+            memcpy( p_dst, p_src, i_width );
             p_dst += i_width;
             p_src += i_src_stride;
         }
@@ -855,7 +855,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pic )
 
     /* store dts in a queue, so that they appear in order in
      * coded order */
-    p_block = block_New( p_enc, 1 );
+    p_block = block_Alloc( 1 );
     if( !p_block )
         return NULL;
     p_block->i_dts = p_pic->date - p_sys->i_pts_offset;
@@ -870,7 +870,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pic )
         StorePicturePTS( p_enc, p_sys->i_input_picnum, p_pic->date + p_sys->i_field_time );
         p_sys->i_input_picnum++;
 
-        p_block = block_New( p_enc, 1 );
+        p_block = block_Alloc( 1 );
         if( !p_block )
             return NULL;
         p_block->i_dts = p_pic->date - p_sys->i_pts_offset + p_sys->i_field_time;
@@ -891,7 +891,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pic )
             uint32_t pic_num;
 
             /* extract data from encoder temporary buffer. */
-            p_block = block_New( p_enc, p_sys->p_dirac->enc_buf.size );
+            p_block = block_Alloc( p_sys->p_dirac->enc_buf.size );
             if( !p_block )
                 return NULL;
             memcpy( p_block->p_buffer, p_sys->p_dirac->enc_buf.buffer,

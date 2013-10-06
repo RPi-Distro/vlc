@@ -3,19 +3,19 @@
  *****************************************************************************
  * Copyright (C) 2010 Tobias Güntner
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /***
@@ -45,29 +45,18 @@ See http://www.vdr-wiki.de/ and http://www.tvdr.de/ for more information.
 # include "config.h"
 #endif
 
-#ifdef HAVE_SYS_TYPES_H
-#   include <sys/types.h>
-#endif
-#ifdef HAVE_SYS_STAT_H
-#   include <sys/stat.h>
-#endif
-#ifdef HAVE_FCNTL_H
-#   include <fcntl.h>
-#endif
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
-#elif defined( WIN32 ) && !defined( UNDER_CE )
+#elif defined( _WIN32 )
 #   include <io.h>
 #endif
 
 #include <ctype.h>
 #include <time.h>
 #include <errno.h>
-
-#if defined( WIN32 ) && !defined( UNDER_CE )
-#   undef lseek
-#   define lseek _lseeki64
-#endif
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
@@ -300,7 +289,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
                 return VLC_EGENERIC;
             ppp_title = va_arg( args, input_title_t*** );
             *va_arg( args, int* ) = 1;
-            *ppp_title = malloc( sizeof( input_title_t** ) );
+            *ppp_title = malloc( sizeof( input_title_t* ) );
             if( !*ppp_title )
                 return VLC_ENOMEM;
             **ppp_title = vlc_input_title_Duplicate( p_sys->p_marks );
@@ -490,7 +479,6 @@ static bool ImportNextFile( access_t *p_access )
 
     ARRAY_APPEND( p_sys->file_sizes, st.st_size );
     p_access->info.i_size += st.st_size;
-    p_access->info.i_update |= INPUT_UPDATE_SIZE;
 
     return true;
 }
@@ -567,13 +555,11 @@ static void OptimizeForRead( int fd )
     posix_fadvise( fd, 0, 4096, POSIX_FADV_WILLNEED );
     posix_fadvise( fd, 0, 0, POSIX_FADV_NOREUSE );
 #endif
-#ifdef HAVE_FCNTL
 #ifdef F_RDAHEAD
     fcntl( fd, F_RDAHEAD, 1 );
 #endif
 #ifdef F_NOCACHE
-    fcntl( fd, F_NOCACHE, 1 );
-#endif
+    fcntl( fd, F_NOCACHE, 0 );
 #endif
 }
 
@@ -597,7 +583,6 @@ static void UpdateFileSize( access_t *p_access )
     p_access->info.i_size -= CURRENT_FILE_SIZE;
     CURRENT_FILE_SIZE = st.st_size;
     p_access->info.i_size += CURRENT_FILE_SIZE;
-    p_access->info.i_update |= INPUT_UPDATE_SIZE;
 }
 
 /*****************************************************************************

@@ -2,23 +2,23 @@
  * algo_ivtc.c : IVTC (inverse telecine) algorithm for the VLC deinterlacer
  *****************************************************************************
  * Copyright (C) 2010-2011 the VideoLAN team
- * $Id: cf08e20aece2c3e53619333bd2c7c6cf4ea6f268 $
+ * $Id: 35f920beebdeeaff6fc174e241cfbe1477b51fcb $
  *
  * Author: Juha Jeronen <juha.jeronen@jyu.fi>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -1438,9 +1438,9 @@ static bool IVTCOutputOrDropFrame( filter_t *p_filter, picture_t *p_dst )
     else if( op == IVTC_OP_COPY_C )
         picture_Copy( p_dst, p_curr );
     else if( op == IVTC_OP_COMPOSE_TNBC )
-        ComposeFrame( p_filter, p_dst, p_next, p_curr, CC_ALTLINE );
+        ComposeFrame( p_filter, p_dst, p_next, p_curr, CC_ALTLINE, false );
     else if( op == IVTC_OP_COMPOSE_TCBN )
-        ComposeFrame( p_filter, p_dst, p_curr, p_next, CC_ALTLINE );
+        ComposeFrame( p_filter, p_dst, p_curr, p_next, CC_ALTLINE, false );
 
     /* Slide history of outgoing interlace scores. This must be done last,
        and only if the frame was not dropped, so we do it here.

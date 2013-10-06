@@ -1,25 +1,25 @@
 /*****************************************************************************
  * flac.c: flac decoder/encoder module making use of libflac
  *****************************************************************************
- * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: d429c53d7de20baf8fae24174c23662b288bd852 $
+ * Copyright (C) 1999-2001 VLC authors and VideoLAN
+ * $Id: 72a12bcc9febf87013c3a49114d8228a3c41989b $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -36,7 +36,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
-#include <vlc_aout.h>
 
 #include <FLAC/stream_decoder.h>
 #include <FLAC/stream_encoder.h>
@@ -57,8 +56,8 @@ struct decoder_sys_t
      * Input/Output properties
      */
     block_t *p_block;
-    aout_buffer_t *p_aout_buffer;
-    date_t        end_date;
+    block_t *p_aout_buffer;
+    date_t   end_date;
 
     /*
      * FLAC properties
@@ -94,10 +93,12 @@ static const int pi_channels_maps[9] =
 static int  OpenDecoder   ( vlc_object_t * );
 static void CloseDecoder  ( vlc_object_t * );
 
+#ifdef ENABLE_SOUT
 static int OpenEncoder   ( vlc_object_t * );
 static void CloseEncoder ( vlc_object_t * );
+#endif
 
-static aout_buffer_t *DecodeBlock( decoder_t *, block_t ** );
+static block_t *DecodeBlock( decoder_t *, block_t ** );
 
 /*****************************************************************************
  * Module descriptor
@@ -112,66 +113,28 @@ vlc_module_begin ()
     set_capability( "decoder", 100 )
     set_callbacks( OpenDecoder, CloseDecoder )
 
+#ifdef ENABLE_SOUT
     add_submodule ()
     add_shortcut( "flac" )
     set_description( N_("Flac audio encoder") )
     set_capability( "encoder", 100 )
     set_callbacks( OpenEncoder, CloseEncoder )
+#endif
 
 vlc_module_end ()
 
 /*****************************************************************************
  * Interleave: helper function to interleave channels
  *****************************************************************************/
-static void Interleave32( int32_t *p_out, const int32_t * const *pp_in,
-                          const int pi_index[],
-                          int i_nb_channels, int i_samples )
+static void Interleave( int32_t *p_out, const int32_t * const *pp_in,
+                        const unsigned char *restrict pi_index, unsigned i_nb_channels,
+                        unsigned i_samples, unsigned bits )
 {
-    int i, j;
-    for ( j = 0; j < i_samples; j++ )
-    {
-        for ( i = 0; i < i_nb_channels; i++ )
-        {
-            p_out[j * i_nb_channels + i] = pp_in[pi_index[i]][j];
-        }
-    }
-}
+    unsigned shift = 32 - bits;
 
-static void Interleave24( int8_t *p_out, const int32_t * const *pp_in,
-                          const int pi_index[],
-                          int i_nb_channels, int i_samples )
-{
-    int i, j;
-    for ( j = 0; j < i_samples; j++ )
-    {
-        for ( i = 0; i < i_nb_channels; i++ )
-        {
-            const int i_index = pi_index[i];
-#ifdef WORDS_BIGENDIAN
-            p_out[3*(j * i_nb_channels + i)+0] = (pp_in[i_index][j] >> 16) & 0xff;
-            p_out[3*(j * i_nb_channels + i)+1] = (pp_in[i_index][j] >> 8 ) & 0xff;
-            p_out[3*(j * i_nb_channels + i)+2] = (pp_in[i_index][j] >> 0 ) & 0xff;
-#else
-            p_out[3*(j * i_nb_channels + i)+2] = (pp_in[i_index][j] >> 16) & 0xff;
-            p_out[3*(j * i_nb_channels + i)+1] = (pp_in[i_index][j] >> 8 ) & 0xff;
-            p_out[3*(j * i_nb_channels + i)+0] = (pp_in[i_index][j] >> 0 ) & 0xff;
-#endif
-        }
-    }
-}
-
-static void Interleave16( int16_t *p_out, const int32_t * const *pp_in,
-                          const int pi_index[],
-                          int i_nb_channels, int i_samples )
-{
-    int i, j;
-    for ( j = 0; j < i_samples; j++ )
-    {
-        for ( i = 0; i < i_nb_channels; i++ )
-        {
-            p_out[j * i_nb_channels + i] = (int32_t)(pp_in[pi_index[i]][j]);
-        }
-    }
+    for( unsigned j = 0; j < i_samples; j++ )
+        for( unsigned i = 0; i < i_nb_channels; i++ )
+            p_out[j * i_nb_channels + i] = pp_in[pi_index[i]][j] << shift;
 }
 
 /*****************************************************************************
@@ -183,8 +146,8 @@ DecoderWriteCallback( const FLAC__StreamDecoder *decoder,
                       const FLAC__int32 *const buffer[], void *client_data )
 {
     /* XXX it supposes our internal format is WG4 */
-    static const int ppi_reorder[1+8][8] = {
-        {-1},
+    static const unsigned char ppi_reorder[1+8][8] = {
+        { },
         { 0, },
         { 0, 1 },
         { 0, 1, 2 },
@@ -205,7 +168,7 @@ DecoderWriteCallback( const FLAC__StreamDecoder *decoder,
     if( date_Get( &p_sys->end_date ) <= VLC_TS_INVALID )
         return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
 
-    const int * const pi_reorder = ppi_reorder[p_dec->fmt_out.audio.i_channels];
+    const unsigned char *pi_reorder = ppi_reorder[p_dec->fmt_out.audio.i_channels];
 
     p_sys->p_aout_buffer =
         decoder_NewAudioBuffer( p_dec, frame->header.blocksize );
@@ -213,20 +176,9 @@ DecoderWriteCallback( const FLAC__StreamDecoder *decoder,
     if( p_sys->p_aout_buffer == NULL )
         return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
 
-    switch( frame->header.bits_per_sample )
-    {
-    case 16:
-        Interleave16( (int16_t *)p_sys->p_aout_buffer->p_buffer, buffer, pi_reorder,
-                      frame->header.channels, frame->header.blocksize );
-        break;
-    case 24:
-        Interleave24( (int8_t *)p_sys->p_aout_buffer->p_buffer, buffer, pi_reorder,
-                      frame->header.channels, frame->header.blocksize );
-        break;
-    default:
-        Interleave32( (int32_t *)p_sys->p_aout_buffer->p_buffer, buffer, pi_reorder,
-                      frame->header.channels, frame->header.blocksize );
-    }
+    Interleave( (int32_t *)p_sys->p_aout_buffer->p_buffer, buffer, pi_reorder,
+                 frame->header.channels, frame->header.blocksize,
+                 frame->header.bits_per_sample );
 
     /* Date management (already done by packetizer) */
     p_sys->p_aout_buffer->i_pts = date_Get( &p_sys->end_date );
@@ -275,35 +227,15 @@ static void DecoderMetadataCallback( const FLAC__StreamDecoder *decoder,
     decoder_t *p_dec = (decoder_t *)client_data;
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    if( p_dec->pf_decode_audio )
-    {
-        switch( metadata->data.stream_info.bits_per_sample )
-        {
-        case 8:
-            p_dec->fmt_out.i_codec = VLC_CODEC_S8;
-            break;
-        case 16:
-            p_dec->fmt_out.i_codec = VLC_CODEC_S16N;
-            break;
-        case 24:
-            p_dec->fmt_out.i_codec = VLC_CODEC_S24N;
-            break;
-        default:
-            msg_Dbg( p_dec, "strange bit/sample value: %d",
-                     metadata->data.stream_info.bits_per_sample );
-            p_dec->fmt_out.i_codec = VLC_CODEC_FI32;
-            break;
-        }
-    }
-
     /* Setup the format */
     p_dec->fmt_out.audio.i_rate     = metadata->data.stream_info.sample_rate;
     p_dec->fmt_out.audio.i_channels = metadata->data.stream_info.channels;
     p_dec->fmt_out.audio.i_physical_channels =
         p_dec->fmt_out.audio.i_original_channels =
             pi_channels_maps[metadata->data.stream_info.channels];
-    p_dec->fmt_out.audio.i_bitspersample =
-        metadata->data.stream_info.bits_per_sample;
+    if (!p_dec->fmt_out.audio.i_bitspersample)
+        p_dec->fmt_out.audio.i_bitspersample =
+            metadata->data.stream_info.bits_per_sample;
 
     msg_Dbg( p_dec, "channels:%d samplerate:%d bitspersamples:%d",
              p_dec->fmt_out.audio.i_channels, p_dec->fmt_out.audio.i_rate,
@@ -338,6 +270,10 @@ static void DecoderErrorCallback( const FLAC__StreamDecoder *decoder,
     case FLAC__STREAM_DECODER_ERROR_STATUS_FRAME_CRC_MISMATCH:
         msg_Err( p_dec, "frame's data did not match the CRC in the "
                  "footer." );
+        break;
+    case FLAC__STREAM_DECODER_ERROR_STATUS_UNPARSEABLE_STREAM:
+        msg_Err( p_dec, "The decoder encountered reserved fields in use in "
+                 "the stream." );
         break;
     default:
         msg_Err( p_dec, "got decoder error: %d", status );
@@ -409,7 +345,7 @@ static int OpenDecoder( vlc_object_t *p_this )
 
     /* Set output properties */
     p_dec->fmt_out.i_cat = AUDIO_ES;
-    p_dec->fmt_out.i_codec = VLC_CODEC_FL32;
+    p_dec->fmt_out.i_codec = VLC_CODEC_S32N;
 
     /* Set callbacks */
     p_dec->pf_decode_audio = DecodeBlock;
@@ -448,9 +384,33 @@ static void ProcessHeader( decoder_t *p_dec )
 
     /* Decode STREAMINFO */
     msg_Dbg( p_dec, "decode STREAMINFO" );
-    p_sys->p_block = block_New( p_dec, p_dec->fmt_in.i_extra );
-    memcpy( p_sys->p_block->p_buffer, p_dec->fmt_in.p_extra,
-            p_dec->fmt_in.i_extra );
+    size_t i_extra = p_dec->fmt_in.i_extra;
+    static const char header[4] = { 'f', 'L', 'a', 'C' };
+
+    if (i_extra > 42 && !memcmp(p_dec->fmt_in.p_extra, header, 4))
+        i_extra = 42;
+    else if (i_extra > 34 && memcmp(p_dec->fmt_in.p_extra, header, 4))
+        i_extra = 34;
+
+    switch (i_extra) {
+    case 34:
+        p_sys->p_block = block_Alloc( 8 + i_extra );
+        memcpy( p_sys->p_block->p_buffer + 8, p_dec->fmt_in.p_extra, i_extra );
+        memcpy( p_sys->p_block->p_buffer, header, 4);
+        uint8_t *p = p_sys->p_block->p_buffer;
+        p[4] = 0x80 | 0; /* STREAMINFO faked as last block */
+        p[5] = 0;
+        p[6] = 0;
+        p[7] = 34; /* block size */
+        break;
+    case 42:
+        p_sys->p_block = block_Alloc( i_extra );
+        memcpy( p_sys->p_block->p_buffer, p_dec->fmt_in.p_extra, i_extra );
+        break;
+    default:
+        msg_Err(p_dec, "Invalid flac header size %zu", i_extra);
+        return;
+    }
     FLAC__stream_decoder_process_until_end_of_metadata( p_sys->p_flac );
     msg_Dbg( p_dec, "STREAMINFO decoded" );
 }
@@ -523,7 +483,7 @@ static void decoder_state_error( decoder_t *p_dec,
 /****************************************************************************
  * DecodeBlock: the whole thing
  ****************************************************************************/
-static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
+static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
@@ -568,6 +528,8 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     return p_sys->p_aout_buffer;
 }
 
+#ifdef ENABLE_SOUT
+
 /*****************************************************************************
  * encoder_sys_t : flac encoder descriptor
  *****************************************************************************/
@@ -579,7 +541,6 @@ struct encoder_sys_t
     int i_headers;
 
     int i_samples_delay;
-    int i_channels;
 
     FLAC__int32 *p_buffer;
     unsigned int i_buffer;
@@ -598,9 +559,9 @@ struct encoder_sys_t
     mtime_t i_pts;
 };
 
-#define STREAMINFO_SIZE 38
+#define STREAMINFO_SIZE 34
 
-static block_t *Encode( encoder_t *, aout_buffer_t * );
+static block_t *Encode( encoder_t *, block_t * );
 
 /*****************************************************************************
  * EncoderWriteCallback: called by libflac to output encoded samples
@@ -623,12 +584,10 @@ EncoderWriteCallback( const FLAC__StreamEncoder *encoder,
             msg_Dbg( p_enc, "Writing STREAMINFO: %zu", bytes );
 
             /* Backup the STREAMINFO metadata block */
-            p_enc->fmt_out.i_extra = STREAMINFO_SIZE + 4;
-            p_enc->fmt_out.p_extra = xmalloc( STREAMINFO_SIZE + 4 );
-            memcpy( p_enc->fmt_out.p_extra, "fLaC", 4 );
-            memcpy( ((uint8_t *)p_enc->fmt_out.p_extra) + 4, buffer,
-                    STREAMINFO_SIZE );
-
+            p_enc->fmt_out.i_extra = STREAMINFO_SIZE + 8;
+            p_enc->fmt_out.p_extra = xmalloc( STREAMINFO_SIZE + 8);
+            memcpy(p_enc->fmt_out.p_extra, "fLaC", 4);
+            memcpy(p_enc->fmt_out.p_extra + 4, buffer, STREAMINFO_SIZE );
             /* Fake this as the last metadata block */
             ((uint8_t*)p_enc->fmt_out.p_extra)[4] |= 0x80;
         }
@@ -636,7 +595,7 @@ EncoderWriteCallback( const FLAC__StreamEncoder *encoder,
         return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
     }
 
-    p_block = block_New( p_enc, bytes );
+    p_block = block_Alloc( bytes );
     memcpy( p_block->p_buffer, buffer, bytes );
 
     p_block->i_dts = p_block->i_pts = p_sys->i_pts;
@@ -744,11 +703,14 @@ static int OpenEncoder( vlc_object_t *p_this )
  ****************************************************************************
  * This function spits out ogg packets.
  ****************************************************************************/
-static block_t *Encode( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
+static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
 {
     encoder_sys_t *p_sys = p_enc->p_sys;
     block_t *p_chain;
     unsigned int i;
+
+    /* FIXME: p_aout_buf is NULL when it's time to flush*/
+    if( unlikely( !p_aout_buf ) ) return NULL;
 
     p_sys->i_pts = p_aout_buf->i_pts -
                 (mtime_t)1000000 * (mtime_t)p_sys->i_samples_delay /
@@ -757,10 +719,10 @@ static block_t *Encode( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
     p_sys->i_samples_delay += p_aout_buf->i_nb_samples;
 
     /* Convert samples to FLAC__int32 */
-    if( p_sys->i_buffer < p_aout_buf->i_buffer * 2 )
+    if( p_sys->i_buffer < p_aout_buf->i_buffer * sizeof(FLAC__int32) )
     {
         p_sys->p_buffer =
-            xrealloc( p_sys->p_buffer, p_aout_buf->i_buffer * 2 );
+            xrealloc( p_sys->p_buffer, p_aout_buf->i_buffer * sizeof(FLAC__int32) );
         p_sys->i_buffer = p_aout_buf->i_buffer * 2;
     }
 
@@ -791,3 +753,4 @@ static void CloseEncoder( vlc_object_t *p_this )
     free( p_sys->p_buffer );
     free( p_sys );
 }
+#endif

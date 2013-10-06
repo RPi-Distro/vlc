@@ -1,24 +1,24 @@
 /*****************************************************************************
  * sgimb.c: a meta demux to parse sgimb referrer files
  *****************************************************************************
- * Copyright (C) 2004 the VideoLAN team
- * $Id: d98f4a8b74e4e1d7237dc4ecd3061ca423247e36 $
+ * Copyright (C) 2004 VLC authors and VideoLAN
+ * $Id: 7aaa886179995a997a3613a44f748a2f53849110 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -130,7 +130,6 @@ struct demux_sys_t
 };
 
 static int Demux ( demux_t *p_demux );
-static int Control( demux_t *p_demux, int i_query, va_list args );
 
 /*****************************************************************************
  * Activate: initializes m3u demux structures
@@ -217,8 +216,6 @@ static int ParseLine ( demux_t *p_demux, char *psz_line )
     else if( !strncasecmp( psz_bol, "Stream=\"", sizeof("Stream=\"") - 1 ) )
     {
         psz_bol += sizeof("Stream=\"") - 1;
-        if ( !psz_bol )
-            return 0;
         char* psz_tmp = strrchr( psz_bol, '"' );
         if( !psz_tmp )
             return 0;
@@ -406,10 +403,3 @@ static int Demux ( demux_t *p_demux )
     vlc_gc_decref(p_current_input);
     return 0; /* Needed for correct operation of go back */
 }
-
-static int Control( demux_t *p_demux, int i_query, va_list args )
-{
-    VLC_UNUSED(p_demux); VLC_UNUSED(i_query); VLC_UNUSED(args);
-    return VLC_EGENERIC;
-}
-

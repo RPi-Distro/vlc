@@ -2,24 +2,24 @@
  * panoramix.c : Wall panoramic video with edge blending plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001, 2002, 2003 VideoLAN
- * $Id: 11160c95aa1346c1ea256a4d1350ed8152b645be $
+ * $Id: 9de7efa53f5fc75c6b51e5123a50b053ca15fcbb $
  *
  * Authors: Cedric Cocquebert <cedric.cocquebert@supelec.fr>
  *          based on Samuel Hocevar <sam@zoy.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -43,13 +43,16 @@
 
 #ifdef OVERLAP
 /* OS CODE DEPENDENT to get display dimensions */
-#   ifdef WIN32
+#   ifdef _WIN32
 #       include <windows.h>
 #   else
 #       include <xcb/xcb.h>
 #       include <xcb/randr.h>
 #   endif
 #endif
+
+#define ROW_MAX (15)
+#define COL_MAX (15)
 
 /*****************************************************************************
  * Module descriptor
@@ -63,7 +66,7 @@
     "which to split the video")
 
 #define ACTIVE_TEXT N_("Active windows")
-#define ACTIVE_LONGTEXT N_("Comma separated list of active windows, " \
+#define ACTIVE_LONGTEXT N_("Comma-separated list of active windows, " \
     "defaults to all")
 
 #define CFG_PREFIX "panoramix-"
@@ -83,7 +86,9 @@ vlc_module_begin()
     set_subcategory( SUBCAT_VIDEO_VFILTER )
 
     add_integer( CFG_PREFIX "cols", -1, COLS_TEXT, COLS_LONGTEXT, true )
+    change_integer_range( -1, COL_MAX )
     add_integer( CFG_PREFIX "rows", -1, ROWS_TEXT, ROWS_LONGTEXT, true )
+    change_integer_range( -1, ROW_MAX )
 
 #ifdef OVERLAP
 #define LENGTH_TEXT N_("length of the overlapping area (in %)")
@@ -164,7 +169,7 @@ vlc_module_begin()
     add_integer_with_range( CFG_PREFIX "bz-whitelevel-red", 0, 0, 255, RGAMMA_WL_TEXT, RGAMMA_WL_LONGTEXT, true )
     add_integer_with_range( CFG_PREFIX "bz-whitelevel-green", 0, 0, 255, GGAMMA_WL_TEXT, GGAMMA_WL_LONGTEXT, true )
     add_integer_with_range( CFG_PREFIX "bz-whitelevel-blue", 0, 0, 255, BGAMMA_WL_TEXT, BGAMMA_WL_LONGTEXT, true )
-#ifndef WIN32
+#ifndef _WIN32
     add_obsolete_bool( CFG_PREFIX "xinerama" );
 #endif
     add_obsolete_bool( CFG_PREFIX "offset-x" )
@@ -190,9 +195,6 @@ static const char *const ppsz_filter_options[] = {
     "bz-whitelevel-green", "bz-whitelevel-blue", "active",
     NULL
 };
-
-#define ROW_MAX (15)
-#define COL_MAX (15)
 
 #define ACCURACY 1000
 
@@ -341,7 +343,7 @@ static const panoramix_chroma_t p_chroma_array[] = {
     { 0, {0, }, { 0, }, { 0, 0, 0 }, false }
 };
 
-#ifndef WIN32
+#ifndef _WIN32
 /* Get the number of outputs */
 static unsigned CountMonitors( vlc_object_t *obj )
 {
@@ -452,7 +454,7 @@ static int Open( vlc_object_t *p_this )
     /* Autodetect number of displays */
     if( p_sys->i_col < 0 || p_sys->i_row < 0 )
     {
-#ifdef WIN32
+#ifdef _WIN32
         const int i_monitor_count = GetSystemMetrics(SM_CMONITORS);
         if( i_monitor_count > 1 )
         {
@@ -499,8 +501,8 @@ static int Open( vlc_object_t *p_this )
     p_sys->a_0 =  p_sys->bz_begin;
 
     /* */
-    p_sys->i_col = VLC_CLIP( COL_MAX, 1, p_sys->i_col );
-    p_sys->i_row = VLC_CLIP( ROW_MAX, 1, p_sys->i_row );
+    p_sys->i_col = VLC_CLIP( p_sys->i_col, 1, COL_MAX );
+    p_sys->i_row = VLC_CLIP( p_sys->i_row, 1, ROW_MAX );
     msg_Dbg( p_splitter, "opening a %i x %i wall",
              p_sys->i_col, p_sys->i_row );
 
@@ -797,7 +799,7 @@ static int Mouse( video_splitter_t *p_splitter, vlc_mouse_t *p_mouse,
     {
         for( int x = 0; x < p_sys->i_col; x++ )
         {
-            const panoramix_output_t *p_output = p_output = &p_sys->pp_output[x][y];
+            const panoramix_output_t *p_output = &p_sys->pp_output[x][y];
             if( p_output->b_active && p_output->i_output == i_index )
             {
                 const int i_x = p_new->i_x - p_output->filter.black.i_left;
@@ -981,7 +983,7 @@ static void FilterPlanar( uint8_t *p_out, int i_out_pitch,
     /* Top black border */
     for( int b = 0; b < p_cfg->black.i_top; b++ )
     {
-        vlc_memset( p_out, i_pixel_black, i_out_width );
+        memset( p_out, i_pixel_black, i_out_width );
         p_out += i_out_pitch;
     }
 
@@ -1002,7 +1004,7 @@ static void FilterPlanar( uint8_t *p_out, int i_out_pitch,
 
         /* Unmodified video */
         const int i_unmodified_width = i_copy_pitch - p_cfg->attenuate.i_left - p_cfg->attenuate.i_right;
-        vlc_memcpy( p_dst, p_src, i_unmodified_width );
+        memcpy( p_dst, p_src, i_unmodified_width );
         p_dst += i_unmodified_width;
         p_src += i_unmodified_width;
 
@@ -1034,7 +1036,7 @@ static void FilterPlanar( uint8_t *p_out, int i_out_pitch,
     /* Bottom black border */
     for( int b = 0; b < p_cfg->black.i_bottom; b++ )
     {
-        vlc_memset( p_out, i_pixel_black, i_out_width );
+        memset( p_out, i_pixel_black, i_out_width );
         p_out += i_out_pitch;
     }
 }

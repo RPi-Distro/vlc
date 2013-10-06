@@ -2,7 +2,7 @@
  * mpjpeg.c: mime multipart jpeg  muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: 8d5817529b520787addc7597f1fd4e4b0e86d9ed $
+ * $Id: 275e751b571cecadff86daf09b651595a41be7cc $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -159,7 +159,7 @@ static int Mux( sout_mux_t *p_mux )
             "Content-Length: %zu\r\n"
             "\r\n";
         block_t *p_data = block_FifoGet( p_fifo );
-        block_t *p_header = block_New( p_mux, sizeof( psz_hfmt ) + 20 );
+        block_t *p_header = block_Alloc( sizeof( psz_hfmt ) + 20 );
 
         if( p_header == NULL ) /* uho! */
         {

@@ -7,19 +7,19 @@
  * Authors: Christopher Mueller <christopher.mueller@itec.uni-klu.ac.at>
  *          Christian Timmerer  <christian.timmerer@itec.uni-klu.ac.at>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published
  * by the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef HTTPCONNECTIONMANAGER_H_
@@ -29,14 +29,13 @@
 
 #include <string>
 #include <vector>
+#include <deque>
 #include <iostream>
 #include <ctime>
-#include <map>
 #include <limits.h>
 
-#include "http/HTTPConnection.h"
-#include "http/Chunk.h"
-#include "adaptationlogic/IDownloadRateObserver.h"
+#include "http/PersistentConnection.h"
+#include "adaptationlogic/IAdaptationLogic.h"
 
 namespace dash
 {
@@ -45,32 +44,36 @@ namespace dash
         class HTTPConnectionManager
         {
             public:
-                HTTPConnectionManager           (stream_t *stream);
+                HTTPConnectionManager           (logic::IAdaptationLogic *adaptationLogic, stream_t *stream);
                 virtual ~HTTPConnectionManager  ();
 
-                void                closeAllConnections ();
-                bool                closeConnection     (IHTTPConnection *con);
-                int                 read                (Chunk *chunk, void *p_buffer, size_t len);
-                int                 peek                (Chunk *chunk, const uint8_t **pp_peek, size_t i_peek);
-                void                attach              (dash::logic::IDownloadRateObserver *observer);
-                void                notify              ();
+                void    closeAllConnections ();
+                bool    addChunk            (Chunk *chunk);
+                int     read                (block_t *block);
+                void    attach              (dash::logic::IDownloadRateObserver *observer);
+                void    notify              ();
 
             private:
-                std::vector<HTTPConnection *>                       connections;
-                std::map<Chunk *, HTTPConnection *>                 chunkMap;
-                std::map<std::string, HTTPConnection *>             urlMap;
                 std::vector<dash::logic::IDownloadRateObserver *>   rateObservers;
-                long                                                bpsAvg;
-                long                                                bpsLastChunk;
-                long                                                bytesReadSession;
-                double                                              timeSecSession;
-                long                                                bytesReadChunk;
-                double                                              timeSecChunk;
+                std::deque<Chunk *>                                 downloadQueue;
+                std::vector<PersistentConnection *>                 connectionPool;
+                logic::IAdaptationLogic                             *adaptationLogic;
                 stream_t                                            *stream;
                 int                                                 chunkCount;
+                int64_t                                             bpsAvg;
+                int64_t                                             bpsLastChunk;
+                int64_t                                             bpsCurrentChunk;
+                int64_t                                             bytesReadSession;
+                int64_t                                             bytesReadChunk;
+                double                                              timeSession;
+                double                                              timeChunk;
 
-                bool                closeConnection( Chunk *chunk );
-                IHTTPConnection*    initConnection( Chunk *chunk );
+                static const size_t     PIPELINE;
+                static const size_t     PIPELINELENGTH;
+                static const uint64_t   CHUNKDEFAULTBITRATE;
+
+                std::vector<PersistentConnection *>     getConnectionsForHost   (const std::string &hostname);
+                void                                    updateStatistics        (int bytes, double time);
 
         };
     }

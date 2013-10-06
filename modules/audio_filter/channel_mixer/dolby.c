@@ -2,7 +2,7 @@
  * dolby.c : simple decoder for dolby surround encoded streams
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: 0319f03d7af4eb732a53dbb16e76e34514b4858f $
+ * $Id: 60819f6a3d2afb477b637dc8ea62878fec57fa9f $
  *
  * Authors: Boris Dorès <babal@via.ecp.fr>
  *
@@ -50,7 +50,7 @@ vlc_module_begin ()
     set_shortname( N_("Dolby Surround decoder") )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACODEC )
-    set_capability( "audio filter", 5 )
+    set_capability( "audio converter", 5 )
     set_callbacks( Create, Destroy )
 vlc_module_end ()
 
@@ -66,12 +66,6 @@ struct filter_sys_t
     int i_rear_center;
     int i_rear_right;
 };
-
-/* our internal channel order (WG-4 order) */
-static const uint32_t pi_channels[] =
-{ AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT, AOUT_CHAN_MIDDLELEFT, AOUT_CHAN_MIDDLERIGHT,
-  AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT, AOUT_CHAN_REARCENTER,
-  AOUT_CHAN_CENTER, AOUT_CHAN_LFE, 0 };
 
 /*****************************************************************************
  * Create: allocate headphone downmixer
@@ -115,11 +109,11 @@ static int Create( vlc_object_t *p_this )
     p_sys->i_rear_center = -1;
     p_sys->i_rear_right = -1;
 
-    while ( pi_channels[i] )
+    while ( pi_vlc_chan_order_wg4[i] )
     {
-        if ( p_filter->fmt_out.audio.i_physical_channels & pi_channels[i] )
+        if ( p_filter->fmt_out.audio.i_physical_channels & pi_vlc_chan_order_wg4[i] )
         {
-            switch ( pi_channels[i] )
+            switch ( pi_vlc_chan_order_wg4[i] )
             {
                 case AOUT_CHAN_LEFT:
                     p_sys->i_left = i_offset;
@@ -170,7 +164,7 @@ static block_t *DoWork( filter_t * p_filter, block_t * p_in_buf )
     size_t i_nb_channels = aout_FormatNbChannels( &p_filter->fmt_out.audio );
     size_t i_nb_rear = 0;
     size_t i;
-    block_t *p_out_buf = filter_NewAudioBuffer( p_filter,
+    block_t *p_out_buf = block_Alloc(
                                 sizeof(float) * i_nb_samples * i_nb_channels );
     if( !p_out_buf )
         goto out;

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2008 Rémi Denis-Courmont
  * Copyright (C) 2009 Laurent Aimar
- * $Id: ea5e82188fd5f5153ba7860d9e70e932c307c861 $
+ * $Id: e7944685b6ca9092ca77ec20d5aff55d32929e6b $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -41,16 +41,11 @@ typedef struct vout_window_sys_t vout_window_sys_t;
  * Window handle type
  */
 enum {
+    VOUT_WINDOW_TYPE_INVALID=0,
     VOUT_WINDOW_TYPE_XID,
     VOUT_WINDOW_TYPE_HWND,
     VOUT_WINDOW_TYPE_NSOBJECT,
 };
-
-#if defined (WIN32) || defined (__OS2__)
-# define VOUT_WINDOW_TYPE_NATIVE VOUT_WINDOW_TYPE_HWND
-#elif defined (__unix__)
-# define VOUT_WINDOW_TYPE_NATIVE VOUT_WINDOW_TYPE_XID
-#endif
 
 /**
  * Control query for vout_window_t
@@ -66,7 +61,7 @@ typedef struct {
     bool is_standalone;
 
     /* Window handle type */
-    int type;
+    unsigned type;
 
     /* Window position hint */
     int x;

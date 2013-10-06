@@ -10,7 +10,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -47,16 +47,14 @@ static int Open (vlc_object_t *obj)
 {
     filter_t *filter = (filter_t *)obj;
 
-    if (filter->fmt_in.audio.i_format != VLC_CODEC_FL32
-     || !AOUT_FMTS_IDENTICAL(&filter->fmt_in.audio, &filter->fmt_out.audio))
-        return VLC_EGENERIC;
-
     if (filter->fmt_in.audio.i_channels != 2)
     {
         msg_Err (filter, "voice removal requires stereo");
         return VLC_EGENERIC;
     }
 
+    filter->fmt_in.audio.i_format = VLC_CODEC_FL32;
+    filter->fmt_out.audio = filter->fmt_in.audio;
     filter->pf_audio_filter = Process;
     return VLC_SUCCESS;
 }

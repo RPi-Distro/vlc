@@ -5,7 +5,9 @@ FAAD2_URL := $(SF)/faac/faad2-$(FAAD2_VERSION).tar.gz
 
 ifeq ($(findstring $(ARCH),arm),)
 # FAAD is a lot slower than lavc on ARM. Skip it.
+ifdef GPL
 PKGS += faad2
+endif
 endif
 
 $(TARBALLS)/faad2-$(FAAD2_VERSION).tar.gz:
@@ -23,7 +25,7 @@ endif
 
 .faad2: faad2
 	$(RECONF)
-	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) CFLAGS="$(NOTHUMB)"
+	cd $< && $(HOSTVARS) ./configure --without-drm $(HOSTCONF)
 	cd $< && sed -i.orig "s/shrext_cmds/shrext/g" libtool
 	cd $</libfaad && $(MAKE) install
 	touch $@

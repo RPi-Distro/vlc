@@ -2,30 +2,32 @@
 /*****************************************************************************
  * mkv.cpp : matroska demuxer
  *****************************************************************************
- * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 2035d82e4f9eabc4cf94b2e5e0c4475ee0498dfa $
+ * Copyright (C) 2003-2004 VLC authors and VideoLAN
+ * $Id: be20476cbe48c6cdb64018e9d34f5ed72ec62311 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #include "demux.hpp"
 #include "stream_io_callback.hpp"
 #include "Ebml_parser.hpp"
+
+#include <vlc_keys.h>
 
 event_thread_t::event_thread_t(demux_t *p_demux) : p_demux(p_demux)
 {
@@ -673,36 +675,59 @@ bool demux_sys_t::PreloadLinked()
         p_seg = used_segments[i];
         if ( p_seg->Editions() != NULL )
         {
-            input_title_t *p_title = vlc_input_title_New();
-            p_seg->i_sys_title = i;
-            int i_chapters;
-
-            // TODO use a name for each edition, let the TITLE deal with a codec name
             for ( j=0; j<p_seg->Editions()->size(); j++ )
             {
+                virtual_edition_c * p_ved = (*p_seg->Editions())[j];
+                input_title_t *p_title = vlc_input_title_New();
+                int i_chapters;
+
+                // TODO use a name for each edition, let the TITLE deal with a codec name
                 if ( p_title->psz_name == NULL )
                 {
-                    const char* psz_tmp = (*p_seg->Editions())[j]->GetMainName().c_str();
+                    const char* psz_tmp = p_ved->GetMainName().c_str();
                     if( *psz_tmp != '\0' )
                         p_title->psz_name = strdup( psz_tmp );
+                    else
+                    {
+                        /* Check in tags if the edition has a name */
+
+                        /* We use only the tags of the first segment as it contains the edition */
+                        std::vector<Tag*> &tags = opened_segments[0]->tags;
+                        uint64_t i_ed_uid = 0;
+                        if( p_ved->p_edition )
+                            i_ed_uid = (uint64_t) p_ved->p_edition->i_uid;
+
+                        for( size_t k = 0; k < tags.size(); k++ )
+                        {
+                            if( tags[k]->i_tag_type == EDITION_UID && tags[k]->i_uid == i_ed_uid )
+                                for( size_t l = 0; l < tags[k]->simple_tags.size(); l++ )
+                                {
+                                    SimpleTag * p_st = tags[k]->simple_tags[l];
+                                    if( !strcmp(p_st->psz_tag_name,"TITLE") )
+                                    {
+                                        msg_Dbg( &demuxer, "Using title \"%s\" from tag for edition %"PRIu64, p_st->p_value, i_ed_uid );
+                                        p_title->psz_name = strdup( p_st->p_value );
+                                        break;
+                                    }
+                                }
+                        }
+
+                        if( !p_title->psz_name &&
+                            asprintf(&(p_title->psz_name), "%s %d", N_("Segment"), (int)i) == -1 )
+                            p_title->psz_name = NULL;
+                    }
                 }
 
                 i_chapters = 0;
-                ( *p_seg->Editions() )[j]->PublishChapters( *p_title, i_chapters, 0 );
+                p_ved->PublishChapters( *p_title, i_chapters, 0 );
 
                 // Input duration into i_length
-                p_title->i_length = ( *p_seg->Editions() )[j]->i_duration;
-            }
+                p_title->i_length = p_ved->i_duration;
 
-            // create a name if there is none
-            if ( p_title->psz_name == NULL )
-            {
-                if( asprintf(&(p_title->psz_name), "%s %d", N_("Segment"), (int)i) == -1 )
-                    p_title->psz_name = NULL;
+                titles.push_back( p_title );
             }
-
-            titles.push_back( p_title );
         }
+        p_seg->i_sys_title = p_seg->i_current_edition;
     }
 
     // TODO decide which segment should be first used (VMG for DVD)
@@ -730,7 +755,6 @@ void demux_sys_t::FreeUnused()
             streams[i] = NULL;
             delete p_s;
         }
-        
     }
     for( i = 0; i < opened_segments.size(); i++)
     {
@@ -770,6 +794,10 @@ bool demux_sys_t::PreparePlayback( virtual_segment_c *p_new_segment )
     /* add information */
     p_current_segment->CurrentSegment()->InformationCreate( );
     p_current_segment->CurrentSegment()->Select( 0 );
+
+    /* Seek to the beginning */
+    p_current_segment->Seek(p_current_segment->CurrentSegment()->sys.demuxer,
+                            0, 0, NULL, -1);
 
     return true;
 }

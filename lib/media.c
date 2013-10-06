@@ -2,7 +2,7 @@
  * media.c: Libvlc API media descripor management
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: 2c01c80abee996e193721b7c73aa23ef68667c27 $
+ * $Id: 7acfb69249fc575e3843475fa458d5047fdb72ef $
  *
  * Authors: Pierre d'Herbemont <pdherbemont@videolan.org>
  *
@@ -120,6 +120,23 @@ static void input_item_subitem_added( const vlc_event_t *p_event,
 }
 
 /**************************************************************************
+ * input_item_subitemtree_added (Private) (vlc event Callback)
+ **************************************************************************/
+static void input_item_subitemtree_added( const vlc_event_t * p_event,
+                                          void * user_data )
+{
+    libvlc_media_t * p_md = user_data;
+    libvlc_event_t event;
+
+    /* Construct the event */
+    event.type = libvlc_MediaSubItemTreeAdded;
+    event.u.media_subitemtree_added.item = p_md;
+
+    /* Send the event */
+    libvlc_event_send( p_md->p_event_manager, &event );
+}
+
+/**************************************************************************
  * input_item_meta_changed (Private) (vlc event Callback)
  **************************************************************************/
 static void input_item_meta_changed( const vlc_event_t *p_event,
@@ -201,6 +218,10 @@ static void install_input_item_observer( libvlc_media_t *p_md )
                       vlc_InputItemPreparsedChanged,
                       input_item_preparsed_changed,
                       p_md );
+    vlc_event_attach( &p_md->p_input_item->event_manager,
+                      vlc_InputItemSubItemTreeAdded,
+                      input_item_subitemtree_added,
+                      p_md );
 }
 
 /**************************************************************************
@@ -223,6 +244,10 @@ static void uninstall_input_item_observer( libvlc_media_t *p_md )
     vlc_event_detach( &p_md->p_input_item->event_manager,
                       vlc_InputItemPreparsedChanged,
                       input_item_preparsed_changed,
+                      p_md );
+    vlc_event_detach( &p_md->p_input_item->event_manager,
+                      vlc_InputItemSubItemTreeAdded,
+                      input_item_subitemtree_added,
                       p_md );
 }
 
@@ -277,6 +302,7 @@ libvlc_media_t * libvlc_media_new_from_input_item(
     libvlc_event_manager_register_event_type(em, libvlc_MediaDurationChanged);
     libvlc_event_manager_register_event_type(em, libvlc_MediaStateChanged);
     libvlc_event_manager_register_event_type(em, libvlc_MediaParsedChanged);
+    libvlc_event_manager_register_event_type(em, libvlc_MediaSubItemTreeAdded);
 
     vlc_gc_incref( p_md->p_input_item );
 
@@ -313,7 +339,7 @@ libvlc_media_t *libvlc_media_new_location( libvlc_instance_t *p_instance,
 libvlc_media_t *libvlc_media_new_path( libvlc_instance_t *p_instance,
                                        const char *path )
 {
-    char *mrl = make_URI( path, "file" );
+    char *mrl = vlc_path2uri( path, NULL );
     if( unlikely(mrl == NULL) )
     {
         libvlc_printerr( "Not enough memory" );
@@ -475,8 +501,7 @@ void libvlc_media_set_meta( libvlc_media_t *p_md, libvlc_meta_t e_meta, const ch
 int libvlc_media_save_meta( libvlc_media_t *p_md )
 {
     assert( p_md );
-    vlc_object_t *p_obj = VLC_OBJECT(libvlc_priv(
-                            p_md->p_libvlc_instance->p_libvlc_int)->p_playlist);
+    vlc_object_t *p_obj = VLC_OBJECT(p_md->p_libvlc_instance->p_libvlc_int);
     return input_item_WriteMeta( p_obj, p_md->p_input_item ) == VLC_SUCCESS;
 }
 
@@ -592,8 +617,8 @@ libvlc_media_get_duration( libvlc_media_t * p_md )
 static int media_parse(libvlc_media_t *media)
 {
     /* TODO: fetcher and parser independent of playlist */
-    playlist_t *playlist =
-        libvlc_priv (media->p_libvlc_instance->p_libvlc_int)->p_playlist;
+#warning FIXME: remove pl_Get
+    playlist_t *playlist = pl_Get(media->p_libvlc_instance->p_libvlc_int);
 
     /* TODO: Fetch art on need basis. But how not to break compatibility? */
     playlist_AskForArtEnqueue(playlist, media->p_input_item );
@@ -734,4 +759,117 @@ libvlc_media_get_tracks_info( libvlc_media_t *p_md, libvlc_media_track_info_t **
 
     vlc_mutex_unlock( &p_input_item->lock );
     return i_es;
+}
+
+unsigned
+libvlc_media_tracks_get( libvlc_media_t *p_md, libvlc_media_track_t *** pp_es )
+{
+    assert( p_md );
+
+    input_item_t *p_input_item = p_md->p_input_item;
+    vlc_mutex_lock( &p_input_item->lock );
+
+    const int i_es = p_input_item->i_es;
+    *pp_es = (i_es > 0) ? calloc( i_es, sizeof(**pp_es) ) : NULL;
+
+    if( !*pp_es ) /* no ES, or OOM */
+    {
+        vlc_mutex_unlock( &p_input_item->lock );
+        return 0;
+    }
+
+    /* Fill array */
+    for( int i = 0; i < i_es; i++ )
+    {
+        libvlc_media_track_t *p_mes = calloc( 1, sizeof(*p_mes) );
+        if ( p_mes )
+        {
+            p_mes->audio = malloc( __MAX(__MAX(sizeof(*p_mes->audio),
+                                               sizeof(*p_mes->video)),
+                                               sizeof(*p_mes->subtitle)) );
+        }
+        if ( !p_mes || !p_mes->audio )
+        {
+            libvlc_media_tracks_release( *pp_es, i_es );
+            *pp_es = NULL;
+            free( p_mes );
+            vlc_mutex_unlock( &p_input_item->lock );
+            return 0;
+        }
+        (*pp_es)[i] = p_mes;
+
+        const es_format_t *p_es = p_input_item->es[i];
+
+        p_mes->i_codec = p_es->i_codec;
+        p_mes->i_original_fourcc = p_es->i_original_fourcc;
+        p_mes->i_id = p_es->i_id;
+
+        p_mes->i_profile = p_es->i_profile;
+        p_mes->i_level = p_es->i_level;
+
+        p_mes->i_bitrate = p_es->i_bitrate;
+        p_mes->psz_language = p_es->psz_language != NULL ? strdup(p_es->psz_language) : NULL;
+        p_mes->psz_description = p_es->psz_description != NULL ? strdup(p_es->psz_description) : NULL;
+
+        switch(p_es->i_cat)
+        {
+        case UNKNOWN_ES:
+        default:
+            p_mes->i_type = libvlc_track_unknown;
+            break;
+        case VIDEO_ES:
+            p_mes->i_type = libvlc_track_video;
+            p_mes->video->i_height = p_es->video.i_height;
+            p_mes->video->i_width = p_es->video.i_width;
+            p_mes->video->i_sar_num = p_es->video.i_sar_num;
+            p_mes->video->i_sar_den = p_es->video.i_sar_den;
+            p_mes->video->i_frame_rate_num = p_es->video.i_frame_rate;
+            p_mes->video->i_frame_rate_den = p_es->video.i_frame_rate_base;
+            break;
+        case AUDIO_ES:
+            p_mes->i_type = libvlc_track_audio;
+            p_mes->audio->i_channels = p_es->audio.i_channels;
+            p_mes->audio->i_rate = p_es->audio.i_rate;
+            break;
+        case SPU_ES:
+            p_mes->i_type = libvlc_track_text;
+            p_mes->subtitle->psz_encoding = p_es->subs.psz_encoding != NULL ?
+                                            strdup(p_es->subs.psz_encoding) : NULL;
+            break;
+        }
+    }
+
+    vlc_mutex_unlock( &p_input_item->lock );
+    return i_es;
+}
+
+
+/**************************************************************************
+ * Release media descriptor's elementary streams description array
+ **************************************************************************/
+void libvlc_media_tracks_release( libvlc_media_track_t **p_tracks, unsigned i_count )
+{
+    for( unsigned i = 0; i < i_count; ++i )
+    {
+        if ( !p_tracks[i] )
+            continue;
+        free( p_tracks[i]->psz_language );
+        free( p_tracks[i]->psz_description );
+        switch( p_tracks[i]->i_type )
+        {
+        case libvlc_track_audio:
+            break;
+        case libvlc_track_video:
+            break;
+        case libvlc_track_text:
+            free( p_tracks[i]->subtitle->psz_encoding );
+            break;
+        case libvlc_track_unknown:
+        default:
+            break;
+        }
+        free( p_tracks[i]->audio );
+        free( p_tracks[i] );
+    }
+    free( p_tracks );
 }

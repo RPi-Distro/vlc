@@ -2,7 +2,7 @@
  * CompatibilityFixes.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 VLC authors and VideoLAN
- * $Id: 43c4b75fe3f5757f3ddfb9763269e83a8a88c9a5 $
+ * $Id: eae593be5fe1e851f7c31f2562ccd1e85bd48114 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -25,63 +25,10 @@
 
 #pragma mark -
 #pragma OS detection code
-#define OSX_LEOPARD (NSAppKitVersionNumber < 1038 && NSAppKitVersionNumber >= 949)
 #define OSX_SNOW_LEOPARD (NSAppKitVersionNumber < 1115 && NSAppKitVersionNumber >= 1038)
-#define OSX_LION (NSAppKitVersionNumber >= 1115.2)
-#define OSX_MOUNTAIN_LION NSAppKitVersionNumber >= 1162
+#define OSX_LION (NSAppKitVersionNumber < 1162 && NSAppKitVersionNumber >= 1115.2)
+#define OSX_MOUNTAIN_LION (NSAppKitVersionNumber < 1244 && NSAppKitVersionNumber >= 1162)
 #define OSX_REDACTED NSAppKitVersionNumber >= 1244
-
-#pragma mark -
-#pragma Fixes for OS X Leopard (10.5)
-
-#ifndef MAC_OS_X_VERSION_10_6
-
-@protocol NSAnimationDelegate <NSObject> @end
-@protocol NSWindowDelegate <NSObject> @end
-@protocol NSComboBoxDataSource <NSObject> @end
-@protocol NSTextFieldDelegate <NSObject> @end
-@protocol NSTableViewDataSource <NSObject> @end
-@protocol NSOutlineViewDelegate <NSObject> @end
-@protocol NSOutlineViewDataSource <NSObject> @end
-@protocol NSToolbarDelegate <NSObject> @end
-@protocol NSSplitViewDelegate <NSObject> @end
-
-enum {
-    NSApplicationPresentationDefault                    = 0,
-    NSApplicationPresentationAutoHideDock               = (1 <<  0),
-    NSApplicationPresentationHideDock                   = (1 <<  1),
-    NSApplicationPresentationAutoHideMenuBar            = (1 <<  2),
-    NSApplicationPresentationHideMenuBar                = (1 <<  3),
-    NSApplicationPresentationDisableAppleMenu           = (1 <<  4),
-    NSApplicationPresentationDisableProcessSwitching    = (1 <<  5),
-    NSApplicationPresentationDisableForceQuit           = (1 <<  6),
-    NSApplicationPresentationDisableSessionTermination  = (1 <<  7),
-    NSApplicationPresentationDisableHideApplication     = (1 <<  8),
-    NSApplicationPresentationDisableMenuBarTransparency = (1 <<  9)
-};
-typedef NSUInteger NSApplicationPresentationOptions;
-
-#if defined( __LP64__) && !defined(__POWER__) /* Bug in the 10.5.sdk in 64bits */
-extern OSErr UpdateSystemActivity(UInt8 activity);
-#define UsrActivity 1
-#endif
-
-/* the following is just to fix warnings, not for implementation! */
-@interface NSMenu (IntroducedInSnowLeopard)
-- (void)removeAllItems;
-@end
-
-@interface NSApplication (IntroducedInSnowLeopard)
-- (NSApplicationPresentationOptions)presentationOptions;
-- (void)setPresentationOptions:(NSApplicationPresentationOptions)newOptions;
-- (NSApplicationPresentationOptions)currentSystemPresentationOptions;
-@end
-
-@interface NSURL (IntroducedInSnowLeopard)
-- (NSArray *)pathComponents;
-@end
-
-#endif
 
 #pragma mark -
 #pragma Fixes for OS X Snow Leopard (10.6)
@@ -97,6 +44,15 @@ enum {
     NSApplicationPresentationAutoHideToolbar            = (1 << 11)
 };
 
+enum {
+    NSWindowAnimationBehaviorDefault = 0,       // let AppKit infer animation behavior for this window
+    NSWindowAnimationBehaviorNone = 2,          // suppress inferred animations (don't animate)
+    NSWindowAnimationBehaviorDocumentWindow = 3,
+    NSWindowAnimationBehaviorUtilityWindow = 4,
+    NSWindowAnimationBehaviorAlertPanel = 5
+};
+typedef NSInteger NSWindowAnimationBehavior;
+
 /* the following is just to fix warnings, not for implementation! */
 @interface NSWindow (IntroducedInLion)
 - (void)setRestorable:(BOOL)b_value;
@@ -104,13 +60,11 @@ enum {
 - (void)windowWillEnterFullScreen:(NSNotification *)notification;
 - (void)windowDidEnterFullScreen:(NSNotification *)notification;
 - (void)windowWillExitFullScreen:(NSNotification *)notification;
+- (void)setAnimationBehavior:(NSWindowAnimationBehavior)newAnimationBehavior;
 @end
 
 @interface NSEvent (IntroducedInLion)
 - (BOOL)isDirectionInvertedFromDevice;
 @end
-
-#define kIOPMAssertionTypePreventUserIdleDisplaySleep    CFSTR("PreventUserIdleDisplaySleep")
-#define kIOPMAssertionTypePreventUserIdleSystemSleep    CFSTR("PreventUserIdleSystemSleep")
 
 #endif

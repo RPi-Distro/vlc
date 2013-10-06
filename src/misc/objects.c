@@ -56,7 +56,7 @@
 # include <sys/socket.h>
 # include <netinet/in.h>
 # include <unistd.h>    // close(), write()
-#elif defined(WIN32)
+#elif defined(_WIN32)
 # include <io.h>
 # include <winsock2.h>
 # include <ws2tcpip.h>
@@ -133,8 +133,8 @@ void *vlc_custom_create (vlc_object_t *parent, size_t length,
     vlc_mutex_init (&priv->var_lock);
     vlc_cond_init (&priv->var_wait);
     priv->pipes[0] = priv->pipes[1] = -1;
-    vlc_spin_init (&priv->ref_spin);
-    priv->i_refcount = 1;
+    atomic_init (&priv->alive, true);
+    atomic_init (&priv->refs, 1);
     priv->pf_destructor = NULL;
     priv->prev = NULL;
     priv->first = NULL;
@@ -142,7 +142,6 @@ void *vlc_custom_create (vlc_object_t *parent, size_t length,
     vlc_object_t *obj = (vlc_object_t *)(priv + 1);
     obj->psz_object_type = typename;
     obj->psz_header = NULL;
-    obj->b_die = false;
     obj->b_force = false;
     memset (obj + 1, 0, length - sizeof (*obj)); /* type-specific stuff */
 
@@ -213,9 +212,7 @@ void vlc_object_set_destructor( vlc_object_t *p_this,
 {
     vlc_object_internals_t *p_priv = vlc_internals(p_this );
 
-    vlc_spin_lock( &p_priv->ref_spin );
     p_priv->pf_destructor = pf_destructor;
-    vlc_spin_unlock( &p_priv->ref_spin );
 }
 
 static vlc_mutex_t name_lock = VLC_STATIC_MUTEX;
@@ -279,7 +276,6 @@ static void vlc_object_destroy( vlc_object_t *p_this )
 
     free( p_priv->psz_name );
 
-    vlc_spin_destroy( &p_priv->ref_spin );
     if( p_priv->pipes[1] != -1 && p_priv->pipes[1] != p_priv->pipes[0] )
         close( p_priv->pipes[1] );
     if( p_priv->pipes[0] != -1 )
@@ -291,7 +287,7 @@ static void vlc_object_destroy( vlc_object_t *p_this )
 }
 
 
-#if defined(WIN32) || defined(__OS2__)
+#if defined(_WIN32) || defined(__OS2__)
 /**
  * select()-able pipes emulated using Winsock
  */
@@ -333,7 +329,7 @@ error:
         close (c);
     return -1;
 }
-#endif /* WIN32 || __OS2__ */
+#endif /* _WIN32 || __OS2__ */
 
 static vlc_mutex_t pipe_lock = VLC_STATIC_MUTEX;
 
@@ -371,7 +367,7 @@ int vlc_object_waitpipe( vlc_object_t *obj )
                 internals->pipes[0] = internals->pipes[1] = -1;
         }
 
-        if (internals->pipes[0] != -1 && obj->b_die)
+        if (internals->pipes[0] != -1 && !atomic_load (&internals->alive))
         {   /* Race condition: vlc_object_kill() already invoked! */
             msg_Dbg (obj, "waitpipe: object already dying");
             write (internals->pipes[1], &(uint64_t){ 1 }, sizeof (uint64_t));
@@ -382,36 +378,35 @@ int vlc_object_waitpipe( vlc_object_t *obj )
     return internals->pipes[0];
 }
 
-#undef vlc_object_kill
 /**
- * Requests termination of an object, cancels the object thread, and make the
- * object wait pipe (if it exists) readable. Not a cancellation point.
+ * Hack for input objects. Should be removed eventually.
  */
-void vlc_object_kill( vlc_object_t *p_this )
+void ObjectKillChildrens( vlc_object_t *p_obj )
 {
-    vlc_object_internals_t *priv = vlc_internals( p_this );
-    int fd = -1;
+    /* FIXME ObjectKillChildrens seems a very bad idea in fact */
+    /*if( p_obj == VLC_OBJECT(p_input->p->p_sout) ) return;*/
 
-    vlc_mutex_lock( &pipe_lock );
-    if( !p_this->b_die )
+    vlc_object_internals_t *priv = vlc_internals (p_obj);
+    if (atomic_exchange (&priv->alive, false))
     {
+        int fd;
+
+        vlc_mutex_lock (&pipe_lock);
         fd = priv->pipes[1];
-        p_this->b_die = true;
+        vlc_mutex_unlock (&pipe_lock);
+        if (fd != -1)
+        {
+            write (fd, &(uint64_t){ 1 }, sizeof (uint64_t));
+            msg_Dbg (p_obj, "object waitpipe triggered");
+        }
     }
 
-    /* This also serves as a memory barrier toward vlc_object_alive(): */
-    vlc_mutex_unlock( &pipe_lock );
-
-    if (fd != -1)
-    {
-        int canc = vlc_savecancel ();
-
-        /* write _after_ setting b_die, so vlc_object_alive() returns false */
-        write (fd, &(uint64_t){ 1 }, sizeof (uint64_t));
-        msg_Dbg (p_this, "waitpipe: object killed");
-        vlc_restorecancel (canc);
-    }
+    vlc_list_t *p_list = vlc_list_children( p_obj );
+    for( int i = 0; i < p_list->i_count; i++ )
+        ObjectKillChildrens( p_list->p_values[i].p_object );
+    vlc_list_release( p_list );
 }
+
 
 #undef vlc_object_find_name
 /**
@@ -433,9 +428,25 @@ vlc_object_t *vlc_object_find_name( vlc_object_t *p_this, const char *psz_name )
 {
     vlc_object_t *p_found;
 
-    /* Reading psz_object_name from a separate inhibits thread-safety.
-     * Use a libvlc address variable instead for that sort of things! */
-    msg_Err( p_this, "%s(\"%s\") is not safe!", __func__, psz_name );
+    /* The object name is not thread-safe, provides no warranty that the
+     * object is fully initialized and still active, and that its owner can
+     * deal with asynchronous and external state changes. There may be multiple
+     * objects with the same name, and the function may fail even if a matching
+     * object exists. DO NOT USE THIS IN NEW CODE. */
+#ifndef NDEBUG
+    /* This was officially deprecated on August 19 2009. For the convenience of
+     * wannabe code janitors, this is the list of names that remain used
+     * and unfixed since then. */
+    static const char const bad[][11] = { "adjust", "clone", "colorthres",
+        "erase", "extract", "gradient", "logo", "marq", "motionblur", "puzzle",
+        "rotate", "sharpen", "transform", "v4l2", "wall" };
+    static const char const poor[][13] = { "invert", "magnify", "motiondetect",
+        "psychedelic", "ripple", "wave" };
+    if( bsearch( psz_name, bad, 15, 11, (void *)strcmp ) == NULL
+     && bsearch( psz_name, poor, 6, 13, (void *)strcmp ) == NULL )
+        return NULL;
+    msg_Err( p_this, "looking for object \"%s\"... FIXME XXX", psz_name );
+#endif
 
     libvlc_lock (p_this->p_libvlc);
     vlc_mutex_lock (&name_lock);
@@ -452,13 +463,12 @@ vlc_object_t *vlc_object_find_name( vlc_object_t *p_this, const char *psz_name )
 void * vlc_object_hold( vlc_object_t *p_this )
 {
     vlc_object_internals_t *internals = vlc_internals( p_this );
-
-    vlc_spin_lock( &internals->ref_spin );
-    /* Avoid obvious freed object uses */
-    assert( internals->i_refcount > 0 );
-    /* Increment the counter */
-    internals->i_refcount++;
-    vlc_spin_unlock( &internals->ref_spin );
+#ifndef NDEBUG
+    unsigned refs = atomic_fetch_add (&internals->refs, 1);
+    assert (refs > 0); /* Avoid obvious freed object uses */
+#else
+    atomic_fetch_add (&internals->refs, 1);
+#endif
     return p_this;
 }
 
@@ -471,43 +481,38 @@ void vlc_object_release( vlc_object_t *p_this )
 {
     vlc_object_internals_t *internals = vlc_internals( p_this );
     vlc_object_t *parent = NULL;
-    bool b_should_destroy;
+    unsigned refs = atomic_load (&internals->refs);
 
-    vlc_spin_lock( &internals->ref_spin );
-    assert( internals->i_refcount > 0 );
-
-    if( internals->i_refcount > 1 )
+    /* Fast path */
+    while (refs > 1)
     {
-        /* Fast path */
-        /* There are still other references to the object */
-        internals->i_refcount--;
-        vlc_spin_unlock( &internals->ref_spin );
-        return;
+        if (atomic_compare_exchange_weak (&internals->refs, &refs, refs - 1))
+            return; /* There are still other references to the object */
+
+        assert (refs > 0);
     }
-    vlc_spin_unlock( &internals->ref_spin );
 
     /* Slow path */
-    /* Remember that we cannot hold the spin while waiting on the mutex */
     libvlc_lock (p_this->p_libvlc);
-    /* Take the spin again. Note that another thread may have held the
-     * object in the (very short) mean time. */
-    vlc_spin_lock( &internals->ref_spin );
-    b_should_destroy = --internals->i_refcount == 0;
-    vlc_spin_unlock( &internals->ref_spin );
+    refs = atomic_fetch_sub (&internals->refs, 1);
+    assert (refs > 0);
 
-    if( b_should_destroy )
+    if (likely(refs == 1))
     {
         /* Detach from parent to protect against vlc_object_find_name() */
         parent = p_this->p_parent;
         if (likely(parent))
         {
            /* Unlink */
-           if (internals->prev != NULL)
-               internals->prev->next = internals->next;
+           vlc_object_internals_t *prev = internals->prev;
+           vlc_object_internals_t *next = internals->next;
+
+           if (prev != NULL)
+               prev->next = next;
            else
-               vlc_internals(parent)->first = internals->next;
-           if (internals->next != NULL)
-               internals->next->prev = internals->prev;
+               vlc_internals (parent)->first = next;
+           if (next != NULL)
+               next->prev = prev;
         }
 
         /* We have no children */
@@ -515,16 +520,25 @@ void vlc_object_release( vlc_object_t *p_this )
     }
     libvlc_unlock (p_this->p_libvlc);
 
-    if( b_should_destroy )
+    if (likely(refs == 1))
     {
-        int canc;
-
-        canc = vlc_savecancel ();
+        int canc = vlc_savecancel ();
         vlc_object_destroy( p_this );
         vlc_restorecancel (canc);
         if (parent)
             vlc_object_release (parent);
     }
+}
+
+#undef vlc_object_alive
+/**
+ * This function returns true, except when it returns false.
+ * \warning Do not use this function. Ever. You were warned.
+ */
+bool vlc_object_alive(vlc_object_t *obj)
+{
+    vlc_object_internals_t *internals = vlc_internals (obj);
+    return atomic_load (&internals->alive);
 }
 
 #undef vlc_list_children
@@ -727,9 +741,7 @@ static void PrintObject( vlc_object_internals_t *priv,
     }
     vlc_mutex_unlock (&name_lock);
 
-    psz_refcount[0] = '\0';
-    if( priv->i_refcount > 0 )
-        snprintf( psz_refcount, 19, ", %u refs", priv->i_refcount );
+    snprintf( psz_refcount, 19, ", %u refs", atomic_load( &priv->refs ) );
 
     psz_parent[0] = '\0';
     /* FIXME: need structure lock!!! */

@@ -1,24 +1,24 @@
 /*****************************************************************************
  * croppadd.c: Crop/Padd image filter
  *****************************************************************************
- * Copyright (C) 2008 the VideoLAN team
- * $Id: 3072637375eceb25f45a7e410a0e5011d4f39a46 $
+ * Copyright (C) 2008 VLC authors and VideoLAN
+ * $Id: b4f2f2d5cebc9261b74e7a32beae42787ae53033 $
  *
  * Authors: Antoine Cellerier <dionoea @t videolan dot org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -266,7 +266,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         p_in += i_ycrop * p_plane->i_pitch;
 
         /* Padd on the top */
-        vlc_memset( p_out, i_padd_color, i_ypadd * p_outplane->i_pitch );
+        memset( p_out, i_padd_color, i_ypadd * p_outplane->i_pitch );
         p_out += i_ypadd * p_outplane->i_pitch;
 
         int i_line;
@@ -279,16 +279,16 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
             p_in += i_xcrop * i_pixel_pitch;
 
             /* Padd on the left */
-            vlc_memset( p_out, i_padd_color, i_xpadd * i_pixel_pitch );
+            memset( p_out, i_padd_color, i_xpadd * i_pixel_pitch );
             p_out += i_xpadd * i_pixel_pitch;
 
             /* Copy the image and crop on the right */
-            vlc_memcpy( p_out, p_in, i_width * i_pixel_pitch );
+            memcpy( p_out, p_in, i_width * i_pixel_pitch );
             p_out += i_width * i_pixel_pitch;
             p_in += i_width * i_pixel_pitch;
 
             /* Padd on the right */
-            vlc_memset( p_out, i_padd_color,
+            memset( p_out, i_padd_color,
                         ( i_outwidth - i_xpadd - i_width ) * i_pixel_pitch );
 
             /* Got to begining of the next line */
@@ -297,7 +297,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         }
 
         /* Padd on the bottom */
-        vlc_memset( p_out, i_padd_color,
+        memset( p_out, i_padd_color,
                  ( i_outheight - i_ypadd - i_height ) * p_outplane->i_pitch );
     }
 

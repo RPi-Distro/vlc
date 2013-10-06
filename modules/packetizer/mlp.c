@@ -2,23 +2,23 @@
  * mlp.c: packetize MLP/TrueHD audio
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: de4c3f58009de143ca637c38a78fcd47a3c18ae6 $
+ * $Id: 69b96b6e379487a004165897f004e7acff6055b2 $
  *
  * Authors: Laurent Aimar < fenrir _AT videolan _DOT_ org >
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -31,7 +31,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
-#include <vlc_aout.h>
 #include <vlc_block_helper.h>
 #include <vlc_bits.h>
 #include <assert.h>
@@ -272,7 +271,7 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
         case STATE_SEND_DATA:
             /* When we reach this point we already know we have enough
              * data available. */
-            p_out_buffer = block_New( p_dec, p_sys->i_frame_size );
+            p_out_buffer = block_Alloc( p_sys->i_frame_size );
             if( !p_out_buffer )
                 return NULL;
 
@@ -302,7 +301,7 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
             p_dec->fmt_out.audio.i_rate     = p_sys->mlp.i_rate;
             p_dec->fmt_out.audio.i_channels = p_sys->mlp.i_channels;
             p_dec->fmt_out.audio.i_original_channels = p_sys->mlp.i_channels_conf;
-            p_dec->fmt_out.audio.i_physical_channels = p_sys->mlp.i_channels_conf & AOUT_CHAN_PHYSMASK;
+            p_dec->fmt_out.audio.i_physical_channels = p_sys->mlp.i_channels_conf;
 
             p_out_buffer->i_pts = p_out_buffer->i_dts = date_Get( &p_sys->end_date );
 

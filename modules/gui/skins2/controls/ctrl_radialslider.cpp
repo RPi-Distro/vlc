@@ -2,7 +2,7 @@
  * ctrl_radialslider.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 14a6e2d274b532e1c7ddb90b772b73c1e0cc477c $
+ * $Id: e06673a4957b75568bd55d6fb79c655d53bb74a9 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -40,17 +40,11 @@ CtrlRadialSlider::CtrlRadialSlider( intf_thread_t *pIntf,
                                     VarBool *pVisible ):
     CtrlGeneric( pIntf, rHelp, pVisible ), m_fsm( pIntf ), m_numImg( numImg ),
     m_rVariable( rVariable ), m_minAngle( minAngle ), m_maxAngle( maxAngle ),
-    m_position( 0 ), m_cmdUpDown( this ), m_cmdDownUp( this ),
-    m_cmdMove( this )
+    m_position( 0 ),
+    m_width( rBmpSeq.getWidth() ), m_height( rBmpSeq.getHeight() / numImg ),
+    m_pImgSeq( rBmpSeq.getGraphics() ),
+    m_cmdUpDown( this ), m_cmdDownUp( this ), m_cmdMove( this )
 {
-    // Build the images of the sequence
-    m_pImgSeq = OSFactory::instance( getIntf() )->createOSGraphics(
-                                     rBmpSeq.getWidth(), rBmpSeq.getHeight() );
-    m_pImgSeq->drawBitmap( rBmpSeq, 0, 0 );
-
-    m_width = rBmpSeq.getWidth();
-    m_height = rBmpSeq.getHeight() / numImg;
-
     // States
     m_fsm.addState( "up" );
     m_fsm.addState( "down" );
@@ -71,7 +65,6 @@ CtrlRadialSlider::CtrlRadialSlider( intf_thread_t *pIntf,
 CtrlRadialSlider::~CtrlRadialSlider()
 {
     m_rVariable.delObserver( this );
-    delete m_pImgSeq;
 }
 
 

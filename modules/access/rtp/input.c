@@ -12,7 +12,7 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
@@ -154,7 +154,7 @@ void *rtp_dgram_thread (void *opaque)
  */
 void *rtp_stream_thread (void *opaque)
 {
-#ifndef WIN32
+#ifndef _WIN32
     demux_t *demux = opaque;
     demux_sys_t *sys = demux->p_sys;
     int fd = sys->fd;

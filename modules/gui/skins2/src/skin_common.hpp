@@ -2,7 +2,7 @@
  * skin_common.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: b7addbe4f83c1910f6786eb23a01f6ca4f65b55a $
+ * $Id: 8b880bb1f5d70bd1cad1e142fc99e2edf4bd6721 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -22,12 +22,12 @@
  * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#ifndef SKIN_COMMON_HPP
+#define SKIN_COMMON_HPP
+
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
-
-#ifndef SKIN_COMMON_HPP
-#define SKIN_COMMON_HPP
 
 #include <vlc_common.h>
 #include <vlc_interface.h>
@@ -70,13 +70,13 @@ typedef void* vlc_wnd_type;
 /// Wrapper around FromLocale, to avoid the need to call LocaleFree()
 static inline string sFromLocale( const string &rLocale )
 {
-    char *s = FromLocale( rLocale.c_str() );
+    const char *s = FromLocale( rLocale.c_str() );
     string res = s;
     LocaleFree( s );
     return res;
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 /// Wrapper around FromWide, to avoid the need to call free()
 static inline string sFromWide( const wstring &rWide )
 {
@@ -90,7 +90,7 @@ static inline string sFromWide( const wstring &rWide )
 /// Wrapper around ToLocale, to avoid the need to call LocaleFree()
 static inline string sToLocale( const string &rUTF8 )
 {
-    char *s = ToLocale( rUTF8.c_str() );
+    const char *s = ToLocale( rUTF8.c_str() );
     string res = s;
     LocaleFree( s );
     return res;
@@ -107,9 +107,6 @@ struct intf_sys_t
 
     /// The playlist thread
     playlist_t *p_playlist;
-
-    /// Message bank subscription
-    msg_subscription_t *p_sub;
 
     // "Singleton" objects: MUST be initialized to NULL !
     /// Logger

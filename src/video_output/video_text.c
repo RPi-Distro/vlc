@@ -2,7 +2,7 @@
  * video_text.c : OSD text manipulation functions
  *****************************************************************************
  * Copyright (C) 1999-2010 VLC authors and VideoLAN
- * $Id: 8d3cffc8a7d3643b89663c81830129b76aae1ee7 $
+ * $Id: 4ef8865914035e5861d4c66debc7eaba9387b2ec $
  *
  * Author: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *         Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -62,8 +62,8 @@ static void OSDTextUpdate(subpicture_t *subpic,
         return;
 
     subpic->b_absolute = false;
-    subpic->i_original_picture_width  = fmt_dst->i_width * fmt_dst->i_sar_num / fmt_dst->i_sar_den;
-    subpic->i_original_picture_height = fmt_dst->i_height;
+    subpic->i_original_picture_width  = fmt_dst->i_visible_width * fmt_dst->i_sar_num / fmt_dst->i_sar_den;
+    subpic->i_original_picture_height = fmt_dst->i_visible_height;
 
     video_format_t fmt;
     video_format_Init( &fmt, VLC_CODEC_TEXT);
@@ -85,13 +85,13 @@ static void OSDTextUpdate(subpicture_t *subpic,
     if (r->i_align & SUBPICTURE_ALIGN_LEFT)
         r->i_x += margin_h + fmt_dst->i_x_offset;
     else if (r->i_align & SUBPICTURE_ALIGN_RIGHT)
-        r->i_x += margin_h + fmt_dst->i_width - (fmt_dst->i_visible_width + fmt_dst->i_x_offset);
+        r->i_x += margin_h - fmt_dst->i_x_offset;
 
     r->i_y = 0;
     if (r->i_align & SUBPICTURE_ALIGN_TOP )
         r->i_y += margin_v + fmt_dst->i_y_offset;
     else if (r->i_align & SUBPICTURE_ALIGN_BOTTOM )
-        r->i_y += margin_v + fmt_dst->i_height - (fmt_dst->i_visible_height + fmt_dst->i_y_offset);
+        r->i_y += margin_v - fmt_dst->i_y_offset;
 }
 
 static void OSDTextDestroy(subpicture_t *subpic)

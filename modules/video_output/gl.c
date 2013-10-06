@@ -12,7 +12,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -45,7 +45,6 @@ static void Close (vlc_object_t *);
 
 vlc_module_begin ()
 #if USE_OPENGL_ES == 2
-# error The OpenGL ES2 plugin is incomplete and not functional. FIXME.
 # define API VLC_OPENGL_ES2
 # define MODULE_VARNAME "gles2"
     set_shortname (N_("OpenGL ES2"))
@@ -101,7 +100,25 @@ static vout_window_t *MakeWindow (vout_display_t *vd)
     vout_window_cfg_t wnd_cfg;
 
     memset (&wnd_cfg, 0, sizeof (wnd_cfg));
-    wnd_cfg.type = VOUT_WINDOW_TYPE_NATIVE;
+
+    /* Please keep this in sync with egl.c */
+    /* <EGL/eglplatform.h> defines the list and order of platforms */
+#if defined(_WIN32) || defined(__VC32__) \
+ && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
+    wnd_cfg.type = VOUT_WINDOW_TYPE_HWND;
+#elif defined(__WINSCW__) || defined(__SYMBIAN32__)  /* Symbian */
+# warning Symbian not supported.
+#elif defined(WL_EGL_PLATFORM)
+# error Wayland not supported.
+#elif defined(__GBM__)
+# error Glamor not supported.
+#elif defined(ANDROID)
+# error Android not supported.
+#elif defined(__unix__) /* X11 */
+    wnd_cfg.type = VOUT_WINDOW_TYPE_XID;
+#else
+# error Platform not recognized.
+#endif
     wnd_cfg.x = var_InheritInteger (vd, "video-x");
     wnd_cfg.y = var_InheritInteger (vd, "video-y");
     wnd_cfg.width  = vd->cfg->display.width;
@@ -138,13 +155,18 @@ static int Open (vlc_object_t *obj)
         goto error;
 
     /* Initialize video display */
-    sys->vgl = vout_display_opengl_New (&vd->fmt, NULL, sys->gl);
+    const vlc_fourcc_t *spu_chromas;
+    sys->vgl = vout_display_opengl_New (&vd->fmt, &spu_chromas, sys->gl);
     if (!sys->vgl)
+    {
+        vlc_gl_ReleaseCurrent (sys->gl);
         goto error;
+    }
 
     vd->sys = sys;
     vd->info.has_pictures_invalid = false;
     vd->info.has_event_thread = false;
+    vd->info.subpicture_chromas = spu_chromas;
     vd->pool = Pool;
     vd->prepare = PictureRender;
     vd->display = PictureDisplay;
@@ -170,6 +192,8 @@ static void Close (vlc_object_t *obj)
     vout_display_sys_t *sys = vd->sys;
 
     vout_display_opengl_Delete (sys->vgl);
+    vlc_gl_ReleaseCurrent (sys->gl);
+
     vlc_gl_Destroy (sys->gl);
     vout_display_DeleteWindow (vd, sys->window);
     free (sys);

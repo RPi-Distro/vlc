@@ -1,13 +1,15 @@
 /*****************************************************************************
- * dbus-tracklist.c : dbus control module (mpris v2.1) - TrackList interface
+ * dbus_tracklist.c : dbus control module (mpris v2.1) - TrackList interface
  *****************************************************************************
  * Copyright © 2006-2011 Rafaël Carré
  * Copyright © 2007-2011 Mirsal Ennaime
  * Copyright © 2009-2011 The VideoLAN team
- * $Id: 22bffa8ecff16822110faa178345a3de0d3c9f47 $
+ * Copyright © 2013      Alex Merry
+ * $Id: 353919dd5ada950cfaabf3fee7bb3b1d3d02a608 $
  *
  * Authors:    Mirsal Ennaime <mirsal at mirsal fr>
  *             Rafaël Carré <funman at videolanorg>
+ *             Alex Merry <dev at randomguy3 me uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -286,20 +288,16 @@ DBUS_METHOD( RemoveTrack )
     REPLY_SEND;
 }
 
-DBUS_METHOD( Tracks )
-{ /* Tracks property */
-    VLC_UNUSED( p_this );
-
-    REPLY_INIT;
-    OUT_ARGUMENTS;
-
-    DBusMessageIter tracks, v;
-    char *psz_track_id = NULL;
-    playlist_t   *p_playlist   = PL;
+static int
+MarshalTracks( intf_thread_t *p_intf, DBusMessageIter *container )
+{
+    DBusMessageIter tracks;
+    char         *psz_track_id = NULL;
+    playlist_t   *p_playlist   = p_intf->p_sys->p_playlist;
     input_item_t *p_input      = NULL;
 
-    dbus_message_iter_open_container( &args, DBUS_TYPE_VARIANT, "ao", &v );
-    dbus_message_iter_open_container( &v,    DBUS_TYPE_ARRAY, "o", &tracks );
+    dbus_message_iter_open_container( container, DBUS_TYPE_ARRAY, "o",
+                                      &tracks );
 
     PL_LOCK;
 
@@ -315,9 +313,8 @@ DBUS_METHOD( Tracks )
                                              &psz_track_id ) )
         {
             PL_UNLOCK;
-            dbus_message_iter_abandon_container( &v, &tracks );
-            dbus_message_iter_abandon_container( &args, &v );
-            return DBUS_HANDLER_RESULT_NEED_MEMORY;
+            dbus_message_iter_abandon_container( container, &tracks );
+            return VLC_ENOMEM;
         }
 
         free( psz_track_id );
@@ -325,46 +322,43 @@ DBUS_METHOD( Tracks )
 
     PL_UNLOCK;
 
-    if( !dbus_message_iter_close_container( &v, &tracks ) ||
-        !dbus_message_iter_close_container( &args, &v ) )
-        return DBUS_HANDLER_RESULT_NEED_MEMORY;
+    if( !dbus_message_iter_close_container( container, &tracks ) )
+        return VLC_ENOMEM;
 
-    REPLY_SEND;
+    return VLC_SUCCESS;
 }
 
-DBUS_METHOD( CanEditTracks )
-{ /* CanEditTracks property */
-    VLC_UNUSED( p_this );
-    REPLY_INIT;
-    OUT_ARGUMENTS;
-
-    DBusMessageIter v;
+static int
+MarshalCanEditTracks( intf_thread_t *p_intf, DBusMessageIter *container )
+{
+    VLC_UNUSED( p_intf );
     const dbus_bool_t b_ret = TRUE;
 
-    if( !dbus_message_iter_open_container( &args, DBUS_TYPE_VARIANT, "b", &v ) )
-        return DBUS_HANDLER_RESULT_NEED_MEMORY;
+    if( !dbus_message_iter_append_basic( container, DBUS_TYPE_BOOLEAN, &b_ret ) )
+        return VLC_ENOMEM;
 
-    if( !dbus_message_iter_append_basic( &v, DBUS_TYPE_BOOLEAN, &b_ret ) )
-    {
-        dbus_message_iter_abandon_container( &args, &v );
-        return DBUS_HANDLER_RESULT_NEED_MEMORY;
-    }
-
-    if( !dbus_message_iter_close_container( &args, &v ) )
-    {
-        dbus_message_iter_abandon_container( &args, &v );
-        return DBUS_HANDLER_RESULT_NEED_MEMORY;
-    }
-
-    REPLY_SEND;
+    return VLC_SUCCESS;
 }
 
 #define PROPERTY_MAPPING_BEGIN if( 0 ) {}
-#define PROPERTY_FUNC( interface, property, function ) \
-    else if( !strcmp( psz_interface_name, interface ) && \
-             !strcmp( psz_property_name,  property ) ) \
-        return function( p_conn, p_from, p_this );
-#define PROPERTY_MAPPING_END return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+#define PROPERTY_GET_FUNC( prop, signature ) \
+    else if( !strcmp( psz_property_name,  #prop ) ) { \
+        if( !dbus_message_iter_open_container( &args, DBUS_TYPE_VARIANT, signature, &v ) ) \
+            return DBUS_HANDLER_RESULT_NEED_MEMORY; \
+        if( VLC_SUCCESS != Marshal##prop( p_this, &v ) ) { \
+            dbus_message_iter_abandon_container( &args, &v ); \
+            return DBUS_HANDLER_RESULT_NEED_MEMORY; \
+        } \
+        if( !dbus_message_iter_close_container( &args, &v ) ) \
+            return DBUS_HANDLER_RESULT_NEED_MEMORY; \
+    }
+
+#define PROPERTY_SET_FUNC( prop ) \
+    else if( !strcmp( psz_property_name,  #prop ) ) { \
+        return prop##Set( p_conn, p_from, p_this ); \
+    }
+#define PROPERTY_MAPPING_END else { return DBUS_HANDLER_RESULT_NOT_YET_HANDLED; }
+
 
 DBUS_METHOD( GetProperty )
 {
@@ -390,16 +384,72 @@ DBUS_METHOD( GetProperty )
     msg_Dbg( (vlc_object_t*) p_this, "Getting property %s",
                                      psz_property_name );
 
+    if( strcmp( psz_interface_name, DBUS_MPRIS_TRACKLIST_INTERFACE ) ) {
+        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+    }
+
+    REPLY_INIT;
+    OUT_ARGUMENTS;
+    DBusMessageIter v;
+
     PROPERTY_MAPPING_BEGIN
-    PROPERTY_FUNC( DBUS_MPRIS_TRACKLIST_INTERFACE, "Tracks", Tracks )
-    PROPERTY_FUNC( DBUS_MPRIS_TRACKLIST_INTERFACE, "CanEditTracks",
-                                                   CanEditTracks )
+    PROPERTY_GET_FUNC( Tracks, "ao" )
+    PROPERTY_GET_FUNC( CanEditTracks, "b" )
     PROPERTY_MAPPING_END
+
+    REPLY_SEND;
 }
 
 #undef PROPERTY_MAPPING_BEGIN
 #undef PROPERTY_GET_FUNC
+#undef PROPERTY_SET_FUNC
 #undef PROPERTY_MAPPING_END
+
+#define ADD_PROPERTY( prop, signature ) \
+    if( VLC_SUCCESS != AddProperty( (intf_thread_t*) p_this, \
+                &dict, #prop, signature, Marshal##prop ) ) { \
+        dbus_message_iter_abandon_container( &args, &dict ); \
+        return VLC_ENOMEM; \
+    }
+
+DBUS_METHOD( GetAllProperties )
+{
+    REPLY_INIT;
+    OUT_ARGUMENTS;
+
+    DBusError error;
+    DBusMessageIter dict;
+
+    char *const psz_interface_name = NULL;
+
+    dbus_error_init( &error );
+    dbus_message_get_args( p_from, &error,
+            DBUS_TYPE_STRING, &psz_interface_name,
+            DBUS_TYPE_INVALID );
+
+    if( dbus_error_is_set( &error ) )
+    {
+        msg_Err( (vlc_object_t*) p_this, "D-Bus message reading : %s",
+                                         error.message );
+        dbus_error_free( &error );
+        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+    }
+
+    msg_Dbg( (vlc_object_t*) p_this, "Getting All properties" );
+
+    if( !dbus_message_iter_open_container( &args, DBUS_TYPE_ARRAY, "{sv}", &dict ) )
+        return DBUS_HANDLER_RESULT_NEED_MEMORY;
+
+    ADD_PROPERTY ( Tracks,        "ao" )
+    ADD_PROPERTY ( CanEditTracks, "b"  )
+
+    if( !dbus_message_iter_close_container( &args, &dict ))
+        return DBUS_HANDLER_RESULT_NEED_MEMORY;
+
+    REPLY_SEND;
+}
+
+#undef ADD_PROPERTY
 
 #define METHOD_FUNC( interface, method, function ) \
     else if( dbus_message_is_method_call( p_from, interface, method ) )\
@@ -411,6 +461,7 @@ handle_tracklist ( DBusConnection *p_conn, DBusMessage *p_from, void *p_this )
     if(0);
 
     METHOD_FUNC( DBUS_INTERFACE_PROPERTIES, "Get",    GetProperty );
+    METHOD_FUNC( DBUS_INTERFACE_PROPERTIES, "GetAll", GetAllProperties );
 
     /* here D-Bus method names are associated to an handler */
 
@@ -445,16 +496,28 @@ PropertiesChangedSignal( intf_thread_t    *p_intf,
 
     OUT_ARGUMENTS;
     ADD_STRING( &psz_interface_name );
-    dbus_message_iter_open_container( &args, DBUS_TYPE_ARRAY, "{sv}",
-                                      &changed_properties );
 
-    dbus_message_iter_close_container( &args, &changed_properties );
+    if( unlikely(!dbus_message_iter_open_container( &args,
+                                                    DBUS_TYPE_ARRAY, "{sv}",
+                                                    &changed_properties )) )
+        return DBUS_HANDLER_RESULT_NEED_MEMORY;
 
-    dbus_message_iter_open_container( &args, DBUS_TYPE_ARRAY, "s",
-                                      &invalidated_properties );
+    if( unlikely(!dbus_message_iter_close_container( &args,
+                                                     &changed_properties )) )
+        return DBUS_HANDLER_RESULT_NEED_MEMORY;
+
+    if( unlikely(!dbus_message_iter_open_container( &args, DBUS_TYPE_ARRAY, "s",
+                                                    &invalidated_properties )) )
+        return DBUS_HANDLER_RESULT_NEED_MEMORY;
 
     i_properties    = vlc_dictionary_keys_count( p_changed_properties );
     ppsz_properties = vlc_dictionary_all_keys( p_changed_properties );
+
+    if( unlikely(!ppsz_properties) )
+    {
+        dbus_message_iter_abandon_container( &args, &invalidated_properties );
+        return DBUS_HANDLER_RESULT_NEED_MEMORY;
+    }
 
     for( int i = 0; i < i_properties; i++ )
     {
@@ -466,8 +529,11 @@ PropertiesChangedSignal( intf_thread_t    *p_intf,
         free( ppsz_properties[i] );
     }
 
-    dbus_message_iter_close_container( &args, &invalidated_properties );
     free( ppsz_properties );
+
+    if( unlikely(!dbus_message_iter_close_container( &args,
+                    &invalidated_properties )) )
+        return DBUS_HANDLER_RESULT_NEED_MEMORY;
 
     SIGNAL_SEND;
 }

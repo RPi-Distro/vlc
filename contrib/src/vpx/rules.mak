@@ -8,12 +8,6 @@ $(TARBALLS)/libvpx-$(VPX_VERSION).tar.bz2:
 
 .sum-vpx: libvpx-$(VPX_VERSION).tar.bz2
 
-ifneq ($(which bash),/bin/bash)
-PATCH_BASH_LOCATION=sed -i.orig s,^\#!/bin/bash,\#!`which bash`,g `grep -Rl ^\#!/bin/bash libvpx-$(VPX_VERSION)`
-else
-PATCH_BASH_LOCATION=true #bash is in /bin
-endif
-
 libvpx: libvpx-$(VPX_VERSION).tar.bz2 .sum-vpx
 	$(UNPACK)
 	$(APPLY) $(SRC)/vpx/libvpx-no-cross.patch
@@ -23,9 +17,13 @@ ifdef HAVE_MACOSX
 	$(APPLY) $(SRC)/vpx/libvpx-mac.patch
 	$(APPLY) $(SRC)/vpx/libvpx-mac-mountain-lion.patch
 endif
-	$(PATCH_BASH_LOCATION)
 ifdef HAVE_WIN32
 	$(APPLY) $(SRC)/vpx/libvpx-win32.patch
+endif
+ifneq ($(which bash),/bin/bash)
+	sed -i.orig \
+		s,^\#!/bin/bash,\#!`which bash`,g \
+		`grep -Rl ^\#!/bin/bash libvpx-$(VPX_VERSION)`
 endif
 	$(MOVE)
 

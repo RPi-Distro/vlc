@@ -2,7 +2,7 @@
  * thread.c : Playlist management functions
  *****************************************************************************
  * Copyright © 1999-2008 VLC authors and VideoLAN
- * $Id: 21c740ae951ffe69568a70cacea2e02cdb8325cb $
+ * $Id: 9bfbc3c18dfc6d63927cf33e080ea40164eca57d $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -46,64 +46,46 @@ static void *Thread   ( void * );
  *****************************************************************************/
 
 /**
- * Create the main playlist threads.
- * Additionally to the playlist, this thread controls :
- *    - Statistics
- *    - VLM
- * \param p_parent
- * \return an object with a started thread
+ * Creates the main playlist thread.
  */
 void playlist_Activate( playlist_t *p_playlist )
 {
-    /* */
     playlist_private_t *p_sys = pl_priv(p_playlist);
 
-    /* Start the playlist thread */
     if( vlc_clone( &p_sys->thread, Thread, p_playlist,
                    VLC_THREAD_PRIORITY_LOW ) )
     {
         msg_Err( p_playlist, "cannot spawn playlist thread" );
+        abort();
     }
-    msg_Dbg( p_playlist, "playlist threads correctly activated" );
 }
 
+/**
+ * Stops the playlist forever (but do not destroy it yet).
+ * Any input is stopped.
+ * \return Nothing but waits for the playlist to be deactivated.
+ */
 void playlist_Deactivate( playlist_t *p_playlist )
 {
-    /* */
     playlist_private_t *p_sys = pl_priv(p_playlist);
 
-    msg_Dbg( p_playlist, "deactivating the playlist" );
-
     PL_LOCK;
-    vlc_object_kill( p_playlist );
+    /* WARNING: There is a latent bug. It is assumed that only one thread will
+     * be waiting for playlist deactivation at a time. So far, that works
+     * as playlist_Deactivate() is only ever called while closing an
+     * interface and interfaces are shut down serially by intf_DestroyAll(). */
+    if( p_sys->killed )
+    {
+        PL_UNLOCK;
+        return;
+    }
+
+    msg_Dbg( p_playlist, "deactivating the playlist" );
+    p_sys->killed = true;
     vlc_cond_signal( &p_sys->signal );
     PL_UNLOCK;
 
     vlc_join( p_sys->thread, NULL );
-    assert( !p_sys->p_input );
-
-    /* release input resources */
-    if( p_sys->p_input_resource )
-    {
-        input_resource_Terminate( p_sys->p_input_resource );
-        input_resource_Release( p_sys->p_input_resource );
-    }
-    p_sys->p_input_resource = NULL;
-
-    if( var_InheritBool( p_playlist, "media-library" ) )
-        playlist_MLDump( p_playlist );
-
-    PL_LOCK;
-
-    /* Release the current node */
-    set_current_status_node( p_playlist, NULL );
-
-    /* Release the current item */
-    set_current_status_item( p_playlist, NULL );
-
-    PL_UNLOCK;
-
-    msg_Dbg( p_playlist, "playlist correctly deactivated" );
 }
 
 /* */
@@ -126,14 +108,6 @@ static int InputEvent( vlc_object_t *p_this, char const *psz_cmd,
 
     PL_UNLOCK;
     return VLC_SUCCESS;
-}
-
-static void UpdateActivity( playlist_t *p_playlist, int i_delta )
-{
-    PL_ASSERT_LOCKED;
-
-    const int i_activity = var_GetInteger( p_playlist, "activity" ) ;
-    var_SetInteger( p_playlist, "activity", i_activity + i_delta );
 }
 
 /**
@@ -175,8 +149,6 @@ void ResetCurrentlyPlaying( playlist_t *p_playlist,
 {
     playlist_private_t *p_sys = pl_priv(p_playlist);
 
-    stats_TimerStart( p_playlist, "Items array build",
-                      STATS_TIMER_PLAYLIST_BUILD );
     PL_DEBUG( "rebuilding array of current - root %s",
               PLI_NAME( p_sys->status.p_node ) );
     ARRAY_RESET( p_playlist->current );
@@ -211,7 +183,6 @@ void ResetCurrentlyPlaying( playlist_t *p_playlist,
         }
     }
     p_sys->b_reset_currently_playing = false;
-    stats_TimerStop( p_playlist, STATS_TIMER_PLAYLIST_BUILD );
 }
 
 
@@ -236,12 +207,8 @@ static int PlayItem( playlist_t *p_playlist, playlist_item_t *p_item )
 
     p_sys->status.i_status = PLAYLIST_RUNNING;
 
-    UpdateActivity( p_playlist, DEFAULT_INPUT_ACTIVITY );
-
     assert( p_sys->p_input == NULL );
 
-    if( !p_sys->p_input_resource )
-        p_sys->p_input_resource = input_resource_New( VLC_OBJECT( p_playlist ) );
     input_thread_t *p_input_thread = input_Create( p_playlist, p_input, NULL, p_sys->p_input_resource );
     if( p_input_thread )
     {
@@ -257,26 +224,24 @@ static int PlayItem( playlist_t *p_playlist, playlist_item_t *p_item )
         }
     }
 
-    char *psz_uri = input_item_GetURI( p_item->p_input );
-    if( psz_uri && ( !strncmp( psz_uri, "directory:", 10 ) ||
-                     !strncmp( psz_uri, "vlc:", 4 ) ) )
+    bool b_find_art = var_GetInteger( p_playlist, "album-art" )
+                                                      == ALBUM_ART_WHEN_PLAYED;
+    if( b_find_art )
     {
+        char *psz_uri = input_item_GetURI( p_item->p_input );
+        if( psz_uri != NULL && (!strncmp( psz_uri, "directory:", 10 ) ||
+                                !strncmp( psz_uri, "vlc:", 4 )) )
+            b_find_art = false;
         free( psz_uri );
-        return VLC_SUCCESS;
     }
-    free( psz_uri );
 
     /* TODO store art policy in playlist private data */
-    if( var_GetInteger( p_playlist, "album-art" ) == ALBUM_ART_WHEN_PLAYED )
+    if( b_find_art )
     {
-        bool b_has_art;
-
-        char *psz_arturl, *psz_name;
-        psz_arturl = input_item_GetArtURL( p_input );
-        psz_name = input_item_GetName( p_input );
-
-        /* p_input->p_meta should not be null after a successfull CreateThread */
-        b_has_art = !EMPTY_STR( psz_arturl );
+        char *psz_arturl = input_item_GetArtURL( p_input );
+        char *psz_name = input_item_GetName( p_input );
+        /* p_input->p_meta should not be null after a successful CreateThread */
+        bool b_has_art = !EMPTY_STR( psz_arturl );
 
         if( !b_has_art || strncmp( psz_arturl, "attachment://", 13 ) )
         {
@@ -286,9 +251,8 @@ static int PlayItem( playlist_t *p_playlist, playlist_item_t *p_item )
         free( psz_arturl );
         free( psz_name );
     }
-    /* FIXME: this is not safe !!*/
     PL_UNLOCK;
-    var_SetAddress( p_playlist, "item-current", p_input );
+    var_TriggerCallback( p_playlist, "activity" );
     PL_LOCK;
 
     return VLC_SUCCESS;
@@ -456,48 +420,37 @@ static playlist_item_t *NextItem( playlist_t *p_playlist )
     return p_new;
 }
 
-static int LoopInput( playlist_t *p_playlist )
+static void LoopInput( playlist_t *p_playlist )
 {
     playlist_private_t *p_sys = pl_priv(p_playlist);
     input_thread_t *p_input = p_sys->p_input;
 
-    if( !p_input )
-        return VLC_EGENERIC;
+    assert( p_input != NULL );
 
-    if( ( p_sys->request.b_request || !vlc_object_alive( p_playlist ) ) && !p_input->b_die )
+    if( p_sys->request.b_request || p_sys->killed )
     {
         PL_DEBUG( "incoming request - stopping current input" );
         input_Stop( p_input, true );
     }
 
+#warning Unsynchronized access to *p_input flags...
     /* This input is dead. Remove it ! */
     if( p_input->b_dead )
     {
+        p_sys->p_input = NULL;
         PL_DEBUG( "dead input" );
-
         PL_UNLOCK;
-        /* We can unlock as we return VLC_EGENERIC (no event will be lost) */
 
-        /* input_resource_t must be manipulated without playlist lock */
-        if( !var_CreateGetBool( p_input, "sout-keep" ) )
+        /* WARNING: Input resource manipulation and callback deletion are
+         * incompatible with the playlist lock. */
+        if( !var_InheritBool( p_input, "sout-keep" ) )
             input_resource_TerminateSout( p_sys->p_input_resource );
-
-        /* The DelCallback must be issued without playlist lock */
         var_DelCallback( p_input, "intf-event", InputEvent, p_playlist );
 
-        PL_LOCK;
-
-        p_sys->p_input = NULL;
         input_Close( p_input );
-
-        UpdateActivity( p_playlist, -DEFAULT_INPUT_ACTIVITY );
-
-        return VLC_EGENERIC;
-    }
-    /* This input is dying, let it do */
-    else if( p_input->b_die )
-    {
-        PL_DEBUG( "dying input" );
+        var_TriggerCallback( p_playlist, "activity" );
+        PL_LOCK;
+        return;
     }
     /* This input has finished, ask it to die ! */
     else if( p_input->b_error || p_input->b_eof )
@@ -505,10 +458,11 @@ static int LoopInput( playlist_t *p_playlist )
         PL_DEBUG( "finished input" );
         input_Stop( p_input, false );
     }
-    return VLC_SUCCESS;
+
+    vlc_cond_wait( &p_sys->signal, &p_sys->lock );
 }
 
-static void LoopRequest( playlist_t *p_playlist )
+static void LoopRequest( playlist_t *p_playlist, int i_status )
 {
     playlist_private_t *p_sys = pl_priv(p_playlist);
     assert( !p_sys->p_input );
@@ -519,30 +473,10 @@ static void LoopRequest( playlist_t *p_playlist )
      *  - Request, running requested -> start new item
      *  - Request, stopped requested -> collect garbage
     */
-    const int i_status = p_sys->request.b_request ?
-                         p_sys->request.i_status : p_sys->status.i_status;
-
-    if( i_status == PLAYLIST_STOPPED || !vlc_object_alive( p_playlist ) )
+    if( i_status == PLAYLIST_STOPPED )
     {
         p_sys->status.i_status = PLAYLIST_STOPPED;
-
-        if( p_sys->p_input_resource &&
-            input_resource_HasVout( p_sys->p_input_resource ) )
-        {
-            /* XXX We can unlock if we don't issue the wait as we will be
-             * call again without anything else done between the calls */
-            PL_UNLOCK;
-
-            /* input_resource_t must be manipulated without playlist lock */
-            input_resource_TerminateVout( p_sys->p_input_resource );
-
-            PL_LOCK;
-        }
-        else
-        {
-            if( vlc_object_alive( p_playlist ) )
-                vlc_cond_wait( &p_sys->signal, &p_sys->lock );
-        }
+        vlc_cond_wait( &p_sys->signal, &p_sys->lock );
         return;
     }
 
@@ -574,25 +508,32 @@ static void *Thread ( void *data )
     playlist_private_t *p_sys = pl_priv(p_playlist);
 
     playlist_Lock( p_playlist );
-    while( vlc_object_alive( p_playlist ) || p_sys->p_input )
+    for( ;; )
     {
-        /* FIXME: what's that ! */
-        if( p_sys->b_reset_currently_playing &&
-            mdate() - p_sys->last_rebuild_date > 30000 ) // 30 ms
+        while( p_sys->p_input != NULL )
+            LoopInput( p_playlist );
+
+        if( p_sys->killed )
+            break; /* THE END */
+
+        const int status = p_sys->request.b_request ?
+                           p_sys->request.i_status : p_sys->status.i_status;
+
+        /* Destroy any video display if the playlist is supposed to stop */
+        if( status == PLAYLIST_STOPPED
+         && input_resource_HasVout( p_sys->p_input_resource ) )
         {
-            ResetCurrentlyPlaying( p_playlist,
-                                   get_current_status_item( p_playlist ) );
-            p_sys->last_rebuild_date = mdate();
+            PL_UNLOCK; /* Mind: NO LOCKS while manipulating input resources! */
+            input_resource_TerminateVout( p_sys->p_input_resource );
+            PL_LOCK;
+            continue; /* lost lock = lost state */
         }
 
-        /* If there is an input, check that it doesn't need to die. */
-        while( !LoopInput( p_playlist ) )
-            vlc_cond_wait( &p_sys->signal, &p_sys->lock );
-
-        LoopRequest( p_playlist );
+        LoopRequest( p_playlist, status );
     }
+    p_sys->status.i_status = PLAYLIST_STOPPED;
     playlist_Unlock( p_playlist );
 
+    input_resource_Terminate( p_sys->p_input_resource );
     return NULL;
 }
-

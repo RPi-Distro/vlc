@@ -2,7 +2,7 @@
  * input.h
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: dbe76df911d9187702126cae37d4a76c1ac0e835 $
+ * $Id: 903134a66a2df8fc2a95e3535ce683da65ce3943 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -23,6 +23,8 @@
 
 #ifndef VLC_LUA_INPUT_H
 #define VLC_LUA_INPUT_H
+
+#include "../vlc.h"
 
 input_thread_t * vlclua_get_input_internal( lua_State * );
 

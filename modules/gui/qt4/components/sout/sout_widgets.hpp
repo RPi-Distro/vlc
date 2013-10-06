@@ -2,7 +2,7 @@
  * sout_widgets.hpp : Widgets for stream output destination boxes
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: b5a7f5365aebfb90717f321421dde3c4855410d9 $
+ * $Id: 983170e00afc10624354116990a01ee82754e79b $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -49,8 +49,7 @@ class VirtualDestBox : public QWidget
     Q_OBJECT
     public:
         VirtualDestBox( QWidget *_parent = NULL ) : QWidget( _parent ){}
-        virtual QString getMRL( const QString&, const int, const bool,
-                                const QString&, const QString& ) = 0;
+        virtual QString getMRL( const QString& ) = 0;
     protected:
         QString mrl;
     signals:
@@ -62,8 +61,7 @@ class FileDestBox: public VirtualDestBox
     Q_OBJECT
     public:
         FileDestBox( QWidget *_parent = NULL );
-        virtual QString getMRL( const QString&, const int, const bool,
-                                const QString&, const QString& );
+        virtual QString getMRL( const QString& );
     private:
         QLineEdit *fileEdit;
     private slots:
@@ -75,8 +73,7 @@ class HTTPDestBox: public VirtualDestBox
     Q_OBJECT
     public:
         HTTPDestBox( QWidget *_parent = NULL );
-        virtual QString getMRL( const QString&, const int, const bool,
-                                const QString&, const QString& );
+        virtual QString getMRL( const QString& );
     private:
         QLineEdit *HTTPEdit;
         QSpinBox *HTTPPort;
@@ -87,8 +84,7 @@ class MMSHDestBox: public VirtualDestBox
     Q_OBJECT
     public:
         MMSHDestBox( QWidget *_parent = NULL );
-        virtual QString getMRL( const QString&, const int, const bool,
-                                const QString&, const QString& );
+        virtual QString getMRL( const QString& );
     private:
         QLineEdit *MMSHEdit;
         QSpinBox *MMSHPort;
@@ -99,8 +95,7 @@ class RTSPDestBox: public VirtualDestBox
     Q_OBJECT
     public:
         RTSPDestBox( QWidget *_parent = NULL );
-        virtual QString getMRL( const QString&, const int, const bool,
-                                const QString&, const QString& );
+        virtual QString getMRL( const QString& );
     private:
         QLineEdit *RTSPEdit;
         QSpinBox *RTSPPort;
@@ -111,8 +106,7 @@ class UDPDestBox: public VirtualDestBox
     Q_OBJECT
     public:
         UDPDestBox( QWidget *_parent = NULL );
-        virtual QString getMRL( const QString&, const int, const bool,
-                                const QString&, const QString& );
+        virtual QString getMRL( const QString& );
     private:
         QLineEdit *UDPEdit;
         QSpinBox *UDPPort;
@@ -123,12 +117,12 @@ class RTPDestBox: public VirtualDestBox
     Q_OBJECT
     public:
         RTPDestBox( QWidget *_parent = NULL, const char *mux = NULL );
-        virtual QString getMRL( const QString&, const int, const bool,
-                                const QString&, const QString& );
+        virtual QString getMRL( const QString& );
     private:
         QLineEdit *RTPEdit;
         QSpinBox *RTPPort;
-        const char *mux;
+        QLineEdit *SAPName;
+        QString mux;
 };
 
 class ICEDestBox: public VirtualDestBox
@@ -136,8 +130,7 @@ class ICEDestBox: public VirtualDestBox
     Q_OBJECT
     public:
         ICEDestBox( QWidget *_parent = NULL );
-        virtual QString getMRL( const QString&, const int, const bool,
-                                const QString&, const QString& );
+        virtual QString getMRL( const QString& );
     private:
         QLineEdit *ICEEdit;
         QLineEdit *ICEMountEdit;

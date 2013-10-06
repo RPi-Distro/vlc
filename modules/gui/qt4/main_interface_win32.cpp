@@ -1,8 +1,8 @@
 /*****************************************************************************
- * main_interface.cpp : Main interface
+ * main_interface_win32.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: 61aeb9da93ea0b25efca17d9e6d877e633ca142c $
+ * $Id: e49f2564b2a3fd6c088fff86f8a985cf2001595f $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -26,6 +26,7 @@
 
 #include "input_manager.hpp"
 #include "actions_manager.hpp"
+#include "dialogs_provider.hpp"
 
 #include <QBitmap>
 #include <vlc_windows_interfaces.h>
@@ -48,6 +49,8 @@
 #define APPCOMMAND_MICROPHONE_VOLUME_MUTE 24
 #define APPCOMMAND_MICROPHONE_VOLUME_DOWN 25
 #define APPCOMMAND_MICROPHONE_VOLUME_UP   26
+#define APPCOMMAND_HELP                   27
+#define APPCOMMAND_OPEN                   30
 #define APPCOMMAND_DICTATE_OR_COMMAND_CONTROL_TOGGLE    43
 #define APPCOMMAND_MIC_ON_OFF_TOGGLE      44
 #define APPCOMMAND_MEDIA_PLAY             46
@@ -76,7 +79,7 @@ void MainInterface::createTaskBarButtons()
     FIXME:the play button's picture doesn't changed to pause when clicked
     */
 
-    CoInitialize( 0 );
+    CoInitializeEx( NULL, COINIT_MULTITHREADED );
 
     if( S_OK == CoCreateInstance( CLSID_TaskbarList,
                 NULL, CLSCTX_INPROC_SERVER,
@@ -85,8 +88,8 @@ void MainInterface::createTaskBarButtons()
     {
         p_taskbl->HrInit();
 
-        if( (himl = ImageList_Create( 20, //cx
-                        20, //cy
+        if( (himl = ImageList_Create( 16, //cx
+                        16, //cy
                         ILC_COLOR32,//flags
                         4,//initial nb of images
                         0//nb of images that can be added
@@ -102,13 +105,13 @@ void MainInterface::createTaskBarButtons()
             QBitmap mask4 = img4.createMaskFromColor(Qt::transparent);
 
             if(-1 == ImageList_Add(himl, img.toWinHBITMAP(QPixmap::PremultipliedAlpha),mask.toWinHBITMAP()))
-                msg_Err( p_intf, "ImageList_Add failed" );
+                msg_Err( p_intf, "First ImageList_Add failed" );
             if(-1 == ImageList_Add(himl, img2.toWinHBITMAP(QPixmap::PremultipliedAlpha),mask2.toWinHBITMAP()))
-                msg_Err( p_intf, "ImageList_Add failed" );
+                msg_Err( p_intf, "Second ImageList_Add failed" );
             if(-1 == ImageList_Add(himl, img3.toWinHBITMAP(QPixmap::PremultipliedAlpha),mask3.toWinHBITMAP()))
-                msg_Err( p_intf, "ImageList_Add failed" );
+                msg_Err( p_intf, "Third ImageList_Add failed" );
             if(-1 == ImageList_Add(himl, img4.toWinHBITMAP(QPixmap::PremultipliedAlpha),mask4.toWinHBITMAP()))
-                msg_Err( p_intf, "ImageList_Add failed" );
+                msg_Err( p_intf, "Fourth ImageList_Add failed" );
         }
 
         // Define an array of two buttons. These buttons provide images through an
@@ -224,6 +227,18 @@ bool MainInterface::winEvent ( MSG * msg, long * result )
                     break;
                 case APPCOMMAND_VOLUME_MUTE:
                     THEAM->toggleMuteAudio();
+                    break;
+                case APPCOMMAND_MEDIA_FAST_FORWARD:
+                    THEMIM->getIM()->faster();
+                    break;
+                case APPCOMMAND_MEDIA_REWIND:
+                    THEMIM->getIM()->slower();
+                    break;
+                case APPCOMMAND_HELP:
+                    THEDP->mediaInfoDialog();
+                    break;
+                case APPCOMMAND_OPEN:
+                    THEDP->simpleOpenDialog();
                     break;
                 default:
                      msg_Dbg( p_intf, "unknown APPCOMMAND = %d", cmd);

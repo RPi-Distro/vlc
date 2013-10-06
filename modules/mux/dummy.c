@@ -2,7 +2,7 @@
  * dummy.c: dummy muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: e1eec70061635e1c738ca186171676ed0cc0f9e7 $
+ * $Id: f42850f35d92c88075fa7b2ce55f5b30ce17f29e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -153,7 +153,7 @@ static int Mux( sout_mux_t *p_mux )
         {
             /* Write header data */
             block_t *p_data;
-            p_data = block_New( p_mux, p_mux->pp_inputs[i]->p_fmt->i_extra );
+            p_data = block_Alloc( p_mux->pp_inputs[i]->p_fmt->i_extra );
 
             memcpy( p_data->p_buffer, p_mux->pp_inputs[i]->p_fmt->p_extra,
                     p_mux->pp_inputs[i]->p_fmt->i_extra );

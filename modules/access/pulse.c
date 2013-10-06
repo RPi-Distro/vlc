@@ -12,7 +12,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -26,7 +26,6 @@
 
 #include <vlc_common.h>
 #include <vlc_aout.h>
-#include <vlc_cpu.h>
 #include <vlc_demux.h>
 #include <vlc_plugin.h>
 #include <pulse/pulseaudio.h>
@@ -181,7 +180,7 @@ static void stream_read_cb(pa_stream *s, size_t length, void *userdata)
 
     block_t *block = block_Alloc(length);
     if (likely(block != NULL)) {
-        vlc_memcpy(block->p_buffer, ptr, length);
+        memcpy(block->p_buffer, ptr, length);
         block->i_nb_samples = samples;
         block->i_dts = block->i_pts = pts;
         if (sys->discontinuity) {
@@ -248,8 +247,8 @@ static const vlc_fourcc_t fourccs[] = {
     [PA_SAMPLE_S32BE] =     VLC_CODEC_S32B,
     [PA_SAMPLE_S24LE] =     VLC_CODEC_S24L,
     [PA_SAMPLE_S24BE] =     VLC_CODEC_S24B,
-    [PA_SAMPLE_S24_32LE] =  0,
-    [PA_SAMPLE_S24_32BE] =  0,
+    [PA_SAMPLE_S24_32LE] =  VLC_CODEC_S24L32,
+    [PA_SAMPLE_S24_32BE] =  VLC_CODEC_S24B32,
 };
 
 static int Open(vlc_object_t *obj)
@@ -274,7 +273,7 @@ static int Open(vlc_object_t *obj)
 
     /* Stream parameters */
     struct pa_sample_spec ss;
-    ss.format = HAVE_FPU ? PA_SAMPLE_FLOAT32NE : PA_SAMPLE_S16NE;
+    ss.format = PA_SAMPLE_S16NE;
     ss.rate = 48000;
     ss.channels = 2;
     assert(pa_sample_spec_valid(&ss));

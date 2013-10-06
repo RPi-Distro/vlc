@@ -2,7 +2,7 @@
  * VLCUIWidgets.h: Widgets for VLC's extensions dialogs for Mac OS X
  *****************************************************************************
  * Copyright (C) 2009-2012 the VideoLAN team and authors
- * $Id: 2c521e46345f0cc71a292dba3eb47af321e49881 $
+ * $Id: 26b41e46987ef6c8f0765f27657022e31c10773b $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan dot>,
  *          Brendon Justin <brendonjustin@gmail.com>
@@ -23,11 +23,13 @@
  *****************************************************************************/
 
 #import <Cocoa/Cocoa.h>
+#import "CompatibilityFixes.h"
 #import <vlc_extensions.h>
 
 @class VLCDialogGridView;
 
-@interface VLCDialogButton : NSButton {
+@interface VLCDialogButton : NSButton
+{
     extension_widget_t *widget;
 }
 
@@ -35,7 +37,8 @@
 @end
 
 
-@interface VLCDialogPopUpButton : NSPopUpButton {
+@interface VLCDialogPopUpButton : NSPopUpButton
+{
     extension_widget_t *widget;
 }
 
@@ -43,7 +46,8 @@
 @end
 
 
-@interface VLCDialogTextField : NSTextField {
+@interface VLCDialogTextField : NSTextField
+{
     extension_widget_t *widget;
 }
 
@@ -51,7 +55,8 @@
 @end
 
 
-@interface VLCDialogWindow : NSWindow {
+@interface VLCDialogWindow : NSWindow
+{
     extension_dialog_t *dialog;
     BOOL has_lock;
 }
@@ -61,7 +66,8 @@
 @end
 
 
-@interface VLCDialogList : NSTableView {
+@interface VLCDialogList : NSTableView <NSTableViewDataSource>
+{
     extension_widget_t *widget;
     NSMutableArray *contentArray;
 }
@@ -71,7 +77,8 @@
 @end
 
 
-@interface VLCDialogGridView : NSView {
+@interface VLCDialogGridView : NSView
+{
     NSUInteger _rowCount, _colCount;
     NSMutableArray *_griddedViews;
 }

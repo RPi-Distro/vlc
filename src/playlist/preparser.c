@@ -1,8 +1,8 @@
 /*****************************************************************************
- * preparse.c: Preparser thread.
+ * preparser.c: Preparser thread.
  *****************************************************************************
  * Copyright © 1999-2009 VLC authors and VideoLAN
- * $Id: ba9a8d979c7046d8ed7f78396c02d2d5c5c51b87 $
+ * $Id: 72e0a12ce5302c50317acd5a25988277ec7856ab $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -39,7 +39,7 @@
  *****************************************************************************/
 struct playlist_preparser_t
 {
-    playlist_t          *p_playlist;
+    vlc_object_t        *object;
     playlist_fetcher_t  *p_fetcher;
 
     vlc_mutex_t     lock;
@@ -56,18 +56,19 @@ static void *Thread( void * );
 /*****************************************************************************
  * Public functions
  *****************************************************************************/
-playlist_preparser_t *playlist_preparser_New( playlist_t *p_playlist, playlist_fetcher_t *p_fetcher )
+playlist_preparser_t *playlist_preparser_New( vlc_object_t *parent,
+                                              playlist_fetcher_t *p_fetcher )
 {
     playlist_preparser_t *p_preparser = malloc( sizeof(*p_preparser) );
     if( !p_preparser )
         return NULL;
 
-    p_preparser->p_playlist = p_playlist;
+    p_preparser->object = parent;
     p_preparser->p_fetcher = p_fetcher;
     vlc_mutex_init( &p_preparser->lock );
     vlc_cond_init( &p_preparser->wait );
     p_preparser->b_live = false;
-    p_preparser->i_art_policy = var_GetInteger( p_playlist, "album-art" );
+    p_preparser->i_art_policy = var_InheritInteger( parent, "album-art" );
     p_preparser->i_waiting = 0;
     p_preparser->pp_waiting = NULL;
 
@@ -85,8 +86,7 @@ void playlist_preparser_Push( playlist_preparser_t *p_preparser, input_item_t *p
     {
         if( vlc_clone_detach( NULL, Thread, p_preparser,
                               VLC_THREAD_PRIORITY_LOW ) )
-            msg_Warn( p_preparser->p_playlist,
-                      "cannot spawn pre-parser thread" );
+            msg_Warn( p_preparser->object, "cannot spawn pre-parser thread" );
         else
             p_preparser->b_live = true;
     }
@@ -119,7 +119,7 @@ void playlist_preparser_Delete( playlist_preparser_t *p_preparser )
 /**
  * This function preparses an item when needed.
  */
-static void Preparse( playlist_t *p_playlist, input_item_t *p_item )
+static void Preparse( vlc_object_t *obj, input_item_t *p_item )
 {
     vlc_mutex_lock( &p_item->lock );
     int i_type = p_item->i_type;
@@ -131,18 +131,14 @@ static void Preparse( playlist_t *p_playlist, input_item_t *p_item )
         return;
     }
 
-    stats_TimerStart( p_playlist, "Preparse run", STATS_TIMER_PREPARSE );
-
     /* Do not preparse if it is already done (like by playing it) */
     if( !input_item_IsPreparsed( p_item ) )
     {
-        input_Preparse( VLC_OBJECT(p_playlist), p_item );
+        input_Preparse( obj, p_item );
         input_item_SetPreparsed( p_item, true );
 
-        var_SetAddress( p_playlist, "item-change", p_item );
+        var_SetAddress( obj, "item-change", p_item );
     }
-
-    stats_TimerStop( p_playlist, STATS_TIMER_PREPARSE );
 }
 
 /**
@@ -150,7 +146,7 @@ static void Preparse( playlist_t *p_playlist, input_item_t *p_item )
  */
 static void Art( playlist_preparser_t *p_preparser, input_item_t *p_item )
 {
-    playlist_t *p_playlist = p_preparser->p_playlist;
+    vlc_object_t *obj = p_preparser->object;
     playlist_fetcher_t *p_fetcher = p_preparser->p_fetcher;
 
     bool b_fetch = false;
@@ -171,13 +167,13 @@ static void Art( playlist_preparser_t *p_preparser, input_item_t *p_item )
                   ( strncmp( psz_arturl, "file://", 7 ) &&
                     strncmp( psz_arturl, "attachment://", 13 ) ) ) )
         {
-            msg_Dbg( p_playlist, "meta ok for %s, need to fetch art",
+            msg_Dbg( obj, "meta ok for %s, need to fetch art",
                      psz_name ? psz_name : "(null)" );
             b_fetch = true;
         }
         else
         {
-            msg_Dbg( p_playlist, "no fetch required for %s (art currently %s)",
+            msg_Dbg( obj, "no fetch required for %s (art currently %s)",
                      psz_name ? psz_name : "(null)",
                      psz_arturl ? psz_arturl : "(null)" );
         }
@@ -194,7 +190,7 @@ static void Art( playlist_preparser_t *p_preparser, input_item_t *p_item )
 static void *Thread( void *data )
 {
     playlist_preparser_t *p_preparser = data;
-    playlist_t *p_playlist = p_preparser->p_playlist;
+    vlc_object_t *obj = p_preparser->object;
 
     for( ;; )
     {
@@ -218,7 +214,7 @@ static void *Thread( void *data )
         if( !p_current )
             break;
 
-        Preparse( p_playlist, p_current );
+        Preparse( obj, p_current );
 
         Art( p_preparser, p_current );
         vlc_gc_decref(p_current);

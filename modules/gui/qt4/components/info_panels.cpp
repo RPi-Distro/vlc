@@ -1,8 +1,8 @@
 /*****************************************************************************
- * infopanels.cpp : Panels for the information dialogs
+ * info_panels.cpp : Panels for the information dialogs
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: cbdf1566de394037f8b5fe9dc3e8e47c1219ae6c $
+ * $Id: 41f018e6e03cc6d5dc7207d69ac664ff6d9e0ef3 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -33,6 +33,9 @@
 #include "qt4.hpp"
 #include "components/info_panels.hpp"
 #include "components/interface_widgets.hpp"
+#include "info_widgets.hpp"
+#include "dialogs/fingerprintdialog.hpp"
+#include "adapters/chromaprint.hpp"
 
 #include <assert.h>
 #include <vlc_url.h>
@@ -94,7 +97,7 @@ MetaPanel::MetaPanel( QWidget *parent,
     date_text = new QLineEdit;
     date_text->setAlignment( Qt::AlignRight );
     date_text->setInputMask("0000");
-    date_text->setMaximumWidth( 128 );
+    date_text->setMaximumWidth( 140 );
     metaLayout->addWidget( date_text, line, 7, 1, -1 );
     line++;
 
@@ -108,14 +111,16 @@ MetaPanel::MetaPanel( QWidget *parent,
     metaLayout->addWidget( label, line - 1, 7, 1, 3  );
 
     seqnum_text = new QLineEdit;
-    seqnum_text->setMaximumWidth( 60 );
+    seqnum_text->setMaximumWidth( 64 );
+    seqnum_text->setAlignment( Qt::AlignRight );
     metaLayout->addWidget( seqnum_text, line, 7, 1, 1 );
 
     label = new QLabel( "/" ); label->setFont( smallFont );
     metaLayout->addWidget( label, line, 8, 1, 1 );
 
     seqtot_text = new QLineEdit;
-    seqtot_text->setMaximumWidth( 60 );
+    seqtot_text->setMaximumWidth( 64 );
+    seqtot_text->setAlignment( Qt::AlignRight );
     metaLayout->addWidget( seqtot_text, line, 9, 1, 1 );
     line++;
 
@@ -132,7 +137,15 @@ MetaPanel::MetaPanel( QWidget *parent,
 
     /* Language on the same line */
     ADD_META( VLC_META_LANGUAGE, language_text, 7, -1 ); line++;
-    ADD_META( VLC_META_PUBLISHER, publisher_text, 0, 7 ); line++;
+    ADD_META( VLC_META_PUBLISHER, publisher_text, 0, 7 );
+
+    fingerprintButton = new QPushButton( qtr("&Fingerprint") );
+    fingerprintButton->setToolTip( qtr( "Find meta data using audio fingerprinting" ) );
+    fingerprintButton->setVisible( false );
+    metaLayout->addWidget( fingerprintButton, line, 7 , 3, -1 );
+    CONNECT( fingerprintButton, clicked(), this, fingerprint() );
+
+    line++;
 
     lblURL = new QLabel;
     lblURL->setOpenExternalLinks( true );
@@ -169,6 +182,7 @@ MetaPanel::MetaPanel( QWidget *parent,
     CONNECT( seqtot_text, textEdited( QString ), this, enterEditMode() );
 
     CONNECT( date_text, textEdited( QString ), this, enterEditMode() );
+//    CONNECT( THEMIM->getIM(), artChanged( QString ), this, enterEditMode() );
 /*    CONNECT( rating_text, valueChanged( QString ), this, enterEditMode( QString ) );*/
 
     /* We are not yet in Edit Mode */
@@ -188,7 +202,7 @@ void MetaPanel::update( input_item_t *p_item )
 
     /* Don't update if you are in edit mode */
     if( b_inEditMode ) return;
-    else p_input = p_item;
+    p_input = p_item;
 
     char *psz_meta;
 #define UPDATE_META( meta, widget ) {                                   \
@@ -215,7 +229,8 @@ void MetaPanel::update( input_item_t *p_item )
     /* URL / URI */
     psz_meta = input_item_GetURI( p_item );
     if( !EMPTY_STR( psz_meta ) )
-         emit uriSet( qfu( psz_meta ) );
+        emit uriSet( qfu( psz_meta ) );
+    fingerprintButton->setVisible( Chromaprint::isSupported( QString( psz_meta ) ) );
     free( psz_meta );
 
     /* Other classic though */
@@ -231,6 +246,7 @@ void MetaPanel::update( input_item_t *p_item )
 
     UPDATE_META( Date, date_text );
     UPDATE_META( TrackNum, seqnum_text );
+    UPDATE_META( TrackTotal, seqtot_text );
 //    UPDATE_META( Setting, setting_text );
 //    UPDATE_META_INT( Rating, rating_text );
 
@@ -263,6 +279,7 @@ void MetaPanel::update( input_item_t *p_item )
     }
 
     art_cover->showArtUpdate( file );
+    art_cover->setItem( p_item );
 }
 
 /**
@@ -279,7 +296,9 @@ void MetaPanel::saveMeta()
     input_item_SetAlbum(  p_input, qtu( collection_text->text() ) );
     input_item_SetGenre(  p_input, qtu( genre_text->text() ) );
     input_item_SetTrackNum(  p_input, qtu( seqnum_text->text() ) );
+    input_item_SetTrackTotal(  p_input, qtu( seqtot_text->text() ) );
     input_item_SetDate(  p_input, qtu( date_text->text() ) );
+    input_item_SetLanguage(  p_input, qtu( language_text->text() ) );
 
     input_item_SetCopyright( p_input, qtu( copyright_text->text() ) );
     input_item_SetPublisher( p_input, qtu( publisher_text->text() ) );
@@ -321,6 +340,7 @@ void MetaPanel::clear()
     copyright_text->clear();
     collection_text->clear();
     seqnum_text->clear();
+    seqtot_text->clear();
     description_text->clear();
     date_text->clear();
     language_text->clear();
@@ -328,17 +348,30 @@ void MetaPanel::clear()
     publisher_text->clear();
     encodedby_text->clear();
     art_cover->clear();
+    fingerprintButton->setVisible( false );
 
     setEditMode( false );
     emit uriSet( "" );
 }
 
+void MetaPanel::fingerprint()
+{
+    FingerprintDialog *dialog = new FingerprintDialog( this, p_intf, p_input );
+    CONNECT( dialog, metaApplied( input_item_t * ), this, fingerprintUpdate( input_item_t * ) );
+    dialog->setAttribute( Qt::WA_DeleteOnClose, true );
+    dialog->show();
+}
+
+void MetaPanel::fingerprintUpdate( input_item_t *p_item )
+{
+    update( p_item );
+    setEditMode( true );
+}
+
 /**
  * Second Panel - Shows the extra metadata in a tree, non editable.
  **/
-ExtraMetaPanel::ExtraMetaPanel( QWidget *parent,
-                                intf_thread_t *_p_intf )
-                                : QWidget( parent ), p_intf( _p_intf )
+ExtraMetaPanel::ExtraMetaPanel( QWidget *parent ) : QWidget( parent )
 {
      QGridLayout *layout = new QGridLayout(this);
 
@@ -408,9 +441,7 @@ void ExtraMetaPanel::clear()
  * Third panel - Stream info
  * Display all codecs and muxers info that we could gather.
  **/
-InfoPanel::InfoPanel( QWidget *parent,
-                      intf_thread_t *_p_intf )
-                      : QWidget( parent ), p_intf( _p_intf )
+InfoPanel::InfoPanel( QWidget *parent ) : QWidget( parent )
 {
      QGridLayout *layout = new QGridLayout(this);
 
@@ -425,7 +456,11 @@ InfoPanel::InfoPanel( QWidget *parent,
      InfoTree = new QTreeWidget(this);
      InfoTree->setColumnCount( 1 );
      InfoTree->header()->hide();
+#if QT_VERSION >= 0x050000
+     InfoTree->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+#else
      InfoTree->header()->setResizeMode(QHeaderView::ResizeToContents);
+#endif
      layout->addWidget(InfoTree, 1, 0 );
 }
 
@@ -485,11 +520,9 @@ void InfoPanel::saveCodecsInfo()
  * Fourth Panel - Stats
  * Displays the Statistics for reading/streaming/encoding/displaying in a tree
  */
-InputStatsPanel::InputStatsPanel( QWidget *parent,
-                                  intf_thread_t *_p_intf )
-                                  : QWidget( parent ), p_intf( _p_intf )
+InputStatsPanel::InputStatsPanel( QWidget *parent ): QWidget( parent )
 {
-     QGridLayout *layout = new QGridLayout(this);
+     QVBoxLayout *layout = new QVBoxLayout(this);
 
      QLabel *topLabel = new QLabel( qtr( "Current"
                  " media / stream " "statistics") );
@@ -524,6 +557,8 @@ InputStatsPanel::InputStatsPanel( QWidget *parent,
                            "0", input , "KiB" );
     CREATE_AND_ADD_TO_CAT( input_bitrate_stat, qtr("Input bitrate"),
                            "0", input, "kb/s" );
+    input_bitrate_graph = new QTreeWidgetItem();
+    input_bitrate_stat->addChild( input_bitrate_graph );
     CREATE_AND_ADD_TO_CAT( demuxed_stat, qtr("Demuxed data size"), "0", input, "KiB") ;
     CREATE_AND_ADD_TO_CAT( stream_bitrate_stat, qtr("Content bitrate"),
                            "0", input, "kb/s" );
@@ -563,7 +598,24 @@ InputStatsPanel::InputStatsPanel( QWidget *parent,
     StatsTree->resizeColumnToContents( 0 );
     StatsTree->setColumnWidth( 1 , 200 );
 
-    layout->addWidget(StatsTree, 1, 0 );
+    layout->addWidget(StatsTree, 4, 0 );
+
+    statsView = new VLCStatsView( this );
+    statsView->setFrameStyle( QFrame::NoFrame );
+    statsView->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+    input_bitrate_graph->setSizeHint( 1, QSize(0, 100) );
+    QString graphlabel =
+            QString( "<font style=\"color:#ff8c00\">%1</font><br/>%2" )
+            .arg( qtr("Last 60 seconds") )
+            .arg( qtr("Overall") );
+    StatsTree->setItemWidget( input_bitrate_graph, 0, new QLabel( graphlabel ) );
+    StatsTree->setItemWidget( input_bitrate_graph, 1, statsView );
+}
+
+void InputStatsPanel::hideEvent( QHideEvent * event )
+{
+    statsView->reset();
+    QWidget::hideEvent( event );
 }
 
 /**
@@ -571,6 +623,7 @@ InputStatsPanel::InputStatsPanel( QWidget *parent,
  **/
 void InputStatsPanel::update( input_item_t *p_item )
 {
+    if ( !isVisible() ) return;
     assert( p_item );
     vlc_mutex_lock( &p_item->p_stats->lock );
 
@@ -581,11 +634,13 @@ void InputStatsPanel::update( input_item_t *p_item )
     { QString str; widget->setText( 1 , str.sprintf( format, ## calc ) );  }
 
     UPDATE_INT( read_media_stat, (p_item->p_stats->i_read_bytes / 1024 ) );
-    UPDATE_FLOAT( input_bitrate_stat,  "%6.0f", (float)(p_item->p_stats->f_input_bitrate *  8000  ));
+    UPDATE_FLOAT( input_bitrate_stat,  "%6.0f", (float)(p_item->p_stats->f_input_bitrate *  8000 ));
     UPDATE_INT( demuxed_stat,    (p_item->p_stats->i_demux_read_bytes / 1024 ) );
-    UPDATE_FLOAT( stream_bitrate_stat, "%6.0f", (float)(p_item->p_stats->f_demux_bitrate *  8000  ));
+    UPDATE_FLOAT( stream_bitrate_stat, "%6.0f", (float)(p_item->p_stats->f_demux_bitrate *  8000 ));
     UPDATE_INT( corrupted_stat,      p_item->p_stats->i_demux_corrupted );
     UPDATE_INT( discontinuity_stat,  p_item->p_stats->i_demux_discontinuity );
+
+    statsView->addValue( p_item->p_stats->f_input_bitrate * 8000 );
 
     /* Video */
     UPDATE_INT( vdecoded_stat,     p_item->p_stats->i_decoded_video );
@@ -611,4 +666,3 @@ void InputStatsPanel::update( input_item_t *p_item )
 void InputStatsPanel::clear()
 {
 }
-

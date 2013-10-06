@@ -1,24 +1,24 @@
 /*****************************************************************************
  * buffer.c: MMS access plug-in
  *****************************************************************************
- * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: c908e272297321e1c9e5ab6cef0c89cd5fe94b5d $
+ * Copyright (C) 2001-2004 VLC authors and VideoLAN
+ * $Id: 4e11e36b05caf28f0776e44b7f6805e20bfc6f26 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -30,6 +30,7 @@
 #endif
 
 #include <vlc_common.h>
+#include <vlc_access.h>
 #include <vlc_charset.h>
 
 #include "asf.h"
@@ -106,7 +107,7 @@ void var_buffer_addmemory( var_buffer_t *p_buf, void *p_mem, int i_mem )
     p_buf->i_data += i_mem;
 }
 
-void var_buffer_addUTF16( var_buffer_t *p_buf, const char *p_str )
+void var_buffer_addUTF16( access_t  *p_access, var_buffer_t *p_buf, const char *p_str )
 {
     uint16_t *p_out;
     size_t i_out;
@@ -120,7 +121,10 @@ void var_buffer_addUTF16( var_buffer_t *p_buf, const char *p_str )
     else
         p_out = NULL;
     if( p_out == NULL )
+    {
+        msg_Err( p_access, "UTF-16 conversion failed" );
         i_out = 0;
+    }
 
     i_out /= 2;
     for( size_t i = 0; i < i_out; i ++ )

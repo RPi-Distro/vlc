@@ -28,7 +28,6 @@
 #include <vlc_common.h>
 
 #include "../libvlc.h"
-#include <vlc_charset.h>
 #include "config/configuration.h"
 
 #include <unistd.h>
@@ -36,14 +35,16 @@
 #include <assert.h>
 #include <limits.h>
 
+#if !defined (__linux__)
 /**
  * Determines the shared data directory
  *
  * @return a nul-terminated string or NULL. Use free() to release it.
  */
-char *config_GetDataDirDefault (void)
+char *config_GetDataDir (void)
 {
-    return strdup (DATA_PATH);
+    const char *path = getenv ("VLC_DATA_PATH");
+    return strdup ((path != NULL) ? path : PKGDATADIR);
 }
 
 /**
@@ -51,41 +52,32 @@ char *config_GetDataDirDefault (void)
  *
  * @return a string (always succeeds).
  */
-const char *config_GetLibDir (void)
+char *config_GetLibDir (void)
 {
-    return PKGLIBDIR;
+    return strdup (PKGLIBDIR);
 }
-
-/**
- * Determines the system configuration directory.
- *
- * @return a string (always succeeds).
- */
-const char *config_GetConfDir( void )
-{
-    return SYSCONFDIR;
-}
+#endif
 
 static char *config_GetHomeDir (void)
 {
     /* 1/ Try $HOME  */
     const char *home = getenv ("HOME");
+    if (home != NULL)
+        return strdup (home);
 #if defined(HAVE_GETPWUID_R)
     /* 2/ Try /etc/passwd */
-    char buf[sysconf (_SC_GETPW_R_SIZE_MAX)];
-    if (home == NULL)
+    long max = sysconf (_SC_GETPW_R_SIZE_MAX);
+    if (max != -1)
     {
-        struct passwd pw, *res;
+        char buf[max];
+        struct passwd pwbuf, *pw;
 
-        if (!getpwuid_r (getuid (), &pw, buf, sizeof (buf), &res) && res)
-            home = pw.pw_dir;
+        if (getpwuid_r (getuid (), &pwbuf, buf, sizeof (buf), &pw) == 0
+          && pw != NULL)
+            return strdup (pw->pw_dir);
     }
 #endif
-
-    if (!home)
-        return NULL;
-
-    return FromLocaleDup (home);
+    return NULL;
 }
 
 static char *config_GetAppDir (const char *xdg_name, const char *xdg_default)
@@ -96,16 +88,15 @@ static char *config_GetAppDir (const char *xdg_name, const char *xdg_default)
     /* XDG Base Directory Specification - Version 0.6 */
     snprintf (var, sizeof (var), "XDG_%s_HOME", xdg_name);
 
-    char *psz_home = FromLocale (getenv (var));
-    if( psz_home )
+    const char *home = getenv (var);
+    if (home != NULL)
     {
-        if( asprintf( &psz_dir, "%s/vlc", psz_home ) == -1 )
+        if (asprintf (&psz_dir, "%s/vlc", home) == -1)
             psz_dir = NULL;
-        LocaleFree (psz_home);
         return psz_dir;
     }
 
-    psz_home = config_GetHomeDir ();
+    char *psz_home = config_GetHomeDir ();
     if( psz_home == NULL
      || asprintf( &psz_dir, "%s/%s/vlc", psz_home, xdg_default ) == -1 )
         psz_dir = NULL;
@@ -213,9 +204,7 @@ static char *config_GetTypeDir (const char *xdg_name)
             path = strdup (home);
     }
 
-    char *ret = FromLocaleDup (path);
-    free (path);
-    return ret;
+    return path;
 }
 
 

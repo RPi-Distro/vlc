@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005-2010 VLC authors and VideoLAN
  *
- * $Id: 121d80cd517d2ccecf6c05e4f3331f38dea0c984 $
+ * $Id: 43471b9e21b5e0cda1d57d00a4fe8bae8393c27e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Filippo Carone <littlejohn@videolan.org>
@@ -147,11 +147,17 @@ libvlc_video_take_snapshot( libvlc_media_player_t *p_mi, unsigned num,
     if (p_vout == NULL)
         return -1;
 
-    /* FIXME: This is not atomic. Someone else could change the values,
-     * at least in theory. */
+    /* FIXME: This is not atomic. All parameters should be passed at once
+     * (obviously _not_ with var_*()). Also, the libvlc object should not be
+     * used for the callbacks: that breaks badly if there are concurrent
+     * media players in the instance. */
+    var_Create( p_vout, "snapshot-width", VLC_VAR_INTEGER );
     var_SetInteger( p_vout, "snapshot-width", i_width);
+    var_Create( p_vout, "snapshot-height", VLC_VAR_INTEGER );
     var_SetInteger( p_vout, "snapshot-height", i_height );
+    var_Create( p_vout, "snapshot-path", VLC_VAR_STRING );
     var_SetString( p_vout, "snapshot-path", psz_filepath );
+    var_Create( p_vout, "snapshot-format", VLC_VAR_STRING );
     var_SetString( p_vout, "snapshot-format", "png" );
     var_TriggerCallback( p_vout, "video-snapshot" );
     vlc_object_release( p_vout );

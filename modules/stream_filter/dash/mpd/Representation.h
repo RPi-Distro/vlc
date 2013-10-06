@@ -7,19 +7,19 @@
  * Authors: Christopher Mueller <christopher.mueller@itec.uni-klu.ac.at>
  *          Christian Timmerer  <christian.timmerer@itec.uni-klu.ac.at>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published
  * by the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef REPRESENTATION_H_
@@ -30,12 +30,14 @@
 #include "mpd/CommonAttributesElements.h"
 #include "mpd/SegmentInfo.h"
 #include "mpd/TrickModeType.h"
+#include "mpd/SegmentBase.h"
+#include "mpd/SegmentList.h"
 
 namespace dash
 {
     namespace mpd
     {
-        class Group;
+        class AdaptationSet;
 
         class Representation : public CommonAttributesElements
         {
@@ -47,12 +49,12 @@ namespace dash
                 void                setId                   ( const std::string &id );
                 /*
                  *  @return The bitrate required for this representation
-                 *          in Bytes per seconds.
+                 *          in bits per seconds.
                  *          Will be a valid value, as the parser refuses Representation
                  *          without bandwidth.
                  */
-                int                 getBandwidth            () const;
-                void                setBandwidth            ( int bandwidth );
+                uint64_t            getBandwidth            () const;
+                void                setBandwidth            ( uint64_t bandwidth );
                 int                 getQualityRanking       () const;
                 void                setQualityRanking       ( int qualityRanking );
                 const std::list<const Representation*>&     getDependencies() const;
@@ -67,17 +69,30 @@ namespace dash
 
                 void                setSegmentInfo( SegmentInfo *info );
                 void                setTrickMode( TrickModeType *trickModeType );
-                const Group*        getParentGroup() const;
-                void                setParentGroup( const Group *group );
+                const AdaptationSet*        getParentGroup() const;
+                void                setParentGroup( const AdaptationSet *group );
+
+                SegmentList*        getSegmentList          () const;
+                void                setSegmentList          (SegmentList *list);
+                SegmentBase*        getSegmentBase          () const;
+                void                setSegmentBase          (SegmentBase *base);
+                void                setWidth                (int width);
+                int                 getWidth                () const;
+                void                setHeight               (int height);
+                int                 getHeight               () const;
 
             private:
-                int                                 bandwidth;
+                uint64_t                            bandwidth;
                 std::string                         id;
                 int                                 qualityRanking;
                 std::list<const Representation*>    dependencies;
                 SegmentInfo                         *segmentInfo;
                 TrickModeType                       *trickModeType;
-                const Group                         *parentGroup;
+                const AdaptationSet                         *parentGroup;
+                SegmentBase                         *segmentBase;
+                SegmentList                         *segmentList;
+                int                                 width;
+                int                                 height;
         };
     }
 }

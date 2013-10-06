@@ -2,7 +2,7 @@
  * mpc.c : MPC stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 649a93e72ef8b95c0911edec1c4eb1f72c5b1210 $
+ * $Id: 989eca49c7be41b2768563f98eb64ff69b0a2dbb $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr.com>
  *
@@ -247,8 +247,7 @@ static int Demux( demux_t *p_demux )
     mpc_frame_info frame;
     mpc_status err;
 #endif
-    p_data = block_New( p_demux,
-                        MPC_DECODER_BUFFER_LENGTH*sizeof(MPC_SAMPLE_FORMAT) );
+    p_data = block_Alloc( MPC_DECODER_BUFFER_LENGTH*sizeof(MPC_SAMPLE_FORMAT) );
     if( !p_data )
         return -1;
 

@@ -2,7 +2,7 @@
  * cache.c: Plugins cache
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: 779656a07ffebf147e0036b0934bc00d71d71c47 $
+ * $Id: 5d9651fcf2ee1fb6c5a2fda272b740dc4c950952 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Ethan C. Baldridge <BaldridgeE@cadmus.com>
@@ -28,21 +28,21 @@
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
-#include "libvlc.h"
-
-#include <stdlib.h>                                      /* free(), strtol() */
-#include <stdio.h>                                              /* sprintf() */
-#include <string.h>                                              /* strdup() */
-#include <vlc_plugin.h>
-#include <errno.h>
-
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
 #endif
 #include <assert.h>
+
+#include <vlc_common.h>
+#include "libvlc.h"
+
+#include <vlc_plugin.h>
+#include <errno.h>
 
 #include "config/configuration.h"
 
@@ -55,11 +55,9 @@
  * Local prototypes
  *****************************************************************************/
 #ifdef HAVE_DYNAMIC_PLUGINS
-static int    CacheLoadConfig  ( module_t *, FILE * );
-
 /* Sub-version number
  * (only used to avoid breakage in dev version when cache structure changes) */
-#define CACHE_SUBVERSION_NUM 18
+#define CACHE_SUBVERSION_NUM 22
 
 /* Cache filename */
 #define CACHE_NAME "plugins.dat"
@@ -79,6 +77,145 @@ void CacheDelete( vlc_object_t *obj, const char *dir )
     vlc_unlink( path );
     free( path );
 }
+
+#define LOAD_IMMEDIATE(a) \
+    if (fread (&(a), sizeof (char), sizeof (a), file) != sizeof (a)) \
+        goto error
+#define LOAD_FLAG(a) \
+    do { \
+        unsigned char b; \
+        LOAD_IMMEDIATE(b); \
+        if (b > 1) \
+            goto error; \
+        (a) = b; \
+    } while (0)
+
+static int CacheLoadString (char **p, FILE *file)
+{
+    char *psz = NULL;
+    uint16_t size;
+
+    LOAD_IMMEDIATE (size);
+    if (size > 16384)
+    {
+error:
+        return -1;
+    }
+
+    if (size > 0)
+    {
+        psz = malloc (size+1);
+        if (unlikely(psz == NULL))
+            goto error;
+        if (fread (psz, 1, size, file) != size)
+        {
+            free (psz);
+            goto error;
+        }
+        psz[size] = '\0';
+    }
+    *p = psz;
+    return 0;
+}
+
+#define LOAD_STRING(a) \
+    if (CacheLoadString (&(a), file)) goto error
+
+static int CacheLoadConfig (module_config_t *cfg, FILE *file)
+{
+    LOAD_IMMEDIATE (cfg->i_type);
+    LOAD_IMMEDIATE (cfg->i_short);
+    LOAD_FLAG (cfg->b_advanced);
+    LOAD_FLAG (cfg->b_internal);
+    LOAD_FLAG (cfg->b_unsaveable);
+    LOAD_FLAG (cfg->b_safe);
+    LOAD_FLAG (cfg->b_removed);
+    LOAD_STRING (cfg->psz_type);
+    LOAD_STRING (cfg->psz_name);
+    LOAD_STRING (cfg->psz_text);
+    LOAD_STRING (cfg->psz_longtext);
+    LOAD_IMMEDIATE (cfg->list_count);
+
+    if (IsConfigStringType (cfg->i_type))
+    {
+        LOAD_STRING (cfg->orig.psz);
+        if (cfg->orig.psz != NULL)
+            cfg->value.psz = strdup (cfg->orig.psz);
+        else
+            cfg->value.psz = NULL;
+
+        if (cfg->list_count)
+            cfg->list.psz = xmalloc (cfg->list_count * sizeof (char *));
+        else /* TODO: fix config_GetPszChoices() instead of this hack: */
+            LOAD_IMMEDIATE(cfg->list.psz_cb);
+        for (unsigned i = 0; i < cfg->list_count; i++)
+        {
+            LOAD_STRING (cfg->list.psz[i]);
+            if (cfg->list.psz[i] == NULL /* NULL -> empty string */
+             && (cfg->list.psz[i] = calloc (1, 1)) == NULL)
+                goto error;
+        }
+    }
+    else
+    {
+        LOAD_IMMEDIATE (cfg->orig);
+        LOAD_IMMEDIATE (cfg->min);
+        LOAD_IMMEDIATE (cfg->max);
+        cfg->value = cfg->orig;
+
+        if (cfg->list_count)
+            cfg->list.i = xmalloc (cfg->list_count * sizeof (int));
+        else /* TODO: fix config_GetPszChoices() instead of this hack: */
+            LOAD_IMMEDIATE(cfg->list.i_cb);
+        for (unsigned i = 0; i < cfg->list_count; i++)
+             LOAD_IMMEDIATE (cfg->list.i[i]);
+    }
+    cfg->list_text = xmalloc (cfg->list_count * sizeof (char *));
+    for (unsigned i = 0; i < cfg->list_count; i++)
+    {
+        LOAD_STRING (cfg->list_text[i]);
+        if (cfg->list_text[i] == NULL /* NULL -> empty string */
+         && (cfg->list_text[i] = calloc (1, 1)) == NULL)
+            goto error;
+    }
+
+    return 0;
+error:
+    return -1; /* FIXME: leaks */
+}
+
+static int CacheLoadModuleConfig (module_t *module, FILE *file)
+{
+    uint16_t lines;
+
+    /* Calculate the structure length */
+    LOAD_IMMEDIATE (module->i_config_items);
+    LOAD_IMMEDIATE (module->i_bool_items);
+    LOAD_IMMEDIATE (lines);
+
+    /* Allocate memory */
+    if (lines)
+    {
+        module->p_config = malloc (lines * sizeof (module_config_t));
+        if (unlikely(module->p_config == NULL))
+        {
+            module->confsize = 0;
+            return -1;
+        }
+    }
+    else
+        module->p_config = NULL;
+    module->confsize = lines;
+
+    /* Do the duplication job */
+    for (size_t i = 0; i < lines; i++)
+        if (CacheLoadConfig (module->p_config + i, file))
+            return -1;
+    return 0;
+error:
+    return -1; /* FIXME: leaks */
+}
+
 
 /**
  * Loads a plugins cache file.
@@ -171,32 +308,9 @@ size_t CacheLoad( vlc_object_t *p_this, const char *dir, module_cache_t **r )
 
     module_cache_t *cache = NULL;
 
-#define LOAD_IMMEDIATE(a) \
-    if( fread( (void *)&a, sizeof(char), sizeof(a), file ) != sizeof(a) ) goto error
-#define LOAD_STRING(a) \
-{ \
-    a = NULL; \
-    if( ( fread( &i_size, sizeof(i_size), 1, file ) != 1 ) \
-     || ( i_size > 16384 ) ) \
-        goto error; \
-    if( i_size ) { \
-        char *psz = xmalloc( i_size ); \
-        if( fread( psz, i_size, 1, file ) != 1 ) { \
-            free( psz ); \
-            goto error; \
-        } \
-        if( psz[i_size-1] ) { \
-            free( psz ); \
-            goto error; \
-        } \
-        a = psz; \
-    } \
-}
-
     for (size_t count = 0; count < i_cache;)
     {
         module_t *module;
-        uint16_t i_size;
         int i_submodules;
 
         module = vlc_module_create (NULL);
@@ -212,7 +326,7 @@ size_t CacheLoad( vlc_object_t *p_this, const char *dir, module_cache_t **r )
         else
         {
             module->pp_shortcuts =
-                              xmalloc (sizeof (char **) * module->i_shortcuts);
+                              xmalloc (sizeof (*module->pp_shortcuts) * module->i_shortcuts);
             for (unsigned j = 0; j < module->i_shortcuts; j++)
                 LOAD_STRING(module->pp_shortcuts[j]);
         }
@@ -222,7 +336,7 @@ size_t CacheLoad( vlc_object_t *p_this, const char *dir, module_cache_t **r )
         LOAD_IMMEDIATE(module->b_unloadable);
 
         /* Config stuff */
-        if (CacheLoadConfig (module, file) != VLC_SUCCESS)
+        if (CacheLoadModuleConfig (module, file) != VLC_SUCCESS)
             goto error;
 
         LOAD_STRING(module->domain);
@@ -244,7 +358,7 @@ size_t CacheLoad( vlc_object_t *p_this, const char *dir, module_cache_t **r )
             else
             {
                 submodule->pp_shortcuts =
-                           xmalloc (sizeof (char **) * submodule->i_shortcuts);
+                           xmalloc (sizeof (*submodule->pp_shortcuts) * submodule->i_shortcuts);
                 for (unsigned j = 0; j < submodule->i_shortcuts; j++)
                     LOAD_STRING(submodule->pp_shortcuts[j]);
             }
@@ -280,112 +394,88 @@ error:
     return 0;
 }
 
+#define SAVE_IMMEDIATE( a ) \
+    if (fwrite (&(a), sizeof(a), 1, file) != 1) \
+        goto error
+#define SAVE_FLAG(a) \
+    do { \
+        char b = (a); \
+        SAVE_IMMEDIATE(b); \
+    } while (0)
 
-static int CacheLoadConfig( module_t *p_module, FILE *file )
+static int CacheSaveString (FILE *file, const char *str)
 {
-    uint32_t i_lines;
-    uint16_t i_size;
+    uint16_t size = (str != NULL) ? strlen (str) : 0;
 
-    /* Calculate the structure length */
-    LOAD_IMMEDIATE( p_module->i_config_items );
-    LOAD_IMMEDIATE( p_module->i_bool_items );
-
-    LOAD_IMMEDIATE( i_lines );
-
-    /* Allocate memory */
-    if (i_lines)
+    SAVE_IMMEDIATE (size);
+    if (size != 0 && fwrite (str, 1, size, file) != size)
     {
-        p_module->p_config =
-            (module_config_t *)calloc( i_lines, sizeof(module_config_t) );
-        if( p_module->p_config == NULL )
-        {
-            p_module->confsize = 0;
-            return VLC_ENOMEM;
-        }
+error:
+        return -1;
     }
-    p_module->confsize = i_lines;
+    return 0;
+}
 
-    /* Do the duplication job */
-    for (size_t i = 0; i < i_lines; i++ )
+#define SAVE_STRING( a ) \
+    if (CacheSaveString (file, (a))) \
+        goto error
+
+static int CacheSaveConfig (FILE *file, const module_config_t *cfg)
+{
+    SAVE_IMMEDIATE (cfg->i_type);
+    SAVE_IMMEDIATE (cfg->i_short);
+    SAVE_FLAG (cfg->b_advanced);
+    SAVE_FLAG (cfg->b_internal);
+    SAVE_FLAG (cfg->b_unsaveable);
+    SAVE_FLAG (cfg->b_safe);
+    SAVE_FLAG (cfg->b_removed);
+    SAVE_STRING (cfg->psz_type);
+    SAVE_STRING (cfg->psz_name);
+    SAVE_STRING (cfg->psz_text);
+    SAVE_STRING (cfg->psz_longtext);
+    SAVE_IMMEDIATE (cfg->list_count);
+
+    if (IsConfigStringType (cfg->i_type))
     {
-        LOAD_IMMEDIATE( p_module->p_config[i] );
-
-        LOAD_STRING( p_module->p_config[i].psz_type );
-        LOAD_STRING( p_module->p_config[i].psz_name );
-        LOAD_STRING( p_module->p_config[i].psz_text );
-        LOAD_STRING( p_module->p_config[i].psz_longtext );
-
-        if (IsConfigStringType (p_module->p_config[i].i_type))
-        {
-            LOAD_STRING (p_module->p_config[i].orig.psz);
-            p_module->p_config[i].value.psz =
-                    (p_module->p_config[i].orig.psz != NULL)
-                        ? strdup (p_module->p_config[i].orig.psz) : NULL;
-        }
-        else
-            memcpy (&p_module->p_config[i].value, &p_module->p_config[i].orig,
-                    sizeof (p_module->p_config[i].value));
-
-        p_module->p_config[i].b_dirty = false;
-
-        if( p_module->p_config[i].i_list )
-        {
-            if( p_module->p_config[i].ppsz_list )
-            {
-                int j;
-                p_module->p_config[i].ppsz_list =
-                    xmalloc( (p_module->p_config[i].i_list+1) * sizeof(char *));
-                if( p_module->p_config[i].ppsz_list )
-                {
-                    for( j = 0; j < p_module->p_config[i].i_list; j++ )
-                        LOAD_STRING( p_module->p_config[i].ppsz_list[j] );
-                    p_module->p_config[i].ppsz_list[j] = NULL;
-                }
-            }
-            if( p_module->p_config[i].ppsz_list_text )
-            {
-                int j;
-                p_module->p_config[i].ppsz_list_text =
-                    xmalloc( (p_module->p_config[i].i_list+1) * sizeof(char *));
-                if( p_module->p_config[i].ppsz_list_text )
-                {
-                  for( j = 0; j < p_module->p_config[i].i_list; j++ )
-                      LOAD_STRING( p_module->p_config[i].ppsz_list_text[j] );
-                  p_module->p_config[i].ppsz_list_text[j] = NULL;
-                }
-            }
-            if( p_module->p_config[i].pi_list )
-            {
-                p_module->p_config[i].pi_list =
-                    xmalloc( (p_module->p_config[i].i_list + 1) * sizeof(int) );
-                if( p_module->p_config[i].pi_list )
-                {
-                    for (int j = 0; j < p_module->p_config[i].i_list; j++)
-                        LOAD_IMMEDIATE( p_module->p_config[i].pi_list[j] );
-                }
-            }
-        }
-
-        if( p_module->p_config[i].i_action )
-        {
-            p_module->p_config[i].ppf_action =
-                xmalloc( p_module->p_config[i].i_action * sizeof(void *) );
-            p_module->p_config[i].ppsz_action_text =
-                xmalloc( p_module->p_config[i].i_action * sizeof(char *) );
-
-            for (int j = 0; j < p_module->p_config[i].i_action; j++)
-            {
-                p_module->p_config[i].ppf_action[j] = NULL;
-                LOAD_STRING( p_module->p_config[i].ppsz_action_text[j] );
-            }
-        }
+        SAVE_STRING (cfg->orig.psz);
+        if (cfg->list_count == 0)
+            SAVE_IMMEDIATE (cfg->list.psz_cb); /* XXX: see CacheLoadConfig() */
+        for (unsigned i = 0; i < cfg->list_count; i++)
+            SAVE_STRING (cfg->list.psz[i]);
     }
+    else
+    {
+        SAVE_IMMEDIATE (cfg->orig);
+        SAVE_IMMEDIATE (cfg->min);
+        SAVE_IMMEDIATE (cfg->max);
+        if (cfg->list_count == 0)
+            SAVE_IMMEDIATE (cfg->list.i_cb); /* XXX: see CacheLoadConfig() */
+        for (unsigned i = 0; i < cfg->list_count; i++)
+             SAVE_IMMEDIATE (cfg->list.i[i]);
+    }
+    for (unsigned i = 0; i < cfg->list_count; i++)
+        SAVE_STRING (cfg->list_text[i]);
 
-    return VLC_SUCCESS;
+    return 0;
+error:
+    return -1;
+}
 
- error:
+static int CacheSaveModuleConfig (FILE *file, const module_t *module)
+{
+    uint16_t lines = module->confsize;
 
-    return VLC_EGENERIC;
+    SAVE_IMMEDIATE (module->i_config_items);
+    SAVE_IMMEDIATE (module->i_bool_items);
+    SAVE_IMMEDIATE (lines);
+
+    for (size_t i = 0; i < lines; i++)
+        if (CacheSaveConfig (file, module->p_config + i))
+           goto error;
+
+    return 0;
+error:
+    return -1;
 }
 
 static int CacheSaveBank( FILE *file, const module_cache_t *, size_t );
@@ -422,7 +512,7 @@ void CacheSave (vlc_object_t *p_this, const char *dir,
         goto out;
     }
 
-#if !defined( WIN32 ) && !defined( __OS2__ )
+#if !defined( _WIN32 ) && !defined( __OS2__ )
     vlc_rename (tmpname, filename); /* atomically replace old cache */
     fclose (file);
 #else
@@ -439,7 +529,6 @@ out:
     free (entries);
 }
 
-static int CacheSaveConfig (FILE *, const module_t *);
 static int CacheSaveSubmodule (FILE *, const module_t *);
 
 static int CacheSaveBank (FILE *file, const module_cache_t *cache,
@@ -469,17 +558,6 @@ static int CacheSaveBank (FILE *file, const module_cache_t *cache,
     if (fwrite( &i_cache, sizeof (i_cache), 1, file) != 1)
         goto error;
 
-#define SAVE_IMMEDIATE( a ) \
-    if (fwrite (&a, sizeof(a), 1, file) != 1) \
-        goto error
-#define SAVE_STRING( a ) \
-    { \
-        uint16_t i_size = (a != NULL) ? (strlen (a) + 1) : 0; \
-        if ((fwrite (&i_size, sizeof (i_size), 1, file) != 1) \
-         || (a && (fwrite (a, 1, i_size, file) != i_size))) \
-            goto error; \
-    } while(0)
-
     for (unsigned i = 0; i < i_cache; i++)
     {
         module_t *module = cache[i].p_module;
@@ -498,7 +576,7 @@ static int CacheSaveBank (FILE *file, const module_cache_t *cache,
         SAVE_IMMEDIATE(module->b_unloadable);
 
         /* Config stuff */
-        if (CacheSaveConfig (file, module))
+        if (CacheSaveModuleConfig (file, module))
             goto error;
 
         SAVE_STRING(module->domain);
@@ -537,56 +615,6 @@ static int CacheSaveSubmodule( FILE *file, const module_t *p_module )
 
     SAVE_STRING( p_module->psz_capability );
     SAVE_IMMEDIATE( p_module->i_score );
-    return 0;
-
-error:
-    return -1;
-}
-
-
-static int CacheSaveConfig (FILE *file, const module_t *p_module)
-{
-    uint32_t i_lines = p_module->confsize;
-
-    SAVE_IMMEDIATE( p_module->i_config_items );
-    SAVE_IMMEDIATE( p_module->i_bool_items );
-    SAVE_IMMEDIATE( i_lines );
-
-    for (size_t i = 0; i < i_lines ; i++)
-    {
-        SAVE_IMMEDIATE( p_module->p_config[i] );
-
-        SAVE_STRING( p_module->p_config[i].psz_type );
-        SAVE_STRING( p_module->p_config[i].psz_name );
-        SAVE_STRING( p_module->p_config[i].psz_text );
-        SAVE_STRING( p_module->p_config[i].psz_longtext );
-
-        if (IsConfigStringType (p_module->p_config[i].i_type))
-            SAVE_STRING( p_module->p_config[i].orig.psz );
-
-        if( p_module->p_config[i].i_list )
-        {
-            if( p_module->p_config[i].ppsz_list )
-            {
-                for (int j = 0; j < p_module->p_config[i].i_list; j++)
-                    SAVE_STRING( p_module->p_config[i].ppsz_list[j] );
-            }
-
-            if( p_module->p_config[i].ppsz_list_text )
-            {
-                for (int j = 0; j < p_module->p_config[i].i_list; j++)
-                    SAVE_STRING( p_module->p_config[i].ppsz_list_text[j] );
-            }
-            if( p_module->p_config[i].pi_list )
-            {
-                for (int j = 0; j < p_module->p_config[i].i_list; j++)
-                    SAVE_IMMEDIATE( p_module->p_config[i].pi_list[j] );
-            }
-        }
-
-        for (int j = 0; j < p_module->p_config[i].i_action; j++)
-            SAVE_STRING( p_module->p_config[i].ppsz_action_text[j] );
-    }
     return 0;
 
 error:

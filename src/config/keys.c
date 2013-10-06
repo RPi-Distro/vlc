@@ -38,6 +38,7 @@
 #ifdef HAVE_SEARCH_H
 # include <search.h>
 #endif
+#include <errno.h>
 
 #include <vlc_common.h>
 #include <vlc_keys.h>
@@ -52,53 +53,71 @@ typedef struct key_descriptor_s
 
 static const struct key_descriptor_s vlc_keys[] =
 {   /* Alphabetical order */
-    { "Backspace",         KEY_BACKSPACE         },
-    { "Browser Back",      KEY_BROWSER_BACK      },
-    { "Browser Favorites", KEY_BROWSER_FAVORITES },
-    { "Browser Forward",   KEY_BROWSER_FORWARD   },
-    { "Browser Home",      KEY_BROWSER_HOME      },
-    { "Browser Refresh",   KEY_BROWSER_REFRESH   },
-    { "Browser Search",    KEY_BROWSER_SEARCH    },
-    { "Browser Stop",      KEY_BROWSER_STOP      },
-    { "Delete",            KEY_DELETE            },
-    { "Down",              KEY_DOWN              },
-    { "End",               KEY_END               },
-    { "Enter",             KEY_ENTER             },
-    { "Esc",               KEY_ESC               },
-    { "F1",                KEY_F1                },
-    { "F10",               KEY_F10               },
-    { "F11",               KEY_F11               },
-    { "F12",               KEY_F12               },
-    { "F2",                KEY_F2                },
-    { "F3",                KEY_F3                },
-    { "F4",                KEY_F4                },
-    { "F5",                KEY_F5                },
-    { "F6",                KEY_F6                },
-    { "F7",                KEY_F7                },
-    { "F8",                KEY_F8                },
-    { "F9",                KEY_F9                },
-    { "Home",              KEY_HOME              },
-    { "Insert",            KEY_INSERT            },
-    { "Left",              KEY_LEFT              },
-    { "Media Next Track",  KEY_MEDIA_NEXT_TRACK  },
-    { "Media Play Pause",  KEY_MEDIA_PLAY_PAUSE  },
-    { "Media Prev Track",  KEY_MEDIA_PREV_TRACK  },
-    { "Media Stop",        KEY_MEDIA_STOP        },
-    { "Menu",              KEY_MENU              },
-    { "Mouse Wheel Down",  KEY_MOUSEWHEELDOWN    },
-    { "Mouse Wheel Left",  KEY_MOUSEWHEELLEFT    },
-    { "Mouse Wheel Right", KEY_MOUSEWHEELRIGHT   },
-    { "Mouse Wheel Up",    KEY_MOUSEWHEELUP      },
-    { "Page Down",         KEY_PAGEDOWN          },
-    { "Page Up",           KEY_PAGEUP            },
-    { "Right",             KEY_RIGHT             },
-    { "Space",             ' '                   },
-    { "Tab",               KEY_TAB               },
-    { "Unset",             KEY_UNSET             },
-    { "Up",                KEY_UP                },
-    { "Volume Down",       KEY_VOLUME_DOWN       },
-    { "Volume Mute",       KEY_VOLUME_MUTE       },
-    { "Volume Up",         KEY_VOLUME_UP         },
+    { N_("Backspace"),         KEY_BACKSPACE         },
+    { N_("Brightness Down"),   KEY_BRIGHTNESS_DOWN   },
+    { N_("Brightness Up"),     KEY_BRIGHTNESS_UP     },
+    { N_("Browser Back"),      KEY_BROWSER_BACK      },
+    { N_("Browser Favorites"), KEY_BROWSER_FAVORITES },
+    { N_("Browser Forward"),   KEY_BROWSER_FORWARD   },
+    { N_("Browser Home"),      KEY_BROWSER_HOME      },
+    { N_("Browser Refresh"),   KEY_BROWSER_REFRESH   },
+    { N_("Browser Search"),    KEY_BROWSER_SEARCH    },
+    { N_("Browser Stop"),      KEY_BROWSER_STOP      },
+    { N_("Delete"),            KEY_DELETE            },
+    { N_("Down"),              KEY_DOWN              },
+    { N_("End"),               KEY_END               },
+    { N_("Enter"),             KEY_ENTER             },
+    { N_("Esc"),               KEY_ESC               },
+    { N_("F1"),                KEY_F1                },
+    { N_("F10"),               KEY_F10               },
+    { N_("F11"),               KEY_F11               },
+    { N_("F12"),               KEY_F12               },
+    { N_("F2"),                KEY_F2                },
+    { N_("F3"),                KEY_F3                },
+    { N_("F4"),                KEY_F4                },
+    { N_("F5"),                KEY_F5                },
+    { N_("F6"),                KEY_F6                },
+    { N_("F7"),                KEY_F7                },
+    { N_("F8"),                KEY_F8                },
+    { N_("F9"),                KEY_F9                },
+    { N_("Home"),              KEY_HOME              },
+    { N_("Insert"),            KEY_INSERT            },
+    { N_("Left"),              KEY_LEFT              },
+    { N_("Media Angle"),       KEY_MEDIA_ANGLE       },
+    { N_("Media Audio Track"), KEY_MEDIA_AUDIO       },
+    { N_("Media Forward"),     KEY_MEDIA_FORWARD     },
+    { N_("Media Menu"),        KEY_MEDIA_MENU        },
+    { N_("Media Next Frame"),  KEY_MEDIA_FRAME_NEXT  },
+    { N_("Media Next Track"),  KEY_MEDIA_NEXT_TRACK  },
+    { N_("Media Play Pause"),  KEY_MEDIA_PLAY_PAUSE  },
+    { N_("Media Prev Frame"),  KEY_MEDIA_FRAME_PREV  },
+    { N_("Media Prev Track"),  KEY_MEDIA_PREV_TRACK  },
+    { N_("Media Record"),      KEY_MEDIA_RECORD      },
+    { N_("Media Repeat"),      KEY_MEDIA_REPEAT      },
+    { N_("Media Rewind"),      KEY_MEDIA_REWIND      },
+    { N_("Media Select"),      KEY_MEDIA_SELECT      },
+    { N_("Media Shuffle"),     KEY_MEDIA_SHUFFLE     },
+    { N_("Media Stop"),        KEY_MEDIA_STOP        },
+    { N_("Media Subtitle"),    KEY_MEDIA_SUBTITLE    },
+    { N_("Media Time"),        KEY_MEDIA_TIME        },
+    { N_("Media View"),        KEY_MEDIA_VIEW        },
+    { N_("Menu"),              KEY_MENU              },
+    { N_("Mouse Wheel Down"),  KEY_MOUSEWHEELDOWN    },
+    { N_("Mouse Wheel Left"),  KEY_MOUSEWHEELLEFT    },
+    { N_("Mouse Wheel Right"), KEY_MOUSEWHEELRIGHT   },
+    { N_("Mouse Wheel Up"),    KEY_MOUSEWHEELUP      },
+    { N_("Page Down"),         KEY_PAGEDOWN          },
+    { N_("Page Up"),           KEY_PAGEUP            },
+    { N_("Right"),             KEY_RIGHT             },
+    { N_("Space"),             ' '                   },
+    { N_("Tab"),               KEY_TAB               },
+    { N_("Unset"),             KEY_UNSET             },
+    { N_("Up"),                KEY_UP                },
+    { N_("Volume Down"),       KEY_VOLUME_DOWN       },
+    { N_("Volume Mute"),       KEY_VOLUME_MUTE       },
+    { N_("Volume Up"),         KEY_VOLUME_UP         },
+    { N_("Zoom In"),           KEY_ZOOM_IN           },
+    { N_("Zoom Out"),          KEY_ZOOM_OUT          },
 };
 #define KEYS_COUNT (sizeof(vlc_keys)/sizeof(vlc_keys[0]))
 
@@ -150,6 +169,9 @@ static char *utf8_cp (uint_fast32_t cp, char *buf)
 
 /**
  * Parse a human-readable string representation of a VLC key code.
+ * @note This only works with the American English representation
+ * (a.k.a. C or POSIX), not with the local representation returned from
+ * vlc_keycode2str().
  * @return a VLC key code, or KEY_UNSET on failure.
  */
 uint_fast32_t vlc_str2keycode (const char *name)
@@ -190,13 +212,22 @@ uint_fast32_t vlc_str2keycode (const char *name)
     return code;
 }
 
+static char *nooptext (const char *txt)
+{
+    return (char *)txt;
+}
+
 /**
  * Format a human-readable and unique representation of a VLC key code
  * (including modifiers).
+ * @param code key code to translate to a string
+ * @param locale true to get a localized string,
+ *               false to get a C string suitable for 'vlcrc'
  * @return a heap-allocated string, or NULL on error.
  */
-char *vlc_keycode2str (uint_fast32_t code)
+char *vlc_keycode2str (uint_fast32_t code, bool locale)
 {
+    char *(*tr) (const char *) = locale ? vlc_gettext : nooptext;
     const char *name;
     char *str, buf[5];
     uintptr_t key = code & ~KEY_MODIFIER;
@@ -214,11 +245,12 @@ char *vlc_keycode2str (uint_fast32_t code)
 
 found:
     if (asprintf (&str, "%s%s%s%s%s%s",
-                  (code & KEY_MODIFIER_CTRL) ? "Ctrl+" : "",
-                  (code & KEY_MODIFIER_ALT) ? "Alt+" : "",
-                  (code & KEY_MODIFIER_SHIFT) ? "Shift+" : "",
-                  (code & KEY_MODIFIER_META) ? "Meta+" : "",
-                  (code & KEY_MODIFIER_COMMAND) ? "Command+" : "", name) == -1)
+                  (code & KEY_MODIFIER_CTRL) ? tr(N_("Ctrl+")) : "",
+                  (code & KEY_MODIFIER_ALT) ? tr(N_("Alt+")) : "",
+                  (code & KEY_MODIFIER_SHIFT) ? tr(N_("Shift+")) : "",
+                  (code & KEY_MODIFIER_META) ? tr(N_("Meta+")) : "",
+                  (code & KEY_MODIFIER_COMMAND) ? tr(N_("Command+")) : "",
+                  tr(name)) == -1)
         return NULL;
     return str;
 }
@@ -243,6 +275,7 @@ static const struct action actions[] =
     { "audiodevice-cycle", ACTIONID_AUDIODEVICE_CYCLE, },
     { "chapter-next", ACTIONID_CHAPTER_NEXT, },
     { "chapter-prev", ACTIONID_CHAPTER_PREV, },
+    { "clear-playlist", ACTIONID_PLAY_CLEAR, },
     { "crop", ACTIONID_CROP, },
     { "crop-bottom", ACTIONID_CROP_BOTTOM, },
     { "crop-left", ACTIONID_CROP_LEFT, },
@@ -250,11 +283,13 @@ static const struct action actions[] =
     { "crop-top", ACTIONID_CROP_TOP, },
     { "decr-scalefactor", ACTIONID_SCALE_DOWN, },
     { "deinterlace", ACTIONID_DEINTERLACE, },
+    { "deinterlace-mode", ACTIONID_DEINTERLACE_MODE, },
     { "disc-menu", ACTIONID_DISC_MENU, },
     { "faster", ACTIONID_FASTER, },
     { "frame-next", ACTIONID_FRAME_NEXT, },
     { "incr-scalefactor", ACTIONID_SCALE_UP, },
     { "intf-boss", ACTIONID_INTF_BOSS, },
+    { "intf-popup-menu", ACTIONID_INTF_POPUP_MENU, },
     { "intf-show", ACTIONID_INTF_TOGGLE_FSC, },
     { "jump+extrashort", ACTIONID_JUMP_FORWARD_EXTRASHORT, },
     { "jump+long", ACTIONID_JUMP_FORWARD_LONG, },
@@ -266,13 +301,6 @@ static const struct action actions[] =
     { "jump-short", ACTIONID_JUMP_BACKWARD_SHORT, },
     { "leave-fullscreen", ACTIONID_LEAVE_FULLSCREEN, },
     { "loop", ACTIONID_LOOP, },
-    { "menu-down", ACTIONID_MENU_DOWN, },
-    { "menu-left", ACTIONID_MENU_LEFT, },
-    { "menu-off", ACTIONID_MENU_OFF, },
-    { "menu-on", ACTIONID_MENU_ON, },
-    { "menu-right", ACTIONID_MENU_RIGHT, },
-    { "menu-select", ACTIONID_MENU_SELECT, },
-    { "menu-up", ACTIONID_MENU_UP, },
     { "nav-activate", ACTIONID_NAV_ACTIVATE, },
     { "nav-down", ACTIONID_NAV_DOWN, },
     { "nav-left", ACTIONID_NAV_LEFT, },
@@ -294,6 +322,8 @@ static const struct action actions[] =
     { "play-pause", ACTIONID_PLAY_PAUSE, },
     { "position", ACTIONID_POSITION, },
     { "prev", ACTIONID_PREV, },
+    { "program-sid-next", ACTIONID_PROGRAM_SID_NEXT, },
+    { "program-sid-prev", ACTIONID_PROGRAM_SID_PREV, },
     { "quit", ACTIONID_QUIT, },
     { "random", ACTIONID_RANDOM, },
     { "rate-faster-fine", ACTIONID_RATE_FASTER_FINE, },
@@ -317,6 +347,10 @@ static const struct action actions[] =
     { "subdelay-up", ACTIONID_SUBDELAY_UP, },
     { "subpos-down", ACTIONID_SUBPOS_DOWN, },
     { "subpos-up", ACTIONID_SUBPOS_UP, },
+    { "subsync-apply", ACTIONID_SUBSYNC_APPLY, },
+    { "subsync-markaudio", ACTIONID_SUBSYNC_MARKAUDIO, },
+    { "subsync-marksub", ACTIONID_SUBSYNC_MARKSUB, },
+    { "subsync-reset", ACTIONID_SUBSYNC_RESET, },
     { "subtitle-track", ACTIONID_SUBTITLE_TRACK, },
     { "title-next", ACTIONID_TITLE_NEXT, },
     { "title-prev", ACTIONID_TITLE_PREV, },
@@ -380,13 +414,35 @@ static int vlc_key_to_action (vlc_object_t *obj, const char *varname,
 }
 
 /**
+ * Adds a mapping from a certain key code to a certain action.
+ */
+static int vlc_AddMapping (void **map, uint32_t keycode, vlc_action_t action)
+{
+    struct mapping *entry = malloc (sizeof (*entry));
+    if (entry == NULL)
+        return ENOMEM;
+    entry->key = keycode;
+    entry->action = action;
+
+    struct mapping **pent = tsearch (entry, map, keycmp);
+    if (unlikely(pent == NULL))
+        return ENOMEM;
+    if (*pent != entry)
+    {
+        free (entry);
+        return EEXIST;
+    }
+    return 0;
+}
+
+/**
  * Sets up all key mappings for a given action.
  * \param map tree (of struct mapping entries) to write mappings to
  * \param confname VLC configuration item to read mappings from
  * \param action action ID
  */
-static void vlc_MapAction (vlc_object_t *obj, void **map,
-                           const char *confname, vlc_action_t action)
+static void vlc_InitAction (vlc_object_t *obj, void **map,
+                            const char *confname, vlc_action_t action)
 {
     char *keys = var_InheritString (obj, confname);
     if (keys == NULL)
@@ -403,24 +459,11 @@ static void vlc_MapAction (vlc_object_t *obj, void **map,
             continue;
         }
 
-        struct mapping *entry = malloc (sizeof (*entry));
-        if (entry == NULL)
-            continue;
-        entry->key = code;
-        entry->action = action;
-
-        struct mapping **pent = tsearch (entry, map, keycmp);
-        if (unlikely(pent == NULL))
-            continue;
-        if (*pent != entry)
-        {
-            free (entry);
+        if (vlc_AddMapping (map, code, action) == EEXIST)
             msg_Warn (obj, "Key \"%s\" bound to multiple actions", key);
-        }
     }
     free (keys);
 }
-
 
 /**
  * Initializes the key map from configuration.
@@ -459,11 +502,29 @@ struct vlc_actions *vlc_InitActions (libvlc_int_t *libvlc)
         char name[12 + MAXACTION];
 
         snprintf (name, sizeof (name), "global-key-%s", actions[i].name);
-        vlc_MapAction (obj, &as->map, name + 7, actions[i].value);
-        vlc_MapAction (obj, &as->global_map, name, actions[i].value);
+        vlc_InitAction (obj, &as->map, name + 7, actions[i].value);
+        vlc_InitAction (obj, &as->global_map, name, actions[i].value);
+    }
+    keys->psz_action = NULL;
+
+    /* Initialize mouse wheel events */
+    int mousemode = var_InheritInteger (obj, "hotkeys-mousewheel-mode");
+    if (mousemode < 2)
+    {
+        vlc_AddMapping (&as->map,
+                        mousemode ? KEY_MOUSEWHEELRIGHT : KEY_MOUSEWHEELUP,
+                        ACTIONID_VOL_UP);
+        vlc_AddMapping (&as->map,
+                        mousemode ? KEY_MOUSEWHEELLEFT : KEY_MOUSEWHEELDOWN,
+                        ACTIONID_VOL_DOWN);
+        vlc_AddMapping (&as->map,
+                        mousemode ? KEY_MOUSEWHEELUP : KEY_MOUSEWHEELRIGHT,
+                        ACTIONID_JUMP_FORWARD_EXTRASHORT);
+        vlc_AddMapping (&as->map,
+                        mousemode ? KEY_MOUSEWHEELDOWN : KEY_MOUSEWHEELLEFT,
+                        ACTIONID_JUMP_BACKWARD_EXTRASHORT);
     }
 
-    keys->psz_action = NULL;
 
     libvlc->p_hotkeys = as->keys;
     var_AddCallback (obj, "key-pressed", vlc_key_to_action, &as->map);

@@ -2,7 +2,7 @@
  * var.c: object variables for input thread
  *****************************************************************************
  * Copyright (C) 2004-2007 VLC authors and VideoLAN
- * $Id: 9613fe2c747503cd55078f4a14f23b428f2d6cf3 $
+ * $Id: 3e3d1125bdfc88bd2d46aa2ffac5cf03448cae08 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -207,7 +207,7 @@ void input_ControlVarInit ( input_thread_t *p_input )
 
     /* Spu ES */
     var_Create( p_input, "spu-es", VLC_VAR_INTEGER | VLC_VAR_HASCHOICE );
-    text.psz_string = _("Subtitles Track");
+    text.psz_string = _("Subtitle Track");
     var_Change( p_input, "spu-es", VLC_VAR_SETTEXT, &text, NULL );
 
     /* Special read only objects variables for intf */

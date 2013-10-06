@@ -1,24 +1,24 @@
 /*****************************************************************************
  * playlist.c :  Playlist import module
  *****************************************************************************
- * Copyright (C) 2004 the VideoLAN team
- * $Id: 00b44a38787b2dbd2e349423af9287fc8cb2d5b0 $
+ * Copyright (C) 2004 VLC authors and VideoLAN
+ * $Id: cae528dba4696ebeee85155fc9839fa6b3f5a26d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -32,8 +32,9 @@
 #include <vlc_plugin.h>
 #include <vlc_demux.h>
 #include <vlc_url.h>
-#ifdef WIN32
-# include <ctype.h>
+
+#if defined( _WIN32 ) || defined( __OS2__ )
+# include <ctype.h>                          /* isalpha */
 #endif
 #include <assert.h>
 
@@ -81,17 +82,17 @@ vlc_module_begin ()
         set_description( N_("B4S playlist import") )
         add_shortcut( "playlist", "b4s-open", "shout-b4s" )
         set_capability( "demux", 10 )
-        set_callbacks( Import_B4S, Close_B4S )
+        set_callbacks( Import_B4S, NULL )
     add_submodule ()
         set_description( N_("DVB playlist import") )
         add_shortcut( "playlist", "dvb-open" )
         set_capability( "demux", 10 )
-        set_callbacks( Import_DVB, Close_DVB )
+        set_callbacks( Import_DVB, NULL )
     add_submodule ()
         set_description( N_("Podcast parser") )
         add_shortcut( "playlist", "podcast" )
         set_capability( "demux", 10 )
-        set_callbacks( Import_podcast, Close_podcast )
+        set_callbacks( Import_podcast, NULL )
     add_submodule ()
         set_description( N_("XSPF playlist import") )
         add_shortcut( "playlist", "xspf-open" )
@@ -101,7 +102,7 @@ vlc_module_begin ()
         set_description( N_("New winamp 5.2 shoutcast import") )
         add_shortcut( "playlist", "shout-winamp" )
         set_capability( "demux", 10 )
-        set_callbacks( Import_Shoutcast, Close_Shoutcast )
+        set_callbacks( Import_Shoutcast, NULL )
         add_bool( "shoutcast-show-adult", false,
                    SHOW_ADULT_TEXT, SHOW_ADULT_LONGTEXT, false )
     add_submodule ()
@@ -118,17 +119,17 @@ vlc_module_begin ()
         set_description( N_("QuickTime Media Link importer") )
         add_shortcut( "playlist", "qtl" )
         set_capability( "demux", 10 )
-        set_callbacks( Import_QTL, Close_QTL )
+        set_callbacks( Import_QTL, NULL )
     add_submodule ()
         set_description( N_("Google Video Playlist importer") )
         add_shortcut( "playlist", "gvp" )
         set_capability( "demux", 10 )
         set_callbacks( Import_GVP, Close_GVP )
     add_submodule ()
-        set_description( N_("Dummy ifo demux") )
+        set_description( N_("Dummy IFO demux") )
         add_shortcut( "playlist" )
         set_capability( "demux", 12 )
-        set_callbacks( Import_IFO, Close_IFO )
+        set_callbacks( Import_IFO, NULL )
     add_submodule ()
         set_description( N_("iTunes Music Library importer") )
         add_shortcut( "playlist", "itml" )
@@ -145,6 +146,12 @@ vlc_module_begin ()
         set_capability( "demux", 10 )
         set_callbacks( Import_ZPL, Close_ZPL )
 vlc_module_end ()
+
+int Control(demux_t *demux, int query, va_list args)
+{
+    (void) demux; (void) query; (void) args;
+    return VLC_EGENERIC;
+}
 
 input_item_t * GetCurrentItem(demux_t *p_demux)
 {
@@ -196,7 +203,7 @@ char *ProcessMRL( const char *psz_mrl, const char *psz_prefix )
     /* FIXME: that's wrong if the playlist is not a local file */
     if( *psz_mrl == DIR_SEP_CHAR )
         goto uri;
-#if defined( WIN32 ) || defined( __OS2__ )
+#if defined( _WIN32 ) || defined( __OS2__ )
     /* Drive letter (this assumes URL scheme are not a single character) */
     if( isalpha((unsigned char)psz_mrl[0]) && psz_mrl[1] == ':' )
         goto uri;
@@ -215,5 +222,5 @@ char *ProcessMRL( const char *psz_mrl, const char *psz_prefix )
     return ret;
 
 uri:
-    return make_URI( psz_mrl, NULL );
+    return vlc_path2uri( psz_mrl, NULL );
 }

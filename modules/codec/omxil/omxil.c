@@ -1,24 +1,24 @@
 /*****************************************************************************
  * omxil.c: Video decoder module making use of OpenMAX IL components.
  *****************************************************************************
- * Copyright (C) 2010 the VideoLAN team
- * $Id: 3f735a6394f6c8b8345d8731f9a2405cac5d8732 $
+ * Copyright (C) 2010 VLC authors and VideoLAN
+ * $Id: a379b82cf5dd03459bdae3d62cccc918b6c8ea8d $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -28,59 +28,23 @@
 # include "config.h"
 #endif
 
-#include <dlfcn.h>
-#if defined(USE_IOMX)
-/* On dll_open, just check that the OMX_Init symbol already is loaded */
-# define dll_open(name) dlsym(RTLD_DEFAULT, "OMX_Init")
-# define dll_close(handle) do { } while (0)
-# define dlsym(handle, name) dlsym(RTLD_DEFAULT, "I" name)
-#else
-# define dll_open(name) dlopen( name, RTLD_NOW )
-# define dll_close(handle) dlclose(handle)
-#endif
-
 #include <limits.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
-#include <vlc_aout.h>
 #include <vlc_block_helper.h>
 #include <vlc_cpu.h>
 #include "../h264_nal.h"
 
 #include "omxil.h"
+#include "omxil_core.h"
 
-//#define OMXIL_EXTRA_DEBUG
-
-/*****************************************************************************
- * List of OpenMAX IL core we will try in order
- *****************************************************************************/
-static const char *ppsz_dll_list[] =
-{
-#if defined(USE_IOMX)
-    "libiomx.so", /* Not used when using IOMX, the lib should already be loaded */
-#else
-    "libOMX_Core.so", /* TI OMAP IL core */
-    "libOmxCore.so", /* Qualcomm IL core */
-    "libomxil-bellagio.so",  /* Bellagio IL core */
+#ifndef NDEBUG
+# define OMXIL_EXTRA_DEBUG
 #endif
-    0
-};
 
-/*****************************************************************************
- * Global OMX Core instance, shared between module instances
- *****************************************************************************/
-static vlc_mutex_t omx_core_mutex = VLC_STATIC_MUTEX;
-static unsigned int omx_refcount = 0;
-static void *dll_handle;
-static OMX_ERRORTYPE (*pf_init) (void);
-static OMX_ERRORTYPE (*pf_deinit) (void);
-static OMX_ERRORTYPE (*pf_get_handle) (OMX_HANDLETYPE *, OMX_STRING,
-                                       OMX_PTR, OMX_CALLBACKTYPE *);
-static OMX_ERRORTYPE (*pf_free_handle) (OMX_HANDLETYPE);
-static OMX_ERRORTYPE (*pf_component_enum)(OMX_STRING, OMX_U32, OMX_U32);
-static OMX_ERRORTYPE (*pf_get_roles_of_component)(OMX_STRING, OMX_U32 *, OMX_U8 **);
+#define SENTINEL_FLAG 0x10000
 
 /*****************************************************************************
  * Local prototypes
@@ -91,7 +55,7 @@ static int  OpenGeneric( vlc_object_t *, bool b_encode );
 static void CloseGeneric( vlc_object_t * );
 
 static picture_t *DecodeVideo( decoder_t *, block_t ** );
-static aout_buffer_t *DecodeAudio ( decoder_t *, block_t ** );
+static block_t *DecodeAudio ( decoder_t *, block_t ** );
 static block_t *EncodeVideo( encoder_t *, picture_t * );
 
 static OMX_ERRORTYPE OmxEventHandler( OMX_HANDLETYPE, OMX_PTR, OMX_EVENTTYPE,
@@ -125,73 +89,6 @@ vlc_module_begin ()
     set_capability( "encoder", 0 )
     set_callbacks( OpenEncoder, CloseGeneric )
 vlc_module_end ()
-
-/*****************************************************************************
- * CreateComponentsList: creates a list of components matching the given role
- *****************************************************************************/
-static int CreateComponentsList(decoder_t *p_dec, const char *psz_role)
-{
-    decoder_sys_t *p_sys = p_dec->p_sys;
-    char psz_name[OMX_MAX_STRINGNAME_SIZE];
-    OMX_ERRORTYPE omx_error;
-    OMX_U32 roles = 0;
-    OMX_U8 **ppsz_roles = 0;
-    unsigned int i, j, len;
-
-    if(!psz_role) goto end;
-    len = strlen(psz_role);
-
-    for( i = 0; ; i++ )
-    {
-        bool b_found = false;
-
-        omx_error = pf_component_enum(psz_name, OMX_MAX_STRINGNAME_SIZE, i);
-        if(omx_error != OMX_ErrorNone) break;
-
-        msg_Dbg(p_dec, "component %s", psz_name);
-
-        omx_error = pf_get_roles_of_component(psz_name, &roles, 0);
-        if(omx_error != OMX_ErrorNone || !roles) continue;
-
-        ppsz_roles = malloc(roles * (sizeof(OMX_U8*) + OMX_MAX_STRINGNAME_SIZE));
-        if(!ppsz_roles) continue;
-
-        for( j = 0; j < roles; j++ )
-            ppsz_roles[j] = ((OMX_U8 *)(&ppsz_roles[roles])) +
-                j * OMX_MAX_STRINGNAME_SIZE;
-
-        omx_error = pf_get_roles_of_component(psz_name, &roles, ppsz_roles);
-        if(omx_error != OMX_ErrorNone) roles = 0;
-
-        for(j = 0; j < roles; j++)
-        {
-            msg_Dbg(p_dec, "  - role: %s", ppsz_roles[j]);
-            if(!strncmp((char *)ppsz_roles[j], psz_role, len)) b_found = true;
-        }
-
-        free(ppsz_roles);
-
-        if(!b_found) continue;
-
-        if(p_sys->components >= MAX_COMPONENTS_LIST_SIZE)
-        {
-            msg_Dbg(p_dec, "too many matching components");
-            continue;
-        }
-
-        strncpy(p_sys->ppsz_components[p_sys->components], psz_name,
-                OMX_MAX_STRINGNAME_SIZE-1);
-        p_sys->components++;
-    }
-
- end:
-    msg_Dbg(p_dec, "found %i matching components for role %s",
-            p_sys->components, psz_role);
-    for( i = 0; i < p_sys->components; i++ )
-        msg_Dbg(p_dec, "- %s", p_sys->ppsz_components[i]);
-
-    return p_sys->components;
-}
 
 /*****************************************************************************
  * ImplementationSpecificWorkarounds: place-holder for implementation
@@ -271,6 +168,7 @@ static OMX_ERRORTYPE ImplementationSpecificWorkarounds(decoder_t *p_dec,
             def->format.video.xFramerate >>= 16;
         }
     }
+#if 0 /* FIXME: doesn't apply for HP Touchpad */
     else if (!strncmp(p_sys->psz_component, "OMX.qcom.video.decoder.",
                       strlen("OMX.qcom.video.decoder")))
     {
@@ -281,6 +179,16 @@ static OMX_ERRORTYPE ImplementationSpecificWorkarounds(decoder_t *p_dec,
             p_port->i_frame_size = def->nBufferSize;
         }
     }
+#endif
+#ifdef RPI_OMX
+    else if (!strcmp(p_sys->psz_component, "OMX.broadcom.video_decode"))
+    {
+        /* Clear these fields before setting parameters, to allow the codec
+         * fill in what it wants (instead of rejecting whatever happened to
+         * be there. */
+        def->format.video.nStride = def->format.video.nSliceHeight = 0;
+    }
+#endif
 
     return OMX_ErrorNone;
 }
@@ -313,8 +221,9 @@ static OMX_ERRORTYPE SetPortDefinition(decoder_t *p_dec, OmxPort *p_port,
 
         if(def->eDir == OMX_DirInput || p_dec->p_sys->b_enc)
         {
-            def->nBufferSize = def->format.video.nFrameWidth *
-              def->format.video.nFrameHeight * 2;
+            if (def->eDir == OMX_DirInput && p_dec->p_sys->b_enc)
+                def->nBufferSize = def->format.video.nFrameWidth *
+                  def->format.video.nFrameHeight * 2;
             p_port->i_frame_size = def->nBufferSize;
 
             if(!GetOmxVideoFormat(p_fmt->i_codec,
@@ -351,7 +260,8 @@ static OMX_ERRORTYPE SetPortDefinition(decoder_t *p_dec, OmxPort *p_port,
                                &p_port->i_frame_size, &p_port->i_frame_stride,
                                &p_port->i_frame_stride_chroma_div );
             def->format.video.nStride = p_port->i_frame_stride;
-            def->nBufferSize = p_port->i_frame_size;
+            if (p_port->i_frame_size > def->nBufferSize)
+                def->nBufferSize = p_port->i_frame_size;
         }
         break;
 
@@ -406,13 +316,29 @@ static OMX_ERRORTYPE SetPortDefinition(decoder_t *p_dec, OmxPort *p_port,
         omx_error = SetAudioParameters(p_port->omx_handle,
                                        &p_port->format_param, def->nPortIndex,
                                        def->format.audio.eEncoding,
+                                       p_fmt->i_codec,
                                        p_fmt->audio.i_channels,
                                        p_fmt->audio.i_rate,
                                        p_fmt->i_bitrate,
                                        p_fmt->audio.i_bitspersample,
                                        p_fmt->audio.i_blockalign);
-        CHECK_ERROR(omx_error, "SetAudioParameters failed (%x : %s)",
-                    omx_error, ErrorToString(omx_error));
+        if (def->eDir == OMX_DirInput) {
+            CHECK_ERROR(omx_error, "SetAudioParameters failed (%x : %s)",
+                        omx_error, ErrorToString(omx_error));
+        } else if (omx_error != OMX_ErrorNone) {
+            msg_Warn(p_dec, "SetAudioParameters failed (%x : %s) on output port",
+                     omx_error, ErrorToString(omx_error));
+            omx_error = OMX_ErrorNone;
+        }
+    }
+    if (!strcmp(p_dec->p_sys->psz_component, "OMX.TI.DUCATI1.VIDEO.DECODER") &&
+                def->eDir == OMX_DirOutput)
+    {
+        /* When setting the output buffer size above, the decoder actually
+         * sets the buffer size to a lower value than what was chosen. If
+         * we try to allocate buffers of this size, it fails. Thus, forcibly
+         * use a larger buffer size. */
+        def->nBufferSize *= 2;
     }
 
  error:
@@ -428,6 +354,7 @@ static OMX_ERRORTYPE GetPortDefinition(decoder_t *p_dec, OmxPort *p_port,
     decoder_sys_t *p_sys = p_dec->p_sys;
     OMX_PARAM_PORTDEFINITIONTYPE *def = &p_port->definition;
     OMX_ERRORTYPE omx_error;
+    OMX_CONFIG_RECTTYPE crop_rect;
 
     omx_error = OMX_GetParameter(p_port->omx_handle,
                                  OMX_IndexParamPortDefinition, def);
@@ -444,6 +371,28 @@ static OMX_ERRORTYPE GetPortDefinition(decoder_t *p_dec, OmxPort *p_port,
         p_fmt->video.i_frame_rate = p_dec->fmt_in.video.i_frame_rate;
         p_fmt->video.i_frame_rate_base = p_dec->fmt_in.video.i_frame_rate_base;
 
+        OMX_INIT_STRUCTURE(crop_rect);
+        crop_rect.nPortIndex = def->nPortIndex;
+        omx_error = OMX_GetConfig(p_port->omx_handle, OMX_IndexConfigCommonOutputCrop, &crop_rect);
+        if (omx_error == OMX_ErrorNone)
+        {
+            if (!def->format.video.nSliceHeight)
+                def->format.video.nSliceHeight = def->format.video.nFrameHeight;
+            if (!def->format.video.nStride)
+                def->format.video.nStride = def->format.video.nFrameWidth;
+            p_fmt->video.i_width = crop_rect.nWidth;
+            p_fmt->video.i_visible_width = crop_rect.nWidth;
+            p_fmt->video.i_height = crop_rect.nHeight;
+            p_fmt->video.i_visible_height = crop_rect.nHeight;
+            if (def->format.video.eColorFormat == OMX_TI_COLOR_FormatYUV420PackedSemiPlanar)
+                def->format.video.nSliceHeight -= crop_rect.nTop/2;
+        }
+        else
+        {
+            /* Don't pass the error back to the caller, this isn't mandatory */
+            omx_error = OMX_ErrorNone;
+        }
+
         /* Hack: Nexus One (stock firmware with binary OMX driver blob)
          * claims to output 420Planar even though it in in practice is
          * NV21. */
@@ -452,17 +401,10 @@ static OMX_ERRORTYPE GetPortDefinition(decoder_t *p_dec, OmxPort *p_port,
                     strlen("OMX.qcom.video.decoder")))
             def->format.video.eColorFormat = OMX_QCOM_COLOR_FormatYVU420SemiPlanar;
 
-        /* Hack: Galaxy S II (stock firmware) gives a slice height larger
-         * than the video height, but this doesn't imply padding between
-         * the video planes. Nexus S also has a slice height larger than
-         * the video height, but there it actually is real padding, thus
-         * Galaxy S II is the buggy one. The Galaxy S II decoder is
-         * named OMX.SEC.avcdec while the one on Nexus S is
-         * OMX.SEC.AVC.Decoder. Thus do this for any OMX.SEC. that don't
-         * contain the string ".Decoder". */
-        if(!strncmp(p_sys->psz_component, "OMX.SEC.", strlen("OMX.SEC.")) &&
-           !strstr(p_sys->psz_component, ".Decoder"))
+        if (IgnoreOmxDecoderPadding(p_sys->psz_component)) {
             def->format.video.nSliceHeight = 0;
+            def->format.video.nStride = p_fmt->video.i_width;
+        }
 
         if(!GetVlcVideoFormat( def->format.video.eCompressionFormat,
                                &p_fmt->i_codec, 0 ) )
@@ -566,8 +508,15 @@ static OMX_ERRORTYPE DeinitialiseComponent(decoder_t *p_dec,
         omx_error = OMX_SendCommand( omx_handle, OMX_CommandStateSet,
                                      OMX_StateIdle, 0 );
         CHECK_ERROR(omx_error, "OMX_CommandStateSet Idle failed (%x)", omx_error );
-        omx_error = WaitForSpecificOmxEvent(p_dec, OMX_EventCmdComplete, 0, 0, 0);
-        CHECK_ERROR(omx_error, "Wait for Idle failed (%x)", omx_error );
+        while (1) {
+            OMX_U32 cmd, state;
+            omx_error = WaitForSpecificOmxEvent(&p_sys->event_queue, OMX_EventCmdComplete, &cmd, &state, 0);
+            CHECK_ERROR(omx_error, "Wait for Idle failed (%x)", omx_error );
+            // The event queue can contain other OMX_EventCmdComplete items,
+            // such as for OMX_CommandFlush
+            if (cmd == OMX_CommandStateSet && state == OMX_StateIdle)
+                break;
+        }
     }
 
     omx_error = OMX_GetState(omx_handle, &state);
@@ -587,8 +536,11 @@ static OMX_ERRORTYPE DeinitialiseComponent(decoder_t *p_dec,
             for(j = 0; j < p_port->i_buffers; j++)
             {
                 OMX_FIFO_GET(&p_port->fifo, p_buffer);
-                if (p_buffer == &p_sys->sentinel_buffer)
+                if (p_buffer->nFlags & SENTINEL_FLAG) {
+                    free(p_buffer);
+                    j--;
                     continue;
+                }
                 omx_error = OMX_FreeBuffer( omx_handle,
                                             p_port->i_port_index, p_buffer );
 
@@ -596,9 +548,20 @@ static OMX_ERRORTYPE DeinitialiseComponent(decoder_t *p_dec,
             }
             CHECK_ERROR(omx_error, "OMX_FreeBuffer failed (%x, %i, %i)",
                         omx_error, (int)p_port->i_port_index, j );
+            while (1) {
+                OMX_FIFO_PEEK(&p_port->fifo, p_buffer);
+                if (!p_buffer) break;
+
+                OMX_FIFO_GET(&p_port->fifo, p_buffer);
+                if (p_buffer->nFlags & SENTINEL_FLAG) {
+                    free(p_buffer);
+                    continue;
+                }
+                msg_Warn( p_dec, "Stray buffer left in fifo, %p", p_buffer );
+            }
         }
 
-        omx_error = WaitForSpecificOmxEvent(p_dec, OMX_EventCmdComplete, 0, 0, 0);
+        omx_error = WaitForSpecificOmxEvent(&p_sys->event_queue, OMX_EventCmdComplete, 0, 0, 0);
         CHECK_ERROR(omx_error, "Wait for Loaded failed (%x)", omx_error );
     }
 
@@ -665,7 +628,14 @@ static OMX_ERRORTYPE InitialiseComponent(decoder_t *p_dec,
     OMX_INIT_STRUCTURE(definition);
     omx_error = OMX_GetParameter(omx_handle, p_dec->fmt_in.i_cat == VIDEO_ES ?
                                  OMX_IndexParamVideoInit : OMX_IndexParamAudioInit, &param);
-    if(omx_error != OMX_ErrorNone) param.nPorts = 0;
+    if(omx_error != OMX_ErrorNone) {
+#ifdef __ANDROID__
+        param.nPorts = 2;
+        param.nStartPortNumber = 0;
+#else
+        param.nPorts = 0;
+#endif
+    }
 
     for(i = 0; i < param.nPorts; i++)
     {
@@ -692,7 +662,8 @@ static OMX_ERRORTYPE InitialiseComponent(decoder_t *p_dec,
         CHECK_ERROR(omx_error, "couldn't find an input and output port");
     }
 
-    if(!strncmp(p_sys->psz_component, "OMX.SEC.", 8))
+    if(!strncmp(p_sys->psz_component, "OMX.SEC.", 8) &&
+       p_dec->fmt_in.i_cat == VIDEO_ES)
     {
         OMX_INDEXTYPE index;
         omx_error = OMX_GetExtensionIndex(omx_handle, (OMX_STRING) "OMX.SEC.index.ThumbnailMode", &index);
@@ -742,7 +713,7 @@ static OMX_ERRORTYPE InitialiseComponent(decoder_t *p_dec,
                                          p_port->i_port_index, NULL);
             CHECK_ERROR(omx_error, "OMX_CommandPortEnable on %i failed (%x)",
                         (int)p_port->i_port_index, omx_error );
-            omx_error = WaitForSpecificOmxEvent(p_dec, OMX_EventCmdComplete, 0, 0, 0);
+            omx_error = WaitForSpecificOmxEvent(&p_sys->event_queue, OMX_EventCmdComplete, 0, 0, 0);
             CHECK_ERROR(omx_error, "Wait for PortEnable on %i failed (%x)",
                         (int)p_port->i_port_index, omx_error );
         }
@@ -767,11 +738,6 @@ static int OpenDecoder( vlc_object_t *p_this )
 
     if( 0 || !GetOmxRole(p_dec->fmt_in.i_codec, p_dec->fmt_in.i_cat, false) )
         return VLC_EGENERIC;
-
-#ifdef HAVE_MAEMO
-    if( p_dec->fmt_in.i_cat != VIDEO_ES && !p_dec->b_force)
-        return VLC_EGENERIC;
-#endif
 
     status = OpenGeneric( p_this, false );
     if(status != VLC_SUCCESS) return status;
@@ -812,45 +778,14 @@ static int OpenGeneric( vlc_object_t *p_this, bool b_encode )
     OMX_BUFFERHEADERTYPE *p_header;
     unsigned int i, j;
 
-    vlc_mutex_lock( &omx_core_mutex );
-    if( omx_refcount > 0 )
-        goto loaded;
-
-    /* Load the OMX core */
-    for( i = 0; ppsz_dll_list[i]; i++ )
-    {
-        dll_handle = dll_open( ppsz_dll_list[i] );
-        if( dll_handle ) break;
-    }
-    if( !dll_handle )
-    {
-        vlc_mutex_unlock( &omx_core_mutex );
+    if (InitOmxCore(p_this) != VLC_SUCCESS) {
         return VLC_EGENERIC;
     }
 
-    pf_init = dlsym( dll_handle, "OMX_Init" );
-    pf_deinit = dlsym( dll_handle, "OMX_Deinit" );
-    pf_get_handle = dlsym( dll_handle, "OMX_GetHandle" );
-    pf_free_handle = dlsym( dll_handle, "OMX_FreeHandle" );
-    pf_component_enum = dlsym( dll_handle, "OMX_ComponentNameEnum" );
-    pf_get_roles_of_component = dlsym( dll_handle, "OMX_GetRolesOfComponent" );
-    if( !pf_init || !pf_deinit || !pf_get_handle || !pf_free_handle ||
-        !pf_component_enum || !pf_get_roles_of_component )
-    {
-        msg_Warn( p_this, "cannot find OMX_* symbols in `%s' (%s)",
-                  ppsz_dll_list[i], dlerror() );
-        dll_close(dll_handle);
-        vlc_mutex_unlock( &omx_core_mutex );
-        return VLC_EGENERIC;
-    }
-
-loaded:
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_dec->p_sys = p_sys = calloc( 1, sizeof(*p_sys)) ) == NULL )
     {
-        if( omx_refcount == 0 )
-            dll_close(dll_handle);
-        vlc_mutex_unlock( &omx_core_mutex );
+        DeinitOmxCore();
         return VLC_ENOMEM;
     }
 
@@ -863,10 +798,7 @@ loaded:
         p_dec->fmt_out.i_codec = 0;
     }
     p_sys->b_enc = b_encode;
-    p_sys->pp_last_event = &p_sys->p_events;
-    vlc_mutex_init (&p_sys->mutex);
-    vlc_cond_init (&p_sys->cond);
-    vlc_mutex_init (&p_sys->lock);
+    InitOmxEventQueue(&p_sys->event_queue);
     vlc_mutex_init (&p_sys->in.fifo.lock);
     vlc_cond_init (&p_sys->in.fifo.wait);
     p_sys->in.fifo.offset = offsetof(OMX_BUFFERHEADERTYPE, pOutputPortPrivate) / sizeof(void *);
@@ -878,34 +810,23 @@ loaded:
     vlc_cond_init (&p_sys->out.fifo.wait);
     p_sys->out.fifo.offset = offsetof(OMX_BUFFERHEADERTYPE, pInputPortPrivate) / sizeof(void *);
     p_sys->out.fifo.pp_last = &p_sys->out.fifo.p_first;
-    p_sys->out.b_direct = true;
+    p_sys->out.b_direct = false;
     p_sys->out.b_flushed = true;
     p_sys->out.p_fmt = &p_dec->fmt_out;
     p_sys->ports = 2;
     p_sys->p_ports = &p_sys->in;
+    p_sys->b_use_pts = 1;
 
     msg_Dbg(p_dec, "fmt in:%4.4s, out: %4.4s", (char *)&p_dec->fmt_in.i_codec,
             (char *)&p_dec->fmt_out.i_codec);
 
-    /* Initialise the OMX core */
-    omx_error = omx_refcount > 0 ? OMX_ErrorNone : pf_init();
-    omx_refcount++;
-    if(omx_error != OMX_ErrorNone)
-    {
-        msg_Warn( p_this, "OMX_Init failed (%x: %s)", omx_error,
-                  ErrorToString(omx_error) );
-        vlc_mutex_unlock( &omx_core_mutex );
-        CloseGeneric(p_this);
-        return VLC_EGENERIC;
-    }
-    p_sys->b_init = true;
-    vlc_mutex_unlock( &omx_core_mutex );
-
     /* Enumerate components and build a list of the one we want to try */
-    if( !CreateComponentsList(p_dec,
+    p_sys->components =
+        CreateComponentsList(p_this,
              GetOmxRole(p_sys->b_enc ? p_dec->fmt_out.i_codec :
                         p_dec->fmt_in.i_codec, p_dec->fmt_in.i_cat,
-                        p_sys->b_enc)) )
+                        p_sys->b_enc), p_sys->ppsz_components);
+    if( !p_sys->components )
     {
         msg_Warn( p_this, "couldn't find an omx component for codec %4.4s",
                   (char *)&p_dec->fmt_in.i_codec );
@@ -923,6 +844,32 @@ loaded:
             continue;
         /* The same sw codecs, renamed in ICS (perhaps also in honeycomb) */
         if (!strncmp(p_sys->ppsz_components[i], "OMX.google.", 11))
+            continue;
+        /* This one has been seen on HTC One V - it behaves like it works,
+         * but FillBufferDone returns buffers filled with 0 bytes. The One V
+         * has got a working OMX.qcom.video.decoder.avc instead though. */
+        if (!strncmp(p_sys->ppsz_components[i], "OMX.ARICENT.", 12))
+            continue;
+        /* Codecs with DRM, that don't output plain YUV data but only
+         * support direct rendering where the output can't be intercepted. */
+        if (strstr(p_sys->ppsz_components[i], ".secure"))
+            continue;
+        /* Use VC1 decoder for WMV3 for now */
+        if (!strcmp(p_sys->ppsz_components[i], "OMX.SEC.WMV.Decoder"))
+            continue;
+        /* This decoder does work, but has an insane latency (leading to errors
+         * about "main audio output playback way too late" and dropped frames).
+         * At least Samsung Galaxy S III (where this decoder is present) has
+         * got another one, OMX.SEC.mp3.dec, that works well and has a
+         * sensible latency. (Also, even if that one isn't found, in general,
+         * using SW codecs is usually more than fast enough for MP3.) */
+        if (!strcmp(p_sys->ppsz_components[i], "OMX.SEC.MP3.Decoder"))
+            continue;
+        /* This codec should be able to handle both VC1 and WMV3, but
+         * for VC1 it doesn't output any buffers at all (in the way we use
+         * it) and for WMV3 it outputs plain black buffers. Thus ignore
+         * it until we can make it work properly. */
+        if (!strcmp(p_sys->ppsz_components[i], "OMX.Nvidia.vc1.decode"))
             continue;
 #endif
         omx_error = InitialiseComponent(p_dec, p_sys->ppsz_components[i],
@@ -949,7 +896,7 @@ loaded:
             p_port->pp_buffers[i] = (void *)ALIGN((uintptr_t)p_buf, p_port->definition.nBufferAlignment);
 #endif
 
-            if(0 && p_port->b_direct)
+            if(p_port->b_direct)
                 omx_error =
                     OMX_UseBuffer( p_sys->omx_handle, &p_port->pp_buffers[j],
                                    p_port->i_port_index, 0,
@@ -968,13 +915,13 @@ loaded:
                     omx_error, (int)p_port->i_port_index, j );
     }
 
-    omx_error = WaitForSpecificOmxEvent(p_dec, OMX_EventCmdComplete, 0, 0, 0);
+    omx_error = WaitForSpecificOmxEvent(&p_sys->event_queue, OMX_EventCmdComplete, 0, 0, 0);
     CHECK_ERROR(omx_error, "Wait for Idle failed (%x)", omx_error );
 
     omx_error = OMX_SendCommand( p_sys->omx_handle, OMX_CommandStateSet,
                                  OMX_StateExecuting, 0);
     CHECK_ERROR(omx_error, "OMX_CommandStateSet Executing failed (%x)", omx_error );
-    omx_error = WaitForSpecificOmxEvent(p_dec, OMX_EventCmdComplete, 0, 0, 0);
+    omx_error = WaitForSpecificOmxEvent(&p_sys->event_queue, OMX_EventCmdComplete, 0, 0, 0);
     CHECK_ERROR(omx_error, "Wait for Executing failed (%x)", omx_error );
 
     /* Send codec configuration data */
@@ -996,6 +943,37 @@ loaded:
             p_header->pOutputPortPrivate = p_header->pBuffer;
             p_header->pBuffer = p_dec->fmt_in.p_extra;
         }
+        else if (p_dec->fmt_in.i_codec == VLC_CODEC_WMV3 &&
+                 p_dec->fmt_in.i_extra >= 4 &&
+                 p_header->nAllocLen >= 36)
+        {
+            int profile;
+            // According to OMX IL 1.2.0 spec (4.3.33.2), the codec config
+            // data for VC-1 Main/Simple (aka WMV3) is according to table 265
+            // in the VC-1 spec. Most of the fields are just set with placeholders
+            // (like framerate, hrd_buffer/rate).
+            static const uint8_t wmv3seq[] = {
+                0xff, 0xff, 0xff, 0xc5, // numframes=ffffff, marker byte
+                0x04, 0x00, 0x00, 0x00, // marker byte
+                0x00, 0x00, 0x00, 0x00, // struct C, almost equal to p_extra
+                0x00, 0x00, 0x00, 0x00, // struct A, vert size
+                0x00, 0x00, 0x00, 0x00, // struct A, horiz size
+                0x0c, 0x00, 0x00, 0x00, // marker byte
+                0xff, 0xff, 0x00, 0x80, // struct B, level=4, cbr=0, hrd_buffer=ffff
+                0xff, 0xff, 0x00, 0x00, // struct B, hrd_rate=ffff
+                0xff, 0xff, 0xff, 0xff, // struct B, framerate=ffffffff
+            };
+            p_header->nFilledLen = sizeof(wmv3seq);
+            memcpy(p_header->pBuffer, wmv3seq, p_header->nFilledLen);
+            // Struct C - almost equal to the extradata
+            memcpy(&p_header->pBuffer[8], p_dec->fmt_in.p_extra, 4);
+            // Expand profile from the highest 2 bits to the highest 4 bits
+            profile = p_header->pBuffer[8] >> 6;
+            p_header->pBuffer[8] = (p_header->pBuffer[8] & 0x0f) | (profile << 4);
+            // Fill in the height/width for struct A
+            SetDWLE(&p_header->pBuffer[12], p_dec->fmt_in.video.i_height);
+            SetDWLE(&p_header->pBuffer[16], p_dec->fmt_in.video.i_width);
+        }
         else
         {
             if(p_header->nFilledLen > p_header->nAllocLen)
@@ -1008,7 +986,7 @@ loaded:
         }
 
         p_header->nOffset = 0;
-        p_header->nFlags = OMX_BUFFERFLAG_CODECCONFIG;
+        p_header->nFlags = OMX_BUFFERFLAG_CODECCONFIG | OMX_BUFFERFLAG_ENDOFFRAME;
         msg_Dbg(p_dec, "sending codec config data %p, %p, %i", p_header,
                 p_header->pBuffer, (int)p_header->nFilledLen);
         OMX_EmptyThisBuffer(p_sys->omx_handle, p_header);
@@ -1024,6 +1002,10 @@ loaded:
     if(p_sys->b_error) goto error;
 
     p_dec->b_need_packetized = true;
+
+    if (!p_sys->b_use_pts)
+        msg_Dbg( p_dec, "using dts timestamp mode for %s", p_sys->psz_component);
+
     return VLC_SUCCESS;
 
  error:
@@ -1060,8 +1042,11 @@ static OMX_ERRORTYPE PortReconfigure(decoder_t *p_dec, OmxPort *p_port)
     for(i = 0; i < p_port->i_buffers; i++)
     {
         OMX_FIFO_GET(&p_port->fifo, p_buffer);
-        if (p_buffer == &p_sys->sentinel_buffer)
+        if (p_buffer->nFlags & SENTINEL_FLAG) {
+            free(p_buffer);
+            i--;
             continue;
+        }
         omx_error = OMX_FreeBuffer( p_sys->omx_handle,
                                     p_port->i_port_index, p_buffer );
 
@@ -1070,7 +1055,7 @@ static OMX_ERRORTYPE PortReconfigure(decoder_t *p_dec, OmxPort *p_port)
     CHECK_ERROR(omx_error, "OMX_FreeBuffer failed (%x, %i, %i)",
                 omx_error, (int)p_port->i_port_index, i );
 
-    omx_error = WaitForSpecificOmxEvent(p_dec, OMX_EventCmdComplete, 0, 0, 0);
+    omx_error = WaitForSpecificOmxEvent(&p_sys->event_queue, OMX_EventCmdComplete, 0, 0, 0);
     CHECK_ERROR(omx_error, "Wait for PortDisable failed (%x)", omx_error );
 
     /* Get the new port definition */
@@ -1113,7 +1098,7 @@ static OMX_ERRORTYPE PortReconfigure(decoder_t *p_dec, OmxPort *p_port)
     p_port->i_buffers = p_port->definition.nBufferCountActual;
     for(i = 0; i < p_port->i_buffers; i++)
     {
-        if(0 && p_port->b_direct)
+        if(p_port->b_direct)
             omx_error =
                 OMX_UseBuffer( p_sys->omx_handle, &p_port->pp_buffers[i],
                                p_port->i_port_index, 0,
@@ -1131,7 +1116,7 @@ static OMX_ERRORTYPE PortReconfigure(decoder_t *p_dec, OmxPort *p_port)
     CHECK_ERROR(omx_error, "OMX_UseBuffer failed (%x, %i, %i)",
                 omx_error, (int)p_port->i_port_index, i );
 
-    omx_error = WaitForSpecificOmxEvent(p_dec, OMX_EventCmdComplete, 0, 0, 0);
+    omx_error = WaitForSpecificOmxEvent(&p_sys->event_queue, OMX_EventCmdComplete, 0, 0, 0);
     CHECK_ERROR(omx_error, "Wait for PortEnable failed (%x)", omx_error );
 
     PrintOmx(p_dec, p_sys->omx_handle, p_dec->p_sys->in.i_port_index);
@@ -1153,6 +1138,8 @@ static picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
 
     OMX_BUFFERHEADERTYPE *p_header;
     block_t *p_block;
+    int i_input_used = 0;
+    struct H264ConvertState convert_state = { 0, 0 };
 
     if( !pp_block || !*pp_block )
         return NULL;
@@ -1186,6 +1173,12 @@ static picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
         OMX_FIFO_PEEK(&p_sys->out.fifo, p_header);
         if(!p_header) break; /* No frame available */
 
+        if(p_sys->out.b_update_def)
+        {
+            omx_error = GetPortDefinition(p_dec, &p_sys->out, p_sys->out.p_fmt);
+            p_sys->out.b_update_def = 0;
+        }
+
         if(p_header->nFilledLen)
         {
             p_pic = p_header->pAppPrivate;
@@ -1194,18 +1187,23 @@ static picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
                 /* We're not in direct rendering mode.
                  * Get a new picture and copy the content */
                 p_pic = decoder_NewPicture( p_dec );
-                if( !p_pic ) break; /* No picture available */
 
-                CopyOmxPicture(p_dec, p_pic, p_header, p_sys->out.definition.format.video.nSliceHeight);
+                if (p_pic)
+                    CopyOmxPicture(p_sys->out.definition.format.video.eColorFormat,
+                                   p_pic, p_sys->out.definition.format.video.nSliceHeight,
+                                   p_sys->out.i_frame_stride,
+                                   p_header->pBuffer + p_header->nOffset,
+                                   p_sys->out.i_frame_stride_chroma_div);
             }
 
-            p_pic->date = p_header->nTimeStamp;
+            if (p_pic)
+                p_pic->date = FromOmxTicks(p_header->nTimeStamp);
             p_header->nFilledLen = 0;
             p_header->pAppPrivate = 0;
         }
 
         /* Get a new picture */
-        if(p_sys->in.b_direct && !p_header->pAppPrivate)
+        if(p_sys->out.b_direct && !p_header->pAppPrivate)
         {
             p_next_pic = decoder_NewPicture( p_dec );
             if(!p_next_pic) break;
@@ -1226,18 +1224,25 @@ static picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
         OMX_FillThisBuffer(p_sys->omx_handle, p_header);
     }
 
+more_input:
     /* Send the input buffer to the component */
-    OMX_FIFO_GET(&p_sys->in.fifo, p_header);
+    OMX_FIFO_GET_TIMEOUT(&p_sys->in.fifo, p_header, 200000);
 
-    if (p_header && p_header->nFlags & OMX_BUFFERFLAG_EOS)
+    if (p_header && p_header->nFlags & SENTINEL_FLAG) {
+        free(p_header);
         goto reconfig;
+    }
 
     if(p_header)
     {
-        p_header->nFilledLen = p_block->i_buffer;
+        bool decode_more = false;
+        p_header->nFilledLen = p_block->i_buffer - i_input_used;
         p_header->nOffset = 0;
         p_header->nFlags = OMX_BUFFERFLAG_ENDOFFRAME;
-        p_header->nTimeStamp = p_block->i_dts;
+        if (p_sys->b_use_pts && p_block->i_pts)
+            p_header->nTimeStamp = ToOmxTicks(p_block->i_pts);
+        else
+            p_header->nTimeStamp = ToOmxTicks(p_block->i_dts);
 
         /* In direct mode we pass the input pointer as is.
          * Otherwise we memcopy the data */
@@ -1246,46 +1251,42 @@ static picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
             p_header->pOutputPortPrivate = p_header->pBuffer;
             p_header->pBuffer = p_block->p_buffer;
             p_header->pAppPrivate = p_block;
+            i_input_used = p_header->nFilledLen;
         }
         else
         {
             if(p_header->nFilledLen > p_header->nAllocLen)
             {
-                msg_Dbg(p_dec, "buffer too small (%i,%i)",
-                        (int)p_header->nFilledLen, (int)p_header->nAllocLen);
                 p_header->nFilledLen = p_header->nAllocLen;
             }
-            memcpy(p_header->pBuffer, p_block->p_buffer, p_header->nFilledLen );
-            block_Release(p_block);
-        }
-
-        /* Convert H.264 NAL format to annex b */
-        if( p_sys->i_nal_size_length >= 3 && p_sys->i_nal_size_length <= 4 )
-        {
-            /* This only works for NAL sizes 3-4 */
-            int i_len = p_header->nFilledLen, i;
-            uint8_t* ptr = p_header->pBuffer;
-            while( i_len >= p_sys->i_nal_size_length )
+            memcpy(p_header->pBuffer, p_block->p_buffer + i_input_used, p_header->nFilledLen);
+            i_input_used += p_header->nFilledLen;
+            if (i_input_used == p_block->i_buffer)
             {
-                uint32_t nal_len = 0;
-                for( i = 0; i < p_sys->i_nal_size_length; i++ ) {
-                    nal_len = (nal_len << 8) | ptr[i];
-                    ptr[i] = 0;
-                }
-                ptr[p_sys->i_nal_size_length - 1] = 1;
-                if( nal_len > INT_MAX || nal_len > (unsigned int) i_len )
-                    break;
-                ptr   += nal_len + 4;
-                i_len -= nal_len + 4;
+                block_Release(p_block);
+            }
+            else
+            {
+                decode_more = true;
+                p_header->nFlags &= ~OMX_BUFFERFLAG_ENDOFFRAME;
             }
         }
+
+        /* Convert H.264 NAL format to annex b. Doesn't do anything if
+         * i_nal_size_length == 0, which is the case for codecs other
+         * than H.264 */
+        convert_h264_to_annexb( p_header->pBuffer, p_header->nFilledLen,
+                                p_sys->i_nal_size_length, &convert_state );
 #ifdef OMXIL_EXTRA_DEBUG
         msg_Dbg( p_dec, "EmptyThisBuffer %p, %p, %i", p_header, p_header->pBuffer,
                  (int)p_header->nFilledLen );
 #endif
         OMX_EmptyThisBuffer(p_sys->omx_handle, p_header);
         p_sys->in.b_flushed = false;
-        *pp_block = NULL; /* Avoid being fed the same packet again */
+        if (decode_more)
+            goto more_input;
+        else
+            *pp_block = NULL; /* Avoid being fed the same packet again */
     }
 
 reconfig:
@@ -1293,9 +1294,16 @@ reconfig:
     for(i = 0; i < p_sys->ports; i++)
     {
         OmxPort *p_port = &p_sys->p_ports[i];
-        if(!p_port->b_reconfigure) continue;
-        p_port->b_reconfigure = 0;
-        omx_error = PortReconfigure(p_dec, p_port);
+        if(p_port->b_reconfigure)
+        {
+            omx_error = PortReconfigure(p_dec, p_port);
+            p_port->b_reconfigure = 0;
+        }
+        if(p_port->b_update_def)
+        {
+            omx_error = GetPortDefinition(p_dec, p_port, p_port->p_fmt);
+            p_port->b_update_def = 0;
+        }
     }
 
     return p_pic;
@@ -1304,10 +1312,10 @@ reconfig:
 /*****************************************************************************
  * DecodeAudio: Called to decode one frame
  *****************************************************************************/
-aout_buffer_t *DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
+block_t *DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    aout_buffer_t *p_buffer = 0;
+    block_t *p_buffer = NULL;
     OMX_BUFFERHEADERTYPE *p_header;
     OMX_ERRORTYPE omx_error;
     block_t *p_block;
@@ -1353,12 +1361,13 @@ aout_buffer_t *DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
     /* Take care of decoded frames first */
     while(!p_buffer)
     {
-        unsigned int i_samples;
+        unsigned int i_samples = 0;
 
         OMX_FIFO_PEEK(&p_sys->out.fifo, p_header);
         if(!p_header) break; /* No frame available */
 
-        i_samples = p_header->nFilledLen / p_sys->out.p_fmt->audio.i_channels / 2;
+        if (p_sys->out.p_fmt->audio.i_channels)
+            i_samples = p_header->nFilledLen / p_sys->out.p_fmt->audio.i_channels / 2;
         if(i_samples)
         {
             p_buffer = decoder_NewAudioBuffer( p_dec, i_samples );
@@ -1367,9 +1376,10 @@ aout_buffer_t *DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
             memcpy( p_buffer->p_buffer, p_header->pBuffer, p_buffer->i_buffer );
             p_header->nFilledLen = 0;
 
-            if( p_header->nTimeStamp != 0 &&
-                p_header->nTimeStamp != date_Get( &p_sys->end_date ) )
-                date_Set( &p_sys->end_date, p_header->nTimeStamp );
+            int64_t timestamp = FromOmxTicks(p_header->nTimeStamp);
+            if( timestamp != 0 &&
+                timestamp != date_Get( &p_sys->end_date ) )
+                date_Set( &p_sys->end_date, timestamp );
 
             p_buffer->i_pts = date_Get( &p_sys->end_date );
             p_buffer->i_length = date_Increment( &p_sys->end_date, i_samples ) -
@@ -1385,17 +1395,19 @@ aout_buffer_t *DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
 
 
     /* Send the input buffer to the component */
-    OMX_FIFO_GET(&p_sys->in.fifo, p_header);
+    OMX_FIFO_GET_TIMEOUT(&p_sys->in.fifo, p_header, 200000);
 
-    if (p_header && p_header->nFlags & OMX_BUFFERFLAG_EOS)
+    if (p_header && p_header->nFlags & SENTINEL_FLAG) {
+        free(p_header);
         goto reconfig;
+    }
 
     if(p_header)
     {
         p_header->nFilledLen = p_block->i_buffer;
         p_header->nOffset = 0;
         p_header->nFlags = OMX_BUFFERFLAG_ENDOFFRAME;
-        p_header->nTimeStamp = p_block->i_dts;
+        p_header->nTimeStamp = ToOmxTicks(p_block->i_dts);
 
         /* In direct mode we pass the input pointer as is.
          * Otherwise we memcopy the data */
@@ -1480,7 +1492,7 @@ static block_t *EncodeVideo( encoder_t *p_enc, picture_t *p_pic )
         p_header->nFilledLen = p_sys->in.i_frame_size;
         p_header->nOffset = 0;
         p_header->nFlags = OMX_BUFFERFLAG_ENDOFFRAME;
-        p_header->nTimeStamp = p_pic->date;
+        p_header->nTimeStamp = ToOmxTicks(p_pic->date);
 #ifdef OMXIL_EXTRA_DEBUG
         msg_Dbg( p_dec, "EmptyThisBuffer %p, %p, %i", p_header, p_header->pBuffer,
                  (int)p_header->nFilledLen );
@@ -1516,12 +1528,12 @@ static block_t *EncodeVideo( encoder_t *p_enc, picture_t *p_pic )
             {
                 /* We're not in direct rendering mode.
                  * Get a new block and copy the content */
-                p_block = block_New( p_dec, p_header->nFilledLen );
+                p_block = block_Alloc( p_header->nFilledLen );
                 memcpy(p_block->p_buffer, p_header->pBuffer, p_header->nFilledLen );
             }
 
             p_block->i_buffer = p_header->nFilledLen;
-            p_block->i_pts = p_block->i_dts = p_header->nTimeStamp;
+            p_block->i_pts = p_block->i_dts = FromOmxTicks(p_header->nTimeStamp);
             p_header->nFilledLen = 0;
             p_header->pAppPrivate = 0;
         }
@@ -1545,17 +1557,10 @@ static void CloseGeneric( vlc_object_t *p_this )
     decoder_sys_t *p_sys = p_dec->p_sys;
 
     if(p_sys->omx_handle) DeinitialiseComponent(p_dec, p_sys->omx_handle);
-    vlc_mutex_lock( &omx_core_mutex );
-    omx_refcount--;
-    if( omx_refcount == 0 )
-    {
-        if( p_sys->b_init ) pf_deinit();
-        dll_close( dll_handle );
-    }
-    vlc_mutex_unlock( &omx_core_mutex );
 
-    vlc_mutex_destroy (&p_sys->mutex);
-    vlc_cond_destroy (&p_sys->cond);
+    DeinitOmxCore();
+
+    DeinitOmxEventQueue(&p_sys->event_queue);
     vlc_mutex_destroy (&p_sys->in.fifo.lock);
     vlc_cond_destroy (&p_sys->in.fifo.wait);
     vlc_mutex_destroy (&p_sys->out.fifo.lock);
@@ -1576,48 +1581,44 @@ static OMX_ERRORTYPE OmxEventHandler( OMX_HANDLETYPE omx_handle,
     unsigned int i;
     (void)omx_handle;
 
+    PrintOmxEvent((vlc_object_t *) p_dec, event, data_1, data_2, event_data);
     switch (event)
     {
-    case OMX_EventCmdComplete:
-        switch ((OMX_STATETYPE)data_1)
-        {
-        case OMX_CommandStateSet:
-            msg_Dbg( p_dec, "OmxEventHandler (%s, %s, %s)", EventToString(event),
-                     CommandToString(data_1), StateToString(data_2) );
-            break;
-
-        default:
-            msg_Dbg( p_dec, "OmxEventHandler (%s, %s, %u)", EventToString(event),
-                     CommandToString(data_1), (unsigned int)data_2 );
-            break;
-        }
-        break;
-
     case OMX_EventError:
-        msg_Dbg( p_dec, "OmxEventHandler (%s, %s, %u, %s)", EventToString(event),
-                 ErrorToString((OMX_ERRORTYPE)data_1), (unsigned int)data_2,
-                 (const char *)event_data);
         //p_sys->b_error = true;
         break;
 
     case OMX_EventPortSettingsChanged:
-        msg_Dbg( p_dec, "OmxEventHandler (%s, %u, %u)", EventToString(event),
-                 (unsigned int)data_1, (unsigned int)data_2 );
-        for(i = 0; i < p_sys->ports; i++)
-            if(p_sys->p_ports[i].definition.eDir == OMX_DirOutput)
-                p_sys->p_ports[i].b_reconfigure = true;
-        memset(&p_sys->sentinel_buffer, 0, sizeof(p_sys->sentinel_buffer));
-        p_sys->sentinel_buffer.nFlags = OMX_BUFFERFLAG_EOS;
-        OMX_FIFO_PUT(&p_sys->in.fifo, &p_sys->sentinel_buffer);
+        if( data_2 == 0 || data_2 == OMX_IndexParamPortDefinition ||
+            data_2 == OMX_IndexParamAudioPcm )
+        {
+            OMX_BUFFERHEADERTYPE *sentinel;
+            for(i = 0; i < p_sys->ports; i++)
+                if(p_sys->p_ports[i].definition.eDir == OMX_DirOutput)
+                    p_sys->p_ports[i].b_reconfigure = true;
+            sentinel = calloc(1, sizeof(*sentinel));
+            if (sentinel) {
+                sentinel->nFlags = SENTINEL_FLAG;
+                OMX_FIFO_PUT(&p_sys->in.fifo, sentinel);
+            }
+        }
+        else if( data_2 == OMX_IndexConfigCommonOutputCrop )
+        {
+            for(i = 0; i < p_sys->ports; i++)
+                if(p_sys->p_ports[i].definition.nPortIndex == data_1)
+                    p_sys->p_ports[i].b_update_def = true;
+        }
+        else
+        {
+            msg_Dbg( p_dec, "Unhandled setting change %x", (unsigned int)data_2 );
+        }
         break;
 
     default:
-        msg_Dbg( p_dec, "OmxEventHandler (%s, %u, %u)", EventToString(event),
-                 (unsigned int)data_1, (unsigned int)data_2 );
         break;
     }
 
-    PostOmxEvent(p_dec, event, data_1, data_2, event_data);
+    PostOmxEvent(&p_sys->event_queue, event, data_1, data_2, event_data);
     return OMX_ErrorNone;
 }
 

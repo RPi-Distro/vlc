@@ -38,7 +38,7 @@ open_tag = "<?vlc"
 close_tag = "?>"
 
 -- TODO: use internal VLC mime lookup function for mimes not included here
-local mimes = {
+mimes = {
     txt = "text/plain",
     json = "text/plain",
     html = "text/html",
@@ -117,7 +117,7 @@ or vlc.strings.convert_xml_special_chars(tostring(msg)))..[[</pre>
 </html>]]
 end
 
-function dirlisting(url,listing,acl_)
+function dirlisting(url,listing)
     local list = {}
     for _,f in ipairs(listing) do
         if not string.match(f,"^%.") then
@@ -135,7 +135,7 @@ function dirlisting(url,listing,acl_)
 </body>
 </html>]]
     end
-    return h:file(url,"text/html",nil,nil,acl_,callback,nil)
+    return h:file(url,"text/html",nil,password,callback,nil)
 end
 
 -- FIXME: Experimental art support. Needs some cleaning up.
@@ -182,7 +182,7 @@ Error
     return content
 end
 
-function file(h,path,url,acl_,mime)
+function file(h,path,url,mime)
     local generate_page = process(path)
     local callback = function(data,request)
         -- FIXME: I'm sure that we could define a real sandbox
@@ -208,10 +208,10 @@ function file(h,path,url,acl_,mime)
         end
         return table.concat(page)
     end
-    return h:file(url or path,mime,nil,nil,acl_,callback,nil)
+    return h:file(url or path,mime,nil,password,callback,nil)
 end
 
-function rawfile(h,path,url,acl_)
+function rawfile(h,path,url)
     local filename = path
     local mtime = 0    -- vlc.net.stat(filename).modification_time
     local page = false -- io.open(filename):read("*a")
@@ -229,7 +229,7 @@ function rawfile(h,path,url,acl_)
         end
         return page
     end
-    return h:file(url or path,nil,nil,nil,acl_,callback,nil)
+    return h:file(url or path,nil,nil,password,callback,nil)
 end
 
 function parse_url_request(request)
@@ -278,20 +278,10 @@ do
     end
     package.path = oldpath
 end
-local files = {}
-local function load_dir(dir,root,parent_acl)
+files = {}
+local function load_dir(dir,root)
     local root = root or "/"
     local has_index = false
-    local my_acl = parent_acl
-    do
-        local af = dir.."/.hosts"
-        local s = vlc.net.stat(af)
-        if s and s.type == "file" then
-            -- We found an acl
-            my_acl = vlc.acl(false)
-            my_acl:load_file(af)
-        end
-    end
     local d = vlc.net.opendir(dir)
     for _,f in ipairs(d) do
         if not string.match(f,"^%.") then
@@ -308,20 +298,19 @@ local function load_dir(dir,root,parent_acl)
                 local mime = mimes[ext]
                 -- print(url,mime)
                 if mime and string.match(mime,"^text/") then
-                    table.insert(files,file(h,dir.."/"..f,url,my_acl,mime))
+                    table.insert(files,file(h,dir.."/"..f,url,mime))
                 else
-                    table.insert(files,rawfile(h,dir.."/"..f,url,my_acl))
+                    table.insert(files,rawfile(h,dir.."/"..f,url))
                 end
             elseif s.type == "dir" then
-                load_dir(dir.."/"..f,root..f.."/",my_acl)
+                load_dir(dir.."/"..f,root..f.."/")
             end
         end
     end
     if not has_index and not config.no_index then
         -- print("Adding index for", root)
-        table.insert(files,dirlisting(root,d,my_acl))
+        table.insert(files,dirlisting(root,d))
     end
-    return my_acl
 end
 
 if config.host then
@@ -330,9 +319,8 @@ if config.host then
     vlc.msg.info("Pass --http-host=IP "..(port and "and --http-port="..port.." " or "").."on the command line instead.")
 end
 
+password = vlc.var.inherit(nil,"http-password")
+
 h = vlc.httpd()
-local root_acl = load_dir( http_dir )
-local a = h:handler("/art",nil,nil,root_acl,callback_art,nil)
-
-while not vlc.misc.lock_and_wait() do end -- everything happens in callbacks
-
+load_dir( http_dir )
+a = h:handler("/art",nil,password,callback_art,nil)

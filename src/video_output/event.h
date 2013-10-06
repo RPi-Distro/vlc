@@ -2,7 +2,7 @@
  * event.h: vout event
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 38c7be40bda53fa6d38c87aa3ae6ba4455492486 $
+ * $Id: c8123e83183991e1fdcefc4bf6336a0daa420028 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -22,7 +22,6 @@
  *****************************************************************************/
 
 #include <vlc_common.h>
-#include <vlc_playlist.h>
 #include <math.h>
 
 #include "vout_control.h"
@@ -40,11 +39,10 @@
 
 static inline void vout_SendEventClose(vout_thread_t *vout)
 {
-    /* Ask to stop
-     * FIXME works only for input handled by the playlist
-     */
-    playlist_t *playlist = pl_Get(vout);
-    playlist_Stop(playlist);
+#warning FIXME: implement video close event
+    /* FIXME: this code is disabled as it breaks the non-playlist cases */
+    //playlist_Stop(pl_Get(vout));
+    (void) vout;
 }
 static inline void vout_SendEventKey(vout_thread_t *vout, int key)
 {
@@ -90,8 +88,7 @@ static inline void vout_SendEventMouseReleased(vout_thread_t *vout, int button)
 static inline void vout_SendEventMouseDoubleClick(vout_thread_t *vout)
 {
     //vout_ControlSetFullscreen(vout, !var_GetBool(vout, "fullscreen"));
-    //var_ToggleBool(vout, "fullscreen");
-    var_SetInteger(vout->p_libvlc, "key-action", ACTIONID_TOGGLE_FULLSCREEN);
+    var_ToggleBool(vout, "fullscreen");
 }
 static inline void vout_SendEventMouseVisible(vout_thread_t *vout)
 {

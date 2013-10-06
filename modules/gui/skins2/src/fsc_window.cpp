@@ -2,7 +2,7 @@
  * fsc_window.cpp
  *****************************************************************************
  * Copyright (C) 2010 the VideoLAN team
- * $Id: ed368af0aa15f25a14c2956e0b9a3b4c3653a752 $
+ * $Id: 00955cc37e3c628345d601b89e6a42d92c69ba97 $
  *
  * Author: Erwan Tulou      <erwan10 at videolan Dot Org>
  *
@@ -28,7 +28,7 @@
 
 /**
  * Fading out is computed in the following way:
- *    - a timer is fired with a given period (FSC_DELAY)
+ *    - a timer is fired with a given period (m_delay)
  *    - a total of FSC_COUNT transitions are processed before
  *      hiding the controller
  *    - transparency is changed in the following way :
@@ -45,7 +45,7 @@ FscWindow::FscWindow( intf_thread_t *pIntf, int left, int top,
                       bool dragDrop, bool playOnDrop, bool visible ) :
     TopWindow( pIntf, left, top, rWindowManager, dragDrop,
                playOnDrop, false, GenericWindow::FscWindow ),
-    m_pTimer( NULL ), m_count( 0 ), m_opacity( m_opacity ),
+    m_pTimer( NULL ), m_count( 0 ),
     m_cmdFscHide( this )
 {
     (void)visible;
@@ -56,6 +56,14 @@ FscWindow::FscWindow( intf_thread_t *pIntf, int left, int top,
 
     // opacity overridden by user
     m_opacity = 255 * var_InheritFloat( getIntf(), "qt-fs-opacity" );
+
+    // fullscreen-controller timeout overridden by user
+    m_delay = var_InheritInteger( getIntf(), "mouse-hide-timeout" ) / FSC_COUNT;
+    if( m_delay <= 0 )
+        m_delay = FSC_DELAY;
+
+    /// activation overridden by user
+    m_enabled = var_InheritBool( getIntf(), "qt-fs-controller" );
 
     // register Fsc
     VoutManager::instance( getIntf())->registerFSC( this );
@@ -85,7 +93,7 @@ void FscWindow::onMouseMoved( )
             m_pTimer->stop();
             m_count = FSC_COUNT;
             setOpacity( m_opacity );
-            m_pTimer->start( FSC_DELAY, false );
+            m_pTimer->start( m_delay, false );
         }
     }
 }
@@ -130,7 +138,7 @@ void FscWindow::processEvent( EvtLeave &rEvtLeave )
 
     m_count = FSC_COUNT;
     setOpacity( m_opacity );
-    m_pTimer->start( FSC_DELAY, false );
+    m_pTimer->start( m_delay, false );
 
     TopWindow::processEvent( rEvtLeave  );
 }
@@ -152,11 +160,14 @@ void FscWindow::onUpdate( Subject<VarBool> &rVariable, void *arg  )
 
 void FscWindow::innerShow()
 {
+    if( !m_enabled )
+        return;
+
     TopWindow::innerShow();
 
     m_count = FSC_COUNT;
     setOpacity( m_opacity );
-    m_pTimer->start( FSC_DELAY, false );
+    m_pTimer->start( m_delay, false );
 }
 
 

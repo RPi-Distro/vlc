@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2005 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: 7ee51e305ed8bf62a12e1aafbfe69a0b99ebc642 $
+ * $Id: d438642203dcf8b21606b8a5003754223162cc52 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -32,14 +32,11 @@
  * This file defines interface to communicate with network plug-ins
  */
 
-#if defined( WIN32 )
-#   if !defined(UNDER_CE)
-#       define _NO_OLDNAMES 1
-#       include <io.h>
-#   endif
+#if defined( _WIN32 )
+#   define _NO_OLDNAMES 1
+#   include <io.h>
 #   include <winsock2.h>
 #   include <ws2tcpip.h>
-#   define ENETUNREACH WSAENETUNREACH
 #   define net_errno (WSAGetLastError())
 extern const char *net_strerror( int val );
 
@@ -160,11 +157,7 @@ VLC_API ssize_t net_Printf( vlc_object_t *p_this, int fd, const v_socket_t *, co
 VLC_API ssize_t net_vaPrintf( vlc_object_t *p_this, int fd, const v_socket_t *, const char *psz_fmt, va_list args );
 #define net_vaPrintf(a,b,c,d,e) net_vaPrintf(VLC_OBJECT(a),b,c,d,e)
 
-struct pollfd;
-VLC_API int vlc_poll(struct pollfd *fds, unsigned nfds, int timeout);
-
-
-#ifdef WIN32
+#ifdef _WIN32
 /* Microsoft: same semantic, same value, different name... go figure */
 # define SHUT_RD SD_RECEIVE
 # define SHUT_WR SD_SEND
@@ -229,6 +222,14 @@ VLC_API int vlc_poll(struct pollfd *fds, unsigned nfds, int timeout);
 #ifndef AI_NUMERICSERV
 # define AI_NUMERICSERV 0
 #endif
+#ifndef AI_IDN
+# define AI_IDN 0 /* GNU/libc extension */
+#endif
+
+#ifdef _WIN32
+# undef gai_strerror
+# define gai_strerror gai_strerrorA
+#endif
 
 #ifdef __OS2__
 # ifndef NI_NUMERICHOST
@@ -265,7 +266,8 @@ VLC_API int  getnameinfo ( const struct sockaddr *, socklen_t,
 #endif
 
 VLC_API int vlc_getnameinfo( const struct sockaddr *, int, char *, int, int *, int );
-VLC_API int vlc_getaddrinfo( vlc_object_t *, const char *, int, const struct addrinfo *, struct addrinfo ** );
+VLC_API int vlc_getaddrinfo (const char *, unsigned,
+                             const struct addrinfo *, struct addrinfo **);
 
 
 #ifdef __OS2__
@@ -371,6 +373,9 @@ static inline void net_SetPort (struct sockaddr *addr, uint16_t port)
         break;
     }
 }
+
+VLC_API char *vlc_getProxyUrl(const char *);
+
 # ifdef __cplusplus
 }
 # endif

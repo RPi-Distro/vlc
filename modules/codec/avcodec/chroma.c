@@ -1,24 +1,24 @@
 /*****************************************************************************
  * chroma.c: libavutil <-> libvlc conversion routines
  *****************************************************************************
- * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: b100423e0fb6272cd66c0478c70942bfcdc9c3bb $
+ * Copyright (C) 1999-2008 VLC authors and VideoLAN
+ * $Id: 4dc18a1bcae4c08a6a4f23d61c6de2e3eed25ea5 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 021100301, USA.
  *****************************************************************************/
 
@@ -31,10 +31,11 @@
 
 #include <libavutil/avutil.h>
 #include <libavutil/pixfmt.h>
+#include "avcommon.h"
 #include "chroma.h"
 
 /*****************************************************************************
- * Chroma fourcc -> ffmpeg_id mapping
+ * Chroma fourcc -> libavutil pixfmt mapping
  *****************************************************************************/
 #if defined(WORDS_BIGENDIAN)
 #   define VLC_RGB_ES( fcc, leid, beid ) \
@@ -64,10 +65,8 @@ static const struct
     {VLC_CODEC_I444, PIX_FMT_YUV444P, 0, 0, 0 },
     {VLC_CODEC_J444, PIX_FMT_YUVJ444P, 0, 0, 0 },
 
-#if LIBAVUTIL_VERSION_INT >= ((49<<16)+(5<<8)+0)
     {VLC_CODEC_I440, PIX_FMT_YUV440P, 0, 0, 0 },
     {VLC_CODEC_J440, PIX_FMT_YUVJ440P, 0, 0, 0 },
-#endif
 
     {VLC_CODEC_I422, PIX_FMT_YUV422P, 0, 0, 0 },
     {VLC_CODEC_J422, PIX_FMT_YUVJ422P, 0, 0, 0 },
@@ -83,17 +82,14 @@ static const struct
     {VLC_FOURCC('N','V','1','2'), PIX_FMT_NV12, 0, 0, 0 },
     {VLC_FOURCC('N','V','2','1'), PIX_FMT_NV21, 0, 0, 0 },
 
-#if LIBAVUTIL_VERSION_INT >= ((51<<16)+(4<<8)+0)
     {VLC_CODEC_I420_9L, PIX_FMT_YUV420P9LE, 0, 0, 0 },
     {VLC_CODEC_I420_9B, PIX_FMT_YUV420P9BE, 0, 0, 0 },
     {VLC_CODEC_I420_10L, PIX_FMT_YUV420P10LE, 0, 0, 0 },
     {VLC_CODEC_I420_10B, PIX_FMT_YUV420P10BE, 0, 0, 0 },
-#endif
-#if LIBAVUTIL_VERSION_INT > ((51<<16)+(22<<8)+0)
+#if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(51,13,0)
     {VLC_CODEC_I422_9L, PIX_FMT_YUV422P9LE, 0, 0, 0 },
     {VLC_CODEC_I422_9B, PIX_FMT_YUV422P9BE, 0, 0, 0 },
 #endif
-#if LIBAVUTIL_VERSION_INT >= ((51<<16)+(9<<8)+0)
     {VLC_CODEC_I422_10L, PIX_FMT_YUV422P10LE, 0, 0, 0 },
     {VLC_CODEC_I422_10B, PIX_FMT_YUV422P10BE, 0, 0, 0 },
 
@@ -101,7 +97,6 @@ static const struct
     {VLC_CODEC_I444_9B, PIX_FMT_YUV444P9BE, 0, 0, 0 },
     {VLC_CODEC_I444_10L, PIX_FMT_YUV444P10LE, 0, 0, 0 },
     {VLC_CODEC_I444_10B, PIX_FMT_YUV444P10BE, 0, 0, 0 },
-#endif
 
     /* Packed YUV formats */
     {VLC_CODEC_YUYV, PIX_FMT_YUYV422, 0, 0, 0 },
@@ -126,33 +121,26 @@ static const struct
      /* Paletized RGB */
     {VLC_CODEC_RGBP, PIX_FMT_PAL8, 0, 0, 0},
 
-
+    /* XYZ */
+#if LIBAVUTIL_VERSION_CHECK(52, 10, 0, 25, 100)
+    {VLC_CODEC_XYZ12, AV_PIX_FMT_XYZ12, 0xfff0, 0xfff0, 0xfff0},
+#endif
     { 0, 0, 0, 0, 0 }
 };
 
-int TestFfmpegChroma( const int i_ffmpeg_id, const vlc_fourcc_t i_vlc_fourcc )
-{
-    for( int i = 0; chroma_table[i].i_chroma != 0; i++ )
-    {
-        if( chroma_table[i].i_chroma == i_vlc_fourcc || chroma_table[i].i_chroma_id == i_ffmpeg_id )
-            return VLC_SUCCESS;
-    }
-    return VLC_EGENERIC;
-}
-
 /* FIXME special case the RGB formats */
-int GetFfmpegChroma( int *i_ffmpeg_chroma, const video_format_t fmt )
+int GetFfmpegChroma( int *restrict i_ffmpeg_chroma, const video_format_t *fmt )
 {
     for( int i = 0; chroma_table[i].i_chroma != 0; i++ )
     {
-        if( chroma_table[i].i_chroma == fmt.i_chroma )
+        if( chroma_table[i].i_chroma == fmt->i_chroma )
         {
             if( ( chroma_table[i].i_rmask == 0 &&
                   chroma_table[i].i_gmask == 0 &&
                   chroma_table[i].i_bmask == 0 ) ||
-                ( chroma_table[i].i_rmask == fmt.i_rmask &&
-                  chroma_table[i].i_gmask == fmt.i_gmask &&
-                  chroma_table[i].i_bmask == fmt.i_bmask ) )
+                ( chroma_table[i].i_rmask == fmt->i_rmask &&
+                  chroma_table[i].i_gmask == fmt->i_gmask &&
+                  chroma_table[i].i_bmask == fmt->i_bmask ) )
             {
                 *i_ffmpeg_chroma = chroma_table[i].i_chroma_id;
                 return VLC_SUCCESS;
@@ -162,7 +150,15 @@ int GetFfmpegChroma( int *i_ffmpeg_chroma, const video_format_t fmt )
     return VLC_EGENERIC;
 }
 
-int GetVlcChroma( video_format_t *fmt, const int i_ffmpeg_chroma )
+vlc_fourcc_t FindVlcChroma( int i_ffmpeg_id )
+{
+    for( int i = 0; chroma_table[i].i_chroma != 0; i++ )
+        if( chroma_table[i].i_chroma_id == i_ffmpeg_id )
+            return chroma_table[i].i_chroma;
+    return 0;
+}
+
+int GetVlcChroma( video_format_t *fmt, int i_ffmpeg_chroma )
 {
     /* TODO FIXME for rgb format we HAVE to set rgb mask/shift */
     for( int i = 0; chroma_table[i].i_chroma != 0; i++ )
@@ -177,4 +173,12 @@ int GetVlcChroma( video_format_t *fmt, const int i_ffmpeg_chroma )
         }
     }
     return VLC_EGENERIC;
+}
+
+int FindFfmpegChroma( vlc_fourcc_t fourcc )
+{
+    for( int i = 0; chroma_table[i].i_chroma != 0; i++ )
+        if( chroma_table[i].i_chroma == fourcc )
+            return chroma_table[i].i_chroma_id;
+    return PIX_FMT_NONE;
 }

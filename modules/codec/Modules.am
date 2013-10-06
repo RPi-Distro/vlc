@@ -1,16 +1,29 @@
-SUBDIRS = loader dmo avcodec shine spudec wmafixed omxil
+noinst_HEADERS =
+
 SOURCES_a52 = a52.c a52.h
-SOURCES_dts = dts.c
+SOURCES_dts = dts.c dts_header.h dts_header.c
 SOURCES_flac = flac.c
 SOURCES_lpcm = lpcm.c
 SOURCES_araw = araw.c
+SOURCES_g711 = g711.c
 SOURCES_vorbis = vorbis.c
 SOURCES_theora = theora.c
 SOURCES_tremor = vorbis.c
 SOURCES_speex = speex.c
 SOURCES_adpcm = adpcm.c
 SOURCES_opus = opus.c opus_header.c opus_header.h
+SOURCES_uleaddvaudio = uleaddvaudio.c
 SOURCES_mpeg_audio = mpeg_audio.c
+SOURCES_shine = shine/shine_mod.c shine/enc_base.h
+EXTRA_DIST += shine/shine.c
+SOURCES_wma_fixed = \
+	wmafixed/asf.h wmafixed/bswap.h \
+	wmafixed/fft.c wmafixed/fft.h \
+	wmafixed/mdct.c wmafixed/mdct.h \
+	wmafixed/wma.c wmafixed/wmadeci.c \
+	wmafixed/bitstream.c wmafixed/bitstream.h \
+	wmafixed/wmadata.h wmafixed/wmadec.h \
+	wmafixed/wmafixed.c wmafixed/wmafixed.h
 SOURCES_libmpeg2 = libmpeg2.c
 SOURCES_rawvideo = rawvideo.c
 SOURCES_quicktime = quicktime.c
@@ -19,12 +32,12 @@ SOURCES_dvbsub = dvbsub.c
 SOURCES_telx = telx.c
 SOURCES_mash = mash.cpp
 SOURCES_x264 = x264.c
+SOURCES_x26410b = x264.c
 SOURCES_twolame = twolame.c
 SOURCES_dirac = dirac.c
 SOURCES_png = png.c
 SOURCES_svcdsub = svcdsub.c
 SOURCES_cvdsub = cvdsub.c
-SOURCES_realvideo = realvideo.c
 SOURCES_sdl_image = sdl_image.c
 SOURCES_zvbi = zvbi.c
 SOURCES_cdg = cdg.c
@@ -38,13 +51,19 @@ SOURCES_subsdec = subsdec.c substext.h
 SOURCES_subsusf = subsusf.c
 SOURCES_t140 = t140.c
 SOURCES_crystalhd = crystalhd.c h264_nal.h
+SOURCES_spudec = spudec/spudec.c spudec/parse.c spudec/spudec.h
 SOURCES_stl = stl.c
+SOURCES_dmo = dmo/dmo.c dmo/dmo.h dmo/buffer.c
 SOURCES_ddummy = ddummy.c
 SOURCES_edummy = edummy.c
+SOURCES_fdkaac = fdkaac.c
+SOURCES_scte27 = scte27.c
+SOURCES_qsv = qsv.c
 
 libvlc_LTLIBRARIES += \
 	liba52_plugin.la \
 	libadpcm_plugin.la \
+	libuleaddvaudio_plugin.la \
 	libaes3_plugin.la \
 	libaraw_plugin.la \
 	libcc_plugin.la \
@@ -53,13 +72,142 @@ libvlc_LTLIBRARIES += \
 	libddummy_plugin.la \
 	libdts_plugin.la \
 	libdvbsub_plugin.la \
-	libedummy_plugin.la \
+	libg711_plugin.la \
 	liblpcm_plugin.la \
 	libmpeg_audio_plugin.la \
 	librawvideo_plugin.la \
+	libspudec_plugin.la \
 	libsvcdsub_plugin.la \
 	libsubsdec_plugin.la \
 	libsubsusf_plugin.la \
-	libt140_plugin.la \
 	libstl_plugin.la \
+	libscte27_plugin.la \
 	$(NULL)
+
+if ENABLE_SOUT
+libvlc_LTLIBRARIES += \
+	libt140_plugin.la \
+	libedummy_plugin.la
+endif
+
+### FFmpeg/libav ###
+libavcodec_plugin_la_SOURCES = \
+	avcodec/avcommon_compat.h \
+	avcodec/avcommon.h \
+	avcodec/video.c \
+	avcodec/subtitle.c \
+	avcodec/audio.c \
+	avcodec/cpu.c \
+	avcodec/fourcc.c \
+	avcodec/chroma.c avcodec/chroma.h \
+	avcodec/va.h \
+	avcodec/avcodec.c avcodec/avcodec.h
+if ENABLE_SOUT
+libavcodec_plugin_la_SOURCES += \
+	avcodec/encoder.c
+endif
+libavcodec_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_avcodec)
+libavcodec_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_avcodec)
+libavcodec_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_avcodec)
+
+if MERGE_FFMPEG
+libavcodec_plugin_la_SOURCES += \
+	../demux/avformat/demux.c \
+	../access/avio.c
+if ENABLE_SOUT
+libavcodec_plugin_la_SOURCES += \
+	../demux/avformat/mux.c
+endif
+libavcodec_plugin_la_CFLAGS += -DMERGE_FFMPEG
+endif
+
+libvlc_LTLIBRARIES += \
+	$(LTLIBavcodec)
+EXTRA_LTLIBRARIES += \
+	libavcodec_plugin.la
+
+### avcodec hardware acceleration ###
+
+libvaapi_plugin_la_SOURCES = \
+	avcodec/copy.c avcodec/copy.h \
+	avcodec/vaapi.c
+libvaapi_plugin_la_CFLAGS = $(AM_CFLAGS) $(LIBVA_CFLAGS) $(X_CFLAGS) $(CFLAGS_avcodec)
+libvaapi_plugin_la_LIBADD = $(AM_LIBADD) $(LIBVA_LIBS) \
+                            $(X_LIBS) $(X_PRE_LIBS) -lX11 $(LIBS_avcodec)
+if HAVE_AVCODEC_VAAPI
+libvlc_LTLIBRARIES += libvaapi_plugin.la
+endif
+
+libdxva2_plugin_la_SOURCES = \
+	avcodec/copy.c avcodec/copy.h \
+	avcodec/dxva2.c
+libdxva2_plugin_la_LIBADD = $(AM_LIBADD) -lole32 -lshlwapi -luuid
+if HAVE_AVCODEC_DXVA2
+libvlc_LTLIBRARIES += libdxva2_plugin.la
+endif
+
+libvda_plugin_la_SOURCES = \
+	avcodec/copy.c avcodec/copy.h \
+	avcodec/vda.c
+libvda_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_avcodec)
+libvda_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_avcodec)
+libvda_plugin_la_LDFLAGS = $(LDFLAGS_avcodec) -Wl,-framework,CoreFoundation,-framework,VideoDecodeAcceleration,-framework,QuartzCore
+if HAVE_AVCODEC_VDA
+libvlc_LTLIBRARIES += libvda_plugin.la
+endif
+
+libvdpau_plugin_la_SOURCES = avcodec/vdpau.c
+libvdpau_plugin_la_CFLAGS = $(AM_CFLAGS) $(VDPAU_CFLAGS) \
+	$(X_CFLAGS) $(CFLAGS_avcodec)
+libvdpau_plugin_la_LIBADD = $(AM_LIBADD) $(VDPAU_LIBS) \
+	 $(X_LIBS) $(X_PRE_LIBS) -lX11 $(LIBS_avcodec)
+libvdpau_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_avcodec)
+if HAVE_AVCODEC_VDPAU
+libvlc_LTLIBRARIES += libvdpau_plugin.la
+endif
+
+### XWD ###
+libxwd_plugin_la_SOURCES = xwd.c
+libxwd_plugin_la_CFLAGS = $(AM_CFLAGS) $(XPROTO_CFLAGS)
+libxwd_plugin_la_LIBADD = $(AM_LIBADD) $(XPROTO_LIBS)
+libvlc_LTLIBRARIES += $(LTLIBxwd)
+EXTRA_LTLIBRARIES += libxwd_plugin.la
+
+### OpenMAX ###
+noinst_HEADERS += \
+	omxil/OMX_Broadcom.h \
+	omxil/OMX_Component.h \
+	omxil/OMX_Core.h \
+	omxil/OMX_Image.h \
+	omxil/OMX_IVCommon.h \
+	omxil/OMX_Types.h \
+	omxil/OMX_Audio.h \
+	omxil/OMX_Index.h \
+	omxil/OMX_Other.h \
+	omxil/OMX_Video.h 
+
+libomxil_plugin_la_SOURCES = \
+	omxil/utils.c omxil/omxil_utils.h \
+	h264_nal.h \
+	omxil/qcom.c omxil/qcom.h \
+	omxil/omxil.c omxil/omxil.h omxil/omxil_core.c omxil/omxil_core.h
+libomxil_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(srcdir)/omxil $(CFLAGS_omxil)
+libomxil_plugin_la_LIBADD = $(AM_LIBADD) $(LIBDL)
+
+libomxil_vout_plugin_la_SOURCES = omxil/vout.c omxil/omxil_core.c omxil/utils.c omxil/qcom.c
+libomxil_vout_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(srcdir)/omxil $(CFLAGS_omxil_vout)
+libomxil_vout_plugin_la_LIBADD = $(AM_LIBADD) $(LIBDL)
+
+libiomx_plugin_la_SOURCES = $(libomxil_plugin_la_SOURCES)
+libiomx_plugin_la_CPPFLAGS = $(libomxil_plugin_la_CPPFLAGS) -DUSE_IOMX
+libiomx_plugin_la_LIBADD = $(libomxil_plugin_la_LIBADD)
+
+libmediacodec_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(srcdir)/omxil
+libmediacodec_plugin_la_SOURCES = omxil/android_mediacodec.c omxil/utils.c
+
+libvlc_LTLIBRARIES += $(LTLIBomxil) $(LTLIBomxil_vout)
+EXTRA_LTLIBRARIES += libomxil_plugin.la libomxil_vout_plugin.la
+if HAVE_ANDROID
+libvlc_LTLIBRARIES += libiomx_plugin.la libmediacodec_plugin.la
+endif
+

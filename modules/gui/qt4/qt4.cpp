@@ -1,8 +1,8 @@
 /*****************************************************************************
- * qt4.cpp : QT4 interface
+ * qt4.cpp : Qt interface
  ****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: 7ff935fc934d7a3e35201c34cbae8ef6a7a2614d $
+ * $Id: 2492dd579ee3b62bec32a6cca5449178d06a960d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -35,22 +35,20 @@
 #include "input_manager.hpp"    /* THEMIM destruction */
 #include "dialogs_provider.hpp" /* THEDP creation */
 #include "main_interface.hpp"   /* MainInterface creation */
+#include "extensions_manager.hpp" /* Extensions manager */
 #include "dialogs/help.hpp"     /* Launch Update */
 #include "recents.hpp"          /* Recents Item destruction */
 #include "util/qvlcapp.hpp"     /* QVLCApplication definition */
 #include "components/playlist/playlist_model.hpp" /* for ~PLModel() */
-#include <vlc_aout_intf.h>
 
 #ifdef Q_WS_X11
  #include <vlc_xlib.h>
 #endif
 
-#include "../../../share/icons/32x32/vlc.xpm"
-#include "../../../share/icons/32x32/vlc-xmas.xpm"
 #include <vlc_plugin.h>
 #include <vlc_vout_window.h>
 
-#ifdef WIN32 /* For static builds */
+#ifdef _WIN32 /* For static builds */
  #include <QtPlugin>
  Q_IMPORT_PLUGIN(qjpeg)
  Q_IMPORT_PLUGIN(qtaccessiblewidgets)
@@ -100,10 +98,6 @@ static void ShowDialog   ( intf_thread_t *, int, int, intf_dialog_args_t * );
     "Show a notification popup with the artist and track name when " \
     "the current playlist item changes, when VLC is minimized or hidden." )
 
-#define ADVANCED_OPTIONS_TEXT N_( "Advanced options" )
-#define ADVANCED_OPTIONS_LONGTEXT N_( "Show all the advanced options " \
-                                      "in the dialogs." )
-
 #define OPACITY_TEXT N_( "Windows opacity between 0.1 and 1" )
 #define OPACITY_LONGTEXT N_( "Sets the windows opacity between 0.1 and 1 " \
                              "for main interface, playlist and extended panel."\
@@ -124,8 +118,6 @@ static void ShowDialog   ( intf_thread_t *, int, int, intf_dialog_args_t * );
                             "versions of the software. It runs once every " \
                             "two weeks." )
 #define UPDATER_DAYS_TEXT N_("Number of days between two update checks")
-
-#define SAVEVOL_TEXT N_( "Automatically save the volume on exit" )
 
 #define PRIVACY_TEXT N_( "Ask for network policy at start" )
 
@@ -183,6 +175,14 @@ static void ShowDialog   ( intf_thread_t *, int, int, intf_dialog_args_t * );
 #define ICONCHANGE_LONGTEXT N_( \
     "This option allows the interface to change its icon on various occasions.")
 
+#define VOLUME_MAX_TEXT N_( "Maximum Volume displayed" )
+
+static const int i_notification_list[] =
+    { NOTIFICATION_NEVER, NOTIFICATION_MINIMIZED, NOTIFICATION_ALWAYS };
+
+static const char *const psz_notification_list_text[] =
+    { N_("Never"), N_("When minimized"), N_("Always") };
+
 /**********************************************************************/
 vlc_module_begin ()
     set_shortname( "Qt" )
@@ -197,15 +197,13 @@ vlc_module_begin ()
     add_bool( "qt-minimal-view", false, QT_MINIMAL_MODE_TEXT,
               QT_MINIMAL_MODE_TEXT, false );
 
-    add_bool( "qt-system-tray",
-#ifdef HAVE_MAEMO
-            false,
-#else
-            true,
-#endif
-            SYSTRAY_TEXT, SYSTRAY_LONGTEXT, false)
-    add_bool( "qt-notification", true, NOTIFICATION_TEXT,
-              NOTIFICATION_LONGTEXT, false )
+    add_bool( "qt-system-tray", true, SYSTRAY_TEXT, SYSTRAY_LONGTEXT, false)
+
+    add_integer( "qt-notification", NOTIFICATION_MINIMIZED,
+                 NOTIFICATION_TEXT,
+                 NOTIFICATION_LONGTEXT, false )
+            change_integer_list( i_notification_list, psz_notification_list_text )
+
     add_bool( "qt-start-minimized", false, MINIMIZED_TEXT,
               MINIMIZED_LONGTEXT, true)
     add_bool( "qt-pause-minimized", false, QT_PAUSE_MINIMIZED_TEXT,
@@ -235,9 +233,7 @@ vlc_module_begin ()
               UPDATER_DAYS_TEXT, UPDATER_DAYS_TEXT, false )
 #endif
 
-    add_bool( "qt-autosave-volume", true, SAVEVOL_TEXT,
-              SAVEVOL_TEXT, true )
-#ifdef WIN32
+#ifdef _WIN32
     add_bool( "qt-disable-volume-keys"             /* name */,
               true                                 /* default value */,
               QT_DISABLE_VOLUME_KEYS_TEXT          /* text */,
@@ -274,6 +270,8 @@ vlc_module_begin ()
 
     add_bool( "qt-icon-change", true, ICONCHANGE_TEXT, ICONCHANGE_LONGTEXT, true )
 
+    add_integer_with_range( "qt-max-volume", 125, 60, 300, VOLUME_MAX_TEXT, VOLUME_MAX_TEXT, true)
+
     add_obsolete_bool( "qt-blingbling" )      /* Suppressed since 1.0.0 */
     add_obsolete_integer( "qt-display-mode" ) /* Suppressed since 1.1.0 */
 
@@ -289,15 +287,20 @@ vlc_module_begin ()
 
         set_callbacks( OpenDialogs, Close )
 
-#if defined(Q_WS_X11) || defined(Q_WS_WIN) || defined(Q_WS_MAC)  || defined(Q_WS_PM)
+#if defined (Q_WS_X11) || (defined (Q_WS_QPA) && defined (__unix__))
     add_submodule ()
-#if defined(Q_WS_X11)
         set_capability( "vout window xid", 0 )
-#elif defined(Q_WS_WIN) || defined(Q_WS_PM)
-        set_capability( "vout window hwnd", 0 )
-#elif defined(Q_WS_MAC)
-        set_capability( "vout window nsobject", 0 )
+        set_callbacks( WindowOpen, WindowClose )
 #endif
+#if defined (Q_WS_WIN) || (defined (Q_WS_QPA) && defined (_WIN32)) \
+ || defined (Q_WS_PM)  || (defined (Q_WS_QPA) && defined (__OS2__))
+    add_submodule ()
+        set_capability( "vout window hwnd", 0 )
+        set_callbacks( WindowOpen, WindowClose )
+#endif
+#if defined (Q_WS_MAC) || (defined (Q_WS_QPA) && defined (__APPLE__))
+    add_submodule ()
+        set_capability( "vout window nsobject", 0 )
         set_callbacks( WindowOpen, WindowClose )
 #endif
 
@@ -305,7 +308,7 @@ vlc_module_end ()
 
 /*****************************************/
 
-/* Ugly, but the Qt4 interface assumes single instance anyway */
+/* Ugly, but the Qt interface assumes single instance anyway */
 static vlc_sem_t ready;
 static QMutex lock;
 static bool busy = false;
@@ -354,7 +357,7 @@ static int Open( vlc_object_t *p_this, bool isDialogProvider )
     QMutexLocker locker (&lock);
     if (busy)
     {
-        msg_Err (p_this, "cannot start Qt4 multiple times");
+        msg_Err (p_this, "cannot start Qt multiple times");
         return VLC_EGENERIC;
     }
 
@@ -395,7 +398,7 @@ static int Open( vlc_object_t *p_this, bool isDialogProvider )
     return VLC_SUCCESS;
 }
 
-/* Open qt4 interface */
+/* Open Qt interface */
 static int OpenIntf( vlc_object_t *p_this )
 {
     return Open( p_this, false );
@@ -414,8 +417,11 @@ static void Close( vlc_object_t *p_this )
 
     if( !p_sys->b_isDialogProvider )
     {
-        var_Destroy (pl_Get(p_this), "window");
-        var_Destroy (pl_Get(p_this), "qt4-iface");
+        playlist_t *pl = pl_Get(p_this);
+
+        var_Destroy (pl, "window");
+        var_Destroy (pl, "qt4-iface");
+        playlist_Deactivate (pl); /* release window provider if needed */
     }
 
     /* And quit */
@@ -438,8 +444,8 @@ static void *Thread( void *obj )
     intf_thread_t *p_intf = (intf_thread_t *)obj;
     MainInterface *p_mi;
     char dummy[] = "vlc"; /* for WM_CLASS */
-    char *argv[2] = { dummy, NULL, };
-    int argc = 1;
+    char *argv[] = { dummy, NULL, };
+    int argc = sizeof(argv) / sizeof(argv[0]) - 1;
 
     Q_INIT_RESOURCE( vlc );
 
@@ -451,7 +457,7 @@ static void *Thread( void *obj )
 
     /* All the settings are in the .conf/.ini style */
     p_intf->p_sys->mainSettings = new QSettings(
-#ifdef WIN32
+#ifdef _WIN32
             QSettings::IniFormat,
 #else
             QSettings::NativeFormat,
@@ -461,9 +467,9 @@ static void *Thread( void *obj )
     /* Icon setting, Mac uses icon from .icns */
 #ifndef Q_WS_MAC
     if( QDate::currentDate().dayOfYear() >= QT_XMAS_JOKE_DAY && var_InheritBool( p_intf, "qt-icon-change" ) )
-        app.setWindowIcon( QIcon(vlc_xmas_xpm) );
+        app.setWindowIcon( QIcon::fromTheme( "vlc-xmas", QIcon( ":/logo/vlc128-xmas.png" ) ) );
     else
-        app.setWindowIcon( QIcon(vlc_xpm) );
+        app.setWindowIcon( QIcon::fromTheme( "vlc", QIcon( ":/logo/vlc256.png" ) ) );
 #endif
 
     /* Initialize timers and the Dialog Provider */
@@ -500,6 +506,22 @@ static void *Thread( void *obj )
 
     /* Explain how to show a dialog :D */
     p_intf->pf_show_dialog = ShowDialog;
+
+    /* Check window type from the Qt platform back-end */
+    p_intf->p_sys->voutWindowType = VOUT_WINDOW_TYPE_INVALID;
+#if defined (Q_WS_QPA)
+    QString platform = app.platformName();
+    if( platform == qfu("xcb") )
+        p_intf->p_sys->voutWindowType = VOUT_WINDOW_TYPE_XID;
+    else
+        msg_Err( p_intf, "unknown Qt platform: %s", qtu(platform) );
+#elif defined (Q_WS_X11)
+    p_intf->p_sys->voutWindowType = VOUT_WINDOW_TYPE_XID;
+#elif defined (Q_WS_WIN) || defined (Q_WS_PM)
+    p_intf->p_sys->voutWindowType = VOUT_WINDOW_TYPE_HWND;
+#elif defined (Q_WS_MAC)
+    p_intf->p_sys->voutWindowType = VOUT_WINDOW_TYPE_NSOBJECT;
+#endif
 
     /* Tell the main LibVLC thread we are ready */
     vlc_sem_post (&ready);
@@ -539,6 +561,9 @@ static void *Thread( void *obj )
            slots in the MainInputManager */
         delete p_mi;
     }
+
+    /* */
+    ExtensionsManager::killInstance();
 
     /* Destroy all remaining windows,
        because some are connected to some slots
@@ -589,20 +614,24 @@ static int WindowControl( vout_window_t *, int i_query, va_list );
 
 static int WindowOpen( vout_window_t *p_wnd, const vout_window_cfg_t *cfg )
 {
-    /* */
     if( cfg->is_standalone )
         return VLC_EGENERIC;
-#if defined (Q_WS_X11)
-    if( var_InheritBool( p_wnd, "video-wallpaper" ) )
-        return VLC_EGENERIC;
-#endif
 
     intf_thread_t *p_intf =
         (intf_thread_t *)var_InheritAddress( p_wnd, "qt4-iface" );
     if( !p_intf )
     {   /* If another interface is used, this plugin cannot work */
-        msg_Dbg( p_wnd, "Qt4 interface not found" );
+        msg_Dbg( p_wnd, "Qt interface not found" );
         return VLC_EGENERIC;
+    }
+    if( p_intf->p_sys->voutWindowType != cfg->type )
+        return VLC_EGENERIC;
+    switch( cfg->type )
+    {
+        case VOUT_WINDOW_TYPE_XID:
+            if( var_InheritBool( p_wnd, "video-wallpaper" ) )
+                return VLC_EGENERIC;
+            break;
     }
 
     QMutexLocker locker (&lock);
@@ -610,31 +639,30 @@ static int WindowOpen( vout_window_t *p_wnd, const vout_window_cfg_t *cfg )
         return VLC_EGENERIC;
 
     MainInterface *p_mi = p_intf->p_sys->p_mi;
-    msg_Dbg( p_wnd, "requesting video..." );
+    msg_Dbg( p_wnd, "requesting video window..." );
 
     int i_x = cfg->x;
     int i_y = cfg->y;
     unsigned i_width = cfg->width;
     unsigned i_height = cfg->height;
 
-#if defined (Q_WS_X11)
-    p_wnd->handle.xid = p_mi->getVideo( &i_x, &i_y, &i_width, &i_height );
-    if( !p_wnd->handle.xid )
-        return VLC_EGENERIC;
-    p_wnd->display.x11 = NULL;
-
-#elif defined (Q_WS_WIN) || defined(Q_WS_PM)
-    p_wnd->handle.hwnd = (void *)p_mi->getVideo( &i_x, &i_y, &i_width, &i_height );
-    if( !p_wnd->handle.hwnd )
+    WId wid = p_mi->getVideo( &i_x, &i_y, &i_width, &i_height );
+    if( !wid )
         return VLC_EGENERIC;
 
-#elif defined (Q_WS_MAC)
-    p_wnd->handle.nsobject = (void *)p_mi->getVideo( &i_x, &i_y, &i_width, &i_height );
-    if( !p_wnd->handle.nsobject )
-        return VLC_EGENERIC;
-#else
-# error FIXME
-#endif
+    switch( cfg->type )
+    {
+        case VOUT_WINDOW_TYPE_XID:
+            p_wnd->handle.xid = (uintptr_t)wid;
+            p_wnd->display.x11 = NULL;
+            break;
+        case VOUT_WINDOW_TYPE_HWND:
+            p_wnd->handle.hwnd = (void *)wid;
+            break;
+        case VOUT_WINDOW_TYPE_NSOBJECT:
+            p_wnd->handle.nsobject = (void *)wid;
+            break;
+    }
 
     p_wnd->control = WindowControl;
     p_wnd->sys = (vout_window_sys_t*)p_mi;

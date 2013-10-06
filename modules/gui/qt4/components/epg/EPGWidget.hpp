@@ -1,8 +1,8 @@
 /*****************************************************************************
- * EPGWidget.h : EPGWidget
+ * EPGWidget.hpp : EPGWidget
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: f9b059620be42c1137ba0587954b181f73c3ff2c $
+ * $Id: c269b48cbe7adc69ff86704bf8bebbea639db05f $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -43,6 +43,11 @@ class EPGWidget : public QWidget
 public:
     explicit EPGWidget( QWidget* parent = 0 );
     void reset();
+    enum
+    {
+        EPGVIEW_WIDGET = 0,
+        NOEPG_WIDGET = 1
+    };
 
 public slots:
     void setZoom( int level );

@@ -2,7 +2,7 @@
  * playtree.cpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 4f760efb62d18a564042f19c060e1cc0d0e8052e $
+ * $Id: 1cb635ad2d27e9a60916146b491a0712b06f3795 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -116,7 +116,7 @@ void Playtree::onUpdateItem( int id )
             return;
         }
 
-        UString *pName = new UString( getIntf(), pNode->p_input->psz_name );
+        UString *pName = getTitle( pNode->p_input );
         playlist_Unlock( m_pPlaylist );
 
         if( *pName != *(it->getString()) )
@@ -127,6 +127,11 @@ void Playtree::onUpdateItem( int id )
                 tree_update::ItemUpdated, IteratorVisible( it, this ) );
             notify( &descr );
         }
+        else
+        {
+            delete pName;
+        }
+
     }
     else
     {
@@ -217,9 +222,7 @@ void Playtree::onAppend( playlist_add_t *p_add )
         for( pos = 0; pos < pItem->p_parent->i_children; pos++ )
             if( pItem->p_parent->pp_children[pos] == pItem ) break;
 
-        UString *pName = new UString( getIntf(),
-                                      pItem->p_input->psz_name );
-
+        UString *pName = getTitle( pItem->p_input );
         playlist_item_t* current = playlist_CurrentPlayingItem( m_pPlaylist );
 
         Iterator it = it_node->add(
@@ -239,7 +242,7 @@ void Playtree::onAppend( playlist_add_t *p_add )
 
 void Playtree::buildNode( playlist_item_t *pNode, VarTree &rTree )
 {
-    UString *pName = new UString( getIntf(), pNode->p_input->psz_name );
+    UString *pName = getTitle( pNode->p_input );
     Iterator it = rTree.add(
         pNode->i_id, UStringPtr( pName ), false,
         playlist_CurrentPlayingItem(m_pPlaylist) == pNode,
@@ -323,26 +326,43 @@ void Playtree::insertItems( VarTree& elem, const list<string>& files, bool start
     for( list<string>::const_iterator it = files.begin();
          it != files.end(); ++it, i_pos++, first = false )
     {
-        char* psz_uri = make_URI( it->c_str(), NULL );
-        if( !psz_uri )
+        input_item_t *pItem;
+
+        if( strstr( it->c_str(), "://" ) )
+            pItem = input_item_New( it->c_str(), NULL );
+        else
+        {
+            char *psz_uri = vlc_path2uri( it->c_str(), NULL );
+            if( psz_uri == NULL )
+                continue;
+            pItem = input_item_New( psz_uri, NULL );
+            free( psz_uri );
+        }
+
+        if( pItem == NULL)
             continue;
 
-        input_item_t* pItem = input_item_New( psz_uri, NULL );
-        if( pItem )
-        {
-            int i_mode = PLAYLIST_APPEND;
-            if( first && start )
-                i_mode |= PLAYLIST_GO;
+        int i_mode = PLAYLIST_APPEND;
+        if( first && start )
+            i_mode |= PLAYLIST_GO;
 
-            playlist_NodeAddInput( m_pPlaylist, pItem, p_node,
-                                   i_mode, i_pos, pl_Locked );
-        }
-        free( psz_uri );
+        playlist_NodeAddInput( m_pPlaylist, pItem, p_node,
+                               i_mode, i_pos, pl_Locked );
     }
 
 fin:
     playlist_Unlock( m_pPlaylist );
 }
+
+
+UString* Playtree::getTitle( input_item_t *pItem )
+{
+    char *psz_name = input_item_GetTitleFbName( pItem );
+    UString *pTitle = new UString( getIntf(), psz_name );
+    free( psz_name );
+    return pTitle;
+}
+
 
 VarTree::Iterator Playtree::findById( int id )
 {

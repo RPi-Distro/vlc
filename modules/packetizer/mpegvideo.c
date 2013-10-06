@@ -1,27 +1,27 @@
 /*****************************************************************************
  * mpegvideo.c: parse and packetize an MPEG1/2 video stream
  *****************************************************************************
- * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: eb931338c3a103799507732dd0391972b2b2c2a4 $
+ * Copyright (C) 2001-2006 VLC authors and VideoLAN
+ * $Id: 2020cfb0d41ecc86ff78eedd8d961762296f8191 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -265,7 +265,7 @@ static block_t *GetCc( decoder_t *p_dec, bool pb_present[4] )
     if( p_sys->cc.i_data <= 0 )
         return NULL;
 
-    p_cc = block_New( p_dec, p_sys->cc.i_data);
+    p_cc = block_Alloc( p_sys->cc.i_data );
     if( p_cc )
     {
         memcpy( p_cc->p_buffer, p_sys->cc.p_data, p_sys->cc.i_data );
@@ -538,7 +538,7 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
             /* Unofficial 15fps from Xing*/
             { 15, 1001 },
             /* Unofficial economy rates from libmpeg3 */
-            { 5, 1001 }, { 10, 1001 }, { 12, 1001 }, { 15, 1001 },
+            { 5000, 1001 }, { 1000, 1001 }, { 12000, 1001 }, { 15000, 1001 },
             { 1, 1 },  { 1, 1 }  /* invalid */
         };
 

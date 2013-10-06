@@ -24,7 +24,7 @@
 
 #define _XPG4_2 /* ancilliary data on Solaris */
 
-#if !defined (WIN32) && !defined (__OS2__)
+#if !defined (_WIN32) && !defined (__OS2__)
 # define ENABLE_ROOTWRAP 1
 #endif
 
@@ -91,7 +91,7 @@ static int recv_fd (int p)
          cmsg = CMSG_NXTHDR (&hdr, cmsg))
     {
         if ((cmsg->cmsg_level == SOL_SOCKET)
-         && (cmsg->cmsg_type = SCM_RIGHTS)
+         && (cmsg->cmsg_type == SCM_RIGHTS)
          && (cmsg->cmsg_len >= CMSG_LEN (sizeof (fd))))
         {
             memcpy (&fd, CMSG_DATA (cmsg), sizeof (fd));
@@ -167,7 +167,10 @@ int rootwrap_bind (int family, int socktype, int protocol,
 
     pthread_mutex_lock (&mutex);
     if (send (sock, &ss, sizeof (ss), 0) != sizeof (ss))
+    {
+        pthread_mutex_unlock (&mutex);
         return -1;
+    }
 
     fd = recv_fd (sock);
     pthread_mutex_unlock (&mutex);

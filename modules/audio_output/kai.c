@@ -1,23 +1,23 @@
 /*****************************************************************************
  * kai.c : KAI audio output plugin for vlc
  *****************************************************************************
- * Copyright (C) 2010 the VideoLAN team
+ * Copyright (C) 2010-2013 VLC authors and VideoLAN
  *
  * Authors: KO Myung-Hun <komh@chollian.net>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -37,6 +37,21 @@
 
 #define FRAME_SIZE 2048
 
+#define AUDIO_BUFFER_SIZE_IN_SECONDS ( AOUT_MAX_ADVANCE_TIME / CLOCK_FREQ )
+
+struct audio_buffer_t
+{
+    uint8_t    *data;
+    int         read_pos;
+    int         write_pos;
+    int         length;
+    int         size;
+    vlc_mutex_t mutex;
+    vlc_cond_t  cond;
+};
+
+typedef struct audio_buffer_t audio_buffer_t;
+
 /*****************************************************************************
  * aout_sys_t: KAI audio output method descriptor
  *****************************************************************************
@@ -45,18 +60,31 @@
  *****************************************************************************/
 struct aout_sys_t
 {
-    aout_packet_t   packet;
+    audio_buffer_t *buffer;
     HKAI            hkai;
+    float           soft_gain;
+    bool            soft_mute;
+    audio_sample_format_t format;
 };
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static int  Open  ( vlc_object_t * );
-static void Close ( vlc_object_t * );
-static void Play  ( audio_output_t *_p_aout, block_t *block );
+static int  Open    ( vlc_object_t * );
+static void Close   ( vlc_object_t * );
+static void Play    ( audio_output_t *_p_aout, block_t *block );
+static void Pause   ( audio_output_t *, bool, mtime_t );
+static void Flush   ( audio_output_t *, bool );
+static int  TimeGet ( audio_output_t *, mtime_t *restrict );
 
 static ULONG APIENTRY KaiCallback ( PVOID, PVOID, ULONG );
+
+static int  CreateBuffer ( audio_output_t *, int );
+static void DestroyBuffer( audio_output_t * );
+static int  ReadBuffer   ( audio_output_t *, uint8_t *, int );
+static int  WriteBuffer  ( audio_output_t *, uint8_t *, int );
+
+#include "volume.h"
 
 /*****************************************************************************
  * Module descriptor
@@ -85,8 +113,8 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_AUDIO_AOUT )
     add_string( "kai-audio-device", ppsz_kai_audio_device[0],
                 KAI_AUDIO_DEVICE_TEXT, KAI_AUDIO_DEVICE_LONGTEXT, false )
-        change_string_list( ppsz_kai_audio_device, ppsz_kai_audio_device_text,
-                            0 )
+        change_string_list( ppsz_kai_audio_device, ppsz_kai_audio_device_text )
+    add_sw_gain( )
     add_bool( "kai-audio-exclusive-mode", false,
               KAI_AUDIO_EXCLUSIVE_MODE_TEXT, KAI_AUDIO_EXCLUSIVE_MODE_LONGTEXT,
               true )
@@ -96,39 +124,16 @@ vlc_module_end ()
 /*****************************************************************************
  * Open: open the audio device
  *****************************************************************************/
-static int Open ( vlc_object_t *p_this )
+static int Start ( audio_output_t *p_aout, audio_sample_format_t *fmt )
 {
-    audio_output_t *p_aout = (audio_output_t *)p_this;
-    aout_sys_t *p_sys;
+    aout_sys_t *p_sys = p_aout->sys;
     char *psz_mode;
     ULONG i_kai_mode;
     KAISPEC ks_wanted, ks_obtained;
     int i_nb_channels;
     int i_bytes_per_frame;
     vlc_value_t val, text;
-    audio_format_t format =  p_aout->format;
-
-    /* Allocate structure */
-    p_aout->sys = calloc( 1, sizeof( aout_sys_t ) );
-
-    if( p_aout->sys == NULL )
-        return VLC_ENOMEM;
-
-    p_sys = p_aout->sys;
-
-    if( var_Get( p_aout, "audio-device", &val ) != VLC_ENOVAR )
-    {
-        /* The user has selected an audio device. */
-        if ( val.i_int == AOUT_VAR_STEREO )
-        {
-            format.i_physical_channels
-                = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT;
-        }
-        else if ( val.i_int == AOUT_VAR_MONO )
-        {
-            format.i_physical_channels = AOUT_CHAN_CENTER;
-        }
-    }
+    audio_sample_format_t format = *fmt;
 
     psz_mode = var_InheritString( p_aout, "kai-audio-device" );
     if( !psz_mode )
@@ -145,16 +150,17 @@ static int Open ( vlc_object_t *p_this )
         free( psz_mode );
 
     i_nb_channels = aout_FormatNbChannels( &format );
-    if ( i_nb_channels > 2 )
+    if ( i_nb_channels >= 2 )
     {
         /* KAI doesn't support more than two channels. */
         i_nb_channels = 2;
-        format.i_physical_channels
-            = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT;
+        format.i_physical_channels = AOUT_CHANS_STEREO;
     }
+    else
+        format.i_physical_channels = AOUT_CHAN_CENTER;
 
-    /* Support s16l only */
-    format.i_format = VLC_CODEC_S16L;
+    /* Support S16 only */
+    format.i_format = VLC_CODEC_S16N;
 
     aout_FormatPrepare( &format );
 
@@ -165,7 +171,7 @@ static int Open ( vlc_object_t *p_this )
     {
         msg_Err( p_aout, "cannot initialize KAI");
 
-        goto exit_free_sys;
+        return VLC_EGENERIC;
     }
 
     ks_wanted.usDeviceIndex   = 0;
@@ -197,43 +203,17 @@ static int Open ( vlc_object_t *p_this )
     msg_Dbg( p_aout, "obtained i_bytes_per_frame = %d",
              format.i_bytes_per_frame );
 
-    p_aout->format   = format;
+    p_sys->format = *fmt = format;
 
-    p_aout->pf_play  = Play;
-    p_aout->pf_pause = aout_PacketPause;
-    p_aout->pf_flush = aout_PacketFlush;
+    p_aout->time_get = TimeGet;
+    p_aout->play     = Play;
+    p_aout->pause    = Pause;
+    p_aout->flush    = Flush;
 
-    aout_PacketInit( p_aout, &p_sys->packet,
-                     ks_obtained.ulBufferSize / i_bytes_per_frame );
-    aout_VolumeSoftInit( p_aout );
+    aout_SoftVolumeStart( p_aout );
 
-    if ( var_Type( p_aout, "audio-device" ) == 0 )
-    {
-        /* First launch. */
-        var_Create( p_aout, "audio-device",
-                    VLC_VAR_INTEGER | VLC_VAR_HASCHOICE );
-        text.psz_string = _("Audio Device");
-        var_Change( p_aout, "audio-device", VLC_VAR_SETTEXT, &text, NULL );
-
-        val.i_int = AOUT_VAR_STEREO;
-        text.psz_string = _("Stereo");
-        var_Change( p_aout, "audio-device", VLC_VAR_ADDCHOICE, &val, &text );
-        val.i_int = AOUT_VAR_MONO;
-        text.psz_string = _("Mono");
-        var_Change( p_aout, "audio-device", VLC_VAR_ADDCHOICE, &val, &text );
-        if ( i_nb_channels == 2 )
-        {
-            val.i_int = AOUT_VAR_STEREO;
-        }
-        else
-        {
-            val.i_int = AOUT_VAR_MONO;
-        }
-        var_Change( p_aout, "audio-device", VLC_VAR_SETDEFAULT, &val, NULL );
-        var_AddCallback( p_aout, "audio-device", aout_ChannelsRestart, NULL );
-    }
-
-    var_TriggerCallback( p_aout, "intf-change" );
+    CreateBuffer( p_aout, AUDIO_BUFFER_SIZE_IN_SECONDS *
+                          format.i_rate * format.i_bytes_per_frame );
 
     /* Prevent SIG_FPE */
     _control87(MCW_EM, MCW_EM);
@@ -242,9 +222,6 @@ static int Open ( vlc_object_t *p_this )
 
 exit_kai_done :
     kaiDone();
-
-exit_free_sys :
-    free( p_sys );
 
     return VLC_EGENERIC;
 }
@@ -258,22 +235,22 @@ static void Play (audio_output_t *p_aout, block_t *block)
 
     kaiPlay( p_sys->hkai );
 
-    aout_PacketPlay( p_aout, block );
+    WriteBuffer( p_aout, block->p_buffer, block->i_buffer );
+
+    block_Release( block );
 }
 
 /*****************************************************************************
  * Close: close the audio device
  *****************************************************************************/
-static void Close ( vlc_object_t *p_this )
+static void Stop ( audio_output_t *p_aout )
 {
-    audio_output_t *p_aout = (audio_output_t *)p_this;
     aout_sys_t *p_sys = p_aout->sys;
 
     kaiClose( p_sys->hkai );
     kaiDone();
 
-    aout_PacketDestroy( p_aout );
-    free( p_sys );
+    DestroyBuffer( p_aout );
 }
 
 /*****************************************************************************
@@ -284,57 +261,189 @@ static ULONG APIENTRY KaiCallback( PVOID p_cb_data,
                                    ULONG i_buf_size )
 {
     audio_output_t *p_aout = (audio_output_t *)p_cb_data;
-    aout_buffer_t  *p_aout_buffer;
-    mtime_t current_date, next_date;
-    ULONG i_len;
+    int i_len;
 
-    /* We have 2 buffers, and a callback function is called right after KAI
-     * runs out of a buffer. So we should get a packet to be played after the
-     * remaining buffer.
-     */
-    next_date = mdate() + ( i_buf_size * 1000000LL
-                                       / p_aout->format.i_bytes_per_frame
-                                       / p_aout->format.i_rate
-                                       * p_aout->format.i_frame_length );
-
-    for (i_len = 0; i_len < i_buf_size;)
-    {
-        current_date = mdate();
-        if( next_date < current_date )
-            next_date = current_date;
-
-        /* Get the next audio data buffer */
-        p_aout_buffer = aout_PacketNext( p_aout, next_date );
-
-        if( p_aout_buffer == NULL )
-        {
-            /* Means we are too early to request a new buffer ?
-             * Try once again.
-             */
-            msleep( AOUT_MIN_PREPARE_TIME );
-            next_date = mdate();
-            p_aout_buffer = aout_PacketNext( p_aout, next_date );
-        }
-
-        if ( p_aout_buffer != NULL )
-        {
-            vlc_memcpy( ( uint8_t * ) p_buffer + i_len,
-                        p_aout_buffer->p_buffer,
-                        p_aout_buffer->i_buffer );
-
-            i_len += p_aout_buffer->i_buffer;
-
-            next_date += p_aout_buffer->i_length;
-
-            aout_BufferFree( p_aout_buffer );
-        }
-        else
-        {
-            vlc_memset( ( uint8_t * ) p_buffer + i_len, 0, i_buf_size - i_len );
-
-            i_len = i_buf_size;
-        }
-    }
+    i_len = ReadBuffer( p_aout, p_buffer, i_buf_size );
+    if(( ULONG )i_len < i_buf_size )
+        memset(( uint8_t * )p_buffer + i_len, 0, i_buf_size - i_len );
 
     return i_buf_size;
+}
+
+static int Open (vlc_object_t *obj)
+{
+    audio_output_t *aout = (audio_output_t *)obj;
+    aout_sys_t *sys = calloc( 1, sizeof( aout_sys_t ) );
+
+    if( unlikely( sys == NULL ))
+        return VLC_ENOMEM;
+
+    aout->sys = sys;
+    aout->start = Start;
+    aout->stop = Stop;
+    aout_SoftVolumeInit( aout );
+    return VLC_SUCCESS;
+}
+
+static void Close( vlc_object_t *obj )
+{
+    audio_output_t *aout = (audio_output_t *)obj;
+    aout_sys_t *sys = aout->sys;
+
+    free(sys);
+}
+
+static void Pause( audio_output_t *aout, bool pause, mtime_t date )
+{
+    VLC_UNUSED( date );
+
+    aout_sys_t *sys = aout->sys;
+
+    if( pause )
+        kaiPause( sys->hkai );
+    else
+        kaiResume( sys->hkai );
+}
+
+static void Flush( audio_output_t *aout, bool drain )
+{
+    audio_buffer_t *buffer = aout->sys->buffer;
+
+    vlc_mutex_lock( &buffer->mutex );
+
+    if( drain )
+    {
+        while( buffer->length > 0 )
+            vlc_cond_wait( &buffer->cond, &buffer->mutex );
+    }
+    else
+    {
+        buffer->read_pos = buffer->write_pos;
+        buffer->length   = 0;
+    }
+
+    vlc_mutex_unlock( &buffer->mutex );
+}
+
+static int TimeGet( audio_output_t *aout, mtime_t *restrict delay )
+{
+    aout_sys_t            *sys = aout->sys;
+    audio_sample_format_t *format = &sys->format;
+    audio_buffer_t        *buffer = sys->buffer;
+
+    vlc_mutex_lock( &buffer->mutex );
+
+    *delay = ( buffer->length / format->i_bytes_per_frame ) * CLOCK_FREQ /
+             format->i_rate;
+
+    vlc_mutex_unlock( &buffer->mutex );
+
+    return 0;
+}
+
+static int CreateBuffer( audio_output_t *aout, int size )
+{
+    audio_buffer_t *buffer;
+
+    buffer = calloc( 1, sizeof( *buffer ));
+    if( !buffer )
+        return -1;
+
+    buffer->data = malloc( size );
+    if( !buffer->data )
+    {
+        free( buffer );
+
+        return -1;
+    }
+
+    buffer->size = size;
+
+    vlc_mutex_init( &buffer->mutex );
+    vlc_cond_init( &buffer->cond );
+
+    aout->sys->buffer = buffer;
+
+    return 0;
+}
+
+static void DestroyBuffer( audio_output_t *aout )
+{
+    audio_buffer_t *buffer = aout->sys->buffer;
+
+    vlc_mutex_destroy( &buffer->mutex );
+    vlc_cond_destroy( &buffer->cond );
+
+    free( buffer->data );
+    free( buffer );
+}
+
+static int ReadBuffer( audio_output_t *aout, uint8_t *data, int size )
+{
+    audio_buffer_t *buffer = aout->sys->buffer;
+    int             len;
+    int             remain_len = 0;
+
+    vlc_mutex_lock( &buffer->mutex );
+
+    len = MIN( buffer->length, size );
+    if( buffer->read_pos + len > buffer->size )
+    {
+        remain_len  = len;
+        len         = buffer->size - buffer->read_pos;
+        remain_len -= len;
+    }
+
+    memcpy( data, buffer->data + buffer->read_pos, len );
+    if( remain_len )
+        memcpy( data + len, buffer->data, remain_len );
+
+    len += remain_len;
+
+    buffer->read_pos += len;
+    buffer->read_pos %= buffer->size;
+
+    buffer->length -= len;
+
+    vlc_cond_signal( &buffer->cond );
+
+    vlc_mutex_unlock( &buffer->mutex );
+
+    return len;
+}
+
+static int WriteBuffer( audio_output_t *aout, uint8_t *data, int size )
+{
+    audio_buffer_t *buffer = aout->sys->buffer;
+    int             len;
+    int             remain_len = 0;
+
+    vlc_mutex_lock( &buffer->mutex );
+
+    /* FIXME :
+     * If size is larger than buffer->size, this is locked indefinitely.
+     */
+    while( buffer->length + size > buffer->size )
+        vlc_cond_wait( &buffer->cond, &buffer->mutex );
+
+    len = size;
+    if( buffer->write_pos + len > buffer->size )
+    {
+        remain_len  = len;
+        len         = buffer->size - buffer->write_pos;
+        remain_len -= len;
+    }
+
+    memcpy( buffer->data + buffer->write_pos, data, len );
+    if( remain_len )
+        memcpy( buffer->data, data + len, remain_len );
+
+    buffer->write_pos += size;
+    buffer->write_pos %= buffer->size;
+
+    buffer->length += size;
+
+    vlc_mutex_unlock( &buffer->mutex );
+
+    return size;
 }

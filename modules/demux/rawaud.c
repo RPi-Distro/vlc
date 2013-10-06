@@ -1,24 +1,24 @@
 /*****************************************************************************
  * rawaud.c : raw audio input module for vlc
  *****************************************************************************
- * Copyright (C) 2009 the VideoLAN team
- * $Id: 36cf73b996f2e722c3779ab0f02c9aad4bc6437a $
+ * Copyright (C) 2009 VLC authors and VideoLAN
+ * $Id: 9dd6da644b8f0cc0c8670b799b8aaa6ecfbc3cb2 $
  *
  * Authors: Jarmo Torvinen <jarmo.torvinen@jutel.fi>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -103,9 +103,6 @@ static int Open( vlc_object_t * p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
 
-    /* Set p_input field */
-    p_demux->pf_demux   = Demux;
-    p_demux->pf_control = Control;
     p_demux->p_sys      = p_sys = malloc( sizeof( demux_sys_t ) );
     if( !p_sys )
         return VLC_ENOMEM;
@@ -210,6 +207,8 @@ static int Open( vlc_object_t * p_this )
     p_sys->i_frame_size = p_sys->i_frame_samples * p_sys->i_seek_step;
     msg_Dbg( p_demux, "frame size is %d bytes ", p_sys->i_frame_size);
 
+    p_demux->pf_demux   = Demux;
+    p_demux->pf_control = Control;
     return VLC_SUCCESS;
 }
 

@@ -5,20 +5,20 @@
 /*****************************************************************************
  * Copyright © 2009 Rémi Denis-Courmont
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- ****************************************************************************/
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -38,7 +38,7 @@ typedef xcb_atom_t Atom;
 #include <vlc_plugin.h>
 #include <vlc_vout_window.h>
 
-#include "xcb_vlc.h"
+#include "events.h"
 
 #define DISPLAY_TEXT N_("X11 display")
 #define DISPLAY_LONGTEXT N_( \
@@ -266,7 +266,7 @@ static int Open (vout_window_t *wnd, const vout_window_cfg_t *cfg)
 
     p_sys->conn = conn;
     if (var_InheritBool (wnd, "keyboard-events"))
-        p_sys->keys = CreateKeyHandler (VLC_OBJECT(wnd), conn);
+        p_sys->keys = XCB_keyHandler_Create (VLC_OBJECT(wnd), conn);
     else
         p_sys->keys = NULL;
     p_sys->root = scr->root;
@@ -334,7 +334,7 @@ static int Open (vout_window_t *wnd, const vout_window_cfg_t *cfg)
      * request from this thread must be completed at this point. */
     if ((p_sys->keys != NULL)
      && vlc_clone (&p_sys->thread, Thread, wnd, VLC_THREAD_PRIORITY_LOW))
-        DestroyKeyHandler (p_sys->keys);
+        XCB_keyHandler_Destroy (p_sys->keys);
 
     xcb_flush (conn); /* Make sure map_window is sent (should be useless) */
     return VLC_SUCCESS;
@@ -359,7 +359,7 @@ static void Close (vout_window_t *wnd)
     {
         vlc_cancel (p_sys->thread);
         vlc_join (p_sys->thread, NULL);
-        DestroyKeyHandler (p_sys->keys);
+        XCB_keyHandler_Destroy (p_sys->keys);
     }
     xcb_disconnect (conn);
     free (wnd->display.x11);
@@ -388,7 +388,7 @@ static void *Thread (void *data)
         int canc = vlc_savecancel ();
         while ((ev = xcb_poll_for_event (conn)) != NULL)
         {
-            if (ProcessKeyEvent (p_sys->keys, ev) == 0)
+            if (XCB_keyHandler_Process (p_sys->keys, ev) == 0)
                 continue;
             msg_Dbg (wnd, "unhandled event: %"PRIu8, ev->response_type);
             free (ev);
@@ -589,7 +589,7 @@ static int EmOpen (vout_window_t *wnd, const vout_window_cfg_t *cfg)
 
     if (var_InheritBool (wnd, "keyboard-events"))
     {
-        p_sys->keys = CreateKeyHandler (VLC_OBJECT(wnd), conn);
+        p_sys->keys = XCB_keyHandler_Create (VLC_OBJECT(wnd), conn);
         if (p_sys->keys != NULL)
         {
             const uint32_t mask = XCB_CW_EVENT_MASK;
@@ -603,7 +603,7 @@ static int EmOpen (vout_window_t *wnd, const vout_window_cfg_t *cfg)
     CacheAtoms (p_sys);
     if ((p_sys->keys != NULL)
      && vlc_clone (&p_sys->thread, Thread, wnd, VLC_THREAD_PRIORITY_LOW))
-        DestroyKeyHandler (p_sys->keys);
+        XCB_keyHandler_Destroy (p_sys->keys);
 
     xcb_flush (conn);
     (void) cfg;

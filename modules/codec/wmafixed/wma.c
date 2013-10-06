@@ -5,19 +5,19 @@
  *
  * Authors: Rafaël Carré <rcarre@m2x.nl>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -30,7 +30,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
-#include <vlc_aout.h>
 #include <vlc_block_helper.h>
 #include <vlc_bits.h>
 
@@ -72,7 +71,7 @@ static unsigned int pi_channels_maps[7] =
 static int  OpenDecoder   ( vlc_object_t * );
 static void CloseDecoder  ( vlc_object_t * );
 
-static aout_buffer_t *DecodeFrame  ( decoder_t *, block_t ** );
+static block_t *DecodeFrame( decoder_t *, block_t ** );
 
 /*****************************************************************************
  * Module descriptor
@@ -90,11 +89,11 @@ vlc_module_end();
  * SplitBuffer: Needed because aout really doesn't like big audio chunk and
  * wma produces easily > 30000 samples...
  *****************************************************************************/
-static aout_buffer_t *SplitBuffer( decoder_t *p_dec )
+static block_t *SplitBuffer( decoder_t *p_dec )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     unsigned int i_samples = __MIN( p_sys->i_samples, 2048 );
-    aout_buffer_t *p_buffer;
+    block_t *p_buffer;
 
     if( i_samples == 0 ) return NULL;
 
@@ -138,7 +137,7 @@ static int OpenDecoder( vlc_object_t *p_this )
 
     /* Set output properties */
     p_dec->fmt_out.i_cat = AUDIO_ES;
-    p_dec->fmt_out.i_codec = VLC_CODEC_FI32;
+    p_dec->fmt_out.i_codec = VLC_CODEC_S32N;
     p_dec->fmt_out.audio.i_bitspersample = p_dec->fmt_in.audio.i_bitspersample;
     p_dec->fmt_out.audio.i_rate = p_dec->fmt_in.audio.i_rate;
 
@@ -192,11 +191,11 @@ static int OpenDecoder( vlc_object_t *p_this )
 /*****************************************************************************
  * DecodeFrame: decodes a wma frame.
  *****************************************************************************/
-static aout_buffer_t *DecodeFrame( decoder_t *p_dec, block_t **pp_block )
+static block_t *DecodeFrame( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     block_t       *p_block;
-    aout_buffer_t *p_aout_buffer = NULL;
+    block_t       *p_aout_buffer = NULL;
 
     if( !pp_block || !*pp_block ) return NULL;
 
@@ -294,7 +293,7 @@ static aout_buffer_t *DecodeFrame( decoder_t *p_dec, block_t **pp_block )
     p_block->i_buffer = 0; /* this block has been decoded */
 
     for( size_t s = 0 ; s < i_buffer; s++ )
-        p_sys->p_output[s] >>= 2; /* Q30 -> Q28 translation */
+        p_sys->p_output[s] <<= 2; /* Q30 -> Q32 translation */
 
     p_aout_buffer = SplitBuffer( p_dec );
     assert( p_aout_buffer );

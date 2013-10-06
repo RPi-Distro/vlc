@@ -1,24 +1,24 @@
 /*****************************************************************************
  * events.c: Windows DirectX video output events handler
  *****************************************************************************
- * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 004f841b58ac0f4a586b35e52156ed509426fe98 $
+ * Copyright (C) 2001-2009 VLC authors and VideoLAN
+ * $Id: ada4d43090d58d3fd5c18822e18fe8120c87de99 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 
@@ -40,7 +40,7 @@
 
 #include <ctype.h>
 
-#ifdef MODULE_NAME_IS_directx
+#ifdef MODULE_NAME_IS_directdraw
 #include <ddraw.h>
 #endif
 #ifdef MODULE_NAME_IS_direct3d
@@ -55,30 +55,6 @@
 
 #include <vlc_keys.h>
 #include "common.h"
-
-#ifdef UNDER_CE
-#include <aygshell.h>
-    //WINSHELLAPI BOOL WINAPI SHFullScreen(HWND hwndRequester, DWORD dwState);
-
-UINT GetMenuState(HMENU hMenu, UINT id, UINT flags)
-{
-    MENUITEMINFO info;
-    memset(&info, 0, sizeof(info));
-    info.cbSize = sizeof(info);
-    info.fMask = MIIM_STATE;
-    if (!GetMenuItemInfo(hMenu, id, (flags & MF_BYPOSITION) != 0, &info))
-        return -1;
-    /* XXX Submenu handling is missing... */
-    return info.fState;
-}
-#endif
-
-/*#if defined(UNDER_CE) && !defined(__PLUGIN__) --FIXME*/
-/*#   define SHFS_SHOWSIPBUTTON 0x0004
-#   define SHFS_HIDESIPBUTTON 0x0008
-#   define MENU_HEIGHT 26
-    BOOL SHFullScreen(HWND hwndRequester, DWORD dwState);
-#endif*/
 
 /*****************************************************************************
  * Local prototypes.
@@ -175,7 +151,6 @@ static void UpdateCursor( event_thread_t *p_event, bool b_show )
     }
 }
 
-#ifndef UNDER_CE
 static HCURSOR EmptyCursor( HINSTANCE instance )
 {
     const int cw = GetSystemMetrics(SM_CXCURSOR);
@@ -195,7 +170,6 @@ static HCURSOR EmptyCursor( HINSTANCE instance )
 
     return cursor;
 }
-#endif
 
 static void MousePressed( event_thread_t *p_event, HWND hwnd, unsigned button )
 {
@@ -250,10 +224,8 @@ static void *EventThread( void *p_this )
         return NULL;
     }
 
-#ifndef UNDER_CE
     /* Prevent monitor from powering off */
-    SetThreadExecutionState( ES_DISPLAY_REQUIRED | ES_CONTINUOUS );
-#endif
+    SetThreadExecutionState( ES_DISPLAY_REQUIRED | ES_SYSTEM_REQUIRED | ES_CONTINUOUS );
 
     /* Main loop */
     /* GetMessage will sleep if there's no message in the queue */
@@ -527,7 +499,7 @@ static int DirectXCreateWindow( event_thread_t *p_event )
     HMENU      hMenu;
     RECT       rect_window;
     WNDCLASS   wc;                            /* window class components */
-    char       vlc_path[MAX_PATH+1];
+    TCHAR      vlc_path[MAX_PATH+1];
     int        i_style, i_stylex;
 
     msg_Dbg( vd, "DirectXCreateWindow" );
@@ -554,18 +526,14 @@ static int DirectXCreateWindow( event_thread_t *p_event )
     }
     #endif
     p_event->cursor_arrow = LoadCursor(NULL, IDC_ARROW);
-#ifndef UNDER_CE
     p_event->cursor_empty = EmptyCursor(hInstance);
-#endif
 
     /* Get the Icon from the main app */
     p_event->vlc_icon = NULL;
-#ifndef UNDER_CE
     if( GetModuleFileName( NULL, vlc_path, MAX_PATH ) )
     {
         p_event->vlc_icon = ExtractIcon( hInstance, vlc_path, 0 );
     }
-#endif
 
     /* Fill in the window class structure */
     wc.style         = CS_OWNDC|CS_DBLCLKS;          /* style: dbl click */
@@ -645,9 +613,9 @@ static int DirectXCreateWindow( event_thread_t *p_event )
                     p_event->class_main,             /* name of window class */
                     _T(VOUT_TITLE) _T(" (DirectX Output)"),  /* window title */
                     i_style,                                 /* window style */
-                    (!p_event->wnd_cfg.x) ? CW_USEDEFAULT :
+                    (!p_event->wnd_cfg.x) ? (UINT)CW_USEDEFAULT :
                         (UINT)p_event->wnd_cfg.x,   /* default X coordinate */
-                    (!p_event->wnd_cfg.y) ? CW_USEDEFAULT :
+                    (!p_event->wnd_cfg.y) ? (UINT)CW_USEDEFAULT :
                         (UINT)p_event->wnd_cfg.y,   /* default Y coordinate */
                     rect_window.right - rect_window.left,    /* window width */
                     rect_window.bottom - rect_window.top,   /* window height */
@@ -746,9 +714,7 @@ static void DirectXCloseWindow( event_thread_t *p_event )
     if( p_event->vlc_icon )
         DestroyIcon( p_event->vlc_icon );
 
-#ifndef UNDER_CE
     DestroyCursor( p_event->cursor_empty );
-#endif
 }
 
 /*****************************************************************************
@@ -787,7 +753,6 @@ static long FAR PASCAL DirectXEventProc( HWND hwnd, UINT message,
     }
     vout_display_t *vd = p_event->vd;
 
-#ifndef UNDER_CE
     /* Catch the screensaver and the monitor turn-off */
     if( message == WM_SYSCOMMAND &&
         ( (wParam & 0xFFF0) == SC_SCREENSAVE || (wParam & 0xFFF0) == SC_MONITORPOWER ) )
@@ -795,7 +760,6 @@ static long FAR PASCAL DirectXEventProc( HWND hwnd, UINT message,
         //if( vd ) msg_Dbg( vd, "WinProc WM_SYSCOMMAND screensaver" );
         return 0; /* this stops them from happening */
     }
-#endif
 #if 0
     if( message == WM_SETCURSOR )
     {
@@ -819,7 +783,7 @@ static long FAR PASCAL DirectXEventProc( HWND hwnd, UINT message,
 
     if( hwnd == p_event->hvideownd )
     {
-#ifdef MODULE_NAME_IS_directx
+#ifdef MODULE_NAME_IS_directdraw
         vlc_mutex_lock( &p_event->lock );
         const bool use_overlay = p_event->use_overlay;
         vlc_mutex_unlock( &p_event->lock );
@@ -827,7 +791,7 @@ static long FAR PASCAL DirectXEventProc( HWND hwnd, UINT message,
 
         switch( message )
         {
-#ifdef MODULE_NAME_IS_directx
+#ifdef MODULE_NAME_IS_directdraw
         case WM_ERASEBKGND:
         /* For overlay, we need to erase background */
             return !use_overlay ? 1 : DefWindowProc(hwnd, message, wParam, lParam);
@@ -906,47 +870,9 @@ static long FAR PASCAL DirectXEventProc( HWND hwnd, UINT message,
         return DefWindowProc(hwnd, message, wParam, lParam);
 
     case WM_KILLFOCUS:
-#ifdef MODULE_NAME_IS_wingapi
-        GXSuspend();
-#endif
-#ifdef UNDER_CE
-        if( hwnd == p_event->hfswnd )
-        {
-            HWND htbar = FindWindow( _T("HHTaskbar"), NULL );
-            ShowWindow( htbar, SW_SHOW );
-        }
-
-        if( !p_event->hparent ||
-            hwnd == p_event->hfswnd )
-        {
-            SHFullScreen( hwnd, SHFS_SHOWSIPBUTTON );
-        }
-#endif
         return 0;
 
     case WM_SETFOCUS:
-#ifdef MODULE_NAME_IS_wingapi
-        GXResume();
-#endif
-#ifdef UNDER_CE
-        /* FIXME vd->cfg is not lock[ed/able] */
-#warning "FIXME: race condition"
-        if( p_event->hparent &&
-            hwnd != p_event->hfswnd && vd->cfg->is_fullscreen )
-            vout_display_SendEventFullscreen(vd, false);
-
-        if( hwnd == p_event->hfswnd )
-        {
-            HWND htbar = FindWindow( _T("HHTaskbar"), NULL );
-            ShowWindow( htbar, SW_HIDE );
-        }
-
-        if( !p_event->hparent ||
-            hwnd == p_event->hfswnd )
-        {
-            SHFullScreen( hwnd, SHFS_HIDESIPBUTTON );
-        }
-#endif
         return 0;
 
     default:
@@ -1031,7 +957,7 @@ void EventThreadMouseHide( event_thread_t *p_event )
 
 void EventThreadUpdateTitle( event_thread_t *p_event, const char *psz_fallback )
 {
-    char *psz_title = var_GetNonEmptyString( p_event->vd, "video-title" );
+    char *psz_title = var_InheritString( p_event->vd, "video-title" );
     if( !psz_title )
         psz_title = strdup( psz_fallback );
     if( !psz_title )
@@ -1117,9 +1043,9 @@ event_thread_t *EventThreadCreate( vout_display_t *vd)
     p_event->source = vd->source;
     vout_display_PlacePicture(&p_event->place, &vd->source, vd->cfg, false);
 
-    _snprintf( p_event->class_main, sizeof(p_event->class_main)/sizeof(*p_event->class_main),
+    _sntprintf( p_event->class_main, sizeof(p_event->class_main)/sizeof(*p_event->class_main),
                _T("VLC MSW %p"), p_event );
-    _snprintf( p_event->class_video, sizeof(p_event->class_video)/sizeof(*p_event->class_video),
+    _sntprintf( p_event->class_video, sizeof(p_event->class_video)/sizeof(*p_event->class_video),
                _T("VLC MSW video %p"), p_event );
     return p_event;
 }

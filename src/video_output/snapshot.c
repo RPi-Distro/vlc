@@ -2,7 +2,7 @@
  * snapshot.c : vout internal snapshot
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: dfde5bd5401eda19ca3f589e8b8ddb4a9e6fc22d $
+ * $Id: 5accd89329dcd69dcf8bc89dcc149b0c0cd31e17 $
  *
  * Authors: Gildas Bazin <gbazin _AT_ videolan _DOT_ org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -26,17 +26,17 @@
 # include "config.h"
 #endif
 
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <time.h>
+
 #include <vlc_common.h>
 #include <vlc_fs.h>
 #include <vlc_strings.h>
 #include <vlc_block.h>
 
 #include "snapshot.h"
-
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <dirent.h>
-#include <time.h>
 
 /* */
 void vout_snapshot_Init(vout_snapshot_t *snap)
@@ -149,7 +149,7 @@ int vout_snapshot_SaveImage(char **name, int *sequential,
         /* */
         char *prefix = NULL;
         if (cfg->prefix_fmt)
-            prefix = str_format(object, cfg->prefix_fmt);
+            prefix = str_format_time(cfg->prefix_fmt);
         if (prefix)
             filename_sanitize(prefix);
         else {
@@ -202,7 +202,7 @@ int vout_snapshot_SaveImage(char **name, int *sequential,
         free(prefix);
     } else {
         /* The user specified a full path name (including file name) */
-        filename = str_format(object, cfg->path);
+        filename = str_format_time(cfg->path);
         path_sanitize(filename);
     }
 

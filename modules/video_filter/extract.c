@@ -1,24 +1,24 @@
 /*****************************************************************************
  * extract.c : Extract RGB components
  *****************************************************************************
- * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 4b172a67a9f4ebd0df3fa818050574c9b8bab4a4 $
+ * Copyright (C) 2000-2006 VLC authors and VideoLAN
+ * $Id: 42953150ab4b9797777eba1d06e2fc9f180960ed $
  *
  * Authors: Antoine Cellerier <dionoea .t videolan d@t org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -252,13 +252,6 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     return CopyInfoAndRelease( p_outpic, p_pic );
 }
 
-static inline uint8_t crop( int a )
-{
-    if( a < 0 ) return 0;
-    if( a > 255 ) return 255;
-    else return (uint8_t)a;
-}
-
 #define U 128
 #define V 128
 
@@ -348,17 +341,17 @@ static void get_custom_from_yuv420( picture_t *p_inpic, picture_t *p_outpic,
         y2out = y1out + i_out_pitch;
         while( y1in < y1end )
         {
-            *uout++ = crop( (*y1in * m[3] + (*uin-U) * m[4] + (*vin-V) * m[5])
+            *uout++ = vlc_uint8( (*y1in * m[3] + (*uin-U) * m[4] + (*vin-V) * m[5])
                       / 65536 + U );
-            *vout++ = crop( (*y1in * m[6] + (*uin-U) * m[7] + (*vin-V) * m[8])
+            *vout++ = vlc_uint8( (*y1in * m[6] + (*uin-U) * m[7] + (*vin-V) * m[8])
                       / 65536 + V );
-            *y1out++ = crop( (*y1in++ * m[0] + (*uin-U) * m[1] + (*vin-V) * m[2])
+            *y1out++ = vlc_uint8( (*y1in++ * m[0] + (*uin-U) * m[1] + (*vin-V) * m[2])
                        / 65536 );
-            *y1out++ = crop( (*y1in++ * m[0] + (*uin-U) * m[1] + (*vin-V) * m[2])
+            *y1out++ = vlc_uint8( (*y1in++ * m[0] + (*uin-U) * m[1] + (*vin-V) * m[2])
                        / 65536 );
-            *y2out++ = crop( (*y2in++ * m[0] + (*uin-U) * m[1] + (*vin-V) * m[2])
+            *y2out++ = vlc_uint8( (*y2in++ * m[0] + (*uin-U) * m[1] + (*vin-V) * m[2])
                        / 65536 );
-            *y2out++ = crop( (*y2in++ * m[0] + (*uin++ - U) * m[1] + (*vin++ -V) * m[2])
+            *y2out++ = vlc_uint8( (*y2in++ * m[0] + (*uin++ - U) * m[1] + (*vin++ -V) * m[2])
                        / 65536 );
         }
         y1in  += 2*i_in_pitch  - i_visible_pitch;
@@ -393,13 +386,13 @@ static void get_custom_from_yuv422( picture_t *p_inpic, picture_t *p_outpic,
         const uint8_t *y1end = y1in + i_visible_pitch;
         while( y1in < y1end )
         {
-            *uout++ = crop( (*y1in * m[3] + (*uin-U) * m[4] + (*vin-V) * m[5])
+            *uout++ = vlc_uint8( (*y1in * m[3] + (*uin-U) * m[4] + (*vin-V) * m[5])
                       / 65536 + U );
-            *vout++ = crop( (*y1in * m[6] + (*uin-U) * m[7] + (*vin-V) * m[8])
+            *vout++ = vlc_uint8( (*y1in * m[6] + (*uin-U) * m[7] + (*vin-V) * m[8])
                       / 65536 + V );
-            *y1out++ = crop( (*y1in++ * m[0] + (*uin-U) * m[1] + (*vin-V) * m[2])
+            *y1out++ = vlc_uint8( (*y1in++ * m[0] + (*uin-U) * m[1] + (*vin-V) * m[2])
                        / 65536 );
-            *y1out++ = crop( (*y1in++ * m[0] + (*uin++ -U) * m[1] + (*vin++ -V) * m[2])
+            *y1out++ = vlc_uint8( (*y1in++ * m[0] + (*uin++ -U) * m[1] + (*vin++ -V) * m[2])
                        / 65536 );
         }
         y1in  += i_in_pitch  - i_visible_pitch;
@@ -439,17 +432,17 @@ static void get_custom_from_packedyuv422( picture_t *p_inpic,
         const uint8_t *ylend = yin + i_visible_pitch;
         while( yin < ylend )
         {
-            *uout = crop( (*yin * m[3] + (*uin-U) * m[4] + (*vin-V) * m[5])
+            *uout = vlc_uint8( (*yin * m[3] + (*uin-U) * m[4] + (*vin-V) * m[5])
                       / 65536 + U );
             uout += 4;
-            *vout = crop( (*yin * m[6] + (*uin-U) * m[7] + (*vin-V) * m[8])
+            *vout = vlc_uint8( (*yin * m[6] + (*uin-U) * m[7] + (*vin-V) * m[8])
                      / 65536 + V );
             vout += 4;
-            *yout = crop( (*yin * m[0] + (*uin-U) * m[1] + (*vin-V) * m[2])
+            *yout = vlc_uint8( (*yin * m[0] + (*uin-U) * m[1] + (*vin-V) * m[2])
                        / 65536 );
             yin  += 2;
             yout += 2;
-            *yout = crop( (*yin * m[0] + (*uin-U) * m[1] + (*vin-V) * m[2])
+            *yout = vlc_uint8( (*yin * m[0] + (*uin-U) * m[1] + (*vin-V) * m[2])
                        / 65536 );
             yin  += 2;
             yout += 2;
@@ -497,17 +490,17 @@ static void get_red_from_yuv420( picture_t *p_inpic, picture_t *p_outpic,
 -11058  0   -15504
 32768   0   45941
 */
-            *uout++ = crop( (*y1in * -11058 + (*vin - V) * -15504)
+            *uout++ = vlc_uint8( (*y1in * -11058 + (*vin - V) * -15504)
                       / 65536 + U );
-            *vout++ = crop( (*y1in * 32768 + (*vin - V) * 45941)
+            *vout++ = vlc_uint8( (*y1in * 32768 + (*vin - V) * 45941)
                       / 65536 + V );
-            *y1out++ = crop( (*y1in++ * 19595 + (*vin - V) * 27473)
+            *y1out++ = vlc_uint8( (*y1in++ * 19595 + (*vin - V) * 27473)
                        / 65536 );
-            *y1out++ = crop( (*y1in++ * 19595 + (*vin - V) * 27473)
+            *y1out++ = vlc_uint8( (*y1in++ * 19595 + (*vin - V) * 27473)
                        / 65536 );
-            *y2out++ = crop( (*y2in++ * 19594 + (*vin - V) * 27473)
+            *y2out++ = vlc_uint8( (*y2in++ * 19594 + (*vin - V) * 27473)
                        / 65536 );
-            *y2out++ = crop( (*y2in++ * 19594 + (*vin++ - V) * 27473)
+            *y2out++ = vlc_uint8( (*y2in++ * 19594 + (*vin++ - V) * 27473)
                        / 65536 );
         }
         y1in  += 2*i_in_pitch  - i_visible_pitch;
@@ -552,17 +545,17 @@ static void get_green_from_yuv420( picture_t *p_inpic, picture_t *p_outpic,
 -21710  7471    15504
 -27439  9443    19595
 */
-            *uout++ = crop( (*y1in * -21710 + (*uin-U) * 7471 + (*vin-V) * 15504)
+            *uout++ = vlc_uint8( (*y1in * -21710 + (*uin-U) * 7471 + (*vin-V) * 15504)
                       / 65536 + U );
-            *vout++ = crop( (*y1in * -27439 + (*uin-U) * 9443 + (*vin-V) * 19595)
+            *vout++ = vlc_uint8( (*y1in * -27439 + (*uin-U) * 9443 + (*vin-V) * 19595)
                       / 65536 + V );
-            *y1out++ = crop( (*y1in++ * 38470 + (*uin-U) * -13239 + (*vin-V) * -27473)
+            *y1out++ = vlc_uint8( (*y1in++ * 38470 + (*uin-U) * -13239 + (*vin-V) * -27473)
                        / 65536 );
-            *y1out++ = crop( (*y1in++ * 38470 + (*uin-U) * -13239 + (*vin-V) * -27473)
+            *y1out++ = vlc_uint8( (*y1in++ * 38470 + (*uin-U) * -13239 + (*vin-V) * -27473)
                        / 65536 );
-            *y2out++ = crop( (*y2in++ * 38470 + (*uin-U) * -13239 + (*vin-V) * -27473)
+            *y2out++ = vlc_uint8( (*y2in++ * 38470 + (*uin-U) * -13239 + (*vin-V) * -27473)
                        / 65536 );
-            *y2out++ = crop( (*y2in++ * 38470 + (*uin++ - U) * -13239 + (*vin++ -V) * -27473)
+            *y2out++ = vlc_uint8( (*y2in++ * 38470 + (*uin++ - U) * -13239 + (*vin++ -V) * -27473)
                        / 65536 );
         }
         y1in  += 2*i_in_pitch  - i_visible_pitch;
@@ -606,17 +599,17 @@ static void get_blue_from_yuv420( picture_t *p_inpic, picture_t *p_outpic,
 32768   58065   0
 -5329   -9443   0
 */
-            *uout++ = crop( (*y1in* 32768 + (*uin - U) * 58065 )
+            *uout++ = vlc_uint8( (*y1in* 32768 + (*uin - U) * 58065 )
                       / 65536 + U );
-            *vout++ = crop( (*y1in * -5329 + (*uin - U) * -9443 )
+            *vout++ = vlc_uint8( (*y1in * -5329 + (*uin - U) * -9443 )
                       / 65536 + V );
-            *y1out++ = crop( (*y1in++ * 7471 + (*uin - U) * 13239 )
+            *y1out++ = vlc_uint8( (*y1in++ * 7471 + (*uin - U) * 13239 )
                        / 65536 );
-            *y1out++ = crop( (*y1in++ * 7471 + (*uin - U) * 13239 )
+            *y1out++ = vlc_uint8( (*y1in++ * 7471 + (*uin - U) * 13239 )
                        / 65536 );
-            *y2out++ = crop( (*y2in++ * 7471 + (*uin - U) * 13239 )
+            *y2out++ = vlc_uint8( (*y2in++ * 7471 + (*uin - U) * 13239 )
                        / 65536 );
-            *y2out++ = crop( (*y2in++ * 7471 + (*uin++ - U) * 13239 )
+            *y2out++ = vlc_uint8( (*y2in++ * 7471 + (*uin++ - U) * 13239 )
                        / 65536 );
         }
         y1in  += 2*i_in_pitch  - i_visible_pitch;
@@ -655,13 +648,13 @@ static void get_red_from_yuv422( picture_t *p_inpic, picture_t *p_outpic,
 -11058  0   -15504
 32768   0   45941
 */
-            *uout++ = crop( (*y1in * -11058 + (*vin - V) * -15504)
+            *uout++ = vlc_uint8( (*y1in * -11058 + (*vin - V) * -15504)
                       / 65536 + U );
-            *vout++ = crop( (*y1in * 32768 + (*vin - V) * 45941)
+            *vout++ = vlc_uint8( (*y1in * 32768 + (*vin - V) * 45941)
                       / 65536 + V );
-            *y1out++ = crop( (*y1in++ * 19595 + (*vin - V) * 27473)
+            *y1out++ = vlc_uint8( (*y1in++ * 19595 + (*vin - V) * 27473)
                        / 65536 );
-            *y1out++ = crop( (*y1in++ * 19595 + (*vin++ - V) * 27473)
+            *y1out++ = vlc_uint8( (*y1in++ * 19595 + (*vin++ - V) * 27473)
                        / 65536 );
         }
         y1in  += i_in_pitch  - i_visible_pitch;
@@ -701,13 +694,13 @@ static void get_green_from_yuv422( picture_t *p_inpic, picture_t *p_outpic,
 -21710  7471    15504
 -27439  9443    19595
 */
-            *uout++ = crop( (*y1in * -21710 + (*uin-U) * 7471 + (*vin-V) * 15504)
+            *uout++ = vlc_uint8( (*y1in * -21710 + (*uin-U) * 7471 + (*vin-V) * 15504)
                       / 65536 + U );
-            *vout++ = crop( (*y1in * -27439 + (*uin-U) * 9443 + (*vin-V) * 19595)
+            *vout++ = vlc_uint8( (*y1in * -27439 + (*uin-U) * 9443 + (*vin-V) * 19595)
                       / 65536 + V );
-            *y1out++ = crop( (*y1in++ * 38470 + (*uin-U) * -13239 + (*vin-V) * -27473)
+            *y1out++ = vlc_uint8( (*y1in++ * 38470 + (*uin-U) * -13239 + (*vin-V) * -27473)
                        / 65536 );
-            *y1out++ = crop( (*y1in++ * 38470 + (*uin++-U) * -13239 + (*vin++-V) * -27473)
+            *y1out++ = vlc_uint8( (*y1in++ * 38470 + (*uin++-U) * -13239 + (*vin++-V) * -27473)
                        / 65536 );
         }
         y1in  += i_in_pitch  - i_visible_pitch;
@@ -747,13 +740,13 @@ static void get_blue_from_yuv422( picture_t *p_inpic, picture_t *p_outpic,
 32768   58065   0
 -5329   -9443   0
 */
-            *uout++ = crop( (*y1in* 32768 + (*uin - U) * 58065 )
+            *uout++ = vlc_uint8( (*y1in* 32768 + (*uin - U) * 58065 )
                       / 65536 + U );
-            *vout++ = crop( (*y1in * -5329 + (*uin - U) * -9443 )
+            *vout++ = vlc_uint8( (*y1in * -5329 + (*uin - U) * -9443 )
                       / 65536 + V );
-            *y1out++ = crop( (*y1in++ * 7471 + (*uin - U) * 13239 )
+            *y1out++ = vlc_uint8( (*y1in++ * 7471 + (*uin - U) * 13239 )
                        / 65536 );
-            *y1out++ = crop( (*y1in++ * 7471 + (*uin++ - U) * 13239 )
+            *y1out++ = vlc_uint8( (*y1in++ * 7471 + (*uin++ - U) * 13239 )
                        / 65536 );
         }
         y1in  += i_in_pitch  - i_visible_pitch;
