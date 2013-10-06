@@ -1,25 +1,25 @@
 /****************************************************************************
  * cdrom_internals.h: cdrom tools private header
  *****************************************************************************
- * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: dc05b484b24d31b8f04ba6718d2364159e8415e3 $
+ * Copyright (C) 1998-2001 VLC authors and VideoLAN
+ * $Id: bfef07e5795772aff51602fa270104b393df8ff8 $
  *
  * Authors: Johan Bilien <jobi@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -36,7 +36,7 @@ struct vcddev_s
 
     /* Section used in vcd device mode */
 
-#ifdef WIN32
+#ifdef _WIN32
     HANDLE h_device_handle;                         /* vcd device descriptor */
 #elif defined( __OS2__ )
     HFILE  hcd;                                     /* vcd device descriptor */
@@ -70,7 +70,7 @@ struct vcddev_s
 #define CD_MAX_TRACK_NO 99
 #endif
 
-#if defined( WIN32 )
+#if defined( _WIN32 )
 
 /* Win32 DeviceIoControl specifics */
 #ifndef MAXIMUM_NUMBER_TRACKS
@@ -127,7 +127,7 @@ typedef struct _CDROM_READ_TOC_EX {
 #define MINIMUM_CDROM_READ_TOC_EX_SIZE    2
 #define CDROM_READ_TOC_EX_FORMAT_CDTEXT   0x05
 
-#endif /* WIN32 */
+#endif /* _WIN32 */
 
 #ifdef __OS2__
 #pragma pack( push, 1 )
@@ -192,7 +192,7 @@ static void   CloseVCDImage( vlc_object_t *, struct vcddev_s * );
 static CDTOC *darwin_getTOC( vlc_object_t *, const struct vcddev_s * );
 static int    darwin_getNumberOfTracks( CDTOC *, int );
 
-#elif defined( WIN32 )
+#elif defined( _WIN32 )
 static int    win32_vcd_open( vlc_object_t *, const char *, struct vcddev_s *);
 
 #elif defined( __OS2__ )

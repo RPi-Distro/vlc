@@ -1,26 +1,26 @@
 /*****************************************************************************
  * subtitle.c: Demux for subtitle text files.
  *****************************************************************************
- * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: aa04ed6e6394e330644960edde762364553d8702 $
+ * Copyright (C) 1999-2007 VLC authors and VideoLAN
+ * $Id: 5b273c5f02961b678102b144f21f8018c66aba80 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -53,11 +53,7 @@ static void Close( vlc_object_t *p_this );
     N_("Override the normal frames per second settings. " \
     "This will only work with MicroDVD and SubRIP (SRT) subtitles.")
 #define SUB_TYPE_LONGTEXT \
-    N_("Force the subtiles format. Valid values are : \"microdvd\", " \
-    "\"subrip\", \"subviewer\", \"ssa1\", \"ssa2-4\", \"ass\", \"vplayer\", " \
-    "\"sami\", \"dvdsubtitle\", \"mpl2\", \"aqt\", \"pjs\", "\
-    "\"mpsub\", \"jacosub\", \"psb\", \"realtext\", \"dks\", \"subviewer1\", " \
-    " and \"auto\" (meaning autodetection, this should always work).")
+    N_("Force the subtiles format. Selecting \"auto\" means autodetection and should always work.")
 #define SUB_DESCRIPTION_LONGTEXT \
     N_("Override the default track description.")
 
@@ -71,20 +67,20 @@ static const char *const ppsz_sub_type[] =
 
 vlc_module_begin ()
     set_shortname( N_("Subtitles"))
-    set_description( N_("Text subtitles parser") )
+    set_description( N_("Text subtitle parser") )
     set_capability( "demux", 0 )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_DEMUX )
     add_float( "sub-fps", 0.0,
-               N_("Frames per second"),
+               N_("Frames per Second"),
                SUB_FPS_LONGTEXT, true )
     add_integer( "sub-delay", 0,
-               N_("Subtitles delay"),
+               N_("Subtitle delay"),
                SUB_DELAY_LONGTEXT, true )
-    add_string( "sub-type", "auto", N_("Subtitles format"),
+    add_string( "sub-type", "auto", N_("Subtitle format"),
                 SUB_TYPE_LONGTEXT, true )
-        change_string_list( ppsz_sub_type, NULL, NULL )
-    add_string( "sub-description", NULL, N_("Subtitles description"),
+        change_string_list( ppsz_sub_type, ppsz_sub_type )
+    add_string( "sub-description", NULL, N_("Subtitle description"),
                 SUB_DESCRIPTION_LONGTEXT, true )
     set_callbacks( Open, Close )
 
@@ -299,6 +295,17 @@ static int Open ( vlc_object_t *p_this )
     }
     free( psz_type );
 
+    /* Detect Unicode while skipping the UTF-8 Byte Order Mark */
+    bool unicode = false;
+    const uint8_t *p_data;
+    if( stream_Peek( p_demux->s, &p_data, 3 ) >= 3
+     && !memcmp( p_data, "\xEF\xBB\xBF", 3 ) )
+    {
+        unicode = true;
+        stream_Seek( p_demux->s, 3 ); /* skip BOM */
+        msg_Dbg( p_demux, "detected Unicode Byte Order Mark" );
+    }
+
     /* Probe if unknown type */
     if( p_sys->i_type == SUB_TYPE_UNKNOWN )
     {
@@ -446,15 +453,14 @@ static int Open ( vlc_object_t *p_this )
 
         /* It will nearly always work even for non seekable stream thanks the
          * caching system, and if it fails we lose just a few sub */
-        if( stream_Seek( p_demux->s, 0 ) )
-        {
+        if( stream_Seek( p_demux->s, unicode ? 3 : 0 ) )
             msg_Warn( p_demux, "failed to rewind" );
-        }
     }
 
     /* Quit on unknown subtitles */
     if( p_sys->i_type == SUB_TYPE_UNKNOWN )
     {
+        stream_Seek( p_demux->s, 0 );
         msg_Warn( p_demux, "failed to recognize subtitle type" );
         free( p_sys );
         return VLC_EGENERIC;
@@ -522,9 +528,9 @@ static int Open ( vlc_object_t *p_this )
         es_format_Init( &fmt, SPU_ES, VLC_CODEC_SSA );
     }
     else
-    {
         es_format_Init( &fmt, SPU_ES, VLC_CODEC_SUBT );
-    }
+    if( unicode )
+        fmt.subs.psz_encoding = strdup( "UTF-8" );
     char *psz_description = var_InheritString( p_demux, "sub-description" );
     if( psz_description && *psz_description )
         fmt.psz_description = psz_description;
@@ -683,7 +689,7 @@ static int Demux( demux_t *p_demux )
             continue;
         }
 
-        if( ( p_block = block_New( p_demux, i_len ) ) == NULL )
+        if( ( p_block = block_Alloc( i_len ) ) == NULL )
         {
             p_sys->i_subtitle++;
             continue;
@@ -717,7 +723,7 @@ static void Fix( demux_t *p_demux )
 
     /* *** fix order (to be sure...) *** */
     /* We suppose that there are near in order and this durty bubble sort
-     * wont take too much time
+     * would not take too much time
      */
     do
     {

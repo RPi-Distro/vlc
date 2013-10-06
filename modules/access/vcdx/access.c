@@ -1,28 +1,28 @@
 /*****************************************************************************
- * vcd.c : VCD input module for vlc using libcdio, libvcd and libvcdinfo.
+ * access.c : VCD input module for vlc using libcdio, libvcd and libvcdinfo.
  *         vlc-specific things tend to go here.
  *****************************************************************************
- * Copyright (C) 2000, 2003, 2004, 2005 the VideoLAN team
- * $Id: 0638533e65a8b2d961ec653eb942d99ddacac42b $
+ * Copyright (C) 2000, 2003, 2004, 2005 VLC authors and VideoLAN
+ * $Id: b2de5a7f8b1770e9e0814c941b909bf67c71a521 $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *   Some code is based on the non-libcdio VCD plugin (as there really
  *   isn't real developer documentation yet on how to write a
  *   navigable plugin.)
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -150,7 +150,7 @@ VCDReadBlock( access_t * p_access )
                (long unsigned int) p_vcdplayer->i_lsn );
 
     /* Allocate a block for the reading */
-    if( !( p_block = block_New( p_access, i_blocks * M2F2_SECTOR_SIZE ) ) )
+    if( !( p_block = block_Alloc( i_blocks * M2F2_SECTOR_SIZE ) ) )
     {
         msg_Err( p_access, "cannot get a new block of size: %i",
                  i_blocks * M2F2_SECTOR_SIZE );
@@ -555,7 +555,7 @@ VCDParse( access_t * p_access, /*out*/ vcdinfo_itemid_t * p_itemid,
       p_itemid->num = 0;
     }
 
-#ifdef WIN32
+#ifdef _WIN32
     /* On Win32 we want the VCD access plugin to be explicitly requested,
      * we end up with lots of problems otherwise */
     if( !p_access->psz_access || !*p_access->psz_access ) return NULL;
@@ -715,8 +715,7 @@ VCDSetOrigin( access_t *p_access, lsn_t i_lsn, track_t i_track,
                   p_vcdplayer->play_item.type );
     }
 
-    p_access->info.i_update = INPUT_UPDATE_TITLE|INPUT_UPDATE_SIZE
-                              |INPUT_UPDATE_SEEKPOINT;
+    p_access->info.i_update = INPUT_UPDATE_TITLE|INPUT_UPDATE_SEEKPOINT;
 
     VCDUpdateTitle( p_access );
 
@@ -1046,12 +1045,10 @@ static int VCDControl( access_t *p_access, int i_query, va_list args )
     case ACCESS_GET_PTS_DELAY:
         *(int64_t*)va_arg(args,int64_t *) = INT64_C(1000) *
                                 var_InheritInteger( p_access, "disc-caching" );
-        dbg_print( INPUT_DBG_EVENT, "GET PTS DELAY" );
         return VLC_SUCCESS;
 
         /* */
     case ACCESS_SET_PAUSE_STATE:
-        dbg_print( INPUT_DBG_EVENT, "SET PAUSE STATE" );
         return VLC_SUCCESS;
 
     case ACCESS_GET_TITLE_INFO:

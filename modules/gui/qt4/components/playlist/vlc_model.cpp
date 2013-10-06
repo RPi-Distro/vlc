@@ -2,7 +2,7 @@
  * vlc_model.cpp : base for playlist and ml model
  ****************************************************************************
  * Copyright (C) 2010 the VideoLAN team and AUTHORS
- * $Id: cd1ec1dc041e19cd16c441138eb63e8c2c740d07 $
+ * $Id: 4895f37362ba94db8b588409d9109ecdb6d45d81 $
  *
  * Authors: Srikanth Raju <srikiraju#gmail#com>
  *
@@ -38,13 +38,18 @@ QString VLCModel::getMeta( const QModelIndex & index, int meta )
         data().toString();
 }
 
+QString VLCModel::getArtUrl( const QModelIndex & index )
+{
+    return index.model()->index( index.row(),
+                    columnFromMeta( COLUMN_COVER ),
+                    index.parent() )
+           .data().toString();
+}
+
 QPixmap VLCModel::getArtPixmap( const QModelIndex & index, const QSize & size )
 {
-    QString artUrl;
-    artUrl = index.model()->index( index.row(),
-                                  columnFromMeta( COLUMN_COVER ),
-                                  index.parent() )
-                                  .data().toString();
+    QString artUrl = VLCModel::getArtUrl( index ) ;
+
     QPixmap artPix;
 
     QString key = artUrl + QString("%1%2").arg(size.width()).arg(size.height());
@@ -71,3 +76,9 @@ QPixmap VLCModel::getArtPixmap( const QModelIndex & index, const QSize & size )
 
     return artPix;
 }
+
+int VLCModel::columnCount( const QModelIndex & ) const
+{
+    return columnFromMeta( COLUMN_END );
+}
+

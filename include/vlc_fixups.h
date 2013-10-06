@@ -1,5 +1,5 @@
 /*****************************************************************************
- * fixups.h: portability fixups included from config.h
+ * vlc_fixups.h: portability fixups included from config.h
  *****************************************************************************
  * Copyright © 1998-2008 the VideoLAN project
  *
@@ -48,7 +48,8 @@ typedef struct
 # include <stdio.h> /* FILE */
 #endif
 
-#if !defined (HAVE_STRLCPY) || \
+#if !defined (HAVE_POSIX_MEMALIGN) || \
+    !defined (HAVE_STRLCPY) || \
     !defined (HAVE_STRNDUP) || \
     !defined (HAVE_STRNLEN)
 # include <stddef.h> /* size_t */
@@ -70,7 +71,10 @@ typedef struct
 #endif
 
 #ifdef __cplusplus
+# define VLC_NOTHROW throw ()
 extern "C" {
+#else
+# define VLC_NOTHROW
 #endif
 
 /* stdio.h */
@@ -114,8 +118,8 @@ char *strcasestr (const char *, const char *);
 char *strdup (const char *);
 #endif
 
-#ifndef HAVE_STRNCASECMP
-int strncasecmp (const char *, const char *, size_t);
+#ifndef HAVE_STRVERSCMP
+int strverscmp (const char *, const char *);
 #endif
 
 #ifndef HAVE_STRNLEN
@@ -174,7 +178,7 @@ struct tm *localtime_r (const time_t *, struct tm *);
 
 /* unistd.h */
 #ifndef HAVE_GETPID
-pid_t getpid (void);
+pid_t getpid (void) VLC_NOTHROW;
 #endif
 
 #ifndef HAVE_FSYNC
@@ -208,6 +212,10 @@ int setenv (const char *, const char *, int);
 int unsetenv (const char *);
 #endif
 
+#ifndef HAVE_POSIX_MEMALIGN
+int posix_memalign (void **, size_t, size_t);
+#endif
+
 /* locale.h */
 #ifndef HAVE_USELOCALE
 #define LC_NUMERIC_MASK  0
@@ -227,6 +235,11 @@ static inline locale_t newlocale(int mask, const char * locale, locale_t base)
     (void)mask; (void)locale; (void)base;
     return NULL;
 }
+#endif
+
+#if !defined (HAVE_STATIC_ASSERT)
+# define _Static_assert(x, s) ((void) sizeof (struct { unsigned:-!(x); }))
+# define static_assert _Static_assert
 #endif
 
 /* Alignment of critical static data structures */
@@ -270,10 +283,8 @@ struct pollfd
 };
 #endif
 #ifndef HAVE_POLL
-# define poll(a, b, c) vlc_poll(a, b, c)
-#elif defined (HAVE_MAEMO)
-# include <poll.h>
-# define poll(a, b, c) vlc_poll(a, b, c)
+struct pollfd;
+int poll (struct pollfd *, unsigned, int);
 #endif
 
 #ifndef HAVE_IF_NAMEINDEX

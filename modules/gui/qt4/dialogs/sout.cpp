@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2007-2009 the VideoLAN team
  *
- * $Id: 3b0fbb96e7dd4d89fd6fc81091ffab3d32dcebf3 $
+ * $Id: eb6fab5d6e2feed9cb594b98f981e0e76fa9c495 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -38,15 +38,17 @@
 #include <assert.h>
 
 SoutDialog::SoutDialog( QWidget *parent, intf_thread_t *_p_intf, const QString& inputMRL )
-           : QVLCDialog( parent,  _p_intf )
+           : QWizard( parent )
 {
+    p_intf = _p_intf;
+
     setWindowTitle( qtr( "Stream Output" ) );
     setWindowRole( "vlc-stream-output" );
 
     /* UI stuff */
     ui.setupUi( this );
     ui.inputBox->setMRL( inputMRL );
-    ui.helpEdit->setPlainText( qtr("This dialog will allow you to stream or "
+    ui.helpEdit->setPlainText( qtr("This wizard will allow you to stream or "
             "convert your media for use locally, on your private network, "
             "or on the Internet.\n"
             "You should start by checking that source matches what you want "
@@ -58,19 +60,10 @@ SoutDialog::SoutDialog( QWidget *parent, intf_thread_t *_p_intf, const QString& 
                  "when you change the above settings,\n"
                  "but you can change it manually." ) ) ;
 
-#if 0
-    /* This needs Qt4.5 to be cool */
     ui.destTab->setTabsClosable( true );
-#else
-    closeTabButton = new QToolButton( this );
-    ui.destTab->setCornerWidget( closeTabButton );
-    closeTabButton->hide();
-    closeTabButton->setAutoRaise( true );
-    closeTabButton->setIcon( QIcon( ":/toolbar/clear" ) );
-    closeTabButton->setToolTip( qtr("Clear") );
-    BUTTONACT( closeTabButton, closeTab() );
-#endif
-    CONNECT( ui.destTab, currentChanged( int ), this, tabChanged( int ) );
+    QTabBar* tb = ui.destTab->findChild<QTabBar*>();
+    if( tb != NULL ) tb->tabButton(0, QTabBar::RightSide)->hide();
+    CONNECT( ui.destTab, tabCloseRequested( int ), this, closeTab( int ) );
     ui.destTab->setTabIcon( 0, QIcon( ":/buttons/playlist/playlist_add" ) );
 
     ui.destBox->addItem( qtr( "File" ) );
@@ -91,24 +84,11 @@ SoutDialog::SoutDialog( QWidget *parent, intf_thread_t *_p_intf, const QString& 
 #define CC( x ) CONNECT( ui.x, currentIndexChanged( int ), this, updateMRL() );
 
     /* Misc */
-    CB( soutAll );  CS( ttl ); CT( sapName ); CT( sapGroup );
+    CB( soutAll );
     CB( localOutput ); CB( transcodeBox );
     CONNECT( ui.profileSelect, optionsChanged(), this, updateMRL() );
 
-    okButton = new QPushButton( qtr( "&Stream" ) );
-    QPushButton *cancelButton = new QPushButton( qtr( "&Cancel" ) );
-
-    okButton->setDefault( true );
-    ui.acceptButtonBox->addButton( okButton, QDialogButtonBox::AcceptRole );
-    ui.acceptButtonBox->addButton( cancelButton, QDialogButtonBox::RejectRole );
-
-    BUTTONACT( okButton, ok() );
-    BUTTONACT( cancelButton, cancel() );
-
-    BUTTONACT( ui.nextButton, next() );
-    BUTTONACT( ui.nextButton2, next() );
-    BUTTONACT( ui.prevButton, prev() );
-    BUTTONACT( ui.prevButton2, prev() );
+    setButtonText( QWizard::FinishButton, "Stream" );
 
 #undef CC
 #undef CS
@@ -116,27 +96,11 @@ SoutDialog::SoutDialog( QWidget *parent, intf_thread_t *_p_intf, const QString& 
 #undef CB
 }
 
-void SoutDialog::next()
+void SoutDialog::closeTab( int i )
 {
-    ui.toolBox->setCurrentIndex( ui.toolBox->currentIndex() + 1 );
-}
-
-void SoutDialog::prev()
-{
-    ui.toolBox->setCurrentIndex( ui.toolBox->currentIndex() - 1 );
-}
-
-void SoutDialog::tabChanged( int i )
-{
-    closeTabButton->setVisible( (i != 0) );
-}
-
-void SoutDialog::closeTab()
-{
-    int i = ui.destTab->currentIndex();
     if( i == 0 ) return;
 
-    QWidget *temp = ui.destTab->currentWidget();
+    QWidget* temp = ui.destTab->widget( i );
     ui.destTab->removeTab( i );
     delete temp;
     updateMRL();
@@ -229,10 +193,7 @@ void SoutDialog::updateMRL()
         if( !vdb )
             continue;
 
-        QString tempMRL = vdb->getMRL( qs_mux, ui.ttl->value(),
-                                       ui.sap->isChecked(),
-                                       ui.sapName->text(),
-                                       ui.sapGroup->text() );
+        QString tempMRL = vdb->getMRL( qs_mux );
         if( tempMRL.isEmpty() ) continue;
 
         if( multi )
@@ -259,8 +220,7 @@ void SoutDialog::updateMRL()
     mrl = smrl.getMrl();
 
     if( ui.soutAll->isChecked() ) mrl.append( " :sout-all" );
-    if( ui.ttl->value() > 1 )
-         mrl.append( QString( " :ttl=" ) + QString::number( ui.ttl->value() ) );
+
     mrl.append( " :sout-keep" );
 
     ui.mrlEdit->setPlainText( mrl );

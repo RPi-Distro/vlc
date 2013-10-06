@@ -4,7 +4,7 @@
  * modules, especially intf modules. See vlc_config.h for output configuration.
  *****************************************************************************
  * Copyright (C) 1998-2005 VLC authors and VideoLAN
- * $Id: 61080c0b7e3c4ae88f9ead94b5590f05257358c1 $
+ * $Id: cc91a662fad795514554cf29fa88532401b015c6 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -32,8 +32,7 @@
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
-
+#include <stdlib.h>
 #include <stdarg.h>                                       /* va_list for BSD */
 #ifdef __APPLE__
 # include <xlocale.h>
@@ -41,75 +40,16 @@
 # include <locale.h>
 #endif
 #include <errno.h>                                                  /* errno */
+#include <assert.h>
+#include <unistd.h>
 
-#ifdef WIN32
+#include <vlc_common.h>
+#include <vlc_interface.h>
+#ifdef _WIN32
 #   include <vlc_network.h>          /* 'net_strerror' and 'WSAGetLastError' */
 #endif
-
-#include <assert.h>
-
 #include <vlc_charset.h>
 #include "../libvlc.h"
-
-/**
- * Store all data required by messages interfaces.
- */
-vlc_rwlock_t msg_lock = VLC_STATIC_RWLOCK;
-msg_subscription_t *msg_head;
-
-struct msg_subscription_t
-{
-    msg_subscription_t *prev, *next;
-    msg_callback_t  func;
-    void           *opaque;
-};
-
-/**
- * Subscribe to the message queue.
- * Whenever a message is emitted, a callback will be called.
- * Callback invocation are serialized within a subscription.
- *
- * @param cb callback function
- * @param opaque data for the callback function
- * @return a subscription pointer, or NULL in case of failure
- */
-msg_subscription_t *vlc_Subscribe (msg_callback_t cb, void *opaque)
-{
-    msg_subscription_t *sub = malloc (sizeof (*sub));
-    if (sub == NULL)
-        return NULL;
-
-    sub->prev = NULL;
-    sub->func = cb;
-    sub->opaque = opaque;
-
-    vlc_rwlock_wrlock (&msg_lock);
-    sub->next = msg_head;
-    msg_head = sub;
-    vlc_rwlock_unlock (&msg_lock);
-
-    return sub;
-}
-
-/**
- * Unsubscribe from the message queue.
- * This function waits for the message callback to return if needed.
- */
-void vlc_Unsubscribe (msg_subscription_t *sub)
-{
-    vlc_rwlock_wrlock (&msg_lock);
-    if (sub->next != NULL)
-        sub->next->prev = sub->prev;
-    if (sub->prev != NULL)
-        sub->prev->next = sub->next;
-    else
-    {
-        assert (msg_head == sub);
-        msg_head = sub->next;
-    }
-    vlc_rwlock_unlock (&msg_lock);
-    free (sub);
-}
 
 /**
  * Emit a log message.
@@ -129,9 +69,10 @@ void vlc_Log (vlc_object_t *obj, int type, const char *module,
     va_end (args);
 }
 
-static void PrintColorMsg (void *, int, const msg_item_t *,
-                           const char *, va_list);
-static void PrintMsg (void *, int, const msg_item_t *, const char *, va_list);
+#ifdef _WIN32
+static void Win32DebugOutputMsg (void *, int , const vlc_log_t *,
+                                 const char *, va_list);
+#endif
 
 /**
  * Emit a log message. This function is the variable argument list equivalent
@@ -165,7 +106,7 @@ void vlc_vaLog (vlc_object_t *obj, int type, const char *module,
             char errbuf[2001];
             size_t errlen;
 
-#ifndef WIN32
+#ifndef _WIN32
             strerror_r( errno, errbuf, 1001 );
 #else
             int sockerr = WSAGetLastError( );
@@ -204,7 +145,7 @@ void vlc_vaLog (vlc_object_t *obj, int type, const char *module,
 #endif
 
     /* Fill message information fields */
-    msg_item_t msg;
+    vlc_log_t msg;
 
     msg.i_object_id = (uintptr_t)obj;
     msg.psz_object_type = (obj != NULL) ? obj->psz_object_type : "generic";
@@ -218,26 +159,22 @@ void vlc_vaLog (vlc_object_t *obj, int type, const char *module,
             break;
         }
 
-    /* Pass message to subscribers */
-    libvlc_priv_t *priv = libvlc_priv (obj->p_libvlc);
+    /* Pass message to the callback */
+    libvlc_priv_t *priv = obj ? libvlc_priv (obj->p_libvlc) : NULL;
 
+#ifdef _WIN32
     va_list ap;
 
     va_copy (ap, args);
-    if (priv->b_color)
-        PrintColorMsg (&priv->i_verbose, type, &msg, format, ap);
-    else
-        PrintMsg (&priv->i_verbose, type, &msg, format, ap);
+    Win32DebugOutputMsg (priv ? &priv->log.verbose : NULL, type, &msg, format, ap);
     va_end (ap);
+#endif
 
-    vlc_rwlock_rdlock (&msg_lock);
-    for (msg_subscription_t *sub = msg_head; sub != NULL; sub = sub->next)
-    {
-        va_copy (ap, args);
-        sub->func (sub->opaque, type, &msg, format, ap);
-        va_end (ap);
+    if (priv) {
+        vlc_rwlock_rdlock (&priv->log.lock);
+        priv->log.cb (priv->log.opaque, type, &msg, format, args);
+        vlc_rwlock_unlock (&priv->log.lock);
     }
-    vlc_rwlock_unlock (&msg_lock);
 
     uselocale (locale);
     freelocale (c);
@@ -252,13 +189,13 @@ static const char msg_type[4][9] = { "", " error", " warning", " debug" };
 #define GRAY    "\033[0m"
 static const char msg_color[4][8] = { WHITE, RED, YELLOW, GRAY };
 
-static void PrintColorMsg (void *d, int type, const msg_item_t *p_item,
+static void PrintColorMsg (void *d, int type, const vlc_log_t *p_item,
                            const char *format, va_list ap)
 {
-    const int *pverbose = d;
     FILE *stream = stderr;
+    int verbose = (intptr_t)d;
 
-    if (*pverbose < 0 || *pverbose < (type - VLC_MSG_ERR))
+    if (verbose < 0 || verbose < (type - VLC_MSG_ERR))
         return;
 
     int canc = vlc_savecancel ();
@@ -271,20 +208,20 @@ static void PrintColorMsg (void *d, int type, const msg_item_t *p_item,
                   p_item->psz_object_type, msg_type[type], msg_color[type]);
     utf8_vfprintf (stream, format, ap);
     fputs (GRAY"\n", stream);
-#if defined (WIN32) || defined (__OS2__)
+#if defined (_WIN32) || defined (__OS2__)
     fflush (stream);
 #endif
     funlockfile (stream);
     vlc_restorecancel (canc);
 }
 
-static void PrintMsg (void *d, int type, const msg_item_t *p_item,
+static void PrintMsg (void *d, int type, const vlc_log_t *p_item,
                       const char *format, va_list ap)
 {
-    const int *pverbose = d;
     FILE *stream = stderr;
+    int verbose = (intptr_t)d;
 
-    if (*pverbose < 0 || *pverbose < (type - VLC_MSG_ERR))
+    if (verbose < 0 || verbose < (type - VLC_MSG_ERR))
         return;
 
     int canc = vlc_savecancel ();
@@ -297,9 +234,106 @@ static void PrintMsg (void *d, int type, const msg_item_t *p_item,
                   p_item->psz_object_type, msg_type[type]);
     utf8_vfprintf (stream, format, ap);
     putc_unlocked ('\n', stream);
-#if defined (WIN32) || defined (__OS2__)
+#if defined (_WIN32) || defined (__OS2__)
     fflush (stream);
 #endif
     funlockfile (stream);
     vlc_restorecancel (canc);
+}
+
+#ifdef _WIN32
+static void Win32DebugOutputMsg (void* d, int type, const vlc_log_t *p_item,
+                                 const char *format, va_list dol)
+{
+    VLC_UNUSED(p_item);
+
+    const signed char *pverbose = d;
+    if (pverbose && (*pverbose < 0 || *pverbose < (type - VLC_MSG_ERR)))
+        return;
+
+    va_list dol2;
+    va_copy (dol2, dol);
+    int msg_len = vsnprintf(NULL, 0, format, dol2);
+    va_end (dol2);
+
+    if(msg_len <= 0)
+        return;
+
+    char *msg = malloc(msg_len + 1 + 1);
+    if (!msg)
+        return;
+
+    msg_len = vsnprintf(msg, msg_len+1, format, dol);
+    if (msg_len > 0){
+        if(msg[msg_len-1] != '\n'){
+            msg[msg_len] = '\n';
+            msg[msg_len + 1] = '\0';
+        }
+        char* psz_msg = NULL;
+        if(asprintf(&psz_msg, "%s %s%s: %s", p_item->psz_module,
+                    p_item->psz_object_type, msg_type[type], msg) > 0) {
+            wchar_t* wmsg = ToWide(psz_msg);
+            OutputDebugStringW(wmsg);
+            free(wmsg);
+            free(psz_msg);
+        }
+    }
+    free(msg);
+}
+#endif
+
+/**
+ * Sets the message logging callback.
+ * \param cb message callback, or NULL to reset
+ * \param data data pointer for the message callback
+ */
+void vlc_LogSet (libvlc_int_t *vlc, vlc_log_cb cb, void *opaque)
+{
+    libvlc_priv_t *priv = libvlc_priv (vlc);
+
+    if (cb == NULL)
+    {
+#if defined (HAVE_ISATTY) && !defined (_WIN32)
+        if (isatty (STDERR_FILENO) && var_InheritBool (vlc, "color"))
+            cb = PrintColorMsg;
+        else
+#endif
+            cb = PrintMsg;
+        opaque = (void *)(intptr_t)priv->log.verbose;
+    }
+
+    vlc_rwlock_wrlock (&priv->log.lock);
+    priv->log.cb = cb;
+    priv->log.opaque = opaque;
+    vlc_rwlock_unlock (&priv->log.lock);
+
+    /* Announce who we are */
+    msg_Dbg (vlc, "VLC media player - %s", VERSION_MESSAGE);
+    msg_Dbg (vlc, "%s", COPYRIGHT_MESSAGE);
+    msg_Dbg (vlc, "revision %s", psz_vlc_changeset);
+    msg_Dbg (vlc, "configured with %s", CONFIGURE_LINE);
+}
+
+void vlc_LogInit (libvlc_int_t *vlc)
+{
+    libvlc_priv_t *priv = libvlc_priv (vlc);
+    const char *str;
+
+    if (var_InheritBool (vlc, "quiet"))
+        priv->log.verbose = -1;
+    else
+    if ((str = getenv ("VLC_VERBOSE")) != NULL)
+        priv->log.verbose = atoi (str);
+    else
+        priv->log.verbose = var_InheritInteger (vlc, "verbose");
+
+    vlc_rwlock_init (&priv->log.lock);
+    vlc_LogSet (vlc, NULL, NULL);
+}
+
+void vlc_LogDeinit (libvlc_int_t *vlc)
+{
+    libvlc_priv_t *priv = libvlc_priv (vlc);
+
+    vlc_rwlock_destroy (&priv->log.lock);
 }

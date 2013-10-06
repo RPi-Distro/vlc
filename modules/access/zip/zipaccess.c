@@ -1,24 +1,24 @@
 /*****************************************************************************
  * zipaccess.c: Module (access) to extract different archives, based on zlib
  *****************************************************************************
- * Copyright (C) 2009 the VideoLAN team
- * $Id: 1611e787a62a6de5977f939477f389d8d53d8c93 $
+ * Copyright (C) 2009 VLC authors and VideoLAN
+ * $Id: adc2d8227ab868e61159cb5f1a1b873c33622873 $
  *
  * Authors: Jean-Philippe André <jpeg@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /** @todo:
@@ -60,7 +60,7 @@ static char *unescapeXml( const char *psz_text );
 static char *unescapeXml( const char *psz_text )
 {
     char *psz_ret = malloc( strlen( psz_text ) + 1 );
-    if( !psz_ret ) return NULL;
+    if( unlikely( !psz_ret ) ) return NULL;
 
     char *psz_tmp = psz_ret;
     for( char *psz_iter = (char*) psz_text; *psz_iter; ++psz_iter, ++psz_tmp )
@@ -113,7 +113,7 @@ int AccessOpen( vlc_object_t *p_this )
 
     p_access->p_sys = p_sys = (access_sys_t*)
             calloc( 1, sizeof( access_sys_t ) );
-    if( !p_sys )
+    if( unlikely( !p_sys ) )
         return VLC_ENOMEM;
 
     /* Split the MRL */
@@ -128,17 +128,17 @@ int AccessOpen( vlc_object_t *p_this )
         msg_Dbg( p_access, "not an encoded URL  Trying file '%s'",
                  psz_path );
         psz_pathToZip = strdup( psz_path );
-        if( !psz_pathToZip )
+        if( unlikely( !psz_pathToZip ) )
         {
             i_ret = VLC_ENOMEM;
             goto exit;
         }
     }
     p_sys->psz_fileInzip = unescapeXml( psz_sep + ZIP_SEP_LEN );
-    if( !p_sys->psz_fileInzip )
+    if( unlikely( !p_sys->psz_fileInzip ) )
     {
         p_sys->psz_fileInzip = strdup( psz_sep + ZIP_SEP_LEN );
-        if( !p_sys->psz_fileInzip )
+        if( unlikely( !p_sys->psz_fileInzip ) )
         {
             i_ret = VLC_ENOMEM;
             goto exit;
@@ -148,7 +148,7 @@ int AccessOpen( vlc_object_t *p_this )
     /* Define IO functions */
     zlib_filefunc_def *p_func = (zlib_filefunc_def*)
                                     calloc( 1, sizeof( zlib_filefunc_def ) );
-    if( !p_func )
+    if( unlikely( !p_func ) )
     {
         i_ret = VLC_ENOMEM;
         goto exit;
@@ -326,6 +326,8 @@ static int AccessSeek( access_t *p_access, uint64_t seek_len )
     unsigned i_seek = 0;
     int i_read = 1;
     char *p_buffer = ( char* ) calloc( 1, ZIP_BUFFER_LEN );
+    if( unlikely( !p_buffer ) )
+        return VLC_EGENERIC;
     while( ( i_seek < seek_len ) && ( i_read > 0 ) )
     {
         i_read = ( seek_len - i_seek < ZIP_BUFFER_LEN )
@@ -390,7 +392,7 @@ static void* ZCALLBACK ZipIO_Open( void* opaque, const char* file, int mode )
     access_t *p_access = (access_t*) opaque;
 
     char *fileUri = malloc( strlen(file) + 8 );
-    if( !fileUri )
+    if( unlikely( !fileUri ) )
         return NULL;
     if( !strstr( file, "://" ) )
     {

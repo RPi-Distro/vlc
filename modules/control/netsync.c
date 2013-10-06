@@ -2,7 +2,7 @@
  * netsync.c: synchronization between several network clients.
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: b68266d5e0976dee41342535d8ce513081c19241 $
+ * $Id: 7466025b6db5ea7ff13322273d78d86219e667a8 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -127,7 +127,6 @@ static int Open(vlc_object_t *object)
         return VLC_EGENERIC;
     }
 
-    intf->pf_run = NULL;
     intf->p_sys = sys = malloc(sizeof(*sys));
     if (!sys) {
         net_Close(fd);

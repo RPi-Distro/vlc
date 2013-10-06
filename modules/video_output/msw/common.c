@@ -1,24 +1,24 @@
 /*****************************************************************************
  * common.c:
  *****************************************************************************
- * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: b0d4c7f0cffd3307a353249b3755866416d349e0 $
+ * Copyright (C) 2001-2009 VLC authors and VideoLAN
+ * $Id: a0e663db950e40a1edd85fb3ef69cfcf78614fd9 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 
@@ -39,7 +39,7 @@
 #include <windowsx.h>
 #include <shellapi.h>
 
-#ifdef MODULE_NAME_IS_directx
+#ifdef MODULE_NAME_IS_directdraw
 #include <ddraw.h>
 #endif
 #ifdef MODULE_NAME_IS_direct3d
@@ -54,22 +54,13 @@
 
 #include "common.h"
 
-#ifndef UNDER_CE
 #include <vlc_windows_interfaces.h>
-#endif
-
-#ifdef UNDER_CE
-#include <aygshell.h>
-    //WINSHELLAPI BOOL WINAPI SHFullScreen(HWND hwndRequester, DWORD dwState);
-#endif
 
 static void CommonChangeThumbnailClip(vout_display_t *, bool show);
 static int CommonControlSetFullscreen(vout_display_t *, bool is_fullscreen);
 
-#if !defined(UNDER_CE)
 static void DisableScreensaver(vout_display_t *);
 static void RestoreScreensaver(vout_display_t *);
-#endif
 
 /* */
 int CommonInit(vout_display_t *vd)
@@ -86,7 +77,6 @@ int CommonInit(vout_display_t *vd)
     sys->is_first_display = true;
     sys->is_on_top = false;
 
-    var_Create(vd, "video-title", VLC_VAR_STRING | VLC_VAR_DOINHERIT);
     var_Create(vd, "video-deco", VLC_VAR_BOOL | VLC_VAR_DOINHERIT);
 
     /* */
@@ -99,7 +89,7 @@ int CommonInit(vout_display_t *vd)
 #ifdef MODULE_NAME_IS_direct3d
     cfg.use_desktop = sys->use_desktop;
 #endif
-#ifdef MODULE_NAME_IS_directx
+#ifdef MODULE_NAME_IS_directdraw
     cfg.use_overlay = sys->use_overlay;
 #endif
     cfg.win.type   = VOUT_WINDOW_TYPE_HWND;
@@ -124,10 +114,8 @@ int CommonInit(vout_display_t *vd)
     }
 
     /* Why not with glwin32 */
-#if !defined(UNDER_CE)
     var_Create(vd, "disable-screensaver", VLC_VAR_BOOL | VLC_VAR_DOINHERIT);
     DisableScreensaver (vd);
-#endif
 
     return VLC_SUCCESS;
 }
@@ -143,9 +131,7 @@ void CommonClean(vout_display_t *vd)
         EventThreadDestroy(sys->event);
     }
 
-#if !defined(UNDER_CE)
     RestoreScreensaver(vd);
-#endif
 }
 
 void CommonManage(vout_display_t *vd)
@@ -179,7 +165,7 @@ void CommonManage(vout_display_t *vd)
              * with the associated window (hvideownd)
              *
              * For directx, it is still important to call UpdateRects
-             * on a move of the parent window, even if no resize occured
+             * on a move of the parent window, even if no resize occurred
              */
             SetWindowPos(sys->hwnd, 0, 0, 0,
                          rect_parent.right - rect_parent.left,
@@ -279,7 +265,6 @@ void AlignRect(RECT *r, int align_boundary, int align_size)
 /* */
 static void CommonChangeThumbnailClip(vout_display_t *vd, bool show)
 {
-#ifndef UNDER_CE
     vout_display_sys_t *sys = vd->sys;
 
     /* Windows 7 taskbar thumbnail code */
@@ -288,7 +273,7 @@ static void CommonChangeThumbnailClip(vout_display_t *vd, bool show)
     if (!GetVersionEx(&winVer) || winVer.dwMajorVersion <= 5)
         return;
 
-    CoInitialize(0);
+    CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
 
     void *ptr;
     if (S_OK == CoCreateInstance(&CLSID_TaskbarList,
@@ -317,7 +302,6 @@ static void CommonChangeThumbnailClip(vout_display_t *vd, bool show)
         taskbl->lpVtbl->Release(taskbl);
     }
     CoUninitialize();
-#endif
 }
 
 /*****************************************************************************
@@ -374,10 +358,6 @@ void UpdateRects(vout_display_t *vd,
     vout_display_PlacePicture(&place, source, &place_cfg, false);
 
     EventThreadUpdateSourceAndPlace(sys->event, source, &place);
-#if defined(MODULE_NAME_IS_wingapi)
-    if (place.width != vd->fmt.i_width || place.height != vd->fmt.i_height)
-        vout_display_SendEventPicturesInvalid(vd);
-#endif
 
     if (sys->hvideownd)
         SetWindowPos(sys->hvideownd, 0,
@@ -396,7 +376,7 @@ void UpdateRects(vout_display_t *vd,
     rect_dest.top = point.y + place.y;
     rect_dest.bottom = rect_dest.top + place.height;
 
-#ifdef MODULE_NAME_IS_directx
+#ifdef MODULE_NAME_IS_directdraw
     /* Apply overlay hardware constraints */
     if (sys->use_overlay)
         AlignRect(&rect_dest, sys->i_align_dest_boundary, sys->i_align_dest_size);
@@ -404,7 +384,7 @@ void UpdateRects(vout_display_t *vd,
 
 #endif
 
-#if defined(MODULE_NAME_IS_directx)
+#if defined(MODULE_NAME_IS_directdraw)
     /* UpdateOverlay directdraw function doesn't automatically clip to the
      * display size so we need to do it otherwise it will fail */
 
@@ -458,7 +438,7 @@ void UpdateRects(vout_display_t *vd,
       (rect_dest.bottom - rect_dest_clipped.bottom) *
       source->i_visible_height / (rect_dest.bottom - rect_dest.top);
 
-#ifdef MODULE_NAME_IS_directx
+#ifdef MODULE_NAME_IS_directdraw
     /* Apply overlay hardware constraints */
     if (sys->use_overlay)
         AlignRect(&rect_src_clipped, sys->i_align_src_boundary, sys->i_align_src_size);
@@ -477,7 +457,7 @@ void UpdateRects(vout_display_t *vd,
                 rect_src_clipped.right, rect_src_clipped.bottom);
 #endif
 
-#ifdef MODULE_NAME_IS_directx
+#ifdef MODULE_NAME_IS_directdraw
     /* The destination coordinates need to be relative to the current
      * directdraw primary surface (display) */
     rect_dest_clipped.left -= sys->rect_display.left;
@@ -527,15 +507,6 @@ static int CommonControlSetFullscreen(vout_display_t *vd, bool is_fullscreen)
         SetWindowLong(hwnd, GWL_STYLE, WS_CLIPCHILDREN | WS_VISIBLE);
 
         if (sys->hparent) {
-#ifdef UNDER_CE
-            POINT point = {0,0};
-            RECT rect;
-            ClientToScreen(sys->hwnd, &point);
-            GetClientRect(sys->hwnd, &rect);
-            SetWindowPos(hwnd, 0, point.x, point.y,
-                         rect.right, rect.bottom,
-                         SWP_NOZORDER|SWP_FRAMECHANGED);
-#else
             /* Retrieve current window position so fullscreen will happen
             *on the right screen */
             HMONITOR hmon = MonitorFromWindow(sys->hparent,
@@ -549,7 +520,6 @@ static int CommonControlSetFullscreen(vout_display_t *vd, bool is_fullscreen)
                              mi.rcMonitor.right - mi.rcMonitor.left,
                              mi.rcMonitor.bottom - mi.rcMonitor.top,
                              SWP_NOZORDER|SWP_FRAMECHANGED);
-#endif
         } else {
             /* Maximize non embedded window */
             ShowWindow(hwnd, SW_SHOWMAXIMIZED);
@@ -564,11 +534,7 @@ static int CommonControlSetFullscreen(vout_display_t *vd, bool is_fullscreen)
                          rect.right, rect.bottom,
                          SWP_NOZORDER|SWP_FRAMECHANGED);
 
-#ifdef UNDER_CE
-            HWND topLevelParent = GetParent(sys->hparent);
-#else
             HWND topLevelParent = GetAncestor(sys->hparent, GA_ROOT);
-#endif
             ShowWindow(topLevelParent, SW_HIDE);
         }
         SetForegroundWindow(hwnd);
@@ -586,11 +552,7 @@ static int CommonControlSetFullscreen(vout_display_t *vd, bool is_fullscreen)
                          rect.right, rect.bottom,
                          SWP_NOZORDER|SWP_FRAMECHANGED);
 
-#ifdef UNDER_CE
-            HWND topLevelParent = GetParent(sys->hparent);
-#else
             HWND topLevelParent = GetAncestor(sys->hparent, GA_ROOT);
-#endif
             ShowWindow(topLevelParent, SW_SHOW);
             SetForegroundWindow(sys->hparent);
             ShowWindow(hwnd, SW_HIDE);
@@ -688,31 +650,34 @@ int CommonControl(vout_display_t *vd, int query, va_list args)
     }
 }
 
-#if !defined(UNDER_CE)
 static void DisableScreensaver(vout_display_t *vd)
 {
     vout_display_sys_t *sys = vd->sys;
 
     /* disable screensaver by temporarily changing system settings */
-    sys->i_spi_lowpowertimeout = 0;
-    sys->i_spi_powerofftimeout = 0;
-    sys->i_spi_screensavetimeout = 0;
+    sys->i_spi_screensaveactive = 0;
     if (var_GetBool(vd, "disable-screensaver")) {
         msg_Dbg(vd, "disabling screen saver");
-        SystemParametersInfo(SPI_GETLOWPOWERTIMEOUT, 0,
-                             &sys->i_spi_lowpowertimeout, 0);
-        if (0 != sys->i_spi_lowpowertimeout) {
-            SystemParametersInfo(SPI_SETLOWPOWERTIMEOUT, 0, NULL, 0);
+        SystemParametersInfo(SPI_GETSCREENSAVEACTIVE, 0,
+                             &sys->i_spi_screensaveactive, 0);
+
+        if (LOWORD(GetVersion()) == 0x0005) {
+            /* If this is NT 5.0 (i.e., Win2K), we need to hack around
+             * KB318781 (see http://support.microsoft.com/kb/318781) */
+
+            HKEY hKeyCP = NULL;
+
+            if (ERROR_SUCCESS == RegOpenKeyEx(HKEY_CURRENT_USER,
+                                              TEXT("Control Panel\\Desktop"),
+                                              0, KEY_QUERY_VALUE, &hKeyCP) &&
+                ERROR_SUCCESS != RegQueryValueEx(hKeyCP, TEXT("SCRNSAVE.EXE"),
+                                                 NULL, NULL, NULL, NULL)) {
+                sys->i_spi_screensaveactive = FALSE;
+            }
         }
-        SystemParametersInfo(SPI_GETPOWEROFFTIMEOUT, 0,
-                             &sys->i_spi_powerofftimeout, 0);
-        if (0 != sys->i_spi_powerofftimeout) {
-            SystemParametersInfo(SPI_SETPOWEROFFTIMEOUT, 0, NULL, 0);
-        }
-        SystemParametersInfo(SPI_GETSCREENSAVETIMEOUT, 0,
-                             &sys->i_spi_screensavetimeout, 0);
-        if (0 != sys->i_spi_screensavetimeout) {
-            SystemParametersInfo(SPI_SETSCREENSAVETIMEOUT, 0, NULL, 0);
+
+        if (FALSE != sys->i_spi_screensaveactive) {
+            SystemParametersInfo(SPI_SETSCREENSAVEACTIVE, 0, NULL, 0);
         }
     }
 }
@@ -722,18 +687,8 @@ static void RestoreScreensaver(vout_display_t *vd)
     vout_display_sys_t *sys = vd->sys;
 
     /* restore screensaver system settings */
-    if (0 != sys->i_spi_lowpowertimeout) {
-        SystemParametersInfo(SPI_SETLOWPOWERTIMEOUT,
-                             sys->i_spi_lowpowertimeout, NULL, 0);
-    }
-    if (0 != sys->i_spi_powerofftimeout) {
-        SystemParametersInfo(SPI_SETPOWEROFFTIMEOUT,
-                             sys->i_spi_powerofftimeout, NULL, 0);
-    }
-    if (0 != sys->i_spi_screensavetimeout) {
-        SystemParametersInfo(SPI_SETSCREENSAVETIMEOUT,
-                             sys->i_spi_screensavetimeout, NULL, 0);
+    if (0 != sys->i_spi_screensaveactive) {
+        SystemParametersInfo(SPI_SETSCREENSAVEACTIVE,
+                             sys->i_spi_screensaveactive, NULL, 0);
     }
 }
-#endif
-

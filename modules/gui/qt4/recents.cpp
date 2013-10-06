@@ -2,7 +2,7 @@
  * recents.cpp : Recents MRL (menu)
  *****************************************************************************
  * Copyright © 2006-2008 the VideoLAN team
- * $Id: a1b0fc488e073132aea0678a8720c85ffd95c149 $
+ * $Id: 75839e8063345e0d5cfbf6a039872b01875895b6 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -32,7 +32,7 @@
 #include <QRegExp>
 #include <QSignalMapper>
 
-#ifdef WIN32
+#ifdef _WIN32
     #include <shlobj.h>
     /* typedef enum  {
         SHARD_PIDL              = 0x00000001,
@@ -45,6 +45,8 @@
         SHARD_SHELLITEM         = 0x00000008 
     } SHARD; */
     #define SHARD_PATHW 0x00000003
+
+    #include <vlc_charset.h>
 #endif
 
 
@@ -86,12 +88,14 @@ void RecentsMRL::addRecent( const QString &mrl )
 
     msg_Dbg( p_intf, "Adding a new MRL to recent ones: %s", qtu( mrl ) );
 
-#ifdef WIN32
+#ifdef _WIN32
     /* Add to the Windows 7 default list in taskbar */
     char* path = make_path( qtu( mrl ) );
     if( path )
     {
-        SHAddToRecentDocs( SHARD_PATHW, path );
+        wchar_t *wmrl = ToWide( path );
+        SHAddToRecentDocs( SHARD_PATHW, wmrl );
+        free( wmrl );
         free( path );
     }
 #endif

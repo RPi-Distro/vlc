@@ -2,7 +2,7 @@
  * ctrl_video.hpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 1b5d37d4ec45f26212ee4db61d26f25555f477b1 $
+ * $Id: 93e23b01840589a5a5d8ff8fbcd8c9a1e9420955 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -67,7 +67,7 @@ public:
     void detachVoutWindow( );
 
     // Get TopWindow associated with the video control
-    virtual TopWindow* getWindow() { return CtrlGeneric::getWindow(); }
+    virtual TopWindow* getWindow() const { return CtrlGeneric::getWindow(); }
 
     // Get the VoutWindow associated with the video control
     virtual VoutWindow* getVoutWindow() { return m_pVoutWindow; }
@@ -80,11 +80,11 @@ public:
     // resize the video Control
     virtual void resizeControl( int width, int height );
 
-    // Is this control useable (visibility requirements)
-    virtual bool isUseable() { return m_bIsUseable; }
+    // Is this control usable (visibility requirements)
+    virtual bool isUseable() const;
 
     // Is this control used
-    virtual bool isUsed() { return m_pVoutWindow ? true : false; }
+    virtual bool isUsed() const;
 
 private:
     /// Associated layout
@@ -95,9 +95,6 @@ private:
 
     /// Difference between layout size and video size
     int m_xShift, m_yShift;
-
-    /// Is the video Control useable
-    bool m_bIsUseable;
 
     /// Vout window
     VoutWindow *m_pVoutWindow;

@@ -1,8 +1,8 @@
 /*****************************************************************************
- * vout_display.c: "vout display" -> "video output" wrapper
+ * vout_wrapper.c: "vout display" -> "video output" wrapper
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: bb017eb951730b79e084ec9e831acec6f681c0db $
+ * $Id: 04cdcd28c7a40cf4f45f3a799a0523e6b19ef990 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -39,7 +39,7 @@
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-#ifdef WIN32
+#ifdef _WIN32
 static int  Forward(vlc_object_t *, char const *,
                     vlc_value_t, vlc_value_t, void *);
 #endif
@@ -54,7 +54,7 @@ int vout_OpenWrapper(vout_thread_t *vout,
     msg_Dbg(vout, "Opening vout display wrapper");
 
     /* */
-    sys->display.title = var_CreateGetNonEmptyString(vout, "video-title");
+    sys->display.title = var_InheritString(vout, "video-title");
 
     /* */
     const mtime_t double_click_timeout = 300000;
@@ -73,7 +73,7 @@ int vout_OpenWrapper(vout_thread_t *vout,
     }
 
     /* */
-#ifdef WIN32
+#ifdef _WIN32
     var_Create(vout, "video-wallpaper", VLC_VAR_BOOL|VLC_VAR_DOINHERIT);
     var_AddCallback(vout, "video-wallpaper", Forward, NULL);
 #endif
@@ -91,7 +91,7 @@ void vout_CloseWrapper(vout_thread_t *vout, vout_display_state_t *state)
 {
     vout_thread_sys_t *sys = vout->p;
 
-#ifdef WIN32
+#ifdef _WIN32
     var_DelCallback(vout, "video-wallpaper", Forward, NULL);
 #endif
     sys->decoder_pool = NULL; /* FIXME remove */
@@ -201,7 +201,7 @@ void vout_ManageWrapper(vout_thread_t *vout)
     }
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 static int Forward(vlc_object_t *object, char const *var,
                    vlc_value_t oldval, vlc_value_t newval, void *data)
 {

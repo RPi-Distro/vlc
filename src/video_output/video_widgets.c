@@ -2,7 +2,7 @@
  * video_widgets.c : OSD widgets manipulation functions
  *****************************************************************************
  * Copyright (C) 2004-2010 VLC authors and VideoLAN
- * $Id: cdddac52a36907806c94252e8b32285c9bf71768 $
+ * $Id: 201f90773c51c56eeaec6b724f323f62584579a7 $
  *
  * Author: Yoann Peronneau <yoann@videolan.org>
  *         Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -275,8 +275,8 @@ static void OSDWidgetUpdate(subpicture_t *subpic,
     fmt.i_sar_num       = 1;
     fmt.i_sar_den       = 1;
 
-    subpic->i_original_picture_width  = fmt.i_width;
-    subpic->i_original_picture_height = fmt.i_height;
+    subpic->i_original_picture_width  = fmt.i_visible_width;
+    subpic->i_original_picture_height = fmt.i_visible_height;
     if (sys->type == OSD_HOR_SLIDER || sys->type == OSD_VERT_SLIDER)
         subpic->p_region = OSDSlider(sys->type, sys->position, &fmt);
     else

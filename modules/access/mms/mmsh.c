@@ -1,24 +1,24 @@
 /*****************************************************************************
  * mmsh.c:
  *****************************************************************************
- * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 27f632be042890dc5cf506f7436b982de2b103f0 $
+ * Copyright (C) 2001, 2002 VLC authors and VideoLAN
+ * $Id: 2a3667008f71dd497e3a019f2424089fa1f35622 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -275,6 +275,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
         case ACCESS_SET_SEEKPOINT:
         case ACCESS_SET_PRIVATE_ID_STATE:
         case ACCESS_GET_CONTENT_TYPE:
+        case ACCESS_GET_META:
             return VLC_EGENERIC;
 
         default:
@@ -344,7 +345,7 @@ static block_t *Block( access_t *p_access )
         const size_t i_offset = p_access->info.i_pos - p_sys->i_start;
         const size_t i_copy = p_sys->i_header - i_offset;
 
-        block_t *p_block = block_New( p_access, i_copy );
+        block_t *p_block = block_Alloc( i_copy );
         if( !p_block )
             return NULL;
 
@@ -363,7 +364,7 @@ static block_t *Block( access_t *p_access )
         if( __MAX( p_sys->i_packet_used, p_sys->i_packet_length ) < i_packet_min )
             i_padding = i_packet_min - __MAX( p_sys->i_packet_used, p_sys->i_packet_length );
 
-        block_t *p_block = block_New( p_access, i_copy + i_padding );
+        block_t *p_block = block_Alloc( i_copy + i_padding );
         if( !p_block )
             return NULL;
 
@@ -773,7 +774,7 @@ static int Start( access_t *p_access, uint64_t i_pos )
 
     for( i = 1; i < 128; i++ )
     {
-        if( p_sys->asfh.stream[i].i_cat == ASF_STREAM_UNKNOWN )
+        if( p_sys->asfh.stream[i].i_cat == ASF_CODEC_TYPE_UNKNOWN )
             continue;
         i_streams++;
         if( p_sys->asfh.stream[i].i_selected )
@@ -815,7 +816,7 @@ static int Start( access_t *p_access, uint64_t i_pos )
 
     for( i = 1; i < 128; i++ )
     {
-        if( p_sys->asfh.stream[i].i_cat != ASF_STREAM_UNKNOWN )
+        if( p_sys->asfh.stream[i].i_cat != ASF_CODEC_TYPE_UNKNOWN )
         {
             int i_select = 2;
             if( p_sys->asfh.stream[i].i_selected )
@@ -823,7 +824,7 @@ static int Start( access_t *p_access, uint64_t i_pos )
                 i_select = 0;
             }
             net_Printf( p_access, p_sys->fd, NULL,
-                        "ffff:%d:%d ", i, i_select );
+                        "ffff:%x:%d ", i, i_select );
         }
     }
     net_Printf( p_access, p_sys->fd, NULL, "\r\n" );
@@ -941,7 +942,7 @@ static int GetPacket( access_t * p_access, chunk_t *p_ck )
     p_ck->p_data      = p_sys->buffer + 12;
     p_ck->i_data      = p_ck->i_size2 - 8;
 
-    if( p_ck->i_type == 0x4524 )   // Transfer complete
+    if( p_ck->i_type == 0x4524 )   // $E (End-of-Stream Notification) Packet
     {
         if( p_ck->i_sequence == 0 )
         {
@@ -954,7 +955,7 @@ static int GetPacket( access_t * p_access, chunk_t *p_ck )
             return VLC_EGENERIC;
         }
     }
-    else if( p_ck->i_type == 0x4324 )
+    else if( p_ck->i_type == 0x4324 ) // $C (Stream Change Notification) Packet
     {
         /* 0x4324 is CHUNK_TYPE_RESET: a new stream will follow with a sequence of 0 */
         msg_Warn( p_access, "next stream following (reset) seq=%d", p_ck->i_sequence  );
@@ -962,7 +963,12 @@ static int GetPacket( access_t * p_access, chunk_t *p_ck )
     }
     else if( (p_ck->i_type != 0x4824) && (p_ck->i_type != 0x4424) )
     {
-        msg_Err( p_access, "invalid chunk FATAL (0x%x)", p_ck->i_type );
+        /* Unsupported so far:
+         * $M (Metadata) Packet               0x4D24
+         * $P (Packet-Pair) Packet            0x5024
+         * $T (Test Data Notification) Packet 0x5424
+         */
+        msg_Err( p_access, "unrecognized chunk FATAL (0x%x)", p_ck->i_type );
         return VLC_EGENERIC;
     }
 

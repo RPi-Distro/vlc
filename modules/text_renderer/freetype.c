@@ -1,8 +1,8 @@
 /*****************************************************************************
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
- * Copyright (C) 2002 - 2012 the VideoLAN team
- * $Id: 622bb115be764802e1bc4302954abfbaabf8c79b $
+ * Copyright (C) 2002 - 2012 VLC authors and VideoLAN
+ * $Id: 05fa2a21a3ab873960a34d9fe474421364404454 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -10,19 +10,19 @@
  *          Jean-Baptiste Kempf <jb@videolan.org>
  *          Felix Paul Kühne <fkuehne@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -47,20 +47,46 @@
 
 /* Default fonts */
 #ifdef __APPLE__
-# define DEFAULT_FONT_FILE "/Library/Fonts/Arial Unicode.ttf"
-# define DEFAULT_FAMILY "Arial Unicode MS"
-#elif defined( WIN32 )
-# define DEFAULT_FONT_FILE "arial.ttf" /* Default path font found at run-time */
-# define DEFAULT_FAMILY "Arial"
+# define SYSTEM_DEFAULT_FONT_FILE "/Library/Fonts/Arial Unicode.ttf"
+# define SYSTEM_DEFAULT_FAMILY "Arial Unicode MS"
+# define SYSTEM_DEFAULT_MONOSPACE_FONT_FILE "/System/Library/Fonts/Monaco.dfont"
+# define SYSTEM_DEFAULT_MONOSPACE_FAMILY "Monaco"
+#elif defined( _WIN32 )
+# define SYSTEM_DEFAULT_FONT_FILE "arial.ttf" /* Default path font found at run-time */
+# define SYSTEM_DEFAULT_FAMILY "Arial"
+# define SYSTEM_DEFAULT_MONOSPACE_FONT_FILE "cour.ttf"
+# define SYSTEM_DEFAULT_MONOSPACE_FAMILY "Courier New"
 #elif defined( __OS2__ )
-# define DEFAULT_FONT_FILE "/psfonts/tnrwt_k.ttf"
-# define DEFAULT_FAMILY "Times New Roman WT K"
-#elif defined( HAVE_MAEMO )
-# define DEFAULT_FONT_FILE "/usr/share/fonts/nokia/nosnb.ttf"
-# define DEFAULT_FAMILY "Nokia Sans Bold"
+# define SYSTEM_DEFAULT_FONT_FILE "/psfonts/tnrwt_k.ttf"
+# define SYSTEM_DEFAULT_FAMILY "Times New Roman WT K"
+# define SYSTEM_DEFAULT_MONOSPACE_FONT_FILE "/psfonts/mtsansdk.ttf"
+# define SYSTEM_DEFAULT_MONOSPACE_FAMILY "Monotype Sans Duospace WT K"
+#elif defined( __ANDROID__ )
+# define SYSTEM_DEFAULT_FONT_FILE "/system/fonts/DroidSans-Bold.ttf"
+# define SYSTEM_DEFAULT_FAMILY "Droid Sans Bold"
+# define SYSTEM_DEFAULT_MONOSPACE_FONT_FILE "/system/fonts/DroidSansMono.ttf"
+# define SYSTEM_DEFAULT_MONOSPACE_FAMILY "Droid Sans Mono"
 #else
-# define DEFAULT_FONT_FILE "/usr/share/fonts/truetype/freefont/FreeSerifBold.ttf"
-# define DEFAULT_FAMILY "Serif Bold"
+# define SYSTEM_DEFAULT_FONT_FILE "/usr/share/fonts/truetype/freefont/FreeSerifBold.ttf"
+# define SYSTEM_DEFAULT_FAMILY "Serif Bold"
+# define SYSTEM_DEFAULT_MONOSPACE_FONT_FILE "/usr/share/fonts/truetype/freefont/FreeMono.ttf"
+# define SYSTEM_DEFAULT_MONOSPACE_FAMILY "Monospace"
+#endif
+
+#ifndef DEFAULT_FONT_FILE
+#define DEFAULT_FONT_FILE SYSTEM_DEFAULT_FONT_FILE
+#endif
+
+#ifndef DEFAULT_FAMILY
+#define DEFAULT_FAMILY SYSTEM_DEFAULT_FAMILY
+#endif
+
+#ifndef DEFAULT_MONOSPACE_FONT_FILE
+#define DEFAULT_MONOSPACE_FONT_FILE SYSTEM_DEFAULT_MONOSPACE_FONT_FILE
+#endif
+
+#ifndef DEFAULT_MONOSPACE_FAMILY
+#define DEFAULT_MONOSPACE_FAMILY SYSTEM_DEFAULT_MONOSPACE_FAMILY
 #endif
 
 /* Freetype */
@@ -77,7 +103,10 @@
 
 /* apple stuff */
 #ifdef __APPLE__
+#include <TargetConditionals.h>
+#if !TARGET_OS_IPHONE
 #include <Carbon/Carbon.h>
+#endif
 #include <sys/param.h>                         /* for MAXPATHLEN */
 #undef HAVE_FONTCONFIG
 #define HAVE_STYLES
@@ -89,7 +118,7 @@
 #endif
 
 /* Win32 GDI */
-#ifdef WIN32
+#ifdef _WIN32
 # include <windows.h>
 # include <shlobj.h>
 # define HAVE_STYLES
@@ -123,6 +152,7 @@ static int  Create ( vlc_object_t * );
 static void Destroy( vlc_object_t * );
 
 #define FONT_TEXT N_("Font")
+#define MONOSPACE_FONT_TEXT N_("Monospace Font")
 
 #define FAMILY_LONGTEXT N_("Font family for the font you want to use")
 #define FONT_LONGTEXT N_("Font file for the font you want to use")
@@ -192,12 +222,15 @@ vlc_module_begin ()
 
 #ifdef HAVE_STYLES
     add_font( "freetype-font", DEFAULT_FAMILY, FONT_TEXT, FAMILY_LONGTEXT, false )
+    add_font( "freetype-monofont", DEFAULT_MONOSPACE_FAMILY, MONOSPACE_FONT_TEXT, FAMILY_LONGTEXT, false )
 #else
     add_loadfile( "freetype-font", DEFAULT_FONT_FILE, FONT_TEXT, FONT_LONGTEXT, false )
+    add_loadfile( "freetype-monofont", DEFAULT_MONOSPACE_FONT_FILE, MONOSPACE_FONT_TEXT, FONT_LONGTEXT, false )
 #endif
 
     add_integer( "freetype-fontsize", 0, FONTSIZE_TEXT,
                  FONTSIZE_LONGTEXT, true )
+        change_integer_range( 0, 4096)
         change_safe()
 
     add_integer( "freetype-rel-fontsize", 16, FONTSIZER_TEXT,
@@ -283,6 +316,7 @@ struct line_desc_t
     line_desc_t      *p_next;
 
     int              i_width;
+    int              i_height;
     int              i_base_line;
     int              i_character_count;
     line_character_t *p_character;
@@ -311,14 +345,9 @@ struct filter_sys_t
     FT_Face        p_face;      /* handle to face object */
     FT_Stroker     p_stroker;
     uint8_t        i_font_opacity;
-    int            i_font_color;
     int            i_font_size;
     bool           b_font_bold;
 
-    uint8_t        i_background_opacity;
-    int            i_background_color;
-
-    double         f_outline_thickness;
     uint8_t        i_outline_opacity;
     int            i_outline_color;
 
@@ -330,11 +359,10 @@ struct filter_sys_t
     int            i_default_font_size;
     int            i_display_height;
     char*          psz_fontfamily;
-#ifdef HAVE_STYLES
+    char*          psz_monofontfamily;
     xml_reader_t  *p_xml;
-#ifdef WIN32
+#ifdef _WIN32
     char*          psz_win_fonts_path;
-#endif
 #endif
 
     input_attachment_t **pp_font_attachments;
@@ -412,7 +440,7 @@ static int GetFontSize( filter_t *p_filter )
     }
     else
     {
-        int i_ratio = var_GetInteger( p_filter, "freetype-rel-fontsize" );
+        int i_ratio = var_InheritInteger( p_filter, "freetype-rel-fontsize" );
         if( i_ratio > 0 )
         {
             i_size = (int)p_filter->fmt_out.video.i_height / i_ratio;
@@ -462,7 +490,7 @@ static void FontConfig_BuildCache( filter_t *p_filter )
     FcInit();
 #endif
 
-#if defined( WIN32 ) || defined( __APPLE__ )
+#if defined( _WIN32 ) || defined( __APPLE__ )
     dialog_progress_bar_t *p_dialog = NULL;
     FcConfig *fcConfig = FcInitLoadConfig();
 
@@ -570,22 +598,20 @@ static char* FontConfig_Select( FcConfig* config, const char* family,
 }
 #endif
 
-#ifdef WIN32
-#define UNICODE
-#define FONT_DIR_NT "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts"
+#ifdef _WIN32
+#define FONT_DIR_NT _T("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts")
 
-static int GetFileFontByName( const char *font_name, char **psz_filename )
+static int GetFileFontByName( LPCTSTR font_name, char **psz_filename )
 {
     HKEY hKey;
-    wchar_t vbuffer[MAX_PATH];
-    wchar_t dbuffer[256];
+    TCHAR vbuffer[MAX_PATH];
+    TCHAR dbuffer[256];
 
     if( RegOpenKeyEx(HKEY_LOCAL_MACHINE, FONT_DIR_NT, 0, KEY_READ, &hKey)
             != ERROR_SUCCESS )
         return 1;
 
-    MultiByteToWideChar( CP_ACP, 0, font_name, -1, dbuffer, 256 );
-    char *font_name_temp = FromWide( dbuffer );
+    char *font_name_temp = FromT( font_name );
     size_t fontname_len = strlen( font_name_temp );
 
     for( int index = 0;; index++ )
@@ -593,15 +619,15 @@ static int GetFileFontByName( const char *font_name, char **psz_filename )
         DWORD vbuflen = MAX_PATH - 1;
         DWORD dbuflen = 255;
 
-        LONG i_result = RegEnumValueW( hKey, index, vbuffer, &vbuflen,
-                                       NULL, NULL, (LPBYTE)dbuffer, &dbuflen);
+        LONG i_result = RegEnumValue( hKey, index, vbuffer, &vbuflen,
+                                      NULL, NULL, (LPBYTE)dbuffer, &dbuflen);
         if( i_result != ERROR_SUCCESS )
         {
             RegCloseKey( hKey );
             return i_result;
         }
 
-        char *psz_value = FromWide( vbuffer );
+        char *psz_value = FromT( vbuffer );
 
         char *s = strchr( psz_value,'(' );
         if( s != NULL && s != psz_value ) s[-1] = '\0';
@@ -625,7 +651,7 @@ static int GetFileFontByName( const char *font_name, char **psz_filename )
         free( psz_value );
     }
 
-    *psz_filename = FromWide( dbuffer );
+    *psz_filename = FromT( dbuffer );
     free( font_name_temp );
     RegCloseKey( hKey );
     return 0;
@@ -639,7 +665,7 @@ static int CALLBACK EnumFontCallback(const ENUMLOGFONTEX *lpelfe, const NEWTEXTM
     if( (type & RASTER_FONTTYPE) ) return 1;
     // if( lpelfe->elfScript ) FIXME
 
-    return GetFileFontByName( (const char *)lpelfe->elfFullName, (char **)lParam );
+    return GetFileFontByName( (LPCTSTR)lpelfe->elfFullName, (char **)lParam );
 }
 
 static char* Win32_Select( filter_t *p_filter, const char* family,
@@ -658,10 +684,8 @@ static char* Win32_Select( filter_t *p_filter, const char* family,
     if( b_bold )
         lf.lfWeight = FW_BOLD;
 
-    char facename[32];
-    wchar_t* psz_fbuffer = ToWide( family );
-    WideCharToMultiByte( CP_ACP, 0, psz_fbuffer, -1, facename, 32, " ", 0 );
-    strncpy( (LPSTR)&lf.lfFaceName, facename, 32 );
+    LPTSTR psz_fbuffer = ToT( family );
+    _tcsncpy( (LPTSTR)&lf.lfFaceName, psz_fbuffer, LF_FACESIZE );
     free( psz_fbuffer );
 
     /* */
@@ -701,9 +725,10 @@ fail:
             return psz_tmp;
     }
 }
-#endif /* HAVE_WIN32 */
+#endif /* _WIN32 */
 
 #ifdef __APPLE__
+#if !TARGET_OS_IPHONE
 static char* MacLegacy_Select( filter_t *p_filter, const char* psz_fontname,
                           bool b_bold, bool b_italic, int i_size, int *i_idx )
 {
@@ -782,6 +807,7 @@ static char* MacLegacy_Select( filter_t *p_filter, const char* psz_fontname,
 
     return psz_path;
 }
+#endif
 #endif
 
 #endif /* HAVE_STYLES */
@@ -1043,6 +1069,93 @@ static inline void BlendAXYZLine( picture_t *p_picture,
     }
 }
 
+static inline void RenderBackground( subpicture_region_t *p_region,
+                                     line_desc_t *p_line_head,
+                                     FT_BBox *p_bbox,
+                                     int i_margin,
+                                     picture_t *p_picture,
+                                     int i_text_width,
+                                     void (*ExtractComponents)( uint32_t, uint8_t *, uint8_t *, uint8_t * ),
+                                     void (*BlendPixel)(picture_t *, int, int, int, int, int, int, int) )
+{
+    for( line_desc_t *p_line = p_line_head; p_line != NULL; p_line = p_line->p_next )
+    {
+        int i_align_left = i_margin;
+        int i_align_top = i_margin;
+        int line_start = 0;
+        int line_end = 0;
+        unsigned line_top = 0;
+        int line_bottom = 0;
+        int max_height = 0;
+
+        if( p_line->i_width < i_text_width )
+        {
+            /* Left offset to take into account alignment */
+            if( (p_region->i_align & 0x3) == SUBPICTURE_ALIGN_RIGHT )
+                i_align_left += ( i_text_width - p_line->i_width );
+            else if( (p_region->i_align & 0x10) == SUBPICTURE_ALIGN_LEAVETEXT)
+                i_align_left = i_margin; /* Keep it the way it is */
+            else if( (p_region->i_align & 0x3) != SUBPICTURE_ALIGN_LEFT )
+                i_align_left += ( i_text_width - p_line->i_width ) / 2;
+        }
+
+        /* Find the tallest character in the line */
+        for( int i = 0; i < p_line->i_character_count; i++ ) {
+            const line_character_t *ch = &p_line->p_character[i];
+            FT_BitmapGlyph p_glyph = ch->p_outline ? ch->p_outline : ch->p_glyph;
+            if (p_glyph->top > max_height)
+                max_height = p_glyph->top;
+        }
+
+        /* Compute the background for the line (identify leading/trailing space) */
+        for( int i = 0; i < p_line->i_character_count; i++ ) {
+            const line_character_t *ch = &p_line->p_character[i];
+            FT_BitmapGlyph p_glyph = ch->p_outline ? ch->p_outline : ch->p_glyph;
+            if (p_glyph && p_glyph->bitmap.rows > 0) {
+                // Found a non-whitespace character
+                line_start = i_align_left + p_glyph->left - p_bbox->xMin;
+                break;
+            }
+        }
+
+        /* Fudge factor to make sure caption background edges are left aligned
+           despite variable font width */
+        if (line_start < 12)
+            line_start = 0;
+
+        /* Find right boundary for bounding box for background */
+        for( int i = p_line->i_character_count; i > 0; i-- ) {
+            const line_character_t *ch = &p_line->p_character[i - 1];
+            FT_BitmapGlyph p_glyph = ch->p_shadow ? ch->p_shadow : ch->p_glyph;
+            if (p_glyph && p_glyph->bitmap.rows > 0) {
+                // Found a non-whitespace character
+                line_end = i_align_left + p_glyph->left - p_bbox->xMin + p_glyph->bitmap.width;
+                break;
+            }
+        }
+
+        /* Setup color for the background */
+        uint8_t i_x, i_y, i_z;
+        ExtractComponents( 0x000000, &i_x, &i_y, &i_z );
+
+        /* Compute the upper boundary for the background */
+        if ((i_align_top + p_line->i_base_line - max_height) < 0)
+            line_top = i_align_top + p_line->i_base_line;
+        else
+            line_top = i_align_top + p_line->i_base_line - max_height;
+
+        /* Compute lower boundary for the background */
+        line_bottom =  __MIN(line_top + p_line->i_height, p_region->fmt.i_visible_height);
+
+        /* Render the actual background */
+        for( int dy = line_top; dy < line_bottom; dy++ )
+        {
+            for( int dx = line_start; dx < line_end; dx++ )
+                BlendPixel( p_picture, dx, dy, 0xff, i_x, i_y, i_z, 0xff );
+        }
+    }
+}
+
 static inline int RenderAXYZ( filter_t *p_filter,
                               subpicture_region_t *p_region,
                               line_desc_t *p_line_head,
@@ -1071,11 +1184,22 @@ static inline int RenderAXYZ( filter_t *p_filter,
     p_region->fmt = fmt;
 
     /* Initialize the picture background */
-    uint8_t i_a = p_sys->i_background_opacity;
+    uint8_t i_a = var_InheritInteger( p_filter, "freetype-background-opacity" );
+    i_a = VLC_CLIP( i_a, 0, 255 );
     uint8_t i_x, i_y, i_z;
-    ExtractComponents( p_sys->i_background_color, &i_x, &i_y, &i_z );
 
-    FillPicture( p_picture, i_a, i_x, i_y, i_z );
+    if (p_region->b_renderbg) {
+        /* Render the background just under the text */
+        FillPicture( p_picture, 0x00, 0x00, 0x00, 0x00 );
+        RenderBackground(p_region, p_line_head, p_bbox, i_margin, p_picture, i_text_width,
+                         ExtractComponents, BlendPixel);
+    } else {
+        /* Render background under entire subpicture block */
+        int i_background_color = var_InheritInteger( p_filter, "freetype-background-color" );
+        i_background_color = VLC_CLIP( i_background_color, 0, 0xFFFFFF );
+        ExtractComponents( i_background_color, &i_x, &i_y, &i_z );
+        FillPicture( p_picture, i_a, i_x, i_y, i_z );
+    }
 
     /* Render shadow then outline and then normal glyphs */
     for( int g = 0; g < 3; g++ )
@@ -1089,6 +1213,8 @@ static inline int RenderAXYZ( filter_t *p_filter,
                 /* Left offset to take into account alignment */
                 if( (p_region->i_align & 0x3) == SUBPICTURE_ALIGN_RIGHT )
                     i_align_left += ( i_text_width - p_line->i_width );
+                else if( (p_region->i_align & 0x10) == SUBPICTURE_ALIGN_LEAVETEXT)
+                    i_align_left = i_margin; /* Keep it the way it is */
                 else if( (p_region->i_align & 0x3) != SUBPICTURE_ALIGN_LEFT )
                     i_align_left += ( i_text_width - p_line->i_width ) / 2;
             }
@@ -1441,7 +1567,6 @@ static int HandleFontAttributes( xml_reader_t *p_xml_reader,
                                  &i_karaoke_bg_color ))
     {
         psz_fontname = strdup( psz_fontname );
-        i_font_size = i_font_size;
     }
     i_font_alpha = (i_font_color >> 24) & 0xff;
     i_font_color &= 0x00ffffff;
@@ -1511,6 +1636,30 @@ static int HandleFontAttributes( xml_reader_t *p_xml_reader,
     return rv;
 }
 
+static int HandleTT(font_stack_t **p_fonts, const char *p_fontfamily )
+{
+    char      *psz_unused_fontname = NULL;
+    uint32_t   i_font_color = 0xffffff;
+    uint32_t   i_karaoke_bg_color = 0x00ffffff;
+    int        i_font_size  = 24;
+
+    /* Default all attributes to the top font in the stack -- in case not
+     * all attributes are specified in the sub-font
+     */
+    PeekFont( p_fonts,
+             &psz_unused_fontname,
+             &i_font_size,
+             &i_font_color,
+             &i_karaoke_bg_color );
+
+    /* Keep all the parent's font attributes, but change to a monospace font */
+    return PushFont( p_fonts,
+                   p_fontfamily,
+                   i_font_size,
+                   i_font_color,
+                   i_karaoke_bg_color );
+}
+
 /* Turn any multiple-whitespaces into single spaces */
 static void HandleWhiteSpace( char *psz_node )
 {
@@ -1530,14 +1679,16 @@ static void HandleWhiteSpace( char *psz_node )
 }
 
 
-static text_style_t *GetStyleFromFontStack( filter_sys_t *p_sys,
+static text_style_t *GetStyleFromFontStack( filter_t *p_filter,
                                             font_stack_t **p_fonts,
                                             int i_style_flags )
 {
     char       *psz_fontname = NULL;
-    uint32_t    i_font_color = p_sys->i_font_color & 0x00ffffff;
+    uint32_t    i_font_color = var_InheritInteger( p_filter, "freetype-color" );
+    i_font_color = VLC_CLIP( i_font_color, 0, 0xFFFFFF );
+    i_font_color = i_font_color & 0x00ffffff;
+    int         i_font_size  = p_filter->p_sys->i_font_size;
     uint32_t    i_karaoke_bg_color = i_font_color;
-    int         i_font_size  = p_sys->i_font_size;
 
     if( PeekFont( p_fonts, &psz_fontname, &i_font_size,
                   &i_font_color, &i_karaoke_bg_color ) )
@@ -1608,6 +1759,10 @@ static int ProcessNodes( filter_t *p_filter,
 
     if( p_font_style )
     {
+        /* If the font is not specified in the style, assume the system font */
+        if(!p_font_style->psz_fontname)
+             p_font_style->psz_fontname = strdup(p_sys->psz_fontfamily);
+
         rv = PushFont( &p_fonts,
                p_font_style->psz_fontname,
                p_font_style->i_font_size > 0 ? p_font_style->i_font_size
@@ -1622,17 +1777,19 @@ static int ProcessNodes( filter_t *p_filter,
                                                        STYLE_UNDERLINE |
                                                        STYLE_STRIKEOUT);
     }
-#ifdef HAVE_STYLES
     else
     {
+        uint32_t i_font_size = p_sys->i_font_size;
+        uint32_t i_font_color = var_InheritInteger( p_filter, "freetype-color" );
+        i_font_color = VLC_CLIP( i_font_color, 0, 0xFFFFFF );
+        uint32_t i_font_opacity = p_sys->i_font_opacity;
         rv = PushFont( &p_fonts,
                        p_sys->psz_fontfamily,
-                       p_sys->i_font_size,
-                       (p_sys->i_font_color & 0xffffff) |
-                          ((p_sys->i_font_opacity & 0xff) << 24),
+                       i_font_size,
+                       (i_font_color & 0xffffff) |
+                          ((i_font_opacity & 0xff) << 24),
                        0x00ffffff );
     }
-#endif
     if( p_sys->b_font_bold )
         i_style_flags |= STYLE_BOLD;
 
@@ -1649,6 +1806,8 @@ static int ProcessNodes( filter_t *p_filter,
             case XML_READER_ENDELEM:
                 if( !strcasecmp( "font", node ) )
                     PopFont( &p_fonts );
+                else if( !strcasecmp( "tt", node ) )
+                    PopFont( &p_fonts );
                 else if( !strcasecmp( "b", node ) )
                     i_style_flags &= ~STYLE_BOLD;
                else if( !strcasecmp( "i", node ) )
@@ -1662,6 +1821,8 @@ static int ProcessNodes( filter_t *p_filter,
             case XML_READER_STARTELEM:
                 if( !strcasecmp( "font", node ) )
                     HandleFontAttributes( p_xml_reader, &p_fonts );
+                else if( !strcasecmp( "tt", node ) )
+                    HandleTT( &p_fonts, p_sys->psz_monofontfamily );
                 else if( !strcasecmp( "b", node ) )
                     i_style_flags |= STYLE_BOLD;
                 else if( !strcasecmp( "i", node ) )
@@ -1677,7 +1838,7 @@ static int ProcessNodes( filter_t *p_filter,
                                                 &pp_styles[i_text_length],
                                                 pi_k_dates ? &pi_k_dates[i_text_length] : NULL,
                                                 "\n",
-                                                GetStyleFromFontStack( p_sys,
+                                                GetStyleFromFontStack( p_filter,
                                                                        &p_fonts,
                                                                        i_style_flags ),
                                                 i_k_date );
@@ -1708,7 +1869,7 @@ static int ProcessNodes( filter_t *p_filter,
                                             &pp_styles[i_text_length],
                                             pi_k_dates ? &pi_k_dates[i_text_length] : NULL,
                                             psz_node,
-                                            GetStyleFromFontStack( p_sys,
+                                            GetStyleFromFontStack( p_filter,
                                                                    &p_fonts,
                                                                    i_style_flags ),
                                             i_k_date );
@@ -1825,8 +1986,10 @@ static FT_Face LoadFace( filter_t *p_filter,
                                           -1,
                                           &i_idx );
 #elif defined( __APPLE__ )
+#if !TARGET_OS_IPHONE
         psz_fontfile = MacLegacy_Select( p_filter, p_style->psz_fontname, false, false, -1, &i_idx );
-#elif defined( WIN32 )
+#endif
+#elif defined( _WIN32 )
         psz_fontfile = Win32_Select( p_filter,
                                     p_style->psz_fontname,
                                     (p_style->i_style_flags & STYLE_BOLD) != 0,
@@ -2176,7 +2339,9 @@ static int ProcessLines( filter_t *p_filter,
                     msg_Err( p_filter, "Failed to set font size to %d", p_current_style->i_font_size );
                 if( p_sys->p_stroker )
                 {
-                    int i_radius = (p_current_style->i_font_size << 6) * p_sys->f_outline_thickness;
+                    double f_outline_thickness = var_InheritInteger( p_filter, "freetype-outline-thickness" ) / 100.0;
+                    f_outline_thickness = VLC_CLIP( f_outline_thickness, 0.0, 0.5 );
+                    int i_radius = (p_current_style->i_font_size << 6) * f_outline_thickness;
                     FT_Stroker_Set( p_sys->p_stroker,
                                     i_radius,
                                     FT_STROKER_LINECAP_ROUND,
@@ -2364,6 +2529,7 @@ static int ProcessLines( filter_t *p_filter,
         {
             p_line->i_width  = __MAX(line_bbox.xMax - line_bbox.xMin, 0);
             p_line->i_base_line = i_base_line;
+            p_line->i_height = __MAX(i_face_height, i_face_height_previous);
             if( i_ul_thickness > 0 )
             {
                 for( int i = 0; i < p_line->i_character_count; i++ )
@@ -2448,7 +2614,6 @@ static int RenderCommon( filter_t *p_filter, subpicture_region_t *p_region_out,
 
     uint32_t *pi_k_durations   = NULL;
 
-#ifdef HAVE_STYLES
     if( b_html )
     {
         stream_t *p_sub = stream_MemoryNew( VLC_OBJECT(p_filter),
@@ -2506,11 +2671,11 @@ static int RenderCommon( filter_t *p_filter, subpicture_region_t *p_region_out,
         stream_Delete( p_sub );
     }
     else
-#endif
     {
         text_style_t *p_style;
         if( p_region_in->p_style )
-            p_style = CreateStyle( p_region_in->p_style->psz_fontname,
+            p_style = CreateStyle( p_region_in->p_style->psz_fontname ? p_region_in->p_style->psz_fontname
+                                                                      : p_sys->psz_fontfamily,
                                    p_region_in->p_style->i_font_size > 0 ? p_region_in->p_style->i_font_size
                                                                          : p_sys->i_font_size,
                                    (p_region_in->p_style->i_font_color & 0xffffff) |
@@ -2521,11 +2686,15 @@ static int RenderCommon( filter_t *p_filter, subpicture_region_t *p_region_out,
                                                                           STYLE_UNDERLINE |
                                                                           STYLE_STRIKEOUT) );
         else
+        {
+            uint32_t i_font_color = var_InheritInteger( p_filter, "freetype-color" );
+            i_font_color = VLC_CLIP( i_font_color, 0, 0xFFFFFF );
             p_style = CreateStyle( p_sys->psz_fontfamily,
                                    p_sys->i_font_size,
-                                   (p_sys->i_font_color & 0xffffff) |
+                                   (i_font_color & 0xffffff) |
                                    ((p_sys->i_font_opacity & 0xff) << 24),
                                    0x00ffffff, 0);
+        }
         if( p_sys->b_font_bold )
             p_style->i_style_flags |= STYLE_BOLD;
 
@@ -2558,7 +2727,9 @@ static int RenderCommon( filter_t *p_filter, subpicture_region_t *p_region_out,
         else if( !p_chroma_list || *p_chroma_list == 0 )
             p_chroma_list = p_chroma_list_rgba;
 
-        const int i_margin = p_sys->i_background_opacity > 0 ? i_max_face_height / 4 : 0;
+        uint8_t i_background_opacity = var_InheritInteger( p_filter, "freetype-background-opacity" );
+        i_background_opacity = VLC_CLIP( i_background_opacity, 0, 255 );
+        const int i_margin = i_background_opacity > 0 ? i_max_face_height / 4 : 0;
         for( const vlc_fourcc_t *p_chroma = p_chroma_list; *p_chroma != 0; p_chroma++ )
         {
             rv = VLC_EGENERIC;
@@ -2608,16 +2779,12 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
     return RenderCommon( p_filter, p_region_out, p_region_in, false, p_chroma_list );
 }
 
-#ifdef HAVE_STYLES
-
 static int RenderHtml( filter_t *p_filter, subpicture_region_t *p_region_out,
                        subpicture_region_t *p_region_in,
                        const vlc_fourcc_t *p_chroma_list )
 {
     return RenderCommon( p_filter, p_region_out, p_region_in, true, p_chroma_list );
 }
-
-#endif
 
 /*****************************************************************************
  * Create: allocates osd-text video thread output method
@@ -2630,7 +2797,9 @@ static int Create( vlc_object_t *p_this )
     filter_sys_t  *p_sys;
     char          *psz_fontfile   = NULL;
     char          *psz_fontfamily = NULL;
-    int            i_error = 0, fontindex = 0;
+    char          *psz_monofontfile   = NULL;
+    char          *psz_monofontfamily = NULL;
+    int            i_error = 0, fontindex = 0, monofontindex = 0;
 
     /* Allocate structure */
     p_filter->p_sys = p_sys = malloc( sizeof(*p_sys) );
@@ -2638,32 +2807,28 @@ static int Create( vlc_object_t *p_this )
         return VLC_ENOMEM;
 
     p_sys->psz_fontfamily   = NULL;
-#ifdef HAVE_STYLES
     p_sys->p_xml            = NULL;
-#endif
     p_sys->p_face           = 0;
     p_sys->p_library        = 0;
     p_sys->i_font_size      = 0;
     p_sys->i_display_height = 0;
 
-    var_Create( p_filter, "freetype-rel-fontsize",
-                VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
+    /*
+     * The following variables should not be cached, as they might be changed on-the-fly:
+     * freetype-rel-fontsize, freetype-background-opacity, freetype-background-color,
+     * freetype-outline-thickness, freetype-color
+     *
+     */
 
     psz_fontfamily = var_InheritString( p_filter, "freetype-font" );
+    psz_monofontfamily = var_InheritString( p_filter, "freetype-monofont" );
     p_sys->i_default_font_size = var_InheritInteger( p_filter, "freetype-fontsize" );
     p_sys->i_font_opacity = var_InheritInteger( p_filter,"freetype-opacity" );
     p_sys->i_font_opacity = VLC_CLIP( p_sys->i_font_opacity, 0, 255 );
-    p_sys->i_font_color = var_InheritInteger( p_filter, "freetype-color" );
-    p_sys->i_font_color = VLC_CLIP( p_sys->i_font_color, 0, 0xFFFFFF );
     p_sys->b_font_bold = var_InheritBool( p_filter, "freetype-bold" );
 
-    p_sys->i_background_opacity = var_InheritInteger( p_filter,"freetype-background-opacity" );;
-    p_sys->i_background_opacity = VLC_CLIP( p_sys->i_background_opacity, 0, 255 );
-    p_sys->i_background_color = var_InheritInteger( p_filter, "freetype-background-color" );
-    p_sys->i_background_color = VLC_CLIP( p_sys->i_background_color, 0, 0xFFFFFF );
-
-    p_sys->f_outline_thickness = var_InheritInteger( p_filter, "freetype-outline-thickness" ) / 100.0;
-    p_sys->f_outline_thickness = VLC_CLIP( p_sys->f_outline_thickness, 0.0, 0.5 );
+    double f_outline_thickness = var_InheritInteger( p_filter, "freetype-outline-thickness" ) / 100.0;
+    f_outline_thickness = VLC_CLIP( f_outline_thickness, 0.0, 0.5 );
     p_sys->i_outline_opacity = var_InheritInteger( p_filter, "freetype-outline-opacity" );
     p_sys->i_outline_opacity = VLC_CLIP( p_sys->i_outline_opacity, 0, 255 );
     p_sys->i_outline_color = var_InheritInteger( p_filter, "freetype-outline-color" );
@@ -2679,7 +2844,7 @@ static int Create( vlc_object_t *p_this )
     p_sys->f_shadow_vector_x = f_shadow_distance * cos(2 * M_PI * f_shadow_angle / 360);
     p_sys->f_shadow_vector_y = f_shadow_distance * sin(2 * M_PI * f_shadow_angle / 360);
 
-#ifdef WIN32
+#ifdef _WIN32
     /* Get Windows Font folder */
     wchar_t wdir[MAX_PATH];
     if( S_OK != SHGetFolderPathW( NULL, CSIDL_FONTS, NULL, SHGFP_TYPE_CURRENT, wdir ) )
@@ -2697,9 +2862,12 @@ static int Create( vlc_object_t *p_this )
 #ifdef HAVE_STYLES
         psz_fontfamily = strdup( DEFAULT_FAMILY );
 #else
-# ifdef WIN32
+# ifdef _WIN32
         if( asprintf( &psz_fontfamily, "%s"DEFAULT_FONT_FILE, p_sys->psz_win_fonts_path ) == -1 )
+        {
+            psz_fontfamily = NULL;
             goto error;
+        }
 # else
         psz_fontfamily = strdup( DEFAULT_FONT_FILE );
 # endif
@@ -2716,9 +2884,14 @@ static int Create( vlc_object_t *p_this )
     /* */
     psz_fontfile = FontConfig_Select( NULL, psz_fontfamily, false, false,
                                       p_sys->i_default_font_size, &fontindex );
+    psz_monofontfile = FontConfig_Select( NULL, psz_monofontfamily, false,
+                                          false, p_sys->i_default_font_size,
+                                          &monofontindex );
 #elif defined(__APPLE__)
+#if !TARGET_OS_IPHONE
     psz_fontfile = MacLegacy_Select( p_filter, psz_fontfamily, false, false, 0, &fontindex );
-#elif defined(WIN32)
+#endif
+#elif defined(_WIN32)
     psz_fontfile = Win32_Select( p_filter, psz_fontfamily, false, false,
                                  p_sys->i_default_font_size, &fontindex );
 
@@ -2728,11 +2901,15 @@ static int Create( vlc_object_t *p_this )
     /* If nothing is found, use the default family */
     if( !psz_fontfile )
         psz_fontfile = strdup( psz_fontfamily );
+    if( !psz_monofontfile )
+        psz_monofontfile = strdup( psz_monofontfamily );
 
 #else /* !HAVE_STYLES */
     /* Use the default file */
     psz_fontfile = psz_fontfamily;
+    psz_monofontfile = psz_monofontfamily;
 #endif
+    p_sys->psz_monofontfamily = psz_monofontfamily;
 
     /* */
     i_error = FT_Init_FreeType( &p_sys->p_library );
@@ -2768,7 +2945,7 @@ static int Create( vlc_object_t *p_this )
     if( SetFontSize( p_filter, 0 ) != VLC_SUCCESS ) goto error;
 
     p_sys->p_stroker = NULL;
-    if( p_sys->f_outline_thickness > 0.001 )
+    if( f_outline_thickness > 0.001 )
     {
         i_error = FT_Stroker_New( p_sys->p_library, &p_sys->p_stroker );
         if( i_error )
@@ -2779,16 +2956,13 @@ static int Create( vlc_object_t *p_this )
     p_sys->i_font_attachments = 0;
 
     p_filter->pf_render_text = RenderText;
-#ifdef HAVE_STYLES
     p_filter->pf_render_html = RenderHtml;
-#else
-    p_filter->pf_render_html = NULL;
-#endif
 
     LoadFontsFromAttachments( p_filter );
 
 #ifdef HAVE_STYLES
     free( psz_fontfile );
+    free( psz_monofontfile );
 #endif
 
     return VLC_SUCCESS;
@@ -2798,8 +2972,10 @@ error:
     if( p_sys->p_library ) FT_Done_FreeType( p_sys->p_library );
 #ifdef HAVE_STYLES
     free( psz_fontfile );
+    free( psz_monofontfile );
 #endif
     free( psz_fontfamily );
+    free( psz_monofontfamily );
     free( p_sys );
     return VLC_EGENERIC;
 }
@@ -2822,10 +2998,13 @@ static void Destroy( vlc_object_t *p_this )
         free( p_sys->pp_font_attachments );
     }
 
-#ifdef HAVE_STYLES
     if( p_sys->p_xml ) xml_ReaderDelete( p_sys->p_xml );
-#endif
     free( p_sys->psz_fontfamily );
+    free( p_sys->psz_monofontfamily );
+
+#ifdef _WIN32
+    free( p_sys->psz_win_fonts_path );
+#endif
 
     /* FcFini asserts calling the subfunction FcCacheFini()
      * even if no other library functions have been made since FcInit(),
@@ -2837,5 +3016,3 @@ static void Destroy( vlc_object_t *p_this )
     FT_Done_FreeType( p_sys->p_library );
     free( p_sys );
 }
-
-

@@ -2,7 +2,7 @@
  * playlist_item.hpp : Item for a playlist tree
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: d36b19c1a0967d778e71f14dfbd34abd10b4e846 $
+ * $Id: 2ce9c7e7dc2b8e131a7dcb374d71b25c879ab6b8 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -30,38 +30,57 @@
 
 #include <QList>
 
-class PLItem
+class AbstractPLItem
 {
+    friend class PLItem; /* super ugly glue stuff */
+    friend class MLItem;
     friend class PLModel;
+    friend class MLModel;
+
 public:
-    PLItem( playlist_item_t *, PLItem *parent );
-    ~PLItem();
-
-    int row() const;
-
-    void insertChild( PLItem *, int pos );
-    void appendChild( PLItem *item );
-    void removeChild( PLItem * );
-    void removeChildren();
-    void takeChildAt( int );
-
-    PLItem *child( int row ) const { return children.value( row ); }
-    int childCount() const { return children.count(); }
-
-    PLItem *parent() { return parentItem; }
-    input_item_t *inputItem() const { return p_input; }
-    int id() { return i_id; }
-    bool operator< ( PLItem& );
+    virtual ~AbstractPLItem() {}
 
 protected:
-    QList<PLItem*> children;
-    PLItem *parentItem;
-    int i_id;
-    input_item_t *p_input;
+    virtual int id() const = 0;
+    int childCount() const { return children.count(); }
+    int indexOf( AbstractPLItem *item ) const { return children.indexOf( item ); };
+    int lastIndexOf( AbstractPLItem *item ) const { return children.lastIndexOf( item ); };
+    AbstractPLItem *parent() { return parentItem; }
+    virtual input_item_t *inputItem() = 0;
+    void insertChild( AbstractPLItem *item, int pos = -1 ) { children.insert( pos, item ); }
+    void appendChild( AbstractPLItem *item ) { insertChild( item, children.count() ); } ;
+    virtual AbstractPLItem *child( int id ) const = 0;
+    void clearChildren();
+
+    QList<AbstractPLItem *> children;
+    AbstractPLItem *parentItem;
+};
+
+class PLItem : public AbstractPLItem
+{
+    friend class PLModel;
+
+public:
+    virtual ~PLItem();
+    bool hasSameParent( PLItem *other ) { return parent() == other->parent(); }
+    bool operator< ( PLItem& );
 
 private:
+    /* AbstractPLItem */
+    int id() const { return i_id; };
+    input_item_t *inputItem() { return p_input; }
+    AbstractPLItem *child( int id ) const { return children.value( id ); };
+
+    /* Local */
+    PLItem( playlist_item_t *, PLItem *parent );
+    int row();
+    void removeChild( PLItem * );
+    void takeChildAt( int );
+
     PLItem( playlist_item_t * );
     void init( playlist_item_t *, PLItem * );
+    int i_id;
+    input_item_t *p_input;
 };
 
 #endif

@@ -1,4 +1,4 @@
-The VideoLAN team would like to acknowledge the following contributors:
+VideoLAN and the VLC team would like to acknowledge the following contributors:
 
 Programming
 -----------
@@ -6,9 +6,9 @@ Rémi Denis-Courmont
 Jean-Baptiste Kempf
 Laurent Aimar
 Gildas Bazin
-Pierre d'Herbemont
-Rafaël Carré
 Felix Paul Kühne
+Rafaël Carré
+Pierre d'Herbemont
 Rémi Duraffort
 Derk-Jan Hartman
 Antoine Cellerier
@@ -19,57 +19,59 @@ Clément Stenac
 Christophe Massiot
 Ilkka Ollakka
 Pierre Ynard
+François Cartegnie
 Damien Fouilleul
 Sigmund Augdal Helberg
 Erwan Tulou
+David Fuhrmann
 Olivier Teulière
 Cyril Deguet
 Eric Petit
 Filippo Carone
 Rocky Bernstein
-François Cartegnie
+Hugo Beauzée-Luyssen
 Olivier Aubert
+Pavlov Konstantin
 Jakob Leben
 Benjamin Pracht
-Pavlov Konstantin
 Jean-Philippe André
-Hugo Beauzée-Luyssen
 Steve Lhomme
 Stéphane Borel
 JP Dinger
-David Fuhrmann
 Geoffroy Couprie
+Martin Storsjö
 Marian Ďurkovič
-Yoann Peronneau
-Jon Lech Johansen
-Sébastien Escudier
-Dennis van Amerongen
 Ludovic Fauvet
-Jérôme Decoodt
+Yoann Peronneau
+Sébastien Escudier
+Jon Lech Johansen
 KO Myung-Hun
+Edward Wang
+Dennis van Amerongen
 Faustino Osuna
+Mirsal Ennaime
+Denis Charmet
+Jérôme Decoodt
 Loïc Minier
 David Flynn
+Frédéric Yhuel
+Kaarlo Raiha
 Mark Moriarty
+Christopher Mueller
 Fabio Ritrovato
-Mirsal Ennaime
 Tony Castley
 Srikanth Raju
-Kaarlo Raiha
 Michel Kaempf
 Jean-Marc Dressler
 Johan Bilien
 Vincent Seguin
-Martin Storsjö
 Simon Latapie
 Bernie Purcell
-Denis Charmet
 Henri Fallon
-Edward Wang
-Emmanuel Puig
 Sebastien Zwickert
 Christoph Miebach
 Adrien Maglo
+Emmanuel Puig
 Renaud Dartus
 Alexis de Lattre
 Vincent Penquerc'h
@@ -78,134 +80,157 @@ Mohammed Adnène Trojette
 Boris Dorès
 Jai Menon
 Anil Daoud
-Pierre Baillet
 Daniel Mierswa
-Dominique Leuenberger
+Naohiro Koriyama
 Rob Jonson
+Pierre Baillet
+Dominique Leuenberger
 Andre Pang
+Zoran Turalija
 Akash Mehrotra
 André Weber
 Anthony Loiseau
 Lukas Durfina
 Xavier Marchesini
-Éric Lassauge
 Cyril Mathé
-Juha Jeronen
+Devin Heitmueller
 Juho Vähä-Herttua
 Ken Self
 Alexis Ballier
+Juha Jeronen
+Nicolas Chauvet
 Richard Hosking
+Éric Lassauge
 Marc Ariberti
+Sébastien Toque
+Tobias Güntner
 Benoit Steiner
 Michel Lespinasse
-Naohiro Koriyama
 Carlo Calabrò
-Nicolas Chauvet
-Brad Smith
 Cheng Sun
+Michał Trzebiatowski
+Brad Smith
+Brendon Justin
 Alexey Sokolov
 Basos G
 Philippe Morin
-Tobias Güntner
+Steinar H. Gunderson
 Vicente Jimenez Aguilar
 Yuval Tze
-Brendon Justin
 Yves Duret
-Frédéric Yhuel
-Michael Hanselmann
-Alexander Lakhin
-Damien Lucas
-Richard Shepherd
-Sébastien Toque
 Benjamin Drung
-Gaël Hendryckx
+Michael Hanselmann
+Alex Merry
+Damien Lucas
 Grigori Goronzy
+Richard Shepherd
+Gaël Hendryckx
+Michael Feurstein
 Stephan Assmus
 Adrien Grand
 Colin Guthrie
 David Menestrina
 Dominique Martinet
+Gleb Pinigin
 Jason Luka
 Luc Saillard
+Luca Barbato
+Mario Speiß
 Pankaj Yadav
 Ramiro Polla
-Steinar H. Gunderson
+Ronald Wright
+Rui Zhang
 Can Wu
 Christophe Courtaut
+FUJISAWA Tooru
 Hannes Domani
 Manol Manolov
-Rui Zhang
+Timothy B. Terriberry
 Antoine Lejeune
 Arnaud Schauly
 Branko Kokanovic
 Dylan Yudaken
 Florian G. Pflug
+François Revol
 G Finch
 Keary Griffin
 Konstanty Bialkowski
+Ming Hu
+Philippe Coent
 Przemyslaw Fiala
 Tanguy Krotoff
+Vianney BOYER
+Casian Andrei
+Chris Smowton
 David Kaplan
-Devin Heitmueller
 Eugenio Jarosiewicz
 Fabian Keil
 Guillaume Poussel
 John Peterson
 Justus Piater
-Luca Barbato
+Mark Lee
 Martin T. H. Sandsmark
 Rune Botten
 Søren Bøg
 Toralf Niebuhr
+Tristan Matthews
+Angelo Haller
+Aurélien Nephtali
 Austin Burrow
 Bill C. Riemers
-Casian Andrei
-Chris Smowton
 Colin Delacroix
 Cristian Maglie
 Elminster2031
-François Revol
 Jakub Wieczorek
+John Freed
+Mark Hassman
 Martin Briza
 Mike Houben
 Romain Goyet
-Timothy B. Terriberry
 Adrian Yanes
-Alex Merry
-Arai/Fujisawa Tooru
-Aurélien Nephtali
+Alexander Lakhin
+Anatoliy Anischovich
 Barry Wardell
 Ben Hutchings
 Besnard Jean-Baptiste
 Brian Weaver
 Clement Chesnin
+David Geldreich
+Diego Elio Pettenò
+Diego Fernando Nieto
+Georgi Chorbadzhiyski
+Jon Stacey
 Jonathan Rosser
 Joris van Rooij
 Kaloyan Kovachev
 Katsushi Kobayashi
+Kelly Anderson
 Loren Merritt
 Maciej Blizinski
 Mark Bidewell
-Mark Hassman
-Michael Feurstein
 Miguel Angel Cabrera Moya
-Ming Hu
 Niles Bindel
+Samuel Pitoiset
 Scott Caudle
 Sean Robinson
+Sergey Radionov
 Simon Hailes
+Stephen Parry
+Sukrit Sangwan
 Thierry Reding
 Xavier Martin
 Alex Converse
 Alexander Bethke
+Alexandre Ratchov
 Andres Krapf
+Andrey Utkin
 Andri Pálsson
 Andy Chenee
 Anuradha Suraparaju
 Benjamin Poulain
 Brieuc Jeunhomme
 Chris Clayton
-Christopher Mueller
+Clément Lecigne
 Cédric Cocquebert
 Daniel Peng
 Danny Wood
@@ -214,49 +239,57 @@ Edouard Gomez
 Emmanuel de Roux
 Frode Tennebø
 GBX
-Georgi Chorbadzhiyski
+Gaurav Narula
+Geraud CONTINSOUZAS
+Hugues Fruchet
 Jan Winter
 Jean-François Massol
 Jean-Philippe Grimaldi
-John Freed
-Jon Stacey
+Josh Watzman
 Kai Lauterbach
-Kelly Anderson
 Konstantin Bogdanov
 Kuan-Chung Chiu
-Mark Lee
+Kuang Rufan
 Matthias Dahl
 Michael McEll
 Michael Ploujnikov
 Mike Schrag
+Nickolai Zeldovich
+Nicolas Bertrand
 Niklas Hayer
+Olafs Vandāns
 Olivier Gambier
 Paul Corke
 Ron Frederick
-Ronald Wright
 Rov Juvano
 Sabourin Gilles
 Sam Lade
+Sandeep Kumar
 Sasha Koruga
 Sreng Jean
 Sven Petai
+Tomas Krotil
 Tomer Barletz
 Tristan Leteurtre
+Vittorio Giovara
 Wang Bo
-Zoran Turalija
 maxime Ripard
 xxcv
 Adam Hoka
 Adrian Knoth
 Adrien Cunin
 Alan Fischer
+Alan McCosh
 Alex Helfet
+Alexander Terentyev
 Alexandre Ferreira
 Alina Friedrichsen
 An L. Ber
 Andreas Schlick
+Andrew Schubert
 Andrey Makhnutin
 Arnaud Vallat
+Asad Mehmood
 Ashok Bhat
 Austin English
 Baptiste Coudurier
@@ -266,22 +299,23 @@ Blake Livingston
 Brandon Brooks
 Brian Johnson
 Brian Kurle
+Cezar Elnazli
 Chris White
 Christian Masus
+Christoph Pfister
 Christoph Seibert
 Christopher Key
 Christopher Rath
 Claudio Ortelli
-Clement Lecigne
-Clément Lecigne
 Cody Russell
 Cristian Morales Vega
 Dan Rosenberg
 Daniel Marth
 Daniel Tisza
 Detlef Schroeder
-Diego Fernando Nieto
+Diego Biurrun
 Dominik 'Rathann' Mierzejewski
+Duncan Salerno
 Edward Sheldrake
 Elliot Murphy
 Eren Inan Canpolat
@@ -291,13 +325,12 @@ Fargier Sylvain
 Fathi Boudra
 Felix Geyer
 Filipe Azevedo
+Finn Hughes
 Florian Hubold
 Florian Roeske
 Frank Enderle
 Frédéric Crozat
-Gaurav Narula
 Georg Seifert
-Geraud CONTINSOUZAS
 Gertjan Van Droogenbroeck
 Gilles Chanteperdrix
 Greg Farrell
@@ -309,8 +342,11 @@ Harry Sintonen
 Iain Wade
 Ibraheem Paredath
 Isamu Arimoto
+Ismael Luceno
+James Bates
 James Bond
 James Turner
+Janne Grunau
 Janne Kujanpää
 Jarmo Torvinen
 Jason Scheunemann
@@ -323,13 +359,14 @@ John Hendrikx
 John Stebbins
 Jonas Gehring
 Joseph S. Atkinson
-Josh Watzman
 Juergen Lock
+Julien 'Lta' BALLET
 Julien / Gellule
 Julien Humbert
 Kamil Baldyga
 Kamil Klimek
 Karlheinz Wohlmuth
+Kevin Anthony
 Kevin DuBois
 Lari Natri
 Lorenzo Pistone
@@ -338,6 +375,7 @@ Lukáš Lalinský
 Mal Graty
 Malte Tancred
 Martin Pöhlmann
+Martin Zeman
 Marton Balint
 Mathew King
 Mathieu Sonet
@@ -350,14 +388,19 @@ Natanael Copa
 Nathan Phillip Brink
 Nick Briggs
 Nick Pope
-Nickolai Zeldovich
+Nil Geiswiller
+Pascal Thomet
+Pere Orga
 Peter Bak Nielsen
 Phil Roffe and David Grellscheid
+Philip Sequeira
 Pierre Souchay
 Piotr Fusik
 Pádraig Brady
 R.M
 Ralph Giles
+Ramon Gabarró
+Robert Forsman
 Robert Jedrzejczyk
 Robert Paciorek
 Rolf Ahrenberg
@@ -367,22 +410,28 @@ Samuli Suominen
 Scott Lyons
 Sebastian Birk
 Sergey Puzanov
+Sergio Ammirata
 Sharad Dixit
 Song Ye Wen
 Stephan Krempel
-Stephen Parry
 Steven Kramer
 Steven Sheehy
 Sveinung Kvilhaugsvik
 Sylvain Cadhillac
+Sylver Bruneau
+Takahito HIRANO
 Theron Lewis
 Thijs Alkemade
+Tillmann Karras
 Timo Paulssen
 Timo Rothenpieler
+Tobias Rapp
 Tomasen
 Tony Vankrunkelsven
 Tristan Heaven
 Varphone Wong
+Vasily Fomin
+Vikram Narayanan
 Yannick Bréhon
 Yavor Doganov
 Yohann Martineau
@@ -400,6 +449,7 @@ Andrea Guzzo
 Andrew Flintham
 Andrew Zaikin
 Andy Lindsay
+Arai/Fujisawa Tooru
 Arkadiusz Miskiewicz
 Arnaud Gomes-do-Vale
 Arwed v. Merkatz
@@ -581,6 +631,7 @@ Adi Nugroho - Tagalog
 Adnan Memija - Bosnian
 airplanez - Korean
 Ajith Manjula - Sinhala
+Aled Powell - Welsh
 Alexander Didebulidze - Georgian
 Alexander Henket - Dutch
 Alexander Jansen - Norwegian Bokmål
@@ -593,6 +644,7 @@ André de Barros Martins Ribeiro - Brazilian portuguese
 Andrey Brilevskiy - Russian
 Andrey Wolk - Russian
 Andri Pálsson - Icelandic
+Andriy Bandura - Ukrainian
 Anh Phan - Vietnamese
 Animesh Swar - Nepalese
 Aputsiaĸ Niels Janussen - Danish
@@ -610,9 +662,11 @@ Carlo Calabrò - Italian
 Chandan Kumar - Hindi
 Chesús Daniel Trigo - Aragonese
 Christoph Miebach - German
+Chynggyz Jumaliev - Kirgyz
 Circo Radu - Romanian
 Cristian Secară - Romanian
 Daniel Nylander - Swedish
+Daniel Winzen - German
 David González - Spanish
 David Planella - Catalan
 Dean Lee - Simplified Chinese
@@ -644,6 +698,7 @@ Goce Manevski - Macedonian
 Golam Maruf Oovee - Bengali
 Gonçalo Cordeiro - Galician
 Gorana Milicevic - Serbian
+Goswami Hardikpuri Kishorpuri - Gujarati
 Haakon Meland Eriksen - Norwegian
 Han HoJoong - Korean
 Hardik Kishorpuri Goswami - Gujarati
@@ -655,6 +710,7 @@ Israt Jahan - Bengali
 Ivar Smolin - Estonian
 Iván Seoane Pardo - Galician
 Ivo Ivanov - Bulgarian
+Iñaki Larrañaga Murgoitio - Basque
 Iñigo Varela - Asturian; Bable
 Jakub Žáček - Czech
 James Olweny - Ganda
@@ -662,16 +718,20 @@ Jamil Ahmed - Bengali
 Javier Varela - Spanish
 Jean-Pierre Kuypers - French
 Jens Seidel - German
+Joao Almeida - Portuguese
 Joel Arvidsson - Swedish
 jogijs - Latvian
 Jonas Larsen - Danish
 Jon Stødle - Norwegian Nynorsk
 Jouni Kähkönen - Finnish
 Juha Jeronen - Finnish
+Julen Ruiz Aizpuru - Basque
 Kai Hermann - German
 Kamil Páral - Czech
 Kang Jeong-Hee - Korean
+Kasper Tvede - Danish
 Kaya Zeren - Turkish
+Kenneth Nielsen - Danish
 Khin Mi Mi Aung - Burmese
 Khoem Sokhem - Khmer
 Kola - Albanian
@@ -681,6 +741,7 @@ Loba Yeasmeen - Bengali
 Lorena Gomes - Catalan
 Lorenzo Porta - Italian
 Luqman Hakim - Indonesian
+L. Balasubramaniam - Hindi
 Mahrazi Mohd Kamal - Malay
 Manolis Stefanis - Modern Greek
 Manuela Silva/Alfredo Silva - Portuguese
@@ -694,7 +755,7 @@ Mathias C. Berens, welcome-soft - German
 Mattias Põldaru - Estonian
 Md. Rezwan Shahid - Bengali
 Meelad Zakaria - Persian
-Michael Bauer - Gaelic Scottish
+Michael Bauer - Scottish Gaelic
 Michal Halenka - Czech
 Michał Trzebiatowski - Polish
 Miguel Sousa - Portuguese
@@ -715,6 +776,9 @@ Otto Kekäläinen - Finnish
 Paras Nath Chaudhary - Nepali
 Pau Iranzo - Catalan
 Paula Iglesias - Galician
+Pedro Valadares - Portuguese
+Peter Jespersen - Danish
+Petr Šimáček - Czech
 Phan Anh - Vietnamese
 Philipp Weissenbacher - German
 Pittayakom Saingtong - Thai
@@ -731,11 +795,15 @@ Saad Liaquat Kiani - Urdu
 Sadia Afroz - Bengali
 Said Marjan Zazai - Pashto
 Salar Khalilzadeh - Persian
+Sam Askari - Spanish
 Sam Hocevar - British
 Samuel Hocevar - French
+Saúl Ortega - Spanish
 Sayan Chowdhury - Hindi
 Seanán Ó Coistín - Irish
 Semsudin Abdic - Bosnian
+Shambhu Kumar - Hindi
+Shantanu Sarkar - Hindi
 Shashi Ranjan - Hindi
 Siarhei Daryichau Дар'ічаў Сяргей - Belarusian
 Sidney Doria - Brazilian Portuguese
@@ -745,11 +813,12 @@ Sipho Sibiya - Zulu
 Sok Sophea - Khmer
 Solomon Gizaw - Amharic
 Sreejith P - Malayalam
+Suraj Kawade - Marathi
 Stian Jørgensrud - Norwegian Bokmål
 Sveinn í Felli - Icelandic
 Tadashi Jokagi - Japanese
 Tarsem Singh - Hindi
-T. Chomphuming - Thai
+Thanakrit Chomphuming - Thai
 Tero Pelander - Finnish
 Thomas De Rocker - Dutch
 Thomas Graf - gettext support, German
@@ -766,12 +835,12 @@ viyyer - Hindi
 Vladimir Yermolayev - Russian
 Vojtěch Smejkal - Czech
 Wei Mingzhi - Simplified Chinese
-Xabier Aramendi - Basque
 Xènia Albà Cantero - Catalan
 Xuacu Saturio - Asturian
 Yaron Shahrabani - Hebrew
 Yaşar Tay - Turkish
 Yhal Htet Aung - Burmese
+Yogesh K S - Kannada
 Yoyo - Simplified Chinese
 Yuksel Yildirim - Turkish
 Zabeeh Khan - Pashto

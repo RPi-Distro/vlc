@@ -2,7 +2,7 @@
  * input_internal.h: Internal input structures
  *****************************************************************************
  * Copyright (C) 1998-2006 VLC authors and VideoLAN
- * $Id: e65acdfb74ac8f99f146503c91c0304b8ede840f $
+ * $Id: e13022dd1d74b5ee12f1eb68b5ce07ecff5ce6b5 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -40,7 +40,7 @@
 typedef struct
 {
     /* Access/Stream/Demux plugins */
-    access_t *p_access;
+    access_t *p_access VLC_DEPRECATED;
     stream_t *p_stream;
     demux_t  *p_demux;
 
@@ -195,6 +195,12 @@ enum input_control_e
 
     INPUT_CONTROL_SET_BOOKMARK,
 
+    INPUT_CONTROL_NAV_ACTIVATE, // NOTE: INPUT_CONTROL_NAV_* values must be
+    INPUT_CONTROL_NAV_UP,       // contiguous and in the same order as
+    INPUT_CONTROL_NAV_DOWN,     // INPUT_NAV_* and DEMUX_NAV_*.
+    INPUT_CONTROL_NAV_LEFT,
+    INPUT_CONTROL_NAV_RIGHT,
+
     INPUT_CONTROL_SET_ES,
     INPUT_CONTROL_RESTART_ES,
 
@@ -246,5 +252,9 @@ int subtitles_Filter( const char *);
 /* input.c */
 void input_SplitMRL( const char **, const char **, const char **,
                      const char **, char * );
+
+/* meta.c */
+void vlc_audio_replay_gain_MergeFromMeta( audio_replay_gain_t *p_dst,
+                                          const vlc_meta_t *p_meta );
 
 #endif

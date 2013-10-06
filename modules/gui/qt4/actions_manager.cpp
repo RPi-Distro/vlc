@@ -1,8 +1,8 @@
 /*****************************************************************************
- * Controller.cpp : Controller for the main interface
+ * actions_manager.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 7cca07727f4a40fd55b0ce4c39d8aab75d53633d $
+ * $Id: fa3703ba9a135a7d9daeb7c1af3378ec4f376e32 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -27,7 +27,6 @@
 #endif
 
 #include <vlc_vout.h>
-#include <vlc_aout_intf.h>
 #include <vlc_keys.h>
 
 #include "actions_manager.hpp"
@@ -179,26 +178,30 @@ void ActionsManager::frame()
 
 void ActionsManager::toggleMuteAudio()
 {
-     aout_ToggleMute( THEPL, NULL );
+     playlist_MuteToggle( THEPL );
 }
 
 void ActionsManager::AudioUp()
 {
-    aout_VolumeUp( THEPL, 1, NULL );
+    playlist_VolumeUp( THEPL, 1, NULL );
 }
 
 void ActionsManager::AudioDown()
 {
-    aout_VolumeDown( THEPL, 1, NULL );
+    playlist_VolumeDown( THEPL, 1, NULL );
 }
 
 void ActionsManager::skipForward()
 {
-    THEMIM->getIM()->jumpFwd();
+    input_thread_t *p_input = THEMIM->getInput();
+    if( p_input )
+        THEMIM->getIM()->jumpFwd();
 }
 
 void ActionsManager::skipBackward()
 {
-    THEMIM->getIM()->jumpBwd();
+    input_thread_t *p_input = THEMIM->getInput();
+    if( p_input )
+        THEMIM->getIM()->jumpBwd();
 }
 

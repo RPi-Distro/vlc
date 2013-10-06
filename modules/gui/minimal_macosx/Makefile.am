@@ -17,8 +17,7 @@ libminimal_macosx_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_minimal_macosx)
 libminimal_macosx_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_minimal_macosx)
 libminimal_macosx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_minimal_macosx)
 libminimal_macosx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_minimal_macosx)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libminimal_macosx_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_minimal_macosx)
 libminimal_macosx_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_minimal_macosx)
-libminimal_macosx_plugin_la_DEPENDENCIES =
 

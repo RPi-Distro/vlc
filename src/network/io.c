@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005, 2007 VLC authors and VideoLAN
  * Copyright © 2005-2006 Rémi Denis-Courmont
- * $Id: b4b419680ffc01ba65cde476065a3e8f291273df $
+ * $Id: a8ea8701b938ef3b48f3151d4acd4eb7ca192cf2 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -41,9 +41,7 @@
 #include <errno.h>
 #include <assert.h>
 
-#ifdef HAVE_FCNTL_H
-#   include <fcntl.h>
-#endif
+#include <fcntl.h>
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
 #endif
@@ -60,9 +58,13 @@
 #   define INADDR_NONE 0xFFFFFFFF
 #endif
 
-#if defined(WIN32) || defined(UNDER_CE)
+#if defined(_WIN32)
 # undef EAFNOSUPPORT
 # define EAFNOSUPPORT WSAEAFNOSUPPORT
+# undef EWOULDBLOCK
+# define EWOULDBLOCK WSAEWOULDBLOCK
+# undef EAGAIN
+# define EAGAIN WSAEWOULDBLOCK
 #endif
 
 #ifdef HAVE_LINUX_DCCP_H
@@ -98,7 +100,7 @@ int net_Socket (vlc_object_t *p_this, int family, int socktype,
         setsockopt (fd, IPPROTO_IPV6, IPV6_V6ONLY, &(int){ 1 }, sizeof (int));
 #endif
 
-#if defined (WIN32) || defined (UNDER_CE)
+#if defined (_WIN32)
 # ifndef IPV6_PROTECTION_LEVEL
 #  warning Please update your C library headers.
 #  define IPV6_PROTECTION_LEVEL 23
@@ -129,17 +131,16 @@ int net_Socket (vlc_object_t *p_this, int family, int socktype,
 int *net_Listen (vlc_object_t *p_this, const char *psz_host,
                  int i_port, int type, int protocol)
 {
-    struct addrinfo hints, *res;
-
-    memset (&hints, 0, sizeof( hints ));
-    hints.ai_socktype = type;
-    hints.ai_protocol = protocol;
-    hints.ai_flags = AI_PASSIVE;
+    struct addrinfo hints = {
+        .ai_socktype = type,
+        .ai_protocol = protocol,
+        .ai_flags = AI_PASSIVE | AI_NUMERICSERV | AI_IDN,
+    }, *res;
 
     msg_Dbg (p_this, "net: listening to %s port %d",
              (psz_host != NULL) ? psz_host : "*", i_port);
 
-    int i_val = vlc_getaddrinfo (p_this, psz_host, i_port, &hints, &res);
+    int i_val = vlc_getaddrinfo (psz_host, i_port, &hints, &res);
     if (i_val)
     {
         msg_Err (p_this, "Cannot resolve %s port %d : %s",
@@ -162,7 +163,7 @@ int *net_Listen (vlc_object_t *p_this, const char *psz_host,
         }
 
         /* Bind the socket */
-#if defined (WIN32) || defined (UNDER_CE)
+#if defined (_WIN32)
         /*
          * Under Win32 and for multicasting, we bind to INADDR_ANY.
          * This is of course a severe bug, since the socket would logically
@@ -186,7 +187,7 @@ int *net_Listen (vlc_object_t *p_this, const char *psz_host,
         if (bind (fd, ptr->ai_addr, ptr->ai_addrlen))
         {
             net_Close (fd);
-#if !defined(WIN32) && !defined(UNDER_CE)
+#if !defined(_WIN32)
             fd = rootwrap_bind (ptr->ai_family, ptr->ai_socktype,
                                 ptr->ai_protocol,
                                 ptr->ai_addr, ptr->ai_addrlen);
@@ -259,141 +260,94 @@ ssize_t
 net_Read (vlc_object_t *restrict p_this, int fd, const v_socket_t *vs,
           void *restrict p_buf, size_t i_buflen, bool waitall)
 {
+    struct pollfd ufd[2];
+
+    ufd[0].fd = fd;
+    ufd[0].events = POLLIN;
+    ufd[1].fd = vlc_object_waitpipe (p_this);
+    ufd[1].events = POLLIN;
+
     size_t i_total = 0;
-    struct pollfd ufd[2] = {
-        { .fd = fd,                           .events = POLLIN },
-        { .fd = vlc_object_waitpipe (p_this), .events = POLLIN },
-    };
-
-    if (ufd[1].fd == -1)
-        return -1; /* vlc_object_waitpipe() sets errno */
-
-    while (i_buflen > 0)
+    do
     {
-        ufd[0].revents = ufd[1].revents = 0;
-
-        if (poll (ufd, sizeof (ufd) / sizeof (ufd[0]), -1) < 0)
-        {
-            if (errno != EINTR)
-                goto error;
-            continue;
-        }
-
-#ifndef POLLRDHUP /* This is nice but non-portable */
-# define POLLRDHUP 0
-#endif
-        if (i_total > 0)
-        {
-            /* Errors (-1) and EOF (0) will be returned on next call,
-             * otherwise we'd "hide" the error from the caller, which is a
-             * bad idea™. */
-            if (ufd[0].revents & (POLLERR|POLLNVAL|POLLRDHUP))
-                break;
-            if (ufd[1].revents)
-                break;
-        }
-        else
-        {
-            if (ufd[1].revents)
-            {
-                assert (p_this->b_die);
-                msg_Dbg (p_this, "socket %d polling interrupted", fd);
-#if defined(WIN32) || defined(UNDER_CE)
-                WSASetLastError (WSAEINTR);
-#else
-                errno = EINTR;
-#endif
-                goto silent;
-            }
-        }
-
-        assert (ufd[0].revents);
-
         ssize_t n;
-#if defined(WIN32) || defined(UNDER_CE)
-        int error;
-#endif
         if (vs != NULL)
         {
             int canc = vlc_savecancel ();
             n = vs->pf_recv (vs->p_sys, p_buf, i_buflen);
-#if defined(WIN32) || defined(UNDER_CE)
-            /* We must read last error immediately, because vlc_restorecancel()
-             * access thread local storage, and TlsGetValue() will call
-             * SetLastError() to indicate that the function succeeded, thus
-             * overwriting the error code coming from pf_recv().
-             * WSAGetLastError is just an alias for GetLastError these days.
-             */
-            error = WSAGetLastError();
-#endif
             vlc_restorecancel (canc);
         }
         else
         {
-#ifdef WIN32
+#ifdef _WIN32
             n = recv (fd, p_buf, i_buflen, 0);
-            error = WSAGetLastError();
 #else
             n = read (fd, p_buf, i_buflen);
 #endif
         }
 
-        if (n == -1)
+        if (n < 0)
         {
-#if defined(WIN32) || defined(UNDER_CE)
-            switch (error)
+            switch (net_errno)
             {
-                case WSAEWOULDBLOCK:
-                case WSAEINTR:
-                /* only happens with vs != NULL (TLS) - not really an error */
-                    continue;
-
-                case WSAEMSGSIZE:
-                /* For UDP only */
-                /* On Win32, recv() fails if the datagram doesn't fit inside
-                 * the passed buffer, even though the buffer will be filled
-                 * with the first part of the datagram. */
-                    msg_Err (p_this, "Receive error: "
-                                     "Increase the mtu size (--mtu option)");
-                    n = i_buflen;
-                    break;
-            }
-#else
-            switch (errno)
-            {
-                case EAGAIN: /* spurious wakeup or no TLS data */
+                case EAGAIN: /* no data */
 #if (EAGAIN != EWOULDBLOCK)
                 case EWOULDBLOCK:
 #endif
+                    break;
+#ifndef _WIN32
                 case EINTR:  /* asynchronous signal */
                     continue;
-            }
+#else
+                case WSAEMSGSIZE: /* datagram too big */
+                    n = i_buflen;
+                    break;
 #endif
+                default:
+                    goto error;
+            }
+        }
+        else
+        if (n > 0)
+        {
+            i_total += n;
+            p_buf = (char *)p_buf + n;
+            i_buflen -= n;
+
+            if (!waitall || i_buflen == 0)
+                break;
+        }
+        else /* n == 0 */
+            break;/* end of stream or empty packet */
+
+        if (ufd[1].fd == -1)
+        {
+            errno = EINTR;
+            return -1;
+        }
+
+        /* Wait for more data */
+        if (poll (ufd, sizeof (ufd) / sizeof (ufd[0]), -1) < 0)
+        {
+            if (errno == EINTR)
+                continue;
             goto error;
         }
 
-        if (n == 0)
-            /* For streams, this means end of file, and there will not be any
-             * further data ever on the stream. For datagram sockets, this
-             * means empty datagram, and there could be more data coming.
-             * However, it makes no sense to set <waitall> with datagrams in the
-             * first place.
-             */
-            break; // EOF
+        if (ufd[1].revents)
+        {
+            msg_Dbg (p_this, "socket %d polling interrupted", fd);
+            errno = EINTR;
+            return -1;
+        }
 
-        i_total += n;
-        p_buf = (char *)p_buf + n;
-        i_buflen -= n;
-
-        if (!waitall)
-            break;
+        assert (ufd[0].revents);
     }
+    while (i_buflen > 0);
 
     return i_total;
-
 error:
-    msg_Err (p_this, "Read error: %m");
-silent:
+    msg_Err (p_this, "read error: %m");
     return -1;
 }
 
@@ -450,7 +404,6 @@ ssize_t net_Write( vlc_object_t *p_this, int fd, const v_socket_t *p_vs,
         {
             if (ufd[1].revents)
             {
-                assert (p_this->b_die);
                 errno = EINTR;
                 goto error;
             }
@@ -459,7 +412,7 @@ ssize_t net_Write( vlc_object_t *p_this, int fd, const v_socket_t *p_vs,
         if (p_vs != NULL)
             val = p_vs->pf_send (p_vs->p_sys, p_data, i_data);
         else
-#ifdef WIN32
+#ifdef _WIN32
             val = send (fd, p_data, i_data, 0);
 #else
             val = write (fd, p_data, i_data);
@@ -494,46 +447,47 @@ error:
  * This function is not thread-safe; the same file descriptor I/O cannot be
  * read by another thread at the same time (although it can be written to).
  *
+ * @note This only works with stream-oriented file descriptors, not with
+ * datagram or packet-oriented ones.
+ *
  * @return nul-terminated heap-allocated string, or NULL on I/O error.
  */
-char *net_Gets( vlc_object_t *p_this, int fd, const v_socket_t *p_vs )
+char *net_Gets(vlc_object_t *obj, int fd, const v_socket_t *vs)
 {
-    char *psz_line = NULL, *ptr = NULL;
-    size_t  i_line = 0, i_max = 0;
+    char *buf = NULL;
+    size_t bufsize = 0, buflen = 0;
 
-
-    for( ;; )
+    for (;;)
     {
-        if( i_line == i_max )
+        if (buflen == bufsize)
         {
-            i_max += 1024;
-            psz_line = xrealloc( psz_line, i_max );
-            ptr = psz_line + i_line;
+            if (unlikely(bufsize >= (1 << 10)))
+                goto error; /* put sane buffer size limit */
+
+            char *newbuf = realloc(buf, bufsize + 1024);
+            if (unlikely(newbuf == NULL))
+                goto error;
+            buf = newbuf;
+            bufsize += 1024;
         }
 
-        if( net_Read( p_this, fd, p_vs, ptr, 1, true ) != 1 )
-        {
-            if( i_line == 0 )
-            {
-                free( psz_line );
-                return NULL;
-            }
-            break;
-        }
+        ssize_t val = net_Read(obj, fd, vs, buf + buflen, 1, false);
+        if (val < 1)
+            goto error;
 
-        if ( *ptr == '\n' )
+        if (buf[buflen] == '\n')
             break;
 
-        i_line++;
-        ptr++;
+        buflen++;
     }
 
-    *ptr-- = '\0';
-
-    if( ( ptr >= psz_line ) && ( *ptr == '\r' ) )
-        *ptr = '\0';
-
-    return psz_line;
+    buf[buflen] = '\0';
+    if (buflen > 0 && buf[buflen - 1] == '\r')
+        buf[buflen - 1] = '\0';
+    return buf;
+error:
+    free(buf);
+    return NULL;
 }
 
 #undef net_Printf

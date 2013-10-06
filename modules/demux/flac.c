@@ -1,25 +1,25 @@
 /*****************************************************************************
  * flac.c : FLAC demux module for vlc
  *****************************************************************************
- * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: 5434dd0cab1aff17fc779273890c222622b88973 $
+ * Copyright (C) 2001-2008 VLC authors and VideoLAN
+ * $Id: a2ac4dc1e7a806566a887a84ff207c78c8919082 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -38,7 +38,7 @@
 #include <vlc_charset.h>              /* EnsureUTF8 */
 
 #include <assert.h>
-#include "vorbis.h"                   /* vorbis comments */
+#include "xiph_metadata.h"            /* vorbis comments */
 
 /*****************************************************************************
  * Module descriptor
@@ -72,7 +72,6 @@ struct demux_sys_t
     decoder_t *p_packetizer;
 
     vlc_meta_t *p_meta;
-    audio_replay_gain_t replay_gain;
 
     int64_t i_time_offset;
     int64_t i_pts;
@@ -92,7 +91,7 @@ struct demux_sys_t
     int                i_cover_score;
 };
 
-#define STREAMINFO_SIZE 38
+#define STREAMINFO_SIZE 34
 #define FLAC_PACKET_SIZE 16384
 
 /*****************************************************************************
@@ -128,7 +127,6 @@ static int Open( vlc_object_t * p_this )
     p_demux->p_sys      = p_sys;
     p_sys->b_start = true;
     p_sys->p_meta = NULL;
-    memset( &p_sys->replay_gain, 0, sizeof(p_sys->replay_gain) );
     p_sys->i_length = 0;
     p_sys->i_time_offset = 0;
     p_sys->i_pts = 0;
@@ -148,7 +146,6 @@ static int Open( vlc_object_t * p_this )
 
     /* Load the FLAC packetizer */
     /* Store STREAMINFO for the decoder and packetizer */
-    p_streaminfo[4] |= 0x80; /* Fake this as the last metadata block */
     es_format_Init( &fmt, AUDIO_ES, VLC_CODEC_FLAC );
     fmt.i_extra = i_streaminfo;
     fmt.p_extra = p_streaminfo;
@@ -169,7 +166,6 @@ static int Open( vlc_object_t * p_this )
                   p_sys->attachments[p_sys->i_cover_idx]->psz_name );
         vlc_meta_Set( p_sys->p_meta, vlc_meta_ArtworkURL, psz_url );
     }
-    vlc_audio_replay_gain_MergeFromMeta( &p_sys->replay_gain, p_sys->p_meta );
     return VLC_SUCCESS;
 }
 
@@ -181,11 +177,12 @@ static void Close( vlc_object_t * p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys = p_demux->p_sys;
 
+    for( int i = 0; i < p_sys->i_seekpoint; i++ )
+        vlc_seekpoint_Delete(p_sys->seekpoint[i]);
     TAB_CLEAN( p_sys->i_seekpoint, p_sys->seekpoint );
 
-    int i;
-    for( i = 0; i < p_sys->i_attachments; i++ )
-        free( p_sys->attachments[i] );
+    for( int i = 0; i < p_sys->i_attachments; i++ )
+        vlc_input_attachment_Delete( p_sys->attachments[i] );
     TAB_CLEAN( p_sys->i_attachments, p_sys->attachments);
 
     /* Delete the decoder */
@@ -224,7 +221,6 @@ static int Demux( demux_t *p_demux )
             if( p_sys->p_es == NULL )
             {
                 p_sys->p_packetizer->fmt_out.b_packetized = true;
-                p_sys->p_packetizer->fmt_out.audio_replay_gain = p_sys->replay_gain;
                 p_sys->p_es = es_out_Add( p_demux->out, &p_sys->p_packetizer->fmt_out);
             }
 
@@ -400,14 +396,13 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         input_attachment_t ***ppp_attach =
             (input_attachment_t***)va_arg( args, input_attachment_t*** );
         int *pi_int = (int*)va_arg( args, int * );
-        int i;
 
         if( p_sys->i_attachments <= 0 )
             return VLC_EGENERIC;
 
-        *pi_int = p_sys->i_attachments;;
-        *ppp_attach = xmalloc( sizeof(input_attachment_t**) * p_sys->i_attachments );
-        for( i = 0; i < p_sys->i_attachments; i++ )
+        *pi_int = p_sys->i_attachments;
+        *ppp_attach = xmalloc( sizeof(input_attachment_t*) * p_sys->i_attachments );
+        for( int i = 0; i < p_sys->i_attachments; i++ )
             (*ppp_attach)[i] = vlc_input_attachment_Duplicate( p_sys->attachments[i] );
         return VLC_SUCCESS;
     }
@@ -441,47 +436,25 @@ static int  ReadMeta( demux_t *p_demux, uint8_t **pp_streaminfo, int *pi_streami
     int     i_peek;
     const uint8_t *p_peek;
     bool b_last;
-    int i_sample_rate;
+    int i_sample_rate = 0;
     int64_t i_sample_count;
-    seekpoint_t *s;
 
-    /* Read STREAMINFO */
-    i_peek = stream_Peek( p_demux->s, &p_peek, 8 );
-    if( (p_peek[4] & 0x7F) != META_STREAMINFO )
-    {
-        msg_Err( p_demux, "this isn't a STREAMINFO metadata block" );
-        return VLC_EGENERIC;
-    }
-    if( Get24bBE(&p_peek[5]) != (STREAMINFO_SIZE - 4) )
-    {
-        msg_Err( p_demux, "invalid size for a STREAMINFO metadata block" );
-        return VLC_EGENERIC;
-    }
-
-    *pi_streaminfo = 4 + STREAMINFO_SIZE;
-    *pp_streaminfo = malloc( 4 + STREAMINFO_SIZE );
-    if( *pp_streaminfo == NULL )
-        return VLC_EGENERIC;
-
-    if( stream_Read( p_demux->s, *pp_streaminfo, 4+STREAMINFO_SIZE ) != 4+STREAMINFO_SIZE )
-    {
-        msg_Err( p_demux, "failed to read STREAMINFO metadata block" );
-        free( *pp_streaminfo );
-        return VLC_EGENERIC;
-    }
-
-    /* */
-    ParseStreamInfo( &i_sample_rate, &i_sample_count, *pp_streaminfo );
-    if( i_sample_rate > 0 )
-        p_sys->i_length = i_sample_count * INT64_C(1000000)/i_sample_rate;
+    *pp_streaminfo = NULL;
 
     /* Be sure we have seekpoint 0 */
-    s = vlc_seekpoint_New();
+    seekpoint_t *s = vlc_seekpoint_New();
     s->i_time_offset = 0;
     s->i_byte_offset = 0;
     TAB_APPEND( p_sys->i_seekpoint, p_sys->seekpoint, s );
 
-    b_last = (*pp_streaminfo)[4]&0x80;
+    uint8_t header[4];
+    if( stream_Read( p_demux->s, header, 4) < 4)
+        return VLC_EGENERIC;
+
+    if (memcmp(header, "fLaC", 4))
+        return VLC_EGENERIC;
+
+    b_last = 0;
     while( !b_last )
     {
         int i_len;
@@ -494,7 +467,34 @@ static int  ReadMeta( demux_t *p_demux, uint8_t **pp_streaminfo, int *pi_streami
         i_type = p_peek[0]&0x7f;
         i_len  = Get24bBE( &p_peek[1] );
 
-        if( i_type == META_SEEKTABLE )
+        if( i_type == META_STREAMINFO && !*pp_streaminfo )
+        {
+            if( i_len != STREAMINFO_SIZE ) {
+                msg_Err( p_demux, "invalid size %d for a STREAMINFO metadata block", i_len );
+                return VLC_EGENERIC;
+            }
+
+            *pi_streaminfo = STREAMINFO_SIZE;
+            *pp_streaminfo = malloc( STREAMINFO_SIZE);
+            if( *pp_streaminfo == NULL )
+                return VLC_EGENERIC;
+
+            if( stream_Read( p_demux->s, NULL, 4) < 4)
+                return VLC_EGENERIC;
+            if( stream_Read( p_demux->s, *pp_streaminfo, STREAMINFO_SIZE ) != STREAMINFO_SIZE )
+            {
+                msg_Err( p_demux, "failed to read STREAMINFO metadata block" );
+                free( *pp_streaminfo );
+                return VLC_EGENERIC;
+            }
+
+            /* */
+            ParseStreamInfo( &i_sample_rate, &i_sample_count, *pp_streaminfo );
+            if( i_sample_rate > 0 )
+                p_sys->i_length = i_sample_count * INT64_C(1000000)/i_sample_rate;
+            continue;
+        }
+        else if( i_type == META_SEEKTABLE )
         {
             i_peek = stream_Peek( p_demux->s, &p_peek, 4+i_len );
             if( i_peek == 4+i_len )
@@ -520,14 +520,15 @@ static int  ReadMeta( demux_t *p_demux, uint8_t **pp_streaminfo, int *pi_streami
     /* */
     p_sys->i_data_pos = stream_Tell( p_demux->s );
 
+    if (!*pp_streaminfo)
+        return VLC_EGENERIC;
+
     return VLC_SUCCESS;
 }
 static void ParseStreamInfo( int *pi_rate, int64_t *pi_count, uint8_t *p_data )
 {
-    const int i_skip = 4+4;
-
-    *pi_rate = GetDWBE(&p_data[i_skip+4+6]) >> 12;
-    *pi_count = GetQWBE(&p_data[i_skip+4+6]) &  ((INT64_C(1)<<36)-1);
+    *pi_rate = GetDWBE(&p_data[4+6]) >> 12;
+    *pi_count = GetQWBE(&p_data[4+6]) &  ((INT64_C(1)<<36)-1);
 }
 
 static void ParseSeekTable( demux_t *p_demux, const uint8_t *p_data, int i_data,
@@ -572,7 +573,6 @@ static void ParseSeekTable( demux_t *p_demux, const uint8_t *p_data, int i_data,
     /* TODO sort it by size and remove wrong seek entry (time not increasing) */
 }
 
-#define RM(x) do { i_data -= (x); p_data += (x); } while(0)
 static void ParseComment( demux_t *p_demux, const uint8_t *p_data, int i_data )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
@@ -580,74 +580,22 @@ static void ParseComment( demux_t *p_demux, const uint8_t *p_data, int i_data )
     if( i_data < 4 )
         return;
 
-    vorbis_ParseComment( &p_sys->p_meta, &p_data[4], i_data - 4 );
-
+    vorbis_ParseComment( &p_sys->p_meta, &p_data[4], i_data - 4,
+        &p_sys->i_attachments, &p_sys->attachments,
+        &p_sys->i_cover_score, &p_sys->i_cover_idx, NULL, NULL );
 }
 
 static void ParsePicture( demux_t *p_demux, const uint8_t *p_data, int i_data )
 {
-    static const int pi_cover_score[] = {
-        0,      /* other */
-        2, 1,   /* icons */
-        10,     /* front cover */
-        9,      /* back cover */
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        6,      /* movie/video screen capture */
-        0,
-        7,      /* Illustration */
-        8,      /* Band/Artist logotype */
-        0,      /* Publisher/Studio */
-    };
     demux_sys_t *p_sys = p_demux->p_sys;
-    int i_type;
-    int i_len;
-    char *psz_mime = NULL;
-    char *psz_description = NULL;
-    input_attachment_t *p_attachment;
-    char psz_name[128];
 
-    if( i_data < 4 + 3*4 )
+    i_data -= 4; p_data += 4;
+
+    input_attachment_t *p_attachment = ParseFlacPicture( p_data, i_data,
+        p_sys->i_attachments, &p_sys->i_cover_score, &p_sys->i_cover_idx );
+    if( p_attachment == NULL )
         return;
-#define RM(x) do { i_data -= (x); p_data += (x); } while(0)
-    RM(4);
 
-    i_type = GetDWBE( p_data ); RM(4);
-    i_len = GetDWBE( p_data ); RM(4);
-    if( i_len < 0 || i_data < i_len + 4 )
-        goto error;
-    psz_mime = strndup( (const char*)p_data, i_len ); RM(i_len);
-    i_len = GetDWBE( p_data ); RM(4);
-    if( i_len < 0 || i_data < i_len + 4*4 + 4)
-        goto error;
-    psz_description = strndup( (const char*)p_data, i_len ); RM(i_len);
-    EnsureUTF8( psz_description );
-    RM(4*4);
-    i_len = GetDWBE( p_data ); RM(4);
-    if( i_len < 0 || i_len > i_data )
-        goto error;
-
-    msg_Dbg( p_demux, "Picture type=%d mime=%s description='%s' file length=%d",
-             i_type, psz_mime, psz_description, i_len );
-
-    snprintf( psz_name, sizeof(psz_name), "picture%d", p_sys->i_attachments );
-    if( !strcasecmp( psz_mime, "image/jpeg" ) )
-        strcat( psz_name, ".jpg" );
-    else if( !strcasecmp( psz_mime, "image/png" ) )
-        strcat( psz_name, ".png" );
-
-    p_attachment = vlc_input_attachment_New( psz_name, psz_mime, psz_description,
-                                             p_data, i_data );
     TAB_APPEND( p_sys->i_attachments, p_sys->attachments, p_attachment );
-
-    if( i_type >= 0 && (unsigned int)i_type < sizeof(pi_cover_score)/sizeof(pi_cover_score[0]) &&
-        p_sys->i_cover_score < pi_cover_score[i_type] )
-    {
-        p_sys->i_cover_idx = p_sys->i_attachments-1;
-        p_sys->i_cover_score = pi_cover_score[i_type];
-    }
-error:
-    free( psz_mime );
-    free( psz_description );
 }
-#undef RM
 

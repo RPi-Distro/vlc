@@ -2,7 +2,7 @@
  * vlm.c: libvlc new API VLM handling functions
  *****************************************************************************
  * Copyright (C) 2005 VLC authors and VideoLAN
- * $Id: aba79667f3592fa49eb6dc74ae6efc8a1e3dabd2 $
+ * $Id: aad066bc77f6ebaac8972e28005602bbff32aa6b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -263,11 +263,16 @@ static char* recurse_answer( vlm_message_t *p_answer, const char* psz_delim,
              * inside a list), create a property of its name as if it
              * had a name value node
              */
+            free( psz_nametag );
             if( i_list )
             {
                 i_success = asprintf( &psz_nametag, "\"name\": \"%s\",%s",
                               aw_child->psz_name, psz_childdelim );
-                if( i_success == -1 ) break;
+                if( i_success == -1 )
+                {
+                    psz_nametag = NULL;
+                    break;
+                }
             }
             else
             {
@@ -391,6 +396,7 @@ const char* libvlc_vlm_show_media( libvlc_instance_t *p_instance,
         }
         free( psz_tmp );
     }
+    vlm_MessageDelete( answer );
     free( psz_message );
     return( psz_response );
 }

@@ -2,7 +2,7 @@
  * cmd_vars.hpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 3246f9aa2780e8de5a74bcc7704868d8918381b5 $
+ * $Id: a27e7aa5aa9edb61d607d32cf028489426b07194 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -38,23 +38,17 @@ class EqualizerBands;
 class EqualizerPreamp;
 class VarText;
 
-/// Command to notify the playlist of a change
-DEFINE_COMMAND( NotifyPlaylist, "notify playlist" )
-
-/// Command to notify the playlist of a change
-DEFINE_COMMAND( PlaytreeChanged, "playtree changed" )
-
 /// Command to notify the playtree of an item update
-class CmdPlaytreeUpdate: public CmdGeneric
+class CmdItemUpdate: public CmdGeneric
 {
 public:
-    CmdPlaytreeUpdate( intf_thread_t *pIntf, input_item_t* pItem ):
+    CmdItemUpdate( intf_thread_t *pIntf, input_item_t* pItem ):
         CmdGeneric( pIntf ), m_pItem( pItem )
     {
         if( pItem )
             vlc_gc_incref( pItem );
     }
-    virtual ~CmdPlaytreeUpdate()
+    virtual ~CmdItemUpdate()
     {
         if( m_pItem )
             vlc_gc_decref( m_pItem );

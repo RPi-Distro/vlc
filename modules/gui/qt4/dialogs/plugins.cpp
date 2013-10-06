@@ -1,8 +1,8 @@
 /*****************************************************************************
- * plugins.hpp : Plug-ins and extensions listing
+ * plugins.cpp : Plug-ins and extensions listing
  ****************************************************************************
  * Copyright (C) 2008-2010 the VideoLAN team
- * $Id: ce7f137908970c7494499d4d4a2b7fdb2f5bd938 $
+ * $Id: b29497e03eade1fa49c2d43bb438d272812f78a3 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *          Jean-Philippe André <jpeg (at) videolan.org>
@@ -75,18 +75,18 @@ PluginDialog::PluginDialog( intf_thread_t *_p_intf ) : QVLCFrame( _p_intf )
     box->addButton( okButton, QDialogButtonBox::RejectRole );
     layout->addWidget( box );
     BUTTONACT( okButton, close() );
-    readSettings( "PluginsDialog", QSize( 435, 280 ) );
+    restoreWidgetPosition( "PluginsDialog", QSize( 435, 280 ) );
 }
 
 PluginDialog::~PluginDialog()
 {
-    writeSettings( "PluginsDialog" );
+    saveWidgetPosition( "PluginsDialog" );
 }
 
 /* Plugins tab */
 
-PluginTab::PluginTab( intf_thread_t *p_intf )
-        : QVLCFrame( p_intf )
+PluginTab::PluginTab( intf_thread_t *p_intf_ )
+        : QVLCFrame( p_intf_ )
 {
     QGridLayout *layout = new QGridLayout( this );
 
@@ -95,7 +95,11 @@ PluginTab::PluginTab( intf_thread_t *p_intf )
     layout->addWidget( treePlugins, 0, 0, 1, -1 );
 
     /* Users cannot move the columns around but we need to sort */
+#if QT_VERSION >= 0x050000
+    treePlugins->header()->setSectionsMovable( false );
+#else
     treePlugins->header()->setMovable( false );
+#endif
     treePlugins->header()->setSortIndicatorShown( true );
     //    treePlugins->header()->setResizeMode( QHeaderView::ResizeToContents );
     treePlugins->setAlternatingRowColors( true );
@@ -125,16 +129,18 @@ PluginTab::PluginTab( intf_thread_t *p_intf )
             this, search( const QString& ) );
 
     setMinimumSize( 500, 300 );
-    readSettings( "Plugins", QSize( 540, 400 ) );
+    restoreWidgetPosition( "Plugins", QSize( 540, 400 ) );
 }
 
 inline void PluginTab::FillTree()
 {
-    module_t **p_list = module_list_get( NULL );
-    module_t *p_module;
+    size_t count;
+    module_t **p_list = module_list_get( &count );
 
-    for( unsigned int i = 0; (p_module = p_list[i] ) != NULL; i++ )
+    for( unsigned int i = 0; i < count; i++ )
     {
+        module_t *p_module = p_list[i];
+
         QStringList qs_item;
         qs_item << qfu( module_get_name( p_module, true ) )
                 << qfu( module_get_capability( p_module ) )
@@ -164,7 +170,7 @@ void PluginTab::search( const QString& qs )
 
 PluginTab::~PluginTab()
 {
-    writeSettings( "Plugins" );
+    saveWidgetPosition( "Plugins" );
     getSettings()->setValue( "Plugins/Header-State",
                              treePlugins->header()->saveState() );
 }
@@ -181,8 +187,15 @@ void PluginTab::keyPressEvent( QKeyEvent *keyEvent )
 bool PluginTreeItem::operator< ( const QTreeWidgetItem & other ) const
 {
     int col = treeWidget()->sortColumn();
-    if( col == 2 )
+    if( col == PluginTab::SCORE )
         return text( col ).toInt() < other.text( col ).toInt();
+    else if ( col == PluginTab::CAPABILITY )
+    {
+        if ( text( PluginTab::CAPABILITY ) == other.text( PluginTab::CAPABILITY ) )
+            return text( PluginTab::NAME ) < other.text( PluginTab::NAME );
+        else
+            return text( PluginTab::CAPABILITY ) < other.text( PluginTab::CAPABILITY );
+    }
     return text( col ) < other.text( col );
 }
 
@@ -219,33 +232,39 @@ ExtensionTab::ExtensionTab( intf_thread_t *p_intf_ )
     extList->setModel( model );
 
     // Buttons' layout
-    QHBoxLayout *hbox = new QHBoxLayout;
-    hbox->addItem( new QSpacerItem( 1, 1, QSizePolicy::Expanding,
-                                    QSizePolicy::Fixed ) );
+    QDialogButtonBox *buttonsBox = new QDialogButtonBox;
 
     // More information button
     butMoreInfo = new QPushButton( QIcon( ":/menu/info" ),
                                    qtr( "More information..." ),
                                    this );
-    CONNECT( butMoreInfo, clicked(),
-             this, moreInformation() );
-    hbox->addWidget( butMoreInfo );
+    CONNECT( butMoreInfo, clicked(), this, moreInformation() );
+    buttonsBox->addButton( butMoreInfo, QDialogButtonBox::ActionRole );
 
     // Reload button
     ExtensionsManager *EM = ExtensionsManager::getInstance( p_intf );
     QPushButton *reload = new QPushButton( QIcon( ":/update" ),
                                            qtr( "Reload extensions" ),
                                            this );
-    CONNECT( reload, clicked(),
-             EM, reloadExtensions() );
-    hbox->addWidget( reload );
+    CONNECT( reload, clicked(), EM, reloadExtensions() );
+    CONNECT( reload, clicked(), this, updateButtons() );
+    CONNECT( extList->selectionModel(),
+             selectionChanged( const QItemSelection &, const QItemSelection & ),
+             this,
+             updateButtons() );
+    buttonsBox->addButton( reload, QDialogButtonBox::ResetRole );
 
-    // Add buttons hbox
-    layout->addItem( hbox );
+    layout->addWidget( buttonsBox );
+    updateButtons();
 }
 
 ExtensionTab::~ExtensionTab()
 {
+}
+
+void ExtensionTab::updateButtons()
+{
+    butMoreInfo->setEnabled( extList->selectionModel()->hasSelection() );
 }
 
 // Do not close on ESC or ENTER
@@ -261,46 +280,60 @@ void ExtensionTab::keyPressEvent( QKeyEvent *keyEvent )
 // Show more information
 void ExtensionTab::moreInformation()
 {
-    if( !extList->selectionModel() ||
-        extList->selectionModel()->selectedIndexes().isEmpty() )
-
-    {
-        return;
-    }
-
     QModelIndex index = extList->selectionModel()->selectedIndexes().first();
-    ExtensionCopy *ext = (ExtensionCopy*) index.internalPointer();
-    if( !ext )
+
+    if( !index.isValid() )
         return;
 
-    ExtensionInfoDialog dlg( *ext, p_intf, this );
+    ExtensionInfoDialog dlg( index, p_intf, this );
     dlg.exec();
 }
 
 /* Safe copy of the extension_t struct */
-class ExtensionCopy
+ExtensionListModel::ExtensionCopy::ExtensionCopy( extension_t *p_ext )
 {
-public:
-    ExtensionCopy( extension_t *p_ext )
-    {
-        name = qfu( p_ext->psz_name );
-        description = qfu( p_ext->psz_description );
-        shortdesc = qfu( p_ext->psz_shortdescription );
-        if( description.isEmpty() )
-            description = shortdesc;
-        if( shortdesc.isEmpty() && !description.isEmpty() )
-            shortdesc = description;
-        title = qfu( p_ext->psz_title );
-        author = qfu( p_ext->psz_author );
-        version = qfu( p_ext->psz_version );
-        url = qfu( p_ext->psz_url );
-        icon = loadPixmapFromData( p_ext->p_icondata, p_ext->i_icondata_size );
-    }
-    ~ExtensionCopy() {}
+    name = qfu( p_ext->psz_name );
+    description = qfu( p_ext->psz_description );
+    shortdesc = qfu( p_ext->psz_shortdescription );
+    if( description.isEmpty() )
+        description = shortdesc;
+    if( shortdesc.isEmpty() && !description.isEmpty() )
+        shortdesc = description;
+    title = qfu( p_ext->psz_title );
+    author = qfu( p_ext->psz_author );
+    version = qfu( p_ext->psz_version );
+    url = qfu( p_ext->psz_url );
+    icon = loadPixmapFromData( p_ext->p_icondata, p_ext->i_icondata_size );
+}
 
-    QString name, title, description, shortdesc, author, version, url;
-    QPixmap *icon;
-};
+ExtensionListModel::ExtensionCopy::~ExtensionCopy()
+{
+    delete icon;
+}
+
+QVariant ExtensionListModel::ExtensionCopy::data( int role ) const
+{
+    switch( role )
+    {
+    case Qt::DisplayRole:
+        return title;
+    case Qt::DecorationRole:
+        if ( !icon ) return QPixmap( ":/logo/vlc48.png" );
+        return *icon;
+    case DescriptionRole:
+        return shortdesc;
+    case VersionRole:
+        return version;
+    case AuthorRole:
+        return author;
+    case LinkRole:
+        return url;
+    case NameRole:
+        return name;
+    default:
+        return QVariant();
+    }
+}
 
 /* Extensions list model for the QListView */
 
@@ -374,11 +407,10 @@ QVariant ExtensionListModel::data( const QModelIndex& index, int role ) const
     if( !index.isValid() )
         return QVariant();
 
-    switch( role )
-    {
-    default:
-        return QVariant();
-    }
+    ExtensionCopy * extension =
+            static_cast<ExtensionCopy *>(index.internalPointer());
+
+    return extension->data( role );
 }
 
 QModelIndex ExtensionListModel::index( int row, int column,
@@ -408,9 +440,6 @@ void ExtensionItemDelegate::paint( QPainter *painter,
                                    const QStyleOptionViewItem &option,
                                    const QModelIndex &index ) const
 {
-    ExtensionCopy *ext = ( ExtensionCopy* ) index.internalPointer();
-    assert( ext != NULL );
-
     int width = option.rect.width();
 
     // Pixmap: buffer where to draw
@@ -442,10 +471,11 @@ void ExtensionItemDelegate::paint( QPainter *painter,
     QFontMetrics metrics = option.fontMetrics;
 
     // Icon
-    if( ext->icon != NULL )
+    QPixmap icon = index.data( Qt::DecorationRole ).value<QPixmap>();
+    if( !icon.isNull() )
     {
         pixpaint->drawPixmap( 7, 7, 2*metrics.height(), 2*metrics.height(),
-                              *ext->icon );
+                              icon );
     }
 
     // Title: bold
@@ -455,7 +485,7 @@ void ExtensionItemDelegate::paint( QPainter *painter,
     pixpaint->drawText( QRect( 17 + 2 * metrics.height(), 7,
                                width - 40 - 2 * metrics.height(),
                                metrics.height() ),
-                        Qt::AlignLeft, ext->title );
+                        Qt::AlignLeft, index.data( Qt::DisplayRole ).toString() );
 
     // Short description: normal
     font.setBold( false );
@@ -463,7 +493,7 @@ void ExtensionItemDelegate::paint( QPainter *painter,
     pixpaint->drawText( QRect( 17 + 2 * metrics.height(),
                                7 + metrics.height(), width - 40,
                                metrics.height() ),
-                        Qt::AlignLeft, ext->shortdesc );
+                        Qt::AlignLeft, index.data( ExtensionListModel::DescriptionRole ).toString() );
 
     // Flush paint operations
     delete pixpaint;
@@ -486,7 +516,7 @@ QSize ExtensionItemDelegate::sizeHint( const QStyleOptionViewItem &option,
 
 /* "More information" dialog */
 
-ExtensionInfoDialog::ExtensionInfoDialog( const ExtensionCopy& extension,
+ExtensionInfoDialog::ExtensionInfoDialog( const QModelIndex &index,
                                           intf_thread_t *p_intf,
                                           QWidget *parent )
        : QVLCDialog( parent, p_intf )
@@ -495,28 +525,22 @@ ExtensionInfoDialog::ExtensionInfoDialog( const ExtensionCopy& extension,
     setWindowModality( Qt::WindowModal );
 
     // Window title
-    setWindowTitle( qtr( "About" ) + " " + extension.title );
+    setWindowTitle( qtr( "About" ) + " " + index.data(Qt::DisplayRole).toString() );
 
     // Layout
     QGridLayout *layout = new QGridLayout( this );
 
     // Icon
     QLabel *icon = new QLabel( this );
-    if( !extension.icon )
-    {
-        QPixmap pix( ":/logo/vlc48.png" );
-        icon->setPixmap( pix );
-    }
-    else
-    {
-        icon->setPixmap( *extension.icon );
-    }
+    QPixmap pix = index.data(Qt::DecorationRole).value<QPixmap>();
+    Q_ASSERT( !pix.isNull() );
+    icon->setPixmap( pix );
     icon->setAlignment( Qt::AlignCenter );
     icon->setFixedSize( 48, 48 );
     layout->addWidget( icon, 1, 0, 2, 1 );
 
     // Title
-    QLabel *label = new QLabel( extension.title, this );
+    QLabel *label = new QLabel( index.data(Qt::DisplayRole).toString(), this );
     QFont font = label->font();
     font.setBold( true );
     font.setPointSizeF( font.pointSizeF() * 1.3f );
@@ -526,19 +550,19 @@ ExtensionInfoDialog::ExtensionInfoDialog( const ExtensionCopy& extension,
     // Version
     label = new QLabel( "<b>" + qtr( "Version" ) + ":</b>", this );
     layout->addWidget( label, 1, 1, 1, 1, Qt::AlignBottom );
-    label = new QLabel( extension.version, this );
+    label = new QLabel( index.data(ExtensionListModel::VersionRole).toString(), this );
     layout->addWidget( label, 1, 2, 1, 2, Qt::AlignBottom );
 
     // Author
     label = new QLabel( "<b>" + qtr( "Author" ) + ":</b>", this );
     layout->addWidget( label, 2, 1, 1, 1, Qt::AlignTop );
-    label = new QLabel( extension.author, this );
+    label = new QLabel( index.data(ExtensionListModel::AuthorRole).toString(), this );
     layout->addWidget( label, 2, 2, 1, 2, Qt::AlignTop );
 
 
     // Description
     label = new QLabel( this );
-    label->setText( extension.description );
+    label->setText( index.data(ExtensionListModel::DescriptionRole).toString() );
     label->setWordWrap( true );
     label->setOpenExternalLinks( true );
     layout->addWidget( label, 4, 0, 1, -1 );
@@ -546,20 +570,18 @@ ExtensionInfoDialog::ExtensionInfoDialog( const ExtensionCopy& extension,
     // URL
     label = new QLabel( "<b>" + qtr( "Website" ) + ":</b>", this );
     layout->addWidget( label, 5, 0, 1, 2 );
-    QString txt = "<a href=\"";
-    txt += extension.url;
-    txt += "\">";
-    txt += extension.url;
-    txt += "</a>";
-    label = new QLabel( txt, this );
-    label->setText( txt );
+    label = new QLabel( QString("<a href=\"%1\">%2</a>")
+                        .arg( index.data(ExtensionListModel::LinkRole).toString() )
+                        .arg( index.data(ExtensionListModel::LinkRole).toString() )
+                        , this );
     label->setOpenExternalLinks( true );
     layout->addWidget( label, 5, 2, 1, -1 );
 
     // Script file
     label = new QLabel( "<b>" + qtr( "File" ) + ":</b>", this );
     layout->addWidget( label, 6, 0, 1, 2 );
-    QLineEdit *line = new QLineEdit( extension.name, this );
+    QLineEdit *line =
+            new QLineEdit( index.data(ExtensionListModel::NameRole).toString(), this );
     line->setReadOnly( true );
     layout->addWidget( line, 6, 2, 1, -1 );
 

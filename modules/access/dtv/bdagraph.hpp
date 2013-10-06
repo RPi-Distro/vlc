@@ -1,5 +1,5 @@
 /*****************************************************************************
- * bdagraph.h : DirectShow BDA graph builder header for vlc
+ * bdagraph.hpp : DirectShow BDA graph builder header for vlc
  *****************************************************************************
  * Copyright ( C ) 2007 the VideoLAN team
  *
@@ -132,9 +132,9 @@ private:
     unsigned GetSystem( REFCLSID clsid );
     HRESULT ListFilters( REFCLSID this_clsid );
     HRESULT FindFilter( REFCLSID clsid, long* i_moniker_used,
-        IBaseFilter* p_upstream, IBaseFilter** p_p_downstream );
+        IBaseFilter* p_upstream, IBaseFilter** p_p_downstream);
     HRESULT Connect( IBaseFilter* p_filter_upstream,
-        IBaseFilter* p_filter_downstream );
+        IBaseFilter* p_filter_downstream);
     HRESULT Start( );
     HRESULT Destroy( );
     HRESULT Register( );

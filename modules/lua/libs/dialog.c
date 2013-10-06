@@ -2,7 +2,7 @@
  * dialog.c: Functions to create interface dialogs from Lua extensions
  *****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 3ca67b24de7ca2b6c261b2f94a1f5f3e9d637134 $
+ * $Id: 55468f3de47ff2ead30b438a4af3fa4ca7f99606 $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -34,9 +34,6 @@
 
 #include <vlc_common.h>
 #include <vlc_extensions.h>
-
-#include <lua.h>        /* Low level lua C API */
-#include <lauxlib.h>    /* Higher level C API */
 
 #include "../vlc.h"
 #include "../libs.h"

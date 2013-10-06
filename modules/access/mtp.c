@@ -1,26 +1,26 @@
 /*****************************************************************************
  * mtp.c: mtp input (mtp: access plug-in)
  *****************************************************************************
- * Copyright (C) 2001-2006 the VideoLAN team
+ * Copyright (C) 2001-2006 VLC authors and VideoLAN
  * Copyright © 2006-2008 Rémi Denis-Courmont
  *
  * Authors: Fabio Ritrovato <exsephiroth87@gmail.com>
  * Original file.c: Christophe Massiot <massiot@via.ecp.fr>
  *                  Rémi Denis-Courmont <rem # videolan # org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -30,25 +30,18 @@
 # include "config.h"
 #endif
 
+#include <assert.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_input.h>
 #include <vlc_access.h>
 #include <vlc_dialog.h>
-
-#include <assert.h>
-#include <errno.h>
-#include <sys/types.h>
-#ifdef HAVE_SYS_STAT_H
-#   include <sys/stat.h>
-#endif
-#ifdef HAVE_FCNTL_H
-#   include <fcntl.h>
-#endif
-
-#include <unistd.h>
-#include <poll.h>
-
 #include <vlc_fs.h>
 
 #include "libmtp.h"
@@ -162,14 +155,10 @@ static int Open( vlc_object_t *p_this )
     }
     p_sys->fd = fd;
 
-#ifdef HAVE_SYS_STAT_H
     struct stat st;
     if( fstat( fd, &st ) )
         msg_Err( p_access, "fstat(%d): %m", fd );
     p_access->info.i_size = st.st_size;
-#else
-# warning File size not known!
-#endif
 
     return VLC_SUCCESS;
 }
@@ -303,19 +292,11 @@ static int open_file( access_t *p_access, const char *path )
                         _( "VLC could not open the file \"%s\". (%m)" ), path );
         return -1;
     }
-
-#if defined( HAVE_FCNTL )
-    fcntl( fd, F_SETFD, fcntl( fd, F_GETFD ) | FD_CLOEXEC );
-
-    /* We'd rather use any available memory for reading ahead
-     * than for caching what we've already seen/heard */
-# if defined( F_RDAHEAD )
+#ifdef F_RDAHEAD
     fcntl( fd, F_RDAHEAD, 1 );
-# endif
-# if defined( F_NOCACHE )
-    fcntl( fd, F_NOCACHE, 1 );
-# endif
 #endif
-
+#ifdef F_NOCACHE
+    fcntl( fd, F_NOCACHE, 0 );
+#endif
     return fd;
 }

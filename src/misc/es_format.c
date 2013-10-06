@@ -2,7 +2,7 @@
  * es_format.c : es_format_t helpers.
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
- * $Id: 51741fecadc20bbe4a3aff70d28b1f250d175fca $
+ * $Id: 352bd5ba3b8f57591653c8f29ef736e7bd874881 $
  *
  * Author: Laurent Aimar <fenrir@videolan.org>
  *
@@ -31,7 +31,6 @@
 
 #include <vlc_common.h>
 #include <vlc_es.h>
-#include <vlc_aout.h>
 
 
 /*****************************************************************************
@@ -148,6 +147,12 @@ void video_format_Setup( video_format_t *p_fmt, vlc_fourcc_t i_chroma,
     case VLC_CODEC_YUVA:
         p_fmt->i_bits_per_pixel = 32;
         break;
+    case VLC_CODEC_YUV420A:
+        p_fmt->i_bits_per_pixel = 20;
+        break;
+    case VLC_CODEC_YUV422A:
+        p_fmt->i_bits_per_pixel = 24;
+        break;
     case VLC_CODEC_I444:
     case VLC_CODEC_J444:
         p_fmt->i_bits_per_pixel = 24;
@@ -199,6 +204,10 @@ void video_format_Setup( video_format_t *p_fmt, vlc_fourcc_t i_chroma,
     case VLC_CODEC_GREY:
     case VLC_CODEC_RGBP:
         p_fmt->i_bits_per_pixel = 8;
+        break;
+
+    case VLC_CODEC_XYZ12:
+        p_fmt->i_bits_per_pixel = 48;
         break;
 
     default:
@@ -426,7 +435,7 @@ bool es_format_IsSimilar( const es_format_t *p_fmt1, const es_format_t *p_fmt2 )
         if( !v1.i_chroma )
             v1.i_chroma = vlc_fourcc_GetCodec( p_fmt1->i_cat, p_fmt1->i_codec );
         if( !v2.i_chroma )
-            v2.i_chroma = vlc_fourcc_GetCodec( p_fmt1->i_cat, p_fmt2->i_codec );
+            v2.i_chroma = vlc_fourcc_GetCodec( p_fmt2->i_cat, p_fmt2->i_codec );
         return video_format_IsSimilar( &p_fmt1->video, &p_fmt2->video );
     }
 

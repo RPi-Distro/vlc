@@ -1,24 +1,24 @@
 /*****************************************************************************
  * mux.c: muxer using libavformat
  *****************************************************************************
- * Copyright (C) 2006 the VideoLAN team
- * $Id: a420462c380582442e0e8df41d2c9ebad1c7a2e2 $
+ * Copyright (C) 2006 VLC authors and VideoLAN
+ * $Id: aef73888deb28dbff3ee299f6b20ef15623d8ded $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -37,16 +37,13 @@
 
 #include "avformat.h"
 #include "../../codec/avcodec/avcodec.h"
+#include "../../codec/avcodec/avcommon.h"
 
-/* Support for deprecated APIs */
-#if LIBAVFORMAT_VERSION_INT < ((52<<16)+(105<<8)+0)
-# define avio_flush put_flush_packet
-#endif
 
 //#define AVFORMAT_DEBUG 1
 
 static const char *const ppsz_mux_options[] = {
-    "mux", NULL
+    "mux", "options", NULL
 };
 
 /*****************************************************************************
@@ -54,11 +51,7 @@ static const char *const ppsz_mux_options[] = {
  *****************************************************************************/
 struct sout_mux_sys_t
 {
-#if LIBAVFORMAT_VERSION_INT >= ((52<<16)+(105<<8)+0)
     AVIOContext     *io;
-#else
-    ByteIOContext   io;
-#endif
     int             io_buffer_size;
     uint8_t        *io_buffer;
 
@@ -66,8 +59,6 @@ struct sout_mux_sys_t
 
     bool     b_write_header;
     bool     b_error;
-
-    int64_t        i_initial_dts;
 };
 
 /*****************************************************************************
@@ -91,29 +82,21 @@ int OpenMux( vlc_object_t *p_this )
     sout_mux_sys_t *p_sys;
     char *psz_mux;
 
-    /* Should we call it only once ? */
-    av_register_all();
+    vlc_init_avformat();
 
-    config_ChainParse( p_mux, "ffmpeg-", ppsz_mux_options, p_mux->p_cfg );
+    config_ChainParse( p_mux, "sout-avformat-", ppsz_mux_options, p_mux->p_cfg );
 
     /* Find the requested muxer */
-    psz_mux = var_GetNonEmptyString( p_mux, "ffmpeg-mux" );
+    psz_mux = var_GetNonEmptyString( p_mux, "sout-avformat-mux" );
     if( psz_mux )
     {
-#if( LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT( 52, 45, 0 ) )
         file_oformat = av_guess_format( psz_mux, NULL, NULL );
-#else
-        file_oformat = guess_format( psz_mux, NULL, NULL );
-#endif
+        free( psz_mux );
     }
     else
     {
         file_oformat =
-#if( LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT( 52, 45, 0 ) )
             av_guess_format( NULL, p_mux->p_access->psz_path, NULL);
-#else
-            guess_format( NULL, p_mux->p_access->psz_path, NULL);
-#endif
     }
     if (!file_oformat)
     {
@@ -121,54 +104,35 @@ int OpenMux( vlc_object_t *p_this )
       return VLC_EGENERIC;
     }
 
-    /* Fill p_mux fields */
-    p_mux->pf_control   = Control;
-    p_mux->pf_addstream = AddStream;
-    p_mux->pf_delstream = DelStream;
-    p_mux->pf_mux       = Mux;
     p_mux->p_sys = p_sys = malloc( sizeof( sout_mux_sys_t ) );
     if( !p_sys )
         return VLC_ENOMEM;
 
     p_sys->oc = avformat_alloc_context();
     p_sys->oc->oformat = file_oformat;
+    /* If we use dummy access, let avformat write output */
+    if( !strcmp( p_mux->p_access->psz_access, "dummy") )
+        strcpy( p_sys->oc->filename, p_mux->p_access->psz_path );
 
     /* Create I/O wrapper */
     p_sys->io_buffer_size = 32768;  /* FIXME */
     p_sys->io_buffer = malloc( p_sys->io_buffer_size );
 
-#if (LIBAVFORMAT_VERSION_INT >= ((52<<16)+(105<<8)+0))
     p_sys->io = avio_alloc_context(
-#else
-    init_put_byte( &p_sys->io,
-#endif
         p_sys->io_buffer, p_sys->io_buffer_size,
         1, p_mux, NULL, IOWrite, IOSeek );
 
-
-#if (LIBAVFORMAT_VERSION_INT < ((52<<16)+(105<<8)+0))
-    AVFormatParameters params, *ap = &params;
-    memset( ap, 0, sizeof(*ap) );
-    if( av_set_parameters( p_sys->oc, ap ) < 0 )
-    {
-        msg_Err( p_mux, "invalid encoding parameters" );
-        av_free( p_sys->oc );
-        free( p_sys->io_buffer );
-        free( p_sys );
-        return VLC_EGENERIC;
-    }
-#endif
-
-#if (LIBAVFORMAT_VERSION_INT >= ((52<<16)+(105<<8)+0))
     p_sys->oc->pb = p_sys->io;
-#else
-    p_sys->oc->pb = &p_sys->io;
-#endif
     p_sys->oc->nb_streams = 0;
 
     p_sys->b_write_header = true;
     p_sys->b_error = false;
-    p_sys->i_initial_dts = 0;
+
+    /* Fill p_mux fields */
+    p_mux->pf_control   = Control;
+    p_mux->pf_addstream = AddStream;
+    p_mux->pf_delstream = DelStream;
+    p_mux->pf_mux       = Mux;
 
     return VLC_SUCCESS;
 }
@@ -180,21 +144,13 @@ void CloseMux( vlc_object_t *p_this )
 {
     sout_mux_t *p_mux = (sout_mux_t*)p_this;
     sout_mux_sys_t *p_sys = p_mux->p_sys;
-    unsigned int i;
 
     if( !p_sys->b_write_header && !p_sys->b_error && av_write_trailer( p_sys->oc ) < 0 )
     {
         msg_Err( p_mux, "could not write trailer" );
     }
 
-    for( i = 0 ; i < p_sys->oc->nb_streams; i++ )
-    {
-        if( p_sys->oc->streams[i]->codec->extradata )
-            av_free( p_sys->oc->streams[i]->codec->extradata );
-        av_free( p_sys->oc->streams[i]->codec );
-        av_free( p_sys->oc->streams[i] );
-    }
-    av_free( p_sys->oc );
+    avformat_free_context(p_sys->oc);
 
     free( p_sys->io_buffer );
     free( p_sys );
@@ -228,11 +184,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
         return VLC_EGENERIC;
     }
 
-#if (LIBAVFORMAT_VERSION_INT >= ((53<<16)+(10<<8)+0))
     stream = avformat_new_stream( p_sys->oc, NULL);
-#else
-    stream = av_new_stream( p_sys->oc, p_sys->oc->nb_streams);
-#endif
     if( !stream )
     {
         free( p_input->p_sys );
@@ -267,10 +219,8 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
                    &codec->sample_aspect_ratio.den,
                    p_input->p_fmt->video.i_sar_num,
                    p_input->p_fmt->video.i_sar_den, 1 << 30 /* something big */ );
-#if LIBAVFORMAT_VERSION_INT >= ((52<<16)+(21<<8)+0)
-        stream->sample_aspect_ratio.num = codec->sample_aspect_ratio.num;
         stream->sample_aspect_ratio.den = codec->sample_aspect_ratio.den;
-#endif
+        stream->sample_aspect_ratio.num = codec->sample_aspect_ratio.num;
         codec->time_base.den = p_input->p_fmt->video.i_frame_rate;
         codec->time_base.num = p_input->p_fmt->video.i_frame_rate_base;
         break;
@@ -278,21 +228,12 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
     }
 
     codec->bit_rate = p_input->p_fmt->i_bitrate;
-#if LIBAVFORMAT_VERSION_INT >= ((51<<16)+(8<<8)+0)
     codec->codec_tag = av_codec_get_tag( p_sys->oc->oformat->codec_tag, i_codec_id );
-    if( !codec->codec_tag && i_codec_id == CODEC_ID_MP2 )
+    if( !codec->codec_tag && i_codec_id == AV_CODEC_ID_MP2 )
     {
-        i_codec_id = CODEC_ID_MP3;
+        i_codec_id = AV_CODEC_ID_MP3;
         codec->codec_tag = av_codec_get_tag( p_sys->oc->oformat->codec_tag, i_codec_id );
     }
-#else
-#   warning "WARNING!!!!!!!"
-#   warning "Using libavformat muxing with versions older than 51.8.0 (r7593) might produce broken files."
-    /* This is a hack */
-    if( i_codec_id == CODEC_ID_MP2 )
-        i_codec_id = CODEC_ID_MP3;
-    codec->codec_tag = p_input->p_fmt->i_original_fourcc ?: p_input->p_fmt->i_codec;
-#endif
     codec->codec_id = i_codec_id;
 
     if( p_input->p_fmt->i_extra )
@@ -333,10 +274,6 @@ static int MuxBlock( sout_mux_t *p_mux, sout_input_t *p_input )
 
     if( p_data->i_flags & BLOCK_FLAG_TYPE_I ) pkt.flags |= AV_PKT_FLAG_KEY;
 
-    /* avformat expects pts/dts which start from 0 */
-    p_data->i_dts -= p_mux->p_sys->i_initial_dts;
-    p_data->i_pts -= p_mux->p_sys->i_initial_dts;
-
     if( p_data->i_pts > 0 )
         pkt.pts = p_data->i_pts * p_stream->time_base.den /
             INT64_C(1000000) / p_stream->time_base.num;
@@ -375,11 +312,17 @@ static int Mux( sout_mux_t *p_mux )
         int error;
         msg_Dbg( p_mux, "writing header" );
 
-#if (LIBAVFORMAT_VERSION_INT >= ((53<<16)+(2<<8)+0))
-        error = avformat_write_header( p_sys->oc, NULL /* options */ );
-#else
-        error = av_write_header( p_sys->oc );
-#endif
+        char *psz_opts = var_GetNonEmptyString( p_mux, "sout-avformat-options" );
+        AVDictionary *options = NULL;
+        if (psz_opts && *psz_opts)
+            options = vlc_av_get_options(psz_opts);
+        free(psz_opts);
+        error = avformat_write_header( p_sys->oc, options ? &options : NULL);
+        AVDictionaryEntry *t = NULL;
+        while ((t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX))) {
+            msg_Err( p_mux, "Unknown option \"%s\"", t->key );
+        }
+        av_dict_free(&options);
         if( error < 0 )
         {
             errno = AVUNERROR(error);
@@ -389,11 +332,7 @@ static int Mux( sout_mux_t *p_mux )
             return VLC_EGENERIC;
         }
 
-#if LIBAVFORMAT_VERSION_INT >= ((52<<16)+(0<<8)+0)
         avio_flush( p_sys->oc->pb );
-#else
-        avio_flush( &p_sys->oc->pb );
-#endif
         p_sys->b_write_header = false;
     }
 
@@ -404,9 +343,6 @@ static int Mux( sout_mux_t *p_mux )
         int i_stream = sout_MuxGetStream( p_mux, 1, &i_dts );
         if( i_stream < 0 )
             return VLC_SUCCESS;
-
-        if( !p_mux->p_sys->i_initial_dts )
-            p_mux->p_sys->i_initial_dts = i_dts;
 
         MuxBlock( p_mux, p_mux->pp_inputs[i_stream] );
     }
@@ -457,7 +393,7 @@ static int IOWrite( void *opaque, uint8_t *buf, int buf_size )
     msg_Dbg( p_mux, "IOWrite %i bytes", buf_size );
 #endif
 
-    block_t *p_buf = block_New( p_mux->p_sout, buf_size );
+    block_t *p_buf = block_Alloc( buf_size );
     if( buf_size > 0 ) memcpy( p_buf->p_buffer, buf, buf_size );
 
     if( p_mux->p_sys->b_write_header )

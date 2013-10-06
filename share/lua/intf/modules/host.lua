@@ -1,7 +1,7 @@
 --[==========================================================================[
  host.lua: VLC Lua interface command line host module
 --[==========================================================================[
- Copyright (C) 2007 the VideoLAN team
+ Copyright (C) 2007-2012 the VideoLAN team
  $Id$
 
  Authors: Antoine Cellerier <dionoea at videolan dot org>
@@ -38,7 +38,7 @@ Example use:
     --or h:listen( { "localhost:4212", "*console" } )
 
     -- The main loop
-    while not vlc.misc.should_die() do
+    while true do
         -- accept new connections and select active clients
         local write, read = h:accept_and_select()
 
@@ -114,25 +114,36 @@ function host()
         end
     end
 
+    local function write_console( client, data )
+        -- FIXME: this method shouldn't be needed. vlc.net.write should
+        -- just work
+        io.write(data or client.buffer)
+        return string.len(data or client.buffer)
+    end
+
+    local function read_console( client, len )
+        -- Read stdin from a windows console (beware: select/poll doesn't work!)
+        return vlc.win.console_read()
+    end
+
     local function del_client( client )
-        for i, c in pairs(clients) do
-            if c == client then
-                if client.type == client_type.stdio then
-                    h:broadcast("Shutting down.\r\n")
-                    vlc.msg.info("Requested shutdown.")
-                    vlc.misc.quit()
-                elseif client.type == client_type.net
-                or client.type == client_type.telnet then
-                    if client.wfd ~= client.rfd then
-                        vlc.net.close( client.rfd )
-                    end
-                    vlc.net.close( client.wfd )
-                end
-                clients[i] = nil
-                return
-            end
+        if not clients[client] then
+            vlc.msg.err("couldn't find client to remove.")
+            return
         end
-        vlc.msg.err("couldn't find client to remove.")
+
+        if client.type == client_type.stdio then
+            h:broadcast("Shutting down.\r\n")
+            vlc.msg.info("Requested shutdown.")
+            vlc.misc.quit()
+        elseif client.type == client_type.net
+        or client.type == client_type.telnet then
+            if client.wfd ~= client.rfd then
+                vlc.net.close( client.rfd )
+            end
+            vlc.net.close( client.wfd )
+        end
+        clients[client] = nil
     end
 
     local function switch_status( client, s )
@@ -154,12 +165,19 @@ function host()
         if t == client_type.net or t == client_type.telnet then
             w = send
             r = recv
-        else if t == client_type.stdio or t == client_type.fifo then
-            w = write
-            r = read
+        elseif t == client_type.stdio or t == client_type.fifo then
+            if vlc.win and t == client_type.stdio then
+                vlc.win.console_init()
+                w = write_console
+                r = read_console
+            else
+                w = write
+                r = read
+            end
         else
             error("Unknown client type", t )
-        end end
+        end
+
         local client = { -- data
                          rfd = fd,
                          wfd = wfd or fd,
@@ -176,7 +194,7 @@ function host()
                          append = append,
                        }
         client:send( "VLC media player "..vlc.misc.version().."\n" )
-        table.insert(clients, client)
+        clients[client] = client
         client:switch_status(status.password)
     end
 
@@ -185,6 +203,9 @@ function host()
         if listeners.tcp and listeners.tcp[host]
                          and listeners.tcp[host][port] then
             error("Already listening on tcp host `"..host..":"..tostring(port).."'")
+        end
+        if listeners.stdio and vlc.win then
+            error("Cannot listen on console and sockets concurrently on Windows")
         end
         if not listeners.tcp then
             listeners.tcp = {}
@@ -208,6 +229,9 @@ function host()
         if listeners.stdio then
             error("Already listening on stdio")
         end
+        if listeners.tcp and vlc.win then
+            error("Cannot listen on console and sockets concurrently on Windows")
+        end
         new_client( h, 0, 1, client_type.stdio )
         listeners.stdio = true
     end
@@ -228,69 +252,75 @@ function host()
         end
     end
 
-    local function _accept_and_select( h, timeout )
-        local function filter_client( fds, status, event )
-            for _, client in pairs(clients) do
-                if client.status == status then
-                    fds[client:fd()] = event
-                end
-            end
-        end
-
-        local pollfds = {}
-        filter_client( pollfds, status.read, vlc.net.POLLIN )
-        filter_client( pollfds, status.password, vlc.net.POLLIN )
-        filter_client( pollfds, status.write, vlc.net.POLLOUT )
-        if listeners.tcp then
-            for _, listener in pairs(listeners.tcp.list) do
-                for _, fd in pairs({listener.data:fds()}) do
-                    pollfds[fd] = vlc.net.POLLIN
-                end
-            end
-        end
-
-        local ret = vlc.net.poll( pollfds )
+    local function _accept_and_select( h )
         local wclients = {}
         local rclients = {}
-        if ret > 0 then
-            for _, client in pairs(clients) do
-                if is_flag_set(pollfds[client:fd()], vlc.net.POLLIN) then
-                    table.insert(rclients,client)
-                elseif is_flag_set(pollfds[client:fd()], vlc.net.POLLERR)
-                or is_flag_set(pollfds[client:fd()], vlc.net.POLLHUP)
-                or is_flag_set(pollfds[client:fd()], vlc.net.POLLNVAL) then
-                    del_client(client)
-                elseif is_flag_set(pollfds[client:fd()], vlc.net.POLLOUT) then
-                    table.insert(wclients,client)
+        if not (vlc.win and listeners.stdio) then
+            local function filter_client( fds, status, event )
+                for _, client in pairs(clients) do
+                    if client.status == status then
+                        fds[client:fd()] = event
+                    end
                 end
             end
+
+            local pollfds = {}
+            filter_client( pollfds, status.read, vlc.net.POLLIN )
+            filter_client( pollfds, status.password, vlc.net.POLLIN )
+            filter_client( pollfds, status.write, vlc.net.POLLOUT )
             if listeners.tcp then
                 for _, listener in pairs(listeners.tcp.list) do
                     for _, fd in pairs({listener.data:fds()}) do
-                        if is_flag_set(pollfds[fd], vlc.net.POLLIN) then
-                            local afd = listener.data:accept()
-                            new_client( h, afd, afd, listener.type )
-                            break
+                        pollfds[fd] = vlc.net.POLLIN
+                    end
+                end
+            end
+
+            local ret = vlc.net.poll( pollfds )
+            if ret > 0 then
+                for _, client in pairs(clients) do
+                    if is_flag_set(pollfds[client:fd()], vlc.net.POLLIN) then
+                        table.insert(rclients, client)
+                    elseif is_flag_set(pollfds[client:fd()], vlc.net.POLLERR)
+                    or is_flag_set(pollfds[client:fd()], vlc.net.POLLHUP)
+                    or is_flag_set(pollfds[client:fd()], vlc.net.POLLNVAL) then
+                        client:del()
+                    elseif is_flag_set(pollfds[client:fd()], vlc.net.POLLOUT) then
+                        table.insert(wclients, client)
+                    end
+                end
+                if listeners.tcp then
+                    for _, listener in pairs(listeners.tcp.list) do
+                        for _, fd in pairs({listener.data:fds()}) do
+                            if is_flag_set(pollfds[fd], vlc.net.POLLIN) then
+                                local afd = listener.data:accept()
+                                new_client( h, afd, afd, listener.type )
+                                break
+                            end
                         end
                     end
                 end
             end
+        else
+            for _, client in pairs(clients) do
+                if client.type == client_type.stdio then
+                    if client.status == status.read or client.status == status.password then
+                        if vlc.win.console_wait(50) then
+                            table.insert(rclients, client)
+                        end
+                    else
+                        table.insert(wclients, client)
+                    end
+                end
+            end
         end
-
         return wclients, rclients
     end
 
-    -- FIXME: this is never called, client sockets are leaked
     local function destructor( h )
-        print "destructor"
         for _,client in pairs(clients) do
-            --client:send("Shutting down.")
-            if client.type == client_type.net
-            or client.type == client_type.telnet then
-                if client.wfd ~= client.rfd then
-                    vlc.net.close(client.rfd)
-                end
-                vlc.net.close(client.wfd)
+            if client.type ~= client_type.stdio then
+                client:del()
             end
         end
     end
@@ -301,8 +331,17 @@ function host()
         end
     end
 
+    if setfenv then
+        -- We're running Lua 5.1
+        -- See http://lua-users.org/wiki/HiddenFeatures for more info.
+        local proxy = newproxy(true)
+        getmetatable(proxy).__gc = destructor
+        destructor = proxy
+    end
+
     -- the instance
-    local h = { -- data
+    local h = setmetatable(
+              { -- data
                 status_callbacks = status_callbacks,
                 -- methods
                 listen = _listen,
@@ -310,7 +349,10 @@ function host()
                 listen_stdio = _listen_stdio,
                 accept_and_select = _accept_and_select,
                 broadcast = _broadcast,
-              }
-
+              },
+              { -- metatable
+                __gc = destructor, -- Should work in Lua 5.2 without the new proxytrick as __gc is also called on tables (needs to be tested)
+                __metatable = "",
+              })
     return h
 end

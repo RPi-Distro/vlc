@@ -1,8 +1,8 @@
 /*****************************************************************************
- * os.c : Low-level dynamic library handling
+ * plugin.c : Low-level dynamic library handling
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: 2e596524cfd5acc265300fbcf25cf08e5e5a6e84 $
+ * $Id: db2b0ba7f97c2f1a04ea5b5bf9dcf1259a299583 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Ethan C. Baldridge <BaldridgeE@cadmus.com>
@@ -29,7 +29,6 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_charset.h>
 #include "modules/modules.h"
 
 #include <sys/types.h>
@@ -43,12 +42,12 @@
  * Load a dynamically linked library using a system dependent method.
  *
  * \param p_this vlc object
- * \param psz_file library file
+ * \param path library file
  * \param p_handle the module handle returned
  * \return 0 on success as well as the module handle.
  */
-int module_Load( vlc_object_t *p_this, const char *psz_file,
-                 module_handle_t *p_handle, bool lazy )
+int module_Load (vlc_object_t *p_this, const char *path,
+                 module_handle_t *p_handle, bool lazy)
 {
 #if defined (RTLD_NOW)
     const int flags = lazy ? RTLD_LAZY : RTLD_NOW;
@@ -57,16 +56,13 @@ int module_Load( vlc_object_t *p_this, const char *psz_file,
 #else
     const int flags = 0;
 #endif
-    char *path = ToLocale( psz_file );
 
-    module_handle_t handle = dlopen( path, flags );
+    module_handle_t handle = dlopen (path, flags);
     if( handle == NULL )
     {
         msg_Warn( p_this, "cannot load module `%s' (%s)", path, dlerror() );
-        LocaleFree( path );
         return -1;
     }
-    LocaleFree( path );
     *p_handle = handle;
     return 0;
 }

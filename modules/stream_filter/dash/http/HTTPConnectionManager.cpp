@@ -7,162 +7,160 @@
  * Authors: Christopher Mueller <christopher.mueller@itec.uni-klu.ac.at>
  *          Christian Timmerer  <christian.timmerer@itec.uni-klu.ac.at>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published
  * by the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
 #include "HTTPConnectionManager.h"
+#include "mpd/Segment.h"
 
 using namespace dash::http;
 using namespace dash::logic;
 
-HTTPConnectionManager::HTTPConnectionManager    (stream_t *stream)
+const size_t    HTTPConnectionManager::PIPELINE               = 80;
+const size_t    HTTPConnectionManager::PIPELINELENGTH         = 2;
+const uint64_t  HTTPConnectionManager::CHUNKDEFAULTBITRATE    = 1;
+
+HTTPConnectionManager::HTTPConnectionManager    (logic::IAdaptationLogic *adaptationLogic, stream_t *stream) :
+                       adaptationLogic          (adaptationLogic),
+                       stream                   (stream),
+                       chunkCount               (0),
+                       bpsAvg                   (0),
+                       bpsLastChunk             (0),
+                       bpsCurrentChunk          (0),
+                       bytesReadSession         (0),
+                       bytesReadChunk           (0),
+                       timeSession              (0),
+                       timeChunk                (0)
 {
-    this->timeSecSession    = 0;
-    this->bytesReadSession  = 0;
-    this->timeSecChunk      = 0;
-    this->bytesReadChunk    = 0;
-    this->bpsAvg            = 0;
-    this->bpsLastChunk      = 0;
-    this->chunkCount        = 0;
-    this->stream            = stream;
 }
 HTTPConnectionManager::~HTTPConnectionManager   ()
 {
     this->closeAllConnections();
 }
 
-bool                HTTPConnectionManager::closeConnection( IHTTPConnection *con )
+void                                HTTPConnectionManager::closeAllConnections      ()
 {
-    for(std::vector<HTTPConnection *>::iterator it = this->connections.begin();
-        it != this->connections.end(); ++it)
-    {
-        if(*it == con)
-        {
-            (*it)->closeSocket();
-            delete(*it);
-            this->connections.erase(it);
-            return true;
-        }
-    }
-    return false;
+    vlc_delete_all(this->connectionPool);
+    vlc_delete_all(this->downloadQueue);
 }
-
-bool                HTTPConnectionManager::closeConnection( Chunk *chunk )
+int                                 HTTPConnectionManager::read                     (block_t *block)
 {
-    HTTPConnection *con = this->chunkMap[chunk];
-    bool ret = this->closeConnection(con);
-    this->chunkMap.erase(chunk);
-    delete(chunk);
-    return ret;
-}
+    if(this->downloadQueue.size() == 0)
+        if(!this->addChunk(this->adaptationLogic->getNextChunk()))
+            return 0;
 
-void                HTTPConnectionManager::closeAllConnections      ()
-{
-    for(std::vector<HTTPConnection *>::iterator it = this->connections.begin(); it != this->connections.end(); ++it)
-    {
-        (*it)->closeSocket();
-        delete(*it);
-    }
-    this->connections.clear();
-    this->urlMap.clear();
+    if(this->downloadQueue.front()->getPercentDownloaded() > HTTPConnectionManager::PIPELINE &&
+       this->downloadQueue.size() < HTTPConnectionManager::PIPELINELENGTH)
+        this->addChunk(this->adaptationLogic->getNextChunk());
 
-    std::map<Chunk *, HTTPConnection *>::iterator it;
-
-    for(it = this->chunkMap.begin(); it != this->chunkMap.end(); ++it)
-    {
-        delete(it->first);
-    }
-
-    this->chunkMap.clear();
-}
-
-int                 HTTPConnectionManager::read( Chunk *chunk, void *p_buffer, size_t len )
-{
-    if(this->chunkMap.find(chunk) == this->chunkMap.end())
-    {
-        this->bytesReadChunk    = 0;
-        this->timeSecChunk      = 0;
-
-        if ( this->initConnection( chunk ) == NULL )
-            return -1;
-    }
+    int ret = 0;
 
     mtime_t start = mdate();
-    int ret = this->chunkMap[chunk]->read(p_buffer, len);
+    ret = this->downloadQueue.front()->getConnection()->read(block->p_buffer, block->i_buffer);
     mtime_t end = mdate();
 
-    if( ret <= 0 )
-        this->closeConnection( chunk );
+    block->i_length = (mtime_t)((ret * 8) / ((float)this->downloadQueue.front()->getBitrate() / 1000000));
+
+    double time = ((double)(end - start)) / 1000000;
+
+    if(ret <= 0)
+    {
+        this->bpsLastChunk   = this->bpsCurrentChunk;
+        this->bytesReadChunk = 0;
+        this->timeChunk      = 0;
+
+        delete(this->downloadQueue.front());
+        this->downloadQueue.pop_front();
+
+        return this->read(block);
+    }
     else
     {
-        double time = ((double)(end - start)) / 1000000;
-
-        this->bytesReadSession += ret;
-        this->bytesReadChunk   += ret;
-        this->timeSecSession   += time;
-        this->timeSecChunk     += time;
-
-
-        if(this->timeSecSession > 0)
-            this->bpsAvg = (this->bytesReadSession / this->timeSecSession) * 8;
-
-        if(this->timeSecChunk > 0)
-            this->bpsLastChunk = (this->bytesReadChunk / this->timeSecChunk) * 8;
-
-        if(this->bpsAvg < 0 || this->chunkCount < 2)
-            this->bpsAvg = 0;
-
-        if(this->bpsLastChunk < 0 || this->chunkCount < 2)
-            this->bpsLastChunk = 0;
-
-        this->notify();
+        this->updateStatistics(ret, time);
     }
+
     return ret;
 }
-
-int                 HTTPConnectionManager::peek                     (Chunk *chunk, const uint8_t **pp_peek, size_t i_peek)
-{
-    if(this->chunkMap.find(chunk) == this->chunkMap.end())
-    {
-        if ( this->initConnection(chunk) == NULL )
-            return -1;
-    }
-    return this->chunkMap[chunk]->peek(pp_peek, i_peek);
-}
-
-IHTTPConnection*     HTTPConnectionManager::initConnection(Chunk *chunk)
-{
-    HTTPConnection *con = new HTTPConnection(chunk->getUrl(), this->stream);
-    if ( con->init() == false )
-        return NULL;
-    this->connections.push_back(con);
-    this->chunkMap[chunk] = con;
-    this->chunkCount++;
-    return con;
-}
-void                HTTPConnectionManager::attach                   (IDownloadRateObserver *observer)
+void                                HTTPConnectionManager::attach                   (IDownloadRateObserver *observer)
 {
     this->rateObservers.push_back(observer);
 }
-void                HTTPConnectionManager::notify                   ()
+void                                HTTPConnectionManager::notify                   ()
 {
-    if ( this->bpsAvg <= 0 )
+    if ( this->bpsAvg == 0 )
         return ;
     for(size_t i = 0; i < this->rateObservers.size(); i++)
         this->rateObservers.at(i)->downloadRateChanged(this->bpsAvg, this->bpsLastChunk);
+}
+std::vector<PersistentConnection *> HTTPConnectionManager::getConnectionsForHost    (const std::string &hostname)
+{
+    std::vector<PersistentConnection *> cons;
+
+    for(size_t i = 0; i < this->connectionPool.size(); i++)
+        if(!this->connectionPool.at(i)->getHostname().compare(hostname) || !this->connectionPool.at(i)->isConnected())
+            cons.push_back(this->connectionPool.at(i));
+
+    return cons;
+}
+void                                HTTPConnectionManager::updateStatistics         (int bytes, double time)
+{
+    this->bytesReadSession  += bytes;
+    this->bytesReadChunk    += bytes;
+    this->timeSession       += time;
+    this->timeChunk         += time;
+
+    this->bpsAvg            = (int64_t) ((this->bytesReadSession * 8) / this->timeSession);
+    this->bpsCurrentChunk   = (int64_t) ((this->bytesReadChunk * 8) / this->timeChunk);
+
+    if(this->bpsAvg < 0)
+        this->bpsAvg = 0;
+
+    if(this->bpsCurrentChunk < 0)
+        this->bpsCurrentChunk = 0;
+
+    this->notify();
+}
+bool                                HTTPConnectionManager::addChunk                 (Chunk *chunk)
+{
+    if(chunk == NULL)
+        return false;
+
+    this->downloadQueue.push_back(chunk);
+
+    std::vector<PersistentConnection *> cons = this->getConnectionsForHost(chunk->getHostname());
+
+    if(cons.size() == 0)
+    {
+        PersistentConnection *con = new PersistentConnection(this->stream);
+        this->connectionPool.push_back(con);
+        cons.push_back(con);
+    }
+
+    size_t pos = this->chunkCount % cons.size();
+
+    cons.at(pos)->addChunk(chunk);
+
+    chunk->setConnection(cons.at(pos));
+
+    this->chunkCount++;
+
+    if(chunk->getBitrate() <= 0)
+        chunk->setBitrate(HTTPConnectionManager::CHUNKDEFAULTBITRATE);
+
+    return true;
 }

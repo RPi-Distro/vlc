@@ -2,7 +2,7 @@
  * VideoEffects.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: be824843abf00a35ceb04a36739e749195dc740b $
+ * $Id: 3fc2eb56271b58f05668d5e8207613512f67e1e7 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -29,6 +29,7 @@
     intf_thread_t *p_intf;
     IBOutlet id o_window;
     IBOutlet id o_tableView;
+    IBOutlet id o_profile_pop;
 
     /* basic */
     IBOutlet id o_adjust_ckb;
@@ -81,7 +82,17 @@
     IBOutlet id o_puzzle_columns_lbl;
     IBOutlet id o_puzzle_columns_fld;
     IBOutlet id o_puzzle_columns_stp;
-    IBOutlet id o_puzzle_blackslot_ckb;
+    IBOutlet id o_clone_ckb;
+    IBOutlet id o_clone_number_fld;
+    IBOutlet id o_clone_number_stp;
+    IBOutlet id o_clone_number_lbl;
+    IBOutlet id o_wall_ckb;
+    IBOutlet id o_wall_numofrows_fld;
+    IBOutlet id o_wall_numofrows_stp;
+    IBOutlet id o_wall_numofrows_lbl;
+    IBOutlet id o_wall_numofcols_fld;
+    IBOutlet id o_wall_numofcols_stp;
+    IBOutlet id o_wall_numofcols_lbl;
 
     /* color */
     IBOutlet id o_threshold_ckb;
@@ -130,17 +141,29 @@
     IBOutlet id o_addlogo_pos_pop;
     IBOutlet id o_addlogo_transparency_lbl;
     IBOutlet id o_addlogo_transparency_sld;
+    IBOutlet id o_anaglyph_ckb;
+
+    NSInteger i_old_profile_index;
 }
 
 /* generic */
 + (VLCVideoEffects *)sharedInstance;
-- (IBAction)toggleWindow:(id)sender;
+- (void)updateCocoaWindowLevel:(NSInteger)i_level;
+
 - (void)resetValues;
 - (void)setVideoFilter: (char *)psz_name on:(BOOL)b_on;
 - (void)setVideoFilterProperty: (char *)psz_name forFilter: (char*)psz_filter integer: (int)i_value;
 - (void)setVideoFilterProperty: (char *)psz_name forFilter: (char*)psz_filter float: (float)f_value;
-- (void)setVideoFilterProperty: (char *)psz_name forFilter: (char *)psz_filter string: (char *)psz_value;
+- (void)setVideoFilterProperty: (char *)psz_name forFilter: (char *)psz_filter string: (const char *)psz_value;
 - (void)setVideoFilterProperty: (char *)psz_name forFilter: (char *)psz_filter boolean: (BOOL)b_value;
+
+- (void)saveCurrentProfile;
+
+- (IBAction)toggleWindow:(id)sender;
+- (IBAction)profileSelectorAction:(id)sender;
+- (IBAction)addProfile:(id)sender;
+- (IBAction)removeProfile:(id)sender;
+
 
 /* basic */
 - (IBAction)enableAdjust:(id)sender;
@@ -162,6 +185,10 @@
 - (IBAction)enableZoom:(id)sender;
 - (IBAction)enablePuzzle:(id)sender;
 - (IBAction)puzzleModifierChanged:(id)sender;
+- (IBAction)enableClone:(id)sender;
+- (IBAction)cloneModifierChanged:(id)sender;
+- (IBAction)enableWall:(id)sender;
+- (IBAction)wallModifierChanged:(id)sender;
 
 /* color */
 - (IBAction)enableThreshold:(id)sender;
@@ -188,4 +215,25 @@
 - (IBAction)addTextModifierChanged:(id)sender;
 - (IBAction)enableAddLogo:(id)sender;
 - (IBAction)addLogoModifierChanged:(id)sender;
+- (IBAction)enableAnaglyph:(id)sender;
+
+/* text field / stepper binding values */
+/* use setter to modify gui elements */
+@property (nonatomic) int cropLeftValue;
+@property (nonatomic) int cropTopValue;
+@property (nonatomic) int cropRightValue;
+@property (nonatomic) int cropBottomValue;
+
+@property (nonatomic) int puzzleRowsValue;
+@property (nonatomic) int puzzleColumnsValue;
+
+@property (nonatomic) int wallRowsValue;
+@property (nonatomic) int wallColumnsValue;
+
+@property (nonatomic) int cloneValue;
+
+@property (nonatomic) int sepiaValue;
+
+@property (nonatomic) int posterizeValue;
+
 @end

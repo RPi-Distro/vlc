@@ -1,24 +1,24 @@
 /*****************************************************************************
  * qtl.c: QuickTime Media Link Importer
  *****************************************************************************
- * Copyright (C) 2006 the VideoLAN team
- * $Id: 4aaf0b97938346553c86f4ede0860c4229d83011 $
+ * Copyright (C) 2006 VLC authors and VideoLAN
+ * $Id: f3514d28beff7340771da6a07fff50e51e487880 $
  *
  * Authors: Antoine Cellerier <dionoea -@t- videolan -Dot- org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*
@@ -73,7 +73,6 @@ const char* ppsz_loop[] = { "true", "false", "palindrome" };
  * Local prototypes
  *****************************************************************************/
 static int Demux( demux_t *p_demux);
-static int Control( demux_t *p_demux, int i_query, va_list args );
 
 /*****************************************************************************
  * Import_QTL: main import function
@@ -90,14 +89,6 @@ int Import_QTL( vlc_object_t *p_this )
     msg_Dbg( p_demux, "using QuickTime Media Link reader" );
 
     return VLC_SUCCESS;
-}
-
-/*****************************************************************************
- * Deactivate: frees unused data
- *****************************************************************************/
-void Close_QTL( vlc_object_t *p_this )
-{
-    (void)p_this;
 }
 
 static int Demux( demux_t *p_demux )
@@ -273,10 +264,4 @@ error:
     free( psz_src );
     free( psz_mimetype );
     return i_ret;
-}
-
-static int Control( demux_t *p_demux, int i_query, va_list args )
-{
-    VLC_UNUSED(p_demux); VLC_UNUSED(i_query); VLC_UNUSED(args);
-    return VLC_EGENERIC;
 }

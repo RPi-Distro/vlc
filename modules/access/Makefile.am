@@ -3,9 +3,9 @@
 
 basedir = access
 dir = access
-mods = access_attachment access_avio access_directory access_dv access_eyetv access_ftp access_gnomevfs access_http access_imem access_jack access_mtp access_rar access_sftp access_tcp access_udp access_vdr cdda dc1394 decklink dvdnav dvdread htcpcp libbluray linsys_hdsdi linsys_sdi pvr stream_filter_rar
-libvlc_LTLIBRARIES =  $(LTLIBaccess_avio) $(LTLIBaccess_directory) $(LTLIBaccess_dv) $(LTLIBaccess_eyetv) $(LTLIBaccess_gnomevfs) $(LTLIBaccess_jack) $(LTLIBaccess_mtp) $(LTLIBaccess_sftp) $(LTLIBcdda) $(LTLIBdc1394) $(LTLIBdecklink) $(LTLIBdvdnav) $(LTLIBdvdread) $(LTLIBhtcpcp) $(LTLIBlibbluray) $(LTLIBlinsys_hdsdi) $(LTLIBlinsys_sdi) $(LTLIBpvr)
-EXTRA_LTLIBRARIES =  libaccess_avio_plugin.la libaccess_directory_plugin.la libaccess_dv_plugin.la libaccess_eyetv_plugin.la libaccess_gnomevfs_plugin.la libaccess_jack_plugin.la libaccess_mtp_plugin.la libaccess_sftp_plugin.la libcdda_plugin.la libdc1394_plugin.la libdecklink_plugin.la libdvdnav_plugin.la libdvdread_plugin.la libhtcpcp_plugin.la liblibbluray_plugin.la liblinsys_hdsdi_plugin.la liblinsys_sdi_plugin.la libpvr_plugin.la
+mods = access_attachment access_avio access_directory access_eyetv access_ftp access_gnomevfs access_http access_imem access_jack access_mtp access_rar access_sftp access_tcp access_udp access_vdr cdda dc1394 dv1394 dvdnav dvdread libbluray libvnc linsys_hdsdi linsys_sdi live555 rdp stream_filter_rar vcd vcdx
+libvlc_LTLIBRARIES =  $(LTLIBaccess_avio) $(LTLIBaccess_directory) $(LTLIBaccess_eyetv) $(LTLIBaccess_gnomevfs) $(LTLIBaccess_jack) $(LTLIBaccess_mtp) $(LTLIBaccess_sftp) $(LTLIBcdda) $(LTLIBdc1394) $(LTLIBdv1394) $(LTLIBdvdnav) $(LTLIBdvdread) $(LTLIBlibbluray) $(LTLIBlibvnc) $(LTLIBlinsys_hdsdi) $(LTLIBlinsys_sdi) $(LTLIBlive555) $(LTLIBrdp) $(LTLIBvcd) $(LTLIBvcdx)
+EXTRA_LTLIBRARIES =  libaccess_avio_plugin.la libaccess_directory_plugin.la libaccess_eyetv_plugin.la libaccess_gnomevfs_plugin.la libaccess_jack_plugin.la libaccess_mtp_plugin.la libaccess_sftp_plugin.la libcdda_plugin.la libdc1394_plugin.la libdv1394_plugin.la libdvdnav_plugin.la libdvdread_plugin.la liblibbluray_plugin.la liblibvnc_plugin.la liblinsys_hdsdi_plugin.la liblinsys_sdi_plugin.la liblive555_plugin.la librdp_plugin.la libvcd_plugin.la libvcdx_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -17,10 +17,9 @@ libaccess_attachment_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_attac
 libaccess_attachment_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_attachment)
 libaccess_attachment_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_attachment)
 libaccess_attachment_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_attachment)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaccess_attachment_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_attachment)
 libaccess_attachment_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_attachment)
-libaccess_attachment_plugin_la_DEPENDENCIES =
 
 # The access_avio plugin
 libaccess_avio_plugin_la_SOURCES = $(SOURCES_access_avio)
@@ -30,10 +29,9 @@ libaccess_avio_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_avio)
 libaccess_avio_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_avio)
 libaccess_avio_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_avio)
 libaccess_avio_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_avio)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaccess_avio_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_avio)
 libaccess_avio_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_avio)
-libaccess_avio_plugin_la_DEPENDENCIES =
 
 # The access_directory plugin
 libaccess_directory_plugin_la_SOURCES = $(SOURCES_access_directory)
@@ -43,23 +41,9 @@ libaccess_directory_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_direct
 libaccess_directory_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_directory)
 libaccess_directory_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_directory)
 libaccess_directory_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_directory)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaccess_directory_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_directory)
 libaccess_directory_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_directory)
-libaccess_directory_plugin_la_DEPENDENCIES =
-
-# The access_dv plugin
-libaccess_dv_plugin_la_SOURCES = $(SOURCES_access_dv)
-nodist_libaccess_dv_plugin_la_SOURCES = $(nodist_SOURCES_access_dv)
-# Force per-target objects:
-libaccess_dv_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_dv)
-libaccess_dv_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_dv)
-libaccess_dv_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_dv)
-libaccess_dv_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_dv)
-# Set LIBADD and DEPENDENCIES manually:
-libaccess_dv_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_dv)
-libaccess_dv_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_dv)
-libaccess_dv_plugin_la_DEPENDENCIES =
 
 # The access_eyetv plugin
 libaccess_eyetv_plugin_la_SOURCES = $(SOURCES_access_eyetv)
@@ -69,10 +53,9 @@ libaccess_eyetv_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_eyetv)
 libaccess_eyetv_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_eyetv)
 libaccess_eyetv_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_eyetv)
 libaccess_eyetv_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_eyetv)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaccess_eyetv_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_eyetv)
 libaccess_eyetv_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_eyetv)
-libaccess_eyetv_plugin_la_DEPENDENCIES =
 
 # The access_ftp plugin
 libaccess_ftp_plugin_la_SOURCES = $(SOURCES_access_ftp)
@@ -82,10 +65,9 @@ libaccess_ftp_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_ftp)
 libaccess_ftp_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_ftp)
 libaccess_ftp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_ftp)
 libaccess_ftp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_ftp)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaccess_ftp_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_ftp)
 libaccess_ftp_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_ftp)
-libaccess_ftp_plugin_la_DEPENDENCIES =
 
 # The access_gnomevfs plugin
 libaccess_gnomevfs_plugin_la_SOURCES = $(SOURCES_access_gnomevfs)
@@ -95,10 +77,9 @@ libaccess_gnomevfs_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_gnomevf
 libaccess_gnomevfs_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_gnomevfs)
 libaccess_gnomevfs_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_gnomevfs)
 libaccess_gnomevfs_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_gnomevfs)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaccess_gnomevfs_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_gnomevfs)
 libaccess_gnomevfs_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_gnomevfs)
-libaccess_gnomevfs_plugin_la_DEPENDENCIES =
 
 # The access_http plugin
 libaccess_http_plugin_la_SOURCES = $(SOURCES_access_http)
@@ -108,10 +89,9 @@ libaccess_http_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_http)
 libaccess_http_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_http)
 libaccess_http_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_http)
 libaccess_http_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_http)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaccess_http_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_http)
 libaccess_http_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_http)
-libaccess_http_plugin_la_DEPENDENCIES =
 
 # The access_imem plugin
 libaccess_imem_plugin_la_SOURCES = $(SOURCES_access_imem)
@@ -121,10 +101,9 @@ libaccess_imem_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_imem)
 libaccess_imem_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_imem)
 libaccess_imem_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_imem)
 libaccess_imem_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_imem)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaccess_imem_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_imem)
 libaccess_imem_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_imem)
-libaccess_imem_plugin_la_DEPENDENCIES =
 
 # The access_jack plugin
 libaccess_jack_plugin_la_SOURCES = $(SOURCES_access_jack)
@@ -134,10 +113,9 @@ libaccess_jack_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_jack)
 libaccess_jack_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_jack)
 libaccess_jack_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_jack)
 libaccess_jack_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_jack)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaccess_jack_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_jack)
 libaccess_jack_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_jack)
-libaccess_jack_plugin_la_DEPENDENCIES =
 
 # The access_mtp plugin
 libaccess_mtp_plugin_la_SOURCES = $(SOURCES_access_mtp)
@@ -147,10 +125,9 @@ libaccess_mtp_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_mtp)
 libaccess_mtp_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_mtp)
 libaccess_mtp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_mtp)
 libaccess_mtp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_mtp)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaccess_mtp_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_mtp)
 libaccess_mtp_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_mtp)
-libaccess_mtp_plugin_la_DEPENDENCIES =
 
 # The access_rar plugin
 libaccess_rar_plugin_la_SOURCES = $(SOURCES_access_rar)
@@ -160,10 +137,9 @@ libaccess_rar_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_rar)
 libaccess_rar_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_rar)
 libaccess_rar_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_rar)
 libaccess_rar_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_rar)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaccess_rar_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_rar)
 libaccess_rar_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_rar)
-libaccess_rar_plugin_la_DEPENDENCIES =
 
 # The access_sftp plugin
 libaccess_sftp_plugin_la_SOURCES = $(SOURCES_access_sftp)
@@ -173,10 +149,9 @@ libaccess_sftp_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_sftp)
 libaccess_sftp_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_sftp)
 libaccess_sftp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_sftp)
 libaccess_sftp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_sftp)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaccess_sftp_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_sftp)
 libaccess_sftp_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_sftp)
-libaccess_sftp_plugin_la_DEPENDENCIES =
 
 # The access_tcp plugin
 libaccess_tcp_plugin_la_SOURCES = $(SOURCES_access_tcp)
@@ -186,10 +161,9 @@ libaccess_tcp_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_tcp)
 libaccess_tcp_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_tcp)
 libaccess_tcp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_tcp)
 libaccess_tcp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_tcp)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaccess_tcp_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_tcp)
 libaccess_tcp_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_tcp)
-libaccess_tcp_plugin_la_DEPENDENCIES =
 
 # The access_udp plugin
 libaccess_udp_plugin_la_SOURCES = $(SOURCES_access_udp)
@@ -199,10 +173,9 @@ libaccess_udp_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_udp)
 libaccess_udp_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_udp)
 libaccess_udp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_udp)
 libaccess_udp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_udp)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaccess_udp_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_udp)
 libaccess_udp_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_udp)
-libaccess_udp_plugin_la_DEPENDENCIES =
 
 # The access_vdr plugin
 libaccess_vdr_plugin_la_SOURCES = $(SOURCES_access_vdr)
@@ -212,10 +185,9 @@ libaccess_vdr_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_vdr)
 libaccess_vdr_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_vdr)
 libaccess_vdr_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_vdr)
 libaccess_vdr_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_vdr)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaccess_vdr_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_vdr)
 libaccess_vdr_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_vdr)
-libaccess_vdr_plugin_la_DEPENDENCIES =
 
 # The cdda plugin
 libcdda_plugin_la_SOURCES = $(SOURCES_cdda)
@@ -225,10 +197,9 @@ libcdda_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_cdda)
 libcdda_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_cdda)
 libcdda_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_cdda)
 libcdda_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_cdda)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libcdda_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_cdda)
 libcdda_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_cdda)
-libcdda_plugin_la_DEPENDENCIES =
 
 # The dc1394 plugin
 libdc1394_plugin_la_SOURCES = $(SOURCES_dc1394)
@@ -238,23 +209,21 @@ libdc1394_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dc1394)
 libdc1394_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_dc1394)
 libdc1394_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_dc1394)
 libdc1394_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_dc1394)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libdc1394_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_dc1394)
 libdc1394_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_dc1394)
-libdc1394_plugin_la_DEPENDENCIES =
 
-# The decklink plugin
-libdecklink_plugin_la_SOURCES = $(SOURCES_decklink)
-nodist_libdecklink_plugin_la_SOURCES = $(nodist_SOURCES_decklink)
+# The dv1394 plugin
+libdv1394_plugin_la_SOURCES = $(SOURCES_dv1394)
+nodist_libdv1394_plugin_la_SOURCES = $(nodist_SOURCES_dv1394)
 # Force per-target objects:
-libdecklink_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_decklink)
-libdecklink_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_decklink)
-libdecklink_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_decklink)
-libdecklink_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_decklink)
-# Set LIBADD and DEPENDENCIES manually:
-libdecklink_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_decklink)
-libdecklink_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_decklink)
-libdecklink_plugin_la_DEPENDENCIES =
+libdv1394_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dv1394)
+libdv1394_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_dv1394)
+libdv1394_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_dv1394)
+libdv1394_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_dv1394)
+# Set LIBADD manually:
+libdv1394_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_dv1394)
+libdv1394_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_dv1394)
 
 # The dvdnav plugin
 libdvdnav_plugin_la_SOURCES = $(SOURCES_dvdnav)
@@ -264,10 +233,9 @@ libdvdnav_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dvdnav)
 libdvdnav_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_dvdnav)
 libdvdnav_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_dvdnav)
 libdvdnav_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_dvdnav)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libdvdnav_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_dvdnav)
 libdvdnav_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_dvdnav)
-libdvdnav_plugin_la_DEPENDENCIES =
 
 # The dvdread plugin
 libdvdread_plugin_la_SOURCES = $(SOURCES_dvdread)
@@ -277,23 +245,9 @@ libdvdread_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dvdread)
 libdvdread_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_dvdread)
 libdvdread_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_dvdread)
 libdvdread_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_dvdread)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libdvdread_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_dvdread)
 libdvdread_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_dvdread)
-libdvdread_plugin_la_DEPENDENCIES =
-
-# The htcpcp plugin
-libhtcpcp_plugin_la_SOURCES = $(SOURCES_htcpcp)
-nodist_libhtcpcp_plugin_la_SOURCES = $(nodist_SOURCES_htcpcp)
-# Force per-target objects:
-libhtcpcp_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_htcpcp)
-libhtcpcp_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_htcpcp)
-libhtcpcp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_htcpcp)
-libhtcpcp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_htcpcp)
-# Set LIBADD and DEPENDENCIES manually:
-libhtcpcp_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_htcpcp)
-libhtcpcp_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_htcpcp)
-libhtcpcp_plugin_la_DEPENDENCIES =
 
 # The libbluray plugin
 liblibbluray_plugin_la_SOURCES = $(SOURCES_libbluray)
@@ -303,10 +257,21 @@ liblibbluray_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_libbluray)
 liblibbluray_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_libbluray)
 liblibbluray_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_libbluray)
 liblibbluray_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_libbluray)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 liblibbluray_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_libbluray)
 liblibbluray_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_libbluray)
-liblibbluray_plugin_la_DEPENDENCIES =
+
+# The libvnc plugin
+liblibvnc_plugin_la_SOURCES = $(SOURCES_libvnc)
+nodist_liblibvnc_plugin_la_SOURCES = $(nodist_SOURCES_libvnc)
+# Force per-target objects:
+liblibvnc_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_libvnc)
+liblibvnc_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_libvnc)
+liblibvnc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_libvnc)
+liblibvnc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_libvnc)
+# Set LIBADD manually:
+liblibvnc_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_libvnc)
+liblibvnc_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_libvnc)
 
 # The linsys_hdsdi plugin
 liblinsys_hdsdi_plugin_la_SOURCES = $(SOURCES_linsys_hdsdi)
@@ -316,10 +281,9 @@ liblinsys_hdsdi_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_linsys_hdsdi)
 liblinsys_hdsdi_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_linsys_hdsdi)
 liblinsys_hdsdi_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_linsys_hdsdi)
 liblinsys_hdsdi_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_linsys_hdsdi)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 liblinsys_hdsdi_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_linsys_hdsdi)
 liblinsys_hdsdi_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_linsys_hdsdi)
-liblinsys_hdsdi_plugin_la_DEPENDENCIES =
 
 # The linsys_sdi plugin
 liblinsys_sdi_plugin_la_SOURCES = $(SOURCES_linsys_sdi)
@@ -329,23 +293,33 @@ liblinsys_sdi_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_linsys_sdi)
 liblinsys_sdi_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_linsys_sdi)
 liblinsys_sdi_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_linsys_sdi)
 liblinsys_sdi_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_linsys_sdi)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 liblinsys_sdi_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_linsys_sdi)
 liblinsys_sdi_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_linsys_sdi)
-liblinsys_sdi_plugin_la_DEPENDENCIES =
 
-# The pvr plugin
-libpvr_plugin_la_SOURCES = $(SOURCES_pvr)
-nodist_libpvr_plugin_la_SOURCES = $(nodist_SOURCES_pvr)
+# The live555 plugin
+liblive555_plugin_la_SOURCES = $(SOURCES_live555)
+nodist_liblive555_plugin_la_SOURCES = $(nodist_SOURCES_live555)
 # Force per-target objects:
-libpvr_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_pvr)
-libpvr_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_pvr)
-libpvr_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_pvr)
-libpvr_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_pvr)
-# Set LIBADD and DEPENDENCIES manually:
-libpvr_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_pvr)
-libpvr_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_pvr)
-libpvr_plugin_la_DEPENDENCIES =
+liblive555_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_live555)
+liblive555_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_live555)
+liblive555_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_live555)
+liblive555_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_live555)
+# Set LIBADD manually:
+liblive555_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_live555)
+liblive555_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_live555)
+
+# The rdp plugin
+librdp_plugin_la_SOURCES = $(SOURCES_rdp)
+nodist_librdp_plugin_la_SOURCES = $(nodist_SOURCES_rdp)
+# Force per-target objects:
+librdp_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_rdp)
+librdp_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_rdp)
+librdp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_rdp)
+librdp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_rdp)
+# Set LIBADD manually:
+librdp_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_rdp)
+librdp_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_rdp)
 
 # The stream_filter_rar plugin
 libstream_filter_rar_plugin_la_SOURCES = $(SOURCES_stream_filter_rar)
@@ -355,8 +329,31 @@ libstream_filter_rar_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_stream_filte
 libstream_filter_rar_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_stream_filter_rar)
 libstream_filter_rar_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_stream_filter_rar)
 libstream_filter_rar_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_stream_filter_rar)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libstream_filter_rar_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_stream_filter_rar)
 libstream_filter_rar_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_stream_filter_rar)
-libstream_filter_rar_plugin_la_DEPENDENCIES =
+
+# The vcd plugin
+libvcd_plugin_la_SOURCES = $(SOURCES_vcd)
+nodist_libvcd_plugin_la_SOURCES = $(nodist_SOURCES_vcd)
+# Force per-target objects:
+libvcd_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_vcd)
+libvcd_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_vcd)
+libvcd_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_vcd)
+libvcd_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_vcd)
+# Set LIBADD manually:
+libvcd_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_vcd)
+libvcd_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_vcd)
+
+# The vcdx plugin
+libvcdx_plugin_la_SOURCES = $(SOURCES_vcdx)
+nodist_libvcdx_plugin_la_SOURCES = $(nodist_SOURCES_vcdx)
+# Force per-target objects:
+libvcdx_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_vcdx)
+libvcdx_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_vcdx)
+libvcdx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_vcdx)
+libvcdx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_vcdx)
+# Set LIBADD manually:
+libvcdx_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_vcdx)
+libvcdx_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_vcdx)
 

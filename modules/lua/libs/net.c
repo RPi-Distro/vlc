@@ -2,7 +2,7 @@
  * net.c: Network related functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 1c7cd122a39d0f931fd55b073339e661770614ea $
+ * $Id: dd0719c2b02c31fd8de45cf37248ce59cdb7392a $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -24,33 +24,25 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#ifndef  _GNU_SOURCE
-#   define  _GNU_SOURCE
-#endif
-
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
-#ifdef WIN32
+#include <errno.h>
+#ifdef _WIN32
 #include <io.h>
 #endif
+#ifdef HAVE_POLL
+#include <poll.h>       /* poll structures and defines */
+#endif
+#include <sys/stat.h>
 
 #include <vlc_common.h>
 #include <vlc_network.h>
 #include <vlc_url.h>
 #include <vlc_fs.h>
+#include <vlc_interface.h>
 
-#include <lua.h>        /* Low level lua C API */
-#include <lauxlib.h>    /* Higher level C API */
-
-#ifdef HAVE_POLL
-#include <poll.h>       /* poll structures and defines */
-#endif
-
-#include <sys/stat.h>
-
-#include<errno.h>
 #include "../vlc.h"
 #include "../libs.h"
 
@@ -197,30 +189,36 @@ static int vlclua_net_recv( lua_State *L )
     return 1;
 }
 
+#ifndef _WIN32
 /*****************************************************************************
  *
  *****************************************************************************/
 /* Takes a { fd : events } table as first arg and modifies it to { fd : revents } */
 static int vlclua_net_poll( lua_State *L )
 {
+    intf_thread_t *intf = (intf_thread_t *)vlclua_get_this( L );
+    intf_sys_t *sys = intf->p_sys;
+
     luaL_checktype( L, 1, LUA_TTABLE );
 
-    int i_fds = 0;
+    int i_fds = 1;
     lua_pushnil( L );
     while( lua_next( L, 1 ) )
     {
         i_fds++;
         lua_pop( L, 1 );
     }
-    struct pollfd *p_fds = malloc( i_fds * sizeof( struct pollfd ) );
-    vlc_cleanup_push( free, p_fds );
+
+    struct pollfd *p_fds = xmalloc( i_fds * sizeof( *p_fds ) );
+
     lua_pushnil( L );
-    int i = 0;
+    int i = 1;
+    p_fds[0].fd = sys->fd[0];
+    p_fds[0].events = POLLIN;
     while( lua_next( L, 1 ) )
     {
         p_fds[i].fd = luaL_checkinteger( L, -2 );
         p_fds[i].events = luaL_checkinteger( L, -1 );
-        p_fds[i].revents = 0;
         lua_pop( L, 1 );
         i++;
     }
@@ -228,17 +226,23 @@ static int vlclua_net_poll( lua_State *L )
     int i_ret;
     do
         i_ret = poll( p_fds, i_fds, -1 );
-    while( i_ret == -1 );
+    while( i_ret == -1 && errno == EINTR );
 
-    for( i = 0; i < i_fds; i++ )
+    for( i = 1; i < i_fds; i++ )
     {
         lua_pushinteger( L, p_fds[i].fd );
         lua_pushinteger( L, p_fds[i].revents );
         lua_settable( L, 1 );
     }
     lua_pushinteger( L, i_ret );
-    vlc_cleanup_run();
-    return 1;
+
+    if( p_fds[0].revents )
+        i_ret = luaL_error( L, "Interrupted." );
+    else
+        i_ret = 1;
+    free( p_fds );
+
+    return i_ret;
 }
 
 /*****************************************************************************
@@ -274,13 +278,13 @@ static int vlclua_fd_read( lua_State *L )
         lua_pushnil( L );
     return 1;
 }
+#endif
 
 /*****************************************************************************
  *
  *****************************************************************************/
 static int vlclua_stat( lua_State *L )
 {
-#ifdef HAVE_SYS_STAT_H
     const char *psz_path = luaL_checkstring( L, 1 );
     struct stat s;
     if( vlc_stat( psz_path, &s ) )
@@ -329,10 +333,6 @@ static int vlclua_stat( lua_State *L )
     lua_pushinteger( L, s.st_ctime );
     lua_setfield( L, -2, "creation_time" );
     return 1;
-#else
-#   warning "Woops, looks like we don't have stat on your platform"
-    return luaL_error( L, "System is missing <sys/stat.h>" );
-#endif
 }
 
 static int vlclua_opendir( lua_State *L )
@@ -368,9 +368,11 @@ static const luaL_Reg vlclua_net_reg[] = {
     { "close", vlclua_net_close },
     { "send", vlclua_net_send },
     { "recv", vlclua_net_recv },
+#ifndef _WIN32
     { "poll", vlclua_net_poll },
     { "read", vlclua_fd_read },
     { "write", vlclua_fd_write },
+#endif
     { "stat", vlclua_stat }, /* Not really "net" */
     { "opendir", vlclua_opendir }, /* Not really "net" */
     { NULL, NULL }

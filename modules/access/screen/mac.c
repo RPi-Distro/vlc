@@ -1,25 +1,27 @@
 /*****************************************************************************
  * mac.c: Screen capture module for the Mac.
  *****************************************************************************
- * Copyright (C) 2004, 2008 the VideoLAN team
- * $Id: 707056fd66989a36abf7407db7c25607605fdb04 $
+ * Copyright (C) 2004 - 2013 VLC authors and VideoLAN
+ * $Id: 698e3625b1097e6eaf40d7af32728bc2c1592580 $
  *
- * Authors: Derk-Jan Hartman <hartman at videolan dot org>
- *          arai <arai_a@mac.com>
+ * Authors: FUJISAWA Tooru <arai_a@mac.com>
+ *          Derk-Jan Hartman <hartman at videolan dot org>
+ *          Pierre d'Herbemont <pdherbemont # videolan org>
+ *          Felix Paul Kühne <fkuehne # videolan org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -27,319 +29,208 @@
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
-# import "config.h"
+# include "config.h"
 #endif
 
 #import <vlc_common.h>
-
-// Fix ourselves ColorSync headers that gets included in ApplicationServices.
-#define DisposeCMProfileIterateUPP(a) DisposeCMProfileIterateUPP(CMProfileIterateUPP userUPP __attribute__((unused)))
-#define DisposeCMMIterateUPP(a) DisposeCMMIterateUPP(CMProfileIterateUPP userUPP __attribute__((unused)))
-#define __MACHINEEXCEPTIONS__
-#import <ApplicationServices/ApplicationServices.h>
-
-#import <OpenGL/OpenGL.h>
-#import <OpenGL/gl.h>
-#import <stdlib.h>
-
-typedef int CGSConnectionRef;
-extern CGError CGSNewConnection( void *, CGSConnectionRef * );
-extern CGError CGSReleaseConnection( CGSConnectionRef );
-extern CGError CGSGetGlobalCursorDataSize( CGSConnectionRef, int * );
-extern CGError CGSGetGlobalCursorData( CGSConnectionRef, unsigned char *,
-                                       int *, int *, CGRect *, CGPoint *,
-                                       int *, int *, int * );
-extern CGError CGSGetCurrentCursorLocation( CGSConnectionRef, CGPoint * );
+#import <vlc_block.h>
 
 #import "screen.h"
 
+#import <ApplicationServices/ApplicationServices.h>
+#import <QuartzCore/QuartzCore.h>
+
+extern int CGSMainConnectionID();
+extern CGImageRef CGSCreateRegisteredCursorImage(int, char*, CGPoint*);
+
 struct screen_data_t
 {
-  CGLContextObj screen;
-  
-  CGLContextObj scaled;
-  char *scaled_image;
-  
-  GLuint texture;
-  char *texture_image;
-  
-  GLuint cursor_texture;
-  
-  int left;
-  int top;
-  int src_width;
-  int src_height;
-  
-  int dest_width;
-  int dest_height;
-  
-  int screen_width;
-  int screen_height;
-  
-  CGSConnectionRef connection;
+    block_t *p_block;
+
+    int width;
+    int height;
+
+    int screen_top;
+    int screen_left;
+    int screen_width;
+    int screen_height;
+
+    CGDirectDisplayID display_id;
+
+    CGContextRef offscreen_context;
+    CGRect offscreen_rect;
+    void *offscreen_bitmap;
+    size_t offscreen_bitmap_size;
 };
 
-int screen_InitCapture( demux_t *p_demux )
-{
-    demux_sys_t   *p_sys = p_demux->p_sys;
-    screen_data_t *p_data;
-    CGLPixelFormatAttribute attribs[4];
-    CGLPixelFormatObj pix;
-    GLint npix;
-    GLint viewport[4];
-    GLuint displayMask;
-    CGLError returnedError;
-
-    p_sys->p_data = p_data =
-        ( screen_data_t * )malloc( sizeof( screen_data_t ) );
-
-    attribs[0] = kCGLPFAFullScreen;
-    attribs[1] = kCGLPFADisplayMask;
-    attribs[2] = CGDisplayIDToOpenGLDisplayMask( CGMainDisplayID() );
-    attribs[3] = 0;
-
-    returnedError = CGLChoosePixelFormat( attribs, &pix, &npix );
-    if (returnedError)
-        goto errorHandling;
-
-    returnedError = CGLCreateContext( pix, NULL, &( p_data->screen ) );
-    if (returnedError)
-        goto errorHandling;
-
-    returnedError = CGLDestroyPixelFormat( pix );
-    if (returnedError)
-        goto errorHandling;
-
-    returnedError = CGLSetCurrentContext( p_data->screen );
-    if (returnedError)
-        goto errorHandling;
-
-    returnedError = CGLSetFullScreen( p_data->screen );
-    if (returnedError)
-        goto errorHandling;
-
-    glGetIntegerv( GL_VIEWPORT, viewport );
-
-    p_data->screen_width = viewport[2];
-    p_data->screen_height = viewport[3];
-
-    p_data->left = p_sys->i_left;
-    p_data->top = p_sys->i_top;
-    p_data->src_width = var_CreateGetInteger( p_demux, "screen-width" );
-    p_data->src_height = var_CreateGetInteger( p_demux, "screen-height" );
-    if (p_data->src_width <= 0 || p_data->src_height <= 0) {
-      p_data->src_width = p_data->screen_width;
-      p_data->src_height = p_data->screen_height;
-    }
-    p_data->dest_width = p_data->src_width;
-    p_data->dest_height = p_data->src_height;
-
-    attribs [0] = kCGLPFAOffScreen;
-    attribs [1] = kCGLPFAColorSize;
-    attribs [2] = 32;
-    attribs [3] = 0;
-
-    returnedError = CGLChoosePixelFormat( attribs, &pix, &npix );
-    if (returnedError)
-        goto errorHandling;
-
-    returnedError = CGLCreateContext( pix, NULL, &( p_data->scaled ) );
-    if (returnedError)
-        goto errorHandling;
-
-    returnedError = CGLDestroyPixelFormat( pix );
-    if (returnedError)
-        goto errorHandling;
-
-    returnedError = CGLSetCurrentContext( p_data->scaled );
-    if (returnedError)
-        goto errorHandling;
-
-    p_data->scaled_image = ( char * )malloc( p_data->dest_width
-                                          * p_data->dest_height * 4 );
-#warning FIXME: CGLSetOffScreen is no longer supported in the future!
-    returnedError = CGLSetOffScreen( p_data->scaled, p_data->dest_width, p_data->dest_height, p_data->dest_width * 4, p_data->scaled_image );
-    if (returnedError)
-        goto errorHandling;
-
-    es_format_Init( &p_sys->fmt, VIDEO_ES, VLC_CODEC_RGB32 );
-
-    /* p_sys->fmt.video.i_* must set to screen size, not subscreen size */
-    p_sys->fmt.video.i_width = p_data->screen_width;
-    p_sys->fmt.video.i_visible_width = p_data->screen_width;
-    p_sys->fmt.video.i_height = p_data->screen_height;
-    p_sys->fmt.video.i_bits_per_pixel = 32;
-
-    glGenTextures( 1, &( p_data->texture ) );
-    glBindTexture( GL_TEXTURE_2D, p_data->texture );
-
-    p_data->texture_image
-      = ( char * )malloc( p_data->src_width * p_data->src_height * 4 );
-
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-
-    glGenTextures( 1, &( p_data->cursor_texture ) );
-    glBindTexture( GL_TEXTURE_2D, p_data->cursor_texture );
-
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-
-    CGSNewConnection( NULL, &( p_data->connection ) );
-
-    return VLC_SUCCESS;
-
-    errorHandling:
-    msg_Err( p_demux, "Core OpenGL failure: %s", CGLErrorString( returnedError ) );
-    return VLC_EGENERIC;
-}
-
-int screen_CloseCapture( demux_t *p_demux )
-{
-    screen_data_t *p_data = ( screen_data_t * )p_demux->p_sys->p_data;
-
-    CGSReleaseConnection( p_data->connection );
-
-    CGLSetCurrentContext( NULL );
-    CGLClearDrawable( p_data->screen );
-    CGLDestroyContext( p_data->screen );
-
-    return VLC_SUCCESS;
-}
-
-block_t *screen_Capture( demux_t *p_demux )
+int screen_InitCapture(demux_t *p_demux)
 {
     demux_sys_t *p_sys = p_demux->p_sys;
-    screen_data_t *p_data = ( screen_data_t * )p_sys->p_data;
+    screen_data_t *p_data;
+    CGLError returnedError;
+
+    p_sys->p_data = p_data = calloc(1, sizeof(screen_data_t));
+    if (!p_data)
+        return VLC_ENOMEM;
+
+    /* fetch the screen we should capture */
+    p_data->display_id = kCGDirectMainDisplay;
+
+    unsigned int displayCount = 0;
+    returnedError = CGGetOnlineDisplayList(0, NULL, &displayCount);
+    if (!returnedError) {
+        CGDirectDisplayID *ids;
+        ids = (CGDirectDisplayID *)malloc(displayCount * sizeof(CGDirectDisplayID));
+        returnedError = CGGetOnlineDisplayList(displayCount, ids, &displayCount);
+        if (!returnedError) {
+            if (p_sys->i_display_id > 0) {
+                for (unsigned int i = 0; i < displayCount; i++) {
+                    if (p_sys->i_display_id == ids[i]) {
+                        p_data->display_id = ids[i];
+                        break;
+                    }
+                }
+            } else if (p_sys->i_screen_index > 0 && p_sys->i_screen_index <= displayCount)
+                p_data->display_id = ids[p_sys->i_screen_index - 1];
+        }
+        free(ids);
+    }
+
+    /* Get the device context for the whole screen */
+    CGRect rect = CGDisplayBounds(p_data->display_id);
+    p_data->screen_left = rect.origin.x;
+    p_data->screen_top = rect.origin.y;
+    p_data->screen_width = rect.size.width;
+    p_data->screen_height = rect.size.height;
+
+    p_data->width = p_sys->i_width;
+    p_data->height = p_sys->i_height;
+    if (p_data->width <= 0 || p_data->height <= 0) {
+        p_data->width = p_data->screen_width;
+        p_data->height = p_data->screen_height;
+    }
+
+    /* setup format */
+    es_format_Init(&p_sys->fmt, VIDEO_ES, VLC_CODEC_RGB32);
+    p_sys->fmt.video.i_visible_width  =
+    p_sys->fmt.video.i_width          = rect.size.width;
+    p_sys->fmt.video.i_visible_height =
+    p_sys->fmt.video.i_height         = rect.size.height;
+    p_sys->fmt.video.i_bits_per_pixel = 32;
+    p_sys->fmt.video.i_chroma         = VLC_CODEC_RGB32;
+    p_sys->fmt.video.i_rmask          = 0x00ff0000;
+    p_sys->fmt.video.i_gmask          = 0x0000ff00;
+    p_sys->fmt.video.i_bmask          = 0x000000ff;
+
+    return VLC_SUCCESS;
+}
+
+int screen_CloseCapture(demux_t *p_demux)
+{
+    demux_sys_t *p_sys = p_demux->p_sys;
+    screen_data_t *p_data = p_sys->p_data;
+
+    if (p_data->offscreen_context)
+        CFRelease(p_data->offscreen_context);
+
+    if (p_data->offscreen_bitmap)
+        free(p_data->offscreen_bitmap);
+
+    if (p_data->p_block)
+        block_Release(p_data->p_block);
+
+    free(p_data);
+
+    return VLC_SUCCESS;
+}
+
+block_t *screen_Capture(demux_t *p_demux)
+{
+    demux_sys_t *p_sys = p_demux->p_sys;
+    screen_data_t *p_data = (screen_data_t *)p_sys->p_data;
     block_t *p_block;
-    int i_size;
+    CGRect capture_rect;
+    CGImageRef image;
 
-    i_size = p_sys->fmt.video.i_height * p_sys->fmt.video.i_width * 4; 
+    /* forward cursor location */
+    CGPoint cursor_pos;
 
-    if( !( p_block = block_New( p_demux, i_size ) ) )
-    {
-        msg_Warn( p_demux, "cannot get block" );
+    CGEventRef event = CGEventCreate(NULL);
+    cursor_pos = CGEventGetLocation(event);
+    CFRelease(event);
+
+    cursor_pos.x -= p_data->screen_left;
+    cursor_pos.y -= p_data->screen_top;
+
+    if (p_sys->b_follow_mouse)
+        FollowMouse(p_sys, cursor_pos.x, cursor_pos.y);
+
+    capture_rect.origin.x = p_sys->i_left;
+    capture_rect.origin.y = p_sys->i_top;
+    capture_rect.size.width = p_data->width;
+    capture_rect.size.height = p_data->height;
+
+    /* fetch image data */
+    image = CGDisplayCreateImageForRect(p_data->display_id, capture_rect);
+    if (!image) {
+        msg_Warn(p_demux, "no image!");
         return NULL;
     }
 
-    CGPoint cursor_pos;
-    CGError cursor_result;
+    /* create offscreen context */
+    if (!p_data->offscreen_context) {
+        CGColorSpaceRef colorspace;
 
-    cursor_pos.x = 0;
-    cursor_pos.y = 0;
+        colorspace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
 
-    cursor_result
-      = CGSGetCurrentCursorLocation( p_data->connection, &cursor_pos );
-
-    if( p_sys->b_follow_mouse
-        && cursor_result == kCGErrorSuccess )
-    {
-        FollowMouse( p_sys, cursor_pos.x, cursor_pos.y );
-        p_data->left = p_sys->i_left;
-        p_data->top = p_sys->i_top;
-    }
-
-    CGLSetCurrentContext( p_data->screen );
-    glReadPixels( p_data->left,
-                  p_data->screen_height - p_data->top - p_data->src_height,
-                  p_data->src_width,
-                  p_data->src_height,
-                  GL_RGBA, GL_UNSIGNED_BYTE,
-                  p_data->texture_image );
-
-    CGLSetCurrentContext( p_data->scaled );
-    glEnable( GL_TEXTURE_2D );
-    glBindTexture( GL_TEXTURE_2D, p_data->texture );
-    glTexImage2D( GL_TEXTURE_2D, 0,
-                  GL_RGBA8, p_data->src_width, p_data->src_height, 0,
-                  GL_RGBA, GL_UNSIGNED_BYTE, p_data->texture_image );
-
-    glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
-    glClear( GL_COLOR_BUFFER_BIT );
-    glColor3f( 1.0f, 1.0f, 1.0f );
-    glEnable( GL_TEXTURE_2D );
-    glBindTexture( GL_TEXTURE_2D, p_data->texture );
-    glBegin( GL_POLYGON );
-    glTexCoord2f( 0.0, 1.0 ); glVertex2f( -1.0, -1.0 );
-    glTexCoord2f( 1.0, 1.0 ); glVertex2f( 1.0, -1.0 );
-    glTexCoord2f( 1.0, 0.0 ); glVertex2f( 1.0, 1.0 );
-    glTexCoord2f( 0.0, 0.0 ); glVertex2f( -1.0, 1.0 );
-    glEnd();
-    glDisable( GL_TEXTURE_2D );
-
-    int size;
-    int tmp1, tmp2, tmp3, tmp4;
-    unsigned char *cursor_image;
-    CGRect cursor_rect;
-    CGPoint cursor_hot;
-
-    if( cursor_result == kCGErrorSuccess
-        && CGSGetGlobalCursorDataSize( p_data->connection, &size )
-        == kCGErrorSuccess )
-    {
-        cursor_image = ( unsigned char* )malloc( size );
-        if( CGSGetGlobalCursorData( p_data->connection,
-                                    cursor_image, &size,
-                                    &tmp1,
-                                    &cursor_rect, &cursor_hot,
-                                    &tmp2, &tmp3, &tmp4 )
-            == kCGErrorSuccess )
-        {
-            glEnable( GL_TEXTURE_2D );
-            glBindTexture( GL_TEXTURE_2D, p_data->cursor_texture );
-            glTexImage2D( GL_TEXTURE_2D, 0,
-                          GL_RGBA8,
-                          ( int )( cursor_rect.size.width ),
-                          ( int )( cursor_rect.size.height ), 0,
-                          GL_RGBA, GL_UNSIGNED_BYTE,
-                          ( char * )cursor_image );
-
-            cursor_rect.origin.x = cursor_pos.x - p_data->left - cursor_hot.x;
-            cursor_rect.origin.y = cursor_pos.y - p_data->top - cursor_hot.y;
-
-            cursor_rect.origin.x
-              = 2.0 * cursor_rect.origin.x / p_data->src_width - 1.0;
-            cursor_rect.origin.y
-              = 2.0 * cursor_rect.origin.y / p_data->src_height - 1.0;
-            cursor_rect.size.width
-              = 2.0 * cursor_rect.size.width / p_data->src_width;
-            cursor_rect.size.height
-              = 2.0 * cursor_rect.size.height / p_data->src_height;
-
-            glColor3f( 1.0f, 1.0f, 1.0f );
-            glEnable( GL_TEXTURE_2D );
-            glEnable( GL_BLEND );
-            glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-            glBindTexture( GL_TEXTURE_2D, p_data->cursor_texture );
-            glBegin( GL_POLYGON );
-            glTexCoord2f( 0.0, 0.0 ); glVertex2f( cursor_rect.origin.x,
-                                                  cursor_rect.origin.y );
-            glTexCoord2f( 1.0, 0.0 ); glVertex2f( cursor_rect.origin.x
-                                                  + cursor_rect.size.width,
-                                                  cursor_rect.origin.y );
-            glTexCoord2f( 1.0, 1.0 ); glVertex2f( cursor_rect.origin.x
-                                                  + cursor_rect.size.width,
-                                                  cursor_rect.origin.y
-                                                  + cursor_rect.size.height );
-            glTexCoord2f( 0.0, 1.0 ); glVertex2f( cursor_rect.origin.x,
-                                                  cursor_rect.origin.y
-                                                  + cursor_rect.size.height );
-            glEnd();
-            glDisable( GL_BLEND );
-            glDisable( GL_TEXTURE_2D );
+        p_data->offscreen_bitmap_size = p_sys->fmt.video.i_width * p_sys->fmt.video.i_height * 4;
+        p_data->offscreen_bitmap = calloc(1, p_data->offscreen_bitmap_size);
+        if (p_data->offscreen_bitmap == NULL) {
+            msg_Warn(p_demux, "can't allocate offscreen bitmap");
+            CFRelease(image);
+            return NULL;
         }
-        free( cursor_image );
+
+        p_data->offscreen_context = CGBitmapContextCreate(p_data->offscreen_bitmap, p_sys->fmt.video.i_width, p_sys->fmt.video.i_height, 8, p_sys->fmt.video.i_width * 4, colorspace, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
+        if (!p_data->offscreen_context) {
+            msg_Warn(p_demux, "can't create offscreen bitmap context");
+            CFRelease(image);
+            return NULL;
+        }
+
+        CGColorSpaceRelease(colorspace);
+
+        p_data->offscreen_rect = CGRectMake(0, 0, p_sys->fmt.video.i_width, p_sys->fmt.video.i_height);
     }
 
-    glReadPixels( 0, 0, 
-                  p_data->dest_width,
-                  p_data->dest_height,
-                  GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
-                  p_block->p_buffer );
+    /* fetch cursor image */
+    CGImageRef cursor_image;
+    int cid = CGSMainConnectionID();
+    CGPoint outHotSpot;
+    cursor_image = CGSCreateRegisteredCursorImage(cid, (char *)"com.apple.coregraphics.GlobalCurrent", &outHotSpot);
+
+    /* draw screen image and cursor image */
+    CGRect cursor_rect;
+    cursor_rect.size.width = CGImageGetWidth(cursor_image);
+    cursor_rect.size.height = CGImageGetHeight(cursor_image);
+    cursor_rect.origin.x = cursor_pos.x - p_sys->i_left - outHotSpot.x;
+    cursor_rect.origin.y = p_data->offscreen_rect.size.height
+        - (cursor_pos.y + cursor_rect.size.height - p_sys->i_top - outHotSpot.y);
+
+    CGContextDrawImage(p_data->offscreen_context, p_data->offscreen_rect, image);
+    CGContextDrawImage(p_data->offscreen_context, cursor_rect, cursor_image);
+
+    /* build block */
+    p_block = block_Alloc(p_data->offscreen_bitmap_size);
+    if (!p_block) {
+        msg_Warn(p_demux, "can't get block");
+        CFRelease(image);
+        return NULL;
+    }
+
+    memmove(p_block->p_buffer, p_data->offscreen_bitmap, p_data->offscreen_bitmap_size);
+
+    CFRelease(image);
 
     return p_block;
 }

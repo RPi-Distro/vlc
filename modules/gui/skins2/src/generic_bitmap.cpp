@@ -2,7 +2,7 @@
  * generic_bitmap.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 37818df4cae1d0775ce79c166d62887bc2e4c221 $
+ * $Id: 66abaf1e6f6ec4fb63acdd03178b7911c4d8599c $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -22,13 +22,34 @@
  *****************************************************************************/
 
 #include "generic_bitmap.hpp"
+#include "os_factory.hpp"
 
 
 GenericBitmap::GenericBitmap( intf_thread_t *pIntf,
                               int nbFrames, int fps, int nbLoops ):
     SkinObject( pIntf ), m_nbFrames( nbFrames ),
-    m_frameRate( fps ), m_nbLoops( nbLoops )
+    m_frameRate( fps ), m_nbLoops( nbLoops ), m_pGraphics( NULL )
 {
+}
+
+const OSGraphics *GenericBitmap::getGraphics() const
+{
+    if( m_pGraphics )
+        return m_pGraphics;
+
+    OSFactory *pOsFactory = OSFactory::instance( getIntf() );
+
+    int width = getWidth();
+    int height = getHeight();
+    if( width > 0 && height > 0 )
+    {
+        m_pGraphics = pOsFactory->createOSGraphics( width, height );
+        m_pGraphics->drawBitmap( *this, 0, 0 );
+        return m_pGraphics;
+    }
+
+    msg_Err( getIntf(), "failed to create a graphics, please report" );
+    return NULL;
 }
 
 

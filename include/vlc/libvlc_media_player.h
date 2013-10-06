@@ -2,7 +2,7 @@
  * libvlc_media_player.h:  libvlc_media_player external API
  *****************************************************************************
  * Copyright (C) 1998-2010 VLC authors and VideoLAN
- * $Id: c36381f813092895244d1615ab8ba1f8b632b520 $
+ * $Id: 82c7ac2cfd2ecf05449a3ee22bcb2a23420d413a $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -73,6 +73,17 @@ typedef struct libvlc_audio_output_t
 } libvlc_audio_output_t;
 
 /**
+ * Description for audio output device.
+ */
+typedef struct libvlc_audio_output_device_t
+{
+    struct libvlc_audio_output_device_t *p_next; /**< Next entry in list */
+    char *psz_device; /**< Device identifier string */
+    char *psz_description; /**< User-friendly device description */
+    /* More fields may be added here in later versions */
+} libvlc_audio_output_device_t;
+
+/**
  * Rectangle type for video geometry
  */
 typedef struct libvlc_rectangle_t
@@ -108,6 +119,22 @@ typedef enum libvlc_navigate_mode_t
     libvlc_navigate_left,
     libvlc_navigate_right
 } libvlc_navigate_mode_t;
+
+/**
+ * Enumeration of values used to set position (e.g. of video title).
+ */
+typedef enum libvlc_position_t {
+    libvlc_position_disable=-1,
+    libvlc_position_center,
+    libvlc_position_left,
+    libvlc_position_right,
+    libvlc_position_top,
+    libvlc_position_top_left,
+    libvlc_position_top_right,
+    libvlc_position_bottom,
+    libvlc_position_bottom_left,
+    libvlc_position_bottom_right
+} libvlc_position_t;
 
 /**
  * Create an empty Media Player object
@@ -629,7 +656,7 @@ LIBVLC_API libvlc_time_t libvlc_media_player_get_time( libvlc_media_player_t *p_
 LIBVLC_API void libvlc_media_player_set_time( libvlc_media_player_t *p_mi, libvlc_time_t i_time );
 
 /**
- * Get movie position.
+ * Get movie position as percentage between 0.0 and 1.0.
  *
  * \param p_mi the Media Player
  * \return movie position, or -1. in case of error
@@ -637,7 +664,8 @@ LIBVLC_API void libvlc_media_player_set_time( libvlc_media_player_t *p_mi, libvl
 LIBVLC_API float libvlc_media_player_get_position( libvlc_media_player_t *p_mi );
 
 /**
- * Set movie position. This has no effect if playback is not enabled.
+ * Set movie position as percentage between 0.0 and 1.0. 
+ * This has no effect if playback is not enabled.
  * This might not work depending on the underlying input format and protocol.
  *
  * \param p_mi the Media Player
@@ -812,6 +840,16 @@ LIBVLC_API void libvlc_media_player_navigate( libvlc_media_player_t* p_mi,
                                               unsigned navigate );
 
 /**
+ * Set if, and how, the video title will be shown when media is played.
+ *
+ * \param p_mi the media player
+ * \param position position at which to display the title, or libvlc_position_disable to prevent the title from being displayed
+ * \param timeout title display timeout in milliseconds (ignored if libvlc_position_disable)
+ * \version libVLC 2.1.0 or later
+ */
+LIBVLC_API void libvlc_media_player_set_video_title_display( libvlc_media_player_t *p_mi, libvlc_position_t position, unsigned int timeout );
+
+/**
  * Release (free) libvlc_track_description_t
  *
  * \param p_track_description the structure to release
@@ -821,8 +859,8 @@ LIBVLC_API void libvlc_track_description_list_release( libvlc_track_description_
 /**
  * \deprecated Use libvlc_track_description_list_release instead
  */
-LIBVLC_DEPRECATED
-LIBVLC_API void libvlc_track_description_release( libvlc_track_description_t *p_track_description );
+LIBVLC_DEPRECATED LIBVLC_API
+void libvlc_track_description_release( libvlc_track_description_t *p_track_description );
 
 /** \defgroup libvlc_video LibVLC video controls
  * @{
@@ -1362,7 +1400,7 @@ typedef enum libvlc_audio_output_channel_t {
 
 
 /**
- * Get the list of available audio outputs
+ * Gets the list of available audio outputs
  *
  * \param p_instance libvlc instance
  * \return list of available audio outputs. It must be freed it with
@@ -1370,18 +1408,20 @@ typedef enum libvlc_audio_output_channel_t {
  *         In case of error, NULL is returned.
  */
 LIBVLC_API libvlc_audio_output_t *
-        libvlc_audio_output_list_get( libvlc_instance_t *p_instance );
+libvlc_audio_output_list_get( libvlc_instance_t *p_instance );
 
 /**
- * Free the list of available audio outputs
+ * Frees the list of available audio outputs
  *
  * \param p_list list with audio outputs for release
  */
-LIBVLC_API void libvlc_audio_output_list_release( libvlc_audio_output_t *p_list );
+LIBVLC_API
+void libvlc_audio_output_list_release( libvlc_audio_output_t *p_list );
 
 /**
- * Set the audio output.
- * Change will be applied after stop and play.
+ * Sets the audio output.
+ * \note Any change will take be effect only after playback is stopped and
+ * restarted. Audio output cannot be changed while playing.
  *
  * \param p_mi media player
  * \param psz_name name of audio output,
@@ -1389,78 +1429,112 @@ LIBVLC_API void libvlc_audio_output_list_release( libvlc_audio_output_t *p_list 
  * \return 0 if function succeded, -1 on error
  */
 LIBVLC_API int libvlc_audio_output_set( libvlc_media_player_t *p_mi,
-                                            const char *psz_name );
+                                        const char *psz_name );
 
 /**
- * Get count of devices for audio output, these devices are hardware oriented
- * like analor or digital output of sound card
+ * Backward compatibility stub. Do not use in new code.
+ * Use libvlc_audio_output_device_list_get() instead.
+ * \return always 0.
+ */
+LIBVLC_DEPRECATED LIBVLC_API
+int libvlc_audio_output_device_count( libvlc_instance_t *, const char * );
+
+/**
+ * Backward compatibility stub. Do not use in new code.
+ * Use libvlc_audio_output_device_list_get() instead.
+ * \return always NULL.
+ */
+LIBVLC_DEPRECATED LIBVLC_API
+char *libvlc_audio_output_device_longname( libvlc_instance_t *, const char *,
+                                           int );
+
+/**
+ * Backward compatibility stub. Do not use in new code.
+ * Use libvlc_audio_output_device_list_get() instead.
+ * \return always NULL.
+ */
+LIBVLC_DEPRECATED LIBVLC_API
+char *libvlc_audio_output_device_id( libvlc_instance_t *, const char *, int );
+
+/**
+ * Gets a list of audio output devices for a given audio output.
+ * \see libvlc_audio_output_device_set().
+ *
+ * \note Not all audio outputs support this. In particular, an empty (NULL)
+ * list of devices does <b>not</b> imply that the specified audio output does
+ * not work.
+ *
+ * \note The list might not be exhaustive.
+ *
+ * \warning Some audio output devices in the list might not actually work in
+ * some circumstances. By default, it is recommended to not specify any
+ * explicit audio device.
  *
  * \param p_instance libvlc instance
- * \param psz_audio_output - name of audio output, \see libvlc_audio_output_t
- * \return number of devices
+ * \param psz_aout audio output name
+ *                 (as returned by libvlc_audio_output_list_get())
+ * \return A NULL-terminated linked list of potential audio output devices.
+ * It must be freed it with libvlc_audio_output_device_list_release()
+ * \version LibVLC 2.1.0 or later.
  */
-LIBVLC_API int libvlc_audio_output_device_count( libvlc_instance_t *p_instance,
-                                                     const char *psz_audio_output );
+LIBVLC_API libvlc_audio_output_device_t *
+libvlc_audio_output_device_list_get( libvlc_instance_t *p_instance,
+                                     const char *aout );
 
 /**
- * Get long name of device, if not available short name given
+ * Frees a list of available audio output devices.
  *
- * \param p_instance libvlc instance
- * \param psz_audio_output - name of audio output, \see libvlc_audio_output_t
- * \param i_device device index
- * \return long name of device
+ * \param p_list list with audio outputs for release
+ * \version LibVLC 2.1.0 or later.
  */
-LIBVLC_API char * libvlc_audio_output_device_longname( libvlc_instance_t *p_instance,
-                                                           const char *psz_audio_output,
-                                                           int i_device );
+LIBVLC_API void libvlc_audio_output_device_list_release(
+                                        libvlc_audio_output_device_t *p_list );
 
 /**
- * Get id name of device
+ * Configures an explicit audio output device for a given audio output plugin.
+ * A list of possible devices can be obtained with
+ * libvlc_audio_output_device_list_get().
  *
- * \param p_instance libvlc instance
- * \param psz_audio_output - name of audio output, \see libvlc_audio_output_t
- * \param i_device device index
- * \return id name of device, use for setting device, need to be free after use
- */
-LIBVLC_API char * libvlc_audio_output_device_id( libvlc_instance_t *p_instance,
-                                                     const char *psz_audio_output,
-                                                     int i_device );
-
-/**
- * Set audio output device. Changes are only effective after stop and play.
+ * \note This function does not select the specified audio output plugin.
+ * libvlc_audio_output_set() is used for that purpose.
+ *
+ * \warning The syntax for the device parameter depends on the audio output.
+ * This is not portable. Only use this function if you know what you are doing.
+ * Some audio outputs do not support this function (e.g. PulseAudio, WASAPI).
+ * Some audio outputs require further parameters (e.g. ALSA: channels map).
  *
  * \param p_mi media player
  * \param psz_audio_output - name of audio output, \see libvlc_audio_output_t
  * \param psz_device_id device
+ * \return Nothing. Errors are ignored.
  */
 LIBVLC_API void libvlc_audio_output_device_set( libvlc_media_player_t *p_mi,
-                                                    const char *psz_audio_output,
-                                                    const char *psz_device_id );
+                                                const char *psz_audio_output,
+                                                const char *psz_device_id );
 
 /**
- * Get current audio device type. Device type describes something like
- * character of output sound - stereo sound, 2.1, 5.1 etc
- *
- * \param p_mi media player
- * \return the audio devices type \see libvlc_audio_output_device_types_t
+ * Stub for backward compatibility.
+ * \return always -1.
  */
+LIBVLC_DEPRECATED
 LIBVLC_API int libvlc_audio_output_get_device_type( libvlc_media_player_t *p_mi );
 
 /**
- * Set current audio device type.
- *
- * \param p_mi vlc instance
- * \param device_type the audio device type,
-          according to \see libvlc_audio_output_device_types_t
+ * Stub for backward compatibility.
  */
-LIBVLC_API void libvlc_audio_output_set_device_type( libvlc_media_player_t *p_mi,
-                                                         int device_type );
+LIBVLC_DEPRECATED
+LIBVLC_API void libvlc_audio_output_set_device_type( libvlc_media_player_t *,
+                                                     int );
 
 
 /**
  * Toggle mute status.
  *
  * \param p_mi media player
+ * \warning Toggling mute atomically is not always possible: On some platforms,
+ * other processes can mute the VLC audio playback stream asynchronously. Thus,
+ * there is a small race condition where toggling will not work.
+ * See also the limitations of libvlc_audio_set_mute().
  */
 LIBVLC_API void libvlc_audio_toggle_mute( libvlc_media_player_t *p_mi );
 
@@ -1468,9 +1542,7 @@ LIBVLC_API void libvlc_audio_toggle_mute( libvlc_media_player_t *p_mi );
  * Get current mute status.
  *
  * \param p_mi media player
- * \return the mute status (boolean)
- *
- * \libvlc_return_bool
+ * \return the mute status (boolean) if defined, -1 if undefined/unapplicable
  */
 LIBVLC_API int libvlc_audio_get_mute( libvlc_media_player_t *p_mi );
 
@@ -1479,6 +1551,12 @@ LIBVLC_API int libvlc_audio_get_mute( libvlc_media_player_t *p_mi );
  *
  * \param p_mi media player
  * \param status If status is true then mute, otherwise unmute
+ * \warning This function does not always work. If there are no active audio
+ * playback stream, the mute status might not be available. If digital
+ * pass-through (S/PDIF, HDMI...) is in use, muting may be unapplicable. Also
+ * some audio output plugins do not support muting at all.
+ * \note To force silent playback, disable all audio tracks. This is more
+ * efficient and reliable than mute.
  */
 LIBVLC_API void libvlc_audio_set_mute( libvlc_media_player_t *p_mi, int status );
 

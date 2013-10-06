@@ -66,16 +66,16 @@ DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 @HAVE_DYNAMIC_PLUGINS_TRUE@am__append_1 = -D__PLUGIN__
 subdir = modules/altivec
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/flags.m4 \
-	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/iconv.m4 \
-	$(top_srcdir)/m4/intlmacosx.m4 $(top_srcdir)/m4/lib-ld.m4 \
-	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
-	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
-	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
-	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/vlc.m4 $(top_srcdir)/m4/with_pkg.m4 \
-	$(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/dolt.m4 \
+	$(top_srcdir)/m4/flags.m4 $(top_srcdir)/m4/gettext.m4 \
+	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/intlmacosx.m4 \
+	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
+	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
+	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/vlc.m4 \
+	$(top_srcdir)/m4/with_pkg.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -112,8 +112,8 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libvlcdir)"
 LTLIBRARIES = $(libvlc_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-am__DEPENDENCIES_2 = $(LTLIBVLCCORE) \
-	$(top_builddir)/compat/libcompat.la $(am__DEPENDENCIES_1)
+am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
+libi420_yuy2_altivec_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_libi420_yuy2_altivec_plugin_la_OBJECTS =  \
 	libi420_yuy2_altivec_plugin_la-i420_yuy2.lo
 libi420_yuy2_altivec_plugin_la_OBJECTS =  \
@@ -125,24 +125,12 @@ libi420_yuy2_altivec_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libi420_yuy2_altivec_plugin_la_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-am_libmemcpyaltivec_plugin_la_OBJECTS =  \
-	libmemcpyaltivec_plugin_la-memcpy.lo
-libmemcpyaltivec_plugin_la_OBJECTS =  \
-	$(am_libmemcpyaltivec_plugin_la_OBJECTS)
-libmemcpyaltivec_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(libmemcpyaltivec_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/autotools/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) \
-	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
-	$(AM_CFLAGS) $(CFLAGS)
 AM_V_CC = $(am__v_CC_@AM_V@)
 am__v_CC_ = $(am__v_CC_@AM_DEFAULT_V@)
 am__v_CC_0 = @echo "  CC    " $@;
@@ -159,10 +147,8 @@ am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_@AM_V@)
 am__v_GEN_ = $(am__v_GEN_@AM_DEFAULT_V@)
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(libi420_yuy2_altivec_plugin_la_SOURCES) \
-	$(libmemcpyaltivec_plugin_la_SOURCES)
-DIST_SOURCES = $(libi420_yuy2_altivec_plugin_la_SOURCES) \
-	$(libmemcpyaltivec_plugin_la_SOURCES)
+SOURCES = $(libi420_yuy2_altivec_plugin_la_SOURCES)
+DIST_SOURCES = $(libi420_yuy2_altivec_plugin_la_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -205,37 +191,37 @@ CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 CFLAGS_access_avio = @CFLAGS_access_avio@
-CFLAGS_access_dv = @CFLAGS_access_dv@
 CFLAGS_access_gnomevfs = @CFLAGS_access_gnomevfs@
-CFLAGS_access_http = @CFLAGS_access_http@
 CFLAGS_access_jack = @CFLAGS_access_jack@
 CFLAGS_access_mtp = @CFLAGS_access_mtp@
 CFLAGS_access_output_shout = @CFLAGS_access_output_shout@
+CFLAGS_access_sftp = @CFLAGS_access_sftp@
+CFLAGS_access_smb = @CFLAGS_access_smb@
 CFLAGS_avcodec = @CFLAGS_avcodec@
-CFLAGS_avformat = @CFLAGS_avformat@
 CFLAGS_bonjour = @CFLAGS_bonjour@
 CFLAGS_caca = @CFLAGS_caca@
 CFLAGS_cdda = @CFLAGS_cdda@
-CFLAGS_dbus = @CFLAGS_dbus@
 CFLAGS_dc1394 = @CFLAGS_dc1394@
 CFLAGS_deinterlace = @CFLAGS_deinterlace@
 CFLAGS_dirac = @CFLAGS_dirac@
 CFLAGS_dtstofloat32 = @CFLAGS_dtstofloat32@
+CFLAGS_dv1394 = @CFLAGS_dv1394@
 CFLAGS_dvdnav = @CFLAGS_dvdnav@
 CFLAGS_dvdread = @CFLAGS_dvdread@
+CFLAGS_fdkaac = @CFLAGS_fdkaac@
 CFLAGS_flac = @CFLAGS_flac@
 CFLAGS_fluidsynth = @CFLAGS_fluidsynth@
-CFLAGS_globalhotkeys = @CFLAGS_globalhotkeys@
+CFLAGS_gles1 = @CFLAGS_gles1@
+CFLAGS_gles2 = @CFLAGS_gles2@
 CFLAGS_goom = @CFLAGS_goom@
-CFLAGS_hildon = @CFLAGS_hildon@
 CFLAGS_i420_yuy2_altivec = @CFLAGS_i420_yuy2_altivec@
-CFLAGS_inhibit = @CFLAGS_inhibit@
 CFLAGS_jack = @CFLAGS_jack@
 CFLAGS_kate = @CFLAGS_kate@
 CFLAGS_libass = @CFLAGS_libass@
 CFLAGS_libbluray = @CFLAGS_libbluray@
 CFLAGS_libmpeg2 = @CFLAGS_libmpeg2@
 CFLAGS_libvlccore = @CFLAGS_libvlccore@
+CFLAGS_libvnc = @CFLAGS_libvnc@
 CFLAGS_linsys_sdi = @CFLAGS_linsys_sdi@
 CFLAGS_lua = @CFLAGS_lua@
 CFLAGS_memcpyaltivec = @CFLAGS_memcpyaltivec@
@@ -245,65 +231,72 @@ CFLAGS_mux_ogg = @CFLAGS_mux_ogg@
 CFLAGS_ncurses = @CFLAGS_ncurses@
 CFLAGS_notify = @CFLAGS_notify@
 CFLAGS_ogg = @CFLAGS_ogg@
+CFLAGS_omxil = @CFLAGS_omxil@
+CFLAGS_omxil_vout = @CFLAGS_omxil_vout@
 CFLAGS_opencv_example = @CFLAGS_opencv_example@
 CFLAGS_opencv_wrapper = @CFLAGS_opencv_wrapper@
 CFLAGS_opus = @CFLAGS_opus@
 CFLAGS_panoramix = @CFLAGS_panoramix@
-CFLAGS_portaudio = @CFLAGS_portaudio@
 CFLAGS_postproc = @CFLAGS_postproc@
+CFLAGS_qsv = @CFLAGS_qsv@
+CFLAGS_rdp = @CFLAGS_rdp@
+CFLAGS_rotate = @CFLAGS_rotate@
 CFLAGS_samplerate = @CFLAGS_samplerate@
 CFLAGS_schroedinger = @CFLAGS_schroedinger@
 CFLAGS_sdl_image = @CFLAGS_sdl_image@
 CFLAGS_sid = @CFLAGS_sid@
 CFLAGS_speex = @CFLAGS_speex@
-CFLAGS_sqlite = @CFLAGS_sqlite@
-CFLAGS_stream_out_switcher = @CFLAGS_stream_out_switcher@
+CFLAGS_stream_out_chromaprint = @CFLAGS_stream_out_chromaprint@
 CFLAGS_svg = @CFLAGS_svg@
 CFLAGS_swscale = @CFLAGS_swscale@
-CFLAGS_telepathy = @CFLAGS_telepathy@
 CFLAGS_theora = @CFLAGS_theora@
 CFLAGS_twolame = @CFLAGS_twolame@
 CFLAGS_udev = @CFLAGS_udev@
 CFLAGS_upnp = @CFLAGS_upnp@
 CFLAGS_vcdx = @CFLAGS_vcdx@
 CFLAGS_vorbis = @CFLAGS_vorbis@
-CFLAGS_vout_ios = @CFLAGS_vout_ios@
 CFLAGS_vout_sdl = @CFLAGS_vout_sdl@
 CFLAGS_x264 = @CFLAGS_x264@
+CFLAGS_x26410b = @CFLAGS_x26410b@
 CFLAGS_xcb_window = @CFLAGS_xcb_window@
 CFLAGS_xml = @CFLAGS_xml@
-CFLAGS_xosd = @CFLAGS_xosd@
 CFLAGS_zvbi = @CFLAGS_zvbi@
+CHROMAPRINT_CFLAGS = @CHROMAPRINT_CFLAGS@
+CHROMAPRINT_LIBS = @CHROMAPRINT_LIBS@
 CONTRIB_DIR = @CONTRIB_DIR@
 COPYRIGHT_MESSAGE = @COPYRIGHT_MESSAGE@
 COPYRIGHT_YEARS = @COPYRIGHT_YEARS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CPPFLAGS_a52tofloat32 = @CPPFLAGS_a52tofloat32@
-CPPFLAGS_access_dv = @CPPFLAGS_access_dv@
 CPPFLAGS_access_gnomevfs = @CPPFLAGS_access_gnomevfs@
-CPPFLAGS_access_jack = @CPPFLAGS_access_jack@
 CPPFLAGS_access_mtp = @CPPFLAGS_access_mtp@
 CPPFLAGS_access_output_shout = @CPPFLAGS_access_output_shout@
+CPPFLAGS_access_sftp = @CPPFLAGS_access_sftp@
+CPPFLAGS_access_smb = @CPPFLAGS_access_smb@
 CPPFLAGS_bonjour = @CPPFLAGS_bonjour@
 CPPFLAGS_caca = @CPPFLAGS_caca@
 CPPFLAGS_dc1394 = @CPPFLAGS_dc1394@
 CPPFLAGS_decklink = @CPPFLAGS_decklink@
+CPPFLAGS_decklinkoutput = @CPPFLAGS_decklinkoutput@
 CPPFLAGS_dirac = @CPPFLAGS_dirac@
 CPPFLAGS_directfb = @CPPFLAGS_directfb@
-CPPFLAGS_dmo = @CPPFLAGS_dmo@
 CPPFLAGS_dtstofloat32 = @CPPFLAGS_dtstofloat32@
+CPPFLAGS_dv1394 = @CPPFLAGS_dv1394@
 CPPFLAGS_dvdread = @CPPFLAGS_dvdread@
 CPPFLAGS_faad = @CPPFLAGS_faad@
+CPPFLAGS_fdkaac = @CPPFLAGS_fdkaac@
 CPPFLAGS_flac = @CPPFLAGS_flac@
 CPPFLAGS_fluidsynth = @CPPFLAGS_fluidsynth@
 CPPFLAGS_freetype = @CPPFLAGS_freetype@
+CPPFLAGS_gles1 = @CPPFLAGS_gles1@
+CPPFLAGS_gles2 = @CPPFLAGS_gles2@
 CPPFLAGS_goom = @CPPFLAGS_goom@
-CPPFLAGS_jack = @CPPFLAGS_jack@
 CPPFLAGS_kate = @CPPFLAGS_kate@
 CPPFLAGS_libass = @CPPFLAGS_libass@
 CPPFLAGS_libbluray = @CPPFLAGS_libbluray@
 CPPFLAGS_libmpeg2 = @CPPFLAGS_libmpeg2@
+CPPFLAGS_libvnc = @CPPFLAGS_libvnc@
 CPPFLAGS_mpgatofixed32 = @CPPFLAGS_mpgatofixed32@
 CPPFLAGS_mtp = @CPPFLAGS_mtp@
 CPPFLAGS_mux_ogg = @CPPFLAGS_mux_ogg@
@@ -312,20 +305,18 @@ CPPFLAGS_ogg = @CPPFLAGS_ogg@
 CPPFLAGS_opencv_example = @CPPFLAGS_opencv_example@
 CPPFLAGS_opencv_wrapper = @CPPFLAGS_opencv_wrapper@
 CPPFLAGS_opus = @CPPFLAGS_opus@
-CPPFLAGS_portaudio = @CPPFLAGS_portaudio@
-CPPFLAGS_qt4 = @CPPFLAGS_qt4@
-CPPFLAGS_quicktime = @CPPFLAGS_quicktime@
-CPPFLAGS_realvideo = @CPPFLAGS_realvideo@
+CPPFLAGS_qsv = @CPPFLAGS_qsv@
+CPPFLAGS_rdp = @CPPFLAGS_rdp@
 CPPFLAGS_samplerate = @CPPFLAGS_samplerate@
 CPPFLAGS_schroedinger = @CPPFLAGS_schroedinger@
 CPPFLAGS_skins2 = @CPPFLAGS_skins2@
 CPPFLAGS_speex = @CPPFLAGS_speex@
-CPPFLAGS_sqlite = @CPPFLAGS_sqlite@
 CPPFLAGS_svg = @CPPFLAGS_svg@
 CPPFLAGS_theora = @CPPFLAGS_theora@
 CPPFLAGS_twolame = @CPPFLAGS_twolame@
 CPPFLAGS_udev = @CPPFLAGS_udev@
 CPPFLAGS_upnp = @CPPFLAGS_upnp@
+CPPFLAGS_vcdx = @CPPFLAGS_vcdx@
 CPPFLAGS_vorbis = @CPPFLAGS_vorbis@
 CPPFLAGS_x264 = @CPPFLAGS_x264@
 CPPFLAGS_xml = @CPPFLAGS_xml@
@@ -333,7 +324,6 @@ CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
-CXXFLAGS_dshow = @CXXFLAGS_dshow@
 CXXFLAGS_live555 = @CXXFLAGS_live555@
 CXXFLAGS_mkv = @CXXFLAGS_mkv@
 CXXFLAGS_mod = @CXXFLAGS_mod@
@@ -342,6 +332,7 @@ CXXFLAGS_qt4 = @CXXFLAGS_qt4@
 CXXFLAGS_skins2 = @CXXFLAGS_skins2@
 CXXFLAGS_taglib = @CXXFLAGS_taglib@
 CXXFLAGS_upnp = @CXXFLAGS_upnp@
+CXXFLAGS_vsxu = @CXXFLAGS_vsxu@
 CYGPATH_W = @CYGPATH_W@
 DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
@@ -359,16 +350,17 @@ DIRECTFB_CFLAGS = @DIRECTFB_CFLAGS@
 DIRECTFB_CONFIG = @DIRECTFB_CONFIG@
 DIRECTFB_LIBS = @DIRECTFB_LIBS@
 DLLTOOL = @DLLTOOL@
+DOLT_BASH = @DOLT_BASH@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
+DV1394_CFLAGS = @DV1394_CFLAGS@
+DV1394_LIBS = @DV1394_LIBS@
 DVBPSI_CFLAGS = @DVBPSI_CFLAGS@
 DVBPSI_LIBS = @DVBPSI_LIBS@
 DVDNAV_CFLAGS = @DVDNAV_CFLAGS@
 DVDNAV_LIBS = @DVDNAV_LIBS@
 DVDREAD_CFLAGS = @DVDREAD_CFLAGS@
 DVDREAD_LIBS = @DVDREAD_LIBS@
-DV_CFLAGS = @DV_CFLAGS@
-DV_LIBS = @DV_LIBS@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
@@ -376,6 +368,8 @@ EGL_CFLAGS = @EGL_CFLAGS@
 EGL_LIBS = @EGL_LIBS@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+FDKAAC_CFLAGS = @FDKAAC_CFLAGS@
+FDKAAC_LIBS = @FDKAAC_LIBS@
 FGREP = @FGREP@
 FILE_LIBVLCCORE_DLL = @FILE_LIBVLCCORE_DLL@
 FILE_LIBVLC_DLL = @FILE_LIBVLC_DLL@
@@ -390,6 +384,10 @@ FRIBIDI_LIBS = @FRIBIDI_LIBS@
 GCRYPT_CFLAGS = @GCRYPT_CFLAGS@
 GCRYPT_LIBS = @GCRYPT_LIBS@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
+GLES1_CFLAGS = @GLES1_CFLAGS@
+GLES1_LIBS = @GLES1_LIBS@
+GLES2_CFLAGS = @GLES2_CFLAGS@
+GLES2_LIBS = @GLES2_LIBS@
 GL_CFLAGS = @GL_CFLAGS@
 GL_LIBS = @GL_LIBS@
 GMSGFMT = @GMSGFMT@
@@ -402,10 +400,8 @@ GNUTLS_LIBS = @GNUTLS_LIBS@
 GOOM_CFLAGS = @GOOM_CFLAGS@
 GOOM_LIBS = @GOOM_LIBS@
 GREP = @GREP@
-HILDON_CFLAGS = @HILDON_CFLAGS@
-HILDON_FM_CFLAGS = @HILDON_FM_CFLAGS@
-HILDON_FM_LIBS = @HILDON_FM_LIBS@
-HILDON_LIBS = @HILDON_LIBS@
+IDN_CFLAGS = @IDN_CFLAGS@
+IDN_LIBS = @IDN_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -422,18 +418,22 @@ KDE4_CONFIG = @KDE4_CONFIG@
 KVA_LIBS = @KVA_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
+LDFLAGS_access_avio = @LDFLAGS_access_avio@
 LDFLAGS_android_surface = @LDFLAGS_android_surface@
+LDFLAGS_avformat = @LDFLAGS_avformat@
+LDFLAGS_live555 = @LDFLAGS_live555@
 LDFLAGS_plugin = @LDFLAGS_plugin@
 LDFLAGS_vlc = @LDFLAGS_vlc@
 LDFLAGS_x264 = @LDFLAGS_x264@
+LDFLAGS_x26410b = @LDFLAGS_x26410b@
 LIBASS_CFLAGS = @LIBASS_CFLAGS@
 LIBASS_LIBS = @LIBASS_LIBS@
 LIBCDDB_CFLAGS = @LIBCDDB_CFLAGS@
 LIBCDDB_LIBS = @LIBCDDB_LIBS@
-LIBCDIO_CFLAGS = @LIBCDIO_CFLAGS@
-LIBCDIO_LIBS = @LIBCDIO_LIBS@
 LIBDL = @LIBDL@
 LIBEXT = @LIBEXT@
+LIBFREERDP_CFLAGS = @LIBFREERDP_CFLAGS@
+LIBFREERDP_LIBS = @LIBFREERDP_LIBS@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
 LIBM = @LIBM@
@@ -442,36 +442,34 @@ LIBMODPLUG_LIBS = @LIBMODPLUG_LIBS@
 LIBMPEG2_CFLAGS = @LIBMPEG2_CFLAGS@
 LIBMPEG2_LIBS = @LIBMPEG2_LIBS@
 LIBOBJS = @LIBOBJS@
-LIBPROXY_CFLAGS = @LIBPROXY_CFLAGS@
-LIBPROXY_LIBS = @LIBPROXY_LIBS@
+LIBPTHREAD = @LIBPTHREAD@
 LIBS = @LIBS@
 LIBS_a52tofloat32 = @LIBS_a52tofloat32@
 LIBS_aa = @LIBS_aa@
 LIBS_access_avio = @LIBS_access_avio@
-LIBS_access_dv = @LIBS_access_dv@
 LIBS_access_eyetv = @LIBS_access_eyetv@
 LIBS_access_ftp = @LIBS_access_ftp@
 LIBS_access_gnomevfs = @LIBS_access_gnomevfs@
 LIBS_access_http = @LIBS_access_http@
 LIBS_access_imem = @LIBS_access_imem@
 LIBS_access_jack = @LIBS_access_jack@
-LIBS_access_mms = @LIBS_access_mms@
 LIBS_access_mtp = @LIBS_access_mtp@
 LIBS_access_output_shout = @LIBS_access_output_shout@
 LIBS_access_output_udp = @LIBS_access_output_udp@
-LIBS_access_realrtsp = @LIBS_access_realrtsp@
 LIBS_access_rtmp = @LIBS_access_rtmp@
 LIBS_access_sftp = @LIBS_access_sftp@
 LIBS_access_smb = @LIBS_access_smb@
 LIBS_access_tcp = @LIBS_access_tcp@
 LIBS_access_udp = @LIBS_access_udp@
 LIBS_adjust = @LIBS_adjust@
+LIBS_anaglyph = @LIBS_anaglyph@
 LIBS_audiobargraph_a = @LIBS_audiobargraph_a@
+LIBS_audiobargraph_v = @LIBS_audiobargraph_v@
 LIBS_audioqueue = @LIBS_audioqueue@
 LIBS_audioscrobbler = @LIBS_audioscrobbler@
+LIBS_audiounit_ios = @LIBS_audiounit_ios@
 LIBS_auhal = @LIBS_auhal@
 LIBS_avcodec = @LIBS_avcodec@
-LIBS_avformat = @LIBS_avformat@
 LIBS_ball = @LIBS_ball@
 LIBS_bonjour = @LIBS_bonjour@
 LIBS_caca = @LIBS_caca@
@@ -480,27 +478,25 @@ LIBS_chorus_flanger = @LIBS_chorus_flanger@
 LIBS_colorthres = @LIBS_colorthres@
 LIBS_compressor = @LIBS_compressor@
 LIBS_crystalhd = @LIBS_crystalhd@
-LIBS_dbus = @LIBS_dbus@
 LIBS_dc1394 = @LIBS_dc1394@
 LIBS_dirac = @LIBS_dirac@
-LIBS_direct2d = @LIBS_direct2d@
-LIBS_direct3d = @LIBS_direct3d@
 LIBS_directfb = @LIBS_directfb@
-LIBS_directx = @LIBS_directx@
 LIBS_dmo = @LIBS_dmo@
-LIBS_dshow = @LIBS_dshow@
 LIBS_dtstofloat32 = @LIBS_dtstofloat32@
+LIBS_dv1394 = @LIBS_dv1394@
 LIBS_dvdnav = @LIBS_dvdnav@
 LIBS_dvdread = @LIBS_dvdread@
 LIBS_equalizer = @LIBS_equalizer@
 LIBS_extract = @LIBS_extract@
 LIBS_faad = @LIBS_faad@
+LIBS_fdkaac = @LIBS_fdkaac@
+LIBS_fingerprinter = @LIBS_fingerprinter@
 LIBS_flac = @LIBS_flac@
 LIBS_fluidsynth = @LIBS_fluidsynth@
 LIBS_freetype = @LIBS_freetype@
 LIBS_gaussianblur = @LIBS_gaussianblur@
-LIBS_globalhotkeys = @LIBS_globalhotkeys@
-LIBS_glwin32 = @LIBS_glwin32@
+LIBS_gles1 = @LIBS_gles1@
+LIBS_gles2 = @LIBS_gles2@
 LIBS_gme = @LIBS_gme@
 LIBS_gnutls = @LIBS_gnutls@
 LIBS_goom = @LIBS_goom@
@@ -508,12 +504,10 @@ LIBS_gradient = @LIBS_gradient@
 LIBS_grain = @LIBS_grain@
 LIBS_growl = @LIBS_growl@
 LIBS_headphone_channel_mixer = @LIBS_headphone_channel_mixer@
-LIBS_hildon = @LIBS_hildon@
 LIBS_hotkeys = @LIBS_hotkeys@
 LIBS_hqdn3d = @LIBS_hqdn3d@
 LIBS_i420_rgb = @LIBS_i420_rgb@
 LIBS_i420_rgb_mmx = @LIBS_i420_rgb_mmx@
-LIBS_inhibit = @LIBS_inhibit@
 LIBS_jack = @LIBS_jack@
 LIBS_kate = @LIBS_kate@
 LIBS_libass = @LIBS_libass@
@@ -521,6 +515,7 @@ LIBS_libbluray = @LIBS_libbluray@
 LIBS_libmpeg2 = @LIBS_libmpeg2@
 LIBS_libvlc = @LIBS_libvlc@
 LIBS_libvlccore = @LIBS_libvlccore@
+LIBS_libvnc = @LIBS_libvnc@
 LIBS_linsys_sdi = @LIBS_linsys_sdi@
 LIBS_lirc = @LIBS_lirc@
 LIBS_live555 = @LIBS_live555@
@@ -534,7 +529,6 @@ LIBS_mod = @LIBS_mod@
 LIBS_mono = @LIBS_mono@
 LIBS_mosaic = @LIBS_mosaic@
 LIBS_motion = @LIBS_motion@
-LIBS_mp4 = @LIBS_mp4@
 LIBS_mpc = @LIBS_mpc@
 LIBS_mpgatofixed32 = @LIBS_mpgatofixed32@
 LIBS_mtp = @LIBS_mtp@
@@ -546,22 +540,20 @@ LIBS_normvol = @LIBS_normvol@
 LIBS_notify = @LIBS_notify@
 LIBS_ogg = @LIBS_ogg@
 LIBS_oldrc = @LIBS_oldrc@
-LIBS_omxil = @LIBS_omxil@
 LIBS_opencv_example = @LIBS_opencv_example@
 LIBS_opencv_wrapper = @LIBS_opencv_wrapper@
 LIBS_opus = @LIBS_opus@
 LIBS_panoramix = @LIBS_panoramix@
 LIBS_param_eq = @LIBS_param_eq@
-LIBS_plugin = @LIBS_plugin@
 LIBS_png = @LIBS_png@
-LIBS_portaudio = @LIBS_portaudio@
 LIBS_postproc = @LIBS_postproc@
 LIBS_projectm = @LIBS_projectm@
 LIBS_psychedelic = @LIBS_psychedelic@
+LIBS_qsv = @LIBS_qsv@
 LIBS_qt4 = @LIBS_qt4@
 LIBS_quartztext = @LIBS_quartztext@
 LIBS_quicktime = @LIBS_quicktime@
-LIBS_realvideo = @LIBS_realvideo@
+LIBS_rdp = @LIBS_rdp@
 LIBS_remoteosd = @LIBS_remoteosd@
 LIBS_ripple = @LIBS_ripple@
 LIBS_rotate = @LIBS_rotate@
@@ -570,22 +562,18 @@ LIBS_samplerate = @LIBS_samplerate@
 LIBS_sap = @LIBS_sap@
 LIBS_scene = @LIBS_scene@
 LIBS_schroedinger = @LIBS_schroedinger@
-LIBS_screen = @LIBS_screen@
 LIBS_sdl_image = @LIBS_sdl_image@
 LIBS_sid = @LIBS_sid@
 LIBS_skins2 = @LIBS_skins2@
 LIBS_spatializer = @LIBS_spatializer@
 LIBS_speex = @LIBS_speex@
-LIBS_sqlite = @LIBS_sqlite@
+LIBS_stream_out_chromaprint = @LIBS_stream_out_chromaprint@
 LIBS_stream_out_raop = @LIBS_stream_out_raop@
 LIBS_stream_out_rtp = @LIBS_stream_out_rtp@
-LIBS_stream_out_select = @LIBS_stream_out_select@
 LIBS_stream_out_standard = @LIBS_stream_out_standard@
-LIBS_stream_out_switcher = @LIBS_stream_out_switcher@
 LIBS_svg = @LIBS_svg@
 LIBS_swscale = @LIBS_swscale@
 LIBS_taglib = @LIBS_taglib@
-LIBS_telepathy = @LIBS_telepathy@
 LIBS_theora = @LIBS_theora@
 LIBS_tremor = @LIBS_tremor@
 LIBS_ts = @LIBS_ts@
@@ -595,107 +583,102 @@ LIBS_unzip = @LIBS_unzip@
 LIBS_upnp = @LIBS_upnp@
 LIBS_vcd = @LIBS_vcd@
 LIBS_vcdx = @LIBS_vcdx@
-LIBS_visual = @LIBS_visual@
 LIBS_vlc = @LIBS_vlc@
 LIBS_vod_rtsp = @LIBS_vod_rtsp@
 LIBS_vorbis = @LIBS_vorbis@
 LIBS_vout_ios = @LIBS_vout_ios@
+LIBS_vout_ios2 = @LIBS_vout_ios2@
 LIBS_vout_macosx = @LIBS_vout_macosx@
 LIBS_vout_sdl = @LIBS_vout_sdl@
+LIBS_vsxu = @LIBS_vsxu@
 LIBS_wave = @LIBS_wave@
 LIBS_waveout = @LIBS_waveout@
 LIBS_win32text = @LIBS_win32text@
-LIBS_wingapi = @LIBS_wingapi@
-LIBS_wingdi = @LIBS_wingdi@
 LIBS_x264 = @LIBS_x264@
+LIBS_x26410b = @LIBS_x26410b@
 LIBS_xml = @LIBS_xml@
-LIBS_xosd = @LIBS_xosd@
 LIBS_zip = @LIBS_zip@
 LIBS_zvbi = @LIBS_zvbi@
 LIBTOOL = @LIBTOOL@
-LIBV4L2_CFLAGS = @LIBV4L2_CFLAGS@
-LIBV4L2_LIBS = @LIBV4L2_LIBS@
 LIBVA_CFLAGS = @LIBVA_CFLAGS@
 LIBVA_LIBS = @LIBVA_LIBS@
-LIBVCDINFO_CFLAGS = @LIBVCDINFO_CFLAGS@
-LIBVCDINFO_LIBS = @LIBVCDINFO_LIBS@
+LIBVNC_CFLAGS = @LIBVNC_CFLAGS@
+LIBVNC_LIBS = @LIBVNC_LIBS@
 LIBXML2_CFLAGS = @LIBXML2_CFLAGS@
 LIBXML2_LIBS = @LIBXML2_LIBS@
 LINSYS_SDI_CFLAGS = @LINSYS_SDI_CFLAGS@
 LINSYS_SDI_LIBS = @LINSYS_SDI_LIBS@
 LIPO = @LIPO@
+LIVE555_CFLAGS = @LIVE555_CFLAGS@
+LIVE555_LIBS = @LIVE555_LIBS@
 LN_S = @LN_S@
+LTCOMPILE = @LTCOMPILE@
+LTCXXCOMPILE = @LTCXXCOMPILE@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
 LTLIBa52tofloat32 = @LTLIBa52tofloat32@
 LTLIBaa = @LTLIBaa@
 LTLIBaccess_avio = @LTLIBaccess_avio@
-LTLIBaccess_dv = @LTLIBaccess_dv@
 LTLIBaccess_eyetv = @LTLIBaccess_eyetv@
 LTLIBaccess_gnomevfs = @LTLIBaccess_gnomevfs@
 LTLIBaccess_jack = @LTLIBaccess_jack@
 LTLIBaccess_mtp = @LTLIBaccess_mtp@
 LTLIBaccess_output_shout = @LTLIBaccess_output_shout@
-LTLIBaccess_realrtsp = @LTLIBaccess_realrtsp@
 LTLIBaccess_sftp = @LTLIBaccess_sftp@
-LTLIBaccess_shm = @LTLIBaccess_shm@
 LTLIBaccess_smb = @LTLIBaccess_smb@
 LTLIBandroid_surface = @LTLIBandroid_surface@
-LTLIBaout_directx = @LTLIBaout_directx@
 LTLIBatmo = @LTLIBatmo@
 LTLIBaudioqueue = @LTLIBaudioqueue@
+LTLIBaudiounit_ios = @LTLIBaudiounit_ios@
 LTLIBauhal = @LTLIBauhal@
+LTLIBavcapture = @LTLIBavcapture@
 LTLIBavcodec = @LTLIBavcodec@
 LTLIBavformat = @LTLIBavformat@
 LTLIBbonjour = @LTLIBbonjour@
 LTLIBcaca = @LTLIBcaca@
 LTLIBcdda = @LTLIBcdda@
 LTLIBcrystalhd = @LTLIBcrystalhd@
-LTLIBdbus = @LTLIBdbus@
 LTLIBdc1394 = @LTLIBdc1394@
-LTLIBdecklink = @LTLIBdecklink@
 LTLIBdirac = @LTLIBdirac@
 LTLIBdirect2d = @LTLIBdirect2d@
 LTLIBdirect3d = @LTLIBdirect3d@
 LTLIBdirectfb = @LTLIBdirectfb@
-LTLIBdirectx = @LTLIBdirectx@
 LTLIBdmo = @LTLIBdmo@
-LTLIBdshow = @LTLIBdshow@
 LTLIBdtstofloat32 = @LTLIBdtstofloat32@
+LTLIBdv1394 = @LTLIBdv1394@
 LTLIBdvdnav = @LTLIBdvdnav@
 LTLIBdvdread = @LTLIBdvdread@
-LTLIBdynamicoverlay = @LTLIBdynamicoverlay@
 LTLIBegl = @LTLIBegl@
 LTLIBfaad = @LTLIBfaad@
 LTLIBfb = @LTLIBfb@
-LTLIBfbosd = @LTLIBfbosd@
+LTLIBfdkaac = @LTLIBfdkaac@
+LTLIBfingerprinter = @LTLIBfingerprinter@
 LTLIBflac = @LTLIBflac@
 LTLIBfluidsynth = @LTLIBfluidsynth@
 LTLIBfreetype = @LTLIBfreetype@
 LTLIBgl = @LTLIBgl@
+LTLIBgles1 = @LTLIBgles1@
+LTLIBgles2 = @LTLIBgles2@
 LTLIBglobalhotkeys = @LTLIBglobalhotkeys@
 LTLIBglwin32 = @LTLIBglwin32@
+LTLIBglx = @LTLIBglx@
 LTLIBgme = @LTLIBgme@
 LTLIBgnutls = @LTLIBgnutls@
 LTLIBgoom = @LTLIBgoom@
 LTLIBgrowl = @LTLIBgrowl@
-LTLIBhildon = @LTLIBhildon@
-LTLIBinhibit = @LTLIBinhibit@
-LTLIBiomx = @LTLIBiomx@
 LTLIBjack = @LTLIBjack@
 LTLIBkate = @LTLIBkate@
 LTLIBlibass = @LTLIBlibass@
 LTLIBlibbluray = @LTLIBlibbluray@
 LTLIBlibmpeg2 = @LTLIBlibmpeg2@
+LTLIBlibvnc = @LTLIBlibvnc@
 LTLIBlinsys_hdsdi = @LTLIBlinsys_hdsdi@
 LTLIBlinsys_sdi = @LTLIBlinsys_sdi@
 LTLIBlirc = @LTLIBlirc@
 LTLIBlive555 = @LTLIBlive555@
 LTLIBmacosx = @LTLIBmacosx@
 LTLIBmacosx_dialog_provider = @LTLIBmacosx_dialog_provider@
-LTLIBmce = @LTLIBmce@
-LTLIBmedia_library = @LTLIBmedia_library@
 LTLIBminimal_macosx = @LTLIBminimal_macosx@
 LTLIBmkv = @LTLIBmkv@
 LTLIBmod = @LTLIBmod@
@@ -707,24 +690,23 @@ LTLIBncurses = @LTLIBncurses@
 LTLIBnotify = @LTLIBnotify@
 LTLIBogg = @LTLIBogg@
 LTLIBomxil = @LTLIBomxil@
+LTLIBomxil_vout = @LTLIBomxil_vout@
 LTLIBopencv_example = @LTLIBopencv_example@
 LTLIBopencv_wrapper = @LTLIBopencv_wrapper@
 LTLIBopensles_android = @LTLIBopensles_android@
 LTLIBopus = @LTLIBopus@
-LTLIBosd_parser = @LTLIBosd_parser@
-LTLIBosdmenu = @LTLIBosdmenu@
 LTLIBpanoramix = @LTLIBpanoramix@
 LTLIBpng = @LTLIBpng@
-LTLIBportaudio = @LTLIBportaudio@
 LTLIBpostproc = @LTLIBpostproc@
 LTLIBprojectm = @LTLIBprojectm@
-LTLIBpvr = @LTLIBpvr@
+LTLIBqsv = @LTLIBqsv@
 LTLIBqt4 = @LTLIBqt4@
 LTLIBqtcapture = @LTLIBqtcapture@
 LTLIBqtsound = @LTLIBqtsound@
 LTLIBquartztext = @LTLIBquartztext@
 LTLIBquicktime = @LTLIBquicktime@
-LTLIBrealvideo = @LTLIBrealvideo@
+LTLIBrdp = @LTLIBrdp@
+LTLIBrealrtsp = @LTLIBrealrtsp@
 LTLIBsamplerate = @LTLIBsamplerate@
 LTLIBschroedinger = @LTLIBschroedinger@
 LTLIBscreen = @LTLIBscreen@
@@ -733,12 +715,10 @@ LTLIBshine = @LTLIBshine@
 LTLIBsid = @LTLIBsid@
 LTLIBskins2 = @LTLIBskins2@
 LTLIBspeex = @LTLIBspeex@
-LTLIBsqlite = @LTLIBsqlite@
-LTLIBstream_out_switcher = @LTLIBstream_out_switcher@
+LTLIBstream_out_chromaprint = @LTLIBstream_out_chromaprint@
 LTLIBsvg = @LTLIBsvg@
 LTLIBswscale = @LTLIBswscale@
 LTLIBtaglib = @LTLIBtaglib@
-LTLIBtelepathy = @LTLIBtelepathy@
 LTLIBtelx = @LTLIBtelx@
 LTLIBtheora = @LTLIBtheora@
 LTLIBtremor = @LTLIBtremor@
@@ -747,20 +727,20 @@ LTLIBudev = @LTLIBudev@
 LTLIBupnp = @LTLIBupnp@
 LTLIBvcd = @LTLIBvcd@
 LTLIBvcdx = @LTLIBvcdx@
-LTLIBvisual = @LTLIBvisual@
 LTLIBvorbis = @LTLIBvorbis@
 LTLIBvout_ios = @LTLIBvout_ios@
+LTLIBvout_ios2 = @LTLIBvout_ios2@
 LTLIBvout_macosx = @LTLIBvout_macosx@
 LTLIBvout_sdl = @LTLIBvout_sdl@
+LTLIBvsxu = @LTLIBvsxu@
 LTLIBwaveout = @LTLIBwaveout@
-LTLIBwingapi = @LTLIBwingapi@
-LTLIBwingdi = @LTLIBwingdi@
 LTLIBwma_fixed = @LTLIBwma_fixed@
 LTLIBx264 = @LTLIBx264@
+LTLIBx26410b = @LTLIBx26410b@
 LTLIBxcb_glx = @LTLIBxcb_glx@
 LTLIBxcb_xv = @LTLIBxcb_xv@
 LTLIBxml = @LTLIBxml@
-LTLIBxosd = @LTLIBxosd@
+LTLIBxwd = @LTLIBxwd@
 LTLIBzvbi = @LTLIBzvbi@
 LUAC = @LUAC@
 LUA_CFLAGS = @LUA_CFLAGS@
@@ -769,8 +749,6 @@ MACOSX_DEPLOYMENT_TARGET = @MACOSX_DEPLOYMENT_TARGET@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
-MCE_CFLAGS = @MCE_CFLAGS@
-MCE_LIBS = @MCE_LIBS@
 MINIZIP_CFLAGS = @MINIZIP_CFLAGS@
 MINIZIP_LIBS = @MINIZIP_LIBS@
 MKDIR_P = @MKDIR_P@
@@ -784,7 +762,6 @@ MUX_OGG_CFLAGS = @MUX_OGG_CFLAGS@
 MUX_OGG_LIBS = @MUX_OGG_LIBS@
 NCURSES_CFLAGS = @NCURSES_CFLAGS@
 NCURSES_LIBS = @NCURSES_LIBS@
-NEON_CFLAGS = @NEON_CFLAGS@
 NM = @NM@
 NMEDIT = @NMEDIT@
 NOTIFY_CFLAGS = @NOTIFY_CFLAGS@
@@ -819,8 +796,6 @@ PKGDIR = @PKGDIR@
 PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
-PORTAUDIO_CFLAGS = @PORTAUDIO_CFLAGS@
-PORTAUDIO_LIBS = @PORTAUDIO_LIBS@
 POSTPROC_CFLAGS = @POSTPROC_CFLAGS@
 POSTPROC_LIBS = @POSTPROC_LIBS@
 POSUB = @POSUB@
@@ -831,8 +806,10 @@ PROJECTM_CFLAGS = @PROJECTM_CFLAGS@
 PROJECTM_LIBS = @PROJECTM_LIBS@
 PULSE_CFLAGS = @PULSE_CFLAGS@
 PULSE_LIBS = @PULSE_LIBS@
-QT4_CFLAGS = @QT4_CFLAGS@
-QT4_LIBS = @QT4_LIBS@
+QT_CFLAGS = @QT_CFLAGS@
+QT_LIBS = @QT_LIBS@
+QUICKSYNC_CFLAGS = @QUICKSYNC_CFLAGS@
+QUICKSYNC_LIBS = @QUICKSYNC_LIBS@
 RANLIB = @RANLIB@
 RC = @RC@
 RCC = @RCC@
@@ -846,18 +823,20 @@ SDL_IMAGE_LIBS = @SDL_IMAGE_LIBS@
 SDL_LIBS = @SDL_LIBS@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
+SFTP_CFLAGS = @SFTP_CFLAGS@
+SFTP_LIBS = @SFTP_LIBS@
 SHELL = @SHELL@
 SHOUT_CFLAGS = @SHOUT_CFLAGS@
 SHOUT_LIBS = @SHOUT_LIBS@
 SID_CFLAGS = @SID_CFLAGS@
 SID_LIBS = @SID_LIBS@
+SMBCLIENT_CFLAGS = @SMBCLIENT_CFLAGS@
+SMBCLIENT_LIBS = @SMBCLIENT_LIBS@
 SOCKET_LIBS = @SOCKET_LIBS@
 SPEEXDSP_CFLAGS = @SPEEXDSP_CFLAGS@
 SPEEXDSP_LIBS = @SPEEXDSP_LIBS@
 SPEEX_CFLAGS = @SPEEX_CFLAGS@
 SPEEX_LIBS = @SPEEX_LIBS@
-SQLITE_CFLAGS = @SQLITE_CFLAGS@
-SQLITE_LIBS = @SQLITE_LIBS@
 STRIP = @STRIP@
 SVG_CFLAGS = @SVG_CFLAGS@
 SVG_LIBS = @SVG_LIBS@
@@ -879,6 +858,10 @@ UIC = @UIC@
 UPNP_CFLAGS = @UPNP_CFLAGS@
 UPNP_LIBS = @UPNP_LIBS@
 USE_NLS = @USE_NLS@
+VCDX_CFLAGS = @VCDX_CFLAGS@
+VCDX_LIBS = @VCDX_LIBS@
+VDPAU_CFLAGS = @VDPAU_CFLAGS@
+VDPAU_LIBS = @VDPAU_LIBS@
 VERSION = @VERSION@
 VERSION_EXTRA = @VERSION_EXTRA@
 VERSION_MAJOR = @VERSION_MAJOR@
@@ -887,8 +870,13 @@ VERSION_MINOR = @VERSION_MINOR@
 VERSION_REVISION = @VERSION_REVISION@
 VORBIS_CFLAGS = @VORBIS_CFLAGS@
 VORBIS_LIBS = @VORBIS_LIBS@
+VSXU_CFLAGS = @VSXU_CFLAGS@
+VSXU_LIBS = @VSXU_LIBS@
+WINDOWS_ARCH = @WINDOWS_ARCH@
 WINDRES = @WINDRES@
 WINE_SDK_PATH = @WINE_SDK_PATH@
+X26410B_CFLAGS = @X26410B_CFLAGS@
+X26410B_LIBS = @X26410B_LIBS@
 X264_CFLAGS = @X264_CFLAGS@
 X264_LIBS = @X264_LIBS@
 XCB_CFLAGS = @XCB_CFLAGS@
@@ -947,6 +935,7 @@ datarootdir = @datarootdir@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
+have_avfoundation = @have_avfoundation@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
@@ -981,8 +970,7 @@ vlclibdir = @vlclibdir@
 basedir = altivec
 dir = altivec
 mods = 
-libvlc_LTLIBRARIES = libmemcpyaltivec_plugin.la \
-	libi420_yuy2_altivec_plugin.la $(NULL)
+libvlc_LTLIBRARIES = libi420_yuy2_altivec_plugin.la $(NULL)
 EXTRA_LTLIBRARIES = 
 NULL = 
 libvlcdir = $(vlclibdir)/plugins/$(basedir)
@@ -992,28 +980,24 @@ CLEANFILES = $(BUILT_SOURCES)
 LTLIBVLCCORE = $(top_builddir)/src/libvlccore.la
 
 # Module name from object or executable file name.
-MODULE_NAME = `p="$@"; p="$${p\#\#*/}"; p="$${p\#lib}"; echo "$${p%_plugin*}"`
+MODULE_NAME = $$(p="$@"; p="$${p\#\#*/}"; p="$${p\#lib}"; echo "$${p%_plugin*}")
 AM_CFLAGS = 
 AM_CXXFLAGS = 
 AM_OBJCFLAGS = 
+AM_LIBADD = $(LIBPTHREAD)
 AM_LDFLAGS = -rpath '$(libvlcdir)' \
 	-avoid-version -module \
 	-export-symbols-regex ^vlc_entry \
 	-shrext $(LIBEXT) \
-	-no-undefined
+	-no-undefined \
+	$(LTLIBVLCCORE) $(top_builddir)/compat/libcompat.la
 
-AM_LIBADD = $(LTLIBVLCCORE) $(top_builddir)/compat/libcompat.la $(LIBS_plugin)
-libmemcpyaltivec_plugin_la_SOURCES = memcpy.c
-libmemcpyaltivec_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_memcpyaltivec)
-libmemcpyaltivec_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_memcpyaltivec)
-libmemcpyaltivec_plugin_la_DEPENDENCIES = 
 libi420_yuy2_altivec_plugin_la_SOURCES = \
         ../video_chroma/i420_yuy2.c \
 	../video_chroma/i420_yuy2.h
 
 libi420_yuy2_altivec_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_i420_yuy2_altivec)
 libi420_yuy2_altivec_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_i420_yuy2_altivec)
-libi420_yuy2_altivec_plugin_la_DEPENDENCIES = 
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -1028,9 +1012,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu modules/altivec/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign modules/altivec/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu modules/altivec/Makefile
+	  $(AUTOMAKE) --foreign modules/altivec/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -1084,8 +1068,6 @@ clean-libvlcLTLIBRARIES:
 	done
 libi420_yuy2_altivec_plugin.la: $(libi420_yuy2_altivec_plugin_la_OBJECTS) $(libi420_yuy2_altivec_plugin_la_DEPENDENCIES) $(EXTRA_libi420_yuy2_altivec_plugin_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libi420_yuy2_altivec_plugin_la_LINK) -rpath $(libvlcdir) $(libi420_yuy2_altivec_plugin_la_OBJECTS) $(libi420_yuy2_altivec_plugin_la_LIBADD) $(LIBS)
-libmemcpyaltivec_plugin.la: $(libmemcpyaltivec_plugin_la_OBJECTS) $(libmemcpyaltivec_plugin_la_DEPENDENCIES) $(EXTRA_libmemcpyaltivec_plugin_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libmemcpyaltivec_plugin_la_LINK) -rpath $(libvlcdir) $(libmemcpyaltivec_plugin_la_OBJECTS) $(libmemcpyaltivec_plugin_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -1094,7 +1076,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libi420_yuy2_altivec_plugin_la-i420_yuy2.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmemcpyaltivec_plugin_la-memcpy.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -1123,13 +1104,6 @@ libi420_yuy2_altivec_plugin_la-i420_yuy2.lo: ../video_chroma/i420_yuy2.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../video_chroma/i420_yuy2.c' object='libi420_yuy2_altivec_plugin_la-i420_yuy2.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libi420_yuy2_altivec_plugin_la_CFLAGS) $(CFLAGS) -c -o libi420_yuy2_altivec_plugin_la-i420_yuy2.lo `test -f '../video_chroma/i420_yuy2.c' || echo '$(srcdir)/'`../video_chroma/i420_yuy2.c
-
-libmemcpyaltivec_plugin_la-memcpy.lo: memcpy.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmemcpyaltivec_plugin_la_CFLAGS) $(CFLAGS) -MT libmemcpyaltivec_plugin_la-memcpy.lo -MD -MP -MF $(DEPDIR)/libmemcpyaltivec_plugin_la-memcpy.Tpo -c -o libmemcpyaltivec_plugin_la-memcpy.lo `test -f 'memcpy.c' || echo '$(srcdir)/'`memcpy.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmemcpyaltivec_plugin_la-memcpy.Tpo $(DEPDIR)/libmemcpyaltivec_plugin_la-memcpy.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='memcpy.c' object='libmemcpyaltivec_plugin_la-memcpy.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmemcpyaltivec_plugin_la_CFLAGS) $(CFLAGS) -c -o libmemcpyaltivec_plugin_la-memcpy.lo `test -f 'memcpy.c' || echo '$(srcdir)/'`memcpy.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

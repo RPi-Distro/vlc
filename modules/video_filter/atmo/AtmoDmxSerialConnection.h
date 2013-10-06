@@ -4,7 +4,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 02103c01f86d06bb24add8a3f2519a439e9c5b4b $
+ * $Id: 1224fdf5e911a37fe000d3b486e4efdefb5def58 $
  */
 #ifndef _AtmoDmxSerialConnection_h_
 #define _AtmoDmxSerialConnection_h_
@@ -14,7 +14,7 @@
 #include "AtmoConnection.h"
 #include "AtmoConfig.h"
 
-#if defined(WIN32)
+#if defined(_WIN32)
 #   include <windows.h>
 #endif
 
@@ -26,7 +26,7 @@ class CAtmoDmxSerialConnection : public CAtmoConnection {
         // contains the DMX Start Adress of each Atmo-Dmx-Channel
         int *m_dmx_channels_base;
 
-#if defined(WIN32)
+#if defined(_WIN32)
         DWORD  m_dwLastWin32Error;
     public:
         DWORD getLastError() { return m_dwLastWin32Error; }

@@ -1,6 +1,6 @@
 /*****************************************************************************
  * Copyright © 2011 VideoLAN
- * $Id: dffb226bf220c1413ffe05235b9c629d211a7858 $
+ * $Id: af1036849d6fb7023915ae4e29b2ee9824fe2d88 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -36,14 +36,16 @@ class TimeTooltip : public QWidget
     Q_OBJECT
 public:
     explicit TimeTooltip( QWidget *parent = 0 );
-    void setText( const QString& time, const QString& text );
+    void setTip( const QPoint& pos, const QString& time, const QString& text );
     virtual void show();
 
 protected:
     virtual void paintEvent( QPaintEvent * );
 
 private:
+    void adjustPosition();
     void buildPath();
+    QPoint mTarget;
     QString mTime;
     QString mText;
     QString mDisplayedText;
@@ -51,7 +53,8 @@ private:
     QRect mBox;
     QPainterPath mPainterPath;
     QBitmap mMask;
-    int mPreviousMetricsWidth;
+    int mTipX;
+    bool mInitialized;
 };
 
 #endif // TIMETOOLTIP_H

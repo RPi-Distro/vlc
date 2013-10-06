@@ -1,13 +1,15 @@
 /*****************************************************************************
- * dbus-introspect.h : dbus control module (mpris v2.1) - introspection data
+ * dbus_introspect.h : dbus control module (mpris v2.1) - introspection data
  *****************************************************************************
  * Copyright © 2006-2011 Rafaël Carré
  * Copyright © 2007-2011 Mirsal Ennaime
  * Copyright © 2009-2011 The VideoLAN team
- * $Id: de9ec159198e8ba69bf38568b7eab2c61133ecb9 $
+ * Copyright © 2013      Alex Merry
+ * $Id: 0b691679b5bd17500006311d2ca7485d13ca3a74 $
  *
  * Authors:    Mirsal Ennaime <mirsal at mirsal fr>
  *             Rafaël Carré <funman at videolanorg>
+ *             Alex Merry <dev at randomguy3 me uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +52,10 @@ static const char* psz_introspection_xml =
 "      <arg direction=\"in\" type=\"s\"/>\n"
 "      <arg direction=\"in\" type=\"v\"/>\n"
 "    </method>\n"
+"    <method name=\"GetAll\">\n"
+"      <arg direction=\"in\" type=\"s\"/>\n"
+"      <arg direction=\"out\" type=\"a{sv}\"/>\n"
+"    </method>\n"
 "    <signal name=\"PropertiesChanged\">\n"
 "      <arg type=\"s\"/>\n"
 "      <arg type=\"a{sv}\"/>\n"
@@ -63,6 +69,8 @@ static const char* psz_introspection_xml =
 "    <property name=\"SupportedUriSchemes\" type=\"as\" access=\"read\" />\n"
 "    <property name=\"HasTrackList\" type=\"b\" access=\"read\" />\n"
 "    <property name=\"CanQuit\" type=\"b\" access=\"read\" />\n"
+"    <property name=\"CanSetFullscreen\" type=\"b\" access=\"read\" />\n"
+"    <property name=\"Fullscreen\" type=\"b\" access=\"readwrite\" />\n"
 "    <property name=\"CanRaise\" type=\"b\" access=\"read\" />\n"
 "    <method name=\"Quit\" />\n"
 "    <method name=\"Raise\" />\n"

@@ -1,26 +1,34 @@
 /*****************************************************************************
  * libmpeg2.c: mpeg2 video decoder module making use of libmpeg2.
  *****************************************************************************
- * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 62d359c74263cee99122edbb35a4cd3820c49691 $
+ * Copyright (C) 1999-2001 VLC authors and VideoLAN
+ * $Id: 928c8aa02c325acc43f344566b38ccb71e2d0bc7 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+/*****************************************************************************
+ * NOTA BENE: this module requires the linking against a library which is
+ * known to require licensing under the GNU General Public License version 2
+ * (or later). Therefore, the result of compiling this module will normally
+ * be subject to the terms of that later license.
+ *****************************************************************************/
+
 
 /*****************************************************************************
  * Preamble
@@ -192,35 +200,26 @@ static int OpenDecoder( vlc_object_t *p_this )
     p_sys->i_gop_user_data = 0;
 
 #if defined( __i386__ ) || defined( __x86_64__ )
-    if( vlc_CPU() & CPU_CAPABILITY_MMX )
-    {
+    if( vlc_CPU_MMX() )
         i_accel |= MPEG2_ACCEL_X86_MMX;
-    }
-
-    if( vlc_CPU() & CPU_CAPABILITY_3DNOW )
-    {
+    if( vlc_CPU_3dNOW() )
         i_accel |= MPEG2_ACCEL_X86_3DNOW;
-    }
-
-    if( vlc_CPU() & CPU_CAPABILITY_MMXEXT )
-    {
+    if( vlc_CPU_MMXEXT() )
         i_accel |= MPEG2_ACCEL_X86_MMXEXT;
-    }
-
 #elif defined( __powerpc__ ) || defined( __ppc__ ) || defined( __ppc64__ )
-    if( vlc_CPU() & CPU_CAPABILITY_ALTIVEC )
-    {
+    if( vlc_CPU_ALTIVEC() )
         i_accel |= MPEG2_ACCEL_PPC_ALTIVEC;
-    }
 
-#elif defined(__arm__) && defined(MPEG2_ACCEL_ARM)
+#elif defined(__arm__)
+# ifdef MPEG2_ACCEL_ARM
     i_accel |= MPEG2_ACCEL_ARM;
-
+# endif
 # ifdef MPEG2_ACCEL_ARM_NEON
-    if( vlc_CPU() & CPU_CAPABILITY_NEON )
-	i_accel |= MPEG2_ACCEL_ARM_NEON;
+    if( vlc_CPU_ARM_NEON() )
+        i_accel |= MPEG2_ACCEL_ARM_NEON;
 # endif
 
+    /* TODO: sparc */
 #else
     /* If we do not know this CPU, trust libmpeg2's feature detection */
     i_accel = MPEG2_ACCEL_DETECT;
@@ -704,7 +703,7 @@ static block_t *GetCc( decoder_t *p_dec, bool pb_present[4] )
     if( p_sys->cc.i_data <= 0 )
         return NULL;
 
-    p_cc = block_New( p_dec, p_sys->cc.i_data);
+    p_cc = block_Alloc( p_sys->cc.i_data);
     if( p_cc )
     {
         memcpy( p_cc->p_buffer, p_sys->cc.p_data, p_sys->cc.i_data );

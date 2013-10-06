@@ -2,7 +2,7 @@
  * control.c
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: d50ea973eed0c897c035ac14f9df5dc3ab1c4f88 $
+ * $Id: a4b2842cf369c6c08c181d9179050c092002e0cd $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -135,6 +135,15 @@ int input_vaControl( input_thread_t *p_input, int i_query, va_list args )
         case INPUT_SET_SPU_DELAY:
             i_64 = (int64_t)va_arg( args, int64_t );
             return var_SetTime( p_input, "spu-delay", i_64 );
+
+        case INPUT_NAV_ACTIVATE:
+        case INPUT_NAV_UP:
+        case INPUT_NAV_DOWN:
+        case INPUT_NAV_LEFT:
+        case INPUT_NAV_RIGHT:
+            input_ControlPush( p_input, i_query - INPUT_NAV_ACTIVATE
+                               + INPUT_CONTROL_NAV_ACTIVATE, NULL );
+            return VLC_SUCCESS;
 
         case INPUT_ADD_INFO:
         {
@@ -394,7 +403,7 @@ int input_vaControl( input_thread_t *p_input, int i_query, va_list args )
                 return VLC_EGENERIC;
             }
             *pi_attachment = p_input->p->i_attachment;
-            *ppp_attachment = malloc( sizeof(input_attachment_t**) * p_input->p->i_attachment );
+            *ppp_attachment = malloc( sizeof(input_attachment_t*) * p_input->p->i_attachment );
             for( i = 0; i < p_input->p->i_attachment; i++ )
                 (*ppp_attachment)[i] = vlc_input_attachment_Duplicate( p_input->p->attachment[i] );
 

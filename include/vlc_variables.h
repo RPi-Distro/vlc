@@ -1,8 +1,8 @@
 /*****************************************************************************
- * variables.h: variables handling
+ * vlc_variables.h: variables handling
  *****************************************************************************
  * Copyright (C) 2002-2004 VLC authors and VideoLAN
- * $Id: f205d4c1dd87fde7159c569b0a62d0ccdb78e016 $
+ * $Id: 241185d2eb9a7314258ed8f523e607c7efcca600 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -167,9 +167,6 @@ VLC_API int var_GetChecked( vlc_object_t *, const char *, int, vlc_value_t * );
 VLC_API int var_GetAndSet( vlc_object_t *, const char *, int, vlc_value_t * );
 
 VLC_API int var_Inherit( vlc_object_t *, const char *, int, vlc_value_t * );
-
-VLC_API int var_Command( vlc_object_t *, const char *, const char *, const char *, char ** );
-#define var_Command(a,b,c,d,e) var_Command( VLC_OBJECT( a ), b, c, d, e )
 
 VLC_API void var_FreeList( vlc_value_t *, vlc_value_t * );
 

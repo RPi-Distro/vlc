@@ -2,7 +2,7 @@
  * vlc_input_item.h: Core input item
  *****************************************************************************
  * Copyright (C) 1999-2009 VLC authors and VideoLAN
- * $Id: 686957288e574ef911209db70178568c9ba61a39 $
+ * $Id: 0f9800da4dd2cd7febdca74b4787054d6baa5dee $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -54,7 +54,6 @@ struct info_category_t
 
 struct input_item_t
 {
-    VLC_GC_MEMBERS
     int        i_id;                 /**< Identifier of the item */
 
     char       *psz_name;            /**< text describing this item */
@@ -228,6 +227,7 @@ INPUT_META(Publisher)
 INPUT_META(EncodedBy)
 INPUT_META(ArtworkURL)
 INPUT_META(TrackID)
+INPUT_META(TrackTotal)
 
 #define input_item_SetTrackNum input_item_SetTrackNumber
 #define input_item_GetTrackNum input_item_GetTrackNumber
@@ -267,6 +267,15 @@ VLC_API input_item_t * input_item_NewExt( const char *psz_uri, const char *psz_n
  */
 VLC_API input_item_t * input_item_Copy(input_item_t * ) VLC_USED;
 
+/** Holds an input item, i.e. creates a new reference. */
+VLC_API input_item_t *input_item_Hold(input_item_t *);
+
+/** Releases an input item, i.e. decrements its reference counter. */
+VLC_API void input_item_Release(input_item_t *);
+
+/* Historical hack... */
+#define vlc_gc_incref(i) input_item_Hold(i)
+#define vlc_gc_decref(i) input_item_Release(i)
 
 /******************
  * Input stats

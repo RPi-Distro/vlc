@@ -2,7 +2,7 @@
  * vlc_keys.h: keycode defines
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: f08243bddf0f2b06752bba8665ce50b2dc5d57bb $
+ * $Id: 62a52fde038aae844097413977156d27d81296fb $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -80,13 +80,31 @@
 #define KEY_MEDIA_PREV_TRACK 0x004A0000
 #define KEY_MEDIA_STOP       0x004B0000
 #define KEY_MEDIA_PLAY_PAUSE 0x004C0000
+#define KEY_MEDIA_RECORD     0x004D0000
+#define KEY_MEDIA_REWIND     0x004E0000
+#define KEY_MEDIA_FORWARD    0x004F0000
+#define KEY_MEDIA_REPEAT     0x00500000
+#define KEY_MEDIA_SHUFFLE    0x00510000
+#define KEY_MEDIA_SUBTITLE   0x00520000
+#define KEY_MEDIA_AUDIO      0x00530000
+#define KEY_MEDIA_ANGLE      0x00540000
+#define KEY_MEDIA_TIME       0x00550000
+#define KEY_MEDIA_FRAME_PREV 0x00560000
+#define KEY_MEDIA_FRAME_NEXT 0x00570000
+#define KEY_MEDIA_SELECT     0x00580000
+#define KEY_MEDIA_VIEW       0x00590000
+#define KEY_MEDIA_MENU       0x005A0000
+#define KEY_ZOOM_IN          0x00600000
+#define KEY_ZOOM_OUT         0x00610000
+#define KEY_BRIGHTNESS_UP    0x00620000
+#define KEY_BRIGHTNESS_DOWN  0x00630000
 
 #define KEY_MOUSEWHEELUP     0x00F00000
 #define KEY_MOUSEWHEELDOWN   0x00F10000
 #define KEY_MOUSEWHEELLEFT   0x00F20000
 #define KEY_MOUSEWHEELRIGHT  0x00F30000
 
-VLC_API char *vlc_keycode2str(uint_fast32_t i_key) VLC_USED;
+VLC_API char *vlc_keycode2str(uint_fast32_t i_key, bool locale) VLC_USED;
 VLC_API uint_fast32_t vlc_str2keycode(const char *str) VLC_USED;
 
 typedef enum vlc_action {
@@ -141,8 +159,13 @@ typedef enum vlc_action {
     ACTIONID_PLAY_BOOKMARK9,
     ACTIONID_PLAY_BOOKMARK10,
     /* end of contiguous zone */
+    ACTIONID_PLAY_CLEAR,
     ACTIONID_SUBDELAY_UP,
     ACTIONID_SUBDELAY_DOWN,
+    ACTIONID_SUBSYNC_MARKAUDIO,
+    ACTIONID_SUBSYNC_MARKSUB,
+    ACTIONID_SUBSYNC_APPLY,
+    ACTIONID_SUBSYNC_RESET,
     ACTIONID_SUBPOS_UP,
     ACTIONID_SUBPOS_DOWN,
     ACTIONID_AUDIO_TRACK,
@@ -164,6 +187,7 @@ typedef enum vlc_action {
     ACTIONID_ASPECT_RATIO,
     ACTIONID_CROP,
     ACTIONID_DEINTERLACE,
+    ACTIONID_DEINTERLACE_MODE,
     ACTIONID_ZOOM,
     ACTIONID_UNZOOM,
     ACTIONID_CROP_TOP,
@@ -178,13 +202,6 @@ typedef enum vlc_action {
     ACTIONID_LOOP,
     ACTIONID_WALLPAPER,
     ACTIONID_LEAVE_FULLSCREEN,
-    ACTIONID_MENU_ON,
-    ACTIONID_MENU_OFF,
-    ACTIONID_MENU_RIGHT,
-    ACTIONID_MENU_LEFT,
-    ACTIONID_MENU_UP,
-    ACTIONID_MENU_DOWN,
-    ACTIONID_MENU_SELECT,
     /* Zoom */
     ACTIONID_ZOOM_QUARTER,
     ACTIONID_ZOOM_HALF,
@@ -200,6 +217,10 @@ typedef enum vlc_action {
     ACTIONID_RATE_NORMAL,
     ACTIONID_RATE_SLOWER_FINE,
     ACTIONID_RATE_FASTER_FINE,
+    /* Cycle Through Program Service IDs */
+    ACTIONID_PROGRAM_SID_NEXT,
+    ACTIONID_PROGRAM_SID_PREV,
+    ACTIONID_INTF_POPUP_MENU,
 
 } vlc_action_t;
 

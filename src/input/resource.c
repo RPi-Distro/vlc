@@ -2,7 +2,7 @@
  * resource.c
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 56b729da3c54c52aaa99641ca9692847992d1f3a $
+ * $Id: f3a82dd651be5be09d62f15758c08c790dc9b8d9 $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
@@ -31,6 +31,7 @@
 #include <assert.h>
 
 #include <vlc_common.h>
+#include <vlc_atomic.h>
 #include <vlc_vout.h>
 #include <vlc_spu.h>
 #include <vlc_aout.h>
@@ -44,7 +45,7 @@
 
 struct input_resource_t
 {
-    VLC_GC_MEMBERS
+    atomic_uint    refs;
 
     vlc_object_t   *p_parent;
 
@@ -70,7 +71,6 @@ struct input_resource_t
     vout_thread_t   **pp_vout;
     int             i_vout;
 
-    /* TODO? track more than one audio output (like video outputs) */
     bool            b_aout_busy;
     audio_output_t *p_aout;
 };
@@ -259,7 +259,7 @@ static vout_thread_t *RequestVout( input_resource_t *p_resource,
         if( p_resource->p_vout_free || i_vout_active > 0 || !b_recycle )
         {
             if( b_recycle )
-                msg_Dbg( p_resource->p_parent, "detroying vout (already one saved or active)" );
+                msg_Dbg( p_resource->p_parent, "destroying vout (already one saved or active)" );
             vout_CloseAndRelease( p_vout );
         }
         else
@@ -324,39 +324,15 @@ exit:
     vlc_mutex_unlock( &p_resource->lock_hold );
 }
 
-/* */
-static void DestroyAout( input_resource_t *p_resource )
-{
-    if( p_resource->p_aout )
-    {
-        aout_Destroy( p_resource->p_aout );
-        p_resource->p_aout = NULL;
-    }
-}
-
-static void ReleaseAout( input_resource_t *p_resource,
-                         audio_output_t *p_aout )
-{
-    if( likely(p_aout == p_resource->p_aout) )
-    {
-        assert( p_resource->b_aout_busy );
-        p_resource->b_aout_busy = false;
-        msg_Dbg( p_resource->p_parent, "releasing audio output" );
-        vlc_object_release( p_aout );
-    }
-    else
-    {
-        msg_Dbg( p_resource->p_parent, "destroying extra audio output" );
-        aout_Destroy( p_aout );
-    }
-}
-
-static audio_output_t *AllocateAout( input_resource_t *p_resource )
+/* Audio output */
+audio_output_t *input_resource_GetAout( input_resource_t *p_resource )
 {
     audio_output_t *p_aout;
 
-    if( unlikely(p_resource->b_aout_busy) )
+    vlc_mutex_lock( &p_resource->lock );
+    if( p_resource->b_aout_busy )
     {
+        vlc_mutex_unlock( &p_resource->lock );
         msg_Dbg( p_resource->p_parent, "creating extra audio output" );
         return aout_New( p_resource->p_parent );
     }
@@ -366,81 +342,82 @@ static audio_output_t *AllocateAout( input_resource_t *p_resource )
     {
         msg_Dbg( p_resource->p_parent, "creating audio output" );
         p_aout = aout_New( p_resource->p_parent );
-        if( unlikely(p_aout == NULL) )
-            return NULL;
-
-        vlc_mutex_lock( &p_resource->lock_hold );
-        assert( p_resource->p_aout == NULL );
-        p_resource->p_aout = p_aout;
-        vlc_mutex_unlock( &p_resource->lock_hold );
     }
     else
-        msg_Dbg( p_resource->p_parent, "recycling audio output" );
+        msg_Dbg( p_resource->p_parent, "reusing audio output" );
 
-    p_resource->b_aout_busy = true;
-    vlc_object_hold( p_aout );
-    return p_aout;
-}
-
-static audio_output_t *RequestAout( input_resource_t *p_resource, audio_output_t *p_aout )
-{
-    vlc_assert_locked( &p_resource->lock );
-
-    if( p_aout )
+    if( p_aout != NULL )
     {
-        ReleaseAout( p_resource, p_aout );
-        return NULL;
-    }
-    return AllocateAout( p_resource );
-}
+        vlc_mutex_lock( &p_resource->lock_hold );
+        p_resource->p_aout = p_aout;
+        vlc_mutex_unlock( &p_resource->lock_hold );
 
-static audio_output_t *HoldAout( input_resource_t *p_resource )
-{
-    vlc_mutex_lock( &p_resource->lock_hold );
-
-    audio_output_t *p_aout = p_resource->p_aout;
-    if( p_aout )
+        p_resource->b_aout_busy = true;
         vlc_object_hold( p_aout );
-
-    vlc_mutex_unlock( &p_resource->lock_hold );
-
+    }
+    vlc_mutex_unlock( &p_resource->lock );
     return p_aout;
 }
 
-static void TerminateAout( input_resource_t *p_resource )
+void input_resource_PutAout( input_resource_t *p_resource,
+                             audio_output_t *p_aout )
 {
-    vlc_mutex_lock( &p_resource->lock_hold );
+    assert( p_aout != NULL );
 
-    audio_output_t *p_aout = p_resource->p_aout;
-    p_resource->p_aout = NULL;
+    vlc_mutex_lock( &p_resource->lock );
+    if( p_aout == p_resource->p_aout )
+    {
+        assert( p_resource->b_aout_busy );
+        p_resource->b_aout_busy = false;
+        msg_Dbg( p_resource->p_parent, "keeping audio output" );
+        vlc_object_release( p_aout );
+        p_aout = NULL;
+    }
+    else
+        msg_Dbg( p_resource->p_parent, "destroying extra audio output" );
+    vlc_mutex_unlock( &p_resource->lock );
 
-    vlc_mutex_unlock( &p_resource->lock_hold );
-
-    if( p_aout )
+    if( p_aout != NULL )
         aout_Destroy( p_aout );
 }
 
-static void Destructor( gc_object_t *p_gc )
+audio_output_t *input_resource_HoldAout( input_resource_t *p_resource )
 {
-    input_resource_t *p_resource = vlc_priv( p_gc, input_resource_t );
+    audio_output_t *p_aout;
 
-    DestroySout( p_resource );
-    DestroyVout( p_resource );
-    DestroyAout( p_resource );
+    vlc_mutex_lock( &p_resource->lock_hold );
+    p_aout = p_resource->p_aout;
+    if( p_aout )
+        vlc_object_hold( p_aout );
+    vlc_mutex_unlock( &p_resource->lock_hold );
 
-    vlc_mutex_destroy( &p_resource->lock_hold );
-    vlc_mutex_destroy( &p_resource->lock );
-    free( p_resource );
+    return p_aout;
 }
 
-/* */
+static void input_resource_TerminateAout( input_resource_t *p_resource )
+{
+    audio_output_t *p_aout;
+
+    vlc_mutex_lock( &p_resource->lock );
+    vlc_mutex_lock( &p_resource->lock_hold );
+    p_aout = p_resource->p_aout;
+    p_resource->p_aout = NULL;
+    vlc_mutex_unlock( &p_resource->lock_hold );
+    p_resource->b_aout_busy = false;
+    vlc_mutex_unlock( &p_resource->lock );
+
+    if( p_aout != NULL )
+        aout_Destroy( p_aout );
+}
+
+/* Common */
 input_resource_t *input_resource_New( vlc_object_t *p_parent )
 {
     input_resource_t *p_resource = calloc( 1, sizeof(*p_resource) );
     if( !p_resource )
         return NULL;
 
-    vlc_gc_init( p_resource, Destructor );
+    atomic_init( &p_resource->refs, 1 );
     p_resource->p_parent = p_parent;
     vlc_mutex_init( &p_resource->lock );
     vlc_mutex_init( &p_resource->lock_hold );
@@ -449,12 +426,22 @@ input_resource_t *input_resource_New( vlc_object_t *p_parent )
 
 void input_resource_Release( input_resource_t *p_resource )
 {
-    vlc_gc_decref( p_resource );
+    if( atomic_fetch_sub( &p_resource->refs, 1 ) != 1 )
+        return;
+
+    DestroySout( p_resource );
+    DestroyVout( p_resource );
+    if( p_resource->p_aout != NULL )
+        aout_Destroy( p_resource->p_aout );
+
+    vlc_mutex_destroy( &p_resource->lock_hold );
+    vlc_mutex_destroy( &p_resource->lock );
+    free( p_resource );
 }
 
 input_resource_t *input_resource_Hold( input_resource_t *p_resource )
 {
-    vlc_gc_incref( p_resource );
+    atomic_fetch_add( &p_resource->refs, 1 );
     return p_resource;
 }
 
@@ -508,20 +495,6 @@ bool input_resource_HasVout( input_resource_t *p_resource )
 }
 
 /* */
-audio_output_t *input_resource_RequestAout( input_resource_t *p_resource, audio_output_t *p_aout )
-{
-    vlc_mutex_lock( &p_resource->lock );
-    audio_output_t *p_ret = RequestAout( p_resource, p_aout );
-    vlc_mutex_unlock( &p_resource->lock );
-
-    return p_ret;
-}
-audio_output_t *input_resource_HoldAout( input_resource_t *p_resource )
-{
-    return HoldAout( p_resource );
-}
-
-/* */
 sout_instance_t *input_resource_RequestSout( input_resource_t *p_resource, sout_instance_t *p_sout, const char *psz_sout )
 {
     vlc_mutex_lock( &p_resource->lock );
@@ -538,11 +511,7 @@ void input_resource_TerminateSout( input_resource_t *p_resource )
 void input_resource_Terminate( input_resource_t *p_resource )
 {
     input_resource_TerminateSout( p_resource );
-
-    vlc_mutex_lock( &p_resource->lock );
-    TerminateAout( p_resource );
-    vlc_mutex_unlock( &p_resource->lock );
-
+    input_resource_TerminateAout( p_resource );
     input_resource_TerminateVout( p_resource );
 }
 

@@ -1,57 +1,61 @@
 /*****************************************************************************
- * vaapi.c: VAAPI helpers for the ffmpeg decoder
+ * vaapi.c: VAAPI helpers for the libavcodec decoder
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 7036768918a5af695cb2cdc3cae8524cadf5cd76 $
+ * $Id: d8703a02b852d6091b9538b49f1c703b6af0c08b $
  *
  * Authors: Laurent Aimar <fenrir_AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
-#include <vlc_fourcc.h>
 #include <assert.h>
 
-#ifdef HAVE_LIBAVCODEC_AVCODEC_H
-#   include <libavcodec/avcodec.h>
-#else
-#   include <avcodec.h>
-#endif
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_fourcc.h>
+#include <vlc_xlib.h>
+
+#include <libavcodec/avcodec.h>
+#include <libavcodec/vaapi.h>
+#include <X11/Xlib.h>
+#include <va/va_x11.h>
 
 #include "avcodec.h"
 #include "va.h"
 #include "copy.h"
 
-#ifdef HAVE_AVCODEC_VAAPI
-
-#include <vlc_xlib.h>
-
-#include <libavcodec/vaapi.h>
-
-#include <X11/Xlib.h>
-#include <va/va_x11.h>
-
 #ifndef VA_SURFACE_ATTRIB_SETTABLE
 #define vaCreateSurfaces(d, f, w, h, s, ns, a, na) \
     vaCreateSurfaces(d, w, h, f, ns, s)
 #endif
+
+static int Create( vlc_va_t *, int, const es_format_t * );
+static void Delete( vlc_va_t * );
+
+vlc_module_begin ()
+    set_description( N_("Video Acceleration (VA) API") )
+    set_capability( "hw decoder", 50 )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_VCODEC )
+    set_callbacks( Create, Delete )
+vlc_module_end ()
 
 typedef struct
 {
@@ -61,11 +65,8 @@ typedef struct
 
 } vlc_va_surface_t;
 
-typedef struct
+struct vlc_va_sys_t
 {
-    vlc_va_t     va;
-
-    /* */
     Display      *p_display_x11;
     VADisplay     p_display;
 
@@ -91,16 +92,15 @@ typedef struct
     copy_cache_t image_cache;
 
     bool b_supports_derive;
-} vlc_va_vaapi_t;
-
-static vlc_va_vaapi_t *vlc_va_vaapi_Get( void *p_va )
-{
-    return p_va;
-}
+};
 
 /* */
-static int Open( vlc_va_vaapi_t *p_va, int i_codec_id )
+static int Open( vlc_va_t *p_external, int i_codec_id )
 {
+    vlc_va_sys_t *p_va = calloc( 1, sizeof(*p_va) );
+    if ( unlikely(p_va == NULL) )
+       return VLC_ENOMEM;
+
     VAProfile i_profile, *p_profiles_list;
     bool b_supported_profile = false;
     int i_profiles_nb = 0;
@@ -109,24 +109,24 @@ static int Open( vlc_va_vaapi_t *p_va, int i_codec_id )
     /* */
     switch( i_codec_id )
     {
-    case CODEC_ID_MPEG1VIDEO:
-    case CODEC_ID_MPEG2VIDEO:
+    case AV_CODEC_ID_MPEG1VIDEO:
+    case AV_CODEC_ID_MPEG2VIDEO:
         i_profile = VAProfileMPEG2Main;
         i_surface_count = 2+1;
         break;
-    case CODEC_ID_MPEG4:
+    case AV_CODEC_ID_MPEG4:
         i_profile = VAProfileMPEG4AdvancedSimple;
         i_surface_count = 2+1;
         break;
-    case CODEC_ID_WMV3:
+    case AV_CODEC_ID_WMV3:
         i_profile = VAProfileVC1Main;
         i_surface_count = 2+1;
         break;
-    case CODEC_ID_VC1:
+    case AV_CODEC_ID_VC1:
         i_profile = VAProfileVC1Advanced;
         i_surface_count = 2+1;
         break;
-    case CODEC_ID_H264:
+    case AV_CODEC_ID_H264:
         i_profile = VAProfileH264High;
         i_surface_count = 16+1;
         break;
@@ -135,7 +135,6 @@ static int Open( vlc_va_vaapi_t *p_va, int i_codec_id )
     }
 
     /* */
-    memset( p_va, 0, sizeof(*p_va) );
     p_va->i_config_id  = VA_INVALID_ID;
     p_va->i_context_id = VA_INVALID_ID;
     p_va->image.image_id = VA_INVALID_ID;
@@ -143,19 +142,28 @@ static int Open( vlc_va_vaapi_t *p_va, int i_codec_id )
     /* Create a VA display */
     p_va->p_display_x11 = XOpenDisplay(NULL);
     if( !p_va->p_display_x11 )
+    {
+        msg_Err( p_external, "Could not connect to X server" );
         goto error;
+    }
 
     p_va->p_display = vaGetDisplay( p_va->p_display_x11 );
     if( !p_va->p_display )
+    {
+        msg_Err( p_external, "Could not get a VAAPI device" );
         goto error;
+    }
 
     if( vaInitialize( p_va->p_display, &p_va->i_version_major, &p_va->i_version_minor ) )
+    {
+        msg_Err( p_external, "Failed to initialize the VAAPI device" );
         goto error;
+    }
 
     /* Check if the selected profile is supported */
     i_profiles_nb = vaMaxNumProfiles( p_va->p_display );
     p_profiles_list = calloc( i_profiles_nb, sizeof( VAProfile ) );
-    if ( !p_profiles_list )
+    if( !p_profiles_list )
         goto error;
 
     VAStatus i_status = vaQueryConfigProfiles( p_va->p_display, p_profiles_list, &i_profiles_nb );
@@ -172,7 +180,10 @@ static int Open( vlc_va_vaapi_t *p_va, int i_codec_id )
     }
     free( p_profiles_list );
     if ( !b_supported_profile )
+    {
+        msg_Dbg( p_external, "Codec and profile not supported by the hardware" );
         goto error;
+    }
 
     /* Create a VA configuration */
     VAConfigAttrib attrib;
@@ -196,17 +207,18 @@ static int Open( vlc_va_vaapi_t *p_va, int i_codec_id )
 
     p_va->b_supports_derive = false;
 
-    if( asprintf( &p_va->va.description, "VA API version %d.%d",
+    if( asprintf( &p_external->description, "VA API version %d.%d",
                   p_va->i_version_major, p_va->i_version_minor ) < 0 )
-        p_va->va.description = NULL;
+        p_external->description = NULL;
 
+    p_external->sys = p_va;
     return VLC_SUCCESS;
 
 error:
     return VLC_EGENERIC;
 }
 
-static void DestroySurfaces( vlc_va_vaapi_t *p_va )
+static void DestroySurfaces( vlc_va_sys_t *p_va )
 {
     if( p_va->image.image_id != VA_INVALID_ID )
     {
@@ -237,7 +249,7 @@ static void DestroySurfaces( vlc_va_vaapi_t *p_va )
     p_va->i_surface_width = 0;
     p_va->i_surface_height = 0;
 }
-static int CreateSurfaces( vlc_va_vaapi_t *p_va, void **pp_hw_ctx, vlc_fourcc_t *pi_chroma,
+static int CreateSurfaces( vlc_va_sys_t *p_va, void **pp_hw_ctx, vlc_fourcc_t *pi_chroma,
                            int i_width, int i_height )
 {
     assert( i_width > 0 && i_height > 0 );
@@ -289,11 +301,11 @@ static int CreateSurfaces( vlc_va_vaapi_t *p_va, void **pp_hw_ctx, vlc_fourcc_t 
         goto error;
     }
 
-    VAImage testImage;
-    if(vaDeriveImage(p_va->p_display, pi_surface_id[0], &testImage) == VA_STATUS_SUCCESS)
+    VAImage test_image;
+    if(vaDeriveImage(p_va->p_display, pi_surface_id[0], &test_image) == VA_STATUS_SUCCESS)
     {
         p_va->b_supports_derive = true;
-        vaDestroyImage(p_va->p_display, testImage.image_id);
+        vaDestroyImage(p_va->p_display, test_image.image_id);
     }
 
     vlc_fourcc_t  i_chroma = 0;
@@ -360,7 +372,7 @@ error:
 static int Setup( vlc_va_t *p_external, void **pp_hw_ctx, vlc_fourcc_t *pi_chroma,
                   int i_width, int i_height )
 {
-    vlc_va_vaapi_t *p_va = vlc_va_vaapi_Get(p_external);
+    vlc_va_sys_t *p_va = p_external->sys;
 
     if( p_va->i_surface_width == i_width &&
         p_va->i_surface_height == i_height )
@@ -382,7 +394,7 @@ static int Setup( vlc_va_t *p_external, void **pp_hw_ctx, vlc_fourcc_t *pi_chrom
 }
 static int Extract( vlc_va_t *p_external, picture_t *p_picture, AVFrame *p_ff )
 {
-    vlc_va_vaapi_t *p_va = vlc_va_vaapi_Get(p_external);
+    vlc_va_sys_t *p_va = p_external->sys;
 
     VASurfaceID i_surface_id = (VASurfaceID)(uintptr_t)p_ff->data[3];
 
@@ -459,7 +471,7 @@ static int Extract( vlc_va_t *p_external, picture_t *p_picture, AVFrame *p_ff )
 }
 static int Get( vlc_va_t *p_external, AVFrame *p_ff )
 {
-    vlc_va_vaapi_t *p_va = vlc_va_vaapi_Get(p_external);
+    vlc_va_sys_t *p_va = p_external->sys;
     int i_old;
     int i;
 
@@ -496,7 +508,7 @@ static int Get( vlc_va_t *p_external, AVFrame *p_ff )
 }
 static void Release( vlc_va_t *p_external, AVFrame *p_ff )
 {
-    vlc_va_vaapi_t *p_va = vlc_va_vaapi_Get(p_external);
+    vlc_va_sys_t *p_va = p_external->sys;
 
     VASurfaceID i_surface_id = (VASurfaceID)(uintptr_t)p_ff->data[3];
 
@@ -509,7 +521,7 @@ static void Release( vlc_va_t *p_external, AVFrame *p_ff )
     }
 }
 
-static void Close( vlc_va_vaapi_t *p_va )
+static void Close( vlc_va_sys_t *p_va )
 {
     if( p_va->i_surface_width || p_va->i_surface_height )
         DestroySurfaces( p_va );
@@ -521,43 +533,34 @@ static void Close( vlc_va_vaapi_t *p_va )
     if( p_va->p_display_x11 )
         XCloseDisplay( p_va->p_display_x11 );
 }
+
 static void Delete( vlc_va_t *p_external )
 {
-    vlc_va_vaapi_t *p_va = vlc_va_vaapi_Get(p_external);
+    vlc_va_sys_t *p_va = p_external->sys;
     Close( p_va );
-    free( p_va->va.description );
+    free( p_external->description );
     free( p_va );
 }
 
-/* */
-vlc_va_t *vlc_va_NewVaapi( vlc_object_t *obj, int i_codec_id )
+static int Create( vlc_va_t *p_va, int i_codec_id, const es_format_t *fmt )
 {
-    if( !vlc_xlib_init( obj ) )
-        return NULL;
-
-    vlc_va_vaapi_t *p_va = calloc( 1, sizeof(*p_va) );
-    if( !p_va )
-        return NULL;
-
-    if( Open( p_va, i_codec_id ) )
+    if( !vlc_xlib_init( VLC_OBJECT(p_va) ) )
     {
-        free( p_va );
-        return NULL;
+        msg_Warn( p_va, "Ignoring VA API" );
+        return VLC_EGENERIC;
     }
 
-    /* */
-    p_va->va.setup = Setup;
-    p_va->va.get = Get;
-    p_va->va.release = Release;
-    p_va->va.extract = Extract;
-    p_va->va.close = Delete;
-    return &p_va->va;
+    (void) fmt;
+
+    int err = Open( p_va, i_codec_id );
+    if( err )
+        return err;
+
+    /* Only VLD supported */
+    p_va->pix_fmt = PIX_FMT_VAAPI_VLD;
+    p_va->setup = Setup;
+    p_va->get = Get;
+    p_va->release = Release;
+    p_va->extract = Extract;
+    return VLC_SUCCESS;
 }
-#else
-vlc_va_t *vlc_va_NewVaapi( vlc_object_t *obj, int i_codec_id )
-{
-    VLC_UNUSED( obj );
-    VLC_UNUSED( i_codec_id );
-    return NULL;
-}
-#endif

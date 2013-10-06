@@ -2,7 +2,7 @@
  * image.c : wrapper for image reading/writing facilities
  *****************************************************************************
  * Copyright (C) 2004-2007 VLC authors and VideoLAN
- * $Id: 0902bd002ff6ace5f98689320a2602b792b6c18b $
+ * $Id: 2ce3f9ca691c42c6de34f7fcce52cd37fdd0b1a1 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -240,7 +240,7 @@ static picture_t *ImageReadUrl( image_handler_t *p_image, const char *psz_url,
 
     i_size = stream_Size( p_stream );
 
-    p_block = block_New( p_image->p_parent, i_size );
+    p_block = block_Alloc( i_size );
 
     stream_Read( p_stream, p_block->p_buffer, i_size );
 
@@ -531,7 +531,7 @@ static picture_t *ImageFilter( image_handler_t *p_image, picture_t *p_pic,
 static const struct
 {
     vlc_fourcc_t i_codec;
-    const char *psz_ext;
+    const char psz_ext[7];
 
 } ext_table[] =
 {
@@ -554,14 +554,11 @@ static const struct
     { VLC_CODEC_TIFF,              "tiff" },
     { VLC_FOURCC('l','b','m',' '), "lbm" },
     { VLC_CODEC_PPM,               "ppm" },
-    { 0, NULL }
 };
 
 vlc_fourcc_t image_Type2Fourcc( const char *psz_type )
 {
-    int i;
-
-    for( i = 0; ext_table[i].i_codec; i++ )
+    for( unsigned i = 0; i < ARRAY_SIZE(ext_table); i++ )
         if( !strcasecmp( ext_table[i].psz_ext, psz_type ) )
             return ext_table[i].i_codec;
 
@@ -580,12 +577,9 @@ vlc_fourcc_t image_Ext2Fourcc( const char *psz_name )
 /*
 static const char *Fourcc2Ext( vlc_fourcc_t i_codec )
 {
-    int i;
-
-    for( i = 0; ext_table[i].i_codec != 0; i++ )
-    {
-        if( ext_table[i].i_codec == i_codec ) return ext_table[i].psz_ext;
-    }
+    for( unsigned i = 0; i < ARRAY_SIZE(ext_table); i++ )
+        if( ext_table[i].i_codec == i_codec )
+            return ext_table[i].psz_ext;
 
     return NULL;
 }
@@ -633,11 +627,8 @@ static picture_t *video_new_buffer( decoder_t *p_dec )
 
 static void video_del_buffer( decoder_t *p_dec, picture_t *p_pic )
 {
-    if( p_pic->i_refcount != 1 )
-        msg_Err( p_dec, "invalid picture reference count" );
-
-    p_pic->i_refcount = 0;
-    picture_Delete( p_pic );
+    (void)p_dec;
+    picture_Release( p_pic );
 }
 
 static void video_link_picture( decoder_t *p_dec, picture_t *p_pic )

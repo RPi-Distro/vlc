@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 7d8b1e1b59647968f2198bafbf1be0e246284ed9 $
+ * $Id: 146734537f5423582d7e21677df52d7b3189c005 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
@@ -80,7 +80,7 @@
  *****************************************************************************/
 
 /* Maximum gap allowed between two CRs. */
-#define CR_MAX_GAP (INT64_C(2000000)*100/9)
+#define CR_MAX_GAP (60 * CLOCK_FREQ)
 
 /* Latency introduced on DVDs with CR == 0 on chapter change - this is from
  * my dice --Meuuh */

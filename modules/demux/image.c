@@ -2,23 +2,23 @@
  * image.c: Image demuxer
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 021f122bd0974723a6f9e3e09307a1e1d7cec8c7 $
+ * $Id: 672e7ba49eb1b31069cacd8cb8f134edb5c16090 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -85,7 +85,7 @@ vlc_module_begin()
         change_safe()
     add_string("image-chroma", "", CHROMA_TEXT, CHROMA_LONGTEXT, true)
         change_safe()
-    add_float("image-duration", 10, DURATION_TEXT, DURATION_LONGTEXT, true)
+    add_float("image-duration", 10, DURATION_TEXT, DURATION_LONGTEXT, false)
         change_safe()
     add_string("image-fps", "10/1", FPS_TEXT, FPS_LONGTEXT, true)
         change_safe()
@@ -150,7 +150,7 @@ static block_t *Decode(demux_t *demux,
         size += image->p[i].i_visible_pitch *
                 image->p[i].i_visible_lines;
 
-    data = block_New(demux, size);
+    data = block_Alloc(size);
     if (!data) {
         picture_Release(image);
         return NULL;

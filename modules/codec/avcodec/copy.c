@@ -2,23 +2,23 @@
  * copy.c: Fast YV12/NV12 copy
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: d0a8779de78d69a5bd05a951b92bd13ba87c07bf $
+ * $Id: e0823aaf69edecd3a7147dcc0e059b0b0602e6a1 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -72,6 +72,21 @@ void CopyCleanCache(copy_cache_t *cache)
         store " %%xmm4,   48(%[dst])\n" \
         : : [dst]"r"(dstp), [src]"r"(srcp) : "memory", "xmm1", "xmm2", "xmm3", "xmm4")
 
+#ifndef __SSE4_1__
+# undef vlc_CPU_SSE4_1
+# define vlc_CPU_SSE4_1() ((cpu & VLC_CPU_SSE4_1) != 0)
+#endif
+
+#ifndef __SSSE3__
+# undef vlc_CPU_SSSE3
+# define vlc_CPU_SSSE3() ((cpu & VLC_CPU_SSSE3) != 0)
+#endif
+
+#ifndef __SSE2__
+# undef vlc_CPU_SSE2
+# define vlc_CPU_SSE2() ((cpu & VLC_CPU_SSE2) != 0)
+#endif
+
 /* Optimized copy from "Uncacheable Speculative Write Combining" memory
  * as used by some video surface.
  * XXX It is really efficient only when SSE4.1 is available.
@@ -94,7 +109,7 @@ static void CopyFromUswc(uint8_t *dst, size_t dst_pitch,
             dst[x] = src[x];
 
 #ifdef CAN_COMPILE_SSE4_1
-        if (cpu & CPU_CAPABILITY_SSE4_1) {
+        if (vlc_CPU_SSE4_1()) {
             if (!unaligned) {
                 for (; x+63 < width; x += 64)
                     COPY64(&dst[x], &src[x], "movntdqa", "movdqa");
@@ -186,7 +201,8 @@ static void SSE_SplitUV(uint8_t *dstu, size_t dstu_pitch,
     "movhpd %%xmm3,  24(%[dst2])\n"
 
 #ifdef CAN_COMPILE_SSSE3
-        if (cpu & CPU_CAPABILITY_SSSE3) {
+        if (vlc_CPU_SSSE3())
+        {
             for (x = 0; x < (width & ~31); x += 32) {
                 asm volatile (
                     "movdqu (%[shuffle]), %%xmm7\n"
@@ -362,7 +378,7 @@ void CopyFromNv12(picture_t *dst, uint8_t *src[2], size_t src_pitch[2],
 {
 #ifdef CAN_COMPILE_SSE2
     unsigned cpu = vlc_CPU();
-    if (cpu & CPU_CAPABILITY_SSE2)
+    if (vlc_CPU_SSE2())
         return SSE_CopyFromNv12(dst, src, src_pitch, width, height,
                                 cache, cpu);
 #else
@@ -384,7 +400,7 @@ void CopyFromYv12(picture_t *dst, uint8_t *src[3], size_t src_pitch[3],
 {
 #ifdef CAN_COMPILE_SSE2
     unsigned cpu = vlc_CPU();
-    if (cpu & CPU_CAPABILITY_SSE2)
+    if (vlc_CPU_SSE2())
         return SSE_CopyFromYv12(dst, src, src_pitch, width, height,
                                 cache, cpu);
 #else

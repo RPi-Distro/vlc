@@ -2,7 +2,7 @@
  * anim_bitmap.hpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: bc005a784f541db23a82061b2bcbb54e3af13fc5 $
+ * $Id: eea3de9cd13a220dc5a0742a7d15f4ce5c2a08a1 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -62,7 +62,7 @@ private:
     /// Bitmap stored
     const GenericBitmap &m_rBitmap;
     /// Graphics to store the bitmap
-    OSGraphics *m_pImage;
+    const OSGraphics * const m_pImage;
     /// Number of frames
     int m_nbFrames;
     /// Frame rate

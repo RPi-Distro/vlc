@@ -1,23 +1,23 @@
 /*****************************************************************************
  * libasf.h :
  *****************************************************************************
- * Copyright © 2001-2004, 2011 the VideoLAN team
+ * Copyright © 2001-2004, 2011 VLC authors and VideoLAN
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 
@@ -181,16 +181,9 @@ typedef struct
 
 } asf_object_content_description_t;
 
-typedef struct
-{
-    uint16_t i_length;
-    uint16_t *i_char;
-
-} string16_t;
-
 #define ASF_CODEC_TYPE_VIDEO    0x0001
 #define ASF_CODEC_TYPE_AUDIO    0x0002
-#define ASF_CODEC_TYPE_UNKNOW   0xffff
+#define ASF_CODEC_TYPE_UNKNOWN  0xffff
 
 typedef struct
 {
@@ -219,7 +212,7 @@ typedef struct
     uint32_t     i_send_time;
     uint32_t     i_flags;
     uint32_t     i_marker_description_length;
-    uint8_t      *i_marker_description;
+    char         *p_marker_description;
 
 } asf_marker_t;
 
@@ -229,7 +222,7 @@ typedef struct
     guid_t      i_reserved1;
     uint32_t    i_count;
     uint16_t    i_reserved2;
-    string16_t name;
+    char        *name;
     asf_marker_t *marker;
 
 } asf_object_marker_t;
@@ -359,8 +352,6 @@ typedef union asf_object_u
 asf_object_root_t *ASF_ReadObjectRoot( stream_t *, int b_seekable );
 void               ASF_FreeObjectRoot( stream_t *, asf_object_root_t *p_root );
 
-#define ASF_CountObject( a, b ) __ASF_CountObject( (asf_object_t*)(a), b )
-int  __ASF_CountObject ( asf_object_t *p_obj, const guid_t *p_guid );
+int ASF_CountObject ( void *p_obj, const guid_t *p_guid );
 
-#define ASF_FindObject( a, b, c )  __ASF_FindObject( (asf_object_t*)(a), b, c )
-void *__ASF_FindObject( asf_object_t *p_obj, const guid_t *p_guid, int i_number );
+void *ASF_FindObject( void *p_obj, const guid_t *p_guid, int i_number );

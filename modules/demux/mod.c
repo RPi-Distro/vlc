@@ -1,25 +1,25 @@
 /*****************************************************************************
  * mod.c: MOD file demuxer (using libmodplug)
  *****************************************************************************
- * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: beff62562baffd72e3160c1a28e7998c0b628ffc $
+ * Copyright (C) 2004-2009 VLC authors and VideoLAN
+ * $Id: 48c9ec097008a1ffff24a62b562028519e6ca3b0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  * Konstanty Bialkowski <konstanty@ieee.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -34,6 +34,7 @@
 #include <vlc_plugin.h>
 #include <vlc_demux.h>
 #include <vlc_meta.h>
+#include <vlc_charset.h>
 #include <assert.h>
 
 #include <libmodplug/modplug.h>
@@ -266,7 +267,7 @@ static int Demux( demux_t *p_demux )
     const int i_bk = ( p_sys->fmt.audio.i_bitspersample / 8 ) *
                        p_sys->fmt.audio.i_channels;
 
-    p_frame = block_New( p_demux, p_sys->fmt.audio.i_rate / 10 * i_bk );
+    p_frame = block_Alloc( p_sys->fmt.audio.i_rate / 10 * i_bk );
     if( !p_frame )
         return -1;
 
@@ -368,12 +369,12 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         char *psz_module_info, *psz_instrument_info;
         unsigned i_temp_index = 0;
         const char *psz_name = ModPlug_GetName( p_sys->f );
-        if( psz_name && *psz_name )
+        if( psz_name && *psz_name && IsUTF8( psz_name ) )
             vlc_meta_SetTitle( p_meta, psz_name );
 
         /* Comment field from artist - not in every type of MOD */
         psz_name = ModPlug_GetMessage( p_sys->f );
-        if( psz_name && *psz_name )
+        if( psz_name && *psz_name && IsUTF8( psz_name ) )
             vlc_meta_SetDescription( p_meta, psz_name );
 
         /* Instruments only in newer MODs - so don't show if 0 */
@@ -402,7 +403,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             {
                 char lBuffer[33];
                 ModPlug_InstrumentName( p_sys->f, i, lBuffer );
-                if ( !lBuffer[0] ) continue; // don't add empty fields.
+                if ( !lBuffer[0] || !IsUTF8( lBuffer ) ) continue;
                 i_temp_index += snprintf( &psz_temp[i_temp_index], sizeof(psz_temp) - i_temp_index, "%s\n", lBuffer );
             }
 
@@ -414,7 +415,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         {
             char psz_buffer[33];
             ModPlug_SampleName( p_sys->f, i, psz_buffer );
-            if ( !psz_buffer[0] ) continue; // don't add empty fields.
+            if ( !psz_buffer[0] || !IsUTF8( psz_buffer ) ) continue;
             i_temp_index += snprintf( &psz_temp[i_temp_index], sizeof(psz_temp) - i_temp_index, "%s\n", psz_buffer );
         }
 

@@ -176,7 +176,7 @@ static int vlc_plugin_setter (void *plugin, void *tgt, int propid, ...)
                 break;
             }
             /* Inheritance. Ugly!! */
-            submodule->pp_shortcuts = xmalloc (sizeof (char **));
+            submodule->pp_shortcuts = xmalloc (sizeof ( *submodule->pp_shortcuts ));
             submodule->pp_shortcuts[0] = strdup_null (module->pp_shortcuts[0]);
             submodule->i_shortcuts = 1; /* object name */
 
@@ -251,7 +251,7 @@ static int vlc_plugin_setter (void *plugin, void *tgt, int propid, ...)
             const char *value = va_arg (ap, const char *);
 
             assert (module->i_shortcuts == 0);
-            module->pp_shortcuts = malloc( sizeof( char ** ) );
+            module->pp_shortcuts = malloc( sizeof( *module->pp_shortcuts ) );
             module->pp_shortcuts[0] = strdup (value);
             module->i_shortcuts = 1;
 
@@ -377,86 +377,51 @@ static int vlc_plugin_setter (void *plugin, void *tgt, int propid, ...)
         {
             size_t len = va_arg (ap, size_t);
 
+            assert (item->list_count == 0); /* cannot replace choices */
+            assert (item->list.psz_cb == NULL);
+            if (len == 0)
+                break; /* nothing to do */
             /* Copy values */
             if (IsConfigIntegerType (item->i_type))
             {
                 const int *src = va_arg (ap, const int *);
-                int *dst = malloc (sizeof (int) * (len + 1));
+                int *dst = xmalloc (sizeof (int) * len);
 
-                if (dst != NULL)
-                {
-                    memcpy (dst, src, sizeof (int) * len);
-                    dst[len] = 0;
-                }
-                item->pi_list = dst;
+                memcpy (dst, src, sizeof (int) * len);
+                item->list.i = dst;
             }
             else
             if (IsConfigStringType (item->i_type))
             {
                 const char *const *src = va_arg (ap, const char *const *);
-                char **dst = malloc (sizeof (char *) * (len + 1));
+                char **dst = xmalloc (sizeof (char *) * len);
 
-                if (dst != NULL)
-                {
-                    for (size_t i = 0; i < len; i++)
-                        dst[i] = src[i] ? strdup (src[i]) : NULL;
-                    dst[len] = NULL;
-                }
-                item->ppsz_list = dst;
+                for (size_t i = 0; i < len; i++)
+                     dst[i] = src[i] ? strdup (src[i]) : NULL;
+                item->list.psz = dst;
             }
             else
                 break;
 
             /* Copy textual descriptions */
             const char *const *text = va_arg (ap, const char *const *);
-            if (text != NULL)
-            {
-                char **dtext = malloc (sizeof (char *) * (len + 1));
-                if( dtext != NULL )
-                {
-                    for (size_t i = 0; i < len; i++)
-                        dtext[i] = text[i] ? strdup (text[i]) : NULL;
-                    dtext[len] = NULL;
-                }
-                item->ppsz_list_text = dtext;
-            }
-            else
-                item->ppsz_list_text = NULL;
-
-            item->i_list = len;
-            item->pf_update_list = va_arg (ap, vlc_callback_t);
+            char **dtext = xmalloc (sizeof (char *) * (len + 1));
+            for (size_t i = 0; i < len; i++)
+                dtext[i] = text[i] ? strdup (text[i]) : NULL;
+            item->list_text = dtext;
+            item->list_count = len;
             break;
         }
 
-        case VLC_CONFIG_ADD_ACTION:
-        {
-            vlc_callback_t cb = va_arg (ap, vlc_callback_t), *tabcb;
-            const char *name = va_arg (ap, const char *);
-            char **tabtext;
-
-            tabcb = realloc (item->ppf_action,
-                             (item->i_action + 2) * sizeof (cb));
-            if (tabcb == NULL)
-                break;
-            item->ppf_action = tabcb;
-            tabcb[item->i_action] = cb;
-            tabcb[item->i_action + 1] = NULL;
-
-            tabtext = realloc (item->ppsz_action_text,
-                               (item->i_action + 2) * sizeof (name));
-            if (tabtext == NULL)
-                break;
-            item->ppsz_action_text = tabtext;
-
-            if (name)
-                tabtext[item->i_action] = strdup (name);
+        case VLC_CONFIG_LIST_CB:
+            if (IsConfigIntegerType (item->i_type))
+               item->list.i_cb = va_arg (ap, vlc_integer_list_cb);
             else
-                tabtext[item->i_action] = NULL;
-            tabtext[item->i_action + 1] = NULL;
-
-            item->i_action++;
+            if (IsConfigStringType (item->i_type))
+               item->list.psz_cb = va_arg (ap, vlc_string_list_cb);
+            else
+                break;
             break;
-        }
 
         default:
             fprintf (stderr, "LibVLC: unknown module property %d\n", propid);

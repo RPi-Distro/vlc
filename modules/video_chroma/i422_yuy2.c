@@ -1,25 +1,25 @@
 /*****************************************************************************
  * i422_yuy2.c : Planar YUV 4:2:2 to Packed YUV conversion module for vlc
  *****************************************************************************
- * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 81b8beb9a38503b7cd2d548de6bb3686c9760af6 $
+ * Copyright (C) 2000, 2001 VLC authors and VideoLAN
+ * $Id: 09166533d0b6c6b1974c55c0df7de4ff6b277bc3 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -71,17 +71,17 @@ vlc_module_begin ()
 #if defined (MODULE_NAME_IS_i422_yuy2)
     set_description( N_("Conversions from " SRC_FOURCC " to " DEST_FOURCC) )
     set_capability( "video filter2", 80 )
-# define CPU_CAPABILITY 0
+# define vlc_CPU_capable() (true)
 # define VLC_TARGET
 #elif defined (MODULE_NAME_IS_i422_yuy2_mmx)
     set_description( N_("MMX conversions from " SRC_FOURCC " to " DEST_FOURCC) )
     set_capability( "video filter2", 100 )
-# define CPU_CAPABILITY CPU_CAPABILITY_MMX
+# define vlc_CPU_capable() vlc_CPU_MMX()
 # define VLC_TARGET VLC_MMX
 #elif defined (MODULE_NAME_IS_i422_yuy2_sse2)
     set_description( N_("SSE2 conversions from " SRC_FOURCC " to " DEST_FOURCC) )
     set_capability( "video filter2", 120 )
-# define CPU_CAPABILITY CPU_CAPABILITY_SSE2
+# define vlc_CPU_capable() vlc_CPU_SSE2()
 # define VLC_TARGET VLC_SSE
 #endif
     set_callbacks( Activate, NULL )
@@ -96,10 +96,8 @@ static int Activate( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
 
-#if CPU_CAPABILITY
-    if( !(vlc_CPU() & CPU_CAPABILITY) )
+    if( !vlc_CPU_capable() )
         return VLC_EGENERIC;
-#endif
     if( p_filter->fmt_in.video.i_width & 1
      || p_filter->fmt_in.video.i_height & 1 )
     {

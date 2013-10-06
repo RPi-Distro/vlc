@@ -2,7 +2,7 @@
  * podcast.c:  Podcast services discovery module
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: 2ad6356170fc1cc0d8c6aa1eaa4e5a5291cf17eb $
+ * $Id: 28bad18b399b689c3055c711c8b35952df3edbc7 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -32,7 +32,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_services_discovery.h>
-
+#include <vlc_playlist.h>
 #include <vlc_network.h>
 #include <assert.h>
 
@@ -100,6 +100,7 @@ struct services_discovery_sys_t
     vlc_mutex_t lock;
     vlc_cond_t  wait;
     bool b_update;
+    bool b_savedurls_loaded;
     char *psz_request;
     int update_type;
 };
@@ -121,6 +122,7 @@ static void SaveUrls( services_discovery_t *p_sd );
  *****************************************************************************/
 static int Open( vlc_object_t *p_this )
 {
+    playlist_t *pl = pl_Get( p_this );
     services_discovery_t *p_sd = ( services_discovery_t* )p_this;
     services_discovery_sys_t *p_sys  = malloc(
                                     sizeof( services_discovery_sys_t ) );
@@ -136,22 +138,23 @@ static int Open( vlc_object_t *p_this )
     vlc_mutex_init( &p_sys->lock );
     vlc_cond_init( &p_sys->wait );
     p_sys->b_update = true;
+    p_sys->b_savedurls_loaded = false;
     p_sys->psz_request = NULL;
     p_sys->update_type = UPDATE_URLS;
 
     p_sd->p_sys  = p_sys;
 
     /* Launch the callback associated with this variable */
-    var_Create( p_sd, "podcast-urls", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
-    var_AddCallback( p_sd, "podcast-urls", UrlsChange, p_sys );
+    var_Create( pl, "podcast-urls", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
+    var_AddCallback( pl, "podcast-urls", UrlsChange, p_sys );
 
-    var_Create( p_sd, "podcast-request", VLC_VAR_STRING );
-    var_AddCallback( p_sd, "podcast-request", Request, p_sys );
+    var_Create( pl, "podcast-request", VLC_VAR_STRING );
+    var_AddCallback( pl, "podcast-request", Request, p_sys );
 
     if (vlc_clone (&p_sys->thread, Run, p_sd, VLC_THREAD_PRIORITY_LOW))
     {
-        var_DelCallback( p_sd, "podcast-request", Request, p_sys );
-        var_DelCallback( p_sd, "podcast-urls", UrlsChange, p_sys );
+        var_DelCallback( pl, "podcast-request", Request, p_sys );
+        var_DelCallback( pl, "podcast-urls", UrlsChange, p_sys );
         vlc_cond_destroy( &p_sys->wait );
         vlc_mutex_destroy( &p_sys->lock );
         free (p_sys);
@@ -167,13 +170,14 @@ static void Close( vlc_object_t *p_this )
 {
     services_discovery_t *p_sd = ( services_discovery_t* )p_this;
     services_discovery_sys_t *p_sys  = p_sd->p_sys;
+    playlist_t *pl = pl_Get( p_this );
     int i;
 
     vlc_cancel (p_sys->thread);
     vlc_join (p_sys->thread, NULL);
 
-    var_DelCallback( p_sd, "podcast-urls", UrlsChange, p_sys );
-    var_DelCallback( p_sd, "podcast-request", Request, p_sys );
+    var_DelCallback( pl, "podcast-urls", UrlsChange, p_sys );
+    var_DelCallback( pl, "podcast-request", Request, p_sys );
     vlc_cond_destroy( &p_sys->wait );
     vlc_mutex_destroy( &p_sys->lock );
 
@@ -218,14 +222,13 @@ static void *Run( void *data )
 
         if( p_sys->update_type == UPDATE_URLS )
         {
-          char* psz_urls = var_GetNonEmptyString( p_sd, "podcast-urls" );
-          ParseUrls( p_sd, psz_urls );
-          free( psz_urls );
+            playlist_t *pl = pl_Get( p_sd );
+            char* psz_urls = var_GetNonEmptyString( pl, "podcast-urls" );
+            ParseUrls( p_sd, psz_urls );
+            free( psz_urls );
         }
         else if( p_sys->update_type == UPDATE_REQUEST )
-        {
-          ParseRequest( p_sd );
-        }
+            ParseRequest( p_sd );
 
         p_sys->b_update = false;
 
@@ -293,12 +296,14 @@ static void ParseUrls( services_discovery_t *p_sd, char *psz_urls )
 
     int i_new_urls = 0;
     char **ppsz_new_urls = NULL;
+    p_sys->b_savedurls_loaded = true;
 
     int i, j;
 
     for( ;; )
     {
-        if( !psz_urls ) break;
+        if( !psz_urls )
+            break;
 
         char *psz_tok = strchr( psz_urls, '|' );
         if( psz_tok ) *psz_tok = '\0';
@@ -327,8 +332,10 @@ static void ParseUrls( services_discovery_t *p_sd, char *psz_urls )
                          strdup( p_sys->ppsz_urls[i]) );
             INSERT_ELEM( pp_new_items, i_new_items, i_new_items, p_sys->pp_items[i] );
         }
-        if( psz_tok )  psz_urls = psz_tok+1;
-        else break;
+        if( psz_tok )
+            psz_urls = psz_tok+1;
+        else
+            break;
     }
 
     /* delete removed items and signal the removal */
@@ -338,12 +345,13 @@ static void ParseUrls( services_discovery_t *p_sd, char *psz_urls )
             if( pp_new_items[j] == p_sys->pp_items[i] ) break;
         if( j == i_new_items )
         {
-          services_discovery_RemoveItem( p_sd, p_sys->pp_items[i] );
-          vlc_gc_decref( p_sys->pp_items[i] );
+            services_discovery_RemoveItem( p_sd, p_sys->pp_items[i] );
+            vlc_gc_decref( p_sys->pp_items[i] );
         }
     }
     free( p_sys->pp_items );
-    for( int i = 0; i < p_sys->i_urls; i++ ) free( p_sys->ppsz_urls[i] );
+    for( int i = 0; i < p_sys->i_urls; i++ )
+        free( p_sys->ppsz_urls[i] );
     free( p_sys->ppsz_urls );
 
     p_sys->ppsz_urls = ppsz_new_urls;
@@ -363,6 +371,15 @@ static void ParseRequest( services_discovery_t *p_sd )
     char *psz_tok = strchr( psz_request, ':' );
     if( !psz_tok ) return;
     *psz_tok = '\0';
+
+    if ( ! p_sys->b_savedurls_loaded )
+    {
+        playlist_t *pl = pl_Get( p_sd );
+        char* psz_urls = var_GetNonEmptyString( pl, "podcast-urls" );
+        ParseUrls( p_sd, psz_urls );
+        free( psz_urls );
+    }
+
     if( !strcmp( psz_request, "ADD" ) )
     {
         psz_request = psz_tok + 1;

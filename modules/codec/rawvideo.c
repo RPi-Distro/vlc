@@ -1,24 +1,24 @@
 /*****************************************************************************
  * rawvideo.c: Pseudo video decoder/packetizer for raw video data
  *****************************************************************************
- * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: aa68f35d26d544db938187f36fe8cc78e20d0e05 $
+ * Copyright (C) 2001, 2002 VLC authors and VideoLAN
+ * $Id: f2db54570c307a14776ea76fec6ff295f4bc93be $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -94,6 +94,8 @@ static int OpenDecoder( vlc_object_t *p_this )
         /* Planar YUV */
         case VLC_CODEC_I444:
         case VLC_CODEC_J444:
+        case VLC_CODEC_I440:
+        case VLC_CODEC_J440:
         case VLC_CODEC_I422:
         case VLC_CODEC_J422:
         case VLC_CODEC_I420:
@@ -106,6 +108,8 @@ static int OpenDecoder( vlc_object_t *p_this )
         case VLC_CODEC_YUVP:
         case VLC_CODEC_NV12:
         case VLC_CODEC_NV21:
+        case VLC_CODEC_I422_10L:
+        case VLC_CODEC_I422_10B:
 
         /* Packed YUV */
         case VLC_CODEC_YUYV:
@@ -120,6 +124,7 @@ static int OpenDecoder( vlc_object_t *p_this )
         case VLC_CODEC_RGB15:
         case VLC_CODEC_RGB8:
         case VLC_CODEC_RGBP:
+        case VLC_CODEC_RGBA:
             break;
 
         default:
@@ -132,7 +137,7 @@ static int OpenDecoder( vlc_object_t *p_this )
         return VLC_ENOMEM;
     /* Misc init */
     p_dec->p_sys->b_packetizer = false;
-    p_sys->b_invert = 0;
+    p_sys->b_invert = false;
 
     if( (int)p_dec->fmt_in.video.i_height < 0 )
     {
@@ -141,8 +146,13 @@ static int OpenDecoder( vlc_object_t *p_this )
             (unsigned int)(-(int)p_dec->fmt_in.video.i_height);
         p_sys->b_invert = true;
     }
+    if( !p_dec->fmt_in.video.i_visible_width )
+        p_dec->fmt_in.video.i_visible_width = p_dec->fmt_in.video.i_width;
+    if( !p_dec->fmt_in.video.i_visible_height )
+        p_dec->fmt_in.video.i_visible_height = p_dec->fmt_in.video.i_height;
 
-    if( p_dec->fmt_in.video.i_width <= 0 || p_dec->fmt_in.video.i_height <= 0 )
+    if( p_dec->fmt_in.video.i_visible_width <= 0
+     || p_dec->fmt_in.video.i_visible_height <= 0 )
     {
         msg_Err( p_dec, "invalid display size %dx%d",
                  p_dec->fmt_in.video.i_width, p_dec->fmt_in.video.i_height );
@@ -164,8 +174,8 @@ static int OpenDecoder( vlc_object_t *p_this )
 
     /* Find out p_vdec->i_raw_size */
     video_format_Setup( &p_dec->fmt_out.video, p_dec->fmt_in.i_codec,
-                        p_dec->fmt_in.video.i_width,
-                        p_dec->fmt_in.video.i_height,
+                        p_dec->fmt_in.video.i_visible_width,
+                        p_dec->fmt_in.video.i_visible_height,
                         p_dec->fmt_in.video.i_sar_num,
                         p_dec->fmt_in.video.i_sar_den );
     picture_t picture;
@@ -289,11 +299,11 @@ static void FillPicture( decoder_t *p_dec, block_t *p_block, picture_t *p_pic )
         if( p_sys->b_invert )
             for( p_dst_end -= i_pitch; p_dst <= p_dst_end;
                  p_dst_end -= i_pitch, p_src += i_visible_pitch )
-                vlc_memcpy( p_dst_end, p_src, i_visible_pitch );
+                memcpy( p_dst_end, p_src, i_visible_pitch );
         else
             for( ; p_dst < p_dst_end;
                  p_dst += i_pitch, p_src += i_visible_pitch )
-                vlc_memcpy( p_dst, p_src, i_visible_pitch );
+                memcpy( p_dst, p_src, i_visible_pitch );
     }
 }
 
@@ -371,9 +381,9 @@ static block_t *SendFrame( decoder_t *p_dec, block_t *p_block )
 
             for( j = 0; j < pic.p[i].i_visible_lines / 2; j++ )
             {
-                vlc_memcpy( p_tmp, p_bottom, pic.p[i].i_visible_pitch  );
-                vlc_memcpy( p_bottom, p_top, pic.p[i].i_visible_pitch  );
-                vlc_memcpy( p_top, p_tmp, pic.p[i].i_visible_pitch  );
+                memcpy( p_tmp, p_bottom, pic.p[i].i_visible_pitch  );
+                memcpy( p_bottom, p_top, pic.p[i].i_visible_pitch  );
+                memcpy( p_top, p_tmp, pic.p[i].i_visible_pitch  );
                 p_top += i_pitch;
                 p_bottom -= i_pitch;
             }

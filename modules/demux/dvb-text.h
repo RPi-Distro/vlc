@@ -1,21 +1,21 @@
 /*****************************************************************************
  * dvb-text.h:
  *****************************************************************************
- * Copyright (C) 2007-2011 the VideoLAN team
+ * Copyright (C) 2007-2011 VLC authors and VideoLAN
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /**
@@ -58,6 +58,7 @@ static char *vlc_from_EIT (const void *buf, size_t length)
                return NULL;
            break;
         case 0x11: /* the BMP */
+        case 0x14: /* Big5 subset of the BMP */
             encoding = "UCS-2BE";
             break;
         case 0x12:
@@ -69,9 +70,6 @@ static char *vlc_from_EIT (const void *buf, size_t length)
             break;
         case 0x13: /* GB-2312-1980 */
             encoding = "GB2312";
-            break;
-        case 0x14: /* Big5 subset of the BMP */
-            encoding = "BIG-5";
             break;
         case 0x15:
             encoding = "UTF-8";

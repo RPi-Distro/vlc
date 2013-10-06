@@ -1,8 +1,8 @@
 /*****************************************************************************
- * intf.c: Generic lua interface functions
+ * video.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 96d032577c8e882b687df17d1e16f92a6793bff3 $
+ * $Id: 258e0d21cddb49abe3a459ea716862a92d276fd6 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -33,9 +33,6 @@
 #endif
 
 #include <vlc_vout.h>
-
-#include <lua.h>        /* Low level lua C API */
-#include <lauxlib.h>    /* Higher level C API */
 
 #include "../vlc.h"
 #include "../libs.h"

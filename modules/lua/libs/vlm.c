@@ -2,7 +2,7 @@
  * vlm.c: Generic lua VLM wrapper
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: d48755c1769fd6e644d536e4f5d20b5bd9cb2acd $
+ * $Id: 7b2b7083062516e0406b2fa4a88e44eb1f1e98c7 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -34,9 +34,6 @@
 
 #include <vlc_common.h>
 #include <vlc_vlm.h>
-
-#include <lua.h>        /* Low level lua C API */
-#include <lauxlib.h>    /* Higher level C API */
 
 #include "../vlc.h"
 #include "../libs.h"

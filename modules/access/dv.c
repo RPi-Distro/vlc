@@ -2,23 +2,23 @@
  * dv.c: Digital video/Firewire input (file: access plug-in)
  *****************************************************************************
  * Copyright (C) 2005 M2X
- * $Id: f9b7bf2a3359658f88038ac61ad132a7a3127c98 $
+ * $Id: 508a93560a1768bbf85a39a756f62421e40c70dd $
  *
  * Authors: Jean-Paul Saman <jpsaman at m2x dot nl>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -36,7 +36,7 @@
 #include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
-#elif defined( WIN32 ) && !defined( UNDER_CE )
+#elif defined( _WIN32 )
 #   include <io.h>
 #endif
 
@@ -57,12 +57,12 @@ static block_t *Block( access_t * );
 static int Control( access_t *, int, va_list );
 
 vlc_module_begin ()
-    set_description( N_("Digital Video (Firewire/ieee1394)  input") )
+    set_description( N_("Digital Video (Firewire/ieee1394) input") )
     set_shortname( N_("DV") )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACCESS )
     set_capability( "access", 0 )
-    add_shortcut( "dv", "dv1394", "raw1394" )
+    add_shortcut( "dv", "raw1394" )
     set_callbacks( Open, Close )
 vlc_module_end ()
 
@@ -402,7 +402,7 @@ Raw1394Handler(raw1394handle_t handle, unsigned char *data,
                 block_ChainAppend( &p_sys->p_frame, p_sys->p_ev->p_frame );
             }
             /* reset list */
-            p_sys->p_ev->p_frame = block_New( p_access, 144000 );
+            p_sys->p_ev->p_frame = block_Alloc( 144000 );
             p_sys->p_ev->pp_last = &p_sys->p_frame;
             vlc_mutex_unlock( &p_sys->lock );
         }

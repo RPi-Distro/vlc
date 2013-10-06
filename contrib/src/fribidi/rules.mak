@@ -15,6 +15,7 @@ $(TARBALLS)/fribidi-$(FRIBIDI_VERSION).tar.bz2:
 fribidi: fribidi-$(FRIBIDI_VERSION).tar.bz2 .sum-fribidi
 	$(UNPACK)
 	$(APPLY) $(SRC)/fribidi/fribidi.patch
+	$(APPLY) $(SRC)/fribidi/no-ansi.patch
 	$(MOVE)
 
 # FIXME: DEPS_fribidi = iconv $(DEPS_iconv)

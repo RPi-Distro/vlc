@@ -3,35 +3,9 @@
 
 basedir = stream_filter
 dir = stream_filter
-mods = decomp stream_filter_record
+mods = 
 libvlc_LTLIBRARIES = 
 EXTRA_LTLIBRARIES = 
 
 include $(top_srcdir)/modules/common.am
-
-# The decomp plugin
-libdecomp_plugin_la_SOURCES = $(SOURCES_decomp)
-nodist_libdecomp_plugin_la_SOURCES = $(nodist_SOURCES_decomp)
-# Force per-target objects:
-libdecomp_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_decomp)
-libdecomp_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_decomp)
-libdecomp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_decomp)
-libdecomp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_decomp)
-# Set LIBADD and DEPENDENCIES manually:
-libdecomp_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_decomp)
-libdecomp_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_decomp)
-libdecomp_plugin_la_DEPENDENCIES =
-
-# The stream_filter_record plugin
-libstream_filter_record_plugin_la_SOURCES = $(SOURCES_stream_filter_record)
-nodist_libstream_filter_record_plugin_la_SOURCES = $(nodist_SOURCES_stream_filter_record)
-# Force per-target objects:
-libstream_filter_record_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_stream_filter_record)
-libstream_filter_record_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_stream_filter_record)
-libstream_filter_record_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_stream_filter_record)
-libstream_filter_record_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_stream_filter_record)
-# Set LIBADD and DEPENDENCIES manually:
-libstream_filter_record_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_stream_filter_record)
-libstream_filter_record_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_stream_filter_record)
-libstream_filter_record_plugin_la_DEPENDENCIES =
 

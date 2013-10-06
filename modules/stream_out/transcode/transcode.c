@@ -2,7 +2,7 @@
  * transcode.c: transcoding stream output module
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: 1c81007ae7bc958325ea256804af2f9d7ddcafb9 $
+ * $Id: b4ff11be4ced4807b164a5b4a0e188d5e68ce0ad $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -93,7 +93,7 @@
 #define ARATE_TEXT N_("Audio sample rate")
 #define ARATE_LONGTEXT N_( \
  "Sample rate of the transcoded audio stream (11250, 22500, 44100 or 48000).")
-#define ALANG_TEXT N_("Audio Language")
+#define ALANG_TEXT N_("Audio language")
 #define ALANG_LONGTEXT N_( \
     "This is the language of the audio stream.")
 #define ACHANS_TEXT N_("Audio channels")
@@ -104,13 +104,13 @@
     "Audio filters will be applied to the audio streams (after conversion " \
     "filters are applied). You can enter a colon-separated list of filters." )
 
-#define SENC_TEXT N_("Subtitles encoder")
+#define SENC_TEXT N_("Subtitle encoder")
 #define SENC_LONGTEXT N_( \
-    "This is the subtitles encoder module that will be used (and its " \
+    "This is the subtitle encoder module that will be used (and its " \
     "associated options)." )
-#define SCODEC_TEXT N_("Destination subtitles codec")
+#define SCODEC_TEXT N_("Destination subtitle codec")
 #define SCODEC_LONGTEXT N_( \
-    "This is the subtitles codec that will be used." )
+    "This is the subtitle codec that will be used." )
 
 #define SFILTER_TEXT N_("Overlays")
 #define SFILTER_LONGTEXT N_( \
@@ -169,14 +169,14 @@ vlc_module_begin ()
                SCALE_LONGTEXT, false )
     add_float( SOUT_CFG_PREFIX "fps", 0, FPS_TEXT,
                FPS_LONGTEXT, false )
-    add_bool( SOUT_CFG_PREFIX "hurry-up", true, HURRYUP_TEXT,
+    add_bool( SOUT_CFG_PREFIX "hurry-up", false, HURRYUP_TEXT,
                HURRYUP_LONGTEXT, false )
     add_bool( SOUT_CFG_PREFIX "deinterlace", false, DEINTERLACE_TEXT,
               DEINTERLACE_LONGTEXT, false )
     add_string( SOUT_CFG_PREFIX "deinterlace-module", "deinterlace",
                 DEINTERLACE_MODULE_TEXT, DEINTERLACE_MODULE_LONGTEXT,
                 false )
-        change_string_list( ppsz_deinterlace_type, 0, 0 )
+        change_string_list( ppsz_deinterlace_type, ppsz_deinterlace_type )
     add_integer( SOUT_CFG_PREFIX "width", 0, WIDTH_TEXT,
                  WIDTH_LONGTEXT, true )
     add_integer( SOUT_CFG_PREFIX "height", 0, HEIGHT_TEXT,
@@ -601,6 +601,7 @@ static int Del( sout_stream_t *p_stream, sout_stream_id_t *id )
         switch( id->p_decoder->fmt_in.i_cat )
         {
         case AUDIO_ES:
+            Send( p_stream, id, NULL );
             transcode_audio_close( id );
             break;
         case VIDEO_ES:

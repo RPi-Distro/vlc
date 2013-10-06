@@ -22,17 +22,19 @@
 # include "config.h"
 #endif
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
 #include <vlc_common.h>
 #include <vlc_charset.h>
 #include <vlc_modules.h>
+#include <vlc_plugin.h>
 #include "modules/modules.h"
 #include "config/configuration.h"
 #include "libvlc.h"
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#if defined( WIN32 ) && !defined( UNDER_CE )
+#if defined( _WIN32 ) && !VLC_WINSTORE_APP
 static void ShowConsole (void);
 static void PauseConsole (void);
 #else
@@ -246,7 +248,7 @@ static void Usage (vlc_object_t *p_this, char const *psz_search)
 
 #define LINE_START 8
 #define PADDING_SPACES 25
-#ifdef WIN32
+#ifdef _WIN32
 #   define OPTION_VALUE_SEP "="
 #else
 #   define OPTION_VALUE_SEP " "
@@ -265,7 +267,7 @@ static void Usage (vlc_object_t *p_this, char const *psz_search)
     bool b_color       = var_InheritBool( p_this, "color" );
     bool b_has_advanced = false;
     bool b_found       = false;
-    int  i_only_advanced = 0; /* Number of modules ignored because they
+    unsigned i_only_advanced = 0; /* Number of modules ignored because they
                                * only have advanced options */
     bool b_strict = psz_search && *psz_search == '=';
     if( b_strict ) psz_search++;
@@ -274,7 +276,7 @@ static void Usage (vlc_object_t *p_this, char const *psz_search)
     psz_spaces_text[PADDING_SPACES+LINE_START] = '\0';
     memset( psz_spaces_longtext, ' ', LINE_START+2 );
     psz_spaces_longtext[LINE_START+2] = '\0';
-#ifndef WIN32
+#ifndef _WIN32
     if( !isatty( 1 ) )
 #endif
         b_color = false; // don't put color control codes in a .txt file
@@ -291,9 +293,8 @@ static void Usage (vlc_object_t *p_this, char const *psz_search)
     }
 
     /* List all modules */
-    module_t **list = module_list_get (NULL);
-    if (!list)
-        return;
+    size_t count;
+    module_t **list = module_list_get (&count);
 
     /* Ugly hack to make sure that the help options always come first
      * (part 1) */
@@ -301,14 +302,14 @@ static void Usage (vlc_object_t *p_this, char const *psz_search)
         Usage( p_this, "help" );
 
     /* Enumerate the config for each module */
-    for (size_t i = 0; list[i]; i++)
+    for (size_t i = 0; i < count; i++)
     {
-        bool b_help_module;
         module_t *p_parser = list[i];
         module_config_t *p_item = NULL;
         module_config_t *p_section = NULL;
         module_config_t *p_end = p_parser->p_config + p_parser->confsize;
         const char *objname = module_get_object (p_parser);
+        bool b_help_module;
 
         if( psz_search &&
             ( b_strict ? strcmp( objname, psz_search )
@@ -446,15 +447,15 @@ static void Usage (vlc_object_t *p_this, char const *psz_search)
                 psz_type = _("string");
                 psz_ket = ">";
 
-                if( p_item->ppsz_list )
+                if( p_item->list_count )
                 {
                     psz_bra = OPTION_VALUE_SEP "{";
                     psz_type = psz_buffer;
                     psz_buffer[0] = '\0';
-                    for( i = 0; p_item->ppsz_list[i]; i++ )
+                    for( i = 0; i < p_item->list_count; i++ )
                     {
                         if( i ) strcat( psz_buffer, "," );
-                        strcat( psz_buffer, p_item->ppsz_list[i] );
+                        strcat( psz_buffer, p_item->list.psz[i] );
                     }
                     psz_ket = "}";
                 }
@@ -474,17 +475,17 @@ static void Usage (vlc_object_t *p_this, char const *psz_search)
                     psz_type = psz_buffer;
                 }
 
-                if( p_item->i_list )
+                if( p_item->list_count )
                 {
                     psz_bra = OPTION_VALUE_SEP "{";
                     psz_type = psz_buffer;
                     psz_buffer[0] = '\0';
-                    for( i = 0; p_item->ppsz_list_text[i]; i++ )
+                    for( i = 0; i < p_item->list_count; i++ )
                     {
                         if( i ) strcat( psz_buffer, ", " );
                         sprintf( psz_buffer + strlen(psz_buffer), "%i (%s)",
-                                 p_item->pi_list[i],
-                                 module_gettext( p_parser, p_item->ppsz_list_text[i] ) );
+                                 p_item->list.i[i],
+                                 module_gettext( p_parser, p_item->list_text[i] ) );
                     }
                     psz_ket = "}";
                 }
@@ -686,15 +687,15 @@ static void Usage (vlc_object_t *p_this, char const *psz_search)
     if( i_only_advanced > 0 )
     {
         if( b_color )
-        {
             utf8_fprintf( stdout, "\n" WHITE "%s" GRAY " ", _( "Note:" ) );
-            utf8_fprintf( stdout, _( "%d module(s) were not displayed because they only have advanced options.\n" ), i_only_advanced );
-        }
         else
-        {
             utf8_fprintf( stdout, "\n%s ", _( "Note:" ) );
-            utf8_fprintf( stdout, _( "%d module(s) were not displayed because they only have advanced options.\n" ), i_only_advanced );
-        }
+
+        utf8_fprintf( stdout, vlc_ngettext("%u module was not displayed "
+                                     "because it only has advanced options.\n",
+                                           "%u modules were not displayed "
+                                  "because they only have advanced options.\n",
+                      i_only_advanced ), i_only_advanced );
     }
     else if( !b_found )
     {
@@ -720,12 +721,10 @@ static void Usage (vlc_object_t *p_this, char const *psz_search)
  *****************************************************************************/
 static void ListModules (vlc_object_t *p_this, bool b_verbose)
 {
-    module_t *p_parser;
-
     bool b_color = var_InheritBool( p_this, "color" );
 
     ShowConsole();
-#ifdef WIN32
+#ifdef _WIN32
     b_color = false; // don't put color control codes in a .txt file
 #else
     if( !isatty( 1 ) )
@@ -733,11 +732,13 @@ static void ListModules (vlc_object_t *p_this, bool b_verbose)
 #endif
 
     /* List all modules */
-    module_t **list = module_list_get (NULL);
+    size_t count;
+    module_t **list = module_list_get (&count);
 
     /* Enumerate each module */
-    for (size_t j = 0; (p_parser = list[j]) != NULL; j++)
+    for (size_t j = 0; j < count; j++)
     {
+        module_t *p_parser = list[j];
         const char *objname = module_get_object (p_parser);
         if( b_color )
             utf8_fprintf( stdout, GREEN"  %-22s "WHITE"%s\n"GRAY, objname,
@@ -795,7 +796,7 @@ static void Version( void )
     PauseConsole();
 }
 
-#if defined (WIN32) && !defined (UNDER_CE)
+#if defined( _WIN32 ) && !VLC_WINSTORE_APP
 /*****************************************************************************
  * ShowConsole: On Win32, create an output console for debug messages
  *****************************************************************************
@@ -807,12 +808,13 @@ static void ShowConsole( void )
 
     if( getenv( "PWD" ) ) return; /* Cygwin shell or Wine */
 
-    AllocConsole();
+    if( !AllocConsole() ) return;
+
     /* Use the ANSI code page (e.g. Windows-1252) as expected by the LibVLC
      * Unicode/locale subsystem. By default, we have the obsolecent OEM code
      * page (e.g. CP437 or CP850). */
     SetConsoleOutputCP (GetACP ());
-    SetConsoleTitle ("VLC media player version "PACKAGE_VERSION);
+    SetConsoleTitle (TEXT("VLC media player version "PACKAGE_VERSION));
 
     freopen( "CONOUT$", "w", stderr );
     freopen( "CONIN$", "r", stdin );
@@ -852,7 +854,7 @@ static int ConsoleWidth( void )
 {
     unsigned i_width = 80;
 
-#ifndef WIN32
+#ifndef _WIN32
     FILE *file = popen( "stty size 2>/dev/null", "r" );
     if (file != NULL)
     {
@@ -860,7 +862,7 @@ static int ConsoleWidth( void )
             i_width = 80;
         pclose( file );
     }
-#elif !defined (UNDER_CE)
+#elif !VLC_WINSTORE_APP
     CONSOLE_SCREEN_BUFFER_INFO buf;
 
     if (GetConsoleScreenBufferInfo (GetStdHandle (STD_OUTPUT_HANDLE), &buf))

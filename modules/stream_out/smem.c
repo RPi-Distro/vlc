@@ -2,7 +2,7 @@
  * smem.c: stream output to memory buffer module
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 5587c2f2d3e0dd2140a454166c94a384750f9fbb $
+ * $Id: f4d3df8d5cdf5a26596a79270b8881f2362c74f1 $
  *
  * Authors: Christophe Courtaut <christophe.courtaut@gmail.com>
  *
@@ -52,6 +52,7 @@
 #include <vlc_sout.h>
 #include <vlc_block.h>
 #include <vlc_codec.h>
+#include <vlc_aout.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -191,10 +192,7 @@ static int Open( vlc_object_t *p_this )
     p_stream->pf_add    = Add;
     p_stream->pf_del    = Del;
     p_stream->pf_send   = Send;
-
-    /* Does the module need out_pace_control? */
-    if ( p_sys->time_sync )
-        p_stream->p_sout->i_out_pace_nocontrol++;
+    p_stream->pace_nocontrol = p_sys->time_sync;
 
     return VLC_SUCCESS;
 }
@@ -205,8 +203,6 @@ static int Open( vlc_object_t *p_this )
 static void Close( vlc_object_t * p_this )
 {
     sout_stream_t *p_stream = (sout_stream_t*)p_this;
-    if ( p_stream->p_sys->time_sync )
-        p_stream->p_sout->i_out_pace_nocontrol--;
     free( p_stream->p_sys );
 }
 
@@ -273,36 +269,10 @@ static sout_stream_id_t *AddAudio( sout_stream_t *p_stream, es_format_t *p_fmt )
 {
     char* psz_tmp;
     sout_stream_id_t* id;
-    int i_bits_per_sample;
+    int i_bits_per_sample = aout_BitsPerSample( p_fmt->i_codec );
 
-    switch( p_fmt->i_codec )
+    if( !i_bits_per_sample )
     {
-    case VLC_CODEC_U8:
-    case VLC_CODEC_S8:
-        i_bits_per_sample = 8;
-        break;
-    case VLC_CODEC_U16L:
-    case VLC_CODEC_S16L:
-    case VLC_CODEC_U16B:
-    case VLC_CODEC_S16B:
-        i_bits_per_sample =  16;
-        break;
-    case VLC_CODEC_U24L:
-    case VLC_CODEC_S24L:
-    case VLC_CODEC_U24B:
-    case VLC_CODEC_S24B:
-        i_bits_per_sample = 24;
-        break;
-    case VLC_CODEC_S32L:
-    case VLC_CODEC_S32B:
-    case VLC_CODEC_FL32:
-    case VLC_CODEC_FI32:
-        i_bits_per_sample = 32;
-        break;
-    case VLC_CODEC_FL64:
-        i_bits_per_sample = 64;
-        break;
-    default:
         msg_Err( p_stream, "Smem does only support raw audio format" );
         return NULL;
     }
@@ -368,12 +338,19 @@ static int SendVideo( sout_stream_t *p_stream, sout_stream_id_t *id,
     /* Copying data into user buffer */
     if( id->format->video.i_bits_per_pixel > 0 )
     {
-        for ( int line = 0; line < i_line; line++, p_pixels += i_line_size )
-            vlc_memcpy( p_pixels, p_buffer->p_buffer + i_line_size * line , i_line_size );
+        uint8_t *p_in = p_buffer->p_buffer;
+        uint8_t *p_out = p_pixels;
+
+        for ( int line = 0; line < i_line; line++ )
+        {
+            memcpy( p_out, p_in, i_line_size );
+            p_out += i_line_size;
+            p_in += i_line_size;
+        }
     }
     else
     {
-        vlc_memcpy( p_pixels, p_buffer->p_buffer, i_size );
+        memcpy( p_pixels, p_buffer->p_buffer, i_size );
     }
     /* Calling the postrender callback to tell the user his buffer is ready */
     p_sys->pf_video_postrender_callback( id->p_data, p_pixels,
@@ -410,7 +387,7 @@ static int SendAudio( sout_stream_t *p_stream, sout_stream_id_t *id,
     }
 
     /* Copying data into user buffer */
-    vlc_memcpy( p_pcm_buffer, p_buffer->p_buffer, i_size );
+    memcpy( p_pcm_buffer, p_buffer->p_buffer, i_size );
     /* Calling the postrender callback to tell the user his buffer is ready */
     p_sys->pf_audio_postrender_callback( id->p_data, p_pcm_buffer,
                                          id->format->audio.i_channels, id->format->audio.i_rate, i_samples,

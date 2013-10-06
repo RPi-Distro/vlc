@@ -36,18 +36,6 @@ vlc.msg.info( "This is an info message and will be displayed in the console" )
 Note: availability of the different VLC specific Lua modules depends on
 the type of VLC Lua script your are in.
 
-Access lists
-------------
-/!\ ACL functions are deprecated and will be removed in future versions.
-
-local a = vlc.acl(true) -> new ACL with default set to allow
-a:check("10.0.0.1") -> 0 == allow, 1 == deny, -1 == error
-a("10.0.0.1") -> same as a:check("10.0.0.1")
-a:duplicate() -> duplicate ACL object
-a:add_host("10.0.0.1",true) -> allow 10.0.0.1
-a:add_net("10.0.0.0",24,true) -> allow 10.0.0.0/24 (not sure)
-a:load_file("/path/to/acl") -> load ACL from file
-
 Configuration
 -------------
 config.get( name ): Get the VLC configuration option "name"'s value.
@@ -108,11 +96,9 @@ HTTPd
 http( host, port, [cert, key, ca, crl]): create a new HTTP (SSL) daemon.
 
 local h = vlc.httpd( "localhost", 8080 )
-h:handler( url, user, password, acl, callback, data ) -- add a handler for given url. If user and password are non nil, they will be used to authenticate connecting clients. If acl is non nil, it will be used to restrict access. callback will be called to handle connections. The callback function takes 7 arguments: data, url, request, type, in, addr, host. It returns the reply as a string.
-h:file( url, mime, user, password, acl, callback, data ) -- add a file for given url with given mime type. If user and password are non nil, they will be used to authenticate connecting clients. If acl is non nil, it will be used to restrict access. callback will be called to handle connections. The callback function takes 2 arguments: data and request. It returns the reply as a string.
+h:handler( url, user, password, callback, data ) -- add a handler for given url. If user and password are non nil, they will be used to authenticate connecting clients. callback will be called to handle connections. The callback function takes 7 arguments: data, url, request, type, in, addr, host. It returns the reply as a string.
+h:file( url, mime, user, password, callback, data ) -- add a file for given url with given mime type. If user and password are non nil, they will be used to authenticate connecting clients. callback will be called to handle connections. The callback function takes 2 arguments: data and request. It returns the reply as a string.
 h:redirect( url_dst, url_src ): Redirect all connections from url_src to url_dst.
-/!\ The "acl" parameter will be removed in future versions.
-
 
 Input
 -----
@@ -159,8 +145,6 @@ Misc (Interfaces only)
 ----------------------------------------------------------------
 /!\ NB: this namespace is ONLY usable for interfaces.
 ---
-version(), copyright(), mdate() are available but DEPRECATED for
-extensions. They WILL be dropped in the future.
 ----------------------------------------------------------------
 misc.version(): Get the VLC version string.
 misc.copyright(): Get the VLC copyright statement.
@@ -171,19 +155,14 @@ misc.action_id( name ): get the id of the given action.
 misc.mdate(): Get the current date (in microseconds).
 misc.mwait(): Wait for the given date (in microseconds).
 
-misc.should_die(): Returns true if the interface should quit.
 misc.quit(): Quit VLC.
-
-misc.lock_and_wait(): Lock our object thread and wait for a wake up signal.
-/!\ This function is deprecated and will be removed in future versions.
-
-misc.timer(callback): Create a timer which call the callback function
-  :schedule(relative, value, interval): schedule the timer
-  :getoverrun(): number of time the timer got overrun (normally 0)
-/!\ This function is deprecated and will be removed in future versions.
 
 Net
 ---
+----------------------------------------------------------------
+/!\ NB: this namespace is ONLY usable for interfaces.
+---
+----------------------------------------------------------------
 net.url_parse( url, [option delimiter] ): Parse URL. Returns a table with
   fields "protocol", "username", "password", "host", "port", path" and
   "option".
@@ -206,10 +185,13 @@ net.send( fd, string, [length] ): Send data on fd.
 net.recv( fd, [max length] ): Receive data from fd.
 net.poll( { fd = events } ): Implement poll function.
   Returns the numbers of file descriptors with a non 0 revent. The function
-  modifies the input table to { fd = revents }. See "man poll".
+  modifies the input table to { fd = revents }. See "man poll". This function
+  is not available on Windows.
 net.POLLIN/POLLPRI/POLLOUT/POLLRDHUP/POLLERR/POLLHUP/POLLNVAL: poll event flags
-net.read( fd, [max length] ): Read data from fd.
-net.write( fd, string, [length] ): Write data to fd.
+net.read( fd, [max length] ): Read data from fd. This function is not
+  available on Windows.
+net.write( fd, string, [length] ): Write data to fd. This function is not
+  available on Windows.
 net.stat( path ): Stat a file. Returns a table with the following fields:
     .type
     .mode
@@ -244,13 +226,6 @@ osd.slider( position, type, [id] ): Display slider. Position is an integer
   from 0 to 100. Type can be "horizontal" or "vertical".
 osd.channel_register(): Register a new OSD channel. Returns the channel id.
 osd.channel_clear( id ): Clear OSD channel.
-osd.menu.show(): Show the OSD menu.
-osd.menu.hide(): Hide the OSD menu.
-osd.menu.prev(): Select previous/left item.
-osd.menu.next(): Select next/right item.
-osd.menu.up(): Move selection up.
-osd.menu.down(): Move selection down.
-osd.menu.activate(): Activate/validate current selection.
 
 Playlist
 --------
@@ -323,12 +298,15 @@ playlist.get( [what, [tree]] ): Get the playlist.
       .nb_played:
       .children: A table of children playlist items.
 playlist.search( name ): filter the playlist items with the given string
-playlist.current(): return the current input item
+playlist.current(): return the current input item id
 playlist.sort( key ): sort the playlist according to the key.
   Key must be one of the followings values: 'id', 'title', 'title nodes first',
                                             'artist', 'genre', 'random', 'duration',
                                             'title numeric' or 'album'.
 playlist.status(): return the playlist status: 'stopped', 'playing', 'paused' or 'unknown'.
+playlist.delete( id ): check if item of id is in playlist and delete it. returns -1 when invalid id.
+playlist.move( id_item, id_where ): take id_item and if id_where has children, it put it as first children, 
+   if id_where don't have children, id_item is put after id_where in same playlist. returns -1 when invalid ids.
 
 FIXME: add methods to get an item's meta, options, es ...
 
@@ -352,8 +330,7 @@ sd.remove_item( item ): remove the item.
 
 n = vlc.sd.add_node( {title="Node"} )
 n:add_subitem( ... ): Same as sd.add_item(), but as a subitem of n.
-n:add_node( ... ): Same as sd.add_node(), but as a subnode of n.
-/!\ This function will be renamed to add_subnode() in future versions.
+n:add_subnode( ... ): Same as sd.add_node(), but as a subnode of n.
 
 d = vlc.sd.add_item( ... ) Get an item object to perform following set operations on it:
 d:set_name(): the item's name in playlist
@@ -414,19 +391,9 @@ var.create( object, name, value ): Create and set the object's variable "name"
   to "value". Created vars can be of type float, string, bool or void.
   For a void variable the value has to be 'nil'.
 
-var.add_callback( object, name, function, data ): Add a callback to the
-  object's "name" variable. Callback functions take 4 arguments: the
-  variable name, the old value, the new value and data.
-/!\ This function is deprecated and will be removed in future versions.
-var.del_callback( object, name, function, data ): Delete a callback to
-  the object's "name" variable. "function" and "data" must be the same as
-  when add_callback() was called.
-/!\ This function is deprecated and will be removed in future versions.
 var.trigger_callback( object, name ): Trigger the callbacks associated with the
   object's "name" variable.
 
-var.command( object name, name, argument ): Issue "object name"'s "name"
-  command with argument "argument".
 var.libvlc_command( name, argument ): Issue libvlc's "name" command with
   argument "argument".
 
@@ -459,6 +426,15 @@ volume.set( level ): Set volume to an absolute level between 0 and 1024.
   256 is 100%.
 volume.up( [n] ): Increment volume by n steps of 32. n defaults to 1.
 volume.down( [n] ): Decrement volume by n steps of 32. n defaults to 1.
+
+Win
+---
+This module is only available on Windows builds
+win.console_init(): Initialize the windows console.
+win.console_wait([timeout]): Wait for input on the console for timeout ms.
+                             Returns true if console input is available.
+win.console_read(): Read input from the windows console. Note that polling and
+                    reading from stdin does not work under windows.
 
 XML
 ---

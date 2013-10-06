@@ -1,8 +1,8 @@
 /*****************************************************************************
- * Messages.hpp : Information about a stream
+ * messages.hpp : Information about a stream
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 9243b23093a1181b7d368579a19c0478f5cab610 $
+ * $Id: 945db4fa29b47031e27e73257db76ffa7a5304f2 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -28,6 +28,8 @@
 #include "util/singleton.hpp"
 #include "ui/messages_panel.h"
 #include <stdarg.h>
+#include <vlc_atomic.h>
+#include <QMutex>
 
 class QTabWidget;
 class QPushButton;
@@ -48,31 +50,33 @@ private:
     virtual ~MessagesDialog();
 
     Ui::messagesPanelWidget ui;
-    msg_subscription_t *sub;
-    static void sinkMessage( void *, msg_item_t *, unsigned );
+    static void sinkMessage( void *, vlc_log_t *, unsigned );
     void customEvent( QEvent * );
     void sinkMessage( const MsgEvent * );
+    bool matchFilter( const QString& );
 
     vlc_atomic_t verbosity;
-    static void MsgCallback( void *, int, const msg_item_t *, const char *,
+    static void MsgCallback( void *, int, const vlc_log_t *, const char *,
                              va_list );
-
-    QStringList filter;
-    bool filterDefault;
 
 private slots:
     bool save();
     void updateConfig();
     void changeVerbosity( int );
-    void clear();
-    void updateTree();
+    void updateOrClear();
     void tabChanged( int );
+    void filterMessages();
 
 private:
     void buildTree( QTreeWidgetItem *, vlc_object_t * );
 
     friend class    Singleton<MessagesDialog>;
     QPushButton *updateButton;
+    QMutex messageLocker;
+#ifndef NDEBUG
+    QTreeWidget *pldebugTree;
+    void updatePLTree();
+#endif
 };
 
 #endif

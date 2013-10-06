@@ -1,10 +1,10 @@
 /*****************************************************************************
- * dbus-root.h : dbus control module (mpris v1.0) - root object
+ * dbus_root.h : dbus control module (mpris v1.0) - root object
  *****************************************************************************
  * Copyright © 2006-2008 Rafaël Carré
  * Copyright © 2007-2010 Mirsal Ennaime
  * Copyright © 2009-2010 The VideoLAN team
- * $Id: c076b3e7bce454d79cd3ac648c587e7a9dc6ac1d $
+ * $Id: 87f0e90b7949f94d9c7fa79677855c6f6d2ad4ba $
  *
  * Authors:    Mirsal Ennaime <mirsal at mirsal fr>
  *             Rafaël Carré <funman at videolanorg>
@@ -36,5 +36,7 @@
 DBusHandlerResult handle_root ( DBusConnection *p_conn,
                                 DBusMessage *p_from,
                                 void *p_this );
+int RootPropertiesChangedEmit ( intf_thread_t *,
+                                vlc_dictionary_t * );
 
 #endif //dbus-root.h

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005 VLC authors and VideoLAN
  * Copyright (C) 2005-2006 Rémi Denis-Courmont
- * $Id: 9e0442c905a13e209739dc951e6cf75c00aad4a2 $
+ * $Id: 8c294e7cbcbadeebb618e60a94018d81fc960ff1 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -43,7 +43,7 @@
 #endif
 
 #include <vlc_network.h>
-#if defined (WIN32) || defined (UNDER_CE)
+#if defined (_WIN32)
 #   undef EINPROGRESS
 #   define EINPROGRESS WSAEWOULDBLOCK
 #   undef EWOULDBLOCK
@@ -75,18 +75,13 @@ extern int net_Socket( vlc_object_t *p_this, int i_family, int i_socktype,
 int net_Connect( vlc_object_t *p_this, const char *psz_host, int i_port,
                  int type, int proto )
 {
-    struct addrinfo hints, *res, *ptr;
     const char      *psz_realhost;
     char            *psz_socks;
-    int             i_realport, i_val, i_handle = -1;
+    int             i_realport, i_handle = -1;
 
     int evfd = vlc_object_waitpipe (p_this);
     if (evfd == -1)
         return -1;
-
-    memset( &hints, 0, sizeof( hints ) );
-    hints.ai_socktype = type;
-    hints.ai_protocol = proto;
 
     psz_socks = var_InheritString( p_this, "socks" );
     if( psz_socks != NULL )
@@ -98,7 +93,6 @@ int net_Connect( vlc_object_t *p_this, const char *psz_host, int i_port,
 
         psz_realhost = psz_socks;
         i_realport = ( psz != NULL ) ? atoi( psz ) : 1080;
-        hints.ai_flags &= ~AI_NUMERICHOST;
 
         msg_Dbg( p_this, "net: connecting to %s port %d (SOCKS) "
                  "for %s port %d", psz_realhost, i_realport,
@@ -137,21 +131,28 @@ int net_Connect( vlc_object_t *p_this, const char *psz_host, int i_port,
                  i_realport );
     }
 
-    i_val = vlc_getaddrinfo( p_this, psz_realhost, i_realport, &hints, &res );
-    free( psz_socks );
+    struct addrinfo hints = {
+        .ai_socktype = type,
+        .ai_protocol = proto,
+        .ai_flags = AI_NUMERICSERV | AI_IDN,
+    }, *res;
 
-    if( i_val )
+    int val = vlc_getaddrinfo (psz_realhost, i_realport, &hints, &res);
+
+    if (val)
     {
-        msg_Err( p_this, "cannot resolve %s port %d : %s", psz_realhost,
-                 i_realport, gai_strerror( i_val ) );
+        msg_Err (p_this, "cannot resolve %s port %d : %s", psz_realhost,
+                 i_realport, gai_strerror (val));
+        free( psz_socks );
         return -1;
     }
+    free( psz_socks );
 
     int timeout = var_InheritInteger (p_this, "ipv4-timeout");
     if (timeout < 0)
         timeout = -1;
 
-    for( ptr = res; ptr != NULL; ptr = ptr->ai_next )
+    for (struct addrinfo *ptr = res; ptr != NULL; ptr = ptr->ai_next)
     {
         int fd = net_Socket( p_this, ptr->ai_family,
                              ptr->ai_socktype, ptr->ai_protocol );
@@ -445,22 +446,24 @@ static int SocksHandshakeTCP( vlc_object_t *p_obj,
 
     if( i_socks_version == 4 )
     {
-        struct addrinfo hints, *p_res;
-
         /* v4 only support ipv4 */
-        memset (&hints, 0, sizeof (hints));
-        hints.ai_family = AF_INET;
-        hints.ai_socktype = SOCK_STREAM;
-        hints.ai_protocol = IPPROTO_TCP;
-        if( vlc_getaddrinfo( p_obj, psz_host, 0, &hints, &p_res ) )
+        static const struct addrinfo hints = {
+            .ai_family = AF_INET,
+            .ai_socktype = SOCK_STREAM,
+            .ai_protocol = IPPROTO_TCP,
+            .ai_flags = AI_IDN,
+        };
+        struct addrinfo *res;
+
+        if (vlc_getaddrinfo (psz_host, 0, &hints, &res))
             return VLC_EGENERIC;
 
         buffer[0] = i_socks_version;
         buffer[1] = 0x01;               /* CONNECT */
         SetWBE( &buffer[2], i_port );   /* Port */
-        memcpy( &buffer[4],             /* Address */
-                &((struct sockaddr_in *)(p_res->ai_addr))->sin_addr, 4 );
-        freeaddrinfo( p_res );
+        memcpy (&buffer[4],             /* Address */
+                &((struct sockaddr_in *)(res->ai_addr))->sin_addr, 4);
+        freeaddrinfo (res);
 
         buffer[8] = 0;                  /* Empty user id */
 

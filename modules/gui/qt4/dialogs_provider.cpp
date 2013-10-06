@@ -2,7 +2,7 @@
  * dialogs_provider.cpp : Dialog Provider
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 0752124527a01286b3192b2adbf561af3c543c45 $
+ * $Id: bf6ecda779275e9e34bbc61e57063a6398021542 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -117,7 +117,7 @@ void DialogsProvider::quit()
 
 void DialogsProvider::customEvent( QEvent *event )
 {
-    if( event->type() == (int)DialogEvent_Type )
+    if( event->type() == DialogEvent::DialogEvent_Type )
     {
         DialogEvent *de = static_cast<DialogEvent*>(event);
         switch( de->i_dialog )
@@ -178,6 +178,9 @@ void DialogsProvider::customEvent( QEvent *event )
 /****************************************************************************
  * Individual simple dialogs
  ****************************************************************************/
+const QEvent::Type DialogEvent::DialogEvent_Type =
+        (QEvent::Type)QEvent::registerEventType();
+
 void DialogsProvider::playlistDialog()
 {
     PlaylistDialog::getInstance( p_intf )->toggleVisible();
@@ -247,12 +250,12 @@ void DialogsProvider::aboutDialog()
 
 void DialogsProvider::mediaInfoDialog()
 {
-    MediaInfoDialog::getInstance( p_intf )->showTab( 0 );
+    MediaInfoDialog::getInstance( p_intf )->showTab( MediaInfoDialog::META_PANEL );
 }
 
 void DialogsProvider::mediaCodecDialog()
 {
-    MediaInfoDialog::getInstance( p_intf )->showTab( 2 );
+    MediaInfoDialog::getInstance( p_intf )->showTab( MediaInfoDialog::INFO_PANEL );
 }
 
 void DialogsProvider::bookmarksDialog()
@@ -329,7 +332,7 @@ void DialogsProvider::openFileGenericDialog( intf_dialog_args_t *p_arg )
         foreach( const QString &file, files )
             p_arg->psz_results[i++] = strdup( qtu( toNativeSepNoSlash( file ) ) );
         if(i == 0)
-            p_intf->p_sys->filepath = QString::fromAscii("");
+            p_intf->p_sys->filepath = QString::fromLatin1("");
         else
             p_intf->p_sys->filepath = qfu( p_arg->psz_results[i-1] );
     }
@@ -472,26 +475,27 @@ void DialogsProvider::simpleMLAppendDialog()
  **/
 void DialogsProvider::openUrlDialog()
 {
-    OpenUrlDialog *oud = new OpenUrlDialog( p_intf );
-    if( oud->exec() == QDialog::Accepted )
+    OpenUrlDialog oud( p_intf );
+    if( oud.exec() != QDialog::Accepted )
+        return;
+
+    QString url = oud.url();
+    if( url.isEmpty() )
+        return;
+
+    if( !url.contains( qfu( "://" ) ) )
     {
-        QString url = oud->url();
-        if( !url.isEmpty() )
-        {
-            char *uri = make_URI( qtu( url ), NULL );
-            if( likely( uri != NULL ) )
-            {
-                playlist_Add( THEPL, uri,
-                              NULL, !oud->shouldEnqueue() ?
-                                      ( PLAYLIST_APPEND | PLAYLIST_GO )
-                                    : ( PLAYLIST_APPEND | PLAYLIST_PREPARSE ),
-                              PLAYLIST_END, true, false );
-                RecentsMRL::getInstance( p_intf )->addRecent( url );
-                free( uri );
-            }
-        }
+        char *uri = vlc_path2uri( qtu( url ), NULL );
+        if( uri == NULL )
+            return;
+        url = qfu(uri);
+        free( uri );
     }
-    delete oud;
+    playlist_Add( THEPL, qtu(url), NULL,
+                  !oud.shouldEnqueue() ? ( PLAYLIST_APPEND | PLAYLIST_GO )
+                                     : ( PLAYLIST_APPEND | PLAYLIST_PREPARSE ),
+                  PLAYLIST_END, true, false );
+    RecentsMRL::getInstance( p_intf )->addRecent( url );
 }
 
 /* Directory */
@@ -512,8 +516,13 @@ static void openDirectory( intf_thread_t *p_intf, bool pl, bool go )
     const char *scheme = "directory";
     if( dir.endsWith( "/VIDEO_TS", Qt::CaseInsensitive ) )
         scheme = "dvd";
+    else if( dir.endsWith( "/BDMV", Qt::CaseInsensitive ) )
+    {
+        scheme = "bluray";
+        dir.remove( "BDMV" );
+    }
 
-    char *uri = make_URI( qtu( toNativeSeparators( dir ) ), scheme );
+    char *uri = vlc_path2uri( qtu( toNativeSeparators( dir ) ), scheme );
     if( unlikely(uri == NULL) )
         return;
 
@@ -587,20 +596,48 @@ void DialogsProvider::saveAPlaylist()
 
     QString selected;
     QString file = QFileDialog::getSaveFileName( NULL,
-                                  qtr( "Save playlist as..." ),
-                                  p_intf->p_sys->filepath, filters.join( ";;" ),
-                                  &selected );
+                                                 qtr( "Save playlist as..." ),
+                                                 p_intf->p_sys->filepath, filters.join( ";;" ),
+                                                 &selected );
+    const char *psz_selected_module = NULL;
+    const char *psz_last_playlist_ext = NULL;
+
     if( file.isEmpty() )
         return;
 
+    /* First test if the file extension is set, and different to selected filter */
     for( size_t i = 0; i < sizeof (types) / sizeof (types[0]); i++)
-        if( selected == qfu( vlc_gettext( types[i].filter_name ) ) + " (*." + qfu( types[i].filter_patterns ) + ")" )
+    {
+        if ( file.endsWith( QString( "." ) + qfu( types[i].filter_patterns ) ) )
         {
-            playlist_Export( THEPL, qtu( toNativeSeparators( file ) ),
-                             THEPL->p_playing, types[i].module );
-            getSettings()->setValue( "last-playlist-ext", types[i].filter_patterns );
+            psz_selected_module = types[i].module;
+            psz_last_playlist_ext = types[i].filter_patterns;
             break;
         }
+    }
+
+    /* otherwise apply the selected extension */
+    if ( !psz_last_playlist_ext )
+    {
+        for( size_t i = 0; i < sizeof (types) / sizeof (types[0]); i++)
+        {
+            if ( selected.startsWith( qfu( vlc_gettext( types[i].filter_name ) ) ) )
+            {
+                psz_selected_module = types[i].module;
+                psz_last_playlist_ext = types[i].filter_patterns;
+                /* Fix file extension */
+                file = file.append( QString( "." ) + qfu( psz_last_playlist_ext ) );
+                break;
+            }
+        }
+    }
+
+    if ( psz_selected_module )
+    {
+        playlist_Export( THEPL, qtu( toNativeSeparators( file ) ),
+                         THEPL->p_playing, psz_selected_module );
+        getSettings()->setValue( "last-playlist-ext", psz_last_playlist_ext );
+    }
 }
 
 /****************************************************************************
@@ -750,12 +787,7 @@ void DialogsProvider::SDMenuAction( const QString& data )
  **/
 void DialogsProvider::playMRL( const QString &mrl )
 {
-    char *uri = make_URI( qtu( mrl ), NULL );
-    if( unlikely( uri == NULL ) )
-        return;
-
-    playlist_Add( THEPL, uri, NULL,
-           PLAYLIST_APPEND | PLAYLIST_GO , PLAYLIST_END, true, false );
+    playlist_Add( THEPL, qtu(mrl), NULL,
+                  PLAYLIST_APPEND | PLAYLIST_GO , PLAYLIST_END, true, false );
     RecentsMRL::getInstance( p_intf )->addRecent( mrl );
-    free( uri );
 }

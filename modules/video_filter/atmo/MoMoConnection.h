@@ -4,7 +4,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: b742e48bbbeed7b4fbd6fb034d02a0fdd1fa0542 $
+ * $Id: 5fd094194b033eb753d9a7074bd15b1d3362e4ed $
  */
 #ifndef _MoMoConnection_h_
 #define _MoMoConnection_h_
@@ -13,7 +13,7 @@
 #include "AtmoConnection.h"
 #include "AtmoConfig.h"
 
-#if defined(WIN32)
+#if defined(_WIN32)
 #   include <windows.h>
 #endif
 
@@ -22,7 +22,7 @@ class CMoMoConnection : public CAtmoConnection {
     private:
         HANDLE m_hComport;
 
-#if defined(WIN32)
+#if defined(_WIN32)
         DWORD  m_dwLastWin32Error;
     public:
         DWORD getLastError() { return m_dwLastWin32Error; }

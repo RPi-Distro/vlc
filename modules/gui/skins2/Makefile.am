@@ -17,8 +17,7 @@ libskins2_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_skins2)
 libskins2_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_skins2)
 libskins2_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_skins2)
 libskins2_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_skins2)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libskins2_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_skins2)
 libskins2_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_skins2)
-libskins2_plugin_la_DEPENDENCIES =
 

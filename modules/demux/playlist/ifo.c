@@ -1,24 +1,24 @@
 /*****************************************************************************
  * ifo.c: Dummy ifo demux to enable opening DVDs rips by double cliking on VIDEO_TS.IFO
  *****************************************************************************
- * Copyright (C) 2007 the VideoLAN team
- * $Id: 6e8dc103092e554269acc51cfc0c5688e7791824 $
+ * Copyright (C) 2007 VLC authors and VideoLAN
+ * $Id: e031f8b00490796035b2089aaa097e175b05dfda $
  *
  * Authors: Antoine Cellerier <dionoea @t videolan d.t org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -39,7 +39,6 @@
  *****************************************************************************/
 static int Demux( demux_t *p_demux);
 static int DemuxDVD_VR( demux_t *p_demux);
-static int Control( demux_t *p_demux, int i_query, va_list args );
 
 /*****************************************************************************
  * Import_IFO: main import function
@@ -93,14 +92,6 @@ int Import_IFO( vlc_object_t *p_this )
     return VLC_SUCCESS;
 }
 
-/*****************************************************************************
- * Deactivate: frees unused data
- *****************************************************************************/
-void Close_IFO( vlc_object_t *p_this )
-{
-    VLC_UNUSED(p_this);
-}
-
 static int Demux( demux_t *p_demux )
 {
     char *psz_url, *psz_dir;
@@ -145,11 +136,4 @@ static int DemuxDVD_VR( demux_t *p_demux )
     free( psz_url );
 
     return 0; /* Needed for correct operation of go back */
-}
-
-
-static int Control( demux_t *p_demux, int i_query, va_list args )
-{
-    VLC_UNUSED(p_demux); VLC_UNUSED(i_query); VLC_UNUSED(args);
-    return VLC_EGENERIC;
 }

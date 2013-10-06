@@ -1,8 +1,8 @@
 /*****************************************************************************
  * playlistinfo.h: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2002-2008 VLC authors and VideoLAN
- * $Id: bdb2ba94b862e68d693afab49296ce8f23f914c2 $
+ * Copyright (C) 2002-2012 VLC authors and VideoLAN
+ * $Id: 8deb36f75994b6d53c0811ac30e588b8a7c385a5 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -102,7 +102,9 @@
     BOOL b_awakeFromNib;
     BOOL b_stats;
 }
+@property (readonly) input_item_t * item;
 
+- (void)updateCocoaWindowLevel:(NSInteger)i_level;
 - (void)initPanel;
 
 - (IBAction)metaFieldChanged:(id)sender;
@@ -110,7 +112,6 @@
 - (IBAction)downloadCoverArt:(id)sender;
 - (void)initMediaPanelStats;
 - (void)updatePanelWithItem:(input_item_t *)_p_item;
-- (input_item_t *)item;
 - (void)setMeta: (char *)meta forLabel: (id)theItem;
 - (void)updateStatistics;
 
@@ -127,10 +128,11 @@
     NSMutableArray *o_children;
 }
 
-- (int)numberOfChildren;
+@property (readonly) int numberOfChildren;
+@property (readonly) NSString * name;
+@property (readonly) NSString * value;
+
 - (VLCInfoTreeItem *)childAtIndex:(NSUInteger)i_index;
-- (NSString *)name;
-- (NSString *)value;
 - (void)refresh;
 
 @end

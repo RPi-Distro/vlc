@@ -1,9 +1,9 @@
 /*****************************************************************************
- * libvlc_internal.h : Definition of opaque structures for libvlc exported API
+ * event_internal.h : Definition of opaque structures for libvlc exported API
  * Also contains some internal utility functions
  *****************************************************************************
  * Copyright (C) 2005-2009 VLC authors and VideoLAN
- * $Id: be4f0f571daad9baa8f4d58705cf3c2d6edac6ce $
+ * $Id: 5c3ab3e5102f6595ca26f0c7706af111b9b35470 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

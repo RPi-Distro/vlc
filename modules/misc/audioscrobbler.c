@@ -2,7 +2,7 @@
  * audioscrobbler.c : audioscrobbler submission plugin
  *****************************************************************************
  * Copyright © 2006-2011 the VideoLAN team
- * $Id: ba79ce273d71017077bc49a3d7fae337aff0d710 $
+ * $Id: 4799a9ef4993dbe2ab8350bbdf9d37437141336d $
  *
  * Author: Rafaël Carré <funman at videolanorg>
  *         Ilkka Ollakka <ileoo at videolan org>
@@ -75,11 +75,10 @@ struct intf_sys_t
 
     vlc_mutex_t             lock;               /**< p_sys mutex            */
     vlc_cond_t              wait;               /**< song to submit event   */
+    vlc_thread_t            thread;             /**< thread to submit song  */
 
     /* submission of played songs */
-    char                    *psz_submit_host;   /**< where to submit data   */
-    int                     i_submit_port;      /**< port to which submit   */
-    char                    *psz_submit_file;   /**< file to which submit   */
+    vlc_url_t               p_submit_url;       /**< where to submit data   */
 
     /* submission of playing song */
 #if 0 //NOT USED
@@ -106,7 +105,7 @@ struct intf_sys_t
 
 static int  Open            (vlc_object_t *);
 static void Close           (vlc_object_t *);
-static void Run             (intf_thread_t *);
+static void *Run            (void *);
 
 /*****************************************************************************
  * Module descriptor
@@ -421,9 +420,15 @@ static int Open(vlc_object_t *p_this)
     vlc_mutex_init(&p_sys->lock);
     vlc_cond_init(&p_sys->wait);
 
-    var_AddCallback(pl_Get(p_intf), "item-current", ItemChange, p_intf);
+    if (vlc_clone(&p_sys->thread, Run, p_intf, VLC_THREAD_PRIORITY_LOW))
+    {
+        vlc_cond_destroy(&p_sys->wait);
+        vlc_mutex_destroy(&p_sys->lock);
+        free(p_sys);
+        return VLC_ENOMEM;
+    }
 
-    p_intf->pf_run = Run;
+    var_AddCallback(pl_Get(p_intf), "activity", ItemChange, p_intf);
 
     return VLC_SUCCESS;
 }
@@ -438,7 +443,10 @@ static void Close(vlc_object_t *p_this)
     intf_thread_t               *p_intf = (intf_thread_t*) p_this;
     intf_sys_t                  *p_sys  = p_intf->p_sys;
 
-    var_DelCallback(p_playlist, "item-current", ItemChange, p_intf);
+    var_DelCallback(p_playlist, "activity", ItemChange, p_intf);
+
+    vlc_cancel(p_sys->thread);
+    vlc_join(p_sys->thread, NULL);
 
     p_input = playlist_CurrentInput(p_playlist);
     if (p_input)
@@ -451,8 +459,7 @@ static void Close(vlc_object_t *p_this)
     int i;
     for (i = 0; i < p_sys->i_songs; i++)
         DeleteSong(&p_sys->p_queue[i]);
-    free(p_sys->psz_submit_host);
-    free(p_sys->psz_submit_file);
+    vlc_UrlClean(&p_sys->p_submit_url);
 #if 0 //NOT USED
     free(p_sys->psz_nowp_host);
     free(p_sys->psz_nowp_file);
@@ -460,69 +467,6 @@ static void Close(vlc_object_t *p_this)
     vlc_cond_destroy(&p_sys->wait);
     vlc_mutex_destroy(&p_sys->lock);
     free(p_sys);
-}
-
-
-/*****************************************************************************
- * ParseURL : Split an http:// URL into host, file, and port
- *
- * Example: "62.216.251.205:80/protocol_1.2"
- *      will be split into "62.216.251.205", 80, "protocol_1.2"
- *
- * psz_url will be freed before returning
- * *psz_file & *psz_host will be freed before use
- *
- * Return value:
- *  VLC_ENOMEM      Out Of Memory
- *  VLC_EGENERIC    Invalid url provided
- *  VLC_SUCCESS     Success
- *****************************************************************************/
-static int ParseURL(char *psz_url, char **psz_host, char **psz_file,
-                        int *i_port)
-{
-    size_t i_pos;
-    size_t i_len = strlen(psz_url);
-    bool b_no_port = false;
-    FREENULL(*psz_host);
-    FREENULL(*psz_file);
-
-    i_pos = strcspn(psz_url, ":");
-    if (i_pos == i_len)
-    {
-        *i_port = 80;
-        i_pos = strcspn(psz_url, "/");
-        b_no_port = true;
-    }
-
-    *psz_host = strndup(psz_url, i_pos);
-    if (!*psz_host)
-        return VLC_ENOMEM;
-
-    if (!b_no_port)
-    {
-        i_pos++; /* skip the ':' */
-        *i_port = atoi(psz_url + i_pos);
-        if (*i_port <= 0)
-        {
-            FREENULL(*psz_host);
-            return VLC_EGENERIC;
-        }
-
-        i_pos = strcspn(psz_url, "/");
-    }
-
-    if (i_pos == i_len)
-        return VLC_EGENERIC;
-
-    i_pos++; /* skip the '/' */
-    *psz_file = strdup(psz_url + i_pos);
-    if (!*psz_file)
-    {
-        FREENULL(*psz_host);
-        return VLC_ENOMEM;
-    }
-
-    return VLC_SUCCESS;
 }
 
 /*****************************************************************************
@@ -716,20 +660,9 @@ static int Handshake(intf_thread_t *p_this)
     if (!psz_url)
         goto oom;
 
-    int ret = ParseURL(psz_url, &p_sys->psz_submit_host,
-                &p_sys->psz_submit_file, &p_sys->i_submit_port);
+    /* parse the submission url */
+    vlc_UrlParse(&p_sys->p_submit_url, psz_url, 0);
     free(psz_url);
-
-    switch(ret)
-    {
-        case VLC_ENOMEM:
-            goto oom;
-        case VLC_EGENERIC:
-            goto proto;
-        case VLC_SUCCESS:
-        default:
-            break;
-    }
 
     return VLC_SUCCESS;
 
@@ -761,8 +694,9 @@ static void HandleInterval(mtime_t *next, unsigned int *i_interval)
 /*****************************************************************************
  * Run : call Handshake() then submit songs
  *****************************************************************************/
-static void Run(intf_thread_t *p_intf)
+static void *Run(void *data)
 {
+    intf_thread_t          *p_intf = data;
     uint8_t                 p_buffer[1024];
     int                     canc = vlc_savecancel();
     bool                    b_handshaked = false;
@@ -795,7 +729,7 @@ static void Run(intf_thread_t *p_intf)
             switch(Handshake(p_intf))
             {
                 case VLC_ENOMEM:
-                    return;
+                    goto out;
 
                 case VLC_ENOVAR:
                     /* username not set */
@@ -803,12 +737,11 @@ static void Run(intf_thread_t *p_intf)
                         _("Last.fm username not set"),
                         "%s", _("Please set a username or disable the "
                         "audioscrobbler plugin, and restart VLC.\n"
-                        "Visit http://www.last.fm/join/ to get an account.")
-                   );
-                    return;
+                        "Visit http://www.last.fm/join/ to get an account."));
+                    goto out;
 
                 case VLC_SUCCESS:
-                    msg_Dbg(p_intf, "Handshake successfull :)");
+                    msg_Dbg(p_intf, "Handshake successful :)");
                     b_handshaked = true;
                     i_interval = 0;
                     next_exchange = mdate();
@@ -816,7 +749,7 @@ static void Run(intf_thread_t *p_intf)
 
                 case VLC_AUDIOSCROBBLER_EFATAL:
                     msg_Warn(p_intf, "Exiting...");
-                    return;
+                    goto out;
 
                 case VLC_EGENERIC:
                 default:
@@ -832,7 +765,7 @@ static void Run(intf_thread_t *p_intf)
         msg_Dbg(p_intf, "Going to submit some data...");
         char *psz_submit;
         if (asprintf(&psz_submit, "s=%s", p_sys->psz_auth_token) == -1)
-            return;
+            break;
 
         /* forge the HTTP POST request */
         vlc_mutex_lock(&p_sys->lock);
@@ -863,7 +796,7 @@ static void Run(intf_thread_t *p_intf)
            ) == -1)
             {   /* Out of memory */
                 vlc_mutex_unlock(&p_sys->lock);
-                return;
+                goto out;
             }
             psz_submit_tmp = psz_submit;
             if (asprintf(&psz_submit, "%s%s",
@@ -872,15 +805,15 @@ static void Run(intf_thread_t *p_intf)
                 free(psz_submit_tmp);
                 free(psz_submit_song);
                 vlc_mutex_unlock(&p_sys->lock);
-                return;
+                goto out;
             }
             free(psz_submit_song);
             free(psz_submit_tmp);
         }
         vlc_mutex_unlock(&p_sys->lock);
 
-        int i_post_socket = net_ConnectTCP(p_intf, p_sys->psz_submit_host,
-                                        p_sys->i_submit_port);
+        int i_post_socket = net_ConnectTCP(p_intf, p_sys->p_submit_url.psz_host,
+                                        p_sys->p_submit_url.i_port);
 
         if (i_post_socket == -1)
         {
@@ -893,7 +826,7 @@ static void Run(intf_thread_t *p_intf)
 
         /* we transmit the data */
         int i_net_ret = net_Printf(p_intf, i_post_socket, NULL,
-            "POST /%s HTTP/1.1\n"
+            "POST %s HTTP/1.1\n"
             "Accept-Encoding: identity\n"
             "Content-length: %zu\n"
             "Connection: close\n"
@@ -903,8 +836,8 @@ static void Run(intf_thread_t *p_intf)
             "\r\n"
             "%s\r\n"
             "\r\n",
-            p_sys->psz_submit_file, strlen(psz_submit),
-            p_sys->psz_submit_host, psz_submit
+            p_sys->p_submit_url.psz_path, strlen(psz_submit),
+            p_sys->p_submit_url.psz_host, psz_submit
        );
 
         free(psz_submit);
@@ -960,5 +893,7 @@ static void Run(intf_thread_t *p_intf)
             HandleInterval(&next_exchange, &i_interval);
         }
     }
+out:
     vlc_restorecancel(canc);
+    return NULL;
 }

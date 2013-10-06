@@ -1,24 +1,24 @@
 /*****************************************************************************
  * theora.c: theora decoder module making use of libtheora.
  *****************************************************************************
- * Copyright (C) 1999-2012 the VideoLAN team
- * $Id: b3c7b7406cf5713595711f1f8d5650ed7d3c184a $
+ * Copyright (C) 1999-2012 VLC authors and VideoLAN
+ * $Id: a052b4627c33db68597e0a527e16593d3ab20634 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -91,9 +91,11 @@ static picture_t *DecodePacket( decoder_t *, ogg_packet * );
 static void ParseTheoraComments( decoder_t * );
 static void theora_CopyPicture( picture_t *, th_ycbcr_buffer );
 
+#ifdef ENABLE_SOUT
 static int  OpenEncoder( vlc_object_t *p_this );
 static void CloseEncoder( vlc_object_t *p_this );
 static block_t *Encode( encoder_t *p_enc, picture_t *p_pict );
+#endif
 
 /*****************************************************************************
  * Module descriptor
@@ -118,6 +120,7 @@ vlc_module_begin ()
     set_callbacks( OpenPacketizer, CloseDecoder )
     add_shortcut( "theora" )
 
+#ifdef ENABLE_SOUT
     add_submodule ()
     set_description( N_("Theora video encoder") )
     set_capability( "encoder", 150 )
@@ -127,6 +130,7 @@ vlc_module_begin ()
 #   define ENC_CFG_PREFIX "sout-theora-"
     add_integer( ENC_CFG_PREFIX "quality", 2, ENC_QUALITY_TEXT,
                  ENC_QUALITY_LONGTEXT, false )
+#endif
 vlc_module_end ()
 
 static const char *const ppsz_enc_options[] = {
@@ -591,13 +595,14 @@ static void theora_CopyPicture( picture_t *p_pic,
              i_line < __MIN(p_pic->p[i_plane].i_lines, ycbcr[i_plane].height);
              i_line++ )
         {
-            vlc_memcpy( p_dst, p_src, ycbcr[i_plane].width );
+            memcpy( p_dst, p_src, ycbcr[i_plane].width );
             p_src += i_src_stride;
             p_dst += i_dst_stride;
         }
     }
 }
 
+#ifdef ENABLE_SOUT
 /*****************************************************************************
  * encoder_sys_t : theora encoder descriptor
  *****************************************************************************/
@@ -845,7 +850,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pict )
     th_encode_packetout( p_sys->tcx, 0, &oggpacket );
 
     /* Ogg packet to block */
-    p_block = block_New( p_enc, oggpacket.bytes );
+    p_block = block_Alloc( oggpacket.bytes );
     memcpy( p_block->p_buffer, oggpacket.packet, oggpacket.bytes );
     p_block->i_dts = p_block->i_pts = p_pict->date;
 
@@ -871,3 +876,4 @@ static void CloseEncoder( vlc_object_t *p_this )
     p_sys->tcx = NULL;
     free( p_sys );
 }
+#endif

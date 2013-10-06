@@ -1,10 +1,11 @@
 /*****************************************************************************
- * voutgl.m: iOS X OpenGLES provider
+ * ios.m: iOS X OpenGLES provider
  *****************************************************************************
- * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: d49aed2f094a9b1e7ed82f3bff66464efd9aff97 $
+ * Copyright (C) 2010-2013 VLC Authors and VideoLAN
+ * $Id: baae0162a984cfe7efd01fa9f09f756080478d94 $
  *
  * Authors: Romain Goyet <romain.goyet at likid dot org>
+ *          Felix Paul Kühne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +27,8 @@
  *****************************************************************************/
 
 #import <UIKit/UIKit.h>
-#import <OpenGLES/ES1/gl.h>
-#import <OpenGLES/ES1/glext.h>
-#include <QuartzCore/QuartzCore.h>
+#import <QuartzCore/QuartzCore.h>
+#import <dlfcn.h>
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -38,8 +38,6 @@
 #include <vlc_plugin.h>
 #include <vlc_vout_display.h>
 #include <vlc_opengl.h>
-
-#define USE_OPENGL_ES 1
 
 #include "opengl.h"
 
@@ -54,6 +52,8 @@ static void PictureRender(vout_display_t *vd, picture_t *pic, subpicture_t *subp
 static void PictureDisplay(vout_display_t *vd, picture_t *pic, subpicture_t *subpicture);
 static int Control (vout_display_t *vd, int query, va_list ap);
 
+static void *OurGetProcAddress(vlc_gl_t *, const char *);
+
 static int OpenglClean(vlc_gl_t *gl);
 static void OpenglSwap(vlc_gl_t *gl);
 
@@ -66,7 +66,7 @@ vlc_module_begin ()
     set_description( N_("iOS OpenGL ES video output (requires UIView)"))
     set_category(CAT_VIDEO)
     set_subcategory(SUBCAT_VIDEO_VOUT )
-    set_capability("vout display", 300)
+    set_capability("vout display", 210)
     set_callbacks(Open, Close)
 
     add_shortcut("ios", "vout_ios")
@@ -100,6 +100,13 @@ struct vout_display_sys_t
     picture_t *current;
     bool has_first_frame;
 };
+
+static void *OurGetProcAddress(vlc_gl_t *gl, const char *name)
+{
+    VLC_UNUSED(gl);
+
+    return dlsym(RTLD_DEFAULT, name);
+}
 
 // Called from vout thread
 static int Open(vlc_object_t *this)
@@ -148,11 +155,11 @@ static int Open(vlc_object_t *this)
     sys->gl.lock = OpenglClean; // We don't do locking, but sometimes we need to cleanup the framebuffer
     sys->gl.unlock = NULL;
     sys->gl.swap = OpenglSwap;
-	sys->gl.getProcAddress = NULL;
+    sys->gl.getProcAddress = OurGetProcAddress;
     sys->gl.sys = sys;
 
-	sys->vgl = vout_display_opengl_New(&vd->fmt, NULL, &sys->gl);
-	if (!sys->vgl)
+    sys->vgl = vout_display_opengl_New(&vd->fmt, NULL, &sys->gl);
+    if (!sys->vgl)
     {
         sys->gl.sys = NULL;
         goto error;
@@ -171,8 +178,11 @@ static int Open(vlc_object_t *this)
     vd->control = Control;
 
     /* */
+    CGRect bounds = sys->glView.layer.bounds;
+    CGFloat scaleFactor = sys->glView.contentScaleFactor;
+    /* we need to multiply the bounds dimensions by the scaleFactor to be save for Retina Displays */
     vout_display_SendEventFullscreen (vd, false);
-    vout_display_SendEventDisplaySize (vd, vd->source.i_visible_width, vd->source.i_visible_height, false);
+    vout_display_SendEventDisplaySize (vd, bounds.size.width * scaleFactor, bounds.size.height * scaleFactor, false);
 
     return VLC_SUCCESS;
 
@@ -220,17 +230,20 @@ static picture_pool_t *Pool(vout_display_t *vd, unsigned requested_count)
 static void PictureRender(vout_display_t *vd, picture_t *pic, subpicture_t *subpicture)
 {
     vout_display_sys_t *sys = vd->sys;
-
-    vout_display_opengl_Prepare( sys->vgl, pic, subpicture );
+    if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+        vout_display_opengl_Prepare( sys->vgl, pic, subpicture );
+    }
 }
 
 static void PictureDisplay(vout_display_t *vd, picture_t *pic, subpicture_t *subpicture)
 {
     vout_display_sys_t *sys = vd->sys;
-    vout_display_opengl_Display(sys->vgl, &vd->fmt );
+    if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+        vout_display_opengl_Display(sys->vgl, &vd->fmt );
+    }
     picture_Release (pic);
     sys->has_first_frame = true;
-	(void)subpicture;
+    (void)subpicture;
 }
 
 static int Control (vout_display_t *vd, int query, va_list ap)
@@ -239,15 +252,19 @@ static int Control (vout_display_t *vd, int query, va_list ap)
 
     switch (query)
     {
+        case VOUT_DISPLAY_CHANGE_SOURCE_ASPECT:
+        {
+            [sys->glView performSelectorOnMainThread:@selector(layoutSubviews) withObject:nil waitUntilDone:NO];
+            return VLC_SUCCESS;
+        }
         case VOUT_DISPLAY_CHANGE_FULLSCREEN:
         case VOUT_DISPLAY_CHANGE_WINDOW_STATE:
         case VOUT_DISPLAY_CHANGE_DISPLAY_SIZE:
         case VOUT_DISPLAY_CHANGE_DISPLAY_FILLED:
         case VOUT_DISPLAY_CHANGE_ZOOM:
-        case VOUT_DISPLAY_CHANGE_SOURCE_ASPECT:
         case VOUT_DISPLAY_CHANGE_SOURCE_CROP:
         {
-            return VLC_EGENERIC;
+            return VLC_SUCCESS;
         }
         case VOUT_DISPLAY_HIDE_MOUSE:
             return VLC_SUCCESS;
@@ -281,7 +298,10 @@ static void OpenglSwap(vlc_gl_t *gl)
 {
     vout_display_sys_t *sys = gl->sys;
     EAGLContext *context = [sys->glView context];
-    [context presentRenderbuffer:GL_RENDERBUFFER_OES];
+
+    if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+        [context presentRenderbuffer:GL_RENDERBUFFER];
+    }
 }
 
 /*****************************************************************************
@@ -314,11 +334,10 @@ static void OpenglSwap(vlc_gl_t *gl)
 
         eaglLayer.opaque = TRUE;
         eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
-//                                        [NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking,
-                                        kEAGLColorFormatRGB565, kEAGLDrawablePropertyColorFormat,
+                                        kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat,
                                         nil];
 
-        _context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
+        _context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
         NSAssert(_context && [EAGLContext setCurrentContext:_context], @"Creating context");
 
         // This shouldn't need to be done on the main thread.
@@ -367,6 +386,11 @@ static void OpenglSwap(vlc_gl_t *gl)
     }
 }
 
+/* we don't get the correct scale factor if we don't overwrite this method */
+- (void) drawRect: (CGRect) rect
+{
+}
+
 @end
 
 @implementation VLCOpenGLESVideoView (Private)
@@ -374,22 +398,22 @@ static void OpenglSwap(vlc_gl_t *gl)
     msg_Dbg(_vd, "Creating framebuffer for layer %p with bounds (%.1f,%.1f,%.1f,%.1f)", self.layer, self.layer.bounds.origin.x, self.layer.bounds.origin.y, self.layer.bounds.size.width, self.layer.bounds.size.height);
     [EAGLContext setCurrentContext:_context];
     // Create default framebuffer object. The backing will be allocated for the current layer in -resizeFromLayer
-    glGenFramebuffersOES(1, &_defaultFramebuffer); // Generate one framebuffer, store it in _defaultFrameBuffer
-    glGenRenderbuffersOES(1, &_colorRenderbuffer);
-    glBindFramebufferOES(GL_FRAMEBUFFER_OES, _defaultFramebuffer);
-    glBindRenderbufferOES(GL_RENDERBUFFER_OES, _colorRenderbuffer);
+    glGenFramebuffers(1, &_defaultFramebuffer); // Generate one framebuffer, store it in _defaultFrameBuffer
+    glGenRenderbuffers(1, &_colorRenderbuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, _defaultFramebuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderbuffer);
 
     // This call associates the storage for the current render buffer with the EAGLDrawable (our CAEAGLLayer)
     // allowing us to draw into a buffer that will later be rendered to screen wherever the layer is (which corresponds with our view).
-    [_context renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(id<EAGLDrawable>)self.layer];
-    glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, _colorRenderbuffer);
+    [_context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(id<EAGLDrawable>)self.layer];
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _colorRenderbuffer);
 
-    GLuint backingWidth, backingHeight;
-    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &backingWidth);
-    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &backingHeight);
+    GLint backingWidth, backingHeight;
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &backingWidth);
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &backingHeight);
 
-    if(glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) != GL_FRAMEBUFFER_COMPLETE_OES) {
-        msg_Err(_vd, "Failed to make complete framebuffer object %x", glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES));
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        msg_Err(_vd, "Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
     }
     [self _updateViewportWithBackingWitdh:backingWidth andBackingHeight:backingHeight];
 }
@@ -419,6 +443,15 @@ static void OpenglSwap(vlc_gl_t *gl)
             x = width;
             y = (width * videoHeight * sarDen) / (videoWidth * sarNum);
         }
+
+        @synchronized (self)
+        {
+            vout_display_cfg_t cfg_tmp = *(_vd->cfg);
+            cfg_tmp.display.width  = width;
+            cfg_tmp.display.height = height;
+
+            vout_display_SendEventDisplaySize (_vd, width, height, false);
+        }
     }
 
     [EAGLContext setCurrentContext:_context];
@@ -427,9 +460,9 @@ static void OpenglSwap(vlc_gl_t *gl)
 
 - (void)_destroyFramebuffer {
     [EAGLContext setCurrentContext:_context];
-    glDeleteFramebuffersOES(1, &_defaultFramebuffer);
+    glDeleteFramebuffers(1, &_defaultFramebuffer);
     _defaultFramebuffer = 0;
-    glDeleteRenderbuffersOES(1, &_colorRenderbuffer);
+    glDeleteRenderbuffers(1, &_colorRenderbuffer);
     _colorRenderbuffer = 0;
 }
 @end

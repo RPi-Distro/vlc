@@ -1,24 +1,24 @@
 /*****************************************************************************
  * sepia.c : Sepia video plugin for vlc
  *****************************************************************************
- * Copyright (C) 2010 the VideoLAN team
- * $Id: 7235537b25bcb9ed9ce30e38471655b0be92234f $
+ * Copyright (C) 2010 VLC authors and VideoLAN
+ * $Id: c0f3ad1a77a1e6b6bf14008238c4bd9a0a8b87b2 $
  *
  * Authors: Branko Kokanovic <branko.kokanovic@gmail.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -33,6 +33,7 @@
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
 #include <vlc_cpu.h>
+#include <vlc_atomic.h>
 
 #include <assert.h>
 #include "filter_picture.h"
@@ -101,8 +102,7 @@ static const struct
 struct filter_sys_t
 {
     SepiaFunction pf_sepia;
-    int i_intensity;
-    vlc_spinlock_t lock;
+    atomic_int i_intensity;
 };
 
 /*****************************************************************************
@@ -139,11 +139,8 @@ static int Create( vlc_object_t *p_this )
 
     config_ChainParse( p_filter, CFG_PREFIX, ppsz_filter_options,
                        p_filter->p_cfg );
-    p_sys->i_intensity= var_CreateGetIntegerCommand( p_filter,
-                       CFG_PREFIX "intensity" );
-
-    vlc_spin_init( &p_sys->lock );
-
+    atomic_init( &p_sys->i_intensity,
+             var_CreateGetIntegerCommand( p_filter, CFG_PREFIX "intensity" ) );
     var_AddCallback( p_filter, CFG_PREFIX "intensity", FilterCallback, NULL );
 
     p_filter->pf_video_filter = Filter;
@@ -162,7 +159,6 @@ static void Destroy( vlc_object_t *p_this )
 
     var_DelCallback( p_filter, CFG_PREFIX "intensity", FilterCallback, NULL );
 
-    vlc_spin_destroy( &p_filter->p_sys->lock );
     free( p_filter->p_sys );
 }
 
@@ -176,14 +172,11 @@ static void Destroy( vlc_object_t *p_this )
 static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
 {
     picture_t *p_outpic;
-    int intensity;
 
     if( !p_pic ) return NULL;
 
     filter_sys_t *p_sys = p_filter->p_sys;
-    vlc_spin_lock( &p_sys->lock );
-    intensity = p_sys->i_intensity;
-    vlc_spin_unlock( &p_sys->lock );
+    int intensity = atomic_load( &p_sys->i_intensity );
 
     p_outpic = filter_NewPicture( p_filter );
     if( !p_outpic )
@@ -317,7 +310,7 @@ static void PlanarI420Sepia( picture_t *p_pic, picture_t *p_outpic,
                                int i_intensity )
 {
 #if defined(CAN_COMPILE_SSE2)
-    if (vlc_CPU() & CPU_CAPABILITY_SSE2)
+    if (vlc_CPU_SSE2())
         return PlanarI420SepiaSSE( p_pic, p_outpic, i_intensity );
 #endif
 
@@ -494,9 +487,6 @@ static int FilterCallback ( vlc_object_t *p_this, char const *psz_var,
     filter_t *p_filter = (filter_t*)p_this;
     filter_sys_t *p_sys = p_filter->p_sys;
 
-    vlc_spin_lock( &p_sys->lock );
-    p_sys->i_intensity = newval.i_int;
-    vlc_spin_unlock( &p_sys->lock );
-
+    atomic_store( &p_sys->i_intensity, newval.i_int );
     return VLC_SUCCESS;
 }

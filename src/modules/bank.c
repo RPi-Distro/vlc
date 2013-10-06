@@ -34,9 +34,7 @@
 #include <assert.h>
 
 #include <sys/types.h>
-#ifdef HAVE_SYS_STAT_H
-#   include <sys/stat.h>
-#endif
+#include <sys/stat.h>
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
 #endif
@@ -71,7 +69,7 @@ static void module_StoreBank (module_t *module)
     modules.head = module;
 }
 
-#ifdef __ELF__
+#if defined(__ELF__) || !HAVE_DYNAMIC_PLUGINS
 # ifdef __GNUC__
 __attribute__((weak))
 # else
@@ -114,8 +112,6 @@ void module_InitBank (void)
         module_t *module = module_InitStatic (vlc_entry__main);
         if (likely(module != NULL))
             module_StoreBank (module);
-
-        module_InitStaticModules();
         config_SortConfig ();
     }
     modules.usage++;
@@ -182,15 +178,16 @@ size_t module_LoadPlugins (vlc_object_t *obj)
 {
     /*vlc_assert_locked (&modules.lock); not for static mutexes :( */
 
-#ifdef HAVE_DYNAMIC_PLUGINS
     if (modules.usage == 1)
     {
+        module_InitStaticModules ();
+#ifdef HAVE_DYNAMIC_PLUGINS
         msg_Dbg (obj, "searching plug-in modules");
         AllocateAllPlugins (obj);
+#endif
         config_UnsortConfig ();
         config_SortConfig ();
     }
-#endif
     vlc_mutex_unlock (&modules.lock);
 
     size_t count;
@@ -213,24 +210,25 @@ void module_list_free (module_t **list)
 
 /**
  * Gets the flat list of VLC modules.
- * @param n [OUT] pointer to the number of modules or NULL
- * @return NULL-terminated table of module pointers
- *         (release with module_list_free()), or NULL in case of error.
+ * @param n [OUT] pointer to the number of modules
+ * @return table of module pointers (release with module_list_free()),
+ *         or NULL in case of error (in that case, *n is zeroed).
  */
 module_t **module_list_get (size_t *n)
 {
-    /* TODO: this whole module lookup is quite inefficient */
-    /* Remove this and improve module_need */
     module_t **tab = NULL;
     size_t i = 0;
+
+    assert (n != NULL);
 
     for (module_t *mod = modules.head; mod; mod = mod->next)
     {
          module_t **nt;
-         nt  = realloc (tab, (i + 2 + mod->submodule_count) * sizeof (*tab));
-         if (nt == NULL)
+         nt  = realloc (tab, (i + 1 + mod->submodule_count) * sizeof (*tab));
+         if (unlikely(nt == NULL))
          {
-             module_list_free (tab);
+             free (tab);
+             *n = 0;
              return NULL;
          }
 
@@ -238,14 +236,61 @@ module_t **module_list_get (size_t *n)
          tab[i++] = mod;
          for (module_t *subm = mod->submodule; subm; subm = subm->next)
              tab[i++] = subm;
-         tab[i] = NULL;
     }
-    if (n != NULL)
-        *n = i;
+    *n = i;
     return tab;
 }
 
-char *psz_vlcpath = NULL;
+static int modulecmp (const void *a, const void *b)
+{
+    const module_t *const *ma = a, *const *mb = b;
+    /* Note that qsort() uses _ascending_ order,
+     * so the smallest module is the one with the biggest score. */
+    return (*mb)->i_score - (*ma)->i_score;
+}
+
+/**
+ * Builds a sorted list of all VLC modules with a given capability.
+ * The list is sorted from the highest module score to the lowest.
+ * @param list pointer to the table of modules [OUT]
+ * @param cap capability of modules to look for
+ * @return the number of matching found, or -1 on error (*list is then NULL).
+ * @note *list must be freed with module_list_free().
+ */
+ssize_t module_list_cap (module_t ***restrict list, const char *cap)
+{
+    /* TODO: This is quite inefficient. List should be sorted by capability. */
+    ssize_t n = 0;
+
+    assert (list != NULL);
+
+    for (module_t *mod = modules.head; mod != NULL; mod = mod->next)
+    {
+         if (module_provides (mod, cap))
+             n++;
+         for (module_t *subm = mod->submodule; subm != NULL; subm = subm->next)
+             if (module_provides (subm, cap))
+                 n++;
+    }
+
+    module_t **tab = malloc (sizeof (*tab) * n);
+    *list = tab;
+    if (unlikely(tab == NULL))
+        return -1;
+
+    for (module_t *mod = modules.head; mod != NULL; mod = mod->next)
+    {
+         if (module_provides (mod, cap))
+             *(tab++)= mod;
+         for (module_t *subm = mod->submodule; subm != NULL; subm = subm->next)
+             if (module_provides (subm, cap))
+                 *(tab++) = subm;
+    }
+
+    assert (tab == *list + n);
+    qsort (*list, n, sizeof (*tab), modulecmp);
+    return n;
+}
 
 #ifdef HAVE_DYNAMIC_PLUGINS
 typedef enum { CACHE_USE, CACHE_RESET, CACHE_IGNORE } cache_mode_t;
@@ -262,7 +307,6 @@ static void AllocatePluginPath (vlc_object_t *, const char *, cache_mode_t);
  */
 static void AllocateAllPlugins (vlc_object_t *p_this)
 {
-    const char *vlcpath = psz_vlcpath;
     char *paths;
     cache_mode_t mode;
 
@@ -273,15 +317,21 @@ static void AllocateAllPlugins (vlc_object_t *p_this)
     else
         mode = CACHE_USE;
 
+#if VLC_WINSTORE_APP
+    /* Windows Store Apps can not load external plugins with absolute paths. */
+    AllocatePluginPath (p_this, "plugins", mode);
+#else
     /* Contruct the special search path for system that have a relocatable
      * executable. Set it to <vlc path>/plugins. */
-    assert( vlcpath );
-
-    if( asprintf( &paths, "%s" DIR_SEP "plugins", vlcpath ) != -1 )
+    char *vlcpath = config_GetLibDir ();
+    if (likely(vlcpath != NULL)
+     && likely(asprintf (&paths, "%s" DIR_SEP "plugins", vlcpath) != -1))
     {
         AllocatePluginPath (p_this, paths, mode);
         free( paths );
     }
+    free (vlcpath);
+#endif /* VLC_WINSTORE_APP */
 
     /* If the user provided a plugin path, we add it to the list */
     paths = getenv( "VLC_PLUGIN_PATH" );
@@ -490,11 +540,11 @@ static int AllocatePluginFile (module_bank_t *bank, const char *abspath,
         module->b_loaded = false;
     }
 
-    /* For now we force loading if the module's config contains
-     * callbacks or actions.
+    /* For now we force loading if the module's config contains callbacks.
      * Could be optimized by adding an API call.*/
     for (size_t n = module->confsize, i = 0; i < n; i++)
-         if (module->p_config[i].i_action)
+         if (module->p_config[i].list_count == 0
+          && (module->p_config[i].list.psz_cb != NULL || module->p_config[i].list.i_cb != NULL))
          {
              /* !unloadable not allowed for plugins with callbacks */
              vlc_module_destroy (module);

@@ -1,26 +1,26 @@
 /*****************************************************************************
- * va.c: Video Acceleration helpers
+ * dxva2.c: Video Acceleration helpers
  *****************************************************************************
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
- * $Id: edbc5014c5b496cc3aa735b77a06ed78d6567d3e $
+ * $Id: e2b0327bd357cdc78efefb92171b36e7a481335a $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -28,36 +28,39 @@
 #endif
 
 
-#if defined(HAVE_LIBAVCODEC_AVCODEC_H) && defined(HAVE_AVCODEC_DXVA2)
 # if _WIN32_WINNT < 0x600
 /* dxva2 needs Vista support */
 #  undef _WIN32_WINNT
 #  define _WIN32_WINNT 0x600
 # endif
-#endif
+
+#include <assert.h>
 
 #include <vlc_common.h>
 #include <vlc_picture.h>
 #include <vlc_fourcc.h>
 #include <vlc_cpu.h>
-#include <assert.h>
+#include <vlc_plugin.h>
 
-#ifdef HAVE_LIBAVCODEC_AVCODEC_H
-#   include <libavcodec/avcodec.h>
-#   ifdef HAVE_AVCODEC_DXVA2
-#       define DXVA2API_USE_BITFIELDS
-#       define COBJMACROS
-#       include <libavcodec/dxva2.h>
-#   endif
-#else
-#   include <avcodec.h>
-#endif
+#include <libavcodec/avcodec.h>
+#    define DXVA2API_USE_BITFIELDS
+#    define COBJMACROS
+#    include <libavcodec/dxva2.h>
 
 #include "avcodec.h"
 #include "va.h"
 #include "copy.h"
 
-#ifdef HAVE_AVCODEC_DXVA2
+static int Open(vlc_va_t *, int, const es_format_t *);
+static void Close(vlc_va_t *);
+
+vlc_module_begin()
+    set_description(N_("DirectX Video Acceleration (DXVA) 2.0"))
+    set_capability("hw decoder", 50)
+    set_category(CAT_INPUT)
+    set_subcategory(SUBCAT_INPUT_VCODEC)
+    set_callbacks(Open, Close)
+vlc_module_end()
 
 #include <windows.h>
 #include <windowsx.h>
@@ -76,12 +79,7 @@
 #ifdef __MINGW32__
 # include <_mingw.h>
 
-# if defined(__MINGW64_VERSION_MAJOR) && __MINGW64_VERSION_MAJOR < 3
-#  undef  IDirect3DDeviceManager9_Release
-#  define IDirect3DDeviceManager9_Release(This) (This)->lpVtbl->Release(This)
-# endif
-
-# if !defined(__MINGW64_VERSION_MAJOR) || __MINGW64_VERSION_MAJOR < 3
+# if !defined(__MINGW64_VERSION_MAJOR)
 #  undef MS_GUID
 #  define MS_GUID DEFINE_GUID /* dxva2api.h fails to declare those, redefine as static */
 #  define DXVA2_E_NEW_VIDEO_DEVICE MAKE_HRESULT(1, 4, 4097)
@@ -147,19 +145,19 @@ typedef struct {
 /* XXX Prefered modes must come first */
 static const dxva2_mode_t dxva2_modes[] = {
     /* MPEG-1/2 */
-    { "MPEG-2 variable-length decoder",                                               &DXVA2_ModeMPEG2_VLD,                   CODEC_ID_MPEG2VIDEO },
-    { "MPEG-2 & MPEG-1 variable-length decoder",                                      &DXVA2_ModeMPEG2and1_VLD,               CODEC_ID_MPEG2VIDEO },
+    { "MPEG-2 variable-length decoder",                                               &DXVA2_ModeMPEG2_VLD,                   AV_CODEC_ID_MPEG2VIDEO },
+    { "MPEG-2 & MPEG-1 variable-length decoder",                                      &DXVA2_ModeMPEG2and1_VLD,               AV_CODEC_ID_MPEG2VIDEO },
     { "MPEG-2 motion compensation",                                                   &DXVA2_ModeMPEG2_MoComp,                0 },
     { "MPEG-2 inverse discrete cosine transform",                                     &DXVA2_ModeMPEG2_IDCT,                  0 },
 
     { "MPEG-1 variable-length decoder",                                               &DXVA2_ModeMPEG1_VLD,                   0 },
 
     /* H.264 */
-    { "H.264 variable-length decoder, film grain technology",                         &DXVA2_ModeH264_F,                      CODEC_ID_H264 },
-    { "H.264 variable-length decoder, no film grain technology (Intel ClearVideo)",   &DXVADDI_Intel_ModeH264_E,              CODEC_ID_H264 },
-    { "H.264 variable-length decoder, no film grain technology",                      &DXVA2_ModeH264_E,                      CODEC_ID_H264 },
-    { "H.264 variable-length decoder, no film grain technology, FMO/ASO",             &DXVA_ModeH264_VLD_WithFMOASO_NoFGT,    CODEC_ID_H264 },
-    { "H.264 variable-length decoder, no film grain technology, Flash",               &DXVA_ModeH264_VLD_NoFGT_Flash,         CODEC_ID_H264 },
+    { "H.264 variable-length decoder, film grain technology",                         &DXVA2_ModeH264_F,                      AV_CODEC_ID_H264 },
+    { "H.264 variable-length decoder, no film grain technology (Intel ClearVideo)",   &DXVADDI_Intel_ModeH264_E,              AV_CODEC_ID_H264 },
+    { "H.264 variable-length decoder, no film grain technology",                      &DXVA2_ModeH264_E,                      AV_CODEC_ID_H264 },
+    { "H.264 variable-length decoder, no film grain technology, FMO/ASO",             &DXVA_ModeH264_VLD_WithFMOASO_NoFGT,    AV_CODEC_ID_H264 },
+    { "H.264 variable-length decoder, no film grain technology, Flash",               &DXVA_ModeH264_VLD_NoFGT_Flash,         AV_CODEC_ID_H264 },
 
     { "H.264 inverse discrete cosine transform, film grain technology",               &DXVA2_ModeH264_D,                      0 },
     { "H.264 inverse discrete cosine transform, no film grain technology",            &DXVA2_ModeH264_C,                      0 },
@@ -178,10 +176,10 @@ static const dxva2_mode_t dxva2_modes[] = {
     { "Windows Media Video 9 post processing",                                        &DXVA2_ModeWMV9_A,                      0 },
 
     /* VC-1 */
-    { "VC-1 variable-length decoder",                                                 &DXVA2_ModeVC1_D,                       CODEC_ID_VC1 },
-    { "VC-1 variable-length decoder",                                                 &DXVA2_ModeVC1_D,                       CODEC_ID_WMV3 },
-    { "VC-1 variable-length decoder",                                                 &DXVA2_ModeVC1_D2010,                   CODEC_ID_VC1 },
-    { "VC-1 variable-length decoder",                                                 &DXVA2_ModeVC1_D2010,                   CODEC_ID_WMV3 },
+    { "VC-1 variable-length decoder",                                                 &DXVA2_ModeVC1_D,                       AV_CODEC_ID_VC1 },
+    { "VC-1 variable-length decoder",                                                 &DXVA2_ModeVC1_D,                       AV_CODEC_ID_WMV3 },
+    { "VC-1 variable-length decoder",                                                 &DXVA2_ModeVC1_D2010,                   AV_CODEC_ID_VC1 },
+    { "VC-1 variable-length decoder",                                                 &DXVA2_ModeVC1_D2010,                   AV_CODEC_ID_WMV3 },
     { "VC-1 variable-length decoder 2 (Intel)",                                       &DXVA_Intel_VC1_ClearVideo_2,           0 },
     { "VC-1 variable-length decoder (Intel)",                                         &DXVA_Intel_VC1_ClearVideo,             0 },
 
@@ -240,12 +238,8 @@ typedef struct {
 } vlc_va_surface_t;
 
 #define VA_DXVA2_MAX_SURFACE_COUNT (64)
-typedef struct
+struct vlc_va_sys_t
 {
-    /* */
-    vlc_va_t va;
-
-    /* */
     vlc_object_t *log;
     int          codec_id;
     int          width;
@@ -291,13 +285,15 @@ typedef struct
 
     vlc_va_surface_t surface[VA_DXVA2_MAX_SURFACE_COUNT];
     LPDIRECT3DSURFACE9 hw_surface[VA_DXVA2_MAX_SURFACE_COUNT];
-} vlc_va_dxva2_t;
+};
+typedef struct vlc_va_sys_t vlc_va_dxva2_t;
 
 /* */
-static vlc_va_dxva2_t *vlc_va_dxva2_Get(void *external)
+static vlc_va_dxva2_t *vlc_va_dxva2_Get(vlc_va_t *external)
 {
-    assert(external == (void*)(&((vlc_va_dxva2_t*)external)->va));
-    return external;
+    vlc_va_dxva2_t *va = external->sys;
+    assert(VLC_OBJECT(external) == va->log);
+    return va;
 }
 
 /* */
@@ -445,7 +441,7 @@ static int Get(vlc_va_t *external, AVFrame *ff)
     }
 
     /* Grab an unused surface, in case none are, try the oldest
-     * XXX using the oldest is a workaround in case a problem happens with ffmpeg */
+     * XXX using the oldest is a workaround in case a problem happens with libavcodec */
     unsigned i, old;
     for (i = 0, old = 0; i < va->surface_count; i++) {
         vlc_va_surface_t *surface = &va->surface[i];
@@ -501,19 +497,21 @@ static void Close(vlc_va_t *external)
     if (va->hd3d9_dll)
         FreeLibrary(va->hd3d9_dll);
 
-    free(va->va.description);
+    free(external->description);
     free(va);
 }
 
-vlc_va_t *vlc_va_NewDxva2(vlc_object_t *log, int codec_id)
+static int Open(vlc_va_t *external, int codec_id, const es_format_t *fmt)
 {
     vlc_va_dxva2_t *va = calloc(1, sizeof(*va));
     if (!va)
         return NULL;
 
+    external->sys = va;
     /* */
-    va->log = log;
+    va->log = VLC_OBJECT(external);
     va->codec_id = codec_id;
+    (void) fmt;
 
     /* Load dll*/
     va->hd3d9_dll = LoadLibrary(TEXT("D3D9.DLL"));
@@ -552,17 +550,17 @@ vlc_va_t *vlc_va_NewDxva2(vlc_object_t *log, int codec_id)
     }
 
     /* TODO print the hardware name/vendor for debugging purposes */
-    va->va.description = DxDescribe(va);
-    va->va.setup   = Setup;
-    va->va.get     = Get;
-    va->va.release = Release;
-    va->va.extract = Extract;
-    va->va.close   = Close;
-    return &va->va;
+    external->description = DxDescribe(va);
+    external->pix_fmt = PIX_FMT_DXVA2_VLD;
+    external->setup   = Setup;
+    external->get     = Get;
+    external->release = Release;
+    external->extract = Extract;
+    return VLC_SUCCESS;
 
 error:
-    Close(&va->va);
-    return NULL;
+    Close(va);
+    return VLC_EGENERIC;
 }
 /* */
 
@@ -574,7 +572,7 @@ static int D3dCreateDevice(vlc_va_dxva2_t *va)
     /* */
     LPDIRECT3D9 (WINAPI *Create9)(UINT SDKVersion);
     Create9 = (void *)GetProcAddress(va->hd3d9_dll,
-                                     TEXT("Direct3DCreate9"));
+                                     "Direct3DCreate9");
     if (!Create9) {
         msg_Err(va->log, "Cannot locate reference to Direct3DCreate9 ABI in DLL");
         return VLC_EGENERIC;
@@ -614,10 +612,10 @@ static int D3dCreateDevice(vlc_va_dxva2_t *va)
 
     /* Direct3D needs a HWND to create a device, even without using ::Present
     this HWND is used to alert Direct3D when there's a change of focus window.
-    For now, use GetShellWindow, as it looks harmless */
+    For now, use GetDesktopWindow, as it looks harmless */
     LPDIRECT3DDEVICE9 d3ddev;
     if (FAILED(IDirect3D9_CreateDevice(d3dobj, D3DADAPTER_DEFAULT,
-                                       D3DDEVTYPE_HAL, GetShellWindow(),
+                                       D3DDEVTYPE_HAL, GetDesktopWindow(),
                                        D3DCREATE_SOFTWARE_VERTEXPROCESSING |
                                        D3DCREATE_MULTITHREADED,
                                        d3dpp, &d3ddev))) {
@@ -649,6 +647,7 @@ static char *DxDescribe(vlc_va_dxva2_t *va)
     } vendors [] = {
         { 0x1002, "ATI" },
         { 0x10DE, "NVIDIA" },
+        { 0x1106, "VIA" },
         { 0x8086, "Intel" },
         { 0x5333, "S3 Graphics" },
         { 0, "" }
@@ -680,7 +679,7 @@ static int D3dCreateDeviceManager(vlc_va_dxva2_t *va)
                                            IDirect3DDeviceManager9 **);
     CreateDeviceManager9 =
       (void *)GetProcAddress(va->hdxva2_dll,
-                             TEXT("DXVA2CreateDirect3DDeviceManager9"));
+                             "DXVA2CreateDirect3DDeviceManager9");
 
     if (!CreateDeviceManager9) {
         msg_Err(va->log, "cannot load function");
@@ -724,7 +723,7 @@ static int DxCreateVideoService(vlc_va_dxva2_t *va)
                                          void **ppService);
     CreateVideoService =
       (void *)GetProcAddress(va->hdxva2_dll,
-                             TEXT("DXVA2CreateVideoService"));
+                             "DXVA2CreateVideoService");
 
     if (!CreateVideoService) {
         msg_Err(va->log, "cannot load function");
@@ -866,7 +865,7 @@ static int DxCreateVideoDecoder(vlc_va_dxva2_t *va,
     va->surface_width  = (fmt->i_width  + 15) & ~15;
     va->surface_height = (fmt->i_height + 15) & ~15;
     switch (codec_id) {
-    case CODEC_ID_H264:
+    case AV_CODEC_ID_H264:
         va->surface_count = 16 + 1;
         break;
     default:
@@ -951,7 +950,7 @@ static int DxCreateVideoDecoder(vlc_va_dxva2_t *va,
         int score;
         if (cfg->ConfigBitstreamRaw == 1)
             score = 1;
-        else if (codec_id == CODEC_ID_H264 && cfg->ConfigBitstreamRaw == 2)
+        else if (codec_id == AV_CODEC_ID_H264 && cfg->ConfigBitstreamRaw == 2)
             score = 2;
         else
             continue;
@@ -1018,4 +1017,3 @@ static void DxDestroyVideoConversion(vlc_va_dxva2_t *va)
 {
     CopyCleanCache(&va->surface_cache);
 }
-#endif

@@ -41,7 +41,7 @@ description=
  Note:
     -I cli and -I luacli are aliases for -I luaintf --lua-intf cli
 
- Configuration options setable throught the --lua-config option are:
+ Configuration options settable through the --lua-config option are:
     * hosts: A list of hosts to listen on.
     * host: A host to listen on. (won't be used if `hosts' is set)
     * password: The password used for telnet clients.
@@ -67,6 +67,8 @@ strip = common.strip
 _ = vlc.gettext._
 N_ = vlc.gettext.N_
 
+running = true
+
 --[[ Setup default environement ]]
 env = { prompt = "> ";
         width = 70;
@@ -81,9 +83,9 @@ for k,v in pairs(env) do
     if config[k] then
         if type(env[k]) == type(config[k]) then
             env[k] = config[k]
-            vlc.msg.dbg("set environement variable `"..k.."' to "..tostring(env[k]))
+            vlc.msg.dbg("set environment variable `"..k.."' to "..tostring(env[k]))
         else
-            vlc.msg.err("environement variable `"..k.."' should be of type "..type(env[k])..". config value will be discarded.")
+            vlc.msg.err("environment variable `"..k.."' should be of type "..type(env[k])..". config value will be discarded.")
         end
     end
 end
@@ -158,6 +160,7 @@ function shutdown(name,client)
     h:broadcast("Shutting down.\r\n")
     vlc.msg.info("Requested shutdown.")
     vlc.misc.quit()
+    running = false
 end
 
 function quit(name,client)
@@ -184,6 +187,20 @@ function add(name,client,arg)
     arg = string.gsub(arg," +:.*$","")
     local uri = vlc.strings.make_uri(arg)
     f({{path=uri,options=options}})
+end
+
+function move(name,client,arg)
+    local x,y
+    local tbl = {}
+    for token in string.gmatch(arg, "[^%s]+") do
+        table.insert(tbl,token)
+    end
+    x = tonumber(tbl[1])
+    y = tonumber(tbl[2])
+    local res = vlc.playlist.move(x,y)
+    if res == (-1) then
+        client:append("You should choose valid id.")
+    end
 end
 
 function playlist_is_tree( client )
@@ -412,7 +429,11 @@ end
 function get_time(var)
     return function(name,client)
         local input = vlc.object.input()
-        client:append(math.floor(vlc.var.get( input, var )))
+	if input then
+	    client:append(math.floor(vlc.var.get( input, var )))
+	else
+	    client:append("")
+	end
     end
 end
 
@@ -502,15 +523,6 @@ function listvalue(obj,var)
     end
 end
 
-function menu(name,client,value)
-    local map = { on='show', off='hide', up='up', down='down', left='prev', right='next', ['select']='activate' }
-    if map[value] and vlc.osd.menu[map[value]] then
-        vlc.osd.menu[map[value]]()
-    else
-        client:append("Unknown menu command '"..tostring(value).."'")
-    end
-end
-
 function hotkey(name, client, value)
     if not value then
         client:append("Please specify a hotkey (ie key-quit or quit)")
@@ -529,6 +541,8 @@ commands_ordered = {
     { "enqueue"; { func = add; args = "XYZ"; help = "queue XYZ to playlist" } };
     { "playlist"; { func = playlist; help = "show items currently in playlist" } };
     { "search"; { func = playlist; args = "[string]"; help = "search for items in playlist (or reset search)" } };
+    { "delete"; { func = skip2(vlc.playlist.delete); args = "[X]"; help = "delete item X in playlist" } };
+    { "move"; { func = move; args = "[X][Y]"; help = "move item X in playlist after Y" } };
     { "sort"; { func = playlist_sort; args = "key"; help = "sort the playlist" } };
     { "sd"; { func = services_discovery; args = "[sd]"; help = "show services discovery or toggle" } };
     { "play"; { func = skip2(vlc.playlist.play); help = "play stream" } };
@@ -568,19 +582,18 @@ commands_ordered = {
     { "volume"; { func = volume; args = "[X]"; help = "set/get audio volume" } };
     { "volup"; { func = ret_print(vlc.volume.up,"( audio volume: "," )"); args = "[X]"; help = "raise audio volume X steps" } };
     { "voldown"; { func = ret_print(vlc.volume.down,"( audio volume: "," )"); args = "[X]"; help = "lower audio volume X steps" } };
-    { "adev"; { func = skip(listvalue("aout","audio-device")); args = "[X]"; help = "set/get audio device" } };
-    { "achan"; { func = skip(listvalue("aout","audio-channels")); args = "[X]"; help = "set/get audio channels" } };
+    -- { "adev"; { func = skip(listvalue("aout","audio-device")); args = "[X]"; help = "set/get audio device" } };
+    { "achan"; { func = skip(listvalue("aout","stereo-mode")); args = "[X]"; help = "set/get stereo audio output mode" } };
     { "atrack"; { func = skip(listvalue("input","audio-es")); args = "[X]"; help = "set/get audio track" } };
     { "vtrack"; { func = skip(listvalue("input","video-es")); args = "[X]"; help = "set/get video track" } };
     { "vratio"; { func = skip(listvalue("vout","aspect-ratio")); args = "[X]"; help = "set/get video aspect ratio" } };
     { "vcrop"; { func = skip(listvalue("vout","crop")); args = "[X]"; help = "set/get video crop"; aliases = { "crop" } } };
     { "vzoom"; { func = skip(listvalue("vout","zoom")); args = "[X]"; help = "set/get video zoom"; aliases = { "zoom" } } };
-    { "vdeinterlace"; { func = skip(listvalue("vout","deinterlace")); args = "[X]"; help = "set/get video deintelace" } };
-    { "vdeinterlace_mode"; { func = skip(listvalue("vout","deinterlace-mode")); args = "[X]"; help = "set/get video deintelace mode" } };
+    { "vdeinterlace"; { func = skip(listvalue("vout","deinterlace")); args = "[X]"; help = "set/get video deinterlace" } };
+    { "vdeinterlace_mode"; { func = skip(listvalue("vout","deinterlace-mode")); args = "[X]"; help = "set/get video deinterlace mode" } };
     { "snapshot"; { func = common.snapshot; help = "take video snapshot" } };
-    { "strack"; { func = skip(listvalue("input","spu-es")); args = "[X]"; help = "set/get subtitles track" } };
+    { "strack"; { func = skip(listvalue("input","spu-es")); args = "[X]"; help = "set/get subtitle track" } };
     { "hotkey"; { func = hotkey; args = "[hotkey name]"; help = "simulate hotkey press"; adv = true; aliases = { "key" } } };
-    { "menu"; { func = menu; args = "[on|off|up|down|left|right|select]"; help = "use menu"; adv = true } };
     { "" };
     { "vlm"; { func = load_vlm; help = "load the VLM" } };
     { "set"; { func = set_env; args = "[var [value]]"; help = "set/get env var"; adv = true } };
@@ -686,32 +699,12 @@ function call_libvlc_command(cmd,client,arg)
     return vlcerr
 end
 
-function call_object_command(cmd,client,arg)
-    local var, val
-    if arg ~= nil then
-        var, val = split_input(arg)
-    end
-    local ok, vlcmsg, vlcerr = pcall( vlc.var.command, cmd, var, val )
-    if not ok then
-        local v = var and " "..var or ""
-        local v2 = val and " "..val or ""
-        client:append("Error in `"..cmd..v..v2.."' ".. vlcmsg) -- when pcall fails the 2nd arg is the error message
-    end
-    if vlcmsg ~= "" then
-        client:append(vlcmsg)
-    end
-    return vlcerr
-end
-
 function client_command( client )
     local cmd,arg = split_input(client.buffer)
     client.buffer = ""
 
     if commands[cmd] then
         call_command(cmd,client,arg)
-    elseif string.sub(cmd,0,1)=='@'
-    and call_object_command(string.sub(cmd,2,#cmd),client,arg) == 0 then
-        --
     elseif call_vlm_command(cmd,client,arg) == 0 then
         --
     elseif client.type == host.client_type.stdio
@@ -794,7 +787,7 @@ h:listen( config.hosts or config.host or "*console" )
 password = config.password or "admin"
 
 --[[ The main loop ]]
-while not vlc.misc.should_die() do
+while running do
     local write, read = h:accept_and_select()
 
     for _, client in pairs(write) do

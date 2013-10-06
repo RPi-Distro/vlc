@@ -2,7 +2,7 @@
  * vlc_filter.h: filter related structures and functions
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: b57b7eff75390d03e7ec0e1a1a510d701e8df5ef $
+ * $Id: 320cbac3a4a5b8461ec41eabd77f323bbbc509dd $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan dot org>
@@ -208,8 +208,6 @@ static inline void filter_DeleteSubpicture( filter_t *p_filter, subpicture_t *p_
 {
     p_filter->pf_sub_buffer_del( p_filter, p_subpicture );
 }
-
-#define filter_NewAudioBuffer block_New
 
 /**
  * This function gives all input attachments at once.

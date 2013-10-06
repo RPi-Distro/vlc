@@ -1,27 +1,27 @@
 /*****************************************************************************
  * h264.c: h264/avc video packetizer
  *****************************************************************************
- * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: a680454d7f5d919c3e285e33cde16ff867024bc5 $
+ * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
+ * $Id: a8193a7cb04aebedc59241694e31f75c74ddde43 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
  *          Derk-Jan Hartman <hartman at videolan dot org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -484,7 +484,7 @@ static block_t *GetCc( decoder_t *p_dec, bool pb_present[4] )
     if( p_sys->cc.i_data <= 0 )
         return NULL;
 
-    p_cc = block_New( p_dec, p_sys->cc.i_data);
+    p_cc = block_Alloc( p_sys->cc.i_data);
     if( p_cc )
     {
         memcpy( p_cc->p_buffer, p_sys->cc.p_data, p_sys->cc.i_data );
@@ -538,7 +538,7 @@ static block_t *CreateAnnexbNAL( decoder_t *p_dec, const uint8_t *p, int i_size 
 {
     block_t *p_nal;
 
-    p_nal = block_New( p_dec, 4 + i_size );
+    p_nal = block_Alloc( 4 + i_size );
     if( !p_nal ) return NULL;
 
     /* Add start code */
@@ -789,11 +789,7 @@ static block_t *OutputPicture( decoder_t *p_dec )
     p_sys->i_cc_dts = p_pic->i_dts;
     p_sys->i_cc_flags = p_pic->i_flags;
 
-    /* Swap cc buffer */
-    cc_data_t cc_tmp = p_sys->cc;
     p_sys->cc = p_sys->cc_next;
-    p_sys->cc_next = cc_tmp;
-
     cc_Flush( &p_sys->cc_next );
 
     return p_pic;

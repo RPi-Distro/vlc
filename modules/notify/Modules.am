@@ -1,16 +1,4 @@
-# Automake forgets to add a proper tag to libtool with Objective-C files.
-# Moreocer Libtool should default tag to CC when none is specified but
-# obviously does not. Here is a fix for that.
-LIBTOOL=@LIBTOOL@ --tag=CC
+AM_LIBTOOLFLAGS=--tag=CC
 
-SOURCES_msn = msn.c
 SOURCES_growl = growl.m
 SOURCES_notify = notify.c
-SOURCES_xosd = xosd.c
-SOURCES_telepathy = telepathy.c
-
-if HAVE_WIN32
-if !HAVE_WINCE
-libvlc_LTLIBRARIES += libmsn_plugin.la
-endif
-endif

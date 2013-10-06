@@ -10,7 +10,7 @@
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
- * ( at your option ) any later version.
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -34,9 +34,6 @@
 #include "dtv/bdagraph.hpp"
 #include "dtv/dtv.h"
 #undef DEBUG_MONIKER_NAME
-#ifndef CQAM
-# define CQAM 0x00000002
-#endif
 
 static ModulationType dvb_parse_modulation (const char *mod)
 {
@@ -240,7 +237,7 @@ int dvb_set_dvbt (dvb_device_t *d, uint32_t freq, const char * /*mod*/,
 
 int dvb_set_dvbt2 (dvb_device_t *, uint32_t /*freq*/, const char * /*mod*/,
                    uint32_t /*fec*/, uint32_t /*bandwidth*/, int /*tx_mode*/,
-                   uint32_t /*guard*/)
+                   uint32_t /*guard*/, uint32_t /*plp*/)
 {
     return VLC_EGENERIC;
 }
@@ -372,9 +369,7 @@ BDAGraph::BDAGraph( vlc_object_t *p_this ):
     p_scanning_tuner = NULL;
     p_grabber = NULL;
 
-    /* Initialize COM - MS says to use CoInitializeEx in preference to
-     * CoInitialize */
-    CoInitializeEx( 0, COINIT_APARTMENTTHREADED );
+    CoInitializeEx( NULL, COINIT_APARTMENTTHREADED );
 }
 
 /*****************************************************************************
@@ -463,7 +458,6 @@ float BDAGraph::GetSignalStrength(void)
     msg_Dbg( p_access, "GetSignalStrength: entering" );
     if( !p_scanning_tuner)
         return 0.;
-    msg_Dbg( p_access, "GetSignalStrength: have tuner" );
     hr = p_scanning_tuner->get_SignalStrength( &l_strength );
     if( FAILED( hr ) )
     {
@@ -1264,7 +1258,7 @@ int BDAGraph::SetDVBS(long l_frequency, long l_symbolrate, uint32_t fec,
         return VLC_EGENERIC;
     }
 
-    //msg_Dbg( p_access, "SetDVBS: get TS" );
+    msg_Dbg( p_access, "SetDVBS: get TS" );
     hr = p_scanning_tuner->get_TuningSpace( &p_tuning_space );
     if( FAILED( hr ) )
     {
@@ -2531,7 +2525,6 @@ HRESULT BDAGraph::FindFilter( REFCLSID this_clsid, long* i_moniker_used,
          * on pointer but does not set it to NULL */
         msg_Dbg( p_access, "FindFilter: Removing filter" );
         hr = p_filter_graph->RemoveFilter( *p_p_downstream );
-        *p_p_downstream = NULL;
         if( FAILED( hr ) )
         {
             msg_Warn( p_access, "FindFilter: "\
@@ -2829,7 +2822,7 @@ STDMETHODIMP BDAGraph::SampleCB( double /*date*/, IMediaSample *p_sample )
 
     if( i_sample_size > 0 && p_sample_data )
     {
-        block_t *p_block = block_New( p_access, i_sample_size );
+        block_t *p_block = block_Alloc( i_sample_size );
 
         if( p_block )
         {

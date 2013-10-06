@@ -1,24 +1,24 @@
 /*****************************************************************************
  * sdl_image.c: sdl decoder module making use of libsdl_image.
  *****************************************************************************
- * Copyright (C) 2005 the VideoLAN team
- * $Id: bd28da76913d8a73188a64a2c70177cc21456089 $
+ * Copyright (C) 2005 VLC authors and VideoLAN
+ * $Id: e3d7bc6da7ce8cd2eca21aae154a7fbf462b1e8d $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -212,7 +212,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
             for ( i = 0; i < p_surface->h; i++ )
             {
-                vlc_memcpy( p_dst, p_src, i_pitch );
+                memcpy( p_dst, p_src, i_pitch );
                 p_src += p_surface->pitch;
                 p_dst += p_pic->p[0].i_pitch;
             }

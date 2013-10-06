@@ -1,25 +1,25 @@
 /*****************************************************************************
  * adpcm.c : adpcm variant audio decoder
  *****************************************************************************
- * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 62fab84804b85f2c24c76935fc930beb24542380 $
+ * Copyright (C) 2001, 2002 VLC authors and VideoLAN
+ * $Id: cdeb5b067eb90419d33ddca01b6ae478a30dd1a6 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -33,7 +33,6 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_aout.h>
 #include <vlc_codec.h>
 
 /*****************************************************************************
@@ -42,7 +41,7 @@
 static int  OpenDecoder( vlc_object_t * );
 static void CloseDecoder( vlc_object_t * );
 
-static aout_buffer_t *DecodeBlock( decoder_t *, block_t ** );
+static block_t *DecodeBlock( decoder_t *, block_t ** );
 
 vlc_module_begin ()
     set_description( N_("ADPCM audio decoder") )
@@ -265,7 +264,7 @@ static int OpenDecoder( vlc_object_t *p_this )
 /*****************************************************************************
  * DecodeBlock:
  *****************************************************************************/
-static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
+static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys  = p_dec->p_sys;
     block_t *p_block;
@@ -291,7 +290,7 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
     if( p_block->i_buffer >= p_sys->i_block )
     {
-        aout_buffer_t *p_out;
+        block_t *p_out;
 
         p_out = decoder_NewAudioBuffer( p_dec, p_sys->i_samplesperblock );
         if( p_out == NULL )

@@ -3,9 +3,9 @@
 
 basedir = visualization
 dir = visualization
-mods = goom projectm
-libvlc_LTLIBRARIES =  $(LTLIBgoom) $(LTLIBprojectm)
-EXTRA_LTLIBRARIES =  libgoom_plugin.la libprojectm_plugin.la
+mods = goom projectm vsxu
+libvlc_LTLIBRARIES =  $(LTLIBgoom) $(LTLIBprojectm) $(LTLIBvsxu)
+EXTRA_LTLIBRARIES =  libgoom_plugin.la libprojectm_plugin.la libvsxu_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -17,10 +17,9 @@ libgoom_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_goom)
 libgoom_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_goom)
 libgoom_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_goom)
 libgoom_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_goom)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libgoom_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_goom)
 libgoom_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_goom)
-libgoom_plugin_la_DEPENDENCIES =
 
 # The projectm plugin
 libprojectm_plugin_la_SOURCES = $(SOURCES_projectm)
@@ -30,8 +29,19 @@ libprojectm_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_projectm)
 libprojectm_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_projectm)
 libprojectm_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_projectm)
 libprojectm_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_projectm)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libprojectm_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_projectm)
 libprojectm_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_projectm)
-libprojectm_plugin_la_DEPENDENCIES =
+
+# The vsxu plugin
+libvsxu_plugin_la_SOURCES = $(SOURCES_vsxu)
+nodist_libvsxu_plugin_la_SOURCES = $(nodist_SOURCES_vsxu)
+# Force per-target objects:
+libvsxu_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_vsxu)
+libvsxu_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_vsxu)
+libvsxu_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_vsxu)
+libvsxu_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_vsxu)
+# Set LIBADD manually:
+libvsxu_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_vsxu)
+libvsxu_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_vsxu)
 

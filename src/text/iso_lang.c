@@ -2,7 +2,7 @@
  * iso_lang.c: function to decode language code (in dvd or a52 for instance).
  *****************************************************************************
  * Copyright (C) 1998-2004 VLC authors and VideoLAN
- * $Id: 841dc1483938c80b6afa024e2a76176ca73a1fa3 $
+ * $Id: 8c6d2eccb8470de496f230adf773cd62ac995e6d $
  *
  * Author: Stéphane Borel <stef@via.ecp.fr>
  *         Arnaud de Bossoreille de Ribou <bozo@via.ecp.fr>
@@ -42,7 +42,7 @@
 #include "iso-639_def.h"
 
 static const iso639_lang_t unknown_language =
-    { "Unknown", "Unknown", "??", "???", "???" };
+    { "Unknown", "??", "???", "???" };
 
 const iso639_lang_t * GetLang_1( const char * psz_code )
 {

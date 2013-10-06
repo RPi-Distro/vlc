@@ -1,8 +1,8 @@
 /*****************************************************************************
- * preferences.cpp : "Normal preferences"
+ * complete_preferences.cpp : "Normal preferences"
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: b29335d253cda5309268cbcd6f0c43e4c7f2495f $
+ * $Id: c4e98f7b03c01713a258bb085ebd60769feb0485 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -42,6 +42,7 @@
 #include <vlc_config_cat.h>
 #include <vlc_intf_strings.h>
 #include <vlc_modules.h>
+#include <vlc_plugin.h>
 #include <assert.h>
 
 #define ITEM_HEIGHT 25
@@ -52,6 +53,7 @@
 PrefsTree::PrefsTree( intf_thread_t *_p_intf, QWidget *_parent ) :
                             QTreeWidget( _parent ), p_intf( _p_intf )
 {
+    b_show_only_loaded = false;
     /* General Qt options */
     setAlternatingRowColors( true );
     setHeaderHidden( true );
@@ -106,7 +108,7 @@ PrefsTree::PrefsTree( intf_thread_t *_p_intf, QWidget *_parent ) :
                 data->help = qtr( psz_help );
             else
                 data->help.clear();
-            data->i_type = TYPE_CATEGORY;
+            data->i_type = PrefsItemData::TYPE_CATEGORY;
             data->i_object_id = p_item->value.i;
 
             /* This is a category, put a nice icon */
@@ -149,7 +151,7 @@ PrefsTree::PrefsTree( intf_thread_t *_p_intf, QWidget *_parent ) :
                   p_item->value.i == SUBCAT_AUDIO_GENERAL ) )
             {
                 /* Data still contains the correct thing */
-                data->i_type = TYPE_CATSUBCAT;
+                data->i_type = PrefsItemData::TYPE_CATSUBCAT;
                 data->i_subcat_id = p_item->value.i;
                 data->name = qtr( config_CategoryNameGet( p_item->value.i ) );
                 psz_help = config_CategoryHelpGet( p_item->value.i );
@@ -172,7 +174,7 @@ PrefsTree::PrefsTree( intf_thread_t *_p_intf, QWidget *_parent ) :
                 data_sub->help = qtr( psz_help );
             else
                 data_sub->help.clear();
-            data_sub->i_type = TYPE_SUBCATEGORY;
+            data_sub->i_type = PrefsItemData::TYPE_SUBCATEGORY;
             data_sub->i_object_id = p_item->value.i;
 
             /* Create a new TreeWidget */
@@ -192,11 +194,12 @@ PrefsTree::PrefsTree( intf_thread_t *_p_intf, QWidget *_parent ) :
     }
     module_config_free( p_config );
 
-
-    module_t **p_list = module_list_get( NULL );
+    size_t count;
+    module_t **p_list = module_list_get( &count );
     /* Build the tree of plugins */
-    for( size_t i = 0; (p_module = p_list[i]) != NULL; i++ )
+    for( size_t i = 0; i < count; i++ )
     {
+        p_module = p_list[i];
         // Main module excluded
         if( module_is_main( p_module) ) continue;
 
@@ -266,8 +269,8 @@ PrefsTree::PrefsTree( intf_thread_t *_p_intf, QWidget *_parent ) :
         if( !b_found ) continue;
 
         PrefsItemData *module_data = new PrefsItemData();
-        module_data->i_type = TYPE_MODULE;
-        module_data->psz_name = strdup( module_get_object( p_module ) );
+        module_data->i_type = PrefsItemData::TYPE_MODULE;
+        module_data->psz_shortcut = strdup( module_get_object( p_module ) );
         module_data->name = qtr( module_get_name( p_module, false ) );
         module_data->help.clear();
         const char *psz_help = module_get_help( p_module );
@@ -364,6 +367,8 @@ bool PrefsTree::filterItems( QTreeWidgetItem *item, const QString &text,
     PrefsItemData *data = item->data( 0, Qt::UserRole ).value<PrefsItemData *>();
 
     bool filtered = sub_filtered && !data->contains( text, cs );
+    if ( b_show_only_loaded && sub_filtered && !data->b_loaded )
+        filtered = true;
     item->setExpanded( !sub_filtered );
     item->setHidden( filtered );
 
@@ -394,10 +399,59 @@ bool PrefsTree::collapseUnselectedItems( QTreeWidgetItem *item )
     return collapsed;
 }
 
+static void populateLoadedSet( QSet<QString> *loaded, vlc_object_t *p_node )
+{
+    Q_ASSERT( loaded );
+    char *name = vlc_object_get_name( p_node );
+    if ( !EMPTY_STR( name ) ) loaded->insert( QString( name ) );
+    free( name );
+
+    vlc_list_t *l = vlc_list_children( p_node );
+    for( int i=0; i < l->i_count; i++ )
+        populateLoadedSet( loaded, l->p_values[i].p_object );
+    vlc_list_release( l );
+}
+
+/* Updates the PrefsItemData loaded status to reflect currently
+ * running modules */
+void PrefsTree::updateLoadedStatus( QTreeWidgetItem *item = NULL,
+                                    QSet<QString> *loaded = NULL )
+{
+    bool b_release = false;
+
+    if( loaded == NULL )
+    {
+        vlc_object_t *p_root = VLC_OBJECT( p_intf->p_libvlc );
+        loaded = new QSet<QString>();
+        populateLoadedSet( loaded, p_root );
+        b_release = true;
+    }
+
+    if ( item == NULL )
+    {
+        for( int i = 0 ; i < topLevelItemCount(); i++ )
+            updateLoadedStatus( topLevelItem( i ), loaded );
+    }
+    else
+    {
+        PrefsItemData *data = item->data( 0, Qt::UserRole )
+                .value<PrefsItemData *>();
+        data->b_loaded = loaded->contains( QString( data->psz_shortcut ) );
+
+        for( int i = 0; i < item->childCount(); i++ )
+            updateLoadedStatus( item->child( i ), loaded );
+    }
+
+    if ( b_release )
+        delete loaded;
+}
+
 /* apply filter on tree */
 void PrefsTree::filter( const QString &text )
 {
-    bool clear_filter = text.isEmpty();
+    bool clear_filter = text.isEmpty() && ! b_show_only_loaded;
+
+    updateLoadedStatus();
 
     for( int i = 0 ; i < topLevelItemCount(); i++ )
     {
@@ -413,9 +467,24 @@ void PrefsTree::filter( const QString &text )
     }
 }
 
+void PrefsTree::setLoadedOnly( bool b_only )
+{
+    b_show_only_loaded = b_only;
+    filter( "" );
+}
+
 void PrefsTree::resizeColumns()
 {
     resizeColumnToContents( 0 );
+}
+
+PrefsItemData::PrefsItemData()
+{
+    panel = NULL;
+    i_object_id = 0;
+    i_subcat_id = -1;
+    psz_shortcut = NULL;
+    b_loaded = false;
 }
 
 /* go over the module config items and search text in psz_text
@@ -427,7 +496,7 @@ bool PrefsItemData::contains( const QString &text, Qt::CaseSensitivity cs )
     if( this->i_type == TYPE_CATEGORY )
         return false;
     else if( this->i_type == TYPE_MODULE )
-        p_module = module_find( this->psz_name );
+        p_module = module_find( this->psz_shortcut );
     else
     {
         p_module = module_get_main();
@@ -470,7 +539,10 @@ bool PrefsItemData::contains( const QString &text, Qt::CaseSensitivity cs )
     }
 
     if (name.contains( text, cs ) || head.contains( text, cs ) || help.contains( text, cs ))
+    {
+        module_config_free( p_config );
         return true;
+    }
 
     if( p_item ) do
     {
@@ -486,7 +558,10 @@ bool PrefsItemData::contains( const QString &text, Qt::CaseSensitivity cs )
         if( p_item->b_internal ) continue;
 
         if ( p_item->psz_text && qtr( p_item->psz_text ).contains( text, cs ) )
+        {
+            module_config_free( p_config );
             return true;
+        }
     }
     while (
             !(
@@ -497,6 +572,7 @@ bool PrefsItemData::contains( const QString &text, Qt::CaseSensitivity cs )
              && ( ++p_item < p_end )
           );
 
+    module_config_free( p_config );
     return false;
 }
 
@@ -504,7 +580,9 @@ bool PrefsItemData::contains( const QString &text, Qt::CaseSensitivity cs )
  * The Panel
  *********************************************************************/
 AdvPrefsPanel::AdvPrefsPanel( QWidget *_parent ) : QWidget( _parent )
-{}
+{
+    p_config = NULL;
+}
 
 AdvPrefsPanel::AdvPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
                         PrefsItemData * data ) :
@@ -512,10 +590,11 @@ AdvPrefsPanel::AdvPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
 {
     /* Find our module */
     module_t *p_module = NULL;
-    if( data->i_type == TYPE_CATEGORY )
+    p_config = NULL;
+    if( data->i_type == PrefsItemData::TYPE_CATEGORY )
         return;
-    else if( data->i_type == TYPE_MODULE )
-        p_module = module_find( data->psz_name );
+    else if( data->i_type == PrefsItemData::TYPE_MODULE )
+        p_module = module_find( data->psz_shortcut );
     else
     {
         p_module = module_get_main();
@@ -523,19 +602,20 @@ AdvPrefsPanel::AdvPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
     }
 
     unsigned confsize;
-    module_config_t *const p_config = module_config_get (p_module, &confsize),
-                    *p_item = p_config,
+    p_config = module_config_get( p_module, &confsize );
+    module_config_t *p_item = p_config,
                     *p_end = p_config + confsize;
 
-    if( data->i_type == TYPE_SUBCATEGORY || data->i_type ==  TYPE_CATSUBCAT )
+    if( data->i_type == PrefsItemData::TYPE_SUBCATEGORY ||
+        data->i_type == PrefsItemData::TYPE_CATSUBCAT )
     {
         while (p_item < p_end)
         {
             if(  p_item->i_type == CONFIG_SUBCATEGORY &&
-                            ( ( data->i_type == TYPE_SUBCATEGORY &&
-                              p_item->value.i == data->i_object_id ) ||
-                            ( data->i_type == TYPE_CATSUBCAT &&
-                              p_item->value.i == data->i_subcat_id ) ) )
+                 ( ( data->i_type == PrefsItemData::TYPE_SUBCATEGORY &&
+                     p_item->value.i == data->i_object_id ) ||
+                   ( data->i_type == PrefsItemData::TYPE_CATSUBCAT &&
+                     p_item->value.i == data->i_subcat_id ) ) )
                 break;
             p_item++;
         }
@@ -549,7 +629,8 @@ AdvPrefsPanel::AdvPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
 
     help = QString( data->help );
 
-    if( data->i_type == TYPE_SUBCATEGORY || data->i_type ==  TYPE_CATSUBCAT )
+    if( data->i_type == PrefsItemData::TYPE_SUBCATEGORY ||
+        data->i_type == PrefsItemData::TYPE_CATSUBCAT )
     {
         head = QString( data->name );
         p_item++; // Why that ?
@@ -589,9 +670,9 @@ AdvPrefsPanel::AdvPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
 
     if( p_item ) do
     {
-        if( ( ( data->i_type == TYPE_SUBCATEGORY &&
+        if( ( ( data->i_type == PrefsItemData::TYPE_SUBCATEGORY &&
                 p_item->value.i != data->i_object_id ) ||
-              ( data->i_type == TYPE_CATSUBCAT  &&
+              ( data->i_type == PrefsItemData::TYPE_CATSUBCAT  &&
                 p_item->value.i != data->i_subcat_id ) ) &&
             ( p_item->i_type == CONFIG_CATEGORY ||
               p_item->i_type == CONFIG_SUBCATEGORY ) )
@@ -633,8 +714,8 @@ AdvPrefsPanel::AdvPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
         else i_line++;
         controls.append( control );
     }
-    while( !( ( data->i_type == TYPE_SUBCATEGORY ||
-               data->i_type == TYPE_CATSUBCAT ) &&
+    while( !( ( data->i_type == PrefsItemData::TYPE_SUBCATEGORY ||
+               data->i_type == PrefsItemData::TYPE_CATSUBCAT ) &&
              ( p_item->i_type == CONFIG_CATEGORY ||
                p_item->i_type == CONFIG_SUBCATEGORY ) )
         && ( ++p_item < p_end ) );
@@ -666,5 +747,5 @@ void AdvPrefsPanel::clean()
 AdvPrefsPanel::~AdvPrefsPanel()
 {
     qDeleteAll( controls ); controls.clear();
+    module_config_free( p_config );
 }
-

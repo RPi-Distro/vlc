@@ -1,26 +1,34 @@
 /****************************************************************************
  * cdrom.c: cdrom tools
  *****************************************************************************
- * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: cda55156faac70f12dbe518f38d62cd3075f7bed $
+ * Copyright (C) 1998-2001 VLC authors and VideoLAN
+ * $Id: 17ce5edd9dd1fdca1f354df932301b5eaf1f2a94 $
  *
  * Authors: Johan Bilien <jobi@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
- *          Jon Lech Johansen <jon-vl@nanocrew.net>
+ *          Rémi Denis-Courmont
+ *          Laurent Aimar
+ *          Rémi Duraffort
+ *          Derk-Jan Hartman
+ *          Samuel Hocevar
+ *          Rafaël Carré
+ *          Christophe Massiot
+ *          Jean-Baptiste Kempf
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -34,26 +42,21 @@
 #   define INCL_DOSDEVIOCTL
 #endif
 
+#ifdef HAVE_UNISTD_H
+#   include <unistd.h>
+#endif
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#ifdef HAVE_ARPA_INET_H
+#   include <arpa/inet.h>
+#endif
+
 #include <vlc_common.h>
 #include <vlc_access.h>
 #include <vlc_charset.h>
 #include <vlc_fs.h>
 #include <limits.h>
-
-#ifdef HAVE_UNISTD_H
-#   include <unistd.h>
-#endif
-
-#include <sys/types.h>
-#ifdef HAVE_SYS_STAT_H
-#   include <sys/stat.h>
-#endif
-#ifdef HAVE_FCNTL_H
-#   include <fcntl.h>
-#endif
-#ifdef HAVE_ARPA_INET_H
-#   include <arpa/inet.h>
-#endif
 
 #if defined( SYS_BSDI )
 #   include <dvd.h>
@@ -70,7 +73,7 @@
 #elif defined( HAVE_IOC_TOC_HEADER_IN_SYS_CDIO_H )
 #   include <sys/cdio.h>
 #   include <sys/cdrio.h>
-#elif defined( WIN32 )
+#elif defined( _WIN32 )
 #   include <windows.h>
 #   include <winioctl.h>
 #elif defined (__linux__)
@@ -94,7 +97,7 @@ vcddev_t *ioctl_Open( vlc_object_t *p_this, const char *psz_dev )
     int i_ret;
     int b_is_file;
     vcddev_t *p_vcddev;
-#if !defined( WIN32 ) && !defined( __OS2__ )
+#if !defined( _WIN32 ) && !defined( __OS2__ )
     struct stat fileinfo;
 #endif
 
@@ -113,7 +116,7 @@ vcddev_t *ioctl_Open( vlc_object_t *p_this, const char *psz_dev )
     /*
      *  Check if we are dealing with a device or a file (vcd image)
      */
-#if defined( WIN32 ) || defined( __OS2__ )
+#if defined( _WIN32 ) || defined( __OS2__ )
     if( (strlen( psz_dev ) == 2 && psz_dev[1] == ':') )
     {
         b_is_file = 0;
@@ -141,7 +144,7 @@ vcddev_t *ioctl_Open( vlc_object_t *p_this, const char *psz_dev )
          *  open the vcd device
          */
 
-#ifdef WIN32
+#ifdef _WIN32
         i_ret = win32_vcd_open( p_this, psz_dev, p_vcddev );
 #elif defined( __OS2__ )
         i_ret = os2_vcd_open( p_this, psz_dev, p_vcddev );
@@ -186,7 +189,7 @@ void ioctl_Close( vlc_object_t * p_this, vcddev_t *p_vcddev )
      *  vcd device mode
      */
 
-#ifdef WIN32
+#ifdef _WIN32
     if( p_vcddev->h_device_handle )
         CloseHandle( p_vcddev->h_device_handle );
 #elif defined( __OS2__ )
@@ -293,7 +296,7 @@ int ioctl_GetTracksMap( vlc_object_t *p_this, const vcddev_t *p_vcddev,
 
         darwin_freeTOC( pTOC );
 
-#elif defined( WIN32 )
+#elif defined( _WIN32 )
         DWORD dwBytesReturned;
         CDROM_TOC cdrom_toc;
 
@@ -506,16 +509,14 @@ int ioctl_ReadSectors( vlc_object_t *p_this, const vcddev_t *p_vcddev,
                    SEEK_SET ) == -1 )
         {
             msg_Err( p_this, "Could not lseek to sector %d", i_sector );
-            if( i_type == VCD_TYPE ) free( p_block );
-            return -1;
+            goto error;
         }
 
         if( read( p_vcddev->i_vcdimage_handle, p_block, VCD_SECTOR_SIZE * i_nb)
             == -1 )
         {
             msg_Err( p_this, "Could not read sector %d", i_sector );
-            if( i_type == VCD_TYPE ) free( p_block );
-            return -1;
+            goto error;
         }
 
     }
@@ -543,11 +544,10 @@ int ioctl_ReadSectors( vlc_object_t *p_this, const vcddev_t *p_vcddev,
         if( ioctl( p_vcddev->i_device_handle, DKIOCCDREAD, &cd_read ) == -1 )
         {
             msg_Err( p_this, "could not read block %d", i_sector );
-            if( i_type == VCD_TYPE ) free( p_block );
-            return -1;
+            goto error;
         }
 
-#elif defined( WIN32 )
+#elif defined( _WIN32 )
         DWORD dwBytesReturned;
         RAW_READ_INFO cdrom_raw;
 
@@ -570,10 +570,7 @@ int ioctl_ReadSectors( vlc_object_t *p_this, const vcddev_t *p_vcddev,
                                      sizeof(RAW_READ_INFO), p_block,
                                      VCD_SECTOR_SIZE * i_nb, &dwBytesReturned,
                                      NULL ) == 0 )
-                {
-                    free( p_block );
-                    return -1;
-                }
+                    goto error;
             }
             else return -1;
         }
@@ -595,11 +592,7 @@ int ioctl_ReadSectors( vlc_object_t *p_this, const vcddev_t *p_vcddev,
         if( rc )
         {
             msg_Err( p_this, "could not read block %d", i_sector );
-
-            if( i_type == VCD_TYPE )
-                free( p_block );
-
-            return -1;
+            goto error;
         }
 
 #elif defined( HAVE_SCSIREQ_IN_SYS_SCSIIO_H )
@@ -630,15 +623,13 @@ int ioctl_ReadSectors( vlc_object_t *p_this, const vcddev_t *p_vcddev,
         if( i_ret == -1 )
         {
             msg_Err( p_this, "SCIOCCOMMAND failed" );
-            if( i_type == VCD_TYPE ) free( p_block );
-            return -1;
+            goto error;
         }
         if( sc.retsts || sc.error )
         {
             msg_Err( p_this, "SCSI command failed: status %d error %d",
                              sc.retsts, sc.error );
-            if( i_type == VCD_TYPE ) free( p_block );
-           return -1;
+            goto error;
         }
 
 #elif defined( HAVE_IOC_TOC_HEADER_IN_SYS_CDIO_H )
@@ -648,24 +639,21 @@ int ioctl_ReadSectors( vlc_object_t *p_this, const vcddev_t *p_vcddev,
             == -1 )
         {
             msg_Err( p_this, "Could not set block size" );
-            if( i_type == VCD_TYPE ) free( p_block );
-            return( -1 );
+            goto error;
         }
 
         if( lseek( p_vcddev->i_device_handle,
                    i_sector * VCD_SECTOR_SIZE, SEEK_SET ) == -1 )
         {
             msg_Err( p_this, "Could not lseek to sector %d", i_sector );
-            if( i_type == VCD_TYPE ) free( p_block );
-            return( -1 );
+            goto error;
         }
 
         if( read( p_vcddev->i_device_handle,
                   p_block, VCD_SECTOR_SIZE * i_nb ) == -1 )
         {
             msg_Err( p_this, "Could not read sector %d", i_sector );
-            if( i_type == VCD_TYPE ) free( p_block );
-            return( -1 );
+            goto error;
         }
 
 #else
@@ -686,11 +674,9 @@ int ioctl_ReadSectors( vlc_object_t *p_this, const vcddev_t *p_vcddev,
                          i_sector );
 
                 if( i == 0 )
-                {
-                    if( i_type == VCD_TYPE ) free( p_block );
-                    return( -1 );
-                }
-                else break;
+                    goto error;
+                else
+                    break;
             }
         }
 #endif
@@ -710,6 +696,11 @@ int ioctl_ReadSectors( vlc_object_t *p_this, const vcddev_t *p_vcddev,
     }
 
     return( 0 );
+
+error:
+    if( i_type == VCD_TYPE )
+        free( p_block );
+    return( -1 );
 }
 
 /****************************************************************************
@@ -1007,7 +998,7 @@ static int darwin_getNumberOfTracks( CDTOC *pTOC, int i_descriptors )
 }
 #endif /* __APPLE__ */
 
-#if defined( WIN32 )
+#if defined( _WIN32 )
 /*****************************************************************************
  * win32_vcd_open: open vcd drive
  *****************************************************************************
@@ -1025,7 +1016,7 @@ static int win32_vcd_open( vlc_object_t * p_this, const char *psz_dev,
 
     sprintf( psz_win32_drive, "\\\\.\\%c:", psz_dev[0] );
 
-    p_vcddev->h_device_handle = CreateFile( psz_win32_drive, GENERIC_READ,
+    p_vcddev->h_device_handle = CreateFileA( psz_win32_drive, GENERIC_READ,
                                             FILE_SHARE_READ | FILE_SHARE_WRITE,
                                             NULL, OPEN_EXISTING,
                                             FILE_FLAG_NO_BUFFERING |
@@ -1033,7 +1024,7 @@ static int win32_vcd_open( vlc_object_t * p_this, const char *psz_dev,
     return (p_vcddev->h_device_handle == NULL) ? -1 : 0;
 }
 
-#endif /* WIN32 */
+#endif /* _WIN32 */
 
 #ifdef __OS2__
 /*****************************************************************************
@@ -1226,7 +1217,7 @@ static int CdTextRead( vlc_object_t *p_object, const vcddev_t *p_vcddev,
     VLC_UNUSED( pi_buffer );
     return -1;
 }
-#elif defined( WIN32 )
+#elif defined( _WIN32 )
 static int CdTextRead( vlc_object_t *p_object, const vcddev_t *p_vcddev,
                        uint8_t **pp_buffer, int *pi_buffer )
 {

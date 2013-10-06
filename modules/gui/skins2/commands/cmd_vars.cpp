@@ -2,7 +2,7 @@
  * cmd_vars.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: b14c402d745337175424712b79f5a70c86bb4d4d $
+ * $Id: dfde4f3cd3bda02eea8f5cecdcc9d142da859267 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -28,16 +28,12 @@
 #include "../vars/playtree.hpp"
 
 
-void CmdPlaytreeChanged::execute()
-{
-    VlcProc::instance( getIntf() )->getPlaytreeVar().onChange();
-}
-
-void CmdPlaytreeUpdate::execute()
+void CmdItemUpdate::execute()
 {
     if( !m_pItem )
         return;
 
+    // update playtree
     playlist_t* pPlaylist = getIntf()->p_sys->p_playlist;
     playlist_Lock( pPlaylist );
     playlist_item_t* p_plItem = playlist_ItemGetByInput( pPlaylist, m_pItem );
@@ -46,12 +42,21 @@ void CmdPlaytreeUpdate::execute()
 
     if( id )
         VlcProc::instance( getIntf() )->getPlaytreeVar().onUpdateItem( id );
+
+    // update current input if needed
+    input_item_t* p_current = NULL;
+    input_thread_t* pInput = getIntf()->p_sys->p_input;
+    if( pInput )
+        p_current = input_GetItem( pInput );
+
+    if( p_current == m_pItem )
+        VlcProc::instance( getIntf() )->update_current_input();
 }
 
-bool CmdPlaytreeUpdate::checkRemove( CmdGeneric *pQueuedCommand ) const
+bool CmdItemUpdate::checkRemove( CmdGeneric *pQueuedCommand ) const
 {
     // We don't use RTTI - Use C-style cast
-    CmdPlaytreeUpdate *pUpdateCommand = (CmdPlaytreeUpdate *)(pQueuedCommand);
+    CmdItemUpdate *pUpdateCommand = (CmdItemUpdate *)(pQueuedCommand);
     return m_pItem == pUpdateCommand->m_pItem;
 }
 

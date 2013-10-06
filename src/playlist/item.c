@@ -2,7 +2,7 @@
  * item.c : Playlist item creation/deletion/add/removal functions
  *****************************************************************************
  * Copyright (C) 1999-2007 VLC authors and VideoLAN
- * $Id: 2b99dcedc81bdf516ed6073d734591ccdfe02091 $
+ * $Id: e902063224a6db6dd828aee94f2fb72c8cc349f9 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -451,7 +451,7 @@ int playlist_AddInput( playlist_t* p_playlist, input_item_t *p_input,
                        bool b_locked )
 {
     playlist_item_t *p_item;
-    if( p_playlist->b_die ) return VLC_EGENERIC;
+
     if( !pl_priv(p_playlist)->b_doing_ml )
         PL_DEBUG( "adding item `%s' ( %s )", p_input->psz_name,
                                              p_input->psz_uri );
@@ -459,7 +459,11 @@ int playlist_AddInput( playlist_t* p_playlist, input_item_t *p_input,
     PL_LOCK_IF( !b_locked );
 
     p_item = playlist_ItemNewFromInput( p_playlist, p_input );
-    if( p_item == NULL ) return VLC_ENOMEM;
+    if( p_item == NULL )
+    {
+        PL_UNLOCK_IF( !b_locked );
+        return VLC_ENOMEM;
+    }
     AddItem( p_playlist, p_item,
              b_playlist ? p_playlist->p_playing :
                           p_playlist->p_media_library , i_mode, i_pos );
@@ -493,16 +497,16 @@ playlist_item_t * playlist_NodeAddInput( playlist_t *p_playlist,
     assert( p_input );
     assert( p_parent && p_parent->i_children != -1 );
 
-    if( p_playlist->b_die )
-        return NULL;
     PL_LOCK_IF( !b_locked );
 
     p_item = playlist_ItemNewFromInput( p_playlist, p_input );
-    if( p_item == NULL ) return NULL;
+    if( p_item == NULL )
+        goto end;
     AddItem( p_playlist, p_item, p_parent, i_mode, i_pos );
 
     GoAndPreparse( p_playlist, i_mode, p_item );
 
+end:
     PL_UNLOCK_IF( !b_locked );
 
     return p_item;
@@ -714,6 +718,24 @@ void playlist_SendAddNotify( playlist_t *p_playlist, int i_item_id,
     add.i_node = i_node_id;
 
     var_SetAddress( p_playlist, "playlist-item-append", &add );
+}
+
+/**
+ * Get the duration of all items in a node.
+ */
+mtime_t playlist_GetNodeDuration( playlist_item_t* node )
+{
+    /* For the assert */
+    playlist_t *p_playlist = node->p_playlist;
+    PL_ASSERT_LOCKED;
+
+    mtime_t mt_duration = 0;
+
+    if( node->i_children != -1 )
+        for( int i = 0; i < node->i_children; i++ )
+            mt_duration += input_item_GetDuration( node->pp_children[i]->p_input );
+
+    return mt_duration;
 }
 
 /***************************************************************************

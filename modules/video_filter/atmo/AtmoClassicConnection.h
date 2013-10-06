@@ -1,10 +1,10 @@
 /*
- * AtmoCom.h: Class for communication with the serial hardware of Atmo Light,
+ * AtmoClassicConnection.h: Class for communication with the serial hardware of Atmo Light,
  * opens and configures the serial port
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 7d0c56abf5249105a54bbbec9dff09876c1e18b1 $
+ * $Id: 2b37900e28f20b5346588b19930239b80d9c42fe $
  */
 #ifndef _AtmoClassicConnection_h_
 #define _AtmoClassicConnection_h_
@@ -13,7 +13,7 @@
 #include "AtmoConnection.h"
 #include "AtmoConfig.h"
 
-#if defined(WIN32)
+#if defined(_WIN32)
 #   include <windows.h>
 #endif
 
@@ -22,7 +22,7 @@ class CAtmoClassicConnection : public CAtmoConnection {
     private:
         HANDLE m_hComport;
 
-#if defined(WIN32)
+#if defined(_WIN32)
         DWORD  m_dwLastWin32Error;
     public:
         DWORD getLastError() { return m_dwLastWin32Error; }

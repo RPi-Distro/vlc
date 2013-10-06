@@ -2,7 +2,7 @@
  * record.c: record stream output module
  *****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: b8f1ac190f05997ae32facbb1fe6b74b72faca02 $
+ * $Id: ac3963f49802b681cc1c145f2f80c2c8718c9693 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -256,8 +256,8 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_t *id,
  *****************************************************************************/
 typedef struct
 {
-    const char  *psz_muxer;
-    const char  *psz_extension;
+    const char  psz_muxer[4];
+    const char  psz_extension[4];
     int         i_es_max;
     vlc_fourcc_t codec[128];
 } muxer_properties_t;
@@ -276,7 +276,7 @@ static const muxer_properties_t p_muxers[] = {
     M( "wav", "wav", 1,         VLC_CODEC_U8,   VLC_CODEC_S16L,
                                 VLC_CODEC_S24L, VLC_CODEC_S32L, VLC_CODEC_FL32 ),
 
-    //M( "ffmpeg{mux=flac}", "flac", 1, VLC_CODEC_FLAC ), BROKEN
+    //M( "avformat{mux=flac}", "flac", 1, VLC_CODEC_FLAC ), BROKEN
 
     M( "ogg", "ogg", INT_MAX,   VLC_CODEC_VORBIS, VLC_CODEC_SPEEX,  VLC_CODEC_FLAC,
                                 VLC_CODEC_SUBT,   VLC_CODEC_THEORA, VLC_CODEC_DIRAC  ),
@@ -292,13 +292,19 @@ static const muxer_properties_t p_muxers[] = {
                                 VLC_CODEC_DTS,
                                 VLC_CODEC_SPU ),
 
+    M( "avi", "avi", 100,       VLC_CODEC_A52, VLC_CODEC_MPGA,
+                                VLC_CODEC_WMA1, VLC_CODEC_WMA2, VLC_CODEC_WMAP, VLC_CODEC_WMAL,
+                                VLC_CODEC_U8, VLC_CODEC_S16L, VLC_CODEC_S24L,
+                                VLC_CODEC_MP4V ),
+
     M( "ts", "ts", 8000,        VLC_CODEC_MPGV,
                                 VLC_CODEC_H264,
                                 VLC_CODEC_MPGA, VLC_CODEC_DVD_LPCM, VLC_CODEC_A52,
                                 VLC_CODEC_DTS,  VLC_CODEC_MP4A,
                                 VLC_CODEC_DVBS, VLC_CODEC_TELETEXT ),
 
-    M( NULL, NULL, 0, 0 )
+    M( "mkv", "mkv", 32,        VLC_CODEC_H264, VLC_CODEC_VP8, VLC_CODEC_MP4V,
+                                VLC_CODEC_A52,  VLC_CODEC_MP4A, VLC_CODEC_VORBIS, VLC_CODEC_FLAC ),
 };
 #undef M
 
@@ -324,8 +330,8 @@ static int OutputNew( sout_stream_t *p_stream,
     }
     free( psz_tmp );
 
-    if( asprintf( &psz_output, "std{access=file,mux='%s',dst='%s'}",
-                  psz_muxer, psz_file ) < 0 )
+    if( asprintf( &psz_output, "std{access=file,mux='%s',dst='%s',no-append,"
+                  "no-format}", psz_muxer, psz_file ) < 0 )
     {
         psz_output = NULL;
         goto error;
@@ -385,7 +391,7 @@ static void OutputStart( sout_stream_t *p_stream )
      * TODO we could insert transcode in a few cases like
      * s16l <-> s16b
      */
-    for( int i = 0; p_muxers[i].psz_muxer != NULL; i++ )
+    for( unsigned i = 0; i < sizeof(p_muxers) / sizeof(*p_muxers); i++ )
     {
         bool b_ok;
         if( p_sys->i_id > p_muxers[i].i_es_max )
@@ -420,25 +426,25 @@ static void OutputStart( sout_stream_t *p_stream )
      * keeps most of our stream */
     if( !psz_muxer || !psz_extension )
     {
-        static const char *ppsz_muxers[][2] = {
+        static const char ppsz_muxers[][2][4] = {
             { "avi", "avi" }, { "mp4", "mp4" }, { "ogg", "ogg" },
             { "asf", "asf" }, {  "ts",  "ts" }, {  "ps", "mpg" },
+            { "mkv", "mkv" },
 #if 0
             // XXX ffmpeg sefault really easily if you try an unsupported codec
             // mov and avi at least segfault
-            { "ffmpeg{mux=avi}", "avi" },
-            { "ffmpeg{mux=mov}", "mov" },
-            { "ffmpeg{mux=mp4}", "mp4" },
-            { "ffmpeg{mux=nsv}", "nsv" },
-            { "ffmpeg{mux=flv}", "flv" },
+            { "avformat{mux=avi}", "avi" },
+            { "avformat{mux=mov}", "mov" },
+            { "avformat{mux=mp4}", "mp4" },
+            { "avformat{mux=nsv}", "nsv" },
+            { "avformat{mux=flv}", "flv" },
 #endif
-            { NULL, NULL }
         };
         int i_best = 0;
         int i_best_es = 0;
 
         msg_Warn( p_stream, "failed to find an adequate muxer, probing muxers" );
-        for( int i = 0; ppsz_muxers[i][0] != NULL; i++ )
+        for( unsigned i = 0; i < sizeof(ppsz_muxers) / sizeof(*ppsz_muxers); i++ )
         {
             char *psz_file;
             int i_es;

@@ -1,10 +1,15 @@
 /*****************************************************************************
  * dtstospdif.c : encapsulates DTS frames into S/PDIF packets
  *****************************************************************************
- * Copyright (C) 2003, 2006 the VideoLAN team
- * $Id: 19cb432b58c15be07b6a9ef20add944a7b3b0421 $
+ * Copyright (C) 2003-2009 the VideoLAN team
+ * $Id: 88384c8e2329f96f50d9e69d75917b3d553963a3 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
+ *          Gildas Bazin
+ *          Derk-Jan Hartman
+ *          Pierre d'Herbemont
+ *          Rémi Denis-Courmont
+ *          Rafaël Carré
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +46,7 @@ struct filter_sys_t
 {
     mtime_t start_date;
 
-    /* 3 DTS frames have to be packed into an S/PDIF frame.
+    /* 3 DTS frames (max 2048) have to be packed into an S/PDIF frame (6144).
      * We accumulate DTS frames from the decoder until we have enough to
      * send. */
     size_t i_frame_size;
@@ -63,7 +68,7 @@ vlc_module_begin ()
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_MISC )
     set_description( N_("Audio filter for DTS->S/PDIF encapsulation") )
-    set_capability( "audio filter", 10 )
+    set_capability( "audio converter", 10 )
     set_callbacks( Create, Close )
 vlc_module_end ()
 
@@ -86,6 +91,7 @@ static int Create( vlc_object_t *p_this )
     p_sys = p_filter->p_sys = malloc( sizeof(*p_sys) );
     if( !p_sys )
         return VLC_ENOMEM;
+
     p_sys->p_buf = NULL;
     p_sys->i_frame_size = 0;
     p_sys->i_frames = 0;
@@ -132,7 +138,7 @@ static block_t *DoWork( filter_t * p_filter, block_t * p_in_buf )
 
     /* Backup frame */
     /* TODO: keeping the blocks in a list would save one memcpy */
-    vlc_memcpy( p_filter->p_sys->p_buf + p_in_buf->i_buffer *
+    memcpy( p_filter->p_sys->p_buf + p_in_buf->i_buffer *
                   p_filter->p_sys->i_frames,
                 p_in_buf->p_buffer, p_in_buf->i_buffer );
 
@@ -150,8 +156,7 @@ static block_t *DoWork( filter_t * p_filter, block_t * p_in_buf )
     }
 
     p_filter->p_sys->i_frames = 0;
-    block_t *p_out_buf = filter_NewAudioBuffer( p_filter,
-                                                12 * p_in_buf->i_nb_samples );
+    block_t *p_out_buf = block_Alloc( 12 * p_in_buf->i_nb_samples );
     if( !p_out_buf )
         goto out;
 
@@ -171,13 +176,13 @@ static block_t *DoWork( filter_t * p_filter, block_t * p_in_buf )
         /* Copy the S/PDIF headers. */
         if( p_filter->fmt_out.audio.i_format == VLC_CODEC_SPDIFB )
         {
-            vlc_memcpy( p_out, p_sync_be, 6 );
+            memcpy( p_out, p_sync_be, 6 );
             p_out[5] = i_ac5_spdif_type;
             SetWBE( p_out + 6, i_length << 3 );
         }
         else
         {
-            vlc_memcpy( p_out, p_sync_le, 6 );
+            memcpy( p_out, p_sync_le, 6 );
             p_out[4] = i_ac5_spdif_type;
             SetWLE( p_out + 6, i_length << 3 );
         }
@@ -200,12 +205,12 @@ static block_t *DoWork( filter_t * p_filter, block_t * p_in_buf )
         }
         else
         {
-            vlc_memcpy( p_out + 8, p_in, i_length );
+            memcpy( p_out + 8, p_in, i_length );
         }
 
         if( i_fz > i_length + 8 )
         {
-            vlc_memset( p_out + 8 + i_length_padded, 0,
+            memset( p_out + 8 + i_length_padded, 0,
                         i_fz - i_length_padded - 8 );
         }
     }

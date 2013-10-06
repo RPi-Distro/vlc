@@ -1,25 +1,25 @@
 /*****************************************************************************
  * quicktime.c: a quicktime decoder that uses the QT library/dll
  *****************************************************************************
- * Copyright (C) 2003, 2008 - 2009 the VideoLAN team
- * $Id: 55f9bf076355117a3ef3d841086f1dcf65a65533 $
+ * Copyright (C) 2003, 2008 - 2009 VLC authors and VideoLAN
+ * $Id: 885c758e7ca6c220cd7265c3196bfb91216e1929 $
  *
  * Authors: Laurent Aimar <fenrir at via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan.org>>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -32,10 +32,9 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_aout.h>
 #include <vlc_codec.h>
 
-#if !defined (__APPLE__) && !defined(WIN32)
+#if !defined (__APPLE__) && !defined(_WIN32)
 # define LOADER 1
 #endif
 
@@ -79,8 +78,8 @@ vlc_module_end ()
 static int           OpenAudio( decoder_t * );
 static int           OpenVideo( decoder_t * );
 
-static aout_buffer_t *DecodeAudio( decoder_t *, block_t ** );
-#ifndef WIN32
+static block_t       *DecodeAudio( decoder_t *, block_t ** );
+#ifndef _WIN32
 static picture_t     *DecodeVideo( decoder_t *, block_t ** );
 #endif
 
@@ -145,7 +144,7 @@ struct decoder_sys_t
     unsigned int    InFrameSize;
     unsigned int    OutFrameSize;
 
-#ifndef WIN32
+#ifndef _WIN32
     /* Video */
     Component         (*FindNextComponent)
         ( Component prev, ComponentDescription* desc );
@@ -216,7 +215,7 @@ static const int pi_channels_maps[6] =
 };
 
 static int QTAudioInit( decoder_t * );
-#ifndef WIN32
+#ifndef _WIN32
 static int QTVideoInit( decoder_t * );
 #endif
 
@@ -524,7 +523,7 @@ exit_error:
 /*****************************************************************************
  * DecodeAudio:
  *****************************************************************************/
-static aout_buffer_t *DecodeAudio( decoder_t *p_dec, block_t **pp_block )
+static block_t *DecodeAudio( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
@@ -639,7 +638,7 @@ static aout_buffer_t *DecodeAudio( decoder_t *p_dec, block_t **pp_block )
 
     if( p_sys->i_out < p_sys->i_out_frames )
     {
-        aout_buffer_t *p_out;
+        block_t *p_out;
         int  i_frames = __MIN( p_sys->i_out_frames - p_sys->i_out, 1000 );
 
         p_out = decoder_NewAudioBuffer( p_dec, i_frames );
@@ -667,7 +666,7 @@ static aout_buffer_t *DecodeAudio( decoder_t *p_dec, block_t **pp_block )
  *****************************************************************************/
 static int OpenVideo( decoder_t *p_dec )
 {
-#ifndef WIN32
+#ifndef _WIN32
     decoder_sys_t *p_sys = malloc( sizeof( decoder_sys_t ) );
     if( !p_sys )
         return VLC_ENOMEM;
@@ -858,12 +857,12 @@ exit_error:
 
 #else
     VLC_UNUSED( p_dec );
-#endif /* !WIN32 */
+#endif /* !_WIN32 */
 
     return VLC_EGENERIC;
 }
 
-#ifndef WIN32
+#ifndef _WIN32
 /*****************************************************************************
  * DecodeVideo:
  *****************************************************************************/
@@ -952,7 +951,7 @@ static picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
     block_Release( p_block );
     return p_pic;
 }
-#endif /* !WIN32 */
+#endif /* !_WIN32 */
 
 /*****************************************************************************
  * QTAudioInit:
@@ -1021,7 +1020,7 @@ static int QTAudioInit( decoder_t *p_dec )
     return VLC_SUCCESS;
 }
 
-#ifndef WIN32
+#ifndef _WIN32
 /*****************************************************************************
  * QTVideoInit:
  *****************************************************************************/
@@ -1093,4 +1092,4 @@ static int QTVideoInit( decoder_t *p_dec )
 
     return VLC_SUCCESS;
 }
-#endif /* !WIN32 */
+#endif /* !_WIN32 */

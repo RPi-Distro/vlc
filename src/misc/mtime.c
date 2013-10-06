@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: dd95a61a665aec6e71ee8129cc973d8d0a58558b $
+ * $Id: 9e22a701e07f96f6adb99a238d1e3dd898250755 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Rémi Denis-Courmont <rem$videolan,org>
@@ -39,7 +39,7 @@
 #ifdef HAVE_UNISTD_H
 # include <unistd.h>
 #endif
-#if !defined (_POSIX_TIMERS)
+#if !defined (_POSIX_TIMERS) || defined (_WIN32)
 # define _POSIX_TIMERS (-1)
 #endif
 #if (_POSIX_TIMERS > 0)

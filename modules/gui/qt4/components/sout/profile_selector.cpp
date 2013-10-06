@@ -2,7 +2,7 @@
  * profile_selector.cpp : A small profile selector and editor
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: de01d77089aa25c815f35bc8159ae9908b3402ef $
+ * $Id: 0a5ec7dcd9bbadd065157c6282453c5d006e95f6 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -31,8 +31,19 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QMessageBox>
+#include <QRadioButton>
+#include <QRegExp>
+#include <QButtonGroup>
+#include <QSpinBox>
+#include <QUrl>
+#include <QListWidgetItem>
 
 #include <assert.h>
+#include <vlc_modules.h>
+
+#define CATPROP2NAME( val ) QString("valueholder_%1").arg( val )
+#define CATANDPROP( cat, prop ) QString("%1_%2").arg( cat ).arg( prop )
+#define OLDFORMAT "^\\w+;\\d+;\\d+;\\d+;"
 
 VLCProfileSelector::VLCProfileSelector( QWidget *_parent ): QWidget( _parent )
 {
@@ -66,14 +77,13 @@ VLCProfileSelector::VLCProfileSelector( QWidget *_parent ): QWidget( _parent )
 
     CONNECT( profileBox, activated( int ),
              this, updateOptions( int ) );
-
     updateOptions( 0 );
 }
 
 inline void VLCProfileSelector::fillProfilesCombo()
 {
     QSettings settings(
-#ifdef WIN32
+#ifdef _WIN32
             QSettings::IniFormat,
 #else
             QSettings::NativeFormat,
@@ -129,7 +139,7 @@ void VLCProfileSelector::editProfile( const QString& qs, const QString& value )
             int i_profile = profileBox->findText( qs );
             assert( i_profile != -1 );
             profileBox->setItemText( i_profile, editor->name );
-            profileBox->setItemData( i_profile, QVariant( editor->transcodeValue() ) );
+            profileBox->setItemData( i_profile, editor->transcodeValue() );
             /* Force mrl recreation */
             updateOptions( i_profile );
         }
@@ -149,7 +159,7 @@ void VLCProfileSelector::deleteProfile()
 void VLCProfileSelector::saveProfiles()
 {
     QSettings settings(
-#ifdef WIN32
+#ifdef _WIN32
             QSettings::IniFormat,
 #else
             QSettings::NativeFormat,
@@ -168,6 +178,181 @@ void VLCProfileSelector::saveProfiles()
 }
 
 void VLCProfileSelector::updateOptions( int i )
+{
+    QString options = profileBox->itemData( i ).toString();
+    QRegExp rx(OLDFORMAT);
+    if ( !options.contains( ";" ) ) return;
+    if ( rx.indexIn( options ) != -1 )
+        return updateOptionsOldFormat( i );
+
+    transcode = "";
+
+    QStringList tuples = options.split( ";" );
+    typedef QHash<QString, QString> proptovalueHashType;
+    QHash<QString, proptovalueHashType *> categtopropHash;
+    proptovalueHashType *proptovalueHash;
+    QString value;
+
+    /* Build a double hash structure because we need to make ordered lookups */
+    foreach ( const QString &tuple, tuples )
+    {
+        QStringList keyvalue = tuple.split( "=" );
+        if ( keyvalue.count() != 2 ) continue;
+        QString key = keyvalue[0];
+        value = keyvalue[1];
+        keyvalue = key.split( "_" );
+        if ( keyvalue.count() != 2 ) continue;
+        QString categ = keyvalue[0];
+        QString prop = keyvalue[1];
+
+        if ( ! categtopropHash.contains( categ ) )
+        {
+            proptovalueHash = new proptovalueHashType();
+            categtopropHash.insert( categ, proptovalueHash );
+        } else {
+            proptovalueHash = categtopropHash.value( categ );
+        }
+        proptovalueHash->insert( prop, value );
+    }
+
+    /* Now we can build the/translate into MRL */
+#define HASHPICK( categ, prop ) \
+    if ( categtopropHash.contains( categ ) ) \
+    {\
+        proptovalueHash = categtopropHash.value( categ );\
+        value = proptovalueHash->take( prop );\
+    }\
+    else value = QString()
+
+    SoutMrl smrl;
+    smrl.begin( "transcode" );
+
+    /* First muxer options */
+    HASHPICK( "muxer", "mux" );
+    if ( value.isEmpty() ) goto cleanup;
+    mux = value;
+
+    HASHPICK( "video", "enable" );
+    if ( !value.isEmpty() )
+    {
+        HASHPICK( "video", "codec" );
+
+        if ( !value.isEmpty() )
+        {
+            smrl.option( "vcodec", value );
+
+            HASHPICK( "vcodec", "bitrate" );
+            if ( value.toInt() > 0 )
+            {
+                smrl.option( "vb", value.toInt() );
+            }
+
+            HASHPICK( "video", "filters" );
+            if ( !value.isEmpty() )
+            {
+                QStringList valuesList = QUrl::fromPercentEncoding( value.toLatin1() ).split( ";" );
+                smrl.option( "vfilter", valuesList.join( ":" ) );
+            }
+
+            /*if ( codec is h264 )*/
+            {
+                /* special handling */
+                QStringList codecoptions;
+
+                HASHPICK( "vcodec", "qp" );
+                if( value.toInt() > 0 )
+                    codecoptions << QString( "qp=%1" ).arg( value );
+
+                HASHPICK( "vcodec", "custom" );
+                if( !value.isEmpty() )
+                    codecoptions << QUrl::fromPercentEncoding( value.toLatin1() );
+
+                if ( codecoptions.count() )
+                    smrl.option( "venc",
+                        QString("x264{%1}").arg( codecoptions.join(",") ) );
+            }
+
+            HASHPICK( "vcodec", "framerate" );
+            if ( !value.isEmpty() && value.toInt() > 0 )
+                smrl.option( "fps", value );
+
+            HASHPICK( "vcodec", "scale" );
+            if ( !value.isEmpty() )
+                smrl.option( "scale", value );
+
+            HASHPICK( "vcodec", "width" );
+            if ( !value.isEmpty() && value.toInt() > 0 )
+                smrl.option( "width", value );
+
+            HASHPICK( "vcodec", "height" );
+            if ( !value.isEmpty() && value.toInt() > 0 )
+                smrl.option( "height", value );
+        } else {
+            HASHPICK( "video", "copy" );
+            if ( ! value.isEmpty() )
+                smrl.option( "vcodec", "copy" );
+        }
+    } else {
+        smrl.option( "vcodec", "none" );
+    }
+
+    HASHPICK( "audio", "enable" );
+    if ( !value.isEmpty() )
+    {
+        HASHPICK( "audio", "codec" );
+        if ( !value.isEmpty() )
+        {
+            smrl.option( "acodec", value );
+
+            HASHPICK( "acodec", "bitrate" );
+            smrl.option( "ab", value.toInt() );
+
+            HASHPICK( "acodec", "channels" );
+            smrl.option( "channels", value.toInt() );
+
+            HASHPICK( "acodec", "samplerate" );
+            smrl.option( "samplerate", value.toInt() );
+
+            HASHPICK( "audio", "filters" );
+            if ( !value.isEmpty() )
+            {
+                QStringList valuesList = QUrl::fromPercentEncoding( value.toLatin1() ).split( ";" );
+                smrl.option( "afilter", valuesList.join( ":" ) );
+            }
+
+        } else {
+            HASHPICK( "audio", "copy" );
+            if ( ! value.isEmpty() )
+                smrl.option( "acodec", "copy" );
+        }
+    } else {
+        smrl.option( "acodec", "none" );
+    }
+
+    HASHPICK( "subtitles", "enable" );
+    if( !value.isEmpty() )
+    {
+        HASHPICK( "subtitles", "codec" );
+        smrl.option( "scodec", value );
+
+        HASHPICK( "subtitles", "overlay" );
+        if ( !value.isEmpty() )
+            smrl.option( "soverlay" );
+    }
+    smrl.end();
+#undef HASHPICK
+
+    transcode = smrl.getMrl();
+
+    cleanup:
+    /* Temp hash tables cleanup */
+    foreach( proptovalueHashType *hash, categtopropHash )
+        delete hash;
+
+    emit optionsChanged();
+}
+
+void VLCProfileSelector::updateOptionsOldFormat( int i )
 {
     QStringList options = profileBox->itemData( i ).toString().split( ";" );
     if( options.count() < 16 )
@@ -233,36 +418,120 @@ VLCProfileEditor::VLCProfileEditor( const QString& qs_name, const QString& value
                  : QVLCDialog( _parent, NULL )
 {
     ui.setupUi( this );
+    ui.buttonGroup->setObjectName( CATPROP2NAME( CATANDPROP( "muxer", "mux" ) ) );
     if( !qs_name.isEmpty() )
     {
         ui.profileLine->setText( qs_name );
         ui.profileLine->setReadOnly( true );
     }
+    loadCapabilities();
     registerCodecs();
-    CONNECT( ui.transcodeVideo, toggled( bool ),
-            this, setVTranscodeOptions( bool ) );
-    CONNECT( ui.transcodeAudio, toggled( bool ),
-            this, setATranscodeOptions( bool ) );
-    CONNECT( ui.transcodeSubs, toggled( bool ),
-            this, setSTranscodeOptions( bool ) );
-    setVTranscodeOptions( false );
-    setATranscodeOptions( false );
-    setSTranscodeOptions( false );
+    registerFilters();
 
-    QPushButton *saveButton = new QPushButton( qtr( "Save" ) );
+    QPushButton *saveButton = new QPushButton(
+                ( qs_name.isEmpty() ) ? qtr( "Create" ) : qtr( "Save" ) );
     ui.buttonBox->addButton( saveButton, QDialogButtonBox::AcceptRole );
     BUTTONACT( saveButton, close() );
     QPushButton *cancelButton = new QPushButton( qtr( "Cancel" ) );
     ui.buttonBox->addButton( cancelButton, QDialogButtonBox::RejectRole );
     BUTTONACT( cancelButton, reject() );
 
+    CONNECT( ui.valueholder_video_copy, stateChanged( int ),
+             this, activatePanels() );
+    CONNECT( ui.valueholder_audio_copy, stateChanged( int ),
+             this, activatePanels() );
+    CONNECT( ui.valueholder_vcodec_bitrate, editingFinished( ),
+             this, fixBirateState() );
+    CONNECT( ui.valueholder_vcodec_qp, editingFinished( ),
+             this, fixQPState() );
+    CONNECT( ui.valueholder_video_codec, currentIndexChanged( int ),
+             this, codecSelected() );
+    reset();
+
     fillProfile( value );
+    muxSelected();
+    codecSelected();
+}
+
+void VLCProfileEditor::loadCapabilities()
+{
+    size_t count;
+    module_t **p_all = module_list_get (&count);
+
+    /* Parse the module list for capabilities and probe each of them */
+    for (size_t i = 0; i < count; i++)
+    {
+         module_t *p_module = p_all[i];
+
+         if( module_provides( p_module, "sout mux" ) )
+             caps["muxers"].insert( module_get_object( p_module ) );
+//        else if ( module_provides( p_module, "encoder" ) )
+//            caps["encoders"].insert( module_get_object( p_module ) );
+    }
+    module_list_free (p_all);
+}
+
+inline void VLCProfileEditor::registerFilters()
+{
+    size_t count;
+    module_t **p_all = module_list_get (&count);
+
+    for (size_t i = 0; i < count; i++)
+    {
+        module_t *p_module = p_all[i];
+        if ( module_get_score( p_module ) > 0 ) continue;
+
+        QString capability = module_get_capability( p_module );
+        QListWidget *listWidget = NULL;
+        QListWidgetItem *item;
+
+        if ( capability == "video filter2" )
+            listWidget = ui.valueholder_video_filters;
+        else if ( capability == "audio filter" )
+            listWidget = ui.valueholder_audio_filters;
+
+        if ( !listWidget ) continue;
+
+        item = new QListWidgetItem( module_get_name( p_module, true ) );
+        item->setCheckState( Qt::Unchecked );
+        item->setToolTip( QString( module_get_help( p_module ) ) );
+        item->setData( Qt::UserRole, QString( module_get_object( p_module ) ) );
+        listWidget->addItem( item );
+    }
+    module_list_free (p_all);
+
+    ui.valueholder_video_filters->sortItems();
+    ui.valueholder_audio_filters->sortItems();
 }
 
 inline void VLCProfileEditor::registerCodecs()
 {
+#define SETMUX( button, val,    vid, aud, men, sub, stream, chaps ) \
+    ui.button->setProperty( "sout", val );\
+    ui.button->setProperty( "capvideo", vid );\
+    ui.button->setProperty( "capaudio", aud );\
+    ui.button->setProperty( "capmenu", men );\
+    ui.button->setProperty( "capsubs", sub );\
+    ui.button->setProperty( "capstream", stream );\
+    ui.button->setProperty( "capchaps", chaps );\
+    CONNECT( ui.button, clicked(bool), this, muxSelected() );
+    SETMUX( PSMux, "ps",        true, true, false, true, false, true )
+    SETMUX( TSMux, "ts",        true, true, false, true, true, false )
+    SETMUX( WEBMux, "webm",     true, true, false, false, true, false )
+    SETMUX( MPEG1Mux, "mpeg1",  true, true, false, false, false, false )
+    SETMUX( OggMux, "ogg",      true, true, false, false, true, true )
+    SETMUX( ASFMux, "asf",      true, true, false, true, true, true )
+    SETMUX( MOVMux, "mp4",      true, true, true, true, true, false )
+    SETMUX( WAVMux, "wav",      false, true, false, false, false, false )
+    SETMUX( RAWMux, "raw",      true, true, false, false, false, false )
+    SETMUX( FLVMux, "flv",      true, true, false, false, true, false )
+    SETMUX( MKVMux, "mkv",      true, true, true, true, true, true )
+    SETMUX( AVIMux, "avi",      true, true, false, false, false, false )
+    SETMUX( MJPEGMux, "mpjpeg", true, false, false, false, false, false )
+#undef SETMUX
 
-#define ADD_VCODEC( name, fourcc ) ui.vCodecBox->addItem( name, QVariant( fourcc ) );
+#define ADD_VCODEC( name, fourcc ) \
+            ui.valueholder_video_codec->addItem( name, QVariant( fourcc ) );
     ADD_VCODEC( "MPEG-1", "mp1v" )
     ADD_VCODEC( "MPEG-2", "mp2v" )
     ADD_VCODEC( "MPEG-4", "mp4v" )
@@ -278,8 +547,10 @@ inline void VLCProfileEditor::registerCodecs()
     ADD_VCODEC( "Theora", "theo" )
     ADD_VCODEC( "Dirac", "drac" )
 #undef ADD_VCODEC
+    /* can do quality */
+    qpcodecsList << "h264";
 
-#define ADD_ACODEC( name, fourcc ) ui.aCodecBox->addItem( name, QVariant( fourcc ) );
+#define ADD_ACODEC( name, fourcc ) ui.valueholder_audio_codec->addItem( name, QVariant( fourcc ) );
     ADD_ACODEC( "MPEG Audio", "mpga" )
     ADD_ACODEC( "MP3", "mp3" )
     ADD_ACODEC( "MPEG 4 Audio ( AAC )", "mp4a" )
@@ -291,7 +562,8 @@ inline void VLCProfileEditor::registerCodecs()
     ADD_ACODEC( "WMA2", "wma2" )
 #undef ADD_ACODEC
 
-#define ADD_SCALING( factor ) ui.vScaleBox->addItem( factor );
+#define ADD_SCALING( factor ) ui.valueholder_vcodec_scale->addItem( factor );
+    ADD_SCALING( qtr("Auto") );
     ADD_SCALING( "1" )
     ADD_SCALING( "0.25" )
     ADD_SCALING( "0.5" )
@@ -302,99 +574,175 @@ inline void VLCProfileEditor::registerCodecs()
     ADD_SCALING( "2" )
 #undef ADD_SCALING
 
-#define ADD_SAMPLERATE( sample ) ui.aSampleBox->addItem( sample );
-    ADD_SAMPLERATE( "8000" )
-    ADD_SAMPLERATE( "11025" )
-    ADD_SAMPLERATE( "22050" )
-    ADD_SAMPLERATE( "44100" )
-    ADD_SAMPLERATE( "48000" )
+#define ADD_SAMPLERATE( sample, val ) ui.valueholder_acodec_samplerate->addItem( sample, val );
+    ADD_SAMPLERATE( "8000 Hz", 8000 )
+    ADD_SAMPLERATE( "11025 Hz", 11025 )
+    ADD_SAMPLERATE( "22050 Hz", 22050 )
+    ADD_SAMPLERATE( "44100 Hz", 44100 )
+    ADD_SAMPLERATE( "48000 Hz", 48000 )
 #undef ADD_SAMPLERATE
 
-#define ADD_SCODEC( name, fourcc ) ui.subsCodecBox->addItem( name, QVariant( fourcc ) );
+#define ADD_SCODEC( name, fourcc ) ui.valueholder_subtitles_codec->addItem( name, QVariant( fourcc ) );
     ADD_SCODEC( "DVB subtitle", "dvbs" )
     ADD_SCODEC( "T.140", "t140" )
 #undef ADD_SCODEC
 }
 
+void VLCProfileEditor::muxSelected()
+{
+    QRadioButton *current =
+            qobject_cast<QRadioButton *>( ui.buttonGroup->checkedButton() );
+
+#define SETYESNOSTATE( name, prop ) \
+    ui.name->setChecked( current->property( prop ).toBool() )
+
+    /* dumb :/ */
+    SETYESNOSTATE( capvideo, "capvideo" );
+    SETYESNOSTATE( capaudio, "capaudio" );
+    SETYESNOSTATE( capmenu, "capmenu" );
+    SETYESNOSTATE( capsubs, "capsubs" );
+    SETYESNOSTATE( capstream, "capstream" );
+    SETYESNOSTATE( capchaps, "capchaps" );
+    bool b = caps["muxers"].contains( "mux_" + current->property("sout").toString() );
+    if ( !b )
+        ui.muxerwarning->setText(
+                    QString( "<img src=\":/menu/info\"/> %1" )
+                    .arg( qtr( "This muxer is not provided directly by VLC: It could be missing." ) )
+                    );
+    else
+        ui.muxerwarning->setText("");
+    return;
+
+#undef SETYESNOSTATE
+}
+
+void VLCProfileEditor::codecSelected()
+{
+    /* Enable quality preset */
+    QString currentcodec = ui.valueholder_video_codec->
+            itemData(ui.valueholder_video_codec->currentIndex() ).toString();
+    ui.valueholder_vcodec_qp->setEnabled( qpcodecsList.contains( currentcodec ) );
+}
+
 void VLCProfileEditor::fillProfile( const QString& qs )
+{
+    QRegExp rx(OLDFORMAT);
+    if ( rx.indexIn( qs ) != -1 ) return fillProfileOldFormat( qs );
+
+    QStringList tuples = qs.split( ";" );
+    foreach ( const QString &tuple, tuples )
+    {
+        QStringList keyvalue = tuple.split( "=" );
+        if ( keyvalue.count() != 2 ) continue;
+        QString key = keyvalue[0];
+        QString value = keyvalue[1];
+        QObject *object = findChild<QObject *>( CATPROP2NAME( key ) );
+        if ( object )
+        {
+            if( object->inherits( "QButtonGroup" ) )
+            { /* Buttongroup for Radios */
+                const QButtonGroup *group = qobject_cast<const QButtonGroup *>( object );
+                foreach( QAbstractButton *button, group->buttons() )
+                {
+                    if ( button->property("sout").toString() == value )
+                    {
+                        button->setChecked( true );
+                        break;/* radios are exclusive */
+                    }
+                }
+            }
+            else if( object->inherits( "QCheckBox" ) )
+            {
+                QCheckBox *box = qobject_cast<QCheckBox *>( object );
+                box->setChecked( ! value.isEmpty() );
+            }
+            else if( object->inherits( "QGroupBox" ) )
+            {
+                QGroupBox *box = qobject_cast<QGroupBox *>( object );
+                box->setChecked( ! value.isEmpty() );
+            }
+            else if( object->inherits( "QSpinBox" ) )
+            {
+                QSpinBox *box = qobject_cast<QSpinBox *>( object );
+                box->setValue( value.toInt() );
+            }
+            else if( object->inherits( "QDoubleSpinBox" ) )
+            {
+                QDoubleSpinBox *box = qobject_cast<QDoubleSpinBox *>( object );
+                box->setValue( value.toDouble() );
+            }
+            else if( object->inherits( "QComboBox" ) )
+            {
+                QComboBox *box = qobject_cast<QComboBox *>( object );
+                box->setCurrentIndex( box->findData( value ) );
+            }
+            else if( object->inherits( "QLineEdit" ) )
+            {
+                QLineEdit *box = qobject_cast<QLineEdit *>( object );
+                box->setText( QUrl::fromPercentEncoding( value.toLatin1() ) );
+            }
+            else if ( object->inherits( "QListWidget" ) )
+            {
+                QStringList valuesList = QUrl::fromPercentEncoding( value.toLatin1() ).split( ";" );
+                const QListWidget *list = qobject_cast<const QListWidget *>( object );
+                for( int i=0; i < list->count(); i++ )
+                {
+                    QListWidgetItem *item = list->item( i );
+                    if ( valuesList.contains( item->data( Qt::UserRole ).toString() ) )
+                        item->setCheckState( Qt::Checked );
+                    else
+                        item->setCheckState( Qt::Unchecked );
+                }
+            }
+        }
+    }
+}
+
+void VLCProfileEditor::fillProfileOldFormat( const QString& qs )
 {
     QStringList options = qs.split( ";" );
     if( options.count() < 16 )
         return;
 
     const QString mux = options[0];
-#define CHECKMUX( button, text) if( text == mux ) ui.button->setChecked( true ); else
-    CHECKMUX( PSMux, "ps" )
-    CHECKMUX( TSMux, "ts" )
-    CHECKMUX( WEBMux, "webm" )
-    CHECKMUX( MPEG1Mux, "mpeg1" )
-    CHECKMUX( OggMux, "ogg" )
-    CHECKMUX( ASFMux, "asf" )
-    CHECKMUX( MOVMux, "mp4" )
-    CHECKMUX( WAVMux, "wav" )
-    CHECKMUX( RAWMux, "raw" )
-    CHECKMUX( FLVMux, "flv" )
-    CHECKMUX( MKVMux, "mkv" )
-    CHECKMUX( AVIMux, "avi" )
-    CHECKMUX( MJPEGMux, "mpjpeg" ){}
-#undef CHECKMUX
+    for ( int i=0; i< ui.muxer->layout()->count(); i++ )
+    {
+        QRadioButton *current =
+                qobject_cast<QRadioButton *>(ui.muxer->layout()->itemAt(i)->widget());
+        if ( unlikely( !current ) ) continue;/* someone is messing up with ui */
+        if ( current->property("sout").toString() == mux )
+        {
+            current->setChecked( true );
+            break;/* radios are exclusive */
+        }
+    }
 
-    ui.keepVideo->setChecked( !options[1].toInt() );
-    ui.transcodeVideo->setChecked( ( options[4] != "none" ) );
-    ui.keepAudio->setChecked( !options[2].toInt() );
-    ui.transcodeAudio->setChecked( ( options[10] != "none" ) );
-    ui.transcodeSubs->setChecked( options[3].toInt() );
+    ui.valueholder_video_copy->setChecked( !options[1].toInt() );
+    ui.valueholder_video_enable->setChecked( ( options[4] != "none" ) );
+    ui.valueholder_audio_copy->setChecked( !options[2].toInt() );
+    ui.valueholder_audio_enable->setChecked( ( options[10] != "none" ) );
+    ui.valueholder_subtitles_enable->setChecked( options[3].toInt() );
 
-    ui.vCodecBox->setCurrentIndex( ui.vCodecBox->findData( options[4] ) );
-    ui.vBitrateSpin->setValue( options[5].toInt() );
-    ui.vScaleBox->setEditText( options[6] );
-    ui.vFrameBox->setValue( options[7].toDouble() );
-    ui.widthBox->setText( options[8] );
-    ui.heightBox->setText( options[9] );
+    ui.valueholder_video_codec->setCurrentIndex( ui.valueholder_video_codec->findData( options[4] ) );
+    ui.valueholder_vcodec_bitrate->setValue( options[5].toInt() );
+    if ( options[6].toInt() > 0 )
+        ui.valueholder_vcodec_scale->setEditText( options[6] );
+    else
+        ui.valueholder_vcodec_scale->setCurrentIndex( 0 );
+    ui.valueholder_vcodec_framerate->setValue( options[7].toDouble() );
+    ui.valueholder_vcodec_width->setValue( options[8].toInt() );
+    ui.valueholder_vcodec_height->setValue( options[9].toInt() );
 
-    ui.aCodecBox->setCurrentIndex( ui.aCodecBox->findData( options[10] ) );
-    ui.aBitrateSpin->setValue( options[11].toInt() );
-    ui.aChannelsSpin->setValue( options[12].toInt() );
-    ui.aSampleBox->setCurrentIndex( ui.aSampleBox->findText( options[13] ) );
+    ui.valueholder_audio_codec->setCurrentIndex( ui.valueholder_audio_codec->findData( options[10] ) );
+    ui.valueholder_acodec_bitrate->setValue( options[11].toInt() );
+    ui.valueholder_acodec_channels->setValue( options[12].toInt() );
 
-    ui.subsCodecBox->setCurrentIndex( ui.subsCodecBox->findData( options[14] ) );
-    ui.subsOverlay->setChecked( options[15].toInt() );
-}
+    int index = ui.valueholder_acodec_samplerate->findData( options[13] );
+    if ( index == -1 ) index = ui.valueholder_acodec_samplerate->findData( 44100 );
+    ui.valueholder_acodec_samplerate->setCurrentIndex( index );
 
-void VLCProfileEditor::setVTranscodeOptions( bool b_trans )
-{
-    ui.vCodecLabel->setEnabled( b_trans );
-    ui.vCodecBox->setEnabled( b_trans );
-    ui.vBitrateLabel->setEnabled( b_trans );
-    ui.vBitrateSpin->setEnabled( b_trans );
-    ui.vScaleLabel->setEnabled( b_trans );
-    ui.vScaleBox->setEnabled( b_trans );
-    ui.heightBox->setEnabled( b_trans );
-    ui.heightLabel->setEnabled( b_trans );
-    ui.widthBox->setEnabled( b_trans );
-    ui.widthLabel->setEnabled( b_trans );
-    ui.vFrameBox->setEnabled( b_trans );
-    ui.vFrameLabel->setEnabled( b_trans );
-    ui.keepVideo->setEnabled( b_trans );
-}
-
-void VLCProfileEditor::setATranscodeOptions( bool b_trans )
-{
-    ui.aCodecLabel->setEnabled( b_trans );
-    ui.aCodecBox->setEnabled( b_trans );
-    ui.aBitrateLabel->setEnabled( b_trans );
-    ui.aBitrateSpin->setEnabled( b_trans );
-    ui.aChannelsLabel->setEnabled( b_trans );
-    ui.aChannelsSpin->setEnabled( b_trans );
-    ui.aSampleLabel->setEnabled( b_trans );
-    ui.aSampleBox->setEnabled( b_trans );
-    ui.keepAudio->setEnabled( b_trans );
-}
-
-void VLCProfileEditor::setSTranscodeOptions( bool b_trans )
-{
-    ui.subsCodecBox->setEnabled( b_trans );
-    ui.subsOverlay->setEnabled( b_trans );
+    ui.valueholder_subtitles_codec->setCurrentIndex( ui.valueholder_subtitles_codec->findData( options[14] ) );
+    ui.valueholder_subtitles_overlay->setChecked( options[15].toInt() );
 }
 
 void VLCProfileEditor::close()
@@ -411,55 +759,114 @@ void VLCProfileEditor::close()
     accept();
 }
 
+#define currentData( box ) box->itemData( box->currentIndex() )
+
 QString VLCProfileEditor::transcodeValue()
 {
-#define SMUX( x, txt ) if( ui.x->isChecked() ) muxValue =  txt; else
-    SMUX( PSMux, "ps" )
-    SMUX( TSMux, "ts" )
-    SMUX( WEBMux, "webm" )
-    SMUX( MPEG1Mux, "mpeg1" )
-    SMUX( OggMux, "ogg" )
-    SMUX( ASFMux, "asf" )
-    SMUX( MOVMux, "mp4" )
-    SMUX( WAVMux, "wav" )
-    SMUX( RAWMux, "raw" )
-    SMUX( FLVMux, "flv" )
-    SMUX( MKVMux, "mkv" )
-    SMUX( AVIMux, "avi" )
-    SMUX( MJPEGMux, "mpjpeg" ){}
-#undef SMUX
+    QList<QObject *> allwidgets = findChildren<QObject *>();
+    QStringList configuration;
 
-#define currentData( box ) box->itemData( box->currentIndex() )
-    QString qs_acodec, qs_vcodec;
+    foreach( const QObject *object, allwidgets )
+    {
+        if ( ! object->objectName().startsWith( CATPROP2NAME( "" ) ) )
+            continue;
+        if ( object->inherits( "QWidget" ) &&
+             ! qobject_cast<const QWidget *>(object)->isEnabled() ) continue;
 
-    qs_vcodec = ( ui.transcodeVideo->isChecked() ) ? currentData( ui.vCodecBox ).toString()
-                                                   : "none";
-    qs_acodec = ( ui.transcodeAudio->isChecked() ) ? currentData( ui.aCodecBox ).toString()
-                                                   : "none";
-    QStringList transcodeMRL;
-    transcodeMRL
-            << muxValue
+        QString name = object->objectName();
+        QStringList vals = object->objectName().split( "_" );
+        if ( vals.count() != 3 ) continue;
+        QString &categ = vals[1];
+        QString &prop = vals[2];
+        QString value;
 
-            << QString::number( !ui.keepVideo->isChecked() )
-            << QString::number( !ui.keepAudio->isChecked() )
-            << QString::number( ui.transcodeSubs->isChecked() )
+        if( object->inherits( "QButtonGroup" ) )
+        {
+            const QButtonGroup *group = qobject_cast<const QButtonGroup *>( object );
+            value = group->checkedButton()->property( "sout" ).toString();
+        }
+        else if( object->inherits( "QCheckBox" ) )
+        {
+            const QCheckBox *box = qobject_cast<const QCheckBox *>( object );
+            value = box->isChecked() ? "yes" : "";
+        }
+        else if( object->inherits( "QGroupBox" ) )
+        {
+            const QGroupBox *box = qobject_cast<const QGroupBox *>( object );
+            value = box->isChecked() ? "yes" : "";
+        }
+        else if( object->inherits( "QSpinBox" ) )
+        {
+            const QSpinBox *box = qobject_cast<const QSpinBox *>( object );
+            value = QString::number( box->value() );
+        }
+        else if( object->inherits( "QDoubleSpinBox" ) )
+        {
+            const QDoubleSpinBox *box = qobject_cast<const QDoubleSpinBox *>( object );
+            value =  QString::number( box->value() );
+        }
+        else if( object->inherits( "QComboBox" ) )
+        {
+            const QComboBox *box = qobject_cast<const QComboBox *>( object );
+            value = currentData( box ).toString();
+        }
+        else if( object->inherits( "QLineEdit" ) )
+        {
+            const QLineEdit *box = qobject_cast<const QLineEdit *>( object );
+            value = QUrl::toPercentEncoding( box->text(), "", "_;" );
+        }
+        else if ( object->inherits( "QListWidget" ) )
+        {
+            const QListWidget *list = qobject_cast<const QListWidget *>( object );
+            QStringList valuesList;
+            for( int i=0; i < list->count(); i++ )
+            {
+                const QListWidgetItem *item = list->item( i );
+                if ( item->checkState() == Qt::Checked )
+                    valuesList.append( item->data( Qt::UserRole ).toString() );
+            }
+            value = QUrl::toPercentEncoding( valuesList.join( ";" ), "", "_;" );
+        }
 
-            << qs_vcodec
-            << QString::number( ui.vBitrateSpin->value() )
-            << ui.vScaleBox->currentText()
-            << QString::number( ui.vFrameBox->value() )
-            << ui.widthBox->text()
-            << ui.heightBox->text()
+        if ( !value.isEmpty() )
+            configuration << QString( "%1_%2=%3" )
+                             .arg( categ ).arg( prop ).arg( value );
+    }
 
-            << qs_acodec
-            << QString::number( ui.aBitrateSpin->value() )
-            << QString::number( ui.aChannelsSpin->value() )
-            << ui.aSampleBox->currentText()
-
-            << currentData( ui.subsCodecBox ).toString()
-            << QString::number( ui.subsOverlay->isChecked() );
-#undef currentData
-
-    return transcodeMRL.join( ";" );
+    return configuration.join( ";" );
 }
 
+void VLCProfileEditor::reset()
+{
+    /* reset to default state as we can only check/enable existing values */
+    ui.valueholder_video_copy->setChecked( false );
+    ui.valueholder_audio_copy->setChecked( false );
+    activatePanels();
+    fixBirateState(); /* defaults to bitrate, not qp */
+    /* end with top level ones for cascaded setEnabled() */
+    ui.valueholder_video_enable->setChecked( false );
+    ui.valueholder_audio_enable->setChecked( false );
+    ui.valueholder_subtitles_enable->setChecked( false );
+}
+
+void VLCProfileEditor::activatePanels()
+{
+    ui.transcodevideo->setEnabled( ! ui.valueholder_video_copy->isChecked() );
+    ui.transcodeaudio->setEnabled( ! ui.valueholder_audio_copy->isChecked() );
+}
+
+void VLCProfileEditor::fixBirateState()
+{
+    /* exclusive bitrate choice */
+    ui.valueholder_vcodec_qp->setValue( 0 );
+}
+
+void VLCProfileEditor::fixQPState()
+{
+    /* exclusive bitrate choice */
+    ui.valueholder_vcodec_bitrate->setValue( 0 );
+}
+
+#undef CATPROP2NAME
+#undef CATANDPROP
+#undef OLDFORMAT

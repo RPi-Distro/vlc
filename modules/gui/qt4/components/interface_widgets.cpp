@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: b10ec6ad3b1a35206c1ff818b99631515bd6e4e2 $
+ * $Id: b22fb4396880ab3e45a3236919abbdafa5c1d622 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -50,6 +50,7 @@
 #include <QTimer>
 #include <QSlider>
 #include <QBitmap>
+#include <QUrl>
 
 #ifdef Q_WS_X11
 #   include <X11/Xlib.h>
@@ -120,12 +121,14 @@ WId VideoWidget::request( int *pi_x, int *pi_y,
     plt.setColor( QPalette::Window, Qt::black );
     stable->setPalette( plt );
     stable->setAutoFillBackground(true);
+    /* Force the widget to be native so that it gets a winId() */
+    stable->setAttribute( Qt::WA_NativeWindow, true );
     /* Indicates that the widget wants to draw directly onto the screen.
        Widgets with this attribute set do not participate in composition
        management */
     /* This is currently disabled on X11 as it does not seem to improve
      * performance, but causes the video widget to be transparent... */
-#ifndef Q_WS_X11
+#if !defined (Q_WS_X11) && !defined (Q_WS_QPA)
     stable->setAttribute( Qt::WA_PaintOnScreen, true );
 #endif
 
@@ -194,7 +197,18 @@ BackgroundWidget::BackgroundWidget( intf_thread_t *_p_i )
     setPalette( plt );
 
     /* Init the cone art */
+    defaultArt = QString( ":/logo/vlc128.png" );
     updateArt( "" );
+
+    /* fade in animator */
+    setProperty( "opacity", 1.0 );
+    fadeAnimation = new QPropertyAnimation( this, "opacity", this );
+    fadeAnimation->setDuration( 1000 );
+    fadeAnimation->setStartValue( 0.0 );
+    fadeAnimation->setEndValue( 1.0 );
+    fadeAnimation->setEasingCurve( QEasingCurve::OutSine );
+    CONNECT( fadeAnimation, valueChanged( const QVariant & ),
+             this, update() );
 
     CONNECT( THEMIM->getIM(), artChanged( QString ),
              this, updateArt( const QString& ) );
@@ -203,17 +217,16 @@ BackgroundWidget::BackgroundWidget( intf_thread_t *_p_i )
 void BackgroundWidget::updateArt( const QString& url )
 {
     if ( !url.isEmpty() )
-    {
         pixmapUrl = url;
-    }
     else
-    {   /* Xmas joke */
-        if( QDate::currentDate().dayOfYear() >= QT_XMAS_JOKE_DAY && var_InheritBool( p_intf, "qt-icon-change" ) )
-            pixmapUrl = QString( ":/logo/vlc128-xmas.png" );
-        else
-            pixmapUrl = QString( ":/logo/vlc128.png" );
-    }
+        pixmapUrl = defaultArt;
     update();
+}
+
+void BackgroundWidget::showEvent( QShowEvent * e )
+{
+    Q_UNUSED( e );
+    if ( b_withart ) fadeAnimation->start();
 }
 
 void BackgroundWidget::paintEvent( QPaintEvent *e )
@@ -233,6 +246,8 @@ void BackgroundWidget::paintEvent( QPaintEvent *e )
 
     i_maxwidth  = __MIN( maximumWidth(), width() ) - MARGIN * 2;
     i_maxheight = __MIN( maximumHeight(), height() ) - MARGIN * 2;
+
+    painter.setOpacity( property( "opacity" ).toFloat() );
 
     if ( height() > MARGIN * 2 )
     {
@@ -274,6 +289,121 @@ void BackgroundWidget::contextMenuEvent( QContextMenuEvent *event )
 {
     VLCMenuBar::PopupMenu( p_intf, true );
     event->accept();
+}
+
+EasterEggBackgroundWidget::EasterEggBackgroundWidget( intf_thread_t *p_intf )
+    : BackgroundWidget( p_intf )
+{
+    flakes = new QLinkedList<flake *>();
+    i_rate = 2;
+    i_speed = 1;
+    b_enabled = false;
+    timer = new QTimer( this );
+    timer->setInterval( 100 );
+    CONNECT( timer, timeout(), this, spawnFlakes() );
+    if ( isVisible() && b_enabled ) timer->start();
+    defaultArt = QString( ":/logo/vlc128-xmas.png" );
+    updateArt( "" );
+}
+
+EasterEggBackgroundWidget::~EasterEggBackgroundWidget()
+{
+    timer->stop();
+    delete timer;
+    reset();
+    delete flakes;
+}
+
+void EasterEggBackgroundWidget::showEvent( QShowEvent *e )
+{
+    if ( b_enabled ) timer->start();
+    BackgroundWidget::showEvent( e );
+}
+
+void EasterEggBackgroundWidget::hideEvent( QHideEvent *e )
+{
+    timer->stop();
+    reset();
+    BackgroundWidget::hideEvent( e );
+}
+
+void EasterEggBackgroundWidget::resizeEvent( QResizeEvent *e )
+{
+    reset();
+    BackgroundWidget::resizeEvent( e );
+}
+
+void EasterEggBackgroundWidget::animate()
+{
+    b_enabled = true;
+    if ( isVisible() ) timer->start();
+}
+
+void EasterEggBackgroundWidget::spawnFlakes()
+{
+    if ( ! isVisible() ) return;
+
+    double w = (double) width() / RAND_MAX;
+
+    int i_spawn = ( (double) qrand() / RAND_MAX ) * i_rate;
+
+    QLinkedList<flake *>::iterator it = flakes->begin();
+    while( it != flakes->end() )
+    {
+        flake *current = *it;
+        current->point.setY( current->point.y() + i_speed );
+        if ( current->point.y() + i_speed >= height() )
+        {
+            delete current;
+            it = flakes->erase( it );
+        }
+        else
+            it++;
+    }
+
+    if ( flakes->size() < MAX_FLAKES )
+    for ( int i=0; i<i_spawn; i++ )
+    {
+        flake *f = new flake;
+        f->point.setX( qrand() * w );
+        f->b_fat = ( qrand() < ( RAND_MAX * .33 ) );
+        flakes->append( f );
+    }
+    update();
+}
+
+void EasterEggBackgroundWidget::reset()
+{
+    while ( !flakes->isEmpty() )
+        delete flakes->takeFirst();
+}
+
+void EasterEggBackgroundWidget::paintEvent( QPaintEvent *e )
+{
+    QPainter painter(this);
+
+    painter.setBrush( QBrush( QColor(Qt::white) ) );
+    painter.setPen( QPen(Qt::white) );
+
+    QLinkedList<flake *>::const_iterator it = flakes->constBegin();
+    while( it != flakes->constEnd() )
+    {
+        const flake * const f = *(it++);
+        if ( f->b_fat )
+        {
+            /* Xsnow like :p */
+            painter.drawPoint( f->point.x(), f->point.y() -1 );
+            painter.drawPoint( f->point.x() + 1, f->point.y() );
+            painter.drawPoint( f->point.x(), f->point.y() +1 );
+            painter.drawPoint( f->point.x() - 1, f->point.y() );
+        }
+        else
+        {
+            painter.drawPoint( f->point );
+        }
+    }
+
+    BackgroundWidget::paintEvent( e );
 }
 
 #if 0
@@ -503,26 +633,30 @@ void SpeedControlWidget::resetRate()
 }
 
 CoverArtLabel::CoverArtLabel( QWidget *parent, intf_thread_t *_p_i )
-              : QLabel( parent ), p_intf( _p_i )
+    : QLabel( parent ), p_intf( _p_i ), p_item( NULL )
 {
     setContextMenuPolicy( Qt::ActionsContextMenu );
-    CONNECT( this, updateRequested(), this, askForUpdate() );
+    CONNECT( THEMIM->getIM(), artChanged( input_item_t * ),
+             this, showArtUpdate( input_item_t * ) );
 
     setMinimumHeight( 128 );
     setMinimumWidth( 128 );
-    setMaximumHeight( 128 );
     setScaledContents( false );
     setAlignment( Qt::AlignCenter );
 
-    QList< QAction* > artActions = actions();
     QAction *action = new QAction( qtr( "Download cover art" ), this );
     CONNECT( action, triggered(), this, askForUpdate() );
     addAction( action );
 
-    input_item_t *p_item = THEMIM->currentInputItem();
+    action = new QAction( qtr( "Add cover art from file" ), this );
+    CONNECT( action, triggered(), this, setArtFromFile() );
+    addAction( action );
+
+    p_item = THEMIM->currentInputItem();
     if( p_item )
     {
-        showArtUpdate( THEMIM->getIM()->decodeArtURL( p_item ) );
+        vlc_gc_incref( p_item );
+        showArtUpdate( p_item );
     }
     else
         showArtUpdate( "" );
@@ -533,6 +667,14 @@ CoverArtLabel::~CoverArtLabel()
     QList< QAction* > artActions = actions();
     foreach( QAction *act, artActions )
         removeAction( act );
+    if ( p_item ) vlc_gc_decref( p_item );
+}
+
+void CoverArtLabel::setItem( input_item_t *_p_item )
+{
+    if ( p_item ) vlc_gc_decref( p_item );
+    p_item = _p_item;
+    if ( p_item ) vlc_gc_incref( p_item );
 }
 
 void CoverArtLabel::showArtUpdate( const QString& url )
@@ -540,7 +682,7 @@ void CoverArtLabel::showArtUpdate( const QString& url )
     QPixmap pix;
     if( !url.isEmpty() && pix.load( url ) )
     {
-        pix = pix.scaled( minimumWidth(), maximumHeight(),
+        pix = pix.scaled( minimumWidth(), minimumHeight(),
                           Qt::KeepAspectRatioByExpanding,
                           Qt::SmoothTransformation );
     }
@@ -551,9 +693,36 @@ void CoverArtLabel::showArtUpdate( const QString& url )
     setPixmap( pix );
 }
 
+void CoverArtLabel::showArtUpdate( input_item_t *_p_item )
+{
+    /* not for me */
+    if ( _p_item != p_item )
+        return;
+
+    QString url;
+    if ( _p_item ) url = THEMIM->getIM()->decodeArtURL( _p_item );
+    showArtUpdate( url );
+}
+
 void CoverArtLabel::askForUpdate()
 {
-    THEMIM->getIM()->requestArtUpdate();
+    THEMIM->getIM()->requestArtUpdate( p_item );
+}
+
+void CoverArtLabel::setArtFromFile()
+{
+    if( !p_item )
+        return;
+
+    QString filePath = QFileDialog::getOpenFileName( this, qtr( "Choose Cover Art" ),
+        p_intf->p_sys->filepath, qtr( "Image Files (*.gif *.jpg *.jpeg *.png)" ) );
+
+    if( filePath.isEmpty() )
+        return;
+
+    QString fileUrl = QUrl::fromLocalFile( filePath ).toString();
+
+    THEMIM->getIM()->setArt( p_item, fileUrl );
 }
 
 void CoverArtLabel::clear()
@@ -562,10 +731,12 @@ void CoverArtLabel::clear()
 }
 
 TimeLabel::TimeLabel( intf_thread_t *_p_intf, TimeLabel::Display _displayType  )
-    : QLabel(), p_intf( _p_intf ), bufTimer( new QTimer(this) ),
+    : ClickableQLabel(), p_intf( _p_intf ), bufTimer( new QTimer(this) ),
       buffering( false ), showBuffering(false), bufVal( -1 ), displayType( _displayType )
 {
     b_remainingTime = false;
+    if( _displayType != TimeLabel::Elapsed )
+        b_remainingTime = getSettings()->value( "MainWindow/ShowRemainingTime", false ).toBool();
     switch( _displayType ) {
         case TimeLabel::Elapsed:
             setText( " --:-- " );
@@ -596,7 +767,7 @@ TimeLabel::TimeLabel( intf_thread_t *_p_intf, TimeLabel::Display _displayType  )
               this, updateBuffering( float ) );
     CONNECT( bufTimer, timeout(), this, updateBuffering() );
 
-    this->setContentsMargins( 4, 0, 4, 0 );
+    setStyleSheet( "padding-left: 4px; padding-right: 4px;" );
 }
 
 void TimeLabel::setDisplayPosition( float pos, int64_t t, int length )
@@ -606,10 +777,11 @@ void TimeLabel::setDisplayPosition( float pos, int64_t t, int length )
 
     if( pos == -1.f )
     {
+        setMinimumSize( QSize( 0, 0 ) );
         if( displayType == TimeLabel::Both )
-            setText( " --:--/--:-- " );
+            setText( "--:--/--:--" );
         else
-            setText( " --:-- " );
+            setText( "--:--" );
         return;
     }
 
@@ -618,20 +790,44 @@ void TimeLabel::setDisplayPosition( float pos, int64_t t, int length )
     secstotimestr( psz_length, length );
     secstotimestr( psz_time, ( b_remainingTime && length ) ? length - time
                                                            : time );
+
+    // compute the minimum size that will be required for the psz_length
+    // and use it to enforce a minimal size to avoid "dancing" widgets
+    QSize minsize( 0, 0 );
+    if ( length > 0 )
+    {
+        QMargins margins = contentsMargins();
+        minsize += QSize(
+                  fontMetrics().size( 0, QString( psz_length ), 0, 0 ).width(),
+                  sizeHint().height()
+                );
+        minsize += QSize( margins.left() + margins.right() + 8, 0 ); /* +padding */
+
+        if ( b_remainingTime )
+            minsize += QSize( fontMetrics().size( 0, "-", 0, 0 ).width(), 0 );
+    }
+
     switch( displayType )
     {
         case TimeLabel::Elapsed:
-            setText( QString(" ") + QString( psz_time ) + QString(" ") );
+            setMinimumSize( minsize );
+            setText( QString( psz_time ) );
             break;
         case TimeLabel::Remaining:
             if( b_remainingTime )
-                setText( QString(" -") + QString( psz_time ) + QString(" ") );
+            {
+                setMinimumSize( minsize );
+                setText( QString("-") + QString( psz_time ) );
+            }
             else
-                setText( QString(" ") + QString( psz_length ) + QString(" ") );
+            {
+                setMinimumSize( QSize( 0, 0 ) );
+                setText( QString( psz_length ) );
+            }
             break;
         case TimeLabel::Both:
         default:
-            QString timestr = QString( " %1%2/%3 " )
+            QString timestr = QString( "%1%2/%3" )
             .arg( QString( (b_remainingTime && length) ? "-" : "" ) )
             .arg( QString( psz_time ) )
             .arg( QString( ( !length && time ) ? "--:--" : psz_length ) );
@@ -654,7 +850,7 @@ void TimeLabel::setDisplayPosition( float pos )
     secstotimestr( psz_time,
                    ( b_remainingTime && cachedLength ?
                    cachedLength - time : time ) );
-    QString timestr = QString( " %1%2/%3 " )
+    QString timestr = QString( "%1%2/%3" )
         .arg( QString( (b_remainingTime && cachedLength) ? "-" : "" ) )
         .arg( QString( psz_time ) )
         .arg( QString( ( !cachedLength && time ) ? "--:--" : psz_length ) );
@@ -666,6 +862,7 @@ void TimeLabel::setDisplayPosition( float pos )
 void TimeLabel::toggleTimeDisplay()
 {
     b_remainingTime = !b_remainingTime;
+    getSettings()->setValue( "MainWindow/ShowRemainingTime", b_remainingTime );
 }
 
 

@@ -1,41 +1,32 @@
 /*****************************************************************************
  * ogg.h : ogg stream demux module for vlc
  *****************************************************************************
- * Copyright (C) 2001-2010 the VideoLAN team
+ * Copyright (C) 2001-2010 VLC authors and VideoLAN
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Andre Pang <Andre.Pang@csiro.au> (Annodex support)
  *          Gabriel Finch <salsaman@gmail.com> (moved from ogg.c to ogg.h)
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
- * Preamble
+ * Definitions of structures and functions used by this plugin
  *****************************************************************************/
-
-
-
-
-/*****************************************************************************
- * Definitions of structures and functions used by this plugins
- *****************************************************************************/
-
 
 typedef struct oggseek_index_entry demux_index_entry_t;
-
 
 typedef struct logical_stream_s
 {
@@ -51,7 +42,7 @@ typedef struct logical_stream_s
     /* the header of some logical streams (eg vorbis) contain essential
      * data for the decoder. We back them up here in case we need to re-feed
      * them to the decoder. */
-    int              b_force_backup;
+    bool             b_force_backup;
     int              i_packets_backup;
     void             *p_headers;
     int              i_headers;
@@ -66,6 +57,7 @@ typedef struct logical_stream_s
     /* Misc */
     bool b_reinit;
     int i_granule_shift;
+
     /* Opus has a starting offset in the headers. */
     int i_pre_skip;
     /* Vorbis and Opus can trim the end of a stream using granule positions. */
@@ -91,11 +83,6 @@ typedef struct logical_stream_s
 
 } logical_stream_t;
 
-
-
-
-
-
 struct demux_sys_t
 {
     ogg_sync_state oy;        /* sync and verify incoming physical bitstream */
@@ -110,7 +97,7 @@ struct demux_sys_t
     mtime_t i_pcr;
 
     /* stream state */
-    int     i_bos;
+    int     i_bos; /* Begnning of stream, tell the demux to look for elementary streams. */
     int     i_eos;
 
     /* bitrate */
@@ -131,15 +118,14 @@ struct demux_sys_t
     /* current page being parsed */
     ogg_page current_page;
 
-    mtime_t i_st_pts;
-
+    /* */
+    vlc_meta_t          *p_meta;
+    int                 i_seekpoints;
+    seekpoint_t         **pp_seekpoints;
 
     /* */
-    vlc_meta_t *p_meta;
-
-    /* */
-    int                i_attachments;
-    input_attachment_t **attachments;
+    int                 i_attachments;
+    input_attachment_t  **attachments;
 
     /* Length, if available. */
     int64_t i_length;

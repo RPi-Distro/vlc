@@ -34,8 +34,9 @@
 
 #include <vlc_common.h>
 #include <vlc_fs.h>
+#include <vlc_charset.h>
 
-#if defined( WIN32 ) && !defined( UNDER_CE )
+#if defined( _WIN32 )
 #   include <mmsystem.h>
 #elif defined(__linux__)
 #   include <sys/types.h>
@@ -122,15 +123,15 @@ static int intf_Eject( vlc_object_t *p_this, const char *psz_device )
 {
     VLC_UNUSED(p_this);
 
-#if defined(WIN32)
+#if defined(_WIN32)
     MCI_OPEN_PARMS op;
     DWORD i_flags;
-    char psz_drive[4];
+    TCHAR psz_drive[4];
 
     memset( &op, 0, sizeof(MCI_OPEN_PARMS) );
-    op.lpstrDeviceType = (LPCSTR)MCI_DEVTYPE_CD_AUDIO;
+    op.lpstrDeviceType = (LPCTSTR)MCI_DEVTYPE_CD_AUDIO;
 
-    strcpy( psz_drive, "X:" );
+    _tcscpy( psz_drive, TEXT("X:") );
     psz_drive[0] = psz_device[0];
     op.lpstrElementName = psz_drive;
 
@@ -169,6 +170,7 @@ static int intf_Eject( vlc_object_t *p_this, const char *psz_device )
         close( fd );
         return VLC_EGENERIC;
     }
+    close( fd );
     return VLC_SUCCESS;
 
 #else

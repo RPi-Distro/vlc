@@ -1,11 +1,10 @@
 /*****************************************************************************
  * controls.h: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2002-2011 VLC authors and VideoLAN
- * $Id: 4488bc388d18820fd3c36216bda7797985672d32 $
+ * Copyright (C) 2002-2012 VLC authors and VideoLAN
+ * $Id: 8df133cb46a8386318e56b629dce36f95c34c01d $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
- *          Christophe Massiot <massiot@via.ecp.fr>
  *          Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne at videolan org>
  *
@@ -39,10 +38,10 @@
     IBOutlet id o_specificTime_sec_lbl;
     IBOutlet id o_specificTime_stepper;
     IBOutlet id o_specificTime_mi;
-
-    NSInteger i_lastScrollWheelDirection;
-    NSTimeInterval t_lastScrollEvent;
 }
+
+@property (nonatomic) int jumpTimeValue;
+
 - (IBAction)play:(id)sender;
 - (IBAction)stop:(id)sender;
 
@@ -63,13 +62,9 @@
 
 - (IBAction)showPosition: (id)sender;
 
-- (IBAction)telxTransparent:(id)sender;
-- (IBAction)telxNavLink:(id)sender;
 - (IBAction)lockVideosAspectRatio:(id)sender;
-- (IBAction)addSubtitleFile:(id)sender;
 
 - (BOOL)keyEvent:(NSEvent *)o_event;
-- (void)scrollWheel: (NSEvent *)theEvent;
 
 - (IBAction)goToSpecificTime:(id)sender;
 @end

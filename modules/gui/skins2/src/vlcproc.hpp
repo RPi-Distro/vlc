@@ -2,7 +2,7 @@
  * vlcproc.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 72e9a147383fd42e8bf6fead23fe9a4e614d29cc $
+ * $Id: 76ebe1a0c5a976a11b85c7e8cb182df29789cdc0 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -37,7 +37,6 @@
 #include "../utils/position.hpp"
 #include "../utils/var_text.hpp"
 #include "../utils/var_string.hpp"
-#include "../commands/cmd_generic.hpp"
 #include "../controls/ctrl_video.hpp"
 
 class OSTimer;
@@ -96,10 +95,12 @@ public:
     /// Indicate whether the embedded video output is currently used
     bool isVoutUsed() const { return m_pVout != NULL; }
 
-    /// update equalizer
-    void update_equalizer( );
+    /// initialize equalizer
+    void init_equalizer( );
 
-    void on_item_current_changed( vlc_object_t* p_obj, vlc_value_t newVal );
+    /// update global variables for the current input
+    void update_current_input( );
+
     void on_intf_event_changed( vlc_object_t* p_obj, vlc_value_t newVal );
     void on_bit_rate_changed( vlc_object_t* p_obj, vlc_value_t newVal );
     void on_sample_rate_changed( vlc_object_t* p_obj, vlc_value_t newVal );
@@ -110,6 +111,7 @@ public:
     void on_repeat_changed( vlc_object_t* p_obj, vlc_value_t newVal );
 
     void on_volume_changed( vlc_object_t* p_obj, vlc_value_t newVal );
+    void on_mute_changed( vlc_object_t* p_obj, vlc_value_t newVal );
     void on_audio_filter_changed( vlc_object_t* p_obj, vlc_value_t newVal );
 
     void on_intf_show_changed( vlc_object_t* p_obj, vlc_value_t newVal );
@@ -122,8 +124,6 @@ protected:
     virtual ~VlcProc();
 
 private:
-    /// Timer to call manage() regularly (via doManage())
-    OSTimer *m_pTimer;
     /// Playtree variable
     VariablePtr m_cPlaytree;
     VariablePtr m_cVarRandom;
@@ -164,27 +164,12 @@ private:
 
     /// Vout thread
     vout_thread_t *m_pVout;
-    /// Audio output
-    audio_output_t *m_pAout;
-    bool m_bEqualizer_started;
-
-    /**
-     * Poll VLC internals to update the status (volume, current time in
-     * the stream, current filename, play/pause/stop status, ...)
-     * This function should be called regurlarly, since there is no
-     * callback mechanism (yet?) to automatically update a variable when
-     * the internal status changes
-     */
-    void manage();
 
     // reset variables when input is over
     void reset_input();
 
     // init variables (libvlc and playlist levels)
     void init_variables();
-
-    /// Define the command that calls manage()
-    DEFINE_CALLBACK( VlcProc, Manage );
 
     /// Callback for intf-show variable
     static int onIntfShow( vlc_object_t *pObj, const char *pVariable,
@@ -233,6 +218,5 @@ private:
                                    vlc_value_t oldVal, vlc_value_t newVal,
                                    void *pParam );
 };
-
 
 #endif

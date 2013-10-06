@@ -1,8 +1,8 @@
 /*****************************************************************************
- * stream_output.h : stream output module
+ * vlc_sout.h : stream output module
  *****************************************************************************
  * Copyright (C) 2002-2008 VLC authors and VideoLAN
- * $Id: 8c2e3428113a4900fc9ec197027fa808ff5b267f $
+ * $Id: 87d8229baee6c6e09e9fe11e1ee4c4761d749af4 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -40,24 +40,19 @@ extern "C" {
 #include <sys/types.h>
 #include <vlc_es.h>
 
-/** Stream output instance */
+/** Stream output instance (FIXME: should be private to src/ to avoid
+ * invalid unsynchronized access) */
 struct sout_instance_t
 {
     VLC_COMMON_MEMBERS
 
     char *psz_sout;
 
-    /* meta data (Read only) XXX it won't be set before the first packet received */
-    vlc_meta_t          *p_meta;
-
     /** count of output that can't control the space */
     int                 i_out_pace_nocontrol;
 
     vlc_mutex_t         lock;
     sout_stream_t       *p_stream;
-
-    /** Private */
-    sout_instance_sys_t *p_sys;
 };
 
 /****************************************************************************
@@ -72,10 +67,6 @@ struct sout_access_out_t
 
     module_t                *p_module;
     char                    *psz_access;
-
-    int                      i_writes;
-    /** Local counter reset each time it is transferred to stats */
-    int64_t                  i_sent_bytes;
 
     char                    *psz_path;
     sout_access_out_sys_t   *p_sys;
@@ -154,8 +145,6 @@ enum sout_mux_query_e
 
 struct sout_input_t
 {
-    sout_instance_t *p_sout;
-
     es_format_t     *p_fmt;
     block_fifo_t    *p_fifo;
 
@@ -195,17 +184,14 @@ struct sout_stream_t
     config_chain_t        *p_cfg;
     sout_stream_t     *p_next;
 
-    /* Subpicture unit */
-    spu_t             *p_spu;
-
     /* add, remove a stream */
     sout_stream_id_t *(*pf_add)( sout_stream_t *, es_format_t * );
     int               (*pf_del)( sout_stream_t *, sout_stream_id_t * );
     /* manage a packet */
     int               (*pf_send)( sout_stream_t *, sout_stream_id_t *, block_t* );
 
-    /* private */
     sout_stream_sys_t *p_sys;
+    bool pace_nocontrol;
 };
 
 VLC_API void sout_StreamChainDelete(sout_stream_t *p_first, sout_stream_t *p_last );

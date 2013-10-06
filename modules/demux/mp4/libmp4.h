@@ -1,27 +1,29 @@
 /*****************************************************************************
  * libmp4.h : LibMP4 library for mp4 module for vlc
  *****************************************************************************
- * Copyright (C) 2001-2004, 2010 the VideoLAN team
+ * Copyright (C) 2001-2004, 2010 VLC authors and VideoLAN
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef _VLC_MP4_H
 #define _VLC_MP4_H 1
+
+#include <vlc_es.h>
 
 #define ATOM_root VLC_FOURCC( 'r', 'o', 'o', 't' )
 #define ATOM_uuid VLC_FOURCC( 'u', 'u', 'i', 'd' )
@@ -78,11 +80,15 @@
 #define ATOM_mehd VLC_FOURCC( 'm', 'e', 'h', 'd' )
 #define ATOM_mfhd VLC_FOURCC( 'm', 'f', 'h', 'd' )
 #define ATOM_traf VLC_FOURCC( 't', 'r', 'a', 'f' )
+#define ATOM_sidx VLC_FOURCC( 's', 'i', 'd', 'x' )
 #define ATOM_tfhd VLC_FOURCC( 't', 'f', 'h', 'd' )
 #define ATOM_trun VLC_FOURCC( 't', 'r', 'u', 'n' )
 #define ATOM_cprt VLC_FOURCC( 'c', 'p', 'r', 't' )
 #define ATOM_iods VLC_FOURCC( 'i', 'o', 'd', 's' )
 #define ATOM_pasp VLC_FOURCC( 'p', 'a', 's', 'p' )
+#define ATOM_mfra VLC_FOURCC( 'm', 'f', 'r', 'a' )
+#define ATOM_mfro VLC_FOURCC( 'm', 'f', 'r', 'o' )
+#define ATOM_tfra VLC_FOURCC( 't', 'f', 'r', 'a' )
 
 #define ATOM_nmhd VLC_FOURCC( 'n', 'm', 'h', 'd' )
 #define ATOM_mp2v VLC_FOURCC( 'm', 'p', '2', 'v' )
@@ -233,7 +239,21 @@
 #define ATOM_0xa9mod VLC_FOURCC( 0xa9, 'm', 'o', 'd' )
 #define ATOM_0xa9PRD VLC_FOURCC( 0xa9, 'P', 'R', 'D' )
 #define ATOM_0xa9grp VLC_FOURCC( 0xa9, 'g', 'r', 'p' )
-#define ATOM_0xa9lyr VLC_FOURCC( 0xa9, 'g', 'r', 'p' )
+#define ATOM_0xa9lyr VLC_FOURCC( 0xa9, 'l', 'y', 'r' )
+#define ATOM_0xa9gen VLC_FOURCC( 0xa9, 'g', 'e', 'n' )
+#define ATOM_0xa9st3 VLC_FOURCC( 0xa9, 's', 't', '3' )
+#define ATOM_0xa9ard VLC_FOURCC( 0xa9, 'a', 'r', 'd' )
+#define ATOM_0xa9arg VLC_FOURCC( 0xa9, 'a', 'r', 'g' )
+#define ATOM_0xa9cak VLC_FOURCC( 0xa9, 'c', 'a', 'k' )
+#define ATOM_0xa9con VLC_FOURCC( 0xa9, 'c', 'o', 'n' )
+#define ATOM_0xa9des VLC_FOURCC( 0xa9, 'd', 'e', 's' )
+#define ATOM_0xa9lnt VLC_FOURCC( 0xa9, 'l', 'n', 't' )
+#define ATOM_0xa9phg VLC_FOURCC( 0xa9, 'p', 'h', 'g' )
+#define ATOM_0xa9pub VLC_FOURCC( 0xa9, 'p', 'u', 'b' )
+#define ATOM_0xa9sne VLC_FOURCC( 0xa9, 's', 'n', 'e' )
+#define ATOM_0xa9sol VLC_FOURCC( 0xa9, 's', 'o', 'l' )
+#define ATOM_0xa9thx VLC_FOURCC( 0xa9, 't', 'h', 'x' )
+#define ATOM_0xa9xpd VLC_FOURCC( 0xa9, 'x', 'p', 'd' )
 #define ATOM_chpl VLC_FOURCC( 'c', 'h', 'p', 'l' )
 #define ATOM_WLOC VLC_FOURCC( 'W', 'L', 'O', 'C' )
 
@@ -243,8 +263,9 @@
 #define ATOM_chap VLC_FOURCC( 'c', 'h', 'a', 'p' )
 
 /* Do you want some debug information on all read boxes ? */
-//#define MP4_VERBOSE  1
-
+#ifndef NDEBUG
+# define MP4_VERBOSE  1
+#endif
 
 struct MP4_Box_s;
 
@@ -256,6 +277,33 @@ typedef struct UUID_s
 } UUID_t;
 
 /* specific structure for all boxes */
+
+typedef struct MP4_Box_data_tfxd_s
+{
+    uint8_t  i_version;
+    uint32_t i_flags;
+
+    uint64_t i_fragment_duration;
+    uint64_t i_fragment_abs_time;
+
+} MP4_Box_data_tfxd_t;
+
+typedef struct TfrfBoxDataFields_s
+{
+    uint64_t i_fragment_duration;
+    uint64_t i_fragment_abs_time;
+
+} TfrfBoxDataFields_t;
+
+typedef struct MP4_Box_data_tfrf_s
+{
+    uint8_t  i_version;
+    uint8_t  i_fragment_count;
+    uint32_t i_flags;
+
+    TfrfBoxDataFields_t *p_tfrf_data_fields;
+
+} MP4_Box_data_tfrf_t;
 
 typedef struct MP4_Box_data_ftyp_s
 {
@@ -310,6 +358,7 @@ typedef struct MP4_Box_data_tkhd_s
     int32_t  i_matrix[9];
     int32_t  i_width;
     int32_t  i_height;
+    float    f_rotation;
 
 } MP4_Box_data_tkhd_t;
 
@@ -457,8 +506,6 @@ typedef struct MP4_Box_data_sample_soun_s
     int     i_qt_description;
     uint8_t *p_qt_description;
 
-    void    *p_drms;
-
 } MP4_Box_data_sample_soun_t;
 
 typedef struct MP4_Box_data_sample_vide_s
@@ -490,8 +537,6 @@ typedef struct MP4_Box_data_sample_vide_s
     /* XXX hack ImageDescription */
     int     i_qt_image_description;
     uint8_t *p_qt_image_description;
-
-    void    *p_drms;
 
 } MP4_Box_data_sample_vide_t;
 
@@ -836,14 +881,42 @@ typedef struct MP4_Box_data_mfhd_s
 
 } MP4_Box_data_mfhd_t;
 
+typedef struct MP4_Box_sidx_item_s
+{
+    bool     b_reference_type;
+    uint32_t i_referenced_size;
+    uint32_t i_subsegment_duration;
+    bool     b_starts_with_SAP;
+    uint8_t  i_SAP_type;
+    uint32_t i_SAP_delta_time;
+
+} MP4_Box_sidx_item_t;
+
+typedef struct MP4_Box_data_sidx_s
+{
+    uint8_t  i_version;
+    uint32_t i_flags;
+
+    uint32_t i_reference_ID;
+    uint32_t i_timescale;
+    uint64_t i_earliest_presentation_time;
+    uint64_t i_first_offset;
+    uint16_t i_reference_count;
+
+    MP4_Box_sidx_item_t *p_items;
+
+} MP4_Box_data_sidx_t;
+
 #define MP4_TFHD_BASE_DATA_OFFSET     (1LL<<0)
 #define MP4_TFHD_SAMPLE_DESC_INDEX    (1LL<<1)
 #define MP4_TFHD_DFLT_SAMPLE_DURATION (1LL<<3)
 #define MP4_TFHD_DFLT_SAMPLE_SIZE     (1LL<<4)
 #define MP4_TFHD_DFLT_SAMPLE_FLAGS    (1LL<<5)
+#define MP4_TFHD_DURATION_IS_EMPTY    (1LL<<16)
 typedef struct MP4_Box_data_tfhd_s
 {
     uint8_t  i_version;
+    bool     b_empty;
     uint32_t i_flags;
     uint32_t i_track_ID;
 
@@ -877,7 +950,7 @@ typedef struct MP4_Box_data_trun_s
     uint32_t i_sample_count;
 
     /* optional fields */
-    uint32_t i_data_offset;
+    int32_t i_data_offset;
     uint32_t i_first_sample_flags;
 
     MP4_descriptor_trun_sample_t *p_samples;
@@ -1029,6 +1102,53 @@ typedef struct
     uint8_t *p_sample_table;
 } MP4_Box_data_sdtp_t;
 
+typedef struct
+{
+    uint8_t  i_version;
+    uint32_t i_flags;
+
+    uint32_t i_size;
+} MP4_Box_data_mfro_t;
+
+typedef struct
+{
+    uint8_t  i_version;
+    uint32_t i_flags;
+
+    uint32_t i_track_ID;
+    uint32_t i_number_of_entries;
+
+    uint8_t i_length_size_of_traf_num;
+    uint8_t i_length_size_of_trun_num;
+    uint8_t i_length_size_of_sample_num;
+
+    uint32_t *p_time;
+    uint32_t *p_moof_offset;
+    uint8_t *p_traf_number;
+    uint8_t *p_trun_number;
+    uint8_t *p_sample_number;
+} MP4_Box_data_tfra_t;
+
+typedef struct
+{
+    uint64_t i_duration;
+    uint32_t i_timescale;
+    uint16_t i_track_ID;
+    uint8_t  i_es_cat;
+
+    uint32_t FourCC;
+    uint32_t Bitrate;
+    uint32_t MaxWidth;
+    uint32_t MaxHeight;
+    uint32_t SamplingRate;
+    uint32_t Channels;
+    uint32_t BitsPerSample;
+    uint32_t AudioTag;
+    uint16_t nBlockAlign;
+    uint8_t  cpd_len;
+    uint8_t  *CodecPrivateData;
+} MP4_Box_data_stra_t;
+
 /*
 typedef struct MP4_Box_data__s
 {
@@ -1044,6 +1164,7 @@ typedef union MP4_Box_data_s
     MP4_Box_data_ftyp_t *p_ftyp;
     MP4_Box_data_mvhd_t *p_mvhd;
     MP4_Box_data_mfhd_t *p_mfhd;
+    MP4_Box_data_sidx_t *p_sidx;
     MP4_Box_data_tfhd_t *p_tfhd;
     MP4_Box_data_trun_t *p_trun;
     MP4_Box_data_tkhd_t *p_tkhd;
@@ -1076,6 +1197,10 @@ typedef union MP4_Box_data_s
     MP4_Box_data_mehd_t *p_mehd;
     MP4_Box_data_sdtp_t *p_sdtp;
 
+    MP4_Box_data_tfra_t *p_tfra;
+    MP4_Box_data_mfro_t *p_mfro;
+    MP4_Box_data_stra_t *p_stra;
+
     MP4_Box_data_stsz_t *p_stsz;
     MP4_Box_data_stz2_t *p_stz2;
     MP4_Box_data_stsc_t *p_stsc;
@@ -1106,6 +1231,9 @@ typedef union MP4_Box_data_s
     MP4_Box_data_tref_generic_t *p_tref_generic;
     MP4_Box_data_name_t *p_name;
 
+    MP4_Box_data_tfrf_t *p_tfrf;
+    MP4_Box_data_tfxd_t *p_tfxd;
+
     void                *p_data; /* for unknow type */
 } MP4_Box_data_t;
 
@@ -1135,7 +1263,230 @@ typedef struct MP4_Box_s
 
 } MP4_Box_t;
 
+/* Contain all information about a chunk */
+typedef struct
+{
+    uint64_t     i_offset; /* absolute position of this chunk in the file */
+    uint32_t     i_sample_description_index; /* index for SampleEntry to use */
+    uint32_t     i_sample_count; /* how many samples in this chunk */
+    uint32_t     i_sample_first; /* index of the first sample in this chunk */
+    uint32_t     i_sample; /* index of the next sample to read in this chunk */
 
+    /* now provide way to calculate pts, dts, and offset without too
+        much memory and with fast access */
+
+    /* with this we can calculate dts/pts without waste memory */
+    uint64_t     i_first_dts;   /* DTS of the first sample */
+    uint64_t     i_last_dts;    /* DTS of the last sample */
+    uint32_t     *p_sample_count_dts;
+    uint32_t     *p_sample_delta_dts;   /* dts delta */
+
+    uint32_t     *p_sample_count_pts;
+    int32_t      *p_sample_offset_pts;  /* pts-dts */
+
+    uint8_t      **p_sample_data;     /* set when b_fragmented is true */
+    uint32_t     *p_sample_size;
+    /* TODO if needed add pts
+        but quickly *add* support for edts and seeking */
+
+} mp4_chunk_t;
+
+ /* Contain all needed information for read all track with vlc */
+typedef struct
+{
+    unsigned int i_track_ID;/* this should be unique */
+
+    int b_ok;               /* The track is usable */
+    int b_enable;           /* is the trak enable by default */
+    bool b_selected;  /* is the trak being played */
+    bool b_chapter;   /* True when used for chapter only */
+
+    bool b_mac_encoding;
+
+    es_format_t fmt;
+    es_out_id_t *p_es;
+
+    /* display size only ! */
+    int i_width;
+    int i_height;
+    float f_rotation;
+
+    /* more internal data */
+    uint64_t        i_timescale;    /* time scale for this track only */
+    uint16_t        current_qid;    /* Smooth Streaming quality level ID */
+
+    /* elst */
+    int             i_elst;         /* current elst */
+    int64_t         i_elst_time;    /* current elst start time (in movie time scale)*/
+    MP4_Box_t       *p_elst;        /* elst (could be NULL) */
+
+    /* give the next sample to read, i_chunk is to find quickly where
+      the sample is located */
+    uint32_t         i_sample;       /* next sample to read */
+    uint32_t         i_chunk;        /* chunk where next sample is stored */
+    /* total count of chunk and sample */
+    uint32_t         i_chunk_count;
+    uint32_t         i_sample_count;
+
+    mp4_chunk_t    *chunk; /* always defined  for each chunk */
+    mp4_chunk_t    *cchunk; /* current chunk if b_fragmented is true */
+
+    /* sample size, p_sample_size defined only if i_sample_size == 0
+        else i_sample_size is size for all sample */
+    uint32_t         i_sample_size;
+    uint32_t         *p_sample_size; /* XXX perhaps add file offset if take
+                                    too much time to do sumations each time*/
+
+    uint32_t     i_sample_first; /* i_sample_first value
+                                                   of the next chunk */
+    uint64_t     i_first_dts;    /* i_first_dts value
+                                                   of the next chunk */
+
+    MP4_Box_t *p_stbl;  /* will contain all timing information */
+    MP4_Box_t *p_stsd;  /* will contain all data to initialize decoder */
+    MP4_Box_t *p_sample;/* point on actual sdsd */
+
+    bool b_drms;
+    bool b_has_non_empty_cchunk;
+    bool b_codec_need_restart;
+    void      *p_drms;
+    MP4_Box_t *p_skcr;
+
+} mp4_track_t;
+
+static inline size_t mp4_box_headersize( MP4_Box_t *p_box )
+{
+    return 8
+        + ( p_box->i_shortsize == 1 ? 8 : 0 )
+        + ( p_box->i_type == ATOM_uuid ? 16 : 0 );
+}
+
+#define MP4_GETX_PRIVATE(dst, code, size) do { \
+    if( (i_read) >= (size) ) { dst = (code); p_peek += (size); } \
+    else { dst = 0; }   \
+    i_read -= (size);   \
+  } while(0)
+
+#define MP4_GET1BYTE( dst )  MP4_GETX_PRIVATE( dst, *p_peek, 1 )
+#define MP4_GET2BYTES( dst ) MP4_GETX_PRIVATE( dst, GetWBE(p_peek), 2 )
+#define MP4_GET3BYTES( dst ) MP4_GETX_PRIVATE( dst, Get24bBE(p_peek), 3 )
+#define MP4_GET4BYTES( dst ) MP4_GETX_PRIVATE( dst, GetDWBE(p_peek), 4 )
+#define MP4_GET8BYTES( dst ) MP4_GETX_PRIVATE( dst, GetQWBE(p_peek), 8 )
+#define MP4_GETFOURCC( dst ) MP4_GETX_PRIVATE( dst, \
+                VLC_FOURCC(p_peek[0],p_peek[1],p_peek[2],p_peek[3]), 4)
+
+#define MP4_GETVERSIONFLAGS( p_void ) \
+    MP4_GET1BYTE( p_void->i_version ); \
+    MP4_GET3BYTES( p_void->i_flags )
+
+#define MP4_GETSTRINGZ( p_str )         \
+    if( (i_read > 0) && (p_peek[0]) )   \
+    {       \
+        const int __i_copy__ = strnlen( (char*)p_peek, i_read-1 );  \
+        p_str = malloc( __i_copy__+1 );               \
+        if( p_str ) \
+        { \
+             memcpy( p_str, p_peek, __i_copy__ ); \
+             p_str[__i_copy__] = 0; \
+        } \
+        p_peek += __i_copy__ + 1;   \
+        i_read -= __i_copy__ + 1;   \
+    }       \
+    else    \
+    {       \
+        p_str = NULL; \
+    }
+
+#define MP4_READBOX_ENTER( MP4_Box_data_TYPE_t ) \
+    int64_t  i_read = p_box->i_size; \
+    uint8_t *p_peek, *p_buff; \
+    int i_actually_read; \
+    if( !( p_peek = p_buff = malloc( i_read ) ) ) \
+    { \
+        return( 0 ); \
+    } \
+    i_actually_read = stream_Read( p_stream, p_peek, i_read ); \
+    if( i_actually_read < 0 || (int64_t)i_actually_read < i_read )\
+    { \
+        msg_Warn( p_stream, "MP4_READBOX_ENTER: I got %i bytes, "\
+        "but I requested %"PRId64"", i_actually_read, i_read );\
+        free( p_buff ); \
+        return( 0 ); \
+    } \
+    p_peek += mp4_box_headersize( p_box ); \
+    i_read -= mp4_box_headersize( p_box ); \
+    if( !( p_box->data.p_data = calloc( 1, sizeof( MP4_Box_data_TYPE_t ) ) ) ) \
+    { \
+        free( p_buff ); \
+        return( 0 ); \
+    }
+
+#define MP4_READBOX_EXIT( i_code ) \
+    do \
+    { \
+        free( p_buff ); \
+        if( i_read < 0 ) \
+            msg_Warn( p_stream, "Not enough data" ); \
+        return( i_code ); \
+    } while (0)
+
+
+/* This macro is used when we want to printf the box type
+ * APPLE annotation box is :
+ *  either 0xA9 + 24-bit ASCII text string (and 0xA9 isn't printable)
+ *  either 32-bit ASCII text string
+ */
+#define MP4_BOX_TYPE_ASCII() ( ((char*)&p_box->i_type)[0] != (char)0xA9 )
+
+static inline uint32_t Get24bBE( const uint8_t *p )
+{
+    return( ( p[0] <<16 ) + ( p[1] <<8 ) + p[2] );
+}
+
+static inline void GetUUID( UUID_t *p_uuid, const uint8_t *p_buff )
+{
+    memcpy( p_uuid, p_buff, 16 );
+}
+
+static inline int CmpUUID( const UUID_t *u1, const UUID_t *u2 )
+{
+    return memcmp( u1, u2, 16 );
+}
+
+static inline void CreateUUID( UUID_t *p_uuid, uint32_t i_fourcc )
+{
+    /* made by 0xXXXXXXXX-0011-0010-8000-00aa00389b71
+            where XXXXXXXX is the fourcc */
+    /* FIXME implement this */
+    (void)p_uuid;
+    (void)i_fourcc;
+}
+
+static const UUID_t TfrfBoxUUID = {
+                { 0xd4, 0x80, 0x7e, 0xf2, 0xca, 0x39, 0x46, 0x95,
+                  0x8e, 0x54, 0x26, 0xcb, 0x9e, 0x46, 0xa7, 0x9f } };
+
+static const UUID_t TfxdBoxUUID = {
+                { 0x6d, 0x1d, 0x9b, 0x05, 0x42, 0xd5, 0x44, 0xe6,
+                  0x80, 0xe2, 0x14, 0x1d, 0xaf, 0xf7, 0x57, 0xb2 } };
+
+static const UUID_t SmooBoxUUID = {
+                { 0xe1, 0xda, 0x72, 0xba, 0x24, 0xd7, 0x43, 0xc3,
+                  0xa6, 0xa5, 0x1b, 0x57, 0x59, 0xa1, 0xa9, 0x2c } };
+
+static const UUID_t StraBoxUUID = {
+                { 0xb0, 0x3e, 0xf7, 0x70, 0x33, 0xbd, 0x4b, 0xac,
+                  0x96, 0xc7, 0xbf, 0x25, 0xf9, 0x7e, 0x24, 0x47 } };
+
+MP4_Box_t *MP4_BoxGetSmooBox( stream_t * );
+
+/*****************************************************************************
+ * MP4_BoxGetNextChunk : Parse the entire moof box.
+ *****************************************************************************
+ *  The first box is a virtual box "root" and is the father of the boxes
+ *  'moof' and, possibly, 'sidx'.
+ *****************************************************************************/
+MP4_Box_t *MP4_BoxGetNextChunk( stream_t * );
 
 /*****************************************************************************
  * MP4_BoxGetRoot : Parse the entire file, and create all boxes in memory

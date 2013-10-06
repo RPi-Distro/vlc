@@ -1,25 +1,25 @@
 /*****************************************************************************
  * i422_i420.c : Planar YUV 4:2:2 to Planar YUV 4:2:0 conversion module for vlc
  *****************************************************************************
- * Copyright (C) 2000, 2001 - 2007 the VideoLAN team
- * $Id: c9291679b600b3ea07d63deebbf79115f78d271d $
+ * Copyright (C) 2000, 2001 - 2007 VLC authors and VideoLAN
+ * $Id: 3c7d6068441f6c7de247eb4cc8df4fdf9bbf6276 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -92,7 +92,7 @@ static int Activate( vlc_object_t *p_this )
                     p_filter->pf_video_filter = I422_YV12_Filter;
                     break;
 
-                case VLC_CODEC_YUVA:
+                case VLC_CODEC_YUV420A:
                     p_filter->pf_video_filter = I422_YUVA_Filter;
                     break;
 
@@ -134,10 +134,10 @@ static void I422_I420( filter_t *p_filter, picture_t *p_source,
 
     for ( ; i_y--; )
     {
-        vlc_memcpy(p_dy, p_y, i_width); p_dy -= i_dpy; p_y -= i_spy;
-        vlc_memcpy(p_dy, p_y, i_width); p_dy -= i_dpy; p_y -= i_spy;
-        vlc_memcpy(p_du, p_u, i_width/2); p_du -= i_dpuv; p_u -= 2*i_spuv;
-        vlc_memcpy(p_dv, p_v, i_width/2); p_dv -= i_dpuv; p_v -= 2*i_spuv;
+        memcpy(p_dy, p_y, i_width); p_dy -= i_dpy; p_y -= i_spy;
+        memcpy(p_dy, p_y, i_width); p_dy -= i_dpy; p_y -= i_spy;
+        memcpy(p_du, p_u, i_width/2); p_du -= i_dpuv; p_u -= 2*i_spuv;
+        memcpy(p_dv, p_v, i_width/2); p_dv -= i_dpuv; p_v -= 2*i_spuv;
     }
 }
 
@@ -163,10 +163,10 @@ static void I422_YV12( filter_t *p_filter, picture_t *p_source,
 
     for ( ; i_y--; )
     {
-        vlc_memcpy(p_dy, p_y, i_width); p_dy -= i_dpy; p_y -= i_spy;
-        vlc_memcpy(p_dy, p_y, i_width); p_dy -= i_dpy; p_y -= i_spy;
-        vlc_memcpy(p_du, p_u, i_width/2); p_du -= i_dpuv; p_u -= 2*i_spuv;
-        vlc_memcpy(p_dv, p_v, i_width/2); p_dv -= i_dpuv; p_v -= 2*i_spuv;
+        memcpy(p_dy, p_y, i_width); p_dy -= i_dpy; p_y -= i_spy;
+        memcpy(p_dy, p_y, i_width); p_dy -= i_dpy; p_y -= i_spy;
+        memcpy(p_du, p_u, i_width/2); p_du -= i_dpuv; p_u -= 2*i_spuv;
+        memcpy(p_dv, p_v, i_width/2); p_dv -= i_dpuv; p_v -= 2*i_spuv;
     }
 }
 
@@ -177,6 +177,6 @@ static void I422_YUVA( filter_t *p_filter, picture_t *p_source,
                                            picture_t *p_dest )
 {
     I422_I420( p_filter, p_source, p_dest );
-    vlc_memset( p_dest->p[A_PLANE].p_pixels, 0xff,
+    memset( p_dest->p[A_PLANE].p_pixels, 0xff,
                 p_dest->p[A_PLANE].i_lines * p_dest->p[A_PLANE].i_pitch );
 }

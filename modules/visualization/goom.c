@@ -58,7 +58,7 @@ vlc_module_begin ()
     set_description( N_("Goom effect") )
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_VISUAL )
-    set_capability( "visualization2", 0 )
+    set_capability( "visualization", 0 )
     add_integer( "goom-width", 800,
                  WIDTH_TEXT, RES_LONGTEXT, false )
     add_integer( "goom-height", 500,
@@ -119,21 +119,6 @@ static int Open( vlc_object_t *p_this )
     goom_thread_t  *p_thread;
     video_format_t fmt;
 
-
-    if( p_filter->fmt_in.audio.i_format != VLC_CODEC_FL32 ||
-         p_filter->fmt_out.audio.i_format != VLC_CODEC_FL32 )
-    {
-        msg_Warn( p_filter, "bad input or output format" );
-        return VLC_EGENERIC;
-    }
-    if( !AOUT_FMTS_SIMILAR( &p_filter->fmt_in.audio, &p_filter->fmt_out.audio ) )
-    {
-        msg_Warn( p_filter, "input and output formats are not similar" );
-        return VLC_EGENERIC;
-    }
-
-    p_filter->pf_audio_filter = DoWork;
-
     /* Allocate structure */
     p_sys = p_filter->p_sys = malloc( sizeof( filter_sys_t ) );
 
@@ -167,7 +152,7 @@ static int Open( vlc_object_t *p_this )
     vlc_cond_init( &p_thread->wait );
 
     p_thread->i_blocks = 0;
-    date_Init( &p_thread->date, p_filter->fmt_out.audio.i_rate, 1 );
+    date_Init( &p_thread->date, p_filter->fmt_in.audio.i_rate, 1 );
     date_Set( &p_thread->date, 0 );
     p_thread->i_channels = aout_FormatNbChannels( &p_filter->fmt_in.audio );
 
@@ -175,14 +160,17 @@ static int Open( vlc_object_t *p_this )
                    Thread, p_thread, VLC_THREAD_PRIORITY_LOW ) )
     {
         msg_Err( p_filter, "cannot lauch goom thread" );
-        vlc_object_release( p_thread->p_vout );
         vlc_mutex_destroy( &p_thread->lock );
         vlc_cond_destroy( &p_thread->wait );
+        aout_filter_RequestVout( p_filter, p_thread->p_vout, NULL );
         free( p_thread );
         free( p_sys );
         return VLC_EGENERIC;
     }
 
+    p_filter->fmt_in.audio.i_format = VLC_CODEC_FL32;
+    p_filter->fmt_out.audio = p_filter->fmt_in.audio;
+    p_filter->pf_audio_filter = DoWork;
     return VLC_SUCCESS;
 }
 
@@ -204,7 +192,7 @@ static block_t *DoWork( filter_t *p_filter, block_t *p_in_buf )
         return p_in_buf;
     }
 
-    p_block = block_New( p_sys->p_thread, p_in_buf->i_buffer );
+    p_block = block_Alloc( p_in_buf->i_buffer );
     if( !p_block )
     {
         vlc_mutex_unlock( &p_sys->p_thread->lock );
@@ -378,7 +366,7 @@ static void Close( vlc_object_t *p_this )
     vlc_join( p_sys->p_thread->thread, NULL );
 
     /* Free data */
-    aout_filter_RequestVout( p_filter, p_sys->p_thread->p_vout, 0 );
+    aout_filter_RequestVout( p_filter, p_sys->p_thread->p_vout, NULL );
     vlc_mutex_destroy( &p_sys->p_thread->lock );
     vlc_cond_destroy( &p_sys->p_thread->wait );
 

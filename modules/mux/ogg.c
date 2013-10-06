@@ -2,7 +2,7 @@
  * ogg.c: ogg muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: 72805b3653280171471f553fe7b112d91a52a916 $
+ * $Id: 99252b0011d9beafc49de7c609a33e837b450cb5 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -309,7 +309,6 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
         case VLC_CODEC_WMV1:
         case VLC_CODEC_WMV2:
         case VLC_CODEC_WMV3:
-        case VLC_CODEC_SNOW:
             p_stream->p_oggds_header = calloc( 1, sizeof(oggds_header_t) );
             if( !p_stream->p_oggds_header )
             {
@@ -516,7 +515,7 @@ static block_t *OggStreamGetPage( sout_mux_t *p_mux,
     while( pager( p_os, &og ) )
     {
         /* Flush all data */
-        p_og = block_New( p_mux, og.header_len + og.body_len );
+        p_og = block_Alloc( og.header_len + og.body_len );
 
         memcpy( p_og->p_buffer, og.header, og.header_len );
         memcpy( p_og->p_buffer + og.header_len, og.body, og.body_len );
@@ -780,11 +779,25 @@ static block_t *OggCreateHeader( sout_mux_t *p_mux )
             msg_Dbg( p_mux, "writing extra data" );
             op.bytes  = p_input->p_fmt->i_extra;
             op.packet = p_input->p_fmt->p_extra;
+            uint8_t flac_streaminfo[34 + 4];
             if( p_stream->i_fourcc == VLC_CODEC_FLAC )
             {
-                /* Skip the flac stream marker */
-                op.bytes -= 4;
-                op.packet+= 4;
+                if (op.bytes == 42 && !memcmp(op.packet, "fLaC", 4)) {
+                    op.bytes -= 4;
+                    memcpy(flac_streaminfo, op.packet + 4, 38);
+                    op.packet = flac_streaminfo;
+                } else if (op.bytes == 34) {
+                    op.bytes += 4;
+                    memcpy(flac_streaminfo + 4, op.packet, 34);
+                    flac_streaminfo[0] = 0x80; /* last block, streaminfo */
+                    flac_streaminfo[1] = 0;
+                    flac_streaminfo[2] = 0;
+                    flac_streaminfo[3] = 34; /* block size */
+                    op.packet = flac_streaminfo;
+                } else {
+                    msg_Err(p_mux, "Invalid FLAC streaminfo (%ld bytes)",
+                            op.bytes);
+                }
             }
             op.b_o_s  = 0;
             op.e_o_s  = 0;

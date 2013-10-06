@@ -1,8 +1,8 @@
 /*****************************************************************************
- * Upnp.cpp :  UPnP discovery module (libupnp)
+ * upnp.cpp :  UPnP discovery module (libupnp)
  *****************************************************************************
  * Copyright (C) 2004-2011 the VideoLAN team
- * $Id: 84284800422a331b0596bee47791d3ceea991bbc $
+ * $Id: 66223fa091369d81af1e0579b1606be2848dc761 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org> (original plugin)
  *          Christian Henz <henz # c-lab.de>
@@ -85,17 +85,17 @@ static int Callback( Upnp_EventType event_type, void* p_event, void* p_user_data
 const char* xml_getChildElementValue( IXML_Element* p_parent,
                                       const char*   psz_tag_name );
 
-const char* xml_getChildElementAttributeValue( IXML_Element* p_parent,
-                                        const char* psz_tag_name_,
-                                        const char* psz_attribute_ );
-
 const char* xml_getChildElementValue( IXML_Document* p_doc,
                                       const char*    psz_tag_name );
 
-IXML_Document* parseBrowseResult( IXML_Document* p_doc );
+const char* xml_getChildElementAttributeValue( IXML_Element* p_parent,
+                                        const char* psz_tag_name,
+                                        const char* psz_attribute );
 
-int parseBrowseNumberValue( IXML_Document* p_doc,
-                            const char*    psz_tag_name );
+int xml_getNumber( IXML_Document* p_doc,
+                   const char*    psz_tag_name );
+
+IXML_Document* parseBrowseResult( IXML_Document* p_doc );
 
 /*
  * Initializes UPNP instance.
@@ -126,6 +126,8 @@ static int Open( vlc_object_t *p_this )
         free( p_sys );
         return VLC_EGENERIC;
     }
+
+    ixmlRelaxParser( 1 );
 
     p_sys->p_server_list = new MediaServerList( p_sd );
     vlc_mutex_init( &p_sys->callback_lock );
@@ -186,17 +188,18 @@ static void Close( vlc_object_t *p_this )
  * Returns the value of a child element, or NULL on error
  */
 const char* xml_getChildElementValue( IXML_Element* p_parent,
-                                      const char*   psz_tag_name_ )
+                                      const char*   psz_tag_name )
 {
-    if ( !p_parent ) return NULL;
-    if ( !psz_tag_name_ ) return NULL;
+    assert( p_parent );
+    assert( psz_tag_name );
 
-    IXML_NodeList* p_node_list = ixmlElement_getElementsByTagName( p_parent, psz_tag_name_ );
+    IXML_NodeList* p_node_list;
+    p_node_list = ixmlElement_getElementsByTagName( p_parent, psz_tag_name );
     if ( !p_node_list ) return NULL;
 
     IXML_Node* p_element = ixmlNodeList_item( p_node_list, 0 );
     ixmlNodeList_free( p_node_list );
-    if ( !p_element ) return NULL;
+    if ( !p_element )   return NULL;
 
     IXML_Node* p_text_node = ixmlNode_getFirstChild( p_element );
     if ( !p_text_node ) return NULL;
@@ -208,45 +211,43 @@ const char* xml_getChildElementValue( IXML_Element* p_parent,
  * Returns the value of a child element's attribute, or NULL on error
  */
 const char* xml_getChildElementAttributeValue( IXML_Element* p_parent,
-                                        const char* psz_tag_name_,
-                                        const char* psz_attribute_ )
+                                        const char* psz_tag_name,
+                                        const char* psz_attribute )
 {
-    if ( !p_parent ) return NULL;
-    if ( !psz_tag_name_ ) return NULL;
-    if ( !psz_attribute_ ) return NULL;
+    assert( p_parent );
+    assert( psz_tag_name );
+    assert( psz_attribute );
 
-    IXML_NodeList* p_node_list = ixmlElement_getElementsByTagName( p_parent, psz_tag_name_ );
-    if ( !p_node_list ) return NULL;
+    IXML_NodeList* p_node_list;
+    p_node_list = ixmlElement_getElementsByTagName( p_parent, psz_tag_name );
+    if ( !p_node_list )   return NULL;
 
     IXML_Node* p_element = ixmlNodeList_item( p_node_list, 0 );
     ixmlNodeList_free( p_node_list );
-    if ( !p_element ) return NULL;
+    if ( !p_element )     return NULL;
 
-    return ixmlElement_getAttribute( (IXML_Element*) p_element, psz_attribute_ );
+    return ixmlElement_getAttribute( (IXML_Element*) p_element, psz_attribute );
 }
 
 /*
  * Returns the value of a child element, or NULL on error
  */
 const char* xml_getChildElementValue( IXML_Document*  p_doc,
-                                      const char*     psz_tag_name_ )
+                                      const char*     psz_tag_name )
 {
-    if ( !p_doc ) return 0;
-    if ( !psz_tag_name_ ) return 0;
+    assert( p_doc );
+    assert( psz_tag_name );
 
-    IXML_NodeList* p_result_list = ixmlDocument_getElementsByTagName( p_doc,
-                                                                   psz_tag_name_ );
+    IXML_NodeList* p_node_list;
+    p_node_list = ixmlDocument_getElementsByTagName( p_doc, psz_tag_name );
+    if ( !p_node_list )  return NULL;
 
-    if ( !p_result_list ) return 0;
+    IXML_Node* p_element = ixmlNodeList_item( p_node_list, 0 );
+    ixmlNodeList_free( p_node_list );
+    if ( !p_element )    return NULL;
 
-    IXML_Node* p_result_node = ixmlNodeList_item( p_result_list, 0 );
-
-    ixmlNodeList_free( p_result_list );
-
-    if ( !p_result_node ) return 0;
-
-    IXML_Node* p_text_node = ixmlNode_getFirstChild( p_result_node );
-    if ( !p_text_node ) return 0;
+    IXML_Node* p_text_node = ixmlNode_getFirstChild( p_element );
+    if ( !p_text_node )  return NULL;
 
     return ixmlNode_getNodeValue( p_text_node );
 }
@@ -256,38 +257,69 @@ const char* xml_getChildElementValue( IXML_Document*  p_doc,
  */
 IXML_Document* parseBrowseResult( IXML_Document* p_doc )
 {
-    ixmlRelaxParser( 1 );
+    assert( p_doc );
 
-    const char* psz_result_string = xml_getChildElementValue( p_doc, "Result" );
-    if( !psz_result_string ) return 0;
+    /* Missing namespaces confuse the ixml parser. This is a very ugly
+     * hack but it is needeed until devices start sending valid XML.
+     *
+     * It works that way:
+     *
+     * The DIDL document is extracted from the Result tag, then wrapped into
+     * a valid XML header and a new root tag which contains missing namespace
+     * definitions so the ixml parser understands it.
+     *
+     * If you know of a better workaround, please oh please fix it */
+    const char* psz_xml_result_fmt = "<?xml version=\"1.0\" ?>"
+        "<Result xmlns:sec=\"urn:samsung:metadata:2009\">%s</Result>";
 
-    IXML_Document* p_browse_doc = ixmlParseBuffer( psz_result_string );
+    char* psz_xml_result_string = NULL;
+    const char* psz_raw_didl = xml_getChildElementValue( p_doc, "Result" );
 
-    return p_browse_doc;
+    if( !psz_raw_didl )
+        return NULL;
+
+    if( -1 == asprintf( &psz_xml_result_string,
+                         psz_xml_result_fmt,
+                         psz_raw_didl) )
+        return NULL;
+
+
+    IXML_Document* p_result_doc = ixmlParseBuffer( psz_xml_result_string );
+    free( psz_xml_result_string );
+
+    if( !p_result_doc )
+        return NULL;
+
+    IXML_NodeList *p_elems = ixmlDocument_getElementsByTagName( p_result_doc,
+                                                                "DIDL-Lite" );
+
+    IXML_Node *p_node = ixmlNodeList_item( p_elems, 0 );
+    ixmlNodeList_free( p_elems );
+
+    return (IXML_Document*)p_node;
 }
 
 /*
  * Get the number value from a SOAP response
  */
-int parseBrowseNumberValue( IXML_Document* p_doc,
-                            const char* psz_tag_name_ )
+int xml_getNumber( IXML_Document* p_doc,
+                   const char* psz_tag_name )
 {
-    ixmlRelaxParser( 1 );
+    assert( p_doc );
+    assert( psz_tag_name );
 
-    const char* psz_number_string = xml_getChildElementValue( p_doc,
-                                                              psz_tag_name_ );
-    if( !psz_number_string ) return 0;
+    const char* psz = xml_getChildElementValue( p_doc, psz_tag_name );
+
+    if( !psz )
+        return 0;
 
     char *psz_end;
-    long l = strtol( psz_number_string, &psz_end, 10 );
+    long l = strtol( psz, &psz_end, 10 );
+
     if( *psz_end || l < 0 || l > INT_MAX )
-    {
         return 0;
-    }
-    else
-    {
-        return (int)l;
-    }
+
+    return (int)l;
 }
 
 /*
@@ -423,8 +455,12 @@ void MediaServer::parseDeviceDescription( IXML_Document* p_doc,
             IXML_Element* p_device_element =
                    ( IXML_Element* ) ixmlNodeList_item( p_device_list, i );
 
-            const char* psz_device_type = xml_getChildElementValue( p_device_element,
-                                                               "deviceType" );
+            if( !p_device_element )
+                continue;
+
+            const char* psz_device_type =
+                xml_getChildElementValue( p_device_element, "deviceType" );
+
             if ( !psz_device_type )
             {
                 msg_Warn( p_sd, "No deviceType found!" );
@@ -435,7 +471,8 @@ void MediaServer::parseDeviceDescription( IXML_Document* p_doc,
                     strlen( MEDIA_SERVER_DEVICE_TYPE ) - 1 ) != 0 )
                 continue;
 
-            const char* psz_udn = xml_getChildElementValue( p_device_element, "UDN" );
+            const char* psz_udn = xml_getChildElementValue( p_device_element,
+                                                            "UDN" );
             if ( !psz_udn )
             {
                 msg_Warn( p_sd, "No UDN!" );
@@ -459,7 +496,8 @@ void MediaServer::parseDeviceDescription( IXML_Document* p_doc,
                 continue;
             }
 
-            MediaServer* p_server = new MediaServer( psz_udn, psz_friendly_name, p_sd );
+            MediaServer* p_server = new MediaServer( psz_udn,
+                    psz_friendly_name, p_sd );
 
             if ( !p_sd->p_sys->p_server_list->addServer( p_server ) )
             {
@@ -478,7 +516,7 @@ void MediaServer::parseDeviceDescription( IXML_Document* p_doc,
                       j < ixmlNodeList_length( p_service_list ); j++ )
                 {
                     IXML_Element* p_service_element =
-                        ( IXML_Element* ) ixmlNodeList_item( p_service_list, j );
+                       ( IXML_Element* ) ixmlNodeList_item( p_service_list, j );
 
                     const char* psz_service_type =
                         xml_getChildElementValue( p_service_element,
@@ -766,7 +804,7 @@ void MediaServer::fetchContents()
 /*
  * Fetches and parses the UPNP response
  */
-bool MediaServer::_fetchContents( Container* p_parent, int i_starting_index )
+bool MediaServer::_fetchContents( Container* p_parent, int i_offset )
 {
     if (!p_parent)
     {
@@ -775,15 +813,16 @@ bool MediaServer::_fetchContents( Container* p_parent, int i_starting_index )
     }
 
     char* psz_starting_index;
-    if( asprintf( &psz_starting_index, "%d", i_starting_index ) < 0 )
+    if( asprintf( &psz_starting_index, "%d", i_offset ) < 0 )
     {
-        msg_Err( _p_sd, "asprintf error:%d", i_starting_index );
+        msg_Err( _p_sd, "asprintf error:%d", i_offset );
         return false;
     }
 
     IXML_Document* p_response = _browseAction( p_parent->getObjectID(),
                                       "BrowseDirectChildren",
-                                      "*", /* Filter */
+                                      "id,dc:title,res," /* Filter */
+                                      "sec:CaptionInfo,sec:CaptionInfoEx",
                                       psz_starting_index, /* StartingIndex */
                                       "0", /* RequestedCount */
                                       "" /* SortCriteria */
@@ -796,12 +835,14 @@ bool MediaServer::_fetchContents( Container* p_parent, int i_starting_index )
     }
 
     IXML_Document* p_result = parseBrowseResult( p_response );
-    int i_number_returned = parseBrowseNumberValue( p_response, "NumberReturned" );
-    int i_total_matches = parseBrowseNumberValue( p_response , "TotalMatches" );
+    int i_number_returned = xml_getNumber( p_response, "NumberReturned" );
+    int i_total_matches   = xml_getNumber( p_response , "TotalMatches" );
+
 #ifndef NDEBUG
-    msg_Dbg( _p_sd, "i_starting_index[%d]i_number_returned[%d]_total_matches[%d]\n",
-             i_starting_index, i_number_returned, i_total_matches );
+    msg_Dbg( _p_sd, "i_offset[%d]i_number_returned[%d]_total_matches[%d]\n",
+             i_offset, i_number_returned, i_total_matches );
 #endif
+
     ixmlDocument_free( p_response );
 
     if ( !p_result )
@@ -809,12 +850,9 @@ bool MediaServer::_fetchContents( Container* p_parent, int i_starting_index )
         msg_Err( _p_sd, "browse() response parsing failed" );
         return false;
     }
+
 #ifndef NDEBUG
-    else
-    {
-        msg_Dbg( _p_sd, "Got DIDL document: %s",
-                ixmlPrintDocument( p_result ) );
-    }
+    msg_Dbg( _p_sd, "Got DIDL document: %s", ixmlPrintDocument( p_result ) );
 #endif
 
     IXML_NodeList* containerNodeList =
@@ -867,44 +905,51 @@ bool MediaServer::_fetchContents( Container* p_parent, int i_starting_index )
             if ( !title )
                 continue;
 
-            const char* resource =
-                        xml_getChildElementValue( itemElement, "res" );
+            const char* psz_subtitles = xml_getChildElementValue( itemElement,
+                    "sec:CaptionInfo" );
 
-            if ( !resource )
-                continue;
+            if ( !psz_subtitles )
+                psz_subtitles = xml_getChildElementValue( itemElement,
+                        "sec:CaptionInfoEx" );
 
-            const char* psz_duration = xml_getChildElementAttributeValue( itemElement,
-                                                                    "res",
-                                                                    "duration" );
-
-            mtime_t i_duration = -1;
-            int i_hours, i_minutes, i_seconds, i_decis;
-
-            if ( psz_duration )
+            /* Try to extract all resources in DIDL */
+            IXML_NodeList* p_resource_list = ixmlDocument_getElementsByTagName( (IXML_Document*) itemElement, "res" );
+            if ( p_resource_list )
             {
-                if( sscanf( psz_duration, "%02d:%02d:%02d.%d",
-                        &i_hours, &i_minutes, &i_seconds, &i_decis ))
-                    i_duration = INT64_C(1000000) * ( i_hours*3600 +
-                                                      i_minutes*60 +
-                                                      i_seconds ) +
-                                 INT64_C(100000) * i_decis;
-            }
+                int i_length = ixmlNodeList_length( p_resource_list );
+                for ( int i = 0; i < i_length; i++ )
+                {
+                    mtime_t i_duration = -1;
+                    int i_hours, i_minutes, i_seconds;
+                    IXML_Element* p_resource = ( IXML_Element* ) ixmlNodeList_item( p_resource_list, i );
+                    const char* psz_resource_url = xml_getChildElementValue( p_resource, "res" );
+                    if( !psz_resource_url )
+                        continue;
+                    const char* psz_duration = ixmlElement_getAttribute( p_resource, "duration" );
 
-            Item* item = new Item( p_parent, objectID, title, resource, i_duration );
-            p_parent->addItem( item );
+                    if ( psz_duration )
+                    {
+                        if( sscanf( psz_duration, "%d:%02d:%02d",
+                            &i_hours, &i_minutes, &i_seconds ) )
+                            i_duration = INT64_C(1000000) * ( i_hours*3600 +
+                                                              i_minutes*60 +
+                                                              i_seconds );
+                    }
+
+                    Item* item = new Item( p_parent, objectID, title, psz_resource_url, psz_subtitles, i_duration );
+                    p_parent->addItem( item );
+                }
+                ixmlNodeList_free( p_resource_list );
+            }
+            else continue;
         }
         ixmlNodeList_free( itemNodeList );
     }
 
     ixmlDocument_free( p_result );
 
-    if( i_starting_index + i_number_returned < i_total_matches )
-    {
-        if( !_fetchContents( p_parent, i_starting_index + i_number_returned ) )
-        {
-            return false;
-        }
-    }
+    if( i_offset + i_number_returned < i_total_matches )
+        return _fetchContents( p_parent, i_offset + i_number_returned );
 
     return true;
 }
@@ -969,14 +1014,32 @@ void MediaServer::_buildPlaylist( Container* p_parent, input_item_node_t *p_inpu
     {
         Item* p_item = p_parent->getItem( i );
 
+        char **ppsz_opts = NULL;
+        char *psz_input_slave = p_item->buildInputSlaveOption();
+        if( psz_input_slave )
+        {
+            ppsz_opts = (char**)malloc( 2 * sizeof( char* ) );
+            ppsz_opts[0] = psz_input_slave;
+            ppsz_opts[1] = p_item->buildSubTrackIdOption();
+        }
+
         input_item_t* p_input_item = input_item_NewExt( p_item->getResource(),
-                                               p_item->getTitle(),
-                                               0,
-                                               NULL,
-                                               0,
-                                               p_item->getDuration() );
+                                           p_item->getTitle(),
+                                           psz_input_slave ? 2 : 0,
+                                           psz_input_slave ? ppsz_opts : NULL,
+                                           VLC_INPUT_OPTION_TRUSTED, /* XXX */
+                                           p_item->getDuration() );
 
         assert( p_input_item );
+        if( ppsz_opts )
+        {
+            free( ppsz_opts[0] );
+            free( ppsz_opts[1] );
+            free( ppsz_opts );
+
+            psz_input_slave = NULL;
+        }
+
         input_item_node_AppendItem( p_input_node, p_input_item );
         p_item->setInputItem( p_input_item );
     }
@@ -1101,14 +1164,17 @@ void MediaServerList::removeServer( const char* psz_udn )
 /*
  * Item class
  */
-Item::Item( Container* p_parent, const char* psz_object_id, const char* psz_title,
-           const char* psz_resource, mtime_t i_duration )
+Item::Item( Container* p_parent,
+        const char* psz_object_id, const char* psz_title,
+        const char* psz_resource, const char* psz_subtitles,
+        mtime_t i_duration )
 {
     _parent = p_parent;
 
     _objectID = psz_object_id;
     _title = psz_title;
     _resource = psz_resource;
+    _subtitles = psz_subtitles ? psz_subtitles : "";
     _duration = i_duration;
 
     _p_input_item = NULL;
@@ -1135,9 +1201,73 @@ const char* Item::getResource() const
     return _resource.c_str();
 }
 
+const char* Item::getSubtitles() const
+{
+    if( !_subtitles.size() )
+        return NULL;
+
+    return _subtitles.c_str();
+}
+
 mtime_t Item::getDuration() const
 {
     return _duration;
+}
+
+char* Item::buildInputSlaveOption() const
+{
+    const char *psz_subtitles    = getSubtitles();
+
+    const char *psz_scheme_delim = "://";
+    const char *psz_sub_opt_fmt  = ":input-slave=%s/%s://%s";
+    const char *psz_demux        = "subtitle";
+
+    char       *psz_uri_scheme   = NULL;
+    const char *psz_scheme_end   = NULL;
+    const char *psz_uri_location = NULL;
+    char       *psz_input_slave  = NULL;
+
+    size_t i_scheme_len;
+
+    if( !psz_subtitles )
+        return NULL;
+
+    psz_scheme_end = strstr( psz_subtitles, psz_scheme_delim );
+
+    /* subtitles not being an URI would make no sense */
+    if( !psz_scheme_end )
+        return NULL;
+
+    i_scheme_len   = psz_scheme_end - psz_subtitles;
+    psz_uri_scheme = (char*)malloc( i_scheme_len + 1 );
+
+    if( !psz_uri_scheme )
+        return NULL;
+
+    memcpy( psz_uri_scheme, psz_subtitles, i_scheme_len );
+    psz_uri_scheme[i_scheme_len] = '\0';
+
+    /* If the subtitles try to force a vlc demux,
+     * then something is very wrong */
+    if( strchr( psz_uri_scheme, '/' ) )
+    {
+        free( psz_uri_scheme );
+        return NULL;
+    }
+
+    psz_uri_location = psz_scheme_end + strlen( psz_scheme_delim );
+
+    if( -1 == asprintf( &psz_input_slave, psz_sub_opt_fmt,
+            psz_uri_scheme, psz_demux, psz_uri_location ) )
+        psz_input_slave = NULL;
+
+    free( psz_uri_scheme );
+    return psz_input_slave;
+}
+
+char* Item::buildSubTrackIdOption() const
+{
+    return strdup( ":sub-track-id=2" );
 }
 
 void Item::setInputItem( input_item_t* p_input_item )

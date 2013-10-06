@@ -1,25 +1,25 @@
 /*****************************************************************************
  * wave.c : Wave video effect plugin for vlc
  *****************************************************************************
- * Copyright (C) 2000-2008 the VideoLAN team
- * $Id: 6ad3ac27171ea742ab29c72cf651cb756075b283 $
+ * Copyright (C) 2000-2008 VLC authors and VideoLAN
+ * $Id: c2c93bd54f763bea23f41d907a96a07f7508eb56 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -170,24 +170,24 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
             {
                 if( i_offset < 0 )
                 {
-                    vlc_memcpy( p_out, p_in - i_offset,
+                    memcpy( p_out, p_in - i_offset,
                                 i_visible_pitch + i_offset );
                     p_in += p_pic->p[i_index].i_pitch;
                     p_out += p_outpic->p[i_index].i_pitch;
-                    vlc_memset( p_out + i_offset, black_pixel, -i_offset );
+                    memset( p_out + i_offset, black_pixel, -i_offset );
                 }
                 else
                 {
-                    vlc_memcpy( p_out + i_offset, p_in,
+                    memcpy( p_out + i_offset, p_in,
                                 i_visible_pitch - i_offset );
-                    vlc_memset( p_out, black_pixel, i_offset );
+                    memset( p_out, black_pixel, i_offset );
                     p_in += p_pic->p[i_index].i_pitch;
                     p_out += p_outpic->p[i_index].i_pitch;
                 }
             }
             else
             {
-                vlc_memcpy( p_out, p_in, i_visible_pitch );
+                memcpy( p_out, p_in, i_visible_pitch );
                 p_in += p_pic->p[i_index].i_pitch;
                 p_out += p_outpic->p[i_index].i_pitch;
             }

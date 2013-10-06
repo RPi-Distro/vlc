@@ -3,20 +3,20 @@
  * @brief Real-Time Protocol (RTP) demux module for VLC media player
  */
 /*****************************************************************************
- * Copyright (C) 2001-2005 the VideoLAN team
+ * Copyright (C) 2001-2005 VLC authors and VideoLAN
  * Copyright © 2007-2009 Rémi Denis-Courmont
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2.1
  * of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  ****************************************************************************/
@@ -33,6 +33,7 @@
 #include <vlc_network.h>
 #include <vlc_plugin.h>
 #include <vlc_dialog.h>
+#include <vlc_aout.h> /* aout_FormatPrepare() */
 
 #include "rtp.h"
 #ifdef HAVE_SRTP
@@ -124,7 +125,7 @@ vlc_module_begin ()
         change_integer_range (0, 32767)
     add_string ("rtp-dynamic-pt", NULL, RTP_DYNAMIC_PT_TEXT,
                 RTP_DYNAMIC_PT_LONGTEXT, true)
-        change_string_list (dynamic_pt_list, dynamic_pt_list_text, NULL)
+        change_string_list (dynamic_pt_list, dynamic_pt_list_text)
 
     /*add_shortcut ("sctp")*/
     add_shortcut ("dccp", "rtptcp", /* "tcp" is already taken :( */
@@ -253,6 +254,7 @@ static int Open (vlc_object_t *obj)
         return VLC_EGENERIC;
     }
 
+    p_sys->chained_demux = NULL;
 #ifdef HAVE_SRTP
     p_sys->srtp         = NULL;
 #endif
@@ -370,25 +372,12 @@ static int extract_port (char **phost)
 /**
  * Control callback
  */
-static int Control (demux_t *demux, int i_query, va_list args)
+static int Control (demux_t *demux, int query, va_list args)
 {
-    switch (i_query)
+    demux_sys_t *sys = demux->p_sys;
+
+    switch (query)
     {
-        case DEMUX_GET_POSITION:
-        {
-            float *v = va_arg (args, float *);
-            *v = 0.;
-            return VLC_SUCCESS;
-        }
-
-        case DEMUX_GET_LENGTH:
-        case DEMUX_GET_TIME:
-        {
-            int64_t *v = va_arg (args, int64_t *);
-            *v = 0;
-            return VLC_SUCCESS;
-        }
-
         case DEMUX_GET_PTS_DELAY:
         {
             int64_t *v = va_arg (args, int64_t *);
@@ -406,6 +395,27 @@ static int Control (demux_t *demux, int i_query, va_list args)
         }
     }
 
+    if (sys->chained_demux != NULL)
+        return stream_DemuxControlVa (sys->chained_demux, query, args);
+
+    switch (query)
+    {
+        case DEMUX_GET_POSITION:
+        {
+            float *v = va_arg (args, float *);
+            *v = 0.;
+            return VLC_SUCCESS;
+        }
+
+        case DEMUX_GET_LENGTH:
+        case DEMUX_GET_TIME:
+        {
+            int64_t *v = va_arg (args, int64_t *);
+            *v = 0;
+            return VLC_SUCCESS;
+        }
+    }
+
     return VLC_EGENERIC;
 }
 
@@ -416,6 +426,8 @@ static int Control (demux_t *demux, int i_query, va_list args)
 
 void *codec_init (demux_t *demux, es_format_t *fmt)
 {
+    if (fmt->i_cat == AUDIO_ES)
+        aout_FormatPrepare (&fmt->audio);
     return es_out_Add (demux->out, fmt);
 }
 
@@ -440,14 +452,23 @@ void codec_decode (demux_t *demux, void *data, block_t *block)
 
 static void *stream_init (demux_t *demux, const char *name)
 {
-    return stream_DemuxNew (demux, name, demux->out);
+    demux_sys_t *p_sys = demux->p_sys;
+
+    if (p_sys->chained_demux != NULL)
+        return NULL;
+    p_sys->chained_demux = stream_DemuxNew (demux, name, demux->out);
+    return p_sys->chained_demux;
 }
 
 static void stream_destroy (demux_t *demux, void *data)
 {
+    demux_sys_t *p_sys = demux->p_sys;
+
     if (data)
+    {
         stream_Delete ((stream_t *)data);
-    (void)demux;
+        p_sys->chained_demux = NULL;
+    }
 }
 
 /* Send a packet to a chained demuxer */
@@ -478,7 +499,8 @@ static void *pcmu_init (demux_t *demux)
 
     es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_MULAW);
     fmt.audio.i_rate = 8000;
-    fmt.audio.i_channels = 1;
+    fmt.audio.i_original_channels =
+    fmt.audio.i_physical_channels = AOUT_CHAN_CENTER;
     return codec_init (demux, &fmt);
 }
 
@@ -491,7 +513,8 @@ static void *gsm_init (demux_t *demux)
 
     es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_GSM);
     fmt.audio.i_rate = 8000;
-    fmt.audio.i_channels = 1;
+    fmt.audio.i_original_channels =
+    fmt.audio.i_physical_channels = AOUT_CHAN_CENTER;
     return codec_init (demux, &fmt);
 }
 
@@ -504,7 +527,8 @@ static void *pcma_init (demux_t *demux)
 
     es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_ALAW);
     fmt.audio.i_rate = 8000;
-    fmt.audio.i_channels = 1;
+    fmt.audio.i_original_channels =
+    fmt.audio.i_physical_channels = AOUT_CHAN_CENTER;
     return codec_init (demux, &fmt);
 }
 
@@ -517,7 +541,8 @@ static void *l16s_init (demux_t *demux)
 
     es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_S16B);
     fmt.audio.i_rate = 44100;
-    fmt.audio.i_channels = 2;
+    fmt.audio.i_original_channels =
+    fmt.audio.i_physical_channels = AOUT_CHANS_STEREO;
     return codec_init (demux, &fmt);
 }
 
@@ -527,7 +552,8 @@ static void *l16m_init (demux_t *demux)
 
     es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_S16B);
     fmt.audio.i_rate = 44100;
-    fmt.audio.i_channels = 1;
+    fmt.audio.i_original_channels =
+    fmt.audio.i_physical_channels = AOUT_CHAN_CENTER;
     return codec_init (demux, &fmt);
 }
 
@@ -540,7 +566,8 @@ static void *qcelp_init (demux_t *demux)
 
     es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_QCELP);
     fmt.audio.i_rate = 8000;
-    fmt.audio.i_channels = 1;
+    fmt.audio.i_original_channels =
+    fmt.audio.i_physical_channels = AOUT_CHAN_CENTER;
     return codec_init (demux, &fmt);
 }
 
@@ -552,7 +579,8 @@ static void *mpa_init (demux_t *demux)
     es_format_t fmt;
 
     es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_MPGA);
-    fmt.audio.i_channels = 2;
+    fmt.audio.i_original_channels =
+    fmt.audio.i_physical_channels = AOUT_CHANS_STEREO;
     fmt.b_packetized = false;
     return codec_init (demux, &fmt);
 }

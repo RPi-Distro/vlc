@@ -13,13 +13,21 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+/*****************************************************************************
+ * NOTA BENE: this module requires the linking against a library which is
+ * known to require licensing under the GNU General Public License version 2
+ * (or later). Therefore, the result of compiling this module will normally
+ * be subject to the terms of that later license.
+ *****************************************************************************/
+
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -174,7 +182,7 @@ static int Open (vlc_object_t *obj)
     return VLC_SUCCESS;
 
 error:
-    msg_Err (demux, "An error occured during sid demuxing" );
+    msg_Err (demux, "An error occurred during sid demuxing" );
     delete player;
     delete builder;
     delete tune;
@@ -198,7 +206,7 @@ static int Demux (demux_t *demux)
 {
     demux_sys_t *sys = demux->p_sys;
 
-    block_t *block = block_New( p_demux, sys->block_size);
+    block_t *block = block_Alloc( sys->block_size);
     if (unlikely(block==NULL))
         return 0;
 

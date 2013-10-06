@@ -43,7 +43,6 @@ struct demux_sys_t
  * Local prototypes
  *****************************************************************************/
 static int Demux( demux_t *p_demux);
-static int Control( demux_t *p_demux, int i_query, va_list args );
 static char* ParseTabValue(char* psz_string);
 
 /*****************************************************************************
@@ -120,6 +119,7 @@ static int Demux( demux_t *p_demux )
             char *psz_tabvalue = ParseTabValue( psz_parse );
             if( !EMPTY_STR(psz_tabvalue) )
             {
+                free( psz_mrl );
                 psz_mrl = ProcessMRL( psz_tabvalue, p_demux->p_sys->psz_prefix );
             }
             free( psz_tabvalue );
@@ -140,7 +140,10 @@ static int Demux( demux_t *p_demux )
 
 #define PARSE(tag,variable)                                     \
     else if( !strncasecmp( psz_parse, tag, strlen( tag ) ) )    \
-        variable = ParseTabValue( psz_parse );
+    {                                                           \
+        free( variable );                                       \
+        variable = ParseTabValue( psz_parse );                  \
+    }
 
         PARSE( "TT", psz_title )
         PARSE( "TG", psz_genre )
@@ -176,8 +179,8 @@ static int Demux( demux_t *p_demux )
     if( !EMPTY_STR(variable) )                          \
     {                                                   \
         input_item_Set##type( p_input, variable );      \
-        FREENULL( variable );                           \
-    }
+    }                                                   \
+    FREENULL( variable );
             /* set the meta */
             SET( psz_genre, Genre );
             SET( psz_tracknum, TrackNum );
@@ -205,14 +208,24 @@ static int Demux( demux_t *p_demux )
     input_item_node_PostAndDelete( p_subitems );
 
     vlc_gc_decref(p_current_input);
+
+    // Free everything if the file is wrongly formated
+    free( psz_title );
+    free( psz_genre );
+    free( psz_tracknum );
+    free( psz_language );
+    free( psz_artist );
+    free( psz_album );
+    free( psz_date );
+    free( psz_publisher );
+    free( psz_encodedby );
+    free( psz_description );
+    free( psz_url );
+    free( psz_copyright );
+    free( psz_mrl );
+
     var_Destroy( p_demux, "zpl-extvlcopt" );
     return 0; /* Needed for correct operation of go back */
-}
-
-static int Control( demux_t *p_demux, int i_query, va_list args )
-{
-    VLC_UNUSED(p_demux); VLC_UNUSED(i_query); VLC_UNUSED(args);
-    return VLC_EGENERIC;
 }
 
 static char* ParseTabValue(char* psz_string)
@@ -228,5 +241,3 @@ static char* ParseTabValue(char* psz_string)
 
     return psz_value;
 }
-
-

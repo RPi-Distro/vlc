@@ -3,7 +3,7 @@
  * Also contains some internal utility functions
  *****************************************************************************
  * Copyright (C) 2005-2009 VLC authors and VideoLAN
- * $Id: c3a081d358f157fb5120bd375320492d0a7c7cb0 $
+ * $Id: 760649e34fd5103dc26a1420f724103e7e385ed0 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -72,6 +72,11 @@ struct libvlc_instance_t
     unsigned      ref_count;
     vlc_mutex_t   instance_lock;
     struct libvlc_callback_entry_list_t *p_callback_list;
+    struct
+    {
+        void (*cb) (void *, int, const libvlc_log_t *, const char *, va_list);
+        void *data;
+    } log;
 };
 
 
@@ -80,8 +85,10 @@ struct libvlc_instance_t
  ***************************************************************************/
 
 /* Thread context */
-void libvlc_init_threads (void);
-void libvlc_deinit_threads (void);
+void libvlc_threads_init (void);
+void libvlc_threads_deinit (void);
+void libvlc_log_init (void);
+void libvlc_log_deinit (void);
 
 /* Events */
 libvlc_event_manager_t * libvlc_event_manager_new(

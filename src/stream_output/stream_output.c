@@ -2,7 +2,7 @@
  * stream_output.c : stream output module
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: 9587cf7314e73e81dc457c2bfc9677c55c75c578 $
+ * $Id: 3f653f1ff902de3bd4a11fcb66608d234a5bfa53 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -109,9 +109,7 @@ sout_instance_t *sout_NewInstance( vlc_object_t *p_parent, const char *psz_dest 
 
     /* *** init descriptor *** */
     p_sout->psz_sout    = strdup( psz_dest );
-    p_sout->p_meta      = NULL;
     p_sout->i_out_pace_nocontrol = 0;
-    p_sout->p_sys       = NULL;
 
     vlc_mutex_init( &p_sout->lock );
     p_sout->p_stream = NULL;
@@ -130,6 +128,7 @@ sout_instance_t *sout_NewInstance( vlc_object_t *p_parent, const char *psz_dest 
 
     FREENULL( p_sout->psz_sout );
 
+    vlc_mutex_destroy( &p_sout->lock );
     vlc_object_release( p_sout );
     return NULL;
 }
@@ -144,12 +143,6 @@ void sout_DeleteInstance( sout_instance_t * p_sout )
 
     /* *** free all string *** */
     FREENULL( p_sout->psz_sout );
-
-    /* delete meta */
-    if( p_sout->p_meta )
-    {
-        vlc_meta_Delete( p_sout->p_meta );
-    }
 
     vlc_mutex_destroy( &p_sout->lock );
 
@@ -268,9 +261,6 @@ sout_access_out_t *sout_AccessOutNew( vlc_object_t *p_sout,
     p_access->pf_write   = NULL;
     p_access->pf_control = NULL;
     p_access->p_module   = NULL;
-
-    p_access->i_writes = 0;
-    p_access->i_sent_bytes = 0;
 
     p_access->p_module   =
         module_need( p_access, "sout access", p_access->psz_access, true );
@@ -465,7 +455,6 @@ sout_input_t *sout_MuxAddStream( sout_mux_t *p_mux, es_format_t *p_fmt )
     p_input = malloc( sizeof( sout_input_t ) );
     if( !p_input )
         return NULL;
-    p_input->p_sout = p_mux->p_sout;
     p_input->p_fmt  = p_fmt;
     p_input->p_fifo = block_FifoNew();
     p_input->p_sys  = NULL;
@@ -620,7 +609,7 @@ static int mrl_Parse( mrl_t *p_mrl, const char *psz_mrl )
             psz_parser++;
         }
     }
-#if defined( WIN32 ) || defined( UNDER_CE ) || defined( __OS2__ )
+#if defined( _WIN32 ) || defined( __OS2__ )
     if( psz_parser - psz_dup == 1 )
     {
         /* msg_Warn( p_sout, "drive letter %c: found in source string",
@@ -729,9 +718,14 @@ static void mrl_Clean( mrl_t *p_mrl )
 /* Destroy a "stream_out" module */
 static void sout_StreamDelete( sout_stream_t *p_stream )
 {
+    sout_instance_t *p_sout = (sout_instance_t *)(p_stream->p_parent);
+
     msg_Dbg( p_stream, "destroying chain... (name=%s)", p_stream->psz_name );
 
-    if( p_stream->p_module ) module_unneed( p_stream, p_stream->p_module );
+    p_sout->i_out_pace_nocontrol -= p_stream->pace_nocontrol;
+
+    if( p_stream->p_module != NULL )
+        module_unneed( p_stream, p_stream->p_module );
 
     FREENULL( p_stream->psz_name );
 
@@ -777,10 +771,11 @@ static sout_stream_t *sout_StreamNew( sout_instance_t *p_sout, char *psz_name,
         return NULL;
 
     p_stream->p_sout   = p_sout;
-    p_stream->p_sys    = NULL;
     p_stream->psz_name = psz_name;
     p_stream->p_cfg    = p_cfg;
     p_stream->p_next   = p_next;
+    p_stream->pace_nocontrol = false;
+    p_stream->p_sys = NULL;
 
     msg_Dbg( p_sout, "stream=`%s'", p_stream->psz_name );
 
@@ -797,6 +792,7 @@ static sout_stream_t *sout_StreamNew( sout_instance_t *p_sout, char *psz_name,
         return NULL;
     }
 
+    p_sout->i_out_pace_nocontrol += p_stream->pace_nocontrol;
     return p_stream;
 }
 

@@ -2,7 +2,7 @@
  * win32_tooltip.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f7fa7486f4ee3d1528b8129bdbd1e78a2659f677 $
+ * $Id: 403d3319216644b7e99b8cc424201470ea010b0e $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -34,7 +34,7 @@ Win32Tooltip::Win32Tooltip( intf_thread_t *pIntf, HINSTANCE hInst,
 {
     // Create the window
     m_hWnd = CreateWindowEx( WS_EX_TOOLWINDOW,
-        "SkinWindowClass", "tooltip", WS_POPUP | WS_DISABLED,
+        TEXT("SkinWindowClass"), TEXT("tooltip"), WS_POPUP | WS_DISABLED,
         CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
         hParentWindow, 0, hInst, NULL );
 

@@ -1,25 +1,25 @@
 /*****************************************************************************
  * i420_rgb16.c : YUV to bitmap RGB conversion module for vlc
  *****************************************************************************
- * Copyright (C) 2000 the VideoLAN team
- * $Id: 7a2a3fed5150fd01466720d9d8c6db18d9dc6b8d $
+ * Copyright (C) 2000 VLC authors and VideoLAN
+ * $Id: de3cbed9f8b191461ff776da6b0cb6305e007492 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -42,7 +42,7 @@
 #   include "../mmx/i420_rgb_mmx.h"
 #   define VLC_TARGET VLC_MMX
 #elif defined (MODULE_NAME_IS_i420_rgb_sse2)
-#   include "../mmx/i420_rgb_mmx.h"
+#   include "../sse2/i420_rgb_sse2.h"
 #   define VLC_TARGET VLC_SSE
 #endif
 

@@ -1,24 +1,24 @@
 /*****************************************************************************
  * zipstream.c: stream_filter that creates a XSPF playlist from a Zip archive
  *****************************************************************************
- * Copyright (C) 2009 the VideoLAN team
- * $Id: ac3f87cf30fa5368982acf8d5c111e90117d0b54 $
+ * Copyright (C) 2009 VLC authors and VideoLAN
+ * $Id: 27919251b69d0a1f8d0efd3b247ab85968561ad8 $
  *
  * Authors: Jean-Philippe André <jpeg@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /** **************************************************************************
@@ -136,14 +136,14 @@ inline static void free_all_node( node *root )
 /* Allocate strcat and format */
 static int astrcatf( char **ppsz_dest, const char *psz_fmt_src, ... )
 {
-    va_list args;
-    va_start( args, psz_fmt_src );
-
     char *psz_tmp;
-    int i_ret = vasprintf( &psz_tmp, psz_fmt_src, args );
-    if( i_ret == -1 ) return -1;
+    va_list args;
 
+    va_start( args, psz_fmt_src );
+    int i_ret = vasprintf( &psz_tmp, psz_fmt_src, args );
     va_end( args );
+
+    if( i_ret == -1 ) return -1;
 
     int i_len = strlen( *ppsz_dest ) + strlen( psz_tmp ) + 1;
     char *psz_out = realloc( *ppsz_dest, i_len );

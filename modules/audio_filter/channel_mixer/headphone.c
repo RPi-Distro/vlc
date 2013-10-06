@@ -3,7 +3,7 @@
  *               -> gives the feeling of a real room with a simple headphone
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: a1db107fcba4b8490daefbebba055d5fc3ec827b $
+ * $Id: 92c1a3b24b8a9702e54deb2f25d3b94101794002 $
  *
  * Authors: Boris Dorès <babal@via.ecp.fr>
  *
@@ -330,7 +330,7 @@ static int Init( vlc_object_t *p_this, struct filter_sys_t * p_data
  * DoWork: convert a buffer
  *****************************************************************************/
 static void DoWork( filter_t * p_filter,
-                    aout_buffer_t * p_in_buf, aout_buffer_t * p_out_buf )
+                    block_t * p_in_buf, block_t * p_out_buf )
 {
     filter_sys_t *p_sys = p_filter->p_sys;
     int i_input_nb = aout_FormatNbChannels( &p_filter->fmt_in.audio );
@@ -441,49 +441,12 @@ static int OpenFilter( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys;
-    bool b_fit = true;
 
     /* Activate this filter only with stereo devices */
     if( p_filter->fmt_out.audio.i_physical_channels
             != (AOUT_CHAN_LEFT|AOUT_CHAN_RIGHT) )
     {
         msg_Dbg( p_filter, "filter discarded (incompatible format)" );
-        return VLC_EGENERIC;
-    }
-
-    /* Request a specific format if not already compatible */
-    if( p_filter->fmt_in.audio.i_original_channels
-            != p_filter->fmt_out.audio.i_original_channels )
-    {
-        b_fit = false;
-        p_filter->fmt_in.audio.i_original_channels =
-                                        p_filter->fmt_out.audio.i_original_channels;
-    }
-    if( p_filter->fmt_in.audio.i_format != VLC_CODEC_FL32
-          || p_filter->fmt_out.audio.i_format != VLC_CODEC_FL32 )
-    {
-        b_fit = false;
-        p_filter->fmt_in.audio.i_format = VLC_CODEC_FL32;
-        p_filter->fmt_out.audio.i_format = VLC_CODEC_FL32;
-    }
-    if( p_filter->fmt_in.audio.i_rate != p_filter->fmt_out.audio.i_rate )
-    {
-        b_fit = false;
-        p_filter->fmt_in.audio.i_rate = p_filter->fmt_out.audio.i_rate;
-    }
-    if( p_filter->fmt_in.audio.i_physical_channels == (AOUT_CHAN_LEFT|AOUT_CHAN_RIGHT)
-          && ( p_filter->fmt_in.audio.i_original_channels & AOUT_CHAN_DOLBYSTEREO )
-          && !var_InheritBool( p_filter, "headphone-dolby" ) )
-    {
-        b_fit = false;
-        p_filter->fmt_in.audio.i_physical_channels = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT |
-                                              AOUT_CHAN_CENTER |
-                                              AOUT_CHAN_REARLEFT |
-                                              AOUT_CHAN_REARRIGHT;
-    }
-    if( !b_fit )
-    {
-        msg_Dbg( p_filter, "requesting specific format" );
         return VLC_EGENERIC;
     }
 
@@ -505,8 +468,19 @@ static int OpenFilter( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    p_filter->pf_audio_filter = Convert;
+    /* Request a specific format if not already compatible */
+    p_filter->fmt_in.audio.i_format = VLC_CODEC_FL32;
+    p_filter->fmt_out.audio.i_format = VLC_CODEC_FL32;
     p_filter->fmt_out.audio.i_rate = p_filter->fmt_in.audio.i_rate;
+    p_filter->fmt_in.audio.i_original_channels =
+                                   p_filter->fmt_out.audio.i_original_channels;
+    if( p_filter->fmt_in.audio.i_physical_channels == AOUT_CHANS_STEREO
+     && (p_filter->fmt_in.audio.i_original_channels & AOUT_CHAN_DOLBYSTEREO)
+     && !var_InheritBool( p_filter, "headphone-dolby" ) )
+    {
+        p_filter->fmt_in.audio.i_physical_channels = AOUT_CHANS_5_0;
+    }
+    p_filter->pf_audio_filter = Convert;
 
     return VLC_SUCCESS;
 }
@@ -536,7 +510,7 @@ static block_t *Convert( filter_t *p_filter, block_t *p_block )
       p_filter->fmt_out.audio.i_bitspersample/8 *
         aout_FormatNbChannels( &(p_filter->fmt_out.audio) );
 
-    block_t *p_out = filter_NewAudioBuffer( p_filter, i_out_size );
+    block_t *p_out = block_Alloc( i_out_size );
     if( !p_out )
     {
         msg_Warn( p_filter, "can't get output buffer" );

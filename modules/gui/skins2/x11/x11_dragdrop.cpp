@@ -2,7 +2,7 @@
  * x11_dragdrop.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e0ca4958bf1f0e7fdf183ec826437a4fd8ca14b9 $
+ * $Id: 36ef6b792ab0fdbcb36a428954796357834b7aab $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -104,9 +104,9 @@ void X11DragDrop::dndEnter( ldata_t data )
 void X11DragDrop::dndPosition( ldata_t data )
 {
     Window src = data[0];
-    //Time time = data[3];
     m_xPos = data[2] >> 16;
     m_yPos = data[2] & 0xffff;
+    Time time = data[3];
 
     Atom selectionAtom = XInternAtom( XDISPLAY, "XdndSelection", 0 );
     //Atom targetAtom = XInternAtom( XDISPLAY, "text/plain", 0 );
@@ -119,7 +119,7 @@ void X11DragDrop::dndPosition( ldata_t data )
     // Convert the selection into the given target
     // NEEDED or it doesn't work!
     XConvertSelection( XDISPLAY, selectionAtom, targetAtom, propAtom, src,
-                       CurrentTime );
+                       time );
 
     actionAtom = XInternAtom( XDISPLAY, "XdndActionCopy", 0 );
     typeAtom = XInternAtom( XDISPLAY, "XdndStatus", 0 );

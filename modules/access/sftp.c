@@ -1,24 +1,24 @@
 /*****************************************************************************
  * sftp.c: SFTP input module
  *****************************************************************************
- * Copyright (C) 2009 the VideoLAN team
- * $Id: 0dba0fc5fa25db16029d8574618d59cb7183ce28 $
+ * Copyright (C) 2009 VLC authors and VideoLAN
+ * $Id: f930af7a7de84dd1082284afee64e753b63abb26 $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -48,10 +48,6 @@
 static int  Open ( vlc_object_t* );
 static void Close( vlc_object_t* );
 
-#define USER_TEXT N_("SFTP user name")
-#define USER_LONGTEXT N_("User name that will be used for the connection.")
-#define PASS_TEXT N_("SFTP password")
-#define PASS_LONGTEXT N_("Password that will be used for the connection.")
 #define PORT_TEXT N_("SFTP port")
 #define PORT_LONGTEXT N_("SFTP port number to use on the server")
 #define MTU_TEXT N_("Read size")
@@ -84,7 +80,7 @@ struct access_sys_t
     LIBSSH2_SESSION* ssh_session;
     LIBSSH2_SFTP* sftp_session;
     LIBSSH2_SFTP_HANDLE* file;
-    int i_read_size;
+    size_t i_read_size;
 };
 
 
@@ -171,10 +167,12 @@ static int Open( vlc_object_t* p_this )
 
     char *psz_home = config_GetUserDir( VLC_HOME_DIR );
     char *psz_knownhosts_file;
-    asprintf( &psz_knownhosts_file, "%s/.ssh/known_hosts", psz_home );
-    libssh2_knownhost_readfile( ssh_knownhosts, psz_knownhosts_file,
-                                LIBSSH2_KNOWNHOST_FILE_OPENSSH );
-    free( psz_knownhosts_file );
+    if( asprintf( &psz_knownhosts_file, "%s/.ssh/known_hosts", psz_home ) != -1 )
+    {
+        libssh2_knownhost_readfile( ssh_knownhosts, psz_knownhosts_file,
+                LIBSSH2_KNOWNHOST_FILE_OPENSSH );
+        free( psz_knownhosts_file );
+    }
     free( psz_home );
 
     const char *fingerprint = libssh2_session_hostkey( p_sys->ssh_session, &i_len, &i_type );
@@ -277,7 +275,7 @@ static block_t* Block( access_t* p_access )
     /* Allocate the buffer we need */
     size_t i_len = __MIN( p_access->p_sys->i_read_size, p_access->info.i_size -
                                               p_access->info.i_pos );
-    block_t* p_block = block_New( p_access, i_len );
+    block_t* p_block = block_Alloc( i_len );
     if( !p_block )
         return NULL;
 

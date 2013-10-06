@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 79ae441226552ef486d410b82513bf8767596edb $
+ * $Id: 7b71588545b3bafd0e558e4455fd887ce3ae843e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -1331,7 +1331,7 @@ static int rtp_packetize_g726( sout_stream_id_t *id, block_t *in, int i_pad )
     while( i_data > 0 )
     {
         int           i_payload = __MIN( i_max, i_data );
-        block_t *out = block_New( p_stream, 12 + i_payload );
+        block_t *out = block_Alloc( 12 + i_payload );
 
         /* rtp common header */
         rtp_packetize_common( id, out, 0,

@@ -1,24 +1,24 @@
 /*****************************************************************************
  * speex.c: speex decoder/packetizer/encoder module making use of libspeex.
  *****************************************************************************
- * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: 5f3284a9f96a5907b667c14e7493d7a352393af9 $
+ * Copyright (C) 2003-2009 VLC authors and VideoLAN
+ * $Id: 94fc27e1e4131ff5dd2c91866594b0e7971470fd $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -32,7 +32,6 @@
 #include <vlc_plugin.h>
 #include <vlc_input.h>
 #include <vlc_codec.h>
-#include <vlc_aout.h>
 #include "../demux/xiph.h"
 
 #include <ogg/ogg.h>
@@ -49,8 +48,11 @@
 static int  OpenDecoder   ( vlc_object_t * );
 static int  OpenPacketizer( vlc_object_t * );
 static void CloseDecoder  ( vlc_object_t * );
+
+#ifdef ENABLE_SOUT
 static int OpenEncoder   ( vlc_object_t * );
 static void CloseEncoder ( vlc_object_t * );
+#endif
 
 #define ENC_CFG_PREFIX "sout-speex-"
 
@@ -103,6 +105,7 @@ vlc_module_begin ()
     set_capability( "packetizer", 100 )
     set_callbacks( OpenPacketizer, CloseDecoder )
 
+#ifdef ENABLE_SOUT
     add_submodule ()
     set_description( N_("Speex audio encoder") )
     set_capability( "encoder", 100 )
@@ -133,6 +136,7 @@ vlc_module_begin ()
                  ENC_DTX_LONGTEXT, false )
 
     /* TODO agc, noise suppression, */
+#endif
 
 vlc_module_end ()
 
@@ -186,17 +190,15 @@ static const int pi_channels_maps[6] =
  ****************************************************************************/
 
 static block_t *DecodeBlock  ( decoder_t *, block_t ** );
-static aout_buffer_t *DecodeRtpSpeexPacket( decoder_t *, block_t **);
+static block_t *DecodeRtpSpeexPacket( decoder_t *, block_t **);
 static int  ProcessHeaders( decoder_t * );
 static int  ProcessInitialHeader ( decoder_t *, ogg_packet * );
 static void *ProcessPacket( decoder_t *, ogg_packet *, block_t ** );
 
-static aout_buffer_t *DecodePacket( decoder_t *, ogg_packet * );
+static block_t *DecodePacket( decoder_t *, ogg_packet * );
 static block_t *SendPacket( decoder_t *, block_t * );
 
 static void ParseSpeexComments( decoder_t *, ogg_packet * );
-
-static block_t *Encode   ( encoder_t *, aout_buffer_t * );
 
 /*****************************************************************************
  * OpenDecoder: probe the decoder and return score
@@ -225,14 +227,14 @@ static int OpenDecoder( vlc_object_t *p_this )
 
     /*
       Set callbacks
-      If the codec is spxr then this decoder is 
-      being invoked on a Speex stream arriving via RTP. 
+      If the codec is spxr then this decoder is
+      being invoked on a Speex stream arriving via RTP.
       A special decoder callback is used.
     */
     if (p_dec->fmt_in.i_original_fourcc == VLC_FOURCC('s', 'p', 'x', 'r'))
     {
-        msg_Dbg( p_dec, "Using RTP version of Speex decoder @ rate %d.", 
-	    p_dec->fmt_in.audio.i_rate );
+        msg_Dbg( p_dec, "Using RTP version of Speex decoder @ rate %d.",
+        p_dec->fmt_in.audio.i_rate );
         p_dec->pf_decode_audio = DecodeRtpSpeexPacket;
     }
     else
@@ -485,78 +487,78 @@ static void *ProcessPacket( decoder_t *p_dec, ogg_packet *p_oggpacket,
 
     if( p_sys->b_packetizer )
     {
-	if ( p_sys->p_header->frames_per_packet > 1 )
-	{
-	    short *p_frame_holder = NULL;
-	    int i_bits_before = 0, i_bits_after = 0, i_bytes_in_speex_frame = 0,
-	        i_pcm_output_size = 0, i_bits_in_speex_frame = 0;
-	    block_t *p_new_block = NULL;
+        if ( p_sys->p_header->frames_per_packet > 1 )
+        {
+            short *p_frame_holder = NULL;
+            int i_bits_before = 0, i_bits_after = 0, i_bytes_in_speex_frame = 0,
+                i_pcm_output_size = 0, i_bits_in_speex_frame = 0;
+            block_t *p_new_block = NULL;
 
-	    i_pcm_output_size = p_sys->p_header->frame_size;
-	    p_frame_holder = (short*)xmalloc( sizeof(short)*i_pcm_output_size );
+            i_pcm_output_size = p_sys->p_header->frame_size;
+            p_frame_holder = (short*)xmalloc( sizeof(short)*i_pcm_output_size );
 
-            speex_bits_read_from( &p_sys->bits, (char*)p_oggpacket->packet,
-	        p_oggpacket->bytes);
-            i_bits_before = speex_bits_remaining( &p_sys->bits );
-	    speex_decode_int(p_sys->p_state, &p_sys->bits, p_frame_holder);
-	    i_bits_after = speex_bits_remaining( &p_sys->bits );
+                speex_bits_read_from( &p_sys->bits, (char*)p_oggpacket->packet,
+                p_oggpacket->bytes);
+                i_bits_before = speex_bits_remaining( &p_sys->bits );
+            speex_decode_int(p_sys->p_state, &p_sys->bits, p_frame_holder);
+            i_bits_after = speex_bits_remaining( &p_sys->bits );
 
-            i_bits_in_speex_frame = i_bits_before - i_bits_after;
-	    i_bytes_in_speex_frame = ( i_bits_in_speex_frame + 
-	        (8 - (i_bits_in_speex_frame % 8)) )
-                / 8;
+                i_bits_in_speex_frame = i_bits_before - i_bits_after;
+            i_bytes_in_speex_frame = ( i_bits_in_speex_frame +
+                (8 - (i_bits_in_speex_frame % 8)) )
+                    / 8;
 
-            p_new_block = block_New( p_dec, i_bytes_in_speex_frame );
-	    memset( p_new_block->p_buffer, 0xff, i_bytes_in_speex_frame );
+                p_new_block = block_Alloc( i_bytes_in_speex_frame );
+            memset( p_new_block->p_buffer, 0xff, i_bytes_in_speex_frame );
 
-	    /*
-	     * Copy the first frame in this packet to a new packet.
-	     */
-	    speex_bits_rewind( &p_sys->bits );
-	    speex_bits_write( &p_sys->bits, 
-	        (char*)p_new_block->p_buffer, 
-		    (int)i_bytes_in_speex_frame );
+            /*
+             * Copy the first frame in this packet to a new packet.
+             */
+            speex_bits_rewind( &p_sys->bits );
+            speex_bits_write( &p_sys->bits,
+                (char*)p_new_block->p_buffer,
+                (int)i_bytes_in_speex_frame );
 
-	    /*
-	     * Move the remaining part of the original packet (subsequent
-	     * frames, if there are any) into the beginning 
-	     * of the original packet so
-	     * they are preserved following the realloc. 
-	     * Note: Any bits that
-	     * remain in the initial packet
-	     * are "filler" if they do not constitute
-	     * an entire byte. 
-	     */
-	    if ( i_bits_after > 7 )
-	    {
-	        /* round-down since we rounded-up earlier (to include
-		 * the speex terminator code. 
-		 */
-	        i_bytes_in_speex_frame--;
-	        speex_bits_write( &p_sys->bits, 
-		        (char*)p_block->p_buffer, 
-		        p_block->i_buffer - i_bytes_in_speex_frame );
-            p_block = block_Realloc( p_block, 
-	            0, 
-		        p_block->i_buffer-i_bytes_in_speex_frame );
-	        *pp_block = p_block;
-	    }
-	    else
-	    {
-	        speex_bits_reset( &p_sys->bits );
-	    }
+            /*
+             * Move the remaining part of the original packet (subsequent
+             * frames, if there are any) into the beginning
+             * of the original packet so
+             * they are preserved following the realloc.
+             * Note: Any bits that
+             * remain in the initial packet
+             * are "filler" if they do not constitute
+             * an entire byte.
+             */
+            if ( i_bits_after > 7 )
+            {
+                /* round-down since we rounded-up earlier (to include
+             * the speex terminator code.
+             */
+                i_bytes_in_speex_frame--;
+                speex_bits_write( &p_sys->bits,
+                    (char*)p_block->p_buffer,
+                    p_block->i_buffer - i_bytes_in_speex_frame );
+                p_block = block_Realloc( p_block,
+                    0,
+                    p_block->i_buffer-i_bytes_in_speex_frame );
+                *pp_block = p_block;
+            }
+            else
+            {
+                speex_bits_reset( &p_sys->bits );
+            }
 
-	    free( p_frame_holder );
-	    return SendPacket( p_dec, p_new_block);
-	}
-	else
-	{
-            return SendPacket( p_dec, p_block );
-	}
+            free( p_frame_holder );
+            return SendPacket( p_dec, p_new_block);
+        }
+        else
+        {
+                return SendPacket( p_dec, p_block );
+        }
     }
     else
     {
-        aout_buffer_t *p_aout_buffer = DecodePacket( p_dec, p_oggpacket );
+        block_t *p_aout_buffer = DecodePacket( p_dec, p_oggpacket );
 
         if( p_block )
             block_Release( p_block );
@@ -564,74 +566,74 @@ static void *ProcessPacket( decoder_t *p_dec, ogg_packet *p_oggpacket,
     }
 }
 
-static aout_buffer_t *DecodeRtpSpeexPacket( decoder_t *p_dec, block_t **pp_block )
+static block_t *DecodeRtpSpeexPacket( decoder_t *p_dec, block_t **pp_block )
 {
     block_t *p_speex_bit_block = *pp_block;
     decoder_sys_t *p_sys = p_dec->p_sys;
-    aout_buffer_t *p_aout_buffer;
+    block_t *p_aout_buffer;
     int i_decode_ret;
     unsigned int i_speex_frame_size;
 
     if ( !p_speex_bit_block || p_speex_bit_block->i_pts <= VLC_TS_INVALID )
         return NULL;
 
-    /* 
+    /*
       If the SpeexBits buffer size is 0 (a default value),
       we know that a proper initialization has not yet been done.
     */
     if ( p_sys->bits.buf_size==0 )
     {
-	p_sys->p_header = (SpeexHeader *)malloc(sizeof(SpeexHeader));
-	if ( !p_sys->p_header )
-	{
-	    msg_Err( p_dec, "Could not allocate a Speex header.");
-	    return NULL;
-	}
-	speex_init_header( p_sys->p_header,p_sys->rtp_rate,1,&speex_nb_mode );
-        speex_bits_init( &p_sys->bits );
-	p_sys->p_state = speex_decoder_init( &speex_nb_mode );
-	if ( !p_sys->p_state )
-	{
-	    msg_Err( p_dec, "Could not allocate a Speex decoder." );
-	    free( p_sys->p_header );
-	    return NULL;
-	}
+        p_sys->p_header = (SpeexHeader *)malloc(sizeof(SpeexHeader));
+        if ( !p_sys->p_header )
+        {
+            msg_Err( p_dec, "Could not allocate a Speex header.");
+            return NULL;
+        }
+        speex_init_header( p_sys->p_header,p_sys->rtp_rate,1,&speex_nb_mode );
+            speex_bits_init( &p_sys->bits );
+        p_sys->p_state = speex_decoder_init( &speex_nb_mode );
+        if ( !p_sys->p_state )
+        {
+            msg_Err( p_dec, "Could not allocate a Speex decoder." );
+            free( p_sys->p_header );
+            return NULL;
+        }
 
-        /*
-	  Assume that variable bit rate is enabled. Also assume
-	  that there is only one frame per packet. 
-	*/
-	p_sys->p_header->vbr = 1;
-	p_sys->p_header->frames_per_packet = 1;
+            /*
+          Assume that variable bit rate is enabled. Also assume
+          that there is only one frame per packet.
+        */
+        p_sys->p_header->vbr = 1;
+        p_sys->p_header->frames_per_packet = 1;
 
-        p_dec->fmt_out.audio.i_channels = p_sys->p_header->nb_channels;
-	p_dec->fmt_out.audio.i_physical_channels = 
-	p_dec->fmt_out.audio.i_original_channels = 
-	    pi_channels_maps[p_sys->p_header->nb_channels];
-        p_dec->fmt_out.audio.i_rate = p_sys->p_header->rate;
+            p_dec->fmt_out.audio.i_channels = p_sys->p_header->nb_channels;
+        p_dec->fmt_out.audio.i_physical_channels =
+        p_dec->fmt_out.audio.i_original_channels =
+            pi_channels_maps[p_sys->p_header->nb_channels];
+            p_dec->fmt_out.audio.i_rate = p_sys->p_header->rate;
 
-        if ( speex_mode_query( &speex_nb_mode, 
-	    SPEEX_MODE_FRAME_SIZE, 
-	    &i_speex_frame_size ) )
-	{
-	    msg_Err( p_dec, "Could not determine the frame size." );
-	    speex_decoder_destroy( p_sys->p_state );
-	    free( p_sys->p_header );
-	    return NULL;
-	}
-	p_dec->fmt_out.audio.i_bytes_per_frame = i_speex_frame_size;
+            if ( speex_mode_query( &speex_nb_mode,
+            SPEEX_MODE_FRAME_SIZE,
+            &i_speex_frame_size ) )
+        {
+            msg_Err( p_dec, "Could not determine the frame size." );
+            speex_decoder_destroy( p_sys->p_state );
+            free( p_sys->p_header );
+            return NULL;
+        }
+        p_dec->fmt_out.audio.i_bytes_per_frame = i_speex_frame_size;
 
-	date_Init(&p_sys->end_date, p_sys->p_header->rate, 1);
+        date_Init(&p_sys->end_date, p_sys->p_header->rate, 1);
     }
 
-    /* 
-      If the SpeexBits are initialized but there is 
+    /*
+      If the SpeexBits are initialized but there is
       still no header, an error must be thrown.
     */
     if ( !p_sys->p_header )
     {
         msg_Err( p_dec, "There is no valid Speex header found." );
-	return NULL;
+        return NULL;
     }
     *pp_block = NULL;
 
@@ -640,43 +642,43 @@ static aout_buffer_t *DecodeRtpSpeexPacket( decoder_t *p_dec, block_t **pp_block
 
     /*
       Ask for a new audio output buffer and make sure
-      we get one. 
+      we get one.
     */
-    p_aout_buffer = decoder_NewAudioBuffer( p_dec, 
+    p_aout_buffer = decoder_NewAudioBuffer( p_dec,
         p_sys->p_header->frame_size );
     if ( !p_aout_buffer || p_aout_buffer->i_buffer == 0 )
     {
         msg_Err(p_dec, "Oops: No new buffer was returned!");
-	return NULL;
+        return NULL;
     }
 
     /*
       Read the Speex payload into the SpeexBits buffer.
     */
-    speex_bits_read_from( &p_sys->bits, 
-        (char*)p_speex_bit_block->p_buffer, 
+    speex_bits_read_from( &p_sys->bits,
+        (char*)p_speex_bit_block->p_buffer,
         p_speex_bit_block->i_buffer );
-    
-    /* 
-      Decode the input and ensure that no errors 
+
+    /*
+      Decode the input and ensure that no errors
       were encountered.
     */
-    i_decode_ret = speex_decode_int( p_sys->p_state, &p_sys->bits, 
+    i_decode_ret = speex_decode_int( p_sys->p_state, &p_sys->bits,
             (int16_t*)p_aout_buffer->p_buffer );
     if ( i_decode_ret < 0 )
     {
         msg_Err( p_dec, "Decoding failed. Perhaps we have a bad stream?" );
-	return NULL;
+        return NULL;
     }
 
-    /* 
-      Handle date management on the audio output buffer. 
+    /*
+      Handle date management on the audio output buffer.
     */
     p_aout_buffer->i_pts = date_Get( &p_sys->end_date );
     p_aout_buffer->i_length = date_Increment( &p_sys->end_date,
         p_sys->p_header->frame_size ) - p_aout_buffer->i_pts;
-    
-    
+
+
     p_sys->i_frame_in_packet++;
     block_Release( p_speex_bit_block );
 
@@ -686,7 +688,7 @@ static aout_buffer_t *DecodeRtpSpeexPacket( decoder_t *p_dec, block_t **pp_block
 /*****************************************************************************
  * DecodePacket: decodes a Speex packet.
  *****************************************************************************/
-static aout_buffer_t *DecodePacket( decoder_t *p_dec, ogg_packet *p_oggpacket )
+static block_t *DecodePacket( decoder_t *p_dec, ogg_packet *p_oggpacket )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
@@ -701,7 +703,7 @@ static aout_buffer_t *DecodePacket( decoder_t *p_dec, ogg_packet *p_oggpacket )
     /* Decode one frame at a time */
     if( p_sys->i_frame_in_packet < p_sys->p_header->frames_per_packet )
     {
-        aout_buffer_t *p_aout_buffer;
+        block_t *p_aout_buffer;
         if( p_sys->p_header->frame_size == 0 )
             return NULL;
 
@@ -820,6 +822,7 @@ static void CloseDecoder( vlc_object_t *p_this )
     free( p_sys );
 }
 
+#ifdef ENABLE_SOUT
 /*****************************************************************************
  * encoder_sys_t: encoder descriptor
  *****************************************************************************/
@@ -849,6 +852,8 @@ struct encoder_sys_t
     int i_samples_delay;
     int i_frame_size;
 };
+
+static block_t *Encode   ( encoder_t *, block_t * );
 
 /*****************************************************************************
  * OpenEncoder: probe the encoder and return score
@@ -979,10 +984,13 @@ static int OpenEncoder( vlc_object_t *p_this )
  ****************************************************************************
  * This function spits out ogg packets.
  ****************************************************************************/
-static block_t *Encode( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
+static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
 {
     encoder_sys_t *p_sys = p_enc->p_sys;
     block_t *p_block, *p_chain = NULL;
+
+    /* Encoder gets NULL when it's time to flush */
+    if( unlikely( !p_aout_buf ) ) return NULL;
 
     unsigned char *p_buffer = p_aout_buf->p_buffer;
     int i_samples = p_aout_buf->i_nb_samples;
@@ -1045,7 +1053,7 @@ static block_t *Encode( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
                                   MAX_FRAME_BYTES );
         speex_bits_reset( &p_sys->bits );
 
-        p_block = block_New( p_enc, i_out );
+        p_block = block_Alloc( i_out );
         memcpy( p_block->p_buffer, p_sys->p_buffer_out, i_out );
 
         p_block->i_length = (mtime_t)1000000 *
@@ -1085,3 +1093,4 @@ static void CloseEncoder( vlc_object_t *p_this )
     free( p_sys->p_buffer );
     free( p_sys );
 }
+#endif

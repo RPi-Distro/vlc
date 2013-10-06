@@ -1,25 +1,25 @@
 /*****************************************************************************
  * m3u.c : M3U playlist format import
  *****************************************************************************
- * Copyright (C) 2004 the VideoLAN team
- * $Id: 388e8a9bc8e6841236ae040b851d67810ef34dfb $
+ * Copyright (C) 2004 VLC authors and VideoLAN
+ * $Id: 8f07a47557f09ccea52cd87c5427b650bcc30d99 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -46,7 +46,6 @@ struct demux_sys_t
  * Local prototypes
  *****************************************************************************/
 static int Demux( demux_t *p_demux);
-static int Control( demux_t *p_demux, int i_query, va_list args );
 static void parseEXTINF( char *psz_string, char **ppsz_artist, char **ppsz_name, int *pi_duration );
 static bool ContainsURL( demux_t *p_demux );
 static bool CheckContentType( stream_t * p_stream, const char * psz_ctype );
@@ -68,25 +67,44 @@ int Import_M3U( vlc_object_t *p_this )
 {
     demux_t *p_demux = (demux_t *)p_this;
     const uint8_t *p_peek;
-    CHECK_PEEK( p_peek, 8 );
-    char *(*pf_dup) (const char *);
+    char *(*pf_dup) (const char *) = GuessEncoding;
+    int offset = 0;
 
-    if( POKE( p_peek, "RTSPtext", 8 ) /* QuickTime */
-     || POKE( p_peek, "\xef\xbb\xbf" "#EXTM3U", 10) /* BOM at start */
-     || demux_IsPathExtension( p_demux, ".m3u8" )
+    if( stream_Peek( p_demux->s, &p_peek, 3 ) == 3
+     && !memcmp( p_peek, "\xef\xbb\xbf", 3) )
+    {
+        pf_dup = CheckUnicode; /* UTF-8 Byte Order Mark */
+        offset = 3;
+    }
+
+    if( demux_IsPathExtension( p_demux, ".m3u8" )
      || demux_IsForced( p_demux, "m3u8" )
      || CheckContentType( p_demux->s, "application/vnd.apple.mpegurl" ) )
-        pf_dup = CheckUnicode; /* UTF-8 */
+        pf_dup = CheckUnicode; /* UTF-8 file type */
     else
-    if( POKE( p_peek, "#EXTM3U", 7 )
-     || demux_IsPathExtension( p_demux, ".m3u" )
+    if( demux_IsPathExtension( p_demux, ".m3u" )
      || demux_IsPathExtension( p_demux, ".vlc" )
      || demux_IsForced( p_demux, "m3u" )
      || ContainsURL( p_demux )
      || CheckContentType( p_demux->s, "audio/x-mpegurl") )
-        pf_dup = GuessEncoding;
+        ; /* Guess encoding */
     else
-        return VLC_EGENERIC;
+    {
+        if( stream_Peek( p_demux->s, &p_peek, 8 + offset ) < (8 + offset) )
+            return VLC_EGENERIC;
+
+        p_peek += offset;
+
+        if( !memcmp( p_peek, "RTSPtext", 8 ) ) /* QuickTime */
+            pf_dup = CheckUnicode; /* UTF-8 */
+        else
+        if( !memcmp( p_peek, "#EXTM3U", 7 ) )
+            ; /* Guess encoding */
+        else
+            return VLC_EGENERIC;
+    }
+
+    stream_Seek( p_demux->s, offset );
 
     STANDARD_DEMUX_INIT_MSG( "found valid M3U playlist" );
     p_demux->p_sys->psz_prefix = FindPrefix( p_demux );
@@ -134,7 +152,14 @@ static bool CheckContentType( stream_t * p_stream, const char * psz_ctype )
     char *psz_check = stream_ContentType( p_stream );
     if( !psz_check ) return false;
 
-    int i_res = strncasecmp( psz_check, psz_ctype, strlen( psz_check ) );
+    int i_len = strlen( psz_check );
+    if ( i_len == 0 )
+    {
+        free( psz_check );
+        return false;
+    }
+
+    int i_res = strncasecmp( psz_check, psz_ctype, i_len );
     free( psz_check );
 
     return ( i_res == 0 ) ? true : false;
@@ -192,8 +217,8 @@ static int Demux( demux_t *p_demux )
             {
                 /* Extended info */
                 psz_parse += sizeof("EXTINF:") - 1;
-                free(psz_name);
-                free(psz_artist);
+                FREENULL( psz_name );
+                FREENULL( psz_artist );
                 parseEXTINF( psz_parse, &psz_artist, &psz_name, &i_parsed_duration );
                 if( i_parsed_duration >= 0 )
                     i_duration = i_parsed_duration * INT64_C(1000000);
@@ -288,12 +313,6 @@ static int Demux( demux_t *p_demux )
     vlc_gc_decref(p_current_input);
     var_Destroy( p_demux, "m3u-extvlcopt" );
     return 0; /* Needed for correct operation of go back */
-}
-
-static int Control( demux_t *p_demux, int i_query, va_list args )
-{
-    VLC_UNUSED(p_demux); VLC_UNUSED(i_query); VLC_UNUSED(args);
-    return VLC_EGENERIC;
 }
 
 static void parseEXTINF(char *psz_string, char **ppsz_artist,

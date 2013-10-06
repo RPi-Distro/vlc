@@ -2,7 +2,7 @@
  * effects.c : Effects for the visualization system
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 110337523c794bad070b7c11b409247efaecd079 $
+ * $Id: d1b8932695ed9805e7be54f596a72b86d36f2a9d $
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
  *          Adrien Maglo <magsoft@videolan.org>
@@ -48,19 +48,34 @@
 /*****************************************************************************
  * dummy_Run
  *****************************************************************************/
-int dummy_Run( visual_effect_t * p_effect, vlc_object_t *p_aout,
-               const block_t * p_buffer , picture_t * p_picture)
+static int dummy_Run( visual_effect_t * p_effect, vlc_object_t *p_aout,
+                      const block_t * p_buffer , picture_t * p_picture)
 {
     VLC_UNUSED(p_effect); VLC_UNUSED(p_aout); VLC_UNUSED(p_buffer);
     VLC_UNUSED(p_picture);
     return 0;
 }
 
+static void dummy_Free( void *data )
+{
+    VLC_UNUSED(data);
+}
+
+
 /*****************************************************************************
  * spectrum_Run: spectrum analyser
  *****************************************************************************/
-int spectrum_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
-                 const block_t * p_buffer , picture_t * p_picture)
+typedef struct spectrum_data
+{
+    int *peaks;
+    int *prev_heights;
+
+    unsigned i_prev_nb_samples;
+    int16_t *p_prev_s16_buff;
+} spectrum_data;
+
+static int spectrum_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
+                        const block_t * p_buffer , picture_t * p_picture)
 {
     spectrum_data *p_data = p_effect->p_data;
     float p_output[FFT_BUFFER_SIZE];  /* Raw FFT Result  */
@@ -332,12 +347,33 @@ int spectrum_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
     return 0;
 }
 
+static void spectrum_Free( void *data )
+{
+    spectrum_data *p_data = data;
+
+    if( p_data != NULL )
+    {
+        free( p_data->peaks );
+        free( p_data->prev_heights );
+        free( p_data->p_prev_s16_buff );
+        free( p_data );
+    }
+}
+
 
 /*****************************************************************************
  * spectrometer_Run: derivative spectrum analysis
  *****************************************************************************/
-int spectrometer_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
-                     const block_t * p_buffer , picture_t * p_picture)
+typedef struct
+{
+    int *peaks;
+
+    unsigned i_prev_nb_samples;
+    int16_t *p_prev_s16_buff;
+} spectrometer_data;
+
+static int spectrometer_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
+                            const block_t * p_buffer , picture_t * p_picture)
 {
 #define Y(R,G,B) ((uint8_t)( (R * .299) + (G * .587) + (B * .114) ))
 #define U(R,G,B) ((uint8_t)( (R * -.169) + (G * -.332) + (B * .500) + 128 ))
@@ -789,12 +825,24 @@ int spectrometer_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
     return 0;
 }
 
+static void spectrometer_Free( void *data )
+{
+    spectrometer_data *p_data = data;
+
+    if( p_data != NULL )
+    {
+        free( p_data->peaks );
+        free( p_data->p_prev_s16_buff );
+        free( p_data );
+    }
+}
+
 
 /*****************************************************************************
  * scope_Run: scope effect
  *****************************************************************************/
-int scope_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
-              const block_t * p_buffer , picture_t * p_picture)
+static int scope_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
+                     const block_t * p_buffer , picture_t * p_picture)
 {
     VLC_UNUSED(p_aout);
 
@@ -850,8 +898,8 @@ int scope_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
 /*****************************************************************************
  * vuMeter_Run: vu meter effect
  *****************************************************************************/
-int vuMeter_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
-                const block_t * p_buffer , picture_t * p_picture)
+static int vuMeter_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
+                       const block_t * p_buffer , picture_t * p_picture)
 {
     VLC_UNUSED(p_aout);
     float i_value_l = 0;
@@ -985,3 +1033,13 @@ int vuMeter_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
 
     return 0;
 }
+
+/* Table of effects */
+const struct visual_cb_t effectv[] = {
+    { "scope",        scope_Run,        dummy_Free        },
+    { "vuMeter",      vuMeter_Run,      dummy_Free        },
+    { "spectrum",     spectrum_Run,     spectrum_Free     },
+    { "spectrometer", spectrometer_Run, spectrometer_Free },
+    { "dummy",        dummy_Run,        dummy_Free        },
+};
+const unsigned effectc = sizeof (effectv) / sizeof (effectv[0]);

@@ -2,7 +2,7 @@
  * plugins.hpp : Plug-ins and extensions listing
  ****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: e2ae1d2ad684f87fb16b789054554eb07e82fae9 $
+ * $Id: 5b26800df8e5eb7fdd1f917895fe8eb0a5dd14cc $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -69,6 +69,13 @@ private:
 class PluginTab : public QVLCFrame
 {
     Q_OBJECT
+public:
+    enum
+    {
+        NAME = 0,
+        CAPABILITY,
+        SCORE
+    };
 
 protected:
     virtual void keyPressEvent( QKeyEvent *keyEvent );
@@ -100,6 +107,7 @@ private:
 
 private slots:
     void moreInformation();
+    void updateButtons();
 
 private:
     QListView *extList;
@@ -124,8 +132,31 @@ class ExtensionListModel : public QAbstractListModel
     Q_OBJECT
 
 public:
+    /* Safe copy of the extension_t struct */
+    class ExtensionCopy
+    {
+
+    public:
+        ExtensionCopy( extension_t * );
+        ~ExtensionCopy();
+        QVariant data( int role ) const;
+
+    private:
+        QString name, title, description, shortdesc, author, version, url;
+        QPixmap *icon;
+    };
+
     ExtensionListModel( QListView *view, intf_thread_t *p_intf );
     virtual ~ExtensionListModel();
+
+    enum
+    {
+        DescriptionRole = Qt::UserRole,
+        VersionRole,
+        AuthorRole,
+        LinkRole,
+        NameRole
+    };
 
     virtual QVariant data( const QModelIndex& index, int role ) const;
     virtual QModelIndex index( int row, int column = 0,
@@ -136,6 +167,7 @@ private slots:
     void updateList();
 
 private:
+
     intf_thread_t *p_intf;
     QList<ExtensionCopy*> extensions;
 };
@@ -160,7 +192,7 @@ private:
 class ExtensionInfoDialog : public QVLCDialog
 {
 public:
-    ExtensionInfoDialog( const ExtensionCopy& extension,
+    ExtensionInfoDialog( const QModelIndex &index,
                          intf_thread_t *p_intf, QWidget *parent );
 };
 

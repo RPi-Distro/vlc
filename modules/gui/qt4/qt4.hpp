@@ -1,8 +1,8 @@
 /*****************************************************************************
- * qt4.hpp : QT4 interface
+ * qt4.hpp : Qt interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 3e904e83a1cba526036f07f5978f73228e000815 $
+ * $Id: a07e0839a6a941c813744aad34d792bf6c473706 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -43,10 +43,16 @@
 #define HAS_QT47 ( QT_VERSION >= 0x040700 )
 
 enum {
-    DialogEventType = 0,
-    IMEventType     = 100,
-    PLEventType     = 200,
-    MsgEventType    = 300,
+    DialogEventTypeOffset = 0,
+    IMEventTypeOffset     = 100,
+    PLEventTypeOffset     = 200,
+    MsgEventTypeOffset    = 300,
+};
+
+enum{
+    NOTIFICATION_NEVER = 0,
+    NOTIFICATION_MINIMIZED = 1,
+    NOTIFICATION_ALWAYS = 2,
 };
 
 class QVLCApp;
@@ -70,9 +76,9 @@ struct intf_sys_t
     QString filepath;        /* Last path used in dialogs */
 
     int  i_screenHeight;     /* Detection of Small screens */
-
+    unsigned voutWindowType; /* Type of vout_window_t provided */
     bool b_isDialogProvider; /* Qt mode or Skins mode */
-#ifdef WIN32
+#ifdef _WIN32
     bool disable_volume_keys;
 #endif
 };
@@ -86,6 +92,7 @@ struct intf_sys_t
 #define THEAM ActionsManager::getInstance( p_intf )
 
 #define qfu( i ) QString::fromUtf8( i )
+#define qfue( i ) QString::fromUtf8( i ).replace( "&", "&&" ) /* for actions/buttons */
 #define qtr( i ) QString::fromUtf8( vlc_gettext(i) )
 #define qtu( i ) ((i).toUtf8().constData())
 

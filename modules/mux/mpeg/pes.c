@@ -2,7 +2,7 @@
  * pes.c: PES packetizer used by the MPEG multiplexers
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 5cbb2da439c0192704d2a6178030f4f2f7820931 $
+ * $Id: 42a74ca8043b551ccbe07cc6c2455156c54da7a5 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -313,12 +313,11 @@ static inline int PESHeader( uint8_t *p_hdr, mtime_t i_pts, mtime_t i_dts,
  *                       To allow unbounded PES packets in transport stream
  *                       VIDEO_ES, set to INT_MAX.
  */
-int  EStoPES ( sout_instance_t *p_sout, block_t **pp_pes, block_t *p_es,
+int  EStoPES ( block_t **pp_pes, block_t *p_es,
                    es_format_t *p_fmt, int i_stream_id,
                    int b_mpeg2, int b_data_alignment, int i_header_size,
                    int i_max_pes_size )
 {
-    VLC_UNUSED(p_sout);
     block_t *p_pes;
     mtime_t i_pts, i_dts, i_length;
 
@@ -407,7 +406,7 @@ int  EStoPES ( sout_instance_t *p_sout, block_t **pp_pes, block_t *p_es,
         }
         else
         {
-            p_pes->p_next = block_New( p_sout, i_pes_header + i_pes_payload );
+            p_pes->p_next = block_Alloc( i_pes_header + i_pes_payload );
             p_pes = p_pes->p_next;
 
             p_pes->i_dts    = 0;
@@ -415,7 +414,7 @@ int  EStoPES ( sout_instance_t *p_sout, block_t **pp_pes, block_t *p_es,
             p_pes->i_length = 0;
             if( i_pes_payload > 0 )
             {
-                vlc_memcpy( p_pes->p_buffer + i_pes_header, p_data,
+                memcpy( p_pes->p_buffer + i_pes_header, p_data,
                             i_pes_payload );
             }
             i_pes_count++;

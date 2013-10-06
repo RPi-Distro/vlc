@@ -1,8 +1,8 @@
 /*****************************************************************************
- * Controller_widget.cpp : Controller Widget for the controllers
+ * controller_widget.hpp : Controller Widget for the controllers
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: c287469904a0b051b5f3d86c6923eeb05546c8c9 $
+ * $Id: 48a6d96b098aa5594d75e8bbba3b3f143f90f101 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -117,8 +117,8 @@ private:
 
 protected slots:
     void userUpdateVolume( int );
-    void libUpdateVolume( void );
-    void updateMuteStatus( void );
+    void libUpdateVolume( float );
+    void updateMuteStatus( bool );
     void refreshLabels( void );
     void showVolumeMenu( QPoint pos );
     void valueChangedFilter( int );

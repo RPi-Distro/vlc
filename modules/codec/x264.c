@@ -2,7 +2,7 @@
  * x264.c: h264 video encoder
  *****************************************************************************
  * Copyright (C) 2004-2010 the VideoLAN team
- * $Id: e914c723d4e75e943e9b8f33d60e4059294e5c84 $
+ * $Id: 5287746fc4deddc1a9b2d22eaa2ab6f9275b0c45 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Ilkka Ollakka <ileoo (at)videolan org>
@@ -44,20 +44,25 @@
 
 #include <assert.h>
 
+#ifdef MODULE_NAME_IS_x26410b
+#define SOUT_CFG_PREFIX "sout-x26410b-"
+#else
 #define SOUT_CFG_PREFIX "sout-x264-"
+#endif
 
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
+static void x264_log( void *, int i_level, const char *psz, va_list );
 
 /* Frame-type options */
 
 #define KEYINT_TEXT N_("Maximum GOP size")
 #define KEYINT_LONGTEXT N_( "Sets maximum interval between IDR-frames." \
     "Larger values save bits, thus improving quality for a given bitrate at " \
-    "the cost of seeking precision." )
+    "the cost of seeking precision. Use -1 for infinite." )
 
 #define MIN_KEYINT_TEXT N_("Minimum GOP size")
 #define MIN_KEYINT_LONGTEXT N_( "Sets minimum interval between IDR-frames. " \
@@ -117,6 +122,10 @@ static void Close( vlc_object_t * );
     " - normal: Non-strict (not Blu-ray compatible)\n"\
     )
 
+#define FULLRANGE_TEXT N_("Use fullrange instead of TV colorrange")
+#define FULLRANGE_LONGTEXT N_("TV-range is usually used colorrange, defining this to true " \
+                              "will enable libx264 to use full colorrange on encoding")
+
 #define CABAC_TEXT N_("CABAC")
 #define CABAC_LONGTEXT N_( "CABAC (Context-Adaptive Binary Arithmetic "\
     "Coding). Slightly slows down encoding and decoding, but should save " \
@@ -151,6 +160,15 @@ static void Close( vlc_object_t * );
    'pure-interlaced' mode */
 #define INTERLACED_TEXT N_("Interlaced mode")
 #define INTERLACED_LONGTEXT N_( "Pure-interlaced mode.")
+
+#define FRAMEPACKING_TEXT N_("Frame packing")
+#define FRAMEPACKING_LONGTEXT N_( "For stereoscopic videos define frame arrangement:\n" \
+    " 0: checkerboard - pixels are alternatively from L and R\n" \
+    " 1: column alternation - L and R are interlaced by column\n" \
+    " 2: row alternation - L and R are interlaced by row\n" \
+    " 3: side by side - L is on the left, R on the right\n" \
+    " 4: top bottom - L is on top, R on bottom\n" \
+    " 5: frame alternation - one view per frame" )
 
 #define INTRAREFRESH_TEXT N_("Use Periodic Intra Refresh")
 #define INTRAREFRESH_LONGTEXT N_("Use Periodic Intra Refresh instead of IDR frames")
@@ -253,7 +271,7 @@ static void Close( vlc_object_t * );
     "(p4x4 requires p8x8. i8x8 requires 8x8dct).")
 
 #define DIRECT_PRED_TEXT N_("Direct MV prediction mode")
-#define DIRECT_PRED_LONGTEXT N_( "Direct MV prediction mode.")
+#define DIRECT_PRED_LONGTEXT DIRECT_PRED_TEXT
 
 #define DIRECT_PRED_SIZE_TEXT N_("Direct prediction size")
 #define DIRECT_PRED_SIZE_LONGTEXT N_( "Direct prediction size: "\
@@ -303,7 +321,6 @@ static void Close( vlc_object_t * );
     "tradeoffs involved in the motion estimation decision process " \
     "(lower = quicker and higher = better quality). Range 1 to 9." )
 
-#define B_RDO_TEXT N_("RD based mode decision for B-frames")
 #define B_RDO_LONGTEXT N_( "RD based mode decision for B-frames. This " \
     "requires subme 6 (or higher).")
 
@@ -316,7 +333,6 @@ static void Close( vlc_object_t * );
 #define CHROMA_ME_LONGTEXT N_( "Chroma ME for subpel and mode decision in " \
     "P-frames.")
 
-#define BIME_TEXT N_("Jointly optimize both MVs in B-frames")
 #define BIME_LONGTEXT N_( "Joint bidirectional motion refinement.")
 
 #define TRANSFORM_8X8DCT_TEXT N_("Adaptive spatial transform size")
@@ -390,11 +406,11 @@ static void Close( vlc_object_t * );
     "Currently default can cause sync-issues on unmuxable output, like rtsp-output without ts-mux" )
 
 #define HRD_TEXT N_("HRD-timing information")
-#define HRD_LONGTEXT N_("HRD-timing information")
+#define TUNE_TEXT N_("Default tune setting used" )
+#define PRESET_TEXT N_("Default preset setting used" )
 
-#define TUNE_TEXT N_("Tune the settings for a particular type of source or situation. " \
-     "Overridden by user settings." )
-#define PRESET_TEXT N_("Use preset as default settings. Overridden by user settings." )
+#define X264_OPTIONS_TEXT N_("x264 advanced options.")
+#define X264_OPTIONS_LONGTEXT N_("x264 advanced options, in the form {opt=val,op2=val2} .")
 
 static const char *const enc_me_list[] =
   { "dia", "hex", "umh", "esa", "tesa" };
@@ -410,16 +426,26 @@ static const char *const bpyramid_list[] =
 static const char *const enc_analyse_list[] =
   { "none", "fast", "normal", "slow", "all" };
 static const char *const enc_analyse_list_text[] =
-  { N_("none"), N_("fast"), N_("normal"), N_("slow"), N_("all") };
+  { N_("None"), N_("Fast"), N_("Normal"), N_("Slow"), N_("All") };
 
 static const char *const direct_pred_list[] =
   { "none", "spatial", "temporal", "auto" };
 static const char *const direct_pred_list_text[] =
-  { N_("none"), N_("spatial"), N_("temporal"), N_("auto") };
+  { N_("None"), N_("Spatial"), N_("Temporal"), N_("Auto") };
+
+static const int const framepacking_list[] =
+  { -1, 0, 1, 2, 3, 4, 5 };
+static const char *const framepacking_list_text[] =
+  { "", N_("checkerboard"), N_("column alternation"), N_("row alternation"), N_("side by side"), N_("top bottom"), N_("frame alternation") };
 
 vlc_module_begin ()
-    set_description( N_("H.264/MPEG4 AVC encoder (x264)"))
+#ifdef MODULE_NAME_IS_x26410b
+    set_description( N_("H.264/MPEG-4 Part 10/AVC encoder (x264 10-bit)"))
+    set_capability( "encoder", 0 )
+#else
+    set_description( N_("H.264/MPEG-4 Part 10/AVC encoder (x264)"))
     set_capability( "encoder", 200 )
+#endif
     set_callbacks( Open, Close )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_VCODEC )
@@ -435,7 +461,7 @@ vlc_module_begin ()
 #if X264_BUILD >= 102 && X264_BUILD <= 114
     add_string( SOUT_CFG_PREFIX "opengop", "none", OPENGOP_TEXT,
                OPENGOP_LONGTEXT, true )
-        change_string_list( x264_open_gop_names, x264_open_gop_names, 0 );
+        change_string_list( x264_open_gop_names, x264_open_gop_names )
 #elif X264_BUILD > 114
     add_bool( SOUT_CFG_PREFIX "opengop", false, OPENGOP_TEXT,
                OPENGOP_LONGTEXT, true )
@@ -468,9 +494,12 @@ vlc_module_begin ()
     add_string( SOUT_CFG_PREFIX "bpyramid", "none", BPYRAMID_TEXT,
               BPYRAMID_LONGTEXT, true )
 #endif
-        change_string_list( bpyramid_list, bpyramid_list, 0 );
+        change_string_list( bpyramid_list, bpyramid_list )
 
     add_bool( SOUT_CFG_PREFIX "cabac", true, CABAC_TEXT, CABAC_LONGTEXT,
+              true )
+
+    add_bool( SOUT_CFG_PREFIX "fullrange", false, FULLRANGE_TEXT, FULLRANGE_LONGTEXT,
               true )
 
     add_integer( SOUT_CFG_PREFIX "ref", 3, REF_TEXT,
@@ -493,18 +522,29 @@ vlc_module_begin ()
 
     add_string( SOUT_CFG_PREFIX "profile", "high", PROFILE_TEXT,
                PROFILE_LONGTEXT, false )
-        change_string_list( x264_profile_names, x264_profile_names, 0 );
+        vlc_config_set (VLC_CONFIG_LIST,
+            (sizeof(x264_profile_names) / sizeof (char*)) - 1,
+            x264_profile_names, x264_profile_names);
+
 
     add_bool( SOUT_CFG_PREFIX "interlaced", false, INTERLACED_TEXT, INTERLACED_LONGTEXT,
               true )
+
+#if X264_BUILD >= 111
+    add_integer( SOUT_CFG_PREFIX "frame-packing", -1, FRAMEPACKING_TEXT, FRAMEPACKING_LONGTEXT, true )
+        change_integer_list( framepacking_list, framepacking_list_text )
+        change_integer_range( -1, 5)
+#endif
 
     add_integer( SOUT_CFG_PREFIX "slices", 0, SLICE_COUNT, SLICE_COUNT_LONGTEXT, true )
     add_integer( SOUT_CFG_PREFIX "slice-max-size", 0, SLICE_MAX_SIZE, SLICE_MAX_SIZE_LONGTEXT, true )
     add_integer( SOUT_CFG_PREFIX "slice-max-mbs", 0, SLICE_MAX_MBS, SLICE_MAX_MBS_LONGTEXT, true )
 
 #if X264_BUILD >= 89
-    add_string( SOUT_CFG_PREFIX "hrd", "none", HRD_TEXT, HRD_LONGTEXT, true )
-        change_string_list( x264_nal_hrd_names, x264_nal_hrd_names, 0 );
+    add_string( SOUT_CFG_PREFIX "hrd", "none", HRD_TEXT, HRD_TEXT, true )
+        vlc_config_set (VLC_CONFIG_LIST,
+            (sizeof(x264_nal_hrd_names) / sizeof (char*)) - 1,
+            x264_nal_hrd_names, x264_nal_hrd_names);
 #endif
 
 
@@ -580,11 +620,11 @@ vlc_module_begin ()
     /* x264 partitions = none (default). set at least "normal" mode. */
     add_string( SOUT_CFG_PREFIX "partitions", "normal", ANALYSE_TEXT,
                 ANALYSE_LONGTEXT, true )
-        change_string_list( enc_analyse_list, enc_analyse_list_text, 0 );
+        change_string_list( enc_analyse_list, enc_analyse_list_text )
 
     add_string( SOUT_CFG_PREFIX "direct", "spatial", DIRECT_PRED_TEXT,
                 DIRECT_PRED_LONGTEXT, true )
-        change_string_list( direct_pred_list, direct_pred_list_text, 0 );
+        change_string_list( direct_pred_list, direct_pred_list_text )
 
     add_integer( SOUT_CFG_PREFIX "direct-8x8", 1, DIRECT_PRED_SIZE_TEXT,
                  DIRECT_PRED_SIZE_LONGTEXT, true )
@@ -599,7 +639,7 @@ vlc_module_begin ()
 
     add_string( SOUT_CFG_PREFIX "me", "hex", ME_TEXT,
                 ME_LONGTEXT, true )
-        change_string_list( enc_me_list, enc_me_list_text, 0 );
+        change_string_list( enc_me_list, enc_me_list_text )
 
     add_integer( SOUT_CFG_PREFIX "merange", 16, MERANGE_TEXT,
                  MERANGE_LONGTEXT, true )
@@ -690,9 +730,16 @@ vlc_module_begin ()
                 STATS_LONGTEXT, true )
 
     add_string( SOUT_CFG_PREFIX "preset", NULL , PRESET_TEXT , PRESET_TEXT, false )
-        change_string_list( x264_preset_names, x264_preset_names, 0 );
+        vlc_config_set (VLC_CONFIG_LIST,
+            (sizeof(x264_preset_names) / sizeof (char*)) - 1,
+            x264_preset_names, x264_preset_names);
     add_string( SOUT_CFG_PREFIX "tune", NULL , TUNE_TEXT, TUNE_TEXT, false )
-        change_string_list( x264_tune_names, x264_tune_names, 0 );
+        vlc_config_set (VLC_CONFIG_LIST,
+            (sizeof(x264_tune_names) / sizeof (char*)) - 1,
+            x264_tune_names, x264_tune_names);
+
+    add_string( SOUT_CFG_PREFIX "options", NULL, X264_OPTIONS_TEXT,
+                X264_OPTIONS_LONGTEXT, true )
 
 vlc_module_end ()
 
@@ -713,7 +760,9 @@ static const char *const ppsz_sout_options[] = {
     "verbose", "vbv-bufsize", "vbv-init", "vbv-maxrate", "weightb", "weightp",
     "aq-mode", "aq-strength", "psy-rd", "psy", "profile", "lookahead", "slices",
     "slice-max-size", "slice-max-mbs", "intra-refresh", "mbtree", "hrd",
-    "tune","preset", "opengop", "bluray-compat", NULL
+    "tune","preset", "opengop", "bluray-compat", "frame-packing", "options",
+    "fullrange",
+    NULL
 };
 
 static block_t *Encode( encoder_t *, picture_t * );
@@ -727,6 +776,7 @@ struct encoder_sys_t
 
     char            *psz_stat_name;
     int             i_sei_size;
+    uint32_t         i_colorspace;
     uint8_t         *p_sei;
 };
 
@@ -747,6 +797,7 @@ static int  Open ( vlc_object_t *p_this )
     int i_qmin = 0, i_qmax = 0;
     x264_nal_t    *nal;
     int i, i_nal;
+    bool fullrange = false;
 
     if( p_enc->fmt_out.i_codec != VLC_CODEC_H264 &&
         !p_enc->b_force )
@@ -760,13 +811,63 @@ static int  Open ( vlc_object_t *p_this )
 
     p_enc->fmt_out.i_cat = VIDEO_ES;
     p_enc->fmt_out.i_codec = VLC_CODEC_H264;
-    p_enc->fmt_in.i_codec = VLC_CODEC_I420;
-
-    p_enc->pf_encode_video = Encode;
-    p_enc->pf_encode_audio = NULL;
     p_enc->p_sys = p_sys = malloc( sizeof( encoder_sys_t ) );
     if( !p_sys )
         return VLC_ENOMEM;
+
+    fullrange = var_GetBool( p_enc, SOUT_CFG_PREFIX "fullrange" );
+    p_enc->fmt_in.i_codec = fullrange ? VLC_CODEC_J420 : VLC_CODEC_I420;
+    p_sys->i_colorspace = X264_CSP_I420;
+#if X264_BUILD >= 118
+    char *psz_profile = var_GetString( p_enc, SOUT_CFG_PREFIX "profile" );
+    if( psz_profile )
+    {
+        const int mask = x264_bit_depth > 8 ? X264_CSP_HIGH_DEPTH : 0;
+
+#ifdef MODULE_NAME_IS_x26410b
+        if( mask == 0)
+        {
+            msg_Err( p_enc, "Only high bith depth encoding supported, bit depth:%d", x264_bit_depth);
+            return VLC_EGENERIC;
+        }
+#endif
+
+        if( !strcmp( psz_profile, "high10" ) )
+        {
+            p_enc->fmt_in.i_codec = mask ? VLC_CODEC_I420_10L : fullrange ? VLC_CODEC_J420 : VLC_CODEC_I420;
+            p_sys->i_colorspace = X264_CSP_I420 | mask;
+        }
+        else if( !strcmp( psz_profile, "high422" ) )
+        {
+            p_enc->fmt_in.i_codec = mask ? VLC_CODEC_I422_10L : fullrange ? VLC_CODEC_J422 : VLC_CODEC_I422;
+            p_sys->i_colorspace = X264_CSP_I422 | mask;
+        }
+        else if( !strcmp( psz_profile, "high444" ) )
+        {
+            p_enc->fmt_in.i_codec = mask ? VLC_CODEC_I444_10L : fullrange ? VLC_CODEC_J444 : VLC_CODEC_I444;
+            p_sys->i_colorspace = X264_CSP_I444 | mask;
+        }
+#ifdef MODULE_NAME_IS_x26410b
+        else
+        {
+            msg_Err( p_enc, "Only high-profiles and 10-bit are supported");
+            return VLC_EGENERIC;
+        }
+
+#endif
+    }
+#ifdef MODULE_NAME_IS_x26410b
+    else
+    {
+            msg_Err( p_enc, "Only high-profiles and 10-bit are supported");
+            return VLC_EGENERIC;
+    }
+#endif
+    free( psz_profile );
+#endif //X264_BUILD
+
+    p_enc->pf_encode_video = Encode;
+    p_enc->pf_encode_audio = NULL;
     p_sys->i_initial_delay = 0;
     p_sys->psz_stat_name = NULL;
     p_sys->i_sei_size = 0;
@@ -783,8 +884,10 @@ static int  Open ( vlc_object_t *p_this )
     x264_param_default_preset( &p_sys->param, psz_preset, psz_tune );
     free( psz_preset );
     free( psz_tune );
+    p_sys->param.i_csp = p_sys->i_colorspace;
     p_sys->param.i_width  = p_enc->fmt_in.video.i_width;
     p_sys->param.i_height = p_enc->fmt_in.video.i_height;
+    p_sys->param.vui.b_fullrange = fullrange;
 
     if( fabs(var_GetFloat( p_enc, SOUT_CFG_PREFIX "qcomp" ) - 0.60) > 0.005 )
        p_sys->param.rc.f_qcompress = var_GetFloat( p_enc, SOUT_CFG_PREFIX "qcomp" );
@@ -845,6 +948,8 @@ static int  Open ( vlc_object_t *p_this )
 
     /* max bitrate = average bitrate -> CBR */
     p_sys->param.rc.i_vbv_max_bitrate = var_GetInteger( p_enc, SOUT_CFG_PREFIX "vbv-maxrate" );
+    if( p_sys->param.rc.i_vbv_max_bitrate && p_sys->param.rc.i_rc_method != X264_RC_ABR )
+        p_enc->fmt_out.i_bitrate = p_sys->param.rc.i_vbv_max_bitrate * 1000;
 
 
     if( !var_GetBool( p_enc, SOUT_CFG_PREFIX "mbtree" ) )
@@ -908,6 +1013,11 @@ static int  Open ( vlc_object_t *p_this )
     if( fabs( var_GetFloat( p_enc, SOUT_CFG_PREFIX "aq-strength" ) - 1.0) > 0.005 )
        p_sys->param.rc.f_aq_strength = var_GetFloat( p_enc, SOUT_CFG_PREFIX "aq-strength" );
 
+#if X264_BUILD >= 111
+    if( var_GetInteger( p_enc, SOUT_CFG_PREFIX "frame-packing" ) > -1 )
+       p_sys->param.i_frame_packing = var_GetInteger( p_enc, SOUT_CFG_PREFIX "frame-packing" );
+#endif
+
     if( var_GetBool( p_enc, SOUT_CFG_PREFIX "verbose" ) )
         p_sys->param.i_log_level = X264_LOG_DEBUG;
 
@@ -922,6 +1032,9 @@ static int  Open ( vlc_object_t *p_this )
 
     i_val = var_GetInteger( p_enc, SOUT_CFG_PREFIX "keyint" );
     if( i_val > 0 && i_val != 250 ) p_sys->param.i_keyint_max = i_val;
+#if X264_BUILD >= 102
+    if( i_val == -1 ) p_sys->param.i_keyint_max = X264_KEYINT_MAX_INFINITE;
+#endif
 
     i_val = var_GetInteger( p_enc, SOUT_CFG_PREFIX "min-keyint" );
     if( i_val > 0 && i_val != 25 ) p_sys->param.i_keyint_min = i_val;
@@ -1143,6 +1256,8 @@ static int  Open ( vlc_object_t *p_this )
     {
         p_sys->param.i_fps_num = p_enc->fmt_in.video.i_frame_rate;
         p_sys->param.i_fps_den = p_enc->fmt_in.video.i_frame_rate_base;
+        p_sys->param.i_timebase_num = 1;
+        p_sys->param.i_timebase_den = INT64_C(1000000);
         p_sys->param.b_vfr_input = 0;
     }
 
@@ -1160,44 +1275,20 @@ static int  Open ( vlc_object_t *p_this )
     /* Check if user has given some profile (baseline,main,high) to limit
      * settings, and apply those*/
     psz_val = var_GetString( p_enc, SOUT_CFG_PREFIX "profile" );
-    if( psz_val )
-    {
-        if( !strcasecmp( psz_val, "baseline" ) )
-        {
-            msg_Dbg( p_enc, "Limiting to baseline profile");
-            p_sys->param.analyse.b_transform_8x8 = 0;
-            p_sys->param.b_cabac = 0;
-            p_sys->param.i_bframe = 0;
-            p_sys->param.analyse.i_weighted_pred = X264_WEIGHTP_NONE;
-            p_sys->param.i_bframe_pyramid = X264_B_PYRAMID_NONE;
-        }
-        else if (!strcasecmp( psz_val, "main" ) )
-        {
-            msg_Dbg( p_enc, "Limiting to main-profile");
-            p_sys->param.analyse.b_transform_8x8 = 0;
-        }
-        /* high profile don't restrict stuff*/
-    }
+    if( psz_val && *psz_val )
+        x264_param_apply_profile( &p_sys->param, psz_val );
     free( psz_val );
 
-
-    unsigned i_cpu = vlc_CPU();
-    if( !(i_cpu & CPU_CAPABILITY_MMX) )
-    {
+#if defined (__i386__) || defined (__x86_64__)
+    if( !vlc_CPU_MMX() )
         p_sys->param.cpu &= ~X264_CPU_MMX;
-    }
-    if( !(i_cpu & CPU_CAPABILITY_MMXEXT) )
-    {
+    if( !vlc_CPU_MMXEXT() )
         p_sys->param.cpu &= ~X264_CPU_MMXEXT;
-    }
-    if( !(i_cpu & CPU_CAPABILITY_SSE) )
-    {
+    if( !vlc_CPU_SSE() )
         p_sys->param.cpu &= ~X264_CPU_SSE;
-    }
-    if( !(i_cpu & CPU_CAPABILITY_SSE2) )
-    {
+    if( !vlc_CPU_SSE2() )
         p_sys->param.cpu &= ~X264_CPU_SSE2;
-    }
+#endif
 
     /* BUILD 29 adds support for multi-threaded encoding while BUILD 49 (r543)
        also adds support for threads = 0 for automatically selecting an optimal
@@ -1221,6 +1312,8 @@ static int  Open ( vlc_object_t *p_this )
         p_sys->param.rc.b_stat_read = i_val & 2;
     }
 
+    p_sys->param.pf_log = x264_log;
+    p_sys->param.p_log_private = p_enc;
     /* We need to initialize pthreadw32 before we open the encoder,
        but only once for the whole application. Since pthreadw32
        doesn't keep a refcount, do it ourselves. */
@@ -1249,6 +1342,28 @@ static int  Open ( vlc_object_t *p_this )
 
     /* We don't want repeated headers, we repeat p_extra ourself if needed */
     p_sys->param.b_repeat_headers = 0;
+
+    char *psz_opts = var_InheritString( p_enc, SOUT_CFG_PREFIX "options" );
+    if (psz_opts && *psz_opts) {
+        config_chain_t *cfg = NULL;
+        config_ChainParseOptions(&cfg, psz_opts);
+        while (cfg) {
+            config_chain_t *next = cfg->p_next;
+            char *name  = cfg->psz_name;
+            char *value = cfg->psz_value;
+            int ret = x264_param_parse(&p_sys->param, name, value);
+            if (ret == X264_PARAM_BAD_NAME) {
+                msg_Err(p_enc, "Unknown option \"%s\"", name);
+            } else if (ret == X264_PARAM_BAD_VALUE) {
+                msg_Err(p_enc, "Bad value \"%s\" for option \"%s\"", value, name);
+            }
+            free(name);
+            free(value);
+            free(cfg);
+            cfg = next;
+        }
+    }
+    free(psz_opts);
 
     /* Open the encoder */
     p_sys->h = x264_encoder_open( &p_sys->param );
@@ -1302,6 +1417,33 @@ static int  Open ( vlc_object_t *p_this )
 }
 
 /****************************************************************************
+ * Logging
+ ****************************************************************************/
+static void x264_log( void *data, int i_level, const char *psz, va_list args)
+{
+    encoder_t *p_enc = (encoder_t *)data;
+
+    switch( i_level )
+    {
+        case X264_LOG_ERROR:
+            i_level = VLC_MSG_ERR;
+            break;
+        case X264_LOG_WARNING:
+            i_level = VLC_MSG_WARN;
+            break;
+        case X264_LOG_INFO:
+            i_level = VLC_MSG_INFO;
+            break;
+        case X264_LOG_DEBUG:
+            i_level = VLC_MSG_DBG;
+        default:
+            i_level = VLC_MSG_DBG;
+    }
+
+    msg_GenericVa( p_enc, i_level, MODULE_STRING, psz, args );
+};
+
+/****************************************************************************
  * Encode:
  ****************************************************************************/
 static block_t *Encode( encoder_t *p_enc, picture_t *p_pict )
@@ -1320,13 +1462,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pict )
 #endif
     if( likely(p_pict) ) {
        pic.i_pts = p_pict->date;
-       /* scale pts starting from 0 as libx264 seems to return dts values
-          assume that
-        */
-       if( unlikely( p_sys->i_initial_delay == 0 ) )
-           p_sys->i_initial_delay = p_pict->date;
-       pic.i_pts -= p_sys->i_initial_delay;
-       pic.img.i_csp = X264_CSP_I420;
+       pic.img.i_csp = p_sys->i_colorspace;
        pic.img.i_plane = p_pict->i_planes;
        for( i = 0; i < p_pict->i_planes; i++ )
        {
@@ -1348,7 +1484,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pict )
     for( i = 0; i < i_nal; i++ )
         i_out += nal[i].i_payload;
 
-    p_block = block_New( p_enc, i_out + p_sys->i_sei_size );
+    p_block = block_Alloc( i_out + p_sys->i_sei_size );
     if( !p_block ) return NULL;
 
     unsigned int i_offset = 0;
@@ -1368,7 +1504,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pict )
         p_block->i_flags |= BLOCK_FLAG_TYPE_I;
     else if( pic.i_type == X264_TYPE_P || pic.i_type == X264_TYPE_I )
         p_block->i_flags |= BLOCK_FLAG_TYPE_P;
-    else if( pic.i_type == X264_TYPE_B )
+    else if( IS_X264_TYPE_B( pic.i_type ) )
         p_block->i_flags |= BLOCK_FLAG_TYPE_B;
     else
         p_block->i_flags |= BLOCK_FLAG_TYPE_PB;
@@ -1379,8 +1515,8 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pict )
             p_enc->fmt_in.video.i_frame_rate;
 
     /* scale pts-values back*/
-    p_block->i_pts = pic.i_pts + p_sys->i_initial_delay;
-    p_block->i_dts = pic.i_dts + p_sys->i_initial_delay;
+    p_block->i_pts = pic.i_pts;
+    p_block->i_dts = pic.i_dts;
 
     return p_block;
 }
@@ -1396,10 +1532,11 @@ static void Close( vlc_object_t *p_this )
     free( p_sys->psz_stat_name );
     free( p_sys->p_sei );
 
-    msg_Dbg( p_enc, "framecount still in libx264 buffer: %d", x264_encoder_delayed_frames( p_sys->h ) );
-
     if( p_sys->h )
+    {
+        msg_Dbg( p_enc, "framecount still in libx264 buffer: %d", x264_encoder_delayed_frames( p_sys->h ) );
         x264_encoder_close( p_sys->h );
+    }
 
 #ifdef PTW32_STATIC_LIB
     vlc_mutex_lock( &pthread_win32_mutex );

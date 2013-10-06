@@ -1,8 +1,8 @@
 /*****************************************************************************
- * preferences_tree.hpp : Tree of modules for preferences
+ * complete_preferences.hpp : Tree of modules for preferences
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 19f2a507946753620c44c7ccf8bd2f3a2821da4f $
+ * $Id: 3b32c3a21f621e4a2c8889f89d86642cc9d6d837 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -32,14 +32,7 @@
 #include <vlc_interface.h>
 
 #include <QTreeWidget>
-
-enum
-{
-    TYPE_CATEGORY,
-    TYPE_CATSUBCAT,
-    TYPE_SUBCATEGORY,
-    TYPE_MODULE
-};
+#include <QSet>
 
 class AdvPrefsPanel;
 class QLabel;
@@ -47,16 +40,24 @@ class QVBoxLayout;
 
 class PrefsItemData : public QObject
 {
+    Q_OBJECT
 public:
-    PrefsItemData()
-    { panel = NULL; i_object_id = 0; i_subcat_id = -1; psz_name = NULL; };
-    virtual ~PrefsItemData() { free( psz_name ); };
+    PrefsItemData();
+    virtual ~PrefsItemData() { free( psz_shortcut ); };
     bool contains( const QString &text, Qt::CaseSensitivity cs );
     AdvPrefsPanel *panel;
     int i_object_id;
     int i_subcat_id;
-    int i_type;
-    char *psz_name;
+    enum prefsType
+    {
+        TYPE_CATEGORY,
+        TYPE_CATSUBCAT,
+        TYPE_SUBCATEGORY,
+        TYPE_MODULE
+    };
+    prefsType i_type;
+    char *psz_shortcut;
+    bool b_loaded;
     QString name;
     QString help;
 };
@@ -66,18 +67,22 @@ Q_DECLARE_METATYPE( PrefsItemData* );
 class PrefsTree : public QTreeWidget
 {
     Q_OBJECT
+
 public:
     PrefsTree( intf_thread_t *, QWidget * );
 
     void applyAll();
     void cleanAll();
     void filter( const QString &text );
+    void setLoadedOnly( bool );
 
 private:
     void doAll( bool );
     bool filterItems( QTreeWidgetItem *item, const QString &text, Qt::CaseSensitivity cs );
     bool collapseUnselectedItems( QTreeWidgetItem *item );
+    void updateLoadedStatus( QTreeWidgetItem *item , QSet<QString> *loaded );
     intf_thread_t *p_intf;
+    bool b_show_only_loaded;
 
 private slots:
     void resizeColumns();
@@ -95,6 +100,7 @@ public:
     void apply();
     void clean();
 private:
+    module_config_t *p_config;
     intf_thread_t *p_intf;
     QList<ConfigControl *> controls;
     QVBoxLayout *global_layout;

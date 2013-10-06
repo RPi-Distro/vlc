@@ -1,24 +1,24 @@
 /*****************************************************************************
  * omxil_utils.h: helper functions
  *****************************************************************************
- * Copyright (C) 2010 the VideoLAN team
- * $Id: f5bc2b13043499e34a51a4c301cc8e00494f38e3 $
+ * Copyright (C) 2010 VLC authors and VideoLAN
+ * $Id: 8f113b4d21cbcda1b761062f65487d372add7c9e $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -28,6 +28,11 @@
 #define OMX_VERSION_MAJOR 1
 #define OMX_VERSION_MINOR 0
 #define OMX_VERSION_REV   0
+#define OMX_VERSION_STEP  0
+#elif defined(RPI_OMX)
+#define OMX_VERSION_MAJOR 1
+#define OMX_VERSION_MINOR 1
+#define OMX_VERSION_REV   2
 #define OMX_VERSION_STEP  0
 #else
 #define OMX_VERSION_MAJOR 1
@@ -55,6 +60,23 @@
 #define CHECK_ERROR(a, ...) \
     if(a != OMX_ErrorNone) {msg_Dbg( p_dec, __VA_ARGS__ ); goto error;}
 
+#ifdef OMX_SKIP64BIT
+static inline int64_t FromOmxTicks(OMX_TICKS value)
+{
+    return (((int64_t)value.nHighPart) << 32) | value.nLowPart;
+}
+static inline OMX_TICKS ToOmxTicks(int64_t value)
+{
+    OMX_TICKS s;
+    s.nLowPart = value;
+    s.nHighPart = value >> 32;
+    return s;
+}
+#else
+#define FromOmxTicks(x) (x)
+#define ToOmxTicks(x) (x)
+#endif
+
 /*****************************************************************************
  * OMX buffer FIFO macros
  *****************************************************************************/
@@ -70,6 +92,20 @@
              ((void **)p_buffer + (p_fifo)->offset); \
          (p_fifo)->p_first = *pp_next; *pp_next = 0; \
          if( !(p_fifo)->p_first ) (p_fifo)->pp_last = &(p_fifo)->p_first; \
+         vlc_mutex_unlock( &(p_fifo)->lock ); } while(0)
+
+#define OMX_FIFO_GET_TIMEOUT(p_fifo, p_buffer, timeout) \
+    do { vlc_mutex_lock( &(p_fifo)->lock ); \
+         mtime_t end = mdate() + timeout; \
+         if( !(p_fifo)->p_first ) \
+             vlc_cond_timedwait( &(p_fifo)->wait, &(p_fifo)->lock, end ); \
+         p_buffer = (p_fifo)->p_first; \
+         if( p_buffer ) { \
+             OMX_BUFFERHEADERTYPE **pp_next = (OMX_BUFFERHEADERTYPE **) \
+                 ((void **)p_buffer + (p_fifo)->offset); \
+             (p_fifo)->p_first = *pp_next; *pp_next = 0; \
+             if( !(p_fifo)->p_first ) (p_fifo)->pp_last = &(p_fifo)->p_first; \
+         } \
          vlc_mutex_unlock( &(p_fifo)->lock ); } while(0)
 
 #define OMX_FIFO_PUT(p_fifo, p_buffer) \
@@ -120,19 +156,37 @@ typedef struct OmxEvent
     struct OmxEvent *next;
 } OmxEvent;
 
-OMX_ERRORTYPE PostOmxEvent(decoder_t *p_dec, OMX_EVENTTYPE event,
+typedef struct OmxEventQueue
+{
+    OmxEvent *p_events;
+    OmxEvent **pp_last_event;
+
+    vlc_mutex_t mutex;
+    vlc_cond_t cond;
+} OmxEventQueue;
+
+void InitOmxEventQueue(OmxEventQueue *queue);
+void DeinitOmxEventQueue(OmxEventQueue *queue);
+OMX_ERRORTYPE PostOmxEvent(OmxEventQueue *queue, OMX_EVENTTYPE event,
     OMX_U32 data_1, OMX_U32 data_2, OMX_PTR event_data);
-OMX_ERRORTYPE WaitForOmxEvent(decoder_t *p_dec, OMX_EVENTTYPE *event,
+OMX_ERRORTYPE WaitForOmxEvent(OmxEventQueue *queue, OMX_EVENTTYPE *event,
     OMX_U32 *data_1, OMX_U32 *data_2, OMX_PTR *event_data);
-OMX_ERRORTYPE WaitForSpecificOmxEvent(decoder_t *p_dec,
+OMX_ERRORTYPE WaitForSpecificOmxEvent(OmxEventQueue *queue,
     OMX_EVENTTYPE specific_event, OMX_U32 *data_1, OMX_U32 *data_2,
     OMX_PTR *event_data);
+void PrintOmxEvent(vlc_object_t *p_this, OMX_EVENTTYPE event, OMX_U32 data_1,
+    OMX_U32 data_2, OMX_PTR event_data);
 
 /*****************************************************************************
  * Picture utility functions
  *****************************************************************************/
-void CopyOmxPicture( decoder_t *, picture_t *, OMX_BUFFERHEADERTYPE *, int );
+void CopyOmxPicture( int i_color_format, picture_t *p_pic,
+                     int i_slice_height,
+                     int i_src_stride, uint8_t *p_src, int i_chroma_div );
+
 void CopyVlcPicture( decoder_t *, OMX_BUFFERHEADERTYPE *, picture_t * );
+
+int IgnoreOmxDecoderPadding(const char *psz_name);
 
 /*****************************************************************************
  * Logging utility functions
@@ -173,8 +227,8 @@ int GetVlcChromaSizes( vlc_fourcc_t i_fourcc,
  *****************************************************************************/
 OMX_ERRORTYPE SetAudioParameters(OMX_HANDLETYPE handle,
     OmxFormatParam *param, OMX_U32 i_port, OMX_AUDIO_CODINGTYPE encoding,
-    uint8_t i_channels, unsigned int i_samplerate, unsigned int i_bitrate,
-    unsigned int i_bps, unsigned int i_blocksize);
+    vlc_fourcc_t i_codec, uint8_t i_channels, unsigned int i_samplerate,
+    unsigned int i_bitrate, unsigned int i_bps, unsigned int i_blocksize);
 OMX_ERRORTYPE GetAudioParameters(OMX_HANDLETYPE handle,
     OmxFormatParam *param, OMX_U32 i_port, OMX_AUDIO_CODINGTYPE encoding,
     uint8_t *pi_channels, unsigned int *pi_samplerate,
@@ -185,5 +239,6 @@ unsigned int GetAudioParamSize(OMX_INDEXTYPE index);
  * Vendor specific color formats
  *****************************************************************************/
 #define OMX_QCOM_COLOR_FormatYVU420SemiPlanar 0x7FA30C00
-
+#define OMX_TI_COLOR_FormatYUV420PackedSemiPlanar 0x7F000100
+#define QOMX_COLOR_FormatYUV420PackedSemiPlanar64x32Tile2m8ka 0x7FA30C03
 #define OMX_IndexVendorSetYUV420pMode 0x7f000003

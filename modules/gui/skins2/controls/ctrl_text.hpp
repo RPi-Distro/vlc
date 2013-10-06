@@ -2,7 +2,7 @@
  * ctrl_text.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 828cb2a9a2cd0ef36409a5a450c60cfe418746af $
+ * $Id: 34986470c424484190b34f9819e47c913b2f1981 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -129,8 +129,11 @@ private:
     /// Method called when visibility is updated
     virtual void onUpdate( Subject<VarBool> &rVariable , void* );
 
-    /// Display the text on the control
-    void displayText( const UString &rText );
+    /// Intialize the set of pictures
+    void setPictures( const UString &rText );
+
+    /// Update object according to current context
+    void updateContext();
 
     /// Helper function to set the position in the correct interval
     void adjust( int &position );

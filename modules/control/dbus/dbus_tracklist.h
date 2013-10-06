@@ -1,10 +1,10 @@
 /*****************************************************************************
- * dbus-tracklist.h : dbus control module (mpris v1.0) - /TrackList object
+ * dbus_tracklist.h : dbus control module (mpris v1.0) - /TrackList object
  *****************************************************************************
  * Copyright © 2006-2008 Rafaël Carré
  * Copyright © 2007-2010 Mirsal Ennaime
  * Copyright © 2009-2010 The VideoLAN team
- * $Id: 6bd173c66f7454484a143d17f2bbb89623b0ce84 $
+ * $Id: 4b758e853c758f353d3f73c5006505866c2c95c6 $
  *
  * Authors:    Mirsal Ennaime <mirsal at mirsal fr>
  *             Rafaël Carré <funman at videolanorg>

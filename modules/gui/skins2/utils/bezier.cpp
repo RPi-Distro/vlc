@@ -2,7 +2,7 @@
  * bezier.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 089f520111e41dea62f3a88696b2005d2f05164a $
+ * $Id: 121cc53b1ef4c32ffd8eb6ba492e8a787067376a $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -34,7 +34,7 @@
 #ifndef HAVE_LRINTF
 #   ifdef HAVE_LRINT
 #       define lrintf( x ) (int)rint( x )
-#   elif defined WIN32
+#   elif defined _WIN32
         __inline long int lrintf( float x )
         {
             int i;

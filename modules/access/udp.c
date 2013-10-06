@@ -1,9 +1,9 @@
 /*****************************************************************************
  * udp.c: raw UDP input module
  *****************************************************************************
- * Copyright (C) 2001-2005 the VideoLAN team
+ * Copyright (C) 2001-2005 VLC authors and VideoLAN
  * Copyright (C) 2007 Remi Denis-Courmont
- * $Id: 0f5f3cc3e5e9d7681fc287961fc1dd890415ca43 $
+ * $Id: 6613ebe7182d92f94331bf55057ae23005d41361 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Tristan Leteurtre <tooney@via.ecp.fr>
@@ -13,19 +13,19 @@
  *
  * Reviewed: 23 October 2003, Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -198,17 +198,15 @@ static int Control( access_t *p_access, int i_query, va_list args )
  *****************************************************************************/
 static block_t *BlockUDP( access_t *p_access )
 {
-    access_sys_t *p_sys = p_access->p_sys;
-    block_t      *p_block;
-    ssize_t len;
-
-    if( p_access->info.b_eof )
-        return NULL;
+    int fd = (intptr_t)p_access->p_sys;
 
     /* Read data */
-    p_block = block_New( p_access, MTU );
-    len = net_Read( p_access, (intptr_t)p_sys, NULL,
-                    p_block->p_buffer, MTU, false );
+    block_t *p_block = block_Alloc( MTU );
+    if( unlikely(p_block == NULL) )
+        return NULL;
+
+    ssize_t len = net_Read( p_access, fd, NULL,
+                            p_block->p_buffer, MTU, false );
     if( len < 0 )
     {
         block_Release( p_block );

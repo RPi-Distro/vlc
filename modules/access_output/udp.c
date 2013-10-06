@@ -2,7 +2,7 @@
  * udp.c
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: d996d749279694007e17d2158912c6ed7ec60c0e $
+ * $Id: 54aadd20fd4b720050544aa015f03f6bd8c3ec15 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -42,7 +42,7 @@
 #   include <unistd.h>
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #   include <winsock2.h>
 #   include <ws2tcpip.h>
 #else

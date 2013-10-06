@@ -1,27 +1,27 @@
 /*****************************************************************************
  * mpeg_audio.c: parse MPEG audio sync info and packetize the stream
  *****************************************************************************
- * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: 08dc775647532a6f7610724dbed5f5b4232447d8 $
+ * Copyright (C) 2001-2003 VLC authors and VideoLAN
+ * $Id: 8c300cda131141c22d38f2ccea4609d0404665fb $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -75,9 +75,9 @@ struct decoder_sys_t
 
 /* This isn't the place to put mad-specific stuff. However, it makes the
  * mad plug-in's life much easier if we put 8 extra bytes at the end of the
- * buffer, because that way it doesn't have to copy the aout_buffer_t to a
- * bigger buffer. This has no implication on other plug-ins, and we only
- * lose 8 bytes per frame. --Meuuh */
+ * buffer, because that way it doesn't have to copy the block_t to a bigger
+ * buffer. This has no implication on other plug-ins, and we only lose 8 bytes
+ * per frame. --Meuuh */
 #define MAD_BUFFER_GUARD 8
 #define MPGA_HEADER_SIZE 4
 
@@ -89,9 +89,9 @@ static int  OpenPacketizer( vlc_object_t * );
 static void CloseDecoder  ( vlc_object_t * );
 static block_t *DecodeBlock  ( decoder_t *, block_t ** );
 
-static uint8_t       *GetOutBuffer ( decoder_t *, block_t ** );
-static aout_buffer_t *GetAoutBuffer( decoder_t * );
-static block_t       *GetSoutBuffer( decoder_t * );
+static uint8_t *GetOutBuffer ( decoder_t *, block_t ** );
+static block_t *GetAoutBuffer( decoder_t * );
+static block_t *GetSoutBuffer( decoder_t * );
 
 static int SyncInfo( uint32_t i_header, unsigned int * pi_channels,
                      unsigned int * pi_channels_conf,
@@ -107,11 +107,7 @@ vlc_module_begin ()
     set_description( N_("MPEG audio layer I/II/III decoder") )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACODEC )
-#if defined(UNDER_CE)
-   set_capability( "decoder", 5 )
-#else
     set_capability( "decoder", 100 )
-#endif
     set_callbacks( OpenDecoder, CloseDecoder )
 
     add_submodule ()
@@ -516,7 +512,7 @@ static uint8_t *GetOutBuffer( decoder_t *p_dec, block_t **pp_out_buffer )
     }
     else
     {
-        aout_buffer_t *p_aout_buffer = GetAoutBuffer( p_dec );
+        block_t *p_aout_buffer = GetAoutBuffer( p_dec );
         p_buf = p_aout_buffer ? p_aout_buffer->p_buffer : NULL;
         *pp_out_buffer = p_aout_buffer;
     }
@@ -527,10 +523,10 @@ static uint8_t *GetOutBuffer( decoder_t *p_dec, block_t **pp_out_buffer )
 /*****************************************************************************
  * GetAoutBuffer:
  *****************************************************************************/
-static aout_buffer_t *GetAoutBuffer( decoder_t *p_dec )
+static block_t *GetAoutBuffer( decoder_t *p_dec )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    aout_buffer_t *p_buf;
+    block_t *p_buf;
 
     p_buf = decoder_NewAudioBuffer( p_dec, p_sys->i_frame_length );
     if( p_buf == NULL ) return NULL;
@@ -556,7 +552,7 @@ static block_t *GetSoutBuffer( decoder_t *p_dec )
     decoder_sys_t *p_sys = p_dec->p_sys;
     block_t *p_block;
 
-    p_block = block_New( p_dec, p_sys->i_frame_size );
+    p_block = block_Alloc( p_sys->i_frame_size );
     if( p_block == NULL ) return NULL;
 
     p_block->i_pts = p_block->i_dts = date_Get( &p_sys->end_date );

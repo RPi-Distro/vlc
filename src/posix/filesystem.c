@@ -25,26 +25,25 @@
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
-#include <vlc_charset.h>
-#include <vlc_fs.h>
-#include "libvlc.h" /* vlc_mkdir */
-
 #include <assert.h>
 
 #include <stdio.h>
 #include <limits.h> /* NAME_MAX */
 #include <errno.h>
+
 #include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#ifndef HAVE_LSTAT
+# define lstat(a, b) stat(a, b)
+#endif
 #include <dirent.h>
 #include <sys/socket.h>
 
-#ifndef HAVE_LSTAT
-# define lstat( a, b ) stat(a, b)
-#endif
+#include <vlc_common.h>
+#include <vlc_fs.h>
+#include "libvlc.h" /* vlc_mkdir */
 
 /**
  * Opens a system file handle.
@@ -69,19 +68,9 @@ int vlc_open (const char *filename, int flags, ...)
     flags |= O_CLOEXEC;
 #endif
 
-    const char *local_name = ToLocale (filename);
-
-    if (local_name == NULL)
-    {
-        errno = ENOENT;
-        return -1;
-    }
-
-    int fd = open (local_name, flags, mode);
+    int fd = open (filename, flags, mode);
     if (fd != -1)
         fcntl (fd, F_SETFD, FD_CLOEXEC);
-
-    LocaleFree (local_name);
     return fd;
 }
 
@@ -109,23 +98,15 @@ int vlc_openat (int dir, const char *filename, int flags, ...)
     flags |= O_CLOEXEC;
 #endif
 
-    const char *local_name = ToLocale (filename);
-    if (local_name == NULL)
-    {
-        errno = ENOENT;
-        return -1;
-    }
-
 #ifdef HAVE_OPENAT
-    int fd = openat (dir, local_name, flags, mode);
+    int fd = openat (dir, filename, flags, mode);
     if (fd != -1)
         fcntl (fd, F_SETFD, FD_CLOEXEC);
 #else
     int fd = -1;
     errno = ENOSYS;
+    (void) mode;
 #endif
-
-    LocaleFree (local_name);
     return fd;
 }
 
@@ -140,16 +121,7 @@ int vlc_openat (int dir, const char *filename, int flags, ...)
  */
 int vlc_mkdir (const char *dirname, mode_t mode)
 {
-    char *locname = ToLocale (dirname);
-    if (unlikely(locname == NULL))
-    {
-        errno = ENOENT;
-        return -1;
-    }
-
-    int res = mkdir (locname, mode);
-    LocaleFree (locname);
-    return res;
+    return mkdir (dirname, mode);
 }
 
 /**
@@ -161,16 +133,7 @@ int vlc_mkdir (const char *dirname, mode_t mode)
  */
 DIR *vlc_opendir (const char *dirname)
 {
-    const char *local_name = ToLocale (dirname);
-    if (unlikely(local_name == NULL))
-    {
-        errno = ENOENT;
-        return NULL;
-    }
-
-    DIR *dir = opendir (local_name);
-    LocaleFree (local_name);
-    return dir;
+    return opendir (dirname);
 }
 
 /**
@@ -190,25 +153,11 @@ char *vlc_readdir( DIR *dir )
     struct dirent *ent;
     char *path = NULL;
 
-#if !defined(__OS2__) || !defined(__KLIBC__)
     long len = fpathconf (dirfd (dir), _PC_NAME_MAX);
-#ifdef NAME_MAX
     /* POSIX says there shall we room for NAME_MAX bytes at all times */
     if (/*len == -1 ||*/ len < NAME_MAX)
         len = NAME_MAX;
-#else
-    /* OS is broken. Lets assume there is no files left. */
-    if (len == -1)
-        return NULL;
-#endif
     len += offsetof (struct dirent, d_name) + 1;
-#else /* __OS2__ && __KLIBC__ */
-    /* In the implementation of Innotek LIBC, aka kLIBC on OS/2,
-     * fpathconf (_PC_NAME_MAX) is broken, and errno is set to EBADF.
-     * Moreover, d_name is not the last member of struct dirent.
-     * So just allocate as many as the size of struct dirent. */
-    long len = sizeof (struct dirent);
-#endif
 
     struct dirent *buf = malloc (len);
     if (unlikely(buf == NULL))
@@ -218,28 +167,9 @@ char *vlc_readdir( DIR *dir )
     if (val != 0)
         errno = val;
     else if (ent != NULL)
-#ifndef __APPLE__
-        path = FromLocaleDup (ent->d_name);
-#else
-        path = FromCharset ("UTF-8-MAC", ent->d_name, strlen (ent->d_name));
-#endif
+        path = strdup (ent->d_name);
     free (buf);
     return path;
-}
-
-static int vlc_statEx (const char *filename, struct stat *buf, bool deref)
-{
-    const char *local_name = ToLocale (filename);
-    if (unlikely(local_name == NULL))
-    {
-        errno = ENOENT;
-        return -1;
-    }
-
-    int res = deref ? stat (local_name, buf)
-                    : lstat (local_name, buf);
-    LocaleFree (local_name);
-    return res;
 }
 
 /**
@@ -250,7 +180,7 @@ static int vlc_statEx (const char *filename, struct stat *buf, bool deref)
  */
 int vlc_stat (const char *filename, struct stat *buf)
 {
-    return vlc_statEx (filename, buf, true);
+    return stat (filename, buf);
 }
 
 /**
@@ -261,7 +191,7 @@ int vlc_stat (const char *filename, struct stat *buf)
  */
 int vlc_lstat (const char *filename, struct stat *buf)
 {
-    return vlc_statEx (filename, buf, false);
+    return lstat (filename, buf);
 }
 
 /**
@@ -273,16 +203,7 @@ int vlc_lstat (const char *filename, struct stat *buf)
  */
 int vlc_unlink (const char *filename)
 {
-    const char *local_name = ToLocale (filename);
-    if (unlikely(local_name == NULL))
-    {
-        errno = ENOENT;
-        return -1;
-    }
-
-    int ret = unlink (local_name);
-    LocaleFree (local_name);
-    return ret;
+    return unlink (filename);
 }
 
 /**
@@ -295,23 +216,7 @@ int vlc_unlink (const char *filename)
  */
 int vlc_rename (const char *oldpath, const char *newpath)
 {
-    const char *lo = ToLocale (oldpath);
-    if (lo == NULL)
-        goto error;
-
-    const char *ln = ToLocale (newpath);
-    if (ln == NULL)
-    {
-        LocaleFree (lo);
-error:
-        errno = ENOENT;
-        return -1;
-    }
-
-    int ret = rename (lo, ln);
-    LocaleFree (lo);
-    LocaleFree (ln);
-    return ret;
+    return rename (oldpath, newpath);
 }
 
 /**
@@ -330,7 +235,7 @@ char *vlc_getcwd (void)
         /* Make sure $PWD is correct */
         if (stat (pwd, &s1) == 0 && stat (".", &s2) == 0
          && s1.st_dev == s2.st_dev && s1.st_ino == s2.st_ino)
-            return ToLocaleDup (pwd);
+            return strdup (pwd);
     }
 
     /* Otherwise iterate getcwd() until the buffer is big enough */
@@ -344,15 +249,7 @@ char *vlc_getcwd (void)
             break;
 
         if (getcwd (buf, size) != NULL)
-#ifdef ASSUME_UTF8
             return buf;
-#else
-        {
-            char *ret = ToLocaleDup (buf);
-            free (buf);
-            return ret; /* success */
-        }
-#endif
         free (buf);
 
         if (errno != ERANGE)
@@ -381,20 +278,6 @@ int vlc_dup (int oldfd)
     }
     return newfd;
 }
-
-#ifdef __ANDROID__ /* && we support android < 2.3 */
-/* pipe2() is declared and available since android-9 NDK,
- * although it is available in libc.a since android-3
- * We redefine the function here in order to be able to run
- * on versions of Android older than 2.3
- */
-#include <sys/syscall.h>
-//#include <sys/linux-syscalls.h> // fucking brokeness
-int pipe2(int fds[2], int flags)
-{
-    return syscall(/*__NR_pipe2 */ 359, fds, flags);
-}
-#endif /* __ANDROID__ */
 
 /**
  * Creates a pipe (see "man pipe" for further reference).

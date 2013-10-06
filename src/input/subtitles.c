@@ -2,7 +2,7 @@
  * subtitles.c : subtitles detection
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 82315f8786986abf0e9c179e410f058901dc8cb4 $
+ * $Id: 61378d52d92aa46c92fd3e167163ef933cf980e0 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  * This is adapted code from the GPL'ed MPlayer (http://mplayerhq.hu)
@@ -31,17 +31,15 @@
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
-#include <vlc_fs.h>
-#include <vlc_url.h>
-
+#include <ctype.h> /* isalnum() */
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
 #endif
-
 #include <sys/stat.h>
 
-#include <ctype.h> /* isalnum */
+#include <vlc_common.h>
+#include <vlc_fs.h>
+#include <vlc_url.h>
 
 #include "input_internal.h"
 
@@ -328,16 +326,14 @@ char **subtitles_Detect( input_thread_t *p_this, char *psz_path,
             char tmp_fname_noext[strlen( psz_name ) + 1];
             char tmp_fname_trim[strlen( psz_name ) + 1];
             char tmp_fname_ext[strlen( psz_name ) + 1];
-            char *tmp;
-
-            int i_prio;
+            const char *tmp;
+            int i_prio = SUB_PRIORITY_NONE;
 
             /* retrieve various parts of the filename */
             strcpy_strip_ext( tmp_fname_noext, psz_name );
             strcpy_get_ext( tmp_fname_ext, psz_name );
             strcpy_trim( tmp_fname_trim, tmp_fname_noext );
 
-            i_prio = SUB_PRIORITY_NONE;
             if( !strcmp( tmp_fname_trim, f_fname_trim ) )
             {
                 /* matches the movie name exactly */

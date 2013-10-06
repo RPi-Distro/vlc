@@ -1,24 +1,24 @@
 /*****************************************************************************
- * encoder.c: dummy encoder plugin for vlc.
+ * edummy.c: dummy encoder plugin for vlc.
  *****************************************************************************
- * Copyright (C) 2002 the VideoLAN team
- * $Id: 38c5b8946e1965b507cc7da891053c1481f94704 $
+ * Copyright (C) 2002 VLC authors and VideoLAN
+ * $Id: 46b280d809827b9aa15179c3a9b989489f867ab0 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -48,7 +48,7 @@ vlc_module_end ()
  * Local prototypes
  *****************************************************************************/
 static block_t *EncodeVideo( encoder_t *p_enc, picture_t *p_pict );
-static block_t *EncodeAudio( encoder_t *p_enc, aout_buffer_t *p_buf );
+static block_t *EncodeAudio( encoder_t *p_enc, block_t *p_buf );
 
 /*****************************************************************************
  * OpenDecoder: open the dummy encoder.
@@ -75,7 +75,7 @@ static block_t *EncodeVideo( encoder_t *p_enc, picture_t *p_pict )
 /****************************************************************************
  * EncodeAudio: the whole thing
  ****************************************************************************/
-static block_t *EncodeAudio( encoder_t *p_enc, aout_buffer_t *p_buf )
+static block_t *EncodeAudio( encoder_t *p_enc, block_t *p_buf )
 {
     VLC_UNUSED(p_enc); VLC_UNUSED(p_buf);
     return NULL;

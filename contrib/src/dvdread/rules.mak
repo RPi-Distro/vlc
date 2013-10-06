@@ -6,7 +6,9 @@ DVDREAD_GITURL := git://git.videolan.org/libdvdread
 LIBDVDREAD_VERSION := git
 
 ifdef BUILD_DISCS
+ifdef GPL
 PKGS += dvdread
+endif
 endif
 ifeq ($(call need_pkg,"dvdread"),)
 PKGS_FOUND += dvdread

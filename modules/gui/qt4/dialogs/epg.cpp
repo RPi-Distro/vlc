@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Epg.cpp : Epg Viewer dialog
+ * epg.cpp : Epg Viewer dialog
  ****************************************************************************
  * Copyright © 2010 VideoLAN and AUTHORS
  *
@@ -96,12 +96,12 @@ EpgDialog::EpgDialog( intf_thread_t *_p_intf ): QVLCFrame( _p_intf )
     CONNECT( timer, timeout(), this, updateInfos() );
 
     updateInfos();
-    readSettings( "EPGDialog", QSize( 650, 450 ) );
+    restoreWidgetPosition( "EPGDialog", QSize( 650, 450 ) );
 }
 
 EpgDialog::~EpgDialog()
 {
-    writeSettings( "EPGDialog" );
+    saveWidgetPosition( "EPGDialog" );
 }
 
 void EpgDialog::displayEvent( EPGItem *epgItem )
@@ -109,10 +109,13 @@ void EpgDialog::displayEvent( EPGItem *epgItem )
     if( !epgItem ) return;
 
     QDateTime end = epgItem->start().addSecs( epgItem->duration() );
-    title->setText( QString("%1 - %2 : %3")
+    title->setText( QString("%1 - %2 : %3%4")
                    .arg( epgItem->start().toString( "hh:mm" ) )
                    .arg( end.toString( "hh:mm" ) )
                    .arg( epgItem->name() )
+                   .arg( epgItem->rating() ?
+                             qtr(" (%1+ rated)").arg( epgItem->rating() ) :
+                             QString() )
                    );
     description->setText( epgItem->description() );
 }

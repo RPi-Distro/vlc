@@ -2,23 +2,23 @@
  * direct2d.c : Direct2D video output plugin for vlc (Win7/Vista SP2 PF Update)
  *****************************************************************************
  * Copyright (C) 2010 VideoLAN and AUTHORS
- * $Id: 115a6d5ecade8d186adc5b0b1b9e6a1148b59c33 $
+ * $Id: 6f5b28a206334a1c97730a10b551f0987be6b029 $
  *
  * Author: David Kaplan <david@2of1.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -37,15 +37,11 @@
 
 #include <windows.h>
 #include <commctrl.h>
-
+#include <initguid.h>
 #include <d2d1.h>
 
 #include "common.h"
 
-#include <initguid.h>
-#undef GUID_EXT
-#define GUID_EXT
-DEFINE_GUID(IID_ID2D1Factory, 0x6152247, 0x6f50, 0x465a, 0x92, 0x45, 0x11, 0x8b, 0xfd, 0x3b, 0x60, 0x7);
 
 /*****************************************************************************
  * Module descriptor
@@ -110,7 +106,7 @@ static int Open(vlc_object_t *object)
                                         void **);
 
     D2D1CreateFactory = (void *)GetProcAddress(sys->d2_dll,
-                                               TEXT("D2D1CreateFactory"));
+                                               "D2D1CreateFactory");
     if (!D2D1CreateFactory) {
         msg_Err(vd,
                 "Cannot locate reference to a D2D1CreateFactory ABI in D2D1.DLL");

@@ -1,24 +1,24 @@
 /*****************************************************************************
  * alphamask.c : Alpha layer mask video filter for vlc
  *****************************************************************************
- * Copyright (C) 2007 the VideoLAN team
- * $Id: bda9fbe521a7facc853724e5127878fb2b02a053 $
+ * Copyright (C) 2007 VLC authors and VideoLAN
+ * $Id: a9f17c23e0bfdc2e9fafa1133ae4813ddcfecc83 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -182,7 +182,7 @@ static void LoadMask( filter_t *p_filter, const char *psz_filename )
     if( p_filter->p_sys->p_mask )
         picture_Release( p_filter->p_sys->p_mask );
     p_image = image_HandlerCreate( p_filter );
-    char *psz_url = make_URI( psz_filename, NULL );
+    char *psz_url = vlc_path2uri( psz_filename, NULL );
     p_filter->p_sys->p_mask =
         image_ReadUrl( p_image, psz_url, &fmt_in, &fmt_out );
     free( psz_url );

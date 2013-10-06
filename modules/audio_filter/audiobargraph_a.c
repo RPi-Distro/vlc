@@ -1,25 +1,25 @@
 /*****************************************************************************
  * audiobargraph_a.c : audiobargraph audio plugin for vlc
  *****************************************************************************
- * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 7236eb3af48f5d9a6c5eef2e712504d40b944323 $
+ * Copyright (C) 2002-2009 VLC authors and VideoLAN
+ * $Id: 53223d3a76d498ee22d701becb496b2e4f780df6 $
  *
  * Authors: Clement CHESNIN <clement.chesnin@gmail.com>
  *          Philippe COENT <philippe.coent@tdf.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -37,35 +37,35 @@
 #include <vlc_network.h>
 #include <math.h>
 
-#define ADDRESS_TEXT N_("TCP address to use (default localhost)")
+#define ADDRESS_TEXT N_("TCP address to use")
 #define ADDRESS_LONGTEXT N_("TCP address to use to communicate with the video "\
-                "part of the Bar Graph (default localhost)." \
+                "part of the Bar Graph (default localhost). " \
                 "In the case of bargraph incrustation, use localhost." )
-#define PORT_TEXT N_("TCP port to use (default 12345)")
+#define PORT_TEXT N_("TCP port to use")
 #define PORT_LONGTEXT N_("TCP port to use to communicate with the video "\
-                "part of the Bar Graph (default 12345)." \
+                "part of the Bar Graph (default 12345). " \
                 "Use the same port as the one used in the rc interface." )
-#define BARGRAPH_TEXT N_("Defines if BarGraph information should be sent (default 1)")
+#define BARGRAPH_TEXT N_("Defines if BarGraph information should be sent")
 #define BARGRAPH_LONGTEXT N_("Defines if BarGraph information should be sent. "\
                 "1 if the information should be sent, 0 otherwise (default 1)." )
-#define BARGRAPH_REPETITION_TEXT N_("Sends the barGraph information every n audio packets (default 4)")
+#define BARGRAPH_REPETITION_TEXT N_("Sends the barGraph information every n audio packets")
 #define BARGRAPH_REPETITION_LONGTEXT N_("Defines how often the barGraph information should be sent. "\
                 "Sends the barGraph information every n audio packets (default 4)." )
-#define SILENCE_TEXT N_("Defines if silence alarm information should be sent (default 1)")
+#define SILENCE_TEXT N_("Defines if silence alarm information should be sent")
 #define SILENCE_LONGTEXT N_("Defines if silence alarm information should be sent. "\
                 "1 if the information should be sent, 0 otherwise (default 1)." )
-#define TIME_WINDOW_TEXT N_("Time window to use in ms (default 5000)")
+#define TIME_WINDOW_TEXT N_("Time window to use in ms")
 #define TIME_WINDOW_LONGTEXT N_("Time Window during when the audio level is measured in ms for silence detection. "\
                 "If the audio level is under the threshold during this time, "\
                 "an alarm is sent (default 5000)." )
-#define ALARM_THRESHOLD_TEXT N_("Minimum Audio level to raise the alarm (default 0.1)")
+#define ALARM_THRESHOLD_TEXT N_("Minimum Audio level to raise the alarm")
 #define ALARM_THRESHOLD_LONGTEXT N_("Threshold to be attained to raise an alarm. "\
                 "If the audio level is under the threshold during this time, "\
                 "an alarm is sent (default 0.1)." )
-#define REPETITION_TIME_TEXT N_("Time between two alarm messages in ms (default 2000)" )
+#define REPETITION_TIME_TEXT N_("Time between two alarm messages in ms" )
 #define REPETITION_TIME_LONGTEXT N_("Time between two alarm messages in ms. "\
                 "This value is used to avoid alarm saturation (default 2000)." )
-#define CONNECTION_RESET_TEXT N_("Force connection reset regularly (default 1)" )
+#define CONNECTION_RESET_TEXT N_("Force connection reset regularly" )
 #define CONNECTION_RESET_LONGTEXT N_("Defines if the TCP connection should be reset. "\
                 "This is to be used when using with audiobargraph_v (default 1)." )
 
@@ -130,25 +130,7 @@ struct filter_sys_t
 static int Open( vlc_object_t *p_this )
 {
     filter_t     *p_filter = (filter_t *)p_this;
-    filter_sys_t *p_sys;
-
-    if ( !AOUT_FMTS_SIMILAR( &p_filter->fmt_in.audio, &p_filter->fmt_out.audio ) )
-    {
-        msg_Err( p_filter, "input and output formats are not similar" );
-        return VLC_EGENERIC;
-    }
-
-    if( p_filter->fmt_in.audio.i_format != VLC_CODEC_FL32 ||
-        p_filter->fmt_out.audio.i_format != VLC_CODEC_FL32 )
-    {
-        p_filter->fmt_in.audio.i_format = VLC_CODEC_FL32;
-        p_filter->fmt_out.audio.i_format = VLC_CODEC_FL32;
-        msg_Warn( p_filter, "bad input or output format" );
-    }
-
-    p_filter->pf_audio_filter = DoWork;
-
-    p_sys = p_filter->p_sys = malloc( sizeof( *p_sys ) );
+    filter_sys_t *p_sys = p_filter->p_sys = malloc( sizeof( *p_sys ) );
     if( !p_sys )
         return VLC_ENOMEM;
 
@@ -171,6 +153,10 @@ static int Open( vlc_object_t *p_this )
     p_sys->last = NULL;
     p_sys->started = 0;
     p_sys->lastAlarm = 0;
+
+    p_filter->fmt_in.audio.i_format = VLC_CODEC_FL32;
+    p_filter->fmt_out.audio = p_filter->fmt_in.audio;
+    p_filter->pf_audio_filter = DoWork;
 
     return VLC_SUCCESS;
 }

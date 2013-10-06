@@ -2,25 +2,26 @@
  * zvbi.c : VBI and Teletext PES demux and decoder using libzvbi
  *****************************************************************************
  * Copyright (C) 2007, M2X
- * $Id: e8f8cf4447e6088c84755a8b772c09a278ad668a $
+ * $Id: 2a1e1310d055b2ee9cc24b7097ed22e85bb24e8c $
  *
  * Authors: Derk-Jan Hartman <djhartman at m2x dot nl>
  *          Jean-Paul Saman <jpsaman at m2x dot nl>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
 /*****************************************************************************
  *
  * information on teletext format can be found here :
@@ -103,18 +104,20 @@ vlc_module_end ()
 
 //Guessing table for missing "default region triplet"
 static const int pi_default_triplet[] = {
- 0, 0,           // slo cze
+ 0, 0, 0, 0,     // slo slk cze ces
  8,              // pol
- 24,24,24,24,    //ssc scr slv rum
+ 24,24,24,24,24, //scc scr srp hrv slv
+ 24,24,          //rum ron
  32,32,32,32,32, //est lit rus bul ukr
  48,48,          //gre ell
  64,             //ara
  88,             //heb
  16 };           //default
 static const char *const ppsz_default_triplet[] = {
- "slo", "cze",
+ "slo", "slk", "cze", "ces",
  "pol",
- "ssc", "scr", "slv", "rum",
+ "scc", "scr", "srp", "hrv", "slv",
+ "rum", "ron",
  "est", "lit", "rus", "bul", "ukr",
  "gre", "ell",
  "ara",
@@ -147,10 +150,12 @@ typedef enum {
     DATA_UNIT_STUFFING                      = 0xFF,
 } data_unit_id;
 
+#define MAX_SLICES 32
+
 struct decoder_sys_t
 {
     vbi_decoder *     p_vbi_dec;
-    vbi_dvb_demux *   p_dvb_demux;
+    vbi_sliced        p_vbi_sliced[MAX_SLICES];
     unsigned int      i_last_page;
     bool              b_update;
     bool              b_text;   /* Subtitles as text */
@@ -177,8 +182,10 @@ static subpicture_t *Subpicture( decoder_t *p_dec, video_format_t *p_fmt,
                                  int i_align, mtime_t i_pts );
 
 static void EventHandler( vbi_event *ev, void *user_data );
-static int OpaquePage( picture_t *p_src, const vbi_page p_page,
-                       const video_format_t fmt, bool b_opaque );
+static int OpaquePage( picture_t *p_src, const vbi_page *p_page,
+                       const video_format_t fmt, bool b_opaque, const int text_offset );
+static int get_first_visible_row( vbi_char *p_text, int rows, int columns);
+static int get_last_visible_row( vbi_char *p_text, int rows, int columns);
 
 /* Properties callbacks */
 static int RequestPage( vlc_object_t *p_this, char const *psz_cmd,
@@ -212,12 +219,11 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_key[0] = p_sys->i_key[1] = p_sys->i_key[2] = '*' - '0';
     p_sys->b_update = false;
     p_sys->p_vbi_dec = vbi_decoder_new();
-    p_sys->p_dvb_demux = vbi_dvb_pes_demux_new( NULL, NULL );
     vlc_mutex_init( &p_sys->lock );
 
-    if( (p_sys->p_vbi_dec == NULL) || (p_sys->p_dvb_demux == NULL) )
+    if( p_sys->p_vbi_dec == NULL )
     {
-        msg_Err( p_dec, "VBI decoder/demux could not be created." );
+        msg_Err( p_dec, "VBI decoder could not be created." );
         Close( p_this );
         return VLC_ENOMEM;
     }
@@ -292,19 +298,14 @@ static void Close( vlc_object_t *p_this )
 
     if( p_sys->p_vbi_dec )
         vbi_decoder_delete( p_sys->p_vbi_dec );
-    if( p_sys->p_dvb_demux )
-        vbi_dvb_demux_delete( p_sys->p_dvb_demux );
     free( p_sys );
 }
-
-#define MAX_SLICES 32
 
 #ifdef WORDS_BIGENDIAN
 # define ZVBI_PIXFMT_RGBA32 VBI_PIXFMT_RGBA32_BE
 #else
 # define ZVBI_PIXFMT_RGBA32 VBI_PIXFMT_RGBA32_LE
 #endif
-
 
 /*****************************************************************************
  * Decode:
@@ -317,8 +318,6 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
     video_format_t  fmt;
     bool            b_cached = false;
     vbi_page        p_page;
-    const uint8_t   *p_pos;
-    unsigned int    i_left;
 
     if( (pp_block == NULL) || (*pp_block == NULL) )
         return NULL;
@@ -326,20 +325,44 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
     p_block = *pp_block;
     *pp_block = NULL;
 
-    p_pos = p_block->p_buffer;
-    i_left = p_block->i_buffer;
-
-    while( i_left > 0 )
+    if( p_block->i_buffer > 0 &&
+        ( ( p_block->p_buffer[0] >= 0x10 && p_block->p_buffer[0] <= 0x1f ) ||
+          ( p_block->p_buffer[0] >= 0x99 && p_block->p_buffer[0] <= 0x9b ) ) )
     {
-        vbi_sliced      p_sliced[MAX_SLICES];
-        unsigned int    i_lines = 0;
-        int64_t         i_pts;
+        vbi_sliced   *p_sliced = p_sys->p_vbi_sliced;
+        unsigned int i_lines = 0;
 
-        i_lines = vbi_dvb_demux_cor( p_sys->p_dvb_demux, p_sliced,
-                                     MAX_SLICES, &i_pts, &p_pos, &i_left );
+        p_block->i_buffer--;
+        p_block->p_buffer++;
+        while( p_block->i_buffer >= 2 )
+        {
+            int      i_id   = p_block->p_buffer[0];
+            unsigned i_size = p_block->p_buffer[1];
+
+            if( 2 + i_size > p_block->i_buffer )
+                break;
+
+            if( ( i_id == 0x02 || i_id == 0x03 ) && i_size >= 44 && i_lines < MAX_SLICES )
+            {
+                unsigned line_offset  = p_block->p_buffer[2] & 0x1f;
+                unsigned field_parity = p_block->p_buffer[2] & 0x20;
+
+                p_sliced[i_lines].id = VBI_SLICED_TELETEXT_B;
+                if( line_offset > 0 )
+                    p_sliced[i_lines].line = line_offset + (field_parity ? 0 : 313);
+                else
+                    p_sliced[i_lines].line = 0;
+                for( int i = 0; i < 42; i++ )
+                    p_sliced[i_lines].data[i] = vbi_rev8( p_block->p_buffer[4 + i] );
+                i_lines++;
+            }
+
+            p_block->i_buffer -= 2 + i_size;
+            p_block->p_buffer += 2 + i_size;
+        }
 
         if( i_lines > 0 )
-            vbi_decode( p_sys->p_vbi_dec, p_sliced, i_lines, i_pts / 90000.0 );
+            vbi_decode( p_sys->p_vbi_dec, p_sliced, i_lines, 0 );
     }
 
     /* */
@@ -385,10 +408,21 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
     msg_Dbg( p_dec, "we now have page: %d ready for display",
              i_wanted_page );
 #endif
+
+    /* Ignore transparent rows at the beginning and end */
+    int i_first_row = get_first_visible_row( p_page.text, p_page.rows, p_page.columns );
+    if ( i_first_row < 0 )
+        goto error;
+    int i_num_rows = get_last_visible_row( p_page.text, p_page.rows, p_page.columns ) - i_first_row + 1;
+#ifdef ZVBI_DEBUG
+    msg_Dbg( p_dec, "After top and tail of page we have rows %i-%i of %i",
+             i_first_row + 1, i_first_row + i_num_rows, p_page.rows );
+#endif
+
     /* If there is a page or sub to render, then we do that here */
     /* Create the subpicture unit */
     p_spu = Subpicture( p_dec, &fmt, p_sys->b_text,
-                        p_page.columns, p_page.rows,
+                        p_page.columns, i_num_rows,
                         i_align, p_block->i_pts );
     if( !p_spu )
         goto error;
@@ -400,13 +434,9 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
         char p_text[i_textsize+1];
 
         i_total = vbi_print_page_region( &p_page, p_text, i_textsize,
-                        "UTF-8", 0, 0, 0, 0, p_page.columns, p_page.rows );
+                        "UTF-8", 0, 0, 0, i_first_row, p_page.columns, i_num_rows );
         p_text[i_total] = '\0';
-        /* Strip off the pagenumber */
-        if( i_total <= 40 )
-            goto error;
-        p_spu->p_region->psz_text = strdup( &p_text[8] );
-
+        p_spu->p_region->psz_text = strdup( p_text );
 #ifdef ZVBI_DEBUG
         msg_Info( p_dec, "page %x-%x(%d)\n%s", p_page.pgno, p_page.subno, i_total, p_text );
 #endif
@@ -417,14 +447,22 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
 
         /* ZVBI is stupid enough to assume pitch == width */
         p_pic->p->i_pitch = 4 * fmt.i_width;
-        vbi_draw_vt_page( &p_page, ZVBI_PIXFMT_RGBA32,
-                          p_spu->p_region->p_picture->p->p_pixels, 1, 1 );
+
+        /* Maintain subtitle postion */
+        p_spu->p_region->i_y = i_first_row*10;
+        p_spu->i_original_picture_width = p_page.columns*12;
+        p_spu->i_original_picture_height = p_page.rows*10;
+
+        vbi_draw_vt_page_region( &p_page, ZVBI_PIXFMT_RGBA32,
+                          p_spu->p_region->p_picture->p->p_pixels, -1,
+                          0, i_first_row, p_page.columns, i_num_rows,
+                          1, 1);
 
         vlc_mutex_lock( &p_sys->lock );
         memcpy( p_sys->nav_link, &p_page.nav_link, sizeof( p_sys->nav_link )) ;
         vlc_mutex_unlock( &p_sys->lock );
 
-        OpaquePage( p_pic, p_page, fmt, b_opaque );
+        OpaquePage( p_pic, &p_page, fmt, b_opaque, i_first_row * p_page.columns );
     }
 
 exit:
@@ -492,7 +530,7 @@ static subpicture_t *Subpicture( decoder_t *p_dec, video_format_t *p_fmt,
     p_spu->i_start = i_pts;
     p_spu->i_stop = 0;
     p_spu->b_ephemer = true;
-    p_spu->b_absolute = false;
+    p_spu->b_absolute = true;
 
     if( !b_text )
     {
@@ -546,8 +584,34 @@ static void EventHandler( vbi_event *ev, void *user_data )
         msg_Dbg( p_dec, "Network ID changed" );
 }
 
-static int OpaquePage( picture_t *p_src, const vbi_page p_page,
-                       const video_format_t fmt, bool b_opaque )
+static int get_first_visible_row( vbi_char *p_text, int rows, int columns)
+{
+    for ( int i = 0; i < rows * columns; i++ )
+    {
+        if ( p_text[i].opacity != VBI_TRANSPARENT_SPACE )
+        {
+            return i / columns;
+        }
+    }
+
+    return rows;
+}
+
+static int get_last_visible_row( vbi_char *p_text, int rows, int columns)
+{
+    for ( int i = rows * columns - 1; i >= 0; i-- )
+    {
+        if (p_text[i].opacity != VBI_TRANSPARENT_SPACE)
+        {
+            return ( i + columns - 1) / columns;
+        }
+    }
+
+    return 0;
+}
+
+static int OpaquePage( picture_t *p_src, const vbi_page *p_page,
+                       const video_format_t fmt, bool b_opaque, const int text_offset )
 {
     unsigned int    x, y;
 
@@ -558,8 +622,8 @@ static int OpaquePage( picture_t *p_src, const vbi_page p_page,
     {
         for( x = 0; x < fmt.i_width; x++ )
         {
-            const vbi_opacity opacity = p_page.text[ y/10 * p_page.columns + x/12 ].opacity;
-            const int background = p_page.text[ y/10 * p_page.columns + x/12 ].background;
+            const vbi_opacity opacity = p_page->text[ text_offset + y/10 * p_page->columns + x/12 ].opacity;
+            const int background = p_page->text[ text_offset + y/10 * p_page->columns + x/12 ].background;
             uint32_t *p_pixel = (uint32_t*)&p_src->p->p_pixels[y * p_src->p->i_pitch + 4*x];
 
             switch( opacity )
@@ -579,7 +643,7 @@ static int OpaquePage( picture_t *p_src, const vbi_page p_page,
                     break;
             /* Full text transparency. only foreground color is show */
             case VBI_TRANSPARENT_FULL:
-                if( (*p_pixel) == (0xff000000 | p_page.color_map[background] ) )
+                if( (*p_pixel) == (0xff000000 | p_page->color_map[background] ) )
                     *p_pixel = 0;
                 break;
             }

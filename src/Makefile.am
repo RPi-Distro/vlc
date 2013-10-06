@@ -3,7 +3,6 @@
 ###############################################################################
 
 AUTOMAKE_OPTIONS = subdir-objects
-SUBDIRS = . test
 
 NULL =
 EXTRA_DIST = \
@@ -24,10 +23,8 @@ pluginsincludedir = $(pkgincludedir)/plugins
 
 pluginsinclude_HEADERS = \
 	../include/vlc_access.h \
-	../include/vlc_acl.h \
 	../include/vlc_aout.h \
-	../include/vlc_aout_intf.h \
-	../include/vlc_aout_mixer.h \
+	../include/vlc_aout_volume.h \
 	../include/vlc_arrays.h \
 	../include/vlc_art_finder.h \
 	../include/vlc_atomic.h \
@@ -65,6 +62,7 @@ pluginsinclude_HEADERS = \
 	../include/vlc_messages.h \
 	../include/vlc_meta.h \
 	../include/vlc_media_library.h \
+	../include/vlc_mime.h \
 	../include/vlc_modules.h \
 	../include/vlc_mouse.h \
 	../include/vlc_mtime.h \
@@ -78,7 +76,7 @@ pluginsinclude_HEADERS = \
 	../include/vlc_probe.h \
 	../include/vlc_rand.h \
 	../include/vlc_services_discovery.h \
-	../include/vlc_sql.h \
+	../include/vlc_fingerprinter.h \
 	../include/vlc_sout.h \
 	../include/vlc_spu.h \
 	../include/vlc_stream.h \
@@ -109,7 +107,6 @@ noinst_HEADERS = \
 	../include/vlc_intf_strings.h \
 	../include/vlc_iso_lang.h \
 	../include/vlc_memory.h \
-	../include/vlc_osd.h \
 	../include/vlc_pgpkey.h \
 	../include/vlc_update.h \
 	../include/vlc_vod.h \
@@ -165,36 +162,45 @@ EXTRA_DIST += libvlc_win32_rc.rc.in
 
 lib_LTLIBRARIES = libvlccore.la
 
-AM_CPPFLAGS = $(INCICONV) \
+AM_CPPFLAGS = $(INCICONV) $(IDN_CFLAGS) \
 	-DMODULE_STRING=\"main\" \
 	-DLOCALEDIR=\"$(localedir)\" \
-	-DSYSCONFDIR=\"$(sysconfdir)\" \
-	-DDATA_PATH=\"$(vlcdatadir)\" \
+	-DPKGDATADIR=\"$(vlcdatadir)\" \
 	-DPKGLIBDIR=\"$(vlclibdir)\"
 AM_CFLAGS = $(CFLAGS_libvlccore)
+if HAVE_DYNAMIC_PLUGINS
+AM_CPPFLAGS += -DHAVE_DYNAMIC_PLUGINS
+endif
+if HAVE_DBUS
+AM_CPPFLAGS += -DHAVE_DBUS
+AM_CFLAGS += $(DBUS_CFLAGS)
+endif
 
 libvlccore_la_SOURCES = $(SOURCES_libvlc)
 libvlccore_la_LDFLAGS = \
-	-no-undefined \
 	$(LDFLAGS_libvlccore) \
 	-no-undefined \
 	-export-symbols $(srcdir)/libvlccore.sym \
-	-version-info 6:1:1
+	-version-info 7:0:0
 libvlccore_la_LIBADD = $(LIBS_libvlccore) \
+	../compat/libcompat.la \
 	$(LTLIBINTL) $(LTLIBICONV) \
-	$(SOCKET_LIBS) $(LIBDL) $(LIBM) \
-	../compat/libcompat.la
+	$(IDN_LIBS) $(LIBPTHREAD) $(SOCKET_LIBS) $(LIBDL) $(LIBM)
 libvlccore_la_DEPENDENCIES = libvlccore.sym
 if HAVE_WIN32
 libvlccore_la_DEPENDENCIES += libvlc_win32_rc.$(OBJEXT)
 libvlccore_la_LDFLAGS += -Wl,libvlc_win32_rc.$(OBJEXT) -avoid-version
 endif
+if HAVE_DBUS
+libvlccore_la_LIBADD += $(DBUS_LIBS)
+endif
 
 libvlc_win32_rc.$(OBJEXT): libvlc_win32_rc.rc
-	$(WINDRES) --include-dir $(top_srcdir)/share -i $< -o $@
+	$(WINDRES) --include-dir $(top_srcdir)/share --include-dir $(top_srcdir)/extras/package/win32 -i $< -o $@
 
 EXTRA_libvlccore_la_SOURCES = \
 	$(SOURCES_libvlc_darwin) \
+	$(SOURCES_libvlc_android) \
 	$(SOURCES_libvlc_linux) \
 	$(SOURCES_libvlc_win32) \
 	$(SOURCES_libvlc_os2) \
@@ -206,13 +212,13 @@ EXTRA_libvlccore_la_SOURCES = \
 if HAVE_DARWIN
 libvlccore_la_SOURCES += $(SOURCES_libvlc_darwin)
 else
+if HAVE_ANDROID
+libvlccore_la_SOURCES += $(SOURCES_libvlc_android)
+else
 if HAVE_LINUX
 libvlccore_la_SOURCES += $(SOURCES_libvlc_linux)
 else
 if HAVE_WIN32
-libvlccore_la_SOURCES += $(SOURCES_libvlc_win32)
-else
-if HAVE_WINCE
 libvlccore_la_SOURCES += $(SOURCES_libvlc_win32)
 else
 if HAVE_SYMBIAN
@@ -239,62 +245,80 @@ endif
 endif
 
 SOURCES_libvlc_darwin = \
-	posix/darwin_dirs.c \
-	misc/atomic.c \
+	darwin/dirs.c \
 	posix/filesystem.c \
 	posix/plugin.c \
-	network/poll.c \
 	posix/thread.c \
-	posix/darwin_specific.c \
+	posix/timer.c \
+	darwin/specific.c \
+	posix/rand.c \
+	darwin/netconf.c \
+	$(NULL)
+
+SOURCES_libvlc_android = \
+	android/dirs.c \
+	android/thread.c \
+	posix/filesystem.c \
+	android/netconf.c \
+	posix/plugin.c \
+	posix/timer.c \
+	posix/linux_cpu.c \
+	posix/linux_specific.c \
+	posix/specific.c \
+	posix/rand.c \
 	$(NULL)
 
 SOURCES_libvlc_linux = \
 	posix/dirs.c \
-	misc/atomic.c \
 	posix/filesystem.c \
+	posix/netconf.c \
 	posix/plugin.c \
-	network/poll.c \
 	posix/thread.c \
+	posix/timer.c \
+	posix/linux_cpu.c \
 	posix/linux_specific.c \
+	posix/specific.c \
+	posix/rand.c \
 	$(NULL)
 
 SOURCES_libvlc_win32 = \
 	win32/dirs.c \
-	win32/atomic.c \
 	win32/filesystem.c \
+	win32/netconf.c \
 	win32/plugin.c \
-	win32/poll.c \
 	win32/thread.c \
 	win32/specific.c \
 	win32/winsock.c \
+	win32/rand.c \
 	$(NULL)
 
 SOURCES_libvlc_symbian = \
 	symbian/path.cpp \
 	symbian/dirs.c \
-	misc/atomic.c \
 	win32/plugin.c \
+	posix/rand.c \
 	$(NULL)
 
 SOURCES_libvlc_os2 = \
 	os2/getaddrinfo.c \
 	os2/dirs.c \
-	misc/atomic.c \
-	posix/filesystem.c \
-	posix/plugin.c \
-	os2/poll.c \
+	os2/filesystem.c \
+	os2/netconf.c \
+	os2/plugin.c \
 	os2/thread.c \
 	os2/specific.c \
+	os2/rand.c \
 	$(NULL)
 
 SOURCES_libvlc_other = \
 	posix/dirs.c \
-	misc/atomic.c \
 	posix/filesystem.c \
-	network/poll.c \
+	posix/netconf.c \
 	posix/thread.c \
+	posix/timer.c \
 	posix/plugin.c \
 	posix/specific.c \
+	posix/rand.c \
 	$(NULL)
 
 SOURCES_libvlc_common = \
@@ -309,6 +333,7 @@ SOURCES_libvlc_common = \
 	playlist/playlist_internal.h \
 	playlist/art.c \
 	playlist/art.h \
+	playlist/aout.c \
 	playlist/thread.c \
 	playlist/control.c \
 	playlist/engine.c \
@@ -350,6 +375,7 @@ SOURCES_libvlc_common = \
 	input/vlm_event.h \
 	input/resource.h \
 	input/resource.c \
+	input/stats.c \
 	input/stream.c \
 	input/stream_demux.c \
 	input/stream_filter.c \
@@ -369,8 +395,6 @@ SOURCES_libvlc_common = \
 	video_output/snapshot.c \
 	video_output/snapshot.h \
 	video_output/statistic.h \
-	video_output/postprocessing.c \
-	video_output/postprocessing.h \
 	video_output/video_output.c \
 	video_output/video_text.c \
 	video_output/video_epg.c \
@@ -386,13 +410,8 @@ SOURCES_libvlc_common = \
 	audio_output/common.c \
 	audio_output/dec.c \
 	audio_output/filters.c \
-	audio_output/input.c \
-	audio_output/mixer.c \
 	audio_output/output.c \
-	audio_output/intf.c \
-	osd/osd.c \
-	osd/osd_text.c \
-	network/acl.c \
+	audio_output/volume.c \
 	network/getaddrinfo.c \
 	network/io.c \
 	network/tcp.c \
@@ -402,6 +421,7 @@ SOURCES_libvlc_common = \
 	text/charset.c \
 	text/strings.c \
 	text/unicode.c \
+	text/url.c \
 	text/filesystem.c \
 	text/iso_lang.c \
 	text/iso-639_def.h \
@@ -422,7 +442,6 @@ SOURCES_libvlc_common = \
 	modules/entry.c \
 	modules/textdomain.c \
 	misc/threads.c \
-	misc/stats.c \
 	misc/cpu.c \
 	misc/epg.c \
 	misc/exit.c \
@@ -434,12 +453,12 @@ SOURCES_libvlc_common = \
 	config/intf.c \
 	config/keys.c \
 	config/cmdline.c \
-	config/dirs.c \
 	config/getopt.c \
 	config/vlc_getopt.h \
 	misc/events.c \
 	misc/image.c \
 	misc/messages.c \
+	misc/mime.c \
 	misc/objects.c \
 	misc/variables.h \
 	misc/variables.c \
@@ -448,13 +467,12 @@ SOURCES_libvlc_common = \
 	misc/update.c \
 	misc/update_crypto.c \
 	misc/xml.c \
-	misc/media_library.c \
 	extras/libc.c \
 	extras/tdestroy.c \
 	misc/filter.c \
 	misc/filter_chain.c \
 	misc/http_auth.c \
-	misc/sql.c \
+	misc/fingerprinter.c \
 	misc/text_style.c \
 	misc/subpicture.c \
 	misc/subpicture.h \
@@ -481,6 +499,38 @@ SOURCES_libvlc_vlm = \
 SOURCES_libvlc = \
 	$(SOURCES_libvlc_common) \
 	$(NULL)
+
+# Unit/regression tests
+#
+check_PROGRAMS = \
+	test_block \
+	test_dictionary \
+	test_i18n_atof \
+	test_md5 \
+	test_timer \
+	test_url \
+	test_utf8 \
+	test_xmlent \
+	test_headers
+
+TESTS = $(check_PROGRAMS)
+
+test_block_SOURCES = test/block_test.c
+test_block_LDADD = $(LDADD) $(LIBS_libvlccore)
+test_block_DEPENDENCIES =
+
+test_dictionary_SOURCES = test/dictionary.c
+test_i18n_atof_SOURCES = test/i18n_atof.c
+test_md5_SOURCES = test/md5.c
+test_timer_SOURCES = test/timer.c
+test_url_SOURCES = test/url.c
+test_utf8_SOURCES = test/utf8.c
+test_xmlent_SOURCES = test/xmlent.c
+test_headers_SOURCES = test/headers.c
+
+AM_LDFLAGS = -no-install
+LDADD = libvlccore.la \
+	../compat/libcompat.la
 
 ###############################################################################
 # GIT revision

@@ -12,7 +12,6 @@ VLC-dev.app: VLC-tmp
 	cp -R VLC-tmp $@
 	$(INSTALL) -m 0755 $(top_builddir)/bin/.libs/vlc $@/Contents/MacOS/VLC
 	$(LN_S) -f ../../../modules $@/Contents/MacOS/plugins
-	rm -Rf VLC-tmp
 
 # VLC.app for packaging and giving it to your friends
 # use package-macosx to get a nice dmg
@@ -23,9 +22,8 @@ VLC.app: VLC-tmp
 	find $@ -type d -exec chmod ugo+rx '{}' \;
 	find $@ -type f -exec chmod ugo+r '{}' \;
 	rm -Rf $@/Contents/Frameworks/BGHUDAppKit.framework/Resources/
-	rm -Rf VLC-tmp
 
-# common target to a VLC bundle used by both the dev and the release build
+
 VLC-tmp: vlc
 	$(AM_V_GEN)for i in src lib share; do \
 		(cd $$i && $(MAKE) $(AM_MAKEFLAGS) install $(silentstd)); \
@@ -92,12 +90,6 @@ package-macosx-zip: VLC.app
 	zip -r -y -9 $(top_builddir)/vlc-$(VERSION).zip $(top_builddir)/vlc-$(VERSION)
 	rm -rf "$(top_builddir)/vlc-$(VERSION)"
 
-package-macosx-framework-zip:
-	mkdir -p $(top_builddir)/vlckit-$(VERSION)/Goodies/
-	cp -R $(srcdir)/projects/macosx/framework/build/Debug/VLCKit.framework $(top_builddir)/vlckit-$(VERSION)/
-	cd $(srcdir); cp AUTHORS COPYING README THANKS NEWS $(abs_top_builddir)/vlckit-$(VERSION)/Goodies/
-	zip -r -y -9 $(top_builddir)/vlckit-$(VERSION).zip $(top_builddir)/vlckit-$(VERSION)
-
 package-translations:
 	mkdir -p "$(srcdir)/vlc-translations-$(VERSION)"
 	for i in `cat "$(top_srcdir)/po/LINGUAS"`; do \
@@ -117,4 +109,4 @@ package-translations:
 	$(AMTAR) chof - $(srcdir)/vlc-translations-$(VERSION) \
 	  | GZIP=$(GZIP_ENV) gzip -c >$(srcdir)/vlc-translations-$(VERSION).tar.gz
 
-.PHONY: package-macosx package-macosx-zip package-macosx-framework-zip package-translations
+.PHONY: package-macosx package-macosx-zip package-translations

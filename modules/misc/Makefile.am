@@ -3,9 +3,9 @@
 
 basedir = misc
 dir = misc
-mods = audioscrobbler inhibit memcpy sqlite vod_rtsp xml
-libvlc_LTLIBRARIES =  $(LTLIBinhibit) $(LTLIBsqlite) $(LTLIBxml)
-EXTRA_LTLIBRARIES =  libinhibit_plugin.la libsqlite_plugin.la libxml_plugin.la
+mods = audioscrobbler fingerprinter vod_rtsp xml
+libvlc_LTLIBRARIES =  $(LTLIBfingerprinter) $(LTLIBxml)
+EXTRA_LTLIBRARIES =  libfingerprinter_plugin.la libxml_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -17,49 +17,21 @@ libaudioscrobbler_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_audioscrobbler)
 libaudioscrobbler_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_audioscrobbler)
 libaudioscrobbler_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_audioscrobbler)
 libaudioscrobbler_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_audioscrobbler)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libaudioscrobbler_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_audioscrobbler)
 libaudioscrobbler_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_audioscrobbler)
-libaudioscrobbler_plugin_la_DEPENDENCIES =
 
-# The inhibit plugin
-libinhibit_plugin_la_SOURCES = $(SOURCES_inhibit)
-nodist_libinhibit_plugin_la_SOURCES = $(nodist_SOURCES_inhibit)
+# The fingerprinter plugin
+libfingerprinter_plugin_la_SOURCES = $(SOURCES_fingerprinter)
+nodist_libfingerprinter_plugin_la_SOURCES = $(nodist_SOURCES_fingerprinter)
 # Force per-target objects:
-libinhibit_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_inhibit)
-libinhibit_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_inhibit)
-libinhibit_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_inhibit)
-libinhibit_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_inhibit)
-# Set LIBADD and DEPENDENCIES manually:
-libinhibit_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_inhibit)
-libinhibit_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_inhibit)
-libinhibit_plugin_la_DEPENDENCIES =
-
-# The memcpy plugin
-libmemcpy_plugin_la_SOURCES = $(SOURCES_memcpy)
-nodist_libmemcpy_plugin_la_SOURCES = $(nodist_SOURCES_memcpy)
-# Force per-target objects:
-libmemcpy_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_memcpy)
-libmemcpy_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_memcpy)
-libmemcpy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_memcpy)
-libmemcpy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_memcpy)
-# Set LIBADD and DEPENDENCIES manually:
-libmemcpy_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_memcpy)
-libmemcpy_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_memcpy)
-libmemcpy_plugin_la_DEPENDENCIES =
-
-# The sqlite plugin
-libsqlite_plugin_la_SOURCES = $(SOURCES_sqlite)
-nodist_libsqlite_plugin_la_SOURCES = $(nodist_SOURCES_sqlite)
-# Force per-target objects:
-libsqlite_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_sqlite)
-libsqlite_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_sqlite)
-libsqlite_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_sqlite)
-libsqlite_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_sqlite)
-# Set LIBADD and DEPENDENCIES manually:
-libsqlite_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_sqlite)
-libsqlite_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_sqlite)
-libsqlite_plugin_la_DEPENDENCIES =
+libfingerprinter_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_fingerprinter)
+libfingerprinter_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_fingerprinter)
+libfingerprinter_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_fingerprinter)
+libfingerprinter_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_fingerprinter)
+# Set LIBADD manually:
+libfingerprinter_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_fingerprinter)
+libfingerprinter_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_fingerprinter)
 
 # The vod_rtsp plugin
 libvod_rtsp_plugin_la_SOURCES = $(SOURCES_vod_rtsp)
@@ -69,10 +41,9 @@ libvod_rtsp_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_vod_rtsp)
 libvod_rtsp_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_vod_rtsp)
 libvod_rtsp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_vod_rtsp)
 libvod_rtsp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_vod_rtsp)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libvod_rtsp_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_vod_rtsp)
 libvod_rtsp_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_vod_rtsp)
-libvod_rtsp_plugin_la_DEPENDENCIES =
 
 # The xml plugin
 libxml_plugin_la_SOURCES = $(SOURCES_xml)
@@ -82,8 +53,7 @@ libxml_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_xml)
 libxml_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_xml)
 libxml_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_xml)
 libxml_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_xml)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libxml_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_xml)
 libxml_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_xml)
-libxml_plugin_la_DEPENDENCIES =
 

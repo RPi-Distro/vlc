@@ -2,7 +2,7 @@
  * notify.c : libnotify notification plugin
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 198221c84d8d87d6a290b5e85c4715d81bbc3611 $
+ * $Id: ff6c3252025e70152b4b9b67e4f047b35cee1d90 $
  *
  * Authors: Christophe Mutricy <xtophe -at- videolan -dot- org>
  *
@@ -121,7 +121,7 @@ static int Open( vlc_object_t *p_this )
     }
 
     /* */
-    var_AddCallback( pl_Get( p_intf ), "item-current", ItemChange, p_intf );
+    var_AddCallback( pl_Get( p_intf ), "activity", ItemChange, p_intf );
 
     return VLC_SUCCESS;
 }
@@ -134,7 +134,7 @@ static void Close( vlc_object_t *p_this )
     intf_thread_t   *p_intf = ( intf_thread_t* ) p_this;
     intf_sys_t      *p_sys  = p_intf->p_sys;
 
-    var_DelCallback( pl_Get( p_this ), "item-current", ItemChange, p_this );
+    var_DelCallback( pl_Get( p_this ), "activity", ItemChange, p_this );
 
     if( p_sys->notification )
     {
@@ -238,7 +238,7 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
         /* Load icon from share/ */
             GError *p_error = NULL;
             char *psz_pixbuf;
-            char *psz_data = config_GetDataDir( p_this );
+            char *psz_data = config_GetDataDir();
             if( asprintf( &psz_pixbuf, "%s/icons/48x48/vlc.png", psz_data ) >= 0 )
             {
                 pix = gdk_pixbuf_new_from_file( psz_pixbuf, &p_error );

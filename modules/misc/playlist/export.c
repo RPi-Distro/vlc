@@ -2,7 +2,7 @@
  * export.c :  Playlist export module
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: da7fa0128e1f45d5e4b60fec460381f8b7fc59fa $
+ * $Id: a42ef39358e40703576edbb3b54575a063c2279c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -56,7 +56,7 @@ vlc_module_begin ()
         set_description( N_("M3U8 playlist export") )
         add_shortcut( "export-m3u8" )
         set_capability( "playlist export" , 0 )
-        set_callbacks( Export_M3U , NULL )
+        set_callbacks( Export_M3U8, NULL )
 
     add_submodule ()
         set_description( N_("XSPF playlist export") )

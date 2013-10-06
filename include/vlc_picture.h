@@ -2,7 +2,7 @@
  * vlc_picture.h: picture definitions
  *****************************************************************************
  * Copyright (C) 1999 - 2009 VLC authors and VideoLAN
- * $Id: 75502cab11099d73441f6912c383d0dafe91c7ba $
+ * $Id: c99f54d7212b39689a8027c64cc92b40442cf080 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -32,6 +32,7 @@
  */
 
 #include <vlc_es.h>
+#include <vlc_atomic.h>
 
 /** Description of a planar graphic field */
 typedef struct plane_t
@@ -56,10 +57,11 @@ typedef struct plane_t
  */
 #define PICTURE_PLANE_MAX (VOUT_MAX_PLANES)
 
+
 /**
  * A private definition to help overloading picture release
  */
-typedef struct picture_release_sys_t picture_release_sys_t;
+typedef struct picture_gc_sys_t picture_gc_sys_t;
 
 /**
  * Video picture
@@ -71,7 +73,6 @@ struct picture_t
      */
     video_frame_format_t format;
 
-    void           *p_data_orig;                /**< pointer before memalign */
     plane_t         p[PICTURE_PLANE_MAX];     /**< description of the planes */
     int             i_planes;                /**< number of allocated planes */
 
@@ -79,7 +80,6 @@ struct picture_t
      * These properties can be modified using the video output thread API,
      * but should never be written directly */
     /**@{*/
-    unsigned        i_refcount;                  /**< link reference counter */
     mtime_t         date;                                  /**< display date */
     bool            b_force;
     /**@}*/
@@ -91,9 +91,6 @@ struct picture_t
     bool            b_progressive;          /**< is it a progressive frame ? */
     bool            b_top_field_first;             /**< which field is first */
     unsigned int    i_nb_fields;                  /**< # of displayed fields */
-    int8_t         *p_q;                           /**< quantification table */
-    int             i_qstride;                    /**< quantification stride */
-    int             i_qtype;                       /**< quantification style */
     /**@}*/
 
     /** Private data - the video output plugin might want to put stuff here to
@@ -101,8 +98,12 @@ struct picture_t
     picture_sys_t * p_sys;
 
     /** This way the picture_Release can be overloaded */
-    void (*pf_release)( picture_t * );
-    picture_release_sys_t *p_release_sys;
+    struct
+    {
+        vlc_atomic_t refcount;
+        void (*pf_destroy)( picture_t * );
+        picture_gc_sys_t *p_sys;
+    } gc;
 
     /** Next picture in a FIFO a pictures */
     struct picture_t *p_next;
@@ -112,7 +113,7 @@ struct picture_t
  * This function will create a new picture.
  * The picture created will implement a default release management compatible
  * with picture_Hold and picture_Release. This default management will release
- * p_sys, p_q, p_data_orig fields if non NULL.
+ * p_sys, gc.p_sys fields if non NULL.
  */
 VLC_API picture_t * picture_New( vlc_fourcc_t i_chroma, int i_width, int i_height, int i_sar_num, int i_sar_den ) VLC_USED;
 
@@ -151,36 +152,18 @@ typedef struct
 VLC_API picture_t * picture_NewFromResource( const video_format_t *, const picture_resource_t * ) VLC_USED;
 
 /**
- * This function will force the destruction a picture.
- * The value of the picture reference count should be 0 before entering this
- * function.
- * Unless used for reimplementing pf_release, you should not use this
- * function but picture_Release.
- */
-VLC_API void picture_Delete( picture_t * );
-
-/**
  * This function will increase the picture reference count.
  * It will not have any effect on picture obtained from vout
  *
  * It returns the given picture for convenience.
  */
-static inline picture_t *picture_Hold( picture_t *p_picture )
-{
-    if( p_picture->pf_release )
-        p_picture->i_refcount++;
-    return p_picture;
-}
+VLC_API picture_t *picture_Hold( picture_t *p_picture );
+
 /**
  * This function will release a picture.
  * It will not have any effect on picture obtained from vout
  */
-static inline void picture_Release( picture_t *p_picture )
-{
-    /* FIXME why do we let pf_release handle the i_refcount ? */
-    if( p_picture->pf_release )
-        p_picture->pf_release( p_picture );
-}
+VLC_API void picture_Release( picture_t *p_picture );
 
 /**
  * This function will return true if you are not the only owner of the
@@ -188,36 +171,12 @@ static inline void picture_Release( picture_t *p_picture )
  *
  * It is only valid if it is created using picture_New.
  */
-static inline bool picture_IsReferenced( picture_t *p_picture )
-{
-    return p_picture->i_refcount > 1;
-}
-
-/**
- * Cleanup quantization matrix data and set to 0
- */
-static inline void picture_CleanupQuant( picture_t *p_pic )
-{
-    free( p_pic->p_q );
-    p_pic->p_q = NULL;
-    p_pic->i_qstride = 0;
-    p_pic->i_qtype = 0;
-}
+VLC_API bool picture_IsReferenced( picture_t *p_picture );
 
 /**
  * This function will copy all picture dynamic properties.
  */
-static inline void picture_CopyProperties( picture_t *p_dst, const picture_t *p_src )
-{
-    p_dst->date = p_src->date;
-    p_dst->b_force = p_src->b_force;
-
-    p_dst->b_progressive = p_src->b_progressive;
-    p_dst->i_nb_fields = p_src->i_nb_fields;
-    p_dst->b_top_field_first = p_src->b_top_field_first;
-
-    /* FIXME: copy ->p_q and ->p_qstride */
-}
+VLC_API void picture_CopyProperties( picture_t *p_dst, const picture_t *p_src );
 
 /**
  * This function will reset a picture information (properties and quantizers).
@@ -242,11 +201,7 @@ VLC_API void plane_CopyPixels( plane_t *p_dst, const plane_t *p_src );
  * \param p_dst pointer to the destination picture.
  * \param p_src pointer to the source picture.
  */
-static inline void picture_Copy( picture_t *p_dst, const picture_t *p_src )
-{
-    picture_CopyPixels( p_dst, p_src );
-    picture_CopyProperties( p_dst, p_src );
-}
+VLC_API void picture_Copy( picture_t *p_dst, const picture_t *p_src );
 
 /**
  * This function will export a picture to an encoded bitstream.
@@ -291,20 +246,6 @@ VLC_API int picture_Setup( picture_t *, vlc_fourcc_t i_chroma, int i_width, int 
  */
 VLC_API void picture_BlendSubpicture( picture_t *, filter_t *p_blend, subpicture_t * );
 
-
-/*****************************************************************************
- * Flags used to describe the status of a picture
- *****************************************************************************/
-
-/* Quantification type */
-enum
-{
-    QTYPE_NONE,
-
-    QTYPE_MPEG1,
-    QTYPE_MPEG2,
-    QTYPE_H264,
-};
 
 /*****************************************************************************
  * Shortcuts to access image components

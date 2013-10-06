@@ -2,7 +2,7 @@
  * playlist.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 50a2b9210e8667b00e2b8a9e3f84c43e0bffd825 $
+ * $Id: 67c273bd4737bc612b28a3601d012653d9b31e1c $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -25,12 +25,22 @@
 
 #import "PXSourceList.h"
 
+/* playlist column definitions */
+#define TRACKNUM_COLUMN @"tracknumber"
+#define TITLE_COLUMN @"name"
+#define ARTIST_COLUMN @"artist"
+#define DURATION_COLUMN @"duration"
+#define GENRE_COLUMN @"genre"
+#define ALBUM_COLUMN @"album"
+#define DESCRIPTION_COLUMN @"description"
+#define DATE_COLUMN @"date"
+#define LANGUAGE_COLUMN @"language"
+#define URI_COLUMN @"uri"
+
 /*****************************************************************************
  * VLCPlaylistView interface
  *****************************************************************************/
 @interface VLCPlaylistView : NSOutlineView
-{
-}
 
 @end
 
@@ -39,9 +49,6 @@
  *****************************************************************************/
 @interface VLCPlaylistCommon : NSObject <NSOutlineViewDataSource, NSOutlineViewDelegate>
 {
-    IBOutlet id o_tc_name;
-    IBOutlet id o_tc_author;
-    IBOutlet id o_tc_duration;
     IBOutlet VLCPlaylistView* o_outline_view;
 
     IBOutlet id o_tc_name_other;
@@ -55,19 +62,14 @@
 
 - (void)setPlaylistRoot: (playlist_item_t *)root_item;
 - (playlist_item_t *)currentPlaylistRoot;
-- (void)initStrings;
 - (playlist_item_t *)selectedPlaylistItem;
 - (NSOutlineView *)outlineView;
-- (void)swapPlaylists:(id)newList;
 @end
 
 /*****************************************************************************
  * VLCPlaylistWizard interface
  *****************************************************************************/
 @interface VLCPlaylistWizard : VLCPlaylistCommon
-{
-}
-
 - (IBAction)reloadOutlineView;
 
 @end
@@ -103,6 +105,7 @@
     IBOutlet id o_save_accessory_popup;
     IBOutlet id o_save_accessory_text;
 
+    IBOutlet id o_playlist_header;
 
     NSImage *o_descendingSortingImage;
     NSImage *o_ascendingSortingImage;
@@ -144,4 +147,5 @@
 - (void)appendArray:(NSArray*)o_array atPos:(int)i_position enqueue:(BOOL)b_enqueue;
 - (void)appendNodeArray:(NSArray*)o_array inNode:(playlist_item_t *)p_node atPos:(int)i_position enqueue:(BOOL)b_enqueue;
 
+- (void)setColumn: (NSString *)o_column state: (NSInteger)i_state translationDict:(NSDictionary *)o_dict;
 @end

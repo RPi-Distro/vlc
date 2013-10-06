@@ -2,21 +2,21 @@
  * smf.c : Standard MIDI File (.mid) demux module for vlc
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 0c3820c088f729abe82e6214aa0b500c142c0269 $
+ * $Id: 6b999cd37ce725b1a09d1c9895864df226f0a3da $
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -68,7 +68,7 @@ struct demux_sys_t
     /* by the way, "quarter note" is "noire" in French */
 
     unsigned     trackc; /* Number of tracks */
-    mtrk_t       trackv[0]; /* Track states */
+    mtrk_t       trackv[]; /* Track states */
 };
 
 /*****************************************************************************
@@ -172,16 +172,12 @@ static int Open (vlc_object_t * p_this)
     }
 
     p_sys = malloc (sizeof (*p_sys) + (sizeof (mtrk_t) * tracks));
-    if (p_sys == NULL)
+    if (unlikely(p_sys == NULL))
         return VLC_ENOMEM;
 
     /* We've had a valid SMF header - now skip it*/
     if (stream_Read (stream, NULL, 14) < 14)
         goto error;
-
-    p_demux->pf_demux   = Demux;
-    p_demux->pf_control = Control;
-    p_demux->p_sys      = p_sys;
 
     /* Default SMF tempo is 120BPM, i.e. half a second per quarter note */
     date_Init (&p_sys->pts, ppqn * 2, 1);
@@ -200,7 +196,7 @@ static int Open (vlc_object_t * p_this)
             /* Seeking screws streaming up, but there is no way around this,
              * as SMF1 tracks are performed simultaneously.
              * Not a big deal as SMF1 are usually only a few kbytes anyway. */
-            if (stream_Seek (stream,  p_sys->trackv[i-1].end))
+            if (stream_Seek (stream, p_sys->trackv[i - 1].end))
             {
                 msg_Err (p_this, "cannot build SMF index (corrupted file?)");
                 goto error;
@@ -239,6 +235,9 @@ static int Open (vlc_object_t * p_this)
     fmt.audio.i_rate = 44100; /* dummy value */
     p_sys->es = es_out_Add (p_demux->out, &fmt);
 
+    p_demux->pf_demux   = Demux;
+    p_demux->pf_control = Control;
+    p_demux->p_sys      = p_sys;
     return VLC_SUCCESS;
 
 error:
@@ -525,7 +524,7 @@ int HandleMessage (demux_t *p_demux, mtrk_t *tr)
     }
 
     /* FIXME: one message per block is very inefficient */
-    block = block_New (p_demux, 1 + datalen);
+    block = block_Alloc (1 + datalen);
     if (block == NULL)
         goto skip;
 
@@ -539,7 +538,7 @@ int HandleMessage (demux_t *p_demux, mtrk_t *tr)
         if (datalen == 0)
         {
             msg_Err (p_demux, "malformatted MIDI event");
-            return -1; /* can't use implicit running status with empty payload! */
+            return -1; /* implicit running status requires non-empty payload */
         }
 
         block->p_buffer[1] = first;
@@ -574,7 +573,8 @@ static int Demux (demux_t *p_demux)
     if (pulse == UINT64_MAX)
         return 0; /* all tracks are done */
 
-    es_out_Control (p_demux->out, ES_OUT_SET_PCR, VLC_TS_0 + date_Get (&p_sys->pts));
+    es_out_Control (p_demux->out, ES_OUT_SET_PCR,
+                    VLC_TS_0 + date_Get (&p_sys->pts));
 
     for (unsigned i = 0; i < p_sys->trackc; i++)
     {
@@ -603,7 +603,7 @@ static int Demux (demux_t *p_demux)
     /* MIDI Tick emulation (ping the decoder every 10ms) */
     while (cur_tick < last_tick)
     {
-        block_t *tick = block_New (p_demux, 1);
+        block_t *tick = block_Alloc (1);
         if (tick == NULL)
             break;
 

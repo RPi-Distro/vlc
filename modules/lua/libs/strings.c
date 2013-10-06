@@ -2,7 +2,7 @@
  * strings.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: ab8e435744d0a8895a8889b3f5d87d1c672cc74a $
+ * $Id: 39ae85e70aa10fdd2a89497346d1a00ac6f98da3 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -36,11 +36,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_meta.h>
-#include <vlc_aout.h>
 #include <vlc_charset.h>
-
-#include <lua.h>        /* Low level lua C API */
-#include <lauxlib.h>    /* Higher level C API */
 
 #include "../vlc.h"
 #include "../libs.h"
@@ -85,9 +81,14 @@ static int vlclua_make_uri( lua_State *L )
 {
     const char *psz_input = luaL_checkstring( L, 1 );
     const char *psz_scheme = luaL_optstring( L, 2, NULL );
-    char *psz_uri = make_URI( psz_input, psz_scheme );
-    lua_pushstring( L, psz_uri );
-    free( psz_uri );
+    if( strstr( psz_input, "://" ) == NULL )
+    {
+        char *psz_uri = vlc_path2uri( psz_input, psz_scheme );
+        lua_pushstring( L, psz_uri );
+        free( psz_uri );
+    }
+    else
+        lua_pushstring( L, psz_input );
     return 1;
 }
 

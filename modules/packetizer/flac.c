@@ -1,25 +1,25 @@
 /*****************************************************************************
  * flac.c: flac packetizer module.
  *****************************************************************************
- * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 1fef09abde9ef38f3e51e1bc0d6dff266fb5ffeb $
+ * Copyright (C) 1999-2001 VLC authors and VideoLAN
+ * $Id: 090b60160eae10a9b4e68618f5e2d7aafb459b26 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -90,6 +90,27 @@ struct decoder_sys_t
     unsigned int i_rate, i_channels, i_bits_per_sample;
 };
 
+static const int pi_channels_maps[9] =
+{
+    0,
+    AOUT_CHAN_CENTER,
+    AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT,
+    AOUT_CHAN_CENTER | AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT,
+    AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_REARLEFT
+     | AOUT_CHAN_REARRIGHT,
+    AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
+     | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT,
+    AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
+     | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT | AOUT_CHAN_LFE,
+    AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
+     | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT | AOUT_CHAN_MIDDLELEFT
+     | AOUT_CHAN_MIDDLERIGHT,
+    AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER | AOUT_CHAN_REARLEFT
+     | AOUT_CHAN_REARRIGHT | AOUT_CHAN_MIDDLELEFT | AOUT_CHAN_MIDDLERIGHT
+     | AOUT_CHAN_LFE
+};
+
+
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
@@ -149,11 +170,18 @@ static void ProcessHeader( decoder_t *p_dec )
     decoder_sys_t *p_sys = p_dec->p_sys;
 
     bs_t bs;
+    int i_extra = p_dec->fmt_in.i_extra;
+    char *p_extra = p_dec->fmt_in.p_extra;
 
-    if( p_dec->fmt_in.i_extra < 8 + 14 )
+    if (i_extra > 8 && !memcmp(p_extra, "fLaC", 4)) {
+        i_extra -= 8;
+        p_extra += 8;
+    }
+
+    if( p_dec->fmt_in.i_extra < 14 )
         return;
 
-    bs_init( &bs, (uint8_t*)p_dec->fmt_in.p_extra + 8, p_dec->fmt_in.i_extra - 8 );
+    bs_init( &bs, p_extra, i_extra);
 
     p_sys->stream_info.min_blocksize = bs_read( &bs, 16 );
     p_sys->stream_info.max_blocksize = bs_read( &bs, 16 );
@@ -167,11 +195,9 @@ static void ProcessHeader( decoder_t *p_dec )
 
     p_sys->b_stream_info = true;
 
-    p_dec->fmt_out.i_extra = p_dec->fmt_in.i_extra;
-    p_dec->fmt_out.p_extra = xrealloc( p_dec->fmt_out.p_extra,
-                                       p_dec->fmt_out.i_extra );
-    memcpy( p_dec->fmt_out.p_extra,
-            p_dec->fmt_in.p_extra, p_dec->fmt_out.i_extra );
+    p_dec->fmt_out.i_extra = i_extra;
+    p_dec->fmt_out.p_extra = xrealloc( p_dec->fmt_out.p_extra, i_extra );
+    memcpy( p_dec->fmt_out.p_extra, p_extra, i_extra );
 }
 
 /* */
@@ -327,7 +353,7 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
             }
 
         case STATE_SEND_DATA:
-            p_sout_block = block_New( p_dec, p_sys->i_frame_size );
+            p_sout_block = block_Alloc( p_sys->i_frame_size );
 
             /* Copy the whole frame into the buffer. When we reach this point
              * we already know we have enough data available. */
@@ -337,6 +363,11 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
             /* Make sure we don't reuse the same pts twice */
             if( p_sys->i_pts == p_sys->bytestream.p_block->i_pts )
                 p_sys->i_pts = p_sys->bytestream.p_block->i_pts = VLC_TS_INVALID;
+
+            p_dec->fmt_out.audio.i_channels = p_sys->i_channels;
+            p_dec->fmt_out.audio.i_physical_channels =
+                p_dec->fmt_out.audio.i_original_channels =
+                    pi_channels_maps[p_sys->stream_info.channels];
 
             /* So p_block doesn't get re-added several times */
             *pp_block = block_BytestreamPop( &p_sys->bytestream );

@@ -2,7 +2,7 @@
  * vlc_demux.h: Demuxer descriptor, queries and methods
  *****************************************************************************
  * Copyright (C) 1999-2005 VLC authors and VideoLAN
- * $Id: 7af6a2ff2f59b04a37084f6e7653058a9d80ccb2 $
+ * $Id: 249291427c0439edbaeb5f5fafd70d6d44340390 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -110,7 +110,7 @@ enum demux_query_e
     DEMUX_SET_TITLE,            /* arg1= int            can fail */
     DEMUX_SET_SEEKPOINT,        /* arg1= int            can fail */
 
-    /* DEMUX_SET_GROUP only a hit for demuxer (mainly DVB) to allow not
+    /* DEMUX_SET_GROUP only a hint for demuxer (mainly DVB) to allow not
      * reading everything (you should not use this to call es_out_Control)
      * if you don't know what to do with it, just IGNORE it, it is safe(r)
      * -1 means all group, 0 default group (first es added) */
@@ -118,10 +118,10 @@ enum demux_query_e
 
     /* Ask the demux to demux until the given date at the next pf_demux call
      * but not more (and not less, at the precision available of course).
-     * XXX: not mandatory (except for subtitle demux) but I will help a lot
+     * XXX: not mandatory (except for subtitle demux) but will help a lot
      * for multi-input
      */
-    DEMUX_SET_NEXT_DEMUX_TIME,  /* arg1= int64_t *      can fail */
+    DEMUX_SET_NEXT_DEMUX_TIME,  /* arg1= int64_t        can fail */
     /* FPS for correct subtitles handling */
     DEMUX_GET_FPS,              /* arg1= double *       res=can fail    */
 
@@ -159,6 +159,13 @@ enum demux_query_e
     DEMUX_SET_RATE,             /* arg1= int*pi_rate                                        can fail */
 
     DEMUX_CAN_SEEK,            /* arg1= bool*    can fail (assume false)*/
+
+    /* Navigation */
+    DEMUX_NAV_ACTIVATE,        /* res=can fail */
+    DEMUX_NAV_UP,              /* res=can fail */
+    DEMUX_NAV_DOWN,            /* res=can fail */
+    DEMUX_NAV_LEFT,            /* res=can fail */
+    DEMUX_NAV_RIGHT,           /* res=can fail */
 };
 
 VLC_API int demux_vaControlHelper( stream_t *, int64_t i_start, int64_t i_end, int64_t i_bitrate, int i_align, int i_query, va_list args );

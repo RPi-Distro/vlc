@@ -1,25 +1,25 @@
 /*****************************************************************************
  * ripple.c : Ripple video effect plugin for vlc
  *****************************************************************************
- * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 55d78625f4ec1546ded3d48f92542a2e9a5606a7 $
+ * Copyright (C) 2000-2006 VLC authors and VideoLAN
+ * $Id: f06afe252977221f09efff172c417e2be4860112 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -160,7 +160,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
 
         for( i_line = 0 ; i_line < i_first_line ; i_line++ )
         {
-            vlc_memcpy( p_out, p_in, p_pic->p[i_index].i_visible_pitch );
+            memcpy( p_out, p_in, p_pic->p[i_index].i_visible_pitch );
             p_in += p_pic->p[i_index].i_pitch;
             p_out += p_outpic->p[i_index].i_pitch;
         }
@@ -181,24 +181,24 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
             {
                 if( i_offset < 0 )
                 {
-                    vlc_memcpy( p_out, p_in - i_offset,
+                    memcpy( p_out, p_in - i_offset,
                                 p_pic->p[i_index].i_visible_pitch + i_offset );
                     p_in -= p_pic->p[i_index].i_pitch;
                     p_out += p_outpic->p[i_index].i_pitch;
-                    vlc_memset( p_out + i_offset, black_pixel, -i_offset );
+                    memset( p_out + i_offset, black_pixel, -i_offset );
                 }
                 else
                 {
-                    vlc_memcpy( p_out + i_offset, p_in,
+                    memcpy( p_out + i_offset, p_in,
                                 p_pic->p[i_index].i_visible_pitch - i_offset );
-                    vlc_memset( p_out, black_pixel, i_offset );
+                    memset( p_out, black_pixel, i_offset );
                     p_in -= p_pic->p[i_index].i_pitch;
                     p_out += p_outpic->p[i_index].i_pitch;
                 }
             }
             else
             {
-                vlc_memcpy( p_out, p_in, p_pic->p[i_index].i_visible_pitch );
+                memcpy( p_out, p_in, p_pic->p[i_index].i_visible_pitch );
                 p_in -= p_pic->p[i_index].i_pitch;
                 p_out += p_outpic->p[i_index].i_pitch;
             }

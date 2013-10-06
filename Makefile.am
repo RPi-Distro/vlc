@@ -16,64 +16,59 @@ SUBDIRS += test
 EXTRA_DIST = \
 	extras/package/win32/vlc.exe.manifest \
 	extras/package/win32/libvlc.dll.manifest \
-	extras/package/win32/peflags.pl \
 	extras/package/win32/change-contribs-directory.sh \
 	extras/package/win32/configure.sh \
 	extras/package/symbian/configure.sh \
 	extras/package/npapi.am \
-	extras/package/win32/vlc.win32.nsi.in \
-	extras/package/win32/spad.nsi.in \
-	extras/package/win32/UAC.nsh \
-	extras/package/win32/languages/declaration.nsh \
-	extras/package/win32/languages/bengali.nsh \
-	extras/package/win32/languages/basque.nsh \
-	extras/package/win32/languages/brazilian_portuguese.nsh \
-	extras/package/win32/languages/bulgarian.nsh \
-	extras/package/win32/languages/catalan.nsh \
-	extras/package/win32/languages/croatian.nsh \
-	extras/package/win32/languages/danish.nsh \
-	extras/package/win32/languages/dutch.nsh \
-	extras/package/win32/languages/english.nsh \
-	extras/package/win32/languages/estonian.nsh \
-	extras/package/win32/languages/finnish.nsh \
-	extras/package/win32/languages/french.nsh \
-	extras/package/win32/languages/galician.nsh \
-	extras/package/win32/languages/german.nsh \
-	extras/package/win32/languages/hebrew.nsh \
-	extras/package/win32/languages/hungarian.nsh \
-	extras/package/win32/languages/italian.nsh \
-	extras/package/win32/languages/japanese.nsh \
-	extras/package/win32/languages/lithuanian.nsh \
-	extras/package/win32/languages/occitan.nsh \
-	extras/package/win32/languages/polish.nsh \
-	extras/package/win32/languages/punjabi.nsh \
-	extras/package/win32/languages/russian.nsh
-	extras/package/win32/languages/romanian.nsh \
-	extras/package/win32/languages/schinese.nsh \
-	extras/package/win32/languages/serbian.nsh \
-	extras/package/win32/languages/slovak.nsh \
-	extras/package/win32/languages/slovenian.nsh \
-	extras/package/win32/languages/sorani.nsh \
-	extras/package/win32/languages/spanish.nsh \
-	extras/package/win32/languages/swedish.nsh \
-	extras/package/win32/languages/ukrainian.nsh \
-	extras/package/win32/UAC/examples \
-	extras/package/win32/UAC/examples/UAC_AllowLUA.nsi \
-	extras/package/win32/UAC/examples/UAC_AdminOnly.nsi \
-	extras/package/win32/UAC/examples/UAC_Uninstaller.nsi \
-	extras/package/win32/UAC/examples/UAC.nsh \
-	extras/package/win32/UAC/examples/UAC_GetUserShellFolderPath.nsi \
-	extras/package/win32/UAC/examples/UAC_RealWorldFullyLoadedDualModeExample.nsi \
-	extras/package/win32/UAC/History.txt \
-	extras/package/win32/UAC/License.txt \
-	extras/package/win32/UAC/nsisutil.h \
-	extras/package/win32/UAC/resource.h \
-	extras/package/win32/UAC/resource.rc \
-	extras/package/win32/UAC/runas.cpp \
-	extras/package/win32/UAC/uac.cpp \
-	extras/package/win32/UAC/uac.h \
-	extras/package/win32/UAC/Readme.html \
-	extras/package/win32/UAC.nsh
+	extras/package/win32/NSIS/vlc.win32.nsi.in \
+	extras/package/win32/NSIS/spad.nsi.in \
+	extras/package/win32/NSIS/UAC/examples \
+	extras/package/win32/NSIS/UAC/examples/UAC_AllowLUA.nsi \
+	extras/package/win32/NSIS/UAC/examples/UAC_AdminOnly.nsi \
+	extras/package/win32/NSIS/UAC/examples/UAC_Uninstaller.nsi \
+	extras/package/win32/NSIS/UAC/examples/UAC.nsh \
+	extras/package/win32/NSIS/UAC/examples/UAC_GetUserShellFolderPath.nsi \
+	extras/package/win32/NSIS/UAC/examples/UAC_RealWorldFullyLoadedDualModeExample.nsi \
+	extras/package/win32/NSIS/UAC/History.txt \
+	extras/package/win32/NSIS/UAC/License.txt \
+	extras/package/win32/NSIS/UAC/nsisutil.h \
+	extras/package/win32/NSIS/UAC/resource.h \
+	extras/package/win32/NSIS/UAC/resource.rc \
+	extras/package/win32/NSIS/UAC/runas.cpp \
+	extras/package/win32/NSIS/UAC/uac.cpp \
+	extras/package/win32/NSIS/UAC/uac.h \
+	extras/package/win32/NSIS/UAC/Readme.html \
+	extras/package/win32/NSIS/UAC.nsh \
+	extras/package/win32/NSIS/languages/declaration.nsh \
+	extras/package/win32/NSIS/languages/bengali.nsh \
+	extras/package/win32/NSIS/languages/basque.nsh \
+	extras/package/win32/NSIS/languages/brazilian_portuguese.nsh \
+	extras/package/win32/NSIS/languages/bulgarian.nsh \
+	extras/package/win32/NSIS/languages/catalan.nsh \
+	extras/package/win32/NSIS/languages/danish.nsh \
+	extras/package/win32/NSIS/languages/dutch.nsh \
+	extras/package/win32/NSIS/languages/english.nsh \
+	extras/package/win32/NSIS/languages/estonian.nsh \
+	extras/package/win32/NSIS/languages/finnish.nsh \
+	extras/package/win32/NSIS/languages/french.nsh \
+	extras/package/win32/NSIS/languages/galician.nsh \
+	extras/package/win32/NSIS/languages/german.nsh \
+	extras/package/win32/NSIS/languages/hebrew.nsh \
+	extras/package/win32/NSIS/languages/hungarian.nsh \
+	extras/package/win32/NSIS/languages/italian.nsh \
+	extras/package/win32/NSIS/languages/japanese.nsh \
+	extras/package/win32/NSIS/languages/lithuanian.nsh \
+	extras/package/win32/NSIS/languages/occitan.nsh \
+	extras/package/win32/NSIS/languages/polish.nsh \
+	extras/package/win32/NSIS/languages/punjabi.nsh \
+	extras/package/win32/NSIS/languages/russian.nsh
+	extras/package/win32/NSIS/languages/romanian.nsh \
+	extras/package/win32/NSIS/languages/schinese.nsh \
+	extras/package/win32/NSIS/languages/slovak.nsh \
+	extras/package/win32/NSIS/languages/slovenian.nsh \
+	extras/package/win32/NSIS/languages/sorani.nsh \
+	extras/package/win32/NSIS/languages/spanish.nsh \
+	extras/package/win32/NSIS/languages/swedish.nsh
 
 dist_noinst_SCRIPTS = bootstrap
 nodist_noinst_SCRIPTS = compile
@@ -93,6 +88,7 @@ DISTCHECK_CONFIGURE_FLAGS = \
 	--disable-mad --disable-libmpeg2 \
 	--disable-faad --disable-skins2 \
 	--disable-live555 \
+	--disable-lua \
 	--disable-fribidi --disable-glx \
 	--disable-mkv \
 	--with-kde-solid='$${datadir}/kde4/apps'
@@ -123,13 +119,16 @@ EXTRA_DIST += \
 	extras/package/macosx/Resources/English.lproj/About.xib \
 	extras/package/macosx/Resources/English.lproj/AudioEffects.xib \
 	extras/package/macosx/Resources/English.lproj/Bookmarks.xib \
+	extras/package/macosx/Resources/English.lproj/ConvertAndSave.xib \
 	extras/package/macosx/Resources/English.lproj/CoreDialogs.xib \
+	extras/package/macosx/Resources/English.lproj/DetachedVideoWindow.xib \
 	extras/package/macosx/Resources/English.lproj/ErrorPanel.xib \
 	extras/package/macosx/Resources/English.lproj/InfoPlist.strings.in \
 	extras/package/macosx/Resources/English.lproj/MainMenu.xib \
 	extras/package/macosx/Resources/English.lproj/MediaInfo.xib \
 	extras/package/macosx/Resources/English.lproj/Open.xib \
 	extras/package/macosx/Resources/English.lproj/Preferences.xib \
+	extras/package/macosx/Resources/English.lproj/SharedDialogs.xib \
 	extras/package/macosx/Resources/English.lproj/SyncTracks.xib \
 	extras/package/macosx/Resources/English.lproj/VideoEffects.xib \
 	extras/package/macosx/Resources/English.lproj/Wizard.xib \
@@ -209,10 +208,14 @@ EXTRA_DIST += \
 	extras/package/macosx/Resources/icons/wav.icns \
 	extras/package/macosx/Resources/icons/wma.icns \
 	extras/package/macosx/Resources/icons/wmv.icns \
-	extras/package/macosx/Resources/mainwindow/back-pressed.png \
-	extras/package/macosx/Resources/mainwindow/back-pressed@2x.png \
-	extras/package/macosx/Resources/mainwindow/back.png \
-	extras/package/macosx/Resources/mainwindow/back@2x.png \
+	extras/package/macosx/Resources/mainwindow/backward-3btns-pressed.png \
+	extras/package/macosx/Resources/mainwindow/backward-3btns-pressed@2x.png \
+	extras/package/macosx/Resources/mainwindow/backward-3btns.png \
+	extras/package/macosx/Resources/mainwindow/backward-3btns@2x.png \
+	extras/package/macosx/Resources/mainwindow/backward-6btns-pressed.png \
+	extras/package/macosx/Resources/mainwindow/backward-6btns-pressed@2x.png \
+	extras/package/macosx/Resources/mainwindow/backward-6btns.png \
+	extras/package/macosx/Resources/mainwindow/backward-6btns@2x.png \
 	extras/package/macosx/Resources/mainwindow/bottom-background.png \
 	extras/package/macosx/Resources/mainwindow/bottom-background@2x.png \
 	extras/package/macosx/Resources/mainwindow/bottombar-mini.png \
@@ -227,14 +230,18 @@ EXTRA_DIST += \
 	extras/package/macosx/Resources/mainwindow/effects-double-buttons@2x.png \
 	extras/package/macosx/Resources/mainwindow/effects-one-button-blue.png \
 	extras/package/macosx/Resources/mainwindow/effects-one-button-blue@2x.png \
-	extras/package/macosx/Resources/mainwindow/effects-one-button.png \
-	extras/package/macosx/Resources/mainwindow/effects-one-button@2x.png \
 	extras/package/macosx/Resources/mainwindow/effects-one-button-pressed.png \
 	extras/package/macosx/Resources/mainwindow/effects-one-button-pressed@2x.png \
-	extras/package/macosx/Resources/mainwindow/forward-pressed.png \
-	extras/package/macosx/Resources/mainwindow/forward-pressed@2x.png \
-	extras/package/macosx/Resources/mainwindow/forward.png \
-	extras/package/macosx/Resources/mainwindow/forward@2x.png \
+	extras/package/macosx/Resources/mainwindow/effects-one-button.png \
+	extras/package/macosx/Resources/mainwindow/effects-one-button@2x.png \
+	extras/package/macosx/Resources/mainwindow/forward-3btns-pressed.png \
+	extras/package/macosx/Resources/mainwindow/forward-3btns-pressed@2x.png \
+	extras/package/macosx/Resources/mainwindow/forward-3btns.png \
+	extras/package/macosx/Resources/mainwindow/forward-3btns@2x.png \
+	extras/package/macosx/Resources/mainwindow/forward-6btns-pressed.png \
+	extras/package/macosx/Resources/mainwindow/forward-6btns-pressed@2x.png \
+	extras/package/macosx/Resources/mainwindow/forward-6btns.png \
+	extras/package/macosx/Resources/mainwindow/forward-6btns@2x.png \
 	extras/package/macosx/Resources/mainwindow/fullscreen-double-buttons-pressed.png \
 	extras/package/macosx/Resources/mainwindow/fullscreen-double-buttons-pressed@2x.png \
 	extras/package/macosx/Resources/mainwindow/fullscreen-double-buttons.png \
@@ -250,6 +257,10 @@ EXTRA_DIST += \
 	extras/package/macosx/Resources/mainwindow/mini-progressbar-wrapper-left.png \
 	extras/package/macosx/Resources/mainwindow/mini-progressbar-wrapper-middle.png \
 	extras/package/macosx/Resources/mainwindow/mini-progressbar-wrapper-right.png \
+	extras/package/macosx/Resources/mainwindow/next-6btns-pressed.png \
+	extras/package/macosx/Resources/mainwindow/next-6btns-pressed@2x.png \
+	extras/package/macosx/Resources/mainwindow/next-6btns.png \
+	extras/package/macosx/Resources/mainwindow/next-6btns@2x.png \
 	extras/package/macosx/Resources/mainwindow/pause-pressed.png \
 	extras/package/macosx/Resources/mainwindow/pause-pressed@2x.png \
 	extras/package/macosx/Resources/mainwindow/pause.png \
@@ -258,12 +269,20 @@ EXTRA_DIST += \
 	extras/package/macosx/Resources/mainwindow/play-pressed@2x.png \
 	extras/package/macosx/Resources/mainwindow/play.png \
 	extras/package/macosx/Resources/mainwindow/play@2x.png \
+	extras/package/macosx/Resources/mainwindow/playlist-1btn-pressed.png \
+	extras/package/macosx/Resources/mainwindow/playlist-1btn-pressed@2x.png \
+	extras/package/macosx/Resources/mainwindow/playlist-1btn.png \
+	extras/package/macosx/Resources/mainwindow/playlist-1btn@2x.png \
 	extras/package/macosx/Resources/mainwindow/playlist-btn-blue.png \
 	extras/package/macosx/Resources/mainwindow/playlist-btn-blue@2x.png \
 	extras/package/macosx/Resources/mainwindow/playlist-btn-pressed.png \
 	extras/package/macosx/Resources/mainwindow/playlist-btn-pressed@2x.png \
 	extras/package/macosx/Resources/mainwindow/playlist-btn.png \
 	extras/package/macosx/Resources/mainwindow/playlist-btn@2x.png \
+	extras/package/macosx/Resources/mainwindow/previous-6btns-pressed.png \
+	extras/package/macosx/Resources/mainwindow/previous-6btns-pressed@2x.png \
+	extras/package/macosx/Resources/mainwindow/previous-6btns.png \
+	extras/package/macosx/Resources/mainwindow/previous-6btns@2x.png \
 	extras/package/macosx/Resources/mainwindow/progression-fill-left.png \
 	extras/package/macosx/Resources/mainwindow/progression-fill-left@2x.png \
 	extras/package/macosx/Resources/mainwindow/progression-fill-middle.png \
@@ -311,10 +330,14 @@ EXTRA_DIST += \
 	extras/package/macosx/Resources/mainwindow/volume-slider-knob@2x.png \
 	extras/package/macosx/Resources/mainwindow/volume-slider-track.png \
 	extras/package/macosx/Resources/mainwindow/volume-slider-track@2x.png \
-	extras/package/macosx/Resources/mainwindow_dark/back-pressed_dark.png \
-	extras/package/macosx/Resources/mainwindow_dark/back-pressed_dark@2x.png \
-	extras/package/macosx/Resources/mainwindow_dark/back_dark.png \
-	extras/package/macosx/Resources/mainwindow_dark/back_dark@2x.png \
+	extras/package/macosx/Resources/mainwindow_dark/backward-3btns-dark-pressed.png \
+	extras/package/macosx/Resources/mainwindow_dark/backward-3btns-dark-pressed@2x.png \
+	extras/package/macosx/Resources/mainwindow_dark/backward-3btns-dark.png \
+	extras/package/macosx/Resources/mainwindow_dark/backward-3btns-dark@2x.png \
+	extras/package/macosx/Resources/mainwindow_dark/backward-6btns-dark-pressed.png \
+	extras/package/macosx/Resources/mainwindow_dark/backward-6btns-dark-pressed@2x.png \
+	extras/package/macosx/Resources/mainwindow_dark/backward-6btns-dark.png \
+	extras/package/macosx/Resources/mainwindow_dark/backward-6btns-dark@2x.png \
 	extras/package/macosx/Resources/mainwindow_dark/bottom-background_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/bottom-background_dark@2x.png \
 	extras/package/macosx/Resources/mainwindow_dark/bottombar-mini.png \
@@ -334,10 +357,14 @@ EXTRA_DIST += \
 	extras/package/macosx/Resources/mainwindow_dark/effects-one-button-pressed-dark@2x.png \
 	extras/package/macosx/Resources/mainwindow_dark/effects-one-button_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/effects-one-button_dark@2x.png \
-	extras/package/macosx/Resources/mainwindow_dark/forward-pressed_dark.png \
-	extras/package/macosx/Resources/mainwindow_dark/forward-pressed_dark@2x.png \
-	extras/package/macosx/Resources/mainwindow_dark/forward_dark.png \
-	extras/package/macosx/Resources/mainwindow_dark/forward_dark@2x.png \
+	extras/package/macosx/Resources/mainwindow_dark/forward-3btns-dark-pressed.png \
+	extras/package/macosx/Resources/mainwindow_dark/forward-3btns-dark-pressed@2x.png \
+	extras/package/macosx/Resources/mainwindow_dark/forward-3btns-dark.png \
+	extras/package/macosx/Resources/mainwindow_dark/forward-3btns-dark@2x.png \
+	extras/package/macosx/Resources/mainwindow_dark/forward-6btns-dark-pressed.png \
+	extras/package/macosx/Resources/mainwindow_dark/forward-6btns-dark-pressed@2x.png \
+	extras/package/macosx/Resources/mainwindow_dark/forward-6btns-dark.png \
+	extras/package/macosx/Resources/mainwindow_dark/forward-6btns-dark@2x.png \
 	extras/package/macosx/Resources/mainwindow_dark/fullscreen-double-buttons-pressed_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/fullscreen-double-buttons-pressed_dark@2x.png \
 	extras/package/macosx/Resources/mainwindow_dark/fullscreen-double-buttons_dark.png \
@@ -346,6 +373,10 @@ EXTRA_DIST += \
 	extras/package/macosx/Resources/mainwindow_dark/fullscreen-one-button-pressed_dark@2x.png \
 	extras/package/macosx/Resources/mainwindow_dark/fullscreen-one-button_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/fullscreen-one-button_dark@2x.png \
+	extras/package/macosx/Resources/mainwindow_dark/next-6btns-dark-pressed.png \
+	extras/package/macosx/Resources/mainwindow_dark/next-6btns-dark-pressed@2x.png \
+	extras/package/macosx/Resources/mainwindow_dark/next-6btns-dark.png \
+	extras/package/macosx/Resources/mainwindow_dark/next-6btns-dark@2x.png \
 	extras/package/macosx/Resources/mainwindow_dark/pause-pressed_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/pause-pressed_dark@2x.png \
 	extras/package/macosx/Resources/mainwindow_dark/pause_dark.png \
@@ -354,6 +385,10 @@ EXTRA_DIST += \
 	extras/package/macosx/Resources/mainwindow_dark/play-pressed_dark@2x.png \
 	extras/package/macosx/Resources/mainwindow_dark/play_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/play_dark@2x.png \
+	extras/package/macosx/Resources/mainwindow_dark/playlist-1btn-dark-pressed.png \
+	extras/package/macosx/Resources/mainwindow_dark/playlist-1btn-dark-pressed@2x.png \
+	extras/package/macosx/Resources/mainwindow_dark/playlist-1btn-dark.png \
+	extras/package/macosx/Resources/mainwindow_dark/playlist-1btn-dark@2x.png \
 	extras/package/macosx/Resources/mainwindow_dark/playlist-blue-pressed_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/playlist-blue-pressed_dark@2x.png \
 	extras/package/macosx/Resources/mainwindow_dark/playlist-blue_dark.png \
@@ -362,6 +397,10 @@ EXTRA_DIST += \
 	extras/package/macosx/Resources/mainwindow_dark/playlist-pressed_dark@2x.png \
 	extras/package/macosx/Resources/mainwindow_dark/playlist_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/playlist_dark@2x.png \
+	extras/package/macosx/Resources/mainwindow_dark/previous-6btns-dark-pressed.png \
+	extras/package/macosx/Resources/mainwindow_dark/previous-6btns-dark-pressed@2x.png \
+	extras/package/macosx/Resources/mainwindow_dark/previous-6btns-dark.png \
+	extras/package/macosx/Resources/mainwindow_dark/previous-6btns-dark@2x.png \
 	extras/package/macosx/Resources/mainwindow_dark/progressbar-fill-left_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/progressbar-fill-left_dark@2x.png \
 	extras/package/macosx/Resources/mainwindow_dark/progressbar-fill-middle_dark.png \
@@ -559,7 +598,7 @@ EXTRA_DIST += \
 ###############################################################################
 
 CLEANFILES =
-DISTCLEANFILES = $(BUILT_SOURCES_distclean) compile
+DISTCLEANFILES = $(BUILT_SOURCES_distclean) compile doltcompile doltlibtool
 MAINTAINERCLEANFILES = ChangeLog
 
 # Shortcut for developers to rebuild the core (libvlc + vlc)
@@ -586,7 +625,7 @@ doc:
 # Building aliases
 ###############################################################################
 
-ALL_ALIASES = cvlc rvlc svlc qvlc nvlc mvlc
+ALL_ALIASES = cvlc rvlc svlc qvlc nvlc
 bin_SCRIPTS = $(ALIASES)
 CLEANFILES += $(ALIASES) $(noinst_SCRIPTS)
 EXTRA_SCRIPTS = $(ALL_ALIASES)
@@ -610,9 +649,6 @@ qvlc: make-alias Makefile
 nvlc: make-alias Makefile
 	$(AM_V_GEN)$(MKALIAS) ncurses
 
-mvlc: make-alias Makefile
-	$(AM_V_GEN)$(MKALIAS) maemo
-
 if BUILD_VLC
 noinst_SCRIPTS = vlc$(EXEEXT)
 endif
@@ -620,11 +656,15 @@ endif
 vlc$(EXEEXT):
 	$(AM_V_GEN)$(LN_S) -f bin/vlc-static$(EXEEXT) vlc$(EXEEXT)
 
+TESTS = test/run_vlc.sh
+dist_noinst_SCRIPTS += test/run_vlc.sh
+
 ###############################################################################
 # Installing plugins cache
 ###############################################################################
 install-exec-hook:
 	if test "$(build)" = "$(host)"; then \
+		PATH="$(DESTDIR)$(bindir):$$PATH" \
 		LD_LIBRARY_PATH="$(DESTDIR)$(libdir):$$LD_LIBRARY_PATH" \
 		"$(DESTDIR)$(vlclibdir)/vlc-cache-gen$(EXEEXT)" \
 			 "$(DESTDIR)$(vlclibdir)/plugins" ; \
@@ -634,10 +674,6 @@ install-exec-hook:
 
 uninstall-hook:
 	rm -f -- "$(DESTDIR)$(vlclibdir)/plugins/plugins.dat"
-
-silentstd = $(silentstd_$(V))
-silentstd_ = $(silentstd_$(AM_DEFAULT_VERBOSITY))
-silentstd_0 = 2>&1 >/dev/null
 
 ###############################################################################
 # PO translation files update
@@ -652,4 +688,5 @@ update-po:
 ###############################################################################
 include extras/package/macosx/package.mak
 include extras/package/win32/package.mak
+include extras/package/win32/msi.mak
 

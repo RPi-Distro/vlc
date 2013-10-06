@@ -2,7 +2,7 @@
  * meta.c : Metadata handling
  *****************************************************************************
  * Copyright (C) 1998-2004 VLC authors and VideoLAN
- * $Id: 1fc7f07bf99047008a48c2a7491a56f61fb37ccd $
+ * $Id: aeda5d40e5a8f877399fc28ef9c62b62dfebfccb $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org
@@ -33,6 +33,7 @@
 #include <vlc_url.h>
 #include <vlc_arrays.h>
 #include <vlc_modules.h>
+#include <vlc_charset.h>
 
 #include "input_internal.h"
 #include "../playlist/art.h"
@@ -40,9 +41,9 @@
 struct vlc_meta_t
 {
     char * ppsz_meta[VLC_META_TYPE_COUNT];
-    
+
     vlc_dictionary_t extra_tags;
-    
+
     int i_status;
 };
 
@@ -78,7 +79,7 @@ const char * vlc_meta_TypeToLocalizedString( vlc_meta_type_t meta_type )
 /**
  * vlc_meta contructor.
  * vlc_meta_Delete() will free the returned pointer.
- */ 
+ */
 vlc_meta_t *vlc_meta_New( void )
 {
     vlc_meta_t *m = (vlc_meta_t*)malloc( sizeof(*m) );
@@ -110,7 +111,7 @@ void vlc_meta_Delete( vlc_meta_t *m )
  * vlc_meta has two kinds of meta, the one in a table, and the one in a
  * dictionary.
  * FIXME - Why don't we merge those two?
- */ 
+ */
 
 void vlc_meta_Set( vlc_meta_t *p_meta, vlc_meta_type_t meta_type, const char *psz_val )
 {
@@ -168,10 +169,10 @@ void vlc_meta_Merge( vlc_meta_t *dst, const vlc_meta_t *src )
 {
     char **ppsz_all_keys;
     int i;
-    
+
     if( !dst || !src )
         return;
-    
+
     for( i = 0; i < VLC_META_TYPE_COUNT; i++ )
     {
         if( src->ppsz_meta[i] )
@@ -180,14 +181,14 @@ void vlc_meta_Merge( vlc_meta_t *dst, const vlc_meta_t *src )
             dst->ppsz_meta[i] = strdup( src->ppsz_meta[i] );
         }
     }
-    
+
     /* XXX: If speed up are needed, it is possible */
     ppsz_all_keys = vlc_dictionary_all_keys( &src->extra_tags );
     for( i = 0; ppsz_all_keys && ppsz_all_keys[i]; i++ )
     {
         /* Always try to remove the previous value */
         vlc_dictionary_remove_value_for_key( &dst->extra_tags, ppsz_all_keys[i], vlc_meta_FreeExtraKey, NULL );
-        
+
         void *p_value = vlc_dictionary_value_for_key( &src->extra_tags, ppsz_all_keys[i] );
         vlc_dictionary_insert( &dst->extra_tags, ppsz_all_keys[i], strdup( (const char*)p_value ) );
         free( ppsz_all_keys[i] );
@@ -208,8 +209,6 @@ void input_ExtractAttachmentAndCacheArt( input_thread_t *p_input )
         free( psz_arturl );
         return;
     }
-
-    playlist_t *p_playlist = pl_Get( p_input );
 
     if( input_item_IsArtFetched( p_item ) )
     {
@@ -251,7 +250,7 @@ void input_ExtractAttachmentAndCacheArt( input_thread_t *p_input )
         psz_type = ".png";
 
     /* */
-    playlist_SaveArt( p_playlist, p_item,
+    playlist_SaveArt( VLC_OBJECT(p_input), p_item,
                       p_attachment->p_data, p_attachment->i_data, psz_type );
 
     vlc_input_attachment_Delete( p_attachment );
@@ -292,4 +291,40 @@ int input_item_WriteMeta( vlc_object_t *obj, input_item_t *p_item )
 error:
     vlc_object_release( p_export );
     return VLC_EGENERIC;
+}
+
+void vlc_audio_replay_gain_MergeFromMeta( audio_replay_gain_t *p_dst,
+                                          const vlc_meta_t *p_meta )
+{
+    const char * psz_value;
+
+    if( !p_meta )
+        return;
+
+    if( (psz_value = vlc_meta_GetExtra(p_meta, "REPLAYGAIN_TRACK_GAIN")) ||
+        (psz_value = vlc_meta_GetExtra(p_meta, "RG_RADIO")) )
+    {
+        p_dst->pb_gain[AUDIO_REPLAY_GAIN_TRACK] = true;
+        p_dst->pf_gain[AUDIO_REPLAY_GAIN_TRACK] = us_atof( psz_value );
+    }
+
+    if( (psz_value = vlc_meta_GetExtra(p_meta, "REPLAYGAIN_TRACK_PEAK" )) ||
+             (psz_value = vlc_meta_GetExtra(p_meta, "RG_PEAK" )) )
+    {
+        p_dst->pb_peak[AUDIO_REPLAY_GAIN_TRACK] = true;
+        p_dst->pf_peak[AUDIO_REPLAY_GAIN_TRACK] = us_atof( psz_value );
+    }
+
+    if( (psz_value = vlc_meta_GetExtra(p_meta, "REPLAYGAIN_ALBUM_GAIN" )) ||
+             (psz_value = vlc_meta_GetExtra(p_meta, "RG_AUDIOPHILE" )) )
+    {
+        p_dst->pb_gain[AUDIO_REPLAY_GAIN_ALBUM] = true;
+        p_dst->pf_gain[AUDIO_REPLAY_GAIN_ALBUM] = us_atof( psz_value );
+    }
+
+    if( (psz_value = vlc_meta_GetExtra(p_meta, "REPLAYGAIN_ALBUM_PEAK" )) )
+    {
+        p_dst->pb_peak[AUDIO_REPLAY_GAIN_ALBUM] = true;
+        p_dst->pf_peak[AUDIO_REPLAY_GAIN_ALBUM] = us_atof( psz_value );
+    }
 }

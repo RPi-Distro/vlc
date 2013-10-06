@@ -2,7 +2,7 @@
  * CoreInteraction.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: abe0d86d80c9fd67241b62254924aede9d52474c $
+ * $Id: f6a8dc4fa1f0988e23a940832f7f7d8267ec0c82 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -27,26 +27,29 @@
 
 @interface VLCCoreInteraction : NSObject {
     int i_currentPlaybackRate;
+    mtime_t timeA, timeB;
+
+    float f_maxVolume;
 }
 + (VLCCoreInteraction *)sharedInstance;
+@property (readwrite) int volume;
+@property (readonly, nonatomic) float maxVolume;
+@property (readwrite) int playbackRate;
+@property (nonatomic, readwrite) BOOL aspectRatioIsLocked;
+@property (readonly) int durationOfCurrentPlaylistItem;
+@property (readonly) NSURL * URLOfCurrentPlaylistItem;
+@property (readonly) NSString * nameOfCurrentPlaylistItem;
+@property (nonatomic, readwrite) BOOL mute;
 
-- (void)play;
+- (void)playOrPause;
 - (void)pause;
 - (void)stop;
 - (void)faster;
 - (void)slower;
 - (void)normalSpeed;
 - (void)toggleRecord;
-- (void)setPlaybackRate:(int)i_value;
-- (int)playbackRate;
 - (void)next;
 - (void)previous;
-- (BOOL)isPlaying;
-- (int)currentTime;
-- (void)setCurrentTime:(int)i_value;
-- (int)durationOfCurrentPlaylistItem;
-- (NSURL*)URLOfCurrentPlaylistItem;
-- (NSString*)nameOfCurrentPlaylistItem;
 - (void)forward;        //LEGACY SUPPORT
 - (void)backward;       //LEGACY SUPPORT
 - (void)forwardExtraShort;
@@ -62,18 +65,16 @@
 - (void)repeatAll;
 - (void)repeatOff;
 - (void)shuffle;
+- (void)setAtoB;
+- (void)resetAtoB;
+- (void)updateAtoB;
 
 - (void)volumeUp;
 - (void)volumeDown;
-- (void)mute;
-- (BOOL)isMuted;
-- (int)volume;
-- (void)setVolume:(int)i_value;
+- (void)toggleMute;
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender;
 
-- (void)setAspectRatioLocked:(BOOL)b_value;
-- (BOOL)aspectRatioIsLocked;
 - (void)toggleFullscreen;
 
 - (BOOL)fixPreferences;

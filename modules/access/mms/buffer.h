@@ -1,24 +1,24 @@
 /*****************************************************************************
  * buffer.h: MMS access plug-in
  *****************************************************************************
- * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: e969fe37a7b9490b97e87bf68b8782e3fc908e05 $
+ * Copyright (C) 2001, 2002 VLC authors and VideoLAN
+ * $Id: 6c94b818bc4ce7ea6aaf365f2201bb7093e02717 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef _MMS_BUFFER_H_
@@ -43,7 +43,7 @@ void var_buffer_add16( var_buffer_t *p_buf, uint16_t i_word );
 void var_buffer_add32( var_buffer_t *p_buf, uint32_t i_word );
 void var_buffer_add64( var_buffer_t *p_buf, uint64_t i_word );
 void var_buffer_addmemory( var_buffer_t *p_buf, void *p_mem, int i_mem );
-void var_buffer_addUTF16( var_buffer_t *p_buf, const char *p_str );
+void var_buffer_addUTF16( access_t  *p_access, var_buffer_t *p_buf, const char *p_str );
 void var_buffer_free( var_buffer_t *p_buf );
 
 

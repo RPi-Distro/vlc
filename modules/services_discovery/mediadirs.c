@@ -2,7 +2,7 @@
  * mediadirs.c:  Picture/Music/Video user directories as service discoveries
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 11885a8e0a89f0bae3e1f298ff0983f932d3a27c $
+ * $Id: 030fcf5a37a9471cb768f4e6eb1709a662cdbf00 $
  *
  * Authors: Erwan Tulou <erwan10 aT videolan DoT org>
  *
@@ -29,14 +29,13 @@
 # include "config.h"
 #endif
 
+#include <sys/stat.h>
+
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_url.h>
 #include <vlc_fs.h>
 #include <vlc_services_discovery.h>
-
-#include <sys/stat.h>
-
 
 /*****************************************************************************
  * Module descriptor
@@ -190,7 +189,7 @@ static void *Run( void *data )
             !S_ISDIR( st.st_mode ) )
             continue;
 
-        char* psz_uri = make_URI( psz_dir, "file" );
+        char* psz_uri = vlc_path2uri( psz_dir, "file" );
 
         input_item_t* p_root = input_item_New( psz_uri, NULL );
         if( p_sys->i_type == Picture )
@@ -268,7 +267,7 @@ static int onNewFileAdded( vlc_object_t *p_this, char const *psz_var,
     if( !psz_file || !*psz_file )
         return VLC_EGENERIC;
 
-    char* psz_uri = make_URI( psz_file, "file" );
+    char* psz_uri = vlc_path2uri( psz_file, "file" );
     input_item_t* p_item = input_item_New( psz_uri, NULL );
 
     if( p_sys->i_type == Picture )

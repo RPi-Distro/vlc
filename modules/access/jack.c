@@ -1,7 +1,7 @@
 /*****************************************************************************
  * jack.c: JACK audio input module
  *****************************************************************************
- * Copyright (C) 2007-2008 the VideoLAN team
+ * Copyright (C) 2007-2008 VLC authors and VideoLAN
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
@@ -9,19 +9,19 @@
  *          Julien Plissonneau Duquene <... at savoirfairelinux.com>
  *          Pierre-Luc Beaudoin <pierre-luc.beaudoin at savoirfairelinux.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /**
@@ -59,7 +59,7 @@ static void Close( vlc_object_t * );
 #define PACE_TEXT N_( "Pace" )
 #define PACE_LONGTEXT N_( \
     "Read the audio stream at VLC pace rather than Jack pace." )
-#define AUTO_CONNECT_TEXT N_( "Auto Connection" )
+#define AUTO_CONNECT_TEXT N_( "Auto connection" )
 #define AUTO_CONNECT_LONGTEXT N_( \
     "Automatically connect VLC input ports to available output ports." )
 
@@ -463,7 +463,7 @@ static block_t *GrabJack( demux_t *p_demux )
     }
     else
     {
-        p_block = block_New( p_demux, i_read );
+        p_block = block_Alloc( i_read );
     }
     if( !p_block )
     {
@@ -519,30 +519,24 @@ static void Port_finder( demux_t *p_demux )
         pp_jack_port_output = jack_get_ports( p_sys->p_jack_client,
            psz_uri, NULL, JackPortIsOutput );
         if( pp_jack_port_output == NULL )
-        {
             msg_Err( p_demux, "port(s) asked not found:%s", psz_uri );
-            free( pp_jack_port_output );
-        }
         else
         {
-            while( pp_jack_port_output && pp_jack_port_output[i_out_ports] )
-            {
+            while( pp_jack_port_output[i_out_ports] )
                 i_out_ports++;
-            }
             /* alloc an array to store all the matched ports */
             p_sys->pp_jack_port_table = xrealloc( p_sys->pp_jack_port_table,
                 (i_out_ports * sizeof( char * ) + i_total_out_ports * sizeof( char * ) ) );
 
             for(int i=0; i<i_out_ports;i++)
-            {
                 p_sys->pp_jack_port_table[i_total_out_ports+i] = ( char * ) pp_jack_port_output[i];
-            }
 
             i_total_out_ports += i_out_ports;
+
+            free( pp_jack_port_output );
         }
     }
 
-    free( pp_jack_port_output );
     p_sys->i_match_ports = i_total_out_ports;
 }
 

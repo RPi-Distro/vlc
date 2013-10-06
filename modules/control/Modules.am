@@ -1,4 +1,3 @@
-SUBDIRS = globalhotkeys dbus
 SOURCES_dummy = dummy.c
 SOURCES_gestures = gestures.c
 SOURCES_netsync = netsync.c
@@ -13,6 +12,8 @@ motion_extra = $(NULL)
 endif
 SOURCES_motion = \
         motion.c \
+        motionlib.c \
+        motionlib.h \
         $(motion_extra) \
         $(NULL)
 
@@ -20,15 +21,35 @@ libvlc_LTLIBRARIES += \
 	libdummy_plugin.la \
 	libgestures_plugin.la \
 	libnetsync_plugin.la \
-	libhotkeys_plugin.la
-if !HAVE_WINCE
-libvlc_LTLIBRARIES += \
+	libhotkeys_plugin.la \
 	liboldrc_plugin.la
+
+libdbus_plugin_la_SOURCES = \
+	dbus/dbus_introspect.h dbus/dbus_common.h \
+	dbus/dbus_root.c dbus/dbus_root.h \
+	dbus/dbus_player.c dbus/dbus_player.h \
+	dbus/dbus_tracklist.c dbus/dbus_tracklist.h \
+	dbus/dbus.c
+libdbus_plugin_la_CFLAGS = $(AM_CFLAGS) $(DBUS_CFLAGS)
+libdbus_plugin_la_LIBADD = $(AM_LIBADD) $(DBUS_LIBS) $(LIBM)
+if HAVE_DBUS
+libvlc_LTLIBRARIES += libdbus_plugin.la
+endif
+
 if !HAVE_WIN32
+libglobalhotkeys_plugin_la_SOURCES = globalhotkeys/xcb.c
+libglobalhotkeys_plugin_la_CFLAGS = $(AM_CFLAGS) $(XCB_KEYSYMS_CFLAGS) $(XCB_CFLAGS)
+libglobalhotkeys_plugin_la_LIBADD = $(AM_LIBADD) $(XCB_KEYSYMS_LIBS) $(XCB_LIBS)
+
 libvlc_LTLIBRARIES += \
+	$(LTLIBglobalhotkeys) \
 	libmotion_plugin.la
 else
+libglobalhotkeys_plugin_la_SOURCES = globalhotkeys/win32.c
+libglobalhotkeys_plugin_la_CFLAGS = $(AM_CFLAGS)
+libglobalhotkeys_plugin_la_LIBADD = $(AM_LIBADD)
+
 libvlc_LTLIBRARIES += \
+	libglobalhotkeys_plugin.la \
 	libntservice_plugin.la
-endif
 endif	

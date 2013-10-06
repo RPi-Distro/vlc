@@ -1,8 +1,8 @@
 /*****************************************************************************
- * firstrun : First Run dialogs
+ * firstrun.cpp : First Run dialogs
  ****************************************************************************
  * Copyright © 2009 VideoLAN
- * $Id: 4e3487f3ef0726c65c353d040a5e96aee9f85c35 $
+ * $Id: 6474d2182b90c17b583a70e1ba26396759171ffc $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -28,17 +28,13 @@
 #include <QCheckBox>
 #include <QLabel>
 #include <QDialogButtonBox>
-#include <QPushButton>
-#include <QSettings>
 
 FirstRun::FirstRun( QWidget *_p, intf_thread_t *_p_intf  )
          : QWidget( _p ), p_intf( _p_intf )
 {
-#ifndef HAVE_MAEMO
     msg_Dbg( p_intf, "Boring first Run Wizard" );
     buildPrivDialog();
     setVisible( true );
-#endif
 }
 
 #define ALBUM_ART_WHEN_ASKED 0
@@ -73,17 +69,19 @@ void FirstRun::buildPrivDialog()
     QGroupBox *blabla = new QGroupBox( qtr( "Privacy and Network Access Policy" ) );
     QGridLayout *blablaLayout = new QGridLayout( blabla );
     QLabel *text = new QLabel( qtr(
-        "<p><i>VLC media player</i> does <b>not</b> send or collect any "
-        "information, even anonymously, about your usage.</p>\n"
-        "<p>However, it can connect to the Internet "
-        "in order to display <b>medias information</b> "
-#ifdef UPDATE_CHECK
-        "or to check for available <b>updates</b>"
-#endif
-        ".</p>\n"
-        "<p><i>VideoLAN</i> (the authors) requires you to express your consent "
-        "before allowing this software to access the Internet.</p>\n"
-        "<p>According to your choices, please check or uncheck the following options:</p>\n"
+        "<p>In order to protect your privacy, the <i>VLC media player</i> "
+        "does <b>not</b> collect personal data or transmit them, "
+        "not even in anonymized form, to anyone."
+        "</p>\n"
+        "<p>Nevertheless, <i>VLC</i> is able to automatically retrieve "
+        "information about the media in your playlist from third party "
+        "Internet-based services. That includes covert arts, track names, "
+        "authoring and other meta-data."
+        "</p>\n"
+        "That may entail identifying some of your media files to third party "
+        "entities. Therefore the <i>VLC</i> developers require your express "
+        "consent for the media player to access the Internet automatically."
+        "</p>\n"
         ) );
     text->setWordWrap( true );
     text->setTextFormat( Qt::RichText );
@@ -97,22 +95,21 @@ void FirstRun::buildPrivDialog()
     gLayout->addWidget( options, 1, 0, 1, 3 );
     int line = 0;
 
-    checkbox = new QCheckBox( qtr( "Allow downloading media information" ) );
+    checkbox = new QCheckBox( qtr( "Automatically retrieve media info" ) );
     checkbox->setChecked( true );
     optionsLayout->addWidget( checkbox, line++, 0 );
 
 #ifdef UPDATE_CHECK
-    checkbox2 = new QCheckBox( qtr( "Allow checking for VLC updates" ) );
+    checkbox2 = new QCheckBox( qtr( "Regularly check for VLC updates" ) );
     checkbox2->setChecked( true );
     optionsLayout->addWidget( checkbox2, line++, 0 );
 #endif
 
     QDialogButtonBox *buttonsBox = new QDialogButtonBox( this );
-    buttonsBox->addButton( qtr( "Save and Continue" ), QDialogButtonBox::AcceptRole );
+    buttonsBox->addButton( qtr( "Continue" ), QDialogButtonBox::AcceptRole );
 
     gLayout->addWidget( buttonsBox, 2, 0, 2, 3 );
 
     CONNECT( buttonsBox, accepted(), this, save() );
     buttonsBox->setFocus();
 }
-

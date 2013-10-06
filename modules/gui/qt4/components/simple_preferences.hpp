@@ -2,7 +2,7 @@
  * simple_preferences.hpp : Simple prefs
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 50996fbaf8bbaa75654a3bfe69c304baccf49b3e $
+ * $Id: ecc136df559b0739c0dfb95195a80795596e8926 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -37,7 +37,7 @@
 #include "ui/sprefs_subtitles.h"
 #include "ui/sprefs_interface.h"
 
-#ifdef WIN32
+#ifdef _WIN32
 # include "util/registry.hpp"
 #endif
 
@@ -63,26 +63,6 @@ enum {
     CachingHigher = 1000
 };
 
-enum {
-#ifdef WIN32
-       directxW,
-#elif defined( __OS2__)
-       kaiW,
-#else
-       alsaW,
-       ossW,
-#endif
-       fileW,
-       audioOutCoB,
-       normalizerChB,
-       volLW,
-       headphoneB,
-       spdifChB,
-};
-enum { inputLE, cachingCoB };
-enum { skinRB, qtRB, styleCB };
-enum { shadowCB, backgroundCB };
-
 class ConfigControl;
 class QComboBox;
 class QLineEdit;
@@ -90,7 +70,7 @@ class QRadioButton;
 class QCheckBox;
 class QString;
 
-#ifdef WIN32
+#ifdef _WIN32
 class QTreeWidgetItem;
 #endif
 
@@ -116,6 +96,9 @@ public:
     virtual ~SPrefsPanel();
     void apply();
     void clean();
+#ifdef _WIN32
+    void cleanLang();
+#endif
 
 private:
     intf_thread_t *p_intf;
@@ -123,13 +106,16 @@ private:
 
     int number;
 
-    QWidgetList optionWidgets;
+    QHash<QString, QWidget*> optionWidgets;
     QStringList qs_filter;
     QButtonGroup *radioGroup;
 
-#ifdef WIN32
+    char *lang;
+
+#ifdef _WIN32
     QList<QTreeWidgetItem *> listAsso;
     bool addType( const char * psz_ext, QTreeWidgetItem*, QTreeWidgetItem*, QVLCRegistry* );
+    void saveLang();
 #endif
 
 /* Display only the options for the selected audio output */
@@ -137,7 +123,8 @@ private slots:
     void lastfm_Changed( int );
     void updateAudioOptions( int );
     void updateAudioVolume( int );
-#ifdef WIN32
+    void langChanged( int );
+#ifdef _WIN32
     void assoDialog();
     void saveAsso();
 #endif

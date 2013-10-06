@@ -2,7 +2,7 @@
  * input.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 60211fdc3667d1fd4242908968355b8f77fd79bc $
+ * $Id: 9e1942c6bd75dd482f07fd8ee9afaf35b8528397 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -37,13 +37,11 @@
 
 #include <vlc_playlist.h>
 
-#include <lua.h>        /* Low level lua C API */
-#include <lauxlib.h>    /* Higher level C API */
 #include <assert.h>
 
+#include "../vlc.h"
 #include "input.h"
 #include "playlist.h"
-#include "../vlc.h"
 #include "../libs.h"
 #include "../extension.h"
 
@@ -147,6 +145,7 @@ static int vlclua_input_metas_internal( lua_State *L, input_item_t *p_item )
         PUSH_META( EncodedBy, "encoded_by" );
         PUSH_META( ArtworkURL, "artwork_url" );
         PUSH_META( TrackID, "track_id" );
+        PUSH_META( TrackTotal, "track_total" );
 
 #undef PUSH_META
 
@@ -323,8 +322,8 @@ static int vlclua_input_item_set_meta( lua_State *L )
 #define META_TYPE( n, s ) { s, vlc_meta_ ## n },
     static const struct
     {
-        const char *psz_name;
-        vlc_meta_type_t type;
+        const char psz_name[15];
+        unsigned char type;
     } pp_meta_types[] = {
         META_TYPE( Title, "title" )
         META_TYPE( Artist, "artist" )
@@ -343,9 +342,13 @@ static int vlclua_input_item_set_meta( lua_State *L )
         META_TYPE( EncodedBy, "encoded_by" )
         META_TYPE( ArtworkURL, "artwork_url" )
         META_TYPE( TrackID, "track_id" )
+        META_TYPE( TrackTotal, "track_total" )
     };
 #undef META_TYPE
 
+    static_assert( sizeof(pp_meta_types)
+                      == VLC_META_TYPE_COUNT * sizeof(pp_meta_types[0]),
+                   "Inconsistent meta data types" );
     vlc_meta_type_t type = vlc_meta_Title;
     for( unsigned i = 0; i < VLC_META_TYPE_COUNT; i++ )
     {

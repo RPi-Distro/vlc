@@ -2,7 +2,7 @@
  * sd.c: Services discovery related functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 143c177c94efd36290ad469679197f34b6c64283 $
+ * $Id: fe5fbb720f10417e56cc328dd3b7c91655bbb86c $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Fabio Ritrovato <sephiroth87 at videolan dot org>
@@ -37,10 +37,7 @@
 #include <vlc_services_discovery.h>
 #include <vlc_playlist.h>
 #include <vlc_charset.h>
-
-#include <lua.h>        /* Low level lua C API */
-#include <lauxlib.h>    /* Higher level C API */
-#include <lualib.h>     /* Lua libs */
+#include <vlc_md5.h>
 
 #include "../vlc.h"
 #include "../libs.h"
@@ -50,11 +47,11 @@
  *
  *****************************************************************************/
 static int vlclua_node_add_subitem( lua_State * );
-static int vlclua_node_add_node( lua_State * );
+static int vlclua_node_add_subnode( lua_State * );
 
 static const luaL_Reg vlclua_node_reg[] = {
     { "add_subitem", vlclua_node_add_subitem },
-    { "add_node", vlclua_node_add_node },
+    { "add_subnode", vlclua_node_add_subnode },
     { NULL, NULL }
 };
 
@@ -94,6 +91,7 @@ vlclua_item_meta(publisher, Publisher)
 vlclua_item_meta(encodedby, EncodedBy)
 vlclua_item_meta(arturl, ArtworkURL)
 vlclua_item_meta(trackid, TrackID)
+vlclua_item_meta(tracktotal, TrackTotal)
 
 static const luaL_Reg vlclua_item_reg[] = {
     vlclua_item_luareg(title)
@@ -113,6 +111,7 @@ static const luaL_Reg vlclua_item_reg[] = {
     vlclua_item_luareg(encodedby)
     vlclua_item_luareg(arturl)
     vlclua_item_luareg(trackid)
+    vlclua_item_luareg(tracktotal)
     { NULL, NULL }
 };
 
@@ -260,6 +259,27 @@ static int vlclua_sd_add_item( lua_State *L )
                 else
                     services_discovery_AddItem( p_sd, p_input, NULL );
                 lua_pop( L, 1 );
+
+                /* string to build the input item uid */
+                lua_getfield( L, -1, "uiddata" );
+                if( lua_isstring( L, -1 ) )
+                {
+                    char *s = strdup( luaL_checkstring( L, -1 ) );
+                    if ( s )
+                    {
+                        struct md5_s md5;
+                        InitMD5( &md5 );
+                        AddMD5( &md5, s, strlen( s ) );
+                        EndMD5( &md5 );
+                        free( s );
+                        s = psz_md5_hash( &md5 );
+                        if ( s )
+                            input_item_AddInfo( p_input, "uid", "md5", "%s", s );
+                        free( s );
+                    }
+                }
+                lua_pop( L, 1 );
+
                 input_item_t **udata = (input_item_t **)
                                        lua_newuserdata( L, sizeof( input_item_t * ) );
                 *udata = p_input;
@@ -297,6 +317,13 @@ static int vlclua_sd_remove_item( lua_State *L )
         /* Make sure we won't try to remove it again */
         *pp_input = NULL;
     }
+    return 1;
+}
+
+static int vlclua_sd_remove_all_items_nodes( lua_State *L )
+{
+    services_discovery_t *p_sd = (services_discovery_t *)vlclua_get_this( L );
+    services_discovery_RemoveAll( p_sd );
     return 1;
 }
 
@@ -367,7 +394,7 @@ static int vlclua_node_add_subitem( lua_State *L )
     return 1;
 }
 
-static int vlclua_node_add_node( lua_State *L )
+static int vlclua_node_add_subnode( lua_State *L )
 {
     services_discovery_t *p_sd = (services_discovery_t *)vlclua_get_this( L );
     input_item_t **pp_node = (input_item_t **)luaL_checkudata( L, 1, "node" );
@@ -430,6 +457,7 @@ static const luaL_Reg vlclua_sd_reg[] = {
     { "add_node", vlclua_sd_add_node },
     { "add_item", vlclua_sd_add_item },
     { "remove_item", vlclua_sd_remove_item },
+    { "remove_all_items_nodes", vlclua_sd_remove_all_items_nodes },
     { NULL, NULL }
 };
 

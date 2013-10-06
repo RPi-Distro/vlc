@@ -5,19 +5,19 @@
  *
  * Authors: Rafaël Carré <rcarre@m2x.nl>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -30,7 +30,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
-#include <vlc_aout.h>
 #include <vlc_block.h>
 #include <vlc_block_helper.h>
 #include <vlc_bits.h>
@@ -58,7 +57,7 @@ struct encoder_sys_t
 static int  OpenEncoder   ( vlc_object_t * );
 static void CloseEncoder  ( vlc_object_t * );
 
-static block_t *EncodeFrame  ( encoder_t *, aout_buffer_t * );
+static block_t *EncodeFrame  ( encoder_t *, block_t * );
 
 vlc_module_begin();
     set_category( CAT_INPUT );
@@ -138,7 +137,7 @@ enomem:
 }
 
 /* We split/pack PCM blocks to a fixed size: pcm_chunk_size bytes */
-static block_t *GetPCM( encoder_t *p_enc, aout_buffer_t *p_block )
+static block_t *GetPCM( encoder_t *p_enc, block_t *p_block )
 {
     encoder_sys_t *p_sys = p_enc->p_sys;
     block_t *p_pcm_block;
@@ -149,20 +148,20 @@ static block_t *GetPCM( encoder_t *p_enc, aout_buffer_t *p_block )
     while( p_sys->i_buffer + p_block->i_buffer >= pcm_chunk_size )
     {
         unsigned int i_buffer = 0;
-        p_pcm_block = block_New( p_enc, pcm_chunk_size );
+        p_pcm_block = block_Alloc( pcm_chunk_size );
         if( !p_pcm_block )
             break;
 
         if( p_sys->i_buffer )
         {
-            vlc_memcpy( p_pcm_block->p_buffer, p_sys->p_buffer, p_sys->i_buffer );
+            memcpy( p_pcm_block->p_buffer, p_sys->p_buffer, p_sys->i_buffer );
 
             i_buffer = p_sys->i_buffer;
             p_sys->i_buffer = 0;
             free( p_sys->p_buffer );
         }
 
-        vlc_memcpy( p_pcm_block->p_buffer + i_buffer,
+        memcpy( p_pcm_block->p_buffer + i_buffer,
                     p_block->p_buffer, pcm_chunk_size - i_buffer );
         p_block->p_buffer += pcm_chunk_size - i_buffer;
 
@@ -189,7 +188,7 @@ static block_t *GetPCM( encoder_t *p_enc, aout_buffer_t *p_block )
             return NULL;
         }
         p_sys->p_buffer = p_tmp;
-        vlc_memcpy( p_sys->p_buffer + p_sys->i_buffer,
+        memcpy( p_sys->p_buffer + p_sys->i_buffer,
                     p_block->p_buffer, p_block->i_buffer );
 
         p_sys->i_buffer += p_block->i_buffer;
@@ -201,7 +200,7 @@ buffered:
     return block_FifoCount( p_sys->p_fifo ) > 0 ? block_FifoGet( p_sys->p_fifo ) : NULL;
 }
 
-static block_t *EncodeFrame( encoder_t *p_enc, aout_buffer_t *p_block )
+static block_t *EncodeFrame( encoder_t *p_enc, block_t *p_block )
 {
     block_t *p_pcm_block;
     block_t *p_chain = NULL;
@@ -225,11 +224,11 @@ static block_t *EncodeFrame( encoder_t *p_enc, aout_buffer_t *p_block )
         encode_frame( (char*)p_pcm_block->p_buffer, chunk );
         block_Release( p_pcm_block );
 
-        block_t *p_mp3_block = block_New( p_enc, chunk->enc_size );
+        block_t *p_mp3_block = block_Alloc( chunk->enc_size );
         if( !p_mp3_block )
             break;
 
-        vlc_memcpy( p_mp3_block->p_buffer, chunk->enc_data, chunk->enc_size );
+        memcpy( p_mp3_block->p_buffer, chunk->enc_data, chunk->enc_size );
 
         /* date management */
         p_mp3_block->i_length = SAMP_PER_FRAME1 * 1000000 /

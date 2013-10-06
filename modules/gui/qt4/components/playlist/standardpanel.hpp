@@ -1,8 +1,8 @@
 /*****************************************************************************
- * panels.hpp : Panels for the playlist
+ * standardpanel.hpp : Panels for the playlist
  ****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: 15128dee3d64cb1006ee64a385054378cbf7d4ef $
+ * $Id: 5b20a53ff7cd43ef742eee1a61b85094645fde80 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -32,6 +32,7 @@
 #include "components/playlist/playlist.hpp"
 
 #include <QWidget>
+#include <QModelIndexList>
 
 #include <vlc_playlist.h> /* playlist_item_t */
 
@@ -52,6 +53,7 @@ class PicFlowView;
 class LocationBar;
 class PLSelector;
 class PlaylistWidget;
+class PixmapAnimator;
 
 class StandardPLPanel: public QWidget
 {
@@ -70,10 +72,13 @@ public:
 
     int currentViewIndex() const;
 
+    static QMenu *viewSelectionMenu(StandardPLPanel *obj);
+
 protected:
     PLModel *model;
     MLModel *mlmodel;
     virtual void wheelEvent( QWheelEvent *e );
+    bool popup( const QModelIndex & index, const QPoint &point, const QModelIndexList &selectionlist );
 
 private:
     intf_thread_t *p_intf;
@@ -84,6 +89,7 @@ private:
     PlIconView        *iconView;
     PlListView        *listView;
     PicFlowView       *picFlowView;
+    int i_zoom;
 
     QAbstractItemView *currentView;
 
@@ -98,12 +104,21 @@ private:
     void createIconView();
     void createListView();
     void createCoverView();
+    void updateZoom( int i_zoom );
     void changeModel ( bool b_ml );
     bool eventFilter ( QObject * watched, QEvent * event );
+
+    /* for popup */
+    QModelIndex popupIndex;  /* FIXME: don't store here, pass as Action param */
+
+    /* Wait spinner */
+    PixmapAnimator *spinnerAnimation;
 
 public slots:
     void setRootItem( playlist_item_t *, bool );
     void browseInto( const QModelIndex& );
+    void showView( int );
+    void setWaiting( bool ); /* spinner */
 
 private slots:
     void deleteSelection();
@@ -120,10 +135,17 @@ private slots:
 
     void popupPlView( const QPoint & );
     void popupSelectColumn( QPoint );
+    void popupPromptAndCreateNode();
+    void popupInfoDialog();
+    void popupExplore();
+    void popupStream();
+    void popupSave();
+    void increaseZoom() { updateZoom( i_zoom + 1 ); };
+    void decreaseZoom() { updateZoom( i_zoom - 1 ); };
     void toggleColumnShown( int );
 
-    void showView( int );
     void cycleViews();
+    void updateViewport(); /* spinner */
 
 signals:
     void viewChanged( const QModelIndex& );
@@ -131,9 +153,9 @@ signals:
 
 
 static const QString viewNames[ StandardPLPanel::VIEW_COUNT ]
-                                = { qtr( "Icon View" ),
-                                    qtr( "Detailed View" ),
-                                    qtr( "List View" ),
-                                    qtr( "PictureFlow View ") };
+                                = { qtr( "Icons" ),
+                                    qtr( "Detailed List" ),
+                                    qtr( "List" ),
+                                    qtr( "PictureFlow") };
 
 #endif

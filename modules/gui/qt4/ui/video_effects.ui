@@ -931,7 +931,7 @@
        <item row="2" column="0" colspan="2">
         <widget class="QCheckBox" name="puzzleBlackSlotCheck">
          <property name="text">
-          <string>Black slot</string>
+          <string>Black Slot</string>
          </property>
         </widget>
        </item>
@@ -956,7 +956,7 @@
       <property name="checked">
        <bool>false</bool>
       </property>
-      <layout class="QGridLayout" name="gridLayout">
+      <layout class="QGridLayout" name="gridLayout_1">
        <item row="0" column="0">
         <widget class="QLabel" name="label_19">
          <property name="minimumSize">
@@ -1782,6 +1782,13 @@
      <widget class="QCheckBox" name="waveEnable">
       <property name="text">
        <string>Waves</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="2">
+     <widget class="QCheckBox" name="anaglyphEnable">
+      <property name="text">
+       <string>Anaglyph 3D</string>
       </property>
      </widget>
     </item>

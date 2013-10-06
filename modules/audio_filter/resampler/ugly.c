@@ -1,24 +1,24 @@
 /*****************************************************************************
- * ugly.c : ugly resampler (changes pitch)
+ * ugly.c : zero-order hold "ugly" resampler
  *****************************************************************************
- * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: 4d3e228ba714a5bf5d875953203c99aa3c1895aa $
+ * Copyright (C) 2002, 2006 VLC authors and VideoLAN
+ * $Id: 796c499a545bebcb8f5f684f327debb3a5f8fc2f $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -37,7 +37,8 @@
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static int  Create    ( vlc_object_t * );
+static int Create (vlc_object_t *);
+static int CreateResampler (vlc_object_t *);
 
 static block_t *DoWork( filter_t *, block_t * );
 
@@ -46,10 +47,14 @@ static block_t *DoWork( filter_t *, block_t * );
  *****************************************************************************/
 vlc_module_begin ()
     set_description( N_("Nearest-neighbor audio resampler") )
-    set_capability( "audio filter", 2 )
+    set_capability( "audio converter", 2 )
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_MISC )
     set_callbacks( Create, NULL )
+
+    add_submodule()
+    set_capability( "audio resampler", 2 )
+    set_callbacks( CreateResampler, NULL )
 vlc_module_end ()
 
 /*****************************************************************************
@@ -59,8 +64,16 @@ static int Create( vlc_object_t *p_this )
 {
     filter_t * p_filter = (filter_t *)p_this;
 
-    if( p_filter->fmt_in.audio.i_rate == p_filter->fmt_out.audio.i_rate
-     || p_filter->fmt_in.audio.i_format != p_filter->fmt_out.audio.i_format
+    if( p_filter->fmt_in.audio.i_rate == p_filter->fmt_out.audio.i_rate )
+        return VLC_EGENERIC;
+    return CreateResampler( p_this );
+}
+
+static int CreateResampler( vlc_object_t *p_this )
+{
+    filter_t * p_filter = (filter_t *)p_this;
+
+    if( p_filter->fmt_in.audio.i_format != p_filter->fmt_out.audio.i_format
      || p_filter->fmt_in.audio.i_physical_channels
                                  != p_filter->fmt_out.audio.i_physical_channels
      || p_filter->fmt_in.audio.i_original_channels

@@ -1,8 +1,8 @@
 /*****************************************************************************
- * ToolbarEdit.cpp : ToolbarEdit dialog
+ * toolbar.cpp : ToolbarEdit dialog
  ****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: ab11b2f75e721ceb0b50c63f0458b2891cdeb251 $
+ * $Id: 34e092471f8da38f3de4fda07178fb4123897c30 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -39,17 +39,17 @@
 #include "input_manager.hpp"
 #include <vlc_vout.h>                       /* vout_thread_t for aspect ratio combobox */
 
-#include <QScrollArea>
 #include <QGroupBox>
 #include <QLabel>
 #include <QComboBox>
 #include <QListWidget>
 #include <QSpinBox>
 #include <QRubberBand>
-
+#include <QDrag>
 #include <QDragEnterEvent>
 #include <QDialogButtonBox>
 #include <QInputDialog>
+#include <QMimeData>
 
 #include <assert.h>
 
@@ -261,7 +261,6 @@ void ToolbarEditDialog::changeProfile( int i )
 
 void ToolbarEditDialog::close()
 {
-    msg_Dbg( p_intf, "Close and save" );
     getSettings()->setValue( "MainWindow/ToolbarPos",
             positionCombo->itemData( positionCombo->currentIndex() ).toInt() );
     getSettings()->setValue( "MainWindow/MainToolbar1", controller1->getValue() );
@@ -306,6 +305,7 @@ WidgetListing::WidgetListing( intf_thread_t *p_intf, QWidget *_parent )
         QPixmap pix( iconL[i] );
         widgetItem->setIcon( pix.scaled( 16, 16, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
         widgetItem->setData( Qt::UserRole, QVariant( i ) );
+        widgetItem->setToolTip( widgetItem->text() );
         addItem( widgetItem );
     }
 
@@ -313,11 +313,13 @@ WidgetListing::WidgetListing( intf_thread_t *p_intf, QWidget *_parent )
     QListWidgetItem *widgetItem = new QListWidgetItem( QIcon( ":/toolbar/space" ),
             qtr( "Spacer" ), this );
     widgetItem->setData( Qt::UserRole, WIDGET_SPACER );
+    widgetItem->setToolTip( widgetItem->text() );
     addItem( widgetItem );
 
     widgetItem = new QListWidgetItem( QIcon( ":/toolbar/space" ),
             qtr( "Expanding Spacer" ), this );
     widgetItem->setData( Qt::UserRole, WIDGET_SPACER_EXTEND );
+    widgetItem->setToolTip( widgetItem->text() );
     addItem( widgetItem );
 
     /**
@@ -448,11 +450,11 @@ WidgetListing::WidgetListing( intf_thread_t *p_intf, QWidget *_parent )
             break;
         case ASPECT_RATIO_COMBOBOX:
             widget = new AspectRatioComboBox( p_intf );
-            widgetItem->setText( qtr("Aspect ratio") );
+            widgetItem->setText( qtr("Aspect ratio selector") );
             break;
         case SPEED_LABEL:
             widget = new SpeedLabel( p_intf, this );
-            widgetItem->setText( qtr("Playback speed") );
+            widgetItem->setText( qtr("Speed selector") );
             break;
         case TIME_LABEL_ELAPSED:
             widget = new QLabel( "2:42", this );
@@ -471,6 +473,7 @@ WidgetListing::WidgetListing( intf_thread_t *p_intf, QWidget *_parent )
 
 
         widgetItem->setIcon( QIcon( QPixmap::grabWidget( widget ) ) );
+        widgetItem->setToolTip( widgetItem->text() );
         widget->hide();
         widgetItem->setData( Qt::UserRole, QVariant( i ) );
 
@@ -526,6 +529,7 @@ DroppingController::DroppingController( intf_thread_t *_p_intf,
     controlLayout->setMargin( 0 );
     setFrameShape( QFrame::StyledPanel );
     setFrameShadow( QFrame::Raised );
+    setMinimumHeight( 20 );
 
     parseAndCreate( line, controlLayout );
 }
@@ -546,7 +550,7 @@ void DroppingController::resetLine( const QString& line )
 
 /* Overloading the AbstractController one, because we don't manage the
    Spacing items in the same ways */
-void DroppingController::createAndAddWidget( QBoxLayout *controlLayout,
+void DroppingController::createAndAddWidget( QBoxLayout *newControlLayout,
                                              int i_index,
                                              buttonType_e i_type,
                                              int i_option )
@@ -576,7 +580,7 @@ void DroppingController::createAndAddWidget( QBoxLayout *controlLayout,
 
         /* Install event Filter for drag'n drop */
         label->installEventFilter( this );
-        controlLayout->insertWidget( i_index, label );
+        newControlLayout->insertWidget( i_index, label );
     }
 
     /* Normal Widgets */
@@ -618,11 +622,11 @@ void DroppingController::createAndAddWidget( QBoxLayout *controlLayout,
         /* Some Widgets are deactivated at creation */
         widg->setEnabled( true );
         widg->show();
-        controlLayout->insertWidget( i_index, widg );
+        newControlLayout->insertWidget( i_index, widg );
     }
 
     /* QList and QBoxLayout don't act the same with insert() */
-    if( i_index < 0 ) i_index = controlLayout->count() - 1;
+    if( i_index < 0 ) i_index = newControlLayout->count() - 1;
 
     widgetList.insert( i_index, value );
 }

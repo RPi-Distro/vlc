@@ -9,9 +9,7 @@
 #include <vlc_es.h>
 #include <vlc_codec.h>
 
-
-#define PICTURE_RING_SIZE 64
-#define SUBPICTURE_RING_SIZE 20
+#include <vlc_picture_fifo.h>
 
 #define MASTER_SYNC_MAX_DRIFT 100000
 
@@ -22,8 +20,7 @@ struct sout_stream_sys_t
     vlc_mutex_t     lock_out;
     vlc_cond_t      cond;
     bool            b_abort;
-    picture_t *     pp_pics[PICTURE_RING_SIZE];
-    int             i_first_pic, i_last_pic;
+    picture_fifo_t *pp_pics;
     vlc_thread_t    thread;
 
     /* Audio */
@@ -39,6 +36,7 @@ struct sout_stream_sys_t
 
     /* Video */
     vlc_fourcc_t    i_vcodec;   /* codec video (0 if not transcode) */
+    video_format_t  fmt_input_video;
     char            *psz_venc;
     config_chain_t  *p_video_cfg;
     int             i_vbitrate;
@@ -74,6 +72,8 @@ struct sout_stream_sys_t
     mtime_t         i_master_drift;
 };
 
+struct aout_filters;
+
 struct sout_stream_id_t
 {
     bool            b_transcode;
@@ -84,10 +84,15 @@ struct sout_stream_id_t
     /* Decoder */
     decoder_t       *p_decoder;
 
-    /* Filters */
-    filter_chain_t  *p_f_chain;
-    /* User specified filters */
-    filter_chain_t  *p_uf_chain;
+    union
+    {
+         struct
+         {
+             filter_chain_t  *p_f_chain; /**< Video filters */
+             filter_chain_t  *p_uf_chain; /**< User-specified video filters */
+         };
+         struct aout_filters *p_af_chain; /**< Audio filters */
+    };
 
     /* Encoder */
     encoder_t       *p_encoder;

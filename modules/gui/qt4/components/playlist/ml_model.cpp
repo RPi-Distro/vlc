@@ -2,7 +2,7 @@
  * ml_model.cpp: the media library's model
  *****************************************************************************
  * Copyright (C) 2008-2011 the VideoLAN Team and AUTHORS
- * $Id: 8680939042c76bd2f39c4bfafe32384db5f6326f $
+ * $Id: e98be71c697ac323c83065117e0d7e200376c991 $
  *
  * Authors: Antoine Lejeune <phytos@videolan.org>
  *          Jean-Philippe André <jpeg@videolan.org>
@@ -36,7 +36,6 @@
 #include <QMimeData>
 #include "ml_item.hpp"
 #include "ml_model.hpp"
-#include "dialogs/mediainfo.hpp"
 #include "dialogs/playlist.hpp"
 #include "components/playlist/sorting.h"
 #include "dialogs_provider.hpp"
@@ -63,9 +62,16 @@ MLModel::MLModel( intf_thread_t* _p_intf, QObject *parent )
         :VLCModel( _p_intf, parent )
 {
     p_ml = ml_Get( p_intf );
+    if ( !p_ml ) return;
+
     vlc_array_t *p_result_array = vlc_array_new();
-    ml_Find( p_ml, p_result_array, ML_MEDIA );
-    insertResultArray( p_result_array );
+    if ( p_result_array )
+    {
+        ml_Find( p_ml, p_result_array, ML_MEDIA );
+        insertResultArray( p_result_array );
+        ml_DestroyResultArray( p_result_array );
+        vlc_array_destroy( p_result_array );
+    }
 
     var_AddCallback( p_ml, "media-added", mediaAdded, this );
     var_AddCallback( p_ml, "media-deleted", mediaDeleted, this );
@@ -77,6 +83,7 @@ MLModel::MLModel( intf_thread_t* _p_intf, QObject *parent )
  */
 MLModel::~MLModel()
 {
+    if ( !p_ml ) return;
     var_DelCallback( p_ml, "media-meta-change", mediaUpdated, this );
     var_DelCallback( p_ml, "media-deleted", mediaDeleted, this );
     var_DelCallback( p_ml, "media-added", mediaAdded, this );
@@ -144,7 +151,7 @@ QVariant MLModel::headerData( int section, Qt::Orientation orientation,
                                     int role ) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-        return QVariant( psz_column_title( columnToMeta( section ) ) );
+        return QVariant( qfu( psz_column_title( columnToMeta( section ) ) ) );
     else
         return QVariant();
 }
@@ -215,11 +222,6 @@ QMimeData* MLModel::mimeData( const QModelIndexList &indexes ) const
     return data;
 }
 
-int MLModel::columnCount( const QModelIndex & ) const
-{
-    return columnFromMeta( COLUMN_END );
-}
-
 int MLModel::rowCount( const QModelIndex & parent ) const
 {
     if( !parent.isValid() )
@@ -257,6 +259,11 @@ void MLModel::remove( QModelIndex idx )
 int MLModel::itemId( const QModelIndex &index ) const
 {
     return getItem( index )->id();
+}
+
+input_item_t * MLModel::getInputItem( const QModelIndex &index ) const
+{
+    return getItem( index )->inputItem();
 }
 
 QVariant MLModel::data( const QModelIndex &index, const int role ) const
@@ -504,86 +511,74 @@ void MLModel::play( const QModelIndex &idx )
     AddItemToPlaylist( item->id(), true, p_ml, true );
 }
 
-bool MLModel::popup( const QModelIndex & index, const QPoint &point, const QModelIndexList &list )
+QString MLModel::getURI( const QModelIndex &index ) const
 {
-    current_selection = list;
-    current_index = index;
-    QMenu menu;
-    if( index.isValid() )
+    return QString();
+}
+
+void MLModel::actionSlot( QAction *action )
+{
+    QString name;
+    QStringList mrls;
+    QModelIndex index;
+    playlist_item_t *p_item;
+
+    actionsContainerType a = action->data().value<actionsContainerType>();
+    switch ( a.action )
     {
-        menu.addAction( QIcon( ":/menu/play" ), qtr(I_POP_PLAY), this, SLOT( popupPlay() ) );
-        menu.addAction( QIcon( ":/menu/stream" ),
-                        qtr(I_POP_STREAM), this, SLOT( popupStream() ) );
-        menu.addAction( qtr(I_POP_SAVE), this, SLOT( popupSave() ) );
-        menu.addAction( QIcon( ":/menu/info" ), qtr(I_POP_INFO), this, SLOT( popupInfo() ) );
-        menu.addSeparator();
+
+    case actionsContainerType::ACTION_PLAY:
+        play( a.indexes.first() );
+        break;
+
+    case actionsContainerType::ACTION_ADDTOPLAYLIST:
+        break;
+
+    case actionsContainerType::ACTION_REMOVE:
+        doDelete( a.indexes );
+        break;
+
+    case actionsContainerType::ACTION_SORT:
+        break;
     }
+}
 
+QModelIndex MLModel::rootIndex() const
+{
+    // FIXME
+    return QModelIndex();
+}
 
-    QIcon addIcon( ":/buttons/playlist/playlist_add" );
-    menu.addSeparator();
-    //menu.addAction( addIcon, qtr(I_PL_ADDF), THEDP, SLOT( simpleMLAppendDialog()) );
-    //menu.addAction( addIcon, qtr(I_PL_ADDDIR), THEDP, SLOT( MLAppendDir() ) );
-    //menu.addAction( addIcon, qtr(I_OP_ADVOP), THEDP, SLOT( MLAppendDialog() ) );
+bool MLModel::isTree() const
+{
+    // FIXME ?
+    return false;
+}
 
-    if( index.isValid() )
+bool MLModel::canEdit() const
+{
+    /* can always insert */
+    return true;
+}
+
+bool MLModel::isCurrentItem( const QModelIndex &index, playLocation where ) const
+{
+    Q_UNUSED( index );
+    if ( where == IN_MEDIALIBRARY )
+        return true;
+    return false;
+}
+
+QModelIndex MLModel::getIndexByMLID( int id ) const
+{
+    for( int i = 0; i < rowCount( ); i++ )
     {
-        menu.addAction( QIcon( ":/buttons/playlist/playlist_remove" ),
-                        qtr(I_POP_DEL), this, SLOT( popupDel() ) );
-        menu.addSeparator();
-    }
-    if( !menu.isEmpty() )
-    {
-        menu.exec( point ); return true;
-    }
-    else return false;
-}
-
-void MLModel::popupPlay()
-{
-    play( current_index );
-}
-
-void MLModel::popupDel()
-{
-    doDelete( current_selection );
-}
-
-void MLModel::popupInfo()
-{
-    MLItem *item = static_cast< MLItem* >( current_index.internalPointer() );
-    input_item_t* p_input = ml_CreateInputItem( p_ml,  item->id() );
-    MediaInfoDialog *mid = new MediaInfoDialog( p_intf, p_input );
-    mid->setParent( PlaylistDialog::getInstance( p_intf ),
-                    Qt::Dialog );
-    mid->show();
-}
-
-QStringList MLModel::selectedURIs()
-{
-    QStringList list;
-    for( int i = 0; i < current_selection.count(); i++ )
-    {
-        QModelIndex idx = current_selection.value(i);
+        QModelIndex idx = index( i, 0 );
         MLItem *item = static_cast< MLItem* >( idx.internalPointer() );
-        list.append( QString( item->getUri().toString() ) );
+        if( item->id() == id )
+            return idx;
     }
-    return list;
-}
-
-void MLModel::popupStream()
-{
-    QStringList mrls = selectedURIs();
-    if( !mrls.isEmpty() )
-        THEDP->streamingDialog( NULL, mrls[0], false );
-
-}
-
-void MLModel::popupSave()
-{
-    QStringList mrls = selectedURIs();
-    if( !mrls.isEmpty() )
-        THEDP->streamingDialog( NULL, mrls[0] );
+    return QModelIndex();
 }
 
 static int mediaAdded( vlc_object_t *p_this, char const *psz_var,
@@ -603,6 +598,7 @@ static int mediaAdded( vlc_object_t *p_this, char const *psz_var,
         return VLC_EGENERIC;
     }
     p_model->insertResultArray( p_result );
+    ml_DestroyResultArray( p_result );
     vlc_array_destroy( p_result );
     return VLC_SUCCESS;
 }
@@ -614,17 +610,7 @@ static int mediaDeleted( vlc_object_t *p_this, char const *psz_var,
     VLC_UNUSED( p_this ); VLC_UNUSED( psz_var ); VLC_UNUSED( oldval );
 
     MLModel* p_model = ( MLModel* )data;
-    QModelIndex remove_idx = QModelIndex();
-    for( int i = 0; i < p_model->rowCount( ); i++ )
-    {
-        QModelIndex idx = p_model->index( i, 0 );
-        MLItem *item = static_cast< MLItem* >( idx.internalPointer() );
-        if( item->id() == newval.i_int )
-        {
-            remove_idx = idx;
-            break;
-        }
-    }
+    QModelIndex remove_idx = p_model->getIndexByMLID( newval.i_int );
     if( remove_idx.isValid() )
         p_model->remove( remove_idx );
     return VLC_SUCCESS;

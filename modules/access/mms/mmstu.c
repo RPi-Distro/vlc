@@ -1,24 +1,24 @@
 /*****************************************************************************
- * mms.c: MMS access plug-in
+ * mmstu.c: MMS access plug-in
  *****************************************************************************
- * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 5862915e0116a95a4500bee52908d618893b0492 $
+ * Copyright (C) 2001, 2002 VLC authors and VideoLAN
+ * $Id: 932c59fc2d3d6c35f5e22e9cde36fb404a3473e6 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 
@@ -140,7 +140,7 @@ int  MMSTUOpen( access_t *p_access )
     {   /* first try with TCP and then UDP*/
         if( ( i_status = MMSOpen( p_access, &p_sys->url, MMS_PROTO_TCP ) ) )
         {
-            if( !p_access->b_die )
+            if( vlc_object_alive(p_access) )
                 i_status = MMSOpen( p_access, &p_sys->url, MMS_PROTO_UDP );
         }
     }
@@ -286,6 +286,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
         case ACCESS_SET_SEEKPOINT:
         case ACCESS_SET_PRIVATE_ID_STATE:
         case ACCESS_GET_CONTENT_TYPE:
+        case ACCESS_GET_META:
             return VLC_EGENERIC;
 
 
@@ -411,7 +412,7 @@ static block_t *Block( access_t *p_access )
     {
         const size_t i_copy = p_sys->i_header - p_access->info.i_pos;
 
-        block_t *p_block = block_New( p_access, i_copy );
+        block_t *p_block = block_Alloc( i_copy );
         if( !p_block )
             return NULL;
 
@@ -429,7 +430,7 @@ static block_t *Block( access_t *p_access )
         if( __MAX( p_sys->i_media, p_sys->i_media_used ) < p_sys->i_packet_length )
             i_padding = p_sys->i_packet_length - __MAX( p_sys->i_media, p_sys->i_media_used );
 
-        block_t *p_block = block_New( p_access, i_copy + i_padding );
+        block_t *p_block = block_Alloc( i_copy + i_padding );
         if( !p_block )
             return NULL;
 
@@ -542,7 +543,7 @@ static int MMSOpen( access_t  *p_access, vlc_url_t *p_url, int  i_proto )
         return VLC_ENOMEM;
     }
 
-    var_buffer_addUTF16( &buffer, tmp );
+    var_buffer_addUTF16( p_access, &buffer, tmp );
     free( tmp );
 
     mms_CommandSend( p_access,
@@ -615,7 +616,7 @@ static int MMSOpen( access_t  *p_access, vlc_url_t *p_url, int  i_proto )
             return VLC_EGENERIC;
         }
     }
-    var_buffer_addUTF16( &buffer, tmp );
+    var_buffer_addUTF16( p_access, &buffer, tmp );
     var_buffer_add16( &buffer, '0' );
     free( tmp );
 
@@ -651,7 +652,7 @@ static int MMSOpen( access_t  *p_access, vlc_url_t *p_url, int  i_proto )
     {
         mediapath++;
     }
-    var_buffer_addUTF16( &buffer, mediapath );
+    var_buffer_addUTF16( p_access, &buffer, mediapath );
 
     mms_CommandSend( p_access,
                      0x05,
@@ -802,7 +803,7 @@ static int MMSOpen( access_t  *p_access, vlc_url_t *p_url, int  i_proto )
     for( i = 1; i < 128; i++ )
     {
 
-        if( p_sys->asfh.stream[i].i_cat != ASF_STREAM_UNKNOWN )
+        if( p_sys->asfh.stream[i].i_cat != ASF_CODEC_TYPE_UNKNOWN )
         {
             i_streams++;
             if( i_first != -1 )
@@ -820,7 +821,7 @@ static int MMSOpen( access_t  *p_access, vlc_url_t *p_url, int  i_proto )
                 msg_Info( p_access,
                           "selecting stream[0x%x] %s (%d Kib/s)",
                           i,
-                          ( p_sys->asfh.stream[i].i_cat == ASF_STREAM_AUDIO  ) ?
+                          ( p_sys->asfh.stream[i].i_cat == ASF_CODEC_TYPE_AUDIO  ) ?
                                                   "audio" : "video" ,
                           p_sys->asfh.stream[i].i_bitrate / 1024);
             }
@@ -830,7 +831,7 @@ static int MMSOpen( access_t  *p_access, vlc_url_t *p_url, int  i_proto )
                 msg_Info( p_access,
                           "ignoring stream[0x%x] %s (%d Kib/s)",
                           i,
-                          ( p_sys->asfh.stream[i].i_cat == ASF_STREAM_AUDIO  ) ?
+                          ( p_sys->asfh.stream[i].i_cat == ASF_CODEC_TYPE_AUDIO  ) ?
                                     "audio" : "video" ,
                           p_sys->asfh.stream[i].i_bitrate / 1024);
 
@@ -1022,10 +1023,6 @@ static int mms_CommandSend( access_t *p_access, int i_command,
 
 static int NetFillBuffer( access_t *p_access )
 {
-#ifdef UNDER_CE
-    return -1;
-
-#else
     access_sys_t    *p_sys = p_access->p_sys;
     int             i_ret;
     struct pollfd   ufd[2];
@@ -1142,7 +1139,6 @@ static int NetFillBuffer( access_t *p_access )
     if( i_udp_read > 0 ) p_sys->i_buffer_udp += i_udp_read;
 
     return i_tcp_read + i_udp_read;
-#endif
 }
 
 static int  mms_ParseCommand( access_t *p_access,

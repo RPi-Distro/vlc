@@ -1,8 +1,8 @@
 /*****************************************************************************
- * codecs.h: codec related structures needed by the demuxers and decoders
+ * vlc_codecs.h: codec related structures needed by the demuxers and decoders
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: ad1f0d9b61eeb2d99d928201272e0197712bde07 $
+ * $Id: a47c5830adda396a19718c4a698173d5830e21d2 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -49,6 +49,9 @@ typedef GUID guid_t;
 #   define ATTR_PACKED __attribute__((__packed__))
 #elif defined(__SUNPRO_C)
 #   pragma pack(1)
+#   define ATTR_PACKED
+#elif defined(__APPLE__)
+#   pragma pack(push, 1)
 #   define ATTR_PACKED
 #else
 #   error FIXME
@@ -207,6 +210,8 @@ ATTR_PACKED
 
 #if defined(__SUNPRO_C)
 #   pragma pack()
+#elif defined(__APPLE__) && !HAVE_ATTRIBUTE_PACKED
+#   pragma pack(pop)
 #endif
 
 /* WAVE format wFormatTag IDs */
@@ -220,9 +225,11 @@ ATTR_PACKED
 #define WAVE_FORMAT_DTS_MS              0x0008 /* Microsoft Corporation */
 #define WAVE_FORMAT_WMAS                0x000a /* WMA 9 Speech */
 #define WAVE_FORMAT_IMA_ADPCM           0x0011 /* Intel Corporation */
+#define WAVE_FORMAT_YAMAHA_ADPCM        0x0020 /* Yamaha */
 #define WAVE_FORMAT_TRUESPEECH          0x0022 /* TrueSpeech */
 #define WAVE_FORMAT_GSM610              0x0031 /* Microsoft Corporation */
 #define WAVE_FORMAT_MSNAUDIO            0x0032 /* Microsoft Corporation */
+#define WAVE_FORMAT_MSG723              0x0042 /* Microsoft G.723 [G723.1] */
 #define WAVE_FORMAT_G726                0x0045 /* ITU-T standard  */
 #define WAVE_FORMAT_MPEG                0x0050 /* Microsoft Corporation */
 #define WAVE_FORMAT_MPEGLAYER3          0x0055 /* ISO/MPEG Layer3 Format Tag */
@@ -231,12 +238,21 @@ ATTR_PACKED
 #define WAVE_FORMAT_DOLBY_AC3_SPDIF     0x0092 /* Sonic Foundry */
 
 #define WAVE_FORMAT_AAC                 0x00FF /* */
+#define WAVE_FORMAT_AAC_MS              0xa106 /* Microsoft AAC */
 #define WAVE_FORMAT_SIPRO               0x0130 /* Sipro Lab Telecom Inc. */
 
 #define WAVE_FORMAT_WMA1                0x0160 /* WMA version 1 */
 #define WAVE_FORMAT_WMA2                0x0161 /* WMA (v2) 7, 8, 9 Series */
 #define WAVE_FORMAT_WMAP                0x0162 /* WMA 9 Professional */
 #define WAVE_FORMAT_WMAL                0x0163 /* WMA 9 Lossless */
+
+#define WAVE_FORMAT_ULEAD_DV_AUDIO_NTSC 0x0215 /* Ulead */
+#define WAVE_FORMAT_ULEAD_DV_AUDIO_PAL  0x0216 /* Ulead */
+
+#define WAVE_FORMAT_ATRAC3              0x0270 /* Atrac3, != from MSDN doc */
+#define WAVE_FORMAT_SONY_ATRAC3         0x0272 /* Atrac3, != from MSDN doc */
+
+#define WAVE_FORMAT_INDEO_AUDIO         0x0402 /* Indeo Audio Coder */
 
 #define WAVE_FORMAT_AAC_2               0x1601 /* Other AAC */
 #define WAVE_FORMAT_AAC_LATM            0x1602 /* AAC/LATM */
@@ -245,6 +261,9 @@ ATTR_PACKED
 #define WAVE_FORMAT_DTS                 0x2001 /* DTS */
 #define WAVE_FORMAT_FFMPEG_AAC          0x706D
 #define WAVE_FORMAT_DIVIO_AAC           0x4143 /* Divio's AAC */
+
+#define WAVE_FORMAT_GSM_AMR_FIXED       0x7A21 /* Fixed bitrate, no SID */
+#define WAVE_FORMAT_GSM_AMR             0x7A22 /* Variable bitrate, including SID */
 
 /* Need to check these */
 #define WAVE_FORMAT_DK3                 0x0061
@@ -268,7 +287,10 @@ ATTR_PACKED
 #define WAVE_FORMAT_VORB_2PLUS          0x6770
 #define WAVE_FORMAT_VORB_3PLUS          0x6771
 
+#define WAVE_FORMAT_G723_1              0xa100
+
 #define WAVE_FORMAT_SPEEX               0xa109 /* Speex audio */
+#define WAVE_FORMAT_FLAC                0xf1ac /* Xiph Flac */
 
 #if !defined(WAVE_FORMAT_EXTENSIBLE)
   #define WAVE_FORMAT_EXTENSIBLE          0xFFFE /* Microsoft */
@@ -283,6 +305,13 @@ ATTR_PACKED
 static const GUID VLC_KSDATAFORMAT_SUBTYPE_PCM = {0xE923AABF, 0xCB58, 0x4471, {0xA1, 0x19, 0xFF, 0xFA, 0x01, 0xE4, 0xCE, 0x62}};
 #define KSDATAFORMAT_SUBTYPE_PCM VLC_KSDATAFORMAT_SUBTYPE_PCM
 #endif
+
+#ifndef _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT_
+#define _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT_ {0x00000003, 0x0000, 0x0010, {0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}}
+static const GUID VLC_KSDATAFORMAT_SUBTYPE_IEEE_FLOAT = {0x00000003, 0x0000, 0x0010, {0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}};
+#define KSDATAFORMAT_SUBTYPE_IEEE_FLOAT VLC_KSDATAFORMAT_SUBTYPE_PCM
+#endif
+
 
 #ifndef _KSDATAFORMAT_SUBTYPE_UNKNOWN_
 #define _KSDATAFORMAT_SUBTYPE_UNKNOWN_ {0x00000000, 0x0000, 0x0000, {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}}
@@ -331,9 +360,12 @@ wave_format_tag_to_fourcc[] =
     { WAVE_FORMAT_ALAW,       VLC_CODEC_ALAW,                   "A-Law" },
     { WAVE_FORMAT_MULAW,      VLC_CODEC_MULAW,                  "Mu-Law" },
     { WAVE_FORMAT_IMA_ADPCM,  VLC_CODEC_ADPCM_IMA_WAV,          "Ima-ADPCM" },
-    { WAVE_FORMAT_TRUESPEECH, VLC_FOURCC(0x22, 0x0, 0x0, 0x0 ), "Truespeech" },
+    { WAVE_FORMAT_YAMAHA_ADPCM, VLC_CODEC_ADPCM_YAMAHA,         "Yamaha ADPCM" },
+    { WAVE_FORMAT_TRUESPEECH, VLC_CODEC_TRUESPEECH,             "Truespeech" },
     { WAVE_FORMAT_GSM610,     VLC_CODEC_GSM_MS,                 "Microsoft WAV GSM" },
     { WAVE_FORMAT_G726,       VLC_CODEC_ADPCM_G726,             "G.726 ADPCM" },
+    { WAVE_FORMAT_G723_1,     VLC_CODEC_G723_1,                 "G.723.1" },
+    { WAVE_FORMAT_MSG723,     VLC_CODEC_G723_1,                 "Microsoft G.723 [G723.1]" },
     { WAVE_FORMAT_MPEGLAYER3, VLC_CODEC_MPGA,                   "Mpeg Audio" },
     { WAVE_FORMAT_MPEG,       VLC_CODEC_MPGA,                   "Mpeg Audio" },
     { WAVE_FORMAT_AMR_NB,     VLC_CODEC_AMR_NB,                 "AMR NB" },
@@ -345,6 +377,8 @@ wave_format_tag_to_fourcc[] =
     { WAVE_FORMAT_WMAP,       VLC_CODEC_WMAP,                   "Window Media Audio 9 Professional" },
     { WAVE_FORMAT_WMAL,       VLC_CODEC_WMAL,                   "Window Media Audio 9 Lossless" },
     { WAVE_FORMAT_WMAS,       VLC_CODEC_WMAS,                   "Window Media Audio 9 Speech" },
+    { WAVE_FORMAT_ATRAC3,     VLC_CODEC_ATRAC3,                 "Sony Atrac3" },
+    { WAVE_FORMAT_SONY_ATRAC3,VLC_CODEC_ATRAC3,                 "Sony Atrac3" },
     { WAVE_FORMAT_DK3,        VLC_FOURCC( 'm', 's', 0x00,0x61), "Duck DK3" },
     { WAVE_FORMAT_DK4,        VLC_FOURCC( 'm', 's', 0x00,0x62), "Duck DK4" },
     { WAVE_FORMAT_DTS,        VLC_CODEC_DTS,                    "DTS Coherent Acoustics" },
@@ -354,6 +388,7 @@ wave_format_tag_to_fourcc[] =
     { WAVE_FORMAT_AAC_2,      VLC_CODEC_MP4A,                   "MPEG-4 Audio" },
     { WAVE_FORMAT_AAC_LATM,   VLC_CODEC_MP4A,                   "MPEG-4 Audio" },
     { WAVE_FORMAT_FFMPEG_AAC, VLC_CODEC_MP4A,                   "MPEG-4 Audio" },
+    { WAVE_FORMAT_AAC_MS,     VLC_CODEC_MP4A,                   "MPEG-4 Audio" },
     { WAVE_FORMAT_VORBIS,     VLC_CODEC_VORBIS,                 "Vorbis Audio" },
     { WAVE_FORMAT_VORB_1,     VLC_FOURCC( 'v', 'o', 'r', '1' ), "Vorbis 1 Audio" },
     { WAVE_FORMAT_VORB_1PLUS, VLC_FOURCC( 'v', 'o', '1', '+' ), "Vorbis 1+ Audio" },
@@ -362,6 +397,12 @@ wave_format_tag_to_fourcc[] =
     { WAVE_FORMAT_VORB_3,     VLC_FOURCC( 'v', 'o', 'r', '3' ), "Vorbis 3 Audio" },
     { WAVE_FORMAT_VORB_3PLUS, VLC_FOURCC( 'v', 'o', '3', '+' ), "Vorbis 3+ Audio" },
     { WAVE_FORMAT_SPEEX,      VLC_CODEC_SPEEX,                  "Speex Audio" },
+    { WAVE_FORMAT_FLAC,       VLC_CODEC_FLAC,                   "FLAC Audio" },
+    { WAVE_FORMAT_GSM_AMR_FIXED, VLC_CODEC_AMR_NB,              "GSM-AMR Audio CBR, no SID" },
+    { WAVE_FORMAT_GSM_AMR,    VLC_CODEC_AMR_NB,                 "GSM-AMR Audio VBR, SID" },
+    { WAVE_FORMAT_ULEAD_DV_AUDIO_NTSC, VLC_CODEC_ULEAD_DV_AUDIO_NTSC, "Ulead DV audio NTSC" },
+    { WAVE_FORMAT_ULEAD_DV_AUDIO_PAL, VLC_CODEC_ULEAD_DV_AUDIO_PAL, "Ulead DV audio PAL" },
+    { WAVE_FORMAT_INDEO_AUDIO, VLC_CODEC_INDEO_AUDIO, "Indeo Audio Coder" },
     { WAVE_FORMAT_UNKNOWN,    VLC_FOURCC( 'u', 'n', 'd', 'f' ), "Unknown" }
 };
 
@@ -399,7 +440,8 @@ static const struct
 }
 sub_format_tag_to_fourcc[] =
 {
-    { _KSDATAFORMAT_SUBTYPE_PCM_, VLC_FOURCC( 'p', 'c', 'm', ' ' ), "PCM" },
+    { _KSDATAFORMAT_SUBTYPE_PCM_, VLC_FOURCC( 'a', 'r', 'a', 'w' ), "PCM" },
+    { _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT_, VLC_FOURCC( 'a', 'f', 'l', 't' ), "Float PCM" },
     { _KSDATAFORMAT_SUBTYPE_UNKNOWN_, VLC_FOURCC( 'u', 'n', 'd', 'f' ), "Unknown" }
 };
 

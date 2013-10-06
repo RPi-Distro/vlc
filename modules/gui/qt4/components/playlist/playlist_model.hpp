@@ -2,7 +2,7 @@
  * playlist_model.hpp : Model for a playlist tree
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: ea3bfb263f465bf21d2033b6a27583ad96413b1d $
+ * $Id: 71bd23ec25b3acbbeb8a527c644ba3c6d12c7e7d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jakob Leben <jleben@videolan.org>
@@ -41,11 +41,12 @@
 #include <QAbstractItemModel>
 #include <QVariant>
 #include <QModelIndex>
+#include <QTimer>
+#include <QMutex>
 
 class PLItem;
 class PLSelector;
 class PlMimeData;
-class QSignalMapper;
 
 class PLModel : public VLCModel
 {
@@ -77,7 +78,6 @@ public:
     virtual QVariant headerData( int section, Qt::Orientation orientation,
                          int role = Qt::DisplayRole ) const;
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
     virtual QModelIndex index( const int r, const int c, const QModelIndex &parent ) const;
     virtual QModelIndex parent( const QModelIndex &index ) const;
@@ -96,23 +96,22 @@ public:
 
     /* Lookups */
     QModelIndex index( const int i_id, const int c );
+    virtual QModelIndex rootIndex() const;
+    virtual bool isTree() const;
+    virtual bool canEdit() const;
     virtual QModelIndex currentIndex() const;
     int itemId( const QModelIndex &index ) const;
+    virtual input_item_t *getInputItem( const QModelIndex & ) const;
+    virtual QString getURI( const QModelIndex &index ) const;
+    QString getTitle( const QModelIndex &index ) const;
+    virtual bool isCurrentItem( const QModelIndex &index, playLocation where ) const;
 
     /* */
     void search( const QString& search_text, const QModelIndex & root, bool b_recursive );
     void rebuild( playlist_item_t * p = NULL );
 
-    /* Popup Actions */
-    virtual bool popup( const QModelIndex & index, const QPoint &point, const QModelIndexList &list );
     virtual void doDelete( QModelIndexList selected );
-
-    PLItem *getItem( const QModelIndex & index ) const
-    {
-        if( index.isValid() )
-            return static_cast<PLItem*>( index.internalPointer() );
-        else return rootItem;
-    }
+    virtual void createNode( QModelIndex index, QString name );
 
 signals:
     void currentIndexChanged( const QModelIndex& );
@@ -121,6 +120,9 @@ signals:
 public slots:
     virtual void activateItem( const QModelIndex &index );
     void clearPlaylist();
+    void ensureArtRequested( const QModelIndex &index );
+    virtual void actionSlot( QAction *action );
+
 private:
     /* General */
     PLItem *rootItem;
@@ -129,9 +131,24 @@ private:
 
     static QIcon icons[ITEM_TYPE_NUMBER];
 
+    /* single row linear inserts agregation */
+    void bufferedRowInsert( PLItem *item, PLItem *parent, int pos );
+    bool isBufferedForInsert( PLItem *parent, int i_item );
+    PLItem *insertBufferRoot;
+    int insertbuffer_firstrow;
+    int insertbuffer_lastrow;
+    QTimer insertBufferCommitTimer;
+    QList<PLItem *> insertBuffer;
+    QMutex insertBufferMutex;
+
     /* Custom model private methods */
     /* Lookups */
-    QStringList selectedURIs();
+    PLItem *getItem( const QModelIndex & index ) const
+    {
+        if( index.isValid() )
+            return static_cast<PLItem*>( index.internalPointer() );
+        else return rootItem;
+    }
     QModelIndex index( PLItem *, const int c ) const;
     bool isCurrent( const QModelIndex &index ) const;
     bool isParent( const QModelIndex &index, const QModelIndex &current) const;
@@ -140,7 +157,7 @@ private:
     void updateTreeItem( PLItem * );
     void removeItem ( PLItem * );
     void removeItem( int );
-    void recurseDelete( QList<PLItem*> children, QModelIndexList *fullList );
+    void recurseDelete( QList<AbstractPLItem*> children, QModelIndexList *fullList );
     void takeItem( PLItem * ); //will not delete item
     void insertChildren( PLItem *node, QList<PLItem*>& items, int i_pos );
     /* ...of which  the following will not update the views */
@@ -152,48 +169,28 @@ private:
     void dropMove( const PlMimeData * data, PLItem *target, int new_pos );
 
     /* */
-    void sort( const int i_root_id, const int column, Qt::SortOrder order );
-
-    /* Popup */
-    int i_popup_item, i_popup_parent;
-    QModelIndexList current_selection;
-    QMenu *sortingMenu;
-    QSignalMapper *sortingMapper;
+    void sort( QModelIndex caller, QModelIndex rootIndex, const int column, Qt::SortOrder order );
 
     /* Lookups */
     PLItem *findById( PLItem *, int ) const;
     PLItem *findByInput( PLItem *, int ) const;
     PLItem *findInner(PLItem *, int , bool ) const;
-    bool canEdit() const;
 
     PLItem *p_cached_item;
     PLItem *p_cached_item_bi;
     int i_cached_id;
     int i_cached_input_id;
 
-    /* Zoom factor for font-size */
-    int i_zoom;
-
     /* */
     QString latestSearch;
 
 private slots:
-    void popupPlay();
-    void popupDel();
-    void popupInfo();
-    void popupStream();
-    void popupSave();
-    void popupExplore();
-    void popupAddNode();
-    void popupAddToPlaylist();
-    void popupSort( int column );
     void processInputItemUpdate( input_item_t *);
     void processInputItemUpdate( input_thread_t* p_input );
     void processItemRemoval( int i_id );
     void processItemAppend( int item, int parent );
+    void commitBufferedRowInserts();
     void activateItem( playlist_item_t *p_item );
-    void increaseZoom();
-    void decreaseZoom();
 };
 
 class PlMimeData : public QMimeData

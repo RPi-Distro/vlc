@@ -30,20 +30,6 @@ fi
 CYGWIN=binmode
 export CYGWIN
 
-# Check for contrib directory
-if test -d extras/contrib/build/bin; then
-  PATH="`pwd`/extras/contrib/build/bin:$PATH"
-  if test -d extras/contrib/build/share/aclocal; then
-    ACLOCAL_ARGS="${ACLOCAL_ARGS} -I extras/contrib/build/share/aclocal"
-  fi
-  if test ".`uname -s`" = ".Darwin"; then
-    LD_LIBRARY_PATH=./extras/contrib/build/lib:$LD_LIBRARY_PATH
-    DYLD_LIBRARY_PATH=./extras/contrib/build/lib:$DYLD_LIBRARY_PATH
-    export LD_LIBRARY_PATH
-    export DYLD_LIBRARY_PATH
-  fi
-fi
-
 # Check for pkg-config
 if ! "${PKG_CONFIG:-pkg-config}" --version >/dev/null 2>&1; then
 	echo 'Error: "pkg-config" is not installed.' >&2
@@ -75,9 +61,9 @@ fi
 ###
 
 echo "generating modules/**/Makefile.am"
-find modules/ -name Modules.am | \
-sed -ne 's,modules/\(.*\)/Modules.am,\1,p' | \
-while read d; do
+for d in modules/*/Modules.am modules/*/*/Modules.am; do
+	d="${d#modules/}"
+	d="${d%/Modules.am}"
 	${CONFIG_SHELL-sh} modules/genmf "$d"
 	printf "."
 done
@@ -89,14 +75,8 @@ set -x
 ###  classic bootstrap stuff
 ###
 
-# Automake complains if these are not present
-echo > ABOUT-NLS
-cp -f INSTALL INSTALL.git
-
 autoreconf --install --force --verbose ${ACLOCAL_ARGS}
-rm -f po/Makevars.template ABOUT-NLS
-echo > ABOUT-NLS
-mv -f INSTALL.git INSTALL
+rm -f po/Makevars.template
 
 ##
 ##  files which need to be regenerated

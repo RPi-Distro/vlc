@@ -1,27 +1,27 @@
 /*****************************************************************************
  * http.c: HTTP input module
  *****************************************************************************
- * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: d662b4e697ec7b36be7f5d718636e27104a4cdee $
+ * Copyright (C) 2001-2008 VLC authors and VideoLAN
+ * $Id: 64336fc86d051175598c80f64f1dc675028d3023 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
  *          Antoine Cellerier <dionoea at videolan dot org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -54,14 +54,6 @@
 
 #include <assert.h>
 #include <limits.h>
-
-#ifdef HAVE_LIBPROXY
-#    include <proxy.h>
-#endif
-
-#ifdef WIN32
-#   include <windows.h>
-#endif
 
 /*****************************************************************************
  * Module descriptor
@@ -97,7 +89,10 @@ static void Close( vlc_object_t * );
 #define REFERER_LONGTEXT N_("Customize the HTTP referer, simulating a previous document")
 
 #define UA_TEXT N_("User Agent")
-#define UA_LONGTEXT N_("You can use a custom User agent or use a known one")
+#define UA_LONGTEXT N_("The name and version of the program will be " \
+    "provided to the HTTP server. They must be separated by a forward " \
+    "slash, e.g. FooBar/1.2.3. This option can only be specified per input " \
+    "item, not globally.")
 
 vlc_module_begin ()
     set_description( N_("HTTP input") )
@@ -136,7 +131,8 @@ struct access_sys_t
 {
     int fd;
     bool b_error;
-    vlc_tls_t  *p_tls;
+    vlc_tls_creds_t *p_creds;
+    vlc_tls_t *p_tls;
     v_socket_t *p_vs;
 
     /* From uri */
@@ -161,7 +157,6 @@ struct access_sys_t
     char       *psz_location;
     bool b_mms;
     bool b_icecast;
-    bool b_ssl;
 #ifdef HAVE_ZLIB_H
     bool b_compressed;
     struct
@@ -266,7 +261,6 @@ static int OpenWithCookies( vlc_object_t *p_this, const char *psz_access,
     p_sys->psz_user_agent = NULL;
     p_sys->psz_referrer = NULL;
     p_sys->b_pace_control = true;
-    p_sys->b_ssl = false;
 #ifdef HAVE_ZLIB_H
     p_sys->b_compressed = false;
     /* 15 is the max windowBits, +32 to enable optional gzip decoding */
@@ -311,7 +305,9 @@ static int OpenWithCookies( vlc_object_t *p_this, const char *psz_access,
     if( !strncmp( psz_access, "https", 5 ) )
     {
         /* HTTP over SSL */
-        p_sys->b_ssl = true;
+        p_sys->p_creds = vlc_tls_ClientCreate( p_this );
+        if( p_sys->p_creds == NULL )
+            goto error;
         if( p_sys->url.i_port <= 0 )
             p_sys->url.i_port = 443;
     }
@@ -363,117 +359,33 @@ static int OpenWithCookies( vlc_object_t *p_this, const char *psz_access,
 
     /* Check proxy */
     psz = var_InheritString( p_access, "http-proxy" );
-    if( psz )
+    if( psz == NULL )
+    {
+        char *url;
+
+        if (likely(asprintf(&url, "%s://%s", psz_access,
+                            p_access->psz_location) != -1))
+        {
+            msg_Dbg(p_access, "querying proxy for %s", url);
+            psz = vlc_getProxyUrl(url);
+            free(url);
+        }
+
+        if (psz != NULL)
+            msg_Dbg(p_access, "proxy: %s", psz);
+        else
+            msg_Dbg(p_access, "no proxy");
+    }
+    if( psz != NULL )
     {
         p_sys->b_proxy = true;
         vlc_UrlParse( &p_sys->proxy, psz, 0 );
         free( psz );
-    }
-#ifdef HAVE_LIBPROXY
-    else
-    {
-        pxProxyFactory *pf = px_proxy_factory_new();
-        if (pf)
-        {
-            char *buf;
-            int i;
-            i=asprintf(&buf, "%s://%s", psz_access, p_access->psz_location);
-            if (i >= 0)
-            {
-                msg_Dbg(p_access, "asking libproxy about url '%s'", buf);
-                char **proxies = px_proxy_factory_get_proxies(pf, buf);
-                if (proxies[0])
-                {
-                    msg_Dbg(p_access, "libproxy suggest to use '%s'", proxies[0]);
-                    if(strcmp(proxies[0],"direct://") != 0)
-                    {
-                        p_sys->b_proxy = true;
-                        vlc_UrlParse( &p_sys->proxy, proxies[0], 0);
-                    }
-                }
-                for(i=0;proxies[i];i++) free(proxies[i]);
-                free(proxies);
-                free(buf);
-            }
-            px_proxy_factory_free(pf);
-        }
-        else
-        {
-            msg_Err(p_access, "Allocating memory for libproxy failed");
-        }
-    }
-#elif (0) // defined( WIN32 ) The parsing is not complete enough
-    else
-    {
-        /* Try to get the proxy server address from Windows internet settings using registry. */
-        HKEY h_key;
-        /* Open the key */
-        if( RegOpenKeyEx( HKEY_CURRENT_USER, "Software\\Microsoft"
-                          "\\Windows\\CurrentVersion\\Internet Settings",
-                          0, KEY_READ, &h_key ) == ERROR_SUCCESS )
-        {
-            DWORD len = sizeof( DWORD );
-            BYTE proxyEnable;
 
-            /* Get the proxy enable value */
-            if( RegQueryValueEx( h_key, "ProxyEnable", NULL, NULL,
-                                 &proxyEnable, &len ) == ERROR_SUCCESS
-             && proxyEnable )
-            {
-                /* Proxy is enabled */
-                /* Get the proxy URL :
-                   Proxy server value in the registry can be something like "address:port"
-                   or "ftp=address1:port1;http=address2:port2 ..." depending of the
-                   confirguration. */
-                unsigned char key[256];
-
-                len = sizeof( key );
-                if( RegQueryValueEx( h_key, "ProxyServer", NULL, NULL,
-                                     key, &len ) == ERROR_SUCCESS )
-                {
-                    /* FIXME: This is lame. The string should be tokenized. */
-#warning FIXME.
-                    char *psz_proxy = strstr( (char *)key, "http=" );
-                    if( psz_proxy != NULL )
-                    {
-                        psz_proxy += 5;
-                        char *end = strchr( psz_proxy, ';' );
-                        if( end != NULL )
-                            *end = '\0';
-                    }
-                    else
-                        psz_proxy = (char *)key;
-                    /* Set proxy enable for this connection. */
-                    p_sys->b_proxy = true;
-                    vlc_UrlParse( &p_sys->proxy, psz_proxy, 0 );
-                }
-            }
-            else
-                msg_Dbg( p_access, "HTTP proxy disabled (MSIE)" );
-            RegCloseKey( h_key );
-        }
-    }
-#else
-    else
-    {
-        psz = getenv( "http_proxy" );
-        if( psz )
-        {
-            p_sys->b_proxy = true;
-            vlc_UrlParse( &p_sys->proxy, psz, 0 );
-        }
-    }
-#endif
-
-    if( psz ) /* No, this is NOT a use-after-free error */
-    {
         psz = var_InheritString( p_access, "http-proxy-pwd" );
         if( psz )
             p_sys->proxy.psz_password = p_sys->psz_proxy_passbuf = psz;
-    }
 
-    if( p_sys->b_proxy )
-    {
         if( p_sys->proxy.psz_host == NULL || *p_sys->proxy.psz_host == '\0' )
         {
             msg_Warn( p_access, "invalid proxy host" );
@@ -526,6 +438,11 @@ connect:
 
     if( p_sys->i_code == 401 )
     {
+        if( p_sys->auth.psz_realm == NULL )
+        {
+            msg_Err( p_access, "authentication failed without realm" );
+            goto error;
+        }
         char *psz_login, *psz_password;
         /* FIXME ? */
         if( p_sys->url.psz_username && p_sys->url.psz_password &&
@@ -596,6 +513,7 @@ connect:
         free( p_sys->psz_referrer );
 
         Disconnect( p_access );
+        vlc_tls_Delete( p_sys->p_creds );
         cookies = p_sys->cookies;
 #ifdef HAVE_ZLIB_H
         inflateEnd( &p_sys->inflate.stream );
@@ -688,6 +606,7 @@ error:
     free( p_sys->psz_referrer );
 
     Disconnect( p_access );
+    vlc_tls_Delete( p_sys->p_creds );
 
     if( p_sys->cookies )
     {
@@ -729,6 +648,7 @@ static void Close( vlc_object_t *p_this )
     free( p_sys->psz_referrer );
 
     Disconnect( p_access );
+    vlc_tls_Delete( p_sys->p_creds );
 
     if( p_sys->cookies )
     {
@@ -823,7 +743,7 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
     if( i_len == 0 )
         goto fatal;
 
-    if( p_sys->i_icy_meta > 0 && p_access->info.i_pos-p_sys->i_icy_offset > 0 )
+    if( p_sys->i_icy_meta > 0 && p_access->info.i_pos - p_sys->i_icy_offset > 0 )
     {
         int64_t i_next = p_sys->i_icy_meta -
                                     (p_access->info.i_pos - p_sys->i_icy_offset ) % p_sys->i_icy_meta;
@@ -992,7 +912,8 @@ static ssize_t ReadCompressed( access_t *p_access, uint8_t *p_buffer,
         p_sys->inflate.stream.next_out = p_buffer;
 
         i_ret = inflate( &p_sys->inflate.stream, Z_SYNC_FLUSH );
-        msg_Warn( p_access, "inflate return value: %d, %s", i_ret, p_sys->inflate.stream.msg );
+        if ( i_ret != Z_OK && i_ret != Z_STREAM_END )
+            msg_Warn( p_access, "inflate return value: %d, %s", i_ret, p_sys->inflate.stream.msg );
 
         return i_len - p_sys->inflate.stream.avail_out;
     }
@@ -1014,7 +935,7 @@ static int Seek( access_t *p_access, uint64_t i_pos )
 
     if( p_access->info.i_size
      && i_pos >= p_access->info.i_size ) {
-        msg_Err( p_access, "seek to far" );
+        msg_Err( p_access, "seek too far" );
         int retval = Seek( p_access, p_access->info.i_size - 1 );
         if( retval == VLC_SUCCESS ) {
             uint8_t p_buffer[2];
@@ -1152,7 +1073,7 @@ static int Connect( access_t *p_access, uint64_t i_tell )
     setsockopt (p_sys->fd, SOL_SOCKET, SO_KEEPALIVE, &(int){ 1 }, sizeof (int));
 
     /* Initialize TLS/SSL session */
-    if( p_sys->b_ssl )
+    if( p_sys->p_creds != NULL )
     {
         /* CONNECT to establish TLS tunnel through HTTP proxy */
         if( p_sys->b_proxy )
@@ -1216,8 +1137,8 @@ static int Connect( access_t *p_access, uint64_t i_tell )
         }
 
         /* TLS/SSL handshake */
-        p_sys->p_tls = vlc_tls_ClientCreate( VLC_OBJECT(p_access), p_sys->fd,
-                                             p_sys->url.psz_host );
+        p_sys->p_tls = vlc_tls_ClientSessionCreate( p_sys->p_creds, p_sys->fd,
+                                                p_sys->url.psz_host, "https" );
         if( p_sys->p_tls == NULL )
         {
             msg_Err( p_access, "cannot establish HTTP/TLS session" );
@@ -1456,9 +1377,9 @@ static int Request( access_t *p_access, uint64_t i_tell )
              * handle it as everyone does. */
             if( p[0] == '/' )
             {
-                const char *psz_http_ext = p_sys->b_ssl ? "s" : "" ;
+                const char *psz_http_ext = p_sys->p_tls ? "s" : "" ;
 
-                if( p_sys->url.i_port == ( p_sys->b_ssl ? 443 : 80 ) )
+                if( p_sys->url.i_port == ( p_sys->p_tls ? 443 : 80 ) )
                 {
                     if( asprintf(&psz_new_loc, "http%s://%s%s", psz_http_ext,
                                  p_sys->url.psz_host, p) < 0 )
@@ -1638,7 +1559,7 @@ static void Disconnect( access_t *p_access )
 
     if( p_sys->p_tls != NULL)
     {
-        vlc_tls_ClientDelete( p_sys->p_tls );
+        vlc_tls_SessionDelete( p_sys->p_tls );
         p_sys->p_tls = NULL;
         p_sys->p_vs = NULL;
     }
@@ -1732,8 +1653,10 @@ static void cookie_append( vlc_array_t * cookies, char * cookie )
 
         assert( current_cookie_name );
 
-        bool is_domain_matching = ( cookie_domain && current_cookie_domain &&
-                                         !strcmp( cookie_domain, current_cookie_domain ) );
+        bool is_domain_matching = (
+                      ( !cookie_domain && !current_cookie_domain ) ||
+                      ( cookie_domain && current_cookie_domain &&
+                        !strcmp( cookie_domain, current_cookie_domain ) ) );
 
         if( is_domain_matching && !strcmp( cookie_name, current_cookie_name )  )
         {

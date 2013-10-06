@@ -17,10 +17,9 @@ libpacketizer_copy_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_cop
 libpacketizer_copy_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_copy)
 libpacketizer_copy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_copy)
 libpacketizer_copy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_copy)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libpacketizer_copy_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_copy)
 libpacketizer_copy_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_copy)
-libpacketizer_copy_plugin_la_DEPENDENCIES =
 
 # The packetizer_dirac plugin
 libpacketizer_dirac_plugin_la_SOURCES = $(SOURCES_packetizer_dirac)
@@ -30,10 +29,9 @@ libpacketizer_dirac_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_di
 libpacketizer_dirac_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_dirac)
 libpacketizer_dirac_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_dirac)
 libpacketizer_dirac_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_dirac)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libpacketizer_dirac_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_dirac)
 libpacketizer_dirac_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_dirac)
-libpacketizer_dirac_plugin_la_DEPENDENCIES =
 
 # The packetizer_flac plugin
 libpacketizer_flac_plugin_la_SOURCES = $(SOURCES_packetizer_flac)
@@ -43,10 +41,9 @@ libpacketizer_flac_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_fla
 libpacketizer_flac_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_flac)
 libpacketizer_flac_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_flac)
 libpacketizer_flac_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_flac)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libpacketizer_flac_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_flac)
 libpacketizer_flac_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_flac)
-libpacketizer_flac_plugin_la_DEPENDENCIES =
 
 # The packetizer_h264 plugin
 libpacketizer_h264_plugin_la_SOURCES = $(SOURCES_packetizer_h264)
@@ -56,10 +53,9 @@ libpacketizer_h264_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_h26
 libpacketizer_h264_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_h264)
 libpacketizer_h264_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_h264)
 libpacketizer_h264_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_h264)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libpacketizer_h264_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_h264)
 libpacketizer_h264_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_h264)
-libpacketizer_h264_plugin_la_DEPENDENCIES =
 
 # The packetizer_mlp plugin
 libpacketizer_mlp_plugin_la_SOURCES = $(SOURCES_packetizer_mlp)
@@ -69,10 +65,9 @@ libpacketizer_mlp_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_mlp)
 libpacketizer_mlp_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_mlp)
 libpacketizer_mlp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_mlp)
 libpacketizer_mlp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_mlp)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libpacketizer_mlp_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_mlp)
 libpacketizer_mlp_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_mlp)
-libpacketizer_mlp_plugin_la_DEPENDENCIES =
 
 # The packetizer_mpeg4audio plugin
 libpacketizer_mpeg4audio_plugin_la_SOURCES = $(SOURCES_packetizer_mpeg4audio)
@@ -82,10 +77,9 @@ libpacketizer_mpeg4audio_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetiz
 libpacketizer_mpeg4audio_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_mpeg4audio)
 libpacketizer_mpeg4audio_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_mpeg4audio)
 libpacketizer_mpeg4audio_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_mpeg4audio)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libpacketizer_mpeg4audio_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_mpeg4audio)
 libpacketizer_mpeg4audio_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_mpeg4audio)
-libpacketizer_mpeg4audio_plugin_la_DEPENDENCIES =
 
 # The packetizer_mpeg4video plugin
 libpacketizer_mpeg4video_plugin_la_SOURCES = $(SOURCES_packetizer_mpeg4video)
@@ -95,10 +89,9 @@ libpacketizer_mpeg4video_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetiz
 libpacketizer_mpeg4video_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_mpeg4video)
 libpacketizer_mpeg4video_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_mpeg4video)
 libpacketizer_mpeg4video_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_mpeg4video)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libpacketizer_mpeg4video_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_mpeg4video)
 libpacketizer_mpeg4video_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_mpeg4video)
-libpacketizer_mpeg4video_plugin_la_DEPENDENCIES =
 
 # The packetizer_mpegvideo plugin
 libpacketizer_mpegvideo_plugin_la_SOURCES = $(SOURCES_packetizer_mpegvideo)
@@ -108,10 +101,9 @@ libpacketizer_mpegvideo_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetize
 libpacketizer_mpegvideo_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_mpegvideo)
 libpacketizer_mpegvideo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_mpegvideo)
 libpacketizer_mpegvideo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_mpegvideo)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libpacketizer_mpegvideo_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_mpegvideo)
 libpacketizer_mpegvideo_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_mpegvideo)
-libpacketizer_mpegvideo_plugin_la_DEPENDENCIES =
 
 # The packetizer_vc1 plugin
 libpacketizer_vc1_plugin_la_SOURCES = $(SOURCES_packetizer_vc1)
@@ -121,8 +113,7 @@ libpacketizer_vc1_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_vc1)
 libpacketizer_vc1_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_vc1)
 libpacketizer_vc1_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_vc1)
 libpacketizer_vc1_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_vc1)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libpacketizer_vc1_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_vc1)
 libpacketizer_vc1_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_vc1)
-libpacketizer_vc1_plugin_la_DEPENDENCIES =
 

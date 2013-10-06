@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id: 65b3d09e98d4b07c3393eff204b24e14bb004f22 $
+ * $Id: 0a08d0dd699e64d91b34e9e109f59c9bae535a39 $
  *
  * sdp/sdpplin parser.
  *
@@ -60,7 +60,7 @@ static sdpplin_stream_t *sdpplin_parse_stream(char **data) {
 
   sdpplin_stream_t *desc;
   char* buf = NULL;
-  char* decoded = NULL;
+  unsigned char* decoded = NULL;
   int handled;
 
   desc = calloc( 1, sizeof(sdpplin_stream_t) );

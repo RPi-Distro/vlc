@@ -2,7 +2,7 @@
  * generic_layout.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 5f5cfa00fc9287627b88fc0fc0465bf96960bb1c $
+ * $Id: d9464b26887b40b339134d9c9b987aa023209ba0 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -37,7 +37,9 @@
 GenericLayout::GenericLayout( intf_thread_t *pIntf, int width, int height,
                               int minWidth, int maxWidth, int minHeight,
                               int maxHeight ):
-    SkinObject( pIntf ), m_pWindow( NULL ), m_rect( 0, 0, width, height ),
+    SkinObject( pIntf ), m_pWindow( NULL ),
+    m_original_width( width ), m_original_height( height ),
+    m_rect( 0, 0, width, height ),
     m_minWidth( minWidth ), m_maxWidth( maxWidth ),
     m_minHeight( minHeight ), m_maxHeight( maxHeight ), m_pVideoCtrlSet(),
     m_visible( false ), m_pVarActive( NULL )
@@ -172,6 +174,10 @@ void GenericLayout::onControlUpdate( const CtrlGeneric &rCtrl,
 
 void GenericLayout::resize( int width, int height )
 {
+    // check real resize
+    if( width == m_rect.getWidth() && height == m_rect.getHeight() )
+        return;
+
     // Update the window size
     m_rect = SkinsRect( 0, 0 , width, height );
 
@@ -188,16 +194,6 @@ void GenericLayout::resize( int width, int height )
     for( iter = m_controlList.begin(); iter != m_controlList.end(); ++iter )
     {
         iter->m_pControl->onResize();
-    }
-
-    // Resize and refresh the associated window
-    TopWindow *pWindow = getWindow();
-    if( pWindow )
-    {
-        // Resize the window
-        pWindow->resize( width, height );
-        // Change the shape of the window and redraw it
-        refreshAll();
     }
 }
 
@@ -234,7 +230,6 @@ void GenericLayout::refreshRect( int x, int y, int width, int height )
     {
         // first apply new shape to the window
         pWindow->updateShape();
-
         pWindow->invalidateRect( x, y, width, height );
     }
 }
@@ -265,3 +260,13 @@ void GenericLayout::onHide()
     m_visible = false;
 }
 
+
+bool GenericLayout::isTightlyCoupledWith( const GenericLayout& otherLayout ) const
+{
+    return m_original_width == otherLayout.m_original_width &&
+           m_original_height == otherLayout.m_original_height &&
+           m_minWidth == otherLayout.m_minWidth &&
+           m_maxWidth == otherLayout.m_maxWidth &&
+           m_minHeight == otherLayout.m_minHeight &&
+           m_maxHeight == otherLayout.m_maxHeight;
+}

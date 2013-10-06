@@ -1,24 +1,24 @@
 /*****************************************************************************
  * invert.c : Invert video plugin for vlc
  *****************************************************************************
- * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 33b2884e08b8495d788fff7e0d49de624d70d09a $
+ * Copyright (C) 2000-2006 VLC authors and VideoLAN
+ * $Id: 681c992398a41ebacecedde9d3f1cb21184e32b2 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -64,9 +64,19 @@ vlc_module_end ()
 static int Create( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
+    vlc_fourcc_t fourcc = p_filter->fmt_in.video.i_chroma;
+
+    if( fourcc == VLC_CODEC_YUVP || fourcc == VLC_CODEC_RGBP
+     || fourcc == VLC_CODEC_RGBA )
+        return VLC_EGENERIC;
+
+    const vlc_chroma_description_t *p_chroma =
+        vlc_fourcc_GetChromaDescription( fourcc );
+    if( p_chroma == NULL
+     || p_chroma->pixel_size * 8 != p_chroma->pixel_bits )
+        return VLC_EGENERIC;
 
     p_filter->pf_video_filter = Filter;
-
     return VLC_SUCCESS;
 }
 
@@ -107,7 +117,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     {
         /* We don't want to invert the alpha plane */
         i_planes = p_pic->i_planes - 1;
-        vlc_memcpy(
+        memcpy(
             p_outpic->p[A_PLANE].p_pixels, p_pic->p[A_PLANE].p_pixels,
             p_pic->p[A_PLANE].i_pitch *  p_pic->p[A_PLANE].i_lines );
     }

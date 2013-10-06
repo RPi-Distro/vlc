@@ -2,7 +2,7 @@
  * meta.c: Get meta/artwork using lua scripts
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: eda16bcb7bee6dcf89055effc0b467979b3ea01a $
+ * $Id: a0c40d12832693c7eaf6a0c4e61e525bb5154906 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -74,7 +74,7 @@ static lua_State * init( vlc_object_t *p_this, input_item_t * p_item, const char
     luaopen_xml( L );
     luaopen_input_item( L, p_item );
 
-    if( vlclua_add_modules_path( p_this, L, psz_filename ) )
+    if( vlclua_add_modules_path( L, psz_filename ) )
     {
         msg_Warn( p_this, "Error while setting the module search path for %s",
                   psz_filename );
@@ -192,7 +192,7 @@ static int read_meta( vlc_object_t *p_this, const char * psz_filename,
     int i_ret = run(p_this, psz_filename, L, "read_meta");
     lua_close( L );
 
-    // Continue even if an error occured: all "meta reader" are always run.
+    // Continue even if an error occurred: all "meta reader" are always run.
     return i_ret == VLC_SUCCESS ? VLC_EGENERIC : i_ret;
 }
 

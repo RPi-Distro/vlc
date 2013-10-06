@@ -1,24 +1,26 @@
 /*****************************************************************************
- * gradfun.c: wrapper for the gradfun filter from mplayer
+ * gradfun.c: wrapper for the gradfun filter from libav
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 5c0eb077a4a95d59699519c455f216bc741067b5 $
+ * $Id: 4665fe976e1f6760cd2d1566750b777a10015a79 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * Based on the work of: Nolan Lum and Loren Merritt
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -55,7 +57,7 @@ static void Close(vlc_object_t *);
 vlc_module_begin()
     set_description(N_("Gradfun video filter"))
     set_shortname(N_("Gradfun"))
-    set_help("Debanding algorithm")
+    set_help(N_("Debanding algorithm"))
     set_capability("video filter2", 0)
     set_category(CAT_VIDEO)
     set_subcategory(SUBCAT_VIDEO_VFILTER)
@@ -133,21 +135,24 @@ static int Open(vlc_object_t *object)
     cfg->thresh      = 0.0;
     cfg->radius      = 0;
     cfg->buf         = NULL;
-    cfg->filter_line = filter_line_c;
-    cfg->blur_line   = blur_line_c;
 
 #if HAVE_SSE2 && HAVE_6REGS
-    if (vlc_CPU() & CPU_CAPABILITY_SSE2)
+    if (vlc_CPU_SSE2())
         cfg->blur_line = blur_line_sse2;
+    else
+#endif
+        cfg->blur_line   = blur_line_c;
+#if HAVE_SSSE3
+    if (vlc_CPU_SSSE3())
+        cfg->filter_line = filter_line_ssse3;
+    else
 #endif
 #if HAVE_MMX2
-    if (vlc_CPU() & CPU_CAPABILITY_MMXEXT)
+    if (vlc_CPU_MMXEXT())
         cfg->filter_line = filter_line_mmx2;
+    else
 #endif
-#if HAVE_SSSE3
-    if (vlc_CPU() & CPU_CAPABILITY_SSSE3)
-        cfg->filter_line = filter_line_ssse3;
-#endif
+        cfg->filter_line = filter_line_c;
 
     filter->p_sys           = sys;
     filter->pf_video_filter = Filter;

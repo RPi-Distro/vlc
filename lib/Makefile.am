@@ -55,12 +55,12 @@ libvlc_la_SOURCES = \
 	../src/revision.c
 EXTRA_DIST = libvlc.pc.in libvlc.sym ../include/vlc/libvlc_version.h.in
 
-libvlc_la_LIBADD = $(LIBS_libvlc) \
-	../src/libvlccore.la ../compat/libcompat.la
+libvlc_la_LIBADD = \
+	../src/libvlccore.la ../compat/libcompat.la $(LIBPTHREAD) $(LIBM)
 libvlc_la_LDFLAGS = \
 	$(LDFLAGS_libvlc) \
 	-no-undefined \
-	-version-info 8:2:3 \
+	-version-info 9:0:4 \
 	-export-symbols $(srcdir)/libvlc.sym
 libvlc_la_DEPENDENCIES = libvlc.sym
 if HAVE_WIN32

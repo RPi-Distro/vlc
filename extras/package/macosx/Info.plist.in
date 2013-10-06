@@ -100,6 +100,18 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
+				<string>xesc</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>movie.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>Expression Encoder Screen Capture File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
 				<string>pls</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
@@ -499,7 +511,7 @@
 				<string>opus</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
-			<string>generic.icns</string>
+			<string>ogg.icns</string>
 			<key>CFBundleTypeMIMETypes</key>
 			<array>
 				<string>audio/opus</string>
@@ -576,7 +588,7 @@
 				<string>ogx</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
-			<string>generic.icns</string>
+			<string>ogg.icns</string>
 			<key>CFBundleTypeMIMETypes</key>
 			<array>
 				<string>application/ogg</string>
@@ -790,6 +802,18 @@
 			<string>wmv.icns</string>
 			<key>CFBundleTypeName</key>
 			<string>Windows Media Video</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>wtv</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>movie.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>Windows Recorded TV Show</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
 		</dict>
@@ -1041,7 +1065,7 @@
 				<string>rec</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
-			<string>generic.icns</string>
+			<string>movie.icns</string>
 			<key>CFBundleTypeName</key>
 			<string>Topfield PVR Recording</string>
 			<key>CFBundleTypeRole</key>
@@ -1077,7 +1101,7 @@
 				<string>vro</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
-			<string>generic.icns</string>
+			<string>movie.icns</string>
 			<key>CFBundleTypeName</key>
 			<string>DVD Video Recording Format</string>
 			<key>CFBundleTypeRole</key>
@@ -1089,7 +1113,7 @@
 				<string>tod</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
-			<string>generic.icns</string>
+			<string>movie.icns</string>
 			<key>CFBundleTypeName</key>
 			<string>JVC Everio Video Capture File</string>
 			<key>CFBundleTypeRole</key>
@@ -1101,7 +1125,7 @@
 				<string>mks</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
-			<string>generic.icns</string>
+			<string>mkv.icns</string>
 			<key>CFBundleTypeName</key>
 			<string>Matroska Elementry Stream</string>
 			<key>CFBundleTypeRole</key>
@@ -1319,7 +1343,7 @@
 		</dict>
 	</array>
 	<key>SUFeedURL</key>
-	<string>http://update.videolan.org/vlc/sparkle/vlc.xml</string>
+	<string>http://update.videolan.org/vlc/sparkle/vlc-intel64.xml</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
 	<key>CFBundleExecutable</key>
@@ -1370,6 +1394,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>mms</string>
+				<string>mmsh</string>
 			</array>
 		</dict>
 		<dict>
@@ -1392,26 +1417,52 @@
 				<string>udp</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleURLIconFile</key>
+			<string>generic</string>
+			<key>CFBundleURLName</key>
+			<string>rtp url</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>rtp</string>
+			</array>
+		</dict>
+        <dict>
+			<key>CFBundleURLIconFile</key>
+			<string>generic</string>
+			<key>CFBundleURLName</key>
+			<string>rtmp url</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>rtmp</string>
+				<string>rtmps</string>
+				<string>rtmpe</string>
+				<string>rtmpt</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLIconFile</key>
+			<string>generic</string>
+			<key>CFBundleURLName</key>
+			<string>sftp url</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>sftp</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLIconFile</key>
+			<string>generic</string>
+			<key>CFBundleURLName</key>
+			<string>smb url</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>smb</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>@VERSION@</string>
-    <key>LSArchitecturePriority</key>
-	<array>
-		<string>x86_64</string>
-		<string>i386</string>
-		<string>ppc</string>
-	</array>
-	<key>LSMinimumSystemVersionByArchitecture</key>
-	<dict>
-		<key>i386</key>
-		<string>10.5.0</string>
-		<key>x86_64</key>
-		<string>10.6.0</string>
-		<key>ppc</key>
-		<string>10.5.0</string>
-		<key>ppc64</key>
-		<string>10.5.0</string>
-	</dict>
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSMainNibFile</key>
@@ -1419,8 +1470,10 @@
 	<key>NSPrincipalClass</key>
 	<string>VLCApplication</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>10.5.0</string>
+	<string>10.6.0</string>
 	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSSupportsAutomaticGraphicsSwitching</key>
 	<true/>
 </dict>
 </plist>

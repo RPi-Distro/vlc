@@ -1,8 +1,8 @@
 /*****************************************************************************
- * Upnp.hpp :  UPnP discovery module (libupnp) header
+ * upnp.hpp :  UPnP discovery module (libupnp) header
  *****************************************************************************
  * Copyright (C) 2004-2010 the VideoLAN team
- * $Id: aa11ddf76b12a67be997165bd4f26b52d26c6f5b $
+ * $Id: 23fe4db9ab4490263934d3a8bba7293f8f92754e $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org> (original plugin)
  *          Christian Henz <henz # c-lab.de>
@@ -120,6 +120,7 @@ public:
     Item( Container*  parent,
           const char* objectID,
           const char* title,
+          const char* subtitles,
           const char* resource,
           mtime_t duration );
     ~Item();
@@ -127,6 +128,9 @@ public:
     const char* getObjectID() const;
     const char* getTitle() const;
     const char* getResource() const;
+    const char* getSubtitles() const;
+    char* buildInputSlaveOption() const;
+    char* buildSubTrackIdOption() const;
     mtime_t getDuration() const;
 
     void setInputItem( input_item_t* p_input_item );
@@ -139,6 +143,7 @@ private:
     std::string _objectID;
     std::string _title;
     std::string _resource;
+    std::string _subtitles;
     mtime_t _duration;
 };
 

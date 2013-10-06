@@ -1,25 +1,25 @@
 # FFmpeg
 
-#FFMPEG_SNAPURL := http://git.videolan.org/?p=ffmpeg.git;a=snapshot;h=23eed00;sf=tgz
-FFMPEG_SNAPURL := http://git.libav.org/?p=libav.git;a=snapshot;h=eae0879;sf=tgz
+#HASH=16c3ed5837884e2b60cf40e762be6c58b13d7ba6
+#FFMPEG_SNAPURL := http://git.videolan.org/?p=ffmpeg.git;a=snapshot;h=$(HASH);sf=tgz
+
+HASH=b1f9cdc37ff5d5b391d2cd9af737ab4e5a0fc1c0
+FFMPEG_SNAPURL := http://git.libav.org/?p=libav.git;a=snapshot;h=$(HASH);sf=tgz
 
 FFMPEGCONF = \
 	--cc="$(CC)" \
 	--disable-doc \
-	--disable-decoder=libvpx \
-	--disable-decoder=libvpx_vp8 \
-	--disable-decoder=libvpx_vp9 \
 	--disable-decoder=bink \
+	--disable-encoder=vorbis \
 	--enable-libgsm \
 	--enable-libopenjpeg \
 	--disable-debug \
-	--enable-gpl \
 	--disable-avdevice \
 	--disable-devices \
-	--disable-protocols \
-	--disable-network \
 	--disable-avfilter \
-	--disable-filters
+	--disable-filters \
+	--disable-bsfs \
+	--disable-bzlib
 
 # Those tools are named differently in FFmpeg and Libav
 #	--disable-ffserver \
@@ -29,51 +29,75 @@ DEPS_ffmpeg = zlib gsm openjpeg
 
 # Optional dependencies
 ifdef BUILD_ENCODERS
-FFMPEGCONF += --enable-libmp3lame --enable-libvpx
+FFMPEGCONF += --enable-libmp3lame --enable-libvpx --disable-decoder=libvpx --disable-decoder=libvpx_vp8 --disable-decoder=libvpx_vp9
 DEPS_ffmpeg += lame $(DEPS_lame) vpx $(DEPS_vpx)
 else
 FFMPEGCONF += --disable-encoders --disable-muxers
 endif
 
+# Small size
 ifdef ENABLE_SMALL
-FFMPEGCONF += --enable-small --optflags=-O2
+FFMPEGCONF += --enable-small
+endif
+ifeq ($(ARCH),arm)
+ifdef HAVE_ARMV7A
+FFMPEGCONF += --enable-thumb
+endif
 endif
 
-# XXX: REVISIT
-#ifndef HAVE_FPU
-#FFMPEGCONF += --disable-mpegaudio-hp
-#endif
-
 ifdef HAVE_CROSS_COMPILE
-FFMPEGCONF += --enable-cross-compile --cross-prefix=$(HOST)-
+FFMPEGCONF += --enable-cross-compile
+ifndef HAVE_DARWIN_OS
+FFMPEGCONF += --cross-prefix=$(HOST)-
+endif
 endif
 
 # ARM stuff
 ifeq ($(ARCH),arm)
-FFMPEGCONF += --disable-runtime-cpudetect --arch=arm
+FFMPEGCONF += --arch=arm
 ifdef HAVE_NEON
-FFMPEGCONF += --cpu=cortex-a8 --enable-neon
-FFMPEG_CFLAGS +=-mfloat-abi=softfp -mfpu=neon
+FFMPEGCONF += --enable-neon
+endif
+ifdef HAVE_ARMV7A
+FFMPEGCONF += --cpu=cortex-a8
+endif
+ifdef HAVE_ARMV6
+FFMPEGCONF += --cpu=armv6 --disable-neon
+endif
+endif
+
+# MIPS stuff
+ifeq ($(ARCH),mipsel)
+FFMPEGCONF += --arch=mips
+endif
+
+# x86 stuff
+ifeq ($(ARCH),i386)
+ifndef HAVE_DARWIN_OS
+FFMPEGCONF += --arch=x86
 endif
 endif
 
 # Darwin
 ifdef HAVE_DARWIN_OS
 FFMPEGCONF += --arch=$(ARCH) --target-os=darwin
-FFMPEG_CFLAGS += -DHAVE_LRINTF
-endif
-ifdef HAVE_MACOSX
-ifneq ($(findstring $(ARCH),i386 x86_64),)
-FFMPEGCONF += --enable-memalign-hack
-endif
 ifeq ($(ARCH),x86_64)
 FFMPEGCONF += --cpu=core2
 endif
+endif
+ifdef HAVE_IOS
+ifeq ($(ARCH),arm)
+FFMPEGCONF += --enable-pic --as="$(AS)"
+endif
+endif
+ifdef HAVE_MACOSX
+FFMPEGCONF += --enable-vda
 endif
 
 # Linux
 ifdef HAVE_LINUX
 FFMPEGCONF += --target-os=linux --enable-pic
+
 endif
 
 # Windows
@@ -82,57 +106,44 @@ ifndef HAVE_MINGW_W64
 DEPS_ffmpeg += directx
 endif
 FFMPEGCONF += --target-os=mingw32 --enable-memalign-hack
-FFMPEGCONF += --enable-w32threads \
-	--disable-bzlib --disable-bsfs \
-	--disable-decoder=dca --disable-encoder=vorbis \
-	--enable-dxva2
+FFMPEGCONF += --enable-w32threads --enable-dxva2 \
+	--disable-decoder=dca
 
 ifdef HAVE_WIN64
 FFMPEGCONF += --cpu=athlon64 --arch=x86_64
 else # !WIN64
 FFMPEGCONF+= --cpu=i686 --arch=x86
 endif
-else
+
+else # !Windows
 FFMPEGCONF += --enable-pthreads
 endif
 
-ifdef HAVE_WINCE
-FFMPEGCONF += --target-os=mingw32ce --arch=armv4l --cpu=armv4t \
-	--disable-decoder=snow --disable-decoder=vc9 \
-	--disable-decoder=wmv3 --disable-decoder=vorbis \
-	--disable-decoder=dvdsub --disable-decoder=dvbsub
-endif
-
-FFMPEG_CFLAGS += --std=gnu99
-
 # Build
-
 PKGS += ffmpeg
-ifeq ($(call need_pkg,"libavcodec libavformat libswscale"),)
+ifeq ($(call need_pkg,"libavcodec >= 54.25.0 libavformat >= 53.21.0 libswscale"),)
 PKGS_FOUND += ffmpeg
 endif
 
-$(TARBALLS)/ffmpeg-git.tar.gz:
+$(TARBALLS)/ffmpeg-$(HASH).tar.gz:
 	$(call download,$(FFMPEG_SNAPURL))
 
-FFMPEG_VERSION := git
-
-.sum-ffmpeg: $(TARBALLS)/ffmpeg-$(FFMPEG_VERSION).tar.gz
+.sum-ffmpeg: $(TARBALLS)/ffmpeg-$(HASH).tar.gz
 	$(warning Not implemented.)
 	touch $@
 
-ffmpeg: ffmpeg-$(FFMPEG_VERSION).tar.gz .sum-ffmpeg
-	rm -Rf $@ $@-git
-	mkdir -p $@-git
-	$(ZCAT) "$<" | (cd $@-git && tar xv --strip-components=1)
-ifdef HAVE_WIN32
-	sed -i "s/std=c99/std=gnu99/" $@-$(FFMPEG_VERSION)/configure
-endif
+ffmpeg: ffmpeg-$(HASH).tar.gz .sum-ffmpeg
+	rm -Rf $@ $@-$(HASH)
+	mkdir -p $@-$(HASH)
+	$(ZCAT) "$<" | (cd $@-$(HASH) && tar xv --strip-components=1)
+
+	# this patch is only needed for libav version b1f9cdc37ff5d5b391d2cd9af737ab4e5a0fc1c0
+	$(APPLY) $(SRC)/ffmpeg/fix-vda-memleak.patch
+
 	$(MOVE)
 
 .ffmpeg: ffmpeg
 	cd $< && $(HOSTVARS) ./configure \
-		--extra-cflags="$(FFMPEG_CFLAGS) -DHAVE_STDINT_H"  \
 		--extra-ldflags="$(LDFLAGS)" $(FFMPEGCONF) \
 		--prefix="$(PREFIX)" --enable-static --disable-shared
 	cd $< && $(MAKE) install-libs install-headers

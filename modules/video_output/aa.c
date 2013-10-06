@@ -1,24 +1,24 @@
 /*****************************************************************************
  * aa.c: "vout display" module using aalib
  *****************************************************************************
- * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 6d9e691459c3b3ddd242881ce25657cc40640a16 $
+ * Copyright (C) 2002-2009 VLC authors and VideoLAN
+ * $Id: 5a848cf6b57636d9982aba93473c8420cedc7455 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -36,7 +36,7 @@
 #include <assert.h>
 #include <aalib.h>
 
-#ifndef WIN32
+#ifndef _WIN32
 # ifdef X_DISPLAY_MISSING
 #  error Xlib required due to XInitThreads
 # endif
@@ -90,7 +90,7 @@ static int Open(vlc_object_t *object)
     vout_display_t *vd = (vout_display_t *)object;
     vout_display_sys_t *sys;
 
-#ifndef WIN32
+#ifndef _WIN32
     if (!vlc_xlib_init (object))
         return VLC_EGENERIC;
 #endif

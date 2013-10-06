@@ -45,10 +45,7 @@ VLC_API int vlc_unlink( const char *filename );
 VLC_API int vlc_rename( const char *oldpath, const char *newpath );
 VLC_API char *vlc_getcwd( void ) VLC_USED;
 
-#if defined( WIN32 )
-# ifndef UNDER_CE
-#  define stat _stati64
-# endif
+#if defined( _WIN32 )
 static inline int vlc_closedir( DIR *dir )
 {
     _WDIR *wdir = *(_WDIR **)dir;
@@ -66,7 +63,23 @@ static inline void vlc_rewinddir( DIR *dir )
 }
 # undef rewinddir
 # define rewinddir vlc_rewinddir
+
+# include <sys/stat.h>
+# ifndef stat
+#  define stat _stati64
+# endif
+# ifndef fstat
+#  define fstat _fstati64
+# endif
+# undef lseek
+# define lseek _lseeki64
 #endif
+
+#ifdef __ANDROID__
+# define lseek lseek64
+#endif
+
+struct stat;
 
 VLC_API int vlc_stat( const char *filename, struct stat *buf );
 VLC_API int vlc_lstat( const char *filename, struct stat *buf );

@@ -11,13 +11,13 @@ SUFFIXES = .rc.in .rc
 
 AM_CPPFLAGS = $(CPPFLAGS_vlc)
 AM_CFLAGS = $(CFLAGS_vlc)
-
+if HAVE_DBUS
+AM_CPPFLAGS += -DHAVE_DBUS
+endif
 
 if !HAVE_WIN32
-if !HAVE_WINCE
 bin_PROGRAMS += vlc-wrapper
 vlc_SOURCES = vlc.c override.c
-endif
 endif
 
 EXTRA_vlc_SOURCES = vlc.c winvlc.c
@@ -25,15 +25,12 @@ if HAVE_WIN32
 vlc_SOURCES = winvlc.c
 noinst_DATA += vlc_win32_rc.rc
 endif
-if HAVE_WINCE
-vlc_SOURCES = winvlc.c
-endif
 
 vlc_wrapper_SOURCES = rootwrap.c
 vlc_wrapper_LDADD = $(SOCKET_LIBS)
 
 vlc_LDFLAGS = $(LDFLAGS_vlc)
-vlc_LDADD = ../lib/libvlc.la ../src/libvlccore.la $(LIBS_vlc)
+vlc_LDADD = ../lib/libvlc.la $(LIBPTHREAD)
 
 vlc_static_SOURCES = $(vlc_SOURCES)
 vlc_static_CFLAGS = $(AM_CFLAGS) \
@@ -57,13 +54,13 @@ vlc_win32_rc.rc: $(top_builddir)/config.status vlc_win32_rc.rc.in
 	$(SHELL) ./config.status --file="bin/$@"
 
 vlc_win32_rc.$(OBJEXT): vlc_win32_rc.rc
-	$(WINDRES) --include-dir $(top_srcdir)/share/icons -i $< -o $@
+	$(WINDRES) --include-dir $(top_srcdir)/share/icons --include-dir $(top_srcdir)/extras/package/win32 -i $< -o $@
 
 vlc_cache_gen_SOURCES = cachegen.c
 vlc_cache_gen_LDADD = \
 	$(GNUGETOPT_LIBS) \
 	../compat/libcompat.la \
-	../lib/libvlc.la ../src/libvlccore.la
+	../lib/libvlc.la
 if HAVE_WIN32
 vlc_cache_gen_LDADD += vlc_win32_rc.$(OBJEXT)
 vlc_cache_gen_DEPENDENCIES = vlc_win32_rc.$(OBJEXT)

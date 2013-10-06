@@ -1,24 +1,24 @@
 /*****************************************************************************
  * vmem.c: memory video driver for vlc
  *****************************************************************************
- * Copyright (C) 2008 the VideoLAN team
+ * Copyright (C) 2008 VLC authors and VideoLAN
  * Copyrgiht (C) 2010 Rémi Denis-Courmont
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -253,16 +253,16 @@ static picture_pool_t *Pool(vout_display_t *vd, unsigned count)
     picture_t *pictures[count];
 
     for (unsigned i = 0; i < count; i++) {
-        picture_resource_t rsc;
-
-        rsc.p_sys = malloc(sizeof(*rsc.p_sys));
-        if (unlikely(!rsc.p_sys)) {
+        picture_sys_t *picsys = malloc(sizeof (*picsys));
+        if (unlikely(picsys == NULL))
+        {
             count = i;
             break;
         }
+        picsys->sys = sys;
+        picsys->id = NULL;
 
-        rsc.p_sys->sys = sys;
-        rsc.p_sys->id = NULL;
+        picture_resource_t rsc = { .p_sys = picsys };
 
         for (unsigned i = 0; i < PICTURE_PLANE_MAX; i++) {
             /* vmem-lock is responsible for the allocation */

@@ -1,8 +1,7 @@
 /*****************************************************************************
  * variables.h: object variables typedefs
  *****************************************************************************
- * Copyright (C) 2002-2006 VLC authors and VideoLAN
- * $Id: 2ab9a1e09c7b5c9ae2f4d02861677c666b60d38e $
+ * Copyright (C) 1999-2012 VLC authors and VideoLAN
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -23,6 +22,40 @@
 
 #ifndef LIBVLC_VARIABLES_H
 # define LIBVLC_VARIABLES_H 1
+
+# include <vlc_atomic.h>
+
+/**
+ * Private LibVLC data for each object.
+ */
+typedef struct vlc_object_internals vlc_object_internals_t;
+
+struct vlc_object_internals
+{
+    char           *psz_name; /* given name */
+
+    /* Object variables */
+    void           *var_root;
+    vlc_mutex_t     var_lock;
+    vlc_cond_t      var_wait;
+
+    /* Objects thread synchronization */
+    int             pipes[2];
+    atomic_bool     alive;
+
+    /* Objects management */
+    atomic_uint     refs;
+    vlc_destructor_t pf_destructor;
+
+    /* Objects tree structure */
+    vlc_object_internals_t *next;  /* next sibling */
+    vlc_object_internals_t *prev;  /* previous sibling */
+    vlc_object_internals_t *first; /* first child */
+};
+
+# define vlc_internals( obj ) (((vlc_object_internals_t*)(VLC_OBJECT(obj)))-1)
+# define vlc_externals( priv ) ((vlc_object_t *)((priv) + 1))
+
 
 typedef struct callback_entry_t callback_entry_t;
 

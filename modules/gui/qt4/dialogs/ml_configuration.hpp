@@ -2,7 +2,7 @@
  * ml_configuration.hpp: ML's configuration dialog (folder view)
  *****************************************************************************
  * Copyright (C) 2008-2010 the VideoLAN Team and AUTHORS
- * $Id: 5cefc6d17ab8e486e8276246d051ef5f400221b1 $
+ * $Id: 145d27979d34ab2b85477deea6576be04fb0501b $
  *
  * Authors: Antoine Lejeune <phytos@videolan.org>
  *          Jean-Philippe André <jpeg@videolan.org>
@@ -97,6 +97,7 @@ private:
 
     MLDirModel *model;
     QCheckBox *recursivity;
+    QCheckBox *synchronous;
 
     static MLConfDialog *instance;
 

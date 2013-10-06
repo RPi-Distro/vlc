@@ -2,7 +2,7 @@
  * ctrl_video.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 2ed026bdee14a3055fe3a546d56e209c02564d91 $
+ * $Id: 7c9dcae8e3136e86e195f3a9f9bfccf9a8e31a89 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -36,8 +36,8 @@ CtrlVideo::CtrlVideo( intf_thread_t *pIntf, GenericLayout &rLayout,
                       bool autoResize, const UString &rHelp,
                       VarBool *pVisible ):
     CtrlGeneric( pIntf, rHelp, pVisible ), m_rLayout( rLayout ),
-    m_bAutoResize( autoResize), m_xShift( 0 ), m_yShift( 0 ),
-    m_bIsUseable( false), m_pVoutWindow( NULL )
+    m_bAutoResize( autoResize ), m_xShift( 0 ), m_yShift( 0 ),
+    m_pVoutWindow( NULL )
 {
     VarBool &rFullscreen = VlcProc::instance( getIntf() )->getFullscreenVar();
     rFullscreen.addObserver( this );
@@ -114,13 +114,11 @@ void CtrlVideo::setLayout( GenericLayout *pLayout,
     CtrlGeneric::setLayout( pLayout, rPosition );
     m_pLayout->getActiveVar().addObserver( this );
 
-    m_bIsUseable = isVisible() && m_pLayout->getActiveVar().get();
-
     // register Video Control
     VoutManager::instance( getIntf() )->registerCtrlVideo( this );
 
     msg_Dbg( getIntf(),"New VideoControl detected(%p), useability=%s",
-                           this, m_bIsUseable ? "true" : "false" );
+                           this, isUseable() ? "true" : "false" );
 }
 
 
@@ -187,15 +185,11 @@ void CtrlVideo::onUpdate( Subject<VarBool> &rVariable, void *arg  )
                       rFullscreen.get() );
     }
 
-    m_bIsUseable = isVisible() &&
-                   m_pLayout->getActiveVar().get() &&
-                   !rFullscreen.get();
-
-    if( m_bIsUseable && !isUsed() )
+    if( isUseable() && !isUsed() )
     {
         VoutManager::instance( getIntf() )->requestVout( this );
     }
-    else if( !m_bIsUseable && isUsed() )
+    else if( !isUseable() && isUsed() )
     {
         VoutManager::instance( getIntf() )->discardVout( this );
     }
@@ -233,3 +227,18 @@ void CtrlVideo::detachVoutWindow( )
     m_pVoutWindow = NULL;
 }
 
+
+bool CtrlVideo::isUseable( ) const
+{
+    VarBool &rFullscreen = VlcProc::instance( getIntf() )->getFullscreenVar();
+
+    return isVisible() &&                 // video control is visible
+           m_pLayout->isVisible() &&      // layout is visible
+           !rFullscreen.get();            // fullscreen is off
+}
+
+
+bool CtrlVideo::isUsed( ) const
+{
+    return m_pVoutWindow ? true : false;
+}

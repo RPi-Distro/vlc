@@ -1,8 +1,8 @@
 /*****************************************************************************
  * dirs.c: directories configuration
  *****************************************************************************
- * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * Copyright © 2007-2008 Rémi Denis-Courmont
+ * Copyright (C) 2001-2010 VLC authors and VideoLAN
+ * Copyright © 2007-2012 Rémi Denis-Courmont
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -25,12 +25,11 @@
 # include "config.h"
 #endif
 
+#define UNICODE
 #include <vlc_common.h>
 
 #include <w32api.h>
-#ifndef UNDER_CE
-# include <direct.h>
-#endif
+#include <direct.h>
 #include <shlobj.h>
 
 #include "../libvlc.h"
@@ -41,56 +40,43 @@
 #include <assert.h>
 #include <limits.h>
 
-char *config_GetDataDirDefault( void )
+char *config_GetLibDir (void)
 {
-    return strdup (psz_vlcpath);
-}
-
-const char *config_GetLibDir (void)
-{
-    abort ();
-}
-
-const char *config_GetConfDir (void)
-{
-    static char appdir[PATH_MAX] = "";
-    wchar_t wdir[MAX_PATH];
-
-#warning FIXME: thread-safety!
-    if (*appdir)
-        return appdir;
-
-#if defined (UNDER_CE)
-    /*There are some errors in cegcc headers*/
-#undef SHGetSpecialFolderPath
-    BOOL WINAPI SHGetSpecialFolderPath(HWND,LPWSTR,int,BOOL);
-    if( SHGetSpecialFolderPath( NULL, wdir, CSIDL_APPDATA, 1 ) )
-#else
-    /* Get the "Application Data" folder for all users */
-    if( S_OK == SHGetFolderPathW( NULL, CSIDL_COMMON_APPDATA
-              | CSIDL_FLAG_CREATE, NULL, SHGFP_TYPE_CURRENT, wdir ) )
-#endif
-    {
-        WideCharToMultiByte (CP_UTF8, 0, wdir, -1,
-                             appdir, PATH_MAX, NULL, NULL);
-        return appdir;
-    }
+#if VLC_WINSTORE_APP
     return NULL;
+#else
+    /* Get our full path */
+    MEMORY_BASIC_INFORMATION mbi;
+    if (!VirtualQuery (config_GetLibDir, &mbi, sizeof(mbi)))
+        goto error;
+
+    wchar_t wpath[MAX_PATH];
+    if (!GetModuleFileName ((HMODULE) mbi.AllocationBase, wpath, MAX_PATH))
+        goto error;
+
+    wchar_t *file = wcsrchr (wpath, L'\\');
+    if (file == NULL)
+        goto error;
+    *file = L'\0';
+
+    return FromWide (wpath);
+error:
+    abort ();
+#endif
+}
+
+char *config_GetDataDir (void)
+{
+    const char *path = getenv ("VLC_DATA_PATH");
+    return (path != NULL) ? strdup (path) : config_GetLibDir ();
 }
 
 static char *config_GetShellDir (int csidl)
 {
     wchar_t wdir[MAX_PATH];
 
-#if defined (UNDER_CE)
-    /*There are some errors in cegcc headers*/
-#undef SHGetSpecialFolderPath
-    BOOL WINAPI SHGetSpecialFolderPath(HWND,LPWSTR,int,BOOL);
-    if (SHGetSpecialFolderPath (NULL, wdir, CSIDL_APPDATA, 1))
-#else
     if (SHGetFolderPathW (NULL, csidl | CSIDL_FLAG_CREATE,
                           NULL, SHGFP_TYPE_CURRENT, wdir ) == S_OK)
-#endif
         return FromWide (wdir);
     return NULL;
 }

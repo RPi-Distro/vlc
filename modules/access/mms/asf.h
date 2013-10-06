@@ -1,24 +1,24 @@
 /*****************************************************************************
  * asf.h: MMS access plug-in
  *****************************************************************************
- * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 0c678de57a06a8319b22ed575f7a179806f74fc0 $
+ * Copyright (C) 2001-2004 VLC authors and VideoLAN
+ * $Id: f15b90d3d9a5dac0567d388e3b3512d454226579 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /****************************************************************************
@@ -33,13 +33,13 @@
 
 #include "../../demux/asf/libasf_guid.h"
 
-#define ASF_STREAM_VIDEO    0x0001
-#define ASF_STREAM_AUDIO    0x0002
-#define ASF_STREAM_UNKNOWN  0xffff
+#define ASF_CODEC_TYPE_VIDEO   0x0001
+#define ASF_CODEC_TYPE_AUDIO   0x0002
+#define ASF_CODEC_TYPE_UNKNOWN 0xffff
 
 typedef struct
 {
-    int i_cat;      /* ASF_STREAM_VIDEO, ASF_STREAM_AUDIO */
+    int i_cat;      /* ASF_CODEC_TYPE_VIDEO, ASF_CODEC_TYPE_AUDIO, */
     int i_bitrate;  /* -1 if unknown */
     int i_selected;
 } asf_stream_t;

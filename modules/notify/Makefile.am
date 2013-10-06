@@ -3,9 +3,9 @@
 
 basedir = notify
 dir = notify
-mods = growl msn notify telepathy xosd
-libvlc_LTLIBRARIES =  $(LTLIBgrowl) $(LTLIBnotify) $(LTLIBtelepathy) $(LTLIBxosd)
-EXTRA_LTLIBRARIES =  libgrowl_plugin.la libnotify_plugin.la libtelepathy_plugin.la libxosd_plugin.la
+mods = growl notify
+libvlc_LTLIBRARIES =  $(LTLIBgrowl) $(LTLIBnotify)
+EXTRA_LTLIBRARIES =  libgrowl_plugin.la libnotify_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -17,23 +17,9 @@ libgrowl_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_growl)
 libgrowl_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_growl)
 libgrowl_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_growl)
 libgrowl_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_growl)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libgrowl_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_growl)
 libgrowl_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_growl)
-libgrowl_plugin_la_DEPENDENCIES =
-
-# The msn plugin
-libmsn_plugin_la_SOURCES = $(SOURCES_msn)
-nodist_libmsn_plugin_la_SOURCES = $(nodist_SOURCES_msn)
-# Force per-target objects:
-libmsn_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_msn)
-libmsn_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_msn)
-libmsn_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_msn)
-libmsn_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_msn)
-# Set LIBADD and DEPENDENCIES manually:
-libmsn_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_msn)
-libmsn_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_msn)
-libmsn_plugin_la_DEPENDENCIES =
 
 # The notify plugin
 libnotify_plugin_la_SOURCES = $(SOURCES_notify)
@@ -43,34 +29,7 @@ libnotify_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_notify)
 libnotify_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_notify)
 libnotify_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_notify)
 libnotify_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_notify)
-# Set LIBADD and DEPENDENCIES manually:
+# Set LIBADD manually:
 libnotify_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_notify)
 libnotify_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_notify)
-libnotify_plugin_la_DEPENDENCIES =
-
-# The telepathy plugin
-libtelepathy_plugin_la_SOURCES = $(SOURCES_telepathy)
-nodist_libtelepathy_plugin_la_SOURCES = $(nodist_SOURCES_telepathy)
-# Force per-target objects:
-libtelepathy_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_telepathy)
-libtelepathy_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_telepathy)
-libtelepathy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_telepathy)
-libtelepathy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_telepathy)
-# Set LIBADD and DEPENDENCIES manually:
-libtelepathy_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_telepathy)
-libtelepathy_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_telepathy)
-libtelepathy_plugin_la_DEPENDENCIES =
-
-# The xosd plugin
-libxosd_plugin_la_SOURCES = $(SOURCES_xosd)
-nodist_libxosd_plugin_la_SOURCES = $(nodist_SOURCES_xosd)
-# Force per-target objects:
-libxosd_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_xosd)
-libxosd_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_xosd)
-libxosd_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_xosd)
-libxosd_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_xosd)
-# Set LIBADD and DEPENDENCIES manually:
-libxosd_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_xosd)
-libxosd_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_xosd)
-libxosd_plugin_la_DEPENDENCIES =
 

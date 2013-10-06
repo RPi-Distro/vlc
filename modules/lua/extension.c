@@ -2,7 +2,7 @@
  * extension.c: Lua Extensions (meta data, web information, ...)
  *****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 2c4edc1afca8dd97886005e0afd83bad85d92918 $
+ * $Id: 4a7105e446f1a4cae981580dc729de8aedaaa66a $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -49,19 +49,17 @@ static const luaL_Reg p_reg[] =
  * Extensions capabilities
  * Note: #define and ppsz_capabilities must be in sync
  */
+static const char const caps[][20] = {
 #define EXT_HAS_MENU          (1 << 0)   ///< Hook: menu
-#define EXT_TRIGGER_ONLY      (1 << 1)   ///< Hook: trigger. Not activable
-#define EXT_INPUT_LISTENER    (1 << 2)   ///< Hook: input_changed
-#define EXT_META_LISTENER     (1 << 3)   ///< Hook: meta_changed
-#define EXT_PLAYING_LISTENER  (1 << 4)   ///< Hook: status_changed
-
-static const char* const ppsz_capabilities[] = {
     "menu",
+#define EXT_TRIGGER_ONLY      (1 << 1)   ///< Hook: trigger. Not activable
     "trigger",
+#define EXT_INPUT_LISTENER    (1 << 2)   ///< Hook: input_changed
     "input-listener",
+#define EXT_META_LISTENER     (1 << 3)   ///< Hook: meta_changed
     "meta-listener",
+#define EXT_PLAYING_LISTENER  (1 << 4)   ///< Hook: status_changed
     "playing-listener",
-    NULL
 };
 
 #define WATCH_TIMER_PERIOD    (10 * CLOCK_FREQ) ///< 10s period for the timer
@@ -381,17 +379,14 @@ int ScanLuaCallback( vlc_object_t *p_this, const char *psz_filename,
                 {
                     /* Key is at index -2 and value at index -1. Discard key */
                     const char *psz_cap = luaL_checkstring( L, -1 );
-                    int i_cap = 0;
                     bool b_ok = false;
                     /* Find this capability's flag */
-                    for( const char *iter = *ppsz_capabilities;
-                         iter != NULL;
-                         iter = ppsz_capabilities[ ++i_cap ])
+                    for( size_t i = 0; i < sizeof(caps)/sizeof(caps[0]); i++ )
                     {
-                        if( !strcmp( iter, psz_cap ) )
+                        if( !strcmp( caps[i], psz_cap ) )
                         {
                             /* Flag it! */
-                            p_ext->p_sys->i_capabilities |= 1 << i_cap;
+                            p_ext->p_sys->i_capabilities |= 1 << i;
                             b_ok = true;
                             break;
                         }
@@ -822,17 +817,14 @@ static lua_State* GetLuaState( extensions_manager_t *p_mgr,
         if( p_ext )
         {
             /* Load more libraries */
-            luaopen_acl( L );
             luaopen_config( L );
             luaopen_dialog( L, p_ext );
             luaopen_input( L );
             luaopen_msg( L );
-            luaopen_net( L );
             luaopen_object( L );
             luaopen_osd( L );
             luaopen_playlist( L );
             luaopen_sd( L );
-            luaopen_misc_extensions( L );
             luaopen_stream( L );
             luaopen_strings( L );
             luaopen_variables( L );
@@ -840,6 +832,9 @@ static lua_State* GetLuaState( extensions_manager_t *p_mgr,
             luaopen_vlm( L );
             luaopen_volume( L );
             luaopen_xml( L );
+#if defined(_WIN32) && !VLC_WINSTORE_APP
+            luaopen_win( L );
+#endif
 
             /* Register extension specific functions */
             lua_getglobal( L, "vlc" );
@@ -856,7 +851,7 @@ static lua_State* GetLuaState( extensions_manager_t *p_mgr,
             }
             else
             {
-                if( vlclua_add_modules_path( p_mgr, L, p_ext->psz_name ) )
+                if( vlclua_add_modules_path( L, p_ext->psz_name ) )
                 {
                     msg_Warn( p_mgr, "Error while setting the module "
                               "search path for %s", p_ext->psz_name );

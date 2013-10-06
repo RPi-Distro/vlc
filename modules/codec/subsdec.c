@@ -1,27 +1,27 @@
 /*****************************************************************************
- * subsdec.c : text subtitles decoder
+ * subsdec.c : text subtitle decoder
  *****************************************************************************
- * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 241340f831f1eb82ec956742abc563a1791410ff $
+ * Copyright (C) 2000-2006 VLC authors and VideoLAN
+ * $Id: a9929b573baf89ab67ba8c1da5d94cbb0c3d1daf $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
  *          Derk-Jan Hartman <hartman at videolan dot org>
  *          Bernie Purcell <bitmap@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -163,13 +163,13 @@ static const int  pi_justification[] = { 0, 1, 2 };
 static const char *const ppsz_justification_text[] = {
     N_("Center"),N_("Left"),N_("Right")};
 
-#define ENCODING_TEXT N_("Subtitles text encoding")
+#define ENCODING_TEXT N_("Subtitle text encoding")
 #define ENCODING_LONGTEXT N_("Set the encoding used in text subtitles")
-#define ALIGN_TEXT N_("Subtitles justification")
+#define ALIGN_TEXT N_("Subtitle justification")
 #define ALIGN_LONGTEXT N_("Set the justification of subtitles")
-#define AUTODETECT_UTF8_TEXT N_("UTF-8 subtitles autodetection")
+#define AUTODETECT_UTF8_TEXT N_("UTF-8 subtitle autodetection")
 #define AUTODETECT_UTF8_LONGTEXT N_("This enables automatic detection of " \
-            "UTF-8 encoding within subtitles files.")
+            "UTF-8 encoding within subtitle files.")
 #define FORMAT_TEXT N_("Formatted Subtitles")
 #define FORMAT_LONGTEXT N_("Some subtitle formats allow for text formatting. " \
  "VLC partly implements this, but you can choose to disable all formatting.")
@@ -179,7 +179,7 @@ static void CloseDecoder  ( vlc_object_t * );
 
 vlc_module_begin ()
     set_shortname( N_("Subtitles"))
-    set_description( N_("Text subtitles decoder") )
+    set_description( N_("Text subtitle decoder") )
     set_capability( "decoder", 50 )
     set_callbacks( OpenDecoder, CloseDecoder )
     set_category( CAT_INPUT )
@@ -190,7 +190,7 @@ vlc_module_begin ()
         change_integer_list( pi_justification, ppsz_justification_text )
     add_string( "subsdec-encoding", "",
                 ENCODING_TEXT, ENCODING_LONGTEXT, false )
-        change_string_list( ppsz_encodings, ppsz_encoding_names, 0 )
+        change_string_list( ppsz_encodings, ppsz_encoding_names )
     add_bool( "subsdec-autodetect-utf8", true,
               AUTODETECT_UTF8_TEXT, AUTODETECT_UTF8_LONGTEXT, false )
     add_bool( "subsdec-formatted", true, FORMAT_TEXT, FORMAT_LONGTEXT,
@@ -250,37 +250,38 @@ static int OpenDecoder( vlc_object_t *p_this )
     p_sys->iconv_handle = (vlc_iconv_t)-1;
     p_sys->b_autodetect_utf8 = false;
 
-    char *psz_charset = NULL;
+    const char *encoding;
+    char *var = NULL;
 
     /* First try demux-specified encoding */
     if( p_dec->fmt_in.i_codec == VLC_CODEC_ITU_T140 )
-        psz_charset = strdup( "UTF-8" ); /* IUT T.140 is always using UTF-8 */
+        encoding = "UTF-8"; /* IUT T.140 is always using UTF-8 */
     else
     if( p_dec->fmt_in.subs.psz_encoding && *p_dec->fmt_in.subs.psz_encoding )
     {
-        psz_charset = strdup (p_dec->fmt_in.subs.psz_encoding);
+        encoding = p_dec->fmt_in.subs.psz_encoding;
         msg_Dbg (p_dec, "trying demuxer-specified character encoding: %s",
-                 p_dec->fmt_in.subs.psz_encoding ?
-                 p_dec->fmt_in.subs.psz_encoding : "not specified");
+                 encoding);
     }
-
-    /* Second, try configured encoding */
-    if (psz_charset == NULL)
+    else
     {
-        psz_charset = var_InheritString (p_dec, "subsdec-encoding");
-        msg_Dbg (p_dec, "trying configured character encoding: %s",
-                 psz_charset ? psz_charset : "not specified");
-        if (psz_charset != NULL && !strcmp (psz_charset, "system"))
+        /* Second, try configured encoding */
+        if ((var = var_InheritString (p_dec, "subsdec-encoding")) != NULL)
         {
-            free (psz_charset);
-            psz_charset = strdup ("");
-            /* ^ iconv() treats "" as nl_langinfo(CODESET) */
+            msg_Dbg (p_dec, "trying configured character encoding: %s", var);
+            if (!strcmp (var, "system"))
+            {
+                free (var);
+                var = NULL;
+                encoding = "";
+                /* ^ iconv() treats "" as nl_langinfo(CODESET) */
+            }
+            else
+                encoding = var;
         }
-    }
-
-    /* Third, try "local" encoding with optional UTF-8 autodetection */
-    if (psz_charset == NULL)
-    {
+        else
+        /* Third, try "local" encoding */
+        {
         /* xgettext:
            The Windows ANSI code page most commonly used for this language.
            VLC uses this as a guess of the subtitle files character set
@@ -291,12 +292,11 @@ static int OpenDecoder( vlc_object_t *p_this )
 
            This MUST be a valid iconv character set. If unsure, please refer
            the VideoLAN translators mailing list. */
-        const char *acp = vlc_pgettext("GetACP", "CP1252");
+            encoding = vlc_pgettext("GetACP", "CP1252");
+            msg_Dbg (p_dec, "trying default character encoding: %s", encoding);
+        }
 
-        psz_charset = strdup (acp);
-        msg_Dbg (p_dec, "trying default character encoding: %s",
-                 psz_charset ? psz_charset : "not specified");
-
+        /* Check UTF-8 autodetection */
         if (var_InheritBool (p_dec, "subsdec-autodetect-utf8"))
         {
             msg_Dbg (p_dec, "using automatic UTF-8 detection");
@@ -304,22 +304,13 @@ static int OpenDecoder( vlc_object_t *p_this )
         }
     }
 
-    /* Forth, don't do character decoding, i.e. assume UTF-8 */
-    if (psz_charset == NULL)
+    if (strcasecmp (encoding, "UTF-8") && strcasecmp (encoding, "utf8"))
     {
-        psz_charset = strdup ("UTF-8");
-        msg_Dbg (p_dec, "using UTF-8 character encoding" );
-    }
-
-    if ((psz_charset != NULL)
-     && strcasecmp (psz_charset, "UTF-8")
-     && strcasecmp (psz_charset, "utf8"))
-    {
-        p_sys->iconv_handle = vlc_iconv_open ("UTF-8", psz_charset);
+        p_sys->iconv_handle = vlc_iconv_open ("UTF-8", encoding);
         if (p_sys->iconv_handle == (vlc_iconv_t)(-1))
-            msg_Err (p_dec, "cannot convert from %s: %m", psz_charset);
+            msg_Err (p_dec, "cannot convert from %s: %m", encoding);
     }
-    free (psz_charset);
+    free (var);
 
     p_sys->i_align = var_InheritInteger( p_dec, "subsdec-align" );
 
@@ -744,7 +735,7 @@ static char *CreateHtmlSubtitle( int *pi_align, char *psz_subtitle )
             {
                 bool   b_match     = false;
                 bool   b_ignore    = false;
-                int    i_len       = strlen( psz_tag ) - 1;
+                int    i_len       = (psz_tag ? strlen(psz_tag) : 0) - 1;
                 char  *psz_lastTag = NULL;
 
                 if( i_len >= 0 )
@@ -963,7 +954,7 @@ static char *CreateHtmlSubtitle( int *pi_align, char *psz_subtitle )
         }
     }
 
-    while( *psz_tag )
+    while( psz_tag && *psz_tag )
     {
         /* */
         char *psz_last = &psz_tag[strlen(psz_tag)-1];
