@@ -62,7 +62,6 @@ confflags += \
 	--enable-kate \
 	--enable-libass \
 	--enable-libmpeg2 \
-	--enable-libproxy \
 	--enable-libxml2 \
 	--enable-lirc \
 	--enable-live555 \
