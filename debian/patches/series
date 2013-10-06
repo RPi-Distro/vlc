@@ -1,4 +1,3 @@
-v4l-kfreebsd.patch
 link-binaries-with-c++.patch
 dvbpsi.patch
 configure-m4-undefine.patch
