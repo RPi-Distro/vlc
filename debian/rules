@@ -22,11 +22,12 @@ ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
 confflags += --disable-optimizations --disable-mmx --disable-sse --disable-altivec
 endif
 
+CFLAGS := $(shell dpkg-buildflags --get CFLAGS)
+CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS)
+
 # configure flags
 confflags += \
-	CFLAGS="$(shell dpkg-buildflags --get CFLAGS)" \
 	CPPFLAGS="$(shell dpkg-buildflags --get CPPFLAGS)" \
-	CXXFLAGS="$(shell dpkg-buildflags --get CXXFLAGS)" \
 	LDFLAGS="$(shell dpkg-buildflags --get LDFLAGS)" \
 	--config-cache \
 	--disable-maintainer-mode \
@@ -203,8 +204,13 @@ endif
 
 # PowerPCSPE specific optimizations
 ifeq (,$(filter-out powerpcspe,$(DEB_HOST_ARCH)))
-confflags += --with-tuning=8548
+CFLAGS += -mtune=8548
+CXXFLAGS += -mtune=8548
 endif
+
+confflags += \
+	CFLAGS="$(CFLAGS)" \
+	CXXFLAGS="$(CXXFLAGS)" \
 
 %:
 	dh $@ --parallel --with autoreconf
