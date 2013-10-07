@@ -155,8 +155,10 @@ Package: libvlccore7
 Section: libs
 Architecture: any
 Pre-Depends: dpkg (>= 1.15.6~)
-Depends: vlc-data (= ${source:Version}), ${misc:Depends}, ${shlibs:Depends},
-         libproxy-tools
+Depends: libproxy-tools,
+         vlc-data (= ${source:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends}
 Description: base library for VLC and its modules
  This package contains the shared library required by VLC modules and libvlc.
  .

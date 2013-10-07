@@ -146,8 +146,8 @@ usr/lib/vlc/plugins/video_filter/libantiflicker_plugin.so
 usr/lib/vlc/plugins/video_filter/libatmo_plugin.so
 usr/lib/vlc/plugins/video_filter/libaudiobargraph_v_plugin.so
 usr/lib/vlc/plugins/video_filter/libball_plugin.so
-usr/lib/vlc/plugins/video_filter/libblendbench_plugin.so
 usr/lib/vlc/plugins/video_filter/libblend_plugin.so
+usr/lib/vlc/plugins/video_filter/libblendbench_plugin.so
 usr/lib/vlc/plugins/video_filter/libbluescreen_plugin.so
 usr/lib/vlc/plugins/video_filter/libcanvas_plugin.so
 usr/lib/vlc/plugins/video_filter/libchain_plugin.so
