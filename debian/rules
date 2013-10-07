@@ -56,13 +56,13 @@ confflags += \
 	--enable-faad \
 	--enable-flac \
 	--enable-fluidsynth \
-	--enable-freerdp \
 	--enable-freetype \
 	--enable-fribidi \
 	--enable-gnutls \
 	--enable-jack \
 	--enable-kate \
 	--enable-libass \
+	--enable-libfreerdp \
 	--enable-libmpeg2 \
 	--enable-libxml2 \
 	--enable-lirc \
