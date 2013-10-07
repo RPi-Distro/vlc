@@ -211,20 +211,9 @@ override_dh_autoreconf:
 
 override_dh_auto_clean:
 	[ ! -f debian/vlc-nox.install.bak ] || mv -f debian/vlc-nox.install.bak debian/vlc-nox.install
-	rm -rf tmp/
 	dh_auto_clean
 
 override_dh_auto_configure:
-	# We need to build the static library apart
-	# Else it's a mess when we build the modules
-	./configure --enable-static $(confflags)
-	$(MAKE) -C compat
-	$(MAKE) -C src libvlccore.la
-	$(MAKE) -C lib libvlc.la
-	mkdir -p tmp
-	cp src/.libs/libvlccore.a tmp/libvlccore.a
-	cp lib/.libs/libvlc.a tmp/libvlc.a
-	$(MAKE) distclean
 	dh_auto_configure -- $(confflags)
 
 override_dh_auto_test:
@@ -245,8 +234,6 @@ override_dh_install:
 	# Remove disabled plugins
 	test -f debian/vlc-nox.install.bak || cp debian/vlc-nox.install debian/vlc-nox.install.bak
 	sed -i "/\($(shell echo $(removeplugins) | sed 's/ /\\|/g')\)_/d" debian/vlc-nox.install
-	cp tmp/libvlc.a debian/tmp/usr/lib
-	cp tmp/libvlccore.a debian/tmp/usr/lib
 	# Clean up libtool crap
 	find debian/tmp -name '*.la' -delete
 	# Remove useless stuff
