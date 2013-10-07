@@ -201,6 +201,7 @@ endif
 confflags += \
 	CFLAGS="$(CFLAGS)" \
 	CXXFLAGS="$(CXXFLAGS)" \
+	$(NULL)
 
 %:
 	dh $@ --parallel --with autoreconf
