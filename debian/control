@@ -7,7 +7,8 @@ Uploaders: Clément Stenac <zorglub@debian.org>,
            Christophe Mutricy <xtophe@videolan.org>,
            Mohammed Adnène Trojette <adn+deb@diwi.org>,
            Reinhard Tartler <siretart@tauware.de>,
-           Benjamin Drung <bdrung@debian.org>
+           Benjamin Drung <bdrung@debian.org>,
+           Edward Wang <edward.c.wang@compdigitec.com>
 Build-Depends: autopoint,
                debhelper (>= 8),
                dh-autoreconf,
