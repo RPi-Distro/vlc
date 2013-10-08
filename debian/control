@@ -229,6 +229,7 @@ Package: vlc-nox
 Architecture: any
 Pre-Depends: dpkg (>= 1.15.6~)
 Depends: ${misc:Depends}, ${shlibs:Depends}
+Recommends: libdvdcss2
 Breaks: vlc (<< 2.1.0)
 Replaces: vlc (<< 2.1.0)
 Provides: mp3-decoder
