@@ -1,10 +1,12 @@
-vlc (2.1.0-1) unstable; urgency=low
+vlc (2.1.0-1) unstable; urgency=high
 
   * New major upstream release. (Closes: #436339, #632965, #642187,
     #698023, #593735, #724734, #665732, #700752, #704941, #708953,
     #712935, #398167, #646200, #679654, #654955, LP: #982953, #301193,
     #986785, #1038303, #1109026, #530797, #667584, #938621, #671031,
     #1080847, #1157384, #1173943)
+  * Security: Fix buffer overflow in the mp4a packetizer CVE-2013-4388
+    (Closes: #726528)
   * Drop configure-m4-undefine.patch. (code in question doesn't exist)
   * Drop dvbpsi.patch. (no longer needed)
   * Drop v4l-kfreebsd.patch. (no longer needed)
