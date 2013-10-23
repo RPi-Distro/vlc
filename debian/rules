@@ -36,6 +36,7 @@ confflags += \
 	--enable-fast-install \
 	--prefix=/usr \
 	--docdir=/usr/share/doc/vlc-nox \
+	--libdir=/usr/lib \
 	--sysconfdir=/etc \
 	--with-binary-version=$(DEBIAN_VERSION) \
 	$(NULL)

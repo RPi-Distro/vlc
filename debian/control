@@ -10,7 +10,7 @@ Uploaders: Clément Stenac <zorglub@debian.org>,
            Benjamin Drung <bdrung@debian.org>,
            Edward Wang <edward.c.wang@compdigitec.com>
 Build-Depends: autopoint,
-               debhelper (>= 8),
+               debhelper (>= 9),
                dh-autoreconf,
                dh-buildinfo,
                gettext,
