@@ -105,16 +105,16 @@ confflags += \
 # dxva2 -> Windows only
 # gnomevfs -> poorly maintained
 # goom -> not in Debian
+# opencv -> developer plugin not required by end users
 # projectm -> broken
 # telx -> incompatible with zvbi
-# opencv -> developer plugin not required by end users
 confflags += \
 	--disable-dxva2 \
 	--disable-gnomevfs \
 	--disable-goom \
+	--disable-opencv \
 	--disable-projectm \
 	--disable-telx \
-	--disable-opencv \
 	$(NULL)
 
 # Linux specific flags
