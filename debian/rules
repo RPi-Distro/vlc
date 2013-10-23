@@ -103,19 +103,27 @@ confflags += \
 	--with-kde-solid=/usr/share/kde4/apps/solid/actions/ \
 	$(NULL)
 # Reasons for disabling features:
+# decklink -> not in Debian
 # dxva2 -> Windows only
 # gnomevfs -> poorly maintained
 # goom -> not in Debian
+# libvnc -> libvncclient not in Debian
 # opencv -> developer plugin not required by end users
 # projectm -> broken
+# quicksync -> currently not supported on Linux
 # telx -> incompatible with zvbi
+# vsxu -> not in Debian
 confflags += \
+	--disable-decklink \
 	--disable-dxva2 \
 	--disable-gnomevfs \
 	--disable-goom \
+	--disable-libvnc \
 	--disable-opencv \
 	--disable-projectm \
+	--disable-quicksync \
 	--disable-telx \
+	--disable-vsxu \
 	$(NULL)
 
 # Linux specific flags
