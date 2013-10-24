@@ -105,25 +105,31 @@ confflags += \
 # Reasons for disabling features:
 # decklink -> not in Debian
 # dxva2 -> Windows only
+# fdkaac -> in Debian non-free
 # gnomevfs -> poorly maintained
 # goom -> not in Debian
 # libvnc -> libvncclient not in Debian
 # opencv -> developer plugin not required by end users
 # projectm -> broken
 # quicksync -> currently not supported on Linux
+# sndio -> not in Debian
 # telx -> incompatible with zvbi
 # vsxu -> not in Debian
+# wasapi -> Windows only
 confflags += \
 	--disable-decklink \
 	--disable-dxva2 \
+	--disable-fdkaac \
 	--disable-gnomevfs \
 	--disable-goom \
 	--disable-libvnc \
 	--disable-opencv \
 	--disable-projectm \
 	--disable-quicksync \
+	--disable-sndio \
 	--disable-telx \
 	--disable-vsxu \
+	--disable-wasapi \
 	$(NULL)
 
 # Linux specific flags
