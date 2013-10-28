@@ -171,7 +171,8 @@ removeplugins += \
 endif
 
 # Linux and kFreeBSD specific flags
-ifeq (,$(filter-out linux kfreebsd,$(DEB_HOST_ARCH_OS)))
+# kfreebsd disabled due to a build failure
+ifeq (,$(filter-out linux,$(DEB_HOST_ARCH_OS)))
 confflags += --enable-v4l2
 else
 confflags += --disable-v4l2
