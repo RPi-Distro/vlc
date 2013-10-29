@@ -141,7 +141,6 @@ confflags += \
 	--enable-atmo \
 	--enable-dc1394 \
 	--enable-dv1394 \
-	--enable-libva \
 	--enable-linsys \
 	--enable-omxil \
 	--enable-udev \
@@ -152,7 +151,6 @@ confflags += \
 	--disable-atmo \
 	--disable-dc1394 \
 	--disable-dv1394 \
-	--disable-libva \
 	--disable-linsys \
 	--disable-omxil \
 	--disable-udev \
@@ -168,8 +166,15 @@ removeplugins += \
 	libomxil \
 	linsys \
 	libudev \
-	libvaapi \
 	$(NULL)
+endif
+
+# Linux and kFreeBSD specific flags
+ifeq (,$(filter-out linux kfreebsd,$(DEB_HOST_ARCH_OS)))
+confflags += --enable-libva
+else
+confflags += --disable-libva
+removeplugins += libvaapi
 endif
 
 # Linux and kFreeBSD specific flags
