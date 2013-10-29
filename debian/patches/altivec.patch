@@ -1,0 +1,15 @@
+Description: Fix detection of compiler flags for altivec on powerpc.
+Author: Benjamin Drung <bdrung@debian.org>
+Bug: https://trac.videolan.org/vlc/ticket/9757
+
+--- a/configure.ac
++++ b/configure.ac
+@@ -1424,6 +1424,8 @@
+         [ac_cv_c_altivec="-faltivec"],
+         dnl Below this are the Linux tests
+         [# Linux/PPC test (gcc 4.x)
++         VLC_RESTORE_FLAGS
++         VLC_SAVE_FLAGS
+          CFLAGS="${CFLAGS} -maltivec"
+          AC_TRY_COMPILE([#include <altivec.h>],
+            [vec_ld(0, (unsigned char *)0);],

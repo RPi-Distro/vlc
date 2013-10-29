@@ -1,2 +1,3 @@
 link-binaries-with-c++.patch
 pnap-grammar.patch
+altivec.patch
