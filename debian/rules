@@ -162,6 +162,7 @@ removeplugins += \
 	libatmo \
 	libdc1394 \
 	libdtv \
+	libdvb \
 	libdv1394 \
 	libfb \
 	libomxil \
