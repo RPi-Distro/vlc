@@ -1,0 +1,13 @@
+#!/bin/sh
+set -e
+
+#DEBHELPER#
+
+case "$1" in
+	configure)
+		# Remove empty /etc/vlc directory (to work around bug #584185).
+		if dpkg --compare-versions "$2" le "2.1.1" && test -d "/etc/vlc"; then
+			rmdir --ignore-fail-on-non-empty /etc/vlc/lua/http/dialogs /etc/vlc/lua/http /etc/vlc/lua /etc/vlc
+		fi
+		;;
+esac
