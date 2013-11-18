@@ -2,7 +2,7 @@
  * controller_widget.cpp : Controller Widget for the controllers
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 1b3f4782dc3620531ee6eb25ea43ef782047a372 $
+ * $Id: aad30a288a824515856a90ed864595c0716e9b63 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -64,7 +64,7 @@ SoundWidget::SoundWidget( QWidget *_parent, intf_thread_t * _p_intf,
         volumeControlWidget = NULL;
 
         /* And add the label */
-        layout->addWidget( volMuteLabel, 0, Qt::AlignBottom );
+        layout->addWidget( volMuteLabel, 0, b_shiny? Qt::AlignBottom : Qt::AlignCenter );
     }
     else
     {
@@ -105,7 +105,7 @@ SoundWidget::SoundWidget( QWidget *_parent, intf_thread_t * _p_intf,
     if( b_special )
         subLayout->addWidget( volumeSlider );
     else
-        layout->addWidget( volumeSlider, 0, Qt::AlignBottom  );
+        layout->addWidget( volumeSlider, 0, b_shiny? Qt::AlignBottom : Qt::AlignCenter );
 
     /* Set the volume from the config */
     float volume = playlist_VolumeGet( THEPL );

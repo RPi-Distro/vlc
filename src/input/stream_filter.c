@@ -2,7 +2,7 @@
  * stream_filter.c
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 8c2f9fceb7f8676d4a3ba9e2ec8abf61777deec9 $
+ * $Id: adcfb5891769e01494e5dcf2253eb76317f9c8e2 $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -111,8 +111,7 @@ stream_t *stream_FilterChainNew( stream_t *p_source,
     /* Add record filter if useful */
     if( b_record )
     {
-        stream_t *p_filter = stream_FilterNew( p_source,
-                                               "stream_filter_record" );
+        stream_t *p_filter = stream_FilterNew( p_source, "record" );
         if( p_filter )
             p_source = p_filter;
     }

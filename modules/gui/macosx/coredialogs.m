@@ -2,7 +2,7 @@
  * coredialogs.m: Mac OS X Core Dialogs
  *****************************************************************************
  * Copyright (C) 2005-2012 VLC authors and VideoLAN
- * $Id: 8e4a79f2b70bf1b469cabd6b39cf1e1d6ef9e9e5 $
+ * $Id: 3289e6b9ef0e4024c22226dfee1c023f33da3ff1 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -242,7 +242,6 @@ static VLCCoreDialogProvider *_o_sharedInstance = nil;
     /* init strings */
     [o_window setTitle: _NS("Errors and Warnings")];
     [o_cleanup_button setTitle: _NS("Clean up")];
-    [o_messages_btn setTitle: _NS("Show Details")];
 }
 
 -(void)dealloc
@@ -282,11 +281,6 @@ static VLCCoreDialogProvider *_o_sharedInstance = nil;
     [o_errors removeAllObjects];
     [o_icons removeAllObjects];
     [o_error_table reloadData];
-}
-
--(IBAction)showMessages:(id)sender
-{
-    [[VLCMain sharedInstance] showMessagesPanel: sender];
 }
 
 /*----------------------------------------------------------------------------

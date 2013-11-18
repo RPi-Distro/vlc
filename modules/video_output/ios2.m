@@ -2,7 +2,7 @@
  * ios2.m: iOS OpenGL ES 2 provider
  *****************************************************************************
  * Copyright (C) 2001-2013 VLC authors and VideoLAN
- * $Id: 66002dc805d1aa56e8adcf13e4e14a9bd8132639 $
+ * $Id: 3656bfe513170ceeb3bee75bddae988c0ae2655e $
  *
  * Authors: Pierre d'Herbemont <pdherbemont at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -485,7 +485,7 @@ static void OpenglESSwap(vlc_gl_t *gl)
 
 - (void)applicationStateChanged:(NSNotification *)notification
 {
-    if ([[notification name] isEqualToString: UIApplicationWillResignActiveNotification])
+    if ([[notification name] isEqualToString:UIApplicationWillResignActiveNotification] || [[notification name] isEqualToString:UIApplicationDidEnterBackgroundNotification] || [[notification name] isEqualToString:UIApplicationWillTerminateNotification])
         _appActive = NO;
     else
         _appActive = YES;

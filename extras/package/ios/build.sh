@@ -13,7 +13,7 @@ cat << EOF
 usage: $0 [-s] [-k sdk]
 
 OPTIONS
-   -k <sdk>      Specify which sdk to use ('xcodebuild -showsdks', current: ${SDK})
+   -k <sdk version>      Specify which sdk to use ('xcodebuild -showsdks', current: ${SDK_VERSION})
    -s            Build for simulator
    -a <arch>     Specify which arch to use (current: ${ARCH})
 EOF
@@ -48,10 +48,9 @@ do
              ;;
          s)
              PLATFORM=Simulator
-             SDK=${SDK_MIN}
              ;;
          k)
-             SDK=$OPTARG
+             SDK_VERSION=$OPTARG
              ;;
          a)
              ARCH=$OPTARG
@@ -133,7 +132,6 @@ export LD="xcrun ld"
 export STRIP="xcrun strip"
 
 
-export SDKROOT
 if [ "$PLATFORM" = "OS" ]; then
 export CFLAGS="-isysroot ${SDKROOT} -arch ${ARCH} -mcpu=cortex-a8 -miphoneos-version-min=${SDK_MIN} ${OPTIM}"
 else
@@ -153,19 +151,18 @@ if [ "$PLATFORM" = "Simulator" ]; then
     export OBJCFLAGS="-fobjc-abi-version=2 -fobjc-legacy-dispatch ${OBJCFLAGS}"
 fi
 
-if [ "$PLATFORM" = "OS" ]; then
-  export LDFLAGS="-L${SDKROOT}/usr/lib -arch ${ARCH} -isysroot ${SDKROOT} -miphoneos-version-min=${SDK_MIN}"
-else
-  export LDFLAGS="-syslibroot=${SDKROOT}/ -arch ${ARCH} -miphoneos-version-min=${SDK_MIN}"
-fi
+export LDFLAGS="-L${SDKROOT}/usr/lib -arch ${ARCH} -isysroot ${SDKROOT} -miphoneos-version-min=${SDK_MIN}"
 
 if [ "$PLATFORM" = "OS" ]; then
     EXTRA_CFLAGS="-arch ${ARCH} -mcpu=cortex-a8"
     EXTRA_LDFLAGS="-arch ${ARCH}"
 else
-    EXTRA_CFLAGS="-m32"
-    EXTRA_LDFLAGS="-m32"
+    EXTRA_CFLAGS="-arch ${ARCH}"
+    EXTRA_LDFLAGS="-arch ${ARCH}"
 fi
+
+EXTRA_CFLAGS+=" -miphoneos-version-min=${SDK_MIN}"
+EXTRA_LDFLAGS+=" -miphoneos-version-min=${SDK_MIN}"
 
 info "LD FLAGS SELECTED = '${LDFLAGS}'"
 
@@ -189,7 +186,7 @@ fi
     --disable-sdl \
     --disable-SDL_image \
     --disable-iconv \
-    --disable-zvbi \
+    --enable-zvbi \
     --disable-kate \
     --disable-caca \
     --disable-gettext \
@@ -201,7 +198,6 @@ fi
     --disable-sidplay2 \
     --disable-samplerate \
     --disable-goom \
-    --disable-gcrypt \
     --disable-vncserver \
     --disable-gnutls \
     --disable-orc \
@@ -215,9 +211,8 @@ fi
     --enable-ass \
     --disable-fontconfig \
     --disable-gpg-error \
-    --disable-gcrypt \
     --disable-lua \
-    --disable-taglib > ${out}
+    --enable-taglib > ${out}
 
 echo "EXTRA_CFLAGS += ${EXTRA_CFLAGS}" >> config.mak
 echo "EXTRA_LDFLAGS += ${EXTRA_LDFLAGS}" >> config.mak
@@ -278,7 +273,6 @@ ${VLCROOT}/configure \
     --enable-fribidi \
     --disable-macosx-audio \
     --disable-qt --disable-skins2 \
-    --disable-libgcrypt \
     --disable-vcd \
     --disable-vlc \
     --disable-vlm \
@@ -314,7 +308,7 @@ ${VLCROOT}/configure \
     --enable-flac \
     --disable-screen \
     --enable-freetype \
-    --disable-taglib \
+    --enable-taglib \
     --disable-mmx \
     --disable-mad > ${out} # MMX and SSE support requires llvm which is broken on Simulator
 fi
@@ -342,7 +336,6 @@ oldrc
 real
 hotkeys
 gestures
-sap
 dynamicoverlay
 rss
 ball

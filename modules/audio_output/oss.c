@@ -208,6 +208,7 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
         fmt->i_original_channels =
         fmt->i_physical_channels = channels;
     }
+    aout_FormatPrepare (fmt);
 
     VolumeSync (aout);
     sys->starting = true;
@@ -281,7 +282,7 @@ static void Flush (audio_output_t *aout, bool wait)
 
     if (wait)
         return; /* drain is implicit with OSS */
-    ioctl (fd, SNDCTL_DSP_HALT_OUTPUT, NULL);
+    ioctl (fd, SNDCTL_DSP_HALT, NULL);
 }
 
 static int VolumeSync (audio_output_t *aout)

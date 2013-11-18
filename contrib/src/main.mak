@@ -130,16 +130,17 @@ CC=xcrun clang
 CXX=xcrun clang++
 ifeq ($(ARCH), arm)
 AS=perl $(abspath ../../extras/tools/build/bin/gas-preprocessor.pl) $(CC)
+CCAS=gas-preprocessor.pl $(CC) -c
 else
+CCAS=$(CC) -c
 AS=xcrun as
 endif
-CCAS=gas-preprocessor.pl $(CC) -c
 AR=xcrun ar
 LD=xcrun ld
 STRIP=xcrun strip
 RANLIB=xcrun ranlib
-EXTRA_CFLAGS += -isysroot $(SDKROOT)  -miphoneos-version-min=5.0
-EXTRA_LDFLAGS += -Wl,-syslibroot,$(SDKROOT) -isysroot $(SDKROOT) -miphoneos-version-min=5.0
+EXTRA_CFLAGS += $(CFLAGS)
+EXTRA_LDFLAGS += $(LDFLAGS)
 endif
 
 ifdef HAVE_WIN32
@@ -394,6 +395,9 @@ ifdef HAVE_DARWIN_OS
 	echo "set(CMAKE_C_FLAGS $(CFLAGS))" >> $@
 	echo "set(CMAKE_CXX_FLAGS $(CFLAGS))" >> $@
 	echo "set(CMAKE_LD_FLAGS $(LDFLAGS))" >> $@
+ifdef HAVE_IOS
+	echo "set(CMAKE_AR ar CACHE FILEPATH "Archiver")" >> $@
+endif
 endif
 ifdef HAVE_CROSS_COMPILE
 	echo "set(_CMAKE_TOOLCHAIN_PREFIX $(HOST)-)" >> $@

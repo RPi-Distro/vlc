@@ -2,7 +2,7 @@
  * Windows.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012-2013 VLC authors and VideoLAN
- * $Id: 2dd7ad7f2afde933dd6c1970c2c9e43e458495ea $
+ * $Id: e110ba88ae806d04f15ef3ab9d08fbecebc551c8 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -104,6 +104,8 @@ static const float f_min_video_height = 70.0;
 
     BOOL              b_window_is_invisible;
     NSInteger i_originalLevel;
+
+    BOOL              b_video_view_was_hidden;
 
     NSTimer *t_hide_mouse_timer;
 

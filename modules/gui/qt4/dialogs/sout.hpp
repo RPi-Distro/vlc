@@ -2,7 +2,7 @@
  * sout.hpp : Stream output dialog ( old-style, ala WX )
  ****************************************************************************
  * Copyright ( C ) 2006 the VideoLAN team
- * $Id: b444f37182f7ba20a75ce8faabbe4f887bcf84ad $
+ * $Id: efbbe45e465268f408e53c27cba4c6bd25232d77 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -120,6 +120,8 @@ public:
 
     QString getMrl(){ return mrl; }
 
+protected:
+    virtual void done( int );
 private:
     Ui::Sout ui;
 
@@ -132,8 +134,6 @@ public slots:
     void updateMRL();
 
 private slots:
-    void ok();
-    void cancel();
     void closeTab( int );
     void addDest();
 };

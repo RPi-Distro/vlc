@@ -2,7 +2,7 @@
  * rss.c : rss/atom feed display video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2006 VLC authors and VideoLAN
- * $Id: 87dc34dbd389674bf1a9b36c8001839abf094494 $
+ * $Id: 63ea3b29659d31444329d189290b6081c4130a18 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *          Rémi Duraffort <ivoire -at- videolan -dot- org>
@@ -228,7 +228,7 @@ vlc_module_begin ()
 vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
-    "urls", "x", "y", "position", "color", "size", "speed", "length",
+    "urls", "x", "y", "position", "opacity", "color", "size", "speed", "length",
     "ttl", "images", "title", NULL
 };
 

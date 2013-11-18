@@ -2,7 +2,7 @@
  * thread.c : Playlist management functions
  *****************************************************************************
  * Copyright © 1999-2008 VLC authors and VideoLAN
- * $Id: 9bfbc3c18dfc6d63927cf33e080ea40164eca57d $
+ * $Id: 08d9feb40476a07f3949a35a9f9db7584abf20ce $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -332,6 +332,12 @@ static playlist_item_t *NextItem( playlist_t *p_playlist )
                 if( p_playlist->i_current_index >= p_playlist->current.i_size )
                 {
                     PL_DEBUG( "looping - restarting at beginning of node" );
+                    /* reshuffle playlist when end is reached */
+                    if( var_GetBool( p_playlist, "random" ) ) {
+                        PL_DEBUG( "reshuffle playlist" );
+                        ResetCurrentlyPlaying( p_playlist,
+                                get_current_status_item( p_playlist ) );
+                    }
                     p_playlist->i_current_index = 0;
                 }
             }
@@ -346,6 +352,12 @@ static playlist_item_t *NextItem( playlist_t *p_playlist )
                 if( p_playlist->i_current_index <= -1 )
                 {
                     PL_DEBUG( "looping - restarting at end of node" );
+                    /* reshuffle playlist when beginning is reached */
+                    if( var_GetBool( p_playlist, "random" ) ) {
+                        PL_DEBUG( "reshuffle playlist" );
+                        ResetCurrentlyPlaying( p_playlist,
+                                get_current_status_item( p_playlist ) );
+                    }
                     p_playlist->i_current_index = p_playlist->current.i_size-1;
                 }
             }
@@ -406,6 +418,12 @@ static playlist_item_t *NextItem( playlist_t *p_playlist )
         {
             if( !b_loop || p_playlist->current.i_size == 0 )
                 return NULL;
+            /* reshuffle after last item has been played */
+            if( var_GetBool( p_playlist, "random" ) ) {
+                PL_DEBUG( "reshuffle playlist" );
+                ResetCurrentlyPlaying( p_playlist,
+                                       get_current_status_item( p_playlist ) );
+            }
             p_playlist->i_current_index = 0;
         }
         PL_DEBUG( "using item %i", p_playlist->i_current_index );

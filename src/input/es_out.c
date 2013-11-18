@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 6b0e9ad8aae75f812005ccda3c668eaf229116ae $
+ * $Id: c75c6db0f5e61cd2875c0aa19c28c70d19dea720 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -1772,7 +1772,7 @@ static void EsOutSelect( es_out_t *out, es_out_id_t *es, bool b_force )
                         LanguageArrayIndex( p_sys->ppsz_audio_language,
                                             p_sys->p_es_audio->psz_language_code );
                     if( es_idx >= 0 &&
-                        ( es_idx < selected_es_idx ||
+                        ( selected_es_idx < 0 || es_idx < selected_es_idx ||
                           ( es_idx == selected_es_idx &&
                             p_sys->p_es_audio->fmt.i_priority < es->fmt.i_priority ) ) )
                         i_wanted = es->i_channel;
@@ -1823,7 +1823,7 @@ static void EsOutSelect( es_out_t *out, es_out_id_t *es, bool b_force )
                                             p_sys->p_es_sub->psz_language_code );
 
                     if( es_idx >= 0 &&
-                        ( es_idx < selected_es_idx ||
+                        ( selected_es_idx < 0 || es_idx < selected_es_idx ||
                           ( es_idx == selected_es_idx &&
                             p_sys->p_es_sub->fmt.i_priority < es->fmt.i_priority ) ) )
                         i_wanted = es->i_channel;

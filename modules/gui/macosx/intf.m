@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: aa1378d0494e0474192465f3ebdc5356b8d29c45 $
+ * $Id: 0fe54cf2b086cc2762b86284aebe71c81ff86c2a $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan.org>
@@ -430,8 +430,8 @@ static int PLItemChanged(vlc_object_t *p_this, const char *psz_var,
      * and other issues, we need to wait for -PlaylistItemChanged to finish and
      * then -informInputChanged on this non-main thread. */
     [o_plItemChangedLock lock];
-    [[VLCMain sharedInstance] performSelectorOnMainThread:@selector(PlaylistItemChanged) withObject:nil waitUntilDone:YES];
-    [[VLCMain sharedInstance] performSelectorOnMainThread:@selector(informInputChanged) withObject:nil waitUntilDone:YES];
+    [[VLCMain sharedInstance] performSelectorOnMainThread:@selector(PlaylistItemChanged) withObject:nil waitUntilDone:YES]; // MUST BE ON MAIN THREAD
+    [[VLCMain sharedInstance] informInputChanged]; // DO NOT MOVE TO MAIN THREAD
     [o_plItemChangedLock unlock];
 
     [o_pool release];
@@ -881,7 +881,7 @@ static VLCMain *_o_sharedMainInstance = nil;
     int returnedValue = 0;
 
     /* always exit fullscreen on quit, otherwise we get ugly artifacts on the next launch */
-    if (b_nativeFullscreenMode) {
+    if (b_nativeFullscreenMode && [o_mainwindow fullscreen]) {
         [o_mainwindow toggleFullScreen: self];
         [NSApp setPresentationOptions:(NSApplicationPresentationDefault)];
     }
@@ -1511,7 +1511,7 @@ static VLCMain *_o_sharedMainInstance = nil;
 
         IOReturn success;
         /* work-around a bug in 10.7.4 and 10.7.5, so check for 10.7.x < 10.7.4, 10.8 and 10.6 */
-        if ((NSAppKitVersionNumber >= 1115.2 && NSAppKitVersionNumber < 1138.45) || OSX_MOUNTAIN_LION || OSX_REDACTED || OSX_SNOW_LEOPARD) {
+        if ((NSAppKitVersionNumber >= 1115.2 && NSAppKitVersionNumber < 1138.45) || OSX_MOUNTAIN_LION || OSX_MAVERICKS || OSX_SNOW_LEOPARD) {
             CFStringRef reasonForActivity = CFStringCreateWithCString(kCFAllocatorDefault, _("VLC media playback"), kCFStringEncodingUTF8);
             if ([self activeVideoPlayback])
                 success = IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, reasonForActivity, &systemSleepAssertionID);
@@ -1778,7 +1778,7 @@ static VLCMain *_o_sharedMainInstance = nil;
 - (NSString *)latestCrashLogPathPreviouslySeen:(BOOL)previouslySeen
 {
     NSString * crashReporter;
-    if (OSX_MOUNTAIN_LION || OSX_REDACTED)
+    if (OSX_MOUNTAIN_LION || OSX_MAVERICKS)
         crashReporter = [@"~/Library/Logs/DiagnosticReports" stringByExpandingTildeInPath];
     else
         crashReporter = [@"~/Library/Logs/CrashReporter" stringByExpandingTildeInPath];

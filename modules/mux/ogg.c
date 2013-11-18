@@ -2,7 +2,7 @@
  * ogg.c: ogg muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: 99252b0011d9beafc49de7c609a33e837b450cb5 $
+ * $Id: c43aecba3abbcf443a695d2cc7386f18a42b786d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -989,6 +989,7 @@ static int MuxBlock( sout_mux_t *p_mux, sout_input_t *p_input )
     op.b_o_s    = 0;
     op.e_o_s    = 0;
     op.packetno = p_stream->i_packet_no++;
+    op.granulepos = -1;
 
     if( p_stream->i_cat == AUDIO_ES )
     {

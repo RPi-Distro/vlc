@@ -2,7 +2,7 @@
  * avcodec.h: decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 2001-2013 VLC authors and VideoLAN
- * $Id: e24873cbfa48c4d44948a57f4705b966c9070b6e $
+ * $Id: 8f0efc12cdf4b364a99397561d215bdccee19c31 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -481,6 +481,14 @@ enum {
 
 #ifdef HAVE_LIBAVUTIL_AVUTIL_H
 # include <libavutil/avutil.h>
+
+/* LIBAVUTIL_VERSION_CHECK checks for the right version of libav and FFmpeg
+ * a is the major version
+ * b and c the minor and micro versions of libav
+ * d and e the minor and micro versions of FFmpeg */
+#define LIBAVUTIL_VERSION_CHECK( a, b, c, d, e ) \
+    ( (LIBAVUTIL_VERSION_MICRO <  100 && LIBAVUTIL_VERSION_INT >= AV_VERSION_INT( a, b, c ) ) || \
+      (LIBAVUTIL_VERSION_MICRO >= 100 && LIBAVUTIL_VERSION_INT >= AV_VERSION_INT( a, d, e ) ) )
 
 #if LIBAVUTIL_VERSION_MAJOR < 52 && !defined(AV_CPU_FLAG_MMXEXT)
 #   define AV_CPU_FLAG_MMXEXT       AV_CPU_FLAG_MMX2

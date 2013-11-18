@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
- * $Id: e2b0327bd357cdc78efefb92171b36e7a481335a $
+ * $Id: 1e2f0b78524e0462b2104faaaf4c2b2c325c962b $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -559,7 +559,7 @@ static int Open(vlc_va_t *external, int codec_id, const es_format_t *fmt)
     return VLC_SUCCESS;
 
 error:
-    Close(va);
+    Close(external);
     return VLC_EGENERIC;
 }
 /* */

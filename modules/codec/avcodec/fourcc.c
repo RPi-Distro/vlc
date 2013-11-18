@@ -2,7 +2,7 @@
  * fourcc.c: libavcodec <-> libvlc conversion routines
  *****************************************************************************
  * Copyright (C) 1999-2009 VLC authors and VideoLAN
- * $Id: f6a891d0633f1b4d2ba769ea9726f87d7cea8442 $
+ * $Id: 23350624a13204ae78bc5e40f9e72029e2a8ea54 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -61,7 +61,6 @@ static const struct
 
     { VLC_CODEC_SVQ1, AV_CODEC_ID_SVQ1, VIDEO_ES },
     { VLC_CODEC_SVQ3, AV_CODEC_ID_SVQ3, VIDEO_ES },
-
     { VLC_CODEC_H264, AV_CODEC_ID_H264, VIDEO_ES },
     { VLC_CODEC_H263, AV_CODEC_ID_H263, VIDEO_ES },
     { VLC_CODEC_H263I, AV_CODEC_ID_H263I,VIDEO_ES },
@@ -220,6 +219,14 @@ static const struct
 
 #if LIBAVCODEC_VERSION_CHECK( 54, 27, 0, 55, 100 )
     { VLC_CODEC_MSS2, AV_CODEC_ID_MSS2, VIDEO_ES },
+#endif
+
+#if LIBAVCODEC_VERSION_CHECK( 55, 24, 0, 37, 100 )
+    { VLC_CODEC_HEVC, AV_CODEC_ID_HEVC, VIDEO_ES },
+#endif
+
+#if LIBAVCODEC_VERSION_CHECK( 54, 41, 0, 89, 100 )
+    { VLC_CODEC_VP9, AV_CODEC_ID_VP9, VIDEO_ES },
 #endif
 
     /* Videogames Codecs */

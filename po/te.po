@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the VLC package.
 #
 # Translators:
-# Praveen Illa <mail2ipn@gmail.com>, 2011, 2012.
+# ప్రవీణ్ ఇళ్ళ <mail2ipn@gmail.com>, 2013
+# వీవెన్ వీరపనేని <veeven@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2013-09-23 00:20+0200\n"
-"PO-Revision-Date: 2013-05-04 07:53+0000\n"
-"Last-Translator: Christoph Miebach <christoph.miebach@web.de>\n"
+"POT-Creation-Date: 2013-11-11 19:12+0100\n"
+"PO-Revision-Date: 2013-09-24 14:45+0000\n"
+"Last-Translator: వీవెన్ వీరపనేని <veeven@gmail.com>\n"
 "Language-Team: Telugu (http://www.transifex.com/projects/p/vlc-trans/"
 "language/te/)\n"
 "Language: te\n"
@@ -33,21 +34,21 @@ msgstr ""
 
 #: include/vlc_config_cat.h:33
 msgid "VLC preferences"
-msgstr "VLC ప్రాధాన్యతలు"
+msgstr "VLC అభిరుచులు"
 
 #: include/vlc_config_cat.h:35
 msgid "Select \"Advanced Options\" to see all options."
 msgstr "అన్ని ఐచ్ఛికాలను చూచుటకు \"అధునాతన ఐచ్ఛికాలు\" ఎంచుకోండి."
 
-#: include/vlc_config_cat.h:38 modules/gui/macosx/simple_prefs.m:140
-#: modules/gui/qt4/components/simple_preferences.cpp:218
-#: modules/gui/qt4/menus.cpp:1073
+#: include/vlc_config_cat.h:38 modules/gui/macosx/simple_prefs.m:269
+#: modules/gui/qt4/components/simple_preferences.cpp:220
+#: modules/gui/qt4/menus.cpp:1075
 msgid "Interface"
 msgstr "అంతరవర్తి"
 
 #: include/vlc_config_cat.h:39
 msgid "Settings for VLC's interfaces"
-msgstr "వియల్సీ'ల అంతరవర్తులకు అమరికలు"
+msgstr "వియల్సీ అంతరవర్తుల అమరికలు"
 
 #: include/vlc_config_cat.h:41
 msgid "Main interfaces settings"
@@ -70,7 +71,7 @@ msgid "Settings for VLC's control interfaces"
 msgstr "VLC యొక్క నియంత్రణా అంతరవర్తుల కొరకు అమరికలు"
 
 #: include/vlc_config_cat.h:49 include/vlc_config_cat.h:50
-#: modules/gui/macosx/simple_prefs.m:150
+#: modules/gui/macosx/simple_prefs.m:279
 msgid "Hotkeys settings"
 msgstr "వేగపుమీటల అమరికలు"
 
@@ -78,9 +79,9 @@ msgstr "వేగపుమీటల అమరికలు"
 #: src/libvlc-module.c:1456 modules/access/imem.c:64
 #: modules/gui/macosx/ConvertAndSave.m:185 modules/gui/macosx/MainMenu.m:377
 #: modules/gui/macosx/output.m:161 modules/gui/macosx/playlistinfo.m:112
-#: modules/gui/macosx/simple_prefs.m:142 modules/gui/macosx/wizard.m:377
+#: modules/gui/macosx/simple_prefs.m:271 modules/gui/macosx/wizard.m:377
 #: modules/gui/qt4/components/info_panels.cpp:551
-#: modules/gui/qt4/components/simple_preferences.cpp:220
+#: modules/gui/qt4/components/simple_preferences.cpp:222
 #: modules/services_discovery/mediadirs.c:76 modules/stream_out/es.c:93
 #: modules/stream_out/transcode/transcode.c:191
 #: share/lua/http/dialogs/create_stream.html:150
@@ -137,10 +138,10 @@ msgstr "ఇతర ఆడియో అమరికలు మరియు పర�
 #: src/libvlc-module.c:1510 modules/access/imem.c:64
 #: modules/gui/macosx/ConvertAndSave.m:175 modules/gui/macosx/MainMenu.m:390
 #: modules/gui/macosx/output.m:151 modules/gui/macosx/playlistinfo.m:102
-#: modules/gui/macosx/simple_prefs.m:144 modules/gui/macosx/simple_prefs.m:279
+#: modules/gui/macosx/simple_prefs.m:273 modules/gui/macosx/simple_prefs.m:409
 #: modules/gui/macosx/wizard.m:378
 #: modules/gui/qt4/components/info_panels.cpp:552
-#: modules/gui/qt4/components/simple_preferences.cpp:222
+#: modules/gui/qt4/components/simple_preferences.cpp:224
 #: modules/services_discovery/mediadirs.c:69 modules/stream_out/es.c:101
 #: modules/stream_out/transcode/transcode.c:161
 #: share/lua/http/dialogs/create_stream.html:147
@@ -319,7 +320,7 @@ msgstr ""
 #: modules/gui/qt4/components/controller.hpp:117
 #: modules/gui/qt4/components/playlist/playlist.cpp:172
 #: modules/gui/qt4/components/playlist/selector.cpp:231
-#: modules/gui/qt4/dialogs/playlist.cpp:40 modules/gui/qt4/menus.cpp:1109
+#: modules/gui/qt4/dialogs/playlist.cpp:40 modules/gui/qt4/menus.cpp:1111
 msgid "Playlist"
 msgstr "ప్రదర్శనజాబితా"
 
@@ -357,7 +358,7 @@ msgid "Advanced settings"
 msgstr "అధునాతన అమరికలు"
 
 #: include/vlc_config_cat.h:188 modules/gui/macosx/open.m:133
-#: modules/gui/macosx/open.m:597 modules/gui/macosx/simple_prefs.m:211
+#: modules/gui/macosx/open.m:597 modules/gui/macosx/simple_prefs.m:340
 #: modules/gui/qt4/ui/sprefs_input.h:354
 msgid "Network"
 msgstr "నెట్‌వర్క్"
@@ -446,8 +447,8 @@ msgstr "గురించి (&A)"
 #: include/vlc_intf_strings.h:65 modules/control/rc.c:72
 #: modules/gui/macosx/ControlsBar.m:404 modules/gui/macosx/MainMenu.m:350
 #: modules/gui/macosx/MainMenu.m:457 modules/gui/macosx/MainMenu.m:464
-#: modules/gui/macosx/MainMenu.m:1183 modules/gui/macosx/MainMenu.m:1184
-#: modules/gui/macosx/MainMenu.m:1185 modules/gui/macosx/playlist.m:499
+#: modules/gui/macosx/MainMenu.m:1189 modules/gui/macosx/MainMenu.m:1190
+#: modules/gui/macosx/MainMenu.m:1191 modules/gui/macosx/playlist.m:517
 #: modules/gui/qt4/components/controller.hpp:115
 #: modules/gui/qt4/dialogs/vlm.cpp:550 modules/gui/qt4/ui/open.h:243
 msgid "Play"
@@ -486,17 +487,17 @@ msgid "Save..."
 msgstr "భద్రపరుచు..."
 
 #: include/vlc_intf_strings.h:77 modules/gui/macosx/CoreInteraction.m:404
-#: modules/gui/macosx/MainMenu.m:364 modules/gui/macosx/MainMenu.m:1464
+#: modules/gui/macosx/MainMenu.m:364 modules/gui/macosx/MainMenu.m:1470
 msgid "Repeat All"
 msgstr "అన్నీ పునరావృతం చేయి"
 
 #: include/vlc_intf_strings.h:78 modules/gui/macosx/CoreInteraction.m:424
-#: modules/gui/macosx/MainMenu.m:363 modules/gui/macosx/MainMenu.m:1459
+#: modules/gui/macosx/MainMenu.m:363 modules/gui/macosx/MainMenu.m:1465
 msgid "Repeat One"
 msgstr "ఒకదానినే పునరావృతంచేయి"
 
 #: include/vlc_intf_strings.h:79 src/libvlc-module.c:1398
-#: modules/gui/macosx/MainMenu.m:362 modules/gui/macosx/MainMenu.m:1454
+#: modules/gui/macosx/MainMenu.m:362 modules/gui/macosx/MainMenu.m:1460
 #: modules/gui/qt4/components/controller.hpp:119
 #: modules/gui/qt4/components/controller.hpp:132
 msgid "Random"
@@ -598,7 +599,7 @@ msgstr ""
 
 #: src/audio_output/output.c:220 src/audio_output/output.c:267
 #: src/config/core.c:407 src/input/es_out.c:902 src/libvlc-module.c:540
-#: modules/gui/macosx/MainWindow.m:962 modules/video_filter/postproc.c:234
+#: modules/gui/macosx/MainWindow.m:967 modules/video_filter/postproc.c:234
 msgid "Disable"
 msgstr "అచేతనపరుచు"
 
@@ -843,7 +844,7 @@ msgstr ""
 msgid "Browser Stop"
 msgstr ""
 
-#: src/config/keys.c:66 modules/gui/macosx/playlist.m:500
+#: src/config/keys.c:66 modules/gui/macosx/playlist.m:518
 #: modules/gui/qt4/dialogs/bookmarks.cpp:50
 #: modules/gui/qt4/ui/podcast_configuration.h:104
 #: modules/gui/qt4/ui/streampanel.h:172
@@ -1094,9 +1095,9 @@ msgid "decoder"
 msgstr "డీకోడర్"
 
 #: src/input/decoder.c:276 src/input/decoder.c:467
-#: modules/codec/avcodec/encoder.c:248 modules/codec/avcodec/encoder.c:256
-#: modules/codec/avcodec/encoder.c:290 modules/codec/avcodec/encoder.c:762
-#: modules/codec/avcodec/encoder.c:815 modules/stream_out/es.c:362
+#: modules/codec/avcodec/encoder.c:255 modules/codec/avcodec/encoder.c:263
+#: modules/codec/avcodec/encoder.c:297 modules/codec/avcodec/encoder.c:769
+#: modules/codec/avcodec/encoder.c:822 modules/stream_out/es.c:362
 #: modules/stream_out/es.c:377
 msgid "Streaming / Transcoding failed"
 msgstr ""
@@ -1163,7 +1164,7 @@ msgid "Subtitle"
 msgstr "ఉపశీర్షిక"
 
 #: src/input/es_out.c:2880 src/input/es_out.c:2907 src/input/es_out.c:2951
-#: src/input/es_out.c:2987 modules/gui/macosx/ConvertAndSave.m:196
+#: src/input/es_out.c:2987 modules/gui/macosx/ConvertAndSave.m:197
 #: modules/gui/macosx/output.m:144
 msgid "Type"
 msgstr "రకం"
@@ -1181,8 +1182,8 @@ msgid "Codec"
 msgstr "కొడెక్"
 
 #: src/input/es_out.c:2898 src/input/meta.c:66 modules/access/imem.c:71
-#: modules/gui/macosx/MainMenu.m:76 modules/stream_out/setid.c:49
-#: modules/gui/qt4/ui/sprefs_interface.h:513
+#: modules/gui/macosx/MainMenu.m:76 modules/gui/macosx/simple_prefs.m:355
+#: modules/stream_out/setid.c:49 modules/gui/qt4/ui/sprefs_interface.h:513
 msgid "Language"
 msgstr "భాష"
 
@@ -1287,7 +1288,7 @@ msgstr ""
 msgid "Title"
 msgstr "శీర్షిక"
 
-#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1116
+#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1130
 #: modules/gui/macosx/playlistinfo.m:75
 msgid "Artist"
 msgstr "కళాకారుడు"
@@ -1575,7 +1576,7 @@ msgid ""
 "automatically select the best method available."
 msgstr ""
 
-#: src/libvlc-module.c:133 modules/gui/macosx/simple_prefs.m:181
+#: src/libvlc-module.c:133 modules/gui/macosx/simple_prefs.m:310
 #: modules/stream_out/display.c:40 modules/gui/qt4/ui/sprefs_audio.h:412
 msgid "Enable audio"
 msgstr "ఆడియోని చేతనపరుచు"
@@ -1636,7 +1637,7 @@ msgid ""
 "played)."
 msgstr ""
 
-#: src/libvlc-module.c:166 modules/gui/macosx/simple_prefs.m:187
+#: src/libvlc-module.c:166 modules/gui/macosx/simple_prefs.m:316
 msgid "Use S/PDIF when available"
 msgstr ""
 
@@ -1646,7 +1647,7 @@ msgid ""
 "audio stream being played."
 msgstr ""
 
-#: src/libvlc-module.c:171 modules/gui/macosx/simple_prefs.m:179
+#: src/libvlc-module.c:171 modules/gui/macosx/simple_prefs.m:308
 msgid "Force detection of Dolby Surround"
 msgstr ""
 
@@ -1660,7 +1661,8 @@ msgstr ""
 
 #: src/libvlc-module.c:180 src/win32/thread.c:827
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:434
-#: modules/gui/qt4/components/simple_preferences.cpp:124
+#: modules/gui/macosx/simple_prefs.m:110
+#: modules/gui/qt4/components/simple_preferences.cpp:125
 #: modules/gui/qt4/components/sout/profile_selector.cpp:566
 #: modules/video_output/kva.c:62 modules/video_output/xcb/xvideo.c:878
 #: modules/gui/qt4/ui/profiles.h:727 modules/gui/qt4/ui/profiles.h:730
@@ -1740,7 +1742,7 @@ msgstr ""
 #: modules/access/fs.c:42 modules/access/v4l2/v4l2.c:163
 #: modules/codec/avcodec/avcodec.c:68 modules/codec/dirac.c:79
 #: modules/codec/kate.c:202 modules/codec/x264.c:429 modules/codec/x264.c:434
-#: modules/gui/macosx/ConvertAndSave.m:203 modules/gui/macosx/open.m:252
+#: modules/gui/macosx/ConvertAndSave.m:204 modules/gui/macosx/open.m:252
 #: modules/gui/macosx/open.m:278 modules/gui/macosx/open.m:279
 #: modules/gui/qt4/components/interface_widgets.cpp:429
 #: modules/text_renderer/freetype.c:214
@@ -1767,7 +1769,7 @@ msgid ""
 "automatically select the best method available."
 msgstr ""
 
-#: src/libvlc-module.c:249 modules/gui/macosx/simple_prefs.m:265
+#: src/libvlc-module.c:249 modules/gui/macosx/simple_prefs.m:395
 #: modules/stream_out/display.c:42 modules/gui/qt4/ui/sprefs_video.h:340
 msgid "Enable video"
 msgstr "వీడియోని చేతనపరుచు"
@@ -1957,7 +1959,7 @@ msgid ""
 msgstr ""
 
 #: src/libvlc-module.c:311 src/video_output/vout_intf.c:274
-#: modules/gui/macosx/simple_prefs.m:268 modules/gui/qt4/ui/sprefs_video.h:347
+#: modules/gui/macosx/simple_prefs.m:398 modules/gui/qt4/ui/sprefs_video.h:347
 msgid "Always on top"
 msgstr "ఎల్లప్పుడు పైన ఉంచు"
 
@@ -2008,7 +2010,7 @@ msgstr ""
 
 #: src/libvlc-module.c:338 src/libvlc-module.c:340
 #: src/video_output/interlacing.c:180 modules/gui/macosx/MainMenu.m:406
-#: modules/gui/macosx/MainMenu.m:407 modules/gui/macosx/simple_prefs.m:277
+#: modules/gui/macosx/MainMenu.m:407 modules/gui/macosx/simple_prefs.m:407
 #: modules/gui/qt4/dialogs/convert.cpp:95
 #: modules/video_filter/deinterlace/deinterlace.c:97
 #: share/lua/http/dialogs/create_stream.html:346
@@ -2017,7 +2019,7 @@ msgstr "విజాలీకరణ"
 
 #: src/libvlc-module.c:348 src/video_output/interlacing.c:196
 #: modules/gui/macosx/MainMenu.m:408 modules/gui/macosx/MainMenu.m:409
-#: modules/gui/macosx/simple_prefs.m:278
+#: modules/gui/macosx/simple_prefs.m:408
 #: modules/video_filter/deinterlace/deinterlace.c:53
 msgid "Deinterlace mode"
 msgstr "విజాలీకరణ రీతి"
@@ -2073,7 +2075,7 @@ msgid ""
 "computer being suspended because of inactivity."
 msgstr ""
 
-#: src/libvlc-module.c:374 modules/gui/macosx/simple_prefs.m:267
+#: src/libvlc-module.c:374 modules/gui/macosx/simple_prefs.m:397
 #: modules/gui/qt4/ui/sprefs_video.h:343
 msgid "Window decorations"
 msgstr "కిటికీ అలంకారాలు"
@@ -2242,7 +2244,7 @@ msgid ""
 "order to keep proportions."
 msgstr ""
 
-#: src/libvlc-module.c:468 modules/gui/macosx/simple_prefs.m:270
+#: src/libvlc-module.c:468 modules/gui/macosx/simple_prefs.m:400
 msgid "Skip frames"
 msgstr "చట్రాలను దాటవేయి"
 
@@ -2370,12 +2372,12 @@ msgstr ""
 #: src/libvlc-module.c:540 src/video_output/vout_intf.c:96
 #: src/video_output/vout_intf.c:114 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
-#: modules/access/dshow/dshow.cpp:2032 modules/audio_output/directx.c:829
+#: modules/access/dshow/dshow.cpp:2032 modules/audio_output/directx.c:830
 #: modules/gui/macosx/AudioEffects.m:86 modules/gui/macosx/MainMenu.m:601
 #: modules/gui/macosx/prefs_widgets.m:1214
 #: modules/gui/macosx/prefs_widgets.m:1287
-#: modules/gui/macosx/simple_prefs.m:389 modules/gui/macosx/simple_prefs.m:530
-#: modules/gui/macosx/simple_prefs.m:780 modules/gui/macosx/VideoEffects.m:57
+#: modules/gui/macosx/simple_prefs.m:519 modules/gui/macosx/simple_prefs.m:672
+#: modules/gui/macosx/simple_prefs.m:922 modules/gui/macosx/VideoEffects.m:57
 #: modules/gui/qt4/components/preferences_widgets.cpp:545
 #: modules/video_filter/marq.c:60 modules/video_filter/rss.c:71
 #: modules/video_filter/rss.c:184 modules/video_output/msw/directx.c:1458
@@ -2383,7 +2385,7 @@ msgid "Default"
 msgstr "అప్రమేయం"
 
 #: src/libvlc-module.c:540 modules/gui/macosx/AudioEffects.m:112
-#: modules/gui/macosx/MainWindow.m:960 modules/gui/macosx/wizard.m:351
+#: modules/gui/macosx/MainWindow.m:965 modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/extended_panels.cpp:1024
 #: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:289
 msgid "Enable"
@@ -2610,12 +2612,12 @@ msgid ""
 "{...}\""
 msgstr ""
 
-#: src/libvlc-module.c:662 modules/gui/macosx/simple_prefs.m:203
+#: src/libvlc-module.c:662 modules/gui/macosx/simple_prefs.m:332
 #: modules/gui/qt4/ui/sprefs_input.h:350
 msgid "Record directory or filename"
 msgstr ""
 
-#: src/libvlc-module.c:664 modules/gui/macosx/simple_prefs.m:205
+#: src/libvlc-module.c:664 modules/gui/macosx/simple_prefs.m:334
 msgid "Directory or filename where the records will be stored"
 msgstr ""
 
@@ -2686,7 +2688,7 @@ msgid "You can completely disable the sub-picture processing."
 msgstr ""
 
 #: src/libvlc-module.c:703 src/libvlc-module.c:1634 src/text/iso-639_def.h:145
-#: modules/gui/macosx/simple_prefs.m:254
+#: modules/gui/macosx/simple_prefs.m:384
 #: modules/stream_out/transcode/transcode.c:219
 #: modules/gui/qt4/ui/sprefs_subtitles.h:286
 msgid "On Screen Display"
@@ -3522,8 +3524,8 @@ msgstr ""
 
 #: src/libvlc-module.c:1203 src/video_output/vout_intf.c:284
 #: modules/gui/macosx/MainMenu.m:395 modules/gui/macosx/MainMenu.m:471
-#: modules/gui/macosx/MainMenu.m:1491 modules/gui/macosx/MainMenu.m:1501
-#: modules/gui/macosx/simple_prefs.m:266
+#: modules/gui/macosx/MainMenu.m:1497 modules/gui/macosx/MainMenu.m:1507
+#: modules/gui/macosx/simple_prefs.m:396
 #: modules/gui/qt4/components/controller.hpp:116
 #: modules/gui/qt4/ui/sprefs_video.h:342
 msgid "Fullscreen"
@@ -3606,7 +3608,7 @@ msgstr "నెమ్మది (బాగా)"
 #: modules/gui/macosx/about.m:274 modules/gui/macosx/ControlsBar.m:726
 #: modules/gui/macosx/ControlsBar.m:727 modules/gui/macosx/fspanel.m:420
 #: modules/gui/macosx/MainMenu.m:361 modules/gui/macosx/MainMenu.m:459
-#: modules/gui/macosx/MainMenu.m:467 modules/gui/macosx/MainMenu.m:1450
+#: modules/gui/macosx/MainMenu.m:467 modules/gui/macosx/MainMenu.m:1456
 #: modules/gui/macosx/wizard.m:306 modules/gui/macosx/wizard.m:318
 #: modules/gui/macosx/wizard.m:1559
 #: modules/gui/qt4/components/controller.hpp:120 modules/notify/notify.c:339
@@ -3622,7 +3624,7 @@ msgstr ""
 #: modules/gui/macosx/about.m:275 modules/gui/macosx/ControlsBar.m:715
 #: modules/gui/macosx/ControlsBar.m:716 modules/gui/macosx/fspanel.m:416
 #: modules/gui/macosx/MainMenu.m:360 modules/gui/macosx/MainMenu.m:460
-#: modules/gui/macosx/MainMenu.m:466 modules/gui/macosx/MainMenu.m:1449
+#: modules/gui/macosx/MainMenu.m:466 modules/gui/macosx/MainMenu.m:1455
 #: modules/gui/qt4/components/controller.hpp:120 modules/notify/notify.c:337
 msgid "Previous"
 msgstr "మునుపటి"
@@ -3633,7 +3635,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1227 modules/gui/macosx/ControlsBar.m:436
 #: modules/gui/macosx/MainMenu.m:351 modules/gui/macosx/MainMenu.m:458
-#: modules/gui/macosx/MainMenu.m:465 modules/gui/macosx/MainMenu.m:1445
+#: modules/gui/macosx/MainMenu.m:465 modules/gui/macosx/MainMenu.m:1451
 #: modules/gui/qt4/components/controller.hpp:115
 #: modules/gui/qt4/dialogs/vlm.cpp:556 modules/gui/qt4/ui/streampanel.h:180
 msgid "Stop"
@@ -3720,7 +3722,7 @@ msgstr ""
 msgid "Select the hotkey to make a long forward jump."
 msgstr ""
 
-#: src/libvlc-module.c:1257 modules/control/hotkeys.c:396
+#: src/libvlc-module.c:1257 modules/control/hotkeys.c:402
 msgid "Next frame"
 msgstr "తరువాత చట్రం"
 
@@ -3870,7 +3872,7 @@ msgstr ""
 #: src/libvlc-module.c:1296 modules/access/v4l2/v4l2.c:181
 #: modules/gui/macosx/ControlsBar.m:455 modules/gui/macosx/MainMenu.m:380
 #: modules/gui/macosx/MainMenu.m:461 modules/gui/macosx/MainMenu.m:470
-#: modules/gui/macosx/MainMenu.m:1482
+#: modules/gui/macosx/MainMenu.m:1488
 msgid "Mute"
 msgstr "నిశబ్దం"
 
@@ -4284,7 +4286,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1560 src/video_output/vout_intf.c:290
 #: modules/gui/macosx/MainMenu.m:397 modules/gui/macosx/MainMenu.m:472
-#: modules/gui/macosx/MainMenu.m:1490
+#: modules/gui/macosx/MainMenu.m:1496
 #: modules/gui/qt4/components/controller.hpp:117
 msgid "Snapshot"
 msgstr "తక్షణచిత్రం"
@@ -4476,14 +4478,15 @@ msgstr "దించుకుంటున్నది ..."
 #: modules/gui/macosx/AudioEffects.m:641 modules/gui/macosx/AudioEffects.m:741
 #: modules/gui/macosx/bookmarks.m:105 modules/gui/macosx/controls.m:54
 #: modules/gui/macosx/ConvertAndSave.m:168
-#: modules/gui/macosx/ConvertAndSave.m:367
-#: modules/gui/macosx/ConvertAndSave.m:381 modules/gui/macosx/coredialogs.m:61
+#: modules/gui/macosx/ConvertAndSave.m:194
+#: modules/gui/macosx/ConvertAndSave.m:368
+#: modules/gui/macosx/ConvertAndSave.m:382 modules/gui/macosx/coredialogs.m:61
 #: modules/gui/macosx/coredialogs.m:63 modules/gui/macosx/coredialogs.m:168
 #: modules/gui/macosx/MainWindow.m:179 modules/gui/macosx/MainWindow.m:184
 #: modules/gui/macosx/open.m:128 modules/gui/macosx/open.m:190
-#: modules/gui/macosx/prefs.m:208 modules/gui/macosx/simple_prefs.m:195
-#: modules/gui/macosx/simple_prefs.m:223 modules/gui/macosx/simple_prefs.m:283
-#: modules/gui/macosx/simple_prefs.m:698 modules/gui/macosx/VideoEffects.m:879
+#: modules/gui/macosx/prefs.m:208 modules/gui/macosx/simple_prefs.m:324
+#: modules/gui/macosx/simple_prefs.m:352 modules/gui/macosx/simple_prefs.m:413
+#: modules/gui/macosx/simple_prefs.m:840 modules/gui/macosx/VideoEffects.m:879
 #: modules/gui/macosx/VideoEffects.m:943 modules/gui/macosx/wizard.m:317
 #: modules/gui/qt4/components/open_panels.cpp:1343
 #: modules/gui/qt4/components/preferences_widgets.cpp:1424
@@ -5245,7 +5248,7 @@ msgstr "కత్తిరించు"
 #: modules/access/linsys/linsys_hdsdi.c:78
 #: modules/access/linsys/linsys_sdi.c:73 modules/demux/rawvid.c:59
 #: modules/gui/macosx/MainMenu.m:400 modules/gui/macosx/MainMenu.m:401
-#: modules/gui/macosx/MainMenu.m:1304
+#: modules/gui/macosx/MainMenu.m:1310
 msgid "Aspect ratio"
 msgstr "రూప నిష్పత్తి"
 
@@ -6852,7 +6855,7 @@ msgid "RTSP/RTP access and demux"
 msgstr ""
 
 #: modules/access/live555.cpp:115 modules/access/live555.cpp:116
-#: modules/gui/macosx/simple_prefs.m:214
+#: modules/gui/macosx/simple_prefs.m:343
 msgid "Use RTP over RTSP (TCP)"
 msgstr ""
 
@@ -7039,8 +7042,8 @@ msgid "User name that will be requested to access the stream."
 msgstr ""
 
 #: modules/access_output/http.c:54 modules/access/vnc.c:47
-#: modules/gui/macosx/coredialogs.m:60 modules/gui/macosx/simple_prefs.m:185
-#: modules/gui/macosx/simple_prefs.m:243
+#: modules/gui/macosx/coredialogs.m:60 modules/gui/macosx/simple_prefs.m:314
+#: modules/gui/macosx/simple_prefs.m:373
 #: modules/gui/qt4/dialogs/external.cpp:118 modules/lua/vlc.c:53
 #: modules/lua/vlc.c:69 modules/misc/audioscrobbler.c:116
 #: modules/stream_out/raop.c:154 modules/stream_out/rtp.c:180
@@ -7541,7 +7544,7 @@ msgstr "తెర ఇన్‌పుట్"
 #: modules/access/screen/screen.c:98 modules/access/screen/xcb.c:69
 #: modules/gui/macosx/MainMenu.m:609 modules/gui/macosx/open.m:207
 #: modules/gui/macosx/open.m:211 modules/gui/macosx/open.m:495
-#: modules/gui/macosx/open.m:1348 modules/gui/macosx/simple_prefs.m:535
+#: modules/gui/macosx/open.m:1348 modules/gui/macosx/simple_prefs.m:677
 msgid "Screen"
 msgstr "తెర"
 
@@ -9378,7 +9381,7 @@ msgstr "సరౌండ్ 5.1"
 
 #: modules/audio_output/alsa.c:77
 msgid "Surround 7.1"
-msgstr "సరౌండ్ 7.1"
+msgstr ""
 
 #: modules/audio_output/alsa.c:82
 msgid "ALSA audio output"
@@ -9807,7 +9810,7 @@ msgid ""
 "To visualize all vectors, the value should be 7."
 msgstr ""
 
-#: modules/codec/avcodec/avcodec.h:131 modules/gui/macosx/simple_prefs.m:215
+#: modules/codec/avcodec/avcodec.h:131 modules/gui/macosx/simple_prefs.m:344
 msgid "Skip the loop filter for H.264 decoding"
 msgstr ""
 
@@ -10072,17 +10075,17 @@ msgstr ""
 msgid "DirectX Video Acceleration (DXVA) 2.0"
 msgstr ""
 
-#: modules/codec/avcodec/encoder.c:249
+#: modules/codec/avcodec/encoder.c:256
 #, c-format
 msgid "\"%s\" is no video encoder."
 msgstr ""
 
-#: modules/codec/avcodec/encoder.c:257
+#: modules/codec/avcodec/encoder.c:264
 #, c-format
 msgid "\"%s\" is no audio encoder."
 msgstr ""
 
-#: modules/codec/avcodec/encoder.c:295
+#: modules/codec/avcodec/encoder.c:302
 #, c-format
 msgid ""
 "It seems your Libav/FFmpeg (libavcodec) installation lacks the following "
@@ -10094,7 +10097,7 @@ msgid ""
 "Do not contact the VideoLAN project about this issue.\n"
 msgstr ""
 
-#: modules/codec/avcodec/encoder.c:763 modules/codec/avcodec/encoder.c:816
+#: modules/codec/avcodec/encoder.c:770 modules/codec/avcodec/encoder.c:823
 msgid "VLC could not open the encoder."
 msgstr ""
 
@@ -10540,7 +10543,7 @@ msgstr ""
 
 #: modules/codec/fluidsynth.c:49 modules/demux/mp4/id3genres.h:129
 msgid "Chorus"
-msgstr ""
+msgstr "కోరస్"
 
 #: modules/codec/fluidsynth.c:51
 msgid "Synthesis gain"
@@ -10644,7 +10647,7 @@ msgid "Maroon"
 msgstr "మెరూన్"
 
 #: modules/codec/kate.c:211 modules/gui/macosx/MainMenu.m:427
-#: modules/gui/macosx/MainMenu.m:995 modules/text_renderer/freetype.c:207
+#: modules/gui/macosx/MainMenu.m:1001 modules/text_renderer/freetype.c:207
 #: modules/text_renderer/quartztext.c:116 modules/text_renderer/win32text.c:90
 #: modules/video_filter/ball.c:119 modules/video_filter/colorthres.c:64
 #: modules/video_filter/marq.c:61 modules/video_filter/rss.c:72
@@ -10659,7 +10662,7 @@ msgid "Fuchsia"
 msgstr ""
 
 #: modules/codec/kate.c:211 modules/gui/macosx/MainMenu.m:429
-#: modules/gui/macosx/MainMenu.m:999 modules/text_renderer/freetype.c:207
+#: modules/gui/macosx/MainMenu.m:1005 modules/text_renderer/freetype.c:207
 #: modules/text_renderer/quartztext.c:116 modules/text_renderer/win32text.c:90
 #: modules/video_filter/colorthres.c:64 modules/video_filter/marq.c:62
 #: modules/video_filter/rss.c:73
@@ -10673,7 +10676,7 @@ msgid "Olive"
 msgstr "ఆలివ్"
 
 #: modules/codec/kate.c:211 modules/gui/macosx/MainMenu.m:428
-#: modules/gui/macosx/MainMenu.m:997 modules/text_renderer/freetype.c:207
+#: modules/gui/macosx/MainMenu.m:1003 modules/text_renderer/freetype.c:207
 #: modules/text_renderer/quartztext.c:116 modules/text_renderer/win32text.c:90
 #: modules/video_filter/ball.c:119 modules/video_filter/marq.c:62
 #: modules/video_filter/rss.c:73
@@ -10706,7 +10709,7 @@ msgid "Navy"
 msgstr "నావీ"
 
 #: modules/codec/kate.c:212 modules/gui/macosx/MainMenu.m:430
-#: modules/gui/macosx/MainMenu.m:1001 modules/text_renderer/freetype.c:208
+#: modules/gui/macosx/MainMenu.m:1007 modules/text_renderer/freetype.c:208
 #: modules/text_renderer/quartztext.c:117 modules/text_renderer/win32text.c:91
 #: modules/video_filter/ball.c:120 modules/video_filter/colorthres.c:64
 #: modules/video_filter/marq.c:63 modules/video_filter/rss.c:74
@@ -10910,9 +10913,8 @@ msgid "PNG video decoder"
 msgstr ""
 
 #: modules/codec/qsv.c:56
-#, fuzzy
 msgid "Enable software mode"
-msgstr "వాల్‌పేపర్ విధాన్ని చేతనపరుచు"
+msgstr ""
 
 #: modules/codec/qsv.c:57
 msgid ""
@@ -10921,9 +10923,8 @@ msgid ""
 msgstr ""
 
 #: modules/codec/qsv.c:61
-#, fuzzy
 msgid "Codec Profile"
-msgstr "ప్రవర"
+msgstr ""
 
 #: modules/codec/qsv.c:63
 msgid ""
@@ -10933,9 +10934,8 @@ msgid ""
 msgstr ""
 
 #: modules/codec/qsv.c:67
-#, fuzzy
 msgid "Codec Level"
-msgstr "కొడెక్ పేరు"
+msgstr ""
 
 #: modules/codec/qsv.c:69
 msgid ""
@@ -10976,9 +10976,8 @@ msgid ""
 msgstr ""
 
 #: modules/codec/qsv.c:90
-#, fuzzy
 msgid "IDR interval"
-msgstr "విజాలీకరణ"
+msgstr ""
 
 #: modules/codec/qsv.c:92
 msgid ""
@@ -11042,9 +11041,8 @@ msgid ""
 msgstr ""
 
 #: modules/codec/qsv.c:122
-#, fuzzy
 msgid "Maximum Bitrate"
-msgstr "గరిష్ట బిట్‌రేటు"
+msgstr ""
 
 #: modules/codec/qsv.c:123
 msgid ""
@@ -11076,9 +11074,8 @@ msgid ""
 msgstr ""
 
 #: modules/codec/qsv.c:139
-#, fuzzy
 msgid "Number of slices per frame"
-msgstr "భాగముల సంఖ్య"
+msgstr ""
 
 #: modules/codec/qsv.c:140
 msgid ""
@@ -11092,9 +11089,8 @@ msgid "Number of reference frames"
 msgstr ""
 
 #: modules/codec/qsv.c:148
-#, fuzzy
 msgid "Number of parallel operations"
-msgstr "నిలువువరుసల సంఖ్య"
+msgstr ""
 
 #: modules/codec/qsv.c:149
 msgid ""
@@ -12637,8 +12633,8 @@ msgid "Fast"
 msgstr ""
 
 #: modules/codec/x264.c:429 modules/gui/macosx/MainMenu.m:357
-#: modules/gui/macosx/simple_prefs.m:567
-#: modules/gui/qt4/components/simple_preferences.cpp:669
+#: modules/gui/macosx/simple_prefs.m:709
+#: modules/gui/qt4/components/simple_preferences.cpp:671
 #: modules/misc/gnutls.c:64 modules/text_renderer/freetype.c:195
 #: modules/text_renderer/freetype.c:214 modules/text_renderer/quartztext.c:121
 #: modules/text_renderer/win32text.c:82
@@ -12745,8 +12741,8 @@ msgid "D-Bus control interface"
 msgstr ""
 
 #: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/MainWindow.m:202
-#: modules/gui/macosx/MainWindow.m:674 modules/gui/macosx/MainWindow.m:680
-#: modules/gui/macosx/MainWindow.m:1241 modules/gui/ncurses.c:1030
+#: modules/gui/macosx/MainWindow.m:679 modules/gui/macosx/MainWindow.m:685
+#: modules/gui/macosx/MainWindow.m:1246 modules/gui/ncurses.c:1030
 #: modules/gui/qt4/dialogs/help.cpp:91 modules/gui/qt4/main_interface.cpp:1013
 #: modules/gui/qt4/main_interface.cpp:1017
 #: modules/gui/qt4/main_interface.cpp:1056
@@ -12813,9 +12809,9 @@ msgstr "సార్వత్రిక వేగపుమీటలు"
 msgid "Global Hotkeys interface"
 msgstr "సార్వత్రిక వేగపుమీటల అంతరవర్తి"
 
-#: modules/control/hotkeys.c:88 modules/gui/macosx/simple_prefs.m:150
+#: modules/control/hotkeys.c:88 modules/gui/macosx/simple_prefs.m:279
 #: modules/gui/qt4/components/preferences_widgets.cpp:1141
-#: modules/gui/qt4/components/simple_preferences.cpp:228
+#: modules/gui/qt4/components/simple_preferences.cpp:230
 msgid "Hotkeys"
 msgstr "వేగపుమీటలు"
 
@@ -12837,123 +12833,123 @@ msgstr ""
 msgid "Random: %s"
 msgstr ""
 
-#: modules/control/hotkeys.c:325
+#: modules/control/hotkeys.c:331
 #, c-format
 msgid "Audio Device: %s"
 msgstr "ఆడియో పరికరం: %s"
 
-#: modules/control/hotkeys.c:388
+#: modules/control/hotkeys.c:394
 msgid "Recording"
 msgstr "రికార్డింగు"
 
-#: modules/control/hotkeys.c:388
+#: modules/control/hotkeys.c:394
 msgid "Recording done"
 msgstr "రికార్డింగు అయినది"
 
-#: modules/control/hotkeys.c:403
+#: modules/control/hotkeys.c:409
 msgid "Sub sync: bookmarked audio time"
 msgstr ""
 
-#: modules/control/hotkeys.c:418 modules/control/hotkeys.c:487
+#: modules/control/hotkeys.c:424 modules/control/hotkeys.c:493
 msgid "No active subtitle"
 msgstr ""
 
-#: modules/control/hotkeys.c:424
+#: modules/control/hotkeys.c:430
 msgid "Sub sync: bookmarked subtitle time"
 msgstr ""
 
-#: modules/control/hotkeys.c:444
+#: modules/control/hotkeys.c:450
 msgid "Sub sync: set bookmarks first!"
 msgstr ""
 
-#: modules/control/hotkeys.c:453
+#: modules/control/hotkeys.c:459
 #, c-format
 msgid "Sub sync: corrected %i ms (total delay = %i ms)"
 msgstr ""
 
-#: modules/control/hotkeys.c:466
+#: modules/control/hotkeys.c:472
 msgid "Sub sync: delay reset"
 msgstr ""
 
-#: modules/control/hotkeys.c:495
+#: modules/control/hotkeys.c:501
 #, c-format
 msgid "Subtitle delay %i ms"
 msgstr "ఉపశీర్షిక ఆలస్యం %i ms"
 
-#: modules/control/hotkeys.c:511
+#: modules/control/hotkeys.c:517
 #, c-format
 msgid "Audio delay %i ms"
 msgstr "శ్రవ్యక ఆలస్యం %i ms"
 
-#: modules/control/hotkeys.c:547
+#: modules/control/hotkeys.c:553
 #, c-format
 msgid "Audio track: %s"
 msgstr "ఆడియో ట్రాక్: %s"
 
-#: modules/control/hotkeys.c:565 modules/control/hotkeys.c:589
+#: modules/control/hotkeys.c:571 modules/control/hotkeys.c:595
 #, c-format
 msgid "Subtitle track: %s"
 msgstr "ఉపశీర్షిక ట్రాక్: %s"
 
-#: modules/control/hotkeys.c:566 modules/control/hotkeys.c:608
+#: modules/control/hotkeys.c:572 modules/control/hotkeys.c:614
 msgid "N/A"
 msgstr "వర్తించదు"
 
-#: modules/control/hotkeys.c:607 modules/control/hotkeys.c:639
+#: modules/control/hotkeys.c:613 modules/control/hotkeys.c:645
 #, c-format
 msgid "Program Service ID: %s"
 msgstr ""
 
-#: modules/control/hotkeys.c:763
+#: modules/control/hotkeys.c:769
 #, c-format
 msgid "Aspect ratio: %s"
 msgstr "రూప నిష్పత్తి: %s"
 
-#: modules/control/hotkeys.c:793
+#: modules/control/hotkeys.c:799
 #, c-format
 msgid "Crop: %s"
 msgstr "కత్తిరించు: %s"
 
-#: modules/control/hotkeys.c:841
+#: modules/control/hotkeys.c:847
 msgid "Zooming reset"
 msgstr ""
 
-#: modules/control/hotkeys.c:848
+#: modules/control/hotkeys.c:854
 msgid "Scaled to screen"
 msgstr ""
 
-#: modules/control/hotkeys.c:850
+#: modules/control/hotkeys.c:856
 msgid "Original Size"
 msgstr "అసలు పరిమాణం"
 
-#: modules/control/hotkeys.c:919
+#: modules/control/hotkeys.c:925
 #, c-format
 msgid "Zoom mode: %s"
 msgstr "జూమ్ విధం: %s"
 
-#: modules/control/hotkeys.c:934 modules/control/hotkeys.c:991
+#: modules/control/hotkeys.c:940 modules/control/hotkeys.c:997
 msgid "Deinterlace off"
 msgstr "విజాలీకరణ ఆపు"
 
-#: modules/control/hotkeys.c:953 modules/control/hotkeys.c:986
+#: modules/control/hotkeys.c:959 modules/control/hotkeys.c:992
 msgid "Deinterlace on"
 msgstr "విజాలీకరణ ఆన్‌చేయి"
 
-#: modules/control/hotkeys.c:1016
+#: modules/control/hotkeys.c:1022
 msgid "Subtitle position: no active subtitle"
 msgstr ""
 
-#: modules/control/hotkeys.c:1028
+#: modules/control/hotkeys.c:1034
 #, c-format
 msgid "Subtitle position %d px"
 msgstr ""
 
-#: modules/control/hotkeys.c:1162
+#: modules/control/hotkeys.c:1168
 #, c-format
 msgid "Volume %ld%%"
 msgstr ""
 
-#: modules/control/hotkeys.c:1167
+#: modules/control/hotkeys.c:1173
 #, c-format
 msgid "Speed: %.2fx"
 msgstr "వేగం: %.2fx"
@@ -13083,8 +13079,8 @@ msgid "Opening"
 msgstr ""
 
 #: modules/control/rc.c:73 modules/gui/macosx/ControlsBar.m:397
-#: modules/gui/macosx/MainMenu.m:1190 modules/gui/macosx/MainMenu.m:1191
-#: modules/gui/macosx/MainMenu.m:1192 modules/gui/qt4/menus.cpp:817
+#: modules/gui/macosx/MainMenu.m:1196 modules/gui/macosx/MainMenu.m:1197
+#: modules/gui/macosx/MainMenu.m:1198 modules/gui/qt4/menus.cpp:817
 msgid "Pause"
 msgstr "నిలిపివేయి"
 
@@ -13737,7 +13733,7 @@ msgstr "అధ్యాయం కొడెక్‌లు"
 msgid "Use chapter codecs found in the segment."
 msgstr ""
 
-#: modules/demux/mkv/mkv.cpp:62 modules/gui/macosx/simple_prefs.m:216
+#: modules/demux/mkv/mkv.cpp:62 modules/gui/macosx/simple_prefs.m:345
 #: modules/gui/qt4/ui/sprefs_input.h:353
 msgid "Preload MKV files in the same directory"
 msgstr ""
@@ -14206,7 +14202,7 @@ msgstr ""
 
 #: modules/demux/mp4/id3genres.h:133
 msgid "Speech"
-msgstr ""
+msgstr "ప్రసంగం"
 
 #: modules/demux/mp4/id3genres.h:134
 msgid "Chanson"
@@ -14963,7 +14959,7 @@ msgid "MPEG Transport Stream demuxer"
 msgstr ""
 
 #: modules/demux/ts.c:171 modules/gui/macosx/MainMenu.m:424
-#: modules/gui/macosx/MainMenu.m:1527 modules/gui/qt4/dialogs/toolbar.cpp:429
+#: modules/gui/macosx/MainMenu.m:1533 modules/gui/qt4/dialogs/toolbar.cpp:429
 msgid "Teletext"
 msgstr ""
 
@@ -15142,7 +15138,7 @@ msgid "VLC media player Help"
 msgstr "VLC మాధ్యమ ప్రదర్శకం సహాయం"
 
 #: modules/gui/macosx/about.m:276 modules/gui/macosx/MainMenu.m:426
-#: modules/gui/macosx/MainMenu.m:993
+#: modules/gui/macosx/MainMenu.m:999
 msgid "Index"
 msgstr "సూచిక"
 
@@ -15175,7 +15171,7 @@ msgstr ""
 #: modules/gui/macosx/AudioEffects.m:121
 #: modules/gui/qt4/components/extended_panels.cpp:1381
 msgid "Release"
-msgstr ""
+msgstr "విడుదల"
 
 #: modules/gui/macosx/AudioEffects.m:122
 #: modules/gui/qt4/components/extended_panels.cpp:1382
@@ -15212,7 +15208,7 @@ msgid "Duplicate current profile..."
 msgstr ""
 
 #: modules/gui/macosx/AudioEffects.m:207
-#: modules/gui/macosx/ConvertAndSave.m:1050
+#: modules/gui/macosx/ConvertAndSave.m:1054
 msgid "Organize Profiles..."
 msgstr ""
 
@@ -15221,16 +15217,16 @@ msgid "Duplicate current profile for a new profile"
 msgstr ""
 
 #: modules/gui/macosx/AudioEffects.m:386
-#: modules/gui/macosx/ConvertAndSave.m:366
+#: modules/gui/macosx/ConvertAndSave.m:367
 #: modules/gui/macosx/VideoEffects.m:878
 msgid "Enter a name for the new profile:"
 msgstr ""
 
 #: modules/gui/macosx/AudioEffects.m:388 modules/gui/macosx/AudioEffects.m:642
-#: modules/gui/macosx/ConvertAndSave.m:368
-#: modules/gui/macosx/ConvertAndSave.m:400 modules/gui/macosx/output.m:457
-#: modules/gui/macosx/playlist.m:696 modules/gui/macosx/prefs.m:207
-#: modules/gui/macosx/simple_prefs.m:222 modules/gui/macosx/simple_prefs.m:285
+#: modules/gui/macosx/ConvertAndSave.m:369
+#: modules/gui/macosx/ConvertAndSave.m:401 modules/gui/macosx/output.m:457
+#: modules/gui/macosx/playlist.m:716 modules/gui/macosx/prefs.m:207
+#: modules/gui/macosx/simple_prefs.m:351 modules/gui/macosx/simple_prefs.m:415
 #: modules/gui/macosx/VideoEffects.m:880
 #: modules/gui/qt4/components/sout/profile_selector.cpp:432
 #: modules/gui/qt4/ui/vlm.h:301
@@ -15248,7 +15244,7 @@ msgid "Select the preset you would like to remove:"
 msgstr ""
 
 #: modules/gui/macosx/AudioEffects.m:401 modules/gui/macosx/AudioEffects.m:740
-#: modules/gui/macosx/bookmarks.m:95 modules/gui/macosx/ConvertAndSave.m:380
+#: modules/gui/macosx/bookmarks.m:95 modules/gui/macosx/ConvertAndSave.m:381
 #: modules/gui/macosx/VideoEffects.m:942 modules/gui/qt4/ui/open_file.h:154
 msgid "Remove"
 msgstr "తీసివేయి"
@@ -15288,7 +15284,7 @@ msgid "Add"
 msgstr "జతచేయి"
 
 #: modules/gui/macosx/bookmarks.m:92 modules/gui/macosx/MainMenu.m:334
-#: modules/gui/macosx/simple_prefs.m:197
+#: modules/gui/macosx/simple_prefs.m:326
 #: modules/gui/qt4/dialogs/bookmarks.cpp:53 modules/gui/qt4/ui/vlm.h:300
 msgid "Clear"
 msgstr "శుభ్రపరుచు"
@@ -15311,14 +15307,13 @@ msgstr "సమయం"
 #: modules/gui/macosx/bookmarks.m:104 modules/gui/macosx/bookmarks.m:221
 #: modules/gui/macosx/bookmarks.m:225 modules/gui/macosx/bookmarks.m:276
 #: modules/gui/macosx/bookmarks.m:281 modules/gui/macosx/controls.m:55
-#: modules/gui/macosx/ConvertAndSave.m:193
-#: modules/gui/macosx/ConvertAndSave.m:283
-#: modules/gui/macosx/ConvertAndSave.m:472
+#: modules/gui/macosx/ConvertAndSave.m:284
 #: modules/gui/macosx/ConvertAndSave.m:479
-#: modules/gui/macosx/ConvertAndSave.m:486 modules/gui/macosx/coredialogs.m:62
+#: modules/gui/macosx/ConvertAndSave.m:486
+#: modules/gui/macosx/ConvertAndSave.m:493 modules/gui/macosx/coredialogs.m:62
 #: modules/gui/macosx/coredialogs.m:99 modules/gui/macosx/coredialogs.m:146
 #: modules/gui/macosx/open.m:380 modules/gui/macosx/output.m:129
-#: modules/gui/macosx/playlistinfo.m:361 modules/gui/macosx/simple_prefs.m:196
+#: modules/gui/macosx/playlistinfo.m:361 modules/gui/macosx/simple_prefs.m:325
 #: modules/gui/macosx/wizard.m:592 modules/gui/macosx/wizard.m:653
 #: modules/gui/macosx/wizard.m:992 modules/gui/macosx/wizard.m:1073
 #: modules/gui/macosx/wizard.m:1080 modules/gui/macosx/wizard.m:1608
@@ -15328,12 +15323,12 @@ msgstr "సమయం"
 msgid "OK"
 msgstr "సరే"
 
-#: modules/gui/macosx/bookmarks.m:106 modules/gui/macosx/playlist.m:159
+#: modules/gui/macosx/bookmarks.m:106 modules/gui/macosx/playlist.m:164
 #: modules/gui/qt4/dialogs/plugins.cpp:109
 msgid "Name"
 msgstr "పేరు"
 
-#: modules/gui/macosx/bookmarks.m:136 modules/gui/macosx/playlist.m:693
+#: modules/gui/macosx/bookmarks.m:136 modules/gui/macosx/playlist.m:713
 msgid "Untitled"
 msgstr "శీర్షికలేని"
 
@@ -15372,7 +15367,7 @@ msgstr "ఏ ఇన్‌పుట్ కనపడలేదు"
 msgid "The stream must be playing or paused for bookmarks to work."
 msgstr ""
 
-#: modules/gui/macosx/controls.m:53 modules/gui/macosx/MainMenu.m:1476
+#: modules/gui/macosx/controls.m:53 modules/gui/macosx/MainMenu.m:1482
 msgid "Jump To Time"
 msgstr "సమయానికి గెంతు"
 
@@ -15473,7 +15468,7 @@ msgstr "పూర్తి శబ్దం"
 msgid "Click to play the audio at maximum volume."
 msgstr ""
 
-#: modules/gui/macosx/ControlsBar.m:462 modules/gui/macosx/simple_prefs.m:180
+#: modules/gui/macosx/ControlsBar.m:462 modules/gui/macosx/simple_prefs.m:309
 #: modules/gui/qt4/ui/sprefs_audio.h:420
 msgid "Effects"
 msgstr "ప్రభావాలు"
@@ -15506,7 +15501,7 @@ msgstr ""
 
 #: modules/gui/macosx/ConvertAndSave.m:153
 msgid "Go!"
-msgstr ""
+msgstr "వెళ్ళు!"
 
 #: modules/gui/macosx/ConvertAndSave.m:154 modules/gui/macosx/MainWindow.m:173
 msgid "Drop media here"
@@ -15535,9 +15530,9 @@ msgstr ""
 #: modules/gui/macosx/ConvertAndSave.m:161 modules/gui/macosx/open.m:138
 #: modules/gui/macosx/open.m:367 modules/gui/macosx/output.m:136
 #: modules/gui/macosx/prefs_widgets.m:1114
-#: modules/gui/macosx/simple_prefs.m:204 modules/gui/macosx/simple_prefs.m:272
+#: modules/gui/macosx/simple_prefs.m:333 modules/gui/macosx/simple_prefs.m:402
 #: modules/gui/qt4/components/preferences_widgets.cpp:263
-#: modules/gui/qt4/components/simple_preferences.cpp:419
+#: modules/gui/qt4/components/simple_preferences.cpp:421
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:98
 #: modules/gui/qt4/ui/open.h:263 modules/gui/qt4/ui/open_disk.h:307
 #: modules/gui/qt4/ui/open_file.h:147 modules/gui/qt4/ui/sprefs_audio.h:418
@@ -15554,14 +15549,15 @@ msgid "Save as File"
 msgstr ""
 
 #: modules/gui/macosx/ConvertAndSave.m:165
-#: modules/gui/macosx/ConvertAndSave.m:415 modules/gui/macosx/output.m:134
+#: modules/gui/macosx/ConvertAndSave.m:416 modules/gui/macosx/output.m:134
 #: modules/gui/macosx/output.m:236 modules/gui/macosx/output.m:352
 msgid "Stream"
 msgstr "ప్రవాహం"
 
 #: modules/gui/macosx/ConvertAndSave.m:167
+#: modules/gui/macosx/ConvertAndSave.m:193
 msgid "Apply"
-msgstr "అనువర్తించు"
+msgstr "ఆపాదించు"
 
 #: modules/gui/macosx/ConvertAndSave.m:169
 msgid "Save as new Profile..."
@@ -15610,15 +15606,15 @@ msgstr "అసలు ఆడియో ట్రాక్‌ని ఉంచు"
 msgid "Overlay subtitles on the video"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:194
+#: modules/gui/macosx/ConvertAndSave.m:195
 msgid "Stream Destination"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:195
+#: modules/gui/macosx/ConvertAndSave.m:196
 msgid "Stream Announcement"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:197 modules/gui/macosx/open.m:195
+#: modules/gui/macosx/ConvertAndSave.m:198 modules/gui/macosx/open.m:195
 #: modules/gui/macosx/output.m:137
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:211
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:306
@@ -15627,11 +15623,11 @@ msgstr ""
 msgid "Address"
 msgstr "చిరునామా"
 
-#: modules/gui/macosx/ConvertAndSave.m:198
+#: modules/gui/macosx/ConvertAndSave.m:199
 msgid "TTL"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:201 modules/gui/macosx/open.m:183
+#: modules/gui/macosx/ConvertAndSave.m:202 modules/gui/macosx/open.m:183
 #: modules/gui/macosx/open.m:185 modules/gui/macosx/output.m:138
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:153
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:212
@@ -15644,86 +15640,86 @@ msgstr ""
 msgid "Port"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:202 modules/gui/macosx/output.m:172
+#: modules/gui/macosx/ConvertAndSave.m:203 modules/gui/macosx/output.m:172
 #: modules/gui/macosx/wizard.m:400 modules/gui/macosx/wizard.m:432
 #: modules/gui/macosx/wizard.m:1798
 msgid "SAP Announcement"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:204 modules/gui/macosx/output.m:174
+#: modules/gui/macosx/ConvertAndSave.m:205 modules/gui/macosx/output.m:174
 #: modules/gui/macosx/output.m:550
 msgid "HTTP Announcement"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:205 modules/gui/macosx/output.m:173
+#: modules/gui/macosx/ConvertAndSave.m:206 modules/gui/macosx/output.m:173
 #: modules/gui/macosx/output.m:546
 msgid "RTSP Announcement"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:206 modules/gui/macosx/output.m:175
+#: modules/gui/macosx/ConvertAndSave.m:207 modules/gui/macosx/output.m:175
 #: modules/gui/macosx/output.m:554
 msgid "Export SDP as file"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:283
+#: modules/gui/macosx/ConvertAndSave.m:284
 msgid "Invalid container format for HTTP streaming"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:285
+#: modules/gui/macosx/ConvertAndSave.m:286
 msgid ""
 "Media encapsulated as %@ cannot be streamed through the HTTP protocol for "
 "technical reasons."
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:365
+#: modules/gui/macosx/ConvertAndSave.m:366
 msgid "Save as new profile"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:378
+#: modules/gui/macosx/ConvertAndSave.m:379
 msgid "Remove a profile"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:379
+#: modules/gui/macosx/ConvertAndSave.m:380
 msgid "Select the profile you would like to remove:"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:461
+#: modules/gui/macosx/ConvertAndSave.m:468
 msgid "%@ stream to %@:%@"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:471
+#: modules/gui/macosx/ConvertAndSave.m:478
 msgid "No Address given"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:473
+#: modules/gui/macosx/ConvertAndSave.m:480
 msgid "In order to stream, a valid destination address is required."
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:478
+#: modules/gui/macosx/ConvertAndSave.m:485
 msgid "No Channel Name given"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:480
+#: modules/gui/macosx/ConvertAndSave.m:487
 msgid ""
 "SAP stream announcement is enabled. However, no channel name is provided."
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:485
+#: modules/gui/macosx/ConvertAndSave.m:492
 msgid "No SDP URL given"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:487
+#: modules/gui/macosx/ConvertAndSave.m:494
 msgid "A SDP export is requested, but no URL is provided."
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:1048
-#: modules/gui/macosx/simple_prefs.m:566 modules/gui/macosx/simple_prefs.m:590
-#: modules/gui/macosx/simple_prefs.m:1143
-#: modules/gui/qt4/components/simple_preferences.cpp:666
+#: modules/gui/macosx/ConvertAndSave.m:1052
+#: modules/gui/macosx/simple_prefs.m:708 modules/gui/macosx/simple_prefs.m:732
+#: modules/gui/macosx/simple_prefs.m:1290
+#: modules/gui/qt4/components/simple_preferences.cpp:668
 msgid "Custom"
 msgstr "అనురూపితం"
 
-#: modules/gui/macosx/coredialogs.m:59 modules/gui/macosx/simple_prefs.m:186
+#: modules/gui/macosx/coredialogs.m:59 modules/gui/macosx/simple_prefs.m:315
 #: modules/gui/qt4/dialogs/external.cpp:113
 msgid "User name"
 msgstr "వాడుకరి పేరు"
@@ -15735,10 +15731,6 @@ msgstr "దోషాలు మరియు హెచ్చరికలు"
 #: modules/gui/macosx/coredialogs.m:244
 msgid "Clean up"
 msgstr ""
-
-#: modules/gui/macosx/coredialogs.m:245
-msgid "Show Details"
-msgstr "వివరాలను చూపించు"
 
 #: modules/gui/macosx/CoreInteraction.m:374
 msgid "Random On"
@@ -15813,7 +15805,7 @@ msgstr ""
 
 #: modules/gui/macosx/intf.m:854
 msgid "Don't ask again"
-msgstr ""
+msgstr "మళ్ళీ అడుగవద్దు"
 
 #: modules/gui/macosx/intf.m:1498 modules/gui/macosx/intf.m:1515
 msgid "VLC media playback"
@@ -15823,7 +15815,7 @@ msgstr ""
 msgid "No CrashLog found"
 msgstr "ఎటువంటి విరిగినచిట్టా కనపడలేదు"
 
-#: modules/gui/macosx/intf.m:1877 modules/gui/macosx/simple_prefs.m:699
+#: modules/gui/macosx/intf.m:1877 modules/gui/macosx/simple_prefs.m:841
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr "కొనసాగించు"
@@ -15849,126 +15841,126 @@ msgstr ""
 msgid "VLC Debug Log (%s).rtf"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:51
+#: modules/gui/macosx/macosx.m:53
 msgid "Video device"
 msgstr "వీడియో పరికరం"
 
-#: modules/gui/macosx/macosx.m:52
+#: modules/gui/macosx/macosx.m:54
 msgid ""
 "Number of the screen to use by default to display videos in 'fullscreen'. "
 "The screen number correspondance can be found in the video device selection "
 "menu."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:56
+#: modules/gui/macosx/macosx.m:58
 msgid "Opaqueness"
 msgstr "అపారదర్శకత"
 
-#: modules/gui/macosx/macosx.m:57
+#: modules/gui/macosx/macosx.m:59
 msgid ""
 "Set the transparency of the video output. 1 is non-transparent (default) 0 "
 "is fully transparent."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:60
+#: modules/gui/macosx/macosx.m:62
 msgid "Black screens in fullscreen"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:61
+#: modules/gui/macosx/macosx.m:63
 msgid "In fullscreen mode, keep screen where there is no video displayed black"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:64
+#: modules/gui/macosx/macosx.m:66
 msgid "Show Fullscreen controller"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:65
+#: modules/gui/macosx/macosx.m:67
 msgid "Shows a lucent controller when moving the mouse in fullscreen mode."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:68
+#: modules/gui/macosx/macosx.m:70
 msgid "Auto-playback of new items"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:69
+#: modules/gui/macosx/macosx.m:71
 msgid "Start playback of new items immediately once they were added."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:72
+#: modules/gui/macosx/macosx.m:74
 msgid "Keep Recent Items"
 msgstr "ఇటీవలి అంశాలను ఉంచు"
 
-#: modules/gui/macosx/macosx.m:73
+#: modules/gui/macosx/macosx.m:75
 msgid ""
 "By default, VLC keeps a list of the last 10 items. This feature can be "
 "disabled here."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:76 modules/gui/macosx/simple_prefs.m:234
+#: modules/gui/macosx/macosx.m:78 modules/gui/macosx/simple_prefs.m:364
 msgid "Control playback with the Apple Remote"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:77
+#: modules/gui/macosx/macosx.m:79
 msgid "By default, VLC can be remotely controlled with the Apple Remote."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:79 modules/gui/macosx/simple_prefs.m:235
+#: modules/gui/macosx/macosx.m:81 modules/gui/macosx/simple_prefs.m:365
 msgid "Control system volume with the Apple Remote"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:80
+#: modules/gui/macosx/macosx.m:82
 msgid ""
 "By default, VLC will control its own volume with the Apple Remote. However, "
 "you can choose to control the global system volume instead."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:82
+#: modules/gui/macosx/macosx.m:84
 msgid "Control playlist items with the Apple Remote"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:83
+#: modules/gui/macosx/macosx.m:85
 msgid ""
 "By default, VLC will allow you to switch to the next or previous item with "
 "the Apple Remote. You can disable this behavior with this option."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:85 modules/gui/macosx/simple_prefs.m:236
+#: modules/gui/macosx/macosx.m:87 modules/gui/macosx/simple_prefs.m:366
 msgid "Control playback with media keys"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:86
+#: modules/gui/macosx/macosx.m:88
 msgid ""
 "By default, VLC can be controlled using the media keys on modern Apple "
 "keyboards."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:89
+#: modules/gui/macosx/macosx.m:91
 msgid "Run VLC with dark interface style"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:90
+#: modules/gui/macosx/macosx.m:92
 msgid ""
 "If this option is enabled, VLC will use the dark interface style. Otherwise, "
 "the grey interface style is used."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:92 modules/gui/macosx/simple_prefs.m:231
+#: modules/gui/macosx/macosx.m:94 modules/gui/macosx/simple_prefs.m:361
 msgid "Use the native fullscreen mode"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:93
+#: modules/gui/macosx/macosx.m:95
 msgid ""
 "By default, VLC uses the fullscreen mode known from previous Mac OS X "
 "releases. It can also use the native fullscreen mode on Mac OS X 10.7 and "
 "later."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:95 modules/gui/macosx/simple_prefs.m:240
+#: modules/gui/macosx/macosx.m:97 modules/gui/macosx/simple_prefs.m:370
 #: modules/gui/qt4/qt4.cpp:86
 msgid "Resize interface to the native video size"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:96 modules/gui/qt4/qt4.cpp:87
+#: modules/gui/macosx/macosx.m:98 modules/gui/qt4/qt4.cpp:87
 msgid ""
 "You have two choices:\n"
 " - The interface will resize to the native video size\n"
@@ -15976,105 +15968,105 @@ msgid ""
 " By default, interface resize to the native video size."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:101 modules/gui/macosx/simple_prefs.m:241
+#: modules/gui/macosx/macosx.m:103 modules/gui/macosx/simple_prefs.m:371
 #: modules/gui/qt4/qt4.cpp:170
 msgid "Pause the video playback when minimized"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:102 modules/gui/qt4/qt4.cpp:172
+#: modules/gui/macosx/macosx.m:104 modules/gui/qt4/qt4.cpp:172
 msgid ""
 "With this option enabled, the playback will be automatically paused when "
 "minimizing the window."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:105 modules/gui/qt4/qt4.cpp:174
+#: modules/gui/macosx/macosx.m:107 modules/gui/qt4/qt4.cpp:174
 msgid "Allow automatic icon changes"
 msgstr "స్వయంచాలక ప్రతీకం మార్పులను అనుమతించు"
 
-#: modules/gui/macosx/macosx.m:106 modules/gui/qt4/qt4.cpp:176
+#: modules/gui/macosx/macosx.m:108 modules/gui/qt4/qt4.cpp:176
 msgid ""
 "This option allows the interface to change its icon on various occasions."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:108 modules/gui/macosx/MainMenu.m:1306
+#: modules/gui/macosx/macosx.m:110 modules/gui/macosx/MainMenu.m:1312
 msgid "Lock Aspect Ratio"
 msgstr "రూప నిష్పత్తికి తాళంవేయి"
 
-#: modules/gui/macosx/macosx.m:110 modules/gui/macosx/MainMenu.m:338
+#: modules/gui/macosx/macosx.m:112 modules/gui/macosx/MainMenu.m:338
 msgid "Show Previous & Next Buttons"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:111
+#: modules/gui/macosx/macosx.m:113
 msgid "Shows the previous and next buttons in the main window."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:113 modules/gui/macosx/MainMenu.m:340
+#: modules/gui/macosx/macosx.m:115 modules/gui/macosx/MainMenu.m:340
 msgid "Show Shuffle & Repeat Buttons"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:114
+#: modules/gui/macosx/macosx.m:116
 msgid "Shows the shuffle and repeat buttons in the main window."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:116 modules/gui/macosx/MainMenu.m:342
+#: modules/gui/macosx/macosx.m:118 modules/gui/macosx/MainMenu.m:342
 msgid "Show Audio Effects Button"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:117
+#: modules/gui/macosx/macosx.m:119
 msgid "Shows the audio effects button in the main window."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:119 modules/gui/macosx/MainMenu.m:344
+#: modules/gui/macosx/macosx.m:121 modules/gui/macosx/MainMenu.m:344
 msgid "Show Sidebar"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:120
+#: modules/gui/macosx/macosx.m:122
 msgid "Shows a sidebar in the main window listing media sources."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:122
+#: modules/gui/macosx/macosx.m:124
 msgid "Pause iTunes during VLC playback"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:123
+#: modules/gui/macosx/macosx.m:125
 msgid ""
 "Pauses iTunes playback when VLC playback starts. If selected, iTunes "
 "playback will be resumed again if VLC playback is finished."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:128
+#: modules/gui/macosx/macosx.m:130
 msgid "Do nothing"
-msgstr ""
+msgstr "ఏమీ చెయ్యవద్దు"
 
-#: modules/gui/macosx/macosx.m:128
+#: modules/gui/macosx/macosx.m:130
 msgid "Pause iTunes"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:128
+#: modules/gui/macosx/macosx.m:130
 msgid "Pause and resume iTunes"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:131 modules/gui/qt4/qt4.cpp:178
+#: modules/gui/macosx/macosx.m:133 modules/gui/qt4/qt4.cpp:178
 msgid "Maximum Volume displayed"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:135
+#: modules/gui/macosx/macosx.m:137
 msgid "Mac OS X interface"
 msgstr "మ్యాక్ OS X అంతరవర్తి"
 
-#: modules/gui/macosx/macosx.m:142
+#: modules/gui/macosx/macosx.m:146
 msgid "Appearance"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:152
+#: modules/gui/macosx/macosx.m:156
 msgid "Behavior"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:162
+#: modules/gui/macosx/macosx.m:166
 msgid "Apple Remote and media keys"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:177
+#: modules/gui/macosx/macosx.m:181
 msgid "Video output"
 msgstr ""
 
@@ -16082,13 +16074,13 @@ msgstr ""
 msgid "Track Number"
 msgstr ""
 
-#: modules/gui/macosx/MainMenu.m:70 modules/gui/macosx/playlist.m:160
+#: modules/gui/macosx/MainMenu.m:70 modules/gui/macosx/playlist.m:165
 #: modules/gui/macosx/wizard.m:347 modules/gui/qt4/dialogs/plugins.cpp:557
 #: modules/mux/asf.c:58
 msgid "Author"
 msgstr "మూలకర్త"
 
-#: modules/gui/macosx/MainMenu.m:71 modules/gui/macosx/playlist.m:161
+#: modules/gui/macosx/MainMenu.m:71 modules/gui/macosx/playlist.m:166
 #: modules/gui/macosx/wizard.m:349
 #: modules/gui/qt4/components/playlist/playlist_model.cpp:402
 #: modules/gui/qt4/components/playlist/sorting.h:56
@@ -16125,7 +16117,7 @@ msgstr "వియల్సీని దాయి"
 msgid "Hide Others"
 msgstr "ఇతరాలని దాయి"
 
-#: modules/gui/macosx/MainMenu.m:317 modules/gui/macosx/simple_prefs.m:282
+#: modules/gui/macosx/MainMenu.m:317 modules/gui/macosx/simple_prefs.m:412
 msgid "Show All"
 msgstr "అన్నీ చూపించు"
 
@@ -16181,7 +16173,7 @@ msgstr "నకలు"
 msgid "Paste"
 msgstr "అతుకు"
 
-#: modules/gui/macosx/MainMenu.m:335 modules/gui/macosx/playlist.m:502
+#: modules/gui/macosx/MainMenu.m:335 modules/gui/macosx/playlist.m:520
 msgid "Select All"
 msgstr "అన్నీ ఎన్నుకొను"
 
@@ -16210,15 +16202,15 @@ msgstr "ట్రాక్ సమకాలీకరణం"
 msgid "A→B Loop"
 msgstr ""
 
-#: modules/gui/macosx/MainMenu.m:366 modules/gui/macosx/MainMenu.m:1469
+#: modules/gui/macosx/MainMenu.m:366 modules/gui/macosx/MainMenu.m:1475
 msgid "Quit after Playback"
 msgstr "ప్లేబ్యాక్ తరువాత నిష్క్రమించు"
 
-#: modules/gui/macosx/MainMenu.m:367 modules/gui/macosx/MainMenu.m:1474
+#: modules/gui/macosx/MainMenu.m:367 modules/gui/macosx/MainMenu.m:1480
 msgid "Step Forward"
 msgstr "అడుగు ముందుకు"
 
-#: modules/gui/macosx/MainMenu.m:368 modules/gui/macosx/MainMenu.m:1475
+#: modules/gui/macosx/MainMenu.m:368 modules/gui/macosx/MainMenu.m:1481
 msgid "Step Backward"
 msgstr "అడుగు వెనుకకు"
 
@@ -16234,30 +16226,30 @@ msgstr "శబ్దం తగ్గించు"
 msgid "Audio Device"
 msgstr "ఆడియో పరికరం"
 
-#: modules/gui/macosx/MainMenu.m:391 modules/gui/macosx/MainMenu.m:1486
+#: modules/gui/macosx/MainMenu.m:391 modules/gui/macosx/MainMenu.m:1492
 msgid "Half Size"
 msgstr "సగం పరిమాణం"
 
-#: modules/gui/macosx/MainMenu.m:392 modules/gui/macosx/MainMenu.m:1487
-#: modules/gui/macosx/MainMenu.m:1526
+#: modules/gui/macosx/MainMenu.m:392 modules/gui/macosx/MainMenu.m:1493
+#: modules/gui/macosx/MainMenu.m:1532
 msgid "Normal Size"
 msgstr "సాధారణ పరిమాణం"
 
-#: modules/gui/macosx/MainMenu.m:393 modules/gui/macosx/MainMenu.m:1488
+#: modules/gui/macosx/MainMenu.m:393 modules/gui/macosx/MainMenu.m:1494
 msgid "Double Size"
 msgstr "రెండింతల పరిమాణం"
 
-#: modules/gui/macosx/MainMenu.m:394 modules/gui/macosx/MainMenu.m:1489
+#: modules/gui/macosx/MainMenu.m:394 modules/gui/macosx/MainMenu.m:1495
 msgid "Fit to Screen"
 msgstr "తెరకు అమర్చు"
 
-#: modules/gui/macosx/MainMenu.m:396 modules/gui/macosx/MainMenu.m:1492
-#: modules/gui/macosx/MainMenu.m:1498
+#: modules/gui/macosx/MainMenu.m:396 modules/gui/macosx/MainMenu.m:1498
+#: modules/gui/macosx/MainMenu.m:1504
 msgid "Float on Top"
 msgstr ""
 
 #: modules/gui/macosx/MainMenu.m:404 modules/gui/macosx/MainMenu.m:405
-#: modules/gui/macosx/simple_prefs.m:263
+#: modules/gui/macosx/simple_prefs.m:393
 msgid "Fullscreen Video Device"
 msgstr "పూర్తితెర వీడియో పరికరం"
 
@@ -16266,7 +16258,7 @@ msgstr "పూర్తితెర వీడియో పరికరం"
 msgid "Post processing"
 msgstr "పోస్ట్ ప్రోసెసింగ్"
 
-#: modules/gui/macosx/MainMenu.m:414 modules/gui/macosx/MainMenu.m:1511
+#: modules/gui/macosx/MainMenu.m:414 modules/gui/macosx/MainMenu.m:1517
 msgid "Add Subtitle File..."
 msgstr ""
 
@@ -16276,11 +16268,11 @@ msgstr "ఉపశీర్షికల ట్రాక్"
 
 #: modules/gui/macosx/MainMenu.m:417
 msgid "Text Size"
-msgstr ""
+msgstr "పాఠ్యపు పరిమాణం"
 
 #: modules/gui/macosx/MainMenu.m:418
 msgid "Text Color"
-msgstr ""
+msgstr "పాఠ్యపు రంగు"
 
 #: modules/gui/macosx/MainMenu.m:419
 msgid "Outline Thickness"
@@ -16288,11 +16280,11 @@ msgstr ""
 
 #: modules/gui/macosx/MainMenu.m:421 modules/gui/macosx/MainMenu.m:422
 msgid "Background Opacity"
-msgstr ""
+msgstr "వెనుతలపు అకిరణ్యత"
 
 #: modules/gui/macosx/MainMenu.m:423
 msgid "Background Color"
-msgstr ""
+msgstr "వెనుతలపు రంగు"
 
 #: modules/gui/macosx/MainMenu.m:425
 msgid "Transparent"
@@ -16334,7 +16326,7 @@ msgstr "ఇష్టాంశాలు..."
 msgid "Playlist..."
 msgstr "ప్రదర్శనజాబితా..."
 
-#: modules/gui/macosx/MainMenu.m:441 modules/gui/macosx/playlist.m:503
+#: modules/gui/macosx/MainMenu.m:441 modules/gui/macosx/playlist.m:521
 msgid "Media Information..."
 msgstr "మాధ్యమ సమాచారం..."
 
@@ -16398,7 +16390,7 @@ msgstr "చందాచేరు"
 #: modules/gui/macosx/MainWindow.m:176 modules/gui/macosx/MainWindow.m:183
 #: modules/gui/qt4/components/playlist/selector.cpp:608
 msgid "Unsubscribe"
-msgstr ""
+msgstr "చందామాను"
 
 #: modules/gui/macosx/MainWindow.m:177
 #: modules/gui/qt4/components/playlist/selector.cpp:286
@@ -16494,7 +16486,7 @@ msgid "Play another media synchronously"
 msgstr ""
 
 #: modules/gui/macosx/open.m:143 modules/gui/macosx/open.m:365
-#: modules/gui/macosx/simple_prefs.m:248 modules/gui/macosx/wizard.m:343
+#: modules/gui/macosx/simple_prefs.m:378 modules/gui/macosx/wizard.m:343
 #: modules/gui/macosx/wizard.m:411 modules/gui/qt4/ui/sprefs_interface.h:530
 msgid "Choose..."
 msgstr "ఎంచుకొను..."
@@ -16665,7 +16657,7 @@ msgstr "FPS"
 msgid "Subtitle encoding"
 msgstr ""
 
-#: modules/gui/macosx/open.m:376 modules/gui/macosx/simple_prefs.m:250
+#: modules/gui/macosx/open.m:376 modules/gui/macosx/simple_prefs.m:380
 #: modules/gui/qt4/ui/sprefs_subtitles.h:296
 msgid "Font size"
 msgstr "ఖతి పరిమాణం"
@@ -16754,59 +16746,59 @@ msgstr "SDP URL"
 msgid "Save File"
 msgstr "దస్త్రాన్ని భద్రపరుచు"
 
-#: modules/gui/macosx/playlist.m:498
+#: modules/gui/macosx/playlist.m:516
 msgid "Save Playlist..."
 msgstr "ప్రదర్శనజాబితాను భద్రపరుచు..."
 
-#: modules/gui/macosx/playlist.m:501
+#: modules/gui/macosx/playlist.m:519
 msgid "Expand Node"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:504
+#: modules/gui/macosx/playlist.m:522
 msgid "Download Cover Art"
 msgstr "కవరు కళను దింపు"
 
-#: modules/gui/macosx/playlist.m:505
+#: modules/gui/macosx/playlist.m:523
 msgid "Fetch Meta Data"
 msgstr "మెటాడేటాను తెమ్ము"
 
-#: modules/gui/macosx/playlist.m:506 modules/gui/macosx/playlist.m:507
+#: modules/gui/macosx/playlist.m:524 modules/gui/macosx/playlist.m:525
 msgid "Reveal in Finder"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:509
+#: modules/gui/macosx/playlist.m:527
 msgid "Sort Node by Name"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:510
+#: modules/gui/macosx/playlist.m:528
 msgid "Sort Node by Author"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:512 modules/gui/macosx/playlist.m:513
+#: modules/gui/macosx/playlist.m:530 modules/gui/macosx/playlist.m:531
 msgid "Search in Playlist"
 msgstr "ప్రదర్శనజాబితాలో శోధించు"
 
-#: modules/gui/macosx/playlist.m:515
+#: modules/gui/macosx/playlist.m:533
 msgid "File Format:"
 msgstr "దస్త్ర ఆకృతి:"
 
-#: modules/gui/macosx/playlist.m:516
+#: modules/gui/macosx/playlist.m:534
 msgid "Extended M3U"
 msgstr "పొడిగించిన M3U"
 
-#: modules/gui/macosx/playlist.m:517
+#: modules/gui/macosx/playlist.m:535
 msgid "XML Shareable Playlist Format (XSPF)"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:518 modules/gui/qt4/dialogs_provider.cpp:582
+#: modules/gui/macosx/playlist.m:536 modules/gui/qt4/dialogs_provider.cpp:582
 msgid "HTML playlist"
 msgstr "HTML ప్రదర్శనజాబితా"
 
-#: modules/gui/macosx/playlist.m:695
+#: modules/gui/macosx/playlist.m:715
 msgid "Save Playlist"
 msgstr "ప్రదర్శనజాబితాను భద్రపరుచు"
 
-#: modules/gui/macosx/playlist.m:1116
+#: modules/gui/macosx/playlist.m:1130
 msgid "Meta-information"
 msgstr "మెటా-సమాచారం"
 
@@ -16894,12 +16886,12 @@ msgstr "మెటా భద్రపరుచుటలో దోషం"
 msgid "VLC was unable to save the meta data."
 msgstr "మెటాడేటాను వియల్సీ భద్రపరుచలేకపోతుంది."
 
-#: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:286
+#: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:416
 #: modules/gui/qt4/dialogs/preferences.cpp:52
 msgid "Preferences"
 msgstr "ప్రాధాన్యతలు"
 
-#: modules/gui/macosx/prefs.m:209 modules/gui/macosx/simple_prefs.m:284
+#: modules/gui/macosx/prefs.m:209 modules/gui/macosx/simple_prefs.m:414
 msgid "Reset All"
 msgstr "అన్నీ తిరిగిఅమర్చు"
 
@@ -16919,282 +16911,282 @@ msgstr "ఒక దస్త్రాన్ని ఎన్నుకొను"
 msgid "Select"
 msgstr "ఎన్నుకొను"
 
-#: modules/gui/macosx/simple_prefs.m:140
-#: modules/gui/qt4/components/simple_preferences.cpp:218
-#: modules/gui/qt4/components/simple_preferences.cpp:693
+#: modules/gui/macosx/simple_prefs.m:269
+#: modules/gui/qt4/components/simple_preferences.cpp:220
+#: modules/gui/qt4/components/simple_preferences.cpp:695
 msgid "Interface Settings"
 msgstr "అంతరవర్తి అమరికలు"
 
-#: modules/gui/macosx/simple_prefs.m:142
-#: modules/gui/qt4/components/simple_preferences.cpp:220
-#: modules/gui/qt4/components/simple_preferences.cpp:396
+#: modules/gui/macosx/simple_prefs.m:271
+#: modules/gui/qt4/components/simple_preferences.cpp:222
+#: modules/gui/qt4/components/simple_preferences.cpp:398
 msgid "Audio Settings"
 msgstr "ఆడియో అమరికలు"
 
-#: modules/gui/macosx/simple_prefs.m:144
-#: modules/gui/qt4/components/simple_preferences.cpp:222
-#: modules/gui/qt4/components/simple_preferences.cpp:350
+#: modules/gui/macosx/simple_prefs.m:273
+#: modules/gui/qt4/components/simple_preferences.cpp:224
+#: modules/gui/qt4/components/simple_preferences.cpp:352
 msgid "Video Settings"
 msgstr "వీడియో అమరికలు"
 
-#: modules/gui/macosx/simple_prefs.m:146
-#: modules/gui/qt4/components/simple_preferences.cpp:224
-#: modules/gui/qt4/components/simple_preferences.cpp:838
+#: modules/gui/macosx/simple_prefs.m:275
+#: modules/gui/qt4/components/simple_preferences.cpp:226
+#: modules/gui/qt4/components/simple_preferences.cpp:840
 msgid "Subtitle & On Screen Display Settings"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:148
+#: modules/gui/macosx/simple_prefs.m:277
 msgid "Input & Codec Settings"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:182
+#: modules/gui/macosx/simple_prefs.m:311
 msgid "General Audio"
 msgstr "సాధారణ ఆడియో"
 
-#: modules/gui/macosx/simple_prefs.m:183
+#: modules/gui/macosx/simple_prefs.m:312
 msgid "Preferred Audio language"
 msgstr "ప్రాధాన్య ఆడియో భాష"
 
-#: modules/gui/macosx/simple_prefs.m:184
+#: modules/gui/macosx/simple_prefs.m:313
 msgid "Enable Last.fm submissions"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:188
+#: modules/gui/macosx/simple_prefs.m:317
 msgid "Visualization"
 msgstr "దృశ్యమానం"
 
-#: modules/gui/macosx/simple_prefs.m:189
+#: modules/gui/macosx/simple_prefs.m:318
 msgid "Keep audio level between sessions"
 msgstr "చర్యాకాలాల మధ్య ఆడియో స్థాయిని ఉంచు"
 
-#: modules/gui/macosx/simple_prefs.m:190 modules/gui/qt4/ui/sprefs_audio.h:415
+#: modules/gui/macosx/simple_prefs.m:319 modules/gui/qt4/ui/sprefs_audio.h:415
 msgid "Always reset audio start level to:"
 msgstr "ఎల్లప్పుడు ఆడియోని ఈ స్థాయికి తిరిగిఅమర్చు:"
 
-#: modules/gui/macosx/simple_prefs.m:193 modules/gui/qt4/dialogs/vlm.cpp:506
+#: modules/gui/macosx/simple_prefs.m:322 modules/gui/qt4/dialogs/vlm.cpp:506
 msgid "Change"
 msgstr "మార్చు"
 
-#: modules/gui/macosx/simple_prefs.m:194
+#: modules/gui/macosx/simple_prefs.m:323
 msgid "Change Hotkey"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:198
+#: modules/gui/macosx/simple_prefs.m:327
 msgid "Select an action to change the associated hotkey:"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:199
+#: modules/gui/macosx/simple_prefs.m:328
 #: modules/gui/qt4/components/preferences_widgets.cpp:1146
 msgid "Action"
 msgstr "చర్య"
 
-#: modules/gui/macosx/simple_prefs.m:200
+#: modules/gui/macosx/simple_prefs.m:329
 msgid "Shortcut"
 msgstr "అడ్డదారి"
 
-#: modules/gui/macosx/simple_prefs.m:206
+#: modules/gui/macosx/simple_prefs.m:335
 msgid "Repair AVI Files"
 msgstr "AVI ఫైళ్ళను బాగుచేయి"
 
-#: modules/gui/macosx/simple_prefs.m:207
+#: modules/gui/macosx/simple_prefs.m:336
 msgid "Default Caching Level"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:208 modules/gui/qt4/ui/open.h:248
+#: modules/gui/macosx/simple_prefs.m:337 modules/gui/qt4/ui/open.h:248
 msgid "Caching"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:209
+#: modules/gui/macosx/simple_prefs.m:338
 msgid ""
 "Use the complete preferences to configure custom caching values for each "
 "access module."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:210
+#: modules/gui/macosx/simple_prefs.m:339
 msgid "Codecs / Muxers"
 msgstr "కొడెక్‌లు / మక్సర్లు"
 
-#: modules/gui/macosx/simple_prefs.m:212
+#: modules/gui/macosx/simple_prefs.m:341
 msgid "Hardware Acceleration"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:213
+#: modules/gui/macosx/simple_prefs.m:342
 msgid "Post-Processing Quality"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:217
+#: modules/gui/macosx/simple_prefs.m:346
 msgid "Edit default application settings for network protocols"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:220
+#: modules/gui/macosx/simple_prefs.m:349
 msgid "Open network streams using the following protocols"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:221
+#: modules/gui/macosx/simple_prefs.m:350
 msgid "Note that these are system-wide settings."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:226
+#: modules/gui/macosx/simple_prefs.m:356
 msgid "Interface style"
 msgstr "అంతరవర్తి శైలి"
 
-#: modules/gui/macosx/simple_prefs.m:227
+#: modules/gui/macosx/simple_prefs.m:357
 msgid "Dark"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:228
+#: modules/gui/macosx/simple_prefs.m:358
 msgid "Bright"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:229
+#: modules/gui/macosx/simple_prefs.m:359
 msgid "Album art download policy"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:230
+#: modules/gui/macosx/simple_prefs.m:360
 msgid "Show video within the main window"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:232
+#: modules/gui/macosx/simple_prefs.m:362
 msgid "Show Fullscreen Controller"
 msgstr "పూర్తితెర నియంత్రకాన్ని చూపించు"
 
-#: modules/gui/macosx/simple_prefs.m:233
+#: modules/gui/macosx/simple_prefs.m:363
 #: modules/gui/qt4/ui/sprefs_interface.h:539
 msgid "Privacy / Network Interaction"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:237
+#: modules/gui/macosx/simple_prefs.m:367
 msgid "Automatically check for updates"
 msgstr "నవీకరణల కోసం స్వయంచాలకంగా పరిశీలించు"
 
-#: modules/gui/macosx/simple_prefs.m:239
+#: modules/gui/macosx/simple_prefs.m:369
 msgid "Enable Growl notifications (on playlist item change)"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:242 modules/lua/vlc.c:96
+#: modules/gui/macosx/simple_prefs.m:372 modules/lua/vlc.c:96
 #: modules/lua/vlc.c:103
 msgid "Lua HTTP"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:246
+#: modules/gui/macosx/simple_prefs.m:376
 msgid "Default Encoding"
 msgstr "అప్రమేయ ఎన్కోడింగ్"
 
-#: modules/gui/macosx/simple_prefs.m:247
+#: modules/gui/macosx/simple_prefs.m:377
 msgid "Display Settings"
 msgstr "ప్రదర్శనా అమరికలు"
 
-#: modules/gui/macosx/simple_prefs.m:249
+#: modules/gui/macosx/simple_prefs.m:379
 #: modules/gui/qt4/ui/sprefs_subtitles.h:297
 msgid "Font color"
 msgstr "ఖతి రంగు"
 
-#: modules/gui/macosx/simple_prefs.m:251 modules/text_renderer/freetype.c:154
+#: modules/gui/macosx/simple_prefs.m:381 modules/text_renderer/freetype.c:154
 #: modules/text_renderer/quartztext.c:92 modules/text_renderer/win32text.c:59
 #: modules/video_filter/marq.c:167 modules/video_filter/rss.c:206
 #: modules/gui/qt4/ui/sprefs_subtitles.h:295
 msgid "Font"
 msgstr "ఖతి"
 
-#: modules/gui/macosx/simple_prefs.m:252
+#: modules/gui/macosx/simple_prefs.m:382
 msgid "Subtitle languages"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:253
+#: modules/gui/macosx/simple_prefs.m:383
 #: modules/gui/qt4/ui/sprefs_subtitles.h:292
 msgid "Preferred subtitle language"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:255
+#: modules/gui/macosx/simple_prefs.m:385
 msgid "Enable OSD"
 msgstr "OSD చేతనపరుచు"
 
-#: modules/gui/macosx/simple_prefs.m:256 modules/text_renderer/win32text.c:66
+#: modules/gui/macosx/simple_prefs.m:386 modules/text_renderer/win32text.c:66
 #: modules/video_filter/marq.c:118 modules/video_filter/rss.c:146
 msgid "Opacity"
 msgstr "అపారదర్శకత"
 
-#: modules/gui/macosx/simple_prefs.m:257 modules/text_renderer/freetype.c:178
+#: modules/gui/macosx/simple_prefs.m:387 modules/text_renderer/freetype.c:178
 msgid "Force bold"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:258 modules/text_renderer/freetype.c:184
+#: modules/gui/macosx/simple_prefs.m:388 modules/text_renderer/freetype.c:184
 #: modules/gui/qt4/ui/sprefs_subtitles.h:299
 msgid "Outline color"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:259 modules/text_renderer/freetype.c:185
+#: modules/gui/macosx/simple_prefs.m:389 modules/text_renderer/freetype.c:185
 #: modules/gui/qt4/ui/sprefs_subtitles.h:298
 msgid "Outline thickness"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:262
+#: modules/gui/macosx/simple_prefs.m:392
 msgid "Black screens in Fullscreen mode"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:264 modules/stream_out/display.c:53
+#: modules/gui/macosx/simple_prefs.m:394 modules/stream_out/display.c:53
 #: modules/gui/qt4/ui/sprefs_video.h:341
 msgid "Display"
 msgstr "ప్రదర్శన"
 
-#: modules/gui/macosx/simple_prefs.m:269
+#: modules/gui/macosx/simple_prefs.m:399
 msgid "Output module"
 msgstr "అవుట్‌పుట్ పర్వికం"
 
-#: modules/gui/macosx/simple_prefs.m:271 modules/gui/qt4/ui/sprefs_video.h:357
+#: modules/gui/macosx/simple_prefs.m:401 modules/gui/qt4/ui/sprefs_video.h:357
 msgid "Video snapshots"
 msgstr "దృశ్యకం తక్షణచిత్రాలు"
 
-#: modules/gui/macosx/simple_prefs.m:273 modules/meta_engine/folder.c:63
+#: modules/gui/macosx/simple_prefs.m:403 modules/meta_engine/folder.c:63
 msgid "Folder"
 msgstr "సంచయం"
 
-#: modules/gui/macosx/simple_prefs.m:274 modules/gui/qt4/ui/sprefs_video.h:362
+#: modules/gui/macosx/simple_prefs.m:404 modules/gui/qt4/ui/sprefs_video.h:362
 msgid "Format"
 msgstr "ఆకృతి"
 
-#: modules/gui/macosx/simple_prefs.m:275 modules/gui/qt4/ui/sprefs_video.h:360
+#: modules/gui/macosx/simple_prefs.m:405 modules/gui/qt4/ui/sprefs_video.h:360
 msgid "Prefix"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:276 modules/gui/qt4/ui/sprefs_video.h:363
+#: modules/gui/macosx/simple_prefs.m:406 modules/gui/qt4/ui/sprefs_video.h:363
 msgid "Sequential numbering"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:446
+#: modules/gui/macosx/simple_prefs.m:588
 msgid "Last check on: %@"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:448
+#: modules/gui/macosx/simple_prefs.m:590
 msgid "No check was performed yet."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:566
-#: modules/gui/qt4/components/simple_preferences.cpp:667
+#: modules/gui/macosx/simple_prefs.m:708
+#: modules/gui/qt4/components/simple_preferences.cpp:669
 msgid "Lowest latency"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:567
-#: modules/gui/qt4/components/simple_preferences.cpp:668
+#: modules/gui/macosx/simple_prefs.m:709
+#: modules/gui/qt4/components/simple_preferences.cpp:670
 msgid "Low latency"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:567
-#: modules/gui/qt4/components/simple_preferences.cpp:670
+#: modules/gui/macosx/simple_prefs.m:709
+#: modules/gui/qt4/components/simple_preferences.cpp:672
 msgid "High latency"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:567
-#: modules/gui/qt4/components/simple_preferences.cpp:671
+#: modules/gui/macosx/simple_prefs.m:709
+#: modules/gui/qt4/components/simple_preferences.cpp:673
 msgid "Higher latency"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:698
+#: modules/gui/macosx/simple_prefs.m:840
 #: modules/gui/qt4/dialogs/preferences.cpp:326
 msgid "Reset Preferences"
 msgstr "ప్రాధాన్యతలను తిరిగిఅమర్చు"
 
-#: modules/gui/macosx/simple_prefs.m:701
+#: modules/gui/macosx/simple_prefs.m:843
 msgid ""
 "This will reset VLC media player's preferences.\n"
 "\n"
@@ -17207,35 +17199,35 @@ msgid ""
 "Are you sure you want to continue?"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1062
+#: modules/gui/macosx/simple_prefs.m:1209
 msgid "Choose the folder to save your video snapshots to."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1064
-#: modules/gui/macosx/simple_prefs.m:1155
+#: modules/gui/macosx/simple_prefs.m:1211
+#: modules/gui/macosx/simple_prefs.m:1302
 msgid "Choose"
 msgstr "ఎంచుకొను"
 
-#: modules/gui/macosx/simple_prefs.m:1153
+#: modules/gui/macosx/simple_prefs.m:1300
 msgid "Choose the directory or filename where the records will be stored."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1272
+#: modules/gui/macosx/simple_prefs.m:1419
 msgid ""
 "Press new keys for\n"
 "\"%@\""
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1349
+#: modules/gui/macosx/simple_prefs.m:1496
 msgid "Invalid combination"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1350
+#: modules/gui/macosx/simple_prefs.m:1497
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1360
-#: modules/gui/macosx/simple_prefs.m:1364
+#: modules/gui/macosx/simple_prefs.m:1507
+#: modules/gui/macosx/simple_prefs.m:1511
 msgid "This combination is already taken by \"%@\"."
 msgstr ""
 
@@ -17993,7 +17985,7 @@ msgstr ""
 
 #: modules/gui/macosx/wizard.m:1294
 msgid "Finish"
-msgstr ""
+msgstr "ముగించు"
 
 #: modules/gui/macosx/wizard.m:1299
 #, c-format
@@ -18764,7 +18756,7 @@ msgstr ""
 
 #: modules/gui/qt4/components/info_panels.cpp:609
 msgid "Last 60 seconds"
-msgstr ""
+msgstr "చివరి 60 క్షణాలు"
 
 #: modules/gui/qt4/components/info_panels.cpp:610
 msgid "Overall"
@@ -19009,7 +19001,7 @@ msgstr ""
 
 #: modules/gui/qt4/components/playlist/standardpanel.hpp:158
 msgid "List"
-msgstr ""
+msgstr "జాబితా"
 
 #: modules/gui/qt4/components/playlist/standardpanel.hpp:159
 msgid "PictureFlow"
@@ -19035,7 +19027,7 @@ msgstr ""
 
 #: modules/gui/qt4/components/preferences_widgets.cpp:1140
 msgid "Actions"
-msgstr ""
+msgstr "చర్యలు"
 
 #: modules/gui/qt4/components/preferences_widgets.cpp:1147
 msgid "Hotkey"
@@ -19089,21 +19081,21 @@ msgstr ""
 msgid "Key: "
 msgstr "కీ:"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:226
-#: modules/gui/qt4/components/simple_preferences.cpp:595
+#: modules/gui/qt4/components/simple_preferences.cpp:228
+#: modules/gui/qt4/components/simple_preferences.cpp:597
 msgid "Input & Codecs Settings"
 msgstr "ఇన్‌పుట్ && కొడెక్‌ల అమరికలు"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:228
-#: modules/gui/qt4/components/simple_preferences.cpp:882
+#: modules/gui/qt4/components/simple_preferences.cpp:230
+#: modules/gui/qt4/components/simple_preferences.cpp:884
 msgid "Configure Hotkeys"
 msgstr "వేగపుమీటలను స్వరూపించు"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:404
+#: modules/gui/qt4/components/simple_preferences.cpp:406
 msgid "Device:"
 msgstr "పరికరం:"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:600
+#: modules/gui/qt4/components/simple_preferences.cpp:602
 msgid ""
 "If this property is blank, different values\n"
 "for DVD, VCD, and CDDA are set.\n"
@@ -19111,42 +19103,42 @@ msgid ""
 "individually in the advanced preferences."
 msgstr ""
 
-#: modules/gui/qt4/components/simple_preferences.cpp:719
+#: modules/gui/qt4/components/simple_preferences.cpp:721
 msgid "This is VLC's skinnable interface. You can download other skins at"
 msgstr "ఇది VLC యొక్క తొడగదగిన అంతరవర్తి. ఇతర అంతరవర్తులను ఇక్కడ దించుకోవచ్చు"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:721
+#: modules/gui/qt4/components/simple_preferences.cpp:723
 msgid "VLC skins website"
 msgstr "VLC తొడుగుల వెబ్‌సైటు"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:750
+#: modules/gui/qt4/components/simple_preferences.cpp:752
 msgid "System's default"
 msgstr "వ్యవస్థ అప్రమేయం"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1227
+#: modules/gui/qt4/components/simple_preferences.cpp:1242
 msgid "File associations"
 msgstr "దస్త్ర సంబంధితాలు"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1236
+#: modules/gui/qt4/components/simple_preferences.cpp:1251
 #: modules/gui/qt4/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "ఆడియో దస్త్రాలు"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1237
+#: modules/gui/qt4/components/simple_preferences.cpp:1252
 #: modules/gui/qt4/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "వీడియో దస్త్రాలు"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1238
+#: modules/gui/qt4/components/simple_preferences.cpp:1253
 #: modules/gui/qt4/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "ప్రదర్శనజాబితా దస్త్రాలు"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1290
+#: modules/gui/qt4/components/simple_preferences.cpp:1305
 msgid "&Apply"
 msgstr "అనువర్తించు (&A)"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1291
+#: modules/gui/qt4/components/simple_preferences.cpp:1306
 #: modules/gui/qt4/dialogs/convert.cpp:109
 #: modules/gui/qt4/dialogs/gototime.cpp:49
 #: modules/gui/qt4/dialogs/open.cpp:108 modules/gui/qt4/dialogs/openurl.cpp:60
@@ -19182,11 +19174,11 @@ msgstr "సృష్టించు"
 msgid "This muxer is not provided directly by VLC: It could be missing."
 msgstr ""
 
-#: modules/gui/qt4/components/sout/profile_selector.cpp:752
+#: modules/gui/qt4/components/sout/profile_selector.cpp:754
 msgid " Profile Name Missing"
 msgstr ""
 
-#: modules/gui/qt4/components/sout/profile_selector.cpp:753
+#: modules/gui/qt4/components/sout/profile_selector.cpp:755
 msgid "You must set a name for the profile."
 msgstr ""
 
@@ -19641,11 +19633,11 @@ msgstr ""
 
 #: modules/gui/qt4/dialogs/preferences.cpp:201
 msgid "Advanced Preferences"
-msgstr ""
+msgstr "ఉన్నత అభిరుచులు"
 
 #: modules/gui/qt4/dialogs/preferences.cpp:222
 msgid "Simple Preferences"
-msgstr ""
+msgstr "సామాన్య అభిరుచులు"
 
 #: modules/gui/qt4/dialogs/preferences.cpp:306
 msgid "Cannot save Configuration"
@@ -19935,15 +19927,15 @@ msgstr "శ్రవ్యకం (&A)"
 msgid "&Video"
 msgstr "దృశ్యకం (&V)"
 
-#: modules/gui/qt4/menus.cpp:333 modules/gui/qt4/menus.cpp:1050
+#: modules/gui/qt4/menus.cpp:333 modules/gui/qt4/menus.cpp:1052
 msgid "Subti&tle"
 msgstr "ఉపశీర్షిక (&t)"
 
-#: modules/gui/qt4/menus.cpp:335 modules/gui/qt4/menus.cpp:1066
+#: modules/gui/qt4/menus.cpp:335 modules/gui/qt4/menus.cpp:1068
 msgid "T&ools"
-msgstr ""
+msgstr "పనిముట్లు (&o)"
 
-#: modules/gui/qt4/menus.cpp:338 modules/gui/qt4/menus.cpp:1101
+#: modules/gui/qt4/menus.cpp:338 modules/gui/qt4/menus.cpp:1103
 msgid "V&iew"
 msgstr "వీక్షణం (&i)"
 
@@ -19995,7 +19987,7 @@ msgstr "ప్రదర్శనజాబితా ముగిసిన తర�
 msgid "Close to systray"
 msgstr "వ్యవస్థపళ్లెమునకు మూసివేయి"
 
-#: modules/gui/qt4/menus.cpp:399 modules/gui/qt4/menus.cpp:1164
+#: modules/gui/qt4/menus.cpp:399 modules/gui/qt4/menus.cpp:1166
 msgid "&Quit"
 msgstr "నిష్క్రమించు (&Q)"
 
@@ -20219,23 +20211,23 @@ msgstr "నెట్‌వర్క్ తెరువు...(&N)"
 msgid "Leave Fullscreen"
 msgstr "పూర్తితెరను వదిలివెళ్ళు"
 
-#: modules/gui/qt4/menus.cpp:1056
+#: modules/gui/qt4/menus.cpp:1058
 msgid "&Playback"
 msgstr "ప్లేబ్యాక్ (&P)"
 
-#: modules/gui/qt4/menus.cpp:1145
+#: modules/gui/qt4/menus.cpp:1147
 msgid "&Hide VLC media player in taskbar"
 msgstr ""
 
-#: modules/gui/qt4/menus.cpp:1151
+#: modules/gui/qt4/menus.cpp:1153
 msgid "Sho&w VLC media player"
 msgstr ""
 
-#: modules/gui/qt4/menus.cpp:1162
+#: modules/gui/qt4/menus.cpp:1164
 msgid "&Open Media"
 msgstr ""
 
-#: modules/gui/qt4/menus.cpp:1626
+#: modules/gui/qt4/menus.cpp:1628
 msgid "&Clear"
 msgstr "శుభ్రపరుచు (&C)"
 
@@ -24907,15 +24899,15 @@ msgstr ""
 
 #: modules/video_filter/puzzle.c:75
 msgid "0"
-msgstr ""
+msgstr "0"
 
 #: modules/video_filter/puzzle.c:75
 msgid "0/180"
-msgstr ""
+msgstr "0/180"
 
 #: modules/video_filter/puzzle.c:75
 msgid "0/90/180/270"
-msgstr ""
+msgstr "0/90/180/270"
 
 #: modules/video_filter/puzzle.c:75
 msgid "0/90/180/270/mirror"
@@ -26336,23 +26328,23 @@ msgstr "VLC మాధ్యమ ప్రదర్శకం - జాల అంత
 
 #: share/lua/http/index.html:215
 msgid "Hide / Show Library"
-msgstr "లైబ్రరీని చూపించు / దాయి"
+msgstr ""
 
 #: share/lua/http/index.html:216
 msgid "Hide / Show Viewer"
-msgstr "వీక్షకాన్ని చూపించు / దాయి"
+msgstr ""
 
 #: share/lua/http/index.html:217
 msgid "Manage Streams"
-msgstr "ప్రవాహాలను నిర్వహించు"
+msgstr ""
 
 #: share/lua/http/index.html:218
 msgid "Track Synchronisation"
-msgstr "ట్రాక్ సమకాలీకరణం"
+msgstr ""
 
 #: share/lua/http/index.html:220
 msgid "VLM Batch Commands"
-msgstr "VLM బ్యాచ్ ఆదేశాలు"
+msgstr ""
 
 #: share/lua/http/index.html:240 modules/gui/qt4/ui/vlm.h:298
 msgid "Loop"
@@ -26360,19 +26352,19 @@ msgstr "ఆవృతం"
 
 #: share/lua/http/index.html:242
 msgid "Empty Playlist"
-msgstr "ఖాళీ ప్రదర్శనజాబితా"
+msgstr ""
 
 #: share/lua/http/index.html:243
 msgid "Queue Selected"
-msgstr "ఎంపికచేసినవి వరులోచేర్చు"
+msgstr ""
 
 #: share/lua/http/index.html:244
 msgid "Play Selected"
-msgstr "ఎంపికచేసిన వాటిని ప్రదర్శించు"
+msgstr ""
 
 #: share/lua/http/index.html:245
 msgid "Refresh List"
-msgstr "జాబితాను తాజాపరుచు"
+msgstr ""
 
 #: share/lua/http/index.html:252
 msgid "Loading flowplayer..."
@@ -26659,7 +26651,7 @@ msgstr "AVI"
 
 #: modules/gui/qt4/ui/profiles.h:700
 msgid "Features"
-msgstr ""
+msgstr "విశిష్టతలు"
 
 #: modules/gui/qt4/ui/profiles.h:702
 msgid "Streamable"
@@ -26687,7 +26679,7 @@ msgstr ""
 
 #: modules/gui/qt4/ui/profiles.h:718
 msgid "Quality"
-msgstr ""
+msgstr "నాణ్యత"
 
 #: modules/gui/qt4/ui/profiles.h:719 modules/gui/qt4/ui/profiles.h:720
 msgid "Not Used"
@@ -27257,53 +27249,11 @@ msgstr "AAAA; "
 msgid "Media Manager List"
 msgstr "మాధ్యమ నిర్వాహకం జాబితా"
 
-#~ msgid "Subtitles/OSD"
-#~ msgstr "ఉపశీర్షికలు/OSD"
-
-#~ msgid "Subtitles codecs"
-#~ msgstr "ఉపశీర్షికల కొడెక్‌లు"
-
-#~ msgid "General Input"
-#~ msgstr "సాధారణ ఇన్‌పుట్"
-
-#~ msgid "CPU features"
-#~ msgstr "సిపియు లక్షణాలు"
-
-#~ msgid "Encoders settings"
-#~ msgstr "ఎన్కోడర్ల అమరికలు"
+#~ msgid "Show Details"
+#~ msgstr "వివరాలను చూపించు"
 
 #~ msgid "No help available"
 #~ msgstr "ఏ సహాయం లభ్యతలోలేదు"
-
-#~ msgid "Quick &Open File..."
-#~ msgstr "దస్త్రం త్వరగా తెరువు...(&O)"
-
-#~ msgid "&Bookmarks"
-#~ msgstr "ఇష్టాంశాలు (&B)"
-
-#~ msgid "Fetch Information"
-#~ msgstr "సమాచారాన్ని తీసుకునిరమ్ము"
-
-#~ msgid "Sort"
-#~ msgstr "క్రమబద్ధీకరించు"
-
-#~ msgid "No Repeat"
-#~ msgstr "పునరావృతం వద్దు"
-
-#~ msgid "Add to Media Library"
-#~ msgstr "మాధ్యమ లైబ్రరీకి జతచేయి"
-
-#~ msgid "Advanced Open..."
-#~ msgstr "అధునాతన రీతిలలో తెరువు..."
-
-#~ msgid "Open Play&list..."
-#~ msgstr "ప్రదర్శనజాబితాను తెరువు...(&l)"
-
-#~ msgid "Search Filter"
-#~ msgstr "శోధన వడబోతకం"
-
-#~ msgid "&Services Discovery"
-#~ msgstr "సేవలను కనిపెట్టుట (&S)"
 
 #~ msgid ""
 #~ "Some options are available but hidden. Check \"Advanced options\" to see "
@@ -27311,59 +27261,20 @@ msgstr "మాధ్యమ నిర్వాహకం జాబితా"
 #~ msgstr ""
 #~ "కొన్ని ఐచ్ఛికాలు లభ్యతలోవున్నాయి కాని దాచబడినవి. వాటిని చూచుటకు \"అధునాతన ఐచ్ఛికాలు\" పరిశీలించండి."
 
-#~ msgid "Image clone"
-#~ msgstr "బొమ్మ ప్రతిరూపం"
-
-#~ msgid "Clone the image"
-#~ msgstr "బొమ్మను ప్రతిరూపించు"
-
-#~ msgid "Default audio volume"
-#~ msgstr "అప్రమేయ ఆడియో శబ్దం"
-
-#~ msgid "Audio output frequency (Hz)"
-#~ msgstr "ఆడియో అవుట్‌పుట్ పౌనఃపున్యం (Hz)"
-
-#~ msgid "Audio visualizations "
-#~ msgstr "ఆడియో దృశ్యమానాలు "
-
-#~ msgid "Subtitles track"
-#~ msgstr "ఉపశీర్షికల ట్రాక్"
-
-#~ msgid "Subtitles track ID"
-#~ msgstr "ఉపశీర్షికల ట్రాక్ ఐడీ"
-
-#~ msgid "Leave fullscreen"
-#~ msgstr "పూర్తితెరను వదిలివేయి"
-
-#~ msgid "Show interface"
-#~ msgstr "అంతరవర్తిని చూపించు"
-
-#~ msgid "Hide interface"
-#~ msgstr "అంతరవర్తిని దాయి"
-
 #~ msgid "Normal/Repeat/Loop"
 #~ msgstr "సాధారణం/పునరావృతం/ఆవృతం"
 
 #~ msgid "Toggle Normal/Repeat/Loop playlist modes"
 #~ msgstr "సాధారణం/పునరావృతం/ఆవృత రీతులను మార్చు"
 
-#~ msgid "CPU"
-#~ msgstr "సిపియు"
-
 #~ msgid "Greek, Modern ()"
 #~ msgstr "గ్రీక్, ఆధునికం ()"
-
-#~ msgid "Aspect-ratio"
-#~ msgstr "రూప-నిష్పత్తి"
 
 #~ msgid "PCM U8"
 #~ msgstr "PCM U8"
 
 #~ msgid "PCM S8"
 #~ msgstr "PCM S8"
-
-#~ msgid "GSM Audio"
-#~ msgstr "GSM ఆడియో"
 
 #~ msgid "PCM U16 LE"
 #~ msgstr "PCM U16 LE"
@@ -27413,9 +27324,6 @@ msgstr "మాధ్యమ నిర్వాహకం జాబితా"
 #~ msgid "PCM F64 BE"
 #~ msgstr "PCM F64 BE"
 
-#~ msgid "ALSA audio capture input"
-#~ msgstr "ALSA ఆడియో బంధక ఇన్‌పుట్"
-
 #~ msgid "Blu-Ray Disc Input"
 #~ msgstr "బ్లూరే డిస్కు ఇన్‌పుట్"
 
@@ -27435,35 +27343,11 @@ msgstr "మాధ్యమ నిర్వాహకం జాబితా"
 #~ msgid "Blu-Ray error"
 #~ msgstr "బ్లూరే దోషము"
 
-#~ msgid "Refresh list"
-#~ msgstr "జాబితాను తాజాపరుచు"
-
 #~ msgid "expand"
 #~ msgstr "విస్తరించు"
 
-#~ msgid "Coffee pot control"
-#~ msgstr "కాఫీ పాట్ నియంత్రణ"
-
-#~ msgid "Auto Connection"
-#~ msgstr "స్వయం అనుసంధానం"
-
 #~ msgid "RTMP"
 #~ msgstr "RTMP"
-
-#~ msgid "PVR video device"
-#~ msgstr "PVR వీడియో పరికరం"
-
-#~ msgid "PVR radio device"
-#~ msgstr "PVR రేడియో పరికరం"
-
-#~ msgid "Framerate"
-#~ msgstr "చట్రంరేటు"
-
-#~ msgid "Audio volume (0-65535)."
-#~ msgstr "ఆడియో శబ్దం (0-65535)."
-
-#~ msgid "Channel"
-#~ msgstr "ఛానల్"
 
 #~ msgid "SECAM"
 #~ msgstr "SECAM"
@@ -27480,56 +27364,20 @@ msgstr "మాధ్యమ నిర్వాహకం జాబితా"
 #~ msgid "cbr"
 #~ msgstr "cbr"
 
-#~ msgid "PVR"
-#~ msgstr "PVR"
-
-#~ msgid "SFTP user name"
-#~ msgstr "SFTP వాడుకరి పేరు"
-
-#~ msgid "SFTP password"
-#~ msgstr "SFTP సంకేతపదం"
-
 #~ msgid "Video device (Default: /dev/video0)."
 #~ msgstr "వీడియో పరికరం (అప్రమేయం: /dev/video0)."
 
 #~ msgid "Use libv4l2"
 #~ msgstr "libv4l2 వాడు"
 
-#~ msgid "Open Sound System"
-#~ msgstr "శబ్ద వ్యవస్థను తెరువు"
-
 #~ msgid "5.1"
 #~ msgstr "5.1"
-
-#~ msgid "Audio device"
-#~ msgstr "ఆడియో పరికరం"
-
-#~ msgid "Default Audio Device"
-#~ msgstr "అప్రమేయ శ్రవణ పరికరం"
-
-#~ msgid "Subtitles text encoding"
-#~ msgstr "ఉపశీర్షికల పాఠ్యం ఎన్కోడింగ్"
-
-#~ msgid "UTF-8 subtitles autodetection"
-#~ msgstr "UTF-8 ఉపశీర్షికల స్వయంగాకనిపెట్టుట"
 
 #~ msgid "fast"
 #~ msgstr "వేగం"
 
-#~ msgid "normal"
-#~ msgstr "సాధారణ"
-
 #~ msgid "slow"
 #~ msgstr "నెమ్మది"
-
-#~ msgid "all"
-#~ msgstr "అన్నీ"
-
-#~ msgid "Subtitle position %i px"
-#~ msgstr "ఉపశీర్షిక స్థానం %i px"
-
-#~ msgid "Volume %d%%"
-#~ msgstr "శబ్దం %d%%"
 
 #~ msgid ""
 #~ "Because this AVI file index is broken or missing, seeking will not work "
@@ -27546,86 +27394,17 @@ msgstr "మాధ్యమ నిర్వాహకం జాబితా"
 #~ "పెద్ద ఫైలు అయితే ఈ ప్రక్రియకు ఎక్కువ సమయం పట్టవచ్చు.\n"
 #~ "మీరు ఏమి చేయదలచుకున్నారు ?"
 
-#~ msgid "Classic rock"
-#~ msgstr "క్లాసిక్ రాక్"
-
-#~ msgid "Alternative rock"
-#~ msgstr "ఆల్టర్నేటివ్ రాక్"
-
 #~ msgid "Christian rap"
 #~ msgstr "క్రిస్టియన్ ర్యాప్"
 
 #~ msgid "Pop/funk"
 #~ msgstr "పాప్/ఫంక్"
 
-#~ msgid "Acid punk"
-#~ msgstr "యాసిడ్ పంక్"
-
-#~ msgid "Acid jazz"
-#~ msgstr "యాసిడ్ జాజ్జ్"
-
 #~ msgid "Rock & roll"
 #~ msgstr "రాక్ & రోల్"
 
 #~ msgid "Hard rock"
 #~ msgstr "హార్డ్ రాక్"
-
-#~ msgid "Frames per second"
-#~ msgstr "సెకనుకు చట్రాలు"
-
-#~ msgid "Subtitles delay"
-#~ msgstr "ఉపశీర్షికల ఆలస్యం"
-
-#~ msgid "Subtitles format"
-#~ msgstr "ఉపశీర్షికల ఆకృతి"
-
-#~ msgid "Subtitles description"
-#~ msgstr "ఉపశీర్షికల వివరణ"
-
-#~ msgid "Video aspect ratio"
-#~ msgstr "దృశ్యకం రూప నిష్పత్తి"
-
-#~ msgid "Image file"
-#~ msgstr "బొమ్మ దస్త్రం"
-
-#~ msgid "Transparency of the image"
-#~ msgstr "బొమ్మ యొక్క పారదర్శకత"
-
-#~ msgid "Commands"
-#~ msgstr "ఆదేశాలు"
-
-#~ msgid "Capture Device"
-#~ msgstr "బంధక పరికరం"
-
-#~ msgid "Frames per Second:"
-#~ msgstr "సెకనుకు చట్రాలు:"
-
-#~ msgid "Subscreen left:"
-#~ msgstr "ఉపతెర ఎడమ:"
-
-#~ msgid "Subscreen top:"
-#~ msgstr "ఉపతెర పైన:"
-
-#~ msgid "Subscreen width:"
-#~ msgstr "ఉపతెర వెడల్పు:"
-
-#~ msgid "Subscreen height:"
-#~ msgstr "ఉపతెర ఎత్తు:"
-
-#~ msgid "Image width:"
-#~ msgstr "బొమ్మ వెడల్పు:"
-
-#~ msgid "Image height:"
-#~ msgstr "బొమ్మ ఎత్తు:"
-
-#~ msgid "Load subtitles file:"
-#~ msgstr "ఉపశీర్షిక దస్త్రాన్ని నింపు:"
-
-#~ msgid "Subtitles encoding"
-#~ msgstr "ఉపశీర్షికల ఎన్కోడింగ్"
-
-#~ msgid "HTML Playlist"
-#~ msgstr "HTML ప్రదర్శనజాబితా"
 
 #~ msgid ""
 #~ "Beware this will reset the VLC media player preferences.\n"
@@ -27634,93 +27413,17 @@ msgstr "మాధ్యమ నిర్వాహకం జాబితా"
 #~ "ఇది VLC మాధ్యమ ప్రదర్శకం యొక్క ప్రాధాన్యతలన్నిటినీ తిరిగి అమర్చును.\n"
 #~ "మీరు ఖచ్చితంగా కొనసాగాలనుకుంటున్నారా?"
 
-#~ msgid "General Audio Settings"
-#~ msgstr "సాధారణ ఆడియో అమరికలు"
-
-#~ msgid "General Video Settings"
-#~ msgstr "సాధారణ వీడియో అమరికలు"
-
-#~ msgid "Subtitles & OSD"
-#~ msgstr "ఉపశీర్షికలు & OSD"
-
-#~ msgid "Subtitles & On Screen Display Settings"
-#~ msgstr "ఉపశీర్షికలు & పై తెర ప్రదర్శన అమరికలు"
-
-#~ msgid "Input & Codecs"
-#~ msgstr "ఇన్‌పుట్ & కొడెక్‌లు"
-
-#~ msgid "Input & Codec settings"
-#~ msgstr "ఇన్‌పుట్ & కొడెక్ అమరికలు"
-
-#~ msgid "Enable Audio"
-#~ msgstr "ఆడియోని చేతనపరుచు"
-
-#~ msgid "HTTP Proxy"
-#~ msgstr "HTTP ప్రోక్సీ"
-
 #~ msgid "Password for HTTP Proxy"
 #~ msgstr "HTTP ప్రోక్సీకి సంకేతపదం"
 
-#~ msgid "Font Color"
-#~ msgstr "ఖతి రంగు"
-
-#~ msgid "Font Size"
-#~ msgstr "ఖతి పరిమాణం"
-
-#~ msgid "Subtitle Languages"
-#~ msgstr "ఉపశీర్షిక భాషలు"
-
-#~ msgid "Preferred Subtitle Language"
-#~ msgstr "ప్రాధాన్య ఉపశీర్షిక భాష"
-
-#, fuzzy
-#~ msgid "Outline Color"
-#~ msgstr "ఖతి రంగు"
-
-#~ msgid "Enable Video"
-#~ msgstr "వీడియోని చేతనపరుచు"
-
-#~ msgid "Subtitles speed:"
-#~ msgstr "ఉపశీర్షికల వేగం:"
-
-#~ msgid " Volume   : %u%%"
-#~ msgstr " శబ్దం   : %u%%"
-
-#~ msgid "Show playlist"
-#~ msgstr "ప్రదర్శనజాబితాను చూపించు"
-
-#~ msgid "Open subtitles file"
-#~ msgstr "ఉపశీర్షికల దస్త్రాన్ని తెరువు"
-
-#~ msgid " dB"
-#~ msgstr " dB"
-
-#~ msgid "Radio device name"
-#~ msgstr "రేడియో పరికరం పేరు"
-
 #~ msgid "TV (digital)"
 #~ msgstr "టివి (డిజిటల్)"
-
-#~ msgid "Add to playlist"
-#~ msgstr "ప్రదర్శనజాబితాకు జతచేయి"
-
-#~ msgid "Clear playlist"
-#~ msgstr "ప్రదర్శితజాబితా శుభ్రపరుచు"
 
 #~ msgid "Icon View"
 #~ msgstr "ప్రతీక వీక్షణం"
 
 #~ msgid "Detailed View"
 #~ msgstr "వివరణాత్మక వీక్షణం"
-
-#~ msgid "List View"
-#~ msgstr "జాబితా వీక్షణం"
-
-#~ msgid "Subtitles && OSD"
-#~ msgstr "ఉపశీర్షికలు && OSD"
-
-#~ msgid "Input && Codecs"
-#~ msgstr "ఇన్‌పుట్ && కొడెక్‌లు"
 
 #~ msgid ""
 #~ "<p><i>VLC media player</i> does <b>not</b> send or collect any "
@@ -27739,15 +27442,6 @@ msgstr "మాధ్యమ నిర్వాహకం జాబితా"
 #~ "<p>ఈ సాఫ్టువేర్‌ని అంతర్జాలానికి అనుసంధానించే ముందు మీ అంగీకారాన్ని <i>VideoLAN</i> "
 #~ "(రూపకర్తల)కు తెలుపవలసివుంటుంది.</p>\n"
 #~ "<p>మీ ఎంపికలకు అనుగుణంగా, దయచేసి క్రింద పేర్కొన్న ఐచ్ఛికాలను ఎంచుకోండి:</p>\n"
-
-#~ msgid "Allow downloading media information"
-#~ msgstr "మాధ్యమ సమాచారాన్ని దించుకొనుటకు అనుమతించు"
-
-#~ msgid "Allow checking for VLC updates"
-#~ msgstr "వియల్సీ నవీకరణల కోసం పరిశీలించుటకు అనుమతించు"
-
-#~ msgid "Save and Continue"
-#~ msgstr "భద్రపరచి కొనసాగు"
 
 #~ msgid ""
 #~ "VLC media player is a free media player, encoder and streamer that can "
@@ -27769,9 +27463,6 @@ msgstr "మాధ్యమ నిర్వాహకం జాబితా"
 #~ "VLC యొక్క ఈ రూపాంతరాన్ని సంకలనం చేసినది:\n"
 #~ " "
 
-#~ msgid "Compiler: "
-#~ msgstr "కంపైలర్: "
-
 #~ msgid ""
 #~ "You are using the Qt4 Interface.\n"
 #~ "\n"
@@ -27779,155 +27470,20 @@ msgstr "మాధ్యమ నిర్వాహకం జాబితా"
 #~ "మీరు Qt4 అంతరవర్తిని వాడుతున్నారు.\n"
 #~ "\n"
 
-#~ msgid "Copyright (C) "
-#~ msgstr "నకలుహక్కు (C) "
-
 #~ msgid " by the VideoLAN Team.\n"
 #~ msgstr " వీడియోలాన్ బృందం.\n"
-
-#~ msgid "&Codec"
-#~ msgstr "కొడెక్ (&C)"
-
-#~ msgid "&Convert"
-#~ msgstr "పరివర్తించు (&C)"
-
-#~ msgid "&Convert / Save"
-#~ msgstr "పరివర్తించు / భద్రపర్చు (&C)"
 
 #~ msgid "Please enter the URL or path to the media you want to play"
 #~ msgstr "దయచేసి మీరు ఆడించాలనుకుంటున్న మాధ్యమం URL లేదా పథాన్ని ప్రవేశపెట్టండి"
 
-#~ msgid "Subtitles Files"
-#~ msgstr "ఉపశీర్షికల దస్త్రాలు"
-
-#~ msgid "&Tools"
-#~ msgstr "పనిముట్లు (&T)"
-
-#~ msgid "&Open (advanced)..."
-#~ msgstr "తెరువు (ఉన్నతం)...(&O)"
-
-#~ msgid "Audio &Channels"
-#~ msgstr "ఆడియో ఛానళ్ళు (&C)"
-
-#~ msgid "&Subtitles Track"
-#~ msgstr "ఉపశీర్షికల ట్రాక్ (&S)"
-
-#~ msgid "&Navigation"
-#~ msgstr "విహరణ (&N)"
-
-#~ msgid "Tools"
-#~ msgstr "పనిముట్లు"
-
-#~ msgid "Hide VLC media player in taskbar"
-#~ msgstr "కర్తవ్యపట్టీలో VLC మాధ్యమ ప్రదర్శకాన్ని దాయి"
-
-#~ msgid "Show VLC media player"
-#~ msgstr "VLC మాధ్యమ ప్రదర్శకాన్ని చూపించు"
-
-#~ msgid "Advanced options"
-#~ msgstr "అధునాతన ఐచ్ఛికాలు"
-
 #~ msgid "Freebox TV"
 #~ msgstr "ఫ్రీబాక్స్ టీవీ"
-
-#~ msgid "French TV"
-#~ msgstr "ఫ్రెంచి టీవీ"
-
-#~ msgid "Ignored extensions in the media library"
-#~ msgstr "మాధ్యమ లైబ్రరీలో వదిలివేసిన పొడిగింతలు"
 
 #~ msgid "MCE"
 #~ msgstr "MCE"
 
 #~ msgid "Blu-Ray"
 #~ msgstr "బ్లూరే"
-
-#~ msgid "Sizes"
-#~ msgstr "పరిమాణాలు"
-
-#~ msgid "Aspect ratio (4:3, 16:9)."
-#~ msgstr "రూప నిష్పత్తి (4:3, 16:9)."
-
-#~ msgid "Command"
-#~ msgstr "ఆదేశం"
-
-#~ msgid "Mute audio"
-#~ msgstr "శ్రవ్య నిశబ్దం"
-
-#~ msgid "Audio Language"
-#~ msgstr "ఆడియో భాష"
-
-#~ msgid "Subtitles encoder"
-#~ msgstr "ఉపశీర్షికల ఎన్కోడర్"
-
-#~ msgid "Manual ratio"
-#~ msgstr "మానవీయ నిష్పత్తి"
-
-#~ msgid "Configuration file"
-#~ msgstr "స్వరూపణ దస్త్రం"
-
-#~ msgid "Change subtitles delay"
-#~ msgstr "ఉపశీర్షికల ఆలస్యమును మార్చండి"
-
-#~ msgid "Enable desktop mode "
-#~ msgstr "డెస్కుటాప్ రీతిని చేతనపరుచు "
-
-#~ msgid "Stream Name"
-#~ msgstr "ప్రవాహం పేరు"
-
-#~ msgid "Video Codec"
-#~ msgstr "వీడియో కొడెక్"
-
-#~ msgid "Audio Codec"
-#~ msgstr "ఆడియో కొడెక్"
-
-#~ msgid "Subtitle Codec"
-#~ msgstr "ఉపశీర్షిక కొడెక్"
-
-#~ msgid "Output Method"
-#~ msgstr "అవుట్‌పుట్ పద్ధతి"
-
-#~ msgid "Video Bit Rate"
-#~ msgstr "వీడియో బిట్‌రేట్"
-
-#~ msgid "Audio Bit Rate"
-#~ msgstr "ఆడియో బిట్‌రేట్"
-
-#~ msgid "Audio Sample Rate"
-#~ msgstr "ఆడియో మాదిరి రేటు"
-
-#~ msgid "MUX Options"
-#~ msgstr "MUX ఐచ్ఛికాలు"
-
-#~ msgid "Video Scale"
-#~ msgstr "వీడియో కొలత"
-
-#~ msgid "Output Port"
-#~ msgstr "అవుట్‌పుట్ పోర్టు"
-
-#~ msgid "Output Destination"
-#~ msgstr "అవుట్‌పుట్ గమ్యం"
-
-#~ msgid "Output File"
-#~ msgstr "అవుట్‌పుట్ దస్త్రం"
-
-#~ msgid "Input Media"
-#~ msgstr "ఇన్‌పుట్ మాధ్యమం"
-
-#~ msgid "File Name"
-#~ msgstr "దస్త్రం పేరు"
-
-#~ msgid "Rows:"
-#~ msgstr "అడ్డవరుసలు:"
-
-#~ msgid "width"
-#~ msgstr "వెడల్పు"
-
-#~ msgid "Columns:"
-#~ msgstr "నిలువువరుసలు:"
-
-#~ msgid "height"
-#~ msgstr "ఎత్తు"
 
 #~ msgid ""
 #~ "We would like to thank the whole VLC community, the testers, our users "
@@ -27937,18 +27493,6 @@ msgstr "మాధ్యమ నిర్వాహకం జాబితా"
 #~ "ఉత్తమ స్వేచ్ఛా సాఫ్టువేరుని సృష్టించుటలో సహకరించిన మా పరీక్షకులకు, వాడుకరులకు మరియు "
 #~ "క్రిందపేర్కొన్న వ్యక్తులకు (మరియు ఇంకా ఇక్కడ తెలుపడం మరిచిపోయిన వారికి...) VLC సంఘం ధన్యవాదాలు "
 #~ "తెలుపుకుంటున్నది."
-
-#~ msgid "Licence"
-#~ msgstr "లైసెన్స్"
-
-#~ msgid "Add a subtitles file"
-#~ msgstr "ఉపశీర్షికల దస్త్రాన్ని జతచేయి"
-
-#~ msgid "Use a sub&titles file"
-#~ msgstr "ఉపశీర్షికల దస్త్రాన్ని వాడు (&t)"
-
-#~ msgid "Select the subtitles file"
-#~ msgstr "ఉపశీర్షికల దస్త్రాన్ని ఎంచుకొను"
 
 #~ msgid ""
 #~ "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
@@ -27984,56 +27528,8 @@ msgstr "మాధ్యమ నిర్వాహకం జాబితా"
 #~ msgid "00000; "
 #~ msgstr "00000; "
 
-#~ msgid "Destinations"
-#~ msgstr "గమ్యాలు"
-
-#~ msgid "Group name"
-#~ msgstr "గుంపు పేరు"
-
-#, fuzzy
-#~ msgid "Instances"
-#~ msgstr "స్థాపించు"
-
-#~ msgid "Subtitles Language"
-#~ msgstr "ఉపశీర్షికల భాష"
-
-#~ msgid "Preferred subtitles language"
-#~ msgstr "ప్రాధాన్య ఉపశీర్షికల భాష"
-
-#~ msgid "Subtitles effects"
-#~ msgstr "ఉపశీర్షికల ప్రభావాలు"
-
-#, fuzzy
-#~ msgid "Black slot"
-#~ msgstr "నలుపు"
-
-#~ msgid "Composr"
-#~ msgstr "స్వరకర్త"
-
-#~ msgid "Previous/Backward"
-#~ msgstr "మునుపటి/వెనుకకు"
-
-#~ msgid "Next/Forward"
-#~ msgstr "తరువాత/ముందుకు"
-
-#~ msgid "Loop/Repeat mode"
-#~ msgstr "ఆవృత/పునరావృత విధం"
-
-#, fuzzy
-#~ msgid "Seek Time"
-#~ msgstr "ప్రారంభ సమయం"
-
-#~ msgid "DVB"
-#~ msgstr "DVB"
-
-#~ msgid "Video Filters..."
-#~ msgstr "వీడియో వడపోతకాలు..."
-
 #~ msgid "Relaunch VLC"
 #~ msgstr "VLC పునఃప్రారంభించు"
-
-#~ msgid "Speed of the subtitles:"
-#~ msgstr "ఉపశీర్షికల యొక్క వేగం:"
 
 #~ msgid "Use systems codecs if available, for WMV codecs"
 #~ msgstr "ఒకవేళ WMV కొడెక్‌ల కొరకు వ్యవస్థ కొడెక్‌లు అందుబాటులోవుంటే వాడు"
@@ -28041,101 +27537,792 @@ msgstr "మాధ్యమ నిర్వాహకం జాబితా"
 #~ msgid "S/PDIF"
 #~ msgstr "S/PDIF"
 
-#~ msgid "ALSA device"
-#~ msgstr "ALSA పరికరం"
-
-#~ msgid "Default Volume"
-#~ msgstr "అప్రమేయ శబ్దం"
-
-#~ msgid "Open a Media"
-#~ msgstr "మాధ్యమాన్ని తెరువు"
-
-#~ msgid "&Open a Media"
-#~ msgstr "ఒక మాధ్యమాన్ని తెరువు (&O)"
-
-#~ msgid "Clear Menu"
-#~ msgstr "మెను శుభ్రపరుచు"
-
-#~ msgid "Fullscreen controller width toggle"
-#~ msgstr "పూర్తితెర వెడల్పు మార్చు నియంత్రకం"
-
-#~ msgid "Display on &Desktop"
-#~ msgstr "డెస్కుటాపుపై ప్రదర్శించు (&D)"
-
-#~ msgid "Viewer"
-#~ msgstr "వీక్షకం"
-
-#~ msgid "Library"
-#~ msgstr "లైబ్రరీ"
-
-#~ msgid "Media Browser"
-#~ msgstr "మాధ్యమ విహారకం"
-
-#~ msgid "No"
-#~ msgstr "కాదు"
-
-#~ msgid "Full Screen"
-#~ msgstr "పూర్తితెర"
-
-#~ msgid "Easy Stream"
-#~ msgstr "సులభ ప్రవాహం"
-
-#~ msgid "Graphical Equalizer"
-#~ msgstr "గ్రాఫికల్ ఈక్వలైజర్"
-
-#~ msgid "VLC media player - Flash Viewer"
-#~ msgstr "VLC మాధ్యమ ప్రదర్శకం - ఫ్లాష్ వీక్షకం"
-
-#~ msgid "Streaming Output"
-#~ msgstr "ప్రవాహ అవుట్‌పుట్"
-
-#~ msgid "Create Stream"
-#~ msgstr "ప్రవాహాన్ని సృష్టించండి"
-
-#~ msgid "Media File"
-#~ msgstr "మాధ్యమ ఫైల్"
-
-#~ msgid "Capture Screen"
-#~ msgstr "తెరను బంధించు"
-
-#~ msgid "Close"
-#~ msgstr "మూసివేయి"
-
-#~ msgid "Error!"
-#~ msgstr "దోషం!"
-
-#~ msgid "Create Mosaic"
-#~ msgstr "మోసైక్ సృష్టించు"
-
 #~ msgid "Okay"
 #~ msgstr "సరే"
-
-#~ msgid "Stream Input Configuration"
-#~ msgstr "ప్రవాహం ఇన్‌పుట్ స్వరూపణం"
-
-#~ msgid "Remove Stream"
-#~ msgstr "ప్రవాహాన్ని తీసివేయి"
-
-#~ msgid "Create New Stream"
-#~ msgstr "కొత్త ప్రవాహాన్ని సృష్టించండి"
-
-#~ msgid "Delete All Streams"
-#~ msgstr "అన్ని ప్రవాహాలను తొలగించు"
-
-#~ msgid "Configure Stream Defaults"
-#~ msgstr "ప్రవాహపు అప్రమేయాలను స్వరూపించు"
-
-#~ msgid "Refresh Streams"
-#~ msgstr "ప్రవాహాలను తాజాపరుచు"
-
-#~ msgid "Enqueue"
-#~ msgstr "వరుసలోచేర్చు"
 
 #~ msgid " - Empty - "
 #~ msgstr " - ఖాళీ - "
 
-#~ msgid "Zoom playlist"
-#~ msgstr "ప్రదర్శనజాబితాను జూమ్‌చేయి"
+#, fuzzy
+#~ msgid "Subtitles/OSD"
+#~ msgstr "ఉపశీర్షికలు"
 
+#, fuzzy
+#~ msgid "Subtitles codecs"
+#~ msgstr "ఉపశీర్షికలు"
+
+#, fuzzy
+#~ msgid "General Input"
+#~ msgstr "సాధారణ"
+
+#, fuzzy
+#~ msgid "CPU features"
+#~ msgstr "విశిష్టతలు"
+
+#, fuzzy
+#~ msgid "Encoders settings"
+#~ msgstr "అమరికలను సవరించు"
+
+#, fuzzy
+#~ msgid "Quick &Open File..."
+#~ msgstr "దస్త్రాన్ని తెరువు...(&O)"
+
+#, fuzzy
+#~ msgid "&Bookmarks"
+#~ msgstr "ఇష్టాంశాలు"
+
+#, fuzzy
+#~ msgid "Fetch Information"
+#~ msgstr "కొడెక్ సమాచారం (&C)"
+
+#, fuzzy
+#~ msgid "Sort"
+#~ msgstr "ఇలా క్రమబద్ధీకరించు"
+
+#, fuzzy
+#~ msgid "No Repeat"
+#~ msgstr "పునరావృతం"
+
+#, fuzzy
+#~ msgid "Add to Media Library"
+#~ msgstr "మాధ్యమ లైబ్రరీని నింపు"
+
+#, fuzzy
+#~ msgid "Advanced Open..."
+#~ msgstr "అధునాతనంగా తెరువు...(&A)"
+
+#, fuzzy
+#~ msgid "Open Play&list..."
+#~ msgstr "ప్రదర్శనజాబితాను తెరువు..."
+
+#, fuzzy
+#~ msgid "Search Filter"
+#~ msgstr "ప్రవాహ వడబోతలు"
+
+#, fuzzy
+#~ msgid "&Services Discovery"
+#~ msgstr "సేవలు కనిపెట్టుట"
+
+#, fuzzy
+#~ msgid "Image clone"
+#~ msgstr "బొమ్మ"
+
+#, fuzzy
+#~ msgid "Clone the image"
+#~ msgstr "మౌస్ పాయింటరు బొమ్మ"
+
+#, fuzzy
+#~ msgid "Default audio volume"
+#~ msgstr "ఆడియో శబ్దం"
+
+#, fuzzy
+#~ msgid "Audio output frequency (Hz)"
+#~ msgstr "ఆడియో అవుట్‌పుట్ విఫలమైంది"
+
+#, fuzzy
+#~ msgid "Audio visualizations "
+#~ msgstr "ఆడియో దృశ్యమానాలు"
+
+#, fuzzy
+#~ msgid "Subtitles track"
+#~ msgstr "ఉపశీర్షికల ట్రాక్"
+
+#, fuzzy
+#~ msgid "Subtitles track ID"
+#~ msgstr "ఉపశీర్షికల ట్రాక్"
+
+#, fuzzy
+#~ msgid "Leave fullscreen"
+#~ msgstr "పూర్తితెరను వదిలివెళ్ళు"
+
+#, fuzzy
+#~ msgid "Show interface"
+#~ msgstr "Qt అంతరవర్తి"
+
+#, fuzzy
+#~ msgid "Hide interface"
+#~ msgstr "Qt అంతరవర్తి"
+
+#, fuzzy
+#~ msgid "CPU"
+#~ msgstr "TCP"
+
+#, fuzzy
+#~ msgid "Aspect-ratio"
+#~ msgstr "రూప నిష్పత్తి"
+
+#, fuzzy
+#~ msgid "GSM Audio"
+#~ msgstr "ఆడియో"
+
+#, fuzzy
+#~ msgid "ALSA audio capture input"
+#~ msgstr "ALSA ఆడియో అవుట్‌పుట్"
+
+#, fuzzy
+#~ msgid "Refresh list"
+#~ msgstr "తాజాపరుచు సమయం"
+
+#, fuzzy
+#~ msgid "Coffee pot control"
+#~ msgstr "నియంత్రణలను తిరిగిఅమర్చు"
+
+#, fuzzy
+#~ msgid "Auto Connection"
+#~ msgstr "స్వయం అనుసంధానం"
+
+#, fuzzy
+#~ msgid "PVR video device"
+#~ msgstr "వీడియో పరికరం"
+
+#, fuzzy
+#~ msgid "PVR radio device"
+#~ msgstr "రేడియో పరికరం"
+
+#, fuzzy
+#~ msgid "Framerate"
+#~ msgstr "చట్రం రేటు"
+
+#, fuzzy
+#~ msgid "Audio volume (0-65535)."
+#~ msgstr "ఆడియో శబ్దం"
+
+#, fuzzy
+#~ msgid "Channel"
+#~ msgstr "ఛానళ్లు"
+
+#, fuzzy
+#~ msgid "PVR"
+#~ msgstr "VDR"
+
+#, fuzzy
+#~ msgid "SFTP user name"
+#~ msgstr "FTP వాడుకరి పేరు"
+
+#, fuzzy
+#~ msgid "SFTP password"
+#~ msgstr "FTP సంకేతపదం"
+
+#, fuzzy
+#~ msgid "Open Sound System"
+#~ msgstr "వనరుని తెరువు"
+
+#, fuzzy
+#~ msgid "Audio device"
+#~ msgstr "ఆడియో పరికరం"
+
+#, fuzzy
+#~ msgid "Default Audio Device"
+#~ msgstr "శ్రవణ పరికరాన్ని ఎంచుకొను"
+
+#, fuzzy
+#~ msgid "Subtitles text encoding"
+#~ msgstr "ఉపశీర్షికను స్వయంగాకనిపెట్ట పథాలు"
+
+#, fuzzy
+#~ msgid "UTF-8 subtitles autodetection"
+#~ msgstr "ఉపశీర్షికను స్వయంగాకనిపెట్ట పథాలు"
+
+#, fuzzy
+#~ msgid "normal"
+#~ msgstr "సాధారణం"
+
+#, fuzzy
+#~ msgid "all"
+#~ msgstr "నేపథ్యచిత్రం"
+
+#, fuzzy
+#~ msgid "Subtitle position %i px"
+#~ msgstr "బలవంతపు ఉపశీర్షిక స్థానం"
+
+#, fuzzy
+#~ msgid "Volume %d%%"
+#~ msgstr "శబ్దము తగ్గించు"
+
+#, fuzzy
+#~ msgid "Classic rock"
+#~ msgstr "సాంప్రదాయక"
+
+#, fuzzy
+#~ msgid "Alternative rock"
+#~ msgstr "ఆల్టర్నేటివ్"
+
+#, fuzzy
+#~ msgid "Acid punk"
+#~ msgstr "యాసిడ్"
+
+#, fuzzy
+#~ msgid "Acid jazz"
+#~ msgstr "యాసిడ్"
+
+#, fuzzy
+#~ msgid "Frames per second"
+#~ msgstr "సెకనుకు చట్రాలు"
+
+#, fuzzy
+#~ msgid "Subtitles delay"
+#~ msgstr "ఉపశీర్షిక ఆలస్యం"
+
+#, fuzzy
+#~ msgid "Subtitles format"
+#~ msgstr "ఉపశీర్షికల ట్రాక్"
+
+#, fuzzy
+#~ msgid "Subtitles description"
+#~ msgstr "ప్రవాహం వివరణ"
+
+#, fuzzy
+#~ msgid "Video aspect ratio"
+#~ msgstr "రూప నిష్పత్తిని ఉంచు"
+
+#, fuzzy
+#~ msgid "Image file"
+#~ msgstr "విషయసూచిక దస్త్రం"
+
+#, fuzzy
+#~ msgid "Transparency of the image"
+#~ msgstr "పారదర్శకత ముసుగు"
+
+#, fuzzy
+#~ msgid "Commands"
+#~ msgstr "వ్యాఖ్యలు"
+
+#, fuzzy
+#~ msgid "Capture Device"
+#~ msgstr "బంధక పరికరం (&D)"
+
+#, fuzzy
+#~ msgid "Frames per Second:"
+#~ msgstr "సెకనుకు చట్రాలు"
+
+#, fuzzy
+#~ msgid "Subscreen left:"
+#~ msgstr "ఉపతెర ఎత్తు"
+
+#, fuzzy
+#~ msgid "Subscreen top:"
+#~ msgstr "ఉపతెర వెడల్పు"
+
+#, fuzzy
+#~ msgid "Subscreen width:"
+#~ msgstr "ఉపతెర వెడల్పు"
+
+#, fuzzy
+#~ msgid "Subscreen height:"
+#~ msgstr "ఉపతెర ఎత్తు"
+
+#, fuzzy
+#~ msgid "Image width:"
+#~ msgstr "బొమ్మ వెడల్పు"
+
+#, fuzzy
+#~ msgid "Image height:"
+#~ msgstr "బొమ్మ ఎత్తు"
+
+#, fuzzy
+#~ msgid "Load subtitles file:"
+#~ msgstr "ఉపశీర్షిక దస్త్రాన్ని వాడు"
+
+#, fuzzy
+#~ msgid "Subtitles encoding"
+#~ msgstr "ఉపశీర్షికలు (అధునాతనం)"
+
+#, fuzzy
+#~ msgid "HTML Playlist"
+#~ msgstr "HTML ప్రదర్శనజాబితా"
+
+#, fuzzy
+#~ msgid "General Audio Settings"
+#~ msgstr "సాధారణ ఆడియో అమరికలు"
+
+#, fuzzy
+#~ msgid "General Video Settings"
+#~ msgstr "సాధారణ వీడియో అమరికలు"
+
+#, fuzzy
+#~ msgid "Subtitles & OSD"
+#~ msgstr "ఉపశీర్షికలు"
+
+#, fuzzy
+#~ msgid "Subtitles & On Screen Display Settings"
+#~ msgstr "తెరపై ప్రదర్శనను చేతనపరుచు (OSD)"
+
+#, fuzzy
+#~ msgid "Input & Codecs"
+#~ msgstr "ఇన్‌పుట్ / కొడెక్‌లు"
+
+#, fuzzy
+#~ msgid "Input & Codec settings"
+#~ msgstr "ఇన్‌పుట్ && కొడెక్‌ల అమరికలు"
+
+#, fuzzy
+#~ msgid "Enable Audio"
+#~ msgstr "ఆడియోని చేతనపరుచు"
+
+#, fuzzy
+#~ msgid "HTTP Proxy"
+#~ msgstr "HTTP ప్రోక్సీ"
+
+#, fuzzy
+#~ msgid "Font Color"
+#~ msgstr "ఖతి రంగు"
+
+#, fuzzy
+#~ msgid "Font Size"
+#~ msgstr "ఖతి పరిమాణం"
+
+#, fuzzy
+#~ msgid "Subtitle Languages"
+#~ msgstr "ఉపశీర్షిక భాష"
+
+#, fuzzy
+#~ msgid "Preferred Subtitle Language"
+#~ msgstr "ప్రాధాన్య ఆడియో భాష"
+
+#, fuzzy
+#~ msgid "Outline Color"
+#~ msgstr "పాఠ్యపు రంగు"
+
+#, fuzzy
+#~ msgid "Enable Video"
+#~ msgstr "వీడియోని చేతనపరుచు"
+
+#, fuzzy
+#~ msgid "Subtitles speed:"
+#~ msgstr "ఉపశీర్షికలు"
+
+#, fuzzy
+#~ msgid " Volume   : %u%%"
+#~ msgstr " వనరు   : %s"
+
+#, fuzzy
+#~ msgid "Show playlist"
+#~ msgstr "ప్రదర్శనజాబితా చూపించు/దాయి"
+
+#, fuzzy
+#~ msgid "Open subtitles file"
+#~ msgstr "ఉపశీర్షికలను తెరువు"
+
+#, fuzzy
+#~ msgid " dB"
+#~ msgstr "dB"
+
+#, fuzzy
+#~ msgid "Radio device name"
+#~ msgstr "ఆడియో పరికరం పేరు"
+
+#, fuzzy
+#~ msgid "Add to playlist"
+#~ msgstr "ప్రదర్శనజాబితాకు జతచేయి"
+
+#, fuzzy
+#~ msgid "Clear playlist"
+#~ msgstr "జాబితా శుభ్రపరుచు"
+
+#, fuzzy
+#~ msgid "List View"
+#~ msgstr "జాబితా"
+
+#, fuzzy
+#~ msgid "Subtitles && OSD"
+#~ msgstr "ఉపశీర్షికలు"
+
+#, fuzzy
+#~ msgid "Input && Codecs"
+#~ msgstr "ఇన్‌పుట్ / కొడెక్‌లు"
+
+#, fuzzy
+#~ msgid "Allow downloading media information"
+#~ msgstr "మాధ్యమ సమాచారాన్ని పొందుటకు రెండుసార్లు నొక్కండి"
+
+#, fuzzy
+#~ msgid "Allow checking for VLC updates"
+#~ msgstr "వియల్సీ నవీకరణల కొరకు పరిశీలించు"
+
+#, fuzzy
+#~ msgid "Save and Continue"
+#~ msgstr "కొనసాగించు"
+
+#, fuzzy
+#~ msgid "Compiler: "
+#~ msgstr "కంపైలర్: %s\n"
+
+#, fuzzy
+#~ msgid "Copyright (C) "
+#~ msgstr "నకలుహక్కు"
+
+#, fuzzy
+#~ msgid "&Codec"
+#~ msgstr "కొడెక్"
+
+#, fuzzy
+#~ msgid "&Convert"
+#~ msgstr "పరివర్తించు"
+
+#, fuzzy
+#~ msgid "&Convert / Save"
+#~ msgstr "పరివర్తించు / భద్రపరుచు...(&r)"
+
+#, fuzzy
+#~ msgid "Subtitles Files"
+#~ msgstr "ఉపశీర్షిక ఫైలు"
+
+#, fuzzy
+#~ msgid "&Tools"
+#~ msgstr "పనిముట్లు (&o)"
+
+#, fuzzy
+#~ msgid "&Open (advanced)..."
+#~ msgstr "దస్త్రాన్ని తెరువు...(&O)"
+
+#, fuzzy
+#~ msgid "Audio &Channels"
+#~ msgstr "ఆడియో ఛానళ్ళు"
+
+#, fuzzy
+#~ msgid "&Subtitles Track"
+#~ msgstr "ఉపశీర్షికల ట్రాక్"
+
+#, fuzzy
+#~ msgid "&Navigation"
+#~ msgstr "విహరణ"
+
+#, fuzzy
+#~ msgid "Tools"
+#~ msgstr "పనిముట్లు (&o)"
+
+#, fuzzy
+#~ msgid "Hide VLC media player in taskbar"
+#~ msgstr "VLC మాధ్యమ ప్రదర్శకాన్ని నవీకరించు"
+
+#, fuzzy
+#~ msgid "Show VLC media player"
+#~ msgstr "VLC మాధ్యమ ప్రదర్శకం"
+
+#, fuzzy
+#~ msgid "Advanced options"
+#~ msgstr "అధునాతన ఐచ్ఛికాలు"
+
+#, fuzzy
+#~ msgid "French TV"
+#~ msgstr "ఫ్రెంచి"
+
+#, fuzzy
+#~ msgid "Ignored extensions in the media library"
+#~ msgstr "వదిలివేసిన పొడిగింతలు"
+
+#, fuzzy
+#~ msgid "Sizes"
+#~ msgstr "పరిమాణం"
+
+#, fuzzy
+#~ msgid "Aspect ratio (4:3, 16:9)."
+#~ msgstr "రూప నిష్పత్తి: %s"
+
+#, fuzzy
+#~ msgid "Command"
+#~ msgstr "వ్యాఖ్య"
+
+#, fuzzy
+#~ msgid "Mute audio"
+#~ msgstr "ఆడియోని మూగపరుచు."
+
+#, fuzzy
+#~ msgid "Audio Language"
+#~ msgstr "ఆడియో భాష"
+
+#, fuzzy
+#~ msgid "Subtitles encoder"
+#~ msgstr "DVD ఉపశీర్షికల డీకోడర్"
+
+#, fuzzy
+#~ msgid "Manual ratio"
+#~ msgstr "సాచురేషన్"
+
+#, fuzzy
+#~ msgid "Configuration file"
+#~ msgstr "VLM స్వరూపణం దస్త్రం"
+
+#, fuzzy
+#~ msgid "Change subtitles delay"
+#~ msgstr "ఉపశీర్షిక ఆలస్యం"
+
+#, fuzzy
+#~ msgid "Enable desktop mode "
+#~ msgstr "వీడియోని చేతనపరుచు"
+
+#, fuzzy
+#~ msgid "Stream Name"
+#~ msgstr "ప్రవాహం పేరు"
+
+#, fuzzy
+#~ msgid "Video Codec"
+#~ msgstr "వీడియో కొడెక్"
+
+#, fuzzy
+#~ msgid "Audio Codec"
+#~ msgstr "ఆడియో కొడెక్"
+
+#, fuzzy
+#~ msgid "Subtitle Codec"
+#~ msgstr "ఉపశీర్షిక ఫైలు"
+
+#, fuzzy
+#~ msgid "Output Method"
+#~ msgstr "అవుట్‌పుట్ వెడల్పు"
+
+#, fuzzy
+#~ msgid "Video Bit Rate"
+#~ msgstr "వీడియో బిట్‌రేట్"
+
+#, fuzzy
+#~ msgid "Audio Bit Rate"
+#~ msgstr "ఆడియో బిట్‌రేట్"
+
+#, fuzzy
+#~ msgid "Audio Sample Rate"
+#~ msgstr "ఆడియో మాదిరి రేటు"
+
+#, fuzzy
+#~ msgid "MUX Options"
+#~ msgstr "DMX ఐచ్ఛికాలు"
+
+#, fuzzy
+#~ msgid "Video Scale"
+#~ msgstr "దృశ్యక బంధనం"
+
+#, fuzzy
+#~ msgid "Output Port"
+#~ msgstr "అవుట్‌పుట్ ఆకృతి"
+
+#, fuzzy
+#~ msgid "Output Destination"
+#~ msgstr "గమ్యం"
+
+#, fuzzy
+#~ msgid "Output File"
+#~ msgstr "అవుట్‌పుట్ దస్త్రం"
+
+#, fuzzy
+#~ msgid "Input Media"
+#~ msgstr "ఇన్‌పుట్ జాబితా"
+
+#, fuzzy
+#~ msgid "File Name"
+#~ msgstr "దస్త్రంపేరు"
+
+#, fuzzy
+#~ msgid "Rows:"
+#~ msgstr "నిలువువరుసలు"
+
+#, fuzzy
+#~ msgid "width"
+#~ msgstr "వెడల్పు"
+
+#, fuzzy
+#~ msgid "Columns:"
+#~ msgstr "అడ్డువరుసలు"
+
+#, fuzzy
+#~ msgid "height"
+#~ msgstr "ఎత్తు"
+
+#, fuzzy
+#~ msgid "Licence"
+#~ msgstr "లైసెన్స్"
+
+#, fuzzy
+#~ msgid "Add a subtitles file"
+#~ msgstr "ఉపశీర్షిక దస్త్రాన్ని వాడు"
+
+#, fuzzy
+#~ msgid "Use a sub&titles file"
+#~ msgstr "ఉపశీర్షిక దస్త్రాన్ని వాడు"
+
+#, fuzzy
+#~ msgid "Select the subtitles file"
+#~ msgstr "దస్త్రాన్ని ఎంచుకొను"
+
+#, fuzzy
+#~ msgid "Destinations"
+#~ msgstr "గమ్యం"
+
+#, fuzzy
+#~ msgid "Group name"
+#~ msgstr "గుంపు"
+
+#, fuzzy
+#~ msgid "Instances"
+#~ msgstr "స్థాపించు"
+
+#, fuzzy
+#~ msgid "Subtitles Language"
+#~ msgstr "ఉపశీర్షిక భాష"
+
+#, fuzzy
+#~ msgid "Preferred subtitles language"
+#~ msgstr "ప్రాధాన్య ఆడియో భాష"
+
+#, fuzzy
+#~ msgid "Subtitles effects"
+#~ msgstr "ఉపశీర్షికలు"
+
+#, fuzzy
+#~ msgid "Black slot"
+#~ msgstr "నలుపు"
+
+#, fuzzy
+#~ msgid "Composr"
+#~ msgstr "స్వరకర్త"
+
+#, fuzzy
+#~ msgid "Previous/Backward"
+#~ msgstr "మునుపటి / వెనుకకు"
+
+#, fuzzy
+#~ msgid "Next/Forward"
+#~ msgstr "తరువాత / ముందుకు"
+
+#, fuzzy
+#~ msgid "Loop/Repeat mode"
+#~ msgstr "ఆవృత / పునరావృతం"
+
+#, fuzzy
+#~ msgid "Seek Time"
+#~ msgstr "ప్రారంభ సమయం"
+
+#, fuzzy
+#~ msgid "DVB"
+#~ msgstr "DV"
+
+#, fuzzy
+#~ msgid "Video Filters..."
+#~ msgstr "వీడియో దస్త్రాలు"
+
+#, fuzzy
+#~ msgid "Speed of the subtitles:"
+#~ msgstr "ఉపశీర్షికలను తెరువు"
+
+#, fuzzy
+#~ msgid "ALSA device"
+#~ msgstr "డివిడి పరికరం"
+
+#, fuzzy
+#~ msgid "Default Volume"
+#~ msgstr "పూర్తి శబ్దం"
+
+#, fuzzy
+#~ msgid "Open a Media"
+#~ msgstr "మాధ్యమం తెరువు"
+
+#, fuzzy
+#~ msgid "&Open a Media"
+#~ msgstr "మాధ్యమం తెరువు"
+
+#, fuzzy
+#~ msgid "Clear Menu"
+#~ msgstr "శుభ్రపరుచు"
+
+#, fuzzy
+#~ msgid "Fullscreen controller width toggle"
+#~ msgstr "పూర్తితెర నియంత్రకం"
+
+#, fuzzy
+#~ msgid "Display on &Desktop"
+#~ msgstr "ప్రదర్శన విభాజకత"
+
+#, fuzzy
+#~ msgid "Viewer"
+#~ msgstr "వీక్షణం (&V)"
+
+#, fuzzy
+#~ msgid "Library"
+#~ msgstr "మాధ్యమ లైబ్రరీ"
+
+#, fuzzy
+#~ msgid "Media Browser"
+#~ msgstr "మాధ్యమం: %s"
+
+#, fuzzy
+#~ msgid "No"
+#~ msgstr "కాదు (&N)"
+
+#, fuzzy
+#~ msgid "Full Screen"
+#~ msgstr "పూర్తితెర"
+
+#, fuzzy
+#~ msgid "Easy Stream"
+#~ msgstr "ప్రవాహం"
+
+#, fuzzy
+#~ msgid "Graphical Equalizer"
+#~ msgstr "గ్రాఫిక్ ఈక్వలైజర్"
+
+#, fuzzy
+#~ msgid "VLC media player - Flash Viewer"
+#~ msgstr "VLC మాధ్యమ ప్రదర్శకం - జాల అంతరవర్తి"
+
+#, fuzzy
+#~ msgid "Streaming Output"
+#~ msgstr "ప్రవాహం అవుట్‌పుట్"
+
+#, fuzzy
+#~ msgid "Create Stream"
+#~ msgstr "అప్రమేయ ప్రవాహం"
+
+#, fuzzy
+#~ msgid "Media File"
+#~ msgstr "మాధ్యమ దస్త్రాలు"
+
+#, fuzzy
+#~ msgid "Capture Screen"
+#~ msgstr "బంధన విధం"
+
+#, fuzzy
+#~ msgid "Close"
+#~ msgstr "మూసివేయి (&C)"
+
+#, fuzzy
+#~ msgid "Error!"
+#~ msgstr "దోషం"
+
+#, fuzzy
+#~ msgid "Create Mosaic"
+#~ msgstr "సృష్టించు"
+
+#, fuzzy
+#~ msgid "Stream Input Configuration"
+#~ msgstr "స్పీకర్ స్వరూపణం"
+
+#, fuzzy
+#~ msgid "Remove Stream"
+#~ msgstr "ఎంపికచేసినవి తీసివేయి"
+
+#, fuzzy
+#~ msgid "Create New Stream"
+#~ msgstr "ఒక కొత్త ప్రవరను సృష్టించు"
+
+#, fuzzy
+#~ msgid "Delete All Streams"
+#~ msgstr "ఇష్టాంశాలన్నిటినీ తొలగించు"
+
+#, fuzzy
+#~ msgid "Configure Stream Defaults"
+#~ msgstr "వేగపుమీటలను స్వరూపించు"
+
+#, fuzzy
+#~ msgid "Refresh Streams"
+#~ msgstr "తాజాపరుచు సమయం"
+
+#, fuzzy
+#~ msgid "Enqueue"
+#~ msgstr "వరుసలోచేర్చు (&E)"
+
+#, fuzzy
+#~ msgid "Zoom playlist"
+#~ msgstr "ప్రదర్శన జాబితా"
+
+#, fuzzy
 #~ msgid "Effect"
-#~ msgstr "ప్రభావం"
+#~ msgstr "ప్రభావాలు"

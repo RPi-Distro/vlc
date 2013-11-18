@@ -2,7 +2,7 @@
  * VLCVoutWindowController.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012-2013 VLC authors and VideoLAN
- * $Id: 0ddc33860687b6fbfe174cd736d10036fe664a2f $
+ * $Id: fb934b80f74e761b8e88146644f2f946615168a2 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -155,7 +155,12 @@
 
     // TODO: find a cleaner way for "start in fullscreen"
     // Start in fs, because either prefs settings, or fullscreen button was pressed before
-    if (var_InheritBool(VLCIntf, "fullscreen") || var_GetBool(pl_Get(VLCIntf), "fullscreen")) {
+
+    char *psz_splitter = var_GetString(pl_Get(VLCIntf), "video-splitter");
+    BOOL b_have_splitter = psz_splitter != NULL && *psz_splitter != '\0';
+    free(psz_splitter);
+
+    if (!b_have_splitter && (var_InheritBool(VLCIntf, "fullscreen") || var_GetBool(pl_Get(VLCIntf), "fullscreen"))) {
 
         // this is not set when we start in fullscreen because of
         // fullscreen settings in video prefs the second time
@@ -251,8 +256,10 @@
 
     [o_vout_dict removeObjectForKey:o_key];
 
-    if ([o_vout_dict count] == 0)
+    if ([o_vout_dict count] == 0) {
         [[VLCMain sharedInstance] setActiveVideoPlayback:NO];
+        i_statusLevelWindowCounter = 0;
+    }
 }
 
 
@@ -269,26 +276,29 @@
 
 - (void)setWindowLevel:(NSInteger)i_level forWindow:(vout_window_t *)p_wnd
 {
+    VLCVideoWindowCommon *o_window = [o_vout_dict objectForKey:[NSValue valueWithPointer:p_wnd]];
+    if (!o_window) {
+        msg_Err(VLCIntf, "Cannot set level for nonexisting window");
+        return;
+    }
+
     // only set level for helper windows to normal if no status vout window exist anymore
     if(i_level == NSStatusWindowLevel) {
         i_statusLevelWindowCounter++;
-        [self updateWindowLevelForHelperWindows:i_level];
+        // window level need to stay on normal in fullscreen mode
+        if (![o_window fullscreen] && ![o_window enteringFullscreenTransition])
+            [self updateWindowLevelForHelperWindows:i_level];
     } else {
-        i_statusLevelWindowCounter--;
+        if (i_statusLevelWindowCounter > 0)
+            i_statusLevelWindowCounter--;
+
         if (i_statusLevelWindowCounter == 0) {
             [self updateWindowLevelForHelperWindows:i_level];
         }
     }
 
-    VLCVideoWindowCommon *o_window = [o_vout_dict objectForKey:[NSValue valueWithPointer:p_wnd]];
-    if (!o_window) {
-        msg_Err(VLCIntf, "Cannot set size for nonexisting window");
-        return;
-    }
-
     [o_window setWindowLevel:i_level];
 }
-
 
 - (void)setFullscreen:(int)i_full forWindow:(vout_window_t *)p_wnd
 {

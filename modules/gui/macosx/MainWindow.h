@@ -2,7 +2,7 @@
  * MainWindow.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 112e7b307af4324ecc310caf8567b878879f2244 $
+ * $Id: 528efee66ad183736117b1ca670f7a57a5ae22cb $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -119,8 +119,6 @@
 - (void)toggleLeftSubSplitView;
 - (void)showDropZone;
 - (void)hideDropZone;
-- (void)showSplitView;
-- (void)hideSplitView;
 - (void)updateTimeSlider;
 - (void)updateWindow;
 - (void)updateName;

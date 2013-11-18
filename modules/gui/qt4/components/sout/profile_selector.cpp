@@ -2,7 +2,7 @@
  * profile_selector.cpp : A small profile selector and editor
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 0a5ec7dcd9bbadd065157c6282453c5d006e95f6 $
+ * $Id: 5b5a724e309f705912f3ce6096526c21fe606453 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -675,6 +675,8 @@ void VLCProfileEditor::fillProfile( const QString& qs )
             {
                 QComboBox *box = qobject_cast<QComboBox *>( object );
                 box->setCurrentIndex( box->findData( value ) );
+                if ( box->lineEdit() && box->currentIndex() == -1 )
+                    box->lineEdit()->setText( value );
             }
             else if( object->inherits( "QLineEdit" ) )
             {
@@ -809,6 +811,7 @@ QString VLCProfileEditor::transcodeValue()
         {
             const QComboBox *box = qobject_cast<const QComboBox *>( object );
             value = currentData( box ).toString();
+            if ( value.isEmpty() && box->lineEdit() ) value = box->lineEdit()->text();
         }
         else if( object->inherits( "QLineEdit" ) )
         {

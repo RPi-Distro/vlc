@@ -2,7 +2,7 @@
  * input_slider.cpp : VolumeSlider and SeekSlider
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 3a92a7809d299a336ad3fa35bacec95870a99871 $
+ * $Id: 841b64441c392519928e8f07daaeaf403c7cbd3c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -57,6 +57,7 @@ SeekSlider::SeekSlider( Qt::Orientation q, QWidget *_parent, bool _static )
           : QSlider( q, _parent ), b_classic( _static )
 {
     isSliding = false;
+    isJumping = false;
     f_buffering = 1.0;
     mHandleOpacity = 1.0;
     chapters = NULL;

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * playlist.m: MacOS X interface module
  *****************************************************************************
-* Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: a69353cb2082ce46dfed6027bf6d9242ebbee201 $
+* Copyright (C) 2002-2013 VLC authors and VideoLAN
+ * $Id: a6e21e43938e61cda5939e9676e87e13222f0a30 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>
@@ -51,7 +51,6 @@
 
 #include <vlc_keys.h>
 #import <vlc_interface.h>
-
 #include <vlc_url.h>
 
 /*****************************************************************************
@@ -98,18 +97,18 @@
     return NO;
 }
 
-- (BOOL) acceptsFirstResponder
+- (BOOL)acceptsFirstResponder
 {
     return YES;
 }
 
-- (BOOL) becomeFirstResponder
+- (BOOL)becomeFirstResponder
 {
     [self setNeedsDisplay:YES];
     return YES;
 }
 
-- (BOOL) resignFirstResponder
+- (BOOL)resignFirstResponder
 {
     [self setNeedsDisplay:YES];
     return YES;
@@ -128,6 +127,12 @@
  * This class the superclass of the VLCPlaylist and VLCPlaylistWizard.
  * It contains the common methods and elements of these 2 entities.
  *****************************************************************************/
+@interface VLCPlaylistCommon ()
+{
+    playlist_item_t * p_current_root_item;
+}
+@end
+
 @implementation VLCPlaylistCommon
 
 - (id)init
@@ -402,7 +407,20 @@
 /*****************************************************************************
  * VLCPlaylist implementation
  *****************************************************************************/
-@interface VLCPlaylist (Internal)
+@interface VLCPlaylist ()
+{
+    NSImage *o_descendingSortingImage;
+    NSImage *o_ascendingSortingImage;
+
+    NSMutableArray *o_nodes_array;
+    NSMutableArray *o_items_array;
+
+    BOOL b_selected_item_met;
+    BOOL b_isSortDescending;
+    id o_tc_sortColumn;
+    NSInteger retainedRowSelection;
+}
+
 - (void)saveTableColumns;
 @end
 
@@ -532,6 +550,8 @@
     [o_outline_view reloadData];
     [[[[VLCMain sharedInstance] wizard] playlistWizard] reloadOutlineView];
     [[[[VLCMain sharedInstance] bookmarks] dataTable] reloadData];
+
+    [o_outline_view selectRowIndexes:[NSIndexSet indexSetWithIndex:retainedRowSelection] byExtendingSelection:NO];
 
     [self outlineViewSelectionDidChange: nil];
     [[VLCMain sharedInstance] updateMainWindow];
@@ -875,14 +895,12 @@
 
     o_selected_indexes = [o_outline_view selectedRowIndexes];
     i_count = [o_selected_indexes count];
+    retainedRowSelection = [o_selected_indexes firstIndex];
 
     p_playlist = pl_Get(p_intf);
 
     NSUInteger indexes[i_count];
     if (i_count == [o_outline_view numberOfRows]) {
-#ifndef NDEBUG
-        msg_Dbg(p_intf, "user selected entire list, deleting current playlist root instead of individual items");
-#endif
         PL_LOCK;
         playlist_NodeDelete(p_playlist, [self currentPlaylistRoot], true, false);
         PL_UNLOCK;
@@ -900,10 +918,6 @@
             PL_UNLOCK;
             continue;
         }
-#ifndef NDEBUG
-        msg_Dbg(p_intf, "deleting item %i (of %i) with id \"%i\", pointerValue \"%p\" and %i children", i+1, i_count,
-                p_item->p_input->i_id, [o_item pointerValue], p_item->i_children +1);
-#endif
 
         if (p_item->i_children != -1) {
         //is a node and not an item

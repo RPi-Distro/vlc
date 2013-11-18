@@ -2,7 +2,7 @@
  * macosx.m: Mac OS X module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2013 VLC authors and VideoLAN
- * $Id: bc40bc1a820d82c44fd96d821dc5e9f396913c4d $
+ * $Id: 5b9047c0a9baef89c18513663fd9c0a7bd485f8d $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -35,6 +35,8 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_vout_window.h>
+
+#include "CompatibilityFixes.h"
 
 /*****************************************************************************
  * External prototypes
@@ -139,9 +141,11 @@ vlc_module_begin()
     set_subcategory(SUBCAT_INTERFACE_MAIN)
     cannot_unload_broken_library()
 
+    BOOL b_have_mavericks = OSX_MAVERICKS;
+
     set_section(N_("Appearance"), 0)
         add_bool("macosx-interfacestyle", false, INTERFACE_STYLE_TEXT, INTERFACE_STYLE_LONGTEXT, false)
-        add_bool("macosx-nativefullscreenmode", false, NATIVE_FULLSCREEN_MODE_ON_LION_TEXT, NATIVE_FULLSCREEN_MODE_ON_LION_LONGTEXT, false)
+        add_bool("macosx-nativefullscreenmode", b_have_mavericks, NATIVE_FULLSCREEN_MODE_ON_LION_TEXT, NATIVE_FULLSCREEN_MODE_ON_LION_LONGTEXT, false)
         add_bool("macosx-icon-change", true, ICONCHANGE_TEXT, ICONCHANGE_LONGTEXT, true)
         add_bool("macosx-show-playback-buttons", false, JUMPBUTTONS_TEXT, JUMPBUTTONS_LONGTEXT, false)
         add_bool("macosx-show-playmode-buttons", false, PLAYMODEBUTTONS_TEXT, PLAYMODEBUTTONS_LONGTEXT, false)
@@ -177,6 +181,6 @@ vlc_module_begin()
         set_section(N_("Video output"), 0)
         add_integer("macosx-vdev", 0, VDEV_TEXT, VDEV_LONGTEXT, false)
         add_float_with_range("macosx-opaqueness", 1, 0, 1, OPAQUENESS_TEXT, OPAQUENESS_LONGTEXT, true);
-        add_bool("macosx-black", true, BLACK_TEXT, BLACK_LONGTEXT, false)
+        add_bool("macosx-black", false, BLACK_TEXT, BLACK_LONGTEXT, false)
 vlc_module_end()
 

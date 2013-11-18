@@ -2,7 +2,7 @@
  * actions_manager.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: fa3703ba9a135a7d9daeb7c1af3378ec4f376e32 $
+ * $Id: d5595fdbcd93909445677f9bde4a14d33d9f2559 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -105,7 +105,7 @@ void ActionsManager::doAction( int id_action )
 
 void ActionsManager::play()
 {
-    if( THEPL->current.i_size == 0 )
+    if( THEPL->current.i_size == 0 && THEPL->items.i_size == 0 )
     {
         /* The playlist is empty, open a file requester */
         THEDP->openFileDialog();

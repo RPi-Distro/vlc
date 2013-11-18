@@ -2,7 +2,7 @@
  * matroska_segment_parse.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: 5e8d6083e42364dda48cd0a6583f11393e370686 $
+ * $Id: c9d2c9d3ef5304c2b64b04ddf2e83f34a12b0f66 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -1263,6 +1263,14 @@ void matroska_segment_c::ParseCluster( bool b_update_start_time )
 int32_t matroska_segment_c::TrackInit( mkv_track_t * p_tk )
 {
     es_format_t *p_fmt = &p_tk->fmt;
+
+    if( p_tk->psz_codec == NULL )
+    {
+        msg_Err( &sys.demuxer, "Empty codec id" );
+        p_tk->fmt.i_codec = VLC_FOURCC( 'u', 'n', 'd', 'f' );
+        return 0;
+    }
+
     if( !strcmp( p_tk->psz_codec, "V_MS/VFW/FOURCC" ) )
     {
         if( p_tk->i_extra_data < (int)sizeof( VLC_BITMAPINFOHEADER ) )
@@ -1341,6 +1349,11 @@ int32_t matroska_segment_c::TrackInit( mkv_track_t * p_tk )
         p_tk->fmt.i_codec = VLC_CODEC_VP8;
         p_tk->b_pts_only = true;
     }
+    else if( !strncmp( p_tk->psz_codec, "V_VP9", 5 ) )
+    {
+        p_tk->fmt.i_codec = VLC_CODEC_VP9;
+        fill_extra_data( p_tk, 0 );
+    }
     else if( !strncmp( p_tk->psz_codec, "V_MPEG4", 7 ) )
     {
         if( !strcmp( p_tk->psz_codec, "V_MPEG4/MS/V3" ) )
@@ -1357,6 +1370,11 @@ int32_t matroska_segment_c::TrackInit( mkv_track_t * p_tk )
             fill_extra_data( p_tk, 0 );
         }
     }
+    else if( !strncmp( p_tk->psz_codec, "V_MPEGH/ISO/HEVC", 16) )
+    {
+        p_tk->fmt.i_codec = VLC_CODEC_HEVC;
+        fill_extra_data( p_tk, 0 );
+    } 
     else if( !strcmp( p_tk->psz_codec, "V_QUICKTIME" ) )
     {
         MP4_Box_t *p_box = (MP4_Box_t*)xmalloc( sizeof( MP4_Box_t ) );
@@ -1522,6 +1540,11 @@ int32_t matroska_segment_c::TrackInit( mkv_track_t * p_tk )
     else if( !strcmp( p_tk->psz_codec, "A_AAC" ) )
     {
         p_tk->fmt.i_codec = VLC_CODEC_MP4A;
+        fill_extra_data( p_tk, 0 );
+    }
+    else if( !strcmp( p_tk->psz_codec, "A_ALAC" ) )
+    {
+        p_tk->fmt.i_codec =  VLC_CODEC_ALAC;
         fill_extra_data( p_tk, 0 );
     }
     else if( !strcmp( p_tk->psz_codec, "A_WAVPACK4" ) )

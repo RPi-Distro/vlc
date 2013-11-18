@@ -2,7 +2,7 @@
  * CoreInteraction.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2013 Felix Paul Kühne
- * $Id: f51bcfc787b7f1a05e09dda4b1853518bacc14c1 $
+ * $Id: d885a80b0ceef89b0f4441ab9bb4ca6be7741372 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -508,15 +508,6 @@ static VLCCoreInteraction *_o_sharedInstance = nil;
         return;
 
     playlist_MuteToggle(pl_Get(p_intf));
-}
-
-- (void)setMute:(BOOL)b_value
-{
-    intf_thread_t *p_intf = VLCIntf;
-    if (!p_intf)
-        return;
-
-    playlist_MuteSet(pl_Get(p_intf), b_value);
 }
 
 - (BOOL)mute

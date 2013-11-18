@@ -2,7 +2,7 @@
  * theora.c: theora decoder module making use of libtheora.
  *****************************************************************************
  * Copyright (C) 1999-2012 VLC authors and VideoLAN
- * $Id: a052b4627c33db68597e0a527e16593d3ab20634 $
+ * $Id: 86ac5d6379aa2386dae22aa734c99eeca25ddd59 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -413,6 +413,7 @@ static void *ProcessPacket( decoder_t *p_dec, ogg_packet *p_oggpacket,
         /* Don't send the the first packet after a discontinuity to
          * theora_decode, otherwise we get purple/green display artifacts
          * appearing in the video output */
+        block_Release(p_block);
         return NULL;
     }
 
