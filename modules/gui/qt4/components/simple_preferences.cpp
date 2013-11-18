@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: e07d63194119ef6c7c83bcf2ead047dcaa2b5ff7 $
+ * $Id: 785ec606eb27ef58b8190e6adf41383697c877ca $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -68,6 +68,7 @@ static const char *const ppsz_language[] =
     "ca",
     "zh_TW",
     "cs",
+    "cy",
     "da",
     "nl",
     "fi",
@@ -132,6 +133,7 @@ static const char *const ppsz_language_text[] =
     "Català",
     "正體中文",
     "Čeština",
+    "Cymraeg",
     "Dansk",
     "Nederlands",
     "Suomi",
@@ -482,7 +484,7 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
             module_exists( name ) && ( !psz_aout || !strcmp( psz_aout, name ) || !strcmp( psz_aout, "any" ) )
 
 #if defined( _WIN32 )
-            if( get_vol_aout( "directx" ) )
+            if( get_vol_aout( "directsound" ) )
                 i_volume = config_GetFloat( p_intf, "directx-volume") * 100 + 0.5;
             else if( get_vol_aout( "waveout" ) )
                 i_volume = config_GetFloat( p_intf, "waveout-volume") * 100 + 0.5;
@@ -1074,7 +1076,7 @@ void SPrefsPanel::apply()
         //FIXME this is moot
 #if defined( _WIN32 )
         VLC_UNUSED( f_gain );
-        if( save_vol_aout( "directx" ) )
+        if( save_vol_aout( "directsound" ) )
             config_PutFloat( p_intf, "directx-volume", i_volume / 100.f );
         if( save_vol_aout( "waveout" ) )
             config_PutFloat( p_intf, "waveout-volume", i_volume / 100.f );
@@ -1206,6 +1208,19 @@ bool SPrefsPanel::addType( const char * psz_ext, QTreeWidgetItem* current,
 
 void SPrefsPanel::assoDialog()
 {
+#if !defined(__IApplicationAssociationRegistrationUI_INTERFACE_DEFINED__)
+#define __IApplicationAssociationRegistrationUI_INTERFACE_DEFINED__
+    const GUID IID_IApplicationAssociationRegistrationUI = {0x1f76a169,0xf994,0x40ac, {0x8f,0xc8,0x09,0x59,0xe8,0x87,0x47,0x10}};
+    const GUID CLSID_ApplicationAssociationRegistrationUI = { 0x1968106d,0xf3b5,0x44cf,{0x89,0x0e,0x11,0x6f,0xcb,0x9e,0xce,0xf1}};
+#ifdef __cplusplus
+    interface IApplicationAssociationRegistrationUI : public IUnknown
+    {
+        virtual HRESULT STDMETHODCALLTYPE LaunchAdvancedAssociationUI(
+                LPCWSTR pszAppRegName) = 0;
+    };
+#endif /* __cplusplus */
+#endif /* __IApplicationAssociationRegistrationUI_INTERFACE_DEFINED__ */
+
     IApplicationAssociationRegistrationUI *p_appassoc;
     CoInitializeEx( NULL, COINIT_MULTITHREADED );
 

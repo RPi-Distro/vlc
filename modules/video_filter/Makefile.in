@@ -1842,7 +1842,7 @@ AM_LDFLAGS = -rpath '$(libvlcdir)' \
 	-export-symbols-regex ^vlc_entry \
 	-shrext $(LIBEXT) \
 	-no-undefined \
-	$(LTLIBVLCCORE) $(top_builddir)/compat/libcompat.la
+	$(top_builddir)/compat/libcompat.la $(LTLIBVLCCORE) 
 
 SOURCES_mosaic = mosaic.c mosaic.h
 SOURCES_transform = transform.c

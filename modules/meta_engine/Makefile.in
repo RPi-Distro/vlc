@@ -1075,7 +1075,7 @@ AM_LDFLAGS = -rpath '$(libvlcdir)' \
 	-export-symbols-regex ^vlc_entry \
 	-shrext $(LIBEXT) \
 	-no-undefined \
-	$(LTLIBVLCCORE) $(top_builddir)/compat/libcompat.la
+	$(top_builddir)/compat/libcompat.la $(LTLIBVLCCORE) 
 
 SOURCES_folder = folder.c
 SOURCES_taglib = taglib.cpp ../demux/xiph_metadata.h ../demux/xiph_metadata.c

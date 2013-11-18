@@ -1350,7 +1350,7 @@ AM_LDFLAGS = -rpath '$(libvlcdir)' \
 	-export-symbols-regex ^vlc_entry \
 	-shrext $(LIBEXT) \
 	-no-undefined \
-	$(LTLIBVLCCORE) $(top_builddir)/compat/libcompat.la
+	$(top_builddir)/compat/libcompat.la $(LTLIBVLCCORE) 
 
 SOURCES_stream_out_dummy = dummy.c
 SOURCES_stream_out_delay = delay.c

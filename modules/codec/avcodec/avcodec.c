@@ -2,7 +2,7 @@
  * avcodec.c: video and audio decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 04ade540e98b99b708bdd180c17cecabe0acc8cf $
+ * $Id: 753a24e1c2911ee9964c13170049ba7914170049 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -362,7 +362,7 @@ static void CloseDecoder( vlc_object_t *p_this )
 
     if( p_sys->p_context )
     {
-        free( p_sys->p_context->extradata );
+        av_free( p_sys->p_context->extradata );
         p_sys->p_context->extradata = NULL;
 
         if( !p_sys->b_delayed_open )

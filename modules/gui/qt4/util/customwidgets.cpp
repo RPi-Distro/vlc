@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id: 1a00fe00affc0cd5a9f6ef9992a2afc3030ed4aa $
+ * $Id: 775218b8fa02592967bdaa9c0f786621a9cac0bb $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin
@@ -287,9 +287,9 @@ int qtWheelEventToVLCKey( QWheelEvent *e )
     return i_vlck;
 }
 
-QString VLCKeyToString( unsigned val )
+QString VLCKeyToString( unsigned val, bool locale )
 {
-    char *base = vlc_keycode2str (val, true);
+    char *base = vlc_keycode2str (val, locale);
     if (base == NULL)
         return qtr( "Unset" );
 

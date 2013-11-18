@@ -2,7 +2,7 @@
 * simple_prefs.h: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2013 VLC authors and VideoLAN
-* $Id: ca6f52888d625ea8ff646ae61b85301a7cd91720 $
+* $Id: d97ae1c41140676ea626b7dd6ec47d4d80250ea7 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -84,6 +84,8 @@
     IBOutlet id o_input_urlhandler_btn;
     IBOutlet id o_input_view;
 
+    IBOutlet id o_intf_language_pop;
+    IBOutlet id o_intf_language_txt;
     IBOutlet id o_intf_style_txt;
     IBOutlet id o_intf_style_dark_bcell;
     IBOutlet id o_intf_style_bright_bcell;

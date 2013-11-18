@@ -2,7 +2,7 @@
  * m3u.c : M3U playlist format import
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: 8f07a47557f09ccea52cd87c5427b650bcc30d99 $
+ * $Id: c2e1e0f4d2fb05281835582fd5dababe62e41d9a $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -95,7 +95,7 @@ int Import_M3U( vlc_object_t *p_this )
 
         p_peek += offset;
 
-        if( !memcmp( p_peek, "RTSPtext", 8 ) ) /* QuickTime */
+        if( !strncasecmp( (const char *)p_peek, "RTSPtext", 8 ) ) /* QuickTime */
             pf_dup = CheckUnicode; /* UTF-8 */
         else
         if( !memcmp( p_peek, "#EXTM3U", 7 ) )

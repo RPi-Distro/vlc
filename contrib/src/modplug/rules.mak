@@ -3,7 +3,7 @@
 #MODPLUG_VERSION := 0.8.8.4
 #MODPLUG_URL := $(SF)/modplug-xmms/libmodplug-$(MODPLUG_VERSION).tar.gz
 
-MODPLUG_GIT_HASH := 9b08cc646c3dc94dd446ab0671e3427dae8a83fc
+MODPLUG_GIT_HASH := bc8cb8248788c05b77da7d653f4c677354339a21
 MODPLUG_URL := http://sourceforge.net/code-snapshots/git/m/mo/modplug-xmms/git.git/modplug-xmms-git-$(MODPLUG_GIT_HASH).zip
 
 PKGS += modplug
@@ -18,7 +18,6 @@ $(TARBALLS)/modplug-xmms-git-$(MODPLUG_GIT_HASH).zip:
 
 libmodplug: modplug-xmms-git-$(MODPLUG_GIT_HASH).zip .sum-modplug
 	$(UNPACK)
-	$(APPLY) $(SRC)/modplug/long.patch
 	$(call pkg_static,"libmodplug/libmodplug.pc.in")
 	$(MOVE)
 

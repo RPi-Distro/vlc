@@ -2,7 +2,7 @@
  * extension.c: Lua Extensions (meta data, web information, ...)
  *****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 4a7105e446f1a4cae981580dc729de8aedaaa66a $
+ * $Id: bef8b573579796eb6c313f0414d6208fca0085fc $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -1206,21 +1206,20 @@ static void WatchTimerCallback( void *data )
 
     vlc_mutex_lock( &p_ext->p_sys->command_lock );
 
-    // Do we have a pending Deactivate command?
-    if( ( p_ext->p_sys->command &&
-          p_ext->p_sys->command->i_command == CMD_DEACTIVATE )
-        || ( p_ext->p_sys->command->next
-             && p_ext->p_sys->command->next->i_command == CMD_DEACTIVATE) )
-    {
-        if( p_ext->p_sys->progress )
-        {
-            dialog_ProgressDestroy( p_ext->p_sys->progress );
-            p_ext->p_sys->progress = NULL;
+    for( struct command_t *cmd = p_ext->p_sys->command;
+         cmd != NULL;
+         cmd = cmd->next )
+        if( cmd->i_command == CMD_DEACTIVATE )
+        {   /* We have a pending Deactivate command... */
+            if( p_ext->p_sys->progress )
+            {
+                dialog_ProgressDestroy( p_ext->p_sys->progress );
+                p_ext->p_sys->progress = NULL;
+            }
+            vlc_mutex_unlock( &p_ext->p_sys->command_lock );
+            KillExtension( p_mgr, p_ext );
+            return;
         }
-        vlc_mutex_unlock( &p_ext->p_sys->command_lock );
-        KillExtension( p_mgr, p_ext );
-        return;
-    }
 
     if( !p_ext->p_sys->progress )
     {

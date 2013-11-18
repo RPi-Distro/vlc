@@ -93,12 +93,13 @@ DIST_COMMON = $(top_srcdir)/modules/common.am $(srcdir)/Modules.am \
 	$(top_srcdir)/autotools/depcomp
 @HAVE_DYNAMIC_PLUGINS_TRUE@am__append_1 = -D__PLUGIN__
 @HAVE_WIN32_TRUE@am__append_2 = $(SOCKET_LIBS)
-@HAVE_XCB_TRUE@am__append_3 = \
+@HAVE_DARWIN_TRUE@am__append_3 = -Wl,-framework,Security,-framework,CoreFoundation
+@HAVE_XCB_TRUE@am__append_4 = \
 @HAVE_XCB_TRUE@	libxdg_screensaver_plugin.la
 
-@HAVE_DBUS_TRUE@am__append_4 = libdbus_screensaver_plugin.la
-@HAVE_ANDROID_TRUE@am__append_5 = -llog
-@ENABLE_SOUT_TRUE@am__append_6 = \
+@HAVE_DBUS_TRUE@am__append_5 = libdbus_screensaver_plugin.la
+@HAVE_ANDROID_TRUE@am__append_6 = -llog
+@ENABLE_SOUT_TRUE@am__append_7 = \
 @ENABLE_SOUT_TRUE@	libvod_rtsp_plugin.la \
 @ENABLE_SOUT_TRUE@	$(NULL)
 
@@ -209,8 +210,8 @@ am_libgnutls_plugin_la_OBJECTS = libgnutls_plugin_la-gnutls.lo
 libgnutls_plugin_la_OBJECTS = $(am_libgnutls_plugin_la_OBJECTS)
 libgnutls_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(libgnutls_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+	$(libgnutls_plugin_la_CFLAGS) $(CFLAGS) \
+	$(libgnutls_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
 liblogger_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1)
 am_liblogger_plugin_la_OBJECTS = liblogger_plugin_la-logger.lo
@@ -1148,9 +1149,9 @@ basedir = misc
 dir = misc
 mods = audioscrobbler fingerprinter vod_rtsp xml
 libvlc_LTLIBRARIES = $(LTLIBfingerprinter) $(LTLIBxml) \
-	libexport_plugin.la $(LTLIBgnutls) $(am__append_3) \
-	$(am__append_4) libaudioscrobbler_plugin.la \
-	liblogger_plugin.la libstats_plugin.la $(am__append_6)
+	libexport_plugin.la $(LTLIBgnutls) $(am__append_4) \
+	$(am__append_5) libaudioscrobbler_plugin.la \
+	liblogger_plugin.la libstats_plugin.la $(am__append_7)
 EXTRA_LTLIBRARIES = libfingerprinter_plugin.la libxml_plugin.la \
 	libgnutls_plugin.la
 NULL = 
@@ -1171,7 +1172,7 @@ AM_LDFLAGS = -rpath '$(libvlcdir)' \
 	-export-symbols-regex ^vlc_entry \
 	-shrext $(LIBEXT) \
 	-no-undefined \
-	$(LTLIBVLCCORE) $(top_builddir)/compat/libcompat.la
+	$(top_builddir)/compat/libcompat.la $(LTLIBVLCCORE) 
 
 SOURCES_vod_rtsp = rtsp.c
 SOURCES_audioscrobbler = audioscrobbler.c
@@ -1194,6 +1195,7 @@ libgnutls_plugin_la_SOURCES = gnutls.c dhparams.h
 libgnutls_plugin_la_CFLAGS = $(AM_CFLAGS) $(GNUTLS_CFLAGS)
 libgnutls_plugin_la_LIBADD = $(AM_LIBADD) $(GNUTLS_LIBS) \
 	$(am__append_2)
+libgnutls_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(am__append_3)
 libxdg_screensaver_plugin_la_SOURCES = inhibit/xdg.c
 libxdg_screensaver_plugin_la_CFLAGS = $(AM_CFLAGS)
 libxdg_screensaver_plugin_la_LIBADD = $(AM_LIBADD)
@@ -1202,7 +1204,7 @@ libdbus_screensaver_plugin_la_CFLAGS = $(AM_CFLAGS) $(DBUS_CFLAGS)
 libdbus_screensaver_plugin_la_LIBADD = $(AM_LIBADD) $(DBUS_LIBS)
 liblogger_plugin_la_SOURCES = logger.c
 liblogger_plugin_la_CFLAGS = $(AM_CFLAGS)
-liblogger_plugin_la_LIBADD = $(AM_LIBADD) $(am__append_5)
+liblogger_plugin_la_LIBADD = $(AM_LIBADD) $(am__append_6)
 libstats_plugin_la_SOURCES = stats.c
 libstats_plugin_la_CFLAGS = $(AM_CFLAGS)
 libstats_plugin_la_LIBADD = $(AM_LIBADD)

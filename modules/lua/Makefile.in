@@ -1073,7 +1073,7 @@ AM_LDFLAGS = -rpath '$(libvlcdir)' \
 	-export-symbols-regex ^vlc_entry \
 	-shrext $(LIBEXT) \
 	-no-undefined \
-	$(LTLIBVLCCORE) $(top_builddir)/compat/libcompat.la
+	$(top_builddir)/compat/libcompat.la $(LTLIBVLCCORE) 
 
 SOURCES_lua = extension.c extension.h extension_thread.c intf.c meta.c \
 	demux.c services_discovery.c vlc.c vlc.h libs.h \

@@ -2,7 +2,7 @@
  * video.c: video decoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 9e1bc210957bd3b727bd30b41a2eb0814552c288 $
+ * $Id: 2fd48affcd61920340d43486a8d32292527ee2a2 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -78,7 +78,7 @@ struct decoder_sys_t
 #if LIBAVCODEC_VERSION_MAJOR < 54
     AVPaletteControl palette;
 #else
-# warning FIXME
+    bool palette_sent;
 #endif
 
     /* */
@@ -415,7 +415,13 @@ int InitVideoDec( decoder_t *p_dec, AVCodecContext *p_context,
         p_sys->p_context->palctrl = &p_sys->palette;
     }
 #else
-# warning FIXME
+    if( p_dec->fmt_in.video.p_palette ) {
+        p_sys->palette_sent = false;
+        p_dec->fmt_out.video.p_palette = malloc( sizeof(video_palette_t) );
+        if( p_dec->fmt_out.video.p_palette )
+            *p_dec->fmt_out.video.p_palette = *p_dec->fmt_in.video.p_palette;
+    } else
+        p_sys->palette_sent = true;
 #endif
 
     /* ***** init this codec with special data ***** */
@@ -580,6 +586,17 @@ picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
         pkt.size = p_block->i_buffer;
         pkt.pts = p_block->i_pts;
         pkt.dts = p_block->i_dts;
+
+#if LIBAVCODEC_VERSION_MAJOR >= 54
+        if( !p_sys->palette_sent )
+        {
+            uint8_t *pal = av_packet_new_side_data(&pkt, AV_PKT_DATA_PALETTE, AVPALETTE_SIZE);
+            if (pal) {
+                memcpy(pal, p_dec->fmt_in.video.p_palette->palette, AVPALETTE_SIZE);
+                p_sys->palette_sent = true;
+            }
+        }
+#endif
 
         /* Make sure we don't reuse the same timestamps twice */
         p_block->i_pts =
@@ -797,8 +814,9 @@ static void ffmpeg_InitCodec( decoder_t *p_dec )
         uint8_t *p;
 
         p_sys->p_context->extradata_size = i_size + 12;
-        p = p_sys->p_context->extradata  =
-            malloc( p_sys->p_context->extradata_size );
+        p = p_sys->p_context->extradata =
+            av_malloc( p_sys->p_context->extradata_size +
+                       FF_INPUT_BUFFER_PADDING_SIZE );
         if( !p )
             return;
 
@@ -835,12 +853,12 @@ static void ffmpeg_InitCodec( decoder_t *p_dec )
     {
         p_sys->p_context->extradata_size = i_size;
         p_sys->p_context->extradata =
-            malloc( i_size + FF_INPUT_BUFFER_PADDING_SIZE );
+            av_malloc( i_size + FF_INPUT_BUFFER_PADDING_SIZE );
         if( p_sys->p_context->extradata )
         {
             memcpy( p_sys->p_context->extradata,
                     p_dec->fmt_in.p_extra, i_size );
-            memset( &((uint8_t*)p_sys->p_context->extradata)[i_size],
+            memset( p_sys->p_context->extradata + i_size,
                     0, FF_INPUT_BUFFER_PADDING_SIZE );
         }
     }

@@ -2,7 +2,7 @@
  * smooth.c: Smooth Streaming stream filter
  *****************************************************************************
  * Copyright (C) 1996-2012 VLC authors and VideoLAN
- * $Id: 29f54fb0e8209e01da82cbce27ce626f16011d37 $
+ * $Id: 5e2c9fdca3e4d6684a71000ad390f8fbca006975 $
  *
  * Author: Frédéric Yhuel <fyhuel _AT_ viotech _DOT_ net>
  * Heavily inspired by HLS module of Jean-Paul Saman
@@ -103,7 +103,7 @@ static bool isSmoothStreaming( stream_t *s )
         }
         peeked = FromCharset( encoding, peeked, 512 );
 
-        if( strstr( peeked, needle ) != NULL )
+        if( peeked != NULL && strstr( peeked, needle ) != NULL )
             ret = true;
     }
     free( peeked );

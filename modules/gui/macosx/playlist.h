@@ -2,7 +2,7 @@
  * playlist.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 67c273bd4737bc612b28a3601d012653d9b31e1c $
+ * $Id: 543ebe33841ef8eaec0d527b7fad693500b51fdb $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -57,7 +57,6 @@
     IBOutlet VLCPlaylistView* o_outline_view_other;
 
     NSMutableDictionary *o_outline_dict;
-    playlist_item_t * p_current_root_item;
 }
 
 - (void)setPlaylistRoot: (playlist_item_t *)root_item;
@@ -106,16 +105,6 @@
     IBOutlet id o_save_accessory_text;
 
     IBOutlet id o_playlist_header;
-
-    NSImage *o_descendingSortingImage;
-    NSImage *o_ascendingSortingImage;
-
-    NSMutableArray *o_nodes_array;
-    NSMutableArray *o_items_array;
-
-    BOOL b_selected_item_met;
-    BOOL b_isSortDescending;
-    id o_tc_sortColumn;
 }
 
 - (void)searchfieldChanged:(NSNotification *)o_notification;

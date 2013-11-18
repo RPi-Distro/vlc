@@ -2,7 +2,7 @@
  * menus.hpp : Menus handling
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 6d5e006ba7340f2d43750815ac40dfe5ca279111 $
+ * $Id: 3b39c7b12f72104bd9877d70a1077efc86c3fc1e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -122,7 +122,7 @@ private:
     static QMenu *VideoMenu( intf_thread_t *p_intf, QWidget *parent ) {
         return VideoMenu( p_intf, new QMenu( parent ) );
     }
-    static QMenu *SubtitleMenu( intf_thread_t *, QMenu *current);
+    static QMenu *SubtitleMenu( intf_thread_t *, QMenu *current, bool b_popup = false );
     static QMenu *SubtitleMenu( intf_thread_t *p_intf, QWidget *parent) {
         return SubtitleMenu( p_intf, new QMenu( parent ) );
     }

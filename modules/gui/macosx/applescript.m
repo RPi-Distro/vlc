@@ -2,7 +2,7 @@
  * applescript.m: MacOS X AppleScript support
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: ddedffcd860cb9e0f9eb02da14d895f1912a58b9 $
+ * $Id: 947dbc8b7bade5939d5f0794b81568e9cfb9db64 $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -87,7 +87,7 @@
     else if ([o_command isEqualToString:@"fullscreen"])
         [[VLCCoreInteraction sharedInstance] toggleFullscreen];
     else if ([o_command isEqualToString:@"mute"])
-        [[VLCCoreInteraction sharedInstance] setMute: YES];
+        [[VLCCoreInteraction sharedInstance] toggleMute];
     else if ([o_command isEqualToString:@"volumeUp"])
         [[VLCCoreInteraction sharedInstance] volumeUp];
     else if ([o_command isEqualToString:@"volumeDown"])

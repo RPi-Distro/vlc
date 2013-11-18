@@ -2,7 +2,7 @@
  * audio.c: audio decoder using libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2003 VLC authors and VideoLAN
- * $Id: 571bf5d5dbb59c5e1ba175ed5b97a3993b7937f6 $
+ * $Id: f0d41e0673e5e4ed281022e8b15339d4b70ad96a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -97,7 +97,7 @@ static void InitDecoderConfig( decoder_t *p_dec, AVCodecContext *p_context )
         if( i_size > 0 )
         {
             p_context->extradata =
-                malloc( i_size + FF_INPUT_BUFFER_PADDING_SIZE );
+                av_malloc( i_size + FF_INPUT_BUFFER_PADDING_SIZE );
             if( p_context->extradata )
             {
                 uint8_t *p_dst = p_context->extradata;
@@ -149,7 +149,7 @@ int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
     if( ffmpeg_OpenCodec( p_dec ) < 0 )
     {
         msg_Err( p_dec, "cannot open codec (%s)", p_sys->psz_namecodec );
-        free( p_sys->p_context->extradata );
+        av_free( p_sys->p_context->extradata );
         free( p_sys );
         return VLC_EGENERIC;
     }

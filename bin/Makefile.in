@@ -86,16 +86,17 @@ EXTRA_PROGRAMS = vlc-wrapper$(EXEEXT)
 @HAVE_DBUS_TRUE@am__append_1 = -DHAVE_DBUS
 @HAVE_WIN32_FALSE@am__append_2 = vlc-wrapper
 @HAVE_WIN32_TRUE@am__append_3 = vlc_win32_rc.rc
-@HAVE_WIN32_TRUE@am__append_4 = -lpsapi -lwininet vlc_win32_rc.$(OBJEXT)
+@HAVE_DARWIN_TRUE@am__append_4 = -Wl,-framework,CoreFoundation
+@HAVE_WIN32_TRUE@am__append_5 = -lpsapi -lwininet vlc_win32_rc.$(OBJEXT)
 @HAVE_WIN32_FALSE@vlc_DEPENDENCIES = ../lib/libvlc.la \
 @HAVE_WIN32_FALSE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2) \
 @HAVE_WIN32_FALSE@	$(am__DEPENDENCIES_3)
-@HAVE_WIN32_FALSE@am__append_5 = $(LIBDL)
-@HAVE_WIN32_FALSE@am__append_6 = -no-install -static
-@HAVE_WIN32_TRUE@am__append_7 = vlc_win32_rc.$(OBJEXT)
+@HAVE_WIN32_FALSE@am__append_6 = $(LIBDL)
+@HAVE_WIN32_FALSE@am__append_7 = -no-install -static
+@HAVE_WIN32_TRUE@am__append_8 = vlc_win32_rc.$(OBJEXT)
 @HAVE_WIN32_FALSE@vlc_cache_gen_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 @HAVE_WIN32_FALSE@	../compat/libcompat.la ../lib/libvlc.la \
-@HAVE_WIN32_FALSE@	$(am__append_7)
+@HAVE_WIN32_FALSE@	$(am__append_8)
 subdir = bin
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/autotools/depcomp
@@ -119,9 +120,12 @@ CONFIG_CLEAN_VPATH_FILES =
 @HAVE_WIN32_FALSE@am__EXEEXT_1 = vlc-wrapper$(EXEEXT)
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(vlclibdir)"
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS) $(vlclib_PROGRAMS)
-am__vlc_SOURCES_DIST = vlc.c override.c winvlc.c
-@HAVE_WIN32_FALSE@am_vlc_OBJECTS = vlc.$(OBJEXT) override.$(OBJEXT)
-@HAVE_WIN32_TRUE@am_vlc_OBJECTS = winvlc.$(OBJEXT)
+am__vlc_SOURCES_DIST = darwinvlc.c override.c vlc.c winvlc.c
+@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@am_vlc_OBJECTS = vlc.$(OBJEXT) \
+@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@	override.$(OBJEXT)
+@HAVE_DARWIN_FALSE@@HAVE_WIN32_TRUE@am_vlc_OBJECTS = winvlc.$(OBJEXT)
+@HAVE_DARWIN_TRUE@am_vlc_OBJECTS = darwinvlc.$(OBJEXT) \
+@HAVE_DARWIN_TRUE@	override.$(OBJEXT)
 vlc_OBJECTS = $(am_vlc_OBJECTS)
 am__DEPENDENCIES_1 =
 @HAVE_WIN32_TRUE@am__DEPENDENCIES_2 = vlc_win32_rc.$(OBJEXT)
@@ -135,14 +139,17 @@ vlc_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(vlc_LDFLAGS) $(LDFLAGS) -o $@
 am_vlc_cache_gen_OBJECTS = cachegen.$(OBJEXT)
 vlc_cache_gen_OBJECTS = $(am_vlc_cache_gen_OBJECTS)
-am__vlc_static_SOURCES_DIST = vlc.c override.c winvlc.c
-@HAVE_WIN32_FALSE@am__objects_1 = vlc_static-vlc.$(OBJEXT) \
-@HAVE_WIN32_FALSE@	vlc_static-override.$(OBJEXT)
-@HAVE_WIN32_TRUE@am__objects_1 = vlc_static-winvlc.$(OBJEXT)
+am__vlc_static_SOURCES_DIST = darwinvlc.c override.c vlc.c winvlc.c
+@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@am__objects_1 =  \
+@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@	vlc_static-vlc.$(OBJEXT) \
+@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@	vlc_static-override.$(OBJEXT)
+@HAVE_DARWIN_FALSE@@HAVE_WIN32_TRUE@am__objects_1 = vlc_static-winvlc.$(OBJEXT)
+@HAVE_DARWIN_TRUE@am__objects_1 = vlc_static-darwinvlc.$(OBJEXT) \
+@HAVE_DARWIN_TRUE@	vlc_static-override.$(OBJEXT)
 am_vlc_static_OBJECTS = $(am__objects_1)
 vlc_static_OBJECTS = $(am_vlc_static_OBJECTS)
 am__DEPENDENCIES_4 = ../lib/libvlc.la $(am__DEPENDENCIES_1) \
-	$(am__append_7) $(am__DEPENDENCIES_3)
+	$(am__append_8) $(am__DEPENDENCIES_3)
 vlc_static_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(vlc_static_CFLAGS) \
 	$(CFLAGS) $(vlc_static_LDFLAGS) $(LDFLAGS) -o $@
@@ -1026,14 +1033,15 @@ noinst_DATA = $(am__append_3) ../modules/plugins.dat
 EXTRA_DIST = vlc_win32_rc.rc.in
 SUFFIXES = .rc.in .rc
 AM_CFLAGS = $(CFLAGS_vlc)
+@HAVE_DARWIN_TRUE@vlc_SOURCES = darwinvlc.c override.c
 @HAVE_WIN32_FALSE@vlc_SOURCES = vlc.c override.c
 @HAVE_WIN32_TRUE@vlc_SOURCES = winvlc.c
-EXTRA_vlc_SOURCES = vlc.c winvlc.c
+EXTRA_vlc_SOURCES = vlc.c winvlc.c darwinvlc.c
 vlc_wrapper_SOURCES = rootwrap.c
 vlc_wrapper_LDADD = $(SOCKET_LIBS)
-vlc_LDFLAGS = $(LDFLAGS_vlc)
-vlc_LDADD = ../lib/libvlc.la $(LIBPTHREAD) $(am__append_4) \
-	$(am__append_5)
+vlc_LDFLAGS = $(LDFLAGS_vlc) $(am__append_4)
+vlc_LDADD = ../lib/libvlc.la $(LIBPTHREAD) $(am__append_5) \
+	$(am__append_6)
 vlc_static_SOURCES = $(vlc_SOURCES)
 vlc_static_CFLAGS = $(AM_CFLAGS) \
 	-DTOP_BUILDDIR=\"$$(cd "$(top_builddir)"; pwd)\" \
@@ -1042,11 +1050,11 @@ vlc_static_CFLAGS = $(AM_CFLAGS) \
 
 vlc_static_DEPENDENCIES = $(vlc_DEPENDENCIES)
 vlc_static_LDADD = $(vlc_LDADD)
-vlc_static_LDFLAGS = $(vlc_LDFLAGS) $(am__append_6)
+vlc_static_LDFLAGS = $(vlc_LDFLAGS) $(am__append_7)
 @HAVE_WIN32_TRUE@vlc_DEPENDENCIES = vlc_win32_rc.$(OBJEXT)
 vlc_cache_gen_SOURCES = cachegen.c
 vlc_cache_gen_LDADD = $(GNUGETOPT_LIBS) ../compat/libcompat.la \
-	../lib/libvlc.la $(am__append_7)
+	../lib/libvlc.la $(am__append_8)
 @HAVE_WIN32_TRUE@vlc_cache_gen_DEPENDENCIES = vlc_win32_rc.$(OBJEXT)
 MOSTLYCLEANFILES = $(noinst_DATA)
 all: all-am
@@ -1214,9 +1222,11 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cachegen.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/darwinvlc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/override.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rootwrap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vlc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vlc_static-darwinvlc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vlc_static-override.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vlc_static-vlc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vlc_static-winvlc.Po@am__quote@
@@ -1243,19 +1253,19 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
 
-vlc_static-vlc.o: vlc.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vlc_static_CFLAGS) $(CFLAGS) -MT vlc_static-vlc.o -MD -MP -MF $(DEPDIR)/vlc_static-vlc.Tpo -c -o vlc_static-vlc.o `test -f 'vlc.c' || echo '$(srcdir)/'`vlc.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/vlc_static-vlc.Tpo $(DEPDIR)/vlc_static-vlc.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='vlc.c' object='vlc_static-vlc.o' libtool=no @AMDEPBACKSLASH@
+vlc_static-darwinvlc.o: darwinvlc.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vlc_static_CFLAGS) $(CFLAGS) -MT vlc_static-darwinvlc.o -MD -MP -MF $(DEPDIR)/vlc_static-darwinvlc.Tpo -c -o vlc_static-darwinvlc.o `test -f 'darwinvlc.c' || echo '$(srcdir)/'`darwinvlc.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/vlc_static-darwinvlc.Tpo $(DEPDIR)/vlc_static-darwinvlc.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='darwinvlc.c' object='vlc_static-darwinvlc.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vlc_static_CFLAGS) $(CFLAGS) -c -o vlc_static-vlc.o `test -f 'vlc.c' || echo '$(srcdir)/'`vlc.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vlc_static_CFLAGS) $(CFLAGS) -c -o vlc_static-darwinvlc.o `test -f 'darwinvlc.c' || echo '$(srcdir)/'`darwinvlc.c
 
-vlc_static-vlc.obj: vlc.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vlc_static_CFLAGS) $(CFLAGS) -MT vlc_static-vlc.obj -MD -MP -MF $(DEPDIR)/vlc_static-vlc.Tpo -c -o vlc_static-vlc.obj `if test -f 'vlc.c'; then $(CYGPATH_W) 'vlc.c'; else $(CYGPATH_W) '$(srcdir)/vlc.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/vlc_static-vlc.Tpo $(DEPDIR)/vlc_static-vlc.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='vlc.c' object='vlc_static-vlc.obj' libtool=no @AMDEPBACKSLASH@
+vlc_static-darwinvlc.obj: darwinvlc.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vlc_static_CFLAGS) $(CFLAGS) -MT vlc_static-darwinvlc.obj -MD -MP -MF $(DEPDIR)/vlc_static-darwinvlc.Tpo -c -o vlc_static-darwinvlc.obj `if test -f 'darwinvlc.c'; then $(CYGPATH_W) 'darwinvlc.c'; else $(CYGPATH_W) '$(srcdir)/darwinvlc.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/vlc_static-darwinvlc.Tpo $(DEPDIR)/vlc_static-darwinvlc.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='darwinvlc.c' object='vlc_static-darwinvlc.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vlc_static_CFLAGS) $(CFLAGS) -c -o vlc_static-vlc.obj `if test -f 'vlc.c'; then $(CYGPATH_W) 'vlc.c'; else $(CYGPATH_W) '$(srcdir)/vlc.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vlc_static_CFLAGS) $(CFLAGS) -c -o vlc_static-darwinvlc.obj `if test -f 'darwinvlc.c'; then $(CYGPATH_W) 'darwinvlc.c'; else $(CYGPATH_W) '$(srcdir)/darwinvlc.c'; fi`
 
 vlc_static-override.o: override.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vlc_static_CFLAGS) $(CFLAGS) -MT vlc_static-override.o -MD -MP -MF $(DEPDIR)/vlc_static-override.Tpo -c -o vlc_static-override.o `test -f 'override.c' || echo '$(srcdir)/'`override.c
@@ -1270,6 +1280,20 @@ vlc_static-override.obj: override.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='override.c' object='vlc_static-override.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vlc_static_CFLAGS) $(CFLAGS) -c -o vlc_static-override.obj `if test -f 'override.c'; then $(CYGPATH_W) 'override.c'; else $(CYGPATH_W) '$(srcdir)/override.c'; fi`
+
+vlc_static-vlc.o: vlc.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vlc_static_CFLAGS) $(CFLAGS) -MT vlc_static-vlc.o -MD -MP -MF $(DEPDIR)/vlc_static-vlc.Tpo -c -o vlc_static-vlc.o `test -f 'vlc.c' || echo '$(srcdir)/'`vlc.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/vlc_static-vlc.Tpo $(DEPDIR)/vlc_static-vlc.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='vlc.c' object='vlc_static-vlc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vlc_static_CFLAGS) $(CFLAGS) -c -o vlc_static-vlc.o `test -f 'vlc.c' || echo '$(srcdir)/'`vlc.c
+
+vlc_static-vlc.obj: vlc.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vlc_static_CFLAGS) $(CFLAGS) -MT vlc_static-vlc.obj -MD -MP -MF $(DEPDIR)/vlc_static-vlc.Tpo -c -o vlc_static-vlc.obj `if test -f 'vlc.c'; then $(CYGPATH_W) 'vlc.c'; else $(CYGPATH_W) '$(srcdir)/vlc.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/vlc_static-vlc.Tpo $(DEPDIR)/vlc_static-vlc.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='vlc.c' object='vlc_static-vlc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vlc_static_CFLAGS) $(CFLAGS) -c -o vlc_static-vlc.obj `if test -f 'vlc.c'; then $(CYGPATH_W) 'vlc.c'; else $(CYGPATH_W) '$(srcdir)/vlc.c'; fi`
 
 vlc_static-winvlc.o: winvlc.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vlc_static_CFLAGS) $(CFLAGS) -MT vlc_static-winvlc.o -MD -MP -MF $(DEPDIR)/vlc_static-winvlc.Tpo -c -o vlc_static-winvlc.o `test -f 'winvlc.c' || echo '$(srcdir)/'`winvlc.c

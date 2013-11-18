@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 8d1fca39a2ca551e1b26668459f3d3bd59a64e42 $
+ * $Id: 2a50ad74a3907fc9f6f5a780f1ac7ae415c67835 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -537,6 +537,14 @@ static int Open( vlc_object_t * p_this )
                     fmt.video.i_sar_num = ((i_frame_aspect_ratio >> 16) & 0xffff) * fmt.video.i_height;
                     fmt.video.i_sar_den = ((i_frame_aspect_ratio >>  0) & 0xffff) * fmt.video.i_width;
                 }
+                /* Extradata is the remainder of the chunk less the BIH */
+                fmt.i_extra = p_vids->i_chunk_size - sizeof(VLC_BITMAPINFOHEADER);
+                if( fmt.i_extra > 0 )
+                {
+                    fmt.p_extra = malloc( fmt.i_extra );
+                    if( !fmt.p_extra ) goto error;
+                    memcpy( fmt.p_extra, &p_vids->p_bih[1], fmt.i_extra );
+                }
 
                 msg_Dbg( p_demux, "stream[%d] video(%4.4s) %"PRIu32"x%"PRIu32" %dbpp %ffps",
                          i, (char*)&p_vids->p_bih->biCompression,
@@ -552,20 +560,13 @@ static int Open( vlc_object_t * p_this )
                         (unsigned int)(-(int)p_vids->p_bih->biHeight);
                 }
 
-                /* Extract palette from extradata if bpp <= 8
-                 * (assumes that extradata contains only palette but appears
-                 *  to be true for all palettized codecs we support) */
+                /* Extract palette from extradata if bpp <= 8 */
                 if( fmt.video.i_bits_per_pixel > 0 && fmt.video.i_bits_per_pixel <= 8 )
                 {
                     /* The palette should not be included in biSize, but come
                      * directly after BITMAPINFORHEADER in the BITMAPINFO structure */
-                    fmt.i_extra = p_vids->i_chunk_size - sizeof(VLC_BITMAPINFOHEADER);
-                    if( fmt.i_extra > 0 )
+                    if( fmt.i_extra > 0 && fmt.p_extra )
                     {
-                        fmt.p_extra = malloc( fmt.i_extra );
-                        if( !fmt.p_extra ) goto error;
-                        memcpy( fmt.p_extra, &p_vids->p_bih[1], fmt.i_extra );
-
                         const uint8_t *p_pal = fmt.p_extra;
 
                         fmt.video.p_palette = calloc( 1, sizeof(video_palette_t) );
@@ -650,7 +651,6 @@ aviindex:
         const avi_track_t *tk = p_sys->track[i];
         if( tk->i_cat == VIDEO_ES && tk->idx.p_entry )
             i_idx_totalframes = __MAX(i_idx_totalframes, tk->idx.i_size);
-            continue;
     }
     if( i_idx_totalframes != p_avih->i_totalframes &&
         p_sys->i_length < (mtime_t)p_avih->i_totalframes *

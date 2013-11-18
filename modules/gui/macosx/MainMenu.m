@@ -2,7 +2,7 @@
  * MainMenu.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2013 Felix Paul Kühne
- * $Id: fba4a6c956d418918f862828da736cd4a06d8930 $
+ * $Id: ab90e38210f570a369a58292725ad2e439d82ef7 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -925,6 +925,7 @@ static VLCMainMenu *_o_sharedInstance = nil;
     }
 
     char *path = input_item_GetURI(p_item);
+
     if (!path)
         path = strdup("");
 
@@ -932,10 +933,15 @@ static VLCMainMenu *_o_sharedInstance = nil;
     [openPanel setCanChooseFiles: YES];
     [openPanel setCanChooseDirectories: NO];
     [openPanel setAllowsMultipleSelection: YES];
-    [openPanel setAllowedFileTypes: [NSArray arrayWithObjects:@"cdg",@"@idx",@"srt",@"sub",@"utf",@"ass",@"ssa",@"aqt",@"jss",@"psb",@"rt",@"smi",@"txt",@"smil",nil]];
-    [openPanel setDirectoryURL:[NSURL fileURLWithPath:[[NSString stringWithUTF8String:path] stringByExpandingTildeInPath]]];
-    i_returnValue = [openPanel runModal];
+
+    [openPanel setAllowedFileTypes: [NSArray arrayWithObjects:@"cdg",@"idx",@"srt",@"sub",@"utf",@"ass",@"ssa",@"aqt",@"jss",@"psb",@"rt",@"smi",@"txt",@"smil",nil]];
+
+    NSURL *o_url = [NSURL URLWithString:[[NSString stringWithUTF8String:path] stringByExpandingTildeInPath]];
+    o_url = [o_url URLByDeletingLastPathComponent];
+    [openPanel setDirectoryURL: o_url];
     free(path);
+
+    i_returnValue = [openPanel runModal];
 
     if (i_returnValue == NSOKButton) {
         NSUInteger c = 0;

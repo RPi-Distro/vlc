@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id: e7ccf4643f3c3c5f9ce184244573797808494698 $
+ * $Id: 37fce1d4515dd95131bfb969f07e568f8aa6c79a $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin
@@ -167,6 +167,6 @@ class QInputEvent;
 int qtKeyModifiersToVLC( QInputEvent* e );
 int qtEventToVLCKey( QKeyEvent *e );
 int qtWheelEventToVLCKey( QWheelEvent *e );
-QString VLCKeyToString( unsigned val );
+QString VLCKeyToString( unsigned val, bool );
 
 #endif

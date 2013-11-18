@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2007-2009 the VideoLAN team
  *
- * $Id: eb6fab5d6e2feed9cb594b98f981e0e76fa9c495 $
+ * $Id: fbe3ed4f76d071ebbe4ce63905d47afca41370e5 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -155,16 +155,10 @@ void SoutDialog::addDest( )
     updateMRL();
 }
 
-void SoutDialog::ok()
+void SoutDialog::done( int r )
 {
     mrl = ui.mrlEdit->toPlainText();
-    accept();
-}
-
-void SoutDialog::cancel()
-{
-    mrl.clear();
-    reject();
+    QWizard::done(r);
 }
 
 void SoutDialog::updateMRL()

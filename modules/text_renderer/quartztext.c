@@ -2,7 +2,7 @@
  * quartztext.c : Put text on the video, using Mac OS X Quartz Engine
  *****************************************************************************
  * Copyright (C) 2007, 2009, 2012 VLC authors and VideoLAN
- * $Id: eb5da4aacaaf25d9de0ee7270b5ce05818d6c631 $
+ * $Id: 73ed014528b13a14ee7ecfd176364c801eb57632 $
  *
  * Authors: Bernie Purcell <bitmap@videolan.org>
  *          Pierre d'Herbemont <pdherbemont # videolan dot>
@@ -52,7 +52,7 @@
 #include <ApplicationServices/ApplicationServices.h>
 #endif
 
-#define DEFAULT_FONT           "Arial Black"
+#define DEFAULT_FONT           "Helvetica-Neue"
 #define DEFAULT_FONT_COLOR     0xffffff
 #define DEFAULT_REL_FONT_SIZE  16
 
@@ -534,8 +534,11 @@ static void setFontAttibutes(char *psz_fontname, int i_font_size, uint32_t i_fon
     CFStringRef p_cfString;
     CTFontRef   p_font;
 
-    // Handle font name and size
-    p_cfString = CFStringCreateWithCString(NULL,
+    // fallback on default
+    if (!psz_fontname)
+        psz_fontname = (char *)DEFAULT_FONT;
+
+    p_cfString = CFStringCreateWithCString(kCFAllocatorDefault,
                                             psz_fontname,
                                             kCFStringEncodingUTF8);
     p_font     = CTFontCreateWithName(p_cfString,
@@ -590,7 +593,11 @@ static void setFontAttibutes(char *psz_fontname, int i_font_size, uint32_t i_fon
                                     slant);
     CFRelease(slant);
 
-    // Handle foreground colour
+    // fetch invalid colors
+    if (i_font_color == 0xFFFFFFFF)
+        i_font_color = 0x00FFFFFF;
+
+    // Handle foreground color
     CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
     CGFloat components[] = { (float)((i_font_color & 0x00ff0000) >> 16) / 255.0,
                              (float)((i_font_color & 0x0000ff00) >>  8) / 255.0,

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005, 2007 VLC authors and VideoLAN
  * Copyright © 2005-2006 Rémi Denis-Courmont
- * $Id: a8ea8701b938ef3b48f3151d4acd4eb7ca192cf2 $
+ * $Id: dc5ef1207f0938d5bd7ce7b0eb95406c91750fa1 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -461,7 +461,7 @@ char *net_Gets(vlc_object_t *obj, int fd, const v_socket_t *vs)
     {
         if (buflen == bufsize)
         {
-            if (unlikely(bufsize >= (1 << 10)))
+            if (unlikely(bufsize >= (1 << 16)))
                 goto error; /* put sane buffer size limit */
 
             char *newbuf = realloc(buf, bufsize + 1024);

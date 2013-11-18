@@ -1578,7 +1578,7 @@ AM_LDFLAGS = -rpath '$(libvlcdir)' \
 	-export-symbols-regex ^vlc_entry \
 	-shrext $(LIBEXT) \
 	-no-undefined \
-	$(LTLIBVLCCORE) $(top_builddir)/compat/libcompat.la
+	$(top_builddir)/compat/libcompat.la $(LTLIBVLCCORE) 
 
 SOURCES_flacsys = flac.c xiph_metadata.h xiph_metadata.c
 SOURCES_ogg = ogg.c ogg.h oggseek.c oggseek.h xiph_metadata.h xiph.h xiph_metadata.c

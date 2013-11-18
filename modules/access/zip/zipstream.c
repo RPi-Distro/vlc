@@ -2,7 +2,7 @@
  * zipstream.c: stream_filter that creates a XSPF playlist from a Zip archive
  *****************************************************************************
  * Copyright (C) 2009 VLC authors and VideoLAN
- * $Id: 27919251b69d0a1f8d0efd3b247ab85968561ad8 $
+ * $Id: f5057386695b1ef0a72f14005fdaf28d7a500de6 $
  *
  * Authors: Jean-Philippe André <jpeg@videolan.org>
  *
@@ -598,7 +598,12 @@ static int WriteXSPF( char **pp_buffer, vlc_array_t *p_filenames,
             char *psz_path = strdup( psz_pathtozip );
             char *psz_escapedName;
             escapeToXml( &psz_escapedName, psz_name );
-            if( astrcatf( &psz_path, "%s", psz_escapedName ) < 0 ) return -1;
+            if( astrcatf( &psz_path, "%s", psz_escapedName ) < 0 )
+            {
+                free( psz_escapedName );
+                return -1;
+            }
+            free( psz_escapedName );
 
             /* Track information */
             if( astrcatf( pp_buffer,

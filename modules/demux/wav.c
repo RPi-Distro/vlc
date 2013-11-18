@@ -2,7 +2,7 @@
  * wav.c : wav file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2008 VLC authors and VideoLAN
- * $Id: 03364b96dc08d5894046dfd09008a2e98d24c128 $
+ * $Id: 258ba7a0e43293cf3412442003add1da9a8a10fc $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -349,6 +349,10 @@ static int Open( vlc_object_t * p_this )
         p_sys->fmt.i_codec =
             vlc_fourcc_GetCodecAudio( p_sys->fmt.i_codec,
                                       p_sys->fmt.audio.i_bitspersample );
+        if( p_sys->fmt.i_codec == 0 ) {
+            msg_Err( p_demux, "Unrecognized codec" );
+            goto error;
+        }
         break;
     case VLC_CODEC_ADPCM_MS:
     /* FIXME not sure at all FIXME */

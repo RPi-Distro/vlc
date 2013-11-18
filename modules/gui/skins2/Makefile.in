@@ -1359,7 +1359,7 @@ AM_LDFLAGS = -rpath '$(libvlcdir)' \
 	-export-symbols-regex ^vlc_entry \
 	-shrext $(LIBEXT) \
 	-no-undefined \
-	$(LTLIBVLCCORE) $(top_builddir)/compat/libcompat.la
+	$(top_builddir)/compat/libcompat.la $(LTLIBVLCCORE) 
 
 SOURCES_skins2 = commands/async_queue.cpp commands/async_queue.hpp \
 	commands/cmd_add_item.cpp commands/cmd_add_item.hpp \

@@ -1093,7 +1093,7 @@ AM_LDFLAGS = -rpath '$(libvlcdir)' \
 	-export-symbols-regex ^vlc_entry \
 	-shrext $(LIBEXT) \
 	-no-undefined \
-	$(LTLIBVLCCORE) $(top_builddir)/compat/libcompat.la
+	$(top_builddir)/compat/libcompat.la $(LTLIBVLCCORE) 
 
 DIST_SUBDIRS = macosx minimal_macosx qt4 skins2 macosx_dialog_provider
 SUBDIRS = $(am__append_2) $(am__append_3) $(am__append_4) \

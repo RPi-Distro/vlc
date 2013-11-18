@@ -2,7 +2,7 @@
  * demux.c: demuxer using libavformat
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: 106d7965da670f0aecfa3025d2ba821986ff46c9 $
+ * $Id: 3bb1266fc9b2ccfe0932f5d90214cd19e0b3de5f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -307,6 +307,7 @@ int OpenDemux( vlc_object_t *p_this )
         case AVMEDIA_TYPE_VIDEO:
             es_format_Init( &fmt, VIDEO_ES, fcc );
 
+            fmt.video.i_bits_per_pixel = cc->bits_per_coded_sample;
             /* Special case for raw video data */
             if( cc->codec_id == AV_CODEC_ID_RAWVIDEO )
             {

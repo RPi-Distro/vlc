@@ -2,7 +2,7 @@
  * controls.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 404446eddf8bb999a3d6621b47200fd0efda03ee $
+ * $Id: 943cf85504df1450d2bbcfdd3f905b1b5763da7a $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Benjamin Pracht <bigben at videolan doit org>
@@ -146,7 +146,7 @@
 
 - (IBAction)mute:(id)sender
 {
-    [[VLCCoreInteraction sharedInstance] setMute: YES];
+    [[VLCCoreInteraction sharedInstance] toggleMute];
 }
 
 - (IBAction)volumeSliderUpdated:(id)sender

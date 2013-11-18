@@ -2,10 +2,10 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2013 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 2.1.0)
+AC_INIT(vlc, 2.1.1)
 VERSION_MAJOR=2
 VERSION_MINOR=1
-VERSION_REVISION=0
+VERSION_REVISION=1
 VERSION_EXTRA=0
 VERSION_DEV=
 
@@ -158,7 +158,7 @@ case "${host_os}" in
     VLC_ADD_LIBS([libvlc vlc],[-Wl,-undefined,dynamic_lookup,-framework,AppKit])
     VLC_ADD_LIBS([avcodec access_avio swscale postproc i420_rgb_mmx x264 x26410b],[-Wl,-read_only_relocs,suppress])
     VLC_ADD_CFLAGS([motion rotate],[-fconstant-cfstrings])
-    VLC_ADD_LIBS([libvlccore],[-Wl,-framework,CoreFoundation,-framework,SystemConfiguration])
+    VLC_ADD_LIBS([libvlccore],[-Wl,-framework,CoreFoundation,-framework,CoreServices])
 
     dnl Allow binaries created on Lion to run on earlier releases
     AC_EGREP_CPP(yes,
@@ -189,16 +189,11 @@ case "${host_os}" in
       [AS_HELP_STRING([--with-macosx-version-min=VERSION],
         [compile for Mac OS X VERSION and above])])
     if test "${with_macosx_version_min}" != "" ; then
-        MACOSX_DEPLOYMENT_TARGET=${with_macosx_version_min}
         CPP="${CPP} -mmacosx-version-min=${with_macosx_version_min}"
         CC="${CC} -mmacosx-version-min=${with_macosx_version_min}"
         CXX="${CXX} -mmacosx-version-min=${with_macosx_version_min}"
         OBJC="${OBJC} -mmacosx-version-min=${with_macosx_version_min}"
         LD="${LD} -mmacosx_version_min=${with_macosx_version_min}"
-        CFLAGS="${CFLAGS} -DMACOSX_DEPLOYMENT_TARGET=${with_macosx_version_min}"
-        CXXFLAGS="${CXXFLAGS} -DMACOSX_DEPLOYMENT_TARGET=${with_macosx_version_min}"
-        OBJCFLAGS="${OBJCFLAGS} -DMACOSX_DEPLOYMENT_TARGET=${with_macosx_version_min}"
-        export MACOSX_DEPLOYMENT_TARGET
     fi
     ;;
   *mingw32* | *cygwin* | *wince* | *mingwce*)
@@ -1399,53 +1394,18 @@ AS_IF([test "${enable_altivec}" = "yes"], [
     have_altivec="yes"
   ])
 
-dnl The AltiVec C extensions
-dnl
-dnl There are several possible cases:
-dnl - OS X PPC, gcc 4.x: use -mpim-altivec -force_cpusubtype_ALL, don't
-dnl                      need <altivec.h>
-dnl - OS X PPC, gcc 3.x: need -faltivec, don't need <altivec.h>
-dnl - Linux PPC, gcc 3.4, 4.x: need <altivec.h> which requires -maltivec
-dnl - Linux PPC, gcc 3.3: need <altivec.h> and -maltivec -mabi=altivec
-dnl - Linux PPC, gcc 3.x: need <altivec.h> and -fvec
-dnl - Others: test should fail
   VLC_SAVE_FLAGS
   AC_CACHE_CHECK([if \$CC groks AltiVec C extensions],
-  [ac_cv_c_altivec],
-  [# OS X/PPC test (gcc 4.x)
-   CFLAGS="${CFLAGS} -mpim-altivec -force_cpusubtype_ALL"
-   AC_TRY_COMPILE([vector unsigned char foo;],
-     [vec_ld(0, (unsigned char *)0);],
-     [ac_cv_c_altivec="-mpim-altivec -force_cpusubtype_ALL"],
-     [# OS X/PPC test (gcc 3.x)
-      CFLAGS="${CFLAGS} -faltivec"
-      AC_TRY_COMPILE([vector unsigned char foo;],
-        [vec_ld(1 * sizeof(vector float), (unsigned char *)0);],
-        [ac_cv_c_altivec="-faltivec"],
-        dnl Below this are the Linux tests
-        [# Linux/PPC test (gcc 4.x)
-         CFLAGS="${CFLAGS} -maltivec"
-         AC_TRY_COMPILE([#include <altivec.h>],
-           [vec_ld(0, (unsigned char *)0);],
-           [ac_cv_c_altivec="-maltivec"],
-           [# Linux/PPC test (gcc 3.3)
-            CFLAGS="${CFLAGS} -maltivec -mabi=altivec"
-            AC_TRY_COMPILE([#include <altivec.h>],
-              [vec_ld(0, (unsigned char *)0);],
-              [ac_cv_c_altivec=""
-               ac_cv_c_altivec_abi="-maltivec -mabi=altivec"],
-              [# Linux/PPC test (gcc 3.3)
-               CFLAGS="${CFLAGS} -fvec"
-               AC_TRY_COMPILE([#include <altivec.h>],
-                 [vec_ld(0, (unsigned char *)0);],
-                 [ac_cv_c_altivec="-fvec"],
-                 [ac_cv_c_altivec=no])
-              ])
-           ])
-        ])
-     ])
+  [ac_cv_c_altivec], [
+    CFLAGS="${CFLAGS} -maltivec"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
+[#include <altivec.h>]], [
+[vec_ld(0, (unsigned char *)0);]])], [
+      ac_cv_c_altivec="-maltivec"
+    ], [
+      ac_cv_c_altivec="no"
+    ])
   ])
-
   VLC_RESTORE_FLAGS
   AS_IF([test "${ac_cv_c_altivec}" != "no"], [
     CPPFLAGS="${CPPFLAGS} ${ac_cv_c_altivec}"

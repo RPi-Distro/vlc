@@ -2,7 +2,7 @@
  * video.c: transcoding stream output module (video)
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: 5e07ca2ef92b86caa9e94efe0d085fd3140434f7 $
+ * $Id: 3fb9045e82b818d1edfd2a0a4867b8338186f036 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -262,6 +262,7 @@ static void transcode_video_filter_init( sout_stream_t *p_stream,
                                          sout_stream_id_t *id )
 {
     const es_format_t *p_fmt_out = &id->p_decoder->fmt_out;
+    id->p_encoder->fmt_in.video.i_chroma = id->p_encoder->fmt_in.i_codec;
 
     id->p_f_chain = filter_chain_New( p_stream, "video filter2",
                                       false,
@@ -511,7 +512,6 @@ static void transcode_video_encoder_init( sout_stream_t *p_stream,
              id->p_encoder->fmt_out.video.i_sar_num * id->p_encoder->fmt_out.video.i_width,
              id->p_encoder->fmt_out.video.i_sar_den * id->p_encoder->fmt_out.video.i_height );
 
-    id->p_encoder->fmt_in.video.i_chroma = id->p_encoder->fmt_in.i_codec;
 }
 
 static int transcode_video_encoder_open( sout_stream_t *p_stream,

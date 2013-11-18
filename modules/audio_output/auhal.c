@@ -2,7 +2,7 @@
  * auhal.c: AUHAL and Coreaudio output plugin
  *****************************************************************************
  * Copyright (C) 2005 - 2013 VLC authors and VideoLAN
- * $Id: 5244a3f8a30f5b2ccc90427e76819d6611b681d9 $
+ * $Id: 1ce1d9f8eab01b1d2f5603fb2ed3c7ced948efd2 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -1278,7 +1278,7 @@ static int SwitchAudioDevice(audio_output_t *p_aout, const char *name)
 static int VolumeSet(audio_output_t * p_aout, float volume)
 {
     struct aout_sys_t *p_sys = p_aout->sys;
-    OSStatus ostatus;
+    OSStatus ostatus = 0;
 
     if(p_sys->b_digital)
         return VLC_EGENERIC;
@@ -1287,12 +1287,14 @@ static int VolumeSet(audio_output_t * p_aout, float volume)
     aout_VolumeReport(p_aout, volume);
 
     /* Set volume for output unit */
-    ostatus = AudioUnitSetParameter(p_sys->au_unit,
-                                    kHALOutputParam_Volume,
-                                    kAudioUnitScope_Global,
-                                    0,
-                                    volume * volume * volume,
-                                    0);
+    if(!p_sys->b_mute) {
+        ostatus = AudioUnitSetParameter(p_sys->au_unit,
+                                        kHALOutputParam_Volume,
+                                        kAudioUnitScope_Global,
+                                        0,
+                                        volume * volume * volume,
+                                        0);
+    }
 
     if (var_InheritBool(p_aout, "volume-save"))
         config_PutInt(p_aout, "auhal-volume", lroundf(volume * AOUT_VOLUME_DEFAULT));

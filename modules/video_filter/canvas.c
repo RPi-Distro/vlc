@@ -2,7 +2,7 @@
  * canvas.c : automatically resize and padd a video to fit in canvas
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
- * $Id: ca3f73edd41e1715ad7c43a38c2e2dc4f8af035b $
+ * $Id: 8198f8abd89fa0202ccae12a3b51c24241ee5365 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *
@@ -180,11 +180,17 @@ static int Activate( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    i_fmt_in_aspect = (int64_t)p_filter->fmt_in.video.i_sar_num *
+    if( p_filter->fmt_in.video.i_sar_num )
+        i_fmt_in_aspect = (int64_t)p_filter->fmt_in.video.i_sar_num *
                       p_filter->fmt_in.video.i_width *
                       VOUT_ASPECT_FACTOR /
                       p_filter->fmt_in.video.i_sar_den /
                       p_filter->fmt_in.video.i_height;
+    else
+        i_fmt_in_aspect = (int64_t)p_filter->fmt_in.video.i_width *
+                      VOUT_ASPECT_FACTOR /
+                      p_filter->fmt_in.video.i_height;
+
     psz_aspect = var_CreateGetNonEmptyString( p_filter, CFG_PREFIX "aspect" );
     if( psz_aspect )
     {
