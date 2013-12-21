@@ -2,7 +2,7 @@
  * ControlsBar.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012 VLC authors and VideoLAN
- * $Id: d7637c2ed6525c2d701f921238ef936cc45b002d $
+ * $Id: c0fd5a1a1a7b4b0f277d6fc929c6d6587d96a83d $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -71,6 +71,7 @@
 @property (readonly) id bottomBarView;
 
 - (CGFloat)height;
+- (void)toggleForwardBackwardMode:(BOOL)b_alt;
 
 - (IBAction)play:(id)sender;
 - (IBAction)bwd:(id)sender;

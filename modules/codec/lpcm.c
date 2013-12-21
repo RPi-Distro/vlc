@@ -2,7 +2,7 @@
  * lpcm.c: lpcm decoder/packetizer module
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 8ad9c6951f44523b5b7fef20ae7bb5977622ed46 $
+ * $Id: eb9793f50b1b91039a9f5cf5cc9ccbbbcb4f93c3 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Henri Fallon <henri@videolan.org>
@@ -1103,7 +1103,7 @@ static void BdExtract( block_t *p_aout_buffer, block_t *p_block,
                        unsigned i_channels, unsigned i_channels_padding,
                        unsigned i_bits )
 {
-    if( i_channels_padding > 0 )
+    if( i_bits != 16 || i_channels_padding > 0 )
     {
         uint8_t *p_src = p_block->p_buffer;
         uint8_t *p_dst = p_aout_buffer->p_buffer;
@@ -1115,7 +1115,7 @@ static void BdExtract( block_t *p_aout_buffer, block_t *p_block,
             memcpy( p_dst, p_src, i_channels * i_bits / 8 );
 #else
             if (i_bits == 16) {
-                swab( p_dst, p_src, (i_channels + i_channels_padding) * i_bits / 8 );
+                swab( p_src, p_dst, (i_channels + i_channels_padding) * i_bits / 8 );
             } else {
                 p_dst[0] = 0;
                 p_dst[1] = p_src[2];

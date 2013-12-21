@@ -2,7 +2,7 @@
  * profile_selector.cpp : A small profile selector and editor
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 5b5a724e309f705912f3ce6096526c21fe606453 $
+ * $Id: b9f7ea84c257ea8d4fba110876a121152559612d $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -287,10 +287,6 @@ void VLCProfileSelector::updateOptions( int i )
             HASHPICK( "vcodec", "height" );
             if ( !value.isEmpty() && value.toInt() > 0 )
                 smrl.option( "height", value );
-        } else {
-            HASHPICK( "video", "copy" );
-            if ( ! value.isEmpty() )
-                smrl.option( "vcodec", "copy" );
         }
     } else {
         smrl.option( "vcodec", "none" );
@@ -320,10 +316,6 @@ void VLCProfileSelector::updateOptions( int i )
                 smrl.option( "afilter", valuesList.join( ":" ) );
             }
 
-        } else {
-            HASHPICK( "audio", "copy" );
-            if ( ! value.isEmpty() )
-                smrl.option( "acodec", "copy" );
         }
     } else {
         smrl.option( "acodec", "none" );

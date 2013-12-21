@@ -2,7 +2,7 @@
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2002 - 2012 VLC authors and VideoLAN
- * $Id: 05fa2a21a3ab873960a34d9fe474421364404454 $
+ * $Id: c27ec4558956f00b1fd2b448fa07d680a2be5c82 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -90,10 +90,11 @@
 #endif
 
 /* Freetype */
-#include <freetype/ftsynth.h>
+#include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 #include FT_STROKER_H
+#include FT_SYNTHESIS_H
 
 #define FT_FLOOR(X)     ((X & -64) >> 6)
 #define FT_CEIL(X)      (((X + 63) & -64) >> 6)
@@ -2621,7 +2622,11 @@ static int RenderCommon( filter_t *p_filter, subpicture_region_t *p_region_out,
                                             strlen( p_region_in->psz_html ),
                                             true );
         if( unlikely(p_sub == NULL) )
+        {
+            free( psz_text );
+            free( pp_styles );
             return VLC_SUCCESS;
+        }
 
         xml_reader_t *p_xml_reader = p_filter->p_sys->p_xml;
         if( !p_xml_reader )

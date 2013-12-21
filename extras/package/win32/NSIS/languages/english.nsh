@@ -31,10 +31,6 @@ StrCpy $Desc_Section07 \
 StrCpy $Desc_Section08 \
     "Deletes VLC media player preferences and cache files leftover from previous installations"
 
-StrCpy $Message_AlreadyInstalled  \
-"VLC media player has already been installed. $\nDo you want to remove \
-the previous version before installing $(^Name) ?"
-
 StrCpy $Name_Section91 "Uninstall"
 StrCpy $Name_Section92 "Delete preferences and cache"
 
@@ -62,3 +58,20 @@ StrCpy $Action_OnArrivalMusicFiles "Play audio files"
 StrCpy $Action_OnArrivalDVDAudio "Play audio DVD"
 
 StrCpy $License_NextText "You are now aware of your rights. Click Next to continue."
+
+StrCpy $Detail_CheckProcesses "Checking processes..."
+StrCpy $MessageBox_VLCRunning "VLC appears to be running and will now be closed."
+StrCpy $MessageBox_VLCUnableToClose "This installer was unable to close VLC, please do it manually."
+StrCpy $MessageBox_InstallAborted "Installation aborted!"
+
+StrCpy $Reinstall_Headline "Already Installed"
+StrCpy $Reinstall_HeadlineInstall "Choose how you want to install VLC."
+StrCpy $Reinstall_HeadlineMaintenance "Choose the maintenance option to perform."
+StrCpy $Reinstall_MessageOlder "An older version of VLC is installed on your system. Select the operation you want to perform and click Next to continue."
+StrCpy $Reinstall_MessageNewer "A newer version of VLC is already installed! It is not recommended that you downgrade to an older version. Select the operation you want to perform and click Next to continue."
+StrCpy $Reinstall_MessageSame "VLC ${VERSION} is already installed. Select the operation you want to perform and click Next to continue."
+StrCpy $Reinstall_OptionUpgrade "Upgrade VLC using previous settings (recommended)"
+StrCpy $Reinstall_OptionDowngrade "Downgrade VLC using previous settings (recommended)"
+StrCpy $Reinstall_OptionComponents "Add/Remove/Reinstall components"
+StrCpy $Reinstall_OptionAdvanced "Change settings (advanced)"
+StrCpy $Reinstall_OptionUninstall "Uninstall VLC"

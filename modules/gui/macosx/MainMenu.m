@@ -2,7 +2,7 @@
  * MainMenu.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2013 Felix Paul Kühne
- * $Id: ab90e38210f570a369a58292725ad2e439d82ef7 $
+ * $Id: 17e748152bc992343f639cc638d2bb5107db61cc $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -705,7 +705,12 @@ static VLCMainMenu *_o_sharedInstance = nil;
 {
     BOOL b_value = !config_GetInt(VLCIntf, "macosx-show-playback-buttons");
     config_PutInt(VLCIntf, "macosx-show-playback-buttons", b_value);
+
     [[[[VLCMain sharedInstance] mainWindow] controlsBar] toggleJumpButtons];
+    [[[VLCMain sharedInstance] voutController] updateWindowsUsingBlock:^(VLCVideoWindowCommon *o_window) {
+        [[o_window controlsBar] toggleForwardBackwardMode: b_value];
+    }];
+
     [o_mi_toggleJumpButtons setState: b_value];
 }
 
