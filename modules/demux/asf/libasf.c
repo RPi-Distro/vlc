@@ -141,9 +141,16 @@ static int ASF_ReadObjectCommon( stream_t *s, asf_object_t *p_obj )
     return VLC_SUCCESS;
 }
 
-static int ASF_NextObject( stream_t *s, asf_object_t *p_obj )
+static int ASF_NextObject( stream_t *s, asf_object_t *p_obj, uint64_t i_boundary )
 {
     asf_object_t obj;
+
+    int64_t i_pos = stream_Tell( s );
+    if ( i_boundary && i_pos >= 0 && (uint64_t) i_pos >= i_boundary )
+    {
+        return VLC_EGENERIC;
+    }
+
     if( p_obj == NULL )
     {
         if( ASF_ReadObjectCommon( s, &obj ) )
@@ -213,7 +220,7 @@ static int  ASF_ReadObject_Header( stream_t *s, asf_object_t *p_obj )
             free( p_subobj );
             break;
         }
-        if( ASF_NextObject( s, p_subobj ) ) /* Go to the next object */
+        if( ASF_NextObject( s, p_subobj, 0 ) ) /* Go to the next object */
             break;
     }
     return VLC_SUCCESS;
@@ -505,7 +512,7 @@ static int ASF_ReadObject_header_extension( stream_t *s, asf_object_t *p_obj )
             break;
         }
 
-        if( ASF_NextObject( s, p_obj ) ) /* Go to the next object */
+        if( ASF_NextObject( s, p_obj, 0 ) ) /* Go to the next object */
         {
             break;
         }
@@ -1241,6 +1248,13 @@ static void ASF_FreeObject_marker( asf_object_t *p_obj)
     FREENULL( p_mk->name );
 }
 
+static int ASF_ReadObject_Raw(stream_t *s, asf_object_t *p_obj)
+{
+    VLC_UNUSED(s);
+    VLC_UNUSED(p_obj);
+    return VLC_SUCCESS;
+}
+
 #if 0
 static int ASF_ReadObject_XXX(stream_t *s, asf_object_t *p_obj)
 {
@@ -1318,6 +1332,12 @@ static const struct
     { &asf_object_extended_content_description, ASF_OBJECT_OTHER,
       ASF_ReadObject_extended_content_description,
       ASF_FreeObject_extended_content_description },
+    { &asf_object_content_encryption_guid, ASF_OBJECT_OTHER,
+      ASF_ReadObject_Raw, ASF_FreeObject_Null },
+    { &asf_object_advanced_content_encryption_guid, ASF_OBJECT_OTHER,
+      ASF_ReadObject_Raw, ASF_FreeObject_Null },
+    { &asf_object_extended_content_encryption_guid, ASF_OBJECT_OTHER,
+      ASF_ReadObject_Raw, ASF_FreeObject_Null },
 
     { &asf_object_null_guid, 0, NULL, NULL }
 };
@@ -1468,6 +1488,9 @@ static const struct
     { &asf_object_advanced_mutual_exclusion, "Advanced Mutual Exclusion" },
     { &asf_object_stream_prioritization, "Stream Prioritization" },
     { &asf_object_extended_content_description, "Extended content description"},
+    { &asf_object_content_encryption_guid, "Content Encryption"},
+    { &asf_object_advanced_content_encryption_guid, "Advanced Content Encryption"},
+    { &asf_object_extended_content_encryption_guid, "Entended Content Encryption"},
 
     { NULL, "Unknown" },
 };
@@ -1528,6 +1551,7 @@ asf_object_root_t *ASF_ReadObjectRoot( stream_t *s, int b_seekable )
 {
     asf_object_root_t *p_root = malloc( sizeof( asf_object_root_t ) );
     asf_object_t *p_obj;
+    uint64_t i_boundary = 0;
 
     if( !p_root )
         return NULL;
@@ -1557,12 +1581,15 @@ asf_object_root_t *ASF_ReadObjectRoot( stream_t *s, int b_seekable )
         switch( p_obj->common.i_type )
         {
             case( ASF_OBJECT_HEADER ):
+                if ( p_root->p_index || p_root->p_data || p_root->p_hdr ) break;
                 p_root->p_hdr = (asf_object_header_t*)p_obj;
                 break;
             case( ASF_OBJECT_DATA ):
+                if ( p_root->p_index || p_root->p_data ) break;
                 p_root->p_data = (asf_object_data_t*)p_obj;
-                break;
+            break;
             case( ASF_OBJECT_INDEX ):
+                if ( p_root->p_index ) break;
                 p_root->p_index = (asf_object_index_t*)p_obj;
                 break;
             default:
@@ -1570,6 +1597,13 @@ asf_object_root_t *ASF_ReadObjectRoot( stream_t *s, int b_seekable )
                       GUID_PRINT( p_obj->common.i_object_id ) );
                 break;
         }
+
+        /* Set a limit to avoid junk when possible */
+        if ( !guidcmp( &p_obj->common.i_object_id, &asf_object_file_properties_guid ) )
+        {
+            i_boundary = p_obj->file_properties.i_file_size;
+        }
+
         if( p_obj->common.i_type == ASF_OBJECT_DATA &&
             p_obj->common.i_object_size <= 50 )
         {
@@ -1582,7 +1616,7 @@ asf_object_root_t *ASF_ReadObjectRoot( stream_t *s, int b_seekable )
             break;
         }
 
-        if( ASF_NextObject( s, p_obj ) ) /* Go to the next object */
+        if( ASF_NextObject( s, p_obj, i_boundary ) ) /* Go to the next object */
             break;
     }
 

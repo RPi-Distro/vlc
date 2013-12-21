@@ -2,7 +2,7 @@
  * waveout.c : Windows waveOut plugin for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 13c0f1e99bcfb6409c2dbf934cc2db9d3619f48f $
+ * $Id: f06c8eef7c57b9e3ddbd9d1dc15ab294715ff916 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          André Weber
@@ -178,12 +178,6 @@ static int Start( audio_output_t *p_aout, audio_sample_format_t *restrict fmt )
     /* Default behaviour is to use software gain */
     p_aout->sys->b_soft = true;
 
-    /*
-      check for configured audio device!
-    */
-    fmt->i_format = var_InheritBool( p_aout, "waveout-float32" )?
-        VLC_CODEC_FL32: VLC_CODEC_S16N;
-
     char *dev = var_GetNonEmptyString( p_aout, "waveout-audio-device");
     uint32_t devid = findDeviceID( dev );
 
@@ -233,6 +227,12 @@ static int Start( audio_output_t *p_aout, audio_sample_format_t *restrict fmt )
 
     if( fmt->i_format != VLC_CODEC_SPDIFL )
     {
+       /*
+         check for configured audio device!
+       */
+       fmt->i_format = var_InheritBool( p_aout, "waveout-float32" )?
+           VLC_CODEC_FL32: VLC_CODEC_S16N;
+
         int max_chan = var_InheritInteger( p_aout, "waveout-audio-channels");
         int i_channels = aout_FormatNbChannels(fmt);
         i_channels = ( i_channels < max_chan )? i_channels: max_chan;

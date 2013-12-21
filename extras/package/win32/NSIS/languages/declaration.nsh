@@ -22,8 +22,6 @@ Var Desc_Section06
 Var Desc_Section07
 Var Desc_Section08
 
-Var Message_AlreadyInstalled
-
 Var Name_Section91
 Var Name_Section92
 Var Desc_Section91
@@ -48,3 +46,20 @@ Var Action_OnArrivalMusicFiles
 Var Action_OnArrivalDVDAudio
 
 Var License_NextText
+
+Var Detail_CheckProcesses
+Var MessageBox_VLCRunning
+Var MessageBox_VLCUnableToClose
+Var MessageBox_InstallAborted
+
+Var Reinstall_Headline
+Var Reinstall_HeadlineInstall
+Var Reinstall_HeadlineMaintenance
+Var Reinstall_MessageOlder
+Var Reinstall_MessageNewer
+Var Reinstall_MessageSame
+Var Reinstall_OptionUpgrade
+Var Reinstall_OptionDowngrade
+Var Reinstall_OptionComponents
+Var Reinstall_OptionAdvanced
+Var Reinstall_OptionUninstall

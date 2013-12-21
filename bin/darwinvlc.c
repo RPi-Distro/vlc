@@ -2,7 +2,7 @@
  * darwinvlc.c: the darwin-specific VLC player
  *****************************************************************************
  * Copyright (C) 1998-2013 the VideoLAN team
- * $Id: 33bb4f3e5f9a92afd924ed9ab33d3cdc4517d44c $
+ * $Id: 9bac3caad86ca7455c20d81fa453aa2b418dce9f $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -185,9 +185,11 @@ int main( int i_argc, const char *ppsz_argv[] )
                 lang = (char *)malloc(maxSize);
                 CFStringGetCString(language, lang, maxSize - 1, kCFStringEncodingUTF8);
             }
-            char tmp[11];
-            snprintf(tmp, 11, "LANG=%s", lang);
-            putenv(tmp);
+            if (strncmp( lang, "auto", 4 )) {
+                char tmp[11];
+                snprintf(tmp, 11, "LANG=%s", lang);
+                putenv(tmp);
+            }
             CFRelease(language);
         }
     }

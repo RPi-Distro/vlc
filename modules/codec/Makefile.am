@@ -3,9 +3,9 @@
 
 basedir = codec
 dir = codec
-mods = a52 adpcm aes3 araw cc cdg crystalhd cvdsub ddummy dirac dmo dts dvbsub edummy faad fdkaac flac fluidsynth g711 kate libass libmpeg2 lpcm mash mpeg_audio opus png qsv quicktime rawvideo schroedinger scte27 sdl_image shine speex spudec stl subsdec subsusf svcdsub t140 telx theora tremor twolame uleaddvaudio vorbis wma_fixed x264 x26410b zvbi
-libvlc_LTLIBRARIES =  $(LTLIBcrystalhd) $(LTLIBdirac) $(LTLIBdmo) $(LTLIBfaad) $(LTLIBfdkaac) $(LTLIBflac) $(LTLIBfluidsynth) $(LTLIBkate) $(LTLIBlibass) $(LTLIBlibmpeg2) $(LTLIBmash) $(LTLIBopus) $(LTLIBpng) $(LTLIBqsv) $(LTLIBquicktime) $(LTLIBschroedinger) $(LTLIBsdl_image) $(LTLIBshine) $(LTLIBspeex) $(LTLIBtelx) $(LTLIBtheora) $(LTLIBtremor) $(LTLIBtwolame) $(LTLIBvorbis) $(LTLIBwma_fixed) $(LTLIBx264) $(LTLIBx26410b) $(LTLIBzvbi)
-EXTRA_LTLIBRARIES =  libcrystalhd_plugin.la libdirac_plugin.la libdmo_plugin.la libfaad_plugin.la libfdkaac_plugin.la libflac_plugin.la libfluidsynth_plugin.la libkate_plugin.la liblibass_plugin.la liblibmpeg2_plugin.la libmash_plugin.la libopus_plugin.la libpng_plugin.la libqsv_plugin.la libquicktime_plugin.la libschroedinger_plugin.la libsdl_image_plugin.la libshine_plugin.la libspeex_plugin.la libtelx_plugin.la libtheora_plugin.la libtremor_plugin.la libtwolame_plugin.la libvorbis_plugin.la libwma_fixed_plugin.la libx264_plugin.la libx26410b_plugin.la libzvbi_plugin.la
+mods = a52 adpcm aes3 araw cc cdg crystalhd cvdsub ddummy dirac dmo dts dvbsub edummy faad fdkaac flac g711 kate libass libmpeg2 lpcm mash mpeg_audio opus png qsv quicktime rawvideo schroedinger scte27 sdl_image shine speex spudec stl subsdec subsusf svcdsub t140 telx theora tremor twolame uleaddvaudio vorbis wma_fixed x264 x26410b zvbi
+libvlc_LTLIBRARIES =  $(LTLIBcrystalhd) $(LTLIBdirac) $(LTLIBdmo) $(LTLIBfaad) $(LTLIBfdkaac) $(LTLIBflac) $(LTLIBkate) $(LTLIBlibass) $(LTLIBlibmpeg2) $(LTLIBmash) $(LTLIBopus) $(LTLIBpng) $(LTLIBqsv) $(LTLIBquicktime) $(LTLIBschroedinger) $(LTLIBsdl_image) $(LTLIBshine) $(LTLIBspeex) $(LTLIBtelx) $(LTLIBtheora) $(LTLIBtremor) $(LTLIBtwolame) $(LTLIBvorbis) $(LTLIBwma_fixed) $(LTLIBx264) $(LTLIBx26410b) $(LTLIBzvbi)
+EXTRA_LTLIBRARIES =  libcrystalhd_plugin.la libdirac_plugin.la libdmo_plugin.la libfaad_plugin.la libfdkaac_plugin.la libflac_plugin.la libkate_plugin.la liblibass_plugin.la liblibmpeg2_plugin.la libmash_plugin.la libopus_plugin.la libpng_plugin.la libqsv_plugin.la libquicktime_plugin.la libschroedinger_plugin.la libsdl_image_plugin.la libshine_plugin.la libspeex_plugin.la libtelx_plugin.la libtheora_plugin.la libtremor_plugin.la libtwolame_plugin.la libvorbis_plugin.la libwma_fixed_plugin.la libx264_plugin.la libx26410b_plugin.la libzvbi_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -212,18 +212,6 @@ libflac_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_flac)
 # Set LIBADD manually:
 libflac_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_flac)
 libflac_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_flac)
-
-# The fluidsynth plugin
-libfluidsynth_plugin_la_SOURCES = $(SOURCES_fluidsynth)
-nodist_libfluidsynth_plugin_la_SOURCES = $(nodist_SOURCES_fluidsynth)
-# Force per-target objects:
-libfluidsynth_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_fluidsynth)
-libfluidsynth_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_fluidsynth)
-libfluidsynth_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_fluidsynth)
-libfluidsynth_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_fluidsynth)
-# Set LIBADD manually:
-libfluidsynth_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_fluidsynth)
-libfluidsynth_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_fluidsynth)
 
 # The g711 plugin
 libg711_plugin_la_SOURCES = $(SOURCES_g711)

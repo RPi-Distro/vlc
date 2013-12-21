@@ -2,7 +2,7 @@
 * simple_prefs.h: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2013 VLC authors and VideoLAN
-* $Id: d97ae1c41140676ea626b7dd6ec47d4d80250ea7 $
+* $Id: 106e1c4712956d76adc5104ed72e7219d1c2ced2 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -107,6 +107,8 @@
     IBOutlet id o_intf_luahttp_box;
     IBOutlet id o_intf_luahttppwd_lbl;
     IBOutlet id o_intf_luahttppwd_fld;
+    IBOutlet id o_intf_pauseitunes_lbl;
+    IBOutlet id o_intf_pauseitunes_pop;
 
     IBOutlet id o_osd_encoding_pop;
     IBOutlet id o_osd_encoding_txt;

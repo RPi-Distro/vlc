@@ -2,7 +2,7 @@
  * deinterlace.c : deinterlacer plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2011 VLC authors and VideoLAN
- * $Id: f7d5f64f8035ea4f18e93a250b1aaf580caa5b21 $
+ * $Id: e6a0b0fb196fcb1a8aaa26a96394fb4dd9da1d12 $
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *         Christophe Massiot <massiot@via.ecp.fr>
@@ -642,13 +642,14 @@ notsupp:
     if( !p_sys )
         return VLC_ENOMEM;
 
+    p_sys->chroma = chroma;
+
     config_ChainParse( p_filter, FILTER_CFG_PREFIX, ppsz_filter_options,
                        p_filter->p_cfg );
     char *psz_mode = var_InheritString( p_filter, FILTER_CFG_PREFIX "mode" );
     SetFilterMethod( p_filter, psz_mode, packed );
     free( psz_mode );
 
-    p_sys->chroma = chroma;
     for( int i = 0; i < METADATA_SIZE; i++ )
     {
         p_sys->meta.pi_date[i] = VLC_TS_INVALID;

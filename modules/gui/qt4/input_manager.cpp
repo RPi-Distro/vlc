@@ -2,7 +2,7 @@
  * input_manager.cpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: bd32de63841e6ed8a6d353921f3226d359b58f6f $
+ * $Id: 2384170abf87c254419474fd1c94ace679caffd4 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka  <ileoo@videolan.org>
@@ -167,6 +167,7 @@ void InputManager::delInput()
 
     /* Reset all InfoPanels but stats */
     emit artChanged( NULL );
+    emit artChanged( "" );
     emit infoChanged( NULL );
     emit currentMetaChanged( (input_item_t *)NULL );
 
@@ -950,11 +951,8 @@ void InputManager::setAtoB()
 /* Function called regularly when in an AtoB loop */
 void InputManager::AtoBLoop( float, int64_t i_time, int )
 {
-    if( timeB )
-    {
-        if( i_time >= timeB || i_time < timeA )
-            var_SetTime( THEMIM->getInput(), "time" , timeA );
-    }
+    if( timeB && i_time >= timeB )
+        var_SetTime( THEMIM->getInput(), "time" , timeA );
 }
 
 /**********************************************************************

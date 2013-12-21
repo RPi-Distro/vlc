@@ -2,7 +2,7 @@
  * intf.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: fdb2ff1d1d4a36b9a9538aa991c133e6a95ba4f9 $
+ * $Id: 90a9fa25d36257441a743b0ae8457ac22be86da4 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -213,6 +213,9 @@ struct intf_sys_t
 - (void)windowDidBecomeKey:(NSNotification *)o_notification;
 
 - (void)mediaKeyTap:(SPMediaKeyTap*)keyTap receivedMediaKeyEvent:(NSEvent*)event;
+
+- (void)resetAndReinitializeUserDefaults;
+
 @end
 
 

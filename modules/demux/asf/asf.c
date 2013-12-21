@@ -261,7 +261,13 @@ static int SeekIndex( demux_t *p_demux, mtime_t i_date, float f_pos )
 
     uint64_t i_offset = (uint64_t)p_index->index_entry[i_entry].i_packet_number *
                         p_sys->p_fp->i_min_data_packet_size;
-    return stream_Seek( p_demux->s, p_sys->i_data_begin + i_offset );
+
+    if ( stream_Seek( p_demux->s, p_sys->i_data_begin + i_offset ) == VLC_SUCCESS )
+    {
+        es_out_Control( p_demux->out, ES_OUT_SET_NEXT_DISPLAY_TIME, VLC_TS_0 + i_date );
+        return VLC_SUCCESS;
+    }
+    else return VLC_EGENERIC;
 }
 
 static void SeekPrepare( demux_t *p_demux )
@@ -743,6 +749,17 @@ static int DemuxInit( demux_t *p_demux )
     if( p_sys->p_fp->i_min_data_packet_size != p_sys->p_fp->i_max_data_packet_size )
     {
         msg_Warn( p_demux, "ASF plugin discarded (invalid file_properties object)" );
+        goto error;
+    }
+
+    if ( ASF_FindObject( p_sys->p_root->p_hdr,
+                         &asf_object_content_encryption_guid, 0 ) != NULL
+         || ASF_FindObject( p_sys->p_root->p_hdr,
+                            &asf_object_extended_content_encryption_guid, 0 ) != NULL
+         || ASF_FindObject( p_sys->p_root->p_hdr,
+                         &asf_object_advanced_content_encryption_guid, 0 ) != NULL )
+    {
+        msg_Warn( p_demux, "ASF plugin discarded (DRM encumbered content)" );
         goto error;
     }
 

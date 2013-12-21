@@ -2,7 +2,7 @@
  * decoder.c: Functions for the management of decoders
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: c86e06f1c11bf6eb3575cc9e039abce86bf6d07e $
+ * $Id: f459c4981b1758ccd9202bcd631ceb72d3ee177e $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -2357,6 +2357,7 @@ static picture_t *vout_new_buffer( decoder_t *p_dec )
         unsigned dpb_size;
         switch( p_dec->fmt_in.i_codec )
         {
+        case VLC_CODEC_HEVC:
         case VLC_CODEC_H264:
         case VLC_CODEC_DIRAC: /* FIXME valid ? */
             dpb_size = 18;

@@ -2,7 +2,7 @@
  * wizard.m: MacOS X Streaming Wizard
  *****************************************************************************
  * Copyright (C) 2005-2013 VLC authors and VideoLAN
- * $Id: 082b1e9105df5f683c9992617090bba6b66f9a33 $
+ * $Id: e8c832fc6abcc51176ad611f4aed5a6d3eaf7fe8 $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>,
  *          Brendon Justin <brendonjustin at gmail.com>
@@ -1097,7 +1097,7 @@ static VLCWizard *_o_sharedInstance = nil;
                 NSMutableArray * tempArray = [[NSMutableArray alloc] init];
                 int x = 0;
                 int y = [[o_userSelections objectForKey:@"pathToStrm"] count];
-                NSMutableString * tempString = [[NSMutableString alloc] init];
+                NSString * tempString = [[NSString alloc] init];
                 while( x != y)
                 {
                     NSString * fileNameToUse;

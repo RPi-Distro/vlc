@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: c75c6db0f5e61cd2875c0aa19c28c70d19dea720 $
+ * $Id: ba8f129cb9aae471e74605774b4ffbf3c9126957 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -1369,7 +1369,7 @@ static void EsOutMeta( es_out_t *p_out, const vlc_meta_t *p_meta )
     {
         input_item_SetArtURL( p_item, psz_arturl );
 
-        if( !strncmp( psz_arturl, "attachment://", strlen("attachment") ) )
+        if( !strncmp( psz_arturl, "attachment://", 13 ) )
         {
             /* Don't look for art cover if sout
              * XXX It can change when sout has meta data support */

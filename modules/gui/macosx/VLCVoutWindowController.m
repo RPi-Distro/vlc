@@ -2,7 +2,7 @@
  * VLCVoutWindowController.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012-2013 VLC authors and VideoLAN
- * $Id: fb934b80f74e761b8e88146644f2f946615168a2 $
+ * $Id: 224f12a57a07d58a4659893eeb8291f57ff742b6 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -94,6 +94,7 @@
         BOOL b_no_video_deco_only = !b_video_wallpaper;
         o_new_video_window = [[VLCVideoWindowCommon alloc] initWithContentRect:window_rect styleMask:mask backing:NSBackingStoreBuffered defer:YES];
         [o_new_video_window setDelegate:o_new_video_window];
+        [o_new_video_window setReleasedWhenClosed: NO];
 
         if (b_video_wallpaper)
             [o_new_video_window setLevel:CGWindowLevelForKey(kCGDesktopWindowLevelKey) + 1];
@@ -186,10 +187,9 @@
     }
 
     if (!b_video_wallpaper) {
-        // set window size
-
+        // set (only!) window origin if specified
         if (b_nonembedded) {
-            NSRect window_rect = [o_new_video_window getWindowRectForProposedVideoViewSize:videoViewSize];
+            NSRect window_rect = [o_new_video_window frame];
             if (videoViewPosition.origin.x > 0.)
                 window_rect.origin.x = videoViewPosition.origin.x;
             if (videoViewPosition.origin.y > 0.)
@@ -211,6 +211,7 @@
             [o_new_video_window setFrameTopLeftPoint: top_left_point];
         }
 
+        // resize window
         [o_new_video_window setNativeVideoSize:videoViewSize];
 
         [o_new_video_window makeKeyAndOrderFront: self];

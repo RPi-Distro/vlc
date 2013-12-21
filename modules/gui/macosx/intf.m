@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 0fe54cf2b086cc2762b86284aebe71c81ff86c2a $
+ * $Id: 6ca0e1cda951d6b76d363bbb774fd9c05d36992f $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan.org>
@@ -1064,7 +1064,7 @@ static VLCMain *_o_sharedMainInstance = nil;
 
 - (void)application:(NSApplication *)o_app openFiles:(NSArray *)o_names
 {
-    char *psz_uri = vlc_path2uri([[o_names objectAtIndex:0] UTF8String], "file");
+    char *psz_uri = vlc_path2uri([[o_names objectAtIndex:0] UTF8String], NULL);
 
     if (launched == NO) {
         if (items_at_launch) {
@@ -1082,7 +1082,7 @@ static VLCMain *_o_sharedMainInstance = nil;
         input_thread_t * p_input = pl_CurrentInput(VLCIntf);
         if (p_input) {
             BOOL b_returned = NO;
-            b_returned = input_AddSubtitle(p_input, psz_uri, true);
+            b_returned = input_AddSubtitle(p_input, [[o_names objectAtIndex:0] UTF8String], true);
             vlc_object_release(p_input);
             if (!b_returned) {
                 free(psz_uri);
@@ -1350,8 +1350,11 @@ static VLCMain *_o_sharedMainInstance = nil;
             var_AddCallback(p_current_input, "intf-event", InputEvent, [VLCMain sharedInstance]);
             [self playbackStatusUpdated];
             [o_mainmenu setRateControlsEnabled: YES];
-            if ([self activeVideoPlayback] && [[o_mainwindow videoView] isHidden])
-                [o_mainwindow performSelectorOnMainThread:@selector(togglePlaylist:) withObject: nil waitUntilDone:NO];
+
+            if ([self activeVideoPlayback] && [[o_mainwindow videoView] isHidden]) {
+                [o_mainwindow performSelectorOnMainThread:@selector(togglePlaylist:) withObject: [NSNumber numberWithInt:1] waitUntilDone:NO];
+            }
+
             p_input_changed = vlc_object_hold(p_current_input);
         }
     }
@@ -1881,10 +1884,24 @@ static VLCMain *_o_sharedMainInstance = nil;
 #pragma mark -
 #pragma mark Remove old prefs
 
+
+static NSString * kVLCPreferencesVersion = @"VLCPreferencesVersion";
+static const int kCurrentPreferencesVersion = 3;
+
+- (void)resetAndReinitializeUserDefaults
+{
+    // note that [NSUserDefaults resetStandardUserDefaults] will NOT correctly reset to the defaults
+
+    NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
+    [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
+
+    // set correct version to avoid question about outdated config
+    [[NSUserDefaults standardUserDefaults] setInteger:kCurrentPreferencesVersion forKey:kVLCPreferencesVersion];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (void)removeOldPreferences
 {
-    static NSString * kVLCPreferencesVersion = @"VLCPreferencesVersion";
-    static const int kCurrentPreferencesVersion = 3;
     NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
     int version = [defaults integerForKey:kVLCPreferencesVersion];
     if (version >= kCurrentPreferencesVersion)
@@ -1901,10 +1918,8 @@ static VLCMain *_o_sharedMainInstance = nil;
     } else if (version == 2) {
         /* version 2 (used by VLC 2.0.x and early versions of 2.1) can lead to exceptions within 2.1 or later
          * so we reset the OS X specific prefs here - in practice, no user will notice */
-        [NSUserDefaults resetStandardUserDefaults];
+        [self resetAndReinitializeUserDefaults];
 
-        [defaults setInteger:kCurrentPreferencesVersion forKey:kVLCPreferencesVersion];
-        [defaults synchronize];
     } else {
         NSArray *libraries = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory,
             NSUserDomainMask, YES);
@@ -1926,16 +1941,17 @@ static VLCMain *_o_sharedMainInstance = nil;
             return;
         }
 
-        NSArray * ourPreferences = [NSArray arrayWithObjects:@"org.videolan.vlc.plist", @"VLC", @"org.videolan.vlc", nil];
+        // Do NOT add the current plist file here as this would conflict with caching.
+        // Instead, just reset below.
+        NSArray * ourPreferences = [NSArray arrayWithObjects:@"org.videolan.vlc", @"VLC", nil];
 
-        /* Move the file to trash so that user can find them later */
-        [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:preferences destination:nil files:ourPreferences tag:0];
+        /* Move the file to trash one by one. Using above array the method would stop after first file
+           not found. */
+        for (NSString *file in ourPreferences) {
+            [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:preferences destination:@"" files:[NSArray arrayWithObject:file] tag:nil];
+        }
 
-        /* really reset the defaults from now on */
-        [NSUserDefaults resetStandardUserDefaults];
-
-        [defaults setInteger:kCurrentPreferencesVersion forKey:kVLCPreferencesVersion];
-        [defaults synchronize];
+        [self resetAndReinitializeUserDefaults];
     }
 
     /* Relaunch now */
