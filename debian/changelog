@@ -1,10 +1,14 @@
-vlc (2.1.1-2) UNRELEASED; urgency=medium
+vlc (2.1.2-1) unstable; urgency=medium
 
-  * Add ftbfs_freetype.patch to fix FTBFS with freetype 2.5.1. 
-    (Closes: #731513)
+  [ Benjamin Drung ]
+  * New upstream release.
+    - Fix build failure with freetype 2.5.1 (Closes: #731513)
+  * Add gpg signature check to watch file.
+
+  [ Mateusz Łukasik ]
   * Bump Standards-Version to 3.9.5 (no changes needed).
 
- -- Mateusz Łukasik <mati75@linuxmint.pl>  Fri, 06 Dec 2013 21:14:20 +0100
+ -- Benjamin Drung <bdrung@debian.org>  Sat, 21 Dec 2013 21:18:56 +0100
 
 vlc (2.1.1-1) unstable; urgency=low
 
