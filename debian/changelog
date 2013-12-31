@@ -1,9 +1,10 @@
-vlc (2.1.2-2) UNRELEASED; urgency=medium
+vlc (2.1.2-2) unstable; urgency=medium
 
+  * Team upload.
   * debian/vlc-data.postinst: Check if a directory exists before trying to
     remove it. (Closes: #732806)
 
- -- Sebastian Ramacher <sramacher@debian.org>  Tue, 31 Dec 2013 02:00:52 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 31 Dec 2013 15:19:27 +0100
 
 vlc (2.1.2-1) unstable; urgency=medium
 
