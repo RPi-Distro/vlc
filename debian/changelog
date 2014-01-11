@@ -1,6 +1,7 @@
 vlc (2.1.2-2~bpo70+1) wheezy-backports; urgency=low
 
   * Rebuild for wheezy-backports.
+  * Require newer version of gettext
 
  -- Reinhard Tartler <siretart@tauware.de>  Sat, 11 Jan 2014 14:24:37 +0000
 
