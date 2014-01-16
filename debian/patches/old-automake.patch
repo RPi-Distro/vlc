@@ -1,0 +1,15 @@
+Author: Reinhard Tartler <siretart@tauware.de>
+Description: Allow building with automake 1.11
+
+AM_SILENT_RULES were introduced in 1.13, which is not available in wheezy.
+
+--- a/configure.ac
++++ b/configure.ac
+@@ -28,6 +28,7 @@ AM_INIT_AUTOMAKE(tar-ustar color-tests f
+ AC_CONFIG_HEADERS([config.h])
+ 
+ # Disable with "./configure --disable-silent-rules" or "make V=1"
++m4_ifndef([AM_SILENT_RULES], [m4_define([AM_SILENT_RULES],[])])
+ AM_SILENT_RULES([yes])
+ 
+ dnl Too many people are not aware of maintainer mode:

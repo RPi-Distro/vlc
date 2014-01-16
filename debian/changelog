@@ -3,8 +3,9 @@ vlc (2.1.2-2~bpo70+1) wheezy-backports; urgency=low
   * Rebuild for wheezy-backports.
   * Tighten build dependencies on gettext, libsmbclient (for pkg-config
     file) and libav9
+  * Add old-automake.patch to support building with automake 1.11 in wheezy
 
- -- Reinhard Tartler <siretart@tauware.de>  Sat, 11 Jan 2014 14:24:37 +0000
+ -- Reinhard Tartler <siretart@tauware.de>  Thu, 16 Jan 2014 07:36:36 -0500
 
 vlc (2.1.2-2) unstable; urgency=medium
 
