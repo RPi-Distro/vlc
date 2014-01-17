@@ -11,6 +11,7 @@ Uploaders: Clément Stenac <zorglub@debian.org>,
            Edward Wang <edward.c.wang@compdigitec.com>,
            Mateusz Łukasik <mati75@linuxmint.pl>
 Build-Depends: autopoint (>= 0.18.3),
+               automake (>= 1.11~),
                debhelper (>= 8),
                dh-autoreconf,
                dh-buildinfo,
