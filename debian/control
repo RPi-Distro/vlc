@@ -108,7 +108,6 @@ Build-Depends: autopoint (>= 0.18.3),
                oss4-dev,
                pkg-config,
                zlib1g-dev
-Build-Conflicts: automake1.9
 Standards-Version: 3.9.5
 Homepage: http://www.videolan.org/vlc/
 Vcs-Git: git://anonscm.debian.org/pkg-multimedia/vlc.git
