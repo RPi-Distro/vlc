@@ -2,7 +2,7 @@
  * item.c : Playlist item creation/deletion/add/removal functions
  *****************************************************************************
  * Copyright (C) 1999-2007 VLC authors and VideoLAN
- * $Id: e902063224a6db6dd828aee94f2fb72c8cc349f9 $
+ * $Id: c6113b1015fbd1e2030b1290a89ec2113befe9a4 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -733,7 +733,13 @@ mtime_t playlist_GetNodeDuration( playlist_item_t* node )
 
     if( node->i_children != -1 )
         for( int i = 0; i < node->i_children; i++ )
-            mt_duration += input_item_GetDuration( node->pp_children[i]->p_input );
+        {
+            input_item_t* p_input = node->pp_children[i]->p_input;
+            if ( p_input->i_type == ITEM_TYPE_NODE )
+                mt_duration += playlist_GetNodeDuration( node->pp_children[i] );
+            else
+                mt_duration += input_item_GetDuration( p_input );
+        }
 
     return mt_duration;
 }

@@ -2,7 +2,7 @@
  * record.c: record stream output module
  *****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: ac3963f49802b681cc1c145f2f80c2c8718c9693 $
+ * $Id: 78b7f1290a2c6e63ff5c0e1cd7966bb7b1f3aed8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -330,8 +330,8 @@ static int OutputNew( sout_stream_t *p_stream,
     }
     free( psz_tmp );
 
-    if( asprintf( &psz_output, "std{access=file,mux='%s',dst='%s',no-append,"
-                  "no-format}", psz_muxer, psz_file ) < 0 )
+    if( asprintf( &psz_output, "std{access=file{no-append,no-format},"
+                  "mux='%s',dst='%s'}", psz_muxer, psz_file ) < 0 )
     {
         psz_output = NULL;
         goto error;

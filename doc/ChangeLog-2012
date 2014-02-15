@@ -35085,12 +35085,3 @@ Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Mon Jan 2 01:00:51 2012 +0100
 
     Happy New Year
-
-commit f4ef5cd57b7086b2d2bd32f831ce63f8273c6d57
-Author: Pierre Ynard <linkfanel@yahoo.fr>
-Date:   Sun Jan 1 16:56:01 2012 +0100
-
-    NEWS: --http-host expects URL-style bracket-enclosed IPv6 addresses
-    
-    Unfortunately there is not much we can do until we ditch the legacy
-    <host>:<port> syntax for good

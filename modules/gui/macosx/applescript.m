@@ -2,7 +2,7 @@
  * applescript.m: MacOS X AppleScript support
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: d570568d05bde52ee1cdb59bbf48fc103c5e37f7 $
+ * $Id: c97951ab70937edd28c338aaa3a4c278ead3ab68 $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -57,15 +57,9 @@
                     return nil;
             }
 
-            char *psz_uri = vlc_path2uri([o_urlString UTF8String], NULL);
-            if (!psz_uri)
-                return nil;
-
             NSDictionary *o_dic;
             NSArray *o_array;
-            o_dic = [NSDictionary dictionaryWithObject:[NSString stringWithCString:psz_uri encoding:NSUTF8StringEncoding] forKey:@"ITEM_URL"];
-            free(psz_uri);
-
+            o_dic = [NSDictionary dictionaryWithObject:o_urlString forKey:@"ITEM_URL"];
             o_array = [NSArray arrayWithObject: o_dic];
 
             if (b_autoplay)
