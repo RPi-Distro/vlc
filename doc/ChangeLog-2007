@@ -32311,15 +32311,3 @@ Author: Felix Paul Kühne <fkuehne@videolan.org>
 Date:   Mon Jan 1 22:39:01 2007 +0000
 
     * using GCC 3.3 with the 10.3.9 SDK is definitelly no good idea. x264 and libtwolame remain broken for future d. releases
-
-commit 2a35ffae6fc5f9ee8b8c81177a4902f72f6239ce
-Author: Jean-Paul Saman <jpsaman@videolan.org>
-Date:   Mon Jan 1 18:56:37 2007 +0000
-
-    Patch by Mikko Hirvonen <masse at astro dot helsinki dot fi> for Firefox-1.5.x development tools detection in configure.ac. The patch is applied with some modifications of me
-
-commit 641707d30e39c4cfa108587019817c96695cef21
-Author: Felix Paul Kühne <fkuehne@videolan.org>
-Date:   Mon Jan 1 17:05:32 2007 +0000
-
-    * added out-of-the-box support for future darwin releases. right now, the following libraries are broken (due to linking issues): cdio, cddb, vcdimager and twolame. additionally, x264 doesn't compile because of a bug in makefile/config.mak.

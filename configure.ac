@@ -1,11 +1,11 @@
 dnl Autoconf settings for vlc
 
-AC_COPYRIGHT([Copyright 2002-2013 VLC authors and VideoLAN])
+AC_COPYRIGHT([Copyright 2002-2014 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 2.1.2)
+AC_INIT(vlc, 2.1.3)
 VERSION_MAJOR=2
 VERSION_MINOR=1
-VERSION_REVISION=2
+VERSION_REVISION=3
 VERSION_EXTRA=0
 VERSION_DEV=
 
@@ -14,7 +14,7 @@ AC_SUBST(PKGDIR)
 
 CONFIGURE_LINE="`echo "$0 $ac_configure_args" | sed -e 's/\\\/\\\\\\\/g'`"
 CODENAME="Rincewind"
-COPYRIGHT_YEARS="1996-2013"
+COPYRIGHT_YEARS="1996-2014"
 
 AC_CONFIG_SRCDIR(src/libvlc.c)
 AC_CONFIG_AUX_DIR(autotools)
@@ -574,7 +574,7 @@ AC_SEARCH_LIBS(connect, [socket], [
   ])
 ])
 
-AC_SEARCH_LIBS([getaddrinfo], [nsl], [
+AC_SEARCH_LIBS([inet_pton], [nsl], [
  AS_IF([test "$ac_cv_search_getaddrinfo" != "none required"], [
     SOCKET_LIBS="$ac_cv_search_getaddrinfo $SOCKET_LIBS"
   ])

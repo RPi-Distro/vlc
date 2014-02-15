@@ -2,7 +2,7 @@
  * input_slider.cpp : VolumeSlider and SeekSlider
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 841b64441c392519928e8f07daaeaf403c7cbd3c $
+ * $Id: 8a477c53d704147c2123288d3b9d8fe5b069fd29 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -112,6 +112,7 @@ SeekSlider::SeekSlider( Qt::Orientation q, QWidget *_parent, bool _static )
     setFocusPolicy( Qt::NoFocus );
 
     /* Use the new/classic style */
+    setMinimumHeight( 18 );
     if( !b_classic )
     {
         alternativeStyle = new SeekStyle;

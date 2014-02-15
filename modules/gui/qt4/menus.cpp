@@ -2,7 +2,7 @@
  * menus.cpp : Qt menus
  *****************************************************************************
  * Copyright © 2006-2011 the VideoLAN team
- * $Id: d956ee2bbe3976bb5de246babf673813587c59a2 $
+ * $Id: 621fed34c6c50e6950c2e1400b379b716eb5bcd7 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -604,7 +604,8 @@ QMenu *VLCMenuBar::AudioMenu( intf_thread_t *p_intf, QMenu * current )
     if( current->isEmpty() )
     {
         addActionWithSubmenu( current, "audio-es", qtr( "Audio &Track" ) );
-        audioDeviceMenu = current->addMenu( qtr( "Audio &Device" ) );
+        audioDeviceMenu = new QMenu( qtr( "Audio &Device" ) );
+        current->addMenu( audioDeviceMenu );
         addActionWithSubmenu( current, "stereo-mode", qtr( "&Stereo Mode" ) );
         current->addSeparator();
 

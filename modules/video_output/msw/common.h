@@ -2,7 +2,7 @@
  * common.h: Windows video output header file
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 12a4f55b5f7502e65c5586ace80d02fe7c9adf2c $
+ * $Id: c5d3fbc124ee87b7fc202c6c2912be47e4a56d30 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -151,6 +151,7 @@ struct vout_display_sys_t
     /* */
     bool                    reset_device;
     bool                    reopen_device;
+    bool                    lost_not_ready;
     bool                    clear_scene;
 
     /* It protects the following variables */

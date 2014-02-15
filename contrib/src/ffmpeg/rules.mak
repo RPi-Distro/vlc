@@ -1,10 +1,16 @@
 # FFmpeg
 
-#HASH=9aa053ceded5550b2e538578af383fd89d82364c
-#FFMPEG_SNAPURL := http://git.videolan.org/?p=ffmpeg.git;a=snapshot;h=$(HASH);sf=tgz
+#Uncomment the one you want
+#USE_LIBAV ?= 1
+USE_FFMPEG ?= 1
 
-HASH=b6a971994187e87fcc8811108e144f15c1652728
+ifdef USE_FFMPEG
+HASH=c46faacdf4e17a78a7e7617d5807a759a6a2868a
+FFMPEG_SNAPURL := http://git.videolan.org/?p=ffmpeg.git;a=snapshot;h=$(HASH);sf=tgz
+else
+HASH=6d93307f8df81808f0dcdbc064b848054a6e83b3
 FFMPEG_SNAPURL := http://git.libav.org/?p=libav.git;a=snapshot;h=$(HASH);sf=tgz
+endif
 
 FFMPEGCONF = \
 	--cc="$(CC)" \
@@ -19,12 +25,16 @@ FFMPEGCONF = \
 	--disable-avfilter \
 	--disable-filters \
 	--disable-bsfs \
-	--disable-bzlib
+	--disable-bzlib \
+	--disable-programs \
+	--disable-avresample
 
-# Those tools are named differently in FFmpeg and Libav
-#	--disable-ffserver \
-#	--disable-ffplay \
-#	--disable-ffprobe
+ifdef USE_FFMPEG
+FFMPEGCONF += \
+	--disable-swresample \
+	--disable-iconv
+endif
+
 DEPS_ffmpeg = zlib gsm openjpeg
 
 # Optional dependencies
@@ -54,7 +64,9 @@ endif
 
 # ARM stuff
 ifeq ($(ARCH),arm)
+ifndef HAVE_DARWIN_OS
 FFMPEGCONF += --arch=arm
+endif
 ifdef HAVE_NEON
 FFMPEGCONF += --enable-neon
 endif

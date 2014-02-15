@@ -2,7 +2,7 @@
  * auhal.c: AUHAL and Coreaudio output plugin
  *****************************************************************************
  * Copyright (C) 2005 - 2013 VLC authors and VideoLAN
- * $Id: 0f33d0f87ab604dab22cf539c1fcba9e7e1b7133 $
+ * $Id: c421fe6972cbb72e8d5185853786d6703203a718 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -234,7 +234,7 @@ static int Open(vlc_object_t *obj)
     p_sys->b_mute = var_InheritBool(p_aout, "mute");
     aout_MuteReport(p_aout, p_sys->b_mute);
 
-    char *psz_audio_device = config_GetPsz(p_aout, "auhal-audio-device");
+    char *psz_audio_device = var_InheritString(p_aout, "auhal-audio-device");
     SwitchAudioDevice(p_aout, psz_audio_device);
     free(psz_audio_device);
 
@@ -1379,20 +1379,22 @@ static void Flush(audio_output_t *p_aout, bool wait)
 {
     struct aout_sys_t *p_sys = p_aout->sys;
 
+    int32_t availableBytes;
+    vlc_mutex_lock(&p_sys->lock);
+    TPCircularBufferTail(&p_sys->circular_buffer, &availableBytes);
+
     if (wait) {
-        int32_t availableBytes;
-        vlc_mutex_lock(&p_sys->lock);
-        TPCircularBufferTail(&p_sys->circular_buffer, &availableBytes);
         while (availableBytes > 0) {
             vlc_cond_wait(&p_sys->cond, &p_sys->lock);
             TPCircularBufferTail(&p_sys->circular_buffer, &availableBytes);
         }
-        vlc_mutex_unlock(&p_sys->lock);
-
     } else {
-        /* flush circular buffer */
-        TPCircularBufferClear(&p_aout->sys->circular_buffer);
+        /* flush circular buffer if data is left */
+        if (availableBytes > 0)
+            TPCircularBufferClear(&p_aout->sys->circular_buffer);
     }
+
+    vlc_mutex_unlock(&p_sys->lock);
 }
 
 static int TimeGet(audio_output_t *p_aout, mtime_t *delay)
@@ -1445,9 +1447,11 @@ static OSStatus RenderCallbackAnalog(vlc_object_t *p_obj,
     } else {
         int32_t bytesToCopy = __MIN(bytesRequested, availableBytes);
 
-        memcpy(targetBuffer, buffer, bytesToCopy);
-        TPCircularBufferConsume(&p_sys->circular_buffer, bytesToCopy);
-        ioData->mBuffers[0].mDataByteSize = bytesToCopy;
+        if (likely(bytesToCopy > 0)) {
+            memcpy(targetBuffer, buffer, bytesToCopy);
+            TPCircularBufferConsume(&p_sys->circular_buffer, bytesToCopy);
+            ioData->mBuffers[0].mDataByteSize = bytesToCopy;
+        }
     }
 
     vlc_cond_signal(&p_sys->cond);
