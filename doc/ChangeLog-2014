@@ -1,3 +1,175 @@
+commit 2a072befdecc7fb6e43e24b863c36767ea335ae6
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Feb 21 15:20:24 2014 +0100
+
+    Update NEWS
+
+commit 05da69857b4787ea0d4f7c8ae8eed73affcb3098
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Feb 21 15:02:04 2014 +0100
+
+    Contribs: update FFMpeg and libav Hashes
+    
+    Fixes the HuffYuv regression on FFmpeg and MXF on libav
+
+commit abd583db4ed9eee2efd11601056caf20a0dc1f27
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Fri Feb 21 15:01:12 2014 +0100
+
+    Update NEWS
+
+commit 4c90d3358db73900e806a5f35783428d65cf9d59
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Fri Feb 21 14:50:16 2014 +0100
+
+    macosx/about: fix layout issue and simply code (close #10746)
+    
+    (cherry picked from commit fe0ec6a107aeb945f2312317c06e955111b21bd4)
+
+commit c7b43264353583cc56e3ea8b55aee25d0df4ecf3
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Fri Feb 21 14:28:48 2014 +0100
+
+    vout_macosx: remove misleading user-facing error message about Quartz Extreme being unavailable (close #9777)
+    
+    While it is strongly desirable to be present, the API behavior or the driver quality seem to have changed on OS X 10.9, so this alert is triggered way to often while video is actually being displayed just fine.
+    
+    Log message is retained for debugging purposes.
+    
+    (cherry picked from commit 7f16c15065e1cf28e34d94b0d491c2955f839ef9)
+
+commit 11b5098cf9993106f01b9270cd057dcb32fcb250
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Tue Feb 18 20:19:16 2014 +0100
+
+    macosx: remove 'vout' option from simple prefs since it is clearly an advanced option this OS, which can break the setup way too easily
+    
+    Manual backport of 3f8f214ac2b22c9b6f3de2f3adab989fa9a5a970
+
+commit 3bde20b52de75861c3c200e4d55b93dad1d6a6b1
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Tue Feb 18 15:29:01 2014 +0100
+
+    dvdread/dvdnav: fix linking with correctly compiled libraries
+
+commit fb1ccab1e3e54839ca5e08afb13c631addfb5216
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Feb 14 19:29:51 2014 +0200
+
+    Linux: update default optical disk paths
+    
+    (cherry picked from commit 98b613b11cb0465e7dce13a803dcabb182fd2b2c)
+
+commit 39d9f1f628594c35b365e1013b8c313af31ebf5c
+Author: Felix Abecassis <felix.abecassis@gmail.com>
+Date:   Thu Feb 13 10:19:05 2014 +0100
+
+    Direct3D: do not leak textures when recycling them
+    
+    If several textures from the cache (i.e. used during the previous
+    call) are matching we invalidate all of them but only keep the last
+    one. We therefore lose all references to the other ones.
+    
+    Close #10248
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit e25184612eee912c8ef329cf1ad7a0a2b76d96ba)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 67e390d56379cac43ede7ea633614b8473ec5b0c
+Author: Felix Abecassis <felix.abecassis@gmail.com>
+Date:   Tue Feb 11 16:20:06 2014 +0100
+
+    Win32: return a failure when a CHANGE_DISPLAY_SIZE event is forced
+    
+    See x11.c for rationale.
+    
+    Close #9273
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit ad58279cf86051a108589eeea6520f69243c1fb8)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c8b3189f1ed316d6e63851cc08edbd3078af0ce4
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Sat Nov 16 00:12:47 2013 +0900
+
+    demux: asf: fix multiple compressed payload regression (fix #9846)
+    
+    Regression introduced by 6eddafe741954803ec2928d26fb7566bd07a3601
+
+commit 40d5cdb342e4afde07cb730b7c5e221841a79425
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 26 15:40:33 2013 +0100
+
+    demux: asf: ignore empty sub-payloads (fix #9990)
+
+commit 127bc9cc81488c402b7253cdcf85f556f1d353d8
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Feb 8 15:48:54 2014 +0100
+
+    Contribs: update libpng to 1.6.8
+    
+    See CVE-2013-6954
+    
+    (cherry picked from commit 4e62c1faae876d142a3430eb243df63033f6785e)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 85aca9192006509c3d5ddfd110c57c83882d6684
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Wed Feb 5 15:37:07 2014 +0100
+
+    iOS: don't deploy xcrun as for Intel builds as this isn't needed
+    
+    (cherry picked from commit 72013a5b4f565e8fbfe83369a4bfa76d0026fc1a)
+
+commit cbc2f85c2c6a37102c2ba4793d4a77963f1d8252
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Wed Feb 5 15:12:37 2014 +0100
+
+    contrib/avcodec: unconditionally enable pic on iOS (close #10532, close #10531)
+    
+    (cherry picked from commit fc45d0b90fb85160d2d1af8302b70fcfe135a59d)
+
+commit 6d0b1712901e0858bdf958c49dea22c5b8c56b30
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Feb 3 18:26:45 2014 +0100
+
+    Prepare VLC 2.1.4
+
+commit c5f61c90318df9a500dd16ff80c5f00fed257c51
+Author: David Fuhrmann <david.fuhrmann@googlemail.com>
+Date:   Sun Feb 2 15:45:26 2014 +0100
+
+    contrib: ffmpeg: remove libav vda patch
+    
+    This is broken with the ffmpeg, with is used for now.
+
+commit 38820b3cb1dbb7f2455f59416ab4ac2da199ec85
+Author: David Fuhrmann <david.fuhrmann@googlemail.com>
+Date:   Sun Feb 2 15:40:57 2014 +0100
+
+    vda: use the ffmpeg api to avoid memleaks.
+    
+    This will not compile with libav. Libav needs to be fixed before we can
+    support it again here.
+
+commit a117767ae0cc092917202214ab4ddf41b5756977
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Feb 1 18:27:05 2014 +0200
+
+    fr: fix translation (closes #10538)
+
+commit 75c3652601e5f9603361d775ce3bcab3e009afd6
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Fri Jan 31 13:32:15 2014 +0100
+
+    contrib/sparkle: fix compilation on Snow Leopard
+    
+    No functional changes
+    
+    Manual backport of 9f4a5e4dbd0fc47622161d2c2a7ef15cf6812cec
+
 commit e6a71cc4ecf377574fb2cf2210a4a1588f2e114e
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Wed Jan 29 20:16:22 2014 +0100

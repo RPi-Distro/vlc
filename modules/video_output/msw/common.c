@@ -2,7 +2,7 @@
  * common.c:
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: d20c136c0f8ee43997afa8f90e9ffbfbd46fffd5 $
+ * $Id: 45f1f5e92ccff7e5931a43e7bf7bfa3e9b49757a $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -603,6 +603,7 @@ int CommonControl(vout_display_t *vd, int query, va_list args)
                              rect_window.right - rect_window.left,
                              rect_window.bottom - rect_window.top, SWP_NOMOVE);
             }
+            return VLC_EGENERIC;
         }
         UpdateRects(vd, cfg, source, is_forced);
         return VLC_SUCCESS;

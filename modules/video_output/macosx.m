@@ -2,7 +2,7 @@
  * macosx.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2013 VLC authors and VideoLAN
- * $Id: aa3b020f9cc2d51716d0f1c384943b6d741548fc $
+ * $Id: 61e994fbedfbee51ebf307145aefd95f8391f6fc $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Eric Petit <titer@m0k.org>
@@ -143,11 +143,8 @@ static int Open (vlc_object_t *this)
     if (!sys)
         return VLC_ENOMEM;
 
-    if (!CGDisplayUsesOpenGLAcceleration (kCGDirectMainDisplay)) {
+    if (!CGDisplayUsesOpenGLAcceleration (kCGDirectMainDisplay))
         msg_Err (this, "no OpenGL hardware acceleration found. this can lead to slow output and unexpected results");
-        dialog_Fatal (this, _("OpenGL acceleration is not supported on your Mac"), _("Your Mac lacks Quartz Extreme acceleration, which is required for video output. It will still work, but much slower and with possibly unexpected results."));
-    } else
-        msg_Dbg (this, "Quartz Extreme acceleration is active");
 
     vd->sys = sys;
     sys->pool = NULL;
