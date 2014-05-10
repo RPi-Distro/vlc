@@ -1,8 +1,11 @@
-vlc (2.1.4-1) UNRELEASED; urgency=medium
+vlc (2.1.4-1) unstable; urgency=medium
 
   * New upstream release (Closes: #742625, LP: #1276650)
+  * SECURITY UPDATE: crafted ASF file handling integer divide-by-zero DoS
+    - CVE-2014-1684
+    (Closes: #743033)
 
- -- Benjamin Drung <bdrung@debian.org>  Sun, 11 May 2014 00:35:36 +0200
+ -- Benjamin Drung <bdrung@debian.org>  Sun, 11 May 2014 00:57:13 +0200
 
 vlc (2.1.2-2) unstable; urgency=medium
 
