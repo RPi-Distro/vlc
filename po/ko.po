@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-01-29 20:14+0100\n"
+"POT-Creation-Date: 2014-02-21 15:55+0100\n"
 "PO-Revision-Date: 2013-12-08 08:25+0000\n"
 "Last-Translator: sheppaul <sheppaul@naver.com>\n"
 "Language-Team: Korean (http://www.transifex.com/projects/p/vlc-trans/"
@@ -142,7 +142,7 @@ msgstr "기타 오디오 설정 및 모듈"
 #: src/libvlc-module.c:1510 modules/access/imem.c:64
 #: modules/gui/macosx/ConvertAndSave.m:175 modules/gui/macosx/MainMenu.m:390
 #: modules/gui/macosx/output.m:151 modules/gui/macosx/playlistinfo.m:102
-#: modules/gui/macosx/simple_prefs.m:273 modules/gui/macosx/simple_prefs.m:410
+#: modules/gui/macosx/simple_prefs.m:273 modules/gui/macosx/simple_prefs.m:409
 #: modules/gui/macosx/wizard.m:378
 #: modules/gui/qt4/components/info_panels.cpp:552
 #: modules/gui/qt4/components/simple_preferences.cpp:224
@@ -2146,7 +2146,7 @@ msgstr "n 밀리초 후 마우스 커서 및 전체화면 컨트롤을 감춥니
 
 #: src/libvlc-module.c:338 src/libvlc-module.c:340
 #: src/video_output/interlacing.c:180 modules/gui/macosx/MainMenu.m:406
-#: modules/gui/macosx/MainMenu.m:407 modules/gui/macosx/simple_prefs.m:408
+#: modules/gui/macosx/MainMenu.m:407 modules/gui/macosx/simple_prefs.m:407
 #: modules/gui/qt4/dialogs/convert.cpp:95
 #: modules/video_filter/deinterlace/deinterlace.c:97
 #: share/lua/http/dialogs/create_stream.html:346
@@ -2155,7 +2155,7 @@ msgstr "디인터레이스"
 
 #: src/libvlc-module.c:348 src/video_output/interlacing.c:196
 #: modules/gui/macosx/MainMenu.m:408 modules/gui/macosx/MainMenu.m:409
-#: modules/gui/macosx/simple_prefs.m:409
+#: modules/gui/macosx/simple_prefs.m:408
 #: modules/video_filter/deinterlace/deinterlace.c:53
 msgid "Deinterlace mode"
 msgstr "디인터레이스 모드"
@@ -2408,7 +2408,7 @@ msgstr ""
 "(1:1) 을 가지고 있습니다. 16:9 화면의 모니터라면, 비율을 유지하기 위해 이 부"
 "분을 4:3으로 변경이 필요할 수 있습니다."
 
-#: src/libvlc-module.c:468 modules/gui/macosx/simple_prefs.m:401
+#: src/libvlc-module.c:468 modules/gui/macosx/simple_prefs.m:400
 msgid "Skip frames"
 msgstr "프레임 건너뛰기"
 
@@ -2553,8 +2553,8 @@ msgstr ""
 #: modules/gui/macosx/AudioEffects.m:86 modules/gui/macosx/MainMenu.m:601
 #: modules/gui/macosx/prefs_widgets.m:1214
 #: modules/gui/macosx/prefs_widgets.m:1287
-#: modules/gui/macosx/simple_prefs.m:520 modules/gui/macosx/simple_prefs.m:674
-#: modules/gui/macosx/simple_prefs.m:923 modules/gui/macosx/VideoEffects.m:57
+#: modules/gui/macosx/simple_prefs.m:519 modules/gui/macosx/simple_prefs.m:671
+#: modules/gui/macosx/simple_prefs.m:920 modules/gui/macosx/VideoEffects.m:57
 #: modules/gui/qt4/components/preferences_widgets.cpp:545
 #: modules/video_filter/marq.c:60 modules/video_filter/rss.c:71
 #: modules/video_filter/rss.c:184 modules/video_output/msw/directx.c:1452
@@ -3929,7 +3929,7 @@ msgid "Slower (fine)"
 msgstr "느리게 (조금)"
 
 #: src/libvlc-module.c:1223 modules/control/hotkeys.c:208
-#: modules/gui/macosx/about.m:274 modules/gui/macosx/ControlsBar.m:760
+#: modules/gui/macosx/about.m:261 modules/gui/macosx/ControlsBar.m:760
 #: modules/gui/macosx/ControlsBar.m:761 modules/gui/macosx/fspanel.m:420
 #: modules/gui/macosx/MainMenu.m:361 modules/gui/macosx/MainMenu.m:459
 #: modules/gui/macosx/MainMenu.m:467 modules/gui/macosx/MainMenu.m:1461
@@ -3945,7 +3945,7 @@ msgid "Select the hotkey to use to skip to the next item in the playlist."
 msgstr "재생목록에서 다음 항목으로 넘김에 사용할 단축키 선택."
 
 #: src/libvlc-module.c:1225 modules/control/hotkeys.c:212
-#: modules/gui/macosx/about.m:275 modules/gui/macosx/ControlsBar.m:749
+#: modules/gui/macosx/about.m:262 modules/gui/macosx/ControlsBar.m:749
 #: modules/gui/macosx/ControlsBar.m:750 modules/gui/macosx/fspanel.m:416
 #: modules/gui/macosx/MainMenu.m:360 modules/gui/macosx/MainMenu.m:460
 #: modules/gui/macosx/MainMenu.m:466 modules/gui/macosx/MainMenu.m:1460
@@ -4813,8 +4813,8 @@ msgstr "다운로드중..."
 #: modules/gui/macosx/MainWindow.m:179 modules/gui/macosx/MainWindow.m:184
 #: modules/gui/macosx/open.m:128 modules/gui/macosx/open.m:190
 #: modules/gui/macosx/prefs.m:208 modules/gui/macosx/simple_prefs.m:324
-#: modules/gui/macosx/simple_prefs.m:352 modules/gui/macosx/simple_prefs.m:414
-#: modules/gui/macosx/simple_prefs.m:842 modules/gui/macosx/VideoEffects.m:879
+#: modules/gui/macosx/simple_prefs.m:352 modules/gui/macosx/simple_prefs.m:413
+#: modules/gui/macosx/simple_prefs.m:839 modules/gui/macosx/VideoEffects.m:879
 #: modules/gui/macosx/VideoEffects.m:943 modules/gui/macosx/wizard.m:317
 #: modules/gui/qt4/components/open_panels.cpp:1343
 #: modules/gui/qt4/components/preferences_widgets.cpp:1424
@@ -8017,7 +8017,7 @@ msgstr "스크린 입력"
 #: modules/access/screen/screen.c:98 modules/access/screen/xcb.c:69
 #: modules/gui/macosx/MainMenu.m:609 modules/gui/macosx/open.m:207
 #: modules/gui/macosx/open.m:211 modules/gui/macosx/open.m:495
-#: modules/gui/macosx/open.m:1348 modules/gui/macosx/simple_prefs.m:679
+#: modules/gui/macosx/open.m:1348 modules/gui/macosx/simple_prefs.m:676
 msgid "Screen"
 msgstr "스크린"
 
@@ -13459,7 +13459,7 @@ msgid "Fast"
 msgstr "빠르게"
 
 #: modules/codec/x264.c:429 modules/gui/macosx/MainMenu.m:357
-#: modules/gui/macosx/simple_prefs.m:711
+#: modules/gui/macosx/simple_prefs.m:708
 #: modules/gui/qt4/components/simple_preferences.cpp:673
 #: modules/misc/gnutls.c:64 modules/text_renderer/freetype.c:196
 #: modules/text_renderer/freetype.c:215 modules/text_renderer/quartztext.c:121
@@ -15987,33 +15987,33 @@ msgstr "슬라이드 (이미지)"
 msgid "Unknown category"
 msgstr "알 수 없는 카테고리"
 
-#: modules/gui/macosx/about.m:92 modules/gui/macosx/MainMenu.m:306
+#: modules/gui/macosx/about.m:88 modules/gui/macosx/MainMenu.m:306
 msgid "About VLC media player"
 msgstr "VLC 미디어 재생기 정보"
 
-#: modules/gui/macosx/about.m:95 modules/gui/qt4/dialogs/help.cpp:125
+#: modules/gui/macosx/about.m:91 modules/gui/qt4/dialogs/help.cpp:125
 msgid "Credits"
 msgstr "크레딧"
 
-#: modules/gui/macosx/about.m:98 modules/gui/macosx/MainMenu.m:450
+#: modules/gui/macosx/about.m:94 modules/gui/macosx/MainMenu.m:450
 #: modules/gui/qt4/dialogs/help.cpp:119
 msgid "License"
 msgstr "라이센스"
 
-#: modules/gui/macosx/about.m:101 modules/gui/qt4/dialogs/help.cpp:122
+#: modules/gui/macosx/about.m:97 modules/gui/qt4/dialogs/help.cpp:122
 msgid "Authors"
 msgstr "작성자"
 
-#: modules/gui/macosx/about.m:104
+#: modules/gui/macosx/about.m:100
 msgid ""
 "VLC media player and VideoLAN are trademarks of the VideoLAN Association."
 msgstr "VLC 미디어 재생기와 VideoLAN은 VidoeLAN 협회의 상표입니다."
 
-#: modules/gui/macosx/about.m:115
+#: modules/gui/macosx/about.m:109
 msgid "Compiled by %s with %@"
 msgstr "%@과 함께 %s로 컴파일함"
 
-#: modules/gui/macosx/about.m:132 modules/gui/qt4/dialogs/help.cpp:94
+#: modules/gui/macosx/about.m:126 modules/gui/qt4/dialogs/help.cpp:94
 msgid ""
 "<p>VLC media player is a free and open source media player, encoder, and "
 "streamer made by the volunteers of the <a href=\"http://www.videolan.org/"
@@ -16033,11 +16033,11 @@ msgstr ""
 "videolan.org/contribute/\"><span style=\" text-decoration: underline; color:"
 "#0057ae;\">참여하세요!</span></a>"
 
-#: modules/gui/macosx/about.m:273
+#: modules/gui/macosx/about.m:260
 msgid "VLC media player Help"
 msgstr "VLC 미디어 재생기 도움말"
 
-#: modules/gui/macosx/about.m:276 modules/gui/macosx/MainMenu.m:426
+#: modules/gui/macosx/about.m:263 modules/gui/macosx/MainMenu.m:426
 #: modules/gui/macosx/MainMenu.m:1004
 msgid "Index"
 msgstr "인덱스"
@@ -16126,7 +16126,7 @@ msgstr "새 프로파일 이름을 입력하세요:"
 #: modules/gui/macosx/ConvertAndSave.m:369
 #: modules/gui/macosx/ConvertAndSave.m:401 modules/gui/macosx/output.m:457
 #: modules/gui/macosx/playlist.m:716 modules/gui/macosx/prefs.m:207
-#: modules/gui/macosx/simple_prefs.m:351 modules/gui/macosx/simple_prefs.m:416
+#: modules/gui/macosx/simple_prefs.m:351 modules/gui/macosx/simple_prefs.m:415
 #: modules/gui/macosx/VideoEffects.m:880
 #: modules/gui/qt4/components/sout/profile_selector.cpp:424
 #: modules/gui/qt4/ui/vlm.h:301
@@ -16447,7 +16447,7 @@ msgstr "출력 위치 선택하기"
 #: modules/gui/macosx/ConvertAndSave.m:161 modules/gui/macosx/open.m:138
 #: modules/gui/macosx/open.m:367 modules/gui/macosx/output.m:136
 #: modules/gui/macosx/prefs_widgets.m:1114
-#: modules/gui/macosx/simple_prefs.m:333 modules/gui/macosx/simple_prefs.m:403
+#: modules/gui/macosx/simple_prefs.m:333 modules/gui/macosx/simple_prefs.m:402
 #: modules/gui/qt4/components/preferences_widgets.cpp:263
 #: modules/gui/qt4/components/simple_preferences.cpp:421
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:98
@@ -16636,8 +16636,8 @@ msgid "A SDP export is requested, but no URL is provided."
 msgstr "SDP 내보내기가 필요합니다만 어떤 주소도 제공되지 않습니다."
 
 #: modules/gui/macosx/ConvertAndSave.m:1052
-#: modules/gui/macosx/simple_prefs.m:710 modules/gui/macosx/simple_prefs.m:734
-#: modules/gui/macosx/simple_prefs.m:1293
+#: modules/gui/macosx/simple_prefs.m:707 modules/gui/macosx/simple_prefs.m:731
+#: modules/gui/macosx/simple_prefs.m:1289
 #: modules/gui/qt4/components/simple_preferences.cpp:670
 msgid "Custom"
 msgstr "사용자 지정"
@@ -16744,7 +16744,7 @@ msgstr "VLC 미디어 재생"
 msgid "No CrashLog found"
 msgstr "충돌 로그를 찾을수 없음"
 
-#: modules/gui/macosx/intf.m:1880 modules/gui/macosx/simple_prefs.m:843
+#: modules/gui/macosx/intf.m:1880 modules/gui/macosx/simple_prefs.m:840
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr "계속"
@@ -17068,7 +17068,7 @@ msgstr "VLC 숨기기"
 msgid "Hide Others"
 msgstr "다른 창 숨기기"
 
-#: modules/gui/macosx/MainMenu.m:317 modules/gui/macosx/simple_prefs.m:413
+#: modules/gui/macosx/MainMenu.m:317 modules/gui/macosx/simple_prefs.m:412
 msgid "Show All"
 msgstr "모두 보기"
 
@@ -17860,12 +17860,12 @@ msgstr "메타 저장중 오류"
 msgid "VLC was unable to save the meta data."
 msgstr "VLC 가 메타 데이터를 저장할수 없습니다."
 
-#: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:417
+#: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:416
 #: modules/gui/qt4/dialogs/preferences.cpp:52
 msgid "Preferences"
 msgstr "환경설정"
 
-#: modules/gui/macosx/prefs.m:209 modules/gui/macosx/simple_prefs.m:415
+#: modules/gui/macosx/prefs.m:209 modules/gui/macosx/simple_prefs.m:414
 msgid "Reset All"
 msgstr "모두 초기화"
 
@@ -18109,64 +18109,60 @@ msgstr "전체화면 모드시 검은 화면"
 msgid "Display"
 msgstr "디스플레이"
 
-#: modules/gui/macosx/simple_prefs.m:400
-msgid "Output module"
-msgstr "출력 모듈"
-
-#: modules/gui/macosx/simple_prefs.m:402 modules/gui/qt4/ui/sprefs_video.h:357
+#: modules/gui/macosx/simple_prefs.m:401 modules/gui/qt4/ui/sprefs_video.h:357
 msgid "Video snapshots"
 msgstr "비디오 스냅샷"
 
-#: modules/gui/macosx/simple_prefs.m:404 modules/meta_engine/folder.c:63
+#: modules/gui/macosx/simple_prefs.m:403 modules/meta_engine/folder.c:63
 msgid "Folder"
 msgstr "폴더"
 
-#: modules/gui/macosx/simple_prefs.m:405 modules/gui/qt4/ui/sprefs_video.h:362
+#: modules/gui/macosx/simple_prefs.m:404 modules/gui/qt4/ui/sprefs_video.h:362
 msgid "Format"
 msgstr "형식"
 
-#: modules/gui/macosx/simple_prefs.m:406 modules/gui/qt4/ui/sprefs_video.h:360
+#: modules/gui/macosx/simple_prefs.m:405 modules/gui/qt4/ui/sprefs_video.h:360
 msgid "Prefix"
 msgstr "접두어"
 
-#: modules/gui/macosx/simple_prefs.m:407 modules/gui/qt4/ui/sprefs_video.h:363
+#: modules/gui/macosx/simple_prefs.m:406 modules/gui/qt4/ui/sprefs_video.h:363
 msgid "Sequential numbering"
 msgstr "순차 번호 부여"
 
-#: modules/gui/macosx/simple_prefs.m:589
+#: modules/gui/macosx/simple_prefs.m:588
 msgid "Last check on: %@"
 msgstr "마지막 확인 시각: %@"
 
-#: modules/gui/macosx/simple_prefs.m:591
+#: modules/gui/macosx/simple_prefs.m:590
 msgid "No check was performed yet."
 msgstr "아직 확인하지 않았습니다."
 
-#: modules/gui/macosx/simple_prefs.m:710
+#: modules/gui/macosx/simple_prefs.m:707
 #: modules/gui/qt4/components/simple_preferences.cpp:671
 msgid "Lowest latency"
 msgstr "가장 낮은 대기시간"
 
-#: modules/gui/macosx/simple_prefs.m:711
+#: modules/gui/macosx/simple_prefs.m:708
 #: modules/gui/qt4/components/simple_preferences.cpp:672
 msgid "Low latency"
 msgstr "낮은 대기시간"
 
-#: modules/gui/macosx/simple_prefs.m:711
+#: modules/gui/macosx/simple_prefs.m:708
 #: modules/gui/qt4/components/simple_preferences.cpp:674
 msgid "High latency"
 msgstr "높은 대기시간"
 
-#: modules/gui/macosx/simple_prefs.m:711
+#: modules/gui/macosx/simple_prefs.m:708
 #: modules/gui/qt4/components/simple_preferences.cpp:675
 msgid "Higher latency"
 msgstr "더 높은 대기시간"
 
-#: modules/gui/macosx/simple_prefs.m:842
+#: modules/gui/macosx/simple_prefs.m:839
 #: modules/gui/qt4/dialogs/preferences.cpp:326
 msgid "Reset Preferences"
 msgstr "환경설정 초기화"
 
-#: modules/gui/macosx/simple_prefs.m:845
+#: modules/gui/macosx/simple_prefs.m:842
 msgid ""
 "This will reset VLC media player's preferences.\n"
 "\n"
@@ -18187,20 +18183,20 @@ msgstr ""
 "\n"
 "계속하시겠습니까?"
 
-#: modules/gui/macosx/simple_prefs.m:1212
+#: modules/gui/macosx/simple_prefs.m:1208
 msgid "Choose the folder to save your video snapshots to."
 msgstr "비디오 스냅샷을 저장할 폴더를 선택하세요."
 
-#: modules/gui/macosx/simple_prefs.m:1214
-#: modules/gui/macosx/simple_prefs.m:1305
+#: modules/gui/macosx/simple_prefs.m:1210
+#: modules/gui/macosx/simple_prefs.m:1301
 msgid "Choose"
 msgstr "선택"
 
-#: modules/gui/macosx/simple_prefs.m:1303
+#: modules/gui/macosx/simple_prefs.m:1299
 msgid "Choose the directory or filename where the records will be stored."
 msgstr "녹화가 저장될 폴더나 파일명을 선택하세요"
 
-#: modules/gui/macosx/simple_prefs.m:1422
+#: modules/gui/macosx/simple_prefs.m:1418
 msgid ""
 "Press new keys for\n"
 "\"%@\""
@@ -18208,16 +18204,16 @@ msgstr ""
 "Press new keys for\n"
 "\"%@\""
 
-#: modules/gui/macosx/simple_prefs.m:1499
+#: modules/gui/macosx/simple_prefs.m:1495
 msgid "Invalid combination"
 msgstr "잘못된 조합"
 
-#: modules/gui/macosx/simple_prefs.m:1500
+#: modules/gui/macosx/simple_prefs.m:1496
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr "유감스럽게도, 이 키는 단축키로 등록할 수 없습니다."
 
+#: modules/gui/macosx/simple_prefs.m:1506
 #: modules/gui/macosx/simple_prefs.m:1510
-#: modules/gui/macosx/simple_prefs.m:1514
 msgid "This combination is already taken by \"%@\"."
 msgstr "이 조합은 \"%@\" 로 이미 사용중입니다."
 
@@ -27215,19 +27211,6 @@ msgstr "K 비디오 가속 비디오 출력"
 msgid "Mac OS X OpenGL video output (requires drawable-nsobject)"
 msgstr "Mac OS X OpenGL 비디오 출력 (drawable-nsobject 필요)"
 
-#: modules/video_output/macosx.m:148
-msgid "OpenGL acceleration is not supported on your Mac"
-msgstr "OpenGL 가속이 당신의 MCA에서 지원되지 않습니다"
-
-#: modules/video_output/macosx.m:148
-msgid ""
-"Your Mac lacks Quartz Extreme acceleration, which is required for video "
-"output. It will still work, but much slower and with possibly unexpected "
-"results."
-msgstr ""
-"당신의 맥은 비디오 출력시 필요한 Quartz Extreme 가속 능력이 없습니다. 여전히 "
-"동작하지만 매우 느리고 예기치 않는 결과를 가져올 수 있습니다."
-
 #: modules/video_output/msw/direct2d.c:52
 msgid "Video output for Windows 7/Windows Vista with Platform update"
 msgstr "플랫폼 업데이트로 윈도우 7/윈도우 비스타의 비디오 출력"
@@ -28801,6 +28784,20 @@ msgstr "AAAA; "
 #: modules/gui/qt4/ui/vlm.h:302
 msgid "Media Manager List"
 msgstr "미디어 관리자 목록"
+
+#~ msgid "Output module"
+#~ msgstr "출력 모듈"
+
+#~ msgid "OpenGL acceleration is not supported on your Mac"
+#~ msgstr "OpenGL 가속이 당신의 MCA에서 지원되지 않습니다"
+
+#~ msgid ""
+#~ "Your Mac lacks Quartz Extreme acceleration, which is required for video "
+#~ "output. It will still work, but much slower and with possibly unexpected "
+#~ "results."
+#~ msgstr ""
+#~ "당신의 맥은 비디오 출력시 필요한 Quartz Extreme 가속 능력이 없습니다. 여전"
+#~ "히 동작하지만 매우 느리고 예기치 않는 결과를 가져올 수 있습니다."
 
 #~ msgid ""
 #~ "SAP is a way to publically announce streams that are being sent using "

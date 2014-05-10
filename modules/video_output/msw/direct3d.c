@@ -2,7 +2,7 @@
  * direct3d.c: Windows Direct3D video output module
  *****************************************************************************
  * Copyright (C) 2006-2009 VLC authors and VideoLAN
- *$Id: 7920cd4eb8a391023781ff015e4188c3e1cfba2c $
+ *$Id: 234149539fb7d344da49909799359322c71929fe $
  *
  * Authors: Damien Fouilleul <damienf@videolan.org>
  *
@@ -1257,6 +1257,7 @@ static void Direct3DImportSubpicture(vout_display_t *vd,
 #endif
                 *d3dr = *cache;
                 memset(cache, 0, sizeof(*cache));
+                break;
             }
         }
         if (!d3dr->texture) {

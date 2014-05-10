@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the main (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 VLC authors and VideoLAN
- * $Id: 2bc5102ef43032afb1a6722da787ecfaa01aa970 $
+ * $Id: 142de69d4ee8a6629475388392c2d04a3686b4b0 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -774,8 +774,8 @@ static const char *const ppsz_prefres[] = {
 #  define DVD_DEVICE     "/dev/cd0c"
 #  define CD_DEVICE      "/dev/cd0c"
 # elif defined(__linux__)
-#  define DVD_DEVICE     "/dev/dvd1"
-#  define CD_DEVICE      "/dev/cdrom1"
+#  define DVD_DEVICE     "/dev/sr0"
+#  define CD_DEVICE      "/dev/sr0"
 # else
 #  define DVD_DEVICE     "/dev/dvd"
 #  define CD_DEVICE      "/dev/cdrom"
