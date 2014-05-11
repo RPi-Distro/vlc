@@ -1,3 +1,346 @@
+commit e6f31709a71695a83d72bf5d1530e2cd4882fdff
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Tue Dec 31 15:46:23 2013 +0100
+
+    contrib: disable GnuTLS for iOS
+    
+    (cherry picked from commit e5005f6f6823bf5a880e541a261f9d121636e8bf)
+
+commit de6bd75898e7fd170dcf34bf027ae001a3bc2503
+Author: David Fuhrmann <david.fuhrmann@googlemail.com>
+Date:   Mon Dec 30 23:11:01 2013 +0100
+
+    contribs/gnutls: disable on iOS
+    
+    (cherry picked from commit e453aec19f4dd03246ff551a1a4b50a812044ddd)
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+    
+    Conflicts:
+    	contrib/src/gnutls/rules.mak
+
+commit cc6c5740804162f0a150d1399455d6618cd678d7
+Author: David Fuhrmann <david.fuhrmann@googlemail.com>
+Date:   Mon Dec 30 23:11:59 2013 +0100
+
+    extras/ios: disable gnutls
+    
+    (cherry picked from commit d10f8066223854b136dddcc7c5e035379642e0f4)
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit efd255c876bad165b0172769abdfc4f6fc9803a1
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Tue Dec 31 13:51:46 2013 +0100
+
+    contrib/avcodec: fix compilation for iOS on ARM
+    
+    (cherry picked from commit 1be757bbae5190aa20d782ebdf8066f50ab71338)
+
+commit 1bdabb7107c50f02156befc9d771981d05b9fb69
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Tue Dec 31 13:14:51 2013 +0100
+
+    extras/tools: update gas-pp
+    
+    (cherry picked from commit 157010834537a193c861e144a98bf58b03559a2f)
+
+commit 6b77e629ff708ade14fc3d8d5d1b38c6256930d9
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Dec 31 10:21:16 2013 +0100
+
+    Qt: allow smaller size on start
+    
+    Ref #9740
+    
+    (cherry picked from commit b87bc7050a03285434bdbe33fefdc4a2034723f3)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 9ac47ba03b2364488712324485dc9a4262a84416
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Dec 30 20:32:36 2013 +0100
+
+    Qt: SeekStyle: don't use outer size for inner content (fix #9740)
+    
+    (cherry picked from commit ebf778dc39016a5833ad5cb9da857d072072a6f1)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 4ef442bd86fe1bf0103bb414b16c0d92d323dd38
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Dec 30 20:23:33 2013 +0200
+
+    RTP: align MTU correctly for L24 (fixes #10269)
+    
+    (cherry picked from commit 82e069368b1249d10c899e77013b8d0a456262ea)
+
+commit 19e1db78f3b73cdb38196d075e9ec6714e143deb
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Fri Dec 27 10:58:03 2013 +0100
+
+    audiounit_ios: merge stability improvements from AUHAL module
+    
+    (cherry picked from commit 50229412d358e954329e48c873bb04e73ab1e805)
+
+commit a69fb3d490858e1dc4c41555dd8839cb8158c249
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Mon Dec 30 18:35:48 2013 +0100
+
+    contrib/avcodec: update hashes
+
+commit 37fa883c2fc6517d5b73055139c64e1c890bf881
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Dec 29 11:15:00 2013 +0100
+
+    Contribs: use FFmpeg for the time being
+    
+    This solve the issues:
+     - Xvid matrix not taken into account
+     - FFv1.3 support
+     - Lagarith YV12 support
+     - non-SSE2 CPU crash, notably Athlon XP
+    
+    More info can be found here:
+    https://wiki.videolan.org/libavcodec_regressions/
+    
+    Close #7411 #9606 #7375 (and related) #10203
+
+commit 8f703b1502eddabfea9ba1ed470cfbfff97360f1
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Dec 28 18:38:49 2013 +0100
+
+    Contrib: use a simpler way to discriminate between libav and FFmpeg
+    
+    (cherry picked from commit 4bed85170f0c40f48cf4b31c554e4b7a84e4cd71)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    
+    Conflicts:
+    	contrib/src/ffmpeg/rules.mak
+
+commit ee44b0d8b7775856905ab168167cd05392f17259
+Author: Luca Barbato <lu_zero@gentoo.org>
+Date:   Sat Dec 28 10:15:35 2013 +0100
+
+    avcodec: Always output frames
+    
+    With the introduction of CODEC_FLAG_OUTPUT_CORRUPT incomplete frames
+    are silently dropped. Enable it to maintain the previous behaviour.
+    
+    Close #10140
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 42bf7e20804df1f6dc779e4e1b1a9a121040c54f)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c7dcd9f7f97334856a83af55903648cebad0a684
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Dec 28 16:23:41 2013 +0100
+
+    Fix FFv1 output with FFmpeg
+    
+    Close #8691
+    
+    Of course, because we _really_ need that many RGB formats...
+    
+    (cherry picked from commit 1b53b355e706ca09fc289319bc237231fd5401b0)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    
+    Conflicts:
+    	modules/codec/avcodec/chroma.c
+
+commit fe283d0ec4e244475a8595fda342fd1ec9691a57
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Dec 28 13:03:53 2013 +0200
+
+    SOCKSv5: fix inverted logic (fixes #10247)
+    
+    (cherry picked from commit dcfe8660d41dbb2b519949ff767c7088a969525a)
+
+commit 167a57c1b5b4c3b6cef7cf97a3f8736900cdd1a0
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Tue Dec 17 19:26:00 2013 +0100
+
+    contrib: gcrypt 1.6.0
+    
+    (cherry picked from commit c4afbb6cab4fc1fa1e87262dc9fbc7553022bdf2)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a74786b7f097492cabb2b75032fc19f901814ad5
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Thu Dec 26 18:45:17 2013 +0100
+
+    macosx/applescript: fix opening non-file URLs (close #10112)
+    
+    (cherry picked from commit daa291c5d9dacbe9776cc05c55c91af870015dcc)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 1dc61230f5121044b1605f3b35bbd047f0e3e751
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Thu Dec 26 17:43:09 2013 +0100
+
+    auhal: prevent assertion failure on TPCircularBufferClear (close #10109)
+    
+    (cherry picked from commit 264f837c23f4fa58df49f457ba52c00b255fe155)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 452e4fd1f26ff4c9c024689d3813e6a5637398a7
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Thu Dec 26 17:34:51 2013 +0100
+
+    auhal: add missing bounds checking (close #10110)
+    
+    (cherry picked from commit 4598d6ca9965428938efddc8469ee39cc73443e6)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 48c1f7dde93a35ca184240e8b4eb1ee7c29cc4ae
+Author: Denis Charmet <typx@dinauz.org>
+Date:   Sun Dec 15 15:51:19 2013 +0100
+
+    Avoid infinite recursion loop when parsing tags
+    
+    Fix #10028
+
+commit 7d48c11c0c5068cb388e8ea45277ce89b68535dc
+Author: Ludovic Fauvet <etix@videolan.org>
+Date:   Fri Dec 13 17:40:39 2013 +0100
+
+    nsis: use windows-1250 encoding for Polish and Slovenian (fix #10126)
+
+commit b5f6467c42db87da107c8061ff06d55fc3b79eab
+Author: Ludovic Fauvet <etix@videolan.org>
+Date:   Fri Dec 13 16:38:01 2013 +0100
+
+    nsis: restore the previous components on x64 (fix #10122)
+    
+    Signed-off-by: Ludovic Fauvet <etix@videolan.org>
+
+commit b039571814565c671db0139b5a7aa7af0c36cff5
+Author: David Fuhrmann <david.fuhrmann@googlemail.com>
+Date:   Thu Dec 12 20:17:24 2013 +0100
+
+    auhal: fix audio device selection via command line
+    
+    close #10119
+    
+    (cherry picked from commit 0afac74a661fd1a56fa5514a9384c0e470890e7b)
+    Signed-off-by: David Fuhrmann <david.fuhrmann@googlemail.com>
+
+commit 73bc344cb5baf0e1be4981861bd7e6775144444f
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Dec 12 13:04:35 2013 +0100
+
+    Make DirectX default on XP, instead of Direct3d
+    
+    We did that for 2.0 temporarily but kept master normal
+    
+    This is still broken on some weird configurations, so well, temporary is
+    going to last..
+    
+    (cherry picked from commit 9dae581372c5d7b714fd005c5fed6d74e701d889)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 413db2a8427e7512b7f9fb78f7e402ff011d381f
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Thu Dec 12 08:58:47 2013 +0100
+
+    ios/build.sh: fetch contribs before compiling them
+    
+    (cherry picked from commit 442d36c4a67fb4b1f162551593896d6a630cad3b)
+
+commit b18b4ba4dd3c45379dfb4cdd69be4fa84ec6c1ee
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Tue Dec 10 12:41:09 2013 -0500
+
+    avcodec: handle codecs outputting YUVA 4:2:0 and 4:2:2
+    
+    (cherry picked from commit e1bdb39097f99e5f2c0748dc484de0e7815f29ad)
+    Signed-off-by: Rafaël Carré <funman@videolan.org>
+
+commit 3e63cf3becceb07ceb6281ffcf1d2ca6f992fb74
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Tue Dec 10 12:35:14 2013 -0500
+
+    swscale: handle 4:2:0 and 4:2:2 YUVA formats
+    
+    (cherry picked from commit c7b8f0b84927feb1621c2685720dbec1bc17538b)
+    Signed-off-by: Rafaël Carré <funman@videolan.org>
+
+commit 02a8a0326001760195383e03bb04a047919fe09f
+Author: Ludovic Fauvet <etix@videolan.org>
+Date:   Tue Dec 10 16:27:18 2013 +0100
+
+    nsis: fix encoding of translations
+    
+    As of now, NSIS doesn't fully support unicode so it is better to use
+    their iso 8859 counterpart.
+    
+    ISO-8859-1:
+    - Dutch
+    - German
+    
+    ISO-8859-2:
+    - Polish
+    - Slovenian
+
+commit df57efaf34e5050c71ae5efac2cc16a1c81b84c8
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Dec 10 10:36:57 2013 +0100
+
+    On the road to 2.1.3
+
+commit d525e26e074a10a1b7f5fb5e010790e0dc3eeebd
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Dec 5 18:15:52 2013 +0200
+
+    contrib: documentation update
+    
+    (cherry picked from commit 193af819395cefa6973641035b32b5042fc42593)
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 7e75d0adc5cd3959920133c0e375840a2b9292e5
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Dec 5 18:09:41 2013 +0200
+
+    contrib: fix FFI build
+    
+    There is no point building FFI for its own sake since VLC does not use
+    FFI directly on any platform.
+    
+    (cherry picked from commit d95361b003565457fc843ab3c79a9d734264cfb3)
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 4cbbf74379e334c5b380580ba8563c7d407a5400
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Tue Dec 3 09:04:51 2013 +0100
+
+    contrib: don't build glib by default
+    
+    We only need it as a dependency of another library (fluidsynth)
+    
+    (cherry picked from commit d6e317a4ff4dbf74185b825d8872e02522f20615)
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit db92c5f24c3ad3c22bc9158fff5fce4130d544a9
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Fri Nov 29 18:44:26 2013 +0100
+
+    contrib/fluidsynth: add glib dependency
+    
+    (cherry picked from commit e307931248d8d8cb6609ec91216b283d6ebbf9f1)
+
+commit b3eed333233ffa39279adbaabd8950a20a596b30
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Fri Nov 29 18:43:48 2013 +0100
+
+    contrib: added target for libffi since it is required to compile glib, which in turn is needed for Fluidsynth on Darwin (refs #10014)
+    
+    (cherry picked from commit e593e38e691434ab7cc23dd9da3843f7ca953771)
+
+commit f449092a2501a1d901e96c4d5aea7ec9c1a3ae3e
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Fri Nov 29 18:42:56 2013 +0100
+
+    contrib: added target for glib since this is a required dependency to compile fluidsynth (refs #10014)
+    
+    (cherry picked from commit e7377ebc15c8f497685520226863964a8e6c448c)
+
 commit a4c487694e5a0dc1bc0a5748cd04417452d05dd5
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Mon Dec 9 01:05:14 2013 +0100
@@ -21000,9 +21343,3 @@ Date:   Sat Dec 29 00:13:40 2012 +0100
     it follows the principle of least surprise.
     
     Signed-off-by: Rafaël Carré <funman@videolan.org>
-
-commit 7939c3e5258149392e14f410497a2d437f21a26b
-Author: Francois Cartegnie <fcvlcdev@free.fr>
-Date:   Tue Jan 1 15:16:27 2013 +0100
-
-    Qt: Compressor/Spatializer: missing signal routing

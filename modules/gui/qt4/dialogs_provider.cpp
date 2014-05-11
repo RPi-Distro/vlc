@@ -2,7 +2,7 @@
  * dialogs_provider.cpp : Dialog Provider
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: bf6ecda779275e9e34bbc61e57063a6398021542 $
+ * $Id: dbdcef03cc67567e7c7436b019ce7f044f695aed $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -514,9 +514,9 @@ static void openDirectory( intf_thread_t *p_intf, bool pl, bool go )
     p_intf->p_sys->filepath = dir;
 
     const char *scheme = "directory";
-    if( dir.endsWith( "/VIDEO_TS", Qt::CaseInsensitive ) )
+    if( dir.endsWith( "VIDEO_TS", Qt::CaseInsensitive ) )
         scheme = "dvd";
-    else if( dir.endsWith( "/BDMV", Qt::CaseInsensitive ) )
+    else if( dir.endsWith( "BDMV", Qt::CaseInsensitive ) )
     {
         scheme = "bluray";
         dir.remove( "BDMV" );

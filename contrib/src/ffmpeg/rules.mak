@@ -1,10 +1,16 @@
 # FFmpeg
 
-#HASH=9aa053ceded5550b2e538578af383fd89d82364c
-#FFMPEG_SNAPURL := http://git.videolan.org/?p=ffmpeg.git;a=snapshot;h=$(HASH);sf=tgz
+#Uncomment the one you want
+#USE_LIBAV ?= 1
+USE_FFMPEG ?= 1
 
-HASH=b6a971994187e87fcc8811108e144f15c1652728
+ifdef USE_FFMPEG
+HASH=469de4f58317e121644c4cf9a2824ccbbf7763ca
+FFMPEG_SNAPURL := http://git.videolan.org/?p=ffmpeg.git;a=snapshot;h=$(HASH);sf=tgz
+else
+HASH=dc9e05e279cb50387b4a65a9f20db1b15111a6e9
 FFMPEG_SNAPURL := http://git.libav.org/?p=libav.git;a=snapshot;h=$(HASH);sf=tgz
+endif
 
 FFMPEGCONF = \
 	--cc="$(CC)" \
@@ -19,12 +25,16 @@ FFMPEGCONF = \
 	--disable-avfilter \
 	--disable-filters \
 	--disable-bsfs \
-	--disable-bzlib
+	--disable-bzlib \
+	--disable-programs \
+	--disable-avresample
 
-# Those tools are named differently in FFmpeg and Libav
-#	--disable-ffserver \
-#	--disable-ffplay \
-#	--disable-ffprobe
+ifdef USE_FFMPEG
+FFMPEGCONF += \
+	--disable-swresample \
+	--disable-iconv
+endif
+
 DEPS_ffmpeg = zlib gsm openjpeg
 
 # Optional dependencies
@@ -54,7 +64,9 @@ endif
 
 # ARM stuff
 ifeq ($(ARCH),arm)
+ifndef HAVE_DARWIN_OS
 FFMPEGCONF += --arch=arm
+endif
 ifdef HAVE_NEON
 FFMPEGCONF += --enable-neon
 endif
@@ -86,8 +98,9 @@ FFMPEGCONF += --cpu=core2
 endif
 endif
 ifdef HAVE_IOS
-ifeq ($(ARCH),arm)
-FFMPEGCONF += --enable-pic --as="$(AS)"
+FFMPEGCONF += --enable-pic
+ifdef HAVE_NEON
+FFMPEGCONF += --as="$(AS)"
 endif
 endif
 ifdef HAVE_MACOSX
@@ -136,9 +149,6 @@ ffmpeg: ffmpeg-$(HASH).tar.gz .sum-ffmpeg
 	rm -Rf $@ $@-$(HASH)
 	mkdir -p $@-$(HASH)
 	$(ZCAT) "$<" | (cd $@-$(HASH) && tar xv --strip-components=1)
-
-	# this patch is only needed for libav version b1f9cdc37ff5d5b391d2cd9af737ab4e5a0fc1c0
-	$(APPLY) $(SRC)/ffmpeg/fix-vda-memleak.patch
 
 	$(MOVE)
 

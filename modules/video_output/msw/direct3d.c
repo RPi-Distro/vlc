@@ -2,7 +2,7 @@
  * direct3d.c: Windows Direct3D video output module
  *****************************************************************************
  * Copyright (C) 2006-2009 VLC authors and VideoLAN
- *$Id: b08db2077fcc64f97465d41d9e9aff819703633d $
+ *$Id: 234149539fb7d344da49909799359322c71929fe $
  *
  * Authors: Damien Fouilleul <damienf@videolan.org>
  *
@@ -142,6 +142,11 @@ static int Open(vlc_object_t *object)
     vout_display_t *vd = (vout_display_t *)object;
     vout_display_sys_t *sys;
 
+    OSVERSIONINFO winVer;
+    winVer.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+    if(GetVersionEx(&winVer) && winVer.dwMajorVersion < 6 && !object->b_force)
+        return VLC_EGENERIC;
+
     /* Allocate structure */
     vd->sys = sys = calloc(1, sizeof(vout_display_sys_t));
     if (!sys)
@@ -156,7 +161,8 @@ static int Open(vlc_object_t *object)
 
     sys->use_desktop = var_CreateGetBool(vd, "video-wallpaper");
     sys->reset_device = false;
-    sys->reset_device = false;
+    sys->reopen_device = false;
+    sys->lost_not_ready = false;
     sys->allow_hw_yuv = var_CreateGetBool(vd, "directx-hw-yuv");
     sys->desktop_save.is_fullscreen = vd->cfg->is_fullscreen;
     sys->desktop_save.is_on_top     = false;
@@ -279,6 +285,11 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
         if (hr == D3DERR_DEVICENOTRESET && !sys->reset_device) {
             vout_display_SendEventPicturesInvalid(vd);
             sys->reset_device = true;
+            sys->lost_not_ready = false;
+        }
+        if (hr == D3DERR_DEVICELOST && !sys->lost_not_ready) {
+            /* Device is lost but not yet ready for reset. */
+            sys->lost_not_ready = true;
         }
         return;
     }
@@ -304,6 +315,13 @@ static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
 {
     vout_display_sys_t *sys = vd->sys;
     LPDIRECT3DDEVICE9 d3ddev = sys->d3ddev;
+
+    if (sys->lost_not_ready) {
+        picture_Release(picture);
+        if (subpicture)
+            subpicture_Delete(subpicture);
+        return;
+    }
 
     // Present the back buffer contents to the display
     // No stretching should happen here !
@@ -1239,6 +1257,7 @@ static void Direct3DImportSubpicture(vout_display_t *vd,
 #endif
                 *d3dr = *cache;
                 memset(cache, 0, sizeof(*cache));
+                break;
             }
         }
         if (!d3dr->texture) {

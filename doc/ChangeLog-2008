@@ -53763,9 +53763,3 @@ Author: Pierre d'Herbemont <pdherbemont@videolan.org>
 Date:   Tue Jan 1 14:33:18 2008 +0000
 
     misc/events.c: Fix event sending, by properly supporting event_manager edition (event_detach) while executing a callback (vlc_event_send). This is done through a recursive lock.
-
-commit 22599f0153a69e2271eafc727e02d07f9954281e
-Author: Rémi Duraffort <ivoire@videolan.org>
-Date:   Tue Jan 1 14:15:03 2008 +0000
-
-    add mutex to the sdl video_output

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005 VLC authors and VideoLAN
  * Copyright (C) 2005-2006 Rémi Denis-Courmont
- * $Id: 8c294e7cbcbadeebb618e60a94018d81fc960ff1 $
+ * $Id: 4a3ef17daa401d6d78b7229419b323497398375e $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -349,17 +349,14 @@ static int SocksNegotiate( vlc_object_t *p_obj,
         return VLC_SUCCESS;
 
     /* We negotiate authentication */
-
-    if( ( psz_socks_user == NULL ) && ( psz_socks_passwd == NULL ) )
-        b_auth = true;
-
     buffer[0] = i_socks_version;    /* SOCKS version */
-    if( b_auth )
+    if( psz_socks_user != NULL && psz_socks_passwd != NULL )
     {
         buffer[1] = 2;                  /* Number of methods */
         buffer[2] = 0x00;               /* - No auth required */
         buffer[3] = 0x02;               /* - USer/Password */
         i_len = 4;
+        b_auth = true;
     }
     else
     {

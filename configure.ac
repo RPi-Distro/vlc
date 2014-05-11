@@ -1,11 +1,11 @@
 dnl Autoconf settings for vlc
 
-AC_COPYRIGHT([Copyright 2002-2013 VLC authors and VideoLAN])
+AC_COPYRIGHT([Copyright 2002-2014 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 2.1.2)
+AC_INIT(vlc, 2.1.4)
 VERSION_MAJOR=2
 VERSION_MINOR=1
-VERSION_REVISION=2
+VERSION_REVISION=4
 VERSION_EXTRA=0
 VERSION_DEV=
 
@@ -14,7 +14,7 @@ AC_SUBST(PKGDIR)
 
 CONFIGURE_LINE="`echo "$0 $ac_configure_args" | sed -e 's/\\\/\\\\\\\/g'`"
 CODENAME="Rincewind"
-COPYRIGHT_YEARS="1996-2013"
+COPYRIGHT_YEARS="1996-2014"
 
 AC_CONFIG_SRCDIR(src/libvlc.c)
 AC_CONFIG_AUX_DIR(autotools)
@@ -154,7 +154,7 @@ case "${host_os}" in
     CPPFLAGS="${CPPFLAGS} ${ARCH_flag}"
     OBJCFLAGS="${OBJCFLAGS} -D_INTL_REDIRECT_MACROS -std=gnu99 ${ARCH_flag}"
     LDFLAGS="${LDFLAGS} -Wl,-headerpad_max_install_names ${ARCH_flag}"
-    VLC_ADD_LIBS([motion rotate], [-Wl,-framework,IOKit,-framework,CoreFoundation])
+    VLC_ADD_LIBS([motion rotate dvdread dvdnav], [-Wl,-framework,IOKit,-framework,CoreFoundation])
     VLC_ADD_LIBS([libvlc vlc],[-Wl,-undefined,dynamic_lookup,-framework,AppKit])
     VLC_ADD_LIBS([avcodec access_avio swscale postproc i420_rgb_mmx x264 x26410b],[-Wl,-read_only_relocs,suppress])
     VLC_ADD_CFLAGS([motion rotate],[-fconstant-cfstrings])
@@ -574,7 +574,7 @@ AC_SEARCH_LIBS(connect, [socket], [
   ])
 ])
 
-AC_SEARCH_LIBS([getaddrinfo], [nsl], [
+AC_SEARCH_LIBS([inet_pton], [nsl], [
  AS_IF([test "$ac_cv_search_getaddrinfo" != "none required"], [
     SOCKET_LIBS="$ac_cv_search_getaddrinfo $SOCKET_LIBS"
   ])

@@ -2,7 +2,7 @@
  * swscale.c: scaling and chroma conversion using libswscale
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 91562ceca707b77dc95d84807d133e01bf63b3ef $
+ * $Id: ffe3e8273cc350cd6cd96d5a22c8281a45717a6b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -258,6 +258,14 @@ static void FixParameters( int *pi_fmt, bool *pb_has_a, bool *pb_swap_uv, vlc_fo
 {
     switch( fmt )
     {
+    case VLC_CODEC_YUV422A:
+        *pi_fmt = PIX_FMT_YUV422P;
+        *pb_has_a = true;
+        break;
+    case VLC_CODEC_YUV420A:
+        *pi_fmt = PIX_FMT_YUV420P;
+        *pb_has_a = true;
+        break;
     case VLC_CODEC_YUVA:
         *pi_fmt = PIX_FMT_YUV444P;
         *pb_has_a = true;

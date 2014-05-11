@@ -2,7 +2,7 @@
  * vlm.cpp : VLM Management
  ****************************************************************************
  * Copyright © 2008 the VideoLAN team
- * $Id: 47e1b93c1646f17122bb9c4eb2cb1a8c495b0b54 $
+ * $Id: bc7d96bd9ded351780feb9201915d6f90f8cae92 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Jean-François Massol <jf.massol -at- gmail.com>
@@ -752,7 +752,7 @@ void VLMWrapper::ControlBroadcast( const QString& name, int BroadcastStatus,
         command += " stop";
         break;
     case ControlBroadcastSeek:
-        command += " seek" + seek;
+        command += " seek " + QString::number( seek );
         break;
     }
     vlm_ExecuteCommand( p_vlm, qtu( command ), &message );

@@ -2,7 +2,7 @@
  * matroska_segment_parse.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: c9d2c9d3ef5304c2b64b04ddf2e83f34a12b0f66 $
+ * $Id: 045de89a20310c3361b518a10272403a8a5fb658 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -1706,7 +1706,6 @@ int32_t matroska_segment_c::TrackInit( mkv_track_t * p_tk )
                 else
                 {
                     msg_Warn( &sys.demuxer, "reading original frame size for vobsub failed" );
-                    return 1;
                 }
 
                 psz_start = strstr( psz_buf, "palette:" );

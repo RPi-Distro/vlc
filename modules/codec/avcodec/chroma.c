@@ -2,7 +2,7 @@
  * chroma.c: libavutil <-> libvlc conversion routines
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 4dc18a1bcae4c08a6a4f23d61c6de2e3eed25ea5 $
+ * $Id: ea1f6723cd0411d6deef62119abb78c98ee5c33c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -93,6 +93,11 @@ static const struct
     {VLC_CODEC_I422_10L, PIX_FMT_YUV422P10LE, 0, 0, 0 },
     {VLC_CODEC_I422_10B, PIX_FMT_YUV422P10BE, 0, 0, 0 },
 
+    {VLC_CODEC_YUV420A, PIX_FMT_YUVA420P, 0, 0, 0 },
+#if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(51,45,0)
+    {VLC_CODEC_YUV422A, AV_PIX_FMT_YUVA422P, 0, 0, 0 },
+#endif
+
     {VLC_CODEC_I444_9L, PIX_FMT_YUV444P9LE, 0, 0, 0 },
     {VLC_CODEC_I444_9B, PIX_FMT_YUV444P9BE, 0, 0, 0 },
     {VLC_CODEC_I444_10L, PIX_FMT_YUV444P10LE, 0, 0, 0 },
@@ -114,6 +119,10 @@ static const struct
 
     VLC_RGB( VLC_CODEC_RGB32, PIX_FMT_RGB32, PIX_FMT_BGR32, 0x00ff0000, 0x0000ff00, 0x000000ff )
     VLC_RGB( VLC_CODEC_RGB32, PIX_FMT_RGB32_1, PIX_FMT_BGR32_1, 0xff000000, 0x00ff0000, 0x0000ff00 )
+
+#if (LIBAVUTIL_VERSION_MICRO >= 100)
+    VLC_RGB( VLC_CODEC_RGB32, AV_PIX_FMT_0BGR32, AV_PIX_FMT_0RGB32, 0x000000ff, 0x0000ff00, 0x00ff0000 )
+#endif
 
     {VLC_CODEC_RGBA, PIX_FMT_RGBA, 0xff000000, 0x00ff0000, 0x0000ff00},
     {VLC_CODEC_GREY, PIX_FMT_GRAY8, 0, 0, 0},

@@ -22569,15 +22569,3 @@ Author: Clément Stenac <zorglub@videolan.org>
 Date:   Thu Jan 1 14:33:15 2004 +0000
 
     Updated brazilian portuguese translation
-
-commit b72e3b167ad79ba8af056f76f03465806e7f9c47
-Author: Rocky Bernstein <rocky@videolan.org>
-Date:   Thu Jan 1 13:55:17 2004 +0000
-
-    Remove a magic number.
-
-commit 9d12fa3b456f70d7621038a47f6b46f100fe5644
-Author: Rocky Bernstein <rocky@videolan.org>
-Date:   Thu Jan 1 13:51:38 2004 +0000
-
-    Add RV16 rendering. With transparancy, but still only Y plane is done.

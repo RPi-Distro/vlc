@@ -2,7 +2,7 @@
  * common.c:
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: a0e663db950e40a1edd85fb3ef69cfcf78614fd9 $
+ * $Id: 45f1f5e92ccff7e5931a43e7bf7bfa3e9b49757a $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -78,6 +78,7 @@ int CommonInit(vout_display_t *vd)
     sys->is_on_top = false;
 
     var_Create(vd, "video-deco", VLC_VAR_BOOL | VLC_VAR_DOINHERIT);
+    var_Create(vd, "disable-screensaver", VLC_VAR_BOOL | VLC_VAR_DOINHERIT);
 
     /* */
     sys->event = EventThreadCreate(vd);
@@ -113,8 +114,6 @@ int CommonInit(vout_display_t *vd)
             vout_display_SendEventFullscreen(vd, false);
     }
 
-    /* Why not with glwin32 */
-    var_Create(vd, "disable-screensaver", VLC_VAR_BOOL | VLC_VAR_DOINHERIT);
     DisableScreensaver (vd);
 
     return VLC_SUCCESS;
@@ -604,6 +603,7 @@ int CommonControl(vout_display_t *vd, int query, va_list args)
                              rect_window.right - rect_window.left,
                              rect_window.bottom - rect_window.top, SWP_NOMOVE);
             }
+            return VLC_EGENERIC;
         }
         UpdateRects(vd, cfg, source, is_forced);
         return VLC_SUCCESS;

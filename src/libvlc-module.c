@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the main (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 VLC authors and VideoLAN
- * $Id: 250e7913957d157aef0e9494a1eb9ba603f09817 $
+ * $Id: 142de69d4ee8a6629475388392c2d04a3686b4b0 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -774,8 +774,8 @@ static const char *const ppsz_prefres[] = {
 #  define DVD_DEVICE     "/dev/cd0c"
 #  define CD_DEVICE      "/dev/cd0c"
 # elif defined(__linux__)
-#  define DVD_DEVICE     "/dev/dvd1"
-#  define CD_DEVICE      "/dev/cdrom1"
+#  define DVD_DEVICE     "/dev/sr0"
+#  define CD_DEVICE      "/dev/sr0"
 # else
 #  define DVD_DEVICE     "/dev/dvd"
 #  define CD_DEVICE      "/dev/cdrom"
@@ -2256,7 +2256,6 @@ vlc_module_begin ()
      */
 #   define KEY_TOGGLE_FULLSCREEN  "f"
 #   define KEY_LEAVE_FULLSCREEN   "Esc"
-#   define KEY_PLAY_PAUSE         "Space\tMedia Play Pause"
 #   define KEY_PAUSE              "Browser Stop"
 #   define KEY_PLAY               "Browser Refresh"
 #   define KEY_FASTER             "+"
@@ -2264,9 +2263,17 @@ vlc_module_begin ()
 #   define KEY_RATE_NORMAL        "="
 #   define KEY_RATE_FASTER_FINE   "]"
 #   define KEY_RATE_SLOWER_FINE   "["
+#ifdef _WIN32
+#   define KEY_PLAY_PAUSE         "Space"
+#   define KEY_NEXT               "n"
+#   define KEY_PREV               "p"
+#   define KEY_STOP               "s"
+#else
+#   define KEY_PLAY_PAUSE         "Space\tMedia Play Pause"
 #   define KEY_NEXT               "n\tMedia Next Track"
 #   define KEY_PREV               "p\tMedia Prev Track"
 #   define KEY_STOP               "s\tMedia Stop"
+#endif
 #   define KEY_POSITION           "t"
 #   define KEY_JUMP_MEXTRASHORT   "Shift+Left"
 #   define KEY_JUMP_PEXTRASHORT   "Shift+Right"
@@ -2276,7 +2283,6 @@ vlc_module_begin ()
 #   define KEY_JUMP_PMEDIUM       "Ctrl+Right"
 #   define KEY_JUMP_MLONG         "Ctrl+Alt+Left"
 #   define KEY_JUMP_PLONG         "Ctrl+Alt+Right"
-#   define KEY_FRAME_NEXT         "e\tBrowser Next"
 #   define KEY_NAV_ACTIVATE       "Enter"
 #   define KEY_NAV_UP             "Up"
 #   define KEY_NAV_DOWN           "Down"
@@ -2287,12 +2293,15 @@ vlc_module_begin ()
 #ifdef _WIN32 /* On Windows, people expect volume keys to control the master */
 #   define KEY_VOL_UP             "Ctrl+Up"
 #   define KEY_VOL_DOWN           "Ctrl+Down"
+#   define KEY_VOL_MUTE           "m"
+#   define KEY_FRAME_NEXT         "e"
 #else
 #   define KEY_VOL_UP             "Ctrl+Up\tVolume Up"
 #   define KEY_VOL_DOWN           "Ctrl+Down\tVolume Down"
+#   define KEY_VOL_MUTE           "m\tVolume Mute"
+#   define KEY_FRAME_NEXT         "e\tBrowser Next"
 #endif
 
-#   define KEY_VOL_MUTE           "m\tVolume Mute"
 #   define KEY_SUBDELAY_UP        "h"
 #   define KEY_SUBDELAY_DOWN      "g"
 #   define KEY_SUBPOS_DOWN        NULL
