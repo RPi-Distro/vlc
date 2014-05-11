@@ -1,3 +1,11 @@
+vlc (2.1.4-0ubuntu14.04.1) trusty-security; urgency=medium
+
+  * New upstream release (Closes: #742625, LP: #1276650)
+  * SECURITY UPDATE: crafted ASF file handling integer divide-by-zero DoS
+    - CVE-2014-1684
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Sun, 11 May 2014 21:31:11 +0200
+
 vlc (2.1.2-2) unstable; urgency=medium
 
   * Team upload.
