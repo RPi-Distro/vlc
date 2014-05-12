@@ -97,6 +97,7 @@ confflags += \
 	--enable-upnp \
 	--enable-vcd \
 	--enable-vcdx \
+	--enable-vdpau \
 	--enable-vorbis \
 	--enable-x264 \
 	--enable-zvbi \
