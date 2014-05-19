@@ -78,7 +78,6 @@ confflags += \
 	--enable-notify \
 	--enable-ogg \
 	--enable-opus \
-	--enable-oss \
 	--enable-pulse \
 	--enable-qt \
 	--enable-realrtsp \
@@ -95,7 +94,6 @@ confflags += \
 	--enable-theora \
 	--enable-twolame \
 	--enable-upnp \
-	--enable-vcd \
 	--enable-vcdx \
 	--enable-vdpau \
 	--enable-vorbis \
@@ -167,6 +165,23 @@ removeplugins += \
 	libomxil \
 	linsys \
 	libudev \
+	$(NULL)
+endif
+
+# Hurd specific flags
+ifeq (,$(filter-out hurd,$(DEB_HOST_ARCH_OS)))
+confflags += \
+	--disable-oss \
+	--disable-vcd
+removeplugins += \
+	oss \
+	cdda \
+	vcd \
+	$(NULL)
+else
+confflags += \
+	--enable-oss \
+	--enable-vcd \
 	$(NULL)
 endif
 
