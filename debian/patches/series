@@ -3,3 +3,7 @@ link-vlc-cache-gen-with-c++.patch
 link-vlc-with-c++.patch
 bp-fix-hang-caused-by-notify.patch
 CVE-2012-5470.patch
+CVE-2013-1868.patch
+CVE-2013-1954.patch
+CVE-2013-4388.patch
+
