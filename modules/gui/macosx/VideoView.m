@@ -2,7 +2,7 @@
  * VideoView.m: MacOS X video output module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 6e2ebbee65878ab1ba19026785f3951a28c84b67 $
+ * $Id: c368a2052f1ecd3bea200237a13702509923130e $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Eric Petit <titer@m0k.org>
@@ -153,8 +153,9 @@
 - (void)mouseDown:(NSEvent *)o_event
 {
     if (([o_event type] == NSLeftMouseDown) && (! ([o_event modifierFlags] &  NSControlKeyMask))) {
-        if ([o_event clickCount] > 1)
+        if ([o_event clickCount] == 2)
             [[VLCCoreInteraction sharedInstance] toggleFullscreen];
+
     } else if (([o_event type] == NSRightMouseDown) ||
                (([o_event type] == NSLeftMouseDown) &&
                ([o_event modifierFlags] &  NSControlKeyMask)))

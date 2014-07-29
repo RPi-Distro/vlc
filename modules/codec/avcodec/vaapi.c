@@ -2,7 +2,7 @@
  * vaapi.c: VAAPI helpers for the libavcodec decoder
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: d8703a02b852d6091b9538b49f1c703b6af0c08b $
+ * $Id: 9914bbdd75d3a3207c5f4a837055009d96119643 $
  *
  * Authors: Laurent Aimar <fenrir_AT_ videolan _DOT_ org>
  *
@@ -128,7 +128,7 @@ static int Open( vlc_va_t *p_external, int i_codec_id )
         break;
     case AV_CODEC_ID_H264:
         i_profile = VAProfileH264High;
-        i_surface_count = 16+1;
+        i_surface_count = 16 + 1 + 2;
         break;
     default:
         return VLC_EGENERIC;

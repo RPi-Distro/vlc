@@ -1,3 +1,40 @@
+Changes between 2.1.4 and 2.1.5:
+--------------------------------
+
+Core:
+ * Fix compilation on OS/2
+
+Access:
+ * Stability improvements for the QTSound capture module
+
+Mac OS X audio output:
+ * Fix channel ordering
+ * Increase the buffersize
+
+Decoders:
+ * Fix DxVA2 decoding of samples needing more surfaces
+ * Improve MAD resistance to broken mp3 streams
+ * Fix PGS alignment in MKV
+
+Qt Interface:
+ * Don't rename mp3 converted files to .raw
+
+Mac OS X Interface:
+ * Correctly support video-on-top
+ * Fix video output event propagation on Macs with retina displays
+ * Stability improvements when using future VLC releases side by side
+
+Streaming:
+ * Fix transcode when audio format changes
+
+Security contents:
+ * Updated GnuTLS to 3.1.25 (CVE-2014-3466)
+ * Updated libpng to 1.6.10 (CVE-2014-0333)
+
+Translations:
+ * Update British English
+
+
 Changes between 2.1.3 and 2.1.4:
 --------------------------------
 

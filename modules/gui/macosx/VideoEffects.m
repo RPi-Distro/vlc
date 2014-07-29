@@ -2,7 +2,7 @@
  * VideoEffects.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: b435888ed1e36d39209c0b687894705397630e4f $
+ * $Id: 122e724115227dab87ba208d429eab774f1a372f $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -792,9 +792,11 @@ static VLCVideoEffects *_o_sharedInstance = nil;
     if (p_vout) {
         var_SetString(p_vout, "video-filter", "");
         var_SetString(p_vout, "sub-source", "");
-        var_SetString(p_vout, "video-splitter", "");
         vlc_object_release(p_vout);
     }
+
+    // video-splitter needs to be set via playlist var
+    var_SetString(pl_Get(p_intf), "video-splitter", "");
 
     /* fetch preset */
     NSArray *items = [[[defaults objectForKey:@"VideoEffectProfiles"] objectAtIndex:selectedProfile] componentsSeparatedByString:@";"];

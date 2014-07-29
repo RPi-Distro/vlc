@@ -2,7 +2,7 @@
  * macosx.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2013 VLC authors and VideoLAN
- * $Id: 61e994fbedfbee51ebf307145aefd95f8391f6fc $
+ * $Id: 45a17c1025028ea2f906116b5820a7e213f0847f $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Eric Petit <titer@m0k.org>
@@ -365,8 +365,6 @@ static int Control (vout_display_t *vd, int query, va_list ap)
             }
 
             if (query == VOUT_DISPLAY_CHANGE_DISPLAY_SIZE && is_forced
-                && (cfg->display.width != vd->cfg->display.width
-                    || cfg->display.height != vd->cfg->display.height)
                 && vout_window_SetSize (sys->embed, cfg->display.width, cfg->display.height)) {
                 [o_pool release];
                 return VLC_EGENERIC;

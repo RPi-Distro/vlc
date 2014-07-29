@@ -3,7 +3,7 @@
  * using MAD (MPEG Audio Decoder)
  *****************************************************************************
  * Copyright (C) 2001-2005 VLC authors and VideoLAN
- * $Id: 781af870c9d00b1c6d5b30684849a8a62288da64 $
+ * $Id: 333d9d8ea9fdeb9c2cb3d2141658c1ff504ffff5 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>
@@ -107,6 +107,7 @@ static void DoWork( filter_t * p_filter,
 
     if( p_sys->i_reject_count > 0 )
     {
+reject:
         memset( p_out_buf->p_buffer, 0, p_out_buf->i_buffer );
         p_sys->i_reject_count--;
         return;
@@ -121,7 +122,22 @@ static void DoWork( filter_t * p_filter,
     mad_fixed_t const * p_right = p_pcm->samples[1];
     float *p_samples = (float *)p_out_buf->p_buffer;
 
-    assert( i_samples == p_out_buf->i_nb_samples );
+    if (p_pcm->channels > p_filter->fmt_out.audio.i_channels)
+    {
+        msg_Err( p_filter, "wrong channels count (corrupt stream?): %u > %u",
+                 p_pcm->channels, p_filter->fmt_out.audio.i_channels);
+        p_sys->i_reject_count = 3;
+        goto reject;
+    }
+
+    if( i_samples != p_out_buf->i_nb_samples )
+    {
+        msg_Err( p_filter, "unexpected samples count (corrupt stream?): "
+                 "%u / %u", i_samples, p_out_buf->i_nb_samples );
+        p_sys->i_reject_count = 3;
+        goto reject;
+    }
+
     /* Interleave and keep buffers in mad_fixed_t format */
     if ( p_pcm->channels == 2 )
     {

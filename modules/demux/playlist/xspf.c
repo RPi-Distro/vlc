@@ -2,7 +2,7 @@
  * xspf.c : XSPF playlist import functions
  *******************************************************************************
  * Copyright (C) 2006-2011 VLC authors and VideoLAN
- * $Id: 86067596a87a0fa82b4085bf719a8a096dad839b $
+ * $Id: db7cc7f09f8f833dadff96b781aeb85dbb300685 $
  *
  * Authors: Daniel Stränger <vlc at schmaller dot de>
  *          Yoann Peronneau <yoann@videolan.org>
@@ -213,10 +213,10 @@ static bool parse_playlist_node COMPLEX_INTERFACE
         /* attribute: xmlns */
         else if (!strcmp(name, "xmlns") || !strcmp(name, "xmlns:vlc"))
             ;
-        else if (!strcmp(name, "xml:base") && psz_value)
+        else if (!strcmp(name, "xml:base"))
         {
             free(p_demux->p_sys->psz_base);
-            p_demux->p_sys->psz_base = strdup(psz_value);
+            p_demux->p_sys->psz_base = strdup(value);
         }
         /* unknown attribute */
         else
