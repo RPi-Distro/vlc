@@ -2,7 +2,7 @@
  * auhal.c: AUHAL and Coreaudio output plugin
  *****************************************************************************
  * Copyright (C) 2005 - 2013 VLC authors and VideoLAN
- * $Id: c421fe6972cbb72e8d5185853786d6703203a718 $
+ * $Id: a72340c2aee0c048b6e4245b3b7aa94e954baf9f $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -57,7 +57,7 @@
 
 #define AOUT_VAR_SPDIF_FLAG 0xf00000
 
-#define AUDIO_BUFFER_SIZE_IN_SECONDS (AOUT_MAX_ADVANCE_TIME / CLOCK_FREQ)
+#define AUDIO_BUFFER_SIZE_IN_SECONDS ((AOUT_MAX_ADVANCE_TIME + CLOCK_FREQ) / CLOCK_FREQ)
 
 
 #define AOUT_VOLUME_DEFAULT             256
@@ -815,7 +815,7 @@ static int StartAnalog(audio_output_t *p_aout, audio_sample_format_t *fmt)
     /* Set the new_layout as the layout VLC will use to feed the AU unit */
     verify_noerr(AudioUnitSetProperty(p_sys->au_unit,
                             kAudioUnitProperty_AudioChannelLayout,
-                            kAudioUnitScope_Output,
+                            kAudioUnitScope_Input, /* yes, it must be the INPUT scope */
                             0, &new_layout, sizeof(new_layout)));
 
     if (new_layout.mNumberChannelDescriptions > 0)

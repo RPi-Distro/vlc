@@ -2,7 +2,7 @@
  * copy.c: Fast YV12/NV12 copy
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: e0823aaf69edecd3a7147dcc0e059b0b0602e6a1 $
+ * $Id: 5593d073a6e41cff202be331ffb7e26eb9ef272b $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -412,5 +412,5 @@ void CopyFromYv12(picture_t *dst, uint8_t *src[3], size_t src_pitch[3],
      CopyPlane(dst->p[1].p_pixels, dst->p[1].i_pitch,
                src[1], src_pitch[1], width / 2, height / 2);
      CopyPlane(dst->p[2].p_pixels, dst->p[2].i_pitch,
-               src[1], src_pitch[2], width / 2, height / 2);
+               src[2], src_pitch[2], width / 2, height / 2);
 }

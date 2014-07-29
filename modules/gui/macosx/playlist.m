@@ -2,7 +2,7 @@
  * playlist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: a6e21e43938e61cda5939e9676e87e13222f0a30 $
+ * $Id: 62d913dd6b316d8cafec1d92db29e6b18eca3ecc $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>
@@ -493,7 +493,9 @@
         if ([o_column isEqualToString:@"status"])
             continue;
 
-        [o_menu setPlaylistColumnTableState: NSOnState forColumn: o_column];
+        if(![o_menu setPlaylistColumnTableState: NSOnState forColumn: o_column])
+            continue;
+
         [[o_outline_view tableColumnWithIdentifier: o_column] setWidth: [[[o_columnArray objectAtIndex:i] objectAtIndex:1] floatValue]];
     }
 
@@ -1352,6 +1354,10 @@
     NSTableColumn * o_work_tc;
 
     if (i_state == NSOnState) {
+        NSString *o_title = [o_dict objectForKey:o_column];
+        if (!o_title)
+            return;
+
         o_work_tc = [[NSTableColumn alloc] initWithIdentifier: o_column];
         [o_work_tc setEditable: NO];
         [[o_work_tc dataCell] setFont: [NSFont controlContentFontOfSize:11.]];

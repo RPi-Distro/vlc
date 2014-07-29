@@ -2,7 +2,7 @@
  * MainMenu.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2013 Felix Paul Kühne
- * $Id: e006b6b2acc3fbf3b64c3a304bd5baeab6c9bdef $
+ * $Id: 7f3977344a5be64f22ceff1909215c5ecd799aa8 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -246,7 +246,7 @@
 - (IBAction)togglePlaymodeButtons:(id)sender;
 - (IBAction)toggleSidebar:(id)sender;
 - (IBAction)togglePlaylistColumnTable:(id)sender;
-- (void)setPlaylistColumnTableState:(NSInteger)i_state forColumn:(NSString *)o_column;
+- (BOOL)setPlaylistColumnTableState:(NSInteger)i_state forColumn:(NSString *)o_column;
 - (NSMenu *)setupPlaylistTableColumnsMenu;
 
 - (IBAction)toggleRecord:(id)sender;

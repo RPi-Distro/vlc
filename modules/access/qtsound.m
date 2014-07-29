@@ -39,8 +39,7 @@
 #include <vlc_demux.h>
 #include <vlc_dialog.h>
 
-//#define QTKIT_VERSION_MIN_REQUIRED 70603
-#define QTKIT_VERSION_MAX_ALLOWED 70700
+#define QTKIT_VERSION_MIN_REQUIRED 70603
 
 #import <QTKit/QTKit.h>
 
@@ -74,7 +73,7 @@ vlc_module_end ()
 {
     demux_t *p_qtsound;
     AudioBuffer *currentAudioBuffer;
-    block_t *rawAudioData;
+    void *rawAudioData;
     UInt32 numberOfSamples;
     date_t date;
     mtime_t currentPts;
@@ -132,7 +131,7 @@ vlc_module_end ()
             /*
              * Allocate storage for the interleaved audio data
              */
-            rawAudioData = block_Alloc(totalDataSize * sizeof(float));
+            rawAudioData = malloc(totalDataSize);
             if (NULL == rawAudioData) {
                 msg_Err(p_qtsound, "Raw audiodata could not be allocated");
                 return;
@@ -182,10 +181,7 @@ vlc_module_end ()
 
 - (void)freeAudioMem
 {
-    @synchronized (self) {
-        if (rawAudioData)
-            block_Release(rawAudioData);
-    }
+    FREENULL(rawAudioData);
 }
 
 - (mtime_t)getCurrentPts
@@ -229,7 +225,6 @@ struct demux_sys_t {
     QTCaptureDevice * audiodevice;
     VLCDecompressedAudioOutput * audiooutput;
     es_out_id_t *p_es_audio;
-    int i_audio_max_buffer_size;
 };
 
 /*****************************************************************************
@@ -431,7 +426,6 @@ static int Open(vlc_object_t *p_this)
     audiofmt.audio.i_channels = 2;
     audiofmt.audio.i_blockalign = audiofmt.audio.i_channels * (audiofmt.audio.i_bitspersample / 8);
     audiofmt.i_bitrate = audiofmt.audio.i_channels * audiofmt.audio.i_rate * audiofmt.audio.i_bitspersample;
-    p_sys->i_audio_max_buffer_size = audiofmt.i_bitrate;
 
     p_sys->session = [[QTCaptureSession alloc] init];
 
@@ -500,39 +494,38 @@ static void Close(vlc_object_t *p_this)
 static int Demux(demux_t *p_demux)
 {
     demux_sys_t *p_sys = p_demux->p_sys;
-    block_t *p_blocka;
+    block_t *p_blocka = nil;
     NSAutoreleasePool *pool;
 
-    p_blocka = block_Alloc(p_sys->i_audio_max_buffer_size);
 
-    if(!p_blocka) {
-        msg_Err(p_demux, "cannot get audio block");
-        return 0;
-    }
 
     @synchronized (p_sys->audiooutput) {
         if ([p_sys->audiooutput checkCurrentAudioBuffer]) {
-            p_blocka->i_buffer = p_blocka->i_size = [p_sys->audiooutput getCurrentTotalDataSize];
-            p_blocka->p_buffer = p_blocka->p_start = [p_sys->audiooutput getCurrentAudioBufferData];
+            unsigned i_buffer_size = [p_sys->audiooutput getCurrentTotalDataSize];
+            p_blocka = block_Alloc(i_buffer_size);
+
+            if(!p_blocka) {
+                msg_Err(p_demux, "cannot get audio block");
+                return 0;
+            }
+
+            memcpy(p_blocka->p_buffer, [p_sys->audiooutput getCurrentAudioBufferData], i_buffer_size);
             p_blocka->i_nb_samples = [p_sys->audiooutput getNumberOfSamples];
             p_blocka->i_pts = [p_sys->audiooutput getCurrentPts];
+
+            [p_sys->audiooutput freeAudioMem];
         }
     }
 
-    if(!p_blocka->i_pts) {
-        // Nothing to transfer yet, just forget
-        block_Release(p_blocka);
-        msleep(10000);
-        return 1;
-    }
+    if (p_blocka) {
+        if (!p_blocka->i_pts) {
+            // Nothing to transfer yet, just forget
+            msleep(10000);
+            return 1;
+        }
 
-    if(p_blocka) {
         es_out_Control(p_demux->out, ES_OUT_SET_PCR, p_blocka->i_pts);
         es_out_Send(p_demux->out, p_sys->p_es_audio, p_blocka);
-    }
-
-    @synchronized (p_sys->audiooutput) {
-        [p_sys->audiooutput freeAudioMem];
     }
 
     return 1;
