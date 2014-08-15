@@ -1,6 +1,7 @@
 vlc (2.1.5-2) UNRELEASED; urgency=medium
 
-  * 
+  * debian/patches/freerdp-1.1.0-beta2-API.patch: Apply upstream patch to
+    support FreeRDP 1.1.0-beta2 API. (Closes: #757951)
 
  -- Sebastian Ramacher <sramacher@debian.org>  Fri, 15 Aug 2014 22:17:10 +0200
 
