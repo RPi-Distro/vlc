@@ -1,9 +1,20 @@
-vlc (2.1.5-2) UNRELEASED; urgency=medium
+vlc (2.2.0~pre1-1) unstable; urgency=medium
 
+  [ Sebastian Ramacher ]
   * debian/patches/freerdp-1.1.0-beta2-API.patch: Apply upstream patch to
     support FreeRDP 1.1.0-beta2 API. (Closes: #757951)
 
- -- Sebastian Ramacher <sramacher@debian.org>  Fri, 15 Aug 2014 22:17:10 +0200
+  [ Reinhard Tartler ]
+  * New upstream release.
+    - Fixes incorrect usage of AVFrame (Closes: #756329)
+  * Bump requirements on libdvdnav and libdvdread
+  * Fixes compilation against libav11 (Closes: #758203)
+  * Drop patches merged upstream
+  * Refresh Hurd patch
+  * Update installation paths for several modules
+  * Disable libtar support (Closes: #737534)
+
+ -- Reinhard Tartler <siretart@tauware.de>  Sat, 16 Aug 2014 18:39:45 -0400
 
 vlc (2.1.5-1) unstable; urgency=medium
 
