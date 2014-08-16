@@ -2,7 +2,7 @@
  * messages.hpp : Information about a stream
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 945db4fa29b47031e27e73257db76ffa7a5304f2 $
+ * $Id: 3a9ab31eb68dffc2eb77b069bd8ce158f00f3be1 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -55,7 +55,7 @@ private:
     void sinkMessage( const MsgEvent * );
     bool matchFilter( const QString& );
 
-    vlc_atomic_t verbosity;
+    atomic_uint verbosity;
     static void MsgCallback( void *, int, const vlc_log_t *, const char *,
                              va_list );
 

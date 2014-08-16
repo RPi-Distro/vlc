@@ -1,10 +1,12 @@
 /*****************************************************************************
  * direct3d.c: Windows Direct3D video output module
  *****************************************************************************
- * Copyright (C) 2006-2009 VLC authors and VideoLAN
- *$Id: 234149539fb7d344da49909799359322c71929fe $
+ * Copyright (C) 2006-2014 VLC authors and VideoLAN
+ *$Id: fc959fcc5d7e128ef53d83be7b93a33aef6a02eb $
  *
- * Authors: Damien Fouilleul <damienf@videolan.org>
+ * Authors: Damien Fouilleul <damienf@videolan.org>,
+ *          Sasha Koruga <skoruga@gmail.com>,
+ *          Felix Abecassis <felix.abecassis@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -39,13 +41,14 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_playlist.h>
 #include <vlc_vout_display.h>
+#include <vlc_charset.h> /* ToT function */
 
 #include <windows.h>
 #include <d3d9.h>
 
 #include "common.h"
+#include "builtin_shaders.h"
 
 /*****************************************************************************
  * Module descriptor
@@ -60,7 +63,18 @@ static void Close(vlc_object_t *);
 #define HW_BLENDING_LONGTEXT N_(\
     "Try to use hardware acceleration for subtitle/OSD blending.")
 
+#define PIXEL_SHADER_TEXT N_("Pixel Shader")
+#define PIXEL_SHADER_LONGTEXT N_(\
+        "Choose a pixel shader to apply.")
+#define PIXEL_SHADER_FILE_TEXT N_("Path to HLSL file")
+#define PIXEL_SHADER_FILE_LONGTEXT N_("Path to an HLSL file containing a single pixel shader.")
+/* The latest option in the selection list: used for loading a shader file. */
+#define SELECTED_SHADER_FILE N_("HLSL File")
+
 #define D3D_HELP N_("Recommended video output for Windows Vista and later versions")
+
+static int FindShadersCallback(vlc_object_t *, const char *,
+                               char ***, char ***);
 
 vlc_module_begin ()
     set_shortname("Direct3D")
@@ -70,6 +84,10 @@ vlc_module_begin ()
     set_subcategory(SUBCAT_VIDEO_VOUT)
 
     add_bool("direct3d-hw-blending", true, HW_BLENDING_TEXT, HW_BLENDING_LONGTEXT, true)
+
+    add_string("direct3d-shader", "", PIXEL_SHADER_TEXT, PIXEL_SHADER_LONGTEXT, true)
+        change_string_cb(FindShadersCallback)
+    add_loadfile("direct3d-shader-file", NULL, PIXEL_SHADER_FILE_TEXT, PIXEL_SHADER_FILE_LONGTEXT, false)
 
     set_capability("vout display", 240)
     add_shortcut("direct3d")
@@ -296,6 +314,8 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
 
     d3d_region_t picture_region;
     if (!Direct3DImportPicture(vd, &picture_region, surface)) {
+        picture_region.width = picture->format.i_visible_width;
+        picture_region.height = picture->format.i_visible_height;
         int subpicture_region_count     = 0;
         d3d_region_t *subpicture_region = NULL;
         if (subpicture)
@@ -487,6 +507,21 @@ static void Manage (vout_display_t *vd)
     }
 }
 
+static HINSTANCE Direct3DLoadShaderLibrary(void)
+{
+    HINSTANCE instance = NULL;
+    for (int i = 43; i > 23; --i) {
+        char *filename = NULL;
+        if (asprintf(&filename, "D3dx9_%d.dll", i) == -1)
+            continue;
+        instance = LoadLibrary(ToT(filename));
+        free(filename);
+        if (instance)
+            break;
+    }
+    return instance;
+}
+
 /**
  * It initializes an instance of Direct3D9
  */
@@ -515,6 +550,10 @@ static int Direct3DCreate(vout_display_t *vd)
        return VLC_EGENERIC;
     }
     sys->d3dobj = d3dobj;
+
+    sys->hd3d9x_dll = Direct3DLoadShaderLibrary();
+    if (!sys->hd3d9x_dll)
+        msg_Warn(vd, "cannot load Direct3D Shader Library; HLSL pixel shading will be disabled.");
 
     /*
     ** Get device capabilities
@@ -548,9 +587,12 @@ static void Direct3DDestroy(vout_display_t *vd)
        IDirect3D9_Release(sys->d3dobj);
     if (sys->hd3d9_dll)
         FreeLibrary(sys->hd3d9_dll);
+    if (sys->hd3d9x_dll)
+        FreeLibrary(sys->hd3d9x_dll);
 
     sys->d3dobj = NULL;
     sys->hd3d9_dll = NULL;
+    sys->hd3d9x_dll = NULL;
 }
 
 
@@ -723,6 +765,9 @@ static void Direct3DDestroyPool(vout_display_t *vd);
 static int  Direct3DCreateScene(vout_display_t *vd, const video_format_t *fmt);
 static void Direct3DDestroyScene(vout_display_t *vd);
 
+static int  Direct3DCreateShaders(vout_display_t *vd);
+static void Direct3DDestroyShaders(vout_display_t *vd);
+
 /**
  * It creates the picture and scene resources.
  */
@@ -738,6 +783,11 @@ static int Direct3DCreateResources(vout_display_t *vd, video_format_t *fmt)
         msg_Err(vd, "Direct3D scene initialization failed !");
         return VLC_EGENERIC;
     }
+    if (Direct3DCreateShaders(vd)) {
+        /* Failing to initialize shaders is not fatal. */
+        msg_Warn(vd, "Direct3D shaders initialization failed !");
+    }
+
     sys->d3dregion_format = D3DFMT_UNKNOWN;
     for (int i = 0; i < 2; i++) {
         D3DFORMAT fmt = i == 0 ? D3DFMT_A8B8G8R8 : D3DFMT_A8R8G8B8;
@@ -761,6 +811,7 @@ static void Direct3DDestroyResources(vout_display_t *vd)
 {
     Direct3DDestroyScene(vd);
     Direct3DDestroyPool(vd);
+    Direct3DDestroyShaders(vd);
 }
 
 /**
@@ -921,8 +972,8 @@ static int Direct3DCreatePool(vout_display_t *vd, video_format_t *fmt)
     /* Create a surface */
     LPDIRECT3DSURFACE9 surface;
     HRESULT hr = IDirect3DDevice9_CreateOffscreenPlainSurface(d3ddev,
-                                                              fmt->i_width,
-                                                              fmt->i_height,
+                                                              fmt->i_visible_width,
+                                                              fmt->i_visible_height,
                                                               d3dfmt->format,
                                                               D3DPOOL_DEFAULT,
                                                               &surface,
@@ -935,25 +986,25 @@ static int Direct3DCreatePool(vout_display_t *vd, video_format_t *fmt)
     IDirect3DDevice9_ColorFill(d3ddev, surface, NULL, D3DCOLOR_ARGB(0xFF, 0, 0, 0));
 
     /* Create the associated picture */
-    picture_resource_t *rsc = &sys->resource;
-    rsc->p_sys = malloc(sizeof(*rsc->p_sys));
-    if (!rsc->p_sys) {
+    picture_sys_t *picsys = malloc(sizeof(*picsys));
+    if (unlikely(picsys == NULL)) {
         IDirect3DSurface9_Release(surface);
         return VLC_ENOMEM;
     }
-    rsc->p_sys->surface = surface;
-    rsc->p_sys->fallback = NULL;
-    for (int i = 0; i < PICTURE_PLANE_MAX; i++) {
-        rsc->p[i].p_pixels = NULL;
-        rsc->p[i].i_pitch = 0;
-        rsc->p[i].i_lines = fmt->i_height / (i > 0 ? 2 : 1);
-    }
-    picture_t *picture = picture_NewFromResource(fmt, rsc);
+    picsys->surface = surface;
+    picsys->fallback = NULL;
+
+    picture_resource_t resource = { .p_sys = picsys };
+    for (int i = 0; i < PICTURE_PLANE_MAX; i++)
+        resource.p[i].i_lines = fmt->i_visible_height / (i > 0 ? 2 : 1);
+
+    picture_t *picture = picture_NewFromResource(fmt, &resource);
     if (!picture) {
         IDirect3DSurface9_Release(surface);
-        free(rsc->p_sys);
+        free(picsys);
         return VLC_ENOMEM;
     }
+    sys->picsys = picsys;
 
     /* Wrap it into a picture pool */
     picture_pool_configuration_t pool_cfg;
@@ -979,10 +1030,10 @@ static void Direct3DDestroyPool(vout_display_t *vd)
     vout_display_sys_t *sys = vd->sys;
 
     if (sys->pool) {
-        picture_resource_t *rsc = &sys->resource;
-        IDirect3DSurface9_Release(rsc->p_sys->surface);
-        if (rsc->p_sys->fallback)
-            picture_Release(rsc->p_sys->fallback);
+        picture_sys_t *picsys = sys->picsys;
+        IDirect3DSurface9_Release(picsys->surface);
+        if (picsys->fallback)
+            picture_Release(picsys->fallback);
         picture_pool_Delete(sys->pool);
     }
     sys->pool = NULL;
@@ -1004,8 +1055,8 @@ static int Direct3DCreateScene(vout_display_t *vd, const video_format_t *fmt)
      */
     LPDIRECT3DTEXTURE9 d3dtex;
     hr = IDirect3DDevice9_CreateTexture(d3ddev,
-                                        fmt->i_width,
-                                        fmt->i_height,
+                                        fmt->i_visible_width,
+                                        fmt->i_visible_height,
                                         1,
                                         D3DUSAGE_RENDERTARGET,
                                         sys->d3dpp.BackBufferFormat,
@@ -1132,31 +1183,245 @@ static void Direct3DDestroyScene(vout_display_t *vd)
     msg_Dbg(vd, "Direct3D scene released successfully");
 }
 
+static int Direct3DCompileShader(vout_display_t *vd, const char *shader_source, size_t source_length)
+{
+    vout_display_sys_t *sys = vd->sys;
+
+    HRESULT (WINAPI * OurD3DXCompileShader)(
+            LPCSTR pSrcData,
+            UINT srcDataLen,
+            const D3DXMACRO *pDefines,
+            LPD3DXINCLUDE pInclude,
+            LPCSTR pFunctionName,
+            LPCSTR pProfile,
+            DWORD Flags,
+            LPD3DXBUFFER *ppShader,
+            LPD3DXBUFFER *ppErrorMsgs,
+            LPD3DXCONSTANTTABLE *ppConstantTable);
+
+    OurD3DXCompileShader = (void*)GetProcAddress(sys->hd3d9x_dll, "D3DXCompileShader");
+    if (!OurD3DXCompileShader) {
+        msg_Warn(vd, "Cannot locate reference to D3DXCompileShader; pixel shading will be disabled");
+        return VLC_EGENERIC;
+    }
+
+    LPD3DXBUFFER error_msgs = NULL;
+    LPD3DXBUFFER compiled_shader = NULL;
+
+    DWORD shader_flags = 0;
+    HRESULT hr = OurD3DXCompileShader(shader_source, source_length, NULL, NULL,
+                "main", "ps_3_0", shader_flags, &compiled_shader, &error_msgs, NULL);
+
+    if (FAILED(hr)) {
+        msg_Warn(vd, "D3DXCompileShader Error (hr=0x%lX)", hr);
+        if (error_msgs)
+            msg_Warn(vd, "HLSL Compilation Error: %s", (char*)ID3DXBuffer_GetBufferPointer(error_msgs));
+        return VLC_EGENERIC;
+    }
+
+    hr = IDirect3DDevice9_CreatePixelShader(sys->d3ddev,
+            ID3DXBuffer_GetBufferPointer(compiled_shader),
+            &sys->d3dx_shader);
+
+    if (FAILED(hr)) {
+        msg_Warn(vd, "IDirect3DDevice9_CreatePixelShader error (hr=0x%lX)", hr);
+        return VLC_EGENERIC;
+    }
+    return VLC_SUCCESS;
+}
+
+#define MAX_SHADER_FILE_SIZE 1024*1024
+
+static int Direct3DCreateShaders(vout_display_t *vd)
+{
+    vout_display_sys_t *sys = vd->sys;
+
+    if (!sys->hd3d9x_dll)
+        return VLC_EGENERIC;
+
+    /* Find which shader was selected in the list. */
+    char *selected_shader = var_InheritString(vd, "direct3d-shader");
+    if (!selected_shader)
+        return VLC_SUCCESS; /* Nothing to do */
+
+    const char *shader_source_builtin = NULL;
+    char *shader_source_file = NULL;
+    FILE *fs = NULL;
+
+    for (size_t i = 0; i < BUILTIN_SHADERS_COUNT; ++i) {
+        if (!strcmp(selected_shader, builtin_shaders[i].name)) {
+            shader_source_builtin = builtin_shaders[i].code;
+            break;
+        }
+    }
+
+    if (shader_source_builtin) {
+        /* A builtin shader was selected. */
+        int err = Direct3DCompileShader(vd, shader_source_builtin, strlen(shader_source_builtin));
+        if (err)
+            goto error;
+    } else {
+        if (strcmp(selected_shader, SELECTED_SHADER_FILE))
+            goto error; /* Unrecognized entry in the list. */
+        /* The source code of the shader needs to be read from a file. */
+        char *filepath = var_InheritString(vd, "direct3d-shader-file");
+        if (!filepath || !*filepath)
+        {
+            free(filepath);
+            goto error;
+        }
+        /* Open file, find its size with fseek/ftell and read its content in a buffer. */
+        fs = fopen(filepath, "rb");
+        if (!fs)
+            goto error;
+        int ret = fseek(fs, 0, SEEK_END);
+        if (ret == -1)
+            goto error;
+        long length = ftell(fs);
+        if (length == -1 || length >= MAX_SHADER_FILE_SIZE)
+            goto error;
+        rewind(fs);
+        shader_source_file = malloc(sizeof(*shader_source_file) * length);
+        if (!shader_source_file)
+            goto error;
+        ret = fread(shader_source_file, length, 1, fs);
+        if (ret != 1)
+            goto error;
+        ret = Direct3DCompileShader(vd, shader_source_file, length);
+        if (ret)
+            goto error;
+    }
+
+    free(selected_shader);
+    free(shader_source_file);
+    fclose(fs);
+
+    return VLC_SUCCESS;
+
+error:
+    Direct3DDestroyShaders(vd);
+    free(selected_shader);
+    free(shader_source_file);
+    if (fs)
+        fclose(fs);
+    return VLC_EGENERIC;
+}
+
+static void Direct3DDestroyShaders(vout_display_t *vd)
+{
+    vout_display_sys_t *sys = vd->sys;
+
+    if (sys->d3dx_shader)
+        IDirect3DPixelShader9_Release(sys->d3dx_shader);
+    sys->d3dx_shader = NULL;
+}
+
+/**
+ * Compute the vertex ordering needed to rotate the video. Without
+ * rotation, the vertices of the rectangle are defined in a clockwise
+ * order. This function computes a remapping of the coordinates to
+ * implement the rotation, given fixed texture coordinates.
+ * The unrotated order is the following:
+ * 0--1
+ * |  |
+ * 3--2
+ * For a 180 degrees rotation it should like this:
+ * 2--3
+ * |  |
+ * 1--0
+ * Vertex 0 should be assigned coordinates at index 2 from the
+ * unrotated order and so on, thus yielding order: 2 3 0 1.
+ */
+static void orientationVertexOrder(video_orientation_t orientation, int vertex_order[static 4])
+{
+    switch (orientation) {
+        case ORIENT_ROTATED_90:
+            vertex_order[0] = 1;
+            vertex_order[1] = 2;
+            vertex_order[2] = 3;
+            vertex_order[3] = 0;
+            break;
+        case ORIENT_ROTATED_270:
+            vertex_order[0] = 3;
+            vertex_order[1] = 0;
+            vertex_order[2] = 1;
+            vertex_order[3] = 2;
+            break;
+        case ORIENT_ROTATED_180:
+            vertex_order[0] = 2;
+            vertex_order[1] = 3;
+            vertex_order[2] = 0;
+            vertex_order[3] = 1;
+            break;
+        case ORIENT_TRANSPOSED:
+            vertex_order[0] = 0;
+            vertex_order[1] = 3;
+            vertex_order[2] = 2;
+            vertex_order[3] = 1;
+            break;
+        case ORIENT_HFLIPPED:
+            vertex_order[0] = 3;
+            vertex_order[1] = 2;
+            vertex_order[2] = 1;
+            vertex_order[3] = 0;
+            break;
+        case ORIENT_VFLIPPED:
+            vertex_order[0] = 1;
+            vertex_order[1] = 0;
+            vertex_order[2] = 3;
+            vertex_order[3] = 2;
+            break;
+        case ORIENT_ANTI_TRANSPOSED: /* transpose + vflip */
+            vertex_order[0] = 1;
+            vertex_order[1] = 2;
+            vertex_order[2] = 3;
+            vertex_order[3] = 0;
+            break;
+       default:
+            vertex_order[0] = 0;
+            vertex_order[1] = 1;
+            vertex_order[2] = 2;
+            vertex_order[3] = 3;
+            break;
+    }
+}
+
 static void Direct3DSetupVertices(CUSTOMVERTEX *vertices,
                                   const RECT src_full,
                                   const RECT src_crop,
                                   const RECT dst,
-                                  int alpha)
+                                  int alpha,
+                                  video_orientation_t orientation)
 {
     const float src_full_width  = src_full.right  - src_full.left;
     const float src_full_height = src_full.bottom - src_full.top;
-    vertices[0].x  = dst.left;
-    vertices[0].y  = dst.top;
+
+    /* Vertices of the dst rectangle in the unrotated (clockwise) order. */
+    const int vertices_coords[4][2] = {
+        { dst.left,  dst.top    },
+        { dst.right, dst.top    },
+        { dst.right, dst.bottom },
+        { dst.left,  dst.bottom },
+    };
+
+    /* Compute index remapping necessary to implement the rotation. */
+    int vertex_order[4];
+    orientationVertexOrder(orientation, vertex_order);
+
+    for (int i = 0; i < 4; ++i) {
+        vertices[i].x  = vertices_coords[vertex_order[i]][0];
+        vertices[i].y  = vertices_coords[vertex_order[i]][1];
+    }
+
     vertices[0].tu = src_crop.left / src_full_width;
     vertices[0].tv = src_crop.top  / src_full_height;
 
-    vertices[1].x  = dst.right;
-    vertices[1].y  = dst.top;
     vertices[1].tu = src_crop.right / src_full_width;
     vertices[1].tv = src_crop.top   / src_full_height;
 
-    vertices[2].x  = dst.right;
-    vertices[2].y  = dst.bottom;
     vertices[2].tu = src_crop.right  / src_full_width;
     vertices[2].tv = src_crop.bottom / src_full_height;
 
-    vertices[3].x  = dst.left;
-    vertices[3].y  = dst.bottom;
     vertices[3].tu = src_crop.left   / src_full_width;
     vertices[3].tv = src_crop.bottom / src_full_height;
 
@@ -1209,7 +1474,7 @@ static int Direct3DImportPicture(vout_display_t *vd,
     Direct3DSetupVertices(region->vertex,
                           vd->sys->rect_src,
                           vd->sys->rect_src_clipped,
-                          vd->sys->rect_dest_clipped, 255);
+                          vd->sys->rect_dest_clipped, 255, vd->fmt.orientation);
     return VLC_SUCCESS;
 }
 
@@ -1278,8 +1543,10 @@ static void Direct3DImportSubpicture(vout_display_t *vd,
                         d3dr->width, d3dr->height, hr);
                 continue;
             }
+#ifndef NDEBUG
             msg_Dbg(vd, "Created %dx%d texture for OSD",
                     r->fmt.i_visible_width, r->fmt.i_visible_height);
+#endif
         }
 
         D3DLOCKED_RECT lock;
@@ -1330,12 +1597,13 @@ static void Direct3DImportSubpicture(vout_display_t *vd,
         dst.bottom = dst.top  + scale_h * r->fmt.i_visible_height,
         Direct3DSetupVertices(d3dr->vertex,
                               src, src, dst,
-                              subpicture->i_alpha * r->i_alpha / 255);
+                              subpicture->i_alpha * r->i_alpha / 255, ORIENT_NORMAL);
     }
 }
 
 static int Direct3DRenderRegion(vout_display_t *vd,
-                                d3d_region_t *region)
+                                d3d_region_t *region,
+                                bool use_pixel_shader)
 {
     vout_display_sys_t *sys = vd->sys;
 
@@ -1368,6 +1636,25 @@ static int Direct3DRenderRegion(vout_display_t *vd,
     if (FAILED(hr)) {
         msg_Dbg(vd, "%s:%d (hr=0x%0lX)", __FUNCTION__, __LINE__, hr);
         return -1;
+    }
+
+    if (sys->d3dx_shader) {
+        if (use_pixel_shader)
+        {
+            hr = IDirect3DDevice9_SetPixelShader(d3ddev, sys->d3dx_shader);
+            float shader_data[4] = { region->width, region->height, 0, 0 };
+            hr = IDirect3DDevice9_SetPixelShaderConstantF(d3ddev, 0, shader_data, 1);
+            if (FAILED(hr)) {
+                msg_Dbg(vd, "%s:%d (hr=0x%0lX)", __FUNCTION__, __LINE__, hr);
+                return -1;
+            }
+        }
+        else /* Disable any existing pixel shader. */
+            hr = IDirect3DDevice9_SetPixelShader(d3ddev, NULL);
+        if (FAILED(hr)) {
+            msg_Dbg(vd, "%s:%d (hr=0x%0lX)", __FUNCTION__, __LINE__, hr);
+            return -1;
+        }
     }
 
     // Render the vertex buffer contents
@@ -1426,14 +1713,14 @@ static void Direct3DRenderScene(vout_display_t *vd,
         return;
     }
 
-    Direct3DRenderRegion(vd, picture);
+    Direct3DRenderRegion(vd, picture, true);
 
     if (subpicture_count > 0)
         IDirect3DDevice9_SetRenderState(d3ddev, D3DRS_ALPHABLENDENABLE, TRUE);
     for (int i = 0; i < subpicture_count; i++) {
         d3d_region_t *r = &subpicture[i];
         if (r->texture)
-            Direct3DRenderRegion(vd, r);
+            Direct3DRenderRegion(vd, r, false);
     }
     if (subpicture_count > 0)
         IDirect3DDevice9_SetRenderState(d3ddev, D3DRS_ALPHABLENDENABLE, FALSE);
@@ -1464,14 +1751,44 @@ static int DesktopCallback(vlc_object_t *object, char const *psz_cmd,
     sys->ch_desktop |= ch_desktop;
     sys->desktop_requested = newval.b_bool;
     vlc_mutex_unlock(&sys->lock);
-
-    /* FIXME we should have a way to export variable to be saved */
-    if (ch_desktop) {
-        playlist_t *p_playlist = pl_Get(vd);
-        /* Modify playlist as well because the vout might have to be
-         * restarted */
-        var_Create(p_playlist, "video-wallpaper", VLC_VAR_BOOL);
-        var_SetBool(p_playlist, "video-wallpaper", newval.b_bool);
-    }
     return VLC_SUCCESS;
+}
+
+typedef struct
+{
+    char **values;
+    char **descs;
+    size_t count;
+} enum_context_t;
+
+static void ListShaders(enum_context_t *ctx)
+{
+    size_t num_shaders = BUILTIN_SHADERS_COUNT;
+    ctx->values = xrealloc(ctx->values, (ctx->count + num_shaders + 1) * sizeof(char *));
+    ctx->descs = xrealloc(ctx->descs, (ctx->count + num_shaders + 1) * sizeof(char *));
+    for (size_t i = 0; i < num_shaders; ++i) {
+        ctx->values[ctx->count] = strdup(builtin_shaders[i].name);
+        ctx->descs[ctx->count] = strdup(builtin_shaders[i].name);
+        ctx->count++;
+    }
+    ctx->values[ctx->count] = strdup(SELECTED_SHADER_FILE);
+    ctx->descs[ctx->count] = strdup(SELECTED_SHADER_FILE);
+    ctx->count++;
+}
+
+/* Populate the list of available shader techniques in the options */
+static int FindShadersCallback(vlc_object_t *object, const char *name,
+                               char ***values, char ***descs)
+{
+    VLC_UNUSED(object);
+    VLC_UNUSED(name);
+
+    enum_context_t ctx = { NULL, NULL, 0 };
+
+    ListShaders(&ctx);
+
+    *values = ctx.values;
+    *descs = ctx.descs;
+    return ctx.count;
+
 }

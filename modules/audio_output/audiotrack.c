@@ -122,7 +122,7 @@ struct aout_sys_t {
 };
 
 /* Soft volume helper */
-#include "volume.h"
+#include "audio_output/volume.h"
 
 static void *InitLibrary(struct aout_sys_t *p_sys);
 
@@ -206,19 +206,17 @@ static int TimeGet(audio_output_t *p_aout, mtime_t *restrict delay)
     if (p_sys->at_getRenderPosition(&hal, &dsp, MUSIC))
         return -1;
 
-    hal = (uint32_t)((uint64_t)hal * p_sys->rate / 44100);
-
     if (p_sys->samples_written == 0) {
-        p_sys->initial = hal;
+        p_sys->initial = dsp;
         return -1;
     }
 
-    hal -= p_sys->initial;
-    if (hal == 0)
+    dsp -= p_sys->initial;
+    if (dsp == 0)
         return -1;
 
     if (delay)
-        *delay = ((mtime_t)p_sys->samples_written - hal) * CLOCK_FREQ / p_sys->rate;
+        *delay = ((mtime_t)p_sys->samples_written - dsp) * CLOCK_FREQ / p_sys->rate;
 
     return 0;
 }
@@ -317,7 +315,6 @@ static int Start(audio_output_t *aout, audio_sample_format_t *restrict fmt)
     aout_SoftVolumeStart(aout);
 
     aout->sys = p_sys;
-    aout->time_get = NULL;
     aout->play = Play;
     aout->pause = Pause;
     aout->flush = Flush;

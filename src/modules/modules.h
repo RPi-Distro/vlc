@@ -2,7 +2,7 @@
  * modules.h : Module management functions.
  *****************************************************************************
  * Copyright (C) 2001 VLC authors and VideoLAN
- * $Id: bad964ff3a67f8110c9452d34ad470ec612c97a1 $
+ * $Id: e38e9524c1bf51ed0ac8e6da61759bb169b53b4c $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -49,8 +49,8 @@ typedef void *module_handle_t;
 /** Plugin entry point prototype */
 typedef int (*vlc_plugin_cb) (int (*)(void *, void *, int, ...), void *);
 
-/** Main module */
-int vlc_entry__main (int (*)(void *, void *, int, ...), void *);
+/** Core module */
+int vlc_entry__core (int (*)(void *, void *, int, ...), void *);
 
 /**
  * Internal module descriptor

@@ -26,7 +26,7 @@ Release HOWTO
   - Use 'make distcheck' to make sure all files are exported correctly
   - copy the tar.xz file on ganesh.videolan.org
   - generate SHA, MD5 hashes and OpenPGP signature of these files
-    (use sha*sum --binary, md5sum --binary, gpg --sign --detach --armor)
+    (use sha*sum --binary, md5sum --binary, gpg -u VideoLAN\ Release --sign --detach --armor)
     Use the sumandsign.sh script
 
  * Contribs
@@ -41,10 +41,8 @@ Release HOWTO
 
  * Mac OS X packages
   - configure using the extras/package/macosx/configure.sh script
-  - compile the source on both a PowerPC and an Intel-based Mac.
-  - use extras/package/macosx/ub.sh to create a Universal Binary.
-  - use extras/package/macosx/codesign.sh to sign it.
-  - copy the packages files on ganesh.videolan.org
+  - use extras/package/macosx/codesign.sh with options and key to sign it.
+  - copy the package to ganesh.videolan.org
 
  * Sign all the files and move the signed files on /opt/ftp/pub/videolan/vlc/X.X.X
   - At first block access to this directory by http or ftp. Only authorize rsync.
@@ -60,14 +58,19 @@ Release HOWTO
 
  * "Check for updates" functionality
   - edit update.videolan.org/vlc/status
-  - gpg -t --sign --detach --armor
+  - gpg -u VideoLAN\ Release -t --sign --detach --armor
+  - for i in *asc;do gpg --verify $i || echo $i;done
 
- * Mirrors (if necessary)
-  - Forwarn the mirror admins
-  - Update the list of files for the mirror check
-     (/var/www/local/mirrors.v.o/files)
-  - Disable mirrors which haven't synced yet and possibly ganesh if there are
-    enough other mirrors (see http://mirrors.videolan.org/release.html)
+ * Mirrors
+  - Forwarn the mirror admins (optional for any minor release)
+  - Go to https://get.videolan.org/<path-to-the-file>?mirrorlist
+  - Ensures there is enough mirrors able to serve the file in each region
+    or just wait few more hours before doing the release.
+    Suggested number of mirrors:
+        - > 70% for a minor release
+        - > 80% for a major release
+        - > 80% for any auto-update
+  - Keep an eye on https://get.videolan.org/?mirrorstats during the release
 
  * Update the wiki
   - edit http://wiki.videolan.org/Template:VLC:latest_version

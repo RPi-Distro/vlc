@@ -2,7 +2,7 @@
  * mmstu.c: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: 932c59fc2d3d6c35f5e22e9cde36fb404a3473e6 $
+ * $Id: 6091fbd274de57918fd53b1221963764f8e5c0dc $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -35,10 +35,8 @@
 #include <errno.h>
 #include <assert.h>
 
-#ifdef HAVE_UNISTD_H
-#   include <unistd.h>
-#endif
 #include <sys/types.h>
+#include <unistd.h>
 #ifdef HAVE_POLL
 #   include <poll.h>
 #endif
@@ -176,7 +174,7 @@ int  MMSTUOpen( access_t *p_access )
     else
     {
         p_sys->b_seekable = true;
-        p_access->info.i_size =
+        p_sys->i_size =
             (uint64_t)p_sys->i_header +
             (uint64_t)p_sys->i_packet_count * (uint64_t)p_sys->i_packet_length;
     }
@@ -224,7 +222,6 @@ static int Control( access_t *p_access, int i_query, va_list args )
 
     switch( i_query )
     {
-        /* */
         case ACCESS_CAN_SEEK:
             pb_bool = (bool*)va_arg( args, bool* );
             *pb_bool = p_sys->b_seekable;
@@ -250,7 +247,10 @@ static int Control( access_t *p_access, int i_query, va_list args )
             *pb_bool = true;
             break;
 
-        /* */
+        case ACCESS_GET_SIZE:
+            *va_arg( args, uint64_t * ) = p_sys->i_size;
+            break;
+
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
             *pi_64 = INT64_C(1000)
@@ -266,7 +266,6 @@ static int Control( access_t *p_access, int i_query, va_list args )
             *pb_bool =  p_sys->asfh.stream[i_int].i_selected ? true : false;
             break;
 
-        /* */
         case ACCESS_SET_PAUSE_STATE:
             b_bool = (bool)va_arg( args, int );
             if( b_bool )
@@ -281,19 +280,8 @@ static int Control( access_t *p_access, int i_query, va_list args )
             }
             break;
 
-        case ACCESS_GET_TITLE_INFO:
-        case ACCESS_SET_TITLE:
-        case ACCESS_SET_SEEKPOINT:
-        case ACCESS_SET_PRIVATE_ID_STATE:
-        case ACCESS_GET_CONTENT_TYPE:
-        case ACCESS_GET_META:
-            return VLC_EGENERIC;
-
-
         default:
-            msg_Warn( p_access, "unimplemented query in control" );
             return VLC_EGENERIC;
-
     }
     return VLC_SUCCESS;
 }
@@ -1100,7 +1088,7 @@ static int NetFillBuffer( access_t *p_access )
 
     if( i_ret < 0 )
     {
-        msg_Err( p_access, "network poll error (%m)" );
+        msg_Err( p_access, "network poll error: %s", vlc_strerror_c(errno) );
         return -1;
     }
 

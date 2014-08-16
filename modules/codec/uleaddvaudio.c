@@ -2,7 +2,7 @@
  * uleaddvaudio.c
  *****************************************************************************
  * Copyright (C) 2012 Laurent Aimar
- * $Id: 067117f4230e1965454bd3724bb36ac61233a4b2 $
+ * $Id: dbbd0b476af6da74c2c267c6ed2fabd0f02f2f3e $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -80,7 +80,7 @@ static block_t *Decode(decoder_t *dec, block_t **block_ptr)
         return NULL;
     }
 
-    const int block_size = sys->is_pal ? 8640 : 7200;
+    const unsigned int block_size = sys->is_pal ? 8640 : 7200;
     if (block->i_buffer >= block_size) {
         uint8_t *src = block->p_buffer;
 

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * CoreInteraction.h: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: f6a8dc4fa1f0988e23a940832f7f7d8267ec0c82 $
+ * Copyright (C) 2011-2014 Felix Paul Kühne
+ * $Id: d2abdb56b9d7e62fceac6d054af50fe30750f11e $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -73,9 +73,16 @@
 - (void)volumeDown;
 - (void)toggleMute;
 
+- (void)addSubtitlesToCurrentInput:(NSArray *)paths;
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender;
 
 - (void)toggleFullscreen;
 
 - (BOOL)fixPreferences;
+
+- (void)setVideoFilter: (const char *)psz_name on:(BOOL)b_on;
+- (void)setVideoFilterProperty: (const char *)psz_name forFilter: (const char *)psz_filter integer: (int)i_value;
+- (void)setVideoFilterProperty: (const char *)psz_name forFilter: (const char *)psz_filter float: (float)f_value;
+- (void)setVideoFilterProperty: (const char *)psz_name forFilter: (const char *)psz_filter string: (const char *)psz_value;
+- (void)setVideoFilterProperty: (const char *)psz_name forFilter: (const char *)psz_filter boolean: (BOOL)b_value;
 @end

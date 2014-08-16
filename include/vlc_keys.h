@@ -2,7 +2,7 @@
  * vlc_keys.h: keycode defines
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 62a52fde038aae844097413977156d27d81296fb $
+ * $Id: 49edab323f602e2149b6371bdb3b3277732b9cc0 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -65,6 +65,8 @@
 #define KEY_MENU             0x00370000
 #define KEY_PAGEUP           0x00390000
 #define KEY_PAGEDOWN         0x003A0000
+#define KEY_PRINT            0x003B0000
+#define KEY_PAUSE            0x003D0000
 
 #define KEY_BROWSER_BACK     0x003F0000
 #define KEY_BROWSER_FORWARD  0x00400000
@@ -170,6 +172,7 @@ typedef enum vlc_action {
     ACTIONID_SUBPOS_DOWN,
     ACTIONID_AUDIO_TRACK,
     ACTIONID_SUBTITLE_TRACK,
+    ACTIONID_SUBTITLE_TOGGLE,
     ACTIONID_INTF_TOGGLE_FSC,
     ACTIONID_INTF_HIDE,
     ACTIONID_INTF_BOSS,

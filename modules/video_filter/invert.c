@@ -2,7 +2,7 @@
  * invert.c : Invert video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2006 VLC authors and VideoLAN
- * $Id: 681c992398a41ebacecedde9d3f1cb21184e32b2 $
+ * $Id: 3303030f501e07b08b3f729a6f16a1bff346ab36 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -67,12 +67,12 @@ static int Create( vlc_object_t *p_this )
     vlc_fourcc_t fourcc = p_filter->fmt_in.video.i_chroma;
 
     if( fourcc == VLC_CODEC_YUVP || fourcc == VLC_CODEC_RGBP
-     || fourcc == VLC_CODEC_RGBA )
+     || fourcc == VLC_CODEC_RGBA || fourcc == VLC_CODEC_ARGB )
         return VLC_EGENERIC;
 
     const vlc_chroma_description_t *p_chroma =
         vlc_fourcc_GetChromaDescription( fourcc );
-    if( p_chroma == NULL
+    if( p_chroma == NULL || p_chroma->plane_count == 0
      || p_chroma->pixel_size * 8 != p_chroma->pixel_bits )
         return VLC_EGENERIC;
 

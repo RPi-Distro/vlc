@@ -1,27 +1,27 @@
 /*****************************************************************************
  * osd.c: transcoding stream output module (osd)
  *****************************************************************************
- * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: ac42a7b9c09e2d634f1487d0ace6a37dfed8271e $
+ * Copyright (C) 2003-2009 VLC authors and VideoLAN
+ * $Id: a7489ad02f97f2dde6037f6b1be4e27e59663963 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *          Antoine Cellerier <dionoea at videolan dot org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -36,7 +36,7 @@
 /*
  * OSD menu
  */
-int transcode_osd_new( sout_stream_t *p_stream, sout_stream_id_t *id )
+int transcode_osd_new( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
 
@@ -97,7 +97,7 @@ int transcode_osd_new( sout_stream_t *p_stream, sout_stream_id_t *id )
     return VLC_EGENERIC;
 }
 
-void transcode_osd_close( sout_stream_t *p_stream, sout_stream_id_t *id)
+void transcode_osd_close( sout_stream_t *p_stream, sout_stream_id_sys_t *id)
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
 
@@ -110,7 +110,7 @@ void transcode_osd_close( sout_stream_t *p_stream, sout_stream_id_t *id)
     p_sys->b_osd = false;
 }
 
-int transcode_osd_process( sout_stream_t *p_stream, sout_stream_id_t *id,
+int transcode_osd_process( sout_stream_t *p_stream, sout_stream_id_sys_t *id,
                                   block_t *in, block_t **out )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
@@ -121,7 +121,7 @@ int transcode_osd_process( sout_stream_t *p_stream, sout_stream_id_t *id,
     {
         video_format_t fmt;
         video_format_Init( &fmt, 0 );
-        video_format_Setup( &fmt, 0, 720, 576, 1, 1 );
+        video_format_Setup( &fmt, 0, 720, 576, 720, 576, 1, 1 );
         p_subpic = spu_Render( p_sys->p_spu, NULL, &fmt, &fmt, in->i_dts, in->i_dts, false );
     }
     else
@@ -154,7 +154,7 @@ int transcode_osd_process( sout_stream_t *p_stream, sout_stream_id_t *id,
 }
 
 bool transcode_osd_add( sout_stream_t *p_stream, es_format_t *p_fmt,
-                                sout_stream_id_t *id)
+                                sout_stream_id_sys_t *id)
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
 

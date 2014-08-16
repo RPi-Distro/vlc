@@ -2,7 +2,7 @@
  * text_style.c
  *****************************************************************************
  * Copyright (C) 1999-2010 VLC authors and VideoLAN
- * $Id: 26606f907f09b9e7c0b93e1ef3ed3d6a459bc1ef $
+ * $Id: a779814ea4eb4a4e0ef8fecc2cb87292411a58a8 $
  *
  * Author: basOS G <noxelia 4t gmail , com>
  *
@@ -37,7 +37,8 @@ text_style_t *text_style_New( void )
 
     /* initialize to default text style */
     p_style->psz_fontname = NULL;
-    p_style->i_font_size = 22;
+    p_style->psz_monofontname = NULL;
+    p_style->i_font_size = STYLE_DEFAULT_FONT_SIZE;
     p_style->i_font_color = 0xffffff;
     p_style->i_font_alpha = 0xff;
     p_style->i_style_flags = STYLE_OUTLINE;
@@ -67,6 +68,9 @@ text_style_t *text_style_Copy( text_style_t *p_dst, const text_style_t *p_src )
     if( p_src->psz_fontname )
         p_dst->psz_fontname = strdup( p_src->psz_fontname );
 
+    if( p_src->psz_monofontname )
+        p_dst->psz_monofontname = strdup( p_src->psz_fontname );
+
     return p_dst;
 }
 
@@ -85,6 +89,8 @@ void text_style_Delete( text_style_t *p_style )
 {
     if( p_style )
         free( p_style->psz_fontname );
+    if( p_style )
+        free( p_style->psz_monofontname );
     free( p_style );
 }
 

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * extended_panels.cpp : Extended controls panels
  ****************************************************************************
- * Copyright (C) 2006-2012 the VideoLAN team
- * $Id: 3b32011d838f867b21b3eabd19abd89cd7db8304 $
+ * Copyright (C) 2006-2013 the VideoLAN team
+ * $Id: 4ee8eed31ed8626fa7feac855cfe2fd5a3197a53 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea .t videolan d@t org>
@@ -47,39 +47,16 @@
 #include "qt4.hpp"
 #include "input_manager.hpp"
 #include "util/qt_dirs.hpp"
+#include "util/customwidgets.hpp"
 
 #include "../../audio_filter/equalizer_presets.h"
-#include <vlc_intf_strings.h>
 #include <vlc_vout.h>
 #include <vlc_modules.h>
 #include <vlc_plugin.h>
 
-#include <vlc_charset.h> /* us_strtod */
-
+static char *ChangeFiltersString( struct intf_thread_t *p_intf, const char *psz_filter_type, const char *psz_name, bool b_add );
+static void ChangeAFiltersString( struct intf_thread_t *p_intf, const char *psz_name, bool b_add );
 static void ChangeVFiltersString( struct intf_thread_t *p_intf, const char *psz_name, bool b_add );
-
-#if 0
-class ConfClickHandler : public QObject
-{
-public:
-    ConfClickHandler( intf_thread_t *_p_intf, ExtVideo *_e ) : QObject ( _e ) {
-        e = _e; p_intf = _p_intf;
-    }
-    virtual ~ConfClickHandler() {}
-    bool eventFilter( QObject *obj, QEvent *evt )
-    {
-        if( evt->type() == QEvent::MouseButtonPress )
-        {
-            e->gotoConf( obj );
-            return true;
-        }
-        return false;
-    }
-private:
-    ExtVideo* e;
-    intf_thread_t *p_intf;
-};
-#endif
 
 const QString ModuleFromWidgetName( QObject *obj )
 {
@@ -226,10 +203,16 @@ ExtVideo::ExtVideo( intf_thread_t *_p_intf, QTabWidget *_parent ) :
     SETUP_VFILTER( mirror )
 
     SETUP_VFILTER( gaussianblur )
-    SETUP_VFILTER_OPTION( gaussianbluSigmaSlider, valueChanged( int ) )
+    SETUP_VFILTER_OPTION( gaussianblurSigmaSlider, valueChanged( int ) )
 
     SETUP_VFILTER( antiflicker )
     SETUP_VFILTER_OPTION( antiflickerSofteningSizeSlider, valueChanged( int ) )
+
+    SETUP_VFILTER( hqdn3d )
+    SETUP_VFILTER_OPTION( hqdn3dLumaSpatSlider, valueChanged( int ) )
+    SETUP_VFILTER_OPTION( hqdn3dLumaTempSlider, valueChanged( int ) )
+    SETUP_VFILTER_OPTION( hqdn3dChromaSpatSlider, valueChanged( int ) )
+    SETUP_VFILTER_OPTION( hqdn3dChromaTempSlider, valueChanged( int ) )
 
 
     if( module_exists( "atmo" ) )
@@ -292,39 +275,9 @@ void ExtVideo::clean()
     ui.cropRightPx->setValue( 0 );
 }
 
-static void ChangeVFiltersString( struct intf_thread_t *p_intf, const char *psz_name, bool b_add )
+static char *ChangeFiltersString( struct intf_thread_t *p_intf, const char *psz_filter_type, const char *psz_name, bool b_add )
 {
     char *psz_parser, *psz_string;
-    const char *psz_filter_type;
-
-    module_t *p_obj = module_find( psz_name );
-    if( !p_obj )
-    {
-        msg_Err( p_intf, "Unable to find filter module \"%s\".", psz_name );
-        return;
-    }
-
-    if( module_provides( p_obj, "video splitter" ) )
-    {
-        psz_filter_type = "video-splitter";
-    }
-    else if( module_provides( p_obj, "video filter2" ) )
-    {
-        psz_filter_type = "video-filter";
-    }
-    else if( module_provides( p_obj, "sub source" ) )
-    {
-        psz_filter_type = "sub-source";
-    }
-    else if( module_provides( p_obj, "sub filter" ) )
-    {
-        psz_filter_type = "sub-filter";
-    }
-    else
-    {
-        msg_Err( p_intf, "Unknown video filter type." );
-        return;
-    }
 
     psz_string = config_GetPsz( p_intf, psz_filter_type );
 
@@ -341,14 +294,14 @@ static void ChangeVFiltersString( struct intf_thread_t *p_intf, const char *psz_
                             psz_string, psz_name ) == -1 )
             {
                 free( psz_parser );
-                return;
+                return NULL;
             }
             free( psz_parser );
         }
         else
         {
             free( psz_string );
-            return;
+            return NULL;
         }
     }
     else
@@ -375,16 +328,72 @@ static void ChangeVFiltersString( struct intf_thread_t *p_intf, const char *psz_
         else
         {
             free( psz_string );
-            return;
+            return NULL;
         }
     }
+    return psz_string;
+}
+
+static void ChangeAFiltersString( struct intf_thread_t *p_intf, const char *psz_name, bool b_add )
+{
+    char *psz_string;
+
+    module_t *p_obj = module_find( psz_name );
+    if( !p_obj )
+    {
+        msg_Err( p_intf, "Unable to find filter module \"%s\".", psz_name );
+        return;
+    }
+
+    psz_string = ChangeFiltersString( p_intf, "audio-filter", psz_name, b_add );
+    if( !psz_string )
+        return;
+
+    config_PutPsz( p_intf, "audio-filter", psz_string );
+
+    free( psz_string );
+}
+
+static const char* GetVFilterType( struct intf_thread_t *p_intf, const char *psz_name )
+{
+    module_t *p_obj = module_find( psz_name );
+    if( !p_obj )
+    {
+        msg_Err( p_intf, "Unable to find filter module \"%s\".", psz_name );
+        return NULL;
+    }
+
+    if( module_provides( p_obj, "video splitter" ) )
+        return "video-splitter";
+    else if( module_provides( p_obj, "video filter2" ) )
+        return "video-filter";
+    else if( module_provides( p_obj, "sub source" ) )
+        return "sub-source";
+    else if( module_provides( p_obj, "sub filter" ) )
+        return "sub-filter";
+    else
+    {
+        msg_Err( p_intf, "Unknown video filter type." );
+        return NULL;
+    }
+}
+
+static void ChangeVFiltersString( struct intf_thread_t *p_intf, const char *psz_name, bool b_add )
+{
+    char *psz_string;
+    const char *psz_filter_type = GetVFilterType( p_intf, psz_name );
+
+    psz_string = ChangeFiltersString( p_intf, psz_filter_type, psz_name, b_add );
+    if( !psz_string )
+        return;
+
     /* Vout is not kept, so put that in the config */
     config_PutPsz( p_intf, psz_filter_type, psz_string );
 
     /* Try to set on the fly */
     if( !strcmp( psz_filter_type, "video-splitter" ) )
     {
-        playlist_t *p_playlist = pl_Get( p_intf );
+        playlist_t *p_playlist = THEPL;
         var_SetString( p_playlist, psz_filter_type, psz_string );
     }
     else
@@ -529,7 +538,7 @@ void ExtVideo::setWidgetValue( QObject *widget )
     QCheckBox      *checkbox      = qobject_cast<QCheckBox*>     ( widget );
     QSpinBox       *spinbox       = qobject_cast<QSpinBox*>      ( widget );
     QDoubleSpinBox *doublespinbox = qobject_cast<QDoubleSpinBox*>( widget );
-    QDial          *dial          = qobject_cast<QDial*>         ( widget );
+    VLCQDial       *dial          = qobject_cast<VLCQDial*>      ( widget );
     QLineEdit      *lineedit      = qobject_cast<QLineEdit*>     ( widget );
     QComboBox      *combobox      = qobject_cast<QComboBox*>     ( widget );
 
@@ -574,30 +583,82 @@ void ExtVideo::setWidgetValue( QObject *widget )
                      i_type );
 }
 
-void ExtVideo::updateFilterOptions()
+void ExtVideo::setFilterOption( struct intf_thread_t *p_intf, const char *psz_module, const char *psz_option,
+        int i_int, double f_float, QString val )
 {
-    QString module = ModuleFromWidgetName( sender()->parent() );
-    //std::cout << "Module name: " << module.toStdString() << std::endl;
-    QString option = OptionFromWidgetName( sender() );
-    //std::cout << "Option name: " << option.toStdString() << std::endl;
-
-    vlc_object_t *p_obj = ( vlc_object_t * )
-        vlc_object_find_name( p_intf->p_libvlc, qtu( module ) );
+    vlc_object_t *p_obj = ( vlc_object_t * )vlc_object_find_name( p_intf->p_libvlc, psz_module );
     int i_type;
     bool b_is_command;
+
     if( !p_obj )
     {
-        msg_Warn( p_intf, "Module %s not found. You'll need to restart the filter to take the change into account.", qtu( module ) );
-        i_type = config_GetType( p_intf, qtu( option ) );
+        msg_Warn( p_intf, "Module %s not found. You'll need to restart the filter to take the change into account.", psz_module );
+        i_type = config_GetType( p_intf, psz_option );
         b_is_command = false;
     }
     else
     {
-        i_type = var_Type( p_obj, qtu( option ) );
+        i_type = var_Type( p_obj, psz_option );
         if( i_type == 0 )
-            i_type = config_GetType( p_intf, qtu( option ) );
+            i_type = config_GetType( p_intf, psz_option );
         b_is_command = ( i_type & VLC_VAR_ISCOMMAND );
     }
+
+    i_type &= VLC_VAR_CLASS;
+    if( i_type == VLC_VAR_INTEGER || i_type == VLC_VAR_BOOL )
+    {
+        if( i_int == -1 )
+            msg_Warn( p_intf, "Could not find the correct Integer widget" );
+        config_PutInt( p_intf, psz_option, i_int );
+        if( b_is_command )
+        {
+            if( i_type == VLC_VAR_INTEGER )
+                var_SetInteger( p_obj, psz_option, i_int );
+            else
+                var_SetBool( p_obj, psz_option, i_int );
+        }
+    }
+    else if( i_type == VLC_VAR_FLOAT )
+    {
+        if( f_float == -1 )
+            msg_Warn( p_intf, "Could not find the correct Float widget" );
+        config_PutFloat( p_intf, psz_option, f_float );
+        if( b_is_command )
+            var_SetFloat( p_obj, psz_option, f_float );
+    }
+    else if( i_type == VLC_VAR_STRING )
+    {
+        if( val.isNull() )
+            msg_Warn( p_intf, "Could not find the correct String widget" );
+        config_PutPsz( p_intf, psz_option, qtu( val ) );
+        if( b_is_command )
+            var_SetString( p_obj, psz_option, qtu( val ) );
+    }
+    else
+        msg_Err( p_intf,
+                 "Module %s's %s variable is of an unsupported type ( %d )",
+                 psz_module,
+                 psz_option,
+                 i_type );
+
+    if( !b_is_command )
+    {
+        msg_Warn( p_intf, "Module %s's %s variable isn't a command. Brute-restarting the filter.",
+                 psz_module,
+                 psz_option );
+        ChangeVFiltersString( p_intf, psz_module, false );
+        ChangeVFiltersString( p_intf, psz_module, true );
+    }
+
+    if( p_obj ) vlc_object_release( p_obj );
+}
+
+void ExtVideo::updateFilterOptions()
+{
+    QString module = ModuleFromWidgetName( sender()->parent() );
+    //msg_Dbg( p_intf, "Module name: %s", qtu( module ) );
+    QString option = OptionFromWidgetName( sender() );
+    //msg_Dbg( p_intf, "Option name: %s", qtu( option ) );
 
     /* Try to cast to all the widgets we're likely to encounter. Only
      * one of the casts is expected to work. */
@@ -605,96 +666,64 @@ void ExtVideo::updateFilterOptions()
     QCheckBox      *checkbox      = qobject_cast<QCheckBox*>     ( sender() );
     QSpinBox       *spinbox       = qobject_cast<QSpinBox*>      ( sender() );
     QDoubleSpinBox *doublespinbox = qobject_cast<QDoubleSpinBox*>( sender() );
-    QDial          *dial          = qobject_cast<QDial*>         ( sender() );
+    VLCQDial       *dial          = qobject_cast<VLCQDial*>      ( sender() );
     QLineEdit      *lineedit      = qobject_cast<QLineEdit*>     ( sender() );
     QComboBox      *combobox      = qobject_cast<QComboBox*>     ( sender() );
 
-    i_type &= VLC_VAR_CLASS;
-    if( i_type == VLC_VAR_INTEGER || i_type == VLC_VAR_BOOL )
-    {
-        int i_int = 0;
-        if( slider )        i_int = slider->value();
-        else if( checkbox ) i_int = checkbox->checkState() == Qt::Checked;
-        else if( spinbox )  i_int = spinbox->value();
-        else if( dial )     i_int = ( 540-dial->value() )%360;
-        else if( lineedit ) i_int = lineedit->text().toInt( NULL,16 );
-        else if( combobox ) i_int = combobox->itemData( combobox->currentIndex() ).toInt();
-        else msg_Warn( p_intf, "Could not find the correct Integer widget" );
-        config_PutInt( p_intf, qtu( option ), i_int );
-        if( b_is_command )
-        {
-            if( i_type == VLC_VAR_INTEGER )
-                var_SetInteger( p_obj, qtu( option ), i_int );
-            else
-                var_SetBool( p_obj, qtu( option ), i_int );
-        }
+    int i_int = -1;
+    double f_float = -1.;
+    QString val;
+
+    if( slider ) {
+        i_int = slider->value();
+        f_float = ( double )slider->value() / ( double )slider->tickInterval(); /* hack alert! */
     }
-    else if( i_type == VLC_VAR_FLOAT )
-    {
-        double f_float = 0;
-        if( slider )             f_float = ( double )slider->value()
-                                         / ( double )slider->tickInterval(); /* hack alert! */
-        else if( doublespinbox ) f_float = doublespinbox->value();
-        else if( dial ) f_float = (540 - dial->value()) % 360;
-        else if( lineedit ) f_float = lineedit->text().toDouble();
-        else msg_Warn( p_intf, "Could not find the correct Float widget" );
-        config_PutFloat( p_intf, qtu( option ), f_float );
-        if( b_is_command )
-            var_SetFloat( p_obj, qtu( option ), f_float );
+    else if( checkbox ) i_int = checkbox->checkState() == Qt::Checked;
+    else if( spinbox ) i_int = spinbox->value();
+    else if( doublespinbox ) f_float = doublespinbox->value();
+    else if( dial ) {
+        i_int = (540 - dial->value()) % 360;
+        f_float = (540 - dial->value()) / 360.;
     }
-    else if( i_type == VLC_VAR_STRING )
+    else if( lineedit ) {
+        i_int = lineedit->text().toInt( NULL,16 );
+        f_float = lineedit->text().toDouble();
+        val = lineedit->text();
+    }
+    else if( combobox ) {
+        i_int = combobox->itemData( combobox->currentIndex() ).toInt();
+        val = combobox->itemData( combobox->currentIndex() ).toString();
+    }
+
+    setFilterOption( p_intf, qtu( module ), qtu( option ), i_int, f_float, val);
+}
+
+int ExtVideo::getPostprocessing( struct intf_thread_t *p_intf)
+{
+    char *psz_config = config_GetPsz(p_intf, "video-filter");
+    int i_q = -1;
+    if (psz_config) {
+        if (strstr(psz_config, "postproc"))
+            i_q = config_GetInt(p_intf, "postproc-q");
+        free(psz_config);
+    }
+    return i_q;
+}
+
+void ExtVideo::setPostprocessing( struct intf_thread_t *p_intf, int q)
+{
+    const char *psz_name = "postproc";
+
+    if( q == -1 )
     {
-        QString val;
-        if( lineedit )
-            val = lineedit->text();
-        else if( combobox )
-            val = combobox->itemData( combobox->currentIndex() ).toString();
-        else
-            msg_Warn( p_intf, "Could not find the correct String widget" );
-        config_PutPsz( p_intf, qtu( option ), qtu( val ) );
-        if( b_is_command )
-            var_SetString( p_obj, qtu( option ), qtu( val ) );
+        ChangeVFiltersString( p_intf, psz_name, false );
     }
     else
-        msg_Err( p_intf,
-                 "Module %s's %s variable is of an unsupported type ( %d )",
-                 qtu( module ),
-                 qtu( option ),
-                 i_type );
-
-    if( !b_is_command )
     {
-        msg_Warn( p_intf, "Module %s's %s variable isn't a command. Brute-restarting the filter.",
-                 qtu( module ),
-                 qtu( option ) );
-        ChangeVFiltersString( p_intf, qtu( module ), false );
-        ChangeVFiltersString( p_intf, qtu( module ), true );
+        ChangeVFiltersString( p_intf, psz_name, false );
+        setFilterOption( p_intf, "postproc", "postproc-q", q, -1, QString() );
     }
-
-    if( p_obj ) vlc_object_release( p_obj );
 }
-
-#if 0
-void ExtVideo::gotoConf( QObject* src )
-{
-#define SHOWCONF( module ) \
-    if( src->objectName().contains( module ) ) \
-    { \
-        PrefsDialog::getInstance( p_intf )->showModulePrefs( module ); \
-        return; \
-    }
-    SHOWCONF( "clone" );
-    SHOWCONF( "magnify" );
-    SHOWCONF( "wave" );
-    SHOWCONF( "ripple" );
-    SHOWCONF( "invert" );
-    SHOWCONF( "puzzle" );
-    SHOWCONF( "wall" );
-    SHOWCONF( "gradient" );
-    SHOWCONF( "colorthres" );
-    SHOWCONF( "anaglyph" )
-}
-#endif
 
 /**********************************************************************
  * v4l2 controls
@@ -722,7 +751,7 @@ void ExtV4l2::showEvent( QShowEvent *event )
 
 void ExtV4l2::Refresh( void )
 {
-    vlc_object_t *p_obj = (vlc_object_t*)vlc_object_find_name( pl_Get(p_intf), "v4l2" );
+    vlc_object_t *p_obj = (vlc_object_t*)vlc_object_find_name( THEPL, "v4l2" );
     help->hide();
     if( box )
     {
@@ -885,7 +914,7 @@ void ExtV4l2::ValueChange( bool value )
 void ExtV4l2::ValueChange( int value )
 {
     QObject *s = sender();
-    vlc_object_t *p_obj = (vlc_object_t*)vlc_object_find_name( pl_Get(p_intf), "v4l2" );
+    vlc_object_t *p_obj = (vlc_object_t*)vlc_object_find_name( THEPL, "v4l2" );
     if( p_obj )
     {
         QString var = s->objectName();
@@ -1073,6 +1102,7 @@ AudioFilterControlWidget::~AudioFilterControlWidget()
 
 void AudioFilterControlWidget::enable( bool b_enable ) const
 {
+    ChangeAFiltersString( p_intf, qtu(name), b_enable );
     playlist_EnableAudioFilter( THEPL, qtu(name), b_enable );
 }
 

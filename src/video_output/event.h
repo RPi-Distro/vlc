@@ -2,7 +2,7 @@
  * event.h: vout event
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: c8123e83183991e1fdcefc4bf6336a0daa420028 $
+ * $Id: b076c69fd9c03847cd623d98a2fa2a069afe1b38 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -54,7 +54,7 @@ static inline void vout_SendEventMouseMoved(vout_thread_t *vout, int x, int y)
 }
 static inline void vout_SendEventMousePressed(vout_thread_t *vout, int button)
 {
-    int key;
+    int key = KEY_UNSET;
     var_OrInteger(vout, "mouse-button-down", 1 << button);
 
     switch (button)

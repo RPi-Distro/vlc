@@ -22696,29 +22696,3 @@ Author: Felix Paul Kühne <fkuehne@videolan.org>
 Date:   Sun Jan 2 18:58:53 2005 +0000
 
     * moved the preferences-window to a seperate nib-file
-
-commit 46f1af78e551014ce2e88d6924b71b5f4502f34c
-Author: Felix Paul Kühne <fkuehne@videolan.org>
-Date:   Sat Jan 1 18:13:51 2005 +0000
-
-    * give credit to Jonas Larsen for creating the Danish l10n
-    * replace all "@" with " at "
-
-commit d1ddeb74fd85b4837e5a2d37a2088b7405397aa6
-Author: Felix Paul Kühne <fkuehne@videolan.org>
-Date:   Sat Jan 1 17:54:05 2005 +0000
-
-    * build libiconv without i18n-support, so it can be compiled without gettext -- gettext will be compiled afterwards, so it can take advantage of libiconv
-
-commit 5fc224c4aadc7f7eb1085a207341105838231ca9
-Author: Felix Paul Kühne <fkuehne@videolan.org>
-Date:   Sat Jan 1 16:29:51 2005 +0000
-
-    * make sure gettext is built before libiconv, since it is needed for its compilation
-
-commit 3d673c28f04c970a29f2d67d2329a3ee31940cd7
-Author: Felix Paul Kühne <fkuehne@videolan.org>
-Date:   Sat Jan 1 15:41:08 2005 +0000
-
-    * use "heanet.dl.sourceforge.net" for downloading FreeType, since www.freetype.org does not respond
-    * use "ftp.heanet.ie" instead of "ftp.gnu.org" as GNU mirror, since the main-server does not respond (I'll revoke this change, when the main-server is usable again)

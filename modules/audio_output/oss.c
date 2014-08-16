@@ -29,6 +29,7 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include <errno.h>
 #include <sys/types.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -98,7 +99,8 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
     int fd = vlc_open (device, O_WRONLY);
     if (fd == -1)
     {
-        msg_Err (aout, "cannot open OSS device %s: %m", device);
+        msg_Err (aout, "cannot open OSS device %s: %s", device,
+                 vlc_strerror_c(errno));
         return VLC_EGENERIC;
     }
     msg_Dbg (aout, "using OSS device: %s", device);
@@ -139,7 +141,8 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
 
     if (ioctl (fd, SNDCTL_DSP_SETFMT, &format) < 0)
     {
-        msg_Err (aout, "cannot set audio format 0x%X: %m", format);
+        msg_Err (aout, "cannot set audio format 0x%X: %s", format,
+                 vlc_strerror_c(errno));
         goto error;
     }
 
@@ -166,7 +169,8 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
     int channels = spdif ? 2 : aout_FormatNbChannels (fmt);
     if (ioctl (fd, SNDCTL_DSP_CHANNELS, &channels) < 0)
     {
-        msg_Err (aout, "cannot set %d channels: %m", channels);
+        msg_Err (aout, "cannot set %d channels: %s", channels,
+                 vlc_strerror_c(errno));
         goto error;
     }
 
@@ -186,7 +190,8 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
     int rate = spdif ? 48000 : fmt->i_rate;
     if (ioctl (fd, SNDCTL_DSP_SPEED, &rate) < 0)
     {
-        msg_Err (aout, "cannot set %d Hz sample rate: %m", rate);
+        msg_Err (aout, "cannot set %d Hz sample rate: %s", rate,
+                 vlc_strerror_c(errno));
         goto error;
     }
 
@@ -209,6 +214,22 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
     }
     aout_FormatPrepare (fmt);
 
+    /* Select timing */
+    unsigned bytes;
+    if (spdif)
+        bytes = AOUT_SPDIF_SIZE;
+    else
+        bytes = fmt->i_rate / (CLOCK_FREQ / AOUT_MIN_PREPARE_TIME)
+                * fmt->i_bytes_per_frame;
+    if (unlikely(bytes < 16))
+        bytes = 16;
+
+    int frag = (AOUT_MAX_ADVANCE_TIME / AOUT_MIN_PREPARE_TIME) << 16
+             | (32 - clz32(bytes - 1));
+    if (ioctl (fd, SNDCTL_DSP_SETFRAGMENT, &frag) < 0)
+        msg_Err (aout, "cannot set 0x%08x fragment: %s", frag,
+                 vlc_strerror_c(errno));
+
     sys->fd = fd;
     VolumeSync (aout);
     sys->starting = true;
@@ -226,7 +247,7 @@ static int TimeGet (audio_output_t *aout, mtime_t *restrict pts)
 
     if (ioctl (sys->fd, SNDCTL_DSP_GETODELAY, &delay) < 0)
     {
-        msg_Warn (aout, "cannot get delay: %m");
+        msg_Warn (aout, "cannot get delay: %s", vlc_strerror_c(errno));
         return -1;
     }
 
@@ -252,7 +273,7 @@ static void Play (audio_output_t *aout, block_t *block)
             block->i_buffer -= bytes;
         }
         else
-            msg_Err (aout, "cannot write samples: %m");
+            msg_Err (aout, "cannot write samples: %s", vlc_strerror_c(errno));
     }
     block_Release (block);
 
@@ -329,7 +350,7 @@ static int VolumeSet (audio_output_t *aout, float vol)
         level |= level << 8;
     if (!sys->mute && ioctl (fd, SNDCTL_DSP_SETPLAYVOL, &level) < 0)
     {
-        msg_Err (aout, "cannot set volume: %m");
+        msg_Err (aout, "cannot set volume: %s", vlc_strerror_c(errno));
         return -1;
     }
 
@@ -348,7 +369,7 @@ static int MuteSet (audio_output_t *aout, bool mute)
     int level = mute ? 0 : (sys->level | (sys->level << 8));
     if (ioctl (fd, SNDCTL_DSP_SETPLAYVOL, &level) < 0)
     {
-        msg_Err (aout, "cannot mute: %m");
+        msg_Err (aout, "cannot mute: %s", vlc_strerror_c(errno));
         return -1;
     }
 
@@ -368,7 +389,7 @@ static int DevicesEnum (audio_output_t *aout)
 
     if (ioctl (fd, SNDCTL_SYSINFO, &si) < 0)
     {
-        msg_Err (aout, "cannot get system infos: %m");
+        msg_Err (aout, "cannot get system infos: %s", vlc_strerror(errno));
         goto out;
     }
 
@@ -381,7 +402,8 @@ static int DevicesEnum (audio_output_t *aout)
 
         if (ioctl (fd, SNDCTL_AUDIOINFO, &ai) < 0)
         {
-            msg_Warn (aout, "cannot get device %d infos: %m", i);
+            msg_Warn (aout, "cannot get device %d infos: %s", i,
+                      vlc_strerror_c(errno));
             continue;
         }
         if (ai.caps & (PCM_CAP_HIDDEN|PCM_CAP_MODEM))

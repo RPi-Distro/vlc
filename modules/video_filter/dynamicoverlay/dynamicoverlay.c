@@ -2,7 +2,7 @@
  * dynamicoverlay.c : dynamic overlay plugin for vlc
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: 789c272c21d676bfe8da313a7688fa8101b9dfcd $
+ * $Id: ab8129a817e764e76ae7799f885ffce5cba09ad5 $
  *
  * Author: Søren Bøg <avacore@videolan.org>
  *
@@ -175,8 +175,8 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
         p_sys->i_inputfd = vlc_open( p_sys->psz_inputfile, O_RDONLY | O_NONBLOCK );
         if( p_sys->i_inputfd == -1 )
         {
-            msg_Warn( p_filter, "Failed to grab input file: %s (%m)",
-                      p_sys->psz_inputfile );
+            msg_Warn( p_filter, "Failed to grab input file: %s (%s)",
+                      p_sys->psz_inputfile, vlc_strerror_c(errno) );
         }
         else
         {
@@ -193,8 +193,8 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
         {
             if( errno != ENXIO )
             {
-                msg_Warn( p_filter, "Failed to grab output file: %s (%m)",
-                          p_sys->psz_outputfile );
+                msg_Warn( p_filter, "Failed to grab output file: %s (%s)",
+                          p_sys->psz_outputfile, vlc_strerror_c(errno) );
             }
         }
         else
@@ -215,7 +215,8 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
             /* We hit an error */
             if( errno != EAGAIN )
             {
-                msg_Warn( p_filter, "Error on input file: %m" );
+                msg_Warn( p_filter, "Error on input file: %s",
+                          vlc_strerror_c(errno) );
                 close( p_sys->i_inputfd );
                 p_sys->i_inputfd = -1;
             }
@@ -321,7 +322,8 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
             /* We hit an error */
             if( errno != EAGAIN )
             {
-                msg_Warn( p_filter, "Error on output file: %m" );
+                msg_Warn( p_filter, "Error on output file: %s",
+                          vlc_strerror_c(errno) );
                 close( p_sys->i_outputfd );
                 p_sys->i_outputfd = -1;
             }

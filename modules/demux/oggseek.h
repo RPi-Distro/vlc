@@ -49,14 +49,17 @@ struct oggseek_index_entry
     int64_t i_pagepos_end;
 };
 
-const demux_index_entry_t *oggseek_theora_index_entry_add ( logical_stream_t *,
-                                                            int64_t i_granule,
-                                                            int64_t i_pagepos );
+int64_t Ogg_GetKeyframeGranule ( logical_stream_t *p_stream, int64_t i_granule );
+bool    Ogg_IsKeyFrame ( logical_stream_t *, ogg_packet * );
+
+int64_t Oggseek_GranuleToAbsTimestamp ( logical_stream_t *p_stream, int64_t i_granule,
+                                       bool b_presentation );
+int     Oggseek_BlindSeektoAbsoluteTime ( demux_t *, logical_stream_t *, int64_t, bool );
+int     Oggseek_BlindSeektoPosition ( demux_t *, logical_stream_t *, double f, bool );
+int     Oggseek_SeektoAbsolutetime ( demux_t *, logical_stream_t *, int64_t i_granulepos );
+const demux_index_entry_t *OggSeek_IndexAdd ( logical_stream_t *, int64_t, int64_t );
+void    Oggseek_ProbeEnd( demux_t * );
 
 void oggseek_index_entries_free ( demux_index_entry_t * );
-
-int64_t oggseek_get_last_frame ( demux_t *, logical_stream_t *);
-
-int oggseek_find_frame ( demux_t *, logical_stream_t *, int64_t i_tframe );
 
 int64_t oggseek_read_page ( demux_t * );

@@ -2,7 +2,7 @@
  * extended.cpp : Extended controls - Undocked
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 0e9b906922250bbe08d52654b330e2a965df47bb $
+ * $Id: 05750cbcd6d6cc260990f6189bba591962d4c7a1 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -61,7 +61,7 @@ ExtendedDialog::ExtendedDialog( intf_thread_t *_p_intf )
     QTabWidget *audioTab = new QTabWidget( audioWidget );
 
     equal = new Equalizer( p_intf, audioTab );
-    audioTab->addTab( equal, qtr( "Graphic Equalizer" ) );
+    audioTab->addTab( equal, qtr( "Equalizer" ) );
 
     Compressor *compres = new Compressor( p_intf, audioTab );
     audioTab->addTab( compres, qtr( "Compressor" ) );

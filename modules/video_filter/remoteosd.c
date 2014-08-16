@@ -2,7 +2,7 @@
  * remoteosd.c: remote osd over vnc filter module
  *****************************************************************************
  * Copyright (C) 2007-2008 Matthias Bauer
- * $Id: 09593c2a66b1a9142d50bc30670efe3efec36b14 $
+ * $Id: 4b73e21ff1dd61b4369ba668207d9420ef515a13 $
  *
  * Authors: Matthias Bauer <matthias dot bauer #_at_# gmx dot ch>
  *
@@ -308,7 +308,7 @@ static int CreateFilter ( vlc_object_t *p_this )
     var_AddCallback( p_filter->p_libvlc, "key-pressed", KeyEvent, p_this );
 
     es_format_Init( &p_filter->fmt_out, SPU_ES, VLC_CODEC_SPU );
-    p_filter->fmt_out.i_priority = 0;
+    p_filter->fmt_out.i_priority = ES_PRIORITY_SELECTABLE_MIN;
 
     vlc_gcrypt_init();
 

@@ -2,7 +2,7 @@
  * interface_widgets.hpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: d4be935f82d11b2016afa897470dec1fe90013a6 $
+ * $Id: 520039f92ff047d24aa7c6c1bc6c667baeefb4cc $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -200,22 +200,14 @@ private:
     intf_thread_t *p_intf;
     bool b_remainingTime;
     int cachedLength;
-    QTimer *bufTimer;
-
-    bool buffering;
-    bool showBuffering;
-    float bufVal;
     TimeLabel::Display displayType;
 
     char psz_length[MSTRTIME_MAX_SIZE];
     char psz_time[MSTRTIME_MAX_SIZE];
     void toggleTimeDisplay();
-    void paintEvent( QPaintEvent* );
 private slots:
     void setDisplayPosition( float pos, int64_t time, int length );
     void setDisplayPosition( float pos );
-    void updateBuffering( float );
-    void updateBuffering();
 };
 
 class SpeedLabel : public QLabel

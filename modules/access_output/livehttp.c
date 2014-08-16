@@ -34,9 +34,7 @@
 #include <time.h>
 #include <fcntl.h>
 #include <errno.h>
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
+#include <unistd.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
@@ -104,6 +102,9 @@ static void Close( vlc_object_t * );
 #define RANDOMIV_TEXT N_("Use randomized IV for encryption")
 #define RANDOMIV_LONGTEXT N_("Generate IV instead using segment-number as IV")
 
+#define INTITIAL_SEG_TEXT N_("Number of first segment")
+#define INITIAL_SEG_LONGTEXT N_("The number of the first segment generated")
+
 vlc_module_begin ()
     set_description( N_("HTTP Live streaming output") )
     set_shortname( N_("LiveHTTP" ))
@@ -113,6 +114,7 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_SOUT_ACO )
     add_integer( SOUT_CFG_PREFIX "seglen", 10, SEGLEN_TEXT, SEGLEN_LONGTEXT, false )
     add_integer( SOUT_CFG_PREFIX "numsegs", 0, NUMSEGS_TEXT, NUMSEGS_LONGTEXT, false )
+    add_integer( SOUT_CFG_PREFIX "initial-segment-number", 1, INTITIAL_SEG_TEXT, INITIAL_SEG_LONGTEXT, false )
     add_bool( SOUT_CFG_PREFIX "splitanywhere", false,
               SPLITANYWHERE_TEXT, SPLITANYWHERE_LONGTEXT, true )
     add_bool( SOUT_CFG_PREFIX "delsegs", true,
@@ -153,6 +155,7 @@ static const char *const ppsz_sout_options[] = {
     "key-file",
     "key-loadfile",
     "generate-iv",
+    "initial-segment-number",
     NULL
 };
 
@@ -186,6 +189,7 @@ struct sout_access_out_sys_t
     block_t *block_buffer;
     int i_handle;
     unsigned i_numsegs;
+    unsigned i_initial_segment;
     bool b_delsegs;
     bool b_ratecontrol;
     bool b_splitanywhere;
@@ -201,6 +205,9 @@ struct sout_access_out_sys_t
 
 static int LoadCryptFile( sout_access_out_t *p_access);
 static int CryptSetup( sout_access_out_t *p_access, char *keyfile );
+static int CheckSegmentChange( sout_access_out_t *p_access, block_t *p_buffer );
+static ssize_t writeSegment( sout_access_out_t *p_access );
+static ssize_t openNextFile( sout_access_out_t *p_access, sout_access_out_sys_t *p_sys );
 /*****************************************************************************
  * Open: open the file
  *****************************************************************************/
@@ -218,7 +225,7 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    if( unlikely( !( p_sys = malloc ( sizeof( *p_sys ) ) ) ) )
+    if( unlikely( !( p_sys = calloc ( 1, sizeof( *p_sys ) ) ) ) )
         return VLC_ENOMEM;
 
     p_sys->i_seglen = var_GetInteger( p_access, SOUT_CFG_PREFIX "seglen" );
@@ -227,6 +234,7 @@ static int Open( vlc_object_t *p_this )
     p_sys->block_buffer = NULL;
 
     p_sys->i_numsegs = var_GetInteger( p_access, SOUT_CFG_PREFIX "numsegs" );
+    p_sys->i_initial_segment = var_GetInteger( p_access, SOUT_CFG_PREFIX "initial-segment-number" );
     p_sys->b_splitanywhere = var_GetBool( p_access, SOUT_CFG_PREFIX "splitanywhere" );
     p_sys->b_delsegs = var_GetBool( p_access, SOUT_CFG_PREFIX "delsegs" );
     p_sys->b_ratecontrol = var_GetBool( p_access, SOUT_CFG_PREFIX "ratecontrol") ;
@@ -279,7 +287,7 @@ static int Open( vlc_object_t *p_this )
     }
 
     p_sys->i_handle = -1;
-    p_sys->i_segment = 0;
+    p_sys->i_segment = p_sys->i_initial_segment > 0 ? p_sys->i_initial_segment -1 : 0;
     p_sys->psz_cursegPath = NULL;
 
     p_access->pf_write = Write;
@@ -298,16 +306,23 @@ static int CryptSetup( sout_access_out_t *p_access, char *key_file )
     uint8_t key[16];
     char *keyfile = NULL;
 
-    if( key_file )
-        keyfile = strdup( key_file );
-    else
-        keyfile = var_InheritString( p_access, SOUT_CFG_PREFIX "key-file" );
-
     if( !p_sys->key_uri ) /*No key uri, assume no encryption wanted*/
     {
         msg_Dbg( p_access, "No key uri, no encryption");
         return VLC_SUCCESS;
     }
+
+    if( key_file )
+        keyfile = strdup( key_file );
+    else
+        keyfile = var_InheritString( p_access, SOUT_CFG_PREFIX "key-file" );
+
+    if( unlikely(keyfile == NULL) )
+    {
+        msg_Err( p_access, "No key-file, no encryption" );
+        return VLC_EGENERIC;
+    }
+
     vlc_gcrypt_init();
 
     /*Setup encryption cipher*/
@@ -316,20 +331,17 @@ static int CryptSetup( sout_access_out_t *p_access, char *key_file )
     if( err )
     {
         msg_Err( p_access, "Openin AES Cipher failed: %s", gpg_strerror(err));
-        return VLC_EGENERIC;
-    }
-
-    if( unlikely(keyfile == NULL) )
-    {
-        msg_Err( p_access, "No key-file, no encryption" );
+        free( keyfile );
         return VLC_EGENERIC;
     }
 
     int keyfd = vlc_open( keyfile, O_RDONLY | O_NONBLOCK );
     if( unlikely( keyfd == -1 ) )
     {
-        msg_Err( p_access, "Unable to open keyfile %s: %m", keyfile );
+        msg_Err( p_access, "Unable to open keyfile %s: %s", keyfile,
+                 vlc_strerror_c(errno) );
         free( keyfile );
+        gcry_cipher_close( p_sys->aes_ctx );
         return VLC_EGENERIC;
     }
     free( keyfile );
@@ -340,6 +352,7 @@ static int CryptSetup( sout_access_out_t *p_access, char *key_file )
     if( keylen < 16 )
     {
         msg_Err( p_access, "No key at least 16 octects (you provided %zd), no encryption", keylen );
+        gcry_cipher_close( p_sys->aes_ctx );
         return VLC_EGENERIC;
     }
 
@@ -347,7 +360,7 @@ static int CryptSetup( sout_access_out_t *p_access, char *key_file )
     if(err)
     {
         msg_Err(p_access, "Setting AES key failed: %s", gpg_strerror(err));
-        gcry_cipher_close( p_sys->aes_ctx);
+        gcry_cipher_close( p_sys->aes_ctx );
         return VLC_EGENERIC;
     }
 
@@ -370,7 +383,8 @@ static int LoadCryptFile( sout_access_out_t *p_access )
 
     if( unlikely( stream == NULL ) )
     {
-        msg_Err( p_access, "Unable to open keyloadfile %s: %m", p_sys->psz_keyfile );
+        msg_Err( p_access, "Unable to open keyloadfile %s: %s",
+                 p_sys->psz_keyfile, vlc_strerror_c(errno) );
         return VLC_EGENERIC;
     }
 
@@ -379,7 +393,8 @@ static int LoadCryptFile( sout_access_out_t *p_access )
     ssize_t len = getline( &key_uri, &(size_t){0}, stream );
     if( unlikely( len == -1 ) )
     {
-        msg_Err( p_access, "Cannot read %s: %m", p_sys->psz_keyfile );
+        msg_Err( p_access, "Cannot read %s: %s", p_sys->psz_keyfile,
+                 vlc_strerror_c(errno) );
         clearerr( stream );
         fclose( stream );
         free( key_uri );
@@ -391,7 +406,8 @@ static int LoadCryptFile( sout_access_out_t *p_access )
     len = getline( &key_file, &(size_t){0}, stream );
     if( unlikely( len == -1 ) )
     {
-        msg_Err( p_access, "Cannot read %s: %m", p_sys->psz_keyfile );
+        msg_Err( p_access, "Cannot read %s: %s", p_sys->psz_keyfile,
+                 vlc_strerror_c(errno) );
         clearerr( stream );
         fclose( stream );
 
@@ -497,7 +513,7 @@ static void destroySegment( output_segment_t *segment )
 static uint32_t segmentAmountNeeded( sout_access_out_sys_t *p_sys )
 {
     float duration = .0f;
-    for( unsigned index = 1; index <= vlc_array_count( p_sys->segments_t ) ; index++ )
+    for( unsigned index = 1; (int)index <= vlc_array_count( p_sys->segments_t ); index++ )
     {
         output_segment_t* segment = vlc_array_item_at_index( p_sys->segments_t, vlc_array_count( p_sys->segments_t ) - index );
         duration += segment->f_seglength;
@@ -511,25 +527,25 @@ static uint32_t segmentAmountNeeded( sout_access_out_sys_t *p_sys )
 
 
 /************************************************************************
- * isFirstItemRemovable: Check for draft 11 section 6.2.2 
- * check that the first item has been around outside playlist 
- * segment->f_seglength + p_sys->i_seglen before it is removed.
+ * isFirstItemRemovable: Check for draft 11 section 6.2.2
+ * check that the first item has been around outside playlist
+ * segment->f_seglength + (p_sys->i_numsegs * p_sys->i_seglen) before it is removed.
  ************************************************************************/
 static bool isFirstItemRemovable( sout_access_out_sys_t *p_sys, uint32_t i_firstseg, uint32_t i_index_offset )
 {
     float duration = .0f;
 
-    /* Check that segment has been out of playlist for seglenght + p_sys->i_seglen amount
+    /* Check that segment has been out of playlist for seglenght + (p_sys->i_numsegs * p_sys->i_seglen) amount
      * We check this by calculating duration of the items that replaced first item in playlist
      */
-    for(int index=0; index < i_index_offset; index++ )
+    for( unsigned int index = 0; index < i_index_offset; index++ )
     {
         output_segment_t *segment = vlc_array_item_at_index( p_sys->segments_t, p_sys->i_segment - i_firstseg + index );
         duration += segment->f_seglength;
     }
     output_segment_t *first = vlc_array_item_at_index( p_sys->segments_t, 0 );
 
-    return duration >= (first->f_seglength + (float)p_sys->i_seglen);
+    return duration >= (first->f_seglength + (float)(p_sys->i_numsegs * p_sys->i_seglen));
 }
 
 /************************************************************************
@@ -541,8 +557,11 @@ static int updateIndexAndDel( sout_access_out_t *p_access, sout_access_out_sys_t
     uint32_t i_firstseg;
     unsigned i_index_offset = 0;
 
-    if ( p_sys->i_numsegs == 0 || p_sys->i_segment < p_sys->i_numsegs )
-        i_firstseg = 1;
+    if ( p_sys->i_numsegs == 0 ||
+         p_sys->i_segment < ( p_sys->i_numsegs + p_sys->i_initial_segment ) )
+    {
+        i_firstseg = p_sys->i_initial_segment == 0 ? 1 : p_sys->i_initial_segment;
+    }
     else
     {
         unsigned numsegs = segmentAmountNeeded( p_sys );
@@ -595,13 +614,14 @@ static int updateIndexAndDel( sout_access_out_t *p_access, sout_access_out_sys_t
                 psz_current_uri = strdup( segment->psz_key_uri );
                 if( p_sys->b_generate_iv )
                 {
-                    unsigned long long iv_hi = 0, iv_lo = 0;
-                    for( unsigned short i = 0; i < 8; i++ )
+                    unsigned long long iv_hi = segment->aes_ivs[0];
+                    unsigned long long iv_lo = segment->aes_ivs[8];
+                    for( unsigned short i = 1; i < 8; i++ )
                     {
-                        iv_hi |= segment->aes_ivs[i] & 0xff;
                         iv_hi <<= 8;
-                        iv_lo |= segment->aes_ivs[8+i] & 0xff;
+                        iv_hi |= segment->aes_ivs[i] & 0xff;
                         iv_lo <<= 8;
+                        iv_lo |= segment->aes_ivs[8+i] & 0xff;
                     }
                     ret = fprintf( fp, "#EXT-X-KEY:METHOD=AES-128,URI=\"%s\",IV=0X%16.16llx%16.16llx\n",
                                    segment->psz_key_uri, iv_hi, iv_lo );
@@ -611,6 +631,7 @@ static int updateIndexAndDel( sout_access_out_t *p_access, sout_access_out_sys_t
                 }
                 if( ret < 0 )
                 {
+                    free( psz_current_uri );
                     free( psz_idxTmp );
                     fclose( fp );
                     return -1;
@@ -620,6 +641,8 @@ static int updateIndexAndDel( sout_access_out_t *p_access, sout_access_out_sys_t
             val = fprintf( fp, "#EXTINF:%s,\n%s\n", segment->psz_duration, segment->psz_uri);
             if ( val < 0 )
             {
+                free( psz_current_uri );
+                free( psz_idxTmp );
                 fclose( fp );
                 return -1;
             }
@@ -729,66 +752,41 @@ static void Close( vlc_object_t * p_this )
 {
     sout_access_out_t *p_access = (sout_access_out_t*)p_this;
     sout_access_out_sys_t *p_sys = p_access->p_sys;
+    block_t *output_block = p_sys->block_buffer;
+    p_sys->block_buffer = NULL;
 
-    msg_Dbg( p_access, "Flushing buffer to last file");
-    bool crypted = false;
-    while( p_sys->block_buffer )
+    while( output_block )
     {
-        if( p_sys->key_uri && !crypted)
-        {
-            if( p_sys->stuffing_size )
-            {
-                p_sys->block_buffer = block_Realloc( p_sys->block_buffer, p_sys->stuffing_size, p_sys->block_buffer->i_buffer );
-                if( unlikely(!p_sys->block_buffer) )
-                    return;
-                memcpy( p_sys->block_buffer->p_buffer, p_sys->stuffing_bytes, p_sys->stuffing_size );
-                p_sys->stuffing_size = 0;
-            }
-            size_t original = p_sys->block_buffer->i_buffer;
-            size_t padded = (original + 15 ) & ~15;
-            size_t pad = padded - original;
-            if( pad )
-            {
-                p_sys->stuffing_size = 16 - pad;
-                p_sys->block_buffer->i_buffer -= p_sys->stuffing_size;
-                memcpy( p_sys->stuffing_bytes, &p_sys->block_buffer->p_buffer[p_sys->block_buffer->i_buffer], p_sys->stuffing_size );
-            }
+        block_t *p_next = output_block->p_next;
+        output_block->p_next = NULL;
 
-            gcry_error_t err = gcry_cipher_encrypt( p_sys->aes_ctx,
-                                p_sys->block_buffer->p_buffer, p_sys->block_buffer->i_buffer, NULL, 0 );
-            if( err )
+        /* Since we are flushing, check the segment change by hand and don't wait
+         * possible keyframe*/
+        if( ((float)(output_block->i_length * CLOCK_FREQ / INT64_C(1000000) ) +
+            (float)(output_block->i_dts - p_sys->i_opendts)) >= p_sys->i_seglenm )
+        {
+            closeCurrentSegment( p_access, p_sys, false );
+            if( unlikely(openNextFile( p_access, p_sys ) < 0 ) )
             {
-                msg_Err( p_access, "Encryption failure: %s ", gpg_strerror(err) );
-                break;
-            }
-            crypted = true;
-        }
-        ssize_t val = write( p_sys->i_handle, p_sys->block_buffer->p_buffer, p_sys->block_buffer->i_buffer );
-        if ( val == -1 )
-        {
-           if ( errno == EINTR )
-              continue;
-           block_ChainRelease ( p_sys->block_buffer);
-           break;
-        }
-        if( !p_sys->block_buffer->p_next )
-        {
-            p_sys->f_seglen = (float)( p_sys->block_buffer->i_length / (1000000)) +
-                               (float)(p_sys->block_buffer->i_dts - p_sys->i_opendts) / CLOCK_FREQ;
-        }
+                block_ChainRelease( output_block );
+                output_block = NULL;
+                block_ChainRelease( p_next );
 
-        if ( likely( (size_t)val >= p_sys->block_buffer->i_buffer ) )
-        {
-           block_t *p_next = p_sys->block_buffer->p_next;
-           block_Release (p_sys->block_buffer);
-           p_sys->block_buffer = p_next;
-           crypted=false;
+                /* Jump out of the loop so we can close rest of the stuff*/
+                continue;
+            }
+            p_sys->i_opendts = p_sys->block_buffer ? p_sys->block_buffer->i_dts : output_block->i_dts;
         }
-        else
-        {
-           p_sys->block_buffer->p_buffer += val;
-           p_sys->block_buffer->i_buffer -= val;
-        }
+        Write( p_access, output_block );
+        output_block = p_next;
+    }
+
+    ssize_t writevalue = writeSegment( p_access );
+    msg_Dbg( p_access, "Writing.. %zd", writevalue );
+    if( unlikely( writevalue < 0 ) )
+    {
+        block_ChainRelease( p_sys->block_buffer );
+        p_sys->block_buffer = NULL;
     }
 
     closeCurrentSegment( p_access, p_sys, true );
@@ -803,6 +801,12 @@ static void Close( vlc_object_t * p_this )
     {
         output_segment_t *segment = vlc_array_item_at_index( p_sys->segments_t, 0 );
         vlc_array_remove( p_sys->segments_t, 0 );
+        if( p_sys->b_delsegs && p_sys->i_numsegs && segment->psz_filename )
+        {
+            msg_Dbg( p_access, "Removing segment number %d name %s", segment->i_segment_number, segment->psz_filename );
+            vlc_unlink( segment->psz_filename );
+        }
+
         destroySegment( segment );
     }
     vlc_array_destroy( p_sys->segments_t );
@@ -844,11 +848,9 @@ static ssize_t openNextFile( sout_access_out_t *p_access, sout_access_out_sys_t 
     uint32_t i_newseg = p_sys->i_segment + 1;
 
     /* Create segment and fill it info that we can (everything excluding duration */
-    output_segment_t *segment = (output_segment_t*)malloc(sizeof(output_segment_t));
+    output_segment_t *segment = (output_segment_t*)calloc(1, sizeof(output_segment_t));
     if( unlikely( !segment ) )
         return -1;
-
-    memset( segment, 0 , sizeof( output_segment_t ) );
 
     segment->i_segment_number = i_newseg;
     segment->psz_filename = formatSegmentPath( p_access->psz_path, i_newseg, true );
@@ -858,6 +860,7 @@ static ssize_t openNextFile( sout_access_out_t *p_access, sout_access_out_sys_t 
     if ( unlikely( !segment->psz_filename ) )
     {
         msg_Err( p_access, "Format segmentpath failed");
+        destroySegment( segment );
         return -1;
     }
 
@@ -865,7 +868,8 @@ static ssize_t openNextFile( sout_access_out_t *p_access, sout_access_out_sys_t 
                      O_TRUNC, 0666 );
     if ( fd == -1 )
     {
-        msg_Err( p_access, "cannot open `%s' (%m)", segment->psz_filename );
+        msg_Err( p_access, "cannot open `%s' (%s)", segment->psz_filename,
+                 vlc_strerror_c(errno) );
         destroySegment( segment );
         return -1;
     }
@@ -891,6 +895,103 @@ static ssize_t openNextFile( sout_access_out_t *p_access, sout_access_out_sys_t 
     p_sys->i_segment = i_newseg;
     return fd;
 }
+/*****************************************************************************
+ * CheckSegmentChange: Check if segment needs to be closed and new opened
+ *****************************************************************************/
+static int CheckSegmentChange( sout_access_out_t *p_access, block_t *p_buffer )
+{
+    sout_access_out_sys_t *p_sys = p_access->p_sys;
+    block_t *output = p_sys->block_buffer;
+
+    if( p_sys->i_handle > 0 &&
+        ( ( p_buffer->i_dts - p_sys->i_opendts +
+          ( p_buffer->i_length * CLOCK_FREQ / INT64_C(1000000) )
+        ) >= p_sys->i_seglenm ) )
+     {
+        closeCurrentSegment( p_access, p_sys, false );
+     }
+
+    if ( p_sys->i_handle < 0 )
+    {
+        p_sys->i_opendts = output ? output->i_dts : p_buffer->i_dts;
+        //For first segment we can get negative duration otherwise...?
+        if( ( p_sys->i_opendts != VLC_TS_INVALID ) &&
+            ( p_buffer->i_dts < p_sys->i_opendts ) )
+            p_sys->i_opendts = p_buffer->i_dts;
+
+        if ( openNextFile( p_access, p_sys ) < 0 )
+           return VLC_EGENERIC;
+    }
+    return VLC_SUCCESS;
+}
+
+static ssize_t writeSegment( sout_access_out_t *p_access )
+{
+    sout_access_out_sys_t *p_sys = p_access->p_sys;
+    block_t *output = p_sys->block_buffer;
+    p_sys->block_buffer = NULL;
+    ssize_t i_write=0;
+    bool crypted = false;
+    while( output )
+    {
+        if( p_sys->key_uri && !crypted )
+        {
+            if( p_sys->stuffing_size )
+            {
+                output = block_Realloc( output, p_sys->stuffing_size, output->i_buffer );
+                if( unlikely(!output ) )
+                    return VLC_ENOMEM;
+                memcpy( output->p_buffer, p_sys->stuffing_bytes, p_sys->stuffing_size );
+                p_sys->stuffing_size = 0;
+            }
+            size_t original = output->i_buffer;
+            size_t padded = (output->i_buffer + 15 ) & ~15;
+            size_t pad = padded - original;
+            if( pad )
+            {
+                p_sys->stuffing_size = 16-pad;
+                output->i_buffer -= p_sys->stuffing_size;
+                memcpy(p_sys->stuffing_bytes, &output->p_buffer[output->i_buffer], p_sys->stuffing_size);
+            }
+
+            gcry_error_t err = gcry_cipher_encrypt( p_sys->aes_ctx,
+                                output->p_buffer, output->i_buffer, NULL, 0 );
+            if( err )
+            {
+                msg_Err( p_access, "Encryption failure: %s ", gpg_strerror(err) );
+                return -1;
+            }
+            crypted=true;
+
+        }
+        ssize_t val = write( p_sys->i_handle, output->p_buffer, output->i_buffer );
+        if ( val == -1 )
+        {
+           if ( errno == EINTR )
+              continue;
+           return -1;
+        }
+
+        p_sys->f_seglen =
+            (float)(output->i_length / INT64_C(1000000) ) +
+            (float)(output->i_dts - p_sys->i_opendts) / CLOCK_FREQ;
+
+        if ( (size_t)val >= output->i_buffer )
+        {
+           block_t *p_next = output->p_next;
+           block_Release (output);
+           output = p_next;
+           crypted=false;
+        }
+        else
+        {
+           output->p_buffer += val;
+           output->i_buffer -= val;
+        }
+        i_write += val;
+    }
+    return i_write;
+}
 
 /*****************************************************************************
  * Write: standard write on a file descriptor.
@@ -900,91 +1001,23 @@ static ssize_t Write( sout_access_out_t *p_access, block_t *p_buffer )
     size_t i_write = 0;
     sout_access_out_sys_t *p_sys = p_access->p_sys;
     block_t *p_temp;
-
     while( p_buffer )
     {
-        if ( ( p_sys->b_splitanywhere || ( p_buffer->i_flags & BLOCK_FLAG_HEADER ) ) )
+        if( ( p_sys->b_splitanywhere  || ( p_buffer->i_flags & BLOCK_FLAG_HEADER ) ) )
         {
-            bool crypted = false;
-            block_t *output = p_sys->block_buffer;
-            p_sys->block_buffer = NULL;
-
-
-            if( p_sys->i_handle > 0 &&
-                ( p_buffer->i_dts - p_sys->i_opendts +
-                  p_buffer->i_length * CLOCK_FREQ / INT64_C(1000000)
-                ) >= p_sys->i_seglenm )
-                closeCurrentSegment( p_access, p_sys, false );
-
-            if ( p_sys->i_handle < 0 )
+            if( unlikely( CheckSegmentChange( p_access, p_buffer ) != VLC_SUCCESS ) )
             {
-                p_sys->i_opendts = output ? output->i_dts : p_buffer->i_dts;
-                //For first segment we can get negative duration otherwise...?
-                if( ( p_sys->i_opendts != VLC_TS_INVALID ) &&
-                    ( p_buffer->i_dts < p_sys->i_opendts ) )
-                    p_sys->i_opendts = p_buffer->i_dts;
-                if ( openNextFile( p_access, p_sys ) < 0 )
-                   return -1;
+                block_ChainRelease ( p_buffer );
+                return -1;
             }
 
-            while( output )
+            ssize_t writevalue = writeSegment( p_access );
+            if( unlikely( writevalue < 0 ) )
             {
-                if( p_sys->key_uri && !crypted )
-                {
-                    if( p_sys->stuffing_size )
-                    {
-                        output = block_Realloc( output, p_sys->stuffing_size, output->i_buffer );
-                        if( unlikely(!output ) )
-                            return VLC_ENOMEM;
-                        memcpy( output->p_buffer, p_sys->stuffing_bytes, p_sys->stuffing_size );
-                        p_sys->stuffing_size = 0;
-                    }
-                    size_t original = output->i_buffer;
-                    size_t padded = (output->i_buffer + 15 ) & ~15;
-                    size_t pad = padded - original;
-                    if( pad )
-                    {
-                        p_sys->stuffing_size = 16-pad;
-                        output->i_buffer -= p_sys->stuffing_size;
-                        memcpy(p_sys->stuffing_bytes, &output->p_buffer[output->i_buffer], p_sys->stuffing_size);
-                    }
-
-                    gcry_error_t err = gcry_cipher_encrypt( p_sys->aes_ctx,
-                                        output->p_buffer, output->i_buffer, NULL, 0 );
-                    if( err )
-                    {
-                        msg_Err( p_access, "Encryption failure: %s ", gpg_strerror(err) );
-                        return -1;
-                    }
-                    crypted=true;
-
-                }
-                ssize_t val = write( p_sys->i_handle, output->p_buffer, output->i_buffer );
-                if ( val == -1 )
-                {
-                   if ( errno == EINTR )
-                      continue;
-                   block_ChainRelease ( p_buffer );
-                   return -1;
-                }
-                p_sys->f_seglen =
-                    (float)output->i_length / INT64_C(1000000) +
-                    (float)(output->i_dts - p_sys->i_opendts) / CLOCK_FREQ;
-
-                if ( (size_t)val >= output->i_buffer )
-                {
-                   block_t *p_next = output->p_next;
-                   block_Release (output);
-                   output = p_next;
-                   crypted=false;
-                }
-                else
-                {
-                   output->p_buffer += val;
-                   output->i_buffer -= val;
-                }
-                i_write += val;
+                block_ChainRelease ( p_buffer );
+                return -1;
             }
+            i_write += writevalue;
         }
 
         p_temp = p_buffer->p_next;

@@ -2,7 +2,7 @@
  * libavi.h : LibAVI library
  ******************************************************************************
  * Copyright (C) 2001-2003 VLC authors and VideoLAN
- * $Id: 4ae9aa6579f0864ed5361fa4eb83d20609d08bbe $
+ * $Id: d3684fd47ea3489f4e3a2feea37a57a477392325 $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -259,6 +259,7 @@ void   *_AVI_ChunkFind ( avi_chunk_t *, vlc_fourcc_t, int );
 
 int     AVI_ChunkReadRoot( stream_t *, avi_chunk_t *p_root );
 void    AVI_ChunkFreeRoot( stream_t *, avi_chunk_t *p_chk  );
+int     AVI_ChunkFetchIndexes( stream_t *, avi_chunk_t *p_riff );
 
 #define AVI_ChunkCount( p_chk, i_fourcc ) \
     _AVI_ChunkCount( AVI_CHUNK(p_chk), i_fourcc )

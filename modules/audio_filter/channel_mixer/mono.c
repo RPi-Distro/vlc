@@ -2,7 +2,7 @@
  * mono.c : stereo2mono downmixsimple channel mixer plug-in
  *****************************************************************************
  * Copyright (C) 2006 M2X
- * $Id: fa86589814217d08f10f453d6baa20f882494b0c $
+ * $Id: 0bb71ccd33ff7881cdb70dc638588c54adea0fd6 $
  *
  * Authors: Jean-Paul Saman <jpsaman at m2x dot nl>
  *
@@ -30,10 +30,6 @@
 
 #include <math.h>                                        /* sqrt */
 #include <stdint.h>                                         /* int16_t .. */
-
-#ifdef HAVE_UNISTD_H
-#   include <unistd.h>
-#endif
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
@@ -99,7 +95,7 @@ static const char *const ppsz_pos_descriptions[] =
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin ()
-    set_description( N_("Audio filter for stereo to mono conversion") )
+    set_description( N_("Stereo to mono downmixer") )
     set_capability( "audio filter", 0 )
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_AFILTER )
@@ -351,13 +347,8 @@ static int OpenFilter( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    if( (p_filter->fmt_in.audio.i_format != p_filter->fmt_out.audio.i_format) ||
-        (p_filter->fmt_in.audio.i_format != VLC_CODEC_S16N) ||
-        (p_filter->fmt_out.audio.i_format != VLC_CODEC_S16N) )
-    {
-        /*msg_Err( p_this, "couldn't load mono filter" );*/
-        return VLC_EGENERIC;
-    }
+    p_filter->fmt_in.audio.i_format = VLC_CODEC_S16N;
+    p_filter->fmt_out.audio.i_format = VLC_CODEC_S16N;
 
     /* Allocate the memory needed to store the module's structure */
     p_sys = p_filter->p_sys = malloc( sizeof(filter_sys_t) );

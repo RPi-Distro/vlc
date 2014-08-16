@@ -1,8 +1,8 @@
 /*****************************************************************************
 * simple_prefs.m: Simple Preferences for Mac OS X
 *****************************************************************************
-* Copyright (C) 2008-2013 VLC authors and VideoLAN
-* $Id: d5efae0fd8ed14d3c9eb0b744a3fd068f1fd2c2d $
+* Copyright (C) 2008-2014 VLC authors and VideoLAN
+* $Id: 3b89472a6a07261977193af351aefc4e83b432ad $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -234,7 +234,7 @@ static VLCSimplePrefs *_o_sharedInstance = nil;
     [o_hotkeys_listbox setDoubleAction:@selector(hotkeyTableDoubleClick:)];
 
     /* setup useful stuff */
-    o_hotkeysNonUseableKeys = [[NSArray arrayWithObjects:@"Command-c", @"Command-x", @"Command-v", @"Command-a", @"Command-," , @"Command-h", @"Command-Alt-h", @"Command-Shift-o", @"Command-o", @"Command-d", @"Command-n", @"Command-s", @"Command-z", @"Command-l", @"Command-r", @"Command-3", @"Command-m", @"Command-w", @"Command-Shift-w", @"Command-Shift-c", @"Command-Shift-p", @"Command-i", @"Command-e", @"Command-Shift-e", @"Command-b", @"Command-Shift-m", @"Command-Ctrl-m", @"Command-?", @"Command-Alt-?", nil] retain];
+    o_hotkeysNonUseableKeys = [[NSArray arrayWithObjects:@"Command-c", @"Command-x", @"Command-v", @"Command-a", @"Command-," , @"Command-h", @"Command-Alt-h", @"Command-Shift-o", @"Command-o", @"Command-d", @"Command-n", @"Command-s", @"Command-l", @"Command-r", @"Command-3", @"Command-m", @"Command-w", @"Command-Shift-w", @"Command-Shift-c", @"Command-Shift-p", @"Command-i", @"Command-e", @"Command-Shift-e", @"Command-b", @"Command-Shift-m", @"Command-Ctrl-m", @"Command-?", @"Command-Alt-?", nil] retain];
 }
 
 #define CreateToolbarItem(o_name, o_desc, o_img, sel) \
@@ -306,7 +306,7 @@ create_toolbar_item(NSString * o_itemIdent, NSString * o_name, NSString * o_desc
 {
     /* audio */
     [o_audio_dolby_txt setStringValue: _NS("Force detection of Dolby Surround")];
-    [o_audio_effects_box setTitle: _NS("Effects")];
+    [o_audio_effects_box setTitle: _NS("Audio Effects")];
     [o_audio_enable_ckb setTitle: _NS("Enable audio")];
     [o_audio_general_box setTitle: _NS("General Audio")];
     [o_audio_lang_txt setStringValue: _NS("Preferred Audio language")];
@@ -356,7 +356,6 @@ create_toolbar_item(NSString * o_itemIdent, NSString * o_name, NSString * o_desc
     [o_intf_style_txt setStringValue: _NS("Interface style")];
     [o_intf_style_dark_bcell setTitle: _NS("Dark")];
     [o_intf_style_bright_bcell setTitle: _NS("Bright")];
-    [o_intf_art_txt setStringValue: _NS("Album art download policy")];
     [o_intf_embedded_ckb setTitle: _NS("Show video within the main window")];
     [o_intf_nativefullscreen_ckb setTitle: _NS("Use the native fullscreen mode")];
     [o_intf_fspanel_ckb setTitle: _NS("Show Fullscreen Controller")];
@@ -364,6 +363,7 @@ create_toolbar_item(NSString * o_itemIdent, NSString * o_name, NSString * o_desc
     [o_intf_appleremote_ckb setTitle: _NS("Control playback with the Apple Remote")];
     [o_intf_appleremote_sysvol_ckb setTitle: _NS("Control system volume with the Apple Remote")];
     [o_intf_mediakeys_ckb setTitle: _NS("Control playback with media keys")];
+    [o_intf_art_ckb setTitle: _NS("Allow metadata network access")];
     [o_intf_update_ckb setTitle: _NS("Automatically check for updates")];
     [o_intf_last_update_lbl setStringValue: @""];
     [o_intf_enableGrowl_ckb setTitle: _NS("Enable Growl notifications (on playlist item change)")];
@@ -371,7 +371,8 @@ create_toolbar_item(NSString * o_itemIdent, NSString * o_name, NSString * o_desc
     [o_intf_pauseminimized_ckb setTitle: _NS("Pause the video playback when minimized")];
     [o_intf_luahttp_box setTitle:_NS("Lua HTTP")];
     [o_intf_luahttppwd_lbl setStringValue:_NS("Password")];
-    [o_intf_pauseitunes_lbl setStringValue:_NS("Control iTunes during playback")];
+    [o_intf_pauseitunes_lbl setStringValue:_NS("Control external music players")];
+    [o_intf_continueplayback_lbl setStringValue:_NS("Continue playback")];
 
     /* Subtitles and OSD */
     [o_osd_encoding_txt setStringValue: _NS("Default Encoding")];
@@ -396,7 +397,7 @@ create_toolbar_item(NSString * o_itemIdent, NSString * o_name, NSString * o_desc
     [o_video_enable_ckb setTitle: _NS("Enable video")];
     [o_video_fullscreen_ckb setTitle: _NS("Fullscreen")];
     [o_video_videodeco_ckb setTitle: _NS("Window decorations")];
-    [o_video_onTop_ckb setTitle: _NS("Always on top")];
+    [o_video_onTop_ckb setTitle: _NS("Float on Top")];
     [o_video_skipFrames_ckb setTitle: _NS("Skip frames")];
     [o_video_snap_box setTitle: _NS("Video snapshots")];
     [o_video_snap_folder_btn setTitle: _NS("Browse...")];
@@ -449,28 +450,47 @@ static inline char * __config_GetLabel(vlc_object_t *p_this, const char *psz_nam
 
     [object removeAllItems];
     p_item = config_FindConfig(VLC_OBJECT(p_intf), name);
-
     /* serious problem, if no item found */
     assert(p_item);
 
-    for (int i = 0; i < p_item->list_count; i++) {
-        NSMenuItem *mi;
-        if (p_item->list_text != NULL)
-            mi = [[NSMenuItem alloc] initWithTitle: _NS(p_item->list_text[i]) action:NULL keyEquivalent: @""];
-        else if (p_item->list.psz[i] && strcmp(p_item->list.psz[i],"") == 0) {
-            [[object menu] addItem: [NSMenuItem separatorItem]];
-            continue;
-        }
-        else if (p_item->list.psz[i])
-            mi = [[NSMenuItem alloc] initWithTitle: [NSString stringWithUTF8String:p_item->list.psz[i]] action:NULL keyEquivalent: @""];
-        else
-            msg_Err(p_intf, "item %d of pref %s failed to be created", i, name);
-        [mi setRepresentedObject:[NSString stringWithUTF8String:p_item->list.psz[i]]];
-        [[object menu] addItem: [mi autorelease]];
-        if (p_item->value.psz && !strcmp(p_item->value.psz, p_item->list.psz[i]))
-            [object selectItem:[object lastItem]];
+    char **values, **texts;
+    ssize_t count = config_GetPszChoices(VLC_OBJECT(VLCIntf), name,
+                                         &values, &texts);
+    if (count < 0) {
+        msg_Err(p_intf, "Cannot get choices for %s", name);
+        return;
     }
-    [object setToolTip: _NS(p_item->psz_longtext)];
+    for (ssize_t i = 0; i < count && texts; i++) {
+        if (texts[i] == NULL || values[i] == NULL)
+            continue;
+
+        if (strcmp(texts[i], "") != 0) {
+            NSMenuItem *mi = [[NSMenuItem alloc] initWithTitle: toNSStr(texts[i]) action: NULL keyEquivalent: @""];
+            [mi setRepresentedObject: toNSStr(values[i])];
+            [[object menu] addItem: [mi autorelease]];
+
+            if (p_item->value.psz && !strcmp(p_item->value.psz, values[i]))
+                [object selectItem: [object lastItem]];
+            
+        } else {
+            [[object menu] addItem: [NSMenuItem separatorItem]];
+        }
+
+        free(texts[i]);
+        free(values[i]);
+    }
+
+    free(texts);
+    free(values);
+
+    if (p_item->psz_longtext)
+        [object setToolTip: _NS(p_item->psz_longtext)];
+}
+
+// just for clarification that this is a module list
+- (void)setupButton: (NSPopUpButton *)object forModuleList: (const char *)name
+{
+    [self setupButton: object forStringList: name];
 }
 
 - (void)setupButton: (NSPopUpButton *)object forIntList: (const char *)name
@@ -483,50 +503,23 @@ static inline char * __config_GetLabel(vlc_object_t *p_this, const char *psz_nam
     /* serious problem, if no item found */
     assert(p_item);
 
-    for (int i = 0; i < p_item->list_count; i++) {
-        NSMenuItem *mi;
-        if (p_item->list_text != NULL)
-            mi = [[NSMenuItem alloc] initWithTitle: _NS(p_item->list_text[i]) action:NULL keyEquivalent: @""];
-        else if (p_item->list.i[i])
-            mi = [[NSMenuItem alloc] initWithTitle: [NSString stringWithFormat: @"%d", p_item->list.i[i]] action:NULL keyEquivalent: @""];
-        else
-            msg_Err(p_intf, "item %d of pref %s failed to be created", i, name);
-        [mi setRepresentedObject:[NSNumber numberWithInt:p_item->list.i[i]]];
+    int64_t *values;
+    char **texts;
+    ssize_t count = config_GetIntChoices(VLC_OBJECT(VLCIntf), name, &values, &texts);
+    for (ssize_t i = 0; i < count; i++) {
+        NSMenuItem *mi = [[NSMenuItem alloc] initWithTitle: toNSStr(texts[i]) action: NULL keyEquivalent: @""];
+        [mi setRepresentedObject:[NSNumber numberWithInt:values[i]]];
         [[object menu] addItem: [mi autorelease]];
-        if (p_item->value.i == p_item->list.i[i])
+
+        if (p_item->value.i == values[i])
             [object selectItem:[object lastItem]];
+
+        free(texts[i]);
     }
-    [object setToolTip: _NS(p_item->psz_longtext)];
-}
+    free(texts);
 
-- (void)setupButton: (NSPopUpButton *)object forModuleList: (const char *)name
-{
-    module_config_t *p_item;
-    module_t *p_parser, **p_list;
-    int y = 0;
-
-    [object removeAllItems];
-
-    p_item = config_FindConfig(VLC_OBJECT(p_intf), name);
-    size_t count;
-    p_list = module_list_get(&count);
-    if (!p_item ||!p_list) {
-        if (p_list) module_list_free(p_list);
-        msg_Err(p_intf, "serious problem, item or list not found");
-        return;
-    }
-
-    [object addItemWithTitle: _NS("Default")];
-    for (size_t i_index = 0; i_index < count; i_index++) {
-        p_parser = p_list[i_index];
-        if (module_provides(p_parser, p_item->psz_type)) {
-            [object addItemWithTitle: [NSString stringWithUTF8String:_(module_GetLongName(p_parser)) ?: ""]];
-            if (p_item->value.psz && !strcmp(p_item->value.psz, module_get_name(p_parser, false)))
-                [object selectItem: [object lastItem]];
-        }
-    }
-    module_list_free(p_list);
-    [object setToolTip: _NS(p_item->psz_longtext)];
+    if (p_item->psz_longtext)
+        [object setToolTip: _NS(p_item->psz_longtext)];
 }
 
 - (void)setupButton: (NSButton *)object forBoolValue: (const char *)name
@@ -564,7 +557,7 @@ static inline char * __config_GetLabel(vlc_object_t *p_this, const char *psz_nam
     }
     [o_intf_language_pop selectItemAtIndex:sel];
 
-    [self setupButton: o_intf_art_pop forIntList: "album-art"];
+    [self setupButton: o_intf_art_ckb forBoolValue: "metadata-network-access"];
 
     [self setupButton: o_intf_fspanel_ckb forBoolValue: "macosx-fspanel"];
 
@@ -605,6 +598,7 @@ static inline char * __config_GetLabel(vlc_object_t *p_this, const char *psz_nam
     [self setupButton: o_intf_pauseminimized_ckb forBoolValue: "macosx-pause-minimized"];
     [self setupField: o_intf_luahttppwd_fld forOption: "http-password"];
     [self setupButton: o_intf_pauseitunes_pop forIntList: "macosx-control-itunes"];
+    [self setupButton: o_intf_continueplayback_pop forIntList: "macosx-continue-playback"];
 
     /******************
      * audio settings *
@@ -687,6 +681,9 @@ static inline char * __config_GetLabel(vlc_object_t *p_this, const char *psz_nam
     [self setupButton: o_video_snap_format_pop forStringList: "snapshot-format"];
     [self setupButton: o_video_deinterlace_pop forIntList: "deinterlace"];
     [self setupButton: o_video_deinterlace_mode_pop forStringList: "deinterlace-mode"];
+
+    // set lion fullscreen mode restrictions
+    [self enableLionFullscreenMode: [o_intf_nativefullscreen_ckb state]];
 
     /***************************
      * input & codecs settings *
@@ -876,52 +873,19 @@ static inline char * __config_GetLabel(vlc_object_t *p_this, const char *psz_nam
 
 static inline void save_int_list(intf_thread_t * p_intf, id object, const char * name)
 {
-    NSNumber *p_valueobject;
-    module_config_t *p_item;
-    p_item = config_FindConfig(VLC_OBJECT(p_intf), name);
-    p_valueobject = (NSNumber *)[[object selectedItem] representedObject];
-    assert([p_valueobject isKindOfClass:[NSNumber class]]);
-    if (p_valueobject) config_PutInt(p_intf, name, [p_valueobject intValue]);
+    NSNumber *p_valueobject = (NSNumber *)[[object selectedItem] representedObject];
+    if (p_valueobject) {
+        assert([p_valueobject isKindOfClass:[NSNumber class]]);
+        config_PutInt(p_intf, name, [p_valueobject intValue]);
+    }
 }
 
 static inline void save_string_list(intf_thread_t * p_intf, id object, const char * name)
 {
-    NSString *p_stringobject;
-    module_config_t *p_item;
-    p_item = config_FindConfig(VLC_OBJECT(p_intf), name);
-    p_stringobject = (NSString *)[[object selectedItem] representedObject];
-    assert([p_stringobject isKindOfClass:[NSString class]]);
+    NSString *p_stringobject = (NSString *)[[object selectedItem] representedObject];
     if (p_stringobject) {
+        assert([p_stringobject isKindOfClass:[NSString class]]);
         config_PutPsz(p_intf, name, [p_stringobject UTF8String]);
-    }
-}
-
-static inline void save_module_list(intf_thread_t * p_intf, id object, const char * name)
-{
-    module_config_t *p_item;
-    module_t *p_parser, **p_list;
-    NSString * objectTitle = [[object selectedItem] title];
-
-    p_item = config_FindConfig(VLC_OBJECT(p_intf), name);
-
-    size_t count;
-    p_list = module_list_get(&count);
-    for (size_t i_module_index = 0; i_module_index < count; i_module_index++) {
-        p_parser = p_list[i_module_index];
-
-        if (p_item->i_type == CONFIG_ITEM_MODULE && module_provides(p_parser, p_item->psz_type)) {
-            if ([objectTitle isEqualToString: _NS(module_GetLongName(p_parser))]) {
-                config_PutPsz(p_intf, name, module_get_name(p_parser, false));
-                break;
-            }
-        }
-    }
-    module_list_free(p_list);
-    if ([objectTitle isEqualToString: _NS("Default")]) {
-        if (!strcmp(name, "vout"))
-            config_PutPsz(p_intf, name, "");
-        else
-            config_PutPsz(p_intf, name, "none");
     }
 }
 
@@ -933,8 +897,7 @@ static inline void save_module_list(intf_thread_t * p_intf, id object, const cha
 #define SaveIntList(object, name) save_int_list(p_intf, object, name)
 
 #define SaveStringList(object, name) save_string_list(p_intf, object, name)
-
-#define SaveModuleList(object, name) save_module_list(p_intf, object, name)
+#define SaveModuleList(object, name) SaveStringList(object, name)
 
 #define getString(name) [NSString stringWithFormat:@"%s", config_GetPsz(p_intf, name)]
 
@@ -947,7 +910,7 @@ static inline void save_module_list(intf_thread_t * p_intf, id object, const cha
         [defaults setObject:[NSString stringWithUTF8String:ppsz_language[index]] forKey:@"language"];
         [defaults synchronize];
 
-        SaveIntList(o_intf_art_pop, "album-art");
+        config_PutInt(p_intf, "metadata-network-access", [o_intf_art_ckb state]);
 
         config_PutInt(p_intf, "macosx-fspanel", [o_intf_fspanel_ckb state]);
         config_PutInt(p_intf, "embedded-video", [o_intf_embedded_ckb state]);
@@ -982,6 +945,7 @@ static inline void save_module_list(intf_thread_t * p_intf, id object, const cha
         config_PutPsz(p_intf, "http-password", [[o_intf_luahttppwd_fld stringValue] UTF8String]);
 
         SaveIntList(o_intf_pauseitunes_pop, "macosx-control-itunes");
+        SaveIntList(o_intf_continueplayback_pop, "macosx-continue-playback");
 
         /* activate stuff without restart */
         if ([o_intf_appleremote_ckb state] == YES)
@@ -1124,6 +1088,9 @@ static inline void save_module_list(intf_thread_t * p_intf, id object, const cha
     o_win_rect = [o_sprefs_win frame];
     o_view_rect = [o_new_category_view frame];
 
+    if (o_currentlyShownCategoryView == o_new_category_view)
+        return;
+
     if (o_currentlyShownCategoryView != nil) {
         /* restore our window's height, if we've shown another category previously */
         o_old_view_rect = [o_currentlyShownCategoryView frame];
@@ -1155,8 +1122,30 @@ static inline void save_module_list(intf_thread_t * p_intf, id object, const cha
 #pragma mark -
 #pragma mark Specific actions
 
+// disables some video settings which do not work in lion mode
+- (void)enableLionFullscreenMode: (BOOL)b_value
+{
+    [o_video_videodeco_ckb setEnabled: !b_value];
+    [o_video_black_ckb setEnabled: !b_value];
+
+    if (b_value) {
+        [o_video_videodeco_ckb setState: NSOnState];
+        [o_video_black_ckb setState: NSOffState];
+
+        NSString *o_tooltipText = _NS("This setting cannot be changed because the native fullscreen mode is enabled.");
+        [o_video_videodeco_ckb setToolTip: o_tooltipText];
+        [o_video_black_ckb setToolTip: o_tooltipText];
+    } else {
+        [self setupButton: o_video_videodeco_ckb forBoolValue: "video-deco"];
+        [self setupButton: o_video_black_ckb forBoolValue: "macosx-black"];
+    }
+}
+
 - (IBAction)interfaceSettingChanged:(id)sender
 {
+    if (sender == o_intf_nativefullscreen_ckb)
+        [self enableLionFullscreenMode:[sender state]];
+
     b_intfSettingChanged = YES;
 }
 
@@ -1273,7 +1262,8 @@ static inline void save_module_list(intf_thread_t * p_intf, id object, const cha
         [[NSFontManager sharedFontManager] setSelectedFont:font isMultiple:NO];
     }
     [[NSFontManager sharedFontManager] setTarget: self];
-    [[NSFontPanel sharedFontPanel] orderFront:self];
+    [[NSFontPanel sharedFontPanel] setDelegate:self];
+    [[NSFontPanel sharedFontPanel] makeKeyAndOrderFront:self];
 }
 
 - (void)changeFont:(id)sender
@@ -1281,6 +1271,11 @@ static inline void save_module_list(intf_thread_t * p_intf, id object, const cha
     NSFont * font = [sender convertFont:[[NSFontManager sharedFontManager] selectedFont]];
     [o_osd_font_fld setStringValue:[font fontName]];
     [self osdSettingChanged:self];
+}
+
+- (NSUInteger)validModesForFontPanel:(NSFontPanel *)fontPanel
+{
+    return NSFontPanelFaceModeMask | NSFontPanelCollectionModeMask;
 }
 
 - (IBAction)inputSettingChanged:(id)sender
@@ -1602,9 +1597,9 @@ static inline void save_module_list(intf_thread_t * p_intf, id object, const cha
     else if (key == NSEndFunctionKey)
         [tempString appendString:@"End"];
     else if (key == NSPageUpFunctionKey)
-        [tempString appendString:@"Pageup"];
+        [tempString appendString:@"Page Up"];
     else if (key == NSPageDownFunctionKey)
-        [tempString appendString:@"Pagedown"];
+        [tempString appendString:@"Page Down"];
     else if (key == NSMenuFunctionKey)
         [tempString appendString:@"Menu"];
     else if (key == NSTabCharacter)

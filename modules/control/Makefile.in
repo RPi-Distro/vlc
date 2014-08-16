@@ -92,15 +92,15 @@ DIST_COMMON = $(top_srcdir)/modules/common.am $(srcdir)/Modules.am \
 	$(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/autotools/depcomp
 @HAVE_DYNAMIC_PLUGINS_TRUE@am__append_1 = -D__PLUGIN__
-@HAVE_DBUS_TRUE@am__append_2 = libdbus_plugin.la
-@HAVE_WIN32_FALSE@am__append_3 = \
-@HAVE_WIN32_FALSE@	$(LTLIBglobalhotkeys) \
-@HAVE_WIN32_FALSE@	libmotion_plugin.la
-
-@HAVE_WIN32_TRUE@am__append_4 = \
-@HAVE_WIN32_TRUE@	libglobalhotkeys_plugin.la \
-@HAVE_WIN32_TRUE@	libntservice_plugin.la
-
+@HAVE_DYNAMIC_PLUGINS_FALSE@am__append_2 = -DMODULE_NAME=$(MODULE_NAME)
+@HAVE_WIN32_TRUE@am__append_3 = $(top_builddir)/modules/module.rc.lo
+@HAVE_DARWIN_TRUE@am__append_4 = unimotion.c unimotion.h
+@HAVE_DARWIN_TRUE@am__append_5 = -Wl,-framework,IOKit,-framework,CoreFoundation
+@HAVE_WIN32_TRUE@am__append_6 = libntservice_plugin.la
+@HAVE_WIN32_FALSE@am__append_7 = libmotion_plugin.la
+@HAVE_DBUS_TRUE@am__append_8 = libdbus_plugin.la
+@HAVE_XCB_KEYSYMS_TRUE@am__append_9 = libxcb_hotkeys_plugin.la
+@HAVE_WIN32_TRUE@am__append_10 = libwin_hotkeys_plugin.la libwin_msg_plugin.la
 subdir = modules/control
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/dolt.m4 \
@@ -146,15 +146,16 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(libvlcdir)"
-LTLIBRARIES = $(libvlc_LTLIBRARIES)
+am__installdirs = "$(DESTDIR)$(controldir)"
+LTLIBRARIES = $(control_LTLIBRARIES) $(noinst_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
-libdbus_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am_libdbus_plugin_la_OBJECTS = libdbus_plugin_la-dbus_root.lo \
-	libdbus_plugin_la-dbus_player.lo \
-	libdbus_plugin_la-dbus_tracklist.lo libdbus_plugin_la-dbus.lo
+libdbus_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
+am__dirstamp = $(am__leading_dot)dirstamp
+am_libdbus_plugin_la_OBJECTS = dbus/libdbus_plugin_la-dbus_root.lo \
+	dbus/libdbus_plugin_la-dbus_player.lo \
+	dbus/libdbus_plugin_la-dbus_tracklist.lo \
+	dbus/libdbus_plugin_la-dbus.lo
 libdbus_plugin_la_OBJECTS = $(am_libdbus_plugin_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -164,120 +165,106 @@ libdbus_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libdbus_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-@HAVE_DBUS_TRUE@am_libdbus_plugin_la_rpath = -rpath $(libvlcdir)
-libdummy_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
+@HAVE_DBUS_TRUE@am_libdbus_plugin_la_rpath = -rpath $(controldir)
+libdummy_plugin_la_DEPENDENCIES =
 am__objects_1 = libdummy_plugin_la-dummy.lo
 am_libdummy_plugin_la_OBJECTS = $(am__objects_1)
-nodist_libdummy_plugin_la_OBJECTS =
-libdummy_plugin_la_OBJECTS = $(am_libdummy_plugin_la_OBJECTS) \
-	$(nodist_libdummy_plugin_la_OBJECTS)
+libdummy_plugin_la_OBJECTS = $(am_libdummy_plugin_la_OBJECTS)
 libdummy_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libdummy_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libdummy_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-libgestures_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
+libgestures_plugin_la_DEPENDENCIES =
 am__objects_2 = libgestures_plugin_la-gestures.lo
 am_libgestures_plugin_la_OBJECTS = $(am__objects_2)
-nodist_libgestures_plugin_la_OBJECTS =
-libgestures_plugin_la_OBJECTS = $(am_libgestures_plugin_la_OBJECTS) \
-	$(nodist_libgestures_plugin_la_OBJECTS)
+libgestures_plugin_la_OBJECTS = $(am_libgestures_plugin_la_OBJECTS)
 libgestures_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libgestures_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libgestures_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-@HAVE_WIN32_FALSE@libglobalhotkeys_plugin_la_DEPENDENCIES =  \
-@HAVE_WIN32_FALSE@	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
-@HAVE_WIN32_FALSE@	$(am__DEPENDENCIES_1)
-@HAVE_WIN32_TRUE@libglobalhotkeys_plugin_la_DEPENDENCIES =  \
-@HAVE_WIN32_TRUE@	$(am__DEPENDENCIES_2)
-am__libglobalhotkeys_plugin_la_SOURCES_DIST = globalhotkeys/xcb.c \
-	globalhotkeys/win32.c
-@HAVE_WIN32_FALSE@am_libglobalhotkeys_plugin_la_OBJECTS =  \
-@HAVE_WIN32_FALSE@	libglobalhotkeys_plugin_la-xcb.lo
-@HAVE_WIN32_TRUE@am_libglobalhotkeys_plugin_la_OBJECTS =  \
-@HAVE_WIN32_TRUE@	libglobalhotkeys_plugin_la-win32.lo
-libglobalhotkeys_plugin_la_OBJECTS =  \
-	$(am_libglobalhotkeys_plugin_la_OBJECTS)
-libglobalhotkeys_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(libglobalhotkeys_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
-@HAVE_WIN32_TRUE@am_libglobalhotkeys_plugin_la_rpath = -rpath \
-@HAVE_WIN32_TRUE@	$(libvlcdir)
-libhotkeys_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_1)
+libhotkeys_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am__objects_3 = libhotkeys_plugin_la-hotkeys.lo
 am_libhotkeys_plugin_la_OBJECTS = $(am__objects_3)
-nodist_libhotkeys_plugin_la_OBJECTS =
-libhotkeys_plugin_la_OBJECTS = $(am_libhotkeys_plugin_la_OBJECTS) \
-	$(nodist_libhotkeys_plugin_la_OBJECTS)
+libhotkeys_plugin_la_OBJECTS = $(am_libhotkeys_plugin_la_OBJECTS)
 libhotkeys_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libhotkeys_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libhotkeys_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-liblirc_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_1)
+liblirc_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am__objects_4 = liblirc_plugin_la-lirc.lo
 am_liblirc_plugin_la_OBJECTS = $(am__objects_4)
-nodist_liblirc_plugin_la_OBJECTS =
-liblirc_plugin_la_OBJECTS = $(am_liblirc_plugin_la_OBJECTS) \
-	$(nodist_liblirc_plugin_la_OBJECTS)
+liblirc_plugin_la_OBJECTS = $(am_liblirc_plugin_la_OBJECTS)
 liblirc_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(liblirc_plugin_la_CFLAGS) $(CFLAGS) \
 	$(liblirc_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-libmotion_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_1)
-am__libmotion_plugin_la_SOURCES_DIST = motion.c motionlib.c \
-	motionlib.h unimotion.c unimotion.h
-am__objects_5 =
-@HAVE_DARWIN_FALSE@am__objects_6 = $(am__objects_5)
-@HAVE_DARWIN_TRUE@am__objects_6 = libmotion_plugin_la-unimotion.lo
-am__objects_7 = libmotion_plugin_la-motion.lo \
-	libmotion_plugin_la-motionlib.lo $(am__objects_6) \
-	$(am__objects_5)
-am_libmotion_plugin_la_OBJECTS = $(am__objects_7)
-nodist_libmotion_plugin_la_OBJECTS =
-libmotion_plugin_la_OBJECTS = $(am_libmotion_plugin_la_OBJECTS) \
-	$(nodist_libmotion_plugin_la_OBJECTS)
+libmotion_plugin_la_DEPENDENCIES = libvlc_motion.la
+am_libmotion_plugin_la_OBJECTS = motion.lo
+libmotion_plugin_la_OBJECTS = $(am_libmotion_plugin_la_OBJECTS)
 libmotion_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(libmotion_plugin_la_CFLAGS) $(CFLAGS) \
-	$(libmotion_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-@HAVE_WIN32_FALSE@am_libmotion_plugin_la_rpath = -rpath $(libvlcdir)
-libnetsync_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_1)
-am__objects_8 = libnetsync_plugin_la-netsync.lo
-am_libnetsync_plugin_la_OBJECTS = $(am__objects_8)
-nodist_libnetsync_plugin_la_OBJECTS =
-libnetsync_plugin_la_OBJECTS = $(am_libnetsync_plugin_la_OBJECTS) \
-	$(nodist_libnetsync_plugin_la_OBJECTS)
+	$(AM_CFLAGS) $(CFLAGS) $(libmotion_plugin_la_LDFLAGS) \
+	$(LDFLAGS) -o $@
+@HAVE_WIN32_FALSE@am_libmotion_plugin_la_rpath = -rpath $(controldir)
+libnetsync_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+am__objects_5 = libnetsync_plugin_la-netsync.lo
+am_libnetsync_plugin_la_OBJECTS = $(am__objects_5)
+libnetsync_plugin_la_OBJECTS = $(am_libnetsync_plugin_la_OBJECTS)
 libnetsync_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libnetsync_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libnetsync_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-libntservice_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am__objects_9 = libntservice_plugin_la-ntservice.lo
-am_libntservice_plugin_la_OBJECTS = $(am__objects_9)
-nodist_libntservice_plugin_la_OBJECTS =
-libntservice_plugin_la_OBJECTS = $(am_libntservice_plugin_la_OBJECTS) \
-	$(nodist_libntservice_plugin_la_OBJECTS)
+libntservice_plugin_la_DEPENDENCIES =
+am__objects_6 = libntservice_plugin_la-ntservice.lo
+am_libntservice_plugin_la_OBJECTS = $(am__objects_6)
+libntservice_plugin_la_OBJECTS = $(am_libntservice_plugin_la_OBJECTS)
 libntservice_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libntservice_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libntservice_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-@HAVE_WIN32_TRUE@am_libntservice_plugin_la_rpath = -rpath $(libvlcdir)
-liboldrc_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_1)
-am__objects_10 = liboldrc_plugin_la-rc.lo
-am_liboldrc_plugin_la_OBJECTS = $(am__objects_10)
-nodist_liboldrc_plugin_la_OBJECTS =
-liboldrc_plugin_la_OBJECTS = $(am_liboldrc_plugin_la_OBJECTS) \
-	$(nodist_liboldrc_plugin_la_OBJECTS)
+@HAVE_WIN32_TRUE@am_libntservice_plugin_la_rpath = -rpath \
+@HAVE_WIN32_TRUE@	$(controldir)
+liboldrc_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+am__objects_7 = liboldrc_plugin_la-rc.lo
+am_liboldrc_plugin_la_OBJECTS = $(am__objects_7)
+liboldrc_plugin_la_OBJECTS = $(am_liboldrc_plugin_la_OBJECTS)
 liboldrc_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(liboldrc_plugin_la_CFLAGS) $(CFLAGS) \
 	$(liboldrc_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
+libvlc_motion_la_LIBADD =
+am__libvlc_motion_la_SOURCES_DIST = motionlib.c motionlib.h \
+	unimotion.c unimotion.h
+@HAVE_DARWIN_TRUE@am__objects_8 = libvlc_motion_la-unimotion.lo
+am_libvlc_motion_la_OBJECTS = libvlc_motion_la-motionlib.lo \
+	$(am__objects_8)
+libvlc_motion_la_OBJECTS = $(am_libvlc_motion_la_OBJECTS)
+libvlc_motion_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libvlc_motion_la_CFLAGS) $(CFLAGS) \
+	$(libvlc_motion_la_LDFLAGS) $(LDFLAGS) -o $@
+libwin_hotkeys_plugin_la_LIBADD =
+am_libwin_hotkeys_plugin_la_OBJECTS = globalhotkeys/win32.lo
+libwin_hotkeys_plugin_la_OBJECTS =  \
+	$(am_libwin_hotkeys_plugin_la_OBJECTS)
+@HAVE_WIN32_TRUE@am_libwin_hotkeys_plugin_la_rpath = -rpath \
+@HAVE_WIN32_TRUE@	$(controldir)
+libwin_msg_plugin_la_LIBADD =
+am_libwin_msg_plugin_la_OBJECTS = win_msg.lo
+libwin_msg_plugin_la_OBJECTS = $(am_libwin_msg_plugin_la_OBJECTS)
+@HAVE_WIN32_TRUE@am_libwin_msg_plugin_la_rpath = -rpath $(controldir)
+libxcb_hotkeys_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
+am_libxcb_hotkeys_plugin_la_OBJECTS =  \
+	globalhotkeys/libxcb_hotkeys_plugin_la-xcb.lo
+libxcb_hotkeys_plugin_la_OBJECTS =  \
+	$(am_libxcb_hotkeys_plugin_la_OBJECTS)
+libxcb_hotkeys_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libxcb_hotkeys_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
+@HAVE_XCB_KEYSYMS_TRUE@am_libxcb_hotkeys_plugin_la_rpath = -rpath \
+@HAVE_XCB_KEYSYMS_TRUE@	$(controldir)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -309,30 +296,24 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(libdbus_plugin_la_SOURCES) $(libdummy_plugin_la_SOURCES) \
-	$(nodist_libdummy_plugin_la_SOURCES) \
 	$(libgestures_plugin_la_SOURCES) \
-	$(nodist_libgestures_plugin_la_SOURCES) \
-	$(libglobalhotkeys_plugin_la_SOURCES) \
-	$(libhotkeys_plugin_la_SOURCES) \
-	$(nodist_libhotkeys_plugin_la_SOURCES) \
-	$(liblirc_plugin_la_SOURCES) \
-	$(nodist_liblirc_plugin_la_SOURCES) \
-	$(libmotion_plugin_la_SOURCES) \
-	$(nodist_libmotion_plugin_la_SOURCES) \
-	$(libnetsync_plugin_la_SOURCES) \
-	$(nodist_libnetsync_plugin_la_SOURCES) \
+	$(libhotkeys_plugin_la_SOURCES) $(liblirc_plugin_la_SOURCES) \
+	$(libmotion_plugin_la_SOURCES) $(libnetsync_plugin_la_SOURCES) \
 	$(libntservice_plugin_la_SOURCES) \
-	$(nodist_libntservice_plugin_la_SOURCES) \
-	$(liboldrc_plugin_la_SOURCES) \
-	$(nodist_liboldrc_plugin_la_SOURCES)
+	$(liboldrc_plugin_la_SOURCES) $(libvlc_motion_la_SOURCES) \
+	$(libwin_hotkeys_plugin_la_SOURCES) \
+	$(libwin_msg_plugin_la_SOURCES) \
+	$(libxcb_hotkeys_plugin_la_SOURCES)
 DIST_SOURCES = $(libdbus_plugin_la_SOURCES) \
 	$(libdummy_plugin_la_SOURCES) $(libgestures_plugin_la_SOURCES) \
-	$(am__libglobalhotkeys_plugin_la_SOURCES_DIST) \
 	$(libhotkeys_plugin_la_SOURCES) $(liblirc_plugin_la_SOURCES) \
-	$(am__libmotion_plugin_la_SOURCES_DIST) \
-	$(libnetsync_plugin_la_SOURCES) \
+	$(libmotion_plugin_la_SOURCES) $(libnetsync_plugin_la_SOURCES) \
 	$(libntservice_plugin_la_SOURCES) \
-	$(liboldrc_plugin_la_SOURCES)
+	$(liboldrc_plugin_la_SOURCES) \
+	$(am__libvlc_motion_la_SOURCES_DIST) \
+	$(libwin_hotkeys_plugin_la_SOURCES) \
+	$(libwin_msg_plugin_la_SOURCES) \
+	$(libxcb_hotkeys_plugin_la_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -362,14 +343,16 @@ ACLOCAL = @ACLOCAL@
 ALIASES = @ALIASES@
 ALSA_CFLAGS = @ALSA_CFLAGS@
 ALSA_LIBS = @ALSA_LIBS@
+ALTIVEC_CFLAGS = @ALTIVEC_CFLAGS@
 AMTAR = @AMTAR@
-AM_CPPFLAGS = -DMODULE_NAME=$(MODULE_NAME) \
-	-DMODULE_NAME_IS_$(MODULE_NAME) \
-	-DMODULE_STRING=\"$(MODULE_NAME)\" $(am__append_1)
+AM_CPPFLAGS = -DMODULE_STRING=\"$(MODULE_NAME)\" $(am__append_1) \
+	$(am__append_2)
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
 ARCH = @ARCH@
 AS = @AS@
+ASDCP_CFLAGS = @ASDCP_CFLAGS@
+ASDCP_LIBS = @ASDCP_LIBS@
 ASM = @ASM@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
@@ -391,20 +374,14 @@ CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
-CFLAGS_access_avio = @CFLAGS_access_avio@
-CFLAGS_access_gnomevfs = @CFLAGS_access_gnomevfs@
-CFLAGS_access_jack = @CFLAGS_access_jack@
 CFLAGS_access_mtp = @CFLAGS_access_mtp@
 CFLAGS_access_output_shout = @CFLAGS_access_output_shout@
 CFLAGS_access_sftp = @CFLAGS_access_sftp@
-CFLAGS_access_smb = @CFLAGS_access_smb@
-CFLAGS_avcodec = @CFLAGS_avcodec@
 CFLAGS_bonjour = @CFLAGS_bonjour@
 CFLAGS_caca = @CFLAGS_caca@
 CFLAGS_cdda = @CFLAGS_cdda@
 CFLAGS_dc1394 = @CFLAGS_dc1394@
 CFLAGS_deinterlace = @CFLAGS_deinterlace@
-CFLAGS_dirac = @CFLAGS_dirac@
 CFLAGS_dtstofloat32 = @CFLAGS_dtstofloat32@
 CFLAGS_dv1394 = @CFLAGS_dv1394@
 CFLAGS_dvdnav = @CFLAGS_dvdnav@
@@ -414,19 +391,15 @@ CFLAGS_flac = @CFLAGS_flac@
 CFLAGS_fluidsynth = @CFLAGS_fluidsynth@
 CFLAGS_gles1 = @CFLAGS_gles1@
 CFLAGS_gles2 = @CFLAGS_gles2@
+CFLAGS_gnomevfs = @CFLAGS_gnomevfs@
 CFLAGS_goom = @CFLAGS_goom@
-CFLAGS_i420_yuy2_altivec = @CFLAGS_i420_yuy2_altivec@
-CFLAGS_jack = @CFLAGS_jack@
 CFLAGS_kate = @CFLAGS_kate@
-CFLAGS_libass = @CFLAGS_libass@
 CFLAGS_libbluray = @CFLAGS_libbluray@
 CFLAGS_libmpeg2 = @CFLAGS_libmpeg2@
 CFLAGS_libvlccore = @CFLAGS_libvlccore@
-CFLAGS_libvnc = @CFLAGS_libvnc@
-CFLAGS_linsys_sdi = @CFLAGS_linsys_sdi@
-CFLAGS_lua = @CFLAGS_lua@
-CFLAGS_memcpyaltivec = @CFLAGS_memcpyaltivec@
-CFLAGS_motion = @CFLAGS_motion@
+CFLAGS_mmal_codec = @CFLAGS_mmal_codec@
+CFLAGS_mmal_vout = @CFLAGS_mmal_vout@
+CFLAGS_mod = @CFLAGS_mod@
 CFLAGS_mtp = @CFLAGS_mtp@
 CFLAGS_mux_ogg = @CFLAGS_mux_ogg@
 CFLAGS_ncurses = @CFLAGS_ncurses@
@@ -437,31 +410,32 @@ CFLAGS_omxil_vout = @CFLAGS_omxil_vout@
 CFLAGS_opencv_example = @CFLAGS_opencv_example@
 CFLAGS_opencv_wrapper = @CFLAGS_opencv_wrapper@
 CFLAGS_opus = @CFLAGS_opus@
-CFLAGS_panoramix = @CFLAGS_panoramix@
 CFLAGS_postproc = @CFLAGS_postproc@
 CFLAGS_qsv = @CFLAGS_qsv@
 CFLAGS_rdp = @CFLAGS_rdp@
-CFLAGS_rotate = @CFLAGS_rotate@
 CFLAGS_samplerate = @CFLAGS_samplerate@
 CFLAGS_schroedinger = @CFLAGS_schroedinger@
-CFLAGS_sdl_image = @CFLAGS_sdl_image@
+CFLAGS_shine = @CFLAGS_shine@
 CFLAGS_sid = @CFLAGS_sid@
+CFLAGS_smb = @CFLAGS_smb@
 CFLAGS_speex = @CFLAGS_speex@
 CFLAGS_stream_out_chromaprint = @CFLAGS_stream_out_chromaprint@
 CFLAGS_svg = @CFLAGS_svg@
+CFLAGS_svgdec = @CFLAGS_svgdec@
 CFLAGS_swscale = @CFLAGS_swscale@
 CFLAGS_theora = @CFLAGS_theora@
 CFLAGS_twolame = @CFLAGS_twolame@
 CFLAGS_udev = @CFLAGS_udev@
 CFLAGS_upnp = @CFLAGS_upnp@
 CFLAGS_vcdx = @CFLAGS_vcdx@
+CFLAGS_vnc = @CFLAGS_vnc@
 CFLAGS_vorbis = @CFLAGS_vorbis@
 CFLAGS_vout_sdl = @CFLAGS_vout_sdl@
+CFLAGS_x262 = @CFLAGS_x262@
 CFLAGS_x264 = @CFLAGS_x264@
 CFLAGS_x26410b = @CFLAGS_x26410b@
-CFLAGS_xcb_window = @CFLAGS_xcb_window@
+CFLAGS_x265 = @CFLAGS_x265@
 CFLAGS_xml = @CFLAGS_xml@
-CFLAGS_zvbi = @CFLAGS_zvbi@
 CHROMAPRINT_CFLAGS = @CHROMAPRINT_CFLAGS@
 CHROMAPRINT_LIBS = @CHROMAPRINT_LIBS@
 CONTRIB_DIR = @CONTRIB_DIR@
@@ -470,20 +444,18 @@ COPYRIGHT_YEARS = @COPYRIGHT_YEARS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CPPFLAGS_a52tofloat32 = @CPPFLAGS_a52tofloat32@
-CPPFLAGS_access_gnomevfs = @CPPFLAGS_access_gnomevfs@
 CPPFLAGS_access_mtp = @CPPFLAGS_access_mtp@
 CPPFLAGS_access_output_shout = @CPPFLAGS_access_output_shout@
 CPPFLAGS_access_sftp = @CPPFLAGS_access_sftp@
-CPPFLAGS_access_smb = @CPPFLAGS_access_smb@
 CPPFLAGS_bonjour = @CPPFLAGS_bonjour@
 CPPFLAGS_caca = @CPPFLAGS_caca@
 CPPFLAGS_dc1394 = @CPPFLAGS_dc1394@
 CPPFLAGS_decklink = @CPPFLAGS_decklink@
 CPPFLAGS_decklinkoutput = @CPPFLAGS_decklinkoutput@
-CPPFLAGS_dirac = @CPPFLAGS_dirac@
 CPPFLAGS_directfb = @CPPFLAGS_directfb@
 CPPFLAGS_dtstofloat32 = @CPPFLAGS_dtstofloat32@
 CPPFLAGS_dv1394 = @CPPFLAGS_dv1394@
+CPPFLAGS_dvdnav = @CPPFLAGS_dvdnav@
 CPPFLAGS_dvdread = @CPPFLAGS_dvdread@
 CPPFLAGS_faad = @CPPFLAGS_faad@
 CPPFLAGS_fdkaac = @CPPFLAGS_fdkaac@
@@ -492,12 +464,12 @@ CPPFLAGS_fluidsynth = @CPPFLAGS_fluidsynth@
 CPPFLAGS_freetype = @CPPFLAGS_freetype@
 CPPFLAGS_gles1 = @CPPFLAGS_gles1@
 CPPFLAGS_gles2 = @CPPFLAGS_gles2@
+CPPFLAGS_gnomevfs = @CPPFLAGS_gnomevfs@
 CPPFLAGS_goom = @CPPFLAGS_goom@
 CPPFLAGS_kate = @CPPFLAGS_kate@
 CPPFLAGS_libass = @CPPFLAGS_libass@
 CPPFLAGS_libbluray = @CPPFLAGS_libbluray@
 CPPFLAGS_libmpeg2 = @CPPFLAGS_libmpeg2@
-CPPFLAGS_libvnc = @CPPFLAGS_libvnc@
 CPPFLAGS_mpgatofixed32 = @CPPFLAGS_mpgatofixed32@
 CPPFLAGS_mtp = @CPPFLAGS_mtp@
 CPPFLAGS_mux_ogg = @CPPFLAGS_mux_ogg@
@@ -510,29 +482,31 @@ CPPFLAGS_qsv = @CPPFLAGS_qsv@
 CPPFLAGS_rdp = @CPPFLAGS_rdp@
 CPPFLAGS_samplerate = @CPPFLAGS_samplerate@
 CPPFLAGS_schroedinger = @CPPFLAGS_schroedinger@
+CPPFLAGS_shine = @CPPFLAGS_shine@
 CPPFLAGS_skins2 = @CPPFLAGS_skins2@
+CPPFLAGS_smb = @CPPFLAGS_smb@
 CPPFLAGS_speex = @CPPFLAGS_speex@
 CPPFLAGS_svg = @CPPFLAGS_svg@
+CPPFLAGS_svgdec = @CPPFLAGS_svgdec@
 CPPFLAGS_theora = @CPPFLAGS_theora@
 CPPFLAGS_twolame = @CPPFLAGS_twolame@
 CPPFLAGS_udev = @CPPFLAGS_udev@
 CPPFLAGS_upnp = @CPPFLAGS_upnp@
 CPPFLAGS_vcdx = @CPPFLAGS_vcdx@
+CPPFLAGS_vnc = @CPPFLAGS_vnc@
 CPPFLAGS_vorbis = @CPPFLAGS_vorbis@
+CPPFLAGS_vpx = @CPPFLAGS_vpx@
 CPPFLAGS_x264 = @CPPFLAGS_x264@
+CPPFLAGS_x265 = @CPPFLAGS_x265@
 CPPFLAGS_xml = @CPPFLAGS_xml@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CXXFLAGS_live555 = @CXXFLAGS_live555@
-CXXFLAGS_mkv = @CXXFLAGS_mkv@
 CXXFLAGS_mod = @CXXFLAGS_mod@
-CXXFLAGS_projectm = @CXXFLAGS_projectm@
 CXXFLAGS_qt4 = @CXXFLAGS_qt4@
 CXXFLAGS_skins2 = @CXXFLAGS_skins2@
-CXXFLAGS_taglib = @CXXFLAGS_taglib@
-CXXFLAGS_upnp = @CXXFLAGS_upnp@
 CXXFLAGS_vsxu = @CXXFLAGS_vsxu@
 CYGPATH_W = @CYGPATH_W@
 DBUS_CFLAGS = @DBUS_CFLAGS@
@@ -545,13 +519,12 @@ DEFS = @DEFS@
 DEFS_BIGENDIAN = @DEFS_BIGENDIAN@
 DEPDIR = @DEPDIR@
 DESKTOP_FILE_VALIDATE = @DESKTOP_FILE_VALIDATE@
-DIRAC_CFLAGS = @DIRAC_CFLAGS@
-DIRAC_LIBS = @DIRAC_LIBS@
 DIRECTFB_CFLAGS = @DIRECTFB_CFLAGS@
 DIRECTFB_CONFIG = @DIRECTFB_CONFIG@
 DIRECTFB_LIBS = @DIRECTFB_LIBS@
 DLLTOOL = @DLLTOOL@
 DOLT_BASH = @DOLT_BASH@
+DOLT_CLEANFILES = @DOLT_CLEANFILES@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 DV1394_CFLAGS = @DV1394_CFLAGS@
@@ -578,6 +551,8 @@ FLAC_CFLAGS = @FLAC_CFLAGS@
 FLAC_LIBS = @FLAC_LIBS@
 FLUIDSYNTH_CFLAGS = @FLUIDSYNTH_CFLAGS@
 FLUIDSYNTH_LIBS = @FLUIDSYNTH_LIBS@
+FREERDP_CFLAGS = @FREERDP_CFLAGS@
+FREERDP_LIBS = @FREERDP_LIBS@
 FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
 FREETYPE_LIBS = @FREETYPE_LIBS@
 FRIBIDI_CFLAGS = @FRIBIDI_CFLAGS@
@@ -601,6 +576,10 @@ GNUTLS_LIBS = @GNUTLS_LIBS@
 GOOM_CFLAGS = @GOOM_CFLAGS@
 GOOM_LIBS = @GOOM_LIBS@
 GREP = @GREP@
+GST_APP_CFLAGS = @GST_APP_CFLAGS@
+GST_APP_LIBS = @GST_APP_LIBS@
+GST_VIDEO_CFLAGS = @GST_VIDEO_CFLAGS@
+GST_VIDEO_LIBS = @GST_VIDEO_LIBS@
 IDN_CFLAGS = @IDN_CFLAGS@
 IDN_LIBS = @IDN_LIBS@
 INSTALL = @INSTALL@
@@ -619,12 +598,11 @@ KDE4_CONFIG = @KDE4_CONFIG@
 KVA_LIBS = @KVA_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
-LDFLAGS_access_avio = @LDFLAGS_access_avio@
-LDFLAGS_android_surface = @LDFLAGS_android_surface@
-LDFLAGS_avformat = @LDFLAGS_avformat@
 LDFLAGS_live555 = @LDFLAGS_live555@
-LDFLAGS_plugin = @LDFLAGS_plugin@
+LDFLAGS_mmal_codec = @LDFLAGS_mmal_codec@
+LDFLAGS_mmal_vout = @LDFLAGS_mmal_vout@
 LDFLAGS_vlc = @LDFLAGS_vlc@
+LDFLAGS_x262 = @LDFLAGS_x262@
 LDFLAGS_x264 = @LDFLAGS_x264@
 LDFLAGS_x26410b = @LDFLAGS_x26410b@
 LIBASS_CFLAGS = @LIBASS_CFLAGS@
@@ -633,8 +611,6 @@ LIBCDDB_CFLAGS = @LIBCDDB_CFLAGS@
 LIBCDDB_LIBS = @LIBCDDB_LIBS@
 LIBDL = @LIBDL@
 LIBEXT = @LIBEXT@
-LIBFREERDP_CFLAGS = @LIBFREERDP_CFLAGS@
-LIBFREERDP_LIBS = @LIBFREERDP_LIBS@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
 LIBM = @LIBM@
@@ -648,28 +624,16 @@ LIBS = @LIBS@
 LIBS_a52tofloat32 = @LIBS_a52tofloat32@
 LIBS_aa = @LIBS_aa@
 LIBS_access_avio = @LIBS_access_avio@
-LIBS_access_eyetv = @LIBS_access_eyetv@
-LIBS_access_ftp = @LIBS_access_ftp@
-LIBS_access_gnomevfs = @LIBS_access_gnomevfs@
-LIBS_access_http = @LIBS_access_http@
-LIBS_access_imem = @LIBS_access_imem@
-LIBS_access_jack = @LIBS_access_jack@
 LIBS_access_mtp = @LIBS_access_mtp@
 LIBS_access_output_shout = @LIBS_access_output_shout@
-LIBS_access_output_udp = @LIBS_access_output_udp@
 LIBS_access_rtmp = @LIBS_access_rtmp@
 LIBS_access_sftp = @LIBS_access_sftp@
-LIBS_access_smb = @LIBS_access_smb@
-LIBS_access_tcp = @LIBS_access_tcp@
-LIBS_access_udp = @LIBS_access_udp@
 LIBS_adjust = @LIBS_adjust@
 LIBS_anaglyph = @LIBS_anaglyph@
+LIBS_android_opaque = @LIBS_android_opaque@
+LIBS_android_surface = @LIBS_android_surface@
 LIBS_audiobargraph_a = @LIBS_audiobargraph_a@
 LIBS_audiobargraph_v = @LIBS_audiobargraph_v@
-LIBS_audioqueue = @LIBS_audioqueue@
-LIBS_audioscrobbler = @LIBS_audioscrobbler@
-LIBS_audiounit_ios = @LIBS_audiounit_ios@
-LIBS_auhal = @LIBS_auhal@
 LIBS_avcodec = @LIBS_avcodec@
 LIBS_ball = @LIBS_ball@
 LIBS_bonjour = @LIBS_bonjour@
@@ -680,9 +644,7 @@ LIBS_colorthres = @LIBS_colorthres@
 LIBS_compressor = @LIBS_compressor@
 LIBS_crystalhd = @LIBS_crystalhd@
 LIBS_dc1394 = @LIBS_dc1394@
-LIBS_dirac = @LIBS_dirac@
 LIBS_directfb = @LIBS_directfb@
-LIBS_dmo = @LIBS_dmo@
 LIBS_dtstofloat32 = @LIBS_dtstofloat32@
 LIBS_dv1394 = @LIBS_dv1394@
 LIBS_dvdnav = @LIBS_dvdnav@
@@ -691,14 +653,15 @@ LIBS_equalizer = @LIBS_equalizer@
 LIBS_extract = @LIBS_extract@
 LIBS_faad = @LIBS_faad@
 LIBS_fdkaac = @LIBS_fdkaac@
-LIBS_fingerprinter = @LIBS_fingerprinter@
 LIBS_flac = @LIBS_flac@
 LIBS_fluidsynth = @LIBS_fluidsynth@
 LIBS_freetype = @LIBS_freetype@
 LIBS_gaussianblur = @LIBS_gaussianblur@
 LIBS_gles1 = @LIBS_gles1@
 LIBS_gles2 = @LIBS_gles2@
+LIBS_glspectrum = @LIBS_glspectrum@
 LIBS_gme = @LIBS_gme@
+LIBS_gnomevfs = @LIBS_gnomevfs@
 LIBS_gnutls = @LIBS_gnutls@
 LIBS_goom = @LIBS_goom@
 LIBS_gradient = @LIBS_gradient@
@@ -707,29 +670,24 @@ LIBS_growl = @LIBS_growl@
 LIBS_headphone_channel_mixer = @LIBS_headphone_channel_mixer@
 LIBS_hotkeys = @LIBS_hotkeys@
 LIBS_hqdn3d = @LIBS_hqdn3d@
-LIBS_i420_rgb = @LIBS_i420_rgb@
 LIBS_i420_rgb_mmx = @LIBS_i420_rgb_mmx@
-LIBS_jack = @LIBS_jack@
 LIBS_kate = @LIBS_kate@
 LIBS_libass = @LIBS_libass@
 LIBS_libbluray = @LIBS_libbluray@
 LIBS_libmpeg2 = @LIBS_libmpeg2@
 LIBS_libvlc = @LIBS_libvlc@
 LIBS_libvlccore = @LIBS_libvlccore@
-LIBS_libvnc = @LIBS_libvnc@
-LIBS_linsys_sdi = @LIBS_linsys_sdi@
 LIBS_lirc = @LIBS_lirc@
 LIBS_live555 = @LIBS_live555@
-LIBS_lua = @LIBS_lua@
 LIBS_macosx = @LIBS_macosx@
 LIBS_macosx_dialog_provider = @LIBS_macosx_dialog_provider@
-LIBS_memcpyaltivec = @LIBS_memcpyaltivec@
 LIBS_minimal_macosx = @LIBS_minimal_macosx@
 LIBS_mkv = @LIBS_mkv@
+LIBS_mmal_codec = @LIBS_mmal_codec@
+LIBS_mmal_vout = @LIBS_mmal_vout@
 LIBS_mod = @LIBS_mod@
 LIBS_mono = @LIBS_mono@
 LIBS_mosaic = @LIBS_mosaic@
-LIBS_motion = @LIBS_motion@
 LIBS_mpc = @LIBS_mpc@
 LIBS_mpgatofixed32 = @LIBS_mpgatofixed32@
 LIBS_mtp = @LIBS_mtp@
@@ -740,15 +698,13 @@ LIBS_noise = @LIBS_noise@
 LIBS_normvol = @LIBS_normvol@
 LIBS_notify = @LIBS_notify@
 LIBS_ogg = @LIBS_ogg@
+LIBS_oldmovie = @LIBS_oldmovie@
 LIBS_oldrc = @LIBS_oldrc@
 LIBS_opencv_example = @LIBS_opencv_example@
 LIBS_opencv_wrapper = @LIBS_opencv_wrapper@
 LIBS_opus = @LIBS_opus@
-LIBS_panoramix = @LIBS_panoramix@
 LIBS_param_eq = @LIBS_param_eq@
-LIBS_png = @LIBS_png@
 LIBS_postproc = @LIBS_postproc@
-LIBS_projectm = @LIBS_projectm@
 LIBS_psychedelic = @LIBS_psychedelic@
 LIBS_qsv = @LIBS_qsv@
 LIBS_qt4 = @LIBS_qt4@
@@ -757,15 +713,14 @@ LIBS_quicktime = @LIBS_quicktime@
 LIBS_rdp = @LIBS_rdp@
 LIBS_remoteosd = @LIBS_remoteosd@
 LIBS_ripple = @LIBS_ripple@
-LIBS_rotate = @LIBS_rotate@
-LIBS_rtp = @LIBS_rtp@
 LIBS_samplerate = @LIBS_samplerate@
 LIBS_sap = @LIBS_sap@
 LIBS_scene = @LIBS_scene@
 LIBS_schroedinger = @LIBS_schroedinger@
-LIBS_sdl_image = @LIBS_sdl_image@
+LIBS_shine = @LIBS_shine@
 LIBS_sid = @LIBS_sid@
 LIBS_skins2 = @LIBS_skins2@
+LIBS_smb = @LIBS_smb@
 LIBS_spatializer = @LIBS_spatializer@
 LIBS_speex = @LIBS_speex@
 LIBS_stream_out_chromaprint = @LIBS_stream_out_chromaprint@
@@ -773,38 +728,37 @@ LIBS_stream_out_raop = @LIBS_stream_out_raop@
 LIBS_stream_out_rtp = @LIBS_stream_out_rtp@
 LIBS_stream_out_standard = @LIBS_stream_out_standard@
 LIBS_svg = @LIBS_svg@
+LIBS_svgdec = @LIBS_svgdec@
 LIBS_swscale = @LIBS_swscale@
-LIBS_taglib = @LIBS_taglib@
 LIBS_theora = @LIBS_theora@
-LIBS_tremor = @LIBS_tremor@
 LIBS_ts = @LIBS_ts@
 LIBS_twolame = @LIBS_twolame@
 LIBS_udev = @LIBS_udev@
 LIBS_unzip = @LIBS_unzip@
 LIBS_upnp = @LIBS_upnp@
-LIBS_vcd = @LIBS_vcd@
 LIBS_vcdx = @LIBS_vcdx@
 LIBS_vlc = @LIBS_vlc@
+LIBS_vnc = @LIBS_vnc@
 LIBS_vod_rtsp = @LIBS_vod_rtsp@
 LIBS_vorbis = @LIBS_vorbis@
-LIBS_vout_ios = @LIBS_vout_ios@
-LIBS_vout_ios2 = @LIBS_vout_ios2@
-LIBS_vout_macosx = @LIBS_vout_macosx@
 LIBS_vout_sdl = @LIBS_vout_sdl@
+LIBS_vpx = @LIBS_vpx@
 LIBS_vsxu = @LIBS_vsxu@
 LIBS_wave = @LIBS_wave@
-LIBS_waveout = @LIBS_waveout@
 LIBS_win32text = @LIBS_win32text@
+LIBS_x262 = @LIBS_x262@
 LIBS_x264 = @LIBS_x264@
 LIBS_x26410b = @LIBS_x26410b@
+LIBS_x265 = @LIBS_x265@
 LIBS_xml = @LIBS_xml@
 LIBS_zip = @LIBS_zip@
-LIBS_zvbi = @LIBS_zvbi@
 LIBTOOL = @LIBTOOL@
-LIBVA_CFLAGS = @LIBVA_CFLAGS@
-LIBVA_LIBS = @LIBVA_LIBS@
-LIBVNC_CFLAGS = @LIBVNC_CFLAGS@
-LIBVNC_LIBS = @LIBVNC_LIBS@
+LIBVA_DRM_CFLAGS = @LIBVA_DRM_CFLAGS@
+LIBVA_DRM_LIBS = @LIBVA_DRM_LIBS@
+LIBVA_X11_CFLAGS = @LIBVA_X11_CFLAGS@
+LIBVA_X11_LIBS = @LIBVA_X11_LIBS@
+LIBVORBIS_CFLAGS = @LIBVORBIS_CFLAGS@
+LIBVORBIS_LIBS = @LIBVORBIS_LIBS@
 LIBXML2_CFLAGS = @LIBXML2_CFLAGS@
 LIBXML2_LIBS = @LIBXML2_LIBS@
 LINSYS_SDI_CFLAGS = @LINSYS_SDI_CFLAGS@
@@ -820,61 +774,49 @@ LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
 LTLIBa52tofloat32 = @LTLIBa52tofloat32@
 LTLIBaa = @LTLIBaa@
-LTLIBaccess_avio = @LTLIBaccess_avio@
 LTLIBaccess_eyetv = @LTLIBaccess_eyetv@
-LTLIBaccess_gnomevfs = @LTLIBaccess_gnomevfs@
-LTLIBaccess_jack = @LTLIBaccess_jack@
 LTLIBaccess_mtp = @LTLIBaccess_mtp@
 LTLIBaccess_output_shout = @LTLIBaccess_output_shout@
 LTLIBaccess_realrtsp = @LTLIBaccess_realrtsp@
 LTLIBaccess_sftp = @LTLIBaccess_sftp@
 LTLIBaccess_smb = @LTLIBaccess_smb@
+LTLIBandroid_opaque = @LTLIBandroid_opaque@
 LTLIBandroid_surface = @LTLIBandroid_surface@
 LTLIBatmo = @LTLIBatmo@
 LTLIBaudioqueue = @LTLIBaudioqueue@
-LTLIBaudiounit_ios = @LTLIBaudiounit_ios@
-LTLIBauhal = @LTLIBauhal@
 LTLIBavcapture = @LTLIBavcapture@
-LTLIBavcodec = @LTLIBavcodec@
-LTLIBavformat = @LTLIBavformat@
 LTLIBbonjour = @LTLIBbonjour@
 LTLIBcaca = @LTLIBcaca@
 LTLIBcdda = @LTLIBcdda@
 LTLIBcrystalhd = @LTLIBcrystalhd@
 LTLIBdc1394 = @LTLIBdc1394@
-LTLIBdirac = @LTLIBdirac@
 LTLIBdirect2d = @LTLIBdirect2d@
 LTLIBdirect3d = @LTLIBdirect3d@
 LTLIBdirectfb = @LTLIBdirectfb@
-LTLIBdmo = @LTLIBdmo@
 LTLIBdtstofloat32 = @LTLIBdtstofloat32@
 LTLIBdv1394 = @LTLIBdv1394@
 LTLIBdvdnav = @LTLIBdvdnav@
 LTLIBdvdread = @LTLIBdvdread@
-LTLIBegl = @LTLIBegl@
 LTLIBfaad = @LTLIBfaad@
 LTLIBfb = @LTLIBfb@
 LTLIBfdkaac = @LTLIBfdkaac@
-LTLIBfingerprinter = @LTLIBfingerprinter@
 LTLIBflac = @LTLIBflac@
 LTLIBfluidsynth = @LTLIBfluidsynth@
 LTLIBfreetype = @LTLIBfreetype@
-LTLIBgl = @LTLIBgl@
 LTLIBgles1 = @LTLIBgles1@
 LTLIBgles2 = @LTLIBgles2@
-LTLIBglobalhotkeys = @LTLIBglobalhotkeys@
+LTLIBglspectrum = @LTLIBglspectrum@
 LTLIBglwin32 = @LTLIBglwin32@
-LTLIBglx = @LTLIBglx@
 LTLIBgme = @LTLIBgme@
+LTLIBgnomevfs = @LTLIBgnomevfs@
 LTLIBgnutls = @LTLIBgnutls@
 LTLIBgoom = @LTLIBgoom@
 LTLIBgrowl = @LTLIBgrowl@
-LTLIBjack = @LTLIBjack@
+LTLIBjpeg = @LTLIBjpeg@
 LTLIBkate = @LTLIBkate@
 LTLIBlibass = @LTLIBlibass@
 LTLIBlibbluray = @LTLIBlibbluray@
 LTLIBlibmpeg2 = @LTLIBlibmpeg2@
-LTLIBlibvnc = @LTLIBlibvnc@
 LTLIBlinsys_hdsdi = @LTLIBlinsys_hdsdi@
 LTLIBlinsys_sdi = @LTLIBlinsys_sdi@
 LTLIBlirc = @LTLIBlirc@
@@ -883,6 +825,8 @@ LTLIBmacosx = @LTLIBmacosx@
 LTLIBmacosx_dialog_provider = @LTLIBmacosx_dialog_provider@
 LTLIBminimal_macosx = @LTLIBminimal_macosx@
 LTLIBmkv = @LTLIBmkv@
+LTLIBmmal_codec = @LTLIBmmal_codec@
+LTLIBmmal_vout = @LTLIBmmal_vout@
 LTLIBmod = @LTLIBmod@
 LTLIBmpc = @LTLIBmpc@
 LTLIBmpgatofixed32 = @LTLIBmpgatofixed32@
@@ -897,7 +841,6 @@ LTLIBopencv_example = @LTLIBopencv_example@
 LTLIBopencv_wrapper = @LTLIBopencv_wrapper@
 LTLIBopensles_android = @LTLIBopensles_android@
 LTLIBopus = @LTLIBopus@
-LTLIBpanoramix = @LTLIBpanoramix@
 LTLIBpng = @LTLIBpng@
 LTLIBpostproc = @LTLIBpostproc@
 LTLIBprojectm = @LTLIBprojectm@
@@ -915,9 +858,11 @@ LTLIBsdl_image = @LTLIBsdl_image@
 LTLIBshine = @LTLIBshine@
 LTLIBsid = @LTLIBsid@
 LTLIBskins2 = @LTLIBskins2@
+LTLIBsmb = @LTLIBsmb@
 LTLIBspeex = @LTLIBspeex@
 LTLIBstream_out_chromaprint = @LTLIBstream_out_chromaprint@
 LTLIBsvg = @LTLIBsvg@
+LTLIBsvgdec = @LTLIBsvgdec@
 LTLIBswscale = @LTLIBswscale@
 LTLIBtaglib = @LTLIBtaglib@
 LTLIBtelx = @LTLIBtelx@
@@ -928,20 +873,17 @@ LTLIBudev = @LTLIBudev@
 LTLIBupnp = @LTLIBupnp@
 LTLIBvcd = @LTLIBvcd@
 LTLIBvcdx = @LTLIBvcdx@
+LTLIBvnc = @LTLIBvnc@
 LTLIBvorbis = @LTLIBvorbis@
-LTLIBvout_ios = @LTLIBvout_ios@
-LTLIBvout_ios2 = @LTLIBvout_ios2@
-LTLIBvout_macosx = @LTLIBvout_macosx@
 LTLIBvout_sdl = @LTLIBvout_sdl@
+LTLIBvpx = @LTLIBvpx@
 LTLIBvsxu = @LTLIBvsxu@
-LTLIBwaveout = @LTLIBwaveout@
 LTLIBwma_fixed = @LTLIBwma_fixed@
+LTLIBx262 = @LTLIBx262@
 LTLIBx264 = @LTLIBx264@
 LTLIBx26410b = @LTLIBx26410b@
-LTLIBxcb_glx = @LTLIBxcb_glx@
-LTLIBxcb_xv = @LTLIBxcb_xv@
+LTLIBx265 = @LTLIBx265@
 LTLIBxml = @LTLIBxml@
-LTLIBxwd = @LTLIBxwd@
 LTLIBzvbi = @LTLIBzvbi@
 LUAC = @LUAC@
 LUA_CFLAGS = @LUA_CFLAGS@
@@ -950,6 +892,8 @@ MACOSX_DEPLOYMENT_TARGET = @MACOSX_DEPLOYMENT_TARGET@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
+MFX_CFLAGS = @MFX_CFLAGS@
+MFX_LIBS = @MFX_LIBS@
 MINIZIP_CFLAGS = @MINIZIP_CFLAGS@
 MINIZIP_LIBS = @MINIZIP_LIBS@
 MKDIR_P = @MKDIR_P@
@@ -1001,16 +945,14 @@ POSTPROC_CFLAGS = @POSTPROC_CFLAGS@
 POSTPROC_LIBS = @POSTPROC_LIBS@
 POSUB = @POSUB@
 PROGRAMFILES = @PROGRAMFILES@
-PROJECTM2_CFLAGS = @PROJECTM2_CFLAGS@
-PROJECTM2_LIBS = @PROJECTM2_LIBS@
 PROJECTM_CFLAGS = @PROJECTM_CFLAGS@
 PROJECTM_LIBS = @PROJECTM_LIBS@
 PULSE_CFLAGS = @PULSE_CFLAGS@
 PULSE_LIBS = @PULSE_LIBS@
+QTX11_CFLAGS = @QTX11_CFLAGS@
+QTX11_LIBS = @QTX11_LIBS@
 QT_CFLAGS = @QT_CFLAGS@
 QT_LIBS = @QT_LIBS@
-QUICKSYNC_CFLAGS = @QUICKSYNC_CFLAGS@
-QUICKSYNC_LIBS = @QUICKSYNC_LIBS@
 RANLIB = @RANLIB@
 RC = @RC@
 RCC = @RCC@
@@ -1027,6 +969,8 @@ SET_MAKE = @SET_MAKE@
 SFTP_CFLAGS = @SFTP_CFLAGS@
 SFTP_LIBS = @SFTP_LIBS@
 SHELL = @SHELL@
+SHINE_CFLAGS = @SHINE_CFLAGS@
+SHINE_LIBS = @SHINE_LIBS@
 SHOUT_CFLAGS = @SHOUT_CFLAGS@
 SHOUT_LIBS = @SHOUT_LIBS@
 SID_CFLAGS = @SID_CFLAGS@
@@ -1039,10 +983,13 @@ SPEEXDSP_LIBS = @SPEEXDSP_LIBS@
 SPEEX_CFLAGS = @SPEEX_CFLAGS@
 SPEEX_LIBS = @SPEEX_LIBS@
 STRIP = @STRIP@
+SVGDEC_CFLAGS = @SVGDEC_CFLAGS@
+SVGDEC_LIBS = @SVGDEC_LIBS@
 SVG_CFLAGS = @SVG_CFLAGS@
 SVG_LIBS = @SVG_LIBS@
 SWSCALE_CFLAGS = @SWSCALE_CFLAGS@
 SWSCALE_LIBS = @SWSCALE_LIBS@
+SYMBOLIC_LDFLAGS = @SYMBOLIC_LDFLAGS@
 SYS = @SYS@
 TAGLIB_CFLAGS = @TAGLIB_CFLAGS@
 TAGLIB_LIBS = @TAGLIB_LIBS@
@@ -1069,17 +1016,25 @@ VERSION_MAJOR = @VERSION_MAJOR@
 VERSION_MESSAGE = @VERSION_MESSAGE@
 VERSION_MINOR = @VERSION_MINOR@
 VERSION_REVISION = @VERSION_REVISION@
+VNC_CFLAGS = @VNC_CFLAGS@
+VNC_LIBS = @VNC_LIBS@
 VORBIS_CFLAGS = @VORBIS_CFLAGS@
 VORBIS_LIBS = @VORBIS_LIBS@
+VPX_CFLAGS = @VPX_CFLAGS@
+VPX_LIBS = @VPX_LIBS@
 VSXU_CFLAGS = @VSXU_CFLAGS@
 VSXU_LIBS = @VSXU_LIBS@
 WINDOWS_ARCH = @WINDOWS_ARCH@
 WINDRES = @WINDRES@
 WINE_SDK_PATH = @WINE_SDK_PATH@
+X262_CFLAGS = @X262_CFLAGS@
+X262_LIBS = @X262_LIBS@
 X26410B_CFLAGS = @X26410B_CFLAGS@
 X26410B_LIBS = @X26410B_LIBS@
 X264_CFLAGS = @X264_CFLAGS@
 X264_LIBS = @X264_LIBS@
+X265_CFLAGS = @X265_CFLAGS@
+X265_LIBS = @X265_LIBS@
 XCB_CFLAGS = @XCB_CFLAGS@
 XCB_COMPOSITE_CFLAGS = @XCB_COMPOSITE_CFLAGS@
 XCB_COMPOSITE_LIBS = @XCB_COMPOSITE_LIBS@
@@ -1108,6 +1063,8 @@ X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
+YASM = @YASM@
+YASMFLAGS = @YASMFLAGS@
 ZVBI_CFLAGS = @ZVBI_CFLAGS@
 ZVBI_LIBS = @ZVBI_LIBS@
 abs_builddir = @abs_builddir@
@@ -1168,34 +1125,30 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 vlcdatadir = @vlcdatadir@
 vlclibdir = @vlclibdir@
-basedir = control
-dir = control
-mods = dummy gestures hotkeys lirc motion netsync ntservice oldrc
-libvlc_LTLIBRARIES = $(LTLIBlirc) libdummy_plugin.la \
-	libgestures_plugin.la libnetsync_plugin.la \
-	libhotkeys_plugin.la liboldrc_plugin.la $(am__append_2) \
-	$(am__append_3) $(am__append_4)
+controldir = $(pluginsdir)/control
+control_LTLIBRARIES = libdummy_plugin.la libgestures_plugin.la \
+	libnetsync_plugin.la libhotkeys_plugin.la liboldrc_plugin.la \
+	$(am__append_6) $(am__append_7) $(am__append_8) \
+	$(am__append_9) $(am__append_10) $(LTLIBlirc)
 EXTRA_LTLIBRARIES = liblirc_plugin.la
-NULL = 
-libvlcdir = $(vlclibdir)/plugins/$(basedir)
 EXTRA_DIST = Modules.am
+AUTOMAKE_OPTIONS = subdir-objects
+NULL = 
+pluginsdir = $(vlclibdir)/plugins
 BUILT_SOURCES = 
 CLEANFILES = $(BUILT_SOURCES)
 LTLIBVLCCORE = $(top_builddir)/src/libvlccore.la
 
 # Module name from object or executable file name.
-MODULE_NAME = $$(p="$@"; p="$${p\#\#*/}"; p="$${p\#lib}"; echo "$${p%_plugin*}")
+MODULE_NAME = $$(p="$@"; p="$${p\#\#*/}"; p="$${p\#lib}"; p="$${p%_plugin*}"; p="$${p%.lo}"; echo "$$p")
 AM_CFLAGS = 
 AM_CXXFLAGS = 
 AM_OBJCFLAGS = 
-AM_LIBADD = $(LIBPTHREAD)
-AM_LDFLAGS = -rpath '$(libvlcdir)' \
-	-avoid-version -module \
-	-export-symbols-regex ^vlc_entry \
-	-shrext $(LIBEXT) \
-	-no-undefined \
-	$(top_builddir)/compat/libcompat.la $(LTLIBVLCCORE) 
-
+AM_LDFLAGS = -avoid-version -module -export-symbols-regex ^vlc_entry \
+	-shrext $(LIBEXT) -no-undefined \
+	$(top_builddir)/compat/libcompat.la $(LTLIBVLCCORE) \
+	$(am__append_3)
+SUFFIXES = .asm
 SOURCES_dummy = dummy.c
 SOURCES_gestures = gestures.c
 SOURCES_netsync = netsync.c
@@ -1203,15 +1156,14 @@ SOURCES_ntservice = ntservice.c
 SOURCES_hotkeys = hotkeys.c
 SOURCES_lirc = lirc.c
 SOURCES_oldrc = rc.c
-@HAVE_DARWIN_FALSE@motion_extra = $(NULL)
-@HAVE_DARWIN_TRUE@motion_extra = unimotion.c unimotion.h
-SOURCES_motion = \
-        motion.c \
-        motionlib.c \
-        motionlib.h \
-        $(motion_extra) \
-        $(NULL)
-
+libvlc_motion_la_SOURCES = motionlib.c motionlib.h $(am__append_4)
+@HAVE_DARWIN_TRUE@libvlc_motion_la_CFLAGS = $(AM_CFLAGS) -fconstant-cfstrings
+libvlc_motion_la_LDFLAGS = -static
+noinst_LTLIBRARIES = libvlc_motion.la
+libmotion_plugin_la_SOURCES = motion.c
+libmotion_plugin_la_LIBADD = libvlc_motion.la
+libmotion_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(controldir)' \
+	$(am__append_5)
 libdbus_plugin_la_SOURCES = \
 	dbus/dbus_introspect.h dbus/dbus_common.h \
 	dbus/dbus_root.c dbus/dbus_root.h \
@@ -1220,114 +1172,68 @@ libdbus_plugin_la_SOURCES = \
 	dbus/dbus.c
 
 libdbus_plugin_la_CFLAGS = $(AM_CFLAGS) $(DBUS_CFLAGS)
-libdbus_plugin_la_LIBADD = $(AM_LIBADD) $(DBUS_LIBS) $(LIBM)
-@HAVE_WIN32_FALSE@libglobalhotkeys_plugin_la_SOURCES = globalhotkeys/xcb.c
-@HAVE_WIN32_TRUE@libglobalhotkeys_plugin_la_SOURCES = globalhotkeys/win32.c
-@HAVE_WIN32_FALSE@libglobalhotkeys_plugin_la_CFLAGS = $(AM_CFLAGS) $(XCB_KEYSYMS_CFLAGS) $(XCB_CFLAGS)
-@HAVE_WIN32_TRUE@libglobalhotkeys_plugin_la_CFLAGS = $(AM_CFLAGS)
-@HAVE_WIN32_FALSE@libglobalhotkeys_plugin_la_LIBADD = $(AM_LIBADD) $(XCB_KEYSYMS_LIBS) $(XCB_LIBS)
-@HAVE_WIN32_TRUE@libglobalhotkeys_plugin_la_LIBADD = $(AM_LIBADD)
+libdbus_plugin_la_LIBADD = $(DBUS_LIBS) $(LIBM)
+libxcb_hotkeys_plugin_la_SOURCES = globalhotkeys/xcb.c
+libxcb_hotkeys_plugin_la_CFLAGS = $(AM_CFLAGS) \
+	$(XCB_KEYSYMS_CFLAGS) $(XCB_CFLAGS)
 
-# The dummy plugin
+libxcb_hotkeys_plugin_la_LIBADD = $(XCB_KEYSYMS_LIBS) $(XCB_LIBS)
+libwin_hotkeys_plugin_la_SOURCES = globalhotkeys/win32.c
+libwin_msg_plugin_la_SOURCES = win_msg.c
 libdummy_plugin_la_SOURCES = $(SOURCES_dummy)
-nodist_libdummy_plugin_la_SOURCES = $(nodist_SOURCES_dummy)
-# Force per-target objects:
-libdummy_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dummy)
+libdummy_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dummy) 	-DMODULE_NAME_IS_dummy
 libdummy_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_dummy)
 libdummy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_dummy)
 libdummy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_dummy)
-# Set LIBADD manually:
-libdummy_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_dummy)
-libdummy_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_dummy)
-
-# The gestures plugin
+libdummy_plugin_la_LIBADD = $(LIBS_dummy)
+libdummy_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(controldir)' $(LDFLAGS_dummy)
 libgestures_plugin_la_SOURCES = $(SOURCES_gestures)
-nodist_libgestures_plugin_la_SOURCES = $(nodist_SOURCES_gestures)
-# Force per-target objects:
-libgestures_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_gestures)
+libgestures_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_gestures) 	-DMODULE_NAME_IS_gestures
 libgestures_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_gestures)
 libgestures_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_gestures)
 libgestures_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_gestures)
-# Set LIBADD manually:
-libgestures_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_gestures)
-libgestures_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_gestures)
-
-# The hotkeys plugin
+libgestures_plugin_la_LIBADD = $(LIBS_gestures)
+libgestures_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(controldir)' $(LDFLAGS_gestures)
 libhotkeys_plugin_la_SOURCES = $(SOURCES_hotkeys)
-nodist_libhotkeys_plugin_la_SOURCES = $(nodist_SOURCES_hotkeys)
-# Force per-target objects:
-libhotkeys_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_hotkeys)
+libhotkeys_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_hotkeys) 	-DMODULE_NAME_IS_hotkeys
 libhotkeys_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_hotkeys)
 libhotkeys_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_hotkeys)
 libhotkeys_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_hotkeys)
-# Set LIBADD manually:
-libhotkeys_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_hotkeys)
-libhotkeys_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_hotkeys)
-
-# The lirc plugin
+libhotkeys_plugin_la_LIBADD = $(LIBS_hotkeys)
+libhotkeys_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(controldir)' $(LDFLAGS_hotkeys)
 liblirc_plugin_la_SOURCES = $(SOURCES_lirc)
-nodist_liblirc_plugin_la_SOURCES = $(nodist_SOURCES_lirc)
-# Force per-target objects:
-liblirc_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_lirc)
+liblirc_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_lirc) 	-DMODULE_NAME_IS_lirc
 liblirc_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_lirc)
 liblirc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_lirc)
 liblirc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_lirc)
-# Set LIBADD manually:
-liblirc_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_lirc)
-liblirc_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_lirc)
-
-# The motion plugin
-libmotion_plugin_la_SOURCES = $(SOURCES_motion)
-nodist_libmotion_plugin_la_SOURCES = $(nodist_SOURCES_motion)
-# Force per-target objects:
-libmotion_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_motion)
-libmotion_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_motion)
-libmotion_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_motion)
-libmotion_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_motion)
-# Set LIBADD manually:
-libmotion_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_motion)
-libmotion_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_motion)
-
-# The netsync plugin
+liblirc_plugin_la_LIBADD = $(LIBS_lirc)
+liblirc_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(controldir)' $(LDFLAGS_lirc)
 libnetsync_plugin_la_SOURCES = $(SOURCES_netsync)
-nodist_libnetsync_plugin_la_SOURCES = $(nodist_SOURCES_netsync)
-# Force per-target objects:
-libnetsync_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_netsync)
+libnetsync_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_netsync) 	-DMODULE_NAME_IS_netsync
 libnetsync_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_netsync)
 libnetsync_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_netsync)
 libnetsync_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_netsync)
-# Set LIBADD manually:
-libnetsync_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_netsync)
-libnetsync_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_netsync)
-
-# The ntservice plugin
+libnetsync_plugin_la_LIBADD = $(LIBS_netsync)
+libnetsync_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(controldir)' $(LDFLAGS_netsync)
 libntservice_plugin_la_SOURCES = $(SOURCES_ntservice)
-nodist_libntservice_plugin_la_SOURCES = $(nodist_SOURCES_ntservice)
-# Force per-target objects:
-libntservice_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_ntservice)
+libntservice_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_ntservice) 	-DMODULE_NAME_IS_ntservice
 libntservice_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_ntservice)
 libntservice_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_ntservice)
 libntservice_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_ntservice)
-# Set LIBADD manually:
-libntservice_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_ntservice)
-libntservice_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_ntservice)
-
-# The oldrc plugin
+libntservice_plugin_la_LIBADD = $(LIBS_ntservice)
+libntservice_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(controldir)' $(LDFLAGS_ntservice)
 liboldrc_plugin_la_SOURCES = $(SOURCES_oldrc)
-nodist_liboldrc_plugin_la_SOURCES = $(nodist_SOURCES_oldrc)
-# Force per-target objects:
-liboldrc_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_oldrc)
+liboldrc_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_oldrc) 	-DMODULE_NAME_IS_oldrc
 liboldrc_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_oldrc)
 liboldrc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_oldrc)
 liboldrc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_oldrc)
-# Set LIBADD manually:
-liboldrc_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_oldrc)
-liboldrc_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_oldrc)
+liboldrc_plugin_la_LIBADD = $(LIBS_oldrc)
+liboldrc_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(controldir)' $(LDFLAGS_oldrc)
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .lo .o .obj
+.SUFFIXES: .asm .c .lo .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/modules/common.am $(srcdir)/Modules.am $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -1360,33 +1266,33 @@ $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
 
-install-libvlcLTLIBRARIES: $(libvlc_LTLIBRARIES)
+install-controlLTLIBRARIES: $(control_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
-	@list='$(libvlc_LTLIBRARIES)'; test -n "$(libvlcdir)" || list=; \
+	@list='$(control_LTLIBRARIES)'; test -n "$(controldir)" || list=; \
 	list2=; for p in $$list; do \
 	  if test -f $$p; then \
 	    list2="$$list2 $$p"; \
 	  else :; fi; \
 	done; \
 	test -z "$$list2" || { \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(libvlcdir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(libvlcdir)" || exit 1; \
-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(libvlcdir)'"; \
-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(libvlcdir)"; \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(controldir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(controldir)" || exit 1; \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(controldir)'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(controldir)"; \
 	}
 
-uninstall-libvlcLTLIBRARIES:
+uninstall-controlLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	@list='$(libvlc_LTLIBRARIES)'; test -n "$(libvlcdir)" || list=; \
+	@list='$(control_LTLIBRARIES)'; test -n "$(controldir)" || list=; \
 	for p in $$list; do \
 	  $(am__strip_dir) \
-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(libvlcdir)/$$f'"; \
-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(libvlcdir)/$$f"; \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(controldir)/$$f'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(controldir)/$$f"; \
 	done
 
-clean-libvlcLTLIBRARIES:
-	-test -z "$(libvlc_LTLIBRARIES)" || rm -f $(libvlc_LTLIBRARIES)
-	@list='$(libvlc_LTLIBRARIES)'; \
+clean-controlLTLIBRARIES:
+	-test -z "$(control_LTLIBRARIES)" || rm -f $(control_LTLIBRARIES)
+	@list='$(control_LTLIBRARIES)'; \
 	locs=`for p in $$list; do echo $$p; done | \
 	      sed 's|^[^/]*$$|.|; s|/[^/]*$$||; s|$$|/so_locations|' | \
 	      sort -u`; \
@@ -1395,20 +1301,42 @@ clean-libvlcLTLIBRARIES:
 	  rm -f $${locs}; \
 	}
 
+clean-noinstLTLIBRARIES:
+	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
+	@list='$(noinst_LTLIBRARIES)'; \
+	locs=`for p in $$list; do echo $$p; done | \
+	      sed 's|^[^/]*$$|.|; s|/[^/]*$$||; s|$$|/so_locations|' | \
+	      sort -u`; \
+	test -z "$$locs" || { \
+	  echo rm -f $${locs}; \
+	  rm -f $${locs}; \
+	}
+dbus/$(am__dirstamp):
+	@$(MKDIR_P) dbus
+	@: > dbus/$(am__dirstamp)
+dbus/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) dbus/$(DEPDIR)
+	@: > dbus/$(DEPDIR)/$(am__dirstamp)
+dbus/libdbus_plugin_la-dbus_root.lo: dbus/$(am__dirstamp) \
+	dbus/$(DEPDIR)/$(am__dirstamp)
+dbus/libdbus_plugin_la-dbus_player.lo: dbus/$(am__dirstamp) \
+	dbus/$(DEPDIR)/$(am__dirstamp)
+dbus/libdbus_plugin_la-dbus_tracklist.lo: dbus/$(am__dirstamp) \
+	dbus/$(DEPDIR)/$(am__dirstamp)
+dbus/libdbus_plugin_la-dbus.lo: dbus/$(am__dirstamp) \
+	dbus/$(DEPDIR)/$(am__dirstamp)
+
 libdbus_plugin.la: $(libdbus_plugin_la_OBJECTS) $(libdbus_plugin_la_DEPENDENCIES) $(EXTRA_libdbus_plugin_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libdbus_plugin_la_LINK) $(am_libdbus_plugin_la_rpath) $(libdbus_plugin_la_OBJECTS) $(libdbus_plugin_la_LIBADD) $(LIBS)
 
 libdummy_plugin.la: $(libdummy_plugin_la_OBJECTS) $(libdummy_plugin_la_DEPENDENCIES) $(EXTRA_libdummy_plugin_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libdummy_plugin_la_LINK) -rpath $(libvlcdir) $(libdummy_plugin_la_OBJECTS) $(libdummy_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libdummy_plugin_la_LINK) -rpath $(controldir) $(libdummy_plugin_la_OBJECTS) $(libdummy_plugin_la_LIBADD) $(LIBS)
 
 libgestures_plugin.la: $(libgestures_plugin_la_OBJECTS) $(libgestures_plugin_la_DEPENDENCIES) $(EXTRA_libgestures_plugin_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libgestures_plugin_la_LINK) -rpath $(libvlcdir) $(libgestures_plugin_la_OBJECTS) $(libgestures_plugin_la_LIBADD) $(LIBS)
-
-libglobalhotkeys_plugin.la: $(libglobalhotkeys_plugin_la_OBJECTS) $(libglobalhotkeys_plugin_la_DEPENDENCIES) $(EXTRA_libglobalhotkeys_plugin_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libglobalhotkeys_plugin_la_LINK) $(am_libglobalhotkeys_plugin_la_rpath) $(libglobalhotkeys_plugin_la_OBJECTS) $(libglobalhotkeys_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libgestures_plugin_la_LINK) -rpath $(controldir) $(libgestures_plugin_la_OBJECTS) $(libgestures_plugin_la_LIBADD) $(LIBS)
 
 libhotkeys_plugin.la: $(libhotkeys_plugin_la_OBJECTS) $(libhotkeys_plugin_la_DEPENDENCIES) $(EXTRA_libhotkeys_plugin_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libhotkeys_plugin_la_LINK) -rpath $(libvlcdir) $(libhotkeys_plugin_la_OBJECTS) $(libhotkeys_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libhotkeys_plugin_la_LINK) -rpath $(controldir) $(libhotkeys_plugin_la_OBJECTS) $(libhotkeys_plugin_la_LIBADD) $(LIBS)
 
 liblirc_plugin.la: $(liblirc_plugin_la_OBJECTS) $(liblirc_plugin_la_DEPENDENCIES) $(EXTRA_liblirc_plugin_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(liblirc_plugin_la_LINK)  $(liblirc_plugin_la_OBJECTS) $(liblirc_plugin_la_LIBADD) $(LIBS)
@@ -1417,85 +1345,116 @@ libmotion_plugin.la: $(libmotion_plugin_la_OBJECTS) $(libmotion_plugin_la_DEPEND
 	$(AM_V_CCLD)$(libmotion_plugin_la_LINK) $(am_libmotion_plugin_la_rpath) $(libmotion_plugin_la_OBJECTS) $(libmotion_plugin_la_LIBADD) $(LIBS)
 
 libnetsync_plugin.la: $(libnetsync_plugin_la_OBJECTS) $(libnetsync_plugin_la_DEPENDENCIES) $(EXTRA_libnetsync_plugin_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libnetsync_plugin_la_LINK) -rpath $(libvlcdir) $(libnetsync_plugin_la_OBJECTS) $(libnetsync_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libnetsync_plugin_la_LINK) -rpath $(controldir) $(libnetsync_plugin_la_OBJECTS) $(libnetsync_plugin_la_LIBADD) $(LIBS)
 
 libntservice_plugin.la: $(libntservice_plugin_la_OBJECTS) $(libntservice_plugin_la_DEPENDENCIES) $(EXTRA_libntservice_plugin_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libntservice_plugin_la_LINK) $(am_libntservice_plugin_la_rpath) $(libntservice_plugin_la_OBJECTS) $(libntservice_plugin_la_LIBADD) $(LIBS)
 
 liboldrc_plugin.la: $(liboldrc_plugin_la_OBJECTS) $(liboldrc_plugin_la_DEPENDENCIES) $(EXTRA_liboldrc_plugin_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(liboldrc_plugin_la_LINK) -rpath $(libvlcdir) $(liboldrc_plugin_la_OBJECTS) $(liboldrc_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(liboldrc_plugin_la_LINK) -rpath $(controldir) $(liboldrc_plugin_la_OBJECTS) $(liboldrc_plugin_la_LIBADD) $(LIBS)
+
+libvlc_motion.la: $(libvlc_motion_la_OBJECTS) $(libvlc_motion_la_DEPENDENCIES) $(EXTRA_libvlc_motion_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libvlc_motion_la_LINK)  $(libvlc_motion_la_OBJECTS) $(libvlc_motion_la_LIBADD) $(LIBS)
+globalhotkeys/$(am__dirstamp):
+	@$(MKDIR_P) globalhotkeys
+	@: > globalhotkeys/$(am__dirstamp)
+globalhotkeys/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) globalhotkeys/$(DEPDIR)
+	@: > globalhotkeys/$(DEPDIR)/$(am__dirstamp)
+globalhotkeys/win32.lo: globalhotkeys/$(am__dirstamp) \
+	globalhotkeys/$(DEPDIR)/$(am__dirstamp)
+
+libwin_hotkeys_plugin.la: $(libwin_hotkeys_plugin_la_OBJECTS) $(libwin_hotkeys_plugin_la_DEPENDENCIES) $(EXTRA_libwin_hotkeys_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(LINK) $(am_libwin_hotkeys_plugin_la_rpath) $(libwin_hotkeys_plugin_la_OBJECTS) $(libwin_hotkeys_plugin_la_LIBADD) $(LIBS)
+
+libwin_msg_plugin.la: $(libwin_msg_plugin_la_OBJECTS) $(libwin_msg_plugin_la_DEPENDENCIES) $(EXTRA_libwin_msg_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(LINK) $(am_libwin_msg_plugin_la_rpath) $(libwin_msg_plugin_la_OBJECTS) $(libwin_msg_plugin_la_LIBADD) $(LIBS)
+globalhotkeys/libxcb_hotkeys_plugin_la-xcb.lo:  \
+	globalhotkeys/$(am__dirstamp) \
+	globalhotkeys/$(DEPDIR)/$(am__dirstamp)
+
+libxcb_hotkeys_plugin.la: $(libxcb_hotkeys_plugin_la_OBJECTS) $(libxcb_hotkeys_plugin_la_DEPENDENCIES) $(EXTRA_libxcb_hotkeys_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libxcb_hotkeys_plugin_la_LINK) $(am_libxcb_hotkeys_plugin_la_rpath) $(libxcb_hotkeys_plugin_la_OBJECTS) $(libxcb_hotkeys_plugin_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f dbus/*.$(OBJEXT)
+	-rm -f dbus/*.lo
+	-rm -f globalhotkeys/*.$(OBJEXT)
+	-rm -f globalhotkeys/*.lo
 
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbus_plugin_la-dbus.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbus_plugin_la-dbus_player.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbus_plugin_la-dbus_root.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdbus_plugin_la-dbus_tracklist.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdummy_plugin_la-dummy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgestures_plugin_la-gestures.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libglobalhotkeys_plugin_la-win32.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libglobalhotkeys_plugin_la-xcb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libhotkeys_plugin_la-hotkeys.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblirc_plugin_la-lirc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmotion_plugin_la-motion.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmotion_plugin_la-motionlib.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmotion_plugin_la-unimotion.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libnetsync_plugin_la-netsync.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libntservice_plugin_la-ntservice.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liboldrc_plugin_la-rc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvlc_motion_la-motionlib.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvlc_motion_la-unimotion.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/motion.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/win_msg.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@dbus/$(DEPDIR)/libdbus_plugin_la-dbus.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@dbus/$(DEPDIR)/libdbus_plugin_la-dbus_player.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@dbus/$(DEPDIR)/libdbus_plugin_la-dbus_root.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@dbus/$(DEPDIR)/libdbus_plugin_la-dbus_tracklist.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@globalhotkeys/$(DEPDIR)/libxcb_hotkeys_plugin_la-xcb.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@globalhotkeys/$(DEPDIR)/win32.Plo@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
 
-libdbus_plugin_la-dbus_root.lo: dbus/dbus_root.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbus_plugin_la_CFLAGS) $(CFLAGS) -MT libdbus_plugin_la-dbus_root.lo -MD -MP -MF $(DEPDIR)/libdbus_plugin_la-dbus_root.Tpo -c -o libdbus_plugin_la-dbus_root.lo `test -f 'dbus/dbus_root.c' || echo '$(srcdir)/'`dbus/dbus_root.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdbus_plugin_la-dbus_root.Tpo $(DEPDIR)/libdbus_plugin_la-dbus_root.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dbus/dbus_root.c' object='libdbus_plugin_la-dbus_root.lo' libtool=yes @AMDEPBACKSLASH@
+dbus/libdbus_plugin_la-dbus_root.lo: dbus/dbus_root.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbus_plugin_la_CFLAGS) $(CFLAGS) -MT dbus/libdbus_plugin_la-dbus_root.lo -MD -MP -MF dbus/$(DEPDIR)/libdbus_plugin_la-dbus_root.Tpo -c -o dbus/libdbus_plugin_la-dbus_root.lo `test -f 'dbus/dbus_root.c' || echo '$(srcdir)/'`dbus/dbus_root.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) dbus/$(DEPDIR)/libdbus_plugin_la-dbus_root.Tpo dbus/$(DEPDIR)/libdbus_plugin_la-dbus_root.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dbus/dbus_root.c' object='dbus/libdbus_plugin_la-dbus_root.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbus_plugin_la_CFLAGS) $(CFLAGS) -c -o libdbus_plugin_la-dbus_root.lo `test -f 'dbus/dbus_root.c' || echo '$(srcdir)/'`dbus/dbus_root.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbus_plugin_la_CFLAGS) $(CFLAGS) -c -o dbus/libdbus_plugin_la-dbus_root.lo `test -f 'dbus/dbus_root.c' || echo '$(srcdir)/'`dbus/dbus_root.c
 
-libdbus_plugin_la-dbus_player.lo: dbus/dbus_player.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbus_plugin_la_CFLAGS) $(CFLAGS) -MT libdbus_plugin_la-dbus_player.lo -MD -MP -MF $(DEPDIR)/libdbus_plugin_la-dbus_player.Tpo -c -o libdbus_plugin_la-dbus_player.lo `test -f 'dbus/dbus_player.c' || echo '$(srcdir)/'`dbus/dbus_player.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdbus_plugin_la-dbus_player.Tpo $(DEPDIR)/libdbus_plugin_la-dbus_player.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dbus/dbus_player.c' object='libdbus_plugin_la-dbus_player.lo' libtool=yes @AMDEPBACKSLASH@
+dbus/libdbus_plugin_la-dbus_player.lo: dbus/dbus_player.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbus_plugin_la_CFLAGS) $(CFLAGS) -MT dbus/libdbus_plugin_la-dbus_player.lo -MD -MP -MF dbus/$(DEPDIR)/libdbus_plugin_la-dbus_player.Tpo -c -o dbus/libdbus_plugin_la-dbus_player.lo `test -f 'dbus/dbus_player.c' || echo '$(srcdir)/'`dbus/dbus_player.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) dbus/$(DEPDIR)/libdbus_plugin_la-dbus_player.Tpo dbus/$(DEPDIR)/libdbus_plugin_la-dbus_player.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dbus/dbus_player.c' object='dbus/libdbus_plugin_la-dbus_player.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbus_plugin_la_CFLAGS) $(CFLAGS) -c -o libdbus_plugin_la-dbus_player.lo `test -f 'dbus/dbus_player.c' || echo '$(srcdir)/'`dbus/dbus_player.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbus_plugin_la_CFLAGS) $(CFLAGS) -c -o dbus/libdbus_plugin_la-dbus_player.lo `test -f 'dbus/dbus_player.c' || echo '$(srcdir)/'`dbus/dbus_player.c
 
-libdbus_plugin_la-dbus_tracklist.lo: dbus/dbus_tracklist.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbus_plugin_la_CFLAGS) $(CFLAGS) -MT libdbus_plugin_la-dbus_tracklist.lo -MD -MP -MF $(DEPDIR)/libdbus_plugin_la-dbus_tracklist.Tpo -c -o libdbus_plugin_la-dbus_tracklist.lo `test -f 'dbus/dbus_tracklist.c' || echo '$(srcdir)/'`dbus/dbus_tracklist.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdbus_plugin_la-dbus_tracklist.Tpo $(DEPDIR)/libdbus_plugin_la-dbus_tracklist.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dbus/dbus_tracklist.c' object='libdbus_plugin_la-dbus_tracklist.lo' libtool=yes @AMDEPBACKSLASH@
+dbus/libdbus_plugin_la-dbus_tracklist.lo: dbus/dbus_tracklist.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbus_plugin_la_CFLAGS) $(CFLAGS) -MT dbus/libdbus_plugin_la-dbus_tracklist.lo -MD -MP -MF dbus/$(DEPDIR)/libdbus_plugin_la-dbus_tracklist.Tpo -c -o dbus/libdbus_plugin_la-dbus_tracklist.lo `test -f 'dbus/dbus_tracklist.c' || echo '$(srcdir)/'`dbus/dbus_tracklist.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) dbus/$(DEPDIR)/libdbus_plugin_la-dbus_tracklist.Tpo dbus/$(DEPDIR)/libdbus_plugin_la-dbus_tracklist.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dbus/dbus_tracklist.c' object='dbus/libdbus_plugin_la-dbus_tracklist.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbus_plugin_la_CFLAGS) $(CFLAGS) -c -o libdbus_plugin_la-dbus_tracklist.lo `test -f 'dbus/dbus_tracklist.c' || echo '$(srcdir)/'`dbus/dbus_tracklist.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbus_plugin_la_CFLAGS) $(CFLAGS) -c -o dbus/libdbus_plugin_la-dbus_tracklist.lo `test -f 'dbus/dbus_tracklist.c' || echo '$(srcdir)/'`dbus/dbus_tracklist.c
 
-libdbus_plugin_la-dbus.lo: dbus/dbus.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbus_plugin_la_CFLAGS) $(CFLAGS) -MT libdbus_plugin_la-dbus.lo -MD -MP -MF $(DEPDIR)/libdbus_plugin_la-dbus.Tpo -c -o libdbus_plugin_la-dbus.lo `test -f 'dbus/dbus.c' || echo '$(srcdir)/'`dbus/dbus.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdbus_plugin_la-dbus.Tpo $(DEPDIR)/libdbus_plugin_la-dbus.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dbus/dbus.c' object='libdbus_plugin_la-dbus.lo' libtool=yes @AMDEPBACKSLASH@
+dbus/libdbus_plugin_la-dbus.lo: dbus/dbus.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbus_plugin_la_CFLAGS) $(CFLAGS) -MT dbus/libdbus_plugin_la-dbus.lo -MD -MP -MF dbus/$(DEPDIR)/libdbus_plugin_la-dbus.Tpo -c -o dbus/libdbus_plugin_la-dbus.lo `test -f 'dbus/dbus.c' || echo '$(srcdir)/'`dbus/dbus.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) dbus/$(DEPDIR)/libdbus_plugin_la-dbus.Tpo dbus/$(DEPDIR)/libdbus_plugin_la-dbus.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dbus/dbus.c' object='dbus/libdbus_plugin_la-dbus.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbus_plugin_la_CFLAGS) $(CFLAGS) -c -o libdbus_plugin_la-dbus.lo `test -f 'dbus/dbus.c' || echo '$(srcdir)/'`dbus/dbus.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbus_plugin_la_CFLAGS) $(CFLAGS) -c -o dbus/libdbus_plugin_la-dbus.lo `test -f 'dbus/dbus.c' || echo '$(srcdir)/'`dbus/dbus.c
 
 libdummy_plugin_la-dummy.lo: dummy.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libdummy_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libdummy_plugin_la_CFLAGS) $(CFLAGS) -MT libdummy_plugin_la-dummy.lo -MD -MP -MF $(DEPDIR)/libdummy_plugin_la-dummy.Tpo -c -o libdummy_plugin_la-dummy.lo `test -f 'dummy.c' || echo '$(srcdir)/'`dummy.c
@@ -1511,20 +1470,6 @@ libgestures_plugin_la-gestures.lo: gestures.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgestures_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libgestures_plugin_la_CFLAGS) $(CFLAGS) -c -o libgestures_plugin_la-gestures.lo `test -f 'gestures.c' || echo '$(srcdir)/'`gestures.c
 
-libglobalhotkeys_plugin_la-xcb.lo: globalhotkeys/xcb.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libglobalhotkeys_plugin_la_CFLAGS) $(CFLAGS) -MT libglobalhotkeys_plugin_la-xcb.lo -MD -MP -MF $(DEPDIR)/libglobalhotkeys_plugin_la-xcb.Tpo -c -o libglobalhotkeys_plugin_la-xcb.lo `test -f 'globalhotkeys/xcb.c' || echo '$(srcdir)/'`globalhotkeys/xcb.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libglobalhotkeys_plugin_la-xcb.Tpo $(DEPDIR)/libglobalhotkeys_plugin_la-xcb.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='globalhotkeys/xcb.c' object='libglobalhotkeys_plugin_la-xcb.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libglobalhotkeys_plugin_la_CFLAGS) $(CFLAGS) -c -o libglobalhotkeys_plugin_la-xcb.lo `test -f 'globalhotkeys/xcb.c' || echo '$(srcdir)/'`globalhotkeys/xcb.c
-
-libglobalhotkeys_plugin_la-win32.lo: globalhotkeys/win32.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libglobalhotkeys_plugin_la_CFLAGS) $(CFLAGS) -MT libglobalhotkeys_plugin_la-win32.lo -MD -MP -MF $(DEPDIR)/libglobalhotkeys_plugin_la-win32.Tpo -c -o libglobalhotkeys_plugin_la-win32.lo `test -f 'globalhotkeys/win32.c' || echo '$(srcdir)/'`globalhotkeys/win32.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libglobalhotkeys_plugin_la-win32.Tpo $(DEPDIR)/libglobalhotkeys_plugin_la-win32.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='globalhotkeys/win32.c' object='libglobalhotkeys_plugin_la-win32.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libglobalhotkeys_plugin_la_CFLAGS) $(CFLAGS) -c -o libglobalhotkeys_plugin_la-win32.lo `test -f 'globalhotkeys/win32.c' || echo '$(srcdir)/'`globalhotkeys/win32.c
-
 libhotkeys_plugin_la-hotkeys.lo: hotkeys.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libhotkeys_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libhotkeys_plugin_la_CFLAGS) $(CFLAGS) -MT libhotkeys_plugin_la-hotkeys.lo -MD -MP -MF $(DEPDIR)/libhotkeys_plugin_la-hotkeys.Tpo -c -o libhotkeys_plugin_la-hotkeys.lo `test -f 'hotkeys.c' || echo '$(srcdir)/'`hotkeys.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libhotkeys_plugin_la-hotkeys.Tpo $(DEPDIR)/libhotkeys_plugin_la-hotkeys.Plo
@@ -1538,27 +1483,6 @@ liblirc_plugin_la-lirc.lo: lirc.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='lirc.c' object='liblirc_plugin_la-lirc.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblirc_plugin_la_CPPFLAGS) $(CPPFLAGS) $(liblirc_plugin_la_CFLAGS) $(CFLAGS) -c -o liblirc_plugin_la-lirc.lo `test -f 'lirc.c' || echo '$(srcdir)/'`lirc.c
-
-libmotion_plugin_la-motion.lo: motion.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmotion_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libmotion_plugin_la_CFLAGS) $(CFLAGS) -MT libmotion_plugin_la-motion.lo -MD -MP -MF $(DEPDIR)/libmotion_plugin_la-motion.Tpo -c -o libmotion_plugin_la-motion.lo `test -f 'motion.c' || echo '$(srcdir)/'`motion.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmotion_plugin_la-motion.Tpo $(DEPDIR)/libmotion_plugin_la-motion.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='motion.c' object='libmotion_plugin_la-motion.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmotion_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libmotion_plugin_la_CFLAGS) $(CFLAGS) -c -o libmotion_plugin_la-motion.lo `test -f 'motion.c' || echo '$(srcdir)/'`motion.c
-
-libmotion_plugin_la-motionlib.lo: motionlib.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmotion_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libmotion_plugin_la_CFLAGS) $(CFLAGS) -MT libmotion_plugin_la-motionlib.lo -MD -MP -MF $(DEPDIR)/libmotion_plugin_la-motionlib.Tpo -c -o libmotion_plugin_la-motionlib.lo `test -f 'motionlib.c' || echo '$(srcdir)/'`motionlib.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmotion_plugin_la-motionlib.Tpo $(DEPDIR)/libmotion_plugin_la-motionlib.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='motionlib.c' object='libmotion_plugin_la-motionlib.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmotion_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libmotion_plugin_la_CFLAGS) $(CFLAGS) -c -o libmotion_plugin_la-motionlib.lo `test -f 'motionlib.c' || echo '$(srcdir)/'`motionlib.c
-
-libmotion_plugin_la-unimotion.lo: unimotion.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmotion_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libmotion_plugin_la_CFLAGS) $(CFLAGS) -MT libmotion_plugin_la-unimotion.lo -MD -MP -MF $(DEPDIR)/libmotion_plugin_la-unimotion.Tpo -c -o libmotion_plugin_la-unimotion.lo `test -f 'unimotion.c' || echo '$(srcdir)/'`unimotion.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmotion_plugin_la-unimotion.Tpo $(DEPDIR)/libmotion_plugin_la-unimotion.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='unimotion.c' object='libmotion_plugin_la-unimotion.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmotion_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libmotion_plugin_la_CFLAGS) $(CFLAGS) -c -o libmotion_plugin_la-unimotion.lo `test -f 'unimotion.c' || echo '$(srcdir)/'`unimotion.c
 
 libnetsync_plugin_la-netsync.lo: netsync.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libnetsync_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libnetsync_plugin_la_CFLAGS) $(CFLAGS) -MT libnetsync_plugin_la-netsync.lo -MD -MP -MF $(DEPDIR)/libnetsync_plugin_la-netsync.Tpo -c -o libnetsync_plugin_la-netsync.lo `test -f 'netsync.c' || echo '$(srcdir)/'`netsync.c
@@ -1581,11 +1505,34 @@ liboldrc_plugin_la-rc.lo: rc.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liboldrc_plugin_la_CPPFLAGS) $(CPPFLAGS) $(liboldrc_plugin_la_CFLAGS) $(CFLAGS) -c -o liboldrc_plugin_la-rc.lo `test -f 'rc.c' || echo '$(srcdir)/'`rc.c
 
+libvlc_motion_la-motionlib.lo: motionlib.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlc_motion_la_CFLAGS) $(CFLAGS) -MT libvlc_motion_la-motionlib.lo -MD -MP -MF $(DEPDIR)/libvlc_motion_la-motionlib.Tpo -c -o libvlc_motion_la-motionlib.lo `test -f 'motionlib.c' || echo '$(srcdir)/'`motionlib.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvlc_motion_la-motionlib.Tpo $(DEPDIR)/libvlc_motion_la-motionlib.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='motionlib.c' object='libvlc_motion_la-motionlib.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlc_motion_la_CFLAGS) $(CFLAGS) -c -o libvlc_motion_la-motionlib.lo `test -f 'motionlib.c' || echo '$(srcdir)/'`motionlib.c
+
+libvlc_motion_la-unimotion.lo: unimotion.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlc_motion_la_CFLAGS) $(CFLAGS) -MT libvlc_motion_la-unimotion.lo -MD -MP -MF $(DEPDIR)/libvlc_motion_la-unimotion.Tpo -c -o libvlc_motion_la-unimotion.lo `test -f 'unimotion.c' || echo '$(srcdir)/'`unimotion.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvlc_motion_la-unimotion.Tpo $(DEPDIR)/libvlc_motion_la-unimotion.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='unimotion.c' object='libvlc_motion_la-unimotion.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlc_motion_la_CFLAGS) $(CFLAGS) -c -o libvlc_motion_la-unimotion.lo `test -f 'unimotion.c' || echo '$(srcdir)/'`unimotion.c
+
+globalhotkeys/libxcb_hotkeys_plugin_la-xcb.lo: globalhotkeys/xcb.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libxcb_hotkeys_plugin_la_CFLAGS) $(CFLAGS) -MT globalhotkeys/libxcb_hotkeys_plugin_la-xcb.lo -MD -MP -MF globalhotkeys/$(DEPDIR)/libxcb_hotkeys_plugin_la-xcb.Tpo -c -o globalhotkeys/libxcb_hotkeys_plugin_la-xcb.lo `test -f 'globalhotkeys/xcb.c' || echo '$(srcdir)/'`globalhotkeys/xcb.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) globalhotkeys/$(DEPDIR)/libxcb_hotkeys_plugin_la-xcb.Tpo globalhotkeys/$(DEPDIR)/libxcb_hotkeys_plugin_la-xcb.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='globalhotkeys/xcb.c' object='globalhotkeys/libxcb_hotkeys_plugin_la-xcb.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libxcb_hotkeys_plugin_la_CFLAGS) $(CFLAGS) -c -o globalhotkeys/libxcb_hotkeys_plugin_la-xcb.lo `test -f 'globalhotkeys/xcb.c' || echo '$(srcdir)/'`globalhotkeys/xcb.c
+
 mostlyclean-libtool:
 	-rm -f *.lo
 
 clean-libtool:
 	-rm -rf .libs _libs
+	-rm -rf dbus/.libs dbus/_libs
+	-rm -rf globalhotkeys/.libs globalhotkeys/_libs
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -1674,7 +1621,7 @@ check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES)
 installdirs:
-	for dir in "$(DESTDIR)$(libvlcdir)"; do \
+	for dir in "$(DESTDIR)$(controldir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -1705,6 +1652,10 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f dbus/$(DEPDIR)/$(am__dirstamp)
+	-rm -f dbus/$(am__dirstamp)
+	-rm -f globalhotkeys/$(DEPDIR)/$(am__dirstamp)
+	-rm -f globalhotkeys/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -1712,11 +1663,11 @@ maintainer-clean-generic:
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
-clean-am: clean-generic clean-libtool clean-libvlcLTLIBRARIES \
-	mostlyclean-am
+clean-am: clean-controlLTLIBRARIES clean-generic clean-libtool \
+	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf ./$(DEPDIR)
+	-rm -rf ./$(DEPDIR) dbus/$(DEPDIR) globalhotkeys/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -1733,7 +1684,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-libvlcLTLIBRARIES
+install-data-am: install-controlLTLIBRARIES
 
 install-dvi: install-dvi-am
 
@@ -1762,7 +1713,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf ./$(DEPDIR)
+	-rm -rf ./$(DEPDIR) dbus/$(DEPDIR) globalhotkeys/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -1779,28 +1730,32 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libvlcLTLIBRARIES
+uninstall-am: uninstall-controlLTLIBRARIES
 
 .MAKE: all check install install-am install-strip
 
-.PHONY: CTAGS GTAGS TAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-libvlcLTLIBRARIES cscopelist-am ctags \
-	ctags-am distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
+.PHONY: CTAGS GTAGS TAGS all all-am check check-am clean \
+	clean-controlLTLIBRARIES clean-generic clean-libtool \
+	clean-noinstLTLIBRARIES cscopelist-am ctags ctags-am distclean \
+	distclean-compile distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am html html-am info info-am \
+	install install-am install-controlLTLIBRARIES install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
 	install-exec-am install-html install-html-am install-info \
-	install-info-am install-libvlcLTLIBRARIES install-man \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags tags-am uninstall uninstall-am \
-	uninstall-libvlcLTLIBRARIES
+	install-info-am install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags tags-am uninstall uninstall-am \
+	uninstall-controlLTLIBRARIES
 
+
+.asm.lo:
+	$(LIBTOOL) --mode=compile --tag=ASM $(YASM) $(YASMFLAGS) $< -o $@
 
 @MAINTAINER_MODE_TRUE@$(srcdir)/Makefile.am: $(srcdir)/Modules.am $(top_srcdir)/modules/genmf
-@MAINTAINER_MODE_TRUE@	$(AM_V_GEN)cd \$(top_srcdir) && \$(SHELL) modules/genmf $(dir)
+@MAINTAINER_MODE_TRUE@	$(AM_V_GEN)cd \$(top_srcdir) && \$(SHELL) modules/genmf control
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

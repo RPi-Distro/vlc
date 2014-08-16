@@ -1,10 +1,11 @@
 /*****************************************************************************
  * recents.hpp : Recents MRL (menu)
  *****************************************************************************
- * Copyright © 2006-2008 the VideoLAN team
- * $Id: 30bd7c9913f614fe73c585c025eb0b3131078e4b $
+ * Copyright © 2008-2014 VideoLAN and VLC authors
+ * $Id: 77c86204735c62a510dbacd6bb1aac56a95c2c28 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
+ *          Jean-baptiste Kempf <jb@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,51 +26,62 @@
 #define QVLC_RECENTS_H_
 
 #include "qt4.hpp"
+#include "util/singleton.hpp"
 
 #include <QObject>
-class QStringList;
+#include <QStringList>
 class QRegExp;
 class QSignalMapper;
 
-#define RECENTS_LIST_SIZE 10
+#define RECENTS_LIST_SIZE 30
 
-class RecentsMRL : public QObject
+class Open
+{
+public:
+    static int openMRL( intf_thread_t*,
+                        const QString &,
+                        bool b_start = true,
+                        bool b_playlist = true);
+
+    static int openMRLwithOptions( intf_thread_t*,
+                                   const QString &,
+                                   QStringList *options,
+                                   bool b_start = true,
+                                   bool b_playlist = true,
+                                   const char* title = NULL);
+};
+
+class RecentsMRL : public QObject, public Singleton<RecentsMRL>
 {
     Q_OBJECT
+    friend class Singleton<RecentsMRL>;
 
 public:
-    static RecentsMRL* getInstance( intf_thread_t* p_intf )
-    {
-        if(!instance)
-            instance = new RecentsMRL( p_intf );
-        return instance;
-    }
-    static void killInstance()
-    {
-        delete instance;
-        instance = NULL;
-    }
-
     void addRecent( const QString & );
-    QStringList recents();
-
+    QStringList recentList();
+    playlist_item_t *toPlaylist(int length);
     QSignalMapper *signalMapper;
+
+    int time( const QString &mrl );
+    void setTime( const QString &mrl, const int64_t time );
 
 private:
     RecentsMRL( intf_thread_t* _p_intf );
     virtual ~RecentsMRL();
 
-    static RecentsMRL *instance;
-
     intf_thread_t *p_intf;
-    QStringList   *stack;
+
+    QStringList   recents;
+    QStringList   times;
     QRegExp       *filter;
     bool          isActive;
 
     void load();
     void save();
+
 public slots:
     void clear();
+    void playMRL( const QString & );
 };
 
 #endif

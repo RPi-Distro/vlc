@@ -993,3 +993,27 @@ reactor leaks ionizing radiations."
 < courmisch> residence registration needs work contract
  -- #videolan, or why OSS is worse than Government administrations
 %
+< j-b> funman patch rejected; /me is afraid
+< TypX> well funman isn't really a good coder anyway
+ * j-b slaps TypX
+< TypX> oh yes
+< TypX> again
+ * funman craps TypX
+< TypX> I don't hate you
+< funman> that might be the most beautiful thing i was ever told <3
+ -- #videolan, BDSM and Litote
+%
+<etix> Who's Barack Obama on the etherpad?
+<TypX> etix: the president of the USA
+<No_se> etix: You really should have heard of him
+<etix> Yeah of course
+ -- #videolan, unexpected attendee to technical discussions at VDD13
+%
+< tmatth> cowboys and endianess
+< tmatth> flac over telegraph
+ -- #videolan, remembering good old times
+%
+<+courmisch> elenril: there are three types of OSes: Windows, those
+ with pthreads, and the useless ones
+ -- IRC, trol^Wdebating on mobile OSes
+%

@@ -2,7 +2,7 @@
  * dv.c: Digital video/Firewire input (file: access plug-in)
  *****************************************************************************
  * Copyright (C) 2005 M2X
- * $Id: 508a93560a1768bbf85a39a756f62421e40c70dd $
+ * $Id: f7792b880561b80bc26d30a00983df1f92733b38 $
  *
  * Authors: Jean-Paul Saman <jpsaman at m2x dot nl>
  *
@@ -34,12 +34,7 @@
 
 #include <errno.h>
 #include <sys/types.h>
-#ifdef HAVE_UNISTD_H
-#   include <unistd.h>
-#elif defined( _WIN32 )
-#   include <io.h>
-#endif
-
+#include <unistd.h>
 #include <sys/poll.h>
 
 #include <libraw1394/raw1394.h>
@@ -294,15 +289,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
             AVCPause( p_access, p_access->p_sys->i_node );
             break;
 
-        case ACCESS_GET_TITLE_INFO:
-        case ACCESS_SET_TITLE:
-        case ACCESS_SET_SEEKPOINT:
-        case ACCESS_SET_PRIVATE_ID_STATE:
-        case ACCESS_GET_CONTENT_TYPE:
-            return VLC_EGENERIC;
-
         default:
-            msg_Warn( p_access, "unimplemented query in control" );
             return VLC_EGENERIC;
 
     }
@@ -347,7 +334,7 @@ static void* Raw1394EventThread( void *obj )
         while( ( result = poll( &p_sys->raw1394_poll, 1, -1 ) ) < 0 )
         {
             if( errno != EINTR )
-                msg_Err( p_access, "poll error: %m" );
+                msg_Err( p_access, "poll error: %s", vlc_strerror_c(errno) );
         }
 
         if( result > 0 && ( ( p_sys->raw1394_poll.revents & POLLIN )
@@ -459,13 +446,15 @@ static int Raw1394GetNumPorts( access_t *p_access )
     /* get a raw1394 handle */
     if( !( handle = raw1394_new_handle() ) )
     {
-        msg_Err( p_access, "raw1394 - failed to get handle: %m." );
+        msg_Err( p_access, "raw1394 - failed to get handle: %s",
+                 vlc_strerror_c(errno) );
         return VLC_EGENERIC;
     }
 
     if( ( n_ports = raw1394_get_port_info( handle, pinf, 16 ) ) < 0 )
     {
-        msg_Err( p_access, "raw1394 - failed to get port info: %m." );
+        msg_Err( p_access, "raw1394 - failed to get port info: %s",
+                 vlc_strerror_c(errno) );
         raw1394_destroy_handle( handle );
         return VLC_EGENERIC;
     }
@@ -484,13 +473,15 @@ static raw1394handle_t Raw1394Open( access_t *p_access, int port )
     handle = raw1394_new_handle();
     if( !handle )
     {
-        msg_Err( p_access, "raw1394 - failed to get handle: %m." );
+        msg_Err( p_access, "raw1394 - failed to get handle: %s",
+                 vlc_strerror_c(errno) );
         return NULL;
     }
 
     if( ( n_ports = raw1394_get_port_info( handle, pinf, 16 ) ) < 0 )
     {
-        msg_Err( p_access, "raw1394 - failed to get port info: %m." );
+        msg_Err( p_access, "raw1394 - failed to get port info: %s",
+                 vlc_strerror_c(errno) );
         raw1394_destroy_handle( handle );
         return NULL;
     }
@@ -498,7 +489,8 @@ static raw1394handle_t Raw1394Open( access_t *p_access, int port )
     /* tell raw1394 which host adapter to use */
     if( raw1394_set_port( handle, port ) < 0 )
     {
-        msg_Err( p_access, "raw1394 - failed to set set port: %m." );
+        msg_Err( p_access, "raw1394 - failed to set set port: %s",
+                 vlc_strerror_c(errno) );
         return NULL;
     }
 

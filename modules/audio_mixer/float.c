@@ -2,7 +2,7 @@
  * float32.c : precise float32 audio volume implementation
  *****************************************************************************
  * Copyright (C) 2002 VLC authors and VideoLAN
- * $Id: 8ebdf6c9230b2248b22e3fc6f871bc7443b7a868 $
+ * $Id: 227069e696e063f017419d58b84612987b40627c $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -61,7 +61,7 @@ static void FilterFL32( audio_volume_t *p_volume, block_t *p_buffer,
         return; /* nothing to do */
 
     float *p = (float *)p_buffer->p_buffer;
-    for( size_t i = p_buffer->i_buffer / sizeof(float); i > 0; i-- )
+    for( size_t i = p_buffer->i_buffer / sizeof(*p); i > 0; i-- )
         *(p++) *= f_multiplier;
 
     (void) p_volume;
@@ -75,7 +75,7 @@ static void FilterFL64( audio_volume_t *p_volume, block_t *p_buffer,
     if( mult == 1. )
         return; /* nothing to do */
 
-    for( size_t i = p_buffer->i_buffer / sizeof(float); i > 0; i-- )
+    for( size_t i = p_buffer->i_buffer / sizeof(*p); i > 0; i-- )
         *(p++) *= mult;
 
     (void) p_volume;

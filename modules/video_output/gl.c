@@ -97,37 +97,28 @@ static int Control (vout_display_t *, int, va_list);
 
 static vout_window_t *MakeWindow (vout_display_t *vd)
 {
-    vout_window_cfg_t wnd_cfg;
+    vout_window_cfg_t cfg = {
+        .x = var_InheritInteger (vd, "video-x"),
+        .y = var_InheritInteger (vd, "video-y"),
+        .width = vd->cfg->display.width,
+        .height = vd->cfg->display.height,
+    };
+    vout_window_t *wnd;
 
-    memset (&wnd_cfg, 0, sizeof (wnd_cfg));
-
-    /* Please keep this in sync with egl.c */
-    /* <EGL/eglplatform.h> defines the list and order of platforms */
-#if defined(_WIN32) || defined(__VC32__) \
- && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
-    wnd_cfg.type = VOUT_WINDOW_TYPE_HWND;
-#elif defined(__WINSCW__) || defined(__SYMBIAN32__)  /* Symbian */
-# warning Symbian not supported.
-#elif defined(WL_EGL_PLATFORM)
-# error Wayland not supported.
-#elif defined(__GBM__)
-# error Glamor not supported.
-#elif defined(ANDROID)
-# error Android not supported.
-#elif defined(__unix__) /* X11 */
-    wnd_cfg.type = VOUT_WINDOW_TYPE_XID;
+#if defined(_WIN32)
+    cfg.type = VOUT_WINDOW_TYPE_HWND;
+#elif defined(__ANDROID__)
+    cfg.type = VOUT_WINDOW_TYPE_ANDROID_NATIVE;
 #else
-# error Platform not recognized.
+    cfg.type = VOUT_WINDOW_TYPE_XID;
 #endif
-    wnd_cfg.x = var_InheritInteger (vd, "video-x");
-    wnd_cfg.y = var_InheritInteger (vd, "video-y");
-    wnd_cfg.width  = vd->cfg->display.width;
-    wnd_cfg.height = vd->cfg->display.height;
 
-    vout_window_t *wnd = vout_display_NewWindow (vd, &wnd_cfg);
-    if (wnd == NULL)
-        msg_Err (vd, "parent window not available");
-    return wnd;
+    wnd = vout_display_NewWindow (vd, &cfg);
+    if (wnd != NULL)
+        return wnd;
+
+    msg_Err (vd, "parent window not available");
+    return NULL;
 }
 
 /**
@@ -151,17 +142,17 @@ static int Open (vlc_object_t *obj)
     if (sys->gl == NULL)
         goto error;
 
+    /* Initialize video display */
+    const vlc_fourcc_t *spu_chromas;
+
     if (vlc_gl_MakeCurrent (sys->gl))
         goto error;
 
-    /* Initialize video display */
-    const vlc_fourcc_t *spu_chromas;
     sys->vgl = vout_display_opengl_New (&vd->fmt, &spu_chromas, sys->gl);
-    if (!sys->vgl)
-    {
-        vlc_gl_ReleaseCurrent (sys->gl);
+    vlc_gl_ReleaseCurrent (sys->gl);
+
+    if (sys->vgl == NULL)
         goto error;
-    }
 
     vd->sys = sys;
     vd->info.has_pictures_invalid = false;
@@ -191,6 +182,7 @@ static void Close (vlc_object_t *obj)
     vout_display_t *vd = (vout_display_t *)obj;
     vout_display_sys_t *sys = vd->sys;
 
+    vlc_gl_MakeCurrent (sys->gl);
     vout_display_opengl_Delete (sys->vgl);
     vlc_gl_ReleaseCurrent (sys->gl);
 
@@ -207,7 +199,11 @@ static picture_pool_t *Pool (vout_display_t *vd, unsigned count)
     vout_display_sys_t *sys = vd->sys;
 
     if (!sys->pool)
+    {
+        vlc_gl_MakeCurrent (sys->gl);
         sys->pool = vout_display_opengl_GetPool (sys->vgl, count);
+        vlc_gl_ReleaseCurrent (sys->gl);
+    }
     return sys->pool;
 }
 
@@ -215,16 +211,21 @@ static void PictureRender (vout_display_t *vd, picture_t *pic, subpicture_t *sub
 {
     vout_display_sys_t *sys = vd->sys;
 
+    vlc_gl_MakeCurrent (sys->gl);
     vout_display_opengl_Prepare (sys->vgl, pic, subpicture);
+    vlc_gl_ReleaseCurrent (sys->gl);
 }
 
 static void PictureDisplay (vout_display_t *vd, picture_t *pic, subpicture_t *subpicture)
 {
     vout_display_sys_t *sys = vd->sys;
 
+    vlc_gl_MakeCurrent (sys->gl);
     vout_display_opengl_Display (sys->vgl, &vd->source);
+    vlc_gl_ReleaseCurrent (sys->gl);
+
     picture_Release (pic);
-    (void)subpicture;
+    (void) subpicture;
 }
 
 static int Control (vout_display_t *vd, int query, va_list ap)
@@ -277,7 +278,9 @@ static int Control (vout_display_t *vd, int query, va_list ap)
         vout_display_place_t place;
 
         vout_display_PlacePicture (&place, src, cfg, false);
-        glViewport (0, 0, place.width, place.height);
+        vlc_gl_MakeCurrent (sys->gl);
+        glViewport (place.x, place.y, place.width, place.height);
+        vlc_gl_ReleaseCurrent (sys->gl);
         return VLC_SUCCESS;
       }
 
@@ -289,7 +292,9 @@ static int Control (vout_display_t *vd, int query, va_list ap)
         vout_display_place_t place;
 
         vout_display_PlacePicture (&place, src, cfg, false);
-        glViewport (0, 0, place.width, place.height);
+        vlc_gl_MakeCurrent (sys->gl);
+        glViewport (place.x, place.y, place.width, place.height);
+        vlc_gl_ReleaseCurrent (sys->gl);
         return VLC_SUCCESS;
       }
 

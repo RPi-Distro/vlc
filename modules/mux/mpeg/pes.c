@@ -1,25 +1,25 @@
 /*****************************************************************************
  * pes.c: PES packetizer used by the MPEG multiplexers
  *****************************************************************************
- * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 42a74ca8043b551ccbe07cc6c2455156c54da7a5 $
+ * Copyright (C) 2001, 2002 VLC authors and VideoLAN
+ * $Id: 9210b3f3ebd0d47850be4bc461062957ed512884 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -110,7 +110,10 @@ static inline int PESHeader( uint8_t *p_hdr, mtime_t i_pts, mtime_t i_dts,
 
                 if( i_pts > 0 && i_dts > 0 &&
                     ( i_pts != i_dts || ( p_fmt->i_cat == VIDEO_ES &&
-                      p_fmt->i_codec != VLC_CODEC_MPGV ) ) )
+                      p_fmt->i_codec != VLC_CODEC_MPGV &&
+                      p_fmt->i_codec != VLC_CODEC_MP2V &&
+                      p_fmt->i_codec != VLC_CODEC_MP1V 
+                      ) ) )
                 {
                     i_pts_dts = 0x03;
                     if ( !i_header_size ) i_header_size = 0xa;
@@ -341,7 +344,8 @@ int  EStoPES ( block_t **pp_pes, block_t *p_es,
     }
 
     if( ( p_fmt->i_codec == VLC_CODEC_MP4V ||
-          p_fmt->i_codec == VLC_CODEC_H264 ) &&
+          p_fmt->i_codec == VLC_CODEC_H264 ||
+          p_fmt->i_codec == VLC_CODEC_HEVC) &&
         p_es->i_flags & BLOCK_FLAG_TYPE_I )
     {
         /* For MPEG4 video, add VOL before I-frames,

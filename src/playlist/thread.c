@@ -2,7 +2,7 @@
  * thread.c : Playlist management functions
  *****************************************************************************
  * Copyright © 1999-2008 VLC authors and VideoLAN
- * $Id: 08d9feb40476a07f3949a35a9f9db7584abf20ce $
+ * $Id: c41ea19220936d596c482960b61bb1cfa79bcd7f $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -224,33 +224,20 @@ static int PlayItem( playlist_t *p_playlist, playlist_item_t *p_item )
         }
     }
 
-    bool b_find_art = var_GetInteger( p_playlist, "album-art" )
-                                                      == ALBUM_ART_WHEN_PLAYED;
-    if( b_find_art )
-    {
-        char *psz_uri = input_item_GetURI( p_item->p_input );
-        if( psz_uri != NULL && (!strncmp( psz_uri, "directory:", 10 ) ||
-                                !strncmp( psz_uri, "vlc:", 4 )) )
-            b_find_art = false;
-        free( psz_uri );
-    }
-
     /* TODO store art policy in playlist private data */
-    if( b_find_art )
-    {
-        char *psz_arturl = input_item_GetArtURL( p_input );
-        char *psz_name = input_item_GetName( p_input );
-        /* p_input->p_meta should not be null after a successful CreateThread */
-        bool b_has_art = !EMPTY_STR( psz_arturl );
+    char *psz_arturl = input_item_GetArtURL( p_input );
+    char *psz_name = input_item_GetName( p_input );
+    /* p_input->p_meta should not be null after a successful CreateThread */
+    bool b_has_art = !EMPTY_STR( psz_arturl );
 
-        if( !b_has_art || strncmp( psz_arturl, "attachment://", 13 ) )
-        {
-            PL_DEBUG( "requesting art for %s", psz_name );
-            playlist_AskForArtEnqueue( p_playlist, p_input );
-        }
-        free( psz_arturl );
-        free( psz_name );
+    if( !b_has_art || strncmp( psz_arturl, "attachment://", 13 ) )
+    {
+        PL_DEBUG( "requesting art for %s", psz_name );
+        libvlc_ArtRequest( p_playlist->p_libvlc, p_input, META_REQUEST_OPTION_NONE );
     }
+    free( psz_arturl );
+    free( psz_name );
+
     PL_UNLOCK;
     var_TriggerCallback( p_playlist, "activity" );
     PL_LOCK;
@@ -372,7 +359,7 @@ static playlist_item_t *NextItem( playlist_t *p_playlist )
     {
         bool b_loop = var_GetBool( p_playlist, "loop" );
         bool b_repeat = var_GetBool( p_playlist, "repeat" );
-        bool b_playstop = var_GetBool( p_playlist, "play-and-stop" );
+        bool b_playstop = var_InheritBool( p_playlist, "play-and-stop" );
 
         /* Repeat and play/stop */
         if( b_repeat && get_current_status_item( p_playlist ) )
@@ -510,7 +497,7 @@ static void LoopRequest( playlist_t *p_playlist, int i_status )
     msg_Dbg( p_playlist, "nothing to play" );
     p_sys->status.i_status = PLAYLIST_STOPPED;
 
-    if( var_GetBool( p_playlist, "play-and-exit" ) )
+    if( var_InheritBool( p_playlist, "play-and-exit" ) )
     {
         msg_Info( p_playlist, "end of playlist, exiting" );
         libvlc_Quit( p_playlist->p_libvlc );
@@ -525,7 +512,7 @@ static void *Thread ( void *data )
     playlist_t *p_playlist = data;
     playlist_private_t *p_sys = pl_priv(p_playlist);
 
-    playlist_Lock( p_playlist );
+    PL_LOCK;
     for( ;; )
     {
         while( p_sys->p_input != NULL )
@@ -550,7 +537,7 @@ static void *Thread ( void *data )
         LoopRequest( p_playlist, status );
     }
     p_sys->status.i_status = PLAYLIST_STOPPED;
-    playlist_Unlock( p_playlist );
+    PL_UNLOCK;
 
     input_resource_Terminate( p_sys->p_input_resource );
     return NULL;

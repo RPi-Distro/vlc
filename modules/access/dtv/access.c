@@ -479,11 +479,8 @@ static int Open (vlc_object_t *obj)
 
     access->pf_block = Read;
     access->pf_control = Control;
-    if (access->psz_demux == NULL || !access->psz_demux[0])
-    {
-        free (access->psz_demux);
-        access->psz_demux = strdup ("ts");
-    }
+    free (access->psz_demux);
+    access->psz_demux = strdup ("ts");
     return VLC_SUCCESS;
 
 error:
@@ -521,11 +518,6 @@ static block_t *Read (access_t *access)
 
     block->i_buffer = val;
 
-    /* Fetch the signal levels every so often. Some devices do not like this
-     * to be requested too frequently, e.g. due to low bandwidth I²C bus. */
-    if ((sys->signal_poll++) == 0)
-        access->info.i_update |= INPUT_UPDATE_SIGNAL;
-
     return block;
 }
 
@@ -540,36 +532,26 @@ static int Control (access_t *access, int query, va_list args)
         case ACCESS_CAN_FASTSEEK:
         case ACCESS_CAN_PAUSE:
         case ACCESS_CAN_CONTROL_PACE:
-        {
-            bool *v = va_arg (args, bool *);
-            *v = false;
-            return VLC_SUCCESS;
-        }
+            *va_arg (args, bool *) = false;
+            break;
 
         case ACCESS_GET_PTS_DELAY:
         {
             int64_t *v = va_arg (args, int64_t *);
             *v = var_InheritInteger (access, "live-caching") * INT64_C(1000);
-            return VLC_SUCCESS;
+            break;
         }
-
-        case ACCESS_GET_TITLE_INFO:
-        case ACCESS_GET_META:
-            return VLC_EGENERIC;
 
         case ACCESS_GET_CONTENT_TYPE:
-        {
-            char **pt = va_arg (args, char **);
-            *pt = strdup ("video/MP2T");
-            return VLC_SUCCESS;
-        }
-
-        case ACCESS_SET_PAUSE_STATE:
-        case ACCESS_SET_TITLE:
-        case ACCESS_SET_SEEKPOINT:
-            return VLC_EGENERIC;
+            *va_arg (args, char **) = strdup ("video/MP2T");
+            break;
 
         case ACCESS_GET_SIGNAL:
+            /* Fetch the signal levels only every so often to avoid stressing
+             * the device bus. */
+            if ((sys->signal_poll++))
+                return VLC_EGENERIC;
+
             *va_arg (args, double *) = dvb_get_snr (dev);
             *va_arg (args, double *) = dvb_get_signal_strength (dev);
             return VLC_SUCCESS;
@@ -588,25 +570,25 @@ static int Control (access_t *access, int query, va_list args)
             }
             else
                 dvb_remove_pid (dev, pid);
-            return VLC_SUCCESS;
+            break;
         }
 
-        case ACCESS_SET_PRIVATE_ID_CA:
 #ifdef HAVE_DVBPSI
+        case ACCESS_SET_PRIVATE_ID_CA:
         {
             struct dvbpsi_pmt_s *pmt = va_arg (args, struct dvbpsi_pmt_s *);
 
             dvb_set_ca_pmt (dev, pmt);
-            return VLC_SUCCESS;
+            break;
         }
 #endif
+        /*case ACCESS_GET_PRIVATE_ID_STATE: TODO? */
 
-        case ACCESS_GET_PRIVATE_ID_STATE:
+        default:
             return VLC_EGENERIC;
     }
 
-    msg_Warn (access, "unimplemented query %d in control", query);
-    return VLC_EGENERIC;
+    return VLC_SUCCESS;
 }
 
 

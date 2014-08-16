@@ -2,7 +2,7 @@
  * VideoEffects.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: 3fc2eb56271b58f05668d5e8207613512f67e1e7 $
+ * $Id: 1d2865e28d4028e256073f3039783a636b703e4c $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -151,11 +151,6 @@
 - (void)updateCocoaWindowLevel:(NSInteger)i_level;
 
 - (void)resetValues;
-- (void)setVideoFilter: (char *)psz_name on:(BOOL)b_on;
-- (void)setVideoFilterProperty: (char *)psz_name forFilter: (char*)psz_filter integer: (int)i_value;
-- (void)setVideoFilterProperty: (char *)psz_name forFilter: (char*)psz_filter float: (float)f_value;
-- (void)setVideoFilterProperty: (char *)psz_name forFilter: (char *)psz_filter string: (const char *)psz_value;
-- (void)setVideoFilterProperty: (char *)psz_name forFilter: (char *)psz_filter boolean: (BOOL)b_value;
 
 - (void)saveCurrentProfile;
 

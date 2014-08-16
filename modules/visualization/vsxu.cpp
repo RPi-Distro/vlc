@@ -2,7 +2,7 @@
  * vsxu.cpp: visualization module wrapper for Vovoid VSXu
  *****************************************************************************
  * Copyright © 2009-2012 the VideoLAN team, Vovoid Media Technologies
- * $Id: 4ee4c801fd98b9ba84cb7fa323d97a740a696403 $
+ * $Id: ca1cd3d92a2c1befdf96ac968ab6b23d579c4862 $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *          Laurent Aimar
@@ -11,18 +11,18 @@
  * Used the projectM implementation as reference for this file.
  *
  * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
- * more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -280,7 +280,7 @@ static void *Thread( void *p_data )
         goto error;
 
     video_format_Init( &fmt, 0 );
-    video_format_Setup( &fmt, VLC_CODEC_RGB32,
+    video_format_Setup( &fmt, VLC_CODEC_RGB32, p_sys->i_width, p_sys->i_height,
                         p_sys->i_width, p_sys->i_height, 0, 1 );
     fmt.i_sar_num = 1;
     fmt.i_sar_den = 1;
@@ -315,6 +315,7 @@ static void *Thread( void *p_data )
 
     // tell main thread we are ready
     vlc_sem_post( &p_sys->ready );
+    vlc_gl_MakeCurrent( gl );
 
     while ( run )
     {
@@ -391,6 +392,8 @@ static void *Thread( void *p_data )
 
     // delete the intro (if ever allocated)
     if (intro) delete intro;
+
+    vlc_gl_ReleaseCurrent( gl );
 
     var_DelCallback( p_vout, "fullscreen", VoutCallback, p_vd );
 

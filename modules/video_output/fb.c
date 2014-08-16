@@ -2,7 +2,7 @@
  * fb.c : framebuffer plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2009 VLC authors and VideoLAN
- * $Id: d09f1c49893be9d571deb71cf74c33d408da721a $
+ * $Id: 1251b85a83b4e4b568b8df35c8878f74c454ae2d $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Jean-Paul Saman
@@ -33,7 +33,7 @@
 #include <signal.h>                                      /* SIGUSR1, SIGUSR2 */
 #include <fcntl.h>                                                 /* open() */
 #include <unistd.h>                                               /* close() */
-
+#include <errno.h>
 #include <termios.h>                                       /* struct termios */
 #include <sys/ioctl.h>
 #include <sys/mman.h>                                              /* mmap() */
@@ -257,7 +257,8 @@ static int Open(vlc_object_t *object)
     vout_display_DeleteWindow(vd, NULL);
 
     /* */
-    video_format_t fmt = vd->fmt;
+    video_format_t fmt;
+    video_format_ApplyRotation(&fmt, &vd->fmt);
 
     if (sys->chroma) {
         fmt.i_chroma = sys->chroma;
@@ -296,8 +297,8 @@ static int Open(vlc_object_t *object)
         }
     }
 
-    fmt.i_width  = sys->width;
-    fmt.i_height = sys->height;
+    fmt.i_visible_width  = sys->width;
+    fmt.i_visible_height = sys->height;
 
     /* */
     vout_display_info_t info = vd->info;
@@ -314,7 +315,7 @@ static int Open(vlc_object_t *object)
 
     /* */
     vout_display_SendEventFullscreen(vd, true);
-    vout_display_SendEventDisplaySize(vd, fmt.i_width, fmt.i_height, true);
+    vout_display_SendEventDisplaySize(vd, fmt.i_visible_width, fmt.i_visible_height, true);
     return VLC_SUCCESS;
 }
 
@@ -450,7 +451,7 @@ static int TtyInit(vout_display_t *vd)
     sigemptyset(&sig_tty.sa_mask);
     if (sigaction(SIGUSR1, &sig_tty, &sys->sig_usr1) ||
         sigaction(SIGUSR2, &sig_tty, &sys->sig_usr2)) {
-        msg_Err(vd, "cannot set signal handler (%m)");
+        msg_Err(vd, "cannot set signal handler (%s)", vlc_strerror_c(errno));
         /* FIXME SIGUSR1 could have succeed */
         goto error_signal;
     }
@@ -458,7 +459,7 @@ static int TtyInit(vout_display_t *vd)
 
     /* Set-up tty according to new signal handler */
     if (-1 == ioctl(sys->tty, VT_GETMODE, &sys->vt_mode)) {
-        msg_Err(vd, "cannot get terminal mode (%m)");
+        msg_Err(vd, "cannot get terminal mode (%s)", vlc_strerror_c(errno));
         goto error;
     }
     struct vt_mode vt_mode = sys->vt_mode;
@@ -468,7 +469,7 @@ static int TtyInit(vout_display_t *vd)
     vt_mode.acqsig = SIGUSR2;
 
     if (-1 == ioctl(sys->tty, VT_SETMODE, &vt_mode)) {
-        msg_Err(vd, "cannot set terminal mode (%m)");
+        msg_Err(vd, "cannot set terminal mode (%s)", vlc_strerror_c(errno));
         goto error;
     }
     return VLC_SUCCESS;
@@ -519,7 +520,7 @@ static int OpenDisplay(vout_display_t *vd, bool force_resolution)
 
     sys->fd = vlc_open(psz_device, O_RDWR);
     if (sys->fd == -1) {
-        msg_Err(vd, "cannot open %s (%m)", psz_device);
+        msg_Err(vd, "cannot open %s (%s)", psz_device, vlc_strerror_c(errno));
         free(psz_device);
         return VLC_EGENERIC;
     }
@@ -527,7 +528,7 @@ static int OpenDisplay(vout_display_t *vd, bool force_resolution)
 
     /* Get framebuffer device information */
     if (ioctl(sys->fd, FBIOGET_VSCREENINFO, &sys->var_info)) {
-        msg_Err(vd, "cannot get fb info (%m)");
+        msg_Err(vd, "cannot get fb info (%s)", vlc_strerror_c(errno));
         close(sys->fd);
         return VLC_EGENERIC;
     }
@@ -546,7 +547,7 @@ static int OpenDisplay(vout_display_t *vd, bool force_resolution)
     sys->var_info.yoffset  =  0;
 
     if (ioctl(sys->fd, FBIOPUT_VSCREENINFO, &sys->var_info)) {
-        msg_Err(vd, "cannot set fb info (%m)");
+        msg_Err(vd, "cannot set fb info (%s)", vlc_strerror_c(errno));
         close(sys->fd);
         return VLC_EGENERIC;
     }
@@ -555,7 +556,8 @@ static int OpenDisplay(vout_display_t *vd, bool force_resolution)
     /* Get some information again, in the definitive configuration */
     if (ioctl(sys->fd, FBIOGET_FSCREENINFO, &fix_info) ||
         ioctl(sys->fd, FBIOGET_VSCREENINFO, &sys->var_info)) {
-        msg_Err(vd, "cannot get additional fb info (%m)");
+        msg_Err(vd, "cannot get additional fb info (%s)",
+                vlc_strerror_c(errno));
 
         /* Restore fb config */
         ioctl(sys->fd, FBIOPUT_VSCREENINFO, &sys->old_info);
@@ -590,7 +592,7 @@ static int OpenDisplay(vout_display_t *vd, bool force_resolution)
 
     switch (sys->var_info.bits_per_pixel) {
     case 8:
-        sys->palette = malloc(8 * 256 * sizeof(uint16_t));
+        sys->palette = malloc(4 * 256 * sizeof(uint16_t));
         if (!sys->palette) {
             /* Restore fb config */
             ioctl(sys->fd, FBIOPUT_VSCREENINFO, &sys->old_info);
@@ -601,9 +603,9 @@ static int OpenDisplay(vout_display_t *vd, bool force_resolution)
         sys->fb_cmap.start = 0;
         sys->fb_cmap.len = 256;
         sys->fb_cmap.red = sys->palette;
-        sys->fb_cmap.green = sys->palette + 256 * sizeof(uint16_t);
-        sys->fb_cmap.blue = sys->palette + 2 * 256 * sizeof(uint16_t);
-        sys->fb_cmap.transp = sys->palette + 3 * 256 * sizeof(uint16_t);
+        sys->fb_cmap.green = sys->palette + 256;
+        sys->fb_cmap.blue = sys->palette + 2 * 256;
+        sys->fb_cmap.transp = sys->palette + 3 * 256;
 
         /* Save the colormap */
         ioctl(sys->fd, FBIOGETCMAP, &sys->fb_cmap);
@@ -642,7 +644,7 @@ static int OpenDisplay(vout_display_t *vd, bool force_resolution)
                           PROT_READ | PROT_WRITE, MAP_SHARED, sys->fd, 0);
 
     if (sys->video_ptr == MAP_FAILED) {
-        msg_Err(vd, "cannot map video memory (%m)");
+        msg_Err(vd, "cannot map video memory (%s)", vlc_strerror_c(errno));
 
         if (sys->var_info.bits_per_pixel == 8) {
             free(sys->palette);

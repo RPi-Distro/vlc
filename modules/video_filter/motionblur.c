@@ -2,7 +2,7 @@
  * motionblur.c : motion blur filter for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001, 2002, 2003 VLC authors and VideoLAN
- * $Id: 0e464790dd61f9a71025f30d09271228bd68787b $
+ * $Id: 4dedc12dabde93986e8ac0d887c828c31dd282f6 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Antoine Cellerier <dionoea &t videolan d.t org>
@@ -90,6 +90,11 @@ struct filter_sys_t
 static int Create( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
+
+    const vlc_chroma_description_t *p_chroma =
+        vlc_fourcc_GetChromaDescription( p_filter->fmt_in.video.i_chroma );
+    if( p_chroma == NULL || p_chroma->plane_count == 0 )
+        return VLC_EGENERIC;
 
     /* Allocate structure */
     p_filter->p_sys = malloc( sizeof( filter_sys_t ) );

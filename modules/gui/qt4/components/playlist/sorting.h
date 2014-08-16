@@ -2,7 +2,7 @@
  * sorting.h : commun sorting & column display code
  ****************************************************************************
  * Copyright © 2008 the VideoLAN team and AUTHORS
- * $Id: f0ea8722c75619a347fd1ff43bd536e549645cd3 $
+ * $Id: 7762327b67d1578fef7dc82564ac0b8810ae50fb $
  *
  * Authors: Rafaël Carré <funman@videolanorg>
  *
@@ -61,7 +61,7 @@ static inline const char * psz_column_title( uint32_t i_column )
     case COLUMN_DESCRIPTION:     return VLC_META_DESCRIPTION;
     case COLUMN_URI:             return _("URI");
     case COLUMN_RATING:          return VLC_META_RATING;
-    case COLUMN_COVER:           return VLC_META_ART_URL;
+    case COLUMN_COVER:           return _("Cover");
     default: abort();
     }
 }

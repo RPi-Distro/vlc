@@ -2,7 +2,7 @@
  * firstrun.cpp : First Run dialogs
  ****************************************************************************
  * Copyright © 2009 VideoLAN
- * $Id: 6474d2182b90c17b583a70e1ba26396759171ffc $
+ * $Id: 8c733e7500ed7839470402758e902697c5ac25eb $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -42,7 +42,7 @@ FirstRun::FirstRun( QWidget *_p, intf_thread_t *_p_intf  )
 
 void FirstRun::save()
 {
-    config_PutInt( p_intf,  "album-art", checkbox->isChecked() ? ALBUM_ART_ALL: ALBUM_ART_WHEN_ASKED );
+    config_PutInt( p_intf,  "metadata-network-access", checkbox->isChecked() );
 #ifdef UPDATE_CHECK
     config_PutInt( p_intf,  "qt-updates-notif", checkbox2->isChecked() );
 #endif
@@ -69,16 +69,16 @@ void FirstRun::buildPrivDialog()
     QGroupBox *blabla = new QGroupBox( qtr( "Privacy and Network Access Policy" ) );
     QGridLayout *blablaLayout = new QGridLayout( blabla );
     QLabel *text = new QLabel( qtr(
-        "<p>In order to protect your privacy, the <i>VLC media player</i> "
+        "<p>In order to protect your privacy, <i>VLC media player</i> "
         "does <b>not</b> collect personal data or transmit them, "
         "not even in anonymized form, to anyone."
         "</p>\n"
         "<p>Nevertheless, <i>VLC</i> is able to automatically retrieve "
         "information about the media in your playlist from third party "
-        "Internet-based services. That includes covert arts, track names, "
-        "authoring and other meta-data."
+        "Internet-based services. This includes cover art, track names, "
+        "artist names and other meta-data."
         "</p>\n"
-        "That may entail identifying some of your media files to third party "
+        "<p>Consequently, this may entail identifying some of your media files to third party "
         "entities. Therefore the <i>VLC</i> developers require your express "
         "consent for the media player to access the Internet automatically."
         "</p>\n"
@@ -95,7 +95,7 @@ void FirstRun::buildPrivDialog()
     gLayout->addWidget( options, 1, 0, 1, 3 );
     int line = 0;
 
-    checkbox = new QCheckBox( qtr( "Automatically retrieve media info" ) );
+    checkbox = new QCheckBox( qtr( "Allow metadata network access" ) );
     checkbox->setChecked( true );
     optionsLayout->addWidget( checkbox, line++, 0 );
 

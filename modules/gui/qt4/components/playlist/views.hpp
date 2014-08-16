@@ -2,7 +2,7 @@
  * views.hpp : Icon view for the Playlist
  ****************************************************************************
  * Copyright © 2010 the VideoLAN team
- * $Id: c74cabcce179d0a6bbe4ca553afc1a54a214dada $
+ * $Id: c34aa2a5103ce912e1e6789c2a8289ff62ccc801 $
  *
  * Authors:         Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -31,7 +31,6 @@
 #include "util/pictureflow.hpp"
 
 class QPainter;
-class PLModel;
 class QFont;
 
 class AbstractPlViewItemDelegate : public QStyledItemDelegate
@@ -79,12 +78,21 @@ public:
     virtual void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 };
 
+class CellPixmapDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
+
+public:
+    CellPixmapDelegate(QWidget *parent = 0) : QStyledItemDelegate(parent) {}
+    virtual void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+};
+
 class PlIconView : public QListView
 {
     Q_OBJECT
 
 public:
-    PlIconView( PLModel *model, QWidget *parent = 0 );
+    PlIconView( QAbstractItemModel *model, QWidget *parent = 0 );
 protected:
     virtual void startDrag ( Qt::DropActions supportedActions );
     virtual void dragMoveEvent ( QDragMoveEvent * event );
@@ -96,7 +104,7 @@ class PlListView : public QListView
     Q_OBJECT
 
 public:
-    PlListView( PLModel *model, QWidget *parent = 0 );
+    PlListView( QAbstractItemModel *model, QWidget *parent = 0 );
 protected:
     virtual void startDrag ( Qt::DropActions supportedActions );
     virtual void dragMoveEvent ( QDragMoveEvent * event );
@@ -109,7 +117,7 @@ class PlTreeView : public QTreeView
     Q_OBJECT
 
 public:
-    PlTreeView( PLModel *, QWidget *parent = 0 );
+    PlTreeView( QAbstractItemModel *, QWidget *parent = 0 );
 protected:
     virtual void startDrag ( Qt::DropActions supportedActions );
     virtual void dragMoveEvent ( QDragMoveEvent * event );
@@ -121,7 +129,7 @@ class PicFlowView : public QAbstractItemView
 {
     Q_OBJECT
 public:
-    PicFlowView( PLModel *model, QWidget *parent = 0 );
+    PicFlowView( QAbstractItemModel *model, QWidget *parent = 0 );
 
     virtual QRect visualRect(const QModelIndex&) const;
     virtual void scrollTo(const QModelIndex&, QAbstractItemView::ScrollHint);

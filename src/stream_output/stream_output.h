@@ -2,7 +2,7 @@
  * stream_output.h : internal stream output
  *****************************************************************************
  * Copyright (C) 2002-2005 VLC authors and VideoLAN
- * $Id: 1607927847606e0ce44f71de15451756ba32e199 $
+ * $Id: 4580c9279975c71eba985ce051969d2fd49dbf7b $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -39,7 +39,7 @@ struct sout_packetizer_input_t
 
     es_format_t         *p_fmt;
 
-    sout_stream_id_t    *id;
+    sout_stream_id_sys_t    *id;
 };
 
 sout_instance_t *sout_NewInstance( vlc_object_t *, const char * );

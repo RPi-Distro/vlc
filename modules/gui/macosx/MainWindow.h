@@ -1,8 +1,8 @@
 /*****************************************************************************
  * MainWindow.h: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 528efee66ad183736117b1ca670f7a57a5ae22cb $
+ * Copyright (C) 2002-2014 VLC authors and VideoLAN
+ * $Id: b809af793343ce4ca6128458b4487e5a92a6aa6b $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -26,7 +26,6 @@
  *****************************************************************************/
 
 #import <Cocoa/Cocoa.h>
-#import "CompatibilityFixes.h"
 #import "PXSourceList.h"
 #import "PXSourceListDataSource.h"
 
@@ -41,6 +40,13 @@
 @class VLCDetachedVideoWindow;
 @class VLCMainWindowControlsBar;
 @class VLCVoutView;
+
+typedef enum {
+    psUserEvent,
+    psUserMenuEvent,
+    psVideoStartedOrStoppedEvent,
+    psPlaylistItemChangedEvent
+} VLCPlaylistStateEvent;
 
 @interface VLCMainWindow : VLCVideoWindowCommon <PXSourceListDataSource, PXSourceListDelegate, NSWindowDelegate, NSAnimationDelegate, NSSplitViewDelegate> {
 
@@ -59,7 +65,7 @@
     IBOutlet id o_dropzone_lbl;
     IBOutlet id o_dropzone_box;
 
-    IBOutlet VLCFSPanel *o_fspanel;
+    VLCFSPanel *o_fspanel;
 
     IBOutlet id o_podcast_view;
     IBOutlet id o_podcast_add_btn;
@@ -83,8 +89,8 @@
     BOOL b_splitview_removed;
     BOOL b_minimized_view;
 
-    NSUInteger i_lastSplitViewHeight;
-    NSUInteger i_lastLeftSplitViewWidth;
+    CGFloat f_lastSplitViewHeight;
+    CGFloat f_lastLeftSplitViewWidth;
 
     NSMutableArray *o_sidebaritems;
 
@@ -105,7 +111,7 @@
 
 - (VLCMainWindowControlsBar *)controlsBar;
 
-- (IBAction)togglePlaylist:(id)sender;
+- (void)changePlaylistState:(VLCPlaylistStateEvent)event;
 
 - (IBAction)dropzoneButtonAction:(id)sender;
 
@@ -115,6 +121,8 @@
 - (IBAction)removePodcastWindowAction:(id)sender;
 
 - (void)windowResizedOrMoved:(NSNotification *)notification;
+
+- (void)reloadSidebar;
 
 - (void)toggleLeftSubSplitView;
 - (void)showDropZone;

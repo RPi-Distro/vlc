@@ -18,11 +18,13 @@ $(TARBALLS)/sparkle-git.tar.xz:
 sparkle: sparkle-git.tar.xz .sum-sparkle
 	$(UNPACK)
 	$(APPLY) $(SRC)/sparkle/sparkle-fix-formatstring.patch
+	$(APPLY) $(SRC)/sparkle/sparkle-fix-xcode-project-for-current-releases.patch
 	$(APPLY) $(SRC)/sparkle/sparkle-fix-compilation-on-snowleopard.patch
 	$(MOVE)
 
 .sparkle: sparkle
-	cd $< && xcodebuild $(XCODE_FLAGS)
+	cd $< && xcodebuild $(XCODE_FLAGS) WARNING_CFLAGS=-Wno-error
 	cd $< && install_name_tool -id @executable_path/../Frameworks/Sparkle.framework/Versions/A/Sparkle build/Release/Sparkle.framework/Sparkle
+	install -d $(PREFIX)
 	cd $< && cp -R build/Release/Sparkle.framework "$(PREFIX)"
 	touch $@

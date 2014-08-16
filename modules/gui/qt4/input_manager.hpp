@@ -2,7 +2,7 @@
  * input_manager.hpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: ff1a83da5f0443dc7f48f4147b3dbf4e097e1587 $
+ * $Id: 60719b88a34cd050380bcb2bb08511432bf1f02f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste <jb@videolan.org>
@@ -141,7 +141,7 @@ public:
     bool hasAudio();
     bool hasVideo() { return hasInput() && b_video; }
     bool hasVisualisation();
-    void requestArtUpdate( input_item_t *p_item );
+    void requestArtUpdate( input_item_t *p_item, bool b_forced );
     void setArt( input_item_t *p_item, QString fileUrl );
 
     QString getName() { return oldName; }
@@ -183,8 +183,10 @@ private:
     void UpdateProgramEvent();
     void UpdateEPG();
 
+    void setInput( input_thread_t * );
+
 public slots:
-    void setInput( input_thread_t * ); ///< Our controlled input changed
+    void inputChangedHandler(); ///< Our controlled input changed
     void sliderUpdate( float ); ///< User dragged the slider. We get new pos
     /* SpeedRate Rate Management */
     void reverse();
@@ -221,6 +223,8 @@ signals:
     void titleChanged( bool );
     void chapterChanged( bool );
     void inputCanSeek( bool );
+    /// You can continuePlayback
+    void continuePlayback( int64_t );
     /// Statistics are updated
     void statisticsUpdated( input_item_t* );
     void infoChanged( input_item_t* );
@@ -309,7 +313,7 @@ private slots:
     void menusUpdateAudio( const QString& );
 
 signals:
-    void inputChanged( input_thread_t * );
+    void inputChanged( );
     void volumeChanged( float );
     void soundMuteChanged( bool );
     void playlistItemAppended( int itemId, int parentId );

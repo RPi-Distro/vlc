@@ -2,7 +2,7 @@
  * demux.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: c295f13d13d07292a49724fe7257dacfc486f6d2 $
+ * $Id: f6b910bfffbd6b58ac0d2d8ea6e3e2cdb3e1044f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -326,7 +326,7 @@ private:
 };
 
 
-class demux_sys_t
+struct demux_sys_t
 {
 public:
     demux_sys_t( demux_t & demux )

@@ -2,7 +2,7 @@
  * record.c
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 8194dcc3d1133bbd70f8662a1aca04b47cd5e7dd $
+ * $Id: 538d506c6714b9e9cde24e6a569b9a664e677885 $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -184,7 +184,7 @@ static int Start( stream_t *s, const char *psz_extension )
 
     /* Create file name
      * TODO allow prefix configuration */
-    psz_file = input_CreateFilename( VLC_OBJECT(s), psz_path, INPUT_RECORD_PREFIX, psz_extension );
+    psz_file = input_CreateFilename( s->p_input, psz_path, INPUT_RECORD_PREFIX, psz_extension );
 
     free( psz_path );
 

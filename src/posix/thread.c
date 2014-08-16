@@ -49,9 +49,6 @@
 #ifdef HAVE_EXECINFO_H
 # include <execinfo.h>
 #endif
-#ifdef __APPLE__
-# include <mach/mach_init.h> /* mach_task_self in semaphores */
-#endif
 #if defined(__SunOS)
 # include <sys/processor.h>
 # include <sys/pset.h>
@@ -165,31 +162,7 @@ vlc_thread_fatal (const char *action, int error,
     fprintf (stderr, "LibVLC fatal error %s (%d) in thread %lu ",
              action, error, vlc_threadid ());
     vlc_trace (function, file, line);
-
-    /* Sometimes strerror_r() crashes too, so make sure we print an error
-     * message before we invoke it */
-#ifdef __GLIBC__
-    /* Avoid the strerror_r() prototype brain damage in glibc */
-    errno = error;
-    fprintf (stderr, " Error message: %m\n");
-#else
-    char buf[1000];
-    const char *msg;
-
-    switch (strerror_r (error, buf, sizeof (buf)))
-    {
-        case 0:
-            msg = buf;
-            break;
-        case ERANGE: /* should never happen */
-            msg = "unknown (too big to display)";
-            break;
-        default:
-            msg = "unknown (invalid error number)";
-            break;
-    }
-    fprintf (stderr, " Error message: %s\n", msg);
-#endif
+    perror ("Thread error");
     fflush (stderr);
 
     vlc_restorecancel (canc);
@@ -445,13 +418,8 @@ int vlc_cond_timedwait (vlc_cond_t *p_condvar, vlc_mutex_t *p_mutex,
  */
 void vlc_sem_init (vlc_sem_t *sem, unsigned value)
 {
-#if defined(__APPLE__)
-    if (unlikely(semaphore_create(mach_task_self(), sem, SYNC_POLICY_FIFO, value) != KERN_SUCCESS))
-        abort ();
-#else
     if (unlikely(sem_init (sem, 0, value)))
         abort ();
-#endif
 }
 
 /**
@@ -461,17 +429,10 @@ void vlc_sem_destroy (vlc_sem_t *sem)
 {
     int val;
 
-#if defined(__APPLE__)
-    if (likely(semaphore_destroy(mach_task_self(), *sem) == KERN_SUCCESS))
-        return;
-
-    val = EINVAL;
-#else
     if (likely(sem_destroy (sem) == 0))
         return;
 
     val = errno;
-#endif
 
     VLC_THREAD_ASSERT ("destroying semaphore");
 }
@@ -484,17 +445,10 @@ int vlc_sem_post (vlc_sem_t *sem)
 {
     int val;
 
-#if defined(__APPLE__)
-    if (likely(semaphore_signal(*sem) == KERN_SUCCESS))
-        return 0;
-
-    val = EINVAL;
-#else
     if (likely(sem_post (sem) == 0))
         return 0;
 
     val = errno;
-#endif
 
     if (unlikely(val != EOVERFLOW))
         VLC_THREAD_ASSERT ("unlocking semaphore");
@@ -509,17 +463,10 @@ void vlc_sem_wait (vlc_sem_t *sem)
 {
     int val;
 
-#if defined(__APPLE__)
-    if (likely(semaphore_wait(*sem) == KERN_SUCCESS))
-        return;
-
-    val = EINVAL;
-#else
     do
         if (likely(sem_wait (sem) == 0))
             return;
     while ((val = errno) == EINTR);
-#endif
 
     VLC_THREAD_ASSERT ("locking semaphore");
 }
@@ -625,9 +572,7 @@ void vlc_threads_setup (libvlc_int_t *p_libvlc)
      * just once per process. */
     if (!initialized)
     {
-#ifndef __APPLE__
         if (var_InheritBool (p_libvlc, "rt-priority"))
-#endif
         {
             rt_offset = var_InheritInteger (p_libvlc, "rt-offset");
             rt_priorities = true;

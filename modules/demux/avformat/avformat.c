@@ -2,7 +2,7 @@
  * avformat.c: demuxer and muxer using libavformat library
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 2aa9624e22bd07d9ed912a0b63932cdd33a89490 $
+ * $Id: 616c670ca83e930cb5b0e27a997eaa4b8b86049a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -42,6 +42,7 @@ vlc_module_begin ()
     set_shortname( N_("Avformat") )
     set_capability( "demux", 2 )
     set_callbacks( OpenDemux, CloseDemux )
+    set_section( N_("Demuxer"), NULL )
     add_string( "avformat-format", NULL, FORMAT_TEXT, FORMAT_LONGTEXT, true )
     add_obsolete_string("ffmpeg-format") /* removed since 2.1.0 */
 #if LIBAVFORMAT_VERSION_INT >= ((53<<16)+(26<<8)+0)

@@ -2,7 +2,7 @@
  * omxil.c: Video decoder module making use of OpenMAX IL components.
  *****************************************************************************
  * Copyright (C) 2010 VLC authors and VideoLAN
- * $Id: 85e795cccf213b3f06708fc8c5d0f413287a3406 $
+ * $Id: 66ed1615da6d66cad3e7e877b829554caa299713 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -202,6 +202,7 @@ static const struct
 {
 #ifdef RPI_OMX
     { "video_decoder.avc", "OMX.broadcom.video_decode" },
+    { "video_decoder.mpeg2", "OMX.broadcom.video_decode" },
     { "iv_renderer", "OMX.broadcom.video_render" },
 #endif
     { 0, 0 }

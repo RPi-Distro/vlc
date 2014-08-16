@@ -2,7 +2,7 @@
  * mosaic.c : Mosaic video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2004-2008 VLC authors and VideoLAN
- * $Id: c59fb3953cc63bbd23a3d3974760708a7b3e9312 $
+ * $Id: a9aef4416b923b94e1b28e78dd2bd57fa41d290e $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -433,8 +433,6 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     filter_sys_t *p_sys = p_filter->p_sys;
     bridge_t *p_bridge;
 
-    subpicture_t *p_spu;
-
     int i_index, i_real_index, i_row, i_col;
     int i_greatest_real_index_used = p_sys->i_order_length - 1;
 
@@ -444,7 +442,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     subpicture_region_t *p_region_prev = NULL;
 
     /* Allocate the subpicture internal data. */
-    p_spu = filter_NewSubpicture( p_filter );
+    subpicture_t *p_spu = filter_NewSubpicture( p_filter );
     if( !p_spu )
         return NULL;
 
@@ -455,6 +453,9 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     p_spu->b_ephemer = true;
     p_spu->i_alpha = p_sys->i_alpha;
     p_spu->b_absolute = false;
+
+    p_spu->i_original_picture_width = p_sys->i_width;
+    p_spu->i_original_picture_height = p_sys->i_height;
 
     vlc_mutex_lock( &p_sys->lock );
     vlc_global_lock( VLC_MOSAIC_MUTEX );

@@ -2,7 +2,7 @@
  * playlist_internal.h : Playlist internals
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 9b6c000b31c6f41bcaa57e6dc49d4ebd88ca830f $
+ * $Id: 51a37487aa1e2b8ea95c3750cea6d0d7270f3a9d $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -38,16 +38,17 @@
 #include <assert.h>
 
 #include "art.h"
-#include "fetcher.h"
 #include "preparser.h"
 
 typedef struct vlc_sd_internal_t vlc_sd_internal_t;
+
+void playlist_ServicesDiscoveryKillAll( playlist_t *p_playlist );
 
 typedef struct playlist_private_t
 {
     playlist_t           public_data;
     playlist_preparser_t *p_preparser;  /**< Preparser data */
-    playlist_fetcher_t   *p_fetcher;    /**< Meta and art fetcher data */
+    struct intf_thread_t *interface; /**< Linked-list of interfaces */
 
     playlist_item_array_t items_to_delete; /**< Array of items and nodes to
             delete... At the very end. This sucks. */
@@ -89,7 +90,6 @@ typedef struct playlist_private_t
 
     bool     b_tree; /**< Display as a tree */
     bool     b_doing_ml; /**< Doing media library stuff  get quicker */
-    bool     b_auto_preparse;
 } playlist_private_t;
 
 #define pl_priv( pl ) ((playlist_private_t *)(pl))
@@ -99,6 +99,7 @@ typedef struct playlist_private_t
  *****************************************************************************/
 
 /* Creation/Deletion */
+playlist_t *playlist_Create( vlc_object_t * );
 void playlist_Destroy( playlist_t * );
 void playlist_Activate( playlist_t * );
 

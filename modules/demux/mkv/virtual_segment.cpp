@@ -2,7 +2,7 @@
  * virtual_segment.cpp : virtual segment implementation in the MKV demuxer
  *****************************************************************************
  * Copyright © 2003-2011 VideoLAN and VLC authors
- * $Id: 75d8035014521230e4b40512e1efd0622257f303 $
+ * $Id: 362fc3cddf617296c693fe38977f6fdebfdaf6f0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -267,6 +267,8 @@ virtual_segment_c::virtual_segment_c( std::vector<matroska_segment_c*> * p_opene
     i_sys_title = 0;
     p_current_chapter = NULL;
 
+    i_current_edition = p_segment->i_default_edition;
+
     for( i = 0; i < p_segment->stored_editions.size(); i++ )
     {
         /* Create a virtual edition from opened */
@@ -276,9 +278,16 @@ virtual_segment_c::virtual_segment_c( std::vector<matroska_segment_c*> * p_opene
          * on an other segment which couldn't be found... ignore it */
         if(p_vedition->b_ordered && p_vedition->i_duration == 0)
         {
+
             msg_Warn( &p_segment->sys.demuxer,
                       "Edition %s (%zu) links to other segments not found and is empty... ignoring it",
                        p_vedition->GetMainName().c_str(), i );
+            if(i_current_edition == i)
+            {
+                msg_Warn( &p_segment->sys.demuxer,
+                          "Empty edition was the default... defaulting to 0");
+                i_current_edition = 0;
+            }
             delete p_vedition;
         }
         else
@@ -614,6 +623,24 @@ void virtual_chapter_c::print()
 void virtual_segment_c::ChangeSegment( matroska_segment_c * p_old, matroska_segment_c * p_new, mtime_t i_start_time )
 {
     size_t i, j;
+    char *sub_lang = NULL, *aud_lang = NULL;
+    for( i = 0; i < p_old->tracks.size(); i++)
+    {
+        mkv_track_t *p_tk = p_old->tracks[i];
+        es_format_t *p_ofmt = &p_tk->fmt;
+        if( p_tk->p_es )
+        {
+            bool state = false;
+            es_out_Control( p_old->sys.demuxer.out, ES_OUT_GET_ES_STATE, p_tk->p_es, &state );
+            if( state )
+            {
+                if( p_ofmt->i_cat == AUDIO_ES )
+                    aud_lang = p_tk->fmt.psz_language;
+                else if( p_ofmt->i_cat == SPU_ES )
+                    sub_lang = p_tk->fmt.psz_language;
+            }
+        }
+    }
     for( i = 0; i < p_new->tracks.size(); i++)
     {
         mkv_track_t *p_tk = p_new->tracks[i];
@@ -651,6 +678,15 @@ void virtual_segment_c::ChangeSegment( matroska_segment_c * p_old, matroska_segm
                     break;
                 }
             }
+        }
+        p_tk->fmt.i_priority &= ~(0x10);
+        if( ( sub_lang && p_nfmt->i_cat == SPU_ES && !strcasecmp(sub_lang, p_nfmt->psz_language) ) ||
+            ( aud_lang && p_nfmt->i_cat == AUDIO_ES && !strcasecmp(aud_lang, p_nfmt->psz_language) ) )
+        {
+            msg_Warn( &p_old->sys.demuxer, "Since previous segment used lang %s forcing track %zu",
+                      p_nfmt->psz_language, i);
+            p_tk->fmt.i_priority |= 0x10;
+            p_tk->b_forced = true;
         }
     }
     p_new->Select( i_start_time );

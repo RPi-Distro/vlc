@@ -2,7 +2,7 @@
  * resource.c
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: f3a82dd651be5be09d62f15758c08c790dc9b8d9 $
+ * $Id: 779c921a2c69a87cfee59de2071dcd49c4dba96e $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
@@ -132,6 +132,7 @@ static sout_instance_t *RequestSout( input_resource_t *p_resource,
         return NULL;
     }
 #else
+    VLC_UNUSED (p_resource); VLC_UNUSED (p_sout); VLC_UNUSED (psz_sout);
     return NULL;
 #endif
 }
@@ -329,33 +330,31 @@ audio_output_t *input_resource_GetAout( input_resource_t *p_resource )
 {
     audio_output_t *p_aout;
 
-    vlc_mutex_lock( &p_resource->lock );
-    if( p_resource->b_aout_busy )
-    {
-        vlc_mutex_unlock( &p_resource->lock );
-        msg_Dbg( p_resource->p_parent, "creating extra audio output" );
-        return aout_New( p_resource->p_parent );
-    }
-
+    vlc_mutex_lock( &p_resource->lock_hold );
     p_aout = p_resource->p_aout;
-    if( p_aout == NULL )
+
+    if( p_aout == NULL || p_resource->b_aout_busy )
     {
         msg_Dbg( p_resource->p_parent, "creating audio output" );
+        vlc_mutex_unlock( &p_resource->lock_hold );
+
         p_aout = aout_New( p_resource->p_parent );
+        if( p_aout == NULL )
+            return NULL; /* failed */
+
+        vlc_mutex_lock( &p_resource->lock_hold );
+        if( p_resource->p_aout == NULL )
+            p_resource->p_aout = p_aout;
     }
     else
         msg_Dbg( p_resource->p_parent, "reusing audio output" );
 
-    if( p_aout != NULL )
+    if( p_resource->p_aout == p_aout )
     {
-        vlc_mutex_lock( &p_resource->lock_hold );
-        p_resource->p_aout = p_aout;
-        vlc_mutex_unlock( &p_resource->lock_hold );
-
+        assert( !p_resource->b_aout_busy );
         p_resource->b_aout_busy = true;
-        vlc_object_hold( p_aout );
     }
-    vlc_mutex_unlock( &p_resource->lock );
+    vlc_mutex_unlock( &p_resource->lock_hold );
     return p_aout;
 }
 
@@ -364,18 +363,17 @@ void input_resource_PutAout( input_resource_t *p_resource,
 {
     assert( p_aout != NULL );
 
-    vlc_mutex_lock( &p_resource->lock );
+    vlc_mutex_lock( &p_resource->lock_hold );
     if( p_aout == p_resource->p_aout )
     {
         assert( p_resource->b_aout_busy );
         p_resource->b_aout_busy = false;
         msg_Dbg( p_resource->p_parent, "keeping audio output" );
-        vlc_object_release( p_aout );
         p_aout = NULL;
     }
     else
         msg_Dbg( p_resource->p_parent, "destroying extra audio output" );
-    vlc_mutex_unlock( &p_resource->lock );
+    vlc_mutex_unlock( &p_resource->lock_hold );
 
     if( p_aout != NULL )
         aout_Destroy( p_aout );
@@ -387,24 +385,24 @@ audio_output_t *input_resource_HoldAout( input_resource_t *p_resource )
 
     vlc_mutex_lock( &p_resource->lock_hold );
     p_aout = p_resource->p_aout;
-    if( p_aout )
+    if( p_aout != NULL )
         vlc_object_hold( p_aout );
     vlc_mutex_unlock( &p_resource->lock_hold );
 
     return p_aout;
 }
 
-static void input_resource_TerminateAout( input_resource_t *p_resource )
+void input_resource_ResetAout( input_resource_t *p_resource )
 {
-    audio_output_t *p_aout;
+    audio_output_t *p_aout = NULL;
 
-    vlc_mutex_lock( &p_resource->lock );
     vlc_mutex_lock( &p_resource->lock_hold );
-    p_aout = p_resource->p_aout;
+    if( !p_resource->b_aout_busy )
+        p_aout = p_resource->p_aout;
+
     p_resource->p_aout = NULL;
-    vlc_mutex_unlock( &p_resource->lock_hold );
     p_resource->b_aout_busy = false;
-    vlc_mutex_unlock( &p_resource->lock );
+    vlc_mutex_unlock( &p_resource->lock_hold );
 
     if( p_aout != NULL )
         aout_Destroy( p_aout );
@@ -511,7 +509,7 @@ void input_resource_TerminateSout( input_resource_t *p_resource )
 void input_resource_Terminate( input_resource_t *p_resource )
 {
     input_resource_TerminateSout( p_resource );
-    input_resource_TerminateAout( p_resource );
+    input_resource_ResetAout( p_resource );
     input_resource_TerminateVout( p_resource );
 }
 

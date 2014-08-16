@@ -2,7 +2,7 @@
  * stream_demux.c
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 01d251c83950047237756942da8e6ea39b89895e $
+ * $Id: 3516d799482dafd08f2278a32d64c9e8fbcbb207 $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -296,8 +296,13 @@ static int DStreamControl( stream_t *s, int i_query, va_list args )
             return VLC_SUCCESS;
         }
 
-        case STREAM_CONTROL_ACCESS:
+        case STREAM_GET_PTS_DELAY:
+            *va_arg( args, int64_t * ) = DEFAULT_PTS_DELAY;
+            return VLC_SUCCESS;
+
         case STREAM_GET_TITLE_INFO:
+        case STREAM_GET_TITLE:
+        case STREAM_GET_SEEKPOINT:
         case STREAM_GET_META:
         case STREAM_GET_CONTENT_TYPE:
         case STREAM_GET_SIGNAL:
@@ -305,6 +310,9 @@ static int DStreamControl( stream_t *s, int i_query, va_list args )
         case STREAM_SET_TITLE:
         case STREAM_SET_SEEKPOINT:
         case STREAM_SET_RECORD_STATE:
+        case STREAM_SET_PRIVATE_ID_STATE:
+        case STREAM_SET_PRIVATE_ID_CA:
+        case STREAM_GET_PRIVATE_ID_STATE:
             return VLC_EGENERIC;
 
         default:
@@ -359,6 +367,9 @@ static void* DStreamThread( void *obj )
             break;
     }
 
+    /* Explicit kludge: the stream is destroyed by the owner of the
+     * streamDemux, not here. */
+    p_demux->s = NULL;
     demux_Delete( p_demux );
 
     return NULL;

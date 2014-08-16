@@ -2,7 +2,7 @@
  * scene.c : scene video filter (based on modules/video_output/image.c)
  *****************************************************************************
  * Copyright (C) 2004-2008 VLC authors and VideoLAN
- * $Id: 4f68a7ec22a4fa5d81ee1ccd6ae423f6515e9558 $
+ * $Id: 3b8ad6f6446d68eb90d9812f9348f995694f40ba $
  *
  * Authors: Jean-Paul Saman <jpsaman@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -31,10 +31,10 @@
 #endif
 
 #include <limits.h>
+#include <errno.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_block.h>
 
 #include <vlc_filter.h>
 #include "filter_picture.h"
@@ -155,6 +155,11 @@ static int Create( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys;
+
+    const vlc_chroma_description_t *p_chroma =
+        vlc_fourcc_GetChromaDescription( p_filter->fmt_in.video.i_chroma );
+    if( p_chroma == NULL || p_chroma->plane_count == 0 )
+        return VLC_EGENERIC;
 
     config_ChainParse( p_filter, CFG_PREFIX, ppsz_vfilter_options,
                        p_filter->p_cfg );
@@ -329,7 +334,8 @@ static void SavePicture( filter_t *p_filter, picture_t *p_pic )
         i_ret = vlc_rename( psz_temp, psz_filename );
         if( i_ret == -1 )
         {
-            msg_Err( p_filter, "could not rename snapshot %s %m", psz_filename );
+            msg_Err( p_filter, "could not rename snapshot %s: %s",
+                     psz_filename, vlc_strerror_c(errno) );
             goto error;
         }
     }

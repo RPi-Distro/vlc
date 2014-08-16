@@ -3,7 +3,7 @@
  *            (using libtwolame from http://www.twolame.org/)
  *****************************************************************************
  * Copyright (C) 2004-2005 VLC authors and VideoLAN
- * $Id: 092fd7db8a35c1e8e4617cf370c7ff84d0f31053 $
+ * $Id: 4d2588ac8b871636ce316152f47af06195ec3aef $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin
@@ -161,7 +161,6 @@ static int OpenEncoder( vlc_object_t *p_this )
         return VLC_ENOMEM;
     p_enc->p_sys = p_sys;
 
-    p_enc->pf_encode_audio = Encode;
     p_enc->fmt_in.i_codec = VLC_CODEC_S16N;
 
     p_enc->fmt_out.i_cat = AUDIO_ES;
@@ -238,6 +237,8 @@ static int OpenEncoder( vlc_object_t *p_this )
         return -VLC_EGENERIC;
     }
 
+    p_enc->pf_encode_audio = Encode;
+
     p_sys->i_nb_samples = 0;
 
     return VLC_SUCCESS;
@@ -261,13 +262,29 @@ static void Bufferize( encoder_t *p_enc, int16_t *p_in, int i_nb_samples )
 static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
 {
     encoder_sys_t *p_sys = p_enc->p_sys;
+    block_t *p_chain = NULL;
 
-    /* FIXME:p_aout_buf is NULL when it's time to flush, does twolame has buffer to flush?*/
-    if( unlikely( !p_aout_buf ) ) return NULL;
+    if( unlikely( !p_aout_buf ) ) {
+        int i_used = 0;
+        block_t *p_block;
+
+        i_used = twolame_encode_flush( p_sys->p_twolame,
+                                p_sys->p_out_buffer, MAX_CODED_FRAME_SIZE );
+        if( i_used <= 0 )
+            return NULL;
+
+        p_block = block_Alloc( i_used );
+        memcpy( p_block->p_buffer, p_sys->p_out_buffer, i_used );
+        p_block->i_length = (mtime_t)1000000 *
+                (mtime_t)MPEG_FRAME_SIZE / (mtime_t)p_enc->fmt_out.audio.i_rate;
+        p_block->i_dts = p_block->i_pts = p_sys->i_pts;
+        p_sys->i_pts += p_block->i_length;
+
+        return p_block;
+    }
 
     int16_t *p_buffer = (int16_t *)p_aout_buf->p_buffer;
     int i_nb_samples = p_aout_buf->i_nb_samples;
-    block_t *p_chain = NULL;
 
     p_sys->i_pts = p_aout_buf->i_pts -
                 (mtime_t)1000000 * (mtime_t)p_sys->i_nb_samples /

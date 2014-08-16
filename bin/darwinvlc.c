@@ -2,7 +2,7 @@
  * darwinvlc.c: the darwin-specific VLC player
  *****************************************************************************
  * Copyright (C) 1998-2013 the VideoLAN team
- * $Id: 9bac3caad86ca7455c20d81fa453aa2b418dce9f $
+ * $Id: 0a35dc58914f17960d2f4db113921aade7276fd6 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -148,14 +148,14 @@ int main( int i_argc, const char *ppsz_argv[] )
     sigaddset (&set, SIGCHLD);
 
     /* Block all these signals */
-    pthread_t self = pthread_self ();
     pthread_sigmask (SIG_SETMASK, &set, NULL);
 
-    const char *argv[i_argc + 2];
+    const char *argv[i_argc + 3];
     int argc = 0;
 
     argv[argc++] = "--no-ignore-config";
     argv[argc++] = "--media-library";
+    argv[argc++] = "--stats";
 
     /* overwrite system language on Mac */
 #if !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR // TARGET_OS_MAC is unspecific
@@ -210,6 +210,8 @@ int main( int i_argc, const char *ppsz_argv[] )
 
     vlc_enable_override ();
 
+    pthread_t self = pthread_self ();
+
     /* Initialize libvlc */
     libvlc_instance_t *vlc = libvlc_new (argc, argv);
     if (vlc == NULL)
@@ -220,12 +222,12 @@ int main( int i_argc, const char *ppsz_argv[] )
     libvlc_set_app_id (vlc, "org.VideoLAN.VLC", PACKAGE_VERSION, PACKAGE_NAME);
     libvlc_set_user_agent (vlc, "VLC media player", "VLC/"PACKAGE_VERSION);
 
+    libvlc_playlist_play (vlc, -1, 0, NULL);
+
     libvlc_add_intf (vlc, "hotkeys,none");
 
     if (libvlc_add_intf (vlc, NULL))
         goto out;
-
-    libvlc_playlist_play (vlc, -1, 0, NULL);
 
     /* Qt4 insists on catching SIGCHLD via signal handler. To work around that,
      * unblock it after all our child threads are created. */

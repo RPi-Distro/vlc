@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005-2010 VLC authors and VideoLAN
  *
- * $Id: 43471b9e21b5e0cda1d57d00a4fe8bae8393c27e $
+ * $Id: c8b371130e82c72c6df93b2ad3b2a620f158ec4d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Filippo Carone <littlejohn@videolan.org>
@@ -38,6 +38,7 @@
 #include <vlc_vout.h>
 
 #include "media_player_internal.h"
+#include <math.h>
 #include <assert.h>
 
 /*
@@ -237,9 +238,9 @@ float libvlc_video_get_scale( libvlc_media_player_t *mp )
 
 void libvlc_video_set_scale( libvlc_media_player_t *p_mp, float f_scale )
 {
-    if (f_scale != 0.)
+    if (isfinite(f_scale) && f_scale != 0.f)
         var_SetFloat (p_mp, "scale", f_scale);
-    var_SetBool (p_mp, "autoscale", f_scale == 0.);
+    var_SetBool (p_mp, "autoscale", f_scale == 0.f);
 
     /* Apply to current video outputs (if any) */
     size_t n;
@@ -248,9 +249,9 @@ void libvlc_video_set_scale( libvlc_media_player_t *p_mp, float f_scale )
     {
         vout_thread_t *p_vout = pp_vouts[i];
 
-        if (f_scale != 0.)
+        if (isfinite(f_scale) && f_scale != 0.f)
             var_SetFloat (p_vout, "scale", f_scale);
-        var_SetBool (p_vout, "autoscale", f_scale == 0.);
+        var_SetBool (p_vout, "autoscale", f_scale == 0.f);
         vlc_object_release (p_vout);
     }
     free (pp_vouts);
@@ -610,32 +611,31 @@ void libvlc_video_set_deinterlace( libvlc_media_player_t *p_mi,
 /* module helpers */
 /* ************** */
 
-
-static vlc_object_t *get_object( libvlc_media_player_t * p_mi,
-                                 const char *name )
+static bool find_sub_source_by_name( libvlc_media_player_t *p_mi, const char *restrict name )
 {
-    vlc_object_t *object;
     vout_thread_t *vout = GetVout( p_mi, 0 );
+    if (!vout)
+        return false;
 
-    if( vout )
+    char *psz_sources = var_GetString( vout, "sub-source" );
+    if( !psz_sources )
     {
-        object = vlc_object_find_name( vout, name );
-        vlc_object_release(vout);
-    }
-    else
-        object = NULL;
-
-    if( !object )
         libvlc_printerr( "%s not enabled", name );
-    return object;
-}
+        vlc_object_release( vout );
+        return false;
+    }
 
+    /* Find 'name'  */
+    char *p = strstr( psz_sources, name );
+    free( psz_sources );
+    vlc_object_release( vout );
+    return (p != NULL);
+}
 
 typedef const struct {
     const char name[20];
     unsigned type;
 } opt_t;
-
 
 static void
 set_int( libvlc_media_player_t *p_mi, const char *restrict name,
@@ -648,7 +648,9 @@ set_int( libvlc_media_player_t *p_mi, const char *restrict name,
         vout_thread_t *vout = GetVout( p_mi, 0 );
         if (vout)
         {
+            /* Fill sub-source */
             vout_EnableFilter( vout, opt->name, value, false );
+            var_TriggerCallback( vout, "sub-source" );
             vlc_object_release( vout );
         }
         return;
@@ -660,15 +662,8 @@ set_int( libvlc_media_player_t *p_mi, const char *restrict name,
         return;
     }
 
-    var_SetInteger(p_mi, opt->name, value);
-    vlc_object_t *object = get_object( p_mi, name );
-    if( object )
-    {
-        var_SetInteger(object, opt->name, value);
-        vlc_object_release( object );
-    }
+    var_SetInteger( p_mi, opt->name, value );
 }
-
 
 static int
 get_int( libvlc_media_player_t *p_mi, const char *restrict name,
@@ -680,9 +675,8 @@ get_int( libvlc_media_player_t *p_mi, const char *restrict name,
     {
         case 0: /* the enabler */
         {
-            vlc_object_t *object = get_object( p_mi, name );
-            vlc_object_release( object );
-            return object != NULL;
+            bool b_enabled = find_sub_source_by_name( p_mi, name );
+            return b_enabled ? 1 : 0;
         }
     case VLC_VAR_INTEGER:
         return var_GetInteger(p_mi, opt->name);
@@ -691,7 +685,6 @@ get_int( libvlc_media_player_t *p_mi, const char *restrict name,
         return 0;
     }
 }
-
 
 static void
 set_float( libvlc_media_player_t *p_mi, const char *restrict name,
@@ -706,22 +699,13 @@ set_float( libvlc_media_player_t *p_mi, const char *restrict name,
     }
 
     var_SetFloat( p_mi, opt->name, value );
-
-    vlc_object_t *object = get_object( p_mi, name );
-    if( object )
-    {
-        var_SetFloat(object, opt->name, value );
-        vlc_object_release( object );
-    }
 }
-
 
 static float
 get_float( libvlc_media_player_t *p_mi, const char *restrict name,
             const opt_t *restrict opt )
 {
     if( !opt ) return 0.0;
-
 
     if( opt->type != VLC_VAR_FLOAT )
     {
@@ -731,7 +715,6 @@ get_float( libvlc_media_player_t *p_mi, const char *restrict name,
 
     return var_GetFloat( p_mi, opt->name );
 }
-
 
 static void
 set_string( libvlc_media_player_t *p_mi, const char *restrict name,
@@ -746,15 +729,7 @@ set_string( libvlc_media_player_t *p_mi, const char *restrict name,
     }
 
     var_SetString( p_mi, opt->name, psz_value );
-
-    vlc_object_t *object = get_object( p_mi, name );
-    if( object )
-    {
-        var_SetString(object, opt->name, psz_value );
-        vlc_object_release( object );
-    }
 }
-
 
 static char *
 get_string( libvlc_media_player_t *p_mi, const char *restrict name,
@@ -770,7 +745,6 @@ get_string( libvlc_media_player_t *p_mi, const char *restrict name,
 
     return var_GetString( p_mi, opt->name );
 }
-
 
 static const opt_t *
 marq_option_bynumber(unsigned option)
@@ -795,8 +769,6 @@ marq_option_bynumber(unsigned option)
         libvlc_printerr( "Unknown marquee option" );
     return r;
 }
-
-static vlc_object_t *get_object( libvlc_media_player_t *, const char *);
 
 /*****************************************************************************
  * libvlc_video_get_marquee_int : get a marq option value
@@ -837,7 +809,6 @@ void libvlc_video_set_marquee_string( libvlc_media_player_t *p_mi,
 
 /* logo module support */
 
-
 static const opt_t *
 logo_option_bynumber( unsigned option )
 {
@@ -861,11 +832,10 @@ logo_option_bynumber( unsigned option )
     return r;
 }
 
-
 void libvlc_video_set_logo_string( libvlc_media_player_t *p_mi,
                                    unsigned option, const char *psz_value )
 {
-    set_string( p_mi,"logo",logo_option_bynumber(option),psz_value );
+    set_string( p_mi,"logo",logo_option_bynumber(option), psz_value );
 }
 
 
@@ -891,12 +861,12 @@ adjust_option_bynumber( unsigned option )
 {
     static const opt_t optlist[] =
     {
-        { "adjust",               0 },
-        { "contrast",             VLC_VAR_FLOAT },
-        { "brightness",           VLC_VAR_FLOAT },
-        { "hue",                  VLC_VAR_INTEGER },
-        { "saturation",           VLC_VAR_FLOAT },
-        { "gamma",                VLC_VAR_FLOAT },
+        { "adjust",     0 },
+        { "contrast",   VLC_VAR_FLOAT },
+        { "brightness", VLC_VAR_FLOAT },
+        { "hue",        VLC_VAR_INTEGER },
+        { "saturation", VLC_VAR_FLOAT },
+        { "gamma",      VLC_VAR_FLOAT },
     };
     enum { num_opts = sizeof(optlist) / sizeof(*optlist) };
 

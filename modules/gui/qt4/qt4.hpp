@@ -2,7 +2,7 @@
  * qt4.hpp : Qt interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: a07e0839a6a941c813744aad34d792bf6c473706 $
+ * $Id: 44d7db657403d85ae4dfd3d742d84007533f35ac $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -41,6 +41,7 @@
 #endif
 
 #define HAS_QT47 ( QT_VERSION >= 0x040700 )
+#define HAS_QT5  ( QT_VERSION >= 0x050000 )
 
 enum {
     DialogEventTypeOffset = 0,
@@ -75,15 +76,15 @@ struct intf_sys_t
 
     QString filepath;        /* Last path used in dialogs */
 
-    int  i_screenHeight;     /* Detection of Small screens */
     unsigned voutWindowType; /* Type of vout_window_t provided */
     bool b_isDialogProvider; /* Qt mode or Skins mode */
+    playlist_t *p_playlist;  /* playlist */
 #ifdef _WIN32
     bool disable_volume_keys;
 #endif
 };
 
-#define THEPL pl_Get(p_intf)
+#define THEPL p_intf->p_sys->p_playlist
 #define QPL_LOCK playlist_Lock( THEPL );
 #define QPL_UNLOCK playlist_Unlock( THEPL );
 

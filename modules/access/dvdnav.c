@@ -2,7 +2,7 @@
  * dvdnav.c: DVD module using the dvdnav library.
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: 13aaa3d5bda6f374bbc344c964b585b398db1549 $
+ * $Id: 1ba59e20f58bfc95d1dee4139d434ecd5421c318 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -38,9 +38,7 @@
 #endif
 
 #include <assert.h>
-#ifdef HAVE_UNISTD_H
-#   include <unistd.h>
-#endif
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -282,9 +280,8 @@ static int Open( vlc_object_t *p_this )
         msg_Warn( p_demux, "cannot set PGC positioning flag" );
     }
 
-    /* Set menu language
-     * XXX A menu-language may be better than sub-language */
-    psz_code = DemuxGetLanguageCode( p_demux, "sub-language" );
+    /* Set menu language */
+    psz_code = DemuxGetLanguageCode( p_demux, "menu-language" );
     if( dvdnav_menu_language_select( p_sys->dvdnav, psz_code ) !=
         DVDNAV_STATUS_OK )
     {
@@ -500,7 +497,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             *va_arg( args, int* ) = 1; /* Chapter offset */
 
             /* Duplicate title infos */
-            *ppp_title = malloc( sizeof( input_title_t ** ) * p_sys->i_title );
+            *ppp_title = malloc( p_sys->i_title * sizeof( input_title_t * ) );
             for( i = 0; i < p_sys->i_title; i++ )
             {
                 (*ppp_title)[i] = vlc_input_title_Duplicate( p_sys->title[i] );
@@ -796,7 +793,6 @@ static int Demux( demux_t *p_demux )
             tk->b_seen = false;
         }
 
-#if defined(HAVE_DVDNAV_GET_VIDEO_RESOLUTION)
         uint32_t i_width, i_height;
         if( dvdnav_get_video_resolution( p_sys->dvdnav,
                                          &i_width, &i_height ) )
@@ -816,7 +812,6 @@ static int Demux( demux_t *p_demux )
             p_sys->sar.i_den = 0;
             break;
         }
-#endif
 
         if( dvdnav_current_title_info( p_sys->dvdnav, &i_title,
                                        &i_part ) == DVDNAV_STATUS_OK )
@@ -861,8 +856,7 @@ static int Demux( demux_t *p_demux )
                 p_demux->info.i_update |= INPUT_UPDATE_TITLE;
                 p_demux->info.i_title = i_title;
 
-                if( i_part >= 1 && i_part <= p_sys->title[i_title]->i_seekpoint &&
-                        p_demux->info.i_seekpoint != i_part - 1 )
+                if( i_part >= 1 && i_part <= p_sys->title[i_title]->i_seekpoint )
                 {
                     p_demux->info.i_update |= INPUT_UPDATE_SEEKPOINT;
                     p_demux->info.i_seekpoint = i_part - 1;
@@ -1042,13 +1036,16 @@ static void DemuxTitles( demux_t *p_demux )
 
     /* Find out number of titles/chapters */
     dvdnav_get_number_of_titles( p_sys->dvdnav, &i_titles );
+
+    if( i_titles > 90 )
+        msg_Err( p_demux, "This is probably an Arccos Protected DVD. This could take time..." );
+
     for( i = 1; i <= i_titles; i++ )
     {
         int32_t i_chapters;
         uint64_t i_title_length;
         uint64_t *p_chapters_time;
 
-#if defined(HAVE_DVDNAV_DESCRIBE_TITLE_CHAPTERS)
         i_chapters = dvdnav_describe_title_chapters( p_sys->dvdnav, i,
                                                      &p_chapters_time,
                                                      &i_title_length );
@@ -1057,12 +1054,6 @@ static void DemuxTitles( demux_t *p_demux )
             i_title_length = 0;
             p_chapters_time = NULL;
         }
-#else
-        if( dvdnav_get_number_of_parts( p_sys->dvdnav, i, &i_chapters ) != DVDNAV_STATUS_OK )
-            i_chapters = 0;
-        i_title_length = 0;
-        p_chapters_time = NULL;
-#endif
         t = vlc_input_title_New();
         t->i_length = i_title_length * 1000 / 90;
         for( int j = 0; j < __MAX( i_chapters, 1 ); j++ )

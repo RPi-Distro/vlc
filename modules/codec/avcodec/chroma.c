@@ -2,7 +2,7 @@
  * chroma.c: libavutil <-> libvlc conversion routines
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: ea1f6723cd0411d6deef62119abb78c98ee5c33c $
+ * $Id: fbbe29a09856d1a872122fc0e9422c69a8cea082 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -94,7 +94,7 @@ static const struct
     {VLC_CODEC_I422_10B, PIX_FMT_YUV422P10BE, 0, 0, 0 },
 
     {VLC_CODEC_YUV420A, PIX_FMT_YUVA420P, 0, 0, 0 },
-#if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(51,45,0)
+#if LIBAVUTIL_VERSION_CHECK( 51, 45, 0, 74, 100 )
     {VLC_CODEC_YUV422A, AV_PIX_FMT_YUVA422P, 0, 0, 0 },
 #endif
 
@@ -102,6 +102,8 @@ static const struct
     {VLC_CODEC_I444_9B, PIX_FMT_YUV444P9BE, 0, 0, 0 },
     {VLC_CODEC_I444_10L, PIX_FMT_YUV444P10LE, 0, 0, 0 },
     {VLC_CODEC_I444_10B, PIX_FMT_YUV444P10BE, 0, 0, 0 },
+    {VLC_CODEC_I444_16L, PIX_FMT_YUV444P16LE, 0, 0, 0 },
+    {VLC_CODEC_I444_16B, PIX_FMT_YUV444P16BE, 0, 0, 0 },
 
     /* Packed YUV formats */
     {VLC_CODEC_YUYV, PIX_FMT_YUYV422, 0, 0, 0 },
@@ -120,15 +122,21 @@ static const struct
     VLC_RGB( VLC_CODEC_RGB32, PIX_FMT_RGB32, PIX_FMT_BGR32, 0x00ff0000, 0x0000ff00, 0x000000ff )
     VLC_RGB( VLC_CODEC_RGB32, PIX_FMT_RGB32_1, PIX_FMT_BGR32_1, 0xff000000, 0x00ff0000, 0x0000ff00 )
 
-#if (LIBAVUTIL_VERSION_MICRO >= 100)
+#ifdef AV_PIX_FMT_0BGR32
     VLC_RGB( VLC_CODEC_RGB32, AV_PIX_FMT_0BGR32, AV_PIX_FMT_0RGB32, 0x000000ff, 0x0000ff00, 0x00ff0000 )
 #endif
 
-    {VLC_CODEC_RGBA, PIX_FMT_RGBA, 0xff000000, 0x00ff0000, 0x0000ff00},
+    {VLC_CODEC_RGBA, PIX_FMT_RGBA, 0, 0, 0 },
+    {VLC_CODEC_ARGB, PIX_FMT_ARGB, 0, 0, 0 },
+    {VLC_CODEC_BGRA, PIX_FMT_BGRA, 0, 0, 0 },
     {VLC_CODEC_GREY, PIX_FMT_GRAY8, 0, 0, 0},
 
      /* Paletized RGB */
     {VLC_CODEC_RGBP, PIX_FMT_PAL8, 0, 0, 0},
+
+#if LIBAVUTIL_VERSION_CHECK(51, 42, 0, 74,100)
+    {VLC_CODEC_GBR_PLANAR, AV_PIX_FMT_GBRP, 0, 0, 0 },
+#endif
 
     /* XYZ */
 #if LIBAVUTIL_VERSION_CHECK(52, 10, 0, 25, 100)

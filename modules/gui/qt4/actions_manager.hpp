@@ -2,7 +2,7 @@
  * actions_manager.hpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: a69457905cf7c55dc0807a2453acb85b944c56b9 $
+ * $Id: 543f10adec0c7b88b55d9bd49c8f4faf477946d9 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -29,8 +29,11 @@
 #endif
 
 #include "qt4.hpp"
+#include "util/singleton.hpp"
 
 #include <QObject>
+class QAction;
+
 typedef enum actionType_e
 {
     PLAY_ACTION,
@@ -58,28 +61,18 @@ typedef enum actionType_e
     OPEN_SUB_ACTION,
 } actionType_e;
 
-class ActionsManager : public QObject
+class ActionsManager : public QObject, public Singleton<ActionsManager>
 {
 
     Q_OBJECT
+    friend class Singleton<ActionsManager>;
+
 public:
-    static ActionsManager *getInstance( intf_thread_t *_p_intf, QObject *_parent = 0 )
-    {
-        if( !instance )
-            instance = new ActionsManager( _p_intf, _parent );
-        return instance;
-    }
-    static void killInstance()
-    {
-        delete instance;
-        instance = NULL;
-    }
 
 private:
-    virtual ~ActionsManager();
+    ActionsManager( intf_thread_t  *_p_i );
+    virtual ~ActionsManager() {}
 
-    static ActionsManager *instance;
-    ActionsManager( intf_thread_t  *_p_i, QObject *_parent );
     intf_thread_t       *p_intf;
 
 public slots:
@@ -90,6 +83,8 @@ public slots:
     void record();
     void skipForward();
     void skipBackward();
+    void PPaction( QAction * );
+
 protected slots:
     void fullscreen();
     void snapshot();

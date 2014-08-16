@@ -218,8 +218,10 @@ int posix_memalign (void **, size_t, size_t);
 
 /* locale.h */
 #ifndef HAVE_USELOCALE
+#define LC_ALL_MASK      0
 #define LC_NUMERIC_MASK  0
 #define LC_MESSAGES_MASK 0
+#define LC_GLOBAL_LOCALE ((locale_t)(uintptr_t)1)
 typedef void *locale_t;
 static inline locale_t uselocale(locale_t loc)
 {
@@ -339,6 +341,12 @@ long nrand48 (unsigned short subi[3]);
 
 #ifdef __OS2__
 # undef HAVE_FORK   /* Implementation of fork() is imperfect on OS/2 */
+#endif
+
+/* math.h */
+
+#ifdef __ANDROID__
+#define nanf(tagp) NAN
 #endif
 
 #endif /* !LIBVLC_FIXUPS_H */

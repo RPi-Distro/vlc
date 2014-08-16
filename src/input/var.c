@@ -2,7 +2,7 @@
  * var.c: object variables for input thread
  *****************************************************************************
  * Copyright (C) 2004-2007 VLC authors and VideoLAN
- * $Id: 3e3d1125bdfc88bd2d46aa2ffac5cf03448cae08 $
+ * $Id: 7591de43c1637f231f85201857a908ccf7549c9c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -210,6 +210,10 @@ void input_ControlVarInit ( input_thread_t *p_input )
     text.psz_string = _("Subtitle Track");
     var_Change( p_input, "spu-es", VLC_VAR_SETTEXT, &text, NULL );
 
+    var_Create( p_input, "spu-choice", VLC_VAR_INTEGER );
+    val.i_int = -1;
+    var_Change( p_input, "spu-choice", VLC_VAR_SETVALUE, &val, NULL );
+
     /* Special read only objects variables for intf */
     var_Create( p_input, "bookmarks", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
 
@@ -284,6 +288,8 @@ void input_ControlVarNavigation( input_thread_t *p_input )
     val.psz_string = malloc( sizeof("title ") + 5 );
     if( !val.psz_string )
         return;
+
+    var_Change( p_input, "title", VLC_VAR_CLEARCHOICES, NULL, NULL );
 
     for( i = 0; i < p_input->p->i_title; i++ )
     {
@@ -428,6 +434,8 @@ void input_ConfigVarInit ( input_thread_t *p_input )
         var_Create( p_input, "audio-language",
                     VLC_VAR_STRING|VLC_VAR_DOINHERIT );
         var_Create( p_input, "sub-language",
+                    VLC_VAR_STRING|VLC_VAR_DOINHERIT );
+        var_Create( p_input, "menu-language",
                     VLC_VAR_STRING|VLC_VAR_DOINHERIT );
 
         var_Create( p_input, "audio-track-id",

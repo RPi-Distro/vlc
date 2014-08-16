@@ -2,7 +2,7 @@
  * window.c: "vout window" managment
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: b351936e989518fd27d8e58c0abc1bfcfcc6ed93 $
+ * $Id: bc45bc28ea0c934547236576e3e31cac01242bfc $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -61,6 +61,7 @@ vout_window_t *vout_window_New(vlc_object_t *obj,
     memset(&window->handle, 0, sizeof(window->handle));
     window->control = NULL;
     window->sys = NULL;
+    window->type = cfg->type;
 
     const char *type;
     switch (cfg->type) {
@@ -80,6 +81,10 @@ vout_window_t *vout_window_New(vlc_object_t *obj,
         type = "vout window xid";
         window->handle.xid = 0;
         window->display.x11 = NULL;
+        break;
+    case VOUT_WINDOW_TYPE_ANDROID_NATIVE:
+        type = "vout window anative";
+        window->handle.anativewindow = NULL;
         break;
     default:
         assert(0);

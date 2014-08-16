@@ -1,25 +1,25 @@
 /*****************************************************************************
  * effects.c : Effects for the visualization system
  *****************************************************************************
- * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: d1b8932695ed9805e7be54f596a72b86d36f2a9d $
+ * Copyright (C) 2002-2009 VLC authors and VideoLAN
+ * $Id: bf30c847ed861164e32d7beb342b802bbb8185ea $
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
  *          Adrien Maglo <magsoft@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -37,6 +37,7 @@
 #include <math.h>
 
 #include "fft.h"
+#include "window.h"
 
 #define PEAK_SPEED 1
 #define BAR_DECREASE_SPEED 5
@@ -72,6 +73,8 @@ typedef struct spectrum_data
 
     unsigned i_prev_nb_samples;
     int16_t *p_prev_s16_buff;
+
+    window_param wind_param;
 } spectrum_data;
 
 static int spectrum_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
@@ -102,6 +105,7 @@ static int spectrum_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
     const int *xscale;
 
     fft_state *p_state;                 /* internal FFT data */
+    DEFINE_WIND_CONTEXT( wind_ctx );    /* internal window data */
 
     int i , j , y , k;
     int i_line;
@@ -115,6 +119,11 @@ static int spectrum_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
     int16_t  *p_buffs;                    /* int16_t converted buffer */
     int16_t  *p_s16_buff;                 /* int16_t converted buffer */
 
+    if (!p_buffer->i_nb_samples) {
+        msg_Err(p_aout, "no samples yet");
+        return -1;
+    }
+
     /* Create p_data if needed */
     if( !p_data )
     {
@@ -127,6 +136,8 @@ static int spectrum_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
 
         p_data->i_prev_nb_samples = 0;
         p_data->p_prev_s16_buff = NULL;
+
+        window_get_param( p_aout, &p_data->wind_param );
     }
     peaks = (int *)p_data->peaks;
     prev_heights = (int *)p_data->prev_heights;
@@ -182,6 +193,13 @@ static int spectrum_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
         msg_Err(p_aout,"unable to initialize FFT transform");
         return -1;
     }
+    if( !window_init( FFT_BUFFER_SIZE, &p_data->wind_param, &wind_ctx ) )
+    {
+        fft_close( p_state );
+        free( height );
+        msg_Err(p_aout,"unable to initialize FFT window");
+        return -1;
+    }
     p_buffs = p_s16_buff;
     for ( i = 0 ; i < FFT_BUFFER_SIZE ; i++)
     {
@@ -193,6 +211,7 @@ static int spectrum_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
             p_buffs = p_s16_buff;
 
     }
+    window_scale_in_place( p_buffer1, &wind_ctx );
     fft_perform( p_buffer1, p_output, p_state);
     for( i = 0; i< FFT_BUFFER_SIZE ; i++ )
         p_dest[i] = p_output[i] *  ( 2 ^ 16 ) / ( ( FFT_BUFFER_SIZE / 2 * 32768 ) ^ 2 );
@@ -340,6 +359,8 @@ static int spectrum_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
         }
     }
 
+    window_close( &wind_ctx );
+
     fft_close( p_state );
 
     free( height );
@@ -370,6 +391,8 @@ typedef struct
 
     unsigned i_prev_nb_samples;
     int16_t *p_prev_s16_buff;
+
+    window_param wind_param;
 } spectrometer_data;
 
 static int spectrometer_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
@@ -420,6 +443,7 @@ static int spectrometer_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
     const double y_scale =  3.60673760222;  /* (log 256) */
 
     fft_state *p_state;                 /* internal FFT data */
+    DEFINE_WIND_CONTEXT( wind_ctx );    /* internal window data */
 
     int i , j , k;
     int i_line = 0;
@@ -431,6 +455,11 @@ static int spectrometer_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
 
     int16_t  *p_buffs;                    /* int16_t converted buffer */
     int16_t  *p_s16_buff;                /* int16_t converted buffer */
+
+    if (!p_buffer->i_nb_samples) {
+        msg_Err(p_aout, "no samples yet");
+        return -1;
+    }
 
     /* Create the data struct if needed */
     spectrometer_data *p_data = p_effect->p_data;
@@ -447,6 +476,7 @@ static int spectrometer_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
         }
         p_data->i_prev_nb_samples = 0;
         p_data->p_prev_s16_buff = NULL;
+        window_get_param( p_aout, &p_data->wind_param );
         p_effect->p_data = (void*)p_data;
     }
     peaks = p_data->peaks;
@@ -511,6 +541,13 @@ static int spectrometer_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
         free( height );
         return -1;
     }
+    if( !window_init( FFT_BUFFER_SIZE, &p_data->wind_param, &wind_ctx ) )
+    {
+        fft_close( p_state );
+        free( height );
+        msg_Err(p_aout,"unable to initialize FFT window");
+        return -1;
+    }
     p_buffs = p_s16_buff;
     for ( i = 0 ; i < FFT_BUFFER_SIZE; i++)
     {
@@ -521,6 +558,7 @@ static int spectrometer_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
         if( p_buffs >= &p_s16_buff[p_buffer->i_nb_samples * p_effect->i_nb_chans] )
             p_buffs = p_s16_buff;
     }
+    window_scale_in_place( p_buffer1, &wind_ctx );
     fft_perform( p_buffer1, p_output, p_state);
     for(i = 0; i < FFT_BUFFER_SIZE; i++)
     {
@@ -818,6 +856,8 @@ static int spectrometer_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
         }
     }
 
+    window_close( &wind_ctx );
+
     fft_close( p_state );
 
     free( height );
@@ -855,8 +895,8 @@ static int scope_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
         for( int j = 0 ; j < 3 ; j++ )
         {
             ppp_area[i_index][j] =
-                p_picture->p[j].p_pixels + i_index * p_picture->p[j].i_lines
-                / 2 * p_picture->p[j].i_pitch;
+                p_picture->p[j].p_pixels + (i_index * 2 + 1) * p_picture->p[j].i_lines
+                / 4 * p_picture->p[j].i_pitch;
         }
     }
 
@@ -864,10 +904,10 @@ static int scope_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
             i_index < __MIN( p_effect->i_width, (int)p_buffer->i_nb_samples );
             i_index++ )
     {
-        uint8_t i_value;
+        int8_t i_value;
 
         /* Left channel */
-        i_value =  (1.0+p_sample[p_effect->i_idx_left]) * 127;
+        i_value =  p_sample[p_effect->i_idx_left] * 127;
         *(ppp_area[0][0]
                 + p_picture->p[0].i_pitch * i_index / p_effect->i_width
                 + p_picture->p[0].i_lines * i_value / 512
@@ -879,7 +919,7 @@ static int scope_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
 
 
         /* Right channel */
-        i_value = (1.0+p_sample[p_effect->i_idx_right]) * 127;
+        i_value = p_sample[p_effect->i_idx_right] * 127;
         *(ppp_area[1][0]
                 + p_picture->p[0].i_pitch * i_index / p_effect->i_width
                 + p_picture->p[0].i_lines * i_value / 512
@@ -905,7 +945,7 @@ static int vuMeter_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
     float i_value_l = 0;
     float i_value_r = 0;
 
-    /* Compute the peack values */
+    /* Compute the peak values */
     for ( unsigned i = 0 ; i < p_buffer->i_nb_samples; i++ )
     {
         const float *p_sample = (float *)p_buffer->p_buffer;

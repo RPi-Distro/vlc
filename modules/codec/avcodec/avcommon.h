@@ -2,7 +2,7 @@
  * avcommon.h: common code for libav*
  *****************************************************************************
  * Copyright (C) 2012 VLC authors and VideoLAN
- * $Id: 90df890c5394f681d1380491650a208373088e49 $
+ * $Id: 8c47330ff660c6a51d64ba6fcfaf85a35b93b6fb $
  *
  * Authors: Rafaël Carré <funman@videolanorg>
  *
@@ -36,54 +36,13 @@
 
 #include "avcommon_compat.h"
 
-/* LIBAVUTIL_VERSION_CHECK checks for the right version of libav and FFmpeg
- * a is the major version
- * b and c the minor and micro versions of libav
- * d and e the minor and micro versions of FFmpeg */
-#define LIBAVUTIL_VERSION_CHECK( a, b, c, d, e ) \
-    ( (LIBAVUTIL_VERSION_MICRO <  100 && LIBAVUTIL_VERSION_INT >= AV_VERSION_INT( a, b, c ) ) || \
-      (LIBAVUTIL_VERSION_MICRO >= 100 && LIBAVUTIL_VERSION_INT >= AV_VERSION_INT( a, d, e ) ) )
-
-
-unsigned GetVlcDspMask( void );
-
-#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
-# include <libavformat/avformat.h>
-static inline void vlc_init_avformat(void)
-{
-    vlc_avcodec_lock();
-
-#if LIBAVUTIL_VERSION_CHECK(51, 25, 0, 42, 100)
-    av_set_cpu_flags_mask( INT_MAX & ~GetVlcDspMask() );
-#endif
-
-    av_register_all();
-
-    vlc_avcodec_unlock();
-}
-#endif
-
-#ifdef HAVE_LIBAVCODEC_AVCODEC_H
-# include <libavcodec/avcodec.h>
-static inline void vlc_init_avcodec(void)
-{
-    vlc_avcodec_lock();
-
-#if LIBAVCODEC_VERSION_MAJOR < 54
-    avcodec_init();
-#endif
-    avcodec_register_all();
-
-    vlc_avcodec_unlock();
-}
-#endif
-
 #ifdef HAVE_LIBAVUTIL_AVUTIL_H
 # include <libavutil/avutil.h>
 # include <libavutil/dict.h>
+# include <libavutil/log.h>
 
-#define AV_OPTIONS_TEXT     "Advanced options."
-#define AV_OPTIONS_LONGTEXT "Advanced options, in the form {opt=val,opt2=val2} ."
+#define AV_OPTIONS_TEXT     "Advanced options"
+#define AV_OPTIONS_LONGTEXT "Advanced options, in the form {opt=val,opt2=val2}."
 
 static inline AVDictionary *vlc_av_get_options(const char *psz_opts)
 {
@@ -98,6 +57,64 @@ static inline AVDictionary *vlc_av_get_options(const char *psz_opts)
         cfg = next;
     }
     return options;
+}
+
+static inline void vlc_init_avutil(vlc_object_t *obj)
+{
+    int level = AV_LOG_QUIET;
+
+    if (!var_InheritBool(obj, "quiet")) {
+        int64_t verbose = var_InheritInteger(obj, "verbose");
+        if (verbose >= 0) switch(verbose + VLC_MSG_ERR) {
+        case VLC_MSG_ERR:
+            level = AV_LOG_ERROR;
+            break;
+        case VLC_MSG_WARN:
+            level = AV_LOG_WARNING;
+            break;
+        case VLC_MSG_DBG:
+            level = AV_LOG_DEBUG;
+        default:
+            break;
+        }
+    }
+
+    av_log_set_level(level);
+
+    msg_Dbg(obj, "CPU flags: 0x%08x", av_get_cpu_flags());
+}
+#endif
+
+#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+# include <libavformat/avformat.h>
+static inline void vlc_init_avformat(vlc_object_t *obj)
+{
+    vlc_avcodec_lock();
+
+    vlc_init_avutil(obj);
+
+    avformat_network_init();
+
+    av_register_all();
+
+    vlc_avcodec_unlock();
+}
+#endif
+
+#ifdef HAVE_LIBAVCODEC_AVCODEC_H
+# include <libavcodec/avcodec.h>
+static inline void vlc_init_avcodec(vlc_object_t *obj)
+{
+    vlc_avcodec_lock();
+
+    vlc_init_avutil(obj);
+
+#if LIBAVCODEC_VERSION_MAJOR < 54
+    avcodec_init();
+#endif
+    avcodec_register_all();
+
+    vlc_avcodec_unlock();
 }
 #endif
 

@@ -38,9 +38,7 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <fcntl.h>
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
+#include <unistd.h>
 
 /**
  * Opens a FILE pointer.
@@ -129,7 +127,7 @@ int vlc_loaddir( DIR *dir, char ***namelist,
     for (unsigned size = 0;;)
     {
         errno = 0;
-        char *entry = vlc_readdir (dir);
+        const char *entry = vlc_readdir (dir);
         if (entry == NULL)
         {
             if (errno)
@@ -138,10 +136,7 @@ int vlc_loaddir( DIR *dir, char ***namelist,
         }
 
         if (!select (entry))
-        {
-            free (entry);
             continue;
-        }
 
         if (num >= size)
         {
@@ -149,14 +144,13 @@ int vlc_loaddir( DIR *dir, char ***namelist,
             char **newtab = realloc (tab, sizeof (*tab) * (size));
 
             if (unlikely(newtab == NULL))
-            {
-                free (entry);
                 goto error;
-            }
             tab = newtab;
         }
 
-        tab[num++] = entry;
+        tab[num] = strdup(entry);
+        if (likely(tab[num] != NULL))
+            num++;
     }
 
     if (compar != NULL)

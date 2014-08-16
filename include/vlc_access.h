@@ -2,7 +2,7 @@
  * vlc_access.h: Access descriptor, queries and methods
  *****************************************************************************
  * Copyright (C) 1999-2006 VLC authors and VideoLAN
- * $Id: df8cf1af98f0fe94a42fa9c402718d9a18bcfa7c $
+ * $Id: 511278add942a4ff59cc658431901236dd48e341 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -43,18 +43,18 @@ enum access_query_e
     ACCESS_CAN_FASTSEEK,    /* arg1= bool*    cannot fail */
     ACCESS_CAN_PAUSE,       /* arg1= bool*    cannot fail */
     ACCESS_CAN_CONTROL_PACE,/* arg1= bool*    cannot fail */
+    ACCESS_GET_SIZE=6,      /* arg1= uin64_t* */
 
     /* */
     ACCESS_GET_PTS_DELAY = 0x101,/* arg1= int64_t*       cannot fail */
-    /* */
-    ACCESS_GET_TITLE_INFO,  /* arg1=input_title_t*** arg2=int*      res=can fail */
+    ACCESS_GET_TITLE_INFO,  /* arg1=input_title_t*** arg2=int*  res=can fail */
+    ACCESS_GET_TITLE,       /* arg1=unsigned * res=can fail */
+    ACCESS_GET_SEEKPOINT,   /* arg1=unsigned * res=can fail */
+
     /* Meta data */
-    ACCESS_GET_META,        /* arg1= vlc_meta_t **                  res=can fail */
+    ACCESS_GET_META,        /* arg1= vlc_meta_t ** res=can fail */
+    ACCESS_GET_CONTENT_TYPE,/* arg1=char **ppsz_content_type res=can fail */
 
-    /* */
-    ACCESS_GET_CONTENT_TYPE,/* arg1=char **ppsz_content_type                       res=can fail */
-
-    /* */
     ACCESS_GET_SIGNAL,      /* arg1=double *pf_quality, arg2=double *pf_strength   res=can fail */
 
     /* */
@@ -104,15 +104,8 @@ struct access_t
     /* Access has to maintain them uptodate */
     struct
     {
-        unsigned int i_update;  /* Access sets them on change,
-                                   Input removes them once take into account*/
-
-        uint64_t     i_size;    /* Write only for access, read only for input */
         uint64_t     i_pos;     /* idem */
         bool         b_eof;     /* idem */
-
-        int          i_title;    /* idem, start from 0 (could be menu) */
-        int          i_seekpoint;/* idem, start from 0 */
     } info;
     access_sys_t *p_sys;
 
@@ -137,14 +130,18 @@ static inline int access_Control( access_t *p_access, int i_query, ... )
     return i_result;
 }
 
+static inline uint64_t access_GetSize( access_t *p_access )
+{
+    uint64_t val;
+    if( access_Control( p_access, ACCESS_GET_SIZE, &val ) )
+        val = 0;
+    return val;
+}
+
 static inline void access_InitFields( access_t *p_a )
 {
-    p_a->info.i_update = 0;
-    p_a->info.i_size = 0;
     p_a->info.i_pos = 0;
     p_a->info.b_eof = false;
-    p_a->info.i_title = 0;
-    p_a->info.i_seekpoint = 0;
 }
 
 /**
@@ -165,7 +162,7 @@ VLC_API input_thread_t * access_GetParentInput( access_t *p_access ) VLC_USED;
     do { \
         access_InitFields( p_access ); \
         ACCESS_SET_CALLBACKS( Read, NULL, Control, Seek ); \
-        p_sys = p_access->p_sys = calloc( 1, sizeof( access_sys_t ) ); \
+        p_sys = p_access->p_sys = (access_sys_t*)calloc( 1, sizeof( access_sys_t ) ); \
         if( !p_sys ) return VLC_ENOMEM;\
     } while(0);
 
@@ -173,7 +170,7 @@ VLC_API input_thread_t * access_GetParentInput( access_t *p_access ) VLC_USED;
     do { \
         access_InitFields( p_access ); \
         ACCESS_SET_CALLBACKS( NULL, Block, Control, Seek ); \
-        p_sys = p_access->p_sys = calloc( 1, sizeof( access_sys_t ) ); \
+        p_sys = p_access->p_sys = (access_sys_t*)calloc( 1, sizeof( access_sys_t ) ); \
         if( !p_sys ) return VLC_ENOMEM; \
     } while(0);
 

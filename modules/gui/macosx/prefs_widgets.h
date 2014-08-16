@@ -2,7 +2,7 @@
  * prefs_widgets.h: Preferences controls
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: ab5be7c12b6ce730ecc9b93e20bb87e076a40abf $
+ * $Id: 0ed6e6409c7dbe89d2ee380ad74ffbdcaaa30290 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Felix Paul Kühne <fkuehne at videolan.org>
@@ -199,7 +199,7 @@ static NSMenu   *o_keys_menu = nil;
 @interface ModuleListConfigControl : VLCConfigControl <NSTableViewDataSource>
 {
     NSTextField     *o_textfield;
-    NSScrollView    *o_scrollview;
+    NSTableView     *o_tableview;
     NSMutableArray  *o_modulearray;
 }
 

@@ -57,14 +57,18 @@ int module_Load( vlc_object_t *p_this, const char *psz_file,
     if (wfile == NULL)
         return -1;
 
-    module_handle_t handle;
-    /* FIXME: this is not thread-safe -- Courmisch */
-    UINT mode = SetErrorMode (SEM_FAILCRITICALERRORS);
-    SetErrorMode (mode|SEM_FAILCRITICALERRORS);
+    module_handle_t handle = NULL;
+#if (_WIN32_WINNT >= 0x601) && !VLC_WINSTORE_APP
+    DWORD mode;
 
-    handle = LoadLibraryW (wfile);
-
-    SetErrorMode (mode);
+    if (SetThreadErrorMode (SEM_FAILCRITICALERRORS, &mode) == 0)
+#endif
+    {
+        handle = LoadLibraryW (wfile);
+#if (_WIN32_WINNT >= 0x601) && !VLC_WINSTORE_APP
+        SetThreadErrorMode (mode, NULL);
+#endif
+    }
     free (wfile);
 
     if( handle == NULL )

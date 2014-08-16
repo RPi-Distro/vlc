@@ -2,7 +2,7 @@
  * playlist.cpp : Custom widgets for the playlist
  ****************************************************************************
  * Copyright © 2007-2010 the VideoLAN team
- * $Id: cb8173ea290a826729d0c106c714c68a1057a37c $
+ * $Id: 7091805f7564e569c90e60dc7c8453e44dcf072e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -30,7 +30,6 @@
 #include "components/playlist/standardpanel.hpp"  /* MainView */
 #include "components/playlist/selector.hpp"       /* PLSelector */
 #include "components/playlist/playlist_model.hpp" /* PLModel */
-#include "components/playlist/ml_model.hpp"       /* MLModel */
 #include "components/interface_widgets.hpp"       /* CoverArtLabel */
 
 #include "util/searchlineedit.hpp"
@@ -95,12 +94,8 @@ PlaylistWidget::PlaylistWidget( intf_thread_t *_p_i, QWidget *_par )
     setMinimumWidth( 400 );
 
     PLModel *model = PLModel::getPLModel( p_intf );
-#ifdef MEDIA_LIBRARY
-    MLModel *mlmodel = new MLModel( p_intf, this );
-    mainView = new StandardPLPanel( this, p_intf, p_root, selector, model, mlmodel );
-#else
-    mainView = new StandardPLPanel( this, p_intf, p_root, selector, model, NULL );
-#endif
+
+    mainView = new StandardPLPanel( this, p_intf, p_root, selector, model );
 
     /* Location Bar */
     locationBar = new LocationBar( model );
@@ -228,20 +223,15 @@ void PlaylistWidget::forceShow()
 
 void PlaylistWidget::changeView( const QModelIndex& index )
 {
-    searchEdit->clear();
     locationBar->setIndex( index );
 }
 
-void PlaylistWidget::clearPlaylist()
-{
-    PLModel::getPLModel( p_intf )->clearPlaylist();
-}
 #include <QSignalMapper>
 #include <QMenu>
 #include <QPainter>
-LocationBar::LocationBar( PLModel *m )
+LocationBar::LocationBar( VLCModel *m )
 {
-    model = m;
+    setModel( m );
     mapper = new QSignalMapper( this );
     CONNECT( mapper, mapped( int ), this, invoke( int ) );
 
@@ -272,7 +262,7 @@ void LocationBar::setIndex( const QModelIndex &index )
         actions.append( action );
         CONNECT( btn, clicked(), action, trigger() );
 
-        mapper->setMapping( action, model->itemId( i ) );
+        mapper->setMapping( action, model->itemId( i, PLAYLIST_ID ) );
         CONNECT( action, triggered(), mapper, map() );
 
         first = false;
@@ -298,7 +288,7 @@ void LocationBar::setRootIndex()
 
 void LocationBar::invoke( int i_id )
 {
-    QModelIndex index = model->index( i_id, 0 );
+    QModelIndex index = model->indexByPLID( i_id, 0 );
     emit invoked ( index );
 }
 

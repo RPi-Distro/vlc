@@ -2,7 +2,7 @@
  * vlm.cpp : VLM Management
  ****************************************************************************
  * Copyright © 2008 the VideoLAN team
- * $Id: bc7d96bd9ded351780feb9201915d6f90f8cae92 $
+ * $Id: 0da88ccf2bbd7ef9c84688b384382bc301d7481d $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Jean-François Massol <jf.massol -at- gmail.com>
@@ -54,7 +54,7 @@
 #include <QFileDialog>
 
 
-VLMDialog::VLMDialog( intf_thread_t *_p_intf ) : QVLCDialog( (QWidget*)_p_intf->p_sys->p_mi, _p_intf )
+VLMDialog::VLMDialog( intf_thread_t *_p_intf ) : QVLCFrame( _p_intf )
 {
     p_vlm = vlm_New( p_intf );
 
@@ -290,7 +290,7 @@ void VLMDialog::mediasPopulator()
         int i_nMedias;
         QString typeShortName;
         int vlmItemCount;
-        vlm_media_t ***ppp_dsc = (vlm_media_t ***)malloc( sizeof( vlm_media_t ) );
+        vlm_media_t ***ppp_dsc = (vlm_media_t ***)malloc( sizeof( vlm_media_t** ) );
 
         /* Get medias information and numbers */
         vlm_Control( p_vlm, VLM_GET_MEDIAS, ppp_dsc, &i_nMedias );
@@ -901,7 +901,7 @@ void VLMDialog::toggleVisible()
 
     ui.vlmListItem->clear();
     mediasPopulator();
-    QVLCDialog::toggleVisible();
+    QVLCFrame::toggleVisible();
 }
 
 

@@ -3,7 +3,7 @@
  *  Uses the low quality "nearest neighbour" algorithm.
  *****************************************************************************
  * Copyright (C) 2003-2007 VLC authors and VideoLAN
- * $Id: d69a55ea80d5bf12f2d9de88147bf4d162bd6855 $
+ * $Id: 08842995a929dfc5319a05ff4f52cc51ae6ff227 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea @t videolan dot org>
@@ -61,11 +61,15 @@ static int OpenFilter( vlc_object_t *p_this )
           p_filter->fmt_in.video.i_chroma != VLC_CODEC_I420 &&
           p_filter->fmt_in.video.i_chroma != VLC_CODEC_YV12 &&
           p_filter->fmt_in.video.i_chroma != VLC_CODEC_RGB32 &&
-          p_filter->fmt_in.video.i_chroma != VLC_CODEC_RGBA ) ||
+          p_filter->fmt_in.video.i_chroma != VLC_CODEC_RGBA &&
+          p_filter->fmt_in.video.i_chroma != VLC_CODEC_ARGB ) ||
         p_filter->fmt_in.video.i_chroma != p_filter->fmt_out.video.i_chroma )
     {
         return VLC_EGENERIC;
     }
+
+    if( p_filter->fmt_in.video.orientation != p_filter->fmt_out.video.orientation )
+        return VLC_EGENERIC;
 
     video_format_ScaleCropAr( &p_filter->fmt_out.video, &p_filter->fmt_in.video );
     p_filter->pf_video_filter = Filter;
@@ -106,6 +110,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     }
 
     if( p_filter->fmt_in.video.i_chroma != VLC_CODEC_RGBA &&
+        p_filter->fmt_in.video.i_chroma != VLC_CODEC_ARGB &&
         p_filter->fmt_in.video.i_chroma != VLC_CODEC_RGB32 )
     {
         for( i_plane = 0; i_plane < p_pic_dst->i_planes; i_plane++ )

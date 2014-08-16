@@ -1,8 +1,8 @@
 /*****************************************************************************
  * CoreInteraction.m: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2011-2013 Felix Paul Kühne
- * $Id: d885a80b0ceef89b0f4441ab9bb4ca6be7741372 $
+ * Copyright (C) 2011-2014 Felix Paul Kühne
+ * $Id: 1fc4d6efddc2baed1ac32c9599bcb63f1595bc22 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -34,10 +34,9 @@
 #import <vlc/vlc.h>
 #import <vlc_strings.h>
 #import <vlc_url.h>
+#import <vlc_modules.h>
+#import <vlc_charset.h>
 
-@interface VLCMainWindow (Internal)
-- (void)jumpWithValue:(char *)p_value forward:(BOOL)b_value;
-@end
 
 @implementation VLCCoreInteraction
 static VLCCoreInteraction *_o_sharedInstance = nil;
@@ -47,8 +46,7 @@ static VLCCoreInteraction *_o_sharedInstance = nil;
     return _o_sharedInstance ? _o_sharedInstance : [[self alloc] init];
 }
 
-#pragma mark -
-#pragma mark Initialization
+#pragma mark - Initialization
 
 - (id)init
 {
@@ -67,16 +65,8 @@ static VLCCoreInteraction *_o_sharedInstance = nil;
     [super dealloc];
 }
 
-- (void)awakeFromNib
-{
-    [[NSNotificationCenter defaultCenter] addObserver: self
-                                             selector: @selector(applicationWillFinishLaunching:)
-                                                 name: NSApplicationWillFinishLaunchingNotification
-                                               object: nil];
-}
 
-#pragma mark -
-#pragma mark Playback Controls
+#pragma mark - Playback Controls
 
 - (void)playOrPause
 {
@@ -270,7 +260,7 @@ static VLCCoreInteraction *_o_sharedInstance = nil;
 
     NSString *o_name;
     char *format = var_InheritString(VLCIntf, "input-title-format");
-    char *formated = str_format_meta(pl_Get(VLCIntf), format);
+    char *formated = str_format_meta(p_input, format);
     free(format);
     o_name = [NSString stringWithUTF8String:formated];
     free(formated);
@@ -556,8 +546,26 @@ static VLCCoreInteraction *_o_sharedInstance = nil;
     return f_maxVolume;
 }
 
-#pragma mark -
-#pragma mark drag and drop support for VLCVoutView, VLBrushedMetalImageView and VLCThreePartDropView
+- (void)addSubtitlesToCurrentInput:(NSArray *)paths
+{
+    input_thread_t * p_input = pl_CurrentInput(VLCIntf);
+    if (!p_input)
+        return;
+
+    NSUInteger count = [paths count];
+
+    for (int i = 0; i < count ; i++) {
+        const char *path = [[[paths objectAtIndex:i] path] UTF8String];
+        msg_Dbg(VLCIntf, "loading subs from %s", path);
+
+        int i_result = input_AddSubtitleOSD(p_input, path, true, true);
+        if (i_result != VLC_SUCCESS)
+            msg_Warn(VLCIntf, "unable to load subtitles from '%s'", path);
+    }
+    vlc_object_release(p_input);
+}
+
+#pragma mark - drag and drop support for VLCVoutView, VLCDragDropView and VLCThreePartDropView
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
 {
     NSPasteboard *o_paste = [sender draggingPasteboard];
@@ -573,12 +581,11 @@ static VLCCoreInteraction *_o_sharedInstance = nil;
             NSUInteger count = [o_values count];
 
             input_thread_t * p_input = pl_CurrentInput(VLCIntf);
-            BOOL b_returned = NO;
 
             if (count == 1 && p_input) {
-                b_returned = input_AddSubtitle(p_input, [[o_values objectAtIndex:0] UTF8String], true);
+                int i_result = input_AddSubtitleOSD(p_input, [[o_values objectAtIndex:0] UTF8String], true, true);
                 vlc_object_release(p_input);
-                if (!b_returned)
+                if (i_result == VLC_SUCCESS)
                     return YES;
             }
             else if (p_input)
@@ -606,8 +613,7 @@ static VLCCoreInteraction *_o_sharedInstance = nil;
     return NO;
 }
 
-#pragma mark -
-#pragma mark video output stuff
+#pragma mark - video output stuff
 
 - (void)setAspectRatioIsLocked:(BOOL)b_value
 {
@@ -632,12 +638,11 @@ static VLCCoreInteraction *_o_sharedInstance = nil;
         vlc_object_release(p_vout);
     } else { // e.g. lion fullscreen toggle
         BOOL b_fs = var_ToggleBool(pl_Get(p_intf), "fullscreen");
-        [[[VLCMain sharedInstance] voutController] setFullscreen:b_fs forWindow:nil];
+        [[[VLCMain sharedInstance] voutController] setFullscreen:b_fs forWindow:nil withAnimation:YES];
     }
 }
 
-#pragma mark -
-#pragma mark uncommon stuff
+#pragma mark - uncommon stuff
 
 - (BOOL)fixPreferences
 {
@@ -671,6 +676,252 @@ static VLCCoreInteraction *_o_sharedInstance = nil;
     #undef fixpref
 
     return b_needsRestart;
+}
+
+#pragma mark - video filter handling
+
+- (const char *)getFilterType:(const char *)psz_name
+{
+    module_t *p_obj = module_find(psz_name);
+    if (!p_obj) {
+        return NULL;
+    }
+
+    if (module_provides(p_obj, "video splitter")) {
+        return "video-splitter";
+    } else if (module_provides(p_obj, "video filter2")) {
+        return "video-filter";
+    } else if (module_provides(p_obj, "sub source")) {
+        return "sub-source";
+    } else if (module_provides(p_obj, "sub filter")) {
+        return "sub-filter";
+    } else {
+        msg_Err(VLCIntf, "Unknown video filter type.");
+        return NULL;
+    }
+}
+
+- (void)setVideoFilter: (const char *)psz_name on:(BOOL)b_on
+{
+    intf_thread_t *p_intf = VLCIntf;
+    if (!p_intf)
+        return;
+    char *psz_string, *psz_parser;
+
+    const char *psz_filter_type = [self getFilterType:psz_name];
+    if (!psz_filter_type) {
+        msg_Err(p_intf, "Unable to find filter module \"%s\".", psz_name);
+        return;
+    }
+
+    msg_Dbg(p_intf, "will set filter '%s'", psz_name);
+
+
+    psz_string = config_GetPsz(p_intf, psz_filter_type);
+
+    if (b_on) {
+        if (psz_string == NULL) {
+            psz_string = strdup(psz_name);
+        } else if (strstr(psz_string, psz_name) == NULL) {
+            char *psz_tmp = strdup([[NSString stringWithFormat: @"%s:%s", psz_string, psz_name] UTF8String]);
+            free(psz_string);
+            psz_string = psz_tmp;
+        }
+    } else {
+        if (!psz_string)
+            return;
+
+        psz_parser = strstr(psz_string, psz_name);
+        if (psz_parser) {
+            if (*(psz_parser + strlen(psz_name)) == ':') {
+                memmove(psz_parser, psz_parser + strlen(psz_name) + 1,
+                        strlen(psz_parser + strlen(psz_name) + 1) + 1);
+            } else {
+                *psz_parser = '\0';
+            }
+
+            /* Remove trailing : : */
+            if (strlen(psz_string) > 0 && *(psz_string + strlen(psz_string) -1) == ':')
+                *(psz_string + strlen(psz_string) -1) = '\0';
+        } else {
+            free(psz_string);
+            return;
+        }
+    }
+    config_PutPsz(p_intf, psz_filter_type, psz_string);
+
+    /* Try to set on the fly */
+    if (!strcmp(psz_filter_type, "video-splitter")) {
+        playlist_t *p_playlist = pl_Get(p_intf);
+        var_SetString(p_playlist, psz_filter_type, psz_string);
+    } else {
+        vout_thread_t *p_vout = getVout();
+        if (p_vout) {
+            var_SetString(p_vout, psz_filter_type, psz_string);
+            vlc_object_release(p_vout);
+        }
+    }
+
+    free(psz_string);
+}
+
+- (void)restartFilterIfNeeded: (const char *)psz_filter option: (const char *)psz_name
+{
+    vout_thread_t *p_vout = getVout();
+    intf_thread_t *p_intf = VLCIntf;
+    if (!p_intf)
+        return;
+
+    if (p_vout == NULL)
+        return;
+    else
+        vlc_object_release(p_vout);
+
+    vlc_object_t *p_filter = vlc_object_find_name(pl_Get(p_intf), psz_filter);
+    if (p_filter) {
+
+        /* we cannot rely on the p_filter existence.
+         This filter might be just
+         disabled, but the object still exists. Therefore, the string
+         is checked, additionally.
+         */
+        const char *psz_filter_type = [self getFilterType:psz_filter];
+        if (!psz_filter_type) {
+            msg_Err(p_intf, "Unable to find filter module \"%s\".", psz_name);
+            goto out;
+        }
+
+        char *psz_string = config_GetPsz(p_intf, psz_filter_type);
+        if (!psz_string) {
+            goto out;
+        }
+        if (strstr(psz_string, psz_filter) == NULL) {
+            free(psz_string);
+            goto out;
+        }
+        free(psz_string);
+
+        int i_type;
+        i_type = var_Type(p_filter, psz_name);
+        if (i_type == 0)
+            i_type = config_GetType(p_intf, psz_name);
+
+        if (!(i_type & VLC_VAR_ISCOMMAND)) {
+            msg_Warn(p_intf, "Brute-restarting filter '%s', because the last changed option isn't a command", psz_name);
+
+            [self setVideoFilter: psz_filter on: NO];
+            [self setVideoFilter: psz_filter on: YES];
+        } else
+            msg_Dbg(p_intf, "restart not needed");
+
+        out:
+        vlc_object_release(p_filter);
+    }
+}
+
+- (void)setVideoFilterProperty: (const char *)psz_name forFilter: (const char *)psz_filter integer: (int)i_value
+{
+    vout_thread_t *p_vout = getVout();
+    vlc_object_t *p_filter;
+    intf_thread_t *p_intf = VLCIntf;
+    if (!p_intf)
+        return;
+
+    config_PutInt(p_intf, psz_name, i_value);
+
+    if (p_vout) {
+        p_filter = vlc_object_find_name(pl_Get(p_intf), psz_filter);
+
+        if (!p_filter) {
+            msg_Warn(p_intf, "filter '%s' isn't enabled", psz_filter);
+            vlc_object_release(p_vout);
+            return;
+        }
+        var_SetInteger(p_filter, psz_name, i_value);
+        vlc_object_release(p_vout);
+        vlc_object_release(p_filter);
+
+        [self restartFilterIfNeeded: psz_filter option: psz_name];
+    }
+}
+
+- (void)setVideoFilterProperty: (const char *)psz_name forFilter: (const char *)psz_filter float: (float)f_value
+{
+    vout_thread_t *p_vout = getVout();
+    vlc_object_t *p_filter;
+    intf_thread_t *p_intf = VLCIntf;
+    if (!p_intf)
+        return;
+
+    config_PutFloat(p_intf, psz_name, f_value);
+
+    if (p_vout) {
+        p_filter = vlc_object_find_name(pl_Get(p_intf), psz_filter);
+
+        if (!p_filter) {
+            msg_Warn(p_intf, "filter '%s' isn't enabled", psz_filter);
+            vlc_object_release(p_vout);
+            return;
+        }
+        var_SetFloat(p_filter, psz_name, f_value);
+        vlc_object_release(p_vout);
+        vlc_object_release(p_filter);
+
+        [self restartFilterIfNeeded: psz_filter option: psz_name];
+    }
+}
+
+- (void)setVideoFilterProperty: (const char *)psz_name forFilter: (const char *)psz_filter string: (const char *)psz_value
+{
+    char *psz_new_value = strdup(psz_value);
+    vout_thread_t *p_vout = getVout();
+    vlc_object_t *p_filter;
+    intf_thread_t *p_intf = VLCIntf;
+    if (!p_intf)
+        return;
+
+    config_PutPsz(p_intf, psz_name, EnsureUTF8(psz_new_value));
+
+    if (p_vout) {
+        p_filter = vlc_object_find_name(pl_Get(p_intf), psz_filter);
+
+        if (!p_filter) {
+            msg_Warn(p_intf, "filter '%s' isn't enabled", psz_filter);
+            vlc_object_release(p_vout);
+            return;
+        }
+        var_SetString(p_filter, psz_name, EnsureUTF8(psz_new_value));
+        vlc_object_release(p_vout);
+        vlc_object_release(p_filter);
+
+        [self restartFilterIfNeeded: psz_filter option: psz_name];
+    }
+
+    free(psz_new_value);
+}
+
+- (void)setVideoFilterProperty: (const char *)psz_name forFilter: (const char *)psz_filter boolean: (BOOL)b_value
+{
+    vout_thread_t *p_vout = getVout();
+    vlc_object_t *p_filter;
+    intf_thread_t *p_intf = VLCIntf;
+    if (!p_intf)
+        return;
+
+    config_PutInt(p_intf, psz_name, b_value);
+
+    if (p_vout) {
+        p_filter = vlc_object_find_name(pl_Get(p_intf), psz_filter);
+
+        if (!p_filter) {
+            msg_Warn(p_intf, "filter '%s' isn't enabled", psz_filter);
+            vlc_object_release(p_vout);
+            return;
+        }
+        var_SetBool(p_filter, psz_name, b_value);
+        vlc_object_release(p_vout);
+        vlc_object_release(p_filter);
+    }
 }
 
 @end

@@ -1,11 +1,10 @@
 /*****************************************************************************
  * actions_manager.cpp : Controller for the main interface
  ****************************************************************************
- * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: d5595fdbcd93909445677f9bde4a14d33d9f2559 $
+ * Copyright © 2009-2014 VideoLAN and VLC authors
+ * $Id: eff40d9039f79c4e89f0ca75c665d5d0018880f1 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
- *          Ilkka Ollakka <ileoo@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,20 +29,17 @@
 #include <vlc_keys.h>
 
 #include "actions_manager.hpp"
-#include "dialogs_provider.hpp" /* Opening Dialogs */
-#include "input_manager.hpp"
-#include "main_interface.hpp" /* Show playlist */
+
+#include "dialogs_provider.hpp"      /* Opening Dialogs */
+#include "input_manager.hpp"         /* THEMIM */
+#include "main_interface.hpp"        /* Show playlist */
 #include "components/controller.hpp" /* Toggle FSC controller width */
+#include "components/extended_panels.hpp"
 
-ActionsManager * ActionsManager::instance = NULL;
-
-ActionsManager::ActionsManager( intf_thread_t * _p_i, QObject *_parent )
-               : QObject( _parent )
+ActionsManager::ActionsManager( intf_thread_t * _p_i )
 {
     p_intf = _p_i;
 }
-
-ActionsManager::~ActionsManager(){}
 
 void ActionsManager::doAction( int id_action )
 {
@@ -98,7 +94,7 @@ void ActionsManager::doAction( int id_action )
                 p_intf->p_sys->p_mi->getFullscreenControllerWidget()->toggleFullwidth();
             break;
         default:
-            msg_Dbg( p_intf, "Action: %i", id_action );
+            msg_Warn( p_intf, "Action not supported: %i", id_action );
             break;
     }
 }
@@ -115,10 +111,10 @@ void ActionsManager::play()
 }
 
 /**
-  * TODO
+ * TODO
  * This functions toggle the fullscreen mode
  * If there is no video, it should first activate Visualisations...
- *  This has also to be fixed in enableVideo()
+ * This has also to be fixed in enableVideo()
  */
 void ActionsManager::fullscreen()
 {
@@ -143,7 +139,8 @@ void ActionsManager::snapshot()
 
 void ActionsManager::playlist()
 {
-    if( p_intf->p_sys->p_mi ) p_intf->p_sys->p_mi->togglePlaylist();
+    if( p_intf->p_sys->p_mi )
+        p_intf->p_sys->p_mi->togglePlaylist();
 }
 
 void ActionsManager::record()
@@ -178,7 +175,7 @@ void ActionsManager::frame()
 
 void ActionsManager::toggleMuteAudio()
 {
-     playlist_MuteToggle( THEPL );
+    playlist_MuteToggle( THEPL );
 }
 
 void ActionsManager::AudioUp()
@@ -205,3 +202,11 @@ void ActionsManager::skipBackward()
         THEMIM->getIM()->jumpBwd();
 }
 
+void ActionsManager::PPaction( QAction *a )
+{
+    int i_q = -1;
+    if( a != NULL )
+        i_q = a->data().toInt();
+
+    ExtVideo::setPostprocessing( p_intf, i_q );
+}

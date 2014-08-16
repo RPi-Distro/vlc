@@ -2,7 +2,7 @@
  * vlc_intf_strings.h : Strings for main interfaces
  *****************************************************************************
  * Copyright (C) 2003 VLC authors and VideoLAN
- * $Id: c075c98c6b869684955a93147e5311e530fffc14 $
+ * $Id: 25c57b37172dd9463d882efdf74d329949a07d03 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -67,6 +67,8 @@
 #define I_POP_INFO N_("Information...")
 #define I_POP_NEWFOLDER I_DIR_OR_FOLDER( N_("Create Directory..."), \
                                          N_("Create Folder...") )
+#define I_POP_RENAMEFOLDER I_DIR_OR_FOLDER( N_("Rename Directory..."), \
+                                         N_("Rename Folder...") )
 #define I_POP_EXPLORE I_DIR_OR_FOLDER( N_("Show Containing Directory..."), \
                                        N_("Show Containing Folder...") )
 #define I_POP_STREAM N_("Stream...")

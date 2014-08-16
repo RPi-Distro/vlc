@@ -2,7 +2,7 @@
  * mediadirs.c:  Picture/Music/Video user directories as service discoveries
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 030fcf5a37a9471cb768f4e6eb1709a662cdbf00 $
+ * $Id: 0e081e986acdb72891f9623eda266526afe001bd $
  *
  * Authors: Erwan Tulou <erwan10 aT videolan DoT org>
  *
@@ -118,7 +118,7 @@ struct services_discovery_sys_t
 static int Open( vlc_object_t *p_this, enum type_e i_type )
 {
     services_discovery_t *p_sd = ( services_discovery_t* )p_this;
-    services_discovery_sys_t *p_sys = p_sd->p_sys;
+    services_discovery_sys_t *p_sys;
 
     p_sd->p_sys = p_sys = calloc( 1, sizeof( *p_sys) );
     if( !p_sys )

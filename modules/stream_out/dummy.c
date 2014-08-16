@@ -1,24 +1,24 @@
 /*****************************************************************************
  * dummy.c: dummy stream output module
  *****************************************************************************
- * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 6dbed32e35d319f420547a3d9aecfaa02711c066 $
+ * Copyright (C) 2003-2004 VLC authors and VideoLAN
+ * $Id: 5142757ff0e893b73f0f0f8cfcaa16499e790184 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -40,9 +40,9 @@
 static int      Open    ( vlc_object_t * );
 static void     Close   ( vlc_object_t * );
 
-static sout_stream_id_t *Add ( sout_stream_t *, es_format_t * );
-static int               Del ( sout_stream_t *, sout_stream_id_t * );
-static int               Send( sout_stream_t *, sout_stream_id_t *, block_t* );
+static sout_stream_id_sys_t *Add ( sout_stream_t *, es_format_t * );
+static int               Del ( sout_stream_t *, sout_stream_id_sys_t * );
+static int               Send( sout_stream_t *, sout_stream_id_sys_t *, block_t* );
 
 /*****************************************************************************
  * Module descriptor
@@ -78,13 +78,13 @@ static void Close( vlc_object_t * p_this )
     (void)p_this;
 }
 
-static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
+static sout_stream_id_sys_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
 {
     VLC_UNUSED(p_stream); VLC_UNUSED(p_fmt);
     return malloc( 1 );
 }
 
-static int Del( sout_stream_t *p_stream, sout_stream_id_t *id )
+static int Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
 {
     VLC_UNUSED(p_stream);
     free( id );
@@ -92,7 +92,7 @@ static int Del( sout_stream_t *p_stream, sout_stream_id_t *id )
     return VLC_SUCCESS;
 }
 
-static int Send( sout_stream_t *p_stream, sout_stream_id_t *id,
+static int Send( sout_stream_t *p_stream, sout_stream_id_sys_t *id,
                  block_t *p_buffer )
 {
     (void)p_stream; (void)id;

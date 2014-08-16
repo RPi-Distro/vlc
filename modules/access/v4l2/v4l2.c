@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-
+#include <errno.h>
 #include <sys/types.h>
 #include <fcntl.h>
 
@@ -67,8 +67,8 @@
 #define SIZE_LONGTEXT N_( \
     "The specified pixel resolution is forced " \
     "(if both width and height are strictly positive)." )
-/*#define FPS_TEXT N_( "Frame rate" )
-#define FPS_LONGTEXT N_( "Maximum frame rate to use (0 = no limits)." )*/
+#define FPS_TEXT N_( "Frame rate" )
+#define FPS_LONGTEXT N_( "Maximum frame rate to use (0 = no limits)." )
 
 #define RADIO_DEVICE_TEXT N_( "Radio device" )
 #define RADIO_DEVICE_LONGTEXT N_("Radio tuner device node." )
@@ -310,9 +310,8 @@ vlc_module_begin ()
     add_string( CFG_PREFIX "aspect-ratio", "4:3", ASPECT_TEXT,
               ASPECT_LONGTEXT, true )
         change_safe()
-    /*add_float( CFG_PREFIX "fps", 0, FPS_TEXT, FPS_LONGTEXT, true )*/
-    add_obsolete_float( CFG_PREFIX "fps" )
-        change_safe() /* since 2.1.0 */
+    add_string( CFG_PREFIX "fps", "60", FPS_TEXT, FPS_LONGTEXT, false )
+        change_safe()
     add_obsolete_bool( CFG_PREFIX "use-libv4l2" ) /* since 2.1.0 */
 
     set_section( N_( "Tuner" ), NULL )
@@ -470,14 +469,16 @@ int OpenDevice (vlc_object_t *obj, const char *path, uint32_t *restrict caps)
     int rawfd = vlc_open (path, O_RDWR);
     if (rawfd == -1)
     {
-        msg_Err (obj, "cannot open device '%s': %m", path);
+        msg_Err (obj, "cannot open device '%s': %s", path,
+                 vlc_strerror_c(errno));
         return -1;
     }
 
     int fd = v4l2_fd_open (rawfd, 0);
     if (fd == -1)
     {
-        msg_Warn (obj, "cannot initialize user-space library: %m");
+        msg_Warn (obj, "cannot initialize user-space library: %s",
+                  vlc_strerror_c(errno));
         /* fallback to direct kernel mode anyway */
         fd = rawfd;
     }
@@ -486,7 +487,8 @@ int OpenDevice (vlc_object_t *obj, const char *path, uint32_t *restrict caps)
     struct v4l2_capability cap;
     if (v4l2_ioctl (fd, VIDIOC_QUERYCAP, &cap) < 0)
     {
-        msg_Err (obj, "cannot get device capabilities: %m");
+        msg_Err (obj, "cannot get device capabilities: %s",
+                 vlc_strerror_c(errno));
         v4l2_close (fd);
         return -1;
     }

@@ -3,7 +3,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 6775351cbd6781267c81e211ea94e2dd9b17d19b $
+ * $Id: 0988539700e76144d11351392aeb96ecce8b2926 $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -66,7 +66,7 @@ void CAtmoTools::ShowShutdownColor(CAtmoDynData *pDynData)
 
        atmoConnection->SendData(packet);
 
-       delete (char *)packet;
+       delete [] packet;
 
 	}
 
@@ -150,7 +150,7 @@ EffectMode CAtmoTools::SwitchEffect(CAtmoDynData *pDynData, EffectMode newEffect
 
                  atmoConnection->SendData( packet );
 
-                 delete (char *)packet;
+                 delete [] packet;
 
                  break;
              }

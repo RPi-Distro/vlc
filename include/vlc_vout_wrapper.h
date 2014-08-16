@@ -2,7 +2,7 @@
  * vlc_vout_wrapper.h: definitions for vout wrappers (temporary)
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 575a51f004a495cc40fdd2f340295e6e76b94410 $
+ * $Id: 26d1d85c2ce519f373ceafdbd2311021173e549b $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -86,7 +86,7 @@ VLC_API bool vout_ManageDisplay(vout_display_t *, bool allow_reset_pictures);
 
 VLC_API void vout_SetDisplayFullscreen(vout_display_t *, bool is_fullscreen);
 VLC_API void vout_SetDisplayFilled(vout_display_t *, bool is_filled);
-VLC_API void vout_SetDisplayZoom(vout_display_t *, int num, int den);
+VLC_API void vout_SetDisplayZoom(vout_display_t *, unsigned num, unsigned den);
 VLC_API void vout_SetWindowState(vout_display_t *, unsigned state);
 VLC_API void vout_SetDisplayAspect(vout_display_t *, unsigned dar_num, unsigned dar_den);
 VLC_API void vout_SetDisplayCrop(vout_display_t *, unsigned crop_num, unsigned crop_den, unsigned left, unsigned top, int right, int bottom);

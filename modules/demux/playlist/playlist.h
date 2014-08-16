@@ -2,7 +2,7 @@
  * playlist.h:  Playlist import module common functions
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: e6a1af7c1e7ce5acacfec5db772366ec686d1025 $
+ * $Id: 5f7db991eeecd7c97da3e82e7796617d29730570 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -22,7 +22,6 @@
  *****************************************************************************/
 
 #include <vlc_input.h>
-#include <vlc_playlist.h>
 
 int Control(demux_t *, int, va_list);
 char *ProcessMRL( const char *, const char * );
@@ -81,6 +80,8 @@ void Close_ZPL ( vlc_object_t * );
 
 extern input_item_t * GetCurrentItem(demux_t *p_demux);
 
+bool CheckContentType( stream_t * p_stream, const char * psz_ctype );
+
 #define STANDARD_DEMUX_INIT_MSG( msg ) do { \
     DEMUX_INIT_COMMON();                    \
     msg_Dbg( p_demux, "%s", msg ); } while(0)
@@ -97,6 +98,15 @@ extern input_item_t * GetCurrentItem(demux_t *p_demux);
         return VLC_EGENERIC; \
     STANDARD_DEMUX_INIT_MSG( msg );
 
+#define DEMUX_BY_EXTENSION_OR_MIMETYPE( ext, mime, msg ) \
+    demux_t *p_demux = (demux_t *)p_this; \
+    char* demux_mimetype = stream_ContentType( p_demux->s ); \
+    if(!( demux_IsPathExtension( p_demux, ext ) || (demux_mimetype && !strcasecmp( mime, demux_mimetype )) )) { \
+        free( demux_mimetype ); \
+        return VLC_EGENERIC; \
+    } \
+    free( demux_mimetype ); \
+    STANDARD_DEMUX_INIT_MSG( msg );
 
 #define CHECK_PEEK( zepeek, size ) do { \
     if( stream_Peek( p_demux->s , &zepeek, size ) < size ){ \

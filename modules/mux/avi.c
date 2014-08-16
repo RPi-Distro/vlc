@@ -1,24 +1,24 @@
 /*****************************************************************************
  * avi.c
  *****************************************************************************
- * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: cb7877aa3fe7fdfb6e523ae407a7c17110dd7790 $
+ * Copyright (C) 2001-2009 VLC authors and VideoLAN
+ * $Id: bc72fc1f93df4b929910f1f168a7995e177d8748 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -43,12 +43,37 @@
 static int  Open   ( vlc_object_t * );
 static void Close  ( vlc_object_t * );
 
+#define SOUT_CFG_PREFIX "sout-avi-"
+
+#define CFG_ARTIST_TEXT     N_("Artist")
+#define CFG_DATE_TEXT       N_("Date")
+#define CFG_GENRE_TEXT      N_("Genre")
+#define CFG_COPYRIGHT_TEXT  N_("Copyright")
+#define CFG_COMMENT_TEXT    N_("Comment")
+#define CFG_NAME_TEXT       N_("Name")
+#define CFG_SUBJECT_TEXT    N_("Subject")
+#define CFG_ENCODER_TEXT    N_("Encoder")
+#define CFG_KEYWORDS_TEXT   N_("Keywords")
+
 vlc_module_begin ()
     set_description( N_("AVI muxer") )
     set_category( CAT_SOUT )
     set_subcategory( SUBCAT_SOUT_MUX )
     set_capability( "sout mux", 5 )
     add_shortcut( "avi" )
+
+    add_string( SOUT_CFG_PREFIX "artist", NULL,    CFG_ARTIST_TEXT, NULL, true )
+    add_string( SOUT_CFG_PREFIX "date",   NULL,    CFG_DATE_TEXT, NULL, true )
+    add_string( SOUT_CFG_PREFIX "genre",  NULL,    CFG_GENRE_TEXT, NULL, true )
+    add_string( SOUT_CFG_PREFIX "copyright", NULL, CFG_COPYRIGHT_TEXT, NULL, true )
+    add_string( SOUT_CFG_PREFIX "comment", NULL,   CFG_COMMENT_TEXT, NULL, true )
+    add_string( SOUT_CFG_PREFIX "name", NULL,      CFG_NAME_TEXT, NULL, true )
+    add_string( SOUT_CFG_PREFIX "subject", NULL,   CFG_SUBJECT_TEXT, NULL, true )
+    add_string( SOUT_CFG_PREFIX "encoder",
+                "VLC Media Player - " VERSION_MESSAGE,
+                                                   CFG_ENCODER_TEXT, NULL, true )
+    add_string( SOUT_CFG_PREFIX "keywords", NULL,  CFG_KEYWORDS_TEXT, NULL, true )
+
     set_callbacks( Open, Close )
 vlc_module_end ()
 
@@ -112,8 +137,7 @@ struct sout_mux_sys_t
 
 };
 
-// FIXME FIXME
-#define HDR_SIZE 10240
+#define HDR_BASE_SIZE 512 /* single video&audio ~ 400 bytes header */
 
 /* Flags in avih */
 #define AVIF_HASINDEX       0x00000010  // Index at end of file?
@@ -319,7 +343,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
                     p_wf->wFormatTag = WAVE_FORMAT_A52;
                     p_wf->nBlockAlign= 1;
                     break;
-                case VLC_CODEC_MPGA:
+                case VLC_CODEC_MP3:
                     p_wf->wFormatTag = WAVE_FORMAT_MPEGLAYER3;
                     p_wf->nBlockAlign= 1;
                     break;
@@ -555,24 +579,41 @@ static int Mux      ( sout_mux_t *p_mux )
 typedef struct buffer_out_s
 {
     int      i_buffer_size;
-    int      i_buffer;
-    uint8_t  *p_buffer;
-
+    block_t  *p_block;
 } buffer_out_t;
 
-static void bo_Init( buffer_out_t *p_bo, int i_size, uint8_t *p_buffer )
+static void bo_Init( buffer_out_t *p_bo, int i_size )
 {
+    p_bo->p_block = block_Alloc( i_size );
+    p_bo->p_block->i_buffer = 0;
     p_bo->i_buffer_size = i_size;
-    p_bo->i_buffer = 0;
-    p_bo->p_buffer = p_buffer;
+}
+
+static void bo_SetByte( buffer_out_t *p_bo, int i_offset, uint8_t i )
+{
+    if( i_offset >= p_bo->i_buffer_size )
+    {
+        int i_growth = HDR_BASE_SIZE;
+        while( i_offset >= p_bo->i_buffer_size + i_growth )
+        {
+            i_growth += HDR_BASE_SIZE;
+        }
+        int i = p_bo->p_block->i_buffer; /* Realloc would set payload size == buffer size */
+        p_bo->p_block = block_Realloc( p_bo->p_block, 0, p_bo->i_buffer_size + i_growth );
+        p_bo->p_block->i_buffer = i;
+        p_bo->i_buffer_size += i_growth;
+    }
+    p_bo->p_block->p_buffer[i_offset] = i;
 }
 static void bo_AddByte( buffer_out_t *p_bo, uint8_t i )
 {
-    if( p_bo->i_buffer < p_bo->i_buffer_size )
-    {
-        p_bo->p_buffer[p_bo->i_buffer] = i;
-    }
-    p_bo->i_buffer++;
+    bo_SetByte( p_bo, p_bo->p_block->i_buffer, i );
+    p_bo->p_block->i_buffer++;
+}
+static void bo_SetWordLE( buffer_out_t *p_bo, int i_offset, uint16_t i )
+{
+    bo_SetByte( p_bo, i_offset, i &0xff );
+    bo_SetByte( p_bo, i_offset + 1, ( ( i >> 8) &0xff ) );
 }
 static void bo_AddWordLE( buffer_out_t *p_bo, uint16_t i )
 {
@@ -583,6 +624,11 @@ static void bo_AddWordBE( buffer_out_t *p_bo, uint16_t i )
 {
     bo_AddByte( p_bo, ( ( i >> 8) &0xff ) );
     bo_AddByte( p_bo, i &0xff );
+}
+static void bo_SetDWordLE( buffer_out_t *p_bo, int i_offset, uint32_t i )
+{
+    bo_SetWordLE( p_bo, i_offset, i &0xffff );
+    bo_SetWordLE( p_bo, i_offset + 2, ( ( i >> 16) &0xffff ) );
 }
 static void bo_AddDWordLE( buffer_out_t *p_bo, uint32_t i )
 {
@@ -633,9 +679,9 @@ static void bo_AddMem( buffer_out_t *p_bo, int i_size, uint8_t *p_mem )
  ****************************************************************************
  ****************************************************************************/
 #define AVI_BOX_ENTER( fcc ) \
-    buffer_out_t _bo_sav_; \
+    int i_datasize_offset; \
     bo_AddFCC( p_bo, fcc ); \
-    _bo_sav_ = *p_bo; \
+    i_datasize_offset = p_bo->p_block->i_buffer; \
     bo_AddDWordLE( p_bo, 0 )
 
 #define AVI_BOX_ENTER_LIST( fcc ) \
@@ -643,8 +689,8 @@ static void bo_AddMem( buffer_out_t *p_bo, int i_size, uint8_t *p_mem )
     bo_AddFCC( p_bo, fcc )
 
 #define AVI_BOX_EXIT( i_err ) \
-    if( p_bo->i_buffer&0x01 ) bo_AddByte( p_bo, 0 ); \
-    bo_AddDWordLE( &_bo_sav_, p_bo->i_buffer - _bo_sav_.i_buffer - 4 ); \
+    if( p_bo->p_block->i_buffer&0x01 ) bo_AddByte( p_bo, 0 ); \
+    bo_SetDWordLE( p_bo, i_datasize_offset, p_bo->p_block->i_buffer - i_datasize_offset - 4 ); \
     return( i_err );
 
 static int avi_HeaderAdd_avih( sout_mux_t *p_mux,
@@ -839,21 +885,66 @@ static int avi_HeaderAdd_strl( buffer_out_t *p_bo, avi_stream_t *p_stream )
     AVI_BOX_EXIT( 0 );
 }
 
+static int avi_HeaderAdd_meta( buffer_out_t *p_bo, const char psz_meta[4],
+                               const char *psz_data )
+{
+    if ( psz_data == NULL ) return 1;
+    const char *psz = psz_data;
+    AVI_BOX_ENTER( psz_meta );
+    while (*psz) bo_AddByte( p_bo, *psz++ );
+    bo_AddByte( p_bo, 0 );
+    AVI_BOX_EXIT( 0 );
+}
+
+static int avi_HeaderAdd_INFO( sout_mux_t *p_mux, buffer_out_t *p_bo )
+{
+    char *psz;
+
+#define APPLY_META(var, fourcc) \
+    psz = var_InheritString( p_mux, SOUT_CFG_PREFIX var );\
+    if ( psz )\
+    {\
+        avi_HeaderAdd_meta( p_bo, fourcc, psz );\
+        free( psz );\
+    }
+
+    AVI_BOX_ENTER_LIST( "INFO" );
+
+    APPLY_META( "artist",   "IART")
+    APPLY_META( "comment",  "ICMT")
+    APPLY_META( "copyright","ICOP")
+    APPLY_META( "date",     "ICRD")
+    APPLY_META( "genre",    "IGNR")
+    APPLY_META( "name",     "INAM")
+    APPLY_META( "keywords", "IKEY")
+    APPLY_META( "subject",  "ISBJ")
+    APPLY_META( "encoder",  "ISFT")
+    /* Some are missing, but are they really useful ?? */
+
+#undef APPLY_META
+
+    AVI_BOX_EXIT( 0 );
+}
+
 static block_t *avi_HeaderCreateRIFF( sout_mux_t *p_mux )
 {
     sout_mux_sys_t      *p_sys = p_mux->p_sys;
-    block_t       *p_hdr;
     int                 i_stream;
     int                 i_junk;
     buffer_out_t        bo;
 
-    p_hdr = block_Alloc( HDR_SIZE );
-    memset( p_hdr->p_buffer, 0, HDR_SIZE );
+    struct
+    {
+        int i_riffsize;
+        int i_hdrllistsize;
+        int i_hdrldatastart;
+    } offsets;
 
-    bo_Init( &bo, HDR_SIZE, p_hdr->p_buffer );
+    bo_Init( &bo, HDR_BASE_SIZE );
 
     bo_AddFCC( &bo, "RIFF" );
-    bo_AddDWordLE( &bo, p_sys->i_movi_size + HDR_SIZE - 8 + p_sys->i_idx1_size );
+    offsets.i_riffsize = bo.p_block->i_buffer;
+    bo_AddDWordLE( &bo, 0xEFBEADDE );
     bo_AddFCC( &bo, "AVI " );
 
     bo_AddFCC( &bo, "LIST" );
@@ -862,8 +953,10 @@ static block_t *avi_HeaderCreateRIFF( sout_mux_t *p_mux )
      *  - 8 (hdr1 LIST tag and its size)
      *  - 12 (movi LIST tag, size, 'movi' listType )
      */
-    bo_AddDWordLE( &bo, HDR_SIZE - 12 - 8 - 12);
+    offsets.i_hdrllistsize = bo.p_block->i_buffer;
+    bo_AddDWordLE( &bo, 0xEFBEADDE );
     bo_AddFCC( &bo, "hdrl" );
+    offsets.i_hdrldatastart = bo.p_block->i_buffer;
 
     avi_HeaderAdd_avih( p_mux, &bo );
     for( i_stream = 0; i_stream < p_sys->i_streams; i_stream++ )
@@ -871,31 +964,44 @@ static block_t *avi_HeaderCreateRIFF( sout_mux_t *p_mux )
         avi_HeaderAdd_strl( &bo, &p_sys->stream[i_stream] );
     }
 
-    i_junk = HDR_SIZE - bo.i_buffer - 8 - 12;
+    /* align on 16 bytes */
+    int i_align = ( ( bo.p_block->i_buffer + 12 + 0xE ) & ~ 0xF );
+    i_junk = i_align - bo.p_block->i_buffer;
     bo_AddFCC( &bo, "JUNK" );
     bo_AddDWordLE( &bo, i_junk );
+    for( int i=0; i< i_junk; i++ )
+    {
+        bo_AddByte( &bo, 0 );
+    }
 
-    bo.i_buffer += i_junk;
+    /* Now set hdrl size */
+    bo_SetDWordLE( &bo, offsets.i_hdrllistsize,
+                   bo.p_block->i_buffer - offsets.i_hdrldatastart );
+
+    avi_HeaderAdd_INFO( p_mux, &bo );
+
     bo_AddFCC( &bo, "LIST" );
     bo_AddDWordLE( &bo, p_sys->i_movi_size + 4 );
     bo_AddFCC( &bo, "movi" );
 
-    return( p_hdr );
+    /* Now set RIFF size */
+    bo_SetDWordLE( &bo, offsets.i_riffsize, bo.p_block->i_buffer - 8
+                   + p_sys->i_movi_size + p_sys->i_idx1_size );
+
+    return( bo.p_block );
 }
 
 static block_t * avi_HeaderCreateidx1( sout_mux_t *p_mux )
 {
     sout_mux_sys_t      *p_sys = p_mux->p_sys;
-    block_t             *p_idx1;
     uint32_t            i_idx1_size;
     buffer_out_t        bo;
 
     i_idx1_size = 16 * p_sys->idx1.i_entry_count + 8;
 
-    p_idx1 = block_Alloc( i_idx1_size);
-    memset( p_idx1->p_buffer, 0, i_idx1_size);
+    bo_Init( &bo, i_idx1_size );
+    memset( bo.p_block->p_buffer, 0, i_idx1_size);
 
-    bo_Init( &bo, i_idx1_size, p_idx1->p_buffer );
     bo_AddFCC( &bo, "idx1" );
     bo_AddDWordLE( &bo, i_idx1_size - 8);
 
@@ -907,6 +1013,5 @@ static block_t * avi_HeaderCreateidx1( sout_mux_t *p_mux )
         bo_AddDWordLE( &bo, p_sys->idx1.entry[i].i_length );
     }
 
-    return( p_idx1 );
+    return( bo.p_block );
 }
-

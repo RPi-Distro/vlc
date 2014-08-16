@@ -2,7 +2,7 @@
  * ConvertAndSave.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012 Felix Paul Kühne
- * $Id: 09007d8b07b325c96a586ab2b899e14cc93c3fe5 $
+ * $Id: 9e8a8a92c514640dfa6a57bc394d6a6d2092faac $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -169,20 +169,5 @@
 - (IBAction)subSettingsChanged:(id)sender;
 
 - (void)updateDropView;
-
-@end
-
-@interface VLCDropEnabledBox : NSBox
-{
-    BOOL b_activeDragAndDrop;
-}
-
-@end
-
-@interface VLCDropEnabledImageView : NSImageView
-
-@end
-
-@interface VLCDropEnabledButton : NSButton
 
 @end

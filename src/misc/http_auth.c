@@ -2,7 +2,7 @@
  * http_auth.c: HTTP authentication for clients as per RFC2617
  *****************************************************************************
  * Copyright (C) 2001-2008 VLC authors and VideoLAN
- * $Id: 6b2bdf27dfec023ec74fefb7ee7db4982c542719 $
+ * $Id: 0e224dadb4777e87554524450722dbc42a8eca89 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -294,7 +294,7 @@ void http_auth_ParseWwwAuthenticateHeader(
         const char *psz_end = strchr( psz_header, ' ' );
         if ( psz_end )
             msg_Warn( p_this, "Unknown authentication scheme: '%*s'",
-                      psz_end - psz_header, psz_header );
+                      (int)(psz_end - psz_header), psz_header );
         else
             msg_Warn( p_this, "Unknown authentication scheme: '%s'",
                       psz_header );

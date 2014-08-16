@@ -2,7 +2,7 @@
  * flac.c: flac decoder/encoder module making use of libflac
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 72a12bcc9febf87013c3a49114d8228a3c41989b $
+ * $Id: b2ee916ab8ce3f6c6632e8eb58d0a1b8ff5dffc8 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -134,7 +134,12 @@ static void Interleave( int32_t *p_out, const int32_t * const *pp_in,
 
     for( unsigned j = 0; j < i_samples; j++ )
         for( unsigned i = 0; i < i_nb_channels; i++ )
-            p_out[j * i_nb_channels + i] = pp_in[pi_index[i]][j] << shift;
+        {
+            union { int32_t i; uint32_t u; } spl;
+
+            spl.u = ((uint32_t)pp_in[pi_index[i]][j]) << shift;
+            p_out[j * i_nb_channels + i] = spl.i;
+        }
 }
 
 /*****************************************************************************
@@ -587,12 +592,12 @@ EncoderWriteCallback( const FLAC__StreamEncoder *encoder,
             p_enc->fmt_out.i_extra = STREAMINFO_SIZE + 8;
             p_enc->fmt_out.p_extra = xmalloc( STREAMINFO_SIZE + 8);
             memcpy(p_enc->fmt_out.p_extra, "fLaC", 4);
-            memcpy(p_enc->fmt_out.p_extra + 4, buffer, STREAMINFO_SIZE );
+            memcpy((uint8_t*)p_enc->fmt_out.p_extra + 4, buffer, STREAMINFO_SIZE );
             /* Fake this as the last metadata block */
             ((uint8_t*)p_enc->fmt_out.p_extra)[4] |= 0x80;
         }
         p_sys->i_headers++;
-        return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
+        return FLAC__STREAM_ENCODER_WRITE_STATUS_OK;
     }
 
     p_block = block_Alloc( bytes );
@@ -610,7 +615,7 @@ EncoderWriteCallback( const FLAC__StreamEncoder *encoder,
 
     block_ChainAppend( &p_sys->p_chain, p_block );
 
-    return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
+    return FLAC__STREAM_ENCODER_WRITE_STATUS_OK;
 }
 /*****************************************************************************
  * EncoderMetadataCallback: called by libflac to output metadata

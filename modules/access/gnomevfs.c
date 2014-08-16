@@ -2,7 +2,7 @@
  * gnomevfs.c: GnomeVFS input
  *****************************************************************************
  * Copyright (C) 2005 VLC authors and VideoLAN
- * $Id: 4b63ee456cc8698cc64c342137fbe0deca2ec3c6 $
+ * $Id: 9a07e461a790b5b81af6227948029af88e2aa9ca $
  *
  * Authors: Benjamin Pracht <bigben -AT- videolan -DOT- org>
  *
@@ -213,7 +213,6 @@ static int Open( vlc_object_t *p_this )
         p_sys->p_file_info->type == GNOME_VFS_FILE_TYPE_BLOCK_DEVICE )
     {
         p_sys->b_seekable = true;
-        p_access->info.i_size = (int64_t)(p_sys->p_file_info->size);
     }
     else if( p_sys->p_file_info->type == GNOME_VFS_FILE_TYPE_FIFO
               || p_sys->p_file_info->type == GNOME_VFS_FILE_TYPE_SOCKET )
@@ -226,7 +225,7 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    if( p_sys->b_seekable && !p_access->info.i_size )
+    if( p_sys->b_seekable && !p_sys->p_file_info->size )
     {
         /* FIXME that's bad because all others access will be probed */
         msg_Warn( p_access, "file %s is empty, aborting", psz_name );
@@ -288,8 +287,8 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
     }
 
     p_access->info.i_pos += (int64_t)i_read_len;
-    if( p_access->info.i_pos >= p_access->info.i_size
-     && p_access->info.i_size != 0 && p_sys->b_local )
+    if( p_access->info.i_pos >= p_sys->p_file_info->size
+     && p_sys->p_file_info->size != 0 && p_sys->b_local )
     {
         gnome_vfs_file_info_clear( p_sys->p_file_info );
         i_ret = gnome_vfs_get_file_info_from_handle( p_sys->p_handle,
@@ -297,8 +296,6 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
         if( i_ret )
             msg_Warn( p_access, "couldn't get file properties again (%s)",
                       gnome_vfs_result_to_string( i_ret ) );
-        else
-            p_access->info.i_size = (int64_t)(p_sys->p_file_info->size);
     }
     return (int)i_read_len;
 }
@@ -348,7 +345,6 @@ static int Control( access_t *p_access, int i_query, va_list args )
 
     switch( i_query )
     {
-        /* */
         case ACCESS_CAN_SEEK:
         case ACCESS_CAN_FASTSEEK:
             pb_bool = (bool*)va_arg( args, bool* );
@@ -361,28 +357,21 @@ static int Control( access_t *p_access, int i_query, va_list args )
             *pb_bool = p_sys->b_pace_control;
             break;
 
+        case ACCESS_GET_SIZE:
+            *va_arg( args, uint64_t * ) = p_sys->p_file_info->size;
+            break;
+
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
             *pi_64 = DEFAULT_PTS_DELAY; /* FIXME */
             break;
 
-        /* */
         case ACCESS_SET_PAUSE_STATE:
             /* Nothing to do */
             break;
 
-        case ACCESS_GET_TITLE_INFO:
-        case ACCESS_SET_TITLE:
-        case ACCESS_SET_SEEKPOINT:
-        case ACCESS_SET_PRIVATE_ID_STATE:
-        case ACCESS_GET_META:
-        case ACCESS_GET_CONTENT_TYPE:
-            return VLC_EGENERIC;
-
         default:
-            msg_Warn( p_access, "unimplemented query in control" );
             return VLC_EGENERIC;
-
     }
     return VLC_SUCCESS;
 }

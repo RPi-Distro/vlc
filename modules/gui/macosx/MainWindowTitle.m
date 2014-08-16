@@ -2,7 +2,7 @@
  * MainWindowTitle.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: bd2bfcd69ce2599ad0cf3039ac9b744c4cb0914d $
+ * $Id: fbbb7b020adb02308342550133860f5a0129c4d8 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -474,7 +474,7 @@
         [contextMenu release];
 
     NSURL * representedURL = [[self window] representedURL];
-    if (! representedURL)
+    if (!representedURL)
         return;
 
     NSArray * pathComponents;
@@ -527,7 +527,31 @@
     [currentItem setImage: icon];
     [currentItem setTarget: self];
 
-    [NSMenu popUpContextMenu: contextMenu withEvent: o_event forView: [self superview]];
+    // center the context menu similar to the white interface
+    CGFloat menuWidth = [contextMenu size].width;
+    NSRect windowFrame = [[self window] frame];
+    NSPoint point;
+
+    CGFloat fullButtonWidth = 0.;
+    if([[VLCMain sharedInstance] nativeFullscreenMode])
+        fullButtonWidth = 20.;
+
+    // assumes 60 px for the window buttons
+    point.x = (windowFrame.size.width - 60. - fullButtonWidth) / 2. - menuWidth / 2. + 60. - 20.;
+    point.y = windowFrame.size.height + 1.;
+    if (point.x < 0)
+        point.x = 10;
+
+    NSEvent *fakeMouseEvent = [NSEvent mouseEventWithType:NSRightMouseDown
+                                                 location:point
+                                            modifierFlags:0
+                                                timestamp:0
+                                             windowNumber:[[self window] windowNumber]
+                                                  context:nil
+                                              eventNumber:0
+                                               clickCount:0
+                                                 pressure:0];
+    [NSMenu popUpContextMenu: contextMenu withEvent: fakeMouseEvent forView: [self superview]];
 }
 
 - (IBAction)revealInFinder:(id)sender

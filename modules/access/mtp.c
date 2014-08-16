@@ -75,7 +75,6 @@ static int  open_file( access_t *, const char * );
 
 struct access_sys_t
 {
-    unsigned int i_nb_reads;
     int fd;
 };
 
@@ -141,7 +140,6 @@ static int Open( vlc_object_t *p_this )
     free( p_rawdevices );
 
     STANDARD_READ_ACCESS_INIT;
-    p_sys->i_nb_reads = 0;
     int fd = p_sys->fd = -1;
 
     /* Open file */
@@ -154,11 +152,6 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
     p_sys->fd = fd;
-
-    struct stat st;
-    if( fstat( fd, &st ) )
-        msg_Err( p_access, "fstat(%d): %m", fd );
-    p_access->info.i_size = st.st_size;
 
     return VLC_SUCCESS;
 }
@@ -173,8 +166,8 @@ static void Close( vlc_object_t * p_this )
 
     close ( p_sys->fd );
     if(	vlc_unlink( p_access->psz_filepath ) != 0 )
-        msg_Err( p_access, "Error deleting file %s, %m",
-                 p_access->psz_filepath );
+        msg_Err( p_access, "Error deleting file %s, %s",
+                 p_access->psz_filepath, vlc_strerror_c(errno) );
     free( p_sys );
 }
 
@@ -198,9 +191,10 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
                 break;
 
             default:
-                msg_Err( p_access, "read failed (%m)" );
-                dialog_Fatal( p_access, _( "File reading failed" ), "%s (%m)",
-                                _( "VLC could not read the file." ) );
+                msg_Err( p_access, "read failed: %s", vlc_strerror_c(errno) );
+                dialog_Fatal( p_access, _( "File reading failed" ),
+                              _( "VLC could not read the file: %s" ),
+                              vlc_strerror(errno) );
                 p_access->info.b_eof = true;
                 return 0;
         }
@@ -209,8 +203,6 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
         p_access->info.i_pos += i_ret;
     else
         p_access->info.b_eof = true;
-
-    p_sys->i_nb_reads++;
 
     return i_ret;
 }
@@ -233,12 +225,12 @@ static int Seek( access_t *p_access, uint64_t i_pos )
  *****************************************************************************/
 static int Control( access_t *p_access, int i_query, va_list args )
 {
+    access_sys_t *sys = p_access->p_sys;
     bool   *pb_bool;
     int64_t      *pi_64;
 
     switch( i_query )
     {
-        /* */
         case ACCESS_CAN_SEEK:
         case ACCESS_CAN_FASTSEEK:
             pb_bool = ( bool* )va_arg( args, bool* );
@@ -251,28 +243,30 @@ static int Control( access_t *p_access, int i_query, va_list args )
             *pb_bool = true;
             break;
 
+        case ACCESS_GET_SIZE:
+        {
+            uint64_t *s = va_arg( args, uint64_t * );
+            struct stat st;
+            if( fstat( sys->fd, &st ) )
+            {
+                msg_Err( p_access, "fstat error: %s", vlc_strerror_c(errno) );
+                return VLC_EGENERIC;
+            }
+            *s = st.st_size;
+            break;
+        }
+
         case ACCESS_GET_PTS_DELAY:
             pi_64 = ( int64_t* )va_arg( args, int64_t * );
             *pi_64 = INT64_C(1000)
                    * var_InheritInteger( p_access, "file-caching" );
             break;
 
-        /* */
         case ACCESS_SET_PAUSE_STATE:
             /* Nothing to do */
             break;
 
-        case ACCESS_GET_TITLE_INFO:
-        case ACCESS_SET_TITLE:
-        case ACCESS_SET_SEEKPOINT:
-        case ACCESS_SET_PRIVATE_ID_STATE:
-        case ACCESS_GET_META:
-        case ACCESS_GET_PRIVATE_ID_STATE:
-        case ACCESS_GET_CONTENT_TYPE:
-            return VLC_EGENERIC;
-
         default:
-            msg_Warn( p_access, "unimplemented query %d in control", i_query );
             return VLC_EGENERIC;
 
     }
@@ -287,9 +281,11 @@ static int open_file( access_t *p_access, const char *path )
     int fd = vlc_open( path, O_RDONLY | O_NONBLOCK );
     if( fd == -1 )
     {
-        msg_Err( p_access, "cannot open file %s (%m)", path );
+        msg_Err( p_access, "cannot open file %s: %s", path,
+                 vlc_strerror_c(errno) );
         dialog_Fatal( p_access, _( "File reading failed" ),
-                        _( "VLC could not open the file \"%s\". (%m)" ), path );
+                      _( "VLC could not open the file \"%s\": %s" ), path,
+                      vlc_strerror(errno) );
         return -1;
     }
 #ifdef F_RDAHEAD

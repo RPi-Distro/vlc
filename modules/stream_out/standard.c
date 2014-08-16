@@ -1,24 +1,24 @@
 /*****************************************************************************
  * standard.c: standard stream output module
  *****************************************************************************
- * Copyright (C) 2003-2011 the VideoLAN team
- * $Id: ec5c47cb0c5565d2c8dc77f58b5807b2af09cd1e $
+ * Copyright (C) 2003-2011 VLC authors and VideoLAN
+ * $Id: 1bdcf6af6fbbd0f21fdec581753733225aba81a5 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -128,26 +128,25 @@ struct sout_stream_sys_t
     session_descriptor_t *p_session;
 };
 
-struct sout_stream_id_t
+struct sout_stream_id_sys_t
 {
 };
 
-static sout_stream_id_t * Add( sout_stream_t *p_stream, es_format_t *p_fmt )
+static sout_stream_id_sys_t * Add( sout_stream_t *p_stream, es_format_t *p_fmt )
 {
-    return (sout_stream_id_t*)sout_MuxAddStream( p_stream->p_sys->p_mux, p_fmt );
+    return (sout_stream_id_sys_t*)sout_MuxAddStream( p_stream->p_sys->p_mux, p_fmt );
 }
 
-static int Del( sout_stream_t *p_stream, sout_stream_id_t *id )
+static int Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
 {
     sout_MuxDeleteStream( p_stream->p_sys->p_mux, (sout_input_t*)id );
     return VLC_SUCCESS;
 }
 
-static int Send( sout_stream_t *p_stream, sout_stream_id_t *id,
+static int Send( sout_stream_t *p_stream, sout_stream_id_sys_t *id,
                  block_t *p_buffer )
 {
-    sout_MuxSendBuffer( p_stream->p_sys->p_mux, (sout_input_t*)id, p_buffer );
-    return VLC_SUCCESS;
+    return sout_MuxSendBuffer( p_stream->p_sys->p_mux, (sout_input_t*)id, p_buffer );
 }
 static void create_SDP(sout_stream_t *p_stream, sout_access_out_t *p_access)
 {
@@ -333,14 +332,7 @@ static int Open( vlc_object_t *p_this )
 
     psz_access = var_GetNonEmptyString( p_stream, SOUT_CFG_PREFIX "access" );
     if( !psz_access )
-    {
-        if( !strcmp( p_stream->psz_name, "http" ) )
-            psz_access = strdup("http");
-        else if (!strcmp (p_stream->psz_name, "udp"))
-            psz_access = strdup("udp");
-        else if (!strcmp (p_stream->psz_name, "file"))
-            psz_access = strdup("file");
-    }
+        psz_access = strdup(p_stream->psz_name);
 
     psz_url = var_GetNonEmptyString( p_stream, SOUT_CFG_PREFIX "dst" );
     if (!psz_url)

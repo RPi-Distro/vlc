@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2007-2009 the VideoLAN team
  *
- * $Id: fbe3ed4f76d071ebbe4ce63905d47afca41370e5 $
+ * $Id: b647bded8e00e78bd386e60c64cd1191dfb8c198 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -114,7 +114,7 @@ void SoutDialog::addDest( )
     switch( ui.destBox->currentIndex() )
     {
         case 0:
-            db = new FileDestBox( this );
+            db = new FileDestBox( this, p_intf );
             caption = qtr( "File" );
             break;
         case 1:

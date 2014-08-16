@@ -17,10 +17,11 @@ $(TARBALLS)/bghudappkit-git.tar.xz:
 
 bghudappkit: bghudappkit-git.tar.xz .sum-bghudappkit
 	$(UNPACK)
-	$(APPLY) $(SRC)/bghudappkit/bghudappkit-xcode4.patch
+	$(APPLY) $(SRC)/bghudappkit/bghudappkit-xcode5.patch
 	$(MOVE)
 
 .bghudappkit: bghudappkit
 	cd $< && xcodebuild $(XCODE_FLAGS)
-	cd $< && cp -R build/Release/BGHUDAppKit.framework "$(PREFIX)"
+	install -d $(PREFIX)
+	cd $< && cp -rf build/Release/BGHUDAppKit.framework "$(PREFIX)"
 	touch $@

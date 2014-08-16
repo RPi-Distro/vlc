@@ -2,7 +2,7 @@
  * menus.hpp : Menus handling
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 3b39c7b12f72104bd9877d70a1077efc86c3fc1e $
+ * $Id: 479f993da8c09f698e918de3469e8357c20edcc1 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -99,6 +99,8 @@ public:
     };
     Q_DECLARE_FLAGS(actionflags, actionflag)
 
+    static QMenu *ppMenu;
+
 private:
     /* All main Menus */
     static QMenu *FileMenu( intf_thread_t *, QWidget *, MainInterface * mi = NULL );
@@ -133,6 +135,7 @@ private:
     }
 
     static QMenu *HelpMenu( QWidget * );
+    static QMenu *PPMenu( intf_thread_t *p_intf );
 
     /* Popups Menus */
     static void PopupMenuStaticEntries( QMenu *menu );

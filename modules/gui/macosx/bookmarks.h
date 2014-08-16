@@ -2,7 +2,7 @@
  * bookmarks.h: MacOS X Bookmarks window
  *****************************************************************************
  * Copyright (C) 2005, 2007 VLC authors and VideoLAN
- * $Id: 809c112bf913356571398e576efad8faaa8f4d54 $
+ * $Id: dbeec5cd4fe85cadbf97f62e1c9c085c5876e7ae $
  *
  * Authors: Felix Kühne <fkuehne at videolan dot org>
  *
@@ -64,5 +64,5 @@
 - (IBAction)edit_ok:(id)sender;
 
 - (void)showBookmarks;
-- (id)dataTable;
+
 @end

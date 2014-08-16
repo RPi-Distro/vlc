@@ -2,7 +2,7 @@
  * info_panels.hpp : Panels for the information dialogs
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: e7d7617edae2e6d8267a3503ef2ed39d990a34b8 $
+ * $Id: 90c7b4a0654bf9ce2425bd33948a7f87124d446b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -31,21 +31,10 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_meta.h>
-
 #include <QWidget>
-
-#include <limits.h>
-
-#define setSpinBounds( spinbox ) {               \
-    spinbox->setRange( 0, INT_MAX );             \
-    spinbox->setAccelerated( true ) ;            \
-    spinbox->setAlignment( Qt::AlignRight );     \
-    spinbox->setSpecialValueText(""); }
 
 class QTreeWidget;
 class QTreeWidgetItem;
-class QTreeView;
 class QSpinBox;
 class QLineEdit;
 class CoverArtLabel;

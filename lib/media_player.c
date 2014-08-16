@@ -33,6 +33,7 @@
 #include <vlc_demux.h>
 #include <vlc_input.h>
 #include <vlc_vout.h>
+#include <vlc_aout.h>
 #include <vlc_keys.h>
 
 #include "libvlc_internal.h"
@@ -45,6 +46,10 @@ input_seekable_changed( vlc_object_t * p_this, char const * psz_cmd,
                         void * p_userdata );
 static int
 input_pausable_changed( vlc_object_t * p_this, char const * psz_cmd,
+                        vlc_value_t oldval, vlc_value_t newval,
+                        void * p_userdata );
+static int
+input_scrambled_changed( vlc_object_t * p_this, char const * psz_cmd,
                         vlc_value_t oldval, vlc_value_t newval,
                         void * p_userdata );
 static int
@@ -116,6 +121,8 @@ static void release_input_thread( libvlc_media_player_t *p_mi, bool b_input_abor
                      input_seekable_changed, p_mi );
     var_DelCallback( p_input_thread, "can-pause",
                     input_pausable_changed, p_mi );
+    var_DelCallback( p_input_thread, "program-scrambled",
+                    input_scrambled_changed, p_mi );
     var_DelCallback( p_input_thread, "intf-event",
                      input_event_changed, p_mi );
 
@@ -205,6 +212,24 @@ input_pausable_changed( vlc_object_t * p_this, char const * psz_cmd,
 
     event.type = libvlc_MediaPlayerPausableChanged;
     event.u.media_player_pausable_changed.new_pausable = newval.b_bool;
+
+    libvlc_event_send( p_mi->p_event_manager, &event );
+    return VLC_SUCCESS;
+}
+
+static int
+input_scrambled_changed( vlc_object_t * p_this, char const * psz_cmd,
+                        vlc_value_t oldval, vlc_value_t newval,
+                        void * p_userdata )
+{
+    VLC_UNUSED(oldval);
+    VLC_UNUSED(p_this);
+    VLC_UNUSED(psz_cmd);
+    libvlc_media_player_t * p_mi = p_userdata;
+    libvlc_event_t event;
+
+    event.type = libvlc_MediaPlayerScrambledChanged;
+    event.u.media_player_scrambled_changed.new_scrambled = newval.b_bool;
 
     libvlc_event_send( p_mi->p_event_manager, &event );
     return VLC_SUCCESS;
@@ -444,6 +469,7 @@ libvlc_media_player_new( libvlc_instance_t *instance )
     var_Create (mp, "mute", VLC_VAR_BOOL);
     var_Create (mp, "volume", VLC_VAR_FLOAT);
     var_Create (mp, "corks", VLC_VAR_INTEGER);
+    var_Create (mp, "audio-filter", VLC_VAR_STRING);
     var_Create (mp, "amem-data", VLC_VAR_ADDRESS);
     var_Create (mp, "amem-setup", VLC_VAR_ADDRESS);
     var_Create (mp, "amem-cleanup", VLC_VAR_ADDRESS);
@@ -462,6 +488,11 @@ libvlc_media_player_new( libvlc_instance_t *instance )
     var_Create (mp, "video-title-position", VLC_VAR_INTEGER);
     var_Create (mp, "video-title-timeout", VLC_VAR_INTEGER);
 
+    /* Equalizer */
+    var_Create (mp, "equalizer-preamp", VLC_VAR_FLOAT);
+    var_Create (mp, "equalizer-vlcfreqs", VLC_VAR_BOOL);
+    var_Create (mp, "equalizer-bands", VLC_VAR_STRING);
+
     mp->p_md = NULL;
     mp->state = libvlc_NothingSpecial;
     mp->p_libvlc_instance = instance;
@@ -472,6 +503,10 @@ libvlc_media_player_new( libvlc_instance_t *instance )
         vlc_object_release(mp);
         return NULL;
     }
+    audio_output_t *aout = input_resource_GetAout(mp->input.p_resource);
+    if( aout != NULL )
+        input_resource_PutAout(mp->input.p_resource, aout);
+
     vlc_mutex_init (&mp->input.lock);
     mp->i_refcount = 1;
     mp->p_event_manager = libvlc_event_manager_new(mp, instance);
@@ -502,6 +537,7 @@ libvlc_media_player_new( libvlc_instance_t *instance )
     register_event(mp, PausableChanged);
 
     register_event(mp, Vout);
+    register_event(mp, ScrambledChanged);
 
     /* Snapshot initialization */
     register_event(mp, SnapshotTaken);
@@ -656,12 +692,13 @@ libvlc_media_player_get_media( libvlc_media_player_t *p_mi )
 {
     libvlc_media_t *p_m;
 
-    lock(p_mi);
+    lock( p_mi );
     p_m = p_mi->p_md;
     if( p_m )
-        libvlc_media_retain( p_mi->p_md );
-    unlock(p_mi);
-    return p_mi->p_md;
+        libvlc_media_retain( p_m );
+    unlock( p_mi );
+
+    return p_m;
 }
 
 /**************************************************************************
@@ -712,6 +749,7 @@ int libvlc_media_player_play( libvlc_media_player_t *p_mi )
 
     var_AddCallback( p_input_thread, "can-seek", input_seekable_changed, p_mi );
     var_AddCallback( p_input_thread, "can-pause", input_pausable_changed, p_mi );
+    var_AddCallback( p_input_thread, "program-scrambled", input_scrambled_changed, p_mi );
     var_AddCallback( p_input_thread, "intf-event", input_event_changed, p_mi );
 
     if( input_Start( p_input_thread ) )
@@ -719,6 +757,7 @@ int libvlc_media_player_play( libvlc_media_player_t *p_mi )
         unlock_input(p_mi);
         var_DelCallback( p_input_thread, "intf-event", input_event_changed, p_mi );
         var_DelCallback( p_input_thread, "can-pause", input_pausable_changed, p_mi );
+        var_DelCallback( p_input_thread, "program-scrambled", input_scrambled_changed, p_mi );
         var_DelCallback( p_input_thread, "can-seek", input_seekable_changed, p_mi );
         vlc_object_release( p_input_thread );
         libvlc_printerr( "Input initialization failure" );
@@ -743,7 +782,7 @@ void libvlc_media_player_set_pause( libvlc_media_player_t *p_mi, int paused )
             if( libvlc_media_player_can_pause( p_mi ) )
                 input_Control( p_input_thread, INPUT_SET_STATE, PAUSE_S );
             else
-                libvlc_media_player_stop( p_mi );
+                input_Stop( p_input_thread, true );
         }
     }
     else
@@ -952,12 +991,16 @@ void libvlc_audio_set_callbacks( libvlc_media_player_t *mp,
     var_SetAddress( mp, "amem-drain", drain_cb );
     var_SetAddress( mp, "amem-data", opaque );
     var_SetString( mp, "aout", "amem,none" );
+
+    input_resource_ResetAout(mp->input.p_resource);
 }
 
 void libvlc_audio_set_volume_callback( libvlc_media_player_t *mp,
                                        libvlc_audio_set_volume_cb cb )
 {
     var_SetAddress( mp, "amem-set-volume", cb );
+
+    input_resource_ResetAout(mp->input.p_resource);
 }
 
 void libvlc_audio_set_format_callbacks( libvlc_media_player_t *mp,
@@ -966,6 +1009,8 @@ void libvlc_audio_set_format_callbacks( libvlc_media_player_t *mp,
 {
     var_SetAddress( mp, "amem-setup", setup );
     var_SetAddress( mp, "amem-cleanup", cleanup );
+
+    input_resource_ResetAout(mp->input.p_resource);
 }
 
 void libvlc_audio_set_format( libvlc_media_player_t *mp, const char *format,
@@ -974,6 +1019,8 @@ void libvlc_audio_set_format( libvlc_media_player_t *mp, const char *format,
     var_SetString( mp, "amem-format", format );
     var_SetInteger( mp, "amem-rate", rate );
     var_SetInteger( mp, "amem-channels", channels );
+
+    input_resource_ResetAout(mp->input.p_resource);
 }
 
 
@@ -1088,10 +1135,10 @@ int libvlc_media_player_get_chapter_count( libvlc_media_player_t *p_mi )
     if( !p_input_thread )
         return -1;
 
-    var_Change( p_input_thread, "chapter", VLC_VAR_CHOICESCOUNT, &val, NULL );
+    int i_ret = var_Change( p_input_thread, "chapter", VLC_VAR_CHOICESCOUNT, &val, NULL );
     vlc_object_release( p_input_thread );
 
-    return val.i_int;
+    return i_ret == VLC_SUCCESS ? val.i_int : -1;
 }
 
 int libvlc_media_player_get_chapter_count_for_title(
@@ -1111,11 +1158,11 @@ int libvlc_media_player_get_chapter_count_for_title(
         vlc_object_release( p_input_thread );
         return -1;
     }
-    var_Change( p_input_thread, psz_name, VLC_VAR_CHOICESCOUNT, &val, NULL );
+    int i_ret = var_Change( p_input_thread, psz_name, VLC_VAR_CHOICESCOUNT, &val, NULL );
     vlc_object_release( p_input_thread );
     free( psz_name );
 
-    return val.i_int;
+    return i_ret == VLC_SUCCESS ? val.i_int : -1;
 }
 
 void libvlc_media_player_set_title( libvlc_media_player_t *p_mi,
@@ -1161,10 +1208,10 @@ int libvlc_media_player_get_title_count( libvlc_media_player_t *p_mi )
     if( !p_input_thread )
         return -1;
 
-    var_Change( p_input_thread, "title", VLC_VAR_CHOICESCOUNT, &val, NULL );
+    int i_ret = var_Change( p_input_thread, "title", VLC_VAR_CHOICESCOUNT, &val, NULL );
     vlc_object_release( p_input_thread );
 
-    return val.i_int;
+    return i_ret == VLC_SUCCESS ? val.i_int : -1;
 }
 
 void libvlc_media_player_next_chapter( libvlc_media_player_t *p_mi )
@@ -1297,7 +1344,9 @@ libvlc_track_description_t *
         return NULL;
 
     vlc_value_t val_list, text_list;
-    var_Change( p_input, psz_variable, VLC_VAR_GETLIST, &val_list, &text_list);
+    int i_ret = var_Change( p_input, psz_variable, VLC_VAR_GETLIST, &val_list, &text_list );
+    if( i_ret != VLC_SUCCESS )
+        return NULL;
 
     /* no tracks */
     if( val_list.p_list->i_count <= 0 )
@@ -1375,6 +1424,20 @@ int libvlc_media_player_can_pause( libvlc_media_player_t *p_mi )
     return b_can_pause;
 }
 
+int libvlc_media_player_program_scrambled( libvlc_media_player_t *p_mi )
+{
+    input_thread_t *p_input_thread;
+    bool b_program_scrambled;
+
+    p_input_thread = libvlc_get_input_thread ( p_mi );
+    if ( !p_input_thread )
+        return false;
+    b_program_scrambled = var_GetBool( p_input_thread, "program-scrambled" );
+    vlc_object_release( p_input_thread );
+
+    return b_program_scrambled;
+}
+
 void libvlc_media_player_next_frame( libvlc_media_player_t *p_mi )
 {
     input_thread_t *p_input_thread = libvlc_get_input_thread ( p_mi );
@@ -1385,16 +1448,80 @@ void libvlc_media_player_next_frame( libvlc_media_player_t *p_mi )
     }
 }
 
+/**
+ * Private lookup table to get subpicture alignment flag values corresponding
+ * to a libvlc_position_t enumerated value.
+ */
+static const unsigned char position_subpicture_alignment[] = {
+    [libvlc_position_center]       = 0,
+    [libvlc_position_left]         = SUBPICTURE_ALIGN_LEFT,
+    [libvlc_position_right]        = SUBPICTURE_ALIGN_RIGHT,
+    [libvlc_position_top]          = SUBPICTURE_ALIGN_TOP,
+    [libvlc_position_top_left]     = SUBPICTURE_ALIGN_TOP | SUBPICTURE_ALIGN_LEFT,
+    [libvlc_position_top_right]    = SUBPICTURE_ALIGN_TOP | SUBPICTURE_ALIGN_RIGHT,
+    [libvlc_position_bottom]       = SUBPICTURE_ALIGN_BOTTOM,
+    [libvlc_position_bottom_left]  = SUBPICTURE_ALIGN_BOTTOM | SUBPICTURE_ALIGN_LEFT,
+    [libvlc_position_bottom_right] = SUBPICTURE_ALIGN_BOTTOM | SUBPICTURE_ALIGN_RIGHT
+};
+
 void libvlc_media_player_set_video_title_display( libvlc_media_player_t *p_mi, libvlc_position_t position, unsigned timeout )
 {
+    assert( position >= libvlc_position_disable && position <= libvlc_position_bottom_right );
+
     if ( position != libvlc_position_disable )
     {
         var_SetBool( p_mi, "video-title-show", true );
-        var_SetInteger( p_mi, "video-title-position", position );
+        var_SetInteger( p_mi, "video-title-position", position_subpicture_alignment[position] );
         var_SetInteger( p_mi, "video-title-timeout", timeout );
     }
     else
     {
         var_SetBool( p_mi, "video-title-show", false );
     }
+}
+
+/**
+ * Maximum size of a formatted equalizer amplification band frequency value.
+ *
+ * The allowed value range is supposed to be constrained from -20.0 to 20.0.
+ *
+ * The format string " %.07f" with a minimum value of "-20" gives a maximum
+ * string length of e.g. " -19.1234567", i.e. 12 bytes (not including the null
+ * terminator).
+ */
+#define EQZ_BAND_VALUE_SIZE 12
+
+int libvlc_media_player_set_equalizer( libvlc_media_player_t *p_mi, libvlc_equalizer_t *p_equalizer )
+{
+    char bands[EQZ_BANDS_MAX * EQZ_BAND_VALUE_SIZE + 1];
+
+    if( p_equalizer != NULL )
+    {
+        for( unsigned i = 0, c = 0; i < EQZ_BANDS_MAX; i++ )
+        {
+            c += snprintf( bands + c, sizeof(bands) - c, " %.07f",
+                          p_equalizer->f_amp[i] );
+            if( unlikely(c >= sizeof(bands)) )
+                return -1;
+        }
+
+        var_SetFloat( p_mi, "equalizer-preamp", p_equalizer->f_preamp );
+        var_SetString( p_mi, "equalizer-bands", bands );
+    }
+    var_SetString( p_mi, "audio-filter", p_equalizer ? "equalizer" : "" );
+
+    audio_output_t *p_aout = input_resource_HoldAout( p_mi->input.p_resource );
+    if( p_aout != NULL )
+    {
+        if( p_equalizer != NULL )
+        {
+            var_SetFloat( p_aout, "equalizer-preamp", p_equalizer->f_preamp );
+            var_SetString( p_aout, "equalizer-bands", bands );
+        }
+
+        var_SetString( p_aout, "audio-filter", p_equalizer ? "equalizer" : "" );
+        vlc_object_release( p_aout );
+    }
+
+    return 0;
 }

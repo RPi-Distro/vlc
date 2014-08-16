@@ -2,7 +2,7 @@
  * controls.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 943cf85504df1450d2bbcfdd3f905b1b5763da7a $
+ * $Id: c8a6dd874f769d05daf0d6c3fc02ebbdaf15c98f $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Benjamin Pracht <bigben at videolan doit org>
@@ -50,11 +50,11 @@
 
 - (void)awakeFromNib
 {
-    [o_specificTime_mi setTitle: _NS("Jump To Time")];
+    [o_specificTime_mi setTitle: _NS("Jump to Time")];
     [o_specificTime_cancel_btn setTitle: _NS("Cancel")];
     [o_specificTime_ok_btn setTitle: _NS("OK")];
     [o_specificTime_sec_lbl setStringValue: _NS("sec.")];
-    [o_specificTime_goTo_lbl setStringValue: _NS("Jump to time")];
+    [o_specificTime_goTo_lbl setStringValue: _NS("Jump to Time")];
 
     [o_specificTime_enter_fld setFormatter:[[[PositionFormatter alloc] init] autorelease]];
 }
@@ -115,13 +115,6 @@
         [[VLCCoreInteraction sharedInstance] repeatAll];
     else
         [[VLCCoreInteraction sharedInstance] repeatOff];
-}
-
-- (IBAction)quitAfterPlayback:(id)sender
-{
-    vlc_value_t val;
-    playlist_t * p_playlist = pl_Get(VLCIntf);
-    var_ToggleBool(p_playlist, "play-and-exit");
 }
 
 - (IBAction)forward:(id)sender

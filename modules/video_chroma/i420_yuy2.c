@@ -2,7 +2,7 @@
  * i420_yuy2.c : YUV to YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 VLC authors and VideoLAN
- * $Id: 7eb317c841c284f75e8e05d85fa0a5e945595aa9 $
+ * $Id: 5457f9572590d442088f498caf3f5fcd15798a25 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damien@videolan.org>
@@ -128,7 +128,8 @@ static int Activate( vlc_object_t *p_this )
     }
 
     if( p_filter->fmt_in.video.i_width != p_filter->fmt_out.video.i_width
-     || p_filter->fmt_in.video.i_height != p_filter->fmt_out.video.i_height )
+       || p_filter->fmt_in.video.i_height != p_filter->fmt_out.video.i_height
+       || p_filter->fmt_in.video.orientation != p_filter->fmt_out.video.orientation )
         return -1;
 
     switch( p_filter->fmt_in.video.i_chroma )

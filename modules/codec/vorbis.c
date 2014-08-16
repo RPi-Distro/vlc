@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: 0d2f020b58b88b25444b5a80a990b8528f57f1a6 $
+ * $Id: 077a1c3becf6877ba00da410f44446a469a8aaf5 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -318,7 +318,8 @@ static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     {
         if( ProcessHeaders( p_dec ) )
         {
-            block_Release( *pp_block );
+            if( *pp_block )
+                block_Release( *pp_block );
             return NULL;
         }
         p_sys->b_has_headers = true;
@@ -336,13 +337,13 @@ static int ProcessHeaders( decoder_t *p_dec )
     ogg_packet oggpacket;
 
     unsigned pi_size[XIPH_MAX_HEADER_COUNT];
-    void     *pp_data[XIPH_MAX_HEADER_COUNT];
+    void *pp_data[XIPH_MAX_HEADER_COUNT];
     unsigned i_count;
     if( xiph_SplitHeaders( pi_size, pp_data, &i_count,
                            p_dec->fmt_in.i_extra, p_dec->fmt_in.p_extra) )
         return VLC_EGENERIC;
     if( i_count < 3 )
-        goto error;
+        return VLC_EGENERIC;
 
     oggpacket.granulepos = -1;
     oggpacket.e_o_s = 0;
@@ -355,29 +356,30 @@ static int ProcessHeaders( decoder_t *p_dec )
     if( vorbis_synthesis_headerin( &p_sys->vi, &p_sys->vc, &oggpacket ) < 0 )
     {
         msg_Err( p_dec, "this bitstream does not contain Vorbis audio data");
-        goto error;
+        return VLC_EGENERIC;
     }
 
     /* Setup the format */
     p_dec->fmt_out.audio.i_rate     = p_sys->vi.rate;
     p_dec->fmt_out.audio.i_channels = p_sys->vi.channels;
 
-    if( p_dec->fmt_out.audio.i_channels > 9 )
+    if( p_dec->fmt_out.audio.i_channels >= ARRAY_SIZE(pi_channels_maps) )
     {
-        msg_Err( p_dec, "invalid number of channels (not between 1 and 9): %i",
+        msg_Err( p_dec, "invalid number of channels (1-%zu): %i",
+                 ARRAY_SIZE(pi_channels_maps),
                  p_dec->fmt_out.audio.i_channels );
-        goto error;
+        return VLC_EGENERIC;
     }
 
     p_dec->fmt_out.audio.i_physical_channels =
         p_dec->fmt_out.audio.i_original_channels =
             pi_channels_maps[p_sys->vi.channels];
-    p_dec->fmt_out.i_bitrate = p_sys->vi.bitrate_nominal;
+    p_dec->fmt_out.i_bitrate = __MAX( 0, (int32_t) p_sys->vi.bitrate_nominal );
 
     date_Init( &p_sys->end_date, p_sys->vi.rate, 1 );
 
-    msg_Dbg( p_dec, "channels:%d samplerate:%ld bitrate:%ld",
-             p_sys->vi.channels, p_sys->vi.rate, p_sys->vi.bitrate_nominal );
+    msg_Dbg( p_dec, "channels:%d samplerate:%ld bitrate:%ud",
+             p_sys->vi.channels, p_sys->vi.rate, p_dec->fmt_out.i_bitrate );
 
     /* The next packet in order is the comments header */
     oggpacket.b_o_s  = 0;
@@ -386,7 +388,7 @@ static int ProcessHeaders( decoder_t *p_dec )
     if( vorbis_synthesis_headerin( &p_sys->vi, &p_sys->vc, &oggpacket ) < 0 )
     {
         msg_Err( p_dec, "2nd Vorbis header is corrupted" );
-        goto error;
+        return VLC_EGENERIC;
     }
     ParseVorbisComments( p_dec );
 
@@ -420,14 +422,7 @@ static int ProcessHeaders( decoder_t *p_dec )
     ConfigureChannelOrder(p_sys->pi_chan_table, p_sys->vi.channels,
             p_dec->fmt_out.audio.i_physical_channels, true);
 
-    for( unsigned i = 0; i < i_count; i++ )
-        free( pp_data[i] );
     return VLC_SUCCESS;
-
-error:
-    for( unsigned i = 0; i < i_count; i++ )
-        free( pp_data[i] );
-    return VLC_EGENERIC;
 }
 
 /*****************************************************************************
@@ -476,11 +471,16 @@ static void Interleave( INTERLEAVE_TYPE *p_out, const INTERLEAVE_TYPE **pp_in,
 {
     for( int j = 0; j < i_samples; j++ )
         for( int i = 0; i < i_nb_channels; i++ )
+        {
 #ifdef MODULE_NAME_IS_tremor
-            p_out[j * i_nb_channels + pi_chan_table[i]] = pp_in[i][j] << 8;
+            union { int32_t i; uint32_t u;} spl;
+
+            spl.u = ((uint32_t)pp_in[i][j]) << 8;
+            p_out[j * i_nb_channels + pi_chan_table[i]] = spl.i;
 #else
             p_out[j * i_nb_channels + pi_chan_table[i]] = pp_in[i][j];
 #endif
+        }
 }
 
 /*****************************************************************************

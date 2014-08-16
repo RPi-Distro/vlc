@@ -93,7 +93,9 @@ DIST_COMMON = $(top_srcdir)/modules/common.am $(srcdir)/Modules.am \
 	$(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/autotools/depcomp $(noinst_HEADERS)
 @HAVE_DYNAMIC_PLUGINS_TRUE@am__append_1 = -D__PLUGIN__
-@ENABLE_SOUT_TRUE@am__append_2 = libpacketizer_copy_plugin.la
+@HAVE_DYNAMIC_PLUGINS_FALSE@am__append_2 = -DMODULE_NAME=$(MODULE_NAME)
+@HAVE_WIN32_TRUE@am__append_3 = $(top_builddir)/modules/module.rc.lo
+@ENABLE_SOUT_TRUE@am__append_4 = libpacketizer_copy_plugin.la
 subdir = modules/packetizer
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/dolt.m4 \
@@ -139,17 +141,13 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(libvlcdir)"
-LTLIBRARIES = $(libvlc_LTLIBRARIES)
-am__DEPENDENCIES_1 =
-am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
-libpacketizer_copy_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
+am__installdirs = "$(DESTDIR)$(packetizerdir)"
+LTLIBRARIES = $(packetizer_LTLIBRARIES)
+libpacketizer_copy_plugin_la_DEPENDENCIES =
 am__objects_1 = libpacketizer_copy_plugin_la-copy.lo
 am_libpacketizer_copy_plugin_la_OBJECTS = $(am__objects_1)
-nodist_libpacketizer_copy_plugin_la_OBJECTS =
 libpacketizer_copy_plugin_la_OBJECTS =  \
-	$(am_libpacketizer_copy_plugin_la_OBJECTS) \
-	$(nodist_libpacketizer_copy_plugin_la_OBJECTS)
+	$(am_libpacketizer_copy_plugin_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -159,94 +157,84 @@ libpacketizer_copy_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libpacketizer_copy_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libpacketizer_copy_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
 @ENABLE_SOUT_TRUE@am_libpacketizer_copy_plugin_la_rpath = -rpath \
-@ENABLE_SOUT_TRUE@	$(libvlcdir)
-libpacketizer_dirac_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
+@ENABLE_SOUT_TRUE@	$(packetizerdir)
+libpacketizer_dirac_plugin_la_DEPENDENCIES =
 am__objects_2 = libpacketizer_dirac_plugin_la-dirac.lo
 am_libpacketizer_dirac_plugin_la_OBJECTS = $(am__objects_2)
-nodist_libpacketizer_dirac_plugin_la_OBJECTS =
 libpacketizer_dirac_plugin_la_OBJECTS =  \
-	$(am_libpacketizer_dirac_plugin_la_OBJECTS) \
-	$(nodist_libpacketizer_dirac_plugin_la_OBJECTS)
+	$(am_libpacketizer_dirac_plugin_la_OBJECTS)
 libpacketizer_dirac_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libpacketizer_dirac_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libpacketizer_dirac_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-libpacketizer_flac_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
+libpacketizer_flac_plugin_la_DEPENDENCIES =
 am__objects_3 = libpacketizer_flac_plugin_la-flac.lo
 am_libpacketizer_flac_plugin_la_OBJECTS = $(am__objects_3)
-nodist_libpacketizer_flac_plugin_la_OBJECTS =
 libpacketizer_flac_plugin_la_OBJECTS =  \
-	$(am_libpacketizer_flac_plugin_la_OBJECTS) \
-	$(nodist_libpacketizer_flac_plugin_la_OBJECTS)
+	$(am_libpacketizer_flac_plugin_la_OBJECTS)
 libpacketizer_flac_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libpacketizer_flac_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libpacketizer_flac_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-libpacketizer_h264_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
+libpacketizer_h264_plugin_la_DEPENDENCIES =
 am__objects_4 = libpacketizer_h264_plugin_la-h264.lo
 am_libpacketizer_h264_plugin_la_OBJECTS = $(am__objects_4)
-nodist_libpacketizer_h264_plugin_la_OBJECTS =
 libpacketizer_h264_plugin_la_OBJECTS =  \
-	$(am_libpacketizer_h264_plugin_la_OBJECTS) \
-	$(nodist_libpacketizer_h264_plugin_la_OBJECTS)
+	$(am_libpacketizer_h264_plugin_la_OBJECTS)
 libpacketizer_h264_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libpacketizer_h264_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libpacketizer_h264_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-libpacketizer_mlp_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am__objects_5 = libpacketizer_mlp_plugin_la-mlp.lo
-am_libpacketizer_mlp_plugin_la_OBJECTS = $(am__objects_5)
-nodist_libpacketizer_mlp_plugin_la_OBJECTS =
+libpacketizer_hevc_plugin_la_DEPENDENCIES =
+am__objects_5 = libpacketizer_hevc_plugin_la-hevc.lo
+am_libpacketizer_hevc_plugin_la_OBJECTS = $(am__objects_5)
+libpacketizer_hevc_plugin_la_OBJECTS =  \
+	$(am_libpacketizer_hevc_plugin_la_OBJECTS)
+libpacketizer_hevc_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libpacketizer_hevc_plugin_la_CFLAGS) $(CFLAGS) \
+	$(libpacketizer_hevc_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
+libpacketizer_mlp_plugin_la_DEPENDENCIES =
+am__objects_6 = libpacketizer_mlp_plugin_la-mlp.lo
+am_libpacketizer_mlp_plugin_la_OBJECTS = $(am__objects_6)
 libpacketizer_mlp_plugin_la_OBJECTS =  \
-	$(am_libpacketizer_mlp_plugin_la_OBJECTS) \
-	$(nodist_libpacketizer_mlp_plugin_la_OBJECTS)
+	$(am_libpacketizer_mlp_plugin_la_OBJECTS)
 libpacketizer_mlp_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libpacketizer_mlp_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libpacketizer_mlp_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-libpacketizer_mpeg4audio_plugin_la_DEPENDENCIES =  \
-	$(am__DEPENDENCIES_2)
-am__objects_6 = libpacketizer_mpeg4audio_plugin_la-mpeg4audio.lo
-am_libpacketizer_mpeg4audio_plugin_la_OBJECTS = $(am__objects_6)
-nodist_libpacketizer_mpeg4audio_plugin_la_OBJECTS =
+libpacketizer_mpeg4audio_plugin_la_DEPENDENCIES =
+am__objects_7 = libpacketizer_mpeg4audio_plugin_la-mpeg4audio.lo
+am_libpacketizer_mpeg4audio_plugin_la_OBJECTS = $(am__objects_7)
 libpacketizer_mpeg4audio_plugin_la_OBJECTS =  \
-	$(am_libpacketizer_mpeg4audio_plugin_la_OBJECTS) \
-	$(nodist_libpacketizer_mpeg4audio_plugin_la_OBJECTS)
+	$(am_libpacketizer_mpeg4audio_plugin_la_OBJECTS)
 libpacketizer_mpeg4audio_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) \
 	--tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link \
 	$(CCLD) $(libpacketizer_mpeg4audio_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libpacketizer_mpeg4audio_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-libpacketizer_mpeg4video_plugin_la_DEPENDENCIES =  \
-	$(am__DEPENDENCIES_2)
-am__objects_7 = libpacketizer_mpeg4video_plugin_la-mpeg4video.lo
-am_libpacketizer_mpeg4video_plugin_la_OBJECTS = $(am__objects_7)
-nodist_libpacketizer_mpeg4video_plugin_la_OBJECTS =
+libpacketizer_mpeg4video_plugin_la_DEPENDENCIES =
+am__objects_8 = libpacketizer_mpeg4video_plugin_la-mpeg4video.lo
+am_libpacketizer_mpeg4video_plugin_la_OBJECTS = $(am__objects_8)
 libpacketizer_mpeg4video_plugin_la_OBJECTS =  \
-	$(am_libpacketizer_mpeg4video_plugin_la_OBJECTS) \
-	$(nodist_libpacketizer_mpeg4video_plugin_la_OBJECTS)
+	$(am_libpacketizer_mpeg4video_plugin_la_OBJECTS)
 libpacketizer_mpeg4video_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) \
 	--tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link \
 	$(CCLD) $(libpacketizer_mpeg4video_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libpacketizer_mpeg4video_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-libpacketizer_mpegvideo_plugin_la_DEPENDENCIES =  \
-	$(am__DEPENDENCIES_2)
-am__objects_8 = libpacketizer_mpegvideo_plugin_la-mpegvideo.lo
-am_libpacketizer_mpegvideo_plugin_la_OBJECTS = $(am__objects_8)
-nodist_libpacketizer_mpegvideo_plugin_la_OBJECTS =
+libpacketizer_mpegvideo_plugin_la_DEPENDENCIES =
+am__objects_9 = libpacketizer_mpegvideo_plugin_la-mpegvideo.lo
+am_libpacketizer_mpegvideo_plugin_la_OBJECTS = $(am__objects_9)
 libpacketizer_mpegvideo_plugin_la_OBJECTS =  \
-	$(am_libpacketizer_mpegvideo_plugin_la_OBJECTS) \
-	$(nodist_libpacketizer_mpegvideo_plugin_la_OBJECTS)
+	$(am_libpacketizer_mpegvideo_plugin_la_OBJECTS)
 libpacketizer_mpegvideo_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) \
 	--tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link \
 	$(CCLD) $(libpacketizer_mpegvideo_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libpacketizer_mpegvideo_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-libpacketizer_vc1_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am__objects_9 = libpacketizer_vc1_plugin_la-vc1.lo
-am_libpacketizer_vc1_plugin_la_OBJECTS = $(am__objects_9)
-nodist_libpacketizer_vc1_plugin_la_OBJECTS =
+libpacketizer_vc1_plugin_la_DEPENDENCIES =
+am__objects_10 = libpacketizer_vc1_plugin_la-vc1.lo
+am_libpacketizer_vc1_plugin_la_OBJECTS = $(am__objects_10)
 libpacketizer_vc1_plugin_la_OBJECTS =  \
-	$(am_libpacketizer_vc1_plugin_la_OBJECTS) \
-	$(nodist_libpacketizer_vc1_plugin_la_OBJECTS)
+	$(am_libpacketizer_vc1_plugin_la_OBJECTS)
 libpacketizer_vc1_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libpacketizer_vc1_plugin_la_CFLAGS) $(CFLAGS) \
@@ -282,27 +270,20 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(libpacketizer_copy_plugin_la_SOURCES) \
-	$(nodist_libpacketizer_copy_plugin_la_SOURCES) \
 	$(libpacketizer_dirac_plugin_la_SOURCES) \
-	$(nodist_libpacketizer_dirac_plugin_la_SOURCES) \
 	$(libpacketizer_flac_plugin_la_SOURCES) \
-	$(nodist_libpacketizer_flac_plugin_la_SOURCES) \
 	$(libpacketizer_h264_plugin_la_SOURCES) \
-	$(nodist_libpacketizer_h264_plugin_la_SOURCES) \
+	$(libpacketizer_hevc_plugin_la_SOURCES) \
 	$(libpacketizer_mlp_plugin_la_SOURCES) \
-	$(nodist_libpacketizer_mlp_plugin_la_SOURCES) \
 	$(libpacketizer_mpeg4audio_plugin_la_SOURCES) \
-	$(nodist_libpacketizer_mpeg4audio_plugin_la_SOURCES) \
 	$(libpacketizer_mpeg4video_plugin_la_SOURCES) \
-	$(nodist_libpacketizer_mpeg4video_plugin_la_SOURCES) \
 	$(libpacketizer_mpegvideo_plugin_la_SOURCES) \
-	$(nodist_libpacketizer_mpegvideo_plugin_la_SOURCES) \
-	$(libpacketizer_vc1_plugin_la_SOURCES) \
-	$(nodist_libpacketizer_vc1_plugin_la_SOURCES)
+	$(libpacketizer_vc1_plugin_la_SOURCES)
 DIST_SOURCES = $(libpacketizer_copy_plugin_la_SOURCES) \
 	$(libpacketizer_dirac_plugin_la_SOURCES) \
 	$(libpacketizer_flac_plugin_la_SOURCES) \
 	$(libpacketizer_h264_plugin_la_SOURCES) \
+	$(libpacketizer_hevc_plugin_la_SOURCES) \
 	$(libpacketizer_mlp_plugin_la_SOURCES) \
 	$(libpacketizer_mpeg4audio_plugin_la_SOURCES) \
 	$(libpacketizer_mpeg4video_plugin_la_SOURCES) \
@@ -338,14 +319,16 @@ ACLOCAL = @ACLOCAL@
 ALIASES = @ALIASES@
 ALSA_CFLAGS = @ALSA_CFLAGS@
 ALSA_LIBS = @ALSA_LIBS@
+ALTIVEC_CFLAGS = @ALTIVEC_CFLAGS@
 AMTAR = @AMTAR@
-AM_CPPFLAGS = -DMODULE_NAME=$(MODULE_NAME) \
-	-DMODULE_NAME_IS_$(MODULE_NAME) \
-	-DMODULE_STRING=\"$(MODULE_NAME)\" $(am__append_1)
+AM_CPPFLAGS = -DMODULE_STRING=\"$(MODULE_NAME)\" $(am__append_1) \
+	$(am__append_2)
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
 ARCH = @ARCH@
 AS = @AS@
+ASDCP_CFLAGS = @ASDCP_CFLAGS@
+ASDCP_LIBS = @ASDCP_LIBS@
 ASM = @ASM@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
@@ -367,20 +350,14 @@ CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
-CFLAGS_access_avio = @CFLAGS_access_avio@
-CFLAGS_access_gnomevfs = @CFLAGS_access_gnomevfs@
-CFLAGS_access_jack = @CFLAGS_access_jack@
 CFLAGS_access_mtp = @CFLAGS_access_mtp@
 CFLAGS_access_output_shout = @CFLAGS_access_output_shout@
 CFLAGS_access_sftp = @CFLAGS_access_sftp@
-CFLAGS_access_smb = @CFLAGS_access_smb@
-CFLAGS_avcodec = @CFLAGS_avcodec@
 CFLAGS_bonjour = @CFLAGS_bonjour@
 CFLAGS_caca = @CFLAGS_caca@
 CFLAGS_cdda = @CFLAGS_cdda@
 CFLAGS_dc1394 = @CFLAGS_dc1394@
 CFLAGS_deinterlace = @CFLAGS_deinterlace@
-CFLAGS_dirac = @CFLAGS_dirac@
 CFLAGS_dtstofloat32 = @CFLAGS_dtstofloat32@
 CFLAGS_dv1394 = @CFLAGS_dv1394@
 CFLAGS_dvdnav = @CFLAGS_dvdnav@
@@ -390,19 +367,15 @@ CFLAGS_flac = @CFLAGS_flac@
 CFLAGS_fluidsynth = @CFLAGS_fluidsynth@
 CFLAGS_gles1 = @CFLAGS_gles1@
 CFLAGS_gles2 = @CFLAGS_gles2@
+CFLAGS_gnomevfs = @CFLAGS_gnomevfs@
 CFLAGS_goom = @CFLAGS_goom@
-CFLAGS_i420_yuy2_altivec = @CFLAGS_i420_yuy2_altivec@
-CFLAGS_jack = @CFLAGS_jack@
 CFLAGS_kate = @CFLAGS_kate@
-CFLAGS_libass = @CFLAGS_libass@
 CFLAGS_libbluray = @CFLAGS_libbluray@
 CFLAGS_libmpeg2 = @CFLAGS_libmpeg2@
 CFLAGS_libvlccore = @CFLAGS_libvlccore@
-CFLAGS_libvnc = @CFLAGS_libvnc@
-CFLAGS_linsys_sdi = @CFLAGS_linsys_sdi@
-CFLAGS_lua = @CFLAGS_lua@
-CFLAGS_memcpyaltivec = @CFLAGS_memcpyaltivec@
-CFLAGS_motion = @CFLAGS_motion@
+CFLAGS_mmal_codec = @CFLAGS_mmal_codec@
+CFLAGS_mmal_vout = @CFLAGS_mmal_vout@
+CFLAGS_mod = @CFLAGS_mod@
 CFLAGS_mtp = @CFLAGS_mtp@
 CFLAGS_mux_ogg = @CFLAGS_mux_ogg@
 CFLAGS_ncurses = @CFLAGS_ncurses@
@@ -413,31 +386,32 @@ CFLAGS_omxil_vout = @CFLAGS_omxil_vout@
 CFLAGS_opencv_example = @CFLAGS_opencv_example@
 CFLAGS_opencv_wrapper = @CFLAGS_opencv_wrapper@
 CFLAGS_opus = @CFLAGS_opus@
-CFLAGS_panoramix = @CFLAGS_panoramix@
 CFLAGS_postproc = @CFLAGS_postproc@
 CFLAGS_qsv = @CFLAGS_qsv@
 CFLAGS_rdp = @CFLAGS_rdp@
-CFLAGS_rotate = @CFLAGS_rotate@
 CFLAGS_samplerate = @CFLAGS_samplerate@
 CFLAGS_schroedinger = @CFLAGS_schroedinger@
-CFLAGS_sdl_image = @CFLAGS_sdl_image@
+CFLAGS_shine = @CFLAGS_shine@
 CFLAGS_sid = @CFLAGS_sid@
+CFLAGS_smb = @CFLAGS_smb@
 CFLAGS_speex = @CFLAGS_speex@
 CFLAGS_stream_out_chromaprint = @CFLAGS_stream_out_chromaprint@
 CFLAGS_svg = @CFLAGS_svg@
+CFLAGS_svgdec = @CFLAGS_svgdec@
 CFLAGS_swscale = @CFLAGS_swscale@
 CFLAGS_theora = @CFLAGS_theora@
 CFLAGS_twolame = @CFLAGS_twolame@
 CFLAGS_udev = @CFLAGS_udev@
 CFLAGS_upnp = @CFLAGS_upnp@
 CFLAGS_vcdx = @CFLAGS_vcdx@
+CFLAGS_vnc = @CFLAGS_vnc@
 CFLAGS_vorbis = @CFLAGS_vorbis@
 CFLAGS_vout_sdl = @CFLAGS_vout_sdl@
+CFLAGS_x262 = @CFLAGS_x262@
 CFLAGS_x264 = @CFLAGS_x264@
 CFLAGS_x26410b = @CFLAGS_x26410b@
-CFLAGS_xcb_window = @CFLAGS_xcb_window@
+CFLAGS_x265 = @CFLAGS_x265@
 CFLAGS_xml = @CFLAGS_xml@
-CFLAGS_zvbi = @CFLAGS_zvbi@
 CHROMAPRINT_CFLAGS = @CHROMAPRINT_CFLAGS@
 CHROMAPRINT_LIBS = @CHROMAPRINT_LIBS@
 CONTRIB_DIR = @CONTRIB_DIR@
@@ -446,20 +420,18 @@ COPYRIGHT_YEARS = @COPYRIGHT_YEARS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CPPFLAGS_a52tofloat32 = @CPPFLAGS_a52tofloat32@
-CPPFLAGS_access_gnomevfs = @CPPFLAGS_access_gnomevfs@
 CPPFLAGS_access_mtp = @CPPFLAGS_access_mtp@
 CPPFLAGS_access_output_shout = @CPPFLAGS_access_output_shout@
 CPPFLAGS_access_sftp = @CPPFLAGS_access_sftp@
-CPPFLAGS_access_smb = @CPPFLAGS_access_smb@
 CPPFLAGS_bonjour = @CPPFLAGS_bonjour@
 CPPFLAGS_caca = @CPPFLAGS_caca@
 CPPFLAGS_dc1394 = @CPPFLAGS_dc1394@
 CPPFLAGS_decklink = @CPPFLAGS_decklink@
 CPPFLAGS_decklinkoutput = @CPPFLAGS_decklinkoutput@
-CPPFLAGS_dirac = @CPPFLAGS_dirac@
 CPPFLAGS_directfb = @CPPFLAGS_directfb@
 CPPFLAGS_dtstofloat32 = @CPPFLAGS_dtstofloat32@
 CPPFLAGS_dv1394 = @CPPFLAGS_dv1394@
+CPPFLAGS_dvdnav = @CPPFLAGS_dvdnav@
 CPPFLAGS_dvdread = @CPPFLAGS_dvdread@
 CPPFLAGS_faad = @CPPFLAGS_faad@
 CPPFLAGS_fdkaac = @CPPFLAGS_fdkaac@
@@ -468,12 +440,12 @@ CPPFLAGS_fluidsynth = @CPPFLAGS_fluidsynth@
 CPPFLAGS_freetype = @CPPFLAGS_freetype@
 CPPFLAGS_gles1 = @CPPFLAGS_gles1@
 CPPFLAGS_gles2 = @CPPFLAGS_gles2@
+CPPFLAGS_gnomevfs = @CPPFLAGS_gnomevfs@
 CPPFLAGS_goom = @CPPFLAGS_goom@
 CPPFLAGS_kate = @CPPFLAGS_kate@
 CPPFLAGS_libass = @CPPFLAGS_libass@
 CPPFLAGS_libbluray = @CPPFLAGS_libbluray@
 CPPFLAGS_libmpeg2 = @CPPFLAGS_libmpeg2@
-CPPFLAGS_libvnc = @CPPFLAGS_libvnc@
 CPPFLAGS_mpgatofixed32 = @CPPFLAGS_mpgatofixed32@
 CPPFLAGS_mtp = @CPPFLAGS_mtp@
 CPPFLAGS_mux_ogg = @CPPFLAGS_mux_ogg@
@@ -486,29 +458,31 @@ CPPFLAGS_qsv = @CPPFLAGS_qsv@
 CPPFLAGS_rdp = @CPPFLAGS_rdp@
 CPPFLAGS_samplerate = @CPPFLAGS_samplerate@
 CPPFLAGS_schroedinger = @CPPFLAGS_schroedinger@
+CPPFLAGS_shine = @CPPFLAGS_shine@
 CPPFLAGS_skins2 = @CPPFLAGS_skins2@
+CPPFLAGS_smb = @CPPFLAGS_smb@
 CPPFLAGS_speex = @CPPFLAGS_speex@
 CPPFLAGS_svg = @CPPFLAGS_svg@
+CPPFLAGS_svgdec = @CPPFLAGS_svgdec@
 CPPFLAGS_theora = @CPPFLAGS_theora@
 CPPFLAGS_twolame = @CPPFLAGS_twolame@
 CPPFLAGS_udev = @CPPFLAGS_udev@
 CPPFLAGS_upnp = @CPPFLAGS_upnp@
 CPPFLAGS_vcdx = @CPPFLAGS_vcdx@
+CPPFLAGS_vnc = @CPPFLAGS_vnc@
 CPPFLAGS_vorbis = @CPPFLAGS_vorbis@
+CPPFLAGS_vpx = @CPPFLAGS_vpx@
 CPPFLAGS_x264 = @CPPFLAGS_x264@
+CPPFLAGS_x265 = @CPPFLAGS_x265@
 CPPFLAGS_xml = @CPPFLAGS_xml@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CXXFLAGS_live555 = @CXXFLAGS_live555@
-CXXFLAGS_mkv = @CXXFLAGS_mkv@
 CXXFLAGS_mod = @CXXFLAGS_mod@
-CXXFLAGS_projectm = @CXXFLAGS_projectm@
 CXXFLAGS_qt4 = @CXXFLAGS_qt4@
 CXXFLAGS_skins2 = @CXXFLAGS_skins2@
-CXXFLAGS_taglib = @CXXFLAGS_taglib@
-CXXFLAGS_upnp = @CXXFLAGS_upnp@
 CXXFLAGS_vsxu = @CXXFLAGS_vsxu@
 CYGPATH_W = @CYGPATH_W@
 DBUS_CFLAGS = @DBUS_CFLAGS@
@@ -521,13 +495,12 @@ DEFS = @DEFS@
 DEFS_BIGENDIAN = @DEFS_BIGENDIAN@
 DEPDIR = @DEPDIR@
 DESKTOP_FILE_VALIDATE = @DESKTOP_FILE_VALIDATE@
-DIRAC_CFLAGS = @DIRAC_CFLAGS@
-DIRAC_LIBS = @DIRAC_LIBS@
 DIRECTFB_CFLAGS = @DIRECTFB_CFLAGS@
 DIRECTFB_CONFIG = @DIRECTFB_CONFIG@
 DIRECTFB_LIBS = @DIRECTFB_LIBS@
 DLLTOOL = @DLLTOOL@
 DOLT_BASH = @DOLT_BASH@
+DOLT_CLEANFILES = @DOLT_CLEANFILES@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 DV1394_CFLAGS = @DV1394_CFLAGS@
@@ -554,6 +527,8 @@ FLAC_CFLAGS = @FLAC_CFLAGS@
 FLAC_LIBS = @FLAC_LIBS@
 FLUIDSYNTH_CFLAGS = @FLUIDSYNTH_CFLAGS@
 FLUIDSYNTH_LIBS = @FLUIDSYNTH_LIBS@
+FREERDP_CFLAGS = @FREERDP_CFLAGS@
+FREERDP_LIBS = @FREERDP_LIBS@
 FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
 FREETYPE_LIBS = @FREETYPE_LIBS@
 FRIBIDI_CFLAGS = @FRIBIDI_CFLAGS@
@@ -577,6 +552,10 @@ GNUTLS_LIBS = @GNUTLS_LIBS@
 GOOM_CFLAGS = @GOOM_CFLAGS@
 GOOM_LIBS = @GOOM_LIBS@
 GREP = @GREP@
+GST_APP_CFLAGS = @GST_APP_CFLAGS@
+GST_APP_LIBS = @GST_APP_LIBS@
+GST_VIDEO_CFLAGS = @GST_VIDEO_CFLAGS@
+GST_VIDEO_LIBS = @GST_VIDEO_LIBS@
 IDN_CFLAGS = @IDN_CFLAGS@
 IDN_LIBS = @IDN_LIBS@
 INSTALL = @INSTALL@
@@ -595,12 +574,11 @@ KDE4_CONFIG = @KDE4_CONFIG@
 KVA_LIBS = @KVA_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
-LDFLAGS_access_avio = @LDFLAGS_access_avio@
-LDFLAGS_android_surface = @LDFLAGS_android_surface@
-LDFLAGS_avformat = @LDFLAGS_avformat@
 LDFLAGS_live555 = @LDFLAGS_live555@
-LDFLAGS_plugin = @LDFLAGS_plugin@
+LDFLAGS_mmal_codec = @LDFLAGS_mmal_codec@
+LDFLAGS_mmal_vout = @LDFLAGS_mmal_vout@
 LDFLAGS_vlc = @LDFLAGS_vlc@
+LDFLAGS_x262 = @LDFLAGS_x262@
 LDFLAGS_x264 = @LDFLAGS_x264@
 LDFLAGS_x26410b = @LDFLAGS_x26410b@
 LIBASS_CFLAGS = @LIBASS_CFLAGS@
@@ -609,8 +587,6 @@ LIBCDDB_CFLAGS = @LIBCDDB_CFLAGS@
 LIBCDDB_LIBS = @LIBCDDB_LIBS@
 LIBDL = @LIBDL@
 LIBEXT = @LIBEXT@
-LIBFREERDP_CFLAGS = @LIBFREERDP_CFLAGS@
-LIBFREERDP_LIBS = @LIBFREERDP_LIBS@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
 LIBM = @LIBM@
@@ -624,28 +600,16 @@ LIBS = @LIBS@
 LIBS_a52tofloat32 = @LIBS_a52tofloat32@
 LIBS_aa = @LIBS_aa@
 LIBS_access_avio = @LIBS_access_avio@
-LIBS_access_eyetv = @LIBS_access_eyetv@
-LIBS_access_ftp = @LIBS_access_ftp@
-LIBS_access_gnomevfs = @LIBS_access_gnomevfs@
-LIBS_access_http = @LIBS_access_http@
-LIBS_access_imem = @LIBS_access_imem@
-LIBS_access_jack = @LIBS_access_jack@
 LIBS_access_mtp = @LIBS_access_mtp@
 LIBS_access_output_shout = @LIBS_access_output_shout@
-LIBS_access_output_udp = @LIBS_access_output_udp@
 LIBS_access_rtmp = @LIBS_access_rtmp@
 LIBS_access_sftp = @LIBS_access_sftp@
-LIBS_access_smb = @LIBS_access_smb@
-LIBS_access_tcp = @LIBS_access_tcp@
-LIBS_access_udp = @LIBS_access_udp@
 LIBS_adjust = @LIBS_adjust@
 LIBS_anaglyph = @LIBS_anaglyph@
+LIBS_android_opaque = @LIBS_android_opaque@
+LIBS_android_surface = @LIBS_android_surface@
 LIBS_audiobargraph_a = @LIBS_audiobargraph_a@
 LIBS_audiobargraph_v = @LIBS_audiobargraph_v@
-LIBS_audioqueue = @LIBS_audioqueue@
-LIBS_audioscrobbler = @LIBS_audioscrobbler@
-LIBS_audiounit_ios = @LIBS_audiounit_ios@
-LIBS_auhal = @LIBS_auhal@
 LIBS_avcodec = @LIBS_avcodec@
 LIBS_ball = @LIBS_ball@
 LIBS_bonjour = @LIBS_bonjour@
@@ -656,9 +620,7 @@ LIBS_colorthres = @LIBS_colorthres@
 LIBS_compressor = @LIBS_compressor@
 LIBS_crystalhd = @LIBS_crystalhd@
 LIBS_dc1394 = @LIBS_dc1394@
-LIBS_dirac = @LIBS_dirac@
 LIBS_directfb = @LIBS_directfb@
-LIBS_dmo = @LIBS_dmo@
 LIBS_dtstofloat32 = @LIBS_dtstofloat32@
 LIBS_dv1394 = @LIBS_dv1394@
 LIBS_dvdnav = @LIBS_dvdnav@
@@ -667,14 +629,15 @@ LIBS_equalizer = @LIBS_equalizer@
 LIBS_extract = @LIBS_extract@
 LIBS_faad = @LIBS_faad@
 LIBS_fdkaac = @LIBS_fdkaac@
-LIBS_fingerprinter = @LIBS_fingerprinter@
 LIBS_flac = @LIBS_flac@
 LIBS_fluidsynth = @LIBS_fluidsynth@
 LIBS_freetype = @LIBS_freetype@
 LIBS_gaussianblur = @LIBS_gaussianblur@
 LIBS_gles1 = @LIBS_gles1@
 LIBS_gles2 = @LIBS_gles2@
+LIBS_glspectrum = @LIBS_glspectrum@
 LIBS_gme = @LIBS_gme@
+LIBS_gnomevfs = @LIBS_gnomevfs@
 LIBS_gnutls = @LIBS_gnutls@
 LIBS_goom = @LIBS_goom@
 LIBS_gradient = @LIBS_gradient@
@@ -683,29 +646,24 @@ LIBS_growl = @LIBS_growl@
 LIBS_headphone_channel_mixer = @LIBS_headphone_channel_mixer@
 LIBS_hotkeys = @LIBS_hotkeys@
 LIBS_hqdn3d = @LIBS_hqdn3d@
-LIBS_i420_rgb = @LIBS_i420_rgb@
 LIBS_i420_rgb_mmx = @LIBS_i420_rgb_mmx@
-LIBS_jack = @LIBS_jack@
 LIBS_kate = @LIBS_kate@
 LIBS_libass = @LIBS_libass@
 LIBS_libbluray = @LIBS_libbluray@
 LIBS_libmpeg2 = @LIBS_libmpeg2@
 LIBS_libvlc = @LIBS_libvlc@
 LIBS_libvlccore = @LIBS_libvlccore@
-LIBS_libvnc = @LIBS_libvnc@
-LIBS_linsys_sdi = @LIBS_linsys_sdi@
 LIBS_lirc = @LIBS_lirc@
 LIBS_live555 = @LIBS_live555@
-LIBS_lua = @LIBS_lua@
 LIBS_macosx = @LIBS_macosx@
 LIBS_macosx_dialog_provider = @LIBS_macosx_dialog_provider@
-LIBS_memcpyaltivec = @LIBS_memcpyaltivec@
 LIBS_minimal_macosx = @LIBS_minimal_macosx@
 LIBS_mkv = @LIBS_mkv@
+LIBS_mmal_codec = @LIBS_mmal_codec@
+LIBS_mmal_vout = @LIBS_mmal_vout@
 LIBS_mod = @LIBS_mod@
 LIBS_mono = @LIBS_mono@
 LIBS_mosaic = @LIBS_mosaic@
-LIBS_motion = @LIBS_motion@
 LIBS_mpc = @LIBS_mpc@
 LIBS_mpgatofixed32 = @LIBS_mpgatofixed32@
 LIBS_mtp = @LIBS_mtp@
@@ -716,15 +674,13 @@ LIBS_noise = @LIBS_noise@
 LIBS_normvol = @LIBS_normvol@
 LIBS_notify = @LIBS_notify@
 LIBS_ogg = @LIBS_ogg@
+LIBS_oldmovie = @LIBS_oldmovie@
 LIBS_oldrc = @LIBS_oldrc@
 LIBS_opencv_example = @LIBS_opencv_example@
 LIBS_opencv_wrapper = @LIBS_opencv_wrapper@
 LIBS_opus = @LIBS_opus@
-LIBS_panoramix = @LIBS_panoramix@
 LIBS_param_eq = @LIBS_param_eq@
-LIBS_png = @LIBS_png@
 LIBS_postproc = @LIBS_postproc@
-LIBS_projectm = @LIBS_projectm@
 LIBS_psychedelic = @LIBS_psychedelic@
 LIBS_qsv = @LIBS_qsv@
 LIBS_qt4 = @LIBS_qt4@
@@ -733,15 +689,14 @@ LIBS_quicktime = @LIBS_quicktime@
 LIBS_rdp = @LIBS_rdp@
 LIBS_remoteosd = @LIBS_remoteosd@
 LIBS_ripple = @LIBS_ripple@
-LIBS_rotate = @LIBS_rotate@
-LIBS_rtp = @LIBS_rtp@
 LIBS_samplerate = @LIBS_samplerate@
 LIBS_sap = @LIBS_sap@
 LIBS_scene = @LIBS_scene@
 LIBS_schroedinger = @LIBS_schroedinger@
-LIBS_sdl_image = @LIBS_sdl_image@
+LIBS_shine = @LIBS_shine@
 LIBS_sid = @LIBS_sid@
 LIBS_skins2 = @LIBS_skins2@
+LIBS_smb = @LIBS_smb@
 LIBS_spatializer = @LIBS_spatializer@
 LIBS_speex = @LIBS_speex@
 LIBS_stream_out_chromaprint = @LIBS_stream_out_chromaprint@
@@ -749,38 +704,37 @@ LIBS_stream_out_raop = @LIBS_stream_out_raop@
 LIBS_stream_out_rtp = @LIBS_stream_out_rtp@
 LIBS_stream_out_standard = @LIBS_stream_out_standard@
 LIBS_svg = @LIBS_svg@
+LIBS_svgdec = @LIBS_svgdec@
 LIBS_swscale = @LIBS_swscale@
-LIBS_taglib = @LIBS_taglib@
 LIBS_theora = @LIBS_theora@
-LIBS_tremor = @LIBS_tremor@
 LIBS_ts = @LIBS_ts@
 LIBS_twolame = @LIBS_twolame@
 LIBS_udev = @LIBS_udev@
 LIBS_unzip = @LIBS_unzip@
 LIBS_upnp = @LIBS_upnp@
-LIBS_vcd = @LIBS_vcd@
 LIBS_vcdx = @LIBS_vcdx@
 LIBS_vlc = @LIBS_vlc@
+LIBS_vnc = @LIBS_vnc@
 LIBS_vod_rtsp = @LIBS_vod_rtsp@
 LIBS_vorbis = @LIBS_vorbis@
-LIBS_vout_ios = @LIBS_vout_ios@
-LIBS_vout_ios2 = @LIBS_vout_ios2@
-LIBS_vout_macosx = @LIBS_vout_macosx@
 LIBS_vout_sdl = @LIBS_vout_sdl@
+LIBS_vpx = @LIBS_vpx@
 LIBS_vsxu = @LIBS_vsxu@
 LIBS_wave = @LIBS_wave@
-LIBS_waveout = @LIBS_waveout@
 LIBS_win32text = @LIBS_win32text@
+LIBS_x262 = @LIBS_x262@
 LIBS_x264 = @LIBS_x264@
 LIBS_x26410b = @LIBS_x26410b@
+LIBS_x265 = @LIBS_x265@
 LIBS_xml = @LIBS_xml@
 LIBS_zip = @LIBS_zip@
-LIBS_zvbi = @LIBS_zvbi@
 LIBTOOL = @LIBTOOL@
-LIBVA_CFLAGS = @LIBVA_CFLAGS@
-LIBVA_LIBS = @LIBVA_LIBS@
-LIBVNC_CFLAGS = @LIBVNC_CFLAGS@
-LIBVNC_LIBS = @LIBVNC_LIBS@
+LIBVA_DRM_CFLAGS = @LIBVA_DRM_CFLAGS@
+LIBVA_DRM_LIBS = @LIBVA_DRM_LIBS@
+LIBVA_X11_CFLAGS = @LIBVA_X11_CFLAGS@
+LIBVA_X11_LIBS = @LIBVA_X11_LIBS@
+LIBVORBIS_CFLAGS = @LIBVORBIS_CFLAGS@
+LIBVORBIS_LIBS = @LIBVORBIS_LIBS@
 LIBXML2_CFLAGS = @LIBXML2_CFLAGS@
 LIBXML2_LIBS = @LIBXML2_LIBS@
 LINSYS_SDI_CFLAGS = @LINSYS_SDI_CFLAGS@
@@ -796,61 +750,49 @@ LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
 LTLIBa52tofloat32 = @LTLIBa52tofloat32@
 LTLIBaa = @LTLIBaa@
-LTLIBaccess_avio = @LTLIBaccess_avio@
 LTLIBaccess_eyetv = @LTLIBaccess_eyetv@
-LTLIBaccess_gnomevfs = @LTLIBaccess_gnomevfs@
-LTLIBaccess_jack = @LTLIBaccess_jack@
 LTLIBaccess_mtp = @LTLIBaccess_mtp@
 LTLIBaccess_output_shout = @LTLIBaccess_output_shout@
 LTLIBaccess_realrtsp = @LTLIBaccess_realrtsp@
 LTLIBaccess_sftp = @LTLIBaccess_sftp@
 LTLIBaccess_smb = @LTLIBaccess_smb@
+LTLIBandroid_opaque = @LTLIBandroid_opaque@
 LTLIBandroid_surface = @LTLIBandroid_surface@
 LTLIBatmo = @LTLIBatmo@
 LTLIBaudioqueue = @LTLIBaudioqueue@
-LTLIBaudiounit_ios = @LTLIBaudiounit_ios@
-LTLIBauhal = @LTLIBauhal@
 LTLIBavcapture = @LTLIBavcapture@
-LTLIBavcodec = @LTLIBavcodec@
-LTLIBavformat = @LTLIBavformat@
 LTLIBbonjour = @LTLIBbonjour@
 LTLIBcaca = @LTLIBcaca@
 LTLIBcdda = @LTLIBcdda@
 LTLIBcrystalhd = @LTLIBcrystalhd@
 LTLIBdc1394 = @LTLIBdc1394@
-LTLIBdirac = @LTLIBdirac@
 LTLIBdirect2d = @LTLIBdirect2d@
 LTLIBdirect3d = @LTLIBdirect3d@
 LTLIBdirectfb = @LTLIBdirectfb@
-LTLIBdmo = @LTLIBdmo@
 LTLIBdtstofloat32 = @LTLIBdtstofloat32@
 LTLIBdv1394 = @LTLIBdv1394@
 LTLIBdvdnav = @LTLIBdvdnav@
 LTLIBdvdread = @LTLIBdvdread@
-LTLIBegl = @LTLIBegl@
 LTLIBfaad = @LTLIBfaad@
 LTLIBfb = @LTLIBfb@
 LTLIBfdkaac = @LTLIBfdkaac@
-LTLIBfingerprinter = @LTLIBfingerprinter@
 LTLIBflac = @LTLIBflac@
 LTLIBfluidsynth = @LTLIBfluidsynth@
 LTLIBfreetype = @LTLIBfreetype@
-LTLIBgl = @LTLIBgl@
 LTLIBgles1 = @LTLIBgles1@
 LTLIBgles2 = @LTLIBgles2@
-LTLIBglobalhotkeys = @LTLIBglobalhotkeys@
+LTLIBglspectrum = @LTLIBglspectrum@
 LTLIBglwin32 = @LTLIBglwin32@
-LTLIBglx = @LTLIBglx@
 LTLIBgme = @LTLIBgme@
+LTLIBgnomevfs = @LTLIBgnomevfs@
 LTLIBgnutls = @LTLIBgnutls@
 LTLIBgoom = @LTLIBgoom@
 LTLIBgrowl = @LTLIBgrowl@
-LTLIBjack = @LTLIBjack@
+LTLIBjpeg = @LTLIBjpeg@
 LTLIBkate = @LTLIBkate@
 LTLIBlibass = @LTLIBlibass@
 LTLIBlibbluray = @LTLIBlibbluray@
 LTLIBlibmpeg2 = @LTLIBlibmpeg2@
-LTLIBlibvnc = @LTLIBlibvnc@
 LTLIBlinsys_hdsdi = @LTLIBlinsys_hdsdi@
 LTLIBlinsys_sdi = @LTLIBlinsys_sdi@
 LTLIBlirc = @LTLIBlirc@
@@ -859,6 +801,8 @@ LTLIBmacosx = @LTLIBmacosx@
 LTLIBmacosx_dialog_provider = @LTLIBmacosx_dialog_provider@
 LTLIBminimal_macosx = @LTLIBminimal_macosx@
 LTLIBmkv = @LTLIBmkv@
+LTLIBmmal_codec = @LTLIBmmal_codec@
+LTLIBmmal_vout = @LTLIBmmal_vout@
 LTLIBmod = @LTLIBmod@
 LTLIBmpc = @LTLIBmpc@
 LTLIBmpgatofixed32 = @LTLIBmpgatofixed32@
@@ -873,7 +817,6 @@ LTLIBopencv_example = @LTLIBopencv_example@
 LTLIBopencv_wrapper = @LTLIBopencv_wrapper@
 LTLIBopensles_android = @LTLIBopensles_android@
 LTLIBopus = @LTLIBopus@
-LTLIBpanoramix = @LTLIBpanoramix@
 LTLIBpng = @LTLIBpng@
 LTLIBpostproc = @LTLIBpostproc@
 LTLIBprojectm = @LTLIBprojectm@
@@ -891,9 +834,11 @@ LTLIBsdl_image = @LTLIBsdl_image@
 LTLIBshine = @LTLIBshine@
 LTLIBsid = @LTLIBsid@
 LTLIBskins2 = @LTLIBskins2@
+LTLIBsmb = @LTLIBsmb@
 LTLIBspeex = @LTLIBspeex@
 LTLIBstream_out_chromaprint = @LTLIBstream_out_chromaprint@
 LTLIBsvg = @LTLIBsvg@
+LTLIBsvgdec = @LTLIBsvgdec@
 LTLIBswscale = @LTLIBswscale@
 LTLIBtaglib = @LTLIBtaglib@
 LTLIBtelx = @LTLIBtelx@
@@ -904,20 +849,17 @@ LTLIBudev = @LTLIBudev@
 LTLIBupnp = @LTLIBupnp@
 LTLIBvcd = @LTLIBvcd@
 LTLIBvcdx = @LTLIBvcdx@
+LTLIBvnc = @LTLIBvnc@
 LTLIBvorbis = @LTLIBvorbis@
-LTLIBvout_ios = @LTLIBvout_ios@
-LTLIBvout_ios2 = @LTLIBvout_ios2@
-LTLIBvout_macosx = @LTLIBvout_macosx@
 LTLIBvout_sdl = @LTLIBvout_sdl@
+LTLIBvpx = @LTLIBvpx@
 LTLIBvsxu = @LTLIBvsxu@
-LTLIBwaveout = @LTLIBwaveout@
 LTLIBwma_fixed = @LTLIBwma_fixed@
+LTLIBx262 = @LTLIBx262@
 LTLIBx264 = @LTLIBx264@
 LTLIBx26410b = @LTLIBx26410b@
-LTLIBxcb_glx = @LTLIBxcb_glx@
-LTLIBxcb_xv = @LTLIBxcb_xv@
+LTLIBx265 = @LTLIBx265@
 LTLIBxml = @LTLIBxml@
-LTLIBxwd = @LTLIBxwd@
 LTLIBzvbi = @LTLIBzvbi@
 LUAC = @LUAC@
 LUA_CFLAGS = @LUA_CFLAGS@
@@ -926,6 +868,8 @@ MACOSX_DEPLOYMENT_TARGET = @MACOSX_DEPLOYMENT_TARGET@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
+MFX_CFLAGS = @MFX_CFLAGS@
+MFX_LIBS = @MFX_LIBS@
 MINIZIP_CFLAGS = @MINIZIP_CFLAGS@
 MINIZIP_LIBS = @MINIZIP_LIBS@
 MKDIR_P = @MKDIR_P@
@@ -977,16 +921,14 @@ POSTPROC_CFLAGS = @POSTPROC_CFLAGS@
 POSTPROC_LIBS = @POSTPROC_LIBS@
 POSUB = @POSUB@
 PROGRAMFILES = @PROGRAMFILES@
-PROJECTM2_CFLAGS = @PROJECTM2_CFLAGS@
-PROJECTM2_LIBS = @PROJECTM2_LIBS@
 PROJECTM_CFLAGS = @PROJECTM_CFLAGS@
 PROJECTM_LIBS = @PROJECTM_LIBS@
 PULSE_CFLAGS = @PULSE_CFLAGS@
 PULSE_LIBS = @PULSE_LIBS@
+QTX11_CFLAGS = @QTX11_CFLAGS@
+QTX11_LIBS = @QTX11_LIBS@
 QT_CFLAGS = @QT_CFLAGS@
 QT_LIBS = @QT_LIBS@
-QUICKSYNC_CFLAGS = @QUICKSYNC_CFLAGS@
-QUICKSYNC_LIBS = @QUICKSYNC_LIBS@
 RANLIB = @RANLIB@
 RC = @RC@
 RCC = @RCC@
@@ -1003,6 +945,8 @@ SET_MAKE = @SET_MAKE@
 SFTP_CFLAGS = @SFTP_CFLAGS@
 SFTP_LIBS = @SFTP_LIBS@
 SHELL = @SHELL@
+SHINE_CFLAGS = @SHINE_CFLAGS@
+SHINE_LIBS = @SHINE_LIBS@
 SHOUT_CFLAGS = @SHOUT_CFLAGS@
 SHOUT_LIBS = @SHOUT_LIBS@
 SID_CFLAGS = @SID_CFLAGS@
@@ -1015,10 +959,13 @@ SPEEXDSP_LIBS = @SPEEXDSP_LIBS@
 SPEEX_CFLAGS = @SPEEX_CFLAGS@
 SPEEX_LIBS = @SPEEX_LIBS@
 STRIP = @STRIP@
+SVGDEC_CFLAGS = @SVGDEC_CFLAGS@
+SVGDEC_LIBS = @SVGDEC_LIBS@
 SVG_CFLAGS = @SVG_CFLAGS@
 SVG_LIBS = @SVG_LIBS@
 SWSCALE_CFLAGS = @SWSCALE_CFLAGS@
 SWSCALE_LIBS = @SWSCALE_LIBS@
+SYMBOLIC_LDFLAGS = @SYMBOLIC_LDFLAGS@
 SYS = @SYS@
 TAGLIB_CFLAGS = @TAGLIB_CFLAGS@
 TAGLIB_LIBS = @TAGLIB_LIBS@
@@ -1045,17 +992,25 @@ VERSION_MAJOR = @VERSION_MAJOR@
 VERSION_MESSAGE = @VERSION_MESSAGE@
 VERSION_MINOR = @VERSION_MINOR@
 VERSION_REVISION = @VERSION_REVISION@
+VNC_CFLAGS = @VNC_CFLAGS@
+VNC_LIBS = @VNC_LIBS@
 VORBIS_CFLAGS = @VORBIS_CFLAGS@
 VORBIS_LIBS = @VORBIS_LIBS@
+VPX_CFLAGS = @VPX_CFLAGS@
+VPX_LIBS = @VPX_LIBS@
 VSXU_CFLAGS = @VSXU_CFLAGS@
 VSXU_LIBS = @VSXU_LIBS@
 WINDOWS_ARCH = @WINDOWS_ARCH@
 WINDRES = @WINDRES@
 WINE_SDK_PATH = @WINE_SDK_PATH@
+X262_CFLAGS = @X262_CFLAGS@
+X262_LIBS = @X262_LIBS@
 X26410B_CFLAGS = @X26410B_CFLAGS@
 X26410B_LIBS = @X26410B_LIBS@
 X264_CFLAGS = @X264_CFLAGS@
 X264_LIBS = @X264_LIBS@
+X265_CFLAGS = @X265_CFLAGS@
+X265_LIBS = @X265_LIBS@
 XCB_CFLAGS = @XCB_CFLAGS@
 XCB_COMPOSITE_CFLAGS = @XCB_COMPOSITE_CFLAGS@
 XCB_COMPOSITE_LIBS = @XCB_COMPOSITE_LIBS@
@@ -1084,6 +1039,8 @@ X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
+YASM = @YASM@
+YASMFLAGS = @YASMFLAGS@
 ZVBI_CFLAGS = @ZVBI_CFLAGS@
 ZVBI_LIBS = @ZVBI_LIBS@
 abs_builddir = @abs_builddir@
@@ -1144,36 +1101,33 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 vlcdatadir = @vlcdatadir@
 vlclibdir = @vlclibdir@
-basedir = packetizer
-dir = packetizer
-mods = packetizer_copy packetizer_dirac packetizer_flac packetizer_h264 packetizer_mlp packetizer_mpeg4audio packetizer_mpeg4video packetizer_mpegvideo packetizer_vc1
-libvlc_LTLIBRARIES = libpacketizer_mpegvideo_plugin.la \
+packetizerdir = $(pluginsdir)/packetizer
+packetizer_LTLIBRARIES = libpacketizer_mpegvideo_plugin.la \
 	libpacketizer_mpeg4video_plugin.la \
 	libpacketizer_mpeg4audio_plugin.la \
 	libpacketizer_h264_plugin.la libpacketizer_vc1_plugin.la \
 	libpacketizer_mlp_plugin.la libpacketizer_dirac_plugin.la \
-	libpacketizer_flac_plugin.la $(NULL) $(am__append_2)
+	libpacketizer_flac_plugin.la libpacketizer_hevc_plugin.la \
+	$(NULL) $(am__append_4)
 EXTRA_LTLIBRARIES = 
-NULL = 
-libvlcdir = $(vlclibdir)/plugins/$(basedir)
 EXTRA_DIST = Modules.am
+AUTOMAKE_OPTIONS = subdir-objects
+NULL = 
+pluginsdir = $(vlclibdir)/plugins
 BUILT_SOURCES = 
 CLEANFILES = $(BUILT_SOURCES)
 LTLIBVLCCORE = $(top_builddir)/src/libvlccore.la
 
 # Module name from object or executable file name.
-MODULE_NAME = $$(p="$@"; p="$${p\#\#*/}"; p="$${p\#lib}"; echo "$${p%_plugin*}")
+MODULE_NAME = $$(p="$@"; p="$${p\#\#*/}"; p="$${p\#lib}"; p="$${p%_plugin*}"; p="$${p%.lo}"; echo "$$p")
 AM_CFLAGS = 
 AM_CXXFLAGS = 
 AM_OBJCFLAGS = 
-AM_LIBADD = $(LIBPTHREAD)
-AM_LDFLAGS = -rpath '$(libvlcdir)' \
-	-avoid-version -module \
-	-export-symbols-regex ^vlc_entry \
-	-shrext $(LIBEXT) \
-	-no-undefined \
-	$(top_builddir)/compat/libcompat.la $(LTLIBVLCCORE) 
-
+AM_LDFLAGS = -avoid-version -module -export-symbols-regex ^vlc_entry \
+	-shrext $(LIBEXT) -no-undefined \
+	$(top_builddir)/compat/libcompat.la $(LTLIBVLCCORE) \
+	$(am__append_3)
+SUFFIXES = .asm
 SOURCES_packetizer_copy = copy.c
 SOURCES_packetizer_mpegvideo = mpegvideo.c
 SOURCES_packetizer_mpeg4video = mpeg4video.c
@@ -1183,120 +1137,83 @@ SOURCES_packetizer_vc1 = vc1.c
 SOURCES_packetizer_mlp = mlp.c
 SOURCES_packetizer_dirac = dirac.c
 SOURCES_packetizer_flac = flac.c
+SOURCES_packetizer_hevc = hevc.c
 noinst_HEADERS = packetizer_helper.h
-
-# The packetizer_copy plugin
 libpacketizer_copy_plugin_la_SOURCES = $(SOURCES_packetizer_copy)
-nodist_libpacketizer_copy_plugin_la_SOURCES = $(nodist_SOURCES_packetizer_copy)
-# Force per-target objects:
-libpacketizer_copy_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_copy)
+libpacketizer_copy_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_copy) 	-DMODULE_NAME_IS_packetizer_copy
 libpacketizer_copy_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_copy)
 libpacketizer_copy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_copy)
 libpacketizer_copy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_copy)
-# Set LIBADD manually:
-libpacketizer_copy_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_copy)
-libpacketizer_copy_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_copy)
-
-# The packetizer_dirac plugin
+libpacketizer_copy_plugin_la_LIBADD = $(LIBS_packetizer_copy)
+libpacketizer_copy_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(packetizerdir)' $(LDFLAGS_packetizer_copy)
 libpacketizer_dirac_plugin_la_SOURCES = $(SOURCES_packetizer_dirac)
-nodist_libpacketizer_dirac_plugin_la_SOURCES = $(nodist_SOURCES_packetizer_dirac)
-# Force per-target objects:
-libpacketizer_dirac_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_dirac)
+libpacketizer_dirac_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_dirac) 	-DMODULE_NAME_IS_packetizer_dirac
 libpacketizer_dirac_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_dirac)
 libpacketizer_dirac_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_dirac)
 libpacketizer_dirac_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_dirac)
-# Set LIBADD manually:
-libpacketizer_dirac_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_dirac)
-libpacketizer_dirac_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_dirac)
-
-# The packetizer_flac plugin
+libpacketizer_dirac_plugin_la_LIBADD = $(LIBS_packetizer_dirac)
+libpacketizer_dirac_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(packetizerdir)' $(LDFLAGS_packetizer_dirac)
 libpacketizer_flac_plugin_la_SOURCES = $(SOURCES_packetizer_flac)
-nodist_libpacketizer_flac_plugin_la_SOURCES = $(nodist_SOURCES_packetizer_flac)
-# Force per-target objects:
-libpacketizer_flac_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_flac)
+libpacketizer_flac_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_flac) 	-DMODULE_NAME_IS_packetizer_flac
 libpacketizer_flac_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_flac)
 libpacketizer_flac_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_flac)
 libpacketizer_flac_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_flac)
-# Set LIBADD manually:
-libpacketizer_flac_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_flac)
-libpacketizer_flac_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_flac)
-
-# The packetizer_h264 plugin
+libpacketizer_flac_plugin_la_LIBADD = $(LIBS_packetizer_flac)
+libpacketizer_flac_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(packetizerdir)' $(LDFLAGS_packetizer_flac)
 libpacketizer_h264_plugin_la_SOURCES = $(SOURCES_packetizer_h264)
-nodist_libpacketizer_h264_plugin_la_SOURCES = $(nodist_SOURCES_packetizer_h264)
-# Force per-target objects:
-libpacketizer_h264_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_h264)
+libpacketizer_h264_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_h264) 	-DMODULE_NAME_IS_packetizer_h264
 libpacketizer_h264_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_h264)
 libpacketizer_h264_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_h264)
 libpacketizer_h264_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_h264)
-# Set LIBADD manually:
-libpacketizer_h264_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_h264)
-libpacketizer_h264_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_h264)
-
-# The packetizer_mlp plugin
+libpacketizer_h264_plugin_la_LIBADD = $(LIBS_packetizer_h264)
+libpacketizer_h264_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(packetizerdir)' $(LDFLAGS_packetizer_h264)
+libpacketizer_hevc_plugin_la_SOURCES = $(SOURCES_packetizer_hevc)
+libpacketizer_hevc_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_hevc) 	-DMODULE_NAME_IS_packetizer_hevc
+libpacketizer_hevc_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_hevc)
+libpacketizer_hevc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_hevc)
+libpacketizer_hevc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_hevc)
+libpacketizer_hevc_plugin_la_LIBADD = $(LIBS_packetizer_hevc)
+libpacketizer_hevc_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(packetizerdir)' $(LDFLAGS_packetizer_hevc)
 libpacketizer_mlp_plugin_la_SOURCES = $(SOURCES_packetizer_mlp)
-nodist_libpacketizer_mlp_plugin_la_SOURCES = $(nodist_SOURCES_packetizer_mlp)
-# Force per-target objects:
-libpacketizer_mlp_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_mlp)
+libpacketizer_mlp_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_mlp) 	-DMODULE_NAME_IS_packetizer_mlp
 libpacketizer_mlp_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_mlp)
 libpacketizer_mlp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_mlp)
 libpacketizer_mlp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_mlp)
-# Set LIBADD manually:
-libpacketizer_mlp_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_mlp)
-libpacketizer_mlp_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_mlp)
-
-# The packetizer_mpeg4audio plugin
+libpacketizer_mlp_plugin_la_LIBADD = $(LIBS_packetizer_mlp)
+libpacketizer_mlp_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(packetizerdir)' $(LDFLAGS_packetizer_mlp)
 libpacketizer_mpeg4audio_plugin_la_SOURCES = $(SOURCES_packetizer_mpeg4audio)
-nodist_libpacketizer_mpeg4audio_plugin_la_SOURCES = $(nodist_SOURCES_packetizer_mpeg4audio)
-# Force per-target objects:
-libpacketizer_mpeg4audio_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_mpeg4audio)
+libpacketizer_mpeg4audio_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_mpeg4audio) 	-DMODULE_NAME_IS_packetizer_mpeg4audio
 libpacketizer_mpeg4audio_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_mpeg4audio)
 libpacketizer_mpeg4audio_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_mpeg4audio)
 libpacketizer_mpeg4audio_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_mpeg4audio)
-# Set LIBADD manually:
-libpacketizer_mpeg4audio_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_mpeg4audio)
-libpacketizer_mpeg4audio_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_mpeg4audio)
-
-# The packetizer_mpeg4video plugin
+libpacketizer_mpeg4audio_plugin_la_LIBADD = $(LIBS_packetizer_mpeg4audio)
+libpacketizer_mpeg4audio_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(packetizerdir)' $(LDFLAGS_packetizer_mpeg4audio)
 libpacketizer_mpeg4video_plugin_la_SOURCES = $(SOURCES_packetizer_mpeg4video)
-nodist_libpacketizer_mpeg4video_plugin_la_SOURCES = $(nodist_SOURCES_packetizer_mpeg4video)
-# Force per-target objects:
-libpacketizer_mpeg4video_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_mpeg4video)
+libpacketizer_mpeg4video_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_mpeg4video) 	-DMODULE_NAME_IS_packetizer_mpeg4video
 libpacketizer_mpeg4video_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_mpeg4video)
 libpacketizer_mpeg4video_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_mpeg4video)
 libpacketizer_mpeg4video_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_mpeg4video)
-# Set LIBADD manually:
-libpacketizer_mpeg4video_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_mpeg4video)
-libpacketizer_mpeg4video_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_mpeg4video)
-
-# The packetizer_mpegvideo plugin
+libpacketizer_mpeg4video_plugin_la_LIBADD = $(LIBS_packetizer_mpeg4video)
+libpacketizer_mpeg4video_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(packetizerdir)' $(LDFLAGS_packetizer_mpeg4video)
 libpacketizer_mpegvideo_plugin_la_SOURCES = $(SOURCES_packetizer_mpegvideo)
-nodist_libpacketizer_mpegvideo_plugin_la_SOURCES = $(nodist_SOURCES_packetizer_mpegvideo)
-# Force per-target objects:
-libpacketizer_mpegvideo_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_mpegvideo)
+libpacketizer_mpegvideo_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_mpegvideo) 	-DMODULE_NAME_IS_packetizer_mpegvideo
 libpacketizer_mpegvideo_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_mpegvideo)
 libpacketizer_mpegvideo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_mpegvideo)
 libpacketizer_mpegvideo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_mpegvideo)
-# Set LIBADD manually:
-libpacketizer_mpegvideo_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_mpegvideo)
-libpacketizer_mpegvideo_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_mpegvideo)
-
-# The packetizer_vc1 plugin
+libpacketizer_mpegvideo_plugin_la_LIBADD = $(LIBS_packetizer_mpegvideo)
+libpacketizer_mpegvideo_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(packetizerdir)' $(LDFLAGS_packetizer_mpegvideo)
 libpacketizer_vc1_plugin_la_SOURCES = $(SOURCES_packetizer_vc1)
-nodist_libpacketizer_vc1_plugin_la_SOURCES = $(nodist_SOURCES_packetizer_vc1)
-# Force per-target objects:
-libpacketizer_vc1_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_vc1)
+libpacketizer_vc1_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_vc1) 	-DMODULE_NAME_IS_packetizer_vc1
 libpacketizer_vc1_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_vc1)
 libpacketizer_vc1_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_vc1)
 libpacketizer_vc1_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_vc1)
-# Set LIBADD manually:
-libpacketizer_vc1_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_vc1)
-libpacketizer_vc1_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_vc1)
+libpacketizer_vc1_plugin_la_LIBADD = $(LIBS_packetizer_vc1)
+libpacketizer_vc1_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(packetizerdir)' $(LDFLAGS_packetizer_vc1)
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .lo .o .obj
+.SUFFIXES: .asm .c .lo .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/modules/common.am $(srcdir)/Modules.am $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -1329,33 +1246,33 @@ $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
 
-install-libvlcLTLIBRARIES: $(libvlc_LTLIBRARIES)
+install-packetizerLTLIBRARIES: $(packetizer_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
-	@list='$(libvlc_LTLIBRARIES)'; test -n "$(libvlcdir)" || list=; \
+	@list='$(packetizer_LTLIBRARIES)'; test -n "$(packetizerdir)" || list=; \
 	list2=; for p in $$list; do \
 	  if test -f $$p; then \
 	    list2="$$list2 $$p"; \
 	  else :; fi; \
 	done; \
 	test -z "$$list2" || { \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(libvlcdir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(libvlcdir)" || exit 1; \
-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(libvlcdir)'"; \
-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(libvlcdir)"; \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(packetizerdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(packetizerdir)" || exit 1; \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(packetizerdir)'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(packetizerdir)"; \
 	}
 
-uninstall-libvlcLTLIBRARIES:
+uninstall-packetizerLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	@list='$(libvlc_LTLIBRARIES)'; test -n "$(libvlcdir)" || list=; \
+	@list='$(packetizer_LTLIBRARIES)'; test -n "$(packetizerdir)" || list=; \
 	for p in $$list; do \
 	  $(am__strip_dir) \
-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(libvlcdir)/$$f'"; \
-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(libvlcdir)/$$f"; \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(packetizerdir)/$$f'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(packetizerdir)/$$f"; \
 	done
 
-clean-libvlcLTLIBRARIES:
-	-test -z "$(libvlc_LTLIBRARIES)" || rm -f $(libvlc_LTLIBRARIES)
-	@list='$(libvlc_LTLIBRARIES)'; \
+clean-packetizerLTLIBRARIES:
+	-test -z "$(packetizer_LTLIBRARIES)" || rm -f $(packetizer_LTLIBRARIES)
+	@list='$(packetizer_LTLIBRARIES)'; \
 	locs=`for p in $$list; do echo $$p; done | \
 	      sed 's|^[^/]*$$|.|; s|/[^/]*$$||; s|$$|/so_locations|' | \
 	      sort -u`; \
@@ -1368,28 +1285,31 @@ libpacketizer_copy_plugin.la: $(libpacketizer_copy_plugin_la_OBJECTS) $(libpacke
 	$(AM_V_CCLD)$(libpacketizer_copy_plugin_la_LINK) $(am_libpacketizer_copy_plugin_la_rpath) $(libpacketizer_copy_plugin_la_OBJECTS) $(libpacketizer_copy_plugin_la_LIBADD) $(LIBS)
 
 libpacketizer_dirac_plugin.la: $(libpacketizer_dirac_plugin_la_OBJECTS) $(libpacketizer_dirac_plugin_la_DEPENDENCIES) $(EXTRA_libpacketizer_dirac_plugin_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libpacketizer_dirac_plugin_la_LINK) -rpath $(libvlcdir) $(libpacketizer_dirac_plugin_la_OBJECTS) $(libpacketizer_dirac_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libpacketizer_dirac_plugin_la_LINK) -rpath $(packetizerdir) $(libpacketizer_dirac_plugin_la_OBJECTS) $(libpacketizer_dirac_plugin_la_LIBADD) $(LIBS)
 
 libpacketizer_flac_plugin.la: $(libpacketizer_flac_plugin_la_OBJECTS) $(libpacketizer_flac_plugin_la_DEPENDENCIES) $(EXTRA_libpacketizer_flac_plugin_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libpacketizer_flac_plugin_la_LINK) -rpath $(libvlcdir) $(libpacketizer_flac_plugin_la_OBJECTS) $(libpacketizer_flac_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libpacketizer_flac_plugin_la_LINK) -rpath $(packetizerdir) $(libpacketizer_flac_plugin_la_OBJECTS) $(libpacketizer_flac_plugin_la_LIBADD) $(LIBS)
 
 libpacketizer_h264_plugin.la: $(libpacketizer_h264_plugin_la_OBJECTS) $(libpacketizer_h264_plugin_la_DEPENDENCIES) $(EXTRA_libpacketizer_h264_plugin_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libpacketizer_h264_plugin_la_LINK) -rpath $(libvlcdir) $(libpacketizer_h264_plugin_la_OBJECTS) $(libpacketizer_h264_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libpacketizer_h264_plugin_la_LINK) -rpath $(packetizerdir) $(libpacketizer_h264_plugin_la_OBJECTS) $(libpacketizer_h264_plugin_la_LIBADD) $(LIBS)
+
+libpacketizer_hevc_plugin.la: $(libpacketizer_hevc_plugin_la_OBJECTS) $(libpacketizer_hevc_plugin_la_DEPENDENCIES) $(EXTRA_libpacketizer_hevc_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libpacketizer_hevc_plugin_la_LINK) -rpath $(packetizerdir) $(libpacketizer_hevc_plugin_la_OBJECTS) $(libpacketizer_hevc_plugin_la_LIBADD) $(LIBS)
 
 libpacketizer_mlp_plugin.la: $(libpacketizer_mlp_plugin_la_OBJECTS) $(libpacketizer_mlp_plugin_la_DEPENDENCIES) $(EXTRA_libpacketizer_mlp_plugin_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libpacketizer_mlp_plugin_la_LINK) -rpath $(libvlcdir) $(libpacketizer_mlp_plugin_la_OBJECTS) $(libpacketizer_mlp_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libpacketizer_mlp_plugin_la_LINK) -rpath $(packetizerdir) $(libpacketizer_mlp_plugin_la_OBJECTS) $(libpacketizer_mlp_plugin_la_LIBADD) $(LIBS)
 
 libpacketizer_mpeg4audio_plugin.la: $(libpacketizer_mpeg4audio_plugin_la_OBJECTS) $(libpacketizer_mpeg4audio_plugin_la_DEPENDENCIES) $(EXTRA_libpacketizer_mpeg4audio_plugin_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libpacketizer_mpeg4audio_plugin_la_LINK) -rpath $(libvlcdir) $(libpacketizer_mpeg4audio_plugin_la_OBJECTS) $(libpacketizer_mpeg4audio_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libpacketizer_mpeg4audio_plugin_la_LINK) -rpath $(packetizerdir) $(libpacketizer_mpeg4audio_plugin_la_OBJECTS) $(libpacketizer_mpeg4audio_plugin_la_LIBADD) $(LIBS)
 
 libpacketizer_mpeg4video_plugin.la: $(libpacketizer_mpeg4video_plugin_la_OBJECTS) $(libpacketizer_mpeg4video_plugin_la_DEPENDENCIES) $(EXTRA_libpacketizer_mpeg4video_plugin_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libpacketizer_mpeg4video_plugin_la_LINK) -rpath $(libvlcdir) $(libpacketizer_mpeg4video_plugin_la_OBJECTS) $(libpacketizer_mpeg4video_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libpacketizer_mpeg4video_plugin_la_LINK) -rpath $(packetizerdir) $(libpacketizer_mpeg4video_plugin_la_OBJECTS) $(libpacketizer_mpeg4video_plugin_la_LIBADD) $(LIBS)
 
 libpacketizer_mpegvideo_plugin.la: $(libpacketizer_mpegvideo_plugin_la_OBJECTS) $(libpacketizer_mpegvideo_plugin_la_DEPENDENCIES) $(EXTRA_libpacketizer_mpegvideo_plugin_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libpacketizer_mpegvideo_plugin_la_LINK) -rpath $(libvlcdir) $(libpacketizer_mpegvideo_plugin_la_OBJECTS) $(libpacketizer_mpegvideo_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libpacketizer_mpegvideo_plugin_la_LINK) -rpath $(packetizerdir) $(libpacketizer_mpegvideo_plugin_la_OBJECTS) $(libpacketizer_mpegvideo_plugin_la_LIBADD) $(LIBS)
 
 libpacketizer_vc1_plugin.la: $(libpacketizer_vc1_plugin_la_OBJECTS) $(libpacketizer_vc1_plugin_la_DEPENDENCIES) $(EXTRA_libpacketizer_vc1_plugin_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libpacketizer_vc1_plugin_la_LINK) -rpath $(libvlcdir) $(libpacketizer_vc1_plugin_la_OBJECTS) $(libpacketizer_vc1_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libpacketizer_vc1_plugin_la_LINK) -rpath $(packetizerdir) $(libpacketizer_vc1_plugin_la_OBJECTS) $(libpacketizer_vc1_plugin_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -1401,6 +1321,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpacketizer_dirac_plugin_la-dirac.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpacketizer_flac_plugin_la-flac.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpacketizer_h264_plugin_la-h264.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpacketizer_hevc_plugin_la-hevc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpacketizer_mlp_plugin_la-mlp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpacketizer_mpeg4audio_plugin_la-mpeg4audio.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpacketizer_mpeg4video_plugin_la-mpeg4video.Plo@am__quote@
@@ -1408,22 +1329,25 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpacketizer_vc1_plugin_la-vc1.Plo@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
@@ -1455,6 +1379,13 @@ libpacketizer_h264_plugin_la-h264.lo: h264.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='h264.c' object='libpacketizer_h264_plugin_la-h264.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpacketizer_h264_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libpacketizer_h264_plugin_la_CFLAGS) $(CFLAGS) -c -o libpacketizer_h264_plugin_la-h264.lo `test -f 'h264.c' || echo '$(srcdir)/'`h264.c
+
+libpacketizer_hevc_plugin_la-hevc.lo: hevc.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpacketizer_hevc_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libpacketizer_hevc_plugin_la_CFLAGS) $(CFLAGS) -MT libpacketizer_hevc_plugin_la-hevc.lo -MD -MP -MF $(DEPDIR)/libpacketizer_hevc_plugin_la-hevc.Tpo -c -o libpacketizer_hevc_plugin_la-hevc.lo `test -f 'hevc.c' || echo '$(srcdir)/'`hevc.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpacketizer_hevc_plugin_la-hevc.Tpo $(DEPDIR)/libpacketizer_hevc_plugin_la-hevc.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='hevc.c' object='libpacketizer_hevc_plugin_la-hevc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpacketizer_hevc_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libpacketizer_hevc_plugin_la_CFLAGS) $(CFLAGS) -c -o libpacketizer_hevc_plugin_la-hevc.lo `test -f 'hevc.c' || echo '$(srcdir)/'`hevc.c
 
 libpacketizer_mlp_plugin_la-mlp.lo: mlp.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpacketizer_mlp_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libpacketizer_mlp_plugin_la_CFLAGS) $(CFLAGS) -MT libpacketizer_mlp_plugin_la-mlp.lo -MD -MP -MF $(DEPDIR)/libpacketizer_mlp_plugin_la-mlp.Tpo -c -o libpacketizer_mlp_plugin_la-mlp.lo `test -f 'mlp.c' || echo '$(srcdir)/'`mlp.c
@@ -1584,7 +1515,7 @@ check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libvlcdir)"; do \
+	for dir in "$(DESTDIR)$(packetizerdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -1622,7 +1553,7 @@ maintainer-clean-generic:
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
-clean-am: clean-generic clean-libtool clean-libvlcLTLIBRARIES \
+clean-am: clean-generic clean-libtool clean-packetizerLTLIBRARIES \
 	mostlyclean-am
 
 distclean: distclean-am
@@ -1643,7 +1574,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-libvlcLTLIBRARIES
+install-data-am: install-packetizerLTLIBRARIES
 
 install-dvi: install-dvi-am
 
@@ -1689,28 +1620,31 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libvlcLTLIBRARIES
+uninstall-am: uninstall-packetizerLTLIBRARIES
 
 .MAKE: all check install install-am install-strip
 
 .PHONY: CTAGS GTAGS TAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-libvlcLTLIBRARIES cscopelist-am ctags \
+	clean-libtool clean-packetizerLTLIBRARIES cscopelist-am ctags \
 	ctags-am distclean distclean-compile distclean-generic \
 	distclean-libtool distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
 	install-exec-am install-html install-html-am install-info \
-	install-info-am install-libvlcLTLIBRARIES install-man \
+	install-info-am install-man install-packetizerLTLIBRARIES \
 	install-pdf install-pdf-am install-ps install-ps-am \
 	install-strip installcheck installcheck-am installdirs \
 	maintainer-clean maintainer-clean-generic mostlyclean \
 	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
 	pdf pdf-am ps ps-am tags tags-am uninstall uninstall-am \
-	uninstall-libvlcLTLIBRARIES
+	uninstall-packetizerLTLIBRARIES
 
+
+.asm.lo:
+	$(LIBTOOL) --mode=compile --tag=ASM $(YASM) $(YASMFLAGS) $< -o $@
 
 @MAINTAINER_MODE_TRUE@$(srcdir)/Makefile.am: $(srcdir)/Modules.am $(top_srcdir)/modules/genmf
-@MAINTAINER_MODE_TRUE@	$(AM_V_GEN)cd \$(top_srcdir) && \$(SHELL) modules/genmf $(dir)
+@MAINTAINER_MODE_TRUE@	$(AM_V_GEN)cd \$(top_srcdir) && \$(SHELL) modules/genmf packetizer
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

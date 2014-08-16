@@ -31,6 +31,7 @@ block_FifoPace
 block_FifoPut
 block_FifoRelease
 block_FifoShow
+block_FifoWake
 block_File
 block_FilePath
 block_heap_Alloc
@@ -161,6 +162,7 @@ httpd_StreamDelete
 httpd_StreamHeader
 httpd_StreamNew
 httpd_StreamSend
+httpd_StreamSetHTTPHeaders
 httpd_UrlCatch
 httpd_UrlDelete
 httpd_UrlNew
@@ -215,7 +217,10 @@ input_resource_New
 input_resource_Release
 input_resource_TerminateVout
 input_resource_Terminate
+input_resource_GetAout
 input_resource_HoldAout
+input_resource_PutAout
+input_resource_ResetAout
 input_Start
 input_Stop
 input_vaControl
@@ -223,12 +228,15 @@ input_Close
 intf_Create
 IsUTF8
 libvlc_InternalAddIntf
+libvlc_InternalPlay
 libvlc_InternalCleanup
 libvlc_InternalCreate
 libvlc_InternalDestroy
 libvlc_InternalInit
 libvlc_Quit
 libvlc_SetExitHandler
+libvlc_MetaRequest
+libvlc_ArtRequest
 vlc_UrlParse
 vlc_UrlClean
 vlc_path2uri
@@ -254,6 +262,8 @@ vlc_module_unload
 vlc_Log
 vlc_LogSet
 vlc_vaLog
+vlc_strerror
+vlc_strerror_c
 msleep
 mstrtime
 mwait
@@ -304,7 +314,6 @@ plane_CopyPixels
 playlist_Add
 playlist_AddExt
 playlist_AddInput
-playlist_AskForArtEnqueue
 playlist_AssertLocked
 playlist_ChildSearchName
 playlist_Clear
@@ -330,7 +339,6 @@ playlist_NodeCreate
 playlist_NodeDelete
 playlist_NodeInsert
 playlist_NodeRemoveItem
-playlist_PreparseEnqueue
 playlist_RecursiveNodeSort
 playlist_ServicesDiscoveryAdd
 playlist_ServicesDiscoveryControl
@@ -346,7 +354,6 @@ playlist_VolumeSet
 playlist_VolumeUp
 playlist_MuteSet
 playlist_MuteGet
-pl_Get
 resolve_xml_special_chars
 sdp_AddAttribute
 sdp_AddMedia
@@ -461,6 +468,10 @@ var_LocationParse
 video_format_CopyCrop
 video_format_ScaleCropAr
 video_format_FixRgb
+video_format_ApplyRotation
+video_format_TransformBy
+video_format_TransformTo
+video_format_GetTransform
 video_format_IsSimilar
 video_format_Setup
 video_format_Print
@@ -590,6 +601,7 @@ vlm_MessageDelete
 vlm_MessageNew
 vlm_MessageSimpleNew
 vlm_New
+vout_ChangeAspectRatio
 vout_Close
 vout_GetPicture
 vout_PutPicture
@@ -624,6 +636,7 @@ vout_SetDisplayAspect
 vout_SetDisplayCrop
 vout_display_GetDefaultDisplaySize
 vout_display_PlacePicture
+vout_display_SendMouseMovedDisplayCoordinates
 xml_Create
 text_style_Copy
 text_style_Delete
@@ -637,3 +650,12 @@ vlc_keycode2str
 vlc_str2keycode
 fingerprinter_Create
 fingerprinter_Destroy
+addons_manager_New
+addons_manager_Delete
+addons_manager_Gather
+addons_manager_LoadCatalog
+addons_manager_Install
+addons_manager_Remove
+addon_entry_New
+addon_entry_Hold
+addon_entry_Release

@@ -38,7 +38,7 @@ Var UninstallLog
 ; General configuration ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
+Name "${PRODUCT_NAME}"
 @HAVE_WIN64_FALSE@ OutFile ..\vlc-${VERSION}-win32.exe
 @HAVE_WIN64_TRUE@  OutFile ..\vlc-${VERSION}-win64.exe
 InstallDir "$@PROGRAMFILES@\VideoLAN\VLC"
@@ -48,7 +48,7 @@ SetCompressor lzma
 SetCompressor /SOLID lzma
 !endif
 
-SetOverwrite ifnewer
+SetOverwrite ifdiff
 CRCCheck on
 BrandingText "${PRODUCT_GROUP} ${PRODUCT_NAME}"
 
@@ -130,21 +130,19 @@ RequestExecutionLevel admin
   !insertmacro MUI_LANGUAGE "Russian"
   !insertmacro MUI_LANGUAGE "Portuguese"
   !insertmacro MUI_LANGUAGE "PortugueseBR"
-  !insertmacro MUI_LANGUAGE "Albanian"
   !insertmacro MUI_LANGUAGE "Welsh"
   !insertmacro MUI_LANGUAGE "Uzbek"
   !insertmacro MUI_LANGUAGE "Ukrainian"
   !insertmacro MUI_LANGUAGE "Turkish"
-  !insertmacro MUI_LANGUAGE "Traditional_Chinese"
   !insertmacro MUI_LANGUAGE "Thai"
-  !insertmacro MUI_LANGUAGE "Sinhala"
-  !insertmacro MUI_LANGUAGE "Scottish_Gaelic"
+;  !insertmacro MUI_LANGUAGE "Sinhala"
+;  !insertmacro MUI_LANGUAGE "Scottish_Gaelic"
   !insertmacro MUI_LANGUAGE "Norwegian"
   !insertmacro MUI_LANGUAGE "Malay"
   !insertmacro MUI_LANGUAGE "Korean"
-  !insertmacro MUI_LANGUAGE "Khmer"
+;  !insertmacro MUI_LANGUAGE "Khmer"
   !insertmacro MUI_LANGUAGE "Greek"
-  !insertmacro MUI_LANGUAGE "English_United_Kingdom"
+;  !insertmacro MUI_LANGUAGE "English_United_Kingdom"
   !insertmacro MUI_LANGUAGE "Czech"
   !insertmacro MUI_LANGUAGE "Bosnian"
   !insertmacro MUI_LANGUAGE "Arabic"
@@ -158,6 +156,9 @@ RequestExecutionLevel admin
   !insertmacro MUI_LANGUAGE "Estonian"
   !insertmacro MUI_LANGUAGE "Lithuanian"
   !insertmacro MUI_LANGUAGE "Basque"
+  !insertmacro MUI_LANGUAGE "Galician"
+  !insertmacro MUI_LANGUAGE "Hebrew"
+  !insertmacro MUI_LANGUAGE "Slovenian"
 
 ; Reserve files for solid compression
   !insertmacro MUI_RESERVEFILE_LANGDLL
@@ -226,7 +227,8 @@ ${MementoSection} $Name_Section01 SEC01
   WriteRegStr HKCR Applications\vlc.exe "FriendlyAppName" "VLC media player"
   WriteRegStr HKCR Applications\vlc.exe\shell\Open "" $ContextMenuEntry_PlayWith
   WriteRegStr HKCR Applications\vlc.exe\shell\Open\command "" '"$INSTDIR\vlc.exe" --started-from-file "%1"'
-  !insertmacro MacroAllExtensions WriteRegStrSupportedTypes
+  !insertmacro MacroAllExtensions RegisterExtensionMacro
+  !insertmacro MacroSkinExtensions RegisterSkinExtensionMacro
 
   ; Windows default programs Registration
   ; Vista and above detection
@@ -521,7 +523,7 @@ UAC_Success:
   StrCmp $LANGUAGE ${LANG_JAPANESE} Japanese 0
 ;  StrCmp $LANGUAGE ${LANG_BENGALI} Bengali 0
 ;  StrCmp $LANGUAGE ${LANG_PUNJABI} Punjabi 0
-;  StrCmp $LANGUAGE ${LANG_SLOVENIAN} Slovenian 0
+  StrCmp $LANGUAGE ${LANG_SLOVENIAN} Slovenian 0
   StrCmp $LANGUAGE ${LANG_SPANISH} Spanish 0
   StrCmp $LANGUAGE ${LANG_ESTONIAN} Estonian 0
   StrCmp $LANGUAGE ${LANG_LITHUANIAN} Lithuanian 0
@@ -534,21 +536,20 @@ UAC_Success:
   StrCmp $LANGUAGE ${LANG_ARABIC} Arabic 0
   StrCmp $LANGUAGE ${LANG_BOSNIAN} Bosnian 0
   StrCmp $LANGUAGE ${LANG_CZECH} Czech 0
-  StrCmp $LANGUAGE ${LANG_ENGLISH_UNITED_KINGDOM} English_United_Kingdom 0
+;  StrCmp $LANGUAGE ${LANG_ENGLISH_UNITED_KINGDOM} English_United_Kingdom 0
   StrCmp $LANGUAGE ${LANG_GREEK} Greek 0
-  StrCmp $LANGUAGE ${LANG_KHMER} Khmer 0
+;  StrCmp $LANGUAGE ${LANG_KHMER} Khmer 0
   StrCmp $LANGUAGE ${LANG_KOREAN} Korean 0
   StrCmp $LANGUAGE ${LANG_MALAY} Malay 0
   StrCmp $LANGUAGE ${LANG_NORWEGIAN} Norwegian 0
-  StrCmp $LANGUAGE ${LANG_SCOTTISH_GAELIC} Scottish_Gaelic 0
-  StrCmp $LANGUAGE ${LANG_SINHALA} Sinhala 0
+;  StrCmp $LANGUAGE ${LANG_SCOTTISH_GAELIC} Scottish_Gaelic 0
+;  StrCmp $LANGUAGE ${LANG_SINHALA} Sinhala 0
   StrCmp $LANGUAGE ${LANG_THAI} Thai 0
-  StrCmp $LANGUAGE ${LANG_TRADITIONAL_CHINESE} Traditional_Chinese 0
+  StrCmp $LANGUAGE ${LANG_TRADITIONAL_CHINESE} TradChinese 0
   StrCmp $LANGUAGE ${LANG_TURKISH} Turkish 0
   StrCmp $LANGUAGE ${LANG_UKRAINIAN} Ukrainian 0
   StrCmp $LANGUAGE ${LANG_UZBEK} Uzbek 0
   StrCmp $LANGUAGE ${LANG_WELSH} Welsh 0
-  StrCmp $LANGUAGE ${LANG_ALBANIAN} Albanian 0
   StrCmp $LANGUAGE ${LANG_PORTUGUESEBR} Brazilian EndLanguageCmp
   French:
   !include "languages\french.nsh"
@@ -637,15 +638,15 @@ UAC_Success:
   Czech:
   !include "languages\czech.nsh"
   Goto EndLanguageCmp
-  English_United_Kingdom:
-  !include "languages\english_united_kingdom.nsh"
-  Goto EndLanguageCmp
+;  English_United_Kingdom:
+;  !include "languages\english_united_kingdom.nsh"
+;  Goto EndLanguageCmp
   Greek:
   !include "languages\greek.nsh"
   Goto EndLanguageCmp
-  Khmer:
-  !include "languages\khmer.nsh"
-  Goto EndLanguageCmp
+;  Khmer:
+;  !include "languages\khmer.nsh"
+;  Goto EndLanguageCmp
   Korean:
   !include "languages\korean.nsh"
   Goto EndLanguageCmp
@@ -655,17 +656,17 @@ UAC_Success:
   Norwegian:
   !include "languages\norwegian.nsh"
   Goto EndLanguageCmp
-  Scottish_Gaelic:
-  !include "languages\scottish_gaelic.nsh"
-  Goto EndLanguageCmp
-  Sinhala:
-  !include "languages\sinhala.nsh"
-  Goto EndLanguageCmp
+;  Scottish_Gaelic:
+;  !include "languages\scottish_gaelic.nsh"
+;  Goto EndLanguageCmp
+;  Sinhala:
+;  !include "languages\sinhala.nsh"
+;  Goto EndLanguageCmp
   Thai:
   !include "languages\thai.nsh"
   Goto EndLanguageCmp
-  Traditional_Chinese:
-  !include "languages\traditional_chinese.nsh"
+  TradChinese:
+  !include "languages\tradchinese.nsh"
   Goto EndLanguageCmp
   Turkish:
   !include "languages\turkish.nsh"
@@ -678,9 +679,6 @@ UAC_Success:
   Goto EndLanguageCmp
   Welsh:
   !include "languages\welsh.nsh"
-  Goto EndLanguageCmp
-  Albanian:
-  !include "languages\albanian.nsh"
   Goto EndLanguageCmp
   Brazilian:
   !include "languages\brazilian_portuguese.nsh"
@@ -1050,7 +1048,7 @@ UAC_Success:
   StrCmp $LANGUAGE ${LANG_JAPANESE} Japanese 0
 ;  StrCmp $LANGUAGE ${LANG_BENGALI} Bengali 0
 ;  StrCmp $LANGUAGE ${LANG_PUNJABI} Punjabi 0
-;  StrCmp $LANGUAGE ${LANG_SLOVENIAN} Slovenian 0
+  StrCmp $LANGUAGE ${LANG_SLOVENIAN} Slovenian 0
   StrCmp $LANGUAGE ${LANG_SPANISH} Spanish 0
   StrCmp $LANGUAGE ${LANG_ESTONIAN} Estonian 0
   StrCmp $LANGUAGE ${LANG_LITHUANIAN} Lithuanian 0
@@ -1063,21 +1061,20 @@ UAC_Success:
   StrCmp $LANGUAGE ${LANG_ARABIC} Arabic 0
   StrCmp $LANGUAGE ${LANG_BOSNIAN} Bosnian 0
   StrCmp $LANGUAGE ${LANG_CZECH} Czech 0
-  StrCmp $LANGUAGE ${LANG_ENGLISH_UNITED_KINGDOM} English_United_Kingdom 0
+;  StrCmp $LANGUAGE ${LANG_ENGLISH_UNITED_KINGDOM} English_United_Kingdom 0
   StrCmp $LANGUAGE ${LANG_GREEK} Greek 0
-  StrCmp $LANGUAGE ${LANG_KHMER} Khmer 0
+;  StrCmp $LANGUAGE ${LANG_KHMER} Khmer 0
   StrCmp $LANGUAGE ${LANG_KOREAN} Korean 0
   StrCmp $LANGUAGE ${LANG_MALAY} Malay 0
   StrCmp $LANGUAGE ${LANG_NORWEGIAN} Norwegian 0
-  StrCmp $LANGUAGE ${LANG_SCOTTISH_GAELIC} Scottish_Gaelic 0
-  StrCmp $LANGUAGE ${LANG_SINHALA} Sinhala 0
+;  StrCmp $LANGUAGE ${LANG_SCOTTISH_GAELIC} Scottish_Gaelic 0
+;  StrCmp $LANGUAGE ${LANG_SINHALA} Sinhala 0
   StrCmp $LANGUAGE ${LANG_THAI} Thai 0
-  StrCmp $LANGUAGE ${LANG_TRADITIONAL_CHINESE} Traditional_Chinese 0
+  StrCmp $LANGUAGE ${LANG_TRADITIONAL_CHINESE} TradChinese 0
   StrCmp $LANGUAGE ${LANG_TURKISH} Turkish 0
   StrCmp $LANGUAGE ${LANG_UKRAINIAN} Ukrainian 0
   StrCmp $LANGUAGE ${LANG_UZBEK} Uzbek 0
   StrCmp $LANGUAGE ${LANG_WELSH} Welsh 0
-  StrCmp $LANGUAGE ${LANG_ALBANIAN} Albanian 0
   StrCmp $LANGUAGE ${LANG_PORTUGUESEBR} Brazilian EndLanguageCmp
   French:
   !include "languages\french.nsh"
@@ -1166,15 +1163,15 @@ UAC_Success:
   Czech:
   !include "languages\czech.nsh"
   Goto EndLanguageCmp
-  English_United_Kingdom:
-  !include "languages\english_united_kingdom.nsh"
-  Goto EndLanguageCmp
+;  English_United_Kingdom:
+;  !include "languages\english_united_kingdom.nsh"
+;  Goto EndLanguageCmp
   Greek:
   !include "languages\greek.nsh"
   Goto EndLanguageCmp
-  Khmer:
-  !include "languages\khmer.nsh"
-  Goto EndLanguageCmp
+;  Khmer:
+;  !include "languages\khmer.nsh"
+;  Goto EndLanguageCmp
   Korean:
   !include "languages\korean.nsh"
   Goto EndLanguageCmp
@@ -1184,17 +1181,17 @@ UAC_Success:
   Norwegian:
   !include "languages\norwegian.nsh"
   Goto EndLanguageCmp
-  Scottish_Gaelic:
-  !include "languages\scottish_gaelic.nsh"
-  Goto EndLanguageCmp
-  Sinhala:
-  !include "languages\sinhala.nsh"
-  Goto EndLanguageCmp
+;  Scottish_Gaelic:
+;  !include "languages\scottish_gaelic.nsh"
+;  Goto EndLanguageCmp
+;  Sinhala:
+;  !include "languages\sinhala.nsh"
+;  Goto EndLanguageCmp
   Thai:
   !include "languages\thai.nsh"
   Goto EndLanguageCmp
-  Traditional_Chinese:
-  !include "languages\traditional_chinese.nsh"
+  TradChinese:
+  !include "languages\tradchinese.nsh"
   Goto EndLanguageCmp
   Turkish:
   !include "languages\turkish.nsh"
@@ -1207,9 +1204,6 @@ UAC_Success:
   Goto EndLanguageCmp
   Welsh:
   !include "languages\welsh.nsh"
-  Goto EndLanguageCmp
-  Albanian:
-  !include "languages\albanian.nsh"
   Goto EndLanguageCmp
   Brazilian:
   !include "languages\brazilian_portuguese.nsh"

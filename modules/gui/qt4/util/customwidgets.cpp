@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id: 775218b8fa02592967bdaa9c0f786621a9cac0bb $
+ * $Id: 8b766ead8aa16e7d3555470acae6ea975838e799 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin
@@ -87,6 +87,25 @@ QString QVLCDebugLevelSpinBox::textFromValue( int v ) const
     return QString( "%1 (%2)" ).arg( v ).arg( texts[v] );
 }
 
+VLCQDial::VLCQDial( QWidget *parent ) : QDial( parent )
+{
+
+}
+
+void VLCQDial::paintEvent( QPaintEvent *event )
+{
+    QDial::paintEvent( event );
+    QPainter painter( this );
+    painter.setPen( QPen( palette().color( QPalette::WindowText ) ) );
+    float radius = 0.5 * 0.707106 * qMin( size().width(), size().height() );
+    painter.drawText( QRectF( rect().center().x() + radius,
+                              rect().center().y() + radius,
+                              size().width(),
+                              size().height() ),
+                      0, QString::number( value() ), 0 );
+    painter.end();
+}
+
 /***************************************************************************
  * Hotkeys converters
  ***************************************************************************/
@@ -116,8 +135,8 @@ static const vlc_qt_key_t keys[] =
     { Qt::Key_Enter,                 '\r' }, // numeric pad
     { Qt::Key_Insert,                KEY_INSERT },
     { Qt::Key_Delete,                KEY_DELETE },
-    // Qt::Key_Pause
-    // Qt::Key_Print
+    { Qt::Key_Pause,                 KEY_PAUSE },
+    { Qt::Key_Print,                 KEY_PRINT },
     // Qt::Key_SysReq
     // Qt::Key_Clear
     { Qt::Key_Home,                  KEY_HOME },
@@ -297,28 +316,6 @@ QString VLCKeyToString( unsigned val, bool locale )
 
     free( base );
     return r;
-}
-
-PixmapAnimator::PixmapAnimator( QWidget *parent, QList<QString> frames )
-    : QAbstractAnimation( parent ), current_frame( 0 )
-{
-    foreach( QString name, frames )
-        pixmaps.append( new QPixmap( name ) );
-    currentPixmap = pixmaps.at( 0 );
-    setFps( frames.count() ); /* default to 1 sec loop */
-    setLoopCount( -1 );
-}
-
-void PixmapAnimator::updateCurrentTime( int msecs )
-{
-    int i = msecs / interval;
-    if ( i >= pixmaps.count() ) i = pixmaps.count() - 1; /* roundings */
-    if ( i != current_frame )
-    {
-        current_frame = i;
-        currentPixmap = pixmaps.at( current_frame );
-        emit pixmapReady( *currentPixmap );
-    }
 }
 
 /* Animated Icon implementation */

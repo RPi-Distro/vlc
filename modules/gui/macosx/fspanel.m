@@ -2,7 +2,7 @@
  * fspanel.m: MacOS X full screen panel
  *****************************************************************************
  * Copyright (C) 2006-2013 VLC authors and VideoLAN
- * $Id: e387ab3780666eab619e4f86b0024d974e62a434 $
+ * $Id: fad739c670f928c4c80910a62d238b244a6580db $
  *
  * Authors: Jérôme Decoodt <djc at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -48,6 +48,7 @@
                     defer:(BOOL)flag
 {
     id win = [super initWithContentRect:contentRect styleMask:NSTexturedBackgroundWindowMask backing:bufferingType defer:flag];
+    self.contentView = [[VLCFSPanelView alloc] initWithFrame:contentRect];
     [win setOpaque:NO];
     [win setHasShadow: NO];
     [win setBackgroundColor:[NSColor clearColor]];
@@ -58,6 +59,7 @@
     [win setLevel:NSModalPanelWindowLevel];
     i_device = config_GetInt(VLCIntf, "macosx-vdev");
     hideAgainTimer = fadeTimer = nil;
+    [self setFrameAutosaveName:@"fspanel"];
     [self setNonActive:nil];
     return win;
 }

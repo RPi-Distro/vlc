@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id: 37fce1d4515dd95131bfb969f07e568f8aa6c79a $
+ * $Id: e1e6c6d38f4c97b243b84fe316a0d11afa1b49a3 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin
@@ -34,9 +34,10 @@
 #include <QSpinBox>
 #include <QCheckBox>
 #include <QList>
-#include <QTimer>
 #include <QToolButton>
-#include <QAbstractAnimation>
+#include <QDial>
+
+#include "animators.hpp"
 
 class QPixmap;
 class QWidget;
@@ -47,6 +48,15 @@ class QFramelessButton : public QPushButton
 public:
     QFramelessButton( QWidget *parent = NULL );
     virtual QSize sizeHint() const { return iconSize(); }
+protected:
+    virtual void paintEvent( QPaintEvent * event );
+};
+
+class VLCQDial : public QDial
+{
+    Q_OBJECT
+public:
+    VLCQDial( QWidget *parent = NULL );
 protected:
     virtual void paintEvent( QPaintEvent * event );
 };
@@ -100,34 +110,6 @@ protected:
     virtual QString textFromValue( int ) const;
     /* QVLCDebugLevelSpinBox is read-only */
     virtual int valueFromText( const QString& ) const { return -1; }
-};
-
-/** An animated pixmap
-     * Use this widget to display an animated icon based on a series of
-     * pixmaps. The pixmaps will be stored in memory and should be kept small.
-     * First, create the widget, add frames and then start playing. Looping
-     * is supported.
-     **/
-class PixmapAnimator : public QAbstractAnimation
-{
-    Q_OBJECT
-
-public:
-    PixmapAnimator( QWidget *parent, QList<QString> _frames );
-    void setFps( int _fps ) { fps = _fps; interval = 1000.0 / fps; };
-    virtual int duration() const { return interval * pixmaps.count(); };
-    virtual ~PixmapAnimator() { qDeleteAll( pixmaps ); };
-    QPixmap *getPixmap() { return currentPixmap; }
-protected:
-    virtual void updateCurrentTime ( int msecs );
-    QList<QPixmap *> pixmaps;
-    QPixmap *currentPixmap;
-    int fps;
-    int interval;
-    int lastframe_msecs;
-    int current_frame;
-signals:
-    void pixmapReady( const QPixmap & );
 };
 
 /** This spinning icon, to the colors of the VLC cone, will show

@@ -140,7 +140,7 @@ static int cmpdev (const void *a, const void *b)
     dev_t delta = *da - *db;
 
     if (sizeof (delta) > sizeof (int))
-        return delta ? ((delta > 0) ? 1 : -1) : 0;
+        return delta ? (((signed)delta > 0) ? 1 : -1) : 0;
     return (signed)delta;
 }
 
@@ -535,8 +535,9 @@ static char *disc_get_mrl (struct udev_device *dev)
     val = udev_device_get_property_value (dev, "ID_CDROM_MEDIA_STATE");
     if (val == NULL)
     {   /* Force probing of the disc in the drive if any. */
-        int fd = open (node, O_RDONLY);
-        close (fd);
+        int fd = open (node, O_RDONLY|O_CLOEXEC);
+        if (fd != -1)
+            close (fd);
         return NULL;
     }
     if (!strcmp (val, "blank"))

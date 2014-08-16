@@ -8,10 +8,6 @@ case "${ARCH}" in
         CFLAGS="${CFLAGS} -m64 -march=core2 -mtune=core2"
         LDFLAGS="${LDFLAGS} -m64"
         ;;
-    ppc)
-        CFLAGS="${CFLAGS} -arch ppc -mtune=G4"
-        LDFLAGS="${LDFLAGS} -arch ppc"
-        ;;
     *x86*)
         CFLAGS="${CFLAGS} -m32 -march=prescott -mtune=generic"
         LDFLAGS="${LDFLAGS} -m32"
@@ -31,17 +27,16 @@ OPTIONS="
         --enable-twolame
         --enable-realrtsp
         --enable-libass
-        --enable-macosx-audio
         --enable-macosx-eyetv
         --enable-macosx-qtkit
         --enable-macosx-avfoundation
-        --enable-macosx-vout
         --disable-skins2
         --disable-xcb
         --disable-caca
         --disable-sdl
         --disable-samplerate
         --disable-macosx-dialog-provider
+        --with-macosx-version-min=10.6
 "
 
 export CFLAGS

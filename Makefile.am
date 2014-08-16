@@ -82,6 +82,7 @@ SUFFIXES =
 DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-fast-install \
 	--disable-a52 \
+	--disable-alsa \
 	--disable-avcodec --disable-avformat \
 	--disable-postproc --disable-swscale \
 	--disable-dbus \
@@ -117,16 +118,22 @@ EXTRA_DIST += \
 	extras/package/macosx/VLC.entitlements \
 	extras/package/macosx/Resources/dsa_pub.pem \
 	extras/package/macosx/Resources/English.lproj/About.xib \
+	extras/package/macosx/Resources/English.lproj/AddonManager.xib \
 	extras/package/macosx/Resources/English.lproj/AudioEffects.xib \
 	extras/package/macosx/Resources/English.lproj/Bookmarks.xib \
 	extras/package/macosx/Resources/English.lproj/ConvertAndSave.xib \
 	extras/package/macosx/Resources/English.lproj/CoreDialogs.xib \
+	extras/package/macosx/Resources/English.lproj/DebugMessageVisualizer.xib \
 	extras/package/macosx/Resources/English.lproj/DetachedVideoWindow.xib \
 	extras/package/macosx/Resources/English.lproj/ErrorPanel.xib \
+	extras/package/macosx/Resources/English.lproj/FSPanel.xib \
 	extras/package/macosx/Resources/English.lproj/InfoPlist.strings.in \
 	extras/package/macosx/Resources/English.lproj/MainMenu.xib \
+	extras/package/macosx/Resources/English.lproj/MainWindow.xib \
 	extras/package/macosx/Resources/English.lproj/MediaInfo.xib \
 	extras/package/macosx/Resources/English.lproj/Open.xib \
+	extras/package/macosx/Resources/English.lproj/PlaylistAccessoryView.xib \
+	extras/package/macosx/Resources/English.lproj/PlaylistMenu.xib \
 	extras/package/macosx/Resources/English.lproj/Preferences.xib \
 	extras/package/macosx/Resources/English.lproj/SharedDialogs.xib \
 	extras/package/macosx/Resources/English.lproj/SyncTracks.xib \

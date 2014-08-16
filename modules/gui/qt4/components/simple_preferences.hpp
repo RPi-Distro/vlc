@@ -2,7 +2,7 @@
  * simple_preferences.hpp : Simple prefs
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: ecc136df559b0739c0dfb95195a80795596e8926 $
+ * $Id: d6c05f3d2ef44c3fe897392456481165b0b5d81b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -78,7 +78,7 @@ class SPrefsCatList : public QWidget
 {
     Q_OBJECT
 public:
-    SPrefsCatList( intf_thread_t *, QWidget *, bool );
+    SPrefsCatList( intf_thread_t *, QWidget * );
     virtual ~SPrefsCatList() {};
 private:
     intf_thread_t *p_intf;
@@ -92,7 +92,7 @@ class SPrefsPanel : public QWidget
 {
     Q_OBJECT
 public:
-    SPrefsPanel( intf_thread_t *, QWidget *, int, bool );
+    SPrefsPanel( intf_thread_t *, QWidget *, int );
     virtual ~SPrefsPanel();
     void apply();
     void clean();

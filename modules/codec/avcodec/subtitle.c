@@ -2,7 +2,7 @@
  * subtitle.c: subtitle decoder using libavcodec library
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: f2ff40233c5805528eb410eb8bd906529a885e9e $
+ * $Id: a8bb19f09229377761f154ce5badafc4ca421b0d $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -57,6 +57,7 @@ int InitSubtitleDec(decoder_t *dec, AVCodecContext *context,
     switch (codec_id) {
     case AV_CODEC_ID_HDMV_PGS_SUBTITLE:
     case AV_CODEC_ID_XSUB:
+    case AV_CODEC_ID_DVB_SUBTITLE:
         break;
     default:
         msg_Warn(dec, "refusing to decode non validated subtitle codec");
@@ -248,7 +249,7 @@ static subpicture_t *ConvertSubtitle(decoder_t *dec, AVSubtitle *ffsub, mtime_t 
     spu->b_absolute = true; /* FIXME How to set it right ? */
     spu->b_ephemer  = true; /* FIXME How to set it right ? */
 
-    if (avctx->codec_id == AV_CODEC_ID_HDMV_PGS_SUBTITLE) {
+    if (avctx->coded_width != 0 && avctx->coded_height != 0) {
         spu->i_original_picture_width = avctx->coded_width;
         spu->i_original_picture_height = avctx->coded_height;
     } else {

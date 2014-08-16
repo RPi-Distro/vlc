@@ -2,7 +2,7 @@
  * macosx.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2013 VLC authors and VideoLAN
- * $Id: 45a17c1025028ea2f906116b5820a7e213f0847f $
+ * $Id: 01392045e8e911af0a1fae7f02c531ff7173d35f $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Eric Petit <titer@m0k.org>
@@ -83,7 +83,7 @@ static void OpenglSwap (vlc_gl_t *gl);
 vlc_module_begin ()
     /* Will be loaded even without interface module. see voutgl.m */
     set_shortname ("Mac OS X")
-    set_description (N_("Mac OS X OpenGL video output (requires drawable-nsobject)"))
+    set_description (N_("Mac OS X OpenGL video output"))
     set_category (CAT_VIDEO)
     set_subcategory (SUBCAT_VIDEO_VOUT)
     set_capability ("vout display", 300)
@@ -183,8 +183,10 @@ static int Open (vlc_object_t *this)
     nsPool = [[NSAutoreleasePool alloc] init];
 
     [VLCOpenGLVideoView performSelectorOnMainThread:@selector(getNewView:) withObject:[NSValue valueWithPointer:&sys->glView] waitUntilDone:YES];
-    if (!sys->glView)
+    if (!sys->glView) {
+        msg_Err(vd, "Initialization of open gl view failed");
         goto error;
+    }
 
     [sys->glView setVoutDisplay:vd];
 
@@ -213,7 +215,6 @@ static int Open (vlc_object_t *this)
     sys->gl.getProcAddress = OurGetProcAddress;
     sys->gl.sys = sys;
     const vlc_fourcc_t *subpicture_chromas;
-    video_format_t fmt = vd->fmt;
 
     sys->vgl = vout_display_opengl_New (&vd->fmt, &subpicture_chromas, &sys->gl);
     if (!sys->vgl) {
@@ -238,7 +239,7 @@ static int Open (vlc_object_t *this)
     vd->control = Control;
 
     /* */
-    vout_display_SendEventDisplaySize (vd, vd->source.i_visible_width, vd->source.i_visible_height, false);
+    vout_display_SendEventDisplaySize (vd, vd->fmt.i_visible_width, vd->fmt.i_visible_height, false);
 
     return VLC_SUCCESS;
 
@@ -332,7 +333,7 @@ static int Control (vout_display_t *vd, int query, va_list ap)
         case VOUT_DISPLAY_CHANGE_WINDOW_STATE:
         {
             unsigned state = va_arg (ap, unsigned);
-            return vout_window_SetState (sys->embed, state);            
+            return vout_window_SetState (sys->embed, state);
         }
         case VOUT_DISPLAY_CHANGE_DISPLAY_FILLED:
         case VOUT_DISPLAY_CHANGE_ZOOM:
@@ -369,7 +370,7 @@ static int Control (vout_display_t *vd, int query, va_list ap)
                 [o_pool release];
                 return VLC_EGENERIC;
             }
- 
+
             /* we always use our current frame here, because we have some size constraints
                in the ui vout provider */
             vout_display_cfg_t cfg_tmp = *cfg;
@@ -634,7 +635,7 @@ static void OpenglSwap (vlc_gl_t *gl)
     else
         bounds = [self bounds];
     vout_display_place_t place;
-    
+
     @synchronized(self) {
         if (vd) {
             vout_display_cfg_t cfg_tmp = *(vd->cfg);
@@ -767,31 +768,22 @@ static void OpenglSwap (vlc_gl_t *gl)
 
 - (void)mouseMoved:(NSEvent *)o_event
 {
-    NSPoint ml;
-    NSRect s_rect;
-    BOOL b_inside;
-
     /* on HiDPI displays, the point bounds don't equal the actual pixel based bounds */
-    if (OSX_LION)
-        s_rect = [self convertRectToBacking:[self bounds]];
-    else
-        s_rect = [self bounds];
-    ml = [self convertPoint: [o_event locationInWindow] fromView: nil];
-    b_inside = [self mouse: ml inRect: s_rect];
-    
+    NSPoint ml = [self convertPoint: [o_event locationInWindow] fromView: nil];
+    NSRect videoRect = [self bounds];
+    BOOL b_inside = [self mouse: ml inRect: videoRect];
+
+    if (OSX_LION) {
+        ml = [self convertPointToBacking: ml];
+        videoRect = [self convertRectToBacking: videoRect];
+    }
+
     if (b_inside) {
         @synchronized (self) {
             if (vd) {
-                vout_display_place_t place = vd->sys->place;
-
-                if (place.width > 0 && place.height > 0) {
-                    const int x = vd->source.i_x_offset +
-                    (int64_t)(ml.x - place.x) * vd->source.i_visible_width / place.width;
-                    const int y = vd->source.i_y_offset +
-                    (int64_t)((int)s_rect.size.height - (int)ml.y - place.y) * vd->source.i_visible_height / place.height;
-
-                    vout_display_SendEventMouseMoved (vd, x, y);
-                }
+                vout_display_SendMouseMovedDisplayCoordinates(vd, ORIENT_NORMAL,
+                                                              (int)ml.x, videoRect.size.height - (int)ml.y,
+                                                              &vd->sys->place);
             }
         }
     }

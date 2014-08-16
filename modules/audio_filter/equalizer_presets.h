@@ -2,11 +2,11 @@
  * equalizer_presets.h:
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: 03f9f6f189c24221153c43f024181464a10bcee6 $
+ * $Id: 3ea70ca1cbcce82da07c8e83d74424467399ebb5 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify it it
+ * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
@@ -17,9 +17,12 @@
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program; if not, write to the Free Software Foundation, Foundation,
+ * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+#ifndef _EQUALIZER_PRESETS_H
+#define _EQUALIZER_PRESETS_H 1
 
 /*****************************************************************************
  * Equalizer presets
@@ -29,6 +32,17 @@
  */
 
 #define EQZ_BANDS_MAX 10
+
+/* The frequency tables */
+static const float f_vlc_frequency_table_10b[EQZ_BANDS_MAX] =
+{
+    60, 170, 310, 600, 1000, 3000, 6000, 12000, 14000, 16000,
+};
+
+static const float f_iso_frequency_table_10b[EQZ_BANDS_MAX] =
+{
+    31.25, 62.5, 125, 250, 500, 1000, 2000, 4000, 8000, 16000,
+};
 
 #define NB_PRESETS 18
 static const char *const preset_list[NB_PRESETS] = {
@@ -139,3 +153,5 @@ static const eqz_preset_t eqz_preset_10b[NB_PRESETS] =
           9.6f, 8.8f }
     },
 };
+
+#endif

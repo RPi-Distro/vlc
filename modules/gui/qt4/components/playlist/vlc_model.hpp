@@ -2,7 +2,7 @@
  * vlc_model.hpp : base for playlist and ml model
  ****************************************************************************
  * Copyright (C) 2010 the VideoLAN team and AUTHORS
- * $Id: e017014904c8df5a5d3008e6da28e9614013da06 $
+ * $Id: 8ef4f920ccb8dd0e0b0583410ee87c6e8bea7900 $
  *
  * Authors: Srikanth Raju <srikiraju#gmail#com>
  *
@@ -31,96 +31,134 @@
 #include "qt4.hpp"
 #include "sorting.h"
 
+#include "playlist_item.hpp"
+
 #include <vlc_input.h>
 
 #include <QModelIndex>
 #include <QPixmapCache>
 #include <QSize>
+#include <QObject>
 #include <QAbstractItemModel>
+#include <QIcon>
+
 class QAction;
 
-class VLCModel : public QAbstractItemModel
+/* Provides non Q_Object interface for Models.
+   This allows multiple inheritance on already QAbstractModel based
+   Qobjects like Q*ProxyModel.
+   Signals being a Q_Object property, they need to be redirected
+   using a QObject based class member.
+*/
+class VLCModelSubInterface
 {
-    Q_OBJECT
 public:
-    enum {
+    VLCModelSubInterface();
+    virtual ~VLCModelSubInterface();
+    enum nodeRole
+    {
       IsCurrentRole = Qt::UserRole,
       IsLeafNodeRole,
       IsCurrentsParentNodeRole
     };
-
-    VLCModel( intf_thread_t *_p_intf, QObject *parent = 0 );
-    /*** QAbstractItemModel subclassing ***/
-    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
-
-    virtual int itemId( const QModelIndex & ) const = 0;
-    virtual input_item_t *getInputItem( const QModelIndex & ) const = 0;
-    virtual QModelIndex currentIndex() const = 0;
+    virtual void rebuild( playlist_item_t * p = NULL ) = 0;
     virtual void doDelete( QModelIndexList ) = 0;
-    virtual ~VLCModel();
-    static QString getMeta( const QModelIndex & index, int meta );
-    static QPixmap getArtPixmap( const QModelIndex & index, const QSize & size );
-    static QString getArtUrl( const QModelIndex & index );
-    virtual QString getURI( const QModelIndex &index ) const = 0;
+    virtual void createNode( QModelIndex, QString ) = 0;
+    virtual void renameNode( QModelIndex, QString ) = 0;
+    virtual void removeAll() = 0;
+
     virtual QModelIndex rootIndex() const = 0;
+    virtual void filter( const QString& search_text, const QModelIndex & root, bool b_recursive ) = 0;
+    virtual QModelIndex currentIndex() const = 0;
+    virtual QModelIndex indexByPLID( const int i_plid, const int c ) const = 0;
+    virtual QModelIndex indexByInputItemID( const int i_inputitem_id, const int c ) const = 0;
+    virtual int itemId( const QModelIndex &, int type ) const = 0;
     virtual bool isTree() const = 0;
     virtual bool canEdit() const = 0;
-    enum playLocation
+    virtual QString getURI( const QModelIndex &index ) const = 0;
+    virtual input_item_t *getInputItem( const QModelIndex & ) const = 0;
+    virtual QString getTitle( const QModelIndex &index ) const = 0;
+    enum actions
     {
-        IN_PLAYLIST,
-        IN_MEDIALIBRARY
+        ACTION_PLAY = 1,
+        ACTION_STREAM,
+        ACTION_SAVE,
+        ACTION_INFO,
+        ACTION_ADDTOPLAYLIST,
+        ACTION_REMOVE,
+        ACTION_SORT,
+        ACTION_EXPLORE,
+        ACTION_CREATENODE,
+        ACTION_RENAMENODE,
+        ACTION_CLEAR,
+        ACTION_ENQUEUEFILE,
+        ACTION_ENQUEUEDIR,
+        ACTION_ENQUEUEGENERIC,
+        ACTION_SAVETOPLAYLIST
     };
-    virtual bool isCurrentItem( const QModelIndex &index, playLocation where ) const = 0;
-
     struct actionsContainerType
     {
-        enum
-        {
-            ACTION_PLAY = 1,
-            ACTION_ADDTOPLAYLIST,
-            ACTION_REMOVE,
-            ACTION_SORT
-        } action;
-        QModelIndexList indexes; /* for passing selection or caller index(es) */
+        actions action;
         int column; /* for sorting */
+        QStringList uris; /* for enqueuing */
+        QString options;
     };
+    virtual bool action( QAction *, const QModelIndexList & ) = 0;
+    virtual bool isSupportedAction( actions action, const QModelIndex & ) const = 0;
+    static int columnFromMeta( int meta_col );
 
-    static int columnToMeta( int _column )
-    {
-        int meta = 1, column = 0;
+    virtual void activateItem( const QModelIndex &index ) = 0;
+    virtual void ensureArtRequested( const QModelIndex &index ) = 0;
+};
 
-        while( column != _column && meta != COLUMN_END )
-        {
-            meta <<= 1;
-            column++;
-        }
+/* Abstract VLC Model ; Base for custom models.
+   Only implements methods sharing the same code that would be
+   implemented in subclasses.
+   Any custom method here must be only used in implemented methods.
+*/
+class VLCModel : public QAbstractItemModel, public VLCModelSubInterface
+{
+    Q_OBJECT
+public:
+    VLCModel( intf_thread_t *_p_intf, QObject *parent = 0 );
+    virtual ~VLCModel();
 
-        return meta;
-    }
+    /*** QAbstractItemModel subclassing ***/
+    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+    QVariant headerData( int, Qt::Orientation, int ) const;
 
-    static int columnFromMeta( int meta_col )
-    {
-        int meta = 1, column = 0;
+    /*** VLCModelSubInterface subclassing ***/
+    virtual int itemId( const QModelIndex &, int type ) const;
+    virtual QString getURI( const QModelIndex &index ) const;
+    virtual input_item_t *getInputItem( const QModelIndex & ) const;
+    virtual QString getTitle( const QModelIndex &index ) const;
 
-        while( meta != meta_col && meta != COLUMN_END )
-        {
-            meta <<= 1;
-            column++;
-        }
-
-        return column;
-    }
-
-    virtual void createNode( QModelIndex, QString ) {};
+    /* Custom */
+    static int columnToMeta( int _column );
+    static int metaToColumn( int meta );
+    static QString getMeta( const QModelIndex & index, int meta );
+    static QPixmap getArtPixmap( const QModelIndex & index, const QSize & size );
 
 public slots:
-    virtual void activateItem( const QModelIndex &index ) = 0;
-    virtual void actionSlot( QAction *action ) = 0;
+    /* slots handlers */
+    virtual void ensureArtRequested( const QModelIndex &index );
+
+signals:
+    void currentIndexChanged( const QModelIndex& );
+    void rootIndexChanged();
 
 protected:
+    /* Custom methods / helpers */
+    virtual bool isCurrent( const QModelIndex &index ) const;
+    virtual bool isParent( const QModelIndex &index, const QModelIndex &current ) const = 0;
+    virtual bool isLeaf( const QModelIndex &index ) const = 0;
+    virtual AbstractPLItem *getItem( const QModelIndex & index ) const;
+
+    QIcon icons[ITEM_TYPE_NUMBER];
+
     intf_thread_t *p_intf;
 };
 
-Q_DECLARE_METATYPE(VLCModel::actionsContainerType)
+Q_DECLARE_METATYPE(VLCModelSubInterface::actionsContainerType)
 
 #endif

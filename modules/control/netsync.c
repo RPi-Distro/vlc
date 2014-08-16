@@ -2,7 +2,7 @@
  * netsync.c: synchronization between several network clients.
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 7466025b6db5ea7ff13322273d78d86219e667a8 $
+ * $Id: 565d4728627ba41ca562e8f07890a69abb388965 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -36,10 +36,8 @@
 #include <vlc_input.h>
 #include <vlc_playlist.h>
 
-#ifdef HAVE_UNISTD_H
-#    include <unistd.h>
-#endif
 #include <sys/types.h>
+#include <unistd.h>
 #ifdef HAVE_POLL
 #   include <poll.h>
 #endif

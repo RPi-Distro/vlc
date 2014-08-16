@@ -2,7 +2,7 @@
  * misc.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: b2e0839ae03569d14ca1b701fba4729773290a91 $
+ * $Id: 067af57d24e733b2b45a5fea163a106d85d2eed8 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -42,18 +42,19 @@
 
 #include "../vlc.h"
 #include "../libs.h"
+#include "misc.h"
 
 /*****************************************************************************
  * Internal lua<->vlc utils
  *****************************************************************************/
-static void vlclua_set_object( lua_State *L, void *id, void *value )
+void vlclua_set_object( lua_State *L, void *id, void *value )
 {
     lua_pushlightuserdata( L, id );
     lua_pushlightuserdata( L, value );
     lua_rawset( L, LUA_REGISTRYINDEX );
 }
 
-static void *vlclua_get_object( lua_State *L, void *id )
+void *vlclua_get_object( lua_State *L, void *id )
 {
     lua_pushlightuserdata( L, id );
     lua_rawget( L, LUA_REGISTRYINDEX );

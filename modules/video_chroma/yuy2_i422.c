@@ -2,7 +2,7 @@
  * yuy2_i422.c : Packed YUV 4:2:2 to Planar YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: 11181dfa1574d1cad765ef226490e2bce8e735c5 $
+ * $Id: 8ab149ea8d52d98dc22bd89026cc78611e1e34e8 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *
@@ -75,7 +75,8 @@ static int Activate( vlc_object_t *p_this )
     }
 
     if( p_filter->fmt_in.video.i_width != p_filter->fmt_out.video.i_width
-     || p_filter->fmt_in.video.i_height != p_filter->fmt_out.video.i_height )
+     || p_filter->fmt_in.video.i_height != p_filter->fmt_out.video.i_height
+     || p_filter->fmt_in.video.orientation != p_filter->fmt_out.video.orientation)
         return -1;
 
     switch( p_filter->fmt_out.video.i_chroma )

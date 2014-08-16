@@ -19,6 +19,10 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
 --]]
 
+function descriptor()
+    return { scope="network" }
+end
+
 -- Return the artwork
 function fetch_art()
     if vlc.item == nil then return nil end
@@ -45,7 +49,7 @@ function fetch_art()
     if not fd then return nil end
     page = fd:read( 65653 )
     fd = nil
-    _, _, arturl = string.find( page, "<img  width=\"174\" src=\"([^\"]+)\" class=\"art\" />\n" )
+    _, _, arturl = string.find( page, "<meta property=\"og:image\" content=\"([^\"]+)\" />" )
     -- Don't use default album-art (not found one)
     if not arturl or string.find( arturl, "default_album_mega.png") then
        return nil

@@ -1,5 +1,5 @@
 # GCRYPT
-GCRYPT_VERSION := 1.6.0
+GCRYPT_VERSION := 1.6.1
 GCRYPT_URL := ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-$(GCRYPT_VERSION).tar.bz2
 
 PKGS += gcrypt
@@ -11,6 +11,9 @@ $(TARBALLS)/libgcrypt-$(GCRYPT_VERSION).tar.bz2:
 
 libgcrypt: libgcrypt-$(GCRYPT_VERSION).tar.bz2 .sum-gcrypt
 	$(UNPACK)
+	$(APPLY) $(SRC)/gcrypt/gcrypt-fix-x86_64-codepath-on-Darwin.patch
+	$(APPLY) $(SRC)/gcrypt/fix-amd64-assembly-on-solaris.patch
+	$(APPLY) $(SRC)/gcrypt/0001-Fix-assembly-division-check.patch
 	$(MOVE)
 
 DEPS_gcrypt = gpg-error
@@ -41,7 +44,7 @@ endif
 endif
 
 .gcrypt: libgcrypt
-	#$(RECONF)
+	$(RECONF)
 	cd $< && $(HOSTVARS) CFLAGS="$(CFLAGS) $(GCRYPT_EXTRA_CFLAGS)" ./configure $(HOSTCONF) $(GCRYPT_CONF)
 	cd $< && $(MAKE) install
 	touch $@

@@ -2,7 +2,7 @@
  * util.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 326f631fb87faaf5a49808d0c7dbb65ca1bd0277 $
+ * $Id: 9608b9591a8f7ee99f91221f9b09868411a4f3a0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -188,12 +188,12 @@ void handle_real_audio(demux_t * p_demux, mkv_track_t * p_tk, block_t * p_blk, m
     if( p_tk->fmt.i_codec == VLC_CODEC_COOK ||
         p_tk->fmt.i_codec == VLC_CODEC_ATRAC3 )
     {
-        const uint32_t i_num = p_sys->i_frame_size / p_sys->i_subpacket_size;
-        const int y = p_sys->i_subpacket / ( p_sys->i_frame_size / p_sys->i_subpacket_size );
+        const uint16_t i_num = p_sys->i_frame_size / p_sys->i_subpacket_size;
+        const size_t y = p_sys->i_subpacket / ( p_sys->i_frame_size / p_sys->i_subpacket_size );
 
-        for( int i = 0; i < i_num; i++ )
+        for( uint16_t i = 0; i < i_num; i++ )
         {
-            int i_index = p_sys->i_sub_packet_h * i +
+            size_t i_index = (size_t) p_sys->i_sub_packet_h * i +
                           ((p_sys->i_sub_packet_h + 1) / 2) * (y&1) + (y>>1);
             if( i_index >= p_sys->i_subpackets )
                 return;

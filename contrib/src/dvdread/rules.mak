@@ -1,34 +1,27 @@
 # DVDREAD
-
-# LIBDVDREAD_VERSION := 4.2.0
-# LIBDVDREAD_URL := http://dvdnav.mplayerhq.hu/releases/libdvdread-$(LIBDVDREAD_VERSION).tar.bz2
-DVDREAD_GITURL := git://git.videolan.org/libdvdread
-LIBDVDREAD_VERSION := git
+LIBDVDREAD_VERSION := 5.0.0
+LIBDVDREAD_URL := $(VIDEOLAN)/libdvdread/$(LIBDVDREAD_VERSION)/libdvdread-$(LIBDVDREAD_VERSION).tar.bz2
 
 ifdef BUILD_DISCS
 ifdef GPL
 PKGS += dvdread
 endif
 endif
-ifeq ($(call need_pkg,"dvdread"),)
+ifeq ($(call need_pkg,"dvdread > 4.9.0 "),)
 PKGS_FOUND += dvdread
 endif
 
-$(TARBALLS)/libdvdread-git.tar.xz:
-	$(call download_git,$(DVDREAD_GITURL))
+$(TARBALLS)/libdvdread-$(LIBDVDREAD_VERSION).tar.bz2:
+	$(call download,$(LIBDVDREAD_URL))
 
-# $(TARBALLS)/libdvdread-$(LIBDVDREAD_VERSION).tar.bz2:
-# 	$(call download,$(LIBDVDREAD_URL))
+.sum-dvdread: libdvdread-$(LIBDVDREAD_VERSION).tar.bz2
 
-.sum-dvdread: libdvdread-$(LIBDVDREAD_VERSION).tar.xz
-	$(warning $@ not implemented)
-	touch $@
-
-dvdread: libdvdread-$(LIBDVDREAD_VERSION).tar.xz .sum-dvdread
+dvdread: libdvdread-$(LIBDVDREAD_VERSION).tar.bz2 .sum-dvdread
 	$(UNPACK)
 ifdef HAVE_WIN32
 	$(APPLY) $(SRC)/dvdread/dvdread-win32.patch
 endif
+	cd $(UNPACK_DIR) && sed -i -e 's,Requires.private,Requires,g' misc/*.pc.in
 	cd $(UNPACK_DIR) && autoreconf -ivf
 	$(MOVE)
 

@@ -2,7 +2,7 @@
  * nuv.c:
  *****************************************************************************
  * Copyright (C) 2005 VLC authors and VideoLAN
- * $Id: 9d534e4c6d3cd3d8c0db1baec82a865453d39553 $
+ * $Id: cb20acdf9e83586c032cfe91ca8506174413026b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gertjan Van Droogenbroeck <gertjanvd _PLUS_ vlc _AT_ gmail _DOT_ com>
@@ -249,7 +249,7 @@ static int Open( vlc_object_t * p_this )
     {
         if( fh.i_compression == 'F' || fh.i_compression == 'R' )
         {
-            /* ffmpeg extra data */
+            /* libavcodec extra data */
             p_sys->i_extra_f = fh.i_length;
             p_sys->p_extra_f = malloc( fh.i_length );
             if( p_sys->p_extra_f == NULL || stream_Read( p_demux->s,

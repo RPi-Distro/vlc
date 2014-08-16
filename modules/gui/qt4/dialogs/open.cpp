@@ -232,6 +232,15 @@ QString OpenDialog::getMRL( bool b_all )
                  : itemsMRL[0];
 }
 
+QStringList OpenDialog::getMRLs( bool b_with_options )
+{
+    if ( !b_with_options ) return itemsMRL;
+    QStringList postfixedMRLs;
+    foreach( const QString &mrl, itemsMRL )
+        postfixedMRLs << QString( mrl ).append( getOptions() );
+    return postfixedMRLs;
+}
+
 QString OpenDialog::getOptions()
 {
     return ui.advancedLineInput->text();
@@ -368,35 +377,11 @@ void OpenDialog::enqueue( bool b_enqueue )
     {
         bool b_start = !i && !b_enqueue;
 
-        input_item_t *p_input_item;
-        p_input_item = input_item_New( qtu( itemsMRL[i] ), NULL );
-
         /* Take options from the UI, not from what we stored */
         QStringList optionsList = getOptions().split( " :" );
 
-        /* Insert options */
-        for( int j = 0; j < optionsList.count(); j++ )
-        {
-            QString qs = colon_unescape( optionsList[j] );
-            if( !qs.isEmpty() )
-            {
-                input_item_AddOption( p_input_item, qtu( qs ),
-                                      VLC_INPUT_OPTION_TRUSTED );
-#ifdef DEBUG_QT
-                msg_Warn( p_intf, "Input option: %s", qtu( qs ) );
-#endif
-            }
-        }
-
         /* Switch between enqueuing and starting the item */
-        /* FIXME: playlist_AddInput() can fail */
-        playlist_AddInput( THEPL, p_input_item,
-                PLAYLIST_APPEND | ( b_start ? PLAYLIST_GO : PLAYLIST_PREPARSE ),
-                PLAYLIST_END, b_pl ? true : false, pl_Unlocked );
-        vlc_gc_decref( p_input_item );
-
-        /* Do not add the current MRL if playlist_AddInput fail */
-        RecentsMRL::getInstance( p_intf )->addRecent( itemsMRL[i] );
+        Open::openMRLwithOptions( p_intf, itemsMRL[i], &optionsList, b_start, b_pl );
     }
 }
 

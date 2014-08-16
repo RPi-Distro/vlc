@@ -2,7 +2,7 @@
  * subsusf.c : USF subtitles decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 VLC authors and VideoLAN
- * $Id: 74a9cf765c9cf9a5425250a6a23c91c71dbf51a6 $
+ * $Id: 0952e30b4d2be9d0e2b18232df362188ed1c2161 $
  *
  * Authors: Bernie Purcell <bitmap@videolan.org>
  *
@@ -1065,12 +1065,10 @@ static char *StripTags( char *psz_subtitle )
 
         psz_subtitle++;
     }
-    *psz_text = '\0';
+    *psz_text++ = '\0';
 
-    char *psz = realloc( psz_text_start, strlen( psz_text_start ) + 1 );
-    if( psz ) psz_text_start = psz;
-
-    return psz_text_start;
+    char *psz = realloc( psz_text_start, psz_text - psz_text_start );
+    return likely(psz != NULL) ? psz : psz_text_start;
 }
 
 /* Turn a HTML subtitle, turn into a plain-text version,

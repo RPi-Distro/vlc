@@ -2,7 +2,7 @@
  * ntservice.c: Windows NT/2K/XP service interface
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: c0602aeed53067782de566ec7823a7356559f248 $
+ * $Id: 3eda3ecdc2f7a8ba134e8eb34c5020a6b248fa89 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -322,7 +322,7 @@ static void WINAPI ServiceDispatch( DWORD numArgs, char **args )
         if( asprintf( &psz_temp, "%s,none", psz_module ) != -1 )
         {
             /* Try to create the interface */
-            if( intf_Create( p_intf, psz_temp ) )
+            if( intf_Create( pl_Get(p_intf), psz_temp ) )
             {
                 msg_Err( p_intf, "interface \"%s\" initialization failed",
                          psz_temp );

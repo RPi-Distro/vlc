@@ -2,7 +2,7 @@
  * avcodec.h: decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 2001-2008 VLC authors and VideoLAN
- * $Id: 388798322f1b91f364586b5e9520d352632e0e3e $
+ * $Id: 7551ab55b6396d95c1e6f24d3016126188321278 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -26,8 +26,8 @@
 
 /* VLC <-> avcodec tables */
 int GetFfmpegCodec( vlc_fourcc_t i_fourcc, int *pi_cat,
-                    int *pi_ffmpeg_codec, const char **ppsz_name );
-int GetVlcFourcc( int i_ffmpeg_codec, int *pi_cat,
+                    unsigned *pi_ffmpeg_codec, const char **ppsz_name );
+int GetVlcFourcc( unsigned i_ffmpeg_codec, int *pi_cat,
                   vlc_fourcc_t *pi_fourcc, const char **ppsz_name );
 vlc_fourcc_t GetVlcAudioFormat( int i_sample_fmt );
 
@@ -108,9 +108,6 @@ int ffmpeg_OpenCodec( decoder_t *p_dec );
 #define SKIP_IDCT_LONGTEXT N_( \
     "Force skipping of idct to speed up decoding for frame types " \
     "(-1=None, 0=Default, 1=B-frames, 2=P-frames, 3=B+P frames, 4=all frames)." )
-
-#define IGNORECROP_TEXT N_("Discard cropping information")
-#define IGNORECROP_LONGTEXT N_("Discard internal cropping parameters (e.g. from H.264 SPS)." )
 
 #define DEBUG_TEXT N_( "Debug mask" )
 #define DEBUG_LONGTEXT N_( "Set FFmpeg debug mask" )

@@ -2,7 +2,7 @@
  * cdrom.c: cdrom tools
  *****************************************************************************
  * Copyright (C) 1998-2001 VLC authors and VideoLAN
- * $Id: f0952d371753bc59eba52c01c5124291c36464f3 $
+ * $Id: d55bef46e6d48993515ede3026ee6bd20b3f4b61 $
  *
  * Authors: Johan Bilien <jobi@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -42,10 +42,8 @@
 #   define INCL_DOSDEVIOCTL
 #endif
 
-#ifdef HAVE_UNISTD_H
-#   include <unistd.h>
-#endif
 #include <sys/types.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #ifdef HAVE_ARPA_INET_H

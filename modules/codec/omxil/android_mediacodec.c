@@ -40,19 +40,101 @@
 #include <OMX_Core.h>
 #include <OMX_Component.h>
 #include "omxil_utils.h"
+#include "android_opaque.h"
 
 #define INFO_OUTPUT_BUFFERS_CHANGED -3
 #define INFO_OUTPUT_FORMAT_CHANGED  -2
 #define INFO_TRY_AGAIN_LATER        -1
 
 extern JavaVM *myVm;
+/* JNI functions to get/set an Android Surface object. */
+extern jobject jni_LockAndGetAndroidJavaSurface();
+extern void jni_UnlockAndroidSurface();
+extern void jni_SetAndroidSurfaceSizeEnv(JNIEnv *p_env, int width, int height, int visible_width, int visible_height, int sar_num, int sar_den);
+extern void jni_EventHardwareAccelerationError();
+extern bool jni_IsVideoPlayerActivityCreated();
+
+/* Implementation of a circular buffer of timestamps with overwriting
+ * of older values. MediaCodec has only one type of timestamp, if a
+ * block has no PTS, we send the DTS instead. Some hardware decoders
+ * cannot cope with this situation and output the frames in the wrong
+ * order. As a workaround in this case, we use a FIFO of timestamps in
+ * order to remember which input packets had no PTS.  Since an
+ * hardware decoder can silently drop frames, this might cause a
+ * growing desynchronization with the actual timestamp. Thus the
+ * circular buffer has a limited size and will overwrite older values.
+ */
+typedef struct
+{
+    uint32_t          begin;
+    uint32_t          size;
+    uint32_t          capacity;
+    int64_t           *buffer;
+} timestamp_fifo_t;
+
+static timestamp_fifo_t *timestamp_FifoNew(uint32_t capacity)
+{
+    timestamp_fifo_t *fifo = calloc(1, sizeof(*fifo));
+    if (!fifo)
+        return NULL;
+    fifo->buffer = malloc(capacity * sizeof(*fifo->buffer));
+    if (!fifo->buffer) {
+        free(fifo);
+        return NULL;
+    }
+    fifo->capacity = capacity;
+    return fifo;
+}
+
+static void timestamp_FifoRelease(timestamp_fifo_t *fifo)
+{
+    free(fifo->buffer);
+    free(fifo);
+}
+
+static bool timestamp_FifoIsEmpty(timestamp_fifo_t *fifo)
+{
+    return fifo->size == 0;
+}
+
+static bool timestamp_FifoIsFull(timestamp_fifo_t *fifo)
+{
+    return fifo->size == fifo->capacity;
+}
+
+static void timestamp_FifoEmpty(timestamp_fifo_t *fifo)
+{
+    fifo->size = 0;
+}
+
+static void timestamp_FifoPut(timestamp_fifo_t *fifo, int64_t ts)
+{
+    uint32_t end = (fifo->begin + fifo->size) % fifo->capacity;
+    fifo->buffer[end] = ts;
+    if (!timestamp_FifoIsFull(fifo))
+        fifo->size += 1;
+    else
+        fifo->begin = (fifo->begin + 1) % fifo->capacity;
+}
+
+static int64_t timestamp_FifoGet(timestamp_fifo_t *fifo)
+{
+    if (timestamp_FifoIsEmpty(fifo))
+        return VLC_TS_INVALID;
+
+    int64_t result = fifo->buffer[fifo->begin];
+    fifo->begin = (fifo->begin + 1) % fifo->capacity;
+    fifo->size -= 1;
+    return result;
+}
 
 struct decoder_sys_t
 {
     jclass media_codec_list_class, media_codec_class, media_format_class;
     jclass buffer_info_class, byte_buffer_class;
     jmethodID tostring;
-    jmethodID get_codec_count, get_codec_info_at, is_encoder;
+    jmethodID get_codec_count, get_codec_info_at, is_encoder, get_capabilities_for_type;
+    jfieldID profile_levels_field, profile_field, level_field;
     jmethodID get_supported_types, get_name;
     jmethodID create_by_codec_name, configure, start, stop, flush, release;
     jmethodID get_output_format, get_input_buffers, get_output_buffers;
@@ -73,8 +155,20 @@ struct decoder_sys_t
     int crop_top, crop_left;
     char *name;
 
-    int started;
-    int decoded;
+    bool allocated;
+    bool started;
+    bool decoded;
+    bool error_state;
+    bool error_event_sent;
+
+    ArchitectureSpecificCopyData architecture_specific_data;
+
+    /* Direct rendering members. */
+    bool direct_rendering;
+    int i_output_buffers; /**< number of MediaCodec output buffers */
+    picture_t** inflight_picture; /**< stores the inflight picture for each output buffer or NULL */
+
+    timestamp_fifo_t *timestamp_fifo;
 };
 
 enum Types
@@ -115,6 +209,11 @@ static const struct member members[] = {
     { "isEncoder", "()Z", "android/media/MediaCodecInfo", OFF(is_encoder), METHOD },
     { "getSupportedTypes", "()[Ljava/lang/String;", "android/media/MediaCodecInfo", OFF(get_supported_types), METHOD },
     { "getName", "()Ljava/lang/String;", "android/media/MediaCodecInfo", OFF(get_name), METHOD },
+    { "getCapabilitiesForType", "(Ljava/lang/String;)Landroid/media/MediaCodecInfo$CodecCapabilities;", "android/media/MediaCodecInfo", OFF(get_capabilities_for_type), METHOD },
+
+    { "profileLevels", "[Landroid/media/MediaCodecInfo$CodecProfileLevel;", "android/media/MediaCodecInfo$CodecCapabilities", OFF(profile_levels_field), FIELD },
+    { "profile", "I", "android/media/MediaCodecInfo$CodecProfileLevel", OFF(profile_field), FIELD },
+    { "level", "I", "android/media/MediaCodecInfo$CodecProfileLevel", OFF(level_field), FIELD },
 
     { "createByCodecName", "(Ljava/lang/String;)Landroid/media/MediaCodec;", "android/media/MediaCodec", OFF(create_by_codec_name), STATIC_METHOD },
     { "configure", "(Landroid/media/MediaFormat;Landroid/view/Surface;Landroid/media/MediaCrypto;I)V", "android/media/MediaCodec", OFF(configure), METHOD },
@@ -156,15 +255,25 @@ static void CloseDecoder(vlc_object_t *);
 
 static picture_t *DecodeVideo(decoder_t *, block_t **);
 
+static void InvalidateAllPictures(decoder_t *);
+
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
+#define DIRECTRENDERING_TEXT N_("Android direct rendering")
+#define DIRECTRENDERING_LONGTEXT N_(\
+        "Enable Android direct rendering using opaque buffers.")
+
+#define CFG_PREFIX "mediacodec-"
+
 vlc_module_begin ()
     set_description( N_("Video decoder using Android MediaCodec") )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_VCODEC )
     set_section( N_("Decoding") , NULL )
     set_capability( "decoder", 0 ) /* Only enabled via commandline arguments */
+    add_bool(CFG_PREFIX "dr", true,
+             DIRECTRENDERING_TEXT, DIRECTRENDERING_LONGTEXT, true)
     set_callbacks( OpenDecoder, CloseDecoder )
 vlc_module_end ()
 
@@ -196,16 +305,21 @@ static int OpenDecoder(vlc_object_t *p_this)
     case VLC_CODEC_H263: mime = "video/3gpp"; break;
     case VLC_CODEC_MP4V: mime = "video/mp4v-es"; break;
     case VLC_CODEC_VC1:  mime = "video/wvc1"; break;
+    case VLC_CODEC_VP8:  mime = "video/x-vnd.on2.vp8"; break;
     default:
-        msg_Dbg(p_dec, "codec %d not supported", p_dec->fmt_in.i_codec);
+        msg_Dbg(p_dec, "codec %4.4s not supported", (char *)&p_dec->fmt_in.i_codec);
         return VLC_EGENERIC;
     }
+
+    size_t fmt_profile = 0;
+    if (p_dec->fmt_in.i_codec == VLC_CODEC_H264)
+        h264_get_profile_level(&p_dec->fmt_in, &fmt_profile, NULL, NULL);
+
     /* Allocate the memory needed to store the decoder's structure */
     if ((p_dec->p_sys = p_sys = calloc(1, sizeof(*p_sys))) == NULL)
         return VLC_ENOMEM;
 
     p_dec->pf_decode_video = DecodeVideo;
-
 
     p_dec->fmt_out.i_cat = p_dec->fmt_in.i_cat;
     p_dec->fmt_out.video = p_dec->fmt_in.video;
@@ -270,13 +384,47 @@ static int OpenDecoder(vlc_object_t *p_this)
             (*env)->DeleteLocalRef(env, info);
             continue;
         }
+
+        jobject codec_capabilities = (*env)->CallObjectMethod(env, info, p_sys->get_capabilities_for_type,
+                                                              (*env)->NewStringUTF(env, mime));
+        jobject profile_levels = NULL;
+        int profile_levels_len = 0;
+        if ((*env)->ExceptionOccurred(env)) {
+            msg_Warn(p_dec, "Exception occurred in MediaCodecInfo.getCapabilitiesForType");
+            (*env)->ExceptionClear(env);
+            break;
+        } else if (codec_capabilities) {
+            profile_levels = (*env)->GetObjectField(env, codec_capabilities, p_sys->profile_levels_field);
+            if (profile_levels)
+                profile_levels_len = (*env)->GetArrayLength(env, profile_levels);
+        }
+        msg_Dbg(p_dec, "Number of profile levels: %d", profile_levels_len);
+
         jobject types = (*env)->CallObjectMethod(env, info, p_sys->get_supported_types);
         int num_types = (*env)->GetArrayLength(env, types);
         bool found = false;
         for (int j = 0; j < num_types && !found; j++) {
             jobject type = (*env)->GetObjectArrayElement(env, types, j);
-            if (!jstrcmp(env, type, mime))
-                found = true;
+            if (!jstrcmp(env, type, mime)) {
+                /* The mime type is matching for this component. We
+                   now check if the capabilities of the codec is
+                   matching the video format. */
+                if (p_dec->fmt_in.i_codec == VLC_CODEC_H264 && fmt_profile) {
+                    for (int i = 0; i < profile_levels_len && !found; ++i) {
+                        jobject profile_level = (*env)->GetObjectArrayElement(env, profile_levels, i);
+
+                        int omx_profile = (*env)->GetIntField(env, profile_level, p_sys->profile_field);
+                        size_t codec_profile = convert_omx_to_profile_idc(omx_profile);
+                        if (codec_profile != fmt_profile)
+                            continue;
+                        /* Some encoders set the level too high, thus we ignore it for the moment.
+                           We could try to guess the actual profile based on the resolution. */
+                        found = true;
+                    }
+                }
+                else
+                    found = true;
+            }
             (*env)->DeleteLocalRef(env, type);
         }
         if (found) {
@@ -304,6 +452,12 @@ static int OpenDecoder(vlc_object_t *p_this)
     // but not in 4.1 devices.
     p_sys->codec = (*env)->CallStaticObjectMethod(env, p_sys->media_codec_class,
                                                   p_sys->create_by_codec_name, codec_name);
+    if ((*env)->ExceptionOccurred(env)) {
+        msg_Warn(p_dec, "Exception occurred in MediaCodec.createByCodecName.");
+        (*env)->ExceptionClear(env);
+        goto error;
+    }
+    p_sys->allocated = true;
     p_sys->codec = (*env)->NewGlobalRef(env, p_sys->codec);
 
     jobject format = (*env)->CallStaticObjectMethod(env, p_sys->media_format_class,
@@ -332,19 +486,44 @@ static int OpenDecoder(vlc_object_t *p_this)
         (*env)->DeleteLocalRef(env, bytebuf);
     }
 
-    (*env)->CallVoidMethod(env, p_sys->codec, p_sys->configure, format, NULL, NULL, 0);
-    if ((*env)->ExceptionOccurred(env)) {
-        msg_Warn(p_dec, "Exception occurred in MediaCodec.configure");
-        (*env)->ExceptionClear(env);
-        goto error;
+    /* If the VideoPlayerActivity is not started, MediaCodec opaque
+       direct rendering should be disabled since no surface will be
+       attached to the JNI. */
+    p_sys->direct_rendering = jni_IsVideoPlayerActivityCreated() && var_InheritBool(p_dec, CFG_PREFIX "dr");
+    if (p_sys->direct_rendering) {
+        jobject surf = jni_LockAndGetAndroidJavaSurface();
+        if (surf) {
+            // Configure MediaCodec with the Android surface.
+            (*env)->CallVoidMethod(env, p_sys->codec, p_sys->configure, format, surf, NULL, 0);
+            if ((*env)->ExceptionOccurred(env)) {
+                msg_Warn(p_dec, "Exception occurred in MediaCodec.configure with an output surface.");
+                (*env)->ExceptionClear(env);
+                jni_UnlockAndroidSurface();
+                goto error;
+            }
+            p_dec->fmt_out.i_codec = VLC_CODEC_ANDROID_OPAQUE;
+        } else {
+            msg_Warn(p_dec, "Failed to get the Android Surface, disabling direct rendering.");
+            p_sys->direct_rendering = false;
+        }
+        jni_UnlockAndroidSurface();
     }
+    if (!p_sys->direct_rendering) {
+        (*env)->CallVoidMethod(env, p_sys->codec, p_sys->configure, format, NULL, NULL, 0);
+        if ((*env)->ExceptionOccurred(env)) {
+            msg_Warn(p_dec, "Exception occurred in MediaCodec.configure");
+            (*env)->ExceptionClear(env);
+            goto error;
+        }
+    }
+
     (*env)->CallVoidMethod(env, p_sys->codec, p_sys->start);
     if ((*env)->ExceptionOccurred(env)) {
         msg_Warn(p_dec, "Exception occurred in MediaCodec.start");
         (*env)->ExceptionClear(env);
         goto error;
     }
-    p_sys->started = 1;
+    p_sys->started = true;
 
     p_sys->input_buffers = (*env)->CallObjectMethod(env, p_sys->codec, p_sys->get_input_buffers);
     p_sys->output_buffers = (*env)->CallObjectMethod(env, p_sys->codec, p_sys->get_output_buffers);
@@ -352,9 +531,19 @@ static int OpenDecoder(vlc_object_t *p_this)
     p_sys->input_buffers = (*env)->NewGlobalRef(env, p_sys->input_buffers);
     p_sys->output_buffers = (*env)->NewGlobalRef(env, p_sys->output_buffers);
     p_sys->buffer_info = (*env)->NewGlobalRef(env, p_sys->buffer_info);
+    p_sys->i_output_buffers = (*env)->GetArrayLength(env, p_sys->output_buffers);
+    p_sys->inflight_picture = calloc(1, sizeof(picture_t*) * p_sys->i_output_buffers);
+    if (!p_sys->inflight_picture)
+        goto error;
     (*env)->DeleteLocalRef(env, format);
 
     (*myVm)->DetachCurrentThread(myVm);
+
+    const int timestamp_fifo_size = 32;
+    p_sys->timestamp_fifo = timestamp_FifoNew(timestamp_fifo_size);
+    if (!p_sys->timestamp_fifo)
+        goto error;
+
     return VLC_SUCCESS;
 
  error:
@@ -372,6 +561,10 @@ static void CloseDecoder(vlc_object_t *p_this)
     if (!p_sys)
         return;
 
+    /* Invalidate all pictures that are currently in flight in order
+     * to prevent the vout from using destroyed output buffers. */
+    if (p_sys->direct_rendering)
+        InvalidateAllPictures(p_dec);
     (*myVm)->AttachCurrentThread(myVm, &env, NULL);
     if (p_sys->input_buffers)
         (*env)->DeleteGlobalRef(env, p_sys->input_buffers);
@@ -379,8 +572,21 @@ static void CloseDecoder(vlc_object_t *p_this)
         (*env)->DeleteGlobalRef(env, p_sys->output_buffers);
     if (p_sys->codec) {
         if (p_sys->started)
+        {
             (*env)->CallVoidMethod(env, p_sys->codec, p_sys->stop);
-        (*env)->CallVoidMethod(env, p_sys->codec, p_sys->release);
+            if ((*env)->ExceptionOccurred(env)) {
+                msg_Err(p_dec, "Exception in MediaCodec.stop");
+                (*env)->ExceptionClear(env);
+            }
+        }
+        if (p_sys->allocated)
+        {
+            (*env)->CallVoidMethod(env, p_sys->codec, p_sys->release);
+            if ((*env)->ExceptionOccurred(env)) {
+                msg_Err(p_dec, "Exception in MediaCodec.release");
+                (*env)->ExceptionClear(env);
+            }
+        }
         (*env)->DeleteGlobalRef(env, p_sys->codec);
     }
     if (p_sys->buffer_info)
@@ -388,63 +594,222 @@ static void CloseDecoder(vlc_object_t *p_this)
     (*myVm)->DetachCurrentThread(myVm);
 
     free(p_sys->name);
+    ArchitectureSpecificCopyHooksDestroy(p_sys->pixel_format, &p_sys->architecture_specific_data);
+    free(p_sys->inflight_picture);
+    if (p_sys->timestamp_fifo)
+        timestamp_FifoRelease(p_sys->timestamp_fifo);
     free(p_sys);
 }
 
-static void GetOutput(decoder_t *p_dec, JNIEnv *env, picture_t **pp_pic, int loop)
+/*****************************************************************************
+ * vout callbacks
+ *****************************************************************************/
+static void DisplayBuffer(picture_sys_t* p_picsys, bool b_render)
+{
+    decoder_t *p_dec = p_picsys->p_dec;
+    decoder_sys_t *p_sys = p_dec->p_sys;
+
+    if (!p_picsys->b_valid)
+        return;
+
+    vlc_mutex_lock(get_android_opaque_mutex());
+
+    /* Picture might have been invalidated while waiting on the mutex. */
+    if (!p_picsys->b_valid) {
+        vlc_mutex_unlock(get_android_opaque_mutex());
+        return;
+    }
+
+    uint32_t i_index = p_picsys->i_index;
+    p_sys->inflight_picture[i_index] = NULL;
+
+    /* Release the MediaCodec buffer. */
+    JNIEnv *env = NULL;
+    (*myVm)->AttachCurrentThread(myVm, &env, NULL);
+    (*env)->CallVoidMethod(env, p_sys->codec, p_sys->release_output_buffer, i_index, b_render);
+    if ((*env)->ExceptionOccurred(env)) {
+        msg_Err(p_dec, "Exception in MediaCodec.releaseOutputBuffer (DisplayBuffer)");
+        (*env)->ExceptionClear(env);
+    }
+
+    (*myVm)->DetachCurrentThread(myVm);
+    p_picsys->b_valid = false;
+
+    vlc_mutex_unlock(get_android_opaque_mutex());
+}
+
+static void UnlockCallback(picture_sys_t* p_picsys)
+{
+    DisplayBuffer(p_picsys, false);
+}
+
+static void DisplayCallback(picture_sys_t* p_picsys)
+{
+    DisplayBuffer(p_picsys, true);
+}
+
+static void InvalidateAllPictures(decoder_t *p_dec)
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    do {
+
+    vlc_mutex_lock(get_android_opaque_mutex());
+    for (int i = 0; i < p_sys->i_output_buffers; ++i) {
+        picture_t *p_pic = p_sys->inflight_picture[i];
+        if (p_pic) {
+            p_pic->p_sys->b_valid = false;
+            p_sys->inflight_picture[i] = NULL;
+        }
+    }
+    vlc_mutex_unlock(get_android_opaque_mutex());
+}
+
+static void GetOutput(decoder_t *p_dec, JNIEnv *env, picture_t **pp_pic, jlong timeout)
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+    while (1) {
         int index = (*env)->CallIntMethod(env, p_sys->codec, p_sys->dequeue_output_buffer,
-                                          p_sys->buffer_info, (jlong) 0);
+                                          p_sys->buffer_info, timeout);
+        if ((*env)->ExceptionOccurred(env)) {
+            msg_Err(p_dec, "Exception in MediaCodec.dequeueOutputBuffer (GetOutput)");
+            (*env)->ExceptionClear(env);
+            p_sys->error_state = true;
+            return;
+        }
+
         if (index >= 0) {
-            jobject buf = (*env)->GetObjectArrayElement(env, p_sys->output_buffers, index);
-            jsize buf_size = (*env)->GetDirectBufferCapacity(env, buf);
-            uint8_t *ptr = (*env)->GetDirectBufferAddress(env, buf);
-            if (!*pp_pic)
+            if (!p_sys->pixel_format) {
+                msg_Warn(p_dec, "Buffers returned before output format is set, dropping frame");
+                (*env)->CallVoidMethod(env, p_sys->codec, p_sys->release_output_buffer, index, false);
+                if ((*env)->ExceptionOccurred(env)) {
+                    msg_Err(p_dec, "Exception in MediaCodec.releaseOutputBuffer");
+                    (*env)->ExceptionClear(env);
+                    p_sys->error_state = true;
+                    return;
+                }
+                continue;
+            }
+
+            if (!*pp_pic) {
                 *pp_pic = decoder_NewPicture(p_dec);
-            if (*pp_pic) {
+            } else if (p_sys->direct_rendering) {
                 picture_t *p_pic = *pp_pic;
-                int size = (*env)->GetIntField(env, p_sys->buffer_info, p_sys->size_field);
-                int offset = (*env)->GetIntField(env, p_sys->buffer_info, p_sys->offset_field);
-                ptr += offset; // Check the size parameter as well
+                picture_sys_t *p_picsys = p_pic->p_sys;
+                int i_prev_index = p_picsys->i_index;
+                (*env)->CallVoidMethod(env, p_sys->codec, p_sys->release_output_buffer, i_prev_index, false);
+                if ((*env)->ExceptionOccurred(env)) {
+                    msg_Err(p_dec, "Exception in MediaCodec.releaseOutputBuffer " \
+                            "(GetOutput, overwriting previous picture)");
+                    (*env)->ExceptionClear(env);
+                    p_sys->error_state = true;
+                    return;
+                }
+
+                // No need to lock here since the previous picture was not sent.
+                p_sys->inflight_picture[i_prev_index] = NULL;
+            }
+            if (*pp_pic) {
+
+                picture_t *p_pic = *pp_pic;
                 // TODO: Use crop_top/crop_left as well? Or is that already taken into account?
                 // On OMX_TI_COLOR_FormatYUV420PackedSemiPlanar the offset already incldues
                 // the cropping, so the top/left cropping params should just be ignored.
-                unsigned int chroma_div;
-                p_pic->date = (*env)->GetLongField(env, p_sys->buffer_info, p_sys->pts_field);
-                GetVlcChromaSizes(p_dec->fmt_out.i_codec, p_dec->fmt_out.video.i_width,
-                                  p_dec->fmt_out.video.i_height, NULL, NULL, &chroma_div);
-                CopyOmxPicture(p_sys->pixel_format, p_pic, p_sys->slice_height, p_sys->stride,
-                               ptr, chroma_div);
-            }
-            (*env)->CallVoidMethod(env, p_sys->codec, p_sys->release_output_buffer, index, false);
-            jthrowable exception = (*env)->ExceptionOccurred(env);
-            if(exception != NULL) {
-                jclass illegalStateException = (*env)->FindClass(env, "java/lang/IllegalStateException");
-                if((*env)->IsInstanceOf(env, exception, illegalStateException)) {
-                    msg_Err(p_dec, "Codec error (IllegalStateException) in MediaCodec.releaseOutputBuffer");
+
+                /* If the oldest input block had no PTS, the timestamp
+                 * of the frame returned by MediaCodec might be wrong
+                 * so we overwrite it with the corresponding dts. */
+                int64_t forced_ts = timestamp_FifoGet(p_sys->timestamp_fifo);
+                if (forced_ts == VLC_TS_INVALID)
+                    p_pic->date = (*env)->GetLongField(env, p_sys->buffer_info, p_sys->pts_field);
+                else
+                    p_pic->date = forced_ts;
+
+                if (p_sys->direct_rendering) {
+                    picture_sys_t *p_picsys = p_pic->p_sys;
+                    p_picsys->pf_display_callback = DisplayCallback;
+                    p_picsys->pf_unlock_callback = UnlockCallback;
+                    p_picsys->p_dec = p_dec;
+                    p_picsys->i_index = index;
+                    p_picsys->b_valid = true;
+
+                    p_sys->inflight_picture[index] = p_pic;
+                } else {
+                    jobject buf = (*env)->GetObjectArrayElement(env, p_sys->output_buffers, index);
+                    jsize buf_size = (*env)->GetDirectBufferCapacity(env, buf);
+                    uint8_t *ptr = (*env)->GetDirectBufferAddress(env, buf);
+
+                    int size = (*env)->GetIntField(env, p_sys->buffer_info, p_sys->size_field);
+                    int offset = (*env)->GetIntField(env, p_sys->buffer_info, p_sys->offset_field);
+                    ptr += offset; // Check the size parameter as well
+
+                    unsigned int chroma_div;
+                    GetVlcChromaSizes(p_dec->fmt_out.i_codec, p_dec->fmt_out.video.i_width,
+                                      p_dec->fmt_out.video.i_height, NULL, NULL, &chroma_div);
+                    CopyOmxPicture(p_sys->pixel_format, p_pic, p_sys->slice_height, p_sys->stride,
+                                   ptr, chroma_div, &p_sys->architecture_specific_data);
+                    (*env)->CallVoidMethod(env, p_sys->codec, p_sys->release_output_buffer, index, false);
+
+                    jthrowable exception = (*env)->ExceptionOccurred(env);
+                    if (exception != NULL) {
+                        jclass illegalStateException = (*env)->FindClass(env, "java/lang/IllegalStateException");
+                        if((*env)->IsInstanceOf(env, exception, illegalStateException)) {
+                            msg_Err(p_dec, "Codec error (IllegalStateException) in MediaCodec.releaseOutputBuffer");
+                            (*env)->ExceptionClear(env);
+                            (*env)->DeleteLocalRef(env, illegalStateException);
+                            p_sys->error_state = true;
+                        }
+                    }
+                    (*env)->DeleteLocalRef(env, buf);
+                }
+            } else {
+                msg_Warn(p_dec, "NewPicture failed");
+                (*env)->CallVoidMethod(env, p_sys->codec, p_sys->release_output_buffer, index, false);
+                if ((*env)->ExceptionOccurred(env)) {
+                    msg_Err(p_dec, "Exception in MediaCodec.releaseOutputBuffer (GetOutput)");
                     (*env)->ExceptionClear(env);
-                    (*env)->DeleteLocalRef(env, illegalStateException);
+                    p_sys->error_state = true;
                 }
             }
-            (*env)->DeleteLocalRef(env, buf);
+            return;
+
         } else if (index == INFO_OUTPUT_BUFFERS_CHANGED) {
             msg_Dbg(p_dec, "output buffers changed");
             (*env)->DeleteGlobalRef(env, p_sys->output_buffers);
+
             p_sys->output_buffers = (*env)->CallObjectMethod(env, p_sys->codec,
                                                              p_sys->get_output_buffers);
-            p_sys->output_buffers = (*env)->NewGlobalRef(env, p_sys->output_buffers);
-            continue;
-        } else if (index == INFO_OUTPUT_FORMAT_CHANGED) {
+            if ((*env)->ExceptionOccurred(env)) {
+                msg_Err(p_dec, "Exception in MediaCodec.getOutputBuffer (GetOutput)");
+                (*env)->ExceptionClear(env);
+                p_sys->output_buffers = NULL;
+                p_sys->error_state = true;
+                return;
+            }
 
+            p_sys->output_buffers = (*env)->NewGlobalRef(env, p_sys->output_buffers);
+
+            vlc_mutex_lock(get_android_opaque_mutex());
+            free(p_sys->inflight_picture);
+            p_sys->i_output_buffers = (*env)->GetArrayLength(env, p_sys->output_buffers);
+            p_sys->inflight_picture = calloc(1, sizeof(picture_t*) * p_sys->i_output_buffers);
+            vlc_mutex_unlock(get_android_opaque_mutex());
+
+        } else if (index == INFO_OUTPUT_FORMAT_CHANGED) {
             jobject format = (*env)->CallObjectMethod(env, p_sys->codec, p_sys->get_output_format);
+            if ((*env)->ExceptionOccurred(env)) {
+                msg_Err(p_dec, "Exception in MediaCodec.getOutputFormat (GetOutput)");
+                (*env)->ExceptionClear(env);
+                p_sys->error_state = true;
+                return;
+            }
+
             jobject format_string = (*env)->CallObjectMethod(env, format, p_sys->tostring);
 
             jsize format_len = (*env)->GetStringUTFLength(env, format_string);
             const char *format_ptr = (*env)->GetStringUTFChars(env, format_string, NULL);
             msg_Dbg(p_dec, "output format changed: %.*s", format_len, format_ptr);
             (*env)->ReleaseStringUTFChars(env, format_string, format_ptr);
+
+            ArchitectureSpecificCopyHooksDestroy(p_sys->pixel_format, &p_sys->architecture_specific_data);
 
             int width           = GET_INTEGER(format, "width");
             int height          = GET_INTEGER(format, "height");
@@ -457,7 +822,16 @@ static void GetOutput(decoder_t *p_dec, JNIEnv *env, picture_t **pp_pic, int loo
             int crop_bottom     = GET_INTEGER(format, "crop-bottom");
 
             const char *name = "unknown";
-            GetVlcChromaFormat(p_sys->pixel_format, &p_dec->fmt_out.i_codec, &name);
+            if (p_sys->direct_rendering) {
+                int sar_num = 1, sar_den = 1;
+                if (p_dec->fmt_in.video.i_sar_num != 0 && p_dec->fmt_in.video.i_sar_den != 0) {
+                    sar_num = p_dec->fmt_in.video.i_sar_num;
+                    sar_den = p_dec->fmt_in.video.i_sar_den;
+                }
+                jni_SetAndroidSurfaceSizeEnv(env, width, height, width, height, sar_num, sar_den);
+            } else
+                GetVlcChromaFormat(p_sys->pixel_format, &p_dec->fmt_out.i_codec, &name);
+
             msg_Dbg(p_dec, "output: %d %s, %dx%d stride %d %d, crop %d %d %d %d",
                     p_sys->pixel_format, name, width, height, p_sys->stride, p_sys->slice_height,
                     p_sys->crop_left, p_sys->crop_top, crop_right, crop_bottom);
@@ -470,6 +844,9 @@ static void GetOutput(decoder_t *p_dec, JNIEnv *env, picture_t **pp_pic, int loo
                 p_sys->slice_height = height;
             if ((*env)->ExceptionOccurred(env))
                 (*env)->ExceptionClear(env);
+
+            ArchitectureSpecificCopyHooks(p_dec, p_sys->pixel_format, p_sys->slice_height,
+                                          p_sys->stride, &p_sys->architecture_specific_data);
             if (p_sys->pixel_format == OMX_TI_COLOR_FormatYUV420PackedSemiPlanar) {
                 p_sys->slice_height -= p_sys->crop_top/2;
                 /* Reset crop top/left here, since the offset parameter already includes this.
@@ -483,11 +860,10 @@ static void GetOutput(decoder_t *p_dec, JNIEnv *env, picture_t **pp_pic, int loo
                 p_sys->stride = p_dec->fmt_out.video.i_width;
             }
 
-            continue;
         } else {
-            break;
+            return;
         }
-    } while (loop);
+    }
 }
 
 static picture_t *DecodeVideo(decoder_t *p_dec, block_t **pp_block)
@@ -502,30 +878,100 @@ static picture_t *DecodeVideo(decoder_t *p_dec, block_t **pp_block)
 
     block_t *p_block = *pp_block;
 
+    if (p_sys->error_state) {
+        block_Release(p_block);
+        if (!p_sys->error_event_sent) {
+            /* Signal the error to the Java. */
+            jni_EventHardwareAccelerationError();
+            p_sys->error_event_sent = true;
+        }
+        return NULL;
+    }
+
     (*myVm)->AttachCurrentThread(myVm, &env, NULL);
 
     if (p_block->i_flags & (BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED)) {
         block_Release(p_block);
+        timestamp_FifoEmpty(p_sys->timestamp_fifo);
         if (p_sys->decoded) {
+            /* Invalidate all pictures that are currently in flight
+             * since flushing make all previous indices returned by
+             * MediaCodec invalid. */
+            if (p_sys->direct_rendering)
+                InvalidateAllPictures(p_dec);
+
             (*env)->CallVoidMethod(env, p_sys->codec, p_sys->flush);
             if ((*env)->ExceptionOccurred(env)) {
                 msg_Warn(p_dec, "Exception occurred in MediaCodec.flush");
                 (*env)->ExceptionClear(env);
+                p_sys->error_state = true;
             }
         }
-        p_sys->decoded = 0;
+        p_sys->decoded = false;
         (*myVm)->DetachCurrentThread(myVm);
         return NULL;
     }
 
+    /* Use the aspect ratio provided by the input (ie read from packetizer).
+     * Don't check the current value of the aspect ratio in fmt_out, since we
+     * want to allow changes in it to propagate. */
+    if (p_dec->fmt_in.video.i_sar_num != 0 && p_dec->fmt_in.video.i_sar_den != 0) {
+        p_dec->fmt_out.video.i_sar_num = p_dec->fmt_in.video.i_sar_num;
+        p_dec->fmt_out.video.i_sar_den = p_dec->fmt_in.video.i_sar_den;
+    }
+
     jlong timeout = 0;
+    const int max_polling_attempts = 50;
+    int attempts = 0;
     while (true) {
-        int index = (*env)->CallIntMethod(env, p_sys->codec, p_sys->dequeue_input_buffer, timeout);
+        int index = (*env)->CallIntMethod(env, p_sys->codec, p_sys->dequeue_input_buffer, (jlong) 0);
+        if ((*env)->ExceptionOccurred(env)) {
+            msg_Err(p_dec, "Exception occurred in MediaCodec.dequeueInputBuffer");
+            (*env)->ExceptionClear(env);
+            p_sys->error_state = true;
+            break;
+        }
+
         if (index < 0) {
-            GetOutput(p_dec, env, &p_pic, timeout > 0);
-            timeout = 30;
+            GetOutput(p_dec, env, &p_pic, timeout);
+            if (p_pic) {
+                /* If we couldn't get an available input buffer but a
+                 * decoded frame is available, we return the frame
+                 * without assigning NULL to *pp_block. The next call
+                 * to DecodeVideo will try to send the input packet again.
+                 */
+                (*myVm)->DetachCurrentThread(myVm);
+                return p_pic;
+            }
+            timeout = 30 * 1000;
+            ++attempts;
+            /* With opaque DR the output buffers are released by the
+               vout therefore we implement a timeout for polling in
+               order to avoid being indefinitely stalled in this loop. */
+            if (p_sys->direct_rendering && attempts == max_polling_attempts) {
+                picture_t *invalid_picture = decoder_NewPicture(p_dec);
+                if (invalid_picture) {
+                    invalid_picture->date = VLC_TS_INVALID;
+                    picture_sys_t *p_picsys = invalid_picture->p_sys;
+                    p_picsys->pf_display_callback = NULL;
+                    p_picsys->pf_unlock_callback = NULL;
+                    p_picsys->p_dec = NULL;
+                    p_picsys->i_index = -1;
+                    p_picsys->b_valid = false;
+                }
+                else {
+                    /* If we cannot return a picture we must free the
+                       block since the decoder will proceed with the
+                       next block. */
+                    block_Release(p_block);
+                    *pp_block = NULL;
+                }
+                (*myVm)->DetachCurrentThread(myVm);
+                return invalid_picture;
+            }
             continue;
         }
+
         jobject buf = (*env)->GetObjectArrayElement(env, p_sys->input_buffers, index);
         jsize size = (*env)->GetDirectBufferCapacity(env, buf);
         uint8_t *bufptr = (*env)->GetDirectBufferAddress(env, buf);
@@ -538,9 +984,16 @@ static picture_t *DecodeVideo(decoder_t *p_dec, block_t **pp_block)
         int64_t ts = p_block->i_pts;
         if (!ts && p_block->i_dts)
             ts = p_block->i_dts;
+        timestamp_FifoPut(p_sys->timestamp_fifo, p_block->i_pts ? VLC_TS_INVALID : p_block->i_dts);
         (*env)->CallVoidMethod(env, p_sys->codec, p_sys->queue_input_buffer, index, 0, size, ts, 0);
         (*env)->DeleteLocalRef(env, buf);
-        p_sys->decoded = 1;
+        if ((*env)->ExceptionOccurred(env)) {
+            msg_Err(p_dec, "Exception in MediaCodec.queueInputBuffer");
+            (*env)->ExceptionClear(env);
+            p_sys->error_state = true;
+            break;
+        }
+        p_sys->decoded = true;
         break;
     }
     if (!p_pic)

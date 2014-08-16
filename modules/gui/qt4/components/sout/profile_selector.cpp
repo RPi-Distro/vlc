@@ -2,7 +2,7 @@
  * profile_selector.cpp : A small profile selector and editor
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: b9f7ea84c257ea8d4fba110876a121152559612d $
+ * $Id: 032101007e0601f90e668158ba775f9e4e6b9ae7 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -532,6 +532,7 @@ inline void VLCProfileEditor::registerCodecs()
     ADD_VCODEC( "DIVX 3" , "DIV3" )
     ADD_VCODEC( "H-263", "H263" )
     ADD_VCODEC( "H-264", "h264" )
+    ADD_VCODEC( "H-265", "hevc" )
     ADD_VCODEC( "VP8", "VP80" )
     ADD_VCODEC( "WMV1", "WMV1" )
     ADD_VCODEC( "WMV2" , "WMV2" )
@@ -549,6 +550,7 @@ inline void VLCProfileEditor::registerCodecs()
     ADD_ACODEC( "A52/AC-3", "a52" )
     ADD_ACODEC( "Vorbis", "vorb" )
     ADD_ACODEC( "Flac", "flac" )
+    ADD_ACODEC( "Opus", "opus" )
     ADD_ACODEC( "Speex", "spx" )
     ADD_ACODEC( "WAV", "s16l" )
     ADD_ACODEC( "WMA2", "wma2" )

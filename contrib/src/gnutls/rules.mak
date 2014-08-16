@@ -3,8 +3,10 @@
 GNUTLS_VERSION := 3.1.25
 GNUTLS_URL := ftp://ftp.gnutls.org/gcrypt/gnutls/v3.1/gnutls-$(GNUTLS_VERSION).tar.xz
 
-ifndef HAVE_IOS
+ifdef BUILD_NETWORK
+ifndef HAVE_DARWIN_OS
 PKGS += gnutls
+endif
 endif
 ifeq ($(call need_pkg,"gnutls >= 3.0.20"),)
 PKGS_FOUND += gnutls
@@ -26,9 +28,8 @@ endif
 	$(APPLY) $(SRC)/gnutls/gnutls-no-egd.patch
 	$(APPLY) $(SRC)/gnutls/read-file-limits.h.patch
 	$(APPLY) $(SRC)/gnutls/downgrade-automake-requirement.patch
-ifdef HAVE_MACOSX
 	$(APPLY) $(SRC)/gnutls/mac-keychain-lookup.patch
-endif
+	$(APPLY) $(SRC)/gnutls/gnutls-pkgconfig-osx.patch
 	$(call pkg_static,"lib/gnutls.pc.in")
 	$(UPDATE_AUTOCONFIG)
 	$(MOVE)

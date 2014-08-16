@@ -2,7 +2,7 @@
  * playlist.hpp : Playlist Widgets
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: f34feec5f1f534301ab3a45e40a1d91f40a76c38 $
+ * $Id: 533a056228b78014fdfcc3746f82de65ed8c435b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -77,7 +77,6 @@ protected:
     virtual void closeEvent( QCloseEvent * );
 private slots:
     void changeView( const QModelIndex& index );
-    void clearPlaylist();
 
     friend class PlaylistDialog;
 };
@@ -119,14 +118,16 @@ private:
     bool b_arrow;
 };
 
-class PLModel;
+class VLCModel;
 class QHBoxLayout;
+
 class LocationBar : public QWidget
 {
     Q_OBJECT
 public:
-    LocationBar( PLModel * );
+    LocationBar( VLCModel * );
     void setIndex( const QModelIndex & );
+    void setModel( VLCModel * _model ) { model = _model; };
     virtual QSize sizeHint() const;
 protected:
     virtual void resizeEvent ( QResizeEvent * event );
@@ -134,7 +135,7 @@ protected:
 private:
     void layOut( const QSize& size );
 
-    PLModel *model;
+    VLCModel *model;
     QSignalMapper *mapper;
     QWidgetList buttons;
     QList<QAction*> actions;

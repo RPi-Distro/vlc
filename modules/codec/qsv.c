@@ -2,7 +2,7 @@
  * qsv.c: mpeg4-part10/mpeg2 video encoder using Intel Media SDK
  *****************************************************************************
  * Copyright (C) 2013 VideoLabs
- * $Id: 7be675c4f222d67a78a5616d57394a3a62273ca2 $
+ * $Id: 9ac1bb7fa59bf6d0b7edc4b8321d9b0154338641 $
  *
  * Authors: Julien 'Lta' BALLET <contact@lta.io>
  *
@@ -413,7 +413,7 @@ static int Open(vlc_object_t *this)
         enc->fmt_out.i_codec != VLC_CODEC_MPGV && !enc->b_force)
         return VLC_EGENERIC;
 
-    if (!enc->fmt_in.video.i_height || !enc->fmt_in.video.i_width ||
+    if (!enc->fmt_in.video.i_visible_height || !enc->fmt_in.video.i_visible_width ||
         !enc->fmt_in.video.i_frame_rate || !enc->fmt_in.video.i_frame_rate_base) {
         msg_Err(enc, "Framerate and picture dimensions must be non-zero");
         return VLC_EGENERIC;
@@ -458,8 +458,8 @@ static int Open(vlc_object_t *this)
     sys->params.mfx.FrameInfo.ChromaFormat  = MFX_CHROMAFORMAT_YUV420;
     sys->params.mfx.FrameInfo.Width         = QSV_ALIGN(16, enc->fmt_in.video.i_width);
     sys->params.mfx.FrameInfo.Height        = QSV_ALIGN(32, enc->fmt_in.video.i_height);
-    sys->params.mfx.FrameInfo.CropW         = enc->fmt_in.video.i_width;
-    sys->params.mfx.FrameInfo.CropH         = enc->fmt_in.video.i_height;
+    sys->params.mfx.FrameInfo.CropW         = enc->fmt_in.video.i_visible_width;
+    sys->params.mfx.FrameInfo.CropH         = enc->fmt_in.video.i_visible_height;
     sys->params.mfx.FrameInfo.PicStruct     = MFX_PICSTRUCT_UNKNOWN;
 
     /* Parsing options common to all RC methods and codecs */

@@ -2,7 +2,7 @@
  * rc.c : remote control stdin/stdout module for vlc
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: ee9fd834895c6b71f180392770c26cff9b0a2335 $
+ * $Id: 8e5a162d1f80e723badd7c9b3a654baf661d6811 $
  *
  * Author: Peter Surda <shurdeek@panorama.sth.ac.at>
  *         Jean-Paul Saman <jpsaman #_at_# m2x _replaceWith#dot_ nl>
@@ -44,10 +44,8 @@
 #include <vlc_playlist.h>
 #include <vlc_keys.h>
 
-#ifdef HAVE_UNISTD_H
-#    include <unistd.h>
-#endif
 #include <sys/types.h>
+#include <unistd.h>
 
 #include <vlc_network.h>
 #include <vlc_url.h>
@@ -246,7 +244,7 @@ static int Activate( vlc_object_t *p_this )
 
         if( (i_socket = vlc_socket( PF_LOCAL, SOCK_STREAM, 0, false ) ) < 0 )
         {
-            msg_Warn( p_intf, "can't open socket: %m" );
+            msg_Warn( p_intf, "can't open socket: %s", vlc_strerror_c(errno) );
             free( psz_unix_path );
             return VLC_EGENERIC;
         }
@@ -265,8 +263,8 @@ static int Activate( vlc_object_t *p_this )
 
             if (bind (i_socket, (struct sockaddr *)&addr, sizeof (addr)))
             {
-                msg_Err (p_intf, "cannot bind UNIX socket at %s: %m",
-                         psz_unix_path);
+                msg_Err (p_intf, "cannot bind UNIX socket at %s: %s",
+                         psz_unix_path, vlc_strerror_c(errno));
                 free (psz_unix_path);
                 net_Close (i_socket);
                 return VLC_EGENERIC;
@@ -275,7 +273,8 @@ static int Activate( vlc_object_t *p_this )
 
         if( listen( i_socket, 1 ) )
         {
-            msg_Warn( p_intf, "can't listen on socket: %m");
+            msg_Warn (p_intf, "can't listen on socket: %s",
+                      vlc_strerror_c(errno));
             free( psz_unix_path );
             net_Close( i_socket );
             return VLC_EGENERIC;
@@ -741,7 +740,7 @@ static void *Run( void *data )
             else
                 fs = var_ToggleBool( p_sys->p_playlist, "fullscreen" );
 
-            if( p_sys->p_input == NULL )
+            if( p_sys->p_input != NULL )
             {
                 vout_thread_t *p_vout = input_GetVout( p_sys->p_input );
                 if( p_vout )
@@ -831,7 +830,6 @@ static void Help( intf_thread_t *p_intf)
     msg_rc("%s", _("| snapshot . . . . . . . . . . . . take video snapshot"));
     msg_rc("%s", _("| strack [X] . . . . . . . . .  set/get subtitle track"));
     msg_rc("%s", _("| key [hotkey name] . . . . . .  simulate hotkey press"));
-    msg_rc("%s", _("| menu . . [on|off|up|down|left|right|select] use menu"));
     msg_rc(  "| ");
     msg_rc("%s", _("| help . . . . . . . . . . . . . . . this help message"));
     msg_rc("%s", _("| logout . . . . . . .  exit (if in socket connection)"));
@@ -964,7 +962,7 @@ static int Input( vlc_object_t *p_this, char const *psz_cmd,
     if( ( state == PAUSE_S ) &&
         ( strcmp( psz_cmd, "pause" ) != 0 ) && (strcmp( psz_cmd,"frame") != 0 ) )
     {
-        msg_rc( "%s", _("Press menu select or pause to continue.") );
+        msg_rc( "%s", _("Press pause to continue.") );
     }
     else
     /* Parse commands that only require an input */
@@ -1190,7 +1188,7 @@ static int Playlist( vlc_object_t *p_this, char const *psz_cmd,
 
         if( state == PAUSE_S )
         {
-            msg_rc( "%s", _("Type 'menu select' or 'pause' to continue.") );
+            msg_rc( "%s", _("Type 'pause' to continue.") );
             return VLC_EGENERIC;
         }
     }
@@ -1421,9 +1419,10 @@ static int Quit( vlc_object_t *p_this, char const *psz_cmd,
 static int Intf( vlc_object_t *p_this, char const *psz_cmd,
                  vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
-    VLC_UNUSED(psz_cmd); VLC_UNUSED(oldval); VLC_UNUSED(p_data);
+    intf_thread_t *intf = (intf_thread_t *)p_this;
 
-    return intf_Create( p_this->p_libvlc, newval.psz_string );
+    VLC_UNUSED(psz_cmd); VLC_UNUSED(oldval); VLC_UNUSED(p_data);
+    return intf_Create(pl_Get(intf), newval.psz_string );
 }
 
 static int Volume( vlc_object_t *p_this, char const *psz_cmd,
@@ -1444,7 +1443,7 @@ static int Volume( vlc_object_t *p_this, char const *psz_cmd,
         vlc_object_release( p_input );
         if( state == PAUSE_S )
         {
-            msg_rc( "%s", _("Type 'menu select' or 'pause' to continue.") );
+            msg_rc( "%s", _("Type 'pause' to continue.") );
             return VLC_EGENERIC;
         }
     }
@@ -1488,7 +1487,7 @@ static int VolumeMove( vlc_object_t *p_this, char const *psz_cmd,
     vlc_object_release( p_input );
     if( state == PAUSE_S )
     {
-        msg_rc( "%s", _("Type 'menu select' or 'pause' to continue.") );
+        msg_rc( "%s", _("Type 'pause' to continue.") );
         return VLC_EGENERIC;
     }
 

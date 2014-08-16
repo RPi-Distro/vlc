@@ -1,24 +1,24 @@
 /*****************************************************************************
  * VLCUIWidgets.m: Widgets for VLC's Minimal Dialog Provider for Mac OS X
  *****************************************************************************
- * Copyright (C) 2009-2010 the VideoLAN team
- * $Id: 96fb44623b35ac68b94dba7c9154e6ba6318903c $
+ * Copyright (C) 2009-2010 VLC authors and VideoLAN
+ * $Id: e3ae835e10bd23fa16fb163f992f40ec2f24bb86 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan dot>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #import "VLCUIWidgets.h"

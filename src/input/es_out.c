@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: ba8f129cb9aae471e74605774b4ffbf3c9126957 $
+ * $Id: d5ac33b31fcd9181a685266546cbc53cff7498ee $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -193,7 +193,7 @@ static void EsOutDecodersStopBuffering( es_out_t *out, bool b_forced );
 static char *LanguageGetName( const char *psz_code );
 static char *LanguageGetCode( const char *psz_lang );
 static char **LanguageSplit( const char *psz_langs, bool b_default_any );
-static int LanguageArrayIndex( char **ppsz_langs, char *psz_lang );
+static int LanguageArrayIndex( char **ppsz_langs, const char *psz_lang );
 
 static char *EsOutProgramGetMetaName( es_out_pgrm_t *p_pgrm );
 
@@ -461,7 +461,7 @@ static int EsOutSetRecord(  es_out_t *out, bool b_record )
 
         if( !psz_sout && psz_path )
         {
-            char *psz_file = input_CreateFilename( VLC_OBJECT(p_input), psz_path, INPUT_RECORD_PREFIX, NULL );
+            char *psz_file = input_CreateFilename( p_input, psz_path, INPUT_RECORD_PREFIX, NULL );
             if( psz_file )
             {
                 if( asprintf( &psz_sout, "#record{dst-prefix='%s'}", psz_file ) < 0 )
@@ -491,7 +491,7 @@ static int EsOutSetRecord(  es_out_t *out, bool b_record )
 
             p_es->p_dec_record = input_DecoderNew( p_input, &p_es->fmt, p_es->p_pgrm->p_clock, p_sys->p_sout_record );
             if( p_es->p_dec_record && p_sys->b_buffering )
-                input_DecoderStartBuffering( p_es->p_dec_record );
+                input_DecoderStartWait( p_es->p_dec_record );
         }
     }
     else
@@ -576,10 +576,10 @@ static void EsOutChangePosition( es_out_t *out )
         if( !p_es->p_dec )
             continue;
 
-        input_DecoderStartBuffering( p_es->p_dec );
+        input_DecoderStartWait( p_es->p_dec );
 
         if( p_es->p_dec_record )
-            input_DecoderStartBuffering( p_es->p_dec_record );
+            input_DecoderStartWait( p_es->p_dec_record );
     }
 
     for( int i = 0; i < p_sys->i_pgrm; i++ )
@@ -620,7 +620,11 @@ static void EsOutDecodersStopBuffering( es_out_t *out, bool b_forced )
 
     if( i_stream_duration <= i_buffering_duration && !b_forced )
     {
-        const double f_level = __MAX( (double)i_stream_duration / i_buffering_duration, 0 );
+        double f_level;
+        if (i_buffering_duration == 0)
+            f_level = 0;
+        else
+            f_level = __MAX( (double)i_stream_duration / i_buffering_duration, 0 );
         input_SendEventCache( p_sys->p_input, f_level );
 
         msg_Dbg( p_sys->p_input, "Buffering %d%%", (int)(100 * f_level) );
@@ -646,12 +650,12 @@ static void EsOutDecodersStopBuffering( es_out_t *out, bool b_forced )
 
         if( !p_es->p_dec || p_es->fmt.i_cat == SPU_ES )
             continue;
-        input_DecoderWaitBuffering( p_es->p_dec );
+        input_DecoderWait( p_es->p_dec );
         if( p_es->p_dec_record )
-            input_DecoderWaitBuffering( p_es->p_dec_record );
+            input_DecoderWait( p_es->p_dec_record );
     }
 
-    msg_Dbg( p_sys->p_input, "Decoder buffering done in %d ms",
+    msg_Dbg( p_sys->p_input, "Decoder wait done in %d ms",
               (int)(mdate() - i_decoder_buffering_start)/1000 );
 
     /* Here is a good place to destroy unused vout with every demuxer */
@@ -671,9 +675,9 @@ static void EsOutDecodersStopBuffering( es_out_t *out, bool b_forced )
         if( !p_es->p_dec )
             continue;
 
-        input_DecoderStopBuffering( p_es->p_dec );
+        input_DecoderStopWait( p_es->p_dec );
         if( p_es->p_dec_record )
-            input_DecoderStopBuffering( p_es->p_dec_record );
+            input_DecoderStopWait( p_es->p_dec_record );
     }
 }
 static void EsOutDecodersChangePause( es_out_t *out, bool b_paused, mtime_t i_date )
@@ -1300,7 +1304,7 @@ static void EsOutProgramEpg( es_out_t *out, int i_group, const vlc_epg_t *p_epg 
     if( p_pgrm->psz_now_playing )
     {
         input_Control( p_input, INPUT_ADD_INFO, psz_cat,
-            vlc_meta_TypeToLocalizedString(vlc_meta_NowPlaying),
+            vlc_meta_TypeToLocalizedString(vlc_meta_NowPlaying), "%s",
             p_pgrm->psz_now_playing );
     }
     else
@@ -1558,13 +1562,13 @@ static void EsCreateDecoder( es_out_t *out, es_out_id_t *p_es )
     if( p_es->p_dec )
     {
         if( p_sys->b_buffering )
-            input_DecoderStartBuffering( p_es->p_dec );
+            input_DecoderStartWait( p_es->p_dec );
 
         if( !p_es->p_master && p_sys->p_sout_record )
         {
             p_es->p_dec_record = input_DecoderNew( p_input, &p_es->fmt, p_es->p_pgrm->p_clock, p_sys->p_sout_record );
             if( p_es->p_dec_record && p_sys->b_buffering )
-                input_DecoderStartBuffering( p_es->p_dec_record );
+                input_DecoderStartWait( p_es->p_dec_record );
         }
     }
 
@@ -1716,7 +1720,7 @@ static void EsOutSelect( es_out_t *out, es_out_id_t *es, bool b_force )
     int i_cat = es->fmt.i_cat;
 
     if( !p_sys->b_active ||
-        ( !b_force && es->fmt.i_priority < 0 ) )
+        ( !b_force && es->fmt.i_priority < ES_PRIORITY_SELECTABLE_MIN ) )
     {
         return;
     }
@@ -1839,6 +1843,9 @@ static void EsOutSelect( es_out_t *out, es_out_id_t *es, bool b_force )
                     ( p_sys->p_es_sub && 
                       p_sys->p_es_sub->fmt.i_priority < es->fmt.i_priority ) )
                     i_wanted = es->i_channel;
+                else if( p_sys->p_es_sub &&
+                         p_sys->p_es_sub->fmt.i_priority >= es->fmt.i_priority )
+                    i_wanted = p_sys->p_es_sub->i_channel;
             }
 
             if( p_sys->i_sub_last >= 0 )
@@ -2309,14 +2316,17 @@ static int EsOutControlLocked( es_out_t *out, int i_query, va_list args )
                             EsOutIsExtraBufferingAllowed( out ),
                             i_pcr, mdate() );
 
-        if( p_pgrm == p_sys->p_pgrm )
+        if( !p_sys->p_pgrm )
+            return VLC_SUCCESS;
+
+        if( p_sys->b_buffering )
         {
-            if( p_sys->b_buffering )
-            {
-                /* Check buffering state on master clock update */
-                EsOutDecodersStopBuffering( out, false );
-            }
-            else if( b_late && ( !p_sys->p_input->p->p_sout ||
+            /* Check buffering state on master clock update */
+            EsOutDecodersStopBuffering( out, false );
+        }
+        else if( p_pgrm == p_sys->p_pgrm )
+        {
+            if( b_late && ( !p_sys->p_input->p->p_sout ||
                                  !p_sys->p_input->p->b_out_pace_control ) )
             {
                 const mtime_t i_pts_delay_base = p_sys->i_pts_delay - p_sys->i_pts_jitter;
@@ -2330,19 +2340,23 @@ static int EsOutControlLocked( es_out_t *out, int i_query, va_list args )
                              "ES_OUT_SET_(GROUP_)PCR  is called too late (jitter of %d ms ignored)",
                              (int)(i_pts_delay - i_pts_delay_base) / 1000 );
                     i_pts_delay = p_sys->i_pts_delay;
+
+                    /* reset clock */
+                    for( int i = 0; i < p_sys->i_pgrm; i++ )
+                      input_clock_Reset( p_sys->pgrm[i]->p_clock );
                 }
                 else
                 {
                     msg_Err( p_sys->p_input,
                              "ES_OUT_SET_(GROUP_)PCR  is called too late (pts_delay increased to %d ms)",
                              (int)(i_pts_delay/1000) );
+
+                    /* Force a rebufferization when we are too late */
+
+                    /* It is not really good, as we throw away already buffered data
+                     * TODO have a mean to correctly reenter bufferization */
+                    es_out_Control( out, ES_OUT_RESET_PCR );
                 }
-
-                /* Force a rebufferization when we are too late */
-
-                /* It is not really good, as we throw away already buffered data
-                 * TODO have a mean to correctly reenter bufferization */
-                es_out_Control( out, ES_OUT_RESET_PCR );
 
                 es_out_SetJitter( out, i_pts_delay_base, i_pts_delay - i_pts_delay_base, p_sys->i_cr_average );
             }
@@ -2472,7 +2486,7 @@ static int EsOutControlLocked( es_out_t *out, int i_query, va_list args )
     {
         const int i_id = (int)va_arg( args, int );
         es_out_id_t *p_es = EsOutGetFromID( out, i_id );
-        int i_new_query;
+        int i_new_query = 0;
 
         switch( i_query )
         {
@@ -2814,7 +2828,7 @@ static char **LanguageSplit( const char *psz_langs, bool b_default_any )
     return ppsz;
 }
 
-static int LanguageArrayIndex( char **ppsz_langs, char *psz_lang )
+static int LanguageArrayIndex( char **ppsz_langs, const char *psz_lang )
 {
     if( !ppsz_langs || !psz_lang )
         return -1;
@@ -2887,10 +2901,10 @@ static void EsOutUpdateInfo( es_out_t *out, es_out_id_t *es, const es_format_t *
         vlc_fourcc_GetDescription( p_fmt_es->i_cat, p_fmt_es->i_codec );
     const vlc_fourcc_t i_codec_fourcc = ( p_fmt_es->i_original_fourcc )?
                                p_fmt_es->i_original_fourcc : p_fmt_es->i_codec;
-    if( psz_codec_description )
+    if( psz_codec_description && *psz_codec_description )
         info_category_AddInfo( p_cat, _("Codec"), "%s (%.4s)",
                                psz_codec_description, (char*)&i_codec_fourcc );
-    else
+    else if ( i_codec_fourcc != VLC_FOURCC(0,0,0,0) )
         info_category_AddInfo( p_cat, _("Codec"), "%.4s",
                                (char*)&i_codec_fourcc );
 

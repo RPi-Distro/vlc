@@ -2,7 +2,7 @@
  * logger.c : file logging plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: 104181eeef3895608e2454fbfb3c7d3fbe55b8b7 $
+ * $Id: e40dd968d53f9c93425976a187deae725d93a6d5 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -37,6 +37,7 @@
 
 #include <stdarg.h>
 #include <assert.h>
+#include <errno.h>
 
 #ifdef __ANDROID__
 # include <android/log.h>
@@ -209,6 +210,7 @@ static int Open( vlc_object_t *p_this )
         if( !strcmp( mode, "html" ) )
         {
             p_sys->footer = HTML_FOOTER;
+            filename = LOG_FILE_HTML;
             header = HTML_HEADER;
             cb = HtmlPrint;
         }
@@ -301,13 +303,15 @@ static int Open( vlc_object_t *p_this )
         /* Open the log file and remove any buffering for the stream */
         msg_Dbg( p_intf, "opening logfile `%s'", filename );
         p_sys->p_file = vlc_fopen( filename, "at" );
-        free( psz_file );
         if( p_sys->p_file == NULL )
         {
-            msg_Err( p_intf, "error opening logfile `%s': %m", filename );
+            msg_Err( p_intf, "error opening logfile `%s': %s", filename,
+                     vlc_strerror_c(errno) );
+            free( psz_file );
             free( p_sys );
             return VLC_EGENERIC;
         }
+        free( psz_file );
         setvbuf( p_sys->p_file, NULL, _IONBF, 0 );
         fputs( header, p_sys->p_file );
     }

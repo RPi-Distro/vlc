@@ -1,8 +1,8 @@
 /*****************************************************************************
  * macosx.m: Mac OS X module for vlc
  *****************************************************************************
- * Copyright (C) 2001-2013 VLC authors and VideoLAN
- * $Id: 5b9047c0a9baef89c18513663fd9c0a7bd485f8d $
+ * Copyright (C) 2001-2014 VLC authors and VideoLAN
+ * $Id: 73f308fc7e9153dc9da85426c4c7c754335f643f $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -26,7 +26,6 @@
  * Preamble
  *****************************************************************************/
 #include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -35,8 +34,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_vout_window.h>
-
-#include "CompatibilityFixes.h"
 
 /*****************************************************************************
  * External prototypes
@@ -121,13 +118,24 @@ void WindowClose  (vout_window_t *);
 #define SIDEBAR_TEXT N_("Show Sidebar")
 #define SIDEBAR_LONGTEXT N_("Shows a sidebar in the main window listing media sources.")
 
-#define ITUNES_TEXT N_("Pause iTunes during VLC playback")
-#define ITUNES_LONGTEXT N_("Pauses iTunes playback when VLC playback starts. If selected, iTunes playback will be resumed again if VLC playback is finished.")
+#define ITUNES_TEXT N_("Control external music players")
+#define ITUNES_LONGTEXT N_("VLC will pause and resume supported music players on playback.")
+
+#define LARGE_LISTFONT_TEXT N_("Use large text for list views")
 
 static const int itunes_list[] =
     { 0, 1, 2 };
 static const char *const itunes_list_text[] = {
-    N_("Do nothing"), N_("Pause iTunes"), N_("Pause and resume iTunes")
+    N_("Do nothing"), N_("Pause iTunes / Spotify"), N_("Pause and resume iTunes / Spotify")
+};
+
+#define CONTINUE_PLAYBACK_TEXT N_("Continue playback where you left off")
+#define CONTINUE_PLAYBACK_LONGTEXT N_("VLC will store playback positions of the last 30 items you played. If you re-open one of those, playback will continue.")
+
+static const int continue_playback_list[] =
+{ 0, 1, 2 };
+static const char *const continue_playback_list_text[] = {
+    N_("Ask"), N_("Always"), N_("Never")
 };
 
 #define VOLUME_MAX_TEXT N_("Maximum Volume displayed")
@@ -136,22 +144,21 @@ static const char *const itunes_list_text[] = {
 vlc_module_begin()
     set_description(N_("Mac OS X interface"))
     set_capability("interface", 200)
-    set_callbacks(OpenIntf, CloseIntf)
+    set_callbacks(OpenIntf, NULL)
     set_category(CAT_INTERFACE)
     set_subcategory(SUBCAT_INTERFACE_MAIN)
     cannot_unload_broken_library()
 
-    BOOL b_have_mavericks = OSX_MAVERICKS;
-
     set_section(N_("Appearance"), 0)
         add_bool("macosx-interfacestyle", false, INTERFACE_STYLE_TEXT, INTERFACE_STYLE_LONGTEXT, false)
-        add_bool("macosx-nativefullscreenmode", b_have_mavericks, NATIVE_FULLSCREEN_MODE_ON_LION_TEXT, NATIVE_FULLSCREEN_MODE_ON_LION_LONGTEXT, false)
+        add_bool("macosx-nativefullscreenmode", false, NATIVE_FULLSCREEN_MODE_ON_LION_TEXT, NATIVE_FULLSCREEN_MODE_ON_LION_LONGTEXT, false)
         add_bool("macosx-icon-change", true, ICONCHANGE_TEXT, ICONCHANGE_LONGTEXT, true)
         add_bool("macosx-show-playback-buttons", false, JUMPBUTTONS_TEXT, JUMPBUTTONS_LONGTEXT, false)
         add_bool("macosx-show-playmode-buttons", false, PLAYMODEBUTTONS_TEXT, PLAYMODEBUTTONS_LONGTEXT, false)
         add_bool("macosx-show-effects-button", false, EFFECTSBUTTON_TEXT, EFFECTSBUTTON_LONGTEXT, false)
         add_bool("macosx-show-sidebar", true, SIDEBAR_TEXT, SIDEBAR_LONGTEXT, false)
         add_integer_with_range("macosx-max-volume", 125, 60, 200, VOLUME_MAX_TEXT, VOLUME_MAX_TEXT, true)
+        add_bool("macosx-large-text", false, LARGE_LISTFONT_TEXT, LARGE_LISTFONT_TEXT, false)
 
     set_section(N_("Behavior"), 0)
         add_bool("macosx-autoplay", true, AUTOPLAY_OSX_TEST, AUTOPLAY_OSX_LONGTEXT, false)
@@ -162,6 +169,8 @@ vlc_module_begin()
         add_bool("macosx-lock-aspect-ratio", true, LOCK_ASPECT_RATIO_TEXT, LOCK_ASPECT_RATIO_TEXT, true)
         add_integer("macosx-control-itunes", 1, ITUNES_TEXT, ITUNES_LONGTEXT, false)
         change_integer_list(itunes_list, itunes_list_text)
+        add_integer("macosx-continue-playback", 0, CONTINUE_PLAYBACK_TEXT, CONTINUE_PLAYBACK_LONGTEXT, false)
+        change_integer_list(continue_playback_list, continue_playback_list_text)
 
     set_section(N_("Apple Remote and media keys"), 0)
         add_bool("macosx-appleremote", true, USE_APPLE_REMOTE_TEXT, USE_APPLE_REMOTE_LONGTEXT, false)

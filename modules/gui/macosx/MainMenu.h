@@ -2,7 +2,7 @@
  * MainMenu.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2013 Felix Paul Kühne
- * $Id: 7f3977344a5be64f22ceff1909215c5ecd799aa8 $
+ * $Id: 7e126f01523bb5cd516092cc2450275e9983b0a1 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -35,6 +35,7 @@
     BOOL b_nib_tracksynchro_loaded;
     BOOL b_nib_bookmarks_loaded;
     BOOL b_nib_convertandsave_loaded;
+    BOOL b_nib_addonmanager_loaded;
 
     id o_about;                 /* VLAboutBox     */
     id o_videoeffects;          /* VLCVideoEffects */
@@ -42,6 +43,7 @@
     id o_trackSynchronization;  /* VLCTrackSynchronization */
     id o_bookmarks;             /* VLCBookmarks */
     id o_convertandsave;        /* VLCConvertAndSave */
+    id o_addonManager;          /* VLCAddonManager */
 
     id o_extMgr;                /* Extensions Manager */
 
@@ -52,6 +54,7 @@
     IBOutlet NSMenuItem * o_mi_checkForUpdate;
     IBOutlet NSMenuItem * o_mi_extensions;
     IBOutlet NSMenu * o_mu_extensions;
+    IBOutlet NSMenuItem * o_mi_addonManager;
     IBOutlet NSMenuItem * o_mi_add_intf;
     IBOutlet NSMenu * o_mu_add_intf;
     IBOutlet NSMenuItem * o_mi_services;
@@ -67,8 +70,10 @@
     IBOutlet NSMenuItem * o_mi_open_net;
     IBOutlet NSMenuItem * o_mi_open_capture;
     IBOutlet NSMenuItem * o_mi_open_recent;
+    IBOutlet NSMenuItem * o_mi_close_window;
     IBOutlet NSMenuItem * o_mi_open_wizard;
     IBOutlet NSMenuItem * o_mi_convertandsave;
+    IBOutlet NSMenuItem * o_mi_save_playlist;
 
     IBOutlet NSMenu * o_mu_edit;
     IBOutlet NSMenuItem * o_mi_cut;
@@ -179,7 +184,7 @@
 
     IBOutlet NSMenu * o_mu_window;
     IBOutlet NSMenuItem * o_mi_minimize;
-    IBOutlet NSMenuItem * o_mi_close_window;
+    IBOutlet NSMenuItem * o_mi_zoom_window;
     IBOutlet NSMenuItem * o_mi_player;
     IBOutlet NSMenuItem * o_mi_controller;
     IBOutlet NSMenuItem * o_mi_audioeffects;
@@ -232,14 +237,16 @@
 - (void)refreshVoutDeviceMenu:(NSNotification *)o_notification;
 - (void)setSubmenusEnabled:(BOOL)b_enabled;
 - (void)setRateControlsEnabled:(BOOL)b_enabled;
-- (void)setupExtensionsMenu;
 - (void)updateSidebarMenuItem;
+
+- (IBAction)openAddonManager:(id)sender;
 
 - (IBAction)intfOpenFile:(id)sender;
 - (IBAction)intfOpenFileGeneric:(id)sender;
 - (IBAction)intfOpenDisc:(id)sender;
 - (IBAction)intfOpenNet:(id)sender;
 - (IBAction)intfOpenCapture:(id)sender;
+- (IBAction)savePlaylist:(id)sender;
 
 - (IBAction)toggleEffectsButton:(id)sender;
 - (IBAction)toggleJumpButtons:(id)sender;
@@ -249,6 +256,7 @@
 - (BOOL)setPlaylistColumnTableState:(NSInteger)i_state forColumn:(NSString *)o_column;
 - (NSMenu *)setupPlaylistTableColumnsMenu;
 
+- (IBAction)quitAfterPlayback:(id)sender;
 - (IBAction)toggleRecord:(id)sender;
 - (void)updateRecordState:(BOOL)b_value;
 - (IBAction)setPlaybackRate:(id)sender;
@@ -268,6 +276,7 @@
 - (IBAction)switchSubtitleBackgroundOpacity:(id)sender;
 - (IBAction)telxTransparent:(id)sender;
 - (IBAction)telxNavLink:(id)sender;
+- (IBAction)togglePostProcessing:(id)sender;
 
 - (IBAction)showWizard:(id)sender;
 - (IBAction)showConvertAndSave:(id)sender;
@@ -287,6 +296,9 @@
 - (IBAction)openForum:(id)sender;
 - (IBAction)openDonate:(id)sender;
 - (IBAction)viewErrorsAndWarnings:(id)sender;
+- (IBAction)showMessagesPanel:(id)showMessagesPanel;
+- (IBAction)showMainWindow:(id)sender;
+- (IBAction)showPlaylist:(id)sender;
 
 - (void)setPlay;
 - (void)setPause;

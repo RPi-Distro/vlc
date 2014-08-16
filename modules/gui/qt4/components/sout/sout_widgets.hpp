@@ -2,7 +2,7 @@
  * sout_widgets.hpp : Widgets for stream output destination boxes
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 983170e00afc10624354116990a01ee82754e79b $
+ * $Id: a03c32fe96cd84a1a353f56af87b10624c4c9359 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -31,6 +31,7 @@
 class QLineEdit;
 class QLabel;
 class QSpinBox;
+class QGridLayout;
 
 class SoutInputBox : public QGroupBox
 {
@@ -48,10 +49,14 @@ class VirtualDestBox : public QWidget
 {
     Q_OBJECT
     public:
-        VirtualDestBox( QWidget *_parent = NULL ) : QWidget( _parent ){}
+        VirtualDestBox( QWidget *_parent = NULL );
         virtual QString getMRL( const QString& ) = 0;
+        virtual ~VirtualDestBox();
     protected:
         QString mrl;
+    protected:
+        QLabel *label;
+        QGridLayout *layout;
     signals:
         void mrlUpdated();
 };
@@ -60,10 +65,11 @@ class FileDestBox: public VirtualDestBox
 {
     Q_OBJECT
     public:
-        FileDestBox( QWidget *_parent = NULL );
+        FileDestBox( QWidget *_parent = NULL, intf_thread_t * = NULL );
         virtual QString getMRL( const QString& );
     private:
         QLineEdit *fileEdit;
+        intf_thread_t *p_intf;
     private slots:
         void fileBrowse();
 };

@@ -2,7 +2,7 @@
  * croppadd.c: Crop/Padd image filter
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
- * $Id: b4f2f2d5cebc9261b74e7a32beae42787ae53033 $
+ * $Id: 2ed34cd03130a09876ead1f0c5693937e96c9240 $
  *
  * Authors: Antoine Cellerier <dionoea @t videolan dot org>
  *
@@ -75,8 +75,8 @@ static picture_t *Filter( filter_t *, picture_t * );
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin ()
-    set_shortname( N_("Cropadd") )
-    set_description( N_("Video scaling filter") )
+    set_shortname( N_("Croppadd") )
+    set_description( N_("Video cropping filter") )
     set_capability( "video filter2", 0 )
     set_callbacks( OpenFilter, CloseFilter )
 
@@ -143,6 +143,11 @@ static int OpenFilter( vlc_object_t *p_this )
          * to change the output format ... FIXME? */
         return VLC_EGENERIC;
     }
+
+    const vlc_chroma_description_t *p_chroma =
+        vlc_fourcc_GetChromaDescription( p_filter->fmt_in.video.i_chroma );
+    if( p_chroma == NULL || p_chroma->plane_count == 0 )
+        return VLC_EGENERIC;
 
     p_filter->p_sys = (filter_sys_t *)malloc( sizeof( filter_sys_t ) );
     if( !p_filter->p_sys ) return VLC_ENOMEM;

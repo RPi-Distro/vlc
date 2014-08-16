@@ -1,4 +1,4 @@
-﻿/*****************************************************************************
+/*****************************************************************************
  * decklink.cpp: BlackMagic DeckLink SDI output module
  *****************************************************************************
  * Copyright (C) 2012-2013 Rafaël Carré
@@ -43,6 +43,7 @@
 #include <vlc_picture_pool.h>
 
 #include <vlc_block.h>
+#include <vlc_image.h>
 #include <vlc_atomic.h>
 #include <vlc_aout.h>
 #include <arpa/inet.h>
@@ -65,6 +66,15 @@ static const int pi_channels_maps[CHANNELS_MAX+1] =
     AOUT_CHANS_5_1,
 };
 #endif
+
+#define NOSIGNAL_INDEX_TEXT N_("Timelength after which we assume there is no signal.")
+#define NOSIGNAL_INDEX_LONGTEXT N_(\
+    "Timelength after which we assume there is no signal.\n"\
+    "After this delay we black out the video."\
+    )
+
+#define NOSIGNAL_IMAGE_TEXT N_("Picture to display on input signal loss.")
+#define NOSIGNAL_IMAGE_LONGTEXT NOSIGNAL_IMAGE_TEXT
 
 #define CARD_INDEX_TEXT N_("Output card")
 #define CARD_INDEX_LONGTEXT N_(\
@@ -113,18 +123,12 @@ static const char *const ppsz_videoconns_text[] = {
     N_("SDI"), N_("HDMI"), N_("Optical SDI"), N_("Component"), N_("Composite"), N_("S-video")
 };
 
-static const char *const ppsz_audioconns[] = {
-    "embedded", "aesebu", "analog"
-};
-static const char *const ppsz_audioconns_text[] = {
-    N_("Embedded"), N_("AES/EBU"), N_("Analog")
-};
-
-
 struct vout_display_sys_t
 {
     picture_pool_t *pool;
     bool tenbits;
+    int nosignal_delay;
+    picture_t *pic_nosignal;
 };
 
 /* Only one audio output module and one video output module
@@ -142,7 +146,6 @@ struct decklink_sys_t
     vlc_mutex_t lock;
     vlc_cond_t cond;
     uint8_t users;
-    BMDAudioConnection aconn;
 
     //int i_channels;
     int i_rate;
@@ -191,6 +194,10 @@ vlc_module_begin()
                 MODE_TEXT, MODE_LONGTEXT, true)
     add_bool(VIDEO_CFG_PREFIX "tenbits", false,
                 VIDEO_TENBITS_TEXT, VIDEO_TENBITS_LONGTEXT, true)
+    add_integer(VIDEO_CFG_PREFIX "nosignal-delay", 5,
+                NOSIGNAL_INDEX_TEXT, NOSIGNAL_INDEX_LONGTEXT, true)
+    add_loadfile(VIDEO_CFG_PREFIX "nosignal-image", NULL,
+                NOSIGNAL_IMAGE_TEXT, NOSIGNAL_IMAGE_LONGTEXT, true)
 
 
     add_submodule ()
@@ -200,9 +207,7 @@ vlc_module_begin()
     set_capability("audio output", 0)
     set_callbacks (OpenAudio, CloseAudio)
     set_section(N_("Decklink Audio Options"), NULL)
-    add_string(AUDIO_CFG_PREFIX "audio-connection", "embedded",
-                AUDIO_CONNECTION_TEXT, AUDIO_CONNECTION_LONGTEXT, true)
-                change_string_list(ppsz_audioconns, ppsz_audioconns_text)
+    add_obsolete_string("audio-connection")
     add_integer(AUDIO_CFG_PREFIX "audio-rate", 48000,
                 RATE_TEXT, RATE_LONGTEXT, true)
     add_integer(AUDIO_CFG_PREFIX "audio-channels", 2,
@@ -227,7 +232,7 @@ static struct decklink_sys_t *GetDLSys(vlc_object_t *obj)
             sys->p_output = NULL;
             sys->offset = 0;
             sys->users = 0;
-            sys->aconn = 0;
+            sys->i_rate = -1;
             vlc_mutex_init(&sys->lock);
             vlc_cond_init(&sys->cond);
             var_Create(libvlc, "decklink-sys", VLC_VAR_ADDRESS);
@@ -264,25 +269,6 @@ static void ReleaseDLSys(vlc_object_t *obj)
     }
 
     vlc_mutex_unlock(&sys_lock);
-}
-
-// Connection mode
-static BMDAudioConnection getAConn(audio_output_t *aout)
-{
-    BMDAudioConnection conn = bmdAudioConnectionEmbedded;
-    char *psz = var_InheritString(aout, AUDIO_CFG_PREFIX "audio-connection");
-    if (!psz)
-        return conn;
-
-    if (!strcmp(psz, "embedded"))
-        conn = bmdAudioConnectionEmbedded;
-    else if (!strcmp(psz, "aesebu"))
-        conn = bmdAudioConnectionAESEBU;
-    else if (!strcmp(psz, "analog"))
-        conn = bmdAudioConnectionAnalog;
-
-    free(psz);
-    return conn;
 }
 
 static BMDVideoConnection getVConn(vout_display_t *vd)
@@ -337,7 +323,7 @@ static struct decklink_sys_t *OpenDecklink(vout_display_t *vd)
     decklink_sys->users++;
 
     /* wait until aout is ready */
-    while (decklink_sys->aconn == 0)
+    while (decklink_sys->i_rate == -1)
         vlc_cond_wait(&decklink_sys->cond, &decklink_sys->lock);
 
     int i_card_index = var_InheritInteger(vd, CFG_PREFIX "card-index");
@@ -466,10 +452,6 @@ static struct decklink_sys_t *OpenDecklink(vout_display_t *vd)
         msg_Err(vd, "Unknown video mode specified.");
         goto error;
     }
-
-    result = p_config->SetInt(
-        bmdDeckLinkConfigAudioInputConnection, decklink_sys->aconn);
-    CHECK("Could not set audio connection");
 
     if (/*decklink_sys->i_channels > 0 &&*/ decklink_sys->i_rate > 0)
     {
@@ -601,13 +583,41 @@ static void DisplayVideo(vout_display_t *vd, picture_t *picture, subpicture_t *)
 {
     vout_display_sys_t *sys = vd->sys;
     struct decklink_sys_t *decklink_sys = GetDLSys(VLC_OBJECT(vd));
+    mtime_t now = mdate();
 
     if (!picture)
         return;
 
+    picture_t *orig_picture = picture;
+
+    if (now - picture->date > sys->nosignal_delay * CLOCK_FREQ) {
+        msg_Dbg(vd, "no signal");
+        if (sys->pic_nosignal) {
+            picture = sys->pic_nosignal;
+        } else {
+            if (sys->tenbits) { // I422_10L
+                plane_t *y = &picture->p[0];
+                memset(y->p_pixels, 0x0, y->i_lines * y->i_pitch);
+                for (int i = 1; i < picture->i_planes; i++) {
+                    plane_t *p = &picture->p[i];
+                    size_t len = p->i_lines * p->i_pitch / 2;
+                    int16_t *data = (int16_t*)p->p_pixels;
+                    for (size_t j = 0; j < len; j++) // XXX: SIMD
+                        data[j] = 0x200;
+                }
+            } else { // UYVY
+                size_t len = picture->p[0].i_lines * picture->p[0].i_pitch;
+                for (size_t i = 0; i < len; i+= 2) { // XXX: SIMD
+                    picture->p[0].p_pixels[i+0] = 0x80;
+                    picture->p[0].p_pixels[i+1] = 0;
+                }
+            }
+        }
+        picture->date = now;
+    }
+
     HRESULT result;
     int w, h, stride, length;
-    mtime_t now;
     w = decklink_sys->i_width;
     h = decklink_sys->i_height;
 
@@ -664,7 +674,7 @@ static void DisplayVideo(vout_display_t *vd, picture_t *picture, subpicture_t *)
 end:
     if (pDLVideoFrame)
         pDLVideoFrame->Release();
-    picture_Release(picture);
+    picture_Release(orig_picture);
 }
 
 static int ControlVideo(vout_display_t *vd, int query, va_list args)
@@ -692,9 +702,13 @@ static int OpenVideo(vlc_object_t *p_this)
         return VLC_ENOMEM;
 
     sys->tenbits = var_InheritBool(p_this, VIDEO_CFG_PREFIX "tenbits");
+    sys->nosignal_delay = var_InheritInteger(p_this, VIDEO_CFG_PREFIX "nosignal-delay");
+    sys->pic_nosignal = NULL;
 
     decklink_sys = OpenDecklink(vd);
     if (!decklink_sys) {
+        if (sys->pic_nosignal)
+            picture_Release(sys->pic_nosignal);
         free(sys);
         return VLC_EGENERIC;
     }
@@ -709,6 +723,37 @@ static int OpenVideo(vlc_object_t *p_this)
     vd->fmt.i_width = decklink_sys->i_width;
     vd->fmt.i_height = decklink_sys->i_height;
 
+    char *pic_file = var_InheritString(p_this, VIDEO_CFG_PREFIX "nosignal-image");
+    if (pic_file) {
+        image_handler_t *img = image_HandlerCreate(p_this);
+        if (!img) {
+            msg_Err(p_this, "Could not create image converter");
+        } else {
+            video_format_t in, dummy;
+
+            video_format_Init(&in, 0);
+            video_format_Setup(&in, 0, vd->fmt.i_width, vd->fmt.i_height,
+                    vd->fmt.i_width, vd->fmt.i_height, 1, 1);
+
+            video_format_Init(&dummy, 0);
+
+            picture_t *png = image_ReadUrl(img, pic_file, &dummy, &in);
+            if (png) {
+                msg_Err(p_this, "Converting");
+                sys->pic_nosignal = image_Convert(img, png, &in, &vd->fmt);
+                picture_Release(png);
+            }
+
+            image_HandlerDelete(img);
+        }
+
+        free(pic_file);
+        if (!sys->pic_nosignal) {
+            CloseVideo(p_this);
+            msg_Err(p_this, "Could not create no signal picture");
+            return VLC_EGENERIC;
+        }
+    }
     vd->info.has_hide_mouse = true;
     vd->pool    = PoolVideo;
     vd->prepare = NULL;
@@ -727,6 +772,9 @@ static void CloseVideo(vlc_object_t *p_this)
 
     if (sys->pool)
         picture_pool_Delete(sys->pool);
+
+    if (sys->pic_nosignal)
+        picture_Release(sys->pic_nosignal);
 
     free(sys);
 
@@ -810,7 +858,6 @@ static int OpenAudio(vlc_object_t *p_this)
     struct decklink_sys_t *decklink_sys = GetDLSys(VLC_OBJECT(aout));
 
     vlc_mutex_lock(&decklink_sys->lock);
-    decklink_sys->aconn = getAConn(aout);
     //decklink_sys->i_channels = var_InheritInteger(vd, AUDIO_CFG_PREFIX "audio-channels");
     decklink_sys->i_rate = var_InheritInteger(aout, AUDIO_CFG_PREFIX "audio-rate");
     decklink_sys->users++;
@@ -834,7 +881,6 @@ static void CloseAudio(vlc_object_t *p_this)
 {
     struct decklink_sys_t *decklink_sys = GetDLSys(p_this);
     vlc_mutex_lock(&decklink_sys->lock);
-    decklink_sys->aconn = 0;
     vlc_mutex_unlock(&decklink_sys->lock);
     ReleaseDLSys(p_this);
 }

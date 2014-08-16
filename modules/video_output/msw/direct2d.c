@@ -2,7 +2,7 @@
  * direct2d.c : Direct2D video output plugin for vlc (Win7/Vista SP2 PF Update)
  *****************************************************************************
  * Copyright (C) 2010 VideoLAN and AUTHORS
- * $Id: 6f5b28a206334a1c97730a10b551f0987be6b029 $
+ * $Id: e758afd4632007da2f89dcd8a196d4bc30f5110f $
  *
  * Author: David Kaplan <david@2of1.org>
  *
@@ -32,7 +32,6 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_playlist.h>
 #include <vlc_vout_display.h>
 
 #include <windows.h>
@@ -347,8 +346,8 @@ static int D2D_CreateRenderTarget(vout_display_t *vd)
     };
 
     D2D1_SIZE_U bitmap_size = {
-        vd->fmt.i_width,
-        vd->fmt.i_height
+        vd->fmt.i_visible_width,
+        vd->fmt.i_visible_height
     };
 
     hr = ID2D1HwndRenderTarget_CreateBitmap(sys->d2_render_target,

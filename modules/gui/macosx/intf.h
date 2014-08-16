@@ -1,8 +1,8 @@
 /*****************************************************************************
  * intf.h: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 90a9fa25d36257441a743b0ae8457ac22be86da4 $
+ * Copyright (C) 2002-2014 VLC authors and VideoLAN
+ * $Id: 8afc5bb7483995d0ead8f957f4c678e9fec86a33 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -38,7 +38,6 @@
 #import <vlc_vout_window.h>
 
 #import <Cocoa/Cocoa.h>
-#import "CompatibilityFixes.h"
 #import "SPMediaKeyTap.h"                   /* for the media key support */
 #import "misc.h"
 #import "MainWindow.h"
@@ -58,30 +57,19 @@ vout_thread_t *getVout(void);
 vout_thread_t *getVoutForActiveWindow(void);
 audio_output_t *getAout(void);
 
-/*****************************************************************************
- * intf_sys_t: description and status of the interface
- *****************************************************************************/
-struct intf_sys_t
-{
-    /* menus handlers */
-    bool b_input_update;
-    bool b_aout_update;
-    bool b_vout_update;
-};
+static NSString * VLCInputChangedNotification = @"VLCInputChangedNotification";
 
 /*****************************************************************************
  * VLCMain interface
  *****************************************************************************/
 @class AppleRemote;
-@class VLCInformation;
-@class VLCEmbeddedWindow;
 @class VLCControls;
 @class VLCPlaylist;
 
 @interface VLCMain : NSObject <NSWindowDelegate, NSApplicationDelegate>
 {
     intf_thread_t *p_intf;      /* The main intf object */
-    input_thread_t *p_current_input, *p_input_changed;
+    input_thread_t *p_current_input;
     BOOL launched;              /* finishedLaunching */
     int items_at_launch;        /* items in playlist after launch */
     id o_mainmenu;              /* VLCMainMenu */
@@ -105,32 +93,10 @@ struct intf_sys_t
     BOOL b_active_videoplayback;
     BOOL b_nativeFullscreenMode;
 
-    VLCMainWindow *o_mainwindow;            /* VLCMainWindow */
+    IBOutlet VLCMainWindow *o_mainwindow;            /* VLCMainWindow */
 
     IBOutlet VLCControls * o_controls;     /* VLCControls    */
     IBOutlet VLCPlaylist * o_playlist;     /* VLCPlaylist    */
-
-    /* messages panel */
-    IBOutlet NSWindow * o_msgs_panel;           /* messages panel */
-    NSMutableArray * o_msg_arr;                 /* messages array */
-    NSLock * o_msg_lock;                        /* messages lock */
-    BOOL b_msg_arr_changed;                     /* did the array change? */
-    IBOutlet NSButton * o_msgs_crashlog_btn;    /* messages open crashlog */
-    IBOutlet NSButton * o_msgs_save_btn;        /* save the log as rtf */
-    IBOutlet NSButton * o_msgs_refresh_btn;     /* update the panel */
-    IBOutlet id o_msgs_table;
-
-    /* CrashReporter panel */
-    IBOutlet NSButton * o_crashrep_dontSend_btn;
-    IBOutlet NSButton * o_crashrep_send_btn;
-    IBOutlet NSTextView * o_crashrep_fld;
-    IBOutlet NSTextField * o_crashrep_title_txt;
-    IBOutlet NSTextField * o_crashrep_desc_txt;
-    IBOutlet NSWindow * o_crashrep_win;
-    IBOutlet NSButton * o_crashrep_includeEmail_ckb;
-    IBOutlet NSButton * o_crashrep_dontaskagain_ckb;
-    IBOutlet NSTextField * o_crashrep_includeEmail_txt;
-    NSURLConnection * crashLogURLConnection;
 
     AppleRemote * o_remote;
     BOOL b_remote_button_hold; /* true as long as the user holds the left,right,plus or minus on the remote control */
@@ -148,11 +114,14 @@ struct intf_sys_t
 
     VLCVoutWindowController *o_vout_controller;
 
-    /* iTunes play/pause support */
+    /* iTunes/Spotify play/pause support */
     BOOL b_has_itunes_paused;
+    BOOL b_has_spotify_paused;
     NSTimer *o_itunes_play_timer;
 
     BOOL b_playlist_updated_selector_in_queue;
+
+    dispatch_queue_t informInputChangedQueue;
 }
 
 @property (readonly) VLCVoutWindowController* voutController;
@@ -183,7 +152,6 @@ struct intf_sys_t
 - (BOOL)hasDefinedShortcutKey:(NSEvent *)o_event force:(BOOL)b_force;
 
 - (void)PlaylistItemChanged;
-- (void)informInputChanged;
 - (void)playbackStatusUpdated;
 - (void)sendDistributedNotificationWithUpdatedPlaybackStatus;
 - (void)playbackModeUpdated;
@@ -198,23 +166,14 @@ struct intf_sys_t
 - (void)showMainWindow;
 - (void)showFullscreenController;
 - (void)updateDelays;
-- (void)initStrings;
-
-- (IBAction)crashReporterAction:(id)sender;
-- (IBAction)openCrashLog:(id)sender;
-- (IBAction)saveDebugLog:(id)sender;
-- (IBAction)showMessagesPanel:(id)sender;
-- (IBAction)updateMessagesPanel:(id)sender;
-
-- (void)processReceivedlibvlcMessage:(const vlc_log_t *) item ofType: (int)type withStr: (char *)str;
 
 - (void)updateTogglePlaylistState;
-
-- (void)windowDidBecomeKey:(NSNotification *)o_notification;
 
 - (void)mediaKeyTap:(SPMediaKeyTap*)keyTap receivedMediaKeyEvent:(NSEvent*)event;
 
 - (void)resetAndReinitializeUserDefaults;
+
+- (BOOL)isTerminating;
 
 @end
 

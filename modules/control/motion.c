@@ -2,7 +2,7 @@
  * motion.c: control VLC with laptop built-in motion sensors
  *****************************************************************************
  * Copyright (C) 2006 - 2007 the VideoLAN team
- * $Id: 5f58aaeea2b45a2b6778469e4b19ba30f26f4b36 $
+ * $Id: 8d74e89fa992897d3e0ab9bb6ba72224d9aaa90e $
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *         Jérôme Decoodt <djc@videolan.org> (unimotion integration)
@@ -160,9 +160,7 @@ static void *RunIntf( void *data )
         if( b_change )
         {
 #warning FIXME: refactor this plugin as a video filter!
-            input_thread_t *p_input;
-
-            p_input = playlist_CurrentInput( pl_Get( p_intf ) );
+            input_thread_t *p_input = pl_CurrentInput( p_intf );
             if( p_input )
             {
                 vout_thread_t *p_vout;

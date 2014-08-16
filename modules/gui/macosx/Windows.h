@@ -1,8 +1,8 @@
 /*****************************************************************************
  * Windows.h: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2012-2013 VLC authors and VideoLAN
- * $Id: e110ba88ae806d04f15ef3ab9d08fbecebc551c8 $
+ * Copyright (C) 2012-2014 VLC authors and VideoLAN
+ * $Id: d3dec6b9b5090c5e99cc5988b3d147d750480d69 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -23,7 +23,6 @@
  *****************************************************************************/
 
 #import <Cocoa/Cocoa.h>
-#import "CompatibilityFixes.h"
 
 /*****************************************************************************
  * VLCWindow
@@ -99,23 +98,26 @@ static const float f_min_video_height = 70.0;
     VLCWindow       * o_fullscreen_window;
     NSViewAnimation * o_fullscreen_anim1;
     NSViewAnimation * o_fullscreen_anim2;
-    NSViewAnimation * o_makekey_anim;
     NSView          * o_temp_view;
 
-    BOOL              b_window_is_invisible;
     NSInteger i_originalLevel;
 
     BOOL              b_video_view_was_hidden;
 
     NSTimer *t_hide_mouse_timer;
 
-    // true when the window is in transition for entering lion fullscreen
-    BOOL b_entering_fullscreen_transition;
+    // true when the window is in transition for entering or exiting fullscreen
+    BOOL b_in_fullscreen_transition;
+
+    NSRect frameBeforeLionFullscreen;
+
+    BOOL b_windowShouldExitFullscreenWhenFinished;
 }
 
 @property (nonatomic, assign) VLCVoutView* videoView;
 @property (readonly) VLCControlsBarCommon* controlsBar;
-@property (readonly) BOOL enteringFullscreenTransition;
+@property (readonly) BOOL inFullscreenTransition;
+@property (readonly) BOOL windowShouldExitFullscreenWhenFinished;
 
 - (void)setWindowLevel:(NSInteger)i_state;
 
@@ -127,8 +129,8 @@ static const float f_min_video_height = 70.0;
 - (void)setTitle:(NSString *)title;
 
 /* fullscreen handling */
-- (void)enterFullscreen;
-- (void)leaveFullscreen;
+- (void)enterFullscreenWithAnimation:(BOOL)b_animation;
+- (void)leaveFullscreenWithAnimation:(BOOL)b_animation;
 
 /* lion fullscreen handling */
 - (void)windowWillEnterFullScreen:(NSNotification *)notification;

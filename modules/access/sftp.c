@@ -2,7 +2,7 @@
  * sftp.c: SFTP input module
  *****************************************************************************
  * Copyright (C) 2009 VLC authors and VideoLAN
- * $Id: f930af7a7de84dd1082284afee64e753b63abb26 $
+ * $Id: 4152d2a3058c95ab5ffe1eeabe3cbfec6fb94dea $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *
@@ -80,6 +80,7 @@ struct access_sys_t
     LIBSSH2_SESSION* ssh_session;
     LIBSSH2_SFTP* sftp_session;
     LIBSSH2_SFTP_HANDLE* file;
+    uint64_t filesize;
     size_t i_read_size;
 };
 
@@ -233,7 +234,7 @@ static int Open( vlc_object_t* p_this )
         msg_Err( p_access, "Impossible to get information about the remote file %s", url.psz_path );
         goto error;
     }
-    p_access->info.i_size = attributes.filesize;
+    p_sys->filesize = attributes.filesize;
 
     p_sys->i_read_size = var_InheritInteger( p_access, "sftp-readsize" );
 
@@ -269,12 +270,14 @@ static void Close( vlc_object_t* p_this )
 
 static block_t* Block( access_t* p_access )
 {
+    access_sys_t *p_sys = p_access->p_sys;
+
     if( p_access->info.b_eof )
         return NULL;
 
     /* Allocate the buffer we need */
-    size_t i_len = __MIN( p_access->p_sys->i_read_size, p_access->info.i_size -
-                                              p_access->info.i_pos );
+    size_t i_len = __MIN( p_sys->i_read_size,
+                          p_sys->filesize - p_access->info.i_pos );
     block_t* p_block = block_Alloc( i_len );
     if( !p_block )
         return NULL;
@@ -335,6 +338,10 @@ static int Control( access_t* p_access, int i_query, va_list args )
         *pb_bool = true;
         break;
 
+    case ACCESS_GET_SIZE:
+        *va_arg( args, uint64_t * ) = p_access->p_sys->filesize;
+        break;
+
     case ACCESS_GET_PTS_DELAY:
         pi_64 = (int64_t*)va_arg( args, int64_t* );
         *pi_64 = INT64_C(1000)
@@ -344,17 +351,7 @@ static int Control( access_t* p_access, int i_query, va_list args )
     case ACCESS_SET_PAUSE_STATE:
         break;
 
-    case ACCESS_GET_TITLE_INFO:
-    case ACCESS_SET_TITLE:
-    case ACCESS_SET_SEEKPOINT:
-    case ACCESS_SET_PRIVATE_ID_STATE:
-    case ACCESS_GET_META:
-    case ACCESS_GET_PRIVATE_ID_STATE:
-    case ACCESS_GET_CONTENT_TYPE:
-        return VLC_EGENERIC;
-
     default:
-        msg_Warn( p_access, "unimplemented query %d in control", i_query );
         return VLC_EGENERIC;
     }
 

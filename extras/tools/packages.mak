@@ -1,10 +1,11 @@
 GNU=http://ftp.gnu.org/gnu
+APACHE=http://mirror.csclub.uwaterloo.ca/apache
 
 YASM_VERSION=1.2.0
 #YASM_URL=$(CONTRIB_VIDEOLAN)/yasm-$(YASM_VERSION).tar.gz
 YASM_URL=http://www.tortall.net/projects/yasm/releases/yasm-$(YASM_VERSION).tar.gz
 
-CMAKE_VERSION=2.8.12
+CMAKE_VERSION=2.8.12.2
 CMAKE_URL=http://www.cmake.org/files/v2.8/cmake-$(CMAKE_VERSION).tar.gz
 
 LIBTOOL_VERSION=2.4.2
@@ -29,11 +30,14 @@ TAR_URL=$(GNU)/tar/tar-$(TAR_VERSION).tar.bz2
 XZ_VERSION=5.0.3
 XZ_URL=http://tukaani.org/xz/xz-$(XZ_VERSION).tar.bz2
 
-OPENSSL_VERSION=1.0.0e
-OPENSSL_URL=http://www.openssl.org/source/openssl-$(OPENSSL_VERSION).tar.gz
-
-GAS_VERSION=940274b
+GAS_VERSION=eca4c18
 GAS_URL=http://git.libav.org/?p=gas-preprocessor.git;a=snapshot;h=$(GAS_VERSION);sf=tgz
 
 RAGEL_VERSION=6.8
 RAGEL_URL=http://www.complang.org/ragel/ragel-$(RAGEL_VERSION).tar.gz
+
+SED_VERSION=4.2.2
+SED_URL=$(GNU)/sed/sed-$(SED_VERSION).tar.bz2
+
+ANT_VERSION=1.9.4
+ANT_URL=$(APACHE)/ant/binaries/apache-ant-$(ANT_VERSION)-bin.tar.bz2

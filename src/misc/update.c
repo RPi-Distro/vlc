@@ -2,7 +2,7 @@
  * update.c: VLC update checking and downloading
  *****************************************************************************
  * Copyright © 2005-2008 VLC authors and VideoLAN
- * $Id: 600e900262af2d6f6897f62ad5abe93ffc4e7ba3 $
+ * $Id: b00eb27bbf79dc78e922472aa6812e329659c9d7 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *          Rémi Duraffort <ivoire at via.ecp.fr>
@@ -141,7 +141,7 @@ void update_Delete( update_t *p_update )
 
     if( p_update->p_download )
     {
-        vlc_atomic_set( &p_update->p_download->aborted, 1 );
+        atomic_store( &p_update->p_download->aborted, true );
         vlc_join( p_update->p_download->thread, NULL );
         vlc_object_release( p_update->p_download );
     }
@@ -307,7 +307,7 @@ static bool GetUpdateFile( update_t *p_update )
             goto error;
         }
 
-        uint8_t *p_hash = hash_sha1_from_public_key( p_new_pkey );
+        uint8_t *p_hash = hash_from_public_key( p_new_pkey );
         if( !p_hash )
         {
             msg_Err( p_update->p_libvlc, "Failed to hash signature" );
@@ -316,7 +316,7 @@ static bool GetUpdateFile( update_t *p_update )
             goto error;
         }
 
-        if( verify_signature( p_new_pkey->sig.r, p_new_pkey->sig.s,
+        if( verify_signature( &p_new_pkey->sig,
                     &p_update->p_pkey->key, p_hash ) == VLC_SUCCESS )
         {
             free( p_hash );
@@ -332,30 +332,35 @@ static bool GetUpdateFile( update_t *p_update )
         }
     }
 
-    uint8_t *p_hash = hash_sha1_from_text( psz_update_data, &sign );
+    uint8_t *p_hash = hash_from_text( psz_update_data, &sign );
     if( !p_hash )
     {
-        msg_Warn( p_update->p_libvlc, "Can't compute SHA1 hash for status file" );
+        msg_Warn( p_update->p_libvlc, "Can't compute hash for status file" );
         goto error;
     }
 
     else if( p_hash[0] != sign.hash_verification[0] ||
         p_hash[1] != sign.hash_verification[1] )
     {
-        msg_Warn( p_update->p_libvlc, "Bad SHA1 hash for status file" );
+        msg_Warn( p_update->p_libvlc, "Bad hash for status file" );
+        free( p_hash );
         goto error;
     }
 
-    else if( verify_signature( sign.r, sign.s, &p_update->p_pkey->key, p_hash )
+    else if( verify_signature( &sign, &p_update->p_pkey->key, p_hash )
             != VLC_SUCCESS )
     {
         msg_Err( p_update->p_libvlc, "BAD SIGNATURE for status file" );
+        free( p_hash );
         goto error;
     }
 
     else
     {
         msg_Info( p_update->p_libvlc, "Status file authenticated" );
+        free( p_hash );
+        free( psz_version_line );
+        free( psz_update_data );
         return true;
     }
 
@@ -492,7 +497,7 @@ void update_Download( update_t *p_update, const char *psz_destdir )
     // If the object already exist, destroy it
     if( p_update->p_download )
     {
-        vlc_atomic_set( &p_update->p_download->aborted, 1 );
+        atomic_store( &p_update->p_download->aborted, true );
         vlc_join( p_update->p_download->thread, NULL );
         vlc_object_release( p_update->p_download );
     }
@@ -507,7 +512,7 @@ void update_Download( update_t *p_update, const char *psz_destdir )
     p_update->p_download = p_udt;
     p_udt->psz_destdir = psz_destdir ? strdup( psz_destdir ) : NULL;
 
-    vlc_atomic_set(&p_udt->aborted, 0);
+    atomic_store(&p_udt->aborted, false);
     vlc_clone( &p_udt->thread, update_DownloadReal, p_udt, VLC_THREAD_PRIORITY_LOW );
 }
 
@@ -588,7 +593,7 @@ static void* update_DownloadReal( void *obj )
     if( p_progress == NULL )
         goto end;
 
-    while( !vlc_atomic_get( &p_udt->aborted ) &&
+    while( !atomic_load( &p_udt->aborted ) &&
            ( i_read = stream_Read( p_stream, p_buffer, 1 << 10 ) ) &&
            !dialog_ProgressCancelled( p_progress ) )
     {
@@ -616,7 +621,7 @@ static void* update_DownloadReal( void *obj )
     fclose( p_file );
     p_file = NULL;
 
-    if( !vlc_atomic_get( &p_udt->aborted ) &&
+    if( !atomic_load( &p_udt->aborted ) &&
         !dialog_ProgressCancelled( p_progress ) )
     {
         dialog_ProgressDestroy( p_progress );
@@ -666,7 +671,7 @@ static void* update_DownloadReal( void *obj )
         goto end;
     }
 
-    uint8_t *p_hash = hash_sha1_from_file( psz_destfile, &sign );
+    uint8_t *p_hash = hash_from_file( psz_destfile, &sign );
     if( !p_hash )
     {
         msg_Err( p_udt, "Unable to hash %s", psz_destfile );
@@ -686,12 +691,12 @@ static void* update_DownloadReal( void *obj )
         dialog_FatalWait( p_udt, _("File corrupted"),
             _("Downloaded file \"%s\" was corrupted. Thus, it was deleted."),
              psz_destfile );
-        msg_Err( p_udt, "Bad SHA1 hash for %s", psz_destfile );
+        msg_Err( p_udt, "Bad hash for %s", psz_destfile );
         free( p_hash );
         goto end;
     }
 
-    if( verify_signature( sign.r, sign.s, &p_update->p_pkey->key, p_hash )
+    if( verify_signature( &sign, &p_update->p_pkey->key, p_hash )
             != VLC_SUCCESS )
     {
         vlc_unlink( psz_destfile );

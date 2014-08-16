@@ -75,6 +75,9 @@
 /* Binary specific version */
 #undef DISTRO_VERSION
 
+/* Define if you want the addons manager modules */
+#undef ENABLE_ADDONMANAGERMODULES
+
 /* Define if you want the HTTP daemon support */
 #undef ENABLE_HTTPD
 
@@ -116,8 +119,8 @@
 /* Support for __attribute__((packed)) for structs */
 #undef HAVE_ATTRIBUTE_PACKED
 
-/* Define to 1 if you have the <AudioUnit/AudioUnit.h> header file. */
-#undef HAVE_AUDIOUNIT_AUDIOUNIT_H
+/* Define to 1 if you have the `av_vda_alloc_context' function. */
+#undef HAVE_AV_VDA_ALLOC_CONTEXT
 
 /* Define to 1 if you have the `backtrace' function. */
 #undef HAVE_BACKTRACE
@@ -132,9 +135,6 @@
 /* Define to 1 if you have the Mac OS X function CFPreferencesCopyAppValue in
    the CoreFoundation framework. */
 #undef HAVE_CFPREFERENCESCOPYAPPVALUE
-
-/* Define to 1 if you have the <CoreAudio/CoreAudio.h> header file. */
-#undef HAVE_COREAUDIO_COREAUDIO_H
 
 /* Define to 1 if you have the <d2d1.h> header file. */
 #undef HAVE_D2D1_H
@@ -164,12 +164,6 @@
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
-
-/* Define if you have dvdnav_describe_title_chapters. */
-#undef HAVE_DVDNAV_DESCRIBE_TITLE_CHAPTERS
-
-/* Define if you have dvdnav_get_video_resolution. */
-#undef HAVE_DVDNAV_GET_VIDEO_RESOLUTION
 
 /* Define to 1 if you have the <dxva2api.h> header file. */
 #undef HAVE_DXVA2API_H
@@ -249,6 +243,9 @@
 /* Define to 1 if you have inet_pton function */
 #undef HAVE_INET_PTON
 
+/* Define to 1 if you have the <interface/mmal/mmal.h> header file. */
+#undef HAVE_INTERFACE_MMAL_MMAL_H
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
@@ -257,6 +254,9 @@
 
 /* Define to 1 if you have the `isatty' function. */
 #undef HAVE_ISATTY
+
+/* Define to 1 if you have the <jpeglib.h> header file. */
+#undef HAVE_JPEGLIB_H
 
 /* Define to 1 if you have the <kai.h> header file. */
 #undef HAVE_KAI_H
@@ -305,6 +305,9 @@
 
 /* Define to 1 if you have the <libtar.h> header file. */
 #undef HAVE_LIBTAR_H
+
+/* Define to 1 if you have the libvorbis */
+#undef HAVE_LIBVORBIS
 
 /* Define to 1 if you have the <linux/dccp.h> header file. */
 #undef HAVE_LINUX_DCCP_H

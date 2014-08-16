@@ -4,7 +4,7 @@
  * interface, such as message output.
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001, 2002 VLC authors and VideoLAN
- * $Id: 79aa519e00a65af6b0e64f60dd0f67e03ad20268 $
+ * $Id: f746f61c09afd91f89dee61340a1d090bd96416c $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -76,6 +76,13 @@ VLC_API void vlc_vaLog(vlc_object_t *, int,
     vlc_Log( VLC_OBJECT(p_this), VLC_MSG_WARN, MODULE_STRING, __VA_ARGS__ )
 #define msg_Dbg( p_this, ... ) \
     vlc_Log( VLC_OBJECT(p_this), VLC_MSG_DBG,  MODULE_STRING, __VA_ARGS__ )
+
+#ifndef MODULE_STRING
+# define MODULE_STRING __FILE__
+#endif
+
+VLC_API const char *vlc_strerror(int);
+VLC_API const char *vlc_strerror_c(int);
 
 /**
  * @}

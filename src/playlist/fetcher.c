@@ -2,7 +2,7 @@
  * fetcher.c: Art fetcher thread.
  *****************************************************************************
  * Copyright © 1999-2009 VLC authors and VideoLAN
- * $Id: f682c8e75fd79edfc32815470eb05380a675c943 $
+ * $Id: eb86994933bc0223232058a6eb42bd7856bade19 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -25,35 +25,62 @@
 # include "config.h"
 #endif
 
+#include <limits.h>
 #include <assert.h>
 
 #include <vlc_common.h>
-#include <vlc_playlist.h>
 #include <vlc_stream.h>
-#include <limits.h>
-#include <vlc_art_finder.h>
+#include <vlc_meta_fetcher.h>
 #include <vlc_memory.h>
 #include <vlc_demux.h>
 #include <vlc_modules.h>
 
+#include "libvlc.h"
 #include "art.h"
 #include "fetcher.h"
-#include "playlist_internal.h"
+#include "input/input_interface.h"
 
 /*****************************************************************************
  * Structures/definitions
  *****************************************************************************/
+typedef enum
+{
+    PASS1_LOCAL = 0,
+    PASS2_NETWORK
+} fetcher_pass_t;
+#define PASS_COUNT 2
+
+typedef struct
+{
+    char *psz_artist;
+    char *psz_album;
+    char *psz_arturl;
+    bool b_found;
+    meta_fetcher_scope_t e_scope; /* max scope */
+
+} playlist_album_t;
+
+typedef struct fetcher_entry_t fetcher_entry_t;
+
+struct fetcher_entry_t
+{
+    input_item_t    *p_item;
+    input_item_meta_request_option_t i_options;
+    fetcher_entry_t *p_next;
+};
+
 struct playlist_fetcher_t
 {
     vlc_object_t   *object;
     vlc_mutex_t     lock;
     vlc_cond_t      wait;
     bool            b_live;
-    int             i_art_policy;
-    int             i_waiting;
-    input_item_t    **pp_waiting;
+
+    fetcher_entry_t *p_waiting_head[PASS_COUNT];
+    fetcher_entry_t *p_waiting_tail[PASS_COUNT];
 
     DECL_ARRAY(playlist_album_t) albums;
+    meta_fetcher_scope_t e_scope;
 };
 
 static void *Thread( void * );
@@ -72,24 +99,42 @@ playlist_fetcher_t *playlist_fetcher_New( vlc_object_t *parent )
     vlc_mutex_init( &p_fetcher->lock );
     vlc_cond_init( &p_fetcher->wait );
     p_fetcher->b_live = false;
-    p_fetcher->i_waiting = 0;
-    p_fetcher->pp_waiting = NULL;
-    p_fetcher->i_art_policy = var_GetInteger( parent, "album-art" );
+
+    bool b_access = var_InheritBool( parent, "metadata-network-access" );
+    if ( !b_access )
+        b_access = ( var_InheritInteger( parent, "album-art" ) == ALBUM_ART_ALL );
+
+    p_fetcher->e_scope = ( b_access ) ? FETCHER_SCOPE_ANY : FETCHER_SCOPE_LOCAL;
+
+    memset( p_fetcher->p_waiting_head, 0, PASS_COUNT * sizeof(fetcher_entry_t *) );
+    memset( p_fetcher->p_waiting_tail, 0, PASS_COUNT * sizeof(fetcher_entry_t *) );
+
     ARRAY_INIT( p_fetcher->albums );
 
     return p_fetcher;
 }
 
-void playlist_fetcher_Push( playlist_fetcher_t *p_fetcher,
-                            input_item_t *p_item )
+void playlist_fetcher_Push( playlist_fetcher_t *p_fetcher, input_item_t *p_item,
+                            input_item_meta_request_option_t i_options )
 {
-    vlc_gc_incref( p_item );
+    fetcher_entry_t *p_entry = malloc( sizeof(fetcher_entry_t) );
+    if ( !p_entry ) return;
 
+    vlc_gc_incref( p_item );
+    p_entry->p_item = p_item;
+    p_entry->p_next = NULL;
+    p_entry->i_options = i_options;
     vlc_mutex_lock( &p_fetcher->lock );
-    INSERT_ELEM( p_fetcher->pp_waiting, p_fetcher->i_waiting,
-                 p_fetcher->i_waiting, p_item );
+    /* Append last */
+    if ( p_fetcher->p_waiting_head[PASS1_LOCAL] )
+        p_fetcher->p_waiting_tail[PASS1_LOCAL]->p_next = p_entry;
+    else
+        p_fetcher->p_waiting_head[PASS1_LOCAL] = p_entry;
+    p_fetcher->p_waiting_tail[PASS1_LOCAL] = p_entry;
+
     if( !p_fetcher->b_live )
     {
+        assert( p_fetcher->p_waiting_head[PASS1_LOCAL] );
         if( vlc_clone_detach( NULL, Thread, p_fetcher,
                               VLC_THREAD_PRIORITY_LOW ) )
             msg_Err( p_fetcher->object,
@@ -102,12 +147,19 @@ void playlist_fetcher_Push( playlist_fetcher_t *p_fetcher,
 
 void playlist_fetcher_Delete( playlist_fetcher_t *p_fetcher )
 {
+    fetcher_entry_t *p_next;
     vlc_mutex_lock( &p_fetcher->lock );
     /* Remove any left-over item, the fetcher will exit */
-    while( p_fetcher->i_waiting > 0 )
+    for ( int i_queue=0; i_queue<PASS_COUNT; i_queue++ )
     {
-        vlc_gc_decref( p_fetcher->pp_waiting[0] );
-        REMOVE_ELEM( p_fetcher->pp_waiting, p_fetcher->i_waiting, 0 );
+        while( p_fetcher->p_waiting_head[i_queue] )
+        {
+            p_next = p_fetcher->p_waiting_head[i_queue]->p_next;
+            vlc_gc_decref( p_fetcher->p_waiting_head[i_queue]->p_item );
+            free( p_fetcher->p_waiting_head[i_queue] );
+            p_fetcher->p_waiting_head[i_queue] = p_next;
+        }
+        p_fetcher->p_waiting_head[i_queue] = NULL;
     }
 
     while( p_fetcher->b_live )
@@ -116,6 +168,7 @@ void playlist_fetcher_Delete( playlist_fetcher_t *p_fetcher )
 
     vlc_cond_destroy( &p_fetcher->wait );
     vlc_mutex_destroy( &p_fetcher->lock );
+
     free( p_fetcher );
 }
 
@@ -134,6 +187,7 @@ static int FindArt( playlist_fetcher_t *p_fetcher, input_item_t *p_item )
 {
     int i_ret;
 
+    playlist_album_t *p_album = NULL;
     char *psz_artist = input_item_GetArtist( p_item );
     char *psz_album = input_item_GetAlbum( p_item );
     char *psz_title = input_item_GetTitle( p_item );
@@ -166,15 +220,22 @@ static int FindArt( playlist_fetcher_t *p_fetcher, input_item_t *p_item )
                         playlist_FindArtInCache( p_item );
                     return 0;
                 }
-                else
+                else if ( album.e_scope >= p_fetcher->e_scope )
                 {
                     return VLC_EGENERIC;
                 }
+                msg_Dbg( p_fetcher->object,
+                         " will search at higher scope, if possible" );
+                p_album = &p_fetcher->albums.p_elems[fe_idx];
+                break;
             }
         FOREACH_END();
     }
-    free( psz_artist );
-    free( psz_album );
+    else
+    {
+        free( psz_artist );
+        free( psz_album );
+    }
 
     if ( playlist_FindArtInCacheUsingItemUID( p_item ) != VLC_SUCCESS )
         playlist_FindArtInCache( p_item );
@@ -219,13 +280,14 @@ static int FindArt( playlist_fetcher_t *p_fetcher, input_item_t *p_item )
     i_ret = VLC_EGENERIC;
 
     vlc_object_t *p_parent = p_fetcher->object;
-    art_finder_t *p_finder =
+    meta_fetcher_t *p_finder =
         vlc_custom_create( p_parent, sizeof( *p_finder ), "art finder" );
     if( p_finder != NULL)
     {
         module_t *p_module;
 
         p_finder->p_item = p_item;
+        p_finder->e_scope = p_fetcher->e_scope;
 
         p_module = module_need( p_finder, "art finder", NULL, false );
         if( p_module )
@@ -243,12 +305,25 @@ static int FindArt( playlist_fetcher_t *p_fetcher, input_item_t *p_item )
     /* Record this album */
     if( psz_artist && psz_album )
     {
-        playlist_album_t a;
-        a.psz_artist = psz_artist;
-        a.psz_album = psz_album;
-        a.psz_arturl = input_item_GetArtURL( p_item );
-        a.b_found = (i_ret == VLC_EGENERIC ? false : true );
-        ARRAY_APPEND( p_fetcher->albums, a );
+        if ( p_album )
+        {
+            p_album->e_scope = p_fetcher->e_scope;
+            free( p_album->psz_arturl );
+            p_album->psz_arturl = input_item_GetArtURL( p_item );
+            p_album->b_found = (i_ret == VLC_EGENERIC ? false : true );
+            free( psz_artist );
+            free( psz_album );
+        }
+        else
+        {
+            playlist_album_t a;
+            a.psz_artist = psz_artist;
+            a.psz_album = psz_album;
+            a.psz_arturl = input_item_GetArtURL( p_item );
+            a.b_found = (i_ret == VLC_EGENERIC ? false : true );
+            a.e_scope = p_fetcher->e_scope;
+            ARRAY_APPEND( p_fetcher->albums, a );
+        }
     }
     else
     {
@@ -334,34 +409,47 @@ error:
  */
 static void FetchMeta( playlist_fetcher_t *p_fetcher, input_item_t *p_item )
 {
-    demux_meta_t *p_demux_meta = vlc_custom_create(p_fetcher->object,
-                                         sizeof(*p_demux_meta), "demux meta" );
-    if( !p_demux_meta )
+    meta_fetcher_t *p_finder =
+        vlc_custom_create( p_fetcher->object, sizeof( *p_finder ), "art finder" );
+    if ( !p_finder )
         return;
 
-    p_demux_meta->p_demux = NULL;
-    p_demux_meta->p_item = p_item;
+    p_finder->e_scope = p_fetcher->e_scope;
+    p_finder->p_item = p_item;
 
-    module_t *p_meta_fetcher = module_need( p_demux_meta, "meta fetcher", NULL, false );
-    if( p_meta_fetcher )
-        module_unneed( p_demux_meta, p_meta_fetcher );
-    vlc_object_release( p_demux_meta );
+    module_t *p_module = module_need( p_finder, "meta fetcher", NULL, false );
+    if( p_module )
+        module_unneed( p_finder, p_module );
+
+    vlc_object_release( p_finder );
 }
 
 static void *Thread( void *p_data )
 {
     playlist_fetcher_t *p_fetcher = p_data;
     vlc_object_t *obj = p_fetcher->object;
-
+    fetcher_pass_t e_pass = PASS1_LOCAL;
     for( ;; )
     {
-        input_item_t *p_item = NULL;
+        fetcher_entry_t *p_entry = NULL;
 
         vlc_mutex_lock( &p_fetcher->lock );
-        if( p_fetcher->i_waiting != 0 )
+        for ( int i=0; i<PASS_COUNT; i++ )
         {
-            p_item = p_fetcher->pp_waiting[0];
-            REMOVE_ELEM( p_fetcher->pp_waiting, p_fetcher->i_waiting, 0 );
+            if ( p_fetcher->p_waiting_head[i] )
+            {
+                e_pass = i;
+                break;
+            }
+        }
+
+        if( p_fetcher->p_waiting_head[e_pass] )
+        {
+            p_entry = p_fetcher->p_waiting_head[e_pass];
+            p_fetcher->p_waiting_head[e_pass] = p_entry->p_next;
+            if ( p_entry->p_next == NULL )
+                p_fetcher->p_waiting_tail[e_pass] = NULL;
+            p_entry->p_next = NULL;
         }
         else
         {
@@ -370,35 +458,94 @@ static void *Thread( void *p_data )
         }
         vlc_mutex_unlock( &p_fetcher->lock );
 
-        if( !p_item )
+        if( !p_entry )
             break;
 
+        meta_fetcher_scope_t e_prev_scope = p_fetcher->e_scope;
+
+        /* scope override */
+        switch ( p_entry->i_options ) {
+        case META_REQUEST_OPTION_SCOPE_ANY:
+            p_fetcher->e_scope = FETCHER_SCOPE_ANY;
+            break;
+        case META_REQUEST_OPTION_SCOPE_LOCAL:
+            p_fetcher->e_scope = FETCHER_SCOPE_LOCAL;
+            break;
+        case META_REQUEST_OPTION_SCOPE_NETWORK:
+            p_fetcher->e_scope = FETCHER_SCOPE_NETWORK;
+            break;
+        case META_REQUEST_OPTION_NONE:
+        default:
+            break;
+        }
         /* Triggers "meta fetcher", eventually fetch meta on the network.
          * They are identical to "meta reader" expect that may actually
          * takes time. That's why they are running here.
          * The result of this fetch is not cached. */
-        FetchMeta( p_fetcher, p_item );
 
-        /* Find art, and download it if needed */
-        int i_ret = FindArt( p_fetcher, p_item );
-        if( i_ret == 1 )
-            i_ret = DownloadArt( p_fetcher, p_item );
+        int i_ret = -1;
 
-        /* */
-        char *psz_name = input_item_GetName( p_item );
-        if( !i_ret ) /* Art is now in cache */
+        if( e_pass == PASS1_LOCAL && ( p_fetcher->e_scope & FETCHER_SCOPE_LOCAL ) )
         {
-            msg_Dbg( obj, "found art for %s in cache", psz_name );
-            input_item_SetArtFetched( p_item, true );
-            var_SetAddress( obj, "item-change", p_item );
+            /* only fetch from local */
+            p_fetcher->e_scope = FETCHER_SCOPE_LOCAL;
+        }
+        else if( e_pass == PASS2_NETWORK && ( p_fetcher->e_scope & FETCHER_SCOPE_NETWORK ) )
+        {
+            /* only fetch from network */
+            p_fetcher->e_scope = FETCHER_SCOPE_NETWORK;
+        }
+        else
+            p_fetcher->e_scope = 0;
+        if ( p_fetcher->e_scope & FETCHER_SCOPE_ANY )
+        {
+            FetchMeta( p_fetcher, p_entry->p_item );
+            i_ret = FindArt( p_fetcher, p_entry->p_item );
+            switch( i_ret )
+            {
+            case 1: /* Found, need to dl */
+                i_ret = DownloadArt( p_fetcher, p_entry->p_item );
+                break;
+            case 0: /* Is in cache */
+                i_ret = VLC_SUCCESS;
+                //ft
+            default:// error
+                break;
+            }
+        }
+
+        p_fetcher->e_scope = e_prev_scope;
+        /* */
+        if ( i_ret != VLC_SUCCESS && (e_pass != PASS2_NETWORK) )
+        {
+            /* Move our entry to next pass queue */
+            vlc_mutex_lock( &p_fetcher->lock );
+            if ( p_fetcher->p_waiting_head[e_pass + 1] )
+                p_fetcher->p_waiting_tail[e_pass + 1]->p_next = p_entry;
+            else
+                p_fetcher->p_waiting_head[e_pass + 1] = p_entry;
+            p_fetcher->p_waiting_tail[e_pass + 1] = p_entry;
+            vlc_mutex_unlock( &p_fetcher->lock );
         }
         else
         {
-            msg_Dbg( obj, "art not found for %s", psz_name );
-            input_item_SetArtNotFound( p_item, true );
+            /* */
+            char *psz_name = input_item_GetName( p_entry->p_item );
+            if( i_ret == VLC_SUCCESS ) /* Art is now in cache */
+            {
+                msg_Dbg( obj, "found art for %s in cache", psz_name );
+                input_item_SetArtFetched( p_entry->p_item, true );
+                var_SetAddress( obj, "item-change", p_entry->p_item );
+            }
+            else
+            {
+                msg_Dbg( obj, "art not found for %s", psz_name );
+                input_item_SetArtNotFound( p_entry->p_item, true );
+            }
+            free( psz_name );
+            vlc_gc_decref( p_entry->p_item );
+            free( p_entry );
         }
-        free( psz_name );
-        vlc_gc_decref( p_item );
     }
     return NULL;
 }

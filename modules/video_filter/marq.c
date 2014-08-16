@@ -2,7 +2,7 @@
  * marq.c : marquee display video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2008 VLC authors and VideoLAN
- * $Id: f5902266d01ffed0bfc4363fcd7f42b83b4c85ab $
+ * $Id: af87d304f93aaf7eeedff5dda35887689764c87b $
  *
  * Authors: Mark Moriarty
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -31,13 +31,13 @@
 # include "config.h"
 #endif
 
+#include <errno.h>
+
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-
 #include <vlc_filter.h>
 #include <vlc_block.h>
 #include <vlc_fs.h>
-
 #include <vlc_strings.h>
 
 /*****************************************************************************
@@ -88,19 +88,8 @@ struct filter_sys_t
 #define MSG_LONGTEXT N_( \
     "Marquee text to display. " \
     "(Available format strings: " \
-    "Time related: %Y = year, %m = month, %d = day, %H = hour, " \
-    "%M = minute, %S = second, ... " \
-    "Meta data related: $a = artist, $b = album, $c = copyright, " \
-    "$d = description, $e = encoded by, $g = genre, " \
-    "$l = language, $n = track num, $p = now playing, " \
-    "$r = rating, $s = subtitles language, $t = title, "\
-    "$u = url, $A = date, " \
-    "$B = audio bitrate (in kb/s), $C = chapter," \
-    "$D = duration, $F = full name with path, $I = title, "\
-    "$L = time left, " \
-    "$N = name, $O = audio language, $P = position (in %), $R = rate, " \
-    "$S = audio sample rate (in kHz), " \
-    "$T = time, $U = publisher, $V = volume, $_ = new line) ")
+    "%Y = year, %m = month, %d = day, %H = hour, " \
+    "%M = minute, %S = second, ...)" )
 #define FILE_TEXT N_("Text file")
 #define FILE_LONGTEXT N_("File to read the marquee text from.")
 #define POSX_TEXT N_("X offset")
@@ -353,7 +342,7 @@ static char *MarqueeReadFile( filter_t *obj, const char *path )
     FILE *stream = vlc_fopen( path, "rt" );
     if( stream == NULL )
     {
-        msg_Err( obj, "cannot open %s: %m", path );
+        msg_Err( obj, "cannot open %s: %s", path, vlc_strerror_c(errno) );
         return NULL;
     }
 
@@ -362,7 +351,7 @@ static char *MarqueeReadFile( filter_t *obj, const char *path )
     ssize_t len = getline( &line, &(size_t){ 0 }, stream );
     if( len == -1 )
     {
-        msg_Err( obj, "cannot read %s: %m", path );
+        msg_Err( obj, "cannot read %s: %s", path, vlc_strerror_c(errno) );
         clearerr( stream );
         line = NULL;
     }

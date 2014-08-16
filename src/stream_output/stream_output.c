@@ -2,7 +2,7 @@
  * stream_output.c : stream output module
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: 3f653f1ff902de3bd4a11fcb66608d234a5bfa53 $
+ * $Id: bbc22bd7820c213d1927a3dfc856135e99cdc2a6 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -512,17 +512,18 @@ void sout_MuxDeleteStream( sout_mux_t *p_mux, sout_input_t *p_input )
 /*****************************************************************************
  * sout_MuxSendBuffer:
  *****************************************************************************/
-void sout_MuxSendBuffer( sout_mux_t *p_mux, sout_input_t *p_input,
+int sout_MuxSendBuffer( sout_mux_t *p_mux, sout_input_t *p_input,
                          block_t *p_buffer )
 {
+    mtime_t i_dts = p_buffer->i_dts;
     block_FifoPut( p_input->p_fifo, p_buffer );
 
     if( p_mux->p_sout->i_out_pace_nocontrol )
     {
         mtime_t current_date = mdate();
-        if ( current_date > p_buffer->i_dts )
+        if ( current_date > i_dts )
             msg_Warn( p_mux, "late buffer for mux input (%"PRId64")",
-                      current_date - p_buffer->i_dts );
+                      current_date - i_dts );
     }
 
     if( p_mux->b_waiting_stream )
@@ -530,15 +531,15 @@ void sout_MuxSendBuffer( sout_mux_t *p_mux, sout_input_t *p_input,
         const int64_t i_caching = var_GetInteger( p_mux->p_sout, "sout-mux-caching" ) * INT64_C(1000);
 
         if( p_mux->i_add_stream_start < 0 )
-            p_mux->i_add_stream_start = p_buffer->i_dts;
+            p_mux->i_add_stream_start = i_dts;
 
         /* Wait until we have enought data before muxing */
         if( p_mux->i_add_stream_start < 0 ||
-            p_buffer->i_dts < p_mux->i_add_stream_start + i_caching )
-            return;
+            i_dts < p_mux->i_add_stream_start + i_caching )
+            return VLC_SUCCESS;
         p_mux->b_waiting_stream = false;
     }
-    p_mux->pf_mux( p_mux );
+    return p_mux->pf_mux( p_mux );
 }
 
 
@@ -556,14 +557,7 @@ int sout_MuxGetStream( sout_mux_t *p_mux, int i_blocks, mtime_t *pi_dts )
         block_t *p_data;
 
         if( block_FifoCount( p_input->p_fifo ) < i_blocks )
-        {
-            if( p_input->p_fmt->i_cat != SPU_ES )
-            {
-                return -1;
-            }
-            /* FIXME: SPU muxing */
             continue;
-        }
 
         p_data = block_FifoShow( p_input->p_fifo );
         if( i_stream < 0 || p_data->i_dts < i_dts )

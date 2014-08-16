@@ -2,7 +2,7 @@
  * equalizer.c
  *****************************************************************************
  * Copyright (C) 2011 VideoLAN and VLC authors
- * $Id: e2e8aa36120b53b7def30c635aaf3f4a24caadc2 $
+ * $Id: 512bae1b71af84a082b792e0b993f4c915e3e610 $
  *
  * Authors: Akash Mehrotra < mehrotra <dot> akash <at> gmail <dot> com >
  *
@@ -40,7 +40,6 @@
 #include "input.h"
 #include "../libs.h"
 #include "../vlc.h"
-#include "playlist.h"
 #include "../../audio_filter/equalizer_presets.h"
 
 #if !defined _WIN32

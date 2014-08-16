@@ -49,13 +49,13 @@ struct aout_stream
  * \param fmt audio output sample format [IN/OUT]
  * \param sid audio output session GUID [IN]
  */
-HRESULT aout_stream_Start(aout_stream_t *s, audio_sample_format_t *fmt,
-                          const GUID *sid);
+typedef HRESULT (*aout_stream_start_t)(aout_stream_t *s,
+    audio_sample_format_t *fmt, const GUID *sid);
 
 /**
  * Destroys an audio output stream.
  */
-void aout_stream_Stop(aout_stream_t *);
+typedef HRESULT (*aout_stream_stop_t)(aout_stream_t *);
 
 static inline HRESULT aout_stream_TimeGet(aout_stream_t *s, mtime_t *delay)
 {
@@ -72,9 +72,18 @@ static inline HRESULT aout_stream_Pause(aout_stream_t *s, bool paused)
     return (s->pause)(s, paused);
 }
 
-static inline HRESULT aout_stream_Flush(aout_stream_t *s)
+static inline HRESULT aout_stream_Flush(aout_stream_t *s, bool wait)
 {
-    return (s->flush)(s);
+    if (wait)
+    {   /* Loosy drain emulation */
+        mtime_t delay;
+
+        if (SUCCEEDED(aout_stream_TimeGet(s, &delay)))
+            Sleep((delay / (CLOCK_FREQ / 1000)) + 1);
+        return S_OK;
+    }
+    else
+        return (s->flush)(s);
 }
 
 static inline

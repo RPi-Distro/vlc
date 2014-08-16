@@ -2,7 +2,7 @@
  * jack.c : JACK audio output module
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: 9fbebb97e0cd906e2650007e6d3c5069a1c42971 $
+ * $Id: f2330d6f2676d744ae70ea083928cf71081090dc $
  *
  * Authors: Cyril Deguet <asmax _at_ videolan.org>
  *          Jon Griffiths <jon_p_griffiths _At_ yahoo _DOT_ com>
@@ -75,7 +75,7 @@ static int  TimeGet      ( audio_output_t *, mtime_t * );
 static int  Process      ( jack_nframes_t i_frames, void *p_arg );
 static int  GraphChange  ( void *p_arg );
 
-#include "volume.h"
+#include "audio_output/volume.h"
 
 #define AUTO_CONNECT_OPTION "jack-auto-connect"
 #define AUTO_CONNECT_TEXT N_("Automatically connect to writable clients")
@@ -247,7 +247,7 @@ static int Start( audio_output_t *p_aout, audio_sample_format_t *restrict fmt )
 
 error_out:
     /* Clean up, if an error occurred */
-    if( status != VLC_SUCCESS && p_sys != NULL )
+    if( status != VLC_SUCCESS )
     {
         if( p_sys->p_jack_client )
         {

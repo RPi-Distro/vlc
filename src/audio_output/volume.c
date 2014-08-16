@@ -135,7 +135,7 @@ int aout_volume_Amplify(aout_volume_t *vol, block_t *block)
         return -1;
 
     float amp = vol->output_factor
-              * vlc_atomic_loadf (&vol->gain_factor);
+              * vlc_atomic_load_float (&vol->gain_factor);
 
     vol->object.amplify(&vol->object, block, amp);
     return 0;
@@ -177,7 +177,7 @@ static float aout_ReplayGainSelect(vlc_object_t *obj, const char *str,
         else
             gain = var_InheritFloat (obj, "audio-replay-gain-default");
 
-        multiplier = pow (10., gain / 20.);
+        multiplier = powf (10.f, gain / 20.f);
 
         if (var_InheritBool (obj, "audio-replay-gain-peak-protection"))
             multiplier = fminf (multiplier, replay_gain->pb_peak[mode]
@@ -197,7 +197,7 @@ static int ReplayGainCallback (vlc_object_t *obj, char const *var,
     aout_volume_t *vol = data;
     float multiplier = aout_ReplayGainSelect(obj, val.psz_string,
                                              &vol->replay_gain);
-    vlc_atomic_storef (&vol->gain_factor, multiplier);
+    vlc_atomic_store_float (&vol->gain_factor, multiplier);
     VLC_UNUSED(var); VLC_UNUSED(oldval);
     return VLC_SUCCESS;
 }

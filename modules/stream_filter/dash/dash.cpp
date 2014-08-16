@@ -25,9 +25,13 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
+#define __STDC_CONSTANT_MACROS 1
+
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+
+#include <stdint.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
@@ -217,7 +221,8 @@ static int  Read            (stream_t *p_stream, void *p_ptr, unsigned int i_len
             case EAGAIN:
                 break;
             default:
-                msg_Dbg(p_stream, "DASH Read: failed to read (%m)");
+                msg_Dbg(p_stream, "DASH Read: failed to read (%s)",
+                        vlc_strerror_c(errno));
                 return 0;
         }
         return 0;
@@ -281,6 +286,11 @@ static int  Control         (stream_t *p_stream, int i_query, va_list args)
             }
             break;
         }
+        case STREAM_GET_PTS_DELAY:
+            *va_arg (args, int64_t *) = INT64_C(1000) *
+                var_InheritInteger(p_stream, "network-caching");
+             break;
+
         default:
             return VLC_EGENERIC;
     }

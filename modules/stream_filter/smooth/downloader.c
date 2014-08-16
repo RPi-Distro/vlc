@@ -2,7 +2,7 @@
  * downloader.c: download thread
  *****************************************************************************
  * Copyright (C) 1996-2012 VLC authors and VideoLAN
- * $Id: b5aee73f1d5895f11e25dd37cb70fd91de260e94 $
+ * $Id: 4e43b5b802802a53648610765d8157fd3cb28449 $
  *
  * Author: Frédéric Yhuel <fyhuel _AT_ viotech _DOT_ net>
  *
@@ -328,25 +328,28 @@ static int build_smoo_box( stream_t *s, uint8_t *smoo_box )
 
         quality_level_t * qlvl = get_qlevel( sms, sms->download_qlvl );
 
-        FourCC = qlvl->FourCC ? qlvl->FourCC : sms->default_FourCC;
-        ((uint32_t *)stra_box)[16] = bswap32( FourCC );
-        ((uint32_t *)stra_box)[17] = bswap32( qlvl->Bitrate );
-        ((uint32_t *)stra_box)[18] = bswap32( qlvl->MaxWidth );
-        ((uint32_t *)stra_box)[19] = bswap32( qlvl->MaxHeight );
-        ((uint32_t *)stra_box)[20] = bswap32( qlvl->SamplingRate );
-        ((uint32_t *)stra_box)[21] = bswap32( qlvl->Channels );
-        ((uint32_t *)stra_box)[22] = bswap32( qlvl->BitsPerSample );
-        ((uint32_t *)stra_box)[23] = bswap32( qlvl->AudioTag );
-        ((uint16_t *)stra_box)[48] = bswap16( qlvl->nBlockAlign );
+        if ( qlvl )
+        {
+            FourCC = qlvl->FourCC ? qlvl->FourCC : sms->default_FourCC;
+            ((uint32_t *)stra_box)[16] = bswap32( FourCC );
+            ((uint32_t *)stra_box)[17] = bswap32( qlvl->Bitrate );
+            ((uint32_t *)stra_box)[18] = bswap32( qlvl->MaxWidth );
+            ((uint32_t *)stra_box)[19] = bswap32( qlvl->MaxHeight );
+            ((uint32_t *)stra_box)[20] = bswap32( qlvl->SamplingRate );
+            ((uint32_t *)stra_box)[21] = bswap32( qlvl->Channels );
+            ((uint32_t *)stra_box)[22] = bswap32( qlvl->BitsPerSample );
+            ((uint32_t *)stra_box)[23] = bswap32( qlvl->AudioTag );
+            ((uint16_t *)stra_box)[48] = bswap16( qlvl->nBlockAlign );
 
-        if( !qlvl->CodecPrivateData )
-            continue;
-        stra_box[98] = stra_box[99] = stra_box[100] = 0; /* reserved */
-        assert( strlen( qlvl->CodecPrivateData ) < 512 );
-        stra_box[101] = strlen( qlvl->CodecPrivateData ) / 2;
-        uint8_t *binary_cpd = decode_string_hex_to_binary( qlvl->CodecPrivateData );
-        memcpy( stra_box + 102, binary_cpd, stra_box[101] );
-        free( binary_cpd );
+            if( !qlvl->CodecPrivateData )
+                continue;
+            stra_box[98] = stra_box[99] = stra_box[100] = 0; /* reserved */
+            assert( strlen( qlvl->CodecPrivateData ) < 512 );
+            stra_box[101] = strlen( qlvl->CodecPrivateData ) / 2;
+            uint8_t *binary_cpd = decode_string_hex_to_binary( qlvl->CodecPrivateData );
+            memcpy( stra_box + 102, binary_cpd, stra_box[101] );
+            free( binary_cpd );
+        }
     }
 
     return VLC_SUCCESS;
@@ -378,6 +381,11 @@ static int Download( stream_t *s, sms_stream_t *sms )
     stream_sys_t *p_sys = s->p_sys;
 
     int index = es_cat_to_index( sms->type );
+    if ( unlikely( index == -1 ) )
+    {
+        msg_Err( s, "invalid stream type" );
+        return VLC_EGENERIC;
+    }
     int64_t start_time = p_sys->download.lead[index];
 
     quality_level_t *qlevel = get_qlevel( sms, sms->download_qlvl );
@@ -593,7 +601,7 @@ void* sms_Thread( void *p_this )
     for( int i = 0; i < 3; i++ )
     {
         sms = SMS_GET_SELECTED_ST( index_to_es_cat( i ) );
-        if( sms )
+        if( sms && vlc_array_count( sms->chunks ) )
         {
             chunk = vlc_array_item_at_index( sms->chunks, 0 );
             p_sys->download.lead[i] = chunk->start_time + p_sys->timescale / 1000;
@@ -671,8 +679,11 @@ void* sms_Thread( void *p_this )
         vlc_mutex_unlock( &p_sys->download.lock_wait );
 
         sms = SMS_GET_SELECTED_ST( next_track( s ) );
-        if( Download( s, sms ) != VLC_SUCCESS )
-            goto cancel;
+        if ( vlc_array_count( sms->chunks ) )
+        {
+            if( Download( s, sms ) != VLC_SUCCESS )
+                goto cancel;
+        }
     }
 
 cancel:

@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2005, 2008, 2010 VLC authors and VideoLAN
- * $Id: 63984094d4e004a2acf30bb96f93aa39118aad85 $
+ * $Id: c1dd7810d659867569709d1a845943555a01dbb9 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -73,7 +73,7 @@ vlc_module_begin ()
     add_shortcut( "mka", "mkv" )
 vlc_module_end ()
 
-class demux_sys_t;
+struct demux_sys_t;
 
 static int  Demux  ( demux_t * );
 static int  Control( demux_t *, int, va_list );
@@ -166,7 +166,7 @@ static int Open( vlc_object_t * p_this )
 
             if (p_src_dir != NULL)
             {
-                char *psz_file;
+                const char *psz_file;
                 while ((psz_file = vlc_readdir(p_src_dir)) != NULL)
                 {
                     if (strlen(psz_file) > 4)
@@ -179,7 +179,6 @@ static int Open( vlc_object_t * p_this )
                         if (!s_filename.compare(p_demux->psz_file))
 #endif
                         {
-                            free (psz_file);
                             continue; // don't reuse the original opened file
                         }
 
@@ -229,7 +228,6 @@ static int Open( vlc_object_t * p_this )
                             }
                         }
                     }
-                    free (psz_file);
                 }
                 closedir( p_src_dir );
             }
@@ -372,8 +370,9 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 p_sys->p_current_segment->p_current_chapter = p_sys->p_current_segment->editions[p_sys->p_current_segment->i_current_edition]->getChapterbyTimecode(0);
 
                 Seek( p_demux, (int64_t)p_sys->titles[i_idx]->seekpoint[0]->i_time_offset, -1, NULL);
-                p_demux->info.i_update |= INPUT_UPDATE_SEEKPOINT;
+                p_demux->info.i_update |= INPUT_UPDATE_SEEKPOINT|INPUT_UPDATE_TITLE;
                 p_demux->info.i_seekpoint = 0;
+                p_demux->info.i_title = i_idx;
                 p_sys->f_duration = (float) p_sys->titles[i_idx]->i_length / 1000.f;
                 return VLC_SUCCESS;
             }
@@ -447,6 +446,11 @@ static void Seek( demux_t *p_demux, mtime_t i_date, double f_percent, virtual_ch
         msg_Warn( p_demux, "cannot seek without duration!");
         return;
     }
+    if( !p_segment )
+    {
+        msg_Warn( p_demux, "cannot seek without valid segment position");
+        return;
+    }
 
     /* seek without index or without date */
     if( f_percent >= 0 && (var_InheritBool( p_demux, "mkv-seek-percent" ) || !p_segment->b_cues || i_date < 0 ))
@@ -499,10 +503,8 @@ void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock
         msg_Err( p_demux, "unknown track number" );
         return;
     }
-    if( i_pts + i_duration < p_sys->i_start_pts && tk->fmt.i_cat == AUDIO_ES )
-    {
-        return; /* discard audio packets that shouldn't be rendered */
-    }
+
+    i_pts -= tk->i_codec_delay;
 
     if ( tk->fmt.i_cat != NAV_ES )
     {
@@ -557,7 +559,7 @@ void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock
             // condition when the DTS is correct (keyframe or B frame == NOT P frame)
         }
         frame_size += data->Size();
-        if( !data->Buffer() || data->Size() > SIZE_MAX || frame_size > block_size  )
+        if( !data->Buffer() || data->Size() > frame_size || frame_size > block_size  )
         {
             msg_Warn( p_demux, "Cannot read frame (too long or no frame)" );
             break;
@@ -592,9 +594,10 @@ void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock
         {
             memcpy( p_block->p_buffer, tk->p_compression_data->GetBuffer(), tk->p_compression_data->GetSize() );
         }
-
-        if( tk->fmt.i_codec == VLC_CODEC_COOK ||
-            tk->fmt.i_codec == VLC_CODEC_ATRAC3 )
+        switch( tk->fmt.i_codec )
+        {
+        case VLC_CODEC_COOK:
+        case VLC_CODEC_ATRAC3:
         {
             handle_real_audio(p_demux, tk, p_block, i_pts);
             block_Release(p_block);
@@ -602,22 +605,39 @@ void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock
                 i_pts + ( mtime_t )( tk->i_default_duration / 1000 ):
                 VLC_TS_INVALID;
             continue;
+         }
+         case VLC_CODEC_OPUS:
+            mtime_t i_length = i_duration * tk-> f_timecodescale *
+                    (double) p_segment->i_timescale / 1000.0;
+            if ( i_length < 0 ) i_length = 0;
+            p_block->i_nb_samples = i_length * tk->fmt.audio.i_rate
+                    / CLOCK_FREQ;
+            break;
         }
 
-        if ( tk->fmt.i_cat == NAV_ES )
-        {
-            // TODO handle the start/stop times of this packet
-            p_sys->p_ev->SetPci( (const pci_t *)&p_block->p_buffer[1]);
-            block_Release( p_block );
-            return;
-        }
-        // correct timestamping when B frames are used
+        
         if( tk->fmt.i_cat != VIDEO_ES )
         {
+            if ( tk->fmt.i_cat == NAV_ES )
+            {
+                // TODO handle the start/stop times of this packet
+                p_sys->p_ev->SetPci( (const pci_t *)&p_block->p_buffer[1]);
+                block_Release( p_block );
+                return;
+            }
+            else if( tk->fmt.i_cat == AUDIO_ES )
+            {
+                if( tk->i_chans_to_reorder )
+                    aout_ChannelReorder( p_block->p_buffer, p_block->i_buffer,
+                                         tk->fmt.audio.i_channels,
+                                         tk->pi_chan_table, tk->fmt.i_codec );
+
+            }
             p_block->i_dts = p_block->i_pts = i_pts;
         }
         else
         {
+            // correct timestamping when B frames are used
             if( tk->b_dts_only )
             {
                 p_block->i_pts = VLC_TS_INVALID;
@@ -637,15 +657,19 @@ void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock
                     p_block->i_dts = min( i_pts, tk->i_last_dts + ( mtime_t )( tk->i_default_duration / 1000 ) );
             }
         }
-        if( tk->fmt.i_cat == VIDEO_ES || tk->fmt.i_cat == AUDIO_ES )
+        if( p_block->i_dts > VLC_TS_INVALID &&
+            ( tk->fmt.i_cat == VIDEO_ES || tk->fmt.i_cat == AUDIO_ES ) )
+        {
             tk->i_last_dts = p_block->i_dts;
+        }
 
 #if 0
 msg_Dbg( p_demux, "block i_dts: %"PRId64" / i_pts: %"PRId64, p_block->i_dts, p_block->i_pts);
 #endif
-        if( strcmp( tk->psz_codec, "S_VOBSUB" ) )
+        if( !tk->b_no_duration )
         {
-            p_block->i_length = i_duration * tk-> f_timecodescale * (double) p_segment->i_timescale / 1000.0;
+            p_block->i_length = i_duration * tk-> f_timecodescale *
+                (double) p_segment->i_timescale / 1000.0;
         }
 
         /* FIXME remove when VLC_TS_INVALID work is done */
@@ -681,10 +705,9 @@ static int Demux( demux_t *p_demux)
         vlc_mutex_unlock( &p_sys->lock_demuxer );
         return 0;
     }
-    int                i_block_count = 0;
-    int                i_return = 0;
+    int i_return = 0;
 
-    for( ;; )
+    do
     {
         if( p_sys->i_pts >= p_sys->i_start_pts  )
             if ( p_vsegment->UpdateCurrentToChapter( *p_demux ) )
@@ -768,15 +791,11 @@ static int Demux( demux_t *p_demux)
         BlockDecode( p_demux, block, simpleblock, p_sys->i_pts, i_block_duration, b_key_picture || b_discardable_picture );
 
         delete block;
-        i_block_count++;
 
-        // TODO optimize when there is need to leave or when seeking has been called
-        if( i_block_count > 5 )
-        {
-            i_return = 1;
-            break;
-        }
+        vlc_mutex_unlock( &p_sys->lock_demuxer );
+        return 1;
     }
+    while (0);
 
     vlc_mutex_unlock( &p_sys->lock_demuxer );
 

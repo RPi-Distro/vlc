@@ -1,25 +1,25 @@
 /*****************************************************************************
  * dialogProvider.m: Minimal Dialog Provider for Mac OS X
  *****************************************************************************
- * Copyright (C) 2009-2011 the VideoLAN team
- * $Id: dc284d4c1426414d71256e6913385e9d14f79df6 $
+ * Copyright (C) 2009-2011 VLC authors and VideoLAN
+ * $Id: 2e78a72f82f42c4c1de129e9d26fc89987044945 $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *          Pierre d'Herbemont <pdherbemont # videolan dot>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -94,8 +94,8 @@ struct intf_sys_t
 vlc_module_begin()
     /* Minimal interface. see intf.m */
     set_shortname("Mac OS X Dialogs")
-    add_shortcut("macosx_dialog_provider", "miosx")
-    set_description("Minimal Mac OS X Dialog Provider")
+    add_shortcut("macosx_dialog_provider")
+    set_description("Mac OS X Dialog Provider")
     set_capability("interface", 0)
 
     /* This setting is interesting, because when used with a libvlc app
@@ -306,6 +306,8 @@ bool checkProgressPanel (void *priv)
     return ret;
 }
 
+@interface VLCDialogDisplayer() <NSWindowDelegate>
+@end
 
 @implementation VLCDialogDisplayer
 - (void)dealloc
@@ -371,7 +373,7 @@ bool checkProgressPanel (void *priv)
                               defaultButton:[dialog objectForKey:@"yes"]
                             alternateButton:[dialog objectForKey:@"no"]
                                 otherButton:[dialog objectForKey:@"cancel"]
-                  informativeTextWithFormat:[dialog objectForKey:@"message"]];
+                  informativeTextWithFormat:@"%@", [dialog objectForKey:@"message"]];
     [alert setAlertStyle:NSInformationalAlertStyle];
     alertRet = [alert runModal];
 

@@ -5,7 +5,7 @@
  * Copyright © 2007-2012 Mirsal Ennaime
  * Copyright © 2009-2012 The VideoLAN team
  * Copyright © 2013      Alex Merry
- * $Id: 1b760c95a7c124962043221f8af83e947bc4d793 $
+ * $Id: bbf7f7b66522bba945313582f6215308c0e67005 $
  *
  * Authors:    Rafaël Carré <funman at videolanorg>
  *             Mirsal Ennaime <mirsal at mirsal fr>
@@ -512,8 +512,7 @@ static int UpdateTimeouts( intf_thread_t *p_intf, mtime_t i_loop_interval )
 static void ProcessEvents( intf_thread_t *p_intf,
                            callback_info_t **p_events, int i_events )
 {
-    playlist_t *p_playlist = p_intf->p_sys->p_playlist;
-    bool        b_can_play = p_intf->p_sys->b_can_play;
+    bool b_can_play = p_intf->p_sys->b_can_play;
 
     vlc_dictionary_t player_properties, tracklist_properties, root_properties;
     vlc_dictionary_init( &player_properties,    0 );
@@ -528,7 +527,7 @@ static void ProcessEvents( intf_thread_t *p_intf,
             TrackChange( p_intf );
 
             // rate depends on current item
-            if( !vlc_dictionary_has_key( &tracklist_properties, "Rate" ) )
+            if( !vlc_dictionary_has_key( &player_properties, "Rate" ) )
                 vlc_dictionary_insert( &player_properties, "Rate", NULL );
 
             vlc_dictionary_insert( &player_properties, "Metadata", NULL );
@@ -536,6 +535,8 @@ static void ProcessEvents( intf_thread_t *p_intf,
         case SIGNAL_INTF_CHANGE:
         case SIGNAL_PLAYLIST_ITEM_APPEND:
         case SIGNAL_PLAYLIST_ITEM_DELETED:
+        {
+            playlist_t *p_playlist = p_intf->p_sys->p_playlist;
             PL_LOCK;
             b_can_play = playlist_CurrentSize( p_playlist ) > 0;
             PL_UNLOCK;
@@ -549,6 +550,7 @@ static void ProcessEvents( intf_thread_t *p_intf,
             if( !vlc_dictionary_has_key( &tracklist_properties, "Tracks" ) )
                 vlc_dictionary_insert( &tracklist_properties, "Tracks", NULL );
             break;
+        }
         case SIGNAL_VOLUME_MUTED:
         case SIGNAL_VOLUME_CHANGE:
             vlc_dictionary_insert( &player_properties, "Volume", NULL );
@@ -571,7 +573,7 @@ static void ProcessEvents( intf_thread_t *p_intf,
             break;
         case SIGNAL_INPUT_METADATA:
         {
-            input_thread_t *p_input = playlist_CurrentInput( p_playlist );
+            input_thread_t *p_input = pl_CurrentInput( p_intf );
             input_item_t   *p_item;
             if( p_input )
             {
@@ -594,7 +596,7 @@ static void ProcessEvents( intf_thread_t *p_intf,
         {
             input_thread_t *p_input;
             input_item_t *p_item;
-            p_input = playlist_CurrentInput( p_intf->p_sys->p_playlist );
+            p_input = pl_CurrentInput( p_intf );
             if( p_input )
             {
                 p_item = input_GetItem( p_input );
@@ -820,7 +822,7 @@ static void *Run( void *data )
 
         if( -1 == i_pollres )
         { /* XXX: What should we do when poll() fails ? */
-            msg_Err( p_intf, "poll() failed: %m" );
+            msg_Err( p_intf, "poll() failed: %s", vlc_strerror_c(errno) );
             vlc_restorecancel( canc );
             continue;
         }
@@ -845,7 +847,7 @@ static void *Run( void *data )
 
         /* Get the list of timeouts to process */
         unsigned int i_timeouts = vlc_array_count( p_sys->p_timeouts );
-        DBusTimeout *p_timeouts[i_timeouts];
+        DBusTimeout *p_timeouts[i_timeouts ? i_timeouts : 1];
         for( unsigned int i = 0; i < i_timeouts; i++ )
         {
             p_timeouts[i] = vlc_array_item_at_index( p_sys->p_timeouts, i );
@@ -861,7 +863,7 @@ static void *Run( void *data )
 
         /* Get the list of events to process */
         int i_events = vlc_array_count( p_intf->p_sys->p_events );
-        callback_info_t* p_info[i_events];
+        callback_info_t* p_info[i_events ? i_events : 1];
         for( int i = i_events - 1; i >= 0; i-- )
         {
             p_info[i] = vlc_array_item_at_index( p_intf->p_sys->p_events, i );
@@ -887,7 +889,8 @@ static void   wakeup_main_loop( void *p_data )
     intf_thread_t *p_intf = (intf_thread_t*) p_data;
 
     if( !write( p_intf->p_sys->p_pipe_fds[PIPE_IN], "\0", 1 ) )
-        msg_Err( p_intf, "Could not wake up the main loop: %m" );
+        msg_Err( p_intf, "Could not wake up the main loop: %s",
+                 vlc_strerror_c(errno) );
 }
 
 /* Flls a callback_info_t data structure in response
@@ -1062,7 +1065,6 @@ static int AllCallback( vlc_object_t *p_this, const char *psz_var,
 static int TrackChange( intf_thread_t *p_intf )
 {
     intf_sys_t          *p_sys      = p_intf->p_sys;
-    playlist_t          *p_playlist = p_sys->p_playlist;
     input_thread_t      *p_input    = NULL;
     input_item_t        *p_item     = NULL;
 
@@ -1080,7 +1082,7 @@ static int TrackChange( intf_thread_t *p_intf )
 
     p_sys->b_meta_read = false;
 
-    p_input = playlist_CurrentInput( p_playlist );
+    p_input = pl_CurrentInput( p_intf );
     if( !p_input )
     {
         return VLC_SUCCESS;

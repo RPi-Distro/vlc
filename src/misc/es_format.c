@@ -2,7 +2,7 @@
  * es_format.c : es_format_t helpers.
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
- * $Id: 352bd5ba3b8f57591653c8f29ef736e7bd874881 $
+ * $Id: 27622bcb742992bfa9baa706e1e88c28ff49f6e3 $
  *
  * Author: Laurent Aimar <fenrir@videolan.org>
  *
@@ -130,13 +130,14 @@ void video_format_FixRgb( video_format_t *p_fmt )
 
 void video_format_Setup( video_format_t *p_fmt, vlc_fourcc_t i_chroma,
                          int i_width, int i_height,
+                         int i_visible_width, int i_visible_height,
                          int i_sar_num, int i_sar_den )
 {
     p_fmt->i_chroma         = vlc_fourcc_GetCodec( VIDEO_ES, i_chroma );
-    p_fmt->i_width          =
-    p_fmt->i_visible_width  = i_width;
-    p_fmt->i_height         =
-    p_fmt->i_visible_height = i_height;
+    p_fmt->i_width          = i_width;
+    p_fmt->i_visible_width  = i_visible_width;
+    p_fmt->i_height         = i_height;
+    p_fmt->i_visible_height = i_visible_height;
     p_fmt->i_x_offset       =
     p_fmt->i_y_offset       = 0;
     vlc_ureduce( &p_fmt->i_sar_num, &p_fmt->i_sar_den,
@@ -188,6 +189,8 @@ void video_format_Setup( video_format_t *p_fmt, vlc_fourcc_t i_chroma,
 
     case VLC_CODEC_RGB32:
     case VLC_CODEC_RGBA:
+    case VLC_CODEC_ARGB:
+    case VLC_CODEC_BGRA:
         p_fmt->i_bits_per_pixel = 32;
         break;
     case VLC_CODEC_RGB24:
@@ -242,6 +245,134 @@ void video_format_ScaleCropAr( video_format_t *p_dst, const video_format_t *p_sr
                 p_dst->i_sar_num, p_dst->i_sar_den, 65536);
 }
 
+//Simplify transforms to have something more managable. Order: angle, hflip.
+static void transform_GetBasicOps( video_transform_t transform,
+                                   unsigned *restrict angle,
+                                   bool *restrict hflip )
+{
+    *hflip = ORIENT_IS_MIRROR(transform);
+
+    switch ( transform )
+    {
+        case TRANSFORM_R90:
+        case TRANSFORM_TRANSPOSE:
+            *angle = 90;
+            break;
+        case TRANSFORM_R180:
+        case TRANSFORM_VFLIP:
+            *angle = 180;
+            break;
+        case TRANSFORM_R270:
+        case TRANSFORM_ANTI_TRANSPOSE:
+            *angle = 270;
+            break;
+        case TRANSFORM_HFLIP:
+        case TRANSFORM_IDENTITY:
+            *angle = 0;
+            break;
+    }
+}
+
+static video_transform_t transform_FromBasicOps( unsigned angle, bool hflip )
+{
+    switch ( angle )
+    {
+        case 90:
+            return hflip ? TRANSFORM_TRANSPOSE : TRANSFORM_R90;
+        case 180:
+            return hflip ? TRANSFORM_VFLIP : TRANSFORM_R180;
+        case 270:
+            return hflip ? TRANSFORM_ANTI_TRANSPOSE : TRANSFORM_R270;
+        default:
+            return hflip ? TRANSFORM_HFLIP : TRANSFORM_IDENTITY;
+    }
+}
+
+video_transform_t video_format_GetTransform( video_orientation_t src,
+                                             video_orientation_t dst )
+{
+    unsigned angle1, angle2;
+    bool hflip1, hflip2;
+
+    transform_GetBasicOps(  (video_transform_t)src, &angle1, &hflip1 );
+    transform_GetBasicOps( transform_Inverse( (video_transform_t)dst ),
+                           &angle2, &hflip2 );
+
+    int angle = (angle1 + angle2) % 360;
+    bool hflip = hflip1 ^ hflip2;
+
+    return transform_FromBasicOps(angle, hflip);
+}
+
+void video_format_TransformBy( video_format_t *fmt, video_transform_t transform )
+{
+    /* Get destination orientation */
+    unsigned angle1, angle2;
+    bool hflip1, hflip2;
+
+    transform_GetBasicOps( transform, &angle1, &hflip1 );
+    transform_GetBasicOps( (video_transform_t)fmt->orientation, &angle2, &hflip2 );
+
+    unsigned angle = (angle2 - angle1 + 360) % 360;
+    bool hflip = hflip2 ^ hflip1;
+
+    video_orientation_t dst_orient = ORIENT_NORMAL;
+
+    if( hflip ) {
+
+        if( angle == 0 )
+            dst_orient = ORIENT_HFLIPPED;
+        else if( angle == 90 )
+            dst_orient = ORIENT_ANTI_TRANSPOSED;
+        else if( angle == 180 )
+            dst_orient = ORIENT_VFLIPPED;
+        else if( angle == 270 )
+            dst_orient = ORIENT_TRANSPOSED;
+    }
+    else {
+
+        if( angle == 90 )
+            dst_orient = ORIENT_ROTATED_90;
+        else if( angle == 180 )
+            dst_orient = ORIENT_ROTATED_180;
+        else if( angle == 270 )
+            dst_orient = ORIENT_ROTATED_270;
+    }
+
+    /* Apply transform */
+    if( ORIENT_IS_SWAP( fmt->orientation ) != ORIENT_IS_SWAP( dst_orient ) )
+    {
+        video_format_t scratch = *fmt;
+
+        fmt->i_width = scratch.i_height;
+        fmt->i_visible_width = scratch.i_visible_height;
+        fmt->i_height = scratch.i_width;
+        fmt->i_visible_height = scratch.i_visible_width;
+        fmt->i_x_offset = scratch.i_y_offset;
+        fmt->i_y_offset = scratch.i_x_offset;
+        fmt->i_sar_num = scratch.i_sar_den;
+        fmt->i_sar_den = scratch.i_sar_num;
+    }
+
+    fmt->orientation = dst_orient;
+}
+
+void video_format_TransformTo( video_format_t *restrict fmt,
+                               video_orientation_t dst_orientation )
+{
+    video_transform_t transform = video_format_GetTransform(fmt->orientation,
+                                                            dst_orientation);
+    video_format_TransformBy(fmt, transform);
+}
+
+void video_format_ApplyRotation( video_format_t *restrict out,
+                                 const video_format_t *restrict in )
+{
+    *out = *in;
+
+    video_format_TransformTo(out, ORIENT_NORMAL);
+}
+
 bool video_format_IsSimilar( const video_format_t *p_fmt1, const video_format_t *p_fmt2 )
 {
     video_format_t v1 = *p_fmt1;
@@ -256,6 +387,9 @@ bool video_format_IsSimilar( const video_format_t *p_fmt1, const video_format_t 
         v1.i_x_offset != v2.i_x_offset || v1.i_y_offset != v2.i_y_offset )
         return false;
     if( v1.i_sar_num * v2.i_sar_den != v2.i_sar_num * v1.i_sar_den )
+        return false;
+
+    if( v1.orientation != v2.orientation)
         return false;
 
     if( v1.i_chroma == VLC_CODEC_RGB15 ||
@@ -296,7 +430,7 @@ void es_format_Init( es_format_t *fmt,
     fmt->i_level                = -1;
     fmt->i_id                   = -1;
     fmt->i_group                = 0;
-    fmt->i_priority             = 0;
+    fmt->i_priority             = ES_PRIORITY_SELECTABLE_MIN;
     fmt->psz_language           = NULL;
     fmt->psz_description        = NULL;
 
@@ -342,6 +476,7 @@ int es_format_Copy( es_format_t *dst, const es_format_t *src )
     }
 
     dst->subs.psz_encoding = dst->subs.psz_encoding ? strdup( src->subs.psz_encoding ) : NULL;
+    dst->subs.p_style = src->subs.p_style ? text_style_Duplicate( src->subs.p_style ) : NULL;
 
     if( src->video.p_palette )
     {
@@ -389,6 +524,8 @@ void es_format_Clean( es_format_t *fmt )
 
     free( fmt->video.p_palette );
     free( fmt->subs.psz_encoding );
+
+    if ( fmt->subs.p_style ) text_style_Delete( fmt->subs.p_style );
 
     if( fmt->i_extra_languages > 0 && fmt->p_extra_languages )
     {

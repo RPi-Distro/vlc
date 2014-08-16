@@ -2,7 +2,7 @@
  * ft2_bitmap.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e7437551add64a0409a16ec8721878d4028e9a70 $
+ * $Id: fed481b1c45ebad864c7b6176d0db04e9eb98ceb $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -50,10 +50,10 @@ void FT2Bitmap::draw( const FT_Bitmap &rBitmap, int left, int top,
     uint8_t green = (color >> 8) & 0xff;
     uint8_t red = (color >> 16) & 0xff;
 
-    for( int y = top; y < top + rBitmap.rows; y++ )
+    for( int y = top; y < top + rBitmap.rows && y < m_height; y++ )
     {
         uint8_t *pData = m_pData + 4 * (m_width * y + left);
-        for( int x = left; x < left + rBitmap.width; x++ )
+        for( int x = left; x < left + rBitmap.width && x < m_width; x++ )
         {
             // The buffer in FT_Bitmap contains alpha values
             uint8_t val = *(pBuf++);

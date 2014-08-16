@@ -2,7 +2,7 @@
  * controller.hpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: bfe68e9e079f321c6355d83d10806d4e10b25311 $
+ * $Id: b22e4301f7bb60c4d348f4d4625d4d688cb97905 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -319,6 +319,7 @@ private:
     int i_mouse_last_move_y;
 
     bool isWideFSC;
+    int i_sensitivity;
 };
 
 #endif

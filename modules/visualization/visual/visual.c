@@ -1,24 +1,24 @@
 /*****************************************************************************
  * visual.c : Visualisation system
  *****************************************************************************
- * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: e0d22448527b94f8ba1f8b9ff7a01845efa4597d $
+ * Copyright (C) 2002-2009 VLC authors and VideoLAN
+ * $Id: 628fd7038564d293cff5edecc6b33050d6fb5744 $
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -39,6 +39,8 @@
 
 #include "visual.h"
 
+#include "window_presets.h"
+
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
@@ -55,6 +57,15 @@
 #define HEIGHT_TEXT N_( "Video height" )
 #define HEIGHT_LONGTEXT N_( \
       "The height of the effects video window, in pixels." )
+
+#define FFT_WINDOW_TEXT N_( "FFT window" )
+#define FFT_WINDOW_LONGTEXT N_( \
+      "The type of FFT window to use for spectrum-based visualizations." )
+
+#define KAISER_PARAMETER_TEXT N_( "Kaiser window parameter" )
+#define KAISER_PARAMETER_LONGTEXT N_( \
+      "The parameter alpha for the Kaiser window. Increasing alpha " \
+      "increases the main-lobe width and decreases the side-lobe amplitude. " )
 
 #define NBBANDS_TEXT N_( "Show 80 bands instead of 20" )
 #define SPNBBANDS_LONGTEXT N_( \
@@ -115,6 +126,11 @@ vlc_module_begin ()
              WIDTH_TEXT, WIDTH_LONGTEXT, false )
     add_integer("effect-height" , VOUT_HEIGHT ,
              HEIGHT_TEXT, HEIGHT_LONGTEXT, false )
+    add_string("effect-fft-window", "flat",
+            FFT_WINDOW_TEXT, FFT_WINDOW_LONGTEXT, true )
+        change_string_list( window_list, window_list_text )
+    add_float("effect-kaiser-param", 3.0f,
+            KAISER_PARAMETER_TEXT, KAISER_PARAMETER_LONGTEXT, true )
     set_section( N_("Spectrum analyser") , NULL )
     add_obsolete_integer( "visual-nbbands" ) /* Since 1.0.0 */
     add_bool("visual-80-bands", true,

@@ -1,26 +1,26 @@
 /*****************************************************************************
  * vod.c: rtsp VoD server module
  *****************************************************************************
- * Copyright (C) 2003-2006, 2010 the VideoLAN team
- * $Id: 41c8d254253babfd4b3e28d08b29325a4b1f5f8c $
+ * Copyright (C) 2003-2006, 2010 VLC authors and VideoLAN
+ * $Id: f0e66c3192413e1fd52228a755c89706a45dcd4f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
  *          Pierre Ynard
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -314,15 +314,13 @@ static void MediaDel( vod_t *p_vod, vod_media_t *p_media )
         RtspUnsetup(p_media->rtsp);
     }
 
-    while( p_media->i_es )
+    for( int i = 0; i < p_media->i_es; i++ )
     {
-        media_es_t *p_es = p_media->es[0];
-        TAB_REMOVE( p_media->i_es, p_media->es, p_es );
-        free( p_es->rtp_fmt.fmtp );
-        free( p_es );
+        free( p_media->es[i]->rtp_fmt.fmtp );
+        free( p_media->es[i] );
     }
+    free( p_media->es );
 
-    TAB_CLEAN( p_media->i_es, p_media->es );
     free( p_media );
 }
 
@@ -507,7 +505,7 @@ const char *vod_get_mux(const vod_media_t *p_media)
 /* Match an RTP id to a VoD media ES and RTSP track to initialize it
  * with the data that was already set up */
 int vod_init_id(vod_media_t *p_media, const char *psz_session, int es_id,
-                sout_stream_id_t *sout_id, rtp_format_t *rtp_fmt,
+                sout_stream_id_sys_t *sout_id, rtp_format_t *rtp_fmt,
                 uint32_t *ssrc, uint16_t *seq_init)
 {
     media_es_t *p_es;
@@ -543,7 +541,7 @@ int vod_init_id(vod_media_t *p_media, const char *psz_session, int es_id,
 
 /* Remove references to the RTP id from its RTSP track */
 void vod_detach_id(vod_media_t *p_media, const char *psz_session,
-                   sout_stream_id_t *sout_id)
+                   sout_stream_id_sys_t *sout_id)
 {
     RtspTrackDetach(p_media->rtsp, psz_session, sout_id);
 }
