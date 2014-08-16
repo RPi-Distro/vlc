@@ -11,7 +11,7 @@ Author: Gabriele Giacone <1o5g4r8o@gmail.com>
 Forwarded: not-needed
 --- a/src/posix/thread.c
 +++ b/src/posix/thread.c
-@@ -327,7 +327,7 @@ void vlc_cond_init (vlc_cond_t *p_condva
+@@ -300,7 +300,7 @@ void vlc_cond_init (vlc_cond_t *p_condva
  
      if (unlikely(pthread_condattr_init (&attr)))
          abort ();
@@ -20,7 +20,7 @@ Forwarded: not-needed
      vlc_clock_setup ();
      pthread_condattr_setclock (&attr, vlc_clock_id);
  #endif
-@@ -929,7 +929,7 @@ mtime_t mdate (void)
+@@ -874,7 +874,7 @@ mtime_t mdate (void)
   */
  void mwait (mtime_t deadline)
  {
@@ -29,7 +29,7 @@ Forwarded: not-needed
      vlc_clock_setup ();
      /* If the deadline is already elapsed, or within the clock precision,
       * do not even bother the system timer. */
-@@ -956,7 +956,7 @@ void msleep (mtime_t delay)
+@@ -901,7 +901,7 @@ void msleep (mtime_t delay)
  {
      struct timespec ts = mtime_to_ts (delay);
  
