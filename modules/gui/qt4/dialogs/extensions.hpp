@@ -2,7 +2,7 @@
  * extensions.hpp: Extensions manager for Qt: dialogs manager
  ****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 48ca9c3a184f9c0a7d03c158d7900e236bf4786b $
+ * $Id: c4ae0378fcdcb3afaa6b524a17c31aec81ae086b $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -138,7 +138,6 @@ private:
 public:
     WidgetMapper( extension_widget_t *_p_widget ) :
             QObject(NULL), p_widget(_p_widget) {}
-    ~WidgetMapper() {}
     extension_widget_t* getWidget() { return p_widget; }
 };
 

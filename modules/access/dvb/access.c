@@ -172,8 +172,6 @@ static int Open( vlc_object_t *p_this )
     }
 
     /* Set up access */
-    free( p_access->psz_demux );
-    p_access->psz_demux = strdup( "m3u8" );
     p_access->pf_read = NULL;
     p_access->pf_control = Control;
     p_access->pf_seek = NULL;
@@ -296,7 +294,7 @@ static block_t *BlockScan( access_t *p_access )
             if( errno == EINTR )
                 continue;
 
-            msg_Err( p_access, "poll error: %m" );
+            msg_Err( p_access, "poll error: %s", vlc_strerror_c(errno) );
             scan_session_Destroy( p_scan, session );
 
             p_access->info.b_eof = true;
@@ -330,7 +328,7 @@ static block_t *BlockScan( access_t *p_access )
             if( ( i_ret = read( p_sys->i_handle, p_block->p_buffer,
                                 i_read_once * TS_PACKET_SIZE ) ) <= 0 )
             {
-                msg_Warn( p_access, "read failed (%m)" );
+                msg_Warn( p_access, "read failed: %s", vlc_strerror_c(errno) );
                 block_Release( p_block );
                 continue;
             }
@@ -365,7 +363,6 @@ static int Control( access_t *p_access, int i_query, va_list args )
 
     switch( i_query )
     {
-        /* */
         case ACCESS_CAN_SEEK:
         case ACCESS_CAN_FASTSEEK:
         case ACCESS_CAN_PAUSE:
@@ -373,19 +370,15 @@ static int Control( access_t *p_access, int i_query, va_list args )
             pb_bool = (bool*)va_arg( args, bool* );
             *pb_bool = false;
             break;
-        /* */
+
+        case ACCESS_GET_CONTENT_TYPE:
+            *va_arg( args, char** ) = strdup("application/vnd.apple.mpegurl"); // m3u8
+            return VLC_SUCCESS;
+
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
             *pi_64 = DEFAULT_PTS_DELAY;
             break;
-
-        /* */
-        case ACCESS_SET_PAUSE_STATE:
-        case ACCESS_GET_TITLE_INFO:
-        case ACCESS_SET_TITLE:
-        case ACCESS_SET_SEEKPOINT:
-        case ACCESS_GET_CONTENT_TYPE:
-            return VLC_EGENERIC;
 
         case ACCESS_GET_SIGNAL:
             pf1 = (double*)va_arg( args, double * );
@@ -397,14 +390,9 @@ static int Control( access_t *p_access, int i_query, va_list args )
                 *pf1 = (double)stat.i_snr / 65535.0;
                 *pf2 = (double)stat.i_signal_strenth / 65535.0;
             }
-            return VLC_SUCCESS;
-
-        case ACCESS_SET_PRIVATE_ID_STATE:
-        case ACCESS_SET_PRIVATE_ID_CA:
-            return VLC_EGENERIC;
+            break;
 
         default:
-            msg_Warn( p_access, "unimplemented query in control" );
             return VLC_EGENERIC;
 
     }

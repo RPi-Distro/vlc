@@ -1,8 +1,8 @@
 /*****************************************************************************
  * VLCUIWidgets.h: Widgets for VLC's extensions dialogs for Mac OS X
  *****************************************************************************
- * Copyright (C) 2009-2012 the VideoLAN team and authors
- * $Id: 26b41e46987ef6c8f0765f27657022e31c10773b $
+ * Copyright (C) 2009-2014 the VideoLAN team and authors
+ * $Id: 548965dc46fba9121b007e04fe303735679f8d8b $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan dot>,
  *          Brendon Justin <brendonjustin@gmail.com>
@@ -23,7 +23,6 @@
  *****************************************************************************/
 
 #import <Cocoa/Cocoa.h>
-#import "CompatibilityFixes.h"
 #import <vlc_extensions.h>
 
 @class VLCDialogGridView;

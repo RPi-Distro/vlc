@@ -2,7 +2,7 @@
  * control.h : vout internal control
  *****************************************************************************
  * Copyright (C) 2009-2010 Laurent Aimar
- * $Id: 2e25cb856c31dfd5da5405b548ac98103d5d56b6 $
+ * $Id: f52a529c3a2d2f46668f7c496763498084e024b1 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -49,7 +49,7 @@ enum {
     VOUT_CONTROL_STEP,                  /* time_ptr */
 
     VOUT_CONTROL_FULLSCREEN,            /* bool */
-    VOUT_CONTROL_ON_TOP,                /* bool */
+    VOUT_CONTROL_WINDOW_STATE,          /* unsigned */
     VOUT_CONTROL_DISPLAY_FILLED,        /* bool */
     VOUT_CONTROL_ZOOM,                  /* pair */
 
@@ -107,7 +107,6 @@ typedef struct {
 
     /* */
     bool is_dead;
-    bool is_sleeping;
     bool can_sleep;
     bool is_processing;
     DECL_ARRAY(vout_control_cmd_t) cmd;

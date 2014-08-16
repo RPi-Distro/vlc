@@ -2,7 +2,7 @@
  * grey_yuv.c : grayscale to others conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2007, 2008 VLC authors and VideoLAN
- * $Id: b236cd7883c057acf402d705fd0b59a2f58b1e1b $
+ * $Id: d76eb880030b03a337592d6b5b4cbbe48b0208ac $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *
@@ -72,7 +72,8 @@ static int Activate( vlc_object_t *p_this )
     }
 
     if( p_filter->fmt_in.video.i_width != p_filter->fmt_out.video.i_width
-     || p_filter->fmt_in.video.i_height != p_filter->fmt_out.video.i_height )
+       || p_filter->fmt_in.video.i_height != p_filter->fmt_out.video.i_height
+       || p_filter->fmt_in.video.orientation != p_filter->fmt_out.video.orientation )
         return -1;
 
     switch( p_filter->fmt_in.video.i_chroma )

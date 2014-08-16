@@ -2,7 +2,7 @@
  * matroska_segment.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: d9685e561e1cbd1f081918d7b9afc0c56d92dc79 $
+ * $Id: f4eb52343dbcdf01d8c1eff7767156f50b7d4de3 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -189,6 +189,16 @@ void matroska_segment_c::LoadCues( KaxCues *cues )
                                 cbnum.ReadData( es.I_O() );
                                 idx.i_block_number = uint32( cbnum );
                             }
+#if LIBMATROSKA_VERSION >= 0x010401
+                            else if( MKV_IS_ID( el, KaxCueRelativePosition ) )
+                            {
+                                /* For future use */
+                            }
+                            else if( MKV_IS_ID( el, KaxCueDuration ) )
+                            {
+                                /* For future use */
+                            }
+#endif
                             else
                             {
                                 msg_Dbg( &sys.demuxer, "         * Unknown (%s)", typeid(*el).name() );
@@ -917,8 +927,7 @@ void matroska_segment_c::Seek( mtime_t i_date, mtime_t i_time_offset, int64_t i_
         i_seek_time = p_indexes[i_idx].i_time;
     }
 
-    msg_Dbg( &sys.demuxer, "seek got %"PRId64" (%d%%)",
-                i_seek_time, (int)( 100 * i_seek_position / stream_Size( sys.demuxer.s ) ) );
+    msg_Dbg( &sys.demuxer, "seek got %"PRId64" - %"PRId64, i_seek_time, i_seek_position );
 
     es.I_O().setFilePointer( i_seek_position, seek_beginning );
 
@@ -931,10 +940,22 @@ void matroska_segment_c::Seek( mtime_t i_date, mtime_t i_time_offset, int64_t i_
     /* now parse until key frame */
     const int es_types[3] = { VIDEO_ES, AUDIO_ES, SPU_ES };
     i_cat = es_types[0];
+    mtime_t i_seek_preroll = 0;
     for( int i = 0; i < 2; i_cat = es_types[++i] )
     {
         for( i_track = 0; i_track < tracks.size(); i_track++ )
         {
+            if( tracks[i_track]->i_seek_preroll )
+            {
+                bool b_enabled;
+                if( es_out_Control( sys.demuxer.out,
+                                    ES_OUT_GET_ES_STATE,
+                                    tracks[i_track]->p_es,
+                                    &b_enabled ) == VLC_SUCCESS &&
+                    b_enabled )
+                    i_seek_preroll = __MAX( i_seek_preroll,
+                                            tracks[i_track]->i_seek_preroll );
+            }
             if( tracks[i_track]->fmt.i_cat == i_cat )
             {
                 spoint * seekpoint = new spoint(i_track, i_seek_time, i_seek_position, i_seek_position);
@@ -970,7 +991,7 @@ void matroska_segment_c::Seek( mtime_t i_date, mtime_t i_time_offset, int64_t i_
         es_out_Control( sys.demuxer.out, ES_OUT_SET_NEXT_DISPLAY_TIME, i_date );
         return;
     }
-
+    i_date -= i_seek_preroll;
     for(;;)
     {
         do
@@ -980,6 +1001,12 @@ void matroska_segment_c::Seek( mtime_t i_date, mtime_t i_time_offset, int64_t i_
             if( BlockGet( block, simpleblock, &b_key_picture, &b_discardable_picture, &i_block_duration ) )
             {
                 msg_Warn( &sys.demuxer, "cannot get block EOF?" );
+                while( p_first )
+                {
+                    spoint *tmp = p_first;
+                    p_first = p_first->p_next;
+                    delete tmp;
+                }
                 return;
             }
 
@@ -1121,13 +1148,13 @@ void matroska_segment_c::ComputeTrackPriority()
             b_has_default_audio = true;
         }
         if( unlikely( !p_tk->b_enabled ) )
-            p_tk->fmt.i_priority = -2;
+            p_tk->fmt.i_priority = ES_PRIORITY_NOT_SELECTABLE;
         else if( p_tk->b_forced )
-            p_tk->fmt.i_priority = 2;
+            p_tk->fmt.i_priority = ES_PRIORITY_SELECTABLE_MIN + 2;
         else if( p_tk->b_default )
-            p_tk->fmt.i_priority = 1;
+            p_tk->fmt.i_priority = ES_PRIORITY_SELECTABLE_MIN + 1;
         else
-            p_tk->fmt.i_priority = 0;
+            p_tk->fmt.i_priority = ES_PRIORITY_SELECTABLE_MIN;
 
         /* Avoid multivideo tracks when unnecessary */
         if( p_tk->fmt.i_cat == VIDEO_ES )
@@ -1203,6 +1230,7 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
     *pb_key_picture         = true;
     *pb_discardable_picture = false;
     size_t i_tk;
+    *pi_duration = 0;
 
     for( ;; )
     {
@@ -1409,6 +1437,17 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
                             }
                         }
                     }
+#if LIBMATROSKA_VERSION >= 0x010401
+                    else if( MKV_IS_ID( el, KaxDiscardPadding ) )
+                    {
+                        KaxDiscardPadding &dp = *(KaxDiscardPadding*) el;
+                        dp.ReadData( es.I_O() );
+                        if ( *pi_duration < int64(dp) )
+                            *pi_duration = 0;
+                        else
+                            *pi_duration -= int64(dp);
+                    }
+#endif
                     break;
                 default:
                     msg_Err( &sys.demuxer, "invalid level = %d", i_level );

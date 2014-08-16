@@ -2,7 +2,7 @@
  * podcast.c : podcast playlist imports
  *****************************************************************************
  * Copyright (C) 2005-2009 VLC authors and VideoLAN
- * $Id: 6af712b6357933fa9574b0160f5d081164488b4a $
+ * $Id: b0c44d9a59f1ee345758505d907d65058ad0dc14 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -33,6 +33,7 @@
 
 #include "playlist.h"
 #include <vlc_xml.h>
+#include <vlc_strings.h>
 
 /*****************************************************************************
  * Local prototypes
@@ -250,6 +251,8 @@ static int Demux( demux_t *p_demux )
                         continue;
                     }
 
+                    resolve_xml_special_chars( psz_item_mrl );
+                    resolve_xml_special_chars( psz_item_name );
                     p_input = input_item_New( psz_item_mrl, psz_item_name );
                     FREENULL( psz_item_mrl );
                     FREENULL( psz_item_name );
@@ -278,7 +281,10 @@ static int Demux( demux_t *p_demux )
 
                     /* Add the global art url to this item, if any */
                     if( psz_art_url )
+                    {
+                        resolve_xml_special_chars( psz_art_url );
                         input_item_SetArtURL( p_input, psz_art_url );
+                    }
 
                     if( psz_item_size )
                     {

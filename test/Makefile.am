@@ -14,6 +14,7 @@ extra_check_verbose__0 = $(extra_check_verbose_0)
 ###############################################################################
 check_PROGRAMS = \
 	test_libvlc_core \
+	test_libvlc_equalizer \
 	test_libvlc_media \
 	test_libvlc_media_list \
 	test_libvlc_media_player \
@@ -22,7 +23,8 @@ check_PROGRAMS = \
         $(NULL)
 
 check_SCRIPTS = \
-    modules/lua/telnet.sh
+	modules/lua/telnet.sh \
+	check_POTFILES.sh
 
 # Disabled test:
 # meta: No suitable test file
@@ -36,7 +38,7 @@ EXTRA_DIST = samples/empty.voc samples/image.jpg $(check_SCRIPTS)
 
 check_HEADERS = libvlc/test.h libvlc/libvlc_additions.h
 
-TESTS = $(check_PROGRAMS)
+TESTS = $(check_PROGRAMS) check_POTFILES.sh
 
 DISTCLEANFILES = samples/test.sample samples/meta.sample
 
@@ -58,6 +60,8 @@ LIBVLC = ../lib/libvlc.la
 
 test_libvlc_core_SOURCES = libvlc/core.c
 test_libvlc_core_LDADD = $(LIBVLC)
+test_libvlc_equalizer_SOURCES = libvlc/equalizer.c
+test_libvlc_equalizer_LDADD = $(LIBVLC)
 test_libvlc_media_SOURCES = libvlc/media.c
 test_libvlc_media_LDADD = $(LIBVLC)
 test_libvlc_media_list_player_SOURCES = libvlc/media_list_player.c

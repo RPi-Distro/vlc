@@ -2,7 +2,7 @@
  * art.c : Art metadata handling
  *****************************************************************************
  * Copyright (C) 1998-2008 VLC authors and VideoLAN
- * $Id: 9a93762ee044de5136486fa8e8c31cab9e2fe26b $
+ * $Id: 18a376441f26fabdfcf27894e49815c0990e6ae5 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org
@@ -26,19 +26,17 @@
 # include "config.h"
 #endif
 
-#include <assert.h>
 #include <sys/stat.h>
+#include <errno.h>
 
 #include <vlc_common.h>
-#include <vlc_playlist.h>
+#include <vlc_input_item.h>
 #include <vlc_fs.h>
 #include <vlc_strings.h>
-#include <vlc_stream.h>
 #include <vlc_url.h>
 #include <vlc_md5.h>
 
-#include "../libvlc.h"
-#include "playlist_internal.h"
+#include "art.h"
 
 static void ArtCacheCreateDir( const char *psz_dir )
 {
@@ -175,7 +173,7 @@ int playlist_FindArtInCache( input_item_t *p_item )
     }
 
     bool b_found = false;
-    char *psz_filename;
+    const char *psz_filename;
     while( !b_found && (psz_filename = vlc_readdir( p_dir )) )
     {
         if( !strncmp( psz_filename, "art", 3 ) )
@@ -195,7 +193,6 @@ int playlist_FindArtInCache( input_item_t *p_item )
 
             b_found = true;
         }
-        free( psz_filename );
     }
 
     /* */
@@ -297,7 +294,7 @@ int playlist_SaveArt( vlc_object_t *obj, input_item_t *p_item,
     {
         if( fwrite( data, 1, length, f ) != length )
         {
-            msg_Err( obj, "%s: %m", psz_filename );
+            msg_Err( obj, "%s: %s", psz_filename, vlc_strerror_c(errno) );
         }
         else
         {
@@ -327,7 +324,8 @@ int playlist_SaveArt( vlc_object_t *obj, input_item_t *p_item,
         if ( f )
         {
             if( fputs( "file://", f ) < 0 || fputs( psz_filename, f ) < 0 )
-                msg_Err( obj, "Error writing %s: %m", psz_byuidfile );
+                msg_Err( obj, "Error writing %s: %s", psz_byuidfile,
+                         vlc_strerror_c(errno) );
             fclose( f );
         }
         free( psz_byuidfile );

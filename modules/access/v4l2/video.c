@@ -61,10 +61,11 @@ static int SetupStandard (vlc_object_t *obj, int fd,
     }
     if (v4l2_ioctl (fd, VIDIOC_S_STD, std) < 0)
     {
-        msg_Err (obj, "cannot set video standard 0x%"PRIx64": %m", *std);
+        msg_Err (obj, "cannot set video standard 0x%"PRIx64": %s",
+                 (uint64_t)*std, vlc_strerror_c(errno));
         return -1;
     }
-    msg_Dbg (obj, "video standard set to 0x%"PRIx64":", *std);
+    msg_Dbg (obj, "video standard set to 0x%"PRIx64":", (uint64_t)*std);
     return 0;
 }
 
@@ -95,7 +96,8 @@ static int SetupAudio (vlc_object_t *obj, int fd,
 
     if (v4l2_ioctl (fd, VIDIOC_ENUMAUDIO, &enumaudio) < 0)
     {
-        msg_Err (obj, "cannot get audio input %"PRIu32" properties: %m", idx);
+        msg_Err (obj, "cannot get audio input %"PRIu32" properties: %s", idx,
+                 vlc_strerror_c(errno));
         return -1;
     }
 
@@ -111,7 +113,8 @@ static int SetupAudio (vlc_object_t *obj, int fd,
 
     if (v4l2_ioctl (fd, VIDIOC_S_AUDIO, &audio) < 0)
     {
-        msg_Err (obj, "cannot select audio input %"PRIu32": %m", idx);
+        msg_Err (obj, "cannot select audio input %"PRIu32": %s", idx,
+                 vlc_strerror_c(errno));
         return -1;
     }
     msg_Dbg (obj, "selected audio input %"PRIu32, idx);
@@ -124,7 +127,8 @@ int SetupTuner (vlc_object_t *obj, int fd, uint32_t idx)
 
     if (v4l2_ioctl (fd, VIDIOC_G_TUNER, &tuner) < 0)
     {
-        msg_Err (obj, "cannot get tuner %"PRIu32" properties: %m", idx);
+        msg_Err (obj, "cannot get tuner %"PRIu32" properties: %s", idx,
+                 vlc_strerror_c(errno));
         return -1;
     }
 
@@ -181,7 +185,8 @@ int SetupTuner (vlc_object_t *obj, int fd, uint32_t idx)
 
     if (v4l2_ioctl (fd, VIDIOC_S_TUNER, &tuner) < 0)
     {
-        msg_Err (obj, "cannot set tuner %"PRIu32" audio mode: %m", idx);
+        msg_Err (obj, "cannot set tuner %"PRIu32" audio mode: %s", idx,
+                 vlc_strerror_c(errno));
         return -1;
     }
     msg_Dbg (obj, "tuner %"PRIu32" audio mode %u set", idx, tuner.audmode);
@@ -199,7 +204,8 @@ int SetupTuner (vlc_object_t *obj, int fd, uint32_t idx)
         if (v4l2_ioctl (fd, VIDIOC_S_FREQUENCY, &frequency) < 0)
         {
             msg_Err (obj, "cannot tune tuner %"PRIu32
-                     " to frequency %u %sHz: %m", idx, freq, mult);
+                     " to frequency %u %sHz: %s", idx, freq, mult,
+                     vlc_strerror_c(errno));
             return -1;
         }
         msg_Dbg (obj, "tuner %"PRIu32" tuned to frequency %"PRIu32" %sHz",
@@ -218,7 +224,8 @@ static int ResetCrop (vlc_object_t *obj, int fd)
      * In practice, it does not. */
     if (v4l2_ioctl (fd, VIDIOC_CROPCAP, &cropcap) < 0)
     {
-        msg_Dbg (obj, "cannot get cropping properties: %m");
+        msg_Dbg (obj, "cannot get cropping properties: %s",
+                 vlc_strerror_c(errno));
         return 0;
     }
 
@@ -230,7 +237,8 @@ static int ResetCrop (vlc_object_t *obj, int fd)
 
     if (v4l2_ioctl (fd, VIDIOC_S_CROP, &crop) < 0)
     {
-        msg_Warn (obj, "cannot reset cropping limits: %m");
+        msg_Warn (obj, "cannot reset cropping limits: %s",
+                  vlc_strerror_c(errno));
         return -1;
     }
     return 0;
@@ -243,7 +251,8 @@ int SetupInput (vlc_object_t *obj, int fd, v4l2_std_id *std)
     input.index = var_InheritInteger (obj, CFG_PREFIX"input");
     if (v4l2_ioctl (fd, VIDIOC_ENUMINPUT, &input) < 0)
     {
-        msg_Err (obj, "invalid video input %"PRIu32": %m", input.index);
+        msg_Err (obj, "invalid video input %"PRIu32": %s", input.index,
+                 vlc_strerror_c(errno));
         return -1;
     }
 
@@ -264,7 +273,8 @@ int SetupInput (vlc_object_t *obj, int fd, v4l2_std_id *std)
     /* Select input */
     if (v4l2_ioctl (fd, VIDIOC_S_INPUT, &input.index) < 0)
     {
-        msg_Err (obj, "cannot select input %"PRIu32": %m", input.index);
+        msg_Err (obj, "cannot select input %"PRIu32": %s", input.index,
+                 vlc_strerror_c(errno));
         return -1;
     }
     msg_Dbg (obj, "selected input %"PRIu32, input.index);
@@ -298,15 +308,19 @@ static int64_t fcmp (const struct v4l2_fract *a,
 }
 
 static const struct v4l2_fract infinity = { 1, 0 };
+static const struct v4l2_fract zero = { 0, 1 };
 
 /**
- * Finds the highest frame rate possible of a certain V4L2 format.
+ * Finds the highest frame rate up to a specific limit possible with a certain
+ * V4L2 format.
  * @param fmt V4L2 capture format [IN]
+ * @param min_it minimum frame internal [IN]
  * @param it V4L2 frame interval [OUT]
  * @return 0 on success, -1 on error.
  */
 static int FindMaxRate (vlc_object_t *obj, int fd,
                         const struct v4l2_format *restrict fmt,
+                        const struct v4l2_fract *restrict min_it,
                         struct v4l2_fract *restrict it)
 {
     struct v4l2_frmivalenum fie = {
@@ -318,7 +332,7 @@ static int FindMaxRate (vlc_object_t *obj, int fd,
 
     if (v4l2_ioctl (fd, VIDIOC_ENUM_FRAMEINTERVALS, &fie) < 0)
     {
-        msg_Dbg (obj, "  unknown frame intervals: %m");
+        msg_Dbg (obj, "  unknown frame intervals: %s", vlc_strerror_c(errno));
         /* Frame intervals cannot be enumerated. Set the format and then
          * get the streaming parameters to figure out the default frame
          * interval. This is not necessarily the maximum though. */
@@ -344,7 +358,8 @@ static int FindMaxRate (vlc_object_t *obj, int fd,
             *it = infinity;
             do
             {
-                if (fcmp (&fie.discrete, it) < 0)
+                if (fcmp (&fie.discrete, min_it) >= 0
+                 && fcmp (&fie.discrete, it) < 0)
                     *it = fie.discrete;
                 fie.index++;
             }
@@ -364,7 +379,29 @@ static int FindMaxRate (vlc_object_t *obj, int fd,
                 msg_Dbg (obj, "  with %"PRIu32"/%"PRIu32" step",
                          fie.stepwise.step.numerator,
                          fie.stepwise.step.denominator);
-            *it = fie.stepwise.min;
+
+            if (fcmp (&fie.stepwise.max, min_it) < 0)
+            {
+                *it = infinity;
+                return -1;
+            }
+
+            if (fcmp (&fie.stepwise.min, min_it) >= 0)
+            {
+                *it = fie.stepwise.min;
+                break;
+            }
+
+            if (fie.type == V4L2_FRMIVAL_TYPE_CONTINUOUS)
+            {
+                *it = *min_it;
+                break;
+            }
+
+            it->numerator *= fie.stepwise.step.denominator;
+            it->denominator *= fie.stepwise.step.denominator;
+            while (fcmp (it, min_it) < 0)
+                it->numerator += fie.stepwise.step.numerator;
             break;
     }
     return 0;
@@ -389,7 +426,7 @@ int SetupFormat (vlc_object_t *obj, int fd, uint32_t fourcc,
 
     if (v4l2_ioctl (fd, VIDIOC_G_FMT, fmt) < 0)
     {
-        msg_Err (obj, "cannot get default format: %m");
+        msg_Err (obj, "cannot get default format: %s", vlc_strerror_c(errno));
         return -1;
     }
     fmt->fmt.pix.pixelformat = fourcc;
@@ -397,8 +434,15 @@ int SetupFormat (vlc_object_t *obj, int fd, uint32_t fourcc,
     struct v4l2_frmsizeenum fse = {
         .pixel_format = fourcc,
     };
-    struct v4l2_fract best_it = infinity;
+    struct v4l2_fract best_it = infinity, min_it;
     uint64_t best_area = 0;
+
+    if (var_InheritURational(obj, &min_it.denominator, &min_it.numerator,
+                             CFG_PREFIX"fps") == VLC_SUCCESS)
+        msg_Dbg (obj, " requested frame internal: %"PRIu32"/%"PRIu32,
+                 min_it.numerator, min_it.denominator);
+    else
+        min_it = zero;
 
     uint32_t width = var_InheritInteger (obj, CFG_PREFIX"width");
     uint32_t height = var_InheritInteger (obj, CFG_PREFIX"height");
@@ -408,16 +452,16 @@ int SetupFormat (vlc_object_t *obj, int fd, uint32_t fourcc,
         fmt->fmt.pix.height = height;
         msg_Dbg (obj, " requested frame size: %"PRIu32"x%"PRIu32,
                  width, height);
-        FindMaxRate (obj, fd, fmt, &best_it);
+        FindMaxRate (obj, fd, fmt, &min_it, &best_it);
     }
     else
     if (v4l2_ioctl (fd, VIDIOC_ENUM_FRAMESIZES, &fse) < 0)
     {
         /* Fallback to current format, try to maximize frame rate */
-        msg_Dbg (obj, " unknown frame sizes: %m");
+        msg_Dbg (obj, " unknown frame sizes: %s", vlc_strerror_c(errno));
         msg_Dbg (obj, " current frame size: %"PRIu32"x%"PRIu32,
                  fmt->fmt.pix.width, fmt->fmt.pix.height);
-        FindMaxRate (obj, fd, fmt, &best_it);
+        FindMaxRate (obj, fd, fmt, &min_it, &best_it);
     }
     else
     switch (fse.type)
@@ -429,7 +473,7 @@ int SetupFormat (vlc_object_t *obj, int fd, uint32_t fourcc,
 
                 msg_Dbg (obj, " frame size %"PRIu32"x%"PRIu32,
                          fse.discrete.width, fse.discrete.height);
-                FindMaxRate (obj, fd, fmt, &cur_it);
+                FindMaxRate (obj, fd, fmt, &min_it, &cur_it);
 
                 int64_t c = fcmp (&cur_it, &best_it);
                 uint64_t area = fse.discrete.width * fse.discrete.height;
@@ -469,7 +513,7 @@ int SetupFormat (vlc_object_t *obj, int fd, uint32_t fourcc,
                 {
                     struct v4l2_fract cur_it;
 
-                    FindMaxRate (obj, fd, fmt, &cur_it);
+                    FindMaxRate (obj, fd, fmt, &min_it, &cur_it);
 
                     int64_t c = fcmp (&cur_it, &best_it);
                     uint64_t area = width * height;
@@ -491,14 +535,15 @@ int SetupFormat (vlc_object_t *obj, int fd, uint32_t fourcc,
     /* Set the final format */
     if (v4l2_ioctl (fd, VIDIOC_S_FMT, fmt) < 0)
     {
-        msg_Err (obj, "cannot set format: %m");
+        msg_Err (obj, "cannot set format: %s", vlc_strerror_c(errno));
         return -1;
     }
 
     /* Now that the final format is set, fetch and override parameters */
     if (v4l2_ioctl (fd, VIDIOC_G_PARM, parm) < 0)
     {
-        msg_Err (obj, "cannot get streaming parameters: %m");
+        msg_Err (obj, "cannot get streaming parameters: %s",
+                 vlc_strerror_c(errno));
         memset (parm, 0, sizeof (*parm));
         parm->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     }
@@ -507,7 +552,8 @@ int SetupFormat (vlc_object_t *obj, int fd, uint32_t fourcc,
     if (best_it.denominator != 0)
         parm->parm.capture.timeperframe = best_it;
     if (v4l2_ioctl (fd, VIDIOC_S_PARM, parm) < 0)
-        msg_Warn (obj, "cannot set streaming parameters: %m");
+        msg_Warn (obj, "cannot set streaming parameters: %s",
+                  vlc_strerror_c(errno));
 
     ResetCrop (obj, fd); /* crop depends on frame size */
 
@@ -555,7 +601,7 @@ block_t *GrabVideo (vlc_object_t *demux, int fd,
                 /* Could ignore EIO, see spec. */
                 /* fall through */
             default:
-                msg_Err (demux, "dequeue error: %m");
+                msg_Err (demux, "dequeue error: %s", vlc_strerror_c(errno));
                 return NULL;
         }
     }
@@ -570,7 +616,7 @@ block_t *GrabVideo (vlc_object_t *demux, int fd,
     /* Unlock */
     if (v4l2_ioctl (fd, VIDIOC_QBUF, &buf) < 0)
     {
-        msg_Err (demux, "queue error: %m");
+        msg_Err (demux, "queue error: %s", vlc_strerror_c(errno));
         block_Release (block);
         return NULL;
     }
@@ -590,12 +636,13 @@ int StartUserPtr (vlc_object_t *obj, int fd)
 
     if (v4l2_ioctl (fd, VIDIOC_REQBUFS, &reqbuf) < 0)
     {
-        msg_Dbg (obj, "cannot reserve user buffers: %m");
+        msg_Dbg (obj, "cannot reserve user buffers: %s",
+                 vlc_strerror_c(errno));
         return -1;
     }
     if (v4l2_ioctl (fd, VIDIOC_STREAMON, &reqbuf.type) < 0)
     {
-        msg_Err (obj, "cannot start streaming: %m");
+        msg_Err (obj, "cannot start streaming: %s", vlc_strerror_c(errno));
         return -1;
     }
     return 0;
@@ -616,7 +663,7 @@ struct buffer_t *StartMmap (vlc_object_t *obj, int fd, uint32_t *restrict n)
 
     if (v4l2_ioctl (fd, VIDIOC_REQBUFS, &req) < 0)
     {
-        msg_Err (obj, "cannot allocate buffers: %m" );
+        msg_Err (obj, "cannot allocate buffers: %s", vlc_strerror_c(errno));
         return NULL;
     }
 
@@ -641,7 +688,8 @@ struct buffer_t *StartMmap (vlc_object_t *obj, int fd, uint32_t *restrict n)
 
         if (v4l2_ioctl (fd, VIDIOC_QUERYBUF, &buf) < 0)
         {
-            msg_Err (obj, "cannot query buffer %"PRIu32": %m", bufc);
+            msg_Err (obj, "cannot query buffer %"PRIu32": %s", bufc,
+                     vlc_strerror_c(errno));
             goto error;
         }
 
@@ -649,7 +697,8 @@ struct buffer_t *StartMmap (vlc_object_t *obj, int fd, uint32_t *restrict n)
                                       MAP_SHARED, fd, buf.m.offset);
         if (bufv[bufc].start == MAP_FAILED)
         {
-            msg_Err (obj, "cannot map buffer %"PRIu32": %m", bufc);
+            msg_Err (obj, "cannot map buffer %"PRIu32": %s", bufc,
+                     vlc_strerror_c(errno));
             goto error;
         }
         bufv[bufc].length = buf.length;
@@ -658,7 +707,8 @@ struct buffer_t *StartMmap (vlc_object_t *obj, int fd, uint32_t *restrict n)
         /* Some drivers refuse to queue buffers before they are mapped. Bug? */
         if (v4l2_ioctl (fd, VIDIOC_QBUF, &buf) < 0)
         {
-            msg_Err (obj, "cannot queue buffer %"PRIu32": %m", bufc);
+            msg_Err (obj, "cannot queue buffer %"PRIu32": %s", bufc,
+                     vlc_strerror_c(errno));
             goto error;
         }
     }
@@ -666,7 +716,7 @@ struct buffer_t *StartMmap (vlc_object_t *obj, int fd, uint32_t *restrict n)
     enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     if (v4l2_ioctl (fd, VIDIOC_STREAMON, &type) < 0)
     {
-        msg_Err (obj, "cannot start streaming: %m");
+        msg_Err (obj, "cannot start streaming: %s", vlc_strerror_c(errno));
         goto error;
     }
     *n = bufc;

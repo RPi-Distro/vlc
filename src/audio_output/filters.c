@@ -2,7 +2,7 @@
  * filters.c : audio output filters management
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: 59346c17386ba9472f9756c7d4bda25b68295faf $
+ * $Id: e6a695593f516255071038fd17de6591d4c32b89 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -296,7 +296,8 @@ static int VisualizationCallback (vlc_object_t *obj, const char *var,
      * separate "visual" (external) and "audio-visual" (internal) variables...
      * The visual plugin should have one submodule per effect instead. */
     if (strcasecmp (mode, "none") && strcasecmp (mode, "goom")
-     && strcasecmp (mode, "projectm") && strcasecmp (mode, "vsxu"))
+     && strcasecmp (mode, "projectm") && strcasecmp (mode, "vsxu")
+     && strcasecmp (mode, "glspectrum"))
     {
         var_Create (obj, "effect-list", VLC_VAR_STRING);
         var_SetString (obj, "effect-list", mode);
@@ -305,25 +306,6 @@ static int VisualizationCallback (vlc_object_t *obj, const char *var,
 
     var_SetString (obj, "audio-visual", mode);
     aout_InputRequestRestart ((audio_output_t *)obj);
-    (void) var; (void) oldval; (void) data;
-    return VLC_SUCCESS;
-}
-
-static int EqualizerCallback (vlc_object_t *obj, const char *var,
-                              vlc_value_t oldval, vlc_value_t newval,
-                              void *data)
-{
-    const char *val = newval.psz_string;
-
-    if (*val)
-    {
-        var_Create (obj, "equalizer-preset", VLC_VAR_STRING);
-        var_SetString (obj, "equalizer-preset", val);
-    }
-
-    if (aout_ChangeFilterString (obj, obj, "audio-filter", "equalizer", *val))
-        aout_InputRequestRestart ((audio_output_t *)obj); /* <- That sucks! */
-
     (void) var; (void) oldval; (void) data;
     return VLC_SUCCESS;
 }
@@ -418,10 +400,7 @@ aout_filters_t *aout_FiltersNew (vlc_object_t *obj,
 
     /* Callbacks (before reading values and also before return statement) */
     if (request_vout != NULL)
-    {
-        var_AddCallback (obj, "equalizer", EqualizerCallback, NULL);
         var_AddCallback (obj, "visual", VisualizationCallback, NULL);
-    }
 
     /* Now add user filters */
     if (!AOUT_FMT_LINEAR(outfmt))
@@ -496,8 +475,8 @@ aout_filters_t *aout_FiltersNew (vlc_object_t *obj,
 
 error:
     aout_FiltersPipelineDestroy (filters->tab, filters->count);
-    var_DelCallback (obj, "equalizer", EqualizerCallback, NULL);
-    var_DelCallback (obj, "visual", VisualizationCallback, NULL);
+    if (request_vout != NULL)
+        var_DelCallback (obj, "visual", VisualizationCallback, NULL);
     free (filters);
     return NULL;
 }
@@ -517,10 +496,7 @@ void aout_FiltersDelete (vlc_object_t *obj, aout_filters_t *filters)
         aout_FiltersPipelineDestroy (&filters->resampler, 1);
     aout_FiltersPipelineDestroy (filters->tab, filters->count);
     if (obj != NULL)
-    {
-        var_DelCallback (obj, "equalizer", EqualizerCallback, NULL);
         var_DelCallback (obj, "visual", VisualizationCallback, NULL);
-    }
     free (filters);
 }
 

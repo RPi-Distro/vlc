@@ -1,8 +1,8 @@
 /*****************************************************************************
  * VLCVoutWindowController.m: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2012-2013 VLC authors and VideoLAN
- * $Id: 224f12a57a07d58a4659893eeb8291f57ff742b6 $
+ * Copyright (C) 2012-2014 VLC authors and VideoLAN
+ * $Id: 305b6ebf407ba4187d02ff96d8ecf27dfe88a483 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -22,6 +22,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#import "CompatibilityFixes.h"
 #import "VLCVoutWindowController.h"
 #import "intf.h"
 #import "MainWindow.h"
@@ -67,7 +68,8 @@
     VLCVideoWindowCommon *o_new_video_window;
 
     // should be called before any window resizing occurs
-    [[VLCMainWindow sharedInstance] videoplayWillBeStarted];
+    if (!b_multiple_vout_windows)
+        [[VLCMainWindow sharedInstance] videoplayWillBeStarted];
 
     if (b_multiple_vout_windows && b_video_wallpaper)
         b_video_wallpaper = false;
@@ -125,13 +127,13 @@
             [o_new_video_window setContentMinSize: NSMakeSize(f_min_video_height, f_min_video_height)];
         }
 
-        [[VLCMainWindow sharedInstance] setNonembedded:YES];
         b_nonembedded = YES;
     } else {
-        if ((var_InheritBool(VLCIntf, "embedded-video") && !b_multiple_vout_windows)) {
+        if ((var_InheritBool(VLCIntf, "embedded-video") && !b_mainwindow_has_video)) {
             // setup embedded video
             o_vout_view = [[[VLCMainWindow sharedInstance] videoView] retain];
             o_new_video_window = [[VLCMainWindow sharedInstance] retain];
+            b_mainwindow_has_video = YES;
             b_nonembedded = NO;
         } else {
             // setup detached window with controls
@@ -154,37 +156,8 @@
 
     NSSize videoViewSize = NSMakeSize(videoViewPosition.size.width, videoViewPosition.size.height);
 
-    // TODO: find a cleaner way for "start in fullscreen"
-    // Start in fs, because either prefs settings, or fullscreen button was pressed before
-
-    char *psz_splitter = var_GetString(pl_Get(VLCIntf), "video-splitter");
-    BOOL b_have_splitter = psz_splitter != NULL && *psz_splitter != '\0';
-    free(psz_splitter);
-
-    if (!b_have_splitter && (var_InheritBool(VLCIntf, "fullscreen") || var_GetBool(pl_Get(VLCIntf), "fullscreen"))) {
-
-        // this is not set when we start in fullscreen because of
-        // fullscreen settings in video prefs the second time
-        var_SetBool(p_wnd->p_parent, "fullscreen", 1);
-
-        int i_full = 1;
-
-        SEL sel = @selector(setFullscreen:forWindow:);
-        NSInvocation *inv = [NSInvocation invocationWithMethodSignature:[self methodSignatureForSelector:sel]];
-        [inv setTarget:self];
-        [inv setSelector:sel];
-        [inv setArgument:&i_full atIndex:2];
-        [inv setArgument:&p_wnd atIndex:3];
-
-        NSTimeInterval resizeTime = 0.;
-        if(!b_nonembedded && !b_video_wallpaper) {
-            NSRect window_rect = [o_new_video_window getWindowRectForProposedVideoViewSize:videoViewSize];
-            resizeTime = [o_new_video_window animationResizeTime:window_rect];
-            resizeTime += 0.1;
-        }
-        
-        [NSTimer scheduledTimerWithTimeInterval:resizeTime invocation:inv repeats:NO];
-    }
+    // Avoid flashes if video will directly start in fullscreen
+    NSDisableScreenUpdates();
 
     if (!b_video_wallpaper) {
         // set (only!) window origin if specified
@@ -219,17 +192,38 @@
 
     [o_new_video_window setAlphaValue: config_GetFloat(VLCIntf, "macosx-opaqueness")];
 
-    if (!b_multiple_vout_windows)
-        [[VLCMainWindow sharedInstance] setNonembedded:b_nonembedded];
-
     [o_vout_view setVoutThread:(vout_thread_t *)p_wnd->p_parent];
     [o_new_video_window setHasActiveVideo: YES];
     [o_vout_dict setObject:[o_new_video_window autorelease] forKey:[NSValue valueWithPointer:p_wnd]];
+
+    [[VLCMain sharedInstance] setActiveVideoPlayback: YES];
+    [[VLCMainWindow sharedInstance] setNonembedded:!b_mainwindow_has_video];
+
+    // beware of order, setActiveVideoPlayback:, setHasActiveVideo: and setNonembedded: must be called before
+    if ([o_new_video_window class] == [VLCMainWindow class])
+        [[VLCMainWindow sharedInstance] changePlaylistState: psVideoStartedOrStoppedEvent];
 
     if (b_nonembedded) {
         // event occurs before window is created, so call again
         [[VLCMain sharedInstance] playlistUpdated];
     }
+
+    // TODO: find a cleaner way for "start in fullscreen"
+    // Start in fs, because either prefs settings, or fullscreen button was pressed before
+    char *psz_splitter = var_GetString(pl_Get(VLCIntf), "video-splitter");
+    BOOL b_have_splitter = psz_splitter != NULL && *psz_splitter != '\0';
+    free(psz_splitter);
+
+    if (!b_have_splitter && (var_InheritBool(VLCIntf, "fullscreen") || var_GetBool(pl_Get(VLCIntf), "fullscreen"))) {
+
+        // this is not set when we start in fullscreen because of
+        // fullscreen settings in video prefs the second time
+        var_SetBool(p_wnd->p_parent, "fullscreen", 1);
+
+        [self setFullscreen:1 forWindow:p_wnd withAnimation:NO];
+    }
+
+    NSEnableScreenUpdates();
 
     return [o_vout_view autorelease];
 }
@@ -242,25 +236,50 @@
         return;
     }
 
-    if ([o_window fullscreen] && ![[VLCMainWindow sharedInstance] nativeFullscreenMode])
-        [o_window leaveFullscreen];
-
     [[o_window videoView] releaseVoutThread];
 
-    // set active video to no BEFORE closing the window to avoid stopping playback
-    // due to NSWindowWillCloseNotification
+    // set active video to no BEFORE closing the window and exiting fullscreen
+    // (avoid stopping playback due to NSWindowWillCloseNotification, preserving fullscreen state)
     [o_window setHasActiveVideo: NO];
-    if (![NSStringFromClass([o_window class]) isEqualToString:@"VLCMainWindow"]) {
-        [o_window close];
-        [o_window orderOut:self]; // for dark interface
+
+    // prevent visible extra window if in fullscreen
+    NSDisableScreenUpdates();
+    BOOL b_native = [[VLCMainWindow sharedInstance] nativeFullscreenMode];
+
+    // close fullscreen, without changing fullscreen vars
+    if (!b_native && ([o_window fullscreen] || [o_window inFullscreenTransition]))
+        [o_window leaveFullscreenWithAnimation:NO];
+
+    // native fullscreen window will not be closed if
+    // fullscreen was triggered without video
+    if ((b_native && [o_window class] == [VLCMainWindow class] && [o_window fullscreen] && [o_window windowShouldExitFullscreenWhenFinished])) {
+        [o_window toggleFullScreen:self];
     }
 
-    [o_vout_dict removeObjectForKey:o_key];
+    if ([o_window class] != [VLCMainWindow class]) {
+        [o_window close];
+    }
+    NSEnableScreenUpdates();
 
+    [o_window retain];
+    [o_vout_dict removeObjectForKey:o_key];
     if ([o_vout_dict count] == 0) {
         [[VLCMain sharedInstance] setActiveVideoPlayback:NO];
         i_statusLevelWindowCounter = 0;
     }
+
+    if ([o_window class] == [VLCMainWindow class]) {
+        b_mainwindow_has_video = NO;
+
+        // video in main window might get stopped while another vout is open
+        if ([o_vout_dict count] > 0)
+            [[VLCMainWindow sharedInstance] setNonembedded:YES];
+
+        // beware of order, setActiveVideoPlayback:, setHasActiveVideo: and setNonembedded: must be called before
+        [[VLCMainWindow sharedInstance] changePlaylistState: psVideoStartedOrStoppedEvent];
+    }
+
+    [o_window release];
 }
 
 
@@ -287,7 +306,7 @@
     if(i_level == NSStatusWindowLevel) {
         i_statusLevelWindowCounter++;
         // window level need to stay on normal in fullscreen mode
-        if (![o_window fullscreen] && ![o_window enteringFullscreenTransition])
+        if (![o_window fullscreen] && ![o_window inFullscreenTransition])
             [self updateWindowLevelForHelperWindows:i_level];
     } else {
         if (i_statusLevelWindowCounter > 0)
@@ -301,7 +320,7 @@
     [o_window setWindowLevel:i_level];
 }
 
-- (void)setFullscreen:(int)i_full forWindow:(vout_window_t *)p_wnd
+- (void)setFullscreen:(int)i_full forWindow:(vout_window_t *)p_wnd withAnimation:(BOOL)b_animation
 {
     intf_thread_t *p_intf = VLCIntf;
     BOOL b_nativeFullscreenMode = [[VLCMain sharedInstance] nativeFullscreenMode];
@@ -309,7 +328,7 @@
     if (!p_intf || (!b_nativeFullscreenMode && !p_wnd))
         return;
     playlist_t *p_playlist = pl_Get(p_intf);
-    BOOL b_fullscreen = i_full;
+    BOOL b_fullscreen = i_full != 0;
 
     if (!var_GetBool(p_playlist, "fullscreen") != !b_fullscreen)
         var_SetBool(p_playlist, "fullscreen", b_fullscreen);
@@ -325,16 +344,11 @@
 
         // fullscreen might be triggered twice (vout event)
         // so ignore duplicate events here
-        if((b_fullscreen && !([o_current_window fullscreen] || [o_current_window enteringFullscreenTransition])) ||
+        if((b_fullscreen && !([o_current_window fullscreen] || [o_current_window inFullscreenTransition])) ||
            (!b_fullscreen && [o_current_window fullscreen])) {
 
             [o_current_window toggleFullScreen:self];
         }
-
-        if (b_fullscreen)
-            [NSApp setPresentationOptions:(NSApplicationPresentationFullScreen | NSApplicationPresentationAutoHideDock | NSApplicationPresentationAutoHideMenuBar)];
-        else
-            [NSApp setPresentationOptions:(NSApplicationPresentationDefault)];
     } else {
         assert(o_current_window);
 
@@ -343,14 +357,14 @@
             if (p_input != NULL && [[VLCMain sharedInstance] activeVideoPlayback]) {
                 // activate app, as method can also be triggered from outside the app (prevents nasty window layout)
                 [NSApp activateIgnoringOtherApps:YES];
-                [o_current_window enterFullscreen];
+                [o_current_window enterFullscreenWithAnimation:b_animation];
 
             }
             if (p_input)
                 vlc_object_release(p_input);
         } else {
             // leaving fullscreen is always allowed
-            [o_current_window leaveFullscreen];
+            [o_current_window leaveFullscreenWithAnimation:YES];
         }
     }
 }

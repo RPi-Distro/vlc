@@ -2,7 +2,7 @@
  * vlc_demux.h: Demuxer descriptor, queries and methods
  *****************************************************************************
  * Copyright (C) 1999-2005 VLC authors and VideoLAN
- * $Id: 249291427c0439edbaeb5f5fafd70d6d44340390 $
+ * $Id: 0dcee0dffe2ac9dafdc9fe8fd5fa363a64cb85e1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -77,6 +77,11 @@ struct demux_t
     input_thread_t *p_input;
 };
 
+/* demux_t.info.i_update field */
+#define INPUT_UPDATE_TITLE      0x0010
+#define INPUT_UPDATE_SEEKPOINT  0x0020
+#define INPUT_UPDATE_META       0x0040
+#define INPUT_UPDATE_TITLE_LIST 0x0100
 
 /* demux_meta_t is returned by "meta reader" module to the demuxer */
 typedef struct demux_meta_t
@@ -110,11 +115,12 @@ enum demux_query_e
     DEMUX_SET_TITLE,            /* arg1= int            can fail */
     DEMUX_SET_SEEKPOINT,        /* arg1= int            can fail */
 
-    /* DEMUX_SET_GROUP only a hint for demuxer (mainly DVB) to allow not
+    /* DEMUX_SET_GROUP/SET_ES only a hint for demuxer (mainly DVB) to allow not
      * reading everything (you should not use this to call es_out_Control)
      * if you don't know what to do with it, just IGNORE it, it is safe(r)
      * -1 means all group, 0 default group (first es added) */
     DEMUX_SET_GROUP,            /* arg1= int, arg2=const vlc_list_t *   can fail */
+    DEMUX_SET_ES,               /* arg1= int                            can fail */
 
     /* Ask the demux to demux until the given date at the next pf_demux call
      * but not more (and not less, at the precision available of course).
@@ -138,6 +144,8 @@ enum demux_query_e
     DEMUX_CAN_RECORD,           /* arg1=bool*   res=can fail(assume false) */
     DEMUX_SET_RECORD_STATE,     /* arg1=bool    res=can fail */
 
+    DEMUX_GET_SIGNAL, /* arg1=double *pf_quality, arg2=double *pf_strength
+                         res=can fail */
 
     /* II. Specific access_demux queries */
     /* PAUSE you are ensured that it is never called twice with the same state */
@@ -169,6 +177,26 @@ enum demux_query_e
 };
 
 VLC_API int demux_vaControlHelper( stream_t *, int64_t i_start, int64_t i_end, int64_t i_bitrate, int i_align, int i_query, va_list args );
+
+static inline void demux_UpdateTitleFromStream( demux_t *demux )
+{
+    stream_t *s = demux->s;
+    unsigned title, seekpoint;
+
+    if( stream_Control( s, STREAM_GET_TITLE, &title ) == VLC_SUCCESS
+     && title != (unsigned)demux->info.i_title )
+    {
+        demux->info.i_title = title;
+        demux->info.i_update |= INPUT_UPDATE_TITLE;
+    }
+
+    if( stream_Control( s, STREAM_GET_SEEKPOINT, &seekpoint ) == VLC_SUCCESS
+     && seekpoint != (unsigned)demux->info.i_seekpoint )
+    {
+        demux->info.i_seekpoint = seekpoint;
+        demux->info.i_update |= INPUT_UPDATE_SEEKPOINT;
+    }
+}
 
 /*************************************************************************
  * Miscellaneous helpers for demuxers

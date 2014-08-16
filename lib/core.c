@@ -2,7 +2,7 @@
  * core.c: Core libvlc new API functions : initialization
  *****************************************************************************
  * Copyright (C) 2005 VLC authors and VideoLAN
- * $Id: 486829ddb472b774222a9235bfbe197a40670b96 $
+ * $Id: cc74071d0d9641e4d2d1decd16a09c798fbb2732 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -36,7 +36,7 @@
 #include <limits.h>
 #include <assert.h>
 
-static const char nomemstr[] = "Insufficient memory";
+#include "../src/revision.c"
 
 libvlc_instance_t * libvlc_new( int argc, const char *const *argv )
 {

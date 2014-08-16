@@ -4,7 +4,7 @@
  * VLC specific code:
  *
  * Copyright © 2008,2011,2012 the VideoLAN team
- * $Id: d9dae02e2a4e3a1c50f092b835741271fea3d5ba $
+ * $Id: e8e522635834362db62aac37437ae903301213aa $
  *
  * Authors: Rafaël Carré <funman@videolanorg>
  *          Felix Paul Kühne <fkuehne@videolan.org
@@ -137,7 +137,7 @@ static int Open( vlc_object_t *p_this )
 static void Close( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
-    playlist_t *p_playlist = pl_Get( p_this );
+    playlist_t *p_playlist = pl_Get( p_intf );
     intf_sys_t *p_sys = p_intf->p_sys;
 
     var_DelCallback( p_playlist, "item-change", ItemChange, p_intf );

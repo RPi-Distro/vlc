@@ -2,7 +2,7 @@
  * xiph_metadata.h: Vorbis Comment parser
  *****************************************************************************
  * Copyright © 2008-2013 VLC authors and VideoLAN
- * $Id: de97c2b061503c2793c549505a841b82bbf551b8 $
+ * $Id: 7a152b12f1927f2abd1ca9df5e9a113270f1435b $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -32,11 +32,13 @@ extern "C" {
 input_attachment_t* ParseFlacPicture( const uint8_t *p_data, int i_data,
     int i_attachments, int *i_cover_score, int *i_cover_idx );
 
-void vorbis_ParseComment( vlc_meta_t **pp_meta,
+void vorbis_ParseComment( es_format_t *p_fmt, vlc_meta_t **pp_meta,
         const uint8_t *p_data, int i_data,
         int *i_attachments, input_attachment_t ***attachments,
         int *i_cover_score, int *i_cover_idx,
-        int *i_seekpoint, seekpoint_t ***ppp_seekpoint );
+        int *i_seekpoint, seekpoint_t ***ppp_seekpoint,
+        float (* ppf_replay_gain)[AUDIO_REPLAY_GAIN_MAX],
+        float (* ppf_replay_peak)[AUDIO_REPLAY_GAIN_MAX] );
 
 static const struct {
   const char *psz_tag;

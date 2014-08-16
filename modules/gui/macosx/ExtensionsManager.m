@@ -2,7 +2,7 @@
  * extensions_manager.cpp: Extensions manager for Cocoa
  ****************************************************************************
  * Copyright (C) 2009-2012 VideoLAN and authors
- * $Id: e07aba90c8fba7fbe3b2b7e9ea09f62ca714794b $
+ * $Id: 6286757a29fc39bbb7b56148781524f1644853ec $
  *
  * Authors: Brendon Justin <brendonjustin@gmail.com>,
  *          Jean-Philippe André < jpeg # videolan.org >
@@ -62,16 +62,6 @@ static ExtensionsManager* instance = nil;
     }
 
     return self;
-}
-
-/** Get the extensions_manager_t if it is loaded and hold the object */
-- (extensions_manager_t *)getManager
-{
-    if (!p_extensions_manager)
-        return NULL;
-
-    vlc_object_hold(p_extensions_manager);
-    return p_extensions_manager;
 }
 
 - (void)buildMenu:(NSMenu *)extMenu
@@ -273,7 +263,7 @@ static ExtensionsManager* instance = nil;
 {
     //This is unlikely, but can happen if no extension modules can be loaded.
     if (p_extensions_manager == NULL)
-        return ;
+        return;
     vlc_mutex_lock(&p_extensions_manager->lock);
 
     extension_t *p_ext;
@@ -290,7 +280,7 @@ static ExtensionsManager* instance = nil;
 {
     //This is unlikely, but can happen if no extension modules can be loaded.
     if (p_extensions_manager == NULL)
-        return ;
+        return;
     vlc_mutex_lock(&p_extensions_manager->lock);
 
     extension_t *p_ext;
@@ -307,7 +297,7 @@ static ExtensionsManager* instance = nil;
 {
     //This is unlikely, but can happen if no extension modules can be loaded.
     if (p_extensions_manager == NULL)
-        return ;
+        return;
     vlc_mutex_lock(&p_extensions_manager->lock);
     extension_t *p_ext;
     FOREACH_ARRAY(p_ext, p_extensions_manager->extensions) {

@@ -2,7 +2,7 @@
  * about.h: MacOS X About Panel
  *****************************************************************************
  * Copyright (C) 2001-2013 VLC authors and VideoLAN
- * $Id: 34f1c6aa67fc9863eb6bac0a2ad944c38e6c0f1e $
+ * $Id: 8bab02e484f7e96bc733ce5cae2e7c8d8a2271c2 $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne -at- videolan.org>
@@ -46,7 +46,7 @@
 
     NSTimer *o_scroll_timer;
     float f_current;
-    float f_end;
+    CGFloat f_end;
     NSTimeInterval i_start;
     BOOL b_restart;
     BOOL b_isSetUp;

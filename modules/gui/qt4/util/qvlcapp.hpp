@@ -2,7 +2,7 @@
  * qvlcapp.hpp : A few helpers
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 722a12d7c8265f77279e403fe8073c539cec6dc1 $
+ * $Id: 652b700370cdd6e122a0268f19585591e7da15b6 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -28,7 +28,7 @@
 #include <QApplication>
 #include <QEvent>
 
-#if defined(Q_WS_WIN)
+#if defined(Q_OS_WIN)
 #   include "qt4.hpp"
 #   include <windows.h>
 #   include "input_manager.hpp"

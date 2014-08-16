@@ -2,7 +2,7 @@
  * audioscrobbler.c : audioscrobbler submission plugin
  *****************************************************************************
  * Copyright © 2006-2011 the VideoLAN team
- * $Id: 4799a9ef4993dbe2ab8350bbdf9d37437141336d $
+ * $Id: 67c194107e361e5403906dcc1359f532bec4d80d $
  *
  * Author: Rafaël Carré <funman at videolanorg>
  *         Ilkka Ollakka <ileoo at videolan org>
@@ -157,16 +157,13 @@ static void DeleteSong(audioscrobbler_song_t* p_song)
  *****************************************************************************/
 static void ReadMetaData(intf_thread_t *p_this)
 {
-    input_thread_t      *p_input;
-    input_item_t        *p_item;
+    intf_sys_t *p_sys = p_this->p_sys;
 
-    intf_sys_t          *p_sys = p_this->p_sys;
-
-    p_input = playlist_CurrentInput(pl_Get(p_this));
+    input_thread_t *p_input = pl_CurrentInput(p_this);
     if (!p_input)
         return;
 
-    p_item = input_GetItem(p_input);
+    input_item_t *p_item = input_GetItem(p_input);
     if (!p_item)
     {
         vlc_object_release(p_input);
@@ -357,10 +354,8 @@ static int PlayingChange(vlc_object_t *p_this, const char *psz_var,
 static int ItemChange(vlc_object_t *p_this, const char *psz_var,
                        vlc_value_t oldval, vlc_value_t newval, void *p_data)
 {
-    input_thread_t      *p_input;
     intf_thread_t       *p_intf     = (intf_thread_t*) p_data;
     intf_sys_t          *p_sys      = p_intf->p_sys;
-    input_item_t        *p_item;
 
     VLC_UNUSED(p_this); VLC_UNUSED(psz_var);
     VLC_UNUSED(oldval); VLC_UNUSED(newval);
@@ -369,12 +364,11 @@ static int ItemChange(vlc_object_t *p_this, const char *psz_var,
     p_sys->b_meta_read      = false;
     p_sys->b_submit         = false;
 
-    p_input = playlist_CurrentInput(pl_Get(p_intf));
-
+    input_thread_t *p_input = pl_CurrentInput(p_intf);
     if (!p_input || p_input->b_dead)
         return VLC_SUCCESS;
 
-    p_item = input_GetItem(p_input);
+    input_item_t *p_item = input_GetItem(p_input);
     if (!p_item)
     {
         vlc_object_release(p_input);
@@ -438,17 +432,15 @@ static int Open(vlc_object_t *p_this)
  *****************************************************************************/
 static void Close(vlc_object_t *p_this)
 {
-    playlist_t                  *p_playlist = pl_Get(p_this);
-    input_thread_t              *p_input;
     intf_thread_t               *p_intf = (intf_thread_t*) p_this;
     intf_sys_t                  *p_sys  = p_intf->p_sys;
 
-    var_DelCallback(p_playlist, "activity", ItemChange, p_intf);
+    var_DelCallback(pl_Get(p_intf), "activity", ItemChange, p_intf);
 
     vlc_cancel(p_sys->thread);
     vlc_join(p_sys->thread, NULL);
 
-    p_input = playlist_CurrentInput(p_playlist);
+    input_thread_t *p_input = pl_CurrentInput(p_intf);
     if (p_input)
     {
         if (p_sys->b_state_cb)
@@ -493,18 +485,10 @@ static int Handshake(intf_thread_t *p_this)
     intf_sys_t          *p_sys                  = p_this->p_sys;
 
     psz_username = var_InheritString(p_this, "lastfm-username");
-    if (!psz_username)
-        return VLC_ENOMEM;
-
     psz_password = var_InheritString(p_this, "lastfm-password");
-    if (!psz_password)
-    {
-        free(psz_username);
-        return VLC_ENOMEM;
-    }
 
     /* username or password have not been setup */
-    if (!*psz_username || !*psz_password)
+    if (EMPTY_STR(psz_username) || EMPTY_STR(psz_password))
     {
         free(psz_username);
         free(psz_password);
@@ -550,6 +534,7 @@ static int Handshake(intf_thread_t *p_this)
     psz_scrobbler_url = var_InheritString(p_this, "scrobbler-url");
     if (!psz_scrobbler_url)
     {
+        free(psz_auth_token);
         free(psz_username);
         return VLC_ENOMEM;
     }
@@ -558,6 +543,7 @@ static int Handshake(intf_thread_t *p_this)
     "http://%s/?hs=true&p=1.2&c="CLIENT_NAME"&v="CLIENT_VERSION"&u=%s&t=%s&a=%s"
     , psz_scrobbler_url, psz_username, psz_timestamp, psz_auth_token);
 
+    free(psz_auth_token);
     free(psz_scrobbler_url);
     free(psz_username);
     if (i_ret == -1)
@@ -703,7 +689,7 @@ static void *Run(void *data)
 
     /* data about audioscrobbler session */
     mtime_t                 next_exchange = -1; /**< when can we send data  */
-    unsigned int            i_interval;         /**< waiting interval (secs)*/
+    unsigned int            i_interval = 0;     /**< waiting interval (secs)*/
 
     intf_sys_t *p_sys = p_intf->p_sys;
 

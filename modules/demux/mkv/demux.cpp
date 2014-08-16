@@ -3,7 +3,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: be20476cbe48c6cdb64018e9d34f5ed72ec62311 $
+ * $Id: c78c93bb517d2b2be0dfe127cea61dbea9eb3bbf $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -660,7 +660,7 @@ void demux_sys_t::PreloadFamily( const matroska_segment_c & of_segment )
 // preload all the linked segments for all preloaded segments
 bool demux_sys_t::PreloadLinked()
 {
-    size_t i, j;
+    size_t i, j, ij = 0;
     virtual_segment_c *p_seg;
 
     p_current_segment = VirtualFromSegments( &opened_segments );
@@ -684,9 +684,8 @@ bool demux_sys_t::PreloadLinked()
                 // TODO use a name for each edition, let the TITLE deal with a codec name
                 if ( p_title->psz_name == NULL )
                 {
-                    const char* psz_tmp = p_ved->GetMainName().c_str();
-                    if( *psz_tmp != '\0' )
-                        p_title->psz_name = strdup( psz_tmp );
+                    if( p_ved->GetMainName().length() )
+                        p_title->psz_name = strdup( p_ved->GetMainName().c_str() );
                     else
                     {
                         /* Check in tags if the edition has a name */
@@ -713,11 +712,12 @@ bool demux_sys_t::PreloadLinked()
                         }
 
                         if( !p_title->psz_name &&
-                            asprintf(&(p_title->psz_name), "%s %d", N_("Segment"), (int)i) == -1 )
+                            asprintf(&(p_title->psz_name), "%s %d", N_("Segment"), (int)ij) == -1 )
                             p_title->psz_name = NULL;
                     }
                 }
 
+                ij++;
                 i_chapters = 0;
                 p_ved->PublishChapters( *p_title, i_chapters, 0 );
 

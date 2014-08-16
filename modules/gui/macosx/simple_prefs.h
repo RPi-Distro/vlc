@@ -2,7 +2,7 @@
 * simple_prefs.h: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2014 VLC authors and VideoLAN
-* $Id: 1516f1b916809eb67db3be49dd4012d88b953f06 $
+* $Id: 1f044d52815065b2a5105fe4101d9a4adc5827db $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -25,7 +25,7 @@
 #import "intf.h"
 #import <vlc_common.h>
 
-@interface VLCSimplePrefs : NSObject <NSToolbarDelegate>
+@interface VLCSimplePrefs : NSObject <NSToolbarDelegate, NSWindowDelegate>
 {
     IBOutlet id o_audio_dolby_pop;
     IBOutlet id o_audio_dolby_txt;
@@ -89,8 +89,7 @@
     IBOutlet id o_intf_style_txt;
     IBOutlet id o_intf_style_dark_bcell;
     IBOutlet id o_intf_style_bright_bcell;
-    IBOutlet id o_intf_art_pop;
-    IBOutlet id o_intf_art_txt;
+    IBOutlet id o_intf_art_ckb;
     IBOutlet id o_intf_embedded_ckb;
     IBOutlet id o_intf_fspanel_ckb;
     IBOutlet id o_intf_appleremote_ckb;
@@ -109,6 +108,8 @@
     IBOutlet id o_intf_luahttppwd_fld;
     IBOutlet id o_intf_pauseitunes_lbl;
     IBOutlet id o_intf_pauseitunes_pop;
+    IBOutlet id o_intf_continueplayback_lbl;
+    IBOutlet id o_intf_continueplayback_pop;
 
     IBOutlet id o_osd_encoding_pop;
     IBOutlet id o_osd_encoding_txt;

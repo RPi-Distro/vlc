@@ -2,7 +2,7 @@
  * vlm.hpp : VLM Management
  ****************************************************************************
  * Copyright ( C ) 2006 the VideoLAN team
- * $Id: 6feee5893d16528f295a00f796053d93402c6ff9 $
+ * $Id: a3c6e5df84174a3955edcaefc38feb4203215c0f $
  *
  * Authors: Jean-François Massol <jf.massol@gmail.com>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -68,7 +68,7 @@ class VLMAWidget;
 class VLMWrapper;
 
 
-class VLMDialog : public QVLCDialog, public Singleton<VLMDialog>
+class VLMDialog : public QVLCFrame, public Singleton<VLMDialog>
 {
     Q_OBJECT
 

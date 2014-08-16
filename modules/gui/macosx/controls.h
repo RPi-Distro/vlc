@@ -2,7 +2,7 @@
  * controls.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 8df133cb46a8386318e56b629dce36f95c34c01d $
+ * $Id: 90985ee16e273e7304809c601138298ed5fb07ef $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <thedj@users.sourceforge.net>
@@ -50,7 +50,6 @@
 - (IBAction)random:(id)sender;
 - (IBAction)repeat:(id)sender;
 - (IBAction)loop:(id)sender;
-- (IBAction)quitAfterPlayback:(id)sender;
 
 - (IBAction)forward:(id)sender;
 - (IBAction)backward:(id)sender;

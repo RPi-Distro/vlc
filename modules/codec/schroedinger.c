@@ -342,7 +342,7 @@ static const char *const enc_profile_list_text[] =
     N_("Main Profile"),
   };
 
-static const char *const const ppsz_enc_options[] = {
+static const char *const ppsz_enc_options[] = {
     ENC_RATE_CONTROL, ENC_GOP_STRUCTURE, ENC_QUALITY, ENC_NOISE_THRESHOLD, ENC_BITRATE,
     ENC_MIN_BITRATE, ENC_MAX_BITRATE, ENC_AU_DISTANCE, ENC_CHROMAFMT,
     ENC_PREFILTER, ENC_PREFILTER_STRENGTH, ENC_CODINGMODE, ENC_MCBLK_SIZE,
@@ -602,7 +602,7 @@ static void SetVideoFormat( decoder_t *p_dec )
     p_sys->p_format = schro_decoder_get_video_format(p_sys->p_schro);
     if( p_sys->p_format == NULL ) return;
 
-    p_sys->i_frame_pts_delta = INT64_C(1000000)
+    p_sys->i_frame_pts_delta = CLOCK_FREQ
                             * p_sys->p_format->frame_rate_denominator
                             / p_sys->p_format->frame_rate_numerator;
 
@@ -1060,7 +1060,7 @@ static bool SetEncChromaFormat( encoder_t *p_enc, uint32_t i_codec )
 static int OpenEncoder( vlc_object_t *p_this )
 {
     encoder_t *p_enc = (encoder_t *)p_this;
-    encoder_sys_t *p_sys = p_enc->p_sys;
+    encoder_sys_t *p_sys;
     int i_tmp;
     float f_tmp;
     char *psz_tmp;
@@ -1072,7 +1072,7 @@ static int OpenEncoder( vlc_object_t *p_this )
     }
 
     if( !p_enc->fmt_in.video.i_frame_rate || !p_enc->fmt_in.video.i_frame_rate_base ||
-        !p_enc->fmt_in.video.i_height || !p_enc->fmt_in.video.i_width )
+        !p_enc->fmt_in.video.i_visible_height || !p_enc->fmt_in.video.i_visible_width )
     {
         msg_Err( p_enc, "Framerate and picture dimensions must be non-zero" );
         return VLC_EGENERIC;
@@ -1138,8 +1138,8 @@ static int OpenEncoder( vlc_object_t *p_this )
     schro_video_format_set_std_video_format( p_sys->p_format, guessed_video_fmt );
 
     /* constants set from the input video format */
-    p_sys->p_format->width                  = p_enc->fmt_in.video.i_width;
-    p_sys->p_format->height                 = p_enc->fmt_in.video.i_height;
+    p_sys->p_format->width                  = p_enc->fmt_in.video.i_visible_width;
+    p_sys->p_format->height                 = p_enc->fmt_in.video.i_visible_height;
     p_sys->p_format->frame_rate_numerator   = p_enc->fmt_in.video.i_frame_rate;
     p_sys->p_format->frame_rate_denominator = p_enc->fmt_in.video.i_frame_rate_base;
     unsigned u_asr_num, u_asr_den;
@@ -1553,7 +1553,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pic )
                         return NULL;
                     memcpy( p_enc->fmt_out.p_extra, p_block->p_buffer, len );
                     memcpy( (uint8_t*)p_enc->fmt_out.p_extra + len, eos, sizeof( eos ) );
-                    SetDWBE( (uint8_t*)p_enc->fmt_out.p_extra + len + 10, len );
+                    SetDWBE( (uint8_t*)p_enc->fmt_out.p_extra + len + sizeof(eos) - 4, len );
                     p_enc->fmt_out.i_extra = len + sizeof( eos );
                 }
             }

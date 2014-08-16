@@ -2,7 +2,7 @@
  * vlc_model.cpp : base for playlist and ml model
  ****************************************************************************
  * Copyright (C) 2010 the VideoLAN team and AUTHORS
- * $Id: 4895f37362ba94db8b588409d9109ecdb6d45d81 $
+ * $Id: 9df4bfbe77eb81939d07495919d2485dc94be2ae $
  *
  * Authors: Srikanth Raju <srikiraju#gmail#com>
  *
@@ -22,14 +22,50 @@
  *****************************************************************************/
 
 #include "vlc_model.hpp"
+#include "input_manager.hpp"                            /* THEMIM */
+#include "pixmaps/types/type_unknown.xpm"
+
+VLCModelSubInterface::VLCModelSubInterface()
+{
+}
+
+VLCModelSubInterface::~VLCModelSubInterface()
+{
+}
+
+int VLCModelSubInterface::columnFromMeta( int meta_col )
+{
+    int meta = 1, column = 0;
+
+    while( meta != meta_col && meta != COLUMN_END )
+    {
+        meta <<= 1;
+        column++;
+    }
+
+    return column;
+}
 
 VLCModel::VLCModel( intf_thread_t *_p_intf, QObject *parent )
-        : QAbstractItemModel( parent ), p_intf(_p_intf)
+    : QAbstractItemModel( parent ), VLCModelSubInterface(), p_intf(_p_intf)
 {
+    /* Icons initialization */
+#define ADD_ICON(type, x) icons[ITEM_TYPE_##type] = QIcon( x )
+    ADD_ICON( UNKNOWN , QPixmap( type_unknown_xpm ) );
+    ADD_ICON( FILE, ":/type/file" );
+    ADD_ICON( DIRECTORY, ":/type/directory" );
+    ADD_ICON( DISC, ":/type/disc" );
+    ADD_ICON( CDDA, ":/type/cdda" );
+    ADD_ICON( CARD, ":/type/capture-card" );
+    ADD_ICON( NET, ":/type/net" );
+    ADD_ICON( PLAYLIST, ":/type/playlist" );
+    ADD_ICON( NODE, ":/type/node" );
+#undef ADD_ICON
 }
 
 VLCModel::~VLCModel()
 {
+
 }
 
 QString VLCModel::getMeta( const QModelIndex & index, int meta )
@@ -38,18 +74,10 @@ QString VLCModel::getMeta( const QModelIndex & index, int meta )
         data().toString();
 }
 
-QString VLCModel::getArtUrl( const QModelIndex & index )
-{
-    return index.model()->index( index.row(),
-                    columnFromMeta( COLUMN_COVER ),
-                    index.parent() )
-           .data().toString();
-}
-
 QPixmap VLCModel::getArtPixmap( const QModelIndex & index, const QSize & size )
 {
-    QString artUrl = VLCModel::getArtUrl( index ) ;
-
+    QString artUrl = index.sibling( index.row(),
+                     VLCModel::columnFromMeta(COLUMN_COVER) ).data().toString();
     QPixmap artPix;
 
     QString key = artUrl + QString("%1%2").arg(size.width()).arg(size.height());
@@ -77,8 +105,109 @@ QPixmap VLCModel::getArtPixmap( const QModelIndex & index, const QSize & size )
     return artPix;
 }
 
+QVariant VLCModel::headerData( int section, Qt::Orientation orientation,
+                              int role ) const
+{
+    if (orientation != Qt::Horizontal || role != Qt::DisplayRole)
+        return QVariant();
+
+    int meta_col = columnToMeta( section );
+
+    if( meta_col == COLUMN_END ) return QVariant();
+
+    return QVariant( qfu( psz_column_title( meta_col ) ) );
+}
+
+int VLCModel::columnToMeta( int _column )
+{
+    int meta = 1, column = 0;
+
+    while( column != _column && meta != COLUMN_END )
+    {
+        meta <<= 1;
+        column++;
+    }
+
+    return meta;
+}
+
+int VLCModel::metaToColumn( int _meta )
+{
+    int meta = 1, column = 0;
+
+    while( meta != COLUMN_END )
+    {
+        if ( meta & _meta )
+            break;
+        meta <<= 1;
+        column++;
+    }
+
+    return column;
+}
+
+int VLCModel::itemId( const QModelIndex &index, int type ) const
+{
+    AbstractPLItem *item = getItem( index );
+    if ( !item ) return -1;
+    return item->id( type );
+}
+
+AbstractPLItem *VLCModel::getItem( const QModelIndex &index ) const
+{
+    if( index.isValid() )
+        return static_cast<AbstractPLItem*>( index.internalPointer() );
+    else return NULL;
+}
+
+QString VLCModel::getURI( const QModelIndex &index ) const
+{
+    AbstractPLItem *item = getItem( index );
+    if ( !item ) return QString();
+    return item->getURI().toString();
+}
+
+input_item_t * VLCModel::getInputItem( const QModelIndex &index ) const
+{
+    AbstractPLItem *item = getItem( index );
+    if ( !item ) return NULL;
+    return item->inputItem();
+}
+
+QString VLCModel::getTitle( const QModelIndex &index ) const
+{
+    AbstractPLItem *item = getItem( index );
+    if ( !item ) return QString();
+    return item->getTitle();
+}
+
+bool VLCModel::isCurrent( const QModelIndex &index ) const
+{
+    AbstractPLItem *item = getItem( index );
+    if ( !item ) return false;
+    return item->inputItem() == THEMIM->currentInputItem();
+}
+
 int VLCModel::columnCount( const QModelIndex & ) const
 {
     return columnFromMeta( COLUMN_END );
+}
+
+void VLCModel::ensureArtRequested( const QModelIndex &index )
+{
+    if ( index.isValid() && hasChildren( index ) )
+    {
+        int i_art_policy = var_GetInteger( THEPL, "album-art" );
+        bool b_access = var_InheritBool( THEPL, "metadata-network-access" );
+        if ( i_art_policy != ALBUM_ART_ALL && ! b_access ) return;
+        int nbnodes = rowCount( index );
+        QModelIndex child;
+        for( int row = 0 ; row < nbnodes ; row++ )
+        {
+            child = index.child( row, COLUMN_COVER );
+            if ( child.isValid() && child.data().toString().isEmpty() )
+                THEMIM->getIM()->requestArtUpdate( getInputItem( child ), false );
+        }
+    }
 }
 

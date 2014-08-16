@@ -398,6 +398,7 @@ static int InitVideo (demux_t *demux, int fd, uint32_t caps)
         es_fmt.video.i_width = fmt.fmt.pix.bytesperline / selected->bpp;
     else
         es_fmt.video.i_width = fmt.fmt.pix.width;
+    es_fmt.video.i_visible_height =
     es_fmt.video.i_height = fmt.fmt.pix.height;
     es_fmt.video.i_frame_rate = parm.parm.capture.timeperframe.denominator;
     es_fmt.video.i_frame_rate_base = parm.parm.capture.timeperframe.numerator;
@@ -502,7 +503,8 @@ static block_t *UserPtrQueue (vlc_object_t *obj, int fd, size_t length)
                       MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (ptr == MAP_FAILED)
     {
-        msg_Err (obj, "cannot allocate %zu-bytes buffer: %m", length);
+        msg_Err (obj, "cannot allocate %zu-bytes buffer: %s", length,
+                 vlc_strerror_c(errno));
         return NULL;
     }
 
@@ -524,7 +526,7 @@ static block_t *UserPtrQueue (vlc_object_t *obj, int fd, size_t length)
 
     if (v4l2_ioctl (fd, VIDIOC_QBUF, &buf) < 0)
     {
-        msg_Err (obj, "cannot queue buffer: %m");
+        msg_Err (obj, "cannot queue buffer: %s", vlc_strerror_c(errno));
         block_Release (block);
         return NULL;
     }
@@ -558,13 +560,14 @@ static void *UserPtrThread (void *data)
         block_cleanup_push (block);
         while (poll (ufd, numfds, -1) == -1)
            if (errno != EINTR)
-               msg_Err (demux, "poll error: %m");
+               msg_Err (demux, "poll error: %s", vlc_strerror_c(errno));
         vlc_cleanup_pop ();
         canc = vlc_savecancel ();
 
         if (v4l2_ioctl (fd, VIDIOC_DQBUF, &buf) < 0)
         {
-            msg_Err (demux, "cannot dequeue buffer: %m");
+            msg_Err (demux, "cannot dequeue buffer: %s",
+                     vlc_strerror_c(errno));
             block_Release (block);
             continue;
         }
@@ -606,7 +609,7 @@ static void *MmapThread (void *data)
         if (poll (ufd, numfds, -1) == -1)
         {
            if (errno != EINTR)
-               msg_Err (demux, "poll error: %m");
+               msg_Err (demux, "poll error: %s", vlc_strerror_c(errno));
            continue;
         }
 
@@ -657,7 +660,7 @@ static void *ReadThread (void *data)
         if (poll (ufd, numfds, -1) == -1)
         {
            if (errno != EINTR)
-               msg_Err (demux, "poll error: %m");
+               msg_Err (demux, "poll error: %s", vlc_strerror_c(errno));
            continue;
         }
 
@@ -666,7 +669,7 @@ static void *ReadThread (void *data)
             block_t *block = block_Alloc (sys->blocksize);
             if (unlikely(block == NULL))
             {
-                msg_Err (demux, "read error: %m");
+                msg_Err (demux, "read error: %s", vlc_strerror_c(errno));
                 v4l2_read (fd, NULL, 0); /* discard frame */
                 continue;
             }

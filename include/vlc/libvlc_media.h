@@ -2,7 +2,7 @@
  * libvlc_media.h:  libvlc external API
  *****************************************************************************
  * Copyright (C) 1998-2009 VLC authors and VideoLAN
- * $Id: eaa41f01890d6921f81af3fc4fe4a33aa8905635 $
+ * $Id: 948230a3f17569091b982038ec2c66b48e1a4398 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -67,7 +67,13 @@ typedef enum libvlc_meta_t {
     libvlc_meta_Publisher,
     libvlc_meta_EncodedBy,
     libvlc_meta_ArtworkURL,
-    libvlc_meta_TrackID
+    libvlc_meta_TrackID,
+    libvlc_meta_TrackTotal,
+    libvlc_meta_Director,
+    libvlc_meta_Season,
+    libvlc_meta_Episode,
+    libvlc_meta_ShowName,
+    libvlc_meta_Actors
     /* Add new meta types HERE */
 } libvlc_meta_t;
 

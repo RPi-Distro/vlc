@@ -3,7 +3,7 @@
  * using MAD (MPEG Audio Decoder)
  *****************************************************************************
  * Copyright (C) 2001-2005 VLC authors and VideoLAN
- * $Id: 333d9d8ea9fdeb9c2cb3d2141658c1ff504ffff5 $
+ * $Id: 15a8ff7c99ef68cf76369fda7947e6e136b64160 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>
@@ -85,10 +85,6 @@ static void DoWork( filter_t * p_filter,
                     block_t * p_in_buf, block_t * p_out_buf )
 {
     filter_sys_t *p_sys = p_filter->p_sys;
-
-    p_out_buf->i_nb_samples = p_in_buf->i_nb_samples;
-    p_out_buf->i_buffer = p_in_buf->i_nb_samples * sizeof(float) *
-                               aout_FormatNbChannels( &p_filter->fmt_out.audio );
 
     /* Do the actual decoding now. */
     mad_stream_buffer( &p_sys->mad_stream, p_in_buf->p_buffer,
@@ -172,6 +168,7 @@ static int OpenFilter( vlc_object_t *p_this )
     filter_sys_t *p_sys;
 
     if( p_filter->fmt_in.audio.i_format != VLC_CODEC_MPGA &&
+        p_filter->fmt_in.audio.i_format != VLC_CODEC_MP3 &&
         p_filter->fmt_in.audio.i_format != VLC_FOURCC('m','p','g','3') )
         return VLC_EGENERIC;
 

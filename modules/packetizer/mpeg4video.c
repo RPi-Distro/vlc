@@ -2,7 +2,7 @@
  * mpeg4video.c: mpeg 4 video packetizer
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
- * $Id: 18ae69390da48cb2a6cd4c96d010f34d60e1be95 $
+ * $Id: ddb8b84619ac5349ef6f67bee40a05aff989fbda $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -533,7 +533,7 @@ static int ParseVOP( decoder_t *p_dec, block_t *p_vop )
     return VLC_SUCCESS;
 }
 
-/* look at ffmpeg av_log2 ;) */
+/* look at libavutil av_log2 ;) */
 static int vlc_log2( unsigned int v )
 {
     int n = 0;

@@ -271,20 +271,17 @@ static int ScanDvbSNextFast( scan_t *p_scan, scan_configuration_t *p_cfg, double
 
         /* find the requested file in the directory */
         for( ; ; ) {
-            char *psz_filename;
+            const char *psz_filename = vlc_readdir( p_dir );
 
-            if( ! (psz_filename = vlc_readdir( p_dir ) ) )
+            if( psz_filename == NULL )
                 break;
 
             if( !strncmp( p_scan->parameter.sat_info.psz_name, psz_filename, 20 ) )
             {
                 if( asprintf( &p_scan->parameter.sat_info.psz_path, "%s" DIR_SEP "%s", psz_dir, psz_filename ) == -1 )
                     p_scan->parameter.sat_info.psz_path = NULL;
-
-                free( psz_filename );
                 break;
             }
-            free( psz_filename );
         }
 
         closedir( p_dir );
@@ -854,8 +851,8 @@ static void NITCallBack( scan_session_t *p_session, dvbpsi_nit_t *p_nit )
 
         uint32_t i_private_data_id = 0;
         dvbpsi_descriptor_t *p_dsc;
-        scan_configuration_t *p_cfg = malloc(sizeof(*p_cfg));
-        if(!p_cfg) return;
+        scan_configuration_t cfg, *p_cfg = &cfg;
+
         memset(p_cfg,0,sizeof(*p_cfg));
         for( p_dsc = p_ts->p_first_descriptor; p_dsc != NULL; p_dsc = p_dsc->p_next )
         {

@@ -2,7 +2,7 @@
  * sdl.c: SDL video output display method
  *****************************************************************************
  * Copyright (C) 1998-2009 VLC authors and VideoLAN
- * $Id: 5520bb24ae68061c542777a3cdffebd55f2aa47f $
+ * $Id: 211ab5cde101cf2110ea8075af5e4a83497b3037 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Pierre Baillet <oct@zoy.org>
@@ -164,7 +164,8 @@ static int Open(vlc_object_t *object)
     sys->desktop_height = SDL_GetVideoInfo()->current_h;
 
     /* */
-    video_format_t fmt = vd->fmt;
+    video_format_t fmt;
+    video_format_ApplyRotation(&fmt, &vd->fmt);
 
     /* */
     vout_display_info_t info = vd->info;
@@ -638,11 +639,11 @@ static void Manage(vout_display_t *vd)
             if (sys->place.width <= 0 || sys->place.height <= 0)
                 break;
 
-            const int x = (int64_t)(event.motion.x - sys->place.x) * vd->source.i_width  / sys->place.width;
-            const int y = (int64_t)(event.motion.y - sys->place.y) * vd->source.i_height / sys->place.height;
-
             SDL_ShowCursor(1);
-            vout_display_SendEventMouseMoved(vd, x, y);
+
+            vout_display_SendMouseMovedDisplayCoordinates(vd, ORIENT_NORMAL,
+                                                          event.motion.x, event.motion.y,
+                                                          &sys->place);
             break;
         }
 

@@ -1,12 +1,12 @@
 var intv = 0;
 var ccmd = "";
 var video_types = [
-           "asf", "avi", "divx", "drc", "dv", "f4v", "flv", "gxf", "iso",
+           "asf", "avi", "bik", "bin", "divx", "drc", "dv", "f4v", "flv", "gxf", "iso",
            "m1v", "m2v", "m2t", "m2ts", "m4v", "mkv", "mov",
            "mp2", "mp4", "mpeg", "mpeg1",
            "mpeg2", "mpeg4", "mpg", "mts", "mtv", "mxf", "mxg", "nuv",
            "ogg", "ogm", "ogv", "ogx", "ps",
-           "rec", "rm", "rmvb", "ts", "vob", "wmv", "xesc" ];
+           "rec", "rm", "rmvb", "rpl", "thp", "ts", "txd", "vob", "wmv", "xesc" ];
 var audio_types = [
         "3ga", "a52", "aac", "ac3", "ape", "awb", "dts", "flac", "it",
         "m4a", "m4p", "mka", "mlp", "mod", "mp1", "mp2", "mp3",

@@ -2,7 +2,7 @@
  * hotkeys.c: Hotkey handling for vlc
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: b358494717191ca99e7c18af20ad39612f88bc5d $
+ * $Id: 7a5db8cb2f2a5f4fb3a62bb38020744a8024ac20 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -369,10 +369,10 @@ static int PutAction( intf_thread_t *p_intf, int i_action )
 
         /* Playlist + video output actions */
         case ACTIONID_WALLPAPER:
-        {   /* FIXME: this is invalid if not using DirectX output!!! */
-            vlc_object_t *obj = p_vout ? VLC_OBJECT(p_vout)
-                                       : VLC_OBJECT(p_playlist);
-            var_ToggleBool( obj, "video-wallpaper" );
+        {
+            bool wp = var_ToggleBool( p_playlist, "video-wallpaper" );
+            if( p_vout )
+                var_SetBool( p_vout, "video-wallpaper", wp );
             break;
         }
 
@@ -591,9 +591,60 @@ static int PutAction( intf_thread_t *p_intf, int i_action )
                     i = 0;
                 else
                     i++;
-                var_Set( p_input, "spu-es", list.p_list->p_values[i] );
+                var_SetInteger( p_input, "spu-es", list.p_list->p_values[i].i_int );
+                var_SetInteger( p_input, "spu-choice", list.p_list->p_values[i].i_int );
                 DisplayMessage( p_vout, _("Subtitle track: %s"),
                                 list2.p_list->p_values[i].psz_string );
+                var_FreeList( &list, &list2 );
+            }
+            break;
+        case ACTIONID_SUBTITLE_TOGGLE:
+            if( p_input )
+            {
+                vlc_value_t list, list2;
+                int i_count, i_sel_index, i_sel_id, i_old_id, i_new_index;
+                i_old_id = var_GetInteger( p_input, "spu-es" );
+                i_sel_id = var_GetInteger( p_input, "spu-choice" );
+
+                var_Change( p_input, "spu-es", VLC_VAR_GETCHOICES,
+                            &list, &list2 );
+                i_count = list.p_list->i_count;
+                if( i_count <= 1 )
+                {
+                    DisplayMessage( p_vout, _("Subtitle track: %s"),
+                                    _("N/A") );
+                    var_FreeList( &list, &list2 );
+                    break;
+                }
+                for( i_sel_index = 0; i_sel_index < i_count; i_sel_index++ )
+                {
+                    if( i_sel_id == list.p_list->p_values[i_sel_index].i_int )
+                    {
+                        break;
+                    }
+                }
+                /* if there is nothing to toggle choose the first track */
+                if( !i_sel_index ) {
+                    i_sel_index = 1;
+                    i_sel_id = list.p_list->p_values[1].i_int;
+                    var_SetInteger( p_input, "spu-choice", i_sel_id );
+                }
+
+                i_new_index = 0;
+                if( i_old_id != i_sel_id )
+                {
+                    if( i_sel_index >= i_count )
+                    {
+                        var_SetInteger( p_input, "spu-choice", list.p_list->p_values[0].i_int );
+                    }
+                    else
+                    {
+                        i_new_index = i_sel_index;
+                    }
+                }
+                var_SetInteger( p_input, "spu-es", list.p_list->p_values[i_new_index].i_int );
+                DisplayMessage( p_vout, _("Subtitle track: %s"),
+                                list2.p_list->p_values[i_new_index].psz_string );
                 var_FreeList( &list, &list2 );
             }
             break;

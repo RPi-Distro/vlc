@@ -2,7 +2,7 @@
  * extensions_manager.h: Extensions manager for Cocoa
  ****************************************************************************
  * Copyright (C) 2012 VideoLAN and authors
- * $Id: a6c97a73e773dd9f0c56c71ff8b12437acd585f6 $
+ * $Id: 890d16f3171c8eeb2951623fc3c3f10b86aa9844 $
  *
  * Authors: Brendon Justin <brendonjustin@gmail.com>
  *
@@ -56,7 +56,6 @@
 
 - (id)initWithIntf:(intf_thread_t *)_p_intf;
 - (void)buildMenu:(NSMenu *)extMenu;
-- (extensions_manager_t *)getManager;
 
 - (BOOL)loadExtensions;
 - (void)unloadExtensions;

@@ -2,7 +2,7 @@
  * vlc_vout.h: common video definitions
  *****************************************************************************
  * Copyright (C) 1999 - 2008 VLC authors and VideoLAN
- * $Id: 2d6c180bfc1dcdf2d57277a44508dcda5d8f17de $
+ * $Id: b39e49b564e8367df07a2a85ee8bddfac6b548c4 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -144,6 +144,9 @@ VLC_API int vout_GetSnapshot( vout_thread_t *p_vout,
                               block_t **pp_image, picture_t **pp_picture,
                               video_format_t *p_fmt,
                               const char *psz_format, mtime_t i_timeout );
+
+VLC_API void vout_ChangeAspectRatio( vout_thread_t *p_vout,
+                                     unsigned int i_num, unsigned int i_den );
 
 /* */
 VLC_API picture_t * vout_GetPicture( vout_thread_t * );

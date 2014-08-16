@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 90ec3a3487c298746461038dbe998b9ff6613ef2 $
+ * $Id: f6ad26981072c03ee7e17b305fc1eac756bfba73 $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
@@ -140,7 +140,7 @@ struct vout_thread_sys_t
 
 /* TODO to move them to vlc_vout.h */
 void vout_ControlChangeFullscreen(vout_thread_t *, bool fullscreen);
-void vout_ControlChangeOnTop(vout_thread_t *, bool is_on_top);
+void vout_ControlChangeWindowState(vout_thread_t *, unsigned state);
 void vout_ControlChangeDisplayFilled(vout_thread_t *, bool is_filled);
 void vout_ControlChangeZoom(vout_thread_t *, int num, int den);
 void vout_ControlChangeSampleAspectRatio(vout_thread_t *, unsigned num, unsigned den);

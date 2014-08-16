@@ -2,7 +2,7 @@
  * filter_chain.c : Handle chains of filter_t objects.
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
- * $Id: d4c09410393001737ab08116c49e4b6f5b9585f4 $
+ * $Id: 63fbb0f1ec3a40ad754f27c8522dae2a958fc4a8 $
  *
  * Author: Antoine Cellerier <dionoea at videolan dot org>
  *
@@ -154,10 +154,8 @@ void filter_chain_Delete( filter_chain_t *p_chain )
 void filter_chain_Reset( filter_chain_t *p_chain, const es_format_t *p_fmt_in,
                          const es_format_t *p_fmt_out )
 {
-    filter_t *p_filter;
-
-    while( (p_filter = &p_chain->first->filter) != NULL )
-        filter_chain_DeleteFilterInternal( p_chain, p_filter );
+    while( p_chain->first != NULL )
+        filter_chain_DeleteFilterInternal( p_chain, &p_chain->first->filter );
 
     if( p_fmt_in )
     {

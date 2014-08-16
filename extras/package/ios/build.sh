@@ -138,9 +138,8 @@ fi
 else
 export CFLAGS="-isysroot ${SDKROOT} -arch ${ARCH} -miphoneos-version-min=${SDK_MIN} ${OPTIM}"
 fi
+
 export CPPFLAGS="${CFLAGS}"
-export CXXFLAGS="${CFLAGS}"
-export OBJCFLAGS="${CFLAGS}"
 
 export CPP="xcrun cc -E"
 export CXXCPP="xcrun c++ -E"
@@ -187,7 +186,7 @@ else
     export ASCPP="xcrun as"
 fi
 
-../bootstrap --host=x86_64-apple-darwin11 --build=${TARGET} --prefix=${VLCROOT}/contrib/${TARGET}-${ARCH} --disable-gpl \
+../bootstrap --build=x86_64-apple-darwin11 --host=${TARGET} --prefix=${VLCROOT}/contrib/${TARGET}-${ARCH} --disable-gpl \
     --disable-disc --disable-sout \
     --disable-sdl \
     --disable-SDL_image \
@@ -200,7 +199,7 @@ fi
     --disable-upnp \
     --disable-gme \
     --disable-tremor \
-    --disable-vorbis \
+    --enable-vorbis \
     --disable-sidplay2 \
     --disable-samplerate \
     --disable-goom \
@@ -257,15 +256,12 @@ ${VLCROOT}/configure \
     --disable-debug \
     --enable-static \
     --disable-macosx \
-    --disable-macosx-vout \
     --disable-macosx-dialog-provider \
     --disable-macosx-qtkit \
     --disable-macosx-eyetv \
     --disable-macosx-vlc-app \
     --disable-macosx-avfoundation \
-    --enable-audioqueue \
-    --enable-ios-audio \
-    --enable-ios-vout2 \
+    --disable-audioqueue \
     --disable-shared \
     --enable-macosx-quartztext \
     --enable-avcodec \
@@ -276,7 +272,6 @@ ${VLCROOT}/configure \
     --disable-lua \
     --disable-a52 \
     --enable-fribidi \
-    --disable-macosx-audio \
     --disable-qt --disable-skins2 \
     --disable-vcd \
     --disable-vlc \
@@ -302,7 +297,7 @@ ${VLCROOT}/configure \
     --disable-libva \
     --disable-gme \
     --disable-tremor \
-    --disable-vorbis \
+    --enable-vorbis \
     --disable-fluidsynth \
     --disable-jack \
     --disable-pulse \
@@ -315,6 +310,7 @@ ${VLCROOT}/configure \
     --enable-freetype \
     --enable-taglib \
     --disable-mmx \
+    --disable-addonmanagermodules \
     --disable-mad > ${out} # MMX and SSE support requires llvm which is broken on Simulator
 fi
 

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * ControlsBar.h: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2012 VLC authors and VideoLAN
- * $Id: c0fd5a1a1a7b4b0f277d6fc929c6d6587d96a83d $
+ * Copyright (C) 2012-2014 VLC authors and VideoLAN
+ * $Id: f53b9e88965ad96696f32d04a098271d41d57b2f $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -23,7 +23,6 @@
  *****************************************************************************/
 
 #import <Cocoa/Cocoa.h>
-#import "CompatibilityFixes.h"
 #import "misc.h"
 
 @class VLCFSPanel;
@@ -38,6 +37,7 @@
 @interface VLCControlsBarCommon : NSObject
 {
     IBOutlet id o_bottombar_view;
+    IBOutlet VLCDragDropView *o_drop_view;
 
     IBOutlet id o_play_btn;
     IBOutlet id o_bwd_btn;
@@ -144,6 +144,8 @@
 
 - (void)setShuffle;
 - (IBAction)shuffle:(id)sender;
+
+- (IBAction)togglePlaylist:(id)sender;
 
 - (void)toggleEffectsButton;
 - (void)toggleJumpButtons;

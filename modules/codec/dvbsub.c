@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 2003 ANEVIA
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: f26013d79595f0b8e998f21217250328332350f3 $
+ * $Id: 956482bb94d547691640de232b2cc7e9a254f1c9 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien LUCAS <damien.lucas@anevia.com>
@@ -119,7 +119,7 @@ vlc_module_begin ()
 #   define DVBSUB_CFG_PREFIX "dvbsub-"
     set_description( N_("DVB subtitles decoder") )
     set_shortname( N_("DVB subtitles") )
-    set_capability( "decoder", 50 )
+    set_capability( "decoder", 80 )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_SCODEC )
     set_callbacks( Open, Close )

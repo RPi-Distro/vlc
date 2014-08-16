@@ -2,7 +2,7 @@
  * controller_widget.cpp : Controller Widget for the controllers
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 66fecd96ae908040de7cbe2ad73ac322a163dc8a $
+ * $Id: db27f3b4c4fb9ac20c4c7d886e55d139bc4f739b $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -190,7 +190,7 @@ void SoundWidget::showVolumeMenu( QPoint pos )
 void SoundWidget::setMuted( bool mute )
 {
     b_is_muted = mute;
-    playlist_t *p_playlist = pl_Get( p_intf );
+    playlist_t *p_playlist = THEPL;
     playlist_MuteSet( p_playlist, mute );
 }
 

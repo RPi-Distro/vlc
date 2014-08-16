@@ -5,38 +5,38 @@
 #
 # Authors: Sam Hocevar <sam@zoy.org>
 
+AUTOMAKE_OPTIONS = subdir-objects
+
 NULL =
-libvlcdir = $(vlclibdir)/plugins/$(basedir)
-EXTRA_DIST = Modules.am
+pluginsdir = $(vlclibdir)/plugins
 BUILT_SOURCES =
 CLEANFILES = $(BUILT_SOURCES)
 
 LTLIBVLCCORE = $(top_builddir)/src/libvlccore.la
 
 # Module name from object or executable file name.
-MODULE_NAME = $$(p="$@"; p="$${p\#\#*/}"; p="$${p\#lib}"; echo "$${p%_plugin*}")
+MODULE_NAME = $$(p="$@"; p="$${p\#\#*/}"; p="$${p\#lib}"; p="$${p%_plugin*}"; p="$${p%.lo}"; echo "$$p")
 
-AM_CPPFLAGS = \
-	-DMODULE_NAME=$(MODULE_NAME) \
-	-DMODULE_NAME_IS_$(MODULE_NAME) \
-	-DMODULE_STRING=\"$(MODULE_NAME)\"
+AM_CPPFLAGS = -DMODULE_STRING=\"$(MODULE_NAME)\"
 if HAVE_DYNAMIC_PLUGINS
 AM_CPPFLAGS += -D__PLUGIN__
+else
+AM_CPPFLAGS += -DMODULE_NAME=$(MODULE_NAME)
 endif
 AM_CFLAGS =
 AM_CXXFLAGS =
 AM_OBJCFLAGS =
-AM_LIBADD = $(LIBPTHREAD)
-AM_LDFLAGS = -rpath '$(libvlcdir)' \
+AM_LDFLAGS = \
 	-avoid-version -module \
 	-export-symbols-regex ^vlc_entry \
 	-shrext $(LIBEXT) \
 	-no-undefined \
 	$(top_builddir)/compat/libcompat.la $(LTLIBVLCCORE) 
-
-include $(srcdir)/Modules.am
-
-if MAINTAINER_MODE
-$(srcdir)/Makefile.am: $(srcdir)/Modules.am $(top_srcdir)/modules/genmf
-	$(AM_V_GEN)cd \$(top_srcdir) && \$(SHELL) modules/genmf $(dir)
+if HAVE_WIN32
+AM_LDFLAGS += $(top_builddir)/modules/module.rc.lo
 endif
+
+SUFFIXES = .asm
+
+.asm.lo:
+	$(LIBTOOL) --mode=compile --tag=ASM $(YASM) $(YASMFLAGS) $< -o $@

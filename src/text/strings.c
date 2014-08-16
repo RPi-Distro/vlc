@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
  * Copyright (C) 2008-2009 Rémi Denis-Courmont
- * $Id: 7d5651e9dffcf6d26c8f811090feb92cff518394 $
+ * $Id: 55738a7f64eb33c0d29afbfecce767a7e1839c81 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *          Daniel Stranger <vlc at schmaller dot de>
@@ -42,11 +42,10 @@
 /* Needed by str_format_meta */
 #include <vlc_input.h>
 #include <vlc_meta.h>
-#include <vlc_playlist.h>
+#include <vlc_aout.h>
 
 #include <vlc_strings.h>
 #include <vlc_charset.h>
-#include <vlc_fs.h>
 #include <libvlc.h>
 #include <errno.h>
 
@@ -512,7 +511,7 @@ static void format_duration (char *buf, size_t len, int64_t duration)
 #define INSERT_STRING( string )                                     \
                     if( string != NULL )                            \
                     {                                               \
-                        int len = strlen( string );                 \
+                        size_t len = strlen( string );              \
                         dst = xrealloc( dst, i_size = i_size + len );\
                         memcpy( (dst+d), string, len );             \
                         d += len;                                   \
@@ -522,28 +521,24 @@ static void format_duration (char *buf, size_t len, int64_t duration)
 /* same than INSERT_STRING, except that string won't be freed */
 #define INSERT_STRING_NO_FREE( string )                             \
                     {                                               \
-                        int len = strlen( string );                 \
+                        size_t len = strlen( string );              \
                         dst = xrealloc( dst, i_size = i_size + len );\
                         memcpy( dst+d, string, len );               \
                         d += len;                                   \
                     }
-char *str_format_meta( playlist_t *p_object, const char *string )
+char *str_format_meta( input_thread_t *p_input, const char *s )
 {
-    const char *s = string;
+    char *dst = strdup( s );
+    if( unlikely(dst == NULL) )
+        return NULL;
+
+    input_item_t *p_item = p_input ? input_GetItem(p_input) : NULL;
+    size_t i_size = strlen( s ) + 1; /* +1 to store '\0' */
+    size_t d = 0;
+
     bool b_is_format = false;
     bool b_empty_if_na = false;
     char buf[10];
-    int i_size = strlen( string ) + 1; /* +1 to store '\0' */
-    char *dst = strdup( string );
-    if( !dst ) return NULL;
-    int d = 0;
-
-    input_thread_t *p_input = playlist_CurrentInput( p_object );
-    input_item_t *p_item = NULL;
-    if( p_input )
-    {
-        p_item = input_GetItem(p_input);
-    }
 
     while( *s )
     {
@@ -553,33 +548,23 @@ char *str_format_meta( playlist_t *p_object, const char *string )
             {
                 case 'a':
                     if( p_item )
-                    {
                         INSERT_STRING( input_item_GetArtist( p_item ) );
-                    }
                     break;
                 case 'b':
                     if( p_item )
-                    {
                         INSERT_STRING( input_item_GetAlbum( p_item ) );
-                    }
                     break;
                 case 'c':
                     if( p_item )
-                    {
                         INSERT_STRING( input_item_GetCopyright( p_item ) );
-                    }
                     break;
                 case 'd':
                     if( p_item )
-                    {
                         INSERT_STRING( input_item_GetDescription( p_item ) );
-                    }
                     break;
                 case 'e':
                     if( p_item )
-                    {
                         INSERT_STRING( input_item_GetEncodedBy( p_item ) );
-                    }
                     break;
                 case 'f':
                     if( p_item && p_item->p_stats )
@@ -595,33 +580,23 @@ char *str_format_meta( playlist_t *p_object, const char *string )
                     break;
                 case 'g':
                     if( p_item )
-                    {
                         INSERT_STRING( input_item_GetGenre( p_item ) );
-                    }
                     break;
                 case 'l':
                     if( p_item )
-                    {
                         INSERT_STRING( input_item_GetLanguage( p_item ) );
-                    }
                     break;
                 case 'n':
                     if( p_item )
-                    {
                         INSERT_STRING( input_item_GetTrackNum( p_item ) );
-                    }
                     break;
                 case 'p':
                     if( p_item )
-                    {
                         INSERT_STRING( input_item_GetNowPlaying( p_item ) );
-                    }
                     break;
                 case 'r':
                     if( p_item )
-                    {
                         INSERT_STRING( input_item_GetRating( p_item ) );
-                    }
                     break;
                 case 's':
                     {
@@ -635,38 +610,28 @@ char *str_format_meta( playlist_t *p_object, const char *string )
                     }
                 case 't':
                     if( p_item )
-                    {
                         INSERT_STRING( input_item_GetTitle( p_item ) );
-                    }
                     break;
                 case 'u':
                     if( p_item )
-                    {
                         INSERT_STRING( input_item_GetURL( p_item ) );
-                    }
                     break;
                 case 'A':
                     if( p_item )
-                    {
                         INSERT_STRING( input_item_GetDate( p_item ) );
-                    }
                     break;
                 case 'B':
                     if( p_input )
-                    {
                         snprintf( buf, 10, "%"PRId64,
                                   var_GetInteger( p_input, "bit-rate" )/1000 );
-                    }
                     else
                         strcpy( buf, b_empty_if_na ? "" : "-" );
                     INSERT_STRING_NO_FREE( buf );
                     break;
                 case 'C':
                     if( p_input )
-                    {
                         snprintf( buf, 10, "%"PRId64,
                                   var_GetInteger( p_input, "chapter" ) );
-                    }
                     else
                         strcpy( buf, b_empty_if_na ? "" : "-" );
                     INSERT_STRING_NO_FREE( buf );
@@ -683,16 +648,12 @@ char *str_format_meta( playlist_t *p_object, const char *string )
                     break;
                 case 'F':
                     if( p_item )
-                    {
                         INSERT_STRING( input_item_GetURI( p_item ) );
-                    }
                     break;
                 case 'I':
                     if( p_input )
-                    {
                         snprintf( buf, 10, "%"PRId64,
                                   var_GetInteger( p_input, "title" ) );
-                    }
                     else
                         strcpy( buf, b_empty_if_na ? "" : "-" );
                     INSERT_STRING_NO_FREE( buf );
@@ -711,31 +672,25 @@ char *str_format_meta( playlist_t *p_object, const char *string )
                     break;
                 case 'N':
                     if( p_item )
-                    {
                         INSERT_STRING( input_item_GetName( p_item ) );
-                    }
                     break;
                 case 'O':
-                    {
-                        char *lang = NULL;
-                        if( p_input )
-                            lang = var_GetNonEmptyString( p_input,
-                                                          "audio-language" );
-                        if( lang == NULL )
-                            lang = strdup( b_empty_if_na ? "" : "-" );
-                        INSERT_STRING( lang );
-                        break;
-                    }
+                {
+                    char *lang = NULL;
+                    if( p_input )
+                        lang = var_GetNonEmptyString( p_input,
+                                                      "audio-language" );
+                    if( lang == NULL )
+                        lang = strdup( b_empty_if_na ? "" : "-" );
+                    INSERT_STRING( lang );
+                    break;
+                }
                 case 'P':
                     if( p_input )
-                    {
                         snprintf( buf, 10, "%2.1lf",
                                   var_GetFloat( p_input, "position" ) * 100. );
-                    }
                     else
-                    {
                         snprintf( buf, 10, b_empty_if_na ? "" : "--.-%%" );
-                    }
                     INSERT_STRING_NO_FREE( buf );
                     break;
                 case 'R':
@@ -770,17 +725,24 @@ char *str_format_meta( playlist_t *p_object, const char *string )
                     break;
                 case 'U':
                     if( p_item )
-                    {
                         INSERT_STRING( input_item_GetPublisher( p_item ) );
-                    }
                     break;
                 case 'V':
                 {
-                    float vol = playlist_VolumeGet( p_object );
-                    if( vol >= 0. )
+                    float vol = 0.f;
+
+                    if( p_input )
                     {
-                        snprintf( buf, 10, "%ld",
-                                  lroundf(vol * AOUT_VOLUME_DEFAULT ) );
+                        audio_output_t *aout = input_GetAout( p_input );
+                        if( aout )
+                        {
+                            vol = aout_VolumeGet( aout );
+                            vlc_object_release( aout );
+                        }
+                    }
+                    if( vol >= 0.f )
+                    {
+                        snprintf( buf, 10, "%ld", lroundf(vol * 256.f) );
                         INSERT_STRING_NO_FREE( buf );
                     }
                     else
@@ -837,9 +799,6 @@ char *str_format_meta( playlist_t *p_object, const char *string )
         s++;
     }
     *(dst+d) = '\0';
-
-    if( p_input )
-        vlc_object_release( p_input );
 
     return dst;
 }

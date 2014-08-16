@@ -4,7 +4,7 @@
  *   (http://liba52.sf.net/).
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 346a36dd8a11a9aa9eea2e1ed1c4d8985968c497 $
+ * $Id: d2016bffb0113b9566a324536933902cce643ac7 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -236,7 +236,10 @@ static void Interleave( sample_t *restrict p_out, const sample_t *restrict p_in,
         for( unsigned i = 0; i < 256; i++ )
         {
 #ifdef LIBA52_FIXED
-            p_out[i * i_nb_channels + pi_chan_table[j]] = p_in[j * 256 + i] << 4;
+            union { uint32_t u; int32_t i; } spl;
+
+            spl.u = ((uint32_t)p_in[j * 256 + i]) << 4;
+            p_out[i * i_nb_channels + pi_chan_table[j]] = spl.i;
 #else
             p_out[i * i_nb_channels + pi_chan_table[j]] = p_in[j * 256 + i];
 #endif
@@ -252,12 +255,17 @@ static void Duplicate( sample_t *restrict p_out, const sample_t *restrict p_in )
     for( unsigned i = 256; i--; )
     {
 #ifdef LIBA52_FIXED
-        sample_t s = *(p_in++) << 4;
+        union { uint32_t u; int32_t i; } spl;
+
+        spl.u = ((uint32_t)*(p_in++)) << 4;
+        *p_out++ = spl.i;
+        *p_out++ = spl.i;
 #else
         sample_t s = *(p_in++);
+
+        *p_out++ = s;
+        *p_out++ = s;
 #endif
-        *p_out++ = s;
-        *p_out++ = s;
     }
 }
 
@@ -272,8 +280,12 @@ static void Exchange( sample_t *restrict p_out, const sample_t *restrict p_in )
     for( unsigned i = 0; i < 256; i++ )
     {
 #ifdef LIBA52_FIXED
-        *p_out++ = *p_first++ << 4;
-        *p_out++ = *p_second++ << 4;
+        uint32_t spl[2];
+
+        spl[0] = ((uint32_t)*p_first++) << 4;
+        spl[1] = ((uint32_t)*p_second++) << 4;
+        memcpy( p_out, spl, sizeof(spl) );
+        p_out += 2;
 #else
         *p_out++ = *p_first++;
         *p_out++ = *p_second++;

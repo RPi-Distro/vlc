@@ -1,5 +1,6 @@
 SOURCES_stream_out_dummy = dummy.c
 SOURCES_stream_out_delay = delay.c
+SOURCES_stream_out_stats = stats.c
 SOURCES_stream_out_description = description.c
 SOURCES_stream_out_standard = standard.c
 SOURCES_stream_out_duplicate = duplicate.c
@@ -19,11 +20,12 @@ libstream_out_transcode_plugin_la_SOURCES = \
 	transcode/transcode.c transcode/transcode.h \
 	transcode/osd.c transcode/spu.c transcode/audio.c transcode/video.c
 libstream_out_transcode_plugin_la_CFLAGS = $(AM_CFLAGS)
-libstream_out_transcode_plugin_la_LIBADD = $(AM_LIBADD)
 
-libvlc_LTLIBRARIES += \
+
+stream_out_LTLIBRARIES += \
 	libstream_out_dummy_plugin.la \
 	libstream_out_delay_plugin.la \
+	libstream_out_stats_plugin.la \
 	libstream_out_description_plugin.la \
 	libstream_out_standard_plugin.la \
 	libstream_out_duplicate_plugin.la \
@@ -40,15 +42,15 @@ libvlc_LTLIBRARIES += \
 	libstream_out_transcode_plugin.la
 
 # RTP plugin
-libvlc_LTLIBRARIES += \
+stream_out_LTLIBRARIES += \
 	libstream_out_rtp_plugin.la
 libstream_out_rtp_plugin_la_SOURCES = \
 	rtp.c rtp.h rtpfmt.c rtcp.c rtsp.c vod.c
 libstream_out_rtp_plugin_la_CFLAGS = $(AM_CFLAGS)
-libstream_out_rtp_plugin_la_LIBADD = $(AM_LIBADD) $(SOCKET_LIBS)
+libstream_out_rtp_plugin_la_LIBADD = $(SOCKET_LIBS) $(LIBPTHREAD)
 if HAVE_GCRYPT
 SRTP_CFLAGS = -I$(top_srcdir)/modules/access/rtp
-SRTP_LIBS = $(top_builddir)/modules/access/rtp/libvlc_srtp.la
+SRTP_LIBS = $(top_builddir)/modules/libvlc_srtp.la
 libstream_out_rtp_plugin_la_CFLAGS += -DHAVE_SRTP $(SRTP_CFLAGS) \
 	$(GCRYPT_CFLAGS)
 libstream_out_rtp_plugin_la_LIBADD += $(SRTP_LIBS) $(GCRYPT_LIBS)
@@ -57,9 +59,9 @@ endif
 # RAOP plugin
 libstream_out_raop_plugin_la_SOURCES = raop.c
 libstream_out_raop_plugin_la_CFLAGS = $(AM_CFLAGS) $(GCRYPT_CFLAGS)
-libstream_out_raop_plugin_la_LIBADD = $(AM_LIBADD) $(GCRYPT_LIBS) -lgpg-error $(LIBS_stream_out_raop)
+libstream_out_raop_plugin_la_LIBADD = $(GCRYPT_LIBS) -lgpg-error $(LIBS_stream_out_raop)
 if HAVE_GCRYPT
-libvlc_LTLIBRARIES += libstream_out_raop_plugin.la
+stream_out_LTLIBRARIES += libstream_out_raop_plugin.la
 endif
 
 BUILT_SOURCES += dummy.cpp

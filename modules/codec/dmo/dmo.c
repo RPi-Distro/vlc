@@ -2,7 +2,7 @@
  * dmo.c : DirectMedia Object decoder module for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 VLC authors and VideoLAN
- * $Id: 6595f70acb2a76809e54851c1d0a2f27dffdc3bf $
+ * $Id: 161fd1778e3642772107d41da1871be68518b0b2 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -152,6 +152,8 @@ static const GUID guid_wma9 = { 0x27ca0808, 0x01f5, 0x4e7a, { 0x8b, 0x05, 0x87, 
 static const GUID guid_wmv_enc = { 0x3181343b, 0x94a2, 0x4feb, { 0xad, 0xef, 0x30, 0xa1, 0xdd, 0xe6, 0x17, 0xb4 } };
 static const GUID guid_wmv_enc2 = { 0x96b57cdd, 0x8966, 0x410c,{ 0xbb, 0x1f, 0xc9, 0x7e, 0xea, 0x76, 0x5c, 0x04 } };
 static const GUID guid_wma_enc = { 0x70f598e9, 0xf4ab, 0x495a, { 0x99, 0xe2, 0xa7, 0xc4, 0xd3, 0xd8, 0x9a, 0xbf } };
+static const GUID guid_wmv8_enc = { 0x7e320092, 0x596a, 0x41b2,{ 0xbb, 0xeb, 0x17, 0x5d, 0x10, 0x50, 0x4e, 0xb6 } };
+static const GUID guid_wmv9_enc = { 0xd23b90d0, 0x144f, 0x46bd,{ 0x84, 0x1d, 0x59, 0xe4, 0xeb, 0x19, 0xdc, 0x59 } };
 
 #ifndef BI_RGB
 # define BI_RGB 0x0
@@ -210,6 +212,13 @@ static const codec_dll encoders_table[] =
     { VLC_CODEC_WMAP, "wmadmoe.dll", &guid_wma_enc },
     /* WMA 2 */
     { VLC_CODEC_WMA2, "wmadmoe.dll", &guid_wma_enc },
+
+    /* WMV3 v11 */
+    { VLC_CODEC_WMV3, "wmvencod.dll", &guid_wmv9_enc },
+    /* WMV2 v11 */
+    { VLC_CODEC_WMV2, "wmvxencd.dll", &guid_wmv8_enc },
+    /* WMV1 v11 */
+    { VLC_CODEC_WMV1, "wmvxencd.dll", &guid_wmv8_enc },
 
     /* */
     { 0, NULL, NULL }
@@ -1108,17 +1117,17 @@ static int EncoderSetVideoType( encoder_t *p_enc, IMediaObject *p_dmo )
 
     p_bih = &vih.bmiHeader;
     p_bih->biCompression = VLC_CODEC_I420;
-    p_bih->biWidth = p_enc->fmt_in.video.i_width;
-    p_bih->biHeight = p_enc->fmt_in.video.i_height;
+    p_bih->biWidth = p_enc->fmt_in.video.i_visible_width;
+    p_bih->biHeight = p_enc->fmt_in.video.i_visible_height;
     p_bih->biBitCount = p_enc->fmt_in.video.i_bits_per_pixel;
-    p_bih->biSizeImage = p_enc->fmt_in.video.i_width *
-        p_enc->fmt_in.video.i_height * p_enc->fmt_in.video.i_bits_per_pixel /8;
+    p_bih->biSizeImage = p_enc->fmt_in.video.i_visible_width *
+        p_enc->fmt_in.video.i_visible_height * p_enc->fmt_in.video.i_bits_per_pixel /8;
     p_bih->biPlanes = 3;
     p_bih->biSize = sizeof(VLC_BITMAPINFOHEADER);
 
     vih.rcSource.left = vih.rcSource.top = 0;
-    vih.rcSource.right = p_enc->fmt_in.video.i_width;
-    vih.rcSource.bottom = p_enc->fmt_in.video.i_height;
+    vih.rcSource.right = p_enc->fmt_in.video.i_visible_width;
+    vih.rcSource.bottom = p_enc->fmt_in.video.i_visible_height;
     vih.rcTarget = vih.rcSource;
 
     vih.AvgTimePerFrame = INT64_C(10000000) / 25; //FIXME
@@ -1477,8 +1486,8 @@ static block_t *EncodeBlock( encoder_t *p_enc, void *p_data )
         picture_t *p_pic = (picture_t *)p_data;
         uint8_t *p_dst;
 
-        int i_buffer = p_enc->fmt_in.video.i_width *
-            p_enc->fmt_in.video.i_height *
+        int i_buffer = p_enc->fmt_in.video.i_visible_width *
+            p_enc->fmt_in.video.i_visible_height *
             p_enc->fmt_in.video.i_bits_per_pixel / 8;
 
         p_block_in = block_Alloc( i_buffer );

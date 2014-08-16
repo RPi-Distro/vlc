@@ -1,8 +1,8 @@
 /*****************************************************************************
  * VideoView.m: MacOS X video output module
  *****************************************************************************
- * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: c368a2052f1ecd3bea200237a13702509923130e $
+ * Copyright (C) 2002-2014 VLC authors and VideoLAN
+ * $Id: c02e4495c135762dd63ee4e548a3fbb4ebd20773 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Eric Petit <titer@m0k.org>
@@ -30,15 +30,13 @@
  * Preamble
  *****************************************************************************/
 #import <stdlib.h>                                                 /* free() */
-#import <string.h>
 
+#import "CompatibilityFixes.h"
 #import "intf.h"
 #import "VideoView.h"
 #import "CoreInteraction.h"
 #import "MainMenu.h"
-#import "MainWindow.h"
 
-#import <vlc_common.h>
 #import <vlc_keys.h>
 
 

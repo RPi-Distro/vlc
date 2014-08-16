@@ -2,7 +2,7 @@
  * chapter_command.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 7c8a3c185aaaddc829831035a00d579da763be40 $
+ * $Id: 80b3e458d3d08d6899347c822bd0a9c24e7b352c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -35,7 +35,7 @@ const binary MATROSKA_DVD_LEVEL_PG   = 0x18;
 const binary MATROSKA_DVD_LEVEL_PTT  = 0x10;
 const binary MATROSKA_DVD_LEVEL_CN   = 0x08;
 
-class demux_sys_t;
+struct demux_sys_t;
 
 class chapter_codec_cmds_c
 {

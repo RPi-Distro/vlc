@@ -2,7 +2,7 @@
  * logo.c : logo video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2006 VLC authors and VideoLAN
- * $Id: 83f7043ad6a0a0dffeffa4a5b85e92a721229c95 $
+ * $Id: 9c566d7e7ec374cca06602a1e5473d75664d2c19 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Simon Latapie <garf@videolan.org>
@@ -276,6 +276,7 @@ static int OpenCommon( vlc_object_t *p_this, bool b_sub )
     p_sys->i_pos = var_CreateGetIntegerCommand( p_filter, "logo-position" );
     p_sys->i_pos_x = var_CreateGetIntegerCommand( p_filter, "logo-x" );
     p_sys->i_pos_y = var_CreateGetIntegerCommand( p_filter, "logo-y" );
+    p_sys->b_absolute = (p_sys->i_pos < 0);
 
     /* Ignore aligment if a position is given for video filter */
     if( !b_sub && p_sys->i_pos_x >= 0 && p_sys->i_pos_y >= 0 )

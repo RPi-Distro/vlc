@@ -1,8 +1,8 @@
 /*****************************************************************************
  * StringUtility.m: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 614040c3e24d9d0a9d145f94e653f4387342c0c8 $
+ * Copyright (C) 2002-2014 VLC authors and VideoLAN
+ * $Id: 68b96ed22a81accd6dd996e56af57c9d0c982c6c $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -55,25 +55,23 @@ static VLCStringUtility *_o_sharedInstance = nil;
 
 - (NSString *)localizedString:(const char *)psz
 {
-    NSString * o_str = nil;
+    NSString * stringObject = nil;
 
     if (psz != NULL) {
-        o_str = [NSString stringWithCString: _(psz) encoding:NSUTF8StringEncoding];
+        stringObject = [NSString stringWithCString: _(psz) encoding:NSUTF8StringEncoding];
 
-        if (o_str == NULL) {
+        if (stringObject == NULL) {
             msg_Err(VLCIntf, "could not translate: %s", psz);
-            return(@"");
+            return @"";
         }
-    } else {
-        msg_Warn(VLCIntf, "can't translate empty strings");
-        return(@"");
-    }
+    } else
+        return @"";
 
-    return(o_str);
+    return stringObject;
 }
 
 /* i_width is in pixels */
-- (NSString *)wrapString: (NSString *)o_in_string toWidth: (int) i_width
+- (NSString *)wrapString:(NSString *)o_in_string toWidth:(int)i_width
 {
     NSMutableString *o_wrapped;
     NSString *o_out_string;
@@ -115,51 +113,15 @@ static VLCStringUtility *_o_sharedInstance = nil;
     return o_out_string;
 }
 
-- (NSString *)OSXStringKeyToString:(NSString *)theString
-{
-    if (![theString isEqualToString:@""]) {
-        /* remove cruft */
-        if ([theString characterAtIndex:([theString length] - 1)] != 0x2b)
-            theString = [theString stringByReplacingOccurrencesOfString:@"+" withString:@""];
-        else {
-            theString = [theString stringByReplacingOccurrencesOfString:@"+" withString:@""];
-            theString = [NSString stringWithFormat:@"%@+", theString];
-        }
-        if ([theString characterAtIndex:([theString length] - 1)] != 0x2d)
-            theString = [theString stringByReplacingOccurrencesOfString:@"-" withString:@""];
-        else {
-            theString = [theString stringByReplacingOccurrencesOfString:@"-" withString:@""];
-            theString = [NSString stringWithFormat:@"%@-", theString];
-        }
-        /* modifiers */
-        theString = [theString stringByReplacingOccurrencesOfString:@"Command" withString: [NSString stringWithUTF8String:"\xE2\x8C\x98"]];
-        theString = [theString stringByReplacingOccurrencesOfString:@"Alt" withString: [NSString stringWithUTF8String:"\xE2\x8C\xA5"]];
-        theString = [theString stringByReplacingOccurrencesOfString:@"Shift" withString: [NSString stringWithUTF8String:"\xE2\x87\xA7"]];
-        theString = [theString stringByReplacingOccurrencesOfString:@"Ctrl" withString: [NSString stringWithUTF8String:"\xE2\x8C\x83"]];
-        /* show non-character keys correctly */
-        theString = [theString stringByReplacingOccurrencesOfString:@"Right" withString:[NSString stringWithUTF8String:"\xE2\x86\x92"]];
-        theString = [theString stringByReplacingOccurrencesOfString:@"Left" withString:[NSString stringWithUTF8String:"\xE2\x86\x90"]];
-        theString = [theString stringByReplacingOccurrencesOfString:@"Up" withString:[NSString stringWithUTF8String:"\xE2\x86\x91"]];
-        theString = [theString stringByReplacingOccurrencesOfString:@"Down" withString:[NSString stringWithUTF8String:"\xE2\x86\x93"]];
-        theString = [theString stringByReplacingOccurrencesOfString:@"Enter" withString:[NSString stringWithUTF8String:"\xe2\x86\xb5"]];
-        theString = [theString stringByReplacingOccurrencesOfString:@"Tab" withString:[NSString stringWithUTF8String:"\xe2\x87\xa5"]];
-        theString = [theString stringByReplacingOccurrencesOfString:@"Delete" withString:[NSString stringWithUTF8String:"\xe2\x8c\xab"]];        /* capitalize plain characters to suit the menubar's look */
-        theString = [theString capitalizedString];
-    }
-    else
-        theString = [NSString stringWithString:_NS("Not Set")];
-    return theString;
-}
-
 - (NSString *)getCurrentTimeAsString:(input_thread_t *)p_input negative:(BOOL)b_negative
 {
     assert(p_input != nil);
-    
+
     vlc_value_t time;
     char psz_time[MSTRTIME_MAX_SIZE];
-    
+
     var_Get(p_input, "time", &time);
-    
+
     mtime_t dur = input_item_GetDuration(input_GetItem(p_input));
     if (b_negative && dur > 0) {
         mtime_t remaining = 0;
@@ -168,6 +130,27 @@ static VLCStringUtility *_o_sharedInstance = nil;
         return [NSString stringWithFormat: @"-%s", secstotimestr(psz_time, (remaining / 1000000))];
     } else
         return [NSString stringWithUTF8String:secstotimestr(psz_time, (time.i_time / 1000000))];
+}
+
+- (NSString *)stringForTime:(long long int)time
+{
+    if (time > 0) {
+        long long positiveDuration = llabs(time);
+        if (positiveDuration > 3600)
+            return [NSString stringWithFormat:@"%s%01ld:%02ld:%02ld",
+                    time < 0 ? "-" : "",
+                    (long) (positiveDuration / 3600),
+                    (long)((positiveDuration / 60) % 60),
+                    (long) (positiveDuration % 60)];
+        else
+            return [NSString stringWithFormat:@"%s%02ld:%02ld",
+                    time < 0 ? "-" : "",
+                    (long)((positiveDuration / 60) % 60),
+                    (long) (positiveDuration % 60)];
+    } else {
+        // Return a string that represents an undefined time.
+        return @"--:--";
+    }
 }
 
 #pragma mark -
@@ -209,6 +192,9 @@ static struct
     {0,0}
 };
 
+/*
+ * Takes the first value of an cocoa key string, and converts it to VLCs int representation.
+ */
 unsigned int CocoaKeyToVLC(unichar i_key)
 {
     unsigned int i;
@@ -221,6 +207,58 @@ unsigned int CocoaKeyToVLC(unichar i_key)
     return (unsigned int)i_key;
 }
 
+/* takes a good old const c string and converts it to NSString without UTF8 loss */
+
+NSString *toNSStr(const char *str) {
+    return str != NULL ? [NSString stringWithUTF8String:str] : @"";
+}
+
+/*
+ * Converts VLC key string to a prettified version, for hotkey settings.
+ * The returned string adapts similar how its done within the cocoa framework when setting this
+ * key to menu items.
+ */
+- (NSString *)OSXStringKeyToString:(NSString *)theString
+{
+    if (![theString isEqualToString:@""]) {
+        /* remove cruft */
+        if ([theString characterAtIndex:([theString length] - 1)] != 0x2b)
+            theString = [theString stringByReplacingOccurrencesOfString:@"+" withString:@""];
+        else {
+            theString = [theString stringByReplacingOccurrencesOfString:@"+" withString:@""];
+            theString = [NSString stringWithFormat:@"%@+", theString];
+        }
+        if ([theString characterAtIndex:([theString length] - 1)] != 0x2d)
+            theString = [theString stringByReplacingOccurrencesOfString:@"-" withString:@""];
+        else {
+            theString = [theString stringByReplacingOccurrencesOfString:@"-" withString:@""];
+            theString = [NSString stringWithFormat:@"%@-", theString];
+        }
+        /* modifiers */
+        theString = [theString stringByReplacingOccurrencesOfString:@"Command" withString: [NSString stringWithUTF8String:"\xE2\x8C\x98"]];
+        theString = [theString stringByReplacingOccurrencesOfString:@"Alt" withString: [NSString stringWithUTF8String:"\xE2\x8C\xA5"]];
+        theString = [theString stringByReplacingOccurrencesOfString:@"Shift" withString: [NSString stringWithUTF8String:"\xE2\x87\xA7"]];
+        theString = [theString stringByReplacingOccurrencesOfString:@"Ctrl" withString: [NSString stringWithUTF8String:"\xE2\x8C\x83"]];
+        /* show non-character keys correctly */
+        theString = [theString stringByReplacingOccurrencesOfString:@"Right" withString:[NSString stringWithUTF8String:"\xE2\x86\x92"]];
+        theString = [theString stringByReplacingOccurrencesOfString:@"Left" withString:[NSString stringWithUTF8String:"\xE2\x86\x90"]];
+        theString = [theString stringByReplacingOccurrencesOfString:@"Page Up" withString:[NSString stringWithUTF8String:"\xE2\x87\x9E"]];
+        theString = [theString stringByReplacingOccurrencesOfString:@"Page Down" withString:[NSString stringWithUTF8String:"\xE2\x87\x9F"]];
+        theString = [theString stringByReplacingOccurrencesOfString:@"Up" withString:[NSString stringWithUTF8String:"\xE2\x86\x91"]];
+        theString = [theString stringByReplacingOccurrencesOfString:@"Down" withString:[NSString stringWithUTF8String:"\xE2\x86\x93"]];
+        theString = [theString stringByReplacingOccurrencesOfString:@"Enter" withString:[NSString stringWithUTF8String:"\xe2\x86\xb5"]];
+        theString = [theString stringByReplacingOccurrencesOfString:@"Tab" withString:[NSString stringWithUTF8String:"\xe2\x87\xa5"]];
+        theString = [theString stringByReplacingOccurrencesOfString:@"Delete" withString:[NSString stringWithUTF8String:"\xe2\x8c\xab"]];        /* capitalize plain characters to suit the menubar's look */
+        theString = [theString capitalizedString];
+    }
+    else
+        theString = [NSString stringWithString:_NS("Not Set")];
+    return theString;
+}
+
+/*
+ * Converts VLC key string to cocoa modifiers which can be used as setKeyEquivalent for menu items
+ */
 - (unsigned int)VLCModifiersToCocoa:(NSString *)theString
 {
     unsigned int new = 0;
@@ -236,6 +274,9 @@ unsigned int CocoaKeyToVLC(unichar i_key)
     return new;
 }
 
+/*
+ * Converts VLC key to cocoa string which can be used as setKeyEquivalentModifierMask for menu items
+ */
 - (NSString *)VLCKeyToString:(NSString *)theString
 {
     if (![theString isEqualToString:@""]) {
@@ -261,7 +302,11 @@ unsigned int CocoaKeyToVLC(unichar i_key)
 #pragma GCC diagnostic ignored "-Wformat"
 #endif
     if ([theString length] > 1) {
-        if ([theString rangeOfString:@"Up"].location != NSNotFound)
+        if ([theString rangeOfString:@"Page Up"].location != NSNotFound)
+            return [NSString stringWithFormat:@"%C", NSPageUpFunctionKey];
+        else if ([theString rangeOfString:@"Page Down"].location != NSNotFound)
+            return [NSString stringWithFormat:@"%C", NSPageDownFunctionKey];
+        else if ([theString rangeOfString:@"Up"].location != NSNotFound)
             return [NSString stringWithFormat:@"%C", NSUpArrowFunctionKey];
         else if ([theString rangeOfString:@"Down"].location != NSNotFound)
             return [NSString stringWithFormat:@"%C", NSDownArrowFunctionKey];
@@ -277,10 +322,6 @@ unsigned int CocoaKeyToVLC(unichar i_key)
             return [NSString stringWithFormat:@"%C", NSHomeFunctionKey];
         else if ([theString rangeOfString:@"End"].location != NSNotFound)
             return [NSString stringWithFormat:@"%C", NSEndFunctionKey];
-        else if ([theString rangeOfString:@"Pageup"].location != NSNotFound)
-            return [NSString stringWithFormat:@"%C", NSPageUpFunctionKey];
-        else if ([theString rangeOfString:@"Pagedown"].location != NSNotFound)
-            return [NSString stringWithFormat:@"%C", NSPageDownFunctionKey];
         else if ([theString rangeOfString:@"Menu"].location != NSNotFound)
             return [NSString stringWithFormat:@"%C", NSMenuFunctionKey];
         else if ([theString rangeOfString:@"Tab"].location != NSNotFound)
@@ -323,6 +364,9 @@ unsigned int CocoaKeyToVLC(unichar i_key)
 
     return theString;
 }
+
+#pragma mark -
+#pragma mark base64 helpers
 
 - (NSString *)b64Decode:(NSString *)string
 {

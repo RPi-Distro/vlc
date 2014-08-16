@@ -2,7 +2,7 @@
  * libvlc_media_player.h:  libvlc_media_player external API
  *****************************************************************************
  * Copyright (C) 1998-2010 VLC authors and VideoLAN
- * $Id: 82c7ac2cfd2ecf05449a3ee22bcb2a23420d413a $
+ * $Id: 4b2f44960b48568dada9d344e15b3a31e78cd6be $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -135,6 +135,13 @@ typedef enum libvlc_position_t {
     libvlc_position_bottom_left,
     libvlc_position_bottom_right
 } libvlc_position_t;
+
+/**
+ * Opaque equalizer handle.
+ *
+ * Equalizer settings can be applied to a media player.
+ */
+typedef struct libvlc_equalizer_t libvlc_equalizer_t;
 
 /**
  * Create an empty Media Player object
@@ -821,6 +828,16 @@ LIBVLC_API int libvlc_media_player_is_seekable( libvlc_media_player_t *p_mi );
  */
 LIBVLC_API int libvlc_media_player_can_pause( libvlc_media_player_t *p_mi );
 
+/**
+ * Check if the current program is scrambled
+ *
+ * \param p_mi the media player
+ * \return true if the current program is scrambled
+ *
+ * \libvlc_return_bool
+ * \version LibVLC 2.2.0 or later
+ */
+LIBVLC_API int libvlc_media_player_program_scrambled( libvlc_media_player_t *p_mi );
 
 /**
  * Display the next frame (if supported)
@@ -1400,7 +1417,7 @@ typedef enum libvlc_audio_output_channel_t {
 
 
 /**
- * Gets the list of available audio outputs
+ * Gets the list of available audio output modules.
  *
  * \param p_instance libvlc instance
  * \return list of available audio outputs. It must be freed it with
@@ -1411,7 +1428,7 @@ LIBVLC_API libvlc_audio_output_t *
 libvlc_audio_output_list_get( libvlc_instance_t *p_instance );
 
 /**
- * Frees the list of available audio outputs
+ * Frees the list of available audio output modules.
  *
  * \param p_list list with audio outputs for release
  */
@@ -1419,7 +1436,7 @@ LIBVLC_API
 void libvlc_audio_output_list_release( libvlc_audio_output_t *p_list );
 
 /**
- * Sets the audio output.
+ * Selects an audio output module.
  * \note Any change will take be effect only after playback is stopped and
  * restarted. Audio output cannot be changed while playing.
  *
@@ -1457,7 +1474,28 @@ LIBVLC_DEPRECATED LIBVLC_API
 char *libvlc_audio_output_device_id( libvlc_instance_t *, const char *, int );
 
 /**
- * Gets a list of audio output devices for a given audio output.
+ * Gets a list of potential audio output devices,
+ * \see libvlc_audio_output_device_set().
+ *
+ * \note Not all audio outputs support enumerating devices.
+ * The audio output may be functional even if the list is empty (NULL).
+ *
+ * \note The list may not be exhaustive.
+ *
+ * \warning Some audio output devices in the list might not actually work in
+ * some circumstances. By default, it is recommended to not specify any
+ * explicit audio device.
+ *
+ * \param mp media player
+ * \return A NULL-terminated linked list of potential audio output devices.
+ * It must be freed it with libvlc_audio_output_device_list_release()
+ * \version LibVLC 2.2.0 or later.
+ */
+LIBVLC_API libvlc_audio_output_device_t *
+libvlc_audio_output_device_enum( libvlc_media_player_t *mp );
+
+/**
+ * Gets a list of audio output devices for a given audio output module,
  * \see libvlc_audio_output_device_set().
  *
  * \note Not all audio outputs support this. In particular, an empty (NULL)
@@ -1491,26 +1529,45 @@ LIBVLC_API void libvlc_audio_output_device_list_release(
                                         libvlc_audio_output_device_t *p_list );
 
 /**
- * Configures an explicit audio output device for a given audio output plugin.
- * A list of possible devices can be obtained with
+ * Configures an explicit audio output device.
+ *
+ * If the module paramater is NULL, audio output will be moved to the device
+ * specified by the device identifier string immediately. This is the
+ * recommended usage.
+ *
+ * A list of adequate potential device strings can be obtained with
+ * libvlc_audio_output_device_enum().
+ *
+ * However passing NULL is supported in LibVLC version 2.2.0 and later only;
+ * in earlier versions, this function would have no effects when the module
+ * parameter was NULL.
+ *
+ * If the module parameter is not NULL, the device parameter of the
+ * corresponding audio output, if it exists, will be set to the specified
+ * string. Note that some audio output modules do not have such a parameter
+ * (notably MMDevice and PulseAudio).
+ *
+ * A list of adequate potential device strings can be obtained with
  * libvlc_audio_output_device_list_get().
  *
  * \note This function does not select the specified audio output plugin.
  * libvlc_audio_output_set() is used for that purpose.
  *
  * \warning The syntax for the device parameter depends on the audio output.
- * This is not portable. Only use this function if you know what you are doing.
- * Some audio outputs do not support this function (e.g. PulseAudio, WASAPI).
- * Some audio outputs require further parameters (e.g. ALSA: channels map).
  *
- * \param p_mi media player
- * \param psz_audio_output - name of audio output, \see libvlc_audio_output_t
- * \param psz_device_id device
- * \return Nothing. Errors are ignored.
+ * Some audio output modules require further parameters (e.g. a channels map
+ * in the case of ALSA).
+ *
+ * \param mp media player
+ * \param module If NULL, current audio output module.
+ *               if non-NULL, name of audio output module
+                 (\see libvlc_audio_output_t)
+ * \param device_id device identifier string
+ * \return Nothing. Errors are ignored (this is a design bug).
  */
-LIBVLC_API void libvlc_audio_output_device_set( libvlc_media_player_t *p_mi,
-                                                const char *psz_audio_output,
-                                                const char *psz_device_id );
+LIBVLC_API void libvlc_audio_output_device_set( libvlc_media_player_t *mp,
+                                                const char *module,
+                                                const char *device_id );
 
 /**
  * Stub for backward compatibility.
@@ -1647,6 +1704,170 @@ LIBVLC_API int64_t libvlc_audio_get_delay( libvlc_media_player_t *p_mi );
  * \version LibVLC 1.1.1 or later
  */
 LIBVLC_API int libvlc_audio_set_delay( libvlc_media_player_t *p_mi, int64_t i_delay );
+
+/**
+ * Get the number of equalizer presets.
+ *
+ * \return number of presets
+ * \version LibVLC 2.2.0 or later
+ */
+LIBVLC_API unsigned libvlc_audio_equalizer_get_preset_count( void );
+
+/**
+ * Get the name of a particular equalizer preset.
+ *
+ * This name can be used, for example, to prepare a preset label or menu in a user
+ * interface.
+ *
+ * \param u_index index of the preset, counting from zero
+ * \return preset name, or NULL if there is no such preset
+ * \version LibVLC 2.2.0 or later
+ */
+LIBVLC_API const char *libvlc_audio_equalizer_get_preset_name( unsigned u_index );
+
+/**
+ * Get the number of distinct frequency bands for an equalizer.
+ *
+ * \return number of frequency bands
+ * \version LibVLC 2.2.0 or later
+ */
+LIBVLC_API unsigned libvlc_audio_equalizer_get_band_count( void );
+
+/**
+ * Get a particular equalizer band frequency.
+ *
+ * This value can be used, for example, to create a label for an equalizer band control
+ * in a user interface.
+ *
+ * \param u_index index of the band, counting from zero
+ * \return equalizer band frequency (Hz), or -1 if there is no such band
+ * \version LibVLC 2.2.0 or later
+ */
+LIBVLC_API float libvlc_audio_equalizer_get_band_frequency( unsigned u_index );
+
+/**
+ * Create a new default equalizer, with all frequency values zeroed.
+ *
+ * The new equalizer can subsequently be applied to a media player by invoking
+ * libvlc_media_player_set_equalizer().
+ *
+ * The returned handle should be freed via libvlc_audio_equalizer_release() when
+ * it is no longer needed.
+ *
+ * \return opaque equalizer handle, or NULL on error
+ * \version LibVLC 2.2.0 or later
+ */
+LIBVLC_API libvlc_equalizer_t *libvlc_audio_equalizer_new( void );
+
+/**
+ * Create a new equalizer, with initial frequency values copied from an existing
+ * preset.
+ *
+ * The new equalizer can subsequently be applied to a media player by invoking
+ * libvlc_media_player_set_equalizer().
+ *
+ * The returned handle should be freed via libvlc_audio_equalizer_release() when
+ * it is no longer needed.
+ *
+ * \param u_index index of the preset, counting from zero
+ * \return opaque equalizer handle, or NULL on error
+ * \version LibVLC 2.2.0 or later
+ */
+LIBVLC_API libvlc_equalizer_t *libvlc_audio_equalizer_new_from_preset( unsigned u_index );
+
+/**
+ * Release a previously created equalizer instance.
+ *
+ * The equalizer was previously created by using libvlc_audio_equalizer_new() or
+ * libvlc_audio_equalizer_new_from_preset().
+ *
+ * It is safe to invoke this method with a NULL p_equalizer parameter for no effect.
+ *
+ * \param p_equalizer opaque equalizer handle, or NULL
+ * \version LibVLC 2.2.0 or later
+ */
+LIBVLC_API void libvlc_audio_equalizer_release( libvlc_equalizer_t *p_equalizer );
+
+/**
+ * Set a new pre-amplification value for an equalizer.
+ *
+ * The new equalizer settings are subsequently applied to a media player by invoking
+ * libvlc_media_player_set_equalizer().
+ *
+ * The supplied amplification value will be clamped to the -20.0 to +20.0 range.
+ *
+ * \param p_equalizer valid equalizer handle, must not be NULL
+ * \param f_preamp preamp value (-20.0 to 20.0 Hz)
+ * \return zero on success, -1 on error
+ * \version LibVLC 2.2.0 or later
+ */
+LIBVLC_API int libvlc_audio_equalizer_set_preamp( libvlc_equalizer_t *p_equalizer, float f_preamp );
+
+/**
+ * Get the current pre-amplification value from an equalizer.
+ *
+ * \param p_equalizer valid equalizer handle, must not be NULL
+ * \return preamp value (Hz)
+ * \version LibVLC 2.2.0 or later
+ */
+LIBVLC_API float libvlc_audio_equalizer_get_preamp( libvlc_equalizer_t *p_equalizer );
+
+/**
+ * Set a new amplification value for a particular equalizer frequency band.
+ *
+ * The new equalizer settings are subsequently applied to a media player by invoking
+ * libvlc_media_player_set_equalizer().
+ *
+ * The supplied amplification value will be clamped to the -20.0 to +20.0 range.
+ *
+ * \param p_equalizer valid equalizer handle, must not be NULL
+ * \param f_amp amplification value (-20.0 to 20.0 Hz)
+ * \param u_band index, counting from zero, of the frequency band to set
+ * \return zero on success, -1 on error
+ * \version LibVLC 2.2.0 or later
+ */
+LIBVLC_API int libvlc_audio_equalizer_set_amp_at_index( libvlc_equalizer_t *p_equalizer, float f_amp, unsigned u_band );
+
+/**
+ * Get the amplification value for a particular equalizer frequency band.
+ *
+ * \param p_equalizer valid equalizer handle, must not be NULL
+ * \param u_band index, counting from zero, of the frequency band to get
+ * \return amplification value (Hz); NaN if there is no such frequency band
+ * \version LibVLC 2.2.0 or later
+ */
+LIBVLC_API float libvlc_audio_equalizer_get_amp_at_index( libvlc_equalizer_t *p_equalizer, unsigned u_band );
+
+/**
+ * Apply new equalizer settings to a media player.
+ *
+ * The equalizer is first created by invoking libvlc_audio_equalizer_new() or
+ * libvlc_audio_equalizer_new_from_preset().
+ *
+ * It is possible to apply new equalizer settings to a media player whether the media
+ * player is currently playing media or not.
+ *
+ * Invoking this method will immediately apply the new equalizer settings to the audio
+ * output of the currently playing media if there is any.
+ *
+ * If there is no currently playing media, the new equalizer settings will be applied
+ * later if and when new media is played.
+ *
+ * Equalizer settings will automatically be applied to subsequently played media.
+ *
+ * To disable the equalizer for a media player invoke this method passing NULL for the
+ * p_equalizer parameter.
+ *
+ * The media player does not keep a reference to the supplied equalizer so it is safe
+ * for an application to release the equalizer reference any time after this method
+ * returns.
+ *
+ * \param p_mi opaque media player handle
+ * \param p_equalizer opaque equalizer handle, or NULL to disable the equalizer for this media player
+ * \return zero on success, -1 on error
+ * \version LibVLC 2.2.0 or later
+ */
+LIBVLC_API int libvlc_media_player_set_equalizer( libvlc_media_player_t *p_mi, libvlc_equalizer_t *p_equalizer );
 
 /** @} audio */
 

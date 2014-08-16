@@ -3,7 +3,7 @@
  * Also contains some internal utility functions
  *****************************************************************************
  * Copyright (C) 2005-2009 VLC authors and VideoLAN
- * $Id: 760649e34fd5103dc26a1420f724103e7e385ed0 $
+ * $Id: 4008c53679766560e5003f3cc4c63a47eeb30bc7 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -49,6 +49,7 @@ VLC_API void libvlc_InternalCleanup( libvlc_int_t * );
 VLC_API void libvlc_InternalDestroy( libvlc_int_t * );
 
 VLC_API int libvlc_InternalAddIntf( libvlc_int_t *, const char * );
+VLC_API void libvlc_InternalPlay( libvlc_int_t * );
 VLC_API void libvlc_InternalWait( libvlc_int_t * );
 VLC_API void libvlc_SetExitHandler( libvlc_int_t *, void (*) (void *), void * );
 
@@ -87,8 +88,6 @@ struct libvlc_instance_t
 /* Thread context */
 void libvlc_threads_init (void);
 void libvlc_threads_deinit (void);
-void libvlc_log_init (void);
-void libvlc_log_deinit (void);
 
 /* Events */
 libvlc_event_manager_t * libvlc_event_manager_new(

@@ -52,6 +52,7 @@ vlc_module_begin()
     set_description( N_("Global Hotkeys interface") )
     set_capability( "interface", 0 )
     set_callbacks( Open, Close )
+    add_shortcut( "globalhotkeys" )
 vlc_module_end()
 
 typedef struct
@@ -236,12 +237,17 @@ static unsigned GetX11Modifier( xcb_connection_t *p_connection,
     if( i_vlc & KEY_MODIFIER_ALT )
         i_mask |= GetModifier( p_connection, p_symbols, XK_Alt_L ) |
                   GetModifier( p_connection, p_symbols, XK_Alt_R );
-    if( i_vlc & KEY_MODIFIER_CTRL )
-        i_mask |= GetModifier( p_connection, p_symbols, XK_Control_L ) |
-                  GetModifier( p_connection, p_symbols, XK_Control_R );
     if( i_vlc & KEY_MODIFIER_SHIFT )
         i_mask |= GetModifier( p_connection, p_symbols, XK_Shift_L ) |
                   GetModifier( p_connection, p_symbols, XK_Shift_R );
+    if( i_vlc & KEY_MODIFIER_CTRL )
+        i_mask |= GetModifier( p_connection, p_symbols, XK_Control_L ) |
+                  GetModifier( p_connection, p_symbols, XK_Control_R );
+    if( i_vlc & KEY_MODIFIER_META )
+        i_mask |= GetModifier( p_connection, p_symbols, XK_Meta_L ) |
+                  GetModifier( p_connection, p_symbols, XK_Meta_R ) |
+                  GetModifier( p_connection, p_symbols, XK_Super_L ) |
+                  GetModifier( p_connection, p_symbols, XK_Super_R );
     return i_mask;
 }
 

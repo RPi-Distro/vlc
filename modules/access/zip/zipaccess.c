@@ -2,7 +2,7 @@
  * zipaccess.c: Module (access) to extract different archives, based on zlib
  *****************************************************************************
  * Copyright (C) 2009 VLC authors and VideoLAN
- * $Id: adc2d8227ab868e61159cb5f1a1b873c33622873 $
+ * $Id: 2f2b4dc167550efb656fe38ee77f5317383b84d6 $
  *
  * Authors: Jean-Philippe André <jpeg@videolan.org>
  *
@@ -101,7 +101,6 @@ int AccessOpen( vlc_object_t *p_this )
     access_t     *p_access = (access_t*)p_this;
     access_sys_t *p_sys;
     int i_ret              = VLC_EGENERIC;
-    unzFile file           = 0;
 
     char *psz_pathToZip = NULL, *psz_path = NULL, *psz_sep = NULL;
 
@@ -117,7 +116,7 @@ int AccessOpen( vlc_object_t *p_this )
         return VLC_ENOMEM;
 
     /* Split the MRL */
-    psz_path = strdup( p_access->psz_location );
+    psz_path = xstrdup( p_access->psz_location );
     psz_sep = strstr( psz_path, ZIP_SEP );
 
     *psz_sep = '\0';
@@ -146,25 +145,19 @@ int AccessOpen( vlc_object_t *p_this )
     }
 
     /* Define IO functions */
-    zlib_filefunc_def *p_func = (zlib_filefunc_def*)
-                                    calloc( 1, sizeof( zlib_filefunc_def ) );
-    if( unlikely( !p_func ) )
-    {
-        i_ret = VLC_ENOMEM;
-        goto exit;
-    }
-    p_func->zopen_file   = ZipIO_Open;
-    p_func->zread_file   = ZipIO_Read;
-    p_func->zwrite_file  = ZipIO_Write; // see comment
-    p_func->ztell_file   = ZipIO_Tell;
-    p_func->zseek_file   = ZipIO_Seek;
-    p_func->zclose_file  = ZipIO_Close;
-    p_func->zerror_file  = ZipIO_Error;
-    p_func->opaque       = p_access;
+    zlib_filefunc_def func;
+    func.zopen_file   = ZipIO_Open;
+    func.zread_file   = ZipIO_Read;
+    func.zwrite_file  = ZipIO_Write; // see comment
+    func.ztell_file   = ZipIO_Tell;
+    func.zseek_file   = ZipIO_Seek;
+    func.zclose_file  = ZipIO_Close;
+    func.zerror_file  = ZipIO_Error;
+    func.opaque       = p_access;
 
     /* Open zip archive */
-    file = p_access->p_sys->zipFile = unzOpen2( psz_pathToZip, p_func );
-    if( !file )
+    p_access->p_sys->zipFile = unzOpen2( psz_pathToZip, &func );
+    if( !p_access->p_sys->zipFile )
     {
         msg_Err( p_access, "not a valid zip archive: '%s'", psz_pathToZip );
         i_ret = VLC_EGENERIC;
@@ -178,12 +171,6 @@ int AccessOpen( vlc_object_t *p_this )
     /* Set callback */
     ACCESS_SET_CALLBACKS( AccessRead, NULL, AccessControl, AccessSeek );
 
-    /* Get some infos about current file. Maybe we could want some more ? */
-    unz_file_info z_info;
-    unzGetCurrentFileInfo( file, &z_info, NULL, 0, NULL, 0, NULL, 0 );
-
-    /* Set access information: size is needed for AccessSeek */
-    p_access->info.i_size = z_info.uncompressed_size;
     p_access->info.i_pos  = 0;
     p_access->info.b_eof  = false;
 
@@ -192,10 +179,10 @@ int AccessOpen( vlc_object_t *p_this )
 exit:
     if( i_ret != VLC_SUCCESS )
     {
-        if( file )
+        if( p_access->p_sys->zipFile )
         {
-            unzCloseCurrentFile( file );
-            unzClose( file );
+            unzCloseCurrentFile( p_access->p_sys->zipFile );
+            unzClose( p_access->p_sys->zipFile );
         }
         free( p_sys->psz_fileInzip );
         free( p_sys->fileFunctions );
@@ -238,7 +225,6 @@ static int AccessControl( access_t *p_access, int i_query, va_list args )
 
     switch( i_query )
     {
-        /* */
         case ACCESS_CAN_SEEK:
         case ACCESS_CAN_PAUSE:
         case ACCESS_CAN_CONTROL_PACE:
@@ -251,29 +237,27 @@ static int AccessControl( access_t *p_access, int i_query, va_list args )
             *pb_bool = false;
             break;
 
+        case ACCESS_GET_SIZE:
+        {
+            unz_file_info z_info;
+
+            unzGetCurrentFileInfo( p_access->p_sys->zipFile, &z_info,
+                                   NULL, 0, NULL, 0, NULL, 0 );
+            *va_arg( args, uint64_t * ) = z_info.uncompressed_size;
+            break;
+        }
+
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
             *pi_64 = DEFAULT_PTS_DELAY;
             break;
 
-        /* */
         case ACCESS_SET_PAUSE_STATE:
             /* Nothing to do */
             break;
 
-        case ACCESS_GET_TITLE_INFO:
-        case ACCESS_SET_TITLE:
-        case ACCESS_SET_SEEKPOINT:
-        case ACCESS_SET_PRIVATE_ID_STATE:
-        case ACCESS_GET_META:
-        case ACCESS_GET_PRIVATE_ID_STATE:
-        case ACCESS_GET_CONTENT_TYPE:
-            return VLC_EGENERIC;
-
         default:
-            msg_Warn( p_access, "unimplemented query %d in control", i_query );
             return VLC_EGENERIC;
-
     }
     return VLC_SUCCESS;
 }

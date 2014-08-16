@@ -2,7 +2,7 @@
  * preferences_widgets.cpp : Widgets for preferences displays
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 8af40afab65cda6d5a66c0e03c4adfc286b855c6 $
+ * $Id: da724dca1b20aa24231f08d533e03f48edaa302c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -191,7 +191,8 @@ void InterfacePreviewWidget::setPreview( enum_style e_style )
         break;
     }
 
-    setPixmap( QPixmap( pixmapLocationString ) );
+    setPixmap( QPixmap( pixmapLocationString ).
+               scaledToWidth( width(), Qt::SmoothTransformation ) );
     update();
 }
 
@@ -547,7 +548,7 @@ void ModuleConfigControl::finish( )
     {
         module_t *p_parser = p_list[i];
 
-        if( !strcmp( module_get_object( p_parser ), "main" ) ) continue;
+        if( !strcmp( module_get_object( p_parser ), "core" ) ) continue;
 
         unsigned confsize;
         module_config_t *p_config;
@@ -662,7 +663,7 @@ void ModuleListConfigControl::finish( bool bycat )
 
         if( bycat )
         {
-            if( !strcmp( module_get_object( p_parser ), "main" ) ) continue;
+            if( !strcmp( module_get_object( p_parser ), "core" ) ) continue;
 
             unsigned confsize;
             module_config_t *p_config = module_config_get (p_parser, &confsize);
@@ -1131,6 +1132,7 @@ KeySelectorControl::KeySelectorControl( vlc_object_t *_p_this,
         qtr( "Select or double click an action to change the associated "
              "hotkey. Use delete key to remove hotkeys"), p );
 
+    label->setWordWrap( true );
     searchLabel = new QLabel( qtr( "Search" ), p );
     actionSearch = new SearchLineEdit();
 

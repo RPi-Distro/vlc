@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 146734537f5423582d7e21677df52d7b3189c005 $
+ * $Id: 1419f8f8131c018468ed2344d985a0aaa1a1aa52 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
@@ -436,7 +436,7 @@ int input_clock_ConvertTS( input_clock_t *cl,
         *pi_ts0 += i_ts_delay;
     }
 
-    /* XXX we do not ipdate i_ts_max on purpose */
+    /* XXX we do not update i_ts_max on purpose */
     if( pi_ts1 && *pi_ts1 > VLC_TS_INVALID )
     {
         *pi_ts1 = ClockStreamToSystem( cl, *pi_ts1 + AvgGet( &cl->drift ) ) +
@@ -446,9 +446,15 @@ int input_clock_ConvertTS( input_clock_t *cl,
     vlc_mutex_unlock( &cl->lock );
 
     /* Check ts validity */
-    if( i_ts_bound != INT64_MAX &&
-        *pi_ts0 > VLC_TS_INVALID && *pi_ts0 >= mdate() + i_ts_delay + i_ts_buffering + i_ts_bound )
-        return VLC_EGENERIC;
+    if (i_ts_bound != INT64_MAX && *pi_ts0 > VLC_TS_INVALID) {
+        if (*pi_ts0 >= mdate() + i_ts_delay + i_ts_buffering + i_ts_bound) {
+            vlc_Log(NULL, VLC_MSG_ERR, "clock",
+                "Timestamp conversion failed (delay %"PRId64", buffering "
+                "%"PRId64", bound %"PRId64")",
+                i_ts_delay, i_ts_buffering, i_ts_bound);
+            return VLC_EGENERIC;
+        }
+    }
 
     return VLC_SUCCESS;
 }

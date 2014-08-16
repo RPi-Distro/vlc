@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1998-2008 VLC authors and VideoLAN
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 1c9e1b61e5969145b930175374c6c74e2d12b097 $
+ * $Id: bc3499bba4d8bb7ee41b983d781adf77f52fa5fa $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -47,19 +47,19 @@ void input_DecoderChangePause( decoder_t *, bool b_paused, mtime_t i_date );
 void input_DecoderChangeDelay( decoder_t *, mtime_t i_delay );
 
 /**
- * This function starts the buffering mode.
+ * This function makes the decoder start waiting for a valid data block from its fifo.
  */
-void input_DecoderStartBuffering( decoder_t * );
+void input_DecoderStartWait( decoder_t * );
 
 /**
- * This function waits for the decoder to have buffered sufficient data.
+ * This function waits for the decoder to actually receive data.
  */
-void input_DecoderWaitBuffering( decoder_t * );
+void input_DecoderWait( decoder_t * );
 
 /**
- * This function stops the buffering mode.
+ * This function exits the waiting mode of the decoder.
  */
-void input_DecoderStopBuffering( decoder_t * );
+void input_DecoderStopWait( decoder_t * );
 
 /**
  * This function returns true if the decoder fifo is empty and false otherwise.

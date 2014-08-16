@@ -2,7 +2,7 @@
  * ps.c: Program Stream demux module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: 1fd9762811e4ce9499641b90055c11bb77356613 $
+ * $Id: e82dbfb54cc2f34a33d3da4a0fd0148d50fe9060 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -258,7 +258,7 @@ static void FindLength( demux_t *p_demux )
         stream_Seek( p_demux->s, i_size - i_end );
 
         i = 0;
-        while( vlc_object_alive (p_demux) && i < 40 && Demux2( p_demux, true ) > 0 ) i++;
+        while( vlc_object_alive (p_demux) && i < 400 && Demux2( p_demux, true ) > 0 ) i++;
         if( i_current_pos >= 0 ) stream_Seek( p_demux->s, i_current_pos );
     }
 
@@ -266,7 +266,7 @@ static void FindLength( demux_t *p_demux )
     for( int i = 0; i < PS_TK_COUNT; i++ )
     {
         ps_track_t *tk = &p_sys->tk[i];
-        if( tk->i_first_pts >= 0 && tk->i_last_pts > 0 &&
+        if( tk->i_last_pts > 0 &&
             tk->i_last_pts > tk->i_first_pts )
         {
             int64_t i_length = (int64_t)tk->i_last_pts - tk->i_first_pts;
@@ -274,7 +274,7 @@ static void FindLength( demux_t *p_demux )
             {
                 p_sys->i_length = i_length;
                 p_sys->i_time_track = i;
-                msg_Dbg( p_demux, "we found a length of: %"PRId64, p_sys->i_length );
+                msg_Dbg( p_demux, "we found a length of: %"PRId64 "s", p_sys->i_length / CLOCK_FREQ );
             }
         }
     }
@@ -444,6 +444,7 @@ static int Demux( demux_t *p_demux )
         break;
     }
 
+    demux_UpdateTitleFromStream( p_demux );
     return 1;
 }
 
@@ -529,6 +530,25 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 return VLC_SUCCESS;
             }
             return VLC_EGENERIC;
+
+        case DEMUX_GET_TITLE_INFO:
+        {
+            struct input_title_t ***v = va_arg( args, struct input_title_t*** );
+            int *c = va_arg( args, int * );
+
+            *va_arg( args, int* ) = 0; /* Title offset */
+            *va_arg( args, int* ) = 0; /* Chapter offset */
+            return stream_Control( p_demux->s, STREAM_GET_TITLE_INFO, v, c );
+        }
+
+        case DEMUX_SET_TITLE:
+            return stream_vaControl( p_demux->s, STREAM_SET_TITLE, args );
+
+        case DEMUX_SET_SEEKPOINT:
+            return stream_vaControl( p_demux->s, STREAM_SET_SEEKPOINT, args );
+
+        case DEMUX_GET_META:
+            return stream_vaControl( p_demux->s, STREAM_GET_META, args );
 
         case DEMUX_GET_FPS:
         default:

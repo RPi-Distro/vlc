@@ -2,7 +2,7 @@
  * ps.h: Program Stream demuxer helper
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: 429b9aa3a4460e92e0a12c9108075015cd343358 $
+ * $Id: c36bdcdb0b585418628b1e27968ccc1d60cc7ade $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -98,7 +98,7 @@ static inline int ps_track_fill( ps_track_t *tk, ps_psm_t *p_psm, int i_id )
         else if( (i_id&0xf0) == 0xb0 )
         {
             es_format_Init( &tk->fmt, AUDIO_ES, VLC_CODEC_MLP );
-            /* FIXME / untested ... no known decoder (at least not in VLC/ffmpeg) */
+            /* FIXME / untested ... */
         }
         else if( ( i_id&0xe0 ) == 0x20 )
         {

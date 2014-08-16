@@ -2,7 +2,7 @@
  * vlmshell.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2005 VLC authors and VideoLAN
- * $Id: 97edd9032ebd86d6a3b4e445beffb1570c537794 $
+ * $Id: 50a3859fe2f8ffbcb2119da83e3e02ce6cf14102 $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -854,8 +854,8 @@ int ExecuteCommand( vlm_t *p_vlm, const char *psz_command,
 
     if( !psz_buf || !ppsz_command )
     {
-        p_message = vlm_MessageNew( ppsz_command[0],
-                        "Memory allocation failed for command of length %zu",
+        p_message = vlm_MessageNew( "Memory error",
+                        "allocation failed for command of length %zu",
                         i_command_len );
         goto error;
     }
@@ -990,18 +990,17 @@ static vlm_schedule_sys_t *vlm_ScheduleNew( vlm_t *vlm, const char *psz_name )
 /* for now, simple delete. After, del with options (last arg) */
 void vlm_ScheduleDelete( vlm_t *vlm, vlm_schedule_sys_t *sched )
 {
+    int i;
     if( sched == NULL ) return;
 
     TAB_REMOVE( vlm->i_schedule, vlm->schedule, sched );
 
     if( vlm->i_schedule == 0 ) free( vlm->schedule );
     free( sched->psz_name );
-    while( sched->i_command )
-    {
-        char *psz_cmd = sched->command[0];
-        TAB_REMOVE( sched->i_command, sched->command, psz_cmd );
-        free( psz_cmd );
-    }
+
+    for ( i = 0; i < sched->i_command; i++ )
+        free( sched->command[i] );
+    free( sched->command );
     free( sched );
 }
 

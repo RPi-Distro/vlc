@@ -2,7 +2,7 @@
  * dshow.cpp : DirectShow access and access_demux module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2004, 2006, 2008, 2010 the VideoLAN team
- * $Id: 84b9977f6f4d2d736856b6d7e79e3d285a29f455 $
+ * $Id: 0e21fe45edf733b7b887af0834fe8dca57436947 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *         Damien Fouilleul <damienf@videolan.org>
@@ -699,7 +699,6 @@ static int DemuxOpen( vlc_object_t *p_this )
 
     p_demux->pf_demux   = Demux;
     p_demux->pf_control = DemuxControl;
-    p_demux->info.i_update = 0;
     p_demux->info.i_title = 0;
     p_demux->info.i_seekpoint = 0;
 
@@ -794,18 +793,15 @@ static int AccessOpen( vlc_object_t *p_this )
     dshow_stream_t *p_stream = p_sys->pp_streams[0];
 
     /* Check if we need to force demuxers */
-    if( !p_access->psz_demux || !*p_access->psz_demux )
+    if( p_stream->i_fourcc == VLC_CODEC_DV )
     {
-        if( p_stream->i_fourcc == VLC_CODEC_DV )
-        {
-            free( p_access->psz_demux );
-            p_access->psz_demux = strdup( "rawdv" );
-        }
-        else if( p_stream->i_fourcc == VLC_CODEC_MPGV )
-        {
-            free( p_access->psz_demux );
-            p_access->psz_demux = strdup( "mpgv" );
-        }
+        free( p_access->psz_demux );
+        p_access->psz_demux = strdup( "rawdv" );
+    }
+    else if( p_stream->i_fourcc == VLC_CODEC_MPGV )
+    {
+        free( p_access->psz_demux );
+        p_access->psz_demux = strdup( "mpgv" );
     }
 
     /* Setup Access */
@@ -813,12 +809,8 @@ static int AccessOpen( vlc_object_t *p_this )
     p_access->pf_block = ReadCompressed;
     p_access->pf_control = AccessControl;
     p_access->pf_seek = NULL;
-    p_access->info.i_update = 0;
-    p_access->info.i_size = 0;
     p_access->info.i_pos = 0;
     p_access->info.b_eof = false;
-    p_access->info.i_title = 0;
-    p_access->info.i_seekpoint = 0;
     p_access->p_sys = p_sys;
 
     /* Everything is ready. Let's rock baby */
@@ -1405,7 +1397,7 @@ static size_t EnumDeviceCaps( vlc_object_t *p_this, IBaseFilter *p_filter,
                 BYTE *pSCC= (BYTE *)CoTaskMemAlloc(piSize);
                 if( NULL != pSCC )
                 {
-                    int i_priority = -1;
+                    int i_priority = ES_PRIORITY_NOT_DEFAULTABLE;
                     for( int i=0; i<piCount; ++i )
                     {
                         if( SUCCEEDED(pSC->GetStreamCaps(i, &p_mt, pSCC)) )
@@ -1586,7 +1578,7 @@ static size_t EnumDeviceCaps( vlc_object_t *p_this, IBaseFilter *p_filter,
                         }
                     }
                     CoTaskMemFree( (LPVOID)pSCC );
-                    if( i_priority >= 0 )
+                    if( i_priority >= ES_PRIORITY_SELECTABLE_MIN )
                         msg_Dbg( p_this, "EnumDeviceCaps: input pin default format configured");
                 }
             }
@@ -1893,9 +1885,7 @@ static int Demux( demux_t *p_demux )
 
             REFERENCE_TIME i_pts, i_end_date;
             HRESULT hr = sample.p_sample->GetTime( &i_pts, &i_end_date );
-            if( hr != VFW_S_NO_STOP_TIME && hr != S_OK ) i_pts = 0;
-
-            if( !i_pts )
+            if( hr == S_OK || hr == VFW_S_NO_STOP_TIME )
             {
                 if( p_stream->mt.majortype == MEDIATYPE_Video || !p_stream->b_pts )
                 {
@@ -1903,10 +1893,12 @@ static int Demux( demux_t *p_demux )
                     i_pts = sample.i_timestamp;
                     p_stream->b_pts = true;
                 }
+                i_pts += (i_pts >= 0) ? +5 : -4;
+                i_pts /= 10; /* 100-ns to µs conversion */
+                i_pts += VLC_TS_0;
             }
-
-            i_pts /= 10; /* Dshow works with 100 nano-seconds resolution */
-
+            else
+                i_pts = VLC_TS_INVALID;
 #if 0
             msg_Dbg( p_demux, "Read() stream: %i, size: %i, PTS: %"PRId64,
                      i_stream, i_data_size, i_pts );
@@ -1917,7 +1909,8 @@ static int Demux( demux_t *p_demux )
             p_block->i_pts = p_block->i_dts = i_pts;
             sample.p_sample->Release();
 
-            es_out_Control( p_demux->out, ES_OUT_SET_PCR, i_pts > 0 ? i_pts : 0 );
+            if( i_pts > VLC_TS_INVALID )
+                es_out_Control( p_demux->out, ES_OUT_SET_PCR, i_pts );
             es_out_Send( p_demux->out, p_stream->p_es, p_block );
 
             i_samples--;
@@ -1937,7 +1930,6 @@ static int AccessControl( access_t *p_access, int i_query, va_list args )
 
     switch( i_query )
     {
-    /* */
     case ACCESS_CAN_SEEK:
     case ACCESS_CAN_FASTSEEK:
     case ACCESS_CAN_PAUSE:
@@ -1946,23 +1938,13 @@ static int AccessControl( access_t *p_access, int i_query, va_list args )
         *pb_bool = false;
         break;
 
-    /* */
     case ACCESS_GET_PTS_DELAY:
         pi_64 = (int64_t*)va_arg( args, int64_t * );
         *pi_64 =
             INT64_C(1000) * var_InheritInteger( p_access, "live-caching" );
         break;
 
-    /* */
-    case ACCESS_SET_PAUSE_STATE:
-    case ACCESS_GET_TITLE_INFO:
-    case ACCESS_SET_TITLE:
-    case ACCESS_SET_SEEKPOINT:
-    case ACCESS_SET_PRIVATE_ID_STATE:
-        return VLC_EGENERIC;
-
     default:
-        msg_Warn( p_access, "unimplemented query in control" );
         return VLC_EGENERIC;
     }
 

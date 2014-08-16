@@ -2,7 +2,7 @@
  * rand.c : non-predictible random bytes generator
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 49c8d5e76e7500bf0c40c919a67a86c0715ae577 $
+ * $Id: 948daea5d1da65ffebcc797dd43ac76062af6943 $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -26,11 +26,18 @@
 #include <vlc_common.h>
 #include <vlc_rand.h>
 
-#include <wincrypt.h>
+#if VLC_WINSTORE_APP
+# define COBJMACROS
+# define INITGUID
+# include <winstring.h>
+# include <roapi.h>
+# include <windows.security.cryptography.h>
+#else
+# include <wincrypt.h>
+#endif
 
 void vlc_rand_bytes (void *buf, size_t len)
 {
-    HCRYPTPROV hProv;
     size_t count = len;
     uint8_t *p_buf = (uint8_t *)buf;
 
@@ -50,6 +57,41 @@ void vlc_rand_bytes (void *buf, size_t len)
         p_buf += sizeof (val);
     }
 
+#if VLC_WINSTORE_APP
+    static const WCHAR *className = L"Windows.Security.Cryptography.CryptographicBuffer";
+    const UINT32 clen = wcslen(className);
+
+    HSTRING hClassName = NULL;
+    HSTRING_HEADER header;
+    HRESULT hr = WindowsCreateStringReference(className, clen, &header, &hClassName);
+    if (hr) {
+        WindowsDeleteString(hClassName);
+        return;
+    }
+
+    ICryptographicBufferStatics *cryptoStatics = NULL;
+    hr = RoGetActivationFactory(hClassName, &IID_ICryptographicBufferStatics, (void**)&cryptoStatics);
+    WindowsDeleteString(hClassName);
+
+    if (hr)
+        return;
+
+    IBuffer *buffer = NULL;
+    hr = ICryptographicBufferStatics_GenerateRandom(cryptoStatics, len, &buffer);
+    if (hr) {
+        ICryptographicBufferStatics_Release(cryptoStatics);
+        return;
+    }
+
+    UINT32 olength;
+    unsigned char *rnd = NULL;
+    hr = ICryptographicBufferStatics_CopyToByteArray(cryptoStatics, buffer, &olength, (BYTE**)&rnd);
+    memcpy(buf, rnd, len);
+
+    IBuffer_Release(buffer);
+    ICryptographicBufferStatics_Release(cryptoStatics);
+#else
+    HCRYPTPROV hProv;
     /* acquire default encryption context */
     if( CryptAcquireContext(
         &hProv,                 // Variable to hold returned handle.
@@ -63,4 +105,5 @@ void vlc_rand_bytes (void *buf, size_t len)
         CryptGenRandom(hProv, len, buf);
         CryptReleaseContext(hProv, 0);
     }
+#endif /* VLC_WINSTORE_APP */
 }

@@ -2,7 +2,7 @@
  * rtsp.c: rtsp VoD server module
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: 45cfc7a7202ab23015e68c12088ce2263e40a016 $
+ * $Id: 434c76e2f992dd07be5189dbafd4082214a3a33e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -73,7 +73,7 @@ static void Close( vlc_object_t * );
 
 vlc_module_begin ()
     set_shortname( N_("RTSP VoD" ) )
-    set_description( "Legacy RTSP VoD server" )
+    set_description( N_("Legacy RTSP VoD server") )
     set_category( CAT_SOUT )
     set_subcategory( SUBCAT_SOUT_VOD )
     set_capability( "vod server", 1 )
@@ -369,16 +369,15 @@ static vod_media_t *MediaNew( vod_t *p_vod, const char *psz_name,
 
     if( asprintf( &p_media->psz_rtsp_path, "%s%s",
                   p_sys->psz_path, psz_name ) <0 )
-        return NULL;
+        goto error;
+
     p_media->p_rtsp_url =
         httpd_UrlNew( p_sys->p_rtsp_host, p_media->psz_rtsp_path, NULL, NULL );
 
     if( !p_media->p_rtsp_url )
     {
         msg_Err( p_vod, "cannot create RTSP url (%s)", p_media->psz_rtsp_path);
-        free( p_media->psz_rtsp_path );
-        free( p_media );
-        return NULL;
+        goto error;
     }
 
     msg_Dbg( p_vod, "created RTSP url: %s", p_media->psz_rtsp_path );
@@ -386,21 +385,12 @@ static vod_media_t *MediaNew( vod_t *p_vod, const char *psz_name,
     if( asprintf( &p_media->psz_rtsp_control_v4,
                   "rtsp://%%s:%%d%s/trackID=%%d",
                   p_media->psz_rtsp_path ) < 0 )
-    {
-        httpd_UrlDelete( p_media->p_rtsp_url );
-        free( p_media->psz_rtsp_path );
-        free( p_media );
-        return NULL;
-    }
+        goto error;
+
     if( asprintf( &p_media->psz_rtsp_control_v6,
                   "rtsp://[%%s]:%%d%s/trackID=%%d",
                   p_media->psz_rtsp_path ) < 0 )
-    {
-        httpd_UrlDelete( p_media->p_rtsp_url );
-        free( p_media->psz_rtsp_path );
-        free( p_media );
-        return NULL;
-    }
+        goto error;
 
     httpd_UrlCatch( p_media->p_rtsp_url, HTTPD_MSG_SETUP,
                     RtspCallback, (void*)p_media );
@@ -431,6 +421,17 @@ static vod_media_t *MediaNew( vod_t *p_vod, const char *psz_name,
 
     CommandPush( p_vod, RTSP_CMD_TYPE_ADD, p_media, NULL, 0, 0.0, NULL );
     return p_media;
+
+error:
+    if( p_media )
+    {
+        free( p_media->psz_rtsp_control_v4 );
+        if( p_media->p_rtsp_url )
+            httpd_UrlDelete( p_media->p_rtsp_url );
+        free( p_media->psz_rtsp_path );
+        free( p_media );
+    }
+    return NULL;
 }
 
 static void MediaAskDel ( vod_t *p_vod, vod_media_t *p_media )

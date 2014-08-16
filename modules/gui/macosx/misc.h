@@ -1,8 +1,8 @@
 /*****************************************************************************
  * misc.h: code not specific to vlc
  *****************************************************************************
- * Copyright (C) 2003-2013 VLC authors and VideoLAN
- * $Id: 42f65fb95b6d8e0e32163ba9d63ffef3144807be $
+ * Copyright (C) 2003-2014 VLC authors and VideoLAN
+ * $Id: a84437a963f23637b15a89257f11314faba4f05e $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -23,7 +23,6 @@
  *****************************************************************************/
 
 #import <Cocoa/Cocoa.h>
-#import "CompatibilityFixes.h"
 
 /*****************************************************************************
  * NSSound (VLCAdditions)
@@ -70,12 +69,34 @@
 - (void)setNonFullscreenPresentationOptions;
 @end
 
-
 /*****************************************************************************
- * VLBrushedMetalImageView
+ * VLCDragDropView
+ *
+ * Disables default drag / drop behaviour of an NSImageView.
+ * set it for all sub image views withing an VLCDragDropView.
  *****************************************************************************/
 
-@interface VLBrushedMetalImageView : NSImageView
+
+@interface VLCDropDisabledImageView : NSImageView
+
+@end
+
+/*****************************************************************************
+ * VLCDragDropView
+ *****************************************************************************/
+
+@interface VLCDragDropView : NSView
+{
+    bool b_activeDragAndDrop;
+
+    id _dropHandler;
+}
+
+@property (nonatomic, assign) id dropHandler;
+@property (nonatomic, assign) BOOL drawBorder;
+
+
+- (void)enablePlaylistItems;
 
 @end
 
@@ -193,12 +214,6 @@
 - (void)setImagesLeft:(NSImage *)left middle: (NSImage *)middle right:(NSImage *)right;
 @end
 
-/*****************************************************************************
- * VLCThreePartDropView interface
- *****************************************************************************/
-@interface VLCThreePartDropView : VLCThreePartImageView
-
-@end
 
 /*****************************************************************************
  * PositionFormatter interface
@@ -213,7 +228,7 @@
 
 - (BOOL)getObjectValue:(id*)obj forString:(NSString*)string errorDescription:(NSString**)error;
 
-- (bool)isPartialStringValid:(NSString*)partialString newEditingString:(NSString**)newString errorDescription:(NSString**)error;
+- (BOOL)isPartialStringValid:(NSString*)partialString newEditingString:(NSString**)newString errorDescription:(NSString**)error;
 
 @end
 
@@ -223,4 +238,27 @@
 
 @interface NSView (EnableSubviews)
 - (void)enableSubviews:(BOOL)b_enable;
+@end
+
+/*****************************************************************************
+ * VLCByteCountFormatter addition
+ *****************************************************************************/
+
+#ifndef MAC_OS_X_VERSION_10_8
+enum {
+    // Specifies display of file or storage byte counts. The actual behavior for this is platform-specific; on OS X 10.7 and less, this uses the binary style, but decimal style on 10.8 and above
+    NSByteCountFormatterCountStyleFile   = 0,
+    // Specifies display of memory byte counts. The actual behavior for this is platform-specific; on OS X 10.7 and less, this uses the binary style, but that may change over time.
+    NSByteCountFormatterCountStyleMemory = 1,
+    // The following two allow specifying the number of bytes for KB explicitly. It's better to use one of the above values in most cases.
+    NSByteCountFormatterCountStyleDecimal = 2,    // 1000 bytes are shown as 1 KB
+    NSByteCountFormatterCountStyleBinary  = 3     // 1024 bytes are shown as 1 KB
+};
+typedef NSInteger NSByteCountFormatterCountStyle;
+#endif
+
+@interface VLCByteCountFormatter : NSFormatter {
+}
+
++ (NSString *)stringFromByteCount:(long long)byteCount countStyle:(NSByteCountFormatterCountStyle)countStyle;
 @end

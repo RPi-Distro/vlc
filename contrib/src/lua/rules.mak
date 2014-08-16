@@ -20,9 +20,15 @@ endif
 ifdef HAVE_WIN32
 LUA_TARGET := mingw
 endif
+ifdef HAVE_SOLARIS
+LUA_TARGET := solaris
+endif
 
 # Feel free to add autodetection if you need to...
 PKGS += lua
+ifeq ($(call need_pkg,"lua5.2"),)
+PKGS_FOUND += lua
+endif
 ifeq ($(call need_pkg,"lua5.1"),)
 PKGS_FOUND += lua
 endif
@@ -38,14 +44,17 @@ lua: lua-$(LUA_VERSION).tar.gz .sum-lua
 	$(APPLY) $(SRC)/lua/no-dylibs.patch
 	$(APPLY) $(SRC)/lua/luac-32bits.patch
 	$(APPLY) $(SRC)/lua/no-localeconv.patch
+	$(APPLY) $(SRC)/lua/lua-ios-support.patch
 ifdef HAVE_DARWIN_OS
 	(cd $(UNPACK_DIR) && \
 	sed -e 's%gcc%$(CC)%' \
 		-e 's%LDFLAGS=%LDFLAGS=$(EXTRA_CFLAGS) $(EXTRA_LDFLAGS)%' \
 		-i.orig src/Makefile)
 endif
-ifdef HAVE_IOS
-	$(APPLY) $(SRC)/lua/lua-ios-support.patch
+ifdef HAVE_SOLARIS
+	(cd $(UNPACK_DIR) && \
+	sed -e 's%LIBS="-ldl"$$%LIBS="-ldl" MYLDFLAGS="$(EXTRA_LDFLAGS)"%' \
+		-i.orig src/Makefile)
 endif
 ifdef HAVE_WIN32
 	cd $(UNPACK_DIR) && sed -i.orig -e 's/lua luac/lua.exe luac.exe/' Makefile

@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: 00b2b36c64345083d7d53b6e09f4757186e3435c $
+ * $Id: 53059c93488ec446d70f1ac291df3f2d087c3a8d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -35,6 +35,7 @@
 #include "dialogs/open.hpp"
 #include "dialogs_provider.hpp" /* Open Subtitle file */
 #include "util/qt_dirs.hpp"
+#include "util/validators.hpp"
 #include <vlc_intf_strings.h>
 #include <vlc_modules.h>
 #include <vlc_plugin.h>
@@ -702,16 +703,6 @@ void NetOpenPanel::updateMRL()
     emit mrlUpdated( qsl, "" );
 }
 
-QValidator::State UrlValidator::validate( QString& str, int& ) const
-{
-    str = str.trimmed();
-    if( str.contains( ' ' ) )
-        return QValidator::Invalid;
-    if( !str.contains( "://" ) )
-        return QValidator::Intermediate;
-    return QValidator::Acceptable;
-}
-
 /**************************************************************************
  * Open Capture device ( DVB, PVR, V4L, and similar )                     *
  **************************************************************************/
@@ -1070,8 +1061,8 @@ void CaptureOpenPanel::initialize()
                             2, 0, 1, 1 );
 
     /* PVR CONNECTs */
-    CuMRL( pvrDevice, textChanged( const QString& ) );
-    CuMRL( pvrAudioDevice, textChanged( const QString& ) );
+    CuMRL( pvrDevice, editTextChanged( const QString& ) );
+    CuMRL( pvrAudioDevice, editTextChanged( const QString& ) );
     CuMRL( pvrFreq, valueChanged ( int ) );
     CuMRL( pvrNormBox, currentIndexChanged ( int ) );
     }

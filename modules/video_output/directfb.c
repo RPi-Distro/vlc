@@ -59,25 +59,15 @@ vlc_module_end()
 static picture_pool_t *Pool  (vout_display_t *, unsigned);
 static void           Display(vout_display_t *, picture_t *, subpicture_t *);
 static int            Control(vout_display_t *, int, va_list);
-static void           Manage (vout_display_t *);
-
-/* */
-static int  OpenDisplay (vout_display_t *);
-static void CloseDisplay(vout_display_t *);
 
 /* */
 struct vout_display_sys_t {
-    /* */
-    IDirectFB             *directfb;
-    IDirectFBSurface      *primary;
-    DFBSurfacePixelFormat pixel_format;
+    IDirectFB        *directfb;
+    IDirectFBSurface *primary;
 
-    /* */
-    int width;
-    int height;
-
-    /* */
     picture_pool_t *pool;
+    picture_t      *pics[3];
+    int             idx;
 };
 
 /* */
@@ -86,71 +76,71 @@ static int Open(vlc_object_t *object)
     vout_display_t *vd = (vout_display_t *)object;
     vout_display_sys_t *sys;
 
-    /* Allocate structure */
-    vd->sys = sys = malloc(sizeof(*sys));
+    vd->sys = sys = calloc(1, sizeof(*sys));
     if (!sys)
         return VLC_ENOMEM;
 
-    sys->directfb = NULL;
-    sys->primary  = NULL;
-    sys->width    = 0;
-    sys->height   = 0;
-    sys->pool     = NULL;
-
-    /* Init DirectFB */
     if (DirectFBInit(NULL,NULL) != DFB_OK) {
         msg_Err(vd, "Cannot init DirectFB");
         free(sys);
         return VLC_EGENERIC;
     }
 
-    if (OpenDisplay(vd)) {
-        msg_Err(vd, "Cannot create primary surface");
-        Close(VLC_OBJECT(vd));
-        return VLC_EGENERIC;
-    }
+    DFBSurfaceDescription dsc;
+    dsc.flags = DSDESC_CAPS;
+    dsc.caps  = DSCAPS_PRIMARY | DSCAPS_TRIPLE;
+#if 0
+    dsc.flags |= DSDESC_HEIGHT | DSDESC_WIDTH;
+    dsc.width = 352;
+    dsc.height = 240;
+#endif
+
+    IDirectFB *directfb = NULL;
+    if (DirectFBCreate(&directfb) != DFB_OK || !directfb)
+        goto error;
+    sys->directfb = directfb;
+
+    IDirectFBSurface *primary = NULL;
+    if (directfb->CreateSurface(directfb, &dsc, &primary) || !primary)
+        goto error;
+    sys->primary = primary;
+
+    /* */
+    int width;
+    int height;
+
+    primary->GetSize(primary, &width, &height);
+
     vout_display_DeleteWindow(vd, NULL);
 
     /* */
-    video_format_t fmt = vd->fmt;
+    video_format_t fmt;
+    video_format_ApplyRotation(&fmt, &vd->fmt);
 
-    switch (sys->pixel_format) {
+    DFBSurfacePixelFormat pixel_format;
+    sys->primary->GetPixelFormat(sys->primary, &pixel_format);
+    switch (pixel_format) {
     case DSPF_RGB332:
-        /* 8 bit RGB (1 byte, red 3@5, green 3@2, blue 2@0) */
         fmt.i_chroma = VLC_CODEC_RGB8;
         fmt.i_rmask = 0x7 << 5;
         fmt.i_gmask = 0x7 << 2;
         fmt.i_bmask = 0x3 << 0;
         break;
-    case DSPF_RGB16:
-        /* 16 bit RGB (2 byte, red 5@11, green 6@5, blue 5@0) */
-        fmt.i_chroma = VLC_CODEC_RGB16;
-        fmt.i_rmask = 0x1f << 11;
-        fmt.i_gmask = 0x3f <<  5;
-        fmt.i_bmask = 0x1f <<  0;
-        break;
-    case DSPF_RGB24:
-        /* 24 bit RGB (3 byte, red 8@16, green 8@8, blue 8@0) */
-        fmt.i_chroma = VLC_CODEC_RGB24;
-        fmt.i_rmask = 0xff << 16;
-        fmt.i_gmask = 0xff <<  8;
-        fmt.i_bmask = 0xff <<  0;
-        break;
-    case DSPF_RGB32:
-        /* 24 bit RGB (4 byte, nothing@24, red 8@16, green 8@8, blue 8@0) */
-        fmt.i_chroma = VLC_CODEC_RGB32;
-        fmt.i_rmask = 0xff << 16;
-        fmt.i_gmask = 0xff <<  8;
-        fmt.i_bmask = 0xff <<  0;
-        break;
+    case DSPF_RGB16: fmt.i_chroma = VLC_CODEC_RGB16; break;
+    case DSPF_RGB24: fmt.i_chroma = VLC_CODEC_RGB24; break;
+    case DSPF_RGB32: fmt.i_chroma = VLC_CODEC_RGB32; break;
     default:
-        msg_Err(vd, "unknown screen depth %i", sys->pixel_format);
+        msg_Err(vd, "unknown screen depth %i", pixel_format);
         Close(VLC_OBJECT(vd));
         return VLC_EGENERIC;
     }
 
-    fmt.i_width  = sys->width;
-    fmt.i_height = sys->height;
+    video_format_FixRgb(&fmt);
+
+    fmt.i_width  = width;
+    fmt.i_height = height;
+    fmt.i_visible_width  = width;
+    fmt.i_visible_height = height;
 
     /* */
     vout_display_info_t info = vd->info;
@@ -163,12 +153,17 @@ static int Open(vlc_object_t *object)
     vd->prepare = NULL;
     vd->display = Display;
     vd->control = Control;
-    vd->manage  = Manage;
+    vd->manage  = NULL;
 
     /* */
     vout_display_SendEventFullscreen(vd, true);
     vout_display_SendEventDisplaySize(vd, fmt.i_width, fmt.i_height, true);
     return VLC_SUCCESS;
+
+error:
+    msg_Err(vd, "Cannot create primary surface");
+    Close(VLC_OBJECT(vd));
+    return VLC_EGENERIC;
 }
 
 static void Close(vlc_object_t *object)
@@ -179,18 +174,81 @@ static void Close(vlc_object_t *object)
     if (sys->pool)
         picture_pool_Delete(sys->pool);
 
-    CloseDisplay(vd);
+    IDirectFBSurface *primary = sys->primary;
+    if (primary)
+        primary->Release(primary);
+
+    IDirectFB *directfb = sys->directfb;
+    if (directfb)
+        directfb->Release(directfb);
+
     free(sys);
+}
+
+struct picture_sys_t {
+    vout_display_sys_t *sys;
+};
+
+static int Lock(picture_t *pic)
+{
+    vout_display_sys_t *sys = pic->p_sys->sys;
+    return sys->pics[sys->idx] == pic ? VLC_SUCCESS : VLC_EGENERIC;
 }
 
 /* */
 static picture_pool_t *Pool(vout_display_t *vd, unsigned count)
 {
+    VLC_UNUSED(count);
     vout_display_sys_t *sys = vd->sys;
+    IDirectFBSurface *primary = sys->primary;
 
-    if (!sys->pool)
-        sys->pool = picture_pool_NewFromFormat(&vd->fmt, count);
+    if (!sys->pool) {
+        picture_resource_t rsc;
+        memset(&rsc, 0, sizeof(rsc));
+        rsc.p[0].i_lines  = vd->fmt.i_height;
+
+        for (int i = 0; i < 3; i++) {
+            rsc.p_sys = malloc(sizeof(*rsc.p_sys));
+            if (!rsc.p_sys)
+                goto cleanup;
+            rsc.p_sys->sys = sys;
+            void *pixels;
+            int  pitch;
+            if (primary->Lock(primary, DSLF_WRITE, &pixels, &pitch) != DFB_OK)
+                goto cleanup;
+
+            rsc.p[0].i_pitch = pitch;
+            rsc.p[0].p_pixels = pixels;
+            primary->Unlock(primary);
+            primary->Flip(primary, NULL, 0);
+
+            sys->pics[i] = picture_NewFromResource(&vd->fmt, &rsc);
+            if (!sys->pics[i]) {
+                free(rsc.p_sys);
+                goto cleanup;
+            }
+        }
+
+        picture_pool_configuration_t cfg = {
+            .picture_count  = 3,
+            .picture        = sys->pics,
+            .lock           = Lock,
+            .unlock         = NULL,
+        };
+
+        sys->pool = picture_pool_NewExtended(&cfg);
+    }
     return sys->pool;
+
+cleanup:
+    for (int i = 0; i < 2; i++) {
+        if (sys->pics[i]) {
+            free(sys->pics[i]->p_sys);
+            picture_Release(sys->pics[i]);
+        }
+    }
+
+    return NULL;
 }
 
 static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpicture)
@@ -198,27 +256,11 @@ static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
     vout_display_sys_t *sys = vd->sys;
 
     IDirectFBSurface *primary = sys->primary;
-
-    void *pixels;
-    int  pitch;
-    if (primary->Lock(primary, DSLF_WRITE, &pixels, &pitch) == DFB_OK) {
-        picture_resource_t rsc;
-
-        memset(&rsc, 0, sizeof(rsc));
-        rsc.p[0].p_pixels = pixels;
-        rsc.p[0].i_lines  = sys->height;
-        rsc.p[0].i_pitch  = pitch;
-
-        picture_t *direct = picture_NewFromResource(&vd->fmt, &rsc);
-        if (direct) {
-            picture_Copy(direct, picture);
-            picture_Release(direct);
-        }
-
-        if (primary->Unlock(primary) == DFB_OK)
-            primary->Flip(primary, NULL, 0);
-    }
+    primary->Flip(primary, NULL, 0);
+    if (++sys->idx >= 3)
+        sys->idx = 0;
     picture_Release(picture);
+
     VLC_UNUSED(subpicture);
 }
 
@@ -237,51 +279,3 @@ static int Control(vout_display_t *vd, int query, va_list args)
         return VLC_EGENERIC;
     }
 }
-
-static void Manage (vout_display_t *vd)
-{
-    VLC_UNUSED(vd);
-}
-
-static int OpenDisplay(vout_display_t *vd)
-{
-    vout_display_sys_t *sys = vd->sys;
-
-    DFBSurfaceDescription dsc;
-    /*dsc.flags = DSDESC_CAPS | DSDESC_HEIGHT | DSDESC_WIDTH;*/
-    dsc.flags = DSDESC_CAPS;
-    dsc.caps  = DSCAPS_PRIMARY | DSCAPS_FLIPPING;
-    /*dsc.width = 352;*/
-    /*dsc.height = 240;*/
-
-    IDirectFB *directfb = NULL;
-    if (DirectFBCreate(&directfb) != DFB_OK || !directfb)
-        return VLC_EGENERIC;
-    sys->directfb = directfb;
-
-    IDirectFBSurface *primary = NULL;
-    if (directfb->CreateSurface(directfb, &dsc, &primary) || !primary)
-        return VLC_EGENERIC;
-    sys->primary = primary;
-
-    primary->GetSize(primary, &sys->width, &sys->height);
-    primary->GetPixelFormat(primary, &sys->pixel_format);
-    primary->FillRectangle(primary, 0, 0, sys->width, sys->height);
-    primary->Flip(primary, NULL, 0);
-
-    return VLC_SUCCESS;
-}
-
-static void CloseDisplay(vout_display_t *vd)
-{
-    vout_display_sys_t *sys = vd->sys;
-
-    IDirectFBSurface *primary = sys->primary;
-    if (primary)
-        primary->Release(primary);
-
-    IDirectFB *directfb = sys->directfb;
-    if (directfb)
-        directfb->Release(directfb);
-}
-

@@ -2,7 +2,7 @@
  * messages.cpp : Information about an item
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 223c4798f2534ceda56741a5ec62e6a8f05228dd $
+ * $Id: 30793a20d4b51526728b8441335c1681e997800a $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -143,7 +143,7 @@ MessagesDialog::~MessagesDialog()
 
 void MessagesDialog::changeVerbosity( int i_verbosity )
 {
-    vlc_atomic_set( &this->verbosity, i_verbosity );
+    atomic_store( &this->verbosity, i_verbosity );
 }
 
 void MessagesDialog::updateConfig()
@@ -337,7 +337,7 @@ void MessagesDialog::MsgCallback( void *self, int type, const vlc_log_t *item,
 {
     MessagesDialog *dialog = (MessagesDialog *)self;
     char *str;
-    int verbosity = vlc_atomic_get( &dialog->verbosity );
+    int verbosity = atomic_load( &dialog->verbosity );
 
     if( verbosity < 0 || verbosity < (type - VLC_MSG_ERR)
      || unlikely(vasprintf( &str, format, ap ) == -1) )

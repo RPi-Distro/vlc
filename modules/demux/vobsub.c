@@ -2,7 +2,7 @@
  * vobsub.c: Demux vobsub files.
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 780da72da0832168dc738d59385d40dca461caba $
+ * $Id: 5de351383745e349b9c167bfc03823a53bd88420 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -432,7 +432,10 @@ static int TextLoad( text_t *txt, stream_t *s )
         char **ppsz_new;
 
         if( psz == NULL || (n >= INT_MAX/sizeof(char *)) )
+        {
+            free( psz );
             break;
+        }
 
         ppsz_new = realloc( lines, (n + 1) * sizeof (char *) );
         if( ppsz_new == NULL )

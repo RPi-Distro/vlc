@@ -2,7 +2,7 @@
  * controller_widget.hpp : Controller Widget for the controllers
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 3633eaa7af2109db5f0eb278eae9181d5277273f $
+ * $Id: 832017516e0c5feaf24c3a32f02b6fcc75c8001d $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -52,7 +52,7 @@ class QAbstractSlider;
 class PlayButton : public QToolButton
 {
     Q_OBJECT
-private slots:
+public slots:
     void updateButtonIcons( bool );
 };
 

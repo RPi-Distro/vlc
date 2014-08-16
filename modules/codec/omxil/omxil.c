@@ -2,7 +2,7 @@
  * omxil.c: Video decoder module making use of OpenMAX IL components.
  *****************************************************************************
  * Copyright (C) 2010 VLC authors and VideoLAN
- * $Id: a379b82cf5dd03459bdae3d62cccc918b6c8ea8d $
+ * $Id: 207964b7994cbd6f917eaf0bfb5e71e604e1889b $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -39,12 +39,21 @@
 
 #include "omxil.h"
 #include "omxil_core.h"
+#include "OMX_Broadcom.h"
 
 #ifndef NDEBUG
 # define OMXIL_EXTRA_DEBUG
 #endif
 
 #define SENTINEL_FLAG 0x10000
+
+/* Defined in the broadcom version of OMX_Index.h */
+#define OMX_IndexConfigRequestCallback 0x7f000063
+#define OMX_IndexParamBrcmPixelAspectRatio 0x7f00004d
+#define OMX_IndexParamBrcmVideoDecodeErrorConcealment 0x7f000080
+
+/* Defined in the broadcom version of OMX_Core.h */
+#define OMX_EventParamOrConfigChanged 0x7F000001
 
 /*****************************************************************************
  * Local prototypes
@@ -99,39 +108,12 @@ static OMX_ERRORTYPE ImplementationSpecificWorkarounds(decoder_t *p_dec,
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     OMX_PARAM_PORTDEFINITIONTYPE *def = &p_port->definition;
-    int i_profile = 0xFFFF, i_level = 0xFFFF;
+    size_t i_profile = 0xFFFF, i_level = 0xFFFF;
 
     /* Try to find out the profile of the video */
-    while(p_fmt->i_cat == VIDEO_ES && def->eDir == OMX_DirInput &&
-          p_fmt->i_codec == VLC_CODEC_H264)
-    {
-        uint8_t *p = (uint8_t*)p_dec->fmt_in.p_extra;
-        if(!p || !p_dec->fmt_in.p_extra) break;
-
-        /* Check the profile / level */
-        if(p_dec->fmt_in.i_original_fourcc == VLC_FOURCC('a','v','c','1') &&
-           p[0] == 1)
-        {
-            if(p_dec->fmt_in.i_extra < 12) break;
-            p_sys->i_nal_size_length = 1 + (p[4]&0x03);
-            if( !(p[5]&0x1f) ) break;
-            p += 8;
-        }
-        else
-        {
-            if(p_dec->fmt_in.i_extra < 8) break;
-            if(!p[0] && !p[1] && !p[2] && p[3] == 1) p += 4;
-            else if(!p[0] && !p[1] && p[2] == 1) p += 3;
-            else break;
-        }
-
-        if( ((*p++)&0x1f) != 7) break;
-
-        /* Get profile/level out of first SPS */
-        i_profile = p[0];
-        i_level = p[2];
-        break;
-    }
+    if(p_fmt->i_cat == VIDEO_ES && def->eDir == OMX_DirInput &&
+       p_fmt->i_codec == VLC_CODEC_H264)
+	h264_get_profile_level(&p_dec->fmt_in, &i_profile, &i_level, &p_sys->i_nal_size_length);
 
     if(!strcmp(p_sys->psz_component, "OMX.TI.Video.Decoder"))
     {
@@ -345,6 +327,34 @@ static OMX_ERRORTYPE SetPortDefinition(decoder_t *p_dec, OmxPort *p_port,
     return omx_error;
 }
 
+
+/*****************************************************************************
+ * UpdatePixelAspect: Update vlc pixel aspect based on the aspect reported on
+ * the omx port - NOTE: Broadcom specific
+ *****************************************************************************/
+static OMX_ERRORTYPE UpdatePixelAspect(decoder_t *p_dec)
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+    OMX_CONFIG_POINTTYPE pixel_aspect;
+    OMX_INIT_STRUCTURE(pixel_aspect);
+    OMX_ERRORTYPE omx_err;
+
+    if (strncmp(p_sys->psz_component, "OMX.broadcom.", 13))
+        return OMX_ErrorNotImplemented;
+
+    pixel_aspect.nPortIndex = p_sys->out.i_port_index;
+    omx_err = OMX_GetParameter(p_sys->omx_handle,
+            OMX_IndexParamBrcmPixelAspectRatio, &pixel_aspect);
+    if (omx_err != OMX_ErrorNone) {
+        msg_Warn(p_dec, "Failed to retrieve aspect ratio");
+    } else {
+        p_dec->fmt_out.video.i_sar_num = pixel_aspect.nX;
+        p_dec->fmt_out.video.i_sar_den = pixel_aspect.nY;
+    }
+
+    return omx_err;
+}
+
 /*****************************************************************************
  * GetPortDefinition: set vlc format based on the definition of the omx port
  *****************************************************************************/
@@ -430,6 +440,7 @@ static OMX_ERRORTYPE GetPortDefinition(decoder_t *p_dec, OmxPort *p_port,
             def->format.video.nStride = p_port->i_frame_stride;
 #endif
         p_port->i_frame_stride = def->format.video.nStride;
+        UpdatePixelAspect(p_dec);
         break;
 
     case AUDIO_ES:
@@ -683,12 +694,45 @@ static OMX_ERRORTYPE InitialiseComponent(decoder_t *p_dec,
         }
     }
 
+    if(!strncmp(p_sys->psz_component, "OMX.broadcom.", 13))
+    {
+        OMX_CONFIG_REQUESTCALLBACKTYPE notifications;
+        OMX_INIT_STRUCTURE(notifications);
+
+        notifications.nPortIndex = p_sys->out.i_port_index;
+        notifications.nIndex = OMX_IndexParamBrcmPixelAspectRatio;
+        notifications.bEnable = OMX_TRUE;
+
+        omx_error = OMX_SetParameter(omx_handle,
+                OMX_IndexConfigRequestCallback, &notifications);
+        if (omx_error == OMX_ErrorNone) {
+            msg_Dbg(p_dec, "Enabled aspect ratio notifications");
+            p_sys->b_aspect_ratio_handled = true;
+        } else
+            msg_Dbg(p_dec, "Could not enable aspect ratio notifications");
+    }
+
     /* Set port definitions */
     for(i = 0; i < p_sys->ports; i++)
     {
         omx_error = SetPortDefinition(p_dec, &p_sys->p_ports[i],
                                       p_sys->p_ports[i].p_fmt);
         if(omx_error != OMX_ErrorNone) goto error;
+    }
+
+    if(!strncmp(p_sys->psz_component, "OMX.broadcom.", 13) &&
+        p_sys->in.p_fmt->i_codec == VLC_CODEC_H264)
+    {
+        OMX_PARAM_BRCMVIDEODECODEERRORCONCEALMENTTYPE concanParam;
+        OMX_INIT_STRUCTURE(concanParam);
+        concanParam.bStartWithValidFrame = OMX_FALSE;
+
+        omx_error = OMX_SetParameter(omx_handle,
+                OMX_IndexParamBrcmVideoDecodeErrorConcealment, &concanParam);
+        if (omx_error == OMX_ErrorNone)
+            msg_Dbg(p_dec, "StartWithValidFrame disabled.");
+        else
+            msg_Dbg(p_dec, "Could not disable StartWithValidFrame.");
     }
 
     /* Allocate our array for the omx buffers and enable ports */
@@ -735,6 +779,11 @@ static int OpenDecoder( vlc_object_t *p_this )
 {
     decoder_t *p_dec = (decoder_t*)p_this;
     int status;
+
+#ifdef __ANDROID__
+    if( p_dec->fmt_in.i_cat == AUDIO_ES )
+        return VLC_EGENERIC;
+#endif
 
     if( 0 || !GetOmxRole(p_dec->fmt_in.i_codec, p_dec->fmt_in.i_cat, false) )
         return VLC_EGENERIC;
@@ -796,6 +845,12 @@ static int OpenGeneric( vlc_object_t *p_this, bool b_encode )
         p_dec->fmt_out.video = p_dec->fmt_in.video;
         p_dec->fmt_out.audio = p_dec->fmt_in.audio;
         p_dec->fmt_out.i_codec = 0;
+
+        /* set default aspect of 1, if parser did not set it */
+        if (p_dec->fmt_out.video.i_sar_num == 0)
+            p_dec->fmt_out.video.i_sar_num = 1;
+        if (p_dec->fmt_out.video.i_sar_den == 0)
+            p_dec->fmt_out.video.i_sar_den = 1;
     }
     p_sys->b_enc = b_encode;
     InitOmxEventQueue(&p_sys->event_queue);
@@ -1042,6 +1097,8 @@ static OMX_ERRORTYPE PortReconfigure(decoder_t *p_dec, OmxPort *p_port)
     for(i = 0; i < p_port->i_buffers; i++)
     {
         OMX_FIFO_GET(&p_port->fifo, p_buffer);
+        if (p_buffer->pAppPrivate != NULL)
+            decoder_DeletePicture( p_dec, p_buffer->pAppPrivate );
         if (p_buffer->nFlags & SENTINEL_FLAG) {
             free(p_buffer);
             i--;
@@ -1167,6 +1224,19 @@ static picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
         return NULL;
     }
 
+    /* Use the aspect ratio provided by the input (ie read from packetizer).
+     * In case the we get aspect ratio info from the decoder (as in the
+     * broadcom OMX implementation on RPi), don't let the packetizer values
+     * override what the decoder says, if anything - otherwise always update
+     * even if it already is set (since it can change within a stream). */
+    if((p_dec->fmt_in.video.i_sar_num != 0 && p_dec->fmt_in.video.i_sar_den != 0) &&
+       (p_dec->fmt_out.video.i_sar_num == 0 || p_dec->fmt_out.video.i_sar_den == 0 ||
+             !p_sys->b_aspect_ratio_handled))
+    {
+        p_dec->fmt_out.video.i_sar_num = p_dec->fmt_in.video.i_sar_num;
+        p_dec->fmt_out.video.i_sar_den = p_dec->fmt_in.video.i_sar_den;
+    }
+
     /* Take care of decoded frames first */
     while(!p_pic)
     {
@@ -1177,6 +1247,7 @@ static picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
         {
             omx_error = GetPortDefinition(p_dec, &p_sys->out, p_sys->out.p_fmt);
             p_sys->out.b_update_def = 0;
+            CHECK_ERROR(omx_error, "GetPortDefinition failed");
         }
 
         if(p_header->nFilledLen)
@@ -1193,7 +1264,7 @@ static picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
                                    p_pic, p_sys->out.definition.format.video.nSliceHeight,
                                    p_sys->out.i_frame_stride,
                                    p_header->pBuffer + p_header->nOffset,
-                                   p_sys->out.i_frame_stride_chroma_div);
+                                   p_sys->out.i_frame_stride_chroma_div, NULL);
             }
 
             if (p_pic)
@@ -1278,8 +1349,8 @@ more_input:
         convert_h264_to_annexb( p_header->pBuffer, p_header->nFilledLen,
                                 p_sys->i_nal_size_length, &convert_state );
 #ifdef OMXIL_EXTRA_DEBUG
-        msg_Dbg( p_dec, "EmptyThisBuffer %p, %p, %i", p_header, p_header->pBuffer,
-                 (int)p_header->nFilledLen );
+        msg_Dbg( p_dec, "EmptyThisBuffer %p, %p, %i, %"PRId64, p_header, p_header->pBuffer,
+                 (int)p_header->nFilledLen, FromOmxTicks(p_header->nTimeStamp) );
 #endif
         OMX_EmptyThisBuffer(p_sys->omx_handle, p_header);
         p_sys->in.b_flushed = false;
@@ -1298,15 +1369,20 @@ reconfig:
         {
             omx_error = PortReconfigure(p_dec, p_port);
             p_port->b_reconfigure = 0;
+            CHECK_ERROR(omx_error, "PortReconfigure failed");
         }
         if(p_port->b_update_def)
         {
             omx_error = GetPortDefinition(p_dec, p_port, p_port->p_fmt);
             p_port->b_update_def = 0;
+            CHECK_ERROR(omx_error, "GetPortDefinition failed");
         }
     }
 
     return p_pic;
+error:
+    p_sys->b_error = true;
+    return NULL;
 }
 
 /*****************************************************************************
@@ -1446,9 +1522,13 @@ reconfig:
         if(!p_port->b_reconfigure) continue;
         p_port->b_reconfigure = 0;
         omx_error = PortReconfigure(p_dec, p_port);
+        CHECK_ERROR(omx_error, "PortReconfigure failed");
     }
 
     return p_buffer;
+error:
+    p_sys->b_error = true;
+    return NULL;
 }
 
 /*****************************************************************************
@@ -1508,6 +1588,7 @@ static block_t *EncodeVideo( encoder_t *p_enc, picture_t *p_pic )
         if(!p_port->b_reconfigure) continue;
         p_port->b_reconfigure = 0;
         omx_error = PortReconfigure(p_dec, p_port);
+        CHECK_ERROR(omx_error, "PortReconfigure failed");
     }
 
     /* Wait for the decoded frame */
@@ -1546,6 +1627,9 @@ static block_t *EncodeVideo( encoder_t *p_enc, picture_t *p_pic )
 
     msg_Dbg(p_dec, "done");
     return p_block;
+error:
+    p_sys->b_error = true;
+    return NULL;
 }
 
 /*****************************************************************************
@@ -1613,6 +1697,9 @@ static OMX_ERRORTYPE OmxEventHandler( OMX_HANDLETYPE omx_handle,
             msg_Dbg( p_dec, "Unhandled setting change %x", (unsigned int)data_2 );
         }
         break;
+    case OMX_EventParamOrConfigChanged:
+        UpdatePixelAspect(p_dec);
+        break;
 
     default:
         break;
@@ -1653,8 +1740,8 @@ static OMX_ERRORTYPE OmxFillBufferDone( OMX_HANDLETYPE omx_handle,
     (void)omx_handle;
 
 #ifdef OMXIL_EXTRA_DEBUG
-    msg_Dbg( p_dec, "OmxFillBufferDone %p, %p, %i", omx_header, omx_header->pBuffer,
-             (int)omx_header->nFilledLen );
+    msg_Dbg( p_dec, "OmxFillBufferDone %p, %p, %i, %"PRId64, omx_header, omx_header->pBuffer,
+             (int)omx_header->nFilledLen, FromOmxTicks(omx_header->nTimeStamp) );
 #endif
 
     if(omx_header->pInputPortPrivate)

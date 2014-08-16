@@ -2,7 +2,7 @@
  * directx.c: Windows DirectDraw video output
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: d0fcc3f07c9ab1d21aff87aa244d4445c3dbee89 $
+ * $Id: 4832fd03bd11c87f8bb0d1abae031e1637345875 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -34,19 +34,19 @@
  * display video in window mode.
  *
  *****************************************************************************/
+
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+
 #include <assert.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_vout_display.h>
-#include <vlc_playlist.h>   /* needed for wallpaper */
-#include <vlc_charset.h>
+#include <vlc_charset.h>    /* FromT */
 
 #include <windows.h>
-#include <winuser.h>
 #include <ddraw.h>
 #include <commctrl.h>       /* ListView_(Get|Set)* */
 
@@ -58,7 +58,6 @@
    prototype of the callbacks and call the FromT conversion function.
 */
 #define DIRECTDRAWENUMERATEEX_NAME "DirectDrawEnumerateExA"
-
 
 /*****************************************************************************
  * Module descriptor
@@ -851,8 +850,8 @@ static int DirectXCreateSurface(vout_display_t *vd,
     ddsd.dwSize   = sizeof(ddsd);
     ddsd.ddpfPixelFormat.dwSize = sizeof(ddsd.ddpfPixelFormat);
     ddsd.dwFlags  = DDSD_HEIGHT | DDSD_WIDTH;
-    ddsd.dwWidth  = fmt->i_width;
-    ddsd.dwHeight = fmt->i_height;
+    ddsd.dwWidth  = fmt->i_visible_width;
+    ddsd.dwHeight = fmt->i_visible_height;
     if (fourcc) {
         ddsd.dwFlags |= DDSD_PIXELFORMAT;
         ddsd.ddpfPixelFormat.dwFlags = DDPF_FOURCC;
@@ -1035,10 +1034,10 @@ static int DirectXCreatePictureResourceYuvOverlay(vout_display_t *vd,
     }
 
     /* */
-    picture_resource_t *rsc = &sys->resource;
-    rsc->p_sys->front_surface = front_surface;
-    rsc->p_sys->surface       = surface;
-    rsc->p_sys->fallback      = NULL;
+    picture_sys_t *picsys = sys->picsys;
+    picsys->front_surface = front_surface;
+    picsys->surface       = surface;
+    picsys->fallback      = NULL;
     return VLC_SUCCESS;
 }
 static int DirectXCreatePictureResourceYuv(vout_display_t *vd,
@@ -1091,10 +1090,10 @@ static int DirectXCreatePictureResourceYuv(vout_display_t *vd,
     }
 
     /* */
-    picture_resource_t *rsc = &sys->resource;
-    rsc->p_sys->front_surface = surface;
-    rsc->p_sys->surface       = surface;
-    rsc->p_sys->fallback      = NULL;
+    picture_sys_t *picsys = sys->picsys;
+    picsys->front_surface = surface;
+    picsys->surface       = surface;
+    picsys->fallback      = NULL;
     return VLC_SUCCESS;
 }
 static int DirectXCreatePictureResourceRgb(vout_display_t *vd,
@@ -1151,10 +1150,10 @@ static int DirectXCreatePictureResourceRgb(vout_display_t *vd,
     }
 
     /* */
-    picture_resource_t *rsc = &sys->resource;
-    rsc->p_sys->front_surface = surface;
-    rsc->p_sys->surface       = surface;
-    rsc->p_sys->fallback      = NULL;
+    picture_sys_t *picsys = sys->picsys;
+    picsys->front_surface = surface;
+    picsys->surface       = surface;
+    picsys->fallback      = NULL;
     return VLC_SUCCESS;
 }
 
@@ -1165,10 +1164,10 @@ static int DirectXCreatePictureResource(vout_display_t *vd,
     vout_display_sys_t *sys = vd->sys;
 
     /* */
-    picture_resource_t *rsc = &sys->resource;
-    rsc->p_sys = calloc(1, sizeof(*rsc->p_sys));
-    if (!rsc->p_sys)
+    picture_sys_t *picsys = calloc(1, sizeof(*picsys));
+    if (unlikely(picsys == NULL))
         return VLC_ENOMEM;
+    sys->picsys = picsys;
 
     /* */
     bool allow_hw_yuv  = sys->can_blit_fourcc &&
@@ -1208,11 +1207,11 @@ static void DirectXDestroyPictureResource(vout_display_t *vd)
 {
     vout_display_sys_t *sys = vd->sys;
 
-    if (sys->resource.p_sys->front_surface != sys->resource.p_sys->surface)
-        DirectXDestroySurface(sys->resource.p_sys->surface);
-    DirectXDestroySurface(sys->resource.p_sys->front_surface);
-    if (sys->resource.p_sys->fallback)
-        picture_Release(sys->resource.p_sys->fallback);
+    if (sys->picsys->front_surface != sys->picsys->surface)
+        DirectXDestroySurface(sys->picsys->surface);
+    DirectXDestroySurface(sys->picsys->front_surface);
+    if (sys->picsys->fallback)
+        picture_Release(sys->picsys->fallback);
 }
 
 static int DirectXLock(picture_t *picture)
@@ -1243,16 +1242,11 @@ static int DirectXCreatePool(vout_display_t *vd,
         return VLC_EGENERIC;
 
     /* Create the associated picture */
-    picture_resource_t *rsc = &sys->resource;
-    for (int i = 0; i < PICTURE_PLANE_MAX; i++) {
-        rsc->p[i].p_pixels = NULL;
-        rsc->p[i].i_pitch  = 0;
-        rsc->p[i].i_lines  = 0;
-    }
-    picture_t *picture = picture_NewFromResource(fmt, rsc);
+    picture_resource_t resource = { .p_sys = sys->picsys };
+    picture_t *picture = picture_NewFromResource(fmt, &resource);
     if (!picture) {
         DirectXDestroyPictureResource(vd);
-        free(rsc->p_sys);
+        free(sys->picsys);
         return VLC_ENOMEM;
     }
 
@@ -1321,7 +1315,7 @@ static int DirectXUpdateOverlay(vout_display_t *vd, LPDIRECTDRAWSURFACE2 surface
     if (!surface) {
         if (!sys->pool)
             return VLC_EGENERIC;
-        surface = sys->resource.p_sys->front_surface;
+        surface = sys->picsys->front_surface;
     }
 
     /* The new window dimensions should already have been computed by the
@@ -1400,15 +1394,6 @@ static int WallpaperCallback(vlc_object_t *object, char const *cmd,
     sys->ch_wallpaper |= ch_wallpaper;
     sys->wallpaper_requested = newval.b_bool;
     vlc_mutex_unlock(&sys->lock);
-
-    /* FIXME we should have a way to export variable to be saved */
-    if (ch_wallpaper) {
-        playlist_t *p_playlist = pl_Get(vd);
-        /* Modify playlist as well because the vout might have to be
-         * restarted */
-        var_Create(p_playlist, "video-wallpaper", VLC_VAR_BOOL);
-        var_SetBool(p_playlist, "video-wallpaper", newval.b_bool);
-    }
     return VLC_SUCCESS;
 }
 

@@ -2,7 +2,7 @@
  * common.c : audio output management of common data structures
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: b66f16c1201289b5814b8050538cb26813106ca1 $
+ * $Id: f92230ec0d051c521e37b196021e03cfd973c0b3 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -322,6 +322,8 @@ do { \
         default:
         {
             unsigned size = aout_BitsPerSample( fourcc ) / 8;
+            assert( size != 0 );
+
             const size_t frames = bytes / (size * channels);
             unsigned char *buf = ptr;
 
@@ -529,7 +531,7 @@ static int FilterOrder( const char *psz_name )
     return INT_MAX;
 }
 
-/* This function will add or remove a a module from a string list (colon
+/* This function will add or remove a module from a string list (colon
  * separated). It will return true if there is a modification
  * In case p_aout is NULL, we will use configuration instead of variable */
 bool aout_ChangeFilterString( vlc_object_t *p_obj, vlc_object_t *p_aout,

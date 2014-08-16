@@ -1,25 +1,25 @@
 /*****************************************************************************
  * udp.c
  *****************************************************************************
- * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 54aadd20fd4b720050544aa015f03f6bd8c3ec15 $
+ * Copyright (C) 2001-2007 VLC authors and VideoLAN
+ * $Id: 2ce33a503a32b1466f0cecca7dc17b28d842362c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -33,14 +33,12 @@
 #include <vlc_plugin.h>
 
 #include <sys/types.h>
+#include <unistd.h>
 #include <assert.h>
+#include <errno.h>
 
 #include <vlc_sout.h>
 #include <vlc_block.h>
-
-#ifdef HAVE_UNISTD_H
-#   include <unistd.h>
-#endif
 
 #ifdef _WIN32
 #   include <winsock2.h>
@@ -443,7 +441,7 @@ static void* ThreadWrite( void *data )
             i_to_send = i_group;
         }
         if ( send( p_sys->i_handle, p_pk->p_buffer, p_pk->i_buffer, 0 ) == -1 )
-            msg_Warn( p_access, "send error: %m" );
+            msg_Warn( p_access, "send error: %s", vlc_strerror_c(errno) );
         vlc_cleanup_pop();
 
         if( i_dropped_packets )

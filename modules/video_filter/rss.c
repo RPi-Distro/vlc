@@ -2,7 +2,7 @@
  * rss.c : rss/atom feed display video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2006 VLC authors and VideoLAN
- * $Id: 63ea3b29659d31444329d189290b6081c4130a18 $
+ * $Id: 9710990919bade858acf51c41dd158ba67310d77 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *          Rémi Duraffort <ivoire -at- videolan -dot- org>
@@ -220,7 +220,8 @@ vlc_module_begin ()
                  false )
     add_integer( CFG_PREFIX "ttl", 1800, TTL_TEXT, TTL_LONGTEXT, false )
     add_bool( CFG_PREFIX "images", true, IMAGE_TEXT, IMAGE_LONGTEXT, false )
-    add_integer( CFG_PREFIX "title", default_title, TITLE_TEXT, TITLE_LONGTEXT, false )
+    add_integer( CFG_PREFIX "title", default_title, TITLE_TEXT, TITLE_LONGTEXT,
+                 false )
         change_integer_list( pi_title_modes, ppsz_title_modes )
 
     set_description( N_("RSS and Atom feed display") )
@@ -288,13 +289,14 @@ static int CreateFilter( vlc_object_t *p_this )
     p_sys->i_xoff = var_CreateGetInteger( p_filter, CFG_PREFIX "x" );
     p_sys->i_yoff = var_CreateGetInteger( p_filter, CFG_PREFIX "y" );
     p_sys->i_pos = var_CreateGetInteger( p_filter, CFG_PREFIX "position" );
-    p_sys->p_style->i_font_alpha = 255 - var_CreateGetInteger( p_filter, CFG_PREFIX "opacity" );
+    p_sys->p_style->i_font_alpha = var_CreateGetInteger( p_filter, CFG_PREFIX "opacity" );
     p_sys->p_style->i_font_color = var_CreateGetInteger( p_filter, CFG_PREFIX "color" );
     p_sys->p_style->i_font_size = var_CreateGetInteger( p_filter, CFG_PREFIX "size" );
 
     if( p_sys->b_images && p_sys->p_style->i_font_size == -1 )
     {
-        msg_Warn( p_filter, "rss-size wasn't specified. Feed images will thus be displayed without being resized" );
+        msg_Warn( p_filter, "rss-size wasn't specified. Feed images will thus "
+                            "be displayed without being resized" );
     }
 
     /* Parse the urls */
@@ -372,7 +374,8 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     }
 
     if( p_sys->last_date
-       + ( p_sys->i_cur_char == 0 && p_sys->i_cur_item == ( p_sys->i_title == scroll_title ? -1 : 0 ) ? 5 : 1 )
+       + ( p_sys->i_cur_char == 0 &&
+           p_sys->i_cur_item == ( p_sys->i_title == scroll_title ? -1 : 0 ) ? 5 : 1 )
            /* ( ... ? 5 : 1 ) means "wait 5 times more for the 1st char" */
        * p_sys->i_speed > date )
     {
@@ -382,7 +385,10 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
 
     p_sys->last_date = date;
     p_sys->i_cur_char++;
-    if( p_sys->i_cur_item == -1 ? p_sys->p_feeds[p_sys->i_cur_feed].psz_title[p_sys->i_cur_char] == 0 : p_sys->p_feeds[p_sys->i_cur_feed].p_items[p_sys->i_cur_item].psz_title[p_sys->i_cur_char] == 0 )
+
+    if( p_sys->i_cur_item == -1 ?
+            p_sys->p_feeds[p_sys->i_cur_feed].psz_title[p_sys->i_cur_char] == 0 :
+            p_sys->p_feeds[p_sys->i_cur_feed].p_items[p_sys->i_cur_item].psz_title[p_sys->i_cur_char] == 0 )
     {
         p_sys->i_cur_char = 0;
         p_sys->i_cur_item++;

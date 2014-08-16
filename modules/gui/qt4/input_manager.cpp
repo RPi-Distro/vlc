@@ -2,7 +2,7 @@
  * input_manager.cpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 2384170abf87c254419474fd1c94ace679caffd4 $
+ * $Id: 1a04f513632a53169fa19efe857a9c1738d08b6e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka  <ileoo@videolan.org>
@@ -31,15 +31,18 @@
 #endif
 
 #include "input_manager.hpp"
-#include <vlc_keys.h>
-#include <vlc_url.h>
-#include <vlc_strings.h>
-#include <vlc_aout.h>
+#include "recents.hpp"
+
+#include <vlc_keys.h>           /* ACTION_ID */
+#include <vlc_url.h>            /* decode_URI */
+#include <vlc_strings.h>        /* str_format_meta */
+#include <vlc_aout.h>           /* audio_output_t */
 
 #include <QApplication>
 #include <QFile>
 #include <QDir>
 #include <QSignalMapper>
+#include <QMessageBox>
 
 #include <assert.h>
 
@@ -96,6 +99,11 @@ InputManager::~InputManager()
     delInput();
 }
 
+void InputManager::inputChangedHandler()
+{
+    setInput( THEMIM->getInput() );
+}
+
 /* Define the Input used.
    Add the callbacks on input
    p_input is held once here */
@@ -108,6 +116,7 @@ void InputManager::setInput( input_thread_t *_p_input )
         msg_Dbg( p_intf, "IM: Setting an input" );
         vlc_object_hold( p_input );
         addCallbacks();
+
         UpdateStatus();
         UpdateName();
         UpdateArt();
@@ -117,6 +126,19 @@ void InputManager::setInput( input_thread_t *_p_input )
 
         p_item = input_GetItem( p_input );
         emit rateChanged( var_GetFloat( p_input, "rate" ) );
+
+        /* Get Saved Time */
+        if( p_item->i_type == ITEM_TYPE_FILE )
+        {
+            int i_time = RecentsMRL::getInstance( p_intf )->time( p_item->psz_uri );
+            if( i_time > 0 &&
+                    !var_GetFloat( p_input, "run-time" ) &&
+                    !var_GetFloat( p_input, "start-time" ) &&
+                    !var_GetFloat( p_input, "stop-time" ) )
+            {
+                emit continuePlayback( (int64_t)i_time * 1000 );
+            }
+        }
     }
     else
     {
@@ -133,6 +155,15 @@ void InputManager::delInput()
 {
     if( !p_input ) return;
     msg_Dbg( p_intf, "IM: Deleting the input" );
+
+    /* Save time / position */
+    float f_pos = var_GetFloat( p_input , "position" );
+    int64_t i_time = var_GetTime( p_input, "time");
+    int i_length = var_GetTime( p_input , "length" ) / CLOCK_FREQ;
+    if( f_pos < 0.05 || f_pos > 0.95 || i_length < 60) {
+        i_time = -1;
+    }
+    RecentsMRL::getInstance( p_intf )->setTime( p_item->psz_uri, i_time );
 
     delCallbacks();
     i_old_playing_status = END_S;
@@ -203,7 +234,7 @@ void InputManager::customEvent( QEvent *event )
         if( p_item == ple->item() )
         {
             UpdateStatus();
-            // UpdateName();
+            UpdateName();
             UpdateArt();
             UpdateMeta();
             /* Update duration of file */
@@ -468,7 +499,7 @@ void InputManager::UpdateName()
 
     /* Try to get the nowplaying */
     char *format = var_InheritString( p_intf, "input-title-format" );
-    char *formated = str_format_meta( THEPL, format );
+    char *formated = str_format_meta( p_input, format );
     free( format );
     name = qfu(formated);
     free( formated );
@@ -636,7 +667,7 @@ void InputManager::UpdateCaching()
     }
 }
 
-void InputManager::requestArtUpdate( input_item_t *p_item )
+void InputManager::requestArtUpdate( input_item_t *p_item, bool b_forced )
 {
     bool b_current_item = false;
     if ( !p_item && hasInput() )
@@ -648,13 +679,15 @@ void InputManager::requestArtUpdate( input_item_t *p_item )
     if ( p_item )
     {
         /* check if it has already been enqueued */
-        if ( p_item->p_meta )
+        if ( p_item->p_meta && !b_forced )
         {
             int status = vlc_meta_GetStatus( p_item->p_meta );
             if ( status & ( ITEM_ART_NOTFOUND|ITEM_ART_FETCHED ) )
                 return;
         }
-        playlist_AskForArtEnqueue( pl_Get(p_intf), p_item );
+        libvlc_ArtRequest( p_intf->p_libvlc, p_item,
+                           (b_forced) ? META_REQUEST_OPTION_SCOPE_ANY
+                                      : META_REQUEST_OPTION_NONE );
         /* No input will signal the cover art to update,
              * let's do it ourself */
         if ( b_current_item )
@@ -983,13 +1016,13 @@ MainInputManager::MainInputManager( intf_thread_t *_p_intf )
     mute.addCallback( this, SLOT(notifyMute(bool)) );
 
     /* Warn our embedded IM about input changes */
-    DCONNECT( this, inputChanged( input_thread_t * ),
-              im, setInput( input_thread_t * ) );
+    DCONNECT( this, inputChanged(),
+              im, inputChangedHandler() );
 
     /* initialize p_input (an input can already be running) */
-    p_input = playlist_CurrentInput( pl_Get(p_intf) );
+    p_input = playlist_CurrentInput( THEPL );
     if( p_input )
-        emit inputChanged( p_input );
+        emit inputChanged( );
 
     /* Audio Menu */
     menusAudioMapper = new QSignalMapper();
@@ -1000,8 +1033,9 @@ MainInputManager::~MainInputManager()
 {
     if( p_input )
     {
-       emit inputChanged( NULL );
        vlc_object_release( p_input );
+       p_input = NULL;
+       emit inputChanged( );
     }
 
     var_DelCallback( THEPL, "activity", PLItemChanged, this );
@@ -1055,8 +1089,8 @@ void MainInputManager::customEvent( QEvent *event )
 
     if( p_input != NULL )
         vlc_object_release( p_input );
-    p_input = playlist_CurrentInput( pl_Get(p_intf) );
-    emit inputChanged( p_input );
+    p_input = playlist_CurrentInput( THEPL );
+    emit inputChanged( );
 }
 
 /* Playlist Control functions */
@@ -1163,11 +1197,12 @@ void MainInputManager::loopRepeatLoopStatus()
 void MainInputManager::activatePlayQuit( bool b_exit )
 {
     var_SetBool( THEPL, "play-and-exit", b_exit );
+    config_PutInt( p_intf, "play-and-exit", b_exit );
 }
 
 bool MainInputManager::getPlayExitState()
 {
-    return var_GetBool( THEPL, "play-and-exit" );
+    return var_InheritBool( THEPL, "play-and-exit" );
 }
 
 bool MainInputManager::hasEmptyPlaylist()

@@ -19,6 +19,10 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
 --]]
 
+function descriptor()
+    return { scope="network" }
+end
+
 -- Return the artwork
 function fetch_art()
     if vlc.item == nil then return nil end
@@ -46,6 +50,6 @@ function fetch_art()
 
     page = fd:read( 65653 )
     fd = nil
-    _, _, arturl = string.find( page, "imgurl=([^&]*)" )
+    _, _, _, arturl = string.find( page, "<img height=\"([0-9]+)\" src=\"([^\"]+gstatic.com[^\"]+)\"" )
     return arturl
 end

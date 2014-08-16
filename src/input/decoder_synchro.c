@@ -2,7 +2,7 @@
  * decoder_synchro.c : frame dropping routines
  *****************************************************************************
  * Copyright (C) 1999-2005 VLC authors and VideoLAN
- * $Id: 576d06af49ada1af84ba056e8e069e2ad7b88981 $
+ * $Id: f396661e849c147e3a06bf6530d4b03bde1aedb3 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -225,7 +225,7 @@ bool decoder_SynchroChoose( decoder_synchro_t * p_synchro, int i_coding_type,
     i_current_rate = decoder_GetDisplayRate( p_synchro->p_dec );
 
     now = mdate();
-    period = 1000000 * 1001 / p_synchro->i_frame_rate
+    period = CLOCK_FREQ * 1001 / p_synchro->i_frame_rate
                      * i_current_rate / INPUT_RATE_DEFAULT;
 
     p_synchro->i_render_time = i_render_time;

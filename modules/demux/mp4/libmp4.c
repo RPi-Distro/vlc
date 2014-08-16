@@ -47,7 +47,7 @@ static double conv_fx( int32_t fx ) {
 
 /* some functions for mp4 encoding of variables */
 #ifdef MP4_VERBOSE
-static void MP4_ConvertDate2Str( char *psz, uint64_t i_date )
+static void MP4_ConvertDate2Str( char *psz, uint64_t i_date, bool b_relative )
 {
     int i_day;
     int i_hour;
@@ -55,7 +55,8 @@ static void MP4_ConvertDate2Str( char *psz, uint64_t i_date )
     int i_sec;
 
     /* date begin at 1 jan 1904 */
-    i_date += ((INT64_C(1904) * 365) + 17) * 24 * 60 * 60;
+    if ( !b_relative )
+        i_date += ((INT64_C(1904) * 365) + 17) * 24 * 60 * 60;
 
     i_day = i_date / ( 60*60*24);
     i_hour = ( i_date /( 60*60 ) ) % 60;
@@ -90,7 +91,7 @@ int MP4_ReadBoxCommon( stream_t *p_stream, MP4_Box_t *p_box )
     }
     p_box->i_pos = stream_Tell( p_stream );
 
-    p_box->data.p_data = NULL;
+    p_box->data.p_payload = NULL;
     p_box->p_father = NULL;
     p_box->p_first  = NULL;
     p_box->p_last  = NULL;
@@ -126,8 +127,8 @@ int MP4_ReadBoxCommon( stream_t *p_stream, MP4_Box_t *p_box )
     if( p_box->i_size )
     {
         if MP4_BOX_TYPE_ASCII()
-            msg_Dbg( p_stream, "found Box: %4.4s size %"PRId64,
-                    (char*)&p_box->i_type, p_box->i_size );
+            msg_Dbg( p_stream, "found Box: %4.4s size %"PRId64" %"PRId64,
+                    (char*)&p_box->i_type, p_box->i_size, p_box->i_pos );
         else
             msg_Dbg( p_stream, "found Box: c%3.3s size %"PRId64,
                     (char*)&p_box->i_type+1, p_box->i_size );
@@ -189,8 +190,8 @@ static int MP4_NextBox( stream_t *p_stream, MP4_Box_t *p_box )
  *       after called one of theses functions, file position is unknown
  *       you need to call MP4_GotoBox to go where you want
  *****************************************************************************/
-static int MP4_ReadBoxContainerChildren( stream_t *p_stream,
-                                    MP4_Box_t *p_container, uint32_t i_last_child )
+int MP4_ReadBoxContainerChildren( stream_t *p_stream,
+                                  MP4_Box_t *p_container, uint32_t i_last_child )
 {
     MP4_Box_t *p_box;
 
@@ -374,13 +375,13 @@ static int MP4_ReadBox_mvhd(  stream_t *p_stream, MP4_Box_t *p_box )
 
 
 #ifdef MP4_VERBOSE
-    MP4_ConvertDate2Str( s_creation_time, p_box->data.p_mvhd->i_creation_time );
+    MP4_ConvertDate2Str( s_creation_time, p_box->data.p_mvhd->i_creation_time, false );
     MP4_ConvertDate2Str( s_modification_time,
-                         p_box->data.p_mvhd->i_modification_time );
+                         p_box->data.p_mvhd->i_modification_time, false );
     if( p_box->data.p_mvhd->i_rate )
     {
         MP4_ConvertDate2Str( s_duration,
-                 p_box->data.p_mvhd->i_duration / p_box->data.p_mvhd->i_rate );
+                 p_box->data.p_mvhd->i_duration / p_box->data.p_mvhd->i_rate, true );
     }
     else
     {
@@ -503,6 +504,7 @@ static int MP4_ReadBox_stra( stream_t *p_stream, MP4_Box_t *p_box )
     MP4_Box_data_stra_t *p_stra = p_box->data.p_stra;
 
     uint8_t i_reserved;
+    VLC_UNUSED(i_reserved);
     MP4_GET1BYTE( p_stra->i_es_cat );
     MP4_GET1BYTE( i_reserved );
     MP4_GET2BYTES( p_stra->i_track_ID );
@@ -595,6 +597,7 @@ static int MP4_ReadBox_sidx(  stream_t *p_stream, MP4_Box_t *p_box )
     }
 
     uint16_t i_reserved;
+    VLC_UNUSED(i_reserved);
     MP4_GET2BYTES( i_reserved );
     MP4_GET2BYTES( p_sidx_data->i_reference_count );
     uint16_t i_count = p_sidx_data->i_reference_count;
@@ -801,7 +804,7 @@ static int MP4_ReadBox_tkhd(  stream_t *p_stream, MP4_Box_t *p_box )
     double scale[2];    // scale factor; sx = scale[0] , sy = scale[1]
     double translate[2];// amount to translate; tx = translate[0] , ty = translate[1]
 
-    int *matrix = p_box->data.p_tkhd->i_matrix;
+    int32_t *matrix = p_box->data.p_tkhd->i_matrix;
 
     translate[0] = conv_fx(matrix[6]);
     translate[1] = conv_fx(matrix[7]);
@@ -819,9 +822,9 @@ static int MP4_ReadBox_tkhd(  stream_t *p_stream, MP4_Box_t *p_box )
     p_box->data.p_tkhd->f_rotation = rotation;
 
 #ifdef MP4_VERBOSE
-    MP4_ConvertDate2Str( s_creation_time, p_box->data.p_mvhd->i_creation_time );
-    MP4_ConvertDate2Str( s_modification_time, p_box->data.p_mvhd->i_modification_time );
-    MP4_ConvertDate2Str( s_duration, p_box->data.p_mvhd->i_duration );
+    MP4_ConvertDate2Str( s_creation_time, p_box->data.p_mvhd->i_creation_time, false );
+    MP4_ConvertDate2Str( s_modification_time, p_box->data.p_mvhd->i_modification_time, false );
+    MP4_ConvertDate2Str( s_duration, p_box->data.p_mvhd->i_duration, true );
 
     msg_Dbg( p_stream, "read box: \"tkhd\" creation %s modification %s duration %s track ID %d layer %d volume %f rotation %f scaleX %f scaleY %f translateX %f translateY %f width %f height %f. "
             "Matrix: %i %i %i %i %i %i %i %i %i",
@@ -836,8 +839,8 @@ static int MP4_ReadBox_tkhd(  stream_t *p_stream, MP4_Box_t *p_box )
                   scale[1],
                   translate[0],
                   translate[1],
-                  (float)p_box->data.p_tkhd->i_width / 65536,
-                  (float)p_box->data.p_tkhd->i_height / 65536,
+                  (float)p_box->data.p_tkhd->i_width / BLOCK16x16,
+                  (float)p_box->data.p_tkhd->i_height / BLOCK16x16,
                   p_box->data.p_tkhd->i_matrix[0],
                   p_box->data.p_tkhd->i_matrix[1],
                   p_box->data.p_tkhd->i_matrix[2],
@@ -888,9 +891,9 @@ static int MP4_ReadBox_mdhd( stream_t *p_stream, MP4_Box_t *p_box )
     MP4_GET2BYTES( p_box->data.p_mdhd->i_predefined );
 
 #ifdef MP4_VERBOSE
-    MP4_ConvertDate2Str( s_creation_time, p_box->data.p_mdhd->i_creation_time );
-    MP4_ConvertDate2Str( s_modification_time, p_box->data.p_mdhd->i_modification_time );
-    MP4_ConvertDate2Str( s_duration, p_box->data.p_mdhd->i_duration );
+    MP4_ConvertDate2Str( s_creation_time, p_box->data.p_mdhd->i_creation_time, false );
+    MP4_ConvertDate2Str( s_modification_time, p_box->data.p_mdhd->i_modification_time, false );
+    MP4_ConvertDate2Str( s_duration, p_box->data.p_mdhd->i_duration, true );
     msg_Dbg( p_stream, "read box: \"mdhd\" creation %s modification %s time scale %d duration %s language %c%c%c",
                   s_creation_time,
                   s_modification_time,
@@ -907,6 +910,7 @@ static int MP4_ReadBox_mdhd( stream_t *p_stream, MP4_Box_t *p_box )
 static int MP4_ReadBox_hdlr( stream_t *p_stream, MP4_Box_t *p_box )
 {
     int32_t i_reserved;
+    VLC_UNUSED(i_reserved);
 
     MP4_READBOX_ENTER( MP4_Box_data_hdlr_t );
 
@@ -1090,8 +1094,8 @@ static int MP4_ReadBox_dref( stream_t *p_stream, MP4_Box_t *p_box )
 
 static void MP4_FreeBox_stts( MP4_Box_t *p_box )
 {
-    FREENULL( p_box->data.p_stts->i_sample_count );
-    FREENULL( p_box->data.p_stts->i_sample_delta );
+    FREENULL( p_box->data.p_stts->pi_sample_count );
+    FREENULL( p_box->data.p_stts->pi_sample_delta );
 }
 
 static int MP4_ReadBox_stts( stream_t *p_stream, MP4_Box_t *p_box )
@@ -1101,21 +1105,25 @@ static int MP4_ReadBox_stts( stream_t *p_stream, MP4_Box_t *p_box )
     MP4_GETVERSIONFLAGS( p_box->data.p_stts );
     MP4_GET4BYTES( p_box->data.p_stts->i_entry_count );
 
-    p_box->data.p_stts->i_sample_count =
+    p_box->data.p_stts->pi_sample_count =
         calloc( p_box->data.p_stts->i_entry_count, sizeof(uint32_t) );
-    p_box->data.p_stts->i_sample_delta =
-        calloc( p_box->data.p_stts->i_entry_count, sizeof(uint32_t) );
-    if( p_box->data.p_stts->i_sample_count == NULL
-     || p_box->data.p_stts->i_sample_delta == NULL )
+    p_box->data.p_stts->pi_sample_delta =
+        calloc( p_box->data.p_stts->i_entry_count, sizeof(int32_t) );
+    if( p_box->data.p_stts->pi_sample_count == NULL
+     || p_box->data.p_stts->pi_sample_delta == NULL )
     {
         MP4_READBOX_EXIT( 0 );
     }
 
-    for( unsigned int i = 0; (i < p_box->data.p_stts->i_entry_count )&&( i_read >=8 ); i++ )
+    uint32_t i = 0;
+    for( ; (i < p_box->data.p_stts->i_entry_count )&&( i_read >=8 ); i++ )
     {
-        MP4_GET4BYTES( p_box->data.p_stts->i_sample_count[i] );
-        MP4_GET4BYTES( p_box->data.p_stts->i_sample_delta[i] );
+        MP4_GET4BYTES( p_box->data.p_stts->pi_sample_count[i] );
+        MP4_GET4BYTES( p_box->data.p_stts->pi_sample_delta[i] );
     }
+
+    if ( i < p_box->data.p_stts->i_entry_count )
+        p_box->data.p_stts->i_entry_count = i;
 
 #ifdef MP4_VERBOSE
     msg_Dbg( p_stream, "read box: \"stts\" entry-count %d",
@@ -1128,8 +1136,8 @@ static int MP4_ReadBox_stts( stream_t *p_stream, MP4_Box_t *p_box )
 
 static void MP4_FreeBox_ctts( MP4_Box_t *p_box )
 {
-    FREENULL( p_box->data.p_ctts->i_sample_count );
-    FREENULL( p_box->data.p_ctts->i_sample_offset );
+    FREENULL( p_box->data.p_ctts->pi_sample_count );
+    FREENULL( p_box->data.p_ctts->pi_sample_offset );
 }
 
 static int MP4_ReadBox_ctts( stream_t *p_stream, MP4_Box_t *p_box )
@@ -1140,21 +1148,24 @@ static int MP4_ReadBox_ctts( stream_t *p_stream, MP4_Box_t *p_box )
 
     MP4_GET4BYTES( p_box->data.p_ctts->i_entry_count );
 
-    p_box->data.p_ctts->i_sample_count =
+    p_box->data.p_ctts->pi_sample_count =
         calloc( p_box->data.p_ctts->i_entry_count, sizeof(uint32_t) );
-    p_box->data.p_ctts->i_sample_offset =
-        calloc( p_box->data.p_ctts->i_entry_count, sizeof(uint32_t) );
-    if( ( p_box->data.p_ctts->i_sample_count == NULL )
-     || ( p_box->data.p_ctts->i_sample_offset == NULL ) )
+    p_box->data.p_ctts->pi_sample_offset =
+        calloc( p_box->data.p_ctts->i_entry_count, sizeof(int32_t) );
+    if( ( p_box->data.p_ctts->pi_sample_count == NULL )
+     || ( p_box->data.p_ctts->pi_sample_offset == NULL ) )
     {
         MP4_READBOX_EXIT( 0 );
     }
 
-    for( unsigned int i = 0; (i < p_box->data.p_ctts->i_entry_count )&&( i_read >=8 ); i++ )
+    uint32_t i = 0;
+    for( ; (i < p_box->data.p_ctts->i_entry_count )&&( i_read >=8 ); i++ )
     {
-        MP4_GET4BYTES( p_box->data.p_ctts->i_sample_count[i] );
-        MP4_GET4BYTES( p_box->data.p_ctts->i_sample_offset[i] );
+        MP4_GET4BYTES( p_box->data.p_ctts->pi_sample_count[i] );
+        MP4_GET4BYTES( p_box->data.p_ctts->pi_sample_offset[i] );
     }
+    if ( i < p_box->data.p_ctts->i_entry_count )
+        p_box->data.p_ctts->i_entry_count = i;
 
 #ifdef MP4_VERBOSE
     msg_Dbg( p_stream, "read box: \"ctts\" entry-count %d",
@@ -1532,7 +1543,9 @@ static int MP4_ReadBox_gnre( stream_t *p_stream, MP4_Box_t *p_box )
         MP4_READBOX_EXIT( 0 );
 
     uint32_t i_version;
+    VLC_UNUSED(i_version);
     uint32_t i_reserved;
+    VLC_UNUSED(i_reserved);
     MP4_GET4BYTES( i_version );
     MP4_GET4BYTES( i_reserved );
     MP4_GET2BYTES( p_gnre->i_genre );
@@ -1561,7 +1574,9 @@ static int MP4_ReadBox_trkn( stream_t *p_stream, MP4_Box_t *p_box )
         MP4_READBOX_EXIT( 0 );
 
     uint32_t i_version;
+    VLC_UNUSED(i_version);
     uint32_t i_reserved;
+    VLC_UNUSED(i_reserved);
     MP4_GET4BYTES( i_version );
     MP4_GET4BYTES( i_reserved );
     MP4_GET2BYTES( i_reserved );
@@ -1579,7 +1594,6 @@ static int MP4_ReadBox_trkn( stream_t *p_stream, MP4_Box_t *p_box )
 
     MP4_READBOX_EXIT( 1 );
 }
-
 
 static int MP4_ReadBox_sample_soun( stream_t *p_stream, MP4_Box_t *p_box )
 {
@@ -1622,7 +1636,7 @@ static int MP4_ReadBox_sample_soun( stream_t *p_stream, MP4_Box_t *p_box )
 
     MP4_GET2BYTES( p_box->data.p_sample_soun->i_channelcount );
     MP4_GET2BYTES( p_box->data.p_sample_soun->i_samplesize );
-    MP4_GET2BYTES( p_box->data.p_sample_soun->i_predefined );
+    MP4_GET2BYTES( p_box->data.p_sample_soun->i_compressionid );
     MP4_GET2BYTES( p_box->data.p_sample_soun->i_reserved3 );
     MP4_GET2BYTES( p_box->data.p_sample_soun->i_sampleratehi );
     MP4_GET2BYTES( p_box->data.p_sample_soun->i_sampleratelo );
@@ -1651,25 +1665,57 @@ static int MP4_ReadBox_sample_soun( stream_t *p_stream, MP4_Box_t *p_box )
     {
         /* SoundDescriptionV2 */
         double f_sample_rate;
-        int64_t dummy;
-        uint32_t i_channel;
+        int64_t i_dummy64;
+        uint32_t i_channel, i_extoffset, i_dummy32;
 
-        MP4_GET4BYTES( p_box->data.p_sample_soun->i_sample_per_packet );
-        MP4_GET8BYTES( dummy );
-        memcpy( &f_sample_rate, &dummy, 8 );
+        /* Checks */
+        if ( p_box->data.p_sample_soun->i_channelcount != 0x3  ||
+             p_box->data.p_sample_soun->i_samplesize != 0x0010 ||
+             p_box->data.p_sample_soun->i_compressionid != 0xFFFE ||
+             p_box->data.p_sample_soun->i_reserved3 != 0x0     ||
+             p_box->data.p_sample_soun->i_sampleratehi != 0x1  ||//65536
+             p_box->data.p_sample_soun->i_sampleratelo != 0x0 )  //remainder
+        {
+            msg_Err( p_stream, "invalid stsd V2 box defaults" );
+            MP4_READBOX_EXIT( 0 );
+        }
+        /* !Checks */
 
+        MP4_GET4BYTES( i_extoffset ); /* offset to stsd extentions */
+        MP4_GET8BYTES( i_dummy64 );
+        memcpy( &f_sample_rate, &i_dummy64, 8 );
         msg_Dbg( p_stream, "read box: %f Hz", f_sample_rate );
-        p_box->data.p_sample_soun->i_sampleratehi = (int)f_sample_rate % 65536;
-        p_box->data.p_sample_soun->i_sampleratelo = f_sample_rate / 65536;
+        p_box->data.p_sample_soun->i_sampleratehi = (int)f_sample_rate % BLOCK16x16;
+        p_box->data.p_sample_soun->i_sampleratelo = f_sample_rate / BLOCK16x16;
 
         MP4_GET4BYTES( i_channel );
         p_box->data.p_sample_soun->i_channelcount = i_channel;
 
+        MP4_GET4BYTES( i_dummy32 );
+        if ( i_dummy32 != 0x7F000000 )
+        {
+            msg_Err( p_stream, "invalid stsd V2 box" );
+            MP4_READBOX_EXIT( 0 );
+        }
+
+        MP4_GET4BYTES( p_box->data.p_sample_soun->i_constbitsperchannel );
+        MP4_GET4BYTES( p_box->data.p_sample_soun->i_formatflags );
+        MP4_GET4BYTES( p_box->data.p_sample_soun->i_constbytesperaudiopacket );
+        MP4_GET4BYTES( p_box->data.p_sample_soun->i_constLPCMframesperaudiopacket );
+
 #ifdef MP4_VERBOSE
-        msg_Dbg( p_stream, "read box: \"soun\" V2" );
+        msg_Dbg( p_stream, "read box: \"soun\" V2 rate=%f bitsperchannel=%u "
+                           "flags=%u bytesperpacket=%u lpcmframesperpacket=%u",
+                 f_sample_rate,
+                 p_box->data.p_sample_soun->i_constbitsperchannel,
+                 p_box->data.p_sample_soun->i_formatflags,
+                 p_box->data.p_sample_soun->i_constbytesperaudiopacket,
+                 p_box->data.p_sample_soun->i_constLPCMframesperaudiopacket );
 #endif
-        stream_Seek( p_stream, p_box->i_pos +
-                        mp4_box_headersize( p_box ) + 28 + 36 );
+        if ( i_extoffset < p_box->i_size )
+            stream_Seek( p_stream, p_box->i_pos + i_extoffset );
+        else
+            stream_Seek( p_stream, p_box->i_pos + p_box->i_size );
     }
     else
     {
@@ -1698,6 +1744,7 @@ static int MP4_ReadBox_sample_soun( stream_t *p_stream, MP4_Box_t *p_box )
         p_box->data.p_sample_soun->i_channelcount = 1;
     }
 
+    /* Loads extensions */
     MP4_ReadBoxContainerRaw( p_stream, p_box ); /* esds/wave/... */
 
 #ifdef MP4_VERBOSE
@@ -1706,7 +1753,7 @@ static int MP4_ReadBox_sample_soun( stream_t *p_stream, MP4_Box_t *p_box )
              p_box->data.p_sample_soun->i_channelcount,
              p_box->data.p_sample_soun->i_samplesize,
              (float)p_box->data.p_sample_soun->i_sampleratehi +
-             (float)p_box->data.p_sample_soun->i_sampleratelo / 65536 );
+             (float)p_box->data.p_sample_soun->i_sampleratelo / BLOCK16x16 );
 
 #endif
     MP4_READBOX_EXIT( 1 );
@@ -1842,7 +1889,7 @@ static int MP4_ReadBox_sample_text( stream_t *p_stream, MP4_Box_t *p_box )
     MP4_GET2BYTES( p_box->data.p_sample_text->i_background_color[0] );
     MP4_GET2BYTES( p_box->data.p_sample_text->i_background_color[1] );
     MP4_GET2BYTES( p_box->data.p_sample_text->i_background_color[2] );
-    p_box->data.p_sample_text->i_background_color[3] = 0;
+    p_box->data.p_sample_text->i_background_color[3] = 0xFF;
 
     MP4_GET2BYTES( p_box->data.p_sample_text->i_text_box_top );
     MP4_GET2BYTES( p_box->data.p_sample_text->i_text_box_left );
@@ -1878,6 +1925,13 @@ static int MP4_ReadBox_sample_tx3g( stream_t *p_stream, MP4_Box_t *p_box )
     MP4_GET2BYTES( p_box->data.p_sample_text->i_text_box_left );
     MP4_GET2BYTES( p_box->data.p_sample_text->i_text_box_bottom );
     MP4_GET2BYTES( p_box->data.p_sample_text->i_text_box_right );
+
+    MP4_GET4BYTES( p_box->data.p_sample_text->i_reserved3 );
+
+    MP4_GET2BYTES( p_box->data.p_sample_text->i_font_id );
+    MP4_GET1BYTE ( p_box->data.p_sample_text->i_font_face );
+    MP4_GET1BYTE ( p_box->data.p_sample_text->i_font_size );
+    MP4_GET4BYTES( p_box->data.p_sample_text->i_font_color );
 
 #ifdef MP4_VERBOSE
     msg_Dbg( p_stream, "read box: \"tx3g\" in stsd text" );
@@ -2057,13 +2111,16 @@ static int MP4_ReadBox_stss( stream_t *p_stream, MP4_Box_t *p_box )
     if( unlikely( p_box->data.p_stss->i_sample_number == NULL ) )
         MP4_READBOX_EXIT( 0 );
 
-    for( unsigned int i = 0; (i < p_box->data.p_stss->i_entry_count )&&( i_read >= 4 ); i++ )
+    unsigned int i;
+    for( i = 0; (i < p_box->data.p_stss->i_entry_count )&&( i_read >= 4 ); i++ )
     {
 
         MP4_GET4BYTES( p_box->data.p_stss->i_sample_number[i] );
         /* XXX in libmp4 sample begin at 0 */
         p_box->data.p_stss->i_sample_number[i]--;
     }
+    if ( i < p_box->data.p_stss->i_entry_count )
+        p_box->data.p_stss->i_entry_count = i;
 
 #ifdef MP4_VERBOSE
     msg_Dbg( p_stream, "read box: \"stss\" entry-count %d",
@@ -2104,11 +2161,14 @@ static int MP4_ReadBox_stsh( stream_t *p_stream, MP4_Box_t *p_box )
         MP4_READBOX_EXIT( 0 );
     }
 
-    for( unsigned i = 0; (i < p_box->data.p_stss->i_entry_count )&&( i_read >= 8 ); i++ )
+    unsigned i;
+    for( i = 0; (i < p_box->data.p_stss->i_entry_count )&&( i_read >= 8 ); i++ )
     {
         MP4_GET4BYTES( p_box->data.p_stsh->i_shadowed_sample_number[i] );
         MP4_GET4BYTES( p_box->data.p_stsh->i_sync_sample_number[i] );
     }
+    if ( i < p_box->data.p_stss->i_entry_count )
+        p_box->data.p_stss->i_entry_count = i;
 
 #ifdef MP4_VERBOSE
     msg_Dbg( p_stream, "read box: \"stsh\" entry-count %d",
@@ -2221,7 +2281,7 @@ static int MP4_ReadBox_elst( stream_t *p_stream, MP4_Box_t *p_box )
     p_box->data.p_elst->i_segment_duration =
         calloc( p_box->data.p_elst->i_entry_count, sizeof(uint64_t) );
     p_box->data.p_elst->i_media_time =
-        calloc( p_box->data.p_elst->i_entry_count, sizeof(uint64_t) );
+        calloc( p_box->data.p_elst->i_entry_count, sizeof(int64_t) );
     p_box->data.p_elst->i_media_rate_integer =
         calloc( p_box->data.p_elst->i_entry_count, sizeof(uint16_t) );
     p_box->data.p_elst->i_media_rate_fraction =
@@ -2234,19 +2294,21 @@ static int MP4_ReadBox_elst( stream_t *p_stream, MP4_Box_t *p_box )
         MP4_READBOX_EXIT( 0 );
     }
 
-
-    for( unsigned i = 0; i < p_box->data.p_elst->i_entry_count; i++ )
+    unsigned i;
+    for( i = 0; i < p_box->data.p_elst->i_entry_count; i++ )
     {
         if( p_box->data.p_elst->i_version == 1 )
         {
-
+            if ( i_read < 20 )
+                break;
             MP4_GET8BYTES( p_box->data.p_elst->i_segment_duration[i] );
 
             MP4_GET8BYTES( p_box->data.p_elst->i_media_time[i] );
         }
         else
         {
-
+            if ( i_read < 12 )
+                break;
             MP4_GET4BYTES( p_box->data.p_elst->i_segment_duration[i] );
 
             MP4_GET4BYTES( p_box->data.p_elst->i_media_time[i] );
@@ -2256,7 +2318,8 @@ static int MP4_ReadBox_elst( stream_t *p_stream, MP4_Box_t *p_box )
         MP4_GET2BYTES( p_box->data.p_elst->i_media_rate_integer[i] );
         MP4_GET2BYTES( p_box->data.p_elst->i_media_rate_fraction[i] );
     }
-
+    if ( i < p_box->data.p_elst->i_entry_count )
+        p_box->data.p_elst->i_entry_count = i;
 #ifdef MP4_VERBOSE
     msg_Dbg( p_stream, "read box: \"elst\" entry-count %lu",
              (unsigned long)p_box->data.p_elst->i_entry_count );
@@ -2615,6 +2678,29 @@ static void MP4_FreeBox_name( MP4_Box_t *p_box )
     FREENULL( p_box->data.p_name->psz_text );
 }
 
+static int MP4_ReadBox_data( stream_t *p_stream, MP4_Box_t *p_box )
+{
+    MP4_READBOX_ENTER( MP4_Box_data_data_t );
+
+    /* What's that header ?? */
+    if ( i_read <= 8 )
+        MP4_READBOX_EXIT( 0 );
+
+    p_box->data.p_data->p_blob = malloc( i_read - 8 );
+    if ( !p_box->data.p_data->p_blob )
+        MP4_READBOX_EXIT( 0 );
+
+    p_box->data.p_data->i_blob = i_read - 8;
+    memcpy( p_box->data.p_data->p_blob, p_peek + 8, i_read - 8 );
+
+    MP4_READBOX_EXIT( 1 );
+}
+
+static void MP4_FreeBox_data( MP4_Box_t *p_box )
+{
+    free( p_box->data.p_data->p_blob );
+}
+
 static int MP4_ReadBox_0xa9xxx( stream_t *p_stream, MP4_Box_t *p_box )
 {
     uint16_t i16;
@@ -2664,6 +2750,7 @@ static int MP4_ReadBox_0xa9xxx( stream_t *p_stream, MP4_Box_t *p_box )
             /* data box contains a version/flags field */
             uint32_t i_version;
             uint32_t i_reserved;
+            VLC_UNUSED(i_reserved);
             MP4_GET4BYTES( i_version );
             MP4_GET4BYTES( i_reserved );
             // version should be 0, flags should be 1 for text, 0 for data
@@ -2711,6 +2798,7 @@ static int MP4_ReadBox_chpl( stream_t *p_stream, MP4_Box_t *p_box )
 {
     MP4_Box_data_chpl_t *p_chpl;
     uint32_t i_dummy;
+    VLC_UNUSED(i_dummy);
     int i;
     MP4_READBOX_ENTER( MP4_Box_data_chpl_t );
 
@@ -2809,18 +2897,39 @@ static int MP4_ReadBox_meta( stream_t *p_stream, MP4_Box_t *p_box )
     if( i_actually_read < 8 )
         return 0;
 
-    /* meta content starts with a 4 byte version/flags value (should be 0) */
-    i_actually_read = stream_Read( p_stream, meta_data, 4 );
-    if( i_actually_read < 4 )
+    if ( !p_box->p_father )
         return 0;
 
-    /* then it behaves like a container */
-    return MP4_ReadBoxContainerRaw( p_stream, p_box );
+    switch( p_box->p_father->i_type )
+    {
+    case ATOM_udta: /* itunes udta/meta */
+        /* meta content starts with a 4 byte version/flags value (should be 0) */
+        i_actually_read = stream_Read( p_stream, meta_data, 4 );
+        if( i_actually_read < 4 )
+            return 0;
+
+        /* then it behaves like a container */
+        return MP4_ReadBoxContainerRaw( p_stream, p_box );
+
+    default: /* regular meta atom */
+
+        i_actually_read = stream_Read( p_stream, meta_data, 8 );
+        if( i_actually_read < 8 )
+            return 0;
+
+        /* Mandatory */
+        if ( VLC_FOURCC( meta_data[4], meta_data[5], meta_data[6], meta_data[7] ) != ATOM_hdlr )
+            return 0;
+
+        //ft
+    }
+    return 1;
 }
 
 static int MP4_ReadBox_iods( stream_t *p_stream, MP4_Box_t *p_box )
 {
     char i_unused;
+    VLC_UNUSED(i_unused);
 
     MP4_READBOX_ENTER( MP4_Box_data_iods_t );
     MP4_GETVERSIONFLAGS( p_box->data.p_iods );
@@ -2988,15 +3097,25 @@ static int MP4_ReadBox_tfra( stream_t *p_stream, MP4_Box_t *p_box )
                         || !p_tfra->p_trun_number || !p_tfra->p_sample_number )
         goto error;
 
-    for( uint32_t i = 0; i < i_number_of_entries; i++ )
+    int i_fields_length = 3 + p_tfra->i_length_size_of_traf_num
+            + p_tfra->i_length_size_of_trun_num
+            + p_tfra->i_length_size_of_sample_num;
+
+    uint32_t i;
+    for( i = 0; i < i_number_of_entries; i++ )
     {
+
         if( p_tfra->i_version == 1 )
         {
+            if ( i_read < i_fields_length + 16 )
+                break;
             MP4_GET8BYTES( p_tfra->p_time[i*2] );
             MP4_GET8BYTES( p_tfra->p_moof_offset[i*2] );
         }
         else
         {
+            if ( i_read < i_fields_length + 8 )
+                break;
             MP4_GET4BYTES( p_tfra->p_time[i] );
             MP4_GET4BYTES( p_tfra->p_moof_offset[i] );
         }
@@ -3054,6 +3173,8 @@ static int MP4_ReadBox_tfra( stream_t *p_stream, MP4_Box_t *p_box )
                 goto error;
         }
     }
+    if ( i < i_number_of_entries )
+        i_number_of_entries = i;
 
 #ifdef MP4_VERBOSE
     if( p_tfra->i_version == 0 )
@@ -3151,241 +3272,253 @@ static const struct
     uint32_t i_type;
     int  (*MP4_ReadBox_function )( stream_t *p_stream, MP4_Box_t *p_box );
     void (*MP4_FreeBox_function )( MP4_Box_t *p_box );
+    uint32_t i_parent; /* set parent to restrict, duplicating if needed; 0 for any */
 } MP4_Box_Function [] =
 {
     /* Containers */
-    { ATOM_moov,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_trak,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_mdia,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_moof,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_minf,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_stbl,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_dinf,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_edts,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_udta,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_nmhd,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_hnti,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_rmra,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_rmda,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_tref,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_gmhd,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_wave,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_ilst,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_mvex,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
+    { ATOM_moov,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, 0 },
+    { ATOM_trak,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, ATOM_moov },
+    { ATOM_mdia,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, ATOM_trak },
+    { ATOM_moof,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, 0 },
+    { ATOM_minf,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, ATOM_mdia },
+    { ATOM_stbl,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, ATOM_minf },
+    { ATOM_dinf,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, ATOM_minf },
+    { ATOM_dinf,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, ATOM_meta },
+    { ATOM_edts,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, ATOM_trak },
+    { ATOM_udta,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, 0 },
+    { ATOM_nmhd,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, ATOM_minf },
+    { ATOM_hnti,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, ATOM_udta },
+    { ATOM_rmra,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, ATOM_moov },
+    { ATOM_rmda,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, ATOM_rmra },
+    { ATOM_tref,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, ATOM_trak },
+    { ATOM_gmhd,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, ATOM_minf },
+    { ATOM_wave,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, 0 },
+    { ATOM_ilst,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, ATOM_meta },
+    { ATOM_mvex,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, ATOM_moov },
+    { ATOM_mvex,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, ATOM_ftyp },
 
     /* specific box */
-    { ATOM_ftyp,    MP4_ReadBox_ftyp,         MP4_FreeBox_ftyp },
-    { ATOM_cmov,    MP4_ReadBox_cmov,         MP4_FreeBox_Common },
-    { ATOM_mvhd,    MP4_ReadBox_mvhd,         MP4_FreeBox_Common },
-    { ATOM_tkhd,    MP4_ReadBox_tkhd,         MP4_FreeBox_Common },
-    { ATOM_mdhd,    MP4_ReadBox_mdhd,         MP4_FreeBox_Common },
-    { ATOM_hdlr,    MP4_ReadBox_hdlr,         MP4_FreeBox_hdlr },
-    { ATOM_vmhd,    MP4_ReadBox_vmhd,         MP4_FreeBox_Common },
-    { ATOM_smhd,    MP4_ReadBox_smhd,         MP4_FreeBox_Common },
-    { ATOM_hmhd,    MP4_ReadBox_hmhd,         MP4_FreeBox_Common },
-    { ATOM_url,     MP4_ReadBox_url,          MP4_FreeBox_url },
-    { ATOM_urn,     MP4_ReadBox_urn,          MP4_FreeBox_urn },
-    { ATOM_dref,    MP4_ReadBox_dref,         MP4_FreeBox_Common },
-    { ATOM_stts,    MP4_ReadBox_stts,         MP4_FreeBox_stts },
-    { ATOM_ctts,    MP4_ReadBox_ctts,         MP4_FreeBox_ctts },
-    { ATOM_stsd,    MP4_ReadBox_stsd,         MP4_FreeBox_Common },
-    { ATOM_stsz,    MP4_ReadBox_stsz,         MP4_FreeBox_stsz },
-    { ATOM_stsc,    MP4_ReadBox_stsc,         MP4_FreeBox_stsc },
-    { ATOM_stco,    MP4_ReadBox_stco_co64,    MP4_FreeBox_stco_co64 },
-    { ATOM_co64,    MP4_ReadBox_stco_co64,    MP4_FreeBox_stco_co64 },
-    { ATOM_stss,    MP4_ReadBox_stss,         MP4_FreeBox_stss },
-    { ATOM_stsh,    MP4_ReadBox_stsh,         MP4_FreeBox_stsh },
-    { ATOM_stdp,    MP4_ReadBox_stdp,         MP4_FreeBox_stdp },
-    { ATOM_padb,    MP4_ReadBox_padb,         MP4_FreeBox_padb },
-    { ATOM_elst,    MP4_ReadBox_elst,         MP4_FreeBox_elst },
-    { ATOM_cprt,    MP4_ReadBox_cprt,         MP4_FreeBox_cprt },
-    { ATOM_esds,    MP4_ReadBox_esds,         MP4_FreeBox_esds },
-    { ATOM_dcom,    MP4_ReadBox_dcom,         MP4_FreeBox_Common },
-    { ATOM_cmvd,    MP4_ReadBox_cmvd,         MP4_FreeBox_cmvd },
-    { ATOM_avcC,    MP4_ReadBox_avcC,         MP4_FreeBox_avcC },
-    { ATOM_hvcC,    MP4_ReadBox_hvcC,         MP4_FreeBox_hvcC },
-    { ATOM_dac3,    MP4_ReadBox_dac3,         MP4_FreeBox_Common },
-    { ATOM_dvc1,    MP4_ReadBox_dvc1,         MP4_FreeBox_Common },
-    { ATOM_enda,    MP4_ReadBox_enda,         MP4_FreeBox_Common },
-    { ATOM_gnre,    MP4_ReadBox_gnre,         MP4_FreeBox_Common },
-    { ATOM_trkn,    MP4_ReadBox_trkn,         MP4_FreeBox_Common },
-    { ATOM_iods,    MP4_ReadBox_iods,         MP4_FreeBox_Common },
-    { ATOM_pasp,    MP4_ReadBox_pasp,         MP4_FreeBox_Common },
+    { ATOM_ftyp,    MP4_ReadBox_ftyp,         MP4_FreeBox_ftyp, 0 },
+    { ATOM_cmov,    MP4_ReadBox_cmov,         MP4_FreeBox_Common, 0 },
+    { ATOM_mvhd,    MP4_ReadBox_mvhd,         MP4_FreeBox_Common, ATOM_moov },
+    { ATOM_tkhd,    MP4_ReadBox_tkhd,         MP4_FreeBox_Common, ATOM_trak },
+    { ATOM_mdhd,    MP4_ReadBox_mdhd,         MP4_FreeBox_Common, ATOM_mdia },
+    { ATOM_hdlr,    MP4_ReadBox_hdlr,         MP4_FreeBox_hdlr,   ATOM_mdia },
+    { ATOM_hdlr,    MP4_ReadBox_hdlr,         MP4_FreeBox_hdlr,   ATOM_meta },
+    { ATOM_vmhd,    MP4_ReadBox_vmhd,         MP4_FreeBox_Common, ATOM_minf },
+    { ATOM_smhd,    MP4_ReadBox_smhd,         MP4_FreeBox_Common, ATOM_minf },
+    { ATOM_hmhd,    MP4_ReadBox_hmhd,         MP4_FreeBox_Common, ATOM_minf },
+    { ATOM_url,     MP4_ReadBox_url,          MP4_FreeBox_url, 0 },
+    { ATOM_urn,     MP4_ReadBox_urn,          MP4_FreeBox_urn, 0 },
+    { ATOM_dref,    MP4_ReadBox_dref,         MP4_FreeBox_Common, 0 },
+    { ATOM_stts,    MP4_ReadBox_stts,         MP4_FreeBox_stts,   ATOM_stbl },
+    { ATOM_ctts,    MP4_ReadBox_ctts,         MP4_FreeBox_ctts,   ATOM_stbl },
+    { ATOM_stsd,    MP4_ReadBox_stsd,         MP4_FreeBox_Common, ATOM_stbl },
+    { ATOM_stsz,    MP4_ReadBox_stsz,         MP4_FreeBox_stsz,   ATOM_stbl },
+    { ATOM_stsc,    MP4_ReadBox_stsc,         MP4_FreeBox_stsc,   ATOM_stbl },
+    { ATOM_stco,    MP4_ReadBox_stco_co64,    MP4_FreeBox_stco_co64, ATOM_stbl },
+    { ATOM_co64,    MP4_ReadBox_stco_co64,    MP4_FreeBox_stco_co64, ATOM_stbl },
+    { ATOM_stss,    MP4_ReadBox_stss,         MP4_FreeBox_stss, ATOM_stbl },
+    { ATOM_stsh,    MP4_ReadBox_stsh,         MP4_FreeBox_stsh, ATOM_stbl },
+    { ATOM_stdp,    MP4_ReadBox_stdp,         MP4_FreeBox_stdp, 0 },
+    { ATOM_padb,    MP4_ReadBox_padb,         MP4_FreeBox_padb, 0 },
+    { ATOM_elst,    MP4_ReadBox_elst,         MP4_FreeBox_elst, ATOM_edts },
+    { ATOM_cprt,    MP4_ReadBox_cprt,         MP4_FreeBox_cprt, 0 },
+    { ATOM_esds,    MP4_ReadBox_esds,         MP4_FreeBox_esds, 0 },
+    { ATOM_dcom,    MP4_ReadBox_dcom,         MP4_FreeBox_Common, 0 },
+    { ATOM_cmvd,    MP4_ReadBox_cmvd,         MP4_FreeBox_cmvd, 0 },
+    { ATOM_avcC,    MP4_ReadBox_avcC,         MP4_FreeBox_avcC, 0 },
+    { ATOM_hvcC,    MP4_ReadBox_hvcC,         MP4_FreeBox_hvcC, 0 },
+    { ATOM_dac3,    MP4_ReadBox_dac3,         MP4_FreeBox_Common, 0 },
+    { ATOM_dvc1,    MP4_ReadBox_dvc1,         MP4_FreeBox_Common, 0 },
+    { ATOM_enda,    MP4_ReadBox_enda,         MP4_FreeBox_Common, 0 },
+    { ATOM_iods,    MP4_ReadBox_iods,         MP4_FreeBox_Common, 0 },
+    { ATOM_pasp,    MP4_ReadBox_pasp,         MP4_FreeBox_Common, 0 },
 
     /* Nothing to do with this box */
-    { ATOM_mdat,    MP4_ReadBoxSkip,          MP4_FreeBox_Common },
-    { ATOM_skip,    MP4_ReadBoxSkip,          MP4_FreeBox_Common },
-    { ATOM_free,    MP4_ReadBoxSkip,          MP4_FreeBox_Common },
-    { ATOM_wide,    MP4_ReadBoxSkip,          MP4_FreeBox_Common },
+    { ATOM_mdat,    MP4_ReadBoxSkip,          MP4_FreeBox_Common, 0 },
+    { ATOM_skip,    MP4_ReadBoxSkip,          MP4_FreeBox_Common, 0 },
+    { ATOM_free,    MP4_ReadBoxSkip,          MP4_FreeBox_Common, 0 },
+    { ATOM_wide,    MP4_ReadBoxSkip,          MP4_FreeBox_Common, 0 },
+    { ATOM_binm,    MP4_ReadBoxSkip,          MP4_FreeBox_Common, 0 },
+
+    /* Subtitles */
+    { ATOM_tx3g,    MP4_ReadBox_sample_tx3g,      MP4_FreeBox_Common, 0 },
+    //{ ATOM_text,    MP4_ReadBox_sample_text,      MP4_FreeBox_Common, 0 },
 
     /* for codecs */
-    { ATOM_soun,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_ms02,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_ms11,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_ms55,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM__mp3,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_mp4a,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_twos,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_sowt,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_QDMC,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_QDM2,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_ima4,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_IMA4,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_dvi,     MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_alaw,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_ulaw,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_raw,     MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_MAC3,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_MAC6,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_Qclp,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_samr,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_sawb,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_OggS,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_alac,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
+    { ATOM_soun,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_lpcm,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_ms02,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_ms11,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_ms55,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM__mp3,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_mp4a,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_twos,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_sowt,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_QDMC,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_QDM2,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_ima4,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_IMA4,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_dvi,     MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_alaw,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_ulaw,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_raw,     MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_MAC3,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_MAC6,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_Qclp,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_samr,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_sawb,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_OggS,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
+    { ATOM_alac,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, ATOM_stsd },
 
-    { ATOM_drmi,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_vide,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_mp4v,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_SVQ1,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_SVQ3,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_ZyGo,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_DIVX,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_XVID,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_h263,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_s263,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_cvid,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_3IV1,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_3iv1,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_3IV2,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_3iv2,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_3IVD,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_3ivd,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_3VID,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_3vid,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_mjpa,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_mjpb,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_qdrw,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_mp2v,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_hdv2,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
+    { ATOM_drmi,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_vide,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_mp4v,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_SVQ1,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_SVQ3,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_ZyGo,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_DIVX,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_XVID,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_h263,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_s263,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_cvid,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_3IV1,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_3iv1,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_3IV2,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_3iv2,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_3IVD,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_3ivd,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_3VID,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_3vid,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_mjpa,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_mjpb,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_qdrw,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_mp2v,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_hdv2,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
 
-    { ATOM_mjqt,    MP4_ReadBox_default,      NULL }, /* found in mjpa/b */
-    { ATOM_mjht,    MP4_ReadBox_default,      NULL },
+    { ATOM_mjqt,    MP4_ReadBox_default,      NULL, 0 }, /* found in mjpa/b */
+    { ATOM_mjht,    MP4_ReadBox_default,      NULL, 0 },
 
-    { ATOM_dvc,     MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_dvp,     MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_dv5n,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_dv5p,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_VP31,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_vp31,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_h264,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
+    { ATOM_dvc,     MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_dvp,     MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_dv5n,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_dv5p,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_VP31,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_vp31,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_h264,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
 
-    { ATOM_jpeg,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_avc1,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
+    { ATOM_jpeg,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
+    { ATOM_avc1,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, ATOM_stsd },
 
-    { ATOM_yv12,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
-    { ATOM_yuv2,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide },
+    { ATOM_yv12,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, 0 },
+    { ATOM_yuv2,    MP4_ReadBox_sample_vide,  MP4_FreeBox_sample_vide, 0 },
 
-    { ATOM_mp4s,    MP4_ReadBox_sample_mp4s,  MP4_FreeBox_Common },
+    { ATOM_mp4s,    MP4_ReadBox_sample_mp4s,  MP4_FreeBox_Common, 0 },
 
     /* XXX there is 2 box where we could find this entry stbl and tref*/
-    { ATOM_hint,    MP4_ReadBox_default,      MP4_FreeBox_Common },
+    { ATOM_hint,    MP4_ReadBox_default,      MP4_FreeBox_Common, 0 },
 
     /* found in tref box */
-    { ATOM_dpnd,    MP4_ReadBox_default,      NULL },
-    { ATOM_ipir,    MP4_ReadBox_default,      NULL },
-    { ATOM_mpod,    MP4_ReadBox_default,      NULL },
-    { ATOM_chap,    MP4_ReadBox_tref_generic, MP4_FreeBox_tref_generic },
+    { ATOM_dpnd,    MP4_ReadBox_default,      NULL, 0 },
+    { ATOM_ipir,    MP4_ReadBox_default,      NULL, 0 },
+    { ATOM_mpod,    MP4_ReadBox_default,      NULL, 0 },
+    { ATOM_chap,    MP4_ReadBox_tref_generic, MP4_FreeBox_tref_generic, 0 },
 
     /* found in hnti */
-    { ATOM_rtp,     MP4_ReadBox_default,      NULL },
+    { ATOM_rtp,     MP4_ReadBox_default,      NULL, 0 },
 
-    /* found in rmra */
-    { ATOM_rdrf,    MP4_ReadBox_rdrf,         MP4_FreeBox_rdrf   },
-    { ATOM_rmdr,    MP4_ReadBox_rmdr,         MP4_FreeBox_Common },
-    { ATOM_rmqu,    MP4_ReadBox_rmqu,         MP4_FreeBox_Common },
-    { ATOM_rmvc,    MP4_ReadBox_rmvc,         MP4_FreeBox_Common },
+    /* found in rmra/rmda */
+    { ATOM_rdrf,    MP4_ReadBox_rdrf,         MP4_FreeBox_rdrf  , ATOM_rmda },
+    { ATOM_rmdr,    MP4_ReadBox_rmdr,         MP4_FreeBox_Common, ATOM_rmda },
+    { ATOM_rmqu,    MP4_ReadBox_rmqu,         MP4_FreeBox_Common, ATOM_rmda },
+    { ATOM_rmvc,    MP4_ReadBox_rmvc,         MP4_FreeBox_Common, ATOM_rmda },
 
-    { ATOM_drms,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun },
-    { ATOM_sinf,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_schi,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_user,    MP4_ReadBox_drms,         MP4_FreeBox_Common },
-    { ATOM_key,     MP4_ReadBox_drms,         MP4_FreeBox_Common },
-    { ATOM_iviv,    MP4_ReadBox_drms,         MP4_FreeBox_Common },
-    { ATOM_priv,    MP4_ReadBox_drms,         MP4_FreeBox_Common },
-    { ATOM_frma,    MP4_ReadBox_frma,         MP4_FreeBox_Common },
-    { ATOM_skcr,    MP4_ReadBox_skcr,         MP4_FreeBox_Common },
+    { ATOM_drms,    MP4_ReadBox_sample_soun,  MP4_FreeBox_sample_soun, 0 },
+    { ATOM_sinf,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, 0 },
+    { ATOM_schi,    MP4_ReadBoxContainer,     MP4_FreeBox_Common, 0 },
+    { ATOM_user,    MP4_ReadBox_drms,         MP4_FreeBox_Common, 0 },
+    { ATOM_key,     MP4_ReadBox_drms,         MP4_FreeBox_Common, 0 },
+    { ATOM_iviv,    MP4_ReadBox_drms,         MP4_FreeBox_Common, 0 },
+    { ATOM_priv,    MP4_ReadBox_drms,         MP4_FreeBox_Common, 0 },
+    { ATOM_frma,    MP4_ReadBox_frma,         MP4_FreeBox_Common, 0 },
+    { ATOM_skcr,    MP4_ReadBox_skcr,         MP4_FreeBox_Common, 0 },
 
     /* found in udta */
-    { ATOM_0xa9nam, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9aut, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9cpy, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9swr, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9inf, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9ART, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9dir, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9cmt, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9req, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9day, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9des, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9fmt, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9prd, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9prf, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9src, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9alb, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9dis, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9enc, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9gen, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9trk, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9dsa, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9hst, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9url, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9ope, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9com, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9wrt, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9too, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9wrn, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9mak, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9mod, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9PRD, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9grp, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9lyr, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9gen, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9st3, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9ard, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9arg, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9cak, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9con, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9des, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9lnt, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9phg, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9pub, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9sne, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9sol, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9thx, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
-    { ATOM_0xa9xpd, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx },
+    { ATOM_0xa9nam, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9aut, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9cpy, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9swr, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9inf, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9ART, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9dir, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9cmt, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9req, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9day, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9des, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9fmt, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9prd, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9prf, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9src, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9alb, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9dis, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9enc, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9gen, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9trk, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9dsa, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9hst, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9url, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9ope, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9com, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9wrt, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9too, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9wrn, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9mak, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9mod, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9PRD, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9grp, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9lyr, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9gen, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9st3, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9ard, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9arg, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9cak, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9con, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9des, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9lnt, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9phg, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9pub, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9sne, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9sol, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9thx, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_0xa9xpd, MP4_ReadBox_0xa9xxx,      MP4_FreeBox_0xa9xxx, ATOM_ilst },
+    { ATOM_chpl,    MP4_ReadBox_chpl,         MP4_FreeBox_chpl,    ATOM_udta },
 
-    { ATOM_chpl,    MP4_ReadBox_chpl,         MP4_FreeBox_chpl },
+    { ATOM_gnre,    MP4_ReadBox_gnre,         MP4_FreeBox_Common,  ATOM_ilst },
+    { ATOM_trkn,    MP4_ReadBox_trkn,         MP4_FreeBox_Common,  ATOM_ilst },
 
     /* iTunes/Quicktime meta info */
-    { ATOM_meta,    MP4_ReadBox_meta,         MP4_FreeBox_Common },
-    { ATOM_name,    MP4_ReadBox_name,         MP4_FreeBox_name },
+    { ATOM_meta,    MP4_ReadBox_meta,         MP4_FreeBox_Common,  0 },
+    { ATOM_name,    MP4_ReadBox_name,         MP4_FreeBox_name,    0 },
+    { ATOM_covr,    MP4_ReadBoxContainer,     MP4_FreeBox_Common,  ATOM_ilst },
+    { ATOM_data,    MP4_ReadBox_data,         MP4_FreeBox_data,    0 },
 
     /* found in smoothstreaming */
-    { ATOM_traf,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_mfra,    MP4_ReadBoxContainer,     MP4_FreeBox_Common },
-    { ATOM_mfhd,    MP4_ReadBox_mfhd,         MP4_FreeBox_Common },
-    { ATOM_sidx,    MP4_ReadBox_sidx,         MP4_FreeBox_sidx },
-    { ATOM_tfhd,    MP4_ReadBox_tfhd,         MP4_FreeBox_Common },
-    { ATOM_trun,    MP4_ReadBox_trun,         MP4_FreeBox_trun },
-    { ATOM_trex,    MP4_ReadBox_trex,         MP4_FreeBox_Common },
-    { ATOM_mehd,    MP4_ReadBox_mehd,         MP4_FreeBox_Common },
-    { ATOM_sdtp,    MP4_ReadBox_sdtp,         MP4_FreeBox_sdtp },
-    { ATOM_tfra,    MP4_ReadBox_tfra,         MP4_FreeBox_tfra },
-    { ATOM_mfro,    MP4_ReadBox_mfro,         MP4_FreeBox_Common },
-    { ATOM_uuid,    MP4_ReadBox_uuid,         MP4_FreeBox_uuid },
+    { ATOM_traf,    MP4_ReadBoxContainer,     MP4_FreeBox_Common,  ATOM_moof },
+    { ATOM_mfra,    MP4_ReadBoxContainer,     MP4_FreeBox_Common,  0 },
+    { ATOM_mfhd,    MP4_ReadBox_mfhd,         MP4_FreeBox_Common,  ATOM_moof },
+    { ATOM_sidx,    MP4_ReadBox_sidx,         MP4_FreeBox_sidx,    0 },
+    { ATOM_tfhd,    MP4_ReadBox_tfhd,         MP4_FreeBox_Common,  ATOM_traf },
+    { ATOM_trun,    MP4_ReadBox_trun,         MP4_FreeBox_trun,    ATOM_traf },
+    { ATOM_trex,    MP4_ReadBox_trex,         MP4_FreeBox_Common,  ATOM_mvex },
+    { ATOM_mehd,    MP4_ReadBox_mehd,         MP4_FreeBox_Common,  ATOM_mvex },
+    { ATOM_sdtp,    MP4_ReadBox_sdtp,         MP4_FreeBox_sdtp,    0 },
+    { ATOM_tfra,    MP4_ReadBox_tfra,         MP4_FreeBox_tfra,    ATOM_mfra },
+    { ATOM_mfro,    MP4_ReadBox_mfro,         MP4_FreeBox_Common,  ATOM_mfra },
+    { ATOM_uuid,    MP4_ReadBox_uuid,         MP4_FreeBox_uuid,    0 },
 
     /* Last entry */
-    { 0,              MP4_ReadBox_default,      NULL }
+    { 0,              MP4_ReadBox_default,      NULL, 0 }
 };
 
 
@@ -3418,6 +3551,11 @@ static MP4_Box_t *MP4_ReadBox( stream_t *p_stream, MP4_Box_t *p_father )
     /* Now search function to call */
     for( i_index = 0; ; i_index++ )
     {
+        if ( MP4_Box_Function[i_index].i_parent &&
+             p_box->p_father &&
+             p_box->p_father->i_type != MP4_Box_Function[i_index].i_parent )
+            continue;
+
         if( ( MP4_Box_Function[i_index].i_type == p_box->i_type )||
             ( MP4_Box_Function[i_index].i_type == 0 ) )
         {
@@ -3456,7 +3594,7 @@ void MP4_BoxFree( stream_t *s, MP4_Box_t *p_box )
     }
 
     /* Now search function to call */
-    if( p_box->data.p_data )
+    if( p_box->data.p_payload )
     {
         for( i_index = 0; ; i_index++ )
         {
@@ -3482,7 +3620,7 @@ void MP4_BoxFree( stream_t *s, MP4_Box_t *p_box )
         {
             MP4_Box_Function[i_index].MP4_FreeBox_function( p_box );
         }
-        free( p_box->data.p_data );
+        free( p_box->data.p_payload );
     }
     free( p_box );
 }
@@ -3554,6 +3692,13 @@ MP4_Box_t *MP4_BoxGetNextChunk( stream_t *s )
 
     MP4_ReadBoxContainerChildren( s, p_chunk, ATOM_moof );
 
+    p_tmp_box = p_chunk->p_first;
+    while( p_tmp_box )
+    {
+        p_chunk->i_size += p_tmp_box->i_size;
+        p_tmp_box = p_tmp_box->p_next;
+    }
+
     return p_chunk;
 }
 
@@ -3580,7 +3725,7 @@ MP4_Box_t *MP4_BoxGetRoot( stream_t *s )
     p_root->i_size = 0;
     CreateUUID( &p_root->i_uuid, p_root->i_type );
 
-    p_root->data.p_data = NULL;
+    p_root->data.p_payload = NULL;
     p_root->p_father    = NULL;
     p_root->p_first     = NULL;
     p_root->p_last      = NULL;
@@ -3668,12 +3813,12 @@ static void MP4_BoxDumpStructure_Internal( stream_t *s,
         }
         if( MP4_BOX_TYPE_ASCII() )
             snprintf( &str[i_level * 4], sizeof(str) - 4*i_level,
-                      "+ %4.4s size %d",
-                        (char*)&p_box->i_type, (uint32_t)p_box->i_size );
+                      "+ %4.4s size %"PRIu64" offset %ld",
+                        (char*)&p_box->i_type, p_box->i_size, p_box->i_pos );
         else
             snprintf( &str[i_level * 4], sizeof(str) - 4*i_level,
-                      "+ c%3.3s size %d",
-                        (char*)&p_box->i_type+1, (uint32_t)p_box->i_size );
+                      "+ c%3.3s size %"PRIu64" offset %ld",
+                        (char*)&p_box->i_type+1, p_box->i_size, p_box->i_pos );
         msg_Dbg( s, "%s", str );
     }
     p_child = p_box->p_first;

@@ -2,7 +2,7 @@
  * screen.c: Screen capture module.
  *****************************************************************************
  * Copyright (C) 2004-2008 VLC authors and VideoLAN
- * $Id: 4c9c138879a9402f1a65b1e696edd71cce177f8e $
+ * $Id: 4b1f4f528b3c7b894a1c194fbba9d0e91e58dfde $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan dot org>
@@ -348,12 +348,7 @@ void RenderCursor( demux_t *p_demux, int i_x, int i_y,
 {
     demux_sys_t *p_sys = p_demux->p_sys;
     if( !p_sys->dst.i_planes )
-        picture_Setup( &p_sys->dst,
-                       p_sys->fmt.video.i_chroma,
-                       p_sys->fmt.video.i_width,
-                       p_sys->fmt.video.i_height,
-                       p_sys->fmt.video.i_sar_num,
-                       p_sys->fmt.video.i_sar_den );
+        picture_Setup( &p_sys->dst, &p_sys->fmt.video );
     if( !p_sys->p_blend )
     {
         p_sys->p_blend = vlc_object_create( p_demux, sizeof(filter_t) );

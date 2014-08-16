@@ -2,7 +2,7 @@
  * EPGView.hpp : EPGView
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: 03d6a75111444cb69e37ca967146df06fd9e3a9f $
+ * $Id: 222deb6e6a26e66c7de8cacfcee548fca782dc1f $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -53,7 +53,7 @@ Q_OBJECT
 
 public:
     explicit EPGView( QWidget *parent = 0 );
-    ~EPGView();
+    virtual ~EPGView();
 
     void            setScale( double scaleFactor );
 

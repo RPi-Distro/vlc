@@ -2,7 +2,7 @@
  * rawvid.c : raw video input module for vlc
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: 7577b5a199e464e57e9bfae1a2df82f7e1c78136 $
+ * $Id: 239f1ca160adec834b1e010fac7a006237f75593 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan d.t org>
@@ -190,13 +190,14 @@ valid:
     /* override presets if yuv4mpeg2 */
     if( b_y4m )
     {
+        /* The string should start with "YUV4MPEG2" */
         char *psz = stream_ReadLine( p_demux->s );
         char *psz_buf;
         int a = 1;
         int b = 1;
 
-        /* The string will start with "YUV4MPEG2" */
-        assert( strlen(psz) >= 9 );
+        if( unlikely(psz == NULL) )
+            goto error;
 
         /* NB, it is not possible to handle interlaced here, since the
          * interlaced picture flags are in picture_t not block_t */
@@ -364,8 +365,8 @@ valid:
     }
 
     es_format_Init( &p_sys->fmt_video, VIDEO_ES, i_chroma );
-    video_format_Setup( &p_sys->fmt_video.video,
-                        i_chroma, i_width, i_height,
+    video_format_Setup( &p_sys->fmt_video.video, i_chroma,
+                        i_width, i_height, i_width, i_height,
                         i_sar_num, i_sar_den );
 
     vlc_ureduce( &p_sys->fmt_video.video.i_frame_rate,

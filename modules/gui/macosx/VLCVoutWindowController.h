@@ -1,8 +1,8 @@
 /*****************************************************************************
  * VLCVoutWindowController.h: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2012-2013 VLC authors and VideoLAN
- * $Id: c2caab91054d37e2e06636d018d0e7c3204c2f28 $
+ * Copyright (C) 2012-2014 VLC authors and VideoLAN
+ * $Id: c555b73e78bd6241786a7a96508b2b94410dbf94 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -23,7 +23,6 @@
  *****************************************************************************/
 
 #import <Cocoa/Cocoa.h>
-#import "CompatibilityFixes.h"
 
 #import <vlc_vout_window.h>
 
@@ -39,6 +38,8 @@
     // save the status level if at least one video window is on status level
     NSUInteger i_statusLevelWindowCounter;
     NSInteger i_currentWindowLevel;
+
+    BOOL b_mainwindow_has_video;
 }
 
 @property (readonly, nonatomic) NSInteger currentWindowLevel;
@@ -47,7 +48,7 @@
 - (void)removeVoutforDisplay:(NSValue *)o_key;
 - (void)setNativeVideoSize:(NSSize)size forWindow:(vout_window_t *)p_wnd;
 - (void)setWindowLevel:(NSInteger)i_level forWindow:(vout_window_t *)p_wnd;
-- (void)setFullscreen:(int)i_full forWindow:(vout_window_t *)p_wnd;
+- (void)setFullscreen:(int)i_full forWindow:(vout_window_t *)p_wnd withAnimation:(BOOL)b_animation;
 
 - (void)updateWindowsControlsBarWithSelector:(SEL)aSel;
 - (void)updateWindowsUsingBlock:(void (^)(VLCVideoWindowCommon *o_window))windowUpdater;

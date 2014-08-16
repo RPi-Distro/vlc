@@ -2,7 +2,7 @@
  * waveout.c : Windows waveOut plugin for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: f06c8eef7c57b9e3ddbd9d1dc15ab294715ff916 $
+ * $Id: 3ce81580b939028b949707ce4e1850ba725fe3f1 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          André Weber
@@ -30,18 +30,15 @@
 # include "config.h"
 #endif
 
-#include <stdio.h>
 #include <math.h>
-#include <wchar.h>
 
 #define UNICODE
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_aout.h>
-#include <vlc_charset.h> /* FromWide() */
-#include <vlc_atomic.h>
+#include <vlc_charset.h>              /* FromWide() */
 
-#include "windows_audio_common.h"
+#include "audio_output/windows_audio_common.h"
 
 #define FRAME_SIZE 4096              /* The size is in samples, not in bytes */
 
@@ -505,7 +502,7 @@ static int OpenWaveOut( audio_output_t *p_aout, uint32_t i_device_id, int i_form
                  waveformat.Samples.wValidBitsPerSample);
         msg_Dbg( p_aout,"waveformat.Samples.wSamplesPerBlock = %d",
                  waveformat.Samples.wSamplesPerBlock);
-        msg_Dbg( p_aout,"waveformat.dwChannelMask          = %lx",
+        msg_Dbg( p_aout,"waveformat.dwChannelMask          = %u",
                  waveformat.dwChannelMask);
     }
 

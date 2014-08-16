@@ -2,7 +2,7 @@
  * stream_memory.c: stream_t wrapper around memory buffer
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 87b7f1bb6863ae87b3e13c7e4dda24f636897d56 $
+ * $Id: 491ab02f01988b0ae797a3891b8f3a61ff5de2dc $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -122,7 +122,13 @@ static int Control( stream_t *s, int i_query, va_list args )
             p_sys->i_pos = i_64;
             break;
 
+        case STREAM_GET_PTS_DELAY:
+            *va_arg( args, int64_t * ) = 0;
+            break;
+
         case STREAM_GET_TITLE_INFO:
+        case STREAM_GET_TITLE:
+        case STREAM_GET_SEEKPOINT:
         case STREAM_GET_META:
         case STREAM_GET_CONTENT_TYPE:
         case STREAM_GET_SIGNAL:
@@ -133,9 +139,11 @@ static int Control( stream_t *s, int i_query, va_list args )
         case STREAM_SET_PAUSE_STATE:
             break; /* nothing to do */
 
-        case STREAM_CONTROL_ACCESS:
-            msg_Err( s, "Hey, what are you thinking ?"
-                     "DON'T USE STREAM_CONTROL_ACCESS !!!" );
+        case STREAM_SET_PRIVATE_ID_STATE:
+        case STREAM_SET_PRIVATE_ID_CA:
+        case STREAM_GET_PRIVATE_ID_STATE:
+            msg_Err( s, "Hey, what are you thinking? "
+                     "DO NOT USE PRIVATE STREAM CONTROLS!!!" );
             return VLC_EGENERIC;
 
         default:

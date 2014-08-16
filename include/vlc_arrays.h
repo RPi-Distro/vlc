@@ -2,7 +2,7 @@
  * vlc_arrays.h : Arrays and data structures handling
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 7749140f10f5ce76339559b166d041854bb4a7da $
+ * $Id: 91f540533b3144f00d1e74bd47dc34cf69598276 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -92,9 +92,9 @@ static inline void *realloc_down( void *ptr, size_t size )
 #define TAB_APPEND_CAST( cast, count, tab, p )             \
   do {                                          \
     if( (count) > 0 )                           \
-        (tab) = cast realloc( tab, sizeof( void ** ) * ( (count) + 1 ) ); \
+        (tab) = cast realloc( tab, sizeof( *(tab) ) * ( (count) + 1 ) ); \
     else                                        \
-        (tab) = cast malloc( sizeof( void ** ) );    \
+        (tab) = cast malloc( sizeof( *(tab) ) );    \
     if( !(tab) ) abort();                       \
     (tab)[count] = (p);                         \
     (count)++;                                  \
@@ -123,7 +123,7 @@ static inline void *realloc_down( void *ptr, size_t size )
             {                                   \
                 memmove( ((void**)(tab) + i_index),    \
                          ((void**)(tab) + i_index+1),  \
-                         ( (count) - i_index - 1 ) * sizeof( void* ) );\
+                         ( (count) - i_index - 1 ) * sizeof( *(tab) ) );\
             }                                   \
             (count)--;                          \
             if( (count) == 0 )                  \
@@ -136,9 +136,9 @@ static inline void *realloc_down( void *ptr, size_t size )
 
 #define TAB_INSERT_CAST( cast, count, tab, p, index ) do { \
     if( (count) > 0 )                           \
-        (tab) = cast realloc( tab, sizeof( void ** ) * ( (count) + 1 ) ); \
+        (tab) = cast realloc( tab, sizeof( *(tab) ) * ( (count) + 1 ) ); \
     else                                        \
-        (tab) = cast malloc( sizeof( void ** ) );       \
+        (tab) = cast malloc( sizeof( *(tab) ) );       \
     if( !(tab) ) abort();                       \
     if( (count) - (index) > 0 )                 \
         memmove( (void**)(tab) + (index) + 1,   \

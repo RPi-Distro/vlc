@@ -2,7 +2,7 @@
  * access.c: uncompressed RAR access
  *****************************************************************************
  * Copyright (C) 2008-2010 Laurent Aimar
- * $Id: e91f34f6257c33f8c4d1109035cf8bd1bd2c6faf $
+ * $Id: ddba8f203635391a69e312909aa052d865e564f8 $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -21,9 +21,6 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-/*****************************************************************************
- * Preamble
- *****************************************************************************/
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
@@ -39,24 +36,6 @@
 
 #include "rar.h"
 
-/*****************************************************************************
- * Module descriptor
- *****************************************************************************/
-static int  Open (vlc_object_t *);
-static void Close(vlc_object_t *);
-
-vlc_module_begin()
-    set_category(CAT_INPUT)
-    set_subcategory(SUBCAT_INPUT_STREAM_FILTER)
-    set_description(N_("Uncompressed RAR"))
-    set_capability("access", 0)
-    set_callbacks(Open, Close)
-    add_shortcut("rar")
-vlc_module_end()
-
-/*****************************************************************************
- * Local definitions/prototypes
- *****************************************************************************/
 struct access_sys_t {
     stream_t               *s;
     rar_file_t             *file;
@@ -123,7 +102,8 @@ static ssize_t Read(access_t *access, uint8_t *data, size_t size)
 
 static int Control(access_t *access, int query, va_list args)
 {
-    stream_t *s = access->p_sys->s;
+    access_sys_t *sys = access->p_sys;
+    stream_t *s = sys->s;
     if (!s)
         return VLC_EGENERIC;
 
@@ -143,6 +123,9 @@ static int Control(access_t *access, int query, va_list args)
         *b = true;
         return VLC_SUCCESS;
     }
+    case ACCESS_GET_SIZE:
+        *va_arg(args, uint64_t *) = sys->file->size;
+        return VLC_SUCCESS;
     case ACCESS_GET_PTS_DELAY: {
         int64_t *delay = va_arg(args, int64_t *);
         *delay = DEFAULT_PTS_DELAY;
@@ -156,7 +139,7 @@ static int Control(access_t *access, int query, va_list args)
     }
 }
 
-static int Open(vlc_object_t *object)
+int RarAccessOpen(vlc_object_t *object)
 {
     access_t *access = (access_t*)object;
 
@@ -173,10 +156,14 @@ static int Open(vlc_object_t *object)
     stream_t *s = stream_UrlNew(access, base);
     if (!s)
         goto error;
-    int count;
+    int count = 0;
     rar_file_t **files;
-    if (RarProbe(s) || RarParse(s, &count, &files) || count <= 0)
-        goto error;
+     if ( RarProbe(s) || (
+            RarParse(s, &count, &files, false ) &&
+            RarParse(s, &count, &files, true )
+          ) ||
+          count <= 0 )
+         goto error;
     rar_file_t *file = NULL;
     for (int i = 0; i < count; i++) {
         if (!file && !strcmp(files[i]->name, name))
@@ -198,7 +185,6 @@ static int Open(vlc_object_t *object)
     access->pf_seek    = Seek;
 
     access_InitFields(access);
-    access->info.i_size = file->size;
 
     rar_file_chunk_t dummy = {
         .mrl = base,
@@ -216,7 +202,7 @@ error:
     return VLC_EGENERIC;
 }
 
-static void Close(vlc_object_t *object)
+void RarAccessClose(vlc_object_t *object)
 {
     access_t *access = (access_t*)object;
     access_sys_t *sys = access->p_sys;
@@ -226,4 +212,3 @@ static void Close(vlc_object_t *object)
     RarFileDelete(sys->file);
     free(sys);
 }
-

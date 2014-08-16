@@ -27,6 +27,7 @@ usage()
 	echo "  --disable-FOO    configure to not build package FOO"
 	echo "  --enable-FOO     configure to build package FOO"
 	echo "  --disable-disc   configure to not build optical discs packages"
+	echo "  --disable-net    configure to not build networking packages"
 	echo "  --disable-sout   configure to not build stream output packages"
 	echo "  --enable-small   optimize libraries for size with slight speed decrease [DANGEROUS]"
 	echo "  --disable-gpl    configure to not build viral GPL code"
@@ -38,6 +39,7 @@ PREFIX=
 PKGS_ENABLE=
 PKGS_DISABLE=
 BUILD_ENCODERS="1"
+BUILD_NETWORK="1"
 BUILD_DISCS="1"
 GPL="1"
 
@@ -66,6 +68,9 @@ do
 		--disable-disc)
 			BUILD_DISCS=
 			;;
+		--disable-net)
+			BUILD_NETWORK=
+			;;
 		--disable-sout)
 			BUILD_ENCODERS=
 			;;
@@ -93,7 +98,7 @@ done
 if test -z "$BUILD"
 then
 	echo -n "Guessing build system... "
-	BUILD="`cc -dumpmachine`"
+	BUILD="`${CC:-cc} -dumpmachine`"
 	if test -z "$BUILD"; then
 		echo "FAIL!"
 		exit 1
@@ -166,7 +171,11 @@ check_ios_sdk()
 
 check_macosx_sdk()
 {
-   [ -z "${OSX_VERSION}" ] && echo "OSX_VERSION not specified, assuming 10.7" && OSX_VERSION=10.7
+   if [ -z "${OSX_VERSION}" ]
+   then
+      OSX_VERSION=`xcrun --show-sdk-version`
+      echo "OSX_VERSION not specified, assuming $OSX_VERSION"
+   fi
    if test -z "$SDKROOT"
    then
       SDKROOT=`xcode-select -print-path`/Platforms/MacOSX.platform/Developer/SDKs/MacOSX$OSX_VERSION.sdk
@@ -177,6 +186,12 @@ check_macosx_sdk()
    then
       SDKROOT_NOT_FOUND=`xcode-select -print-path`/Platforms/MacOSX.platform/Developer/SDKs/MacOSX$OSX_VERSION.sdk
       SDKROOT=`xcode-select -print-path`/SDKs/MacOSX$OSX_VERSION.sdk
+      echo "SDKROOT not found at $SDKROOT_NOT_FOUND, trying $SDKROOT"
+   fi
+   if [ ! -d "${SDKROOT}" ]
+   then
+      SDKROOT_NOT_FOUND="$SDKROOT"
+      SDKROOT=`xcrun --show-sdk-path`
       echo "SDKROOT not found at $SDKROOT_NOT_FOUND, trying $SDKROOT"
    fi
 
@@ -204,6 +219,7 @@ check_android_sdk()
 test -z "$PREFIX" || add_make "PREFIX := $PREFIX"
 test -z "$BUILD_DISCS" || add_make_enabled "BUILD_DISCS"
 test -z "$BUILD_ENCODERS" || add_make_enabled "BUILD_ENCODERS"
+test -z "$BUILD_NETWORK" || add_make_enabled "BUILD_NETWORK"
 test -z "$ENABLE_SMALL" || add_make_enabled "ENABLE_SMALL"
 test -z "$GPL" || add_make_enabled "GPL"
 
@@ -243,11 +259,11 @@ case "${OS}" in
 	*linux*)
 		add_make_enabled "HAVE_LINUX"
 		;;
-	*wince*)
-		add_make_enabled "HAVE_WINCE"
-		;;
 	*mingw*)
 		add_make_enabled "HAVE_WIN32"
+		;;
+	*solaris*)
+		add_make_enabled "HAVE_SOLARIS"
 		;;
 esac
 

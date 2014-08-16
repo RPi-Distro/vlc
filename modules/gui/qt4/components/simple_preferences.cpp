@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: f391e99b80dc8648a099e92c44a640d8ba0795b1 $
+ * $Id: 5cf8fc930674afea99e8a8b15962c7496ffc2d83 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -29,7 +29,6 @@
 
 #include "components/simple_preferences.hpp"
 #include "components/preferences_widgets.hpp"
-#include "dialogs/ml_configuration.hpp"
 
 #include <vlc_config_cat.h>
 #include <vlc_configuration.h>
@@ -47,7 +46,7 @@
 #include <QDir>
 #include <math.h>
 
-#define ICON_HEIGHT 64
+#define ICON_HEIGHT 48
 
 #ifdef _WIN32
 # include <vlc_windows_interfaces.h>
@@ -184,14 +183,66 @@ static const char *const ppsz_language_text[] =
     "Walon",
 };
 
+static int getDefaultAudioVolume(vlc_object_t *obj, const char *aout)
+{
+    if (!strcmp(aout, "") || !strcmp(aout, "any"))
+        return -1;
+    else
+    /* Note: For hysterical raisins, this is sorted by decreasing priority
+     * order (then alphabetical order). */
+    if (!strcmp(aout, "pulse"))
+        return -1;
+    else
+#ifdef __linux__
+    if (!strcmp(aout, "alsa") && module_exists("alsa"))
+        return cbrtf(config_GetFloat(obj, "alsa-gain")) * 100.f + .5f;
+    else
+#endif
+#ifdef _WIN32
+    if (!strcmp(aout, "mmdevice"))
+        return -1;
+    else
+#endif
+    if (!strcmp(aout, "sndio"))
+        return -1;
+    else
+#ifdef __APPLE__
+    if (!strcmp("auhal") && module_exists("auhal"))
+        return (config_GetFloat(obj, "auhal-volume") * 100.f + .5f)
+                 / AOUT_VOLUME_DEFAULT;
+    else
+#endif
+#ifdef _WIN32
+    if (!strcmp(aout, "directsound") && module_exists("directsound"))
+        return config_GetFloat(obj, "directx-volume") * 100.f + .5f;
+    else
+#endif
+    if (!strcmp(aout, "jack"))
+        return cbrtf(config_GetFloat(obj, "jack-gain")) * 100.f + 0.5f;
+    else
+#ifdef __OS2__
+    if (!strcmp(aout, "kai"))
+        return cbrtf(config_GetFloat(obj, "kai-gain")) * 100.f + .5f;
+    else
+#endif
+    if (!strcmp(aout, "oss"))
+        return -1;
+    else
+#ifdef _WIN32
+    if (!strcmp(aout, "waveout"))
+        return config_GetFloat(obj, "waveout-volume") * 100.f + .5f;
+    else
+#endif
+        return -1;
+}
 
 /*********************************************************************
  * The List of categories
  *********************************************************************/
-SPrefsCatList::SPrefsCatList( intf_thread_t *_p_intf, QWidget *_parent, bool small ) :
+SPrefsCatList::SPrefsCatList( intf_thread_t *_p_intf, QWidget *_parent ) :
                                   QWidget( _parent ), p_intf( _p_intf )
 {
-    QVBoxLayout *layout = new QVBoxLayout();
+    QHBoxLayout *layout = new QHBoxLayout();
 
     /* Use autoExclusive buttons and a mapper as QButtonGroup can't
        set focus (keys) when it manages the buttons's exclusivity.
@@ -199,7 +250,7 @@ SPrefsCatList::SPrefsCatList( intf_thread_t *_p_intf, QWidget *_parent, bool sma
     QSignalMapper *mapper = new QSignalMapper( layout );
     CONNECT( mapper, mapped(int), this, switchPanel(int) );
 
-    short icon_height = small ? ICON_HEIGHT /2 : ICON_HEIGHT;
+    short icon_height = ICON_HEIGHT;
 
 #define ADD_CATEGORY( button, label, ltooltip, icon, numb )                 \
     QToolButton * button = new QToolButton( this );                         \
@@ -207,9 +258,8 @@ SPrefsCatList::SPrefsCatList( intf_thread_t *_p_intf, QWidget *_parent, bool sma
     button->setText( label );                                               \
     button->setToolTip( ltooltip );                                         \
     button->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );              \
-    button->setIconSize( QSize( icon_height, icon_height ) );               \
-    button->resize( icon_height + 6 , icon_height + 6 );                    \
-    button->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding) ;  \
+    button->setIconSize( QSize( icon_height + 40 , icon_height ) );         \
+    button->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred        ); \
     button->setAutoRaise( true );                                           \
     button->setCheckable( true );                                           \
     button->setAutoExclusive( true );                                       \
@@ -236,10 +286,9 @@ SPrefsCatList::SPrefsCatList( intf_thread_t *_p_intf, QWidget *_parent, bool sma
     layout->setMargin( 0 );
     layout->setSpacing( 1 );
 
-    setMinimumWidth( 140 );
-    setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Preferred);
+    setMinimumWidth( ICON_HEIGHT * 6 + 10 );
     setLayout( layout );
-
 }
 
 void SPrefsCatList::switchPanel( int i )
@@ -251,7 +300,7 @@ void SPrefsCatList::switchPanel( int i )
  * The Panels
  *********************************************************************/
 SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
-                          int _number, bool small ) : QWidget( _parent ), p_intf( _p_intf )
+                          int _number ) : QWidget( _parent ), p_intf( _p_intf )
 {
     module_config_t *p_config;
     ConfigControl *control;
@@ -416,10 +465,13 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
 
 #define audioControl2( name) \
             audioCommon( name ) \
+            QHBoxLayout * name ## hboxLayout = new QHBoxLayout; \
             QLineEdit * name ## Device = new QLineEdit; \
             name ## Label->setBuddy( name ## Device ); \
+            name ## hboxLayout->addWidget( name ## Device ); \
             QPushButton * name ## Browse = new QPushButton( qtr( "Browse..." ) ); \
-            outputAudioLayout->addWidget( name ## Device, outputAudioLayout->rowCount() - 1, 0, 1, -1, Qt::AlignLeft );
+            name ## hboxLayout->addWidget( name ## Browse ); \
+            outputAudioLayout->addLayout( name ## hboxLayout, outputAudioLayout->rowCount() - 1, 1, 1, 1, Qt::AlignLeft );
 
             /* Build if necessary */
             QGridLayout * outputAudioLayout = qobject_cast<QGridLayout *>(ui.outputAudioBox->layout());
@@ -457,7 +509,7 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
                 optionWidgets["ossL"] = OSSLabel;
                 optionWidgets["ossW"] = OSSDevice;
                 optionWidgets["ossB"] = OSSBrowse;
-                CONFIG_GENERIC_FILE( "oss-audio-device" , File, NULL, OSSDevice,
+                CONFIG_GENERIC_FILE( "oss-audio-device" , File, OSSLabel, OSSDevice,
                                  OSSBrowse );
             }
 #endif
@@ -471,39 +523,6 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
             /* Audio Options */
             ui.volumeValue->setMaximum( i_max_volume );
             ui.defaultVolume->setMaximum( i_max_volume );
-
-            bool b_enabled = config_GetInt( p_intf, "volume-save" );
-            ui.resetVolumeCheckbox->setChecked( !b_enabled );
-
-            p_config = config_FindConfig( VLC_OBJECT(p_intf), "aout" );
-            char *psz_aout = p_config->value.psz;
-
-            int i_volume = 100; //FIXME not foolproof
-
-#define get_vol_aout( name ) \
-            module_exists( name ) && ( !psz_aout || !strcmp( psz_aout, name ) || !strcmp( psz_aout, "any" ) )
-
-#if defined( _WIN32 )
-            if( get_vol_aout( "directsound" ) )
-                i_volume = config_GetFloat( p_intf, "directx-volume") * 100 + 0.5;
-            else if( get_vol_aout( "waveout" ) )
-                i_volume = config_GetFloat( p_intf, "waveout-volume") * 100 + 0.5;
-#elif defined( Q_OS_MAC )
-            if( get_vol_aout( "auhal" ) )
-                i_volume = ( config_GetFloat( p_intf, "auhal-volume") * 100 + 0.5 )
-                    / AOUT_VOLUME_DEFAULT;
-#elif defined( __OS2__ )
-            if( get_vol_aout( "kai" ) )
-                i_volume = cbrtf( config_GetFloat( p_intf, "kai-gain" ) ) * 100 + 0.5;
-#else
-            if( get_vol_aout( "alsa" ) )
-                i_volume = cbrtf( config_GetFloat( p_intf, "alsa-gain" ) ) * 100 + 0.5;
-            else if( get_vol_aout( "jack" ) )
-                i_volume = cbrtf( config_GetFloat( p_intf, "jack-gain" ) ) * 100 + 0.5;
-#endif
-#undef get_vol_aout
-
-            ui.defaultVolume->setValue( i_volume );
 
             CONNECT( ui.defaultVolume, valueChanged( int ),
                      this, updateAudioVolume( int ) );
@@ -583,7 +602,7 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
             qs_filter = qfu( psz ).split( ':', QString::SkipEmptyParts );
             free( psz );
 
-            b_enabled = ( qs_filter.contains( "normvol" ) );
+            bool b_enabled = ( qs_filter.contains( "normvol" ) );
             ui.volNormBox->setChecked( b_enabled );
             ui.volNormSpin->setEnabled( b_enabled );
 
@@ -730,11 +749,6 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
 #else
             ui.osGroupBox->hide();
 #endif
-#ifdef MEDIA_LIBRARY
-            BUTTONACT( ui.sqlMLbtn, configML() );
-#else
-            ui.sqlMLbtn->hide();
-#endif
 
             /* interface */
             char *psz_intf = config_GetPsz( p_intf, "intf" );
@@ -797,8 +811,7 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
             CONFIG_GENERIC_FILE( "skins2-last", File, ui.skinFileLabel,
                                  ui.fileSkin, ui.skinBrowse );
 
-            CONFIG_GENERIC( "album-art", IntegerList, ui.artFetchLabel,
-                                                      artFetcher );
+            CONFIG_BOOL( "metadata-network-access", MetadataNetworkAccessMode );
 
             /* UPDATE options */
 #ifdef UPDATE_CHECK
@@ -918,19 +931,11 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
     panel_layout->addWidget( panel_label );
     panel_layout->addWidget( title_line );
 
-    if( small )
-    {
-        QScrollArea *scroller= new QScrollArea;
-        scroller->setWidget( panel );
-        scroller->setWidgetResizable( true );
-        scroller->setFrameStyle( QFrame::NoFrame );
-        panel_layout->addWidget( scroller );
-    }
-    else
-    {
-        panel_layout->addWidget( panel );
-        if( number != SPrefsHotkeys ) panel_layout->addStretch( 2 );
-    }
+    QScrollArea *scroller= new QScrollArea;
+    scroller->setWidget( panel );
+    scroller->setWidgetResizable( true );
+    scroller->setFrameStyle( QFrame::NoFrame );
+    panel_layout->addWidget( scroller );
 
     setLayout( panel_layout );
 
@@ -972,6 +977,22 @@ void SPrefsPanel::updateAudioOptions( int number)
     optionWidgets["fileW"]->setVisible( ( value == "afile" ) );
     optionWidgets["spdifChB"]->setVisible( ( value == "alsa" || value == "oss" || value == "auhal" ||
                                            value == "directsound" || value == "waveout" ) );
+
+    int volume = getDefaultAudioVolume(VLC_OBJECT(p_intf), qtu(value));
+    bool save = true;
+
+    if (volume >= 0)
+        save = config_GetInt(VLC_OBJECT(p_intf), "volume-save");
+
+    QCheckBox *resetVolumeCheckBox =
+        qobject_cast<QCheckBox *>(optionWidgets["resetVolumeCheckbox"]);
+    resetVolumeCheckBox->setChecked(!save);
+    resetVolumeCheckBox->setEnabled(volume >= 0);
+
+    QSlider *defaultVolume =
+        qobject_cast<QSlider *>(optionWidgets["defaultVolume"]);
+    defaultVolume->setValue((volume >= 0) ? volume : 100);
+    defaultVolume->setEnabled(volume >= 0);
 }
 
 
@@ -1157,7 +1178,7 @@ void SPrefsPanel::langChanged( int i )
 
 void SPrefsPanel::configML()
 {
-#ifdef MEDIA_LIBRARY
+#ifdef SQL_MEDIA_LIBRARY
     MLConfDialog *mld = new MLConfDialog( this, p_intf );
     mld->exec();
     delete mld;

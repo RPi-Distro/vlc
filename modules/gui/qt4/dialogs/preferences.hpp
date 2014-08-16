@@ -2,7 +2,7 @@
  * preferences.hpp : Preferences
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: ea71af8d95edb735842508289f08db1c7c18fca6 $
+ * $Id: c98853e8d027ae9a36130c6cea0b8b1bd1fd590e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -41,6 +41,7 @@ class QLabel;
 class SearchLineEdit;
 class QStackedWidget;
 class QSplitter;
+class QScrollArea;
 
 class PrefsDialog : public QVLCDialog
 {
@@ -74,8 +75,6 @@ private:
 
     QGroupBox *types;
     QRadioButton *simple,*all;
-
-    bool b_small;
 
 private slots:
     void setAdvanced();

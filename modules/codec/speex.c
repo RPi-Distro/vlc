@@ -2,7 +2,7 @@
  * speex.c: speex decoder/packetizer/encoder module making use of libspeex.
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 94fc27e1e4131ff5dd2c91866594b0e7971470fd $
+ * $Id: cbfb84a145a2f19a55f50e5480d4cddc600d27b8 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -265,6 +265,64 @@ static int OpenPacketizer( vlc_object_t *p_this )
     return i_ret;
 }
 
+static int CreateDefaultHeader( decoder_t *p_dec )
+{
+    ogg_packet oggpacket;
+    SpeexHeader *p_header = malloc( sizeof(SpeexHeader) );
+    if( !p_header )
+        return VLC_ENOMEM;
+
+    const int rate = p_dec->fmt_in.audio.i_rate;
+    const unsigned i_mode = (rate / 8000) >> 1;
+
+    const SpeexMode *mode;
+    int ret = VLC_SUCCESS;
+    oggpacket.packet = NULL;
+
+    switch( rate )
+    {
+        case 8000:
+        case 16000:
+        case 32000:
+            mode = speex_lib_get_mode( i_mode );
+            break;
+        default:
+            msg_Err( p_dec, "Unexpected rate %d", rate );
+            ret = VLC_EGENERIC;
+            goto cleanup;
+    }
+
+    speex_init_header( p_header, rate, p_dec->fmt_in.audio.i_channels, mode );
+    p_header->frames_per_packet = 160 << i_mode;
+
+    oggpacket.packet = (unsigned char *) speex_header_to_packet( p_header,
+            (int *) &oggpacket.bytes );
+    if( !oggpacket.packet )
+    {
+        ret = VLC_ENOMEM;
+        goto cleanup;
+    }
+
+    oggpacket.b_o_s = 1;
+    oggpacket.e_o_s = 0;
+    oggpacket.granulepos = -1;
+    oggpacket.packetno = 0;
+
+    ret = ProcessInitialHeader( p_dec, &oggpacket );
+
+    if( ret != VLC_SUCCESS )
+    {
+        msg_Err( p_dec, "default Speex header is corrupted" );
+    }
+
+cleanup:
+    free( oggpacket.packet );
+    free( p_header );
+
+    return ret;
+}
+
+
 /****************************************************************************
  * DecodeBlock: the whole thing
  ****************************************************************************
@@ -300,7 +358,17 @@ static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     /* Check for headers */
     if( !p_sys->b_has_headers )
     {
-        if( ProcessHeaders( p_dec ) )
+        if( !p_dec->fmt_in.p_extra )
+        {
+            msg_Warn( p_dec, "Header missing, using default settings" );
+
+            if( CreateDefaultHeader( p_dec ) )
+            {
+                block_Release( *pp_block );
+                return NULL;
+            }
+        }
+        else if( ProcessHeaders( p_dec ) )
         {
             block_Release( *pp_block );
             return NULL;
@@ -326,7 +394,7 @@ static int ProcessHeaders( decoder_t *p_dec )
                            p_dec->fmt_in.i_extra, p_dec->fmt_in.p_extra) )
         return VLC_EGENERIC;
     if( i_count < 2 )
-        goto error;
+        return VLC_EGENERIC;;
 
     oggpacket.granulepos = -1;
     oggpacket.e_o_s = 0;
@@ -339,7 +407,7 @@ static int ProcessHeaders( decoder_t *p_dec )
     if( ProcessInitialHeader( p_dec, &oggpacket ) != VLC_SUCCESS )
     {
         msg_Err( p_dec, "initial Speex header is corrupted" );
-        goto error;
+        return VLC_EGENERIC;;
     }
 
     /* The next packet in order is the comments header */
@@ -357,14 +425,7 @@ static int ProcessHeaders( decoder_t *p_dec )
                 p_dec->fmt_in.p_extra, p_dec->fmt_out.i_extra );
     }
 
-    for( unsigned i = 0; i < i_count; i++ )
-        free( pp_data[i] );
     return VLC_SUCCESS;
-
-error:
-    for( unsigned i = 0; i < i_count; i++ )
-        free( pp_data[i] );
-    return VLC_EGENERIC;
 }
 
 /*****************************************************************************
@@ -497,18 +558,18 @@ static void *ProcessPacket( decoder_t *p_dec, ogg_packet *p_oggpacket,
             i_pcm_output_size = p_sys->p_header->frame_size;
             p_frame_holder = (short*)xmalloc( sizeof(short)*i_pcm_output_size );
 
-                speex_bits_read_from( &p_sys->bits, (char*)p_oggpacket->packet,
+            speex_bits_read_from( &p_sys->bits, (char*)p_oggpacket->packet,
                 p_oggpacket->bytes);
-                i_bits_before = speex_bits_remaining( &p_sys->bits );
+            i_bits_before = speex_bits_remaining( &p_sys->bits );
             speex_decode_int(p_sys->p_state, &p_sys->bits, p_frame_holder);
             i_bits_after = speex_bits_remaining( &p_sys->bits );
 
-                i_bits_in_speex_frame = i_bits_before - i_bits_after;
+            i_bits_in_speex_frame = i_bits_before - i_bits_after;
             i_bytes_in_speex_frame = ( i_bits_in_speex_frame +
                 (8 - (i_bits_in_speex_frame % 8)) )
-                    / 8;
+                / 8;
 
-                p_new_block = block_Alloc( i_bytes_in_speex_frame );
+            p_new_block = block_Alloc( i_bytes_in_speex_frame );
             memset( p_new_block->p_buffer, 0xff, i_bytes_in_speex_frame );
 
             /*
@@ -583,15 +644,18 @@ static block_t *DecodeRtpSpeexPacket( decoder_t *p_dec, block_t **pp_block )
     */
     if ( p_sys->bits.buf_size==0 )
     {
-        p_sys->p_header = (SpeexHeader *)malloc(sizeof(SpeexHeader));
+        p_sys->p_header = malloc(sizeof(SpeexHeader));
         if ( !p_sys->p_header )
         {
             msg_Err( p_dec, "Could not allocate a Speex header.");
             return NULL;
         }
-        speex_init_header( p_sys->p_header,p_sys->rtp_rate,1,&speex_nb_mode );
-            speex_bits_init( &p_sys->bits );
-        p_sys->p_state = speex_decoder_init( &speex_nb_mode );
+
+        const SpeexMode *mode = speex_lib_get_mode((p_sys->rtp_rate / 8000) >> 1);
+
+        speex_init_header( p_sys->p_header,p_sys->rtp_rate, 1, mode );
+        speex_bits_init( &p_sys->bits );
+        p_sys->p_state = speex_decoder_init( mode );
         if ( !p_sys->p_state )
         {
             msg_Err( p_dec, "Could not allocate a Speex decoder." );
@@ -599,22 +663,22 @@ static block_t *DecodeRtpSpeexPacket( decoder_t *p_dec, block_t **pp_block )
             return NULL;
         }
 
-            /*
+        /*
           Assume that variable bit rate is enabled. Also assume
           that there is only one frame per packet.
         */
         p_sys->p_header->vbr = 1;
         p_sys->p_header->frames_per_packet = 1;
 
-            p_dec->fmt_out.audio.i_channels = p_sys->p_header->nb_channels;
+        p_dec->fmt_out.audio.i_channels = p_sys->p_header->nb_channels;
         p_dec->fmt_out.audio.i_physical_channels =
         p_dec->fmt_out.audio.i_original_channels =
             pi_channels_maps[p_sys->p_header->nb_channels];
-            p_dec->fmt_out.audio.i_rate = p_sys->p_header->rate;
+        p_dec->fmt_out.audio.i_rate = p_sys->p_header->rate;
 
-            if ( speex_mode_query( &speex_nb_mode,
-            SPEEX_MODE_FRAME_SIZE,
-            &i_speex_frame_size ) )
+        if ( speex_mode_query( &speex_nb_mode,
+                               SPEEX_MODE_FRAME_SIZE,
+                               &i_speex_frame_size ) )
         {
             msg_Err( p_dec, "Could not determine the frame size." );
             speex_decoder_destroy( p_sys->p_state );

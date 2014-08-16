@@ -2,7 +2,7 @@
  * dirac.c
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
- * $Id: 110db0cc82ebb2e00e75affb74d7dd4885b0c560 $
+ * $Id: 6deec7136671fdfedcb4bc591b38b7bfa77f1b03 $
  *
  * Authors: David Flynn <davidf@rd.bbc.co.uk>
  *
@@ -657,9 +657,8 @@ static block_t *dirac_EmitEOS( decoder_t *p_dec, uint32_t i_prev_parse_offset )
 
     p_block->i_flags = DIRAC_NON_DATED;
 
-    return p_block;
-
     (void) p_dec;
+    return p_block;
 }
 
 /***

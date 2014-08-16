@@ -20,37 +20,8 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-/* Go reading the rfc 4880 ! NOW !! */
-
-/*
- * XXX
- *  When PGP-signing a file, we only sign a SHA-1 hash of this file
- *  The DSA key size requires that we use an algorithm which produce
- *  a 160 bits long hash
- *  An alternative is RIPEMD160 , which you can use by giving the option
- *      --digest-algo RIPEMD160 to GnuPG
- *
- *  As soon as SHA-1 is broken, this method is not secure anymore, because an
- *  attacker could generate a file with the same SHA-1 hash.
- *
- *  Whenever this happens, we need to use another algorithm / type of key.
- * XXX
- */
-
 #include <vlc_update.h>
 #include <vlc_atomic.h>
-
-enum    /* Public key algorithms */
-{
-    /* we will only use DSA public keys */
-    PUBLIC_KEY_ALGO_DSA = 0x11
-};
-
-enum    /* Digest algorithms */
-{
-    /* and DSA use SHA-1 digest */
-    DIGEST_ALGO_SHA1    = 0x02
-};
 
 enum    /* Packet types */
 {
@@ -77,16 +48,16 @@ enum    /* Signature subpacket types */
 };
 
 struct public_key_packet_t
-{ /* a public key packet (DSA/SHA-1) is 418 bytes */
+{
 
     uint8_t version;      /* we use only version 4 */
     uint8_t timestamp[4]; /* creation time of the key */
     uint8_t algo;         /* we only use DSA */
     /* the multi precision integers, with their 2 bytes length header */
-    uint8_t p[2+128];
-    uint8_t q[2+20];
-    uint8_t g[2+128];
-    uint8_t y[2+128];
+    uint8_t p[2+3072/8];
+    uint8_t q[2+256/8];
+    uint8_t g[2+3072/8];
+    uint8_t y[2+3072/8];
 };
 
 /* used for public key and file signatures */
@@ -96,7 +67,7 @@ struct signature_packet_t
 
     uint8_t type;
     uint8_t public_key_algo;    /* DSA only */
-    uint8_t digest_algo;        /* SHA-1 only */
+    uint8_t digest_algo;
 
     uint8_t hash_verification[2];
     uint8_t issuer_longid[8];
@@ -120,14 +91,11 @@ struct signature_packet_t
 /* The part below is made of consecutive MPIs, their number and size being
  * public-key-algorithm dependent.
  *
- * Since we use DSA signatures only, there is 2 integers, r & s, made of:
- *      2 bytes for the integer length (scalar number)
- *      160 bits (20 bytes) for the integer itself
- *
- * Note: the integers may be less than 160 significant bits
+ * Since we use DSA signatures only, there is 2 integers, r & s.
+ * They range from 160 for 1k keys to 256 bits for 3k keys.
  */
-    uint8_t r[2+20];
-    uint8_t s[2+20];
+    uint8_t r[2+256/8];
+    uint8_t s[2+256/8];
 };
 
 typedef struct public_key_packet_t public_key_packet_t;
@@ -153,7 +121,7 @@ typedef struct
     VLC_COMMON_MEMBERS
 
     vlc_thread_t thread;
-    vlc_atomic_t aborted;
+    atomic_bool aborted;
     update_t *p_update;
     char *psz_destdir;
 } update_download_thread_t;
@@ -203,11 +171,10 @@ parse_public_key(
         const uint8_t *p_sig_issuer );
 
 /*
- * Verify an OpenPGP signature made on some SHA-1 hash, with some DSA public key
+ * Verify an OpenPGP signature made on some hash, with some DSA public key
  */
 int
-verify_signature(
-        uint8_t *p_r, uint8_t *p_s, public_key_packet_t *p_key,
+verify_signature(signature_packet_t *sign, public_key_packet_t *p_key,
         uint8_t *p_hash );
 
 /*
@@ -219,22 +186,21 @@ download_signature(
         vlc_object_t *p_this, signature_packet_t *p_sig, const char *psz_url );
 
 /*
- * return a sha1 hash of a text
+ * return a hash of a text
  */
 uint8_t *
-hash_sha1_from_text(
+hash_from_text(
         const char *psz_text, signature_packet_t *p_sig );
 
 /*
- * return a sha1 hash of a file
+ * return a hash of a file
  */
 uint8_t *
-hash_sha1_from_file(
+hash_from_file(
         const char *psz_file, signature_packet_t *p_sig );
 
 /*
- * return a sha1 hash of a public key
+ * return a hash of a public key
  */
 uint8_t *
-hash_sha1_from_public_key( public_key_t *p_pkey );
-
+hash_from_public_key( public_key_t *p_pkey );

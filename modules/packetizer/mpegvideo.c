@@ -2,7 +2,7 @@
  * mpegvideo.c: parse and packetize an MPEG1/2 video stream
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
- * $Id: 2020cfb0d41ecc86ff78eedd8d961762296f8191 $
+ * $Id: 038366cbbe1a497835b68af574d33be9d8b689b1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -389,7 +389,7 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
         if( b_eos )
             p_pic->i_flags |= BLOCK_FLAG_END_OF_SEQUENCE;
 
-        i_duration = (mtime_t)( 1000000 * p_sys->i_frame_rate_base /
+        i_duration = (mtime_t)( CLOCK_FREQ * p_sys->i_frame_rate_base /
                                 p_sys->i_frame_rate );
 
         if( !p_sys->b_seq_progressive && p_sys->i_picture_structure != 0x03 )

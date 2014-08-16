@@ -13,6 +13,10 @@ ZLIB_CONFIG_VARS=CHOST=$(HOST)
 endif
 endif
 
+ifdef HAVE_SOLARIS
+ZLIB_ECFLAGS = -fPIC -DPIC
+endif
+
 $(TARBALLS)/zlib-$(ZLIB_VERSION).tar.gz:
 	$(call download,$(ZLIB_URL))
 
@@ -20,10 +24,9 @@ $(TARBALLS)/zlib-$(ZLIB_VERSION).tar.gz:
 
 zlib: zlib-$(ZLIB_VERSION).tar.gz .sum-zlib
 	$(UNPACK)
-	$(APPLY) $(SRC)/zlib/zlib-wince.patch
 	$(MOVE)
 
 .zlib: zlib
-	cd $< && $(HOSTVARS) $(ZLIB_CONFIG_VARS) ./configure --prefix=$(PREFIX) --static
+	cd $< && $(HOSTVARS) $(ZLIB_CONFIG_VARS) CFLAGS="$(CFLAGS) $(ZLIB_ECFLAGS)" ./configure --prefix=$(PREFIX) --static
 	cd $< && $(MAKE) install
 	touch $@

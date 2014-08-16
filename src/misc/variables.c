@@ -2,7 +2,7 @@
  * variables.c: routines for object variables handling
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: e3d56b70097d994d5b2f3278b7fe9d4e53d1d981 $
+ * $Id: a631863460d2cc2687bc2b1059954a949debd1c8 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -584,10 +584,6 @@ int var_Change( vlc_object_t *p_this, const char *psz_name,
             p_val->psz_string = p_var->psz_text ? strdup( p_var->psz_text )
                                                 : NULL;
             break;
-        case VLC_VAR_SETISCOMMAND:
-            p_var->i_type |= VLC_VAR_ISCOMMAND;
-            break;
-
         default:
             break;
     }
@@ -1278,6 +1274,10 @@ int (var_InheritURational)(vlc_object_t *object,
             n = 0;
             d = 0;
         }
+    } else if ( *next == '\0' ) {
+        /* plain integer given */
+        *num = n;
+        *den = 1;
     }
 
     if (n > 0 && d > 0)

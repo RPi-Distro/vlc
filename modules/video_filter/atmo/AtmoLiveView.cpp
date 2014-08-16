@@ -5,7 +5,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 2f8d0167a302fa343d16730e46bd362259a56744 $
+ * $Id: 987bb6115ad6da3016a852fab5c62a0aeb67505b $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -121,7 +121,7 @@ DWORD CAtmoLiveView::Execute(void)
             if(PreviousPacket && (PreviousPacket->numColors == ColorPacket->numColors))
                 CopyColorPacket(ColorPacket, PreviousPacket)
             else {
-                delete (char *)PreviousPacket;
+                delete [] PreviousPacket;
                 DupColorPacket(PreviousPacket, ColorPacket )
             }
         } else {
@@ -196,7 +196,7 @@ DWORD CAtmoLiveView::Execute(void)
     pPacketQueue->ShowQueueStatus( m_pLog );
 #endif
 
-    delete (char *)PreviousPacket;
+    delete [] PreviousPacket;
 
     delete filter;
     return 0;

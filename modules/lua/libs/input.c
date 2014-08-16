@@ -2,7 +2,7 @@
  * input.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 9e1942c6bd75dd482f07fd8ee9afaf35b8528397 $
+ * $Id: 5b800802ac53d8941e38c5952bbbc139fe7af143 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -41,7 +41,6 @@
 
 #include "../vlc.h"
 #include "input.h"
-#include "playlist.h"
 #include "../libs.h"
 #include "../extension.h"
 
@@ -62,9 +61,16 @@ input_thread_t * vlclua_get_input_internal( lua_State *L )
             return p_input;
         }
     }
+
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
-    input_thread_t *p_input = playlist_CurrentInput( p_playlist );
-    return p_input;
+    if( p_playlist != NULL )
+    {
+        input_thread_t *p_input = playlist_CurrentInput( p_playlist );
+        if( p_input )
+            return p_input;
+    }
+
+    return NULL;
 }
 
 static int vlclua_input_item_info( lua_State *L )
@@ -146,6 +152,11 @@ static int vlclua_input_metas_internal( lua_State *L, input_item_t *p_item )
         PUSH_META( ArtworkURL, "artwork_url" );
         PUSH_META( TrackID, "track_id" );
         PUSH_META( TrackTotal, "track_total" );
+        PUSH_META( Director, "director" );
+        PUSH_META( Season, "season" );
+        PUSH_META( Episode, "episode" );
+        PUSH_META( ShowName, "show_name" );
+        PUSH_META( Actors, "actors" );
 
 #undef PUSH_META
 
@@ -207,9 +218,9 @@ static int vlclua_input_add_subtitle( lua_State *L )
     if( !p_input )
         return luaL_error( L, "can't add subtitle: no current input" );
     if( !lua_isstring( L, 1 ) )
-        return luaL_error( L, "vlc.input.add_subtitle() usage: (url)" );
-    const char *psz_url = luaL_checkstring( L, 1 );
-    input_AddSubtitle( p_input, psz_url, false );
+        return luaL_error( L, "vlc.input.add_subtitle() usage: (path)" );
+    const char *psz_path = luaL_checkstring( L, 1 );
+    input_AddSubtitle( p_input, psz_path, false );
     vlc_object_release( p_input );
     return 1;
 }
@@ -267,7 +278,7 @@ static int vlclua_input_item_get( lua_State *L, input_item_t *p_item )
 static int vlclua_input_item_get_current( lua_State *L )
 {
     input_thread_t *p_input = vlclua_get_input_internal( L );
-    input_item_t *p_item = ( p_input && p_input->p ) ? input_GetItem( p_input ) : NULL;
+    input_item_t *p_item = p_input ? input_GetItem( p_input ) : NULL;
     if( !p_item )
     {
         lua_pushnil( L );
@@ -343,6 +354,11 @@ static int vlclua_input_item_set_meta( lua_State *L )
         META_TYPE( ArtworkURL, "artwork_url" )
         META_TYPE( TrackID, "track_id" )
         META_TYPE( TrackTotal, "track_total" )
+        META_TYPE( Director, "director" )
+        META_TYPE( Season, "season" )
+        META_TYPE( Episode, "episode" )
+        META_TYPE( ShowName, "show_name" )
+        META_TYPE( Actors, "actors" )
     };
 #undef META_TYPE
 

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2008 Rémi Denis-Courmont
  * Copyright (C) 2009 Laurent Aimar
- * $Id: e7944685b6ca9092ca77ec20d5aff55d32929e6b $
+ * $Id: ed7d42c89657225e42bcf8dab18a61710f41d635 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -45,6 +45,7 @@ enum {
     VOUT_WINDOW_TYPE_XID,
     VOUT_WINDOW_TYPE_HWND,
     VOUT_WINDOW_TYPE_NSOBJECT,
+    VOUT_WINDOW_TYPE_ANDROID_NATIVE,
 };
 
 /**
@@ -80,14 +81,17 @@ typedef struct {
 struct vout_window_t {
     VLC_COMMON_MEMBERS
 
+    unsigned type; /**< Window handle type */
+
     /* window handle (mandatory)
      *
      * It must be filled in the open function.
      */
     union {
-        void     *hwnd;     /* Win32 window handle */
-        uint32_t xid;       /* X11 windows ID */
-        void     *nsobject; /* Mac OSX view object */
+        void     *hwnd;          /* Win32 window handle */
+        uint32_t xid;            /* X11 windows ID */
+        void     *nsobject;      /* Mac OSX view object */
+        void     *anativewindow; /* Android native window. */
     } handle;
 
     /* display server (mandatory) */

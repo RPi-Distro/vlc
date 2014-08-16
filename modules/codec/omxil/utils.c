@@ -2,7 +2,7 @@
  * utils.c: helper functions
  *****************************************************************************
  * Copyright (C) 2010 VLC authors and VideoLAN
- * $Id: 4736b7e35777fe207233b36e9188803d211601f3 $
+ * $Id: af050c3a857bb905446aaa6fdbaa1fa95a38ac0a $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -36,6 +36,7 @@
 
 #include "omxil.h"
 #include "qcom.h"
+#include "../../video_chroma/copy.h"
 
 /*****************************************************************************
  * Events utility functions
@@ -163,9 +164,47 @@ void PrintOmxEvent(vlc_object_t *p_this, OMX_EVENTTYPE event, OMX_U32 data_1,
 /*****************************************************************************
  * Picture utility functions
  *****************************************************************************/
+void ArchitectureSpecificCopyHooks( decoder_t *p_dec, int i_color_format,
+                                    int i_slice_height, int i_src_stride,
+                                    ArchitectureSpecificCopyData *p_architecture_specific )
+{
+    (void)i_slice_height;
+
+#ifdef CAN_COMPILE_SSE2
+    if( i_color_format == OMX_COLOR_FormatYUV420SemiPlanar && vlc_CPU_SSE2() )
+    {
+        copy_cache_t *p_surface_cache = malloc( sizeof(copy_cache_t) );
+        if( !p_surface_cache || CopyInitCache( p_surface_cache, i_src_stride ) )
+        {
+            free( p_surface_cache );
+            return;
+        }
+        p_architecture_specific->data = p_surface_cache;
+        p_dec->fmt_out.i_codec = VLC_CODEC_YV12;
+    }
+#endif
+}
+
+void ArchitectureSpecificCopyHooksDestroy( int i_color_format,
+                                           ArchitectureSpecificCopyData *p_architecture_specific )
+{
+    if (!p_architecture_specific->data)
+        return;
+#ifdef CAN_COMPILE_SSE2
+    if( i_color_format == OMX_COLOR_FormatYUV420SemiPlanar && vlc_CPU_SSE2() )
+    {
+        copy_cache_t *p_surface_cache = (copy_cache_t*)p_architecture_specific->data;
+        CopyCleanCache(p_surface_cache);
+    }
+#endif
+    free(p_architecture_specific->data);
+    p_architecture_specific->data = NULL;
+}
+
 void CopyOmxPicture( int i_color_format, picture_t *p_pic,
                      int i_slice_height,
-                     int i_src_stride, uint8_t *p_src, int i_chroma_div )
+                     int i_src_stride, uint8_t *p_src, int i_chroma_div,
+                     ArchitectureSpecificCopyData *p_architecture_specific )
 {
     uint8_t *p_dst;
     int i_dst_stride;
@@ -175,6 +214,17 @@ void CopyOmxPicture( int i_color_format, picture_t *p_pic,
         qcom_convert(p_src, p_pic);
         return;
     }
+#ifdef CAN_COMPILE_SSE2
+    if( i_color_format == OMX_COLOR_FormatYUV420SemiPlanar
+        && vlc_CPU_SSE2() && p_architecture_specific->data )
+    {
+        copy_cache_t *p_surface_cache = (copy_cache_t*)p_architecture_specific->data;
+        uint8_t *ppi_src_pointers[2] = { p_src, p_src + i_src_stride * i_slice_height };
+        size_t pi_src_strides[2] = { i_src_stride, i_src_stride };
+        CopyFromNv12( p_pic, ppi_src_pointers, pi_src_strides, i_src_stride, i_slice_height, p_surface_cache );
+        return;
+    }
+#endif
 
     for( i_plane = 0; i_plane < p_pic->i_planes; i_plane++ )
     {
@@ -428,8 +478,9 @@ static const struct
     { VLC_CODEC_I420, OMX_COLOR_FormatYUV420PackedPlanar, 3, 1, 2 },
     { VLC_CODEC_NV12, OMX_COLOR_FormatYUV420SemiPlanar, 3, 1, 1 },
     { VLC_CODEC_NV21, OMX_QCOM_COLOR_FormatYVU420SemiPlanar, 3, 1, 1 },
-    { VLC_CODEC_NV12, OMX_TI_COLOR_FormatYUV420PackedSemiPlanar, 3, 1, 2 },
+    { VLC_CODEC_NV12, OMX_TI_COLOR_FormatYUV420PackedSemiPlanar, 3, 1, 1 },
     { VLC_CODEC_NV12, QOMX_COLOR_FormatYUV420PackedSemiPlanar64x32Tile2m8ka, 3, 1, 1 },
+    { VLC_CODEC_NV12, OMX_QCOM_COLOR_FormatYUV420PackedSemiPlanar32m, 3, 1, 1 },
     { VLC_CODEC_YUYV, OMX_COLOR_FormatYCbYCr, 4, 2, 0 },
     { VLC_CODEC_YVYU, OMX_COLOR_FormatYCrYCb, 4, 2, 0 },
     { VLC_CODEC_UYVY, OMX_COLOR_FormatCbYCrY, 4, 2, 0 },
@@ -991,4 +1042,93 @@ void PrintOmx(decoder_t *p_dec, OMX_HANDLETYPE omx_handle, OMX_U32 i_port)
             }
         }
     }
+}
+
+bool h264_get_profile_level(const es_format_t *p_fmt, size_t *p_profile, size_t *p_level, size_t *p_nal_size)
+{
+    uint8_t *p = (uint8_t*)p_fmt->p_extra;
+    if(!p || !p_fmt->p_extra) return false;
+
+    /* Check the profile / level */
+    if(p_fmt->i_original_fourcc == VLC_FOURCC('a','v','c','1') &&
+       p[0] == 1)
+    {
+	if(p_fmt->i_extra < 12) return false;
+	if (p_nal_size) *p_nal_size = 1 + (p[4]&0x03);
+	if( !(p[5]&0x1f) ) return false;
+	p += 8;
+    }
+    else
+    {
+	if(p_fmt->i_extra < 8) return false;
+	if(!p[0] && !p[1] && !p[2] && p[3] == 1) p += 4;
+	else if(!p[0] && !p[1] && p[2] == 1) p += 3;
+	else return false;
+    }
+
+    if( ((*p++)&0x1f) != 7) return false;
+
+    /* Get profile/level out of first SPS */
+    if (p_profile) *p_profile = p[0];
+    if (p_level) *p_level = p[2];
+    return true;
+}
+
+static const struct
+{
+    OMX_VIDEO_AVCPROFILETYPE omx_profile;
+    size_t                   profile_idc;
+} omx_to_profile_idc[] =
+{
+    { OMX_VIDEO_AVCProfileBaseline,  66 },
+    { OMX_VIDEO_AVCProfileMain,      77 },
+    { OMX_VIDEO_AVCProfileExtended,  88 },
+    { OMX_VIDEO_AVCProfileHigh,     100 },
+    { OMX_VIDEO_AVCProfileHigh10,   110 },
+    { OMX_VIDEO_AVCProfileHigh422,  122 },
+    { OMX_VIDEO_AVCProfileHigh444,  244 },
+};
+
+size_t convert_omx_to_profile_idc(OMX_VIDEO_AVCPROFILETYPE profile_type)
+{
+    size_t array_length = sizeof(omx_to_profile_idc)/sizeof(omx_to_profile_idc[0]);
+    for (size_t i = 0; i < array_length; ++i) {
+        if (omx_to_profile_idc[i].omx_profile == profile_type)
+            return omx_to_profile_idc[i].profile_idc;
+    }
+    return 0;
+}
+
+static const struct
+{
+    OMX_VIDEO_AVCLEVELTYPE omx_level;
+    size_t                 level_idc;
+} omx_to_level_idc[] =
+{
+    { OMX_VIDEO_AVCLevel1,  10 },
+    { OMX_VIDEO_AVCLevel1b,  9 },
+    { OMX_VIDEO_AVCLevel11, 11 },
+    { OMX_VIDEO_AVCLevel12, 12 },
+    { OMX_VIDEO_AVCLevel13, 13 },
+    { OMX_VIDEO_AVCLevel2,  20 },
+    { OMX_VIDEO_AVCLevel21, 21 },
+    { OMX_VIDEO_AVCLevel22, 22 },
+    { OMX_VIDEO_AVCLevel3,  30 },
+    { OMX_VIDEO_AVCLevel31, 31 },
+    { OMX_VIDEO_AVCLevel32, 32 },
+    { OMX_VIDEO_AVCLevel4,  40 },
+    { OMX_VIDEO_AVCLevel41, 41 },
+    { OMX_VIDEO_AVCLevel42, 42 },
+    { OMX_VIDEO_AVCLevel5,  50 },
+    { OMX_VIDEO_AVCLevel51, 51 },
+};
+
+size_t convert_omx_to_level_idc(OMX_VIDEO_AVCLEVELTYPE level_type)
+{
+    size_t array_length = sizeof(omx_to_level_idc)/sizeof(omx_to_level_idc[0]);
+    for (size_t i = 0; i < array_length; ++i) {
+        if (omx_to_level_idc[i].omx_level == level_type)
+            return omx_to_level_idc[i].level_idc;
+    }
+    return 0;
 }

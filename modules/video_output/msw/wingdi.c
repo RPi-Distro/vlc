@@ -2,7 +2,7 @@
  * wingdi.c : Win32 / WinCE GDI video output plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: 7ead2b4ffb7f03a7c56095c6ad315956bbec32a3 $
+ * $Id: 761af9a3f43e92e9a22230c855b4357498789b98 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -36,13 +36,8 @@
 #include <vlc_vout_display.h>
 
 #include <windows.h>
-#include <commctrl.h>
 
 #include "common.h"
-
-#ifndef WS_NONAVDONEBUTTON
-#   define WS_NONAVDONEBUTTON 0
-#endif
 
 /*****************************************************************************
  * Module descriptor
@@ -129,6 +124,7 @@ static picture_pool_t *Pool(vout_display_t *vd, unsigned count)
     VLC_UNUSED(count);
     return vd->sys->pool;
 }
+
 static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpicture)
 {
     vout_display_sys_t *sys = vd->sys;
@@ -172,6 +168,7 @@ static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
 
     CommonDisplay(vd);
 }
+
 static int Control(vout_display_t *vd, int query, va_list args)
 {
     switch (query) {
@@ -183,6 +180,7 @@ static int Control(vout_display_t *vd, int query, va_list args)
     }
 
 }
+
 static void Manage(vout_display_t *vd)
 {
     CommonManage(vd);
@@ -298,10 +296,8 @@ static int Init(vout_display_t *vd,
         cfg.picture_count = 1;
         cfg.picture = &picture;
         sys->pool = picture_pool_NewExtended(&cfg);
-    } else {
-        free(rsc.p_sys);
+    } else
         sys->pool = NULL;
-    }
 
     UpdateRects(vd, NULL, NULL, true);
 

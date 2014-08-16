@@ -2,7 +2,7 @@
  * avcodec.h: decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 2001-2013 VLC authors and VideoLAN
- * $Id: 8f0efc12cdf4b364a99397561d215bdccee19c31 $
+ * $Id: 3fc14dc163885eb5ac80d955e3159a506f0dcfed $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -412,7 +412,9 @@ enum {
     AV_CODEC_ID_MLP,
     AV_CODEC_ID_GSM_MS, /* as found in WAV */
     AV_CODEC_ID_ATRAC3,
+#if LIBAVCODEC_VERSION_MAJOR < 56
     AV_CODEC_ID_VOXWARE,
+#endif
     AV_CODEC_ID_APE,
     AV_CODEC_ID_NELLYMOSER,
     AV_CODEC_ID_MUSEPACK8,
@@ -494,6 +496,23 @@ enum {
 #   define AV_CPU_FLAG_MMXEXT       AV_CPU_FLAG_MMX2
 #endif
 
+#if !LIBAVUTIL_VERSION_CHECK( 52, 11, 0, 32, 100 )
+#   define AV_PIX_FMT_FLAG_HWACCEL  PIX_FMT_HWACCEL
+#endif
+
+#if !LIBAVUTIL_VERSION_CHECK( 51, 44, 0, 76, 100 )
+#   define av_pix_fmt_desc_get(a) &av_pix_fmt_descriptors[a]
+#endif
+
 #endif /* HAVE_LIBAVUTIL_AVUTIL_H */
+
+#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+# include <libavformat/avformat.h>
+
+#define LIBAVFORMAT_VERSION_CHECK( a, b, c, d, e ) \
+    ( (LIBAVFORMAT_VERSION_MICRO <  100 && LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT( a, b, c ) ) || \
+      (LIBAVFORMAT_VERSION_MICRO >= 100 && LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT( a, d, e ) ) )
+
+#endif
 
 #endif

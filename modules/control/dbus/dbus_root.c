@@ -1,11 +1,11 @@
 /*****************************************************************************
- * dbus_root.c : dbus control module (mpris v1.0) - root object
+ * dbus_root.c : dbus control module (mpris v2.2) - Root object
  *****************************************************************************
  * Copyright © 2006-2008 Rafaël Carré
  * Copyright © 2007-2011 Mirsal Ennaime
  * Copyright © 2009-2011 The VideoLAN team
  * Copyright © 2013      Alex Merry
- * $Id: 7702034164a791549b4745a58d56f293e9740716 $
+ * $Id: 384254916ff5d3939b8db25b62ccd5d87534e8bb $
  *
  * Authors:    Mirsal Ennaime <mirsal at mirsal fr>
  *             Rafaël Carré <funman at videolanorg>
@@ -43,13 +43,13 @@
 #include "dbus_root.h"
 #include "dbus_common.h"
 
-static const char const ppsz_supported_uri_schemes[][9] = {
+static const char ppsz_supported_uri_schemes[][9] = {
     "file", "http", "https", "rtsp", "realrtsp", "pnm", "ftp", "mtp", "smb",
     "mms", "mmsu", "mmst", "mmsh", "unsv", "itpc", "icyx", "rtmp", "rtp",
     "dccp", "dvd", "vcd", "vcdx"
 };
 
-static const char const ppsz_supported_mime_types[][26] = {
+static const char ppsz_supported_mime_types[][26] = {
     "audio/mpeg", "audio/x-mpeg",
     "video/mpeg", "video/x-mpeg",
     "video/mpeg-system", "video/x-mpeg-system",
@@ -446,17 +446,6 @@ handle_root ( DBusConnection *p_conn, DBusMessage *p_from, void *p_this )
  * PropertiesChangedSignal() synthetizes and sends the
  * org.freedesktop.DBus.Properties.PropertiesChanged signal
  */
-
-#define PROPERTY_MAPPING_BEGIN if( 0 ) {}
-#define PROPERTY_ENTRY( prop, signature ) \
-    else if( !strcmp( ppsz_properties[i], #prop ) ) \
-    { \
-        if( VLC_SUCCESS != AddProperty( (intf_thread_t*) p_intf, \
-                    &changed_properties, #prop, signature, Marshal##prop ) ) \
-            return DBUS_HANDLER_RESULT_NEED_MEMORY; \
-    }
-#define PROPERTY_MAPPING_END else { return DBUS_HANDLER_RESULT_NOT_YET_HANDLED; }
-
 static DBusHandlerResult
 PropertiesChangedSignal( intf_thread_t    *p_intf,
                          vlc_dictionary_t *p_changed_properties )
@@ -489,12 +478,12 @@ PropertiesChangedSignal( intf_thread_t    *p_intf,
 
     for( int i = 0; i < i_properties; i++ )
     {
-        PROPERTY_MAPPING_BEGIN
-        PROPERTY_ENTRY( Fullscreen, "b" )
-        PROPERTY_MAPPING_END
-
+        if( !strcmp( ppsz_properties[i], "Fullscreen" ) )
+             AddProperty( p_intf, &changed_properties, "Fullscreen", "b",
+                          MarshalFullscreen );
         free( ppsz_properties[i] );
     }
+    free( ppsz_properties );
 
     if( !dbus_message_iter_close_container( &args, &changed_properties ) )
         return DBUS_HANDLER_RESULT_NEED_MEMORY;
@@ -505,8 +494,6 @@ PropertiesChangedSignal( intf_thread_t    *p_intf,
 
     if( !dbus_message_iter_close_container( &args, &invalidated_properties ) )
         return DBUS_HANDLER_RESULT_NEED_MEMORY;
-
-    free( ppsz_properties );
 
     SIGNAL_SEND;
 }

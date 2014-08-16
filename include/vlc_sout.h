@@ -2,7 +2,7 @@
  * vlc_sout.h : stream output module
  *****************************************************************************
  * Copyright (C) 2002-2008 VLC authors and VideoLAN
- * $Id: 87d8229baee6c6e09e9fe11e1ee4c4761d749af4 $
+ * $Id: b9366f790374562525f49d5449ec882fff348ddf $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -56,9 +56,9 @@ struct sout_instance_t
 };
 
 /****************************************************************************
- * sout_stream_id_t: opaque (private for all sout_stream_t)
+ * sout_stream_id_sys_t: opaque (private for all sout_stream_t)
  ****************************************************************************/
-typedef struct sout_stream_id_t  sout_stream_id_t;
+typedef struct sout_stream_id_sys_t  sout_stream_id_sys_t;
 
 /** Stream output access_output */
 struct sout_access_out_t
@@ -81,6 +81,7 @@ struct sout_access_out_t
 enum access_out_query_e
 {
     ACCESS_OUT_CONTROLS_PACE, /* arg1=bool *, can fail (assume true) */
+    ACCESS_OUT_CAN_SEEK, /* arg1=bool *, can fail (assume true) */
 };
 
 VLC_API sout_access_out_t * sout_AccessOutNew( vlc_object_t *, const char *psz_access, const char *psz_name ) VLC_USED;
@@ -156,7 +157,7 @@ VLC_API sout_mux_t * sout_MuxNew( sout_instance_t*, const char *, sout_access_ou
 VLC_API sout_input_t * sout_MuxAddStream( sout_mux_t *, es_format_t * ) VLC_USED;
 VLC_API void sout_MuxDeleteStream( sout_mux_t *, sout_input_t * );
 VLC_API void sout_MuxDelete( sout_mux_t * );
-VLC_API void sout_MuxSendBuffer( sout_mux_t *, sout_input_t  *, block_t * );
+VLC_API int sout_MuxSendBuffer( sout_mux_t *, sout_input_t  *, block_t * );
 VLC_API int sout_MuxGetStream(sout_mux_t *, int , mtime_t *);
 
 static inline int sout_MuxControl( sout_mux_t *p_mux, int i_query, ... )
@@ -185,10 +186,10 @@ struct sout_stream_t
     sout_stream_t     *p_next;
 
     /* add, remove a stream */
-    sout_stream_id_t *(*pf_add)( sout_stream_t *, es_format_t * );
-    int               (*pf_del)( sout_stream_t *, sout_stream_id_t * );
+    sout_stream_id_sys_t *(*pf_add)( sout_stream_t *, es_format_t * );
+    int               (*pf_del)( sout_stream_t *, sout_stream_id_sys_t * );
     /* manage a packet */
-    int               (*pf_send)( sout_stream_t *, sout_stream_id_t *, block_t* );
+    int               (*pf_send)( sout_stream_t *, sout_stream_id_sys_t *, block_t* );
 
     sout_stream_sys_t *p_sys;
     bool pace_nocontrol;
@@ -198,15 +199,15 @@ VLC_API void sout_StreamChainDelete(sout_stream_t *p_first, sout_stream_t *p_las
 VLC_API sout_stream_t *sout_StreamChainNew(sout_instance_t *p_sout,
         char *psz_chain, sout_stream_t *p_next, sout_stream_t **p_last) VLC_USED;
 
-static inline sout_stream_id_t *sout_StreamIdAdd( sout_stream_t *s, es_format_t *fmt )
+static inline sout_stream_id_sys_t *sout_StreamIdAdd( sout_stream_t *s, es_format_t *fmt )
 {
     return s->pf_add( s, fmt );
 }
-static inline int sout_StreamIdDel( sout_stream_t *s, sout_stream_id_t *id )
+static inline int sout_StreamIdDel( sout_stream_t *s, sout_stream_id_sys_t *id )
 {
     return s->pf_del( s, id );
 }
-static inline int sout_StreamIdSend( sout_stream_t *s, sout_stream_id_t *id, block_t *b )
+static inline int sout_StreamIdSend( sout_stream_t *s, sout_stream_id_sys_t *id, block_t *b )
 {
     return s->pf_send( s, id, b );
 }

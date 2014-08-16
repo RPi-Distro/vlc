@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 07003240c8717589b91b554f2f36d14889b7936c $
+ * $Id: 430d234494fc9d91b3325e15dfdc02da7e3bb5fe $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rémi Denis-Courmont
@@ -40,9 +40,8 @@
 #include <vlc_network.h>
 #include <vlc_charset.h>
 
-#ifdef HAVE_UNISTD_H
-#    include <unistd.h>
-#endif
+#include <errno.h>
+#include <unistd.h>
 #ifdef HAVE_ARPA_INET_H
 # include <arpa/inet.h>
 #endif
@@ -557,7 +556,8 @@ static void *Run( void *data )
                     i_read = net_Read (p_sd, ufd[i].fd, NULL, p_buffer,
                                        MAX_SAP_BUFFER, false);
                     if (i_read < 0)
-                        msg_Warn (p_sd, "receive error: %m");
+                        msg_Warn (p_sd, "receive error: %s",
+                                  vlc_strerror_c(errno));
                     if (i_read > 6)
                     {
                         /* Parse the packet */
@@ -750,12 +750,12 @@ static int ParseSAP( services_discovery_t *p_sd, const uint8_t *buf,
         if (strcmp (psz_sdp, "application/sdp"))
         {
             msg_Dbg (p_sd, "unsupported content type: %s", psz_sdp);
-            return VLC_EGENERIC;
+            goto error;
         }
 
         // skips content type
         if (len <= clen)
-            return VLC_EGENERIC;
+            goto error;
 
         len -= clen;
         psz_sdp += clen;
@@ -765,7 +765,7 @@ static int ParseSAP( services_discovery_t *p_sd, const uint8_t *buf,
     p_sdp = ParseSDP( VLC_OBJECT(p_sd), psz_sdp );
 
     if( p_sdp == NULL )
-        return VLC_EGENERIC;
+        goto error;
 
     p_sdp->psz_sdp = psz_sdp;
 
@@ -785,7 +785,7 @@ static int ParseSAP( services_discovery_t *p_sd, const uint8_t *buf,
     if( p_sdp->psz_uri == NULL )
     {
         FreeSDP( p_sdp );
-        return VLC_EGENERIC;
+        goto error;
     }
 
     for( i = 0 ; i< p_sd->p_sys->i_announces ; i++ )
@@ -817,15 +817,19 @@ static int ParseSAP( services_discovery_t *p_sd, const uint8_t *buf,
                 p_announce->i_period = ( p_announce->i_period * (p_announce->i_period_trust-1) + (now - p_announce->i_last) ) / p_announce->i_period_trust;
                 p_announce->i_last = now;
             }
-            FreeSDP( p_sdp ); p_sdp = NULL;
+            FreeSDP( p_sdp );
+            free (decomp);
             return VLC_SUCCESS;
         }
     }
 
     CreateAnnounce( p_sd, i_source, i_hash, p_sdp );
 
-    FREENULL (decomp);
+    free (decomp);
     return VLC_SUCCESS;
+error:
+    free (decomp);
+    return VLC_EGENERIC;
 }
 
 sap_announce_t *CreateAnnounce( services_discovery_t *p_sd, uint32_t *i_source, uint16_t i_hash,
@@ -852,14 +856,18 @@ sap_announce_t *CreateAnnounce( services_discovery_t *p_sd, uint32_t *i_source, 
     p_input = input_item_NewWithType( p_sap->p_sdp->psz_uri,
                                       p_sdp->psz_sessionname,
                                       0, NULL, 0, -1, ITEM_TYPE_NET );
-    vlc_meta_t *p_meta = vlc_meta_New();
-    vlc_meta_Set( p_meta, vlc_meta_Description, p_sdp->psz_sessioninfo );
-    p_input->p_meta = p_meta;
-    p_sap->p_item = p_input;
-    if( !p_input )
+    if( unlikely(p_input == NULL) )
     {
         free( p_sap );
         return NULL;
+    }
+    p_sap->p_item = p_input;
+
+    vlc_meta_t *p_meta = vlc_meta_New();
+    if( likely(p_meta != NULL) )
+    {
+        vlc_meta_Set( p_meta, vlc_meta_Description, p_sdp->psz_sessioninfo );
+        p_input->p_meta = p_meta;
     }
 
     if( p_sdp->rtcp_port )
@@ -1251,7 +1259,7 @@ static sdp_t *ParseSDP (vlc_object_t *p_obj, const char *psz_sdp)
                 {
                     msg_Dbg (p_obj, "SDP origin not supported: %s", data);
                     /* Or maybe out-of-range, but this looks suspicious */
-                    return NULL;
+                    goto error;
                 }
                 EnsureUTF8 (p_sdp->orig_host);
                 break;

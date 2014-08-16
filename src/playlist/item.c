@@ -2,7 +2,7 @@
  * item.c : Playlist item creation/deletion/add/removal functions
  *****************************************************************************
  * Copyright (C) 1999-2007 VLC authors and VideoLAN
- * $Id: c6113b1015fbd1e2030b1290a89ec2113befe9a4 $
+ * $Id: 92814819d9b563860cddcb63da1abbda5866c251 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -146,10 +146,7 @@ static void input_item_add_subitem_tree ( const vlc_event_t * p_event,
 
             if( var_GetBool( p_playlist, "random" ) )
             {
-                unsigned rand_pos =
-                    ((unsigned)vlc_mrand48()) % (last_pos - pos);
-                rand_pos += pos;
-                p_play_item = p_item->pp_children[rand_pos];
+                p_play_item = NULL;
             }
             else
             {
@@ -752,27 +749,27 @@ mtime_t playlist_GetNodeDuration( playlist_item_t* node )
 static void GoAndPreparse( playlist_t *p_playlist, int i_mode,
                            playlist_item_t *p_item )
 {
+    playlist_private_t *sys = pl_priv(p_playlist);
+
     PL_ASSERT_LOCKED;
     if( (i_mode & PLAYLIST_GO ) )
     {
-        pl_priv(p_playlist)->request.b_request = true;
-        pl_priv(p_playlist)->request.i_skip = 0;
-        pl_priv(p_playlist)->request.p_item = p_item;
-        if( pl_priv(p_playlist)->p_input )
-            input_Stop( pl_priv(p_playlist)->p_input, true );
-        pl_priv(p_playlist)->request.i_status = PLAYLIST_RUNNING;
-        vlc_cond_signal( &pl_priv(p_playlist)->signal );
+        sys->request.b_request = true;
+        sys->request.i_skip = 0;
+        sys->request.p_item = p_item;
+        if( sys->p_input != NULL )
+            input_Stop( sys->p_input, true );
+        sys->request.i_status = PLAYLIST_RUNNING;
+        vlc_cond_signal( &sys->signal );
     }
     /* Preparse if no artist/album info, and hasn't been preparsed allready
        and if user has some preparsing option (auto-preparse variable)
        enabled*/
     char *psz_artist = input_item_GetArtist( p_item->p_input );
     char *psz_album = input_item_GetAlbum( p_item->p_input );
-    if( pl_priv(p_playlist)->b_auto_preparse &&
-        input_item_IsPreparsed( p_item->p_input ) == false &&
-            ( EMPTY_STR( psz_artist ) || ( EMPTY_STR( psz_album ) ) )
-          )
-        playlist_PreparseEnqueue( p_playlist, p_item->p_input );
+    if( sys->p_preparser != NULL && !input_item_IsPreparsed( p_item->p_input )
+     && (EMPTY_STR(psz_artist) || EMPTY_STR(psz_album)) )
+        playlist_preparser_Push( sys->p_preparser, p_item->p_input, 0 );
     free( psz_artist );
     free( psz_album );
 }

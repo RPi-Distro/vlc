@@ -2,12 +2,12 @@
  * VLCMinimalVoutWindow.m: MacOS X Minimal interface window
  *****************************************************************************
  * Copyright (C) 2007-2012 VLC authors and VideoLAN
- * $Id: 311bb8b64e1329db75a0e068a8fad06fb1298517 $
+ * $Id: 143291e5d1fe314e558c34d1120fd07680e57a11 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
  *
- * This program is free software; you can redistribute it and/or modify it it it
+ * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
@@ -18,7 +18,7 @@
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program; if not, write to the Free Software Foundation, Foundation, Foundation,
+ * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 

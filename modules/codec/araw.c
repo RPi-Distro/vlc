@@ -2,7 +2,7 @@
  * araw.c: Pseudo audio decoder; for raw pcm data
  *****************************************************************************
  * Copyright (C) 2001, 2003 VLC authors and VideoLAN
- * $Id: b8064efa544f5a7e8b151978e91bf74aad11317e $
+ * $Id: a4b0f115e9f9aeb084cd420f562916e065a83de6 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -28,6 +28,7 @@
 # include "config.h"
 #endif
 
+#include <math.h>
 #include <assert.h>
 
 #include <vlc_common.h>
@@ -96,7 +97,9 @@ static void S24L32Decode( void *, const uint8_t *, unsigned );
 static void U32BDecode( void *, const uint8_t *, unsigned );
 static void U32LDecode( void *, const uint8_t *, unsigned );
 static void S32IDecode( void *, const uint8_t *, unsigned );
+static void F32NDecode( void *, const uint8_t *, unsigned );
 static void F32IDecode( void *, const uint8_t *, unsigned );
+static void F64NDecode( void *, const uint8_t *, unsigned );
 static void F64IDecode( void *, const uint8_t *, unsigned );
 static void DAT12Decode( void *, const uint8_t *, unsigned );
 
@@ -139,7 +142,10 @@ static int DecoderOpen( vlc_object_t *p_this )
 #endif
         format = VLC_CODEC_FL64;
         decode = F64IDecode;
+        bits = 64;
+        break;
     case VLC_CODEC_FL64:
+        decode = F64NDecode;
         bits = 64;
         break;
 #ifdef WORDS_BIGENDIAN
@@ -149,7 +155,10 @@ static int DecoderOpen( vlc_object_t *p_this )
 #endif
         format = VLC_CODEC_FL32;
         decode = F32IDecode;
+        bits = 32;
+        break;
     case VLC_CODEC_FL32:
+        decode = F32NDecode;
         bits = 32;
         break;
     case VLC_CODEC_U32B:
@@ -297,10 +306,13 @@ static int DecoderOpen( vlc_object_t *p_this )
 static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-
-    if( !pp_block || !*pp_block ) return NULL;
+    if( pp_block == NULL )
+        return NULL;
 
     block_t *p_block = *pp_block;
+    if( p_block == NULL )
+        return NULL;
+    *pp_block = NULL;
 
     if( p_block->i_pts > VLC_TS_INVALID &&
         p_block->i_pts != date_Get( &p_sys->end_date ) )
@@ -308,47 +320,38 @@ static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         date_Set( &p_sys->end_date, p_block->i_pts );
     }
     else if( !date_Get( &p_sys->end_date ) )
-    {
         /* We've just started the stream, wait for the first PTS. */
-        block_Release( p_block );
-        return NULL;
-    }
-
-    /* Don't re-use the same pts twice */
-    p_block->i_pts = VLC_TS_INVALID;
+        goto skip;
 
     unsigned samples = (8 * p_block->i_buffer) / p_sys->framebits;
     if( samples == 0 )
-    {
-        block_Release( p_block );
-        return NULL;
-    }
-
-    /* Create chunks of max 1024 samples */
-    if( samples > 1024 ) samples = 1024;
-
-    block_t *p_out = decoder_NewAudioBuffer( p_dec, samples );
-    if( p_out == NULL )
-    {
-        block_Release( p_block );
-        return NULL;
-    }
-
-    p_out->i_pts = date_Get( &p_sys->end_date );
-    p_out->i_length = date_Increment( &p_sys->end_date, samples )
-                      - p_out->i_pts;
+        goto skip;
 
     if( p_sys->decode != NULL )
+    {
+        block_t *p_out = decoder_NewAudioBuffer( p_dec, samples );
+        if( p_out == NULL )
+            goto skip;
+
         p_sys->decode( p_out->p_buffer, p_block->p_buffer,
                        samples * p_dec->fmt_in.audio.i_channels );
+        block_Release( p_block );
+        p_block = p_out;
+    }
     else
-        memcpy( p_out->p_buffer, p_block->p_buffer, p_out->i_buffer );
+    {
+        decoder_UpdateAudioFormat( p_dec );
+        p_block->i_nb_samples = samples;
+        p_block->i_buffer = samples * (p_sys->framebits / 8);
+    }
 
-    samples = (samples * p_sys->framebits) / 8;
-    p_block->p_buffer += samples;
-    p_block->i_buffer -= samples;
-
-    return p_out;
+    p_block->i_pts = date_Get( &p_sys->end_date );
+    p_block->i_length = date_Increment( &p_sys->end_date, samples )
+                      - p_block->i_pts;
+    return p_block;
+skip:
+    block_Release( p_block );
+    return NULL;
 }
 
 static void S8Decode( void *outp, const uint8_t *in, unsigned samples )
@@ -512,6 +515,20 @@ static void S32IDecode( void *outp, const uint8_t *in, unsigned samples )
     }
 }
 
+static void F32NDecode( void *outp, const uint8_t *in, unsigned samples )
+{
+    float *out = outp;
+
+    for( size_t i = 0; i < samples; i++ )
+    {
+        memcpy( out, in, sizeof(float) );
+        if( unlikely(!isfinite(*out)) )
+            *out = 0.f;
+        out++;
+        in += sizeof(float);
+    }
+}
+
 static void F32IDecode( void *outp, const uint8_t *in, unsigned samples )
 {
     float *out = outp;
@@ -525,8 +542,24 @@ static void F32IDecode( void *outp, const uint8_t *in, unsigned samples )
 #else
         s.u = GetDWBE( in );
 #endif
+        if( unlikely(!isfinite(s.f)) )
+            s.f = 0.f;
         *(out++) = s.f;
         in += 4;
+    }
+}
+
+static void F64NDecode( void *outp, const uint8_t *in, unsigned samples )
+{
+    double *out = outp;
+
+    for( size_t i = 0; i < samples; i++ )
+    {
+        memcpy( out, in, sizeof(double) );
+        if( unlikely(!isfinite( *out )) )
+            *out = 0.;
+        out++;
+        in += sizeof(double);
     }
 }
 
@@ -543,6 +576,8 @@ static void F64IDecode( void *outp, const uint8_t *in, unsigned samples )
 #else
         s.u = GetQWBE( in );
 #endif
+        if( unlikely(!isfinite( s.d )) )
+            s.d = 0.;
         *(out++) = s.d;
         in += 8;
     }
@@ -739,14 +774,15 @@ static block_t *Encode( encoder_t *enc, block_t *in )
     out->i_dts        = in->i_dts;
     out->i_pts        = in->i_pts;
     out->i_length     = in->i_length;
-    out->i_nb_samples = in->i_nb_samples;
 
     void (*encode)(void *, const uint8_t *, unsigned) = (void *)enc->p_sys;
     if( encode != NULL )
         encode( out->p_buffer, in->p_buffer, in->i_nb_samples
                                              * enc->fmt_out.audio.i_channels );
-    else
+    else {
+        assert( out->i_buffer >= in->i_buffer );
         memcpy( out->p_buffer, in->p_buffer, in->i_buffer );
+    }
     return out;
 }
 

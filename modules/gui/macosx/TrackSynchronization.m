@@ -1,9 +1,9 @@
 /*****************************************************************************
  * TrackSynchronization.m: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2011-2012 VLC authors and VideoLAN
- * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: c0b8f3c6706a354fec8f8009463efb9a3b8befeb $
+ * Copyright (C) 2011-2014 VLC authors and VideoLAN
+ * Copyright (C) 2011-2014 Felix Paul Kühne
+ * $Id: f65e5ce7a9562dd9b95eb1a215e73d85ac6f0d48 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -24,9 +24,9 @@
 
 #import "CompatibilityFixes.h"
 #import "intf.h"
-#import "VideoEffects.h"
 #import <vlc_common.h>
 #import "TrackSynchronization.h"
+#import "CoreInteraction.h"
 
 #define SUBSDELAY_CFG_MODE                     "subsdelay-mode"
 #define SUBSDELAY_CFG_FACTOR                   "subsdelay-factor"
@@ -218,7 +218,7 @@ static VLCTrackSynchronization *_o_sharedInstance = nil;
             var_SetFloat(p_obj, SUBSDELAY_CFG_FACTOR, f_factor);
             vlc_object_release(p_obj);
         }
-        [[VLCVideoEffects sharedInstance] setVideoFilter: "subsdelay" on: f_factor > 0];
+        [[VLCCoreInteraction sharedInstance] setVideoFilter: "subsdelay" on: f_factor > 0];
 
         vlc_object_release(p_input);
     }

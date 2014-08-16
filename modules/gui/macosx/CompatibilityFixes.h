@@ -2,7 +2,7 @@
  * CompatibilityFixes.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 VLC authors and VideoLAN
- * $Id: 651a4b9a0a0bede1114970c796b54da7a0857d9a $
+ * $Id: caab7d528187cd02b97767d49840e3671c90946f $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -45,6 +45,10 @@ enum {
 };
 
 enum {
+    NSFullScreenWindowMask      = 1 << 14
+};
+
+enum {
     NSWindowAnimationBehaviorDefault = 0,       // let AppKit infer animation behavior for this window
     NSWindowAnimationBehaviorNone = 2,          // suppress inferred animations (don't animate)
     NSWindowAnimationBehaviorDocumentWindow = 3,
@@ -65,6 +69,10 @@ typedef NSInteger NSWindowAnimationBehavior;
 
 @interface NSEvent (IntroducedInLion)
 - (BOOL)isDirectionInvertedFromDevice;
+@end
+
+@interface NSAnimationContext (IntroducedInLion)
++ (void)runAnimationGroup:(void (^)(NSAnimationContext *context))changes completionHandler:(void (^)(void))completionHandler;
 @end
 
 #endif

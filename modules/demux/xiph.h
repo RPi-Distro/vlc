@@ -2,7 +2,7 @@
  * xiph.h: Xiph helpers
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 8ccc5dadf9356e335466c30754466f2d5240bea9 $
+ * $Id: 7d244286bef989d294e82881836c4d4535cd1d42 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -24,46 +24,88 @@
 #include <assert.h>
 #define XIPH_MAX_HEADER_COUNT (256)
 
-static inline int xiph_SplitHeaders(unsigned packet_size[], void *packet[], unsigned *packet_count,
+/* Temp ffmpeg vorbis format */
+static inline bool xiph_IsOldFormat( const void *extra, unsigned int i_extra )
+{
+    if ( i_extra >= 6 && GetWBE( extra ) == 30 )
+        return true;
+    else
+        return false;
+}
+
+static inline unsigned int xiph_CountHeaders( const void *extra, unsigned int i_extra )
+{
+    const uint8_t *p_extra = (uint8_t*) extra;
+    if ( !i_extra ) return 0;
+    if ( xiph_IsOldFormat( extra, i_extra ) )
+    {
+        /* Check headers count */
+        unsigned int overall_len = 6;
+        for ( int i=0; i<3; i++ )
+        {
+            uint16_t i_size = GetWBE( extra );
+            p_extra += 2 + i_size;
+            if ( overall_len > i_extra - i_size )
+                return 0;
+            overall_len += i_size;
+        }
+        return 3;
+    }
+    else
+    {
+        return *p_extra + 1;
+    }
+}
+
+static inline int xiph_SplitHeaders(unsigned packet_size[], void * packet[], unsigned *packet_count,
                                     unsigned extra_size, const void *extra)
 {
-    const uint8_t *current = (const uint8_t*)extra;
+    const uint8_t *current = (const uint8_t *)extra;
     const uint8_t *end = &current[extra_size];
     if (extra_size < 1)
         return VLC_EGENERIC;
 
     /* Parse the packet count and their sizes */
-    const unsigned count = 1 + *current++;
+    const unsigned count = xiph_CountHeaders( current++, extra_size );
     if (packet_count)
         *packet_count = count;
-    unsigned size = 0;
-    for (unsigned i = 0; i < count - 1; i++) {
-        packet_size[i] = 0;
-        for (;;) {
-            if (current >= end)
-                return VLC_EGENERIC;
-            packet_size[i] += *current;
-            if (*current++ != 255)
-                break;
-        }
-        size += packet_size[i];
-    }
-    if (end - current < size)
-        return VLC_EGENERIC;
-    packet_size[count - 1] = end - current - size;
 
-    /* Copy the payloads */
-    for (unsigned i = 0; i < count; i++) {
-        packet[i] = malloc(packet_size[i]);
-        if (!packet[i]) {
-            for (unsigned j = 0; j < i; j++)
-                free(packet[j]);
-            return VLC_ENOMEM;
+    if ( xiph_IsOldFormat( extra, extra_size ) )
+    {
+        uint8_t *p_extra = (uint8_t*) extra;
+        unsigned int overall_len = count << 1;
+        for ( unsigned int i=0; i < count; i++ ) {
+            packet_size[i] = GetWBE( p_extra );
+            packet[i] = p_extra + 2;
+            p_extra += packet_size[i] + 2;
+            if (overall_len > extra_size - packet_size[i])
+                return VLC_EGENERIC;
+            overall_len += packet_size[i];
         }
-        if (packet_size[i] > 0) {
-            memcpy(packet[i], current, packet_size[i]);
-            current += packet_size[i];
+    }
+    else
+    {
+        int size = 0;
+        for (unsigned i = 0; i < count - 1; i++) {
+            packet_size[i] = 0;
+            for (;;) {
+                if (current >= end)
+                    return VLC_EGENERIC;
+                packet_size[i] += *current;
+                if (*current++ != 255)
+                    break;
+            }
+            size += packet_size[i];
         }
+        if (end - current < size)
+            return VLC_EGENERIC;
+        packet_size[count - 1] = end - current - size;
+
+        for (unsigned i = 0; i < count; i++)
+            if (packet_size[i] > 0) {
+                packet[i] = (void *) current;
+                current += packet_size[i];
+            }
     }
     return VLC_SUCCESS;
 }
@@ -131,7 +173,7 @@ static inline int xiph_AppendHeaders(int *extra_size, void **extra,
     if (count >= XIPH_MAX_HEADER_COUNT)
         return VLC_EGENERIC;
 
-    free(*extra);
+    void *old = *extra;
 
     packet_size[count] = size;
     packet[count]      = (void*)data;
@@ -140,8 +182,8 @@ static inline int xiph_AppendHeaders(int *extra_size, void **extra,
         *extra_size = 0;
         *extra      = NULL;
     }
-    for (unsigned i = 0; i < count; i++)
-        free(packet[i]);
+
+    free(old);
 
     if (*extra_size <= 0)
         return VLC_EGENERIC;

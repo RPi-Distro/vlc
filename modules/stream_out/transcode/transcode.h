@@ -11,11 +11,12 @@
 
 #include <vlc_picture_fifo.h>
 
+/*100ms is around the limit where people are noticing lipsync issues*/
 #define MASTER_SYNC_MAX_DRIFT 100000
 
 struct sout_stream_sys_t
 {
-    sout_stream_id_t *id_video;
+    sout_stream_id_sys_t *id_video;
     block_t         *p_buffers;
     vlc_mutex_t     lock_out;
     vlc_cond_t      cond;
@@ -25,7 +26,6 @@ struct sout_stream_sys_t
 
     /* Audio */
     vlc_fourcc_t    i_acodec;   /* codec audio (0 if not transcode) */
-    audio_sample_format_t   fmt_audio;
     char            *psz_aenc;
     char            *psz_alang;
     config_chain_t  *p_audio_cfg;
@@ -37,12 +37,10 @@ struct sout_stream_sys_t
 
     /* Video */
     vlc_fourcc_t    i_vcodec;   /* codec video (0 if not transcode) */
-    video_format_t  fmt_input_video;
     char            *psz_venc;
     config_chain_t  *p_video_cfg;
     int             i_vbitrate;
     double          f_scale;
-    double          f_fps;
     unsigned int    i_width, i_maxwidth;
     unsigned int    i_height, i_maxheight;
     bool            b_deinterlace;
@@ -51,6 +49,7 @@ struct sout_stream_sys_t
     int             i_threads;
     bool            b_high_priority;
     bool            b_hurry_up;
+    unsigned int    fps_num,fps_den;
 
     char            *psz_vf2;
 
@@ -70,12 +69,13 @@ struct sout_stream_sys_t
 
     /* Sync */
     bool            b_master_sync;
+    /* i_master drift is how much audio buffer is ahead of calculated pts */
     mtime_t         i_master_drift;
 };
 
 struct aout_filters;
 
-struct sout_stream_id_t
+struct sout_stream_id_sys_t
 {
     bool            b_transcode;
 
@@ -91,47 +91,56 @@ struct sout_stream_id_t
          {
              filter_chain_t  *p_f_chain; /**< Video filters */
              filter_chain_t  *p_uf_chain; /**< User-specified video filters */
+             video_format_t  fmt_input_video;
          };
-         struct aout_filters *p_af_chain; /**< Audio filters */
+         struct
+         {
+             struct aout_filters    *p_af_chain; /**< Audio filters */
+             audio_format_t  fmt_audio;
+         };
+
     };
 
     /* Encoder */
     encoder_t       *p_encoder;
 
     /* Sync */
-    date_t          interpolated_pts;
+    date_t          next_input_pts; /**< Incoming calculated PTS */
+    date_t          next_output_pts; /**< output calculated PTS */
+    int             i_input_frame_interval;
+    int             i_output_frame_interval;
 };
 
 /* OSD */
 
-int transcode_osd_new( sout_stream_t *p_stream, sout_stream_id_t *id );
-void transcode_osd_close( sout_stream_t *p_stream, sout_stream_id_t *id);
-int transcode_osd_process( sout_stream_t *p_stream, sout_stream_id_t *id,
+int transcode_osd_new( sout_stream_t *p_stream, sout_stream_id_sys_t *id );
+void transcode_osd_close( sout_stream_t *p_stream, sout_stream_id_sys_t *id);
+int transcode_osd_process( sout_stream_t *p_stream, sout_stream_id_sys_t *id,
                                   block_t *in, block_t **out );
-bool transcode_osd_add    ( sout_stream_t *, es_format_t *, sout_stream_id_t *);
+bool transcode_osd_add    ( sout_stream_t *, es_format_t *, sout_stream_id_sys_t *);
 
 /* SPU */
 
-int  transcode_spu_new    ( sout_stream_t *, sout_stream_id_t * );
-void transcode_spu_close  ( sout_stream_t *, sout_stream_id_t * );
-int  transcode_spu_process( sout_stream_t *, sout_stream_id_t *,
+int  transcode_spu_new    ( sout_stream_t *, sout_stream_id_sys_t * );
+void transcode_spu_close  ( sout_stream_t *, sout_stream_id_sys_t * );
+int  transcode_spu_process( sout_stream_t *, sout_stream_id_sys_t *,
                                    block_t *, block_t ** );
-bool transcode_spu_add    ( sout_stream_t *, es_format_t *, sout_stream_id_t *);
+bool transcode_spu_add    ( sout_stream_t *, es_format_t *, sout_stream_id_sys_t *);
 
 /* AUDIO */
 
-int  transcode_audio_new    ( sout_stream_t *, sout_stream_id_t * );
-void transcode_audio_close  ( sout_stream_id_t * );
-int  transcode_audio_process( sout_stream_t *, sout_stream_id_t *,
+int  transcode_audio_new    ( sout_stream_t *, sout_stream_id_sys_t * );
+void transcode_audio_close  ( sout_stream_id_sys_t * );
+int  transcode_audio_process( sout_stream_t *, sout_stream_id_sys_t *,
                                      block_t *, block_t ** );
 bool transcode_audio_add    ( sout_stream_t *, es_format_t *,
-                                sout_stream_id_t *);
+                                sout_stream_id_sys_t *);
 
 /* VIDEO */
 
-int  transcode_video_new    ( sout_stream_t *, sout_stream_id_t * );
-void transcode_video_close  ( sout_stream_t *, sout_stream_id_t * );
-int  transcode_video_process( sout_stream_t *, sout_stream_id_t *,
+int  transcode_video_new    ( sout_stream_t *, sout_stream_id_sys_t * );
+void transcode_video_close  ( sout_stream_t *, sout_stream_id_sys_t * );
+int  transcode_video_process( sout_stream_t *, sout_stream_id_sys_t *,
                                      block_t *, block_t ** );
 bool transcode_video_add    ( sout_stream_t *, es_format_t *,
-                                sout_stream_id_t *);
+                                sout_stream_id_sys_t *);

@@ -57,6 +57,18 @@
  * unsigned equivalents, i.e. 4-bytes and 8-bytes types, although GCC also
  * supports 1 and 2-bytes types. Some non-x86 architectures do not support
  * 8-byte atomic types (or not efficiently). */
+#  if defined (_MSC_VER)
+/* Some atomic operations of the Interlocked API are only
+   available for desktop apps. Thus we define the atomic types to
+   be at least 32 bits wide. */
+typedef      int_least32_t atomic_flag;
+typedef      int_least32_t atomic_bool;
+typedef      int_least32_t atomic_char;
+typedef      int_least32_t atomic_schar;
+typedef     uint_least32_t atomic_uchar;
+typedef      int_least32_t atomic_short;
+typedef     uint_least32_t atomic_ushort;
+#  else
 typedef          bool      atomic_flag;
 typedef          bool      atomic_bool;
 typedef          char      atomic_char;
@@ -64,6 +76,7 @@ typedef   signed char      atomic_schar;
 typedef unsigned char      atomic_uchar;
 typedef          short     atomic_short;
 typedef unsigned short     atomic_ushort;
+#  endif
 typedef          int       atomic_int;
 typedef unsigned int       atomic_uint;
 typedef          long      atomic_long;
@@ -302,70 +315,104 @@ typedef         uintmax_t atomic_uintmax_t;
 #  define atomic_flag_clear_explicit(object,order) \
     atomic_flag_clear(object)
 
+# elif defined (_MSC_VER)
+
+# include <windows.h>
+
+/*** Use the Interlocked API. ***/
+
+/* Define macros in order to dispatch to the correct function depending on the type.
+   Several ranges are need because some operations are not implemented for all types. */
+#  define atomic_type_dispatch_32_64(operation, object, ...) \
+    (sizeof(*object) == 4 ? operation((LONG *)object, __VA_ARGS__) : \
+    sizeof(*object) == 8 ? operation##64((LONGLONG *)object, __VA_ARGS__) : \
+    (abort(), 0))
+
+#  define atomic_type_dispatch_16_64(operation, object, ...) \
+    (sizeof(*object) == 2 ? operation##16((short *)object, __VA_ARGS__) : \
+    atomic_type_dispatch_32_64(operation, object, __VA_ARGS__))
+
+#  define atomic_type_dispatch_8_64(operation, object, ...) \
+    (sizeof(*object) == 1 ? operation##8((char *)object, __VA_ARGS__) : \
+    atomic_type_dispatch_16_64(operation, object, __VA_ARGS__))
+
+#  define atomic_store(object,desired) \
+    atomic_type_dispatch_16_64(InterlockedExchange, object, desired)
+#  define atomic_store_explicit(object,desired,order) \
+    atomic_store(object, desired)
+
+#  define atomic_load(object) \
+    atomic_type_dispatch_16_64(InterlockedCompareExchange, object, 0, 0)
+#  define atomic_load_explicit(object,order) \
+    atomic_load(object)
+
+#  define atomic_exchange(object,desired) \
+    atomic_type_dispatch_16_64(InterlockedExchange, object, desired)
+#  define atomic_exchange_explicit(object,desired,order) \
+    atomic_exchange(object, desired)
+
+#  define atomic_compare_exchange_strong(object,expected,desired) \
+    atomic_type_dispatch_16_64(InterlockedCompareExchange, object, *expected, desired) == *expected
+#  define atomic_compare_exchange_strong_explicit(object,expected,desired,order) \
+    atomic_compare_exchange_strong(object, expected, desired)
+#  define atomic_compare_exchange_weak(object,expected,desired) \
+    atomic_compare_exchange_strong(object, expected, desired)
+#  define atomic_compare_exchange_weak_explicit(object,expected,desired,order) \
+    atomic_compare_exchange_weak(object, expected, desired)
+
+#  define atomic_fetch_add(object,operand) \
+    atomic_type_dispatch_32_64(InterlockedExchangeAdd, object, operand)
+#  define atomic_fetch_add_explicit(object,operand,order) \
+    atomic_fetch_add(object, operand)
+
+#  define atomic_fetch_sub(object,operand) \
+    atomic_type_dispatch_32_64(InterlockedExchangeAdd, object, -(LONGLONG)operand)
+#  define atomic_fetch_sub_explicit(object,operand,order) \
+    atomic_fetch_sub(object, operand)
+
+#  define atomic_fetch_or(object,operand) \
+    atomic_type_dispatch_8_64(InterlockedOr, object, operand)
+#  define atomic_fetch_or_explicit(object,operand,order) \
+    atomic_fetch_or(object, operand)
+
+#  define atomic_fetch_xor(object,operand) \
+    atomic_type_dispatch_8_64(InterlockedXor, object, operand)
+#  define atomic_fetch_xor_explicit(object,operand,order) \
+    atomic_fetch_sub(object, operand)
+
+#  define atomic_fetch_and(object,operand) \
+    atomic_type_dispatch_8_64(InterlockedAnd, object, operand)
+#  define atomic_fetch_and_explicit(object,operand,order) \
+    atomic_fetch_and(object, operand)
+
+#  define atomic_flag_test_and_set(object) \
+    atomic_exchange(object, true)
+
+#  define atomic_flag_test_and_set_explicit(object,order) \
+    atomic_flag_test_and_set(object)
+
+#  define atomic_flag_clear(object) \
+    atomic_store(object, false)
+
+#  define atomic_flag_clear_explicit(object,order) \
+    atomic_flag_clear(object)
+
 # else
 #  error FIXME: implement atomic operations for this compiler.
 # endif
 # endif
 
-/**
- * Memory storage space for an atom. Never access it directly.
- */
-typedef union
-{
-    atomic_uintptr_t u;
-} vlc_atomic_t;
-
-/** Static initializer for \ref vlc_atomic_t */
-# define VLC_ATOMIC_INIT(val) { (val) }
-
-/* All functions return the atom value _after_ the operation. */
-static inline uintptr_t vlc_atomic_get(vlc_atomic_t *atom)
-{
-    return atomic_load(&atom->u);
-}
-
-static inline uintptr_t vlc_atomic_set(vlc_atomic_t *atom, uintptr_t v)
-{
-    atomic_store(&atom->u, v);
-    return v;
-}
-
-static inline uintptr_t vlc_atomic_add(vlc_atomic_t *atom, uintptr_t v)
-{
-    return atomic_fetch_add(&atom->u, v) + v;
-}
-
-static inline uintptr_t vlc_atomic_sub (vlc_atomic_t *atom, uintptr_t v)
-{
-    return atomic_fetch_sub (&atom->u, v) - v;
-}
-
-static inline uintptr_t vlc_atomic_inc (vlc_atomic_t *atom)
-{
-    return vlc_atomic_add (atom, 1);
-}
-
-static inline uintptr_t vlc_atomic_dec (vlc_atomic_t *atom)
-{
-    return vlc_atomic_sub (atom, 1);
-}
-
-static inline uintptr_t vlc_atomic_swap(vlc_atomic_t *atom, uintptr_t v)
-{
-    return atomic_exchange(&atom->u, v);
-}
-
-static inline uintptr_t vlc_atomic_compare_swap(vlc_atomic_t *atom,
-                                                uintptr_t u, uintptr_t v)
-{
-    atomic_compare_exchange_strong(&atom->u, &u, v);
-    return u;
-}
-
 typedef atomic_uint_least32_t vlc_atomic_float;
 
+static inline void vlc_atomic_init_float(vlc_atomic_float *var, float f)
+{
+    union { float f; uint32_t i; } u;
+    u.f = f;
+    atomic_init(var, u.i);
+}
+
 /** Helper to retrieve a single precision from an atom. */
-static inline float vlc_atomic_loadf(vlc_atomic_float *atom)
+static inline float vlc_atomic_load_float(vlc_atomic_float *atom)
 {
     union { float f; uint32_t i; } u;
     u.i = atomic_load(atom);
@@ -373,7 +420,7 @@ static inline float vlc_atomic_loadf(vlc_atomic_float *atom)
 }
 
 /** Helper to store a single precision into an atom. */
-static inline void vlc_atomic_storef(vlc_atomic_float *atom, float f)
+static inline void vlc_atomic_store_float(vlc_atomic_float *atom, float f)
 {
     union { float f; uint32_t i; } u;
     u.f = f;

@@ -2,7 +2,7 @@
  * fluidsynth.c: Software MIDI synthesizer using libfluidsynth
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 49d5ab146065198b3d1ab8fee992c5f4f1980076 $
+ * $Id: 43a91f2af3a7e983614e6f3d1f7cf9a4b304c6b2 $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -28,9 +28,7 @@
 #include <vlc_codec.h>
 #include <vlc_dialog.h>
 
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
+#include <unistd.h>
 #ifdef _POSIX_VERSION
 # include <glob.h>
 #endif
@@ -207,6 +205,16 @@ static block_t *DecodeBlock (decoder_t *p_dec, block_t **pp_block)
     if (p_block == NULL)
         return NULL;
     *pp_block = NULL;
+
+    if (p_block->i_flags & (BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED))
+    {
+        date_Set (&p_sys->end_date, 0);
+        //fluid_synth_system_reset (p_sys->synth);
+        fluid_synth_program_reset (p_sys->synth);
+        for (unsigned channel = 0; channel < 16; channel++)
+            for (unsigned note = 0; note < 128; note++)
+                fluid_synth_noteoff (p_sys->synth, channel, note);
+    }
 
     if (p_block->i_pts > VLC_TS_INVALID && !date_Get (&p_sys->end_date))
         date_Set (&p_sys->end_date, p_block->i_pts);

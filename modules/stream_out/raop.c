@@ -1,24 +1,24 @@
 /*****************************************************************************
  * raop.c: Remote Audio Output Protocol streaming support
  *****************************************************************************
- * Copyright (C) 2008 the VideoLAN team
- * $Id: 7c21e5d4977700e8d38eed15abbd7fbf40d57e77 $
+ * Copyright (C) 2008 VLC authors and VideoLAN
+ * $Id: 8960475ef4797cd6d43d52b8140fb82d1d62b0a7 $
  *
  * Author: Michael Hanselmann
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -81,9 +81,9 @@ static const char psz_delim_semicolon[] = ";";
 static int Open( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-static sout_stream_id_t *Add( sout_stream_t *, es_format_t * );
-static int Del( sout_stream_t *, sout_stream_id_t * );
-static int Send( sout_stream_t *, sout_stream_id_t *, block_t* );
+static sout_stream_id_sys_t *Add( sout_stream_t *, es_format_t * );
+static int Del( sout_stream_t *, sout_stream_id_sys_t * );
+static int Send( sout_stream_t *, sout_stream_id_sys_t *, block_t* );
 
 static int VolumeCallback( vlc_object_t *p_this, char const *psz_cmd,
                            vlc_value_t oldval, vlc_value_t newval,
@@ -104,7 +104,7 @@ struct sout_stream_sys_t
     int i_volume;
 
     /* Plugin status */
-    sout_stream_id_t *p_audio_stream;
+    sout_stream_id_sys_t *p_audio_stream;
     bool b_alac_warning;
     bool b_volume_callback;
 
@@ -133,7 +133,7 @@ struct sout_stream_sys_t
     uint8_t *p_sendbuf;
 };
 
-struct sout_stream_id_t
+struct sout_stream_id_sys_t
 {
     es_format_t fmt;
 };
@@ -211,7 +211,7 @@ static void FreeSys( vlc_object_t *p_this, sout_stream_sys_t *p_sys )
     free( p_sys );
 }
 
-static void FreeId( sout_stream_id_t *id )
+static void FreeId( sout_stream_id_sys_t *id )
 {
     free( id );
 }
@@ -551,7 +551,8 @@ static char *ReadPasswordFile( vlc_object_t *p_this, const char *psz_path )
     p_file = vlc_fopen( psz_path, "rt" );
     if ( p_file == NULL )
     {
-        msg_Err( p_this, "Unable to open password file '%s': %m", psz_path );
+        msg_Err( p_this, "Unable to open password file '%s': %s", psz_path,
+                 vlc_strerror_c(errno) );
         goto error;
     }
 
@@ -560,7 +561,8 @@ static char *ReadPasswordFile( vlc_object_t *p_this, const char *psz_path )
     {
         if ( ferror( p_file ) )
         {
-            msg_Err( p_this, "Error reading '%s': %m", psz_path );
+            msg_Err( p_this, "Error reading '%s': %s", psz_path,
+                     vlc_strerror_c(errno) );
             goto error;
         }
 
@@ -1385,10 +1387,7 @@ static int Open( vlc_object_t *p_this )
 
     p_sys = calloc( 1, sizeof( *p_sys ) );
     if ( p_sys == NULL )
-    {
-        i_err = VLC_ENOMEM;
-        goto error;
-    }
+        return VLC_ENOMEM;
 
     p_stream->pf_add = Add;
     p_stream->pf_del = Del;
@@ -1442,8 +1441,8 @@ static int Open( vlc_object_t *p_this )
                                           RAOP_PORT );
     if ( p_sys->i_control_fd < 0 )
     {
-        msg_Err( p_this, "Cannot establish control connection to %s:%d (%m)",
-                 p_sys->psz_host, RAOP_PORT );
+        msg_Err( p_this, "Cannot establish control connection to %s:%d (%s)",
+                 p_sys->psz_host, RAOP_PORT, vlc_strerror_c(errno) );
         i_err = VLC_EGENERIC;
         goto error;
     }
@@ -1526,8 +1525,9 @@ static int Open( vlc_object_t *p_this )
                                          p_sys->i_server_port );
     if ( p_sys->i_stream_fd < 0 )
     {
-        msg_Err( p_this, "Cannot establish stream connection to %s:%d (%m)",
-                 p_sys->psz_host, p_sys->i_server_port );
+        msg_Err( p_this, "Cannot establish stream connection to %s:%d (%s)",
+                 p_sys->psz_host, p_sys->i_server_port,
+                 vlc_strerror_c(errno)  );
         i_err = VLC_EGENERIC;
         goto error;
     }
@@ -1560,10 +1560,10 @@ static void Close( vlc_object_t *p_this )
 /*****************************************************************************
  * Add:
  *****************************************************************************/
-static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
+static sout_stream_id_sys_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
-    sout_stream_id_t *id = NULL;
+    sout_stream_id_sys_t *id = NULL;
 
     id = calloc( 1, sizeof( *id ) );
     if ( id == NULL )
@@ -1621,7 +1621,7 @@ error:
 /*****************************************************************************
  * Del:
  *****************************************************************************/
-static int Del( sout_stream_t *p_stream, sout_stream_id_t *id )
+static int Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
     int i_err = VLC_SUCCESS;
@@ -1638,7 +1638,7 @@ static int Del( sout_stream_t *p_stream, sout_stream_id_t *id )
 /*****************************************************************************
  * Send:
  *****************************************************************************/
-static int Send( sout_stream_t *p_stream, sout_stream_id_t *id,
+static int Send( sout_stream_t *p_stream, sout_stream_id_sys_t *id,
                  block_t *p_buffer )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;

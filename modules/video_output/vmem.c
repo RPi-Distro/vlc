@@ -139,7 +139,8 @@ static int Open(vlc_object_t *object)
     sys->pool = NULL;
 
     /* Define the video format */
-    video_format_t fmt = vd->fmt;
+    video_format_t fmt;
+    video_format_ApplyRotation(&fmt, &vd->fmt);
 
     if (setup != NULL) {
         char chroma[5];
@@ -175,6 +176,9 @@ static int Open(vlc_object_t *object)
         sys->count = 1;
         sys->cleanup = NULL;
     }
+    fmt.i_x_offset = fmt.i_y_offset = 0;
+    fmt.i_visible_width = fmt.i_width;
+    fmt.i_visible_height = fmt.i_height;
 
     if (!fmt.i_chroma) {
         msg_Err(vd, "vmem-chroma should be 4 characters long");

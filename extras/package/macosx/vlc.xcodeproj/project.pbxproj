@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1CC6EB6819882782004335BD /* window-fullscreen-on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC6EB6719882782004335BD /* window-fullscreen-on@2x.png */; };
+		1CC6EB6A19882789004335BD /* window-fullscreen-over@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC6EB6919882789004335BD /* window-fullscreen-over@2x.png */; };
+		1CC6EB6C19882794004335BD /* window-fullscreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC6EB6B19882794004335BD /* window-fullscreen@2x.png */; };
+		7D3F6525188051F2005776C4 /* BWQuincyMain.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D3F6523188051F2005776C4 /* BWQuincyMain.xib */; };
+		7D8BB0B71830311300FAE9B7 /* DebugMessageVisualizer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D8BB0B51830311300FAE9B7 /* DebugMessageVisualizer.xib */; };
+		7D8BB0BA1830367200FAE9B7 /* PlaylistMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D8BB0B81830367200FAE9B7 /* PlaylistMenu.xib */; };
+		7D8BB0C01830393300FAE9B7 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D8BB0BE1830393300FAE9B7 /* MainWindow.xib */; };
+		7DB65D5618ABD6490053B874 /* AddonManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7DB65D5418ABD6490053B874 /* AddonManager.xib */; };
+		7DE88F2A1831396A00CD9DA2 /* PlaylistAccessoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7DE88F281831396A00CD9DA2 /* PlaylistAccessoryView.xib */; };
 		7DFFA16C16124F38001AF89F /* effects-one-button-pressed-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DFFA16A16124F38001AF89F /* effects-one-button-pressed-dark.png */; };
 		7DFFA16D16124F38001AF89F /* effects-one-button-pressed-dark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DFFA16B16124F38001AF89F /* effects-one-button-pressed-dark@2x.png */; };
 		CC04323D13B246DF00D7D52E /* effects-double-buttons_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = CC04321313B246DF00D7D52E /* effects-double-buttons_dark.png */; };
@@ -457,6 +466,9 @@
 		089C1672FE841209C02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		1CC6EB6719882782004335BD /* window-fullscreen-on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "window-fullscreen-on@2x.png"; path = "Resources/mainwindow_dark/window-fullscreen-on@2x.png"; sourceTree = "<group>"; };
+		1CC6EB6919882789004335BD /* window-fullscreen-over@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "window-fullscreen-over@2x.png"; path = "Resources/mainwindow_dark/window-fullscreen-over@2x.png"; sourceTree = "<group>"; };
+		1CC6EB6B19882794004335BD /* window-fullscreen@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "window-fullscreen@2x.png"; path = "Resources/mainwindow_dark/window-fullscreen@2x.png"; sourceTree = "<group>"; };
 		2AEF857609A5FEC900130822 /* fspanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fspanel.h; path = ../../../modules/gui/macosx/fspanel.h; sourceTree = SOURCE_ROOT; };
 		2AEF857709A5FEC900130822 /* fspanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fspanel.m; path = ../../../modules/gui/macosx/fspanel.m; sourceTree = SOURCE_ROOT; };
 		5CCED71014C0D4A90057F8D1 /* ExtensionsDialogProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExtensionsDialogProvider.h; path = ../../../modules/gui/macosx/ExtensionsDialogProvider.h; sourceTree = SOURCE_ROOT; };
@@ -465,7 +477,21 @@
 		5CCED71314C0D4A90057F8D1 /* ExtensionsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ExtensionsManager.m; path = ../../../modules/gui/macosx/ExtensionsManager.m; sourceTree = SOURCE_ROOT; };
 		5CCED71414C0D4A90057F8D1 /* VLCUIWidgets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VLCUIWidgets.h; path = ../../../modules/gui/macosx/VLCUIWidgets.h; sourceTree = SOURCE_ROOT; };
 		5CCED71514C0D4A90057F8D1 /* VLCUIWidgets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VLCUIWidgets.m; path = ../../../modules/gui/macosx/VLCUIWidgets.m; sourceTree = SOURCE_ROOT; };
+		7D3F6524188051F2005776C4 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Resources/English.lproj/BWQuincyMain.xib; sourceTree = "<group>"; };
+		7D3F652618805297005776C4 /* BWQuincyManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BWQuincyManager.h; path = ../../../modules/gui/macosx/BWQuincyManager.h; sourceTree = "<group>"; };
+		7D3F652718805297005776C4 /* BWQuincyManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BWQuincyManager.m; path = ../../../modules/gui/macosx/BWQuincyManager.m; sourceTree = "<group>"; };
+		7D3F652818805297005776C4 /* BWQuincyUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BWQuincyUI.h; path = ../../../modules/gui/macosx/BWQuincyUI.h; sourceTree = "<group>"; };
+		7D3F652918805297005776C4 /* BWQuincyUI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BWQuincyUI.m; path = ../../../modules/gui/macosx/BWQuincyUI.m; sourceTree = "<group>"; };
 		7D7DC2CA182E86D9008C9E3E /* darwinvlc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = darwinvlc.c; path = ../../../bin/darwinvlc.c; sourceTree = "<group>"; };
+		7D8BB0B318302AC000FAE9B7 /* DebugMessageVisualizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DebugMessageVisualizer.h; path = ../../../modules/gui/macosx/DebugMessageVisualizer.h; sourceTree = "<group>"; };
+		7D8BB0B418302AC000FAE9B7 /* DebugMessageVisualizer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DebugMessageVisualizer.m; path = ../../../modules/gui/macosx/DebugMessageVisualizer.m; sourceTree = "<group>"; };
+		7D8BB0B61830311300FAE9B7 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Resources/English.lproj/DebugMessageVisualizer.xib; sourceTree = "<group>"; };
+		7D8BB0B91830367200FAE9B7 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Resources/English.lproj/PlaylistMenu.xib; sourceTree = "<group>"; };
+		7D8BB0BF1830393300FAE9B7 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Resources/English.lproj/MainWindow.xib; sourceTree = "<group>"; };
+		7DB65D5218ABD6380053B874 /* AddonManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AddonManager.h; path = ../../../modules/gui/macosx/AddonManager.h; sourceTree = "<group>"; };
+		7DB65D5318ABD6380053B874 /* AddonManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AddonManager.m; path = ../../../modules/gui/macosx/AddonManager.m; sourceTree = "<group>"; };
+		7DB65D5518ABD6490053B874 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Resources/English.lproj/AddonManager.xib; sourceTree = "<group>"; };
+		7DE88F291831396A00CD9DA2 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Resources/English.lproj/PlaylistAccessoryView.xib; sourceTree = "<group>"; };
 		7DFFA16A16124F38001AF89F /* effects-one-button-pressed-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "effects-one-button-pressed-dark.png"; path = "Resources/mainwindow_dark/effects-one-button-pressed-dark.png"; sourceTree = "<group>"; };
 		7DFFA16B16124F38001AF89F /* effects-one-button-pressed-dark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "effects-one-button-pressed-dark@2x.png"; path = "Resources/mainwindow_dark/effects-one-button-pressed-dark@2x.png"; sourceTree = "<group>"; };
 		8E49720006417F6800370C9F /* playlistinfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = playlistinfo.h; path = ../../../modules/gui/macosx/playlistinfo.h; sourceTree = SOURCE_ROOT; };
@@ -1061,6 +1087,8 @@
 				8ED6C27E03E2EB1C0059A3A7 /* macosx.m */,
 				8ED6C27C03E2EB1C0059A3A7 /* intf.h */,
 				8ED6C27D03E2EB1C0059A3A7 /* intf.m */,
+				7D8BB0B318302AC000FAE9B7 /* DebugMessageVisualizer.h */,
+				7D8BB0B418302AC000FAE9B7 /* DebugMessageVisualizer.m */,
 				CC448A5A13B61D49009F72E0 /* MainMenu.h */,
 				CC448A5B13B61D49009F72E0 /* MainMenu.m */,
 				CC448A6013B68A0B009F72E0 /* CoreInteraction.h */,
@@ -1077,6 +1105,8 @@
 				5CCED71114C0D4A90057F8D1 /* ExtensionsDialogProvider.m */,
 				5CCED71214C0D4A90057F8D1 /* ExtensionsManager.h */,
 				5CCED71314C0D4A90057F8D1 /* ExtensionsManager.m */,
+				7DB65D5218ABD6380053B874 /* AddonManager.h */,
+				7DB65D5318ABD6380053B874 /* AddonManager.m */,
 				5CCED71414C0D4A90057F8D1 /* VLCUIWidgets.h */,
 				5CCED71514C0D4A90057F8D1 /* VLCUIWidgets.m */,
 				8E6BC6FA041684EC0059A3A7 /* controls.h */,
@@ -1158,6 +1188,17 @@
 				CC402F4B0E00ABBB006A4BA4 /* VLC.bundle */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		7D3F652A1880529C005776C4 /* QuincyKit */ = {
+			isa = PBXGroup;
+			children = (
+				7D3F652618805297005776C4 /* BWQuincyManager.h */,
+				7D3F652718805297005776C4 /* BWQuincyManager.m */,
+				7D3F652818805297005776C4 /* BWQuincyUI.h */,
+				7D3F652918805297005776C4 /* BWQuincyUI.m */,
+			);
+			name = QuincyKit;
 			sourceTree = "<group>";
 		};
 		8E445F86047289E50059A3A7 /* fileicons */ = {
@@ -1338,8 +1379,11 @@
 				CC04323913B246DF00D7D52E /* volume-slider-knob_dark.png */,
 				CC04323A13B246DF00D7D52E /* volume-slider-track_dark.png */,
 				CC206B6B14AD0A5D007935C6 /* window-fullscreen-on.png */,
+				1CC6EB6719882782004335BD /* window-fullscreen-on@2x.png */,
 				CC206B6C14AD0A5D007935C6 /* window-fullscreen-over.png */,
+				1CC6EB6919882789004335BD /* window-fullscreen-over@2x.png */,
 				CC206B6D14AD0A5D007935C6 /* window-fullscreen.png */,
+				1CC6EB6B19882794004335BD /* window-fullscreen@2x.png */,
 				CC206B6914AD0A52007935C6 /* window-resize.png */,
 			);
 			name = "dark variant";
@@ -1499,6 +1543,7 @@
 		CC0CD0E513DE0FC600B0D90D /* Imported Code */ = {
 			isa = PBXGroup;
 			children = (
+				7D3F652A1880529C005776C4 /* QuincyKit */,
 				CC6D8D9C0A878DED006F2BBE /* AppleRemote.h */,
 				CC6D8D9D0A878DED006F2BBE /* AppleRemote.m */,
 				CC0CD0E413DE0EB500B0D90D /* PXSourceList */,
@@ -1776,6 +1821,12 @@
 				CCD83E2B13FE9B90004F1652 /* MainMenu.xib */,
 				CC0663371566CD5A003A411C /* ConvertAndSave.xib */,
 				CC461F73160084A10022423C /* SharedDialogs.xib */,
+				7D8BB0B51830311300FAE9B7 /* DebugMessageVisualizer.xib */,
+				7D8BB0B81830367200FAE9B7 /* PlaylistMenu.xib */,
+				7D8BB0BE1830393300FAE9B7 /* MainWindow.xib */,
+				7DE88F281831396A00CD9DA2 /* PlaylistAccessoryView.xib */,
+				7D3F6523188051F2005776C4 /* BWQuincyMain.xib */,
+				7DB65D5418ABD6490053B874 /* AddonManager.xib */,
 			);
 			name = xibs;
 			sourceTree = "<group>";
@@ -1835,9 +1886,11 @@
 			files = (
 				CC8062641021F8790021EB9A /* dsa_pub.pem in Resources */,
 				CC402EB80E00ABBB006A4BA4 /* InfoPlist.strings in Resources */,
+				7DB65D5618ABD6490053B874 /* AddonManager.xib in Resources */,
 				CC402EB90E00ABBB006A4BA4 /* vlc.scriptSuite in Resources */,
 				CC402EBA0E00ABBB006A4BA4 /* vlc.scriptTerminology in Resources */,
 				CC402EBB0E00ABBB006A4BA4 /* README.MacOSX.rtf in Resources */,
+				7D3F6525188051F2005776C4 /* BWQuincyMain.xib in Resources */,
 				CC402F3C0E00ABBB006A4BA4 /* noart.png in Resources */,
 				CC04323D13B246DF00D7D52E /* effects-double-buttons_dark.png in Resources */,
 				CC04323E13B246DF00D7D52E /* effects-double-buttons-blue_dark.png in Resources */,
@@ -1930,6 +1983,7 @@
 				CC04337D13B28B8200D7D52E /* progression-fill-right.png in Resources */,
 				CC04337E13B28B8200D7D52E /* progression-knob.png in Resources */,
 				CC04337F13B28B8200D7D52E /* progression-track-wrapper-left.png in Resources */,
+				7D8BB0B71830311300FAE9B7 /* DebugMessageVisualizer.xib in Resources */,
 				CC04338013B28B8200D7D52E /* progression-track-wrapper-middle.png in Resources */,
 				CC04338113B28B8200D7D52E /* progression-track-wrapper-right.png in Resources */,
 				CC04338213B28B8200D7D52E /* repeat-all-pressed.png in Resources */,
@@ -2154,12 +2208,14 @@
 				CC919089159B4BB800E634A7 /* repeat-one-blue-pressed_dark@2x.png in Resources */,
 				CC91908A159B4BB800E634A7 /* fullscreen-one-button_dark@2x.png in Resources */,
 				CC91908B159B4BB800E634A7 /* pause_dark@2x.png in Resources */,
+				7DE88F2A1831396A00CD9DA2 /* PlaylistAccessoryView.xib in Resources */,
 				CC91908C159B4BB800E634A7 /* pause-pressed_dark@2x.png in Resources */,
 				CC91908D159B4BB800E634A7 /* play_dark@2x.png in Resources */,
 				CC91908E159B4BB800E634A7 /* play-pressed_dark@2x.png in Resources */,
 				CC91908F159B4BB800E634A7 /* playlist-blue_dark@2x.png in Resources */,
 				CC919090159B4BB800E634A7 /* playlist-blue-pressed_dark@2x.png in Resources */,
 				CC919091159B4BB800E634A7 /* effects-double-buttons_dark@2x.png in Resources */,
+				7D8BB0BA1830367200FAE9B7 /* PlaylistMenu.xib in Resources */,
 				CC919092159B4BB800E634A7 /* effects-double-buttons-pressed_dark@2x.png in Resources */,
 				CC919093159B4BB800E634A7 /* effects-one-button_dark@2x.png in Resources */,
 				CC919094159B4BB800E634A7 /* effects-one-button-blue_dark@2x.png in Resources */,
@@ -2228,6 +2284,7 @@
 				CC166FE115F5136B0088201B /* previous-6btns-dark-pressed.png in Resources */,
 				CC166FE215F5136B0088201B /* previous-6btns-dark-pressed@2x.png in Resources */,
 				CC166FE315F5136B0088201B /* previous-6btns-dark.png in Resources */,
+				7D8BB0C01830393300FAE9B7 /* MainWindow.xib in Resources */,
 				CC166FE415F5136B0088201B /* previous-6btns-dark@2x.png in Resources */,
 				CC166FE915F517660088201B /* backward-6btns-pressed.png in Resources */,
 				CC166FEA15F517660088201B /* backward-6btns-pressed@2x.png in Resources */,
@@ -2251,12 +2308,63 @@
 				7DFFA16C16124F38001AF89F /* effects-one-button-pressed-dark.png in Resources */,
 				7DFFA16D16124F38001AF89F /* effects-one-button-pressed-dark@2x.png in Resources */,
 				E0FB95CE1615B6DF0005069A /* DetachedVideoWindow.xib in Resources */,
+				1CC6EB6819882782004335BD /* window-fullscreen-on@2x.png in Resources */,
+				1CC6EB6A19882789004335BD /* window-fullscreen-over@2x.png in Resources */,
+				1CC6EB6C19882794004335BD /* window-fullscreen@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		7D3F6523188051F2005776C4 /* BWQuincyMain.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7D3F6524188051F2005776C4 /* English */,
+			);
+			name = BWQuincyMain.xib;
+			sourceTree = "<group>";
+		};
+		7D8BB0B51830311300FAE9B7 /* DebugMessageVisualizer.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7D8BB0B61830311300FAE9B7 /* English */,
+			);
+			name = DebugMessageVisualizer.xib;
+			sourceTree = "<group>";
+		};
+		7D8BB0B81830367200FAE9B7 /* PlaylistMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7D8BB0B91830367200FAE9B7 /* English */,
+			);
+			name = PlaylistMenu.xib;
+			sourceTree = "<group>";
+		};
+		7D8BB0BE1830393300FAE9B7 /* MainWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7D8BB0BF1830393300FAE9B7 /* English */,
+			);
+			name = MainWindow.xib;
+			sourceTree = "<group>";
+		};
+		7DB65D5418ABD6490053B874 /* AddonManager.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7DB65D5518ABD6490053B874 /* English */,
+			);
+			name = AddonManager.xib;
+			sourceTree = "<group>";
+		};
+		7DE88F281831396A00CD9DA2 /* PlaylistAccessoryView.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7DE88F291831396A00CD9DA2 /* English */,
+			);
+			name = PlaylistAccessoryView.xib;
+			sourceTree = "<group>";
+		};
 		CC0663371566CD5A003A411C /* ConvertAndSave.xib */ = {
 			isa = PBXVariantGroup;
 			children = (

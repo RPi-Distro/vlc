@@ -1,8 +1,8 @@
 /*****************************************************************************
  * playlist.m: MacOS X interface module
  *****************************************************************************
-* Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 62d913dd6b316d8cafec1d92db29e6b18eca3ecc $
+* Copyright (C) 2002-2014 VLC authors and VideoLAN
+ * $Id: b41ef77b12c5c605c7940c3e6913b74062990c11 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>
@@ -39,6 +39,8 @@
 #include <math.h>
 #include <sys/mount.h>
 
+#import "CompatibilityFixes.h"
+
 #import "intf.h"
 #import "wizard.h"
 #import "bookmarks.h"
@@ -48,6 +50,7 @@
 #import "misc.h"
 #import "open.h"
 #import "MainMenu.h"
+#import "CoreInteraction.h"
 
 #include <vlc_keys.h>
 #import <vlc_interface.h>
@@ -164,6 +167,8 @@
     [[o_tc_name_other headerCell] setStringValue:_NS("Name")];
     [[o_tc_author_other headerCell] setStringValue:_NS("Author")];
     [[o_tc_duration_other headerCell] setStringValue:_NS("Duration")];
+
+    [self reloadStyles];
 }
 
 - (void)setPlaylistRoot: (playlist_item_t *)root_item
@@ -187,6 +192,36 @@
 {
     return [[o_outline_view itemAtRow: [o_outline_view selectedRow]]
                                                                 pointerValue];
+}
+
+- (void)reloadStyles
+{
+    NSFont *fontToUse;
+    CGFloat rowHeight;
+    if (config_GetInt(VLCIntf, "macosx-large-text")) {
+        fontToUse = [NSFont systemFontOfSize:13.];
+        rowHeight = 21.;
+    } else {
+        fontToUse = [NSFont systemFontOfSize:11.];
+        rowHeight = 16.;
+    }
+
+    NSArray *columns = [o_outline_view tableColumns];
+    NSUInteger count = columns.count;
+    for (NSUInteger x = 0; x < count; x++)
+        [[columns[x] dataCell] setFont:fontToUse];
+    [o_outline_view setRowHeight:rowHeight];
+
+    columns = [o_outline_view_other tableColumns];
+    count = columns.count;
+    for (NSUInteger x = 0; x < count; x++)
+        [[columns[x] dataCell] setFont:fontToUse];
+    [o_outline_view_other setRowHeight:rowHeight];
+}
+
+- (void)dealloc {
+    [o_outline_dict release];
+    [super dealloc];
 }
 
 @end
@@ -363,6 +398,22 @@
             free(psz_value);
         }
     }
+    else if ([o_identifier isEqualToString:FILESIZE_COLUMN]) {
+        psz_value = input_item_GetURI(p_item->p_input);
+        o_value = @"";
+        if (psz_value) {
+            NSURL *url = [NSURL URLWithString:[NSString stringWithUTF8String:psz_value]];
+            if ([url isFileURL]) {
+                NSFileManager *fileManager = [NSFileManager defaultManager];
+                if ([fileManager fileExistsAtPath:[url path]]) {
+                    NSError *error;
+                    NSDictionary *attributes = [fileManager attributesOfItemAtPath:[url path] error:&error];
+                    o_value = [VLCByteCountFormatter stringFromByteCount:[attributes fileSize] countStyle:NSByteCountFormatterCountStyleDecimal];
+                }
+            }
+            free(psz_value);
+        }
+    }
     else if ([o_identifier isEqualToString:@"status"]) {
         if (input_item_HasErrorWhenReading(p_item->p_input)) {
             o_value = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kAlertCautionIcon)];
@@ -418,7 +469,10 @@
     BOOL b_selected_item_met;
     BOOL b_isSortDescending;
     id o_tc_sortColumn;
-    NSInteger retainedRowSelection;
+    NSUInteger retainedRowSelection;
+
+    BOOL b_playlistmenu_nib_loaded;
+    BOOL b_view_setup;
 }
 
 - (void)saveTableColumns;
@@ -426,13 +480,18 @@
 
 @implementation VLCPlaylist
 
-+ (void)initialize{
++ (void)initialize
+{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSMutableArray * o_columnArray = [[NSMutableArray alloc] init];
+    NSMutableArray *o_columnArray = [[NSMutableArray alloc] init];
     [o_columnArray addObject: [NSArray arrayWithObjects:TITLE_COLUMN, [NSNumber numberWithFloat:190.], nil]];
     [o_columnArray addObject: [NSArray arrayWithObjects:ARTIST_COLUMN, [NSNumber numberWithFloat:95.], nil]];
     [o_columnArray addObject: [NSArray arrayWithObjects:DURATION_COLUMN, [NSNumber numberWithFloat:95.], nil]];
-    NSDictionary *appDefaults = [NSDictionary dictionaryWithObject:[NSArray arrayWithArray:o_columnArray] forKey: @"PlaylistColumnSelection"];
+
+    NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
+                                 [NSArray arrayWithArray:o_columnArray], @"PlaylistColumnSelection",
+                                 [NSArray array], @"recentlyPlayedMediaList",
+                                 [NSDictionary dictionary], @"recentlyPlayedMedia", nil];
 
     [defaults registerDefaults:appDefaults];
     [o_columnArray release];
@@ -457,6 +516,9 @@
 
 - (void)awakeFromNib
 {
+    if (b_view_setup)
+        return;
+
     playlist_t * p_playlist = pl_Get(VLCIntf);
 
     [super awakeFromNib];
@@ -500,6 +562,8 @@
     }
 
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(applicationWillTerminate:) name: NSApplicationWillTerminateNotification object: nil];
+
+    b_view_setup = YES;
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification
@@ -515,7 +579,6 @@
 
 - (void)initStrings
 {
-    [o_mi_save_playlist setTitle: _NS("Save Playlist...")];
     [o_mi_play setTitle: _NS("Play")];
     [o_mi_delete setTitle: _NS("Delete")];
     [o_mi_recursive_expand setTitle: _NS("Expand Node")];
@@ -530,12 +593,6 @@
     [o_mi_sort_author setTitle: _NS("Sort Node by Author")];
 
     [o_search_field setToolTip: _NS("Search in Playlist")];
-    [o_search_field_other setToolTip: _NS("Search in Playlist")];
-
-    [o_save_accessory_text setStringValue: _NS("File Format:")];
-    [[o_save_accessory_popup itemAtIndex:0] setTitle: _NS("Extended M3U")];
-    [[o_save_accessory_popup itemAtIndex:1] setTitle: _NS("XML Shareable Playlist Format (XSPF)")];
-    [[o_save_accessory_popup itemAtIndex:2] setTitle: _NS("HTML playlist")];
 }
 
 - (void)playlistUpdated
@@ -551,7 +608,6 @@
     //[o_outline_dict removeAllObjects];
     [o_outline_view reloadData];
     [[[[VLCMain sharedInstance] wizard] playlistWizard] reloadOutlineView];
-    [[[[VLCMain sharedInstance] bookmarks] dataTable] reloadData];
 
     [o_outline_view selectRowIndexes:[NSIndexSet indexSetWithIndex:retainedRowSelection] byExtendingSelection:NO];
 
@@ -714,6 +770,13 @@
     NSSavePanel *o_save_panel = [NSSavePanel savePanel];
     NSString * o_name = [NSString stringWithFormat: @"%@", _NS("Untitled")];
 
+    [NSBundle loadNibNamed:@"PlaylistAccessoryView" owner:self];
+
+    [o_save_accessory_text setStringValue: _NS("File Format:")];
+    [[o_save_accessory_popup itemAtIndex:0] setTitle: _NS("Extended M3U")];
+    [[o_save_accessory_popup itemAtIndex:1] setTitle: _NS("XML Shareable Playlist Format (XSPF)")];
+    [[o_save_accessory_popup itemAtIndex:2] setTitle: _NS("HTML playlist")];
+
     [o_save_panel setTitle: _NS("Save Playlist")];
     [o_save_panel setPrompt: _NS("Save")];
     [o_save_panel setAccessoryView: o_save_accessory_view];
@@ -794,6 +857,7 @@
             else
                 p_item = NULL;
         }
+
         playlist_Control(p_playlist, PLAYLIST_VIEWPLAY, pl_Locked, p_node, p_item);
     }
     PL_UNLOCK;
@@ -853,7 +917,7 @@
 
         if (p_item) {
             if (p_item->i_children == -1)
-                playlist_PreparseEnqueue(p_playlist, p_item->p_input);
+                libvlc_MetaRequest(p_intf->p_libvlc, p_item->p_input, META_REQUEST_OPTION_NONE);
             else
                 msg_Dbg(p_intf, "preparsing nodes not implemented");
         }
@@ -878,7 +942,7 @@
         p_item = [[o_outline_view itemAtRow: indexes[i]] pointerValue];
 
         if (p_item && p_item->i_children == -1)
-            playlist_AskForArtEnqueue(p_playlist, p_item->p_input);
+            libvlc_ArtRequest(p_intf->p_libvlc, p_item->p_input, META_REQUEST_OPTION_NONE);
     }
     [self playlistUpdated];
 }
@@ -886,6 +950,11 @@
 - (IBAction)selectAll:(id)sender
 {
     [o_outline_view selectAll: nil];
+}
+
+- (IBAction)showInfoPanel:(id)sender
+{
+    [[[VLCMain sharedInstance] info] initPanel];
 }
 
 - (IBAction)deleteItem:(id)sender
@@ -898,6 +967,8 @@
     o_selected_indexes = [o_outline_view selectedRowIndexes];
     i_count = [o_selected_indexes count];
     retainedRowSelection = [o_selected_indexes firstIndex];
+    if (retainedRowSelection == NSNotFound)
+        retainedRowSelection = 0;
 
     p_playlist = pl_Get(p_intf);
 
@@ -1085,6 +1156,7 @@
         NSDictionary *o_one_item;
 
         /* Get the item */
+        PL_LOCK;
         o_one_item = [o_array objectAtIndex:i_item];
         p_input = [self createItem: o_one_item];
 
@@ -1092,7 +1164,6 @@
             continue;
 
         /* Add the item */
-        PL_LOCK;
         playlist_NodeAddInput(p_playlist, p_input, p_node,
                                       PLAYLIST_INSERT,
                                       i_position == -1 ?
@@ -1228,6 +1299,9 @@
 
 - (NSMenu *)menuForEvent:(NSEvent *)o_event
 {
+    if (!b_playlistmenu_nib_loaded)
+        b_playlistmenu_nib_loaded = [NSBundle loadNibNamed:@"PlaylistMenu" owner:self];
+
     NSPoint pt;
     bool b_rows;
     bool b_item_sel;
@@ -1249,7 +1323,7 @@
     [o_mi_sort_name setEnabled: b_item_sel];
     [o_mi_sort_author setEnabled: b_item_sel];
 
-    return(o_ctx_menu);
+    return o_ctx_menu;
 }
 
 - (void)outlineView: (NSOutlineView *)o_tv didClickTableColumn:(NSTableColumn *)o_tc
@@ -1324,11 +1398,17 @@
     o_playing_item = [o_outline_dict objectForKey: [NSString stringWithFormat:@"%p",  playlist_CurrentPlayingItem(p_playlist)]];
     PL_UNLOCK;
 
+    NSFont *fontToUse;
+    if (config_GetInt(VLCIntf, "macosx-large-text"))
+        fontToUse = [NSFont systemFontOfSize:13.];
+    else
+        fontToUse = [NSFont systemFontOfSize:11.];
+
     if ([self isItem: [o_playing_item pointerValue] inNode: [item pointerValue] checkItemExistence:YES locked:NO]
                         || [o_playing_item isEqual: item])
-        [cell setFont: [[NSFontManager sharedFontManager] convertFont:[cell font] toHaveTrait:NSBoldFontMask]];
+        [cell setFont: [[NSFontManager sharedFontManager] convertFont:fontToUse toHaveTrait:NSBoldFontMask]];
     else
-        [cell setFont: [[NSFontManager sharedFontManager] convertFont:[cell font] toNotHaveTrait:NSBoldFontMask]];
+        [cell setFont: [[NSFontManager sharedFontManager] convertFont:fontToUse toNotHaveTrait:NSBoldFontMask]];
 }
 
 - (id)playingItem
@@ -1395,6 +1475,118 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
     [o_columns release];
     [o_arrayToSave release];
+}
+
+- (void)continuePlaybackWhereYouLeftOff:(input_thread_t *)p_input_thread
+{
+    NSDictionary *recentlyPlayedFiles = [[NSUserDefaults standardUserDefaults] objectForKey:@"recentlyPlayedMedia"];
+    if (recentlyPlayedFiles) {
+        input_item_t *p_item = input_GetItem(p_input_thread);
+        if (!p_item)
+            return;
+
+        /* allow the user to over-write the start-time */
+        if (p_item->i_options > 0) {
+            for (int x = 0; x < p_item->i_options; x++) {
+                if (strstr(p_item->ppsz_options[x],"start-time"))
+                    return;
+            }
+        }
+
+        char *psz_url = decode_URI(input_item_GetURI(p_item));
+        if (!psz_url)
+            return;
+
+        NSString *url = [NSString stringWithUTF8String:psz_url ? psz_url : ""];
+        free(psz_url);
+
+        /* check for file existance before resuming */
+        if (![[NSFileManager defaultManager] fileExistsAtPath:[[NSURL URLWithString:[NSString stringWithUTF8String:input_item_GetURI(p_item)]] path]])
+            return;
+
+        NSNumber *lastPosition = [recentlyPlayedFiles objectForKey:url];
+        if (lastPosition && lastPosition.intValue > 0) {
+            vlc_value_t pos;
+            var_Get(p_input_thread, "position", &pos);
+            float f_current_pos = 100. * pos.f_float;
+            long long int dur = input_item_GetDuration(p_item) / 1000000;
+            int current_pos_in_sec = (f_current_pos * dur) / 100;
+
+            if (current_pos_in_sec >= lastPosition.intValue)
+                return;
+
+            int settingValue = config_GetInt(VLCIntf, "macosx-continue-playback");
+            NSInteger returnValue = NSAlertErrorReturn;
+
+            if (settingValue == 0) {
+                NSAlert *theAlert = [NSAlert alertWithMessageText:_NS("Continue playback?") defaultButton:_NS("Continue") alternateButton:_NS("Restart playback") otherButton:_NS("Always continue") informativeTextWithFormat:_NS("Playback of \"%@\" will continue at %@"), [NSString stringWithUTF8String:input_item_GetTitleFbName(p_item)], [[VLCStringUtility sharedInstance] stringForTime:lastPosition.intValue]];
+
+                [[VLCCoreInteraction sharedInstance] pause];
+                returnValue = [theAlert runModal];
+                [[VLCCoreInteraction sharedInstance] playOrPause];
+            }
+
+            if (returnValue == NSAlertAlternateReturn || settingValue == 2)
+                lastPosition = [NSNumber numberWithInt:0];
+
+            pos.f_float = (float)lastPosition.intValue / (float)dur;
+            msg_Dbg(VLCIntf, "continuing playback at %2.2f", pos.f_float);
+            var_Set(p_input_thread, "position", pos);
+
+            if (returnValue == NSAlertOtherReturn)
+                config_PutInt(VLCIntf, "macosx-continue-playback", 1);
+        }
+    }
+}
+
+- (void)storePlaybackPositionForItem:(input_thread_t *)p_input_thread
+{
+    input_item_t *p_item = input_GetItem(p_input_thread);
+    if (!p_item)
+        return;
+
+    char *psz_url = decode_URI(input_item_GetURI(p_item));
+    NSString *url = [NSString stringWithUTF8String:psz_url ? psz_url : ""];
+    free(psz_url);
+
+    if (url.length < 1)
+        return;
+
+    if ([url rangeOfString:@"file://" options:NSCaseInsensitiveSearch].location != 0)
+        return;
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *mutDict = [[NSMutableDictionary alloc] initWithDictionary:[defaults objectForKey:@"recentlyPlayedMedia"]];
+
+    vlc_value_t pos;
+    var_Get(p_input_thread, "position", &pos);
+    float f_current_pos = 100. * pos.f_float;
+    long long int dur = input_item_GetDuration(p_item) / 1000000;
+    int current_pos_in_sec = (f_current_pos * dur) / 100;
+    NSMutableArray *mediaList = [[defaults objectForKey:@"recentlyPlayedMediaList"] mutableCopy];
+
+    if (pos.f_float > .05 && pos.f_float < .95 && dur > 180) {
+        [mutDict setObject:[NSNumber numberWithInt:current_pos_in_sec] forKey:url];
+
+        [mediaList removeObject:url];
+        [mediaList addObject:url];
+        NSUInteger mediaListCount = mediaList.count;
+        if (mediaListCount > 30) {
+            for (NSUInteger x = 0; x < mediaListCount - 30; x++) {
+                [mutDict removeObjectForKey:[mediaList objectAtIndex:0]];
+                [mediaList removeObjectAtIndex:0];
+            }
+        }
+    } else {
+        [mutDict removeObjectForKey:url];
+        [mediaList removeObject:url];
+    }
+    [defaults setObject:mutDict forKey:@"recentlyPlayedMedia"];
+    [defaults setObject:mediaList forKey:@"recentlyPlayedMediaList"];
+    [defaults synchronize];
+
+    [mutDict release];
+    [mediaList release];
 }
 
 @end
@@ -1565,12 +1757,11 @@
         NSUInteger count = [o_values count];
         NSMutableArray *o_array = [NSMutableArray arrayWithCapacity:count];
         input_thread_t * p_input = pl_CurrentInput(VLCIntf);
-        BOOL b_returned = NO;
 
         if (count == 1 && p_input) {
-            b_returned = input_AddSubtitle(p_input, vlc_path2uri([[o_values objectAtIndex:0] UTF8String], NULL), true);
+            int i_result = input_AddSubtitleOSD(p_input, vlc_path2uri([[o_values objectAtIndex:0] UTF8String], NULL), true, true);
             vlc_object_release(p_input);
-            if (!b_returned)
+            if (i_result == VLC_SUCCESS)
                 return YES;
         }
         else if (p_input)

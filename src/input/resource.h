@@ -2,7 +2,7 @@
  * resource.h
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: f1ae4ef5dd18f22beab0f2e0081f8b89599496ad $
+ * $Id: 4c24c749c56cb1a5fc48834f7591877c916e4120 $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
@@ -35,16 +35,6 @@ void input_resource_SetInput( input_resource_t *, input_thread_t * );
  * This function handles sout request.
  */
 sout_instance_t *input_resource_RequestSout( input_resource_t *, sout_instance_t *, const char *psz_sout );
-
-/**
- * This function creates or recycles an audio output.
- */
-audio_output_t *input_resource_GetAout( input_resource_t * );
-
-/**
- * This function retains or destroys an audio output.
- */
-void input_resource_PutAout( input_resource_t *, audio_output_t * );
 
 /**
  * This function handles vout request.

@@ -2,7 +2,7 @@
  * control.c : vout internal control
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 930e09b04ea9fd884c71774dd2ce821dcaeaf7cf $
+ * $Id: f317196b4139e438e5bb49c63f6148f2fec63086 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -62,7 +62,6 @@ void vout_control_Init(vout_control_t *ctrl)
     vlc_cond_init(&ctrl->wait_acknowledge);
 
     ctrl->is_dead = false;
-    ctrl->is_sleeping = false;
     ctrl->can_sleep = true;
     ctrl->is_processing = false;
     ARRAY_INIT(ctrl->cmd);
@@ -115,8 +114,7 @@ void vout_control_Wake(vout_control_t *ctrl)
 {
     vlc_mutex_lock(&ctrl->lock);
     ctrl->can_sleep = false;
-    if (ctrl->is_sleeping)
-        vlc_cond_signal(&ctrl->wait_request);
+    vlc_cond_signal(&ctrl->wait_request);
     vlc_mutex_unlock(&ctrl->lock);
 }
 
@@ -187,16 +185,11 @@ int vout_control_Pop(vout_control_t *ctrl, vout_control_cmd_t *cmd,
         vlc_cond_broadcast(&ctrl->wait_acknowledge);
 
         const mtime_t max_deadline = mdate() + timeout;
+        const mtime_t wait_deadline = deadline <= VLC_TS_INVALID ? max_deadline : __MIN(deadline, max_deadline);
 
-        /* Supurious wake up are perfectly fine */
-        if (deadline <= VLC_TS_INVALID) {
-            ctrl->is_sleeping = true;
-            if (ctrl->can_sleep)
-                vlc_cond_timedwait(&ctrl->wait_request, &ctrl->lock, max_deadline);
-            ctrl->is_sleeping = false;
-        } else {
-            vlc_cond_timedwait(&ctrl->wait_request, &ctrl->lock, __MIN(deadline, max_deadline));
-        }
+        /* Spurious wakeups are perfectly fine */
+        if (ctrl->can_sleep)
+            vlc_cond_timedwait(&ctrl->wait_request, &ctrl->lock, wait_deadline);
     }
 
     bool has_cmd;

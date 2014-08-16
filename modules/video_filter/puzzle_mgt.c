@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005-2009 VLC authors and VideoLAN
  * Copyright (C) 2013      Vianney Boyer
- * $Id: b6a986213130c8a3e0bacc0eadc0a020108e812a $
+ * $Id: d770d7a9df25c99d2d72f693b3ef06b44f0ab135 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *          Vianney Boyer <vlcvboyer -at- gmail -dot- com>
@@ -465,11 +465,9 @@ int puzzle_shuffle( filter_t *p_filter )
 int puzzle_generate_rand_pce_list( filter_t *p_filter, int32_t **pi_pce_lst )
 {
     filter_sys_t *p_sys = p_filter->p_sys;
-
     int32_t i_pieces_nbr = p_sys->s_allocated.i_pieces_nbr;
 
-    if (pi_pce_lst != NULL )
-        free( *pi_pce_lst );
+    free( *pi_pce_lst );
     *pi_pce_lst = calloc( i_pieces_nbr, sizeof(**pi_pce_lst) );
     if( !*pi_pce_lst )
         return VLC_ENOMEM;
@@ -956,5 +954,52 @@ void puzzle_load( filter_t *p_filter, save_game_t *ps_save_game)
 
                 break;
             }
+    }
+
+    for (uint32_t i_pce=0; i_pce < p_sys->s_allocated.i_pieces_nbr; i_pce++) {
+        /* redefine shapes */
+        uint32_t i_left_pce  = 0;
+        uint32_t i_right_pce = 6;
+        uint32_t i_top_pce   = 2;
+        uint32_t i_btm_pce   = 4;
+
+        uint32_t i_pce_pair = 0;
+        for (int32_t i_row = 0; i_row < p_sys->s_allocated.i_rows; i_row++)
+            for (int32_t i_col = 0; i_col < p_sys->s_allocated.i_cols; i_col++) {
+                if (p_sys->ps_pieces[i_pce].i_original_row == p_sys->ps_pieces[i_pce_pair].i_original_row) {
+                    if (p_sys->ps_pieces[i_pce].i_original_col == p_sys->ps_pieces[i_pce_pair].i_original_col - 1)
+                        i_right_pce = i_pce_pair;
+                    else if (p_sys->ps_pieces[i_pce].i_original_col == p_sys->ps_pieces[i_pce_pair].i_original_col + 1)
+                        i_left_pce = i_pce_pair;
+                }
+                else if (p_sys->ps_pieces[i_pce].i_original_col == p_sys->ps_pieces[i_pce_pair].i_original_col) {
+                    if (p_sys->ps_pieces[i_pce].i_original_row == p_sys->ps_pieces[i_pce_pair].i_original_row - 1)
+                        i_btm_pce = i_pce_pair;
+                    else if (p_sys->ps_pieces[i_pce].i_original_row == p_sys->ps_pieces[i_pce_pair].i_original_row + 1)
+                        i_top_pce = i_pce_pair;
+                }
+                i_pce_pair++;
+            }
+
+        if ((p_sys->ps_pieces[i_pce].i_left_shape == 0) && (p_sys->ps_pieces[i_pce].i_original_col != 0)) {
+            p_sys->ps_pieces[i_left_pce].i_right_shape = 6 + 8 + 8*(( (unsigned) vlc_mrand48()) % ( SHAPES_QTY ) ) + (vlc_mrand48() & 0x01);
+            p_sys->ps_pieces[i_pce].i_left_shape = (p_sys->ps_pieces[i_left_pce].i_right_shape - 6 ) ^ 0x01;
+        }
+
+        if ((p_sys->ps_pieces[i_pce].i_right_shape == 6) && (p_sys->ps_pieces[i_pce].i_original_col != p_sys->s_allocated.i_cols-1)) {
+            p_sys->ps_pieces[i_pce].i_right_shape = 6 + 8 + 8*(( (unsigned) vlc_mrand48()) % ( SHAPES_QTY ) ) + (vlc_mrand48() & 0x01);
+            p_sys->ps_pieces[i_right_pce].i_left_shape = (p_sys->ps_pieces[i_pce].i_right_shape - 6 ) ^ 0x01;
+        }
+
+        if ((p_sys->ps_pieces[i_pce].i_top_shape == 2) && (p_sys->ps_pieces[i_pce].i_original_row != 0)) {
+            p_sys->ps_pieces[i_top_pce].i_btm_shape = 4 + 8 + 8*(( (unsigned) vlc_mrand48()) % ( SHAPES_QTY ) ) + (vlc_mrand48() & 0x01);
+            p_sys->ps_pieces[i_pce].i_top_shape = (p_sys->ps_pieces[i_top_pce].i_btm_shape - 2 ) ^ 0x01;
+        }
+
+        if ((p_sys->ps_pieces[i_pce].i_btm_shape == 4) && (p_sys->ps_pieces[i_pce].i_original_row != p_sys->s_allocated.i_rows-1)) {
+            p_sys->ps_pieces[i_pce].i_btm_shape = 4 + 8 + 8*(( (unsigned) vlc_mrand48()) % ( SHAPES_QTY ) ) + (vlc_mrand48() & 0x01);
+            p_sys->ps_pieces[i_btm_pce].i_top_shape = (p_sys->ps_pieces[i_pce].i_btm_shape - 2 ) ^ 0x01;
+        }
+
     }
 }

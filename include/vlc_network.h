@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2005 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: d438642203dcf8b21606b8a5003754223162cc52 $
+ * $Id: d1c63b1e76dbf462062cb6c1a36b2c8c7fd4427a $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -38,7 +38,6 @@
 #   include <winsock2.h>
 #   include <ws2tcpip.h>
 #   define net_errno (WSAGetLastError())
-extern const char *net_strerror( int val );
 
 struct iovec
 {

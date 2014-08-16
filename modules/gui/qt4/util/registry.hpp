@@ -2,7 +2,7 @@
  * registry.hpp: Windows Registry Manipulation
  ****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 3cac7db1817a96180e20b726ff7f6df30a9ef23d $
+ * $Id: c48854dac4251bafc7dd4b3bccceb30b9c85c0e2 $
  *
  * Authors: Andre Weber <WeberAndre # gmx - de>
  *
@@ -32,7 +32,7 @@ private:
     char m_pathBuffer[256];
 public:
     QVLCRegistry(HKEY rootKey);
-    ~QVLCRegistry(void);
+    ~QVLCRegistry(void) {}
 
     void WriteRegistryInt( const char *path, const char *valueName, int value);
     void WriteRegistryString( const char *path, const char *valueName, const char *value);

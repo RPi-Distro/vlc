@@ -2,7 +2,7 @@
  * dialogs.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: d96f1b2210479c75113a953bb494cbd5152d77ce $
+ * $Id: 3bda3b94eba4117fa6e28de68aff78165620b1b3 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -332,14 +332,14 @@ void Dialogs::showPopupMenu( bool bShow, int popupType = INTF_DIALOG_POPUPMENU )
 
 void Dialogs::showInteraction( interaction_dialog_t *p_dialog )
 {
-    intf_dialog_args_t *p_arg = (intf_dialog_args_t *)
-                                calloc( 1, sizeof(intf_dialog_args_t) );
-
-    p_arg->p_dialog = p_dialog;
-    p_arg->p_intf = getIntf();
-
     if( m_pProvider && m_pProvider->pf_show_dialog )
     {
+        intf_dialog_args_t *p_arg = (intf_dialog_args_t *)
+                                    calloc( 1, sizeof(intf_dialog_args_t) );
+
+        p_arg->p_dialog = p_dialog;
+        p_arg->p_intf = getIntf();
+
         m_pProvider->pf_show_dialog( m_pProvider, INTF_DIALOG_INTERACTION,
                                      0, p_arg );
     }

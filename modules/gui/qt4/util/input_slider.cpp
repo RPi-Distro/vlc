@@ -2,7 +2,7 @@
  * input_slider.cpp : VolumeSlider and SeekSlider
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 8a477c53d704147c2123288d3b9d8fe5b069fd29 $
+ * $Id: d947d861f1d089d564e8481e2fd466bf1e8fcff0 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -197,6 +197,8 @@ void SeekSlider::updatePos()
 
 void SeekSlider::updateBuffering( float f_buffering_ )
 {
+    if ( f_buffering_ < f_buffering )
+        bufferingStart = QTime::currentTime();
     f_buffering = f_buffering_;
     repaint();
 }
@@ -380,6 +382,33 @@ void SeekSlider::leaveEvent( QEvent * )
     }
 }
 
+void SeekSlider::paintEvent( QPaintEvent *ev )
+{
+    if ( alternativeStyle )
+    {
+        SeekStyle::SeekStyleOption option;
+        option.initFrom( this );
+        if ( QTime::currentTime() > bufferingStart.addSecs( 1 ) )
+            option.buffering = f_buffering;
+        else
+            option.buffering = 1.0;
+        option.length = inputLength;
+        option.animate = ( animHandle->state() == QAbstractAnimation::Running
+                           || hideHandleTimer->isActive() );
+        option.animationopacity = mHandleOpacity;
+        option.sliderPosition = sliderPosition();
+        option.sliderValue = value();
+        option.maximum = maximum();
+        option.minimum = minimum();
+        if ( chapters ) foreach( const SeekPoint &point, chapters->getPoints() )
+            option.points << point.time;
+        QPainter painter( this );
+        style()->drawComplexControl( QStyle::CC_Slider, &option, &painter, this );
+    }
+    else
+        QSlider::paintEvent( ev );
+}
+
 void SeekSlider::hideEvent( QHideEvent * )
 {
     mTimeTooltip->hide();
@@ -442,12 +471,6 @@ void SeekSlider::hideHandle()
     /* Play the animation backward */
     animHandle->setDirection( QAbstractAnimation::Backward );
     animHandle->start();
-}
-
-bool SeekSlider::isAnimationRunning() const
-{
-    return animHandle->state() == QAbstractAnimation::Running
-            || hideHandleTimer->isActive();
 }
 
 

@@ -96,7 +96,6 @@ struct vout_display_sys_t
 
     xcb_xv_query_image_attributes_reply_t *att;
     picture_pool_t *pool; /* picture pool */
-    picture_resource_t resource[MAX_PICTURES];
 };
 
 static picture_pool_t *Pool (vout_display_t *, unsigned);
@@ -148,7 +147,7 @@ static vlc_fourcc_t ParseFormat (vlc_object_t *obj,
             {
               case 24:
                 if (f->bpp == 32 && f->depth == 32)
-                    return VLC_CODEC_RGBA;
+                    return VLC_CODEC_ARGB;
                 if (f->bpp == 32 && f->depth == 24)
                     return VLC_CODEC_RGB32;
                 if (f->bpp == 24 && f->depth == 24)
@@ -163,16 +162,13 @@ static vlc_fourcc_t ParseFormat (vlc_object_t *obj,
               case 15:
                 if (f->byte_order != ORDER)
                     return 0; /* Mixed endian! */
-                if (f->bpp == 16 && f->depth == 16)
-                    return VLC_CODEC_RGBT;
                 if (f->bpp == 16 && f->depth == 15)
                     return VLC_CODEC_RGB15;
                 break;
               case 12:
-                if (f->bpp == 16 && f->depth == 16)
-                    return VLC_CODEC_RGBA16;
                 if (f->bpp == 16 && f->depth == 12)
                     return VLC_CODEC_RGB12;
+                break;
               case 8:
                 if (f->bpp == 8 && f->depth == 8)
                     return VLC_CODEC_RGB8;
@@ -319,8 +315,8 @@ FindFormat (vlc_object_t *obj, xcb_connection_t *conn, video_format_t *fmt,
             continue;
 
         /* VLC pads scanline to 16 pixels internally */
-        unsigned width = fmt->i_width;
-        unsigned height = fmt->i_height;
+        unsigned width = (fmt->i_width + 31) & ~31;
+        unsigned height = (fmt->i_height + 15) & ~15;
         xcb_xv_query_image_attributes_reply_t *i;
         i = xcb_xv_query_image_attributes_reply (conn,
             xcb_xv_query_image_attributes (conn, a->base_id, f->id,
@@ -442,7 +438,7 @@ static int Open (vlc_object_t *obj)
             continue;
 
         /* Look for an image format */
-        fmt = vd->fmt;
+        video_format_ApplyRotation(&fmt, &vd->fmt);
         free (p_sys->att);
         p_sys->att = FindFormat (obj, conn, &fmt, a, &p_sys->id);
         if (p_sys->att == NULL) /* No acceptable image formats */
@@ -550,6 +546,17 @@ static int Open (vlc_object_t *obj)
         free(r);
     }
 
+    /* Colour space */
+    {
+        xcb_intern_atom_reply_t *r =
+            xcb_intern_atom_reply (conn,
+                xcb_intern_atom (conn, 1, 13, "XV_ITURBT_709"), NULL);
+        if (r != NULL && r->atom != 0)
+            xcb_xv_set_port_attribute(conn, p_sys->port, r->atom,
+                                      fmt.i_height > 576);
+        free(r);
+    }
+
     /* Create cursor */
     p_sys->cursor = XCB_cursor_Create (conn, screen);
 
@@ -599,17 +606,7 @@ static void Close (vlc_object_t *obj)
     vout_display_sys_t *p_sys = vd->sys;
 
     if (p_sys->pool)
-    {
-        for (unsigned i = 0; i < MAX_PICTURES; i++)
-        {
-            picture_resource_t *res = &p_sys->resource[i];
-
-            if (!res->p->p_pixels)
-                break;
-            XCB_pictures_Free (res, NULL);
-        }
         picture_pool_Delete (p_sys->pool);
-    }
 
     /* show the default cursor */
     xcb_change_window_attributes (p_sys->conn, p_sys->embed->handle.xid, XCB_CW_CURSOR,
@@ -626,12 +623,20 @@ static void PoolAlloc (vout_display_t *vd, unsigned requested_count)
 {
     vout_display_sys_t *p_sys = vd->sys;
 
-    memset (p_sys->resource, 0, sizeof(p_sys->resource));
-
     const uint32_t *pitches= xcb_xv_query_image_attributes_pitches (p_sys->att);
     const uint32_t *offsets= xcb_xv_query_image_attributes_offsets (p_sys->att);
     const unsigned num_planes= __MIN(p_sys->att->num_planes, PICTURE_PLANE_MAX);
     p_sys->data_size = p_sys->att->data_size;
+
+    picture_resource_t res = { NULL };
+    for (unsigned i = 0; i < num_planes; i++)
+    {
+        uint32_t data_size;
+        data_size = (i < num_planes - 1) ? offsets[i+1] : p_sys->data_size;
+
+        res.p[i].i_lines = (data_size - offsets[i]) / pitches[i];
+        res.p[i].i_pitch = pitches[i];
+    }
 
     picture_t *pic_array[MAX_PICTURES];
     requested_count = __MIN(requested_count, MAX_PICTURES);
@@ -639,48 +644,36 @@ static void PoolAlloc (vout_display_t *vd, unsigned requested_count)
     unsigned count;
     for (count = 0; count < requested_count; count++)
     {
-        picture_resource_t *res = &p_sys->resource[count];
+        xcb_shm_seg_t seg = p_sys->shm ? xcb_generate_id (p_sys->conn) : 0;
 
-        for (unsigned i = 0; i < num_planes; i++)
-        {
-            uint32_t data_size;
-            data_size = (i < num_planes - 1) ? offsets[i+1] : p_sys->data_size;
-
-            res->p[i].i_lines = (data_size - offsets[i]) / pitches[i];
-            res->p[i].i_pitch = pitches[i];
-        }
-
-        if (XCB_pictures_Alloc (vd, res, p_sys->att->data_size,
-                                p_sys->conn, p_sys->shm))
+        if (XCB_picture_Alloc (vd, &res, p_sys->data_size, p_sys->conn, seg))
             break;
 
         /* Allocate further planes as specified by XVideo */
         /* We assume that offsets[0] is zero */
         for (unsigned i = 1; i < num_planes; i++)
-            res->p[i].p_pixels = res->p[0].p_pixels + offsets[i];
+            res.p[i].p_pixels = res.p[0].p_pixels + offsets[i];
 
         if (p_sys->swap_uv)
         {   /* YVU: swap U and V planes */
-            uint8_t *buf = res->p[2].p_pixels;
-            res->p[2].p_pixels = res->p[1].p_pixels;
-            res->p[1].p_pixels = buf;
+            uint8_t *buf = res.p[2].p_pixels;
+            res.p[2].p_pixels = res.p[1].p_pixels;
+            res.p[1].p_pixels = buf;
         }
 
-        pic_array[count] = picture_NewFromResource (&vd->fmt, res);
-        if (!pic_array[count])
-        {
-            XCB_pictures_Free (res, p_sys->conn);
-            memset (res, 0, sizeof(*res));
+        pic_array[count] = XCB_picture_NewFromResource (&vd->fmt, &res);
+        if (unlikely(pic_array[count] == NULL))
             break;
-        }
     }
+    xcb_flush (p_sys->conn);
 
     if (count == 0)
         return;
 
     p_sys->pool = picture_pool_New (count, pic_array);
-    /* TODO release picture resources if NULL */
-    xcb_flush (p_sys->conn);
+    if (unlikely(p_sys->pool == NULL))
+        while (count > 0)
+            picture_Release(pic_array[--count]);
 }
 
 /**
@@ -702,28 +695,28 @@ static picture_pool_t *Pool (vout_display_t *vd, unsigned requested_count)
 static void Display (vout_display_t *vd, picture_t *pic, subpicture_t *subpicture)
 {
     vout_display_sys_t *p_sys = vd->sys;
-    xcb_shm_seg_t segment = pic->p_sys->segment;
+    xcb_shm_seg_t segment = XCB_picture_GetSegment(pic);
     xcb_void_cookie_t ck;
+    video_format_t fmt;
 
     if (!p_sys->visible)
         goto out;
+
+    video_format_ApplyRotation(&fmt, &vd->source);
+
     if (segment)
         ck = xcb_xv_shm_put_image_checked (p_sys->conn, p_sys->port,
                               p_sys->window, p_sys->gc, segment, p_sys->id, 0,
-                   /* Src: */ vd->source.i_x_offset,
-                              vd->source.i_y_offset,
-                              vd->source.i_visible_width,
-                              vd->source.i_visible_height,
+                   /* Src: */ fmt.i_x_offset, fmt.i_y_offset,
+                              fmt.i_visible_width, fmt.i_visible_height,
                    /* Dst: */ 0, 0, p_sys->width, p_sys->height,
                 /* Memory: */ pic->p->i_pitch / pic->p->i_pixel_pitch,
                               pic->p->i_lines, false);
     else
         ck = xcb_xv_put_image_checked (p_sys->conn, p_sys->port, p_sys->window,
                           p_sys->gc, p_sys->id,
-                          vd->source.i_x_offset,
-                          vd->source.i_y_offset,
-                          vd->source.i_visible_width,
-                          vd->source.i_visible_height,
+                          fmt.i_x_offset, fmt.i_y_offset,
+                          fmt.i_visible_width, fmt.i_visible_height,
                           0, 0, p_sys->width, p_sys->height,
                           pic->p->i_pitch / pic->p->i_pixel_pitch,
                           pic->p->i_lines,
@@ -827,8 +820,6 @@ static void Manage (vout_display_t *vd)
 static int EnumAdaptors (vlc_object_t *obj, const char *var,
                          int64_t **vp, char ***tp)
 {
-    size_t n = 0;
-
     /* Connect to X */
     char *display = var_InheritString (obj, "x11-display");
     xcb_connection_t *conn;
@@ -837,7 +828,7 @@ static int EnumAdaptors (vlc_object_t *obj, const char *var,
     conn = xcb_connect (display, &snum);
     free (display);
     if (xcb_connection_has_error (conn) /*== NULL*/)
-        goto error;
+        return -1;
 
     /* Find configured screen */
     const xcb_setup_t *setup = xcb_get_setup (conn);
@@ -852,33 +843,43 @@ static int EnumAdaptors (vlc_object_t *obj, const char *var,
         }
         snum--;
     }
+
     if (scr == NULL)
-        goto error;
+    {
+        xcb_disconnect (conn);
+        return -1;
+    }
 
     xcb_xv_query_adaptors_reply_t *adaptors =
         xcb_xv_query_adaptors_reply (conn,
             xcb_xv_query_adaptors (conn, scr->root), NULL);
+    xcb_disconnect (conn);
     if (adaptors == NULL)
-        goto error;
+        return -1;
 
     xcb_xv_adaptor_info_iterator_t it;
+    size_t n = 0;
 
     for (it = xcb_xv_query_adaptors_info_iterator (adaptors);
          it.rem > 0;
          xcb_xv_adaptor_info_next (&it))
-        n++;
+    {
+        const xcb_xv_adaptor_info_t *a = it.data;
+
+        if ((a->type & XCB_XV_TYPE_INPUT_MASK)
+         && (a->type & XCB_XV_TYPE_IMAGE_MASK))
+            n++;
+    }
 
     int64_t *values = xmalloc ((n + 1) * sizeof (*values));
     char **texts = xmalloc ((n + 1) * sizeof (*texts));
     *vp = values;
     *tp = texts;
-    n = 0;
 
     *(values++) = -1;
     *(texts++) = strdup (N_("Auto"));
-    n++;
 
-    for (it = xcb_xv_query_adaptors_info_iterator (adaptors);
+    for (it = xcb_xv_query_adaptors_info_iterator (adaptors), n = -1;
          it.rem > 0;
          xcb_xv_adaptor_info_next (&it))
     {
@@ -890,12 +891,10 @@ static int EnumAdaptors (vlc_object_t *obj, const char *var,
          || !(a->type & XCB_XV_TYPE_IMAGE_MASK))
             continue;
 
-        *(values++) = n - 2;
+        *(values++) = n;
         *(texts++) = strndup (xcb_xv_adaptor_info_name (a), a->name_size);
     }
     free (adaptors);
-error:
-    xcb_disconnect (conn);
     (void) obj; (void) var;
-    return n;
+    return values - *vp;
 }

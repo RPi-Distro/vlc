@@ -112,7 +112,7 @@ static picture_t *Decode (decoder_t *dec, block_t **pp)
             break;
         case 32:
             if (ntohl(hdr->bits_per_pixel) == 32)
-                chroma = VLC_CODEC_RGBA;
+                chroma = VLC_CODEC_ARGB;
             break;
     }
     /* TODO: check image endianess, set RGB mask */
@@ -120,6 +120,7 @@ static picture_t *Decode (decoder_t *dec, block_t **pp)
         goto drop;
 
     video_format_Setup(&dec->fmt_out.video, chroma,
+                       ntohl(hdr->pixmap_width), ntohl(hdr->pixmap_height),
                        ntohl(hdr->pixmap_width), ntohl(hdr->pixmap_height),
                        dec->fmt_in.video.i_sar_num,
                        dec->fmt_in.video.i_sar_den);

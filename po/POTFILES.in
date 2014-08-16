@@ -74,6 +74,7 @@ src/config/file.c
 src/config/help.c
 src/config/intf.c
 src/config/keys.c
+src/darwin/error.c
 src/extras/libc.c
 src/extras/tdestroy.c
 src/input/access.c
@@ -185,6 +186,7 @@ modules/access/bd/bd.c
 modules/access/bluray.c
 modules/access/cdda.c
 modules/access/dc1394.c
+modules/access/dcp/dcp.cpp
 modules/access/decklink.cpp
 modules/access/directory.c
 modules/access/dshow/crossbar.cpp
@@ -326,7 +328,7 @@ modules/audio_output/audioqueue.c
 modules/audio_output/audiotrack.c
 modules/audio_output/audiounit_ios.c
 modules/audio_output/auhal.c
-modules/audio_output/directx.c
+modules/audio_output/directsound.c
 modules/audio_output/file.c
 modules/audio_output/jack.c
 modules/audio_output/kai.c
@@ -349,9 +351,9 @@ modules/codec/avcodec/chroma.c
 modules/codec/avcodec/dxva2.c
 modules/codec/avcodec/encoder.c
 modules/codec/avcodec/fourcc.c
+modules/codec/avcodec/hwdummy.c
 modules/codec/avcodec/vaapi.c
 modules/codec/avcodec/vda.c
-modules/codec/avcodec/vdpau.c
 modules/codec/avcodec/video.c
 modules/codec/cc.c
 modules/codec/cc.h
@@ -359,7 +361,6 @@ modules/codec/cdg.c
 modules/codec/crystalhd.c
 modules/codec/cvdsub.c
 modules/codec/ddummy.c
-modules/codec/dirac.c
 modules/codec/dmo/buffer.c
 modules/codec/dmo/dmo.c
 modules/codec/dmo/dmo.h
@@ -371,11 +372,14 @@ modules/codec/fdkaac.c
 modules/codec/flac.c
 modules/codec/fluidsynth.c
 modules/codec/g711.c
+modules/codec/gstdecode.c
+modules/codec/jpeg.c
 modules/codec/kate.c
 modules/codec/libass.c
 modules/codec/libmpeg2.c
 modules/codec/lpcm.c
-modules/codec/mash.cpp
+modules/codec/mft.c
+modules/codec/mmal.c
 modules/codec/mpeg_audio.c
 modules/codec/omxil/android_mediacodec.c
 modules/codec/omxil/omxil.c
@@ -390,7 +394,7 @@ modules/codec/quicktime.c
 modules/codec/rawvideo.c
 modules/codec/schroedinger.c
 modules/codec/sdl_image.c
-modules/codec/shine/shine_mod.c
+modules/codec/shine.c
 modules/codec/speex.c
 modules/codec/spudec/parse.c
 modules/codec/spudec/spudec.c
@@ -398,6 +402,7 @@ modules/codec/spudec/spudec.h
 modules/codec/stl.c
 modules/codec/subsdec.c
 modules/codec/subsusf.c
+modules/codec/substx3g.c
 modules/codec/svcdsub.c
 modules/codec/t140.c
 modules/codec/telx.c
@@ -405,8 +410,10 @@ modules/codec/theora.c
 modules/codec/twolame.c
 modules/codec/uleaddvaudio.c
 modules/codec/vorbis.c
+modules/codec/vpx.c
 modules/codec/wmafixed/wma.c
 modules/codec/x264.c
+modules/codec/x265.c
 modules/codec/xwd.c
 modules/codec/zvbi.c
 modules/control/dbus/dbus.c
@@ -441,6 +448,7 @@ modules/demux/avformat/mux.c
 modules/demux/avi/avi.c
 modules/demux/avi/libavi.c
 modules/demux/avi/libavi.h
+modules/demux/caf.c
 modules/demux/cdg.c
 modules/demux/demuxdump.c
 modules/demux/dirac.c
@@ -475,6 +483,7 @@ modules/demux/mp4/mp4.c
 modules/demux/mpc.c
 modules/demux/mpeg/es.c
 modules/demux/mpeg/h264.c
+modules/demux/mpeg/hevc.c
 modules/demux/mpeg/mpgv.c
 modules/demux/nsc.c
 modules/demux/nsv.c
@@ -519,6 +528,8 @@ modules/demux/xiph_metadata.h
 modules/demux/xiph_metadata.c
 modules/gui/macosx/about.h
 modules/gui/macosx/about.m
+modules/gui/macosx/AddonManager.h
+modules/gui/macosx/AddonManager.m
 modules/gui/macosx/AppleRemote.h
 modules/gui/macosx/AppleRemote.m
 modules/gui/macosx/applescript.h
@@ -527,6 +538,8 @@ modules/gui/macosx/AudioEffects.h
 modules/gui/macosx/AudioEffects.m
 modules/gui/macosx/bookmarks.h
 modules/gui/macosx/bookmarks.m
+modules/gui/macosx/BWQuincyUI.h
+modules/gui/macosx/BWQuincyUI.m
 modules/gui/macosx/controls.h
 modules/gui/macosx/controls.m
 modules/gui/macosx/ControlsBar.h
@@ -913,6 +926,12 @@ modules/gui/skins2/x11/x11_tooltip.cpp
 modules/gui/skins2/x11/x11_tooltip.hpp
 modules/gui/skins2/x11/x11_window.cpp
 modules/gui/skins2/x11/x11_window.hpp
+modules/hw/vdpau/adjust.c
+modules/hw/vdpau/avcodec.c
+modules/hw/vdpau/chroma.c
+modules/hw/vdpau/deinterlace.c
+modules/hw/vdpau/display.c
+modules/hw/vdpau/sharpen.c
 modules/lua/demux.c
 modules/lua/intf.c
 modules/lua/libs/configuration.c
@@ -928,7 +947,6 @@ modules/lua/libs/objects.c
 modules/lua/libs/objects.h
 modules/lua/libs/osd.c
 modules/lua/libs/playlist.c
-modules/lua/libs/playlist.h
 modules/lua/libs/sd.c
 modules/lua/libs/stream.c
 modules/lua/libs/strings.c
@@ -953,6 +971,7 @@ modules/misc/playlist/html.c
 modules/misc/playlist/m3u.c
 modules/misc/playlist/xspf.c
 modules/misc/rtsp.c
+modules/misc/securetransport.c
 modules/misc/stats.c
 modules/misc/xml/libxml.c
 modules/mux/asf.c
@@ -975,6 +994,7 @@ modules/packetizer/copy.c
 modules/packetizer/dirac.c
 modules/packetizer/flac.c
 modules/packetizer/h264.c
+modules/packetizer/hevc.c
 modules/packetizer/mlp.c
 modules/packetizer/mpeg4audio.c
 modules/packetizer/mpeg4video.c
@@ -1016,6 +1036,7 @@ modules/stream_out/rtp.h
 modules/stream_out/rtsp.c
 modules/stream_out/setid.c
 modules/stream_out/smem.c
+modules/stream_out/stats.c
 modules/stream_out/standard.c
 modules/stream_out/transcode/transcode.c
 modules/text_renderer/freetype.c
@@ -1023,6 +1044,7 @@ modules/text_renderer/quartztext.c
 modules/text_renderer/svg.c
 modules/text_renderer/tdummy.c
 modules/text_renderer/win32text.c
+modules/video_chroma/chain.c
 modules/video_chroma/grey_yuv.c
 modules/video_chroma/i420_rgb16.c
 modules/video_chroma/i420_rgb8.c
@@ -1036,6 +1058,7 @@ modules/video_chroma/i422_yuy2.c
 modules/video_chroma/i422_yuy2.h
 modules/video_chroma/omxdl.c
 modules/video_chroma/rv32.c
+modules/video_chroma/swscale.c
 modules/video_chroma/yuy2_i420.c
 modules/video_chroma/yuy2_i422.c
 modules/video_filter/adjust.c
@@ -1072,8 +1095,6 @@ modules/video_filter/blendbench.c
 modules/video_filter/blend.cpp
 modules/video_filter/bluescreen.c
 modules/video_filter/canvas.c
-modules/video_filter/chain.c
-modules/video_filter/clone.c
 modules/video_filter/colorthres.c
 modules/video_filter/croppadd.c
 modules/video_filter/deinterlace/algo_phosphor.h
@@ -1089,6 +1110,7 @@ modules/video_filter/erase.c
 modules/video_filter/extract.c
 modules/video_filter/filter_event_info.h
 modules/video_filter/filter_picture.h
+modules/video_filter/freeze.c
 modules/video_filter/gaussianblur.c
 modules/video_filter/gradfun.c
 modules/video_filter/gradient.c
@@ -1103,9 +1125,9 @@ modules/video_filter/mosaic.c
 modules/video_filter/mosaic.h
 modules/video_filter/motionblur.c
 modules/video_filter/motiondetect.c
+modules/video_filter/oldmovie.c
 modules/video_filter/opencv_example.cpp
 modules/video_filter/opencv_wrapper.c
-modules/video_filter/panoramix.c
 modules/video_filter/posterize.c
 modules/video_filter/postproc.c
 modules/video_filter/psychedelic.c
@@ -1120,14 +1142,16 @@ modules/video_filter/scene.c
 modules/video_filter/sepia.c
 modules/video_filter/sharpen.c
 modules/video_filter/subsdelay.c
-modules/video_filter/swscale.c
 modules/video_filter/transform.c
-modules/video_filter/wall.c
+modules/video_filter/vhs.c
 modules/video_filter/wave.c
 modules/video_filter/yuvp.c
 modules/video_output/aa.c
-modules/video_output/androidsurface.c
+modules/video_output/android/nativewindow.c
+modules/video_output/android/opaque.c
+modules/video_output/android/surface.c
 modules/video_output/caca.c
+modules/video_output/caopengllayer.m
 modules/video_output/decklink.cpp
 modules/video_output/directfb.c
 modules/video_output/drawable.c
@@ -1135,10 +1159,10 @@ modules/video_output/egl.c
 modules/video_output/fb.c
 modules/video_output/gl.c
 modules/video_output/glx.c
-modules/video_output/ios.m
 modules/video_output/ios2.m
 modules/video_output/kva.c
 modules/video_output/macosx.m
+modules/video_output/mmal.c
 modules/video_output/msw/direct2d.c
 modules/video_output/msw/direct3d.c
 modules/video_output/msw/directx.c
@@ -1153,6 +1177,9 @@ modules/video_output/xcb/window.c
 modules/video_output/xcb/x11.c
 modules/video_output/xcb/xvideo.c
 modules/video_output/yuv.c
+modules/video_splitter/clone.c
+modules/video_splitter/panoramix.c
+modules/video_splitter/wall.c
 modules/visualization/goom.c
 modules/visualization/projectm.cpp
 modules/visualization/visual/effects.c

@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2011 VideoLAN and AUTHORS
- * $Id: 5a13f50aa819c89349e80e886fb4e691ba574ffe $
+ * $Id: 4734749a0b0e7133563862e5ccd63e887de54031 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -60,8 +60,16 @@
 #include <QStackedWidget>
 #include <QFileInfo>
 
+#include <QTimer>
+
 #include <vlc_keys.h>                       /* Wheel event */
 #include <vlc_vout_display.h>               /* vout_thread_t and VOUT_ events */
+
+
+#if defined(_WIN32) && HAS_QT5
+#include <QWindow>
+#include <qpa/qplatformnativeinterface.h>
+#endif
 
 // #define DEBUG_INTF
 
@@ -112,7 +120,7 @@ MainInterface::MainInterface( intf_thread_t *_p_intf ) : QVLCMW( _p_intf )
     setWindowRole( "vlc-main" );
     setWindowIcon( QApplication::windowIcon() );
     setWindowOpacity( var_InheritFloat( p_intf, "qt-opacity" ) );
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     setAttribute( Qt::WA_MacBrushedMetal );
 #endif
 
@@ -162,11 +170,6 @@ MainInterface::MainInterface( intf_thread_t *_p_intf ) : QVLCMW( _p_intf )
      **************/
     createStatusBar();
     setStatusBarVisibility( getSettings()->value( "MainWindow/status-bar-visible", false ).toBool() );
-
-    /********************
-     * Input Manager    *
-     ********************/
-    MainInputManager::getInstance( p_intf );
 
 #ifdef _WIN32
     himl = NULL;
@@ -365,6 +368,56 @@ void MainInterface::reloadPrefs()
     }
 }
 
+void MainInterface::createContinueDialog( QWidget *w )
+{
+    /* Create non-modal continueDialog */
+    continueDialog = new QWidget( w );
+    continueDialog->hide();
+    QHBoxLayout *continueDialogLayout = new QHBoxLayout( continueDialog );
+    continueDialogLayout->setSpacing( 0 ); continueDialogLayout->setMargin( 0 );
+
+    QLabel *continueLabel = new QLabel( qtr( "Do you want to restart the playback where left off?") );
+    QToolButton *cancel = new QToolButton( continueDialog );
+    cancel->setAutoRaise( true );
+    cancel->setText( "X" );
+    QPushButton *ok = new QPushButton( qtr("&Continue")  );
+
+    continueDialogLayout->addWidget(continueLabel);
+    continueDialogLayout->addStretch( 1 );
+    continueDialogLayout->addWidget( ok );
+    continueDialogLayout->addWidget( cancel );
+
+    CONNECT( cancel, clicked(), continueDialog, hide() );
+    BUTTONACT(ok, continuePlayback() );
+
+    CONNECT( THEMIM->getIM(), continuePlayback(int64_t), this, showContinueDialog(int64_t) );
+
+    w->layout()->addWidget( continueDialog );
+}
+
+void MainInterface::showContinueDialog( int64_t _time ) {
+    int setting = var_InheritInteger( p_intf, "qt-continue" );
+
+    if( setting == 0 )
+        return;
+
+    i_continueTime = _time;
+
+    if( setting == 2)
+        continuePlayback();
+    else
+    {
+        continueDialog->setVisible(true);
+        QTimer::singleShot(6000, continueDialog, SLOT(hide()));
+    }
+}
+
+void MainInterface::continuePlayback()
+{
+    var_SetTime( THEMIM->getInput(), "time", i_continueTime );
+    continueDialog->hide();
+}
+
 void MainInterface::createMainWidget( QSettings *creationSettings )
 {
     /* Create the main Widget and the mainLayout */
@@ -374,6 +427,7 @@ void MainInterface::createMainWidget( QSettings *creationSettings )
     main->setContentsMargins( 0, 0, 0, 0 );
     mainLayout->setSpacing( 0 ); mainLayout->setMargin( 0 );
 
+    createContinueDialog( main );
     /* */
     stackCentralW = new QVLCStackedWidget( main );
 
@@ -535,7 +589,7 @@ void MainInterface::debug()
 #endif
 }
 
-inline void MainInterface::showVideo() { showTab( videoWidget ); }
+inline void MainInterface::showVideo() { showTab( videoWidget ); setRaise(); }
 inline void MainInterface::restoreStackOldWidget()
             { showTab( stackCentralOldWidget ); }
 
@@ -634,8 +688,8 @@ void MainInterface::toggleFSC()
 
 /**
  * NOTE:
- * You must not change the state of this object or other Qt4 UI objects,
- * from the video output thread - only from the Qt4 UI main loop thread.
+ * You must not change the state of this object or other Qt UI objects,
+ * from the video output thread - only from the Qt UI main loop thread.
  * All window provider queries must be handled through signals or events.
  * That's why we have all those emit statements...
  */
@@ -685,7 +739,7 @@ void MainInterface::releaseVideoSlot( void )
 {
     /* This function is called when the embedded video window is destroyed,
      * or in the rare case that the embedded window is still here but the
-     * Qt4 interface exits. */
+     * Qt interface exits. */
     assert( videoWidget );
     videoWidget->release();
     setVideoOnTop( false );
@@ -754,6 +808,9 @@ void MainInterface::setVideoFullScreen( bool fs )
          * qt-fullscreen-screennumber is forced) */
         setMinimalView( b_minimalView );
         setInterfaceFullScreen( b_interfaceFullScreen );
+#ifdef _WIN32
+        changeThumbbarButtons( THEMIM->getIM()->playingStatus() );
+#endif
     }
     videoWidget->sync();
 }
@@ -971,8 +1028,10 @@ void MainInterface::setStatusBarVisibility( bool b_visible )
 
 void MainInterface::setPlaylistVisibility( bool b_visible )
 {
-    if ( !isPlDocked() && !THEDP->isDying() )
-        playlistVisible = b_visible;
+    if( isPlDocked() || THEDP->isDying() || (playlistWidget && playlistWidget->isMinimized() ) )
+        return;
+
+    playlistVisible = b_visible;
 }
 
 #if 0
@@ -1102,10 +1161,18 @@ void MainInterface::toggleUpdateSystrayMenu()
         /* check if any visible window is above vlc in the z-order,
          * but ignore the ones always on top
          * and the ones which can't be activated */
+        HWND winId;
+#if HAS_QT5
+        QWindow *window = windowHandle();
+        winId = static_cast<HWND>(QGuiApplication::platformNativeInterface()->nativeResourceForWindow("handle", window));
+#else
+        winId = internalWinId();
+#endif
+
         WINDOWINFO wi;
         HWND hwnd;
         wi.cbSize = sizeof( WINDOWINFO );
-        for( hwnd = GetNextWindow( internalWinId(), GW_HWNDPREV );
+        for( hwnd = GetNextWindow( winId, GW_HWNDPREV );
                 hwnd && ( !IsWindowVisible( hwnd ) ||
                     ( GetWindowInfo( hwnd, &wi ) &&
                       (wi.dwExStyle&WS_EX_NOACTIVATE) ) );
@@ -1121,7 +1188,7 @@ void MainInterface::toggleUpdateSystrayMenu()
             }
 #else
         hide();
-#endif
+#endif // _WIN32
     }
     if( sysTray )
         VLCMenuBar::updateSystrayMenu( this, p_intf );
@@ -1154,7 +1221,7 @@ void MainInterface::handleSystrayClick(
     {
         case QSystemTrayIcon::Trigger:
         case QSystemTrayIcon::DoubleClick:
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
             VLCMenuBar::updateSystrayMenu( this, p_intf );
 #else
             toggleUpdateSystrayMenu();
@@ -1276,9 +1343,9 @@ void MainInterface::dropEventPlay( QDropEvent *event, bool b_play, bool b_playli
     /* D&D of a subtitles file, add it on the fly */
     if( mimeData->urls().count() == 1 && THEMIM->getIM()->hasInput() )
     {
-        if( !input_AddSubtitle( THEMIM->getInput(),
+        if( !input_AddSubtitleOSD( THEMIM->getInput(),
                  qtu( toNativeSeparators( mimeData->urls()[0].toLocalFile() ) ),
-                 true ) )
+                 true, true ) )
         {
             event->accept();
             return;
@@ -1308,11 +1375,8 @@ void MainInterface::dropEventPlay( QDropEvent *event, bool b_play, bool b_playli
             }
             if( mrl.length() > 0 )
             {
-                playlist_Add( THEPL, qtu(mrl), NULL,
-                          PLAYLIST_APPEND | (first ? PLAYLIST_GO: PLAYLIST_PREPARSE),
-                          PLAYLIST_END, b_playlist, pl_Unlocked );
+                Open::openMRL( p_intf, mrl, first, b_playlist );
                 first = false;
-                RecentsMRL::getInstance( p_intf )->addRecent( mrl );
             }
         }
     }
@@ -1324,9 +1388,7 @@ void MainInterface::dropEventPlay( QDropEvent *event, bool b_play, bool b_playli
         QUrl(mimeData->text()).isValid() )
     {
         QString mrl = toURI( mimeData->text() );
-        playlist_Add( THEPL, qtu(mrl), NULL,
-                      PLAYLIST_APPEND | (first ? PLAYLIST_GO: PLAYLIST_PREPARSE),
-                      PLAYLIST_END, b_playlist, pl_Unlocked );
+        Open::openMRL( p_intf, mrl, first, b_playlist );
     }
     event->accept();
 }

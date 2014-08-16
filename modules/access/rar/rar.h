@@ -2,7 +2,7 @@
  * rar.h: uncompressed RAR parser
  *****************************************************************************
  * Copyright (C) 2008-2010 Laurent Aimar
- * $Id: 4dea45925c2d8f319d692475bc0307fdd9f6cfe7 $
+ * $Id: 889309fa20b787f16fe5ead302fac275f8093a0e $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -40,5 +40,9 @@ typedef struct {
 
 int  RarProbe(stream_t *);
 void RarFileDelete(rar_file_t *);
-int  RarParse(stream_t *, int *, rar_file_t ***);
+int  RarParse(stream_t *, int *, rar_file_t ***, bool);
 
+int RarAccessOpen(vlc_object_t *);
+void RarAccessClose(vlc_object_t *);
+int RarStreamOpen(vlc_object_t *);
+void RarStreamClose(vlc_object_t *);

@@ -2,7 +2,7 @@
  * theme_loader.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e224364a1b8a7ef2dddeb9fa1d4aaaa618f58c66 $
+ * $Id: 5783cdaa707222fb95c4247a53d2bcefd12f6322 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -28,9 +28,7 @@
 
 #include <fcntl.h>
 #include <sys/stat.h>
-#ifdef HAVE_UNISTD_H
-#   include <unistd.h>
-#endif
+#include <unistd.h>
 
 #include <vlc_common.h>
 #include <vlc_fs.h>
@@ -394,11 +392,10 @@ bool ThemeLoader::findFile( const string &rootDir, const string &rFileName,
     // Path separator
     const string &sep = OSFactory::instance( getIntf() )->getDirSeparator();
 
-    DIR *pCurrDir;
-    char *pszDirContent;
+    const char *pszDirContent;
 
     // Open the dir
-    pCurrDir = vlc_opendir( rootDir.c_str() );
+    DIR *pCurrDir = vlc_opendir( rootDir.c_str() );
 
     if( pCurrDir == NULL )
     {
@@ -430,7 +427,6 @@ bool ThemeLoader::findFile( const string &rootDir, const string &rFileName,
                 // Can we find the file in this subdirectory?
                 if( findFile( newURI, rFileName, themeFilePath ) )
                 {
-                    free( pszDirContent );
                     closedir( pCurrDir );
                     return true;
                 }
@@ -441,14 +437,11 @@ bool ThemeLoader::findFile( const string &rootDir, const string &rFileName,
                 if( rFileName == string( pszDirContent ) )
                 {
                     themeFilePath = newURI;
-                    free( pszDirContent );
                     closedir( pCurrDir );
                     return true;
                 }
             }
         }
-
-        free( pszDirContent );
     }
 
     closedir( pCurrDir );

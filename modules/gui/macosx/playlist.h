@@ -2,7 +2,7 @@
  * playlist.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 543ebe33841ef8eaec0d527b7fad693500b51fdb $
+ * $Id: 07bb5181c7283abbab19e438e02a5a0f22250195 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -36,6 +36,7 @@
 #define DATE_COLUMN @"date"
 #define LANGUAGE_COLUMN @"language"
 #define URI_COLUMN @"uri"
+#define FILESIZE_COLUMN @"file-size"
 
 /*****************************************************************************
  * VLCPlaylistView interface
@@ -63,6 +64,7 @@
 - (playlist_item_t *)currentPlaylistRoot;
 - (playlist_item_t *)selectedPlaylistItem;
 - (NSOutlineView *)outlineView;
+- (void)reloadStyles;
 @end
 
 /*****************************************************************************
@@ -84,7 +86,6 @@
     IBOutlet id o_btn_playlist;
     IBOutlet id o_playlist_view;
     IBOutlet id o_search_field;
-    IBOutlet id o_search_field_other;
     IBOutlet id o_mi_save_playlist;
     IBOutlet id o_ctx_menu;
 
@@ -129,6 +130,7 @@
 - (IBAction)sortNodeByName:(id)sender;
 - (IBAction)sortNodeByAuthor:(id)sender;
 - (IBAction)recursiveExpandNode:(id)sender;
+- (IBAction)showInfoPanel:(id)sender;
 
 - (id)playingItem;
 - (NSArray *)draggedItems;
@@ -137,4 +139,7 @@
 - (void)appendNodeArray:(NSArray*)o_array inNode:(playlist_item_t *)p_node atPos:(int)i_position enqueue:(BOOL)b_enqueue;
 
 - (void)setColumn: (NSString *)o_column state: (NSInteger)i_state translationDict:(NSDictionary *)o_dict;
+- (void)continuePlaybackWhereYouLeftOff:(input_thread_t *)p_input_thread;
+- (void)storePlaybackPositionForItem:(input_thread_t *)p_input_thread;
+
 @end

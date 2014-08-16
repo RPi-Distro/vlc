@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005-2009 VLC authors and VideoLAN
  * Copyright (C) 2013      Vianney Boyer
- * $Id: 3cef61288dc9feba67035dd58405a5c096e29114 $
+ * $Id: 2fe5e0c8afe025f38acda864c16782276c83b7e5 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *          Vianney Boyer <vlcvboyer -at- gmail -dot- com>
@@ -133,6 +133,11 @@ int Open( vlc_object_t *p_this )
         msg_Err( p_filter, "Input and output format does not match" );
         return VLC_EGENERIC;
     }
+
+    const vlc_chroma_description_t *p_chroma =
+        vlc_fourcc_GetChromaDescription( p_filter->fmt_in.video.i_chroma );
+    if( p_chroma == NULL || p_chroma->plane_count == 0 )
+        return VLC_EGENERIC;
 
     /* Allocate structure */
     p_filter->p_sys = p_sys = calloc(1, sizeof( *p_sys ) );

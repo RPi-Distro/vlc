@@ -2,7 +2,7 @@
  * upnp.cpp :  UPnP discovery module (libupnp)
  *****************************************************************************
  * Copyright (C) 2004-2011 the VideoLAN team
- * $Id: 66223fa091369d81af1e0579b1606be2848dc761 $
+ * $Id: 483f374d4b837d68a61bb8e4ae5ff578ccf5a0db $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org> (original plugin)
  *          Christian Henz <henz # c-lab.de>
@@ -32,7 +32,7 @@
 # include "config.h"
 #endif
 
-#include "upnp.hpp"
+#include "services_discovery/upnp.hpp"
 
 #include <vlc_plugin.h>
 #include <vlc_services_discovery.h>
@@ -822,7 +822,8 @@ bool MediaServer::_fetchContents( Container* p_parent, int i_offset )
     IXML_Document* p_response = _browseAction( p_parent->getObjectID(),
                                       "BrowseDirectChildren",
                                       "id,dc:title,res," /* Filter */
-                                      "sec:CaptionInfo,sec:CaptionInfoEx",
+                                      "sec:CaptionInfo,sec:CaptionInfoEx,"
+                                      "pv:subtitlefile",
                                       psz_starting_index, /* StartingIndex */
                                       "0", /* RequestedCount */
                                       "" /* SortCriteria */
@@ -911,6 +912,10 @@ bool MediaServer::_fetchContents( Container* p_parent, int i_offset )
             if ( !psz_subtitles )
                 psz_subtitles = xml_getChildElementValue( itemElement,
                         "sec:CaptionInfoEx" );
+
+            if ( !psz_subtitles )
+                psz_subtitles = xml_getChildElementValue( itemElement,
+                        "pv:subtitlefile" );
 
             /* Try to extract all resources in DIDL */
             IXML_NodeList* p_resource_list = ixmlDocument_getElementsByTagName( (IXML_Document*) itemElement, "res" );

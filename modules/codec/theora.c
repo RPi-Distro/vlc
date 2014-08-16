@@ -2,7 +2,7 @@
  * theora.c: theora decoder module making use of libtheora.
  *****************************************************************************
  * Copyright (C) 1999-2012 VLC authors and VideoLAN
- * $Id: 86ac5d6379aa2386dae22aa734c99eeca25ddd59 $
+ * $Id: b6831aebaca66df4573ab8d733d29b151abb9d8f $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -105,6 +105,8 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pict );
   "Enforce a quality between 1 (low) and 10 (high), instead " \
   "of specifying a particular bitrate. This will produce a VBR stream." )
 
+#define ENC_POSTPROCESS_TEXT N_("Post processing quality")
+
 vlc_module_begin ()
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_VCODEC )
@@ -113,6 +115,8 @@ vlc_module_begin ()
     set_capability( "decoder", 100 )
     set_callbacks( OpenDecoder, CloseDecoder )
     add_shortcut( "theora" )
+#   define DEC_CFG_PREFIX "theora-"
+    add_integer( DEC_CFG_PREFIX "postproc", -1, ENC_POSTPROCESS_TEXT, NULL, true )
 
     add_submodule ()
     set_description( N_("Theora video packetizer") )
@@ -236,6 +240,7 @@ static int ProcessHeaders( decoder_t *p_dec )
     decoder_sys_t *p_sys = p_dec->p_sys;
     ogg_packet oggpacket;
     th_setup_info *ts = NULL; /* theora setup information */
+    int i_max_pp, i_pp;
 
     unsigned pi_size[XIPH_MAX_HEADER_COUNT];
     void     *pp_data[XIPH_MAX_HEADER_COUNT];
@@ -244,7 +249,7 @@ static int ProcessHeaders( decoder_t *p_dec )
                            p_dec->fmt_in.i_extra, p_dec->fmt_in.p_extra) )
         return VLC_EGENERIC;
     if( i_count < 3 )
-        goto error;
+        return VLC_EGENERIC;
 
     oggpacket.granulepos = -1;
     oggpacket.e_o_s = 0;
@@ -374,6 +379,21 @@ static int ProcessHeaders( decoder_t *p_dec )
             msg_Err( p_dec, "Could not allocate Theora decoder" );
             goto error;
         }
+
+        i_pp = var_InheritInteger( p_dec, DEC_CFG_PREFIX "postproc" );
+        if ( i_pp >= 0 && !th_decode_ctl( p_sys->tcx,
+                    TH_DECCTL_GET_PPLEVEL_MAX, &i_max_pp, sizeof(int) ) )
+        {
+            i_pp = __MIN( i_pp, i_max_pp );
+            if ( th_decode_ctl( p_sys->tcx, TH_DECCTL_SET_PPLEVEL,
+                                &i_pp, sizeof(int) ) )
+                msg_Err( p_dec, "Failed to set post processing level to %d",
+                         i_pp );
+            else
+                msg_Dbg( p_dec, "Set post processing level to %d / %d",
+                         i_pp, i_max_pp );
+        }
+
     }
     else
     {
@@ -384,15 +404,11 @@ static int ProcessHeaders( decoder_t *p_dec )
                 p_dec->fmt_in.p_extra, p_dec->fmt_out.i_extra );
     }
 
-    for( unsigned i = 0; i < i_count; i++ )
-        free( pp_data[i] );
     /* Clean up the decoder setup info... we're done with it */
     th_setup_free( ts );
     return VLC_SUCCESS;
 
 error:
-    for( unsigned i = 0; i < i_count; i++ )
-        free( pp_data[i] );
     /* Clean up the decoder setup info... we're done with it */
     th_setup_free( ts );
     return VLC_EGENERIC;
@@ -660,8 +676,8 @@ static int OpenEncoder( vlc_object_t *p_this )
 
     th_info_init( &p_sys->ti );
 
-    p_sys->ti.frame_width = p_enc->fmt_in.video.i_width;
-    p_sys->ti.frame_height = p_enc->fmt_in.video.i_height;
+    p_sys->ti.frame_width = p_enc->fmt_in.video.i_visible_width;
+    p_sys->ti.frame_height = p_enc->fmt_in.video.i_visible_height;
 
     if( p_sys->ti.frame_width % 16 || p_sys->ti.frame_height % 16 )
     {
@@ -671,12 +687,12 @@ static int OpenEncoder( vlc_object_t *p_this )
         p_sys->ti.frame_height = (p_sys->ti.frame_height + 15) >> 4 << 4;
 
         msg_Dbg( p_enc, "padding video from %dx%d to %dx%d",
-                 p_enc->fmt_in.video.i_width, p_enc->fmt_in.video.i_height,
+                 p_enc->fmt_in.video.i_visible_width, p_enc->fmt_in.video.i_visible_height,
                  p_sys->ti.frame_width, p_sys->ti.frame_height );
     }
 
-    p_sys->ti.pic_width = p_enc->fmt_in.video.i_width;
-    p_sys->ti.pic_height = p_enc->fmt_in.video.i_height;
+    p_sys->ti.pic_width = p_enc->fmt_in.video.i_visible_width;
+    p_sys->ti.pic_height = p_enc->fmt_in.video.i_visible_height;
     p_sys->ti.pic_x = 0 /*frame_x_offset*/;
     p_sys->ti.pic_y = 0 /*frame_y_offset*/;
 

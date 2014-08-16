@@ -2,7 +2,7 @@
  * normvol.c: volume normalizer
  *****************************************************************************
  * Copyright (C) 2001, 2006 VLC authors and VideoLAN
- * $Id: 68f8d62adfa69a02a22abf63a07495a2e743f8c5 $
+ * $Id: 6bcacdb55b30f6850f96c81ffe043746b4b85d39 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -156,8 +156,7 @@ static block_t *DoWork( filter_t *p_filter, block_t *p_in_buf )
         for( i_chan = 0; i_chan < i_channels; i_chan++ )
         {
             float f_sample = p_in[i_chan];
-            float f_square = pow( f_sample, 2 );
-            pf_sum[i_chan] += f_square;
+            pf_sum[i_chan] += f_sample * f_sample;
         }
         p_in += i_channels;
     }

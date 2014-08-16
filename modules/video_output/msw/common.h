@@ -2,7 +2,7 @@
  * common.h: Windows video output header file
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: c5d3fbc124ee87b7fc202c6c2912be47e4a56d30 $
+ * $Id: 5ddf85e0a7ada5d7dbb25beae1440985015d14de $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -22,10 +22,23 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#ifdef MODULE_NAME_IS_directdraw
+# include <ddraw.h>
+#endif
+#ifdef MODULE_NAME_IS_direct3d
+# include <d3d9.h>
+# include <d3dx9effect.h>
+#endif
+#ifdef MODULE_NAME_IS_glwin32
+# include "../opengl.h"
+#endif
+#ifdef MODULE_NAME_IS_direct2d
+# include <d2d1.h>
+#endif
+
 /*****************************************************************************
  * event_thread_t: event thread
  *****************************************************************************/
-#include <vlc_picture_pool.h>
 #include "events.h"
 
 /*****************************************************************************
@@ -48,7 +61,6 @@ struct vout_display_sys_t
 
     /* size of the display */
     RECT         rect_display;
-    int          display_depth;
 
     /* size of the overall window (including black bands) */
     RECT         rect_parent;
@@ -100,7 +112,7 @@ struct vout_display_sys_t
     LPDIRECTDRAWCLIPPER  clipper;             /* clipper used for blitting */
     HINSTANCE            hddraw_dll;       /* handle of the opened ddraw dll */
 
-    picture_resource_t   resource;
+    picture_sys_t        *picsys;
 
     /* It protects the following variables */
     vlc_mutex_t    lock;
@@ -113,6 +125,7 @@ struct vout_display_sys_t
     HGLRC                 hGLRC;
     vlc_gl_t              gl;
     vout_display_opengl_t *vgl;
+    HDC                   affinityHDC; // DC for the selected GPU
 #endif
 
 #ifdef MODULE_NAME_IS_direct2d
@@ -135,10 +148,13 @@ struct vout_display_sys_t
 
     // core objects
     HINSTANCE               hd3d9_dll;       /* handle of the opened d3d9 dll */
+    HINSTANCE               hd3d9x_dll;      /* handle of the opened d3d9x dll */
+    IDirect3DPixelShader9*  d3dx_shader;
     LPDIRECT3D9             d3dobj;
     D3DCAPS9                d3dcaps;
     LPDIRECT3DDEVICE9       d3ddev;
     D3DPRESENT_PARAMETERS   d3dpp;
+
     // scene objects
     LPDIRECT3DTEXTURE9      d3dtex;
     LPDIRECT3DVERTEXBUFFER9 d3dvtc;
@@ -146,7 +162,7 @@ struct vout_display_sys_t
     int                     d3dregion_count;
     struct d3d_region_t     *d3dregion;
 
-    picture_resource_t      resource;
+    picture_sys_t           *picsys;
 
     /* */
     bool                    reset_device;

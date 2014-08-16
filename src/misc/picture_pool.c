@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2009 VLC authors and VideoLAN
  * Copyright (C) 2009 Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
- * $Id: 14db3b65a8fe8c6d6e1bf507d6c226ecb00fdbc9 $
+ * $Id: 294d671eedbf9b027775fd2c61ee0b38b6199ad9 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -33,7 +33,6 @@
 
 #include <vlc_common.h>
 #include <vlc_picture_pool.h>
-#include <vlc_atomic.h>
 
 /*****************************************************************************
  *
@@ -48,6 +47,7 @@ struct picture_gc_sys_t {
     void (*unlock)(picture_t *);
 
     /* */
+    atomic_bool zombie;
     int64_t tick;
 };
 
@@ -91,24 +91,39 @@ picture_pool_t *picture_pool_NewExtended(const picture_pool_configuration_t *cfg
     if (!pool)
         return NULL;
 
+    /*
+     * NOTE: When a pooled picture is released, it must be returned to the list
+     * of available pictures from its pool, rather than destroyed.
+     * This requires a dedicated release callback, a pointer to the pool and a
+     * reference count. For simplicity, rather than allocate a whole new
+     * picture_t structure, the pool overrides gc.pf_destroy and gc.p_sys when
+     * created, and restores them when destroyed.
+     * There are some implications to keep in mind:
+     *  - The original creator of the picture (e.g. video output display) must
+     *    not manipulate the gc parameters while the picture is pooled.
+     *  - The picture cannot be pooled more than once, in other words, pools
+     *    cannot be stacked/layered.
+     *  - The picture must be available and its reference count equal to one
+     *    when it gets pooled.
+     *  - Picture plane pointers and sizes must not be mangled in any case.
+     */
     for (int i = 0; i < cfg->picture_count; i++) {
         picture_t *picture = cfg->picture[i];
 
-        /* The pool must be the only owner of the picture */
-        assert(!picture_IsReferenced(picture));
-
-        /* Install the new release callback */
+        /* Save the original garbage collector */
         picture_gc_sys_t *gc_sys = malloc(sizeof(*gc_sys));
-        if (!gc_sys)
+        if (unlikely(gc_sys == NULL))
             abort();
         gc_sys->destroy     = picture->gc.pf_destroy;
         gc_sys->destroy_sys = picture->gc.p_sys;
         gc_sys->lock        = cfg->lock;
         gc_sys->unlock      = cfg->unlock;
+        atomic_init(&gc_sys->zombie, false);
         gc_sys->tick        = 0;
 
-        /* */
-        vlc_atomic_set(&picture->gc.refcount, 0);
+        /* Override the garbage collector */
+        assert(atomic_load(&picture->gc.refcount) == 1);
+        atomic_init(&picture->gc.refcount, 0);
         picture->gc.pf_destroy = Destroy;
         picture->gc.p_sys      = gc_sys;
 
@@ -166,7 +181,7 @@ picture_pool_t *picture_pool_Reserve(picture_pool_t *master, int count)
         if (master->picture_reserved[i])
             continue;
 
-        assert(vlc_atomic_get(&master->picture[i]->gc.refcount) == 0);
+        assert(atomic_load(&master->picture[i]->gc.refcount) == 0);
         master->picture_reserved[i] = true;
 
         pool->picture[found]          = master->picture[i];
@@ -192,17 +207,20 @@ void picture_pool_Delete(picture_pool_t *pool)
         } else {
             picture_gc_sys_t *gc_sys = picture->gc.p_sys;
 
-            assert(vlc_atomic_get(&picture->gc.refcount) == 0);
             assert(!pool->picture_reserved[i]);
 
-            /* Restore old release callback */
-            vlc_atomic_set(&picture->gc.refcount, 1);
-            picture->gc.pf_destroy = gc_sys->destroy;
-            picture->gc.p_sys      = gc_sys->destroy_sys;
+            /* Restore the original garbage collector */
+            if (atomic_fetch_add(&picture->gc.refcount, 1) == 0)
+            {   /* Simple case: the picture is not locked, destroy it now. */
+                picture->gc.pf_destroy = gc_sys->destroy;
+                picture->gc.p_sys      = gc_sys->destroy_sys;
+                free(gc_sys);
+            }
+            else /* Intricate case: the picture is still locked and the gc
+                    cannot be modified (w/o memory synchronization). */
+                atomic_store(&gc_sys->zombie, true);
 
             picture_Release(picture);
-
-            free(gc_sys);
         }
     }
     free(pool->picture_reserved);
@@ -217,7 +235,7 @@ picture_t *picture_pool_Get(picture_pool_t *pool)
             continue;
 
         picture_t *picture = pool->picture[i];
-        if (vlc_atomic_get(&picture->gc.refcount) > 0)
+        if (atomic_load(&picture->gc.refcount) > 0)
             continue;
 
         if (Lock(picture))
@@ -242,19 +260,19 @@ void picture_pool_NonEmpty(picture_pool_t *pool, bool reset)
 
         picture_t *picture = pool->picture[i];
         if (reset) {
-            if (vlc_atomic_get(&picture->gc.refcount) > 0)
+            if (atomic_load(&picture->gc.refcount) > 0)
                 Unlock(picture);
-            vlc_atomic_set(&picture->gc.refcount, 0);
-        } else if (vlc_atomic_get(&picture->gc.refcount) == 0) {
+            atomic_store(&picture->gc.refcount, 0);
+        } else if (atomic_load(&picture->gc.refcount) == 0) {
             return;
         } else if (!old || picture->gc.p_sys->tick < old->gc.p_sys->tick) {
             old = picture;
         }
     }
     if (!reset && old) {
-        if (vlc_atomic_get(&old->gc.refcount) > 0)
+        if (atomic_load(&old->gc.refcount) > 0)
             Unlock(old);
-        vlc_atomic_set(&old->gc.refcount, 0);
+        atomic_store(&old->gc.refcount, 0);
     }
 }
 int picture_pool_GetSize(picture_pool_t *pool)
@@ -264,7 +282,18 @@ int picture_pool_GetSize(picture_pool_t *pool)
 
 static void Destroy(picture_t *picture)
 {
+    picture_gc_sys_t *gc_sys = picture->gc.p_sys;
+
     Unlock(picture);
+
+    if (atomic_load(&gc_sys->zombie))
+    {   /* Picture from an already destroyed pool */
+        picture->gc.pf_destroy = gc_sys->destroy;
+        picture->gc.p_sys      = gc_sys->destroy_sys;
+        free(gc_sys);
+
+        picture->gc.pf_destroy(picture);
+    }
 }
 
 static int Lock(picture_t *picture)
@@ -274,10 +303,10 @@ static int Lock(picture_t *picture)
         return gc_sys->lock(picture);
     return VLC_SUCCESS;
 }
+
 static void Unlock(picture_t *picture)
 {
     picture_gc_sys_t *gc_sys = picture->gc.p_sys;
     if (gc_sys->unlock)
         gc_sys->unlock(picture);
 }
-

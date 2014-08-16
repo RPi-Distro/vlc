@@ -1,6 +1,6 @@
 # dvbpsi
 
-DVBPSI_VERSION := 0.2.2
+DVBPSI_VERSION := 1.2.0
 DVBPSI_URL := $(VIDEOLAN)/libdvbpsi/$(DVBPSI_VERSION)/libdvbpsi-$(DVBPSI_VERSION).tar.bz2
 
 PKGS += dvbpsi
@@ -17,6 +17,7 @@ libdvbpsi: libdvbpsi-$(DVBPSI_VERSION).tar.bz2 .sum-dvbpsi
 	$(UNPACK)
 	$(UPDATE_AUTOCONFIG) && cd $(UNPACK_DIR) && mv config.guess config.sub .auto
 	$(APPLY) $(SRC)/dvbpsi/dvbpsi-noexamples.patch
+	$(APPLY) $(SRC)/dvbpsi/dvbpsi-sys-types.patch
 	$(MOVE)
 
 .dvbpsi: libdvbpsi

@@ -4,7 +4,7 @@
  * modules, especially intf modules. See vlc_config.h for output configuration.
  *****************************************************************************
  * Copyright (C) 1998-2005 VLC authors and VideoLAN
- * $Id: cc91a662fad795514554cf29fa88532401b015c6 $
+ * $Id: 8452a5a99d12badd17d259300a0489f65cdbe94a $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -34,20 +34,10 @@
 
 #include <stdlib.h>
 #include <stdarg.h>                                       /* va_list for BSD */
-#ifdef __APPLE__
-# include <xlocale.h>
-#elif defined(HAVE_LOCALE_H)
-# include <locale.h>
-#endif
-#include <errno.h>                                                  /* errno */
-#include <assert.h>
 #include <unistd.h>
 
 #include <vlc_common.h>
 #include <vlc_interface.h>
-#ifdef _WIN32
-#   include <vlc_network.h>          /* 'net_strerror' and 'WSAGetLastError' */
-#endif
 #include <vlc_charset.h>
 #include "../libvlc.h"
 
@@ -84,65 +74,20 @@ void vlc_vaLog (vlc_object_t *obj, int type, const char *module,
     if (obj != NULL && obj->i_flags & OBJECT_FLAGS_QUIET)
         return;
 
-    /* C locale to get error messages in English in the logs */
-    locale_t c = newlocale (LC_MESSAGES_MASK, "C", (locale_t)0);
-    locale_t locale = uselocale (c);
+    /* Get basename from the module filename */
+    char *p = strrchr(module, '/');
+    if (p != NULL)
+        module = p;
+    p = strchr(module, '.');
 
-#ifndef __GLIBC__
-    /* Expand %m to strerror(errno) - only once */
-    char buf[strlen(format) + 2001], *ptr;
-    strcpy (buf, format);
-    ptr = (char*)buf;
-    format = (const char*) buf;
-
-    for( ;; )
+    size_t modlen = (p != NULL) ? (p - module) : 1;
+    char modulebuf[modlen + 1];
+    if (p != NULL)
     {
-        ptr = strchr( ptr, '%' );
-        if( ptr == NULL )
-            break;
-
-        if( ptr[1] == 'm' )
-        {
-            char errbuf[2001];
-            size_t errlen;
-
-#ifndef _WIN32
-            strerror_r( errno, errbuf, 1001 );
-#else
-            int sockerr = WSAGetLastError( );
-            if( sockerr )
-            {
-                strncpy( errbuf, net_strerror( sockerr ), 1001 );
-                WSASetLastError( sockerr );
-            }
-            if ((sockerr == 0)
-             || (strcmp ("Unknown network stack error", errbuf) == 0))
-                strncpy( errbuf, strerror( errno ), 1001 );
-#endif
-            errbuf[1000] = 0;
-
-            /* Escape '%' from the error string */
-            for( char *percent = strchr( errbuf, '%' );
-                 percent != NULL;
-                 percent = strchr( percent + 2, '%' ) )
-            {
-                memmove( percent + 1, percent, strlen( percent ) + 1 );
-            }
-
-            errlen = strlen( errbuf );
-            memmove( ptr + errlen, ptr + 2, strlen( ptr + 2 ) + 1 );
-            memcpy( ptr, errbuf, errlen );
-            break; /* Only once, so we don't overflow */
-        }
-
-        /* Looks for conversion specifier... */
-        do
-            ptr++;
-        while( *ptr && ( strchr( "diouxXeEfFgGaAcspn%", *ptr ) == NULL ) );
-        if( *ptr )
-            ptr++; /* ...and skip it */
+        memcpy(modulebuf, module, modlen);
+        modulebuf[modlen] = '\0';
+        module = modulebuf;
     }
-#endif
 
     /* Fill message information fields */
     vlc_log_t msg;
@@ -175,9 +120,6 @@ void vlc_vaLog (vlc_object_t *obj, int type, const char *module,
         priv->log.cb (priv->log.opaque, type, &msg, format, args);
         vlc_rwlock_unlock (&priv->log.lock);
     }
-
-    uselocale (locale);
-    freelocale (c);
 }
 
 static const char msg_type[4][9] = { "", " error", " warning", " debug" };
@@ -188,6 +130,9 @@ static const char msg_type[4][9] = { "", " error", " warning", " debug" };
 #define WHITE   COL(0,1)
 #define GRAY    "\033[0m"
 static const char msg_color[4][8] = { WHITE, RED, YELLOW, GRAY };
+
+/* Display size of a pointer */
+static const int ptr_width = 2 * /* hex digits */ sizeof(uintptr_t);
 
 static void PrintColorMsg (void *d, int type, const vlc_log_t *p_item,
                            const char *format, va_list ap)
@@ -201,7 +146,7 @@ static void PrintColorMsg (void *d, int type, const vlc_log_t *p_item,
     int canc = vlc_savecancel ();
 
     flockfile (stream);
-    fprintf (stream, "["GREEN"%p"GRAY"] ", (void *)p_item->i_object_id);
+    utf8_fprintf (stream, "["GREEN"%0*"PRIxPTR""GRAY"] ", ptr_width, p_item->i_object_id);
     if (p_item->psz_header != NULL)
         utf8_fprintf (stream, "[%s] ", p_item->psz_header);
     utf8_fprintf (stream, "%s %s%s: %s", p_item->psz_module,
@@ -227,7 +172,7 @@ static void PrintMsg (void *d, int type, const vlc_log_t *p_item,
     int canc = vlc_savecancel ();
 
     flockfile (stream);
-    fprintf (stream, "[%p] ", (void *)p_item->i_object_id);
+    utf8_fprintf (stream, "[%0*"PRIxPTR"] ", ptr_width, p_item->i_object_id);
     if (p_item->psz_header != NULL)
         utf8_fprintf (stream, "[%s] ", p_item->psz_header);
     utf8_fprintf (stream, "%s %s%s: ", p_item->psz_module,

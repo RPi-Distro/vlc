@@ -1,25 +1,25 @@
 /*****************************************************************************
  * mosaic_bridge.c:
  *****************************************************************************
- * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: dc3fcc805ea505e8e7662d539290aa2412e9d7f1 $
+ * Copyright (C) 2004-2007 VLC authors and VideoLAN
+ * $Id: d06430a1ea250851426cbfbb03068a7295573532 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -73,9 +73,9 @@ struct decoder_owner_sys_t
  *****************************************************************************/
 static int  Open    ( vlc_object_t * );
 static void Close   ( vlc_object_t * );
-static sout_stream_id_t *Add ( sout_stream_t *, es_format_t * );
-static int               Del ( sout_stream_t *, sout_stream_id_t * );
-static int               Send( sout_stream_t *, sout_stream_id_t *, block_t * );
+static sout_stream_id_sys_t *Add ( sout_stream_t *, es_format_t * );
+static int               Del ( sout_stream_t *, sout_stream_id_sys_t * );
+static int               Send( sout_stream_t *, sout_stream_id_sys_t *, block_t * );
 
 inline static void video_del_buffer_decoder( decoder_t *, picture_t * );
 inline static void video_del_buffer_filter( filter_t *, picture_t * );
@@ -282,7 +282,7 @@ static int video_filter_buffer_allocation_init( filter_t *p_filter, void *p_data
     return VLC_SUCCESS;
 }
 
-static sout_stream_id_t * Add( sout_stream_t *p_stream, es_format_t *p_fmt )
+static sout_stream_id_sys_t * Add( sout_stream_t *p_stream, es_format_t *p_fmt )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
     bridge_t *p_bridge;
@@ -416,10 +416,10 @@ static sout_stream_id_t * Add( sout_stream_t *p_stream, es_format_t *p_fmt )
         p_sys->p_vf2 = NULL;
     }
 
-    return (sout_stream_id_t *)p_sys;
+    return (sout_stream_id_sys_t *)p_sys;
 }
 
-static int Del( sout_stream_t *p_stream, sout_stream_id_t *id )
+static int Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
 {
     VLC_UNUSED(id);
     sout_stream_sys_t *p_sys = p_stream->p_sys;
@@ -510,7 +510,7 @@ static void PushPicture( sout_stream_t *p_stream, picture_t *p_picture )
     vlc_global_unlock( VLC_MOSAIC_MUTEX );
 }
 
-static int Send( sout_stream_t *p_stream, sout_stream_id_t *id,
+static int Send( sout_stream_t *p_stream, sout_stream_id_sys_t *id,
                  block_t *p_buffer )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;

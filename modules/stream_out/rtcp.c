@@ -2,7 +2,7 @@
  * rtcp.c: RTCP stream output support
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 46289db5a859a11295afd2c66807a9c9973298e0 $
+ * $Id: 6a85bfaf2cb2b1269732f73113e20237a5eb0753 $
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -11,7 +11,7 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public

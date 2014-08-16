@@ -2,7 +2,7 @@
  * omxil_utils.h: helper functions
  *****************************************************************************
  * Copyright (C) 2010 VLC authors and VideoLAN
- * $Id: 8f113b4d21cbcda1b761062f65487d372add7c9e $
+ * $Id: 0a5dc17e77fed0008ad87124acfb091af1fe8835 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -180,9 +180,22 @@ void PrintOmxEvent(vlc_object_t *p_this, OMX_EVENTTYPE event, OMX_U32 data_1,
 /*****************************************************************************
  * Picture utility functions
  *****************************************************************************/
+typedef struct ArchitectureSpecificCopyData
+{
+    void *data;
+} ArchitectureSpecificCopyData;
+
+void ArchitectureSpecificCopyHooks( decoder_t *p_dec, int i_color_format,
+                                    int i_slice_height, int i_src_stride,
+                                    ArchitectureSpecificCopyData *p_architecture_specific );
+
+void ArchitectureSpecificCopyHooksDestroy( int i_color_format,
+                                           ArchitectureSpecificCopyData *p_architecture_specific );
+
 void CopyOmxPicture( int i_color_format, picture_t *p_pic,
                      int i_slice_height,
-                     int i_src_stride, uint8_t *p_src, int i_chroma_div );
+                     int i_src_stride, uint8_t *p_src, int i_chroma_div,
+                     ArchitectureSpecificCopyData *p_architecture_specific );
 
 void CopyVlcPicture( decoder_t *, OMX_BUFFERHEADERTYPE *, picture_t * );
 
@@ -241,4 +254,14 @@ unsigned int GetAudioParamSize(OMX_INDEXTYPE index);
 #define OMX_QCOM_COLOR_FormatYVU420SemiPlanar 0x7FA30C00
 #define OMX_TI_COLOR_FormatYUV420PackedSemiPlanar 0x7F000100
 #define QOMX_COLOR_FormatYUV420PackedSemiPlanar64x32Tile2m8ka 0x7FA30C03
+#define OMX_QCOM_COLOR_FormatYUV420PackedSemiPlanar32m 0x7FA30C04
 #define OMX_IndexVendorSetYUV420pMode 0x7f000003
+
+/*****************************************************************************
+ * H264 specific code
+ *****************************************************************************/
+bool h264_get_profile_level(const es_format_t *p_fmt, size_t *p_profile, size_t *p_level, size_t *p_nal_size);
+
+size_t convert_omx_to_profile_idc(OMX_VIDEO_AVCPROFILETYPE profile_type);
+
+size_t convert_omx_to_level_idc(OMX_VIDEO_AVCLEVELTYPE level_type);

@@ -1,27 +1,27 @@
 /*****************************************************************************
  * spu.c: transcoding stream output module (spu)
  *****************************************************************************
- * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: b33d0063cc318b6a94dc0b639d1d5a533d7b94ed $
+ * Copyright (C) 2003-2009 VLC authors and VideoLAN
+ * $Id: 50d9e2d73258e4d6eaafc90cc232dfa6de38a6d6 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *          Antoine Cellerier <dionoea at videolan dot org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -40,7 +40,8 @@ static subpicture_t *spu_new_buffer( decoder_t *p_dec,
 {
     VLC_UNUSED( p_dec );
     subpicture_t *p_subpicture = subpicture_New( p_upd );
-    p_subpicture->b_subtitle = true;
+    if( likely(p_subpicture != NULL) )
+        p_subpicture->b_subtitle = true;
     return p_subpicture;
 }
 
@@ -49,7 +50,7 @@ static void spu_del_buffer( decoder_t *p_dec, subpicture_t *p_subpic )
     VLC_UNUSED( p_dec );
     subpicture_Delete( p_subpic );
 }
-int transcode_spu_new( sout_stream_t *p_stream, sout_stream_id_t *id )
+int transcode_spu_new( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
 
@@ -99,7 +100,7 @@ int transcode_spu_new( sout_stream_t *p_stream, sout_stream_id_t *id )
     return VLC_SUCCESS;
 }
 
-void transcode_spu_close( sout_stream_t *p_stream, sout_stream_id_t *id)
+void transcode_spu_close( sout_stream_t *p_stream, sout_stream_id_sys_t *id)
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
     /* Close decoder */
@@ -120,7 +121,7 @@ void transcode_spu_close( sout_stream_t *p_stream, sout_stream_id_t *id)
 }
 
 int transcode_spu_process( sout_stream_t *p_stream,
-                                  sout_stream_id_t *id,
+                                  sout_stream_id_sys_t *id,
                                   block_t *in, block_t **out )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
@@ -129,7 +130,10 @@ int transcode_spu_process( sout_stream_t *p_stream,
 
     p_subpic = id->p_decoder->pf_decode_sub( id->p_decoder, &in );
     if( !p_subpic )
-        return VLC_EGENERIC;
+    {
+        /* We just don't have anything to handle now, go own*/
+        return VLC_SUCCESS;
+    }
 
     if( p_sys->b_master_sync && p_sys->i_master_drift )
     {
@@ -140,6 +144,7 @@ int transcode_spu_process( sout_stream_t *p_stream,
     if( p_sys->b_soverlay )
     {
         spu_PutSubpicture( p_sys->p_spu, p_subpic );
+        return VLC_SUCCESS;
     }
     else
     {
@@ -158,11 +163,11 @@ int transcode_spu_process( sout_stream_t *p_stream,
 }
 
 bool transcode_spu_add( sout_stream_t *p_stream, es_format_t *p_fmt,
-                        sout_stream_id_t *id )
+                        sout_stream_id_sys_t *id )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
 
-    if( p_sys->i_scodec || p_sys->psz_senc )
+    if( p_sys->i_scodec )
     {
         msg_Dbg( p_stream, "creating subtitle transcoding from fcc=`%4.4s' "
                  "to fcc=`%4.4s'", (char*)&p_fmt->i_codec,

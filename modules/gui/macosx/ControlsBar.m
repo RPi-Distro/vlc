@@ -1,8 +1,8 @@
 /*****************************************************************************
  * ControlsBar.m: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2012-2013 VLC authors and VideoLAN
- * $Id: 77506234850c18c32df24e4bed3b57b5b6559ba6 $
+ * Copyright (C) 2012-2014 VLC authors and VideoLAN
+ * $Id: 1e741d98f0c3c0dec62af660cb0da9681559593b $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -27,6 +27,7 @@
 #import "CoreInteraction.h"
 #import "MainMenu.h"
 #import "fspanel.h"
+#import "CompatibilityFixes.h"
 
 /*****************************************************************************
  * VLCControlsBarCommon
@@ -48,6 +49,8 @@
     if (!OSX_SNOW_LEOPARD)
         b_nativeFullscreenMode = var_InheritBool(VLCIntf, "macosx-nativefullscreenmode");
 #endif
+
+    [o_drop_view setDrawBorder: NO];
 
     [o_play_btn setToolTip: _NS("Play/Pause")];
     [[o_play_btn cell] accessibilitySetOverrideValue:_NS("Click to play or pause the current media.") forAttribute:NSAccessibilityDescriptionAttribute];
@@ -143,7 +146,7 @@
 
     // remove fullscreen button for lion fullscreen
     if (b_nativeFullscreenMode) {
-        float f_width = [o_fullscreen_btn frame].size.width;
+        CGFloat f_width = [o_fullscreen_btn frame].size.width;
 
         NSRect frame = [o_time_fld frame];
         frame.origin.x += f_width;
@@ -444,6 +447,14 @@
         [o_fullscreen_btn setState:b_fullscreen];
 }
 
+- (void)dealloc {
+    [o_play_img release];
+    [o_play_pressed_img release];
+    [o_pause_img release];
+    [o_pause_pressed_img release];
+    [super dealloc];
+}
+
 @end
 
 
@@ -493,7 +504,7 @@
     [[o_volume_up_btn cell] accessibilitySetOverrideValue:_NS("Click to play the audio at maximum volume.") forAttribute:NSAccessibilityDescriptionAttribute];
     [[o_volume_up_btn cell] accessibilitySetOverrideValue:[o_volume_up_btn toolTip] forAttribute:NSAccessibilityTitleAttribute];
 
-    [o_effects_btn setToolTip: _NS("Effects")];
+    [o_effects_btn setToolTip: _NS("Audio Effects")];
     [[o_effects_btn cell] accessibilitySetOverrideValue:_NS("Click to show an Audio Effects panel featuring an equalizer and further filters.") forAttribute:NSAccessibilityDescriptionAttribute];
     [[o_effects_btn cell] accessibilitySetOverrideValue:[o_effects_btn toolTip] forAttribute:NSAccessibilityTitleAttribute];
 
@@ -642,7 +653,7 @@ else \
 [[item animator] setFrame: frame]
 
     NSRect frame;
-    float f_space = [o_effects_btn frame].size.width;
+    CGFloat f_space = [o_effects_btn frame].size.width;
     // extra margin between button and volume up button
     if (b_nativeFullscreenMode)
         f_space += 2;
@@ -692,7 +703,7 @@ else \
 [[item animator] setFrame: frame]
 
     NSRect frame;
-    float f_space = [o_effects_btn frame].size.width;
+    CGFloat f_space = [o_effects_btn frame].size.width;
     // extra margin between button and volume up button
     if (b_nativeFullscreenMode)
         f_space += 2;
@@ -922,7 +933,7 @@ else \
 - (void)addPlaymodeButtons:(BOOL)b_fast
 {
     NSRect frame;
-    float f_space = [o_repeat_btn frame].size.width + [o_shuffle_btn frame].size.width - 6.;
+    CGFloat f_space = [o_repeat_btn frame].size.width + [o_shuffle_btn frame].size.width - 6.;
 
     if (b_dark_interface) {
         [[o_playlist_btn animator] setImage:[NSImage imageNamed:@"playlist_dark"]];
@@ -955,7 +966,7 @@ else \
 - (void)removePlaymodeButtons:(BOOL)b_fast
 {
     NSRect frame;
-    float f_space = [o_repeat_btn frame].size.width + [o_shuffle_btn frame].size.width - 6.;
+    CGFloat f_space = [o_repeat_btn frame].size.width + [o_shuffle_btn frame].size.width - 6.;
     [o_repeat_btn setHidden: YES];
     [o_shuffle_btn setHidden: YES];
 
@@ -1062,6 +1073,11 @@ else \
     [self setShuffle];
 }
 
+- (IBAction)togglePlaylist:(id)sender
+{
+    [[[VLCMain sharedInstance] mainWindow] changePlaylistState: psUserEvent];
+}
+
 - (IBAction)volumeAction:(id)sender
 {
     if (sender == o_volume_sld)
@@ -1132,6 +1148,20 @@ else \
     }
 
     [[VLCMainMenu sharedInstance] setRateControlsEnabled: b_control];
+}
+
+- (void)dealloc {
+    [o_repeat_img release];
+    [o_repeat_pressed_img release];
+    [o_repeat_all_img release];
+    [o_repeat_all_pressed_img release];
+    [o_repeat_one_img release];
+    [o_repeat_one_pressed_img release];
+    [o_shuffle_img release];
+    [o_shuffle_pressed_img release];
+    [o_shuffle_on_img release];
+    [o_shuffle_on_pressed_img release];
+    [super dealloc];
 }
 
 @end

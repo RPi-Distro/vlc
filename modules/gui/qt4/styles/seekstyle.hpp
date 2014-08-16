@@ -23,12 +23,25 @@
 #ifndef SEEKSTYLE_HPP
 #define SEEKSTYLE_HPP
 
+#include <inttypes.h>
 #include <QProxyStyle>
-
+#include <QStyleOptionSlider>
 
 class SeekStyle : public QProxyStyle
 {
     Q_OBJECT
+public:
+    class SeekStyleOption : public QStyleOptionSlider
+    {
+    public:
+        SeekStyleOption();
+        float buffering;
+        int length;
+        bool animate;
+        qreal animationopacity;
+        QList<int64_t> points;
+    };
+
 public:
     SeekStyle();
     virtual int pixelMetric(PixelMetric metric, const QStyleOption * option = 0, const QWidget * widget = 0) const;

@@ -2,7 +2,7 @@
  * extension.h: Lua Extensions (meta data, web information, ...)
  *****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 05776729ca5686b46c7535dd0e5c24c95b6a634c $
+ * $Id: 69f1705e03afb7416ef644ac1011adaccec9210d $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -68,6 +68,8 @@ struct extension_sys_t
 
     /* Lua specific */
     lua_State *L;
+
+    vlclua_dtable_t dtable;
 
     /* Thread data */
     vlc_thread_t thread;

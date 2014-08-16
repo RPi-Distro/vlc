@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 VLC authors and VideoLAN
- * $Id: 7a1ab161e062082ab20fd3f9c24b0421c71570e2 $
+ * $Id: 163ae2dd52c2fea9186e3474858d0c06bfcdebba $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -685,6 +685,8 @@ static int SessionsSetup( demux_t *p_demux )
     unsigned int   i_receive_buffer = 0;
     int            i_frame_buffer = DEFAULT_FRAME_BUFFER_SIZE;
     unsigned const thresh = 200000; /* RTP reorder threshold .2 second (default .1) */
+    const char     *p_sess_lang = NULL;
+    const char     *p_lang;
 
     b_rtsp_tcp    = var_CreateGetBool( p_demux, "rtsp-tcp" ) ||
                     var_GetBool( p_demux, "rtsp-http" );
@@ -697,6 +699,20 @@ static int SessionsSetup( demux_t *p_demux )
         msg_Err( p_demux, "Could not create the RTSP Session: %s",
             p_sys->env->getResultMsg() );
         return VLC_EGENERIC;
+    }
+
+    if( strcmp( p_sys->p_sdp, "m=" ) != 0 )
+    {
+        const char *p_sess_attr_end;
+
+        p_sess_attr_end = strstr( p_sys->p_sdp, "\nm=" );
+        if( !p_sess_attr_end )
+            p_sess_attr_end = strstr( p_sys->p_sdp, "\rm=" );
+
+        p_sess_lang = p_sess_attr_end ? strstr( p_sys->p_sdp, "a=lang:" ) : NULL;
+        if( p_sess_lang &&
+            p_sess_lang - p_sys->p_sdp > p_sess_attr_end - p_sys->p_sdp )
+            p_sess_lang = NULL;
     }
 
     /* Initialise each media subsession */
@@ -1017,6 +1033,40 @@ static int SessionsSetup( demux_t *p_demux )
                         delete[] p_extra;
                     }
                 }
+#if LIVEMEDIA_LIBRARY_VERSION_INT >= 1393372800 // 2014.02.26
+                else if( !strcmp( sub->codecName(), "H265" ) )
+                {
+                   unsigned int i_extra1 = 0, i_extra2 = 0, i_extra3 = 0, i_extraTot;
+                    uint8_t      *p_extra1 = NULL, *p_extra2 = NULL, *p_extra3 = NULL;
+
+                    tk->fmt.i_codec = VLC_CODEC_HEVC;
+                    tk->fmt.b_packetized = false;
+
+                    p_extra1 = parseH264ConfigStr( sub->fmtp_spropvps(), i_extra1 );
+                    p_extra2 = parseH264ConfigStr( sub->fmtp_spropsps(), i_extra2 );
+                    p_extra3 = parseH264ConfigStr( sub->fmtp_sproppps(), i_extra3 );
+                   i_extraTot = i_extra1 + i_extra2 + i_extra3;
+                   if( i_extraTot > 0 )
+                    {
+                        tk->fmt.i_extra = i_extraTot;
+                        tk->fmt.p_extra = xmalloc( i_extraTot );
+                       if( p_extra1 )
+                       {
+                            memcpy( tk->fmt.p_extra, p_extra1, i_extra1 );
+                       }
+                       if( p_extra2 )
+                       {
+                         memcpy( ((char*)tk->fmt.p_extra)+i_extra1, p_extra2, i_extra2 );
+                       }
+                       if( p_extra3 )
+                       {
+                         memcpy( ((char*)tk->fmt.p_extra)+i_extra1+i_extra2, p_extra3, i_extra3 );
+                       }
+
+                        delete[] p_extra1; delete[] p_extra2; delete[] p_extra3;
+                    }
+                }
+#endif
                 else if( !strcmp( sub->codecName(), "JPEG" ) )
                 {
                     tk->fmt.i_codec = VLC_CODEC_MJPG;
@@ -1075,6 +1125,20 @@ static int SessionsSetup( demux_t *p_demux )
                 {
                     tk->fmt.i_codec = VLC_CODEC_VP8;
                 }
+                else if( !strcmp( sub->codecName(), "THEORA" ) )
+                {
+                    tk->fmt.i_codec = VLC_CODEC_THEORA;
+                    unsigned int i_extra;
+                    unsigned char *p_extra;
+                    if( ( p_extra=parseVorbisConfigStr( sub->fmtp_config(),
+                                                        i_extra ) ) )
+                    {
+                        tk->fmt.i_extra = i_extra;
+                        tk->fmt.p_extra = p_extra;
+                    }
+                    else
+                        msg_Warn( p_demux,"Missing or unsupported theora header." );
+                }
             }
             else if( !strcmp( sub->mediumName(), "text" ) )
             {
@@ -1084,6 +1148,19 @@ static int SessionsSetup( demux_t *p_demux )
                 {
                     tk->fmt.i_codec = VLC_CODEC_ITU_T140;
                 }
+            }
+
+            /* Try and parse a=lang: attribute */
+            p_lang = strstr( sub->savedSDPLines(), "a=lang:" );
+            if( !p_lang )
+                p_lang = p_sess_lang;
+
+            if( p_lang )
+            {
+                unsigned i_lang_len;
+                p_lang += 7;
+                i_lang_len = strcspn( p_lang, " \r\n" );
+                tk->fmt.psz_language = strndup( p_lang, i_lang_len );
             }
 
             if( !tk->b_quicktime && !tk->b_muxed && !tk->b_asf )
@@ -1197,7 +1274,6 @@ static int Demux( demux_t *p_demux )
     TaskToken      task;
 
     bool            b_send_pcr = true;
-    int64_t         i_pcr = 0;
     int             i;
 
     /* Check if we need to send the server a Keep-A-Live signal */
@@ -1252,16 +1328,6 @@ static int Demux( demux_t *p_demux )
 
         if( tk->b_asf || tk->b_muxed )
             b_send_pcr = false;
-#if 0
-        if( i_pcr == 0 )
-        {
-            i_pcr = tk->i_pts;
-        }
-        else if( tk->i_pts != 0 && i_pcr > tk->i_pts )
-        {
-            i_pcr = tk->i_pts ;
-        }
-#endif
     }
     if( p_sys->i_pcr > 0 )
     {
@@ -1308,7 +1374,6 @@ static int Demux( demux_t *p_demux )
             tk->f_npt = 0.;
             p_sys->i_pcr = 0;
             p_sys->f_npt = 0.;
-            i_pcr = 0;
         }
     }
 
@@ -1804,7 +1869,7 @@ static void StreamRead( void *p_private, unsigned int i_size,
         QuickTimeGenericRTPSource::QTState &qtState = qtRTPSource->qtState;
         uint8_t *sdAtom = (uint8_t*)&qtState.sdAtom[4];
 
-        /* Get codec informations from the quicktime atoms :
+        /* Get codec information from the quicktime atoms :
          * http://developer.apple.com/quicktime/icefloe/dispatch026.html */
         if( tk->fmt.i_cat == VIDEO_ES ) {
             if( qtState.sdAtomSize < 16 + 32 )
@@ -1916,10 +1981,12 @@ static void StreamRead( void *p_private, unsigned int i_size,
         if( tk->sub->rtpSource()->curPacketMarkerBit() )
             p_block->i_flags |= BLOCK_FLAG_END_OF_FRAME;
     }
-    else if( tk->fmt.i_codec == VLC_CODEC_H264 )
+    else if( tk->fmt.i_codec == VLC_CODEC_H264 || tk->fmt.i_codec == VLC_CODEC_HEVC )
     {
-        if( (tk->p_buffer[0] & 0x1f) >= 24 )
+        if( tk->fmt.i_codec == VLC_CODEC_H264 && (tk->p_buffer[0] & 0x1f) >= 24 )
             msg_Warn( p_demux, "unsupported NAL type for H264" );
+        else if( tk->fmt.i_codec == VLC_CODEC_HEVC && ((tk->p_buffer[0] & 0x7e)>>1) >= 48 )
+            msg_Warn( p_demux, "unsupported NAL type for H265" );
 
         /* Normal NAL type */
         p_block = block_Alloc( i_size + 4 );

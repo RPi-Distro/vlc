@@ -2,7 +2,7 @@
  * snapshot.h : vout internal snapshot
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: ccdef2af6c95cba606f312b2166b14beb5b111ad $
+ * $Id: b81e3e7ba8b547ebe48b215035fdf254e0887e5f $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -77,7 +77,7 @@ typedef struct {
  */
 int vout_snapshot_SaveImage(char **name, int *sequential,
                             const block_t *image,
-                            vlc_object_t *object,
+                            vout_thread_t *p_vout,
                             const vout_snapshot_save_cfg_t *cfg);
 
 #endif
