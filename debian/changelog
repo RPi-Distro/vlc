@@ -7,6 +7,7 @@ vlc (2.2.0~pre1-1) unstable; urgency=medium
   [ Reinhard Tartler ]
   * New upstream release.
     - Fixes incorrect usage of AVFrame (Closes: #756329)
+    - Fixes compilation against newer freerdp: (Closes: #758382, 757951)
   * Bump requirements on libdvdnav and libdvdread
   * Fixes compilation against libav11 (Closes: #758203)
   * Drop patches merged upstream
