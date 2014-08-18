@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 1.0\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-08-15 23:41+0200\n"
+"POT-Creation-Date: 2014-08-17 23:02+0200\n"
 "PO-Revision-Date: 2009-06-07 18:52+0300\n"
 "Last-Translator: Ara Qadir <arastein@gmail.com>\n"
 "Language-Team: Kurdish (Sorani) <arastein@gmail.com>\n"
@@ -17560,27 +17560,27 @@ msgstr "پاشەکەوتکردنی لیستی لێدان"
 msgid "Meta-information"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1522 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/macosx/playlist.m:1521 modules/gui/qt4/qt4.cpp:188
 #, fuzzy
 msgid "Continue playback?"
 msgstr "دەربچۆ دوای لێدان"
 
-#: modules/gui/macosx/playlist.m:1522 modules/gui/macosx/simple_prefs.m:837
+#: modules/gui/macosx/playlist.m:1521 modules/gui/macosx/simple_prefs.m:837
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr "بەردەوامبوون"
 
-#: modules/gui/macosx/playlist.m:1522
+#: modules/gui/macosx/playlist.m:1521
 #, fuzzy
 msgid "Restart playback"
 msgstr "دەربچۆ دوای لێدان"
 
-#: modules/gui/macosx/playlist.m:1522
+#: modules/gui/macosx/playlist.m:1521
 #, fuzzy
 msgid "Always continue"
 msgstr "هەمیشە لە لوتکە"
 
-#: modules/gui/macosx/playlist.m:1522
+#: modules/gui/macosx/playlist.m:1521
 msgid "Playback of \"%@\" will continue at %@"
 msgstr ""
 

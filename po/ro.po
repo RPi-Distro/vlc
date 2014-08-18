@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-08-15 23:41+0200\n"
+"POT-Creation-Date: 2014-08-17 23:02+0200\n"
 "PO-Revision-Date: 2014-06-16 10:10+0000\n"
 "Last-Translator: Ioan-Simion Ghejan <simi@simi.ro>\n"
 "Language-Team: Romanian (http://www.transifex.com/projects/p/vlc-trans/"
@@ -17993,24 +17993,24 @@ msgstr "Salvează lista de redare"
 msgid "Meta-information"
 msgstr "Meta-informație"
 
-#: modules/gui/macosx/playlist.m:1522 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/macosx/playlist.m:1521 modules/gui/qt4/qt4.cpp:188
 msgid "Continue playback?"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1522 modules/gui/macosx/simple_prefs.m:837
+#: modules/gui/macosx/playlist.m:1521 modules/gui/macosx/simple_prefs.m:837
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr "Continuă"
 
-#: modules/gui/macosx/playlist.m:1522
+#: modules/gui/macosx/playlist.m:1521
 msgid "Restart playback"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1522
+#: modules/gui/macosx/playlist.m:1521
 msgid "Always continue"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1522
+#: modules/gui/macosx/playlist.m:1521
 msgid "Playback of \"%@\" will continue at %@"
 msgstr ""
 

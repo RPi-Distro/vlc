@@ -5,7 +5,7 @@
  * Copyright © 2007-2012 Mirsal Ennaime
  * Copyright © 2009-2012 The VideoLAN team
  * Copyright © 2013      Alex Merry
- * $Id: bbf7f7b66522bba945313582f6215308c0e67005 $
+ * $Id: 87277cd1b43ea0bfd428e9da4e1fcdefe3e69ecc $
  *
  * Authors:    Rafaël Carré <funman at videolanorg>
  *             Mirsal Ennaime <mirsal at mirsal fr>
@@ -192,43 +192,48 @@ static int Open( vlc_object_t *p_this )
         msg_Err( p_this, "Failed to connect to the D-Bus session daemon: %s",
                 error.message );
         dbus_error_free( &error );
+        close( p_sys->p_pipe_fds[1] );
+        close( p_sys->p_pipe_fds[0] );
         free( p_sys );
         return VLC_EGENERIC;
     }
 
     dbus_connection_set_exit_on_disconnect( p_conn, FALSE );
 
-    /* register an instance-specific well known name of the form
-     * org.mpris.MediaPlayer2.vlc.instanceXXXX where XXXX is the
-     * current process's pid */
-    size_t i_length = sizeof( DBUS_MPRIS_BUS_NAME ) +
-        sizeof( DBUS_INSTANCE_ID_PREFIX ) + 10;
-
-    char unique_service[i_length];
-
-    snprintf( unique_service, sizeof (unique_service),
-            DBUS_MPRIS_BUS_NAME"."DBUS_INSTANCE_ID_PREFIX"%"PRIu32,
-            (uint32_t)getpid() );
-
-    dbus_bus_request_name( p_conn, unique_service, 0, &error );
-
-    if( dbus_error_is_set( &error ) )
-    {
-        msg_Err( p_this, "Error requesting service name %s: %s",
-                 unique_service, error.message );
-        dbus_error_free( &error );
-        free( p_sys );
-        return VLC_EGENERIC;
-    }
-    msg_Dbg( p_intf, "listening on dbus as: %s", unique_service );
-
-    /* Try to register org.mpris.MediaPlayer2.vlc as well in case we are
-     * the only VLC instance currently connected to the bus */
-    dbus_bus_request_name( p_conn, DBUS_MPRIS_BUS_NAME, 0, NULL );
-
     /* Register the entry point object path */
     dbus_connection_register_object_path( p_conn, DBUS_MPRIS_OBJECT_PATH,
             &dbus_mpris_vtable, p_this );
+
+    /* Try to register org.mpris.MediaPlayer2.vlc */
+    dbus_bus_request_name( p_conn, DBUS_MPRIS_BUS_NAME, 0, &error );
+    if( dbus_error_is_set( &error ) )
+    {
+        msg_Dbg( p_this, "Failed to get service name %s: %s",
+                 DBUS_MPRIS_BUS_NAME, error.message );
+        dbus_error_free( &error );
+
+        /* Register an instance-specific well known name of the form
+         * org.mpris.MediaPlayer2.vlc.instanceXXXX where XXXX is the
+         * current Process ID */
+        char unique_service[sizeof( DBUS_MPRIS_BUS_NAME ) +
+                            sizeof( DBUS_INSTANCE_ID_PREFIX ) + 10];
+
+        snprintf( unique_service, sizeof (unique_service),
+                  DBUS_MPRIS_BUS_NAME"."DBUS_INSTANCE_ID_PREFIX"%"PRIu32,
+                  (uint32_t)getpid() );
+
+        dbus_bus_request_name( p_conn, unique_service, 0, &error );
+        if( dbus_error_is_set( &error ) )
+        {
+            msg_Err( p_this, "Failed to get service name %s: %s",
+                     DBUS_MPRIS_BUS_NAME, error.message );
+            dbus_error_free( &error );
+        }
+        else
+            msg_Dbg( p_intf, "listening on dbus as: %s", unique_service );
+    }
+    else
+        msg_Dbg( p_intf, "listening on dbus as: %s", DBUS_MPRIS_BUS_NAME );
 
     dbus_connection_flush( p_conn );
 
@@ -285,6 +290,8 @@ error:
 
     vlc_mutex_destroy( &p_sys->lock );
 
+    close( p_sys->p_pipe_fds[1] );
+    close( p_sys->p_pipe_fds[0] );
     free( p_sys );
     return VLC_ENOMEM;
 }
@@ -336,6 +343,8 @@ static void Close   ( vlc_object_t *p_this )
     vlc_array_destroy( p_sys->p_events );
     vlc_array_destroy( p_sys->p_timeouts );
     vlc_array_destroy( p_sys->p_watches );
+    close( p_sys->p_pipe_fds[1] );
+    close( p_sys->p_pipe_fds[0] );
     free( p_sys );
 }
 

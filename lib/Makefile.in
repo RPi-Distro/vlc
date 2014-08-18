@@ -1039,7 +1039,7 @@ libvlc_la_LIBADD = \
 	../src/libvlccore.la ../compat/libcompat.la $(LIBPTHREAD) $(LIBM)
 
 libvlc_la_LDFLAGS = $(LDFLAGS_libvlc) -no-undefined -version-info \
-	9:0:4 -export-symbols $(srcdir)/libvlc.sym $(am__append_2)
+	10:0:5 -export-symbols $(srcdir)/libvlc.sym $(am__append_2)
 libvlc_la_DEPENDENCIES = libvlc.sym $(am__append_1)
 pkgconfig_DATA = libvlc.pc
 all: $(BUILT_SOURCES)

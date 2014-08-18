@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-08-15 23:41+0200\n"
+"POT-Creation-Date: 2014-08-17 23:02+0200\n"
 "PO-Revision-Date: 2014-05-02 14:06+0000\n"
 "Last-Translator: dushmantha <dushmantharupasinghe@gmail.com>\n"
 "Language-Team: Sinhala (http://www.transifex.com/projects/p/vlc-trans/"
@@ -17111,27 +17111,27 @@ msgstr "ධාවන ලැයිස්තුව සුරකින්න"
 msgid "Meta-information"
 msgstr "මෙටා තොරතුරු"
 
-#: modules/gui/macosx/playlist.m:1522 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/macosx/playlist.m:1521 modules/gui/qt4/qt4.cpp:188
 #, fuzzy
 msgid "Continue playback?"
 msgstr "පිළිවැයීම නවතන්න"
 
-#: modules/gui/macosx/playlist.m:1522 modules/gui/macosx/simple_prefs.m:837
+#: modules/gui/macosx/playlist.m:1521 modules/gui/macosx/simple_prefs.m:837
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr "අඛණ්ඩව කරගෙන යන්න"
 
-#: modules/gui/macosx/playlist.m:1522
+#: modules/gui/macosx/playlist.m:1521
 #, fuzzy
 msgid "Restart playback"
 msgstr "පිළිවැයීම නවතන්න"
 
-#: modules/gui/macosx/playlist.m:1522
+#: modules/gui/macosx/playlist.m:1521
 #, fuzzy
 msgid "Always continue"
 msgstr "සැමවිටම ඉහළින් තබන්න"
 
-#: modules/gui/macosx/playlist.m:1522
+#: modules/gui/macosx/playlist.m:1521
 msgid "Playback of \"%@\" will continue at %@"
 msgstr ""
 

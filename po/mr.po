@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-08-15 23:41+0200\n"
+"POT-Creation-Date: 2014-08-17 23:02+0200\n"
 "PO-Revision-Date: 2014-04-14 07:32+0000\n"
 "Last-Translator: suraj.kawade\n"
 "Language-Team: Marathi (http://www.transifex.com/projects/p/vlc-trans/"
@@ -17009,27 +17009,27 @@ msgstr "प्लेलिस्ट जतन करा"
 msgid "Meta-information"
 msgstr "मेटा-इन्फोर्मेशन"
 
-#: modules/gui/macosx/playlist.m:1522 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/macosx/playlist.m:1521 modules/gui/qt4/qt4.cpp:188
 #, fuzzy
 msgid "Continue playback?"
 msgstr "सामयिक प्लेबॅक"
 
-#: modules/gui/macosx/playlist.m:1522 modules/gui/macosx/simple_prefs.m:837
+#: modules/gui/macosx/playlist.m:1521 modules/gui/macosx/simple_prefs.m:837
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr "सुरु ठेवा"
 
-#: modules/gui/macosx/playlist.m:1522
+#: modules/gui/macosx/playlist.m:1521
 #, fuzzy
 msgid "Restart playback"
 msgstr "सामयिक प्लेबॅक"
 
-#: modules/gui/macosx/playlist.m:1522
+#: modules/gui/macosx/playlist.m:1521
 #, fuzzy
 msgid "Always continue"
 msgstr "नेहमी वर ठेवा"
 
-#: modules/gui/macosx/playlist.m:1522
+#: modules/gui/macosx/playlist.m:1521
 msgid "Playback of \"%@\" will continue at %@"
 msgstr ""
 

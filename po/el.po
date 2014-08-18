@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-08-15 23:41+0200\n"
+"POT-Creation-Date: 2014-08-17 23:02+0200\n"
 "PO-Revision-Date: 2014-07-29 14:32+0000\n"
 "Last-Translator: Alex Kalfas <kalfas.alex@gmail.com>\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/vlc-trans/language/"
@@ -18639,24 +18639,24 @@ msgstr "Αποθήκευση λίστας αναπαραγωγής"
 msgid "Meta-information"
 msgstr "Μετα-πληροφορίες"
 
-#: modules/gui/macosx/playlist.m:1522 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/macosx/playlist.m:1521 modules/gui/qt4/qt4.cpp:188
 msgid "Continue playback?"
 msgstr "Συνέχιση της αναπαραγωγής;"
 
-#: modules/gui/macosx/playlist.m:1522 modules/gui/macosx/simple_prefs.m:837
+#: modules/gui/macosx/playlist.m:1521 modules/gui/macosx/simple_prefs.m:837
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr "Συνέχεια"
 
-#: modules/gui/macosx/playlist.m:1522
+#: modules/gui/macosx/playlist.m:1521
 msgid "Restart playback"
 msgstr "Επανεκκίνηση αναπαραγωγής"
 
-#: modules/gui/macosx/playlist.m:1522
+#: modules/gui/macosx/playlist.m:1521
 msgid "Always continue"
 msgstr "Πάντα συνέχιση"
 
-#: modules/gui/macosx/playlist.m:1522
+#: modules/gui/macosx/playlist.m:1521
 msgid "Playback of \"%@\" will continue at %@"
 msgstr "Η αναπαραγωγή του \"%@\" θα συνεχιστεί στα %@"
 

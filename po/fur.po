@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-08-15 23:41+0200\n"
+"POT-Creation-Date: 2014-08-17 23:02+0200\n"
 "PO-Revision-Date: 2006-10-22 20:42+0000\n"
 "Last-Translator: A. Decorte <klenje@adriacom.it>\n"
 "Language-Team: Friulian <fur@li.org>\n"
@@ -18269,27 +18269,27 @@ msgstr "Salve liste di riproduzion"
 msgid "Meta-information"
 msgstr "Meta-informazions"
 
-#: modules/gui/macosx/playlist.m:1522 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/macosx/playlist.m:1521 modules/gui/qt4/qt4.cpp:188
 #, fuzzy
 msgid "Continue playback?"
 msgstr "Riproduzion locâl"
 
-#: modules/gui/macosx/playlist.m:1522 modules/gui/macosx/simple_prefs.m:837
+#: modules/gui/macosx/playlist.m:1521 modules/gui/macosx/simple_prefs.m:837
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr "Va indevant"
 
-#: modules/gui/macosx/playlist.m:1522
+#: modules/gui/macosx/playlist.m:1521
 #, fuzzy
 msgid "Restart playback"
 msgstr "Riproduzion locâl"
 
-#: modules/gui/macosx/playlist.m:1522
+#: modules/gui/macosx/playlist.m:1521
 #, fuzzy
 msgid "Always continue"
 msgstr "Simpri in prin plan"
 
-#: modules/gui/macosx/playlist.m:1522
+#: modules/gui/macosx/playlist.m:1521
 msgid "Playback of \"%@\" will continue at %@"
 msgstr ""
 
