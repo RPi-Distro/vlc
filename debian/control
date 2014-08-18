@@ -9,7 +9,8 @@ Uploaders: Clément Stenac <zorglub@debian.org>,
            Reinhard Tartler <siretart@tauware.de>,
            Benjamin Drung <bdrung@debian.org>,
            Edward Wang <edward.c.wang@compdigitec.com>,
-           Mateusz Łukasik <mati75@linuxmint.pl>
+           Mateusz Łukasik <mati75@linuxmint.pl>,
+           Sebastian Ramacher <sramacher@debian.org>
 Build-Depends: autopoint,
                debhelper (>= 9),
                dh-autoreconf,
