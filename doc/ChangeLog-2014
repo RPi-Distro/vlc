@@ -1,3 +1,121 @@
+commit 5178b240f63be256e20e8ee23f1358f752207761
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Sat Aug 16 13:20:55 2014 +0200
+
+    macosx: Do not resume playback if start, stop or run-time is set
+    
+    (cherry picked from commit ad30beeabe8228616b3cd92b88e07f8165f28c0d)
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 071e0ab21f6b9fa4036a843b7aea91c6b25d5c90
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sat Aug 16 21:56:11 2014 +0200
+
+    extras/tools: update gas-pp
+    
+    (cherry picked from commit 7bbd36a5f527e39b9686e8deed441c09f7b9ada7)
+
+commit 162e7f9086698aff6a4a851baefd9d037e9df2c0
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Wed Aug 6 14:50:56 2014 +0200
+
+    contrib: sparkle: drop obsolete patch
+    
+    (cherry picked from commit b073cda5f02aa512936ced2c45c9bfa54b83b429)
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 43375a497f2f71cfb3488152e2158708e5aa2eff
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Wed Aug 6 14:49:48 2014 +0200
+
+    contrib: sparkle: update snow leopard patch
+    
+    (cherry picked from commit b88ae64d8e0b3b971d5eda00a0ac938a8d39544e)
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 49a382da16bffcd6f00c32989f5b4620ab0c5b93
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Wed Aug 6 14:46:29 2014 +0200
+
+    contrib: sparkle: remove applied patch
+    
+    (cherry picked from commit 57acfbdcd66ddd363c80ff24c44997f0b9b874b8)
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 6fe09846417904d51f95fea5e90351f34d3f1968
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Aug 17 10:22:19 2014 +0300
+
+    Update libtool library versions
+
+commit c7137692365d5da29b19575d09c584ac115b3ee2
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Aug 16 13:48:17 2014 +0300
+
+    dbus: fix file descriptors leak
+    
+    (cherry picked from commit 67aa058beb6ee58181c821ff217dfda1d5a36363)
+
+commit 36c43ad4c60cb7e739d9496eb6ae16b4c72af67a
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Aug 16 13:44:37 2014 +0300
+
+    dbus: register only one MPRIS bus name (fixes #10301)
+    
+    (cherry picked from commit 078317de42128ae298de5f507b89b3a769cf0eab)
+
+commit 37232b5eac0ae3441d64a1f6f51d5fa21ee453f1
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Aug 16 13:37:23 2014 +0300
+
+    dbus: register object path before bus names
+    
+    This fixes a race condition where the player was visible on the bus
+    with the MPRIS name, but did not implement MPRIS.
+    
+    (cherry picked from commit d32c36dc11322402e47838d8ed2d69b8e47a2e55)
+
+commit 003586cc4acce2527cd56cbc15f6b5dfefe322a9
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Aug 16 13:11:09 2014 +0300
+
+    netsync: fix stale pointer on error
+    
+    (cherry picked from commit 3cd098faaf269be951f522b0aab0c1ee9dcdfbbe)
+
+commit a5789854b09e34f476c4fc9657730831d28a7223
+Author: Hannes Domani <ssbssa@yahoo.de>
+Date:   Fri Aug 15 22:50:48 2014 +0200
+
+    oldrc: fix thread-cancellation on windows (fixes #10483)
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 09cc30dff2dfca9ec993c7bf245942ca5735ebf0)
+
+commit f5e85d90bd3829efb5b22a267e4cb284595f88de
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Aug 16 09:20:32 2014 +0200
+
+    Slovene and Albanian follow CP1250
+
+commit 13fbe3d2a1771a31ce936c91bee3c13856acbfae
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Aug 16 09:16:19 2014 +0200
+
+    Bosnian must be CP1250
+
+commit 18ab804ee330cd709f973394ef4367a1b3dd901c
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Aug 16 02:41:05 2014 +0200
+
+    On the road to 2.2.0-pre2
+
+commit 2a756bf35317f52058e9cc868366f20b05ffd88a
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Aug 16 02:36:30 2014 +0200
+
+    NEWS: forwardport 2.1.5 NEWS
+
 commit c0fa66fa9ebf7c2aa9d6b94b24270b23e782121c
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Sat Aug 16 01:52:31 2014 +0200
@@ -16387,73 +16505,3 @@ Date:   Wed Jan 1 22:35:36 2014 +0100
     Remove faulty return when vobsub doesn't define a size.
     
     Close #10111
-
-commit 776f719e75bad42a1e684b5c074a95cf7f9fc3b1
-Author: Rémi Denis-Courmont <remi@remlab.net>
-Date:   Wed Jan 1 20:31:26 2014 +0200
-
-    input_CreateFilename: take explicit input thread pointer
-    
-    This should fix meta-data expansion in LibVLC (i.e. when recording).
-
-commit 68bc7fd968916a68eb16873431d48e4185669838
-Author: Rémi Denis-Courmont <remi@remlab.net>
-Date:   Wed Jan 1 20:25:52 2014 +0200
-
-    str_format_meta: take input thread pointer rather than playlist
-
-commit 098f3844b086a18c332f663a13c586bf1881b297
-Author: Rémi Denis-Courmont <remi@remlab.net>
-Date:   Wed Jan 1 20:17:32 2014 +0200
-
-    str_format_meta: clean up
-
-commit 27da83668571d11e8fed3bd87d2b396dfd5b57b0
-Author: Rémi Denis-Courmont <remi@remlab.net>
-Date:   Wed Jan 1 19:19:26 2014 +0200
-
-    dbus: use pl_CurrentInput()
-
-commit 5be88dcfc4e3585a90b8cdcbe6aee28c471173d4
-Author: Rémi Denis-Courmont <remi@remlab.net>
-Date:   Wed Jan 1 19:19:13 2014 +0200
-
-    pl_CurrentInput: more specific prototype
-
-commit b3f95b9594696b80ad5c3f0053b1507306c9ccb5
-Author: Rémi Denis-Courmont <remi@remlab.net>
-Date:   Wed Jan 1 18:07:45 2014 +0200
-
-    intf-add: small simplification
-
-commit 11c1769c986a690a75e8fe5df11e293f5f52e206
-Author: Rémi Denis-Courmont <remi@remlab.net>
-Date:   Wed Jan 1 18:55:49 2014 +0200
-
-    libvlc: look "syslog" value only once, simplify
-
-commit bc1fa152b3f17a26eef9cf57596c8368b6e30829
-Author: Rémi Denis-Courmont <remi@remlab.net>
-Date:   Wed Jan 1 18:52:01 2014 +0200
-
-    libvlc: look the value of intf up only once when used
-
-commit d19530bcb2f4721e5c4b2704865c0d86440d899b
-Author: Rémi Denis-Courmont <remi@remlab.net>
-Date:   Wed Jan 1 18:38:19 2014 +0200
-
-    libvlc: remove "evil" daemon global variable and clean up
-    
-    (The unlikely corner case of ENOMEM remains unhandled/unfixed.)
-
-commit ec44ae90ab3beb3f06371d506fd3e2ad104f9796
-Author: Rémi Denis-Courmont <remi@remlab.net>
-Date:   Wed Jan 1 17:57:26 2014 +0200
-
-    Remove stray comment
-
-commit 33d54e40ebfc58ecffe482a25f817c0b550c63b9
-Author: Jean-Baptiste Kempf <jb@videolan.org>
-Date:   Wed Jan 1 11:31:17 2014 +0100
-
-    Happy New Year 2014!

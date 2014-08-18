@@ -1519,7 +1519,7 @@ libvlccore_la_SOURCES = $(SOURCES_libvlc) $(am__append_7) \
 	$(am__append_11) $(am__append_12) $(am__append_13) \
 	$(am__append_14) $(am__append_15)
 libvlccore_la_LDFLAGS = $(LDFLAGS_libvlccore) -no-undefined \
-	-export-symbols $(srcdir)/libvlccore.sym -version-info 7:0:0 \
+	-export-symbols $(srcdir)/libvlccore.sym -version-info 8:0:0 \
 	$(am__append_5)
 libvlccore_la_LIBADD = $(LIBS_libvlccore) ../compat/libcompat.la \
 	$(LTLIBINTL) $(LTLIBICONV) $(IDN_LIBS) $(LIBPTHREAD) \
