@@ -339,8 +339,8 @@ Description: VBI teletext plugin for VLC
 
 Package: vlc-plugin-samba
 Architecture: any
-Breaks: vlc-nox (<= 2.2.0~pre2-2~)
-Replaces: vlc-nox (<= 2.2.0~pre2-2~)
+Breaks: vlc-nox (<< 2.2.0~pre2-2)
+Replaces: vlc-nox (<< 2.2.0~pre2-2)
 Depends: vlc-nox (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
