@@ -1,6 +1,22 @@
 vlc (2.2.0~pre2-2) UNRELEASED; urgency=medium
 
-  * 
+  * Add vlc-plugin-samba package shipping the Samba plugin. (Closes: #729238)
+    - debian/control: Add new vlc-plugin-samba package and add it to vlc's
+      Recommends.
+    - debian/vlc-{nox,plugin-samba}.install: Move Samba plugin to
+      vlc-plugin-samba.
+  * Remove vlc-plugin-pulse and put PulseAudio plugins to vlc.
+    - debian/control: Turn vlc-plugin-pulse into a transitional package and
+      remove it from vlc's Recommends.
+    - debian/vlc-{plugin-pulse,}.install: Move PulseAudio plugins to vlc.
+  * debian/rules: Improve check if plugins from vlc-nox are linked against
+    libX11 or libxcb.
+  * debian/vlc{-nox,}.install.in: Move RDP plugin to vlc to get rid of all
+    libX11 and libxcb dependencies in vlc-nox.
+  * debian/control:
+    - Remove obsolete Replaces.
+    - Mention all plugin packages in the Description.
+    - Add myself to Uploaders.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Mon, 18 Aug 2014 22:09:17 +0200
 
