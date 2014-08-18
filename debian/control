@@ -349,7 +349,7 @@ Description: Samba plugin for VLC
 
 Package: vlc-plugin-pulse
 Architecture: all
-Depends: vlc-plugins (>= ${source:Version}),
+Depends: vlc-data (= ${source:Version}),
          ${misc:Depends}
 Description: transitional dummy package for vlc-nox
  This is a transitional dummy package for libdiscid-dev.
