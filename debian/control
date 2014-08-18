@@ -177,7 +177,6 @@ Depends: fonts-freefont-ttf,
          ${misc:Depends},
          ${shlibs:Depends}
 Recommends: vlc-plugin-notify (= ${binary:Version}),
-            vlc-plugin-pulse (= ${binary:Version}),
             xdg-utils
 Suggests: videolan-doc
 Breaks: vlc-data (<< 1.1.5), vlc-nox (<< 2.0.2)
@@ -295,19 +294,6 @@ Description: LibNotify plugin for VLC
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
  podcasts, and multimedia streams from various network sources.
 
-Package: vlc-plugin-pulse
-Architecture: any
-Pre-Depends: dpkg (>= 1.15.6~)
-Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
-Description: PulseAudio plugin for VLC
- This plugin adds support for PulseAudio to the VLC media player. To
- activate the audio output module, use the `--aout pulse' flag or
- select the `pulse' audio output plugin from the preferences menu.
- .
- VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
- DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
- podcasts, and multimedia streams from various network sources.
-
 Package: vlc-plugin-sdl
 Architecture: any
 Pre-Depends: dpkg (>= 1.15.6~)
@@ -346,3 +332,10 @@ Description: VBI teletext plugin for VLC
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
  podcasts, and multimedia streams from various network sources.
+
+Package: vlc-plugin-pulse
+Architecture: all
+Depends: vlc-plugins (>= ${source:Version}),
+         ${misc:Depends}
+Description: transitional dummy package for vlc-nox
+ This is a transitional dummy package for libdiscid-dev.
