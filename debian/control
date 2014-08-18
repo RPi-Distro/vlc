@@ -177,6 +177,7 @@ Depends: fonts-freefont-ttf,
          ${misc:Depends},
          ${shlibs:Depends}
 Recommends: vlc-plugin-notify (= ${binary:Version}),
+            vlc-plugin-samba (= ${binary:Version}),
             xdg-utils
 Suggests: videolan-doc
 Breaks: vlc-data (<< 1.1.5),
