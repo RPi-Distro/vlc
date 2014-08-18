@@ -290,7 +290,7 @@ ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
 	# Check that we did not install a plugin linked with libX11 or
 	# libxcb in vlc-nox
 	BORKED=no; \
-	LD_LIBRARY_PATH="debian/libvlccore8/usr/lib:debian/libvlc5/usr/lib:$$LD_LIBRARY_PATH"; \
+	LD_LIBRARY_PATH="debian/libvlccore8/usr/lib:debian/libvlc5/usr/lib${LD_LIBRARY_PATH:+:}${LD_LIBRARY_PATH:-}"; \
 	for file in $$(find debian/vlc-nox/usr/lib/vlc -name '*.so'); do \
 		if ldd -r $$file | egrep -q -e 'libX11\.so' -e 'libxcb\.so'; then \
 			BORKED=yes; \
