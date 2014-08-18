@@ -333,6 +333,20 @@ Description: VBI teletext plugin for VLC
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
  podcasts, and multimedia streams from various network sources.
 
+Package: vlc-plugin-samba
+Architecture: any
+Breaks: vlc-nox (<= 2.2.0~pre2-2~)
+Replaces: vlc-nox (<= 2.2.0~pre2-2~)
+Depends: vlc-nox (= ${binary:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends}
+Description: Samba plugin for VLC
+ This plugin adds support to access Samba shares from the VLC media player.
+ .
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+
 Package: vlc-plugin-pulse
 Architecture: all
 Depends: vlc-plugins (>= ${source:Version}),
