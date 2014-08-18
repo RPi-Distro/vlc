@@ -196,9 +196,10 @@ Description: multimedia player and streamer
  .
  VLC has support for on-the-fly transcoding of audio and video formats, either
  for broadcasting purposes or for movie format transformations. Support for
- most output methods is provided by this package, but features can be added
- by installing additional audio plugins (vlc-plugin-pulse, vlc-plugin-sdl)
- or video plugins (vlc-plugin-sdl).
+ most output methods is provided by this package, but features can be added by
+ installing additional plugins (vlc-plugin-fluidsynth, vlc-plugin-jack,
+ vlc-plugin-notify, vlc-plugin-samba, vlc-plugin-sdl, vlc-plugin-svg,
+ vlc-plugin-zvbi).
 
 Package: vlc-data
 Pre-Depends: dpkg (>= 1.15.6~)
