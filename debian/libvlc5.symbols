@@ -1,5 +1,16 @@
 libvlc.so.5 libvlc5 #MINVER#
  libvlc_add_intf@Base 1.1.0
+ libvlc_audio_equalizer_get_amp_at_index@Base 2.2.0~pre1
+ libvlc_audio_equalizer_get_band_count@Base 2.2.0~pre1
+ libvlc_audio_equalizer_get_band_frequency@Base 2.2.0~pre1
+ libvlc_audio_equalizer_get_preamp@Base 2.2.0~pre1
+ libvlc_audio_equalizer_get_preset_count@Base 2.2.0~pre1
+ libvlc_audio_equalizer_get_preset_name@Base 2.2.0~pre1
+ libvlc_audio_equalizer_new@Base 2.2.0~pre1
+ libvlc_audio_equalizer_new_from_preset@Base 2.2.0~pre1
+ libvlc_audio_equalizer_release@Base 2.2.0~pre1
+ libvlc_audio_equalizer_set_amp_at_index@Base 2.2.0~pre1
+ libvlc_audio_equalizer_set_preamp@Base 2.2.0~pre1
  libvlc_audio_filter_list_get@Base 2.0.0
  libvlc_audio_get_channel@Base 1.1.0
  libvlc_audio_get_delay@Base 1.1.1
@@ -9,6 +20,7 @@ libvlc.so.5 libvlc5 #MINVER#
  libvlc_audio_get_track_description@Base 1.1.0
  libvlc_audio_get_volume@Base 1.1.0
  libvlc_audio_output_device_count@Base 1.1.0
+ libvlc_audio_output_device_enum@Base 2.2.0~pre1
  libvlc_audio_output_device_id@Base 1.1.0
  libvlc_audio_output_device_list_get@Base 2.1.0
  libvlc_audio_output_device_list_release@Base 2.1.0
@@ -143,10 +155,12 @@ libvlc.so.5 libvlc5 #MINVER#
  libvlc_media_player_pause@Base 1.1.0
  libvlc_media_player_play@Base 1.1.0
  libvlc_media_player_previous_chapter@Base 1.1.0
+ libvlc_media_player_program_scrambled@Base 2.2.0~pre1
  libvlc_media_player_release@Base 1.1.0
  libvlc_media_player_retain@Base 1.1.0
  libvlc_media_player_set_agl@Base 1.1.0
  libvlc_media_player_set_chapter@Base 1.1.0
+ libvlc_media_player_set_equalizer@Base 2.2.0~pre1
  libvlc_media_player_set_hwnd@Base 1.1.0
  libvlc_media_player_set_media@Base 1.1.0
  libvlc_media_player_set_nsobject@Base 1.1.0

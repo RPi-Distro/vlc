@@ -1,4 +1,4 @@
-libvlccore.so.7 libvlccore7 #MINVER#
+libvlccore.so.8 libvlccore8 #MINVER#
  AddMD5@Base 2.0.0
  EndMD5@Base 2.0.0
  EnsureUTF8@Base 2.0.0
@@ -14,6 +14,15 @@ libvlccore.so.7 libvlccore7 #MINVER#
  VLC_CompileHost@Base 2.0.0
  VLC_Compiler@Base 2.0.0
  access_GetParentInput@Base 2.0.0
+ addon_entry_Hold@Base 2.2.0~pre1
+ addon_entry_New@Base 2.2.0~pre1
+ addon_entry_Release@Base 2.2.0~pre1
+ addons_manager_Delete@Base 2.2.0~pre1
+ addons_manager_Gather@Base 2.2.0~pre1
+ addons_manager_Install@Base 2.2.0~pre1
+ addons_manager_LoadCatalog@Base 2.2.0~pre1
+ addons_manager_New@Base 2.2.0~pre1
+ addons_manager_Remove@Base 2.2.0~pre1
  aout_BitsPerSample@Base 2.0.0
  aout_ChannelExtract@Base 2.0.0
  aout_ChannelReorder@Base 2.0.0
@@ -45,6 +54,7 @@ libvlccore.so.7 libvlccore7 #MINVER#
  block_FifoPut@Base 2.0.0
  block_FifoRelease@Base 2.0.0
  block_FifoShow@Base 2.0.0
+ block_FifoWake@Base 2.2.0~pre1
  block_File@Base 2.0.0
  block_FilePath@Base 2.1.0
  block_Init@Base 2.0.0
@@ -168,6 +178,7 @@ libvlccore.so.7 libvlccore7 #MINVER#
  httpd_StreamHeader@Base 2.0.0
  httpd_StreamNew@Base 2.0.0
  httpd_StreamSend@Base 2.0.0
+ httpd_StreamSetHTTPHeaders@Base 2.2.0~pre1
  httpd_UrlCatch@Base 2.0.0
  httpd_UrlDelete@Base 2.0.0
  httpd_UrlNew@Base 2.0.0
@@ -220,18 +231,24 @@ libvlccore.so.7 libvlccore7 #MINVER#
  input_item_node_Create@Base 2.0.0
  input_item_node_Delete@Base 2.0.0
  input_item_node_PostAndDelete@Base 2.0.0
+ input_resource_GetAout@Base 2.2.0~pre1
  input_resource_HoldAout@Base 2.1.0
  input_resource_New@Base 2.0.0
+ input_resource_PutAout@Base 2.2.0~pre1
  input_resource_Release@Base 2.0.0
+ input_resource_ResetAout@Base 2.2.0~pre1
  input_resource_Terminate@Base 2.0.0
  input_resource_TerminateVout@Base 2.0.0
  input_vaControl@Base 2.0.0
  intf_Create@Base 2.0.0
+ libvlc_ArtRequest@Base 2.2.0~pre1
  libvlc_InternalAddIntf@Base 2.0.0
  libvlc_InternalCleanup@Base 2.0.0
  libvlc_InternalCreate@Base 2.0.0
  libvlc_InternalDestroy@Base 2.0.0
  libvlc_InternalInit@Base 2.0.0
+ libvlc_InternalPlay@Base 2.2.0~pre1
+ libvlc_MetaRequest@Base 2.2.0~pre1
  libvlc_Quit@Base 2.0.0
  libvlc_SetExitHandler@Base 2.0.0
  make_path@Base 2.0.0
@@ -296,12 +313,10 @@ libvlccore.so.7 libvlccore7 #MINVER#
  picture_pool_NewFromFormat@Base 2.0.0
  picture_pool_NonEmpty@Base 2.0.0
  picture_pool_Reserve@Base 2.0.0
- pl_Get@Base 2.0.0
  plane_CopyPixels@Base 2.0.0
  playlist_Add@Base 2.0.0
  playlist_AddExt@Base 2.0.0
  playlist_AddInput@Base 2.0.0
- playlist_AskForArtEnqueue@Base 2.0.0
  playlist_AssertLocked@Base 2.0.0
  playlist_ChildSearchName@Base 2.0.0
  playlist_Clear@Base 2.0.0
@@ -331,7 +346,6 @@ libvlccore.so.7 libvlccore7 #MINVER#
  playlist_NodeDelete@Base 2.0.0
  playlist_NodeInsert@Base 2.0.0
  playlist_NodeRemoveItem@Base 2.0.0
- playlist_PreparseEnqueue@Base 2.0.0
  playlist_RecursiveNodeSort@Base 2.0.0
  playlist_ServicesDiscoveryAdd@Base 2.0.0
  playlist_ServicesDiscoveryControl@Base 2.0.0
@@ -434,12 +448,16 @@ libvlccore.so.7 libvlccore7 #MINVER#
  var_SetChecked@Base 2.0.0
  var_TriggerCallback@Base 2.0.0
  var_Type@Base 2.0.0
+ video_format_ApplyRotation@Base 2.2.0~pre1
  video_format_CopyCrop@Base 2.0.0
  video_format_FixRgb@Base 2.0.0
+ video_format_GetTransform@Base 2.2.0~pre1
  video_format_IsSimilar@Base 2.0.0
  video_format_Print@Base 2.0.0
  video_format_ScaleCropAr@Base 2.0.0
  video_format_Setup@Base 2.0.0
+ video_format_TransformBy@Base 2.2.0~pre1
+ video_format_TransformTo@Base 2.2.0~pre1
  video_splitter_Delete@Base 2.0.0
  video_splitter_New@Base 2.0.0
  vlc_CPU@Base 2.0.0
@@ -574,6 +592,8 @@ libvlccore.so.7 libvlccore7 #MINVER#
  vlc_stat@Base 2.0.0
  vlc_str2keycode@Base 2.0.0
  vlc_strcasestr@Base 2.0.0
+ vlc_strerror@Base 2.2.0~pre1
+ vlc_strerror_c@Base 2.2.0~pre1
  vlc_testcancel@Base 2.0.0
  vlc_threadvar_create@Base 2.0.0
  vlc_threadvar_delete@Base 2.0.0
@@ -599,6 +619,7 @@ libvlccore.so.7 libvlccore7 #MINVER#
  vlm_MessageSimpleNew@Base 2.0.0
  vlm_New@Base 2.0.0
  vout_AreDisplayPicturesInvalid@Base 2.0.0
+ vout_ChangeAspectRatio@Base 2.2.0~pre1
  vout_Close@Base 2.0.0
  vout_DeleteDisplay@Base 2.0.0
  vout_EnableFilter@Base 2.0.0
@@ -629,6 +650,7 @@ libvlccore.so.7 libvlccore7 #MINVER#
  vout_SetWindowState@Base 2.0.0
  vout_display_GetDefaultDisplaySize@Base 2.0.0
  vout_display_PlacePicture@Base 2.0.0
+ vout_display_SendMouseMovedDisplayCoordinates@Base 2.2.0~pre1
  vout_window_Control@Base 2.0.0
  vout_window_Delete@Base 2.0.0
  vout_window_New@Base 2.0.0
