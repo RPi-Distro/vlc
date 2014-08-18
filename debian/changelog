@@ -1,4 +1,4 @@
-vlc (2.2.0~pre1-1) unstable; urgency=medium
+vlc (2.2.0~pre2-1) unstable; urgency=medium
 
   [ Sebastian Ramacher ]
   * debian/patches/freerdp-1.1.0-beta2-API.patch: Apply upstream patch to
@@ -14,6 +14,7 @@ vlc (2.2.0~pre1-1) unstable; urgency=medium
   * Refresh Hurd patch
   * Update installation paths for several modules
   * Disable libtar support (Closes: #737534)
+  * Follow upstream SONAME bump libvlccore7 -> libvlccore8
 
  -- Reinhard Tartler <siretart@tauware.de>  Sat, 16 Aug 2014 18:39:45 -0400
 
