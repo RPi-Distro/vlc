@@ -1,3 +1,9 @@
+vlc (2.2.0~pre2-3) UNRELEASED; urgency=medium
+
+  * 
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 19 Aug 2014 21:32:36 +0200
+
 vlc (2.2.0~pre2-2) unstable; urgency=medium
 
   * Add vlc-plugin-samba package shipping the Samba plugin. (Closes: #729238)
