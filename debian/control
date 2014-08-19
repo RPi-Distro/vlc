@@ -345,4 +345,5 @@ Depends: vlc (>= ${source:Version}),
          vlc-data (= ${source:Version}),
          ${misc:Depends}
 Description: transitional dummy package for vlc
- This is a transitional dummy package for vlc. It can safely be removed.
+ This is a transitional dummy package for vlc. The PulseAudio plugin is now
+ included in vlc. This package can safely be removed.
