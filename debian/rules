@@ -114,6 +114,7 @@ confflags += \
 # opencv -> developer plugin not required by end users
 # projectm -> broken
 # sndio -> not in Debian
+# svgdev -> libcairo2-dev is not new enough
 # telx -> incompatible with zvbi
 # vsxu -> not in Debian
 # wasapi -> Windows only
@@ -127,6 +128,7 @@ confflags += \
 	--disable-opencv \
 	--disable-projectm \
 	--disable-sndio \
+	--disable-svgdec \
 	--disable-telx \
 	--disable-vsxu \
 	--disable-wasapi \
