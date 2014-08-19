@@ -343,6 +343,5 @@ Architecture: all
 Depends: vlc-data (= ${source:Version}),
          vlc (>= ${source:Version}),
          ${misc:Depends}
-Description: transitional dummy package for vlc-nox
- This is a transitional dummy package for libdiscid-dev. It can safely be
- removed.
+Description: transitional dummy package for vlc
+ This is a transitional dummy package for vlc. It can safely be removed.
