@@ -313,5 +313,8 @@ override_dh_installchangelogs:
 	dh_installchangelogs ChangeLog -p vlc-data
 	dh_installchangelogs ChangeLog -p vlc-nox
 
+override_dh_makeshlibs:
+	dh_makeshlibs -Xusr/lib/vlc/libvlc_vdpau
+
 override_dh_builddeb:
 	dh_builddeb -- -Zxz
