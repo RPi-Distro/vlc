@@ -59,8 +59,8 @@ confflags += \
 	--enable-freerdp \
 	--enable-freetype \
 	--enable-fribidi \
-	--enable-glesv1 \
-	--enable-glesv2 \
+	--enable-gles1 \
+	--enable-gles2 \
 	--enable-glx \
 	--enable-gnutls \
 	--enable-jack \
