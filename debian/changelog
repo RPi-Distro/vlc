@@ -15,7 +15,10 @@ vlc (2.2.0~pre2-2) UNRELEASED; urgency=medium
     libX11 and libxcb dependencies in vlc-nox.
   * debian/control:
     - Remove obsolete Replaces.
+    - Remove obsolete Pre-Depends. dpkg (>= 1.15.6+) is even available in
+      squeeze.
     - Mention all plugin packages in the Description.
+    - Explicitly list libdbus-1-dev in Build-Depends.
     - Add myself to Uploaders.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Mon, 18 Aug 2014 22:09:17 +0200
