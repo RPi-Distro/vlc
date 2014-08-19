@@ -50,13 +50,13 @@ confflags += \
 	--enable-chromaprint \
 	--enable-dbus \
 	--enable-dca \
-	--enable-dirac \
 	--enable-directfb \
 	--enable-dvbpsi \
 	--enable-dvdnav \
 	--enable-faad \
 	--enable-flac \
 	--enable-fluidsynth \
+	--enable-freerdp \
 	--enable-freetype \
 	--enable-fribidi \
 	--enable-glesv1 \
@@ -66,7 +66,6 @@ confflags += \
 	--enable-jack \
 	--enable-kate \
 	--enable-libass \
-	--enable-libfreerdp \
 	--enable-libmpeg2 \
 	--enable-libxml2 \
 	--enable-lirc \
@@ -111,9 +110,9 @@ confflags += \
 # gnomevfs -> poorly maintained
 # goom -> not in Debian
 # libvnc -> libvncserver-dev (containing libvncclient) conflicts with gnutls28
+# mfx -> currently not supported on Linux
 # opencv -> developer plugin not required by end users
 # projectm -> broken
-# quicksync -> currently not supported on Linux
 # sndio -> not in Debian
 # telx -> incompatible with zvbi
 # vsxu -> not in Debian
@@ -125,9 +124,9 @@ confflags += \
 	--disable-gnomevfs \
 	--disable-goom \
 	--disable-libvnc \
+	--disable-mfx \
 	--disable-opencv \
 	--disable-projectm \
-	--disable-quicksync \
 	--disable-sndio \
 	--disable-telx \
 	--disable-vsxu \
