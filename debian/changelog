@@ -6,7 +6,7 @@ vlc (2.2.0~pre2-3) UNRELEASED; urgency=medium
       (Closes: #728039)
     - Make Breaks and Replaces backport friendly.
     - Fix description of the transitional vlc-plugin-pulse package.
-    - Added to Build-Depends: libegl1-mesa-dev, libvncserver-dev,
+    - Added to Build-Depends: libegl1-mesa-dev, libvncserver-dev (>= 0.9.9),
       libgles1-mesa-dev, libgles2-mesa-dev.
     - Bump required versions in Build-Depends: libdbus-1-dev, libpulse-dev,
       libtag1-dev.
@@ -21,10 +21,8 @@ vlc (2.2.0~pre2-3) UNRELEASED; urgency=medium
   * debian/vlc-nox.links: Fix broken /usr/share/bug/vlc-nox symlink.
 
   [ Benjamin Drung ]
-  * Bump required versions of libbluray-dev and libopus-dev (according to configure).
-  * Run wrap-and-sort
-  * Fix --enable-glesvX to --enable-glesX.
-  * Tighten libvncserver-dev dependency to >= 0.9.9.
+  * Bump required versions of libbluray-dev and libopus-dev (according to
+    configure).
 
  -- Sebastian Ramacher <sramacher@debian.org>  Tue, 19 Aug 2014 21:32:36 +0200
 
