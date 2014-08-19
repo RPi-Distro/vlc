@@ -98,6 +98,7 @@ confflags += \
 	--enable-upnp \
 	--enable-vcdx \
 	--enable-vdpau \
+	--enable-vnc \
 	--enable-vorbis \
 	--enable-x264 \
 	--enable-zvbi \
@@ -109,7 +110,6 @@ confflags += \
 # fdkaac -> in Debian non-free
 # gnomevfs -> poorly maintained
 # goom -> not in Debian
-# libvnc -> libvncserver-dev (containing libvncclient) conflicts with gnutls28
 # mfx -> currently not supported on Linux
 # opencv -> developer plugin not required by end users
 # projectm -> broken
@@ -123,7 +123,6 @@ confflags += \
 	--disable-fdkaac \
 	--disable-gnomevfs \
 	--disable-goom \
-	--disable-libvnc \
 	--disable-mfx \
 	--disable-opencv \
 	--disable-projectm \
