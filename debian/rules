@@ -59,6 +59,9 @@ confflags += \
 	--enable-fluidsynth \
 	--enable-freetype \
 	--enable-fribidi \
+	--enable-glesv1 \
+	--enable-glesv2 \
+	--enable-glx \
 	--enable-gnutls \
 	--enable-jack \
 	--enable-kate \
