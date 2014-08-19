@@ -1,4 +1,4 @@
-vlc (2.2.0~pre2-3) UNRELEASED; urgency=medium
+vlc (2.2.0~pre2-3) unstable; urgency=medium
 
   [ Sebastian Ramacher ]
   * debian/control:
@@ -24,7 +24,7 @@ vlc (2.2.0~pre2-3) UNRELEASED; urgency=medium
   * Bump required versions of libbluray-dev and libopus-dev (according to
     configure).
 
- -- Sebastian Ramacher <sramacher@debian.org>  Tue, 19 Aug 2014 21:32:36 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 20 Aug 2014 01:54:32 +0200
 
 vlc (2.2.0~pre2-2) unstable; urgency=medium
 
