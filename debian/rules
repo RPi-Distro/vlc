@@ -112,6 +112,7 @@ confflags += \
 # fdkaac -> in Debian non-free
 # gnomevfs -> poorly maintained
 # goom -> not in Debian
+# libtar -> security issue (#737534)
 # mfx -> currently not supported on Linux
 # opencv -> developer plugin not required by end users
 # projectm -> broken
@@ -120,7 +121,6 @@ confflags += \
 # telx -> incompatible with zvbi
 # vsxu -> not in Debian
 # wasapi -> Windows only
-# libtar -> security issue (#737534)
 confflags += \
 	--disable-decklink \
 	--disable-dxva2 \
