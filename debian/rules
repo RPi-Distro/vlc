@@ -119,12 +119,14 @@ confflags += \
 # telx -> incompatible with zvbi
 # vsxu -> not in Debian
 # wasapi -> Windows only
+# libtar -> security issue (#737534)
 confflags += \
 	--disable-decklink \
 	--disable-dxva2 \
 	--disable-fdkaac \
 	--disable-gnomevfs \
 	--disable-goom \
+	--disable-libtar \
 	--disable-mfx \
 	--disable-opencv \
 	--disable-projectm \
