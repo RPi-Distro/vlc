@@ -1,4 +1,4 @@
-vlc (2.2.0~pre2-4) UNRELEASED; urgency=medium
+vlc (2.2.0~pre2-4) unstable; urgency=medium
 
   * debian/vlc-nox.install.in: libi420_yuy2_altivec_plugin.so moved to
     video_chroma. Fixes package build failure on powerpc.
@@ -10,7 +10,7 @@ vlc (2.2.0~pre2-4) UNRELEASED; urgency=medium
   * debian/control: Lower Recommends: libdvdcss2 to Suggests to comply with
     Policy §2.2.1. Thanks to Thorsten Alteholz.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Wed, 20 Aug 2014 02:20:41 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 25 Aug 2014 22:58:42 +0200
 
 vlc (2.2.0~pre2-3) unstable; urgency=medium
 
