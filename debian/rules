@@ -101,6 +101,7 @@ confflags += \
 	--enable-vdpau \
 	--enable-vnc \
 	--enable-vorbis \
+	--enable-vpx \
 	--enable-x264 \
 	--enable-zvbi \
 	--with-kde-solid=/usr/share/kde4/apps/solid/actions/ \
