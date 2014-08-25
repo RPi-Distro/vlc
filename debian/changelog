@@ -1,6 +1,14 @@
 vlc (2.2.0~pre2-4) UNRELEASED; urgency=medium
 
-  * 
+  * debian/vlc-nox.install.in: libi420_yuy2_altivec_plugin.so moved to
+    video_chroma. Fixes package build failure on powerpc.
+  * Enable shine and vpx plugins:
+    - debian/control: Add libshine-dev and libvpx-dev to B-D.
+    - debian/rules: Pass --enable-shine and --enable-vpx.
+    - debian/vlc-nox.isntall.in: Install new plugins.
+  * debian/rules: Explicitly disable libtar support.
+  * debian/control: Lower Recommends: libdvdcss2 to Suggests to comply with
+    Policy §2.2.1. Thanks to Thorsten Alteholz.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Wed, 20 Aug 2014 02:20:41 +0200
 
