@@ -87,6 +87,7 @@ confflags += \
 	--enable-schroedinger \
 	--enable-sdl \
 	--enable-sftp \
+	--enable-shine \
 	--enable-shout \
 	--enable-skins2 \
 	--enable-smbclient \
