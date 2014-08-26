@@ -5,7 +5,7 @@ vlc (2.2.0~pre2-4) unstable; urgency=medium
   * Enable shine and vpx plugins:
     - debian/control: Add libshine-dev and libvpx-dev to B-D.
     - debian/rules: Pass --enable-shine and --enable-vpx.
-    - debian/vlc-nox.isntall.in: Install new plugins.
+    - debian/vlc-nox.install.in: Install new plugins.
   * debian/rules: Explicitly disable libtar support.
   * debian/control: Lower Recommends: libdvdcss2 to Suggests to comply with
     Policy §2.2.1. Thanks to Thorsten Alteholz.
