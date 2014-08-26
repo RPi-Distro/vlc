@@ -101,7 +101,6 @@ confflags += \
 	--enable-vdpau \
 	--enable-vnc \
 	--enable-vorbis \
-	--enable-vpx \
 	--enable-x264 \
 	--enable-zvbi \
 	--with-kde-solid=/usr/share/kde4/apps/solid/actions/ \
@@ -119,6 +118,7 @@ confflags += \
 # sndio -> not in Debian
 # svgdev -> libcairo2-dev is not new enough
 # telx -> incompatible with zvbi
+# vpx -> not needed when having libavcodec
 # vsxu -> not in Debian
 # wasapi -> Windows only
 confflags += \
@@ -134,6 +134,7 @@ confflags += \
 	--disable-sndio \
 	--disable-svgdec \
 	--disable-telx \
+	--disable-vpx \
 	--disable-vsxu \
 	--disable-wasapi \
 	$(NULL)
