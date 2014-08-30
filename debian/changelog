@@ -7,10 +7,6 @@ vlc (2.2.0~pre2-5) UNRELEASED; urgency=medium
   * Disable vpx plugin (not needed when having libavcodec)
   * Remove hurd.patch, because this is a bug in Hurd and not in VLC.
 
-  [ Sebastian Ramacher ]
-  * debian/patches/link-vlc-cache-gen-with-gobject.patch: Link vlc-cache-gen
-    against gobject to prevent gobject related crashes. (Closes: #752544)
-
  -- Sebastian Ramacher <sramacher@debian.org>  Wed, 27 Aug 2014 23:10:55 +0200
 
 vlc (2.2.0~pre2-4) unstable; urgency=medium
