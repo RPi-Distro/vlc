@@ -2,12 +2,12 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2014 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 2.2.0-pre2)
+AC_INIT(vlc, 2.2.0-pre3)
 VERSION_MAJOR=2
 VERSION_MINOR=2
 VERSION_REVISION=0
 VERSION_EXTRA=0
-VERSION_DEV=pre2
+VERSION_DEV=pre3
 
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
@@ -946,7 +946,7 @@ dnl Check for various optimization flags
 AS_IF([test "${enable_optimizations}" != "no"], [
 
   dnl -O4 and -O3 only in production builds
-  AS_IF([test "{enable_debug}" = "no"], [
+  AS_IF([test "${enable_debug}" = "no"], [
     VLC_SAVE_FLAGS
     CFLAGS="${CFLAGS} -O4"
     CXXFLAGS="${CXXFLAGS} -O4"
@@ -1528,7 +1528,7 @@ then
   AS_IF([test "${LUAC}" = "false"], [
     AC_MSG_ERROR([Could not find the LUA byte compiler.])
   ])
-  AS_IF([test -d "${CONTRIB_DIR}" -a -f "${CONTRIB_DIR}"/lib/liblua.a -a `echo|${LUAC} -o - -|od -j 8 -N 2 -t x2|head -n 1|tr -s ' '|cut -d' ' -f2` != 0404], [
+  AS_IF([test -d "${CONTRIB_DIR}" -a -f "${CONTRIB_DIR}/lib/liblua.a" -a `echo|${LUAC} -o - -|od -j 8 -N 2 -t x2|head -n 1|tr -s ' '|cut -d' ' -f2` != 0404], [
     AC_MSG_ERROR([You need 32-bits luac when using using lua from contrib.])
   ])
 fi

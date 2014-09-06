@@ -2,7 +2,7 @@
  * vlc.h: VLC specific lua library functions.
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: be8b0eee5d2d4f28a60b9028b9818995a9792039 $
+ * $Id: efd94f164bd6340166d822d6724040d5244cbdad $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -171,9 +171,7 @@ typedef struct
 {
     int *fdv;
     unsigned fdc;
-#ifndef _WIN32
     int fd[2];
-#endif
 } vlclua_dtable_t;
 
 int vlclua_fd_init( lua_State *, vlclua_dtable_t * );

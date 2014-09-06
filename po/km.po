@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-08-17 23:02+0200\n"
+"POT-Creation-Date: 2014-08-29 03:59+0200\n"
 "PO-Revision-Date: 2014-04-02 04:57+0000\n"
 "Last-Translator: soksophea <sksophea@gmail.com>\n"
 "Language-Team: Khmer (http://www.transifex.com/projects/p/vlc-trans/language/"
@@ -76,7 +76,7 @@ msgstr "ការ​កំណត់​ចំណុច​ប្រទាក់​
 msgid "Hotkeys settings"
 msgstr "ការ​កំណត់​គ្រាប់ចុច​រហ័ស"
 
-#: include/vlc_config_cat.h:53 src/input/es_out.c:2880 src/input/es_out.c:2921
+#: include/vlc_config_cat.h:53 src/input/es_out.c:2878 src/input/es_out.c:2919
 #: src/libvlc-module.c:1443 modules/access/imem.c:64
 #: modules/gui/macosx/ConvertAndSave.m:185 modules/gui/macosx/MainMenu.m:420
 #: modules/gui/macosx/output.m:161 modules/gui/macosx/playlistinfo.m:112
@@ -135,7 +135,7 @@ msgstr "ផ្សេងៗ"
 msgid "Miscellaneous audio settings and modules."
 msgstr "ម៉ូឌុល និង​ការ​កំណត់​អូឌីយ៉ូ​ផ្សេងៗ ។"
 
-#: include/vlc_config_cat.h:71 src/input/es_out.c:2883 src/input/es_out.c:2965
+#: include/vlc_config_cat.h:71 src/input/es_out.c:2881 src/input/es_out.c:2963
 #: src/libvlc-module.c:1497 modules/access/imem.c:64
 #: modules/gui/macosx/ConvertAndSave.m:175 modules/gui/macosx/MainMenu.m:433
 #: modules/gui/macosx/output.m:151 modules/gui/macosx/playlistinfo.m:102
@@ -617,7 +617,7 @@ msgstr "តម្រង​អូឌីយ៉ូ​​បាន​បរាជ័
 msgid "The maximum number of filters (%u) was reached."
 msgstr "បាន​ដល់​​ចំនួន​តម្រង​​អតិបរមា (%u) ។"
 
-#: src/audio_output/output.c:229 src/config/core.c:407 src/input/es_out.c:906
+#: src/audio_output/output.c:229 src/config/core.c:407 src/input/es_out.c:904
 #: src/libvlc-module.c:538 modules/gui/macosx/MainMenu.m:277
 #: modules/gui/macosx/MainWindow.m:1072 modules/video_filter/postproc.c:234
 msgid "Disable"
@@ -1201,57 +1201,57 @@ msgstr "កូដិក​វីដេអូ​"
 msgid "VLC could not identify the audio or video codec"
 msgstr "VLC មិន​អាច​បើក​ម៉ូឌុល​ឌិកូឌ័រ​បានទេ ។"
 
-#: src/input/es_out.c:926 src/input/es_out.c:931 src/libvlc-module.c:228
+#: src/input/es_out.c:924 src/input/es_out.c:929 src/libvlc-module.c:228
 #: modules/access/vcdx/access.c:455 modules/access/vcdx/info.c:226
 #: modules/gui/qt4/components/open_panels.cpp:524
 msgid "Track"
 msgstr "បទ"
 
-#: src/input/es_out.c:1137
+#: src/input/es_out.c:1135
 #, c-format
 msgid "%s [%s %d]"
 msgstr "%s [%s %d]"
 
-#: src/input/es_out.c:1137 src/input/es_out.c:1142 src/input/var.c:167
+#: src/input/es_out.c:1135 src/input/es_out.c:1140 src/input/var.c:167
 #: src/libvlc-module.c:562 modules/gui/macosx/MainMenu.m:413
 #: modules/gui/macosx/MainMenu.m:414
 msgid "Program"
 msgstr "កម្មវិធី"
 
-#: src/input/es_out.c:1340 src/input/es_out.c:1342
+#: src/input/es_out.c:1338 src/input/es_out.c:1340
 msgid "Scrambled"
 msgstr "បាន​ច្របល់"
 
-#: src/input/es_out.c:1340
+#: src/input/es_out.c:1338
 msgid "Yes"
 msgstr "បាទ/ចាស"
 
-#: src/input/es_out.c:2012
+#: src/input/es_out.c:2010
 #, c-format
 msgid "Closed captions %u"
 msgstr "បាន​បិទ​ចំណង​ជើង %u"
 
-#: src/input/es_out.c:2870
+#: src/input/es_out.c:2868
 #, c-format
 msgid "Stream %d"
 msgstr "ស្ទ្រីម %d"
 
-#: src/input/es_out.c:2886 src/input/es_out.c:3001 modules/access/imem.c:64
+#: src/input/es_out.c:2884 src/input/es_out.c:2999 modules/access/imem.c:64
 msgid "Subtitle"
 msgstr "ចំណង​ជើង​រង"
 
-#: src/input/es_out.c:2894 src/input/es_out.c:2921 src/input/es_out.c:2965
-#: src/input/es_out.c:3001 modules/gui/macosx/AddonManager.m:123
+#: src/input/es_out.c:2892 src/input/es_out.c:2919 src/input/es_out.c:2963
+#: src/input/es_out.c:2999 modules/gui/macosx/AddonManager.m:123
 #: modules/gui/macosx/ConvertAndSave.m:197 modules/gui/macosx/output.m:144
 #: modules/gui/qt4/dialogs/plugins.cpp:1457
 msgid "Type"
 msgstr "ប្រភេទ"
 
-#: src/input/es_out.c:2897
+#: src/input/es_out.c:2895
 msgid "Original ID"
 msgstr "លេខ​សម្គាល់​ច្បាប់​ដើម"
 
-#: src/input/es_out.c:2905 src/input/es_out.c:2908 modules/access/imem.c:67
+#: src/input/es_out.c:2903 src/input/es_out.c:2906 modules/access/imem.c:67
 #: modules/gui/macosx/ConvertAndSave.m:177
 #: modules/gui/macosx/ConvertAndSave.m:187 modules/gui/macosx/wizard.m:382
 #: modules/gui/qt4/ui/profiles.h:711 modules/gui/qt4/ui/profiles.h:737
@@ -1259,73 +1259,73 @@ msgstr "លេខ​សម្គាល់​ច្បាប់​ដើម"
 msgid "Codec"
 msgstr "កូដិក"
 
-#: src/input/es_out.c:2912 src/input/meta.c:66 modules/access/imem.c:71
+#: src/input/es_out.c:2910 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/MainMenu.m:80 modules/gui/macosx/simple_prefs.m:355
 #: modules/stream_out/setid.c:49 modules/gui/qt4/ui/sprefs_interface.h:504
 msgid "Language"
 msgstr "ភាសា"
 
-#: src/input/es_out.c:2915 src/input/meta.c:61
+#: src/input/es_out.c:2913 src/input/meta.c:61
 #: modules/gui/macosx/bookmarks.m:103 modules/gui/macosx/MainMenu.m:78
 #: modules/gui/qt4/dialogs/bookmarks.cpp:75
 msgid "Description"
 msgstr "សេចក្ដី​ពណ៌នា"
 
-#: src/input/es_out.c:2924 modules/gui/macosx/ConvertAndSave.m:189
+#: src/input/es_out.c:2922 modules/gui/macosx/ConvertAndSave.m:189
 #: modules/gui/macosx/output.m:167 modules/gui/qt4/ui/profiles.h:739
 msgid "Channels"
 msgstr "ឆានែល"
 
-#: src/input/es_out.c:2929 modules/access/alsa.c:39 modules/access/imem.c:75
+#: src/input/es_out.c:2927 modules/access/alsa.c:39 modules/access/imem.c:75
 #: modules/audio_output/amem.c:45 modules/codec/fluidsynth.c:60
 msgid "Sample rate"
 msgstr "អត្រា​គំរូ"
 
-#: src/input/es_out.c:2929
+#: src/input/es_out.c:2927
 #, c-format
 msgid "%u Hz"
 msgstr "%u Hz"
 
-#: src/input/es_out.c:2939
+#: src/input/es_out.c:2937
 msgid "Bits per sample"
 msgstr "ប៊ីត​ក្នុង​មួយ​គំរូ"
 
-#: src/input/es_out.c:2944 modules/access_output/shout.c:92
-#: modules/demux/playlist/shoutcast.c:328
+#: src/input/es_out.c:2942 modules/access_output/shout.c:92
+#: modules/demux/playlist/shoutcast.c:335
 #: modules/gui/macosx/ConvertAndSave.m:178
 #: modules/gui/macosx/ConvertAndSave.m:188 modules/gui/qt4/ui/profiles.h:712
 #: modules/gui/qt4/ui/profiles.h:738
 msgid "Bitrate"
 msgstr "អត្រា​​ប៊ីត"
 
-#: src/input/es_out.c:2944
+#: src/input/es_out.c:2942
 #, c-format
 msgid "%u kb/s"
 msgstr "%u kb/s"
 
-#: src/input/es_out.c:2956
+#: src/input/es_out.c:2954
 msgid "Track replay gain"
 msgstr "បទ replay gain"
 
-#: src/input/es_out.c:2958
+#: src/input/es_out.c:2956
 msgid "Album replay gain"
 msgstr "អាល់ប៊ុម replay gain"
 
-#: src/input/es_out.c:2959
+#: src/input/es_out.c:2957
 #, c-format
 msgid "%.2f dB"
 msgstr "%.2f dB"
 
-#: src/input/es_out.c:2968 modules/gui/macosx/ConvertAndSave.m:180
+#: src/input/es_out.c:2966 modules/gui/macosx/ConvertAndSave.m:180
 #: modules/gui/qt4/ui/profiles.h:732
 msgid "Resolution"
 msgstr "គុណភាព​បង្ហាញ"
 
-#: src/input/es_out.c:2973
+#: src/input/es_out.c:2971
 msgid "Display resolution"
 msgstr "បង្ហាញ​គុណភាព​បង្ហាញ"
 
-#: src/input/es_out.c:2983 src/input/es_out.c:2986 modules/access/imem.c:93
+#: src/input/es_out.c:2981 src/input/es_out.c:2984 modules/access/imem.c:93
 #: modules/access/rdp.c:69 modules/access/screen/screen.c:42
 #: modules/access/screen/xcb.c:39 modules/access/shm.c:42
 #: modules/access/timecode.c:34 modules/access/v4l2/v4l2.c:70
@@ -1334,7 +1334,7 @@ msgstr "បង្ហាញ​គុណភាព​បង្ហាញ"
 msgid "Frame rate"
 msgstr "អត្រា​ស៊ុម"
 
-#: src/input/es_out.c:2994
+#: src/input/es_out.c:2992
 msgid "Decoded format"
 msgstr "បាន​ឌិកូដ​ទ្រង់ទ្រាយ"
 
@@ -1797,7 +1797,7 @@ msgstr ""
 "បង្កើន​បាន​ជា​បទពិសោធន៍​របស់​អ្នក​ដែរ ជា​ពិសេស​នៅ​ពេល​ដែល​បាន​បន្សំ​ជាមួយ​នឹង​កម្មវិធី​លាយ​ឆានែល​កាស​ពាក់​"
 "ត្រចៀក ។"
 
-#: src/libvlc-module.c:178 src/win32/thread.c:885
+#: src/libvlc-module.c:178 src/win32/thread.c:888
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:442
 #: modules/gui/macosx/simple_prefs.m:110
 #: modules/gui/qt4/components/simple_preferences.cpp:124
@@ -5743,12 +5743,12 @@ msgstr ""
 msgid "Blu-ray error"
 msgstr "Blu-ray មាន​បញ្ហា"
 
-#: modules/access/bluray.c:1189
+#: modules/access/bluray.c:1196
 #, fuzzy
 msgid "Top Menu"
 msgstr "ម៉ឺនុយ"
 
-#: modules/access/bluray.c:1191
+#: modules/access/bluray.c:1198
 #, fuzzy
 msgid "First Play"
 msgstr "បាន​ចាក់​ដំបូង"
@@ -7501,7 +7501,7 @@ msgid "Password that will be requested to access the stream."
 msgstr "ពាក្យសម្ងាត់​ដែល​នឹង​ត្រូវ​បាន​ស្នើ​ដើម្បី​ចូល​ដំណើរការ​ស្ទ្រីម។"
 
 #: modules/access_output/http.c:58 modules/demux/playlist/qtl.c:242
-#: modules/demux/playlist/shoutcast.c:327
+#: modules/demux/playlist/shoutcast.c:334
 msgid "Mime"
 msgstr "Mime"
 
@@ -9874,7 +9874,7 @@ msgstr "កម្រិត​សំឡេង​អូឌីយ៉ូ​ចំន
 msgid "Dummy audio output"
 msgstr "គ្មាន​កន្លែង​បញ្ចេញ​អូឌីយ៉ូ​ឡើយ"
 
-#: modules/audio_output/alsa.c:64 modules/audio_output/oss.c:68
+#: modules/audio_output/alsa.c:64 modules/audio_output/oss.c:73
 msgid "Audio output device"
 msgstr "ឧបករណ៍​អូឌីយ៉ូ​ចេញ"
 
@@ -10112,11 +10112,11 @@ msgstr "អូឌីយ៉ូ​ចេញ OpenSLES"
 msgid "OpenSLES"
 msgstr "OpenSLES"
 
-#: modules/audio_output/oss.c:69
+#: modules/audio_output/oss.c:74
 msgid "OSS device node path."
 msgstr "ផ្លូវ​ថ្នាំង​ឧបករណ៍ OSS ។"
 
-#: modules/audio_output/oss.c:73
+#: modules/audio_output/oss.c:78
 msgid "Open Sound System audio output"
 msgstr "លទ្ធផល​អូឌីយ៉ូ​ប្រព័ន្ធ​សំឡេង​បើក​ចំហ"
 
@@ -12074,7 +12074,7 @@ msgstr "ឌិកូឌ័រ​វីដេអូ​រូបភាព SDL"
 msgid "MP3 fixed point audio encoder"
 msgstr "អ៊ិនកូដឌ័រ​អូឌីយ៉ូ​ចំណុច​ថេរ MP3"
 
-#: modules/codec/speex.c:59 modules/codec/speex.c:863
+#: modules/codec/speex.c:59 modules/codec/speex.c:867
 #: modules/gui/macosx/open.m:186 modules/gui/macosx/VideoEffects.m:138
 #: modules/gui/qt4/ui/sprefs_video.h:336
 #: modules/gui/qt4/ui/video_effects.h:1422
@@ -15588,15 +15588,15 @@ msgstr "ទំហំ​ផតខាស់"
 msgid "%s bytes"
 msgstr "%s បៃ"
 
-#: modules/demux/playlist/shoutcast.c:325
+#: modules/demux/playlist/shoutcast.c:332
 msgid "Shoutcast"
 msgstr "Shoutcast"
 
-#: modules/demux/playlist/shoutcast.c:329
+#: modules/demux/playlist/shoutcast.c:336
 msgid "Listeners"
 msgstr "អ្នក​ស្ដាប់"
 
-#: modules/demux/playlist/shoutcast.c:330
+#: modules/demux/playlist/shoutcast.c:337
 msgid "Load"
 msgstr "ផ្ទុក"
 
@@ -22155,7 +22155,7 @@ msgstr "សុវត្ថិភាព​ស្រទាប់​ដឹកជញ
 msgid "GNU TLS server"
 msgstr "ម៉ាស៊ីន​មេ​របស់ GNU TLS"
 
-#: modules/misc/gnutls.c:269 modules/misc/securetransport.c:327
+#: modules/misc/gnutls.c:281 modules/misc/securetransport.c:327
 #, c-format
 msgid ""
 "You attempted to reach %s. However the security certificate presented by the "
@@ -22171,7 +22171,7 @@ msgstr ""
 "\n"
 "បើ​សង្ស័យ សូម​បោះបង់​វា​ឥឡូវ។\n"
 
-#: modules/misc/gnutls.c:279
+#: modules/misc/gnutls.c:291
 #, c-format
 msgid ""
 "You attempted to reach %s. However the security certificate presented by the "
@@ -22187,21 +22187,21 @@ msgstr ""
 "\n"
 "បើ​សង្ស័យ សូម​បោះបង់​វា​ឥឡូវ។\n"
 
-#: modules/misc/gnutls.c:294 modules/misc/gnutls.c:311
+#: modules/misc/gnutls.c:306 modules/misc/gnutls.c:323
 #: modules/misc/securetransport.c:334
 msgid "Insecure site"
 msgstr "តំបន់​បណ្ដាញ​គ្មាន​សុវត្ថិភាព"
 
-#: modules/misc/gnutls.c:295 modules/misc/gnutls.c:314
+#: modules/misc/gnutls.c:307 modules/misc/gnutls.c:326
 #: modules/misc/securetransport.c:335
 msgid "Abort"
 msgstr "បោះបង់"
 
-#: modules/misc/gnutls.c:295
+#: modules/misc/gnutls.c:307
 msgid "View certificate"
 msgstr "មើល​វិញ្ញាបនបត្រ"
 
-#: modules/misc/gnutls.c:312
+#: modules/misc/gnutls.c:324
 #, c-format
 msgid ""
 "This is the certificate presented by %s:\n"
@@ -22214,11 +22214,11 @@ msgstr ""
 "\n"
 "បើ​សង្ស័យ សូម​បោះបង់​វា​ឥឡូវ។\n"
 
-#: modules/misc/gnutls.c:314
+#: modules/misc/gnutls.c:326
 msgid "Accept 24 hours"
 msgstr "យល់ព្រម ២៤ ម៉ោង"
 
-#: modules/misc/gnutls.c:315
+#: modules/misc/gnutls.c:327
 msgid "Accept permanently"
 msgstr "យល់ព្រម​រហូត"
 

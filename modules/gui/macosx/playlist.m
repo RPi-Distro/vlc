@@ -2,7 +2,7 @@
  * playlist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2014 VLC authors and VideoLAN
- * $Id: 09ddb9d5de6b8940b16c76291d6e63638b806073 $
+ * $Id: e6d777b6e184cb304794d4d027f42ef910e49e5e $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>
@@ -209,13 +209,13 @@
     NSArray *columns = [o_outline_view tableColumns];
     NSUInteger count = columns.count;
     for (NSUInteger x = 0; x < count; x++)
-        [[columns[x] dataCell] setFont:fontToUse];
+        [[[columns objectAtIndex:x] dataCell] setFont:fontToUse];
     [o_outline_view setRowHeight:rowHeight];
 
     columns = [o_outline_view_other tableColumns];
     count = columns.count;
     for (NSUInteger x = 0; x < count; x++)
-        [[columns[x] dataCell] setFont:fontToUse];
+        [[[columns objectAtIndex:x] dataCell] setFont:fontToUse];
     [o_outline_view_other setRowHeight:rowHeight];
 }
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 1.0\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-08-17 23:02+0200\n"
+"POT-Creation-Date: 2014-08-29 03:59+0200\n"
 "PO-Revision-Date: 2009-06-07 18:52+0300\n"
 "Last-Translator: Ara Qadir <arastein@gmail.com>\n"
 "Language-Team: Kurdish (Sorani) <arastein@gmail.com>\n"
@@ -73,7 +73,7 @@ msgstr "ڕێکخستنەکانی ڕووکارەکانی دەستبەسەرداگ
 msgid "Hotkeys settings"
 msgstr "ڕێکخستنەکانی کلیلە گەرمەکان"
 
-#: include/vlc_config_cat.h:53 src/input/es_out.c:2880 src/input/es_out.c:2921
+#: include/vlc_config_cat.h:53 src/input/es_out.c:2878 src/input/es_out.c:2919
 #: src/libvlc-module.c:1443 modules/access/imem.c:64
 #: modules/gui/macosx/ConvertAndSave.m:185 modules/gui/macosx/MainMenu.m:420
 #: modules/gui/macosx/output.m:161 modules/gui/macosx/playlistinfo.m:112
@@ -132,7 +132,7 @@ msgstr "جۆربەجۆرەکان"
 msgid "Miscellaneous audio settings and modules."
 msgstr "یەکە و ڕێکخستنە جۆربەجۆرەکانی دەنگ."
 
-#: include/vlc_config_cat.h:71 src/input/es_out.c:2883 src/input/es_out.c:2965
+#: include/vlc_config_cat.h:71 src/input/es_out.c:2881 src/input/es_out.c:2963
 #: src/libvlc-module.c:1497 modules/access/imem.c:64
 #: modules/gui/macosx/ConvertAndSave.m:175 modules/gui/macosx/MainMenu.m:433
 #: modules/gui/macosx/output.m:151 modules/gui/macosx/playlistinfo.m:102
@@ -602,7 +602,7 @@ msgstr "پاڵاوتنی دەنگ شکستی هێنا"
 msgid "The maximum number of filters (%u) was reached."
 msgstr "گەیشتیت بە زۆرترین ژمارەی پاڵێوەر (%d)."
 
-#: src/audio_output/output.c:229 src/config/core.c:407 src/input/es_out.c:906
+#: src/audio_output/output.c:229 src/config/core.c:407 src/input/es_out.c:904
 #: src/libvlc-module.c:538 modules/gui/macosx/MainMenu.m:277
 #: modules/gui/macosx/MainWindow.m:1072 modules/video_filter/postproc.c:234
 msgid "Disable"
@@ -1194,57 +1194,57 @@ msgstr "کۆدێکەکانی ڤیدیۆ"
 msgid "VLC could not identify the audio or video codec"
 msgstr "VLC نەیتوانی یەکەی بەپاکەتکردن بکاتەوە."
 
-#: src/input/es_out.c:926 src/input/es_out.c:931 src/libvlc-module.c:228
+#: src/input/es_out.c:924 src/input/es_out.c:929 src/libvlc-module.c:228
 #: modules/access/vcdx/access.c:455 modules/access/vcdx/info.c:226
 #: modules/gui/qt4/components/open_panels.cpp:524
 msgid "Track"
 msgstr "تراک"
 
-#: src/input/es_out.c:1137
+#: src/input/es_out.c:1135
 #, c-format
 msgid "%s [%s %d]"
 msgstr "%s [%s %d]"
 
-#: src/input/es_out.c:1137 src/input/es_out.c:1142 src/input/var.c:167
+#: src/input/es_out.c:1135 src/input/es_out.c:1140 src/input/var.c:167
 #: src/libvlc-module.c:562 modules/gui/macosx/MainMenu.m:413
 #: modules/gui/macosx/MainMenu.m:414
 msgid "Program"
 msgstr "پڕۆگرام"
 
-#: src/input/es_out.c:1340 src/input/es_out.c:1342
+#: src/input/es_out.c:1338 src/input/es_out.c:1340
 msgid "Scrambled"
 msgstr ""
 
-#: src/input/es_out.c:1340
+#: src/input/es_out.c:1338
 msgid "Yes"
 msgstr "بەڵێ"
 
-#: src/input/es_out.c:2012
+#: src/input/es_out.c:2010
 #, c-format
 msgid "Closed captions %u"
 msgstr ""
 
-#: src/input/es_out.c:2870
+#: src/input/es_out.c:2868
 #, c-format
 msgid "Stream %d"
 msgstr ""
 
-#: src/input/es_out.c:2886 src/input/es_out.c:3001 modules/access/imem.c:64
+#: src/input/es_out.c:2884 src/input/es_out.c:2999 modules/access/imem.c:64
 msgid "Subtitle"
 msgstr "ژێرنووس"
 
-#: src/input/es_out.c:2894 src/input/es_out.c:2921 src/input/es_out.c:2965
-#: src/input/es_out.c:3001 modules/gui/macosx/AddonManager.m:123
+#: src/input/es_out.c:2892 src/input/es_out.c:2919 src/input/es_out.c:2963
+#: src/input/es_out.c:2999 modules/gui/macosx/AddonManager.m:123
 #: modules/gui/macosx/ConvertAndSave.m:197 modules/gui/macosx/output.m:144
 #: modules/gui/qt4/dialogs/plugins.cpp:1457
 msgid "Type"
 msgstr "جۆر"
 
-#: src/input/es_out.c:2897
+#: src/input/es_out.c:2895
 msgid "Original ID"
 msgstr "ID ـی ڕەسەن"
 
-#: src/input/es_out.c:2905 src/input/es_out.c:2908 modules/access/imem.c:67
+#: src/input/es_out.c:2903 src/input/es_out.c:2906 modules/access/imem.c:67
 #: modules/gui/macosx/ConvertAndSave.m:177
 #: modules/gui/macosx/ConvertAndSave.m:187 modules/gui/macosx/wizard.m:382
 #: modules/gui/qt4/ui/profiles.h:711 modules/gui/qt4/ui/profiles.h:737
@@ -1252,73 +1252,73 @@ msgstr "ID ـی ڕەسەن"
 msgid "Codec"
 msgstr "کۆدێک"
 
-#: src/input/es_out.c:2912 src/input/meta.c:66 modules/access/imem.c:71
+#: src/input/es_out.c:2910 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/MainMenu.m:80 modules/gui/macosx/simple_prefs.m:355
 #: modules/stream_out/setid.c:49 modules/gui/qt4/ui/sprefs_interface.h:504
 msgid "Language"
 msgstr "زمان"
 
-#: src/input/es_out.c:2915 src/input/meta.c:61
+#: src/input/es_out.c:2913 src/input/meta.c:61
 #: modules/gui/macosx/bookmarks.m:103 modules/gui/macosx/MainMenu.m:78
 #: modules/gui/qt4/dialogs/bookmarks.cpp:75
 msgid "Description"
 msgstr "پەسن"
 
-#: src/input/es_out.c:2924 modules/gui/macosx/ConvertAndSave.m:189
+#: src/input/es_out.c:2922 modules/gui/macosx/ConvertAndSave.m:189
 #: modules/gui/macosx/output.m:167 modules/gui/qt4/ui/profiles.h:739
 msgid "Channels"
 msgstr "کەناڵەکان"
 
-#: src/input/es_out.c:2929 modules/access/alsa.c:39 modules/access/imem.c:75
+#: src/input/es_out.c:2927 modules/access/alsa.c:39 modules/access/imem.c:75
 #: modules/audio_output/amem.c:45 modules/codec/fluidsynth.c:60
 msgid "Sample rate"
 msgstr "ڕێژەی نمونە"
 
-#: src/input/es_out.c:2929
+#: src/input/es_out.c:2927
 #, c-format
 msgid "%u Hz"
 msgstr "%u Hz"
 
-#: src/input/es_out.c:2939
+#: src/input/es_out.c:2937
 msgid "Bits per sample"
 msgstr "بیت بۆ هەر نمونەیەک"
 
-#: src/input/es_out.c:2944 modules/access_output/shout.c:92
-#: modules/demux/playlist/shoutcast.c:328
+#: src/input/es_out.c:2942 modules/access_output/shout.c:92
+#: modules/demux/playlist/shoutcast.c:335
 #: modules/gui/macosx/ConvertAndSave.m:178
 #: modules/gui/macosx/ConvertAndSave.m:188 modules/gui/qt4/ui/profiles.h:712
 #: modules/gui/qt4/ui/profiles.h:738
 msgid "Bitrate"
 msgstr "ڕێژەی بت"
 
-#: src/input/es_out.c:2944
+#: src/input/es_out.c:2942
 #, c-format
 msgid "%u kb/s"
 msgstr "%u کب/چ"
 
-#: src/input/es_out.c:2956
+#: src/input/es_out.c:2954
 msgid "Track replay gain"
 msgstr ""
 
-#: src/input/es_out.c:2958
+#: src/input/es_out.c:2956
 msgid "Album replay gain"
 msgstr ""
 
-#: src/input/es_out.c:2959
+#: src/input/es_out.c:2957
 #, c-format
 msgid "%.2f dB"
 msgstr "%.2f dB"
 
-#: src/input/es_out.c:2968 modules/gui/macosx/ConvertAndSave.m:180
+#: src/input/es_out.c:2966 modules/gui/macosx/ConvertAndSave.m:180
 #: modules/gui/qt4/ui/profiles.h:732
 msgid "Resolution"
 msgstr ""
 
-#: src/input/es_out.c:2973
+#: src/input/es_out.c:2971
 msgid "Display resolution"
 msgstr ""
 
-#: src/input/es_out.c:2983 src/input/es_out.c:2986 modules/access/imem.c:93
+#: src/input/es_out.c:2981 src/input/es_out.c:2984 modules/access/imem.c:93
 #: modules/access/rdp.c:69 modules/access/screen/screen.c:42
 #: modules/access/screen/xcb.c:39 modules/access/shm.c:42
 #: modules/access/timecode.c:34 modules/access/v4l2/v4l2.c:70
@@ -1327,7 +1327,7 @@ msgstr ""
 msgid "Frame rate"
 msgstr "ڕێژەی چوارچێوە"
 
-#: src/input/es_out.c:2994
+#: src/input/es_out.c:2992
 #, fuzzy
 msgid "Decoded format"
 msgstr "تۆمارکردن"
@@ -1768,7 +1768,7 @@ msgid ""
 "your experience, especially when combined with the Headphone Channel Mixer."
 msgstr ""
 
-#: src/libvlc-module.c:178 src/win32/thread.c:885
+#: src/libvlc-module.c:178 src/win32/thread.c:888
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:442
 #: modules/gui/macosx/simple_prefs.m:110
 #: modules/gui/qt4/components/simple_preferences.cpp:124
@@ -5598,12 +5598,12 @@ msgstr ""
 msgid "Blu-ray error"
 msgstr ""
 
-#: modules/access/bluray.c:1189
+#: modules/access/bluray.c:1196
 #, fuzzy
 msgid "Top Menu"
 msgstr "مێنیو"
 
-#: modules/access/bluray.c:1191
+#: modules/access/bluray.c:1198
 #, fuzzy
 msgid "First Play"
 msgstr "یەکەم لێدان"
@@ -7331,7 +7331,7 @@ msgid "Password that will be requested to access the stream."
 msgstr ""
 
 #: modules/access_output/http.c:58 modules/demux/playlist/qtl.c:242
-#: modules/demux/playlist/shoutcast.c:327
+#: modules/demux/playlist/shoutcast.c:334
 msgid "Mime"
 msgstr ""
 
@@ -9722,7 +9722,7 @@ msgstr "ئاستی دەنگی بنەڕەت"
 msgid "Dummy audio output"
 msgstr ""
 
-#: modules/audio_output/alsa.c:64 modules/audio_output/oss.c:68
+#: modules/audio_output/alsa.c:64 modules/audio_output/oss.c:73
 #, fuzzy
 msgid "Audio output device"
 msgstr "یەکەی دەرەنجامی دەنگ"
@@ -9961,11 +9961,11 @@ msgstr "دەرەنجامی ڤیدیۆی X11"
 msgid "OpenSLES"
 msgstr "کردنەوە"
 
-#: modules/audio_output/oss.c:69
+#: modules/audio_output/oss.c:74
 msgid "OSS device node path."
 msgstr ""
 
-#: modules/audio_output/oss.c:73
+#: modules/audio_output/oss.c:78
 #, fuzzy
 msgid "Open Sound System audio output"
 msgstr "دەرەنجامی ڤیدیۆی X11"
@@ -11833,7 +11833,7 @@ msgstr ""
 msgid "MP3 fixed point audio encoder"
 msgstr ""
 
-#: modules/codec/speex.c:59 modules/codec/speex.c:863
+#: modules/codec/speex.c:59 modules/codec/speex.c:867
 #: modules/gui/macosx/open.m:186 modules/gui/macosx/VideoEffects.m:138
 #: modules/gui/qt4/ui/sprefs_video.h:336
 #: modules/gui/qt4/ui/video_effects.h:1422
@@ -15293,16 +15293,16 @@ msgstr ""
 msgid "%s bytes"
 msgstr "بایتە نێردراوەکان"
 
-#: modules/demux/playlist/shoutcast.c:325
+#: modules/demux/playlist/shoutcast.c:332
 msgid "Shoutcast"
 msgstr ""
 
-#: modules/demux/playlist/shoutcast.c:329
+#: modules/demux/playlist/shoutcast.c:336
 #, fuzzy
 msgid "Listeners"
 msgstr "هێڵی"
 
-#: modules/demux/playlist/shoutcast.c:330
+#: modules/demux/playlist/shoutcast.c:337
 msgid "Load"
 msgstr ""
 
@@ -21926,7 +21926,7 @@ msgstr ""
 msgid "GNU TLS server"
 msgstr "ڕاژەکاری HTTP"
 
-#: modules/misc/gnutls.c:269 modules/misc/securetransport.c:327
+#: modules/misc/gnutls.c:281 modules/misc/securetransport.c:327
 #, c-format
 msgid ""
 "You attempted to reach %s. However the security certificate presented by the "
@@ -21937,7 +21937,7 @@ msgid ""
 "If in doubt, abort now.\n"
 msgstr ""
 
-#: modules/misc/gnutls.c:279
+#: modules/misc/gnutls.c:291
 #, c-format
 msgid ""
 "You attempted to reach %s. However the security certificate presented by the "
@@ -21948,22 +21948,22 @@ msgid ""
 "If in doubt, abort now.\n"
 msgstr ""
 
-#: modules/misc/gnutls.c:294 modules/misc/gnutls.c:311
+#: modules/misc/gnutls.c:306 modules/misc/gnutls.c:323
 #: modules/misc/securetransport.c:334
 msgid "Insecure site"
 msgstr ""
 
-#: modules/misc/gnutls.c:295 modules/misc/gnutls.c:314
+#: modules/misc/gnutls.c:307 modules/misc/gnutls.c:326
 #: modules/misc/securetransport.c:335
 msgid "Abort"
 msgstr ""
 
-#: modules/misc/gnutls.c:295
+#: modules/misc/gnutls.c:307
 #, fuzzy
 msgid "View certificate"
 msgstr "پەڕگەی بڕوانامە"
 
-#: modules/misc/gnutls.c:312
+#: modules/misc/gnutls.c:324
 #, c-format
 msgid ""
 "This is the certificate presented by %s:\n"
@@ -21972,11 +21972,11 @@ msgid ""
 "If in doubt, abort now.\n"
 msgstr ""
 
-#: modules/misc/gnutls.c:314
+#: modules/misc/gnutls.c:326
 msgid "Accept 24 hours"
 msgstr ""
 
-#: modules/misc/gnutls.c:315
+#: modules/misc/gnutls.c:327
 msgid "Accept permanently"
 msgstr ""
 

@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: d5ac33b31fcd9181a685266546cbc53cff7498ee $
+ * $Id: ab092544bc072268470a8bddfffbe0908ead2cfe $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -603,11 +603,9 @@ static void EsOutDecodersStopBuffering( es_out_t *out, bool b_forced )
     mtime_t i_system_start;
     mtime_t i_stream_duration;
     mtime_t i_system_duration;
-    i_ret = input_clock_GetState( p_sys->p_pgrm->p_clock,
+    if (input_clock_GetState( p_sys->p_pgrm->p_clock,
                                   &i_stream_start, &i_system_start,
-                                  &i_stream_duration, &i_system_duration );
-    assert( !i_ret || b_forced );
-    if( i_ret )
+                                  &i_stream_duration, &i_system_duration ))
         return;
 
     mtime_t i_preroll_duration = 0;

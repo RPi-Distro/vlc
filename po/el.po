@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-08-17 23:02+0200\n"
+"POT-Creation-Date: 2014-08-29 03:59+0200\n"
 "PO-Revision-Date: 2014-07-29 14:32+0000\n"
 "Last-Translator: Alex Kalfas <kalfas.alex@gmail.com>\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/vlc-trans/language/"
@@ -82,7 +82,7 @@ msgstr "Ρυθμίσεις για τις διεπαφές ελέγχου του 
 msgid "Hotkeys settings"
 msgstr "Ρυθμίσεις πλήκτρων συντόμευσης"
 
-#: include/vlc_config_cat.h:53 src/input/es_out.c:2880 src/input/es_out.c:2921
+#: include/vlc_config_cat.h:53 src/input/es_out.c:2878 src/input/es_out.c:2919
 #: src/libvlc-module.c:1443 modules/access/imem.c:64
 #: modules/gui/macosx/ConvertAndSave.m:185 modules/gui/macosx/MainMenu.m:420
 #: modules/gui/macosx/output.m:161 modules/gui/macosx/playlistinfo.m:112
@@ -142,7 +142,7 @@ msgstr "Διάφορα"
 msgid "Miscellaneous audio settings and modules."
 msgstr "Διάφορες ρυθμίσεις και ενότητες ήχου."
 
-#: include/vlc_config_cat.h:71 src/input/es_out.c:2883 src/input/es_out.c:2965
+#: include/vlc_config_cat.h:71 src/input/es_out.c:2881 src/input/es_out.c:2963
 #: src/libvlc-module.c:1497 modules/access/imem.c:64
 #: modules/gui/macosx/ConvertAndSave.m:175 modules/gui/macosx/MainMenu.m:433
 #: modules/gui/macosx/output.m:151 modules/gui/macosx/playlistinfo.m:102
@@ -659,7 +659,7 @@ msgstr "Αποτυχία φιλτραρίσματος ήχου"
 msgid "The maximum number of filters (%u) was reached."
 msgstr "Επιτεύχθηκε ο μέγιστος αριθμός φίλτρων (%u)."
 
-#: src/audio_output/output.c:229 src/config/core.c:407 src/input/es_out.c:906
+#: src/audio_output/output.c:229 src/config/core.c:407 src/input/es_out.c:904
 #: src/libvlc-module.c:538 modules/gui/macosx/MainMenu.m:277
 #: modules/gui/macosx/MainWindow.m:1072 modules/video_filter/postproc.c:234
 msgid "Disable"
@@ -1250,57 +1250,57 @@ msgstr "Άγνωστος αποκωδικοποιητής"
 msgid "VLC could not identify the audio or video codec"
 msgstr "Το VLC δεν μπόρεσε να αναγνωρίσει τους αποκωδικοποιητές ήχου ή βίντεο"
 
-#: src/input/es_out.c:926 src/input/es_out.c:931 src/libvlc-module.c:228
+#: src/input/es_out.c:924 src/input/es_out.c:929 src/libvlc-module.c:228
 #: modules/access/vcdx/access.c:455 modules/access/vcdx/info.c:226
 #: modules/gui/qt4/components/open_panels.cpp:524
 msgid "Track"
 msgstr "Κομμάτι"
 
-#: src/input/es_out.c:1137
+#: src/input/es_out.c:1135
 #, c-format
 msgid "%s [%s %d]"
 msgstr "%s [%s %d]"
 
-#: src/input/es_out.c:1137 src/input/es_out.c:1142 src/input/var.c:167
+#: src/input/es_out.c:1135 src/input/es_out.c:1140 src/input/var.c:167
 #: src/libvlc-module.c:562 modules/gui/macosx/MainMenu.m:413
 #: modules/gui/macosx/MainMenu.m:414
 msgid "Program"
 msgstr "Πρόγραμμα"
 
-#: src/input/es_out.c:1340 src/input/es_out.c:1342
+#: src/input/es_out.c:1338 src/input/es_out.c:1340
 msgid "Scrambled"
 msgstr "Διαταραγμένη"
 
-#: src/input/es_out.c:1340
+#: src/input/es_out.c:1338
 msgid "Yes"
 msgstr "Ναι"
 
-#: src/input/es_out.c:2012
+#: src/input/es_out.c:2010
 #, c-format
 msgid "Closed captions %u"
 msgstr "Κλεισμένες λεζάντες %u"
 
-#: src/input/es_out.c:2870
+#: src/input/es_out.c:2868
 #, c-format
 msgid "Stream %d"
 msgstr "Ροή δεδομένων %d"
 
-#: src/input/es_out.c:2886 src/input/es_out.c:3001 modules/access/imem.c:64
+#: src/input/es_out.c:2884 src/input/es_out.c:2999 modules/access/imem.c:64
 msgid "Subtitle"
 msgstr "Υπότιτλος"
 
-#: src/input/es_out.c:2894 src/input/es_out.c:2921 src/input/es_out.c:2965
-#: src/input/es_out.c:3001 modules/gui/macosx/AddonManager.m:123
+#: src/input/es_out.c:2892 src/input/es_out.c:2919 src/input/es_out.c:2963
+#: src/input/es_out.c:2999 modules/gui/macosx/AddonManager.m:123
 #: modules/gui/macosx/ConvertAndSave.m:197 modules/gui/macosx/output.m:144
 #: modules/gui/qt4/dialogs/plugins.cpp:1457
 msgid "Type"
 msgstr "Τύπος"
 
-#: src/input/es_out.c:2897
+#: src/input/es_out.c:2895
 msgid "Original ID"
 msgstr "Αρχική ταυτότητα"
 
-#: src/input/es_out.c:2905 src/input/es_out.c:2908 modules/access/imem.c:67
+#: src/input/es_out.c:2903 src/input/es_out.c:2906 modules/access/imem.c:67
 #: modules/gui/macosx/ConvertAndSave.m:177
 #: modules/gui/macosx/ConvertAndSave.m:187 modules/gui/macosx/wizard.m:382
 #: modules/gui/qt4/ui/profiles.h:711 modules/gui/qt4/ui/profiles.h:737
@@ -1308,73 +1308,73 @@ msgstr "Αρχική ταυτότητα"
 msgid "Codec"
 msgstr "Codec"
 
-#: src/input/es_out.c:2912 src/input/meta.c:66 modules/access/imem.c:71
+#: src/input/es_out.c:2910 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/MainMenu.m:80 modules/gui/macosx/simple_prefs.m:355
 #: modules/stream_out/setid.c:49 modules/gui/qt4/ui/sprefs_interface.h:504
 msgid "Language"
 msgstr "Γλώσσα"
 
-#: src/input/es_out.c:2915 src/input/meta.c:61
+#: src/input/es_out.c:2913 src/input/meta.c:61
 #: modules/gui/macosx/bookmarks.m:103 modules/gui/macosx/MainMenu.m:78
 #: modules/gui/qt4/dialogs/bookmarks.cpp:75
 msgid "Description"
 msgstr "Περιγραφή"
 
-#: src/input/es_out.c:2924 modules/gui/macosx/ConvertAndSave.m:189
+#: src/input/es_out.c:2922 modules/gui/macosx/ConvertAndSave.m:189
 #: modules/gui/macosx/output.m:167 modules/gui/qt4/ui/profiles.h:739
 msgid "Channels"
 msgstr "Κανάλια"
 
-#: src/input/es_out.c:2929 modules/access/alsa.c:39 modules/access/imem.c:75
+#: src/input/es_out.c:2927 modules/access/alsa.c:39 modules/access/imem.c:75
 #: modules/audio_output/amem.c:45 modules/codec/fluidsynth.c:60
 msgid "Sample rate"
 msgstr "Ρυθμός δειγματοληψίας"
 
-#: src/input/es_out.c:2929
+#: src/input/es_out.c:2927
 #, c-format
 msgid "%u Hz"
 msgstr "%u Hz"
 
-#: src/input/es_out.c:2939
+#: src/input/es_out.c:2937
 msgid "Bits per sample"
 msgstr "Bits ανά δείγμα"
 
-#: src/input/es_out.c:2944 modules/access_output/shout.c:92
-#: modules/demux/playlist/shoutcast.c:328
+#: src/input/es_out.c:2942 modules/access_output/shout.c:92
+#: modules/demux/playlist/shoutcast.c:335
 #: modules/gui/macosx/ConvertAndSave.m:178
 #: modules/gui/macosx/ConvertAndSave.m:188 modules/gui/qt4/ui/profiles.h:712
 #: modules/gui/qt4/ui/profiles.h:738
 msgid "Bitrate"
 msgstr "Ρυθμός μετάδοσης δεδομένων"
 
-#: src/input/es_out.c:2944
+#: src/input/es_out.c:2942
 #, c-format
 msgid "%u kb/s"
 msgstr "%u kb/s"
 
-#: src/input/es_out.c:2956
+#: src/input/es_out.c:2954
 msgid "Track replay gain"
 msgstr "Απολαβή επανάληψης κομματιού"
 
-#: src/input/es_out.c:2958
+#: src/input/es_out.c:2956
 msgid "Album replay gain"
 msgstr "Απολαβή επανάληψης άλμπουμ"
 
-#: src/input/es_out.c:2959
+#: src/input/es_out.c:2957
 #, c-format
 msgid "%.2f dB"
 msgstr "%.2f dB"
 
-#: src/input/es_out.c:2968 modules/gui/macosx/ConvertAndSave.m:180
+#: src/input/es_out.c:2966 modules/gui/macosx/ConvertAndSave.m:180
 #: modules/gui/qt4/ui/profiles.h:732
 msgid "Resolution"
 msgstr "Ανάλυση"
 
-#: src/input/es_out.c:2973
+#: src/input/es_out.c:2971
 msgid "Display resolution"
 msgstr "Ανάλυση οθόνης"
 
-#: src/input/es_out.c:2983 src/input/es_out.c:2986 modules/access/imem.c:93
+#: src/input/es_out.c:2981 src/input/es_out.c:2984 modules/access/imem.c:93
 #: modules/access/rdp.c:69 modules/access/screen/screen.c:42
 #: modules/access/screen/xcb.c:39 modules/access/shm.c:42
 #: modules/access/timecode.c:34 modules/access/v4l2/v4l2.c:70
@@ -1383,7 +1383,7 @@ msgstr "Ανάλυση οθόνης"
 msgid "Frame rate"
 msgstr "Ρυθμός καρέ"
 
-#: src/input/es_out.c:2994
+#: src/input/es_out.c:2992
 msgid "Decoded format"
 msgstr "Αποκωδικοποιημένος τύπος"
 
@@ -1867,7 +1867,7 @@ msgstr ""
 "Surround, ενεργοποιώντας αυτή την εμπειρία σας, πιθανόν θα βελτιώσετε την "
 "ποιότητα, ειδικά αν την συνδυάσετε με το μίκτη καναλιού ακουστικών."
 
-#: src/libvlc-module.c:178 src/win32/thread.c:885
+#: src/libvlc-module.c:178 src/win32/thread.c:888
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:442
 #: modules/gui/macosx/simple_prefs.m:110
 #: modules/gui/qt4/components/simple_preferences.cpp:124
@@ -6074,11 +6074,11 @@ msgstr ""
 msgid "Blu-ray error"
 msgstr "Σφάλμα Blu-ray"
 
-#: modules/access/bluray.c:1189
+#: modules/access/bluray.c:1196
 msgid "Top Menu"
 msgstr "Αρχικό μενού"
 
-#: modules/access/bluray.c:1191
+#: modules/access/bluray.c:1198
 msgid "First Play"
 msgstr "Πρώτη αναπαραγωγή"
 
@@ -7910,7 +7910,7 @@ msgid "Password that will be requested to access the stream."
 msgstr "Κωδικός χρήστη που θα ζητηθεί για την πρόσβαση στη ροή δεδομένων."
 
 #: modules/access_output/http.c:58 modules/demux/playlist/qtl.c:242
-#: modules/demux/playlist/shoutcast.c:327
+#: modules/demux/playlist/shoutcast.c:334
 msgid "Mime"
 msgstr "Πρότυπο δικτύου MIME"
 
@@ -10369,7 +10369,7 @@ msgstr "Ακέραιη ένταση ήχου"
 msgid "Dummy audio output"
 msgstr "Εικονική έξοδος ήχου"
 
-#: modules/audio_output/alsa.c:64 modules/audio_output/oss.c:68
+#: modules/audio_output/alsa.c:64 modules/audio_output/oss.c:73
 msgid "Audio output device"
 msgstr "Συσκευή εξόδου ήχου"
 
@@ -10615,11 +10615,11 @@ msgstr "Έξοδος ήχου OpenSLES"
 msgid "OpenSLES"
 msgstr "OpenSLES"
 
-#: modules/audio_output/oss.c:69
+#: modules/audio_output/oss.c:74
 msgid "OSS device node path."
 msgstr "Διαδρομή κόμβου συσκευής OSS."
 
-#: modules/audio_output/oss.c:73
+#: modules/audio_output/oss.c:78
 msgid "Open Sound System audio output"
 msgstr "Άνοιγμα εξόδου ήχου του ηχητικού συστήματος"
 
@@ -12673,7 +12673,7 @@ msgstr "Αποκωδικοποιητής βίντεο SDL_image"
 msgid "MP3 fixed point audio encoder"
 msgstr "Κωδικοποιητής ήχου προκαθορισμένου σημείου MP3 "
 
-#: modules/codec/speex.c:59 modules/codec/speex.c:863
+#: modules/codec/speex.c:59 modules/codec/speex.c:867
 #: modules/gui/macosx/open.m:186 modules/gui/macosx/VideoEffects.m:138
 #: modules/gui/qt4/ui/sprefs_video.h:336
 #: modules/gui/qt4/ui/video_effects.h:1422
@@ -16321,15 +16321,15 @@ msgstr "Μέγεθος Podcast"
 msgid "%s bytes"
 msgstr "%s bytes"
 
-#: modules/demux/playlist/shoutcast.c:325
+#: modules/demux/playlist/shoutcast.c:332
 msgid "Shoutcast"
 msgstr "Shoutcast"
 
-#: modules/demux/playlist/shoutcast.c:329
+#: modules/demux/playlist/shoutcast.c:336
 msgid "Listeners"
 msgstr "Ακροατές"
 
-#: modules/demux/playlist/shoutcast.c:330
+#: modules/demux/playlist/shoutcast.c:337
 msgid "Load"
 msgstr "Φόρτωση"
 
@@ -23097,7 +23097,7 @@ msgstr "Ασφάλεια στρώματος μεταφοράς GnuTLS"
 msgid "GNU TLS server"
 msgstr "Εξυπηρετητής GNU TLS"
 
-#: modules/misc/gnutls.c:269 modules/misc/securetransport.c:327
+#: modules/misc/gnutls.c:281 modules/misc/securetransport.c:327
 #, c-format
 msgid ""
 "You attempted to reach %s. However the security certificate presented by the "
@@ -23115,7 +23115,7 @@ msgstr ""
 "\n"
 "Σε περίπτωση αμφιβολίας, εγκαταλείψτε αμέσως.\n"
 
-#: modules/misc/gnutls.c:279
+#: modules/misc/gnutls.c:291
 #, c-format
 msgid ""
 "You attempted to reach %s. However the security certificate presented by the "
@@ -23133,21 +23133,21 @@ msgstr ""
 "\n"
 "Σε περίπτωση αμφιβολίας, εγκαταλείψτε αμέσως.\n"
 
-#: modules/misc/gnutls.c:294 modules/misc/gnutls.c:311
+#: modules/misc/gnutls.c:306 modules/misc/gnutls.c:323
 #: modules/misc/securetransport.c:334
 msgid "Insecure site"
 msgstr "Μη ασφαλής σελίδα"
 
-#: modules/misc/gnutls.c:295 modules/misc/gnutls.c:314
+#: modules/misc/gnutls.c:307 modules/misc/gnutls.c:326
 #: modules/misc/securetransport.c:335
 msgid "Abort"
 msgstr "Εγκατάλειψη"
 
-#: modules/misc/gnutls.c:295
+#: modules/misc/gnutls.c:307
 msgid "View certificate"
 msgstr "Δείτε το πιστοποιητικό"
 
-#: modules/misc/gnutls.c:312
+#: modules/misc/gnutls.c:324
 #, c-format
 msgid ""
 "This is the certificate presented by %s:\n"
@@ -23160,11 +23160,11 @@ msgstr ""
 "\n"
 "Σε περίπτωση αμφιβολίας, εγκαταλείψτε αμέσως.\n"
 
-#: modules/misc/gnutls.c:314
+#: modules/misc/gnutls.c:326
 msgid "Accept 24 hours"
 msgstr "Αποδοχή για 24 ώρες"
 
-#: modules/misc/gnutls.c:315
+#: modules/misc/gnutls.c:327
 msgid "Accept permanently"
 msgstr "Αποδοχή για πάντα"
 

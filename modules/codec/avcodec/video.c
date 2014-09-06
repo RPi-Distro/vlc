@@ -2,7 +2,7 @@
  * video.c: video decoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 2e119d04c40c0f0b79d6d4c24726c4a87a207259 $
+ * $Id: 9169befd681f29de811aa02ebe1762fbdb20f492 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -350,6 +350,21 @@ int InitVideoDec( decoder_t *p_dec, AVCodecContext *p_context,
             p_sys->p_context->thread_type &= ~FF_THREAD_FRAME;
 # endif
     }
+
+    /* Workaround: frame multithreading is not compatible with
+     * DXVA2. When a frame is being copied to host memory, the frame
+     * is locked and cannot be used as a reference frame
+     * simultaneously and thus decoding fails for some frames. This
+     * causes major image corruption. */
+# if defined(_WIN32)
+    char *avcodec_hw = var_InheritString( p_dec, "avcodec-hw" );
+    if( avcodec_hw == NULL || strcasecmp( avcodec_hw, "none" ) )
+    {
+        msg_Warn( p_dec, "threaded frame decoding is not compatible with DXVA2, disabled" );
+        p_sys->p_context->thread_type &= ~FF_THREAD_FRAME;
+    }
+    free( avcodec_hw );
+# endif
 
     if( p_sys->p_context->thread_type & FF_THREAD_FRAME )
         p_dec->i_extra_picture_buffers = 2 * p_sys->p_context->thread_count;
