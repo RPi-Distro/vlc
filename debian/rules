@@ -179,16 +179,13 @@ endif
 # Hurd specific flags
 ifeq (,$(filter-out hurd,$(DEB_HOST_ARCH_OS)))
 confflags += \
-	--disable-oss \
 	--disable-vcd
 removeplugins += \
-	oss \
 	cdda \
 	vcd \
 	$(NULL)
 else
 confflags += \
-	--enable-oss \
 	--enable-vcd \
 	$(NULL)
 endif
@@ -208,6 +205,16 @@ confflags += --enable-v4l2
 else
 confflags += --disable-v4l2
 removeplugins += libv4l2
+endif
+
+# kFreeBSD specific flags
+ifeq (,$(filter-out kfreebsd,$(DEB_HOST_ARCH_OS)))
+confflags += --enable-oss
+else
+# Note: Use ALSA on Linux instead of OSS.
+#       Ubuntu has disabled OSS support in their Linux kernel.
+confflags += --disable-oss
+removeplugins += oss
 endif
 
 # Linux amd64 and i386 specific flags

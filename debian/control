@@ -112,7 +112,7 @@ Build-Depends: autopoint,
                libxpm-dev,
                libzvbi-dev (>= 0.2.28),
                lua5.2,
-               oss4-dev,
+               oss4-dev [kfreebsd-any],
                pkg-config,
                zlib1g-dev
 Standards-Version: 3.9.5
