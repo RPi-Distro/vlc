@@ -142,7 +142,8 @@ confflags += \
 # Linux specific flags
 ifeq ($(DEB_HOST_ARCH_OS),linux)
 # omxil should be enabled on all systems, but libomxil-bellagio does
-# not build on kfreebsd and hurd (currently)
+# not build on kfreebsd and hurd (currently).
+# V4L2 is disabled on kFreeBSD due to a build failure.
 confflags += \
 	--enable-alsa \
 	--enable-atmo \
@@ -151,6 +152,7 @@ confflags += \
 	--enable-linsys \
 	--enable-omxil \
 	--enable-udev \
+	--enable-v4l2 \
 	$(NULL)
 else
 confflags += \
@@ -161,6 +163,7 @@ confflags += \
 	--disable-linsys \
 	--disable-omxil \
 	--disable-udev \
+	--disable-v4l2 \
 	$(NULL)
 removeplugins += \
 	alsa \
@@ -173,38 +176,16 @@ removeplugins += \
 	libomxil \
 	linsys \
 	libudev \
+	libv4l2 \
 	$(NULL)
 endif
 
-# Hurd specific flags
-ifeq (,$(filter-out hurd,$(DEB_HOST_ARCH_OS)))
-confflags += \
-	--disable-vcd
-removeplugins += \
-	cdda \
-	vcd \
-	$(NULL)
-else
-confflags += \
-	--enable-vcd \
-	$(NULL)
-endif
-
-# Linux and kFreeBSD specific flags
+# Linux and kFreeBSD specific flags (disabled on Hurd)
 ifeq (,$(filter-out linux kfreebsd,$(DEB_HOST_ARCH_OS)))
-confflags += --enable-libva
+confflags += --enable-libva --enable-vcd
 else
-confflags += --disable-libva
-removeplugins += libvaapi
-endif
-
-# Linux and kFreeBSD specific flags
-# kfreebsd disabled due to a build failure
-ifeq (,$(filter-out linux,$(DEB_HOST_ARCH_OS)))
-confflags += --enable-v4l2
-else
-confflags += --disable-v4l2
-removeplugins += libv4l2
+confflags += --disable-libva --disable-vcd
+removeplugins += cdda libvaapi vcd
 endif
 
 # kFreeBSD specific flags
