@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: 62409edd6b944bc7beb359c5b96f2c9c73e41845 $
+ * $Id: 46939dc9bc159c2e8d0a02d962cd04e36fe61372 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Rémi Denis-Courmont <rem$videolan,org>
@@ -258,7 +258,7 @@ uint64_t NTPtime64 (void)
      * No leap seconds during that period since they were not invented yet.
      */
     assert (t < 0x100000000);
-    t |= ((70LL * 365 + 17) * 24 * 60 * 60 + ts.tv_sec) << 32;
+    t |= ((UINT64_C(70) * 365 + 17) * 24 * 60 * 60 + ts.tv_sec) << 32;
     return t;
 }
 

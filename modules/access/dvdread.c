@@ -2,7 +2,7 @@
  * dvdread.c : DvdRead input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
- * $Id: bab72177f63f6c636dbd93125ceb69ee28022c76 $
+ * $Id: f1c64294784ce8a55a8ec6dd2ba3d0bbfe283f1c $
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1162,7 +1162,7 @@ static void DvdReadHandleDSI( demux_t *p_demux, uint8_t *p_data )
     /*
      * Store the timecodes so we can get the current time
      */
-    p_sys->i_title_cur_time = (mtime_t) (p_sys->dsi_pack.dsi_gi.nv_pck_scr / 90 * 1000);
+    p_sys->i_title_cur_time = (mtime_t) p_sys->dsi_pack.dsi_gi.nv_pck_scr / 90 * 1000;
     p_sys->i_cell_cur_time = (mtime_t) dvdtime_to_time( &p_sys->dsi_pack.dsi_gi.c_eltm, 0 );
 
     /*

@@ -2,7 +2,7 @@
  * ps.h: Program Stream demuxer helper
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: c36bdcdb0b585418628b1e27968ccc1d60cc7ade $
+ * $Id: cd7d547a838754683421cc8b4dc02139513b2c0f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -648,7 +648,7 @@ static inline int ps_psm_fill( ps_psm_t *p_psm, block_t *p_pkt,
             }
         }
 
-        tmp_es = realloc_or_free( p_psm->es, sizeof(ps_es_t *) * (p_psm->i_es+1) );
+        tmp_es = realloc( p_psm->es, sizeof(ps_es_t *) * (p_psm->i_es+1) );
         if( tmp_es )
         {
             p_psm->es = tmp_es;
