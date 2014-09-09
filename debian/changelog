@@ -1,4 +1,4 @@
-vlc (2.2.0~pre2-5) UNRELEASED; urgency=medium
+vlc (2.2.0~pre3-1) UNRELEASED; urgency=medium
 
   [ Mateusz Łukasik ]
   * Fix typo in changelog
@@ -6,6 +6,13 @@ vlc (2.2.0~pre2-5) UNRELEASED; urgency=medium
   [ Benjamin Drung ]
   * Disable vpx plugin (not needed when having libavcodec)
   * Remove hurd.patch, because this is a bug in Hurd and not in VLC.
+  * Disable OSS on Linux (use ALSA instead).
+  * Imported Upstream version 2.2.0~pre3
+  * debian/rules: Merge common configure flags groups.
+
+  [ Sebastian Ramacher ]
+  * debian/control: Remove libdirac-dev from Build-Depends. It is no longer
+    needed.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Wed, 27 Aug 2014 23:10:55 +0200
 
