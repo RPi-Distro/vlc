@@ -4,11 +4,10 @@ vlc (2.2.0~pre3-1) UNRELEASED; urgency=medium
   * Fix typo in changelog
 
   [ Benjamin Drung ]
+  * New upstream release.
   * Disable vpx plugin (not needed when having libavcodec)
   * Remove hurd.patch, because this is a bug in Hurd and not in VLC.
-  * Disable OSS on Linux (use ALSA instead).
-  * Imported Upstream version 2.2.0~pre3
-  * debian/rules: Merge common configure flags groups.
+  * Disable OSS on Linux (Use ALSA on Linux instead of OSS.)
 
   [ Sebastian Ramacher ]
   * debian/control: Remove libdirac-dev from Build-Depends. It is no longer
