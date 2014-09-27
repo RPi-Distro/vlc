@@ -2,7 +2,6 @@ usr/bin/qvlc
 usr/bin/svlc
 usr/lib/vlc/libvlc_vdpau.so*
 usr/lib/vlc/plugins/access/libpulsesrc_plugin.so
-usr/lib/vlc/plugins/access/librdp_plugin.so
 usr/lib/vlc/plugins/access/libvnc_plugin.so
 usr/lib/vlc/plugins/access/libxcb_screen_plugin.so
 usr/lib/vlc/plugins/audio_output/libpulse_plugin.so

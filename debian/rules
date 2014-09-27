@@ -56,7 +56,6 @@ confflags += \
 	--enable-faad \
 	--enable-flac \
 	--enable-fluidsynth \
-	--enable-freerdp \
 	--enable-freetype \
 	--enable-fribidi \
 	--enable-gles1 \
@@ -109,6 +108,7 @@ confflags += \
 # decklink -> not in Debian
 # dxva2 -> Windows only
 # fdkaac -> in Debian non-free
+# freerdp -> currently broken (#757605, #762591 and others)
 # gnomevfs -> poorly maintained
 # goom -> not in Debian
 # libtar -> security issue (#737534)
@@ -125,6 +125,7 @@ confflags += \
 	--disable-decklink \
 	--disable-dxva2 \
 	--disable-fdkaac \
+	--disable-freerdp \
 	--disable-gnomevfs \
 	--disable-goom \
 	--disable-libtar \
