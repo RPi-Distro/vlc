@@ -2,7 +2,7 @@
  * AudioEffects.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2004-2012 VLC authors and VideoLAN
- * $Id: 7e24daf9b40f31496b85833be7e8bc33be8d3321 $
+ * $Id: 0a77f5512528e4c33ce8ae1f0fd6ecc3984789f6 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jérôme Decoodt <djc@videolan.org>
@@ -209,7 +209,7 @@ static VLCAudioEffects *_o_sharedInstance = nil;
     if ([o_window isKeyWindow])
         [o_window orderOut:sender];
     else {
-        [o_window setLevel: [[[VLCMain sharedInstance] voutController] currentWindowLevel]];
+        [o_window setLevel: [[[VLCMain sharedInstance] voutController] currentStatusWindowLevel]];
         [o_window makeKeyAndOrderFront:sender];
     }
 }

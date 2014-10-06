@@ -2,7 +2,7 @@
  * anim_bitmap.hpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: eea3de9cd13a220dc5a0742a7d15f4ce5c2a08a1 $
+ * $Id: 6825544cf054e1d13c727badfb6a5fafdc4ceb70 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -57,6 +57,9 @@ public:
     /// Get the size of the current frame
     virtual int getWidth() const;
     virtual int getHeight() const;
+
+    /// compare two animated image
+    bool operator==( const AnimBitmap& other ) const;
 
 private:
     /// Bitmap stored

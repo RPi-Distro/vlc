@@ -3,7 +3,7 @@
  *            (using libtwolame from http://www.twolame.org/)
  *****************************************************************************
  * Copyright (C) 2004-2005 VLC authors and VideoLAN
- * $Id: 4d2588ac8b871636ce316152f47af06195ec3aef $
+ * $Id: b41276edf5fce280bf63da48abe36284ecb26307 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin
@@ -251,12 +251,24 @@ static int OpenEncoder( vlc_object_t *p_this )
  ****************************************************************************/
 static void Bufferize( encoder_t *p_enc, int16_t *p_in, int i_nb_samples )
 {
-    int16_t *p_buffer = p_enc->p_sys->p_buffer
-                         + (p_enc->p_sys->i_nb_samples
-                             * p_enc->fmt_in.audio.i_channels);
+    encoder_sys_t *p_sys = p_enc->p_sys;
+    const unsigned i_offset = p_sys->i_nb_samples * p_enc->fmt_in.audio.i_channels;
+    const unsigned i_len = ARRAY_SIZE(p_sys->p_buffer);
 
-    memcpy( p_buffer, p_in, i_nb_samples * p_enc->fmt_in.audio.i_channels
-                             * sizeof(int16_t) );
+    if( i_offset >= i_len )
+    {
+        msg_Err( p_enc, "buffer full" );
+        return;
+    }
+
+    unsigned i_copy = i_nb_samples * p_enc->fmt_in.audio.i_channels;
+    if( i_copy + i_offset > i_len)
+    {
+        msg_Err( p_enc, "dropping samples" );
+        i_copy = i_len - i_offset;
+    }
+
+    memcpy( p_sys->p_buffer + i_offset, p_in, i_copy * sizeof(int16_t) );
 }
 
 static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
@@ -274,6 +286,8 @@ static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
             return NULL;
 
         p_block = block_Alloc( i_used );
+        if( !p_block )
+            return NULL;
         memcpy( p_block->p_buffer, p_sys->p_out_buffer, i_used );
         p_block->i_length = (mtime_t)1000000 *
                 (mtime_t)MPEG_FRAME_SIZE / (mtime_t)p_enc->fmt_out.audio.i_rate;
@@ -302,8 +316,21 @@ static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
         i_used = twolame_encode_buffer_interleaved( p_sys->p_twolame,
                                p_sys->p_buffer, MPEG_FRAME_SIZE,
                                p_sys->p_out_buffer, MAX_CODED_FRAME_SIZE );
+        /* On error, buffer samples and return what was already encoded */
+        if( i_used < 0 )
+        {
+            msg_Err( p_enc, "encoder error: %d", i_used );
+            break;
+        }
+
         p_sys->i_nb_samples = 0;
         p_block = block_Alloc( i_used );
+        if( !p_block )
+        {
+            if( p_chain )
+                block_ChainRelease( p_chain );
+            return NULL;
+        }
         memcpy( p_block->p_buffer, p_sys->p_out_buffer, i_used );
         p_block->i_length = (mtime_t)1000000 *
                 (mtime_t)MPEG_FRAME_SIZE / (mtime_t)p_enc->fmt_out.audio.i_rate;

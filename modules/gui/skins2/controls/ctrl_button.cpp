@@ -2,7 +2,7 @@
  * ctrl_button.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 0530bbbefeadf5d451cb2cc5f2dfdcd944bd7af8 $
+ * $Id: 06a294416320ed638862daab5b08943ba6b170d8 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -138,6 +138,9 @@ void CtrlButton::draw( OSGraphics &rImage, int xDest, int yDest, int w, int h )
 void CtrlButton::setImage( AnimBitmap *pImg )
 {
     if( pImg == m_pImg )
+        return;
+
+    if( pImg && m_pImg && *pImg == *m_pImg )
         return;
 
     AnimBitmap *pOldImg = m_pImg;

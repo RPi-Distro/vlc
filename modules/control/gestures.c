@@ -2,7 +2,7 @@
  * gestures.c: control vlc with mouse gestures
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 53e440c92f4a8dc87ec35c7595dc4d0775c373c1 $
+ * $Id: 2e50eecc1a99e5c564614f1cae230b3c6701e79d $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -47,7 +47,7 @@ struct intf_sys_t
     bool                b_button_pressed;
     int                 i_last_x, i_last_y;
     unsigned int        i_pattern;
-    int                 i_num_gestures;
+    unsigned int        i_num_gestures;
     int                 i_threshold;
     int                 i_button_mask;
 };
@@ -146,7 +146,7 @@ static int Open ( vlc_object_t *p_this )
 /*****************************************************************************
  * gesture: return a subpattern within a pattern
  *****************************************************************************/
-static int gesture( int i_pattern, int i_num )
+static inline unsigned gesture( unsigned i_pattern, unsigned i_num )
 {
     return ( i_pattern >> ( i_num * 4 ) ) & 0xF;
 }
@@ -382,7 +382,7 @@ static int MovedEvent( vlc_object_t *p_this, char const *psz_var,
     {
         int i_horizontal = newval.coords.x - p_sys->i_last_x;
         int i_vertical = newval.coords.y - p_sys->i_last_y;
-        int pattern = 0;
+        unsigned int pattern = 0;
 
         i_horizontal = i_horizontal / p_sys->i_threshold;
         i_vertical = i_vertical / p_sys->i_threshold;
@@ -412,7 +412,8 @@ static int MovedEvent( vlc_object_t *p_this, char const *psz_var,
         {
             p_sys->i_last_x = newval.coords.x;
             p_sys->i_last_y = newval.coords.y;
-            if( gesture( p_sys->i_pattern, p_sys->i_num_gestures - 1 )
+            if( p_sys->i_num_gestures > 0
+             && gesture( p_sys->i_pattern, p_sys->i_num_gestures - 1 )
                     != pattern )
             {
                 p_sys->i_pattern |= pattern << ( p_sys->i_num_gestures * 4 );

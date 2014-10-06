@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: a93157333f3605e78789b7e2f0c2f231386efe6b $
+ * $Id: 292011a70e94a1d1ce30a30bdbe6eb27d04a22de $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan.org>
@@ -611,7 +611,6 @@ static VLCMain *_o_sharedMainInstance = nil;
 
     o_open = [[VLCOpen alloc] init];
     o_coredialogs = [[VLCCoreDialogProvider alloc] init];
-    o_info = [[VLCInfo alloc] init];
     o_mainmenu = [[VLCMainMenu alloc] init];
     o_coreinteraction = [[VLCCoreInteraction alloc] init];
     o_eyetv = [[VLCEyeTVController alloc] init];
@@ -774,12 +773,14 @@ static VLCMain *_o_sharedMainInstance = nil;
     [o_mainwindow updateTimeSlider];
     [o_mainwindow updateVolumeSlider];
 
+    // respect playlist-autostart
+    // note that PLAYLIST_PLAY will not stop any playback if already started
     playlist_t * p_playlist = pl_Get(VLCIntf);
     PL_LOCK;
     BOOL kidsAround = p_playlist->p_local_category->i_children != 0;
-    PL_UNLOCK;
     if (kidsAround && var_GetBool(p_playlist, "playlist-autostart"))
-        [[self playlist] playItem:nil];
+        playlist_Control(p_playlist, PLAYLIST_PLAY, true);
+    PL_UNLOCK;
 }
 
 /* don't allow a double termination call. If the user has
@@ -1395,7 +1396,7 @@ static bool f_appExit = false;
             iTunesApplication *iTunesApp = (iTunesApplication *) [SBApplication applicationWithBundleIdentifier:@"com.apple.iTunes"];
             if (iTunesApp && [iTunesApp isRunning]) {
                 if ([iTunesApp playerState] == iTunesEPlSPaused) {
-                    msg_Dbg(p_intf, "Unpause iTunes...");
+                    msg_Dbg(p_intf, "unpausing iTunes");
                     [iTunesApp playpause];
                 }
             }
@@ -1403,9 +1404,13 @@ static bool f_appExit = false;
 
         if (b_has_spotify_paused) {
             SpotifyApplication *spotifyApp = (SpotifyApplication *) [SBApplication applicationWithBundleIdentifier:@"com.spotify.client"];
-            if ([spotifyApp isRunning] && [spotifyApp playerState] == kSpotifyPlayerStatePaused) {
-                msg_Dbg(p_intf, "Unpause Spotify...");
-                [spotifyApp play];
+            if (spotifyApp) {
+                if ([spotifyApp respondsToSelector:@selector(isRunning)] && [spotifyApp respondsToSelector:@selector(playerState)]) {
+                    if ([spotifyApp isRunning] && [spotifyApp playerState] == kSpotifyPlayerStatePaused) {
+                        msg_Dbg(p_intf, "unpausing Spotify");
+                        [spotifyApp play];
+                    }
+                }
             }
         }
     }
@@ -1438,7 +1443,7 @@ static bool f_appExit = false;
                 iTunesApplication *iTunesApp = (iTunesApplication *) [SBApplication applicationWithBundleIdentifier:@"com.apple.iTunes"];
                 if (iTunesApp && [iTunesApp isRunning]) {
                     if ([iTunesApp playerState] == iTunesEPlSPlaying) {
-                        msg_Dbg(p_intf, "Pause iTunes...");
+                        msg_Dbg(p_intf, "pausing iTunes");
                         [iTunesApp pause];
                         b_has_itunes_paused = YES;
                     }
@@ -1448,10 +1453,15 @@ static bool f_appExit = false;
             // pause Spotify
             if (!b_has_spotify_paused) {
                 SpotifyApplication *spotifyApp = (SpotifyApplication *) [SBApplication applicationWithBundleIdentifier:@"com.spotify.client"];
-                if ([spotifyApp isRunning] && [spotifyApp playerState] == kSpotifyPlayerStatePlaying) {
-                    msg_Dbg(p_intf, "Pause Spotify...");
-                    [spotifyApp pause];
-                    b_has_spotify_paused = YES;
+
+                if (spotifyApp) {
+                    if ([spotifyApp respondsToSelector:@selector(isRunning)] && [spotifyApp respondsToSelector:@selector(playerState)]) {
+                        if ([spotifyApp isRunning] && [spotifyApp playerState] == kSpotifyPlayerStatePlaying) {
+                            msg_Dbg(p_intf, "pausing Spotify");
+                            [spotifyApp pause];
+                            b_has_spotify_paused = YES;
+                        }
+                    }
                 }
             }
         }
@@ -1644,6 +1654,9 @@ static bool f_appExit = false;
 
 - (id)info
 {
+    if (!o_info)
+        o_info = [[VLCInfo alloc] init];
+
     if (! nib_info_loaded)
         nib_info_loaded = [NSBundle loadNibNamed:@"MediaInfo" owner: NSApp];
 

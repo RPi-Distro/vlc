@@ -2,7 +2,7 @@
  * fourcc.c: libavcodec <-> libvlc conversion routines
  *****************************************************************************
  * Copyright (C) 1999-2009 VLC authors and VideoLAN
- * $Id: 3608f2ca92e92dab7534dfc8246fdf3df975a3ce $
+ * $Id: c6875d0d23bd285ab815dbae5d44785faa675792 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -43,6 +43,8 @@ static const struct
     int i_cat;
 } codecs_table[] =
 {
+    { 0, AV_CODEC_ID_NONE, UNKNOWN_ES },
+
     /*
      * Video Codecs
      */

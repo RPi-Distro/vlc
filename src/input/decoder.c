@@ -2,7 +2,7 @@
  * decoder.c: Functions for the management of decoders
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 87c65ef38904d825d912b177cb8f30ad18ab0d8f $
+ * $Id: b9565514b522c10d9d54b2f8e7b7b235e62ac187 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -937,6 +937,7 @@ static void DecoderFlush( decoder_t *p_dec )
     /* Empty the fifo */
     block_FifoEmpty( p_owner->p_fifo );
 
+    p_owner->b_waiting = false;
     /* Monitor for flush end */
     p_owner->b_flushing = true;
     vlc_cond_signal( &p_owner->wait_request );
@@ -2016,7 +2017,8 @@ static int aout_update_format( decoder_t *p_dec )
 
         p_owner->p_aout = p_aout;
         DecoderUpdateFormatLocked( p_dec );
-        if( unlikely(p_owner->b_paused) ) /* fake pause if needed */
+        if( unlikely(p_owner->b_paused) && p_aout != NULL )
+            /* fake pause if needed */
             aout_DecChangePause( p_aout, true, mdate() );
 
         vlc_mutex_unlock( &p_owner->lock );

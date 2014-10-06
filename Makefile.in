@@ -725,7 +725,6 @@ LIBPTHREAD = @LIBPTHREAD@
 LIBS = @LIBS@
 LIBS_a52tofloat32 = @LIBS_a52tofloat32@
 LIBS_aa = @LIBS_aa@
-LIBS_access_avio = @LIBS_access_avio@
 LIBS_access_mtp = @LIBS_access_mtp@
 LIBS_access_output_shout = @LIBS_access_output_shout@
 LIBS_access_rtmp = @LIBS_access_rtmp@
@@ -736,7 +735,6 @@ LIBS_android_opaque = @LIBS_android_opaque@
 LIBS_android_surface = @LIBS_android_surface@
 LIBS_audiobargraph_a = @LIBS_audiobargraph_a@
 LIBS_audiobargraph_v = @LIBS_audiobargraph_v@
-LIBS_avcodec = @LIBS_avcodec@
 LIBS_ball = @LIBS_ball@
 LIBS_bonjour = @LIBS_bonjour@
 LIBS_caca = @LIBS_caca@
@@ -772,7 +770,6 @@ LIBS_growl = @LIBS_growl@
 LIBS_headphone_channel_mixer = @LIBS_headphone_channel_mixer@
 LIBS_hotkeys = @LIBS_hotkeys@
 LIBS_hqdn3d = @LIBS_hqdn3d@
-LIBS_i420_rgb_mmx = @LIBS_i420_rgb_mmx@
 LIBS_kate = @LIBS_kate@
 LIBS_libass = @LIBS_libass@
 LIBS_libbluray = @LIBS_libbluray@
@@ -1747,6 +1744,7 @@ EXTRA_DIST = extras/package/win32/vlc.exe.manifest \
 	extras/package/macosx/Info.plist.in \
 	extras/package/ios/build.sh extras/tools/bootstrap \
 	extras/tools/packages.mak extras/tools/tools.mak \
+	extras/tools/ragel-6.8-javacodegen.patch \
 	extras/analyser/zsh_completion.sh extras/analyser/zsh.cpp \
 	extras/analyser/emacs.init extras/analyser/vlc.vim \
 	extras/analyser/valgrind.suppressions \
@@ -2621,7 +2619,8 @@ VLC.app: VLC-tmp
 	PRODUCT="$@" ACTION="release-makefile" src_dir=$(srcdir) build_dir=$(top_builddir) sh $(srcdir)/extras/package/macosx/build-package.sh
 	find $@ -type d -exec chmod ugo+rx '{}' \;
 	find $@ -type f -exec chmod ugo+r '{}' \;
-	rm -Rf $@/Contents/Frameworks/BGHUDAppKit.framework/Resources/
+	rm -Rf $@/Contents/Frameworks/BGHUDAppKit.framework/Versions/A/Resources/BGHUDAppKitPlugin.ibplugin
+	rm -Rf $@/Contents/Frameworks/BGHUDAppKit.framework/Versions/A/Resources/README.textile
 
 VLC-tmp: vlc
 	$(AM_V_GEN)for i in src lib share; do \
@@ -2644,8 +2643,8 @@ VLC-tmp: vlc
 	cd "$(srcdir)/modules/gui/macosx/" && cp *.h *.m $(abs_top_builddir)/tmp/modules/gui/macosx/
 	cd $(top_builddir)/tmp/extras/package/macosx && \
 		xcodebuild -target vlc SYMROOT=../../../build DSTROOT=../../../build $(silentstd)
-	cp -R -L $(top_builddir)/tmp/build/Default/VLC.bundle $@
-	mkdir -p $@/Contents/Frameworks && cp -R -L $(CONTRIB_DIR)/Growl.framework $@/Contents/Frameworks/
+	cp -R $(top_builddir)/tmp/build/Default/VLC.bundle $@
+	mkdir -p $@/Contents/Frameworks && cp -R $(CONTRIB_DIR)/Growl.framework $@/Contents/Frameworks/
 	mkdir -p $@/Contents/MacOS/share/locale/
 	cp -r "$(prefix)/lib/vlc/lua" "$(prefix)/share/vlc/lua" $@/Contents/MacOS/share/
 	mkdir -p $@/Contents/MacOS/include/
@@ -2801,6 +2800,7 @@ package-win-common: package-win-install build-npapi
 	do \
 		test -f "$$x/libstdc++-6.dll" && cp "$$x/libstdc++-6.dll" "$(win32_destdir)/" ; \
 		test -f "$$x/libgcc_s_sjlj-1.dll" && cp "$$x/libgcc_s_sjlj-1.dll" "$(win32_destdir)/" ; \
+		test -f "$$x/libgcc_s_seh-1.dll" && cp "$$x/libgcc_s_seh-1.dll" "$(win32_destdir)/" ; \
 		test -f "$$x/libwinpthread-1.dll" && cp "$$x/libwinpthread-1.dll" "$(win32_destdir)/" ; \
 		test -f "$$x/../bin/libwinpthread-1.dll" && cp "$$x/../bin/libwinpthread-1.dll" "$(win32_destdir)/" ; \
 	done

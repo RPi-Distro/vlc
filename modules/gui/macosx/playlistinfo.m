@@ -2,7 +2,7 @@
  r playlistinfo.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 40bb85f8dd6aa62fdf1a1e5a1f0689e8736692a7 $
+ * $Id: bbf00ba752110720bbe4d03381751ed434ae571c $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -65,7 +65,6 @@ static VLCInfo *_o_sharedInstance = nil;
 - (void)awakeFromNib
 {
     [o_info_window setExcludedFromWindowsMenu: YES];
-    [o_info_window setFloatingPanel: NO];
     if (!OSX_SNOW_LEOPARD)
         [o_info_window setCollectionBehavior: NSWindowCollectionBehaviorFullScreenAuxiliary];
 
@@ -115,7 +114,6 @@ static VLCInfo *_o_sharedInstance = nil;
     [o_lost_abuffers_lbl setStringValue: _NS("Lost buffers")];
 
     [o_info_window setInitialFirstResponder: o_uri_txt];
-    [o_info_window setDelegate: self];
 
     b_awakeFromNib = YES;
 
@@ -151,9 +149,9 @@ static VLCInfo *_o_sharedInstance = nil;
     else
         [self initMediaPanelStats];
 
-    NSInteger i_level = [[[VLCMain sharedInstance] voutController] currentWindowLevel];
+    NSInteger i_level = [[[VLCMain sharedInstance] voutController] currentStatusWindowLevel];
     [o_info_window setLevel: i_level];
-    [o_info_window makeKeyAndOrderFront: self];
+    [o_info_window makeKeyAndOrderFront:nil];
 }
 
 - (void)initMediaPanelStats

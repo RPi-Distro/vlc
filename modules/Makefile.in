@@ -2880,7 +2880,6 @@ LIBPTHREAD = @LIBPTHREAD@
 LIBS = @LIBS@
 LIBS_a52tofloat32 = @LIBS_a52tofloat32@
 LIBS_aa = @LIBS_aa@
-LIBS_access_avio = @LIBS_access_avio@
 LIBS_access_mtp = @LIBS_access_mtp@
 LIBS_access_output_shout = @LIBS_access_output_shout@
 LIBS_access_rtmp = @LIBS_access_rtmp@
@@ -2891,7 +2890,6 @@ LIBS_android_opaque = @LIBS_android_opaque@
 LIBS_android_surface = @LIBS_android_surface@
 LIBS_audiobargraph_a = @LIBS_audiobargraph_a@
 LIBS_audiobargraph_v = @LIBS_audiobargraph_v@
-LIBS_avcodec = @LIBS_avcodec@
 LIBS_ball = @LIBS_ball@
 LIBS_bonjour = @LIBS_bonjour@
 LIBS_caca = @LIBS_caca@
@@ -2927,7 +2925,6 @@ LIBS_growl = @LIBS_growl@
 LIBS_headphone_channel_mixer = @LIBS_headphone_channel_mixer@
 LIBS_hotkeys = @LIBS_hotkeys@
 LIBS_hqdn3d = @LIBS_hqdn3d@
-LIBS_i420_rgb_mmx = @LIBS_i420_rgb_mmx@
 LIBS_kate = @LIBS_kate@
 LIBS_libass = @LIBS_libass@
 LIBS_libbluray = @LIBS_libbluray@
@@ -4229,7 +4226,8 @@ libmkv_plugin_la_CPPFLAGS = $(AM_CPPFLAGS)
 libmkv_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(demuxdir)'
 libmkv_plugin_la_LIBADD = $(LIBS_mkv) $(am__append_95)
 libmp4_plugin_la_SOURCES = demux/mp4/mp4.c demux/mp4/mp4.h \
-                           demux/mp4/libmp4.c demux/mp4/libmp4.h demux/mp4/id3genres.h
+                           demux/mp4/libmp4.c demux/mp4/libmp4.h \
+                           demux/mp4/id3genres.h demux/mp4/languages.h
 
 libmp4_plugin_la_LIBADD = $(LIBM) $(am__append_96)
 libmp4_plugin_la_LDFLAGS = $(AM_LDFLAGS)

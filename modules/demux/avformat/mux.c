@@ -2,7 +2,7 @@
  * mux.c: muxer using libavformat
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: c9532f5e168cae38db299aa10a31e408f68a447d $
+ * $Id: 2974a6de3d63df2a322de4370ccf13f43f8e2bf5 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -180,7 +180,8 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
 
     msg_Dbg( p_mux, "adding input" );
 
-    if( !GetFfmpegCodec( fmt->i_codec, 0, &i_codec_id, 0 ) )
+    if( !GetFfmpegCodec( fmt->i_codec, 0, &i_codec_id, 0 )
+     || i_codec_id == AV_CODEC_ID_NONE )
     {
         msg_Dbg( p_mux, "couldn't find codec for fourcc '%4.4s'",
                  (char *)&fmt->i_codec );

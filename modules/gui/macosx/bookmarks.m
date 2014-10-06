@@ -2,7 +2,7 @@
  * bookmarks.m: MacOS X Bookmarks window
  *****************************************************************************
  * Copyright (C) 2005 - 2012 VLC authors and VideoLAN
- * $Id: b59343402a185363ed5e5e70ea5b4354f46de060 $
+ * $Id: a322cdda2cc9a3066161b9cb55cb56f67d7555bd $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *
@@ -124,7 +124,7 @@ static VLCBookmarks *_o_sharedInstance = nil;
 {
     /* show the window, called from intf.m */
     [o_bookmarks_window displayIfNeeded];
-    [o_bookmarks_window setLevel: [[[VLCMain sharedInstance] voutController] currentWindowLevel]];
+    [o_bookmarks_window setLevel: [[[VLCMain sharedInstance] voutController] currentStatusWindowLevel]];
     [o_bookmarks_window makeKeyAndOrderFront:nil];
 }
 

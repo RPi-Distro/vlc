@@ -2,7 +2,7 @@
  * VideoEffects.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: 674c5ee6a9f457f81d67d3e96ebbc1ebeaeb6be3 $
+ * $Id: 050ef98a767148987f4a017cf61c690726622717 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -572,7 +572,7 @@ static VLCVideoEffects *_o_sharedInstance = nil;
     if ([o_window isKeyWindow])
         [o_window orderOut:sender];
     else {
-        [o_window setLevel: [[[VLCMain sharedInstance] voutController] currentWindowLevel]];
+        [o_window setLevel: [[[VLCMain sharedInstance] voutController] currentStatusWindowLevel]];
         [o_window makeKeyAndOrderFront:sender];
     }
 }
@@ -586,17 +586,6 @@ static VLCVideoEffects *_o_sharedInstance = nil;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSUInteger selectedProfile = [o_profile_pop indexOfSelectedItem];
 
-    /* disable all current video filters, if a vout is available */
-    vout_thread_t *p_vout = getVout();
-    if (p_vout) {
-        var_SetString(p_vout, "video-filter", "");
-        var_SetString(p_vout, "sub-source", "");
-        vlc_object_release(p_vout);
-    }
-
-    // video-splitter needs to be set via playlist var
-    var_SetString(pl_Get(p_intf), "video-splitter", "");
-
     /* fetch preset */
     NSArray *items = [[[defaults objectForKey:@"VideoEffectProfiles"] objectAtIndex:selectedProfile] componentsSeparatedByString:@";"];
 
@@ -609,36 +598,34 @@ static VLCVideoEffects *_o_sharedInstance = nil;
 
     /* filter handling */
     NSString *tempString = B64DecNSStr([items objectAtIndex:0]);
-    NSArray *tempArray;
-    NSUInteger count;
+    vout_thread_t *p_vout = getVout();
 
     /* enable the new filters */
-    config_PutPsz(p_intf, "video-filter", "");
-    if ([tempString length] > 0) {
-        tempArray = [tempString componentsSeparatedByString:@":"];
-        count = [tempArray count];
-        for (NSUInteger x = 0; x < count; x++)
-            [vci_si setVideoFilter:[[tempArray objectAtIndex:x] UTF8String] on:YES];
+    config_PutPsz(p_intf, "video-filter", [tempString UTF8String]);
+    if (p_vout) {
+        var_SetString(p_vout, "video-filter", [tempString UTF8String]);
     }
 
     tempString = B64DecNSStr([items objectAtIndex:1]);
     /* enable another round of new filters */
-    config_PutPsz(p_intf,"sub-source", "");
-    if ([tempString length] > 0) {
-        tempArray = [tempString componentsSeparatedByString:@":"];
-        count = [tempArray count];
-        for (NSUInteger x = 0; x < count; x++)
-            [vci_si setVideoFilter:[[tempArray objectAtIndex:x] UTF8String] on:YES];
+    config_PutPsz(p_intf, "sub-source", [tempString UTF8String]);
+    if (p_vout) {
+        var_SetString(p_vout, "sub-source", [tempString UTF8String]);
+    }
+
+    if (p_vout) {
+        vlc_object_release(p_vout);
     }
 
     tempString = B64DecNSStr([items objectAtIndex:2]);
     /* enable another round of new filters */
-    config_PutPsz(p_intf,"video-splitter", "");
-    if ([tempString length] > 0) {
-        tempArray = [tempString componentsSeparatedByString:@":"];
-        count = [tempArray count];
-        for (NSUInteger x = 0; x < count; x++)
-            [vci_si setVideoFilter:[[tempArray objectAtIndex:x] UTF8String] on:YES];
+    char *psz_current_splitter = var_GetString(pl_Get(p_intf), "video-splitter");
+    bool b_filter_changed = ![tempString isEqual:toNSStr(psz_current_splitter)];
+    free(psz_current_splitter);
+
+    if (b_filter_changed) {
+        config_PutPsz(p_intf, "video-splitter", [tempString UTF8String]);
+        var_SetString(pl_Get(p_intf), "video-splitter", [tempString UTF8String]);
     }
 
     /* try to set filter values on-the-fly and store them appropriately */
@@ -833,8 +820,9 @@ static VLCVideoEffects *_o_sharedInstance = nil;
 
 - (IBAction)enableAdjustBrightnessThreshold:(id)sender
 {
+    VLCCoreInteraction *vci_si = [VLCCoreInteraction sharedInstance];
+
     if (sender == o_adjust_reset_btn) {
-        VLCCoreInteraction *vci_si = [VLCCoreInteraction sharedInstance];
         [o_adjust_brightness_sld setFloatValue: 1.0];
         [o_adjust_contrast_sld setFloatValue: 1.0];
         [o_adjust_gamma_sld setFloatValue: 1.0];
@@ -851,7 +839,8 @@ static VLCVideoEffects *_o_sharedInstance = nil;
         [vci_si setVideoFilterProperty: "hue" forFilter: "adjust" integer: 0.0];
         [vci_si setVideoFilterProperty: "saturation" forFilter: "adjust" float: 1.0];
     } else
-        config_PutInt(p_intf, "brightness-threshold", [o_adjust_brightness_ckb state]);
+        [vci_si setVideoFilterProperty: "brightness-threshold" forFilter: "adjust" boolean: [o_adjust_brightness_ckb state]];
+
 }
 
 - (IBAction)enableSharpen:(id)sender

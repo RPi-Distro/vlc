@@ -34,6 +34,7 @@
 #include <vlc_plugin.h>
 #include <vlc_fourcc.h>
 #include <vlc_picture.h>
+#include <vlc_atomic.h>
 #include <vlc_xlib.h>
 #include "vlc_vdpau.h"
 #include "../../codec/avcodec/va.h"
@@ -58,9 +59,10 @@ struct vlc_va_sys_t
     VdpDecoderProfile profile;
     uint16_t width;
     uint16_t height;
+    vlc_vdp_video_field_t **pool;
 };
 
-static int Lock(vlc_va_t *va, void **opaque, uint8_t **data)
+static vlc_vdp_video_field_t *CreateSurface(vlc_va_t *va)
 {
     vlc_va_sys_t *sys = va->sys;
     VdpVideoSurface surface;
@@ -72,15 +74,58 @@ static int Lock(vlc_va_t *va, void **opaque, uint8_t **data)
     {
         msg_Err(va, "%s creation failure: %s", "video surface",
                 vdp_get_error_string(sys->vdp, err));
-        return VLC_EGENERIC;
+        return NULL;
     }
 
     vlc_vdp_video_field_t *field = vlc_vdp_video_create(sys->vdp, surface);
     if (unlikely(field == NULL))
-        return VLC_ENOMEM;
+        vdp_video_surface_destroy(sys->vdp, surface);
+    return field;
+}
 
-    *data = (void *)(uintptr_t)surface;
+static void DestroySurface(vlc_vdp_video_field_t *field)
+{
+    assert(field != NULL);
+    field->destroy(field);
+}
+
+static vlc_vdp_video_field_t *GetSurface(vlc_va_t *va)
+{
+    vlc_va_sys_t *sys = va->sys;
+    vlc_vdp_video_field_t *f;
+
+    for (unsigned i = 0; (f = sys->pool[i]) != NULL; i++)
+    {
+        uintptr_t expected = 1;
+
+        if (atomic_compare_exchange_strong(&f->frame->refs, &expected, 2))
+        {
+            vlc_vdp_video_field_t *field = vlc_vdp_video_copy(f);
+            atomic_fetch_sub(&f->frame->refs, 1);
+            return field;
+        }
+    }
+
+    /* All pictures in the pool are referenced. Try to make a new one. */
+    return CreateSurface(va);
+}
+
+static int Lock(vlc_va_t *va, void **opaque, uint8_t **data)
+{
+    vlc_vdp_video_field_t *field;
+    unsigned tries = (CLOCK_FREQ + VOUT_OUTMEM_SLEEP) / VOUT_OUTMEM_SLEEP;
+
+    while ((field = GetSurface(va)) == NULL)
+    {
+        if (--tries == 0)
+            return VLC_ENOMEM;
+        /* Out of video RAM, wait for some time as in src/input/decoder.c.
+         * XXX: Both this and the core should use a semaphore or a CV. */
+        msleep(VOUT_OUTMEM_SLEEP);
+    }
+
     *opaque = field;
+    *data = (void *)(uintptr_t)field->frame->surface;
     return VLC_SUCCESS;
 }
 
@@ -88,8 +133,7 @@ static void Unlock(void *opaque, uint8_t *data)
 {
     vlc_vdp_video_field_t *field = opaque;
 
-    assert(field != NULL);
-    field->destroy(field);
+    DestroySurface(field);
     (void) data;
 }
 
@@ -129,12 +173,39 @@ static int Init(vlc_va_t *va, void **ctxp, vlc_fourcc_t *chromap,
         break;
     }
 
+    vlc_vdp_video_field_t **pool = malloc(sizeof (*pool) * (surfaces + 6));
+    if (unlikely(pool == NULL))
+        return VLC_ENOMEM;
+
+    unsigned i = 0;
+    while (i < surfaces + 5)
+    {
+        pool[i] = CreateSurface(va);
+        if (pool[i] == NULL)
+            break;
+        i++;
+    }
+    pool[i] = NULL;
+
+    if (i < surfaces + 3)
+    {
+        msg_Err(va, "not enough video RAM");
+        while (i > 0)
+            DestroySurface(pool[--i]);
+        free(pool);
+        return VLC_ENOMEM;
+    }
+    sys->pool = pool;
+
     err = vdp_decoder_create(sys->vdp, sys->device, sys->profile, width,
                              height, surfaces, &sys->context->decoder);
     if (err != VDP_STATUS_OK)
     {
         msg_Err(va, "%s creation failure: %s", "decoder",
                 vdp_get_error_string(sys->vdp, err));
+        while (i > 0)
+            DestroySurface(pool[--i]);
+        free(pool);
         sys->context->decoder = VDP_INVALID_HANDLE;
         return VLC_EGENERIC;
     }
@@ -151,6 +222,9 @@ static void Deinit(vlc_va_t *va)
 
     assert(sys->context->decoder != VDP_INVALID_HANDLE);
     vdp_decoder_destroy(sys->vdp, sys->context->decoder);
+    for (unsigned i = 0; sys->pool[i] != NULL; i++)
+        sys->pool[i]->destroy(sys->pool[i]);
+    free(sys->pool);
 }
 
 static int Setup(vlc_va_t *va, void **ctxp, vlc_fourcc_t *chromap,
@@ -197,7 +271,7 @@ static int Open(vlc_va_t *va, AVCodecContext *ctx, const es_format_t *fmt)
             if ((fmt->i_profile & FF_PROFILE_H264_INTRA)
              && (fmt->i_level == 11))
                 level = VDP_DECODER_LEVEL_H264_1b;
-         default:
+        default:
             break;
     }
 
@@ -221,7 +295,7 @@ static int Open(vlc_va_t *va, AVCodecContext *ctx, const es_format_t *fmt)
     err = vdp_get_x11(NULL, -1, &sys->vdp, &sys->device);
     if (err != VDP_STATUS_OK)
     {
-        free(sys->context);
+        av_free(sys->context);
         free(sys);
         return VLC_EGENERIC;
     }

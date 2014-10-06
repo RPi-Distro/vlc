@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 2b5b9a1b9da69eeddacfbea49a5cea828acc59d0 $
+ * $Id: 2169c8a9c3b8d3ba58088713fa57e86242650ced $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -407,7 +407,7 @@ static int Open( vlc_object_t * p_this )
         tk->i_scale = p_strh->i_scale;
         tk->i_samplesize = p_strh->i_samplesize;
         msg_Dbg( p_demux, "stream[%d] rate:%d scale:%d samplesize:%d",
-                 i, tk->i_rate, tk->i_scale, tk->i_samplesize );
+                i, tk->i_rate, tk->i_scale, tk->i_samplesize );
 
         switch( p_strh->i_type )
         {
@@ -453,6 +453,15 @@ static int Open( vlc_object_t * p_this )
                 fmt.audio.i_blockalign      = p_auds->p_wf->nBlockAlign;
                 fmt.audio.i_bitspersample   = p_auds->p_wf->wBitsPerSample;
                 fmt.b_packetized            = !tk->i_blocksize;
+
+                avi_chunk_list_t *p_info = AVI_ChunkFind( p_riff, AVIFOURCC_INFO, 0 );
+                if( p_info )
+                {
+                    int i_chunk = AVIFOURCC_IAS1 + ((i - 1) << 24);
+                    avi_chunk_STRING_t *p_lang = AVI_ChunkFind( p_info, i_chunk, 0 );
+                    if( p_lang != NULL )
+                        fmt.psz_language = FromACP( p_lang->p_str );
+                }
 
                 msg_Dbg( p_demux,
                     "stream[%d] audio(0x%x - %s) %d channels %dHz %dbits",
@@ -996,7 +1005,6 @@ static int Demux_Seekable( demux_t *p_demux )
     for( i_track = 0; i_track < p_sys->i_track; i_track++ )
     {
         avi_track_t *tk = p_sys->track[i_track];
-        mtime_t i_dpts;
 
         toread[i_track].b_ok = tk->b_activated && !tk->b_eof;
         if( tk->i_idxposc < tk->idx.i_size )
@@ -1012,21 +1020,18 @@ static int Demux_Seekable( demux_t *p_demux )
             toread[i_track].i_posf = -1;
         }
 
-        i_dpts = p_sys->i_time - AVI_GetPTS( tk  );
+        mtime_t i_dpts = p_sys->i_time - AVI_GetPTS( tk );
 
         if( tk->i_samplesize )
         {
-            toread[i_track].i_toread = AVI_PTSToByte( tk, llabs( i_dpts ) );
+            toread[i_track].i_toread = AVI_PTSToByte( tk, i_dpts );
+        }
+        else if ( i_dpts > -2 * CLOCK_FREQ ) /* don't send a too early dts (low fps video) */
+        {
+            toread[i_track].i_toread = AVI_PTSToChunk( tk, i_dpts );
         }
         else
-        {
-            toread[i_track].i_toread = AVI_PTSToChunk( tk, llabs( i_dpts ) );
-        }
-
-        if( i_dpts < 0 )
-        {
-            toread[i_track].i_toread *= -1;
-        }
+            toread[i_track].i_toread = -1;
     }
 
     for( ;; )
@@ -1048,7 +1053,7 @@ static int Demux_Seekable( demux_t *p_demux )
                 continue;
             }
 
-            if( toread[i].i_toread > 0 )
+            if( toread[i].i_toread >= 0 )
             {
                 b_done = false; /* not yet finished */
             }

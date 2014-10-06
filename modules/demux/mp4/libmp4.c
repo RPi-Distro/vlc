@@ -32,6 +32,7 @@
 #endif
 
 #include "libmp4.h"
+#include "languages.h"
 #include <math.h>
 
 /* Some assumptions:
@@ -881,12 +882,10 @@ static int MP4_ReadBox_mdhd( stream_t *p_stream, MP4_Box_t *p_box )
         MP4_GET4BYTES( p_box->data.p_mdhd->i_timescale );
         MP4_GET4BYTES( p_box->data.p_mdhd->i_duration );
     }
-    p_box->data.p_mdhd->i_language_code = i_language = GetWBE( p_peek );
-    for( unsigned i = 0; i < 3; i++ )
-    {
-        p_box->data.p_mdhd->i_language[i] =
-                    ( ( i_language >> ( (2-i)*5 ) )&0x1f ) + 0x60;
-    }
+
+    MP4_GET2BYTES( i_language );
+    decodeQtLanguageCode( i_language, p_box->data.p_mdhd->rgs_language,
+                          &p_box->data.p_mdhd->b_mac_encoding );
 
     MP4_GET2BYTES( p_box->data.p_mdhd->i_predefined );
 
@@ -894,14 +893,12 @@ static int MP4_ReadBox_mdhd( stream_t *p_stream, MP4_Box_t *p_box )
     MP4_ConvertDate2Str( s_creation_time, p_box->data.p_mdhd->i_creation_time, false );
     MP4_ConvertDate2Str( s_modification_time, p_box->data.p_mdhd->i_modification_time, false );
     MP4_ConvertDate2Str( s_duration, p_box->data.p_mdhd->i_duration, true );
-    msg_Dbg( p_stream, "read box: \"mdhd\" creation %s modification %s time scale %d duration %s language %c%c%c",
+    msg_Dbg( p_stream, "read box: \"mdhd\" creation %s modification %s time scale %d duration %s language %3.3s",
                   s_creation_time,
                   s_modification_time,
                   (uint32_t)p_box->data.p_mdhd->i_timescale,
                   s_duration,
-                  p_box->data.p_mdhd->i_language[0],
-                  p_box->data.p_mdhd->i_language[1],
-                  p_box->data.p_mdhd->i_language[2] );
+                  (char*) &p_box->data.p_mdhd->rgs_language );
 #endif
     MP4_READBOX_EXIT( 1 );
 }
@@ -1240,6 +1237,7 @@ static int MP4_ReadBox_esds( stream_t *p_stream, MP4_Box_t *p_box )
             unsigned int i_len;
 
             MP4_GET1BYTE( i_len );
+            i_len = __MIN(i_read, i_len);
             es_descriptor.psz_URL = malloc( i_len + 1 );
             if( es_descriptor.psz_URL )
             {
@@ -1396,9 +1394,11 @@ static int MP4_ReadBox_avcC( stream_t *p_stream, MP4_Box_t *p_box )
         if( !p_avcC->i_sps_length || !p_avcC->sps )
             goto error;
 
-        for( i = 0; i < p_avcC->i_sps; i++ )
+        for( i = 0; i < p_avcC->i_sps && i_read > 2; i++ )
         {
             MP4_GET2BYTES( p_avcC->i_sps_length[i] );
+            if ( p_avcC->i_sps_length[i] > i_read )
+                goto error;
             p_avcC->sps[i] = malloc( p_avcC->i_sps_length[i] );
             if( p_avcC->sps[i] )
                 memcpy( p_avcC->sps[i], p_peek, p_avcC->i_sps_length[i] );
@@ -1406,6 +1406,8 @@ static int MP4_ReadBox_avcC( stream_t *p_stream, MP4_Box_t *p_box )
             p_peek += p_avcC->i_sps_length[i];
             i_read -= p_avcC->i_sps_length[i];
         }
+        if ( i != p_avcC->i_sps )
+            goto error;
     }
 
     MP4_GET1BYTE( p_avcC->i_pps );
@@ -1417,9 +1419,11 @@ static int MP4_ReadBox_avcC( stream_t *p_stream, MP4_Box_t *p_box )
         if( !p_avcC->i_pps_length || !p_avcC->pps )
             goto error;
 
-        for( i = 0; i < p_avcC->i_pps; i++ )
+        for( i = 0; i < p_avcC->i_pps && i_read > 2; i++ )
         {
             MP4_GET2BYTES( p_avcC->i_pps_length[i] );
+            if( p_avcC->i_pps_length[i] > i_read )
+                goto error;
             p_avcC->pps[i] = malloc( p_avcC->i_pps_length[i] );
             if( p_avcC->pps[i] )
                 memcpy( p_avcC->pps[i], p_peek, p_avcC->i_pps_length[i] );
@@ -1427,6 +1431,8 @@ static int MP4_ReadBox_avcC( stream_t *p_stream, MP4_Box_t *p_box )
             p_peek += p_avcC->i_pps_length[i];
             i_read -= p_avcC->i_pps_length[i];
         }
+        if ( i != p_avcC->i_pps )
+            goto error;
     }
 #ifdef MP4_VERBOSE
     msg_Dbg( p_stream,
@@ -1449,6 +1455,7 @@ static int MP4_ReadBox_avcC( stream_t *p_stream, MP4_Box_t *p_box )
     MP4_READBOX_EXIT( 1 );
 
 error:
+    MP4_FreeBox_avcC( p_box );
     MP4_READBOX_EXIT( 0 );
 }
 
@@ -1597,6 +1604,7 @@ static int MP4_ReadBox_trkn( stream_t *p_stream, MP4_Box_t *p_box )
 
 static int MP4_ReadBox_sample_soun( stream_t *p_stream, MP4_Box_t *p_box )
 {
+    p_box->i_handler = ATOM_soun;
     MP4_READBOX_ENTER( MP4_Box_data_sample_soun_t );
     p_box->data.p_sample_soun->p_qt_description = NULL;
 
@@ -1768,6 +1776,7 @@ static void MP4_FreeBox_sample_soun( MP4_Box_t *p_box )
 
 int MP4_ReadBox_sample_vide( stream_t *p_stream, MP4_Box_t *p_box )
 {
+    p_box->i_handler = ATOM_vide;
     MP4_READBOX_ENTER( MP4_Box_data_sample_vide_t );
 
     for( unsigned i = 0; i < 6 ; i++ )
@@ -1811,6 +1820,8 @@ int MP4_ReadBox_sample_vide( stream_t *p_stream, MP4_Box_t *p_box )
     MP4_GET4BYTES( p_box->data.p_sample_vide->i_qt_data_size );
     MP4_GET2BYTES( p_box->data.p_sample_vide->i_qt_frame_count );
 
+    if ( i_read < 32 )
+        MP4_READBOX_EXIT( 0 );
     memcpy( &p_box->data.p_sample_vide->i_compressorname, p_peek, 32 );
     p_peek += 32; i_read -= 32;
 
@@ -1854,6 +1865,7 @@ static int MP4_ReadBox_sample_text( stream_t *p_stream, MP4_Box_t *p_box )
 {
     int32_t t;
 
+    p_box->i_handler = ATOM_text;
     MP4_READBOX_ENTER( MP4_Box_data_sample_text_t );
 
     MP4_GET4BYTES( p_box->data.p_sample_text->i_reserved1 );
@@ -1904,6 +1916,7 @@ static int MP4_ReadBox_sample_text( stream_t *p_stream, MP4_Box_t *p_box )
 
 static int MP4_ReadBox_sample_tx3g( stream_t *p_stream, MP4_Box_t *p_box )
 {
+    p_box->i_handler = ATOM_text;
     MP4_READBOX_ENTER( MP4_Box_data_sample_text_t );
 
     MP4_GET4BYTES( p_box->data.p_sample_text->i_reserved1 );
@@ -2329,26 +2342,21 @@ static int MP4_ReadBox_elst( stream_t *p_stream, MP4_Box_t *p_box )
 
 static int MP4_ReadBox_cprt( stream_t *p_stream, MP4_Box_t *p_box )
 {
-    unsigned int i_language;
+    uint16_t i_language;
+    bool b_mac;
 
     MP4_READBOX_ENTER( MP4_Box_data_cprt_t );
 
     MP4_GETVERSIONFLAGS( p_box->data.p_cprt );
 
-    i_language = GetWBE( p_peek );
-    for( unsigned i = 0; i < 3; i++ )
-    {
-        p_box->data.p_cprt->i_language[i] =
-            ( ( i_language >> ( (2-i)*5 ) )&0x1f ) + 0x60;
-    }
-    p_peek += 2; i_read -= 2;
+    MP4_GET2BYTES( i_language );
+    decodeQtLanguageCode( i_language, p_box->data.p_cprt->rgs_language, &b_mac );
+
     MP4_GETSTRINGZ( p_box->data.p_cprt->psz_notice );
 
 #ifdef MP4_VERBOSE
-    msg_Dbg( p_stream, "read box: \"cprt\" language %c%c%c notice %s",
-                      p_box->data.p_cprt->i_language[0],
-                      p_box->data.p_cprt->i_language[1],
-                      p_box->data.p_cprt->i_language[2],
+    msg_Dbg( p_stream, "read box: \"cprt\" language %3.3s notice %s",
+                      p_box->data.p_cprt->rgs_language,
                       p_box->data.p_cprt->psz_notice );
 
 #endif

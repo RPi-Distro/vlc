@@ -2,7 +2,7 @@
  * top_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: d65a80e0acf3be14d01e40a847b4dc2ae3e0533f $
+ * $Id: 11b0d0d7dc71dbf28621c4c3836ac683f90d56c8 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -382,13 +382,14 @@ void TopWindow::setActiveLayout( GenericLayout *pLayout )
     // Get the size of the layout and resize the window
     resize( pLayout->getWidth(), pLayout->getHeight() );
 
+    // The new layout is active
+    pLayout->getActiveVar().set( true );
+
     if( isVisible )
     {
         pLayout->onShow();
     }
 
-    // The new layout is active
-    pLayout->getActiveVar().set( true );
 }
 
 

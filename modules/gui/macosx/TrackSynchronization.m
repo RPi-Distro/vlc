@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2011-2014 VLC authors and VideoLAN
  * Copyright (C) 2011-2014 Felix Paul Kühne
- * $Id: f65e5ce7a9562dd9b95eb1a215e73d85ac6f0d48 $
+ * $Id: d2deecdcf8ac7b43f2da7ee38dd8617101d8de51 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -109,7 +109,7 @@ static VLCTrackSynchronization *_o_sharedInstance = nil;
     if ([o_window isVisible])
         [o_window orderOut:sender];
     else {
-        [o_window setLevel: [[[VLCMain sharedInstance] voutController] currentWindowLevel]];
+        [o_window setLevel: [[[VLCMain sharedInstance] voutController] currentStatusWindowLevel]];
         [o_window makeKeyAndOrderFront:sender];
     }
 }

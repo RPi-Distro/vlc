@@ -2,7 +2,7 @@
  * video.c: video decoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 9169befd681f29de811aa02ebe1762fbdb20f492 $
+ * $Id: ad9be3b695901e0428aaa8b9981e8f7fef3f66c8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -435,7 +435,7 @@ int InitVideoDec( decoder_t *p_dec, AVCodecContext *p_context,
     if( ffmpeg_OpenCodec( p_dec ) < 0 )
     {
         msg_Err( p_dec, "cannot open codec (%s)", p_sys->psz_namecodec );
-        av_free( p_sys->p_ff_pic );
+        avcodec_free_frame( &p_sys->p_ff_pic );
         vlc_sem_destroy( &p_sys->sem_mt );
         free( p_sys );
         return VLC_EGENERIC;
@@ -812,7 +812,7 @@ void EndVideoDec( decoder_t *p_dec )
     wait_mt( p_sys );
 
     if( p_sys->p_ff_pic )
-        av_free( p_sys->p_ff_pic );
+        avcodec_free_frame( &p_sys->p_ff_pic );
 
     if( p_sys->p_va )
         vlc_va_Delete( p_sys->p_va );

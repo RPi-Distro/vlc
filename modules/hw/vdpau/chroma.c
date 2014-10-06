@@ -478,14 +478,35 @@ static picture_t *VideoRender(filter_t *filter, picture_t *src)
         picture_Release(src);
     }
     else
+    {
         sys->history[MAX_PAST + MAX_FUTURE].field = NULL;
+        sys->history[MAX_PAST + MAX_FUTURE].force = false;
+    }
 
     if (dst == NULL)
         goto skip;
 
     vlc_vdp_video_field_t *f = sys->history[MAX_PAST].field;
     if (f == NULL)
-        goto error;
+    {   /* There is no present field, probably just starting playback. */
+        if (!sys->history[MAX_PAST + MAX_FUTURE].force)
+            goto error;
+
+        /* If the picture is forced, ignore deinterlacing and fast forward. */
+        /* FIXME: Remove the forced hack pictures in video output core and
+         * allow the last field of a video to be rendered properly. */
+        while (sys->history[MAX_PAST].field == NULL)
+        {
+            f = sys->history[0].field;
+            if (f != NULL)
+                f->destroy(f);
+
+            memmove(sys->history, sys->history + 1,
+                    sizeof (sys->history[0]) * (MAX_PAST + MAX_FUTURE));
+            sys->history[MAX_PAST + MAX_FUTURE].field = NULL;
+        }
+        f = sys->history[MAX_PAST].field;
+    }
 
     dst->date = sys->history[MAX_PAST].date;
     dst->b_force = sys->history[MAX_PAST].force;

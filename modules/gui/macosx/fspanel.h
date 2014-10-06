@@ -2,7 +2,7 @@
  * fspanel.h: MacOS X full screen panel
  *****************************************************************************
  * Copyright (C) 2006-2013 VLC authors and VideoLAN
- * $Id: 636432c634d5a6f1ad3ab974de2593228d61dac5 $
+ * $Id: 614dfff8b24b1e1e5962b72600c0e2daca55af98 $
  *
  * Authors: Jérôme Decoodt <djc at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -45,7 +45,6 @@
                 styleMask: (NSUInteger)aStyle
                   backing: (NSBackingStoreType)bufferingType
                     defer: (BOOL)flag;
-- (void)awakeFromNib;
 - (BOOL)canBecomeKeyWindow;
 - (void)dealloc;
 

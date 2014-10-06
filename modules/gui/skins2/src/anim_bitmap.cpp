@@ -2,7 +2,7 @@
  * anim_bitmap.cpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 0ac5ac4fbd27d286ba3700cc72a0d291d7f35fd9 $
+ * $Id: b01b16d37d0f7e149dab785304c1f635bc38cced $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -121,3 +121,10 @@ void AnimBitmap::CmdNextFrame::execute()
     m_pParent->notify();
 }
 
+bool AnimBitmap::operator ==( const AnimBitmap& rOther ) const
+{
+    return &m_rBitmap == &rOther.m_rBitmap
+        && m_nbFrames == rOther.m_nbFrames
+        && m_frameRate == rOther.m_frameRate
+        && m_nbLoops == rOther.m_nbLoops;
+}

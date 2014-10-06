@@ -4,7 +4,7 @@
  * interface, such as command line.
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: 5e733e1ba5bf748832820d1ea3f984e12b8a913d $
+ * $Id: 4bc709a78c70c015a706ea2953b75d58730111c5 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -207,6 +207,7 @@ int libvlc_InternalAddIntf(libvlc_int_t *libvlc, const char *name)
                          "Use 'cvlc' to use vlc without interface."));
         }
         ret = intf_Create(playlist, intf);
+        free(intf);
         name = "default";
     }
     if (ret != VLC_SUCCESS)

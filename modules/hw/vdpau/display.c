@@ -315,7 +315,11 @@ static void Wait(vout_display_t *vd, picture_t *pic, subpicture_t *subpicture)
     }
 
     sys->current = pic;
-    (void) subpicture;
+
+    /* We already dealt with the subpicture in the Queue phase, so it's safe to
+       delete at this point */
+    if (subpicture)
+        subpicture_Delete(subpicture);
 }
 
 static int Control(vout_display_t *vd, int query, va_list ap)
@@ -660,9 +664,6 @@ static int Open(vlc_object_t *obj)
         vdp_presentation_queue_target_destroy(sys->vdp, sys->target);
         goto error;
     }
-
-    VdpColor black = { 0.f, 0.f, 0.f, 1.f };
-    vdp_presentation_queue_set_background_color(sys->vdp, sys->queue, &black);
 
     sys->cursor = XCB_cursor_Create(sys->conn, screen);
     sys->pool = NULL;
