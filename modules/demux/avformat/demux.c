@@ -2,7 +2,7 @@
  * demux.c: demuxer using libavformat
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: e424fbd053f507e6215007f7d7a5ef9218eebb0e $
+ * $Id: 826b78e0dd67b5f248176898dcb1e19a5a8f8f86 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -255,7 +255,7 @@ int OpenDemux( vlc_object_t *p_this )
     /* Fill p_demux fields */
     p_demux->pf_demux = Demux;
     p_demux->pf_control = Control;
-    p_demux->p_sys = p_sys = malloc( sizeof( demux_sys_t ) );
+    p_demux->p_sys = p_sys = xmalloc( sizeof( demux_sys_t ) );
     p_sys->ic = 0;
     p_sys->fmt = fmt;
     p_sys->i_tk = 0;
@@ -267,7 +267,7 @@ int OpenDemux( vlc_object_t *p_this )
 
     /* Create I/O wrapper */
     p_sys->io_buffer_size = 32768;  /* FIXME */
-    p_sys->io_buffer = malloc( p_sys->io_buffer_size );
+    p_sys->io_buffer = xmalloc( p_sys->io_buffer_size );
 
     p_sys->ic = avformat_alloc_context();
     p_sys->ic->pb = avio_alloc_context( p_sys->io_buffer,
@@ -328,17 +328,10 @@ int OpenDemux( vlc_object_t *p_this )
     {
         AVStream *s = p_sys->ic->streams[i];
         AVCodecContext *cc = s->codec;
-
-        es_out_id_t  *es;
+        es_out_id_t  *es = NULL;
         es_format_t  fmt;
         vlc_fourcc_t fcc;
         const char *psz_type = "unknown";
-
-        if( cc->codec_id == AV_CODEC_ID_NONE )
-        {
-            p_sys->i_tk++;
-            continue;
-        }
 
         if( !GetVlcFourcc( cc->codec_id, NULL, &fcc, NULL ) )
             fcc = VLC_FOURCC( 'u', 'n', 'd', 'f' );
@@ -346,8 +339,13 @@ int OpenDemux( vlc_object_t *p_this )
 #if LIBAVFORMAT_VERSION_INT >= ((54<<16)+(2<<8)+0)
         /* Do not use the cover art as a stream */
         if( s->disposition == AV_DISPOSITION_ATTACHED_PIC )
-            continue;
+            fcc = 0;
 #endif
+        if( fcc == 0 )
+        {
+            TAB_APPEND( p_sys->i_tk, p_sys->tk, NULL );
+            continue;
+        }
 
         switch( cc->codec_type )
         {
@@ -391,7 +389,7 @@ int OpenDemux( vlc_object_t *p_this )
 #if LIBAVCODEC_VERSION_MAJOR < 54
             if( cc->palctrl )
             {
-                fmt.video.p_palette = malloc( sizeof(video_palette_t) );
+                fmt.video.p_palette = xmalloc( sizeof(video_palette_t) );
                 *fmt.video.p_palette = *(video_palette_t *)cc->palctrl;
             }
 #else
@@ -595,10 +593,10 @@ int OpenDemux( vlc_object_t *p_this )
 
             msg_Dbg( p_demux, "adding es: %s codec = %4.4s (%d)",
                      psz_type, (char*)&fcc, cc->codec_id  );
-            TAB_APPEND( p_sys->i_tk, p_sys->tk, es );
         }
+        TAB_APPEND( p_sys->i_tk, p_sys->tk, es );
     }
-    p_sys->tk_pcr = calloc( p_sys->i_tk, sizeof(*p_sys->tk_pcr) );
+    p_sys->tk_pcr = xcalloc( p_sys->i_tk, sizeof(*p_sys->tk_pcr) );
 
     if( p_sys->ic->start_time != (int64_t)AV_NOPTS_VALUE )
         i_start_time = p_sys->ic->start_time * 1000000 / AV_TIME_BASE;
@@ -647,7 +645,7 @@ void CloseDemux( vlc_object_t *p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys = p_demux->p_sys;
 
-    FREENULL( p_sys->tk );
+    free( p_sys->tk );
     free( p_sys->tk_pcr );
 
     if( p_sys->ic )
@@ -757,7 +755,7 @@ static int Demux( demux_t *p_demux )
             p_stream->time_base.den - i_start_time + VLC_TS_0;
     }
     if( pkt.duration > 0 && p_frame->i_length <= 0 )
-        p_frame->i_length = pkt.duration * 1000000 *
+        p_frame->i_length = pkt.duration * INT64_C(1000000) *
             p_stream->time_base.num /
             p_stream->time_base.den;
 
@@ -792,7 +790,10 @@ static int Demux( demux_t *p_demux )
         UpdateSeekPoint( p_demux, p_sys->i_pcr );
     }
 
-    es_out_Send( p_demux->out, p_sys->tk[pkt.stream_index], p_frame );
+    if( p_sys->tk[pkt.stream_index] != NULL )
+        es_out_Send( p_demux->out, p_sys->tk[pkt.stream_index], p_frame );
+    else
+        block_Release( p_frame );
 
     av_free_packet( &pkt );
     return 1;
@@ -1012,7 +1013,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 return VLC_EGENERIC;
 
             *pi_int = p_sys->i_attachments;;
-            *ppp_attach = malloc( sizeof(input_attachment_t*) * p_sys->i_attachments );
+            *ppp_attach = xmalloc( sizeof(input_attachment_t*) * p_sys->i_attachments );
             for( i = 0; i < p_sys->i_attachments; i++ )
                 (*ppp_attach)[i] = vlc_input_attachment_Duplicate( p_sys->attachments[i] );
             return VLC_SUCCESS;
@@ -1029,7 +1030,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 return VLC_EGENERIC;
 
             *pi_int = 1;
-            *ppp_title = malloc( sizeof( input_title_t*) );
+            *ppp_title = xmalloc( sizeof( input_title_t*) );
             (*ppp_title)[0] = vlc_input_title_Duplicate( p_sys->p_title );
             *pi_title_offset = 0;
             *pi_seekpoint_offset = 0;

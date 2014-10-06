@@ -6,7 +6,7 @@
  * thread, and destroy a previously oppened video output thread.
  *****************************************************************************
  * Copyright (C) 2000-2007 VLC authors and VideoLAN
- * $Id: 18f22ce495e5f72519ce8ac33c6ea4c266558ceb $
+ * $Id: 2dd43f4c5c4bd8566b3bbf8c92d4b0e948c42980 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -806,6 +806,8 @@ static void ThreadChangeFilters(vout_thread_t *vout,
         }
     }
 
+    es_format_Clean(&fmt_target);
+
     if (vout->p->filter.configuration != filters) {
         free(vout->p->filter.configuration);
         vout->p->filter.configuration = filters ? strdup(filters) : NULL;
@@ -1121,6 +1123,7 @@ static int ThreadDisplayPicture(vout_thread_t *vout, mtime_t *deadline)
         date_refresh = vout->p->displayed.date + VOUT_REDISPLAY_DELAY - render_delay;
         refresh = date_refresh <= date;
     }
+    bool force_refresh = !drop_next_frame && refresh;
 
     if (!first && !refresh && !drop_next_frame) {
         if (!frame_by_frame) {
@@ -1142,8 +1145,9 @@ static int ThreadDisplayPicture(vout_thread_t *vout, mtime_t *deadline)
         return VLC_EGENERIC;
 
     /* display the picture immediately */
-    bool is_forced = frame_by_frame || (!drop_next_frame && refresh) || vout->p->displayed.current->b_force;
-    return ThreadDisplayRenderPicture(vout, is_forced);
+    bool is_forced = frame_by_frame || force_refresh || vout->p->displayed.current->b_force;
+    int ret = ThreadDisplayRenderPicture(vout, is_forced);
+    return force_refresh ? VLC_EGENERIC : ret;
 }
 
 static void ThreadDisplaySubpicture(vout_thread_t *vout,

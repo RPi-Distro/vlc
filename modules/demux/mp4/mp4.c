@@ -125,7 +125,6 @@ static int      MP4_TrackNextSample( demux_t *, mp4_track_t *, uint32_t );
 static void     MP4_TrackSetELST( demux_t *, mp4_track_t *, int64_t );
 
 static void     MP4_UpdateSeekpoint( demux_t * );
-static const char *MP4_ConvertMacCode( uint16_t );
 
 static MP4_Box_t * MP4_GetTrexByTrackID( MP4_Box_t *p_moov, const uint32_t i_id );
 
@@ -967,13 +966,14 @@ end:
                 continue;
 
             mtime_t i_dts = MP4_TrackGetDTS( p_demux, tk );
+            p_sys->i_pcr = __MIN( i_dts, p_sys->i_pcr );
+
             if ( !p_sys->b_seekmode && i_dts > p_sys->i_pcr + 2*CLOCK_FREQ )
             {
                 msg_Dbg( p_demux, "that media doesn't look interleaved, will need to seek");
                 p_sys->b_seekmode = true;
             }
 
-            p_sys->i_pcr = __MIN( i_dts, p_sys->i_pcr );
             p_sys->i_time = p_sys->i_pcr * p_sys->i_timescale / CLOCK_FREQ;
         }
     }
@@ -1746,12 +1746,15 @@ static int TrackCreateChunksIndex( demux_t *p_demux,
         i_last = BOXDATA(p_stsc)->i_first_chunk[i_index] - 1;
     }
 
-    p_demux_track->chunk[0].i_sample_first = 0;
-    for( i_chunk = 1; i_chunk < p_demux_track->i_chunk_count; i_chunk++ )
+    if ( p_demux_track->i_chunk_count )
     {
-        p_demux_track->chunk[i_chunk].i_sample_first =
-            p_demux_track->chunk[i_chunk-1].i_sample_first +
-                p_demux_track->chunk[i_chunk-1].i_sample_count;
+        p_demux_track->chunk[0].i_sample_first = 0;
+        for( i_chunk = 1; i_chunk < p_demux_track->i_chunk_count; i_chunk++ )
+        {
+            p_demux_track->chunk[i_chunk].i_sample_first =
+                p_demux_track->chunk[i_chunk-1].i_sample_first +
+                    p_demux_track->chunk[i_chunk-1].i_sample_count;
+        }
     }
 
     msg_Dbg( p_demux, "track[Id 0x%x] read %d chunk",
@@ -2207,7 +2210,7 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
     switch( p_track->fmt.i_cat )
     {
     case VIDEO_ES:
-        if ( !p_sample->data.p_sample_vide )
+        if ( !p_sample->data.p_sample_vide || p_sample->i_handler != ATOM_vide )
             break;
         p_track->fmt.video.i_width = p_sample->data.p_sample_vide->i_width;
         p_track->fmt.video.i_height = p_sample->data.p_sample_vide->i_height;
@@ -2264,7 +2267,7 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
         break;
 
     case AUDIO_ES:
-        if ( !p_sample->data.p_sample_soun )
+        if ( !p_sample->data.p_sample_soun || p_sample->i_handler != ATOM_soun )
             break;
         p_track->fmt.audio.i_channels =
             p_sample->data.p_sample_soun->i_channelcount;
@@ -2405,6 +2408,8 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
         case( VLC_FOURCC( 'r', 'a', 'w', ' ' ) ):
         case( VLC_FOURCC( 'N', 'O', 'N', 'E' ) ):
         {
+            if ( p_sample->i_handler != ATOM_soun )
+                break;
             MP4_Box_data_sample_soun_t *p_soun = p_sample->data.p_sample_soun;
 
             if(p_soun && (p_soun->i_samplesize+7)/8 == 1 )
@@ -2435,6 +2440,8 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
         case( VLC_FOURCC( 't', 'e', 'x', 't' ) ):
         case( VLC_FOURCC( 't', 'x', '3', 'g' ) ):
         {
+            if ( p_sample->i_handler != ATOM_text )
+                break;
             p_track->fmt.i_codec = VLC_CODEC_TX3G;
             MP4_Box_data_sample_text_t *p_text = p_sample->data.p_sample_text;
             if ( p_text )
@@ -2491,6 +2498,8 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
             break;
         case VLC_CODEC_DVD_LPCM:
         {
+            if ( p_sample->i_handler != ATOM_soun )
+                break;
             MP4_Box_data_sample_soun_t *p_soun = p_sample->data.p_sample_soun;
             if( p_soun->i_qt_version == 2 )
             {
@@ -2704,6 +2713,9 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
             case VLC_FOURCC( 'V', 'P', '3', '1' ):
             case VLC_FOURCC( '3', 'I', 'V', '1' ):
             case VLC_FOURCC( 'Z', 'y', 'G', 'o' ):
+            {
+                if ( p_sample->i_handler != ATOM_vide )
+                    break;
                 p_track->fmt.i_extra =
                     p_sample->data.p_sample_vide->i_qt_image_description;
                 if( p_track->fmt.i_extra > 0 )
@@ -2714,6 +2726,7 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
                             p_track->fmt.i_extra);
                 }
                 break;
+            }
 
             case VLC_CODEC_AMR_NB:
                 p_track->fmt.audio.i_rate = 8000;
@@ -2724,6 +2737,9 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
             case VLC_FOURCC( 'Q', 'D', 'M', 'C' ):
             case VLC_CODEC_QDM2:
             case VLC_CODEC_ALAC:
+            {
+                if ( p_sample->i_handler != ATOM_soun )
+                    break;
                 p_track->fmt.i_extra =
                     p_sample->data.p_sample_soun->i_qt_description;
                 if( p_track->fmt.i_extra > 0 )
@@ -2739,7 +2755,7 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
                     p_track->fmt.audio.i_rate = GetDWBE((uint8_t*)p_track->fmt.p_extra + 52);
                 }
                 break;
-
+            }
             case VLC_FOURCC( 'v', 'c', '-', '1' ):
             {
                 MP4_Box_t *p_dvc1 = MP4_BoxGet( p_sample, "dvc1" );
@@ -2808,8 +2824,11 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
             case VLC_CODEC_ADPCM_MS:
             case VLC_CODEC_ADPCM_IMA_WAV:
             case VLC_CODEC_QCELP:
-                p_track->fmt.audio.i_blockalign = p_sample->data.p_sample_soun->i_bytes_per_frame;
+            {
+                if ( p_sample->i_handler == ATOM_soun )
+                    p_track->fmt.audio.i_blockalign = p_sample->data.p_sample_soun->i_bytes_per_frame;
                 break;
+            }
 
             default:
                 msg_Dbg( p_demux, "Unrecognized FourCC %4.4s", (char *)&p_sample->i_type );
@@ -3095,19 +3114,8 @@ static void MP4_TrackCreate( demux_t *p_demux, mp4_track_t *p_track,
     if( p_track->i_timescale == 0 )
         return;
 
-    if( BOXDATA(p_mdhd)->i_language_code < 0x400 )
-    {
-        strcpy( language, MP4_ConvertMacCode( BOXDATA(p_mdhd)->i_language_code ) );
-        p_track->b_mac_encoding = true;
-    }
-    else if( BOXDATA(p_mdhd)->i_language_code == 0x7fff )
-        p_track->b_mac_encoding = true;
-    else
-    {
-        for( unsigned i = 0; i < 3; i++ )
-            language[i] = BOXDATA(p_mdhd)->i_language[i];
-        language[3] = '\0';
-    }
+    memcpy( &language, BOXDATA(p_mdhd)->rgs_language, 3 );
+    p_track->b_mac_encoding = BOXDATA(p_mdhd)->b_mac_encoding;
 
     switch( p_hdlr->data.p_hdlr->i_handler_type )
     {
@@ -3605,47 +3613,6 @@ static void MP4_TrackSetELST( demux_t *p_demux, mp4_track_t *tk,
     {
         msg_Warn( p_demux, "elst old=%d new=%d", i_elst_last, tk->i_elst );
     }
-}
-
-/* */
-static const char *MP4_ConvertMacCode( uint16_t i_code )
-{
-    static const struct { const char psz_iso639_1[3]; uint16_t i_code; } p_cvt[] = {
-        { "en",   0 }, { "fr",   1 }, { "de",   2 }, { "it",   3 }, { "nl",   4 },
-        { "sv",   5 }, { "es",   6 }, { "da",   7 }, { "pt",   8 }, { "no",   9 },
-        { "he",  10 }, { "ja",  11 }, { "ar",  12 }, { "fi",  13 }, { "el",  14 },
-        { "is",  15 }, { "mt",  16 }, { "tr",  17 }, { "hr",  18 }, { "zh",  19 },
-        { "ur",  20 }, { "hi",  21 }, { "th",  22 }, { "ko",  23 }, { "lt",  24 },
-        { "pl",  25 }, { "hu",  26 }, { "et",  27 }, { "lv",  28 }, //{ "??",  29 },
-        { "fo",  30 }, { "fa",  31 }, { "ru",  32 }, { "zh",  33 }, { "nl",  34 },
-        { "ga",  35 }, { "sq",  36 }, { "ro",  37 }, { "cs",  38 }, { "sk",  39 },
-        { "sl",  40 }, { "yi",  41 }, { "sr",  42 }, { "mk",  43 }, { "bg",  44 },
-        { "uk",  45 }, { "be",  46 }, { "uz",  47 }, { "az",  48 }, { "kk",  48 },
-        { "az",  50 }, { "hy",  51 }, { "ka",  52 }, { "mo",  53 }, { "ky",  54 },
-        { "tg",  55 }, { "tk",  56 }, { "mn",  57 }, { "mn",  58 }, { "ps",  59 },
-        { "ku",  60 }, { "ks",  61 }, { "sd",  62 }, { "bo",  63 }, { "ne",  64 },
-        { "sa",  65 }, { "mr",  66 }, { "bn",  67 }, { "as",  68 }, { "gu",  69 },
-        { "pa",  70 }, { "or",  71 }, { "ml",  72 }, { "kn",  73 }, { "ta",  74 },
-        { "te",  75 }, { "si",  76 }, { "my",  77 }, { "km",  78 }, { "lo",  79 },
-        { "vi",  80 }, { "id",  81 }, { "tl",  82 }, { "ms",  83 }, { "ms",  84 },
-        { "am",  85 }, { "ti",  86 }, { "om",  87 }, { "so",  88 }, { "sw",  89 },
-        { "rw",  90 }, { "rn",  91 }, { "ny",  92 }, { "mg",  93 }, { "eo",  94 },
-
-                                                     { "cy", 128 }, { "eu", 129 },
-        { "ca", 130 }, { "la", 131 }, { "qu", 132 }, { "gn", 133 }, { "ay", 134 },
-        { "tt", 135 }, { "ug", 136 }, { "dz", 137 }, { "jv", 138 }, { "su", 139 },
-        { "gl", 140 }, { "af", 141 }, { "br", 142 }, { "iu", 143 }, { "gd", 144 },
-        { "gv", 145 }, { "ga", 146 }, { "to", 147 }, { "el", 148 },
-        /* */
-        { "", 0 }
-    };
-    int i;
-    for( i = 0; *p_cvt[i].psz_iso639_1; i++ )
-    {
-        if( p_cvt[i].i_code == i_code )
-            return p_cvt[i].psz_iso639_1;
-    }
-    return "";
 }
 
 /******************************************************************************

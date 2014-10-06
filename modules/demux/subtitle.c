@@ -2,7 +2,7 @@
  * subtitle.c: Demux for subtitle text files.
  *****************************************************************************
  * Copyright (C) 1999-2007 VLC authors and VideoLAN
- * $Id: 29922cc00ad6a751eb773af02fc33440e695b1d6 $
+ * $Id: c2a7642643b05a9832f99c1dc38f5160461b9d50 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -584,6 +584,7 @@ static void Close( vlc_object_t *p_this )
     for( i = 0; i < p_sys->i_subtitles; i++ )
         free( p_sys->subtitle[i].psz_text );
     free( p_sys->subtitle );
+    free( p_sys->psz_header );
 
     free( p_sys );
 }
@@ -1082,6 +1083,7 @@ static int  ParseSSA( demux_t *p_demux, subtitle_t *p_subtitle,
 {
     demux_sys_t *p_sys = p_demux->p_sys;
     text_t      *txt = &p_sys->txt;
+    size_t header_len = 0;
 
     for( ;; )
     {
@@ -1154,11 +1156,12 @@ static int  ParseSSA( demux_t *p_demux, subtitle_t *p_subtitle,
         free( psz_text );
 
         /* All the other stuff we add to the header field */
-        char *psz_header;
-        if( asprintf( &psz_header, "%s%s\n",
-                       p_sys->psz_header ? p_sys->psz_header : "", s ) == -1 )
+        size_t s_len = strlen( s );
+        p_sys->psz_header = realloc_or_free( p_sys->psz_header, header_len + s_len + 2 );
+        if( !p_sys->psz_header )
             return VLC_ENOMEM;
-        p_sys->psz_header = psz_header;
+        snprintf( p_sys->psz_header + header_len, s_len + 2, "%s\n", s );
+        header_len += s_len + 1;
     }
 }
 

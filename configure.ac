@@ -2,12 +2,12 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2014 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 2.2.0-pre3)
+AC_INIT(vlc, 2.2.0-pre4)
 VERSION_MAJOR=2
 VERSION_MINOR=2
 VERSION_REVISION=0
 VERSION_EXTRA=0
-VERSION_DEV=pre3
+VERSION_DEV=pre4
 
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
@@ -171,7 +171,6 @@ case "${host_os}" in
     OBJCFLAGS="${OBJCFLAGS} -D_INTL_REDIRECT_MACROS -std=gnu99 ${ARCH_flag}"
     LDFLAGS="${LDFLAGS} -Wl,-headerpad_max_install_names ${ARCH_flag}"
     VLC_ADD_LIBS([libvlc vlc],[-Wl,-undefined,dynamic_lookup,-framework,AppKit])
-    VLC_ADD_LIBS([avcodec access_avio swscale postproc i420_rgb_mmx x262 x264 x26410b],[-Wl,-read_only_relocs,suppress])
     VLC_ADD_LIBS([libvlccore],[-Wl,-framework,CoreFoundation,-framework,CoreServices])
 
     AC_EGREP_CPP(yes,

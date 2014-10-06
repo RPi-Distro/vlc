@@ -2,7 +2,7 @@
  * stream_memory.c: stream_t wrapper around memory buffer
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 491ab02f01988b0ae797a3891b8f3a61ff5de2dc $
+ * $Id: 25caa2e15d11c88641df2d26d45d61f9ca1679f8 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -157,7 +157,8 @@ static int Read( stream_t *s, void *p_read, unsigned int i_read )
 {
     stream_sys_t *p_sys = s->p_sys;
     int i_res = __MIN( i_read, p_sys->i_size - p_sys->i_pos );
-    memcpy( p_read, p_sys->p_buffer + p_sys->i_pos, i_res );
+    if ( p_read )
+        memcpy( p_read, p_sys->p_buffer + p_sys->i_pos, i_res );
     p_sys->i_pos += i_res;
     return i_res;
 }

@@ -2,7 +2,7 @@
  * mp4.c: mp4/mov muxer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2003, 2006 VLC authors and VideoLAN
- * $Id: d1a7490f8d506833e9d35465c88b0f55040b9c17 $
+ * $Id: 9b39eb203178f3e9198cc495261694bb57abe929 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin at videolan dot org>
@@ -210,7 +210,6 @@ static int Open(vlc_object_t *p_this)
         else
             bo_add_fourcc(box, "mp41");
         bo_add_fourcc(box, "avc1");
-        bo_add_fourcc(box, "qt  ");
         box_fix(box);
 
         p_sys->i_pos += box->len;

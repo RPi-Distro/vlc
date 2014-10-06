@@ -2,7 +2,7 @@
  * flac.c: flac packetizer module.
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: d3fe3226d71014c4747e7beee9eb2cb8dca09cb1 $
+ * $Id: 3303a27639f96675423521f75a6f3cb866905a27 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -769,6 +769,7 @@ static void Close(vlc_object_t *p_this)
     decoder_t *p_dec = (decoder_t *)p_this;
     decoder_sys_t *p_sys = p_dec->p_sys;
 
+    es_format_Clean(&p_dec->fmt_out);
     block_BytestreamRelease(&p_sys->bytestream);
     free(p_sys);
 }

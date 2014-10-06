@@ -2,7 +2,7 @@
  * display.c: "vout display" managment
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 4b85f0c753210bc0015169c02204a565a0b580d8 $
+ * $Id: e2b57eaa58e3d965e7ec473f7e2915e75a7ee541 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -146,6 +146,9 @@ static void vout_display_Delete(vout_display_t *vd)
 {
     if (vd->module)
         module_unneed(vd, vd->module);
+
+    video_format_Clean(&vd->source);
+    video_format_Clean(&vd->fmt);
 
     vlc_object_release(vd);
 }
@@ -475,19 +478,20 @@ static void VoutDisplayCreateRender(vout_display_t *vd)
     es_format_InitFromVideo(&src, &v_src);
 
     /* */
-    es_format_t dst;
-
     filter_t *filter;
     for (int i = 0; i < 1 + (v_dst_cmp.i_chroma != v_dst.i_chroma); i++) {
+        es_format_t dst;
 
         es_format_InitFromVideo(&dst, i == 0 ? &v_dst : &v_dst_cmp);
 
         filter_chain_Reset(osys->filters, &src, &dst);
         filter = filter_chain_AppendFilter(osys->filters,
                                            NULL, NULL, &src, &dst);
+        es_format_Clean(&dst);
         if (filter)
             break;
     }
+    es_format_Clean(&src);
     if (!filter)
         msg_Err(vd, "Failed to adapt decoder format to display");
 }

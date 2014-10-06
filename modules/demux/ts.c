@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2005 VLC authors and VideoLAN
- * $Id: dcd1d946304fa10b15c8da0afc6e325da1f2a99b $
+ * $Id: 8c78b5f2d3852945a444dbff875a38a84ae4cb59 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -2283,9 +2283,10 @@ static bool GatherData( demux_t *p_demux, ts_pid_t *pid, block_t *p_bk )
                       i_cc, ( pid->i_cc + 1 )&0x0f, pid->i_pid );
 
             pid->i_cc = i_cc;
-            if( pid->es->p_data && pid->es->fmt.i_cat != VIDEO_ES )
+            if( pid->es->p_data && pid->es->fmt.i_cat != VIDEO_ES &&
+                pid->es->fmt.i_cat != AUDIO_ES )
             {
-                /* Small video artifacts are usually better than
+                /* Small audio/video artifacts are usually better than
                  * dropping full frames */
                 pid->es->p_data->i_flags |= BLOCK_FLAG_CORRUPTED;
             }

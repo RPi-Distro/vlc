@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-08-29 03:59+0200\n"
+"POT-Creation-Date: 2014-10-06 17:05+0200\n"
 "PO-Revision-Date: 2014-04-02 04:57+0000\n"
 "Last-Translator: soksophea <sksophea@gmail.com>\n"
 "Language-Team: Khmer (http://www.transifex.com/projects/p/vlc-trans/language/"
@@ -79,7 +79,7 @@ msgstr "ការ​កំណត់​គ្រាប់ចុច​រហ័ស
 #: include/vlc_config_cat.h:53 src/input/es_out.c:2878 src/input/es_out.c:2919
 #: src/libvlc-module.c:1443 modules/access/imem.c:64
 #: modules/gui/macosx/ConvertAndSave.m:185 modules/gui/macosx/MainMenu.m:420
-#: modules/gui/macosx/output.m:161 modules/gui/macosx/playlistinfo.m:112
+#: modules/gui/macosx/output.m:161 modules/gui/macosx/playlistinfo.m:111
 #: modules/gui/macosx/simple_prefs.m:271 modules/gui/macosx/wizard.m:377
 #: modules/gui/qt4/components/info_panels.cpp:564
 #: modules/gui/qt4/components/simple_preferences.cpp:272
@@ -138,7 +138,7 @@ msgstr "ម៉ូឌុល និង​ការ​កំណត់​អូឌ�
 #: include/vlc_config_cat.h:71 src/input/es_out.c:2881 src/input/es_out.c:2963
 #: src/libvlc-module.c:1497 modules/access/imem.c:64
 #: modules/gui/macosx/ConvertAndSave.m:175 modules/gui/macosx/MainMenu.m:433
-#: modules/gui/macosx/output.m:151 modules/gui/macosx/playlistinfo.m:102
+#: modules/gui/macosx/output.m:151 modules/gui/macosx/playlistinfo.m:101
 #: modules/gui/macosx/simple_prefs.m:273 modules/gui/macosx/simple_prefs.m:410
 #: modules/gui/macosx/wizard.m:378
 #: modules/gui/qt4/components/info_panels.cpp:565
@@ -1161,8 +1161,8 @@ msgid "decoder"
 msgstr "ឌិកូឌ័រ"
 
 #: src/input/decoder.c:261 src/input/decoder.c:453
-#: modules/codec/avcodec/encoder.c:287 modules/codec/avcodec/encoder.c:295
-#: modules/codec/avcodec/encoder.c:329 modules/codec/avcodec/encoder.c:867
+#: modules/codec/avcodec/encoder.c:290 modules/codec/avcodec/encoder.c:298
+#: modules/codec/avcodec/encoder.c:332 modules/codec/avcodec/encoder.c:870
 #: modules/stream_out/es.c:362 modules/stream_out/es.c:377
 msgid "Streaming / Transcoding failed"
 msgstr "បរាជ័យ​ក្នុង​ការ​ស្ទ្រីម / ការ​បម្លែង​ត្រឡប់"
@@ -1338,20 +1338,20 @@ msgstr "អត្រា​ស៊ុម"
 msgid "Decoded format"
 msgstr "បាន​ឌិកូដ​ទ្រង់ទ្រាយ"
 
-#: src/input/input.c:2310
+#: src/input/input.c:2302
 msgid "Your input can't be opened"
 msgstr "មិន​អាច​បើក​ព័ត៌មាន​បញ្ចូល​របស់​អ្នក​បានទេ"
 
-#: src/input/input.c:2311
+#: src/input/input.c:2303
 #, c-format
 msgid "VLC is unable to open the MRL '%s'. Check the log for details."
 msgstr "VLC មិន​អាច​បើក MRL '%s' បាន​ទេ ។ ពិនិត្យ​មើល​កំណត់ហេតុ​សម្រាប់​សេចក្ដី​លម្អិត ។"
 
-#: src/input/input.c:2423
+#: src/input/input.c:2415
 msgid "VLC can't recognize the input's format"
 msgstr "VLC មិន​អាច​ស្គាល់​ទ្រង់ទ្រាយ​ព័ត៌មាន​បញ្ចូល​បាន​ទេ"
 
-#: src/input/input.c:2424
+#: src/input/input.c:2416
 #, c-format
 msgid ""
 "The format of '%s' cannot be detected. Have a look at the log for details."
@@ -1360,7 +1360,7 @@ msgstr "មិន​អាច​លុប​ទ្រង់ទ្រាយ '%s' 
 #: src/input/meta.c:55 src/input/var.c:177 modules/gui/macosx/MainMenu.m:73
 #: modules/gui/macosx/MainMenu.m:415 modules/gui/macosx/MainMenu.m:416
 #: modules/gui/macosx/open.m:169 modules/gui/macosx/open.m:171
-#: modules/gui/macosx/playlistinfo.m:74 modules/gui/macosx/wizard.m:345
+#: modules/gui/macosx/playlistinfo.m:73 modules/gui/macosx/wizard.m:345
 #: modules/gui/qt4/components/open_panels.cpp:484
 #: modules/gui/qt4/components/open_panels.cpp:498 modules/mux/asf.c:56
 #: modules/gui/qt4/ui/open_disk.h:309
@@ -1368,7 +1368,7 @@ msgid "Title"
 msgstr "ចំណងជើង"
 
 #: src/input/meta.c:56 modules/gui/macosx/playlist.m:1203
-#: modules/gui/macosx/playlistinfo.m:75 modules/mux/avi.c:48
+#: modules/gui/macosx/playlistinfo.m:74 modules/mux/avi.c:48
 msgid "Artist"
 msgstr "សិល្បករ"
 
@@ -1802,7 +1802,7 @@ msgstr ""
 #: modules/gui/macosx/simple_prefs.m:110
 #: modules/gui/qt4/components/simple_preferences.cpp:124
 #: modules/gui/qt4/components/sout/profile_selector.cpp:560
-#: modules/video_output/kva.c:62 modules/video_output/xcb/xvideo.c:880
+#: modules/video_output/kva.c:62 modules/video_output/xcb/xvideo.c:888
 #: modules/gui/qt4/ui/profiles.h:727 modules/gui/qt4/ui/profiles.h:730
 msgid "Auto"
 msgstr "ស្វ័យប្រវត្តិ"
@@ -2164,7 +2164,7 @@ msgstr "លាក់​ទស្សន៍ទ្រនិច និង​ឧប�
 #: src/libvlc-module.c:336 src/libvlc-module.c:338
 #: src/video_output/interlacing.c:180 modules/gui/macosx/MainMenu.m:449
 #: modules/gui/macosx/MainMenu.m:450 modules/gui/macosx/simple_prefs.m:408
-#: modules/gui/qt4/dialogs/convert.cpp:95 modules/hw/vdpau/chroma.c:832
+#: modules/gui/qt4/dialogs/convert.cpp:95 modules/hw/vdpau/chroma.c:853
 #: modules/video_filter/deinterlace/deinterlace.c:97
 #: share/lua/http/dialogs/create_stream.html:346
 msgid "Deinterlace"
@@ -2194,7 +2194,7 @@ msgstr "ល្បាយ"
 msgid "Mean"
 msgstr "មធ្យម"
 
-#: src/libvlc-module.c:355 modules/hw/vdpau/chroma.c:819
+#: src/libvlc-module.c:355 modules/hw/vdpau/chroma.c:840
 #: modules/video_filter/deinterlace/deinterlace.h:57
 msgid "Bob"
 msgstr "បប់"
@@ -2565,7 +2565,7 @@ msgstr ""
 #: modules/gui/macosx/simple_prefs.m:665 modules/gui/macosx/VideoEffects.m:55
 #: modules/gui/qt4/components/preferences_widgets.cpp:546
 #: modules/video_filter/marq.c:60 modules/video_filter/rss.c:71
-#: modules/video_filter/rss.c:184 modules/video_output/msw/directx.c:1437
+#: modules/video_filter/rss.c:184 modules/video_output/msw/directx.c:1438
 msgid "Default"
 msgstr "លំនាំដើម"
 
@@ -3793,7 +3793,7 @@ msgstr "បញ្ជី​ចាក់​អាច​ប្រើ​មែកធ
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr "ការ​កំណត់​ទាំងនេះ​គឺ​ជា​ការ​បន្សំ​គ្រាប់ចុច VLC សកល ដែល​គេ​ស្គាល់​ថា \"គ្រាប់ចុច​រហ័ស\" ។"
 
-#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1752
+#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1765
 msgid "Ignore"
 msgstr "មិន​អើពើ"
 
@@ -3839,7 +3839,7 @@ msgid "Select the hotkey to use to exit fullscreen state."
 msgstr "ជ្រើស​គ្រាប់ចុច​រហ័ស​ដែល​ត្រូវ​ប្រើ​ដើម្បី​ចេញ​ពី​ស្ថានភាព​ពេញ​អេក្រង់។"
 
 #: src/libvlc-module.c:1193 modules/gui/macosx/ControlsBar.m:55
-#: modules/gui/macosx/fspanel.m:420
+#: modules/gui/macosx/fspanel.m:422
 msgid "Play/Pause"
 msgstr "ចាក់​/ផ្អាក"
 
@@ -3901,7 +3901,7 @@ msgstr "យឺត​ជាង (ល្អ)"
 
 #: src/libvlc-module.c:1209 modules/control/hotkeys.c:208
 #: modules/gui/macosx/about.m:261 modules/gui/macosx/ControlsBar.m:771
-#: modules/gui/macosx/ControlsBar.m:772 modules/gui/macosx/fspanel.m:422
+#: modules/gui/macosx/ControlsBar.m:772 modules/gui/macosx/fspanel.m:424
 #: modules/gui/macosx/MainMenu.m:404 modules/gui/macosx/MainMenu.m:502
 #: modules/gui/macosx/MainMenu.m:510 modules/gui/macosx/MainMenu.m:1559
 #: modules/gui/macosx/wizard.m:306 modules/gui/macosx/wizard.m:318
@@ -3917,7 +3917,7 @@ msgstr "ជ្រើស​គ្រាប់ចុច​រហ័ស​ដែល
 
 #: src/libvlc-module.c:1211 modules/control/hotkeys.c:212
 #: modules/gui/macosx/about.m:262 modules/gui/macosx/ControlsBar.m:760
-#: modules/gui/macosx/ControlsBar.m:761 modules/gui/macosx/fspanel.m:418
+#: modules/gui/macosx/ControlsBar.m:761 modules/gui/macosx/fspanel.m:420
 #: modules/gui/macosx/MainMenu.m:403 modules/gui/macosx/MainMenu.m:503
 #: modules/gui/macosx/MainMenu.m:509 modules/gui/macosx/MainMenu.m:1558
 #: modules/gui/qt4/components/controller.hpp:120 modules/notify/notify.c:337
@@ -3942,7 +3942,7 @@ msgstr "ជ្រើស​គ្រាប់ចុច​រហ័ស​ដើម
 
 #: src/libvlc-module.c:1215 modules/gui/macosx/bookmarks.m:105
 #: modules/gui/macosx/bookmarks.m:114 modules/gui/macosx/ControlsBar.m:67
-#: modules/gui/macosx/fspanel.m:446 modules/gui/macosx/VideoEffects.m:163
+#: modules/gui/macosx/fspanel.m:448 modules/gui/macosx/VideoEffects.m:163
 #: modules/gui/macosx/VideoEffects.m:185 modules/video_filter/marq.c:150
 #: modules/video_filter/rss.c:200 modules/gui/qt4/ui/sprefs_subtitles.h:293
 #: modules/gui/qt4/ui/video_effects.h:1456
@@ -4647,7 +4647,7 @@ msgid "Decoders"
 msgstr "ឌិកូឌ័រ"
 
 #: src/libvlc-module.c:1871 modules/access/avio.h:40
-#: modules/access/v4l2/v4l2.c:59 modules/gui/macosx/playlistinfo.m:96
+#: modules/access/v4l2/v4l2.c:59 modules/gui/macosx/playlistinfo.m:95
 msgid "Input"
 msgstr "បញ្ចូល"
 
@@ -4749,8 +4749,8 @@ msgstr "%.1f ជីកាបៃ"
 msgid "%.1f MiB"
 msgstr "%.1f មេកាបៃ"
 
-#: src/misc/update.c:477 modules/gui/macosx/playlistinfo.m:162
-#: modules/gui/macosx/playlistinfo.m:164 modules/gui/macosx/playlistinfo.m:174
+#: src/misc/update.c:477 modules/gui/macosx/playlistinfo.m:160
+#: modules/gui/macosx/playlistinfo.m:162 modules/gui/macosx/playlistinfo.m:172
 #, c-format
 msgid "%.1f KiB"
 msgstr "%.1f គីឡូបៃ"
@@ -4782,7 +4782,7 @@ msgstr ""
 msgid "Downloading ..."
 msgstr "កំពុង​ទាញ​យក..."
 
-#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2557
+#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2562
 #: modules/gui/macosx/AudioEffects.m:372 modules/gui/macosx/AudioEffects.m:387
 #: modules/gui/macosx/AudioEffects.m:613 modules/gui/macosx/AudioEffects.m:712
 #: modules/gui/macosx/bookmarks.m:111 modules/gui/macosx/BWQuincyUI.m:80
@@ -4795,8 +4795,8 @@ msgstr "កំពុង​ទាញ​យក..."
 #: modules/gui/macosx/open.m:128 modules/gui/macosx/open.m:183
 #: modules/gui/macosx/prefs.m:208 modules/gui/macosx/simple_prefs.m:324
 #: modules/gui/macosx/simple_prefs.m:352 modules/gui/macosx/simple_prefs.m:414
-#: modules/gui/macosx/simple_prefs.m:836 modules/gui/macosx/VideoEffects.m:691
-#: modules/gui/macosx/VideoEffects.m:755 modules/gui/macosx/wizard.m:317
+#: modules/gui/macosx/simple_prefs.m:836 modules/gui/macosx/VideoEffects.m:678
+#: modules/gui/macosx/VideoEffects.m:742 modules/gui/macosx/wizard.m:317
 #: modules/gui/qt4/components/open_panels.cpp:1334
 #: modules/gui/qt4/components/preferences_widgets.cpp:1426
 #: modules/gui/qt4/components/sout/profile_selector.cpp:427
@@ -8794,7 +8794,7 @@ msgid "Volume Set"
 msgstr "កំណត់​កម្រិត​សំឡេង"
 
 #: modules/access/vcdx/info.c:69 modules/gui/macosx/ControlsBar.m:497
-#: modules/gui/macosx/fspanel.m:465 modules/gui/qt4/dialogs/toolbar.cpp:448
+#: modules/gui/macosx/fspanel.m:467 modules/gui/qt4/dialogs/toolbar.cpp:448
 #: modules/stream_out/raop.c:150 modules/gui/qt4/ui/sprefs_audio.h:427
 msgid "Volume"
 msgstr "កម្រិត​សំឡេង"
@@ -9874,7 +9874,7 @@ msgstr "កម្រិត​សំឡេង​អូឌីយ៉ូ​ចំន
 msgid "Dummy audio output"
 msgstr "គ្មាន​កន្លែង​បញ្ចេញ​អូឌីយ៉ូ​ឡើយ"
 
-#: modules/audio_output/alsa.c:64 modules/audio_output/oss.c:73
+#: modules/audio_output/alsa.c:64 modules/audio_output/oss.c:69
 msgid "Audio output device"
 msgstr "ឧបករណ៍​អូឌីយ៉ូ​ចេញ"
 
@@ -10112,11 +10112,11 @@ msgstr "អូឌីយ៉ូ​ចេញ OpenSLES"
 msgid "OpenSLES"
 msgstr "OpenSLES"
 
-#: modules/audio_output/oss.c:74
+#: modules/audio_output/oss.c:70
 msgid "OSS device node path."
 msgstr "ផ្លូវ​ថ្នាំង​ឧបករណ៍ OSS ។"
 
-#: modules/audio_output/oss.c:78
+#: modules/audio_output/oss.c:74
 msgid "Open Sound System audio output"
 msgstr "លទ្ធផល​អូឌីយ៉ូ​ប្រព័ន្ធ​សំឡេង​បើក​ចំហ"
 
@@ -10671,17 +10671,17 @@ msgstr ""
 msgid "DirectX Video Acceleration (DXVA) 2.0"
 msgstr "DirectX Video Acceleration (DXVA) 2.0"
 
-#: modules/codec/avcodec/encoder.c:288
+#: modules/codec/avcodec/encoder.c:291
 #, c-format
 msgid "\"%s\" is no video encoder."
 msgstr "\"%s\" គឺ​គ្មាន​អ៊ិនកូឌ័រ​វីដេអូ​ទេ ។"
 
-#: modules/codec/avcodec/encoder.c:296
+#: modules/codec/avcodec/encoder.c:299
 #, c-format
 msgid "\"%s\" is no audio encoder."
 msgstr "\"%s\" គឺ​គ្មាន​អ៊ិនកូឌ័រ​អូឌីយ៉ូ​ទេ ។"
 
-#: modules/codec/avcodec/encoder.c:334
+#: modules/codec/avcodec/encoder.c:337
 #, c-format
 msgid ""
 "It seems your Libav/FFmpeg (libavcodec) installation lacks the following "
@@ -10699,26 +10699,26 @@ msgstr ""
 "នេះ​មិនមែន​ជា​កំហុស​ខាងក្នុង​កម្មវិធី​ចាក់​មេឌៀ VLC ទេ។\n"
 "សូម​កុំ​ទាក់ទង​ម​ក​គម្រោង VideoLAN អំពី​បញ្ហា​នេះ។\n"
 
-#: modules/codec/avcodec/encoder.c:854
+#: modules/codec/avcodec/encoder.c:857
 msgid "unknown"
 msgstr "មិន​ស្គាល់"
 
-#: modules/codec/avcodec/encoder.c:854
+#: modules/codec/avcodec/encoder.c:857
 #, fuzzy
 msgid "video"
 msgstr "S-video"
 
-#: modules/codec/avcodec/encoder.c:855
+#: modules/codec/avcodec/encoder.c:858
 #, fuzzy
 msgid "audio"
 msgstr "អូឌីយ៉ូ"
 
-#: modules/codec/avcodec/encoder.c:855
+#: modules/codec/avcodec/encoder.c:858
 #, fuzzy
 msgid "subpicture"
 msgstr "រូបភាព​រង"
 
-#: modules/codec/avcodec/encoder.c:868
+#: modules/codec/avcodec/encoder.c:871
 #, fuzzy, c-format
 msgid "VLC could not open the %4.4s %s encoder."
 msgstr "VLC មិន​អាច​បើក​អ៊ិនកូឌ័រ​បានទេ ។"
@@ -10857,7 +10857,7 @@ msgstr "កូអរដោណេ Y របស់​ចំណងជើង​រង
 msgid "DVB subtitles decoder"
 msgstr "ឌិកូឌ័រ​ចំណងជើង​រង DVB"
 
-#: modules/codec/dvbsub.c:121 modules/demux/ts.c:3561 modules/demux/ts.c:3618
+#: modules/codec/dvbsub.c:121 modules/demux/ts.c:3562 modules/demux/ts.c:3619
 msgid "DVB subtitles"
 msgstr "ចំណងជើង​រង DVB"
 
@@ -13362,7 +13362,7 @@ msgstr "គណនា និង​បោះពុម្ព​ស្ថិតិ S
 msgid "Quiet mode"
 msgstr "របៀប​ស្ងាត់"
 
-#: modules/codec/x264.c:402 modules/gui/macosx/playlistinfo.m:80
+#: modules/codec/x264.c:402 modules/gui/macosx/playlistinfo.m:79
 #: modules/gui/qt4/ui/streampanel.h:170
 msgid "Statistics"
 msgstr "ស្ថិតិ"
@@ -13462,7 +13462,7 @@ msgstr "យឺត​"
 msgid "Spatial"
 msgstr "Spatial"
 
-#: modules/codec/x264.c:442 modules/hw/vdpau/chroma.c:819
+#: modules/codec/x264.c:442 modules/hw/vdpau/chroma.c:840
 msgid "Temporal"
 msgstr "Temporal"
 
@@ -14402,11 +14402,11 @@ msgstr "ជួសជុល​នៅ​ពេល​ចាំបាច់"
 msgid "AVI demuxer"
 msgstr "ឧបករណ៍​មិន​ទ្វេ​ទិស AVI"
 
-#: modules/demux/avi/avi.c:719
+#: modules/demux/avi/avi.c:728
 msgid "Broken or missing AVI Index"
 msgstr "លិបិក្រម AVI បាន​ខូច ឬ​បាត់"
 
-#: modules/demux/avi/avi.c:720
+#: modules/demux/avi/avi.c:729
 msgid ""
 "Because this AVI file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14421,19 +14421,19 @@ msgstr ""
 "ជំហាន​នេះ​អាច​ប្រើ​ពេលវេលា​យូរ​សម្រាប់​ឯកសារ​ដែល​មាន​ទំហំ​ធំ។\n"
 "តើ​អ្នក​ចង់​ធ្វើ​អ្វី?"
 
-#: modules/demux/avi/avi.c:726
+#: modules/demux/avi/avi.c:735
 msgid "Build index then play"
 msgstr "បង្កើត​លិបិក្រម រួច​ចាក់"
 
-#: modules/demux/avi/avi.c:726
+#: modules/demux/avi/avi.c:735
 msgid "Play as is"
 msgstr "ចាក់"
 
-#: modules/demux/avi/avi.c:726
+#: modules/demux/avi/avi.c:735
 msgid "Do not play"
 msgstr "កុំ​ចាក់"
 
-#: modules/demux/avi/avi.c:2556
+#: modules/demux/avi/avi.c:2561
 msgid "Fixing AVI Index..."
 msgstr "កំពុង​ជួសជុល​លិបិក្រម AVI..."
 
@@ -15267,7 +15267,7 @@ msgstr "អ្នក​តែង"
 msgid "Producer"
 msgstr "ផលិតករ"
 
-#: modules/demux/mp4/mp4.c:1453 modules/gui/macosx/playlistinfo.m:385
+#: modules/demux/mp4/mp4.c:1453 modules/gui/macosx/playlistinfo.m:383
 #: modules/gui/qt4/components/controller.hpp:120
 #: modules/gui/qt4/components/controller.hpp:132
 msgid "Information"
@@ -15857,19 +15857,19 @@ msgstr "ព័ត៌មាន​ទូរទស្សន៍ ៖ កាលវិ�
 msgid "Teletext subtitles: hearing impaired"
 msgstr "ចំណង​ជើង​រង​ព័ត៌មាន​ទូរទស្សន៍ ៖ ត្រចៀក​ខ្សោយ"
 
-#: modules/demux/ts.c:3625
+#: modules/demux/ts.c:3626
 msgid "DVB subtitles: hearing impaired"
 msgstr "ចំណងជើង​រង DVB ៖ ត្រចៀក​ខ្សោយ"
 
-#: modules/demux/ts.c:3910
+#: modules/demux/ts.c:3911
 msgid "clean effects"
 msgstr "សម្អាត​បែបផែន"
 
-#: modules/demux/ts.c:3911
+#: modules/demux/ts.c:3912
 msgid "hearing impaired"
 msgstr "ត្រចៀក​ខ្សោយ"
 
-#: modules/demux/ts.c:3912
+#: modules/demux/ts.c:3913
 msgid "visual impaired commentary"
 msgstr "សេចក្ដី​អធិប្បាយ​ភ្នែក​ខ្សោយ"
 
@@ -16158,13 +16158,13 @@ msgstr "ស្ទួន​ប្រវត្តិរូប​បច្ចុប
 msgid "Organize Profiles..."
 msgstr "រៀបចំ​ប្រវត្តិរូប..."
 
-#: modules/gui/macosx/AudioEffects.m:370 modules/gui/macosx/VideoEffects.m:689
+#: modules/gui/macosx/AudioEffects.m:370 modules/gui/macosx/VideoEffects.m:676
 msgid "Duplicate current profile for a new profile"
 msgstr "ស្ទួន​ប្រវត្តិរូប​បច្ចុប្បន្ន​សម្រាប់​ប្រវត្តិរូប​ថ្មី"
 
 #: modules/gui/macosx/AudioEffects.m:371
 #: modules/gui/macosx/ConvertAndSave.m:371
-#: modules/gui/macosx/VideoEffects.m:690
+#: modules/gui/macosx/VideoEffects.m:677
 msgid "Enter a name for the new profile:"
 msgstr "បញ្ចូល​ឈ្មោះ​សម្រាប់​ប្រវត្តិរូប​ថ្មី៖"
 
@@ -16173,25 +16173,25 @@ msgstr "បញ្ចូល​ឈ្មោះ​សម្រាប់​ប្រ
 #: modules/gui/macosx/ConvertAndSave.m:405 modules/gui/macosx/output.m:456
 #: modules/gui/macosx/playlist.m:781 modules/gui/macosx/prefs.m:207
 #: modules/gui/macosx/simple_prefs.m:351 modules/gui/macosx/simple_prefs.m:416
-#: modules/gui/macosx/VideoEffects.m:692
+#: modules/gui/macosx/VideoEffects.m:679
 #: modules/gui/qt4/components/sout/profile_selector.cpp:424
 #: modules/gui/qt4/ui/vlm.h:301
 msgid "Save"
 msgstr "រក្សាទុក"
 
 #: modules/gui/macosx/AudioEffects.m:384 modules/gui/macosx/AudioEffects.m:709
-#: modules/gui/macosx/VideoEffects.m:752
+#: modules/gui/macosx/VideoEffects.m:739
 msgid "Remove a preset"
 msgstr "លុប​ការ​កំណត់​ស្រេច​ចេញ"
 
 #: modules/gui/macosx/AudioEffects.m:385 modules/gui/macosx/AudioEffects.m:710
-#: modules/gui/macosx/VideoEffects.m:753
+#: modules/gui/macosx/VideoEffects.m:740
 msgid "Select the preset you would like to remove:"
 msgstr "ជ្រើស​ការ​កំណត់​ស្រេច​ដែល​អ្នក​ចង់​លុបចេញ៖"
 
 #: modules/gui/macosx/AudioEffects.m:386 modules/gui/macosx/AudioEffects.m:711
 #: modules/gui/macosx/bookmarks.m:101 modules/gui/macosx/ConvertAndSave.m:385
-#: modules/gui/macosx/VideoEffects.m:754 modules/gui/qt4/ui/open_file.h:154
+#: modules/gui/macosx/VideoEffects.m:741 modules/gui/qt4/ui/open_file.h:154
 msgid "Remove"
 msgstr "យកចេញ"
 
@@ -16211,11 +16211,11 @@ msgstr "រក្សាទុក​ជម្រើស​បច្ចុប្ប
 msgid "Enter a name for the new preset:"
 msgstr "បញ្ចូល​ឈ្មោះ​សម្រាប់​ការ​កំណត់​ស្រេច​ថ្មី៖"
 
-#: modules/gui/macosx/AudioEffects.m:676 modules/gui/macosx/VideoEffects.m:715
+#: modules/gui/macosx/AudioEffects.m:676 modules/gui/macosx/VideoEffects.m:702
 msgid "Please enter a unique name for the new profile."
 msgstr "សូម​បញ្ចូល​ឈ្មោះ​តែមួយ​សម្រាប់​ការ​កំណត់​ស្រេច​ថ្មី។"
 
-#: modules/gui/macosx/AudioEffects.m:677 modules/gui/macosx/VideoEffects.m:716
+#: modules/gui/macosx/AudioEffects.m:677 modules/gui/macosx/VideoEffects.m:703
 msgid "Multiple profiles with the same name are not allowed."
 msgstr "មិន​អនុញ្ញាត​ប្រវត្តិរូប​ច្រើន​ដែល​មាន​ឈ្មោះ​ដូចគ្នា​ទេ។"
 
@@ -16259,7 +16259,7 @@ msgstr "ពេលវេលា"
 #: modules/gui/macosx/ConvertAndSave.m:497 modules/gui/macosx/coredialogs.m:62
 #: modules/gui/macosx/coredialogs.m:99 modules/gui/macosx/coredialogs.m:146
 #: modules/gui/macosx/open.m:374 modules/gui/macosx/output.m:129
-#: modules/gui/macosx/playlistinfo.m:362 modules/gui/macosx/simple_prefs.m:325
+#: modules/gui/macosx/playlistinfo.m:360 modules/gui/macosx/simple_prefs.m:325
 #: modules/gui/macosx/wizard.m:592 modules/gui/macosx/wizard.m:653
 #: modules/gui/macosx/wizard.m:992 modules/gui/macosx/wizard.m:1073
 #: modules/gui/macosx/wizard.m:1080 modules/gui/macosx/wizard.m:1608
@@ -16361,11 +16361,11 @@ msgstr "ទៅកាន់​ពេលវេលា"
 msgid "sec."
 msgstr "វិនាទី"
 
-#: modules/gui/macosx/ControlsBar.m:56 modules/gui/macosx/fspanel.m:420
+#: modules/gui/macosx/ControlsBar.m:56 modules/gui/macosx/fspanel.m:422
 msgid "Click to play or pause the current media."
 msgstr "ចុច​ដើម្បី​ចាក់ ឬ​ផ្អាក​មេឌៀ​បច្ចុប្បន្ន។"
 
-#: modules/gui/macosx/ControlsBar.m:59 modules/gui/macosx/fspanel.m:419
+#: modules/gui/macosx/ControlsBar.m:59 modules/gui/macosx/fspanel.m:421
 msgid "Backward"
 msgstr "ថយក្រោយ"
 
@@ -16375,7 +16375,7 @@ msgid ""
 "current media."
 msgstr "ចុច​ដើម្បី​ទៅកាន់​ធាតុ​បញ្ជី​ចាក់​មុន។ សង្កត់​ដើម្បី​រំលង​ថយក្រោយ​តាម​មេឌៀ​បច្ចុប្បន្ន។"
 
-#: modules/gui/macosx/ControlsBar.m:63 modules/gui/macosx/fspanel.m:421
+#: modules/gui/macosx/ControlsBar.m:63 modules/gui/macosx/fspanel.m:423
 msgid "Forward"
 msgstr "ទៅ​មុខ"
 
@@ -16385,13 +16385,13 @@ msgid ""
 "current media."
 msgstr "ចុច​ដើម្បី​ទៅកាន់​ធាតុ​បញ្ជី​ចាក់​បន្ទាប់។ សង្កត់​ដើម្បី​រំលង​ទៅមុខ​តាម​មេឌៀ​បច្ចុប្បន្ន។"
 
-#: modules/gui/macosx/ControlsBar.m:68 modules/gui/macosx/fspanel.m:447
+#: modules/gui/macosx/ControlsBar.m:68 modules/gui/macosx/fspanel.m:449
 msgid ""
 "Click and move the mouse while keeping the button pressed to use this slider "
 "to change current playback position."
 msgstr "ចុច និង​ផ្លាស់ទី​កណ្ដុរ​ដោយ​សង្កត់​ប៊ូតុង​ឲ្យ​ជាប់​ដើម្បី​ប្រើ​គ្រាប់​រំកិល​នេះ​ប្ដូរ​ទីតាំង​ការ​ចាក់​បច្ចុប្បន្ន។"
 
-#: modules/gui/macosx/ControlsBar.m:71 modules/gui/macosx/fspanel.m:423
+#: modules/gui/macosx/ControlsBar.m:71 modules/gui/macosx/fspanel.m:425
 msgid "Toggle Fullscreen mode"
 msgstr "បិទ/បើក​របៀប​ពេញ​អេក្រង់"
 
@@ -16399,11 +16399,11 @@ msgstr "បិទ/បើក​របៀប​ពេញ​អេក្រង់"
 msgid "Click to enable fullscreen video playback."
 msgstr "ចុច​ដើម្បី​បើក​ការ​ចាក់​វីដេអូ​ពេញ​អេក្រង់។"
 
-#: modules/gui/macosx/ControlsBar.m:176 modules/gui/macosx/fspanel.m:419
+#: modules/gui/macosx/ControlsBar.m:176 modules/gui/macosx/fspanel.m:421
 msgid "Click and hold to skip backward through the current media."
 msgstr "ចុច រួច​សង្កត់​ដើម្បី​​រំលង​ថយក្រោយ​កាត់តាម​មេឌៀ​បច្ចុប្បន្ន។"
 
-#: modules/gui/macosx/ControlsBar.m:177 modules/gui/macosx/fspanel.m:421
+#: modules/gui/macosx/ControlsBar.m:177 modules/gui/macosx/fspanel.m:423
 msgid "Click and hold to skip forward through the current media."
 msgstr "ចុច រួច​សង្កត់​ដើម្បី​​រំលង​ទៅមុខ​កាត់តាម​មេឌៀ​បច្ចុប្បន្ន។"
 
@@ -16443,7 +16443,7 @@ msgstr "ចៃដន្យ"
 msgid "Click to enable or disable random playback."
 msgstr "ចុច​ដើម្បី​បើក ឬ​បិទ​ការ​ចាក់​ចៃដន្យ។"
 
-#: modules/gui/macosx/ControlsBar.m:498 modules/gui/macosx/fspanel.m:466
+#: modules/gui/macosx/ControlsBar.m:498 modules/gui/macosx/fspanel.m:468
 msgid ""
 "Click and move the mouse while keeping the button pressed to use this slider "
 "to change the volume."
@@ -16467,11 +16467,11 @@ msgid ""
 "filters."
 msgstr "ចុច​ដើម្បី​បង្ហាញ​បែបផែន​អូឌីយ៉ូ លក្ខណៈ​ផ្ទាំង​អេហ្គុយ និង​តម្រង​ផ្សេងទៀត។"
 
-#: modules/gui/macosx/ControlsBar.m:762 modules/gui/macosx/fspanel.m:418
+#: modules/gui/macosx/ControlsBar.m:762 modules/gui/macosx/fspanel.m:420
 msgid "Click to go to the previous playlist item."
 msgstr "ចុច​ដើម្បី​ទៅកាន់​ធាតុ​បញ្ជី​ចាក់​មុន។"
 
-#: modules/gui/macosx/ControlsBar.m:773 modules/gui/macosx/fspanel.m:422
+#: modules/gui/macosx/ControlsBar.m:773 modules/gui/macosx/fspanel.m:424
 msgid "Click to go to the next playlist item."
 msgstr "ចុច​ដើម្បី​ទៅកាន់​ធាតុ​បញ្ជី​ចាក់​បន្ទាប់។"
 
@@ -16729,27 +16729,27 @@ msgid ""
 "panel)."
 msgstr "កុំ​បង្ហាញ​ប្រអប់​ដែល​មិន​ត្រូវការ​សកម្មភាព​អ្នកប្រើ (បន្ទះ​កំហុស និង​ការ​រិះគន់) ។"
 
-#: modules/gui/macosx/fspanel.m:407
+#: modules/gui/macosx/fspanel.m:409
 msgid "(no item is being played)"
 msgstr "(ពុំមាន​ធាតុ​ដែល​កំពុង​ចាក់​ទេ)"
 
-#: modules/gui/macosx/fspanel.m:423
+#: modules/gui/macosx/fspanel.m:425
 msgid "Click to exit fullscreen playback."
 msgstr "ចុច​ដើម្បី​ចេញពី​​ការ​ចាក់​ពេញ​អេក្រង់។"
 
-#: modules/gui/macosx/intf.m:1465 modules/gui/macosx/intf.m:1482
+#: modules/gui/macosx/intf.m:1475 modules/gui/macosx/intf.m:1492
 msgid "VLC media playback"
 msgstr "កម្មវិធី​ចាក់​មេឌៀ VLC"
 
-#: modules/gui/macosx/intf.m:1750
+#: modules/gui/macosx/intf.m:1763
 msgid "Remove old preferences?"
 msgstr "យក​ចំណូលចិត្ត​ចាស់​ចេញ​ឬ ?"
 
-#: modules/gui/macosx/intf.m:1751
+#: modules/gui/macosx/intf.m:1764
 msgid "We just found an older version of VLC's preferences files."
 msgstr "យើង​ទើបតែ​រក​ឃើញ​កំណែ​ចាស់​របស់​ឯកសារ​ចំណូលចិត្ត VLC ។"
 
-#: modules/gui/macosx/intf.m:1752
+#: modules/gui/macosx/intf.m:1765
 msgid "Move To Trash and Relaunch VLC"
 msgstr "ផ្លាស់ទី​ទៅ​ធុង​សំរាម រួច​ចាប់ផ្ដើម VLC ឡើងវិញ"
 
@@ -17843,87 +17843,87 @@ msgstr "នៅ​លើ​គេ​ជានិច្ច"
 msgid "Playback of \"%@\" will continue at %@"
 msgstr ""
 
-#: modules/gui/macosx/playlistinfo.m:72
+#: modules/gui/macosx/playlistinfo.m:71
 #: modules/gui/qt4/dialogs/mediainfo.cpp:54
 msgid "Media Information"
 msgstr "ព័ត៌មាន​មេឌៀ"
 
-#: modules/gui/macosx/playlistinfo.m:73
+#: modules/gui/macosx/playlistinfo.m:72
 msgid "Location"
 msgstr "ទីតាំង"
 
-#: modules/gui/macosx/playlistinfo.m:76
+#: modules/gui/macosx/playlistinfo.m:75
 msgid "Save Metadata"
 msgstr "រក្សាទុក​ទិន្នន័យ​មេតា"
 
-#: modules/gui/macosx/playlistinfo.m:78
+#: modules/gui/macosx/playlistinfo.m:77
 #: modules/visualization/visual/visual.c:122
 msgid "General"
 msgstr "ទូទៅ"
 
-#: modules/gui/macosx/playlistinfo.m:79
+#: modules/gui/macosx/playlistinfo.m:78
 msgid "Codec Details"
 msgstr "សេចក្ដី​លម្អិត​កូដិក"
 
-#: modules/gui/macosx/playlistinfo.m:97
+#: modules/gui/macosx/playlistinfo.m:96
 msgid "Read at media"
 msgstr "អាន​មេឌៀ"
 
-#: modules/gui/macosx/playlistinfo.m:98
+#: modules/gui/macosx/playlistinfo.m:97
 #: modules/gui/qt4/components/info_panels.cpp:571
 msgid "Input bitrate"
 msgstr "អត្រា​ប៊ីត​ព័ត៌មាន​បញ្ចូល"
 
-#: modules/gui/macosx/playlistinfo.m:99
+#: modules/gui/macosx/playlistinfo.m:98
 msgid "Demuxed"
 msgstr "មិន​បាន​ទ្វេ​ទិស"
 
-#: modules/gui/macosx/playlistinfo.m:100
+#: modules/gui/macosx/playlistinfo.m:99
 msgid "Stream bitrate"
 msgstr "ស្ទ្រីម​អត្រា​ប៊ីត"
 
-#: modules/gui/macosx/playlistinfo.m:103 modules/gui/macosx/playlistinfo.m:113
+#: modules/gui/macosx/playlistinfo.m:102 modules/gui/macosx/playlistinfo.m:112
 msgid "Decoded blocks"
 msgstr "ប្លុក​ដែល​បាន​ឌិកូដ"
 
-#: modules/gui/macosx/playlistinfo.m:104
+#: modules/gui/macosx/playlistinfo.m:103
 msgid "Displayed frames"
 msgstr "បាន​បង្ហាញ​ស៊ុម"
 
-#: modules/gui/macosx/playlistinfo.m:105
+#: modules/gui/macosx/playlistinfo.m:104
 msgid "Lost frames"
 msgstr "ស៊ុម​ដែល​បាត់"
 
-#: modules/gui/macosx/playlistinfo.m:107 modules/gui/macosx/wizard.m:360
+#: modules/gui/macosx/playlistinfo.m:106 modules/gui/macosx/wizard.m:360
 #: modules/gui/qt4/dialogs_provider.cpp:688
 msgid "Streaming"
 msgstr "ការ​ស្ទ្រីម"
 
-#: modules/gui/macosx/playlistinfo.m:108
+#: modules/gui/macosx/playlistinfo.m:107
 msgid "Sent packets"
 msgstr "បាន​ផ្ញើ​កញ្ចប់"
 
-#: modules/gui/macosx/playlistinfo.m:109
+#: modules/gui/macosx/playlistinfo.m:108
 msgid "Sent bytes"
 msgstr "បៃ​ដែល​បាន​ផ្ញើ"
 
-#: modules/gui/macosx/playlistinfo.m:110
+#: modules/gui/macosx/playlistinfo.m:109
 msgid "Send rate"
 msgstr "ផ្ញើ​អត្រា"
 
-#: modules/gui/macosx/playlistinfo.m:114
+#: modules/gui/macosx/playlistinfo.m:113
 msgid "Played buffers"
 msgstr "អង្គ​ចងចាំ​បណ្ដោះ​អាសន្ន​ដែល​បាន​ចាក់"
 
-#: modules/gui/macosx/playlistinfo.m:115
+#: modules/gui/macosx/playlistinfo.m:114
 msgid "Lost buffers"
 msgstr "អង្គ​ចងចាំ​បណ្ដោះ​អាសន្ន​ដែល​បាត់"
 
-#: modules/gui/macosx/playlistinfo.m:360
+#: modules/gui/macosx/playlistinfo.m:358
 msgid "Error while saving meta"
 msgstr "កំហុស​ពេល​រក្សាទុក​មេតា"
 
-#: modules/gui/macosx/playlistinfo.m:361
+#: modules/gui/macosx/playlistinfo.m:359
 msgid "VLC was unable to save the meta data."
 msgstr "VLC មិន​អាច​រក្សាទុក​ទិន្នន័យ​មេតា​បានទេ ។"
 
@@ -21850,54 +21850,54 @@ msgstr "បើក​ស្បែក..."
 msgid "VDPAU adjust video filter"
 msgstr "តម្រង​វីដេអូ Gradfun"
 
-#: modules/hw/vdpau/avcodec.c:45
+#: modules/hw/vdpau/avcodec.c:46
 #, fuzzy
 msgid "VDPAU video decoder"
 msgstr "ឌិកូឌ័រ​វីដេអូ CDG"
 
-#: modules/hw/vdpau/chroma.c:819
+#: modules/hw/vdpau/chroma.c:840
 #, fuzzy
 msgid "Temporal-spatial"
 msgstr "Temporal"
 
-#: modules/hw/vdpau/chroma.c:823 modules/hw/vdpau/display.c:45
+#: modules/hw/vdpau/chroma.c:844 modules/hw/vdpau/display.c:45
 msgid "VDPAU"
 msgstr ""
 
-#: modules/hw/vdpau/chroma.c:824
+#: modules/hw/vdpau/chroma.c:845
 msgid "VDPAU surface conversions"
 msgstr ""
 
-#: modules/hw/vdpau/chroma.c:832
+#: modules/hw/vdpau/chroma.c:853
 #, fuzzy
 msgid "Deinterlacing algorithm"
 msgstr "ក្បួន​ដោះស្រាយ Debanding"
 
-#: modules/hw/vdpau/chroma.c:835
+#: modules/hw/vdpau/chroma.c:856
 #, fuzzy
 msgid "Inverse telecine"
 msgstr "ជម្រើស​មិន​ត្រឹមត្រូវ"
 
-#: modules/hw/vdpau/chroma.c:837
+#: modules/hw/vdpau/chroma.c:858
 #, fuzzy
 msgid "Deinterlace chroma skip"
 msgstr "បើក​មិន​ត្របាញ់"
 
-#: modules/hw/vdpau/chroma.c:838
+#: modules/hw/vdpau/chroma.c:859
 msgid "Whether temporal deinterlacing applies to luma only"
 msgstr ""
 
-#: modules/hw/vdpau/chroma.c:840
+#: modules/hw/vdpau/chroma.c:861
 #, fuzzy
 msgid "Noise reduction level"
 msgstr "ការ​កាត់​បន្ថយ​ភាព​រំខាន"
 
-#: modules/hw/vdpau/chroma.c:842
+#: modules/hw/vdpau/chroma.c:863
 #, fuzzy
 msgid "Scaling quality"
 msgstr "គុណភាព"
 
-#: modules/hw/vdpau/chroma.c:842
+#: modules/hw/vdpau/chroma.c:863
 #, fuzzy
 msgid "High quality scaling level"
 msgstr "ការ​ធ្វើ​គំរូ​អូឌីយ៉ូ​គុណភាព​ខ្ពស់​ឡើងវិញ"

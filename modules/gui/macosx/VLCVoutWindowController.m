@@ -2,7 +2,7 @@
  * VLCVoutWindowController.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012-2014 VLC authors and VideoLAN
- * $Id: 305b6ebf407ba4187d02ff96d8ecf27dfe88a483 $
+ * $Id: 99b2192dde7b16145940bdf11dfedc46230fb083 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -41,6 +41,7 @@
     self = [super init];
     o_vout_dict = [[NSMutableDictionary alloc] init];
     i_currentWindowLevel = NSNormalWindowLevel;
+    i_currentFloatingWindowLevel = NSFloatingWindowLevel;
     return self;
 }
 
@@ -397,15 +398,21 @@
         return;
 
     i_currentWindowLevel = i_level;
+    if (i_level == NSNormalWindowLevel) {
+        i_currentFloatingWindowLevel = NSFloatingWindowLevel;
+    } else {
+        i_currentFloatingWindowLevel = i_level + 1;
+    }
 
     [[VLCMainWindow sharedInstance] setWindowLevel:i_level];
-    [[VLCVideoEffects sharedInstance] updateCocoaWindowLevel:i_level];
-    [[VLCAudioEffects sharedInstance] updateCocoaWindowLevel:i_level];
-    [[[VLCMain sharedInstance] info] updateCocoaWindowLevel:i_level];
-    [[VLCBookmarks sharedInstance] updateCocoaWindowLevel:i_level];
-    [[VLCTrackSynchronization sharedInstance] updateCocoaWindowLevel:i_level];
+
+    [[VLCVideoEffects sharedInstance] updateCocoaWindowLevel:i_currentFloatingWindowLevel];
+    [[VLCAudioEffects sharedInstance] updateCocoaWindowLevel:i_currentFloatingWindowLevel];
+    [[[VLCMain sharedInstance] info] updateCocoaWindowLevel:i_currentFloatingWindowLevel];
+    [[VLCBookmarks sharedInstance] updateCocoaWindowLevel:i_currentFloatingWindowLevel];
+    [[VLCTrackSynchronization sharedInstance] updateCocoaWindowLevel:i_currentFloatingWindowLevel];
 }
 
-@synthesize currentWindowLevel=i_currentWindowLevel;
+@synthesize currentStatusWindowLevel=i_currentFloatingWindowLevel;
 
 @end

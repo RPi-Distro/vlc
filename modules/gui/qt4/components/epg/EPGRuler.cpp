@@ -2,7 +2,7 @@
  * EPGRuler.cpp: EPGRuler
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: ee3229214be1a26e17155d6b4315c1a1b8ae8fda $
+ * $Id: bd7ccaca7282cb95db9e88ee09fbfc3e6e637dd0 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -36,8 +36,8 @@ EPGRuler::EPGRuler( QWidget* parent )
     : QWidget( parent )
 {
     setContentsMargins( 0, 0, 0, 0 );
-    setMinimumHeight( 15 );
-    setMaximumHeight( 15 );
+    setMinimumHeight( height() );
+    setMaximumHeight( height() );
     m_offset = 0;
 }
 

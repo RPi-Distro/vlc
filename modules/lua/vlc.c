@@ -2,7 +2,7 @@
  * vlc.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: eac7724c1888fdfe9c25beaa11f6f11461ca1cc7 $
+ * $Id: df235d06c7ff09c1477d963560a655551d0ca993 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -213,7 +213,7 @@ int vlclua_dir_list( const char *luadirname, char ***pppsz_dir_list )
         i++;
     free( datadir );
 
-#if !(defined(__APPLE__) || defined(_WIN32) || defined(__OS2__))
+#if !(defined(__APPLE__) || defined(_WIN32))
     char *psz_libpath = config_GetLibDir();
     if( likely(psz_libpath != NULL) )
     {

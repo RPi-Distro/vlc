@@ -2,7 +2,7 @@
  * MainMenu.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2013 Felix Paul Kühne
- * $Id: bfbd1123563bfc7e2d5d2fe5c766a54432bb84bb $
+ * $Id: 117bf4f239768bb5fbfe367efcaccba1d32ebe22 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -1181,7 +1181,7 @@ static VLCMainMenu *_o_sharedInstance = nil;
 
 - (IBAction)viewPreferences:(id)sender
 {
-    NSInteger i_level = [[[VLCMain sharedInstance] voutController] currentWindowLevel];
+    NSInteger i_level = [[[VLCMain sharedInstance] voutController] currentStatusWindowLevel];
     [[[VLCMain sharedInstance] simplePreferences] showSimplePrefsWithLevel:i_level];
 }
 

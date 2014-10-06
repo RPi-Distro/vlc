@@ -2,7 +2,7 @@
  * avcodec.c: video and audio decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 70460619ba82ac7b4749c686ceb740d1c0232bf6 $
+ * $Id: 2a710f3db23bd9355b50568fbcf164f65c9accae $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -263,7 +263,8 @@ static int OpenDecoder( vlc_object_t *p_this )
 
     /* *** determine codec type *** */
     if( !GetFfmpegCodec( p_dec->fmt_in.i_codec, &i_cat, &i_codec_id,
-                             &psz_namecodec ) )
+                             &psz_namecodec )
+     || i_cat == UNKNOWN_ES )
     {
         return VLC_EGENERIC;
     }

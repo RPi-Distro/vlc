@@ -2,7 +2,7 @@
  * ctrl_checkbox.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 31f35feec59ebdcd720e58215cb9021d089cbc5d $
+ * $Id: 4b065720194ebb4caa5bd98ae7b059e210ad39dc $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -165,6 +165,9 @@ void CtrlCheckbox::draw( OSGraphics &rImage, int xDest, int yDest, int w, int h 
 void CtrlCheckbox::setImage( AnimBitmap *pImg )
 {
     if( pImg == m_pImgCurrent )
+        return;
+
+    if( pImg && m_pImgCurrent && *pImg == *m_pImgCurrent )
         return;
 
     AnimBitmap *pOldImg = m_pImgCurrent;

@@ -2,7 +2,7 @@
  * directx.c: Windows DirectDraw video output
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 4832fd03bd11c87f8bb0d1abae031e1637345875 $
+ * $Id: afaa8f8df3023791b345e2149c1334d143d8fb33 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -210,7 +210,8 @@ static int Open(vlc_object_t *object)
     var_AddCallback(vd, "video-wallpaper", WallpaperCallback, NULL);
 
     /* Setup vout_display now that everything is fine */
-    vd->fmt     = fmt;
+    video_format_Clean(&vd->fmt);
+    video_format_Copy(&vd->fmt, &fmt);
     vd->info    = info;
 
     vd->pool    = Pool;

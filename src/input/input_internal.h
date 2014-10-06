@@ -2,7 +2,7 @@
  * input_internal.h: Internal input structures
  *****************************************************************************
  * Copyright (C) 1998-2006 VLC authors and VideoLAN
- * $Id: 9f7129480edf7bf4b5dc1dad69178169eababfbb $
+ * $Id: 2236313b9c1fa6859842715d6f35c03fd5840e8b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -116,6 +116,7 @@ struct input_thread_private_t
     /* Input attachment */
     int i_attachment;
     input_attachment_t **attachment;
+    demux_t **attachment_demux;
 
     /* Main input properties */
 

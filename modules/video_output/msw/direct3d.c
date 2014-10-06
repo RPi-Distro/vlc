@@ -2,7 +2,7 @@
  * direct3d.c: Windows Direct3D video output module
  *****************************************************************************
  * Copyright (C) 2006-2014 VLC authors and VideoLAN
- *$Id: fc959fcc5d7e128ef53d83be7b93a33aef6a02eb $
+ *$Id: 7fa45859530b908e89c4eb38246c7a873c6028c1 $
  *
  * Authors: Damien Fouilleul <damienf@videolan.org>,
  *          Sasha Koruga <skoruga@gmail.com>,
@@ -228,7 +228,8 @@ static int Open(vlc_object_t *object)
     var_AddCallback(vd, "video-wallpaper", DesktopCallback, NULL);
 
     /* Setup vout_display now that everything is fine */
-    vd->fmt  = fmt;
+    video_format_Clean(&vd->fmt);
+    video_format_Copy(&vd->fmt, &fmt);
     vd->info = info;
 
     vd->pool    = Pool;
@@ -511,11 +512,9 @@ static HINSTANCE Direct3DLoadShaderLibrary(void)
 {
     HINSTANCE instance = NULL;
     for (int i = 43; i > 23; --i) {
-        char *filename = NULL;
-        if (asprintf(&filename, "D3dx9_%d.dll", i) == -1)
-            continue;
-        instance = LoadLibrary(ToT(filename));
-        free(filename);
+        TCHAR filename[16];
+        _sntprintf(filename, 16, TEXT("D3dx9_%d.dll"), i);
+        instance = LoadLibrary(filename);
         if (instance)
             break;
     }
