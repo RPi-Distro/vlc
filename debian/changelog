@@ -1,6 +1,8 @@
 vlc (2.2.0~pre4-1) UNRELEASED; urgency=medium
 
   * New upstream release.
+    - Add video/ogg and audio/ogg to desktop file. (Closes: #762564)
+    - Fix output issues with VDPAU. (Closes: #759818)
 
  -- Sebastian Ramacher <sramacher@debian.org>  Mon, 06 Oct 2014 18:36:55 +0200
 
