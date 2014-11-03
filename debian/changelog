@@ -1,8 +1,9 @@
 vlc (2.2.0~rc1-1) UNRELEASED; urgency=medium
 
   * New upstream release.
+  * debian/vlc-nox.install.in: Correctly install sftp plugin.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Mon, 03 Nov 2014 18:31:08 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 03 Nov 2014 19:53:30 +0100
 
 vlc (2.2.0~pre4-2) unstable; urgency=medium
 
