@@ -31,6 +31,7 @@ usr/lib/vlc/plugins/access/liblive555_plugin.so
 usr/lib/vlc/plugins/access/librar_plugin.so
 usr/lib/vlc/plugins/access/librtp_plugin.so
 usr/lib/vlc/plugins/access/libsdp_plugin.so
+usr/lib/vlc/plugins/access/libsftp_plugin.so
 usr/lib/vlc/plugins/access/libshm_plugin.so
 usr/lib/vlc/plugins/access/libtcp_plugin.so
 usr/lib/vlc/plugins/access/libtimecode_plugin.so
