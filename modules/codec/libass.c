@@ -2,7 +2,7 @@
  * SSA/ASS subtitle decoder using libass.
  *****************************************************************************
  * Copyright (C) 2008-2009 VLC authors and VideoLAN
- * $Id: aa38f1b2f609072b6d003b46b7b4fd694dfebbd2 $
+ * $Id: 5590df15375907f1578337948e8d10c67c49d5f6 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *
@@ -219,7 +219,7 @@ static int Create( vlc_object_t *p_this )
 #endif
 
 #ifdef HAVE_FONTCONFIG
-#if defined(_WIN32)
+#if defined(_WIN32) || defined(__APPLE__)
     dialog_progress_bar_t *p_dialog =
         dialog_ProgressCreate( p_dec,
                                _("Building font cache"),
@@ -227,7 +227,7 @@ static int Create( vlc_object_t *p_this )
                                   "This should take less than a minute." ), NULL );
 #endif
     ass_set_fonts( p_renderer, psz_font, psz_family, true, NULL, 1 );  // setup default font/family
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__APPLE__)
     if( p_dialog )
     {
         dialog_ProgressSet( p_dialog, NULL, 1.0 );

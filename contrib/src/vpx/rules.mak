@@ -72,11 +72,16 @@ endif
 
 VPX_CONF := \
 	--enable-runtime-cpu-detect \
-	--disable-install-bins \
-	--disable-install-docs \
+	--disable-docs \
 	--disable-examples \
 	--disable-unit-tests \
-	--disable-vp8-decoder
+	--disable-install-bins \
+	--disable-install-docs
+
+ifndef BUILD_ENCODERS
+	VPX_CONF += --disable-vp8-encoder --disable-vp9-encoder
+endif
+
 ifndef HAVE_WIN32
 VPX_CONF += --enable-pic
 endif

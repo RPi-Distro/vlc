@@ -2,12 +2,12 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2014 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 2.2.0-pre4)
+AC_INIT(vlc, 2.2.0-rc1)
 VERSION_MAJOR=2
 VERSION_MINOR=2
 VERSION_REVISION=0
 VERSION_EXTRA=0
-VERSION_DEV=pre4
+VERSION_DEV=rc1
 
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
@@ -1721,7 +1721,7 @@ AS_IF([test "${SYS}" = "mingw32"], [ VLC_ADD_PLUGIN([access_smb]) ])
 dnl
 dnl sftp access support
 dnl
-PKG_ENABLE_MODULES_VLC([SFTP], [access_sftp], [libssh2], (support SFTP file transfer via libssh2), [auto])
+PKG_ENABLE_MODULES_VLC([SFTP], [sftp], [libssh2], (support SFTP file transfer via libssh2), [auto])
 
 dnl
 dnl  Video4Linux 2
@@ -2501,6 +2501,7 @@ then
       CPPFLAGS="${CPPFLAGS} ${SWSCALE_CFLAGS}"
       CFLAGS="${CFLAGS} ${SWSCALE_CFLAGS}"
       AC_CHECK_HEADERS(libswscale/swscale.h)
+      AC_CHECK_HEADERS(libavutil/avutil.h)
       VLC_ADD_PLUGIN([swscale])
       VLC_ADD_LIBS([swscale],[$SWSCALE_LIBS])
       VLC_ADD_CFLAGS([swscale],[$SWSCALE_CFLAGS])
@@ -3717,7 +3718,7 @@ AS_IF([test "${enable_qt}" != "no"], [
       QT_PATH="$(eval $PKG_CONFIG --variable=exec_prefix Qt5Core)"
       QT_HOST_PATH="$(eval $PKG_CONFIG --variable=host_bins Qt5Core)"
       AC_PATH_PROGS(MOC, [moc-qt5 moc], moc, [${QT_HOST_PATH} ${QT_PATH}/bin ${CONTRIB_DIR}/bin])
-      AC_PATH_PROG(RCC, [rcc-qt5 rcc], rcc, [${QT_HOST_PATH} ${QT_PATH}/bin ${CONTRIB_DIR}/bin])
+      AC_PATH_PROGS(RCC, [rcc-qt5 rcc], rcc, [${QT_HOST_PATH} ${QT_PATH}/bin ${CONTRIB_DIR}/bin])
       AC_PATH_PROGS(UIC, [uic-qt5 uic], uic, [${QT_HOST_PATH} ${QT_PATH}/bin ${CONTRIB_DIR}/bin])
     ], [
       PKG_CHECK_MODULES([QT], [QtCore QtGui >= 4.6.0],, [

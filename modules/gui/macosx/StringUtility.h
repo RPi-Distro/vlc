@@ -2,7 +2,7 @@
  * StringUtility.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2014 VLC authors and VideoLAN
- * $Id: 5e4024e91142ebad574e50449b8194bdd751dae7 $
+ * $Id: ebc3a4f30943d982afd112c0bade6894143dfcc2 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -37,6 +37,12 @@
 
 NSString *toNSStr(const char *str);
 unsigned int CocoaKeyToVLC(unichar i_key);
+
+/**
+ * Gets the proper variant for an image ressource,
+ * depending on the os version.
+ */
+NSImage *imageFromRes(NSString *o_id);
 
 @interface VLCStringUtility : NSObject
 

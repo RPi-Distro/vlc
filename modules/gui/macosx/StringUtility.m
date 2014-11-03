@@ -2,7 +2,7 @@
  * StringUtility.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2014 VLC authors and VideoLAN
- * $Id: 68b96ed22a81accd6dd996e56af57c9d0c982c6c $
+ * $Id: 37301e9b81da614ad9960a1c37f81c20b58202d1 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -24,12 +24,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#import <vlc_input.h>
+#import "intf.h"
+#import "StringUtility.h"
+#import "CompatibilityFixes.h"
+
 #import <vlc_keys.h>
 #import <vlc_strings.h>
-
-#import "StringUtility.h"
-#import "intf.h"
 
 @implementation VLCStringUtility
 
@@ -393,5 +393,16 @@ NSString *toNSStr(const char *str) {
     return returnStr;
 }
 
-
 @end
+
+NSImage *imageFromRes(NSString *o_id)
+{
+    NSString *result = @"";
+    if (OSX_YOSEMITE) {
+        result = [result stringByAppendingString:@"ys-"];
+    }
+
+    result = [result stringByAppendingString:o_id];
+
+    return [NSImage imageNamed:result];
+}

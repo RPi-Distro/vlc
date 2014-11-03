@@ -2,7 +2,7 @@
  * libavi.c : LibAVI
  *****************************************************************************
  * Copyright (C) 2001 VLC authors and VideoLAN
- * $Id: 79cd34b1b5fe662b80c5a59c06901d512f7aeb42 $
+ * $Id: d0cfe714168642e90d09d6b72e1b0c986f051146 $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -460,9 +460,10 @@ static int AVI_ChunkRead_strf( stream_t *s, avi_chunk_t *p_chk )
             {
                 p_chk->strf.vids.p_bih->biSize = p_chk->common.i_chunk_size;
             }
-            uint64_t i_extrasize = p_chk->common.i_chunk_size - sizeof(VLC_BITMAPINFOHEADER);
-            if( i_extrasize > 0 )
+            if ( p_chk->common.i_chunk_size > sizeof(VLC_BITMAPINFOHEADER) )
             {
+                uint64_t i_extrasize = p_chk->common.i_chunk_size - sizeof(VLC_BITMAPINFOHEADER);
+
                 /* There's a color palette appended, set up VLC_BITMAPINFO */
                 memcpy( &p_chk->strf.vids.p_bih[1],
                         p_buff + 8 + sizeof(VLC_BITMAPINFOHEADER), /* 8=fourrc+size */
@@ -471,12 +472,12 @@ static int AVI_ChunkRead_strf( stream_t *s, avi_chunk_t *p_chk )
                 if ( !p_chk->strf.vids.p_bih->biClrUsed )
                     p_chk->strf.vids.p_bih->biClrUsed = (1 << p_chk->strf.vids.p_bih->biBitCount);
 
-                if( i_extrasize > (UINT32_MAX * sizeof(uint32_t)) )
+                if( i_extrasize / sizeof(uint32_t) > UINT32_MAX )
                     p_chk->strf.vids.p_bih->biClrUsed = UINT32_MAX;
                 else
                 {
                     p_chk->strf.vids.p_bih->biClrUsed =
-                            __MAX( i_extrasize / sizeof(uint32_t),
+                            __MIN( i_extrasize / sizeof(uint32_t),
                                    p_chk->strf.vids.p_bih->biClrUsed );
                 }
 

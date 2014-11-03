@@ -1,6 +1,6 @@
 /*****************************************************************************
  * Copyright © 2011-2012 VideoLAN
- * $Id: 48a6879f7a70433b1b3894365d6d2f1b849e3144 $
+ * $Id: bb472d7111e33c13d4e03dd4954767f03e69e98e $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -36,7 +36,11 @@ TimeTooltip::TimeTooltip( QWidget *parent ) :
     setWindowFlags( Qt::Window                  |
                     Qt::WindowStaysOnTopHint    |
                     Qt::FramelessWindowHint     |
-                    Qt::X11BypassWindowManagerHint );
+                    Qt::X11BypassWindowManagerHint
+#if HAS_QT5
+                    | Qt::WindowDoesNotAcceptFocus
+#endif
+                    );
 
     // Tell Qt that it doesn't need to erase the background before
     // a paintEvent occurs. This should save some CPU cycles.

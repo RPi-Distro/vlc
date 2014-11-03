@@ -1,9 +1,10 @@
 GNU=http://ftp.gnu.org/gnu
 APACHE=http://mirror.csclub.uwaterloo.ca/apache
 SF= http://downloads.sourceforge.net/project
+VIDEOLAN=http://downloads.videolan.org/pub/contrib
 
 YASM_VERSION=1.2.0
-#YASM_URL=$(CONTRIB_VIDEOLAN)/yasm-$(YASM_VERSION).tar.gz
+#YASM_URL=$(VIDEOLAN)/yasm-$(YASM_VERSION).tar.gz
 YASM_URL=http://www.tortall.net/projects/yasm/releases/yasm-$(YASM_VERSION).tar.gz
 
 CMAKE_VERSION=2.8.12.2
@@ -21,7 +22,7 @@ AUTOMAKE_URL=$(GNU)/automake/automake-$(AUTOMAKE_VERSION).tar.gz
 M4_VERSION=1.4.16
 M4_URL=$(GNU)/m4/m4-$(M4_VERSION).tar.gz
 
-PKGCFG_VERSION=0.27.1-1
+PKGCFG_VERSION=0.28-1
 #PKGCFG_URL=http://downloads.videolan.org/pub/videolan/testing/contrib/pkg-config-$(PKGCFG_VERSION).tar.gz
 PKGCFG_URL=$(SF)/pkgconfiglite/$(PKGCFG_VERSION)/pkg-config-lite-$(PKGCFG_VERSION).tar.gz
 
@@ -35,7 +36,8 @@ GAS_VERSION=72887b9
 GAS_URL=http://git.libav.org/?p=gas-preprocessor.git;a=snapshot;h=$(GAS_VERSION);sf=tgz
 
 RAGEL_VERSION=6.8
-RAGEL_URL=http://www.complang.org/ragel/ragel-$(RAGEL_VERSION).tar.gz
+#RAGEL_URL=http://www.complang.org/ragel/ragel-$(RAGEL_VERSION).tar.gz
+RAGEL_URL=$(VIDEOLAN)/ragel-$(RAGEL_VERSION).tar.gz
 
 SED_VERSION=4.2.2
 SED_URL=$(GNU)/sed/sed-$(SED_VERSION).tar.bz2

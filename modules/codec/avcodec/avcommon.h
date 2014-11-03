@@ -2,7 +2,7 @@
  * avcommon.h: common code for libav*
  *****************************************************************************
  * Copyright (C) 2012 VLC authors and VideoLAN
- * $Id: 8c47330ff660c6a51d64ba6fcfaf85a35b93b6fb $
+ * $Id: 411ddaceb1b8bbdb9d16e18e93e173ee76de7cbd $
  *
  * Authors: Rafaël Carré <funman@videolanorg>
  *
@@ -39,6 +39,7 @@
 #ifdef HAVE_LIBAVUTIL_AVUTIL_H
 # include <libavutil/avutil.h>
 # include <libavutil/dict.h>
+# include <libavutil/cpu.h>
 # include <libavutil/log.h>
 
 #define AV_OPTIONS_TEXT     "Advanced options"

@@ -2,7 +2,7 @@
  * ogg.c : ogg stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: d7cd17944779bb79804a083132a2cfdb5ee3a99d $
+ * $Id: d69a675d96335bd59a9cf8ae491c2b82dfd2342a $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Andre Pang <Andre.Pang@csiro.au> (Annodex support)
@@ -1488,7 +1488,6 @@ static int Ogg_FindLogicalStreams( demux_t *p_demux )
 {
     demux_sys_t *p_ogg = p_demux->p_sys  ;
     ogg_packet oggpacket;
-    int i_stream = 0;
 
     p_ogg->i_total_length = stream_Size ( p_demux->s );
     msg_Dbg( p_demux, "File length is %"PRId64" bytes", p_ogg->i_total_length );
@@ -1504,15 +1503,11 @@ static int Ogg_FindLogicalStreams( demux_t *p_demux )
              * We found the beginning of our first logical stream. */
             while( ogg_page_bos( &p_ogg->current_page ) )
             {
-                logical_stream_t *p_stream;
-
-                p_stream = malloc( sizeof(logical_stream_t) );
+                logical_stream_t *p_stream = calloc( 1, sizeof(logical_stream_t) );
                 if( unlikely( !p_stream ) )
                     return VLC_ENOMEM;
 
                 TAB_APPEND( p_ogg->i_streams, p_ogg->pp_stream, p_stream );
-
-                memset( p_stream, 0, sizeof(logical_stream_t) );
 
                 es_format_Init( &p_stream->fmt, 0, 0 );
                 es_format_Init( &p_stream->fmt_old, 0, 0 );
@@ -1545,6 +1540,7 @@ static int Ogg_FindLogicalStreams( demux_t *p_demux )
                     {
                         msg_Dbg( p_demux, "found invalid vorbis header" );
                         Ogg_LogicalStreamDelete( p_demux, p_stream );
+                        p_stream = NULL;
                         p_ogg->i_streams--;
                     }
                 }
@@ -1563,6 +1559,7 @@ static int Ogg_FindLogicalStreams( demux_t *p_demux )
                     {
                         msg_Dbg( p_demux, "found invalid Speex header" );
                         Ogg_LogicalStreamDelete( p_demux, p_stream );
+                        p_stream = NULL;
                         p_ogg->i_streams--;
                     }
                 }
@@ -1611,6 +1608,7 @@ static int Ogg_FindLogicalStreams( demux_t *p_demux )
                     {
                         msg_Dbg( p_demux, "found invalid Flac header" );
                         Ogg_LogicalStreamDelete( p_demux, p_stream );
+                        p_stream = NULL;
                         p_ogg->i_streams--;
                     }
                 }
@@ -1626,6 +1624,7 @@ static int Ogg_FindLogicalStreams( demux_t *p_demux )
                     {
                         msg_Dbg( p_demux, "found invalid Theora header" );
                         Ogg_LogicalStreamDelete( p_demux, p_stream );
+                        p_stream = NULL;
                         p_ogg->i_streams--;
                     }
                 }
@@ -1641,6 +1640,7 @@ static int Ogg_FindLogicalStreams( demux_t *p_demux )
                     {
                         msg_Warn( p_demux, "found dirac header isn't decodable" );
                         Ogg_LogicalStreamDelete( p_demux, p_stream );
+                        p_stream = NULL;
                         p_ogg->i_streams--;
                     }
                 }
@@ -1678,6 +1678,7 @@ static int Ogg_FindLogicalStreams( demux_t *p_demux )
                     {
                         msg_Dbg( p_demux, "invalid VP8 header found");
                         Ogg_LogicalStreamDelete( p_demux, p_stream );
+                        p_stream = NULL;
                         p_ogg->i_streams--;
                     }
                 }
@@ -1687,7 +1688,7 @@ static int Ogg_FindLogicalStreams( demux_t *p_demux )
                 {
                     Ogg_ReadAnnodexHeader( p_demux, p_stream, &oggpacket );
                     /* kill annodex track */
-                    free( p_stream );
+                    FREENULL( p_stream );
                     p_ogg->i_streams--;
                 }
                 /* Check for Annodex header */
@@ -1706,6 +1707,7 @@ static int Ogg_FindLogicalStreams( demux_t *p_demux )
                     {
                         msg_Dbg( p_demux, "invalid kate header found");
                         Ogg_LogicalStreamDelete( p_demux, p_stream );
+                        p_stream = NULL;
                         p_ogg->i_streams--;
                     }
                 }
@@ -1811,6 +1813,7 @@ static int Ogg_FindLogicalStreams( demux_t *p_demux )
                         {
                             msg_Dbg( p_demux, "invalid oggds audio header" );
                             Ogg_LogicalStreamDelete( p_demux, p_stream );
+                            p_stream = NULL;
                             p_ogg->i_streams--;
                         }
                     }
@@ -1818,7 +1821,7 @@ static int Ogg_FindLogicalStreams( demux_t *p_demux )
                     {
                         msg_Dbg( p_demux, "stream %d has an old header "
                             "but is of an unknown type", p_ogg->i_streams-1 );
-                        free( p_stream );
+                        FREENULL( p_stream );
                         p_ogg->i_streams--;
                     }
                 }
@@ -1941,6 +1944,7 @@ static int Ogg_FindLogicalStreams( demux_t *p_demux )
                         {
                             msg_Dbg( p_demux, "invalid oggds audio header" );
                             Ogg_LogicalStreamDelete( p_demux, p_stream );
+                            p_stream = NULL;
                             p_ogg->i_streams--;
                         }
                     }
@@ -1959,7 +1963,7 @@ static int Ogg_FindLogicalStreams( demux_t *p_demux )
                     {
                         msg_Dbg( p_demux, "stream %d has a header marker "
                             "but is of an unknown type", p_ogg->i_streams-1 );
-                        free( p_stream );
+                        FREENULL( p_stream );
                         p_ogg->i_streams--;
                     }
                 }
@@ -1976,12 +1980,13 @@ static int Ogg_FindLogicalStreams( demux_t *p_demux )
                 {
                     msg_Dbg( p_demux, "stream %d is of unknown type",
                              p_ogg->i_streams-1 );
-                    free( p_stream );
+                    FREENULL( p_stream );
                     p_ogg->i_streams--;
                 }
 
                 /* we'll need to get all headers */
-                p_ogg->pp_stream[i_stream]->b_initializing &= p_ogg->pp_stream[i_stream]->b_force_backup;
+                if ( p_stream )
+                    p_stream->b_initializing &= p_stream->b_force_backup;
 
                 if( Ogg_ReadPage( p_demux, &p_ogg->current_page ) != VLC_SUCCESS )
                     return VLC_EGENERIC;
@@ -1990,7 +1995,7 @@ static int Ogg_FindLogicalStreams( demux_t *p_demux )
             /* This is the first data page, which means we are now finished
              * with the initial pages. We just need to store it in the relevant
              * bitstream. */
-            for( i_stream = 0; i_stream < p_ogg->i_streams; i_stream++ )
+            for( int i_stream = 0; i_stream < p_ogg->i_streams; i_stream++ )
             {
                 if( ogg_stream_pagein( &p_ogg->pp_stream[i_stream]->os,
                                        &p_ogg->current_page ) == 0 )

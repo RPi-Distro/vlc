@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 292011a70e94a1d1ce30a30bdbe6eb27d04a22de $
+ * $Id: ff070888ca5ba6808726260633e2eb6836ae96fd $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan.org>
@@ -84,6 +84,8 @@ static void destroyProgressPanel (void *);
 static int InputEvent(vlc_object_t *, const char *,
                       vlc_value_t, vlc_value_t, void *);
 static int PLItemChanged(vlc_object_t *, const char *,
+                         vlc_value_t, vlc_value_t, void *);
+static int PLItemUpdated(vlc_object_t *, const char *,
                          vlc_value_t, vlc_value_t, void *);
 static int PlaylistUpdated(vlc_object_t *, const char *,
                            vlc_value_t, vlc_value_t, void *);
@@ -392,6 +394,20 @@ static int PLItemChanged(vlc_object_t *p_this, const char *psz_var,
     return VLC_SUCCESS;
 }
 
+/**
+ * Callback for item-change variable. Is triggered after update of duration or metadata.
+ */
+static int PLItemUpdated(vlc_object_t *p_this, const char *psz_var,
+                         vlc_value_t oldval, vlc_value_t new_val, void *param)
+{
+    NSAutoreleasePool * o_pool = [[NSAutoreleasePool alloc] init];
+
+    [[VLCMain sharedInstance] performSelectorOnMainThread:@selector(plItemUpdated) withObject:nil waitUntilDone:NO];
+
+    [o_pool release];
+    return VLC_SUCCESS;
+}
+
 static int PlaylistUpdated(vlc_object_t *p_this, const char *psz_var,
                          vlc_value_t oldval, vlc_value_t new_val, void *param)
 {
@@ -658,7 +674,7 @@ static VLCMain *_o_sharedMainInstance = nil;
     var_AddCallback(p_intf->p_libvlc, "intf-toggle-fscontrol", ShowController, self);
     var_AddCallback(p_intf->p_libvlc, "intf-show", ShowController, self);
     var_AddCallback(p_intf->p_libvlc, "intf-boss", BossCallback, self);
-    var_AddCallback(p_playlist, "item-change", PLItemChanged, self);
+    var_AddCallback(p_playlist, "item-change", PLItemUpdated, self);
     var_AddCallback(p_playlist, "activity", PLItemChanged, self);
     var_AddCallback(p_playlist, "leaf-to-parent", PlaylistUpdated, self);
     var_AddCallback(p_playlist, "playlist-item-append", PlaylistUpdated, self);
@@ -832,7 +848,7 @@ static bool f_appExit = false;
     var_DelCallback(p_intf, "dialog-login", DialogCallback, self);
     var_DelCallback(p_intf, "dialog-question", DialogCallback, self);
     var_DelCallback(p_intf, "dialog-progress-bar", DialogCallback, self);
-    var_DelCallback(p_playlist, "item-change", PLItemChanged, self);
+    var_DelCallback(p_playlist, "item-change", PLItemUpdated, self);
     var_DelCallback(p_playlist, "activity", PLItemChanged, self);
     var_DelCallback(p_playlist, "leaf-to-parent", PlaylistUpdated, self);
     var_DelCallback(p_playlist, "playlist-item-append", PlaylistUpdated, self);
@@ -1304,7 +1320,6 @@ static bool f_appExit = false;
     [o_mainwindow updateWindow];
     [self updateDelays];
     [self updateMainMenu];
-    [self playlistUpdated];
 
     /*
      * Due to constraints within NSAttributedString's main loop runtime handling
@@ -1316,6 +1331,11 @@ static bool f_appExit = false;
         if (p_input_changed)
             vlc_object_release(p_input_changed);
     });
+}
+
+- (void)plItemUpdated
+{
+    [o_mainwindow updateName];
 }
 
 - (void)updateMainMenu
@@ -1488,7 +1508,7 @@ static bool f_appExit = false;
 
         IOReturn success;
         /* work-around a bug in 10.7.4 and 10.7.5, so check for 10.7.x < 10.7.4, 10.8 and 10.6 */
-        if ((NSAppKitVersionNumber >= 1115.2 && NSAppKitVersionNumber < 1138.45) || OSX_MOUNTAIN_LION || OSX_MAVERICKS || OSX_SNOW_LEOPARD) {
+        if ((NSAppKitVersionNumber >= 1115.2 && NSAppKitVersionNumber < 1138.45) || OSX_MOUNTAIN_LION || OSX_MAVERICKS || OSX_YOSEMITE || OSX_SNOW_LEOPARD) {
             CFStringRef reasonForActivity = CFStringCreateWithCString(kCFAllocatorDefault, _("VLC media playback"), kCFStringEncodingUTF8);
             if ([self activeVideoPlayback])
                 success = IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, reasonForActivity, &systemSleepAssertionID);

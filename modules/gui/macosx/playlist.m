@@ -2,7 +2,7 @@
  * playlist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2014 VLC authors and VideoLAN
- * $Id: e6d777b6e184cb304794d4d027f42ef910e49e5e $
+ * $Id: 57f7ae9afeaaf02174249278f375113120aec3f0 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>
@@ -1066,21 +1066,20 @@
     if ([[NSFileManager defaultManager] fileExistsAtPath:o_path isDirectory:&b_dir] && b_dir &&
         [[NSWorkspace sharedWorkspace] getFileSystemInfoForPath:o_path isRemovable: &b_rem
                                                      isWritable:&b_writable isUnmountable:NULL description:NULL type:NULL] && b_rem && !b_writable && [o_nsurl isFileURL]) {
-        id o_vlc_open = [[VLCMain sharedInstance] open];
 
-        NSString *diskType = [o_vlc_open getVolumeTypeFromMountPath: o_path];
+        NSString *diskType = [VLCOpen getVolumeTypeFromMountPath: o_path];
         msg_Dbg(p_intf, "detected optical media of type %s in the file input", [diskType UTF8String]);
 
         if ([diskType isEqualToString: kVLCMediaDVD])
-            o_uri = [NSString stringWithFormat: @"dvdnav://%@", [o_vlc_open getBSDNodeFromMountPath: o_path]];
+            o_uri = [NSString stringWithFormat: @"dvdnav://%@", [VLCOpen getBSDNodeFromMountPath: o_path]];
         else if ([diskType isEqualToString: kVLCMediaVideoTSFolder])
             o_uri = [NSString stringWithFormat: @"dvdnav://%@", o_path];
         else if ([diskType isEqualToString: kVLCMediaAudioCD])
-            o_uri = [NSString stringWithFormat: @"cdda://%@", [o_vlc_open getBSDNodeFromMountPath: o_path]];
+            o_uri = [NSString stringWithFormat: @"cdda://%@", [VLCOpen getBSDNodeFromMountPath: o_path]];
         else if ([diskType isEqualToString: kVLCMediaVCD])
-            o_uri = [NSString stringWithFormat: @"vcd://%@#0:0", [o_vlc_open getBSDNodeFromMountPath: o_path]];
+            o_uri = [NSString stringWithFormat: @"vcd://%@#0:0", [VLCOpen getBSDNodeFromMountPath: o_path]];
         else if ([diskType isEqualToString: kVLCMediaSVCD])
-            o_uri = [NSString stringWithFormat: @"vcd://%@@0:0", [o_vlc_open getBSDNodeFromMountPath: o_path]];
+            o_uri = [NSString stringWithFormat: @"vcd://%@@0:0", [VLCOpen getBSDNodeFromMountPath: o_path]];
         else if ([diskType isEqualToString: kVLCMediaBD] || [diskType isEqualToString: kVLCMediaBDMVFolder])
             o_uri = [NSString stringWithFormat: @"bluray://%@", o_path];
         else
@@ -1477,6 +1476,30 @@
     [o_arrayToSave release];
 }
 
+- (BOOL)isValidResumeItem:(input_item_t *)p_item
+{
+    char *psz_url = input_item_GetURI(p_item);
+    NSString *o_url_string = toNSStr(psz_url);
+    free(psz_url);
+
+    if ([o_url_string isEqualToString:@""])
+        return NO;
+
+    NSURL *o_url = [NSURL URLWithString:o_url_string];
+
+    if (![o_url isFileURL])
+        return NO;
+
+    BOOL isDir = false;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:[o_url path] isDirectory:&isDir])
+        return NO;
+
+    if (isDir)
+        return NO;
+
+    return YES;
+}
+
 - (void)continuePlaybackWhereYouLeftOff:(input_thread_t *)p_input_thread
 {
     NSDictionary *recentlyPlayedFiles = [[NSUserDefaults standardUserDefaults] objectForKey:@"recentlyPlayedMedia"];
@@ -1492,27 +1515,18 @@
             return;
         }
 
+        /* check for file existance before resuming */
+        if (![self isValidResumeItem:p_item])
+            return;
+
         char *psz_url = decode_URI(input_item_GetURI(p_item));
         if (!psz_url)
             return;
-
-        NSString *url = [NSString stringWithUTF8String:psz_url ? psz_url : ""];
+        NSString *url = toNSStr(psz_url);
         free(psz_url);
-
-        /* check for file existance before resuming */
-        if (![[NSFileManager defaultManager] fileExistsAtPath:[[NSURL URLWithString:[NSString stringWithUTF8String:input_item_GetURI(p_item)]] path]])
-            return;
 
         NSNumber *lastPosition = [recentlyPlayedFiles objectForKey:url];
         if (lastPosition && lastPosition.intValue > 0) {
-            vlc_value_t pos;
-            var_Get(p_input_thread, "position", &pos);
-            float f_current_pos = 100. * pos.f_float;
-            long long int dur = input_item_GetDuration(p_item) / 1000000;
-            int current_pos_in_sec = (f_current_pos * dur) / 100;
-
-            if (current_pos_in_sec >= lastPosition.intValue)
-                return;
 
             int settingValue = config_GetInt(VLCIntf, "macosx-continue-playback");
             NSInteger returnValue = NSAlertErrorReturn;
@@ -1528,9 +1542,9 @@
             if (returnValue == NSAlertAlternateReturn || settingValue == 2)
                 lastPosition = [NSNumber numberWithInt:0];
 
-            pos.f_float = (float)lastPosition.intValue / (float)dur;
-            msg_Dbg(VLCIntf, "continuing playback at %2.2f", pos.f_float);
-            var_Set(p_input_thread, "position", pos);
+            mtime_t lastPos = (mtime_t)lastPosition.intValue * 1000000;
+            msg_Dbg(VLCIntf, "continuing playback at %lld", lastPos);
+            var_SetTime(p_input_thread, "time", lastPos);
 
             if (returnValue == NSAlertOtherReturn)
                 config_PutInt(VLCIntf, "macosx-continue-playback", 1);
@@ -1540,32 +1554,33 @@
 
 - (void)storePlaybackPositionForItem:(input_thread_t *)p_input_thread
 {
+    if (!var_InheritBool(VLCIntf, "macosx-recentitems"))
+        return;
+
     input_item_t *p_item = input_GetItem(p_input_thread);
     if (!p_item)
         return;
 
+    if (![self isValidResumeItem:p_item])
+        return;
+
     char *psz_url = decode_URI(input_item_GetURI(p_item));
-    NSString *url = [NSString stringWithUTF8String:psz_url ? psz_url : ""];
+    if (!psz_url)
+        return;
+    NSString *url = toNSStr(psz_url);
     free(psz_url);
-
-    if (url.length < 1)
-        return;
-
-    if ([url rangeOfString:@"file://" options:NSCaseInsensitiveSearch].location != 0)
-        return;
 
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSMutableDictionary *mutDict = [[NSMutableDictionary alloc] initWithDictionary:[defaults objectForKey:@"recentlyPlayedMedia"]];
 
-    vlc_value_t pos;
-    var_Get(p_input_thread, "position", &pos);
-    float f_current_pos = 100. * pos.f_float;
-    long long int dur = input_item_GetDuration(p_item) / 1000000;
-    int current_pos_in_sec = (f_current_pos * dur) / 100;
+    float relativePos = var_GetFloat(p_input_thread, "position");
+    mtime_t pos = var_GetTime(p_input_thread, "time") / 1000000;
+    mtime_t dur = input_item_GetDuration(p_item) / 1000000;
+
     NSMutableArray *mediaList = [[defaults objectForKey:@"recentlyPlayedMediaList"] mutableCopy];
 
-    if (pos.f_float > .05 && pos.f_float < .95 && dur > 180) {
-        [mutDict setObject:[NSNumber numberWithInt:current_pos_in_sec] forKey:url];
+    if (relativePos > .05 && relativePos < .95 && dur > 180) {
+        [mutDict setObject:[NSNumber numberWithInt:pos] forKey:url];
 
         [mediaList removeObject:url];
         [mediaList addObject:url];

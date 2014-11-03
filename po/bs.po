@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-10-06 17:05+0200\n"
+"POT-Creation-Date: 2014-11-03 14:06+0100\n"
 "PO-Revision-Date: 2014-07-10 19:10+0000\n"
 "Last-Translator: Adnan Memija <sream_92@live.com>\n"
 "Language-Team: Bosnian (http://www.transifex.com/projects/p/vlc-trans/"
@@ -346,8 +346,8 @@ msgstr "VLC je implementacija Videa Po Zahtjevu"
 
 #: include/vlc_config_cat.h:167 src/libvlc-module.c:1994
 #: src/playlist/engine.c:243 modules/demux/playlist/playlist.c:64
-#: modules/demux/playlist/playlist.c:65 modules/gui/macosx/MainWindow.m:327
-#: modules/gui/macosx/MainWindow.m:945
+#: modules/demux/playlist/playlist.c:65 modules/gui/macosx/MainWindow.m:329
+#: modules/gui/macosx/MainWindow.m:956
 #: modules/gui/qt4/components/controller.hpp:117
 #: modules/gui/qt4/components/playlist/playlist.cpp:167
 #: modules/gui/qt4/components/playlist/selector.cpp:231
@@ -392,10 +392,6 @@ msgstr "Napredne postavke. Koristite sa oprezom..."
 #: include/vlc_config_cat.h:181
 msgid "Advanced settings"
 msgstr "Napredne postavke"
-
-#: include/vlc_input.h:568
-msgid "Subtitle track added"
-msgstr "Trag podtitla dodan"
 
 #: include/vlc_interface.h:140
 msgid ""
@@ -555,7 +551,7 @@ msgstr "Dodaj Mapu..."
 msgid "Save Playlist to &File..."
 msgstr "Snimi Listu Izvođenja u &Datoteku..."
 
-#: include/vlc_intf_strings.h:91 modules/gui/macosx/MainWindow.m:173
+#: include/vlc_intf_strings.h:91 modules/gui/macosx/MainWindow.m:174
 #: modules/gui/qt4/components/preferences_widgets.cpp:1136
 msgid "Search"
 msgstr "Pretraga"
@@ -631,7 +627,7 @@ msgstr "Maksimalni broj filtera (%u) je dosegnut."
 
 #: src/audio_output/output.c:229 src/config/core.c:407 src/input/es_out.c:904
 #: src/libvlc-module.c:538 modules/gui/macosx/MainMenu.m:277
-#: modules/gui/macosx/MainWindow.m:1072 modules/video_filter/postproc.c:234
+#: modules/gui/macosx/MainWindow.m:1083 modules/video_filter/postproc.c:234
 msgid "Disable"
 msgstr "Onemogući"
 
@@ -1346,7 +1342,7 @@ msgstr "Format od '%s' se ne može detektovati. Pogledajte dnevnik za detalje."
 msgid "Title"
 msgstr "Naslov"
 
-#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1203
+#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1202
 #: modules/gui/macosx/playlistinfo.m:74 modules/mux/avi.c:48
 msgid "Artist"
 msgstr "Umjetnik"
@@ -2592,7 +2588,7 @@ msgid "Default"
 msgstr "Zadano"
 
 #: src/libvlc-module.c:538 modules/gui/macosx/AudioEffects.m:112
-#: modules/gui/macosx/MainWindow.m:1070 modules/gui/macosx/wizard.m:351
+#: modules/gui/macosx/MainWindow.m:1081 modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/extended_panels.cpp:1053
 #: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:289
 msgid "Enable"
@@ -3737,7 +3733,7 @@ msgstr ""
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr ""
 
-#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1765
+#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1785
 msgid "Ignore"
 msgstr "Ignoriši"
 
@@ -3844,7 +3840,7 @@ msgid "Slower (fine)"
 msgstr "Sporije (fino)"
 
 #: src/libvlc-module.c:1209 modules/control/hotkeys.c:208
-#: modules/gui/macosx/about.m:261 modules/gui/macosx/ControlsBar.m:771
+#: modules/gui/macosx/about.m:268 modules/gui/macosx/ControlsBar.m:771
 #: modules/gui/macosx/ControlsBar.m:772 modules/gui/macosx/fspanel.m:424
 #: modules/gui/macosx/MainMenu.m:404 modules/gui/macosx/MainMenu.m:502
 #: modules/gui/macosx/MainMenu.m:510 modules/gui/macosx/MainMenu.m:1559
@@ -3861,7 +3857,7 @@ msgstr ""
 "Izaberite vruću tipku za preskakanje na sljedeću stavku iz liste izvođenja."
 
 #: src/libvlc-module.c:1211 modules/control/hotkeys.c:212
-#: modules/gui/macosx/about.m:262 modules/gui/macosx/ControlsBar.m:760
+#: modules/gui/macosx/about.m:269 modules/gui/macosx/ControlsBar.m:760
 #: modules/gui/macosx/ControlsBar.m:761 modules/gui/macosx/fspanel.m:420
 #: modules/gui/macosx/MainMenu.m:403 modules/gui/macosx/MainMenu.m:503
 #: modules/gui/macosx/MainMenu.m:509 modules/gui/macosx/MainMenu.m:1558
@@ -4730,7 +4726,7 @@ msgstr "Preuzimanje..."
 #: modules/gui/macosx/ConvertAndSave.m:372
 #: modules/gui/macosx/ConvertAndSave.m:386 modules/gui/macosx/coredialogs.m:61
 #: modules/gui/macosx/coredialogs.m:63 modules/gui/macosx/coredialogs.m:168
-#: modules/gui/macosx/MainWindow.m:184 modules/gui/macosx/MainWindow.m:189
+#: modules/gui/macosx/MainWindow.m:186 modules/gui/macosx/MainWindow.m:191
 #: modules/gui/macosx/open.m:128 modules/gui/macosx/open.m:183
 #: modules/gui/macosx/prefs.m:208 modules/gui/macosx/simple_prefs.m:324
 #: modules/gui/macosx/simple_prefs.m:352 modules/gui/macosx/simple_prefs.m:414
@@ -4806,7 +4802,7 @@ msgid "Install"
 msgstr "Instaliraj"
 
 #: src/playlist/engine.c:256 src/playlist/loadsave.c:159 lib/media_list.c:252
-#: modules/gui/macosx/MainWindow.m:329 modules/gui/macosx/MainWindow.m:947
+#: modules/gui/macosx/MainWindow.m:331 modules/gui/macosx/MainWindow.m:958
 #: modules/gui/qt4/components/playlist/selector.cpp:238
 msgid "Media Library"
 msgstr "Medijska Biblioteka"
@@ -13031,9 +13027,9 @@ msgstr "DBus"
 msgid "D-Bus control interface"
 msgstr "D-Bus kontrolno okruženje"
 
-#: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/MainWindow.m:207
-#: modules/gui/macosx/MainWindow.m:729 modules/gui/macosx/MainWindow.m:735
-#: modules/gui/macosx/MainWindow.m:1354 modules/gui/ncurses.c:1041
+#: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/MainWindow.m:209
+#: modules/gui/macosx/MainWindow.m:740 modules/gui/macosx/MainWindow.m:746
+#: modules/gui/macosx/MainWindow.m:1366 modules/gui/ncurses.c:1041
 #: modules/gui/qt4/dialogs/help.cpp:91 modules/gui/qt4/main_interface.cpp:1078
 #: modules/gui/qt4/main_interface.cpp:1082
 #: modules/gui/qt4/main_interface.cpp:1121
@@ -13762,7 +13758,7 @@ msgstr ""
 msgid "ASF/WMV demuxer"
 msgstr ""
 
-#: modules/demux/asf/asf.c:215 modules/demux/asf/asf.c:1193
+#: modules/demux/asf/asf.c:215 modules/demux/asf/asf.c:1195
 msgid "Could not demux ASF stream"
 msgstr ""
 
@@ -13770,7 +13766,7 @@ msgstr ""
 msgid "VLC failed to load the ASF header."
 msgstr ""
 
-#: modules/demux/asf/asf.c:1194
+#: modules/demux/asf/asf.c:1196
 msgid "DRM protected streams are not supported."
 msgstr ""
 
@@ -15421,11 +15417,11 @@ msgid ""
 "underline; color:#0057ae;\">Help and join us!</span></a>"
 msgstr ""
 
-#: modules/gui/macosx/about.m:260
+#: modules/gui/macosx/about.m:267
 msgid "VLC media player Help"
 msgstr ""
 
-#: modules/gui/macosx/about.m:263 modules/gui/macosx/MainMenu.m:469
+#: modules/gui/macosx/about.m:270 modules/gui/macosx/MainMenu.m:469
 #: modules/gui/macosx/MainMenu.m:1075
 msgid "Index"
 msgstr ""
@@ -15877,11 +15873,11 @@ msgstr ""
 msgid "Go!"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:154 modules/gui/macosx/MainWindow.m:178
+#: modules/gui/macosx/ConvertAndSave.m:154 modules/gui/macosx/MainWindow.m:179
 msgid "Drop media here"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:155 modules/gui/macosx/MainWindow.m:176
+#: modules/gui/macosx/ConvertAndSave.m:155 modules/gui/macosx/MainWindow.m:177
 msgid "Open media..."
 msgstr "Otvori medije..."
 
@@ -16128,19 +16124,19 @@ msgstr ""
 msgid "Click to exit fullscreen playback."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1475 modules/gui/macosx/intf.m:1492
+#: modules/gui/macosx/intf.m:1495 modules/gui/macosx/intf.m:1512
 msgid "VLC media playback"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1763
+#: modules/gui/macosx/intf.m:1783
 msgid "Remove old preferences?"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1764
+#: modules/gui/macosx/intf.m:1784
 msgid "We just found an older version of VLC's preferences files."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1765
+#: modules/gui/macosx/intf.m:1785
 msgid "Move To Trash and Relaunch VLC"
 msgstr ""
 
@@ -16701,58 +16697,58 @@ msgstr "Napravi donaciju..."
 msgid "Online Forum..."
 msgstr "Online Forum..."
 
-#: modules/gui/macosx/MainWindow.m:174
+#: modules/gui/macosx/MainWindow.m:175
 msgid ""
 "Enter a term to search the playlist. Results will be selected in the table."
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:177
+#: modules/gui/macosx/MainWindow.m:178
 msgid ""
 "Click to open an advanced dialog to select the media to play. You can also "
 "drop files here to play."
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:180 modules/gui/macosx/MainWindow.m:185
+#: modules/gui/macosx/MainWindow.m:182 modules/gui/macosx/MainWindow.m:187
 #: modules/gui/qt4/components/playlist/selector.cpp:577
 msgid "Subscribe"
 msgstr "Pretplati se"
 
-#: modules/gui/macosx/MainWindow.m:181 modules/gui/macosx/MainWindow.m:188
+#: modules/gui/macosx/MainWindow.m:183 modules/gui/macosx/MainWindow.m:190
 #: modules/gui/qt4/components/playlist/selector.cpp:594
 msgid "Unsubscribe"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:182
+#: modules/gui/macosx/MainWindow.m:184
 #: modules/gui/qt4/components/playlist/selector.cpp:280
 msgid "Subscribe to a podcast"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:183
+#: modules/gui/macosx/MainWindow.m:185
 #: modules/gui/qt4/components/playlist/selector.cpp:578
 msgid "Enter URL of the podcast to subscribe to:"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:186
+#: modules/gui/macosx/MainWindow.m:188
 msgid "Unsubscribe from a podcast"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:187
+#: modules/gui/macosx/MainWindow.m:189
 msgid "Select the podcast you would like to unsubscribe from:"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:241
+#: modules/gui/macosx/MainWindow.m:243
 msgid "Check for album art and metadata?"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:241
+#: modules/gui/macosx/MainWindow.m:243
 msgid "Enable Metadata Retrieval"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:241
+#: modules/gui/macosx/MainWindow.m:243
 msgid "No, Thanks"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:241
+#: modules/gui/macosx/MainWindow.m:243
 msgid ""
 "VLC can check online for album art and metadata to enrich your playback "
 "experience, e.g. by providing track information when playing Audio CDs. To "
@@ -16760,23 +16756,23 @@ msgid ""
 "trusted services in an anonymized form."
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:326
+#: modules/gui/macosx/MainWindow.m:328
 msgid "LIBRARY"
 msgstr "BIBLIOTEKA"
 
-#: modules/gui/macosx/MainWindow.m:331
+#: modules/gui/macosx/MainWindow.m:333
 msgid "MY COMPUTER"
 msgstr "MOJ KOMPJUTER"
 
-#: modules/gui/macosx/MainWindow.m:332
+#: modules/gui/macosx/MainWindow.m:334
 msgid "DEVICES"
 msgstr "UREĐAJI"
 
-#: modules/gui/macosx/MainWindow.m:333
+#: modules/gui/macosx/MainWindow.m:335
 msgid "LOCAL NETWORK"
 msgstr "LOKALNA MREŽA"
 
-#: modules/gui/macosx/MainWindow.m:334
+#: modules/gui/macosx/MainWindow.m:336
 msgid "INTERNET"
 msgstr "INTERNET"
 
@@ -17165,28 +17161,28 @@ msgstr "HTML lista izvođenja"
 msgid "Save Playlist"
 msgstr "Snimi Listu Izvođenja"
 
-#: modules/gui/macosx/playlist.m:1203
+#: modules/gui/macosx/playlist.m:1202
 msgid "Meta-information"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1521 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/macosx/playlist.m:1535 modules/gui/qt4/qt4.cpp:188
 msgid "Continue playback?"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1521 modules/gui/macosx/simple_prefs.m:837
+#: modules/gui/macosx/playlist.m:1535 modules/gui/macosx/simple_prefs.m:837
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr "Nastavi"
 
-#: modules/gui/macosx/playlist.m:1521
+#: modules/gui/macosx/playlist.m:1535
 msgid "Restart playback"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1521
+#: modules/gui/macosx/playlist.m:1535
 msgid "Always continue"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1521
+#: modules/gui/macosx/playlist.m:1535
 msgid "Playback of \"%@\" will continue at %@"
 msgstr ""
 
@@ -21063,7 +21059,7 @@ msgstr ""
 msgid "High quality scaling level"
 msgstr ""
 
-#: modules/hw/vdpau/deinterlace.c:131
+#: modules/hw/vdpau/deinterlace.c:132
 msgid "VDPAU deinterlacing filter"
 msgstr ""
 
@@ -27059,8 +27055,9 @@ msgstr ""
 
 #: modules/gui/qt4/ui/about.h:287 modules/gui/qt4/ui/open.h:242
 #: modules/gui/qt4/ui/podcast_configuration.h:100
+#, fuzzy
 msgid "Dialog"
-msgstr ""
+msgstr "Analogno"
 
 #: modules/gui/qt4/ui/about.h:288 modules/gui/qt4/ui/about.h:289
 msgid "Update"
@@ -27072,24 +27069,28 @@ msgstr ""
 #: modules/gui/qt4/ui/sprefs_interface.h:503
 #: modules/gui/qt4/ui/sprefs_subtitles.h:289
 #: modules/gui/qt4/ui/sprefs_video.h:320 modules/gui/qt4/ui/streampanel.h:167
+#, fuzzy
 msgid "Form"
-msgstr ""
+msgstr "Format"
 
 #: modules/gui/qt4/ui/equalizer.h:135
+#, fuzzy
 msgid "Preset"
-msgstr ""
+msgstr "Resetuj"
 
 #: modules/gui/qt4/ui/equalizer.h:137
 msgid "0.00 dB"
 msgstr ""
 
 #: modules/gui/qt4/ui/messages_panel.h:139
+#, fuzzy
 msgid "&Verbosity:"
-msgstr ""
+msgstr "Preopširnost (0,1,2)"
 
 #: modules/gui/qt4/ui/messages_panel.h:140
+#, fuzzy
 msgid "&Filter:"
-msgstr ""
+msgstr "Filter"
 
 #: modules/gui/qt4/ui/messages_panel.h:141
 msgid "&Save as..."
@@ -27100,32 +27101,36 @@ msgid "Modules Tree"
 msgstr ""
 
 #: modules/gui/qt4/ui/open.h:245
+#, fuzzy
 msgid "Show extended options"
-msgstr ""
+msgstr "Pokaži proširene postavke"
 
 #: modules/gui/qt4/ui/open.h:247
 msgid "Show &more options"
 msgstr "Pokaži &više opcija"
 
 #: modules/gui/qt4/ui/open.h:250
+#, fuzzy
 msgid "Change the caching for the media"
-msgstr ""
+msgstr "Promijeni naziv na osnovu trenutnog medija"
 
 #: modules/gui/qt4/ui/open.h:252
 msgid " ms"
 msgstr " ms"
 
 #: modules/gui/qt4/ui/open.h:253
+#, fuzzy
 msgid "MRL"
-msgstr ""
+msgstr "URL"
 
 #: modules/gui/qt4/ui/open.h:254
 msgid "Start Time"
 msgstr "Početno Vrijeme"
 
 #: modules/gui/qt4/ui/open.h:255
+#, fuzzy
 msgid "Edit Options"
-msgstr ""
+msgstr "Opcije"
 
 #: modules/gui/qt4/ui/open.h:256
 msgid "Extra media"
@@ -27136,12 +27141,14 @@ msgid "Complete MRL for VLC internal"
 msgstr ""
 
 #: modules/gui/qt4/ui/open.h:261
+#, fuzzy
 msgid "Select the file"
-msgstr ""
+msgstr "Izaberi datoteku"
 
 #: modules/gui/qt4/ui/open.h:265
+#, fuzzy
 msgid "Change the start time for the media"
-msgstr ""
+msgstr "Promijeni naziv na osnovu trenutnog medija"
 
 #: modules/gui/qt4/ui/open.h:267
 msgid "HH'H':mm'm':ss's'.zzz"
@@ -27184,8 +27191,9 @@ msgid "SVCD/VCD"
 msgstr ""
 
 #: modules/gui/qt4/ui/open_disk.h:303
+#, fuzzy
 msgid "Disable Disc Menus"
-msgstr ""
+msgstr "Onemogući DVD izbornike"
 
 #: modules/gui/qt4/ui/open_disk.h:305
 msgid "No disc menus"
@@ -27204,16 +27212,19 @@ msgid "Audio and Subtitles"
 msgstr "Zvuk i Podtitlovi"
 
 #: modules/gui/qt4/ui/open_file.h:143
+#, fuzzy
 msgid "Use a sub&title file"
-msgstr ""
+msgstr "Koristi datoteku podtitla"
 
 #: modules/gui/qt4/ui/open_file.h:145
+#, fuzzy
 msgid "Select the subtitle file"
-msgstr ""
+msgstr "Automatski prepoznaj podtitl datoteke"
 
 #: modules/gui/qt4/ui/open_file.h:149
+#, fuzzy
 msgid "Choose one or more media file to open"
-msgstr ""
+msgstr "Izaberite jednu ili više datoteka za otvaranje"
 
 #: modules/gui/qt4/ui/open_file.h:151
 msgid "File Selection"
@@ -27236,8 +27247,9 @@ msgid "Please enter a network URL:"
 msgstr "Molimo unesite mrežni URL:"
 
 #: modules/gui/qt4/ui/profiles.h:686
+#, fuzzy
 msgid "Profile edition"
-msgstr ""
+msgstr "Naziv Profila"
 
 #: modules/gui/qt4/ui/profiles.h:687
 msgid "MPEG-TS"
@@ -27292,40 +27304,48 @@ msgid "AVI"
 msgstr "AVI"
 
 #: modules/gui/qt4/ui/profiles.h:700
+#, fuzzy
 msgid "Features"
-msgstr ""
+msgstr "Geste"
 
 #: modules/gui/qt4/ui/profiles.h:702
+#, fuzzy
 msgid "Streamable"
-msgstr ""
+msgstr "Naziv strujanja"
 
 #: modules/gui/qt4/ui/profiles.h:703
+#, fuzzy
 msgid "Chapters"
-msgstr ""
+msgstr "Poglavlje"
 
 #: modules/gui/qt4/ui/profiles.h:706
+#, fuzzy
 msgid "Menus"
-msgstr ""
+msgstr "Meni"
 
 #: modules/gui/qt4/ui/profiles.h:713
+#, fuzzy
 msgid "Frame Rate"
-msgstr ""
+msgstr "Brzina"
 
 #: modules/gui/qt4/ui/profiles.h:714
+#, fuzzy
 msgid "Same as source"
-msgstr ""
+msgstr "Maksimalni RTP izvori"
 
 #: modules/gui/qt4/ui/profiles.h:716
 msgid " fps"
 msgstr " fps"
 
 #: modules/gui/qt4/ui/profiles.h:717
+#, fuzzy
 msgid "Custom options"
-msgstr ""
+msgstr "Lista prilagođenih odnosa isjecanja"
 
 #: modules/gui/qt4/ui/profiles.h:718
+#, fuzzy
 msgid "Quality"
-msgstr ""
+msgstr "VBR Kvalitet"
 
 #: modules/gui/qt4/ui/profiles.h:719 modules/gui/qt4/ui/profiles.h:720
 msgid "Not Used"
@@ -27336,32 +27356,37 @@ msgid " kb/s"
 msgstr " kb/s"
 
 #: modules/gui/qt4/ui/profiles.h:722 modules/gui/qt4/ui/profiles.h:742
+#, fuzzy
 msgid "Encoding parameters"
-msgstr ""
+msgstr "Kodiranje X koordinate"
 
 #: modules/gui/qt4/ui/profiles.h:725
+#, fuzzy
 msgid "Frame size"
-msgstr ""
+msgstr "Brzina"
 
 #: modules/gui/qt4/ui/profiles.h:728 modules/gui/qt4/ui/profiles.h:731
 msgid "px"
 msgstr ""
 
 #: modules/gui/qt4/ui/profiles.h:741
+#, fuzzy
 msgid "Sample Rate"
-msgstr ""
+msgstr "Brzina"
 
 #: modules/gui/qt4/ui/sout.h:203
 msgid "Set up media sources to stream"
 msgstr ""
 
 #: modules/gui/qt4/ui/sout.h:205
+#, fuzzy
 msgid "Destination Setup"
-msgstr ""
+msgstr "Odredište"
 
 #: modules/gui/qt4/ui/sout.h:206
+#, fuzzy
 msgid "Select destinations to stream to"
-msgstr ""
+msgstr "Izaberi strujanje"
 
 #: modules/gui/qt4/ui/sout.h:207
 msgid ""
@@ -27378,56 +27403,65 @@ msgid "Display locally"
 msgstr "Prikaži lokalno"
 
 #: modules/gui/qt4/ui/sout.h:212
+#, fuzzy
 msgid "Transcoding Options"
-msgstr ""
+msgstr "Napredne Opcije"
 
 #: modules/gui/qt4/ui/sout.h:213
+#, fuzzy
 msgid "Select and choose transcoding options"
-msgstr ""
+msgstr "Izaberi \"Napredne Opcije\" za prikaz svih opcija."
 
 #: modules/gui/qt4/ui/sout.h:214
 msgid "Activate Transcoding"
 msgstr ""
 
 #: modules/gui/qt4/ui/sout.h:215
+#, fuzzy
 msgid "Option Setup"
-msgstr ""
+msgstr "Opcije"
 
 #: modules/gui/qt4/ui/sout.h:216
 msgid "Set up any additional options for streaming"
 msgstr ""
 
 #: modules/gui/qt4/ui/sout.h:217
+#, fuzzy
 msgid "Miscellaneous Options"
-msgstr ""
+msgstr "Raznovrsno"
 
 #: modules/gui/qt4/ui/sout.h:218
+#, fuzzy
 msgid "Stream all elementary streams"
-msgstr ""
+msgstr "Strujaj sva osnovna strujanja (video, zvuk i podtitlove)"
 
 #: modules/gui/qt4/ui/sout.h:219
+#, fuzzy
 msgid "Generated stream output string"
-msgstr ""
+msgstr "Opšte postavke izlaznog strujanja"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:428
 msgid " %"
 msgstr " %"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:431
+#, fuzzy
 msgid "Output module:"
-msgstr ""
+msgstr "Izlazni moduli"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:435
 msgid "Effects"
 msgstr "Efekti"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:436
+#, fuzzy
 msgid "Visualization:"
-msgstr ""
+msgstr "Vizualizacija"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:437
+#, fuzzy
 msgid "Enable Time-Stretching audio"
-msgstr ""
+msgstr "Uključi vremensko proširavanje zvuka"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:438
 msgid "Dolby Surround:"
@@ -27438,8 +27472,9 @@ msgid "Replay gain mode:"
 msgstr "Mod zauzeća reprodukcije:"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:440
+#, fuzzy
 msgid "Headphone surround effect"
-msgstr ""
+msgstr "Efekat slušalica"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:441
 msgid "Normalize volume to:"
@@ -27474,8 +27509,9 @@ msgid "x264 preset and tuning selection"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_input.h:349
+#, fuzzy
 msgid "Hardware-accelerated decoding"
-msgstr ""
+msgstr "Hardversko kodiranje"
 
 #: modules/gui/qt4/ui/sprefs_input.h:350
 msgid "Skip H.264 in-loop deblocking filter"
@@ -27486,24 +27522,29 @@ msgid "Video quality post-processing level"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_input.h:352
+#, fuzzy
 msgid "Optical drive"
-msgstr ""
+msgstr "Lokalni diskovi"
 
 #: modules/gui/qt4/ui/sprefs_input.h:353
+#, fuzzy
 msgid "Default optical device"
-msgstr ""
+msgstr "Zadani uređaji"
 
 #: modules/gui/qt4/ui/sprefs_input.h:357
+#, fuzzy
 msgid "Damaged or incomplete AVI file"
-msgstr ""
+msgstr "Svojstva filtera slika"
 
 #: modules/gui/qt4/ui/sprefs_input.h:360
+#, fuzzy
 msgid "HTTP proxy URL"
-msgstr ""
+msgstr "HTTP poslužitelj"
 
 #: modules/gui/qt4/ui/sprefs_input.h:361
+#, fuzzy
 msgid "HTTP (default)"
-msgstr ""
+msgstr "(zadano omogućeno)"
 
 #: modules/gui/qt4/ui/sprefs_input.h:362
 msgid "RTP over RTSP (TCP)"
@@ -27514,8 +27555,9 @@ msgid "Live555 stream transport"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_input.h:364
+#, fuzzy
 msgid "Default caching policy"
-msgstr ""
+msgstr "Zadano Kodiranje"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:505
 msgid "Menus language:"
@@ -27554,8 +27596,9 @@ msgid "Show media change popup:"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_interface.h:516
+#, fuzzy
 msgid "Start in minimal view mode"
-msgstr ""
+msgstr "Pokreni video u modu cijelog ekrana"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:517
 msgid "Force window style:"
@@ -27566,8 +27609,9 @@ msgid "Integrate video in interface"
 msgstr "Ugradi video u okruženje"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:519
+#, fuzzy
 msgid "Show systray icon"
-msgstr ""
+msgstr "Prikaži postavke"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:520
 msgid "Skin resource file:"
@@ -27606,36 +27650,43 @@ msgid "Operating System Integration"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_interface.h:539
+#, fuzzy
 msgid "File extensions association"
-msgstr ""
+msgstr "Asocijacije datoteka"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:540
+#, fuzzy
 msgid "Set up associations..."
-msgstr ""
+msgstr "Asocijacije datoteka"
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:291
+#, fuzzy
 msgid "Enable On Screen Display (OSD)"
-msgstr ""
+msgstr "Direktan Prikaz"
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:292
+#, fuzzy
 msgid "Show media title on video start"
-msgstr ""
+msgstr "Pokaži naslov medija na videu"
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:294
+#, fuzzy
 msgid "Enable subtitles"
-msgstr ""
+msgstr "Omogući pod-fotografije"
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:295
+#, fuzzy
 msgid "Subtitle Language"
-msgstr ""
+msgstr "Jezik podtitla"
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:297
 msgid "Default encoding"
 msgstr "Zadano kodiranje"
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:298
+#, fuzzy
 msgid "Subtitle effects"
-msgstr ""
+msgstr "Kodeci podtitla"
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:304
 msgid "Add a shadow"
@@ -27670,12 +27721,14 @@ msgid "Display device"
 msgstr "Uređaj prikaza"
 
 #: modules/gui/qt4/ui/sprefs_video.h:331
+#, fuzzy
 msgid "KVA"
-msgstr ""
+msgstr "MKV"
 
 #: modules/gui/qt4/ui/sprefs_video.h:335
+#, fuzzy
 msgid "Deinterlacing"
-msgstr ""
+msgstr "Raspletavanje"
 
 #: modules/gui/qt4/ui/sprefs_video.h:337
 msgid "Force Aspect Ratio"
@@ -27694,12 +27747,14 @@ msgid "Stuff"
 msgstr ""
 
 #: modules/gui/qt4/ui/streampanel.h:173
+#, fuzzy
 msgid "Edit settings"
-msgstr ""
+msgstr "Postavke zvuka"
 
 #: modules/gui/qt4/ui/streampanel.h:174
+#, fuzzy
 msgid "Control"
-msgstr ""
+msgstr "Kontrole"
 
 #: modules/gui/qt4/ui/streampanel.h:175
 msgid "Run manually"
@@ -27714,24 +27769,27 @@ msgid "Run on schedule"
 msgstr ""
 
 #: modules/gui/qt4/ui/streampanel.h:178
+#, fuzzy
 msgid "Status"
-msgstr ""
+msgstr "Statusna Traka"
 
 #: modules/gui/qt4/ui/streampanel.h:179
 msgid "P/P"
 msgstr ""
 
 #: modules/gui/qt4/ui/streampanel.h:182
+#, fuzzy
 msgid "Prev"
-msgstr ""
+msgstr "Prethodno"
 
 #: modules/gui/qt4/ui/streampanel.h:183
 msgid "Add Input"
 msgstr "Dodaj Ulaz"
 
 #: modules/gui/qt4/ui/streampanel.h:184
+#, fuzzy
 msgid "Edit Input"
-msgstr ""
+msgstr "Dodaj Ulaz"
 
 #: modules/gui/qt4/ui/streampanel.h:185
 msgid "Clear List"
@@ -27746,8 +27804,9 @@ msgid "Launching an update request..."
 msgstr "Pokrećem zahtjev za nadogradnju..."
 
 #: modules/gui/qt4/ui/update.h:150
+#, fuzzy
 msgid "Do you want to download it?"
-msgstr ""
+msgstr "Želite li ga preuzeti?"
 
 #: modules/gui/qt4/ui/video_effects.h:1404
 msgid "Essential"
@@ -27759,8 +27818,9 @@ msgid ">HHHHHH;#"
 msgstr ">HHHHHH;#"
 
 #: modules/gui/qt4/ui/video_effects.h:1419
+#, fuzzy
 msgid "Negate colors"
-msgstr ""
+msgstr "Kreiraj Mapu"
 
 #: modules/gui/qt4/ui/video_effects.h:1432
 msgid "Colors"
@@ -27771,12 +27831,14 @@ msgid "Interactive Zoom"
 msgstr "Interaktivno Zumiranje"
 
 #: modules/gui/qt4/ui/video_effects.h:1439
+#, fuzzy
 msgid "Angle"
-msgstr ""
+msgstr "Jungle"
 
 #: modules/gui/qt4/ui/video_effects.h:1443
+#, fuzzy
 msgid "Black Slot"
-msgstr ""
+msgstr "Crna"
 
 #: modules/gui/qt4/ui/video_effects.h:1447
 #: modules/gui/qt4/ui/video_effects.h:1464
@@ -27812,8 +27874,9 @@ msgid "Mark analyzed Pixels"
 msgstr ""
 
 #: modules/gui/qt4/ui/video_effects.h:1473
+#, fuzzy
 msgid "Filter threshold (%)"
-msgstr ""
+msgstr "Uglađenost Filtera"
 
 #: modules/gui/qt4/ui/video_effects.h:1476
 msgid "Anaglyph 3D"
@@ -27840,8 +27903,9 @@ msgid "Soften"
 msgstr "Mekšanje"
 
 #: modules/gui/qt4/ui/video_effects.h:1488
+#, fuzzy
 msgid "Denoiser"
-msgstr ""
+msgstr "Šum"
 
 #: modules/gui/qt4/ui/video_effects.h:1489
 msgid "Spatial luma strength"
@@ -27860,12 +27924,14 @@ msgid "Temporal chroma strength"
 msgstr ""
 
 #: modules/gui/qt4/ui/vlm.h:286
+#, fuzzy
 msgid "VLM configurator"
-msgstr ""
+msgstr "&VLM Konfiguracija"
 
 #: modules/gui/qt4/ui/vlm.h:287
+#, fuzzy
 msgid "Media Manager Edition"
-msgstr ""
+msgstr "Medijske &Informacije"
 
 #: modules/gui/qt4/ui/vlm.h:288
 msgid "Name:"
@@ -27892,20 +27958,26 @@ msgid "Time Control"
 msgstr "Vremenska Kontrola"
 
 #: modules/gui/qt4/ui/vlm.h:295
+#, fuzzy
 msgid "Mux Control"
-msgstr ""
+msgstr "Kontrole"
 
 #: modules/gui/qt4/ui/vlm.h:296
+#, fuzzy
 msgid "Muxer:"
-msgstr ""
+msgstr "Mukser"
 
 #: modules/gui/qt4/ui/vlm.h:297
 msgid "AAAA; "
 msgstr "AAAA; "
 
 #: modules/gui/qt4/ui/vlm.h:302
+#, fuzzy
 msgid "Media Manager List"
-msgstr ""
+msgstr "Medij Ugao"
+
+#~ msgid "Subtitle track added"
+#~ msgstr "Trag podtitla dodan"
 
 #~ msgid "Media in Zip"
 #~ msgstr "Mediji u Zipu"
@@ -28094,9 +28166,6 @@ msgstr ""
 
 #~ msgid "Use GPU accelerated decoding"
 #~ msgstr "Koristi GPU ubrzano kodiranje"
-
-#~ msgid "Do you want to download it ?"
-#~ msgstr "Želite li ga preuzeti?"
 
 #~ msgid ""
 #~ "VLC does not support the audio or video format \"%4.4s\". Unfortunately "
@@ -28528,10 +28597,6 @@ msgstr ""
 #~ msgstr "Stišaj zvuk."
 
 #, fuzzy
-#~ msgid "Filter Smoothness (in %)"
-#~ msgstr "Uglađenost Filtera"
-
-#, fuzzy
 #~ msgid "Configuration file"
 #~ msgstr "VLM konfiguracijska datoteka"
 
@@ -28542,10 +28607,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Licence"
 #~ msgstr "Licenca"
-
-#, fuzzy
-#~ msgid "Use a sub&titles file"
-#~ msgstr "Koristi datoteku podtitla"
 
 #, fuzzy
 #~ msgid "Destinations"
@@ -28560,16 +28621,8 @@ msgstr ""
 #~ msgstr "Instalirano"
 
 #, fuzzy
-#~ msgid "Subtitles Language"
-#~ msgstr "Jezik podtitla"
-
-#, fuzzy
 #~ msgid "Preferred subtitles language"
 #~ msgstr "Preferirani jezik Zvuka"
-
-#, fuzzy
-#~ msgid "Subtitles effects"
-#~ msgstr "Kodeci podtitla"
 
 #, fuzzy
 #~ msgid "Video Filters..."

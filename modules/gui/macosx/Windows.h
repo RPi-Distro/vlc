@@ -2,7 +2,7 @@
  * Windows.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012-2014 VLC authors and VideoLAN
- * $Id: d3dec6b9b5090c5e99cc5988b3d147d750480d69 $
+ * $Id: 319e95a44b2ef96897883cc752877ed6e0a1f80d $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -74,6 +74,7 @@
 static const float f_min_video_height = 70.0;
 
 @class VLCControlsBarCommon;
+@class VLCMainWindowTitleView;
 
 /*****************************************************************************
  * VLCVideoWindowCommon
@@ -86,7 +87,7 @@ static const float f_min_video_height = 70.0;
     NSRect previousSavedFrame;
     BOOL b_dark_interface;
 
-    IBOutlet id o_titlebar_view; // only set in main or detached window
+    IBOutlet VLCMainWindowTitleView *o_titlebar_view; // only set in main or detached window
     IBOutlet VLCVoutView *o_video_view;
 
     IBOutlet VLCControlsBarCommon *o_controls_bar;

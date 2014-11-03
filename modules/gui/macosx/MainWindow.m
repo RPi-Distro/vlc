@@ -2,7 +2,7 @@
  * MainWindow.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: e8a8de483f1fb17afd8ee6f20b352ad698968a0a $
+ * $Id: 35a658a8a48742865e18d1f121828d8ebf0363d8 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -54,6 +54,7 @@
 - (void)hidePodcastControls;
 @end
 
+static const float f_min_window_height = 307.;
 
 @implementation VLCMainWindow
 
@@ -176,6 +177,7 @@ static VLCMainWindow *_o_sharedInstance = nil;
     [o_dropzone_btn setTitle: _NS("Open media...")];
     [[o_dropzone_btn cell] accessibilitySetOverrideValue:_NS("Click to open an advanced dialog to select the media to play. You can also drop files here to play.") forAttribute:NSAccessibilityDescriptionAttribute];
     [o_dropzone_lbl setStringValue: _NS("Drop media here")];
+    [o_dropzone_img setImage: imageFromRes(@"dropzone")];
 
     [o_podcast_add_btn setTitle: _NS("Subscribe")];
     [o_podcast_remove_btn setTitle: _NS("Unsubscribe")];
@@ -200,9 +202,9 @@ static VLCMainWindow *_o_sharedInstance = nil;
     [self setAcceptsMouseMovedEvents: YES];
     // Set that here as IB seems to be buggy
     if (b_dark_interface)
-        [self setContentMinSize:NSMakeSize(604., 288. + [o_titlebar_view frame].size.height)];
+        [self setContentMinSize:NSMakeSize(604., f_min_window_height + [o_titlebar_view frame].size.height)];
     else
-        [self setContentMinSize:NSMakeSize(604., 288.)];
+        [self setContentMinSize:NSMakeSize(604., f_min_window_height)];
 
     [self setTitle: _NS("VLC media player")];
 
@@ -325,9 +327,9 @@ static VLCMainWindow *_o_sharedInstance = nil;
     o_sidebaritems = [[NSMutableArray alloc] init];
     SideBarItem *libraryItem = [SideBarItem itemWithTitle:_NS("LIBRARY") identifier:@"library"];
     SideBarItem *playlistItem = [SideBarItem itemWithTitle:_NS("Playlist") identifier:@"playlist"];
-    [playlistItem setIcon: [NSImage imageNamed:@"sidebar-playlist"]];
+    [playlistItem setIcon: imageFromRes(@"sidebar-playlist")];
     SideBarItem *medialibraryItem = [SideBarItem itemWithTitle:_NS("Media Library") identifier:@"medialibrary"];
-    [medialibraryItem setIcon: [NSImage imageNamed:@"sidebar-playlist"]];
+    [medialibraryItem setIcon: imageFromRes(@"sidebar-playlist")];
     SideBarItem *mycompItem = [SideBarItem itemWithTitle:_NS("MY COMPUTER") identifier:@"mycomputer"];
     SideBarItem *devicesItem = [SideBarItem itemWithTitle:_NS("DEVICES") identifier:@"devices"];
     SideBarItem *lanItem = [SideBarItem itemWithTitle:_NS("LOCAL NETWORK") identifier:@"localnetwork"];
@@ -351,33 +353,30 @@ static VLCMainWindow *_o_sharedInstance = nil;
         switch (*p_category) {
             case SD_CAT_INTERNET:
                 [internetItems addObject: [SideBarItem itemWithTitle: _NS(*ppsz_longname) identifier: o_identifier]];
-                if (!strncmp(*ppsz_name, "podcast", 7))
-                    [[internetItems lastObject] setIcon: [NSImage imageNamed:@"sidebar-podcast"]];
-                else
-                    [[internetItems lastObject] setIcon: [NSImage imageNamed:@"NSApplicationIcon"]];
+                [[internetItems lastObject] setIcon: imageFromRes(@"sidebar-podcast")];
                 [[internetItems lastObject] setSdtype: SD_CAT_INTERNET];
                 [[internetItems lastObject] setUntranslatedTitle: [NSString stringWithUTF8String:*ppsz_longname]];
                 break;
             case SD_CAT_DEVICES:
                 [devicesItems addObject: [SideBarItem itemWithTitle: _NS(*ppsz_longname) identifier: o_identifier]];
-                [[devicesItems lastObject] setIcon: [NSImage imageNamed:@"NSApplicationIcon"]];
+                [[devicesItems lastObject] setIcon: imageFromRes(@"sidebar-local")];
                 [[devicesItems lastObject] setSdtype: SD_CAT_DEVICES];
                 [[devicesItems lastObject] setUntranslatedTitle: [NSString stringWithUTF8String:*ppsz_longname]];
                 break;
             case SD_CAT_LAN:
                 [lanItems addObject: [SideBarItem itemWithTitle: _NS(*ppsz_longname) identifier: o_identifier]];
-                [[lanItems lastObject] setIcon: [NSImage imageNamed:@"sidebar-local"]];
+                [[lanItems lastObject] setIcon: imageFromRes(@"sidebar-local")];
                 [[lanItems lastObject] setSdtype: SD_CAT_LAN];
                 [[lanItems lastObject] setUntranslatedTitle: [NSString stringWithUTF8String:*ppsz_longname]];
                 break;
             case SD_CAT_MYCOMPUTER:
                 [mycompItems addObject: [SideBarItem itemWithTitle: _NS(*ppsz_longname) identifier: o_identifier]];
                 if (!strncmp(*ppsz_name, "video_dir", 9))
-                    [[mycompItems lastObject] setIcon: [NSImage imageNamed:@"sidebar-movie"]];
+                    [[mycompItems lastObject] setIcon: imageFromRes(@"sidebar-movie")];
                 else if (!strncmp(*ppsz_name, "audio_dir", 9))
-                    [[mycompItems lastObject] setIcon: [NSImage imageNamed:@"sidebar-music"]];
+                    [[mycompItems lastObject] setIcon: imageFromRes(@"sidebar-music")];
                 else if (!strncmp(*ppsz_name, "picture_dir", 11))
-                    [[mycompItems lastObject] setIcon: [NSImage imageNamed:@"sidebar-pictures"]];
+                    [[mycompItems lastObject] setIcon: imageFromRes(@"sidebar-pictures")];
                 else
                     [[mycompItems lastObject] setIcon: [NSImage imageNamed:@"NSApplicationIcon"]];
                 [[mycompItems lastObject] setUntranslatedTitle: [NSString stringWithUTF8String:*ppsz_longname]];
@@ -440,28 +439,36 @@ static VLCMainWindow *_o_sharedInstance = nil;
 - (void)resizePlaylistAfterCollapse
 {
     // no animation here since we might be in the middle of another resize animation
-    NSRect plrect;
-    plrect = [o_playlist_table frame];
-    plrect.size.height = [o_split_view frame].size.height - 20.0; // actual pl top bar height, which differs from its frame
-    [o_playlist_table setFrame: plrect];
-    [o_playlist_table setNeedsDisplay: YES];
+    NSRect rightSplitRect = [o_right_split_view frame];
 
-    NSRect rightSplitRect;
-    rightSplitRect = [o_right_split_view frame];
-    plrect = [o_dropzone_box frame];
-    plrect.origin.x = (rightSplitRect.size.width - plrect.size.width) / 2;
-    plrect.origin.y = (rightSplitRect.size.height - plrect.size.height) / 2;
-    [o_dropzone_view setFrame: [o_playlist_table frame]];
-    [o_dropzone_box setFrame: plrect];
+    NSRect plrect;
+    plrect.size.height = rightSplitRect.size.height - 20.0; // actual pl top bar height, which differs from its frame
+    plrect.size.width = rightSplitRect.size.width;
+    plrect.origin.x = plrect.origin.y = 0.;
+
+    NSRect dropzoneboxRect = [o_dropzone_box frame];
+    dropzoneboxRect.origin.x = (plrect.size.width - dropzoneboxRect.size.width) / 2;
+    dropzoneboxRect.origin.y = (plrect.size.height - dropzoneboxRect.size.height) / 2;
+
+    [o_dropzone_view setFrame: plrect];
+    [o_dropzone_box setFrame: dropzoneboxRect];
+
+    if (b_podcastView_displayed) {
+        plrect.size.height -= [o_podcast_view frame].size.height;
+        plrect.origin.y = [o_podcast_view frame].size.height;
+    }
+    [o_playlist_table setFrame: plrect];
+
     [o_dropzone_view setNeedsDisplay: YES];
+    [o_playlist_table setNeedsDisplay: YES];
 }
 
 - (void)makeSplitViewVisible
 {
     if (b_dark_interface)
-        [self setContentMinSize: NSMakeSize(604., 288. + [o_titlebar_view frame].size.height)];
+        [self setContentMinSize: NSMakeSize(604., f_min_window_height + [o_titlebar_view frame].size.height)];
     else
-        [self setContentMinSize: NSMakeSize(604., 288.)];
+        [self setContentMinSize: NSMakeSize(604., f_min_window_height)];
 
     NSRect old_frame = [self frame];
     CGFloat newHeight = [self minSize].height;
@@ -629,6 +636,9 @@ static VLCMainWindow *_o_sharedInstance = nil;
 
 - (void)hideSplitView:(BOOL)b_with_resize
 {
+    // cancel pending pl resizes, in case of fast toggle between both modes
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(resizePlaylistAfterCollapse) object:nil];
+
     if (b_with_resize) {
         NSRect winrect = [self frame];
         f_lastSplitViewHeight = [o_split_view frame].size.height;
@@ -637,7 +647,6 @@ static VLCMainWindow *_o_sharedInstance = nil;
         [self setFrame: winrect display: YES animate: YES];
     }
 
-    [self performSelector:@selector(hideDropZone) withObject:nil afterDelay:0.1];
     if (b_dark_interface) {
         [self setContentMinSize: NSMakeSize(604., [o_controls_bar height] + [o_titlebar_view frame].size.height)];
         [self setContentMaxSize: NSMakeSize(FLT_MAX, [o_controls_bar height] + [o_titlebar_view frame].size.height)];
@@ -653,9 +662,9 @@ static VLCMainWindow *_o_sharedInstance = nil;
 {
     [self updateWindow];
     if (b_dark_interface)
-        [self setContentMinSize:NSMakeSize(604., 288. + [o_titlebar_view frame].size.height)];
+        [self setContentMinSize:NSMakeSize(604., f_min_window_height + [o_titlebar_view frame].size.height)];
     else
-        [self setContentMinSize:NSMakeSize(604., 288.)];
+        [self setContentMinSize:NSMakeSize(604., f_min_window_height)];
     [self setContentMaxSize: NSMakeSize(FLT_MAX, FLT_MAX)];
 
     if (b_with_resize) {
@@ -666,6 +675,8 @@ static VLCMainWindow *_o_sharedInstance = nil;
         [self setFrame: winrect display: YES animate: YES];
     }
 
+    // cancel pending pl resizes, in case of fast toggle between both modes
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(resizePlaylistAfterCollapse) object:nil];
     [self performSelector:@selector(resizePlaylistAfterCollapse) withObject: nil afterDelay:0.75];
 
     b_splitview_removed = NO;
@@ -1137,17 +1148,18 @@ static VLCMainWindow *_o_sharedInstance = nil;
         [[[VLCMain sharedInstance] playlist] setPlaylistRoot: pl_item];
     }
 
+    // Note the order: first hide the podcast controls, then show the drop zone
+    if ([[item identifier] isEqualToString:@"podcast{longname=\"Podcasts\"}"])
+        [self showPodcastControls];
+    else
+        [self hidePodcastControls];
+
     PL_LOCK;
     if ([[[VLCMain sharedInstance] playlist] currentPlaylistRoot] != p_playlist->p_local_category || p_playlist->p_local_category->i_children > 0)
         [self hideDropZone];
     else
         [self showDropZone];
     PL_UNLOCK;
-
-    if ([[item identifier] isEqualToString:@"podcast{longname=\"Podcasts\"}"])
-        [self showPodcastControls];
-    else
-        [self hidePodcastControls];
 
     [[NSNotificationCenter defaultCenter] postNotificationName: @"VLCMediaKeySupportSettingChanged"
                                                         object: nil

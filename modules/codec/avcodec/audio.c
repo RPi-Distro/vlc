@@ -2,7 +2,7 @@
  * audio.c: audio decoder using libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2003 VLC authors and VideoLAN
- * $Id: 254c06da497b9e77832c1f926afe6b267564cde1 $
+ * $Id: 34c83527b020e8f65276458986f59c298dcefc77 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -361,6 +361,7 @@ block_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
     if( p_block->i_buffer == 0 )
     {   /* Done with this buffer */
         block_Release( p_block );
+        p_block = NULL;
         *pp_block = NULL;
     }
 
@@ -448,7 +449,8 @@ block_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
 end:
     *pp_block = NULL;
 drop:
-    block_Release(p_block);
+    if( p_block != NULL )
+        block_Release(p_block);
     return NULL;
 }
 

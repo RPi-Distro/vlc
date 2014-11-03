@@ -6,7 +6,7 @@
  * thread, and destroy a previously oppened video output thread.
  *****************************************************************************
  * Copyright (C) 2000-2007 VLC authors and VideoLAN
- * $Id: 2dd43f4c5c4bd8566b3bbf8c92d4b0e948c42980 $
+ * $Id: 1b01ee08d8579469179f491da817821c46d48374 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1452,8 +1452,17 @@ static int ThreadReinit(vout_thread_t *vout,
     }
     state.sar.num = 0;
     state.sar.den = 0;
+
     /* FIXME current vout "variables" are not in sync here anymore
      * and I am not sure what to do */
+    if (state.cfg.display.sar.num <= 0 || state.cfg.display.sar.den <= 0) {
+        state.cfg.display.sar.num = 1;
+        state.cfg.display.sar.den = 1;
+    }
+    if (state.cfg.zoom.num <= 0 || state.cfg.zoom.den <= 0) {
+        state.cfg.zoom.num = 1;
+        state.cfg.zoom.den = 1;
+    }
 
     vout->p->original = original;
     vout->p->dpb_size = cfg->dpb_size;

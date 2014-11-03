@@ -1,13 +1,13 @@
-Changes between 2.1.x and 2.2.0-pre4:
+Changes between 2.1.x and 2.2.0-rc1:
 --------------------------------
 
 Important changes:
  * The licenses of more modules have changed from GPLv2+ to LGPLv2.1+,
-   notably the streaming output, muxers and access output ones
+   notably most of the streaming output, muxers and access output modules
 
 Core:
  * Support automatic rotation using streams metadata, GPU-accelerated when possible
- * Add extensions download from external repositories
+ * Add extensions manager and downloading from external repositories
  * Rework the metadata fetching algorithm and policies
  * Partial fix of playback of short audio samples
 
@@ -85,7 +85,7 @@ Video Output:
  * New Android native window provider module
  * Direct rendering for MediaCodec Android hardware acceleration
  * Support for loading HLSL shaders in Direct3D video output
- * Add mmal based video output
+ * Add MMAL based video output for RaspberryPi
 
 Video Filter:
  * New Oldmovie effect filter
@@ -154,7 +154,7 @@ Misc:
  * Teletext navigation buttons support in Qt4 gui
 
 Security:
- * Numerous integer and heap overflow in Ogg and MP4 demuxer
+ * Numerous integer and heap overflow in Ogg, AVI, ASF, TTA and MP4 demuxers
 
 Removed modules:
  * iOS video output: use ios2
