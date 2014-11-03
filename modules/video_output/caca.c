@@ -2,7 +2,7 @@
  * caca.c: Color ASCII Art "vout display" module using libcaca
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 2958abd9a6d431bc4f1a5d5560e9853d361577cc $
+ * $Id: 4b39e455d026edc51588a5793493a824103645e3 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -331,7 +331,7 @@ static int Control(vout_display_t *vd, int query, va_list args)
     case VOUT_DISPLAY_CHANGE_ZOOM:
     case VOUT_DISPLAY_CHANGE_DISPLAY_FILLED:
     case VOUT_DISPLAY_CHANGE_SOURCE_ASPECT:
-        return VLC_SUCCESS;
+        return VLC_EGENERIC;
 
     case VOUT_DISPLAY_CHANGE_SOURCE_CROP:
         if (sys->dither)

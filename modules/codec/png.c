@@ -2,7 +2,7 @@
  * png.c: png decoder module making use of libpng.
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 46d31af689d2e6a2ebc9557d53184b3b7e77663b $
+ * $Id: 33f75155b9a8f8feec30445aafc3dc26854e5f78 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -405,7 +405,7 @@ static block_t *EncodeBlock(encoder_t *p_enc, picture_t *p_pic)
 
     /* Encode picture */
 
-    for( int i = 0; i < p_pic->p->i_lines; i++ )
+    for( int i = 0; i < p_pic->p->i_visible_lines; i++ )
     {
         png_write_row( p_png, p_pic->p->p_pixels + (i * p_pic->p->i_pitch) );
         if( p_sys->b_error ) goto error;

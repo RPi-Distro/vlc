@@ -2,7 +2,7 @@
  * Windows.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012-2014 VLC authors and VideoLAN
- * $Id: 4f6bfc62659b244f7d91990d86f07ddbf4019006 $
+ * $Id: 48b1d82f6ebe73a4c76b231cd8ee8ceb07a75b11 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -256,7 +256,7 @@
 
     BOOL b_inFullscreen = [self fullscreen] || ([self respondsToSelector:@selector(inFullscreenTransition)] && [(VLCVideoWindowCommon *)self inFullscreenTransition]);
 
-    if(OSX_MAVERICKS && b_inFullscreen && constrainedRect.size.width == screenRect.size.width
+    if((OSX_MAVERICKS || OSX_YOSEMITE) && b_inFullscreen && constrainedRect.size.width == screenRect.size.width
           && constrainedRect.size.height != screenRect.size.height
           && abs(screenRect.size.height - constrainedRect.size.height) <= 25.) {
 
@@ -335,9 +335,8 @@
 
     if (b_nativeFullscreenMode) {
         [self setCollectionBehavior: NSWindowCollectionBehaviorFullScreenPrimary];
-    } else {
-        [o_titlebar_view setFullscreenButtonHidden: YES];
     }
+
 
     [super awakeFromNib];
 }
@@ -643,6 +642,17 @@
         [self recreateHideMouseTimer];
 
     [super mouseMoved: theEvent];
+}
+
+#pragma mark -
+#pragma mark Key events
+
+- (void)flagsChanged:(NSEvent *)theEvent
+{
+    BOOL b_alt_pressed = ([theEvent modifierFlags] & NSAlternateKeyMask) != 0;
+    [o_titlebar_view informModifierPressed: b_alt_pressed];
+
+    [super flagsChanged:theEvent];
 }
 
 #pragma mark -

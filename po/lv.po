@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-10-06 17:05+0200\n"
+"POT-Creation-Date: 2014-11-03 14:06+0100\n"
 "PO-Revision-Date: 2014-03-15 00:21+0000\n"
 "Last-Translator: Arnis Lupiks\n"
 "Language-Team: Latvian (http://www.transifex.com/projects/p/vlc-trans/"
@@ -354,8 +354,8 @@ msgstr "VLC ir īstenošana Video On Demand"
 
 #: include/vlc_config_cat.h:167 src/libvlc-module.c:1994
 #: src/playlist/engine.c:243 modules/demux/playlist/playlist.c:64
-#: modules/demux/playlist/playlist.c:65 modules/gui/macosx/MainWindow.m:327
-#: modules/gui/macosx/MainWindow.m:945
+#: modules/demux/playlist/playlist.c:65 modules/gui/macosx/MainWindow.m:329
+#: modules/gui/macosx/MainWindow.m:956
 #: modules/gui/qt4/components/controller.hpp:117
 #: modules/gui/qt4/components/playlist/playlist.cpp:167
 #: modules/gui/qt4/components/playlist/selector.cpp:231
@@ -400,11 +400,6 @@ msgstr "Papildu uzstādījumi. Izmantojiet uzmanīgi ..."
 #: include/vlc_config_cat.h:181
 msgid "Advanced settings"
 msgstr "Papildu uzstādījumus"
-
-#: include/vlc_input.h:568
-#, fuzzy
-msgid "Subtitle track added"
-msgstr "Subtitra celiņš"
 
 #: include/vlc_interface.h:140
 msgid ""
@@ -566,7 +561,7 @@ msgstr "Pievienot mapi..."
 msgid "Save Playlist to &File..."
 msgstr "Saglabat atskaņošanas sarakstu pie &Faila..."
 
-#: include/vlc_intf_strings.h:91 modules/gui/macosx/MainWindow.m:173
+#: include/vlc_intf_strings.h:91 modules/gui/macosx/MainWindow.m:174
 #: modules/gui/qt4/components/preferences_widgets.cpp:1136
 msgid "Search"
 msgstr "Meklēt"
@@ -643,7 +638,7 @@ msgstr "Maksimālais numurs filtru (%u) tika sasniegts."
 
 #: src/audio_output/output.c:229 src/config/core.c:407 src/input/es_out.c:904
 #: src/libvlc-module.c:538 modules/gui/macosx/MainMenu.m:277
-#: modules/gui/macosx/MainWindow.m:1072 modules/video_filter/postproc.c:234
+#: modules/gui/macosx/MainWindow.m:1083 modules/video_filter/postproc.c:234
 msgid "Disable"
 msgstr "Izslēgt"
 
@@ -1360,7 +1355,7 @@ msgstr ""
 msgid "Title"
 msgstr "Virsraksts"
 
-#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1203
+#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1202
 #: modules/gui/macosx/playlistinfo.m:74 modules/mux/avi.c:48
 msgid "Artist"
 msgstr "Mākslinieks"
@@ -2563,7 +2558,7 @@ msgid "Default"
 msgstr "Pēc noklusējuma"
 
 #: src/libvlc-module.c:538 modules/gui/macosx/AudioEffects.m:112
-#: modules/gui/macosx/MainWindow.m:1070 modules/gui/macosx/wizard.m:351
+#: modules/gui/macosx/MainWindow.m:1081 modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/extended_panels.cpp:1053
 #: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:289
 msgid "Enable"
@@ -3663,7 +3658,7 @@ msgstr ""
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr ""
 
-#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1765
+#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1785
 msgid "Ignore"
 msgstr ""
 
@@ -3768,7 +3763,7 @@ msgid "Slower (fine)"
 msgstr ""
 
 #: src/libvlc-module.c:1209 modules/control/hotkeys.c:208
-#: modules/gui/macosx/about.m:261 modules/gui/macosx/ControlsBar.m:771
+#: modules/gui/macosx/about.m:268 modules/gui/macosx/ControlsBar.m:771
 #: modules/gui/macosx/ControlsBar.m:772 modules/gui/macosx/fspanel.m:424
 #: modules/gui/macosx/MainMenu.m:404 modules/gui/macosx/MainMenu.m:502
 #: modules/gui/macosx/MainMenu.m:510 modules/gui/macosx/MainMenu.m:1559
@@ -3784,7 +3779,7 @@ msgid "Select the hotkey to use to skip to the next item in the playlist."
 msgstr ""
 
 #: src/libvlc-module.c:1211 modules/control/hotkeys.c:212
-#: modules/gui/macosx/about.m:262 modules/gui/macosx/ControlsBar.m:760
+#: modules/gui/macosx/about.m:269 modules/gui/macosx/ControlsBar.m:760
 #: modules/gui/macosx/ControlsBar.m:761 modules/gui/macosx/fspanel.m:420
 #: modules/gui/macosx/MainMenu.m:403 modules/gui/macosx/MainMenu.m:503
 #: modules/gui/macosx/MainMenu.m:509 modules/gui/macosx/MainMenu.m:1558
@@ -4653,7 +4648,7 @@ msgstr ""
 #: modules/gui/macosx/ConvertAndSave.m:372
 #: modules/gui/macosx/ConvertAndSave.m:386 modules/gui/macosx/coredialogs.m:61
 #: modules/gui/macosx/coredialogs.m:63 modules/gui/macosx/coredialogs.m:168
-#: modules/gui/macosx/MainWindow.m:184 modules/gui/macosx/MainWindow.m:189
+#: modules/gui/macosx/MainWindow.m:186 modules/gui/macosx/MainWindow.m:191
 #: modules/gui/macosx/open.m:128 modules/gui/macosx/open.m:183
 #: modules/gui/macosx/prefs.m:208 modules/gui/macosx/simple_prefs.m:324
 #: modules/gui/macosx/simple_prefs.m:352 modules/gui/macosx/simple_prefs.m:414
@@ -4729,7 +4724,7 @@ msgid "Install"
 msgstr ""
 
 #: src/playlist/engine.c:256 src/playlist/loadsave.c:159 lib/media_list.c:252
-#: modules/gui/macosx/MainWindow.m:329 modules/gui/macosx/MainWindow.m:947
+#: modules/gui/macosx/MainWindow.m:331 modules/gui/macosx/MainWindow.m:958
 #: modules/gui/qt4/components/playlist/selector.cpp:238
 msgid "Media Library"
 msgstr ""
@@ -12981,9 +12976,9 @@ msgstr ""
 msgid "D-Bus control interface"
 msgstr ""
 
-#: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/MainWindow.m:207
-#: modules/gui/macosx/MainWindow.m:729 modules/gui/macosx/MainWindow.m:735
-#: modules/gui/macosx/MainWindow.m:1354 modules/gui/ncurses.c:1041
+#: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/MainWindow.m:209
+#: modules/gui/macosx/MainWindow.m:740 modules/gui/macosx/MainWindow.m:746
+#: modules/gui/macosx/MainWindow.m:1366 modules/gui/ncurses.c:1041
 #: modules/gui/qt4/dialogs/help.cpp:91 modules/gui/qt4/main_interface.cpp:1078
 #: modules/gui/qt4/main_interface.cpp:1082
 #: modules/gui/qt4/main_interface.cpp:1121
@@ -13718,7 +13713,7 @@ msgstr ""
 msgid "ASF/WMV demuxer"
 msgstr ""
 
-#: modules/demux/asf/asf.c:215 modules/demux/asf/asf.c:1193
+#: modules/demux/asf/asf.c:215 modules/demux/asf/asf.c:1195
 msgid "Could not demux ASF stream"
 msgstr ""
 
@@ -13726,7 +13721,7 @@ msgstr ""
 msgid "VLC failed to load the ASF header."
 msgstr ""
 
-#: modules/demux/asf/asf.c:1194
+#: modules/demux/asf/asf.c:1196
 msgid "DRM protected streams are not supported."
 msgstr ""
 
@@ -15382,11 +15377,11 @@ msgid ""
 "underline; color:#0057ae;\">Help and join us!</span></a>"
 msgstr ""
 
-#: modules/gui/macosx/about.m:260
+#: modules/gui/macosx/about.m:267
 msgid "VLC media player Help"
 msgstr ""
 
-#: modules/gui/macosx/about.m:263 modules/gui/macosx/MainMenu.m:469
+#: modules/gui/macosx/about.m:270 modules/gui/macosx/MainMenu.m:469
 #: modules/gui/macosx/MainMenu.m:1075
 msgid "Index"
 msgstr ""
@@ -15847,11 +15842,11 @@ msgstr ""
 msgid "Go!"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:154 modules/gui/macosx/MainWindow.m:178
+#: modules/gui/macosx/ConvertAndSave.m:154 modules/gui/macosx/MainWindow.m:179
 msgid "Drop media here"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:155 modules/gui/macosx/MainWindow.m:176
+#: modules/gui/macosx/ConvertAndSave.m:155 modules/gui/macosx/MainWindow.m:177
 msgid "Open media..."
 msgstr ""
 
@@ -16098,19 +16093,19 @@ msgstr ""
 msgid "Click to exit fullscreen playback."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1475 modules/gui/macosx/intf.m:1492
+#: modules/gui/macosx/intf.m:1495 modules/gui/macosx/intf.m:1512
 msgid "VLC media playback"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1763
+#: modules/gui/macosx/intf.m:1783
 msgid "Remove old preferences?"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1764
+#: modules/gui/macosx/intf.m:1784
 msgid "We just found an older version of VLC's preferences files."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1765
+#: modules/gui/macosx/intf.m:1785
 msgid "Move To Trash and Relaunch VLC"
 msgstr ""
 
@@ -16675,58 +16670,58 @@ msgstr ""
 msgid "Online Forum..."
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:174
+#: modules/gui/macosx/MainWindow.m:175
 msgid ""
 "Enter a term to search the playlist. Results will be selected in the table."
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:177
+#: modules/gui/macosx/MainWindow.m:178
 msgid ""
 "Click to open an advanced dialog to select the media to play. You can also "
 "drop files here to play."
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:180 modules/gui/macosx/MainWindow.m:185
+#: modules/gui/macosx/MainWindow.m:182 modules/gui/macosx/MainWindow.m:187
 #: modules/gui/qt4/components/playlist/selector.cpp:577
 msgid "Subscribe"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:181 modules/gui/macosx/MainWindow.m:188
+#: modules/gui/macosx/MainWindow.m:183 modules/gui/macosx/MainWindow.m:190
 #: modules/gui/qt4/components/playlist/selector.cpp:594
 msgid "Unsubscribe"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:182
+#: modules/gui/macosx/MainWindow.m:184
 #: modules/gui/qt4/components/playlist/selector.cpp:280
 msgid "Subscribe to a podcast"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:183
+#: modules/gui/macosx/MainWindow.m:185
 #: modules/gui/qt4/components/playlist/selector.cpp:578
 msgid "Enter URL of the podcast to subscribe to:"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:186
+#: modules/gui/macosx/MainWindow.m:188
 msgid "Unsubscribe from a podcast"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:187
+#: modules/gui/macosx/MainWindow.m:189
 msgid "Select the podcast you would like to unsubscribe from:"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:241
+#: modules/gui/macosx/MainWindow.m:243
 msgid "Check for album art and metadata?"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:241
+#: modules/gui/macosx/MainWindow.m:243
 msgid "Enable Metadata Retrieval"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:241
+#: modules/gui/macosx/MainWindow.m:243
 msgid "No, Thanks"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:241
+#: modules/gui/macosx/MainWindow.m:243
 msgid ""
 "VLC can check online for album art and metadata to enrich your playback "
 "experience, e.g. by providing track information when playing Audio CDs. To "
@@ -16734,23 +16729,23 @@ msgid ""
 "trusted services in an anonymized form."
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:326
+#: modules/gui/macosx/MainWindow.m:328
 msgid "LIBRARY"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:331
+#: modules/gui/macosx/MainWindow.m:333
 msgid "MY COMPUTER"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:332
+#: modules/gui/macosx/MainWindow.m:334
 msgid "DEVICES"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:333
+#: modules/gui/macosx/MainWindow.m:335
 msgid "LOCAL NETWORK"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:334
+#: modules/gui/macosx/MainWindow.m:336
 msgid "INTERNET"
 msgstr ""
 
@@ -17140,31 +17135,31 @@ msgstr ""
 msgid "Save Playlist"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1203
+#: modules/gui/macosx/playlist.m:1202
 msgid "Meta-information"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1521 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/macosx/playlist.m:1535 modules/gui/qt4/qt4.cpp:188
 #, fuzzy
 msgid "Continue playback?"
 msgstr "Saraksts"
 
-#: modules/gui/macosx/playlist.m:1521 modules/gui/macosx/simple_prefs.m:837
+#: modules/gui/macosx/playlist.m:1535 modules/gui/macosx/simple_prefs.m:837
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1521
+#: modules/gui/macosx/playlist.m:1535
 #, fuzzy
 msgid "Restart playback"
 msgstr "Saraksts"
 
-#: modules/gui/macosx/playlist.m:1521
+#: modules/gui/macosx/playlist.m:1535
 #, fuzzy
 msgid "Always continue"
 msgstr "Vienmēr augšpusē"
 
-#: modules/gui/macosx/playlist.m:1521
+#: modules/gui/macosx/playlist.m:1535
 msgid "Playback of \"%@\" will continue at %@"
 msgstr ""
 
@@ -21066,7 +21061,7 @@ msgstr "Izvades moduļi"
 msgid "High quality scaling level"
 msgstr "Augstas kvalitātes audio rezamplēšana"
 
-#: modules/hw/vdpau/deinterlace.c:131
+#: modules/hw/vdpau/deinterlace.c:132
 #, fuzzy
 msgid "VDPAU deinterlacing filter"
 msgstr "Piekļuves filtri"
@@ -27086,8 +27081,9 @@ msgid "Dialog"
 msgstr ""
 
 #: modules/gui/qt4/ui/about.h:288 modules/gui/qt4/ui/about.h:289
+#, fuzzy
 msgid "Update"
-msgstr ""
+msgstr "Datums"
 
 #: modules/gui/qt4/ui/equalizer.h:132 modules/gui/qt4/ui/open_disk.h:296
 #: modules/gui/qt4/ui/open_net.h:96 modules/gui/qt4/ui/sprefs_audio.h:425
@@ -27107,28 +27103,33 @@ msgid "0.00 dB"
 msgstr ""
 
 #: modules/gui/qt4/ui/messages_panel.h:139
+#, fuzzy
 msgid "&Verbosity:"
-msgstr ""
+msgstr "Liekvārdība (0,1,2)"
 
 #: modules/gui/qt4/ui/messages_panel.h:140
+#, fuzzy
 msgid "&Filter:"
-msgstr ""
+msgstr "Filtri"
 
 #: modules/gui/qt4/ui/messages_panel.h:141
+#, fuzzy
 msgid "&Save as..."
-msgstr ""
+msgstr "Saglabat atskaņošanas sarakstu pie &Faila..."
 
 #: modules/gui/qt4/ui/messages_panel.h:143
 msgid "Modules Tree"
 msgstr ""
 
 #: modules/gui/qt4/ui/open.h:245
+#, fuzzy
 msgid "Show extended options"
-msgstr ""
+msgstr "Rādīt papildu iespējas"
 
 #: modules/gui/qt4/ui/open.h:247
+#, fuzzy
 msgid "Show &more options"
-msgstr ""
+msgstr "Rādīt papildu iespējas"
 
 #: modules/gui/qt4/ui/open.h:250
 msgid "Change the caching for the media"
@@ -27139,16 +27140,19 @@ msgid " ms"
 msgstr ""
 
 #: modules/gui/qt4/ui/open.h:253
+#, fuzzy
 msgid "MRL"
-msgstr ""
+msgstr "URL"
 
 #: modules/gui/qt4/ui/open.h:254
+#, fuzzy
 msgid "Start Time"
-msgstr ""
+msgstr "Mēdiju Laiks"
 
 #: modules/gui/qt4/ui/open.h:255
+#, fuzzy
 msgid "Edit Options"
-msgstr ""
+msgstr "Palīdzības iestatījumi"
 
 #: modules/gui/qt4/ui/open.h:256
 msgid "Extra media"
@@ -27159,8 +27163,9 @@ msgid "Complete MRL for VLC internal"
 msgstr ""
 
 #: modules/gui/qt4/ui/open.h:261
+#, fuzzy
 msgid "Select the file"
-msgstr ""
+msgstr "Subtitri/OSD"
 
 #: modules/gui/qt4/ui/open.h:265
 msgid "Change the start time for the media"
@@ -27175,72 +27180,86 @@ msgid "Play another media synchronously (extra audio file, ...)"
 msgstr ""
 
 #: modules/gui/qt4/ui/open_capture.h:97
+#, fuzzy
 msgid "Capture mode"
-msgstr ""
+msgstr "Tīkls"
 
 #: modules/gui/qt4/ui/open_capture.h:99
+#, fuzzy
 msgid "Select the capture device type"
-msgstr ""
+msgstr "Subtitri/OSD"
 
 #: modules/gui/qt4/ui/open_capture.h:101
+#, fuzzy
 msgid "Device Selection"
-msgstr ""
+msgstr "Noņemt atlasītos"
 
 #: modules/gui/qt4/ui/open_capture.h:102
+#, fuzzy
 msgid "Options"
-msgstr ""
+msgstr "Palīdzības iestatījumi"
 
 #: modules/gui/qt4/ui/open_capture.h:104
 msgid "Access advanced options to tweak the device"
 msgstr ""
 
 #: modules/gui/qt4/ui/open_capture.h:106
+#, fuzzy
 msgid "Advanced options..."
-msgstr ""
+msgstr "&Papildus atvērt..."
 
 #: modules/gui/qt4/ui/open_disk.h:297
+#, fuzzy
 msgid "Disc Selection"
-msgstr ""
+msgstr "Izvēlaties Mapi"
 
 #: modules/gui/qt4/ui/open_disk.h:301
 msgid "SVCD/VCD"
 msgstr ""
 
 #: modules/gui/qt4/ui/open_disk.h:303
+#, fuzzy
 msgid "Disable Disc Menus"
-msgstr ""
+msgstr "Atslēgt ekrānsaudzētāju"
 
 #: modules/gui/qt4/ui/open_disk.h:305
 msgid "No disc menus"
 msgstr ""
 
 #: modules/gui/qt4/ui/open_disk.h:306
+#, fuzzy
 msgid "Disc device"
-msgstr ""
+msgstr "Video iestatījumi"
 
 #: modules/gui/qt4/ui/open_disk.h:308
+#, fuzzy
 msgid "Starting Position"
-msgstr ""
+msgstr "Apraksts"
 
 #: modules/gui/qt4/ui/open_disk.h:311
+#, fuzzy
 msgid "Audio and Subtitles"
-msgstr ""
+msgstr "Mēdiju Apakšvirsraksts"
 
 #: modules/gui/qt4/ui/open_file.h:143
+#, fuzzy
 msgid "Use a sub&title file"
-msgstr ""
+msgstr "Subtitri/OSD"
 
 #: modules/gui/qt4/ui/open_file.h:145
+#, fuzzy
 msgid "Select the subtitle file"
-msgstr ""
+msgstr "Mēdiju Apakšvirsraksts"
 
 #: modules/gui/qt4/ui/open_file.h:149
+#, fuzzy
 msgid "Choose one or more media file to open"
-msgstr ""
+msgstr "Izvelties vienu vai vairākas datnes ko atvert "
 
 #: modules/gui/qt4/ui/open_file.h:151
+#, fuzzy
 msgid "File Selection"
-msgstr ""
+msgstr "Izvēlaties Mapi"
 
 #: modules/gui/qt4/ui/open_file.h:152
 msgid "You can select local files with the following list and buttons."
@@ -27251,8 +27270,9 @@ msgid "Add..."
 msgstr ""
 
 #: modules/gui/qt4/ui/open_net.h:97
+#, fuzzy
 msgid "Network Protocol"
-msgstr ""
+msgstr "Tīkls"
 
 #: modules/gui/qt4/ui/open_net.h:98
 msgid "Please enter a network URL:"
@@ -27315,24 +27335,29 @@ msgid "AVI"
 msgstr ""
 
 #: modules/gui/qt4/ui/profiles.h:700
+#, fuzzy
 msgid "Features"
-msgstr ""
+msgstr "Procesora iespējas"
 
 #: modules/gui/qt4/ui/profiles.h:702
+#, fuzzy
 msgid "Streamable"
-msgstr ""
+msgstr "Plūsma %d"
 
 #: modules/gui/qt4/ui/profiles.h:703
+#, fuzzy
 msgid "Chapters"
-msgstr ""
+msgstr "Nodaļa"
 
 #: modules/gui/qt4/ui/profiles.h:706
+#, fuzzy
 msgid "Menus"
-msgstr ""
+msgstr "Izvēlne"
 
 #: modules/gui/qt4/ui/profiles.h:713
+#, fuzzy
 msgid "Frame Rate"
-msgstr ""
+msgstr "Kadru likme"
 
 #: modules/gui/qt4/ui/profiles.h:714
 msgid "Same as source"
@@ -27343,8 +27368,9 @@ msgid " fps"
 msgstr ""
 
 #: modules/gui/qt4/ui/profiles.h:717
+#, fuzzy
 msgid "Custom options"
-msgstr ""
+msgstr "Apraksts"
 
 #: modules/gui/qt4/ui/profiles.h:718
 msgid "Quality"
@@ -27355,36 +27381,41 @@ msgid "Not Used"
 msgstr ""
 
 #: modules/gui/qt4/ui/profiles.h:721 modules/gui/qt4/ui/profiles.h:740
+#, fuzzy
 msgid " kb/s"
-msgstr ""
+msgstr "%u kb/s"
 
 #: modules/gui/qt4/ui/profiles.h:722 modules/gui/qt4/ui/profiles.h:742
 msgid "Encoding parameters"
 msgstr ""
 
 #: modules/gui/qt4/ui/profiles.h:725
+#, fuzzy
 msgid "Frame size"
-msgstr ""
+msgstr "Kadru likme"
 
 #: modules/gui/qt4/ui/profiles.h:728 modules/gui/qt4/ui/profiles.h:731
 msgid "px"
 msgstr ""
 
 #: modules/gui/qt4/ui/profiles.h:741
+#, fuzzy
 msgid "Sample Rate"
-msgstr ""
+msgstr "Parauga likme"
 
 #: modules/gui/qt4/ui/sout.h:203
 msgid "Set up media sources to stream"
 msgstr ""
 
 #: modules/gui/qt4/ui/sout.h:205
+#, fuzzy
 msgid "Destination Setup"
-msgstr ""
+msgstr "Apraksts"
 
 #: modules/gui/qt4/ui/sout.h:206
+#, fuzzy
 msgid "Select destinations to stream to"
-msgstr ""
+msgstr "Izvēlieties \"Paplašinātas Opcijas\", lai redzētu visas opcijas."
 
 #: modules/gui/qt4/ui/sout.h:207
 msgid ""
@@ -27393,20 +27424,23 @@ msgid ""
 msgstr ""
 
 #: modules/gui/qt4/ui/sout.h:208
+#, fuzzy
 msgid "New destination"
-msgstr ""
+msgstr "Apraksts"
 
 #: modules/gui/qt4/ui/sout.h:210
+#, fuzzy
 msgid "Display locally"
-msgstr ""
+msgstr "Displeja izšķirtspēja"
 
 #: modules/gui/qt4/ui/sout.h:212
 msgid "Transcoding Options"
 msgstr ""
 
 #: modules/gui/qt4/ui/sout.h:213
+#, fuzzy
 msgid "Select and choose transcoding options"
-msgstr ""
+msgstr "Izvēlieties \"Paplašinātas Opcijas\", lai redzētu visas opcijas."
 
 #: modules/gui/qt4/ui/sout.h:214
 msgid "Activate Transcoding"
@@ -27421,44 +27455,52 @@ msgid "Set up any additional options for streaming"
 msgstr ""
 
 #: modules/gui/qt4/ui/sout.h:217
+#, fuzzy
 msgid "Miscellaneous Options"
-msgstr ""
+msgstr "Dažādi"
 
 #: modules/gui/qt4/ui/sout.h:218
 msgid "Stream all elementary streams"
 msgstr ""
 
 #: modules/gui/qt4/ui/sout.h:219
+#, fuzzy
 msgid "Generated stream output string"
-msgstr ""
+msgstr "Vispārīgie plūsmas izejas iestatījumi"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:428
 msgid " %"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_audio.h:431
+#, fuzzy
 msgid "Output module:"
-msgstr ""
+msgstr "Izejas moduļi"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:435
+#, fuzzy
 msgid "Effects"
-msgstr ""
+msgstr "Video kodeki"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:436
+#, fuzzy
 msgid "Visualization:"
-msgstr ""
+msgstr "Vizualizācijas"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:437
+#, fuzzy
 msgid "Enable Time-Stretching audio"
-msgstr ""
+msgstr "Aktivizēt laika stiepšanas audio"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:438
+#, fuzzy
 msgid "Dolby Surround:"
-msgstr ""
+msgstr "Dolby Surround"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:439
+#, fuzzy
 msgid "Replay gain mode:"
-msgstr ""
+msgstr "Atkārtot ieguvuma režīmu"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:440
 msgid "Headphone surround effect"
@@ -27469,12 +27511,14 @@ msgid "Normalize volume to:"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_audio.h:443
+#, fuzzy
 msgid "Preferred audio language:"
-msgstr ""
+msgstr "Subtitri/OSD"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:444
+#, fuzzy
 msgid "Password:"
-msgstr ""
+msgstr "Parole"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:445
 msgid "Username:"
@@ -27485,8 +27529,9 @@ msgid "Submit played tracks stats to Last.fm"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_input.h:346
+#, fuzzy
 msgid "Codecs"
-msgstr ""
+msgstr "Kodeks"
 
 #: modules/gui/qt4/ui/sprefs_input.h:347
 msgid "x264 profile and level selection"
@@ -27505,16 +27550,18 @@ msgid "Skip H.264 in-loop deblocking filter"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_input.h:351
+#, fuzzy
 msgid "Video quality post-processing level"
-msgstr ""
+msgstr "Augstas kvalitātes audio rezamplēšana"
 
 #: modules/gui/qt4/ui/sprefs_input.h:352
 msgid "Optical drive"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_input.h:353
+#, fuzzy
 msgid "Default optical device"
-msgstr ""
+msgstr "Noklusētais audio skaļums"
 
 #: modules/gui/qt4/ui/sprefs_input.h:357
 msgid "Damaged or incomplete AVI file"
@@ -27541,8 +27588,9 @@ msgid "Default caching policy"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_interface.h:505
+#, fuzzy
 msgid "Menus language:"
-msgstr ""
+msgstr "Valoda"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:506
 msgid "Look and feel"
@@ -27557,16 +27605,19 @@ msgid "This is VLC's default interface, with a native look and feel."
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_interface.h:511
+#, fuzzy
 msgid "Use native style"
-msgstr ""
+msgstr "Nav aktīvu subtitru"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:512
+#, fuzzy
 msgid "Resize interface to video size"
-msgstr ""
+msgstr "Piekļuves filtri"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:513
+#, fuzzy
 msgid "Show controls in full screen mode"
-msgstr ""
+msgstr "Sākt video uz pilnekrāna režīma"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:514
 msgid "Pause playback when minimized"
@@ -27577,16 +27628,19 @@ msgid "Show media change popup:"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_interface.h:516
+#, fuzzy
 msgid "Start in minimal view mode"
-msgstr ""
+msgstr "Sākt video uz pilnekrāna režīma"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:517
+#, fuzzy
 msgid "Force window style:"
-msgstr ""
+msgstr "Nākošais virsraksts"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:518
+#, fuzzy
 msgid "Integrate video in interface"
-msgstr ""
+msgstr "Galvenais interfeiss"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:519
 msgid "Show systray icon"
@@ -27597,8 +27651,9 @@ msgid "Skin resource file:"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_interface.h:522
+#, fuzzy
 msgid "Playlist and Instances"
-msgstr ""
+msgstr "Atskaņošanas saraksts"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:523
 msgid "Allow only one instance"
@@ -27641,24 +27696,29 @@ msgid "Enable On Screen Display (OSD)"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:292
+#, fuzzy
 msgid "Show media title on video start"
-msgstr ""
+msgstr "Rādīt mediju virsrakstu uz video"
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:294
+#, fuzzy
 msgid "Enable subtitles"
-msgstr ""
+msgstr "Subtitrs"
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:295
+#, fuzzy
 msgid "Subtitle Language"
-msgstr ""
+msgstr "Subtitra celiņš"
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:297
+#, fuzzy
 msgid "Default encoding"
-msgstr ""
+msgstr "Noklusēta plūsma"
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:298
+#, fuzzy
 msgid "Subtitle effects"
-msgstr ""
+msgstr "Subtitru kodeki"
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:304
 msgid "Add a shadow"
@@ -27689,16 +27749,18 @@ msgid "DirectX"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_video.h:330
+#, fuzzy
 msgid "Display device"
-msgstr ""
+msgstr "Displeja izšķirtspēja"
 
 #: modules/gui/qt4/ui/sprefs_video.h:331
 msgid "KVA"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_video.h:335
+#, fuzzy
 msgid "Deinterlacing"
-msgstr ""
+msgstr "Interfeiss"
 
 #: modules/gui/qt4/ui/sprefs_video.h:337
 msgid "Force Aspect Ratio"
@@ -27709,20 +27771,23 @@ msgid "vlc-snap"
 msgstr ""
 
 #: modules/gui/qt4/ui/streampanel.h:169
+#, fuzzy
 msgid "1"
-msgstr ""
+msgstr "F1"
 
 #: modules/gui/qt4/ui/streampanel.h:171
 msgid "Stuff"
 msgstr ""
 
 #: modules/gui/qt4/ui/streampanel.h:173
+#, fuzzy
 msgid "Edit settings"
-msgstr ""
+msgstr "Skaņas iestatījumi"
 
 #: modules/gui/qt4/ui/streampanel.h:174
+#, fuzzy
 msgid "Control"
-msgstr ""
+msgstr "Izveidot mapi..."
 
 #: modules/gui/qt4/ui/streampanel.h:175
 msgid "Run manually"
@@ -27737,32 +27802,37 @@ msgid "Run on schedule"
 msgstr ""
 
 #: modules/gui/qt4/ui/streampanel.h:178
+#, fuzzy
 msgid "Status"
-msgstr ""
+msgstr "Video kodeki"
 
 #: modules/gui/qt4/ui/streampanel.h:179
 msgid "P/P"
 msgstr ""
 
 #: modules/gui/qt4/ui/streampanel.h:182
+#, fuzzy
 msgid "Prev"
-msgstr ""
+msgstr "Iepriekšējā nodaļa"
 
 #: modules/gui/qt4/ui/streampanel.h:183
+#, fuzzy
 msgid "Add Input"
-msgstr ""
+msgstr "Pievienot interfeisu"
 
 #: modules/gui/qt4/ui/streampanel.h:184
 msgid "Edit Input"
 msgstr ""
 
 #: modules/gui/qt4/ui/streampanel.h:185
+#, fuzzy
 msgid "Clear List"
-msgstr ""
+msgstr "Saraksts"
 
 #: modules/gui/qt4/ui/update.h:148
+#, fuzzy
 msgid "Check for VLC updates"
-msgstr ""
+msgstr "Pārbaudīt atjauninājumus..."
 
 #: modules/gui/qt4/ui/update.h:149
 msgid "Launching an update request..."
@@ -27786,16 +27856,19 @@ msgid "Negate colors"
 msgstr ""
 
 #: modules/gui/qt4/ui/video_effects.h:1432
+#, fuzzy
 msgid "Colors"
-msgstr ""
+msgstr "Saskarņu pārvaldība"
 
 #: modules/gui/qt4/ui/video_effects.h:1433
+#, fuzzy
 msgid "Interactive Zoom"
-msgstr ""
+msgstr "Interfeiss"
 
 #: modules/gui/qt4/ui/video_effects.h:1439
+#, fuzzy
 msgid "Angle"
-msgstr ""
+msgstr "Mēdiju Leņķis"
 
 #: modules/gui/qt4/ui/video_effects.h:1443
 msgid "Black Slot"
@@ -27803,8 +27876,9 @@ msgstr ""
 
 #: modules/gui/qt4/ui/video_effects.h:1447
 #: modules/gui/qt4/ui/video_effects.h:1464
+#, fuzzy
 msgid "..."
-msgstr ""
+msgstr "Saglabāt..."
 
 #: modules/gui/qt4/ui/video_effects.h:1452
 msgid "full"
@@ -27823,12 +27897,14 @@ msgid "Mask"
 msgstr ""
 
 #: modules/gui/qt4/ui/video_effects.h:1468
+#, fuzzy
 msgid "Output Color Filtermode"
-msgstr ""
+msgstr "Izejas moduļi"
 
 #: modules/gui/qt4/ui/video_effects.h:1469
+#, fuzzy
 msgid "Brightness (%)"
-msgstr ""
+msgstr "Gaišāks"
 
 #: modules/gui/qt4/ui/video_effects.h:1471
 msgid "Mark analyzed Pixels"
@@ -27847,12 +27923,14 @@ msgid "Mirror"
 msgstr ""
 
 #: modules/gui/qt4/ui/video_effects.h:1481
+#, fuzzy
 msgid "Motion detect"
-msgstr ""
+msgstr "Automātisks"
 
 #: modules/gui/qt4/ui/video_effects.h:1482
+#, fuzzy
 msgid "Spatial blur"
-msgstr ""
+msgstr "Vizualizācijas"
 
 #: modules/gui/qt4/ui/video_effects.h:1486
 msgid "Anti-Flickering"
@@ -27872,44 +27950,53 @@ msgid "Spatial luma strength"
 msgstr "Vizualizācijas"
 
 #: modules/gui/qt4/ui/video_effects.h:1490
+#, fuzzy
 msgid "Temporal luma strength"
-msgstr ""
+msgstr "Vizualizācijas"
 
 #: modules/gui/qt4/ui/video_effects.h:1491
+#, fuzzy
 msgid "Spatial chroma strength"
-msgstr ""
+msgstr "Vizualizācijas"
 
 #: modules/gui/qt4/ui/video_effects.h:1492
+#, fuzzy
 msgid "Temporal chroma strength"
-msgstr ""
+msgstr "Vizualizācijas"
 
 #: modules/gui/qt4/ui/vlm.h:286
+#, fuzzy
 msgid "VLM configurator"
-msgstr ""
+msgstr "&VLM Konfigurācija"
 
 #: modules/gui/qt4/ui/vlm.h:287
+#, fuzzy
 msgid "Media Manager Edition"
-msgstr ""
+msgstr "Mediji &Informācija"
 
 #: modules/gui/qt4/ui/vlm.h:288
 msgid "Name:"
 msgstr ""
 
 #: modules/gui/qt4/ui/vlm.h:290
+#, fuzzy
 msgid "Input:"
-msgstr ""
+msgstr "Bitreits"
 
 #: modules/gui/qt4/ui/vlm.h:291
+#, fuzzy
 msgid "Select Input"
-msgstr ""
+msgstr "Izvēlaties Mapi"
 
 #: modules/gui/qt4/ui/vlm.h:292
+#, fuzzy
 msgid "Output:"
-msgstr ""
+msgstr "Izejas moduļi"
 
 #: modules/gui/qt4/ui/vlm.h:293
+#, fuzzy
 msgid "Select Output"
-msgstr ""
+msgstr "Izejas plūsma "
 
 #: modules/gui/qt4/ui/vlm.h:294
 msgid "Time Control"
@@ -27920,16 +28007,22 @@ msgid "Mux Control"
 msgstr ""
 
 #: modules/gui/qt4/ui/vlm.h:296
+#, fuzzy
 msgid "Muxer:"
-msgstr ""
+msgstr "multipleksēri"
 
 #: modules/gui/qt4/ui/vlm.h:297
 msgid "AAAA; "
 msgstr ""
 
 #: modules/gui/qt4/ui/vlm.h:302
+#, fuzzy
 msgid "Media Manager List"
-msgstr ""
+msgstr "Mēdiju Leņķis"
+
+#, fuzzy
+#~ msgid "Subtitle track added"
+#~ msgstr "Subtitra celiņš"
 
 #, fuzzy
 #~ msgid "AVFoundation Video Capture"
@@ -27993,10 +28086,6 @@ msgstr ""
 #~ msgstr "Izvades moduļi"
 
 #, fuzzy
-#~ msgid "Default: 90sec"
-#~ msgstr "Noklusēta plūsma"
-
-#, fuzzy
 #~ msgid "Chromaprint stream output"
 #~ msgstr "Izejas plūsma "
 
@@ -28017,19 +28106,12 @@ msgstr ""
 #~ msgstr "Saraksts"
 
 #, fuzzy
-#~ msgid "Streaming Output"
-#~ msgstr "Izejas plūsma "
-
-#, fuzzy
 #~ msgid "Automatically retrieve media infos"
 #~ msgstr "Automātiski"
 
 #, fuzzy
 #~ msgid "General Input"
 #~ msgstr "Pamata"
-
-#~ msgid "CPU features"
-#~ msgstr "Procesora iespējas"
 
 #, fuzzy
 #~ msgid ""
@@ -28070,20 +28152,12 @@ msgstr ""
 #~ msgstr "CDDB Stils"
 
 #, fuzzy
-#~ msgid "SFTP password"
-#~ msgstr "Parole"
-
-#, fuzzy
 #~ msgid "Backlight compensation."
 #~ msgstr "Meta-informācija"
 
 #, fuzzy
 #~ msgid "Fixed-point audio mixer"
 #~ msgstr "Audio kodeki"
-
-#, fuzzy
-#~ msgid "Default Audio Device"
-#~ msgstr "Noklusētais audio skaļums"
 
 #, fuzzy
 #~ msgid "RealVideo library decoder"
@@ -28116,10 +28190,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Font Size"
 #~ msgstr "Video kodeki"
-
-#, fuzzy
-#~ msgid "Preferred Subtitle Language"
-#~ msgstr "Subtitri/OSD"
 
 #, fuzzy
 #~ msgid "Force Bold"
@@ -28164,14 +28234,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "SQLite database module"
 #~ msgstr "Ekstra saskarnes moduļi"
-
-#, fuzzy
-#~ msgid "Menu position"
-#~ msgstr "Apraksts"
-
-#, fuzzy
-#~ msgid "MUX Options"
-#~ msgstr "Palīdzības iestatījumi"
 
 #, fuzzy
 #~ msgid "Output Destination"
@@ -28246,10 +28308,6 @@ msgstr ""
 #~ msgstr "Saskarnes"
 
 #, fuzzy
-#~ msgid "Capture Screen"
-#~ msgstr "Tīkls"
-
-#, fuzzy
 #~ msgid "Close"
 #~ msgstr "Kodeks"
 
@@ -28272,10 +28330,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Motion blue"
 #~ msgstr "Piekļuves filtri"
-
-#, fuzzy
-#~ msgid "Effect"
-#~ msgstr "Video kodeki"
 
 #, fuzzy
 #~ msgid "HTTP password"
@@ -28354,24 +28408,12 @@ msgstr ""
 #~ msgstr "Pieteikties"
 
 #, fuzzy
-#~ msgid " Stats "
-#~ msgstr "Video kodeki"
-
-#, fuzzy
-#~ msgid "Input caching:"
-#~ msgstr "Bitreits"
-
-#, fuzzy
 #~ msgid "Privacy and Network Warning"
 #~ msgstr "Pamata saskarnes iestatījumi"
 
 #, fuzzy
 #~ msgid "C&lear"
 #~ msgstr "Saraksts"
-
-#, fuzzy
-#~ msgid "&Update"
-#~ msgstr "Datums"
 
 #, fuzzy
 #~ msgid "XSPF playlist (*.xspf)"
@@ -28462,10 +28504,6 @@ msgstr ""
 #~ msgstr "Subtitri/OSD"
 
 #, fuzzy
-#~ msgid "Select the port used"
-#~ msgstr "Subtitri/OSD"
-
-#, fuzzy
 #~ msgid "Fullscreen-only"
 #~ msgstr "Saskarnes"
 
@@ -28484,10 +28522,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "CDDB server"
 #~ msgstr "CDDB Stils"
-
-#, fuzzy
-#~ msgid "Protocol:"
-#~ msgstr "Tīkls"
 
 #, fuzzy
 #~ msgid "Transcode:"
@@ -28518,20 +28552,12 @@ msgstr ""
 #~ msgstr "Meta-informācija"
 
 #, fuzzy
-#~ msgid " Clear "
-#~ msgstr "Saraksts"
-
-#, fuzzy
 #~ msgid " Cancel "
 #~ msgstr "Kanāli"
 
 #, fuzzy
 #~ msgid "Corrupted"
 #~ msgstr "Filtri"
-
-#, fuzzy
-#~ msgid "Disc Devices"
-#~ msgstr "Video iestatījumi"
 
 #, fuzzy
 #~ msgid "Canal +"
@@ -28560,10 +28586,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "An error occured while saving your settings via SimplePrefs."
 #~ msgstr "Meta-informācija"
-
-#, fuzzy
-#~ msgid "Use a sub&amp;titles file"
-#~ msgstr "Subtitri/OSD"
 
 #, fuzzy
 #~ msgid "textFormat"
@@ -28636,10 +28658,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Skip Frames"
 #~ msgstr "Video kodeki"
-
-#, fuzzy
-#~ msgid "Color:"
-#~ msgstr "Saskarņu pārvaldība"
 
 #, fuzzy
 #~ msgid "Save Messages As..."
@@ -28736,10 +28754,6 @@ msgstr ""
 
 #~ msgid "No suitable decoder module"
 #~ msgstr "Nav piemērots dekodera modulis"
-
-#, fuzzy
-#~ msgid "Add a subtitle file"
-#~ msgstr "Mēdiju Apakšvirsraksts"
 
 #, fuzzy
 #~ msgid "Subtitles/OSD"
@@ -28938,10 +28952,6 @@ msgstr ""
 #~ msgstr "Aktivizēt fona režīmu"
 
 #, fuzzy
-#~ msgid "Stream Name"
-#~ msgstr "Plūsma %d"
-
-#, fuzzy
 #~ msgid "Video Codec"
 #~ msgstr "Video kodeki"
 
@@ -28966,24 +28976,12 @@ msgstr ""
 #~ msgstr "Parauga likme"
 
 #, fuzzy
-#~ msgid "Output File"
-#~ msgstr "Izejas moduļi"
-
-#, fuzzy
 #~ msgid "width"
 #~ msgstr "Video platums"
 
 #, fuzzy
 #~ msgid "height"
 #~ msgstr "Labais"
-
-#, fuzzy
-#~ msgid "Destinations"
-#~ msgstr "Apraksts"
-
-#, fuzzy
-#~ msgid "Subtitles Language"
-#~ msgstr "Subtitra celiņš"
 
 #, fuzzy
 #~ msgid "Duration in second"
@@ -29016,10 +29014,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Easy Stream"
 #~ msgstr "Plūsma..."
-
-#, fuzzy
-#~ msgid "Seek Time"
-#~ msgstr "Mēdiju Laiks"
 
 #, fuzzy
 #~ msgid "Graphical Equalizer"
@@ -29092,10 +29086,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "About the video filters"
 #~ msgstr "Audio filtri"
-
-#, fuzzy
-#~ msgid "Controller..."
-#~ msgstr "Izveidot mapi..."
 
 #, fuzzy
 #~ msgid "Keep current Equalizer settings"
@@ -29174,10 +29164,6 @@ msgstr ""
 #~ msgstr "Video pielāgošana"
 
 #, fuzzy
-#~ msgid "Embed video in interface"
-#~ msgstr "Galvenais interfeiss"
-
-#, fuzzy
 #~ msgid "Video filters"
 #~ msgstr "Audio filtri"
 
@@ -29200,10 +29186,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Settings for audio+video and miscellaneous decoders and encoders."
 #~ msgstr "Iestatījumi priekš audio-tikai dekoderiem un atkodēšanas."
-
-#, fuzzy
-#~ msgid "Advanced open..."
-#~ msgstr "&Papildus atvērt..."
 
 #, fuzzy
 #~ msgid "Audio Compact Disc"
@@ -29232,14 +29214,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Go to Chapter"
 #~ msgstr "Nodaļa"
-
-#, fuzzy
-#~ msgid "Select None"
-#~ msgstr "Izvēlaties Mapi"
-
-#, fuzzy
-#~ msgid "Check for Updates"
-#~ msgstr "Pārbaudīt atjauninājumus..."
 
 #, fuzzy
 #~ msgid "PDA Linux Gtk2+ interface"
@@ -29276,10 +29250,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Video Codec:"
 #~ msgstr "Video kodeki"
-
-#, fuzzy
-#~ msgid "Deinterlace:"
-#~ msgstr "Interfeiss"
 
 #, fuzzy
 #~ msgid "Access:"
@@ -29357,10 +29327,6 @@ msgstr ""
 #~ msgstr "Video pielāgošana"
 
 #, fuzzy
-#~ msgid "Autodetect"
-#~ msgstr "Automātisks"
-
-#, fuzzy
 #~ msgid "General interface settings"
 #~ msgstr "Galvenā interfeisa iestatījumi"
 
@@ -29433,10 +29399,6 @@ msgstr ""
 #~ msgstr "VLC iestatījumi"
 
 #, fuzzy
-#~ msgid "Outputs"
-#~ msgstr "Izejas moduļi"
-
-#, fuzzy
 #~ msgid "WinCE interface module"
 #~ msgstr "Papildus interfeisa moduļi"
 
@@ -29459,10 +29421,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Check for updates..."
 #~ msgstr "Pārbaudīt atjauninājumus..."
-
-#, fuzzy
-#~ msgid "Display Device"
-#~ msgstr "Displeja izšķirtspēja"
 
 #, fuzzy
 #~ msgid "Subtitles & OSD settings"
@@ -29495,10 +29453,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "&Add URL..."
 #~ msgstr "Pievienot Datni..."
-
-#, fuzzy
-#~ msgid "&Save Playlist..."
-#~ msgstr "Saglabat atskaņošanas sarakstu pie &Faila..."
 
 #, fuzzy
 #~ msgid "Ctrl"
@@ -29563,10 +29517,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Video canvas height"
 #~ msgstr "Video momentuzņēmuma augstums"
-
-#, fuzzy
-#~ msgid "Security options"
-#~ msgstr "Apraksts"
 
 #, fuzzy
 #~ msgid "Advanced Information"

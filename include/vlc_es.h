@@ -2,7 +2,7 @@
  * vlc_es.h: Elementary stream formats descriptions
  *****************************************************************************
  * Copyright (C) 1999-2012 VLC authors and VideoLAN
- * $Id: 5790d2343b22322d1f5e4965697dbc3d5a0e378c $
+ * $Id: 8db588494350b40b0f9225df00234f44189c5072 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -285,7 +285,8 @@ VLC_API void video_format_ScaleCropAr( video_format_t *, const video_format_t * 
  * This function "normalizes" the formats orientation, by switching the a/r according to the orientation,
  * producing a format whose orientation is ORIENT_NORMAL. It makes a shallow copy (pallette is not alloc'ed).
  */
-VLC_API void video_format_ApplyRotation(video_format_t *restrict out, const video_format_t *restrict in);
+VLC_API void video_format_ApplyRotation(video_format_t * /*restrict*/ out,
+                                        const video_format_t *in);
 
 /**
  * This function applies the transform operation to fmt.

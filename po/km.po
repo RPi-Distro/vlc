@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-10-06 17:05+0200\n"
+"POT-Creation-Date: 2014-11-03 14:06+0100\n"
 "PO-Revision-Date: 2014-04-02 04:57+0000\n"
 "Last-Translator: soksophea <sksophea@gmail.com>\n"
 "Language-Team: Khmer (http://www.transifex.com/projects/p/vlc-trans/language/"
@@ -338,8 +338,8 @@ msgstr "ការ​ប្រតិបត្តិ​​វីដេអូ​ន
 
 #: include/vlc_config_cat.h:167 src/libvlc-module.c:1994
 #: src/playlist/engine.c:243 modules/demux/playlist/playlist.c:64
-#: modules/demux/playlist/playlist.c:65 modules/gui/macosx/MainWindow.m:327
-#: modules/gui/macosx/MainWindow.m:945
+#: modules/demux/playlist/playlist.c:65 modules/gui/macosx/MainWindow.m:329
+#: modules/gui/macosx/MainWindow.m:956
 #: modules/gui/qt4/components/controller.hpp:117
 #: modules/gui/qt4/components/playlist/playlist.cpp:167
 #: modules/gui/qt4/components/playlist/selector.cpp:231
@@ -381,11 +381,6 @@ msgstr "ការ​កំណត់​កម្រិត​ខ្ពស់ ។ �
 #: include/vlc_config_cat.h:181
 msgid "Advanced settings"
 msgstr "ការ​កំណត់​កម្រិត​ខ្ពស់"
-
-#: include/vlc_input.h:568
-#, fuzzy
-msgid "Subtitle track added"
-msgstr "បទ​ចំណងជើង​រង"
 
 #: include/vlc_interface.h:140
 msgid ""
@@ -546,7 +541,7 @@ msgstr "បន្ថែម​ថត..."
 msgid "Save Playlist to &File..."
 msgstr "រក្សាទុក​បញ្ជី​ចាក់​ទៅ​ឯកសារ..."
 
-#: include/vlc_intf_strings.h:91 modules/gui/macosx/MainWindow.m:173
+#: include/vlc_intf_strings.h:91 modules/gui/macosx/MainWindow.m:174
 #: modules/gui/qt4/components/preferences_widgets.cpp:1136
 msgid "Search"
 msgstr "ស្វែងរក"
@@ -619,7 +614,7 @@ msgstr "បាន​ដល់​​ចំនួន​តម្រង​​អត
 
 #: src/audio_output/output.c:229 src/config/core.c:407 src/input/es_out.c:904
 #: src/libvlc-module.c:538 modules/gui/macosx/MainMenu.m:277
-#: modules/gui/macosx/MainWindow.m:1072 modules/video_filter/postproc.c:234
+#: modules/gui/macosx/MainWindow.m:1083 modules/video_filter/postproc.c:234
 msgid "Disable"
 msgstr "បិទ"
 
@@ -1367,7 +1362,7 @@ msgstr "មិន​អាច​លុប​ទ្រង់ទ្រាយ '%s' 
 msgid "Title"
 msgstr "ចំណងជើង"
 
-#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1203
+#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1202
 #: modules/gui/macosx/playlistinfo.m:74 modules/mux/avi.c:48
 msgid "Artist"
 msgstr "សិល្បករ"
@@ -2570,7 +2565,7 @@ msgid "Default"
 msgstr "លំនាំដើម"
 
 #: src/libvlc-module.c:538 modules/gui/macosx/AudioEffects.m:112
-#: modules/gui/macosx/MainWindow.m:1070 modules/gui/macosx/wizard.m:351
+#: modules/gui/macosx/MainWindow.m:1081 modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/extended_panels.cpp:1053
 #: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:289
 msgid "Enable"
@@ -3793,7 +3788,7 @@ msgstr "បញ្ជី​ចាក់​អាច​ប្រើ​មែកធ
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr "ការ​កំណត់​ទាំងនេះ​គឺ​ជា​ការ​បន្សំ​គ្រាប់ចុច VLC សកល ដែល​គេ​ស្គាល់​ថា \"គ្រាប់ចុច​រហ័ស\" ។"
 
-#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1765
+#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1785
 msgid "Ignore"
 msgstr "មិន​អើពើ"
 
@@ -3900,7 +3895,7 @@ msgid "Slower (fine)"
 msgstr "យឺត​ជាង (ល្អ)"
 
 #: src/libvlc-module.c:1209 modules/control/hotkeys.c:208
-#: modules/gui/macosx/about.m:261 modules/gui/macosx/ControlsBar.m:771
+#: modules/gui/macosx/about.m:268 modules/gui/macosx/ControlsBar.m:771
 #: modules/gui/macosx/ControlsBar.m:772 modules/gui/macosx/fspanel.m:424
 #: modules/gui/macosx/MainMenu.m:404 modules/gui/macosx/MainMenu.m:502
 #: modules/gui/macosx/MainMenu.m:510 modules/gui/macosx/MainMenu.m:1559
@@ -3916,7 +3911,7 @@ msgid "Select the hotkey to use to skip to the next item in the playlist."
 msgstr "ជ្រើស​គ្រាប់ចុច​រហ័ស​ដែល​ត្រូវ​ប្រើ​ដើម្បី​រំលង​ទៅកាន់​ធាតុ​បន្ទាប់​នៅ​ក្នុង​បញ្ជី​ចាក់។"
 
 #: src/libvlc-module.c:1211 modules/control/hotkeys.c:212
-#: modules/gui/macosx/about.m:262 modules/gui/macosx/ControlsBar.m:760
+#: modules/gui/macosx/about.m:269 modules/gui/macosx/ControlsBar.m:760
 #: modules/gui/macosx/ControlsBar.m:761 modules/gui/macosx/fspanel.m:420
 #: modules/gui/macosx/MainMenu.m:403 modules/gui/macosx/MainMenu.m:503
 #: modules/gui/macosx/MainMenu.m:509 modules/gui/macosx/MainMenu.m:1558
@@ -4791,7 +4786,7 @@ msgstr "កំពុង​ទាញ​យក..."
 #: modules/gui/macosx/ConvertAndSave.m:372
 #: modules/gui/macosx/ConvertAndSave.m:386 modules/gui/macosx/coredialogs.m:61
 #: modules/gui/macosx/coredialogs.m:63 modules/gui/macosx/coredialogs.m:168
-#: modules/gui/macosx/MainWindow.m:184 modules/gui/macosx/MainWindow.m:189
+#: modules/gui/macosx/MainWindow.m:186 modules/gui/macosx/MainWindow.m:191
 #: modules/gui/macosx/open.m:128 modules/gui/macosx/open.m:183
 #: modules/gui/macosx/prefs.m:208 modules/gui/macosx/simple_prefs.m:324
 #: modules/gui/macosx/simple_prefs.m:352 modules/gui/macosx/simple_prefs.m:414
@@ -4871,7 +4866,7 @@ msgid "Install"
 msgstr "ដំឡើង"
 
 #: src/playlist/engine.c:256 src/playlist/loadsave.c:159 lib/media_list.c:252
-#: modules/gui/macosx/MainWindow.m:329 modules/gui/macosx/MainWindow.m:947
+#: modules/gui/macosx/MainWindow.m:331 modules/gui/macosx/MainWindow.m:958
 #: modules/gui/qt4/components/playlist/selector.cpp:238
 msgid "Media Library"
 msgstr "បណ្ណាល័យ​មេឌៀ"
@@ -13568,9 +13563,9 @@ msgstr "DBus"
 msgid "D-Bus control interface"
 msgstr "ចំណុច​ប្រទាក់​ឧបករណ៍​បញ្ជា D-Bus"
 
-#: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/MainWindow.m:207
-#: modules/gui/macosx/MainWindow.m:729 modules/gui/macosx/MainWindow.m:735
-#: modules/gui/macosx/MainWindow.m:1354 modules/gui/ncurses.c:1041
+#: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/MainWindow.m:209
+#: modules/gui/macosx/MainWindow.m:740 modules/gui/macosx/MainWindow.m:746
+#: modules/gui/macosx/MainWindow.m:1366 modules/gui/ncurses.c:1041
 #: modules/gui/qt4/dialogs/help.cpp:91 modules/gui/qt4/main_interface.cpp:1078
 #: modules/gui/qt4/main_interface.cpp:1082
 #: modules/gui/qt4/main_interface.cpp:1121
@@ -14313,7 +14308,7 @@ msgstr "ឧបករណ៍​មិន​ទ្វេ​ទិស AIFF"
 msgid "ASF/WMV demuxer"
 msgstr "ឧបករណ៍​មិន​ទ្វេ​ទិស ASF/WMV"
 
-#: modules/demux/asf/asf.c:215 modules/demux/asf/asf.c:1193
+#: modules/demux/asf/asf.c:215 modules/demux/asf/asf.c:1195
 msgid "Could not demux ASF stream"
 msgstr "មិន​អាច​មិន​ទ្វេ​ទិស​ស្ទ្រីម ASF បានទេ"
 
@@ -14321,7 +14316,7 @@ msgstr "មិន​អាច​មិន​ទ្វេ​ទិស​ស្ទ
 msgid "VLC failed to load the ASF header."
 msgstr "VLC បាន​បរាជ័យ​ក្នុង​ការ​ផ្ទុក​បឋមកថា ASF ។"
 
-#: modules/demux/asf/asf.c:1194
+#: modules/demux/asf/asf.c:1196
 msgid "DRM protected streams are not supported."
 msgstr ""
 
@@ -16014,11 +16009,11 @@ msgstr ""
 "href=\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: "
 "underline; color:#0057ae;\">ជួយ​គាំទ្រ និង​ចូលរួម​ជាមួយ​ពួក​យើង!</span></a>"
 
-#: modules/gui/macosx/about.m:260
+#: modules/gui/macosx/about.m:267
 msgid "VLC media player Help"
 msgstr "ជំនួយ​កម្មវិធី​ចាក់​មេឌៀ VLC"
 
-#: modules/gui/macosx/about.m:263 modules/gui/macosx/MainMenu.m:469
+#: modules/gui/macosx/about.m:270 modules/gui/macosx/MainMenu.m:469
 #: modules/gui/macosx/MainMenu.m:1075
 msgid "Index"
 msgstr "លិបិក្រម"
@@ -16483,11 +16478,11 @@ msgstr "បម្លែង និង​ស្ទ្រីម"
 msgid "Go!"
 msgstr "ចាប់ផ្ដើម!"
 
-#: modules/gui/macosx/ConvertAndSave.m:154 modules/gui/macosx/MainWindow.m:178
+#: modules/gui/macosx/ConvertAndSave.m:154 modules/gui/macosx/MainWindow.m:179
 msgid "Drop media here"
 msgstr "ទម្លាក់​មេឌៀ​នៅ​ទីនេះ"
 
-#: modules/gui/macosx/ConvertAndSave.m:155 modules/gui/macosx/MainWindow.m:176
+#: modules/gui/macosx/ConvertAndSave.m:155 modules/gui/macosx/MainWindow.m:177
 msgid "Open media..."
 msgstr "បើក​មេឌៀ..."
 
@@ -16737,19 +16732,19 @@ msgstr "(ពុំមាន​ធាតុ​ដែល​កំពុង​ច�
 msgid "Click to exit fullscreen playback."
 msgstr "ចុច​ដើម្បី​ចេញពី​​ការ​ចាក់​ពេញ​អេក្រង់។"
 
-#: modules/gui/macosx/intf.m:1475 modules/gui/macosx/intf.m:1492
+#: modules/gui/macosx/intf.m:1495 modules/gui/macosx/intf.m:1512
 msgid "VLC media playback"
 msgstr "កម្មវិធី​ចាក់​មេឌៀ VLC"
 
-#: modules/gui/macosx/intf.m:1763
+#: modules/gui/macosx/intf.m:1783
 msgid "Remove old preferences?"
 msgstr "យក​ចំណូលចិត្ត​ចាស់​ចេញ​ឬ ?"
 
-#: modules/gui/macosx/intf.m:1764
+#: modules/gui/macosx/intf.m:1784
 msgid "We just found an older version of VLC's preferences files."
 msgstr "យើង​ទើបតែ​រក​ឃើញ​កំណែ​ចាស់​របស់​ឯកសារ​ចំណូលចិត្ត VLC ។"
 
-#: modules/gui/macosx/intf.m:1765
+#: modules/gui/macosx/intf.m:1785
 msgid "Move To Trash and Relaunch VLC"
 msgstr "ផ្លាស់ទី​ទៅ​ធុង​សំរាម រួច​ចាប់ផ្ដើម VLC ឡើងវិញ"
 
@@ -17329,12 +17324,12 @@ msgstr "ជួយ​ឧបត្ថម្ភ..."
 msgid "Online Forum..."
 msgstr "វេទិកា​លើ​បណ្ដាញ..."
 
-#: modules/gui/macosx/MainWindow.m:174
+#: modules/gui/macosx/MainWindow.m:175
 msgid ""
 "Enter a term to search the playlist. Results will be selected in the table."
 msgstr "បញ្ចូល​ពាក្យ​ដើម្បី​ស្វែងរក​បញ្ជី​ចាក់។ លទ្ធផល​នឹង​ត្រូវ​បាន​ជ្រើស​នៅ​ក្នុង​តារាង។"
 
-#: modules/gui/macosx/MainWindow.m:177
+#: modules/gui/macosx/MainWindow.m:178
 msgid ""
 "Click to open an advanced dialog to select the media to play. You can also "
 "drop files here to play."
@@ -17342,49 +17337,49 @@ msgstr ""
 "ចុច​បើក​ប្រអប់​ជម្រើស​កម្រិត​ខ្ពស់​រួច​ជ្រើស​មេឌៀ​ដើម្បី​ចាក់។ អ្នក​ក៏​អាច​ទម្លាក់​ឯកសារ​នៅ​ទីនេះ​ដើម្បី​ចាក់​បាន​ផង​"
 "ដែរ។"
 
-#: modules/gui/macosx/MainWindow.m:180 modules/gui/macosx/MainWindow.m:185
+#: modules/gui/macosx/MainWindow.m:182 modules/gui/macosx/MainWindow.m:187
 #: modules/gui/qt4/components/playlist/selector.cpp:577
 msgid "Subscribe"
 msgstr "ជាវ"
 
-#: modules/gui/macosx/MainWindow.m:181 modules/gui/macosx/MainWindow.m:188
+#: modules/gui/macosx/MainWindow.m:183 modules/gui/macosx/MainWindow.m:190
 #: modules/gui/qt4/components/playlist/selector.cpp:594
 msgid "Unsubscribe"
 msgstr "ឈប់ជាវ"
 
-#: modules/gui/macosx/MainWindow.m:182
+#: modules/gui/macosx/MainWindow.m:184
 #: modules/gui/qt4/components/playlist/selector.cpp:280
 msgid "Subscribe to a podcast"
 msgstr "ជាវ​ទៅ​ផតខាស"
 
-#: modules/gui/macosx/MainWindow.m:183
+#: modules/gui/macosx/MainWindow.m:185
 #: modules/gui/qt4/components/playlist/selector.cpp:578
 msgid "Enter URL of the podcast to subscribe to:"
 msgstr "បញ្ចូល URL របស់​ផតខាស​ដែល​ត្រូវ​ជាវ​ទៅ ៖"
 
-#: modules/gui/macosx/MainWindow.m:186
+#: modules/gui/macosx/MainWindow.m:188
 msgid "Unsubscribe from a podcast"
 msgstr "ឈប់​ជាវ​ពី​ផតខាស់"
 
-#: modules/gui/macosx/MainWindow.m:187
+#: modules/gui/macosx/MainWindow.m:189
 msgid "Select the podcast you would like to unsubscribe from:"
 msgstr "ជ្រើស​ផតខាស់​ដែល​អ្នក​ចង់​ឈប់​ជាវ​ពី៖"
 
-#: modules/gui/macosx/MainWindow.m:241
+#: modules/gui/macosx/MainWindow.m:243
 msgid "Check for album art and metadata?"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:241
+#: modules/gui/macosx/MainWindow.m:243
 #, fuzzy
 msgid "Enable Metadata Retrieval"
 msgstr "បើក​ការ​ត្រង​ជាមុន​ដែល​អាច​ប្រែប្រួល"
 
-#: modules/gui/macosx/MainWindow.m:241
+#: modules/gui/macosx/MainWindow.m:243
 #, fuzzy
 msgid "No, Thanks"
 msgstr "អរគុណ"
 
-#: modules/gui/macosx/MainWindow.m:241
+#: modules/gui/macosx/MainWindow.m:243
 msgid ""
 "VLC can check online for album art and metadata to enrich your playback "
 "experience, e.g. by providing track information when playing Audio CDs. To "
@@ -17392,23 +17387,23 @@ msgid ""
 "trusted services in an anonymized form."
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:326
+#: modules/gui/macosx/MainWindow.m:328
 msgid "LIBRARY"
 msgstr "បណ្ណាល័យ"
 
-#: modules/gui/macosx/MainWindow.m:331
+#: modules/gui/macosx/MainWindow.m:333
 msgid "MY COMPUTER"
 msgstr "កុំព្យូទ័រ​របស់​ខ្ញុំ"
 
-#: modules/gui/macosx/MainWindow.m:332
+#: modules/gui/macosx/MainWindow.m:334
 msgid "DEVICES"
 msgstr "ឧបករណ៍"
 
-#: modules/gui/macosx/MainWindow.m:333
+#: modules/gui/macosx/MainWindow.m:335
 msgid "LOCAL NETWORK"
 msgstr "បណ្ដាញ​មូលដ្ឋាន"
 
-#: modules/gui/macosx/MainWindow.m:334
+#: modules/gui/macosx/MainWindow.m:336
 msgid "INTERNET"
 msgstr "អ៊ីនធឺណិត"
 
@@ -17815,31 +17810,31 @@ msgstr "បញ្ជី​ចាក់ HTML"
 msgid "Save Playlist"
 msgstr "រក្សាទុក​បញ្ជី​ចាក់"
 
-#: modules/gui/macosx/playlist.m:1203
+#: modules/gui/macosx/playlist.m:1202
 msgid "Meta-information"
 msgstr "ព័ត៌មាន​មេតា"
 
-#: modules/gui/macosx/playlist.m:1521 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/macosx/playlist.m:1535 modules/gui/qt4/qt4.cpp:188
 #, fuzzy
 msgid "Continue playback?"
 msgstr "វត្ថុ​​បញ្ជា iTunes នៅ​ពេល​ចាក់​សារ​ថ្មី"
 
-#: modules/gui/macosx/playlist.m:1521 modules/gui/macosx/simple_prefs.m:837
+#: modules/gui/macosx/playlist.m:1535 modules/gui/macosx/simple_prefs.m:837
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr "បន្ត"
 
-#: modules/gui/macosx/playlist.m:1521
+#: modules/gui/macosx/playlist.m:1535
 #, fuzzy
 msgid "Restart playback"
 msgstr "ប្ដូរ​ការ​ចាក់​តាម​តម្រូវការ"
 
-#: modules/gui/macosx/playlist.m:1521
+#: modules/gui/macosx/playlist.m:1535
 #, fuzzy
 msgid "Always continue"
 msgstr "នៅ​លើ​គេ​ជានិច្ច"
 
-#: modules/gui/macosx/playlist.m:1521
+#: modules/gui/macosx/playlist.m:1535
 msgid "Playback of \"%@\" will continue at %@"
 msgstr ""
 
@@ -21902,7 +21897,7 @@ msgstr "គុណភាព"
 msgid "High quality scaling level"
 msgstr "ការ​ធ្វើ​គំរូ​អូឌីយ៉ូ​គុណភាព​ខ្ពស់​ឡើងវិញ"
 
-#: modules/hw/vdpau/deinterlace.c:131
+#: modules/hw/vdpau/deinterlace.c:132
 #, fuzzy
 msgid "VDPAU deinterlacing filter"
 msgstr "តម្រង​​វីដេអូ​មិន​ត្របាញ់"
@@ -29089,6 +29084,10 @@ msgstr "AAAA;"
 #: modules/gui/qt4/ui/vlm.h:302
 msgid "Media Manager List"
 msgstr "បញ្ជី​គ្រប់គ្រង​មេឌៀ"
+
+#, fuzzy
+#~ msgid "Subtitle track added"
+#~ msgstr "បទ​ចំណងជើង​រង"
 
 #~ msgid "Media in Zip"
 #~ msgstr "មេឌៀ​​នៅ​ក្នុង​ហ្ស៊ីប"

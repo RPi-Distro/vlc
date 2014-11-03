@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-10-06 17:05+0200\n"
+"POT-Creation-Date: 2014-11-03 14:06+0100\n"
 "PO-Revision-Date: 2014-01-01 14:48+0000\n"
 "Last-Translator: akkuvijay <akkuvijay@aol.com>\n"
 "Language-Team: Malayalam (http://www.transifex.com/projects/p/vlc-trans/"
@@ -321,8 +321,8 @@ msgstr "വീ എല്‍ സീയുടെ Video on Demand സേവനം"
 
 #: include/vlc_config_cat.h:167 src/libvlc-module.c:1994
 #: src/playlist/engine.c:243 modules/demux/playlist/playlist.c:64
-#: modules/demux/playlist/playlist.c:65 modules/gui/macosx/MainWindow.m:327
-#: modules/gui/macosx/MainWindow.m:945
+#: modules/demux/playlist/playlist.c:65 modules/gui/macosx/MainWindow.m:329
+#: modules/gui/macosx/MainWindow.m:956
 #: modules/gui/qt4/components/controller.hpp:117
 #: modules/gui/qt4/components/playlist/playlist.cpp:167
 #: modules/gui/qt4/components/playlist/selector.cpp:231
@@ -362,11 +362,6 @@ msgstr ""
 #: include/vlc_config_cat.h:181
 msgid "Advanced settings"
 msgstr "കൂടുതല്‍ ക്രമീകരണങ്ങള്‍"
-
-#: include/vlc_input.h:568
-#, fuzzy
-msgid "Subtitle track added"
-msgstr "ഉപശീര്‍ഷകങ്ങള്‍"
 
 #: include/vlc_interface.h:140
 msgid ""
@@ -524,7 +519,7 @@ msgstr "ഫൈല്‍ ചേര്‍ക്കുക"
 msgid "Save Playlist to &File..."
 msgstr "പ്ലേലിസ്റ്റ് ഒരു ഫയല്‍ ആയി സേവ് ചെയുക"
 
-#: include/vlc_intf_strings.h:91 modules/gui/macosx/MainWindow.m:173
+#: include/vlc_intf_strings.h:91 modules/gui/macosx/MainWindow.m:174
 #: modules/gui/qt4/components/preferences_widgets.cpp:1136
 msgid "Search"
 msgstr "തിരയുക"
@@ -574,7 +569,7 @@ msgstr ""
 
 #: src/audio_output/output.c:229 src/config/core.c:407 src/input/es_out.c:904
 #: src/libvlc-module.c:538 modules/gui/macosx/MainMenu.m:277
-#: modules/gui/macosx/MainWindow.m:1072 modules/video_filter/postproc.c:234
+#: modules/gui/macosx/MainWindow.m:1083 modules/video_filter/postproc.c:234
 msgid "Disable"
 msgstr "ദുര്‍ബലപെടുത്തുക"
 
@@ -1284,7 +1279,7 @@ msgstr "'%s' എന്താണെന്ന് അറിയാന്‍ പറ�
 msgid "Title"
 msgstr "പേര്"
 
-#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1203
+#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1202
 #: modules/gui/macosx/playlistinfo.m:74 modules/mux/avi.c:48
 msgid "Artist"
 msgstr "കലാകാരന്‍"
@@ -2408,7 +2403,7 @@ msgid "Default"
 msgstr ""
 
 #: src/libvlc-module.c:538 modules/gui/macosx/AudioEffects.m:112
-#: modules/gui/macosx/MainWindow.m:1070 modules/gui/macosx/wizard.m:351
+#: modules/gui/macosx/MainWindow.m:1081 modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/extended_panels.cpp:1053
 #: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:289
 msgid "Enable"
@@ -3508,7 +3503,7 @@ msgstr ""
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr ""
 
-#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1765
+#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1785
 msgid "Ignore"
 msgstr ""
 
@@ -3613,7 +3608,7 @@ msgid "Slower (fine)"
 msgstr ""
 
 #: src/libvlc-module.c:1209 modules/control/hotkeys.c:208
-#: modules/gui/macosx/about.m:261 modules/gui/macosx/ControlsBar.m:771
+#: modules/gui/macosx/about.m:268 modules/gui/macosx/ControlsBar.m:771
 #: modules/gui/macosx/ControlsBar.m:772 modules/gui/macosx/fspanel.m:424
 #: modules/gui/macosx/MainMenu.m:404 modules/gui/macosx/MainMenu.m:502
 #: modules/gui/macosx/MainMenu.m:510 modules/gui/macosx/MainMenu.m:1559
@@ -3629,7 +3624,7 @@ msgid "Select the hotkey to use to skip to the next item in the playlist."
 msgstr ""
 
 #: src/libvlc-module.c:1211 modules/control/hotkeys.c:212
-#: modules/gui/macosx/about.m:262 modules/gui/macosx/ControlsBar.m:760
+#: modules/gui/macosx/about.m:269 modules/gui/macosx/ControlsBar.m:760
 #: modules/gui/macosx/ControlsBar.m:761 modules/gui/macosx/fspanel.m:420
 #: modules/gui/macosx/MainMenu.m:403 modules/gui/macosx/MainMenu.m:503
 #: modules/gui/macosx/MainMenu.m:509 modules/gui/macosx/MainMenu.m:1558
@@ -4498,7 +4493,7 @@ msgstr ""
 #: modules/gui/macosx/ConvertAndSave.m:372
 #: modules/gui/macosx/ConvertAndSave.m:386 modules/gui/macosx/coredialogs.m:61
 #: modules/gui/macosx/coredialogs.m:63 modules/gui/macosx/coredialogs.m:168
-#: modules/gui/macosx/MainWindow.m:184 modules/gui/macosx/MainWindow.m:189
+#: modules/gui/macosx/MainWindow.m:186 modules/gui/macosx/MainWindow.m:191
 #: modules/gui/macosx/open.m:128 modules/gui/macosx/open.m:183
 #: modules/gui/macosx/prefs.m:208 modules/gui/macosx/simple_prefs.m:324
 #: modules/gui/macosx/simple_prefs.m:352 modules/gui/macosx/simple_prefs.m:414
@@ -4574,7 +4569,7 @@ msgid "Install"
 msgstr ""
 
 #: src/playlist/engine.c:256 src/playlist/loadsave.c:159 lib/media_list.c:252
-#: modules/gui/macosx/MainWindow.m:329 modules/gui/macosx/MainWindow.m:947
+#: modules/gui/macosx/MainWindow.m:331 modules/gui/macosx/MainWindow.m:958
 #: modules/gui/qt4/components/playlist/selector.cpp:238
 msgid "Media Library"
 msgstr "മീഡിയ ലൈബ്രറി"
@@ -12811,9 +12806,9 @@ msgstr ""
 msgid "D-Bus control interface"
 msgstr ""
 
-#: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/MainWindow.m:207
-#: modules/gui/macosx/MainWindow.m:729 modules/gui/macosx/MainWindow.m:735
-#: modules/gui/macosx/MainWindow.m:1354 modules/gui/ncurses.c:1041
+#: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/MainWindow.m:209
+#: modules/gui/macosx/MainWindow.m:740 modules/gui/macosx/MainWindow.m:746
+#: modules/gui/macosx/MainWindow.m:1366 modules/gui/ncurses.c:1041
 #: modules/gui/qt4/dialogs/help.cpp:91 modules/gui/qt4/main_interface.cpp:1078
 #: modules/gui/qt4/main_interface.cpp:1082
 #: modules/gui/qt4/main_interface.cpp:1121
@@ -13541,7 +13536,7 @@ msgstr ""
 msgid "ASF/WMV demuxer"
 msgstr ""
 
-#: modules/demux/asf/asf.c:215 modules/demux/asf/asf.c:1193
+#: modules/demux/asf/asf.c:215 modules/demux/asf/asf.c:1195
 msgid "Could not demux ASF stream"
 msgstr ""
 
@@ -13549,7 +13544,7 @@ msgstr ""
 msgid "VLC failed to load the ASF header."
 msgstr ""
 
-#: modules/demux/asf/asf.c:1194
+#: modules/demux/asf/asf.c:1196
 msgid "DRM protected streams are not supported."
 msgstr ""
 
@@ -15202,11 +15197,11 @@ msgid ""
 "underline; color:#0057ae;\">Help and join us!</span></a>"
 msgstr ""
 
-#: modules/gui/macosx/about.m:260
+#: modules/gui/macosx/about.m:267
 msgid "VLC media player Help"
 msgstr ""
 
-#: modules/gui/macosx/about.m:263 modules/gui/macosx/MainMenu.m:469
+#: modules/gui/macosx/about.m:270 modules/gui/macosx/MainMenu.m:469
 #: modules/gui/macosx/MainMenu.m:1075
 msgid "Index"
 msgstr ""
@@ -15664,11 +15659,11 @@ msgstr ""
 msgid "Go!"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:154 modules/gui/macosx/MainWindow.m:178
+#: modules/gui/macosx/ConvertAndSave.m:154 modules/gui/macosx/MainWindow.m:179
 msgid "Drop media here"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:155 modules/gui/macosx/MainWindow.m:176
+#: modules/gui/macosx/ConvertAndSave.m:155 modules/gui/macosx/MainWindow.m:177
 msgid "Open media..."
 msgstr ""
 
@@ -15915,19 +15910,19 @@ msgstr ""
 msgid "Click to exit fullscreen playback."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1475 modules/gui/macosx/intf.m:1492
+#: modules/gui/macosx/intf.m:1495 modules/gui/macosx/intf.m:1512
 msgid "VLC media playback"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1763
+#: modules/gui/macosx/intf.m:1783
 msgid "Remove old preferences?"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1764
+#: modules/gui/macosx/intf.m:1784
 msgid "We just found an older version of VLC's preferences files."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1765
+#: modules/gui/macosx/intf.m:1785
 msgid "Move To Trash and Relaunch VLC"
 msgstr ""
 
@@ -16490,58 +16485,58 @@ msgstr ""
 msgid "Online Forum..."
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:174
+#: modules/gui/macosx/MainWindow.m:175
 msgid ""
 "Enter a term to search the playlist. Results will be selected in the table."
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:177
+#: modules/gui/macosx/MainWindow.m:178
 msgid ""
 "Click to open an advanced dialog to select the media to play. You can also "
 "drop files here to play."
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:180 modules/gui/macosx/MainWindow.m:185
+#: modules/gui/macosx/MainWindow.m:182 modules/gui/macosx/MainWindow.m:187
 #: modules/gui/qt4/components/playlist/selector.cpp:577
 msgid "Subscribe"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:181 modules/gui/macosx/MainWindow.m:188
+#: modules/gui/macosx/MainWindow.m:183 modules/gui/macosx/MainWindow.m:190
 #: modules/gui/qt4/components/playlist/selector.cpp:594
 msgid "Unsubscribe"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:182
+#: modules/gui/macosx/MainWindow.m:184
 #: modules/gui/qt4/components/playlist/selector.cpp:280
 msgid "Subscribe to a podcast"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:183
+#: modules/gui/macosx/MainWindow.m:185
 #: modules/gui/qt4/components/playlist/selector.cpp:578
 msgid "Enter URL of the podcast to subscribe to:"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:186
+#: modules/gui/macosx/MainWindow.m:188
 msgid "Unsubscribe from a podcast"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:187
+#: modules/gui/macosx/MainWindow.m:189
 msgid "Select the podcast you would like to unsubscribe from:"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:241
+#: modules/gui/macosx/MainWindow.m:243
 msgid "Check for album art and metadata?"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:241
+#: modules/gui/macosx/MainWindow.m:243
 msgid "Enable Metadata Retrieval"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:241
+#: modules/gui/macosx/MainWindow.m:243
 msgid "No, Thanks"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:241
+#: modules/gui/macosx/MainWindow.m:243
 msgid ""
 "VLC can check online for album art and metadata to enrich your playback "
 "experience, e.g. by providing track information when playing Audio CDs. To "
@@ -16549,23 +16544,23 @@ msgid ""
 "trusted services in an anonymized form."
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:326
+#: modules/gui/macosx/MainWindow.m:328
 msgid "LIBRARY"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:331
+#: modules/gui/macosx/MainWindow.m:333
 msgid "MY COMPUTER"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:332
+#: modules/gui/macosx/MainWindow.m:334
 msgid "DEVICES"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:333
+#: modules/gui/macosx/MainWindow.m:335
 msgid "LOCAL NETWORK"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:334
+#: modules/gui/macosx/MainWindow.m:336
 msgid "INTERNET"
 msgstr ""
 
@@ -16954,29 +16949,29 @@ msgstr ""
 msgid "Save Playlist"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1203
+#: modules/gui/macosx/playlist.m:1202
 msgid "Meta-information"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1521 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/macosx/playlist.m:1535 modules/gui/qt4/qt4.cpp:188
 msgid "Continue playback?"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1521 modules/gui/macosx/simple_prefs.m:837
+#: modules/gui/macosx/playlist.m:1535 modules/gui/macosx/simple_prefs.m:837
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1521
+#: modules/gui/macosx/playlist.m:1535
 msgid "Restart playback"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1521
+#: modules/gui/macosx/playlist.m:1535
 #, fuzzy
 msgid "Always continue"
 msgstr "എപ്പോളും മുകളില്‍ നില്‍ക്കുക"
 
-#: modules/gui/macosx/playlist.m:1521
+#: modules/gui/macosx/playlist.m:1535
 msgid "Playback of \"%@\" will continue at %@"
 msgstr ""
 
@@ -20865,7 +20860,7 @@ msgstr ""
 msgid "High quality scaling level"
 msgstr ""
 
-#: modules/hw/vdpau/deinterlace.c:131
+#: modules/hw/vdpau/deinterlace.c:132
 #, fuzzy
 msgid "VDPAU deinterlacing filter"
 msgstr "പ്രവര്‍ത്തിമുഖം"
@@ -26898,24 +26893,28 @@ msgid "&Verbosity:"
 msgstr ""
 
 #: modules/gui/qt4/ui/messages_panel.h:140
+#, fuzzy
 msgid "&Filter:"
-msgstr ""
+msgstr "ഫില്‍ട്ടറുകള്‍"
 
 #: modules/gui/qt4/ui/messages_panel.h:141
+#, fuzzy
 msgid "&Save as..."
-msgstr ""
+msgstr "സേവ്‌..."
 
 #: modules/gui/qt4/ui/messages_panel.h:143
 msgid "Modules Tree"
 msgstr ""
 
 #: modules/gui/qt4/ui/open.h:245
+#, fuzzy
 msgid "Show extended options"
-msgstr ""
+msgstr "ക്രമീകരണങ്ങള്‍ കാണിക്ക"
 
 #: modules/gui/qt4/ui/open.h:247
+#, fuzzy
 msgid "Show &more options"
-msgstr ""
+msgstr "ക്രമീകരണങ്ങള്‍ കാണിക്ക"
 
 #: modules/gui/qt4/ui/open.h:250
 msgid "Change the caching for the media"
@@ -26926,16 +26925,18 @@ msgid " ms"
 msgstr ""
 
 #: modules/gui/qt4/ui/open.h:253
+#, fuzzy
 msgid "MRL"
-msgstr ""
+msgstr "URL"
 
 #: modules/gui/qt4/ui/open.h:254
 msgid "Start Time"
 msgstr ""
 
 #: modules/gui/qt4/ui/open.h:255
+#, fuzzy
 msgid "Edit Options"
-msgstr ""
+msgstr "ശബ്ദ ക്രമീകരണങ്ങള്‍"
 
 #: modules/gui/qt4/ui/open.h:256
 msgid "Extra media"
@@ -26946,8 +26947,9 @@ msgid "Complete MRL for VLC internal"
 msgstr ""
 
 #: modules/gui/qt4/ui/open.h:261
+#, fuzzy
 msgid "Select the file"
-msgstr ""
+msgstr "ഒന്നോ അതിലധികമോ ഫൈല്‍ തുറക്കുക"
 
 #: modules/gui/qt4/ui/open.h:265
 msgid "Change the start time for the media"
@@ -26962,20 +26964,23 @@ msgid "Play another media synchronously (extra audio file, ...)"
 msgstr ""
 
 #: modules/gui/qt4/ui/open_capture.h:97
+#, fuzzy
 msgid "Capture mode"
-msgstr ""
+msgstr "Capture &Device"
 
 #: modules/gui/qt4/ui/open_capture.h:99
 msgid "Select the capture device type"
 msgstr ""
 
 #: modules/gui/qt4/ui/open_capture.h:101
+#, fuzzy
 msgid "Device Selection"
-msgstr ""
+msgstr "ദ്രിശ്യ റെസൊലൂഷന്‍"
 
 #: modules/gui/qt4/ui/open_capture.h:102
+#, fuzzy
 msgid "Options"
-msgstr ""
+msgstr "വിശ്വലൈസേഷനുകള്‍"
 
 #: modules/gui/qt4/ui/open_capture.h:104
 msgid "Access advanced options to tweak the device"
@@ -27002,32 +27007,37 @@ msgid "No disc menus"
 msgstr ""
 
 #: modules/gui/qt4/ui/open_disk.h:306
+#, fuzzy
 msgid "Disc device"
-msgstr ""
+msgstr "ദ്രിശ്യ റെസൊലൂഷന്‍"
 
 #: modules/gui/qt4/ui/open_disk.h:308
 msgid "Starting Position"
 msgstr ""
 
 #: modules/gui/qt4/ui/open_disk.h:311
+#, fuzzy
 msgid "Audio and Subtitles"
-msgstr ""
+msgstr "സബ്‌ റ്റൈറ്റിലുകള്‍"
 
 #: modules/gui/qt4/ui/open_file.h:143
+#, fuzzy
 msgid "Use a sub&title file"
-msgstr ""
+msgstr "സബ്‌ റ്റൈറ്റിലുകള്‍"
 
 #: modules/gui/qt4/ui/open_file.h:145
+#, fuzzy
 msgid "Select the subtitle file"
-msgstr ""
+msgstr "ഒന്നോ അതിലധികമോ ഫൈല്‍ തുറക്കുക"
 
 #: modules/gui/qt4/ui/open_file.h:149
 msgid "Choose one or more media file to open"
 msgstr "ഒന്നോ അതിലധികമോ ഫൈല്‍ തുറക്കുക"
 
 #: modules/gui/qt4/ui/open_file.h:151
+#, fuzzy
 msgid "File Selection"
-msgstr ""
+msgstr "ദ്രിശ്യ റെസൊലൂഷന്‍"
 
 #: modules/gui/qt4/ui/open_file.h:152
 msgid "You can select local files with the following list and buttons."
@@ -27038,8 +27048,9 @@ msgid "Add..."
 msgstr "ഫൈല്‍ ചേര്‍ക്കുക"
 
 #: modules/gui/qt4/ui/open_net.h:97
+#, fuzzy
 msgid "Network Protocol"
-msgstr ""
+msgstr "നെറ്റ്വര്‍ക്ക്‌"
 
 #: modules/gui/qt4/ui/open_net.h:98
 msgid "Please enter a network URL:"
@@ -27102,16 +27113,19 @@ msgid "AVI"
 msgstr ""
 
 #: modules/gui/qt4/ui/profiles.h:700
+#, fuzzy
 msgid "Features"
-msgstr ""
+msgstr "സി പി യ്യു ഫീച്ചറുകള്‍"
 
 #: modules/gui/qt4/ui/profiles.h:702
+#, fuzzy
 msgid "Streamable"
-msgstr ""
+msgstr "സ്ട്രീം"
 
 #: modules/gui/qt4/ui/profiles.h:703
+#, fuzzy
 msgid "Chapters"
-msgstr ""
+msgstr "അദ്ധ്യായം"
 
 #: modules/gui/qt4/ui/profiles.h:706
 msgid "Menus"
@@ -27150,8 +27164,9 @@ msgid "Encoding parameters"
 msgstr ""
 
 #: modules/gui/qt4/ui/profiles.h:725
+#, fuzzy
 msgid "Frame size"
-msgstr ""
+msgstr "ഫ്രെയിം റേറ്റ്‌ "
 
 #: modules/gui/qt4/ui/profiles.h:728 modules/gui/qt4/ui/profiles.h:731
 msgid "px"
@@ -27166,12 +27181,14 @@ msgid "Set up media sources to stream"
 msgstr ""
 
 #: modules/gui/qt4/ui/sout.h:205
+#, fuzzy
 msgid "Destination Setup"
-msgstr ""
+msgstr "വിവരണം"
 
 #: modules/gui/qt4/ui/sout.h:206
+#, fuzzy
 msgid "Select destinations to stream to"
-msgstr ""
+msgstr "എല്ലാ ഓപ്ഷനുകളും കാണുന്നതിനു അട്വാന്‍സ്‌ട്‌ ഓപ്ഷന്‍ ക്ലിക്ക്‌ ചെയ്യുക"
 
 #: modules/gui/qt4/ui/sout.h:207
 msgid ""
@@ -27180,8 +27197,9 @@ msgid ""
 msgstr ""
 
 #: modules/gui/qt4/ui/sout.h:208
+#, fuzzy
 msgid "New destination"
-msgstr ""
+msgstr "വിവരണം"
 
 #: modules/gui/qt4/ui/sout.h:210
 msgid "Display locally"
@@ -27192,8 +27210,9 @@ msgid "Transcoding Options"
 msgstr ""
 
 #: modules/gui/qt4/ui/sout.h:213
+#, fuzzy
 msgid "Select and choose transcoding options"
-msgstr ""
+msgstr "എല്ലാ ഓപ്ഷനുകളും കാണുന്നതിനു അട്വാന്‍സ്‌ട്‌ ഓപ്ഷന്‍ ക്ലിക്ക്‌ ചെയ്യുക"
 
 #: modules/gui/qt4/ui/sout.h:214
 msgid "Activate Transcoding"
@@ -27244,8 +27263,9 @@ msgid "Dolby Surround:"
 msgstr "ഡോള്‍ബി സറൌണ്ട്‌"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:439
+#, fuzzy
 msgid "Replay gain mode:"
-msgstr ""
+msgstr "വീണ്ടും കാണിക്കുക"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:440
 msgid "Headphone surround effect"
@@ -27256,8 +27276,9 @@ msgid "Normalize volume to:"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_audio.h:443
+#, fuzzy
 msgid "Preferred audio language:"
-msgstr ""
+msgstr "സബ്‌ റ്റൈറ്റിലുകള്‍"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:444
 msgid "Password:"
@@ -27328,8 +27349,9 @@ msgid "Default caching policy"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_interface.h:505
+#, fuzzy
 msgid "Menus language:"
-msgstr ""
+msgstr "ഭാഷ"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:506
 msgid "Look and feel"
@@ -27344,8 +27366,9 @@ msgid "This is VLC's default interface, with a native look and feel."
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_interface.h:511
+#, fuzzy
 msgid "Use native style"
-msgstr ""
+msgstr "അടുത്ത ടൈറ്റില്‍"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:512
 msgid "Resize interface to video size"
@@ -27368,24 +27391,28 @@ msgid "Start in minimal view mode"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_interface.h:517
+#, fuzzy
 msgid "Force window style:"
-msgstr ""
+msgstr "അടുത്ത ടൈറ്റില്‍"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:518
+#, fuzzy
 msgid "Integrate video in interface"
-msgstr ""
+msgstr "പ്രധാന പ്രവര്‍ത്തിമുഖങ്ങത്തിനു വേണ്ട ക്രമീകരണങ്ങള്‍"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:519
+#, fuzzy
 msgid "Show systray icon"
-msgstr ""
+msgstr "ക്രമീകരണങ്ങള്‍ കാണിക്ക"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:520
 msgid "Skin resource file:"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_interface.h:522
+#, fuzzy
 msgid "Playlist and Instances"
-msgstr ""
+msgstr "പ്ളേലിസ്റ്റ്‌"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:523
 msgid "Allow only one instance"
@@ -27428,24 +27455,28 @@ msgid "Enable On Screen Display (OSD)"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:292
+#, fuzzy
 msgid "Show media title on video start"
-msgstr ""
+msgstr "ദൃശ്യത്തില്‍ അതിന്റെ പേരും കാണിക്കുക"
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:294
+#, fuzzy
 msgid "Enable subtitles"
-msgstr ""
+msgstr "സബ്‌ റ്റൈറ്റിലുകള്‍"
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:295
+#, fuzzy
 msgid "Subtitle Language"
-msgstr ""
+msgstr "ഉപശീര്‍ഷകങ്ങള്‍"
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:297
 msgid "Default encoding"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:298
+#, fuzzy
 msgid "Subtitle effects"
-msgstr ""
+msgstr "ഉപശീര്‍ഷക കോഡക്കുകള്‍"
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:304
 msgid "Add a shadow"
@@ -27472,8 +27503,9 @@ msgid "Accelerated video output (Overlay)"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_video.h:329
+#, fuzzy
 msgid "DirectX"
-msgstr ""
+msgstr "ഡയറക്റ്ററി ചേര്‍ക്കുക"
 
 #: modules/gui/qt4/ui/sprefs_video.h:330
 msgid "Display device"
@@ -27532,24 +27564,28 @@ msgid "P/P"
 msgstr ""
 
 #: modules/gui/qt4/ui/streampanel.h:182
+#, fuzzy
 msgid "Prev"
-msgstr ""
+msgstr "മുന്‍പുള്ളത്"
 
 #: modules/gui/qt4/ui/streampanel.h:183
+#, fuzzy
 msgid "Add Input"
-msgstr ""
+msgstr "പ്രവര്‍ത്തിമുഖം കൊടുക്കുക"
 
 #: modules/gui/qt4/ui/streampanel.h:184
+#, fuzzy
 msgid "Edit Input"
-msgstr ""
+msgstr "പൊതുവായ ഇന്‍പുട്ട്‌"
 
 #: modules/gui/qt4/ui/streampanel.h:185
 msgid "Clear List"
 msgstr ""
 
 #: modules/gui/qt4/ui/update.h:148
+#, fuzzy
 msgid "Check for VLC updates"
-msgstr ""
+msgstr "അപ്ഡേറ്റ് പരിശോധിക്കുക"
 
 #: modules/gui/qt4/ui/update.h:149
 msgid "Launching an update request..."
@@ -27569,20 +27605,23 @@ msgid ">HHHHHH;#"
 msgstr ""
 
 #: modules/gui/qt4/ui/video_effects.h:1419
+#, fuzzy
 msgid "Negate colors"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ ഉണ്ടാക്കുക"
 
 #: modules/gui/qt4/ui/video_effects.h:1432
 msgid "Colors"
 msgstr ""
 
 #: modules/gui/qt4/ui/video_effects.h:1433
+#, fuzzy
 msgid "Interactive Zoom"
-msgstr ""
+msgstr "പ്രവര്‍ത്തിമുഖം"
 
 #: modules/gui/qt4/ui/video_effects.h:1439
+#, fuzzy
 msgid "Angle"
-msgstr ""
+msgstr "മാധ്യമ കൊണ്"
 
 #: modules/gui/qt4/ui/video_effects.h:1443
 msgid "Black Slot"
@@ -27590,8 +27629,9 @@ msgstr ""
 
 #: modules/gui/qt4/ui/video_effects.h:1447
 #: modules/gui/qt4/ui/video_effects.h:1464
+#, fuzzy
 msgid "..."
-msgstr ""
+msgstr "ഫൈല്‍ ചേര്‍ക്കുക"
 
 #: modules/gui/qt4/ui/video_effects.h:1452
 msgid "full"
@@ -27682,8 +27722,9 @@ msgid "Name:"
 msgstr ""
 
 #: modules/gui/qt4/ui/vlm.h:290
+#, fuzzy
 msgid "Input:"
-msgstr ""
+msgstr "ഉല്‍പാദന മൊഡ്യൂളുകള്‍"
 
 #: modules/gui/qt4/ui/vlm.h:291
 msgid "Select Input"
@@ -27698,8 +27739,9 @@ msgid "Select Output"
 msgstr "സ്റ്റ്രീം ഔട്ട്‌പുട്ട്‌"
 
 #: modules/gui/qt4/ui/vlm.h:294
+#, fuzzy
 msgid "Time Control"
-msgstr ""
+msgstr "കൂടുതല്‍ നിയന്ത്രണങ്ങള്‍"
 
 #: modules/gui/qt4/ui/vlm.h:295
 msgid "Mux Control"
@@ -27714,8 +27756,13 @@ msgid "AAAA; "
 msgstr ""
 
 #: modules/gui/qt4/ui/vlm.h:302
+#, fuzzy
 msgid "Media Manager List"
-msgstr ""
+msgstr "മീഡിയ വിവരങ്ങള്‍"
+
+#, fuzzy
+#~ msgid "Subtitle track added"
+#~ msgstr "ഉപശീര്‍ഷകങ്ങള്‍"
 
 #, fuzzy
 #~ msgid "AVFoundation Video Capture"
@@ -27764,13 +27811,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Streaming Output"
 #~ msgstr "സ്റ്റ്രീം ഔട്ട്‌പുട്ട്‌"
-
-#, fuzzy
-#~ msgid "Add a subtitle file"
-#~ msgstr "സബ്‌ റ്റൈറ്റിലുകള്‍"
-
-#~ msgid "CPU features"
-#~ msgstr "സി പി യ്യു ഫീച്ചറുകള്‍"
 
 #~ msgid ""
 #~ "In this section you can force the behavior of the subtitle demuxer, for "
@@ -27829,14 +27869,6 @@ msgstr ""
 
 #~ msgid "&Navigation"
 #~ msgstr "നാവിഗേഷന്‍"
-
-#, fuzzy
-#~ msgid "Use a sub&titles file"
-#~ msgstr "സബ്‌ റ്റൈറ്റിലുകള്‍"
-
-#, fuzzy
-#~ msgid "Preferred subtitles language"
-#~ msgstr "സബ്‌ റ്റൈറ്റിലുകള്‍"
 
 #, fuzzy
 #~ msgid "Low Pass Ffilter"
@@ -27962,22 +27994,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "&Subtitles Track"
 #~ msgstr "ഉപശീര്‍ഷകങ്ങള്‍"
-
-#, fuzzy
-#~ msgid "Select the subtitles file"
-#~ msgstr "ഒന്നോ അതിലധികമോ ഫൈല്‍ തുറക്കുക"
-
-#, fuzzy
-#~ msgid "Destinations"
-#~ msgstr "വിവരണം"
-
-#, fuzzy
-#~ msgid "Subtitles Language"
-#~ msgstr "ഉപശീര്‍ഷകങ്ങള്‍"
-
-#, fuzzy
-#~ msgid "Subtitles effects"
-#~ msgstr "ഉപശീര്‍ഷക കോഡക്കുകള്‍"
 
 #, fuzzy
 #~ msgid "Loop/Repeat mode"

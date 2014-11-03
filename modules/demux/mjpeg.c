@@ -2,7 +2,7 @@
  * mjpeg.c : demuxes mjpeg webcam http streams
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: 2c076adeea5bb03a690f17d56be7c9cee67275ba $
+ * $Id: af6fceae8e31e0758df693aff5d31ee720be7190 $
  *
  * Authors: Henry Jen (slowhog) <henryjen@ztune.net>
  *          Derk-Jan Hartman (thedj)
@@ -462,7 +462,8 @@ static int MimeDemux( demux_t *p_demux )
 
     if( i_size > 0 )
     {
-        stream_Read( p_demux->s, NULL, i_size );
+        if( stream_Read( p_demux->s, NULL, i_size ) != i_size )
+            return 0;
     }
     else if( i_size < 0 )
     {

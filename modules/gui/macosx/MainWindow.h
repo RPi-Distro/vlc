@@ -2,7 +2,7 @@
  * MainWindow.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2014 VLC authors and VideoLAN
- * $Id: b809af793343ce4ca6128458b4487e5a92a6aa6b $
+ * $Id: 8c934187ef238b8d7bf7a494af331ad2555e00ab $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -64,6 +64,7 @@ typedef enum {
     IBOutlet id o_dropzone_btn;
     IBOutlet id o_dropzone_lbl;
     IBOutlet id o_dropzone_box;
+    IBOutlet id o_dropzone_img;
 
     VLCFSPanel *o_fspanel;
 

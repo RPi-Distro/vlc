@@ -72,7 +72,7 @@ static int Demux  ( demux_t * );
 static int Control( demux_t *, int i_query, va_list args );
 static void FlushRemainingPackets( demux_t *p_demux );
 
-#define MAX_ASF_TRACKS 128
+#define MAX_ASF_TRACKS (ASF_MAX_STREAMNUMBER + 1)
 #define ASF_PREROLL_FROM_CURRENT -1
 
 typedef struct
@@ -745,6 +745,8 @@ static int DemuxPayload(demux_t *p_demux, struct asf_packet_t *pkt, int i_payloa
 
     bool b_packet_keyframe = pkt->p_peek[pkt->i_skip] >> 7;
     uint8_t i_stream_number = pkt->p_peek[pkt->i_skip++] & 0x7f;
+    if ( i_stream_number >= MAX_ASF_TRACKS )
+        goto skip;
 
     uint32_t i_media_object_number = 0;
     if (GetValue2b(&i_media_object_number, pkt->p_peek, &pkt->i_skip, pkt->left - pkt->i_skip, pkt->property >> 4) < 0)
@@ -1100,7 +1102,7 @@ static void ASF_fillup_es_priorities_ex( demux_sys_t *p_sys, void *p_hdr,
         /* Just set highest prio on highest in the group */
         for ( uint16_t i = 1; i < p_mutex->i_stream_number_count; i++ )
         {
-            if ( p_prios->i_count > p_sys->i_track ) break;
+            if ( p_prios->i_count > p_sys->i_track || i > p_sys->i_track ) break;
             p_prios->pi_stream_numbers[ p_prios->i_count++ ] = p_mutex->pi_stream_number[ i ];
         }
     }
@@ -1127,7 +1129,7 @@ static void ASF_fillup_es_bitrate_priorities_ex( demux_sys_t *p_sys, void *p_hdr
         /* Just remove < highest */
         for ( uint16_t i = 1; i < p_bitrate_mutex->i_stream_number_count; i++ )
         {
-            if ( p_prios->i_count > p_sys->i_track ) break;
+            if ( p_prios->i_count > p_sys->i_track || i > p_sys->i_track ) break;
             p_prios->pi_stream_numbers[ p_prios->i_count++ ] = p_bitrate_mutex->pi_stream_numbers[ i ];
         }
     }
@@ -1429,7 +1431,7 @@ static int DemuxInit( demux_t *p_demux )
 
                 if( p_sp->i_type_specific_data_length > sizeof( WAVEFORMATEX ) &&
                     i_format != WAVE_FORMAT_MPEGLAYER3 &&
-                    i_format != WAVE_FORMAT_MPEG )
+                    i_format != WAVE_FORMAT_MPEG && i_data >= 19 )
                 {
                     GET_CHECKED( fmt.i_extra, __MIN( GetWLE( &p_data[16] ),
                                          p_sp->i_type_specific_data_length -

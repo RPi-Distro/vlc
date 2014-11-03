@@ -81,7 +81,10 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 @HAVE_WIN32_TRUE@am__append_1 = ../src/libvlc_win32_rc.$(OBJEXT)
-@HAVE_WIN32_TRUE@am__append_2 = -Wl,../src/libvlc_win32_rc.$(OBJEXT) -avoid-version
+@HAVE_WIN32_TRUE@am__append_2 = -Wl,../src/libvlc_win32_rc.$(OBJEXT) -avoid-version \
+@HAVE_WIN32_TRUE@					 -Wc,--static -Wc,-static-libgcc
+
+@HAVE_OS2_TRUE@am__append_3 = -avoid-version
 subdir = lib
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/autotools/depcomp $(pkginclude_HEADERS)
@@ -240,7 +243,6 @@ CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 CFLAGS_access_mtp = @CFLAGS_access_mtp@
 CFLAGS_access_output_shout = @CFLAGS_access_output_shout@
-CFLAGS_access_sftp = @CFLAGS_access_sftp@
 CFLAGS_bonjour = @CFLAGS_bonjour@
 CFLAGS_caca = @CFLAGS_caca@
 CFLAGS_cdda = @CFLAGS_cdda@
@@ -279,6 +281,7 @@ CFLAGS_qsv = @CFLAGS_qsv@
 CFLAGS_rdp = @CFLAGS_rdp@
 CFLAGS_samplerate = @CFLAGS_samplerate@
 CFLAGS_schroedinger = @CFLAGS_schroedinger@
+CFLAGS_sftp = @CFLAGS_sftp@
 CFLAGS_shine = @CFLAGS_shine@
 CFLAGS_sid = @CFLAGS_sid@
 CFLAGS_smb = @CFLAGS_smb@
@@ -310,7 +313,6 @@ CPPFLAGS = @CPPFLAGS@
 CPPFLAGS_a52tofloat32 = @CPPFLAGS_a52tofloat32@
 CPPFLAGS_access_mtp = @CPPFLAGS_access_mtp@
 CPPFLAGS_access_output_shout = @CPPFLAGS_access_output_shout@
-CPPFLAGS_access_sftp = @CPPFLAGS_access_sftp@
 CPPFLAGS_bonjour = @CPPFLAGS_bonjour@
 CPPFLAGS_caca = @CPPFLAGS_caca@
 CPPFLAGS_dc1394 = @CPPFLAGS_dc1394@
@@ -346,6 +348,7 @@ CPPFLAGS_qsv = @CPPFLAGS_qsv@
 CPPFLAGS_rdp = @CPPFLAGS_rdp@
 CPPFLAGS_samplerate = @CPPFLAGS_samplerate@
 CPPFLAGS_schroedinger = @CPPFLAGS_schroedinger@
+CPPFLAGS_sftp = @CPPFLAGS_sftp@
 CPPFLAGS_shine = @CPPFLAGS_shine@
 CPPFLAGS_skins2 = @CPPFLAGS_skins2@
 CPPFLAGS_smb = @CPPFLAGS_smb@
@@ -490,7 +493,6 @@ LIBS_aa = @LIBS_aa@
 LIBS_access_mtp = @LIBS_access_mtp@
 LIBS_access_output_shout = @LIBS_access_output_shout@
 LIBS_access_rtmp = @LIBS_access_rtmp@
-LIBS_access_sftp = @LIBS_access_sftp@
 LIBS_adjust = @LIBS_adjust@
 LIBS_anaglyph = @LIBS_anaglyph@
 LIBS_android_opaque = @LIBS_android_opaque@
@@ -578,6 +580,7 @@ LIBS_samplerate = @LIBS_samplerate@
 LIBS_sap = @LIBS_sap@
 LIBS_scene = @LIBS_scene@
 LIBS_schroedinger = @LIBS_schroedinger@
+LIBS_sftp = @LIBS_sftp@
 LIBS_shine = @LIBS_shine@
 LIBS_sid = @LIBS_sid@
 LIBS_skins2 = @LIBS_skins2@
@@ -639,7 +642,6 @@ LTLIBaccess_eyetv = @LTLIBaccess_eyetv@
 LTLIBaccess_mtp = @LTLIBaccess_mtp@
 LTLIBaccess_output_shout = @LTLIBaccess_output_shout@
 LTLIBaccess_realrtsp = @LTLIBaccess_realrtsp@
-LTLIBaccess_sftp = @LTLIBaccess_sftp@
 LTLIBaccess_smb = @LTLIBaccess_smb@
 LTLIBandroid_opaque = @LTLIBandroid_opaque@
 LTLIBandroid_surface = @LTLIBandroid_surface@
@@ -716,6 +718,7 @@ LTLIBsamplerate = @LTLIBsamplerate@
 LTLIBschroedinger = @LTLIBschroedinger@
 LTLIBscreen = @LTLIBscreen@
 LTLIBsdl_image = @LTLIBsdl_image@
+LTLIBsftp = @LTLIBsftp@
 LTLIBshine = @LTLIBshine@
 LTLIBsid = @LTLIBsid@
 LTLIBskins2 = @LTLIBskins2@
@@ -1036,7 +1039,8 @@ libvlc_la_LIBADD = \
 	../src/libvlccore.la ../compat/libcompat.la $(LIBPTHREAD) $(LIBM)
 
 libvlc_la_LDFLAGS = $(LDFLAGS_libvlc) -no-undefined -version-info \
-	10:0:5 -export-symbols $(srcdir)/libvlc.sym $(am__append_2)
+	10:0:5 -export-symbols $(srcdir)/libvlc.sym $(am__append_2) \
+	$(am__append_3)
 libvlc_la_DEPENDENCIES = libvlc.sym $(am__append_1)
 pkgconfig_DATA = libvlc.pc
 all: $(BUILT_SOURCES)

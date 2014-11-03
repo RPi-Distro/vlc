@@ -2,7 +2,7 @@
  * libvlc_media_player.h:  libvlc_media_player external API
  *****************************************************************************
  * Copyright (C) 1998-2010 VLC authors and VideoLAN
- * $Id: 4b2f44960b48568dada9d344e15b3a31e78cd6be $
+ * $Id: 94bf7e8c4461896ff0d22b7c86ce6d3f9854eb17 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -572,7 +572,8 @@ void libvlc_audio_set_callbacks( libvlc_media_player_t *mp,
                                  void *opaque );
 
 /**
- * Set callbacks and private data for decoded audio.
+ * Set callbacks and private data for decoded audio. This only works in
+ * combination with libvlc_audio_set_callbacks().
  * Use libvlc_audio_set_format() or libvlc_audio_set_format_callbacks()
  * to configure the decoded audio format.
  *

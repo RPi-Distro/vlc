@@ -2,7 +2,7 @@
  * zvbi.c : VBI and Teletext PES demux and decoder using libzvbi
  *****************************************************************************
  * Copyright (C) 2007, M2X
- * $Id: bd5599fb04b6f8d688316ddad347c7b16e021a2d $
+ * $Id: abcd27f5355953f68a13b4e7d6f848d58f7aa4c1 $
  *
  * Authors: Derk-Jan Hartman <djhartman at m2x dot nl>
  *          Jean-Paul Saman <jpsaman at m2x dot nl>
@@ -372,7 +372,7 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
 
     if( !b_cached )
     {
-        if( p_sys->i_last_page != i_wanted_page )
+        if( p_sys->b_text && p_sys->i_last_page != i_wanted_page )
         {
             /* We need to reset the subtitle */
             p_spu = Subpicture( p_dec, &fmt, true,

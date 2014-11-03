@@ -27,12 +27,15 @@ speex: speex-$(SPEEX_VERSION).tar.gz .sum-speex
 	$(ZCAT) "$<" | (cd $@-git && tar xv --strip-components=1)
 	$(MOVE)
 
-SPEEX_CONF := --without-ogg
+SPEEX_CONF := --disable-binaries
 ifndef HAVE_FPU
 SPEEX_CONF += --enable-fixed-point
 ifeq ($(ARCH),arm)
 SPEEX_CONF += --enable-arm5e-asm
 endif
+endif
+ifeq ($(ARCH),aarch64)
+SPEEX_CONF += --disable-neon
 endif
 
 .speex: speex

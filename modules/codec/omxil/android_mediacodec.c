@@ -392,7 +392,8 @@ static int OpenDecoder(vlc_object_t *p_this)
         if ((*env)->ExceptionOccurred(env)) {
             msg_Warn(p_dec, "Exception occurred in MediaCodecInfo.getCapabilitiesForType");
             (*env)->ExceptionClear(env);
-            break;
+            (*env)->DeleteLocalRef(env, info);
+            continue;
         } else if (codec_capabilities) {
             profile_levels = (*env)->GetObjectField(env, codec_capabilities, p_sys->profile_levels_field);
             if (profile_levels)
@@ -437,6 +438,7 @@ static int OpenDecoder(vlc_object_t *p_this)
             p_sys->name[name_len] = '\0';
             (*env)->ReleaseStringUTFChars(env, name, name_ptr);
             codec_name = name;
+            (*env)->DeleteLocalRef(env, info);
             break;
         }
         (*env)->DeleteLocalRef(env, info);
@@ -829,8 +831,14 @@ static void GetOutput(decoder_t *p_dec, JNIEnv *env, picture_t **pp_pic, jlong t
                     sar_den = p_dec->fmt_in.video.i_sar_den;
                 }
                 jni_SetAndroidSurfaceSizeEnv(env, width, height, width, height, sar_num, sar_den);
-            } else
-                GetVlcChromaFormat(p_sys->pixel_format, &p_dec->fmt_out.i_codec, &name);
+            } else {
+                if (!GetVlcChromaFormat(p_sys->pixel_format,
+                                        &p_dec->fmt_out.i_codec, &name)) {
+                    msg_Err(p_dec, "color-format not recognized");
+                    p_sys->error_state = true;
+                    return;
+                }
+            }
 
             msg_Dbg(p_dec, "output: %d %s, %dx%d stride %d %d, crop %d %d %d %d",
                     p_sys->pixel_format, name, width, height, p_sys->stride, p_sys->slice_height,
@@ -934,6 +942,8 @@ static picture_t *DecodeVideo(decoder_t *p_dec, block_t **pp_block)
 
         if (index < 0) {
             GetOutput(p_dec, env, &p_pic, timeout);
+            if (p_sys->error_state)
+                break;
             if (p_pic) {
                 /* If we couldn't get an available input buffer but a
                  * decoded frame is available, we return the frame
@@ -995,6 +1005,12 @@ static picture_t *DecodeVideo(decoder_t *p_dec, block_t **pp_block)
         }
         p_sys->decoded = true;
         break;
+    }
+    if (p_sys->error_state) {
+        if (p_pic)
+            decoder_DeletePicture(p_dec, p_pic);
+        jni_detach_thread();
+        return NULL;
     }
     if (!p_pic)
         GetOutput(p_dec, env, &p_pic, 0);

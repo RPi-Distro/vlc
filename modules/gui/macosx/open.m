@@ -2,7 +2,7 @@
  * open.m: Open dialogues for VLC's MacOS X port
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 9e3e5389e7552cfcb6ae1d8a494528e2fc48cbe0 $
+ * $Id: 7cbe46357d5f0340ac6ecea6db5fad2fb42aac3c $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -825,7 +825,7 @@ static VLCOpen *_o_sharedMainInstance = nil;
     [[[o_tabview tabViewItemAtIndex: [o_tabview indexOfTabViewItemWithIdentifier:@"optical"]] view] displayIfNeeded];
 }
 
-- (NSString *) getBSDNodeFromMountPath:(NSString *)mountPath
++ (NSString *) getBSDNodeFromMountPath:(NSString *)mountPath
 {
     OSStatus err;
     FSRef ref;
@@ -860,7 +860,7 @@ static VLCOpen *_o_sharedMainInstance = nil;
     return @"";
 }
 
-- (NSString *)getVolumeTypeFromMountPath:(NSString *)mountPath
++ (NSString *)getVolumeTypeFromMountPath:(NSString *)mountPath
 {
     OSStatus err;
     FSRef ref;
@@ -1003,7 +1003,7 @@ out:
 
 - (NSDictionary *)scanPath:(NSString *)o_path
 {
-    NSString *o_type = [self getVolumeTypeFromMountPath:o_path];
+    NSString *o_type = [VLCOpen getVolumeTypeFromMountPath:o_path];
     NSImage *o_image = [[NSWorkspace sharedWorkspace] iconForFile: o_path];
     NSString *o_device_path;
 
@@ -1020,7 +1020,7 @@ out:
         [o_type isEqualToString: kVLCMediaUnknown])
         o_device_path = o_path;
     else
-        o_device_path = [self getBSDNodeFromMountPath:o_path];
+        o_device_path = [VLCOpen getBSDNodeFromMountPath:o_path];
 
     return [NSDictionary dictionaryWithObjectsAndKeys: o_path, @"path",
                                                 o_device_path, @"devicePath",
