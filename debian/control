@@ -257,6 +257,7 @@ Depends: fluid-soundfont-gm | musescore-soundfont-gm,
          vlc-nox (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
+Enhances: vlc
 Description: FluidSynth plugin for VLC
  This plugin adds support for playing MIDI file via the FluidSynth software
  synthesizer to the VLC media player.
@@ -268,6 +269,7 @@ Description: FluidSynth plugin for VLC
 Package: vlc-plugin-jack
 Architecture: any
 Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Enhances: vlc
 Description: Jack audio plugins for VLC
  These plugins add support for JACK to the VLC media player. To
  activate the audio output module, use the `--aout jack' flag or
@@ -283,6 +285,7 @@ Architecture: any
 Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
 Breaks: vlc-nox (<< 1.1.2)
 Replaces: vlc-nox (<< 1.1.2)
+Enhances: vlc
 Description: LibNotify plugin for VLC
  This plugin adds support for libnotify track change notification to the
  VLC media player.
@@ -294,6 +297,7 @@ Description: LibNotify plugin for VLC
 Package: vlc-plugin-sdl
 Architecture: any
 Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Enhances: vlc
 Description: SDL video and audio output plugin for VLC
  This plugin adds support for the Simple DirectMedia Layer library to
  the VLC media player. To activate it, use the `--vout sdl' or
@@ -307,6 +311,7 @@ Description: SDL video and audio output plugin for VLC
 Package: vlc-plugin-svg
 Architecture: any
 Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Enhances: vlc
 Description: SVG plugin for VLC
  This plugin allows you to render SVG graphics on top of the video. It is a text
  renderer, and must be activated through the '--text-renderer svg' option. When
@@ -320,6 +325,7 @@ Description: SVG plugin for VLC
 Package: vlc-plugin-zvbi
 Architecture: any
 Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Enhances: vlc
 Description: VBI teletext plugin for VLC
  This plugin adds support for VBI teletext to the VLC media player.
  .
@@ -332,6 +338,7 @@ Architecture: any
 Breaks: vlc-nox (<< 2.2.0~pre2-2~)
 Replaces: vlc-nox (<< 2.2.0~pre2-2~)
 Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Enhances: vlc
 Description: Samba plugin for VLC
  This plugin adds support to access Samba shares from the VLC media player.
  .
