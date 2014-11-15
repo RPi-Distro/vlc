@@ -2,7 +2,7 @@
  * vlc_text_style.h: text_style_t definition and helpers.
  *****************************************************************************
  * Copyright (C) 1999-2010 VLC authors and VideoLAN
- * $Id: 531411ae607308ad632cd90c63bd70756ebb51df $
+ * $Id: 51677243e472c3e7712f1a0b168a647433f7470b $
  *
  * Authors: Derk-Jan Hartman <hartman _AT_ videolan _DOT_ org>
  *          basOS G <noxelia 4t gmail , com>
@@ -39,10 +39,11 @@ extern "C" {
 typedef struct
 {
     char *     psz_fontname;      /**< The name of the font */
+    char *     psz_monofontname;  /**< The name of the mono font */
     int        i_font_size;       /**< The font size in pixels */
     int        i_font_color;      /**< The color of the text 0xRRGGBB
                                        (native endianness) */
-    int        i_font_alpha;      /**< The transparency of the text.
+    unsigned   i_font_alpha;      /**< The transparency of the text.
                                        0x00 is fully opaque,
                                        0xFF fully transparent */
     int        i_style_flags;     /**< Formatting style flags */
@@ -75,6 +76,8 @@ typedef struct
 #define STYLE_BACKGROUND  16
 #define STYLE_UNDERLINE   32
 #define STYLE_STRIKEOUT   64
+
+#define STYLE_DEFAULT_FONT_SIZE 22
 
 /**
  * Create a default text style

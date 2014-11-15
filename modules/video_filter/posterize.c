@@ -1,24 +1,24 @@
 /*****************************************************************************
  * posterize.c : Posterize video plugin for vlc
  *****************************************************************************
- * Copyright (C) 2010 the VideoLAN team
- * $Id: f0f3a1f288cc1c7c8a6526ba95ca953ef3b2fea0 $
+ * Copyright (C) 2010 VLC authors and VideoLAN
+ * $Id: 4f80ff2a53336271b7e6a64f1a744023eb89a6d0 $
  *
  * Authors: Branko Kokanovic <branko.kokanovic@gmail.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -29,10 +29,11 @@
 # include "config.h"
 #endif
 
+#include <assert.h>
+
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-
-#include <assert.h>
+#include <vlc_atomic.h>
 #include <vlc_filter.h>
 #include "filter_picture.h"
 
@@ -86,8 +87,7 @@ static int FilterCallback( vlc_object_t *, char const *,
  *****************************************************************************/
 struct filter_sys_t
 {
-    int i_level;
-    vlc_mutex_t lock;
+    atomic_int i_level;
 };
 
 /*****************************************************************************
@@ -129,11 +129,10 @@ static int Create( vlc_object_t *p_this )
 
     config_ChainParse( p_filter, CFG_PREFIX, ppsz_filter_options,
                        p_filter->p_cfg );
-    p_sys->i_level = var_CreateGetIntegerCommand( p_filter, CFG_PREFIX "level" );
+    atomic_init( &p_sys->i_level,
+                 var_CreateGetIntegerCommand( p_filter, CFG_PREFIX "level" ) );
 
-    vlc_mutex_init( &p_sys->lock );
-
-    var_AddCallback( p_filter, CFG_PREFIX "level", FilterCallback, NULL );
+    var_AddCallback( p_filter, CFG_PREFIX "level", FilterCallback, p_sys );
 
     p_filter->pf_video_filter = Filter;
 
@@ -148,11 +147,10 @@ static int Create( vlc_object_t *p_this )
 static void Destroy( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
+    filter_sys_t *p_sys = p_filter->p_sys;
 
-    var_DelCallback( p_filter, CFG_PREFIX "level", FilterCallback, NULL );
-
-    vlc_mutex_destroy( &p_filter->p_sys->lock );
-    free( p_filter->p_sys );
+    var_DelCallback( p_filter, CFG_PREFIX "level", FilterCallback, p_sys );
+    free( p_sys );
 }
 
 /*****************************************************************************
@@ -165,14 +163,11 @@ static void Destroy( vlc_object_t *p_this )
 static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
 {
     picture_t *p_outpic;
-    int level;
 
     if( !p_pic ) return NULL;
 
     filter_sys_t *p_sys = p_filter->p_sys;
-    vlc_mutex_lock( &p_sys->lock );
-    level = p_sys->i_level;
-    vlc_mutex_unlock( &p_sys->lock );
+    int level = atomic_load( &p_sys->i_level );
 
     p_outpic = filter_NewPicture( p_filter );
     if( !p_outpic )
@@ -442,16 +437,11 @@ static void YuvPosterization( uint8_t* posterized_y1, uint8_t* posterized_y2,
 static int FilterCallback ( vlc_object_t *p_this, char const *psz_var,
                             vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
-    (void)oldval;    (void)p_data;
-    filter_t *p_filter = (filter_t*)p_this;
-    filter_sys_t *p_sys = p_filter->p_sys;
+    (void)p_this; (void)oldval;
+    filter_sys_t *p_sys = p_data;
 
     if( !strcmp( psz_var, CFG_PREFIX "level" ) )
-    {
-        vlc_mutex_lock( &p_sys->lock );
-        p_sys->i_level = newval.i_int;
-        vlc_mutex_unlock( &p_sys->lock );
-    }
+        atomic_store( &p_sys->i_level, newval.i_int );
 
     return VLC_SUCCESS;
 }

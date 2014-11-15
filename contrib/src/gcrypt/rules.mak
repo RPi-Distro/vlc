@@ -1,5 +1,5 @@
 # GCRYPT
-GCRYPT_VERSION := 1.5.1
+GCRYPT_VERSION := 1.6.2
 GCRYPT_URL := ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-$(GCRYPT_VERSION).tar.bz2
 
 PKGS += gcrypt
@@ -11,24 +11,39 @@ $(TARBALLS)/libgcrypt-$(GCRYPT_VERSION).tar.bz2:
 
 libgcrypt: libgcrypt-$(GCRYPT_VERSION).tar.bz2 .sum-gcrypt
 	$(UNPACK)
+	$(APPLY) $(SRC)/gcrypt/fix-amd64-assembly-on-solaris.patch
+	$(APPLY) $(SRC)/gcrypt/0001-Fix-assembly-division-check.patch
 	$(MOVE)
 
 DEPS_gcrypt = gpg-error
 
-CONFIGURE_OPTS =
+GCRYPT_CONF = \
+	--enable-ciphers=aes,des,rfc2268,arcfour \
+	--enable-digests=sha1,md5,rmd160,sha256,sha512 \
+	--enable-pubkey-ciphers=dsa,rsa,ecc
 ifdef HAVE_WIN64
-CONFIGURE_OPTS += --disable-asm
+GCRYPT_CONF += --disable-asm
+endif
+ifdef HAVE_IOS
+GCRYPT_EXTRA_CFLAGS = -fheinous-gnu-extensions
+else
+GCRYPT_EXTRA_CFLAGS =
 endif
 ifdef HAVE_MACOSX
-CONFIGURE_OPTS += --disable-aesni-support
+GCRYPT_CONF += --disable-aesni-support
+else
+ifdef HAVE_BSD
+GCRYPT_CONF += --disable-asm --disable-aesni-support
+endif
+endif
+ifdef HAVE_ANDROID
+ifeq ($(ANDROID_ABI), x86)
+GCRYPT_CONF += ac_cv_sys_symbol_underscore=no
+endif
 endif
 
 .gcrypt: libgcrypt
-	#$(RECONF)
-	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) \
-		--enable-ciphers=aes,des,rfc2268,arcfour \
-		--enable-digests=sha1,md5,rmd160,sha256,sha512 \
-		--enable-pubkey-ciphers=dsa,rsa,ecc \
-		$(CONFIGURE_OPTS)
+	$(RECONF)
+	cd $< && $(HOSTVARS) CFLAGS="$(CFLAGS) $(GCRYPT_EXTRA_CFLAGS)" ./configure $(HOSTCONF) $(GCRYPT_CONF)
 	cd $< && $(MAKE) install
 	touch $@

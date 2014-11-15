@@ -2,7 +2,7 @@
  * url.c: Test for url encoding/decoding stuff
  *****************************************************************************
  * Copyright (C) 2006 Rémi Denis-Courmont
- * $Id: ed6129206c9b354821e0a871b867c51165ac444c $
+ * $Id: 6c263832902e2ef1fe9e8fa3d38707bad9775826 $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -70,7 +70,7 @@ static inline void test_b64 (const char *in, const char *out)
 
 static char *make_URI_def (const char *in)
 {
-    return make_URI (in, NULL);
+    return vlc_path2uri (in, NULL);
 }
 
 static inline void test_path (const char *in, const char *out)
@@ -101,8 +101,8 @@ int main (void)
     test_decode ("%7E", "~");
 
     /* tests with invalid input */
-    test_decode ("%", "%");
-    test_decode ("%2", "%2");
+    test_decode ("%", NULL);
+    test_decode ("%2", NULL);
     test_decode ("%0000", "");
 
     /* Non-ASCII tests */
@@ -119,9 +119,6 @@ int main (void)
     test_b64 ("foobar", "Zm9vYmFy");
 
     /* Path test */
-    test_path ("file:///", "file:///");
-    test_path ("http://www.example.com/%7Ejohn/",
-               "http://www.example.com/%7Ejohn/");
     test_path ("/", "file:///");
     test_path ("/home/john/", "file:///home/john/");
     test_path ("/home/john//too///many//slashes",

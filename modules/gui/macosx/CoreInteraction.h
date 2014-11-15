@@ -1,8 +1,8 @@
 /*****************************************************************************
  * CoreInteraction.h: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: abe0d86d80c9fd67241b62254924aede9d52474c $
+ * Copyright (C) 2011-2014 Felix Paul Kühne
+ * $Id: d2abdb56b9d7e62fceac6d054af50fe30750f11e $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -27,26 +27,29 @@
 
 @interface VLCCoreInteraction : NSObject {
     int i_currentPlaybackRate;
+    mtime_t timeA, timeB;
+
+    float f_maxVolume;
 }
 + (VLCCoreInteraction *)sharedInstance;
+@property (readwrite) int volume;
+@property (readonly, nonatomic) float maxVolume;
+@property (readwrite) int playbackRate;
+@property (nonatomic, readwrite) BOOL aspectRatioIsLocked;
+@property (readonly) int durationOfCurrentPlaylistItem;
+@property (readonly) NSURL * URLOfCurrentPlaylistItem;
+@property (readonly) NSString * nameOfCurrentPlaylistItem;
+@property (nonatomic, readwrite) BOOL mute;
 
-- (void)play;
+- (void)playOrPause;
 - (void)pause;
 - (void)stop;
 - (void)faster;
 - (void)slower;
 - (void)normalSpeed;
 - (void)toggleRecord;
-- (void)setPlaybackRate:(int)i_value;
-- (int)playbackRate;
 - (void)next;
 - (void)previous;
-- (BOOL)isPlaying;
-- (int)currentTime;
-- (void)setCurrentTime:(int)i_value;
-- (int)durationOfCurrentPlaylistItem;
-- (NSURL*)URLOfCurrentPlaylistItem;
-- (NSString*)nameOfCurrentPlaylistItem;
 - (void)forward;        //LEGACY SUPPORT
 - (void)backward;       //LEGACY SUPPORT
 - (void)forwardExtraShort;
@@ -62,19 +65,24 @@
 - (void)repeatAll;
 - (void)repeatOff;
 - (void)shuffle;
+- (void)setAtoB;
+- (void)resetAtoB;
+- (void)updateAtoB;
 
 - (void)volumeUp;
 - (void)volumeDown;
-- (void)mute;
-- (BOOL)isMuted;
-- (int)volume;
-- (void)setVolume:(int)i_value;
+- (void)toggleMute;
 
+- (void)addSubtitlesToCurrentInput:(NSArray *)paths;
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender;
 
-- (void)setAspectRatioLocked:(BOOL)b_value;
-- (BOOL)aspectRatioIsLocked;
 - (void)toggleFullscreen;
 
 - (BOOL)fixPreferences;
+
+- (void)setVideoFilter: (const char *)psz_name on:(BOOL)b_on;
+- (void)setVideoFilterProperty: (const char *)psz_name forFilter: (const char *)psz_filter integer: (int)i_value;
+- (void)setVideoFilterProperty: (const char *)psz_name forFilter: (const char *)psz_filter float: (float)f_value;
+- (void)setVideoFilterProperty: (const char *)psz_name forFilter: (const char *)psz_filter string: (const char *)psz_value;
+- (void)setVideoFilterProperty: (const char *)psz_name forFilter: (const char *)psz_filter boolean: (BOOL)b_value;
 @end

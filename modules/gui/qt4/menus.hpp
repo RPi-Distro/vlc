@@ -2,7 +2,7 @@
  * menus.hpp : Menus handling
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 3ccee3b9481037d85a6731543f1b759dc7b22165 $
+ * $Id: 479f993da8c09f698e918de3469e8357c20edcc1 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -99,12 +99,15 @@ public:
     };
     Q_DECLARE_FLAGS(actionflags, actionflag)
 
+    static QMenu *ppMenu;
+
 private:
     /* All main Menus */
     static QMenu *FileMenu( intf_thread_t *, QWidget *, MainInterface * mi = NULL );
 
-    static QMenu *ToolsMenu( QMenu * );
-    static QMenu *ToolsMenu( QWidget *parent ) { return ToolsMenu( new QMenu( parent ) ); }
+    static QMenu *ToolsMenu( intf_thread_t *, QMenu * );
+    static QMenu *ToolsMenu( intf_thread_t * p_intf, QWidget *parent )
+        { return ToolsMenu( p_intf, new QMenu( parent ) ); }
 
     static QMenu *ViewMenu( intf_thread_t *, QMenu *, MainInterface * mi = NULL );
 
@@ -117,11 +120,14 @@ private:
     }
     static QMenu *RebuildNavigMenu( intf_thread_t *, QMenu *, bool b_keep = false );
 
-    static QMenu *VideoMenu( intf_thread_t *, QMenu *, bool b_subtitle = true );
+    static QMenu *VideoMenu( intf_thread_t *, QMenu * );
     static QMenu *VideoMenu( intf_thread_t *p_intf, QWidget *parent ) {
         return VideoMenu( p_intf, new QMenu( parent ) );
     }
-    static QMenu *SubtitleMenu( QMenu *current);
+    static QMenu *SubtitleMenu( intf_thread_t *, QMenu *current, bool b_popup = false );
+    static QMenu *SubtitleMenu( intf_thread_t *p_intf, QWidget *parent) {
+        return SubtitleMenu( p_intf, new QMenu( parent ) );
+    }
 
     static QMenu *AudioMenu( intf_thread_t *, QMenu * );
     static QMenu *AudioMenu( intf_thread_t *p_intf, QWidget *parent ) {
@@ -129,6 +135,7 @@ private:
     }
 
     static QMenu *HelpMenu( QWidget * );
+    static QMenu *PPMenu( intf_thread_t *p_intf );
 
     /* Popups Menus */
     static void PopupMenuStaticEntries( QMenu *menu );
@@ -150,7 +157,9 @@ private:
     static void EnableStaticEntries( QMenu *, bool );
 
     /* recentMRL menu */
-    static QMenu *recentsMenu;
+    static QMenu *recentsMenu, *audioDeviceMenu;
+
+    static void updateAudioDevice( intf_thread_t *, audio_output_t *, QMenu* );
 
 public slots:
     static void updateRecents( intf_thread_t * );
@@ -173,6 +182,7 @@ public:
             case 2: VLCMenuBar::VideoMenu( p_intf, menu ); break;
             case 3: VLCMenuBar::RebuildNavigMenu( p_intf, menu ); break;
             case 4: VLCMenuBar::ViewMenu( p_intf, menu ); break;
+            case 5: VLCMenuBar::SubtitleMenu( p_intf, menu ); break;
         }
     }
 private:

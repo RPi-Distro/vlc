@@ -1,8 +1,8 @@
 /*****************************************************************************
- * main_interface.cpp : Main interface
+ * main_interface_win32.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: 61aeb9da93ea0b25efca17d9e6d877e633ca142c $
+ * $Id: c16293aaf0e5ddbaaa09dafd5e670d10fcfabfca $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -26,9 +26,17 @@
 
 #include "input_manager.hpp"
 #include "actions_manager.hpp"
+#include "dialogs_provider.hpp"
+#include "components/interface_widgets.hpp"
 
 #include <QBitmap>
 #include <vlc_windows_interfaces.h>
+
+#if defined(_WIN32) && HAS_QT5
+# include <QWindow>
+# include <qpa/qplatformnativeinterface.h>
+#endif
+
 
 #define WM_APPCOMMAND 0x0319
 
@@ -48,6 +56,8 @@
 #define APPCOMMAND_MICROPHONE_VOLUME_MUTE 24
 #define APPCOMMAND_MICROPHONE_VOLUME_DOWN 25
 #define APPCOMMAND_MICROPHONE_VOLUME_UP   26
+#define APPCOMMAND_HELP                   27
+#define APPCOMMAND_OPEN                   30
 #define APPCOMMAND_DICTATE_OR_COMMAND_CONTROL_TOGGLE    43
 #define APPCOMMAND_MIC_ON_OFF_TOGGLE      44
 #define APPCOMMAND_MEDIA_PLAY             46
@@ -69,6 +79,35 @@
 #define GET_FLAGS_LPARAM(lParam)      (LOWORD(lParam))
 #define GET_KEYSTATE_LPARAM(lParam)   GET_FLAGS_LPARAM(lParam)
 
+HWND MainInterface::WinId( QWidget *w )
+{
+#if HAS_QT5
+    if( w && w->windowHandle() )
+        return static_cast<HWND>(QGuiApplication::platformNativeInterface()->
+            nativeResourceForWindow("handle", w->windowHandle()));
+    else
+        return 0;
+#else
+    return winId();
+#endif
+}
+
+#if defined(_WIN32) && !HAS_QT5
+static const int PremultipliedAlpha = QPixmap::PremultipliedAlpha;
+static HBITMAP qt_pixmapToWinHBITMAP(const QPixmap &p, int hbitmapFormat = 0)
+{
+    return p.toWinHBITMAP((enum QBitmap::HBitmapFormat)hbitmapFormat);
+}
+#else
+Q_GUI_EXPORT HBITMAP qt_pixmapToWinHBITMAP(const QPixmap &p, int hbitmapFormat = 0);
+enum HBitmapFormat
+{
+    NoAlpha,
+    PremultipliedAlpha,
+    Alpha
+};
+#endif
+
 void MainInterface::createTaskBarButtons()
 {
     /*Here is the code for the taskbar thumb buttons
@@ -76,7 +115,7 @@ void MainInterface::createTaskBarButtons()
     FIXME:the play button's picture doesn't changed to pause when clicked
     */
 
-    CoInitialize( 0 );
+    CoInitializeEx( NULL, COINIT_MULTITHREADED );
 
     if( S_OK == CoCreateInstance( CLSID_TaskbarList,
                 NULL, CLSCTX_INPROC_SERVER,
@@ -85,8 +124,8 @@ void MainInterface::createTaskBarButtons()
     {
         p_taskbl->HrInit();
 
-        if( (himl = ImageList_Create( 20, //cx
-                        20, //cy
+        if( (himl = ImageList_Create( 16, //cx
+                        16, //cy
                         ILC_COLOR32,//flags
                         4,//initial nb of images
                         0//nb of images that can be added
@@ -101,14 +140,14 @@ void MainInterface::createTaskBarButtons()
             QBitmap mask3 = img3.createMaskFromColor(Qt::transparent);
             QBitmap mask4 = img4.createMaskFromColor(Qt::transparent);
 
-            if(-1 == ImageList_Add(himl, img.toWinHBITMAP(QPixmap::PremultipliedAlpha),mask.toWinHBITMAP()))
-                msg_Err( p_intf, "ImageList_Add failed" );
-            if(-1 == ImageList_Add(himl, img2.toWinHBITMAP(QPixmap::PremultipliedAlpha),mask2.toWinHBITMAP()))
-                msg_Err( p_intf, "ImageList_Add failed" );
-            if(-1 == ImageList_Add(himl, img3.toWinHBITMAP(QPixmap::PremultipliedAlpha),mask3.toWinHBITMAP()))
-                msg_Err( p_intf, "ImageList_Add failed" );
-            if(-1 == ImageList_Add(himl, img4.toWinHBITMAP(QPixmap::PremultipliedAlpha),mask4.toWinHBITMAP()))
-                msg_Err( p_intf, "ImageList_Add failed" );
+            if(-1 == ImageList_Add(himl, qt_pixmapToWinHBITMAP(img, PremultipliedAlpha), qt_pixmapToWinHBITMAP(mask)))
+                msg_Err( p_intf, "First ImageList_Add failed" );
+            if(-1 == ImageList_Add(himl, qt_pixmapToWinHBITMAP(img2, PremultipliedAlpha), qt_pixmapToWinHBITMAP(mask2)))
+                msg_Err( p_intf, "Second ImageList_Add failed" );
+            if(-1 == ImageList_Add(himl, qt_pixmapToWinHBITMAP(img3, PremultipliedAlpha), qt_pixmapToWinHBITMAP(mask3)))
+                msg_Err( p_intf, "Third ImageList_Add failed" );
+            if(-1 == ImageList_Add(himl, qt_pixmapToWinHBITMAP(img4, PremultipliedAlpha), qt_pixmapToWinHBITMAP(mask4)))
+                msg_Err( p_intf, "Fourth ImageList_Add failed" );
         }
 
         // Define an array of two buttons. These buttons provide images through an
@@ -131,12 +170,12 @@ void MainInterface::createTaskBarButtons()
         thbButtons[2].iBitmap = 3;
         thbButtons[2].dwFlags = THBF_HIDDEN;
 
-        HRESULT hr = p_taskbl->ThumbBarSetImageList(winId(), himl );
+        HRESULT hr = p_taskbl->ThumbBarSetImageList(WinId(this), himl );
         if(S_OK != hr)
             msg_Err( p_intf, "ThumbBarSetImageList failed with error %08lx", hr );
         else
         {
-            hr = p_taskbl->ThumbBarAddButtons(winId(), 3, thbButtons);
+            hr = p_taskbl->ThumbBarAddButtons(WinId(this), 3, thbButtons);
             if(S_OK != hr)
                 msg_Err( p_intf, "ThumbBarAddButtons failed with error %08lx", hr );
         }
@@ -225,6 +264,18 @@ bool MainInterface::winEvent ( MSG * msg, long * result )
                 case APPCOMMAND_VOLUME_MUTE:
                     THEAM->toggleMuteAudio();
                     break;
+                case APPCOMMAND_MEDIA_FAST_FORWARD:
+                    THEMIM->getIM()->faster();
+                    break;
+                case APPCOMMAND_MEDIA_REWIND:
+                    THEMIM->getIM()->slower();
+                    break;
+                case APPCOMMAND_HELP:
+                    THEDP->mediaInfoDialog();
+                    break;
+                case APPCOMMAND_OPEN:
+                    THEDP->simpleOpenDialog();
+                    break;
                 default:
                      msg_Dbg( p_intf, "unknown APPCOMMAND = %d", cmd);
                      *result = FALSE;
@@ -284,7 +335,13 @@ void MainInterface::changeThumbbarButtons( int i_status )
         default:
             return;
     }
-    HRESULT hr =  p_taskbl->ThumbBarUpdateButtons(this->winId(), 3, thbButtons);
+
+    HRESULT hr;
+    if( videoWidget && THEMIM->getIM()->hasVideo() )
+        hr =  p_taskbl->ThumbBarUpdateButtons(WinId(videoWidget), 3, thbButtons);
+    else
+        hr =  p_taskbl->ThumbBarUpdateButtons(WinId(this), 3, thbButtons);
+
     if(S_OK != hr)
         msg_Err( p_intf, "ThumbBarUpdateButtons failed with error %08lx", hr );
 }

@@ -2,7 +2,7 @@
  * vlc_arrays.h : Arrays and data structures handling
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 6643197707faf62a22b3ab4313676e8e40cf8355 $
+ * $Id: 91f540533b3144f00d1e74bd47dc34cf69598276 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -40,16 +40,11 @@ static inline void *realloc_down( void *ptr, size_t size )
 /**
  * Simple dynamic array handling. Array is realloced at each insert/removal
  */
-#if defined( _MSC_VER ) && _MSC_VER < 1300 && !defined( UNDER_CE )
-#   define VLCCVP (void**) /* Work-around for broken compiler */
-#else
-#   define VLCCVP
-#endif
 #define INSERT_ELEM( p_ar, i_oldsize, i_pos, elem )                           \
     do                                                                        \
     {                                                                         \
         if( !(i_oldsize) ) (p_ar) = NULL;                                       \
-        (p_ar) = VLCCVP realloc( p_ar, ((i_oldsize) + 1) * sizeof(*(p_ar)) ); \
+        (p_ar) = realloc( p_ar, ((i_oldsize) + 1) * sizeof(*(p_ar)) ); \
         if( !(p_ar) ) abort();                                                \
         if( (i_oldsize) - (i_pos) )                                           \
         {                                                                     \
@@ -97,9 +92,9 @@ static inline void *realloc_down( void *ptr, size_t size )
 #define TAB_APPEND_CAST( cast, count, tab, p )             \
   do {                                          \
     if( (count) > 0 )                           \
-        (tab) = cast realloc( tab, sizeof( void ** ) * ( (count) + 1 ) ); \
+        (tab) = cast realloc( tab, sizeof( *(tab) ) * ( (count) + 1 ) ); \
     else                                        \
-        (tab) = cast malloc( sizeof( void ** ) );    \
+        (tab) = cast malloc( sizeof( *(tab) ) );    \
     if( !(tab) ) abort();                       \
     (tab)[count] = (p);                         \
     (count)++;                                  \
@@ -108,15 +103,13 @@ static inline void *realloc_down( void *ptr, size_t size )
 #define TAB_APPEND( count, tab, p )             \
     TAB_APPEND_CAST( , count, tab, p )
 
-#define TAB_FIND( count, tab, p, index )        \
+#define TAB_FIND( count, tab, p, idx )          \
   do {                                          \
-    (index) = -1;                               \
-    for( int i = 0; i < (count); i++ )          \
-        if( (tab)[i] == (p) )                   \
-        {                                       \
-            (index) = i;                        \
+    for( (idx) = 0; (idx) < (count); (idx)++ )  \
+        if( (tab)[(idx)] == (p) )               \
             break;                              \
-        }                                       \
+    if( (idx) >= (count) )                      \
+        (idx) = -1;                             \
   } while(0)
 
 
@@ -130,7 +123,7 @@ static inline void *realloc_down( void *ptr, size_t size )
             {                                   \
                 memmove( ((void**)(tab) + i_index),    \
                          ((void**)(tab) + i_index+1),  \
-                         ( (count) - i_index - 1 ) * sizeof( void* ) );\
+                         ( (count) - i_index - 1 ) * sizeof( *(tab) ) );\
             }                                   \
             (count)--;                          \
             if( (count) == 0 )                  \
@@ -143,9 +136,9 @@ static inline void *realloc_down( void *ptr, size_t size )
 
 #define TAB_INSERT_CAST( cast, count, tab, p, index ) do { \
     if( (count) > 0 )                           \
-        (tab) = cast realloc( tab, sizeof( void ** ) * ( (count) + 1 ) ); \
+        (tab) = cast realloc( tab, sizeof( *(tab) ) * ( (count) + 1 ) ); \
     else                                        \
-        (tab) = cast malloc( sizeof( void ** ) );       \
+        (tab) = cast malloc( sizeof( *(tab) ) );       \
     if( !(tab) ) abort();                       \
     if( (count) - (index) > 0 )                 \
         memmove( (void**)(tab) + (index) + 1,   \
@@ -193,8 +186,8 @@ static inline void *realloc_down( void *ptr, size_t size )
 /* Internal functions */
 #define _ARRAY_ALLOC(array, newsize) {                                      \
     (array).i_alloc = newsize;                                              \
-    (array).p_elems = VLCCVP realloc( (array).p_elems, (array).i_alloc *    \
-                                    sizeof(*(array).p_elems) );             \
+    (array).p_elems = realloc( (array).p_elems, (array).i_alloc *           \
+                               sizeof(*(array).p_elems) );                  \
     if( !(array).p_elems ) abort();                                         \
 }
 
@@ -507,6 +500,8 @@ vlc_dictionary_all_keys( const vlc_dictionary_t * p_dict )
     int i, count = vlc_dictionary_keys_count( p_dict );
 
     ppsz_ret = (char**)malloc(sizeof(char *) * (count + 1));
+    if( unlikely(!ppsz_ret) )
+        return NULL;
 
     count = 0;
     for( i = 0; i < p_dict->i_size; i++ )

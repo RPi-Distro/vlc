@@ -2,7 +2,7 @@
  * volume.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 874085f7521974c995ba79fb4dc25099da29887c $
+ * $Id: e4a1d942deff3e5b0dc7b885a1a232cfaa5b022c $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -37,19 +37,19 @@ public:
     Volume( intf_thread_t *pIntf );
     virtual ~Volume() { }
 
-    virtual void set( float percentage, bool updateVLC = true );
-    virtual void set( int volume, bool updateVLC = true);
-
+    virtual void set( float percentage, bool updateVLC );
     virtual void set( float percentage ) { set( percentage, true ); }
+
+    virtual float getVolume() const;
+    virtual void setVolume( float volume, bool updateVLC );
 
     virtual float getStep() const { return m_step; }
 
     virtual string getAsStringPercent() const;
 
 private:
+    // preferred volume step on [0., 1.]
     float m_step;
-    int m_max;
-    int m_volumeMax;
 };
 
 

@@ -1,22 +1,22 @@
 /*****************************************************************************
- * Copyright (C) 2003, 2004 Rocky Bernstein (for the VideoLAN team)
- * $Id: e7f38f81ff468dcde1a121091160eec8c02d5890 $
+ * Copyright (C) 2003, 2004 Rocky Bernstein (for VLC authors and VideoLAN)
+ * $Id: 122060e8a5ad358d43d4d0886885d8ec78fbc74e $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /* VCD Player header. More or less media-player independent. Or at least
@@ -147,6 +147,8 @@ typedef struct vcdplayer_input_s
   vcdplayer_play_item_info_t *entry;
 
   unsigned int i_titles;                /* # of navigatable titles. */
+  unsigned int i_cur_title;
+  unsigned int i_cur_chapter;
 
   /*
      # tracks + menu for segments + menu for LIDs
@@ -160,6 +162,7 @@ typedef struct vcdplayer_input_s
   bool           b_track_length; /* Use track as max unit in seek */
   input_thread_t *p_input;
   access_t       *p_access;
+  uint64_t       size;
  
 } vcdplayer_t;
 

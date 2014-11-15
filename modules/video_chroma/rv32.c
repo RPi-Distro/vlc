@@ -1,24 +1,24 @@
 /*****************************************************************************
  * rv32.c: conversion plugin to RV32 format.
  *****************************************************************************
- * Copyright (C) 2005 the VideoLAN team
- * $Id: 5bb8e67ebdc699af522f2e921cce7c16955fd684 $
+ * Copyright (C) 2005 VLC authors and VideoLAN
+ * $Id: e74fa8d5278cad6452a3f608dbd058cc060679c3 $
  *
  * Author: Cyril Deguet <asmax@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -63,7 +63,8 @@ static int OpenFilter( vlc_object_t *p_this )
     }
 
     if( p_filter->fmt_in.video.i_width != p_filter->fmt_out.video.i_width
-     || p_filter->fmt_in.video.i_height != p_filter->fmt_out.video.i_height )
+     || p_filter->fmt_in.video.i_height != p_filter->fmt_out.video.i_height
+     || p_filter->fmt_in.video.orientation != p_filter->fmt_out.video.orientation)
         return -1;
 
     p_filter->pf_video_filter = Filter;

@@ -1,8 +1,8 @@
 /*****************************************************************************
- * GotoTime.hpp : GotoTime dialogs
+ * convert.hpp : GotoTime dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: b23ae208a7725cebd79c075c66c13cedc3e0b309 $
+ * $Id: c2b6a380efc71947ca84ee4fbabd494520d8cc92 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -28,6 +28,8 @@
 
 class QLineEdit;
 class QCheckBox;
+class QRadioButton;
+class QPushButton;
 class VLCProfileSelector;
 
 class ConvertDialog : public QVLCDialog
@@ -42,14 +44,17 @@ public:
 private:
     QLineEdit *fileLine;
 
-    QCheckBox *displayBox, *deinterBox, *dumpBox;
+    QCheckBox *displayBox, *deinterBox;
+    QRadioButton *dumpRadio;
+    QPushButton *okButton;
     VLCProfileSelector *profile;
     QString mrl;
 private slots:
     virtual void close();
     virtual void cancel();
     void fileBrowse();
-    void dumpChecked(bool);
+    void setDestinationFileExtension();
+    void validate();
 };
 
 #endif

@@ -23,14 +23,16 @@
 #endif
 
 #include <sys/types.h>
-#ifdef WIN32
+#ifdef _WIN32
 # include <windows.h>
 #endif
 
 pid_t getpid (void)
 {
-#ifdef WIN32
+#if defined (_WIN32)
     return (pid_t) GetCurrentProcessId ();
+#elif defined (__native_client__)
+    return 1;
 #else
 # error Unimplemented!
 #endif

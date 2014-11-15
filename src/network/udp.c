@@ -4,7 +4,7 @@
  * Copyright (C) 2004-2006 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
  *
- * $Id: d88e18d6579e091e9fd29f4d00685aeb0753b97f $
+ * $Id: b2c8a501ad30bbf4197705cfa199ca31bd5e1566 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -38,13 +38,8 @@
 
 #include <vlc_network.h>
 
-#ifdef WIN32
-#   if defined(UNDER_CE)
-#       undef IP_MULTICAST_TTL
-#       define IP_MULTICAST_TTL 3
-#       undef IP_ADD_MEMBERSHIP
-#       define IP_ADD_MEMBERSHIP 5
-#   endif
+#ifdef _WIN32
+#   undef EAFNOSUPPORT
 #   define EAFNOSUPPORT WSAEAFNOSUPPORT
 #else
 #   include <unistd.h>
@@ -94,22 +89,14 @@ extern int net_Socket( vlc_object_t *p_this, int i_family, int i_socktype,
                        int i_protocol );
 
 /* */
-static int net_SetupDgramSocket( vlc_object_t *p_obj, int fd, const struct addrinfo *ptr )
+static int net_SetupDgramSocket (vlc_object_t *p_obj, int fd,
+                                 const struct addrinfo *ptr)
 {
 #ifdef SO_REUSEPORT
     setsockopt (fd, SOL_SOCKET, SO_REUSEPORT, &(int){ 1 }, sizeof (int));
 #endif
 
-#ifdef SO_RCVBUF
-    /* Increase the receive buffer size to 1/2MB (8Mb/s during 1/2s)
-     * to avoid packet loss caused in case of scheduling hiccups */
-    setsockopt (fd, SOL_SOCKET, SO_RCVBUF,
-                (void *)&(int){ 0x80000 }, sizeof (int));
-    setsockopt (fd, SOL_SOCKET, SO_SNDBUF,
-                (void *)&(int){ 0x80000 }, sizeof (int));
-#endif
-
-#if defined (WIN32) || defined (UNDER_CE)
+#if defined (_WIN32)
     if (net_SockAddrIsMulticast (ptr->ai_addr, ptr->ai_addrlen)
      && (sizeof (struct sockaddr_storage) >= ptr->ai_addrlen))
     {
@@ -126,7 +113,7 @@ static int net_SetupDgramSocket( vlc_object_t *p_obj, int fd, const struct addri
 #endif
     if (bind (fd, ptr->ai_addr, ptr->ai_addrlen))
     {
-        msg_Err( p_obj, "socket bind error (%m)" );
+        msg_Err( p_obj, "socket bind error: %s", vlc_strerror_c(net_errno) );
         net_Close (fd);
         return -1;
     }
@@ -137,12 +124,11 @@ static int net_SetupDgramSocket( vlc_object_t *p_obj, int fd, const struct addri
 static int net_ListenSingle (vlc_object_t *obj, const char *host, int port,
                              int protocol)
 {
-    struct addrinfo hints, *res;
-
-    memset (&hints, 0, sizeof( hints ));
-    hints.ai_socktype = SOCK_DGRAM;
-    hints.ai_protocol = protocol;
-    hints.ai_flags = AI_PASSIVE;
+    struct addrinfo hints = {
+        .ai_socktype = SOCK_DGRAM,
+        .ai_protocol = protocol,
+        .ai_flags = AI_PASSIVE | AI_NUMERICSERV | AI_IDN,
+    }, *res;
 
     if (host && !*host)
         host = NULL;
@@ -150,7 +136,7 @@ static int net_ListenSingle (vlc_object_t *obj, const char *host, int port,
     msg_Dbg (obj, "net: opening %s datagram port %d",
              host ? host : "any", port);
 
-    int val = vlc_getaddrinfo (obj, host, port, &hints, &res);
+    int val = vlc_getaddrinfo (host, port, &hints, &res);
     if (val)
     {
         msg_Err (obj, "Cannot resolve %s port %d : %s", host, port,
@@ -166,7 +152,7 @@ static int net_ListenSingle (vlc_object_t *obj, const char *host, int port,
                              ptr->ai_protocol);
         if (fd == -1)
         {
-            msg_Dbg (obj, "socket error: %m");
+            msg_Dbg (obj, "socket error: %s", vlc_strerror_c(net_errno));
             continue;
         }
 
@@ -222,7 +208,7 @@ static int net_SetMcastHopLimit( vlc_object_t *p_this,
 
         default:
             errno = EAFNOSUPPORT;
-            msg_Warn( p_this, "%m" );
+            msg_Warn( p_this, "%s", vlc_strerror_c(EAFNOSUPPORT) );
             return VLC_EGENERIC;
     }
 
@@ -231,11 +217,13 @@ static int net_SetMcastHopLimit( vlc_object_t *p_this,
         /* BSD compatibility */
         unsigned char buf;
 
-        msg_Dbg( p_this, "cannot set hop limit (%d): %m", hlim );
+        msg_Dbg( p_this, "cannot set hop limit (%d): %s", hlim,
+                 vlc_strerror_c(net_errno) );
         buf = (unsigned char)(( hlim > 255 ) ? 255 : hlim);
         if( setsockopt( fd, proto, cmd, &buf, sizeof( buf ) ) )
         {
-            msg_Err( p_this, "cannot set hop limit (%d): %m", hlim );
+            msg_Err( p_this, "cannot set hop limit (%d): %s", hlim,
+                     vlc_strerror_c(net_errno) );
             return VLC_EGENERIC;
         }
     }
@@ -261,6 +249,7 @@ static int net_SetMcastOut (vlc_object_t *p_this, int fd, int family,
             if (setsockopt (fd, SOL_IPV6, IPV6_MULTICAST_IF,
                             &scope, sizeof (scope)) == 0)
                 return 0;
+            break;
 #endif
 
 #ifdef __linux__
@@ -270,12 +259,14 @@ static int net_SetMcastOut (vlc_object_t *p_this, int fd, int family,
             if (setsockopt (fd, SOL_IP, IP_MULTICAST_IF,
                             &req, sizeof (req)) == 0)
                 return 0;
+            break;
         }
 #endif
         default:
             errno = EAFNOSUPPORT;
     }
-    msg_Err (p_this, "cannot force multicast interface %s: %m", iface);
+    msg_Err (p_this, "cannot force multicast interface %s: %s", iface,
+             vlc_strerror_c(errno));
     return -1;
 }
 
@@ -303,7 +294,9 @@ net_SourceSubscribe (vlc_object_t *obj, int fd,
                      const struct sockaddr *src, socklen_t srclen,
                      const struct sockaddr *grp, socklen_t grplen)
 {
-#ifdef MCAST_JOIN_SOURCE_GROUP
+/* MCAST_JOIN_SOURCE_GROUP was introduced to OS X in v10.7, but it doesn't work,
+ * so ignore it to use the same code path as on 10.5 or 10.6 */
+#if defined (MCAST_JOIN_SOURCE_GROUP) && !defined (__APPLE__)
     /* Agnostic SSM multicast join */
     int level;
     struct group_source_req gsr;
@@ -372,7 +365,8 @@ net_SourceSubscribe (vlc_object_t *obj, int fd,
     }
 
 #endif
-    msg_Err (obj, "cannot join source multicast group: %m");
+    msg_Err (obj, "cannot join source multicast group: %s",
+             vlc_strerror_c(net_errno));
     msg_Warn (obj, "trying ASM instead of SSM...");
     return net_Subscribe (obj, fd, grp, grplen);
 }
@@ -456,7 +450,8 @@ int net_Subscribe (vlc_object_t *obj, int fd,
     }
 
 #endif
-    msg_Err (obj, "cannot join multicast group: %m");
+    msg_Err (obj, "cannot join multicast group: %s",
+             vlc_strerror_c(net_errno));
     return -1;
 }
 
@@ -503,39 +498,34 @@ static int net_SetDSCP( int fd, uint8_t dscp )
 int net_ConnectDgram( vlc_object_t *p_this, const char *psz_host, int i_port,
                       int i_hlim, int proto )
 {
-    struct addrinfo hints, *res, *ptr;
-    int             i_val, i_handle = -1;
+    struct addrinfo hints = {
+        .ai_socktype = SOCK_DGRAM,
+        .ai_protocol = proto,
+        .ai_flags = AI_NUMERICSERV | AI_IDN,
+    }, *res;
+    int       i_handle = -1;
     bool      b_unreach = false;
 
     if( i_hlim < 0 )
         i_hlim = var_InheritInteger( p_this, "ttl" );
 
-    memset( &hints, 0, sizeof( hints ) );
-    hints.ai_socktype = SOCK_DGRAM;
-    hints.ai_protocol = proto;
-
     msg_Dbg( p_this, "net: connecting to [%s]:%d", psz_host, i_port );
 
-    i_val = vlc_getaddrinfo( p_this, psz_host, i_port, &hints, &res );
-    if( i_val )
+    int val = vlc_getaddrinfo (psz_host, i_port, &hints, &res);
+    if (val)
     {
-        msg_Err( p_this, "cannot resolve [%s]:%d : %s", psz_host, i_port,
-                 gai_strerror( i_val ) );
+        msg_Err (p_this, "cannot resolve [%s]:%d : %s", psz_host, i_port,
+                 gai_strerror (val));
         return -1;
     }
 
-    for( ptr = res; ptr != NULL; ptr = ptr->ai_next )
+    for (struct addrinfo *ptr = res; ptr != NULL; ptr = ptr->ai_next)
     {
         char *str;
         int fd = net_Socket (p_this, ptr->ai_family, ptr->ai_socktype,
                              ptr->ai_protocol);
         if (fd == -1)
             continue;
-
-        /* Increase the receive buffer size to 1/2MB (8Mb/s during 1/2s)
-        * to avoid packet loss caused by scheduling problems */
-        setsockopt (fd, SOL_SOCKET, SO_RCVBUF, &(int){ 0x80000 }, sizeof (int));
-        setsockopt (fd, SOL_SOCKET, SO_SNDBUF, &(int){ 0x80000 }, sizeof (int));
 
         /* Allow broadcast sending */
         setsockopt (fd, SOL_SOCKET, SO_BROADCAST, &(int){ 1 }, sizeof (int));
@@ -559,18 +549,16 @@ int net_ConnectDgram( vlc_object_t *p_this, const char *psz_host, int i_port,
             break;
         }
 
-#if defined( WIN32 ) || defined( UNDER_CE )
+#if defined( _WIN32 )
         if( WSAGetLastError () == WSAENETUNREACH )
 #else
         if( errno == ENETUNREACH )
 #endif
             b_unreach = true;
         else
-        {
-            msg_Warn( p_this, "%s port %d : %m", psz_host, i_port);
-            net_Close( fd );
-            continue;
-        }
+            msg_Warn( p_this, "%s port %d : %s", psz_host, i_port,
+                      vlc_strerror_c(errno) );
+        net_Close( fd );
     }
 
     freeaddrinfo( res );
@@ -601,14 +589,13 @@ int net_OpenDgram( vlc_object_t *obj, const char *psz_bind, int i_bind,
     msg_Dbg (obj, "net: connecting to [%s]:%d from [%s]:%d",
              psz_server, i_server, psz_bind, i_bind);
 
-    struct addrinfo hints, *loc, *rem;
-    int val;
+    struct addrinfo hints = {
+        .ai_socktype = SOCK_DGRAM,
+        .ai_protocol = protocol,
+        .ai_flags = AI_NUMERICSERV | AI_IDN,
+    }, *loc, *rem;
 
-    memset (&hints, 0, sizeof (hints));
-    hints.ai_socktype = SOCK_DGRAM;
-    hints.ai_protocol = protocol;
-
-    val = vlc_getaddrinfo (obj, psz_server, i_server, &hints, &rem);
+    int val = vlc_getaddrinfo (psz_server, i_server, &hints, &rem);
     if (val)
     {
         msg_Err (obj, "cannot resolve %s port %d : %s", psz_bind, i_bind,
@@ -616,8 +603,8 @@ int net_OpenDgram( vlc_object_t *obj, const char *psz_bind, int i_bind,
         return -1;
     }
 
-    hints.ai_flags = AI_PASSIVE;
-    val = vlc_getaddrinfo (obj, psz_bind, i_bind, &hints, &loc);
+    hints.ai_flags |= AI_PASSIVE;
+    val = vlc_getaddrinfo (psz_bind, i_bind, &hints, &loc);
     if (val)
     {
         msg_Err (obj, "cannot resolve %s port %d : %s", psz_bind, i_bind,
@@ -651,8 +638,8 @@ int net_OpenDgram( vlc_object_t *obj, const char *psz_bind, int i_bind,
                                      ptr->ai_addr, ptr->ai_addrlen)
               : connect (fd, ptr2->ai_addr, ptr2->ai_addrlen))
             {
-                msg_Err (obj, "cannot connect to %s port %d: %m",
-                         psz_server, i_server);
+                msg_Err (obj, "cannot connect to %s port %d: %s",
+                         psz_server, i_server, vlc_strerror_c(net_errno));
                 continue;
             }
             val = fd;

@@ -1,5 +1,5 @@
 /*****************************************************************************
- * block.c: Test for block_t stuff
+ * block_test.c: Test for block_t stuff
  *****************************************************************************
  * Copyright (C) 2008 Rémi Denis-Courmont
  *
@@ -39,7 +39,7 @@ static void test_block_File (void)
     FILE *stream;
     int res;
 
-    stream = fopen ("testfile.txt", "wb+");
+    stream = fopen ("testfile.txt", "wb+e");
     assert (stream != NULL);
 
     res = fputs (text, stream);

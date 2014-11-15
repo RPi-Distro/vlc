@@ -24,6 +24,8 @@ class Mwindow : public QMainWindow {
                void play();
                void stop();
                void mute();
+               void about();
+               void fullscreen();
 
                int changeVolume(int);
                void changePosition(int);
@@ -33,19 +35,15 @@ class Mwindow : public QMainWindow {
                virtual void closeEvent(QCloseEvent*);
 
         private:
-               QString current;
                QPushButton *playBut;
-               QPushButton *stopBut;
-               QPushButton *muteBut;
                QSlider *volumeSlider;
                QSlider *slider;
                QWidget *videoWidget;
-               QWidget *centralWidget;
-               libvlc_instance_t *vlcObject;
+
+               libvlc_instance_t *vlcInstance;
                libvlc_media_player_t *vlcPlayer;
 
-               void initMenus();
-               void initComponents();
+               void initUI();
 };
 
 

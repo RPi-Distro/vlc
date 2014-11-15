@@ -4,7 +4,7 @@
  * interface, such as command line.
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: 1a60fa10dd40fe57dcdd032f4ec50f2917a80b4a $
+ * $Id: 4bc709a78c70c015a706ea2953b75d58730111c5 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -37,44 +37,44 @@
 # include "config.h"
 #endif
 
+#include <unistd.h>
 #include <assert.h>
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
 
 #include <vlc_common.h>
 #include <vlc_modules.h>
 #include <vlc_interface.h>
+#include <vlc_playlist.h>
 #include "libvlc.h"
+#include "playlist/playlist_internal.h"
+#include "../lib/libvlc_internal.h"
 
-/*****************************************************************************
- * Local prototypes
- *****************************************************************************/
-static void* RunInterface( void * );
-#if defined( __APPLE__)
-static void * MonitorLibVLCDeath( vlc_object_t *p_this );
-#endif
 static int AddIntfCallback( vlc_object_t *, char const *,
                             vlc_value_t , vlc_value_t , void * );
 
+/* This lock ensures that the playlist is created only once (per instance). It
+ * also protects the list of running interfaces against concurrent access,
+ * either to add or remove an interface.
+ *
+ * However, it does NOT protect from destruction of the playlist by
+ * intf_DestroyAll(). Instead, care must be taken that intf_Create() and any
+ * other function that depends on the playlist is only called BEFORE
+ * intf_DestroyAll() has the possibility to destroy all interfaces.
+ */
 static vlc_mutex_t lock = VLC_STATIC_MUTEX;
 
-#undef intf_Create
 /**
  * Create and start an interface.
  *
- * @param p_this the calling vlc_object_t
- * @param psz_module a preferred interface module
+ * @param playlist playlist and parent object for the interface
+ * @param chain configuration chain string
  * @return VLC_SUCCESS or an error code
  */
-int intf_Create( vlc_object_t *p_this, const char *psz_module )
+int intf_Create( playlist_t *playlist, const char *chain )
 {
-    libvlc_int_t *p_libvlc = p_this->p_libvlc;
-    intf_thread_t * p_intf;
-
     /* Allocate structure */
-    p_intf = vlc_custom_create( p_libvlc, sizeof( *p_intf ), "interface" );
-    if( !p_intf )
+    intf_thread_t *p_intf = vlc_custom_create( playlist, sizeof( *p_intf ),
+                                               "interface" );
+    if( unlikely(p_intf == NULL) )
         return VLC_ENOMEM;
 
     /* Variable used for interface spawning */
@@ -83,83 +83,45 @@ int intf_Create( vlc_object_t *p_this, const char *psz_module )
                 VLC_VAR_HASCHOICE | VLC_VAR_ISCOMMAND );
     text.psz_string = _("Add Interface");
     var_Change( p_intf, "intf-add", VLC_VAR_SETTEXT, &text, NULL );
-#if !defined(WIN32) && defined(HAVE_ISATTY)
+#if !defined(_WIN32) && defined(HAVE_ISATTY)
     if( isatty( 0 ) )
 #endif
     {
-        val.psz_string = (char *)"rc";
+        val.psz_string = (char *)"rc,none";
         text.psz_string = (char *)_("Console");
         var_Change( p_intf, "intf-add", VLC_VAR_ADDCHOICE, &val, &text );
     }
-    val.psz_string = (char *)"telnet";
+    val.psz_string = (char *)"telnet,none";
     text.psz_string = (char *)_("Telnet");
     var_Change( p_intf, "intf-add", VLC_VAR_ADDCHOICE, &val, &text );
-    val.psz_string = (char *)"http";
+    val.psz_string = (char *)"http,none";
     text.psz_string = (char *)_("Web");
     var_Change( p_intf, "intf-add", VLC_VAR_ADDCHOICE, &val, &text );
-    val.psz_string = (char *)"logger";
+    val.psz_string = (char *)"logger,none";
     text.psz_string = (char *)_("Debug logging");
     var_Change( p_intf, "intf-add", VLC_VAR_ADDCHOICE, &val, &text );
-    val.psz_string = (char *)"gestures";
+    val.psz_string = (char *)"gestures,none";
     text.psz_string = (char *)_("Mouse Gestures");
     var_Change( p_intf, "intf-add", VLC_VAR_ADDCHOICE, &val, &text );
 
-    var_AddCallback( p_intf, "intf-add", AddIntfCallback, NULL );
-
-    /* Attach interface to LibVLC */
-#if defined( __APPLE__ )
-    p_intf->b_should_run_on_first_thread = false;
-#endif
+    var_AddCallback( p_intf, "intf-add", AddIntfCallback, playlist );
 
     /* Choose the best module */
+    char *module;
+
     p_intf->p_cfg = NULL;
-    char *psz_parser = *psz_module == '$'
-                     ? var_CreateGetString(p_intf,psz_module+1)
-                     : strdup( psz_module );
-    char *psz_tmp = config_ChainCreate( &p_intf->psz_intf, &p_intf->p_cfg,
-                                        psz_parser );
-    free( psz_tmp );
-    free( psz_parser );
-    p_intf->p_module = module_need( p_intf, "interface", p_intf->psz_intf, true );
+    free( config_ChainCreate( &module, &p_intf->p_cfg, chain ) );
+    p_intf->p_module = module_need( p_intf, "interface", module, true );
+    free(module);
     if( p_intf->p_module == NULL )
     {
         msg_Err( p_intf, "no suitable interface module" );
         goto error;
     }
 
-#if defined( __APPLE__ )
-    /* Hack to get Mac OS X Cocoa runtime running
-     * (it needs access to the main thread) */
-    if( p_intf->b_should_run_on_first_thread )
-    {
-        if( vlc_clone( &p_intf->thread,
-                       MonitorLibVLCDeath, p_intf, VLC_THREAD_PRIORITY_LOW ) )
-        {
-            msg_Err( p_intf, "cannot spawn libvlc death monitoring thread" );
-            goto error;
-        }
-        assert( p_intf->pf_run );
-        p_intf->pf_run( p_intf );
-
-        /* It is monitoring libvlc, not the p_intf */
-        vlc_object_kill( p_intf->p_libvlc );
-
-        vlc_join( p_intf->thread, NULL );
-    }
-    else
-#endif
-    /* Run the interface in a separate thread */
-    if( p_intf->pf_run
-     && vlc_clone( &p_intf->thread,
-                   RunInterface, p_intf, VLC_THREAD_PRIORITY_LOW ) )
-    {
-        msg_Err( p_intf, "cannot spawn interface thread" );
-        goto error;
-    }
-
     vlc_mutex_lock( &lock );
-    p_intf->p_next = libvlc_priv( p_libvlc )->p_intf;
-    libvlc_priv( p_libvlc )->p_intf = p_intf;
+    p_intf->p_next = pl_priv( playlist )->interface;
+    pl_priv( playlist )->interface = p_intf;
     vlc_mutex_unlock( &lock );
 
     return VLC_SUCCESS;
@@ -168,103 +130,139 @@ error:
     if( p_intf->p_module )
         module_unneed( p_intf, p_intf->p_module );
     config_ChainDestroy( p_intf->p_cfg );
-    free( p_intf->psz_intf );
     vlc_object_release( p_intf );
     return VLC_EGENERIC;
 }
 
+/**
+ * Creates the playlist if necessary, and return a pointer to it.
+ * @note The playlist is not reference-counted. So the pointer is only valid
+ * until intf_DestroyAll() destroys interfaces.
+ */
+static playlist_t *intf_GetPlaylist(libvlc_int_t *libvlc)
+{
+    playlist_t *playlist;
+
+    vlc_mutex_lock(&lock);
+    playlist = libvlc_priv(libvlc)->playlist;
+    if (playlist == NULL)
+    {
+        playlist = playlist_Create(VLC_OBJECT(libvlc));
+        libvlc_priv(libvlc)->playlist = playlist;
+    }
+    vlc_mutex_unlock(&lock);
+
+    return playlist;
+}
 
 /**
- * Stops and destroys all interfaces
- * @param p_libvlc the LibVLC instance
+ * Inserts an item in the playlist used by interfaces.
+ * @note This function may <b>not</b> be called at the same time as
+ * intf_DestroyAll().
  */
-void intf_DestroyAll( libvlc_int_t *p_libvlc )
+void intf_InsertItem(libvlc_int_t *libvlc, const char *mrl, unsigned optc,
+                     const char *const *optv, unsigned flags)
 {
-    intf_thread_t *p_first;
+    playlist_AddExt(intf_GetPlaylist(libvlc), mrl, NULL, PLAYLIST_INSERT,
+                    0, -1, optc, optv, flags, true, pl_Unlocked);
+}
 
-    vlc_mutex_lock( &lock );
-    p_first = libvlc_priv( p_libvlc )->p_intf;
-#ifndef NDEBUG
-    libvlc_priv( p_libvlc )->p_intf = NULL;
-#endif
-    vlc_mutex_unlock( &lock );
+void libvlc_InternalPlay(libvlc_int_t *libvlc)
+{
+    playlist_t *pl;
 
-    /* Tell the interfaces to die */
-    for( intf_thread_t *p_intf = p_first; p_intf; p_intf = p_intf->p_next )
-        vlc_object_kill( p_intf );
+    vlc_mutex_lock(&lock);
+    pl = libvlc_priv(libvlc)->playlist;
+    vlc_mutex_unlock(&lock);
 
-    /* Cleanup the interfaces */
-    for( intf_thread_t *p_intf = p_first; p_intf != NULL; )
-    {
-        intf_thread_t *p_next = p_intf->p_next;
+    if (pl != NULL && var_GetBool(pl, "playlist-autostart"))
+        playlist_Control(pl, PLAYLIST_PLAY, false);
+}
 
-        if( p_intf->pf_run )
+/**
+ * Starts an interface plugin.
+ */
+int libvlc_InternalAddIntf(libvlc_int_t *libvlc, const char *name)
+{
+    playlist_t *playlist = intf_GetPlaylist(libvlc);
+    int ret;
+
+    if (unlikely(playlist == NULL))
+        ret = VLC_ENOMEM;
+    else
+    if (name != NULL)
+        ret = intf_Create(playlist, name);
+    else
+    {   /* Default interface */
+        char *intf = var_InheritString(libvlc, "intf");
+        if (intf == NULL) /* "intf" has not been set */
         {
-            vlc_cancel( p_intf->thread );
-#ifdef __APPLE__
-            if (!p_intf->b_should_run_on_first_thread)
+#if !defined(_WIN32) && !defined(__OS2__)
+            char *pidfile = var_InheritString(libvlc, "pidfile");
+            if (pidfile != NULL)
+                free(pidfile);
+            else
 #endif
-            vlc_join( p_intf->thread, NULL );
+                msg_Info(libvlc, _("Running vlc with the default interface. "
+                         "Use 'cvlc' to use vlc without interface."));
         }
-        module_unneed( p_intf, p_intf->p_module );
-        free( p_intf->psz_intf );
-        config_ChainDestroy( p_intf->p_cfg );
-        vlc_object_release( p_intf );
-
-        p_intf = p_next;
+        ret = intf_Create(playlist, intf);
+        free(intf);
+        name = "default";
     }
+    if (ret != VLC_SUCCESS)
+        msg_Err(libvlc, "interface \"%s\" initialization failed", name);
+    return ret;
+}
+
+/**
+ * Stops and destroys all interfaces, then the playlist.
+ * @warning FIXME
+ * @param libvlc the LibVLC instance
+ */
+void intf_DestroyAll(libvlc_int_t *libvlc)
+{
+    playlist_t *playlist;
+
+    vlc_mutex_lock(&lock);
+    playlist = libvlc_priv(libvlc)->playlist;
+    if (playlist != NULL)
+    {
+        intf_thread_t *intf, **pp = &(pl_priv(playlist)->interface);
+
+        while ((intf = *pp) != NULL)
+        {
+            *pp = intf->p_next;
+            vlc_mutex_unlock(&lock);
+
+            module_unneed(intf, intf->p_module);
+            config_ChainDestroy(intf->p_cfg);
+            var_DelCallback(intf, "intf-add", AddIntfCallback, playlist);
+            vlc_object_release(intf);
+
+            vlc_mutex_lock(&lock);
+        }
+
+        libvlc_priv(libvlc)->playlist = NULL;
+    }
+    vlc_mutex_unlock(&lock);
+
+    if (playlist != NULL)
+        playlist_Destroy(playlist);
 }
 
 /* Following functions are local */
 
-/**
- * RunInterface: setups necessary data and give control to the interface
- *
- * @param p_this: interface object
- */
-static void* RunInterface( void *p_this )
+static int AddIntfCallback( vlc_object_t *obj, char const *var,
+                            vlc_value_t old, vlc_value_t cur, void *data )
 {
-    intf_thread_t *p_intf = p_this;
+    playlist_t *playlist = data;
 
-    p_intf->pf_run( p_intf );
-    return NULL;
-}
-
-#if defined( __APPLE__ )
-#include "../lib/libvlc_internal.h" /* libvlc_InternalWait */
-/**
- * MonitorLibVLCDeath: Used when b_should_run_on_first_thread is set.
- *
- * @param p_this: the interface object
- */
-static void * MonitorLibVLCDeath( vlc_object_t * p_this )
-{
-    intf_thread_t *p_intf = (intf_thread_t *)p_this;
-    libvlc_int_t * p_libvlc = p_intf->p_libvlc;
-    int canc = vlc_savecancel ();
-
-    libvlc_InternalWait( p_libvlc );
-
-    vlc_object_kill( p_intf ); /* Kill the stupid first thread interface */
-    vlc_restorecancel (canc);
-    return NULL;
-}
-#endif
-
-static int AddIntfCallback( vlc_object_t *p_this, char const *psz_cmd,
-                         vlc_value_t oldval, vlc_value_t newval, void *p_data )
-{
-    (void)psz_cmd; (void)oldval; (void)p_data;
-    char* psz_intf;
-
-    /* Try to create the interface */
-    if( asprintf( &psz_intf, "%s,none", newval.psz_string ) == -1 )
-        return VLC_ENOMEM;
-
-    int ret = intf_Create( VLC_OBJECT(p_this->p_libvlc), psz_intf );
-    free( psz_intf );
+    int ret = intf_Create( playlist, cur.psz_string );
     if( ret )
-        msg_Err( p_this, "interface \"%s\" initialization failed",
-                 newval.psz_string );
+        msg_Err( obj, "interface \"%s\" initialization failed",
+                 cur.psz_string );
+
+    (void) var; (void) old;
     return ret;
 }

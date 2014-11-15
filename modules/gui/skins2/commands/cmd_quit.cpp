@@ -2,7 +2,7 @@
  * cmd_quit.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: b6d49fa6478cb575e77d53960166e446a03d2030 $
+ * $Id: e8961f5b53d28ab7d14459814b67b503ba0b0c15 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -26,7 +26,8 @@
 #   include "config.h"
 #endif
 
-#include <vlc_osd.h>
+#include <vlc_vout.h>
+#include <vlc_vout_osd.h>
 #include <vlc_playlist.h>
 
 #include "cmd_quit.hpp"
@@ -48,4 +49,14 @@ void CmdQuit::execute()
 
     // Kill libvlc
     libvlc_Quit( getIntf()->p_libvlc );
+}
+
+
+void CmdExitLoop::execute()
+{
+    // Get the instance of OSFactory
+    OSFactory *pOsFactory = OSFactory::instance( getIntf() );
+
+    // Exit the main OS loop
+    pOsFactory->getOSLoop()->exit();
 }

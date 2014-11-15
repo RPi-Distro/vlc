@@ -1,9 +1,9 @@
 /*
- * calculations.c: calculations needed by the input devices
+ * AtmoCalculations.cpp: calculations needed by the input devices
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: dd59374e429c24226713fd86f84a32b93021ecca $
+ * $Id: 9829f952f038fd03e5760df98b4c5f1574ec8d8e $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -16,7 +16,7 @@
 
 #include "AtmoDefs.h"
 
-#if defined(WIN32)
+#if defined(_WIN32)
 #   include <windows.h>
 #endif
 

@@ -2,7 +2,7 @@
  * error.c: error handling routine
  *****************************************************************************
  * Copyright (C) 2002-2004 VLC authors and VideoLAN
- * $Id: 95c8d7323788ddaad093036e8ca96799294047a0 $
+ * $Id: 7cd911483937e8f30d10d3e4e092b4cd441f642c $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -59,8 +59,6 @@ char const * vlc_error ( int i_err )
         case VLC_EBADVAR:
             return "bad variable value";
 
-        case VLC_EEXIT:
-            return "program exited";
         case VLC_EGENERIC:
             return "generic error";
         default:

@@ -45,15 +45,26 @@ VLC_API int vlc_unlink( const char *filename );
 VLC_API int vlc_rename( const char *oldpath, const char *newpath );
 VLC_API char *vlc_getcwd( void ) VLC_USED;
 
-#if defined( WIN32 )
-# ifndef UNDER_CE
-#  define stat _stati64
-# endif
+#if defined( _WIN32 )
+typedef struct vlc_DIR
+{
+    _WDIR *wdir; /* MUST be first, see <vlc_fs.h> */
+    char *entry;
+    union
+    {
+        DWORD drives;
+        bool insert_dot_dot;
+    } u;
+} vlc_DIR;
+
 static inline int vlc_closedir( DIR *dir )
 {
-    _WDIR *wdir = *(_WDIR **)dir;
-    free( dir );
-    return wdir ? _wclosedir( wdir ) : 0;
+    vlc_DIR *vdir = (vlc_DIR *)dir;
+    _WDIR *wdir = vdir->wdir;
+
+    free( vdir->entry );
+    free( vdir );
+    return (wdir != NULL) ? _wclosedir( wdir ) : 0;
 }
 # undef closedir
 # define closedir vlc_closedir
@@ -66,7 +77,25 @@ static inline void vlc_rewinddir( DIR *dir )
 }
 # undef rewinddir
 # define rewinddir vlc_rewinddir
+
+# include <sys/stat.h>
+# ifndef stat
+#  define stat _stati64
+# endif
+# ifndef fstat
+#  define fstat _fstati64
+# endif
+# ifndef _MSC_VER
+#  undef lseek
+#  define lseek _lseeki64
+# endif
 #endif
+
+#ifdef __ANDROID__
+# define lseek lseek64
+#endif
+
+struct stat;
 
 VLC_API int vlc_stat( const char *filename, struct stat *buf );
 VLC_API int vlc_lstat( const char *filename, struct stat *buf );

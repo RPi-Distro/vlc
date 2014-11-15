@@ -2,7 +2,7 @@
  * playlist.hpp: Playlist dialog
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: e3215df78a54ac2d7b5b99360687095afade119f $
+ * $Id: f7a2e49f3017f0b90b0a815fd53b3e94416b78b0 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -34,14 +34,22 @@ class QSignalMapper;
 class PLSelector;
 class PLPanel;
 class QSettings;
+class QHideEvent;
 
 class PlaylistDialog : public QVLCMW, public Singleton<PlaylistDialog>
 {
     Q_OBJECT
-private:
-    PlaylistWidget *playlistWidget;
+
+public:
+    PlaylistWidget *exportPlaylistWidget( );
+    void importPlaylistWidget( PlaylistWidget * );
+    bool hasPlaylistWidget();
+
+protected:
+    virtual void hideEvent( QHideEvent * );
 
 private:
+    PlaylistWidget *playlistWidget;
     PlaylistDialog( intf_thread_t * );
     virtual ~PlaylistDialog();
 
@@ -51,6 +59,9 @@ private:
     void dragLeaveEvent( QDragLeaveEvent * );
 
     friend class    Singleton<PlaylistDialog>;
+
+signals:
+    void visibilityChanged( bool );
 };
 
 

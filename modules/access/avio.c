@@ -2,23 +2,23 @@
  * avio.c: access using libavformat library
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: ddfe86fc31c93962d22ec66281c7798f70a0152e $
+ * $Id: 47615e6d939ddded86fc24ea7cddc28b1228532b $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -33,6 +33,7 @@
 #include <vlc_avcodec.h>
 
 #include "avio.h"
+#include "../codec/avcodec/avcommon.h"
 
 #if LIBAVFORMAT_VERSION_MAJOR < 54
 # define AVIOContext URLContext
@@ -72,8 +73,10 @@ static int UrlInterruptCallback(void *access)
     return !vlc_object_alive((vlc_object_t*)access);
 }
 
-struct access_sys_t {
+struct access_sys_t
+{
     AVIOContext *context;
+    uint64_t size;
 };
 
 struct sout_access_out_sys_t {
@@ -137,9 +140,7 @@ int OpenAvio(vlc_object_t *object)
     }
 
     /* */
-    vlc_avcodec_lock();
-    av_register_all();
-    vlc_avcodec_unlock();
+    vlc_init_avformat(object);
 
     int ret;
 #if LIBAVFORMAT_VERSION_MAJOR < 54
@@ -149,11 +150,21 @@ int OpenAvio(vlc_object_t *object)
         .callback = UrlInterruptCallback,
         .opaque = access,
     };
-    ret = avio_open2(&sys->context, url, AVIO_FLAG_READ, &cb, NULL /* options */);
+    AVDictionary *options = NULL;
+    char *psz_opts = var_InheritString(access, "avio-options");
+    if (psz_opts && *psz_opts) {
+        options = vlc_av_get_options(psz_opts);
+        free(psz_opts);
+    }
+    ret = avio_open2(&sys->context, url, AVIO_FLAG_READ, &cb, &options);
+    AVDictionaryEntry *t = NULL;
+    while ((t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX)))
+        msg_Err( access, "unknown option \"%s\"", t->key );
+    av_dict_free(&options);
 #endif
     if (ret < 0) {
-        errno = AVUNERROR(ret);
-        msg_Err(access, "Failed to open %s: %m", url);
+        msg_Err(access, "Failed to open %s: %s", url,
+                vlc_strerror_c(AVUNERROR(ret)));
         free(url);
         goto error;
     }
@@ -176,10 +187,10 @@ int OpenAvio(vlc_object_t *object)
     seekable = sys->context->seekable;
 #endif
     msg_Dbg(access, "%sseekable, size=%"PRIi64, seekable ? "" : "not ", size);
+    sys->size = size > 0 ? size : 0;
 
     /* */
     access_InitFields(access);
-    access->info.i_size = size > 0 ? size : 0;
 
     access->pf_read = Read;
     access->pf_block = NULL;
@@ -195,18 +206,25 @@ error:
 }
 
 /* */
+
+static const char *const ppsz_sout_options[] = {
+    "options",
+    NULL,
+};
+
 int OutOpenAvio(vlc_object_t *object)
 {
     sout_access_out_t *access = (sout_access_out_t*)object;
+
+    config_ChainParse( access, "sout-avio-", ppsz_sout_options, access->p_cfg );
+
     sout_access_out_sys_t *sys = malloc(sizeof(*sys));
     if (!sys)
         return VLC_ENOMEM;
     sys->context = NULL;
 
     /* */
-    vlc_avcodec_lock();
-    av_register_all();
-    vlc_avcodec_unlock();
+    vlc_init_avformat(object);
 
     if (!access->psz_path)
         goto error;
@@ -219,8 +237,18 @@ int OutOpenAvio(vlc_object_t *object)
         .callback = UrlInterruptCallback,
         .opaque = access,
     };
+    AVDictionary *options = NULL;
+    char *psz_opts = var_InheritString(access, "sout-avio-options");
+    if (psz_opts && *psz_opts) {
+        options = vlc_av_get_options(psz_opts);
+        free(psz_opts);
+    }
     ret = avio_open2(&sys->context, access->psz_path, AVIO_FLAG_WRITE,
-                     &cb, NULL /* options */);
+                     &cb, &options);
+    AVDictionaryEntry *t = NULL;
+    while ((t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX)))
+        msg_Err( access, "unknown option \"%s\"", t->key );
+    av_dict_free(&options);
 #endif
     if (ret < 0) {
         errno = AVUNERROR(ret);
@@ -279,8 +307,10 @@ static ssize_t Read(access_t *access, uint8_t *data, size_t size)
     int r = avio_read(access->p_sys->context, data, size);
     if (r > 0)
         access->info.i_pos += r;
-    else
+    else {
         access->info.b_eof = true;
+        r = 0;
+    }
     return r;
 }
 
@@ -289,24 +319,22 @@ static ssize_t Read(access_t *access, uint8_t *data, size_t size)
  *****************************************************************************/
 static ssize_t Write(sout_access_out_t *p_access, block_t *p_buffer)
 {
-    access_sys_t *p_sys = (access_sys_t*)p_access->p_sys;
+    sout_access_out_sys_t *p_sys = (sout_access_out_sys_t*)p_access->p_sys;
     size_t i_write = 0;
+    int val;
 
     while (p_buffer != NULL) {
         block_t *p_next = p_buffer->p_next;
 
 #if LIBAVFORMAT_VERSION_MAJOR < 54
-        int written = url_write(p_sys->context, p_buffer->p_buffer, p_buffer->i_buffer);
-        if (written < 0) {
-            errno = AVUNERROR(written);
+        val = url_write(p_sys->context, p_buffer->p_buffer, p_buffer->i_buffer);
+        if (val < 0)
             goto error;
-        }
-        i_write += written;
+        i_write += val;
 #else
         avio_write(p_sys->context, p_buffer->p_buffer, p_buffer->i_buffer);
         avio_flush(p_sys->context);
-        if (p_sys->context->error) {
-            errno = AVUNERROR(p_sys->context->error);
+        if ((val = p_sys->context->error) != 0) {
             p_sys->context->error = 0; /* FIXME? */
             goto error;
         }
@@ -321,7 +349,8 @@ static ssize_t Write(sout_access_out_t *p_access, block_t *p_buffer)
     return i_write;
 
 error:
-    msg_Err(p_access, "Wrote only %zu bytes (%m)", i_write);
+    msg_Err(p_access, "Wrote only %zu bytes: %s", i_write,
+            vlc_strerror_c(AVUNERROR(val)));
     block_ChainRelease( p_buffer );
     return i_write;
 }
@@ -340,9 +369,9 @@ static int Seek(access_t *access, uint64_t position)
     else
         ret = avio_seek(sys->context, position, SEEK_SET);
     if (ret < 0) {
-        errno = AVUNERROR(ret);
-        msg_Err(access, "Seek to %"PRIu64" failed: %m", position);
-        if (access->info.i_size <= 0 || position != access->info.i_size)
+        msg_Err(access, "Seek to %"PRIu64" failed: %s", position,
+                vlc_strerror_c(AVUNERROR(ret)));
+        if (sys->size == 0 || position != sys->size)
             return VLC_EGENERIC;
     }
     access->info.i_pos = position;
@@ -405,9 +434,12 @@ static int Control(access_t *access, int query, va_list args)
         b = va_arg(args, bool *);
         *b = true; /* FIXME */
         return VLC_SUCCESS;
+    case ACCESS_GET_SIZE:
+        *va_arg(args, uint64_t *) = sys->size;
+        return VLC_SUCCESS;
     case ACCESS_GET_PTS_DELAY: {
         int64_t *delay = va_arg(args, int64_t *);
-        *delay = DEFAULT_PTS_DELAY; /* FIXME */
+        *delay = INT64_C(1000) * var_InheritInteger(access, "network-caching");
         return VLC_SUCCESS;
     }
     case ACCESS_SET_PAUSE_STATE: {
@@ -416,15 +448,6 @@ static int Control(access_t *access, int query, va_list args)
             return VLC_EGENERIC;
         return VLC_SUCCESS;
     }
-    case ACCESS_GET_TITLE_INFO:
-    case ACCESS_GET_META:
-    case ACCESS_GET_CONTENT_TYPE:
-    case ACCESS_GET_SIGNAL:
-    case ACCESS_SET_TITLE:
-    case ACCESS_SET_SEEKPOINT:
-    case ACCESS_SET_PRIVATE_ID_STATE:
-    case ACCESS_SET_PRIVATE_ID_CA:
-    case ACCESS_GET_PRIVATE_ID_STATE:
     default:
         return VLC_EGENERIC;
     }

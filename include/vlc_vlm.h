@@ -2,7 +2,7 @@
  * vlc_vlm.h: VLM core structures
  *****************************************************************************
  * Copyright (C) 2000, 2001 VLC authors and VideoLAN
- * $Id: 12a0eda4979b1e1bc507794d89e5794e6911e97a $
+ * $Id: 11111da6edb9fbecaa750af4c2851a5f0c338f0b $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -180,7 +180,7 @@ struct vlm_message_t
 };
 
 
-#ifdef __cpluplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -360,7 +360,7 @@ static inline void vlm_media_instance_Delete( vlm_media_instance_t *p_instance )
     free( p_instance );
 }
 
-#ifdef __cpluplus
+#ifdef __cplusplus
 }
 #endif
 

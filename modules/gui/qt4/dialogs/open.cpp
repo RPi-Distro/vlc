@@ -30,7 +30,6 @@
 #include "util/qt_dirs.hpp"
 
 #include <QTabWidget>
-#include <QGridLayout>
 #include <QRegExp>
 #include <QMenu>
 
@@ -87,7 +86,7 @@ OpenDialog::OpenDialog( QWidget *parent,
     captureOpenPanel = new CaptureOpenPanel( this, p_intf );
 
     /* Insert the tabs */
-    ui.Tab->insertTab( OPEN_FILE_TAB, fileOpenPanel, QIcon( ":/type/folder-grey" ),
+    ui.Tab->insertTab( OPEN_FILE_TAB, fileOpenPanel, QIcon( ":/type/file-asym" ),
                        qtr( "&File" ) );
     ui.Tab->insertTab( OPEN_DISC_TAB, discOpenPanel, QIcon( ":/type/disc" ),
                        qtr( "&Disc" ) );
@@ -119,8 +118,8 @@ OpenDialog::OpenDialog( QWidget *parent,
                                     QKeySequence( "Alt+P" ) );
     openButtonMenu->addAction( qtr( "&Stream" ), this, SLOT( stream() ) ,
                                     QKeySequence( "Alt+S" ) );
-    openButtonMenu->addAction( qtr( "&Convert" ), this, SLOT( transcode() ) ,
-                                    QKeySequence( "Alt+C" ) );
+    openButtonMenu->addAction( qtr( "C&onvert" ), this, SLOT( transcode() ) ,
+                                    QKeySequence( "Alt+O" ) );
 
     playButton->setMenu( openButtonMenu );
 
@@ -203,7 +202,7 @@ void OpenDialog::setMenuAction()
             playButton->setText( qtr( "&Stream" ) );
             break;
         case OPEN_AND_SAVE:
-            playButton->setText( qtr( "&Convert / Save" ) );
+            playButton->setText( qtr( "C&onvert / Save" ) );
             break;
         case OPEN_AND_ENQUEUE:
             playButton->setText( qtr( "&Enqueue" ) );
@@ -229,8 +228,17 @@ OpenDialog::~OpenDialog()
 QString OpenDialog::getMRL( bool b_all )
 {
     if( itemsMRL.count() == 0 ) return "";
-    return b_all ? itemsMRL[0] + ui.advancedLineInput->text()
+    return b_all ? itemsMRL[0] + getOptions()
                  : itemsMRL[0];
+}
+
+QStringList OpenDialog::getMRLs( bool b_with_options )
+{
+    if ( !b_with_options ) return itemsMRL;
+    QStringList postfixedMRLs;
+    foreach( const QString &mrl, itemsMRL )
+        postfixedMRLs << QString( mrl ).append( getOptions() );
+    return postfixedMRLs;
 }
 
 QString OpenDialog::getOptions()
@@ -369,40 +377,11 @@ void OpenDialog::enqueue( bool b_enqueue )
     {
         bool b_start = !i && !b_enqueue;
 
-        input_item_t *p_input;
-        p_input = input_item_New( qtu( itemsMRL[i] ), NULL );
-
-        /* Insert options only for the first element.
-           We don't know how to edit that anyway. */
-        if( i == 0 )
-        {
-            /* Take options from the UI, not from what we stored */
-            QStringList optionsList = ui.advancedLineInput->text().split( " :" );
-
-            /* Insert options */
-            for( int j = 0; j < optionsList.count(); j++ )
-            {
-                QString qs = colon_unescape( optionsList[j] );
-                if( !qs.isEmpty() )
-                {
-                    input_item_AddOption( p_input, qtu( qs ),
-                                          VLC_INPUT_OPTION_TRUSTED );
-#ifdef DEBUG_QT
-                    msg_Warn( p_intf, "Input option: %s", qtu( qs ) );
-#endif
-                }
-            }
-        }
+        /* Take options from the UI, not from what we stored */
+        QStringList optionsList = getOptions().split( " :" );
 
         /* Switch between enqueuing and starting the item */
-        /* FIXME: playlist_AddInput() can fail */
-        playlist_AddInput( THEPL, p_input,
-                PLAYLIST_APPEND | ( b_start ? PLAYLIST_GO : PLAYLIST_PREPARSE ),
-                PLAYLIST_END, b_pl ? true : false, pl_Unlocked );
-        vlc_gc_decref( p_input );
-
-        /* Do not add the current MRL if playlist_AddInput fail */
-        RecentsMRL::getInstance( p_intf )->addRecent( itemsMRL[i] );
+        Open::openMRLwithOptions( p_intf, itemsMRL[i], &optionsList, b_start, b_pl );
     }
 }
 
@@ -420,7 +399,7 @@ void OpenDialog::stream( bool b_transcode_only )
     /* Dbg and send :D */
     msg_Dbg( p_intf, "MRL passed to the Sout: %s", qtu( soutMRL ) );
     THEDP->streamingDialog( this, soutMRL, b_transcode_only,
-                            ui.advancedLineInput->text().split( " :" ) );
+                            getOptions().split( " :" ) );
 }
 
 /* Update the MRL items from the panels */
@@ -449,6 +428,9 @@ void OpenDialog::updateMRL() {
     }
     ui.advancedLineInput->setText( mrl );
     ui.mrlLine->setText( itemsMRL.join( " " ) );
+    /* Only allow action without valid items */
+    playButton->setEnabled( !itemsMRL.isEmpty() );
+    selectButton->setEnabled( !itemsMRL.isEmpty() );
 }
 
 /* Change the caching combobox */

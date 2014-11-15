@@ -5,17 +5,17 @@
  * This file is part of mpeg2dec, a free MPEG-2 video stream decoder.
  *
  * mpeg2dec is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * mpeg2dec is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
@@ -43,20 +43,23 @@ typedef    union {
 #define    mmx_i2r(op,imm,reg) \
     __asm__ __volatile__ (#op " %0, %%" #reg \
                   : /* nothing */ \
-                  : "i" (imm) )
+                  : "i" (imm) \
+                  : #reg)
 
 #define    mmx_m2r(op,mem,reg) \
     __asm__ __volatile__ (#op " %0, %%" #reg \
                   : /* nothing */ \
-                  : "m" (mem))
+                  : "m" (mem) \
+                  : #reg)
 
 #define    mmx_r2m(op,reg,mem) \
     __asm__ __volatile__ (#op " %%" #reg ", %0" \
                   : "=m" (mem) \
-                  : /* nothing */ )
+                  : /* nothing */ \
+                  : "memory")
 
 #define    mmx_r2r(op,regs,regd) \
-    __asm__ __volatile__ (#op " %" #regs ", %" #regd)
+    __asm__ __volatile__ (#op " %%" #regs ", %%" #regd ::: #regd)
 
 
 #define    emms() __asm__ __volatile__ ("emms")
@@ -200,11 +203,13 @@ typedef    union {
 #define mmx_m2ri(op,mem,reg,imm) \
         __asm__ __volatile__ (#op " %1, %0, %%" #reg \
                               : /* nothing */ \
-                              : "X" (mem), "X" (imm))
+                              : "X" (mem), "X" (imm) \
+                              : #reg)
 #define mmx_r2ri(op,regs,regd,imm) \
         __asm__ __volatile__ (#op " %0, %%" #regs ", %%" #regd \
                               : /* nothing */ \
-                              : "X" (imm) )
+                              : "X" (imm) \
+                              : #regd)
 
 #define    mmx_fetch(mem,hint) \
     __asm__ __volatile__ ("prefetch" #hint " %0" \
@@ -238,7 +243,7 @@ typedef    union {
 #define    pminub_r2r(regs,regd)        mmx_r2r (pminub, regs, regd)
 
 #define    pmovmskb(mmreg,reg) \
-    __asm__ __volatile__ ("movmskps %" #mmreg ", %" #reg)
+    __asm__ __volatile__ ("movmskps %" #mmreg ", %" #reg : : : #reg)
 
 #define    pmulhuw_m2r(var,reg)        mmx_m2r (pmulhuw, var, reg)
 #define    pmulhuw_r2r(regs,regd)        mmx_r2r (pmulhuw, regs, regd)

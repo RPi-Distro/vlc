@@ -57,18 +57,18 @@ int module_Load( vlc_object_t *p_this, const char *psz_file,
     if (wfile == NULL)
         return -1;
 
-    module_handle_t handle;
-#ifndef UNDER_CE
-    /* FIXME: this is not thread-safe -- Courmisch */
-    UINT mode = SetErrorMode (SEM_FAILCRITICALERRORS);
-    SetErrorMode (mode|SEM_FAILCRITICALERRORS);
-#endif
+    module_handle_t handle = NULL;
+#if (_WIN32_WINNT >= 0x601) && !VLC_WINSTORE_APP
+    DWORD mode;
 
-    handle = LoadLibraryW (wfile);
-
-#ifndef UNDER_CE
-    SetErrorMode (mode);
+    if (SetThreadErrorMode (SEM_FAILCRITICALERRORS, &mode) == 0)
 #endif
+    {
+        handle = LoadLibraryW (wfile);
+#if (_WIN32_WINNT >= 0x601) && !VLC_WINSTORE_APP
+        SetThreadErrorMode (mode, NULL);
+#endif
+    }
     free (wfile);
 
     if( handle == NULL )
@@ -91,17 +91,5 @@ void module_Unload( module_handle_t handle )
 
 void *module_Lookup( module_handle_t handle, const char *psz_function )
 {
-#ifdef UNDER_CE
-    wchar_t wide[strlen( psz_function ) + 1];
-    size_t i = 0;
-    do
-        wide[i] = psz_function[i]; /* UTF-16 <- ASCII */
-    while( psz_function[i++] );
-
-    return (void *)GetProcAddress( handle, wide );
-
-#else
     return (void *)GetProcAddress( handle, (char *)psz_function );
-
-#endif
 }

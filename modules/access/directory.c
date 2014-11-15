@@ -1,25 +1,25 @@
 /*****************************************************************************
  * directory.c: expands a directory (directory: access plug-in)
  *****************************************************************************
- * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: 4fcc8723a0c9f6b8772c3ff3616d410992fae983 $
+ * Copyright (C) 2002-2008 VLC authors and VideoLAN
+ * $Id: 3d72dc09ab3944409f6e95e43fe91eb8dac9ba22 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Rémi Denis-Courmont
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -35,16 +35,10 @@
 #include <vlc_access.h>
 
 #include <sys/types.h>
-#ifdef HAVE_SYS_STAT_H
-#   include <sys/stat.h>
-#endif
+#include <sys/stat.h>
 #include <errno.h>
-#ifdef HAVE_UNISTD_H
-#   include <unistd.h>
-#   include <fcntl.h>
-#elif defined( WIN32 ) && !defined( UNDER_CE )
-#   include <io.h>
-#endif
+#include <unistd.h>
+#include <fcntl.h>
 
 #include <vlc_fs.h>
 #include <vlc_url.h>
@@ -82,6 +76,7 @@ struct access_sys_t
     bool header;
     int i_item_count;
     char *xspf_ext;
+    int (*compar)(const char **a, const char **b);
 };
 
 /* Select non-hidden files only */
@@ -97,6 +92,11 @@ static int collate (const char **a, const char **b)
 #else
     return strcmp  (*a, *b);
 #endif
+}
+
+static int version (const char **a, const char **b)
+{
+    return strverscmp (*a, *b);
 }
 
 /*****************************************************************************
@@ -129,7 +129,7 @@ int DirInit (access_t *p_access, DIR *handle)
             uri = NULL;
     }
     else
-        uri = make_URI (p_access->psz_filepath, "file");
+        uri = vlc_path2uri (p_access->psz_filepath, "file");
     if (unlikely(uri == NULL))
         goto error;
 
@@ -140,10 +140,22 @@ int DirInit (access_t *p_access, DIR *handle)
         free (uri);
         goto error;
     }
+
+    char *psz_sort = var_InheritString (p_access, "directory-sort");
+    if (!psz_sort)
+        p_sys->compar = collate;
+    else if (!strcasecmp (psz_sort, "version"))
+        p_sys->compar = version;
+    else if (!strcasecmp (psz_sort, "none"))
+        p_sys->compar = NULL;
+    else
+        p_sys->compar = collate;
+    free(psz_sort);
+
     root->parent = NULL;
     root->handle = handle;
     root->uri = uri;
-    root->filec = vlc_loaddir (handle, &root->filev, visible, collate);
+    root->filec = vlc_loaddir (handle, &root->filev, visible, p_sys->compar);
     if (root->filec < 0)
         root->filev = NULL;
     root->i = 0;
@@ -182,10 +194,7 @@ int DirInit (access_t *p_access, DIR *handle)
     p_access->pf_read  = NULL;
     p_access->pf_block = DirBlock;
     p_access->pf_seek  = NULL;
-    p_access->pf_control= DirControl;
-    free (p_access->psz_demux);
-    p_access->psz_demux = strdup ("xspf-open");
-
+    p_access->pf_control = DirControl;
     return VLC_SUCCESS;
 
 error:
@@ -282,9 +291,7 @@ block_t *DirBlock (access_t *p_access)
             if (unlikely(len == -1))
                 goto fatal;
 
-            block_t *block = block_heap_Alloc (footer, footer, len);
-            if (unlikely(block == NULL))
-                free (footer);
+            block_t *block = block_heap_Alloc (footer, len);
             p_access->info.b_eof = true;
             return block;
         }
@@ -347,7 +354,7 @@ block_t *DirBlock (access_t *p_access)
         }
         sub->parent = current;
         sub->handle = handle;
-        sub->filec = vlc_loaddir (handle, &sub->filev, visible, collate);
+        sub->filec = vlc_loaddir (handle, &sub->filev, visible, p_sys->compar);
         if (sub->filec < 0)
             sub->filev = NULL;
         sub->i = 0;
@@ -434,12 +441,9 @@ notdir:
         p_sys->xspf_ext = NULL;
     free (old_xspf_ext);
 
-    block_t *block = block_heap_Alloc (entry, entry, len);
+    block_t *block = block_heap_Alloc (entry, len);
     if (unlikely(block == NULL))
-    {
-        free (entry);
         goto fatal;
-    }
     return block;
 
 fatal:
@@ -458,7 +462,6 @@ int DirControl( access_t *p_access, int i_query, va_list args )
 {
     switch( i_query )
     {
-        /* */
         case ACCESS_CAN_SEEK:
         case ACCESS_CAN_FASTSEEK:
             *va_arg( args, bool* ) = false;
@@ -469,24 +472,17 @@ int DirControl( access_t *p_access, int i_query, va_list args )
             *va_arg( args, bool* ) = true;
             break;
 
-        /* */
         case ACCESS_GET_PTS_DELAY:
             *va_arg( args, int64_t * ) = DEFAULT_PTS_DELAY * 1000;
             break;
 
-        /* */
-        case ACCESS_SET_PAUSE_STATE:
-        case ACCESS_GET_TITLE_INFO:
-        case ACCESS_SET_TITLE:
-        case ACCESS_SET_SEEKPOINT:
-        case ACCESS_SET_PRIVATE_ID_STATE:
         case ACCESS_GET_CONTENT_TYPE:
-        case ACCESS_GET_META:
-            return VLC_EGENERIC;
+            *va_arg( args, char** ) = strdup("application/xspf+xml");
+            return VLC_SUCCESS;
 
         default:
-            msg_Warn( p_access, "unimplemented query in control" );
             return VLC_EGENERIC;
     }
+    (void) p_access;
     return VLC_SUCCESS;
 }

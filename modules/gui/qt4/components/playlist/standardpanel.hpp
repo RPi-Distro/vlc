@@ -1,8 +1,8 @@
 /*****************************************************************************
- * panels.hpp : Panels for the playlist
+ * standardpanel.hpp : Panels for the playlist
  ****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: 15128dee3d64cb1006ee64a385054378cbf7d4ef $
+ * $Id: 57ab0aef3c5ea82c868f5371a052f8bf7ca1ef20 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -30,14 +30,15 @@
 
 #include "qt4.hpp"
 #include "components/playlist/playlist.hpp"
+#include "components/playlist/vlc_model.hpp"
 
 #include <QWidget>
+#include <QModelIndexList>
 
 #include <vlc_playlist.h> /* playlist_item_t */
 
 class QSignalMapper;
-class PLModel;
-class MLModel;
+class VLCProxyModel;
 class QKeyEvent;
 class QWheelEvent;
 class QStackedLayout;
@@ -49,9 +50,9 @@ class PlIconView;
 class PlListView;
 class PicFlowView;
 
-class LocationBar;
 class PLSelector;
 class PlaylistWidget;
+class PixmapAnimator;
 
 class StandardPLPanel: public QWidget
 {
@@ -59,7 +60,7 @@ class StandardPLPanel: public QWidget
 
 public:
     StandardPLPanel( PlaylistWidget *, intf_thread_t *,
-                     playlist_item_t *, PLSelector *, PLModel *, MLModel * );
+                     playlist_item_t *, PLSelector *, VLCModel * );
     virtual ~StandardPLPanel();
 
     enum { ICON_VIEW = 0,
@@ -70,10 +71,12 @@ public:
 
     int currentViewIndex() const;
 
+    static QMenu *viewSelectionMenu(StandardPLPanel *obj);
+
 protected:
-    PLModel *model;
-    MLModel *mlmodel;
+    VLCModel *model;
     virtual void wheelEvent( QWheelEvent *e );
+    bool popup( const QPoint &point );
 
 private:
     intf_thread_t *p_intf;
@@ -84,6 +87,7 @@ private:
     PlIconView        *iconView;
     PlListView        *listView;
     PicFlowView       *picFlowView;
+    int i_zoom;
 
     QAbstractItemView *currentView;
 
@@ -91,19 +95,24 @@ private:
 
     QSignalMapper *selectColumnsSigMapper;
 
-    int lastActivatedId;
-    int currentRootIndexId;
+    int lastActivatedPLItemId;
+    int currentRootIndexPLId;
 
     void createTreeView();
     void createIconView();
     void createListView();
     void createCoverView();
-    void changeModel ( bool b_ml );
+    void updateZoom( int i_zoom );
     bool eventFilter ( QObject * watched, QEvent * event );
+
+    /* Wait spinner */
+    PixmapAnimator *spinnerAnimation;
 
 public slots:
     void setRootItem( playlist_item_t *, bool );
     void browseInto( const QModelIndex& );
+    void showView( int );
+    void setWaiting( bool ); /* spinner */
 
 private slots:
     void deleteSelection();
@@ -120,10 +129,13 @@ private slots:
 
     void popupPlView( const QPoint & );
     void popupSelectColumn( QPoint );
+    void popupAction( QAction * );
+    void increaseZoom() { updateZoom( i_zoom + 1 ); };
+    void decreaseZoom() { updateZoom( i_zoom - 1 ); };
     void toggleColumnShown( int );
 
-    void showView( int );
     void cycleViews();
+    void updateViewport(); /* spinner */
 
 signals:
     void viewChanged( const QModelIndex& );
@@ -131,9 +143,9 @@ signals:
 
 
 static const QString viewNames[ StandardPLPanel::VIEW_COUNT ]
-                                = { qtr( "Icon View" ),
-                                    qtr( "Detailed View" ),
-                                    qtr( "List View" ),
-                                    qtr( "PictureFlow View ") };
+                                = { qtr( "Icons" ),
+                                    qtr( "Detailed List" ),
+                                    qtr( "List" ),
+                                    qtr( "PictureFlow") };
 
 #endif

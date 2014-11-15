@@ -2,7 +2,7 @@
  * extended_panels.hpp : Exentended Panels
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 9964aef52651e0e794237fcadd60c752d647fe31 $
+ * $Id: b4c71eae980de945e3c882606a06a9433936939e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea at videolan dot org>
@@ -37,8 +37,6 @@
 #include <QTabWidget>
 
 #define BANDS 10
-#define NUM_CP_CTRL 7
-#define NUM_SP_CTRL 5
 
 class QSignalMapper;
 
@@ -48,7 +46,8 @@ class ExtVideo: public QObject
     friend class ExtendedDialog;
 public:
     ExtVideo( struct intf_thread_t *, QTabWidget * );
-    /*void gotoConf( QObject* );*/
+    static void setPostprocessing( struct intf_thread_t *, int q);
+    static int getPostprocessing( struct intf_thread_t *p_intf);
 private:
     Ui::ExtVideoWidget ui;
     QSignalMapper* filterMapper;
@@ -56,6 +55,8 @@ private:
     void initComboBoxItems( QObject* );
     void setWidgetValue( QObject* );
     void clean();
+    static void setFilterOption( struct intf_thread_t *, const char *psz_module, const char *psz_option, int, double, QString );
+
 private slots:
     void updateFilters();
     void updateFilterOptions();
@@ -83,89 +84,123 @@ private slots:
     void ValueChange( bool value );
 };
 
-class Equalizer: public QWidget
+class FilterSliderData : public QObject
 {
     Q_OBJECT
-    friend class ExtendedDialog;
+
+public:
+    typedef struct
+    {
+        QString name;
+        QString descs;
+        QString units;
+        float f_min;      // min
+        float f_max;      // max
+        float f_value;    // value
+        float f_resolution; // resolution
+        float f_visual_multiplier; // only for display (f_value *)
+    } slider_data_t;
+    FilterSliderData( QObject *parent, intf_thread_t *p_intf,
+                      QSlider *slider,
+                      QLabel *valueLabel, QLabel *nameLabel,
+                      const slider_data_t *p_data );
+    void setValue( float f );
+
+protected:
+    FilterSliderData( QObject *parent, QSlider *slider );
+    virtual float initialValue();
+    QSlider *slider;
+    QLabel *valueLabel;
+    QLabel *nameLabel;
+    const slider_data_t *p_data;
+    intf_thread_t *p_intf;
+    bool b_save_to_config;
+
+public slots:
+    virtual void onValueChanged( int i ) const;
+    virtual void updateText( int i );
+    virtual void writeToConfig() const;
+    void setSaveToConfig( bool );
+};
+
+class AudioFilterControlWidget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    AudioFilterControlWidget( intf_thread_t *, QWidget *, const char *name );
+    virtual ~AudioFilterControlWidget();
+
+protected:
+    virtual void build();
+    QVector<FilterSliderData::slider_data_t> controls;
+    QVector<FilterSliderData *> sliderDatas;
+    QGroupBox *slidersBox;
+    intf_thread_t *p_intf;
+    QString name; // filter's module name
+    int i_smallfont;
+
+protected slots:
+    void enable( bool ) const;
+    virtual void setSaveToConfig( bool );
+};
+
+class EqualizerSliderData : public FilterSliderData
+{
+    Q_OBJECT
+
+public:
+    EqualizerSliderData( QObject *parent, intf_thread_t *p_intf,
+                         QSlider *slider,
+                         QLabel *valueLabel, QLabel *nameLabel,
+                         const slider_data_t *p_data, int index );
+
+protected:
+    virtual float initialValue();
+    int index;
+    QStringList getBandsFromAout() const;
+
+public slots:
+    virtual void onValueChanged( int i ) const;
+    virtual void writeToConfig() const;
+};
+
+class Equalizer: public AudioFilterControlWidget
+{
+    Q_OBJECT
+
 public:
     Equalizer( intf_thread_t *, QWidget * );
-    QComboBox *presetsComboBox;
 
-    char * createValuesFromPreset( int i_preset );
-    void updateUIFromCore();
+protected:
+    virtual void build();
+
+protected slots:
+    virtual void setSaveToConfig( bool );
+
 private:
-    Ui::EqualizerWidget ui;
-    QSlider *bands[BANDS];
-    QLabel *band_texts[BANDS];
+    FilterSliderData *preamp;
+    FilterSliderData::slider_data_t preamp_values;
 
-    void delCallbacks( vlc_object_t * );
-    void addCallbacks( vlc_object_t * );
-
-    intf_thread_t *p_intf;
-    void clean() { enable(); }
 private slots:
-    void enable(bool);
-    void enable();
-    void set2Pass();
-    void setPreamp();
-    void setCoreBands();
-    void setCorePreset(int);
+    void setCorePreset( int );
+    void enable2Pass( bool ) const;
 };
 
-class Compressor: public QWidget
+class Compressor: public AudioFilterControlWidget
 {
     Q_OBJECT
+
 public:
     Compressor( intf_thread_t *, QWidget * );
-
-private:
-    QSlider *compCtrl[NUM_CP_CTRL];
-    QLabel *ctrl_texts[NUM_CP_CTRL];
-    QLabel *ctrl_readout[NUM_CP_CTRL];
-    float controlVars[NUM_CP_CTRL];
-    float oldControlVars[NUM_CP_CTRL];
-
-    QCheckBox *enableCheck;
-
-    intf_thread_t *p_intf;
-
-    void delCallbacks( vlc_object_t * );
-    void addCallbacks( vlc_object_t * );
-
-    void updateSliders(float *);
-    void setValues();
-
-private slots:
-    void enable(bool);
-    void enable();
-    void setInitValues();
 };
 
-class Spatializer: public QWidget
+class Spatializer: public AudioFilterControlWidget
 {
     Q_OBJECT
+
 public:
     Spatializer( intf_thread_t *, QWidget * );
-
-private:
-    QSlider *spatCtrl[NUM_SP_CTRL];
-    QLabel *ctrl_texts[NUM_SP_CTRL];
-    QLabel *ctrl_readout[NUM_SP_CTRL];
-    float controlVars[5];
-    float oldControlVars[5];
-
-    QCheckBox *enableCheck;
-
-    void delCallbacks( vlc_object_t * );
-    void addCallbacks( vlc_object_t * );
-    intf_thread_t *p_intf;
-
-    void setValues();
-
-private slots:
-    void enable(bool);
-    void enable();
-    void setInitValues();
 };
 
 class SyncWidget : public QWidget

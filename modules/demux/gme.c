@@ -12,7 +12,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -248,8 +248,12 @@ static int Control (demux_t *demux, int query, va_list args)
              || (sys->titlev[sys->track_id]->i_length == 0))
                 *pos = 0.;
             else
-                *pos = (double)(gme_tell (sys->emu))
+            {
+                int offset = gme_tell (sys->emu);
+
+                *pos = (double)offset
                     / (double)(sys->titlev[sys->track_id]->i_length / 1000);
+            }
             return VLC_SUCCESS;
         }
 

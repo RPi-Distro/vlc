@@ -1,24 +1,24 @@
 /*****************************************************************************
  * grey_yuv.c : grayscale to others conversion module for vlc
  *****************************************************************************
- * Copyright (C) 2007, 2008 the VideoLAN team
- * $Id: 84b39fd32431eedbf9cd8fa8632ae1cad51783e5 $
+ * Copyright (C) 2007, 2008 VLC authors and VideoLAN
+ * $Id: d76eb880030b03a337592d6b5b4cbbe48b0208ac $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -72,7 +72,8 @@ static int Activate( vlc_object_t *p_this )
     }
 
     if( p_filter->fmt_in.video.i_width != p_filter->fmt_out.video.i_width
-     || p_filter->fmt_in.video.i_height != p_filter->fmt_out.video.i_height )
+       || p_filter->fmt_in.video.i_height != p_filter->fmt_out.video.i_height
+       || p_filter->fmt_in.video.orientation != p_filter->fmt_out.video.orientation )
         return -1;
 
     switch( p_filter->fmt_in.video.i_chroma )

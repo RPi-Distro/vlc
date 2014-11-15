@@ -16,8 +16,8 @@ $(TARBALLS)/libtheora-$(THEORA_VERSION).tar.xz:
 
 libtheora: libtheora-$(THEORA_VERSION).tar.xz .sum-theora
 	$(UNPACK)
-	$(APPLY) $(SRC)/theora/libtheora-includes.patch
-	echo 'ACLOCAL_AMFLAGS = -I m4' >> $(UNPACK_DIR)/Makefile.am
+	$(APPLY) $(SRC)/theora/libtheora-compiler-differentiation.patch
+	$(APPLY) $(SRC)/theora/libtheora-no-forceaddr.patch
 	$(UPDATE_AUTOCONFIG)
 	$(MOVE)
 
@@ -37,6 +37,9 @@ endif
 ifdef HAVE_MACOSX64
 THEORACONF += --disable-asm
 endif
+ifdef HAVE_IOS
+THEORACONF += --disable-asm
+endif
 ifdef HAVE_WIN64
 THEORACONF += --disable-asm
 endif
@@ -44,9 +47,6 @@ endif
 DEPS_theora = ogg $(DEPS_ogg)
 
 .theora: libtheora
-ifdef HAVE_WIN32
-	$(RECONF)
-endif
 	cd $< && $(HOSTVARS) ./configure $(THEORACONF)
 	cd $< && $(MAKE) install
 	touch $@

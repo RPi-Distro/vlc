@@ -2,7 +2,7 @@
  * SegmentTimeline.cpp: Implement the SegmentTimeline tag.
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: d9a997481c0e66af88c946bca289837c0991ade5 $
+ * $Id: d6dcc38a4e0789283715d78d9e10e2b8c0e39696 $
  *
  * Authors: Hugo Beauzée-Luyssen <beauze.h@gmail.com>
  *
@@ -20,6 +20,10 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include "SegmentTimeline.h"
 
@@ -52,17 +56,16 @@ void dash::mpd::SegmentTimeline::setTimescale(int timescale)
 
 void dash::mpd::SegmentTimeline::addElement(dash::mpd::SegmentTimeline::Element *e)
 {
-    int64_t         offset = 0;
-    for ( int i = 0; i <= e->r; ++i )
+    int64_t offset = 0;
+
+    for ( int i = 0; i < e->r; ++i )
     {
         this->elements.push_back( e );
-        if ( i < e->r )
-        {
-            e = new SegmentTimeline::Element( *e );
-            offset += e->d;
-            e->t += offset;
-        }
+        e = new SegmentTimeline::Element( *e );
+        offset += e->d;
+        e->t += offset;
     }
+    this->elements.push_back( e );
 }
 
 const SegmentTimeline::Element*    SegmentTimeline::getElement( unsigned int index ) const

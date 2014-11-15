@@ -1,25 +1,25 @@
 /*****************************************************************************
- * mkv.cpp : matroska demuxer
+ * mkv.hpp : matroska demuxer
  *****************************************************************************
- * Copyright (C) 2003-2005, 2008 the VideoLAN team
- * $Id: f30e37081e9748d34f389e77065c670d3aab4dc1 $
+ * Copyright (C) 2003-2005, 2008 VLC authors and VideoLAN
+ * $Id: 063891462fe164830b02a39675f74bbefd5c2f58 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef _MKV_H_
@@ -53,6 +53,7 @@
 #include <vlc_charset.h>
 #include <vlc_input.h>
 #include <vlc_demux.h>
+#include <vlc_aout.h> /* For reordering */
 
 #include <iostream>
 #include <cassert>
@@ -96,8 +97,6 @@
 
 #include "ebml/StdIOCallback.h"
 
-#include <vlc_keys.h>
-
 extern "C" {
    #include "../mp4/libmp4.h"
 }
@@ -112,6 +111,13 @@ extern "C" {
 #define MATROSKA_COMPRESSION_BLIB   1
 #define MATROSKA_COMPRESSION_LZOX   2
 #define MATROSKA_COMPRESSION_HEADER 3
+
+enum
+{
+    MATROSKA_ENCODING_SCOPE_ALL_FRAMES = 1,
+    MATROSKA_ENCODING_SCOPE_PRIVATE = 2,
+    MATROSKA_ENCODING_SCOPE_NEXT = 4 /* unsupported */
+};
 
 #define MKVD_TIMECODESCALE 1000000
 
@@ -174,10 +180,15 @@ struct matroska_stream_c
 /*****************************************************************************
  * definitions of structures and functions used by this plugins
  *****************************************************************************/
+class PrivateTrackData
+{
+public:
+    virtual ~PrivateTrackData() {}
+    virtual int32_t Init() { return 0; }
+};
+
 struct mkv_track_t
 {
-//    ~mkv_track_t();
-
     bool         b_default;
     bool         b_enabled;
     bool         b_forced;
@@ -190,6 +201,7 @@ struct mkv_track_t
     bool         b_dts_only;
     bool         b_pts_only;
 
+    bool         b_no_duration;
     uint64_t     i_default_duration;
     float        f_timecodescale;
     mtime_t      i_last_dts;
@@ -201,6 +213,12 @@ struct mkv_track_t
 
     /* audio */
     unsigned int i_original_rate;
+    uint8_t i_chans_to_reorder;            /* do we need channel reordering */
+    uint8_t pi_chan_table[AOUT_CHAN_MAX];
+
+
+    /* Private track paramters */
+    PrivateTrackData *p_sys;
 
     bool            b_inited;
     /* data to be send first */
@@ -219,7 +237,12 @@ struct mkv_track_t
 
     /* encryption/compression */
     int                    i_compression_type;
+    uint32_t               i_encoding_scope;
     KaxContentCompSettings *p_compression_data;
+
+    /* Matroska 4 new elements used by Opus */
+    mtime_t i_seek_preroll;
+    mtime_t i_codec_delay;
 
 };
 

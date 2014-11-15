@@ -2,25 +2,25 @@
  * virtual_segment.cpp : virtual segment implementation in the MKV demuxer
  *****************************************************************************
  * Copyright © 2003-2011 VideoLAN and VLC authors
- * $Id: 041d6bbe6b304ad2ff63b599ba3c7c3c46df3f0c $
+ * $Id: 362fc3cddf617296c693fe38977f6fdebfdaf6f0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
  *          Denis Charmet <typx@dinauz.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 #include <vector>
 
@@ -267,6 +267,8 @@ virtual_segment_c::virtual_segment_c( std::vector<matroska_segment_c*> * p_opene
     i_sys_title = 0;
     p_current_chapter = NULL;
 
+    i_current_edition = p_segment->i_default_edition;
+
     for( i = 0; i < p_segment->stored_editions.size(); i++ )
     {
         /* Create a virtual edition from opened */
@@ -276,9 +278,16 @@ virtual_segment_c::virtual_segment_c( std::vector<matroska_segment_c*> * p_opene
          * on an other segment which couldn't be found... ignore it */
         if(p_vedition->b_ordered && p_vedition->i_duration == 0)
         {
+
             msg_Warn( &p_segment->sys.demuxer,
-                      "Edition %s (%lu) links to other segments not found and is empty... ignoring it",
+                      "Edition %s (%zu) links to other segments not found and is empty... ignoring it",
                        p_vedition->GetMainName().c_str(), i );
+            if(i_current_edition == i)
+            {
+                msg_Warn( &p_segment->sys.demuxer,
+                          "Empty edition was the default... defaulting to 0");
+                i_current_edition = 0;
+            }
             delete p_vedition;
         }
         else
@@ -476,10 +485,7 @@ void virtual_segment_c::Seek( demux_t & demuxer, mtime_t i_date, mtime_t i_time_
         }
 
         if( p_current_chapter->p_segment != p_chapter->p_segment )
-        {
-            p_chapter->p_segment->Select( i_date );
-            p_current_chapter->p_segment->UnSelect();
-        }
+            ChangeSegment( p_current_chapter->p_segment, p_chapter->p_segment, i_date );
         p_current_chapter = p_chapter;
 
         p_chapter->p_segment->Seek( i_date, i_time_offset, i_global_position );
@@ -613,3 +619,76 @@ void virtual_chapter_c::print()
         sub_chapters[i]->print();
 }
 #endif
+
+void virtual_segment_c::ChangeSegment( matroska_segment_c * p_old, matroska_segment_c * p_new, mtime_t i_start_time )
+{
+    size_t i, j;
+    char *sub_lang = NULL, *aud_lang = NULL;
+    for( i = 0; i < p_old->tracks.size(); i++)
+    {
+        mkv_track_t *p_tk = p_old->tracks[i];
+        es_format_t *p_ofmt = &p_tk->fmt;
+        if( p_tk->p_es )
+        {
+            bool state = false;
+            es_out_Control( p_old->sys.demuxer.out, ES_OUT_GET_ES_STATE, p_tk->p_es, &state );
+            if( state )
+            {
+                if( p_ofmt->i_cat == AUDIO_ES )
+                    aud_lang = p_tk->fmt.psz_language;
+                else if( p_ofmt->i_cat == SPU_ES )
+                    sub_lang = p_tk->fmt.psz_language;
+            }
+        }
+    }
+    for( i = 0; i < p_new->tracks.size(); i++)
+    {
+        mkv_track_t *p_tk = p_new->tracks[i];
+        es_format_t *p_nfmt = &p_tk->fmt;
+
+        /* Let's only do that for audio and video for now */
+        if( p_nfmt->i_cat == AUDIO_ES || p_nfmt->i_cat == VIDEO_ES )
+        {
+            
+            /* check for a similar elementary stream */
+            for( j = 0; j < p_old->tracks.size(); j++)
+            {
+                es_format_t * p_ofmt = &p_old->tracks[j]->fmt;
+
+                if( !p_old->tracks[j]->p_es )
+                    continue;
+
+                if( ( p_nfmt->i_cat == p_ofmt->i_cat ) &&
+                    ( p_nfmt->i_codec == p_ofmt->i_codec ) &&
+                    ( p_nfmt->i_priority == p_ofmt->i_priority ) &&
+                    ( p_nfmt->i_bitrate == p_ofmt->i_bitrate ) &&
+                    ( p_nfmt->i_extra == p_ofmt->i_extra ) &&
+                    ( (!p_nfmt->p_extra && !p_ofmt->p_extra) || 
+                      !memcmp( p_nfmt->p_extra, p_ofmt->p_extra, p_nfmt->i_extra ) ) &&
+                    !strcasecmp( p_nfmt->psz_language, p_ofmt->psz_language ) &&
+                    ( ( p_nfmt->i_cat == AUDIO_ES && 
+                        !memcmp( &p_nfmt->audio, &p_ofmt->audio, sizeof(audio_format_t) ) ) ||
+                      ( p_nfmt->i_cat == VIDEO_ES && 
+                        !memcmp( &p_nfmt->video, &p_ofmt->video, sizeof(video_format_t) ) ) ) )
+                {
+                    /* FIXME handle video palettes... */
+                    msg_Warn( &p_old->sys.demuxer, "Reusing decoder of old track %zu for track %zu", j, i);
+                    p_tk->p_es = p_old->tracks[j]->p_es;
+                    p_old->tracks[j]->p_es = NULL;
+                    break;
+                }
+            }
+        }
+        p_tk->fmt.i_priority &= ~(0x10);
+        if( ( sub_lang && p_nfmt->i_cat == SPU_ES && !strcasecmp(sub_lang, p_nfmt->psz_language) ) ||
+            ( aud_lang && p_nfmt->i_cat == AUDIO_ES && !strcasecmp(aud_lang, p_nfmt->psz_language) ) )
+        {
+            msg_Warn( &p_old->sys.demuxer, "Since previous segment used lang %s forcing track %zu",
+                      p_nfmt->psz_language, i);
+            p_tk->fmt.i_priority |= 0x10;
+            p_tk->b_forced = true;
+        }
+    }
+    p_new->Select( i_start_time );
+    p_old->UnSelect();
+}

@@ -2,7 +2,7 @@
  * core.c management of the modules configuration
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: cbef20c96c2f9805fb424edf3b001dddb5af8922 $
+ * $Id: 9882c525cc24fcbd4303b4c850b7d18bc5b17226 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -28,15 +28,18 @@
 #include <vlc_common.h>
 #include <vlc_keys.h>
 #include <vlc_modules.h>
+#include <vlc_plugin.h>
 
 #include "vlc_configuration.h"
 
+#include <errno.h>
 #include <assert.h>
 
 #include "configuration.h"
 #include "modules/modules.h"
 
 vlc_rwlock_t config_lock = VLC_STATIC_RWLOCK;
+bool config_dirty = false;
 
 static inline char *strdupnull (const char *src)
 {
@@ -241,7 +244,7 @@ void config_PutPsz( vlc_object_t *p_this,
     vlc_rwlock_wrlock (&config_lock);
     oldstr = (char *)p_config->value.psz;
     p_config->value.psz = str;
-    p_config->b_dirty = true;
+    config_dirty = true;
     vlc_rwlock_unlock (&config_lock);
 
     free (oldstr);
@@ -282,7 +285,7 @@ void config_PutInt( vlc_object_t *p_this, const char *psz_name,
 
     vlc_rwlock_wrlock (&config_lock);
     p_config->value.i = i_value;
-    p_config->b_dirty = true;
+    config_dirty = true;
     vlc_rwlock_unlock (&config_lock);
 }
 
@@ -323,8 +326,147 @@ void config_PutFloat( vlc_object_t *p_this,
 
     vlc_rwlock_wrlock (&config_lock);
     p_config->value.f = f_value;
-    p_config->b_dirty = true;
+    config_dirty = true;
     vlc_rwlock_unlock (&config_lock);
+}
+
+/**
+ * Determines a list of suggested values for an integer configuration item.
+ * \param values pointer to a table of integer values [OUT]
+ * \param texts pointer to a table of descriptions strings [OUT]
+ * \return number of choices, or -1 on error
+ * \note the caller is responsible for calling free() on all descriptions and
+ * on both tables. In case of error, both pointers are set to NULL.
+ */
+ssize_t config_GetIntChoices (vlc_object_t *obj, const char *name,
+                             int64_t **restrict values, char ***restrict texts)
+{
+    *values = NULL;
+    *texts = NULL;
+
+    module_config_t *cfg = config_FindConfig (obj, name);
+    if (cfg == NULL)
+    {
+        msg_Warn (obj, "option %s does not exist", name);
+        errno = ENOENT;
+        return -1;
+    }
+
+    size_t count = cfg->list_count;
+    if (count == 0)
+    {
+        if (cfg->list.i_cb == NULL)
+            return 0;
+        return cfg->list.i_cb(obj, name, values, texts);
+    }
+
+    int64_t *vals = xmalloc (sizeof (*vals) * count);
+    char **txts = xmalloc (sizeof (*txts) * count);
+
+    for (size_t i = 0; i < count; i++)
+    {
+        vals[i] = cfg->list.i[i];
+        /* FIXME: use module_gettext() instead */
+        txts[i] = strdup ((cfg->list_text[i] != NULL)
+                                       ? vlc_gettext (cfg->list_text[i]) : "");
+        if (unlikely(txts[i] == NULL))
+            abort ();
+    }
+
+    *values = vals;
+    *texts = txts;
+    return count;
+}
+
+
+static ssize_t config_ListModules (const char *cap, char ***restrict values,
+                                   char ***restrict texts)
+{
+    module_t **list;
+    ssize_t n = module_list_cap (&list, cap);
+    if (n <= 0)
+    {
+        *values = *texts = NULL;
+        return n;
+    }
+
+    char **vals = xmalloc ((n + 2) * sizeof (*vals));
+    char **txts = xmalloc ((n + 2) * sizeof (*txts));
+
+    vals[0] = xstrdup ("any");
+    txts[0] = xstrdup (_("Automatic"));
+
+    for (ssize_t i = 0; i < n; i++)
+    {
+        vals[i + 1] = xstrdup (module_get_object (list[i]));
+        txts[i + 1] = xstrdup (module_gettext (list[i],
+                               module_get_name (list[i], true)));
+    }
+
+    vals[n + 1] = xstrdup ("none");
+    txts[n + 1] = xstrdup (_("Disable"));
+
+    *values = vals;
+    *texts = txts;
+    return n + 2;
+}
+
+/**
+ * Determines a list of suggested values for a string configuration item.
+ * \param values pointer to a table of value strings [OUT]
+ * \param texts pointer to a table of descriptions strings [OUT]
+ * \return number of choices, or -1 on error
+ * \note the caller is responsible for calling free() on all values, on all
+ * descriptions and on both tables.
+ * In case of error, both pointers are set to NULL.
+ */
+ssize_t config_GetPszChoices (vlc_object_t *obj, const char *name,
+                              char ***restrict values, char ***restrict texts)
+{
+    *values = *texts = NULL;
+
+    module_config_t *cfg = config_FindConfig (obj, name);
+    if (cfg == NULL)
+    {
+        errno = ENOENT;
+        return -1;
+    }
+
+    switch (cfg->i_type)
+    {
+        case CONFIG_ITEM_MODULE:
+            return config_ListModules (cfg->psz_type, values, texts);
+        default:
+            if (!IsConfigStringType (cfg->i_type))
+            {
+                errno = EINVAL;
+                return -1;
+            }
+            break;
+    }
+
+    size_t count = cfg->list_count;
+    if (count == 0)
+    {
+        if (cfg->list.psz_cb == NULL)
+            return 0;
+        return cfg->list.psz_cb(obj, name, values, texts);
+    }
+
+    char **vals = xmalloc (sizeof (*vals) * count);
+    char **txts = xmalloc (sizeof (*txts) * count);
+
+    for (size_t i = 0; i < count; i++)
+    {
+        vals[i] = xstrdup ((cfg->list.psz[i] != NULL) ? cfg->list.psz[i] : "");
+        /* FIXME: use module_gettext() instead */
+        txts[i] = xstrdup ((cfg->list_text[i] != NULL)
+                                       ? vlc_gettext (cfg->list_text[i]) : "");
+    }
+
+    *values = vals;
+    *texts = txts;
+    return count;
 }
 
 static int confcmp (const void *a, const void *b)
@@ -352,12 +494,9 @@ static struct
  */
 int config_SortConfig (void)
 {
-    size_t nmod;
+    size_t nmod, nconf = 0;
     module_t **mlist = module_list_get (&nmod);
-    if (unlikely(mlist == NULL))
-        return VLC_ENOMEM;
 
-    size_t nconf = 0;
     for (size_t i = 0; i < nmod; i++)
          nconf  += mlist[i]->confsize;
 
@@ -436,29 +575,27 @@ void config_Free (module_config_t *config, size_t confsize)
         free( p_item->psz_text );
         free( p_item->psz_longtext );
 
+        if (IsConfigIntegerType (p_item->i_type))
+        {
+            if (p_item->list_count)
+                free (p_item->list.i);
+        }
+        else
         if (IsConfigStringType (p_item->i_type))
         {
             free (p_item->value.psz);
             free (p_item->orig.psz);
+            if (p_item->list_count)
+            {
+                for (size_t i = 0; i < p_item->list_count; i++)
+                    free (p_item->list.psz[i]);
+                free (p_item->list.psz);
+            }
         }
 
-        if( p_item->ppsz_list )
-            for (int i = 0; i < p_item->i_list; i++)
-                free( p_item->ppsz_list[i] );
-        if( p_item->ppsz_list_text )
-            for (int i = 0; i < p_item->i_list; i++)
-                free( p_item->ppsz_list_text[i] );
-        free( p_item->ppsz_list );
-        free( p_item->ppsz_list_text );
-        free( p_item->pi_list );
-
-        if( p_item->i_action )
-        {
-            for (int i = 0; i < p_item->i_action; i++)
-                free( p_item->ppsz_action_text[i] );
-            free( p_item->ppf_action );
-            free( p_item->ppsz_action_text );
-        }
+        for (size_t i = 0; i < p_item->list_count; i++)
+                free (p_item->list_text[i]);
+        free (p_item->list_text);
     }
 
     free (config);
@@ -470,12 +607,14 @@ void config_Free (module_config_t *config, size_t confsize)
  *****************************************************************************/
 void config_ResetAll( vlc_object_t *p_this )
 {
-    VLC_UNUSED(p_this);
-    module_t *p_module;
-    module_t **list = module_list_get (NULL);
+    size_t count;
+    module_t **list = module_list_get (&count);
 
     vlc_rwlock_wrlock (&config_lock);
-    for (size_t j = 0; (p_module = list[j]) != NULL; j++)
+    for (size_t j = 0; j < count; j++)
+    {
+        module_t *p_module = list[j];
+
         for (size_t i = 0; i < p_module->confsize; i++ )
         {
             module_config_t *p_config = p_module->p_config + i;
@@ -493,7 +632,9 @@ void config_ResetAll( vlc_object_t *p_this )
                         strdupnull (p_config->orig.psz);
             }
         }
+    }
     vlc_rwlock_unlock (&config_lock);
 
     module_list_free (list);
+    VLC_UNUSED(p_this);
 }

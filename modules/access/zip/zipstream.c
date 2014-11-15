@@ -1,24 +1,24 @@
 /*****************************************************************************
  * zipstream.c: stream_filter that creates a XSPF playlist from a Zip archive
  *****************************************************************************
- * Copyright (C) 2009 the VideoLAN team
- * $Id: ac3f87cf30fa5368982acf8d5c111e90117d0b54 $
+ * Copyright (C) 2009 VLC authors and VideoLAN
+ * $Id: 8fd966d64c3d030445813aa05238663e68767aa4 $
  *
  * Authors: Jean-Philippe André <jpeg@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /** **************************************************************************
@@ -34,9 +34,6 @@
 
 /* FIXME remove */
 #include <vlc_input.h>
-
-#define FILENAME_TEXT N_( "Media in Zip" )
-#define FILENAME_LONGTEXT N_( "Path to the media in the Zip archive" )
 
 /** **************************************************************************
  * Module descriptor
@@ -136,14 +133,14 @@ inline static void free_all_node( node *root )
 /* Allocate strcat and format */
 static int astrcatf( char **ppsz_dest, const char *psz_fmt_src, ... )
 {
-    va_list args;
-    va_start( args, psz_fmt_src );
-
     char *psz_tmp;
-    int i_ret = vasprintf( &psz_tmp, psz_fmt_src, args );
-    if( i_ret == -1 ) return -1;
+    va_list args;
 
+    va_start( args, psz_fmt_src );
+    int i_ret = vasprintf( &psz_tmp, psz_fmt_src, args );
     va_end( args );
+
+    if( i_ret == -1 ) return -1;
 
     int i_len = strlen( *ppsz_dest ) + strlen( psz_tmp ) + 1;
     char *psz_out = realloc( *ppsz_dest, i_len );
@@ -322,7 +319,6 @@ static int Control( stream_t *s, int i_query, va_list args )
             return VLC_EGENERIC;
 
         case STREAM_UPDATE_SIZE:
-        case STREAM_CONTROL_ACCESS:
         case STREAM_CAN_SEEK:
         case STREAM_CAN_FASTSEEK:
         case STREAM_SET_RECORD_STATE:
@@ -440,6 +436,8 @@ static int GetFilesInZip( stream_t *p_this, unzFile file,
             != UNZ_OK )
         {
             msg_Warn( p_this, "can't get info about file in zip" );
+            free( psz_fileName );
+            free( p_fileInfo );
             return VLC_EGENERIC;
         }
 
@@ -598,7 +596,12 @@ static int WriteXSPF( char **pp_buffer, vlc_array_t *p_filenames,
             char *psz_path = strdup( psz_pathtozip );
             char *psz_escapedName;
             escapeToXml( &psz_escapedName, psz_name );
-            if( astrcatf( &psz_path, "%s", psz_escapedName ) < 0 ) return -1;
+            if( astrcatf( &psz_path, "%s", psz_escapedName ) < 0 )
+            {
+                free( psz_escapedName );
+                return -1;
+            }
+            free( psz_escapedName );
 
             /* Track information */
             if( astrcatf( pp_buffer,
@@ -713,7 +716,9 @@ static node* findOrCreateParentNode( node *root, const char *fullpath )
         if( !strcmp( current->name, folder ) )
         {
             /* We found the folder, go recursively deeper */
-            return findOrCreateParentNode( current, sep );
+            node *parentNode = findOrCreateParentNode( current, sep );
+            free( path );
+            return parentNode;
         }
         current = current->next;
     }

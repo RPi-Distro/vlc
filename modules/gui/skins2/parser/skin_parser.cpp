@@ -2,7 +2,7 @@
  * skin_parser.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 30ed199f6ff5738bec19066fe262b02baad70c27 $
+ * $Id: 89711b65de7e1c2d397a9f91531a2c16d9dff757 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -99,8 +99,8 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
         DefaultAttr( attr, "points", "(0,0)" );
         DefaultAttr( attr, "range", "10" );
 
-        int refWidth = getRefWidth( false );
-        int refHeight = getRefHeight( false );
+        int refWidth, refHeight;
+        getRefDimensions( refWidth, refHeight, false );
         int x = getDimension( attr["x"], refWidth );
         int y = getDimension( attr["y"], refHeight );
         const BuilderData::Anchor anchor( x + m_xOffset,
@@ -204,8 +204,8 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
         DefaultAttr( attr, "tooltiptext", "" );
         DefaultAttr( attr, "help", "" );
 
-        int refWidth = getRefWidth( false );
-        int refHeight = getRefHeight( false );
+        int refWidth, refHeight;
+        getRefDimensions( refWidth, refHeight, false );
         int x = getDimension( attr["x"], refWidth );
         int y = getDimension( attr["y"], refHeight );
         const BuilderData::Button button( uniqueId( attr["id"] ),
@@ -243,8 +243,8 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
         DefaultAttr( attr, "tooltiptext2", "" );
         DefaultAttr( attr, "help", "" );
 
-        int refWidth = getRefWidth( false );
-        int refHeight = getRefHeight( false );
+        int refWidth, refHeight;
+        getRefDimensions( refWidth, refHeight, false );
         int x = getDimension( attr["x"], refWidth );
         int y = getDimension( attr["y"], refHeight );
         const BuilderData::Checkbox checkbox( uniqueId( attr["id"] ),
@@ -302,8 +302,8 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
         DefaultAttr( attr, "help", "" );
         DefaultAttr( attr, "art", "false" );
 
-        int refWidth = getRefWidth( false );
-        int refHeight = getRefHeight( false );
+        int refWidth, refHeight;
+        getRefDimensions( refWidth, refHeight, false );
         int x = getDimension( attr["x"], refWidth );
         int y = getDimension( attr["y"], refHeight );
         int width = getDimension( attr["width"], refWidth );
@@ -331,8 +331,8 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
         DefaultAttr( attr, "minheight", "-1" );
         DefaultAttr( attr, "maxheight", "-1" );
 
-        int refWidth = getRefWidth( true );
-        int refHeight = getRefHeight( true );
+        int refWidth, refHeight;
+        getRefDimensions( refWidth, refHeight, true );
         int width = getDimension( attr["width"], refWidth );
         int height = getDimension( attr["height"], refHeight );
 
@@ -366,9 +366,8 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
         DefaultAttr( attr, "xmargin", "0" );
         DefaultAttr( attr, "ymargin", "0" );
 
-        int refWidth = getRefWidth( false );
-        int refHeight = getRefHeight( false );
-
+        int refWidth, refHeight;
+        getRefDimensions( refWidth, refHeight, false );
         int x = getDimension( attr["x"], refWidth );
         int y = getDimension( attr["y"], refHeight );
         int width = getDimension( attr["width"], refWidth );
@@ -422,9 +421,8 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
         DefaultAttr( attr, "selcolor", "#0000FF" );
         DefaultAttr( attr, "help", "" );
 
-        int refWidth = getRefWidth( false );
-        int refHeight = getRefHeight( false );
-
+        int refWidth, refHeight;
+        getRefDimensions( refWidth, refHeight, false );
         int x = getDimension( attr["x"], refWidth );
         int y = getDimension( attr["y"], refHeight );
         int width = getDimension( attr["width"], refWidth );
@@ -484,9 +482,8 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
         DefaultAttr( attr, "selcolor", "#0000FF" );
         DefaultAttr( attr, "help", "" );
 
-        int refWidth = getRefWidth( false );
-        int refHeight = getRefHeight( false );
-
+        int refWidth, refHeight;
+        getRefDimensions( refWidth, refHeight, false );
         int x = getDimension( attr["x"], refWidth );
         int y = getDimension( attr["y"], refHeight );
         int width = getDimension( attr["width"], refWidth );
@@ -533,8 +530,8 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
         DefaultAttr( attr, "tooltiptext", "" );
         DefaultAttr( attr, "help", "" );
 
-        int refWidth = getRefWidth( false );
-        int refHeight = getRefHeight( false );
+        int refWidth, refHeight;
+        getRefDimensions( refWidth, refHeight, false );
         int x = getDimension( attr["x"], refWidth );
         int y = getDimension( attr["y"], refHeight );
         const BuilderData::RadialSlider radial( uniqueId( attr["id"] ),
@@ -559,6 +556,8 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
         DefaultAttr( attr, "visible", "true" );
         DefaultAttr( attr, "x", "0" );
         DefaultAttr( attr, "y", "0" );
+        DefaultAttr( attr, "width", "-1" );
+        DefaultAttr( attr, "height", "-1" );
         DefaultAttr( attr, "lefttop", "lefttop" );
         DefaultAttr( attr, "rightbottom", "lefttop" );
         DefaultAttr( attr, "xkeepratio", "false" );
@@ -577,13 +576,15 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
             newValue = "playtree.slider";
         }
 
-        int refWidth = getRefWidth( false );
-        int refHeight = getRefHeight( false );
+        int refWidth, refHeight;
+        getRefDimensions( refWidth, refHeight, false );
         int x = getDimension( attr["x"], refWidth );
         int y = getDimension( attr["y"], refHeight );
+        int width = getDimension( attr["width"], refWidth );
+        int height = getDimension( attr["height"], refHeight );
         const BuilderData::Slider slider( uniqueId( attr["id"] ),
-                attr["visible"], x + m_xOffset,
-                y + m_yOffset, attr["lefttop"],
+                attr["visible"], x + m_xOffset, y + m_yOffset,
+                width, height, attr["lefttop"],
                 attr["rightbottom"], convertBoolean( attr["xkeepratio"] ),
                 convertBoolean( attr["ykeepratio"] ), attr["up"], attr["down"],
                 attr["over"], attr["points"], atoi( attr["thickness"] ),
@@ -631,9 +632,8 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
         DefaultAttr( attr, "ykeepratio", "false" );
         DefaultAttr( attr, "help", "" );
 
-        int refWidth = getRefWidth( false );
-        int refHeight = getRefHeight( false );
-
+        int refWidth, refHeight;
+        getRefDimensions( refWidth, refHeight, false );
         int x = getDimension( attr["x"], refWidth );
         int y = getDimension( attr["y"], refHeight );
         int width = getDimension( attr["width"], refWidth );
@@ -705,12 +705,11 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
         DefaultAttr( attr, "rightbottom", "lefttop" );
         DefaultAttr( attr, "xkeepratio", "false" );
         DefaultAttr( attr, "ykeepratio", "false" );
-        DefaultAttr( attr, "autoresize", "false" );
+        DefaultAttr( attr, "autoresize", "true" );
         DefaultAttr( attr, "help", "" );
 
-        int refWidth = getRefWidth( false );
-        int refHeight = getRefHeight( false );
-
+        int refWidth, refHeight;
+        getRefDimensions( refWidth, refHeight, false );
         int x = getDimension( attr["x"], refWidth );
         int y = getDimension( attr["y"], refHeight );
         int width = getDimension( attr["width"], refWidth );
@@ -748,8 +747,8 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
 
         m_curWindowId = uniqueId( attr["id"] );
 
-        int refWidth = getRefWidth( true );
-        int refHeight = getRefHeight( true );
+        int refWidth, refHeight;
+        getRefDimensions( refWidth, refHeight, true );
         int x = getDimension( attr["x"], refWidth );
         int y = getDimension( attr["y"], refHeight );
         const BuilderData::Window window( m_curWindowId,
@@ -871,46 +870,39 @@ const string SkinParser::uniqueId( const string &id )
     return newId;
 }
 
-int SkinParser::getRefWidth( bool toScreen )
+void SkinParser::getRefDimensions( int &rWidth, int &rHeight, bool toScreen )
 {
     if( toScreen )
     {
         OSFactory *pOsFactory = OSFactory::instance( getIntf() );
-        return pOsFactory->getScreenWidth();
+        rWidth = pOsFactory->getScreenWidth();
+        rHeight = pOsFactory->getScreenHeight();
+        return;
     }
 
     string panelId = m_panelStack.back();
     if( panelId != "none" )
     {
-        const BuilderData::Panel panel = m_pData->m_listPanel.back();
-        return panel.m_width;
+        list<BuilderData::Panel>::const_iterator it;
+        for( it = m_pData->m_listPanel.begin();
+             it != m_pData->m_listPanel.end(); ++it )
+        {
+            if( it->m_id == panelId )
+            {
+                rWidth = it->m_width;
+                rHeight = it->m_height;
+                return;
+            }
+        }
     }
     else
     {
         const BuilderData::Layout layout = m_pData->m_listLayout.back();
-        return layout.m_width;
+        rWidth = layout.m_width;
+        rHeight = layout.m_height;
+        return;
     }
-}
-
-int SkinParser::getRefHeight( bool toScreen )
-{
-    if( toScreen )
-    {
-        OSFactory *pOsFactory = OSFactory::instance( getIntf() );
-        return pOsFactory->getScreenHeight();
-    }
-
-    string panelId = m_panelStack.back();
-    if( panelId != "none" )
-    {
-        const BuilderData::Panel panel = m_pData->m_listPanel.back();
-        return panel.m_height;
-    }
-    else
-    {
-        const BuilderData::Layout layout = m_pData->m_listLayout.back();
-        return layout.m_height;
-    }
+    msg_Err( getIntf(), "failure to retrieve parent panel or layout" );
 }
 
 
@@ -971,33 +963,45 @@ void SkinParser::convertPosition( string position, string xOffset,
                           int refWidth, int refHeight, int* p_x, int* p_y )
 {
     int iPosition = getPosition( position );
-    if( iPosition == POS_UNDEF )
-        return;
+    if( iPosition != POS_UNDEF )
+    {
+        // compute offset against the parent object size
+        // for backward compatibility
+        int i_xOffset = getDimension( xOffset, refWidth );
+        int i_yOffset = getDimension( yOffset, refHeight );
+        int i_xMargin = getDimension( xMargin, refWidth );
+        int i_yMargin = getDimension( yMargin, refHeight );
 
-    int i_xOffset = getDimension( xOffset, refWidth );
-    int i_yOffset = getDimension( yOffset, refHeight );
-    int i_xMargin = getDimension( xMargin, refWidth );
-    int i_yMargin = getDimension( yMargin, refHeight );
+        // compute *p_x
+        if( iPosition & POS_LEFT )
+            *p_x = i_xMargin;
+        else if( iPosition & POS_RIGHT )
+            *p_x = refWidth - width - i_xMargin;
+        else
+            *p_x = ( refWidth - width ) / 2;
 
-   // compute *p_x
-   if( iPosition & POS_LEFT )
-       *p_x = i_xMargin;
-   else if( iPosition & POS_RIGHT )
-       *p_x = refWidth - width - i_xMargin;
-   else
-       *p_x = ( refWidth - width ) / 2;
+        // compute *p_y
+        if( iPosition & POS_TOP )
+            *p_y = i_yMargin;
+        else if( iPosition & POS_BOTTOM )
+            *p_y = refHeight - height - i_yMargin;
+        else
+            *p_y = ( refHeight - height ) / 2;
 
-   // compute *p_y
-   if( iPosition & POS_TOP )
-       *p_y = i_yMargin;
-   else if( iPosition & POS_BOTTOM )
-       *p_y = refHeight - height - i_yMargin;
-   else
-       *p_y = ( refHeight - height ) / 2;
+        // add offset
+        *p_x += i_xOffset;
+        *p_y += i_yOffset;
+    }
+    else
+    {
+        // compute offset against the current object size
+        int i_xOffset = getDimension( xOffset, width );
+        int i_yOffset = getDimension( yOffset, height );
 
-    // add offset
-    *p_x += i_xOffset;
-    *p_y += i_yOffset;
+        // add offset
+        *p_x += i_xOffset;
+        *p_y += i_yOffset;
+    }
 }
 
 
@@ -1006,8 +1010,8 @@ void SkinParser::updateWindowPos( int width, int height )
     BuilderData::Window win = m_pData->m_listWindow.back();
     m_pData->m_listWindow.pop_back();
 
-    int refWidth = getRefWidth( true );
-    int refHeight = getRefHeight( true );
+    int refWidth, refHeight;
+    getRefDimensions( refWidth, refHeight, true );
     convertPosition( win.m_position,
                      win.m_xOffset, win.m_yOffset,
                      win.m_xMargin, win.m_yMargin,

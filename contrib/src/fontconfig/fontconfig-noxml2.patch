@@ -95,7 +95,7 @@ diff -ruN fontconfig/src/fcxml.c fontconfig.new/src/fcxml.c
      if (!config)
  	goto bail0;
 -    if (!FcConfigAddDir (config, (FcChar8 *) FC_DEFAULT_FONTS))
-+    char *path = malloc( MAX_PATH + 1 );
++    char path[MAX_PATH + 8];
 +    GetWindowsDirectory( path, MAX_PATH + 1 );
 +    strcat( path, "\\fonts" );
 +//    printf( "Fonts dir: %s\n", path );

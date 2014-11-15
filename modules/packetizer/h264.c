@@ -1,27 +1,27 @@
 /*****************************************************************************
  * h264.c: h264/avc video packetizer
  *****************************************************************************
- * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: a680454d7f5d919c3e285e33cde16ff867024bc5 $
+ * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
+ * $Id: e671f6e92bc97347bd50355db4ddc5664974f547 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
  *          Derk-Jan Hartman <hartman at videolan dot org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -31,7 +31,6 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
-#include <assert.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
@@ -147,14 +146,6 @@ enum nal_unit_type_e
     /* ref_idc == 0 for 6,9,10,11,12 */
 };
 
-enum nal_priority_e
-{
-    NAL_PRIORITY_DISPOSABLE = 0,
-    NAL_PRIORITY_LOW        = 1,
-    NAL_PRIORITY_HIGH       = 2,
-    NAL_PRIORITY_HIGHEST    = 3,
-};
-
 #define BLOCK_FLAG_PRIVATE_AUD (1 << BLOCK_FLAG_PRIVATE_SHIFT)
 
 static block_t *Packetize( decoder_t *, block_t ** );
@@ -165,7 +156,7 @@ static void PacketizeReset( void *p_private, bool b_broken );
 static block_t *PacketizeParse( void *p_private, bool *pb_ts_used, block_t * );
 static int PacketizeValidate( void *p_private, block_t * );
 
-static block_t *ParseNALBlock( decoder_t *, bool *pb_used_ts, block_t * );
+static block_t *ParseNALBlock( decoder_t *, bool *pb_ts_used, block_t * );
 static block_t *CreateAnnexbNAL( decoder_t *, const uint8_t *p, int );
 
 static block_t *OutputPicture( decoder_t *p_dec );
@@ -484,7 +475,7 @@ static block_t *GetCc( decoder_t *p_dec, bool pb_present[4] )
     if( p_sys->cc.i_data <= 0 )
         return NULL;
 
-    p_cc = block_New( p_dec, p_sys->cc.i_data);
+    p_cc = block_Alloc( p_sys->cc.i_data);
     if( p_cc )
     {
         memcpy( p_cc->p_buffer, p_sys->cc.p_data, p_sys->cc.i_data );
@@ -538,7 +529,7 @@ static block_t *CreateAnnexbNAL( decoder_t *p_dec, const uint8_t *p, int i_size 
 {
     block_t *p_nal;
 
-    p_nal = block_New( p_dec, 4 + i_size );
+    p_nal = block_Alloc( 4 + i_size );
     if( !p_nal ) return NULL;
 
     /* Add start code */
@@ -603,7 +594,7 @@ static inline int bs_read_se( bs_t *s )
  * ParseNALBlock: parses annexB type NALs
  * All p_frag blocks are required to start with 0 0 0 1 4-byte startcode
  *****************************************************************************/
-static block_t *ParseNALBlock( decoder_t *p_dec, bool *pb_used_ts, block_t *p_frag )
+static block_t *ParseNALBlock( decoder_t *p_dec, bool *pb_ts_used, block_t *p_frag )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     block_t *p_pic = NULL;
@@ -700,13 +691,13 @@ static block_t *ParseNALBlock( decoder_t *p_dec, bool *pb_used_ts, block_t *p_fr
     if( p_frag )
         block_ChainAppend( &p_sys->p_frame, p_frag );
 
-    *pb_used_ts = false;
+    *pb_ts_used = false;
     if( p_sys->i_frame_dts <= VLC_TS_INVALID &&
         p_sys->i_frame_pts <= VLC_TS_INVALID )
     {
         p_sys->i_frame_dts = i_frag_dts;
         p_sys->i_frame_pts = i_frag_pts;
-        *pb_used_ts = true;
+        *pb_ts_used = true;
     }
     return p_pic;
 }
@@ -789,11 +780,7 @@ static block_t *OutputPicture( decoder_t *p_dec )
     p_sys->i_cc_dts = p_pic->i_dts;
     p_sys->i_cc_flags = p_pic->i_flags;
 
-    /* Swap cc buffer */
-    cc_data_t cc_tmp = p_sys->cc;
     p_sys->cc = p_sys->cc_next;
-    p_sys->cc_next = cc_tmp;
-
     cc_Flush( &p_sys->cc_next );
 
     return p_pic;

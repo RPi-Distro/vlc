@@ -4,7 +4,7 @@
  * interface, such as message output.
  *****************************************************************************
  * Copyright (C) 1999, 2000 VLC authors and VideoLAN
- * $Id: 6914ecaa3ab462a3e8bff28647ec86d51af43d12 $
+ * $Id: e98be12aab142e9901562ea952ee11f54e207f46 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -52,19 +52,12 @@ typedef struct intf_thread_t
     VLC_COMMON_MEMBERS
 
     struct intf_thread_t *p_next; /** LibVLC interfaces book keeping */
-    vlc_thread_t thread; /** LibVLC thread */
-    /* Thread properties and locks */
-#if defined( __APPLE__ )
-    bool          b_should_run_on_first_thread;
-#endif
 
     /* Specific interfaces */
     intf_sys_t *        p_sys;                          /** system interface */
-    char *              psz_intf;                    /** intf name specified */
 
     /** Interface module */
     module_t *   p_module;
-    void      ( *pf_run )    ( struct intf_thread_t * ); /** Run function */
 
     /** Specific for dialogs providers */
     void ( *pf_show_dialog ) ( struct intf_thread_t *, int, int,
@@ -97,20 +90,43 @@ struct intf_dialog_args_t
     struct interaction_dialog_t *p_dialog;
 };
 
-/*****************************************************************************
- * Prototypes
- *****************************************************************************/
-VLC_API int intf_Create( vlc_object_t *, const char * );
-#define intf_Create(a,b) intf_Create(VLC_OBJECT(a),b)
+VLC_API int intf_Create( playlist_t *, const char * );
 
 VLC_API void libvlc_Quit( libvlc_int_t * );
 
+static inline playlist_t *pl_Get( struct intf_thread_t *intf )
+{
+    return (playlist_t *)(intf->p_parent);
+}
+
+/**
+ * Retrieves the current input thread from the playlist.
+ * @note The returned object must be released with vlc_object_release().
+ */
+#define pl_CurrentInput(intf) (playlist_CurrentInput(pl_Get(intf)))
+
+/**
+ * \defgroup vlc_subscription Log messages subscription
+ * These functions deal with log messages.
+ * @{
+ */
+
+/**
+ * Message logging callback signature.
+ * \param data data pointer as provided to vlc_msg_SetCallback().
+ * \param type message type (VLC_MSG_* values from enum vlc_log_type)
+ * \param item meta information
+ * \param fmt format string
+ * \param args format string arguments
+ */
+typedef void (*vlc_log_cb) (void *data, int type, const vlc_log_t *item,
+                            const char *fmt, va_list args);
+
+VLC_API void vlc_LogSet(libvlc_int_t *, vlc_log_cb cb, void *data);
+
 /*@}*/
 
-/*****************************************************************************
- * Macros
- *****************************************************************************/
-#if defined( WIN32 ) && !defined( UNDER_CE )
+#if defined( _WIN32 ) && !VLC_WINSTORE_APP
 #    define CONSOLE_INTRO_MSG \
          if( !getenv( "PWD" ) ) /* detect Cygwin shell or Wine */ \
          { \
@@ -166,17 +182,20 @@ typedef enum vlc_dialog {
 /* Useful text messages shared by interfaces */
 #define INTF_ABOUT_MSG LICENSE_MSG
 
-#define EXTENSIONS_AUDIO_CSV "3ga", "669", "a52", "aac", "ac3", "ape", "awb", "dts", "flac", "it", \
-                         "m4a", "m4p", "mka", "mlp", "mod", "mp1", "mp2", "mp3", "mpc", "mpga", \
-                         "oga", "ogg", "oma", "qcp", "ra", "rmi", "s3m", "spx", "thd", "tta", \
-                         "wav", "wma", "wv", "xm"
+#define EXTENSIONS_AUDIO_CSV "3ga", "669", "a52", "aac", "ac3", "adt", "adts", "aif", "aifc", "aiff", \
+                         "amr", "aob", "ape", "awb", "caf", "dts", "flac", "it", "kar", \
+                         "m4a", "m4b", "m4p", "m5p", "mka", "mlp", "mod", "mpa", "mp1", "mp2", "mp3", "mpc", "mpga", "mus", \
+                         "oga", "ogg", "oma", "opus", "qcp", "ra", "rmi", "s3m", "sid", "spx", "thd", "tta", \
+                         "voc", "vqf", "w64", "wav", "wma", "wv", "xa", "xm"
 
-#define EXTENSIONS_VIDEO_CSV "asf", "avi", "divx", "drc", "dv", "f4v", "flv", "gxf", "iso", \
+#define EXTENSIONS_VIDEO_CSV "3g2", "3gp", "3gp2", "3gpp", "amv", "asf", "avi", "bik", "divx", "drc", "dv", \
+                             "f4v", "flv", "gvi", "gxf", "iso", \
                              "m1v", "m2v", "m2t", "m2ts", "m4v", "mkv", "mov",\
-                             "mp2", "mp4", "mpeg", "mpeg1", \
-                             "mpeg2", "mpeg4", "mpg", "mts", "mtv", "mxf", "mxg", "nuv", \
+                             "mp2", "mp2v", "mp4", "mp4v", "mpe", "mpeg", "mpeg1", \
+                             "mpeg2", "mpeg4", "mpg", "mpv2", "mts", "mtv", "mxf", "mxg", "nsv", "nuv", \
                              "ogg", "ogm", "ogv", "ogx", "ps", \
-                             "rec", "rm", "rmvb", "ts", "vob", "wm", "wmv"
+                             "rec", "rm", "rmvb", "rpl", "thp", "tod", "ts", "tts", "txd", "vob", "vro", \
+                             "webm", "wm", "wmv", "wtv", "xesc"
 
 #define EXTENSIONS_AUDIO \
     "*.3ga;" \
@@ -194,21 +213,25 @@ typedef enum vlc_dialog {
     "*.ape;" \
     "*.awb;" \
     "*.caf;" \
-    "*.cda;" \
     "*.dts;" \
     "*.flac;"\
     "*.it;"  \
+    "*.kar;" \
     "*.m4a;" \
+    "*.m4b;" \
     "*.m4p;" \
+    "*.m5p;" \
     "*.mid;" \
     "*.mka;" \
     "*.mlp;" \
     "*.mod;" \
+    "*.mpa;" \
     "*.mp1;" \
     "*.mp2;" \
     "*.mp3;" \
     "*.mpc;" \
     "*.mpga;" \
+    "*.mus;" \
     "*.oga;" \
     "*.ogg;" \
     "*.oma;" \
@@ -217,6 +240,7 @@ typedef enum vlc_dialog {
     "*.ra;" \
     "*.rmi;" \
     "*.s3m;" \
+    "*.sid;" \
     "*.spx;" \
     "*.thd;" \
     "*.tta;" \
@@ -229,13 +253,13 @@ typedef enum vlc_dialog {
     "*.xa;"  \
     "*.xm"
 
-#define EXTENSIONS_VIDEO "*.3g2;*.3gp;*.3gp2;*.3gpp;*.amv;*.asf;*.avi;*.bin;*.divx;*.drc;*.dv;*f4v;*.flv;*.gxf;*.iso;*.m1v;*.m2v;" \
-                         "*.m2t;*.m2ts;*.m4v;*.mkv;*.mov;*.mp2;*.mp2v;*.mp4;*.mp4v;*.mpa;*.mpe;*.mpeg;*.mpeg1;" \
+#define EXTENSIONS_VIDEO "*.3g2;*.3gp;*.3gp2;*.3gpp;*.amv;*.asf;*.avi;*.bik;*.bin;*.divx;*.drc;*.dv;*f4v;*.flv;*.gvi;*.gxf;*.iso;*.m1v;*.m2v;" \
+                         "*.m2t;*.m2ts;*.m4v;*.mkv;*.mov;*.mp2;*.mp2v;*.mp4;*.mp4v;*.mpe;*.mpeg;*.mpeg1;" \
                          "*.mpeg2;*.mpeg4;*.mpg;*.mpv2;*.mts;*.mtv;*.mxf;*.mxg;*.nsv;*.nuv;" \
                          "*.ogg;*.ogm;*.ogv;*.ogx;*.ps;" \
-                         "*.rec;*.rm;*.rmvb;*.tod;*.ts;*.tts;*.vob;*.vro;*.webm;*.wm;*.wmv"
+                         "*.rec;*.rm;*.rmvb;*.rpl;*.thp;*.tod;*.ts;*.tts;*.txd;*.vob;*.vro;*.webm;*.wm;*.wmv;*.wtv;*.xesc"
 
-#define EXTENSIONS_PLAYLIST "*.asx;*.b4s;*.cue;*.ifo;*.m3u;*.m3u8;*.pls;*.ram;*.rar;*.sdp;*.vlc;*.xspf;*.wvx;*.zip;*.conf"
+#define EXTENSIONS_PLAYLIST "*.asx;*.b4s;*.cue;*.ifo;*.m3u;*.m3u8;*.pls;*.ram;*.rar;*.sdp;*.vlc;*.xspf;*.wax;*.wvx;*.zip;*.conf"
 
 #define EXTENSIONS_MEDIA EXTENSIONS_VIDEO ";" EXTENSIONS_AUDIO ";" \
                           EXTENSIONS_PLAYLIST
@@ -245,8 +269,9 @@ typedef enum vlc_dialog {
                             "*.ssa;*.aqt;" \
                             "*.jss;*.psb;" \
                             "*.rt;*.smi;*.txt;" \
-                            "*.smil;*.stl;*.usf" \
-                            "*.dks;*.pjs;*.mpl2"
+                            "*.smil;*.stl;*.usf;" \
+                            "*.dks;*.pjs;*.mpl2;*.mks;" \
+                            "*.vtt"
 
 /** \defgroup vlc_interaction Interaction
  * \ingroup vlc_interface

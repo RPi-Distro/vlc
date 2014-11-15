@@ -1,27 +1,27 @@
 /*****************************************************************************
  * oss.c : OSS input module for vlc
  *****************************************************************************
- * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 7590cac1dc7008345de05b034e4a29f40af4b125 $
+ * Copyright (C) 2002-2009 VLC authors and VideoLAN
+ * $Id: 40e78c1a09e733ec4ce204d19094de99d5512e12 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Richard Hosking <richard at hovis dot net>
  *          Antoine Cellerier <dionoea at videolan d.t org>
  *          Dennis Lou <dlou99 at yahoo dot com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -294,7 +294,7 @@ static block_t* GrabAudio( demux_t *p_demux )
     block_t *p_block;
 
     if( p_sys->p_block ) p_block = p_sys->p_block;
-    else p_block = block_New( p_demux, p_sys->i_max_frame_size );
+    else p_block = block_Alloc( p_sys->i_max_frame_size );
 
     if( !p_block )
     {
@@ -339,7 +339,8 @@ static int OpenAudioDevOss( demux_t *p_demux )
 
     if( i_fd < 0 )
     {
-        msg_Err( p_demux, "cannot open OSS audio device (%m)" );
+        msg_Err( p_demux, "cannot open OSS audio device (%s)",
+                 vlc_strerror_c(errno) );
         goto adev_fail;
     }
 
@@ -348,21 +349,24 @@ static int OpenAudioDevOss( demux_t *p_demux )
         || i_format != AFMT_S16_LE )
     {
         msg_Err( p_demux,
-                 "cannot set audio format (16b little endian) (%m)" );
+                 "cannot set audio format (16b little endian) (%s)",
+                 vlc_strerror_c(errno) );
         goto adev_fail;
     }
 
     if( ioctl( i_fd, SNDCTL_DSP_STEREO,
                &p_demux->p_sys->b_stereo ) < 0 )
     {
-        msg_Err( p_demux, "cannot set audio channels count (%m)" );
+        msg_Err( p_demux, "cannot set audio channels count (%s)",
+                 vlc_strerror_c(errno) );
         goto adev_fail;
     }
 
     if( ioctl( i_fd, SNDCTL_DSP_SPEED,
                &p_demux->p_sys->i_sample_rate ) < 0 )
     {
-        msg_Err( p_demux, "cannot set audio sample rate (%m)" );
+        msg_Err( p_demux, "cannot set audio sample rate (%s)",
+                 vlc_strerror_c(errno) );
         goto adev_fail;
     }
 
@@ -415,14 +419,16 @@ static bool ProbeAudioDevOss( demux_t *p_demux, const char *psz_device )
 
     if( i_fd < 0 )
     {
-        msg_Err( p_demux, "cannot open device %s for OSS audio (%m)", psz_device );
+        msg_Err( p_demux, "cannot open device %s for OSS audio (%s)",
+                 psz_device, vlc_strerror_c(errno) );
         goto open_failed;
     }
 
     /* this will fail if the device is video */
     if( ioctl( i_fd, SNDCTL_DSP_GETCAPS, &i_caps ) < 0 )
     {
-        msg_Err( p_demux, "cannot get audio caps (%m)" );
+        msg_Err( p_demux, "cannot get audio caps (%s)",
+                 vlc_strerror_c(errno) );
         goto open_failed;
     }
 

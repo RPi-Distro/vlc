@@ -1,8 +1,8 @@
 /*****************************************************************************
- * Help.cpp : Help and About dialogs
+ * help.cpp : Help and About dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 1bca9c59770fe7c825888f214a1453fa76093840 $
+ * $Id: 453753b28a4b397fb5afed3a3f626a243a4b381c $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *          Rémi Duraffort <ivoire (at) via.ecp.fr>
@@ -70,63 +70,115 @@ HelpDialog::HelpDialog( intf_thread_t *_p_intf ) : QVLCFrame( _p_intf )
     layout->addWidget( closeButtonBox );
 
     CONNECT( closeButtonBox, rejected(), this, close() );
-    readSettings( "Help", QSize( 500, 450 ) );
+    restoreWidgetPosition( "Help", QSize( 500, 450 ) );
 }
 
 HelpDialog::~HelpDialog()
 {
-    writeSettings( "Help" );
+    saveWidgetPosition( "Help" );
 }
 
 AboutDialog::AboutDialog( intf_thread_t *_p_intf)
-            : QVLCDialog( (QWidget*)_p_intf->p_sys->p_mi, _p_intf )
+            : QVLCDialog( (QWidget*)_p_intf->p_sys->p_mi, _p_intf ), b_advanced( false )
 {
     /* Build UI */
     ui.setupUi( this );
-    ui.closeButtonBox->addButton(
-        new QPushButton( qtr("&Close"), this ), QDialogButtonBox::RejectRole );
-
     setWindowTitle( qtr( "About" ) );
     setWindowRole( "vlc-about" );
-    setMinimumSize( 600, 500 );
-    resize( 600, 500 );
     setWindowModality( Qt::WindowModal );
 
-    CONNECT( ui.closeButtonBox, rejected(), this, close() );
-    ui.closeButtonBox->setFocus();
+    ui.version->setText(qfu( " " VERSION_MESSAGE ) );
+    ui.title->setText("<html><head/><body><p><span style=\" font-size:26pt; color:#353535;\"> " + qtr( "VLC media player" ) + " </span></p></body></html>");
 
-    ui.introduction->setText(
-            qtr( "VLC media player" ) + qfu( " " VERSION_MESSAGE ) );
+    ui.MainBlabla->setText("<html><head/><body>" +
+    qtr( "<p>VLC media player is a free and open source media player, encoder, and streamer made by the volunteers of the <a href=\"http://www.videolan.org/\"><span style=\" text-decoration: underline; color:#0057ae;\">VideoLAN</span></a> community.</p><p>VLC uses its internal codecs, works on essentially every popular platform, and can read almost all files, CDs, DVDs, network streams, capture cards and other media formats!</p><p><a href=\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: underline; color:#0057ae;\">Help and join us!</span></a>" ) +
+    "</p></body> </html>");
 
+#if 0
     if( QDate::currentDate().dayOfYear() >= QT_XMAS_JOKE_DAY && var_InheritBool( p_intf, "qt-icon-change" ) )
         ui.iconVLC->setPixmap( QPixmap( ":/logo/vlc128-xmas.png" ) );
     else
         ui.iconVLC->setPixmap( QPixmap( ":/logo/vlc128.png" ) );
+#endif
 
-    /* Main Introduction */
-    ui.infoLabel->setText(
-            qtr( "VLC media player is a free media player, "
-                "encoder and streamer that can read from files, "
-                "CDs, DVDs, network streams, capture cards and even more!\n"
-                "VLC uses its internal codecs and works on essentially every "
-                "popular platform.\n\n" )
-            + qtr( "This version of VLC was compiled by:\n " )
-            + qfu( VLC_CompileBy() )+ " on " + qfu( VLC_CompileHost() ) +
-            + " ("__DATE__" "__TIME__").\n"
-            + qtr( "Compiler: " ) + qfu( VLC_Compiler() ) + ".\n"
-            + qtr( "You are using the Qt4 Interface.\n\n" )
-            + qtr( "Copyright (C) " ) + COPYRIGHT_YEARS
-            + qtr( " by the VideoLAN Team.\n" )
-            + "http://www.videolan.org" );
+#if 0
+    ifdef UPDATE_CHECK
+#else
+    ui.update->hide();
+#endif
 
     /* GPL License */
-    ui.licenseEdit->setText( qfu( psz_license ) );
+    ui.licensePage->setText( qfu( psz_license ) );
 
     /* People who helped */
-    ui.thanksEdit->setText( qfu( psz_thanks ) );
+    ui.creditPage->setText( qfu( psz_thanks ) );
 
     /* People who wrote the software */
-    ui.authorsEdit->setText( qfu( psz_authors ) );
+    ui.authorsPage->setText( qfu( psz_authors ) );
+
+    ui.licenseButton->setText( "<html><head/><body><p><span style=\" text-decoration: underline; color:#0057ae;\">"+qtr( "License" )+"</span></p></body></html>");
+    ui.licenseButton->installEventFilter( this );
+
+    ui.authorsButton->setText( "<html><head/><body><p><span style=\" text-decoration: underline; color:#0057ae;\">"+qtr( "Authors" )+"</span></p></body></html>");
+    ui.authorsButton->installEventFilter( this );
+
+    ui.creditsButton->setText( "<html><head/><body><p><span style=\" text-decoration: underline; color:#0057ae;\">"+qtr( "Credits" )+"</span></p></body></html>");
+    ui.creditsButton->installEventFilter( this );
+
+    ui.version->installEventFilter( this );
+}
+
+void AboutDialog::showLicense()
+{
+    ui.stackedWidget->setCurrentWidget( ui.licensePage );
+}
+
+void AboutDialog::showAuthors()
+{
+    ui.stackedWidget->setCurrentWidget( ui.authorsPage );
+}
+
+void AboutDialog::showCredit()
+{
+    ui.stackedWidget->setCurrentWidget( ui.creditPage );
+}
+
+bool AboutDialog::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::MouseButtonPress )
+    {
+        if( obj == ui.version )
+        {
+            if( !b_advanced )
+            {
+                ui.version->setText(qfu( VLC_CompileBy() )+ "@" + qfu( VLC_CompileHost() )
+                    + " " + __DATE__ + " " + __TIME__);
+                b_advanced = true;
+            }
+            else
+            {
+                ui.version->setText(qfu( " " VERSION_MESSAGE ) );
+                b_advanced = false;
+            }
+            return true;
+        }
+        else if( obj == ui.licenseButton )
+            showLicense();
+        else if( obj == ui.authorsButton )
+            showAuthors();
+        else if( obj == ui.creditsButton )
+            showCredit();
+
+        return false;
+    }
+
+    return QVLCDialog::eventFilter( obj, event);
+}
+
+void AboutDialog::showEvent( QShowEvent *event )
+{
+    ui.stackedWidget->setCurrentWidget( ui.blablaPage );
+    QVLCDialog::showEvent( event );
 }
 
 #ifdef UPDATE_CHECK
@@ -141,12 +193,17 @@ static void UpdateCallback( void *data, bool b_ret )
     QEvent* event;
 
     if( b_ret )
-        event = new QEvent( (QEvent::Type)UDOkEvent );
+        event = new QEvent( UpdateDialog::UDOkEvent );
     else
-        event = new QEvent( (QEvent::Type)UDErrorEvent );
+        event = new QEvent( UpdateDialog::UDErrorEvent );
 
     QApplication::postEvent( UDialog, event );
 }
+
+const QEvent::Type UpdateDialog::UDOkEvent =
+        (QEvent::Type)QEvent::registerEventType();
+const QEvent::Type UpdateDialog::UDErrorEvent =
+        (QEvent::Type)QEvent::registerEventType();
 
 UpdateDialog::UpdateDialog( intf_thread_t *_p_intf ) : QVLCFrame( _p_intf )
 {
@@ -176,9 +233,9 @@ UpdateDialog::UpdateDialog( intf_thread_t *_p_intf ) : QVLCFrame( _p_intf )
     b_checked = false;
 
     setMinimumSize( 300, 300 );
-    setMaximumSize( 400, 300 );
+    setMaximumSize( 500, 300 );
 
-    readSettings( "Update", QSize( 300, 250 ) );
+    restoreWidgetPosition( "Update", maximumSize() );
 
     /* Check for updates */
     UpdateOrDownload();
@@ -187,7 +244,7 @@ UpdateDialog::UpdateDialog( intf_thread_t *_p_intf ) : QVLCFrame( _p_intf )
 UpdateDialog::~UpdateDialog()
 {
     update_Delete( p_update );
-    writeSettings( "Update" );
+    saveWidgetPosition( "Update" );
 }
 
 /* Check for updates */
@@ -241,7 +298,16 @@ void UpdateDialog::updateNotify( bool b_result )
                 .arg( p_release->i_extra == 0 ? "" : "." + QString::number( p_release->i_extra ) );
 
             ui.updateNotifyLabel->setText( message );
-            ui.updateNotifyTextEdit->setText( qfu( p_release->psz_desc ) );
+            message = qfu( p_release->psz_desc ).replace( "\n", "<br/>" );
+
+            /* Try to highlight releases featuring security changes */
+            int i_index = message.indexOf( "security", Qt::CaseInsensitive );
+            if ( i_index >= 0 )
+            {
+                message.insert( i_index + 8, "</font>" );
+                message.insert( i_index, "<font style=\"color:red\">" );
+            }
+            ui.updateNotifyTextEdit->setHtml( message );
 
             /* Force the dialog to be shown */
             this->show();

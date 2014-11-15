@@ -1,24 +1,24 @@
 /*****************************************************************************
  * algo_x.c : "X" algorithm for vlc deinterlacer
  *****************************************************************************
- * Copyright (C) 2000-2011 the VideoLAN team
- * $Id: 4724c35255c01fd0da0c060266a760c30dd9837a $
+ * Copyright (C) 2000-2011 VLC authors and VideoLAN
+ * $Id: a42861043c2ceb2cd70ed0276fbdafb016c9b9f9 $
  *
  * Author: Laurent Aimar <fenrir@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -78,6 +78,7 @@ static inline int XDeint8x8DetectC( uint8_t *src, int i_src )
     return fc < 1 ? false : true;
 }
 #ifdef CAN_COMPILE_MMXEXT
+VLC_MMX
 static inline int XDeint8x8DetectMMXEXT( uint8_t *src, int i_src )
 {
 
@@ -164,6 +165,7 @@ static inline void XDeint8x8MergeC( uint8_t *dst,  int i_dst,
 }
 
 #ifdef CAN_COMPILE_MMXEXT
+VLC_MMX
 static inline void XDeint8x8MergeMMXEXT( uint8_t *dst,  int i_dst,
                                          uint8_t *src1, int i_src1,
                                          uint8_t *src2, int i_src2 )
@@ -237,6 +239,7 @@ static inline void XDeint8x8FieldEC( uint8_t *dst, int i_dst,
 }
 
 #ifdef CAN_COMPILE_MMXEXT
+VLC_MMX
 static inline void XDeint8x8FieldEMMXEXT( uint8_t *dst, int i_dst,
                                           uint8_t *src, int i_src )
 {
@@ -308,6 +311,7 @@ static inline void XDeint8x8FieldC( uint8_t *dst, int i_dst,
 }
 
 #ifdef CAN_COMPILE_MMXEXT
+VLC_MMX
 static inline void XDeint8x8FieldMMXEXT( uint8_t *dst, int i_dst,
                                          uint8_t *src, int i_src )
 {
@@ -495,6 +499,7 @@ static inline void XDeintBand8x8C( uint8_t *dst, int i_dst,
 }
 
 #ifdef CAN_COMPILE_MMXEXT
+VLC_MMX
 static inline void XDeintBand8x8MMXEXT( uint8_t *dst, int i_dst,
                                         uint8_t *src, int i_src,
                                         const int i_mbx, int i_modx )
@@ -535,8 +540,8 @@ static inline void XDeintBand8x8MMXEXT( uint8_t *dst, int i_dst,
 void RenderX( picture_t *p_outpic, picture_t *p_pic )
 {
     int i_plane;
-#ifdef CAN_COMPILE_MMXEXT
-    unsigned u_cpu = vlc_CPU();
+#if defined (CAN_COMPILE_MMXEXT)
+    const bool mmxext = vlc_CPU_MMXEXT();
 #endif
 
     /* Copy image and skip lines */
@@ -559,7 +564,7 @@ void RenderX( picture_t *p_outpic, picture_t *p_pic )
             uint8_t *src = &p_pic->p[i_plane].p_pixels[8*y*i_src];
 
 #ifdef CAN_COMPILE_MMXEXT
-            if( u_cpu & CPU_CAPABILITY_MMXEXT )
+            if( mmxext )
                 XDeintBand8x8MMXEXT( dst, i_dst, src, i_src, i_mbx, i_modx );
             else
 #endif
@@ -586,7 +591,7 @@ void RenderX( picture_t *p_outpic, picture_t *p_pic )
     }
 
 #ifdef CAN_COMPILE_MMXEXT
-    if( u_cpu & CPU_CAPABILITY_MMXEXT )
+    if( mmxext )
         emms();
 #endif
 }

@@ -1,25 +1,25 @@
 /*****************************************************************************
- * projectm: visualization module based on libprojectM
+ * projectm.cpp: visualization module based on libprojectM
  *****************************************************************************
- * Copyright © 2009-2011 the VideoLAN team
- * $Id: 9756bb98523eb935ca5e915357bf0ffbc4ad6831 $
+ * Copyright © 2009-2011 VLC authors and VideoLAN
+ * $Id: e80fbf45b49752a2dd764cde39f3f5a4af4a9dbe $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *          Laurent Aimar
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+  * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
- * more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -28,6 +28,8 @@
 #ifndef __STDC_CONSTANT_MACROS
 # define __STDC_CONSTANT_MACROS
 #endif
+
+#include <assert.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
@@ -74,29 +76,37 @@ static void Close        ( vlc_object_t * );
 #define TEXTURE_TEXT N_("Texture size")
 #define TEXTURE_LONGTEXT N_("The size of the texture, in pixels.")
 
-#ifdef WIN32
+#ifdef _WIN32
 # define FONT_PATH      "C:\\WINDOWS\\Fonts\\arial.ttf"
 # define FONT_PATH_MENU "C:\\WINDOWS\\Fonts\\arial.ttf"
+# define PRESET_PATH    NULL
 #else
 # define FONT_PATH      "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf"
 # define FONT_PATH_MENU "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf"
+# define PRESET_PATH    "/usr/share/projectM/presets"
+#endif
+
+#ifdef DEFAULT_FONT_FILE
+#undef FONT_PATH
+#define FONT_PATH DEFAULT_FONT_FILE
+#endif
+
+#ifdef DEFAULT_MONOSPACE_FONT_FILE
+#undef FONT_PATH_MENU
+#define FONT_PATH_MENU DEFAULT_MONOSPACE_FONT_FILE
 #endif
 
 vlc_module_begin ()
     set_shortname( N_("projectM"))
     set_description( N_("libprojectM effect") )
-    set_capability( "visualization2", 0 )
+    set_capability( "visualization", 0 )
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_VISUAL )
 #ifndef HAVE_PROJECTM2
     add_loadfile( "projectm-config", "/usr/share/projectM/config.inp",
                   CONFIG_TEXT, CONFIG_LONGTEXT, true )
 #else
-#ifdef WIN32
-    add_directory( "projectm-preset-path", NULL,
-#else
-    add_directory( "projectm-preset-path", "/usr/share/projectM/presets",
-#endif
+    add_directory( "projectm-preset-path", PRESET_PATH,
                   PRESET_PATH_TXT, PRESET_PATH_LONGTXT, true )
     add_loadfile( "projectm-title-font", FONT_PATH,
                   TITLE_FONT_TXT, TITLE_FONT_LONGTXT, true )
@@ -161,21 +171,6 @@ static int Open( vlc_object_t * p_this )
     filter_t     *p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys;
 
-    /* Test the audio format */
-    if( p_filter->fmt_in.audio.i_format != VLC_CODEC_FL32 ||
-        p_filter->fmt_out.audio.i_format != VLC_CODEC_FL32 )
-    {
-        msg_Warn( p_filter, "bad input or output format" );
-        return VLC_EGENERIC;
-    }
-    if( !AOUT_FMTS_SIMILAR( &p_filter->fmt_in.audio, &p_filter->fmt_out.audio ) )
-    {
-        msg_Warn( p_filter, "input and outut are not similar" );
-        return VLC_EGENERIC;
-    }
-
-    p_filter->pf_audio_filter = DoWork;
-
     p_sys = p_filter->p_sys = (filter_sys_t*)malloc( sizeof( *p_sys ) );
     if( !p_sys )
         return VLC_ENOMEM;
@@ -203,6 +198,9 @@ static int Open( vlc_object_t * p_this )
         goto error;
     }
 
+    p_filter->fmt_in.audio.i_format = VLC_CODEC_FL32;
+    p_filter->fmt_out.audio = p_filter->fmt_in.audio;
+    p_filter->pf_audio_filter = DoWork;
     return VLC_SUCCESS;
 
 error:
@@ -295,7 +293,7 @@ static void *Thread( void *p_data )
     filter_sys_t *p_sys = p_filter->p_sys;
 
     video_format_t fmt;
-    vlc_gl_t *gl;
+    vlc_gl_t *gl = NULL;
     unsigned int i_last_width  = 0;
     unsigned int i_last_height = 0;
     locale_t loc;
@@ -321,10 +319,8 @@ static void *Thread( void *p_data )
 
     /* */
     video_format_Init( &fmt, 0 );
-    video_format_Setup( &fmt, VLC_CODEC_RGB32,
-                        p_sys->i_width, p_sys->i_height, 0, 1 );
-    fmt.i_sar_num = 1;
-    fmt.i_sar_den = 1;
+    video_format_Setup( &fmt, VLC_CODEC_RGB32, p_sys->i_width, p_sys->i_height,
+                        p_sys->i_width, p_sys->i_height, 1, 1 );
 
     vout_display_state_t state;
     memset( &state, 0, sizeof(state) );
@@ -355,6 +351,8 @@ static void *Thread( void *p_data )
         goto error;
     }
 
+    vlc_gl_MakeCurrent( gl );
+
     /* Work-around the projectM locale bug */
     loc = newlocale (LC_NUMERIC_MASK, "C", NULL);
     oldloc = uselocale (loc);
@@ -366,10 +364,10 @@ static void *Thread( void *p_data )
     free( psz_config );
 #else
     psz_preset_path = var_InheritString( p_filter, "projectm-preset-path" );
-#ifdef WIN32
+#ifdef _WIN32
     if ( psz_preset_path == NULL )
     {
-        char *psz_data_path = config_GetDataDir( p_filter );
+        char *psz_data_path = config_GetDataDir();
         asprintf( &psz_preset_path, "%s" DIR_SEP "visualization", psz_data_path );
         free( psz_data_path );
     }
@@ -450,6 +448,7 @@ static void *Thread( void *p_data )
                 uselocale (oldloc);
                 freelocale (loc);
             }
+            vlc_gl_ReleaseCurrent( gl );
             return NULL;
         }
         vlc_mutex_unlock( &p_sys->lock );
@@ -465,7 +464,7 @@ static void *Thread( void *p_data )
             vlc_gl_Unlock( gl );
         }
     }
-    abort();
+    assert(0);
 
 error:
     p_sys->b_error = true;

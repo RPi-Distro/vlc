@@ -39,103 +39,11 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <sys/types.h>
-#ifdef UNDER_CE
-#  include <tchar.h>
-#elif defined(WIN32)
+#if defined(_WIN32)
 #  include <io.h>
 #endif
 #include <errno.h>
 #include <wctype.h>
-
-/**
- * Releases (if needed) a localized or uniformized string.
- * @param str non-NULL return value from FromLocale() or ToLocale().
- */
-void LocaleFree (const char *str)
-{
-#ifdef ASSUME_UTF8
-    (void) str;
-#else
-    free ((char *)str);
-#endif
-}
-
-
-/**
- * Converts a string from the system locale character encoding to UTF-8.
- *
- * @param locale nul-terminated string to convert
- *
- * @return a nul-terminated UTF-8 string, or NULL in case of error.
- * To avoid memory leak, you have to pass the result to LocaleFree()
- * when it is no longer needed.
- */
-char *FromLocale (const char *locale)
-{
-#ifdef ASSUME_UTF8
-    return (char *)locale;
-#else
-    return locale ? FromCharset ("", locale, strlen(locale)) : NULL;
-#endif
-}
-
-/**
- * converts a string from the system locale character encoding to utf-8,
- * the result is always allocated on the heap.
- *
- * @param locale nul-terminated string to convert
- *
- * @return a nul-terminated utf-8 string, or null in case of error.
- * The result must be freed using free() - as with the strdup() function.
- */
-char *FromLocaleDup (const char *locale)
-{
-#ifdef ASSUME_UTF8
-    return strdup (locale);
-#else
-    return FromCharset ("", locale, strlen(locale));
-#endif
-}
-
-
-/**
- * ToLocale: converts an UTF-8 string to local system encoding.
- *
- * @param utf8 nul-terminated string to be converted
- *
- * @return a nul-terminated string, or NULL in case of error.
- * To avoid memory leak, you have to pass the result to LocaleFree()
- * when it is no longer needed.
- */
-char *ToLocale (const char *utf8)
-{
-#ifdef ASSUME_UTF8
-    return (char *)utf8;
-#else
-    size_t outsize;
-    return utf8 ? ToCharset ("", utf8, &outsize) : NULL;
-#endif
-}
-
-
-/**
- * converts a string from UTF-8 to the system locale character encoding,
- * the result is always allocated on the heap.
- *
- * @param utf8 nul-terminated string to convert
- *
- * @return a nul-terminated string, or null in case of error.
- * The result must be freed using free() - as with the strdup() function.
- */
-char *ToLocaleDup (const char *utf8)
-{
-#ifdef ASSUME_UTF8
-    return strdup (utf8);
-#else
-    size_t outsize;
-    return ToCharset ("", utf8, &outsize);
-#endif
-}
 
 /**
  * Formats an UTF-8 string as vfprintf(), then print it, with
@@ -143,13 +51,15 @@ char *ToLocaleDup (const char *utf8)
  */
 int utf8_vfprintf( FILE *stream, const char *fmt, va_list ap )
 {
-#ifdef ASSUME_UTF8
+#ifndef _WIN32
     return vfprintf (stream, fmt, ap);
 #else
     char *str;
-    int res;
+    int res = vasprintf (&str, fmt, ap);
+    if (unlikely(res == -1))
+        return -1;
 
-# if defined( WIN32 ) && !defined( UNDER_CE )
+#if !VLC_WINSTORE_APP
     /* Writing to the console is a lot of fun on Microsoft Windows.
      * If you use the standard I/O functions, you must use the OEM code page,
      * which is different from the usual ANSI code page. Or maybe not, if the
@@ -157,44 +67,30 @@ int utf8_vfprintf( FILE *stream, const char *fmt, va_list ap )
     int fd = _fileno (stream);
     if (likely(fd != -1) && _isatty (fd))
     {
-        res = vasprintf (&str, fmt, ap);
-        if (unlikely(res == -1))
-            return -1;
-
-        size_t wlen = 2 * (res + 1);
-        wchar_t *wide = malloc (wlen);
+        wchar_t *wide = ToWide (str);
         if (likely(wide != NULL))
         {
-            wlen = MultiByteToWideChar (CP_UTF8, 0, str, res + 1, wide, wlen);
-            if (wlen > 0)
-            {
-                HANDLE h = (HANDLE)(intptr_t)_get_osfhandle (fd);
-                DWORD out;
-
-                WriteConsoleW (h, wide, wlen - 1, &out, NULL);
-            }
-            else
-                res = -1;
+            HANDLE h = (HANDLE)((uintptr_t)_get_osfhandle (fd));
+            DWORD out;
+            /* XXX: It is not clear whether WriteConsole() wants the number of
+             * Unicode characters or the size of the wchar_t array. */
+            BOOL ok = WriteConsoleW (h, wide, wcslen (wide), &out, NULL);
             free (wide);
+            if (ok)
+                goto out;
         }
-        else
-            res = -1;
-        free (str);
-        return res;
     }
-# endif
-
-    res = vasprintf (&str, fmt, ap);
-    if (unlikely(res == -1))
-        return -1;
-
-    char *ansi = ToLocaleDup (str);
+#endif
+    wchar_t *wide = ToWide(str);
+    if (likely(wide != NULL))
+    {
+        res = fputws(wide, stream);
+        free(wide);
+    }
+    else
+        res = -1;
+out:
     free (str);
-
-    if (ansi == NULL)
-        return -1;
-    fputs (ansi, stream);
-    free (ansi);
     return res;
 #endif
 }

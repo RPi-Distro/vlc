@@ -2,7 +2,7 @@
  * vlc_strings.h: String functions
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: 9b4d0944cf94b6c4208fe26f2d92caee8fb7459c $
+ * $Id: 3ce4884e7ac610205103c2e1cbab521a4c1ebab4 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *
@@ -45,10 +45,15 @@ VLC_API size_t vlc_b64_decode_binary( uint8_t **pp_dst, const char *psz_src );
 VLC_API char * vlc_b64_decode( const char *psz_src );
 
 VLC_API char * str_format_time( const char * );
-VLC_API char * str_format_meta( vlc_object_t *, const char * );
-#define str_format_meta( a, b ) str_format_meta( VLC_OBJECT( a ), b )
-VLC_API char * str_format( vlc_object_t *, const char * );
-#define str_format( a, b ) str_format( VLC_OBJECT( a ), b )
+VLC_API char * str_format_meta( input_thread_t *, const char * );
+
+static inline char *str_format( input_thread_t *input, const char *fmt )
+{
+    char *s1 = str_format_time( fmt );
+    char *s2 = str_format_meta( input, s1 );
+    free( s1 );
+    return s2;
+}
 
 VLC_API void filename_sanitize( char * );
 VLC_API void path_sanitize( char * );

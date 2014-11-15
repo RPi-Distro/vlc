@@ -13,7 +13,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -200,7 +200,7 @@ static int OpenDecoder( vlc_object_t *p_this )
     };
     for( int i = 0; i < PATHS_NB; i++ )
     {
-        HINSTANCE p_bcm_dll = LoadLibrary( psz_paths[i] );
+        HINSTANCE p_bcm_dll = LoadLibraryA( psz_paths[i] );
         if( p_bcm_dll )
         {
             p_sys->p_bcm_dll = p_bcm_dll;
@@ -214,7 +214,7 @@ static int OpenDecoder( vlc_object_t *p_this )
     }
 
 #define LOAD_SYM( a ) \
-    BC_FUNC( a )  = (void *)GetProcAddress( p_sys->p_bcm_dll, TEXT( #a ) ); \
+    BC_FUNC( a )  = (void *)GetProcAddress( p_sys->p_bcm_dll, ( #a ) ); \
     if( !BC_FUNC( a ) ) { \
         msg_Err( p_dec, "missing symbol " # a ); return VLC_EGENERIC; }
 
@@ -599,7 +599,7 @@ static void crystal_CopyPicture ( picture_t *p_pic, BC_DTS_PROC_OUT* p_out )
     p_dst_end     = p_dst  + (i_dst_stride * p_out->PicInfo.height);
 
     for( ; p_dst < p_dst_end; p_dst += i_dst_stride, p_src += (p_out->PicInfo.width * 2))
-        vlc_memcpy( p_dst, p_src, p_out->PicInfo.width * 2); // Copy in bytes
+        memcpy( p_dst, p_src, p_out->PicInfo.width * 2); // Copy in bytes
 }
 #endif
 

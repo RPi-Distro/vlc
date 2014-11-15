@@ -3,25 +3,25 @@
  *          (http://www.bbc.co.uk/rd/projects/dirac/index.shtml)
  *          (http://diracvideo.org)
  *****************************************************************************
- * Copyright (C) 2008-2011 the VideoLAN team
+ * Copyright (C) 2008-2011 VLC authors and VideoLAN
  *
  * Authors: Jonathan Rosser <jonathan.rosser@gmail.com>
  *          David Flynn <davidf at rd dot bbc.co.uk>
  *          Anuradha Suraparaju <asuraparaju at gmail dot com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -342,7 +342,7 @@ static const char *const enc_profile_list_text[] =
     N_("Main Profile"),
   };
 
-static const char *const const ppsz_enc_options[] = {
+static const char *const ppsz_enc_options[] = {
     ENC_RATE_CONTROL, ENC_GOP_STRUCTURE, ENC_QUALITY, ENC_NOISE_THRESHOLD, ENC_BITRATE,
     ENC_MIN_BITRATE, ENC_MAX_BITRATE, ENC_AU_DISTANCE, ENC_CHROMAFMT,
     ENC_PREFILTER, ENC_PREFILTER_STRENGTH, ENC_CODINGMODE, ENC_MCBLK_SIZE,
@@ -375,7 +375,7 @@ vlc_module_begin ()
 
     add_string( ENC_CFG_PREFIX ENC_RATE_CONTROL, NULL,
                  ENC_RATE_CONTROL_TEXT, ENC_RATE_CONTROL_LONGTEXT, false )
-    change_string_list( enc_rate_control_list, enc_rate_control_list_text, 0 );
+    change_string_list( enc_rate_control_list, enc_rate_control_list_text )
 
     add_float( ENC_CFG_PREFIX ENC_QUALITY, -1.,
                ENC_QUALITY_TEXT, ENC_QUALITY_LONGTEXT, false )
@@ -399,7 +399,7 @@ vlc_module_begin ()
 
     add_string( ENC_CFG_PREFIX ENC_GOP_STRUCTURE, NULL,
                  ENC_GOP_STRUCTURE_TEXT, ENC_GOP_STRUCTURE_LONGTEXT, false )
-    change_string_list( enc_gop_structure_list, enc_gop_structure_list_text, 0 );
+    change_string_list( enc_gop_structure_list, enc_gop_structure_list_text )
 
     add_integer( ENC_CFG_PREFIX ENC_AU_DISTANCE, -1,
                  ENC_AU_DISTANCE_TEXT, ENC_AU_DISTANCE_LONGTEXT, false )
@@ -407,26 +407,26 @@ vlc_module_begin ()
 
     add_string( ENC_CFG_PREFIX ENC_CHROMAFMT, "420",
                 ENC_CHROMAFMT_TEXT, ENC_CHROMAFMT_LONGTEXT, false )
-    change_string_list( enc_chromafmt_list, enc_chromafmt_list_text, 0 );
+    change_string_list( enc_chromafmt_list, enc_chromafmt_list_text )
 
     add_string( ENC_CFG_PREFIX ENC_CODINGMODE, "auto",
                 ENC_CODINGMODE_TEXT, ENC_CODINGMODE_LONGTEXT, false )
-    change_string_list( enc_codingmode_list, enc_codingmode_list_text, 0 );
+    change_string_list( enc_codingmode_list, enc_codingmode_list_text )
 
     add_string( ENC_CFG_PREFIX ENC_MVPREC, NULL,
                 ENC_MVPREC_TEXT, ENC_MVPREC_LONGTEXT, false )
-    change_string_list( enc_mvprec_list, enc_mvprec_list, 0 );
+    change_string_list( enc_mvprec_list, enc_mvprec_list )
 
     /* advanced option only */
     add_string( ENC_CFG_PREFIX ENC_MCBLK_SIZE, NULL,
                 ENC_MCBLK_SIZE_TEXT, ENC_MCBLK_SIZE_TEXT, true )
-    change_string_list( enc_block_size_list, enc_block_size_list_text, 0 );
+    change_string_list( enc_block_size_list, enc_block_size_list_text )
 
 
     /* advanced option only */
     add_string( ENC_CFG_PREFIX ENC_MCBLK_OVERLAP, NULL,
                 ENC_MCBLK_OVERLAP_TEXT, ENC_MCBLK_OVERLAP_TEXT, true )
-    change_string_list( enc_block_overlap_list, enc_block_overlap_list_text, 0 );
+    change_string_list( enc_block_overlap_list, enc_block_overlap_list_text )
 
     /* advanced option only */
     add_integer( ENC_CFG_PREFIX ENC_ME_COMBINED, -1,
@@ -455,11 +455,11 @@ vlc_module_begin ()
 
     add_string( ENC_CFG_PREFIX ENC_DWTINTRA, NULL,
                 ENC_DWTINTRA_TEXT, ENC_DWTINTRA_TEXT, false )
-    change_string_list( enc_wavelet_list, enc_wavelet_list_text, 0 );
+    change_string_list( enc_wavelet_list, enc_wavelet_list_text )
 
     add_string( ENC_CFG_PREFIX ENC_DWTINTER, NULL,
                 ENC_DWTINTER_TEXT, ENC_DWTINTER_TEXT, false )
-    change_string_list( enc_wavelet_list, enc_wavelet_list_text, 0 );
+    change_string_list( enc_wavelet_list, enc_wavelet_list_text )
 
     add_integer( ENC_CFG_PREFIX ENC_DWTDEPTH, -1,
                  ENC_DWTDEPTH_TEXT, ENC_DWTDEPTH_LONGTEXT, false )
@@ -473,11 +473,11 @@ vlc_module_begin ()
     /* advanced option only */
     add_string( ENC_CFG_PREFIX ENC_SCBLK_SIZE, NULL,
                 ENC_SCBLK_SIZE_TEXT, ENC_SCBLK_SIZE_TEXT, true )
-    change_string_list( enc_codeblock_size_list, enc_codeblock_size_list_text, 0 );
+    change_string_list( enc_codeblock_size_list, enc_codeblock_size_list_text )
 
     add_string( ENC_CFG_PREFIX ENC_PREFILTER, NULL,
                 ENC_PREFILTER_TEXT, ENC_PREFILTER_LONGTEXT, false )
-    change_string_list( enc_filtering_list, enc_filtering_list_text, 0 );
+    change_string_list( enc_filtering_list, enc_filtering_list_text )
 
     add_float( ENC_CFG_PREFIX ENC_PREFILTER_STRENGTH, -1.,
                  ENC_PREFILTER_STRENGTH_TEXT, ENC_PREFILTER_STRENGTH_LONGTEXT, false )
@@ -491,7 +491,7 @@ vlc_module_begin ()
     /* advanced option only */
     add_string( ENC_CFG_PREFIX ENC_PWT, NULL,
                 ENC_PWT_TEXT, ENC_PWT_TEXT, true )
-    change_string_list( enc_perceptual_weighting_list, enc_perceptual_weighting_list, 0 );
+    change_string_list( enc_perceptual_weighting_list, enc_perceptual_weighting_list )
 
     /* advanced option only */
     add_float( ENC_CFG_PREFIX ENC_PDIST, -1,
@@ -516,7 +516,7 @@ vlc_module_begin ()
     /* advanced option only */
     add_string( ENC_CFG_PREFIX ENC_FORCE_PROFILE, NULL,
                 ENC_FORCE_PROFILE_TEXT, ENC_FORCE_PROFILE_TEXT, true )
-    change_string_list( enc_profile_list, enc_profile_list_text, 0 );
+    change_string_list( enc_profile_list, enc_profile_list_text )
 
 vlc_module_end ()
 
@@ -602,7 +602,7 @@ static void SetVideoFormat( decoder_t *p_dec )
     p_sys->p_format = schro_decoder_get_video_format(p_sys->p_schro);
     if( p_sys->p_format == NULL ) return;
 
-    p_sys->i_frame_pts_delta = INT64_C(1000000)
+    p_sys->i_frame_pts_delta = CLOCK_FREQ
                             * p_sys->p_format->frame_rate_denominator
                             / p_sys->p_format->frame_rate_numerator;
 
@@ -1060,7 +1060,7 @@ static bool SetEncChromaFormat( encoder_t *p_enc, uint32_t i_codec )
 static int OpenEncoder( vlc_object_t *p_this )
 {
     encoder_t *p_enc = (encoder_t *)p_this;
-    encoder_sys_t *p_sys = p_enc->p_sys;
+    encoder_sys_t *p_sys;
     int i_tmp;
     float f_tmp;
     char *psz_tmp;
@@ -1072,7 +1072,7 @@ static int OpenEncoder( vlc_object_t *p_this )
     }
 
     if( !p_enc->fmt_in.video.i_frame_rate || !p_enc->fmt_in.video.i_frame_rate_base ||
-        !p_enc->fmt_in.video.i_height || !p_enc->fmt_in.video.i_width )
+        !p_enc->fmt_in.video.i_visible_height || !p_enc->fmt_in.video.i_visible_width )
     {
         msg_Err( p_enc, "Framerate and picture dimensions must be non-zero" );
         return VLC_EGENERIC;
@@ -1138,8 +1138,8 @@ static int OpenEncoder( vlc_object_t *p_this )
     schro_video_format_set_std_video_format( p_sys->p_format, guessed_video_fmt );
 
     /* constants set from the input video format */
-    p_sys->p_format->width                  = p_enc->fmt_in.video.i_width;
-    p_sys->p_format->height                 = p_enc->fmt_in.video.i_height;
+    p_sys->p_format->width                  = p_enc->fmt_in.video.i_visible_width;
+    p_sys->p_format->height                 = p_enc->fmt_in.video.i_visible_height;
     p_sys->p_format->frame_rate_numerator   = p_enc->fmt_in.video.i_frame_rate;
     p_sys->p_format->frame_rate_denominator = p_enc->fmt_in.video.i_frame_rate_base;
     unsigned u_asr_num, u_asr_den;
@@ -1483,7 +1483,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pic )
 
         /* store dts in a queue, so that they appear in order in
          * coded order */
-        p_block = block_New( p_enc, 1 );
+        p_block = block_Alloc( 1 );
         if( !p_block )
             return NULL;
         p_block->i_dts = p_pic->date - p_sys->i_pts_offset;
@@ -1497,7 +1497,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pic )
             StorePicturePTS( p_enc, p_sys->i_input_picnum, p_pic->date + p_sys->i_field_time );
             p_sys->i_input_picnum++;
 
-            p_block = block_New( p_enc, 1 );
+            p_block = block_Alloc( 1 );
             if( !p_block )
                 return NULL;
             p_block->i_dts = p_pic->date - p_sys->i_pts_offset + p_sys->i_field_time;
@@ -1527,7 +1527,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pic )
             uint32_t u_pic_num;
             int i_presentation_frame;
             p_enc_buf = schro_encoder_pull( p_sys->p_schro, &i_presentation_frame );
-            p_block = block_New( p_enc, p_enc_buf->length );
+            p_block = block_Alloc( p_enc_buf->length );
             if( !p_block )
                 return NULL;
 
@@ -1553,7 +1553,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pic )
                         return NULL;
                     memcpy( p_enc->fmt_out.p_extra, p_block->p_buffer, len );
                     memcpy( (uint8_t*)p_enc->fmt_out.p_extra + len, eos, sizeof( eos ) );
-                    SetDWBE( (uint8_t*)p_enc->fmt_out.p_extra + len + 10, len );
+                    SetDWBE( (uint8_t*)p_enc->fmt_out.p_extra + len + sizeof(eos) - 4, len );
                     p_enc->fmt_out.i_extra = len + sizeof( eos );
                 }
             }

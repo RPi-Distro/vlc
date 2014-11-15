@@ -1,24 +1,24 @@
 /*****************************************************************************
  * magnify.c : Magnify/Zoom interactive effect
  *****************************************************************************
- * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: cb8e870b37c8b81b2cd62d9bca4dbd6f76ece5e7 $
+ * Copyright (C) 2005-2009 VLC authors and VideoLAN
+ * $Id: 9df90a9cbb94232b771d0732f5398ffc3252c584 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -190,8 +190,8 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
 
         /* */
         fmt_in = p_filter->fmt_in.video;
-        fmt_in.i_width  = (fmt_in.i_width  * ZOOM_FACTOR / o_zoom) & ~1;
-        fmt_in.i_height = (fmt_in.i_height * ZOOM_FACTOR / o_zoom) & ~1;
+        fmt_in.i_width  = fmt_in.i_visible_width  = (fmt_in.i_width  * ZOOM_FACTOR / o_zoom) & ~1;
+        fmt_in.i_height = fmt_in.i_visible_height = (fmt_in.i_height * ZOOM_FACTOR / o_zoom) & ~1;
 
         /* */
         fmt_out = p_filter->fmt_out.video;
@@ -215,8 +215,8 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
 
         /* image visualization */
         fmt_out = p_filter->fmt_out.video;
-        fmt_out.i_width  = (fmt_out.i_width /VIS_ZOOM) & ~1;
-        fmt_out.i_height = (fmt_out.i_height/VIS_ZOOM) & ~1;
+        fmt_out.i_width  = fmt_out.i_visible_width  = (fmt_out.i_width /VIS_ZOOM) & ~1;
+        fmt_out.i_height = fmt_out.i_visible_height = (fmt_out.i_height/VIS_ZOOM) & ~1;
         p_converted = image_Convert( p_sys->p_image, p_pic,
                                      &p_pic->format, &fmt_out );
 
@@ -317,7 +317,7 @@ static void DrawRectangle( uint8_t *pb_dst, int i_pitch, int i_width, int i_heig
         return;
 
     /* top line */
-    vlc_memset( &pb_dst[y * i_pitch + x], 0xff, i_w );
+    memset( &pb_dst[y * i_pitch + x], 0xff, i_w );
 
     /* left and right */
     for( dy = 1; dy < i_h-1; dy++ )
@@ -327,7 +327,7 @@ static void DrawRectangle( uint8_t *pb_dst, int i_pitch, int i_width, int i_heig
     }
 
     /* bottom line */
-    vlc_memset( &pb_dst[(y+i_h-1) * i_pitch + x], 0xff, i_w );
+    memset( &pb_dst[(y+i_h-1) * i_pitch + x], 0xff, i_w );
 }
 
 static int Mouse( filter_t *p_filter, vlc_mouse_t *p_mouse, const vlc_mouse_t *p_old, const vlc_mouse_t *p_new )

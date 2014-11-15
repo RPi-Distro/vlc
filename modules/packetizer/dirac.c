@@ -1,24 +1,24 @@
 /*****************************************************************************
  * dirac.c
  *****************************************************************************
- * Copyright (C) 2008 the VideoLAN team
- * $Id: 858867475787bea3daa4c6bc81012f01f7184a3b $
+ * Copyright (C) 2008 VLC authors and VideoLAN
+ * $Id: 71b0b11a129601debc73663c68fe9bec88f6993f $
  *
  * Authors: David Flynn <davidf@rd.bbc.co.uk>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2 of the License
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /* Dirac packetizer, formed of three parts:
@@ -128,9 +128,6 @@ struct decoder_sys_t
      * completed encapsulation units from the front */
     block_t *p_outqueue;
     block_t **pp_outqueue_last;
-    /* p_out_dts points to an element in p_outqueue.  It is used for VLC's
-     * fake pts hidden in DTS hack, as used by AVI */
-    block_t *p_out_dts;
 
     uint32_t u_tg_last_picnum; /*< most recent picturenumber output from RoB */
     bool b_tg_last_picnum; /*< u_tg_last_picnum valid */
@@ -297,7 +294,7 @@ static int block_ChainToArray( block_t *p_block, block_t ***ppp_array)
 
 /**
  * Destructively find and recover the earliest timestamp from start of
- * bytestream, upto i_length.
+ * bytestream, up to i_length.
  */
 static void dirac_RecoverTimestamps ( decoder_t *p_dec, size_t i_length )
 {
@@ -520,7 +517,7 @@ static bool dirac_UnpackSeqHdr( struct seq_hdr_t *p_sh, block_t *p_block )
     uint32_t u_video_format = dirac_uint( &bs ); /* index */
     if( u_video_format > 20 )
     {
-        /* dont know how to parse this header */
+        /* don't know how to parse this header */
         return false;
     }
 
@@ -571,13 +568,13 @@ static bool dirac_UnpackSeqHdr( struct seq_hdr_t *p_sh, block_t *p_block )
     if( dirac_bool( &bs ) )
     {
         uint32_t frame_rate_index = dirac_uint( &bs );
-        p_sh->u_fps_num = dirac_frate_tbl[frame_rate_index].u_n;
-        p_sh->u_fps_den = dirac_frate_tbl[frame_rate_index].u_d;
         if( frame_rate_index >= dirac_frate_tbl_size )
         {
             /* invalid header */
             return false;
         }
+        p_sh->u_fps_num = dirac_frate_tbl[frame_rate_index].u_n;
+        p_sh->u_fps_den = dirac_frate_tbl[frame_rate_index].u_d;
         if( frame_rate_index == 0 )
         {
             p_sh->u_fps_num = dirac_uint( &bs ); /* frame_rate_numerator */
@@ -651,7 +648,7 @@ static bool dirac_UnpackSeqHdr( struct seq_hdr_t *p_sh, block_t *p_block )
 static block_t *dirac_EmitEOS( decoder_t *p_dec, uint32_t i_prev_parse_offset )
 {
     const uint8_t p_eos[] = { 'B','B','C','D',0x10,0,0,0,13,0,0,0,0 };
-    block_t *p_block = block_New( p_dec, 13 );
+    block_t *p_block = block_Alloc( 13 );
     if( !p_block )
         return NULL;
     memcpy( p_block->p_buffer, p_eos, 13 );
@@ -660,9 +657,8 @@ static block_t *dirac_EmitEOS( decoder_t *p_dec, uint32_t i_prev_parse_offset )
 
     p_block->i_flags = DIRAC_NON_DATED;
 
-    return p_block;
-
     (void) p_dec;
+    return p_block;
 }
 
 /***
@@ -735,7 +731,7 @@ static block_t *dirac_DoSync( decoder_t *p_dec )
             {
                 return NULL; /* retry later */
             }
-            /* attempt to syncronise backwards from pu.u_next_offset */
+            /* attempt to synchronise backwards from pu.u_next_offset */
             p_sys->i_offset = pu.u_next_offset;
             /* fall through */
         case TRY_SYNC: /* -> SYNCED | NOT_SYNCED */
@@ -791,13 +787,13 @@ sync_fail:
     /* recover any timestamps from the data that is about to be flushed */
     dirac_RecoverTimestamps( p_dec, p_sys->i_offset );
 
-    /* flush everything upto the start of the DU */
+    /* flush everything up to the start of the DU */
     block_SkipBytes( &p_sys->bytestream, p_sys->i_offset );
     block_BytestreamFlush( &p_sys->bytestream );
     p_sys->i_offset = 0;
 
     /* setup the data unit buffer */
-    block_t *p_block = block_New( p_dec, pu.u_next_offset );
+    block_t *p_block = block_Alloc( pu.u_next_offset );
     if( !p_block )
         return NULL;
 
@@ -851,7 +847,7 @@ static int dirac_InspectDataUnit( decoder_t *p_dec, block_t **pp_block, block_t 
         Actually, this is a bad idea:
          - It sets the discontinuity for every dirac EOS packet
            which doesnt imply a time discontinuity.
-         - When the syncronizer detects a real discontinuity, it
+         - When the synchronizer detects a real discontinuity, it
            should copy the flags through.
         p_eu->i_flags |= BLOCK_FLAG_DISCONTINUITY;
         */
@@ -1038,7 +1034,7 @@ static block_t *dirac_BuildEncapsulationUnit( decoder_t *p_dec, block_t *p_block
  *
  * Returns:
  *  0: everything ok
- *  1: EOS occured, please flush and reset
+ *  1: EOS occurred, please flush and reset
  *  2: picture number discontinuity, please flush and reset
  */
 static int dirac_TimeGenPush( decoder_t *p_dec, block_t *p_block_in )
@@ -1144,9 +1140,6 @@ static int dirac_TimeGenPush( decoder_t *p_dec, block_t *p_block_in )
     if( p_sys->b_dts == p_sys->b_pts )
         return 0;
 
-    if( !p_sys->p_out_dts )
-        p_sys->p_out_dts = p_sys->p_outqueue;
-
     /* model the reorder buffer */
     block_t *p_block = dirac_Reorder( p_dec, p_block_in, u_picnum );
     if( !p_block )
@@ -1183,25 +1176,35 @@ static int dirac_TimeGenPush( decoder_t *p_dec, block_t *p_block_in )
     p_sys->b_tg_last_picnum = true;
     p_sys->u_tg_last_picnum = u_picnum;
 
-    if( !p_sys->b_pts )
+    return 0;
+}
+
+
+static void dirac_ReorderDequeueAndReleaseBlock( decoder_t *p_dec, block_t *p_block )
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+    /* Check if that block is present in reorder queue and release it
+       if needed */
+    struct dirac_reorder_entry **pp_at = &p_sys->reorder_buf.p_head;
+    for( ; *pp_at; pp_at = &(*pp_at)->p_next )
     {
-        /* some demuxers (eg, AVI) will provide a series of fake dts values,
-         * which are actually inorder pts values (ie, what should be seen at
-         * the output of a decoder.  A main reason for simulating the reorder
-         * buffer is to turn the inorder fakedts into an out-of-order pts */
-        p_block->i_pts = p_sys->p_out_dts->i_dts;
-        p_sys->p_out_dts->i_dts = VLC_TS_INVALID;
+        /* backup address in case we remove member */
+        struct dirac_reorder_entry *p_entry = *pp_at;
+        if ( p_entry->p_eu == p_block )
+        {
+            /* unlink member */
+            *pp_at = (*pp_at)->p_next;
+
+            /* Add to empty reorder entry list*/
+            p_entry->p_next = p_sys->reorder_buf.p_empty;
+            p_sys->reorder_buf.p_empty = p_entry;
+
+            p_sys->reorder_buf.u_size--;
+            break;
+        }
     }
 
-    /* If pts was copied from dts, the dts needs to be corrected to account for reordering*/
-    /* If dts has never been seen, the same needs to happen */
-    p_sys->p_out_dts->i_dts = p_block->i_pts - p_sys->i_pts_offset;
-
-    /* move dts pointer */
-    if( p_sys->p_out_dts )
-        p_sys->p_out_dts = p_sys->p_out_dts->p_next;
-
-    return 0;
+    block_Release( p_block );
 }
 
 /*****************************************************************************
@@ -1227,7 +1230,7 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
             if( p_block )
             {
                 p_block->p_next = dirac_EmitEOS( p_dec, 13 );
-                /* need two EOS to ensure it gets detected by syncro
+                /* need two EOS to ensure it gets detected by synchro
                  * duplicates get discarded in forming encapsulation unit */
             }
         }
@@ -1245,7 +1248,7 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
     }
 
     /* form as many encapsulation units as possible, give up
-     * when the syncronizer runs out of input data */
+     * when the synchronizer runs out of input data */
     while( ( p_block = dirac_DoSync( p_dec ) ) )
     {
         p_block = dirac_BuildEncapsulationUnit( p_dec, p_block );
@@ -1314,7 +1317,6 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
         dirac_ReorderInit( &p_sys->reorder_buf );
 
         assert( p_sys->p_outqueue == NULL );
-        p_sys->p_out_dts = NULL;
     }
 
     /* perform sanity check:
@@ -1333,7 +1335,7 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
             block_t *p_block_next = p_block->p_next;
             if( p_block->i_pts > VLC_TS_INVALID && p_block->i_dts > VLC_TS_INVALID )
                 break;
-            block_Release( p_block );
+            dirac_ReorderDequeueAndReleaseBlock( p_dec, p_block );
             p_sys->p_outqueue = p_block = p_block_next;
         }
     }
@@ -1383,7 +1385,7 @@ static int Open( vlc_object_t *p_this )
         /* handle hacky systems like ogg that dump some headers
          * in p_extra. and packetizers that expect it to be filled
          * in before real startup */
-        block_t *p_init = block_New( p_dec, p_dec->fmt_in.i_extra );
+        block_t *p_init = block_Alloc( p_dec->fmt_in.i_extra );
         if( !p_init )
         {
             /* memory might be avaliable soon.  it isn't the end of

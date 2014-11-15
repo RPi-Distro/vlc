@@ -1,22 +1,22 @@
 /*****************************************************************************
  * win32.c: Screen capture module.
  *****************************************************************************
- * Copyright (C) 2004-2011 the VideoLAN team
- * $Id: d01a4265b773a51344db241bf294cf091fcfcacf $
+ * Copyright (C) 2004-2011 VLC authors and VideoLAN
+ * $Id: 0092df96faf673a9456dfa0ddc2467d37048caca $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
@@ -56,7 +56,7 @@ int screen_InitCapture( demux_t *p_demux )
         return VLC_ENOMEM;
 
     /* Get the device context for the whole screen */
-    p_data->hdc_src = CreateDC( "DISPLAY", NULL, NULL, NULL );
+    p_data->hdc_src = CreateDC( TEXT("DISPLAY"), NULL, NULL, NULL );
     if( !p_data->hdc_src )
     {
         msg_Err( p_demux, "cannot get device context" );
@@ -151,7 +151,7 @@ struct block_sys_t
 
 static void CaptureBlockRelease( block_t *p_block )
 {
-    DeleteObject( ((block_sys_t *)p_block)->hbmp );
+    DeleteObject( ((struct block_sys_t *)p_block)->hbmp );
     free( p_block );
 }
 
@@ -159,7 +159,7 @@ static block_t *CaptureBlockNew( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
     screen_data_t *p_data = p_sys->p_data;
-    block_sys_t *p_block;
+    struct block_sys_t *p_block;
     void *p_buffer;
     int i_buffer;
     HBITMAP hbmp;
@@ -214,7 +214,7 @@ static block_t *CaptureBlockNew( demux_t *p_demux )
     }
 
     /* Build block */
-    if( !(p_block = malloc( sizeof( block_t ) + sizeof( block_sys_t ) )) )
+    if( !(p_block = malloc( sizeof( block_t ) + sizeof( struct block_sys_t ) )) )
         goto error;
 
     /* Fill all fields */

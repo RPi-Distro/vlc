@@ -22,11 +22,12 @@ ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
 confflags += --disable-optimizations --disable-mmx --disable-sse --disable-altivec
 endif
 
+CFLAGS := $(shell dpkg-buildflags --get CFLAGS)
+CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS)
+
 # configure flags
 confflags += \
-	CFLAGS="$(shell dpkg-buildflags --get CFLAGS)" \
 	CPPFLAGS="$(shell dpkg-buildflags --get CPPFLAGS)" \
-	CXXFLAGS="$(shell dpkg-buildflags --get CXXFLAGS)" \
 	LDFLAGS="$(shell dpkg-buildflags --get LDFLAGS)" \
 	--config-cache \
 	--disable-maintainer-mode \
@@ -35,6 +36,7 @@ confflags += \
 	--enable-fast-install \
 	--prefix=/usr \
 	--docdir=/usr/share/doc/vlc-nox \
+	--libdir=/usr/lib \
 	--sysconfdir=/etc \
 	--with-binary-version=$(DEBIAN_VERSION) \
 	$(NULL)
@@ -45,23 +47,26 @@ confflags += \
 	--enable-bluray \
 	--enable-bonjour \
 	--enable-caca \
+	--enable-chromaprint \
 	--enable-dbus \
 	--enable-dca \
-	--enable-dirac \
 	--enable-directfb \
 	--enable-dvbpsi \
 	--enable-dvdnav \
 	--enable-faad \
 	--enable-flac \
 	--enable-fluidsynth \
+	--enable-freerdp \
 	--enable-freetype \
 	--enable-fribidi \
+	--enable-gles1 \
+	--enable-gles2 \
+	--enable-glx \
 	--enable-gnutls \
 	--enable-jack \
 	--enable-kate \
 	--enable-libass \
 	--enable-libmpeg2 \
-	--enable-libproxy \
 	--enable-libxml2 \
 	--enable-lirc \
 	--enable-live555 \
@@ -75,98 +80,122 @@ confflags += \
 	--enable-notify \
 	--enable-ogg \
 	--enable-opus \
-	--enable-oss \
 	--enable-pulse \
-	--enable-qt4 \
+	--enable-qt \
 	--enable-realrtsp \
 	--enable-samplerate \
 	--enable-schroedinger \
 	--enable-sdl \
 	--enable-sftp \
+	--enable-shine \
 	--enable-shout \
 	--enable-skins2 \
-	--enable-smb \
+	--enable-smbclient \
 	--enable-speex \
 	--enable-svg \
 	--enable-taglib \
 	--enable-theora \
 	--enable-twolame \
 	--enable-upnp \
-	--enable-vcd \
 	--enable-vcdx \
+	--enable-vdpau \
+	--enable-vnc \
 	--enable-vorbis \
 	--enable-x264 \
 	--enable-zvbi \
 	--with-kde-solid=/usr/share/kde4/apps/solid/actions/ \
 	$(NULL)
 # Reasons for disabling features:
+# decklink -> not in Debian
 # dxva2 -> Windows only
+# fdkaac -> in Debian non-free
 # gnomevfs -> poorly maintained
 # goom -> not in Debian
-# portaudio -> not needed
+# libtar -> security issue (#737534)
+# mfx -> currently not supported on Linux
+# opencv -> developer plugin not required by end users
 # projectm -> broken
-# sqlite -> still in development
+# sndio -> not in Debian
+# svgdev -> libcairo2-dev is not new enough
 # telx -> incompatible with zvbi
+# vpx -> not needed when having libavcodec
+# vsxu -> not in Debian
+# wasapi -> Windows only
 confflags += \
+	--disable-decklink \
 	--disable-dxva2 \
+	--disable-fdkaac \
 	--disable-gnomevfs \
 	--disable-goom \
-	--disable-portaudio \
+	--disable-libtar \
+	--disable-mfx \
+	--disable-opencv \
 	--disable-projectm \
-	--disable-sqlite \
+	--disable-sndio \
+	--disable-svgdec \
 	--disable-telx \
+	--disable-vpx \
+	--disable-vsxu \
+	--disable-wasapi \
 	$(NULL)
 
 # Linux specific flags
 ifeq ($(DEB_HOST_ARCH_OS),linux)
 # omxil should be enabled on all systems, but libomxil-bellagio does
-# not build on kfreebsd and hurd (currently)
+# not build on kfreebsd and hurd (currently).
+# V4L2 is disabled on kFreeBSD due to a build failure.
 confflags += \
 	--enable-alsa \
 	--enable-atmo \
 	--enable-dc1394 \
-	--enable-dv \
-	--enable-fbosd \
-	--enable-libva \
+	--enable-dv1394 \
 	--enable-linsys \
 	--enable-omxil \
-	--enable-pvr \
 	--enable-udev \
+	--enable-v4l2 \
 	$(NULL)
 else
 confflags += \
 	--disable-alsa \
 	--disable-atmo \
 	--disable-dc1394 \
-	--disable-dv \
-	--disable-fbosd \
-	--disable-libva \
+	--disable-dv1394 \
 	--disable-linsys \
 	--disable-omxil \
-	--disable-pvr \
 	--disable-udev \
+	--disable-v4l2 \
 	$(NULL)
 removeplugins += \
 	alsa \
 	libatmo \
 	libdc1394 \
 	libdtv \
-	libaccess_dv \
+	libdvb \
+	libdv1394 \
 	libfb \
-	libfbosd \
 	libomxil \
 	linsys \
-	libpvr \
 	libudev \
+	libv4l2 \
 	$(NULL)
 endif
 
-# Linux and kFreeBSD specific flags
+# Linux and kFreeBSD specific flags (disabled on Hurd)
 ifeq (,$(filter-out linux kfreebsd,$(DEB_HOST_ARCH_OS)))
-confflags += --enable-v4l2
+confflags += --enable-libva --enable-vcd
 else
-confflags += --disable-v4l2
-removeplugins += libv4l2
+confflags += --disable-libva --disable-vcd
+removeplugins += cdda libvaapi vcd
+endif
+
+# kFreeBSD specific flags
+ifeq (,$(filter-out kfreebsd,$(DEB_HOST_ARCH_OS)))
+confflags += --enable-oss
+else
+# Note: Use ALSA on Linux instead of OSS.
+#       Ubuntu has disabled OSS support in their Linux kernel.
+confflags += --disable-oss
+removeplugins += oss
 endif
 
 # Linux amd64 and i386 specific flags
@@ -182,7 +211,7 @@ ifeq (,$(filter-out amd64 i386,$(DEB_HOST_ARCH_CPU)))
 confflags += --enable-mmx --enable-sse
 else
 confflags += --disable-mmx --disable-sse
-removeplugins += 3dn mmx mmxext sse2
+removeplugins += mmx sse2
 endif
 
 # ARM specific optimizations
@@ -203,8 +232,14 @@ endif
 
 # PowerPCSPE specific optimizations
 ifeq (,$(filter-out powerpcspe,$(DEB_HOST_ARCH)))
-confflags += --with-tuning=8548
+CFLAGS += -mtune=8548
+CXXFLAGS += -mtune=8548
 endif
+
+confflags += \
+	CFLAGS="$(CFLAGS)" \
+	CXXFLAGS="$(CXXFLAGS)" \
+	$(NULL)
 
 %:
 	dh $@ --parallel --with autoreconf
@@ -213,20 +248,10 @@ override_dh_autoreconf:
 	dh_autoreconf --as-needed
 
 override_dh_auto_clean:
-	[ ! -f debian/vlc-nox.install.bak ] || mv -f debian/vlc-nox.install.bak debian/vlc-nox.install
-	rm -rf tmp/
+	rm -f debian/vlc.install debian/vlc-nox.install
 	dh_auto_clean
 
 override_dh_auto_configure:
-	# We need to build the static library apart
-	# Else it's a mess when we build the modules
-	./configure --enable-static $(confflags)
-	$(MAKE) -C compat
-	$(MAKE) -C src libvlccore.la
-	$(MAKE) -C lib libvlc.la
-	mkdir -p tmp
-	cp src/.libs/libvlccore.a tmp/libvlccore.a
-	cp lib/.libs/libvlc.a tmp/libvlc.a
 	dh_auto_configure -- $(confflags)
 
 override_dh_auto_test:
@@ -245,10 +270,8 @@ endif
 
 override_dh_install:
 	# Remove disabled plugins
-	test -f debian/vlc-nox.install.bak || cp debian/vlc-nox.install debian/vlc-nox.install.bak
-	sed -i "/\($(shell echo $(removeplugins) | sed 's/ /\\|/g')\)_/d" debian/vlc-nox.install
-	cp tmp/libvlc.a debian/tmp/usr/lib
-	cp tmp/libvlccore.a debian/tmp/usr/lib
+	sed "/\($(shell echo $(removeplugins) | sed 's/ /\\|/g')\)_/d" debian/vlc.install.in > debian/vlc.install
+	sed "/\($(shell echo $(removeplugins) | sed 's/ /\\|/g')\)_/d" debian/vlc-nox.install.in > debian/vlc-nox.install
 	# Clean up libtool crap
 	find debian/tmp -name '*.la' -delete
 	# Remove useless stuff
@@ -259,24 +282,16 @@ override_dh_install:
 	find debian/tmp -name LICENSE -delete
 	# Install stuff
 	dh_install --fail-missing
-	# move .hosts
-	if test -d debian/vlc-data; then \
-		mkdir -p debian/vlc-data/etc/vlc/lua/http/dialogs && \
-		mv debian/vlc-data/usr/share/vlc/lua/http/dialogs/.hosts debian/vlc-data/etc/vlc/lua/http/dialogs && \
-		ln -s /etc/vlc/lua/http/dialogs/.hosts debian/vlc-data/usr/share/vlc/lua/http/dialogs/.hosts && \
-		mv debian/vlc-data/usr/share/vlc/lua/http/.hosts debian/vlc-data/etc/vlc/lua/http && \
-		ln -s /etc/vlc/lua/http/.hosts debian/vlc-data/usr/share/vlc/lua/http/.hosts; \
-	fi
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
 	# Check that we did not install a plugin linked with libX11 or
 	# libxcb in vlc-nox
 	BORKED=no; \
+	LD_LIBRARY_PATH="debian/libvlccore8/usr/lib:debian/libvlc5/usr/lib$${LD_LIBRARY_PATH:+:}$${LD_LIBRARY_PATH:-}"; \
 	for file in $$(find debian/vlc-nox/usr/lib/vlc -name '*.so'); do \
-	  if objdump -x $$file | egrep -q -e '^ +NEEDED +libX11\.so' \
-	                                  -e '^ +NEEDED +libxcb\.so'; then \
-	    BORKED=yes; \
-	    echo $$file depends on libX11 or libxcb; \
-	  fi; \
+		if ldd -r $$file | egrep -q -e 'libX11\.so' -e 'libxcb\.so'; then \
+			BORKED=yes; \
+			echo $$file depends on libX11 or libxcb; \
+		fi; \
 	done; \
 	if test "$$BORKED" = yes; then exit 1; fi
 endif
@@ -293,6 +308,9 @@ override_dh_installdocs:
 override_dh_installchangelogs:
 	dh_installchangelogs ChangeLog -p vlc-data
 	dh_installchangelogs ChangeLog -p vlc-nox
+
+override_dh_makeshlibs:
+	dh_makeshlibs -Xusr/lib/vlc/libvlc_vdpau
 
 override_dh_builddeb:
 	dh_builddeb -- -Zxz

@@ -52,7 +52,6 @@ struct services_discovery_sys_t
     vlc_thread_t thread;
     vlc_mutex_t lock;
     vlc_cond_t cond;
-    bool b_exiting;
 
     char **ppsz_query;
     int i_query;
@@ -90,7 +89,7 @@ int Open_LuaSD( vlc_object_t *p_this )
     }
     p_sd->p_sys = p_sys;
     p_sd->pf_control = Control;
-    p_sys->psz_filename = vlclua_find_file( p_this, "sd", psz_name );
+    p_sys->psz_filename = vlclua_find_file( "sd", psz_name );
     if( !p_sys->psz_filename )
     {
         msg_Err( p_sd, "Couldn't find lua services discovery script \"%s\".",
@@ -110,9 +109,8 @@ int Open_LuaSD( vlc_object_t *p_this )
     luaL_register( L, "vlc", p_reg );
     luaopen_input( L );
     luaopen_msg( L );
-    luaopen_net( L );
     luaopen_object( L );
-    luaopen_sd( L );
+    luaopen_sd_sd( L );
     luaopen_strings( L );
     luaopen_variables( L );
     luaopen_stream( L );
@@ -120,7 +118,7 @@ int Open_LuaSD( vlc_object_t *p_this )
     luaopen_xml( L );
     lua_pop( L, 1 );
 
-    if( vlclua_add_modules_path( p_sd, L, p_sys->psz_filename ) )
+    if( vlclua_add_modules_path( L, p_sys->psz_filename ) )
     {
         msg_Warn( p_sd, "Error while setting the module search path for %s",
                   p_sys->psz_filename );
@@ -136,7 +134,6 @@ int Open_LuaSD( vlc_object_t *p_this )
     p_sys->L = L;
     vlc_mutex_init( &p_sys->lock );
     vlc_cond_init( &p_sys->cond );
-    p_sys->b_exiting = false;
     TAB_INIT( p_sys->i_query, p_sys->ppsz_query );
 
     if( vlc_clone( &p_sys->thread, Run, p_sd, VLC_THREAD_PRIORITY_LOW ) )
@@ -163,10 +160,6 @@ void Close_LuaSD( vlc_object_t *p_this )
 {
     services_discovery_t *p_sd = ( services_discovery_t * )p_this;
     services_discovery_sys_t *p_sys = p_sd->p_sys;
-
-    vlc_mutex_lock( &p_sys->lock );
-    p_sys->b_exiting = true;
-    vlc_mutex_unlock( &p_sys->lock );
 
     vlc_cancel( p_sys->thread );
     vlc_join( p_sys->thread, NULL );
@@ -214,29 +207,29 @@ static void* Run( void *data )
     /* Main loop to handle search requests */
     vlc_mutex_lock( &p_sys->lock );
     mutex_cleanup_push( &p_sys->lock );
-    while( !p_sys->b_exiting )
+    for( ;; )
     {
         /* Wait for a request */
-        while( !p_sys->i_query )
-            vlc_cond_wait( &p_sys->cond, &p_sys->lock );
-
-        /* Execute every query each one protected against cancelation */
-        cancel = vlc_savecancel();
-        while( !p_sys->b_exiting && p_sys->i_query )
+        if( !p_sys->i_query )
         {
-            char *psz_query = p_sys->ppsz_query[p_sys->i_query - 1];
-            REMOVE_ELEM( p_sys->ppsz_query, p_sys->i_query, p_sys->i_query - 1 );
-
-            vlc_mutex_unlock( &p_sys->lock );
-            DoSearch( p_sd, psz_query );
-            free( psz_query );
-            vlc_mutex_lock( &p_sys->lock );
+            vlc_cond_wait( &p_sys->cond, &p_sys->lock );
+            continue;
         }
+
+        /* Execute one query (protected against cancellation) */
+        char *psz_query = p_sys->ppsz_query[p_sys->i_query - 1];
+        REMOVE_ELEM( p_sys->ppsz_query, p_sys->i_query, p_sys->i_query - 1 );
+        vlc_mutex_unlock( &p_sys->lock );
+
+        cancel = vlc_savecancel();
+        DoSearch( p_sd, psz_query );
+        free( psz_query );
         /* Force garbage collection, because the core will keep the SD
          * open, but lua will never gc until lua_close(). */
         lua_gc( L, LUA_GCCOLLECT, 0 );
-
         vlc_restorecancel( cancel );
+
+        vlc_mutex_lock( &p_sys->lock );
     }
     vlc_cleanup_run();
 
@@ -323,6 +316,7 @@ static int FillDescriptor( services_discovery_t *p_sd,
 
     /* Create a new lua thread */
     lua_State *L = luaL_newstate();
+
     if( luaL_dofile( L, p_sys->psz_filename ) )
     {
         msg_Err( p_sd, "Error loading script %s: %s", p_sys->psz_filename,
@@ -373,11 +367,15 @@ static int FillDescriptor( services_discovery_t *p_sd,
                     break;
                 }
             }
+
+            lua_pop( L, 1 );
+
             if( !psz_iter )
                 msg_Warn( p_sd, "Services discovery capability '%s' unknown in "
                                 "script '%s'", psz_cap, p_sys->psz_filename );
         }
     }
+
     lua_pop( L, 1 );
     i_ret = VLC_SUCCESS;
 

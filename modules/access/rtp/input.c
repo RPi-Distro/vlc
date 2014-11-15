@@ -12,7 +12,7 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
@@ -30,6 +30,7 @@
 #include <vlc_network.h>
 
 #include <limits.h>
+#include <errno.h>
 #include <unistd.h>
 #ifdef HAVE_POLL
 # include <poll.h>
@@ -136,7 +137,8 @@ void *rtp_dgram_thread (void *opaque)
             }
             else
             {
-                msg_Warn (demux, "RTP network error: %m");
+                msg_Warn (demux, "RTP network error: %s",
+                          vlc_strerror_c(errno));
                 block_Release (block);
             }
         }
@@ -154,7 +156,7 @@ void *rtp_dgram_thread (void *opaque)
  */
 void *rtp_stream_thread (void *opaque)
 {
-#ifndef WIN32
+#ifndef _WIN32
     demux_t *demux = opaque;
     demux_sys_t *sys = demux->p_sys;
     int fd = sys->fd;

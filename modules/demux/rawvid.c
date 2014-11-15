@@ -1,25 +1,25 @@
 /*****************************************************************************
  * rawvid.c : raw video input module for vlc
  *****************************************************************************
- * Copyright (C) 2007 the VideoLAN team
- * $Id: 82e4daaa38458e2087250f489d308bb4414c44ad $
+ * Copyright (C) 2007 VLC authors and VideoLAN
+ * $Id: 239f1ca160adec834b1e010fac7a006237f75593 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan d.t org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -43,7 +43,7 @@ static void Close( vlc_object_t * );
 
 #define FPS_TEXT N_("Frames per Second")
 #define FPS_LONGTEXT N_("This is the desired frame rate when " \
-    "playing raw video streams.  In the form 30000/1001 or 29.97")
+    "playing raw video streams. In the form 30000/1001 or 29.97")
 
 #define WIDTH_TEXT N_("Width")
 #define WIDTH_LONGTEXT N_("This specifies the width in pixels of the raw " \
@@ -169,9 +169,6 @@ static int Open( vlc_object_t * p_this )
         return VLC_EGENERIC;
     }
 valid:
-    /* Set p_input field */
-    p_demux->pf_demux   = Demux;
-    p_demux->pf_control = Control;
     p_demux->p_sys      = p_sys = malloc( sizeof( demux_sys_t ) );
     if( !p_sys )
         return VLC_ENOMEM;
@@ -193,13 +190,14 @@ valid:
     /* override presets if yuv4mpeg2 */
     if( b_y4m )
     {
+        /* The string should start with "YUV4MPEG2" */
         char *psz = stream_ReadLine( p_demux->s );
         char *psz_buf;
         int a = 1;
         int b = 1;
 
-        /* The string will start with "YUV4MPEG2" */
-        assert( strlen(psz) >= 9 );
+        if( unlikely(psz == NULL) )
+            goto error;
 
         /* NB, it is not possible to handle interlaced here, since the
          * interlaced picture flags are in picture_t not block_t */
@@ -367,8 +365,8 @@ valid:
     }
 
     es_format_Init( &p_sys->fmt_video, VIDEO_ES, i_chroma );
-    video_format_Setup( &p_sys->fmt_video.video,
-                        i_chroma, i_width, i_height,
+    video_format_Setup( &p_sys->fmt_video.video, i_chroma,
+                        i_width, i_height, i_width, i_height,
                         i_sar_num, i_sar_den );
 
     vlc_ureduce( &p_sys->fmt_video.video.i_frame_rate,
@@ -388,6 +386,8 @@ valid:
                         * p_sys->fmt_video.video.i_bits_per_pixel / 8;
     p_sys->p_es_video = es_out_Add( p_demux->out, &p_sys->fmt_video );
 
+    p_demux->pf_demux   = Demux;
+    p_demux->pf_control = Control;
     return VLC_SUCCESS;
 
 error:

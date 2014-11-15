@@ -1,28 +1,28 @@
 /*****************************************************************************
- * vcd.c : VCD input module for vlc using libcdio, libvcd and libvcdinfo.
+ * access.c : VCD input module for vlc using libcdio, libvcd and libvcdinfo.
  *         vlc-specific things tend to go here.
  *****************************************************************************
- * Copyright (C) 2000, 2003, 2004, 2005 the VideoLAN team
- * $Id: 0638533e65a8b2d961ec653eb942d99ddacac42b $
+ * Copyright (C) 2000, 2003, 2004, 2005 VLC authors and VideoLAN
+ * $Id: fda659922ab1454ac68bd50717227b473b90a7a6 $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *   Some code is based on the non-libcdio VCD plugin (as there really
  *   isn't real developer documentation yet on how to write a
  *   navigable plugin.)
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -150,7 +150,7 @@ VCDReadBlock( access_t * p_access )
                (long unsigned int) p_vcdplayer->i_lsn );
 
     /* Allocate a block for the reading */
-    if( !( p_block = block_New( p_access, i_blocks * M2F2_SECTOR_SIZE ) ) )
+    if( !( p_block = block_Alloc( i_blocks * M2F2_SECTOR_SIZE ) ) )
     {
         msg_Err( p_access, "cannot get a new block of size: %i",
                  i_blocks * M2F2_SECTOR_SIZE );
@@ -242,7 +242,7 @@ VCDSeek( access_t * p_access, uint64_t i_pos )
     if (!p_access || !p_access->p_sys) return VLC_EGENERIC;
     {
         vcdplayer_t         *p_vcdplayer = (vcdplayer_t *)p_vcd_access->p_sys;
-        const input_title_t *t = p_vcdplayer->p_title[p_access->info.i_title];
+        const input_title_t *t = p_vcdplayer->p_title[p_vcdplayer->i_cur_title];
         unsigned int         i_entry = VCDINFO_INVALID_ENTRY;
         int i_seekpoint;
 
@@ -297,13 +297,10 @@ VCDSeek( access_t * p_access, uint64_t i_pos )
         }
  
         /* Update current seekpoint */
-        if( i_seekpoint != p_access->info.i_seekpoint )
-        {
-            dbg_print( (INPUT_DBG_SEEK), "seekpoint change %lu",
-                       (long unsigned int) i_seekpoint );
-            p_access->info.i_update |= INPUT_UPDATE_SEEKPOINT;
-            p_access->info.i_seekpoint = i_seekpoint;
-        }
+        if( p_vcdplayer->i_cur_chapter != i_seekpoint )
+            dbg_print( (INPUT_DBG_SEEK), "seekpoint change %d",
+                       i_seekpoint );
+        p_vcdplayer->i_cur_chapter = i_seekpoint;
     }
     p_access->info.b_eof = false;
     return VLC_SUCCESS;
@@ -555,7 +552,7 @@ VCDParse( access_t * p_access, /*out*/ vcdinfo_itemid_t * p_itemid,
       p_itemid->num = 0;
     }
 
-#ifdef WIN32
+#ifdef _WIN32
     /* On Win32 we want the VCD access plugin to be explicitly requested,
      * we end up with lots of problems otherwise */
     if( !p_access->psz_access || !*p_access->psz_access ) return NULL;
@@ -672,20 +669,20 @@ VCDSetOrigin( access_t *p_access, lsn_t i_lsn, track_t i_track,
     case VCDINFO_ITEM_TYPE_ENTRY:
         VCDUpdateVar( p_access, p_itemid->num, VLC_VAR_SETVALUE,
                       "chapter", _("Entry"), "Setting entry/segment");
-        p_access->info.i_title     = i_track-1;
+        p_vcdplayer->i_cur_title = i_track - 1;
         if (p_vcdplayer->b_track_length)
         {
-            p_access->info.i_size = p_vcdplayer->p_title[i_track-1]->i_size;
+            p_vcdplayer->size = p_vcdplayer->p_title[i_track-1]->i_size;
             p_access->info.i_pos  = (uint64_t) M2F2_SECTOR_SIZE *
                      (vcdinfo_get_track_lsn(p_vcdplayer->vcd, i_track)-i_lsn);
         } else {
-            p_access->info.i_size = M2F2_SECTOR_SIZE * (int64_t)
+            p_vcdplayer->size = M2F2_SECTOR_SIZE * (int64_t)
                  vcdinfo_get_entry_sect_count(p_vcdplayer->vcd,p_itemid->num);
             p_access->info.i_pos = 0;
         }
         dbg_print( (INPUT_DBG_LSN|INPUT_DBG_PBC), "size: %"PRIu64", pos: %"PRIu64,
-                   p_access->info.i_size, p_access->info.i_pos );
-        p_access->info.i_seekpoint = p_itemid->num;
+                   p_vcdplayer->size, p_access->info.i_pos );
+        p_vcdplayer->i_cur_chapter = p_itemid->num;
         break;
 
     case VCDINFO_ITEM_TYPE_SEGMENT:
@@ -695,18 +692,18 @@ VCDSetOrigin( access_t *p_access, lsn_t i_lsn, track_t i_track,
            and they must here. The segment seekpoints are stored after
            the entry seekpoints and (zeroed) lid seekpoints.
         */
-        p_access->info.i_title     = p_vcdplayer->i_titles - 1;
-        p_access->info.i_size      = 0; /* No seeking on stills, please. */
+        p_vcdplayer->i_cur_title   = p_vcdplayer->i_titles - 1;
+        p_vcdplayer->size          = 0; /* No seeking on stills, please. */
         p_access->info.i_pos       = 0;
-        p_access->info.i_seekpoint = p_vcdplayer->i_entries
+        p_vcdplayer->i_cur_chapter = p_vcdplayer->i_entries
                                    + p_vcdplayer->i_lids + p_itemid->num;
         break;
 
     case VCDINFO_ITEM_TYPE_TRACK:
-        p_access->info.i_title     = i_track-1;
-        p_access->info.i_size      = p_vcdplayer->p_title[i_track-1]->i_size;
+        p_vcdplayer->i_cur_title   = i_track - 1;
+        p_vcdplayer->size          = p_vcdplayer->p_title[i_track - 1]->i_size;
         p_access->info.i_pos       = 0;
-        p_access->info.i_seekpoint = vcdinfo_track_get_entry(p_vcdplayer->vcd,
+        p_vcdplayer->i_cur_chapter = vcdinfo_track_get_entry(p_vcdplayer->vcd,
                                                              i_track);
         break;
 
@@ -714,9 +711,6 @@ VCDSetOrigin( access_t *p_access, lsn_t i_lsn, track_t i_track,
         msg_Warn( p_access, "can't set origin for play type %d",
                   p_vcdplayer->play_item.type );
     }
-
-    p_access->info.i_update = INPUT_UPDATE_TITLE|INPUT_UPDATE_SIZE
-                              |INPUT_UPDATE_SEEKPOINT;
 
     VCDUpdateTitle( p_access );
 
@@ -853,12 +847,8 @@ VCDOpen ( vlc_object_t *p_this )
     p_access->pf_control       = VCDControl;
     p_access->pf_seek          = VCDSeek;
 
-    p_access->info.i_update    = 0;
-    p_access->info.i_size      = 0;
     p_access->info.i_pos       = 0;
     p_access->info.b_eof       = false;
-    p_access->info.i_title     = 0;
-    p_access->info.i_seekpoint = 0;
 
     p_vcdplayer = malloc( sizeof(vcdplayer_t) );
 
@@ -867,6 +857,7 @@ VCDOpen ( vlc_object_t *p_this )
 
     p_vcdplayer->i_debug = var_InheritInteger( p_this, MODULE_STRING "-debug" );
     p_access->p_sys = (access_sys_t *) p_vcdplayer;
+    p_vcdplayer->size = 0;
 
     /* Set where to log errors messages from libcdio. */
     p_vcd_access = p_access;
@@ -895,6 +886,8 @@ VCDOpen ( vlc_object_t *p_this )
 //    p_vcdplayer->p_meta            = vlc_meta_New();
     p_vcdplayer->p_segments        = NULL;
     p_vcdplayer->p_entries         = NULL;
+    p_vcdplayer->i_cur_title       = 0;
+    p_vcdplayer->i_cur_chapter     = 0;
 
     /* set up input  */
 
@@ -1013,12 +1006,12 @@ static int VCDControl( access_t *p_access, int i_query, va_list args )
 
     switch( i_query )
     {
+#if 0
         /* Pass back a copy of meta information that was gathered when we
            during the Open/Initialize call.
          */
     case ACCESS_GET_META:
         dbg_print( INPUT_DBG_EVENT, "get meta info" );
-#if 0
         if( p_vcdplayer->p_meta )
         {
             vlc_meta_t **pp_meta = (vlc_meta_t**)va_arg(args,vlc_meta_t**);
@@ -1027,32 +1020,25 @@ static int VCDControl( access_t *p_access, int i_query, va_list args )
             dbg_print( INPUT_DBG_META, "%s", "Meta copied" );
         }
         else
-#endif
             msg_Warn( p_access, "tried to copy NULL meta info" );
-
         return VLC_SUCCESS;
-
+#endif
     case ACCESS_CAN_SEEK:
     case ACCESS_CAN_FASTSEEK:
     case ACCESS_CAN_PAUSE:
     case ACCESS_CAN_CONTROL_PACE:
-
         dbg_print( INPUT_DBG_EVENT,
                    "seek/fastseek/pause/can_control_pace" );
         *((bool*)va_arg( args, bool* )) = true;
-        return VLC_SUCCESS;
+        break;
 
-    /* */
     case ACCESS_GET_PTS_DELAY:
         *(int64_t*)va_arg(args,int64_t *) = INT64_C(1000) *
                                 var_InheritInteger( p_access, "disc-caching" );
-        dbg_print( INPUT_DBG_EVENT, "GET PTS DELAY" );
-        return VLC_SUCCESS;
+        break;
 
-        /* */
     case ACCESS_SET_PAUSE_STATE:
-        dbg_print( INPUT_DBG_EVENT, "SET PAUSE STATE" );
-        return VLC_SUCCESS;
+        break;
 
     case ACCESS_GET_TITLE_INFO:
     {
@@ -1080,7 +1066,7 @@ static int VCDControl( access_t *p_access, int i_query, va_list args )
         if( p_vcdplayer->i_titles == 0 )
         {
             *pi_int = 0; ppp_title = NULL;
-            return VLC_SUCCESS;
+            break;
         }
         *pi_int = p_vcdplayer->i_titles;
         *ppp_title = malloc(sizeof(input_title_t **)*p_vcdplayer->i_titles);
@@ -1091,14 +1077,22 @@ static int VCDControl( access_t *p_access, int i_query, va_list args )
             if( p_vcdplayer->p_title[i] )
                 (*ppp_title)[i] =
                            vlc_input_title_Duplicate(p_vcdplayer->p_title[i]);
+        break;
     }
-    break;
+
+    case ACCESS_GET_TITLE:
+        *va_arg( args, unsigned * ) = p_vcdplayer->i_cur_title;
+        break;
+
+    case ACCESS_GET_SEEKPOINT:
+        *va_arg( args, unsigned * ) = p_vcdplayer->i_cur_chapter;
+        break;
 
     case ACCESS_SET_TITLE:
         i = (int)va_arg( args, int );
 
         dbg_print( INPUT_DBG_EVENT, "set title %d" , i);
-        if( i != p_access->info.i_title )
+        if( i != p_vcdplayer->i_cur_title )
         {
             vcdinfo_itemid_t itemid;
             track_t          i_track = i+1;
@@ -1132,13 +1126,13 @@ static int VCDControl( access_t *p_access, int i_query, va_list args )
 
     case ACCESS_SET_SEEKPOINT:
     {
-        input_title_t *t = p_vcdplayer->p_title[p_access->info.i_title];
+        input_title_t *t = p_vcdplayer->p_title[p_vcdplayer->i_cur_title];
         unsigned int i = (unsigned int)va_arg( args, unsigned int );
 
         dbg_print( INPUT_DBG_EVENT, "set seekpoint %d", i );
         if( t->i_seekpoint > 0 )
         {
-            track_t i_track = p_access->info.i_title+1;
+            track_t i_track = p_vcdplayer->i_cur_title + 1;
             lsn_t lsn;
 
             /* FIXME! For now we are assuming titles are only tracks and
@@ -1167,17 +1161,11 @@ static int VCDControl( access_t *p_access, int i_query, va_list args )
             VCDSetOrigin(p_access,vcdinfo_get_entry_lsn(p_vcdplayer->vcd,i),
                          i_track,&(p_vcdplayer->play_item));
         }
-        return VLC_SUCCESS;
+        break;
     }
 
-    case ACCESS_SET_PRIVATE_ID_STATE:
-        dbg_print( INPUT_DBG_EVENT, "set private id" );
-        return VLC_EGENERIC;
-
     default:
-        msg_Warn( p_access, "unimplemented query in control" );
         return VLC_EGENERIC;
-
     }
     return VLC_SUCCESS;
 }

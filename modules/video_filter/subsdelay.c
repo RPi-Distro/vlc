@@ -2,21 +2,21 @@
  * subsdelay.c : Subsdelay plugin for vlc
  *****************************************************************************
  * Copyright © 2011 VideoLAN
- * $Id: 974518dce62e7088b34f55f93bb2d4800cc05b03 $
+ * $Id: be727cf767ae25f3aa10110c7c35fecd6dba006a $
  *
  * Authors: Yuval Tze <yuvaltze@gmail.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
@@ -33,7 +33,6 @@
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
 #include <vlc_subpicture.h>
-#include <vlc_osd.h>
 #include <vlc_es.h>
 #include <stdlib.h>
 
@@ -43,7 +42,7 @@
 
 /* descriptions */
 
-#define SUBSDELAY_HELP N_("Change subtitles delay")
+#define SUBSDELAY_HELP N_("Change subtitle delay")
 
 #define MODE_TEXT N_( "Delay calculation mode" )
 #define MODE_LONGTEXT N_( \
@@ -273,7 +272,7 @@ static void SubsdelayEntryNewStopValueUpdated( subsdelay_heap_entry_t *p_entry )
 
 vlc_module_begin()
         set_shortname( _("Subsdelay") )
-        set_description( _("Subtitles delay") )
+        set_description( _("Subtitle delay") )
         set_help( SUBSDELAY_HELP )
         set_capability( "sub filter", 0 )
         set_callbacks( SubsdelayCreate, SubsdelayDestroy )

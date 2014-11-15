@@ -1,8 +1,8 @@
 /*****************************************************************************
  * coredialogs.h: Mac OS X Core Dialogs
  *****************************************************************************
- * Copyright (C) 2005-2011 VLC authors and VideoLAN
- * $Id: 4a73039dd7a7ef9ad4f1f8ecf62cd622a490077c $
+ * Copyright (C) 2005-2012 VLC authors and VideoLAN
+ * $Id: 239600b08c4047b59b59f35c751d517bab5ebdfe $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -35,7 +35,6 @@
     IBOutlet id o_window;
     IBOutlet id o_cleanup_button;
     IBOutlet id o_error_table;
-    IBOutlet id o_messages_btn;
 
     NSMutableArray * o_errors;
     NSMutableArray * o_icons;
@@ -43,7 +42,6 @@
     BOOL b_nib_loaded;
 }
 - (IBAction)cleanupTable:(id)sender;
-- (IBAction)showMessages:(id)sender;
 
 -(void)showPanel;
 -(void)addError: (NSString *)o_error withMsg:(NSString *)o_msg;

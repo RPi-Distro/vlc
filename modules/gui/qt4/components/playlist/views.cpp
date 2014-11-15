@@ -2,7 +2,7 @@
  * views.cpp : Views for the Playlist
  ****************************************************************************
  * Copyright © 2010 the VideoLAN team
- * $Id: 32009afd0fe6fca38a30ae1a9f15439e43475400 $
+ * $Id: 45306607ab7596929751dffb71c58c034dc5877b $
  *
  * Authors:         Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -22,7 +22,7 @@
  *****************************************************************************/
 
 #include "components/playlist/views.hpp"
-#include "components/playlist/playlist_model.hpp" /* PLModel */
+#include "components/playlist/vlc_model.hpp"      /* VLCModel */
 #include "components/playlist/sorting.h"          /* Columns List */
 #include "input_manager.hpp"                      /* THEMIM */
 
@@ -32,6 +32,8 @@
 #include <QFontMetrics>
 #include <QDrag>
 #include <QDragMoveEvent>
+#include <QMetaType>
+#include <QHeaderView>
 
 #include "assert.h"
 
@@ -56,14 +58,14 @@ void AbstractPlViewItemDelegate::paintBackground(
         painter->setPen( option.palette.color( QPalette::Highlight ).darker( 150 ) );
         painter->drawRect( r );
     }
-    else if( index.data( PLModel::IsCurrentRole ).toBool() )
+    else if( index.data( VLCModel::IsCurrentRole ).toBool() )
     {
         painter->setBrush( QBrush( Qt::lightGray ) );
         painter->setPen( QColor( Qt::darkGray ) );
         painter->drawRect( r );
     }
     if( option.state & QStyle::State_MouseOver )
-    {
+    { /* requires WA_hover on viewport */
         painter->setOpacity( 0.5 );
         painter->setPen( Qt::NoPen );
         painter->setBrush( option.palette.color( QPalette::Highlight ).lighter( 150 ) );
@@ -78,6 +80,8 @@ void PlIconViewItemDelegate::paint( QPainter * painter, const QStyleOptionViewIt
     QString artist = VLCModel::getMeta( index, COLUMN_ARTIST );
 
     QFont font( index.data( Qt::FontRole ).value<QFont>() );
+    font.setPointSize( __MAX( font.pointSize() + i_zoom, 4 ) );
+    font.setBold( index.data( VLCModel::IsCurrentRole ).toBool() );
     painter->setFont( font );
     QFontMetrics fm = painter->fontMetrics();
 
@@ -116,12 +120,12 @@ void PlIconViewItemDelegate::paint( QPainter * painter, const QStyleOptionViewIt
 
 
     //Draw children indicator
-    if( !index.data( PLModel::IsLeafNodeRole ).toBool() )
+    if( !index.data( VLCModel::IsLeafNodeRole ).toBool() )
     {
         QRect r( option.rect );
         r.setSize( QSize( 25, 25 ) );
         r.translate( 5, 5 );
-        if( index.data( PLModel::IsCurrentsParentNodeRole ).toBool() )
+        if( index.data( VLCModel::IsCurrentsParentNodeRole ).toBool() )
         {
             painter->setOpacity( 0.75 );
             QPainterPath nodeRectPath;
@@ -163,6 +167,7 @@ void PlIconViewItemDelegate::paint( QPainter * painter, const QStyleOptionViewIt
 QSize PlIconViewItemDelegate::sizeHint ( const QStyleOptionViewItem &, const QModelIndex & index ) const
 {
     QFont f( index.data( Qt::FontRole ).value<QFont>() );
+    f.setPointSize( __MAX( f.pointSize() + i_zoom, 4 ) );
     f.setBold( true );
     QFontMetrics fm( f );
     int textHeight = fm.height();
@@ -216,6 +221,8 @@ void PlListViewItemDelegate::paint( QPainter * painter, const QStyleOptionViewIt
 
     //Draw title info
     f.setItalic( true );
+    f.setPointSize( __MAX( f.pointSize() + i_zoom, 4 ) );
+    f.setBold( index.data( VLCModel::IsCurrentRole ).toBool() );
     painter->setFont( f );
     QFontMetrics fm( painter->fontMetrics() );
 
@@ -227,7 +234,7 @@ void PlListViewItemDelegate::paint( QPainter * painter, const QStyleOptionViewIt
     }
 
     //Draw children indicator
-    if( !index.data( PLModel::IsLeafNodeRole ).toBool() )
+    if( !index.data( VLCModel::IsLeafNodeRole ).toBool() )
     {
         QPixmap dirPix = QPixmap( ":/type/node" );
         painter->drawPixmap( QPoint( textRect.x(), textRect.center().y() - dirPix.height() / 2 ),
@@ -266,6 +273,28 @@ QSize PlListViewItemDelegate::sizeHint ( const QStyleOptionViewItem &, const QMo
     return QSize( 0, height );
 }
 
+
+void PlTreeViewItemDelegate::paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
+{
+    if ( index.data( VLCModel::IsCurrentRole ).toBool() )
+    {
+        QStyleOptionViewItem myoptions = option;
+        myoptions.font.setBold( true );
+        AbstractPlViewItemDelegate::paint( painter, myoptions, index );
+    }
+    else
+    {
+        AbstractPlViewItemDelegate::paint( painter, option, index );
+    }
+}
+
+void CellPixmapDelegate::paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
+{
+    QPixmap pixmap = index.data( Qt::DecorationRole ).value<QPixmap>();
+    painter->drawPixmap( option.rect.topLeft(),
+                         pixmap.scaled( option.rect.size(), Qt::KeepAspectRatio ) );
+}
+
 static inline void plViewStartDrag( QAbstractItemView *view, const Qt::DropActions & supportedActions )
 {
     QDrag *drag = new QDrag( view );
@@ -283,7 +312,7 @@ static void plViewDragMoveEvent( QAbstractItemView *, QDragMoveEvent * event )
     else event->acceptProposedAction();
 }
 
-PlIconView::PlIconView( PLModel *, QWidget *parent ) : QListView( parent )
+PlIconView::PlIconView( QAbstractItemModel *, QWidget *parent ) : QListView( parent )
 {
     PlIconViewItemDelegate *delegate = new PlIconViewItemDelegate( this );
 
@@ -293,8 +322,10 @@ PlIconView::PlIconView( PLModel *, QWidget *parent ) : QListView( parent )
     setWrapping( true );
     setUniformItemSizes( true );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
+    setSelectionBehavior( QAbstractItemView::SelectRows );
     setDragEnabled(true);
     setAttribute( Qt::WA_MacShowFocusRect, false );
+    viewport()->setAttribute( Qt::WA_Hover );
     /* dropping in QListView::IconMode does not seem to work */
     //setAcceptDrops( true );
     //setDropIndicatorShown(true);
@@ -313,11 +344,30 @@ void PlIconView::dragMoveEvent ( QDragMoveEvent * event )
     QAbstractItemView::dragMoveEvent( event );
 }
 
-PlListView::PlListView( PLModel *, QWidget *parent ) : QListView( parent )
+bool PlIconView::viewportEvent ( QEvent * event )
+{
+    if ( event->type() == QEvent::ToolTip )
+    {
+        event->ignore();
+        return true;
+    }
+    else if ( event->type() == QEvent::Wheel )
+    {
+        QWheelEvent *wEvent = static_cast<QWheelEvent *>(event);
+        if( wEvent->modifiers() & Qt::ControlModifier ) {
+            event->ignore();
+            return true;
+        }
+    }
+    return QAbstractItemView::viewportEvent( event );
+}
+
+PlListView::PlListView( QAbstractItemModel *, QWidget *parent ) : QListView( parent )
 {
     setViewMode( QListView::ListMode );
     setUniformItemSizes( true );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
+    setSelectionBehavior( QAbstractItemView::SelectRows );
     setAlternatingRowColors( true );
     setDragEnabled(true);
     setAcceptDrops( true );
@@ -326,6 +376,7 @@ PlListView::PlListView( PLModel *, QWidget *parent ) : QListView( parent )
     PlListViewItemDelegate *delegate = new PlListViewItemDelegate( this );
     setItemDelegate( delegate );
     setAttribute( Qt::WA_MacShowFocusRect, false );
+    viewport()->setAttribute( Qt::WA_Hover );
 }
 
 void PlListView::startDrag ( Qt::DropActions supportedActions )
@@ -348,6 +399,61 @@ void PlListView::keyPressEvent( QKeyEvent *event )
     //Otherwise, just do as usual.
     else
         QListView::keyPressEvent( event );
+}
+
+bool PlListView::viewportEvent ( QEvent * event )
+{
+    if ( event->type() == QEvent::ToolTip )
+    {
+        event->ignore();
+        return true;
+    }
+    else if ( event->type() == QEvent::Wheel )
+    {
+        QWheelEvent *wEvent = static_cast<QWheelEvent *>(event);
+        if( wEvent->modifiers() & Qt::ControlModifier ) {
+            event->ignore();
+            return true;
+        }
+    }
+    return QAbstractItemView::viewportEvent( event );
+}
+
+PlTreeView::PlTreeView( QAbstractItemModel *, QWidget *parent ) : QTreeView( parent )
+{
+    setItemDelegate( new PlTreeViewItemDelegate( this ) );
+    setItemDelegateForColumn( VLCModel::metaToColumn(COLUMN_COVER),
+                              new CellPixmapDelegate( this ) );
+    setIconSize( QSize( 20, 20 ) );
+    setAlternatingRowColors( true );
+    setAnimated( true );
+    setUniformRowHeights( true );
+    setSortingEnabled( true );
+    setAttribute( Qt::WA_MacShowFocusRect, false );
+    viewport()->setAttribute( Qt::WA_Hover );
+    header()->setSortIndicator( -1 , Qt::AscendingOrder );
+    header()->setSortIndicatorShown( true );
+#if HAS_QT5
+    header()->setSectionsClickable( true );
+#else
+    header()->setClickable( true );
+#endif
+    header()->setContextMenuPolicy( Qt::CustomContextMenu );
+
+    setSelectionBehavior( QAbstractItemView::SelectRows );
+    setSelectionMode( QAbstractItemView::ExtendedSelection );
+    setDragEnabled( true );
+    setAcceptDrops( true );
+    setDropIndicatorShown( true );
+    setContextMenuPolicy( Qt::CustomContextMenu );
+}
+
+void PlTreeView::setModel( QAbstractItemModel * model )
+{
+    QTreeView::setModel( model );
+    VLCModel *m = static_cast<VLCModel*>(model);
+    CONNECT( this, expanded( const QModelIndex & ),
+             m, ensureArtRequested( const QModelIndex & ) );
 }
 
 void PlTreeView::startDrag ( Qt::DropActions supportedActions )
@@ -373,14 +479,20 @@ void PlTreeView::keyPressEvent( QKeyEvent *event )
 }
 
 #include <QHBoxLayout>
-PicFlowView::PicFlowView( PLModel *p_model, QWidget *parent ) : QAbstractItemView( parent )
+PicFlowView::PicFlowView( QAbstractItemModel *p_model, QWidget *parent ) : QAbstractItemView( parent )
 {
     QHBoxLayout *layout = new QHBoxLayout( this );
     layout->setMargin( 0 );
     picFlow = new PictureFlow( this, p_model );
-    picFlow->setSlideSize(QSize(128,128));
     layout->addWidget( picFlow );
+    picFlow->setSlideSize(QSize( 4*LISTVIEW_ART_SIZE, 3*LISTVIEW_ART_SIZE) );
     setSelectionMode( QAbstractItemView::SingleSelection );
+}
+
+void PicFlowView::setModel( QAbstractItemModel *model )
+{
+    QAbstractItemView::setModel( model );
+    picFlow->setModel( model );
 }
 
 int PicFlowView::horizontalOffset() const
@@ -464,3 +576,20 @@ void PicFlowView::playItem( int i_item )
     emit activated( model()->index(i_item, 0) );
 }
 
+bool PicFlowView::viewportEvent ( QEvent * event )
+{
+    if ( event->type() == QEvent::ToolTip )
+    {
+        event->ignore();
+        return true;
+    }
+    else if ( event->type() == QEvent::Wheel )
+    {
+        QWheelEvent *wEvent = static_cast<QWheelEvent *>(event);
+        if( wEvent->modifiers() & Qt::ControlModifier ) {
+            event->ignore();
+            return true;
+        }
+    }
+    return QAbstractItemView::viewportEvent( event );
+}

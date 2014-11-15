@@ -1,24 +1,24 @@
 /*****************************************************************************
  * dynamicoverlay.c : dynamic overlay plugin for vlc
  *****************************************************************************
- * Copyright (C) 2007 the VideoLAN team
- * $Id: b9562a69011d26918622ad612073e9da0920ba0d $
+ * Copyright (C) 2007 VLC authors and VideoLAN
+ * $Id: ab8129a817e764e76ae7799f885ffce5cba09ad5 $
  *
  * Author: Søren Bøg <avacore@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -33,7 +33,6 @@
 #include <vlc_sout.h>
 #include <vlc_vout.h>
 #include <vlc_filter.h>
-#include <vlc_osd.h>
 #include <vlc_fs.h>
 
 #include <ctype.h>
@@ -176,8 +175,8 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
         p_sys->i_inputfd = vlc_open( p_sys->psz_inputfile, O_RDONLY | O_NONBLOCK );
         if( p_sys->i_inputfd == -1 )
         {
-            msg_Warn( p_filter, "Failed to grab input file: %s (%m)",
-                      p_sys->psz_inputfile );
+            msg_Warn( p_filter, "Failed to grab input file: %s (%s)",
+                      p_sys->psz_inputfile, vlc_strerror_c(errno) );
         }
         else
         {
@@ -194,8 +193,8 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
         {
             if( errno != ENXIO )
             {
-                msg_Warn( p_filter, "Failed to grab output file: %s (%m)",
-                          p_sys->psz_outputfile );
+                msg_Warn( p_filter, "Failed to grab output file: %s (%s)",
+                          p_sys->psz_outputfile, vlc_strerror_c(errno) );
             }
         }
         else
@@ -216,7 +215,8 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
             /* We hit an error */
             if( errno != EAGAIN )
             {
-                msg_Warn( p_filter, "Error on input file: %m" );
+                msg_Warn( p_filter, "Error on input file: %s",
+                          vlc_strerror_c(errno) );
                 close( p_sys->i_inputfd );
                 p_sys->i_inputfd = -1;
             }
@@ -322,7 +322,8 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
             /* We hit an error */
             if( errno != EAGAIN )
             {
-                msg_Warn( p_filter, "Error on output file: %m" );
+                msg_Warn( p_filter, "Error on output file: %s",
+                          vlc_strerror_c(errno) );
                 close( p_sys->i_outputfd );
                 p_sys->i_outputfd = -1;
             }

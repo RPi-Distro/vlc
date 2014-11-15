@@ -1,8 +1,8 @@
 /*****************************************************************************
- * infopanels.hpp : Panels for the information dialogs
+ * info_panels.hpp : Panels for the information dialogs
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: e82b024ceb25012df359d9d75834de0b9add57d7 $
+ * $Id: 90c7b4a0654bf9ce2425bd33948a7f87124d446b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -31,26 +31,17 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_meta.h>
-
 #include <QWidget>
-
-#include <limits.h>
-
-#define setSpinBounds( spinbox ) {               \
-    spinbox->setRange( 0, INT_MAX );             \
-    spinbox->setAccelerated( true ) ;            \
-    spinbox->setAlignment( Qt::AlignRight );     \
-    spinbox->setSpecialValueText(""); }
 
 class QTreeWidget;
 class QTreeWidgetItem;
-class QTreeView;
 class QSpinBox;
 class QLineEdit;
 class CoverArtLabel;
 class QTextEdit;
 class QLabel;
+class VLCStatsView;
+class QPushButton;
 
 class MetaPanel: public QWidget
 {
@@ -88,9 +79,13 @@ private:
     QLabel   *lblURL;
     QString  currentURL;
 
+    QPushButton *fingerprintButton;
+
 public slots:
     void update( input_item_t * );
     void clear();
+    void fingerprint();
+    void fingerprintUpdate( input_item_t * );
 
 private slots:
     void enterEditMode();
@@ -104,9 +99,8 @@ class ExtraMetaPanel: public QWidget
 {
     Q_OBJECT
 public:
-    ExtraMetaPanel( QWidget *, struct intf_thread_t * );
+    ExtraMetaPanel( QWidget * );
 private:
-    struct intf_thread_t *p_intf;
     QTreeWidget *extraMetaTree;
 public slots:
     void update( input_item_t * );
@@ -117,14 +111,15 @@ class InputStatsPanel: public QWidget
 {
     Q_OBJECT
 public:
-    InputStatsPanel( QWidget *, struct intf_thread_t * );
+    InputStatsPanel( QWidget * );
+protected:
+    virtual void hideEvent( QHideEvent * );
 private:
-    struct intf_thread_t *p_intf;
-
     QTreeWidget *StatsTree;
     QTreeWidgetItem *input;
     QTreeWidgetItem *read_media_stat;
     QTreeWidgetItem *input_bitrate_stat;
+    QTreeWidgetItem *input_bitrate_graph;
     QTreeWidgetItem *demuxed_stat;
     QTreeWidgetItem *stream_bitrate_stat;
     QTreeWidgetItem *corrupted_stat;
@@ -146,6 +141,7 @@ private:
     QTreeWidgetItem *aplayed_stat;
     QTreeWidgetItem *alost_stat;
 
+    VLCStatsView *statsView;
 public slots:
     void update( input_item_t * );
     void clear();
@@ -155,9 +151,8 @@ class InfoPanel: public QWidget
 {
     Q_OBJECT
 public:
-    InfoPanel( QWidget *, struct intf_thread_t * );
+    InfoPanel( QWidget * );
 private:
-    struct intf_thread_t *p_intf;
     QTreeWidget *InfoTree;
 public slots:
     void update( input_item_t * );

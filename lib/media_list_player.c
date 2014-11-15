@@ -2,7 +2,7 @@
  * media_list_player.c: libvlc new API media_list player functions
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: 9af65783b9b6a12cf76465ec253b6fd23cdfba92 $
+ * $Id: 9ac935a716f09b4cb42de1b9ddfb6e41454a93be $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -470,7 +470,12 @@ libvlc_media_list_player_new(libvlc_instance_t * p_instance)
     p_mlp->i_refcount = 1;
     vlc_mutex_init(&p_mlp->object_lock);
     vlc_mutex_init(&p_mlp->mp_callback_lock);
-    libvlc_event_manager_register_event_type(p_mlp->p_event_manager, libvlc_MediaListPlayerNextItemSet);
+    libvlc_event_manager_register_event_type( p_mlp->p_event_manager,
+            libvlc_MediaListPlayerNextItemSet );
+    libvlc_event_manager_register_event_type( p_mlp->p_event_manager,
+            libvlc_MediaListPlayerStopped );
+    libvlc_event_manager_register_event_type( p_mlp->p_event_manager,
+            libvlc_MediaListPlayerPlayed );
     p_mlp->e_playback_mode = libvlc_playback_mode_default;
 
     return p_mlp;
@@ -700,6 +705,11 @@ static void stop(libvlc_media_list_player_t * p_mlp)
 
     free(p_mlp->current_playing_item_path);
     p_mlp->current_playing_item_path = NULL;
+
+    /* Send the event */
+    libvlc_event_t event;
+    event.type = libvlc_MediaListPlayerStopped;
+    libvlc_event_send(p_mlp->p_event_manager, &event);
 }
 
 /**************************************************************************
@@ -773,6 +783,10 @@ static int set_relative_playlist_position_and_play(
     if (!path)
     {
         libvlc_media_list_unlock(p_mlp->p_mlist);
+        /* Send list played event */
+        libvlc_event_t event;
+        event.type = libvlc_MediaListPlayerPlayed;
+        libvlc_event_send(p_mlp->p_event_manager, &event);
         return -1;
     }
 

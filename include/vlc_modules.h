@@ -1,8 +1,8 @@
 /*****************************************************************************
- * modules.h : Module descriptor and load functions
+ * vlc_modules.h : Module descriptor and load functions
  *****************************************************************************
  * Copyright (C) 2001-2011 VLC authors and VideoLAN
- * $Id: 6e0a4397d752431f7da62062df60a099f8b57303 $
+ * $Id: 7f45217969b63e32af360d2e48789f5a16809b9a $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -67,11 +67,11 @@ VLC_API const char * module_gettext( const module_t *, const char * ) VLC_USED;
 
 VLC_USED static inline module_t *module_get_main (void)
 {
-    return module_find ("main");
+    return module_find ("core");
 }
 #define module_get_main(a) module_get_main()
 
 VLC_USED static inline bool module_is_main( const module_t * p_module )
 {
-    return !strcmp( module_get_object( p_module ), "main" );
+    return !strcmp( module_get_object( p_module ), "core" );
 }

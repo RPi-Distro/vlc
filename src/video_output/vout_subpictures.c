@@ -2,7 +2,7 @@
  * vout_subpictures.c : subpicture management functions
  *****************************************************************************
  * Copyright (C) 2000-2007 VLC authors and VideoLAN
- * $Id: 6434772c56e58473d76581829398310ecea5b95a $
+ * $Id: a051c16b418faa385316a21b026f3398d03397d4 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -238,12 +238,16 @@ static filter_t *SpuRenderCreateAndLoadScale(vlc_object_t *object,
     es_format_Init(&scale->fmt_in, VIDEO_ES, 0);
     scale->fmt_in.video.i_chroma = src_chroma;
     scale->fmt_in.video.i_width =
-    scale->fmt_in.video.i_height = 32;
+    scale->fmt_in.video.i_visible_width =
+    scale->fmt_in.video.i_height =
+    scale->fmt_in.video.i_visible_height = 32;
 
     es_format_Init(&scale->fmt_out, VIDEO_ES, 0);
     scale->fmt_out.video.i_chroma = dst_chroma;
     scale->fmt_out.video.i_width =
-    scale->fmt_out.video.i_height = require_resize ? 16 : 32;
+    scale->fmt_out.video.i_visible_width =
+    scale->fmt_out.video.i_height =
+    scale->fmt_out.video.i_visible_height = require_resize ? 16 : 32;
 
     scale->pf_video_buffer_new = spu_new_video_buffer;
     scale->pf_video_buffer_del = spu_del_video_buffer;
@@ -476,16 +480,16 @@ static void SpuRegionPlace(int *x, int *y,
         if (region->i_align & SUBPICTURE_ALIGN_TOP)
             *y = region->i_y;
         else if (region->i_align & SUBPICTURE_ALIGN_BOTTOM)
-            *y = subpic->i_original_picture_height - region->fmt.i_height - region->i_y;
+            *y = subpic->i_original_picture_height - region->fmt.i_visible_height - region->i_y;
         else
-            *y = subpic->i_original_picture_height / 2 - region->fmt.i_height / 2;
+            *y = subpic->i_original_picture_height / 2 - region->fmt.i_visible_height / 2;
 
         if (region->i_align & SUBPICTURE_ALIGN_LEFT)
             *x = region->i_x;
         else if (region->i_align & SUBPICTURE_ALIGN_RIGHT)
-            *x = subpic->i_original_picture_width - region->fmt.i_width - region->i_x;
+            *x = subpic->i_original_picture_width - region->fmt.i_visible_width - region->i_x;
         else
-            *x = subpic->i_original_picture_width / 2 - region->fmt.i_width / 2;
+            *x = subpic->i_original_picture_width / 2 - region->fmt.i_visible_width / 2;
     }
 }
 
@@ -722,7 +726,8 @@ static void SpuRenderRegion(spu_t *spu,
     /* Save this position for subtitle overlap support
      * it is really important that there are given without scale_size applied */
     *dst_area = spu_area_create(x_offset, y_offset,
-                                region->fmt.i_width, region->fmt.i_height,
+                                region->fmt.i_visible_width,
+                                region->fmt.i_visible_height,
                                 scale_size);
 
     /* Handle overlapping subtitles when possible */
@@ -738,8 +743,10 @@ static void SpuRenderRegion(spu_t *spu,
     if (subpic->b_subtitle)
         restrained.y -= y_margin;
 
-    spu_area_t display = spu_area_create(0, 0, fmt->i_width, fmt->i_height,
+    spu_area_t display = spu_area_create(0, 0, fmt->i_visible_width,
+                                         fmt->i_visible_height,
                                          spu_scale_unit());
+    //fprintf("
     SpuAreaFitInside(&restrained, &display);
 
     /* Fix the position for the current scale_size */
@@ -782,8 +789,8 @@ static void SpuRenderRegion(spu_t *spu,
         (!using_palette || (sys->scale_yuvp && sys->scale_yuvp->p_module)) &&
         (scale_size.w != SCALE_UNIT || scale_size.h != SCALE_UNIT ||
         using_palette || convert_chroma)) {
-        const unsigned dst_width  = spu_scale_w(region->fmt.i_width,  scale_size);
-        const unsigned dst_height = spu_scale_h(region->fmt.i_height, scale_size);
+        const unsigned dst_width  = spu_scale_w(region->fmt.i_visible_width,  scale_size);
+        const unsigned dst_height = spu_scale_h(region->fmt.i_visible_height, scale_size);
 
         /* Destroy the cache if unusable */
         if (region->p_private) {
@@ -791,8 +798,8 @@ static void SpuRenderRegion(spu_t *spu,
             bool is_changed = false;
 
             /* Check resize changes */
-            if (dst_width  != private->fmt.i_width ||
-                dst_height != private->fmt.i_height)
+            if (dst_width  != private->fmt.i_visible_width ||
+                dst_height != private->fmt.i_visible_height)
                 is_changed = true;
 
             /* Check forced palette changes */
@@ -835,12 +842,14 @@ static void SpuRenderRegion(spu_t *spu,
 
             /* Conversion(except from YUVP)/Scaling */
             if (picture &&
-                (picture->format.i_width  != dst_width ||
-                 picture->format.i_height != dst_height ||
+                (picture->format.i_visible_width  != dst_width ||
+                 picture->format.i_visible_height != dst_height ||
                  (convert_chroma && !using_palette)))
             {
                 scale->fmt_in.video  = picture->format;
                 scale->fmt_out.video = picture->format;
+                if (using_palette)
+                    scale->fmt_in.video.i_chroma = chroma_list[0];
                 if (convert_chroma)
                     scale->fmt_out.i_codec        =
                     scale->fmt_out.video.i_chroma = chroma_list[0];
@@ -987,8 +996,8 @@ static subpicture_t *SpuRenderSubpictures(spu_t *spu,
     subpicture_t *output = subpicture_New(NULL);
     if (!output)
         return NULL;
-    output->i_original_picture_width  = fmt_dst->i_width;
-    output->i_original_picture_height = fmt_dst->i_height;
+    output->i_original_picture_width  = fmt_dst->i_visible_width;
+    output->i_original_picture_height = fmt_dst->i_visible_height;
     subpicture_region_t **output_last_ptr = &output->p_region;
 
     /* Allocate area array for subtitle overlap */
@@ -1019,8 +1028,8 @@ static subpicture_t *SpuRenderSubpictures(spu_t *spu,
             else
                 msg_Warn(spu, "original picture size is undefined");
 
-            subpic->i_original_picture_width  = fmt_src->i_width;
-            subpic->i_original_picture_height = fmt_src->i_height;
+            subpic->i_original_picture_width  = fmt_src->i_visible_width;
+            subpic->i_original_picture_height = fmt_src->i_visible_height;
         }
 
         if (sys->text) {
@@ -1042,8 +1051,8 @@ static subpicture_t *SpuRenderSubpictures(spu_t *spu,
             /* Compute region scale AR */
             video_format_t region_fmt = region->fmt;
             if (region_fmt.i_sar_num <= 0 || region_fmt.i_sar_den <= 0) {
-                region_fmt.i_sar_num = (int64_t)fmt_dst->i_width  * fmt_dst->i_sar_num * subpic->i_original_picture_height;
-                region_fmt.i_sar_den = (int64_t)fmt_dst->i_height * fmt_dst->i_sar_den * subpic->i_original_picture_width;
+                region_fmt.i_sar_num = (int64_t)fmt_dst->i_visible_width  * fmt_dst->i_sar_num * subpic->i_original_picture_height;
+                region_fmt.i_sar_den = (int64_t)fmt_dst->i_visible_height * fmt_dst->i_sar_den * subpic->i_original_picture_width;
                 vlc_ureduce(&region_fmt.i_sar_num, &region_fmt.i_sar_den,
                             region_fmt.i_sar_num, region_fmt.i_sar_den, 65536);
             }
@@ -1052,9 +1061,9 @@ static subpicture_t *SpuRenderSubpictures(spu_t *spu,
              * FIXME The current scaling ensure that the heights match, the width being
              * cropped.
              */
-            spu_scale_t scale = spu_scale_createq((int64_t)fmt_dst->i_height                 * fmt_dst->i_sar_den * region_fmt.i_sar_num,
+            spu_scale_t scale = spu_scale_createq((int64_t)fmt_dst->i_visible_height                 * fmt_dst->i_sar_den * region_fmt.i_sar_num,
                                                   (int64_t)subpic->i_original_picture_height * fmt_dst->i_sar_num * region_fmt.i_sar_den,
-                                                  fmt_dst->i_height,
+                                                  fmt_dst->i_visible_height,
                                                   subpic->i_original_picture_height);
 
             /* Check scale validity */
@@ -1363,9 +1372,13 @@ void spu_PutSubpicture(spu_t *spu, subpicture_t *subpic)
 
     vlc_mutex_lock(&sys->filter_chain_lock);
     if (chain_update) {
-        filter_chain_Reset(sys->filter_chain, NULL, NULL);
+        if (*chain_update) {
+            filter_chain_Reset(sys->filter_chain, NULL, NULL);
 
-        filter_chain_AppendFromString(spu->p->filter_chain, chain_update);
+            filter_chain_AppendFromString(spu->p->filter_chain, chain_update);
+        }
+        else if (filter_chain_GetLength(spu->p->filter_chain) > 0)
+            filter_chain_Reset(sys->filter_chain, NULL, NULL);
 
         /* "sub-source"  was formerly "sub-filter", so now the "sub-filter"
         configuration may contain sub-filters or sub-sources configurations.
@@ -1374,23 +1387,28 @@ void spu_PutSubpicture(spu_t *spu, subpicture_t *subpic)
     }
     vlc_mutex_unlock(&sys->filter_chain_lock);
 
-
     if (is_left_empty) {
-        /* try to use the configuration as a sub-source configuration */
-
-        vlc_mutex_lock(&sys->lock);
-        if (!sys->source_chain_update || !*sys->source_chain_update) {
-            free(sys->source_chain_update);
-            sys->source_chain_update = chain_update;
-            chain_update = NULL;
+        /* try to use the configuration as a sub-source configuration,
+           but only if there is no 'source_chain_update' value and
+           if only if 'chain_update' has a value */
+        if (chain_update && *chain_update) {
+            vlc_mutex_lock(&sys->lock);
+            if (!sys->source_chain_update || !*sys->source_chain_update) {
+                if (sys->source_chain_update)
+                    free(sys->source_chain_update);
+                sys->source_chain_update = chain_update;
+                chain_update = NULL;
+            }
+            vlc_mutex_unlock(&sys->lock);
         }
-        vlc_mutex_unlock(&sys->lock);
     }
 
     free(chain_update);
 
     /* Run filter chain on the new subpicture */
+    vlc_mutex_lock(&sys->filter_chain_lock);
     subpic = filter_chain_SubFilter(spu->p->filter_chain, subpic);
+    vlc_mutex_unlock(&sys->filter_chain_lock);
     if (!subpic)
         return;
 
@@ -1431,9 +1449,13 @@ subpicture_t *spu_Render(spu_t *spu,
 
     vlc_mutex_lock(&sys->source_chain_lock);
     if (chain_update) {
-        filter_chain_Reset(sys->source_chain, NULL, NULL);
+        if (*chain_update) {
+            filter_chain_Reset(sys->source_chain, NULL, NULL);
 
-        filter_chain_AppendFromString(spu->p->source_chain, chain_update);
+            filter_chain_AppendFromString(spu->p->source_chain, chain_update);
+        }
+        else if (filter_chain_GetLength(spu->p->source_chain) > 0)
+            filter_chain_Reset(sys->source_chain, NULL, NULL);
 
         free(chain_update);
     }
@@ -1444,11 +1466,13 @@ subpicture_t *spu_Render(spu_t *spu,
     static const vlc_fourcc_t chroma_list_default_yuv[] = {
         VLC_CODEC_YUVA,
         VLC_CODEC_RGBA,
+        VLC_CODEC_ARGB,
         VLC_CODEC_YUVP,
         0,
     };
     static const vlc_fourcc_t chroma_list_default_rgb[] = {
         VLC_CODEC_RGBA,
+        VLC_CODEC_ARGB,
         VLC_CODEC_YUVA,
         VLC_CODEC_YUVP,
         0,

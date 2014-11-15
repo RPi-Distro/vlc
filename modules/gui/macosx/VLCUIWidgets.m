@@ -1,8 +1,8 @@
 /*****************************************************************************
  * VLCUIWidgets.m: Widgets for VLC's extensions dialogs for Mac OS X
  *****************************************************************************
- * Copyright (C) 2009-2012 the VideoLAN team and authors
- * $Id: 9abc48c253f6192bd37d298ca8a26cda12b289df $
+ * Copyright (C) 2009-2014 the VideoLAN team and authors
+ * $Id: 7e08899d75b8726e993c1ebe925b7c1c1a4a64d9 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan dot>,
  *          Brendon Justin <brendonjustin@gmail.com>
@@ -22,6 +22,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#import "CompatibilityFixes.h"
 #import "VLCUIWidgets.h"
 
 #import <stdlib.h>
@@ -72,8 +73,7 @@
 
 - (id)init
 {
-    if ((self = [super init]))
-    {
+    if ((self = [super init])) {
         _colCount = 0;
         _rowCount = 0;
         _griddedViews = [[NSMutableArray alloc] init];
@@ -91,8 +91,7 @@
 {
     _colCount = 0;
     _rowCount = 0;
-    for (NSDictionary *obj in _griddedViews)
-    {
+    for (NSDictionary *obj in _griddedViews) {
         NSUInteger row = [[obj objectForKey:@"row"] intValue];
         NSUInteger col = [[obj objectForKey:@"col"] intValue];
         if (col + 1 > _colCount)
@@ -189,9 +188,8 @@
 {
     CGFloat top = [self marginY];
     for (NSUInteger i = 1; i < _rowCount - targetRow; i++)
-    {
         top += [self heightOfRow:_rowCount - i] + [self marginY];
-    }
+
     return top;
 }
 
@@ -247,8 +245,7 @@
 - (CGFloat)leftOfColumn:(NSUInteger)targetColumn
 {
     CGFloat left = [self marginX];
-    for (NSUInteger i = 0; i < targetColumn; i++)
-    {
+    for (NSUInteger i = 0; i < targetColumn; i++) {
         left += [self widthOfColumn:i] + [self marginX];
     }
     return left;

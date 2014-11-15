@@ -1,25 +1,25 @@
 /*****************************************************************************
  * asf.c: asf muxer module for vlc
  *****************************************************************************
- * Copyright (C) 2003-2004, 2006 the VideoLAN team
- * $Id: c2d91e07142d3a9ccd4e534398cf8dee3fd45b49 $
+ * Copyright (C) 2003-2004, 2006 VLC authors and VideoLAN
+ * $Id: c8d98ebbc45530519be34164b2b3f64ac664fbee $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -374,22 +374,20 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
                     tk->psz_name = "MPEG-4 Audio";
                     i_bitspersample = 0;
                     break;
-                case VLC_CODEC_MPGA:
-#if 1
+                case VLC_CODEC_MP3:
                     tk->psz_name = "MPEG Audio Layer 3";
                     tk->i_tag = WAVE_FORMAT_MPEGLAYER3;
                     i_bitspersample = 0;
                     i_blockalign = 1;
                     i_extra = 12;
                     break;
-#else
+                case VLC_CODEC_MPGA:
                     tk->psz_name = "MPEG Audio Layer 1/2";
                     tk->i_tag = WAVE_FORMAT_MPEG;
                     i_bitspersample = 0;
                     i_blockalign = 1;
                     i_extra = 22;
                     break;
-#endif
                 case VLC_CODEC_WMA1:
                     tk->psz_name = "Windows Media Audio v1";
                     tk->i_tag = WAVE_FORMAT_WMA1;
@@ -909,13 +907,13 @@ static block_t *asf_header_create( sout_mux_t *p_mux, bool b_broadcast )
 
     if( p_sys->b_asf_http )
     {
-        out = block_New( p_mux, i_size + 50 + 12 );
+        out = block_Alloc( i_size + 50 + 12 );
         bo_init( &bo, out->p_buffer, i_size + 50 + 12 );
         asf_chunk_add( &bo, 0x4824, i_size + 50, 0xc00, p_sys->i_seq++ );
     }
     else
     {
-        out = block_New( p_mux, i_size + 50 );
+        out = block_Alloc( i_size + 50 );
         bo_init( &bo, out->p_buffer, i_size + 50 );
     }
 
@@ -975,7 +973,7 @@ static block_t *asf_header_create( sout_mux_t *p_mux, bool b_broadcast )
         bo_addle_u64( &bo, 0 );
         bo_addle_u64( &bo, 0 );
         bo_addle_u32( &bo, p_fmt->i_bitrate );  /* Bitrate */
-        bo_addle_u32( &bo, 0 );                 /* Buffer size */
+        bo_addle_u32( &bo, p_sys->i_preroll_time ); /* Buffer size */
         bo_addle_u32( &bo, 0 );                 /* Initial buffer fullness */
         bo_addle_u32( &bo, p_fmt->i_bitrate );  /* Alternate Bitrate */
         bo_addle_u32( &bo, 0 );                 /* Alternate Buffer size */
@@ -1183,7 +1181,7 @@ static block_t *asf_packet_create( sout_mux_t *p_mux,
 
         if( p_sys->pk == NULL )
         {
-            p_sys->pk = block_New( p_mux, p_sys->i_packet_size + i_preheader );
+            p_sys->pk = block_Alloc( p_sys->i_packet_size + i_preheader );
             /* reserve 14 bytes for the packet header */
             p_sys->i_pk_used = 14 + i_preheader;
             p_sys->i_pk_frame = 0;
@@ -1244,14 +1242,14 @@ static block_t *asf_stream_end_create( sout_mux_t *p_mux )
 
     if( p_sys->b_asf_http )
     {
-        out = block_New( p_mux, 12 );
+        out = block_Alloc( 12 );
         bo_init( &bo, out->p_buffer, 12 );
         asf_chunk_add( &bo, 0x4524, 0, 0x00, p_sys->i_seq++ );
     }
     else
     {
         /* Create index */
-        out = block_New( p_mux, 56 );
+        out = block_Alloc( 56 );
         bo_init( &bo, out->p_buffer, 56 );
         bo_add_guid ( &bo, &asf_object_index_guid );
         bo_addle_u64( &bo, 56 );

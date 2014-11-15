@@ -2,7 +2,7 @@
  * item.h
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 1b7845fd2736bea39d85b269cfb4271b645605e7 $
+ * $Id: aa31d05e355779c691e8c8f0cec9c35d42f43e97 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -25,8 +25,17 @@
 #define LIBVLC_INPUT_ITEM_H 1
 
 #include "input_interface.h"
+#include <vlc_atomic.h>
 
 void input_item_SetErrorWhenReading( input_item_t *p_i, bool b_error );
 void input_item_UpdateTracksInfo( input_item_t *item, const es_format_t *fmt );
+
+typedef struct input_item_owner
+{
+    input_item_t item;
+    atomic_uint refs;
+} input_item_owner_t;
+
+# define item_owner(item) ((struct input_item_owner *)(item))
 
 #endif

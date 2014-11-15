@@ -1,84 +1,45 @@
 /*****************************************************************************
- * events.c: Windows DirectX video output events handler
+ * events.c: Windows video output events handler
  *****************************************************************************
- * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 004f841b58ac0f4a586b35e52156ed509426fe98 $
+ * Copyright (C) 2001-2009 VLC authors and VideoLAN
+ * $Id: a1fe0185a6dd612f9423c23c0b2414f1aea91ad5 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-
 
 /*****************************************************************************
  * Preamble: This file contains the functions related to the creation of
  *             a window and the handling of its messages (events).
  *****************************************************************************/
+
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
+#include "win32touch.h"
+
 #include <vlc_common.h>
 #include <vlc_vout_display.h>
-#include <vlc_vout_window.h>
 
 #include <windows.h>
-#include <windowsx.h>
-#include <shellapi.h>
+#include <windowsx.h>                                        /* GET_X_LPARAM */
+#include <shellapi.h>                                         /* ExtractIcon */
 
-#include <ctype.h>
-
-#ifdef MODULE_NAME_IS_directx
-#include <ddraw.h>
-#endif
-#ifdef MODULE_NAME_IS_direct3d
-#include <d3d9.h>
-#endif
-#ifdef MODULE_NAME_IS_glwin32
-#include "../opengl.h"
-#endif
-#ifdef MODULE_NAME_IS_direct2d
-#include <d2d1.h>
-#endif
-
-#include <vlc_keys.h>
 #include "common.h"
-
-#ifdef UNDER_CE
-#include <aygshell.h>
-    //WINSHELLAPI BOOL WINAPI SHFullScreen(HWND hwndRequester, DWORD dwState);
-
-UINT GetMenuState(HMENU hMenu, UINT id, UINT flags)
-{
-    MENUITEMINFO info;
-    memset(&info, 0, sizeof(info));
-    info.cbSize = sizeof(info);
-    info.fMask = MIIM_STATE;
-    if (!GetMenuItemInfo(hMenu, id, (flags & MF_BYPOSITION) != 0, &info))
-        return -1;
-    /* XXX Submenu handling is missing... */
-    return info.fState;
-}
-#endif
-
-/*#if defined(UNDER_CE) && !defined(__PLUGIN__) --FIXME*/
-/*#   define SHFS_SHOWSIPBUTTON 0x0004
-#   define SHFS_HIDESIPBUTTON 0x0008
-#   define MENU_HEIGHT 26
-    BOOL SHFullScreen(HWND hwndRequester, DWORD dwState);
-#endif*/
 
 /*****************************************************************************
  * Local prototypes.
@@ -108,6 +69,9 @@ struct event_thread_t
     HCURSOR cursor_empty;
     unsigned button_pressed;
 
+    /* Gestures */
+    win32_gesture_sys_t *p_gesture;
+
     /* Title */
     char *psz_title;
 
@@ -130,12 +94,24 @@ struct event_thread_t
     bool has_moved;
 };
 
-static int  DirectXCreateWindow( event_thread_t * );
-static void DirectXCloseWindow ( event_thread_t * );
-static long FAR PASCAL DirectXEventProc( HWND, UINT, WPARAM, LPARAM );
+/***************************
+ * Local Prototypes        *
+ ***************************/
+/* Window Creation */
+static int  Win32VoutCreateWindow( event_thread_t * );
+static void Win32VoutCloseWindow ( event_thread_t * );
+static long FAR PASCAL WinVoutEventProc( HWND, UINT, WPARAM, LPARAM );
+static int  Win32VoutConvertKey( int i_key );
 
-static int DirectXConvertKey( int i_key );
+/* Display/Hide Cursor */
+static void UpdateCursor( event_thread_t *p_event, bool b_show );
+static HCURSOR EmptyCursor( HINSTANCE instance );
 
+/* Mouse events sending functions */
+static void MouseReleased( event_thread_t *p_event, unsigned button );
+static void MousePressed( event_thread_t *p_event, HWND hwnd, unsigned button );
+
+/* Local helpers */
 static inline bool isMouseEvent( WPARAM type )
 {
     return type >= WM_MOUSEFIRST &&
@@ -146,71 +122,6 @@ static inline bool isKeyEvent( WPARAM type )
 {
     return type >= WM_KEYFIRST &&
            type <= WM_KEYLAST;
-}
-
-static void UpdateCursor( event_thread_t *p_event, bool b_show )
-{
-    if( p_event->is_cursor_hidden == !b_show )
-        return;
-    p_event->is_cursor_hidden = !b_show;
-
-#if 1
-    HCURSOR cursor = b_show ? p_event->cursor_arrow : p_event->cursor_empty;
-    if( p_event->hvideownd )
-        SetClassLongPtr( p_event->hvideownd, GCLP_HCURSOR, (LONG_PTR)cursor );
-    if( p_event->hwnd )
-        SetClassLongPtr( p_event->hwnd, GCLP_HCURSOR, (LONG_PTR)cursor );
-#endif
-
-    /* FIXME I failed to find a cleaner way to force a redraw of the cursor */
-    POINT p;
-    GetCursorPos(&p);
-    HWND hwnd = WindowFromPoint(p);
-    if( hwnd == p_event->hvideownd || hwnd == p_event->hwnd )
-    {
-        if( b_show )
-            SetCursor( cursor );
-        else
-            SetCursorPos( p.x, p.y );
-    }
-}
-
-#ifndef UNDER_CE
-static HCURSOR EmptyCursor( HINSTANCE instance )
-{
-    const int cw = GetSystemMetrics(SM_CXCURSOR);
-    const int ch = GetSystemMetrics(SM_CYCURSOR);
-
-    HCURSOR cursor = NULL;
-    uint8_t *and = malloc(cw * ch);
-    uint8_t *xor = malloc(cw * ch);
-    if( and && xor )
-    {
-        memset(and, 0xff, cw * ch );
-        memset(xor, 0x00, cw * ch );
-        cursor = CreateCursor( instance, 0, 0, cw, ch, and, xor);
-    }
-    free( and );
-    free( xor );
-
-    return cursor;
-}
-#endif
-
-static void MousePressed( event_thread_t *p_event, HWND hwnd, unsigned button )
-{
-    if( !p_event->button_pressed )
-        SetCapture( hwnd );
-    p_event->button_pressed |= 1 << button;
-    vout_display_SendEventMousePressed( p_event->vd, button );
-}
-
-static void MouseReleased( event_thread_t *p_event, unsigned button )
-{
-    p_event->button_pressed &= ~(1 << button);
-    if( !p_event->button_pressed )
-        ReleaseCapture();
-    vout_display_SendEventMouseReleased( p_event->vd, button );
 }
 /*****************************************************************************
  * EventThread: Create video window & handle its messages
@@ -235,7 +146,7 @@ static void *EventThread( void *p_this )
     /* Create a window for the video */
     /* Creating a window under Windows also initializes the thread's event
      * message queue */
-    if( DirectXCreateWindow( p_event ) )
+    if( Win32VoutCreateWindow( p_event ) )
         p_event->b_error = true;
 
     p_event->b_ready = true;
@@ -250,10 +161,9 @@ static void *EventThread( void *p_this )
         return NULL;
     }
 
-#ifndef UNDER_CE
     /* Prevent monitor from powering off */
-    SetThreadExecutionState( ES_DISPLAY_REQUIRED | ES_CONTINUOUS );
-#endif
+    if (var_GetBool(vd, "disable-screensaver"))
+        SetThreadExecutionState( ES_DISPLAY_REQUIRED | ES_SYSTEM_REQUIRED | ES_CONTINUOUS );
 
     /* Main loop */
     /* GetMessage will sleep if there's no message in the queue */
@@ -365,7 +275,7 @@ static void *EventThread( void *p_this )
             /* The key events are first processed here and not translated
              * into WM_CHAR events because we need to know the status of the
              * modifier keys. */
-            int i_key = DirectXConvertKey( msg.wParam );
+            int i_key = Win32VoutConvertKey( msg.wParam );
             if( !i_key )
             {
                 /* This appears to be a "normal" (ascii) key */
@@ -466,562 +376,11 @@ static void *EventThread( void *p_this )
         p_event->hwnd = NULL; /* Window already destroyed */
     }
 
-    msg_Dbg( vd, "DirectXEventThread terminating" );
+    msg_Dbg( vd, "Win32 Vout EventThread terminating" );
 
-    DirectXCloseWindow( p_event );
+    Win32VoutCloseWindow( p_event );
     vlc_restorecancel(canc);
     return NULL;
-}
-
-#ifdef MODULE_NAME_IS_direct3d
-static int CALLBACK
-enumWindowsProc(HWND hwnd, LPARAM lParam)
-{
-    HWND *wnd = (HWND *)lParam;
-
-    char name[128];
-    name[0] = '\0';
-    GetClassNameA( hwnd, name, 128 );
-
-    if( !strcasecmp( name, "WorkerW" ) )
-    {
-        hwnd = FindWindowEx( hwnd, NULL, _T("SHELLDLL_DefView"), NULL );
-        if( hwnd ) hwnd = FindWindowEx( hwnd, NULL, _T("SysListView32"), NULL );
-        if( hwnd )
-        {
-            *wnd = hwnd;
-            return false;
-        }
-    }
-    return true;
-}
-
-static HWND GetDesktopHandle(vout_display_t *vd)
-{
-    /* Find Program Manager */
-    HWND hwnd = FindWindow( _T("Progman"), NULL );
-    if( hwnd ) hwnd = FindWindowEx( hwnd, NULL, _T("SHELLDLL_DefView"), NULL );
-    if( hwnd ) hwnd = FindWindowEx( hwnd, NULL, _T("SysListView32"), NULL );
-    if( hwnd )
-        return hwnd;
-
-    msg_Dbg( vd, "Couldn't find desktop icon window,. Trying the hard way." );
-
-    EnumWindows( enumWindowsProc, (LPARAM)&hwnd );
-    return hwnd;
-}
-#endif
-/* following functions are local */
-
-/*****************************************************************************
- * DirectXCreateWindow: create a window for the video.
- *****************************************************************************
- * Before creating a direct draw surface, we need to create a window in which
- * the video will be displayed. This window will also allow us to capture the
- * events.
- *****************************************************************************/
-static int DirectXCreateWindow( event_thread_t *p_event )
-{
-    vout_display_t *vd = p_event->vd;
-    HINSTANCE  hInstance;
-    HMENU      hMenu;
-    RECT       rect_window;
-    WNDCLASS   wc;                            /* window class components */
-    char       vlc_path[MAX_PATH+1];
-    int        i_style, i_stylex;
-
-    msg_Dbg( vd, "DirectXCreateWindow" );
-
-    /* Get this module's instance */
-    hInstance = GetModuleHandle(NULL);
-
-    #ifdef MODULE_NAME_IS_direct3d
-    if( !p_event->use_desktop )
-    {
-    #endif
-        /* If an external window was specified, we'll draw in it. */
-        p_event->parent_window = vout_display_NewWindow(vd, &p_event->wnd_cfg );
-        if( p_event->parent_window )
-            p_event->hparent = p_event->parent_window->handle.hwnd;
-        else
-            p_event->hparent = NULL;
-    #ifdef MODULE_NAME_IS_direct3d
-    }
-    else
-    {
-        p_event->parent_window = NULL;
-        p_event->hparent = GetDesktopHandle(vd);
-    }
-    #endif
-    p_event->cursor_arrow = LoadCursor(NULL, IDC_ARROW);
-#ifndef UNDER_CE
-    p_event->cursor_empty = EmptyCursor(hInstance);
-#endif
-
-    /* Get the Icon from the main app */
-    p_event->vlc_icon = NULL;
-#ifndef UNDER_CE
-    if( GetModuleFileName( NULL, vlc_path, MAX_PATH ) )
-    {
-        p_event->vlc_icon = ExtractIcon( hInstance, vlc_path, 0 );
-    }
-#endif
-
-    /* Fill in the window class structure */
-    wc.style         = CS_OWNDC|CS_DBLCLKS;          /* style: dbl click */
-    wc.lpfnWndProc   = (WNDPROC)DirectXEventProc;       /* event handler */
-    wc.cbClsExtra    = 0;                         /* no extra class data */
-    wc.cbWndExtra    = 0;                        /* no extra window data */
-    wc.hInstance     = hInstance;                            /* instance */
-    wc.hIcon         = p_event->vlc_icon;       /* load the vlc big icon */
-    wc.hCursor       = p_event->is_cursor_hidden ? p_event->cursor_empty :
-                                                   p_event->cursor_arrow;
-    wc.hbrBackground = GetStockObject(BLACK_BRUSH);  /* background color */
-    wc.lpszMenuName  = NULL;                                  /* no menu */
-    wc.lpszClassName = p_event->class_main;       /* use a special class */
-
-    /* Register the window class */
-    if( !RegisterClass(&wc) )
-    {
-        if( p_event->vlc_icon )
-            DestroyIcon( p_event->vlc_icon );
-
-        msg_Err( vd, "DirectXCreateWindow RegisterClass FAILED (err=%lu)", GetLastError() );
-        return VLC_EGENERIC;
-    }
-
-    /* Register the video sub-window class */
-    wc.lpszClassName = p_event->class_video;
-    wc.hIcon = 0;
-    wc.hbrBackground = NULL; /* no background color */
-    if( !RegisterClass(&wc) )
-    {
-        msg_Err( vd, "DirectXCreateWindow RegisterClass FAILED (err=%lu)", GetLastError() );
-        return VLC_EGENERIC;
-    }
-
-    /* When you create a window you give the dimensions you wish it to
-     * have. Unfortunatly these dimensions will include the borders and
-     * titlebar. We use the following function to find out the size of
-     * the window corresponding to the useable surface we want */
-    rect_window.left   = 10;
-    rect_window.top    = 10;
-    rect_window.right  = rect_window.left + p_event->wnd_cfg.width;
-    rect_window.bottom = rect_window.top  + p_event->wnd_cfg.height;
-
-    if( var_GetBool( vd, "video-deco" ) )
-    {
-        /* Open with window decoration */
-        AdjustWindowRect( &rect_window, WS_OVERLAPPEDWINDOW|WS_SIZEBOX, 0 );
-        i_style = WS_OVERLAPPEDWINDOW|WS_SIZEBOX|WS_VISIBLE|WS_CLIPCHILDREN;
-        i_stylex = 0;
-    }
-    else
-    {
-        /* No window decoration */
-        AdjustWindowRect( &rect_window, WS_POPUP, 0 );
-        i_style = WS_POPUP|WS_VISIBLE|WS_CLIPCHILDREN;
-        i_stylex = 0; // WS_EX_TOOLWINDOW; Is TOOLWINDOW really needed ?
-                      // It messes up the fullscreen window.
-    }
-
-    if( p_event->hparent )
-    {
-        i_style = WS_VISIBLE|WS_CLIPCHILDREN|WS_CHILD;
-        i_stylex = 0;
-
-        /* allow user to regain control over input events if requested */
-        bool b_mouse_support = var_InheritBool( vd, "mouse-events" );
-        bool b_key_support = var_InheritBool( vd, "keyboard-events" );
-        if( !b_mouse_support && !b_key_support )
-            i_style |= WS_DISABLED;
-    }
-
-    p_event->i_window_style = i_style;
-
-    /* Create the window */
-    p_event->hwnd =
-        CreateWindowEx( WS_EX_NOPARENTNOTIFY | i_stylex,
-                    p_event->class_main,             /* name of window class */
-                    _T(VOUT_TITLE) _T(" (DirectX Output)"),  /* window title */
-                    i_style,                                 /* window style */
-                    (!p_event->wnd_cfg.x) ? CW_USEDEFAULT :
-                        (UINT)p_event->wnd_cfg.x,   /* default X coordinate */
-                    (!p_event->wnd_cfg.y) ? CW_USEDEFAULT :
-                        (UINT)p_event->wnd_cfg.y,   /* default Y coordinate */
-                    rect_window.right - rect_window.left,    /* window width */
-                    rect_window.bottom - rect_window.top,   /* window height */
-                    p_event->hparent,                       /* parent window */
-                    NULL,                          /* no menu in this window */
-                    hInstance,            /* handle of this program instance */
-                    (LPVOID)p_event );           /* send vd to WM_CREATE */
-
-    if( !p_event->hwnd )
-    {
-        msg_Warn( vd, "DirectXCreateWindow create window FAILED (err=%lu)", GetLastError() );
-        return VLC_EGENERIC;
-    }
-
-    if( p_event->hparent )
-    {
-        LONG i_style;
-
-        /* We don't want the window owner to overwrite our client area */
-        i_style = GetWindowLong( p_event->hparent, GWL_STYLE );
-
-        if( !(i_style & WS_CLIPCHILDREN) )
-            /* Hmmm, apparently this is a blocking call... */
-            SetWindowLong( p_event->hparent, GWL_STYLE,
-                           i_style | WS_CLIPCHILDREN );
-
-        /* Create our fullscreen window */
-        p_event->hfswnd =
-            CreateWindowEx( WS_EX_APPWINDOW, p_event->class_main,
-                            _T(VOUT_TITLE) _T(" (DirectX Output)"),
-                            WS_OVERLAPPEDWINDOW|WS_CLIPCHILDREN|WS_SIZEBOX,
-                            CW_USEDEFAULT, CW_USEDEFAULT,
-                            CW_USEDEFAULT, CW_USEDEFAULT,
-                            NULL, NULL, hInstance, NULL );
-    }
-    else
-    {
-        p_event->hfswnd = NULL;
-    }
-
-    /* Append a "Always On Top" entry in the system menu */
-    hMenu = GetSystemMenu( p_event->hwnd, FALSE );
-    AppendMenu( hMenu, MF_SEPARATOR, 0, _T("") );
-    AppendMenu( hMenu, MF_STRING | MF_UNCHECKED,
-                       IDM_TOGGLE_ON_TOP, _T("Always on &Top") );
-
-    /* Create video sub-window. This sub window will always exactly match
-     * the size of the video, which allows us to use crazy overlay colorkeys
-     * without having them shown outside of the video area. */
-    /* FIXME vd->source.i_width/i_height seems wrong */
-    p_event->hvideownd =
-    CreateWindow( p_event->class_video, _T(""),   /* window class */
-        WS_CHILD,                   /* window style, not visible initially */
-        0, 0,
-        vd->source.i_width,          /* default width */
-        vd->source.i_height,        /* default height */
-        p_event->hwnd,               /* parent window */
-        NULL, hInstance,
-        (LPVOID)p_event );    /* send vd to WM_CREATE */
-
-    if( !p_event->hvideownd )
-        msg_Warn( vd, "can't create video sub-window" );
-    else
-        msg_Dbg( vd, "created video sub-window" );
-
-    /* Now display the window */
-    ShowWindow( p_event->hwnd, SW_SHOW );
-
-    return VLC_SUCCESS;
-}
-
-/*****************************************************************************
- * DirectXCloseWindow: close the window created by DirectXCreateWindow
- *****************************************************************************
- * This function returns all resources allocated by DirectXCreateWindow.
- *****************************************************************************/
-static void DirectXCloseWindow( event_thread_t *p_event )
-{
-    vout_display_t *vd = p_event->vd;
-    msg_Dbg( vd, "DirectXCloseWindow" );
-
-    DestroyWindow( p_event->hwnd );
-    if( p_event->hfswnd )
-        DestroyWindow( p_event->hfswnd );
-
-    #ifdef MODULE_NAME_IS_direct3d
-    if( !p_event->use_desktop )
-    #endif
-        vout_display_DeleteWindow( vd, p_event->parent_window );
-    p_event->hwnd = NULL;
-
-    HINSTANCE hInstance = GetModuleHandle(NULL);
-    UnregisterClass( p_event->class_video, hInstance );
-    UnregisterClass( p_event->class_main, hInstance );
-
-    if( p_event->vlc_icon )
-        DestroyIcon( p_event->vlc_icon );
-
-#ifndef UNDER_CE
-    DestroyCursor( p_event->cursor_empty );
-#endif
-}
-
-/*****************************************************************************
- * DirectXEventProc: This is the window event processing function.
- *****************************************************************************
- * On Windows, when you create a window you have to attach an event processing
- * function to it. The aim of this function is to manage "Queued Messages" and
- * "Nonqueued Messages".
- * Queued Messages are those picked up and retransmitted by vout_Manage
- * (using the GetMessage and DispatchMessage functions).
- * Nonqueued Messages are those that Windows will send directly to this
- * procedure (like WM_DESTROY, WM_WINDOWPOSCHANGED...)
- *****************************************************************************/
-static long FAR PASCAL DirectXEventProc( HWND hwnd, UINT message,
-                                         WPARAM wParam, LPARAM lParam )
-{
-    event_thread_t *p_event;
-
-    if( message == WM_CREATE )
-    {
-        /* Store vd for future use */
-        p_event = (event_thread_t *)((CREATESTRUCT *)lParam)->lpCreateParams;
-        SetWindowLongPtr( hwnd, GWLP_USERDATA, (LONG_PTR)p_event );
-        return TRUE;
-    }
-    else
-    {
-        LONG_PTR p_user_data = GetWindowLongPtr( hwnd, GWLP_USERDATA );
-        p_event = (event_thread_t *)p_user_data;
-        if( !p_event )
-        {
-            /* Hmmm mozilla does manage somehow to save the pointer to our
-             * windowproc and still calls it after the vout has been closed. */
-            return DefWindowProc(hwnd, message, wParam, lParam);
-        }
-    }
-    vout_display_t *vd = p_event->vd;
-
-#ifndef UNDER_CE
-    /* Catch the screensaver and the monitor turn-off */
-    if( message == WM_SYSCOMMAND &&
-        ( (wParam & 0xFFF0) == SC_SCREENSAVE || (wParam & 0xFFF0) == SC_MONITORPOWER ) )
-    {
-        //if( vd ) msg_Dbg( vd, "WinProc WM_SYSCOMMAND screensaver" );
-        return 0; /* this stops them from happening */
-    }
-#endif
-#if 0
-    if( message == WM_SETCURSOR )
-    {
-        msg_Err(vd, "WM_SETCURSOR: %d (t2)", p_event->is_cursor_hidden);
-        SetCursor( p_event->is_cursor_hidden ? p_event->cursor_empty : p_event->cursor_arrow );
-        return 1;
-    }
-#endif
-    if( message == WM_CAPTURECHANGED )
-    {
-        for( int button = 0; p_event->button_pressed; button++ )
-        {
-            unsigned m = 1 << button;
-            if( p_event->button_pressed & m )
-                vout_display_SendEventMouseReleased( p_event->vd, button );
-            p_event->button_pressed &= ~m;
-        }
-        p_event->button_pressed = 0;
-        return 0;
-    }
-
-    if( hwnd == p_event->hvideownd )
-    {
-#ifdef MODULE_NAME_IS_directx
-        vlc_mutex_lock( &p_event->lock );
-        const bool use_overlay = p_event->use_overlay;
-        vlc_mutex_unlock( &p_event->lock );
-#endif
-
-        switch( message )
-        {
-#ifdef MODULE_NAME_IS_directx
-        case WM_ERASEBKGND:
-        /* For overlay, we need to erase background */
-            return !use_overlay ? 1 : DefWindowProc(hwnd, message, wParam, lParam);
-        case WM_PAINT:
-        /*
-        ** For overlay, DefWindowProc() will erase dirty regions
-        ** with colorkey.
-        ** For non-overlay, vout will paint the whole window at
-        ** regular interval, therefore dirty regions can be ignored
-        ** to minimize repaint.
-        */
-            if( !use_overlay )
-            {
-                ValidateRect(hwnd, NULL);
-            }
-            // fall through to default
-#else
-        /*
-        ** For OpenGL and Direct3D, vout will update the whole
-        ** window at regular interval, therefore dirty region
-        ** can be ignored to minimize repaint.
-        */
-        case WM_ERASEBKGND:
-            /* nothing to erase */
-            return 1;
-        case WM_PAINT:
-            /* nothing to repaint */
-            ValidateRect(hwnd, NULL);
-            // fall through
-#endif
-        default:
-            return DefWindowProc(hwnd, message, wParam, lParam);
-        }
-    }
-
-    switch( message )
-    {
-
-    case WM_WINDOWPOSCHANGED:
-        vlc_mutex_lock( &p_event->lock );
-        p_event->has_moved = true;
-        vlc_mutex_unlock( &p_event->lock );
-        return 0;
-
-    /* the user wants to close the window */
-    case WM_CLOSE:
-        vout_display_SendEventClose(vd);
-        return 0;
-
-    /* the window has been closed so shut down everything now */
-    case WM_DESTROY:
-        msg_Dbg( vd, "WinProc WM_DESTROY" );
-        /* just destroy the window */
-        PostQuitMessage( 0 );
-        return 0;
-
-    case WM_SYSCOMMAND:
-        switch (wParam)
-        {
-        case IDM_TOGGLE_ON_TOP:            /* toggle the "on top" status */
-        {
-            msg_Dbg(vd, "WinProc WM_SYSCOMMAND: IDM_TOGGLE_ON_TOP");
-            HMENU hMenu = GetSystemMenu(vd->sys->hwnd, FALSE);
-            vout_display_SendWindowState(vd, (GetMenuState(hMenu, IDM_TOGGLE_ON_TOP, MF_BYCOMMAND) & MF_CHECKED) ?
-                    VOUT_WINDOW_STATE_NORMAL : VOUT_WINDOW_STATE_ABOVE);
-            return 0;
-        }
-        default:
-            break;
-        }
-        break;
-
-    case WM_PAINT:
-    case WM_NCPAINT:
-    case WM_ERASEBKGND:
-        return DefWindowProc(hwnd, message, wParam, lParam);
-
-    case WM_KILLFOCUS:
-#ifdef MODULE_NAME_IS_wingapi
-        GXSuspend();
-#endif
-#ifdef UNDER_CE
-        if( hwnd == p_event->hfswnd )
-        {
-            HWND htbar = FindWindow( _T("HHTaskbar"), NULL );
-            ShowWindow( htbar, SW_SHOW );
-        }
-
-        if( !p_event->hparent ||
-            hwnd == p_event->hfswnd )
-        {
-            SHFullScreen( hwnd, SHFS_SHOWSIPBUTTON );
-        }
-#endif
-        return 0;
-
-    case WM_SETFOCUS:
-#ifdef MODULE_NAME_IS_wingapi
-        GXResume();
-#endif
-#ifdef UNDER_CE
-        /* FIXME vd->cfg is not lock[ed/able] */
-#warning "FIXME: race condition"
-        if( p_event->hparent &&
-            hwnd != p_event->hfswnd && vd->cfg->is_fullscreen )
-            vout_display_SendEventFullscreen(vd, false);
-
-        if( hwnd == p_event->hfswnd )
-        {
-            HWND htbar = FindWindow( _T("HHTaskbar"), NULL );
-            ShowWindow( htbar, SW_HIDE );
-        }
-
-        if( !p_event->hparent ||
-            hwnd == p_event->hfswnd )
-        {
-            SHFullScreen( hwnd, SHFS_HIDESIPBUTTON );
-        }
-#endif
-        return 0;
-
-    default:
-        //msg_Dbg( vd, "WinProc WM Default %i", message );
-        break;
-    }
-
-    /* Let windows handle the message */
-    return DefWindowProc(hwnd, message, wParam, lParam);
-}
-
-static struct
-{
-    int i_dxkey;
-    int i_vlckey;
-
-} dxkeys_to_vlckeys[] =
-{
-    { VK_F1, KEY_F1 }, { VK_F2, KEY_F2 }, { VK_F3, KEY_F3 }, { VK_F4, KEY_F4 },
-    { VK_F5, KEY_F5 }, { VK_F6, KEY_F6 }, { VK_F7, KEY_F7 }, { VK_F8, KEY_F8 },
-    { VK_F9, KEY_F9 }, { VK_F10, KEY_F10 }, { VK_F11, KEY_F11 },
-    { VK_F12, KEY_F12 },
-
-    { VK_RETURN, KEY_ENTER },
-    { VK_SPACE, ' ' },
-    { VK_ESCAPE, KEY_ESC },
-
-    { VK_LEFT, KEY_LEFT },
-    { VK_RIGHT, KEY_RIGHT },
-    { VK_UP, KEY_UP },
-    { VK_DOWN, KEY_DOWN },
-
-    { VK_HOME, KEY_HOME },
-    { VK_END, KEY_END },
-    { VK_PRIOR, KEY_PAGEUP },
-    { VK_NEXT, KEY_PAGEDOWN },
-
-    { VK_INSERT, KEY_INSERT },
-    { VK_DELETE, KEY_DELETE },
-
-    { VK_CONTROL, 0 },
-    { VK_SHIFT, 0 },
-    { VK_MENU, 0 },
-
-    { VK_BROWSER_BACK, KEY_BROWSER_BACK },
-    { VK_BROWSER_FORWARD, KEY_BROWSER_FORWARD },
-    { VK_BROWSER_REFRESH, KEY_BROWSER_REFRESH },
-    { VK_BROWSER_STOP, KEY_BROWSER_STOP },
-    { VK_BROWSER_SEARCH, KEY_BROWSER_SEARCH },
-    { VK_BROWSER_FAVORITES, KEY_BROWSER_FAVORITES },
-    { VK_BROWSER_HOME, KEY_BROWSER_HOME },
-    { VK_VOLUME_MUTE, KEY_VOLUME_MUTE },
-    { VK_VOLUME_DOWN, KEY_VOLUME_DOWN },
-    { VK_VOLUME_UP, KEY_VOLUME_UP },
-    { VK_MEDIA_NEXT_TRACK, KEY_MEDIA_NEXT_TRACK },
-    { VK_MEDIA_PREV_TRACK, KEY_MEDIA_PREV_TRACK },
-    { VK_MEDIA_STOP, KEY_MEDIA_STOP },
-    { VK_MEDIA_PLAY_PAUSE, KEY_MEDIA_PLAY_PAUSE },
-
-    { 0, 0 }
-};
-
-static int DirectXConvertKey( int i_key )
-{
-    int i;
-
-    for( i = 0; dxkeys_to_vlckeys[i].i_dxkey != 0; i++ )
-    {
-        if( dxkeys_to_vlckeys[i].i_dxkey == i_key )
-        {
-            return dxkeys_to_vlckeys[i].i_vlckey;
-        }
-    }
-
-    return 0;
 }
 
 void EventThreadMouseHide( event_thread_t *p_event )
@@ -1031,7 +390,7 @@ void EventThreadMouseHide( event_thread_t *p_event )
 
 void EventThreadUpdateTitle( event_thread_t *p_event, const char *psz_fallback )
 {
-    char *psz_title = var_GetNonEmptyString( p_event->vd, "video-title" );
+    char *psz_title = var_InheritString( p_event->vd, "video-title" );
     if( !psz_title )
         psz_title = strdup( psz_fallback );
     if( !psz_title )
@@ -1117,10 +476,10 @@ event_thread_t *EventThreadCreate( vout_display_t *vd)
     p_event->source = vd->source;
     vout_display_PlacePicture(&p_event->place, &vd->source, vd->cfg, false);
 
-    _snprintf( p_event->class_main, sizeof(p_event->class_main)/sizeof(*p_event->class_main),
-               _T("VLC MSW %p"), p_event );
-    _snprintf( p_event->class_video, sizeof(p_event->class_video)/sizeof(*p_event->class_video),
-               _T("VLC MSW video %p"), p_event );
+    _sntprintf( p_event->class_main, sizeof(p_event->class_main)/sizeof(*p_event->class_main),
+               _T("VLC video main %p"), p_event );
+    _sntprintf( p_event->class_video, sizeof(p_event->class_video)/sizeof(*p_event->class_video),
+               _T("VLC video output %p"), p_event );
     return p_event;
 }
 
@@ -1190,5 +549,574 @@ void EventThreadStop( event_thread_t *p_event )
 
     vlc_join( p_event->thread, NULL );
     p_event->b_ready = false;
+}
+
+
+/***********************************
+ * Local functions implementations *
+ ***********************************/
+static void UpdateCursor( event_thread_t *p_event, bool b_show )
+{
+    if( p_event->is_cursor_hidden == !b_show )
+        return;
+    p_event->is_cursor_hidden = !b_show;
+
+#if 1
+    HCURSOR cursor = b_show ? p_event->cursor_arrow : p_event->cursor_empty;
+    if( p_event->hvideownd )
+        SetClassLongPtr( p_event->hvideownd, GCLP_HCURSOR, (LONG_PTR)cursor );
+    if( p_event->hwnd )
+        SetClassLongPtr( p_event->hwnd, GCLP_HCURSOR, (LONG_PTR)cursor );
+#endif
+
+    /* FIXME I failed to find a cleaner way to force a redraw of the cursor */
+    POINT p;
+    GetCursorPos(&p);
+    HWND hwnd = WindowFromPoint(p);
+    if( hwnd == p_event->hvideownd || hwnd == p_event->hwnd )
+    {
+        if( b_show )
+            SetCursor( cursor );
+        else
+            SetCursorPos( p.x, p.y );
+    }
+}
+
+static HCURSOR EmptyCursor( HINSTANCE instance )
+{
+    const int cw = GetSystemMetrics(SM_CXCURSOR);
+    const int ch = GetSystemMetrics(SM_CYCURSOR);
+
+    HCURSOR cursor = NULL;
+    uint8_t *and = malloc(cw * ch);
+    uint8_t *xor = malloc(cw * ch);
+    if( and && xor )
+    {
+        memset(and, 0xff, cw * ch );
+        memset(xor, 0x00, cw * ch );
+        cursor = CreateCursor( instance, 0, 0, cw, ch, and, xor);
+    }
+    free( and );
+    free( xor );
+
+    return cursor;
+}
+
+static void MousePressed( event_thread_t *p_event, HWND hwnd, unsigned button )
+{
+    if( !p_event->button_pressed )
+        SetCapture( hwnd );
+    p_event->button_pressed |= 1 << button;
+    vout_display_SendEventMousePressed( p_event->vd, button );
+}
+
+static void MouseReleased( event_thread_t *p_event, unsigned button )
+{
+    p_event->button_pressed &= ~(1 << button);
+    if( !p_event->button_pressed )
+        ReleaseCapture();
+    vout_display_SendEventMouseReleased( p_event->vd, button );
+}
+
+#ifdef MODULE_NAME_IS_direct3d
+static int CALLBACK
+enumWindowsProc(HWND hwnd, LPARAM lParam)
+{
+    HWND *wnd = (HWND *)lParam;
+
+    char name[128];
+    name[0] = '\0';
+    GetClassNameA( hwnd, name, 128 );
+
+    if( !strcasecmp( name, "WorkerW" ) )
+    {
+        hwnd = FindWindowEx( hwnd, NULL, _T("SHELLDLL_DefView"), NULL );
+        if( hwnd ) hwnd = FindWindowEx( hwnd, NULL, _T("SysListView32"), NULL );
+        if( hwnd )
+        {
+            *wnd = hwnd;
+            return false;
+        }
+    }
+    return true;
+}
+
+static HWND GetDesktopHandle(vout_display_t *vd)
+{
+    /* Find Program Manager */
+    HWND hwnd = FindWindow( _T("Progman"), NULL );
+    if( hwnd ) hwnd = FindWindowEx( hwnd, NULL, _T("SHELLDLL_DefView"), NULL );
+    if( hwnd ) hwnd = FindWindowEx( hwnd, NULL, _T("SysListView32"), NULL );
+    if( hwnd )
+        return hwnd;
+
+    msg_Dbg( vd, "Couldn't find desktop icon window,. Trying the hard way." );
+
+    EnumWindows( enumWindowsProc, (LPARAM)&hwnd );
+    return hwnd;
+}
+#endif
+
+/*****************************************************************************
+ * Win32VoutCreateWindow: create a window for the video.
+ *****************************************************************************
+ * Before creating a direct draw surface, we need to create a window in which
+ * the video will be displayed. This window will also allow us to capture the
+ * events.
+ *****************************************************************************/
+static int Win32VoutCreateWindow( event_thread_t *p_event )
+{
+    vout_display_t *vd = p_event->vd;
+    HINSTANCE  hInstance;
+    HMENU      hMenu;
+    RECT       rect_window;
+    WNDCLASS   wc;                            /* window class components */
+    TCHAR      vlc_path[MAX_PATH+1];
+    int        i_style, i_stylex;
+
+    msg_Dbg( vd, "Win32VoutCreateWindow" );
+
+    /* Get this module's instance */
+    hInstance = GetModuleHandle(NULL);
+
+    #ifdef MODULE_NAME_IS_direct3d
+    if( !p_event->use_desktop )
+    {
+    #endif
+        /* If an external window was specified, we'll draw in it. */
+        p_event->parent_window = vout_display_NewWindow(vd, &p_event->wnd_cfg );
+        if( p_event->parent_window )
+            p_event->hparent = p_event->parent_window->handle.hwnd;
+        else
+            p_event->hparent = NULL;
+    #ifdef MODULE_NAME_IS_direct3d
+    }
+    else
+    {
+        p_event->parent_window = NULL;
+        p_event->hparent = GetDesktopHandle(vd);
+    }
+    #endif
+    p_event->cursor_arrow = LoadCursor(NULL, IDC_ARROW);
+    p_event->cursor_empty = EmptyCursor(hInstance);
+
+    /* Get the Icon from the main app */
+    p_event->vlc_icon = NULL;
+    if( GetModuleFileName( NULL, vlc_path, MAX_PATH ) )
+    {
+        p_event->vlc_icon = ExtractIcon( hInstance, vlc_path, 0 );
+    }
+
+    /* Fill in the window class structure */
+    wc.style         = CS_OWNDC|CS_DBLCLKS;          /* style: dbl click */
+    wc.lpfnWndProc   = (WNDPROC)WinVoutEventProc;       /* event handler */
+    wc.cbClsExtra    = 0;                         /* no extra class data */
+    wc.cbWndExtra    = 0;                        /* no extra window data */
+    wc.hInstance     = hInstance;                            /* instance */
+    wc.hIcon         = p_event->vlc_icon;       /* load the vlc big icon */
+    wc.hCursor       = p_event->is_cursor_hidden ? p_event->cursor_empty :
+                                                   p_event->cursor_arrow;
+    wc.hbrBackground = GetStockObject(BLACK_BRUSH);  /* background color */
+    wc.lpszMenuName  = NULL;                                  /* no menu */
+    wc.lpszClassName = p_event->class_main;       /* use a special class */
+
+    /* Register the window class */
+    if( !RegisterClass(&wc) )
+    {
+        if( p_event->vlc_icon )
+            DestroyIcon( p_event->vlc_icon );
+
+        msg_Err( vd, "Win32VoutCreateWindow RegisterClass FAILED (err=%lu)", GetLastError() );
+        return VLC_EGENERIC;
+    }
+
+    /* Register the video sub-window class */
+    wc.lpszClassName = p_event->class_video;
+    wc.hIcon = 0;
+    wc.hbrBackground = NULL; /* no background color */
+    if( !RegisterClass(&wc) )
+    {
+        msg_Err( vd, "Win32VoutCreateWindow RegisterClass FAILED (err=%lu)", GetLastError() );
+        return VLC_EGENERIC;
+    }
+
+    /* When you create a window you give the dimensions you wish it to
+     * have. Unfortunatly these dimensions will include the borders and
+     * titlebar. We use the following function to find out the size of
+     * the window corresponding to the useable surface we want */
+    rect_window.left   = 10;
+    rect_window.top    = 10;
+    rect_window.right  = rect_window.left + p_event->wnd_cfg.width;
+    rect_window.bottom = rect_window.top  + p_event->wnd_cfg.height;
+
+    if( var_GetBool( vd, "video-deco" ) )
+    {
+        /* Open with window decoration */
+        AdjustWindowRect( &rect_window, WS_OVERLAPPEDWINDOW|WS_SIZEBOX, 0 );
+        i_style = WS_OVERLAPPEDWINDOW|WS_SIZEBOX|WS_VISIBLE|WS_CLIPCHILDREN;
+        i_stylex = 0;
+    }
+    else
+    {
+        /* No window decoration */
+        AdjustWindowRect( &rect_window, WS_POPUP, 0 );
+        i_style = WS_POPUP|WS_VISIBLE|WS_CLIPCHILDREN;
+        i_stylex = 0; // WS_EX_TOOLWINDOW; Is TOOLWINDOW really needed ?
+                      // It messes up the fullscreen window.
+    }
+
+    if( p_event->hparent )
+    {
+        i_style = WS_VISIBLE|WS_CLIPCHILDREN|WS_CHILD;
+        i_stylex = 0;
+
+        /* allow user to regain control over input events if requested */
+        bool b_mouse_support = var_InheritBool( vd, "mouse-events" );
+        bool b_key_support = var_InheritBool( vd, "keyboard-events" );
+        if( !b_mouse_support && !b_key_support )
+            i_style |= WS_DISABLED;
+    }
+
+    p_event->i_window_style = i_style;
+
+    /* Create the window */
+    p_event->hwnd =
+        CreateWindowEx( WS_EX_NOPARENTNOTIFY | i_stylex,
+                    p_event->class_main,             /* name of window class */
+                    _T(VOUT_TITLE) _T(" (VLC Video Output)"),  /* window title */
+                    i_style,                                 /* window style */
+                    (!p_event->wnd_cfg.x) ? (UINT)CW_USEDEFAULT :
+                        (UINT)p_event->wnd_cfg.x,   /* default X coordinate */
+                    (!p_event->wnd_cfg.y) ? (UINT)CW_USEDEFAULT :
+                        (UINT)p_event->wnd_cfg.y,   /* default Y coordinate */
+                    rect_window.right - rect_window.left,    /* window width */
+                    rect_window.bottom - rect_window.top,   /* window height */
+                    p_event->hparent,                       /* parent window */
+                    NULL,                          /* no menu in this window */
+                    hInstance,            /* handle of this program instance */
+                    (LPVOID)p_event );           /* send vd to WM_CREATE */
+
+    if( !p_event->hwnd )
+    {
+        msg_Warn( vd, "Win32VoutCreateWindow create window FAILED (err=%lu)", GetLastError() );
+        return VLC_EGENERIC;
+    }
+
+    InitGestures( p_event->hwnd, &p_event->p_gesture );
+
+    if( p_event->hparent )
+    {
+        LONG i_style;
+
+        /* We don't want the window owner to overwrite our client area */
+        i_style = GetWindowLong( p_event->hparent, GWL_STYLE );
+
+        if( !(i_style & WS_CLIPCHILDREN) )
+            /* Hmmm, apparently this is a blocking call... */
+            SetWindowLong( p_event->hparent, GWL_STYLE,
+                           i_style | WS_CLIPCHILDREN );
+
+        /* Create our fullscreen window */
+        p_event->hfswnd =
+            CreateWindowEx( WS_EX_APPWINDOW, p_event->class_main,
+                            _T(VOUT_TITLE) _T(" (VLC Fullscreen Video Output)"),
+                            WS_OVERLAPPEDWINDOW|WS_CLIPCHILDREN|WS_SIZEBOX,
+                            CW_USEDEFAULT, CW_USEDEFAULT,
+                            CW_USEDEFAULT, CW_USEDEFAULT,
+                            NULL, NULL, hInstance, NULL );
+    }
+    else
+    {
+        p_event->hfswnd = NULL;
+    }
+
+    /* Append a "Always On Top" entry in the system menu */
+    hMenu = GetSystemMenu( p_event->hwnd, FALSE );
+    AppendMenu( hMenu, MF_SEPARATOR, 0, _T("") );
+    AppendMenu( hMenu, MF_STRING | MF_UNCHECKED,
+                       IDM_TOGGLE_ON_TOP, _T("Always on &Top") );
+
+    /* Create video sub-window. This sub window will always exactly match
+     * the size of the video, which allows us to use crazy overlay colorkeys
+     * without having them shown outside of the video area. */
+    /* FIXME vd->source.i_width/i_height seems wrong */
+    p_event->hvideownd =
+    CreateWindow( p_event->class_video, _T(""),   /* window class */
+        WS_CHILD,                   /* window style, not visible initially */
+        0, 0,
+        vd->source.i_width,          /* default width */
+        vd->source.i_height,        /* default height */
+        p_event->hwnd,               /* parent window */
+        NULL, hInstance,
+        (LPVOID)p_event );    /* send vd to WM_CREATE */
+
+    if( !p_event->hvideownd )
+        msg_Warn( vd, "can't create video sub-window" );
+    else
+        msg_Dbg( vd, "created video sub-window" );
+
+    /* Now display the window */
+    ShowWindow( p_event->hwnd, SW_SHOW );
+
+    return VLC_SUCCESS;
+}
+
+/*****************************************************************************
+ * Win32VoutCloseWindow: close the window created by Win32VoutCreateWindow
+ *****************************************************************************
+ * This function returns all resources allocated by Win32VoutCreateWindow.
+ *****************************************************************************/
+static void Win32VoutCloseWindow( event_thread_t *p_event )
+{
+    vout_display_t *vd = p_event->vd;
+    msg_Dbg( vd, "Win32VoutCloseWindow" );
+
+    DestroyWindow( p_event->hwnd );
+    if( p_event->hfswnd )
+        DestroyWindow( p_event->hfswnd );
+
+    #ifdef MODULE_NAME_IS_direct3d
+    if( !p_event->use_desktop )
+    #endif
+        vout_display_DeleteWindow( vd, p_event->parent_window );
+    p_event->hwnd = NULL;
+
+    HINSTANCE hInstance = GetModuleHandle(NULL);
+    UnregisterClass( p_event->class_video, hInstance );
+    UnregisterClass( p_event->class_main, hInstance );
+
+    if( p_event->vlc_icon )
+        DestroyIcon( p_event->vlc_icon );
+
+    DestroyCursor( p_event->cursor_empty );
+
+    CloseGestures( p_event->p_gesture);
+}
+
+/*****************************************************************************
+ * WinVoutEventProc: This is the window event processing function.
+ *****************************************************************************
+ * On Windows, when you create a window you have to attach an event processing
+ * function to it. The aim of this function is to manage "Queued Messages" and
+ * "Nonqueued Messages".
+ * Queued Messages are those picked up and retransmitted by vout_Manage
+ * (using the GetMessage and DispatchMessage functions).
+ * Nonqueued Messages are those that Windows will send directly to this
+ * procedure (like WM_DESTROY, WM_WINDOWPOSCHANGED...)
+ *****************************************************************************/
+static long FAR PASCAL WinVoutEventProc( HWND hwnd, UINT message,
+                                         WPARAM wParam, LPARAM lParam )
+{
+    event_thread_t *p_event;
+
+    if( message == WM_CREATE )
+    {
+        /* Store vd for future use */
+        p_event = (event_thread_t *)((CREATESTRUCT *)lParam)->lpCreateParams;
+        SetWindowLongPtr( hwnd, GWLP_USERDATA, (LONG_PTR)p_event );
+        return TRUE;
+    }
+    else
+    {
+        LONG_PTR p_user_data = GetWindowLongPtr( hwnd, GWLP_USERDATA );
+        p_event = (event_thread_t *)p_user_data;
+        if( !p_event )
+        {
+            /* Hmmm mozilla does manage somehow to save the pointer to our
+             * windowproc and still calls it after the vout has been closed. */
+            return DefWindowProc(hwnd, message, wParam, lParam);
+        }
+    }
+    vout_display_t *vd = p_event->vd;
+
+#if 0
+    if( message == WM_SETCURSOR )
+    {
+        msg_Err(vd, "WM_SETCURSOR: %d (t2)", p_event->is_cursor_hidden);
+        SetCursor( p_event->is_cursor_hidden ? p_event->cursor_empty : p_event->cursor_arrow );
+        return 1;
+    }
+#endif
+    if( message == WM_CAPTURECHANGED )
+    {
+        for( int button = 0; p_event->button_pressed; button++ )
+        {
+            unsigned m = 1 << button;
+            if( p_event->button_pressed & m )
+                vout_display_SendEventMouseReleased( p_event->vd, button );
+            p_event->button_pressed &= ~m;
+        }
+        p_event->button_pressed = 0;
+        return 0;
+    }
+
+    if( hwnd == p_event->hvideownd )
+    {
+#ifdef MODULE_NAME_IS_directdraw
+        vlc_mutex_lock( &p_event->lock );
+        const bool use_overlay = p_event->use_overlay;
+        vlc_mutex_unlock( &p_event->lock );
+#endif
+
+        switch( message )
+        {
+#ifdef MODULE_NAME_IS_directdraw
+        case WM_ERASEBKGND:
+        /* For overlay, we need to erase background */
+            return !use_overlay ? 1 : DefWindowProc(hwnd, message, wParam, lParam);
+        case WM_PAINT:
+        /*
+        ** For overlay, DefWindowProc() will erase dirty regions
+        ** with colorkey.
+        ** For non-overlay, vout will paint the whole window at
+        ** regular interval, therefore dirty regions can be ignored
+        ** to minimize repaint.
+        */
+            if( !use_overlay )
+            {
+                ValidateRect(hwnd, NULL);
+            }
+            // fall through to default
+#else
+        /*
+        ** For OpenGL and Direct3D, vout will update the whole
+        ** window at regular interval, therefore dirty region
+        ** can be ignored to minimize repaint.
+        */
+        case WM_ERASEBKGND:
+            /* nothing to erase */
+            return 1;
+        case WM_PAINT:
+            /* nothing to repaint */
+            ValidateRect(hwnd, NULL);
+            // fall through
+#endif
+        default:
+            return DefWindowProc(hwnd, message, wParam, lParam);
+        }
+    }
+
+    switch( message )
+    {
+
+    case WM_WINDOWPOSCHANGED:
+        vlc_mutex_lock( &p_event->lock );
+        p_event->has_moved = true;
+        vlc_mutex_unlock( &p_event->lock );
+        return 0;
+
+    /* the user wants to close the window */
+    case WM_CLOSE:
+        vout_display_SendEventClose(vd);
+        return 0;
+
+    /* the window has been closed so shut down everything now */
+    case WM_DESTROY:
+        msg_Dbg( vd, "WinProc WM_DESTROY" );
+        /* just destroy the window */
+        PostQuitMessage( 0 );
+        return 0;
+
+    case WM_SYSCOMMAND:
+        switch (wParam)
+        {
+        case IDM_TOGGLE_ON_TOP:            /* toggle the "on top" status */
+        {
+            msg_Dbg(vd, "WinProc WM_SYSCOMMAND: IDM_TOGGLE_ON_TOP");
+            HMENU hMenu = GetSystemMenu(vd->sys->hwnd, FALSE);
+            vout_display_SendWindowState(vd, (GetMenuState(hMenu, IDM_TOGGLE_ON_TOP, MF_BYCOMMAND) & MF_CHECKED) ?
+                    VOUT_WINDOW_STATE_NORMAL : VOUT_WINDOW_STATE_ABOVE);
+            return 0;
+        }
+        default:
+            break;
+        }
+        break;
+
+    case WM_PAINT:
+    case WM_NCPAINT:
+    case WM_ERASEBKGND:
+        return DefWindowProc(hwnd, message, wParam, lParam);
+
+    case WM_KILLFOCUS:
+        return 0;
+
+    case WM_SETFOCUS:
+        return 0;
+
+    case WM_GESTURE:
+        return DecodeGesture( VLC_OBJECT(vd), p_event->p_gesture, hwnd, message, wParam, lParam );
+
+    default:
+        //msg_Dbg( vd, "WinProc WM Default %i", message );
+        break;
+    }
+
+    /* Let windows handle the message */
+    return DefWindowProc(hwnd, message, wParam, lParam);
+}
+
+static struct
+{
+    int i_dxkey;
+    int i_vlckey;
+
+} dxkeys_to_vlckeys[] =
+{
+    { VK_F1, KEY_F1 }, { VK_F2, KEY_F2 }, { VK_F3, KEY_F3 }, { VK_F4, KEY_F4 },
+    { VK_F5, KEY_F5 }, { VK_F6, KEY_F6 }, { VK_F7, KEY_F7 }, { VK_F8, KEY_F8 },
+    { VK_F9, KEY_F9 }, { VK_F10, KEY_F10 }, { VK_F11, KEY_F11 },
+    { VK_F12, KEY_F12 },
+
+    { VK_RETURN, KEY_ENTER },
+    { VK_SPACE, ' ' },
+    { VK_ESCAPE, KEY_ESC },
+
+    { VK_LEFT, KEY_LEFT },
+    { VK_RIGHT, KEY_RIGHT },
+    { VK_UP, KEY_UP },
+    { VK_DOWN, KEY_DOWN },
+
+    { VK_HOME, KEY_HOME },
+    { VK_END, KEY_END },
+    { VK_PRIOR, KEY_PAGEUP },
+    { VK_NEXT, KEY_PAGEDOWN },
+
+    { VK_INSERT, KEY_INSERT },
+    { VK_DELETE, KEY_DELETE },
+
+    { VK_CONTROL, 0 },
+    { VK_SHIFT, 0 },
+    { VK_MENU, 0 },
+
+    { VK_BROWSER_BACK, KEY_BROWSER_BACK },
+    { VK_BROWSER_FORWARD, KEY_BROWSER_FORWARD },
+    { VK_BROWSER_REFRESH, KEY_BROWSER_REFRESH },
+    { VK_BROWSER_STOP, KEY_BROWSER_STOP },
+    { VK_BROWSER_SEARCH, KEY_BROWSER_SEARCH },
+    { VK_BROWSER_FAVORITES, KEY_BROWSER_FAVORITES },
+    { VK_BROWSER_HOME, KEY_BROWSER_HOME },
+    { VK_VOLUME_MUTE, KEY_VOLUME_MUTE },
+    { VK_VOLUME_DOWN, KEY_VOLUME_DOWN },
+    { VK_VOLUME_UP, KEY_VOLUME_UP },
+    { VK_MEDIA_NEXT_TRACK, KEY_MEDIA_NEXT_TRACK },
+    { VK_MEDIA_PREV_TRACK, KEY_MEDIA_PREV_TRACK },
+    { VK_MEDIA_STOP, KEY_MEDIA_STOP },
+    { VK_MEDIA_PLAY_PAUSE, KEY_MEDIA_PLAY_PAUSE },
+
+    { 0, 0 }
+};
+
+static int Win32VoutConvertKey( int i_key )
+{
+    for( int i = 0; dxkeys_to_vlckeys[i].i_dxkey != 0; i++ )
+    {
+        if( dxkeys_to_vlckeys[i].i_dxkey == i_key )
+        {
+            return dxkeys_to_vlckeys[i].i_vlckey;
+        }
+    }
+
+    return 0;
 }
 

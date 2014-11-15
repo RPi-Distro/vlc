@@ -2,7 +2,7 @@
  * mediainfo.hpp : Information about a stream
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 49c1f18ed53625a469b99b3f13df189baab52ebe $
+ * $Id: f6f9af73a908b1833716330c7d7aaea3dc3aa286 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -38,7 +38,15 @@ public:
     MediaInfoDialog( intf_thread_t *,
                      input_item_t * input = NULL );
 
-    void showTab( int );
+    enum panel
+    {
+        META_PANEL = 0,
+        EXTRAMETA_PANEL,
+        INFO_PANEL,
+        INPUTSTATS_PANEL
+    };
+
+    void showTab( panel );
 #if 0
     void setInput( input_item_t * );
 #endif

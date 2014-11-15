@@ -12,63 +12,607 @@ It was taken from http://download.videolan.org/pub/vlc/
 With the exception of other files mentioned in this document, all code and
 artwork belongs to members of the VideoLAN team <videolan@videolan.org>. See
 each file for precise details about its respective authors.
-  Copyright (c) 1996-2009 Laurent Aimar <fenrir@via.ecp.fr>
-                          Marc Ariberti <marcari@via.ecp.fr>
-                          Stephan Assmus <stippi@yellowbites.com>
-                          Olivier Aubert <oaubert at lisi dot univ-lyon1 dot fr>
-                          Sigmund Augdal Helberg <dnumgis@videolan.org>
-                          Pierre Baillet <oct@zoy.org>
-                          Gildas Bazin <gbazin@videolan.org>
-                          Rocky Bernstein <rocky@panix.com>
-                          Johan Bilien <jobi@via.ecp.fr>
-                          Stéphane Borel <stef@via.ecp.fr>
-                          Arnaud de Bossoreille de Ribou <bozo@via.ecp.fr>
-                          Filippo Carone <filippo[dontspam]@carone.org>
-			  Rafaël "Hanz, David" Carr é<funman@videolanorg>
-                          Tony Castley <tony@castley.net>
-                          Antoine Cellerier <dionoea@videolan.org>
-                          Renaud Dartus <reno@via.ecp.fr>
-                          Cyril Deguet <asmax@via.ecp.fr>
-                          Rémi Denis-Courmont <rem#videolan.org>
-                          Colin Delacroix <colin@zoy.org>
-                          Boris Dorès <babal(at)via.ecp.fr>
-                          Jean-Marc Dressler <polux@via.ecp.fr>
-                          Henri Fallon <henri@via.ecp.fr>
-                          Andrew Flintham <amf@cus.org.uk>
-                          Damien Fouilleul <Damien.Fouilleul@laposte.net>
-                          Alexis Guillard <alexis.guillard@bt.com>
-                          Gerald Hansink <gerald.hansink@ordina.nl>
-                          Shane Harper <shanegh@optusnet.com.au>
-                          Derk-Jan Hartman <hartman@videolan.org>
-                          Gaël Hendryckx <jimmy@via.ecp.fr>
-                          Sam Hocevar <sam@zoy.org>
-                          Eugenio Jarosiewicz <ej0@cise.ufl.edu>
-                          Jon Lech Johansen <jon-vl@nanocrew.net>
-                          Michel Kaempf <maxx@via.ecp.fr>
-                          Jean-Baptiste Kempf <jb@videolan.org>
-                          Pavlov Konstantin <thresh@videolan.oeg>
-                          Felix Kühne <fkuehne@users.sourceforge.net>
-                          Simon Latapie <garf@via.ecp.fr>
-                          Pascal Levesque <pascal.levesque@mindready.com>
-                          Christophe Massiot <massiot@via.ecp.fr>
-                          Loïc Minier <lool@via.ecp.fr
-                          Christophe Mutricy <xtophe@videolan.org>
-                          Florian G. Pflug <fgp@phlo.org>
-                          Heiko Panther <heiko.panther@web.de>
-                          Eric Petit <titer@videolan.org>
-                          Benjamin Pracht <bigben@videolan.org>
-                          Emmanuel Puig <karibu@videolan.org>
-                          Frédéric RUGET <frederic.ruget@free.fr>
-                          Jean-Paul Saman <jp_dot_saman#videolan_dot_nl>
-                          Arnaud Schauly <gitan@via.ecp.fr>
-                          Vincent Seguin <seguin@via.ecp.fr>
-                          Richard Shepherd <richard@rshepherd.demon.co.uk>
-                          Clément Stenac <zorglub@videolan.org>
-                          Peter Surda <shurdeek@panorama.sth.ac.at>
-                          Olivier Teulière <ipkiss@via.ecp.fr
-                          Yuehua Zhao <zhao908@hotmail.com>
-                          Bo Wang <silencewang@msn.com>
-  Licensed under the GNU General Public License, version 2 or later.
+
+Copyright (c) 1996-2013 the VideoLAN Team
+Rémi Denis-Courmont
+Jean-Baptiste Kempf
+Laurent Aimar
+Gildas Bazin
+Felix Paul Kühne
+Rafaël Carré
+Pierre d'Herbemont
+Rémi Duraffort
+Derk-Jan Hartman
+Antoine Cellerier
+Samuel Hocevar
+Jean-Paul Saman
+Christophe Mutricy
+Clément Stenac
+Christophe Massiot
+Ilkka Ollakka
+Pierre Ynard
+François Cartegnie
+Damien Fouilleul
+Sigmund Augdal Helberg
+Erwan Tulou
+David Fuhrmann
+Olivier Teulière
+Cyril Deguet
+Eric Petit
+Filippo Carone
+Rocky Bernstein
+Hugo Beauzée-Luyssen
+Olivier Aubert
+Pavlov Konstantin
+Jakob Leben
+Benjamin Pracht
+Jean-Philippe André
+Steve Lhomme
+Stéphane Borel
+JP Dinger
+Geoffroy Couprie
+Martin Storsjö
+Marian Ďurkovič
+Ludovic Fauvet
+Yoann Peronneau
+Sébastien Escudier
+Jon Lech Johansen
+KO Myung-Hun
+Edward Wang
+Dennis van Amerongen
+Faustino Osuna
+Mirsal Ennaime
+Denis Charmet
+Jérôme Decoodt
+Loïc Minier
+David Flynn
+Frédéric Yhuel
+Kaarlo Raiha
+Mark Moriarty
+Christopher Mueller
+Fabio Ritrovato
+Tony Castley
+Srikanth Raju
+Michel Kaempf
+Jean-Marc Dressler
+Johan Bilien
+Vincent Seguin
+Simon Latapie
+Bernie Purcell
+Henri Fallon
+Sebastien Zwickert
+Christoph Miebach
+Adrien Maglo
+Emmanuel Puig
+Renaud Dartus
+Alexis de Lattre
+Vincent Penquerc'h
+Arnaud de Bossoreille de Ribou
+Mohammed Adnène Trojette
+Boris Dorès
+Jai Menon
+Anil Daoud
+Daniel Mierswa
+Naohiro Koriyama
+Rob Jonson
+Pierre Baillet
+Dominique Leuenberger
+Andre Pang
+Zoran Turalija
+Akash Mehrotra
+André Weber
+Anthony Loiseau
+Lukas Durfina
+Xavier Marchesini
+Cyril Mathé
+Devin Heitmueller
+Juho Vähä-Herttua
+Ken Self
+Alexis Ballier
+Juha Jeronen
+Nicolas Chauvet
+Richard Hosking
+Éric Lassauge
+Marc Ariberti
+Sébastien Toque
+Tobias Güntner
+Benoit Steiner
+Michel Lespinasse
+Carlo Calabrò
+Cheng Sun
+Michał Trzebiatowski
+Brad Smith
+Brendon Justin
+Alexey Sokolov
+Basos G
+Philippe Morin
+Steinar H. Gunderson
+Vicente Jimenez Aguilar
+Yuval Tze
+Yves Duret
+Benjamin Drung
+Michael Hanselmann
+Alex Merry
+Damien Lucas
+Grigori Goronzy
+Richard Shepherd
+Gaël Hendryckx
+Michael Feurstein
+Stephan Assmus
+Adrien Grand
+Colin Guthrie
+David Menestrina
+Dominique Martinet
+Gleb Pinigin
+Jason Luka
+Luc Saillard
+Luca Barbato
+Mario Speiß
+Pankaj Yadav
+Ramiro Polla
+Ronald Wright
+Rui Zhang
+Can Wu
+Christophe Courtaut
+FUJISAWA Tooru
+Hannes Domani
+Manol Manolov
+Timothy B. Terriberry
+Antoine Lejeune
+Arnaud Schauly
+Branko Kokanovic
+Dylan Yudaken
+Florian G. Pflug
+François Revol
+G Finch
+Keary Griffin
+Konstanty Bialkowski
+Ming Hu
+Philippe Coent
+Przemyslaw Fiala
+Tanguy Krotoff
+Vianney BOYER
+Casian Andrei
+Chris Smowton
+David Kaplan
+Eugenio Jarosiewicz
+Fabian Keil
+Guillaume Poussel
+John Peterson
+Justus Piater
+Mark Lee
+Martin T. H. Sandsmark
+Rune Botten
+Søren Bøg
+Toralf Niebuhr
+Tristan Matthews
+Angelo Haller
+Aurélien Nephtali
+Austin Burrow
+Bill C. Riemers
+Colin Delacroix
+Cristian Maglie
+Elminster2031
+Jakub Wieczorek
+John Freed
+Mark Hassman
+Martin Briza
+Mike Houben
+Romain Goyet
+Adrian Yanes
+Alexander Lakhin
+Anatoliy Anischovich
+Barry Wardell
+Ben Hutchings
+Besnard Jean-Baptiste
+Brian Weaver
+Clement Chesnin
+David Geldreich
+Diego Elio Pettenò
+Diego Fernando Nieto
+Georgi Chorbadzhiyski
+Jon Stacey
+Jonathan Rosser
+Joris van Rooij
+Kaloyan Kovachev
+Katsushi Kobayashi
+Kelly Anderson
+Loren Merritt
+Maciej Blizinski
+Mark Bidewell
+Miguel Angel Cabrera Moya
+Niles Bindel
+Samuel Pitoiset
+Scott Caudle
+Sean Robinson
+Sergey Radionov
+Simon Hailes
+Stephen Parry
+Sukrit Sangwan
+Thierry Reding
+Xavier Martin
+Alex Converse
+Alexander Bethke
+Alexandre Ratchov
+Andres Krapf
+Andrey Utkin
+Andri Pálsson
+Andy Chenee
+Anuradha Suraparaju
+Benjamin Poulain
+Brieuc Jeunhomme
+Chris Clayton
+Clément Lecigne
+Cédric Cocquebert
+Daniel Peng
+Danny Wood
+David K
+Edouard Gomez
+Emmanuel de Roux
+Frode Tennebø
+GBX
+Gaurav Narula
+Geraud CONTINSOUZAS
+Hugues Fruchet
+Jan Winter
+Jean-François Massol
+Jean-Philippe Grimaldi
+Josh Watzman
+Kai Lauterbach
+Konstantin Bogdanov
+Kuan-Chung Chiu
+Kuang Rufan
+Matthias Dahl
+Michael McEll
+Michael Ploujnikov
+Mike Schrag
+Nickolai Zeldovich
+Nicolas Bertrand
+Niklas Hayer
+Olafs Vandāns
+Olivier Gambier
+Paul Corke
+Ron Frederick
+Rov Juvano
+Sabourin Gilles
+Sam Lade
+Sandeep Kumar
+Sasha Koruga
+Sreng Jean
+Sven Petai
+Tomas Krotil
+Tomer Barletz
+Tristan Leteurtre
+Vittorio Giovara
+Wang Bo
+maxime Ripard
+xxcv
+Adam Hoka
+Adrian Knoth
+Adrien Cunin
+Alan Fischer
+Alan McCosh
+Alex Helfet
+Alexander Terentyev
+Alexandre Ferreira
+Alina Friedrichsen
+An L. Ber
+Andreas Schlick
+Andrew Schubert
+Andrey Makhnutin
+Arnaud Vallat
+Asad Mehmood
+Ashok Bhat
+Austin English
+Baptiste Coudurier
+Benoit Calvez
+Björn Stenberg
+Blake Livingston
+Brandon Brooks
+Brian Johnson
+Brian Kurle
+Cezar Elnazli
+Chris White
+Christian Masus
+Christoph Pfister
+Christoph Seibert
+Christopher Key
+Christopher Rath
+Claudio Ortelli
+Cody Russell
+Cristian Morales Vega
+Dan Rosenberg
+Daniel Marth
+Daniel Tisza
+Detlef Schroeder
+Diego Biurrun
+Dominik 'Rathann' Mierzejewski
+Duncan Salerno
+Edward Sheldrake
+Elliot Murphy
+Eren Inan Canpolat
+Ernest E. Teem III
+Etienne Membrives
+Fargier Sylvain
+Fathi Boudra
+Felix Geyer
+Filipe Azevedo
+Finn Hughes
+Florian Hubold
+Florian Roeske
+Frank Enderle
+Frédéric Crozat
+Georg Seifert
+Gertjan Van Droogenbroeck
+Gilles Chanteperdrix
+Greg Farrell
+Gregory Maxwell
+Gwenole Beauchesne
+Götz Waschk
+Hans-Kristian Arntzen
+Harry Sintonen
+Iain Wade
+Ibraheem Paredath
+Isamu Arimoto
+Ismael Luceno
+James Bates
+James Bond
+James Turner
+Janne Grunau
+Janne Kujanpää
+Jarmo Torvinen
+Jason Scheunemann
+Jeff Lu
+Jeroen Ost
+Joe Taber
+Johann Ransay
+Johannes Weißl
+John Hendrikx
+John Stebbins
+Jonas Gehring
+Joseph S. Atkinson
+Juergen Lock
+Julien 'Lta' BALLET
+Julien / Gellule
+Julien Humbert
+Kamil Baldyga
+Kamil Klimek
+Karlheinz Wohlmuth
+Kevin Anthony
+Kevin DuBois
+Lari Natri
+Lorenzo Pistone
+Lucas C. Villa Real
+Lukáš Lalinský
+Mal Graty
+Malte Tancred
+Martin Pöhlmann
+Martin Zeman
+Marton Balint
+Mathew King
+Mathieu Sonet
+Matthew A. Townsend
+Matthias Bauer
+Mika Tiainen
+Mike Cardillo
+Mounir Lamouri (volkmar)
+Natanael Copa
+Nathan Phillip Brink
+Nick Briggs
+Nick Pope
+Nil Geiswiller
+Pascal Thomet
+Pere Orga
+Peter Bak Nielsen
+Phil Roffe and David Grellscheid
+Philip Sequeira
+Pierre Souchay
+Piotr Fusik
+Pádraig Brady
+R.M
+Ralph Giles
+Ramon Gabarró
+Robert Forsman
+Robert Jedrzejczyk
+Robert Paciorek
+Rolf Ahrenberg
+Roman Pen
+Ruud Althuizen
+Samuli Suominen
+Scott Lyons
+Sebastian Birk
+Sergey Puzanov
+Sergio Ammirata
+Sharad Dixit
+Song Ye Wen
+Stephan Krempel
+Steven Kramer
+Steven Sheehy
+Sveinung Kvilhaugsvik
+Sylvain Cadhillac
+Sylver Bruneau
+Takahito HIRANO
+Theron Lewis
+Thijs Alkemade
+Tillmann Karras
+Timo Paulssen
+Timo Rothenpieler
+Tobias Rapp
+Tomasen
+Tony Vankrunkelsven
+Tristan Heaven
+Varphone Wong
+Vasily Fomin
+Vikram Narayanan
+Yannick Bréhon
+Yavor Doganov
+Yohann Martineau
+dharani.prabhu.s
+suheaven
+wucan
+김정은
+Adam Sampson
+Alexander Gall
+Alex Antropoff
+Alexis Guillard
+Alex Izvorski
+Amir Gouini
+Andrea Guzzo
+Andrew Flintham
+Andrew Zaikin
+Andy Lindsay
+Arai/Fujisawa Tooru
+Arkadiusz Miskiewicz
+Arnaud Gomes-do-Vale
+Arwed v. Merkatz
+Barak Ori
+Basil Achermann
+Benjamin Mironer
+Bill
+Bob Maguire
+Brian C. Wiles
+Brian Raymond
+Brian Robb
+Carsten Gottbehüt
+Carsten Haitzler
+Charles Hordis
+Chris Clepper
+Christian Henz
+Christof Baumgaertner
+Christophe Burgalat
+Christopher Johnson
+Cian Duffy
+Colin Simmonds
+Damian Ivereigh
+Daniel Fischer
+Daniel Stränger
+Danko Dolch
+Dennis Lou
+Dermot McGahon
+Diego Petteno
+Douglas West
+Dugal Harris
+Emmanuel Blindauer
+Enrico Gueli
+Enrique Osuna
+Eren Türkay
+Eric Dudiak
+Espen Skoglund
+Ethan C. Baldridge
+François Seingier
+Frans van Veen
+Frédéric Ruget
+Gerald Hansink
+Gisle Vanem
+Glen Gray
+Goetz Waschk
+Gregory Hazel
+Gustaf Neumann
+Hang Su
+Hans Lambermont
+Hans-Peter Jansen
+Harris Dugal
+Heiko Panther
+Igor Helman
+Isaac Osunkunle
+Jan David Mol
+Jan Gerber
+Jan Van Boghout
+Jasper Alias
+Jean-Alexis Montignies
+Jean-Baptiste Le Stang
+Jeffrey Baker
+Jeroen Massar
+Jérôme Guilbaud
+Johannes Buchner
+Johen Michael Zorko
+Johnathan Rosser
+John Dalgliesh
+John Paul Lorenti
+Jörg
+Joseph Tulou
+Julien Blache
+Julien Plissonneau Duquène
+Julien Robert
+Kenneth Ostby
+Kenneth Self
+Kevin H. Patterson
+Koehler, Vitally
+K. Staring
+Lahiru Lakmal Priyadarshana
+Laurent Mutricy
+Leo Spalteholz
+Loox Thefuture
+Marc Nolette
+Marco Munderloh
+Mark Gritter
+Markus Kern
+Markus Kuespert
+Martin Hamrle
+Martin Kahr
+Mateus Krepsky Ludwich
+Mathias Kretschmer
+Mats Rojestal
+Matthias P. Nowak
+Matthieu Lochegnies
+Michael Mondragon
+Michael S. Feurstein
+Michel Lanners
+Mickael Hoerdt
+Miguel Angel Cabrera
+Mikko Hirvonen
+Moritz Bunkus
+Nilmoni Deb
+Olivier Houchard
+Olivier Pomel
+Ondrej Kuda aka Albert
+Øyvind Kolbu
+Pascal Levesque
+Patrick Horn
+Patrick McLean
+Pauline Castets
+Paul Mackerras
+Peter Surda
+Petr Vacek
+Philippe Van Hecke
+Pierre-Luc Beaudoin
+Pierre Marc Dumuid
+Régis Duchesne
+Remco Poortinga
+Rene Gollent
+Rob Casey
+Robson Braga Araujo
+Roine Gustafsson
+Roman Bednarek
+Rudolf Cornelissen
+Sašo Kiselkov
+Sebastian Jenny
+Shane Harper
+Stefán Freyr Stefánsson
+Steve Brown
+Steven M. Schultz
+Tapio Hiltunen
+Thomas L. Wood
+Thomas Mühlgrabner
+Thomas Parmelan
+Tim 'O Callagha
+Tim Schuerewegen
+Tong Ka Man
+Torsten Spindler
+Udo Richter
+Vincent Dimar
+Vincent Penne
+Vitalijus Slavinskas
+Vitaly V. Bursov
+Vladimir Chernyshov
+Wade Majors
+Wallace Wadge
+Watanabe Go
+William Hawkins
+Xavier Maillard
+Ye zhang
+Yuehua Zhao
+  Licensed under the GNU Lesser General Public License, version 2.1 or later.
 
 mozilla/support/npunix.c:
 mozilla/support/npwin.cpp:
@@ -79,140 +623,386 @@ mozilla/support/npwin.cpp:
   under the MPL/GPL/LGPL triple license since the Mozilla relicensing,
   hence used under the GNU General Public License, version 2 or later.
 
-src/extras/getopt.c:
-src/extras/getopt.h:
-src/extras/getopt1.c:
-  Copyright (c) 1987, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97
-                Free Software Foundation, Inc.
+Files in src/:
+  Copyright (c) 1996-2013 the VideoLAN Team
+  Licensed under the GNU Lesser General Public License, version 2.1 or later.
+
+The following files and folders:
+modules/gui/eject.c
+modules/gui/ncurses.c
+modules/gui/qt4
+modules/gui/macosx_dialog_provider
+modules/gui/skins2
+modules/gui/macosx
+modules/access/dtv
+modules/access/dvdnav.c
+modules/access/dvdread.c
+modules/access/dshow
+modules/access/vnc.c
+modules/access/v4l2/linux
+modules/access/rtsp
+modules/video_output/ios.m
+modules/control/hotkeys.c
+modules/control/lirc.c
+modules/control/gestures.c
+modules/control/rc.c
+modules/control/motionlib.h
+modules/control/dbus
+modules/control/globalhotkeys
+modules/control/dummy.c
+modules/control/netsync.c
+modules/control/motion.c
+modules/control/motionlib.c
+modules/control/ntservice.c
+modules/mmx/i420_rgb_mmx.h
+modules/audio_filter/channel_mixer
+modules/audio_filter/resampler/src.c
+modules/audio_filter/converter
+modules/visualization/visual
+modules/visualization/vsxu.cpp
+modules/visualization/goom.c
+modules/visualization/projectm.cpp
+modules/mux
+modules/mux/mpeg
+modules/codec/faad.c
+modules/codec/t140.c
+modules/codec/libmpeg2.c
+modules/codec/wmafixed
+modules/codec/x264.c
+modules/codec/shine
+modules/codec/dts.c
+modules/demux/real.c
+modules/demux/playlist
+modules/demux/sid.cpp
+modules/demux/mpc.c
+modules/lua
+modules/services_discovery
+modules/stream_out
+modules/access_output
+modules/video_filter
+modules/misc/audioscrobbler.c
+modules/misc/stats.c
+modules/misc/rtsp.c
+modules/misc/playlist
+modules/misc/logger.c
+modules/notify
+  Copyright (c) 1996-2013 the VideoLAN Team
   Licensed under the GNU General Public License, version 2 or later.
 
-src/misc/unicode.c:
-  Copyright (c) 2005-2006 Rémi Denis-Courmont <rem # videolan.org>
-                1998-2002 Larry Wall
-  Licensed under the GNU General Public License, version 2 or later.
-
-src/misc/charset.c:
-  Copyright (c) 2003-2006 Derk-Jan Hartman <thedj at users.sf.net>
-                          Christophe Massiot <massiot@via.ecp.fr>
-                          Rémi Denis-Courmont <rem#videolan.org>
-                2001-2003 The Mape Project
-                          Karel Zak  <zakkr@zf.jcu.cz>
-  Licensed under the GNU General Public License, version 2 or later.
-
-Files in loader/:
-  Copyright (C) the Wine project
-                1993 Robert J. Amstadt
-                1993, 1994 Martin Ayotte
-                1994 Eric Youndale & Erik Bos
-                1995 Thomas Sandford
-                1995, 1996 Martin von Löwis
-                1996-1998 Marcus Meissner
-                1998 Patrick Stridvall
-                1999 Éric Pouech
-                1995-1999 Alexandre Julliard
-                2000 Eugene Kuznetsov (divx@euro.ru)
-                2005 Rémi Denis-Courmont <rem#videolan.org>
-  Originally distributed under LPGL 2.1 (or later) by the Wine project.
-  Licensed under the GNU General Public License, version 2 or later.
-
-include/mmx.h:
-  Copyright (C) 1997-1999 H. Dietz and R. Fisher
-  Licensed under the GNU General Public License, version 2 or later.
-
-Files in modules/gui/skins2/unzip:
-  Copyright (C) 1998-2005 Gilles Vollant
-  Copyright (c) 1990-2000 Info-ZIP.  All rights reserved.
-  Licensed under the Info-ZIP license (see below).
-
-modules/access/dvb/en50221.c:
-  Copyright (c) 2004-2005 Christophe Massiot <massiot@via.ecp.fr>
-                2000 Klaus Schmidinger
-  Licensed under the GNU General Public License, version 2 or later.
-
-modules/stream_out/transrate/putvlc.h:
-  Copyright (C) 1996, MPEG Software Simulation Group. All Rights Reserved.
-  This file has a purely functional purpose and does henceforth not qualify
-  for copyright.
-
-Other files in modules/stream_out/transrate/:
-  Copyright (C) 2003 Antoine Missout <antoine.missout@metakine.com>
-                     Laurent Aimar <fenrir@via.ecp.fr>
-                     Christophe Massiot <massiot@via.ecp.fr>
-                2000-2003 Michel Lespinasse <walken@zoy.org>
-                1999-2000 Aaron Holtzman <aholtzma@ess.engr.uvic.ca>
-  Licensed under the GNU General Public License, version 2 or later.
-
-Files in modules/codec/cmml/:
-modules/misc/xml/xtag.c:
-  Copyright (C) 2003-2004 Commonwealth Scientific and Industrial Research
-                          Organisation (CSIRO) Australia
-                2003-2004 Conrad Parker <Conrad.Parker@csiro.au>
-                2003-2004 Andre Pang <Andre.Pang@csiro.au>
-                2004 Gildas Bazin <gbazin@videolan.org>
-  Licensed under the GNU General Public License, version 2 or later.
-
-modules/codec/dvbsub.c:
-  Copyright (c) 2003 Damien LUCAS <damien.lucas@anevia.com>
-                2003 ANEVIA
-                2003-2005 Gildas Bazin <gbazin@videolan.org>
-                2003-2005 Laurent Aimar <fenrir@via.ecp.fr>
-                2003-2005 Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
-  Licensed under the GNU General Public License, version 2 or later.
-
-Files in modules/video_filter/swscale/:
-  Copyright (C) 1999 Aaron Holtzman <aholtzma@ess.engr.uvic.ca>
-                1999 Franck Sicard <Franck.Sicard@solsoft.fr>
-                2000 Håkan Hjort <d95hjort@dtek.chalmers.se>
-                2000 Silicon Integrated System Corp.
-                2001 Nick Kurshev
-                2001-2003 Michael Niedermayer <michaelni@gmx.at>
-                2003-2004 Gildas Bazin <gbazin@videolan.org>
-                2004 Marc Hoffman <marc.hoffman@analog.com>
-                2004 Romain Dolbeau <romain@dolbeau.org>
-  Licensed under the GNU General Public License, version 2 or later.
-
-modules/misc/playlist/xspf.[ch]:
-modules/demux/playlist/xspf.[ch]:
-  Copyright (c) 2006 Daniel Stränger <vlc at schmaller dot de>
-                2006 Yoann Peronneau <yoann@videolan.org>
-  Licensed under the GNU General Public License, version 2 or later.
-
-modules/demux/ty.c:
-  Copyright (C) 2005 Neal Symms <tivo@freakinzoo.com>
-                2005 Christopher Wingert for tivo-mplayer
-  Licensed under the GNU General Public License, version 2 or later.
-
-Files in modules/access/rtsp/:
-  Copyright (c) 2005 Gildas Bazin <gbazin@videolan.org>
-                2002-2004 the xine project
-  Licensed under the GNU General Public License, version 2 or later.
-
-modules/access/v4l.c:
-  Copyright (c) 2002-2004 Laurent Aimar <fenrir@via.ecp.fr>
-                2002-2004 Paul Forgey <paulf at aphrodite dot com>
-                2002-2004 Gildas Bazin <gbazin@videolan.org>
-                2002-2004 Benjamin Pracht <bigben at videolan dot org>
-  Licensed under the GNU General Public License, version 2 or later.
-
-modules/access/videodev_mjpeg.h:
-  Copyright (c) 2006 lavrec <http://mjpeg.sourceforge.net>
-                2006 Rainer Johanni <rainer@johanni.de>
-  Licensed under the GNU General Public License, version 2 or later.
-
-Files in src/osd/:
-modules/mux/rtp/rtcp.[ch]:
-modules/mux/rtp/rtp.h:
-  Copyright (c) 2005 M2X
-                2005 Jean-Paul Saman <jpsaman #_at_# videolan dot org>
-                2005 Sigmund Augdal Helberg <dnumgis@videolan.org>
-  Licensed under the GNU General Public License, version 2 or later.
-
-modules/access/dv.c:
-  Copyright (c) 2005 M2X
-                2005 Jean-Paul Saman <jpsaman #_at_# videolan dot org>
-  Copyright Arne Schirmacher <dvgrab@schirmacher.de>
-            Dan Dennedy <dan@dennedy.org> and others
-  Licensed under the GNU General Public License, version 2 or later.
+The following files and folders:
+modules/audio_output
+modules/gui/qt4/dialogs/fingerprintdialog.hpp
+modules/gui/qt4/dialogs/fingerprintdialog.cpp
+modules/gui/qt4/adapters/chromaprint.hpp
+modules/gui/qt4/adapters/chromaprint.cpp
+modules/gui/minimal_macosx
+modules/access/gnomevfs.c
+modules/access/smb.c
+modules/access/fs.c
+modules/access/eyetv.m
+modules/access/rar
+modules/access/attachment.c
+modules/access/rtp
+modules/access/dvb
+modules/access/bluray.c
+modules/access/live555.cpp
+modules/access/udp.c
+modules/access/file.c
+modules/access/fs.h
+modules/access/decklink.cpp
+modules/access/dtv
+modules/access/directory.c
+modules/access/screen
+modules/access/dvdnav.c
+modules/access/alsa.c
+modules/access/zip
+modules/access/linsys
+modules/access/qtsound.m
+modules/access/cdda.c
+modules/access/mtp.c
+modules/access/dvdread.c
+modules/access/timecode.c
+modules/access/oss.c
+modules/access/pulse.c
+modules/access/dc1394.c
+modules/access/tcp.c
+modules/access/qtcapture.m
+modules/access/idummy.c
+modules/access/sdp.c
+modules/access/dshow
+modules/access/vcdx
+modules/access/vnc.c
+modules/access/sftp.c
+modules/access/jack.c
+modules/access/imem.c
+modules/access/v4l2
+modules/access/avio.c
+modules/access/mms/mms.h
+modules/access/mms/mms.c
+modules/access/mms/mmsh.c
+modules/access/mms/asf.c
+modules/access/mms/buffer.c
+modules/access/mms/mmstu.h
+modules/access/mms/mmsh.h
+modules/access/mms/mmstu.c
+modules/access/mms/buffer.h
+modules/access/mms/asf.h
+modules/access/shm.c
+modules/access/avcapture.m
+modules/access/rdp.c
+modules/access/vdr.c
+modules/access/ftp.c
+modules/access/dv.c
+modules/access/avio.h
+modules/access/vcd
+modules/access/bd
+modules/access/http.c
+modules/video_output
+modules/arm_neon
+modules/text_renderer
+modules/audio_mixer
+modules/meta_engine
+modules/packetizer
+modules/audio_filter/spatializer/spatializer.cpp
+modules/audio_filter/normvol.c
+modules/audio_filter/chorus_flanger.c
+modules/audio_filter/compressor.c
+modules/audio_filter/channel_mixer/remap.c
+modules/audio_filter/channel_mixer/trivial.c
+modules/audio_filter/channel_mixer/simple.c
+modules/audio_filter/stereo_widen.c
+modules/audio_filter/resampler/bandlimited.c
+modules/audio_filter/resampler/bandlimited.h
+modules/audio_filter/resampler/src.c
+modules/audio_filter/resampler/speex.c
+modules/audio_filter/resampler/ugly.c
+modules/audio_filter/gain.c
+modules/audio_filter/scaletempo.c
+modules/audio_filter/equalizer_presets.h
+modules/audio_filter/equalizer.c
+modules/audio_filter/audiobargraph_a.c
+modules/audio_filter/converter/a52tofloat32.c
+modules/audio_filter/converter/a52tospdif.c
+modules/audio_filter/converter/mpgatofixed32.c
+modules/audio_filter/converter/dtstofloat32.c
+modules/audio_filter/converter/format.c
+modules/audio_filter/param_eq.c
+modules/audio_filter/karaoke.c
+modules/visualization/cyclic_buffer.h
+modules/mux/mpeg/dvbpsi_compat.h
+modules/codec/opus.c
+modules/codec/g711.c
+modules/codec/crystalhd.c
+modules/codec/sdl_image.c
+modules/codec/dts_header.c
+modules/codec/faad.c
+modules/codec/libass.c
+modules/codec/uleaddvaudio.c
+modules/codec/theora.c
+modules/codec/cc.h
+modules/codec/mash.cpp
+modules/codec/qsv.c
+modules/codec/a52.c
+modules/codec/schroedinger.c
+modules/codec/twolame.c
+modules/codec/a52.h
+modules/codec/stl.c
+modules/codec/adpcm.c
+modules/codec/fluidsynth.c
+modules/codec/libmpeg2.c
+modules/codec/flac.c
+modules/codec/speex.c
+modules/codec/dts_header.h
+modules/codec/zvbi.c
+modules/codec/spudec/spudec.c
+modules/codec/spudec/spudec.h
+modules/codec/spudec/parse.c
+modules/codec/scte27.c
+modules/codec/wmafixed/asf.h
+modules/codec/wmafixed/wma.c
+modules/codec/mpeg_audio.c
+modules/codec/xwd.c
+modules/codec/cc.c
+modules/codec/quicktime.c
+modules/codec/dirac.c
+modules/codec/telx.c
+modules/codec/aes3.c
+modules/codec/lpcm.c
+modules/codec/png.c
+modules/codec/svcdsub.c
+modules/codec/subsdec.c
+modules/codec/shine/shine_mod.c
+modules/codec/dvbsub.c
+modules/codec/subsusf.c
+modules/codec/ddummy.c
+modules/codec/omxil
+modules/codec/dmo
+modules/codec/araw.c
+modules/codec/edummy.c
+modules/codec/cvdsub.c
+modules/codec/avcodec
+modules/codec/rawvideo.c
+modules/codec/kate.c
+modules/codec/h264_nal.h
+modules/codec/vorbis.c
+modules/codec/cdg.c
+modules/sse2/i420_rgb_sse2.h
+modules/demux/rawdv.c
+modules/demux/avformat
+modules/demux/nuv.c
+modules/demux/tta.c
+modules/demux/voc.c
+modules/demux/nsc.c
+modules/demux/ps.h
+modules/demux/ogg.h
+modules/demux/ps.c
+modules/demux/dvb-text.h
+modules/demux/rawdv.h
+modules/demux/avi/avi.c
+modules/demux/avi/libavi.h
+modules/demux/avi/libavi.c
+modules/demux/xa.c
+modules/demux/smf.c
+modules/demux/stl.c
+modules/demux/asf/asf.c
+modules/demux/asf/libasf_guid.h
+modules/demux/asf/libasf.c
+modules/demux/asf/libasf.h
+modules/demux/xiph.h
+modules/demux/mjpeg.c
+modules/demux/flac.c
+modules/demux/mod.c
+modules/demux/xiph_metadata.c
+modules/demux/vobsub.h
+modules/demux/rawaud.c
+modules/demux/mkv
+modules/demux/playlist
+modules/demux/vc1.c
+modules/demux/sid.cpp
+modules/demux/ts.c
+modules/demux/wav.c
+modules/demux/gme.c
+modules/demux/ogg.c
+modules/demux/dirac.c
+modules/demux/oggseek.h
+modules/demux/demuxdump.c
+modules/demux/mp4
+modules/demux/pva.c
+modules/demux/aiff.c
+modules/demux/mpeg/mpgv.c
+modules/demux/mpeg/es.c
+modules/demux/mpeg/h264.c
+modules/demux/xiph_metadata.h
+modules/demux/nsv.c
+modules/demux/mxpeg_helper.h
+modules/demux/rawvid.c
+modules/demux/oggseek.c
+modules/demux/vobsub.c
+modules/demux/ty.c
+modules/demux/image.c
+modules/demux/au.c
+modules/demux/subtitle.c
+modules/demux/cdg.c
+modules/services_discovery
+modules/stream_out
+modules/video_chroma
+modules/access_output/livehttp.c
+modules/video_filter/alphamask.c
+modules/video_filter/puzzle.c
+modules/video_filter/puzzle_pce.h
+modules/video_filter/puzzle_pce.c
+modules/video_filter/puzzle.h
+modules/video_filter/panoramix.c
+modules/video_filter/anaglyph.c
+modules/video_filter/colorthres.c
+modules/video_filter/gradfun.c
+modules/video_filter/croppadd.c
+modules/video_filter/puzzle_lib.c
+modules/video_filter/gradient.c
+modules/video_filter/extract.c
+modules/video_filter/canvas.c
+modules/video_filter/opencv_wrapper.c
+modules/video_filter/gaussianblur.c
+modules/video_filter/swscale.c
+modules/video_filter/postproc.c
+modules/video_filter/audiobargraph_v.c
+modules/video_filter/grain.c
+modules/video_filter/sepia.c
+modules/video_filter/filter_picture.h
+modules/video_filter/puzzle_bezier.c
+modules/video_filter/subsdelay.c
+modules/video_filter/mosaic.c
+modules/video_filter/marq.c
+modules/video_filter/hqdn3d.c
+modules/video_filter/blendbench.c
+modules/video_filter/posterize.c
+modules/video_filter/yuvp.c
+modules/video_filter/antiflicker.c
+modules/video_filter/adjust_sat_hue.c
+modules/video_filter/magnify.c
+modules/video_filter/opencv_example.cpp
+modules/video_filter/puzzle_lib.h
+modules/video_filter/puzzle_bezier.h
+modules/video_filter/logo.c
+modules/video_filter/adjust_sat_hue.h
+modules/video_filter/blend.cpp
+modules/video_filter/mosaic.h
+modules/video_filter/wave.c
+modules/video_filter/clone.c
+modules/video_filter/atmo/FnordlichtConnection.h
+modules/video_filter/atmo/atmo.cpp
+modules/video_filter/atmo/FnordlichtConnection.cpp
+modules/video_filter/scene.c
+modules/video_filter/wall.c
+modules/video_filter/adjust.c
+modules/video_filter/motiondetect.c
+modules/video_filter/motionblur.c
+modules/video_filter/erase.c
+modules/video_filter/scale.c
+modules/video_filter/puzzle_mgt.c
+modules/video_filter/mirror.c
+modules/video_filter/deinterlace/mmx.h
+modules/video_filter/deinterlace/algo_phosphor.c
+modules/video_filter/deinterlace/algo_yadif.h
+modules/video_filter/deinterlace/merge_arm.S
+modules/video_filter/deinterlace/algo_ivtc.h
+modules/video_filter/deinterlace/algo_x.c
+modules/video_filter/deinterlace/merge.c
+modules/video_filter/deinterlace/deinterlace.c
+modules/video_filter/deinterlace/merge.h
+modules/video_filter/deinterlace/helpers.h
+modules/video_filter/deinterlace/deinterlace.h
+modules/video_filter/deinterlace/algo_basic.h
+modules/video_filter/deinterlace/algo_phosphor.h
+modules/video_filter/deinterlace/algo_x.h
+modules/video_filter/deinterlace/algo_ivtc.c
+modules/video_filter/deinterlace/algo_basic.c
+modules/video_filter/deinterlace/helpers.c
+modules/video_filter/deinterlace/common.h
+modules/video_filter/deinterlace/algo_yadif.c
+modules/video_filter/bluescreen.c
+modules/video_filter/remoteosd.c
+modules/video_filter/invert.c
+modules/video_filter/filter_event_info.h
+modules/video_filter/transform.c
+modules/video_filter/puzzle_mgt.h
+modules/video_filter/chain.c
+modules/video_filter/rss.c
+modules/video_filter/ball.c
+modules/video_filter/psychedelic.c
+modules/video_filter/dynamicoverlay
+modules/video_filter/ripple.c
+modules/video_filter/sharpen.c
+modules/misc/inhibit/dbus.c
+modules/misc/inhibit/xdg.c
+modules/misc/webservices/acoustid.c
+modules/misc/webservices/acoustid.h
+modules/misc/gnutls.c
+modules/misc/fingerprinter.c
+modules/misc/xml
+modules/stream_filter
+  Copyright (c) 1996-2013 the VideoLAN Team
+  Licensed under the GNU Lesser General Public License, version 2.1 or later.
 
 share/skins2/fonts/FreeSans.ttf:
 share/skins2/fonts/FreeSansBold.ttf:
@@ -228,12 +1018,28 @@ Other files in share/skins2/:
 2. License list
 ===============
 
-The blurb for the GNU General Publice License, version 2 or later:
+The blurb for the GNU General Public License, version 2 or later:
 
  | This program is free software; you can redistribute it and/or modify
  | it under the terms of the GNU General Public License as published by
  | the Free Software Foundation; either version 2, or (at your option)
  | any later version.
+ |
+ |  This program is distributed in the hope that it will be useful,
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ | General Public License for more details.
+ |
+ |  You should have received a copy of the GNU General Public License
+ | along with this program; if not, write to the Free Software
+ | Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+
+The blurb for the GNU Lesser General Public Licence, version 2.1 or later:
+
+ | This program is free software; you can redistribute it and/or modify it
+ | under the terms of the GNU Lesser General Public License as published by
+ | the Free Software Foundation; either version 2.1 of the License, or
+ | (at your option) any later version.
  |
  |  This program is distributed in the hope that it will be useful,
  | but WITHOUT ANY WARRANTY; without even the implied warranty of

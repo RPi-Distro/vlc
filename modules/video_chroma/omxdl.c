@@ -10,7 +10,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -248,6 +248,9 @@ static int FixRV12 (video_format_t *fmt)
 static int Open (vlc_object_t *obj)
 {
     filter_t *filter = (filter_t *)obj;
+
+    if (filter->fmt_in.video.orientation != filter->fmt_out.video.orientation)
+        return VLC_EGENERIC;
 
     if ((filter->fmt_in.video.i_width != filter->fmt_out.video.i_width)
      || (filter->fmt_in.video.i_height != filter->fmt_out.video.i_height))

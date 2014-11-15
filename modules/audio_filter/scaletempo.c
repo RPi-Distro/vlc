@@ -1,24 +1,24 @@
 /*****************************************************************************
  * scaletempo.c: Scale audio tempo while maintaining pitch
  *****************************************************************************
- * Copyright © 2008 the VideoLAN team
- * $Id: 0b76e18b6abeb3d67ac77e0467783870cae250d4 $
+ * Copyright © 2008 VLC authors and VideoLAN
+ * $Id: 4600ec33b5ffcb1b0836c4e4d3623b4af6268ab8 $
  *
  * Authors: Rov Juvano <rovjuvano@users.sourceforge.net>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -386,32 +386,11 @@ static int reinit_buffers( filter_t *p_filter )
 static int Open( vlc_object_t *p_this )
 {
     filter_t     *p_filter = (filter_t *)p_this;
-    filter_sys_t *p_sys;
-    bool b_fit = true;
-
-    if( p_filter->fmt_in.audio.i_format != VLC_CODEC_FL32 ||
-        p_filter->fmt_out.audio.i_format != VLC_CODEC_FL32 )
-    {
-        b_fit = false;
-        p_filter->fmt_in.audio.i_format = p_filter->fmt_out.audio.i_format = VLC_CODEC_FL32;
-        msg_Warn( p_filter, "bad input or output format" );
-    }
-    if( ! AOUT_FMTS_SIMILAR( &p_filter->fmt_in.audio, &p_filter->fmt_out.audio ) )
-    {
-        b_fit = false;
-        memcpy( &p_filter->fmt_out.audio, &p_filter->fmt_in.audio, sizeof(audio_sample_format_t) );
-        msg_Warn( p_filter, "input and output formats are not similar" );
-    }
-
-    if( ! b_fit )
-        return VLC_EGENERIC;
 
     /* Allocate structure */
-    p_sys = p_filter->p_sys = malloc( sizeof(*p_sys) );
+    filter_sys_t *p_sys = p_filter->p_sys = malloc( sizeof(*p_sys) );
     if( ! p_sys )
         return VLC_ENOMEM;
-
-    p_filter->pf_audio_filter = DoWork;
 
     p_sys->scale             = 1.0;
     p_sys->sample_rate       = p_filter->fmt_in.audio.i_rate;
@@ -447,6 +426,10 @@ static int Open( vlc_object_t *p_this )
         Close( p_this );
         return VLC_EGENERIC;
     }
+
+    p_filter->fmt_in.audio.i_format = VLC_CODEC_FL32;
+    p_filter->fmt_out.audio = p_filter->fmt_in.audio;
+    p_filter->pf_audio_filter = DoWork;
     return VLC_SUCCESS;
 }
 
@@ -485,7 +468,7 @@ static block_t *DoWork( filter_t * p_filter, block_t * p_in_buf )
     }
 
     size_t i_outsize = calculate_output_buffer_size ( p_filter, p_in_buf->i_buffer );
-    block_t *p_out_buf = filter_NewAudioBuffer( p_filter, i_outsize );
+    block_t *p_out_buf = block_Alloc( i_outsize );
     if( p_out_buf == NULL )
         return NULL;
 

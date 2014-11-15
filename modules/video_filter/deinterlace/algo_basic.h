@@ -1,26 +1,26 @@
 /*****************************************************************************
  * algo_basic.h : Basic algorithms for the VLC deinterlacer
  *****************************************************************************
- * Copyright (C) 2000-2011 the VideoLAN team
- * $Id: 4923948f8c96045e6a0cca6a4fda37c16071d27c $
+ * Copyright (C) 2000-2011 VLC authors and VideoLAN
+ * $Id: 2b1d9e3c812d86d4af91ef01c0bb9beba05c358f $
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *         Damien Lucas <nitrox@videolan.org>  (Bob, Blend)
  *         Laurent Aimar <fenrir@videolan.org> (Bob, Blend)
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_DEINTERLACE_ALGO_BASIC_H
@@ -44,15 +44,13 @@ struct picture_t;
  *
  * For a 2x (framerate-doubling) near-equivalent, see RenderBob().
  *
- * @param p_filter The filter instance. Must be non-NULL.
  * @param p_outpic Output frame. Must be allocated by caller.
  * @param p_pic Input frame. Must exist.
  * @param i_field Keep which field? 0 = top field, 1 = bottom field.
  * @see RenderBob()
  * @see Deinterlace()
  */
-void RenderDiscard( filter_t *p_filter,
-                    picture_t *p_outpic, picture_t *p_pic, int i_field );
+void RenderDiscard( picture_t *p_outpic, picture_t *p_pic, int i_field );
 
 /**
  * RenderBob: basic framerate doubler.
@@ -61,15 +59,13 @@ void RenderDiscard( filter_t *p_filter,
  *
  * For a 1x (non-doubling) near-equivalent, see RenderDiscard().
  *
- * @param p_filter The filter instance. Must be non-NULL.
  * @param p_outpic Output frame. Must be allocated by caller.
  * @param p_pic Input frame. Must exist.
  * @param i_field Render which field? 0 = top field, 1 = bottom field.
  * @see RenderLinear()
  * @see Deinterlace()
  */
-void RenderBob( filter_t *p_filter,
-                picture_t *p_outpic, picture_t *p_pic, int i_field );
+void RenderBob( picture_t *p_outpic, picture_t *p_pic, int i_field );
 
 /**
  * RenderLinear: Bob with linear interpolation.

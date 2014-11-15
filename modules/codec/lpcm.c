@@ -1,8 +1,8 @@
 /*****************************************************************************
  * lpcm.c: lpcm decoder/packetizer module
  *****************************************************************************
- * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: 66f57c08053730e3280d448c570a15b9dd9331ee $
+ * Copyright (C) 1999-2008 VLC authors and VideoLAN
+ * $Id: e3dad879f32c7d1ab1041ce23a33a834819943e7 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Henri Fallon <henri@videolan.org>
@@ -11,19 +11,19 @@
  *          Lauren Aimar <fenrir _AT_ videolan _DOT_ org >
  *          Steinar H. Gunderson <steinar+vlc@gunderson.no>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -37,6 +37,7 @@
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
 #include <vlc_aout.h>
+#include <unistd.h>
 #include <assert.h>
 
 /*****************************************************************************
@@ -49,7 +50,7 @@ static void CloseCommon   ( vlc_object_t * );
 #ifdef ENABLE_SOUT
 static int  OpenEncoder   ( vlc_object_t * );
 static void CloseEncoder  ( vlc_object_t * );
-static block_t *EncodeFrames( encoder_t *, aout_buffer_t * );
+static block_t *EncodeFrames( encoder_t *, block_t * );
 #endif
 
 vlc_module_begin ()
@@ -92,6 +93,8 @@ struct decoder_sys_t
     /* */
     unsigned i_header_size;
     int      i_type;
+    uint8_t  i_chans_to_reorder;
+    uint8_t  pi_chan_table[AOUT_CHAN_MAX];
 };
 
 #ifdef ENABLE_SOUT
@@ -139,17 +142,30 @@ struct encoder_sys_t
  * - frequency (4 bits)
  * - bits per sample (2 bits)
  * - unknown (6 bits)
+ *
+ * LPCM WIDI header
+ * refers http://www.dvdforum.org/images/Guideline1394V10R0_20020911.pdf
+  * - sub stream id (8 bits) = 0xa0
+ * - frame header count (8 bits) = 0x06
+ * [ 0b0000000 (7 bits)
+ * - audio emphasis (1 bit) ] (8 bits)
+ * [ qz word length (2 bits) 0x00 == 16bits
+ * - sampling freq (3 bits) 0b001 == 44.1K, 0b010 == 48K Hz
+ * - channels count(3 bits) ] (8 bits) 0b000 == dual mono, 0b001 == stereo
+ * follows: LPCM data (15360 bits/1920 bytes)
  */
 
 #define LPCM_VOB_HEADER_LEN (6)
 #define LPCM_AOB_HEADER_LEN (11)
 #define LPCM_BD_HEADER_LEN (4)
+#define LPCM_WIDI_HEADER_LEN (4)
 
 enum
 {
     LPCM_VOB,
     LPCM_AOB,
     LPCM_BD,
+    LPCM_WIDI,
 };
 
 typedef struct
@@ -169,7 +185,7 @@ static int VobHeader( unsigned *pi_rate,
                       unsigned *pi_channels, unsigned *pi_original_channels,
                       unsigned *pi_bits,
                       const uint8_t *p_header );
-static void VobExtract( aout_buffer_t *, block_t *, unsigned i_bits );
+static void VobExtract( block_t *, block_t *, unsigned i_bits );
 /* */
 static int AobHeader( unsigned *pi_rate,
                       unsigned *pi_channels, unsigned *pi_layout,
@@ -177,16 +193,21 @@ static int AobHeader( unsigned *pi_rate,
                       unsigned *pi_padding,
                       aob_group_t g[2],
                       const uint8_t *p_header );
-static void AobExtract( aout_buffer_t *, block_t *, unsigned i_bits, aob_group_t p_group[2] );
+static void AobExtract( block_t *, block_t *, unsigned i_bits, aob_group_t p_group[2] );
 /* */
-static int BdHeader( unsigned *pi_rate,
+static int BdHeader( decoder_sys_t *p_sys,
+                     unsigned *pi_rate,
                      unsigned *pi_channels,
                      unsigned *pi_channels_padding,
                      unsigned *pi_original_channels,
                      unsigned *pi_bits,
                      const uint8_t *p_header );
-static void BdExtract( aout_buffer_t *, block_t *, unsigned, unsigned, unsigned, unsigned );
-
+static void BdExtract( block_t *, block_t *, unsigned, unsigned, unsigned, unsigned );
+/* */
+static int WidiHeader( unsigned *pi_rate,
+                       unsigned *pi_channels, unsigned *pi_original_channels,
+                       unsigned *pi_bits,
+                       const uint8_t *p_header );
 
 /*****************************************************************************
  * OpenCommon:
@@ -215,6 +236,11 @@ static int OpenCommon( vlc_object_t *p_this, bool b_packetizer )
         i_type = LPCM_BD;
         i_header_size = LPCM_BD_HEADER_LEN;
         break;
+    /* WIDI LPCM */
+    case VLC_CODEC_WIDI_LPCM:
+        i_type = LPCM_WIDI;
+        i_header_size = LPCM_WIDI_HEADER_LEN;
+        break;
     default:
         return VLC_EGENERIC;
     }
@@ -228,6 +254,7 @@ static int OpenCommon( vlc_object_t *p_this, bool b_packetizer )
     date_Set( &p_sys->end_date, 0 );
     p_sys->i_type = i_type;
     p_sys->i_header_size = i_header_size;
+    p_sys->i_chans_to_reorder = 0;
 
     /* Set output properties */
     p_dec->fmt_out.i_cat = AUDIO_ES;
@@ -242,6 +269,9 @@ static int OpenCommon( vlc_object_t *p_this, bool b_packetizer )
         case LPCM_AOB:
             p_dec->fmt_out.i_codec = VLC_CODEC_DVDA_LPCM;
             break;
+        case LPCM_WIDI:
+            p_dec->fmt_out.i_codec = VLC_CODEC_WIDI_LPCM;
+            break;
         default:
             assert(0);
         case LPCM_BD:
@@ -255,11 +285,11 @@ static int OpenCommon( vlc_object_t *p_this, bool b_packetizer )
         {
         case 24:
         case 20:
-            p_dec->fmt_out.i_codec = VLC_CODEC_S24B;
-            p_dec->fmt_out.audio.i_bitspersample = 24;
+            p_dec->fmt_out.i_codec = VLC_CODEC_S32N;
+            p_dec->fmt_out.audio.i_bitspersample = 32;
             break;
         default:
-            p_dec->fmt_out.i_codec = VLC_CODEC_S16B;
+            p_dec->fmt_out.i_codec = VLC_CODEC_S16N;
             p_dec->fmt_out.audio.i_bitspersample = 16;
             break;
         }
@@ -334,8 +364,12 @@ static block_t *DecodeFrame( decoder_t *p_dec, block_t **pp_block )
                            p_block->p_buffer );
         break;
     case LPCM_BD:
-        i_ret = BdHeader( &i_rate, &i_channels, &i_channels_padding, &i_original_channels, &i_bits,
+        i_ret = BdHeader( p_sys, &i_rate, &i_channels, &i_channels_padding, &i_original_channels, &i_bits,
                           p_block->p_buffer );
+        break;
+    case LPCM_WIDI:
+        i_ret = WidiHeader( &i_rate, &i_channels, &i_original_channels, &i_bits,
+                            p_block->p_buffer );
         break;
     default:
         abort();
@@ -357,7 +391,7 @@ static block_t *DecodeFrame( decoder_t *p_dec, block_t **pp_block )
     p_dec->fmt_out.audio.i_rate = i_rate;
     p_dec->fmt_out.audio.i_channels = i_channels;
     p_dec->fmt_out.audio.i_original_channels = i_original_channels;
-    p_dec->fmt_out.audio.i_physical_channels = i_original_channels & AOUT_CHAN_PHYSMASK;
+    p_dec->fmt_out.audio.i_physical_channels = i_original_channels;
 
     i_frame_length = (p_block->i_buffer - p_sys->i_header_size - i_padding) /
                      (i_channels + i_channels_padding) * 8 / i_bits;
@@ -377,17 +411,17 @@ static block_t *DecodeFrame( decoder_t *p_dec, block_t **pp_block )
         /* */
         if( i_bits == 16 )
         {
-            p_dec->fmt_out.i_codec = VLC_CODEC_S16B;
+            p_dec->fmt_out.i_codec = VLC_CODEC_S16N;
             p_dec->fmt_out.audio.i_bitspersample = 16;
         }
         else
         {
-            p_dec->fmt_out.i_codec = VLC_CODEC_S24B;
-            p_dec->fmt_out.audio.i_bitspersample = 24;
+            p_dec->fmt_out.i_codec = VLC_CODEC_S32N;
+            p_dec->fmt_out.audio.i_bitspersample = 32;
         }
 
         /* */
-        aout_buffer_t *p_aout_buffer;
+        block_t *p_aout_buffer;
         p_aout_buffer = decoder_NewAudioBuffer( p_dec, i_frame_length );
         if( !p_aout_buffer )
             return NULL;
@@ -400,8 +434,16 @@ static block_t *DecodeFrame( decoder_t *p_dec, block_t **pp_block )
         p_block->p_buffer += p_sys->i_header_size + i_padding;
         p_block->i_buffer -= p_sys->i_header_size + i_padding;
 
+        if( p_sys->i_chans_to_reorder )
+        {
+            aout_ChannelReorder( p_block->p_buffer, p_block->i_buffer,
+                                 p_sys->i_chans_to_reorder, p_sys->pi_chan_table,
+                                 p_dec->fmt_out.i_codec );
+        }
+
         switch( p_sys->i_type )
         {
+        case LPCM_WIDI:
         case LPCM_VOB:
             VobExtract( p_aout_buffer, p_block, i_bits );
             break;
@@ -464,10 +506,8 @@ static int OpenEncoder( vlc_object_t *p_this )
 
     /* In DVD LCPM, a frame is always 150 PTS ticks. */
     p_sys->i_frame_samples = p_enc->fmt_in.audio.i_rate * 150 / 90000;
-    p_sys->p_buffer = (uint8_t *)malloc(
-        p_sys->i_frame_samples *
-        p_enc->fmt_in.audio.i_channels *
-        p_enc->fmt_in.audio.i_bitspersample);
+    p_sys->p_buffer = xmalloc(p_sys->i_frame_samples
+                            * p_enc->fmt_in.audio.i_channels * 16);
     p_sys->i_buffer_used = 0;
     p_sys->i_frame_num = 0;
 
@@ -478,7 +518,7 @@ static int OpenEncoder( vlc_object_t *p_this )
     p_enc->fmt_in.i_codec = p_enc->fmt_out.i_codec;
 
     p_enc->fmt_in.audio.i_bitspersample = 16;
-    p_enc->fmt_in.i_codec = VLC_CODEC_S16B;
+    p_enc->fmt_in.i_codec = VLC_CODEC_S16N;
 
     p_enc->fmt_out.i_bitrate =
         p_enc->fmt_in.audio.i_channels *
@@ -505,7 +545,7 @@ static void CloseEncoder ( vlc_object_t *p_this )
 /*****************************************************************************
  * EncodeFrames: encode zero or more LCPM audio packets
  *****************************************************************************/
-static block_t *EncodeFrames( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
+static block_t *EncodeFrames( encoder_t *p_enc, block_t *p_aout_buf )
 {
     encoder_sys_t *p_sys = p_enc->p_sys;
     block_t *p_first_block = NULL, *p_last_block = NULL;
@@ -542,7 +582,7 @@ static block_t *EncodeFrames( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
 
     for ( int i = 0; i < i_num_frames; ++i )
     {
-        block_t *p_block = block_New( p_enc, i_frame_size );
+        block_t *p_block = block_Alloc( i_frame_size );
         if( !p_block )
             return NULL;
 
@@ -558,8 +598,15 @@ static block_t *EncodeFrames( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
         const int i_kept_bytes = p_sys->i_buffer_used * p_sys->i_channels * 2;
         const int i_consume_bytes = i_consume_samples * p_sys->i_channels * 2;
 
+#ifdef WORDS_BIGENDIAN
         memcpy( frame + 6, p_sys->p_buffer, i_kept_bytes );
-        memcpy( frame + 6 + i_kept_bytes, p_aout_buf->p_buffer + i_bytes_consumed, i_consume_bytes );
+        memcpy( frame + 6 + i_kept_bytes, p_aout_buf->p_buffer + i_bytes_consumed,
+                i_consume_bytes );
+#else
+        swab( p_sys->p_buffer, frame + 6, i_kept_bytes );
+        swab( p_aout_buf->p_buffer + i_bytes_consumed, frame + 6 + i_kept_bytes,
+              i_consume_bytes );
+#endif
 
         p_sys->i_frame_num++;
         p_sys->i_buffer_used = 0;
@@ -816,7 +863,35 @@ static int AobHeader( unsigned *pi_rate,
     return VLC_SUCCESS;
 }
 
-static int BdHeader( unsigned *pi_rate,
+static const uint32_t pi_8channels_in[] =
+{ AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT, AOUT_CHAN_CENTER,
+  AOUT_CHAN_MIDDLELEFT, AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT,
+  AOUT_CHAN_MIDDLERIGHT, AOUT_CHAN_LFE, 0 };
+
+static const uint32_t pi_7channels_in[] =
+{ AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT, AOUT_CHAN_CENTER,
+  AOUT_CHAN_MIDDLELEFT, AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT,
+  AOUT_CHAN_MIDDLERIGHT, 0 };
+
+static const uint32_t pi_6channels_in[] =
+{ AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT, AOUT_CHAN_CENTER,
+  AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT, AOUT_CHAN_LFE, 0 };
+
+static const uint32_t pi_5channels_in[] =
+{ AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT, AOUT_CHAN_CENTER,
+  AOUT_CHAN_MIDDLELEFT, AOUT_CHAN_MIDDLERIGHT, 0 };
+
+static const uint32_t pi_4channels_in[] =
+{ AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT,
+  AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT, 0 };
+
+static const uint32_t pi_3channels_in[] =
+{ AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT,
+  AOUT_CHAN_CENTER, 0 };
+
+
+static int BdHeader( decoder_sys_t *p_sys,
+                     unsigned *pi_rate,
                      unsigned *pi_channels,
                      unsigned *pi_channels_padding,
                      unsigned *pi_original_channels,
@@ -824,6 +899,7 @@ static int BdHeader( unsigned *pi_rate,
                      const uint8_t *p_header )
 {
     const uint32_t h = GetDWBE( p_header );
+    const uint32_t *pi_channels_in = NULL;
     switch( ( h & 0xf000) >> 12 )
     {
     case 1:
@@ -837,6 +913,7 @@ static int BdHeader( unsigned *pi_rate,
     case 4:
         *pi_channels = 3;
         *pi_original_channels = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER;
+        pi_channels_in = pi_3channels_in;
         break;
     case 5:
         *pi_channels = 3;
@@ -851,23 +928,27 @@ static int BdHeader( unsigned *pi_rate,
         *pi_channels = 4;
         *pi_original_channels = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT |
                                 AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT;
+        pi_channels_in = pi_4channels_in;
         break;
     case 8:
         *pi_channels = 5;
         *pi_original_channels = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER |
                                 AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT;
+        pi_channels_in = pi_5channels_in;
         break;
     case 9:
         *pi_channels = 6;
         *pi_original_channels = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER |
                                 AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT |
                                 AOUT_CHAN_LFE;
+        pi_channels_in = pi_6channels_in;
         break;
     case 10:
         *pi_channels = 7;
         *pi_original_channels = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER |
                                 AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT |
                                 AOUT_CHAN_MIDDLELEFT | AOUT_CHAN_MIDDLERIGHT;
+        pi_channels_in = pi_7channels_in;
         break;
     case 11:
         *pi_channels = 8;
@@ -875,6 +956,7 @@ static int BdHeader( unsigned *pi_rate,
                                 AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT |
                                 AOUT_CHAN_MIDDLELEFT | AOUT_CHAN_MIDDLERIGHT |
                                 AOUT_CHAN_LFE;
+        pi_channels_in = pi_8channels_in;
         break;
 
     default:
@@ -908,74 +990,119 @@ static int BdHeader( unsigned *pi_rate,
     default:
         return -1;
     }
+
+    if( pi_channels_in )
+    {
+        p_sys->i_chans_to_reorder =
+            aout_CheckChannelReorder( pi_channels_in, NULL,
+                                      *pi_original_channels,
+                                      p_sys->pi_chan_table );
+    }
+
     return 0;
 }
 
-static void VobExtract( aout_buffer_t *p_aout_buffer, block_t *p_block,
+static int WidiHeader( unsigned *pi_rate,
+                       unsigned *pi_channels, unsigned *pi_original_channels,
+                       unsigned *pi_bits,
+                       const uint8_t *p_header )
+{
+    if ( p_header[0] != 0xa0 || p_header[1] != 0x06 )
+        return -1;
+
+    switch( ( p_header[3] & 0x38 ) >> 3 )
+    {
+    case 0b001:
+        *pi_rate = 44100;
+        break;
+    case 0b010:
+        *pi_rate = 48000;
+        break;
+    default:
+        return -1;
+    }
+
+    if( p_header[3] >> 6 != 0 )
+        return -1;
+    else
+        *pi_bits = 16;
+
+    *pi_channels = (p_header[3] & 0x7) + 1;
+
+    *pi_original_channels = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT;
+
+    return 0;
+}
+
+static void VobExtract( block_t *p_aout_buffer, block_t *p_block,
                         unsigned i_bits )
 {
-    uint8_t *p_out = p_aout_buffer->p_buffer;
-
     /* 20/24 bits LPCM use special packing */
     if( i_bits == 24 )
     {
+        uint32_t *p_out = (uint32_t *)p_aout_buffer->p_buffer;
+
         while( p_block->i_buffer / 12 )
         {
             /* Sample 1 */
-            p_out[0] = p_block->p_buffer[0];
-            p_out[1] = p_block->p_buffer[1];
-            p_out[2] = p_block->p_buffer[8];
+            *(p_out++) = (p_block->p_buffer[ 0] << 24)
+                       | (p_block->p_buffer[ 1] << 16)
+                       | (p_block->p_buffer[ 8] <<  8);
             /* Sample 2 */
-            p_out[3] = p_block->p_buffer[2];
-            p_out[4] = p_block->p_buffer[3];
-            p_out[5] = p_block->p_buffer[9];
+            *(p_out++) = (p_block->p_buffer[ 2] << 24)
+                       | (p_block->p_buffer[ 3] << 16)
+                       | (p_block->p_buffer[ 9] <<  8);
             /* Sample 3 */
-            p_out[6] = p_block->p_buffer[4];
-            p_out[7] = p_block->p_buffer[5];
-            p_out[8] = p_block->p_buffer[10];
+            *(p_out++) = (p_block->p_buffer[ 4] << 24)
+                       | (p_block->p_buffer[ 5] << 16)
+                       | (p_block->p_buffer[10] <<  8);
             /* Sample 4 */
-            p_out[9] = p_block->p_buffer[6];
-            p_out[10] = p_block->p_buffer[7];
-            p_out[11] = p_block->p_buffer[11];
+            *(p_out++) = (p_block->p_buffer[ 6] << 24)
+                       | (p_block->p_buffer[ 7] << 16)
+                       | (p_block->p_buffer[11] <<  8);
 
             p_block->i_buffer -= 12;
             p_block->p_buffer += 12;
-            p_out += 12;
         }
     }
     else if( i_bits == 20 )
     {
+        uint32_t *p_out = (uint32_t *)p_aout_buffer->p_buffer;
+
         while( p_block->i_buffer / 10 )
         {
             /* Sample 1 */
-            p_out[0] = p_block->p_buffer[0];
-            p_out[1] = p_block->p_buffer[1];
-            p_out[2] = p_block->p_buffer[8] & 0xF0;
+            *(p_out++) = ( p_block->p_buffer[0]         << 24)
+                       | ( p_block->p_buffer[1]         << 16)
+                       | ((p_block->p_buffer[8] & 0xF0) <<  8);
             /* Sample 2 */
-            p_out[3] = p_block->p_buffer[2];
-            p_out[4] = p_block->p_buffer[3];
-            p_out[5] = p_block->p_buffer[8] << 4;
+            *(p_out++) = ( p_block->p_buffer[2]         << 24)
+                       | ( p_block->p_buffer[3]         << 16)
+                       | ((p_block->p_buffer[8] & 0x0F) << 12);
             /* Sample 3 */
-            p_out[6] = p_block->p_buffer[4];
-            p_out[7] = p_block->p_buffer[5];
-            p_out[8] = p_block->p_buffer[9] & 0xF0;
+            *(p_out++) = ( p_block->p_buffer[4]         << 24)
+                       | ( p_block->p_buffer[5]         << 16)
+                       | ((p_block->p_buffer[9] & 0xF0) <<  8);
             /* Sample 4 */
-            p_out[9] = p_block->p_buffer[6];
-            p_out[10] = p_block->p_buffer[7];
-            p_out[11] = p_block->p_buffer[9] << 4;
+            *(p_out++) = ( p_block->p_buffer[6]         << 24)
+                       | ( p_block->p_buffer[7]         << 16)
+                       | ((p_block->p_buffer[9] & 0x0F) << 12);
 
             p_block->i_buffer -= 10;
             p_block->p_buffer += 10;
-            p_out += 12;
         }
     }
     else
     {
         assert( i_bits == 16 );
-        memcpy( p_out, p_block->p_buffer, p_block->i_buffer );
+#ifdef WORDS_BIGENDIAN
+        memcpy( p_aout_buffer->p_buffer, p_block->p_buffer, p_block->i_buffer );
+#else
+        swab( p_block->p_buffer, p_aout_buffer->p_buffer, p_block->i_buffer );
+#endif
     }
 }
-static void AobExtract( aout_buffer_t *p_aout_buffer,
+static void AobExtract( block_t *p_aout_buffer,
                         block_t *p_block, unsigned i_bits, aob_group_t p_group[2] )
 {
     const unsigned i_channels = p_group[0].i_channels +
@@ -1033,26 +1160,45 @@ static void AobExtract( aout_buffer_t *p_aout_buffer,
 
     }
 }
-static void BdExtract( aout_buffer_t *p_aout_buffer, block_t *p_block,
+static void BdExtract( block_t *p_aout_buffer, block_t *p_block,
                        unsigned i_frame_length,
                        unsigned i_channels, unsigned i_channels_padding,
                        unsigned i_bits )
 {
-    if( i_channels_padding > 0 )
+    if( i_bits != 16 || i_channels_padding > 0 )
     {
         uint8_t *p_src = p_block->p_buffer;
         uint8_t *p_dst = p_aout_buffer->p_buffer;
+        int dst_inc = ((i_bits == 16) ? 2 : 4) * i_channels;
+
         while( i_frame_length > 0 )
         {
+#ifdef WORDS_BIGENDIAN
             memcpy( p_dst, p_src, i_channels * i_bits / 8 );
+#else
+            if (i_bits == 16) {
+                swab( p_src, p_dst, (i_channels + i_channels_padding) * i_bits / 8 );
+            } else {
+                for (unsigned i = 0; i < i_channels; ++i) {
+                    p_dst[i * 4] = 0;
+                    p_dst[1 + (i * 4)] = p_src[2 + (i * 3)];
+                    p_dst[2 + (i * 4)] = p_src[1 + (i * 3)];
+                    p_dst[3 + (i * 4)] = p_src[i * 3];
+                }
+            }
+#endif
             p_src += (i_channels + i_channels_padding) * i_bits / 8;
-            p_dst += (i_channels +                  0) * i_bits / 8;
+            p_dst += dst_inc;
             i_frame_length--;
         }
     }
     else
     {
+#ifdef WORDS_BIGENDIAN
         memcpy( p_aout_buffer->p_buffer, p_block->p_buffer, p_block->i_buffer );
+#else
+        swab( p_block->p_buffer, p_aout_buffer->p_buffer, p_block->i_buffer );
+#endif
     }
 }
 

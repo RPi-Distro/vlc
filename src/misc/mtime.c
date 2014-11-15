@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: dd95a61a665aec6e71ee8129cc973d8d0a58558b $
+ * $Id: 46939dc9bc159c2e8d0a02d962cd04e36fe61372 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Rémi Denis-Courmont <rem$videolan,org>
@@ -36,10 +36,8 @@
 #include <vlc_common.h>
 #include <assert.h>
 
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
-#if !defined (_POSIX_TIMERS)
+#include <unistd.h>
+#if !defined (_POSIX_TIMERS) || defined (_WIN32)
 # define _POSIX_TIMERS (-1)
 #endif
 #if (_POSIX_TIMERS > 0)
@@ -212,14 +210,14 @@ mtime_t date_Increment( date_t *p_date, uint32_t i_nb_samples )
  */
 mtime_t date_Decrement( date_t *p_date, uint32_t i_nb_samples )
 {
-    mtime_t i_dividend = (mtime_t)i_nb_samples * 1000000 * p_date->i_divider_den;
+    mtime_t i_dividend = (mtime_t)i_nb_samples * CLOCK_FREQ * p_date->i_divider_den;
     p_date->date -= i_dividend / p_date->i_divider_num;
     unsigned i_rem_adjust = i_dividend % p_date->i_divider_num;
 
     if( p_date->i_remainder < i_rem_adjust )
     {
         /* This is Bresenham algorithm. */
-        assert( p_date->i_remainder > -p_date->i_divider_num);
+        assert( p_date->i_remainder < p_date->i_divider_num);
         p_date->date -= 1;
         p_date->i_remainder += p_date->i_divider_num;
     }
@@ -260,7 +258,7 @@ uint64_t NTPtime64 (void)
      * No leap seconds during that period since they were not invented yet.
      */
     assert (t < 0x100000000);
-    t |= ((70LL * 365 + 17) * 24 * 60 * 60 + ts.tv_sec) << 32;
+    t |= ((UINT64_C(70) * 365 + 17) * 24 * 60 * 60 + ts.tv_sec) << 32;
     return t;
 }
 

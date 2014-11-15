@@ -1,8 +1,8 @@
 /*****************************************************************************
- * Controller_widget.cpp : Controller Widget for the controllers
+ * controller_widget.hpp : Controller Widget for the controllers
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: c287469904a0b051b5f3d86c6923eeb05546c8c9 $
+ * $Id: 832017516e0c5feaf24c3a32f02b6fcc75c8001d $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -52,7 +52,7 @@ class QAbstractSlider;
 class PlayButton : public QToolButton
 {
     Q_OBJECT
-private slots:
+public slots:
     void updateButtonIcons( bool );
 };
 
@@ -99,7 +99,6 @@ class SoundWidget : public QWidget
 public:
     SoundWidget( QWidget *parent, intf_thread_t  *_p_i, bool,
                  bool b_special = false );
-    virtual ~SoundWidget();
     void setMuted( bool );
 
 protected:
@@ -117,8 +116,8 @@ private:
 
 protected slots:
     void userUpdateVolume( int );
-    void libUpdateVolume( void );
-    void updateMuteStatus( void );
+    void libUpdateVolume( float );
+    void updateMuteStatus( bool );
     void refreshLabels( void );
     void showVolumeMenu( QPoint pos );
     void valueChangedFilter( int );

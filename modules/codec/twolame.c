@@ -2,23 +2,23 @@
  * twolame.c: libtwolame encoder (MPEG-1/2 layer II) module
  *            (using libtwolame from http://www.twolame.org/)
  *****************************************************************************
- * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: cd07276c15eb9e8b24de9f2ec113343222cdd439 $
+ * Copyright (C) 2004-2005 VLC authors and VideoLAN
+ * $Id: b41276edf5fce280bf63da48abe36284ecb26307 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
@@ -44,7 +44,7 @@
  ****************************************************************************/
 static int OpenEncoder   ( vlc_object_t * );
 static void CloseEncoder ( vlc_object_t * );
-static block_t *Encode   ( encoder_t *, aout_buffer_t * );
+static block_t *Encode   ( encoder_t *, block_t * );
 
 /*****************************************************************************
  * Module descriptor
@@ -161,7 +161,6 @@ static int OpenEncoder( vlc_object_t *p_this )
         return VLC_ENOMEM;
     p_enc->p_sys = p_sys;
 
-    p_enc->pf_encode_audio = Encode;
     p_enc->fmt_in.i_codec = VLC_CODEC_S16N;
 
     p_enc->fmt_out.i_cat = AUDIO_ES;
@@ -238,6 +237,8 @@ static int OpenEncoder( vlc_object_t *p_this )
         return -VLC_EGENERIC;
     }
 
+    p_enc->pf_encode_audio = Encode;
+
     p_sys->i_nb_samples = 0;
 
     return VLC_SUCCESS;
@@ -250,20 +251,54 @@ static int OpenEncoder( vlc_object_t *p_this )
  ****************************************************************************/
 static void Bufferize( encoder_t *p_enc, int16_t *p_in, int i_nb_samples )
 {
-    int16_t *p_buffer = p_enc->p_sys->p_buffer
-                         + (p_enc->p_sys->i_nb_samples
-                             * p_enc->fmt_in.audio.i_channels);
+    encoder_sys_t *p_sys = p_enc->p_sys;
+    const unsigned i_offset = p_sys->i_nb_samples * p_enc->fmt_in.audio.i_channels;
+    const unsigned i_len = ARRAY_SIZE(p_sys->p_buffer);
 
-    memcpy( p_buffer, p_in, i_nb_samples * p_enc->fmt_in.audio.i_channels
-                             * sizeof(int16_t) );
+    if( i_offset >= i_len )
+    {
+        msg_Err( p_enc, "buffer full" );
+        return;
+    }
+
+    unsigned i_copy = i_nb_samples * p_enc->fmt_in.audio.i_channels;
+    if( i_copy + i_offset > i_len)
+    {
+        msg_Err( p_enc, "dropping samples" );
+        i_copy = i_len - i_offset;
+    }
+
+    memcpy( p_sys->p_buffer + i_offset, p_in, i_copy * sizeof(int16_t) );
 }
 
-static block_t *Encode( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
+static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
 {
     encoder_sys_t *p_sys = p_enc->p_sys;
+    block_t *p_chain = NULL;
+
+    if( unlikely( !p_aout_buf ) ) {
+        int i_used = 0;
+        block_t *p_block;
+
+        i_used = twolame_encode_flush( p_sys->p_twolame,
+                                p_sys->p_out_buffer, MAX_CODED_FRAME_SIZE );
+        if( i_used <= 0 )
+            return NULL;
+
+        p_block = block_Alloc( i_used );
+        if( !p_block )
+            return NULL;
+        memcpy( p_block->p_buffer, p_sys->p_out_buffer, i_used );
+        p_block->i_length = (mtime_t)1000000 *
+                (mtime_t)MPEG_FRAME_SIZE / (mtime_t)p_enc->fmt_out.audio.i_rate;
+        p_block->i_dts = p_block->i_pts = p_sys->i_pts;
+        p_sys->i_pts += p_block->i_length;
+
+        return p_block;
+    }
+
     int16_t *p_buffer = (int16_t *)p_aout_buf->p_buffer;
     int i_nb_samples = p_aout_buf->i_nb_samples;
-    block_t *p_chain = NULL;
 
     p_sys->i_pts = p_aout_buf->i_pts -
                 (mtime_t)1000000 * (mtime_t)p_sys->i_nb_samples /
@@ -281,9 +316,22 @@ static block_t *Encode( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
         i_used = twolame_encode_buffer_interleaved( p_sys->p_twolame,
                                p_sys->p_buffer, MPEG_FRAME_SIZE,
                                p_sys->p_out_buffer, MAX_CODED_FRAME_SIZE );
+        /* On error, buffer samples and return what was already encoded */
+        if( i_used < 0 )
+        {
+            msg_Err( p_enc, "encoder error: %d", i_used );
+            break;
+        }
+
         p_sys->i_nb_samples = 0;
-        p_block = block_New( p_enc, i_used );
-        vlc_memcpy( p_block->p_buffer, p_sys->p_out_buffer, i_used );
+        p_block = block_Alloc( i_used );
+        if( !p_block )
+        {
+            if( p_chain )
+                block_ChainRelease( p_chain );
+            return NULL;
+        }
+        memcpy( p_block->p_buffer, p_sys->p_out_buffer, i_used );
         p_block->i_length = (mtime_t)1000000 *
                 (mtime_t)MPEG_FRAME_SIZE / (mtime_t)p_enc->fmt_out.audio.i_rate;
         p_block->i_dts = p_block->i_pts = p_sys->i_pts;

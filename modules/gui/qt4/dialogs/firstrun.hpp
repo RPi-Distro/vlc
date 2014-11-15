@@ -1,8 +1,8 @@
 /*****************************************************************************
- * firstrun : First Run dialogs
+ * firstrun.hpp : First Run dialogs
  ****************************************************************************
  * Copyright © 2009 VideoLAN
- * $Id: f45351344c3ff10890de28971e137321e6a87db0 $
+ * $Id: 0159a02f0ddb3c87cc6a93b1ccfc08c90bfbeebe $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -33,14 +33,8 @@ class FirstRun : public QWidget
     public:
         static void CheckAndRun( QWidget *_p, intf_thread_t *p_intf )
         {
-            if( getSettings()->value( "IsFirstRun", 1 ).toInt() )
-            {
-                if( var_InheritBool( p_intf, "qt-privacy-ask") )
-                {
-                    new FirstRun( _p, p_intf );
-                }
-                getSettings()->setValue( "IsFirstRun", 0 );
-            }
+            if( var_InheritBool( p_intf, "qt-privacy-ask") )
+                new FirstRun( _p, p_intf );
         }
         FirstRun( QWidget *, intf_thread_t * );
     private:

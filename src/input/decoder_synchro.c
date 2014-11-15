@@ -2,7 +2,7 @@
  * decoder_synchro.c : frame dropping routines
  *****************************************************************************
  * Copyright (C) 1999-2005 VLC authors and VideoLAN
- * $Id: 16ab7286a23887fa36e03a1ff3de305f754af1f0 $
+ * $Id: f396661e849c147e3a06bf6530d4b03bde1aedb3 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -225,7 +225,7 @@ bool decoder_SynchroChoose( decoder_synchro_t * p_synchro, int i_coding_type,
     i_current_rate = decoder_GetDisplayRate( p_synchro->p_dec );
 
     now = mdate();
-    period = 1000000 * 1001 / p_synchro->i_frame_rate
+    period = CLOCK_FREQ * 1001 / p_synchro->i_frame_rate
                      * i_current_rate / INPUT_RATE_DEFAULT;
 
     p_synchro->i_render_time = i_render_time;
@@ -369,25 +369,24 @@ void decoder_SynchroEnd( decoder_synchro_t * p_synchro, int i_coding_type,
 {
     mtime_t     tau;
 
-    if( !b_garbage )
-    {
-        tau = mdate() - p_synchro->decoding_start;
+    if( b_garbage )
+        return;
 
-        /* If duration too high, something happened (pause ?), so don't
-         * take it into account. */
-        if( tau < 3 * p_synchro->p_tau[i_coding_type]
-             || ( !p_synchro->pi_meaningful[i_coding_type]
-                   && tau < MAX_VALID_TAU ) )
+    tau = mdate() - p_synchro->decoding_start;
+
+    /* If duration too high, something happened (pause ?), so don't
+     * take it into account. */
+    if( tau < 3 * p_synchro->p_tau[i_coding_type] ||
+          ( !p_synchro->pi_meaningful[i_coding_type] && tau < MAX_VALID_TAU ) )
+    {
+        /* Mean with average tau, to ensure stability. */
+        p_synchro->p_tau[i_coding_type] =
+            (p_synchro->pi_meaningful[i_coding_type]
+             * p_synchro->p_tau[i_coding_type] + tau)
+            / (p_synchro->pi_meaningful[i_coding_type] + 1);
+        if( p_synchro->pi_meaningful[i_coding_type] < MAX_PIC_AVERAGE )
         {
-            /* Mean with average tau, to ensure stability. */
-            p_synchro->p_tau[i_coding_type] =
-                (p_synchro->pi_meaningful[i_coding_type]
-                 * p_synchro->p_tau[i_coding_type] + tau)
-                / (p_synchro->pi_meaningful[i_coding_type] + 1);
-            if( p_synchro->pi_meaningful[i_coding_type] < MAX_PIC_AVERAGE )
-            {
-                p_synchro->pi_meaningful[i_coding_type]++;
-            }
+            p_synchro->pi_meaningful[i_coding_type]++;
         }
     }
 }
@@ -416,8 +415,7 @@ void decoder_SynchroNewPicture( decoder_synchro_t * p_synchro, int i_coding_type
     switch( i_coding_type )
     {
     case I_CODING_TYPE:
-        if( p_synchro->i_eta_p
-             && p_synchro->i_eta_p != p_synchro->i_n_p )
+        if( p_synchro->i_eta_p && p_synchro->i_eta_p != p_synchro->i_n_p )
         {
 #if 0
             if( !p_synchro->b_quiet )

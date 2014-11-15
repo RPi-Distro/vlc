@@ -2,7 +2,7 @@
  * theme_loader.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 144f48953ad69aaba1aeedaef0537829693d32ef $
+ * $Id: 5783cdaa707222fb95c4247a53d2bcefd12f6322 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -26,6 +26,10 @@
 # include "config.h"
 #endif
 
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include <vlc_common.h>
 #include <vlc_fs.h>
 
@@ -36,16 +40,6 @@
 #include "../src/os_factory.hpp"
 #include "../src/vlcproc.hpp"
 #include "../src/window_manager.hpp"
-
-#ifdef HAVE_FCNTL_H
-#   include <fcntl.h>
-#endif
-#ifdef HAVE_SYS_STAT_H
-#   include <sys/stat.h>
-#endif
-#ifdef HAVE_UNISTD_H
-#   include <unistd.h>
-#endif
 
 #if defined( HAVE_ZLIB_H )
 #   include <zlib.h>
@@ -398,11 +392,10 @@ bool ThemeLoader::findFile( const string &rootDir, const string &rFileName,
     // Path separator
     const string &sep = OSFactory::instance( getIntf() )->getDirSeparator();
 
-    DIR *pCurrDir;
-    char *pszDirContent;
+    const char *pszDirContent;
 
     // Open the dir
-    pCurrDir = vlc_opendir( rootDir.c_str() );
+    DIR *pCurrDir = vlc_opendir( rootDir.c_str() );
 
     if( pCurrDir == NULL )
     {
@@ -434,7 +427,6 @@ bool ThemeLoader::findFile( const string &rootDir, const string &rFileName,
                 // Can we find the file in this subdirectory?
                 if( findFile( newURI, rFileName, themeFilePath ) )
                 {
-                    free( pszDirContent );
                     closedir( pCurrDir );
                     return true;
                 }
@@ -445,14 +437,11 @@ bool ThemeLoader::findFile( const string &rootDir, const string &rFileName,
                 if( rFileName == string( pszDirContent ) )
                 {
                     themeFilePath = newURI;
-                    free( pszDirContent );
                     closedir( pCurrDir );
                     return true;
                 }
             }
         }
-
-        free( pszDirContent );
     }
 
     closedir( pCurrDir );

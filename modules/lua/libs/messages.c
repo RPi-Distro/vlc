@@ -2,7 +2,7 @@
  * messages.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 9c40e539f6a1b19b55d0c3a48c41b524e2883d1c $
+ * $Id: 6122878b8582a0cbc4af3c8b0deb8cdd68d53185 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -36,11 +36,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_meta.h>
-#include <vlc_aout.h>
-
-#include <lua.h>        /* Low level lua C API */
-#include <lauxlib.h>    /* Higher level C API */
-#include <lualib.h>     /* Lua libs */
 
 #include "../vlc.h"
 #include "../libs.h"

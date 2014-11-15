@@ -2,23 +2,23 @@
  * en50221.c : implementation of the transport, session and applications
  * layers of EN 50 221
  *****************************************************************************
- * Copyright (C) 2004-2005 the VideoLAN team
+ * Copyright (C) 2004-2005 VLC authors and VideoLAN
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  * Based on code from libdvbci Copyright (C) 2000 Klaus Schmidinger
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.    See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA    02111, USA.
  *****************************************************************************/
 
@@ -57,6 +57,8 @@
 
 #include "../demux/dvb-text.h"
 #include "dtv/en50221.h"
+
+#include "../mux/mpeg/dvbpsi_compat.h"
 
 typedef struct en50221_session_t
 {
@@ -283,9 +285,9 @@ static int TPDUSend( cam_t * p_cam, uint8_t i_slot, uint8_t i_tag,
 
         if ( i_length )
             memcpy( p, p_content, i_length );
-            i_size = i_length + (p - p_data);
-        }
+        i_size = i_length + (p - p_data);
         break;
+    }
 
     default:
         break;
@@ -294,7 +296,8 @@ static int TPDUSend( cam_t * p_cam, uint8_t i_slot, uint8_t i_tag,
 
     if ( write( p_cam->fd, p_data, i_size ) != i_size )
     {
-        msg_Err( p_cam->obj, "cannot write to CAM device (%m)" );
+        msg_Err( p_cam->obj, "cannot write to CAM device: %s",
+                 vlc_strerror_c(errno) );
         return VLC_EGENERIC;
     }
 
@@ -320,7 +323,7 @@ static int TPDURecv( cam_t *p_cam, uint8_t i_slot, uint8_t *pi_tag,
     while( poll(pfd, 1, CAM_READ_TIMEOUT ) == -1 )
         if( errno != EINTR )
         {
-            msg_Err( p_cam->obj, "poll error: %m" );
+            msg_Err( p_cam->obj, "poll error: %s", vlc_strerror_c(errno) );
             return VLC_EGENERIC;
         }
 
@@ -345,7 +348,8 @@ static int TPDURecv( cam_t *p_cam, uint8_t i_slot, uint8_t *pi_tag,
 
     if ( i_size < 5 )
     {
-        msg_Err( p_cam->obj, "cannot read from CAM device (%d:%m)", i_size );
+        msg_Err( p_cam->obj, "cannot read from CAM device (%d): %s", i_size,
+                 vlc_strerror_c(errno) );
         if( pi_size == NULL )
             free( p_data );
         return VLC_EGENERIC;
@@ -879,7 +883,8 @@ static int APDUSend( cam_t * p_cam, int i_session_id, int i_tag,
             i_ret = ioctl( p_cam->fd, CA_SEND_MSG, &ca_msg );
             if ( i_ret < 0 )
             {
-                msg_Err( p_cam->obj, "Error sending to CAM: %m" );
+                msg_Err( p_cam->obj, "Error sending to CAM: %s",
+                         vlc_strerror_c(errno) );
                 i_ret = VLC_EGENERIC;
             }
         }
@@ -939,6 +944,7 @@ static void ResourceManagerOpen( cam_t * p_cam, unsigned i_session_id )
  * Application Information
  */
 
+#ifdef ENABLE_HTTPD
 /*****************************************************************************
  * ApplicationInformationEnterMenu
  *****************************************************************************/
@@ -950,6 +956,7 @@ static void ApplicationInformationEnterMenu( cam_t * p_cam, int i_session_id )
     APDUSend( p_cam, i_session_id, AOT_ENTER_MENU, NULL, 0 );
     p_cam->pb_slot_mmi_expected[i_slot] = true;
 }
+#endif
 
 /*****************************************************************************
  * ApplicationInformationHandle
@@ -1610,7 +1617,7 @@ static void MMIFree( mmi_t *p_object )
     }
 }
 
-
+#ifdef ENABLE_HTTPD
 /*****************************************************************************
  * MMISendObject
  *****************************************************************************/
@@ -1660,6 +1667,7 @@ static void MMISendClose( cam_t *p_cam, int i_session_id )
 
     p_cam->pb_slot_mmi_expected[i_slot] = true;
 }
+#endif
 
 /*****************************************************************************
  * MMIDisplayReply
@@ -1993,7 +2001,7 @@ cam_t *en50221_Init( vlc_object_t *obj, int fd )
          * ASIC. */
         if ( ioctl( fd, CA_GET_SLOT_INFO, &info ) < 0 )
         {
-            msg_Err( obj, "cannot get slot info: %m" );
+            msg_Err( obj, "cannot get slot info: %s", vlc_strerror_c(errno) );
             goto error;
         }
         if( info.flags == 0 )
@@ -2282,6 +2290,7 @@ int en50221_SetCAPMT( cam_t * p_cam, dvbpsi_pmt_t *p_pmt )
     return VLC_SUCCESS;
 }
 
+#ifdef ENABLE_HTTPD
 /*****************************************************************************
  * en50221_OpenMMI :
  *****************************************************************************/
@@ -2394,7 +2403,6 @@ static void en50221_SendMMIObject( cam_t * p_cam, unsigned i_slot,
     msg_Err( p_cam->obj, "SendMMIObject when no MMI session is opened !" );
 }
 
-#ifdef ENABLE_HTTPD
 char *en50221_Status( cam_t *p_cam, char *psz_request )
 {
     if( psz_request != NULL && *psz_request )
@@ -2511,7 +2519,7 @@ char *en50221_Status( cam_t *p_cam, char *psz_request )
 
     if( ioctl( p_cam->fd, CA_GET_CAP, &caps ) < 0 )
     {
-        fprintf( p, "ioctl CA_GET_CAP failed (%m)\n" );
+        fprintf( p, "ioctl(CA_GET_CAP) failed: %s\n", vlc_strerror_c(errno) );
         goto out;
     }
 
@@ -2552,7 +2560,8 @@ char *en50221_Status( cam_t *p_cam, char *psz_request )
         sinfo.num = i_slot;
         if ( ioctl( p_cam->fd, CA_GET_SLOT_INFO, &sinfo ) < 0 )
         {
-            fprintf( p, "ioctl CA_GET_SLOT_INFO failed (%m)<br>\n" );
+            fprintf( p, "ioctl(CA_GET_SLOT_INFO) failed: %s<br>\n",
+                     vlc_strerror_c(errno) );
             continue;
         }
 

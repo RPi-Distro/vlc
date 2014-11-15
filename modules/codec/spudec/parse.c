@@ -1,26 +1,26 @@
 /*****************************************************************************
  * parse.c: SPU parser
  *****************************************************************************
- * Copyright (C) 2000-2001, 2005, 2006 the VideoLAN team
- * $Id: 99a8c4702da49bf03729cdd0f816849a52be61c3 $
+ * Copyright (C) 2000-2001, 2005, 2006 VLC authors and VideoLAN
+ * $Id: ccc8cb6f0ffbe0b6a1b7a9636d7def2275241c77 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -623,10 +623,13 @@ static int ParseRLE( decoder_t *p_dec,
         int i, i_inner = -1, i_shade = -1;
 
         /* Set the border color */
-        p_spu_data->pi_yuv[i_border][0] = 0x00;
-        p_spu_data->pi_yuv[i_border][1] = 0x80;
-        p_spu_data->pi_yuv[i_border][2] = 0x80;
-        stats[i_border] = 0;
+        if( i_border != -1 )
+        {
+            p_spu_data->pi_yuv[i_border][0] = 0x00;
+            p_spu_data->pi_yuv[i_border][1] = 0x80;
+            p_spu_data->pi_yuv[i_border][2] = 0x80;
+            stats[i_border] = 0;
+        }
 
         /* Find the inner colors */
         for( i = 0 ; i < 4 && i_inner == -1 ; i++ )

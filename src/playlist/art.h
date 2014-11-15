@@ -2,7 +2,7 @@
  * art.h:
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: eb3aa231c989e2ee91098db119055c372e79da66 $
+ * $Id: da13e7956a71da45be25a7018465f4ccb502dfc5 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -25,18 +25,11 @@
 #ifndef _PLAYLIST_ART_H
 #define _PLAYLIST_ART_H 1
 
-typedef struct
-{
-    char *psz_artist;
-    char *psz_album;
-    char *psz_arturl;
-    bool b_found;
-
-} playlist_album_t;
-
 int playlist_FindArtInCache( input_item_t * );
+int playlist_FindArtInCacheUsingItemUID( input_item_t * );
 
-int playlist_SaveArt( playlist_t *, input_item_t *, const uint8_t *p_buffer, int i_buffer, const char *psz_type );
+int playlist_SaveArt( vlc_object_t *, input_item_t *,
+                      const void *, size_t, const char *psz_type );
 
 #endif
 

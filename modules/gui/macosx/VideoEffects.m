@@ -2,7 +2,7 @@
  * VideoEffects.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: 8c46512507d1f5dda65029e821b45b09ec65ba24 $
+ * $Id: 050ef98a767148987f4a017cf61c690726622717 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -23,47 +23,57 @@
 
 #import "CompatibilityFixes.h"
 #import "intf.h"
-#import <vlc_common.h>
-#import <vlc_modules.h>
-#import <vlc_charset.h>
 #import "VideoEffects.h"
+#import "SharedDialogs.h"
+#import "CoreInteraction.h"
+
+@interface VLCVideoEffects (Internal)
+- (void)resetProfileSelector;
+@end
 
 #pragma mark -
-#pragma mark Initialization & Generic code
+#pragma mark Initialization
 
 @implementation VLCVideoEffects
 static VLCVideoEffects *_o_sharedInstance = nil;
+
+@synthesize cropLeftValue, cropTopValue, cropRightValue, cropBottomValue;
+@synthesize puzzleRowsValue, puzzleColumnsValue;
+@synthesize wallRowsValue, wallColumnsValue;
+@synthesize cloneValue;
+@synthesize sepiaValue;
+@synthesize posterizeValue;
 
 + (VLCVideoEffects *)sharedInstance
 {
     return _o_sharedInstance ? _o_sharedInstance : [[self alloc] init];
 }
 
++ (void)initialize
+{
+    NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:[NSArray arrayWithObject:@";;;0;1.000000;1.000000;1.000000;1.000000;0.050000;16;2.000000;OTA=;4;4;16711680;20;15;120;Z3JhZGllbnQ=;1;0;16711680;6;80;VkxD;-1;;-1;255;2;3;3"], @"VideoEffectProfiles",
+                                 [NSArray arrayWithObject:_NS("Default")], @"VideoEffectProfileNames", nil];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
+}
+
 - (id)init
 {
-    if (_o_sharedInstance) {
+    if (_o_sharedInstance)
         [self dealloc];
-    } else {
+    else {
         p_intf = VLCIntf;
+        i_old_profile_index = -1;
         _o_sharedInstance = [super init];
     }
 
     return _o_sharedInstance;
 }
 
-- (IBAction)toggleWindow:(id)sender
-{
-    if( [o_window isVisible] )
-        [o_window orderOut:sender];
-    else
-        [o_window makeKeyAndOrderFront:sender];
-}
-
 - (void)awakeFromNib
 {
     [o_window setTitle: _NS("Video Effects")];
     [o_window setExcludedFromWindowsMenu:YES];
-    if (OSX_LION)
+    if (!OSX_SNOW_LEOPARD)
         [o_window setCollectionBehavior: NSWindowCollectionBehaviorFullScreenAuxiliary];
 
     [[o_tableView tabViewItemAtIndex:[o_tableView indexOfTabViewItemWithIdentifier:@"basic"]] setLabel:_NS("Basic")];
@@ -71,6 +81,8 @@ static VLCVideoEffects *_o_sharedInstance = nil;
     [[o_tableView tabViewItemAtIndex:[o_tableView indexOfTabViewItemWithIdentifier:@"geometry"]] setLabel:_NS("Geometry")];
     [[o_tableView tabViewItemAtIndex:[o_tableView indexOfTabViewItemWithIdentifier:@"color"]] setLabel:_NS("Color")];
     [[o_tableView tabViewItemAtIndex:[o_tableView indexOfTabViewItemWithIdentifier:@"misc"]] setLabel:_NS("Miscellaneous")];
+
+    [self resetProfileSelector];
 
     [o_adjust_ckb setTitle:_NS("Image Adjust")];
     [o_adjust_hue_lbl setStringValue:_NS("Hue")];
@@ -109,7 +121,11 @@ static VLCVideoEffects *_o_sharedInstance = nil;
     [o_puzzle_ckb setTitle:_NS("Puzzle game")];
     [o_puzzle_rows_lbl setStringValue:_NS("Rows")];
     [o_puzzle_columns_lbl setStringValue:_NS("Columns")];
-    [o_puzzle_blackslot_ckb setTitle:_NS("Black Slot")];
+    [o_clone_ckb setTitle:_NS("Clone")];
+    [o_clone_number_lbl setStringValue:_NS("Number of clones")];
+    [o_wall_ckb setTitle:_NS("Wall")];
+    [o_wall_numofrows_lbl setStringValue:_NS("Rows")];
+    [o_wall_numofcols_lbl setStringValue:_NS("Columns")];
 
     [o_threshold_ckb setTitle:_NS("Color threshold")];
     [o_threshold_color_lbl setStringValue:_NS("Color")];
@@ -140,6 +156,7 @@ static VLCVideoEffects *_o_sharedInstance = nil;
     [o_watereffect_ckb setTitle:_NS("Water effect")];
     [o_waves_ckb setTitle:_NS("Waves")];
     [o_psychedelic_ckb setTitle:_NS("Psychedelic")];
+    [o_anaglyph_ckb setTitle:_NS("Anaglyph")];
 
     [o_addtext_ckb setTitle:_NS("Add text")];
     [o_addtext_text_lbl setStringValue:_NS("Text")];
@@ -189,7 +206,61 @@ static VLCVideoEffects *_o_sharedInstance = nil;
 
     [o_tableView selectFirstTabViewItem:self];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(inputChangedEvent:)
+                                                 name:VLCInputChangedNotification
+                                               object:nil];
+
+
     [self resetValues];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+
+    [super dealloc];
+}
+
+- (void)updateCocoaWindowLevel:(NSInteger)i_level
+{
+    if (o_window && [o_window isVisible] && [o_window level] != i_level)
+        [o_window setLevel: i_level];
+}
+
+#pragma mark -
+#pragma mark internal functions
+
+-(void)inputChangedEvent:(NSNotification *)o_notification
+{
+    // reset crop values when input changed
+    [self setCropBottomValue:0];
+    [self setCropTopValue:0];
+    [self setCropLeftValue:0];
+    [self setCropRightValue:0];
+}
+
+- (void)resetProfileSelector
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [o_profile_pop removeAllItems];
+
+    NSArray * profileNames = [defaults objectForKey:@"VideoEffectProfileNames"];
+    [o_profile_pop addItemsWithTitles:profileNames];
+
+    [[o_profile_pop menu] addItem:[NSMenuItem separatorItem]];
+    [o_profile_pop addItemWithTitle:_NS("Duplicate current profile...")];
+    [[o_profile_pop lastItem] setTarget: self];
+    [[o_profile_pop lastItem] setAction: @selector(addProfile:)];
+
+    if ([profileNames count] > 1) {
+        [o_profile_pop addItemWithTitle:_NS("Organize profiles...")];
+        [[o_profile_pop lastItem] setTarget: self];
+        [[o_profile_pop lastItem] setAction: @selector(removeProfile:)];
+    }
+
+    [o_profile_pop selectItemAtIndex:[defaults integerForKey:@"VideoEffectSelectedProfile"]];
+    [self profileSelectorAction:self];
 }
 
 - (void)resetValues
@@ -200,47 +271,84 @@ static VLCVideoEffects *_o_sharedInstance = nil;
 
     /* do we have any filter enabled? if yes, show it. */
     char * psz_vfilters;
-    psz_vfilters = config_GetPsz( p_intf, "video-filter" );
-    if( psz_vfilters ) {
-        [o_adjust_ckb setState: (NSInteger)strstr( psz_vfilters, "adjust")];
-        [o_sharpen_ckb setState: (NSInteger)strstr( psz_vfilters, "sharpen")];
-        [o_banding_ckb setState: (NSInteger)strstr( psz_vfilters, "gradfun")];
-        [o_grain_ckb setState: (NSInteger)strstr( psz_vfilters, "grain")];
-        [o_transform_ckb setState: (NSInteger)strstr( psz_vfilters, "transform")];
-        [o_zoom_ckb setState: (NSInteger)strstr( psz_vfilters, "magnify")];
-        [o_puzzle_ckb setState: (NSInteger)strstr( psz_vfilters, "puzzle")];
-        [o_threshold_ckb setState: (NSInteger)strstr( psz_vfilters, "colorthres")];
-        [o_sepia_ckb setState: (NSInteger)strstr( psz_vfilters, "sepia")];
-        [o_noise_ckb setState: (NSInteger)strstr( psz_vfilters, "noise")];
-        [o_gradient_ckb setState: (NSInteger)strstr( psz_vfilters, "gradient")];
-        [o_extract_ckb setState: (NSInteger)strstr( psz_vfilters, "extract")];
-        [o_invert_ckb setState: (NSInteger)strstr( psz_vfilters, "invert")];
-        [o_posterize_ckb setState: (NSInteger)strstr( psz_vfilters, "posterize")];
-        [o_blur_ckb setState: (NSInteger)strstr( psz_vfilters, "motionblur")];
-        [o_motiondetect_ckb setState: (NSInteger)strstr( psz_vfilters, "motiondetect")];
-        [o_watereffect_ckb setState: (NSInteger)strstr( psz_vfilters, "ripple")];
-        [o_waves_ckb setState: (NSInteger)strstr( psz_vfilters, "wave")];
-        [o_psychedelic_ckb setState: (NSInteger)strstr( psz_vfilters, "psychedelic")];
-        free( psz_vfilters );
-    }
-    psz_vfilters = config_GetPsz( p_intf, "sub-source" );
+    psz_vfilters = config_GetPsz(p_intf, "video-filter");
     if (psz_vfilters) {
-        [o_addtext_ckb setState: (NSInteger)strstr( psz_vfilters, "marq" )];
-        [o_addlogo_ckb setState: (NSInteger)strstr( psz_vfilters, "logo" )];
-        free( psz_vfilters );
+        [o_adjust_ckb setState: (NSInteger)strstr(psz_vfilters, "adjust")];
+        [o_sharpen_ckb setState: (NSInteger)strstr(psz_vfilters, "sharpen")];
+        [o_banding_ckb setState: (NSInteger)strstr(psz_vfilters, "gradfun")];
+        [o_grain_ckb setState: (NSInteger)strstr(psz_vfilters, "grain")];
+        [o_transform_ckb setState: (NSInteger)strstr(psz_vfilters, "transform")];
+        [o_zoom_ckb setState: (NSInteger)strstr(psz_vfilters, "magnify")];
+        [o_puzzle_ckb setState: (NSInteger)strstr(psz_vfilters, "puzzle")];
+        [o_threshold_ckb setState: (NSInteger)strstr(psz_vfilters, "colorthres")];
+        [o_sepia_ckb setState: (NSInteger)strstr(psz_vfilters, "sepia")];
+        [o_noise_ckb setState: (NSInteger)strstr(psz_vfilters, "noise")];
+        [o_gradient_ckb setState: (NSInteger)strstr(psz_vfilters, "gradient")];
+        [o_extract_ckb setState: (NSInteger)strstr(psz_vfilters, "extract")];
+        [o_invert_ckb setState: (NSInteger)strstr(psz_vfilters, "invert")];
+        [o_posterize_ckb setState: (NSInteger)strstr(psz_vfilters, "posterize")];
+        [o_blur_ckb setState: (NSInteger)strstr(psz_vfilters, "motionblur")];
+        [o_motiondetect_ckb setState: (NSInteger)strstr(psz_vfilters, "motiondetect")];
+        [o_watereffect_ckb setState: (NSInteger)strstr(psz_vfilters, "ripple")];
+        [o_waves_ckb setState: (NSInteger)strstr(psz_vfilters, "wave")];
+        [o_psychedelic_ckb setState: (NSInteger)strstr(psz_vfilters, "psychedelic")];
+        [o_anaglyph_ckb setState: (NSInteger)strstr(psz_vfilters, "anaglyph")];
+        free(psz_vfilters);
+    } else {
+        [o_adjust_ckb setState: NSOffState];
+        [o_sharpen_ckb setState: NSOffState];
+        [o_banding_ckb setState: NSOffState];
+        [o_grain_ckb setState: NSOffState];
+        [o_transform_ckb setState: NSOffState];
+        [o_zoom_ckb setState: NSOffState];
+        [o_puzzle_ckb setState: NSOffState];
+        [o_threshold_ckb setState: NSOffState];
+        [o_sepia_ckb setState: NSOffState];
+        [o_noise_ckb setState: NSOffState];
+        [o_gradient_ckb setState: NSOffState];
+        [o_extract_ckb setState: NSOffState];
+        [o_invert_ckb setState: NSOffState];
+        [o_posterize_ckb setState: NSOffState];
+        [o_blur_ckb setState: NSOffState];
+        [o_motiondetect_ckb setState: NSOffState];
+        [o_watereffect_ckb setState: NSOffState];
+        [o_waves_ckb setState: NSOffState];
+        [o_psychedelic_ckb setState: NSOffState];
+        [o_anaglyph_ckb setState: NSOffState];
+    }
+
+    psz_vfilters = config_GetPsz(p_intf, "sub-source");
+    if (psz_vfilters) {
+        [o_addtext_ckb setState: (NSInteger)strstr(psz_vfilters, "marq")];
+        [o_addlogo_ckb setState: (NSInteger)strstr(psz_vfilters, "logo")];
+        free(psz_vfilters);
+    } else {
+        [o_addtext_ckb setState: NSOffState];
+        [o_addlogo_ckb setState: NSOffState];
+    }
+
+    psz_vfilters = config_GetPsz(p_intf, "video-splitter");
+    if (psz_vfilters) {
+        [o_clone_ckb setState: (NSInteger)strstr(psz_vfilters, "clone")];
+        [o_wall_ckb setState: (NSInteger)strstr(psz_vfilters, "wall")];
+        free(psz_vfilters);
+    } else {
+        [o_clone_ckb setState: NSOffState];
+        [o_wall_ckb setState: NSOffState];
     }
 
     /* fetch and show the various values */
-    [o_adjust_hue_sld setIntValue: config_GetInt( p_intf, "hue" )];
-    [o_adjust_contrast_sld setFloatValue: config_GetFloat( p_intf, "contrast" )];
-    [o_adjust_brightness_sld setFloatValue: config_GetFloat( p_intf, "brightness" )];
-    [o_adjust_saturation_sld setFloatValue: config_GetFloat( p_intf, "saturation" )];
-    [o_adjust_gamma_sld setFloatValue: config_GetFloat( p_intf, "gamma" )];
-    [o_adjust_brightness_sld setToolTip: [NSString stringWithFormat:@"%0.3f", config_GetFloat( p_intf, "brightness" )]];
-    [o_adjust_contrast_sld setToolTip: [NSString stringWithFormat:@"%0.3f", config_GetFloat( p_intf, "contrast" )]];
-    [o_adjust_gamma_sld setToolTip: [NSString stringWithFormat:@"%0.3f", config_GetFloat( p_intf, "gamma" )]];
-    [o_adjust_hue_sld setToolTip: [NSString stringWithFormat:@"%lli", config_GetInt( p_intf, "hue" )]];
-    [o_adjust_saturation_sld setToolTip: [NSString stringWithFormat:@"%0.3f", config_GetFloat( p_intf, "saturation" )]];
+    [o_adjust_hue_sld setIntValue: config_GetInt(p_intf, "hue")];
+    [o_adjust_contrast_sld setFloatValue: config_GetFloat(p_intf, "contrast")];
+    [o_adjust_brightness_sld setFloatValue: config_GetFloat(p_intf, "brightness")];
+    [o_adjust_saturation_sld setFloatValue: config_GetFloat(p_intf, "saturation")];
+    [o_adjust_brightness_ckb setState:(config_GetInt(p_intf, "brightness-threshold") != 0 ? NSOnState : NSOffState)];
+    [o_adjust_gamma_sld setFloatValue: config_GetFloat(p_intf, "gamma")];
+    [o_adjust_brightness_sld setToolTip: [NSString stringWithFormat:@"%0.3f", config_GetFloat(p_intf, "brightness")]];
+    [o_adjust_contrast_sld setToolTip: [NSString stringWithFormat:@"%0.3f", config_GetFloat(p_intf, "contrast")]];
+    [o_adjust_gamma_sld setToolTip: [NSString stringWithFormat:@"%0.3f", config_GetFloat(p_intf, "gamma")]];
+    [o_adjust_hue_sld setToolTip: [NSString stringWithFormat:@"%lli", config_GetInt(p_intf, "hue")]];
+    [o_adjust_saturation_sld setToolTip: [NSString stringWithFormat:@"%0.3f", config_GetFloat(p_intf, "saturation")]];
     b_state = [o_adjust_ckb state];
     [o_adjust_brightness_sld setEnabled: b_state];
     [o_adjust_brightness_ckb setEnabled: b_state];
@@ -254,41 +362,42 @@ static VLCVideoEffects *_o_sharedInstance = nil;
     [o_adjust_hue_lbl setEnabled: b_state];
     [o_adjust_saturation_lbl setEnabled: b_state];
     [o_adjust_reset_btn setEnabled: b_state];
-    [o_sharpen_sld setFloatValue: config_GetFloat( p_intf, "sharpen-sigma" )];
-    [o_sharpen_sld setToolTip: [NSString stringWithFormat:@"%0.3f", config_GetFloat( p_intf, "sharpen-sigma" )]];
+
+    [o_sharpen_sld setFloatValue: config_GetFloat(p_intf, "sharpen-sigma")];
+    [o_sharpen_sld setToolTip: [NSString stringWithFormat:@"%0.3f", config_GetFloat(p_intf, "sharpen-sigma")]];
     [o_sharpen_sld setEnabled: [o_sharpen_ckb state]];
     [o_sharpen_lbl setEnabled: [o_sharpen_ckb state]];
-    [o_banding_sld setIntValue: config_GetInt( p_intf, "gradfun-radius" )];
-    [o_banding_sld setToolTip: [NSString stringWithFormat:@"%lli", config_GetInt( p_intf, "gradfun-radius" )]];
+
+    [o_banding_sld setIntValue: config_GetInt(p_intf, "gradfun-radius")];
+    [o_banding_sld setToolTip: [NSString stringWithFormat:@"%lli", config_GetInt(p_intf, "gradfun-radius")]];
     [o_banding_sld setEnabled: [o_banding_ckb state]];
     [o_banding_lbl setEnabled: [o_banding_ckb state]];
-    [o_grain_sld setFloatValue: config_GetFloat( p_intf, "grain-variance" )];
-    [o_grain_sld setToolTip: [NSString stringWithFormat:@"%0.3f", config_GetFloat( p_intf, "grain-variance" )]];
+
+    [o_grain_sld setFloatValue: config_GetFloat(p_intf, "grain-variance")];
+    [o_grain_sld setToolTip: [NSString stringWithFormat:@"%0.3f", config_GetFloat(p_intf, "grain-variance")]];
     [o_grain_sld setEnabled: [o_grain_ckb state]];
     [o_grain_lbl setEnabled: [o_grain_ckb state]];
 
-    [o_crop_top_fld setIntValue: 0];
-    [o_crop_left_fld setIntValue: 0];
-    [o_crop_right_fld setIntValue: 0];
-    [o_crop_bottom_fld setIntValue: 0];
+    [self setCropLeftValue: 0];
+    [self setCropTopValue: 0];
+    [self setCropRightValue: 0];
+    [self setCropBottomValue: 0];
     [o_crop_sync_top_bottom_ckb setState: NSOffState];
     [o_crop_sync_left_right_ckb setState: NSOffState];
 
-    tmpChar = config_GetPsz( p_intf, "transform-type" );
-    tmpString = [NSString stringWithUTF8String: tmpChar];
-    if( [tmpString isEqualToString:@"hflip"] )
+    tmpChar = config_GetPsz(p_intf, "transform-type");
+    tmpString = [NSString stringWithUTF8String:tmpChar];
+    if ([tmpString isEqualToString:@"hflip"])
         [o_transform_pop selectItemWithTag: 1];
-    else if( [tmpString isEqualToString:@"vflip"] )
+    else if ([tmpString isEqualToString:@"vflip"])
         [o_transform_pop selectItemWithTag: 2];
     else
         [o_transform_pop selectItemWithTag:[tmpString intValue]];
-    FREENULL( tmpChar );
+    FREENULL(tmpChar);
     [o_transform_pop setEnabled: [o_transform_ckb state]];
-    [o_puzzle_rows_fld setIntValue: config_GetInt( p_intf, "puzzle-rows" )];
-    [o_puzzle_rows_stp setIntValue: config_GetInt( p_intf, "puzzle-rows" )];
-    [o_puzzle_columns_fld setIntValue: config_GetInt( p_intf, "puzzle-cols" )];
-    [o_puzzle_columns_stp setIntValue: config_GetInt( p_intf, "puzzle-cols" )];
-    [o_puzzle_blackslot_ckb setState: config_GetInt( p_intf, "puzzle-black-slot" )];
+
+    [self setPuzzleColumnsValue: config_GetInt(p_intf, "puzzle-cols")];
+    [self setPuzzleRowsValue: config_GetInt(p_intf, "puzzle-rows")];
     b_state = [o_puzzle_ckb state];
     [o_puzzle_rows_fld setEnabled: b_state];
     [o_puzzle_rows_stp setEnabled: b_state];
@@ -296,13 +405,29 @@ static VLCVideoEffects *_o_sharedInstance = nil;
     [o_puzzle_columns_fld setEnabled: b_state];
     [o_puzzle_columns_stp setEnabled: b_state];
     [o_puzzle_columns_lbl setEnabled: b_state];
-    [o_puzzle_blackslot_ckb setEnabled: b_state];
 
-    [o_threshold_color_fld setStringValue: [[NSString stringWithFormat:@"%llx", config_GetInt( p_intf, "colorthres-color" )] uppercaseString]];
-    [o_threshold_saturation_sld setIntValue: config_GetInt( p_intf, "colorthres-saturationthres" )];
-    [o_threshold_saturation_sld setToolTip: [NSString stringWithFormat:@"%lli", config_GetInt( p_intf, "colorthres-saturationthres" )]];
-    [o_threshold_similarity_sld setIntValue: config_GetInt( p_intf, "colorthres-similaritythres" )];
-    [o_threshold_similarity_sld setToolTip: [NSString stringWithFormat:@"%lli", config_GetInt( p_intf, "colorthres-similaritythres" )]];
+    [self setCloneValue: config_GetInt(p_intf, "clone-count")];
+    b_state = [o_clone_ckb state];
+    [o_clone_number_lbl setEnabled: b_state];
+    [o_clone_number_fld setEnabled: b_state];
+    [o_clone_number_stp setEnabled: b_state];
+
+    b_state = [o_wall_ckb state];
+    [self setWallRowsValue: config_GetInt(p_intf, "wall-rows")];
+    [o_wall_numofrows_lbl setEnabled: b_state];
+    [o_wall_numofrows_fld setEnabled: b_state];
+    [o_wall_numofrows_stp setEnabled: b_state];
+    [self setWallColumnsValue: config_GetInt(p_intf, "wall-cols")];
+    [o_wall_numofcols_lbl setEnabled: b_state];
+    [o_wall_numofcols_fld setEnabled: b_state];
+    [o_wall_numofcols_stp setEnabled: b_state];
+
+    [o_threshold_color_fld setStringValue: [[NSString stringWithFormat:@"%llx", config_GetInt(p_intf, "colorthres-color")] uppercaseString]];
+    [o_threshold_saturation_sld setIntValue: config_GetInt(p_intf, "colorthres-saturationthres")];
+    [o_threshold_saturation_sld setToolTip: [NSString stringWithFormat:@"%lli", config_GetInt(p_intf, "colorthres-saturationthres")]];
+    [o_threshold_similarity_sld setIntValue: config_GetInt(p_intf, "colorthres-similaritythres")];
+    [o_threshold_similarity_sld setToolTip: [NSString stringWithFormat:@"%lli", config_GetInt(p_intf, "colorthres-similaritythres")]];
+
     b_state = [o_threshold_ckb state];
     [o_threshold_color_fld setEnabled: b_state];
     [o_threshold_color_lbl setEnabled: b_state];
@@ -310,62 +435,67 @@ static VLCVideoEffects *_o_sharedInstance = nil;
     [o_threshold_saturation_lbl setEnabled: b_state];
     [o_threshold_similarity_sld setEnabled: b_state];
     [o_threshold_similarity_lbl setEnabled: b_state];
-    [o_sepia_fld setIntValue: config_GetInt( p_intf, "sepia-intensity" )];
-    [o_sepia_stp setIntValue: config_GetInt( p_intf, "sepia-intensity" )];
-    [o_sepia_fld setEnabled: [o_sepia_ckb state]];
-    [o_sepia_stp setEnabled: [o_sepia_ckb state]];
-    [o_sepia_lbl setEnabled: [o_sepia_ckb state]];
-    tmpChar = config_GetPsz( p_intf, "gradient-mode" );
-    tmpString = [NSString stringWithUTF8String: tmpChar];
-    if( [tmpString isEqualToString:@"hough"] )
+
+    [self setSepiaValue: config_GetInt(p_intf, "sepia-intensity")];
+    b_state = [o_sepia_ckb state];
+    [o_sepia_fld setEnabled: b_state];
+    [o_sepia_stp setEnabled: b_state];
+    [o_sepia_lbl setEnabled: b_state];
+
+    tmpChar = config_GetPsz(p_intf, "gradient-mode");
+    tmpString = [NSString stringWithUTF8String:tmpChar];
+    if ([tmpString isEqualToString:@"hough"])
         [o_gradient_mode_pop selectItemWithTag: 3];
-    else if( [tmpString isEqualToString:@"edge"] )
+    else if ([tmpString isEqualToString:@"edge"])
         [o_gradient_mode_pop selectItemWithTag: 2];
     else
         [o_gradient_mode_pop selectItemWithTag: 1];
-    FREENULL( tmpChar );
-    [o_gradient_cartoon_ckb setState: config_GetInt( p_intf, "gradient-cartoon" )];
-    [o_gradient_color_ckb setState: config_GetInt( p_intf, "gradient-type" )];
+    FREENULL(tmpChar);
+    [o_gradient_cartoon_ckb setState: config_GetInt(p_intf, "gradient-cartoon")];
+    [o_gradient_color_ckb setState: config_GetInt(p_intf, "gradient-type")];
     b_state = [o_gradient_ckb state];
     [o_gradient_mode_pop setEnabled: b_state];
     [o_gradient_mode_lbl setEnabled: b_state];
     [o_gradient_cartoon_ckb setEnabled: b_state];
     [o_gradient_color_ckb setEnabled: b_state];
-    [o_extract_fld setStringValue: [[NSString stringWithFormat:@"%llx", config_GetInt( p_intf, "extract-component" )] uppercaseString]];
+
+    [o_extract_fld setStringValue: [[NSString stringWithFormat:@"%llx", config_GetInt(p_intf, "extract-component")] uppercaseString]];
     [o_extract_fld setEnabled: [o_extract_ckb state]];
     [o_extract_lbl setEnabled: [o_extract_ckb state]];
-    [o_posterize_fld setIntValue: config_GetInt( p_intf, "posterize-level" )];
-    [o_posterize_stp setIntValue: config_GetInt( p_intf, "posterize-level" )];
-    [o_posterize_fld setEnabled: [o_posterize_ckb state]];
-    [o_posterize_stp setEnabled: [o_posterize_ckb state]];
-    [o_posterize_lbl setEnabled: [o_posterize_ckb state]];
-    [o_blur_sld setIntValue: config_GetInt( p_intf, "blur-factor" )];
-    [o_blur_sld setToolTip: [NSString stringWithFormat:@"%lli", config_GetInt( p_intf, "blur-factor" )]];
+
+    [self setPosterizeValue: config_GetInt(p_intf, "posterize-level")];
+    b_state = [o_posterize_ckb state];
+    [o_posterize_fld setEnabled: b_state];
+    [o_posterize_stp setEnabled: b_state];
+    [o_posterize_lbl setEnabled: b_state];
+
+    [o_blur_sld setIntValue: config_GetInt(p_intf, "blur-factor")];
+    [o_blur_sld setToolTip: [NSString stringWithFormat:@"%lli", config_GetInt(p_intf, "blur-factor")]];
     [o_blur_sld setEnabled: [o_blur_ckb state]];
     [o_blur_lbl setEnabled: [o_blur_ckb state]];
 
-    tmpChar = config_GetPsz( p_intf, "marq-marquee" );
-    if( tmpChar )
-    {
-        [o_addtext_text_fld setStringValue: [NSString stringWithUTF8String: tmpChar]];
-        FREENULL( tmpChar );
-    }
-    [o_addtext_pos_pop selectItemWithTag: config_GetInt( p_intf, "marq-position" )];
+    tmpChar = config_GetPsz(p_intf, "marq-marquee");
+    if (tmpChar) {
+        [o_addtext_text_fld setStringValue: [NSString stringWithUTF8String:tmpChar]];
+        FREENULL(tmpChar);
+    } else
+        [o_addtext_text_fld setStringValue: @""];
+    [o_addtext_pos_pop selectItemWithTag: config_GetInt(p_intf, "marq-position")];
     b_state = [o_addtext_ckb state];
     [o_addtext_pos_pop setEnabled: b_state];
     [o_addtext_pos_lbl setEnabled: b_state];
     [o_addtext_text_lbl setEnabled: b_state];
     [o_addtext_text_fld setEnabled: b_state];
 
-    tmpChar = config_GetPsz( p_intf, "logo-file" );
-    if( tmpChar )
-    {
-       [o_addlogo_logo_fld setStringValue: [NSString stringWithUTF8String: tmpChar]];
-        FREENULL( tmpChar );
-    }
-    [o_addlogo_pos_pop selectItemWithTag: config_GetInt( p_intf, "logo-position" )];
-    [o_addlogo_transparency_sld setIntValue: config_GetInt( p_intf, "logo-opacity" )];
-    [o_addlogo_transparency_sld setToolTip: [NSString stringWithFormat:@"%lli", config_GetInt( p_intf, "logo-opacity" )]];
+    tmpChar = config_GetPsz(p_intf, "logo-file");
+    if (tmpChar) {
+        [o_addlogo_logo_fld setStringValue: [NSString stringWithUTF8String:tmpChar]];
+        FREENULL(tmpChar);
+    } else
+        [o_addlogo_logo_fld setStringValue: @""];
+    [o_addlogo_pos_pop selectItemWithTag: config_GetInt(p_intf, "logo-position")];
+    [o_addlogo_transparency_sld setIntValue: config_GetInt(p_intf, "logo-opacity")];
+    [o_addlogo_transparency_sld setToolTip: [NSString stringWithFormat:@"%lli", config_GetInt(p_intf, "logo-opacity")]];
     b_state = [o_addlogo_ckb state];
     [o_addlogo_pos_pop setEnabled: b_state];
     [o_addlogo_pos_lbl setEnabled: b_state];
@@ -375,217 +505,277 @@ static VLCVideoEffects *_o_sharedInstance = nil;
     [o_addlogo_transparency_lbl setEnabled: b_state];
 }
 
-- (void)setVideoFilter: (char *)psz_name on:(BOOL)b_on
+- (NSString *)generateProfileString
 {
-    char *psz_string, *psz_parser;
-    const char *psz_filter_type;
+    return [NSString stringWithFormat:@"%@;%@;%@;%lli;%f;%f;%f;%f;%f;%lli;%f;%@;%lli;%lli;%lli;%lli;%lli;%lli;%@;%lli;%lli;%lli;%lli;%lli;%@;%lli;%@;%lli;%lli;%lli;%lli;%lli;%lli",
+            B64EncAndFree(config_GetPsz(p_intf, "video-filter")),
+            B64EncAndFree(config_GetPsz(p_intf, "sub-source")),
+            B64EncAndFree(config_GetPsz(p_intf, "video-splitter")),
+            config_GetInt(p_intf, "hue"),
+            config_GetFloat(p_intf, "contrast"),
+            config_GetFloat(p_intf, "brightness"),
+            config_GetFloat(p_intf, "saturation"),
+            config_GetFloat(p_intf, "gamma"),
+            config_GetFloat(p_intf, "sharpen-sigma"),
+            config_GetInt(p_intf, "gradfun-radius"),
+            config_GetFloat(p_intf, "grain-variance"),
+            B64EncAndFree(config_GetPsz(p_intf, "transform-type")),
+            config_GetInt(p_intf, "puzzle-rows"),
+            config_GetInt(p_intf, "puzzle-cols"),
+            config_GetInt(p_intf, "colorthres-color"),
+            config_GetInt(p_intf, "colorthres-saturationthres"),
+            config_GetInt(p_intf, "colorthres-similaritythres"),
+            config_GetInt(p_intf, "sepia-intensity"),
+            B64EncAndFree(config_GetPsz(p_intf, "gradient-mode")),
+            config_GetInt(p_intf, "gradient-cartoon"),
+            config_GetInt(p_intf, "gradient-type"),
+            config_GetInt(p_intf, "extract-component"),
+            config_GetInt(p_intf, "posterize-level"),
+            config_GetInt(p_intf, "blur-factor"),
+            B64EncAndFree(config_GetPsz(p_intf, "marq-marquee")),
+            config_GetInt(p_intf, "marq-position"),
+            B64EncAndFree(config_GetPsz(p_intf, "logo-file")),
+            config_GetInt(p_intf, "logo-position"),
+            config_GetInt(p_intf, "logo-opacity"),
+            config_GetInt(p_intf, "clone-count"),
+            config_GetInt(p_intf, "wall-rows"),
+            config_GetInt(p_intf, "wall-cols"),
+            // version 2 of profile string:
+            config_GetInt(p_intf, "brightness-threshold") // index: 32
+            ];
+}
 
-    module_t *p_obj = module_find( psz_name );
-    if( !p_obj )
-    {
-        msg_Err( p_intf, "Unable to find filter module \"%s\".", psz_name );
+#pragma mark -
+#pragma mark generic UI code
+
+- (void)saveCurrentProfile
+{
+    if (i_old_profile_index == -1)
+        return;
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    /* fetch all the current settings in a uniform string */
+    NSString *newProfile = [self generateProfileString];
+
+    NSMutableArray *workArray = [[NSMutableArray alloc] initWithArray:[defaults objectForKey:@"VideoEffectProfiles"]];
+    if (i_old_profile_index >= [workArray count])
+        return;
+
+    [workArray replaceObjectAtIndex:i_old_profile_index withObject:newProfile];
+    [defaults setObject:[NSArray arrayWithArray:workArray] forKey:@"VideoEffectProfiles"];
+    [workArray release];
+    [defaults synchronize];
+}
+
+- (IBAction)toggleWindow:(id)sender
+{
+    if ([o_window isKeyWindow])
+        [o_window orderOut:sender];
+    else {
+        [o_window setLevel: [[[VLCMain sharedInstance] voutController] currentStatusWindowLevel]];
+        [o_window makeKeyAndOrderFront:sender];
+    }
+}
+
+- (IBAction)profileSelectorAction:(id)sender
+{
+    [self saveCurrentProfile];
+    i_old_profile_index = [o_profile_pop indexOfSelectedItem];
+    VLCCoreInteraction *vci_si = [VLCCoreInteraction sharedInstance];
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSUInteger selectedProfile = [o_profile_pop indexOfSelectedItem];
+
+    /* fetch preset */
+    NSArray *items = [[[defaults objectForKey:@"VideoEffectProfiles"] objectAtIndex:selectedProfile] componentsSeparatedByString:@";"];
+
+    // version 1 of profile string has 32 entries
+    if ([items count] < 32) {
+        msg_Err(p_intf, "Error in parsing profile string");
+        [self resetValues];
         return;
     }
-    msg_Dbg( p_intf, "will set filter '%s'", psz_name );
 
-    if( module_provides( p_obj, "video splitter" ) )
-    {
-        psz_filter_type = "video-splitter";
+    /* filter handling */
+    NSString *tempString = B64DecNSStr([items objectAtIndex:0]);
+    vout_thread_t *p_vout = getVout();
+
+    /* enable the new filters */
+    config_PutPsz(p_intf, "video-filter", [tempString UTF8String]);
+    if (p_vout) {
+        var_SetString(p_vout, "video-filter", [tempString UTF8String]);
     }
-    else if( module_provides( p_obj, "video filter2" ) )
-    {
-        psz_filter_type = "video-filter";
+
+    tempString = B64DecNSStr([items objectAtIndex:1]);
+    /* enable another round of new filters */
+    config_PutPsz(p_intf, "sub-source", [tempString UTF8String]);
+    if (p_vout) {
+        var_SetString(p_vout, "sub-source", [tempString UTF8String]);
     }
-    else if( module_provides( p_obj, "sub source" ) )
-    {
-        psz_filter_type = "sub-source";
+
+    if (p_vout) {
+        vlc_object_release(p_vout);
     }
-    else if( module_provides( p_obj, "sub filter" ) )
-    {
-        psz_filter_type = "sub-filter";
+
+    tempString = B64DecNSStr([items objectAtIndex:2]);
+    /* enable another round of new filters */
+    char *psz_current_splitter = var_GetString(pl_Get(p_intf), "video-splitter");
+    bool b_filter_changed = ![tempString isEqual:toNSStr(psz_current_splitter)];
+    free(psz_current_splitter);
+
+    if (b_filter_changed) {
+        config_PutPsz(p_intf, "video-splitter", [tempString UTF8String]);
+        var_SetString(pl_Get(p_intf), "video-splitter", [tempString UTF8String]);
     }
-    else
-    {
-        msg_Err( p_intf, "Unknown video filter type." );
+
+    /* try to set filter values on-the-fly and store them appropriately */
+    [vci_si setVideoFilterProperty:"hue" forFilter:"adjust" integer:[[items objectAtIndex:3] intValue]];
+    [vci_si setVideoFilterProperty:"contrast" forFilter:"adjust" float:[[items objectAtIndex:4] floatValue]];
+    [vci_si setVideoFilterProperty:"brightness" forFilter:"adjust" float:[[items objectAtIndex:5] floatValue]];
+    [vci_si setVideoFilterProperty:"saturation" forFilter:"adjust" float:[[items objectAtIndex:6] floatValue]];
+    [vci_si setVideoFilterProperty:"gamma" forFilter:"adjust" float:[[items objectAtIndex:7] floatValue]];
+    [vci_si setVideoFilterProperty:"sharpen-sigma" forFilter:"sharpen" float:[[items objectAtIndex:8] floatValue]];
+    [vci_si setVideoFilterProperty:"gradfun-radius" forFilter:"gradfun" integer:[[items objectAtIndex:9] intValue]];
+    [vci_si setVideoFilterProperty:"grain-variance" forFilter:"grain" float:[[items objectAtIndex:10] floatValue]];
+    [vci_si setVideoFilterProperty:"transform-type" forFilter:"transform" string:[B64DecNSStr([items objectAtIndex:11]) UTF8String]];
+    [vci_si setVideoFilterProperty:"puzzle-rows" forFilter:"puzzle" integer:[[items objectAtIndex:12] intValue]];
+    [vci_si setVideoFilterProperty:"puzzle-cols" forFilter:"puzzle" integer:[[items objectAtIndex:13] intValue]];
+    [vci_si setVideoFilterProperty:"colorthres-color" forFilter:"colorthres" integer:[[items objectAtIndex:14] intValue]];
+    [vci_si setVideoFilterProperty:"colorthres-saturationthres" forFilter:"colorthres" integer:[[items objectAtIndex:15] intValue]];
+    [vci_si setVideoFilterProperty:"colorthres-similaritythres" forFilter:"colorthres" integer:[[items objectAtIndex:16] intValue]];
+    [vci_si setVideoFilterProperty:"sepia-intensity" forFilter:"sepia" integer:[[items objectAtIndex:17] intValue]];
+    [vci_si setVideoFilterProperty:"gradient-mode" forFilter:"gradient" string:[B64DecNSStr([items objectAtIndex:18]) UTF8String]];
+    [vci_si setVideoFilterProperty:"gradient-cartoon" forFilter:"gradient" boolean:[[items objectAtIndex:19] intValue]];
+    [vci_si setVideoFilterProperty:"gradient-type" forFilter:"gradient" integer:[[items objectAtIndex:20] intValue]];
+    [vci_si setVideoFilterProperty:"extract-component" forFilter:"extract" integer:[[items objectAtIndex:21] intValue]];
+    [vci_si setVideoFilterProperty:"posterize-level" forFilter:"posterize" integer:[[items objectAtIndex:22] intValue]];
+    [vci_si setVideoFilterProperty:"blur-factor" forFilter:"motionblur" integer:[[items objectAtIndex:23] intValue]];
+    [vci_si setVideoFilterProperty:"marq-marquee" forFilter:"marq" string:[B64DecNSStr([items objectAtIndex:24]) UTF8String]];
+    [vci_si setVideoFilterProperty:"marq-position" forFilter:"marq" integer:[[items objectAtIndex:25] intValue]];
+    [vci_si setVideoFilterProperty:"logo-file" forFilter:"logo" string:[B64DecNSStr([items objectAtIndex:26]) UTF8String]];
+    [vci_si setVideoFilterProperty:"logo-position" forFilter:"logo" integer:[[items objectAtIndex:27] intValue]];
+    [vci_si setVideoFilterProperty:"logo-opacity" forFilter:"logo" integer:[[items objectAtIndex:28] intValue]];
+    [vci_si setVideoFilterProperty:"clone-count" forFilter:"clone" integer:[[items objectAtIndex:29] intValue]];
+    [vci_si setVideoFilterProperty:"wall-rows" forFilter:"wall" integer:[[items objectAtIndex:30] intValue]];
+    [vci_si setVideoFilterProperty:"wall-cols" forFilter:"wall" integer:[[items objectAtIndex:31] intValue]];
+
+    if ([items count] >= 33) { // version >=2 of profile string
+        [vci_si setVideoFilterProperty: "brightness-threshold" forFilter: "adjust" boolean: [[items objectAtIndex:32] intValue]];
+    }
+
+    [defaults setInteger:selectedProfile forKey:@"VideoEffectSelectedProfile"];
+    [defaults synchronize];
+
+    [self resetValues];
+}
+
+- (IBAction)addProfile:(id)sender
+{
+    /* show panel */
+    VLCEnterTextPanel * panel = [VLCEnterTextPanel sharedInstance];
+    [panel setTitle: _NS("Duplicate current profile for a new profile")];
+    [panel setSubTitle: _NS("Enter a name for the new profile:")];
+    [panel setCancelButtonLabel: _NS("Cancel")];
+    [panel setOKButtonLabel: _NS("Save")];
+    [panel setTarget:self];
+
+    [panel runModalForWindow:o_window];
+}
+
+- (void)panel:(VLCEnterTextPanel *)panel returnValue:(NSUInteger)value text:(NSString *)text
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+    if (value != NSOKButton) {
+        [o_profile_pop selectItemAtIndex:[defaults integerForKey:@"VideoEffectSelectedProfile"]];
         return;
     }
 
-    psz_string = config_GetPsz( p_intf, psz_filter_type );
+    NSArray *profileNames = [defaults objectForKey:@"VideoEffectProfileNames"];
 
-    if (b_on) {
-        if(! psz_string)
-            psz_string = psz_name;
-        else if( (NSInteger)strstr( psz_string, psz_name ) == NO )
-            psz_string = (char *)[[NSString stringWithFormat: @"%s:%s", psz_string, psz_name] UTF8String];
-    } else {
-        if( !psz_string )
-            return;
+    // duplicate names are not allowed in the popup control
+    if ([text length] == 0 || [profileNames containsObject:text]) {
+        [o_profile_pop selectItemAtIndex:[defaults integerForKey:@"VideoEffectSelectedProfile"]];
 
-        psz_parser = strstr( psz_string, psz_name );
-        if( psz_parser )
-        {
-            if( *( psz_parser + strlen( psz_name ) ) == ':' )
-            {
-                memmove( psz_parser, psz_parser + strlen( psz_name ) + 1,
-                        strlen( psz_parser + strlen( psz_name ) + 1 ) + 1 );
-            }
-            else
-            {
-                *psz_parser = '\0';
-            }
+        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+        [alert setAlertStyle:NSCriticalAlertStyle];
+        [alert setMessageText:_NS("Please enter a unique name for the new profile.")];
+        [alert setInformativeText:_NS("Multiple profiles with the same name are not allowed.")];
 
-            /* Remove trailing : : */
-            if( strlen( psz_string ) > 0 &&
-               *( psz_string + strlen( psz_string ) -1 ) == ':' )
-            {
-                *( psz_string + strlen( psz_string ) -1 ) = '\0';
-            }
-        }
-        else
-        {
-            free( psz_string );
-            return;
-        }
-    }
-    config_PutPsz( p_intf, psz_filter_type, psz_string );
-
-    /* Try to set on the fly */
-    if( !strcmp( psz_filter_type, "video-splitter" ) )
-    {
-        playlist_t *p_playlist = pl_Get( p_intf );
-        var_SetString( p_playlist, psz_filter_type, psz_string );
-    }
-    else
-    {
-        vout_thread_t *p_vout = getVout();
-        if( p_vout )
-        {
-            var_SetString( p_vout, psz_filter_type, psz_string );
-            vlc_object_release( p_vout );
-        }
-    }
-}
-
-- (void)restartFilterIfNeeded: (char *)psz_filter option: (char *)psz_name
-{
-    vout_thread_t *p_vout = getVout();
-
-    if (p_vout == NULL)
+        [alert beginSheetModalForWindow:o_window
+                          modalDelegate:nil
+                         didEndSelector:nil
+                            contextInfo:nil];
         return;
-    else
-        vlc_object_release( p_vout );
-
-    vlc_object_t *p_filter = vlc_object_find_name( pl_Get(p_intf), psz_filter );
-    int i_type;
-    i_type = var_Type( p_filter, psz_name );
-    if( i_type == 0 )
-        i_type = config_GetType( p_intf, psz_name );
-
-    if( !(i_type & VLC_VAR_ISCOMMAND) )
-    {
-        msg_Warn( p_intf, "Brute-restarting filter '%s', because the last changed option isn't a command", psz_name );
-        [self setVideoFilter: psz_filter on: NO];
-        [self setVideoFilter: psz_filter on: YES];
     }
-    else
-        msg_Dbg( p_intf, "restart not needed" );
 
-    if( p_filter )
-        vlc_object_release( p_filter );
+    /* fetch all the current settings in a uniform string */
+    NSString *newProfile = [self generateProfileString];
+
+    /* add string to user defaults as well as a label */
+
+    NSMutableArray *workArray = [[NSMutableArray alloc] initWithArray:[defaults objectForKey:@"VideoEffectProfiles"]];
+    [workArray addObject:newProfile];
+    [defaults setObject:[NSArray arrayWithArray:workArray] forKey:@"VideoEffectProfiles"];
+    [defaults setInteger:[workArray count] - 1 forKey:@"VideoEffectSelectedProfile"];
+    [workArray release];
+
+    workArray = [[NSMutableArray alloc] initWithArray:[defaults objectForKey:@"VideoEffectProfileNames"]];
+    [workArray addObject:text];
+    [defaults setObject:[NSArray arrayWithArray:workArray] forKey:@"VideoEffectProfileNames"];
+    [workArray release];
+
+    /* save defaults */
+    [defaults synchronize];
+
+    /* refresh UI */
+    [self resetProfileSelector];
 }
 
-- (void)setVideoFilterProperty: (char *)psz_name forFilter: (char *)psz_filter integer: (int)i_value
+- (IBAction)removeProfile:(id)sender
 {
-    vout_thread_t *p_vout = getVout();
-    vlc_object_t *p_filter;
+    /* show panel */
+    VLCSelectItemInPopupPanel * panel = [VLCSelectItemInPopupPanel sharedInstance];
+    [panel setTitle:_NS("Remove a preset")];
+    [panel setSubTitle:_NS("Select the preset you would like to remove:")];
+    [panel setOKButtonLabel:_NS("Remove")];
+    [panel setCancelButtonLabel:_NS("Cancel")];
+    [panel setPopupButtonContent:[[NSUserDefaults standardUserDefaults] objectForKey:@"VideoEffectProfileNames"]];
+    [panel setTarget:self];
 
-    if( p_vout == NULL ) {
-        config_PutInt( p_intf , psz_name , i_value );
-    } else {
-        p_filter = vlc_object_find_name( pl_Get(p_intf), psz_filter );
-
-        if(! p_filter ) {
-            msg_Err( p_intf, "we're unable to find the filter '%s'", psz_filter );
-            vlc_object_release( p_vout );
-            return;
-        }
-        var_SetInteger( p_filter, psz_name, i_value );
-        config_PutInt( p_intf, psz_name, i_value );
-        vlc_object_release( p_vout );
-        vlc_object_release( p_filter );
-    }
-
-    [self restartFilterIfNeeded:psz_filter option: psz_name];
+    [panel runModalForWindow:o_window];
 }
 
-- (void)setVideoFilterProperty: (char *)psz_name forFilter: (char *)psz_filter float: (float)f_value
+- (void)panel:(VLCSelectItemInPopupPanel *)panel returnValue:(NSUInteger)value item:(NSUInteger)item
 {
-    vout_thread_t *p_vout = getVout();
-    vlc_object_t *p_filter;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
-    if( p_vout == NULL ) {
-        config_PutFloat( p_intf , psz_name , f_value );
-    } else {
-        p_filter = vlc_object_find_name( pl_Get(p_intf), psz_filter );
-
-        if(! p_filter ) {
-            msg_Err( p_intf, "we're unable to find the filter '%s'", psz_filter );
-            vlc_object_release( p_vout );
-            return;
-        }
-        var_SetFloat( p_filter, psz_name, f_value );
-        config_PutFloat( p_intf, psz_name, f_value );
-        vlc_object_release( p_vout );
-        vlc_object_release( p_filter );
-
-        [self restartFilterIfNeeded:psz_filter option: psz_name];
+    if (value != NSOKButton) {
+        [o_profile_pop selectItemAtIndex:[defaults integerForKey:@"VideoEffectSelectedProfile"]];
+        return;
     }
-}
 
-- (void)setVideoFilterProperty: (char *)psz_name forFilter: (char *)psz_filter string: (char *)psz_value
-{
-    vout_thread_t *p_vout = getVout();
-    vlc_object_t *p_filter;
+    /* remove selected profile from settings */
+    NSMutableArray *workArray = [[NSMutableArray alloc] initWithArray: [defaults objectForKey:@"VideoEffectProfiles"]];
+    [workArray removeObjectAtIndex:item];
+    [defaults setObject:[NSArray arrayWithArray:workArray] forKey:@"VideoEffectProfiles"];
+    [workArray release];
 
-    if( p_vout == NULL ) {
-        config_PutPsz( p_intf, psz_name, EnsureUTF8(psz_value) );
-    } else {
-        p_filter = vlc_object_find_name( pl_Get(p_intf), psz_filter );
+    workArray = [[NSMutableArray alloc] initWithArray: [defaults objectForKey:@"VideoEffectProfileNames"]];
+    [workArray removeObjectAtIndex:item];
+    [defaults setObject:[NSArray arrayWithArray:workArray] forKey:@"VideoEffectProfileNames"];
+    [workArray release];
 
-        if(! p_filter ) {
-            msg_Err( p_intf, "we're unable to find the filter '%s'", psz_filter );
-            vlc_object_release( p_vout );
-            return;
-        }
-        var_SetString( p_filter, psz_name, EnsureUTF8(psz_value) );
-        config_PutPsz( p_intf, psz_name, EnsureUTF8(psz_value) );
-        vlc_object_release( p_vout );
-        vlc_object_release( p_filter );
+    if (i_old_profile_index >= item)
+        [defaults setInteger:i_old_profile_index - 1 forKey:@"VideoEffectSelectedProfile"];
 
-        [self restartFilterIfNeeded:psz_filter option: psz_name];
-    }
-}
+    /* save defaults */
+    [defaults synchronize];
 
-- (void)setVideoFilterProperty: (char *)psz_name forFilter: (char *)psz_filter boolean: (BOOL)b_value
-{
-    vout_thread_t *p_vout = getVout();
-    vlc_object_t *p_filter;
-
-    if( p_vout == NULL ) {
-        config_PutInt( p_intf, psz_name, b_value );
-    } else {
-        p_filter = vlc_object_find_name( pl_Get(p_intf), psz_filter );
-
-        if(! p_filter ) {
-            msg_Err( p_intf, "we're unable to find the filter '%s'", psz_filter );
-            vlc_object_release( p_vout );
-            return;
-        }
-        var_SetBool( p_filter, psz_name, b_value );
-        config_PutInt( p_intf, psz_name, b_value );
-        vlc_object_release( p_vout );
-        vlc_object_release( p_filter );
-    }
+    /* do not save deleted profile */
+    i_old_profile_index = -1;
+    /* refresh UI */
+    [self resetProfileSelector];
 }
 
 #pragma mark -
@@ -594,7 +784,7 @@ static VLCVideoEffects *_o_sharedInstance = nil;
 {
     BOOL b_state = [o_adjust_ckb state];
 
-    [self setVideoFilter: "adjust" on: b_state];
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "adjust" on: b_state];
     [o_adjust_brightness_sld setEnabled: b_state];
     [o_adjust_brightness_ckb setEnabled: b_state];
     [o_adjust_brightness_lbl setEnabled: b_state];
@@ -611,18 +801,18 @@ static VLCVideoEffects *_o_sharedInstance = nil;
 
 - (IBAction)adjustSliderChanged:(id)sender
 {
-    if( sender == o_adjust_brightness_sld )
-        [self setVideoFilterProperty: "brightness" forFilter: "adjust" float: [o_adjust_brightness_sld floatValue]];
-    else if( sender == o_adjust_contrast_sld )
-        [self setVideoFilterProperty: "contrast" forFilter: "adjust" float: [o_adjust_contrast_sld floatValue]];
-    else if( sender == o_adjust_gamma_sld )
-        [self setVideoFilterProperty: "gamma" forFilter: "adjust" float: [o_adjust_gamma_sld floatValue]];
-    else if( sender == o_adjust_hue_sld )
-        [self setVideoFilterProperty: "hue" forFilter: "adjust" integer: [o_adjust_hue_sld intValue]];
-    else if( sender == o_adjust_saturation_sld )
-        [self setVideoFilterProperty: "saturation" forFilter: "adjust" float: [o_adjust_saturation_sld floatValue]];
+    if (sender == o_adjust_brightness_sld)
+        [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "brightness" forFilter: "adjust" float: [o_adjust_brightness_sld floatValue]];
+    else if (sender == o_adjust_contrast_sld)
+        [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "contrast" forFilter: "adjust" float: [o_adjust_contrast_sld floatValue]];
+    else if (sender == o_adjust_gamma_sld)
+        [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "gamma" forFilter: "adjust" float: [o_adjust_gamma_sld floatValue]];
+    else if (sender == o_adjust_hue_sld)
+        [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "hue" forFilter: "adjust" integer: [o_adjust_hue_sld intValue]];
+    else if (sender == o_adjust_saturation_sld)
+        [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "saturation" forFilter: "adjust" float: [o_adjust_saturation_sld floatValue]];
 
-    if( sender == o_adjust_hue_sld )
+    if (sender == o_adjust_hue_sld)
         [o_adjust_hue_sld setToolTip: [NSString stringWithFormat:@"%i", [o_adjust_hue_sld intValue]]];
     else
         [sender setToolTip: [NSString stringWithFormat:@"%0.3f", [sender floatValue]]];
@@ -630,8 +820,9 @@ static VLCVideoEffects *_o_sharedInstance = nil;
 
 - (IBAction)enableAdjustBrightnessThreshold:(id)sender
 {
-    if (sender == o_adjust_reset_btn)
-    {
+    VLCCoreInteraction *vci_si = [VLCCoreInteraction sharedInstance];
+
+    if (sender == o_adjust_reset_btn) {
         [o_adjust_brightness_sld setFloatValue: 1.0];
         [o_adjust_contrast_sld setFloatValue: 1.0];
         [o_adjust_gamma_sld setFloatValue: 1.0];
@@ -642,28 +833,28 @@ static VLCVideoEffects *_o_sharedInstance = nil;
         [o_adjust_gamma_sld setToolTip: [NSString stringWithFormat:@"%0.3f", 1.0]];
         [o_adjust_hue_sld setToolTip: [NSString stringWithFormat:@"%i", 0]];
         [o_adjust_saturation_sld setToolTip: [NSString stringWithFormat:@"%0.3f", 1.0]];
-        [self setVideoFilterProperty: "brightness" forFilter: "adjust" float: 1.0];
-        [self setVideoFilterProperty: "contrast" forFilter: "adjust" float: 1.0];
-        [self setVideoFilterProperty: "gamma" forFilter: "adjust" float: 1.0];
-        [self setVideoFilterProperty: "hue" forFilter: "adjust" integer: 0.0];
-        [self setVideoFilterProperty: "saturation" forFilter: "adjust" float: 1.0];
-    }
-    else
-        config_PutInt( p_intf, "brightness-threshold", [o_adjust_brightness_ckb state] );
+        [vci_si setVideoFilterProperty: "brightness" forFilter: "adjust" float: 1.0];
+        [vci_si setVideoFilterProperty: "contrast" forFilter: "adjust" float: 1.0];
+        [vci_si setVideoFilterProperty: "gamma" forFilter: "adjust" float: 1.0];
+        [vci_si setVideoFilterProperty: "hue" forFilter: "adjust" integer: 0.0];
+        [vci_si setVideoFilterProperty: "saturation" forFilter: "adjust" float: 1.0];
+    } else
+        [vci_si setVideoFilterProperty: "brightness-threshold" forFilter: "adjust" boolean: [o_adjust_brightness_ckb state]];
+
 }
 
 - (IBAction)enableSharpen:(id)sender
 {
     BOOL b_state = [o_sharpen_ckb state];
 
-    [self setVideoFilter: "sharpen" on: b_state];
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "sharpen" on: b_state];
     [o_sharpen_sld setEnabled: b_state];
     [o_sharpen_lbl setEnabled: b_state];
 }
 
 - (IBAction)sharpenSliderChanged:(id)sender
 {
-    [self setVideoFilterProperty: "sharpen-sigma" forFilter: "sharpen" float: [sender floatValue]];
+    [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "sharpen-sigma" forFilter: "sharpen" float: [sender floatValue]];
     [sender setToolTip: [NSString stringWithFormat:@"%0.3f", [sender floatValue]]];
 }
 
@@ -671,14 +862,14 @@ static VLCVideoEffects *_o_sharedInstance = nil;
 {
     BOOL b_state = [o_banding_ckb state];
 
-    [self setVideoFilter: "gradfun" on: b_state];
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "gradfun" on: b_state];
     [o_banding_sld setEnabled: b_state];
     [o_banding_lbl setEnabled: b_state];
 }
 
 - (IBAction)bandingSliderChanged:(id)sender
 {
-    [self setVideoFilterProperty: "gradfun-radius" forFilter: "gradfun" integer: [sender intValue]];
+    [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "gradfun-radius" forFilter: "gradfun" integer: [sender intValue]];
     [sender setToolTip: [NSString stringWithFormat:@"%i", [sender intValue]]];
 }
 
@@ -686,14 +877,14 @@ static VLCVideoEffects *_o_sharedInstance = nil;
 {
     BOOL b_state = [o_grain_ckb state];
 
-    [self setVideoFilter: "grain" on: b_state];
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "grain" on: b_state];
     [o_grain_sld setEnabled: b_state];
     [o_grain_lbl setEnabled: b_state];
 }
 
 - (IBAction)grainSliderChanged:(id)sender
 {
-    [self setVideoFilterProperty: "grain-variance" forFilter: "grain" float: [sender floatValue]];
+    [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "grain-variance" forFilter: "grain" float: [sender floatValue]];
     [sender setToolTip: [NSString stringWithFormat:@"%0.3f", [sender floatValue]]];
 }
 
@@ -701,51 +892,28 @@ static VLCVideoEffects *_o_sharedInstance = nil;
 #pragma mark -
 #pragma mark crop
 
-#define updateopposite( giver, taker ) \
-    if (sender == giver) \
-        [taker setIntValue: [giver intValue]]
-
 - (IBAction)cropObjectChanged:(id)sender
 {
-    updateopposite( o_crop_top_fld, o_crop_top_stp );
-    updateopposite( o_crop_top_stp, o_crop_top_fld );
-    updateopposite( o_crop_left_fld, o_crop_left_stp );
-    updateopposite( o_crop_left_stp, o_crop_left_fld );
-    updateopposite( o_crop_right_fld, o_crop_right_stp );
-    updateopposite( o_crop_right_stp, o_crop_right_fld );
-    updateopposite( o_crop_bottom_fld, o_crop_bottom_stp );
-    updateopposite( o_crop_bottom_stp, o_crop_bottom_fld );
-
-    if( [o_crop_sync_top_bottom_ckb state] ) {
-        if (sender == o_crop_top_fld || sender == o_crop_top_stp ) {
-            [o_crop_bottom_fld setIntValue: [o_crop_top_fld intValue]];
-            [o_crop_bottom_stp setIntValue: [o_crop_top_fld intValue]];
-        }
+    if ([o_crop_sync_top_bottom_ckb state]) {
+        if (sender == o_crop_bottom_fld || sender == o_crop_bottom_stp)
+            [self setCropTopValue: [self cropBottomValue]];
         else
-        {
-            [o_crop_top_fld setIntValue: [o_crop_bottom_fld intValue]];
-            [o_crop_top_stp setIntValue: [o_crop_bottom_fld intValue]];
-        }
+            [self setCropBottomValue: [self cropTopValue]];
     }
-    if( [o_crop_sync_left_right_ckb state] ) {
-        if (sender == o_crop_left_fld || sender == o_crop_left_stp ) {
-            [o_crop_right_fld setIntValue: [o_crop_left_fld intValue]];
-            [o_crop_right_stp setIntValue: [o_crop_left_fld intValue]];
-        }
+    if ([o_crop_sync_left_right_ckb state]) {
+        if (sender == o_crop_right_fld || sender == o_crop_right_stp)
+            [self setCropLeftValue: [self cropRightValue]];
         else
-        {
-            [o_crop_left_fld setIntValue: [o_crop_right_fld intValue]];
-            [o_crop_left_stp setIntValue: [o_crop_right_fld intValue]];
-        }
+            [self setCropRightValue: [self cropLeftValue]];
     }
 
     vout_thread_t *p_vout = getVout();
-    if( p_vout ) {
-        var_SetInteger( p_vout, "crop-top", [o_crop_top_fld intValue] );
-        var_SetInteger( p_vout, "crop-bottom", [o_crop_bottom_fld intValue] );
-        var_SetInteger( p_vout, "crop-left", [o_crop_left_fld intValue] );
-        var_SetInteger( p_vout, "crop-right", [o_crop_right_fld intValue] );
-        vlc_object_release( p_vout );
+    if (p_vout) {
+        var_SetInteger(p_vout, "crop-top", [o_crop_top_fld intValue]);
+        var_SetInteger(p_vout, "crop-bottom", [o_crop_bottom_fld intValue]);
+        var_SetInteger(p_vout, "crop-left", [o_crop_left_fld intValue]);
+        var_SetInteger(p_vout, "crop-right", [o_crop_right_fld intValue]);
+        vlc_object_release(p_vout);
     }
 }
 
@@ -753,56 +921,94 @@ static VLCVideoEffects *_o_sharedInstance = nil;
 #pragma mark geometry
 - (IBAction)enableTransform:(id)sender
 {
-    [self setVideoFilter: "transform" on: [o_transform_ckb state]];
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "transform" on: [o_transform_ckb state]];
     [o_transform_pop setEnabled: [o_transform_ckb state]];
 }
 
 - (IBAction)transformModifierChanged:(id)sender
 {
     NSInteger tag = [[o_transform_pop selectedItem] tag];
-    char * psz_string = (char *)[[NSString stringWithFormat:@"%li", tag] UTF8String];
-    if( tag == 1 )
-        psz_string = (char *)"hflip";
-    else if( tag == 2 )
-        psz_string = (char *)"vflip";
+    const char *psz_string = [[NSString stringWithFormat:@"%li", tag] UTF8String];
+    if (tag == 1)
+        psz_string = "hflip";
+    else if (tag == 2)
+        psz_string = "vflip";
 
-    [self setVideoFilterProperty: "transform-type" forFilter: "transform" string: psz_string];
+    [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "transform-type" forFilter: "transform" string: psz_string];
 }
 
 - (IBAction)enableZoom:(id)sender
 {
-    [self setVideoFilter: "magnify" on: [o_zoom_ckb state]];
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "magnify" on: [o_zoom_ckb state]];
 }
 
 - (IBAction)enablePuzzle:(id)sender
 {
     BOOL b_state = [o_puzzle_ckb state];
 
-    [self setVideoFilter: "puzzle" on: b_state];
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "puzzle" on: b_state];
     [o_puzzle_columns_fld setEnabled: b_state];
     [o_puzzle_columns_stp setEnabled: b_state];
     [o_puzzle_columns_lbl setEnabled: b_state];
     [o_puzzle_rows_fld setEnabled: b_state];
     [o_puzzle_rows_stp setEnabled: b_state];
     [o_puzzle_rows_lbl setEnabled: b_state];
-    [o_puzzle_blackslot_ckb setEnabled: b_state];
 }
 
 - (IBAction)puzzleModifierChanged:(id)sender
 {
-    updateopposite(o_puzzle_columns_fld, o_puzzle_columns_stp);
-    updateopposite(o_puzzle_columns_stp, o_puzzle_columns_fld);
-    updateopposite(o_puzzle_rows_fld, o_puzzle_rows_stp);
-    updateopposite(o_puzzle_rows_stp, o_puzzle_rows_fld);
-	
-    if( sender == o_puzzle_blackslot_ckb )
-        [self setVideoFilterProperty: "puzzle-black-slot" forFilter: "puzzle" boolean: [o_puzzle_blackslot_ckb state]];
-    else if( sender == o_puzzle_columns_fld || sender == o_puzzle_columns_stp )
-        [self setVideoFilterProperty: "puzzle-cols" forFilter: "puzzle" integer: [o_puzzle_columns_fld intValue]];
+    if (sender == o_puzzle_columns_fld || sender == o_puzzle_columns_stp)
+        [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "puzzle-cols" forFilter: "puzzle" integer: [sender intValue]];
     else
-        [self setVideoFilterProperty: "puzzle-rows" forFilter: "puzzle" integer: [o_puzzle_rows_fld intValue]];
+        [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "puzzle-rows" forFilter: "puzzle" integer: [sender intValue]];
 }
 
+- (IBAction)enableClone:(id)sender
+{
+    BOOL b_state = [o_clone_ckb state];
+
+    if (b_state && [o_wall_ckb state]) {
+        [o_wall_ckb setState: NSOffState];
+        [self enableWall: o_wall_ckb];
+    }
+
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "clone" on: b_state];
+    [o_clone_number_lbl setEnabled: b_state];
+    [o_clone_number_fld setEnabled: b_state];
+    [o_clone_number_stp setEnabled: b_state];
+}
+
+- (IBAction)cloneModifierChanged:(id)sender
+{
+    [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "clone-count" forFilter: "clone" integer: [o_clone_number_fld intValue]];
+}
+
+- (IBAction)enableWall:(id)sender
+{
+    BOOL b_state = [o_wall_ckb state];
+
+    if (b_state && [o_clone_ckb state]) {
+        [o_clone_ckb setState: NSOffState];
+        [self enableClone: o_clone_ckb];
+    }
+
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "wall" on: b_state];
+    [o_wall_numofcols_fld setEnabled: b_state];
+    [o_wall_numofcols_stp setEnabled: b_state];
+    [o_wall_numofcols_lbl setEnabled: b_state];
+
+    [o_wall_numofrows_fld setEnabled: b_state];
+    [o_wall_numofrows_stp setEnabled: b_state];
+    [o_wall_numofrows_lbl setEnabled: b_state];
+}
+
+- (IBAction)wallModifierChanged:(id)sender
+{
+    if (sender == o_wall_numofcols_fld || sender == o_wall_numofcols_stp)
+        [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "wall-cols" forFilter: "wall" integer: [sender intValue]];
+    else
+        [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "wall-rows" forFilter: "wall" integer: [sender intValue]];
+}
 
 #pragma mark -
 #pragma mark color
@@ -810,7 +1016,7 @@ static VLCVideoEffects *_o_sharedInstance = nil;
 {
     BOOL b_state = [o_threshold_ckb state];
 
-    [self setVideoFilter: "colorthres" on: b_state];
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "colorthres" on: b_state];
     [o_threshold_color_fld setEnabled: b_state];
     [o_threshold_color_lbl setEnabled: b_state];
     [o_threshold_saturation_sld setEnabled: b_state];
@@ -821,16 +1027,13 @@ static VLCVideoEffects *_o_sharedInstance = nil;
 
 - (IBAction)thresholdModifierChanged:(id)sender
 {
-    if( sender == o_threshold_color_fld )
-        [self setVideoFilterProperty: "colorthres-color" forFilter: "colorthres" integer: [o_threshold_color_fld intValue]];
-    else if( sender == o_threshold_saturation_sld )
-    {
-        [self setVideoFilterProperty: "colorthres-saturationthres" forFilter: "colorthres" integer: [o_threshold_saturation_sld intValue]];
+    if (sender == o_threshold_color_fld)
+        [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "colorthres-color" forFilter: "colorthres" integer: [o_threshold_color_fld intValue]];
+    else if (sender == o_threshold_saturation_sld) {
+        [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "colorthres-saturationthres" forFilter: "colorthres" integer: [o_threshold_saturation_sld intValue]];
         [o_threshold_saturation_sld setToolTip: [NSString stringWithFormat:@"%i", [o_threshold_saturation_sld intValue]]];
-    }
-    else
-    {
-        [self setVideoFilterProperty: "colorthres-similaritythres" forFilter: "colorthres" integer: [o_threshold_similarity_sld intValue]];
+    } else {
+        [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "colorthres-similaritythres" forFilter: "colorthres" integer: [o_threshold_similarity_sld intValue]];
         [o_threshold_similarity_sld setToolTip: [NSString stringWithFormat:@"%i", [o_threshold_similarity_sld intValue]]];
     }
 }
@@ -839,7 +1042,7 @@ static VLCVideoEffects *_o_sharedInstance = nil;
 {
     BOOL b_state = [o_sepia_ckb state];
 
-    [self setVideoFilter: "sepia" on: b_state];
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "sepia" on: b_state];
     [o_sepia_fld setEnabled: b_state];
     [o_sepia_stp setEnabled: b_state];
     [o_sepia_lbl setEnabled: b_state];
@@ -847,22 +1050,19 @@ static VLCVideoEffects *_o_sharedInstance = nil;
 
 - (IBAction)sepiaModifierChanged:(id)sender
 {
-    updateopposite(o_sepia_fld, o_sepia_stp);
-    updateopposite(o_sepia_stp, o_sepia_fld);
-	
-    [self setVideoFilterProperty: "sepia-intensity" forFilter: "sepia" integer: [o_sepia_fld intValue]];
+    [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "sepia-intensity" forFilter: "sepia" integer: [o_sepia_fld intValue]];
 }
 
 - (IBAction)enableNoise:(id)sender
 {
-    [self setVideoFilter: "noise" on: [o_noise_ckb state]];
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "noise" on: [o_noise_ckb state]];
 }
 
 - (IBAction)enableGradient:(id)sender
 {
     BOOL b_state = [o_gradient_ckb state];
 
-    [self setVideoFilter: "gradient" on: b_state];
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "gradient" on: b_state];
     [o_gradient_mode_pop setEnabled: b_state];
     [o_gradient_mode_lbl setEnabled: b_state];
     [o_gradient_color_ckb setEnabled: b_state];
@@ -871,43 +1071,42 @@ static VLCVideoEffects *_o_sharedInstance = nil;
 
 - (IBAction)gradientModifierChanged:(id)sender
 {
-    if( sender == o_gradient_mode_pop ) {
-        if( [[o_gradient_mode_pop selectedItem] tag] == 3 )
-            [self setVideoFilterProperty: "gradient-mode" forFilter: "gradient" string: "hough"];
-        else if( [[o_gradient_mode_pop selectedItem] tag] == 2 )
-            [self setVideoFilterProperty: "gradient-mode" forFilter: "gradient" string: "edge"];
+    if (sender == o_gradient_mode_pop) {
+        if ([[o_gradient_mode_pop selectedItem] tag] == 3)
+            [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "gradient-mode" forFilter: "gradient" string: "hough"];
+        else if ([[o_gradient_mode_pop selectedItem] tag] == 2)
+            [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "gradient-mode" forFilter: "gradient" string: "edge"];
         else
-            [self setVideoFilterProperty: "gradient-mode" forFilter: "gradient" string: "gradient"];
-    }
-    else if( sender == o_gradient_color_ckb )
-        [self setVideoFilterProperty: "gradient-type" forFilter: "gradient" integer: [o_gradient_color_ckb state]];
+            [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "gradient-mode" forFilter: "gradient" string: "gradient"];
+    } else if (sender == o_gradient_color_ckb)
+        [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "gradient-type" forFilter: "gradient" integer: [o_gradient_color_ckb state]];
     else
-        [self setVideoFilterProperty: "gradient-cartoon" forFilter: "gradient" boolean: [o_gradient_cartoon_ckb state]];
+        [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "gradient-cartoon" forFilter: "gradient" boolean: [o_gradient_cartoon_ckb state]];
 }
 
 - (IBAction)enableExtract:(id)sender
 {
-    BOOL b_state = [o_extract_ckb state]; 
-    [self setVideoFilter: "extract" on: b_state];
+    BOOL b_state = [o_extract_ckb state];
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "extract" on: b_state];
     [o_extract_fld setEnabled: b_state];
     [o_extract_lbl setEnabled: b_state];
 }
 
 - (IBAction)extractModifierChanged:(id)sender
 {
-    [self setVideoFilterProperty: "extract-component" forFilter: "extract" integer: [o_extract_fld intValue]];  
+    [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "extract-component" forFilter: "extract" integer: [o_extract_fld intValue]];
 }
 
 - (IBAction)enableInvert:(id)sender
 {
-    [self setVideoFilter: "invert" on: [o_invert_ckb state]];
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "invert" on: [o_invert_ckb state]];
 }
 
 - (IBAction)enablePosterize:(id)sender
 {
     BOOL b_state = [o_posterize_ckb state];
 
-    [self setVideoFilter: "posterize" on: b_state];
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "posterize" on: b_state];
     [o_posterize_fld setEnabled: b_state];
     [o_posterize_stp setEnabled: b_state];
     [o_posterize_lbl setEnabled: b_state];
@@ -915,69 +1114,66 @@ static VLCVideoEffects *_o_sharedInstance = nil;
 
 - (IBAction)posterizeModifierChanged:(id)sender
 {
-    updateopposite(o_posterize_fld, o_posterize_stp);
-    updateopposite(o_posterize_stp, o_posterize_fld);
-	
-    [self setVideoFilterProperty: "posterize-level" forFilter: "posterize" integer: [o_extract_fld intValue]];
+    [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "posterize-level" forFilter: "posterize" integer: [o_posterize_fld intValue]];
 }
 
 - (IBAction)enableBlur:(id)sender
 {
     BOOL b_state = [o_blur_ckb state];
 
-    [self setVideoFilter: "motionblur" on: b_state];
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "motionblur" on: b_state];
     [o_blur_sld setEnabled: b_state];
     [o_blur_lbl setEnabled: b_state];
 }
 
 - (IBAction)blurModifierChanged:(id)sender
 {
-    [self setVideoFilterProperty: "blur-factor" forFilter: "motionblur" integer: [sender intValue]];
+    [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "blur-factor" forFilter: "motionblur" integer: [sender intValue]];
     [sender setToolTip: [NSString stringWithFormat:@"%i", [sender intValue]]];
 }
 
 - (IBAction)enableMotionDetect:(id)sender
 {
-    [self setVideoFilter: "motiondetect" on: [o_motiondetect_ckb state]];
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "motiondetect" on: [o_motiondetect_ckb state]];
 }
 
 - (IBAction)enableWaterEffect:(id)sender
 {
-    [self setVideoFilter: "ripple" on: [o_watereffect_ckb state]];
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "ripple" on: [o_watereffect_ckb state]];
 }
 
 - (IBAction)enableWaves:(id)sender
 {
-    [self setVideoFilter: "wave" on: [o_waves_ckb state]];
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "wave" on: [o_waves_ckb state]];
 }
 
 - (IBAction)enablePsychedelic:(id)sender
 {
-    [self setVideoFilter: "psychedelic" on: [o_psychedelic_ckb state]];
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "psychedelic" on: [o_psychedelic_ckb state]];
 }
-
 
 #pragma mark -
 #pragma mark Miscellaneous
 - (IBAction)enableAddText:(id)sender
 {
     BOOL b_state = [o_addtext_ckb state];
+    VLCCoreInteraction *vci_si = [VLCCoreInteraction sharedInstance];
 
     [o_addtext_pos_pop setEnabled: b_state];
     [o_addtext_pos_lbl setEnabled: b_state];
     [o_addtext_text_lbl setEnabled: b_state];
     [o_addtext_text_fld setEnabled: b_state];
-    [self setVideoFilter: "marq" on: b_state];
-    [self setVideoFilterProperty: "marq-marquee" forFilter: "marq" string: (char *)[[o_addtext_text_fld stringValue] UTF8String]];
-    [self setVideoFilterProperty: "marq-position" forFilter: "marq" integer: [[o_addtext_pos_pop selectedItem] tag]];
+    [vci_si setVideoFilter: "marq" on: b_state];
+    [vci_si setVideoFilterProperty: "marq-marquee" forFilter: "marq" string: [[o_addtext_text_fld stringValue] UTF8String]];
+    [vci_si setVideoFilterProperty: "marq-position" forFilter: "marq" integer: [[o_addtext_pos_pop selectedItem] tag]];
 }
 
 - (IBAction)addTextModifierChanged:(id)sender
 {
     if (sender == o_addtext_text_fld)
-        [self setVideoFilterProperty: "marq-marquee" forFilter: "marq" string: (char *)[[o_addtext_text_fld stringValue] UTF8String]];
+        [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "marq-marquee" forFilter: "marq" string:[[o_addtext_text_fld stringValue] UTF8String]];
     else
-        [self setVideoFilterProperty: "marq-position" forFilter: "marq" integer: [[o_addtext_pos_pop selectedItem] tag]];
+        [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "marq-position" forFilter: "marq" integer: [[o_addtext_pos_pop selectedItem] tag]];
 }
 
 - (IBAction)enableAddLogo:(id)sender
@@ -990,20 +1186,24 @@ static VLCVideoEffects *_o_sharedInstance = nil;
     [o_addlogo_logo_lbl setEnabled: b_state];
     [o_addlogo_transparency_sld setEnabled: b_state];
     [o_addlogo_transparency_lbl setEnabled: b_state];
-    [self setVideoFilter: "logo" on: b_state];
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "logo" on: b_state];
 }
 
 - (IBAction)addLogoModifierChanged:(id)sender
 {
     if (sender == o_addlogo_logo_fld)
-        [self setVideoFilterProperty: "logo-file" forFilter: "logo" string: (char *)[[o_addlogo_logo_fld stringValue] UTF8String]];
+        [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "logo-file" forFilter: "logo" string: [[o_addlogo_logo_fld stringValue] UTF8String]];
     else if (sender == o_addlogo_pos_pop)
-        [self setVideoFilterProperty: "logo-position" forFilter: "logo" integer: [[o_addlogo_pos_pop selectedItem] tag]];
-    else
-    {
-        [self setVideoFilterProperty: "logo-opacity" forFilter: "logo" integer: [o_addlogo_transparency_sld intValue]];
+        [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "logo-position" forFilter: "logo" integer: [[o_addlogo_pos_pop selectedItem] tag]];
+    else {
+        [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: "logo-opacity" forFilter: "logo" integer: [o_addlogo_transparency_sld intValue]];
         [o_addlogo_transparency_sld setToolTip: [NSString stringWithFormat:@"%i", [o_addlogo_transparency_sld intValue]]];
     }
+}
+
+- (IBAction)enableAnaglyph:(id)sender
+{
+    [[VLCCoreInteraction sharedInstance] setVideoFilter: "anaglyph" on: [o_anaglyph_ckb state]];
 }
 
 @end

@@ -1,24 +1,24 @@
 /*****************************************************************************
  * mms.c: MMS over tcp, udp and http access plug-in
  *****************************************************************************
- * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: f01c1ed694cf69cd803ffc7c3d8a025464aaca8f $
+ * Copyright (C) 2002-2004 VLC authors and VideoLAN
+ * $Id: 5633c103a1448312c969fa011a1b9a50876f59eb $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -119,7 +119,7 @@ static int Open( vlc_object_t *p_this )
 
     if( MMSTUOpen ( p_access ) )
     {
-        if( p_access->b_die )
+        if( !vlc_object_alive(p_access) )
             return VLC_EGENERIC;
 
         /* try mmsh if mmstu failed */

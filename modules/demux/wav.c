@@ -1,24 +1,24 @@
 /*****************************************************************************
  * wav.c : wav file input module for vlc
  *****************************************************************************
- * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: 4a96f0e1257c99eb8ed0e56ce0e9b187f0df25a2 $
+ * Copyright (C) 2001-2008 VLC authors and VideoLAN
+ * $Id: 0ac9d5e0a00e158b51869e6d1db1c33a7284c494 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -34,6 +34,8 @@
 #include <vlc_demux.h>
 #include <vlc_aout.h>
 #include <vlc_codecs.h>
+
+#include "windows_audio_commons.h"
 
 /*****************************************************************************
  * Module descriptor
@@ -61,7 +63,7 @@ struct demux_sys_t
     es_out_id_t     *p_es;
 
     int64_t         i_data_pos;
-    unsigned int    i_data_size;
+    int64_t         i_data_size;
 
     unsigned int    i_frame_size;
     int             i_frame_samples;
@@ -69,8 +71,8 @@ struct demux_sys_t
     date_t          pts;
 
     uint32_t i_channel_mask;
-    bool b_chan_reorder;              /* do we need channel reordering */
-    int pi_chan_table[AOUT_CHAN_MAX];
+    uint8_t i_chans_to_reorder;            /* do we need channel reordering */
+    uint8_t pi_chan_table[AOUT_CHAN_MAX];
 };
 
 static int ChunkFind( demux_t *, const char *, unsigned int * );
@@ -79,17 +81,6 @@ static int FrameInfo_IMA_ADPCM( unsigned int *, int *, const es_format_t * );
 static int FrameInfo_MS_ADPCM ( unsigned int *, int *, const es_format_t * );
 static int FrameInfo_PCM      ( unsigned int *, int *, const es_format_t * );
 static int FrameInfo_MSGSM    ( unsigned int *, int *, const es_format_t * );
-
-static const uint32_t pi_channels_src[] =
-    { WAVE_SPEAKER_FRONT_LEFT, WAVE_SPEAKER_FRONT_RIGHT,
-      WAVE_SPEAKER_FRONT_CENTER, WAVE_SPEAKER_LOW_FREQUENCY,
-      WAVE_SPEAKER_BACK_LEFT, WAVE_SPEAKER_BACK_RIGHT, WAVE_SPEAKER_BACK_CENTER,
-      WAVE_SPEAKER_SIDE_LEFT, WAVE_SPEAKER_SIDE_RIGHT, 0 };
-static const uint32_t pi_channels_in[] =
-    { AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT,
-      AOUT_CHAN_CENTER, AOUT_CHAN_LFE,
-      AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT, AOUT_CHAN_REARCENTER,
-      AOUT_CHAN_MIDDLELEFT, AOUT_CHAN_MIDDLERIGHT, 0 };
 
 /*****************************************************************************
  * Open: check file and initializes structures
@@ -100,9 +91,11 @@ static int Open( vlc_object_t * p_this )
     demux_sys_t *p_sys;
 
     const uint8_t *p_peek;
-    unsigned int i_size;
-    unsigned int i_extended;
-    const char        *psz_name;
+    bool           b_is_rf64;
+    unsigned int   i_size;
+    uint64_t       i_data_size;
+    unsigned int   i_extended;
+    const char    *psz_name;
 
     WAVEFORMATEXTENSIBLE *p_wf_ext = NULL;
     WAVEFORMATEX         *p_wf = NULL;
@@ -111,24 +104,54 @@ static int Open( vlc_object_t * p_this )
     if( stream_Peek( p_demux->s, &p_peek, 12 ) < 12 )
         return VLC_EGENERIC;
 
-    if( memcmp( p_peek, "RIFF", 4 ) || memcmp( &p_peek[8], "WAVE", 4 ) )
+    b_is_rf64 = ( memcmp( p_peek, "RF64", 4 ) == 0 );
+    if( ( !b_is_rf64 && memcmp( p_peek, "RIFF", 4 ) ) ||
+          memcmp( &p_peek[8], "WAVE", 4 ) )
     {
         return VLC_EGENERIC;
     }
 
-    p_demux->pf_demux   = Demux;
-    p_demux->pf_control = Control;
-    p_demux->p_sys      = p_sys = malloc( sizeof( *p_sys ) );
-    if( p_sys == NULL )
+    p_demux->pf_demux     = Demux;
+    p_demux->pf_control   = Control;
+    p_demux->p_sys        = p_sys = malloc( sizeof( *p_sys ) );
+    if( unlikely(!p_sys) )
         return VLC_ENOMEM;
 
-    p_sys->p_es         = NULL;
-    p_sys->b_chan_reorder = false;
+    p_sys->p_es           = NULL;
+    p_sys->i_data_size    = 0;
+    p_sys->i_chans_to_reorder = 0;
     p_sys->i_channel_mask = 0;
 
     /* skip riff header */
     if( stream_Read( p_demux->s, NULL, 12 ) != 12 )
         goto error;
+
+    if( b_is_rf64 )
+    {
+        /* search datasize64 chunk */
+        if( ChunkFind( p_demux, "ds64", &i_size ) )
+        {
+            msg_Err( p_demux, "cannot find 'ds64' chunk" );
+            goto error;
+        }
+        if( i_size < 24 )
+        {
+            msg_Err( p_demux, "invalid 'ds64' chunk" );
+            goto error;
+        }
+        if( stream_Read( p_demux->s, NULL, 8 ) != 8 )
+            goto error;
+        if( stream_Peek( p_demux->s, &p_peek, 24 ) < 24 )
+            goto error;
+        i_data_size = GetQWLE( &p_peek[8] );
+        if( i_data_size >> 62 )
+            p_sys->i_data_size = (int64_t)1 << 62;
+        else
+            p_sys->i_data_size = i_data_size;
+        if( stream_Read( p_demux->s, NULL, i_size ) != (int)i_size ||
+            ( (i_size & 1) && stream_Read( p_demux->s, NULL, 1 ) != 1 ) )
+            goto error;
+    }
 
     /* search fmt chunk */
     if( ChunkFind( p_demux, "fmt ", &i_size ) )
@@ -148,12 +171,12 @@ static int Open( vlc_object_t * p_this )
 
     /* load waveformatex */
     p_wf_ext = malloc( i_size );
-    if( p_wf_ext == NULL )
+    if( unlikely( !p_wf_ext ) )
          goto error;
 
-    p_wf = &p_wf_ext->Format;
+    p_wf         = &p_wf_ext->Format;
     p_wf->cbSize = 0;
-    i_size -= 2;
+    i_size      -= 2;
     if( stream_Read( p_demux->s, p_wf, i_size ) != (int)i_size ||
         ( ( i_size & 1 ) && stream_Read( p_demux->s, NULL, 1 ) != 1 ) )
     {
@@ -164,10 +187,10 @@ static int Open( vlc_object_t * p_this )
     es_format_Init( &p_sys->fmt, AUDIO_ES, 0 );
     wf_tag_to_fourcc( GetWLE( &p_wf->wFormatTag ), &p_sys->fmt.i_codec,
                       &psz_name );
-    p_sys->fmt.audio.i_channels = GetWLE ( &p_wf->nChannels );
-    p_sys->fmt.audio.i_rate = GetDWLE( &p_wf->nSamplesPerSec );
-    p_sys->fmt.audio.i_blockalign = GetWLE( &p_wf->nBlockAlign );
-    p_sys->fmt.i_bitrate = GetDWLE( &p_wf->nAvgBytesPerSec ) * 8;
+    p_sys->fmt.audio.i_channels      = GetWLE ( &p_wf->nChannels );
+    p_sys->fmt.audio.i_rate          = GetDWLE( &p_wf->nSamplesPerSec );
+    p_sys->fmt.audio.i_blockalign    = GetWLE( &p_wf->nBlockAlign );
+    p_sys->fmt.i_bitrate             = GetDWLE( &p_wf->nAvgBytesPerSec ) * 8;
     p_sys->fmt.audio.i_bitspersample = GetWLE( &p_wf->wBitsPerSample );
     if( i_size >= sizeof(WAVEFORMATEX) )
         p_sys->fmt.i_extra = __MIN( GetWLE( &p_wf->cbSize ), i_size - sizeof(WAVEFORMATEX) );
@@ -181,7 +204,7 @@ static int Open( vlc_object_t * p_this )
         ( p_sys->fmt.i_extra + sizeof( WAVEFORMATEX )
             >= sizeof( WAVEFORMATEXTENSIBLE ) ) )
     {
-        unsigned i, i_channel_mask;
+        unsigned i_channel_mask;
         GUID guid_subformat;
 
         guid_subformat = p_wf_ext->SubFormat;
@@ -198,20 +221,7 @@ static int Open( vlc_object_t * p_this )
         if( i_channel_mask )
         {
             int i_match = 0;
-            for( i = 0; i < sizeof(pi_channels_src)/sizeof(*pi_channels_src); i++ )
-            {
-                if( i_channel_mask & pi_channels_src[i] )
-                {
-                    if( !( p_sys->i_channel_mask & pi_channels_in[i] ) )
-                        i_match++;
-
-                    i_channel_mask &= ~pi_channels_src[i];
-                    p_sys->i_channel_mask |= pi_channels_in[i];
-
-                    if( i_match >= p_sys->fmt.audio.i_channels )
-                        break;
-                }
-            }
+            p_sys->i_channel_mask = getChannelMask( &i_channel_mask, p_sys->fmt.audio.i_channels, &i_match );
             if( i_channel_mask )
                 msg_Warn( p_demux, "Some channels are unrecognized or uselessly specified (0x%x)", i_channel_mask );
             if( i_match < p_sys->fmt.audio.i_channels )
@@ -237,11 +247,11 @@ static int Open( vlc_object_t * p_this )
                     }
                 }
                 /* Well fill up with what we can */
-                for( unsigned i = 0; i < sizeof(pi_channels_in)/sizeof(*pi_channels_in) && i_missing > 0; i++ )
+                for( unsigned i = 0; i < sizeof(pi_channels_aout)/sizeof(*pi_channels_aout) && i_missing > 0; i++ )
                 {
-                    if( !( p_sys->i_channel_mask & pi_channels_in[i] ) )
+                    if( !( p_sys->i_channel_mask & pi_channels_aout[i] ) )
                     {
-                        p_sys->i_channel_mask |= pi_channels_in[i];
+                        p_sys->i_channel_mask |= pi_channels_aout[i];
                         i_missing--;
 
                         if( i_missing <= 0 )
@@ -262,22 +272,20 @@ static int Open( vlc_object_t * p_this )
              p_sys->fmt.audio.i_channels > 2 && p_sys->fmt.audio.i_channels <= 9 )
     {
         for( int i = 0; i < p_sys->fmt.audio.i_channels; i++ )
-            p_sys->i_channel_mask |= pi_channels_in[i];
+            p_sys->i_channel_mask |= pi_channels_aout[i];
     }
 
     if( p_sys->i_channel_mask )
     {
         if( p_sys->fmt.i_codec == VLC_FOURCC('a','r','a','w') ||
-            p_sys->fmt.i_codec == VLC_FOURCC('p','c','m',' ') ||
             p_sys->fmt.i_codec == VLC_FOURCC('a','f','l','t') )
-            p_sys->b_chan_reorder =
-                aout_CheckChannelReorder( pi_channels_in, NULL,
+            p_sys->i_chans_to_reorder =
+                aout_CheckChannelReorder( pi_channels_aout, NULL,
                                           p_sys->i_channel_mask,
-                                          p_sys->fmt.audio.i_channels,
                                           p_sys->pi_chan_table );
 
-        msg_Dbg( p_demux, "channel mask: %x, reordering: %i",
-                 p_sys->i_channel_mask, (int)p_sys->b_chan_reorder );
+        msg_Dbg( p_demux, "channel mask: %x, reordering: %u",
+                 p_sys->i_channel_mask, p_sys->i_chans_to_reorder );
     }
 
     p_sys->fmt.audio.i_physical_channels =
@@ -286,7 +294,7 @@ static int Open( vlc_object_t * p_this )
     if( p_sys->fmt.i_extra > 0 )
     {
         p_sys->fmt.p_extra = malloc( p_sys->fmt.i_extra );
-        if( !p_sys->fmt.p_extra )
+        if( unlikely(!p_sys->fmt.p_extra) )
         {
             p_sys->fmt.i_extra = 0;
             goto error;
@@ -313,12 +321,21 @@ static int Open( vlc_object_t * p_this )
     case VLC_FOURCC( 'u', 'l', 'a', 'w' ):
     case VLC_CODEC_ALAW:
     case VLC_CODEC_MULAW:
-    case VLC_FOURCC( 'p', 'c', 'm', ' ' ):
         if( FrameInfo_PCM( &p_sys->i_frame_size, &p_sys->i_frame_samples,
                            &p_sys->fmt ) )
             goto error;
+        p_sys->fmt.i_codec =
+            vlc_fourcc_GetCodecAudio( p_sys->fmt.i_codec,
+                                      p_sys->fmt.audio.i_bitspersample );
+        if( p_sys->fmt.i_codec == 0 ) {
+            msg_Err( p_demux, "Unrecognized codec" );
+            goto error;
+        }
         break;
     case VLC_CODEC_ADPCM_MS:
+    /* FIXME not sure at all FIXME */
+    case VLC_FOURCC( 'm', 's', 0x00, 0x61 ):
+    case VLC_FOURCC( 'm', 's', 0x00, 0x62 ):
         if( FrameInfo_MS_ADPCM( &p_sys->i_frame_size, &p_sys->i_frame_samples,
                                 &p_sys->fmt ) )
             goto error;
@@ -328,19 +345,16 @@ static int Open( vlc_object_t * p_this )
                                  &p_sys->fmt ) )
             goto error;
         break;
-    case VLC_FOURCC( 'm', 's', 0x00, 0x61 ):
-    case VLC_FOURCC( 'm', 's', 0x00, 0x62 ):
-        /* FIXME not sure at all FIXME */
-        if( FrameInfo_MS_ADPCM( &p_sys->i_frame_size, &p_sys->i_frame_samples,
-                                &p_sys->fmt ) )
-            goto error;
-        break;
     case VLC_CODEC_MPGA:
     case VLC_CODEC_A52:
         /* FIXME set end of area FIXME */
         goto error;
     case VLC_CODEC_GSM_MS:
     case VLC_CODEC_ADPCM_G726:
+    case VLC_CODEC_TRUESPEECH:
+    case VLC_CODEC_ATRAC3:
+    case VLC_CODEC_G723_1:
+    case VLC_CODEC_WMA2:
         if( FrameInfo_MSGSM( &p_sys->i_frame_size, &p_sys->i_frame_samples,
                              &p_sys->fmt ) )
             goto error;
@@ -365,11 +379,13 @@ static int Open( vlc_object_t * p_this )
 
     msg_Dbg( p_demux, "found %s audio format", psz_name );
 
-    if( ChunkFind( p_demux, "data", &p_sys->i_data_size ) )
+    if( ChunkFind( p_demux, "data", &i_size ) )
     {
         msg_Err( p_demux, "cannot find 'data' chunk" );
         goto error;
     }
+    if( !b_is_rf64 || i_size < UINT32_MAX )
+        p_sys->i_data_size = i_size;
     if( stream_Read( p_demux->s, NULL, 8 ) != 8 )
         goto error;
     p_sys->i_data_pos = stream_Tell( p_demux->s );
@@ -388,7 +404,7 @@ static int Open( vlc_object_t * p_this )
     return VLC_SUCCESS;
 
 error:
-    msg_Err( p_demux, "An error occured during wav demuxing" );
+    msg_Err( p_demux, "An error occurred during wav demuxing" );
     free( p_wf );
     free( p_sys );
     return VLC_EGENERIC;
@@ -404,15 +420,20 @@ static int Demux( demux_t *p_demux )
     demux_sys_t *p_sys = p_demux->p_sys;
     block_t     *p_block;
     const int64_t i_pos = stream_Tell( p_demux->s );
+    unsigned int i_read_size = p_sys->i_frame_size;
 
-    if( p_sys->i_data_size > 0 &&
-        i_pos >= p_sys->i_data_pos + p_sys->i_data_size )
+    if( p_sys->i_data_size > 0 )
     {
-        /* EOF */
-        return 0;
+        int64_t i_end = p_sys->i_data_pos + p_sys->i_data_size;
+        if ( i_pos >= i_end )
+            return 0;  /* EOF */
+
+        /* Don't read past data chunk boundary */
+        if ( i_end < i_pos + i_read_size )
+            i_read_size = i_end - i_pos;
     }
 
-    if( ( p_block = stream_Block( p_demux->s, p_sys->i_frame_size ) ) == NULL )
+    if( ( p_block = stream_Block( p_demux->s, i_read_size ) ) == NULL )
     {
         msg_Warn( p_demux, "cannot read data" );
         return 0;
@@ -425,11 +446,10 @@ static int Demux( demux_t *p_demux )
     es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_block->i_pts );
 
     /* Do the channel reordering */
-    if( p_sys->b_chan_reorder )
+    if( p_sys->i_chans_to_reorder )
         aout_ChannelReorder( p_block->p_buffer, p_block->i_buffer,
                              p_sys->fmt.audio.i_channels,
-                             p_sys->pi_chan_table,
-                             p_sys->fmt.audio.i_bitspersample );
+                             p_sys->pi_chan_table, p_sys->fmt.i_codec );
 
     es_out_Send( p_demux->out, p_sys->p_es, p_block );
 
@@ -444,7 +464,7 @@ static int Demux( demux_t *p_demux )
 static void Close ( vlc_object_t * p_this )
 {
     demux_t     *p_demux = (demux_t*)p_this;
-    demux_sys_t *p_sys  = p_demux->p_sys;
+    demux_sys_t *p_sys   = p_demux->p_sys;
 
     free( p_sys );
 }

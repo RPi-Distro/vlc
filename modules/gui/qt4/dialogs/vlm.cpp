@@ -2,7 +2,7 @@
  * vlm.cpp : VLM Management
  ****************************************************************************
  * Copyright © 2008 the VideoLAN team
- * $Id: a4e27361b4b8e201a5bd3b1ab06d3dd612947660 $
+ * $Id: 0da88ccf2bbd7ef9c84688b384382bc301d7481d $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Jean-François Massol <jf.massol -at- gmail.com>
@@ -54,7 +54,7 @@
 #include <QFileDialog>
 
 
-VLMDialog::VLMDialog( intf_thread_t *_p_intf ) : QVLCDialog( (QWidget*)_p_intf->p_sys->p_mi, _p_intf )
+VLMDialog::VLMDialog( intf_thread_t *_p_intf ) : QVLCFrame( _p_intf )
 {
     p_vlm = vlm_New( p_intf );
 
@@ -94,7 +94,7 @@ VLMDialog::VLMDialog( intf_thread_t *_p_intf ) : QVLCDialog( (QWidget*)_p_intf->
     date = new QDateTimeEdit( QDate::currentDate() );
     date->setAlignment( Qt::AlignRight );
     date->setCalendarPopup( true );
-#ifdef WIN32
+#ifdef _WIN32
     date->setDisplayFormat( "dd MM yyyy" );
 #else
     date->setDisplayFormat( "dd MMMM yyyy" );
@@ -290,7 +290,7 @@ void VLMDialog::mediasPopulator()
         int i_nMedias;
         QString typeShortName;
         int vlmItemCount;
-        vlm_media_t ***ppp_dsc = (vlm_media_t ***)malloc( sizeof( vlm_media_t ) );
+        vlm_media_t ***ppp_dsc = (vlm_media_t ***)malloc( sizeof( vlm_media_t** ) );
 
         /* Get medias information and numbers */
         vlm_Control( p_vlm, VLM_GET_MEDIAS, ppp_dsc, &i_nMedias );
@@ -606,12 +606,12 @@ void VLMBroadcast::stop()
 /****************
  * VLMSchedule
  ****************/
-VLMSchedule::VLMSchedule( const QString& name, const QString& input,
+VLMSchedule::VLMSchedule( const QString& name_, const QString& input,
                           const QString& inputOptions,
                           const QString& output, QDateTime _schetime,
                           QDateTime _schedate, int _scherepeatnumber,
                           int _repeatDays, bool enabled, VLMDialog *parent )
-            : VLMAWidget( name, input, inputOptions, output, enabled, parent,
+            : VLMAWidget( name_, input, inputOptions, output, enabled, parent,
                           QVLM_Schedule )
 {
     nameLabel->setText( qtr("Schedule: ") + name );
@@ -632,10 +632,10 @@ void VLMSchedule::update()
 /****************
  * VLMVOD
  ****************/
-VLMVod::VLMVod( const QString& name, const QString& input,
+VLMVod::VLMVod( const QString& name_, const QString& input,
                 const QString& inputOptions, const QString& output,
                 bool enabled, const QString& _mux, VLMDialog *parent)
-       : VLMAWidget( name, input, inputOptions, output, enabled, parent,
+       : VLMAWidget( name_, input, inputOptions, output, enabled, parent,
                      QVLM_VOD )
 {
     nameLabel->setText( qtr("VOD: ") + name );
@@ -752,7 +752,7 @@ void VLMWrapper::ControlBroadcast( const QString& name, int BroadcastStatus,
         command += " stop";
         break;
     case ControlBroadcastSeek:
-        command += " seek" + seek;
+        command += " seek " + QString::number( seek );
         break;
     }
     vlm_ExecuteCommand( p_vlm, qtu( command ), &message );
@@ -901,7 +901,7 @@ void VLMDialog::toggleVisible()
 
     ui.vlmListItem->clear();
     mediasPopulator();
-    QVLCDialog::toggleVisible();
+    QVLCFrame::toggleVisible();
 }
 
 

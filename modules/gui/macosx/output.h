@@ -2,7 +2,7 @@
  * output.h: MacOS X Output Dialog
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: 0c0eaba8bc6aa394cba93aff70e41871de86eaaa $
+ * $Id: 6bb43232fc2fecdbe9ee1333a873a39485c00809 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -82,9 +82,8 @@
     NSArray *o_mrl;
     NSString *o_transcode;
 }
+@property (readwrite, retain) NSArray * soutMRL;
 
-- (void)setMRL:(NSArray *)o_mrl_string;
-- (NSArray *)mrl;
 - (void)setTranscode:(NSString *)o_transcode_string;
 
 - (void)initStrings;
@@ -92,11 +91,15 @@
 - (IBAction)outputChanged:(id)sender;
 - (IBAction)outputSettings:(id)sender;
 - (IBAction)outputCloseSheet:(id)sender;
-- (void)outputMethodChanged:(NSNotification *)o_notification;
-- (void)outputInfoChanged:(NSNotification *)o_notification;
+- (IBAction)outputMethodChanged:(id)sender;
+- (IBAction)outputInfoChanged:(id)object;
 - (void)TTLChanged:(NSNotification *)o_notification;
 - (IBAction)outputFileBrowse:(id)sender;
-- (void)transcodeChanged:(NSNotification *)o_notification;
-- (void)transcodeInfoChanged:(NSNotification *)o_notification;
+- (IBAction)streamPortStepperChanged:(id)sender;
+- (IBAction)streamTTLStepperChanged:(id)sender;
+- (IBAction)transcodeChanged:(id)sender;
+- (IBAction)transcodeInfoChanged:(id)object;
 - (IBAction)announceChanged:(id)sender;
+
+- (IBAction)streamTTLStepperChanged:(id)sender;
 @end

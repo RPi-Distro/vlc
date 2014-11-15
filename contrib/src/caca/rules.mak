@@ -14,23 +14,24 @@ $(TARBALLS)/libcaca-$(CACA_VERSION).tar.gz:
 
 caca: libcaca-$(CACA_VERSION).tar.gz .sum-caca
 	$(UNPACK)
-ifdef HAVE_MACOSX
-	$(APPLY) $(SRC)/caca/caca-osx-sdkofourchoice.patch
 	$(APPLY) $(SRC)/caca/caca-fix-compilation-llvmgcc.patch
-endif
 	$(APPLY) $(SRC)/caca/caca-llvm-weak-alias.patch
-
-ifdef HAVE_WIN32
+	$(APPLY) $(SRC)/caca/caca-osx-sdkofourchoice.patch
 	$(APPLY) $(SRC)/caca/caca-win32-static.patch
-endif
 	$(MOVE)
 
-CONFIGURE_FLAGS := --disable-imlib2 --disable-doc --disable-ruby --disable-csharp --disable-cxx --disable-java
+CACA_CONF := \
+	--disable-imlib2 \
+	--disable-doc \
+	--disable-ruby \
+	--disable-csharp \
+	--disable-cxx \
+	--disable-java
 ifdef HAVE_MACOSX
-CONFIGURE_FLAGS += --disable-x11
+CACA_CONF += --disable-x11
 endif
 
 .caca: caca
-	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) $(CONFIGURE_FLAGS)
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) $(CACA_CONF)
 	cd $< && $(MAKE) -C $< install
 	touch $@

@@ -7,19 +7,19 @@
  * Authors: Christopher Mueller <christopher.mueller@itec.uni-klu.ac.at>
  *          Christian Timmerer  <christian.timmerer@itec.uni-klu.ac.at>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published
  * by the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -30,28 +30,40 @@
 using namespace dash::logic;
 using namespace dash::xml;
 using namespace dash::mpd;
-using namespace dash::exception;
 
-AbstractAdaptationLogic::AbstractAdaptationLogic    (IMPDManager *mpdManager)
+AbstractAdaptationLogic::AbstractAdaptationLogic    (IMPDManager *mpdManager, stream_t *stream) :
+                         bpsAvg                     (0),
+                         bpsLastChunk               (0),
+                         mpdManager                 (mpdManager),
+                         stream                     (stream),
+                         bufferedMicroSec           (0),
+                         bufferedPercent            (0)
+
 {
-    this->bpsAvg        = -1;
-    this->bpsLastChunk  = 0;
-    this->mpdManager    = mpdManager;
 }
 AbstractAdaptationLogic::~AbstractAdaptationLogic   ()
 {
 }
 
-void AbstractAdaptationLogic::downloadRateChanged    (long bpsAvg, long bpsLastChunk)
+void AbstractAdaptationLogic::bufferLevelChanged     (mtime_t bufferedMicroSec, int bufferedPercent)
+{
+    this->bufferedMicroSec = bufferedMicroSec;
+    this->bufferedPercent  = bufferedPercent;
+}
+void AbstractAdaptationLogic::downloadRateChanged    (uint64_t bpsAvg, uint64_t bpsLastChunk)
 {
     this->bpsAvg        = bpsAvg;
     this->bpsLastChunk  = bpsLastChunk;
 }
-long AbstractAdaptationLogic::getBpsAvg              ()
+uint64_t AbstractAdaptationLogic::getBpsAvg          () const
 {
     return this->bpsAvg;
 }
-long AbstractAdaptationLogic::getBpsLastChunk        ()
+uint64_t AbstractAdaptationLogic::getBpsLastChunk    () const
 {
     return this->bpsLastChunk;
+}
+int AbstractAdaptationLogic::getBufferPercent        () const
+{
+    return this->bufferedPercent;
 }

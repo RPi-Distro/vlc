@@ -2,7 +2,7 @@
  * image.c : wrapper for image reading/writing facilities
  *****************************************************************************
  * Copyright (C) 2004-2007 VLC authors and VideoLAN
- * $Id: 0902bd002ff6ace5f98689320a2602b792b6c18b $
+ * $Id: f5be25b32c8579d86fc5da931013be94166bdbe5 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -174,6 +174,10 @@ static picture_t *ImageRead( image_handler_t *p_image, block_t *p_block,
         p_fmt_out->i_width = p_image->p_dec->fmt_out.video.i_width;
     if( !p_fmt_out->i_height )
         p_fmt_out->i_height = p_image->p_dec->fmt_out.video.i_height;
+    if( !p_fmt_out->i_visible_width )
+        p_fmt_out->i_visible_width = p_fmt_out->i_width;
+    if( !p_fmt_out->i_visible_height )
+        p_fmt_out->i_visible_height = p_fmt_out->i_height;
 
     /* Check if we need chroma conversion or resizing */
     if( p_image->p_dec->fmt_out.video.i_chroma != p_fmt_out->i_chroma ||
@@ -240,7 +244,7 @@ static picture_t *ImageReadUrl( image_handler_t *p_image, const char *psz_url,
 
     i_size = stream_Size( p_stream );
 
-    p_block = block_New( p_image->p_parent, i_size );
+    p_block = block_Alloc( i_size );
 
     stream_Read( p_stream, p_block->p_buffer, i_size );
 
@@ -381,7 +385,7 @@ static int ImageWriteUrl( image_handler_t *p_image, picture_t *p_pic,
     file = vlc_fopen( psz_url, "wb" );
     if( !file )
     {
-        msg_Err( p_image->p_parent, "%s: %m", psz_url );
+        msg_Err( p_image->p_parent, "%s: %s", psz_url, vlc_strerror_c(errno) );
         return VLC_EGENERIC;
     }
 
@@ -401,7 +405,7 @@ static int ImageWriteUrl( image_handler_t *p_image, picture_t *p_pic,
     if( err )
     {
        errno = err;
-       msg_Err( p_image->p_parent, "%s: %m", psz_url );
+       msg_Err( p_image->p_parent, "%s: %s", psz_url, vlc_strerror_c(errno) );
     }
 
     return err ? VLC_EGENERIC : VLC_SUCCESS;
@@ -531,7 +535,7 @@ static picture_t *ImageFilter( image_handler_t *p_image, picture_t *p_pic,
 static const struct
 {
     vlc_fourcc_t i_codec;
-    const char *psz_ext;
+    const char psz_ext[7];
 
 } ext_table[] =
 {
@@ -550,18 +554,16 @@ static const struct
     { VLC_FOURCC('x','c','f',' '), "xcf" },
     { VLC_CODEC_PCX,               "pcx" },
     { VLC_CODEC_GIF,               "gif" },
+    { VLC_CODEC_SVG,               "svg" },
     { VLC_CODEC_TIFF,              "tif" },
     { VLC_CODEC_TIFF,              "tiff" },
     { VLC_FOURCC('l','b','m',' '), "lbm" },
     { VLC_CODEC_PPM,               "ppm" },
-    { 0, NULL }
 };
 
 vlc_fourcc_t image_Type2Fourcc( const char *psz_type )
 {
-    int i;
-
-    for( i = 0; ext_table[i].i_codec; i++ )
+    for( unsigned i = 0; i < ARRAY_SIZE(ext_table); i++ )
         if( !strcasecmp( ext_table[i].psz_ext, psz_type ) )
             return ext_table[i].i_codec;
 
@@ -580,12 +582,9 @@ vlc_fourcc_t image_Ext2Fourcc( const char *psz_name )
 /*
 static const char *Fourcc2Ext( vlc_fourcc_t i_codec )
 {
-    int i;
-
-    for( i = 0; ext_table[i].i_codec != 0; i++ )
-    {
-        if( ext_table[i].i_codec == i_codec ) return ext_table[i].psz_ext;
-    }
+    for( unsigned i = 0; i < ARRAY_SIZE(ext_table); i++ )
+        if( ext_table[i].i_codec == i_codec )
+            return ext_table[i].psz_ext;
 
     return NULL;
 }
@@ -609,6 +608,7 @@ static const struct
     { VLC_CODEC_JPEG,              "image/jpeg" },
     { VLC_CODEC_PCX,               "image/pcx" },
     { VLC_CODEC_PNG,               "image/png" },
+    { VLC_CODEC_SVG,               "image/svg+xml" },
     { VLC_CODEC_TIFF,              "image/tiff" },
     { VLC_CODEC_TARGA,             "image/x-tga" },
     { VLC_FOURCC('x','p','m',' '), "image/x-xpixmap" },
@@ -633,11 +633,8 @@ static picture_t *video_new_buffer( decoder_t *p_dec )
 
 static void video_del_buffer( decoder_t *p_dec, picture_t *p_pic )
 {
-    if( p_pic->i_refcount != 1 )
-        msg_Err( p_dec, "invalid picture reference count" );
-
-    p_pic->i_refcount = 0;
-    picture_Delete( p_pic );
+    (void)p_dec;
+    picture_Release( p_pic );
 }
 
 static void video_link_picture( decoder_t *p_dec, picture_t *p_pic )
@@ -712,33 +709,38 @@ static encoder_t *CreateEncoder( vlc_object_t *p_this, video_format_t *fmt_in,
     p_enc->p_module = NULL;
     es_format_Init( &p_enc->fmt_in, VIDEO_ES, fmt_in->i_chroma );
     p_enc->fmt_in.video = *fmt_in;
-    if( fmt_out->i_width > 0 && fmt_out->i_height > 0 )
-    {
-        p_enc->fmt_in.video.i_width = fmt_out->i_width;
-        p_enc->fmt_in.video.i_height = fmt_out->i_height;
 
-        if( fmt_out->i_visible_width > 0 &&
-            fmt_out->i_visible_height > 0 )
-        {
-            p_enc->fmt_in.video.i_visible_width = fmt_out->i_visible_width;
-            p_enc->fmt_in.video.i_visible_height = fmt_out->i_visible_height;
-        }
-        else
-        {
-            p_enc->fmt_in.video.i_visible_width = fmt_out->i_width;
-            p_enc->fmt_in.video.i_visible_height = fmt_out->i_height;
-        }
-    }
-    else if( fmt_out->i_sar_num && fmt_out->i_sar_den &&
-             fmt_out->i_sar_num * fmt_in->i_sar_den !=
-             fmt_out->i_sar_den * fmt_in->i_sar_num )
+    if( p_enc->fmt_in.video.i_visible_width == 0 ||
+        p_enc->fmt_in.video.i_visible_height == 0 )
     {
-        p_enc->fmt_in.video.i_width =
-            fmt_in->i_sar_num * (int64_t)fmt_out->i_sar_den * fmt_in->i_width /
-            fmt_in->i_sar_den / fmt_out->i_sar_num;
-        p_enc->fmt_in.video.i_visible_width =
-            fmt_in->i_sar_num * (int64_t)fmt_out->i_sar_den *
-            fmt_in->i_visible_width / fmt_in->i_sar_den / fmt_out->i_sar_num;
+        if( fmt_out->i_width > 0 && fmt_out->i_height > 0 )
+        {
+            p_enc->fmt_in.video.i_width = fmt_out->i_width;
+            p_enc->fmt_in.video.i_height = fmt_out->i_height;
+
+            if( fmt_out->i_visible_width > 0 &&
+                fmt_out->i_visible_height > 0 )
+            {
+                p_enc->fmt_in.video.i_visible_width = fmt_out->i_visible_width;
+                p_enc->fmt_in.video.i_visible_height = fmt_out->i_visible_height;
+            }
+            else
+            {
+                p_enc->fmt_in.video.i_visible_width = fmt_out->i_width;
+                p_enc->fmt_in.video.i_visible_height = fmt_out->i_height;
+            }
+        }
+        else if( fmt_out->i_sar_num && fmt_out->i_sar_den &&
+                 fmt_out->i_sar_num * fmt_in->i_sar_den !=
+                 fmt_out->i_sar_den * fmt_in->i_sar_num )
+        {
+            p_enc->fmt_in.video.i_width =
+                fmt_in->i_sar_num * (int64_t)fmt_out->i_sar_den * fmt_in->i_width /
+                fmt_in->i_sar_den / fmt_out->i_sar_num;
+            p_enc->fmt_in.video.i_visible_width =
+                fmt_in->i_sar_num * (int64_t)fmt_out->i_sar_den *
+                fmt_in->i_visible_width / fmt_in->i_sar_den / fmt_out->i_sar_num;
+        }
     }
 
     p_enc->fmt_in.video.i_frame_rate = 25;

@@ -2,7 +2,7 @@
  * skin_main.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 095bf498ea1d1701344e5593c434d2d059f6e57b $
+ * $Id: caecdff887a7c554e1a12fc68e2a72dfd1a356e2 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -81,11 +81,6 @@ static int Open( vlc_object_t *p_this )
     if( p_intf->p_sys == NULL )
         return VLC_ENOMEM;
 
-    // Suscribe to messages bank
-#if 0
-    p_intf->p_sys->p_sub = vlc_Subscribe( p_intf );
-#endif
-
     p_intf->p_sys->p_input = NULL;
     p_intf->p_sys->p_playlist = pl_Get( p_intf );
 
@@ -153,19 +148,29 @@ static void Close( vlc_object_t *p_this )
 
     msg_Dbg( p_intf, "closing skins2 module" );
 
+    /* Terminate input to ensure that our window provider is released. */
+    playlist_Deactivate( p_intf->p_sys->p_playlist );
+
     vlc_mutex_lock( &skin_load.mutex );
     skin_load.intf = NULL;
     vlc_mutex_unlock( &skin_load.mutex);
+
+    AsyncQueue *pQueue = p_intf->p_sys->p_queue;
+    if( pQueue )
+    {
+        CmdGeneric *pCmd = new CmdExitLoop( p_intf );
+        if( pCmd )
+            pQueue->push( CmdGenericPtr( pCmd ) );
+    }
+    else
+    {
+        msg_Err( p_intf, "thread found already stopped (weird!)" );
+    }
 
     vlc_join( p_intf->p_sys->thread, NULL );
 
     vlc_mutex_destroy( &p_intf->p_sys->init_lock );
     vlc_cond_destroy( &p_intf->p_sys->init_wait );
-
-    // Unsubscribe from messages bank
-#if 0
-    vlc_Unsubscribe( p_intf, p_intf->p_sys->p_sub );
-#endif
 
     // Destroy structure
     free( p_intf->p_sys );
@@ -350,8 +355,7 @@ static int WindowOpen( vout_window_t *pWnd, const vout_window_cfg_t *cfg )
     if( pIntf == NULL )
         return VLC_EGENERIC;
 
-    if( !vlc_object_alive( pIntf ) ||
-        !var_InheritBool( pIntf, "skinned-video") ||
+    if( !var_InheritBool( pIntf, "skinned-video") ||
         cfg->is_standalone )
     {
         vlc_object_release( pIntf );
@@ -487,7 +491,7 @@ vlc_module_begin ()
     add_string( "skins2-config", "", SKINS2_CONFIG, SKINS2_CONFIG_LONG,
                 true )
         change_private ()
-#ifdef WIN32
+#ifdef _WIN32
     add_bool( "skins2-systray", true, SKINS2_SYSTRAY,
               SKINS2_SYSTRAY_LONG, false );
     add_bool( "skins2-taskbar", true, SKINS2_TASKBAR,
@@ -507,7 +511,7 @@ vlc_module_begin ()
     add_shortcut( "skins" )
 
     add_submodule ()
-#ifdef WIN32
+#if defined( _WIN32 ) || defined( __OS2__ )
         set_capability( "vout window hwnd", 51 )
 #else
         set_capability( "vout window xid", 51 )

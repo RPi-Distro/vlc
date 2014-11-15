@@ -2,7 +2,7 @@
  * xml.c: XML related functions
  *****************************************************************************
  * Copyright (C) 2010 Antoine Cellerier
- * $Id: f8b0afef97711b67bcf04ca867b45b36199a1ebd $
+ * $Id: 80f53fbe8e3f12fa66b35b18bd36ae35b1675b22 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -34,9 +34,6 @@
 
 #include <vlc_common.h>
 #include <vlc_xml.h>
-
-#include <lua.h>        /* Low level lua C API */
-#include <lauxlib.h>    /* Higher level C API */
 
 #include "../vlc.h"
 #include "../libs.h"

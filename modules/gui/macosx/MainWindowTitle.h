@@ -2,7 +2,7 @@
  * MainWindowTitle.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: f3f8b11dfdac40fc8385b92a056505002e680e78 $
+ * $Id: 201572f877f1eb3b38969c08c1c6b43a5de134b1 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -39,6 +39,15 @@
     NSImage * o_green_img;
     NSImage * o_green_over_img;
     NSImage * o_green_on_img;
+    // yosemite fullscreen images
+    NSImage * o_fullscreen_img;
+    NSImage * o_fullscreen_over_img;
+    NSImage * o_fullscreen_on_img;
+    // old native fullscreen images
+    NSImage * o_old_fullscreen_img;
+    NSImage * o_old_fullscreen_over_img;
+    NSImage * o_old_fullscreen_on_img;
+
     NSShadow * o_window_title_shadow;
     NSDictionary * o_window_title_attributes_dict;
 
@@ -47,39 +56,39 @@
     IBOutlet id o_green_btn;
     IBOutlet id o_fullscreen_btn;
     IBOutlet id o_title_lbl;
-}
 
+    BOOL b_nativeFullscreenMode;
+
+    // state to determine correct image for green bubble
+    BOOL b_alt_pressed;
+    BOOL b_mouse_over;
+}
+@property (readonly) NSButton * closeButton;
+@property (readonly) NSButton * minimizeButton;
+@property (readonly) NSButton * zoomButton;
+
+- (void)informModifierPressed:(BOOL)b_is_altkey;
 - (void)loadButtonIcons;
 - (IBAction)buttonAction:(id)sender;
 - (void)setWindowTitle:(NSString *)title;
-- (void)setFullscreenButtonHidden:(BOOL)b_value;
 - (void)setWindowButtonOver:(BOOL)b_value;
 - (void)setWindowFullscreenButtonOver:(BOOL)b_value;
-
-- (NSButton*)closeButton;
-- (NSButton*)minimizeButton;
-- (NSButton*)zoomButton;
 
 @end
 
 @interface VLCWindowButtonCell : NSButtonCell
-{
-}
+
 @end
 
 @interface VLCResizeControl : NSImageView
-{
-}
+
 @end
 
 @interface VLCColorView : NSView
-{
-}
+
 @end
 
 @interface VLCCustomWindowButtonPrototype: NSButton
-{
-}
 - (NSArray*)extendedAccessibilityAttributeNames: (NSArray*)theAttributeNames;
 - (id)extendedAccessibilityAttributeValue: (NSString*)theAttributeName;
 - (NSNumber*)extendedAccessibilityIsAttributeSettable: (NSString*)theAttributeName;
@@ -87,25 +96,21 @@
 @end
 
 @interface VLCCustomWindowCloseButton: VLCCustomWindowButtonPrototype
-{
-}
+
 @end
 
 
 @interface VLCCustomWindowMinimizeButton: VLCCustomWindowButtonPrototype
-{
-}
+
 @end
 
 
 @interface VLCCustomWindowZoomButton: VLCCustomWindowButtonPrototype
-{
-}
+
 @end
 
 @interface VLCCustomWindowFullscreenButton : VLCCustomWindowButtonPrototype
-{
-}
+
 @end
 
 @interface VLCWindowTitleTextField : NSTextField

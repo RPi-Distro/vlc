@@ -1,27 +1,30 @@
 # FLAC
 
-FLAC_VERSION := 1.2.1
-FLAC_URL := $(SF)/flac/flac-src/flac-$(FLAC_VERSION)-src/flac-$(FLAC_VERSION).tar.gz
+FLAC_VERSION := 1.3.0
+FLAC_URL := http://downloads.xiph.org/releases/flac/flac-$(FLAC_VERSION).tar.xz
 
 PKGS += flac
 ifeq ($(call need_pkg,"flac"),)
 PKGS_FOUND += flac
 endif
 
-$(TARBALLS)/flac-$(FLAC_VERSION).tar.gz:
+$(TARBALLS)/flac-$(FLAC_VERSION).tar.xz:
 	$(call download,$(FLAC_URL))
 
-.sum-flac: flac-$(FLAC_VERSION).tar.gz
+.sum-flac: flac-$(FLAC_VERSION).tar.xz
 
-flac: flac-$(FLAC_VERSION).tar.gz .sum-flac
+flac: flac-$(FLAC_VERSION).tar.xz .sum-flac
 	$(UNPACK)
-	$(APPLY) $(SRC)/flac/flac-win32.patch
 	$(APPLY) $(SRC)/flac/libFLAC-pc.patch
-ifdef HAVE_WIN32
-	$(APPLY) $(SRC)/flac/libFLAC-pc-win32.patch
-endif
-ifdef HAVE_MACOSX
+ifdef HAVE_DARWIN_OS
 	cd $(UNPACK_DIR) && sed -e 's,-dynamiclib,-dynamiclib -arch $(ARCH),' -i.orig configure
+endif
+ifdef HAVE_ANDROID
+ifeq ($(ANDROID_ABI), x86)
+	# cpu.c:130:29: error: sys/ucontext.h: No such file or directory
+	# defining USE_OBSOLETE_SIGCONTEXT_FLAVOR allows us to bypass that
+	cd $(UNPACK_DIR) && sed -i.orig -e s/"#  undef USE_OBSOLETE_SIGCONTEXT_FLAVOR"/"#define USE_OBSOLETE_SIGCONTEXT_FLAVOR"/g src/libFLAC/cpu.c
+endif
 endif
 	$(UPDATE_AUTOCONFIG)
 	$(MOVE)
@@ -33,7 +36,7 @@ FLACCONF := $(HOSTCONF) \
 	--disable-cpplibs \
 	--disable-oggtest
 # TODO? --enable-sse
-ifdef HAVE_MACOSX
+ifdef HAVE_DARWIN_OS
 ifneq ($(findstring $(ARCH),i386 x86_64),)
 FLACCONF += --disable-asm-optimizations
 endif
@@ -43,6 +46,6 @@ DEPS_flac = ogg $(DEPS_ogg)
 
 .flac: flac
 	cd $< && $(HOSTVARS) ./configure $(FLACCONF)
-	cd $</src && $(MAKE) -C libFLAC install
-	cd $< && $(MAKE) -C include install
+	cd $</include && $(MAKE) install
+	cd $</src && $(MAKE) -C share install && $(MAKE) -C libFLAC install
 	touch $@

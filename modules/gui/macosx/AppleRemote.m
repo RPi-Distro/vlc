@@ -1,7 +1,7 @@
 /*****************************************************************************
  * AppleRemote.m
  * AppleRemote
- * $Id: e9300342135619bbdd70120fa0448347fbac03c6 $
+ * $Id: 6bb9a07b71872359217562552a9a50733fa95c50 $
  *
  * Created by Martin Kahr on 11.03.06 under a MIT-style license.
  * Copyright (c) 2006 martinkahr.com. All rights reserved.
@@ -64,6 +64,8 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 
 @implementation AppleRemote
 
+@synthesize openInExclusiveMode = _openInExclusiveMode, clickCountEnabledButtons = _clickCountEnabledButtons, maximumClickCountTimeDifference = _maxClickTimeDifference, processesBacklog=_processesBacklog, simulatesPlusMinusHold = _simulatePlusMinusHold;
+
 #pragma public interface
 
 static AppleRemote *_o_sharedInstance = nil;
@@ -79,67 +81,37 @@ static AppleRemote *_o_sharedInstance = nil;
         [self dealloc];
     } else {
         _o_sharedInstance = [super init];
-        openInExclusiveMode = YES;
+        _openInExclusiveMode = YES;
         queue = NULL;
         hidDeviceInterface = NULL;
-        cookieToButtonMapping = [[NSMutableDictionary alloc] init];
+        NSMutableDictionary * mutableCookieToButtonMapping = [[NSMutableDictionary alloc] init];
 
-        if( NSAppKitVersionNumber < 1038.13 )
-        {
-            /* Leopard and early Snow Leopard Cookies */
-            msg_Dbg( VLCIntf, "using Leopard AR cookies" );
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonVolume_Plus]  forKey:@"31_29_28_18_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonVolume_Minus] forKey:@"31_30_28_18_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonMenu]         forKey:@"31_20_18_31_20_18_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonPlay]         forKey:@"31_21_18_31_21_18_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonRight]        forKey:@"31_22_18_31_22_18_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonLeft]         forKey:@"31_23_18_31_23_18_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonRight_Hold]   forKey:@"31_18_4_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonLeft_Hold]    forKey:@"31_18_3_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonMenu_Hold]    forKey:@"31_18_31_18_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonPlay_Sleep]   forKey:@"35_31_18_35_31_18_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteControl_Switched]   forKey:@"19_"];
-        }
-        else if( OSX_LION )
-        {
-            /* Lion cookies */
-            msg_Dbg( VLCIntf, "using future AR cookies" );
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonVolume_Plus]    forKey:@"33_31_30_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonVolume_Minus]   forKey:@"33_32_30_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonMenu]           forKey:@"33_22_21_20_2_33_22_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonPlay]           forKey:@"33_23_21_20_2_33_23_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonRight]          forKey:@"33_24_21_20_2_33_24_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonLeft]           forKey:@"33_25_21_20_2_33_25_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonRight_Hold]     forKey:@"33_21_20_14_12_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonLeft_Hold]      forKey:@"33_21_20_13_12_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonMenu_Hold]      forKey:@"33_21_20_2_33_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonPlay_Sleep]     forKey:@"37_33_21_20_2_37_33_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteControl_Switched]     forKey:@"42_33_23_21_20_2_33_23_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:k2009RemoteButtonPlay]       forKey:@"33_21_20_8_2_33_21_20_8_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:k2009RemoteButtonFullscreen] forKey:@"33_21_20_3_2_33_21_20_3_2_"];
-        }
-        else
-        {
+        [mutableCookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonVolume_Plus]    forKey:@"33_31_30_21_20_2_"];
+        [mutableCookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonVolume_Minus]   forKey:@"33_32_30_21_20_2_"];
+        [mutableCookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonMenu]           forKey:@"33_22_21_20_2_33_22_21_20_2_"];
+        [mutableCookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonPlay]           forKey:@"33_23_21_20_2_33_23_21_20_2_"];
+        [mutableCookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonRight]          forKey:@"33_24_21_20_2_33_24_21_20_2_"];
+        [mutableCookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonLeft]           forKey:@"33_25_21_20_2_33_25_21_20_2_"];
+        [mutableCookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonRight_Hold]     forKey:@"33_21_20_14_12_2_"];
+        [mutableCookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonLeft_Hold]      forKey:@"33_21_20_13_12_2_"];
+        [mutableCookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonMenu_Hold]      forKey:@"33_21_20_2_33_21_20_2_"];
+        [mutableCookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonPlay_Sleep]     forKey:@"37_33_21_20_2_37_33_21_20_2_"];
+        [mutableCookieToButtonMapping setObject:[NSNumber numberWithInt:k2009RemoteButtonPlay]       forKey:@"33_21_20_8_2_33_21_20_8_2_"];
+        [mutableCookieToButtonMapping setObject:[NSNumber numberWithInt:k2009RemoteButtonFullscreen] forKey:@"33_21_20_3_2_33_21_20_3_2_"];
+
+        if( OSX_SNOW_LEOPARD )
             /* 10.6.2+ Snow Leopard cookies */
-            msg_Dbg( VLCIntf, "using Snow Leopard AR cookies" );
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonVolume_Plus]    forKey:@"33_31_30_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonVolume_Minus]   forKey:@"33_32_30_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonMenu]           forKey:@"33_22_21_20_2_33_22_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonPlay]           forKey:@"33_23_21_20_2_33_23_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonRight]          forKey:@"33_24_21_20_2_33_24_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonLeft]           forKey:@"33_25_21_20_2_33_25_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonRight_Hold]     forKey:@"33_21_20_14_12_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonLeft_Hold]      forKey:@"33_21_20_13_12_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonMenu_Hold]      forKey:@"33_21_20_2_33_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonPlay_Sleep]     forKey:@"37_33_21_20_2_37_33_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteControl_Switched]     forKey:@"19_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:k2009RemoteButtonPlay]       forKey:@"33_21_20_8_2_33_21_20_8_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:k2009RemoteButtonFullscreen] forKey:@"33_21_20_3_2_33_21_20_3_2_"];
-        }
+            [mutableCookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteControl_Switched]     forKey:@"19_"];
+        else
+        /* Lion cookies */
+            [mutableCookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteControl_Switched]     forKey:@"42_33_23_21_20_2_33_23_21_20_2_"];
+
+        _cookieToButtonMapping = [[NSDictionary alloc] initWithDictionary: mutableCookieToButtonMapping];
+        [mutableCookieToButtonMapping release];
 
         /* defaults */
-        [self setSimulatesPlusMinusHold: YES];
-        maxClickTimeDifference = DEFAULT_MAXIMUM_CLICK_TIME_DIFFERENCE;
+        _simulatePlusMinusHold = YES;
+        _maxClickTimeDifference = DEFAULT_MAXIMUM_CLICK_TIME_DIFFERENCE;
     }
 
     return _o_sharedInstance;
@@ -147,7 +119,7 @@ static AppleRemote *_o_sharedInstance = nil;
 
 - (void) dealloc {
     [self stopListening:self];
-    [cookieToButtonMapping release];
+    [_cookieToButtonMapping release];
     [super dealloc];
 }
 
@@ -155,7 +127,7 @@ static AppleRemote *_o_sharedInstance = nil;
     return remoteId;
 }
 
-- (BOOL) isRemoteAvailable {
+- (BOOL) remoteAvailable {
     io_object_t hidDevice = [self findAppleRemoteDevice];
     if (hidDevice != 0) {
         IOObjectRelease(hidDevice);
@@ -165,8 +137,8 @@ static AppleRemote *_o_sharedInstance = nil;
     }
 }
 
-- (BOOL) isListeningToRemote {
-    return (hidDeviceInterface != NULL && allCookies != NULL && queue != NULL);
+- (BOOL) listeningToRemote {
+    return (hidDeviceInterface != NULL && _allCookies != NULL && queue != NULL);
 }
 
 - (void) setListeningToRemote: (BOOL) value {
@@ -191,15 +163,8 @@ static AppleRemote *_o_sharedInstance = nil;
     return delegate;
 }
 
-- (BOOL) isOpenInExclusiveMode {
-    return openInExclusiveMode;
-}
-- (void) setOpenInExclusiveMode: (BOOL) value {
-    openInExclusiveMode = value;
-}
-
 - (BOOL) clickCountingEnabled {
-    return clickCountEnabledButtons != 0;
+    return self.clickCountEnabledButtons != 0;
 }
 - (void) setClickCountingEnabled: (BOOL) value {
     if (value) {
@@ -207,27 +172,6 @@ static AppleRemote *_o_sharedInstance = nil;
     } else {
         [self setClickCountEnabledButtons: 0];
     }
-}
-
-- (unsigned int) clickCountEnabledButtons {
-    return clickCountEnabledButtons;
-}
-- (void) setClickCountEnabledButtons: (unsigned int)value {
-    clickCountEnabledButtons = value;
-}
-
-- (NSTimeInterval) maximumClickCountTimeDifference {
-    return maxClickTimeDifference;
-}
-- (void) setMaximumClickCountTimeDifference: (NSTimeInterval) timeDiff {
-    maxClickTimeDifference = timeDiff;
-}
-
-- (BOOL) processesBacklog {
-    return processesBacklog;
-}
-- (void) setProcessesBacklog: (BOOL) value {
-    processesBacklog = value;
 }
 
 - (BOOL) listeningOnAppActivate {
@@ -249,15 +193,8 @@ static AppleRemote *_o_sharedInstance = nil;
     }
 }
 
-- (BOOL) simulatesPlusMinusHold {
-    return simulatePlusMinusHold;
-}
-- (void) setSimulatesPlusMinusHold: (BOOL) value {
-    simulatePlusMinusHold = value;
-}
-
 - (IBAction) startListening: (id) sender {
-    if ([self isListeningToRemote]) return;
+    if ([self listeningToRemote]) return;
 
     io_object_t hidDevice = [self findAppleRemoteDevice];
     if (hidDevice == 0) return;
@@ -300,9 +237,9 @@ cleanup:
         queue = NULL;
     }
 
-    if (allCookies != nil) {
-        [allCookies autorelease];
-        allCookies = nil;
+    if (_allCookies != nil) {
+        [_allCookies autorelease];
+        _allCookies = nil;
     }
 
     if (hidDeviceInterface != NULL) {
@@ -370,9 +307,8 @@ static AppleRemote* sharedInstance=nil;
     return hidDeviceInterface;
 }
 
-
 - (NSDictionary*) cookieToButtonMapping {
-    return cookieToButtonMapping;
+    return _cookieToButtonMapping;
 }
 
 - (NSString*) validCookieSubstring: (NSString*) cookieString {
@@ -401,7 +337,7 @@ static AppleRemote* sharedInstance=nil;
 
 - (void) sendRemoteButtonEvent: (AppleRemoteEventIdentifier) event pressedDown: (BOOL) pressedDown {
     if (delegate) {
-        if (simulatePlusMinusHold) {
+        if (self.simulatesPlusMinusHold) {
             if (event == kRemoteButtonVolume_Plus || event == kRemoteButtonVolume_Minus) {
                 if (pressedDown) {
                     lastPlusMinusEvent = event;
@@ -425,7 +361,7 @@ static AppleRemote* sharedInstance=nil;
             }
         }
 
-        if (([self clickCountEnabledButtons] & event) == event) {
+        if ((self.clickCountEnabledButtons & event) == event) {
             if (pressedDown==NO && (event == kRemoteButtonVolume_Minus || event == kRemoteButtonVolume_Plus)) {
                 return; // this one is triggered automatically by the handler
             }
@@ -443,8 +379,8 @@ static AppleRemote* sharedInstance=nil;
                 eventNumber= [NSNumber numberWithUnsignedInt:event];
             }
             [self performSelector: @selector(executeClickCountEvent:)
-                       withObject: [NSArray arrayWithObjects:eventNumber, timeNumber, nil]
-                       afterDelay: maxClickTimeDifference];
+                       withObject: [NSArray arrayWithObjects: eventNumber, timeNumber, nil]
+                       afterDelay: _maxClickTimeDifference];
         } else {
             [delegate appleRemoteButton:event pressedDown: pressedDown clickCount:1];
         }
@@ -452,8 +388,8 @@ static AppleRemote* sharedInstance=nil;
 }
 
 - (void) executeClickCountEvent: (NSArray*) values {
-    AppleRemoteEventIdentifier event = [[values objectAtIndex: 0] unsignedIntValue];
-    NSTimeInterval eventTimePoint = [[values objectAtIndex: 1] doubleValue];
+    AppleRemoteEventIdentifier event = [[values objectAtIndex:0] unsignedIntValue];
+    NSTimeInterval eventTimePoint = [[values objectAtIndex:1] doubleValue];
 
     BOOL finishedClicking = NO;
     int finalClickCount = eventClickCount;
@@ -493,9 +429,9 @@ static AppleRemote* sharedInstance=nil;
         while((subCookieString = [self validCookieSubstring: cookieString])) {
             cookieString = [cookieString substringFromIndex: [subCookieString length]];
             lastSubCookieString = subCookieString;
-            if (processesBacklog) [self handleEventWithCookieString: subCookieString sumOfValues:sumOfValues];
+            if (self.processesBacklog) [self handleEventWithCookieString: subCookieString sumOfValues:sumOfValues];
         }
-        if (processesBacklog == NO && lastSubCookieString != nil) {
+        if (self.processesBacklog == NO && lastSubCookieString != nil) {
             // process the last event of the backlog and assume that the button is not pressed down any longer.
             // The events in the backlog do not seem to be in order and therefore (in rare cases) the last event might be
             // a button pressed down event while in reality the user has released it.
@@ -608,7 +544,7 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
     long                    usage;
     long                    usagePage;
     id                      object;
-    NSArray*                elements = nil;
+    NSArray*                elements;
     NSDictionary*           element;
     IOReturn success;
 
@@ -621,13 +557,11 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
     success = (*handle)->copyMatchingElements(handle, NULL, (CFArrayRef*)&elements);
 
     if (success == kIOReturnSuccess) {
-
-        [elements autorelease];
         /*
         cookies = calloc(NUMBER_OF_APPLE_REMOTE_ACTIONS, sizeof(IOHIDElementCookie));
         memset(cookies, 0, sizeof(IOHIDElementCookie) * NUMBER_OF_APPLE_REMOTE_ACTIONS);
         */
-        allCookies = [[NSMutableArray alloc] init];
+        NSMutableArray *mutableAllCookies = [[NSMutableArray alloc] init];
         NSUInteger elementCount = [elements count];
         for (NSUInteger i=0; i< elementCount; i++) {
             element = [elements objectAtIndex:i];
@@ -648,9 +582,14 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
             if (object == nil || ![object isKindOfClass:[NSNumber class]]) continue;
             usagePage = [object longValue];
 
-            [allCookies addObject: [NSNumber numberWithInt:(int)cookie]];
+            [mutableAllCookies addObject: [NSNumber numberWithInt:(int)cookie]];
         }
+        _allCookies = [[NSArray alloc] initWithArray: mutableAllCookies];
+        [mutableAllCookies release];
+        [elements release];
     } else {
+        if (elements)
+            [elements release];
         return NO;
     }
 
@@ -661,7 +600,7 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
     HRESULT  result;
 
     IOHIDOptionsType openMode = kIOHIDOptionsTypeNone;
-    if ([self isOpenInExclusiveMode]) openMode = kIOHIDOptionsTypeSeizeDevice;
+    if ([self openInExclusiveMode]) openMode = kIOHIDOptionsTypeSeizeDevice;
     IOReturn ioReturnValue = (*hidDeviceInterface)->open(hidDeviceInterface, openMode);
 
     if (ioReturnValue == KERN_SUCCESS) {
@@ -669,9 +608,9 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
         if (queue) {
             result = (*queue)->create(queue, 0, 12);    //depth: maximum number of elements in queue before oldest elements in queue begin to be lost.
 
-            NSUInteger cookieCount = [allCookies count];
+            NSUInteger cookieCount = [_allCookies count];
             for(NSUInteger i=0; i<cookieCount; i++) {
-                IOHIDElementCookie cookie = (IOHIDElementCookie)[[allCookies objectAtIndex:i] intValue];
+                IOHIDElementCookie cookie = (IOHIDElementCookie)[[_allCookies objectAtIndex:i] intValue];
                 (*queue)->addElement(queue, cookie, 0);
             }
 

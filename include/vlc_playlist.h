@@ -2,7 +2,7 @@
  * vlc_playlist.h : Playlist functions
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: ca422608889bdea7adfa1dbe03a1f580e9b92e0c $
+ * $Id: 49dcd1535bdff782f18463b5b45c80b298f8e5c5 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -32,6 +32,8 @@ extern "C" {
 #include <vlc_events.h>
 
 TYPEDEF_ARRAY(playlist_item_t*, playlist_item_array_t)
+
+struct intf_thread_t;
 
 /**
  * \file
@@ -102,7 +104,6 @@ TYPEDEF_ARRAY(playlist_item_t*, playlist_item_array_t)
  *
  * - "item-change": It will contain the input_item_t->i_id of a changed input
  * item monitored by the playlist.
- * - "item-current": It will contain a input_item_t->i_id of the current
  * item being played.
  *
  * - "playlist-item-append": It will contain a pointer to a playlist_add_t.
@@ -252,9 +253,6 @@ enum pl_locked_state
 #define PL_UNLOCK playlist_Unlock( p_playlist )
 #define PL_ASSERT_LOCKED playlist_AssertLocked( p_playlist )
 
-VLC_API playlist_t * pl_Get( vlc_object_t * ) VLC_USED;
-#define pl_Get( a ) pl_Get( VLC_OBJECT(a) )
-
 /* Playlist control */
 #define playlist_Play(p) playlist_Control(p,PLAYLIST_PLAY, pl_Unlocked )
 #define playlist_Pause(p) playlist_Control(p,PLAYLIST_PAUSE, pl_Unlocked )
@@ -266,6 +264,7 @@ VLC_API playlist_t * pl_Get( vlc_object_t * ) VLC_USED;
 VLC_API void playlist_Lock( playlist_t * );
 VLC_API void playlist_Unlock( playlist_t * );
 VLC_API void playlist_AssertLocked( playlist_t * );
+VLC_API void playlist_Deactivate( playlist_t * );
 
 /**
  * Do a playlist action.
@@ -283,16 +282,14 @@ VLC_API int playlist_Control( playlist_t *p_playlist, int i_query, bool b_locked
  */
 VLC_API input_thread_t * playlist_CurrentInput( playlist_t *p_playlist ) VLC_USED;
 
+/** Get the duration of all items in a node.
+ */
+VLC_API mtime_t playlist_GetNodeDuration( playlist_item_t * );
+
 /** Clear the playlist
  * \param b_locked TRUE if playlist is locked when entering this function
  */
 VLC_API void playlist_Clear( playlist_t *, bool );
-
-/** Enqueue an input item for preparsing */
-VLC_API int playlist_PreparseEnqueue(playlist_t *, input_item_t * );
-
-/** Request the art for an input item to be fetched */
-VLC_API int playlist_AskForArtEnqueue(playlist_t *, input_item_t * );
 
 /* Playlist sorting */
 VLC_API int playlist_TreeMove( playlist_t *, playlist_item_t *, playlist_item_t *, int );
@@ -364,16 +361,35 @@ VLC_API int playlist_NodeDelete( playlist_t *, playlist_item_t *, bool , bool );
 VLC_API playlist_item_t * playlist_GetNextLeaf( playlist_t *p_playlist, playlist_item_t *p_root, playlist_item_t *p_item, bool b_ena, bool b_unplayed ) VLC_USED;
 VLC_API playlist_item_t * playlist_GetPrevLeaf( playlist_t *p_playlist, playlist_item_t *p_root, playlist_item_t *p_item, bool b_ena, bool b_unplayed ) VLC_USED;
 
+/**************************
+ * Audio output management
+ **************************/
+
+VLC_API audio_output_t *playlist_GetAout( playlist_t * );
+
+#define AOUT_VOLUME_DEFAULT             256
+#define AOUT_VOLUME_MAX                 512
+
+VLC_API float playlist_VolumeGet( playlist_t * );
+VLC_API int playlist_VolumeSet( playlist_t *, float );
+VLC_API int playlist_VolumeUp( playlist_t *, int, float * );
+#define playlist_VolumeDown(a, b, c) playlist_VolumeUp(a, -(b), c)
+VLC_API int playlist_MuteSet( playlist_t *, bool );
+VLC_API int playlist_MuteGet( playlist_t * );
+
+static inline int playlist_MuteToggle( playlist_t *pl )
+{
+    int val = playlist_MuteGet( pl );
+    if (val >= 0)
+        val = playlist_MuteSet( pl, !val );
+    return val;
+}
+
+VLC_API void playlist_EnableAudioFilter( playlist_t *, const char *, bool );
+
 /***********************************************************************
  * Inline functions
  ***********************************************************************/
-/** Small helper tp get current playing input or NULL. Release the input after use. */
-#define pl_CurrentInput(a) __pl_CurrentInput( VLC_OBJECT(a) )
-static  inline input_thread_t * __pl_CurrentInput( vlc_object_t * p_this )
-{
-    return playlist_CurrentInput( pl_Get( p_this ) );
-}
-
 /** Tell if the playlist is empty */
 static inline bool playlist_IsEmpty( playlist_t *p_playlist )
 {

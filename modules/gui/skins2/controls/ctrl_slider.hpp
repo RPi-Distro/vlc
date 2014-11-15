@@ -2,7 +2,7 @@
  * ctrl_slider.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: bae216f622e65c666133ff4511f2fb653e6613eb $
+ * $Id: 8a5911173083db47a0cc8d94c725349848dd95e9 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -29,6 +29,7 @@
 #include "../utils/bezier.hpp"
 #include "../utils/fsm.hpp"
 #include "../utils/observer.hpp"
+#include "../utils/position.hpp"
 
 
 class GenericBitmap;
@@ -74,7 +75,6 @@ public:
     virtual void notifyLayout( int witdh = -1, int height = -1,
                                int xOffSet = 0, int yOffSet = 0 );
 
-
     /// Get the text of the tooltip
     virtual UString getTooltipText() const { return m_tooltip; }
 
@@ -92,7 +92,6 @@ private:
     int m_width, m_height;
     /// Position of the cursor
     int m_xPosition, m_yPosition;
-    rect m_currentCursorRect;
     /// Callback objects
     DEFINE_CALLBACK( CtrlSliderCursor, OverDown )
     DEFINE_CALLBACK( CtrlSliderCursor, DownOver )
@@ -100,18 +99,20 @@ private:
     DEFINE_CALLBACK( CtrlSliderCursor, UpOver )
     DEFINE_CALLBACK( CtrlSliderCursor, Move )
     DEFINE_CALLBACK( CtrlSliderCursor, Scroll )
-    /// Last saved position of the cursor (stored as a percentage)
-    float m_lastPercentage;
+    /// Last saved cursor placement
+    rect m_lastCursorRect;
     /// Offset between the mouse pointer and the center of the cursor
     int m_xOffset, m_yOffset;
     /// The last received event
     EvtGeneric *m_pEvt;
-    /// Images of the cursor in the differents states
-    OSGraphics *m_pImgUp, *m_pImgOver, *m_pImgDown;
-    /// Current image
-    OSGraphics *m_pImg;
     /// Bezier curve of the slider
     const Bezier &m_rCurve;
+    /// Images of the cursor in the different states
+    const OSGraphics * const m_pImgUp;
+    const OSGraphics * const m_pImgOver;
+    const OSGraphics * const m_pImgDown;
+    /// Current image
+    const OSGraphics *m_pImg;
 
     /// Method called when the position variable is modified
     virtual void onUpdate( Subject<VarPercent> &rVariable, void * );
@@ -121,6 +122,9 @@ private:
 
     /// Call notifyLayout
     void refreshLayout( bool force = true );
+
+    /// getter for the current slider rectangle
+    rect getCurrentCursorRect();
 };
 
 
@@ -147,8 +151,15 @@ public:
     /// Handle an event
     virtual void handleEvent( EvtGeneric &rEvent );
 
+    /// Called when the position is set
+    virtual void onPositionChange();
+
     /// Method called when the control is resized
     virtual void onResize();
+
+    /// Method called to notify are to be updated
+    virtual void notifyLayout( int witdh = -1, int height = -1,
+                               int xOffSet = 0, int yOffSet = 0 );
 
     /// Get the type of control (custom RTTI)
     virtual string getType() const { return "slider_bg"; }
@@ -185,6 +196,9 @@ private:
 
     /// Method to compute the resize factors
     void getResizeFactors( float &rFactorX, float &rFactorY ) const;
+
+    /// Method to (re)set the current image
+    void setCurrentImage( );
 };
 
 

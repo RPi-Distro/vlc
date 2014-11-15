@@ -2,7 +2,7 @@
  * objects.c: Generic lua<->vlc object wrapper
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: c3543d68d836a1c1a893fc8cf6809fb967349b44 $
+ * $Id: 6517816d2a2b77eb0ed3fb591a1e117e740dad45 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -35,13 +35,9 @@
 #include <vlc_common.h>
 #include <vlc_vout.h>
 
-#include <lua.h>        /* Low level lua C API */
-#include <lauxlib.h>    /* Higher level C API */
-
 #include "../vlc.h"
 #include "../libs.h"
 #include "objects.h"
-#include "playlist.h"
 #include "input.h"
 
 /*****************************************************************************
@@ -114,7 +110,7 @@ int vlclua_push_vlc_object( lua_State *L, vlc_object_t *p_obj )
 }
 static int vlclua_get_vout( lua_State *L )
 {
-    input_thread_t *p_input= vlclua_get_input_internal( L );
+    input_thread_t *p_input = vlclua_get_input_internal( L );
     if( p_input )
     {
         vout_thread_t *p_vout = input_GetVout( p_input );
@@ -130,12 +126,11 @@ static int vlclua_get_vout( lua_State *L )
 }
 static int vlclua_get_aout( lua_State *L )
 {
-    input_thread_t *p_input= vlclua_get_input_internal( L );
-    if( p_input )
+    playlist_t *p_playlist = vlclua_get_playlist_internal( L );
+    if( p_playlist != NULL )
     {
-        audio_output_t *p_aout = input_GetAout( p_input );
-        vlc_object_release(p_input);
-        if(p_aout)
+        audio_output_t *p_aout = playlist_GetAout( p_playlist );
+        if( p_aout != NULL )
         {
             vlclua_push_vlc_object( L, (vlc_object_t *)p_aout );
             return 1;

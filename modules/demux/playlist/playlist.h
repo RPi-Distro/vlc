@@ -1,29 +1,29 @@
 /*****************************************************************************
  * playlist.h:  Playlist import module common functions
  *****************************************************************************
- * Copyright (C) 2004 the VideoLAN team
- * $Id: 3c3c80719dd54534fa42e2ce15e26248fa3e08bb $
+ * Copyright (C) 2004 VLC authors and VideoLAN
+ * $Id: 5f7db991eeecd7c97da3e82e7796617d29730570 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #include <vlc_input.h>
-#include <vlc_playlist.h>
 
+int Control(demux_t *, int, va_list);
 char *ProcessMRL( const char *, const char * );
 char *FindPrefix( demux_t * );
 
@@ -42,19 +42,15 @@ int Import_PLS ( vlc_object_t * );
 void Close_PLS ( vlc_object_t * );
 
 int Import_B4S ( vlc_object_t * );
-void Close_B4S ( vlc_object_t * );
 
 int Import_DVB ( vlc_object_t * );
-void Close_DVB ( vlc_object_t * );
 
 int Import_podcast ( vlc_object_t * );
-void Close_podcast ( vlc_object_t * );
 
 int Import_xspf ( vlc_object_t * );
 void Close_xspf ( vlc_object_t * );
 
 int Import_Shoutcast ( vlc_object_t * );
-void Close_Shoutcast ( vlc_object_t * );
 
 int Import_ASX ( vlc_object_t * );
 void Close_ASX ( vlc_object_t * );
@@ -63,7 +59,6 @@ int Import_SGIMB ( vlc_object_t * );
 void Close_SGIMB ( vlc_object_t * );
 
 int Import_QTL ( vlc_object_t * );
-void Close_QTL ( vlc_object_t * );
 
 int Import_GVP ( vlc_object_t * );
 void Close_GVP ( vlc_object_t * );
@@ -85,6 +80,8 @@ void Close_ZPL ( vlc_object_t * );
 
 extern input_item_t * GetCurrentItem(demux_t *p_demux);
 
+bool CheckContentType( stream_t * p_stream, const char * psz_ctype );
+
 #define STANDARD_DEMUX_INIT_MSG( msg ) do { \
     DEMUX_INIT_COMMON();                    \
     msg_Dbg( p_demux, "%s", msg ); } while(0)
@@ -101,6 +98,15 @@ extern input_item_t * GetCurrentItem(demux_t *p_demux);
         return VLC_EGENERIC; \
     STANDARD_DEMUX_INIT_MSG( msg );
 
+#define DEMUX_BY_EXTENSION_OR_MIMETYPE( ext, mime, msg ) \
+    demux_t *p_demux = (demux_t *)p_this; \
+    char* demux_mimetype = stream_ContentType( p_demux->s ); \
+    if(!( demux_IsPathExtension( p_demux, ext ) || (demux_mimetype && !strcasecmp( mime, demux_mimetype )) )) { \
+        free( demux_mimetype ); \
+        return VLC_EGENERIC; \
+    } \
+    free( demux_mimetype ); \
+    STANDARD_DEMUX_INIT_MSG( msg );
 
 #define CHECK_PEEK( zepeek, size ) do { \
     if( stream_Peek( p_demux->s , &zepeek, size ) < size ){ \

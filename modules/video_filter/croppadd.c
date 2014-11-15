@@ -1,24 +1,24 @@
 /*****************************************************************************
  * croppadd.c: Crop/Padd image filter
  *****************************************************************************
- * Copyright (C) 2008 the VideoLAN team
- * $Id: 3072637375eceb25f45a7e410a0e5011d4f39a46 $
+ * Copyright (C) 2008 VLC authors and VideoLAN
+ * $Id: 2ed34cd03130a09876ead1f0c5693937e96c9240 $
  *
  * Authors: Antoine Cellerier <dionoea @t videolan dot org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -75,8 +75,8 @@ static picture_t *Filter( filter_t *, picture_t * );
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin ()
-    set_shortname( N_("Cropadd") )
-    set_description( N_("Video scaling filter") )
+    set_shortname( N_("Croppadd") )
+    set_description( N_("Video cropping filter") )
     set_capability( "video filter2", 0 )
     set_callbacks( OpenFilter, CloseFilter )
 
@@ -143,6 +143,11 @@ static int OpenFilter( vlc_object_t *p_this )
          * to change the output format ... FIXME? */
         return VLC_EGENERIC;
     }
+
+    const vlc_chroma_description_t *p_chroma =
+        vlc_fourcc_GetChromaDescription( p_filter->fmt_in.video.i_chroma );
+    if( p_chroma == NULL || p_chroma->plane_count == 0 )
+        return VLC_EGENERIC;
 
     p_filter->p_sys = (filter_sys_t *)malloc( sizeof( filter_sys_t ) );
     if( !p_filter->p_sys ) return VLC_ENOMEM;
@@ -266,7 +271,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         p_in += i_ycrop * p_plane->i_pitch;
 
         /* Padd on the top */
-        vlc_memset( p_out, i_padd_color, i_ypadd * p_outplane->i_pitch );
+        memset( p_out, i_padd_color, i_ypadd * p_outplane->i_pitch );
         p_out += i_ypadd * p_outplane->i_pitch;
 
         int i_line;
@@ -279,16 +284,16 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
             p_in += i_xcrop * i_pixel_pitch;
 
             /* Padd on the left */
-            vlc_memset( p_out, i_padd_color, i_xpadd * i_pixel_pitch );
+            memset( p_out, i_padd_color, i_xpadd * i_pixel_pitch );
             p_out += i_xpadd * i_pixel_pitch;
 
             /* Copy the image and crop on the right */
-            vlc_memcpy( p_out, p_in, i_width * i_pixel_pitch );
+            memcpy( p_out, p_in, i_width * i_pixel_pitch );
             p_out += i_width * i_pixel_pitch;
             p_in += i_width * i_pixel_pitch;
 
             /* Padd on the right */
-            vlc_memset( p_out, i_padd_color,
+            memset( p_out, i_padd_color,
                         ( i_outwidth - i_xpadd - i_width ) * i_pixel_pitch );
 
             /* Got to begining of the next line */
@@ -297,7 +302,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         }
 
         /* Padd on the bottom */
-        vlc_memset( p_out, i_padd_color,
+        memset( p_out, i_padd_color,
                  ( i_outheight - i_ypadd - i_height ) * p_outplane->i_pitch );
     }
 

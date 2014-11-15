@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005 VLC authors and VideoLAN
  * Copyright (C) 2005-2006 Rémi Denis-Courmont
- * $Id: 9e0442c905a13e209739dc951e6cf75c00aad4a2 $
+ * $Id: 083861d8ede48166ea62a6da138d2f78cd1ad34f $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -34,24 +34,21 @@
 
 #include <errno.h>
 #include <assert.h>
-
-#ifdef HAVE_UNISTD_H
-#   include <unistd.h>
-#endif
+#include <unistd.h>
 #ifdef HAVE_POLL
 # include <poll.h>
 #endif
 
 #include <vlc_network.h>
-#if defined (WIN32) || defined (UNDER_CE)
+#if defined (_WIN32)
 #   undef EINPROGRESS
 #   define EINPROGRESS WSAEWOULDBLOCK
 #   undef EWOULDBLOCK
 #   define EWOULDBLOCK WSAEWOULDBLOCK
+#   undef EAGAIN
+#   define EAGAIN WSAEWOULDBLOCK
 #   undef EINTR
 #   define EINTR WSAEINTR
-#   undef ETIMEDOUT
-#   define ETIMEDOUT WSAETIMEDOUT
 #endif
 
 #include "libvlc.h" /* vlc_object_waitpipe */
@@ -75,18 +72,13 @@ extern int net_Socket( vlc_object_t *p_this, int i_family, int i_socktype,
 int net_Connect( vlc_object_t *p_this, const char *psz_host, int i_port,
                  int type, int proto )
 {
-    struct addrinfo hints, *res, *ptr;
     const char      *psz_realhost;
     char            *psz_socks;
-    int             i_realport, i_val, i_handle = -1;
+    int             i_realport, i_handle = -1;
 
     int evfd = vlc_object_waitpipe (p_this);
     if (evfd == -1)
         return -1;
-
-    memset( &hints, 0, sizeof( hints ) );
-    hints.ai_socktype = type;
-    hints.ai_protocol = proto;
 
     psz_socks = var_InheritString( p_this, "socks" );
     if( psz_socks != NULL )
@@ -98,7 +90,6 @@ int net_Connect( vlc_object_t *p_this, const char *psz_host, int i_port,
 
         psz_realhost = psz_socks;
         i_realport = ( psz != NULL ) ? atoi( psz ) : 1080;
-        hints.ai_flags &= ~AI_NUMERICHOST;
 
         msg_Dbg( p_this, "net: connecting to %s port %d (SOCKS) "
                  "for %s port %d", psz_realhost, i_realport,
@@ -137,27 +128,34 @@ int net_Connect( vlc_object_t *p_this, const char *psz_host, int i_port,
                  i_realport );
     }
 
-    i_val = vlc_getaddrinfo( p_this, psz_realhost, i_realport, &hints, &res );
-    free( psz_socks );
+    struct addrinfo hints = {
+        .ai_socktype = type,
+        .ai_protocol = proto,
+        .ai_flags = AI_NUMERICSERV | AI_IDN,
+    }, *res;
 
-    if( i_val )
+    int val = vlc_getaddrinfo (psz_realhost, i_realport, &hints, &res);
+
+    if (val)
     {
-        msg_Err( p_this, "cannot resolve %s port %d : %s", psz_realhost,
-                 i_realport, gai_strerror( i_val ) );
+        msg_Err (p_this, "cannot resolve %s port %d : %s", psz_realhost,
+                 i_realport, gai_strerror (val));
+        free( psz_socks );
         return -1;
     }
+    free( psz_socks );
 
     int timeout = var_InheritInteger (p_this, "ipv4-timeout");
     if (timeout < 0)
         timeout = -1;
 
-    for( ptr = res; ptr != NULL; ptr = ptr->ai_next )
+    for (struct addrinfo *ptr = res; ptr != NULL; ptr = ptr->ai_next)
     {
         int fd = net_Socket( p_this, ptr->ai_family,
                              ptr->ai_socktype, ptr->ai_protocol );
         if( fd == -1 )
         {
-            msg_Dbg( p_this, "socket error: %m" );
+            msg_Dbg( p_this, "socket error: %s", vlc_strerror_c(net_errno) );
             continue;
         }
 
@@ -167,7 +165,8 @@ int net_Connect( vlc_object_t *p_this, const char *psz_host, int i_port,
 
             if( net_errno != EINPROGRESS && net_errno != EINTR )
             {
-                msg_Err( p_this, "connection failed: %m" );
+                msg_Err( p_this, "connection failed: %s",
+                         vlc_strerror_c(net_errno) );
                 goto next_ai;
             }
 
@@ -184,7 +183,8 @@ int net_Connect( vlc_object_t *p_this, const char *psz_host, int i_port,
             switch (val)
             {
                  case -1: /* error */
-                     msg_Err (p_this, "connection polling error: %m");
+                     msg_Err (p_this, "polling error: %s",
+                              vlc_strerror_c(net_errno));
                      goto next_ai;
 
                  case 0: /* timeout */
@@ -201,8 +201,8 @@ int net_Connect( vlc_object_t *p_this, const char *psz_host, int i_port,
             if (getsockopt (fd, SOL_SOCKET, SO_ERROR, &val,
                             &(socklen_t){ sizeof (val) }) || val)
             {
-                errno = val;
-                msg_Err (p_this, "connection failed: %m");
+                msg_Err (p_this, "connection failed: %s",
+                         vlc_strerror_c(val));
                 goto next_ai;
             }
         }
@@ -249,7 +249,8 @@ int net_AcceptSingle (vlc_object_t *obj, int lfd)
     if (fd == -1)
     {
         if (net_errno != EAGAIN && net_errno != EWOULDBLOCK)
-            msg_Err (obj, "accept failed (from socket %d): %m", lfd);
+            msg_Err (obj, "accept failed (from socket %d): %s", lfd,
+                     vlc_strerror_c(net_errno));
         return -1;
     }
 
@@ -296,7 +297,7 @@ int net_Accept (vlc_object_t *p_this, int *pi_fd)
         {
             if (net_errno != EINTR)
             {
-                msg_Err (p_this, "poll error: %m");
+                msg_Err (p_this, "poll error: %s", vlc_strerror_c(net_errno));
                 return -1;
             }
         }
@@ -348,17 +349,14 @@ static int SocksNegotiate( vlc_object_t *p_obj,
         return VLC_SUCCESS;
 
     /* We negotiate authentication */
-
-    if( ( psz_socks_user == NULL ) && ( psz_socks_passwd == NULL ) )
-        b_auth = true;
-
     buffer[0] = i_socks_version;    /* SOCKS version */
-    if( b_auth )
+    if( psz_socks_user != NULL && psz_socks_passwd != NULL )
     {
         buffer[1] = 2;                  /* Number of methods */
         buffer[2] = 0x00;               /* - No auth required */
         buffer[3] = 0x02;               /* - USer/Password */
         i_len = 4;
+        b_auth = true;
     }
     else
     {
@@ -445,22 +443,24 @@ static int SocksHandshakeTCP( vlc_object_t *p_obj,
 
     if( i_socks_version == 4 )
     {
-        struct addrinfo hints, *p_res;
-
         /* v4 only support ipv4 */
-        memset (&hints, 0, sizeof (hints));
-        hints.ai_family = AF_INET;
-        hints.ai_socktype = SOCK_STREAM;
-        hints.ai_protocol = IPPROTO_TCP;
-        if( vlc_getaddrinfo( p_obj, psz_host, 0, &hints, &p_res ) )
+        static const struct addrinfo hints = {
+            .ai_family = AF_INET,
+            .ai_socktype = SOCK_STREAM,
+            .ai_protocol = IPPROTO_TCP,
+            .ai_flags = AI_IDN,
+        };
+        struct addrinfo *res;
+
+        if (vlc_getaddrinfo (psz_host, 0, &hints, &res))
             return VLC_EGENERIC;
 
         buffer[0] = i_socks_version;
         buffer[1] = 0x01;               /* CONNECT */
         SetWBE( &buffer[2], i_port );   /* Port */
-        memcpy( &buffer[4],             /* Address */
-                &((struct sockaddr_in *)(p_res->ai_addr))->sin_addr, 4 );
-        freeaddrinfo( p_res );
+        memcpy (&buffer[4],             /* Address */
+                &((struct sockaddr_in *)(res->ai_addr))->sin_addr, 4);
+        freeaddrinfo (res);
 
         buffer[8] = 0;                  /* Empty user id */
 

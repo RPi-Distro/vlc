@@ -1,25 +1,25 @@
 /*****************************************************************************
  * mosaic.h:
  *****************************************************************************
- * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: 5e634fa10fbb64009866cc97050cb1f75bef85d0 $
+ * Copyright (C) 2004-2008 VLC authors and VideoLAN
+ * $Id: c5888bcb4ce0538c21f914740a1e630c8e4bd48f $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 typedef struct bridged_es_t
@@ -43,17 +43,6 @@ typedef struct bridge_t
 
 static bridge_t *GetBridge( vlc_object_t *p_object )
 {
-    vlc_object_t *p_libvlc = VLC_OBJECT( p_object->p_libvlc );
-    vlc_value_t val;
-
-    if( var_Get( p_libvlc, "mosaic-struct", &val ) != VLC_SUCCESS )
-    {
-        return NULL;
-    }
-    else
-    {
-        return val.p_address;
-    }
+    return var_GetAddress(VLC_OBJECT(p_object->p_libvlc), "mosaic-struct");
 }
 #define GetBridge(a) GetBridge( VLC_OBJECT(a) )
-

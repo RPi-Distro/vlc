@@ -2,7 +2,7 @@
  * item.c : Playlist item creation/deletion/add/removal functions
  *****************************************************************************
  * Copyright (C) 1999-2007 VLC authors and VideoLAN
- * $Id: 2b99dcedc81bdf516ed6073d734591ccdfe02091 $
+ * $Id: 92814819d9b563860cddcb63da1abbda5866c251 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -146,10 +146,7 @@ static void input_item_add_subitem_tree ( const vlc_event_t * p_event,
 
             if( var_GetBool( p_playlist, "random" ) )
             {
-                unsigned rand_pos =
-                    ((unsigned)vlc_mrand48()) % (last_pos - pos);
-                rand_pos += pos;
-                p_play_item = p_item->pp_children[rand_pos];
+                p_play_item = NULL;
             }
             else
             {
@@ -451,7 +448,7 @@ int playlist_AddInput( playlist_t* p_playlist, input_item_t *p_input,
                        bool b_locked )
 {
     playlist_item_t *p_item;
-    if( p_playlist->b_die ) return VLC_EGENERIC;
+
     if( !pl_priv(p_playlist)->b_doing_ml )
         PL_DEBUG( "adding item `%s' ( %s )", p_input->psz_name,
                                              p_input->psz_uri );
@@ -459,7 +456,11 @@ int playlist_AddInput( playlist_t* p_playlist, input_item_t *p_input,
     PL_LOCK_IF( !b_locked );
 
     p_item = playlist_ItemNewFromInput( p_playlist, p_input );
-    if( p_item == NULL ) return VLC_ENOMEM;
+    if( p_item == NULL )
+    {
+        PL_UNLOCK_IF( !b_locked );
+        return VLC_ENOMEM;
+    }
     AddItem( p_playlist, p_item,
              b_playlist ? p_playlist->p_playing :
                           p_playlist->p_media_library , i_mode, i_pos );
@@ -493,16 +494,16 @@ playlist_item_t * playlist_NodeAddInput( playlist_t *p_playlist,
     assert( p_input );
     assert( p_parent && p_parent->i_children != -1 );
 
-    if( p_playlist->b_die )
-        return NULL;
     PL_LOCK_IF( !b_locked );
 
     p_item = playlist_ItemNewFromInput( p_playlist, p_input );
-    if( p_item == NULL ) return NULL;
+    if( p_item == NULL )
+        goto end;
     AddItem( p_playlist, p_item, p_parent, i_mode, i_pos );
 
     GoAndPreparse( p_playlist, i_mode, p_item );
 
+end:
     PL_UNLOCK_IF( !b_locked );
 
     return p_item;
@@ -716,6 +717,30 @@ void playlist_SendAddNotify( playlist_t *p_playlist, int i_item_id,
     var_SetAddress( p_playlist, "playlist-item-append", &add );
 }
 
+/**
+ * Get the duration of all items in a node.
+ */
+mtime_t playlist_GetNodeDuration( playlist_item_t* node )
+{
+    /* For the assert */
+    playlist_t *p_playlist = node->p_playlist;
+    PL_ASSERT_LOCKED;
+
+    mtime_t mt_duration = 0;
+
+    if( node->i_children != -1 )
+        for( int i = 0; i < node->i_children; i++ )
+        {
+            input_item_t* p_input = node->pp_children[i]->p_input;
+            if ( p_input->i_type == ITEM_TYPE_NODE )
+                mt_duration += playlist_GetNodeDuration( node->pp_children[i] );
+            else
+                mt_duration += input_item_GetDuration( p_input );
+        }
+
+    return mt_duration;
+}
+
 /***************************************************************************
  * The following functions are local
  ***************************************************************************/
@@ -724,27 +749,27 @@ void playlist_SendAddNotify( playlist_t *p_playlist, int i_item_id,
 static void GoAndPreparse( playlist_t *p_playlist, int i_mode,
                            playlist_item_t *p_item )
 {
+    playlist_private_t *sys = pl_priv(p_playlist);
+
     PL_ASSERT_LOCKED;
     if( (i_mode & PLAYLIST_GO ) )
     {
-        pl_priv(p_playlist)->request.b_request = true;
-        pl_priv(p_playlist)->request.i_skip = 0;
-        pl_priv(p_playlist)->request.p_item = p_item;
-        if( pl_priv(p_playlist)->p_input )
-            input_Stop( pl_priv(p_playlist)->p_input, true );
-        pl_priv(p_playlist)->request.i_status = PLAYLIST_RUNNING;
-        vlc_cond_signal( &pl_priv(p_playlist)->signal );
+        sys->request.b_request = true;
+        sys->request.i_skip = 0;
+        sys->request.p_item = p_item;
+        if( sys->p_input != NULL )
+            input_Stop( sys->p_input, true );
+        sys->request.i_status = PLAYLIST_RUNNING;
+        vlc_cond_signal( &sys->signal );
     }
     /* Preparse if no artist/album info, and hasn't been preparsed allready
        and if user has some preparsing option (auto-preparse variable)
        enabled*/
     char *psz_artist = input_item_GetArtist( p_item->p_input );
     char *psz_album = input_item_GetAlbum( p_item->p_input );
-    if( pl_priv(p_playlist)->b_auto_preparse &&
-        input_item_IsPreparsed( p_item->p_input ) == false &&
-            ( EMPTY_STR( psz_artist ) || ( EMPTY_STR( psz_album ) ) )
-          )
-        playlist_PreparseEnqueue( p_playlist, p_item->p_input );
+    if( sys->p_preparser != NULL && !input_item_IsPreparsed( p_item->p_input )
+     && (EMPTY_STR(psz_artist) || EMPTY_STR(psz_album)) )
+        playlist_preparser_Push( sys->p_preparser, p_item->p_input, 0 );
     free( psz_artist );
     free( psz_album );
 }

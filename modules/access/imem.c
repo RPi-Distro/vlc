@@ -2,23 +2,23 @@
  * imem.c : Memory input for VLC
  *****************************************************************************
  * Copyright (C) 2009-2010 Laurent Aimar
- * $Id: 8442a430a30d73eef8886a424b32a07aac150d2b $
+ * $Id: 5b4b05600b052ce1ce928aa2c51f9ec4e909bed1 $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -309,7 +309,6 @@ static int OpenAccess(vlc_object_t *object)
     access->pf_block   = Block;
     access->pf_seek    = NULL;
     access->p_sys      = (access_sys_t*)sys;
-    access->info.i_size = var_InheritInteger(object, "imem-size");
 
     return VLC_SUCCESS;
 }
@@ -344,6 +343,11 @@ static int ControlAccess(access_t *access, int i_query, va_list args)
         *b = true;
         return VLC_SUCCESS;
     }
+    case ACCESS_GET_SIZE: {
+        uint64_t *s = va_arg(args, uint64_t *);
+        *s = var_InheritInteger(access, "imem-size");
+        return VLC_SUCCESS;
+    }
     case ACCESS_GET_PTS_DELAY: {
         int64_t *delay = va_arg(args, int64_t *);
         *delay = DEFAULT_PTS_DELAY; /* FIXME? */
@@ -352,13 +356,6 @@ static int ControlAccess(access_t *access, int i_query, va_list args)
     case ACCESS_SET_PAUSE_STATE:
         return VLC_SUCCESS;
 
-    case ACCESS_GET_TITLE_INFO:
-    case ACCESS_SET_TITLE:
-    case ACCESS_SET_SEEKPOINT:
-    case ACCESS_SET_PRIVATE_ID_STATE:
-    case ACCESS_GET_META:
-    case ACCESS_GET_PRIVATE_ID_STATE:
-    case ACCESS_GET_CONTENT_TYPE:
     default:
         return VLC_EGENERIC;
     }
@@ -384,7 +381,7 @@ static block_t *Block(access_t *access)
 
     block_t *block = NULL;
     if (buffer_size > 0) {
-        block = block_New(access, buffer_size);
+        block = block_Alloc(buffer_size);
         if (block)
             memcpy(block->p_buffer, buffer, buffer_size);
     }
@@ -584,7 +581,7 @@ static int Demux(demux_t *demux)
             dts = pts;
 
         if (buffer_size > 0) {
-            block_t *block = block_New(demux, buffer_size);
+            block_t *block = block_Alloc(buffer_size);
             if (block) {
                 block->i_dts = dts >= 0 ? (1 + dts) : VLC_TS_INVALID;
                 block->i_pts = pts >= 0 ? (1 + pts) : VLC_TS_INVALID;

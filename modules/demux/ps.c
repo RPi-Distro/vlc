@@ -1,24 +1,24 @@
 /*****************************************************************************
  * ps.c: Program Stream demux module for VLC.
  *****************************************************************************
- * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 1cf57834eba3706f224e48a86960faf71735b6da $
+ * Copyright (C) 2004-2009 VLC authors and VideoLAN
+ * $Id: e82dbfb54cc2f34a33d3da4a0fd0148d50fe9060 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -82,6 +82,7 @@ struct demux_sys_t
     ps_track_t  tk[PS_TK_COUNT];
 
     int64_t     i_scr;
+    int64_t     i_last_scr;
     int         i_mux_rate;
     int64_t     i_length;
     int         i_time_track;
@@ -134,6 +135,7 @@ static int OpenCommon( vlc_object_t *p_this, bool b_force )
     /* Init p_sys */
     p_sys->i_mux_rate = 0;
     p_sys->i_scr      = -1;
+    p_sys->i_last_scr = -1;
     p_sys->i_length   = -1;
     p_sys->i_current_pts = (mtime_t) 0;
     p_sys->i_time_track = -1;
@@ -256,7 +258,7 @@ static void FindLength( demux_t *p_demux )
         stream_Seek( p_demux->s, i_size - i_end );
 
         i = 0;
-        while( vlc_object_alive (p_demux) && i < 40 && Demux2( p_demux, true ) > 0 ) i++;
+        while( vlc_object_alive (p_demux) && i < 400 && Demux2( p_demux, true ) > 0 ) i++;
         if( i_current_pos >= 0 ) stream_Seek( p_demux->s, i_current_pos );
     }
 
@@ -264,7 +266,7 @@ static void FindLength( demux_t *p_demux )
     for( int i = 0; i < PS_TK_COUNT; i++ )
     {
         ps_track_t *tk = &p_sys->tk[i];
-        if( tk->i_first_pts >= 0 && tk->i_last_pts > 0 &&
+        if( tk->i_last_pts > 0 &&
             tk->i_last_pts > tk->i_first_pts )
         {
             int64_t i_length = (int64_t)tk->i_last_pts - tk->i_first_pts;
@@ -272,7 +274,7 @@ static void FindLength( demux_t *p_demux )
             {
                 p_sys->i_length = i_length;
                 p_sys->i_time_track = i;
-                msg_Dbg( p_demux, "we found a length of: %"PRId64, p_sys->i_length );
+                msg_Dbg( p_demux, "we found a length of: %"PRId64 "s", p_sys->i_length / CLOCK_FREQ );
             }
         }
     }
@@ -322,6 +324,7 @@ static int Demux( demux_t *p_demux )
     case 0x1ba:
         if( !ps_pkt_parse_pack( p_pkt, &p_sys->i_scr, &i_mux_rate ) )
         {
+            p_sys->i_last_scr = p_sys->i_scr;
             if( !p_sys->b_have_pack ) p_sys->b_have_pack = true;
             /* done later on to work around bad vcd/svcd streams */
             /* es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_sys->i_scr ); */
@@ -395,6 +398,7 @@ static int Demux( demux_t *p_demux )
                   tk->fmt.i_codec == VLC_CODEC_CVD ) )
             {
                 p_sys->i_scr = -1;
+                p_sys->i_last_scr = -1;
             }
 
             if( p_sys->i_scr >= 0 )
@@ -403,11 +407,7 @@ static int Demux( demux_t *p_demux )
             p_sys->i_scr = -1;
 
             if( tk->b_seen && tk->es &&
-                (
-#ifdef ZVBI_COMPILED /* FIXME!! */
-                tk->fmt.i_codec == VLC_CODEC_TELETEXT ||
-#endif
-                !ps_pkt_parse_pes( p_pkt, tk->i_skip ) ) )
+                !ps_pkt_parse_pes( p_pkt, tk->i_skip ) )
             {
                 if( !b_new && !p_sys->b_have_pack &&
                     (tk->fmt.i_cat == AUDIO_ES) &&
@@ -416,6 +416,13 @@ static int Demux( demux_t *p_demux )
                     /* A hack to sync the A/V on PES files. */
                     msg_Dbg( p_demux, "force SCR: %"PRId64, p_pkt->i_pts );
                     es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_pkt->i_pts );
+                }
+                if( tk->fmt.i_codec == VLC_CODEC_TELETEXT &&
+                    p_pkt->i_pts <= VLC_TS_INVALID && p_sys->i_last_scr >= 0 )
+                {
+                    /* Teletext may have missing PTS (ETSI EN 300 472 Annexe A)
+                     * In this case use the last SCR + 40ms */
+                    p_pkt->i_pts = VLC_TS_0 + p_sys->i_last_scr + 40000;
                 }
 
                 if( (int64_t)p_pkt->i_pts > p_sys->i_current_pts )
@@ -437,6 +444,7 @@ static int Demux( demux_t *p_demux )
         break;
     }
 
+    demux_UpdateTitleFromStream( p_demux );
     return 1;
 }
 
@@ -469,6 +477,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             f = (double) va_arg( args, double );
             i64 = stream_Size( p_demux->s );
             p_sys->i_current_pts = 0;
+            p_sys->i_last_scr = -1;
 
             return stream_Seek( p_demux->s, (int64_t)(i64 * f) );
 
@@ -515,11 +524,31 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                     return i64 ? VLC_EGENERIC : VLC_SUCCESS;
 
                 p_sys->i_current_pts = 0;
+                p_sys->i_last_scr = -1;
                 i_pos *= (float)i64 / (float)i_now;
                 stream_Seek( p_demux->s, i_pos );
                 return VLC_SUCCESS;
             }
             return VLC_EGENERIC;
+
+        case DEMUX_GET_TITLE_INFO:
+        {
+            struct input_title_t ***v = va_arg( args, struct input_title_t*** );
+            int *c = va_arg( args, int * );
+
+            *va_arg( args, int* ) = 0; /* Title offset */
+            *va_arg( args, int* ) = 0; /* Chapter offset */
+            return stream_Control( p_demux->s, STREAM_GET_TITLE_INFO, v, c );
+        }
+
+        case DEMUX_SET_TITLE:
+            return stream_vaControl( p_demux->s, STREAM_SET_TITLE, args );
+
+        case DEMUX_SET_SEEKPOINT:
+            return stream_vaControl( p_demux->s, STREAM_SET_SEEKPOINT, args );
+
+        case DEMUX_GET_META:
+            return stream_vaControl( p_demux->s, STREAM_GET_META, args );
 
         case DEMUX_GET_FPS:
         default:

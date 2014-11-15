@@ -1,11 +1,10 @@
 /*****************************************************************************
- * Controller.cpp : Controller for the main interface
+ * actions_manager.cpp : Controller for the main interface
  ****************************************************************************
- * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 7cca07727f4a40fd55b0ce4c39d8aab75d53633d $
+ * Copyright © 2009-2014 VideoLAN and VLC authors
+ * $Id: eff40d9039f79c4e89f0ca75c665d5d0018880f1 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
- *          Ilkka Ollakka <ileoo@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,24 +26,20 @@
 #endif
 
 #include <vlc_vout.h>
-#include <vlc_aout_intf.h>
 #include <vlc_keys.h>
 
 #include "actions_manager.hpp"
-#include "dialogs_provider.hpp" /* Opening Dialogs */
-#include "input_manager.hpp"
-#include "main_interface.hpp" /* Show playlist */
+
+#include "dialogs_provider.hpp"      /* Opening Dialogs */
+#include "input_manager.hpp"         /* THEMIM */
+#include "main_interface.hpp"        /* Show playlist */
 #include "components/controller.hpp" /* Toggle FSC controller width */
+#include "components/extended_panels.hpp"
 
-ActionsManager * ActionsManager::instance = NULL;
-
-ActionsManager::ActionsManager( intf_thread_t * _p_i, QObject *_parent )
-               : QObject( _parent )
+ActionsManager::ActionsManager( intf_thread_t * _p_i )
 {
     p_intf = _p_i;
 }
-
-ActionsManager::~ActionsManager(){}
 
 void ActionsManager::doAction( int id_action )
 {
@@ -99,14 +94,14 @@ void ActionsManager::doAction( int id_action )
                 p_intf->p_sys->p_mi->getFullscreenControllerWidget()->toggleFullwidth();
             break;
         default:
-            msg_Dbg( p_intf, "Action: %i", id_action );
+            msg_Warn( p_intf, "Action not supported: %i", id_action );
             break;
     }
 }
 
 void ActionsManager::play()
 {
-    if( THEPL->current.i_size == 0 )
+    if( THEPL->current.i_size == 0 && THEPL->items.i_size == 0 )
     {
         /* The playlist is empty, open a file requester */
         THEDP->openFileDialog();
@@ -116,10 +111,10 @@ void ActionsManager::play()
 }
 
 /**
-  * TODO
+ * TODO
  * This functions toggle the fullscreen mode
  * If there is no video, it should first activate Visualisations...
- *  This has also to be fixed in enableVideo()
+ * This has also to be fixed in enableVideo()
  */
 void ActionsManager::fullscreen()
 {
@@ -144,7 +139,8 @@ void ActionsManager::snapshot()
 
 void ActionsManager::playlist()
 {
-    if( p_intf->p_sys->p_mi ) p_intf->p_sys->p_mi->togglePlaylist();
+    if( p_intf->p_sys->p_mi )
+        p_intf->p_sys->p_mi->togglePlaylist();
 }
 
 void ActionsManager::record()
@@ -179,26 +175,38 @@ void ActionsManager::frame()
 
 void ActionsManager::toggleMuteAudio()
 {
-     aout_ToggleMute( THEPL, NULL );
+    playlist_MuteToggle( THEPL );
 }
 
 void ActionsManager::AudioUp()
 {
-    aout_VolumeUp( THEPL, 1, NULL );
+    playlist_VolumeUp( THEPL, 1, NULL );
 }
 
 void ActionsManager::AudioDown()
 {
-    aout_VolumeDown( THEPL, 1, NULL );
+    playlist_VolumeDown( THEPL, 1, NULL );
 }
 
 void ActionsManager::skipForward()
 {
-    THEMIM->getIM()->jumpFwd();
+    input_thread_t *p_input = THEMIM->getInput();
+    if( p_input )
+        THEMIM->getIM()->jumpFwd();
 }
 
 void ActionsManager::skipBackward()
 {
-    THEMIM->getIM()->jumpBwd();
+    input_thread_t *p_input = THEMIM->getInput();
+    if( p_input )
+        THEMIM->getIM()->jumpBwd();
 }
 
+void ActionsManager::PPaction( QAction *a )
+{
+    int i_q = -1;
+    if( a != NULL )
+        i_q = a->data().toInt();
+
+    ExtVideo::setPostprocessing( p_intf, i_q );
+}

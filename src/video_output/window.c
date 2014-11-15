@@ -2,7 +2,7 @@
  * window.c: "vout window" managment
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: d47d4f438913c08f03c9c77f45b059cbb80c4a8a $
+ * $Id: bc45bc28ea0c934547236576e3e31cac01242bfc $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -61,10 +61,11 @@ vout_window_t *vout_window_New(vlc_object_t *obj,
     memset(&window->handle, 0, sizeof(window->handle));
     window->control = NULL;
     window->sys = NULL;
+    window->type = cfg->type;
 
     const char *type;
     switch (cfg->type) {
-#if defined(WIN32) || defined(__OS2__)
+#if defined(_WIN32) || defined(__OS2__)
     case VOUT_WINDOW_TYPE_HWND:
         type = "vout window hwnd";
         window->handle.hwnd = NULL;
@@ -81,6 +82,10 @@ vout_window_t *vout_window_New(vlc_object_t *obj,
         window->handle.xid = 0;
         window->display.x11 = NULL;
         break;
+    case VOUT_WINDOW_TYPE_ANDROID_NATIVE:
+        type = "vout window anative";
+        window->handle.anativewindow = NULL;
+        break;
     default:
         assert(0);
     }
@@ -95,10 +100,9 @@ vout_window_t *vout_window_New(vlc_object_t *obj,
     /* Hook for screensaver inhibition */
     if (var_InheritBool(obj, "disable-screensaver") &&
         cfg->type == VOUT_WINDOW_TYPE_XID) {
-        w->inhibit = vlc_inhibit_Create(VLC_OBJECT (window),
-                                        window->handle.xid);
+        w->inhibit = vlc_inhibit_Create(VLC_OBJECT (window));
         if (w->inhibit != NULL)
-            vlc_inhibit_Set(w->inhibit, true);
+            vlc_inhibit_Set(w->inhibit, VLC_INHIBIT_VIDEO);
             /* FIXME: ^ wait for vout activation, pause */
     }
     else
@@ -122,7 +126,7 @@ void vout_window_Delete(vout_window_t *window)
     window_t *w = (window_t *)window;
     if (w->inhibit)
     {
-        vlc_inhibit_Set (w->inhibit, false);
+        vlc_inhibit_Set (w->inhibit, VLC_INHIBIT_NONE);
         vlc_inhibit_Destroy (w->inhibit);
     }
 

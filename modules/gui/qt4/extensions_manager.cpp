@@ -2,7 +2,7 @@
  * extensions_manager.cpp: Extensions manager for Qt
  ****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 29538dc771baab1e4e3d8e70956f3ae68f52b81a $
+ * $Id: ec2959d515c000d3d2bd0730d4495b68e1689898 $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -49,8 +49,8 @@ ExtensionsManager::ExtensionsManager( intf_thread_t *_p_intf, QObject *parent )
     menuMapper = new QSignalMapper( this );
     CONNECT( menuMapper, mapped( int ), this, triggerMenu( int ) );
     CONNECT( THEMIM->getIM(), playingStatusChanged( int ), this, playingChanged( int ) );
-    DCONNECT( THEMIM, inputChanged( input_thread_t* ),
-              this, inputChanged( input_thread_t* ) );
+    DCONNECT( THEMIM, inputChanged(  ),
+              this, inputChanged( ) );
     CONNECT( THEMIM->getIM(), metaChanged( input_item_t* ),
              this, metaChanged( input_item_t* ) );
     b_unloading = false;
@@ -153,7 +153,9 @@ void ExtensionsManager::menu( QMenu *current )
 
         if( b_Active && extension_HasMenu( p_extensions_manager, p_ext ) )
         {
-            QMenu *submenu = new QMenu( qfu( p_ext->psz_title ), current );
+            QMenu *submenu = new QMenu(
+                    qfu( p_ext->psz_shortdescription ? p_ext->psz_shortdescription: p_ext->psz_title ),
+                    current );
             char **ppsz_titles = NULL;
             uint16_t *pi_ids = NULL;
             size_t i_num = 0;
@@ -198,7 +200,8 @@ void ExtensionsManager::menu( QMenu *current )
         }
         else
         {
-            action = current->addAction( qfu( p_ext->psz_title ) );
+            action = current->addAction(
+                    qfu( p_ext->psz_shortdescription ? p_ext->psz_shortdescription: p_ext->psz_title ) );
             menuMapper->setMapping( action, MENU_MAP( 0, i_ext ) );
             CONNECT( action, triggered(), menuMapper, map() );
 
@@ -226,6 +229,7 @@ void ExtensionsManager::triggerMenu( int id )
     {
         msg_Dbg( p_intf, "can't trigger extension with wrong id %d",
                  (int) i_ext );
+        vlc_mutex_unlock( &p_extensions_manager->lock );
         return;
     }
 
@@ -260,8 +264,9 @@ void ExtensionsManager::triggerMenu( int id )
     }
 }
 
-void ExtensionsManager::inputChanged( input_thread_t* p_input )
+void ExtensionsManager::inputChanged( )
 {
+    input_thread_t* p_input = THEMIM->getInput();
     //This is unlikely, but can happen if no extension modules can be loaded.
     if ( p_extensions_manager == NULL )
         return ;

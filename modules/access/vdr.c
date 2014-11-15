@@ -3,19 +3,19 @@
  *****************************************************************************
  * Copyright (C) 2010 Tobias Güntner
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /***
@@ -45,29 +45,14 @@ See http://www.vdr-wiki.de/ and http://www.tvdr.de/ for more information.
 # include "config.h"
 #endif
 
-#ifdef HAVE_SYS_TYPES_H
-#   include <sys/types.h>
-#endif
-#ifdef HAVE_SYS_STAT_H
-#   include <sys/stat.h>
-#endif
-#ifdef HAVE_FCNTL_H
-#   include <fcntl.h>
-#endif
-#ifdef HAVE_UNISTD_H
-#   include <unistd.h>
-#elif defined( WIN32 ) && !defined( UNDER_CE )
-#   include <io.h>
-#endif
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include <ctype.h>
 #include <time.h>
 #include <errno.h>
-
-#if defined( WIN32 ) && !defined( UNDER_CE )
-#   undef lseek
-#   define lseek _lseeki64
-#endif
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
@@ -125,6 +110,7 @@ struct access_sys_t
 {
     /* file sizes of all parts */
     size_array_t file_sizes;
+    uint64_t size; /* total size */
 
     /* index and fd of current open file */
     unsigned i_current_file;
@@ -135,6 +121,7 @@ struct access_sys_t
 
     /* cut marks */
     input_title_t *p_marks;
+    unsigned cur_seekpoint;
     float fps;
 
     /* file format: true=TS, false=PES */
@@ -202,6 +189,7 @@ static int Open( vlc_object_t *p_this )
     access_sys_t *p_sys;
     STANDARD_READ_ACCESS_INIT;
     p_sys->fd = -1;
+    p_sys->cur_seekpoint = 0;
     p_sys->fps = var_InheritFloat( p_access, "vdr-fps" );
     ARRAY_INIT( p_sys->file_sizes );
 
@@ -300,10 +288,18 @@ static int Control( access_t *p_access, int i_query, va_list args )
                 return VLC_EGENERIC;
             ppp_title = va_arg( args, input_title_t*** );
             *va_arg( args, int* ) = 1;
-            *ppp_title = malloc( sizeof( input_title_t** ) );
+            *ppp_title = malloc( sizeof( input_title_t* ) );
             if( !*ppp_title )
                 return VLC_ENOMEM;
             **ppp_title = vlc_input_title_Duplicate( p_sys->p_marks );
+            break;
+
+        case ACCESS_GET_TITLE:
+            *va_arg( args, unsigned * ) = 0;
+            break;
+
+        case ACCESS_GET_SEEKPOINT:
+            *va_arg( args, unsigned * ) = p_sys->cur_seekpoint;
             break;
 
         case ACCESS_SET_TITLE:
@@ -312,7 +308,6 @@ static int Control( access_t *p_access, int i_query, va_list args )
 
         case ACCESS_SET_SEEKPOINT:
             i = va_arg( args, int );
-            /* Seek updates p_access->info */
             return Seek( p_access, p_sys->p_marks->seekpoint[i]->i_byte_offset );
 
         case ACCESS_GET_META:
@@ -322,12 +317,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
             vlc_meta_Merge( p_meta, p_sys->p_meta );
             break;
 
-        case ACCESS_SET_PRIVATE_ID_STATE:
-        case ACCESS_GET_CONTENT_TYPE:
-            return VLC_EGENERIC;
-
         default:
-            msg_Warn( p_access, "unimplemented query in control" );
             return VLC_EGENERIC;
     }
     return VLC_SUCCESS;
@@ -374,9 +364,10 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
     else
     {
         /* abort on read error */
-        msg_Err( p_access, "failed to read (%m)" );
-        dialog_Fatal( p_access, _("File reading failed"), "%s (%m)",
-                      _("VLC could not read the file.") );
+        msg_Err( p_access, "failed to read (%s)", vlc_strerror_c(errno) );
+        dialog_Fatal( p_access, _("File reading failed"),
+                      _("VLC could not read the file (%s)."),
+                      vlc_strerror(errno) );
         SwitchFile( p_access, -1 );
         return 0;
     }
@@ -390,7 +381,7 @@ static int Seek( access_t *p_access, uint64_t i_pos )
     access_sys_t *p_sys = p_access->p_sys;
 
     /* might happen if called by ACCESS_SET_SEEKPOINT */
-    i_pos = __MIN( i_pos, p_access->info.i_size );
+    i_pos = __MIN( i_pos, p_sys->size );
 
     p_access->info.i_pos = i_pos;
     p_access->info.b_eof = false;
@@ -423,28 +414,23 @@ static void FindSeekpoint( access_t *p_access )
     if( !p_sys->p_marks )
         return;
 
-    int i_new_seekpoint = p_access->info.i_seekpoint;
+    int new_seekpoint = p_sys->cur_seekpoint;
     if( p_access->info.i_pos < (uint64_t)p_sys->p_marks->
-        seekpoint[ p_access->info.i_seekpoint ]->i_byte_offset )
+        seekpoint[p_sys->cur_seekpoint]->i_byte_offset )
     {
         /* i_pos moved backwards, start fresh */
-        i_new_seekpoint = 0;
+        new_seekpoint = 0;
     }
 
     /* only need to check the following seekpoints */
-    while( i_new_seekpoint + 1 < p_sys->p_marks->i_seekpoint &&
+    while( new_seekpoint + 1 < p_sys->p_marks->i_seekpoint &&
         p_access->info.i_pos >= (uint64_t)p_sys->p_marks->
-        seekpoint[ i_new_seekpoint + 1 ]->i_byte_offset )
+        seekpoint[new_seekpoint + 1]->i_byte_offset )
     {
-        i_new_seekpoint++;
+        new_seekpoint++;
     }
 
-    /* avoid unnecessary events */
-    if( p_access->info.i_seekpoint != i_new_seekpoint )
-    {
-        p_access->info.i_seekpoint = i_new_seekpoint;
-        p_access->info.i_update |= INPUT_UPDATE_SEEKPOINT;
-    }
+    p_sys->cur_seekpoint = new_seekpoint;
 }
 
 /*****************************************************************************
@@ -475,7 +461,8 @@ static bool ImportNextFile( access_t *p_access )
     struct stat st;
     if( vlc_stat( psz_path, &st ) )
     {
-        msg_Dbg( p_access, "could not stat %s: %m", psz_path );
+        msg_Dbg( p_access, "could not stat %s: %s", psz_path,
+                 vlc_strerror_c(errno) );
         free( psz_path );
         return false;
     }
@@ -489,8 +476,7 @@ static bool ImportNextFile( access_t *p_access )
     free( psz_path );
 
     ARRAY_APPEND( p_sys->file_sizes, st.st_size );
-    p_access->info.i_size += st.st_size;
-    p_access->info.i_update |= INPUT_UPDATE_SIZE;
+    p_sys->size += st.st_size;
 
     return true;
 }
@@ -526,7 +512,8 @@ static bool SwitchFile( access_t *p_access, unsigned i_file )
 
     if( p_sys->fd == -1 )
     {
-        msg_Err( p_access, "Failed to open %s: %m", psz_path );
+        msg_Err( p_access, "Failed to open %s: %s", psz_path,
+                 vlc_strerror_c(errno) );
         goto error;
     }
 
@@ -546,7 +533,7 @@ static bool SwitchFile( access_t *p_access, unsigned i_file )
 
 error:
     dialog_Fatal (p_access, _("File reading failed"), _("VLC could not"
-        " open the file \"%s\". (%m)"), psz_path);
+        " open the file \"%s\" (%s)."), psz_path, vlc_strerror(errno) );
     if( p_sys->fd != -1 )
     {
         close( p_sys->fd );
@@ -567,13 +554,11 @@ static void OptimizeForRead( int fd )
     posix_fadvise( fd, 0, 4096, POSIX_FADV_WILLNEED );
     posix_fadvise( fd, 0, 0, POSIX_FADV_NOREUSE );
 #endif
-#ifdef HAVE_FCNTL
 #ifdef F_RDAHEAD
     fcntl( fd, F_RDAHEAD, 1 );
 #endif
 #ifdef F_NOCACHE
-    fcntl( fd, F_NOCACHE, 1 );
-#endif
+    fcntl( fd, F_NOCACHE, 0 );
 #endif
 }
 
@@ -585,7 +570,7 @@ static void UpdateFileSize( access_t *p_access )
     access_sys_t *p_sys = p_access->p_sys;
     struct stat st;
 
-    if( p_access->info.i_size >= p_access->info.i_pos )
+    if( p_sys->size >= p_access->info.i_pos )
         return;
 
     /* TODO: not sure if this can happen or what to do in this case */
@@ -594,10 +579,9 @@ static void UpdateFileSize( access_t *p_access )
     if( (uint64_t)st.st_size <= CURRENT_FILE_SIZE )
         return;
 
-    p_access->info.i_size -= CURRENT_FILE_SIZE;
+    p_sys->size -= CURRENT_FILE_SIZE;
     CURRENT_FILE_SIZE = st.st_size;
-    p_access->info.i_size += CURRENT_FILE_SIZE;
-    p_access->info.i_update |= INPUT_UPDATE_SIZE;
+    p_sys->size += CURRENT_FILE_SIZE;
 }
 
 /*****************************************************************************
@@ -614,7 +598,8 @@ static FILE *OpenRelativeFile( access_t *p_access, const char *psz_file )
 
     FILE *file = vlc_fopen( psz_path, "rb" );
     if( !file )
-        msg_Warn( p_access, "Failed to open %s: %m", psz_path );
+        msg_Warn( p_access, "Failed to open %s: %s", psz_path,
+                  vlc_strerror_c(errno) );
     free( psz_path );
 
     return file;
@@ -823,7 +808,7 @@ static void ImportMarks( access_t *p_access )
     }
     p_marks->psz_name = strdup( _("VDR Cut Marks") );
     p_marks->i_length = i_frame_count * (int64_t)( CLOCK_FREQ / p_sys->fps );
-    p_marks->i_size = p_access->info.i_size;
+    p_marks->i_size = p_sys->size;
 
     /* offset for chapter positions */
     int i_chapter_offset = p_sys->fps / 1000 *

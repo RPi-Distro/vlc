@@ -2,23 +2,23 @@
  * stl.c: EBU STL decoder
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: d534b528026ff81464a543986682ce0dd4f1416e $
+ * $Id: 361e7530523995a2a142d26eb6089bb421345c03 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -78,49 +78,31 @@ static cct_number_t cct_nums[] = { {CCT_ISO_6937_2, "ISO_6937-2"},
                                    {CCT_ISO_8859_8, "ISO_8859-8"} };
 
 
-static char *ParseText(uint8_t *data, int size, const char *charset)
+static char *ParseText(const uint8_t *data, size_t size, const char *charset)
 {
-    char *text = strdup("");
-    int  text_size = 0;
+    char *text = malloc(size);
+    if (text == NULL)
+        return NULL;
 
-    for (int i = 0; i < size; i++) {
+    size_t text_size = 0;
+
+    for (size_t i = 0; i < size; i++) {
         uint8_t code = data[i];
 
         if (code == 0x8f)
             break;
-
-        char tmp[16] = "";
-        char *t = tmp;
-        if ((code >= 0x20 && code <= 0x7e) ||
-            (code >= 0xa0 && code <= 0xff) )
-            snprintf(tmp, sizeof(tmp), "%c", code);
-#if 0
-        else if (code == 0x80)
-            snprintf(tmp, sizeof(tmp), "<i>");
-        else if (code == 0x81)
-            snprintf(tmp, sizeof(tmp), "</i>");
-        else if (code == 0x82)
-            snprintf(tmp, sizeof(tmp), "<u>");
-        else if (code == 0x83)
-            snprintf(tmp, sizeof(tmp), "</u>");
-        else if (code == 0x8a)
-            snprintf(tmp, sizeof(tmp), "\n");
-#endif
-        else {
-            t = NULL;
-        }
-
-        if (!t)
+        if (code == 0x7f)
             continue;
-        size_t t_size = strlen(t);
-        text = realloc_or_free(text, t_size + text_size + 1);
-        if (!text)
-            continue;
-        memcpy(&text[text_size], t, t_size);
-        text_size += t_size;
-        text[text_size]   = '\0';
+        /* TODO: italics begin/end 0x80/0x81, underline being/end 0x82/0x83 */
+        if (code & 0x60)
+            text[text_size++] = code;
+        if (code == 0x8a)
+            text[text_size++] = '\n';
     }
-    return FromCharset(charset, text, text_size);
+
+    char *u8 = FromCharset(charset, text, text_size);
+    free(text);
+    return u8;
 }
 
 static subpicture_t *Decode(decoder_t *dec, block_t **block)
@@ -164,6 +146,7 @@ static subpicture_t *Decode(decoder_t *dec, block_t **block)
         sub->p_region->psz_text = ParseText(payload,
                                             payload_size,
                                             cct_nums[dec->p_sys->cct - CCT_BEGIN].str);
+        sub->p_region->i_align = SUBPICTURE_ALIGN_BOTTOM;
         sub->p_region->psz_html = NULL;
     }
 

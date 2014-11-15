@@ -2,7 +2,7 @@
  * control.c : Handle control of the playlist & running through it
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: bf46a32b86c5bc5c09d739541a8c55671b01fff3 $
+ * $Id: e1be944224b1465543c70d45e5d835ffd5f89818 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -39,39 +39,6 @@ static int PlaylistVAControl( playlist_t * p_playlist, int i_query, va_list args
  * Playlist control
  *****************************************************************************/
 
-static vlc_mutex_t global_lock = VLC_STATIC_MUTEX;
-
-#undef pl_Get
-playlist_t *pl_Get (vlc_object_t *obj)
-{
-    playlist_t *pl;
-    libvlc_int_t *p_libvlc = obj->p_libvlc;
-
-    vlc_mutex_lock (&global_lock);
-    pl = libvlc_priv (p_libvlc)->p_playlist;
-    assert (pl != NULL);
-
-    if (!libvlc_priv (p_libvlc)->playlist_active)
-    {
-         playlist_Activate (pl);
-         libvlc_priv (p_libvlc)->playlist_active = true;
-    }
-    vlc_mutex_unlock (&global_lock);
-    return pl;
-}
-
-void pl_Deactivate (libvlc_int_t *p_libvlc)
-{
-    bool deactivate;
-
-    vlc_mutex_lock (&global_lock);
-    deactivate = libvlc_priv (p_libvlc)->playlist_active;
-    vlc_mutex_unlock (&global_lock);
-
-    if (deactivate)
-        playlist_Deactivate (libvlc_priv (p_libvlc)->p_playlist);
-}
-
 void playlist_Lock( playlist_t *pl )
 {
     vlc_mutex_lock( &pl_priv(pl)->lock );
@@ -107,11 +74,9 @@ static int PlaylistVAControl( playlist_t * p_playlist, int i_query, va_list args
 
     PL_ASSERT_LOCKED;
 
-    if( !vlc_object_alive( p_playlist ) )
-        return VLC_EGENERIC;
-
-    if( playlist_IsEmpty( p_playlist ) && i_query != PLAYLIST_STOP )
-        return VLC_EGENERIC;
+    if( i_query != PLAYLIST_STOP )
+        if( pl_priv(p_playlist)->killed || playlist_IsEmpty( p_playlist ) )
+            return VLC_EGENERIC;
 
     switch( i_query )
     {
@@ -143,6 +108,7 @@ static int PlaylistVAControl( playlist_t * p_playlist, int i_query, va_list args
     case PLAYLIST_PLAY:
         if( pl_priv(p_playlist)->p_input )
         {
+            pl_priv(p_playlist)->status.i_status = PLAYLIST_RUNNING;
             var_SetInteger( pl_priv(p_playlist)->p_input, "state", PLAYING_S );
             break;
         }
@@ -194,28 +160,3 @@ static int PlaylistVAControl( playlist_t * p_playlist, int i_query, va_list args
 
     return VLC_SUCCESS;
 }
-
-/*****************************************************************************
- * Preparse control
- *****************************************************************************/
-/** Enqueue an item for preparsing */
-int playlist_PreparseEnqueue( playlist_t *p_playlist, input_item_t *p_item )
-{
-    playlist_private_t *p_sys = pl_priv(p_playlist);
-
-    if( unlikely(p_sys->p_preparser == NULL) )
-        return VLC_ENOMEM;
-    playlist_preparser_Push( p_sys->p_preparser, p_item );
-    return VLC_SUCCESS;
-}
-
-int playlist_AskForArtEnqueue( playlist_t *p_playlist, input_item_t *p_item )
-{
-    playlist_private_t *p_sys = pl_priv(p_playlist);
-
-    if( unlikely(p_sys->p_fetcher == NULL) )
-        return VLC_ENOMEM;
-    playlist_fetcher_Push( p_sys->p_fetcher, p_item );
-    return VLC_SUCCESS;
-}
-

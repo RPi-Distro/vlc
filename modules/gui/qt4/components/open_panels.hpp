@@ -1,10 +1,10 @@
 /*****************************************************************************
- * open.hpp : Panels for the open dialogs
+ * open_panels.hpp : Panels for the open dialogs
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
- * $Id: 5a86ffcbb2c9a67132e9df5b5dbc07b8bf19ec2d $
+ * $Id: 4f541a1877a82d4eb62aba3ceb384b86ba606851 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -130,7 +130,6 @@ private slots:
     void browseFile();
     void removeFile();
     void updateButtons();
-    void toggleSubtitleFrame( bool );
 };
 
 class NetOpenPanel: public OpenPanel
@@ -140,22 +139,13 @@ public:
     NetOpenPanel( QWidget *, intf_thread_t * );
     virtual ~NetOpenPanel();
     virtual void clear() ;
-    void onFocus();
-    void onAccept();
+    virtual void onFocus();
+    virtual void onAccept();
 private:
     Ui::OpenNetwork ui;
     bool b_recentList;
 public slots:
     virtual void updateMRL();
-};
-
-class UrlValidator : public QValidator
-{
-   Q_OBJECT
-public:
-   UrlValidator( QObject *parent ) : QValidator( parent ) { }
-   void fixup( QString& ) const;
-   QValidator::State validate( QString&, int& ) const;
 };
 
 class DiscOpenPanel: public OpenPanel
@@ -174,8 +164,8 @@ public:
     virtual ~DiscOpenPanel();
     virtual void clear() ;
     virtual void accept() ;
-#if defined( WIN32 ) || defined( __OS2__ )
-    void onFocus();
+#if defined( _WIN32 ) || defined( __OS2__ )
+    virtual void onFocus();
 #endif
 private:
     Ui::OpenDisk ui;
@@ -204,13 +194,13 @@ private:
     QString advMRL;
     QStringList configList;
     QDialog *adv;
-#ifdef WIN32
+#ifdef _WIN32
     StringListConfigControl *vdevDshowW, *adevDshowW;
     QLineEdit *dshowVSizeLine;
 #else
-    QSpinBox  *pvrFreq, *pvrBitr;
+    QSpinBox  *pvrFreq;
     QComboBox *v4l2VideoDevice, *v4l2AudioDevice;
-    QLineEdit *pvrDevice, *pvrRadioDevice;
+    QComboBox *pvrDevice, *pvrAudioDevice;
     QComboBox *v4l2StdBox, *pvrNormBox;
     QSpinBox *jackChannels;
     QCheckBox *jackPace, *jackConnect;
@@ -227,6 +217,7 @@ public slots:
     void initialize();
 private slots:
     void updateButtons();
+    void enableAdvancedDialog( int );
     void advancedDialog();
 };
 

@@ -1,6 +1,6 @@
 # libvorbis
 
-VORBIS_VERSION := 1.3.3
+VORBIS_VERSION := 1.3.4
 VORBIS_URL := http://downloads.xiph.org/releases/vorbis/libvorbis-$(VORBIS_VERSION).tar.xz
 #VORBIS_URL := $(CONTRIB_VIDEOLAN)/libvorbis-$(VORBIS_VERSION).tar.gz
 
@@ -25,12 +25,14 @@ $(TARBALLS)/libvorbis-$(VORBIS_VERSION).tar.xz:
 
 libvorbis: libvorbis-$(VORBIS_VERSION).tar.xz .sum-vorbis
 	$(UNPACK)
+	$(APPLY) $(SRC)/vorbis/osx.patch
 	$(UPDATE_AUTOCONFIG)
 	$(MOVE)
 
 DEPS_vorbis = ogg $(DEPS_ogg)
 
 .vorbis: libvorbis
+	$(RECONF) -Im4
 	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) --disable-docs --disable-examples --disable-oggtest
 	cd $< && $(MAKE) install
 	touch $@

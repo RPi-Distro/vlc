@@ -1,25 +1,25 @@
 /*****************************************************************************
- * mkv.cpp : matroska demuxer
+ * matroska_segment.hpp : matroska demuxer
  *****************************************************************************
- * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 673458e1199f84254776bf3d55642cb8c97dcecc $
+ * Copyright (C) 2003-2004 VLC authors and VideoLAN
+ * $Id: afb37dbc9f274e53e438de3c15441d8466c0e6b2 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef _MATROSKA_SEGMENT_HPP_
@@ -35,6 +35,39 @@ class chapter_item_c;
 
 struct mkv_track_t;
 struct mkv_index_t;
+
+typedef enum
+{
+    WHOLE_SEGMENT,
+    TRACK_UID,
+    EDITION_UID,
+    CHAPTER_UID,
+    ATTACHMENT_UID
+} tag_target_type;
+
+class SimpleTag
+{
+public:
+    SimpleTag():
+        psz_tag_name(NULL), psz_lang(NULL), b_default(true), p_value(NULL){}
+    ~SimpleTag();
+    char *psz_tag_name;
+    char *psz_lang; /* NULL value means "undf" */
+    bool b_default;
+    char * p_value;
+    std::vector<SimpleTag *> sub_tags;
+};
+
+class Tag
+{
+public:
+    Tag():i_tag_type(WHOLE_SEGMENT),i_target_type(50),i_uid(0){}
+    ~Tag();
+    tag_target_type i_tag_type;
+    uint64_t        i_target_type;
+    uint64_t        i_uid;
+    std::vector<SimpleTag*> simple_tags;
+};
 
 class matroska_segment_c
 {
@@ -93,6 +126,7 @@ public:
 
     std::vector<chapter_translation_c*> translations;
     std::vector<KaxSegmentFamily*>  families;
+    std::vector<Tag *>              tags;
 
     demux_sys_t                    & sys;
     EbmlParser                     *ep;
@@ -125,8 +159,10 @@ private:
     void ParseChapterAtom( int i_level, KaxChapterAtom *ca, chapter_item_c & chapters );
     void ParseTrackEntry( KaxTrackEntry *m );
     void ParseCluster( bool b_update_start_time = true );
-    void ParseSimpleTags( KaxTagSimple *tag );
+    SimpleTag * ParseSimpleTags( KaxTagSimple *tag, int level = 50 );
     void IndexAppendCluster( KaxCluster *cluster );
+    int32_t TrackInit( mkv_track_t * p_tk );
+    void ComputeTrackPriority();
 };
 
 

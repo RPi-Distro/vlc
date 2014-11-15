@@ -1,24 +1,24 @@
 /*****************************************************************************
  * dmo.h : DirectMedia Object codec module for vlc
  *****************************************************************************
- * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: edb5fe5419da000a578e9ab35e9bde8d260a63bb $
+ * Copyright (C) 2002, 2003 VLC authors and VideoLAN
+ * $Id: d69b97065288bf67407d7e5bf93c56da027513e4 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 const GUID IID_IUnknown;
@@ -38,7 +38,7 @@ const GUID MEDIASUBTYPE_RGB24;
 const GUID MEDIASUBTYPE_RGB565;
 
 
-#ifndef WIN32
+#ifndef _WIN32
 void* CoTaskMemAlloc(unsigned long cb);
 void CoTaskMemFree(void* cb);
 #endif

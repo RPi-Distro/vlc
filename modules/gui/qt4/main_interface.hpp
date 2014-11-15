@@ -2,7 +2,7 @@
  * main_interface.hpp : Main Interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: f2489bb9b05e0100c1e0e14836cc8d2405355a26 $
+ * $Id: e3f36a74158113bdfb364c43380ea966fd80b194 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -29,7 +29,7 @@
 
 #include "util/qvlcframe.hpp"
 
-#ifdef WIN32
+#ifdef _WIN32
  #include <vlc_windows_interfaces.h>
 #endif
 
@@ -54,13 +54,7 @@ class SpeedControlWidget;
 class QVBoxLayout;
 class QMenu;
 class QSize;
-
-enum {
-    CONTROLS_VISIBLE  = 0x1,
-    CONTROLS_HIDDEN   = 0x2,
-    CONTROLS_ADVANCED = 0x4,
-};
-
+class StandardPLPanel;
 
 class MainInterface : public QVLCMW
 {
@@ -73,6 +67,8 @@ public:
     MainInterface( intf_thread_t *);
     virtual ~MainInterface();
 
+    static const QEvent::Type ToolbarsNeedRebuild;
+
     /* Video requests from core */
     WId  getVideo( int *pi_x, int *pi_y,
                   unsigned int *pi_width, unsigned int *pi_height );
@@ -83,14 +79,21 @@ public:
     QSystemTrayIcon *getSysTray() { return sysTray; }
     QMenu *getSysTrayMenu() { return systrayMenu; }
     FullscreenControllerWidget* getFullscreenControllerWidget() { return fullscreenControls; }
+    enum
+    {
+        CONTROLS_VISIBLE  = 0x1,
+        CONTROLS_HIDDEN   = 0x2,
+        CONTROLS_ADVANCED = 0x4,
+    };
     int getControlsVisibilityStatus();
     bool isPlDocked() { return ( b_plDocked != false ); }
     bool isInterfaceFullScreen() { return b_interfaceFullScreen; }
+    StandardPLPanel* getPlaylistView();
 
 protected:
     void dropEventPlay( QDropEvent* event, bool b_play ) { dropEventPlay(event, b_play, true); }
     void dropEventPlay( QDropEvent *, bool, bool );
-#ifdef WIN32
+#ifdef _WIN32
     virtual bool winEvent( MSG *, long * );
 #endif
     virtual void changeEvent( QEvent * );
@@ -101,12 +104,14 @@ protected:
     virtual void closeEvent( QCloseEvent *);
     virtual void keyPressEvent( QKeyEvent *);
     virtual void wheelEvent( QWheelEvent * );
+    virtual bool eventFilter(QObject *, QEvent *);
 
 private:
     /* Main Widgets Creation */
     void createMainWidget( QSettings* );
     void createStatusBar();
     void createPlaylist();
+    void createContinueDialog( QWidget *w );
 
     /* Systray */
     void createSystray();
@@ -142,6 +147,10 @@ private:
     PlaylistWidget      *playlistWidget;
     //VisualSelector      *visualSelector;
 
+    /* continue */
+    QWidget             *continueDialog;
+    int64_t             i_continueTime;
+
     /* Status Bar */
     QLabel              *nameLabel;
     QLabel              *cryptedLabel;
@@ -152,7 +161,7 @@ private:
     QMap<QWidget *, QSize> stackWidgetsSizes;
 
     /* Flags */
-    bool                 b_notificationEnabled; /// Systray Notifications
+    unsigned             i_notificationSetting; /// Systray Notifications
     bool                 b_autoresize;          ///< persistent resizable window
     bool                 b_videoEmbedded;       ///< Want an external Video Window
     bool                 b_videoFullScreen;     ///< --fullscreen
@@ -170,12 +179,16 @@ private:
     bool                 b_hasPausedWhenMinimized;
     bool                 b_statusbarVisible;
 
-#ifdef WIN32
+#ifdef _WIN32
+    HWND WinId( QWidget *);
     HIMAGELIST himl;
     ITaskbarList3 *p_taskbl;
     UINT taskbar_wmsg;
     void createTaskBarButtons();
 #endif
+
+    static const Qt::Key kc[10]; /* easter eggs */
+    int i_kc_offset;
 
 public slots:
     void dockPlaylist( bool b_docked = true );
@@ -189,9 +202,10 @@ public slots:
     void toggleFSC();
 
     void setStatusBarVisibility(bool b_visible);
+    void setPlaylistVisibility(bool b_visible);
 
     void popupMenu( const QPoint& );
-#ifdef WIN32
+#ifdef _WIN32
     void changeThumbbarButtons( int );
 #endif
 
@@ -204,6 +218,7 @@ public slots:
     void emitRaise();
 
     void reloadPrefs();
+    void toolBarConfUpdated();
 
 private slots:
     void debug();
@@ -244,6 +259,9 @@ private slots:
     void setBoss();
     void setRaise();
 
+    void showContinueDialog( int64_t);
+    void continuePlayback();
+
 signals:
     void askGetVideo( WId *p_id, int *pi_x, int *pi_y,
                       unsigned *pi_width, unsigned *pi_height );
@@ -256,7 +274,7 @@ signals:
     void askToQuit();
     void askBoss();
     void askRaise();
-
+    void kc_pressed(); /* easter eggs */
 };
 
 #endif

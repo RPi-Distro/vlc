@@ -1,24 +1,24 @@
 /*****************************************************************************
- * subtitle.c: subtitle decoder using ffmpeg library
+ * subtitle.c: subtitle decoder using libavcodec library
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: f3a72e0b8b1dd92e5d8c0842d8f4798204b1e609 $
+ * $Id: a8bb19f09229377761f154ce5badafc4ca421b0d $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -33,26 +33,17 @@
 #include <vlc_codec.h>
 #include <vlc_avcodec.h>
 
-/* ffmpeg header */
+#include <libavcodec/avcodec.h>
 #include <libavutil/mem.h>
-#ifdef HAVE_LIBAVCODEC_AVCODEC_H
-#   include <libavcodec/avcodec.h>
-#   ifdef HAVE_AVCODEC_VAAPI
-#       include <libavcodec/vaapi.h>
-#   endif
-#else
-#   include <avcodec.h>
-#endif
 
 #include "avcodec.h"
-
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 25, 0 )
 
 struct decoder_sys_t {
     AVCODEC_COMMON_MEMBERS
 };
 
-static subpicture_t *ConvertSubtitle(decoder_t *, AVSubtitle *, mtime_t pts);
+static subpicture_t *ConvertSubtitle(decoder_t *, AVSubtitle *, mtime_t pts,
+                                     AVCodecContext *avctx);
 
 /**
  * Initialize subtitle decoder
@@ -64,8 +55,9 @@ int InitSubtitleDec(decoder_t *dec, AVCodecContext *context,
 
     /* */
     switch (codec_id) {
-    case CODEC_ID_HDMV_PGS_SUBTITLE:
-    case CODEC_ID_XSUB:
+    case AV_CODEC_ID_HDMV_PGS_SUBTITLE:
+    case AV_CODEC_ID_XSUB:
+    case AV_CODEC_ID_DVB_SUBTITLE:
         break;
     default:
         msg_Warn(dec, "refusing to decode non validated subtitle codec");
@@ -92,23 +84,31 @@ int InitSubtitleDec(decoder_t *dec, AVCodecContext *context,
 
     /* */
     int ret;
+    char *psz_opts = var_InheritString(dec, "avcodec-options");
+    AVDictionary *options = NULL;
+    if (psz_opts && *psz_opts)
+        options = vlc_av_get_options(psz_opts);
+    free(psz_opts);
+
     vlc_avcodec_lock();
-#if LIBAVCODEC_VERSION_MAJOR < 54
-    ret = avcodec_open(context, codec);
-#else
-    ret = avcodec_open2(context, codec, NULL /* options */);
-#endif
+    ret = avcodec_open2(context, codec, options ? &options : NULL);
+    vlc_avcodec_unlock();
+
+    AVDictionaryEntry *t = NULL;
+    while ((t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX))) {
+        msg_Err(dec, "Unknown option \"%s\"", t->key);
+    }
+    av_dict_free(&options);
+
     if (ret < 0) {
-        vlc_avcodec_unlock();
         msg_Err(dec, "cannot open codec (%s)", namecodec);
         free(context->extradata);
         free(sys);
         return VLC_EGENERIC;
     }
-    vlc_avcodec_unlock();
 
     /* */
-    msg_Dbg(dec, "ffmpeg codec (%s) started", namecodec);
+    msg_Dbg(dec, "libavcodec codec (%s) started", namecodec);
     dec->fmt_out.i_cat = SPU_ES;
 
     return VLC_SUCCESS;
@@ -176,7 +176,8 @@ subpicture_t *DecodeSubtitle(decoder_t *dec, block_t **block_ptr)
     subpicture_t *spu = NULL;
     if (has_subtitle)
         spu = ConvertSubtitle(dec, &subtitle,
-                              block->i_pts > 0 ? block->i_pts : block->i_dts);
+                              block->i_pts > 0 ? block->i_pts : block->i_dts,
+                              sys->p_context);
 
     /* */
     if (!spu)
@@ -185,15 +186,7 @@ subpicture_t *DecodeSubtitle(decoder_t *dec, block_t **block_ptr)
 }
 
 /**
- * Clean up private data
- */
-void EndSubtitleDec(decoder_t *dec)
-{
-    VLC_UNUSED(dec);
-}
-
-/**
- * Convert a RGBA ffmpeg region to our format.
+ * Convert a RGBA libavcodec region to our format.
  */
 static subpicture_region_t *ConvertRegionRGBA(AVSubtitleRect *ffregion)
 {
@@ -240,9 +233,10 @@ static subpicture_region_t *ConvertRegionRGBA(AVSubtitleRect *ffregion)
 }
 
 /**
- * Convert a ffmpeg subtitle to our format.
+ * Convert a libavcodec subtitle to our format.
  */
-static subpicture_t *ConvertSubtitle(decoder_t *dec, AVSubtitle *ffsub, mtime_t pts)
+static subpicture_t *ConvertSubtitle(decoder_t *dec, AVSubtitle *ffsub, mtime_t pts,
+                                     AVCodecContext *avctx)
 {
     subpicture_t *spu = decoder_NewSubpicture(dec, NULL);
     if (!spu)
@@ -254,10 +248,16 @@ static subpicture_t *ConvertSubtitle(decoder_t *dec, AVSubtitle *ffsub, mtime_t 
     spu->i_stop     = pts + ffsub->end_display_time * INT64_C(1000);
     spu->b_absolute = true; /* FIXME How to set it right ? */
     spu->b_ephemer  = true; /* FIXME How to set it right ? */
-    spu->i_original_picture_width =
-        dec->fmt_in.subs.spu.i_original_frame_width;
-    spu->i_original_picture_height =
-        dec->fmt_in.subs.spu.i_original_frame_height;
+
+    if (avctx->coded_width != 0 && avctx->coded_height != 0) {
+        spu->i_original_picture_width = avctx->coded_width;
+        spu->i_original_picture_height = avctx->coded_height;
+    } else {
+        spu->i_original_picture_width =
+            dec->fmt_in.subs.spu.i_original_frame_width;
+        spu->i_original_picture_height =
+            dec->fmt_in.subs.spu.i_original_frame_height;
+    }
 
     subpicture_region_t **region_next = &spu->p_region;
 
@@ -290,4 +290,3 @@ static subpicture_t *ConvertSubtitle(decoder_t *dec, AVSubtitle *ffsub, mtime_t 
     return spu;
 }
 
-#endif

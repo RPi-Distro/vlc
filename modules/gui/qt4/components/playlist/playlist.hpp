@@ -1,8 +1,8 @@
 /*****************************************************************************
- * interface_widgets.hpp : Playlist Widgets
+ * playlist.hpp : Playlist Widgets
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: bf79faacb91f47ba4a801803d3a3215c628bee93 $
+ * $Id: 533a056228b78014fdfcc3746f82de65ed8c435b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -52,19 +52,18 @@ class PlaylistWidget : public QWidget
 {
     Q_OBJECT
 public:
-    PlaylistWidget( intf_thread_t *_p_i, QWidget * );
     virtual ~PlaylistWidget();
 
     void forceHide();
     void forceShow();
     QStackedWidget *artContainer;
+    StandardPLPanel      *mainView;
+
 private:
     QSplitter            *leftSplitter;
     QSplitter            *split;
-    StandardPLPanel      *mainView;
-    PLSelector           *selector;
 
-    QAction *viewActions[ 4 /* StandardPLPanel::VIEW_COUNT*/ ];
+    PLSelector           *selector;
 
     LocationBar          *locationBar;
     SearchLineEdit       *searchEdit;
@@ -72,15 +71,17 @@ private:
     intf_thread_t *p_intf;
 
 protected:
+    PlaylistWidget( intf_thread_t *_p_i, QWidget * );
     virtual void dropEvent( QDropEvent *);
     virtual void dragEnterEvent( QDragEnterEvent * );
     virtual void closeEvent( QCloseEvent * );
 private slots:
     void changeView( const QModelIndex& index );
-    void clearPlaylist();
+
+    friend class PlaylistDialog;
 };
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 class PlaylistSplitter : public QSplitter
 {
 public:
@@ -92,7 +93,7 @@ protected:
  #define PlaylistSplitter QSplitter
 #endif
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 class SplitterHandle : public QSplitterHandle
 {
 public:
@@ -117,14 +118,16 @@ private:
     bool b_arrow;
 };
 
-class PLModel;
+class VLCModel;
 class QHBoxLayout;
+
 class LocationBar : public QWidget
 {
     Q_OBJECT
 public:
-    LocationBar( PLModel * );
+    LocationBar( VLCModel * );
     void setIndex( const QModelIndex & );
+    void setModel( VLCModel * _model ) { model = _model; };
     virtual QSize sizeHint() const;
 protected:
     virtual void resizeEvent ( QResizeEvent * event );
@@ -132,7 +135,7 @@ protected:
 private:
     void layOut( const QSize& size );
 
-    PLModel *model;
+    VLCModel *model;
     QSignalMapper *mapper;
     QWidgetList buttons;
     QList<QAction*> actions;

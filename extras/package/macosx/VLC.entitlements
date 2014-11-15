@@ -29,6 +29,10 @@
 	<key>com.apple.security.temporary-exception.files.home-relative-path.read-only</key>
 	<string>/</string>
 	<key>com.apple.security.temporary-exception.files.absolute-path.read-only</key>
-	<string>/dev/</string>
+	<string>/tmp/</string>
+	<key>com.apple.security.temporary-exception.apple-events</key>
+	<string>com.Growl.GrowlHelperApp</string>
+	<key>com.apple.security.temporary-exception.mach-lookup.global-name</key>
+	<string>GrowlApplicationBridgePathway</string>
 </dict>
 </plist>

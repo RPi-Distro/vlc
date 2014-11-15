@@ -1,23 +1,24 @@
  @*****************************************************************************
- @ i420_yuyv_neon.S : ARM NEONv1 I420 to YUYV chroma conversion
+ @ i420_yuyv.S : ARM NEONv1 I420 to YUYV chroma conversion
  @*****************************************************************************
  @ Copyright (C) 2009-2011 Rémi Denis-Courmont
  @
  @ This program is free software; you can redistribute it and/or modify
- @ it under the terms of the GNU General Public License as published by
- @ the Free Software Foundation; either version 2 of the License, or
+ @ it under the terms of the GNU Lesser General Public License as published by
+ @ the Free Software Foundation; either version 2.1 of the License, or
  @ (at your option) any later version.
  @
  @ This program is distributed in the hope that it will be useful,
  @ but WITHOUT ANY WARRANTY; without even the implied warranty of
  @ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- @ GNU General Public License for more details.
+ @ GNU Lesser General Public License for more details.
  @
- @ You should have received a copy of the GNU General Public License
+ @ You should have received a copy of the GNU Lesser General Public License
  @ along with this program; if not, write to the Free Software Foundation,
  @ Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  @****************************************************************************/
 
+	.syntax unified
 	.fpu neon
 	.text
 
@@ -35,7 +36,7 @@
 #define COUNT	ip
 #define OPITCH	lr
 
-	.align
+	.align 2
 	.global i420_yuyv_neon
 	.type	i420_yuyv_neon, %function
 i420_yuyv_neon:
@@ -46,7 +47,7 @@ i420_yuyv_neon:
 	sub		OPAD,	OPITCH,	WIDTH,	lsl #1
 	sub		YPAD,	YPITCH,	WIDTH
 1:
-	movgts		COUNT,	WIDTH
+	movsgt		COUNT,	WIDTH
 	add		O2,	O1,	OPITCH
 	add		Y2,	Y1,	YPITCH
 	pople		{r4-r8,r10-r11,pc}
@@ -85,7 +86,7 @@ i420_uyvy_neon:
 	sub		OPAD,	OPITCH,	WIDTH,	lsl #1
 	sub		YPAD,	YPITCH,	WIDTH
 1:
-	movgts		COUNT,	WIDTH
+	movsgt		COUNT,	WIDTH
 	add		O2,	O1,	OPITCH
 	add		Y2,	Y1,	YPITCH
 	pople		{r4-r8,r10-r11,pc}

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2008 Rémi Denis-Courmont
  * Copyright (C) 2009 Laurent Aimar
- * $Id: ea5e82188fd5f5153ba7860d9e70e932c307c861 $
+ * $Id: ed7d42c89657225e42bcf8dab18a61710f41d635 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -41,16 +41,12 @@ typedef struct vout_window_sys_t vout_window_sys_t;
  * Window handle type
  */
 enum {
+    VOUT_WINDOW_TYPE_INVALID=0,
     VOUT_WINDOW_TYPE_XID,
     VOUT_WINDOW_TYPE_HWND,
     VOUT_WINDOW_TYPE_NSOBJECT,
+    VOUT_WINDOW_TYPE_ANDROID_NATIVE,
 };
-
-#if defined (WIN32) || defined (__OS2__)
-# define VOUT_WINDOW_TYPE_NATIVE VOUT_WINDOW_TYPE_HWND
-#elif defined (__unix__)
-# define VOUT_WINDOW_TYPE_NATIVE VOUT_WINDOW_TYPE_XID
-#endif
 
 /**
  * Control query for vout_window_t
@@ -66,7 +62,7 @@ typedef struct {
     bool is_standalone;
 
     /* Window handle type */
-    int type;
+    unsigned type;
 
     /* Window position hint */
     int x;
@@ -85,14 +81,17 @@ typedef struct {
 struct vout_window_t {
     VLC_COMMON_MEMBERS
 
+    unsigned type; /**< Window handle type */
+
     /* window handle (mandatory)
      *
      * It must be filled in the open function.
      */
     union {
-        void     *hwnd;     /* Win32 window handle */
-        uint32_t xid;       /* X11 windows ID */
-        void     *nsobject; /* Mac OSX view object */
+        void     *hwnd;          /* Win32 window handle */
+        uint32_t xid;            /* X11 windows ID */
+        void     *nsobject;      /* Mac OSX view object */
+        void     *anativewindow; /* Android native window. */
     } handle;
 
     /* display server (mandatory) */

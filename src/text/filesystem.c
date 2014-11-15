@@ -38,9 +38,7 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <fcntl.h>
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
+#include <unistd.h>
 
 /**
  * Opens a FILE pointer.
@@ -68,6 +66,10 @@ FILE *vlc_fopen (const char *filename, const char *mode)
             case 'w':
                 rwflags = O_WRONLY;
                 oflags |= O_CREAT | O_TRUNC;
+                break;
+
+            case 'x':
+                oflags |= O_EXCL;
                 break;
 
             case '+':
@@ -125,7 +127,7 @@ int vlc_loaddir( DIR *dir, char ***namelist,
     for (unsigned size = 0;;)
     {
         errno = 0;
-        char *entry = vlc_readdir (dir);
+        const char *entry = vlc_readdir (dir);
         if (entry == NULL)
         {
             if (errno)
@@ -134,10 +136,7 @@ int vlc_loaddir( DIR *dir, char ***namelist,
         }
 
         if (!select (entry))
-        {
-            free (entry);
             continue;
-        }
 
         if (num >= size)
         {
@@ -145,17 +144,16 @@ int vlc_loaddir( DIR *dir, char ***namelist,
             char **newtab = realloc (tab, sizeof (*tab) * (size));
 
             if (unlikely(newtab == NULL))
-            {
-                free (entry);
                 goto error;
-            }
             tab = newtab;
         }
 
-        tab[num++] = entry;
+        tab[num] = strdup(entry);
+        if (likely(tab[num] != NULL))
+            num++;
     }
 
-    if (compar != NULL)
+    if (compar != NULL && num > 0)
         qsort (tab, num, sizeof (*tab),
                (int (*)( const void *, const void *))compar);
     *namelist = tab;

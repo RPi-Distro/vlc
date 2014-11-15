@@ -1,6 +1,6 @@
 # libvpx
 
-VPX_VERSION := v1.1.0
+VPX_VERSION := v1.3.0
 VPX_URL := http://webm.googlecode.com/files/libvpx-$(VPX_VERSION).tar.bz2
 
 $(TARBALLS)/libvpx-$(VPX_VERSION).tar.bz2:
@@ -8,25 +8,11 @@ $(TARBALLS)/libvpx-$(VPX_VERSION).tar.bz2:
 
 .sum-vpx: libvpx-$(VPX_VERSION).tar.bz2
 
-ifneq ($(which bash),/bin/bash)
-PATCH_BASH_LOCATION=sed -i.orig s,^\#!/bin/bash,\#!`which bash`,g `grep -Rl ^\#!/bin/bash libvpx-$(VPX_VERSION)`
-else
-PATCH_BASH_LOCATION=true #bash is in /bin
-endif
-
 libvpx: libvpx-$(VPX_VERSION).tar.bz2 .sum-vpx
 	$(UNPACK)
+	$(APPLY) $(SRC)/vpx/libvpx-sysroot.patch
 	$(APPLY) $(SRC)/vpx/libvpx-no-cross.patch
-	$(APPLY) $(SRC)/vpx/libvpx-no-abi.patch
-	$(APPLY) $(SRC)/vpx/windows.patch
-ifdef HAVE_MACOSX
 	$(APPLY) $(SRC)/vpx/libvpx-mac.patch
-	$(APPLY) $(SRC)/vpx/libvpx-mac-mountain-lion.patch
-endif
-	$(PATCH_BASH_LOCATION)
-ifdef HAVE_WIN32
-	$(APPLY) $(SRC)/vpx/libvpx-win32.patch
-endif
 	$(MOVE)
 
 DEPS_vpx =
@@ -53,7 +39,9 @@ else ifeq ($(ARCH),x86_64)
 VPX_ARCH := x86_64
 endif
 
-ifdef HAVE_LINUX
+ifdef HAVE_ANDROID
+VPX_OS := android
+else ifdef HAVE_LINUX
 VPX_OS := linux
 else ifdef HAVE_DARWIN_OS
 ifeq ($(ARCH),arm)
@@ -84,12 +72,16 @@ endif
 
 VPX_CONF := \
 	--enable-runtime-cpu-detect \
-	--disable-install-bins \
-	--disable-install-srcs \
-	--disable-install-libs \
-	--disable-install-docs \
+	--disable-docs \
 	--disable-examples \
-	--disable-vp8-decoder
+	--disable-unit-tests \
+	--disable-install-bins \
+	--disable-install-docs
+
+ifndef BUILD_ENCODERS
+	VPX_CONF += --disable-vp8-encoder --disable-vp9-encoder
+endif
+
 ifndef HAVE_WIN32
 VPX_CONF += --enable-pic
 endif
@@ -99,18 +91,18 @@ endif
 ifdef HAVE_IOS
 VPX_CONF += --sdk-path=$(SDKROOT)
 endif
+ifdef HAVE_ANDROID
+# vpx configure.sh overrides our sysroot and it looks for it itself, and
+# uses that path to look for the compiler (which we already know)
+VPX_CONF += --sdk-path=$(shell dirname $(shell which $(HOST)-gcc))
+# needed for cpu-features.h
+VPX_CONF += --extra-cflags="-I $(ANDROID_NDK)/sources/cpufeatures/"
+endif
 
 .vpx: libvpx
 	cd $< && CROSS=$(VPX_CROSS) ./configure --target=$(VPX_TARGET) \
-		$(VPX_CONF)
+		$(VPX_CONF) --prefix=$(PREFIX)
+	cd $< && $(MAKE)
+	cd $< && ../../../contrib/src/pkg-static.sh vpx.pc
 	cd $< && $(MAKE) install
-	rm -Rf -- "$(PREFIX)/include/vpx/"
-	mkdir -p -- "$(PREFIX)/include/vpx/"
-	# Of course! Why the hell would it be listed or in make install?
-	cp $</vpx/*.h $</vpx_ports/*.h "$(PREFIX)/include/vpx/"
-	rm -f -- "$(PREFIX)/include/vpx/config.h"
-	$(RANLIB) $</libvpx.a
-	# Of course! Why the hell would it be listed or in make install?
-	mkdir -p -- "$(PREFIX)/lib"
-	install -- $</libvpx.a "$(PREFIX)/lib/libvpx.a"
 	touch $@

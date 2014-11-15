@@ -1,24 +1,24 @@
 /*****************************************************************************
  * folder.c
  *****************************************************************************
- * Copyright (C) 2006 the VideoLAN team
- * $Id: 46337908c49728e8d524b96397a3de288edac661 $
+ * Copyright (C) 2006 VLC authors and VideoLAN
+ * $Id: 38c1e075f75b5fc96b065c7cd4c97381fe7b6ed8 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -29,22 +29,23 @@
 # include "config.h"
 #endif
 
+#include <sys/stat.h>
+
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_art_finder.h>
+#include <vlc_meta_fetcher.h>
 #include <vlc_fs.h>
 #include <vlc_url.h>
 #include <vlc_input_item.h>
 
-#ifdef HAVE_SYS_STAT_H
-#   include <sys/stat.h>
-#endif
-
 static const char* cover_files[] = {
     "Folder.jpg",           /* Windows */
     "AlbumArtSmall.jpg",    /* Windows */
+    "AlbumArt.jpg",         /* Windows */
+    "Album.jpg",
     ".folder.png",          /* KDE?    */
     "cover.jpg",            /* rockbox */
+    "thumb.jpg",
 };
 
 static const int i_covers = (sizeof(cover_files)/sizeof(cover_files[0]));
@@ -71,27 +72,57 @@ vlc_module_end ()
  *****************************************************************************/
 static int FindMeta( vlc_object_t *p_this )
 {
-    art_finder_t *p_finder = (art_finder_t *)p_this;
+    meta_fetcher_t *p_finder = (meta_fetcher_t *)p_this;
     input_item_t *p_item = p_finder->p_item;
     bool b_have_art = false;
+    struct stat statinfo;
+    char *psz_path = NULL;
 
     if( !p_item )
         return VLC_EGENERIC;
 
-    char *psz_dir = input_item_GetURI( p_item );
-    if( !psz_dir )
+    char *psz_uri = input_item_GetURI( p_item );
+    if( !psz_uri )
         return VLC_EGENERIC;
 
-    char *psz_path = make_path( psz_dir );
-    free( psz_dir );
-    if( psz_path == NULL )
-        return VLC_EGENERIC;
+    if ( *psz_uri && psz_uri[strlen( psz_uri ) - 1] != DIR_SEP_CHAR )
+    {
+        if ( asprintf( &psz_path, "%s"DIR_SEP, psz_uri ) == -1 )
+        {
+            free( psz_uri );
+            return VLC_EGENERIC;
+        }
+        char *psz_basedir = make_path( psz_path );
+        FREENULL( psz_path );
+        if( psz_basedir == NULL )
+        {
+            free( psz_uri );
+            return VLC_EGENERIC;
+        }
+        if( vlc_stat( psz_basedir, &statinfo ) == 0 && S_ISDIR(statinfo.st_mode) )
+            psz_path = psz_basedir;
+        else
+            free( psz_basedir );
+    }
 
-    char *psz_buf = strrchr( psz_path, DIR_SEP_CHAR );
-    if( psz_buf )
-        *++psz_buf = '\0';
-    else
-        *psz_path = '\0'; /* relative path */
+    if ( psz_path == NULL )
+    {
+        char *psz_basedir = make_path( psz_uri );
+        if( psz_basedir == NULL )
+        {
+            free( psz_uri );
+            return VLC_EGENERIC;
+        }
+
+        char *psz_buf = strrchr( psz_basedir, DIR_SEP_CHAR );
+        if( psz_buf )
+            *++psz_buf = '\0';
+        else
+            *psz_basedir = '\0'; /* relative path */
+        psz_path = psz_basedir;
+    }
+
+    free( psz_uri );
 
     for( int i = -1; !b_have_art && i < i_covers; i++ )
     {
@@ -117,10 +148,9 @@ static int FindMeta( vlc_object_t *p_this )
         if( unlikely(filepath == NULL) )
             continue;
 
-        struct stat dummy;
-        if( vlc_stat( filepath, &dummy ) == 0 )
+        if( vlc_stat( filepath, &statinfo ) == 0 && S_ISREG(statinfo.st_mode) )
         {
-            char *psz_uri = make_URI( filepath, "file" );
+            char *psz_uri = vlc_path2uri( filepath, "file" );
             if( psz_uri )
             {
                 input_item_SetArtURL( p_item, psz_uri );

@@ -2,23 +2,23 @@
  * image.c: Image demuxer
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 021f122bd0974723a6f9e3e09307a1e1d7cec8c7 $
+ * $Id: 5b56913bf5bd9b9e0338b1d751333447bedcc2f3 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -85,7 +85,7 @@ vlc_module_begin()
         change_safe()
     add_string("image-chroma", "", CHROMA_TEXT, CHROMA_LONGTEXT, true)
         change_safe()
-    add_float("image-duration", 10, DURATION_TEXT, DURATION_LONGTEXT, true)
+    add_float("image-duration", 10, DURATION_TEXT, DURATION_LONGTEXT, false)
         change_safe()
     add_string("image-fps", "10/1", FPS_TEXT, FPS_LONGTEXT, true)
         change_safe()
@@ -150,7 +150,7 @@ static block_t *Decode(demux_t *demux,
         size += image->p[i].i_visible_pitch *
                 image->p[i].i_visible_lines;
 
-    data = block_New(demux, size);
+    data = block_Alloc(size);
     if (!data) {
         picture_Release(image);
         return NULL;
@@ -423,6 +423,53 @@ static bool IsExif(stream_t *s)
     return true;
 }
 
+static bool FindSVGmarker(int *position, const uint8_t *data, const int size, const char *marker)
+{
+    for( int i = *position; i < size; i++)
+    {
+        if (memcmp(&data[i], marker, strlen(marker)) == 0)
+        {
+            *position = i;
+            return true;
+        }
+    }
+    return false;
+}
+
+static bool IsSVG(stream_t *s)
+{
+    char *ext = strstr(s->psz_path, ".svg");
+    if (!ext) return false;
+
+    const uint8_t *header;
+    int size = stream_Peek(s, &header, 4096);
+    int position = 0;
+
+    const char xml[] = "<?xml version=\"";
+    if (!FindSVGmarker(&position, header, size, xml))
+        return false;
+    if (position != 0)
+        return false;
+
+    const char endxml[] = ">\0";
+    if (!FindSVGmarker(&position, header, size, endxml))
+        return false;
+    if (position <= 15)
+        return false;
+
+    const char svg[] = "<svg";
+    if (!FindSVGmarker(&position, header, size, svg))
+        return false;
+    if (position < 19)
+        return false;
+
+    /* SVG Scalable Vector Graphics image */
+
+    /* NOTE: some SVG images have the mimetype set in a meta data section
+     * and some do not */
+    return true;
+}
+
 static bool IsTarga(stream_t *s)
 {
     /* The header is not enough to ensure proper detection, we need
@@ -537,6 +584,9 @@ static const image_format_t formats[] = {
     },
     { .codec = VLC_CODEC_JPEG,
       .detect = IsExif,
+    },
+    { .codec = VLC_CODEC_SVG,
+      .detect = IsSVG,
     },
     { .codec = VLC_CODEC_TARGA,
       .detect = IsTarga,

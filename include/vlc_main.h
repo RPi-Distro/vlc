@@ -1,5 +1,5 @@
 /*****************************************************************************
- * main.h: access to all program variables
+ * vlc_main.h: access to all program variables
  * Declaration and extern access to LibVLC instance object.
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001, 2002, 2008 VLC authors and VideoLAN
@@ -25,8 +25,6 @@
  * \file
  * This file defines libvlc_int_t internal libvlc instance
  */
-
-TYPEDEF_ARRAY(input_item_t*, input_item_array_t)
 
 struct hotkey;
 

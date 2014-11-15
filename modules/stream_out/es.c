@@ -1,24 +1,24 @@
 /*****************************************************************************
  * es.c: Elementary stream output module
  *****************************************************************************
- * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 4f12c049292f45986ed78e33c52ea1ffc7fcbade $
+ * Copyright (C) 2003-2004 VLC authors and VideoLAN
+ * $Id: c4b6274a29b3ffb17cf254d2013c18246e073c1b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -119,9 +119,9 @@ static const char *const ppsz_sout_options[] = {
     NULL
 };
 
-static sout_stream_id_t *Add ( sout_stream_t *, es_format_t * );
-static int               Del ( sout_stream_t *, sout_stream_id_t * );
-static int               Send( sout_stream_t *, sout_stream_id_t *, block_t* );
+static sout_stream_id_sys_t *Add ( sout_stream_t *, es_format_t * );
+static int               Del ( sout_stream_t *, sout_stream_id_sys_t * );
+static int               Send( sout_stream_t *, sout_stream_id_sys_t *, block_t* );
 
 struct sout_stream_sys_t
 {
@@ -202,7 +202,7 @@ static void Close( vlc_object_t * p_this )
     free( p_sys );
 }
 
-struct sout_stream_id_t
+struct sout_stream_id_sys_t
 {
     sout_input_t *p_input;
     sout_mux_t   *p_mux;
@@ -269,11 +269,10 @@ static char * es_print_url( const char *psz_fmt, vlc_fourcc_t i_fourcc, int i_co
     return( psz_dst );
 }
 
-static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
+static sout_stream_id_sys_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
-    sout_instance_t   *p_sout = p_stream->p_sout;
-    sout_stream_id_t  *id;
+    sout_stream_id_sys_t  *id;
 
     const char        *psz_access;
     const char        *psz_mux;
@@ -354,7 +353,7 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
              psz_access, psz_mux, psz_dst );
 
     /* *** find and open appropriate access module *** */
-    p_access = sout_AccessOutNew( p_sout, psz_access, psz_dst );
+    p_access = sout_AccessOutNew( p_stream, psz_access, psz_dst );
     if( p_access == NULL )
     {
         msg_Err( p_stream, "no suitable sout access module for `%s/%s://%s'",
@@ -369,7 +368,7 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     }
 
     /* *** find and open appropriate mux module *** */
-    p_mux = sout_MuxNew( p_sout, psz_mux, p_access );
+    p_mux = sout_MuxNew( p_stream->p_sout, psz_mux, p_access );
     if( p_mux == NULL )
     {
         msg_Err( p_stream, "no suitable sout mux module for `%s/%s://%s'",
@@ -385,7 +384,7 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     }
     free( psz_dst );
 
-    id = malloc( sizeof( sout_stream_id_t ) );
+    id = malloc( sizeof( sout_stream_id_sys_t ) );
     if( !id )
     {
         sout_MuxDelete( p_mux );
@@ -404,12 +403,12 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     }
 
     if( !sout_AccessOutCanControlPace( p_access ) )
-        p_sout->i_out_pace_nocontrol++;
+        p_stream->p_sout->i_out_pace_nocontrol++;
 
     return id;
 }
 
-static int Del( sout_stream_t *p_stream, sout_stream_id_t *id )
+static int Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
 {
     VLC_UNUSED(p_stream);
     sout_access_out_t *p_access = id->p_mux->p_access;
@@ -424,12 +423,10 @@ static int Del( sout_stream_t *p_stream, sout_stream_id_t *id )
     return VLC_SUCCESS;
 }
 
-static int Send( sout_stream_t *p_stream, sout_stream_id_t *id,
+static int Send( sout_stream_t *p_stream, sout_stream_id_sys_t *id,
                  block_t *p_buffer )
 {
     VLC_UNUSED(p_stream);
-    sout_MuxSendBuffer( id->p_mux, id->p_input, p_buffer );
-
-    return VLC_SUCCESS;
+    return sout_MuxSendBuffer( id->p_mux, id->p_input, p_buffer );
 }
 

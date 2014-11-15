@@ -1,8 +1,8 @@
 /*****************************************************************************
- * Convert.cpp : Convertion dialogs
+ * convert.cpp : Convertion dialogs
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 94f5fe15312a983a38135418b651ba91a82138c7 $
+ * $Id: 267492844dc88bb6d478e545388f8a16d8e60a2e $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -68,31 +68,44 @@ ConvertDialog::ConvertDialog( QWidget *parent, intf_thread_t *_p_intf,
     destLayout->addWidget( fileSelectButton, 0, 2);
     BUTTONACT( fileSelectButton, fileBrowse() );
 
-    displayBox = new QCheckBox( qtr( "Display the output" ) );
-    displayBox->setToolTip( qtr( "This display the resulting media, but can "
-                               "slow things down." ) );
-    destLayout->addWidget( displayBox, 2, 0, 1, -1 );
-
-    mainLayout->addWidget( destBox, 1, 0, 1, -1  );
+    mainLayout->addWidget( destBox, 3, 0, 1, -1  );
 
 
     /* Profile Editor */
     QGroupBox *settingBox = new QGroupBox( qtr( "Settings" ) );
     QGridLayout *settingLayout = new QGridLayout( settingBox );
 
-    profile = new VLCProfileSelector( this );
-    settingLayout->addWidget( profile, 0, 0, 1, -1 );
+    QRadioButton *convertRadio = new QRadioButton( qtr( "Convert" ) );
+    dumpRadio = new QRadioButton( qtr( "Dump raw input" ) );
+    QButtonGroup *buttonGroup = new QButtonGroup(this);
+    buttonGroup->addButton( convertRadio );
+    buttonGroup->addButton( dumpRadio );
+    convertRadio->setChecked( true );
+
+    settingLayout->addWidget( convertRadio, 1, 0 );
+
+    QWidget *convertPanel = new QWidget( this );
+    QVBoxLayout *convertLayout = new QVBoxLayout( convertPanel );
+
+    displayBox = new QCheckBox( qtr( "Display the output" ) );
+    displayBox->setToolTip( qtr( "This display the resulting media, but can "
+                               "slow things down." ) );
+    convertLayout->addWidget( displayBox );
 
     deinterBox = new QCheckBox( qtr( "Deinterlace" ) );
-    settingLayout->addWidget( deinterBox, 1, 0 );
+    convertLayout->addWidget( deinterBox );
 
-    dumpBox = new QCheckBox( qtr( "Dump raw input" ) );
-    settingLayout->addWidget( dumpBox, 1, 1 );
+    profile = new VLCProfileSelector( this );
+    convertLayout->addWidget( profile );
 
-    mainLayout->addWidget( settingBox, 3, 0, 1, -1  );
+    settingLayout->addWidget( convertPanel, 2, 0 );
+
+    settingLayout->addWidget( dumpRadio, 5, 0 );
+
+    mainLayout->addWidget( settingBox, 1, 0, 1, -1  );
 
     /* Buttons */
-    QPushButton *okButton = new QPushButton( qtr( "&Start" ) );
+    okButton = new QPushButton( qtr( "&Start" ) );
     QPushButton *cancelButton = new QPushButton( qtr( "&Cancel" ) );
     QDialogButtonBox *buttonBox = new QDialogButtonBox;
 
@@ -105,15 +118,24 @@ ConvertDialog::ConvertDialog( QWidget *parent, intf_thread_t *_p_intf,
     BUTTONACT(okButton,close());
     BUTTONACT(cancelButton,cancel());
 
-    CONNECT(dumpBox,toggled(bool),this,dumpChecked(bool));
+    CONNECT( convertRadio, toggled(bool), convertPanel, setEnabled(bool) );
+    CONNECT(profile, optionsChanged(), this, setDestinationFileExtension());
+    CONNECT(fileLine, editingFinished(), this, setDestinationFileExtension());
+    CONNECT(fileLine, textChanged(const QString&), this, validate());
+
+    validate();
 }
 
 void ConvertDialog::fileBrowse()
 {
+    QString fileExtension = ( ! profile->isEnabled() ) ? ".*" : "." + profile->getMux();
+
     QString fileName = QFileDialog::getSaveFileName( this, qtr( "Save file..." ),
-            "",
- qtr( "Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv *.webm)" ) );
+        p_intf->p_sys->filepath,
+        QString( "%1 (*%2);;%3 (*.*)" ).arg( qtr( "Containers" ) )
+            .arg( fileExtension ).arg( qtr("All") ) );
     fileLine->setText( toNativeSeparators( fileName ) );
+    setDestinationFileExtension();
 }
 
 void ConvertDialog::cancel()
@@ -125,7 +147,7 @@ void ConvertDialog::close()
 {
     hide();
 
-    if( dumpBox->isChecked() )
+    if( dumpRadio->isChecked() )
     {
         mrl = "demux=dump :demuxdump-file=" + fileLine->text();
     }
@@ -140,19 +162,31 @@ void ConvertDialog::close()
         mrl += ":";
         if( displayBox->isChecked() )
             mrl += "duplicate{dst=display,dst=";
-        mrl += "std{access=file,mux=" + profile->getMux()
-             + ",dst='" + fileLine->text() + "'}";
+        mrl += "std{access=file{no-overwrite},mux=" + profile->getMux()
+             + ",dst='" + fileLine->text().replace( QChar('\''), "\\\'" )
+             + "'}";
         if( displayBox->isChecked() )
             mrl += "}";
     }
 
-    msg_Warn( p_intf, "Transcode MRL: %s", qtu( mrl ) );
+    msg_Dbg( p_intf, "Transcode MRL: %s", qtu( mrl ) );
     accept();
 }
 
-void ConvertDialog::dumpChecked( bool checked )
+void ConvertDialog::setDestinationFileExtension()
 {
-    deinterBox->setEnabled( !checked );
-    displayBox->setEnabled( !checked );
-    profile->setEnabled( !checked );
+    if( !fileLine->text().isEmpty() && profile->isEnabled() )
+    {
+        QString newFileExtension = "." + profile->getMux();
+        if( fileLine->text().lastIndexOf( "." ) == -1 )
+        {
+            QString newFileName = fileLine->text().append( newFileExtension );
+            fileLine->setText( toNativeSeparators( newFileName ) );
+        }
+    }
+}
+
+void ConvertDialog::validate()
+{
+    okButton->setEnabled( !fileLine->text().isEmpty() );
 }

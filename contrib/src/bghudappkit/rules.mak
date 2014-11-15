@@ -17,13 +17,11 @@ $(TARBALLS)/bghudappkit-git.tar.xz:
 
 bghudappkit: bghudappkit-git.tar.xz .sum-bghudappkit
 	$(UNPACK)
-	$(APPLY) $(SRC)/bghudappkit/bghudappkit-xcode4.patch
+	$(APPLY) $(SRC)/bghudappkit/bghudappkit-xcode5.patch
 	$(MOVE)
 
 .bghudappkit: bghudappkit
 	cd $< && xcodebuild $(XCODE_FLAGS)
-	install_name_tool -change @loader_path/../../../../../../../BGHUDAppKit.framework/Versions/A/BGHUDAppKit \
-								@loader_path/../../../../Versions/A/BGHUDAppKit \
-		$</build/Release/BGHUDAppKit.framework/Resources/BGHUDAppKitPlugin.ibplugin/Contents/MacOS/BGHUDAppKitPlugin
-	cd $< && cp -R build/Release/BGHUDAppKit.framework "$(PREFIX)"
+	install -d $(PREFIX)
+	cd $< && cp -Rf build/Release/BGHUDAppKit.framework "$(PREFIX)"
 	touch $@

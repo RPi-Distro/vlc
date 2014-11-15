@@ -1,26 +1,26 @@
 /*****************************************************************************
  * ty.c - TiVo ty stream video demuxer for VLC
  *****************************************************************************
- * Copyright (C) 2005 the VideoLAN team
+ * Copyright (C) 2005 VLC authors and VideoLAN
  * Copyright (C) 2005 by Neal Symms (tivo@freakinzoo.com) - February 2005
  * based on code by Christopher Wingert for tivo-mplayer
  * tivo(at)wingert.org, February 2003
  *
- * $Id: a74d0a915aa820faabf30407816008d00ccee3af $
+ * $Id: f2f30c888dffd39e61f449b3fc98d021eaf4e94f $
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *
  * CODE CHANGES:
  * v1.0.0 - 24-Feb-2005 - Initial release - Series 1 support ONLY!
@@ -798,7 +798,7 @@ static int DemuxRecVideo( demux_t *p_demux, ty_rec_hdr_t *rec_hdr, block_t *p_bl
         {
             if( p_sys->p_cc[i] )
             {
-                block_t *p_cc = block_New( p_demux, p_sys->cc.i_data );
+                block_t *p_cc = block_Alloc( p_sys->cc.i_data );
                 p_cc->i_flags |= BLOCK_FLAG_TYPE_I;
                 p_cc->i_pts = p_block_in->i_pts;
                 memcpy( p_cc->p_buffer, p_sys->cc.p_data, p_sys->cc.i_data );
@@ -1443,7 +1443,7 @@ static void DemuxDecodeXds( demux_t *p_demux, uint8_t d1, uint8_t d2 )
         p_epg = vlc_epg_New( NULL );
         if( m->current.psz_name )
         {
-            vlc_epg_AddEvent( p_epg, 0, 0, m->current.psz_name, NULL, NULL );
+            vlc_epg_AddEvent( p_epg, 0, 0, m->current.psz_name, NULL, NULL, 0 );
             //if( m->current.psz_rating )
             //  TODO but VLC cannot yet handle rating per epg event
             vlc_epg_SetCurrent( p_epg, 0 );

@@ -1,26 +1,26 @@
 /*****************************************************************************
- * resize.c: video scaling module for YUVP/A, I420 and RGBA pictures
+ * scale.c: video scaling module for YUVP/A, I420 and RGBA pictures
  *  Uses the low quality "nearest neighbour" algorithm.
  *****************************************************************************
- * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: 66384db2f2745d802ecce381568a5713c3e8b9ee $
+ * Copyright (C) 2003-2007 VLC authors and VideoLAN
+ * $Id: 08842995a929dfc5319a05ff4f52cc51ae6ff227 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea @t videolan dot org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -61,11 +61,15 @@ static int OpenFilter( vlc_object_t *p_this )
           p_filter->fmt_in.video.i_chroma != VLC_CODEC_I420 &&
           p_filter->fmt_in.video.i_chroma != VLC_CODEC_YV12 &&
           p_filter->fmt_in.video.i_chroma != VLC_CODEC_RGB32 &&
-          p_filter->fmt_in.video.i_chroma != VLC_CODEC_RGBA ) ||
+          p_filter->fmt_in.video.i_chroma != VLC_CODEC_RGBA &&
+          p_filter->fmt_in.video.i_chroma != VLC_CODEC_ARGB ) ||
         p_filter->fmt_in.video.i_chroma != p_filter->fmt_out.video.i_chroma )
     {
         return VLC_EGENERIC;
     }
+
+    if( p_filter->fmt_in.video.orientation != p_filter->fmt_out.video.orientation )
+        return VLC_EGENERIC;
 
     video_format_ScaleCropAr( &p_filter->fmt_out.video, &p_filter->fmt_in.video );
     p_filter->pf_video_filter = Filter;
@@ -106,6 +110,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     }
 
     if( p_filter->fmt_in.video.i_chroma != VLC_CODEC_RGBA &&
+        p_filter->fmt_in.video.i_chroma != VLC_CODEC_ARGB &&
         p_filter->fmt_in.video.i_chroma != VLC_CODEC_RGB32 )
     {
         for( i_plane = 0; i_plane < p_pic_dst->i_planes; i_plane++ )

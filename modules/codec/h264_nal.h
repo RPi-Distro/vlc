@@ -10,13 +10,15 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+#include <limits.h>
 
 /* Parse the SPS/PPS Metadata and convert it to annex b format */
 static int convert_sps_pps( decoder_t *p_dec, const uint8_t *p_buf,
@@ -96,3 +98,47 @@ static int convert_sps_pps( decoder_t *p_dec, const uint8_t *p_buf,
     return VLC_SUCCESS;
 }
 
+/* Convert H.264 NAL format to annex b in-place */
+struct H264ConvertState {
+    uint32_t nal_len;
+    uint32_t nal_pos;
+};
+
+static void convert_h264_to_annexb( uint8_t *p_buf, uint32_t i_len,
+                                    size_t i_nal_size,
+                                    struct H264ConvertState *state )
+{
+    if( i_nal_size < 3 || i_nal_size > 4 )
+        return;
+
+    /* This only works for NAL sizes 3-4 */
+    while( i_len > 0 )
+    {
+        if( state->nal_pos < i_nal_size ) {
+            unsigned int i;
+            for( i = 0; state->nal_pos < i_nal_size && i < i_len; i++, state->nal_pos++ ) {
+                state->nal_len = (state->nal_len << 8) | p_buf[i];
+                p_buf[i] = 0;
+            }
+            if( state->nal_pos < i_nal_size )
+                return;
+            p_buf[i - 1] = 1;
+            p_buf += i;
+            i_len -= i;
+        }
+        if( state->nal_len > INT_MAX )
+            return;
+        if( state->nal_len > i_len )
+        {
+            state->nal_len -= i_len;
+            return;
+        }
+        else
+        {
+            p_buf += state->nal_len;
+            i_len -= state->nal_len;
+            state->nal_len = 0;
+            state->nal_pos = 0;
+        }
+    }
+}

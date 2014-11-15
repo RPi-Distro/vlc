@@ -32,6 +32,10 @@
 #include "opus_header.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
+
+#include <vlc_common.h>
+#include "../demux/xiph.h"
 
 /* Header contents:
   - "OpusHead" (64 bits)
@@ -69,7 +73,7 @@ typedef struct {
     int pos;
 } ROPacket;
 
-static int write_uint32(Packet *p, ogg_uint32_t val)
+static int write_uint32(Packet *p, uint32_t val)
 {
     if (p->pos>p->maxlen-4)
         return 0;
@@ -81,7 +85,7 @@ static int write_uint32(Packet *p, ogg_uint32_t val)
     return 1;
 }
 
-static int write_uint16(Packet *p, ogg_uint16_t val)
+static int write_uint16(Packet *p, uint16_t val)
 {
     if (p->pos>p->maxlen-2)
         return 0;
@@ -100,24 +104,24 @@ static int write_chars(Packet *p, const unsigned char *str, int nb_chars)
     return 1;
 }
 
-static int read_uint32(ROPacket *p, ogg_uint32_t *val)
+static int read_uint32(ROPacket *p, uint32_t *val)
 {
     if (p->pos>p->maxlen-4)
         return 0;
-    *val =  (ogg_uint32_t)p->data[p->pos  ];
-    *val |= (ogg_uint32_t)p->data[p->pos+1]<< 8;
-    *val |= (ogg_uint32_t)p->data[p->pos+2]<<16;
-    *val |= (ogg_uint32_t)p->data[p->pos+3]<<24;
+    *val =  (uint32_t)p->data[p->pos  ];
+    *val |= (uint32_t)p->data[p->pos+1]<< 8;
+    *val |= (uint32_t)p->data[p->pos+2]<<16;
+    *val |= (uint32_t)p->data[p->pos+3]<<24;
     p->pos += 4;
     return 1;
 }
 
-static int read_uint16(ROPacket *p, ogg_uint16_t *val)
+static int read_uint16(ROPacket *p, uint16_t *val)
 {
     if (p->pos>p->maxlen-2)
         return 0;
-    *val =  (ogg_uint16_t)p->data[p->pos  ];
-    *val |= (ogg_uint16_t)p->data[p->pos+1]<<8;
+    *val =  (uint16_t)p->data[p->pos  ];
+    *val |= (uint16_t)p->data[p->pos+1]<<8;
     p->pos += 2;
     return 1;
 }
@@ -136,7 +140,7 @@ int opus_header_parse(const unsigned char *packet, int len, OpusHeader *h)
     char str[9];
     ROPacket p;
     unsigned char ch;
-    ogg_uint16_t shortval;
+    uint16_t shortval;
 
     p.data = packet;
     p.maxlen = len;
@@ -213,7 +217,103 @@ int opus_header_parse(const unsigned char *packet, int len, OpusHeader *h)
     return 1;
 }
 
-int opus_header_to_packet(const OpusHeader *h, unsigned char *packet, int len)
+/*
+ Comments will be stored in the Vorbis style.
+ It is described in the "Structure" section of
+    http://www.xiph.org/ogg/vorbis/doc/v-comment.html
+
+ However, Opus and other non-vorbis formats omit the "framing_bit".
+
+The comment header is decoded as follows:
+  1) [vendor_length] = unsigned little endian 32 bits integer
+  2) [vendor_string] = UTF-8 vector as [vendor_length] octets
+  3) [user_comment_list_length] = unsigned little endian 32 bits integer
+  4) iterate [user_comment_list_length] times {
+     5) [length] = unsigned little endian 32 bits integer
+     6) this iteration's user comment = UTF-8 vector as [length] octets
+  }
+  7) done.
+*/
+
+static char *comment_init(size_t *length, const char *vendor)
+{
+    /*The 'vendor' field should be the actual encoding library used.*/
+    if (!vendor)
+        vendor = "unknown";
+    int vendor_length = strlen(vendor);
+
+    int user_comment_list_length = 0;
+    int len = 8 + 4 + vendor_length + 4;
+    char *p = malloc(len);
+    if (p == NULL)
+        return NULL;
+
+    memcpy(p, "OpusTags", 8);
+    SetDWLE(p + 8, vendor_length);
+    memcpy(p + 12, vendor, vendor_length);
+    SetDWLE(p + 12 + vendor_length, user_comment_list_length);
+
+    *length = len;
+    return p;
+}
+
+static int comment_add(char **comments, size_t *length, const char *tag,
+                       const char *val)
+{
+    char *p = *comments;
+    int vendor_length = GetDWLE(p + 8);
+    size_t user_comment_list_length = GetDWLE(p + 8 + 4 + vendor_length);
+    size_t tag_len = (tag ? strlen(tag) : 0);
+    size_t val_len = strlen(val);
+    size_t len = (*length) + 4 + tag_len + val_len;
+
+    p = realloc(p, len);
+    if (p == NULL)
+        return 1;
+
+    SetDWLE(p + *length, tag_len + val_len);          /* length of comment */
+    if (tag) memcpy(p + *length + 4, tag, tag_len);         /* comment */
+    memcpy(p + *length + 4 + tag_len, val, val_len);        /* comment */
+    SetDWLE(p + 8 + 4 + vendor_length, user_comment_list_length + 1);
+    *comments = p;
+    *length = len;
+    return 0;
+}
+
+/* adds padding so that metadata can be updated without rewriting the whole file */
+static int comment_pad(char **comments, size_t *length)
+{
+    const unsigned padding = 512; /* default from opus-tools */
+
+    char *p = *comments;
+    /* Make sure there is at least "padding" worth of padding free, and
+       round up to the maximum that fits in the current ogg segments. */
+    size_t newlen = ((*length + padding) / 255 + 1) * 255 - 1;
+    p = realloc(p, newlen);
+    if (p == NULL)
+        return 1;
+
+    memset(p + *length, 0, newlen - *length);
+    *comments = p;
+    *length = newlen;
+    return 0;
+}
+
+int opus_prepare_header(unsigned channels, unsigned rate, OpusHeader *header)
+{
+    header->version = 1;
+    header->channels = channels;
+    header->nb_streams = header->channels;
+    header->nb_coupled = 0;
+    header->input_sample_rate = rate;
+    header->gain = 0; // 0dB
+    header->channel_mapping = header->channels > 8 ? 255 :
+                              header->channels > 2;
+
+    return 0;
+}
+
+static int opus_header_to_packet(const OpusHeader *h, unsigned char *packet, int len)
 {
     Packet p;
     unsigned char ch;
@@ -266,3 +366,46 @@ int opus_header_to_packet(const OpusHeader *h, unsigned char *packet, int len)
 
     return p.pos;
 }
+
+int opus_write_header(uint8_t **p_extra, int *i_extra, OpusHeader *header, const char *vendor)
+{
+    unsigned char header_data[100];
+    const int packet_size = opus_header_to_packet(header, header_data,
+                                                  sizeof(header_data));
+
+    unsigned char *data[2];
+    size_t size[2];
+
+    data[0] = header_data;
+    size[0] = packet_size;
+
+    size_t comments_length;
+    char *comments = comment_init(&comments_length, vendor);
+    if (!comments)
+        return 1;
+    if (comment_add(&comments, &comments_length, "ENCODER=",
+                    "VLC media player"))
+    {
+        free(comments);
+        return 1;
+    }
+
+    if (comment_pad(&comments, &comments_length))
+    {
+        free(comments);
+        return 1;
+    }
+
+    data[1] = (unsigned char *) comments;
+    size[1] = comments_length;
+
+    for (unsigned i = 0; i < ARRAY_SIZE(data); ++i)
+        if (xiph_AppendHeaders(i_extra, (void **) p_extra, size[i], data[i]))
+        {
+            *i_extra = 0;
+            *p_extra = NULL;
+        }
+
+    return 0;
+}
+

@@ -1,24 +1,24 @@
 /*******************************************************************************
  * itml.c : iTunes Music Library import functions
  *******************************************************************************
- * Copyright (C) 2007 the VideoLAN team
- * $Id: fa027809c30a6343cfa85de550562c13d02c07df $
+ * Copyright (C) 2007 VLC authors and VideoLAN
+ * $Id: e000ec39abf8118275ca3d8d61bf725e85919356 $
  *
  * Authors: Yoann Peronneau <yoann@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *******************************************************************************/
 /**
  * \file modules/demux/playlist/itml.c
@@ -43,7 +43,6 @@ struct demux_sys_t
     int i_ntracks;
 };
 
-static int Control( demux_t *, int, va_list );
 static int Demux( demux_t * );
 
 /**
@@ -113,13 +112,6 @@ end:
 
     /* Needed for correct operation of go back */
     return 0;
-}
-
-/** \brief dummy function for demux callback interface */
-static int Control( demux_t *p_demux, int i_query, va_list args )
-{
-    VLC_UNUSED(p_demux); VLC_UNUSED(i_query); VLC_UNUSED(args);
-    return VLC_EGENERIC;
 }
 
 /**

@@ -2,7 +2,7 @@
  * vlc_subpicture.h: subpicture definitions
  *****************************************************************************
  * Copyright (C) 1999 - 2009 VLC authors and VideoLAN
- * $Id: 797f22ab3e39787a4af758af7546336e22a639cc $
+ * $Id: 6bfede171002b78b80c7635e87fdd51ea7d15ea4 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -67,6 +67,7 @@ struct subpicture_region_t
     char            *psz_text;       /**< text string comprising this region */
     char            *psz_html;       /**< HTML version of subtitle (NULL = use psz_text) */
     text_style_t    *p_style;        /**< a description of the text style formatting */
+    bool            b_renderbg;      /**< render black background under text */
 
     subpicture_region_t *p_next;                /**< next region in the list */
     subpicture_region_private_t *p_private;  /**< Private data for spu_t *only* */
@@ -77,9 +78,10 @@ struct subpicture_region_t
 #define SUBPICTURE_ALIGN_RIGHT 0x2
 #define SUBPICTURE_ALIGN_TOP 0x4
 #define SUBPICTURE_ALIGN_BOTTOM 0x8
+#define SUBPICTURE_ALIGN_LEAVETEXT 0x10 /**< Align the subpicture, but not the text inside */
 #define SUBPICTURE_ALIGN_MASK ( SUBPICTURE_ALIGN_LEFT|SUBPICTURE_ALIGN_RIGHT| \
-                                SUBPICTURE_ALIGN_TOP |SUBPICTURE_ALIGN_BOTTOM )
-
+                                SUBPICTURE_ALIGN_TOP |SUBPICTURE_ALIGN_BOTTOM| \
+                                SUBPICTURE_ALIGN_LEAVETEXT )
 /**
  * This function will create a new subpicture region.
  *

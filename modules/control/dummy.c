@@ -2,7 +2,7 @@
  * intf_dummy.c: dummy interface plugin
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 7311414d0e33a42812f99a545a946020885fab09 $
+ * $Id: 4300555b07b3cf4e867a09edbddf0a694e57b27c $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -33,7 +33,7 @@
 #include <vlc_plugin.h>
 #include <vlc_interface.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #define QUIET_TEXT N_("Do not open a DOS command box interface")
 #define QUIET_LONGTEXT N_( \
     "By default the dummy interface plugin will start a DOS command box. " \
@@ -49,7 +49,7 @@ vlc_module_begin ()
     set_description( N_("Dummy interface") )
     set_capability( "interface", 0 )
     set_callbacks( Open, NULL )
-#ifdef WIN32
+#ifdef _WIN32
     add_bool( "dummy-quiet", false, QUIET_TEXT, QUIET_LONGTEXT, false )
 #endif
 vlc_module_end ()
@@ -61,7 +61,7 @@ static int Open( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t*) p_this;
 
-#ifdef WIN32
+#ifdef _WIN32
     bool b_quiet;
     b_quiet = var_InheritBool( p_intf, "dummy-quiet" );
     if( !b_quiet )
@@ -69,8 +69,6 @@ static int Open( vlc_object_t *p_this )
 #endif
 
     msg_Info( p_intf, "using the dummy interface module..." );
-
-    p_intf->pf_run = NULL;
 
     return VLC_SUCCESS;
 }

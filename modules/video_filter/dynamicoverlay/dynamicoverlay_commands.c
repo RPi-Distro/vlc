@@ -1,25 +1,25 @@
 /*****************************************************************************
  * dynamicoverlay_commands.c : dynamic overlay plugin commands
  *****************************************************************************
- * Copyright (C) 2008 the VideoLAN team
- * $Id: 73254720070ef3a8db9e5f65e28dd97e15fa5ed4 $
+ * Copyright (C) 2008 VLC authors and VideoLAN
+ * $Id: dbb48d6db0156249043090b876dfec73ed0f30f7 $
  *
  * Author: Søren Bøg <avacore@videolan.org>
  *         Jean-Paul Saman <jpsaman@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -30,7 +30,6 @@
 #include <vlc_arrays.h>
 #include <vlc_vout.h>
 #include <vlc_filter.h>
-#include <vlc_osd.h>
 
 #include <string.h>
 #include <ctype.h>
@@ -56,7 +55,7 @@ overlay_t *OverlayCreate( void )
     p_ovl->i_alpha = 0xFF;
     p_ovl->b_active = false;
     video_format_Setup( &p_ovl->format, VLC_FOURCC( '\0','\0','\0','\0') , 0, 0,
-                        1, 1 );
+                        0, 0, 1, 1 );
     p_ovl->p_fontstyle = text_style_New();
     p_ovl->data.p_text = NULL;
 
@@ -464,7 +463,7 @@ static int exec_DataSharedMem( filter_t *p_filter,
         }
 
         video_format_Setup( &p_ovl->format, VLC_CODEC_TEXT,
-                            0, 0, 0, 1 );
+                            0, 0, 0, 0, 0, 1 );
 
         p_data = shmat( p_params->i_shmid, NULL, SHM_RDONLY );
         if( p_data == NULL )
@@ -526,7 +525,7 @@ static int exec_DataSharedMem( filter_t *p_filter,
                  i_line < (size_t)p_ovl->data.p_pic->p[i_plane].i_visible_lines;
                  ++i_line )
             {
-                vlc_memcpy( p_out, p_in,
+                memcpy( p_out, p_in,
                             p_ovl->data.p_pic->p[i_plane].i_visible_pitch );
                 p_out += p_ovl->data.p_pic->p[i_plane].i_pitch;
                 p_in += p_ovl->data.p_pic->p[i_plane].i_visible_pitch;

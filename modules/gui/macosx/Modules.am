@@ -1,10 +1,9 @@
-# Automake forgets to add a proper tag to libtool with Objective-C files.
-# Moreovcer Libtool should default tag to CC when none is specified but
-# obviously does not. Here is a fix for that.
-LIBTOOL=@LIBTOOL@ --tag=CC
+AM_LIBTOOLFLAGS=--tag=CC
 
 SOURCES_macosx = \
 	CompatibilityFixes.h \
+	StringUtility.h \
+	StringUtility.m \
 	AppleRemote.h \
 	AppleRemote.m \
 	SPInvocationGrabbing.h \
@@ -21,6 +20,10 @@ SOURCES_macosx = \
 	ExtensionsManager.m \
 	ExtensionsDialogProvider.h \
 	ExtensionsDialogProvider.m \
+	AddonManager.h \
+	AddonManager.m \
+	AddonListDataSource.h \
+	AddonListDataSource.m \
 	VLCUIWidgets.h \
 	VLCUIWidgets.m \
 	about.h \
@@ -74,5 +77,22 @@ SOURCES_macosx = \
 	VideoView.m \
 	MainWindowTitle.h \
 	MainWindowTitle.m \
+	ConvertAndSave.h \
+	ConvertAndSave.m \
+	SharedDialogs.h \
+	SharedDialogs.m \
+	Windows.h \
+	Windows.m \
+	ControlsBar.m \
+	ControlsBar.h \
+	VLCVoutWindowController.m \
+	VLCVoutWindowController.h \
+	DebugMessageVisualizer.m \
+	DebugMessageVisualizer.h \
+	BWQuincyManager.h \
+	BWQuincyManager.m \
+	BWQuincyUI.h \
+	BWQuincyUI.m \
+	iTunes.h \
+	Spotify.h \
 	$(NULL)
-

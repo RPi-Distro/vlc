@@ -52,6 +52,7 @@ vlc_module_begin()
     set_description( N_("Global Hotkeys interface") )
     set_capability( "interface", 0 )
     set_callbacks( Open, Close )
+    add_shortcut( "globalhotkeys" )
 vlc_module_end()
 
 typedef struct
@@ -181,9 +182,16 @@ static unsigned GetModifier( xcb_connection_t *p_connection, xcb_key_symbols_t *
     if( sym == 0 )
         return 0; /* no modifier */
 
-    const xcb_keycode_t *p_keys = xcb_key_symbols_get_keycode( p_symbols, sym );
-    if( !p_keys )
+    xcb_get_modifier_mapping_cookie_t r =
+            xcb_get_modifier_mapping( p_connection );
+    xcb_get_modifier_mapping_reply_t *p_map =
+            xcb_get_modifier_mapping_reply( p_connection, r, NULL );
+    if( !p_map )
         return 0;
+
+    xcb_keycode_t *p_keys = xcb_key_symbols_get_keycode( p_symbols, sym );
+    if( !p_keys )
+        goto end;
 
     int i = 0;
     bool no_modifier = true;
@@ -198,28 +206,24 @@ static unsigned GetModifier( xcb_connection_t *p_connection, xcb_key_symbols_t *
     }
 
     if( no_modifier )
-        return 0;
-
-    xcb_get_modifier_mapping_cookie_t r =
-            xcb_get_modifier_mapping( p_connection );
-    xcb_get_modifier_mapping_reply_t *p_map =
-            xcb_get_modifier_mapping_reply( p_connection, r, NULL );
-    if( !p_map )
-        return 0;
+        goto end;
 
     xcb_keycode_t *p_keycode = xcb_get_modifier_mapping_keycodes( p_map );
     if( !p_keycode )
-        return 0;
+        goto end;
 
     for( int i = 0; i < 8; i++ )
         for( int j = 0; j < p_map->keycodes_per_modifier; j++ )
             for( int k = 0; p_keys[k] != XCB_NO_SYMBOL; k++ )
                 if( p_keycode[i*p_map->keycodes_per_modifier + j] == p_keys[k])
                 {
+                    free( p_keys );
                     free( p_map );
                     return pi_mask[i];
                 }
 
+end:
+    free( p_keys );
     free( p_map ); // FIXME to check
     return 0;
 }
@@ -233,12 +237,17 @@ static unsigned GetX11Modifier( xcb_connection_t *p_connection,
     if( i_vlc & KEY_MODIFIER_ALT )
         i_mask |= GetModifier( p_connection, p_symbols, XK_Alt_L ) |
                   GetModifier( p_connection, p_symbols, XK_Alt_R );
-    if( i_vlc & KEY_MODIFIER_CTRL )
-        i_mask |= GetModifier( p_connection, p_symbols, XK_Control_L ) |
-                  GetModifier( p_connection, p_symbols, XK_Control_R );
     if( i_vlc & KEY_MODIFIER_SHIFT )
         i_mask |= GetModifier( p_connection, p_symbols, XK_Shift_L ) |
                   GetModifier( p_connection, p_symbols, XK_Shift_R );
+    if( i_vlc & KEY_MODIFIER_CTRL )
+        i_mask |= GetModifier( p_connection, p_symbols, XK_Control_L ) |
+                  GetModifier( p_connection, p_symbols, XK_Control_R );
+    if( i_vlc & KEY_MODIFIER_META )
+        i_mask |= GetModifier( p_connection, p_symbols, XK_Meta_L ) |
+                  GetModifier( p_connection, p_symbols, XK_Meta_R ) |
+                  GetModifier( p_connection, p_symbols, XK_Super_L ) |
+                  GetModifier( p_connection, p_symbols, XK_Super_R );
     return i_mask;
 }
 

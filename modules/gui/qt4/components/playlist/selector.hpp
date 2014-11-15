@@ -2,7 +2,7 @@
  * selector.hpp : Playlist source selector
  ****************************************************************************
  * Copyright (C) 2000-2009 the VideoLAN team
- * $Id: 68db8103bd8733029b9b09f5ccc469b15ba929b7 $
+ * $Id: 2daaa5408c3fbcc1f208fd02c6c9e216c1a77c38 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf
@@ -62,6 +62,7 @@ enum {
     IN_ITEM_ROLE,        //input_item_t->i_id
     SPECIAL_ROLE,        //SpecialData
     CAP_SEARCH_ROLE,
+    SD_CATEGORY_ROLE,
 };
 
 enum ItemAction {
@@ -130,8 +131,12 @@ protected:
 private:
     void createItems();
     PLSelItem * addItem ( SelectorItemType type, const char* str,
-            bool drop = false, QTreeWidgetItem* parentItem = 0 );
+            bool drop = false, bool bold = false, QTreeWidgetItem* parentItem = 0 );
     PLSelItem * addPodcastItem( playlist_item_t *p_item );
+
+    PLSelItem* playlistItem;
+
+    void updateTotalDuration(PLSelItem*, const char*);
 
     inline PLSelItem * itemWidget( QTreeWidgetItem * );
 
@@ -150,6 +155,7 @@ private slots:
 
 signals:
     void categoryActivated( playlist_item_t *, bool );
+    void SDCategorySelected( bool );
 };
 
 #endif

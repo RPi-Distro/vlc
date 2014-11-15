@@ -1,25 +1,25 @@
 /*****************************************************************************
  * vc1.c
  *****************************************************************************
- * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: 0859f68bbaeb0414a194fb8b86b91e1c8a515d20 $
+ * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
+ * $Id: c1ddd645578c31b934acfc4cc246c07eede71398 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -116,7 +116,7 @@ static void PacketizeReset( void *p_private, bool b_broken );
 static block_t *PacketizeParse( void *p_private, bool *pb_ts_used, block_t * );
 static int PacketizeValidate( void *p_private, block_t * );
 
-static block_t *ParseIDU( decoder_t *p_dec, bool *pb_used_ts, block_t *p_frag );
+static block_t *ParseIDU( decoder_t *p_dec, bool *pb_ts_used, block_t *p_frag );
 
 static const uint8_t p_vc1_startcode[3] = { 0x00, 0x00, 0x01 };
 /*****************************************************************************
@@ -319,13 +319,13 @@ static void BuildExtraData( decoder_t *p_dec )
             p_sys->ep.p_ep->p_buffer, p_sys->ep.p_ep->i_buffer );
 }
 /* ParseIDU: parse an Independent Decoding Unit */
-static block_t *ParseIDU( decoder_t *p_dec, bool *pb_used_ts, block_t *p_frag )
+static block_t *ParseIDU( decoder_t *p_dec, bool *pb_ts_used, block_t *p_frag )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     block_t *p_pic;
     const idu_type_t idu = p_frag->p_buffer[3];
 
-    *pb_used_ts = false;
+    *pb_ts_used = false;
     if( !p_sys->b_sequence_header && idu != IDU_TYPE_SEQUENCE_HEADER )
     {
         msg_Warn( p_dec, "waiting for sequence header" );
@@ -406,7 +406,7 @@ static block_t *ParseIDU( decoder_t *p_dec, bool *pb_used_ts, block_t *p_frag )
     {
         p_sys->i_frame_dts = p_frag->i_dts;
         p_sys->i_frame_pts = p_frag->i_pts;
-        *pb_used_ts = true;
+        *pb_ts_used = true;
     }
 
     /* We will add back SH and EP on I frames */

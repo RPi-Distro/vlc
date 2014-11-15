@@ -2,7 +2,7 @@
  * SegmentTemplate.cpp: Implement the UrlTemplate element.
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: 507b5438472e68d764e0e3f3f19452246e061db1 $
+ * $Id: 1fe1c34830d97add74ff766d9ec93762b61437dd $
  *
  * Authors: Hugo Beauzée-Luyssen <beauze.h@gmail.com>
  *
@@ -27,7 +27,7 @@
 #include "SegmentTemplate.h"
 #include "SegmentTimeline.h"
 #include "Representation.h"
-#include "Group.h"
+#include "AdaptationSet.h"
 #include "SegmentInfoDefault.h"
 
 #include <cassert>
@@ -39,8 +39,8 @@ using namespace dash::mpd;
 
 SegmentTemplate::SegmentTemplate( bool containRuntimeIdentifier,
                                   Representation* representation ) :
+    Segment( representation ),
     containRuntimeIdentifier( containRuntimeIdentifier ),
-    representation( representation ),
     beginTime( std::string::npos ),
     beginIndex( std::string::npos ),
     currentSegmentIndex( 0 )
@@ -60,10 +60,10 @@ std::string     SegmentTemplate::getSourceUrl() const
     {
         //FIXME: This should use the current representation SegmentInfo
         //which "inherits" the SegmentInfoDefault values.
-        if ( this->representation->getParentGroup()->getSegmentInfoDefault() != NULL &&
-             this->representation->getParentGroup()->getSegmentInfoDefault()->getSegmentTimeline() != NULL )
+        if ( this->parentRepresentation->getParentGroup()->getSegmentInfoDefault() != NULL &&
+             this->parentRepresentation->getParentGroup()->getSegmentInfoDefault()->getSegmentTimeline() != NULL )
         {
-            const SegmentTimeline::Element  *el = this->representation->getParentGroup()->
+            const SegmentTimeline::Element  *el = this->parentRepresentation->getParentGroup()->
                     getSegmentInfoDefault()->getSegmentTimeline()->getElement( this->currentSegmentIndex );
             if ( el != NULL )
             {

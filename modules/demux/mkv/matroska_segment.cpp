@@ -1,47 +1,32 @@
 /*****************************************************************************
- * mkv.cpp : matroska demuxer
+ * matroska_segment.cpp : matroska demuxer
  *****************************************************************************
- * Copyright (C) 2003-2010 the VideoLAN team
- * $Id: bc99aa631812e7c6eb5fd90ee5d6e5a1e2525f5a $
+ * Copyright (C) 2003-2010 VLC authors and VideoLAN
+ * $Id: f4eb52343dbcdf01d8c1eff7767156f50b7d4de3 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #include "matroska_segment.hpp"
-
 #include "chapters.hpp"
-
 #include "demux.hpp"
-
+#include "util.hpp"
 #include "Ebml_parser.hpp"
-
-extern "C" {
-#include "../vobsub.h"
-}
-
-#include <vlc_codecs.h>
-
-/* GetFourCC helper */
-#define GetFOURCC( p )  __GetFOURCC( (uint8_t*)p )
-static vlc_fourcc_t __GetFOURCC( uint8_t *p )
-{
-    return VLC_FOURCC( p[0], p[1], p[2], p[3] );
-}
 
 matroska_segment_c::matroska_segment_c( demux_sys_t & demuxer, EbmlStream & estream )
     :segment(NULL)
@@ -87,6 +72,7 @@ matroska_segment_c::~matroska_segment_c()
     {
         delete tracks[i_track]->p_compression_data;
         es_format_Clean( &tracks[i_track]->fmt );
+        delete tracks[i_track]->p_sys;
         free( tracks[i_track]->p_extra_data );
         free( tracks[i_track]->psz_codec );
         delete tracks[i_track];
@@ -120,6 +106,7 @@ matroska_segment_c::~matroska_segment_c()
  *****************************************************************************/
 void matroska_segment_c::LoadCues( KaxCues *cues )
 {
+    bool b_invalid_cue;
     EbmlParser  *ep;
     EbmlElement *el;
 
@@ -134,6 +121,7 @@ void matroska_segment_c::LoadCues( KaxCues *cues )
     {
         if( MKV_IS_ID( el, KaxCuePoint ) )
         {
+            b_invalid_cue = false;
 #define idx p_indexes[i_index]
 
             idx.i_track       = -1;
@@ -148,41 +136,81 @@ void matroska_segment_c::LoadCues( KaxCues *cues )
                 if( MKV_IS_ID( el, KaxCueTime ) )
                 {
                     KaxCueTime &ctime = *(KaxCueTime*)el;
-
-                    ctime.ReadData( es.I_O() );
-
+                    try
+                    {
+                        if( unlikely( ctime.GetSize() >= SIZE_MAX ) )
+                        {
+                            msg_Err( &sys.demuxer, "CueTime size too big");
+                            b_invalid_cue = true;
+                            break;
+                        }
+                        ctime.ReadData( es.I_O() );
+                    }
+                    catch(...)
+                    {
+                        msg_Err( &sys.demuxer, "Error while reading CueTime" );
+                        b_invalid_cue = true;
+                        break;
+                    }
                     idx.i_time = uint64( ctime ) * i_timescale / (mtime_t)1000;
                 }
                 else if( MKV_IS_ID( el, KaxCueTrackPositions ) )
                 {
                     ep->Down();
-                    while( ( el = ep->Get() ) != NULL )
+                    try
                     {
-                        if( MKV_IS_ID( el, KaxCueTrack ) )
+                        while( ( el = ep->Get() ) != NULL )
                         {
-                            KaxCueTrack &ctrack = *(KaxCueTrack*)el;
+                            if( unlikely( el->GetSize() >= SIZE_MAX ) )
+                            {
+                                ep->Up();
+                                msg_Err( &sys.demuxer, "Error %s too big, aborting", typeid(*el).name() );
+                                b_invalid_cue = true;
+                                break;
+                            }
 
-                            ctrack.ReadData( es.I_O() );
-                            idx.i_track = uint16( ctrack );
-                        }
-                        else if( MKV_IS_ID( el, KaxCueClusterPosition ) )
-                        {
-                            KaxCueClusterPosition &ccpos = *(KaxCueClusterPosition*)el;
+                            if( MKV_IS_ID( el, KaxCueTrack ) )
+                            {
+                                KaxCueTrack &ctrack = *(KaxCueTrack*)el;
+                                ctrack.ReadData( es.I_O() );
+                                idx.i_track = uint16( ctrack );
+                            }
+                            else if( MKV_IS_ID( el, KaxCueClusterPosition ) )
+                            {
+                                KaxCueClusterPosition &ccpos = *(KaxCueClusterPosition*)el;
 
-                            ccpos.ReadData( es.I_O() );
-                            idx.i_position = segment->GetGlobalPosition( uint64( ccpos ) );
-                        }
-                        else if( MKV_IS_ID( el, KaxCueBlockNumber ) )
-                        {
-                            KaxCueBlockNumber &cbnum = *(KaxCueBlockNumber*)el;
+                                ccpos.ReadData( es.I_O() );
+                                idx.i_position = segment->GetGlobalPosition( uint64( ccpos ) );
+                            }
+                            else if( MKV_IS_ID( el, KaxCueBlockNumber ) )
+                            {
+                                KaxCueBlockNumber &cbnum = *(KaxCueBlockNumber*)el;
 
-                            cbnum.ReadData( es.I_O() );
-                            idx.i_block_number = uint32( cbnum );
+                                cbnum.ReadData( es.I_O() );
+                                idx.i_block_number = uint32( cbnum );
+                            }
+#if LIBMATROSKA_VERSION >= 0x010401
+                            else if( MKV_IS_ID( el, KaxCueRelativePosition ) )
+                            {
+                                /* For future use */
+                            }
+                            else if( MKV_IS_ID( el, KaxCueDuration ) )
+                            {
+                                /* For future use */
+                            }
+#endif
+                            else
+                            {
+                                msg_Dbg( &sys.demuxer, "         * Unknown (%s)", typeid(*el).name() );
+                            }
                         }
-                        else
-                        {
-                            msg_Dbg( &sys.demuxer, "         * Unknown (%s)", typeid(*el).name() );
-                        }
+                    }
+                    catch(...)
+                    {
+                        ep->Up();   
+                        msg_Err( &sys.demuxer, "Error while reading %s", typeid(*el).name() );
+                        b_invalid_cue = true;
+                        break;
                     }
                     ep->Up();
                 }
@@ -198,13 +226,15 @@ void matroska_segment_c::LoadCues( KaxCues *cues )
                      " track=%d bnum=%d", idx.i_time, idx.i_position,
                      idx.i_track, idx.i_block_number );
 #endif
-
-            i_index++;
-            if( i_index >= i_index_max )
+            if( likely( !b_invalid_cue ) )
             {
-                i_index_max += 1024;
-                p_indexes = (mkv_index_t*)xrealloc( p_indexes,
-                                        sizeof( mkv_index_t ) * i_index_max );
+                i_index++;
+                if( i_index >= i_index_max )
+                {
+                    i_index_max += 1024;
+                    p_indexes = (mkv_index_t*)xrealloc( p_indexes,
+                                                        sizeof( mkv_index_t ) * i_index_max );
+                }
             }
 #undef idx
         }
@@ -219,78 +249,135 @@ void matroska_segment_c::LoadCues( KaxCues *cues )
 }
 
 
-#define PARSE_TAG( type ) \
-    do { \
-    msg_Dbg( &sys.demuxer, "|   + " type ); \
-    ep->Down();                             \
-    while( ( el = ep->Get() ) != NULL )     \
-    {                                       \
-        msg_Dbg( &sys.demuxer, "|   |   + Unknown (%s)", typeid( *el ).name() ); \
-    }                                      \
-    ep->Up(); } while( 0 )
-
 static const struct {
     vlc_meta_type_t type;
     const char *key;
-} metadata_map[] = { {vlc_meta_Title,       "TITLE"},
-                     {vlc_meta_Artist,      "ARTIST"},
-                     {vlc_meta_Genre,       "GENRE"},
-                     {vlc_meta_Copyright,   "COPYRIGHT"},
-                     {vlc_meta_Description, "DESCRIPTION"},
-                     {vlc_meta_Publisher,   "PUBLISHER"},
-                     {vlc_meta_URL,         "URL"},
-                     {vlc_meta_TrackNumber, "PART_NUMBER"},
-                     {vlc_meta_Date,        "DATE_RELEASED"},
-                     {vlc_meta_Title,       NULL},
+    int target_type; /* 0 is valid for all target_type */
+} metadata_map[] = {
+                     {vlc_meta_Album,       "TITLE",         50},
+                     {vlc_meta_Title,       "TITLE",         0},
+                     {vlc_meta_Artist,      "ARTIST",        0},
+                     {vlc_meta_Genre,       "GENRE",         0},
+                     {vlc_meta_Copyright,   "COPYRIGHT",     0},
+                     {vlc_meta_TrackNumber, "PART_NUMBER",   0},
+                     {vlc_meta_Description, "DESCRIPTION",   0},
+                     {vlc_meta_Description, "COMMENT",       0},
+                     {vlc_meta_Rating,      "RATING",        0},
+                     {vlc_meta_Date,        "DATE_RELEASED", 0},
+                     {vlc_meta_Date,        "DATE_RELEASE",  0},
+                     {vlc_meta_Date,        "DATE_RECORDED", 0},
+                     {vlc_meta_URL,         "URL",           0},
+                     {vlc_meta_Publisher,   "PUBLISHER",     0},
+                     {vlc_meta_EncodedBy,   "ENCODED_BY",    0},
+                     {vlc_meta_TrackTotal,  "TOTAL_PARTS",   0},
+                     {vlc_meta_Title,       NULL,            0},
 };
 
-void matroska_segment_c::ParseSimpleTags( KaxTagSimple *tag )
+SimpleTag * matroska_segment_c::ParseSimpleTags( KaxTagSimple *tag, int target_type )
 {
     EbmlElement *el;
     EbmlParser *ep = new EbmlParser( &es, tag, &sys.demuxer );
-    char *k = NULL, *v = NULL;
+    SimpleTag * p_simple = new SimpleTag;
+    size_t max_size = tag->GetSize();
+    size_t size = 0;
+
+    if( !p_simple )
+    {
+        msg_Err( &sys.demuxer, "Couldn't allocate memory for Simple Tag... ignoring it");
+        return NULL;
+    }
 
     if( !sys.meta )
         sys.meta = vlc_meta_New();
 
     msg_Dbg( &sys.demuxer, "|   + Simple Tag ");
-    while( ( el = ep->Get() ) != NULL )
+    try
     {
-        if( MKV_IS_ID( el, KaxTagName ) )
+        while( ( el = ep->Get() ) != NULL && size < max_size)
         {
-            KaxTagName &key = *(KaxTagName*)el;
-            key.ReadData( es.I_O(), SCOPE_ALL_DATA );
-            k = strdup( UTFstring( key ).GetUTF8().c_str() );
+            if( unlikely( el->GetSize() >= SIZE_MAX ) )
+            {
+                msg_Err( &sys.demuxer, "Error %s too big ignoring the tag", typeid(*el).name() );
+                delete ep;
+                delete p_simple;
+                return NULL;
+            }
+            if( MKV_IS_ID( el, KaxTagName ) )
+            {
+                KaxTagName &key = *(KaxTagName*)el;
+                key.ReadData( es.I_O(), SCOPE_ALL_DATA );
+                p_simple->psz_tag_name = strdup( UTFstring( key ).GetUTF8().c_str() );
+            }
+            else if( MKV_IS_ID( el, KaxTagString ) )
+            {
+                KaxTagString &value = *(KaxTagString*)el;
+                value.ReadData( es.I_O(), SCOPE_ALL_DATA );
+                p_simple->p_value = strdup( UTFstring( value ).GetUTF8().c_str() );
+            }
+            else if(  MKV_IS_ID( el, KaxTagLangue ) )
+            {
+                KaxTagLangue &language = *(KaxTagLangue*) el;
+                language.ReadData( es.I_O(), SCOPE_ALL_DATA );
+                p_simple->psz_lang = strdup( string( language ).c_str());
+            }
+            else if(  MKV_IS_ID( el, KaxTagDefault ) )
+            {
+                KaxTagDefault & dft = *(KaxTagDefault*) el;
+                dft.ReadData( es.I_O(), SCOPE_ALL_DATA );
+                p_simple->b_default = (bool) uint8( dft );
+            }
+            /*Tags can be nested*/
+            else if( MKV_IS_ID( el, KaxTagSimple) )
+            {
+                SimpleTag * p_st = ParseSimpleTags( (KaxTagSimple*)el, target_type );
+                if( p_st )
+                    p_simple->sub_tags.push_back( p_st );
+            }
+            /*TODO Handle binary tags*/
+            size += el->HeadSize() + el->GetSize();
         }
-        if( MKV_IS_ID( el, KaxTagString ) )
-        {
-            KaxTagString &value = *(KaxTagString*)el;
-            value.ReadData( es.I_O(), SCOPE_ALL_DATA );
-            v = strdup( UTFstring( value ).GetUTF8().c_str() );
-        }
+    }
+    catch(...)
+    {
+        msg_Err( &sys.demuxer, "Error while reading Tag ");
+        delete ep;
+        delete p_simple;
+        return NULL;
     }
     delete ep;
 
-    if( !k || !v )
+    if( !p_simple->psz_tag_name || !p_simple->p_value )
     {
         msg_Warn( &sys.demuxer, "Invalid MKV SimpleTag found.");
-        return;
+        delete p_simple;
+        return NULL;
     }
-
     for( int i = 0; metadata_map[i].key; i++ )
     {
-        if( !strcmp( k, metadata_map[i].key ) )
+        if( !strcmp( p_simple->psz_tag_name, metadata_map[i].key ) &&
+            (metadata_map[i].target_type == 0 || target_type == metadata_map[i].target_type ) )
         {
-            vlc_meta_Set( sys.meta, metadata_map[i].type, v );
+            vlc_meta_Set( sys.meta, metadata_map[i].type, p_simple->p_value );
+            msg_Dbg( &sys.demuxer, "|   |   + Meta %s: %s", p_simple->psz_tag_name, p_simple->p_value);
             goto done;
         }
     }
-    vlc_meta_AddExtra( sys.meta, k, v );
+    msg_Dbg( &sys.demuxer, "|   |   + Meta %s: %s", p_simple->psz_tag_name, p_simple->p_value);
+    vlc_meta_AddExtra( sys.meta, p_simple->psz_tag_name, p_simple->p_value);
 done:
-    free( k );
-    free( v );
-    return;
+    return p_simple;
 }
+
+#define PARSE_TAG( type ) \
+    do { \
+        msg_Dbg( &sys.demuxer, "|   + " type ); \
+        ep->Down();                             \
+        while( ( el = ep->Get() ) != NULL )     \
+        {                                       \
+            msg_Dbg( &sys.demuxer, "|   |   + Unknown (%s)", typeid( *el ).name() ); \
+        }                                      \
+        ep->Up(); } while( 0 )
+
 
 void matroska_segment_c::LoadTags( KaxTags *tags )
 {
@@ -302,12 +389,88 @@ void matroska_segment_c::LoadTags( KaxTags *tags )
     {
         if( MKV_IS_ID( el, KaxTag ) )
         {
+            Tag * p_tag = new Tag;
+            if(!p_tag)
+            {
+                msg_Err( &sys.demuxer,"Couldn't allocate memory for tag... ignoring it");
+                continue;
+            }
             msg_Dbg( &sys.demuxer, "+ Tag" );
             ep->Down();
+            int target_type = 50;
             while( ( el = ep->Get() ) != NULL )
             {
                 if( MKV_IS_ID( el, KaxTagTargets ) )
-                    PARSE_TAG( "Targets" );
+                {
+                    msg_Dbg( &sys.demuxer, "|   + Targets" );
+                    ep->Down();
+                    while( ( el = ep->Get() ) != NULL )
+                    {
+                        try
+                        {
+                            if( unlikely( el->GetSize() >= SIZE_MAX ) )
+                            {
+                                msg_Err( &sys.demuxer, "Invalid size while reading tag");
+                                break;
+                            }
+                            if( MKV_IS_ID( el, KaxTagTargetTypeValue ) )
+                            {
+                                KaxTagTargetTypeValue &value = *(KaxTagTargetTypeValue*)el;
+                                value.ReadData( es.I_O() );
+
+                                msg_Dbg( &sys.demuxer, "|   |   + TargetTypeValue: %u", uint32(value));
+                                target_type = uint32(value);
+                            }
+                            if( MKV_IS_ID( el, KaxTagTrackUID ) )
+                            {
+                                p_tag->i_tag_type = TRACK_UID;
+                                KaxTagTrackUID &uid = *(KaxTagTrackUID*) el;
+                                uid.ReadData( es.I_O() );
+                                p_tag->i_uid = uint64( uid );
+                                msg_Dbg( &sys.demuxer, "|   |   + TrackUID: %"PRIu64, p_tag->i_uid);
+
+                            }
+                            if( MKV_IS_ID( el, KaxTagEditionUID ) )
+                            {
+                                p_tag->i_tag_type = EDITION_UID;
+                                KaxTagEditionUID &uid = *(KaxTagEditionUID*) el;
+                                uid.ReadData( es.I_O() );
+                                p_tag->i_uid = uint64( uid );
+                                msg_Dbg( &sys.demuxer, "|   |   + EditionUID: %"PRIu64, p_tag->i_uid);
+                            }
+                            if( MKV_IS_ID( el, KaxTagChapterUID ) )
+                            {
+                                p_tag->i_tag_type = CHAPTER_UID;
+                                KaxTagChapterUID &uid = *(KaxTagChapterUID*) el;
+                                uid.ReadData( es.I_O() );
+                                p_tag->i_uid = uint64( uid );
+                                msg_Dbg( &sys.demuxer, "|   |   + ChapterUID: %"PRIu64, p_tag->i_uid);
+                            }
+                            if( MKV_IS_ID( el, KaxTagAttachmentUID ) )
+                            {
+                                p_tag->i_tag_type = ATTACHMENT_UID;
+                                KaxTagAttachmentUID &uid = *(KaxTagAttachmentUID*) el;
+                                uid.ReadData( es.I_O() );
+                                p_tag->i_uid = uint64( uid );
+                                msg_Dbg( &sys.demuxer, "|   |   + AttachmentUID: %"PRIu64, p_tag->i_uid);
+                            }
+                        }
+                        catch(...)
+                        {
+                            msg_Err( &sys.demuxer, "Error while reading tag");
+                            break;
+                        }
+                    }
+                    ep->Up();
+                }
+                else if( MKV_IS_ID( el, KaxTagSimple ) )
+                {
+                    SimpleTag * p_simple =
+                        ParseSimpleTags( static_cast<KaxTagSimple*>( el ),
+                                         target_type );
+                    if( p_simple )
+                        p_tag->simple_tags.push_back( p_simple );
+                }
 #if 0 // not valid anymore
                 else if( MKV_IS_ID( el, KaxTagGeneral ) )
                     PARSE_TAG( "General" );
@@ -346,14 +509,13 @@ void matroska_segment_c::LoadTags( KaxTags *tags )
                     msg_Dbg( &sys.demuxer, "|   + Multi Title" );
                 }
 #endif
-                else if( MKV_IS_ID( el, KaxTagSimple ) )
-                    ParseSimpleTags( static_cast<KaxTagSimple*>( el ) );
                 else
                 {
                     msg_Dbg( &sys.demuxer, "|   + LoadTag Unknown (%s)", typeid( *el ).name() );
                 }
             }
             ep->Up();
+            this->tags.push_back(p_tag);
         }
         else
         {
@@ -576,6 +738,8 @@ bool matroska_segment_c::Preload( )
             msg_Dbg( &sys.demuxer, "|   + Preload Unknown (%s)", typeid(*el).name() );
     }
 
+    ComputeTrackPriority();
+
     b_preloaded = true;
 
     return true;
@@ -694,6 +858,9 @@ void matroska_segment_c::Seek( mtime_t i_date, mtime_t i_time_offset, int64_t i_
     int i_cat;
     bool b_has_key = false;
 
+    for( size_t i = 0; i < tracks.size(); i++)
+        tracks[i]->i_last_dts = VLC_TS_INVALID;
+
     if( i_global_position >= 0 )
     {
         /* Special case for seeking in files with no cues */
@@ -729,11 +896,11 @@ void matroska_segment_c::Seek( mtime_t i_date, mtime_t i_time_offset, int64_t i_
     }
 
     /* Don't try complex seek if we seek to 0 */
-    if( i_date == 0 )
+    if( i_date == 0 && i_time_offset == 0 )
     {
+        es_out_Control( sys.demuxer.out, ES_OUT_SET_PCR, VLC_TS_0 );
         es_out_Control( sys.demuxer.out, ES_OUT_SET_NEXT_DISPLAY_TIME,
                         INT64_C(0) );
-        es_out_Control( sys.demuxer.out, ES_OUT_SET_PCR, VLC_TS_0 );
         es.I_O().setFilePointer( i_start_pos );
 
         delete ep;
@@ -742,7 +909,7 @@ void matroska_segment_c::Seek( mtime_t i_date, mtime_t i_time_offset, int64_t i_
         sys.i_start_pts = 0;
         sys.i_pts = 0;
         sys.i_pcr = 0;
-        return;       
+        return;
     }
 
     int i_idx = 0;
@@ -760,8 +927,7 @@ void matroska_segment_c::Seek( mtime_t i_date, mtime_t i_time_offset, int64_t i_
         i_seek_time = p_indexes[i_idx].i_time;
     }
 
-    msg_Dbg( &sys.demuxer, "seek got %"PRId64" (%d%%)",
-                i_seek_time, (int)( 100 * i_seek_position / stream_Size( sys.demuxer.s ) ) );
+    msg_Dbg( &sys.demuxer, "seek got %"PRId64" - %"PRId64, i_seek_time, i_seek_position );
 
     es.I_O().setFilePointer( i_seek_position, seek_beginning );
 
@@ -771,15 +937,25 @@ void matroska_segment_c::Seek( mtime_t i_date, mtime_t i_time_offset, int64_t i_
 
     sys.i_start_pts = i_date;
 
-    es_out_Control( sys.demuxer.out, ES_OUT_SET_NEXT_DISPLAY_TIME, i_date );
-
     /* now parse until key frame */
     const int es_types[3] = { VIDEO_ES, AUDIO_ES, SPU_ES };
     i_cat = es_types[0];
+    mtime_t i_seek_preroll = 0;
     for( int i = 0; i < 2; i_cat = es_types[++i] )
     {
         for( i_track = 0; i_track < tracks.size(); i_track++ )
         {
+            if( tracks[i_track]->i_seek_preroll )
+            {
+                bool b_enabled;
+                if( es_out_Control( sys.demuxer.out,
+                                    ES_OUT_GET_ES_STATE,
+                                    tracks[i_track]->p_es,
+                                    &b_enabled ) == VLC_SUCCESS &&
+                    b_enabled )
+                    i_seek_preroll = __MAX( i_seek_preroll,
+                                            tracks[i_track]->i_seek_preroll );
+            }
             if( tracks[i_track]->fmt.i_cat == i_cat )
             {
                 spoint * seekpoint = new spoint(i_track, i_seek_time, i_seek_position, i_seek_position);
@@ -789,7 +965,7 @@ void matroska_segment_c::Seek( mtime_t i_date, mtime_t i_time_offset, int64_t i_
                     {
                         spoint * tmp = sp;
                         sp = sp->p_next;
-                        delete tmp;                    
+                        delete tmp;
                     }
                     return;
                 }
@@ -810,17 +986,27 @@ void matroska_segment_c::Seek( mtime_t i_date, mtime_t i_time_offset, int64_t i_
     }
     /*Neither video nor audio track... no seek further*/
     if( unlikely( !p_first ) )
-        return; 
-
+    {
+        es_out_Control( sys.demuxer.out, ES_OUT_SET_PCR, i_date );
+        es_out_Control( sys.demuxer.out, ES_OUT_SET_NEXT_DISPLAY_TIME, i_date );
+        return;
+    }
+    i_date -= i_seek_preroll;
     for(;;)
     {
-        while( i_pts < i_date )
+        do
         {
             bool b_key_picture;
             bool b_discardable_picture;
             if( BlockGet( block, simpleblock, &b_key_picture, &b_discardable_picture, &i_block_duration ) )
             {
                 msg_Warn( &sys.demuxer, "cannot get block EOF?" );
+                while( p_first )
+                {
+                    spoint *tmp = p_first;
+                    p_first = p_first->p_next;
+                    delete tmp;
+                }
                 return;
             }
 
@@ -857,7 +1043,7 @@ void matroska_segment_c::Seek( mtime_t i_date, mtime_t i_time_offset, int64_t i_
             }
 
             delete block;
-        }
+        } while( i_pts < i_date );
         if( b_has_key || !i_idx )
             break;
 
@@ -879,6 +1065,7 @@ void matroska_segment_c::Seek( mtime_t i_date, mtime_t i_time_offset, int64_t i_
 
     sys.i_pcr = sys.i_pts = p_min->i_date;
     es_out_Control( sys.demuxer.out, ES_OUT_SET_PCR, VLC_TS_0 + sys.i_pcr );
+    es_out_Control( sys.demuxer.out, ES_OUT_SET_NEXT_DISPLAY_TIME, i_date );
     cluster = (KaxCluster *) ep->UnGet( p_min->i_seek_pos, p_min->i_cluster_pos );
 
     /* hack use BlockGet to get the cluster then goto the wanted block */
@@ -922,20 +1109,8 @@ int matroska_segment_c::BlockFindTrackIndex( size_t *pi_track,
     return VLC_SUCCESS;
 }
 
-static inline void fill_extra_data( mkv_track_t *p_tk, unsigned int offset )
+void matroska_segment_c::ComputeTrackPriority()
 {
-    if(p_tk->i_extra_data <= offset) return;
-    p_tk->fmt.i_extra = p_tk->i_extra_data - offset;
-    p_tk->fmt.p_extra = xmalloc( p_tk->fmt.i_extra );
-    if(!p_tk->fmt.p_extra) { p_tk->fmt.i_extra = 0; return; };
-    memcpy( p_tk->fmt.p_extra, p_tk->p_extra_data + offset, p_tk->fmt.i_extra );
-}
-
-bool matroska_segment_c::Select( mtime_t i_start_time )
-{
-    /* add all es */
-    msg_Dbg( &sys.demuxer, "found %d es", (int)tracks.size() );
-
     bool b_has_default_video = false;
     bool b_has_default_audio = false;
     /* check for default */
@@ -972,428 +1147,47 @@ bool matroska_segment_c::Select( mtime_t i_start_time )
             p_tk->b_default = true;
             b_has_default_audio = true;
         }
-
-        if( !strcmp( p_tk->psz_codec, "V_MS/VFW/FOURCC" ) )
-        {
-            if( p_tk->i_extra_data < (int)sizeof( VLC_BITMAPINFOHEADER ) )
-            {
-                msg_Err( &sys.demuxer, "missing/invalid VLC_BITMAPINFOHEADER" );
-                p_tk->fmt.i_codec = VLC_FOURCC( 'u', 'n', 'd', 'f' );
-            }
-            else
-            {
-                VLC_BITMAPINFOHEADER *p_bih = (VLC_BITMAPINFOHEADER*)p_tk->p_extra_data;
-
-                p_tk->fmt.video.i_width = GetDWLE( &p_bih->biWidth );
-                p_tk->fmt.video.i_height= GetDWLE( &p_bih->biHeight );
-                p_tk->fmt.i_codec       = GetFOURCC( &p_bih->biCompression );
-
-                p_tk->fmt.i_extra       = GetDWLE( &p_bih->biSize ) - sizeof( VLC_BITMAPINFOHEADER );
-                if( p_tk->fmt.i_extra > 0 )
-                {
-                    /* Very unlikely yet possible: bug #5659*/
-                    size_t maxlen = p_tk->i_extra_data - sizeof( VLC_BITMAPINFOHEADER );
-                    p_tk->fmt.i_extra = ( p_tk->fmt.i_extra < maxlen )?
-                        p_tk->fmt.i_extra : maxlen;
-
-                    p_tk->fmt.p_extra = xmalloc( p_tk->fmt.i_extra );
-                    memcpy( p_tk->fmt.p_extra, &p_bih[1], p_tk->fmt.i_extra );
-                }
-            }
-            p_tk->b_dts_only = true;
-        }
-        else if( !strcmp( p_tk->psz_codec, "V_MPEG1" ) ||
-                 !strcmp( p_tk->psz_codec, "V_MPEG2" ) )
-        {
-            p_tk->fmt.i_codec = VLC_CODEC_MPGV;
-            if( p_tk->i_extra_data )
-                fill_extra_data( p_tk, 0 );
-        }
-        else if( !strncmp( p_tk->psz_codec, "V_THEORA", 8 ) )
-        {
-            p_tk->fmt.i_codec = VLC_CODEC_THEORA;
-            fill_extra_data( p_tk, 0 );
-            p_tk->b_pts_only = true;
-        }
-        else if( !strncmp( p_tk->psz_codec, "V_REAL/RV", 9 ) )
-        {
-            uint8_t *p = p_tk->p_extra_data;
-
-            if( !strcmp( p_tk->psz_codec, "V_REAL/RV10" ) )
-                p_fmt->i_codec = VLC_CODEC_RV10;
-            else if( !strcmp( p_tk->psz_codec, "V_REAL/RV20" ) )
-                p_fmt->i_codec = VLC_CODEC_RV20;
-            else if( !strcmp( p_tk->psz_codec, "V_REAL/RV30" ) )
-                p_fmt->i_codec = VLC_CODEC_RV30;
-            else if( !strcmp( p_tk->psz_codec, "V_REAL/RV40" ) )
-                p_fmt->i_codec = VLC_CODEC_RV40;
-
-            /* Extract the framerate from the header */
-            if( p_tk->i_extra_data >= 26 &&
-                p[4] == 'V' && p[5] == 'I' && p[6] == 'D' && p[7] == 'O' &&
-                p[8] == 'R' && p[9] == 'V' &&
-                (p[10] == '3' || p[10] == '4') && p[11] == '0' )
-            {
-                p_tk->fmt.video.i_frame_rate =
-                    p[22] << 24 | p[23] << 16 | p[24] << 8 | p[25] << 0;
-                p_tk->fmt.video.i_frame_rate_base = 65536;
-            }
-
-            fill_extra_data( p_tk, 26 );
-            p_tk->b_dts_only = true;
-        }
-        else if( !strncmp( p_tk->psz_codec, "V_DIRAC", 7 ) )
-        {
-            p_tk->fmt.i_codec = VLC_CODEC_DIRAC;
-        }
-        else if( !strncmp( p_tk->psz_codec, "V_VP8", 5 ) )
-        {
-            p_tk->fmt.i_codec = VLC_CODEC_VP8;
-            p_tk->b_pts_only = true;
-        }
-        else if( !strncmp( p_tk->psz_codec, "V_MPEG4", 7 ) )
-        {
-            if( !strcmp( p_tk->psz_codec, "V_MPEG4/MS/V3" ) )
-            {
-                p_tk->fmt.i_codec = VLC_CODEC_DIV3;
-            }
-            else if( !strncmp( p_tk->psz_codec, "V_MPEG4/ISO", 11 ) )
-            {
-                /* A MPEG 4 codec, SP, ASP, AP or AVC */
-                if( !strcmp( p_tk->psz_codec, "V_MPEG4/ISO/AVC" ) )
-                    p_tk->fmt.i_codec = VLC_FOURCC( 'a', 'v', 'c', '1' );
-                else
-                    p_tk->fmt.i_codec = VLC_CODEC_MP4V;
-                fill_extra_data( p_tk, 0 );
-            }
-        }
-        else if( !strcmp( p_tk->psz_codec, "V_QUICKTIME" ) )
-        {
-            MP4_Box_t *p_box = (MP4_Box_t*)xmalloc( sizeof( MP4_Box_t ) );
-            stream_t *p_mp4_stream = stream_MemoryNew( VLC_OBJECT(&sys.demuxer),
-                                                       p_tk->p_extra_data,
-                                                       p_tk->i_extra_data,
-                                                       true );
-            if( MP4_ReadBoxCommon( p_mp4_stream, p_box ) &&
-                MP4_ReadBox_sample_vide( p_mp4_stream, p_box ) )
-            {
-                p_tk->fmt.i_codec = p_box->i_type;
-                p_tk->fmt.video.i_width = p_box->data.p_sample_vide->i_width;
-                p_tk->fmt.video.i_height = p_box->data.p_sample_vide->i_height;
-                p_tk->fmt.i_extra = p_box->data.p_sample_vide->i_qt_image_description;
-                p_tk->fmt.p_extra = xmalloc( p_tk->fmt.i_extra );
-                memcpy( p_tk->fmt.p_extra, p_box->data.p_sample_vide->p_qt_image_description, p_tk->fmt.i_extra );
-                MP4_FreeBox_sample_vide( p_box );
-            }
-            else
-            {
-                free( p_box );
-            }
-            stream_Delete( p_mp4_stream );
-        }
-        else if( !strcmp( p_tk->psz_codec, "V_MJPEG" ) )
-        {
-            p_tk->fmt.i_codec = VLC_CODEC_MJPG;
-        }
-        else if( !strcmp( p_tk->psz_codec, "A_MS/ACM" ) )
-        {
-            if( p_tk->i_extra_data < (int)sizeof( WAVEFORMATEX ) )
-            {
-                msg_Err( &sys.demuxer, "missing/invalid WAVEFORMATEX" );
-                p_tk->fmt.i_codec = VLC_FOURCC( 'u', 'n', 'd', 'f' );
-            }
-            else
-            {
-                WAVEFORMATEX *p_wf = (WAVEFORMATEX*)p_tk->p_extra_data;
-
-                wf_tag_to_fourcc( GetWLE( &p_wf->wFormatTag ), &p_tk->fmt.i_codec, NULL );
-
-                p_tk->fmt.audio.i_channels   = GetWLE( &p_wf->nChannels );
-                p_tk->fmt.audio.i_rate = GetDWLE( &p_wf->nSamplesPerSec );
-                p_tk->fmt.i_bitrate    = GetDWLE( &p_wf->nAvgBytesPerSec ) * 8;
-                p_tk->fmt.audio.i_blockalign = GetWLE( &p_wf->nBlockAlign );;
-                p_tk->fmt.audio.i_bitspersample = GetWLE( &p_wf->wBitsPerSample );
-
-                p_tk->fmt.i_extra            = GetWLE( &p_wf->cbSize );
-                if( p_tk->fmt.i_extra > 0 )
-                {
-                    p_tk->fmt.p_extra = xmalloc( p_tk->fmt.i_extra );
-                    memcpy( p_tk->fmt.p_extra, &p_wf[1], p_tk->fmt.i_extra );
-                }
-            }
-        }
-        else if( !strcmp( p_tk->psz_codec, "A_MPEG/L3" ) ||
-                 !strcmp( p_tk->psz_codec, "A_MPEG/L2" ) ||
-                 !strcmp( p_tk->psz_codec, "A_MPEG/L1" ) )
-        {
-            p_tk->fmt.i_codec = VLC_CODEC_MPGA;
-        }
-        else if( !strcmp( p_tk->psz_codec, "A_AC3" ) )
-        {
-            p_tk->fmt.i_codec = VLC_CODEC_A52;
-        }
-        else if( !strcmp( p_tk->psz_codec, "A_EAC3" ) )
-        {
-            p_tk->fmt.i_codec = VLC_CODEC_EAC3;
-        }
-        else if( !strcmp( p_tk->psz_codec, "A_DTS" ) )
-        {
-            p_tk->fmt.i_codec = VLC_CODEC_DTS;
-        }
-        else if( !strcmp( p_tk->psz_codec, "A_MLP" ) )
-        {
-            p_tk->fmt.i_codec = VLC_CODEC_MLP;
-        }
-        else if( !strcmp( p_tk->psz_codec, "A_TRUEHD" ) )
-        {
-            /* FIXME when more samples arrive */
-            p_tk->fmt.i_codec = VLC_CODEC_TRUEHD;
-            p_fmt->b_packetized = false;
-        }
-        else if( !strcmp( p_tk->psz_codec, "A_FLAC" ) )
-        {
-            p_tk->fmt.i_codec = VLC_CODEC_FLAC;
-            fill_extra_data( p_tk, 0 );
-        }
-        else if( !strcmp( p_tk->psz_codec, "A_VORBIS" ) )
-        {
-            p_tk->fmt.i_codec = VLC_CODEC_VORBIS;
-            fill_extra_data( p_tk, 0 );
-        }
-        else if( !strncmp( p_tk->psz_codec, "A_AAC/MPEG2/", strlen( "A_AAC/MPEG2/" ) ) ||
-                 !strncmp( p_tk->psz_codec, "A_AAC/MPEG4/", strlen( "A_AAC/MPEG4/" ) ) )
-        {
-            int i_profile, i_srate, sbr = 0;
-            static const unsigned int i_sample_rates[] =
-            {
-                    96000, 88200, 64000, 48000, 44100, 32000, 24000, 22050,
-                    16000, 12000, 11025,  8000,  7350,     0,     0,     0
-            };
-
-            p_tk->fmt.i_codec = VLC_CODEC_MP4A;
-            /* create data for faad (MP4DecSpecificDescrTag)*/
-
-            if( !strcmp( &p_tk->psz_codec[12], "MAIN" ) )
-            {
-                i_profile = 0;
-            }
-            else if( !strcmp( &p_tk->psz_codec[12], "LC" ) )
-            {
-                i_profile = 1;
-            }
-            else if( !strcmp( &p_tk->psz_codec[12], "SSR" ) )
-            {
-                i_profile = 2;
-            }
-            else if( !strcmp( &p_tk->psz_codec[12], "LC/SBR" ) )
-            {
-                i_profile = 1;
-                sbr = 1;
-            }
-            else
-            {
-                i_profile = 3;
-            }
-
-            for( i_srate = 0; i_srate < 13; i_srate++ )
-            {
-                if( i_sample_rates[i_srate] == p_tk->i_original_rate )
-                {
-                    break;
-                }
-            }
-            msg_Dbg( &sys.demuxer, "profile=%d srate=%d", i_profile, i_srate );
-
-            p_tk->fmt.i_extra = sbr ? 5 : 2;
-            p_tk->fmt.p_extra = xmalloc( p_tk->fmt.i_extra );
-            ((uint8_t*)p_tk->fmt.p_extra)[0] = ((i_profile + 1) << 3) | ((i_srate&0xe) >> 1);
-            ((uint8_t*)p_tk->fmt.p_extra)[1] = ((i_srate & 0x1) << 7) | (p_tk->fmt.audio.i_channels << 3);
-            if (sbr != 0)
-            {
-                int syncExtensionType = 0x2B7;
-                int iDSRI;
-                for (iDSRI=0; iDSRI<13; iDSRI++)
-                    if( i_sample_rates[iDSRI] == p_tk->fmt.audio.i_rate )
-                        break;
-                ((uint8_t*)p_tk->fmt.p_extra)[2] = (syncExtensionType >> 3) & 0xFF;
-                ((uint8_t*)p_tk->fmt.p_extra)[3] = ((syncExtensionType & 0x7) << 5) | 5;
-                ((uint8_t*)p_tk->fmt.p_extra)[4] = ((1 & 0x1) << 7) | (iDSRI << 3);
-            }
-        }
-        else if( !strcmp( p_tk->psz_codec, "A_AAC" ) )
-        {
-            p_tk->fmt.i_codec = VLC_CODEC_MP4A;
-            fill_extra_data( p_tk, 0 );
-        }
-        else if( !strcmp( p_tk->psz_codec, "A_WAVPACK4" ) )
-        {
-            p_tk->fmt.i_codec = VLC_CODEC_WAVPACK;
-            fill_extra_data( p_tk, 0 );
-        }
-        else if( !strcmp( p_tk->psz_codec, "A_TTA1" ) )
-        {
-            p_fmt->i_codec = VLC_CODEC_TTA;
-            if( p_tk->i_extra_data > 0 )
-            {
-              fill_extra_data( p_tk, 0 );
-            }
-            else
-            {
-                p_fmt->i_extra = 30;
-                p_fmt->p_extra = xmalloc( p_fmt->i_extra );
-                uint8_t *p_extra = (uint8_t*)p_fmt->p_extra;
-                memcpy( &p_extra[ 0], "TTA1", 4 );
-                SetWLE( &p_extra[ 4], 1 );
-                SetWLE( &p_extra[ 6], p_fmt->audio.i_channels );
-                SetWLE( &p_extra[ 8], p_fmt->audio.i_bitspersample );
-                SetDWLE( &p_extra[10], p_fmt->audio.i_rate );
-                SetDWLE( &p_extra[14], 0xffffffff );
-                memset( &p_extra[18], 0, 30  - 18 );
-            }
-        }
-        else if( !strcmp( p_tk->psz_codec, "A_PCM/INT/BIG" ) ||
-                 !strcmp( p_tk->psz_codec, "A_PCM/INT/LIT" ) ||
-                 !strcmp( p_tk->psz_codec, "A_PCM/FLOAT/IEEE" ) )
-        {
-            if( !strcmp( p_tk->psz_codec, "A_PCM/INT/BIG" ) )
-            {
-                p_tk->fmt.i_codec = VLC_FOURCC( 't', 'w', 'o', 's' );
-            }
-            else
-            {
-                p_tk->fmt.i_codec = VLC_FOURCC( 'a', 'r', 'a', 'w' );
-            }
-            p_tk->fmt.audio.i_blockalign = ( p_tk->fmt.audio.i_bitspersample + 7 ) / 8 * p_tk->fmt.audio.i_channels;
-        }
-        else if( !strncmp( p_tk->psz_codec, "A_REAL/", 7 ) )
-        {
-            if( !strcmp( p_tk->psz_codec, "A_REAL/COOK" ) )
-                p_tk->fmt.i_codec = VLC_CODEC_COOK;
-            else if( !strcmp( p_tk->psz_codec, "A_REAL/ATRC" ) )
-                p_tk->fmt.i_codec = VLC_CODEC_ATRAC3;
-            else if( !strcmp( p_tk->psz_codec, "A_REAL/28_8" ) )
-                p_tk->fmt.i_codec = VLC_CODEC_RA_288;
-            /* FIXME 14_4, RALF and SIPR */
-            fill_extra_data( p_tk, p_tk->fmt.i_codec == VLC_CODEC_RA_288 ? 0 : 0 /*78 - FIXME need to implement reading support for cook */ );
-        }
-        else if( !strcmp( p_tk->psz_codec, "A_REAL/14_4" ) )
-        {
-            p_fmt->i_codec = VLC_CODEC_RA_144;
-            p_fmt->audio.i_channels = 1;
-            p_fmt->audio.i_rate = 8000;
-            p_fmt->audio.i_blockalign = 0x14;
-        }
-        else if( !strcmp( p_tk->psz_codec, "S_KATE" ) )
-        {
-            p_tk->fmt.i_codec = VLC_CODEC_KATE;
-            p_tk->fmt.subs.psz_encoding = strdup( "UTF-8" );
-
-            fill_extra_data( p_tk, 0 );
-        }
-        else if( !strcmp( p_tk->psz_codec, "S_TEXT/ASCII" ) )
-        {
-            p_fmt->i_codec = VLC_CODEC_SUBT;
-            p_fmt->subs.psz_encoding = strdup( "ASCII" );
-        }
-        else if( !strcmp( p_tk->psz_codec, "S_TEXT/UTF8" ) )
-        {
-            p_tk->fmt.i_codec = VLC_CODEC_SUBT;
-            p_tk->fmt.subs.psz_encoding = strdup( "UTF-8" );
-        }
-        else if( !strcmp( p_tk->psz_codec, "S_TEXT/USF" ) )
-        {
-            p_tk->fmt.i_codec = VLC_FOURCC( 'u', 's', 'f', ' ' );
-            p_tk->fmt.subs.psz_encoding = strdup( "UTF-8" );
-            if( p_tk->i_extra_data )
-                fill_extra_data( p_tk, 0 );
-        }
-        else if( !strcmp( p_tk->psz_codec, "S_TEXT/SSA" ) ||
-                 !strcmp( p_tk->psz_codec, "S_TEXT/ASS" ) ||
-                 !strcmp( p_tk->psz_codec, "S_SSA" ) ||
-                 !strcmp( p_tk->psz_codec, "S_ASS" ))
-        {
-            p_tk->fmt.i_codec = VLC_CODEC_SSA;
-            p_tk->fmt.subs.psz_encoding = strdup( "UTF-8" );
-            if( p_tk->i_extra_data )
-                fill_extra_data( p_tk, 0 );
-        }
-        else if( !strcmp( p_tk->psz_codec, "S_VOBSUB" ) )
-        {
-            p_tk->fmt.i_codec = VLC_CODEC_SPU;
-            if( p_tk->i_extra_data )
-            {
-                char *psz_start;
-                char *psz_buf = (char *)malloc( p_tk->i_extra_data + 1);
-                if( psz_buf != NULL )
-                {
-                    memcpy( psz_buf, p_tk->p_extra_data , p_tk->i_extra_data );
-                    psz_buf[p_tk->i_extra_data] = '\0';
-
-                    psz_start = strstr( psz_buf, "size:" );
-                    if( psz_start &&
-                        vobsub_size_parse( psz_start,
-                                           &p_tk->fmt.subs.spu.i_original_frame_width,
-                                           &p_tk->fmt.subs.spu.i_original_frame_height ) == VLC_SUCCESS )
-                    {
-                        msg_Dbg( &sys.demuxer, "original frame size vobsubs: %dx%d",
-                                 p_tk->fmt.subs.spu.i_original_frame_width,
-                                 p_tk->fmt.subs.spu.i_original_frame_height );
-                    }
-                    else
-                    {
-                        msg_Warn( &sys.demuxer, "reading original frame size for vobsub failed" );
-                    }
-
-                    psz_start = strstr( psz_buf, "palette:" );
-                    if( psz_start &&
-                        vobsub_palette_parse( psz_start, &p_tk->fmt.subs.spu.palette[1] ) == VLC_SUCCESS )
-                    {
-                        p_tk->fmt.subs.spu.palette[0] =  0xBeef;
-                        msg_Dbg( &sys.demuxer, "vobsub palette read" );
-                    }
-                    else
-                    {
-                        msg_Warn( &sys.demuxer, "reading original palette failed" );
-                    }
-                    free( psz_buf );
-                }
-            }
-        }
-        else if( !strcmp( p_tk->psz_codec, "S_HDMV/PGS" ) )
-        {
-            p_tk->fmt.i_codec = VLC_CODEC_BD_PG;
-        }
-        else if( !strcmp( p_tk->psz_codec, "B_VOBBTN" ) )
-        {
-            p_tk->fmt.i_cat = NAV_ES;
-            continue;
-        }
-        else
-        {
-            msg_Err( &sys.demuxer, "unknown codec id=`%s'", p_tk->psz_codec );
-            p_tk->fmt.i_codec = VLC_FOURCC( 'u', 'n', 'd', 'f' );
-        }
         if( unlikely( !p_tk->b_enabled ) )
-            p_tk->fmt.i_priority = -2;
+            p_tk->fmt.i_priority = ES_PRIORITY_NOT_SELECTABLE;
         else if( p_tk->b_forced )
-            p_tk->fmt.i_priority = 2;
+            p_tk->fmt.i_priority = ES_PRIORITY_SELECTABLE_MIN + 2;
         else if( p_tk->b_default )
-            p_tk->fmt.i_priority = 1;
+            p_tk->fmt.i_priority = ES_PRIORITY_SELECTABLE_MIN + 1;
         else
-            p_tk->fmt.i_priority = 0;
+            p_tk->fmt.i_priority = ES_PRIORITY_SELECTABLE_MIN;
 
         /* Avoid multivideo tracks when unnecessary */
         if( p_tk->fmt.i_cat == VIDEO_ES )
             p_tk->fmt.i_priority--;
+    } 
+}
 
-        p_tk->p_es = es_out_Add( sys.demuxer.out, &p_tk->fmt );
+bool matroska_segment_c::Select( mtime_t i_start_time )
+{
+    /* add all es */
+    msg_Dbg( &sys.demuxer, "found %d es", (int)tracks.size() );
+
+    for( size_t i_track = 0; i_track < tracks.size(); i_track++ )
+    {
+        mkv_track_t *p_tk = tracks[i_track];
+        es_format_t *p_fmt = &p_tk->fmt;
+
+        if( unlikely( p_fmt->i_cat == UNKNOWN_ES || !p_tk->psz_codec ) )
+        {
+            msg_Warn( &sys.demuxer, "invalid track[%d, n=%d]", (int)i_track, p_tk->i_number );
+            p_tk->p_es = NULL;
+            continue;
+        }
+
+        if( !p_tk->p_es )
+            p_tk->p_es = es_out_Add( sys.demuxer.out, &p_tk->fmt );
 
         /* Turn on a subtitles track if it has been flagged as default -
          * but only do this if no subtitles track has already been engaged,
          * either by an earlier 'default track' (??) or by default
          * language choice behaviour.
          */
-        if( p_tk->b_default )
+        if( p_tk->b_default || p_tk->b_forced )
         {
             es_out_Control( sys.demuxer.out,
                             ES_OUT_SET_ES_DEFAULT,
@@ -1435,6 +1229,8 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
 
     *pb_key_picture         = true;
     *pb_discardable_picture = false;
+    size_t i_tk;
+    *pi_duration = 0;
 
     for( ;; )
     {
@@ -1447,9 +1243,9 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
         if( pp_simpleblock != NULL || ((el = ep->Get()) == NULL && pp_block != NULL) )
         {
             /* Check blocks validity to protect againts broken files */
-            if( BlockFindTrackIndex( NULL, pp_block , pp_simpleblock ) )
+            if( BlockFindTrackIndex( &i_tk, pp_block , pp_simpleblock ) )
             {
-                delete pp_block;
+                ep->Unkeep();
                 pp_simpleblock = NULL;
                 pp_block = NULL;
                 continue;
@@ -1458,6 +1254,29 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
             {
                 *pb_key_picture         = pp_simpleblock->IsKeyframe();
                 *pb_discardable_picture = pp_simpleblock->IsDiscardable();
+            }
+            /* We have block group let's check if the picture is a keyframe */
+            else if( *pb_key_picture )
+            {
+                switch(tracks[i_tk]->fmt.i_codec)
+                {
+                    case VLC_CODEC_THEORA:
+                        {
+                            DataBuffer *p_data = &pp_block->GetBuffer(0);
+                            size_t sz = p_data->Size();
+                            const uint8_t * p_buff = p_data->Buffer();
+                            /* if the second bit of a Theora frame is 1 
+                               it's not a keyframe */
+                            if( sz && p_buff )
+                            {
+                                if( p_buff[0] & 0x40 )
+                                    *pb_key_picture = false;
+                            }
+                            else
+                                *pb_key_picture = false;
+                            break;
+                        }
+                }
             }
 
             /* update the index */
@@ -1502,110 +1321,161 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
         }
 
         /* do parsing */
-        switch ( i_level )
+        try
         {
-        case 1:
-            if( MKV_IS_ID( el, KaxCluster ) )
+            switch ( i_level )
             {
-                cluster = (KaxCluster*)el;
-                i_cluster_pos = cluster->GetElementPosition();
-
-                // reset silent tracks
-                for (size_t i=0; i<tracks.size(); i++)
-                {
-                    tracks[i]->b_silent = false;
-                }
-
-                ep->Down();
-            }
-            else if( MKV_IS_ID( el, KaxCues ) )
-            {
-                msg_Warn( &sys.demuxer, "find KaxCues FIXME" );
-                return VLC_EGENERIC;
-            }
-            else
-            {
-                msg_Dbg( &sys.demuxer, "unknown (%s)", typeid( el ).name() );
-            }
-            break;
-        case 2:
-            if( MKV_IS_ID( el, KaxClusterTimecode ) )
-            {
-                KaxClusterTimecode &ctc = *(KaxClusterTimecode*)el;
-
-                ctc.ReadData( es.I_O(), SCOPE_ALL_DATA );
-                cluster->InitTimecode( uint64( ctc ), i_timescale );
- 
-                /* add it to the index */
-                if( i_index == 0 ||
-                    ( i_index > 0 &&
-                      p_indexes[i_index - 1].i_position < (int64_t)cluster->GetElementPosition() ) )
-                    IndexAppendCluster( cluster );
-            }
-            else if( MKV_IS_ID( el, KaxClusterSilentTracks ) )
-            {
-                ep->Down();
-            }
-            else if( MKV_IS_ID( el, KaxBlockGroup ) )
-            {
-                i_block_pos = el->GetElementPosition();
-                ep->Down();
-            }
-            else if( MKV_IS_ID( el, KaxSimpleBlock ) )
-            {
-                pp_simpleblock = (KaxSimpleBlock*)el;
-
-                pp_simpleblock->ReadData( es.I_O() );
-                pp_simpleblock->SetParent( *cluster );
-            }
-            break;
-        case 3:
-            if( MKV_IS_ID( el, KaxBlock ) )
-            {
-                pp_block = (KaxBlock*)el;
-
-                pp_block->ReadData( es.I_O() );
-                pp_block->SetParent( *cluster );
-
-                ep->Keep();
-            }
-            else if( MKV_IS_ID( el, KaxBlockDuration ) )
-            {
-                KaxBlockDuration &dur = *(KaxBlockDuration*)el;
-
-                dur.ReadData( es.I_O() );
-                *pi_duration = uint64( dur );
-            }
-            else if( MKV_IS_ID( el, KaxReferenceBlock ) )
-            {
-                KaxReferenceBlock &ref = *(KaxReferenceBlock*)el;
-
-                ref.ReadData( es.I_O() );
-
-                if( *pb_key_picture )
-                    *pb_key_picture = false;
-                else if( int64( ref ) > 0 )
-                    *pb_discardable_picture = true;
-            }
-            else if( MKV_IS_ID( el, KaxClusterSilentTrackNumber ) )
-            {
-                KaxClusterSilentTrackNumber &track_num = *(KaxClusterSilentTrackNumber*)el;
-                track_num.ReadData( es.I_O() );
-                // find the track
-                for (size_t i=0; i<tracks.size(); i++)
-                {
-                    if ( tracks[i]->i_number == uint32(track_num))
+                case 1:
+                    if( MKV_IS_ID( el, KaxCluster ) )
                     {
-                        tracks[i]->b_silent = true;
+                        cluster = (KaxCluster*)el;
+                        i_cluster_pos = cluster->GetElementPosition();
+
+                        // reset silent tracks
+                        for (size_t i=0; i<tracks.size(); i++)
+                        {
+                            tracks[i]->b_silent = false;
+                        }
+
+                        ep->Down();
+                    }
+                    else if( MKV_IS_ID( el, KaxCues ) )
+                    {
+                        msg_Warn( &sys.demuxer, "find KaxCues FIXME" );
+                        return VLC_EGENERIC;
+                    }
+                    else
+                    {
+                        msg_Dbg( &sys.demuxer, "unknown (%s)", typeid( el ).name() );
+                    }
+                    break;
+                case 2:
+                    if( unlikely( el->GetSize() >= SIZE_MAX ) )
+                    {
+                        msg_Err( &sys.demuxer, "Error while reading %s... upping level", typeid(*el).name());
+                        ep->Up();
                         break;
                     }
-                }
+                    if( MKV_IS_ID( el, KaxClusterTimecode ) )
+                    {
+                        KaxClusterTimecode &ctc = *(KaxClusterTimecode*)el;
+
+                        ctc.ReadData( es.I_O(), SCOPE_ALL_DATA );
+                        cluster->InitTimecode( uint64( ctc ), i_timescale );
+
+                        /* add it to the index */
+                        if( i_index == 0 ||
+                            ( i_index > 0 &&
+                              p_indexes[i_index - 1].i_position < (int64_t)cluster->GetElementPosition() ) )
+                            IndexAppendCluster( cluster );
+                    }
+                    else if( MKV_IS_ID( el, KaxClusterSilentTracks ) )
+                    {
+                        ep->Down();
+                    }
+                    else if( MKV_IS_ID( el, KaxBlockGroup ) )
+                    {
+                        i_block_pos = el->GetElementPosition();
+                        ep->Down();
+                    }
+                    else if( MKV_IS_ID( el, KaxSimpleBlock ) )
+                    {
+                        pp_simpleblock = (KaxSimpleBlock*)el;
+
+                        pp_simpleblock->ReadData( es.I_O() );
+                        pp_simpleblock->SetParent( *cluster );
+                    }
+                    break;
+                case 3:
+                    if( unlikely( el->GetSize() >= SIZE_MAX ) )
+                    {
+                        msg_Err( &sys.demuxer, "Error while reading %s... upping level", typeid(*el).name());
+                        ep->Up();
+                        ep->Unkeep();
+                        pp_simpleblock = NULL;
+                        pp_block = NULL;
+                        break;
+                    }
+                    if( MKV_IS_ID( el, KaxBlock ) )
+                    {
+                        pp_block = (KaxBlock*)el;
+
+                        pp_block->ReadData( es.I_O() );
+                        pp_block->SetParent( *cluster );
+
+                        ep->Keep();
+                    }
+                    else if( MKV_IS_ID( el, KaxBlockDuration ) )
+                    {
+                        KaxBlockDuration &dur = *(KaxBlockDuration*)el;
+
+                        dur.ReadData( es.I_O() );
+                        *pi_duration = uint64( dur );
+                    }
+                    else if( MKV_IS_ID( el, KaxReferenceBlock ) )
+                    {
+                        KaxReferenceBlock &ref = *(KaxReferenceBlock*)el;
+
+                        ref.ReadData( es.I_O() );
+
+                        if( *pb_key_picture )
+                            *pb_key_picture = false;
+                        else if( int64( ref ) > 0 )
+                            *pb_discardable_picture = true;
+                    }
+                    else if( MKV_IS_ID( el, KaxClusterSilentTrackNumber ) )
+                    {
+                        KaxClusterSilentTrackNumber &track_num = *(KaxClusterSilentTrackNumber*)el;
+                        track_num.ReadData( es.I_O() );
+                        // find the track
+                        for (size_t i=0; i<tracks.size(); i++)
+                        {
+                            if ( tracks[i]->i_number == uint32(track_num))
+                            {
+                                tracks[i]->b_silent = true;
+                                break;
+                            }
+                        }
+                    }
+#if LIBMATROSKA_VERSION >= 0x010401
+                    else if( MKV_IS_ID( el, KaxDiscardPadding ) )
+                    {
+                        KaxDiscardPadding &dp = *(KaxDiscardPadding*) el;
+                        dp.ReadData( es.I_O() );
+                        if ( *pi_duration < int64(dp) )
+                            *pi_duration = 0;
+                        else
+                            *pi_duration -= int64(dp);
+                    }
+#endif
+                    break;
+                default:
+                    msg_Err( &sys.demuxer, "invalid level = %d", i_level );
+                    return VLC_EGENERIC;
             }
-            break;
-        default:
-            msg_Err( &sys.demuxer, "invalid level = %d", i_level );
-            return VLC_EGENERIC;
+        }
+        catch(...)
+        {
+            msg_Err( &sys.demuxer, "Error while reading %s... upping level", typeid(*el).name());
+            ep->Up();
+            ep->Unkeep();
+            pp_simpleblock = NULL;
+            pp_block = NULL;
         }
     }
 }
 
+SimpleTag::~SimpleTag()
+{
+    free(psz_tag_name);
+    free(psz_lang);
+    free(p_value);
+    for(size_t i = 0; i < sub_tags.size(); i++)
+        delete sub_tags[i];
+}
+
+Tag::~Tag()
+{
+    for(size_t i = 0; i < simple_tags.size(); i++)
+        delete simple_tags[i];
+}

@@ -2,7 +2,7 @@
  * playlist_item.cpp : Manage playlist item
  ****************************************************************************
  * Copyright © 2006-2011 the VideoLAN team
- * $Id: cb9bde33516742bab4e0a699a597e97b526bd014 $
+ * $Id: 0fbbcba09b4b098e38318b7d6edbf165e88d1fe5 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -31,11 +31,21 @@
 #include "qt4.hpp"
 #include "playlist_item.hpp"
 
-#include "sorting.h"
-
 /*************************************************************************
  * Playlist item implementation
  *************************************************************************/
+
+void AbstractPLItem::clearChildren()
+{
+    qDeleteAll( children );
+    children.clear();
+}
+
+void AbstractPLItem::removeChild( AbstractPLItem *item )
+{
+    children.removeOne( item );
+    delete item;
+}
 
 /*
    Playlist item is just a wrapper, an abstraction of the playlist_item
@@ -47,8 +57,8 @@
 void PLItem::init( playlist_item_t *_playlist_item, PLItem *parent )
 {
     parentItem = parent;          /* Can be NULL, but only for the rootItem */
-    i_id       = _playlist_item->i_id;           /* Playlist item specific id */
-    p_input    = _playlist_item->p_input;
+    i_playlist_id = _playlist_item->i_id;           /* Playlist item specific id */
+    p_input = _playlist_item->p_input;
     vlc_gc_incref( p_input );
 }
 
@@ -73,60 +83,75 @@ PLItem::~PLItem()
     children.clear();
 }
 
-void PLItem::insertChild( PLItem *item, int i_pos )
+int PLItem::id( int type )
 {
-    children.insert( i_pos, item );
-}
-
-void PLItem::appendChild( PLItem *item )
-{
-    children.insert( children.count(), item );
-}
-
-void PLItem::removeChild( PLItem *item )
-{
-    children.removeOne( item );
-    delete item;
-}
-
-void PLItem::removeChildren()
-{
-    qDeleteAll( children );
-    children.clear();
+    switch( type )
+    {
+    case INPUTITEM_ID:
+        return inputItem()->i_id;
+    case PLAYLIST_ID:
+        return i_playlist_id;
+    default:
+    case MLMEDIA_ID:
+        assert( 0 );
+        return -1;
+    }
 }
 
 void PLItem::takeChildAt( int index )
 {
-    PLItem *child = children[index];
+    AbstractPLItem *child = children[index];
     child->parentItem = NULL;
     children.removeAt( index );
 }
 
 /* This function is used to get one's parent's row number in the model */
-int PLItem::row() const
+int PLItem::row()
 {
     if( parentItem )
-        return parentItem->children.indexOf( const_cast<PLItem*>(this) );
-       // We don't ever inherit PLItem, yet, but it might come :D
+        return parentItem->indexOf( this );
     return 0;
 }
 
-bool PLItem::operator< ( PLItem& other )
+bool PLItem::operator< ( AbstractPLItem& other )
 {
-    PLItem *item1 = this;
+    AbstractPLItem *item1 = this;
     while( item1->parentItem )
     {
-        PLItem *item2 = &other;
+        AbstractPLItem *item2 = &other;
         while( item2->parentItem )
         {
             if( item1 == item2->parentItem ) return true;
             if( item2 == item1->parentItem ) return false;
             if( item1->parentItem == item2->parentItem )
-                return item1->parentItem->children.indexOf( item1 ) <
-                       item1->parentItem->children.indexOf( item2 );
+                return item1->parentItem->indexOf( item1 ) <
+                       item1->parentItem->indexOf( item2 );
             item2 = item2->parentItem;
         }
         item1 = item1->parentItem;
     }
     return false;
+}
+
+QUrl PLItem::getURI() const
+{
+    QString uri;
+    vlc_mutex_lock( &p_input->lock );
+    uri = QString( p_input->psz_uri );
+    vlc_mutex_unlock( &p_input->lock );
+    return QUrl( uri );
+}
+
+QString PLItem::getTitle() const
+{
+    QString title;
+    char *fb_name = input_item_GetTitle( p_input );
+    if( EMPTY_STR( fb_name ) )
+    {
+        free( fb_name );
+        fb_name = input_item_GetName( p_input );
+    }
+    title = qfu(fb_name);
+    free(fb_name);
+    return title;
 }

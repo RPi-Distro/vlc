@@ -2,7 +2,7 @@
  * vlc_block_helper.h: Helper functions for data blocks management.
  *****************************************************************************
  * Copyright (C) 2003 VLC authors and VideoLAN
- * $Id: 903a0f0857a8fcac12b2863d6a0c46b267d473a1 $
+ * $Id: fdd5fdbeafee1f296c157410ef3e69a7cf57d3e5 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
@@ -121,11 +121,9 @@ static inline block_t *block_BytestreamPop( block_bytestream_t *p_bytestream )
     while( p_block->p_next && p_block->p_next->p_next )
         p_block = p_block->p_next;
 
-    {
-        block_t *p_block_old = p_block;
-        p_block = p_block->p_next;
-        p_block_old->p_next = NULL;
-    }
+    block_t *p_block_old = p_block;
+    p_block = p_block->p_next;
+    p_block_old->p_next = NULL;
 
     return p_block;
 }
@@ -376,7 +374,6 @@ static inline int block_GetBytes( block_bytestream_t *p_bytestream,
         i_offset = 0;
     }
 
-    /* No buffer given, just skip the data */
     p_bytestream->p_block = p_block;
     p_bytestream->i_offset = i_offset + i_copy;
 

@@ -1,25 +1,25 @@
 /*****************************************************************************
  * mosaic.c : Mosaic video plugin for vlc
  *****************************************************************************
- * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: ea52d51cc46cf83f3124b7ece68697cdbdf5fb20 $
+ * Copyright (C) 2004-2008 VLC authors and VideoLAN
+ * $Id: a9aef4416b923b94e1b28e78dd2bd57fa41d290e $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *          Christophe Massiot <massiot@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
 *****************************************************************************/
 
 /*****************************************************************************
@@ -433,8 +433,6 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     filter_sys_t *p_sys = p_filter->p_sys;
     bridge_t *p_bridge;
 
-    subpicture_t *p_spu;
-
     int i_index, i_real_index, i_row, i_col;
     int i_greatest_real_index_used = p_sys->i_order_length - 1;
 
@@ -444,7 +442,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     subpicture_region_t *p_region_prev = NULL;
 
     /* Allocate the subpicture internal data. */
-    p_spu = filter_NewSubpicture( p_filter );
+    subpicture_t *p_spu = filter_NewSubpicture( p_filter );
     if( !p_spu )
         return NULL;
 
@@ -455,6 +453,9 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     p_spu->b_ephemer = true;
     p_spu->i_alpha = p_sys->i_alpha;
     p_spu->b_absolute = false;
+
+    p_spu->i_original_picture_width = p_sys->i_width;
+    p_spu->i_original_picture_height = p_sys->i_height;
 
     vlc_mutex_lock( &p_sys->lock );
     vlc_global_lock( VLC_MOSAIC_MUTEX );

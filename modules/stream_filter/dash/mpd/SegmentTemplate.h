@@ -2,7 +2,7 @@
  * SegmentTemplate.cpp: Implement the UrlTemplate element.
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: 8439050d73248f51f4bc09ab0feb81476758d40c $
+ * $Id: dea7fcc78834db6e1ca16f1356c084c867893442 $
  *
  * Authors: Hugo Beauzée-Luyssen <beauze.h@gmail.com>
  *
@@ -42,7 +42,6 @@ namespace dash
                 virtual void            done();
             private:
                 bool                    containRuntimeIdentifier;
-                Representation*         representation;
                 size_t                  beginTime;
                 size_t                  beginIndex;
                 int                     currentSegmentIndex;

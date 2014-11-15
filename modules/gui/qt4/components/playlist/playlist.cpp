@@ -2,7 +2,7 @@
  * playlist.cpp : Custom widgets for the playlist
  ****************************************************************************
  * Copyright © 2007-2010 the VideoLAN team
- * $Id: 7d04d12f8e1ea50dde7bc6f6120d3c0a9a53f88e $
+ * $Id: 7091805f7564e569c90e60dc7c8453e44dcf072e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -30,7 +30,6 @@
 #include "components/playlist/standardpanel.hpp"  /* MainView */
 #include "components/playlist/selector.hpp"       /* PLSelector */
 #include "components/playlist/playlist_model.hpp" /* PLModel */
-#include "components/playlist/ml_model.hpp"       /* MLModel */
 #include "components/interface_widgets.hpp"       /* CoverArtLabel */
 
 #include "util/searchlineedit.hpp"
@@ -69,7 +68,7 @@ PlaylistWidget::PlaylistWidget( intf_thread_t *_p_i, QWidget *_par )
     /* Create a Container for the Art Label
        in order to have a beautiful resizing for the selector above it */
     artContainer = new QStackedWidget;
-    artContainer->setMaximumHeight( 128 );
+    artContainer->setMaximumHeight( 256 );
 
     /* Art label */
     CoverArtLabel *art = new CoverArtLabel( artContainer, p_intf );
@@ -78,6 +77,8 @@ PlaylistWidget::PlaylistWidget( intf_thread_t *_p_i, QWidget *_par )
 
     CONNECT( THEMIM->getIM(), artChanged( QString ),
              art, showArtUpdate( const QString& ) );
+    CONNECT( THEMIM->getIM(), artChanged( input_item_t * ),
+             art, showArtUpdate( input_item_t * ) );
 
     leftSplitter->addWidget( artContainer );
 
@@ -93,12 +94,8 @@ PlaylistWidget::PlaylistWidget( intf_thread_t *_p_i, QWidget *_par )
     setMinimumWidth( 400 );
 
     PLModel *model = PLModel::getPLModel( p_intf );
-#ifdef MEDIA_LIBRARY
-    MLModel *mlmodel = new MLModel( p_intf, this );
-    mainView = new StandardPLPanel( this, p_intf, p_root, selector, model, mlmodel );
-#else
-    mainView = new StandardPLPanel( this, p_intf, p_root, selector, model, NULL );
-#endif
+
+    mainView = new StandardPLPanel( this, p_intf, p_root, selector, model );
 
     /* Location Bar */
     locationBar = new LocationBar( model );
@@ -118,29 +115,7 @@ PlaylistWidget::PlaylistWidget( intf_thread_t *_p_i, QWidget *_par )
     viewButton->setToolTip( qtr("Change playlistview") );
     topbarLayout->addWidget( viewButton );
 
-    /* View selection menu */
-    QSignalMapper *viewSelectionMapper = new QSignalMapper( this );
-    CONNECT( viewSelectionMapper, mapped( int ), mainView, showView( int ) );
-
-    QActionGroup *actionGroup = new QActionGroup( this );
-
-#ifndef NDEBUG
-# define MAX_VIEW StandardPLPanel::VIEW_COUNT
-#else
-# define MAX_VIEW StandardPLPanel::VIEW_COUNT - 1
-#endif
-    for( int i = 0; i < MAX_VIEW; i++ )
-    {
-        viewActions[i] = actionGroup->addAction( viewNames[i] );
-        viewActions[i]->setCheckable( true );
-        viewSelectionMapper->setMapping( viewActions[i], i );
-        CONNECT( viewActions[i], triggered(), viewSelectionMapper, map() );
-    }
-    viewActions[0]->setChecked( true );
-
-    QMenu *viewMenu = new QMenu( viewButton );
-    viewMenu->addActions( actionGroup->actions() );
-    viewButton->setMenu( viewMenu );
+    viewButton->setMenu( StandardPLPanel::viewSelectionMenu( mainView ));
     CONNECT( viewButton, clicked(), mainView, cycleViews() );
 
     /* Search */
@@ -161,6 +136,7 @@ PlaylistWidget::PlaylistWidget( intf_thread_t *_p_i, QWidget *_par )
     DCONNECT( selector, categoryActivated( playlist_item_t *, bool ),
               mainView, setRootItem( playlist_item_t *, bool ) );
     mainView->setRootItem( p_root, false );
+    CONNECT( selector, SDCategorySelected(bool), mainView, setWaiting(bool) );
 
     /* */
     split = new PlaylistSplitter( this );
@@ -247,22 +223,15 @@ void PlaylistWidget::forceShow()
 
 void PlaylistWidget::changeView( const QModelIndex& index )
 {
-    searchEdit->clear();
     locationBar->setIndex( index );
-    int i = mainView->currentViewIndex();
-    viewActions[i]->setChecked(true);
 }
 
-void PlaylistWidget::clearPlaylist()
-{
-    PLModel::getPLModel( p_intf )->clearPlaylist();
-}
 #include <QSignalMapper>
 #include <QMenu>
 #include <QPainter>
-LocationBar::LocationBar( PLModel *m )
+LocationBar::LocationBar( VLCModel *m )
 {
-    model = m;
+    setModel( m );
     mapper = new QSignalMapper( this );
     CONNECT( mapper, mapped( int ), this, invoke( int ) );
 
@@ -283,17 +252,7 @@ void LocationBar::setIndex( const QModelIndex &index )
 
     while( true )
     {
-        PLItem *item = model->getItem( i );
-        QString text;
-
-        char *fb_name = input_item_GetTitle( item->inputItem() );
-        if( EMPTY_STR( fb_name ) )
-        {
-            free( fb_name );
-            fb_name = input_item_GetName( item->inputItem() );
-        }
-        text = qfu(fb_name);
-        free(fb_name);
+        QString text = model->getTitle( i );
 
         QAbstractButton *btn = new LocationButton( text, first, !first, this );
         btn->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
@@ -303,7 +262,7 @@ void LocationBar::setIndex( const QModelIndex &index )
         actions.append( action );
         CONNECT( btn, clicked(), action, trigger() );
 
-        mapper->setMapping( action, item->id() );
+        mapper->setMapping( action, model->itemId( i, PLAYLIST_ID ) );
         CONNECT( action, triggered(), mapper, map() );
 
         first = false;
@@ -329,7 +288,7 @@ void LocationBar::setRootIndex()
 
 void LocationBar::invoke( int i_id )
 {
-    QModelIndex index = model->index( i_id, 0 );
+    QModelIndex index = model->indexByPLID( i_id, 0 );
     emit invoked ( index );
 }
 
@@ -451,7 +410,7 @@ QSize LocationButton::sizeHint() const
 
 #undef PADDING
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 QSplitterHandle *PlaylistSplitter::createHandle()
 {
     return new SplitterHandle( orientation(), this );

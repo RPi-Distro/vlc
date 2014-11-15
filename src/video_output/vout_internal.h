@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 1f7184590c557d57d187dfe6767ab5f846d62017 $
+ * $Id: f6ad26981072c03ee7e17b305fc1eac756bfba73 $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
@@ -91,7 +91,6 @@ struct vout_thread_sys_t
     struct {
         mtime_t     date;
         mtime_t     timestamp;
-        int         qtype;
         bool        is_interlaced;
         picture_t   *decoded;
         picture_t   *current;
@@ -141,7 +140,7 @@ struct vout_thread_sys_t
 
 /* TODO to move them to vlc_vout.h */
 void vout_ControlChangeFullscreen(vout_thread_t *, bool fullscreen);
-void vout_ControlChangeOnTop(vout_thread_t *, bool is_on_top);
+void vout_ControlChangeWindowState(vout_thread_t *, unsigned state);
 void vout_ControlChangeDisplayFilled(vout_thread_t *, bool is_filled);
 void vout_ControlChangeZoom(vout_thread_t *, int num, int den);
 void vout_ControlChangeSampleAspectRatio(vout_thread_t *, unsigned num, unsigned den);
@@ -155,6 +154,7 @@ void vout_ControlChangeSubMargin(vout_thread_t *, int);
 
 /* */
 void vout_IntfInit( vout_thread_t * );
+void vout_IntfReinit( vout_thread_t * );
 
 /* */
 int  vout_OpenWrapper (vout_thread_t *, const char *, const vout_display_state_t *);

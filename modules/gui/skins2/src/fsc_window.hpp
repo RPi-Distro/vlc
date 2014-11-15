@@ -2,7 +2,7 @@
  * fsc_window.hpp
  *****************************************************************************
  * Copyright (C) 2010 the VideoLAN team
- * $Id: 92244900484fdf05cec0343bf312114663a349b8 $
+ * $Id: 7221039aff99bc243e417173fe550805c7251e14 $
  *
  * Author: Erwan Tulou      <erwan10 At videolan Dot Org>
  *
@@ -67,6 +67,10 @@ private:
     int m_count;
     /// opacity set by user
     int m_opacity;
+    /// delay set by user
+    int m_delay;
+    /// activation set by user
+    bool m_enabled;
 
     /// Callback for the timer
     DEFINE_CALLBACK( FscWindow, FscHide )

@@ -2,7 +2,7 @@
  * configuration.c: Generic lua<->vlc config interface
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 5fd95cf9760dcc19b7854b357cedfc4874fac6a8 $
+ * $Id: b5a5cbd01f50558acbc5377e82eb537170a2c5a7 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -33,9 +33,6 @@
 #endif
 
 #include <vlc_common.h>
-
-#include <lua.h>        /* Low level lua C API */
-#include <lauxlib.h>    /* Higher level C API */
 
 #include "../vlc.h"
 #include "../libs.h"
@@ -110,7 +107,7 @@ static int vlclua_config_set( lua_State *L )
  *****************************************************************************/
 static int vlclua_datadir( lua_State *L )
 {
-    char *psz_data = config_GetDataDir( vlclua_get_this( L ) );
+    char *psz_data = config_GetDataDir();
     lua_pushstring( L, psz_data );
     free( psz_data );
     return 1;
@@ -154,7 +151,7 @@ static int vlclua_datadir_list( lua_State *L )
     char **ppsz_dir_list = NULL;
     int i = 1;
 
-    if( vlclua_dir_list( vlclua_get_this( L ), psz_dirname, &ppsz_dir_list )
+    if( vlclua_dir_list( psz_dirname, &ppsz_dir_list )
         != VLC_SUCCESS )
         return 0;
     lua_newtable( L );

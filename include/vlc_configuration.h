@@ -1,10 +1,10 @@
 /*****************************************************************************
- * configuration.h : configuration management module
+ * vlc_configuration.h : configuration management module
  * This file describes the programming interface for the configuration module.
  * It includes functions allowing to declare, get or set configuration options.
  *****************************************************************************
  * Copyright (C) 1999-2006 VLC authors and VideoLAN
- * $Id: bd6e00b6bf70e4b6be324648146a0d5d7c0309b4 $
+ * $Id: fe0aba5ca8b9d5bb60afd0ac9027d023b1862f2f $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -32,98 +32,11 @@
  * It includes functions allowing to declare, get or set configuration options.
  */
 
+#include <sys/types.h>  /* for ssize_t */
+
 # ifdef __cplusplus
 extern "C" {
 # endif
-
-/*****************************************************************************
- * Macros used to build the configuration structure.
- *****************************************************************************/
-
-/* Configuration hint types */
-#define CONFIG_HINT_CATEGORY                0x02  /* Start of new category */
-#define CONFIG_HINT_SUBCATEGORY             0x03  /* Start of sub-category */
-#define CONFIG_HINT_SUBCATEGORY_END         0x04  /* End of sub-category */
-#define CONFIG_HINT_USAGE                   0x05  /* Usage information */
-
-#define CONFIG_CATEGORY                     0x06 /* Set category */
-#define CONFIG_SUBCATEGORY                  0x07 /* Set subcategory */
-#define CONFIG_SECTION                      0x08 /* Start of new section */
-
-/* Configuration item types */
-#define CONFIG_ITEM_FLOAT                   0x20  /* Float option */
-#define CONFIG_ITEM_INTEGER                 0x40  /* Integer option */
-#define CONFIG_ITEM_RGB                     0x41  /* RGB color option */
-#define CONFIG_ITEM_BOOL                    0x60  /* Bool option */
-#define CONFIG_ITEM_STRING                  0x80  /* String option */
-#define CONFIG_ITEM_PASSWORD                0x81  /* Password option (*) */
-#define CONFIG_ITEM_KEY                     0x82  /* Hot key option */
-#define CONFIG_ITEM_MODULE                  0x84  /* Module option */
-#define CONFIG_ITEM_MODULE_CAT              0x85  /* Module option */
-#define CONFIG_ITEM_MODULE_LIST             0x86  /* Module option */
-#define CONFIG_ITEM_MODULE_LIST_CAT         0x87  /* Module option */
-#define CONFIG_ITEM_LOADFILE                0x8C  /* Read file option */
-#define CONFIG_ITEM_SAVEFILE                0x8D  /* Written file option */
-#define CONFIG_ITEM_DIRECTORY               0x8E  /* Directory option */
-#define CONFIG_ITEM_FONT                    0x8F  /* Font option */
-
-#define CONFIG_ITEM(x) (((x) & ~0xF) != 0)
-
-/*******************************************************************
- * All predefined categories and subcategories
- *******************************************************************/
-#define CAT_INTERFACE 1
-   #define SUBCAT_INTERFACE_GENERAL 101
-   #define SUBCAT_INTERFACE_MAIN 102
-   #define SUBCAT_INTERFACE_CONTROL 103
-   #define SUBCAT_INTERFACE_HOTKEYS 104
-
-#define CAT_AUDIO 2
-   #define SUBCAT_AUDIO_GENERAL 201
-   #define SUBCAT_AUDIO_AOUT 202
-   #define SUBCAT_AUDIO_AFILTER 203
-   #define SUBCAT_AUDIO_VISUAL 204
-   #define SUBCAT_AUDIO_MISC 205
-
-#define CAT_VIDEO 3
-   #define SUBCAT_VIDEO_GENERAL 301
-   #define SUBCAT_VIDEO_VOUT 302
-   #define SUBCAT_VIDEO_VFILTER 303
-   #define SUBCAT_VIDEO_TEXT 304
-   #define SUBCAT_VIDEO_SUBPIC 305
-   #define SUBCAT_VIDEO_VFILTER2 306
-
-#define CAT_INPUT 4
-   #define SUBCAT_INPUT_GENERAL 401
-   #define SUBCAT_INPUT_ACCESS 402
-   #define SUBCAT_INPUT_DEMUX 403
-   #define SUBCAT_INPUT_VCODEC 404
-   #define SUBCAT_INPUT_ACODEC 405
-   #define SUBCAT_INPUT_SCODEC 406
-   #define SUBCAT_INPUT_STREAM_FILTER 407
-
-#define CAT_SOUT 5
-   #define SUBCAT_SOUT_GENERAL 501
-   #define SUBCAT_SOUT_STREAM 502
-   #define SUBCAT_SOUT_MUX 503
-   #define SUBCAT_SOUT_ACO 504
-   #define SUBCAT_SOUT_PACKETIZER 505
-   #define SUBCAT_SOUT_SAP 506
-   #define SUBCAT_SOUT_VOD 507
-
-#define CAT_ADVANCED 6
-   #define SUBCAT_ADVANCED_CPU 601
-   #define SUBCAT_ADVANCED_MISC 602
-   #define SUBCAT_ADVANCED_NETWORK 603
-   #define SUBCAT_ADVANCED_XML 604
-
-#define CAT_PLAYLIST 7
-   #define SUBCAT_PLAYLIST_GENERAL 701
-   #define SUBCAT_PLAYLIST_SD 702
-   #define SUBCAT_PLAYLIST_EXPORT 703
-
-#define CAT_OSD 8
-   #define SUBCAT_OSD_IMPORT 801
 
 struct config_category_t
 {
@@ -139,40 +52,41 @@ typedef union
     float       f;
 } module_value_t;
 
+typedef int (*vlc_string_list_cb)(vlc_object_t *, const char *,
+                                  char ***, char ***);
+typedef int (*vlc_integer_list_cb)(vlc_object_t *, const char *,
+                                   int64_t **, char ***);
+
 struct module_config_t
 {
-    char        *psz_type;                          /* Configuration subtype */
-    char        *psz_name;                                    /* Option name */
-    char        *psz_text;      /* Short comment on the configuration option */
-    char        *psz_longtext;   /* Long comment on the configuration option */
+    uint8_t     i_type;                        /* Configuration type */
+    char        i_short;               /* Optional short option name */
+    unsigned    b_advanced:1;                     /* Advanced option */
+    unsigned    b_internal:1;          /* Hidden from prefs and help */
+    unsigned    b_unsaveable:1;       /* Not stored in configuration */
+    unsigned    b_safe:1;       /* Safe in web plugins and playlists */
+    unsigned    b_removed:1;                           /* Deprecated */
+
+    char *psz_type;                                 /* Configuration subtype */
+    char *psz_name;                                           /* Option name */
+    char *psz_text;             /* Short comment on the configuration option */
+    char *psz_longtext;          /* Long comment on the configuration option */
+
     module_value_t value;                                    /* Option value */
     module_value_t orig;
     module_value_t min;
     module_value_t max;
 
     /* Values list */
-    char **      ppsz_list;       /* List of possible values for the option */
-    int         *pi_list;                              /* Idem for integers */
-    char       **ppsz_list_text;          /* Friendly names for list values */
-    int          i_list;                               /* Options list size */
-    vlc_callback_t pf_update_list; /* Callback to initialize dropdown lists */
-    uint8_t      i_type;                              /* Configuration type */
-    char         i_short;                     /* Optional short option name */
-
-    /* Misc */
-    unsigned    b_dirty:1;        /* Dirty flag to indicate a config change */
-    unsigned    b_advanced:1;        /* Flag to indicate an advanced option */
-    unsigned    b_internal:1; /* Flag to indicate option is not to be shown */
-    unsigned    b_unsaveable:1;               /* Config should not be saved */
-    unsigned    b_safe:1;       /* Safe to use in web plugins and playlists */
-
-    /* Actions list */
-    int            i_action;                           /* actions list size */
-    vlc_callback_t *ppf_action;    /* List of possible actions for a config */
-    char          **ppsz_action_text;         /* Friendly names for actions */
-
-    /* Deprecated */
-    bool        b_removed;
+    uint16_t list_count;                                /* Options list size */
+    union
+    {
+        char **psz;               /* List of possible values for the option */
+        int   *i;
+        vlc_string_list_cb psz_cb;
+        vlc_integer_list_cb i_cb;
+    } list;
+    char **list_text;                      /* Friendly names for list values */
 };
 
 /*****************************************************************************
@@ -186,6 +100,10 @@ VLC_API float config_GetFloat(vlc_object_t *, const char *) VLC_USED;
 VLC_API void config_PutFloat(vlc_object_t *, const char *, float);
 VLC_API char * config_GetPsz(vlc_object_t *, const char *) VLC_USED VLC_MALLOC;
 VLC_API void config_PutPsz(vlc_object_t *, const char *, const char *);
+VLC_API ssize_t config_GetIntChoices(vlc_object_t *, const char *,
+                                     int64_t **, char ***) VLC_USED;
+VLC_API ssize_t config_GetPszChoices(vlc_object_t *, const char *,
+                                     char ***, char ***) VLC_USED;
 
 VLC_API int config_SaveConfigFile( vlc_object_t * );
 #define config_SaveConfigFile(a) config_SaveConfigFile(VLC_OBJECT(a))
@@ -194,10 +112,8 @@ VLC_API void config_ResetAll( vlc_object_t * );
 #define config_ResetAll(a) config_ResetAll(VLC_OBJECT(a))
 
 VLC_API module_config_t * config_FindConfig( vlc_object_t *, const char * ) VLC_USED;
-VLC_API char * config_GetDataDir( vlc_object_t * ) VLC_USED VLC_MALLOC;
-#define config_GetDataDir(a) config_GetDataDir(VLC_OBJECT(a))
-VLC_API const char * config_GetLibDir( void ) VLC_USED;
-VLC_API const char * config_GetConfDir( void ) VLC_USED;
+VLC_API char * config_GetDataDir(void) VLC_USED VLC_MALLOC;
+VLC_API char *config_GetLibDir(void) VLC_USED;
 
 typedef enum vlc_userdir
 {
@@ -254,6 +170,18 @@ struct config_chain_t
  */
 VLC_API void config_ChainParse( vlc_object_t *, const char *psz_prefix, const char *const *ppsz_options, config_chain_t * );
 #define config_ChainParse( a, b, c, d ) config_ChainParse( VLC_OBJECT(a), b, c, d )
+
+/**
+ * This function will parse a configuration string (psz_opts) and
+ * - set all options for this module in a chained list (*pp_cfg)
+ * - returns a pointer on the next module if any.
+ *
+ * The string format is
+ *   module{option=*,option=*}
+ *
+ * The options values are unescaped using config_StringUnescape.
+ */
+VLC_API const char *config_ChainParseOptions( config_chain_t **pp_cfg, const char *ppsz_opts );
 
 /**
  * This function will parse a configuration string (psz_string) and

@@ -19,23 +19,37 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
 --]]
 
+function descriptor()
+    return { scope="network" }
+end
+
 -- Return the artwork
 function fetch_art()
     if vlc.item == nil then return nil end
 
     local meta = vlc.item:metas()
-    if meta["artist"] and meta["album"] then
-        title = meta["artist"].." "..meta["album"]
+
+-- Radio Entries
+    if meta["Listing Type"] == "radio"
+    then
+        title = meta["title"] .. " radio logo"
+-- TV Entries
+    elseif meta["Listing Type"] == "tv"
+    then
+        title = meta["title"] .. " tv logo"
+-- Album entries
+    elseif meta["artist"] and meta["album"] then
+        title = meta["artist"].." "..meta["album"].." cover"
     elseif meta["artist"] and meta["title"] then
-        title = meta["artist"].." "..meta["title"]
+        title = meta["artist"].." "..meta["title"].." cover"
     else
         return nil
     end
-    fd = vlc.stream( "http://images.google.com/images?q="..vlc.strings.encode_uri_component( title.." cover" ) )
+    fd = vlc.stream( "http://images.google.com/images?q="..vlc.strings.encode_uri_component( title ) )
     if not fd then return nil end
 
     page = fd:read( 65653 )
     fd = nil
-    _, _, arturl = string.find( page, "imgurl=([^&]*)" )
+    _, _, _, arturl = string.find( page, "<img height=\"([0-9]+)\" src=\"([^\"]+gstatic.com[^\"]+)\"" )
     return arturl
 end

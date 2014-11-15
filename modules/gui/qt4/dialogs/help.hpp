@@ -1,8 +1,8 @@
 /*****************************************************************************
- * Help.hpp : Help and About dialogs
+ * help.hpp : Help and About dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: d314f21d70f2422798c5243ae213bdc7eb434fda $
+ * $Id: 3ef58fee45f31c058f30d38d44fbfd2d270fbab8 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -58,20 +58,29 @@ private:
     Ui::aboutWidget ui;
 
 public slots:
-    virtual void close() { toggleVisible(); }
-
     friend class    Singleton<AboutDialog>;
+
+protected:
+    bool eventFilter(QObject *obj, QEvent *event);
+    virtual void showEvent ( QShowEvent * );
+
+private:
+    bool b_advanced;
+
+private slots:
+    void showLicense();
+    void showAuthors();
+    void showCredit();
 };
 
 #ifdef UPDATE_CHECK
-
-static const int UDOkEvent = QEvent::User + DialogEventType + 21;
-static const int UDErrorEvent = QEvent::User + DialogEventType + 22;
 
 class UpdateDialog : public QVLCFrame, public Singleton<UpdateDialog>
 {
     Q_OBJECT
 public:
+    static const QEvent::Type UDOkEvent;
+    static const QEvent::Type UDErrorEvent;
     void updateNotify( bool );
 
 private:

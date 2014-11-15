@@ -1,23 +1,23 @@
 /*****************************************************************************
  * screen.c: Screen capture module.
  *****************************************************************************
- * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: 73a279e1d962cf89ddac49aaa7c6e021de463dc6 $
+ * Copyright (C) 2004-2008 VLC authors and VideoLAN
+ * $Id: 4b1f4f528b3c7b894a1c194fbba9d0e91e58dfde $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan dot org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
@@ -33,6 +33,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_modules.h>                 /* module_need for "video blending" */
+#include <vlc_url.h>
 #include "screen.h"
 
 /*****************************************************************************
@@ -42,7 +43,7 @@
 #define FPS_LONGTEXT N_( \
     "Desired frame rate for the capture." )
 
-#ifdef WIN32
+#ifdef _WIN32
 #define FRAGS_TEXT N_("Capture fragment size")
 #define FRAGS_LONGTEXT N_( \
     "Optimize the capture by fragmenting the screen in chunks " \
@@ -74,10 +75,19 @@
     "capture." )
 #endif
 
+#ifdef SCREEN_DISPLAY_ID
+#define DISPLAY_ID_TEXT N_( "Display ID" )
+#define DISPLAY_ID_LONGTEXT N_( \
+    "Display ID. If not specified, main display ID is used. " )
+#define INDEX_TEXT N_( "Screen index" )
+#define INDEX_LONGTEXT N_( \
+    "Index of screen (1, 2, 3, ...). Alternative to Display ID." )
+#endif
+
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-#ifdef WIN32
+#ifdef _WIN32
 #   define SCREEN_FPS 1
 #else
 #   define SCREEN_FPS 5
@@ -105,8 +115,13 @@ vlc_module_begin ()
     add_loadfile( "screen-mouse-image", "", MOUSE_TEXT, MOUSE_LONGTEXT, true )
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
     add_integer( "screen-fragment-size", 0, FRAGS_TEXT, FRAGS_LONGTEXT, true )
+#endif
+
+#ifdef SCREEN_DISPLAY_ID
+    add_integer( "screen-display-id", 0, DISPLAY_ID_TEXT, DISPLAY_ID_LONGTEXT, true )
+    add_integer( "screen-index", 0, INDEX_TEXT, INDEX_LONGTEXT, true )
 #endif
 
     set_capability( "access_demux", 0 )
@@ -153,6 +168,11 @@ static int Open( vlc_object_t *p_this )
                           p_sys->i_height );
 #endif
 
+#ifdef SCREEN_DISPLAY_ID
+    p_sys->i_display_id = var_CreateGetInteger( p_demux, "screen-display-id" );
+    p_sys->i_screen_index = var_CreateGetInteger( p_demux, "screen-index" );
+#endif
+
     if( screen_InitCapture( p_demux ) != VLC_SUCCESS )
     {
         free( p_sys );
@@ -181,7 +201,7 @@ static int Open( vlc_object_t *p_this )
             p_sys->fmt.video.i_width = p_sys->i_width;
             p_sys->fmt.video.i_visible_height =
             p_sys->fmt.video.i_height = p_sys->i_height;
-            p_sys->b_follow_mouse = var_CreateGetInteger( p_demux,
+            p_sys->b_follow_mouse = var_CreateGetBool( p_demux,
                                                 "screen-follow-mouse" );
             if( p_sys->b_follow_mouse )
                 msg_Dbg( p_demux, "mouse following enabled" );
@@ -190,13 +210,14 @@ static int Open( vlc_object_t *p_this )
 #endif
 
 #ifdef SCREEN_MOUSE
-    char * psz_mouse = var_CreateGetNonEmptyString( p_demux,
-                                                    "screen-mouse-image" );
-    if( psz_mouse )
+    char *mousefile = var_InheritString( p_demux, "screen-mouse-image" );
+    char *mouseurl = mousefile ? vlc_path2uri( mousefile, NULL ) : NULL;
+    free( mousefile );
+    if( mouseurl )
     {
         image_handler_t *p_image;
         video_format_t fmt_in, fmt_out;
-        msg_Dbg( p_demux, "Using %s for the mouse pointer image", psz_mouse );
+        msg_Dbg( p_demux, "Using %s for the mouse pointer image", mouseurl );
         memset( &fmt_in, 0, sizeof( fmt_in ) );
         memset( &fmt_out, 0, sizeof( fmt_out ) );
         fmt_out.i_chroma = VLC_CODEC_RGBA;
@@ -204,17 +225,19 @@ static int Open( vlc_object_t *p_this )
         if( p_image )
         {
             p_sys->p_mouse =
-                image_ReadUrl( p_image, psz_mouse, &fmt_in, &fmt_out );
+                image_ReadUrl( p_image, mouseurl, &fmt_in, &fmt_out );
             image_HandlerDelete( p_image );
         }
         if( !p_sys->p_mouse )
             msg_Err( p_demux, "Failed to open mouse pointer image (%s)",
-                     psz_mouse );
-        free( psz_mouse );
+                     mouseurl );
+        free( mouseurl );
     }
 #endif
 
     p_sys->es = es_out_Add( p_demux->out, &p_sys->fmt );
+
+    p_sys->i_start = mdate();
 
     return VLC_SUCCESS;
 }
@@ -274,6 +297,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 {
     bool *pb;
     int64_t *pi64;
+    demux_sys_t *p_sys = p_demux->p_sys;
 
     switch( i_query )
     {
@@ -294,7 +318,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
         case DEMUX_GET_TIME:
             pi64 = (int64_t*)va_arg( args, int64_t * );
-            *pi64 = mdate();
+            *pi64 = mdate() - p_sys->i_start;
             return VLC_SUCCESS;
 
         /* TODO implement others */
@@ -324,12 +348,7 @@ void RenderCursor( demux_t *p_demux, int i_x, int i_y,
 {
     demux_sys_t *p_sys = p_demux->p_sys;
     if( !p_sys->dst.i_planes )
-        picture_Setup( &p_sys->dst,
-                       p_sys->fmt.video.i_chroma,
-                       p_sys->fmt.video.i_width,
-                       p_sys->fmt.video.i_height,
-                       p_sys->fmt.video.i_sar_num,
-                       p_sys->fmt.video.i_sar_den );
+        picture_Setup( &p_sys->dst, &p_sys->fmt.video );
     if( !p_sys->p_blend )
     {
         p_sys->p_blend = vlc_object_create( p_demux, sizeof(filter_t) );

@@ -1,8 +1,8 @@
 /*****************************************************************************
- * Controller.cpp : Controller for the main interface
+ * controller.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: dd75161ff3b58d155acdd5ae17257d0b9e092b6a $
+ * $Id: a006ff0a8e7eb51ceb06082ee97aa8ba39a433af $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -109,7 +109,7 @@ void AbstractController::setupButton( QAbstractButton *aButton )
 /* Open the generic config line for the toolbar, parse it
  * and create the widgets accordingly */
 void AbstractController::parseAndCreate( const QString& config,
-                                         QBoxLayout *controlLayout )
+                                         QBoxLayout *newControlLayout )
 {
     QStringList list = config.split( ";", QString::SkipEmptyParts ) ;
     for( int i = 0; i < list.count(); i++ )
@@ -126,7 +126,7 @@ void AbstractController::parseAndCreate( const QString& config,
         buttonType_e i_type = (buttonType_e)list2.at( 0 ).toInt( &ok );
         if( !ok )
         {
-            msg_Warn( p_intf, "Parsing error 2. Please report this." );
+            msg_Warn( p_intf, "Parsing error 2. Please, report this." );
             continue;
         }
 
@@ -140,17 +140,17 @@ void AbstractController::parseAndCreate( const QString& config,
             }
         }
 
-        createAndAddWidget( controlLayout, -1, i_type, i_option );
+        createAndAddWidget( newControlLayout, -1, i_type, i_option );
     }
 
     if( buttonGroupLayout )
     {
-        controlLayout->addLayout( buttonGroupLayout );
+        newControlLayout->addLayout( buttonGroupLayout );
         buttonGroupLayout = NULL;
     }
 }
 
-void AbstractController::createAndAddWidget( QBoxLayout *controlLayout,
+void AbstractController::createAndAddWidget( QBoxLayout *controlLayout_,
                                              int i_index,
                                              buttonType_e i_type,
                                              int i_option )
@@ -160,18 +160,18 @@ void AbstractController::createAndAddWidget( QBoxLayout *controlLayout,
     /* Close the current buttonGroup if we have a special widget or a spacer */
     if( buttonGroupLayout && i_type > BUTTON_MAX )
     {
-        controlLayout->addLayout( buttonGroupLayout );
+        controlLayout_->addLayout( buttonGroupLayout );
         buttonGroupLayout = NULL;
     }
 
     /* Special case for SPACERS, who aren't QWidgets */
     if( i_type == WIDGET_SPACER )
     {
-        controlLayout->addSpacing( 12 );
+        controlLayout_->addSpacing( 12 );
     }
     else if(  i_type == WIDGET_SPACER_EXTEND )
     {
-        controlLayout->addStretch( 12 );
+        controlLayout_->addStretch( 12 );
     }
     else
     {
@@ -191,7 +191,7 @@ void AbstractController::createAndAddWidget( QBoxLayout *controlLayout,
         }
         else /* Special widgets */
         {
-            controlLayout->addWidget( widg );
+            controlLayout_->addWidget( widg );
         }
     }
 }
@@ -241,6 +241,7 @@ QWidget *AbstractController::createWidget( buttonType_e button, int options )
         CONNECT_MAP_SET( playButton, PLAY_ACTION );
         CONNECT( this, inputPlaying( bool ),
                  playButton, updateButtonIcons( bool ));
+        playButton->updateButtonIcons( THEMIM->getIM()->playingStatus() == PLAYING_S );
         widget = playButton;
         }
         break;
@@ -359,6 +360,9 @@ QWidget *AbstractController::createWidget( buttonType_e button, int options )
                  THEMIM->getIM(), sliderUpdate( float ) );
         CONNECT( THEMIM->getIM(), cachingChanged( float ),
                  slider, updateBuffering( float ) );
+        /* Give hint to disable slider's interactivity when useless */
+        CONNECT( THEMIM->getIM(), inputCanSeek( bool ),
+                 slider, setSeekable( bool ) );
         widget = slider;
         }
         break;
@@ -604,7 +608,7 @@ QFrame *AbstractController::telexFrame()
 
     /* Page setting */
     QSpinBox *telexPage = new QSpinBox( telexFrame );
-    telexPage->setRange( 0, 999 );
+    telexPage->setRange( 100, 899 );
     telexPage->setValue( 100 );
     telexPage->setAccelerated( true );
     telexPage->setWrapping( true );
@@ -612,6 +616,40 @@ QFrame *AbstractController::telexFrame()
     telexPage->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Minimum );
     telexPage->setEnabled( false );
     telexLayout->addWidget( telexPage );
+
+    /* Contextual & Index Buttons */
+    QSignalMapper *contextButtonMapper = new QSignalMapper( this );
+    QToolButton *contextButton = NULL;
+    int i_iconminsize = __MAX( 16, telexOn->minimumHeight() );
+    QPixmap iconPixmap( i_iconminsize, i_iconminsize );
+    iconPixmap.fill( Qt::transparent );
+    QPainter iconPixmapPainter( &iconPixmap );
+    QLinearGradient iconPixmapPainterGradient( iconPixmap.rect().center() / 2,
+                                               iconPixmap.rect().center() );
+
+#define CREATE_CONTEXT_BUTTON(color, key) \
+    iconPixmapPainterGradient.setColorAt( 0, QColor( color ).lighter(150) );\
+    iconPixmapPainterGradient.setColorAt( 1.0, QColor( color ) );\
+    iconPixmapPainter.setBrush( iconPixmapPainterGradient );\
+    iconPixmapPainter.drawEllipse( iconPixmap.rect().adjusted( 4, 4, -5, -5 ) );\
+    contextButton = new QToolButton();\
+    setupButton( contextButton );\
+    contextButton->setIcon( iconPixmap );\
+    contextButton->setEnabled( false );\
+    contextButtonMapper->setMapping( contextButton, key << 16 );\
+    CONNECT( contextButton, clicked(), contextButtonMapper, map() );\
+    CONNECT( contextButtonMapper, mapped( int ),\
+             THEMIM->getIM(), telexSetPage( int ) );\
+    CONNECT( THEMIM->getIM(), teletextActivated( bool ), contextButton, setEnabled( bool ) );\
+    telexLayout->addWidget( contextButton )
+
+    CREATE_CONTEXT_BUTTON("grey", 'i'); /* index */
+    CREATE_CONTEXT_BUTTON("red", 'r');
+    CREATE_CONTEXT_BUTTON("green", 'g');
+    CREATE_CONTEXT_BUTTON("yellow", 'y');
+    CREATE_CONTEXT_BUTTON("blue", 'b');
+
+#undef CREATE_CONTEXT_BUTTON
 
     /* Page change and set */
     CONNECT( telexPage, valueChanged( int ),
@@ -648,7 +686,7 @@ ControlsWidget::ControlsWidget( intf_thread_t *_p_i,
     setStyleSheet( "background: red ");
 #endif
     setAttribute( Qt::WA_MacBrushedMetal);
-    QVBoxLayout *controlLayout = new QVBoxLayout( this );
+    controlLayout = new QVBoxLayout( this );
     controlLayout->setContentsMargins( 3, 1, 0, 1 );
     controlLayout->setSpacing( 0 );
     QHBoxLayout *controlLayout1 = new QHBoxLayout;
@@ -737,7 +775,6 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i, QWi
 
     setWindowFlags( Qt::ToolTip );
     setMinimumWidth( FSC_WIDTH );
-    setMinimumHeight( FSC_HEIGHT );
     isWideFSC = false;
 
     setFrameShape( QFrame::StyledPanel );
@@ -767,6 +804,8 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i, QWi
     CONNECT( p_slowHideTimer, timeout(), this, slowHideFSC() );
     f_opacity = var_InheritFloat( p_intf, "qt-fs-opacity" );
 #endif
+
+    i_sensitivity = var_InheritInteger( p_intf, "qt-fs-sensitivity" );
 
     vlc_mutex_init_recursive( &lock );
 
@@ -820,11 +859,6 @@ void FullscreenControllerWidget::restoreFSC()
         /* Dock at the bottom of the screen */
         updateFullwidthGeometry( targetScreen() );
     }
-
-#ifdef Q_WS_X11
-    // Tell kwin that we do not want a shadow around the fscontroller
-    setMask( QRegion( 0, 0, width(), height() ) );
-#endif
 }
 
 void FullscreenControllerWidget::centerFSC( int number )
@@ -905,7 +939,7 @@ void FullscreenControllerWidget::updateFullwidthGeometry( int number )
 {
     QRect screenGeometry = QApplication::desktop()->screenGeometry( number );
     setMinimumWidth( screenGeometry.width() );
-    setGeometry( screenGeometry.x(), screenGeometry.y() + screenGeometry.height() - FSC_HEIGHT, screenGeometry.width(), FSC_HEIGHT );
+    setGeometry( screenGeometry.x(), screenGeometry.y() + screenGeometry.height() - height(), screenGeometry.width(), height() );
     adjustSize();
 }
 
@@ -935,7 +969,7 @@ void FullscreenControllerWidget::customEvent( QEvent *event )
     switch( (int)event->type() )
     {
         /* This is used when the 'i' hotkey is used, to force quick toggle */
-        case FullscreenControlToggle_Type:
+        case IMEvent::FullscreenControlToggle:
             vlc_mutex_lock( &lock );
             b_fs = b_fullscreen;
             vlc_mutex_unlock( &lock );
@@ -952,7 +986,7 @@ void FullscreenControllerWidget::customEvent( QEvent *event )
             }
             break;
         /* Event called to Show the FSC on mouseChanged() */
-        case FullscreenControlShow_Type:
+        case IMEvent::FullscreenControlShow:
             vlc_mutex_lock( &lock );
             b_fs = b_fullscreen;
             vlc_mutex_unlock( &lock );
@@ -962,12 +996,12 @@ void FullscreenControllerWidget::customEvent( QEvent *event )
 
             break;
         /* Start the timer to hide later, called usually with above case */
-        case FullscreenControlPlanHide_Type:
+        case IMEvent::FullscreenControlPlanHide:
             if( !b_mouse_over ) // Only if the mouse is not over FSC
                 planHideFSC();
             break;
         /* Hide */
-        case FullscreenControlHide_Type:
+        case IMEvent::FullscreenControlHide:
             hideFSC();
             break;
         default:
@@ -1062,7 +1096,7 @@ static int FullscreenControllerWidgetFullscreenChanged( vlc_object_t *vlc_object
 
     vout_thread_t *p_vout = (vout_thread_t *) vlc_object;
 
-    msg_Dbg( p_vout, "Qt4: Fullscreen state changed" );
+    msg_Dbg( p_vout, "Qt: Fullscreen state changed" );
     FullscreenControllerWidget *p_fs = (FullscreenControllerWidget *)data;
 
     p_fs->fullscreenChanged( p_vout, new_val.b_bool, var_GetInteger( p_vout, "mouse-hide-timeout" ) );
@@ -1171,7 +1205,7 @@ void FullscreenControllerWidget::fullscreenChanged( vout_thread_t *p_vout,
                 FullscreenControllerWidgetMouseMoved, this );
 
         /* Force fs hiding */
-        IMEvent *eHide = new IMEvent( FullscreenControlHide_Type, 0 );
+        IMEvent *eHide = new IMEvent( IMEvent::FullscreenControlHide, 0 );
         QApplication::postEvent( this, eHide );
     }
     vlc_mutex_unlock( &lock );
@@ -1188,8 +1222,8 @@ void FullscreenControllerWidget::mouseChanged( vout_thread_t *, int i_mousex, in
 
     b_toShow = false;
     if( ( i_mouse_last_move_x == -1 || i_mouse_last_move_y == -1 ) ||
-        ( abs( i_mouse_last_move_x - i_mousex ) > 2 ||
-          abs( i_mouse_last_move_y - i_mousey ) > 2 ) )
+        ( abs( i_mouse_last_move_x - i_mousex ) > i_sensitivity ||
+          abs( i_mouse_last_move_y - i_mousey ) > i_sensitivity ) )
     {
         i_mouse_last_move_x = i_mousex;
         i_mouse_last_move_y = i_mousey;
@@ -1199,11 +1233,11 @@ void FullscreenControllerWidget::mouseChanged( vout_thread_t *, int i_mousex, in
     if( b_toShow )
     {
         /* Show event */
-        IMEvent *eShow = new IMEvent( FullscreenControlShow_Type, 0 );
+        IMEvent *eShow = new IMEvent( IMEvent::FullscreenControlShow, 0 );
         QApplication::postEvent( this, eShow );
 
         /* Plan hide event */
-        IMEvent *eHide = new IMEvent( FullscreenControlPlanHide_Type, 0 );
+        IMEvent *eHide = new IMEvent( IMEvent::FullscreenControlPlanHide, 0 );
         QApplication::postEvent( this, eHide );
     }
 }

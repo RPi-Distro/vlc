@@ -2,7 +2,7 @@
  * demux.c :  Lua playlist demux module
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 169d668a80273890fefc8d48d27c1cea388af617 $
+ * $Id: eac4f249edce222cf5aa51a9b438b2d3373671cb $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -30,14 +30,8 @@
 
 #include <assert.h>
 
-#include <vlc_common.h>
-#include <vlc_demux.h>
-#include <vlc_url.h>
-#include <vlc_strings.h>
-
 #include "vlc.h"
 #include "libs.h"
-#include "libs/playlist.h"
 
 
 /*****************************************************************************
@@ -127,9 +121,9 @@ static const luaL_Reg p_reg_parse[] =
  * the script pointed by psz_filename.
  *****************************************************************************/
 static int probe_luascript( vlc_object_t *p_this, const char * psz_filename,
-                            void * user_data )
+                            const luabatch_context_t *p_context )
 {
-    VLC_UNUSED(user_data);
+    VLC_UNUSED(p_context);
     demux_t * p_demux = (demux_t *)p_this;
 
     p_demux->p_sys->psz_filename = strdup(psz_filename);
@@ -161,7 +155,7 @@ static int probe_luascript( vlc_object_t *p_this, const char * psz_filename,
     lua_pop( L, 1 );
 
     /* Setup the module search path */
-    if( vlclua_add_modules_path( p_demux, L, psz_filename ) )
+    if( vlclua_add_modules_path( L, psz_filename ) )
     {
         msg_Warn( p_demux, "Error while setting the module search path for %s",
                   psz_filename );
@@ -254,7 +248,6 @@ static int Demux( demux_t *p_demux )
 
     input_thread_t *p_input_thread = demux_GetParentInput( p_demux );
     input_item_t *p_current_input = input_GetItem( p_input_thread );
-    playlist_t *p_playlist = pl_Get( p_demux );
 
     luaL_register( L, "vlc", p_reg_parse );
 
@@ -278,8 +271,7 @@ static int Demux( demux_t *p_demux )
     }
 
     if( lua_gettop( L ) )
-        vlclua_playlist_add_internal( p_demux, L, p_playlist,
-                                      p_current_input, 0 );
+        vlclua_playlist_add_internal( p_demux, L, NULL, p_current_input, 0 );
     else
         msg_Err( p_demux, "Script went completely foobar" );
 

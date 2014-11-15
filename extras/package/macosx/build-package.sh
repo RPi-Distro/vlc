@@ -4,17 +4,13 @@
 #
 # Script that installs libvlc to VLC.app
 
-# We are building VLC.app or the moz plugin
+# We are building VLC.app
 #
 if test "${ACTION}" = "release-makefile"; then
     echo "running build-package.sh in release-makefile mode"
 
     FULL_PRODUCT_NAME="${PRODUCT}"
-    if [ "$FULL_PRODUCT_NAME" = "VLC-Plugin.plugin" ] ; then
-        TARGET_BUILD_DIR="${src_dir}"
-    else
-        TARGET_BUILD_DIR="${build_dir}"
-    fi
+    TARGET_BUILD_DIR="${build_dir}"
     CONTENTS_FOLDER_PATH="${FULL_PRODUCT_NAME}/Contents/MacOS"
     VLC_BUILD_DIR="${build_dir}"
     VLC_SRC_DIR="${src_dir}"
@@ -235,11 +231,6 @@ if [ "$FULL_PRODUCT_NAME" = "VLC.app" ] ; then
     vlc_install "bin/${prefix}" "vlc" "${target}" "bin" "@loader_path/lib"
     mv ${target}/vlc ${target}/VLC
     chmod +x ${target}/VLC
-elif [ "$FULL_PRODUCT_NAME" = "VLC-Plugin.plugin" ] ; then
-    # install Safari webplugin
-    vlc_install "projects/mozilla/${prefix}" "npvlc.${suffix}" "${target}" "lib" "@loader_path/lib"
-    mv ${target}/npvlc.${suffix} "${target}/VLC Plugin"
-    chmod +x "${target}/VLC Plugin"
 else
     vlc_install "bin/${prefix}" "vlc" "${target}/bin" "bin" "@loader_path/../lib"
 fi
@@ -258,11 +249,11 @@ done
 ##########################
 # Build the lib folder
 vlc_install "lib/${prefix}" "libvlc.5.dylib" "${target_lib}" "library"
-vlc_install "src/${prefix}" "libvlccore.5.dylib" "${target_lib}" "library"
+vlc_install "src/${prefix}" "libvlccore.7.dylib" "${target_lib}" "library"
 pushd `pwd` > /dev/null
 cd ${target_lib}
 ln -sf libvlc.5.dylib libvlc.dylib
-ln -sf libvlccore.5.dylib libvlccore.dylib
+ln -sf libvlccore.7.dylib libvlccore.dylib
 popd > /dev/null
 
 ##########################

@@ -2,7 +2,7 @@
  * dialogs_provider.hpp : Dialogs provider
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 7429057c746e09f67a9a5d8bc701135850e40bb9 $
+ * $Id: 990590b0b00f241122a77c527a53d113fda43c3b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -41,7 +41,7 @@
 #define TITLE_EXTENSIONS_VIDEO qtr( "Video Files" )
 #define TITLE_EXTENSIONS_AUDIO qtr( "Audio Files" )
 #define TITLE_EXTENSIONS_PLAYLIST qtr( "Playlist Files" )
-#define TITLE_EXTENSIONS_SUBTITLE qtr( "Subtitles Files" )
+#define TITLE_EXTENSIONS_SUBTITLE qtr( "Subtitle Files" )
 #define TITLE_EXTENSIONS_ALL qtr( "All Files" )
 #define EXTENSIONS_ALL "*"
 #define ADD_EXT_FILTER( string, type ) \
@@ -55,13 +55,6 @@ enum {
     EXT_FILTER_AUDIO     =  0x04,
     EXT_FILTER_PLAYLIST  =  0x08,
     EXT_FILTER_SUBTITLE  =  0x10,
-};
-
-enum {
-    DialogEvent_Type = QEvent::User + DialogEventType + 1,
-    //PLUndockEvent_Type = QEvent::User + DialogEventType + 2;
-    //PLDockEvent_Type = QEvent::User + DialogEventType + 3;
-    SetVideoOnTopEvent_Type = QEvent::User + DialogEventType + 4,
 };
 
 class QEvent;
@@ -90,10 +83,6 @@ public:
         delete instance;
         instance = NULL;
     }
-    static bool isAlive()
-    {
-        return ( instance != NULL );
-    }
 
     QStringList showSimpleOpen( const QString& help = QString(),
                                 int filters = EXT_FILTER_MEDIA |
@@ -101,6 +90,8 @@ public:
                                 EXT_FILTER_PLAYLIST,
                                 const QString& path = QString() );
     bool isDying() { return b_isDying; }
+    static QString getDirectoryDialog( intf_thread_t *p_intf);
+
 protected:
     QSignalMapper *menusMapper;
     QSignalMapper *menusUpdateMapper;
@@ -118,10 +109,9 @@ private:
 
     void openDialog( int );
     void addFromSimple( bool, bool );
+    void saveAPlaylist(playlist_t *p_playlist, playlist_item_t *p_node);
 
 public slots:
-    void playMRL( const QString & );
-
     void playlistDialog();
     void bookmarksDialog();
     void mediaInfoDialog();
@@ -147,8 +137,6 @@ public slots:
     void openFileGenericDialog( intf_dialog_args_t * );
 
     void simpleOpenDialog();
-    void simplePLAppendDialog();
-    void simpleMLAppendDialog();
 
     void openDialog();
     void openDiscDialog();
@@ -162,7 +150,6 @@ public slots:
 
     void PLOpenDir();
     void PLAppendDir();
-    void MLAppendDir();
 
     void streamingDialog( QWidget *parent, const QString& mrl, bool b_stream = true,
                           QStringList options = QStringList("") );
@@ -170,7 +157,8 @@ public slots:
     void openAndTranscodingDialogs();
 
     void openAPlaylist();
-    void saveAPlaylist();
+    void savePlayingToPlaylist();
+    void saveRecentsToPlaylist();
 
     void loadSubtitlesFile();
 
@@ -186,14 +174,14 @@ signals:
 class DialogEvent : public QEvent
 {
 public:
+    static const QEvent::Type DialogEvent_Type;
     DialogEvent( int _i_dialog, int _i_arg, intf_dialog_args_t *_p_arg ) :
-                 QEvent( (QEvent::Type)(DialogEvent_Type) )
+                 QEvent( DialogEvent_Type )
     {
         i_dialog = _i_dialog;
         i_arg = _i_arg;
         p_arg = _p_arg;
     }
-    virtual ~DialogEvent() { }
 
     int i_arg, i_dialog;
     intf_dialog_args_t *p_arg;

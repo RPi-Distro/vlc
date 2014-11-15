@@ -2,7 +2,7 @@
  * playlist.c
  *****************************************************************************
  * Copyright (C) 2007-2011 the VideoLAN team
- * $Id: 5498520736eb7ca029829517566f8ea64123e3ec $
+ * $Id: ab4faf1329f67f0a7c3e785999ee1045827a5d84 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -37,22 +37,20 @@
 #include <vlc_interface.h>
 #include <vlc_playlist.h>
 
-#include <lua.h>        /* Low level lua C API */
-#include <lauxlib.h>    /* Higher level C API */
-
 #include "../vlc.h"
 #include "../libs.h"
 #include "input.h"
-#include "playlist.h"
 #include "variables.h"
+#include "misc.h"
 
-/*****************************************************************************
- * Internal lua<->vlc utils
- *****************************************************************************/
+void vlclua_set_playlist_internal( lua_State *L, playlist_t *pl )
+{
+    vlclua_set_object( L, vlclua_set_playlist_internal, pl );
+}
+
 playlist_t *vlclua_get_playlist_internal( lua_State *L )
 {
-    vlc_object_t *p_this = vlclua_get_this( L );
-    return pl_Get( p_this );
+    return vlclua_get_object( L, vlclua_set_playlist_internal );
 }
 
 static int vlclua_playlist_prev( lua_State * L )
@@ -144,7 +142,35 @@ static int vlclua_playlist_delete( lua_State * L )
     int i_id = luaL_checkint( L, 1 );
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
     PL_LOCK;
-    int i_ret = playlist_DeleteFromInput(p_playlist, playlist_ItemGetById( p_playlist, i_id ) -> p_input, true );
+    playlist_item_t *p_item = playlist_ItemGetById( p_playlist, i_id );
+    if( !p_item )
+    {
+       PL_UNLOCK;
+       return vlclua_push_ret( L, -1 );
+    }
+    int i_ret = playlist_DeleteFromInput( p_playlist, p_item -> p_input, true );
+    PL_UNLOCK;
+    return vlclua_push_ret( L, i_ret );
+}
+
+static int vlclua_playlist_move( lua_State * L )
+{
+    int i_item = luaL_checkint( L, 1 );
+    int i_target = luaL_checkint( L, 2 );
+    playlist_t *p_playlist = vlclua_get_playlist_internal( L );
+    PL_LOCK;
+    playlist_item_t *p_item = playlist_ItemGetById( p_playlist, i_item );
+    playlist_item_t *p_target = playlist_ItemGetById( p_playlist, i_target );
+    if( !p_item || !p_target )
+    {
+       PL_UNLOCK;
+       return vlclua_push_ret( L, -1 );
+    }
+    int i_ret;
+    if( p_target->i_children != -1 )
+        i_ret = playlist_TreeMove( p_playlist, p_item, p_target, 0 );
+    else
+    	i_ret = playlist_TreeMove( p_playlist, p_item, p_target->p_parent, p_target->i_id - p_target->p_parent->pp_children[0]->i_id + 1 );
     PL_UNLOCK;
     return vlclua_push_ret( L, i_ret );
 }
@@ -392,6 +418,7 @@ static const luaL_Reg vlclua_playlist_reg[] = {
     { "sort", vlclua_playlist_sort },
     { "status", vlclua_playlist_status },
     { "delete", vlclua_playlist_delete },
+    { "move", vlclua_playlist_move },
     { NULL, NULL }
 };
 

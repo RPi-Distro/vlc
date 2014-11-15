@@ -1,24 +1,24 @@
 /*****************************************************************************
  * directx.c: Windows DirectDraw video output
  *****************************************************************************
- * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: b4797d11ece32a2db771d9468949e1501b25ba0f $
+ * Copyright (C) 2001-2009 VLC authors and VideoLAN
+ * $Id: afaa8f8df3023791b345e2149c1334d143d8fb33 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -34,26 +34,30 @@
  * display video in window mode.
  *
  *****************************************************************************/
+
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+
 #include <assert.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_vout_display.h>
-#include <vlc_playlist.h>   /* needed for wallpaper */
+#include <vlc_charset.h>    /* FromT */
 
 #include <windows.h>
-#include <winuser.h>
 #include <ddraw.h>
 #include <commctrl.h>       /* ListView_(Get|Set)* */
 
 #include "common.h"
 
-#ifdef UNICODE
-#   error "Unicode mode not supported"
-#endif
+/* Unicode function "DirectDrawEnumerateExW" has been desactivated
+   since in some cases this function fails and the callbacks are not
+   called. If the Unicode mode is restored, one should modify the
+   prototype of the callbacks and call the FromT conversion function.
+*/
+#define DIRECTDRAWENUMERATEEX_NAME "DirectDrawEnumerateExA"
 
 /*****************************************************************************
  * Module descriptor
@@ -84,14 +88,11 @@
 #define DX_HELP N_("Recommended video output for Windows XP. " \
     "Incompatible with Vista's Aero interface" )
 
-static const char * const device[] = { "" };
-static const char * const device_text[] = { N_("Default") };
-
 static int  Open (vlc_object_t *);
 static void Close(vlc_object_t *);
 
-static int  FindDevicesCallback(vlc_object_t *, char const *,
-                                vlc_value_t, vlc_value_t, void *);
+static int FindDevicesCallback(vlc_object_t *, const char *,
+                               char ***, char ***);
 vlc_module_begin()
     set_shortname("DirectX")
     set_description(N_("DirectX (DirectDraw) video output"))
@@ -105,8 +106,7 @@ vlc_module_begin()
     add_bool("directx-3buffering", true, TRIPLEBUF_TEXT,
               TRIPLEBUF_LONGTEXT, true)
     add_string("directx-device", "", DEVICE_TEXT, DEVICE_LONGTEXT, true)
-        change_string_list(device, device_text, FindDevicesCallback)
-        change_action_add(FindDevicesCallback, N_("Refresh list"))
+        change_string_cb(FindDevicesCallback)
 
     set_capability("vout display", 230)
     add_shortcut("directx")
@@ -210,7 +210,8 @@ static int Open(vlc_object_t *object)
     var_AddCallback(vd, "video-wallpaper", WallpaperCallback, NULL);
 
     /* Setup vout_display now that everything is fine */
-    vd->fmt     = fmt;
+    video_format_Clean(&vd->fmt);
+    video_format_Copy(&vd->fmt, &fmt);
     vd->info    = info;
 
     vd->pool    = Pool;
@@ -435,8 +436,8 @@ static void DirectXClose(vout_display_t *vd)
 }
 
 /* */
-static BOOL WINAPI DirectXOpenDDrawCallback(GUID *guid, LPTSTR desc,
-                                            LPTSTR drivername, VOID *context,
+static BOOL WINAPI DirectXOpenDDrawCallback(GUID *guid, LPSTR desc,
+                                            LPSTR drivername, VOID *context,
                                             HMONITOR hmon)
 {
     vout_display_t *vd = context;
@@ -450,12 +451,15 @@ static BOOL WINAPI DirectXOpenDDrawCallback(GUID *guid, LPTSTR desc,
     if (!hmon)
         return TRUE;
 
-    msg_Dbg(vd, "DirectXEnumCallback: %s, %s", desc, drivername);
+    char *psz_drivername = drivername;
+    char *psz_desc = desc;
+
+    msg_Dbg(vd, "DirectXEnumCallback: %s, %s", psz_desc, psz_drivername);
 
     char *device = var_GetString(vd, "directx-device");
 
     /* Check for forced device */
-    if (device && *device && !strcmp(drivername, device)) {
+    if (device && *device && !strcmp(psz_drivername, device)) {
         MONITORINFO monitor_info;
         monitor_info.cbSize = sizeof(MONITORINFO);
 
@@ -479,7 +483,7 @@ static BOOL WINAPI DirectXOpenDDrawCallback(GUID *guid, LPTSTR desc,
     free(device);
 
     if (hmon == sys->hmonitor) {
-        msg_Dbg(vd, "selecting %s, %s", desc, drivername);
+        msg_Dbg(vd, "selecting %s, %s", psz_desc, psz_drivername);
 
         free(sys->display_driver);
         sys->display_driver = malloc(sizeof(*guid));
@@ -568,7 +572,7 @@ static int DirectXOpenDDraw(vout_display_t *vd)
     /* */
     HRESULT (WINAPI *OurDirectDrawCreate)(GUID *,LPDIRECTDRAW *,IUnknown *);
     OurDirectDrawCreate =
-        (void *)GetProcAddress(sys->hddraw_dll, _T("DirectDrawCreate"));
+        (void *)GetProcAddress(sys->hddraw_dll, "DirectDrawCreate");
     if (!OurDirectDrawCreate) {
         msg_Err(vd, "DirectXInitDDraw failed GetProcAddress");
         return VLC_EGENERIC;
@@ -577,7 +581,7 @@ static int DirectXOpenDDraw(vout_display_t *vd)
     /* */
     HRESULT (WINAPI *OurDirectDrawEnumerateEx)(LPDDENUMCALLBACKEXA, LPVOID, DWORD);
     OurDirectDrawEnumerateEx =
-      (void *)GetProcAddress(sys->hddraw_dll, _T("DirectDrawEnumerateExA"));
+      (void *)GetProcAddress(sys->hddraw_dll, DIRECTDRAWENUMERATEEX_NAME);
 
     if (OurDirectDrawEnumerateEx) {
         char *device = var_GetString(vd, "directx-device");
@@ -847,8 +851,8 @@ static int DirectXCreateSurface(vout_display_t *vd,
     ddsd.dwSize   = sizeof(ddsd);
     ddsd.ddpfPixelFormat.dwSize = sizeof(ddsd.ddpfPixelFormat);
     ddsd.dwFlags  = DDSD_HEIGHT | DDSD_WIDTH;
-    ddsd.dwWidth  = fmt->i_width;
-    ddsd.dwHeight = fmt->i_height;
+    ddsd.dwWidth  = fmt->i_visible_width;
+    ddsd.dwHeight = fmt->i_visible_height;
     if (fourcc) {
         ddsd.dwFlags |= DDSD_PIXELFORMAT;
         ddsd.ddpfPixelFormat.dwFlags = DDPF_FOURCC;
@@ -1031,10 +1035,10 @@ static int DirectXCreatePictureResourceYuvOverlay(vout_display_t *vd,
     }
 
     /* */
-    picture_resource_t *rsc = &sys->resource;
-    rsc->p_sys->front_surface = front_surface;
-    rsc->p_sys->surface       = surface;
-    rsc->p_sys->fallback      = NULL;
+    picture_sys_t *picsys = sys->picsys;
+    picsys->front_surface = front_surface;
+    picsys->surface       = surface;
+    picsys->fallback      = NULL;
     return VLC_SUCCESS;
 }
 static int DirectXCreatePictureResourceYuv(vout_display_t *vd,
@@ -1087,10 +1091,10 @@ static int DirectXCreatePictureResourceYuv(vout_display_t *vd,
     }
 
     /* */
-    picture_resource_t *rsc = &sys->resource;
-    rsc->p_sys->front_surface = surface;
-    rsc->p_sys->surface       = surface;
-    rsc->p_sys->fallback      = NULL;
+    picture_sys_t *picsys = sys->picsys;
+    picsys->front_surface = surface;
+    picsys->surface       = surface;
+    picsys->fallback      = NULL;
     return VLC_SUCCESS;
 }
 static int DirectXCreatePictureResourceRgb(vout_display_t *vd,
@@ -1147,10 +1151,10 @@ static int DirectXCreatePictureResourceRgb(vout_display_t *vd,
     }
 
     /* */
-    picture_resource_t *rsc = &sys->resource;
-    rsc->p_sys->front_surface = surface;
-    rsc->p_sys->surface       = surface;
-    rsc->p_sys->fallback      = NULL;
+    picture_sys_t *picsys = sys->picsys;
+    picsys->front_surface = surface;
+    picsys->surface       = surface;
+    picsys->fallback      = NULL;
     return VLC_SUCCESS;
 }
 
@@ -1161,10 +1165,10 @@ static int DirectXCreatePictureResource(vout_display_t *vd,
     vout_display_sys_t *sys = vd->sys;
 
     /* */
-    picture_resource_t *rsc = &sys->resource;
-    rsc->p_sys = calloc(1, sizeof(*rsc->p_sys));
-    if (!rsc->p_sys)
+    picture_sys_t *picsys = calloc(1, sizeof(*picsys));
+    if (unlikely(picsys == NULL))
         return VLC_ENOMEM;
+    sys->picsys = picsys;
 
     /* */
     bool allow_hw_yuv  = sys->can_blit_fourcc &&
@@ -1204,11 +1208,11 @@ static void DirectXDestroyPictureResource(vout_display_t *vd)
 {
     vout_display_sys_t *sys = vd->sys;
 
-    if (sys->resource.p_sys->front_surface != sys->resource.p_sys->surface)
-        DirectXDestroySurface(sys->resource.p_sys->surface);
-    DirectXDestroySurface(sys->resource.p_sys->front_surface);
-    if (sys->resource.p_sys->fallback)
-        picture_Release(sys->resource.p_sys->fallback);
+    if (sys->picsys->front_surface != sys->picsys->surface)
+        DirectXDestroySurface(sys->picsys->surface);
+    DirectXDestroySurface(sys->picsys->front_surface);
+    if (sys->picsys->fallback)
+        picture_Release(sys->picsys->fallback);
 }
 
 static int DirectXLock(picture_t *picture)
@@ -1239,16 +1243,11 @@ static int DirectXCreatePool(vout_display_t *vd,
         return VLC_EGENERIC;
 
     /* Create the associated picture */
-    picture_resource_t *rsc = &sys->resource;
-    for (int i = 0; i < PICTURE_PLANE_MAX; i++) {
-        rsc->p[i].p_pixels = NULL;
-        rsc->p[i].i_pitch  = 0;
-        rsc->p[i].i_lines  = 0;
-    }
-    picture_t *picture = picture_NewFromResource(fmt, rsc);
+    picture_resource_t resource = { .p_sys = sys->picsys };
+    picture_t *picture = picture_NewFromResource(fmt, &resource);
     if (!picture) {
         DirectXDestroyPictureResource(vd);
-        free(rsc->p_sys);
+        free(sys->picsys);
         return VLC_ENOMEM;
     }
 
@@ -1317,7 +1316,7 @@ static int DirectXUpdateOverlay(vout_display_t *vd, LPDIRECTDRAWSURFACE2 surface
     if (!surface) {
         if (!sys->pool)
             return VLC_EGENERIC;
-        surface = sys->resource.p_sys->front_surface;
+        surface = sys->picsys->front_surface;
     }
 
     /* The new window dimensions should already have been computed by the
@@ -1396,85 +1395,69 @@ static int WallpaperCallback(vlc_object_t *object, char const *cmd,
     sys->ch_wallpaper |= ch_wallpaper;
     sys->wallpaper_requested = newval.b_bool;
     vlc_mutex_unlock(&sys->lock);
-
-    /* FIXME we should have a way to export variable to be saved */
-    if (ch_wallpaper) {
-        playlist_t *p_playlist = pl_Get(vd);
-        /* Modify playlist as well because the vout might have to be
-         * restarted */
-        var_Create(p_playlist, "video-wallpaper", VLC_VAR_BOOL);
-        var_SetBool(p_playlist, "video-wallpaper", newval.b_bool);
-    }
     return VLC_SUCCESS;
 }
+
+typedef struct
+{
+    char **values;
+    char **descs;
+    size_t count;
+} enum_context_t;
 
 /*****************************************************************************
  * config variable callback
  *****************************************************************************/
-static BOOL WINAPI DirectXEnumCallback2(GUID *guid, LPTSTR desc,
-                                        LPTSTR drivername, VOID *context,
+static BOOL WINAPI DirectXEnumCallback2(GUID *guid, LPSTR desc,
+                                        LPSTR drivername, VOID *data,
                                         HMONITOR hmon)
 {
+    enum_context_t *ctx = data;
+
     VLC_UNUSED(guid); VLC_UNUSED(desc); VLC_UNUSED(hmon);
 
-    module_config_t *item = context;
+    char *psz_drivername = drivername;
+    ctx->values = xrealloc(ctx->values, (ctx->count + 1) * sizeof(char *));
+    ctx->descs = xrealloc(ctx->descs, (ctx->count + 1) * sizeof(char *));
 
-    item->ppsz_list = xrealloc(item->ppsz_list,
-                               (item->i_list+2) * sizeof(char *));
-    item->ppsz_list_text = xrealloc(item->ppsz_list_text,
-                                    (item->i_list+2) * sizeof(char *));
-
-    item->ppsz_list[item->i_list] = strdup(drivername);
-    item->ppsz_list_text[item->i_list] = NULL;
-    item->i_list++;
-    item->ppsz_list[item->i_list] = NULL;
-    item->ppsz_list_text[item->i_list] = NULL;
+    ctx->values[ctx->count] = strdup(psz_drivername);
+    ctx->descs[ctx->count] = strdup(psz_drivername);
+    ctx->count++;
 
     return TRUE; /* Keep enumerating */
 }
 
-static int FindDevicesCallback(vlc_object_t *object, char const *name,
-                               vlc_value_t newval, vlc_value_t oldval, void *data)
+static int FindDevicesCallback(vlc_object_t *object, const char *name,
+                               char ***values, char ***descs)
 {
-    VLC_UNUSED(newval); VLC_UNUSED(oldval); VLC_UNUSED(data);
+    enum_context_t ctx;
 
-    module_config_t *item = config_FindConfig(object, name);
-    if (!item)
-        return VLC_SUCCESS;
-
-    /* Clear-up the current list */
-    if (item->i_list > 0) {
-        int i;
-        /* Keep the first entry */
-        for (i = 1; i < item->i_list; i++) {
-            free(item->ppsz_list[i]);
-            free(item->ppsz_list_text[i]);
-        }
-        /* TODO: Remove when no more needed */
-        item->ppsz_list[i] = NULL;
-        item->ppsz_list_text[i] = NULL;
-    }
-    item->i_list = 1;
+    ctx.values = xmalloc(sizeof(char *));
+    ctx.descs = xmalloc(sizeof(char *));
+    ctx.values[0] = strdup("");
+    ctx.descs[0] = strdup(_("Default"));
+    ctx.count = 1;
 
     /* Load direct draw DLL */
     HINSTANCE hddraw_dll = LoadLibrary(_T("DDRAW.DLL"));
-    if (!hddraw_dll)
-        return VLC_SUCCESS;
+    if (hddraw_dll != NULL)
+    {
+        /* Enumerate displays */
+        HRESULT (WINAPI *OurDirectDrawEnumerateEx)(LPDDENUMCALLBACKEXA,
+                                                   LPVOID, DWORD) =
+              (void *)GetProcAddress(hddraw_dll, DIRECTDRAWENUMERATEEX_NAME);
+        if (OurDirectDrawEnumerateEx != NULL)
+            OurDirectDrawEnumerateEx(DirectXEnumCallback2, &ctx,
+                                     DDENUM_ATTACHEDSECONDARYDEVICES);
+        FreeLibrary(hddraw_dll);
+    }
 
-    /* Enumerate displays */
-    HRESULT (WINAPI *OurDirectDrawEnumerateEx)(LPDDENUMCALLBACKEXA,
-                                               LPVOID, DWORD) =
-        (void *)GetProcAddress(hddraw_dll, _T("DirectDrawEnumerateExA"));
-    if (OurDirectDrawEnumerateEx)
-        OurDirectDrawEnumerateEx(DirectXEnumCallback2, item,
-                                 DDENUM_ATTACHEDSECONDARYDEVICES);
+    VLC_UNUSED(object);
+    VLC_UNUSED(name);
 
-    FreeLibrary(hddraw_dll);
-
-    /* Signal change to the interface */
-    item->b_dirty = true;
-
-    return VLC_SUCCESS;
+    *values = ctx.values;
+    *descs = ctx.descs;
+    return ctx.count;
 }
 
 

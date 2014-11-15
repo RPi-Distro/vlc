@@ -1,24 +1,24 @@
 /*****************************************************************************
- * avcodec.h: decoder and encoder using libavcodec
+ * chroma.h: decoder and encoder using libavcodec
  *****************************************************************************
- * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: 0a0970af2304750c626e5977d23cbbb7b1d63b2c $
+ * Copyright (C) 2001-2008 VLC authors and VideoLAN
+ * $Id: d7ef4eff61dbbbd082c85dad060d888b89085e9b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /* VLC <-> avutil tables */
@@ -26,8 +26,10 @@
 #ifndef _VLC_AVUTIL_CHROMA_H
 #define _VLC_AVUTIL_CHROMA_H 1
 
-int TestFfmpegChroma( const int i_ffmpeg_id, const vlc_fourcc_t i_vlc_fourcc );
-int GetFfmpegChroma( int *i_ffmpeg_chroma, const video_format_t fmt );
-int GetVlcChroma( video_format_t *fmt, const int i_ffmpeg_chroma );
+int FindFfmpegChroma( vlc_fourcc_t );
+int GetFfmpegChroma( int *i_ffmpeg_chroma, const video_format_t *fmt );
+
+vlc_fourcc_t FindVlcChroma( int );
+int GetVlcChroma( video_format_t *fmt, int i_ffmpeg_chroma );
 
 #endif

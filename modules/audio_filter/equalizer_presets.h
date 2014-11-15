@@ -1,25 +1,28 @@
 /*****************************************************************************
  * equalizer_presets.h:
  *****************************************************************************
- * Copyright (C) 2004 the VideoLAN team
- * $Id: 0c0c81215b776d1d5ab494c6f7a2f0327d1ee19b $
+ * Copyright (C) 2004 VLC authors and VideoLAN
+ * $Id: 3ea70ca1cbcce82da07c8e83d74424467399ebb5 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+#ifndef _EQUALIZER_PRESETS_H
+#define _EQUALIZER_PRESETS_H 1
 
 /*****************************************************************************
  * Equalizer presets
@@ -29,6 +32,17 @@
  */
 
 #define EQZ_BANDS_MAX 10
+
+/* The frequency tables */
+static const float f_vlc_frequency_table_10b[EQZ_BANDS_MAX] =
+{
+    60, 170, 310, 600, 1000, 3000, 6000, 12000, 14000, 16000,
+};
+
+static const float f_iso_frequency_table_10b[EQZ_BANDS_MAX] =
+{
+    31.25, 62.5, 125, 250, 500, 1000, 2000, 4000, 8000, 16000,
+};
 
 #define NB_PRESETS 18
 static const char *const preset_list[NB_PRESETS] = {
@@ -54,81 +68,90 @@ typedef struct
 static const eqz_preset_t eqz_preset_10b[NB_PRESETS] =
 {
     {
-        "flat", 10, 12.0,
-        { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
+        "flat", 10, 12.0f,
+        { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
     },
     {
-        "classical", 10, 12.0,
-        { -1.11022e-15, -1.11022e-15, -1.11022e-15, -1.11022e-15,
-          -1.11022e-15, -1.11022e-15, -7.2, -7.2, -7.2, -9.6 }
+        "classical", 10, 12.0f,
+        { -1.11022e-15f, -1.11022e-15f, -1.11022e-15f, -1.11022e-15f,
+          -1.11022e-15f, -1.11022e-15f, -7.2f, -7.2f, -7.2f, -9.6f }
     },
     {
-        "club", 10, 6.0,
-        { -1.11022e-15, -1.11022e-15, 8, 5.6, 5.6, 5.6, 3.2, -1.11022e-15,
-          -1.11022e-15, -1.11022e-15 }
+        "club", 10, 6.0f,
+        { -1.11022e-15f, -1.11022e-15f, 8.0f, 5.6f, 5.6f, 5.6f, 3.2f,
+          -1.11022e-15f, -1.11022e-15f, -1.11022e-15f }
     },
     {
-        "dance", 10, 5.0,
-        { 9.6, 7.2, 2.4, -1.11022e-15, -1.11022e-15, -5.6, -7.2, -7.2,
-          -1.11022e-15, -1.11022e-15 }
+        "dance", 10, 5.0f,
+        { 9.6f, 7.2f, 2.4f, -1.11022e-15f, -1.11022e-15f, -5.6f, -7.2f, -7.2f,
+          -1.11022e-15f, -1.11022e-15f }
     },
     {
-        "fullbass", 10, 5.0,
-        { -8, 9.6, 9.6, 5.6, 1.6, -4, -8, -10.4, -11.2, -11.2  }
+        "fullbass", 10, 5.0f,
+        { -8.0f, 9.6f, 9.6f, 5.6f, 1.6f, -4.0f, -8.0f, -10.4f, -11.2f, -11.2f }
     },
     {
-        "fullbasstreble", 10, 4.0,
-        { 7.2, 5.6, -1.11022e-15, -7.2, -4.8, 1.6, 8, 11.2, 12, 12 }
+        "fullbasstreble", 10, 4.0f,
+        { 7.2f, 5.6f, -1.11022e-15f, -7.2f, -4.8f, 1.6f, 8.0f, 11.2f,
+          12.0f, 12.0f }
     },
     {
-        "fulltreble", 10, 3.0,
-        { -9.6, -9.6, -9.6, -4, 2.4, 11.2, 16, 16, 16, 16.8 }
+        "fulltreble", 10, 3.0f,
+        { -9.6f, -9.6f, -9.6f, -4.0f, 2.4f, 11.2f, 16.0f, 16.0f, 16.0f, 16.8f }
     },
     {
-        "headphones", 10, 4.0,
-        { 4.8, 11.2, 5.6, -3.2, -2.4, 1.6, 4.8, 9.6, 12.8, 14.4 }
+        "headphones", 10, 4.0f,
+        { 4.8f, 11.2f, 5.6f, -3.2f, -2.4f, 1.6f, 4.8f, 9.6f, 12.8f, 14.4f }
     },
     {
-        "largehall", 10, 5.0,
-        { 10.4, 10.4, 5.6, 5.6, -1.11022e-15, -4.8, -4.8, -4.8, -1.11022e-15,
-          -1.11022e-15 }
+        "largehall", 10, 5.0f,
+        { 10.4f, 10.4f, 5.6f, 5.6f, -1.11022e-15f, -4.8f, -4.8f, -4.8f,
+          -1.11022e-15f, -1.11022e-15f }
     },
     {
-        "live", 10, 7.0,
-        { -4.8, -1.11022e-15, 4, 5.6, 5.6, 5.6, 4, 2.4, 2.4, 2.4 }
+        "live", 10, 7.0f,
+        { -4.8f, -1.11022e-15f, 4.0f, 5.6f, 5.6f, 5.6f, 4.0f, 2.4f,
+          2.4f, 2.4f }
     },
     {
-        "party", 10, 6.0,
-        { 7.2, 7.2, -1.11022e-15, -1.11022e-15, -1.11022e-15, -1.11022e-15,
-          -1.11022e-15, -1.11022e-15, 7.2, 7.2 }
+        "party", 10, 6.0f,
+        { 7.2f, 7.2f, -1.11022e-15f, -1.11022e-15f, -1.11022e-15f,
+          -1.11022e-15f, -1.11022e-15f, -1.11022e-15f, 7.2f, 7.2f }
     },
     {
-        "pop", 10, 6.0,
-        { -1.6, 4.8, 7.2, 8, 5.6, -1.11022e-15, -2.4, -2.4, -1.6, -1.6 }
+        "pop", 10, 6.0f,
+        { -1.6f, 4.8f, 7.2f, 8.0f, 5.6f, -1.11022e-15f, -2.4f, -2.4f,
+          -1.6f, -1.6f }
     },
     {
-        "reggae", 10, 8.0,
-        { -1.11022e-15, -1.11022e-15, -1.11022e-15, -5.6, -1.11022e-15, 6.4,
-          6.4, -1.11022e-15, -1.11022e-15, -1.11022e-15 }
+        "reggae", 10, 8.0f,
+        { -1.11022e-15f, -1.11022e-15f, -1.11022e-15f, -5.6f, -1.11022e-15f,
+          6.4f, 6.4f, -1.11022e-15f, -1.11022e-15f, -1.11022e-15f }
     },
     {
-        "rock", 10, 5.0,
-        { 8, 4.8, -5.6, -8, -3.2, 4, 8.8, 11.2, 11.2, 11.2 }
+        "rock", 10, 5.0f,
+        { 8.0f, 4.8f, -5.6f, -8.0f, -3.2f, 4.0f, 8.8f, 11.2f, 11.2f, 11.2f }
     },
     {
-        "ska", 10, 6.0,
-        { -2.4, -4.8, -4, -1.11022e-15, 4, 5.6, 8.8, 9.6, 11.2, 9.6 }
+        "ska", 10, 6.0f,
+        { -2.4f, -4.8f, -4.0f, -1.11022e-15f, 4.0f, 5.6f, 8.8f, 9.6f,
+          11.2f, 9.6f }
     },
     {
-        "soft", 10, 5.0,
-        { 4.8, 1.6, -1.11022e-15, -2.4, -1.11022e-15, 4, 8, 9.6, 11.2, 12 }
+        "soft", 10, 5.0f,
+        { 4.8f, 1.6f, -1.11022e-15f, -2.4f, -1.11022e-15f, 4.0f, 8.0f, 9.6f,
+          11.2f, 12.0f }
     },
     {
-        "softrock", 10, 7.0,
-        { 4, 4, 2.4, -1.11022e-15, -4, -5.6, -3.2, -1.11022e-15, 2.4, 8.8 }
+        "softrock", 10, 7.0f,
+        { 4.0f, 4.0f, 2.4f, -1.11022e-15f, -4.0f, -5.6f, -3.2f, -1.11022e-15f,
+          2.4f, 8.8f }
     },
     {
-        "techno", 10, 5.0,
-        { 8, 5.6, -1.11022e-15, -5.6, -4.8, -1.11022e-15, 8, 9.6, 9.6, 8.8 }
+        "techno", 10, 5.0f,
+        { 8.0f, 5.6f, -1.11022e-15f, -5.6f, -4.8f, -1.11022e-15f, 8.0f, 9.6f,
+          9.6f, 8.8f }
     },
 };
+
+#endif

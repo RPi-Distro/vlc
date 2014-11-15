@@ -2,26 +2,26 @@
  * ps.c: MPEG PS (ISO/IEC 13818-1) / MPEG SYSTEM (ISO/IEC 1172-1)
  *       multiplexer module for vlc
  *****************************************************************************
- * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 4a3ab9328f83a4a8aae6dfe7b864bae3c7c44e0b $
+ * Copyright (C) 2001, 2002 VLC authors and VideoLAN
+ * $Id: e00390b005d9fd76da6f5f03bd11d8218a136922 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -214,7 +214,7 @@ static void Close( vlc_object_t * p_this )
 
     msg_Info( p_mux, "Close" );
 
-    p_end = block_New( p_mux, 4 );
+    p_end = block_Alloc( 4 );
     p_end->p_buffer[0] = 0x00; p_end->p_buffer[1] = 0x00;
     p_end->p_buffer[2] = 0x01; p_end->p_buffer[3] = 0xb9;
 
@@ -273,6 +273,8 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
     switch( p_input->p_fmt->i_codec )
     {
         case VLC_CODEC_MPGV:
+        case VLC_CODEC_MP2V:
+        case VLC_CODEC_MP1V:
             p_stream->i_stream_id =
                 StreamIdGet( p_sys->stream_id_mpgv, 0xe0, 0xef );
             p_stream->i_stream_type = 0x02; /* ISO/IEC 13818 Video */
@@ -511,8 +513,7 @@ static int Mux( sout_mux_t *p_mux )
 
         /* Get and mux a packet */
         p_data = block_FifoGet( p_input->p_fifo );
-         EStoPES ( p_mux->p_sout, &p_data, p_data,
-                       p_input->p_fmt, p_stream->i_stream_id,
+         EStoPES ( &p_data, p_data, p_input->p_fmt, p_stream->i_stream_id,
                        p_sys->b_mpeg2, 0, 0, p_sys->i_pes_max_size );
 
         block_ChainAppend( &p_ps, p_data );
@@ -575,7 +576,7 @@ static void MuxWritePackHeader( sout_mux_t *p_mux, block_t **p_buf,
 
     i_scr = (i_dts - p_sys->i_dts_delay) * 9 / 100;
 
-    p_hdr = block_New( p_mux, 18 );
+    p_hdr = block_Alloc( 18 );
     p_hdr->i_pts = p_hdr->i_dts = i_dts;
     bits_initwrite( &bits, 14, p_hdr->p_buffer );
     bits_write( &bits, 32, 0x01ba );
@@ -649,7 +650,7 @@ static void MuxWriteSystemHeader( sout_mux_t *p_mux, block_t **p_buf,
     i_nb_stream = p_mux->i_nb_inputs -
         ( i_nb_private > 0 ? i_nb_private - 1 : 0 );
 
-    p_hdr = block_New( p_mux, 12 + i_nb_stream * 3 );
+    p_hdr = block_Alloc(  12 + i_nb_stream * 3 );
     p_hdr->i_dts = p_hdr->i_pts = i_dts;
 
     /* The spec specifies that the reported rate_bound must be upper limit */
@@ -739,7 +740,7 @@ static void MuxWritePSM( sout_mux_t *p_mux, block_t **p_buf, mtime_t i_dts )
 
     i_psm_size += i_es_map_size;
 
-    p_hdr = block_New( p_mux, i_psm_size );
+    p_hdr = block_Alloc( i_psm_size );
     p_hdr->i_dts = p_hdr->i_pts = i_dts;
 
     memset( p_hdr->p_buffer, 0, p_hdr->i_buffer );

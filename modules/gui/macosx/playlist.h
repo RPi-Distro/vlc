@@ -2,7 +2,7 @@
  * playlist.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 50a2b9210e8667b00e2b8a9e3f84c43e0bffd825 $
+ * $Id: 07bb5181c7283abbab19e438e02a5a0f22250195 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -25,12 +25,23 @@
 
 #import "PXSourceList.h"
 
+/* playlist column definitions */
+#define TRACKNUM_COLUMN @"tracknumber"
+#define TITLE_COLUMN @"name"
+#define ARTIST_COLUMN @"artist"
+#define DURATION_COLUMN @"duration"
+#define GENRE_COLUMN @"genre"
+#define ALBUM_COLUMN @"album"
+#define DESCRIPTION_COLUMN @"description"
+#define DATE_COLUMN @"date"
+#define LANGUAGE_COLUMN @"language"
+#define URI_COLUMN @"uri"
+#define FILESIZE_COLUMN @"file-size"
+
 /*****************************************************************************
  * VLCPlaylistView interface
  *****************************************************************************/
 @interface VLCPlaylistView : NSOutlineView
-{
-}
 
 @end
 
@@ -39,9 +50,6 @@
  *****************************************************************************/
 @interface VLCPlaylistCommon : NSObject <NSOutlineViewDataSource, NSOutlineViewDelegate>
 {
-    IBOutlet id o_tc_name;
-    IBOutlet id o_tc_author;
-    IBOutlet id o_tc_duration;
     IBOutlet VLCPlaylistView* o_outline_view;
 
     IBOutlet id o_tc_name_other;
@@ -50,24 +58,19 @@
     IBOutlet VLCPlaylistView* o_outline_view_other;
 
     NSMutableDictionary *o_outline_dict;
-    playlist_item_t * p_current_root_item;
 }
 
 - (void)setPlaylistRoot: (playlist_item_t *)root_item;
 - (playlist_item_t *)currentPlaylistRoot;
-- (void)initStrings;
 - (playlist_item_t *)selectedPlaylistItem;
 - (NSOutlineView *)outlineView;
-- (void)swapPlaylists:(id)newList;
+- (void)reloadStyles;
 @end
 
 /*****************************************************************************
  * VLCPlaylistWizard interface
  *****************************************************************************/
 @interface VLCPlaylistWizard : VLCPlaylistCommon
-{
-}
-
 - (IBAction)reloadOutlineView;
 
 @end
@@ -83,7 +86,6 @@
     IBOutlet id o_btn_playlist;
     IBOutlet id o_playlist_view;
     IBOutlet id o_search_field;
-    IBOutlet id o_search_field_other;
     IBOutlet id o_mi_save_playlist;
     IBOutlet id o_ctx_menu;
 
@@ -103,16 +105,7 @@
     IBOutlet id o_save_accessory_popup;
     IBOutlet id o_save_accessory_text;
 
-
-    NSImage *o_descendingSortingImage;
-    NSImage *o_ascendingSortingImage;
-
-    NSMutableArray *o_nodes_array;
-    NSMutableArray *o_items_array;
-
-    BOOL b_selected_item_met;
-    BOOL b_isSortDescending;
-    id o_tc_sortColumn;
+    IBOutlet id o_playlist_header;
 }
 
 - (void)searchfieldChanged:(NSNotification *)o_notification;
@@ -137,11 +130,16 @@
 - (IBAction)sortNodeByName:(id)sender;
 - (IBAction)sortNodeByAuthor:(id)sender;
 - (IBAction)recursiveExpandNode:(id)sender;
+- (IBAction)showInfoPanel:(id)sender;
 
 - (id)playingItem;
 - (NSArray *)draggedItems;
 
 - (void)appendArray:(NSArray*)o_array atPos:(int)i_position enqueue:(BOOL)b_enqueue;
 - (void)appendNodeArray:(NSArray*)o_array inNode:(playlist_item_t *)p_node atPos:(int)i_position enqueue:(BOOL)b_enqueue;
+
+- (void)setColumn: (NSString *)o_column state: (NSInteger)i_state translationDict:(NSDictionary *)o_dict;
+- (void)continuePlaybackWhereYouLeftOff:(input_thread_t *)p_input_thread;
+- (void)storePlaybackPositionForItem:(input_thread_t *)p_input_thread;
 
 @end

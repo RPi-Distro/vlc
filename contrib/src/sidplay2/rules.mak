@@ -3,7 +3,9 @@
 SID_VERSION := 2.1.1
 SID_URL := $(SF)/sidplay2/sidplay2/sidplay-libs-$(SID_VERSION)/sidplay-libs-$(SID_VERSION).tar.gz
 
+ifdef GPL
 PKGS += sidplay2
+endif
 
 $(TARBALLS)/sidplay-libs-$(SID_VERSION).tar.gz:
 	$(call download,$(SID_URL))
@@ -20,7 +22,11 @@ sidplay-libs: sidplay-libs-$(SID_VERSION).tar.gz .sum-sidplay2
 	$(MOVE)
 
 .sidplay2: sidplay-libs
-	$(RECONF)
+	for d in . libsidplay resid builders/resid-builder \
+			builders/hardsid-builder libsidutils ; \
+	do \
+		(cd $</$$d && autoreconf -fiv -I unix) || exit $$? ; \
+	done
 	cd $< && $(HOSTVARS) ./configure $(HOSTCONF)
 	cd $< && $(MAKE) install
 	cp -- $(PREFIX)/lib/sidplay/builders/* "$(PREFIX)/lib/"

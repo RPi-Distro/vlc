@@ -2,7 +2,7 @@
  * mediainfo.cpp : Information about an item
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: d5a015b047c7bc33795789091524430483840cb5 $
+ * $Id: 23db28089826c0dd69e220e5d7af6775b2a9c8f4 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -48,7 +48,10 @@ MediaInfoDialog::MediaInfoDialog( intf_thread_t *_p_intf,
 {
     isMainInputInfo = ( p_item == NULL );
 
-    setWindowTitle( qtr( "Media Information" ) );
+    if ( isMainInputInfo )
+        setWindowTitle( qtr( "Current Media Information" ) );
+    else
+        setWindowTitle( qtr( "Media Information" ) );
     setWindowRole( "vlc-media-info" );
 
     setWindowFlags( Qt::Window | Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint );
@@ -57,15 +60,15 @@ MediaInfoDialog::MediaInfoDialog( intf_thread_t *_p_intf,
     infoTabW = new QTabWidget;
 
     MP = new MetaPanel( infoTabW, p_intf );
-    infoTabW->addTab( MP, qtr( "&General" ) );
-    EMP = new ExtraMetaPanel( infoTabW, p_intf );
-    infoTabW->addTab( EMP, qtr( "&Metadata" ) );
-    IP = new InfoPanel( infoTabW, p_intf );
-    infoTabW->addTab( IP, qtr( "&Codec" ) );
+    infoTabW->insertTab( META_PANEL, MP, qtr( "&General" ) );
+    EMP = new ExtraMetaPanel( infoTabW );
+    infoTabW->insertTab( EXTRAMETA_PANEL, EMP, qtr( "&Metadata" ) );
+    IP = new InfoPanel( infoTabW );
+    infoTabW->insertTab( INFO_PANEL, IP, qtr( "Co&dec" ) );
     if( isMainInputInfo )
     {
-        ISP = new InputStatsPanel( infoTabW, p_intf );
-        infoTabW->addTab( ISP, qtr( "S&tatistics" ) );
+        ISP = new InputStatsPanel( infoTabW );
+        infoTabW->insertTab( INPUTSTATS_PANEL, ISP, qtr( "S&tatistics" ) );
     }
 
     QGridLayout *layout = new QGridLayout( this );
@@ -125,15 +128,15 @@ MediaInfoDialog::MediaInfoDialog( intf_thread_t *_p_intf,
     if( p_item )
         updateAllTabs( p_item );
 
-    readSettings( "Mediainfo", QSize( 600 , 480 ) );
+    restoreWidgetPosition( "Mediainfo", QSize( 600 , 480 ) );
 }
 
 MediaInfoDialog::~MediaInfoDialog()
 {
-    writeSettings( "Mediainfo" );
+    saveWidgetPosition( "Mediainfo" );
 }
 
-void MediaInfoDialog::showTab( int i_tab = 0 )
+void MediaInfoDialog::showTab( panel i_tab = META_PANEL )
 {
     infoTabW->setCurrentIndex( i_tab );
     show();

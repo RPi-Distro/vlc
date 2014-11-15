@@ -36,16 +36,7 @@ ifneq ($(HOST),$(BUILD))
 HAVE_CROSS_COMPILE = 1
 endif
 ARCH := $(shell $(SRC)/get-arch.sh $(HOST))
-ifneq ($(findstring $(ARCH),i386 sparc sparc64 ppc ppc64 x86_64),)
-# This should be consistent with include/vlc_cpu.h
-HAVE_FPU = 1
-else ifneq ($(findstring $(ARCH),arm),)
-ifneq ($(call cppcheck, __VFP_FP__)),)
-ifeq ($(call cppcheck, __SOFT_FP__),)
-HAVE_FPU = 1
-endif
-endif
-endif
+
 ifeq ($(ARCH)-$(HAVE_WIN32),x86_64-1)
 HAVE_WIN64 := 1
 endif
@@ -100,23 +91,14 @@ endif
 endif
 
 ifdef HAVE_ANDROID
-CC :=  $(HOST)-gcc --sysroot=$(ANDROID_NDK)/platforms/android-9/arch-arm
-CXX := $(HOST)-g++ --sysroot=$(ANDROID_NDK)/platforms/android-9/arch-arm
-
-# Kludge for C++ prebuilt compiler
-EXTRA_CFLAGS += -D__STDC_VERSION__=199901L
-EXTRA_CFLAGS += -I$(ANDROID_NDK)/sources/cxx-stl/gnu-libstdc++/include
-ifdef HAVE_NEON
-    EXTRA_CFLAGS += -I$(ANDROID_NDK)/sources/cxx-stl/gnu-libstdc++/libs/armeabi-v7a/include -mfloat-abi=softfp -mfpu=neon -mcpu=cortex-a8
-else
-    EXTRA_CFLAGS += -I$(ANDROID_NDK)/sources/cxx-stl/gnu-libstdc++/libs/armeabi/include
-endif
+CC :=  $(HOST)-gcc --sysroot=$(ANDROID_NDK)/platforms/android-9/arch-$(PLATFORM_SHORT_ARCH)
+CXX := $(HOST)-g++ --sysroot=$(ANDROID_NDK)/platforms/android-9/arch-$(PLATFORM_SHORT_ARCH)
 endif
 
 ifdef HAVE_MACOSX
-MIN_OSX_VERSION=10.5
-CC=xcrun llvm-gcc-4.2
-CXX=xcrun llvm-g++-4.2
+MIN_OSX_VERSION=10.6
+CC=xcrun cc
+CXX=xcrun c++
 AR=xcrun ar
 LD=xcrun ld
 STRIP=xcrun strip
@@ -127,13 +109,8 @@ ifeq ($(ARCH),x86_64)
 EXTRA_CFLAGS += -m64
 EXTRA_LDFLAGS += -m64
 else
-ifeq ($(ARCH), ppc)
-EXTRA_CFLAGS += -arch ppc
-EXTRA_LDFLAGS += -arch ppc
-else
 EXTRA_CFLAGS += -m32
 EXTRA_LDFLAGS += -m32
-endif
 endif
 
 XCODE_FLAGS = -sdk macosx$(OSX_VERSION)
@@ -146,9 +123,38 @@ endif
 
 endif
 
+CCAS=$(CC) -c
+
+ifdef HAVE_IOS
+CC=xcrun clang
+CXX=xcrun clang++
+ifdef HAVE_NEON
+AS=perl $(abspath ../../extras/tools/build/bin/gas-preprocessor.pl) $(CC)
+CCAS=gas-preprocessor.pl $(CC) -c
+else
+CCAS=$(CC) -c
+endif
+AR=xcrun ar
+LD=xcrun ld
+STRIP=xcrun strip
+RANLIB=xcrun ranlib
+EXTRA_CFLAGS += $(CFLAGS)
+EXTRA_LDFLAGS += $(LDFLAGS)
+endif
+
 ifdef HAVE_WIN32
 ifneq ($(shell $(CC) $(CFLAGS) -E -dM -include _mingw.h - < /dev/null | grep -E __MINGW64_VERSION_MAJOR),)
 HAVE_MINGW_W64 := 1
+endif
+endif
+
+ifdef HAVE_SOLARIS
+ifeq ($(ARCH),x86_64)
+EXTRA_CFLAGS += -m64
+EXTRA_LDFLAGS += -m64
+else
+EXTRA_CFLAGS += -m32
+EXTRA_LDFLAGS += -m32
 endif
 endif
 
@@ -161,6 +167,20 @@ CXXFLAGS := $(CXXFLAGS) $(EXTRA_CFLAGS) -g
 EXTRA_LDFLAGS += -L$(PREFIX)/lib
 LDFLAGS := $(LDFLAGS) $(EXTRA_LDFLAGS)
 # Do not export those! Use HOSTVARS.
+
+# Do the FPU detection, after we have figured out our compilers and flags.
+ifneq ($(findstring $(ARCH),aarch64 i386 ppc ppc64 sparc sparc64 x86_64),)
+# This should be consistent with include/vlc_cpu.h
+HAVE_FPU = 1
+else ifneq ($(findstring $(ARCH),arm),)
+ifneq ($(call cppcheck, __VFP_FP__)),)
+ifeq ($(call cppcheck, __SOFTFP__),)
+HAVE_FPU = 1
+endif
+endif
+else ifneq ($(call cppcheck, __mips_hard_float),)
+HAVE_FPU = 1
+endif
 
 ACLOCAL_AMFLAGS += -I$(PREFIX)/share/aclocal
 export ACLOCAL_AMFLAGS
@@ -197,8 +217,19 @@ download = rm -f $@.tmp && \
 	wget --passive -c -p -O $@.tmp "$(1)" && \
 	touch $@.tmp && \
 	mv $@.tmp $@
+else ifeq ($(which fetch >/dev/null 2>&1 || echo FAIL),)
+download = rm -f $@.tmp && \
+	fetch -p -o $@.tmp "$(1)" && \
+	touch $@.tmp && \
+	mv $@.tmp $@
 else
 download = $(error Neither curl nor wget found!)
+endif
+
+ifeq ($(shell which bzcat >/dev/null 2>&1 || echo FAIL),)
+BZCAT = bzcat
+else
+BZCAT ?= $(error Bunzip2 client (bzcat) not found!)
 endif
 
 ifeq ($(shell gzcat --version >/dev/null 2>&1 || echo FAIL),)
@@ -223,6 +254,9 @@ endif
 # Common helpers
 #
 HOSTCONF := --prefix="$(PREFIX)"
+HOSTCONF += --datarootdir="$(PREFIX)/share"
+HOSTCONF += --includedir="$(PREFIX)/include"
+HOSTCONF += --libdir="$(PREFIX)/lib"
 HOSTCONF += --build="$(BUILD)" --host="$(HOST)" --target="$(HOST)"
 HOSTCONF += --program-prefix=""
 # libtool stuff:
@@ -237,7 +271,7 @@ endif
 
 HOSTTOOLS := \
 	CC="$(CC)" CXX="$(CXX)" LD="$(LD)" \
-	AR="$(AR)" RANLIB="$(RANLIB)" STRIP="$(STRIP)" \
+	AR="$(AR)" CCAS="$(CCAS)" RANLIB="$(RANLIB)" STRIP="$(STRIP)" \
 	PATH="$(PREFIX)/bin:$(PATH)"
 HOSTVARS := $(HOSTTOOLS) \
 	CPPFLAGS="$(CPPFLAGS)" \
@@ -270,12 +304,12 @@ UNPACK = $(RM) -R $@ \
 	$(foreach f,$(filter %.tar.bz2,$^), && tar xvjf $(f)) \
 	$(foreach f,$(filter %.tar.xz,$^), && tar xvJf $(f)) \
 	$(foreach f,$(filter %.zip,$^), && unzip $(f))
-UNPACK_DIR = $(basename $(basename $(notdir $<)))
-APPLY = (cd $(UNPACK_DIR) && patch -p1) <
+UNPACK_DIR = $(patsubst %.tar,%,$(basename $(notdir $<)))
+APPLY = (cd $(UNPACK_DIR) && patch -fp1) <
 pkg_static = (cd $(UNPACK_DIR) && ../../../contrib/src/pkg-static.sh $(1))
 MOVE = mv $(UNPACK_DIR) $@ && touch $@
 
-AUTOMAKE_DATA_DIRS=$(abspath $(dir $(shell which automake))/../share/automake*)
+AUTOMAKE_DATA_DIRS=$(foreach n,$(foreach n,$(subst :, ,$(shell echo $$PATH)),$(abspath $(n)/../share)),$(wildcard $(n)/automake*))
 UPDATE_AUTOCONFIG = for dir in $(AUTOMAKE_DATA_DIRS); do \
 		if test -f "$${dir}/config.sub" -a -f "$${dir}/config.guess"; then \
 			cp "$${dir}/config.sub" "$${dir}/config.guess" $(UNPACK_DIR); \
@@ -334,7 +368,8 @@ vlc-contrib-$(HOST)-latest.tar.bz2:
 	$(call download,$(PREBUILT_URL))
 
 prebuilt: vlc-contrib-$(HOST)-latest.tar.bz2
-	$(UNPACK) && mv $(HOST) $(TOPDST)
+	-$(UNPACK)
+	mv $(HOST) $(TOPDST)
 	cd $(TOPDST)/$(HOST) && $(SRC)/change_prefix.sh
 
 package: install
@@ -373,11 +408,26 @@ ifdef HAVE_WIN32
 	echo "set(CMAKE_SYSTEM_NAME Windows)" >> $@
 	echo "set(CMAKE_RC_COMPILER $(HOST)-windres)" >> $@
 endif
-ifdef HAVE_MACOSX
+ifdef HAVE_DARWIN_OS
 	echo "set(CMAKE_SYSTEM_NAME Darwin)" >> $@
 	echo "set(CMAKE_C_FLAGS $(CFLAGS))" >> $@
 	echo "set(CMAKE_CXX_FLAGS $(CFLAGS))" >> $@
 	echo "set(CMAKE_LD_FLAGS $(LDFLAGS))" >> $@
+	echo "set(CMAKE_AR ar CACHE FILEPATH "Archiver")" >> $@
+ifdef HAVE_IOS
+	echo "set(CMAKE_OSX_SYSROOT $(IOS_SDK))" >> $@
+else
+	echo "set(CMAKE_OSX_SYSROOT $(MACOSX_SDK))" >> $@
+endif
+endif
+ifdef HAVE_CROSS_COMPILE
+	echo "set(_CMAKE_TOOLCHAIN_PREFIX $(HOST)-)" >> $@
+ifdef HAVE_ANDROID
+# cmake will overwrite our --sysroot with a native (host) one on Darwin
+# Set it to "" right away to short-circuit this behaviour
+	echo "set(CMAKE_CXX_SYSROOT_FLAG \"\")" >> $@
+	echo "set(CMAKE_C_SYSROOT_FLAG \"\")" >> $@
+endif
 endif
 	echo "set(CMAKE_C_COMPILER $(CC))" >> $@
 	echo "set(CMAKE_CXX_COMPILER $(CXX))" >> $@

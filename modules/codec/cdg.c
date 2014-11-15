@@ -2,23 +2,23 @@
  * cdg.c: CDG decoder module
  *****************************************************************************
  * Copyright (C) 2007 Laurent Aimar
- * $Id: a340576241cd0099277dc6fd88fcd5ceb4dc696c $
+ * $Id: 5a28a33799d1d96114577664f90372eb5baf98c0 $
  *
  * Authors: Laurent Aimar <fenrir # via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -329,8 +329,8 @@ static int DecodeScroll( decoder_sys_t *p_cdg, const uint8_t *p_data, int b_copy
             }
             else
             {
-                if( dy < 0 || dy >= CDG_SCREEN_HEIGHT ||
-                    dx < 0 || dx >= CDG_SCREEN_WIDTH )
+                if( dy < 0 || (unsigned)dy >= CDG_SCREEN_HEIGHT ||
+                    dx < 0 || (unsigned)dx >= CDG_SCREEN_WIDTH )
                     continue;
             }
             p_cdg->screen[dy*CDG_SCREEN_PITCH+dx] = copy[y*CDG_SCREEN_PITCH+x];

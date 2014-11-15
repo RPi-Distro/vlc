@@ -1,8 +1,8 @@
 /*****************************************************************************
 * simple_prefs.h: Simple Preferences for Mac OS X
 *****************************************************************************
-* Copyright (C) 2008-2012 VLC authors and VideoLAN
-* $Id: 5c3c6cc00b9fd9e48ca471115dcd36cdfcbdb4e6 $
+* Copyright (C) 2008-2014 VLC authors and VideoLAN
+* $Id: 1f044d52815065b2a5105fe4101d9a4adc5827db $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -25,7 +25,7 @@
 #import "intf.h"
 #import <vlc_common.h>
 
-@interface VLCSimplePrefs : NSObject <NSToolbarDelegate>
+@interface VLCSimplePrefs : NSObject <NSToolbarDelegate, NSWindowDelegate>
 {
     IBOutlet id o_audio_dolby_pop;
     IBOutlet id o_audio_dolby_txt;
@@ -71,33 +71,30 @@
     IBOutlet id o_input_cachelevel_txt;
     IBOutlet id o_input_cachelevel_custom_txt;
     IBOutlet id o_input_caching_box;
-    IBOutlet id o_input_httpproxy_fld;
-    IBOutlet id o_input_httpproxy_txt;
-    IBOutlet id o_input_httpproxypwd_sfld;
-    IBOutlet id o_input_httpproxypwd_txt;
     IBOutlet id o_input_mux_box;
     IBOutlet id o_input_net_box;
+    IBOutlet id o_input_avcodec_hw_txt;
+    IBOutlet id o_input_avcodec_hw_pop;
     IBOutlet id o_input_postproc_fld;
     IBOutlet id o_input_postproc_txt;
     IBOutlet id o_input_rtsp_ckb;
     IBOutlet id o_input_skipLoop_txt;
     IBOutlet id o_input_skipLoop_pop;
     IBOutlet id o_input_mkv_preload_dir_ckb;
+    IBOutlet id o_input_urlhandler_btn;
     IBOutlet id o_input_view;
 
+    IBOutlet id o_intf_language_pop;
+    IBOutlet id o_intf_language_txt;
     IBOutlet id o_intf_style_txt;
     IBOutlet id o_intf_style_dark_bcell;
     IBOutlet id o_intf_style_bright_bcell;
-    IBOutlet id o_intf_art_pop;
-    IBOutlet id o_intf_art_txt;
+    IBOutlet id o_intf_art_ckb;
     IBOutlet id o_intf_embedded_ckb;
     IBOutlet id o_intf_fspanel_ckb;
-
-IBOutlet id o_intf_appleremote_ckb;
-
-IBOutlet id o_intf_mediakeys_ckb;
-    IBOutlet id o_intf_lang_pop;
-    IBOutlet id o_intf_lang_txt;
+    IBOutlet id o_intf_appleremote_ckb;
+    IBOutlet id o_intf_appleremote_sysvol_ckb;
+    IBOutlet id o_intf_mediakeys_ckb;
     IBOutlet id o_intf_network_box;
     IBOutlet id o_intf_view;
     IBOutlet id o_intf_update_ckb;
@@ -106,6 +103,13 @@ IBOutlet id o_intf_mediakeys_ckb;
     IBOutlet id o_intf_nativefullscreen_ckb;
     IBOutlet id o_intf_autoresize_ckb;
     IBOutlet id o_intf_pauseminimized_ckb;
+    IBOutlet id o_intf_luahttp_box;
+    IBOutlet id o_intf_luahttppwd_lbl;
+    IBOutlet id o_intf_luahttppwd_fld;
+    IBOutlet id o_intf_pauseitunes_lbl;
+    IBOutlet id o_intf_pauseitunes_pop;
+    IBOutlet id o_intf_continueplayback_lbl;
+    IBOutlet id o_intf_continueplayback_pop;
 
     IBOutlet id o_osd_encoding_pop;
     IBOutlet id o_osd_encoding_txt;
@@ -147,8 +151,6 @@ IBOutlet id o_intf_mediakeys_ckb;
     IBOutlet id o_video_fullscreen_ckb;
     IBOutlet id o_video_videodeco_ckb;
     IBOutlet id o_video_onTop_ckb;
-    IBOutlet id o_video_output_pop;
-    IBOutlet id o_video_output_txt;
     IBOutlet id o_video_skipFrames_ckb;
     IBOutlet id o_video_snap_box;
     IBOutlet id o_video_snap_folder_btn;
@@ -165,6 +167,20 @@ IBOutlet id o_intf_mediakeys_ckb;
     IBOutlet id o_video_deinterlace_mode_pop;
     IBOutlet id o_video_video_box;
     IBOutlet id o_video_view;
+
+    IBOutlet id o_urlhandler_title_txt;
+    IBOutlet id o_urlhandler_subtitle_txt;
+    IBOutlet id o_urlhandler_save_btn;
+    IBOutlet id o_urlhandler_cancel_btn;
+    IBOutlet id o_urlhandler_ftp_pop;
+    IBOutlet id o_urlhandler_mms_pop;
+    IBOutlet id o_urlhandler_rtmp_pop;
+    IBOutlet id o_urlhandler_rtp_pop;
+    IBOutlet id o_urlhandler_rtsp_pop;
+    IBOutlet id o_urlhandler_sftp_pop;
+    IBOutlet id o_urlhandler_smb_pop;
+    IBOutlet id o_urlhandler_udp_pop;
+    IBOutlet id o_urlhandler_win;
 
     BOOL b_audioSettingChanged;
     BOOL b_intfSettingChanged;
@@ -184,11 +200,10 @@ IBOutlet id o_intf_mediakeys_ckb;
     intf_thread_t *p_intf;
 }
 + (VLCSimplePrefs *)sharedInstance;
-- (NSString *)OSXStringKeyToString:(NSString *)theString;
 
 /* toolbar */
-- (NSToolbarItem *) toolbar: (NSToolbar *)o_toolbar 
-      itemForItemIdentifier: (NSString *)o_itemIdent 
+- (NSToolbarItem *) toolbar: (NSToolbar *)o_toolbar
+      itemForItemIdentifier: (NSString *)o_itemIdent
   willBeInsertedIntoToolbar: (BOOL)b_willBeInserted;
 - (NSArray *)toolbarDefaultItemIdentifiers: (NSToolbar *)toolbar;
 - (NSArray *)toolbarAllowedItemIdentifiers: (NSToolbar *)toolbar;
@@ -199,7 +214,8 @@ IBOutlet id o_intf_mediakeys_ckb;
 - (void)showSimplePrefsWithLevel:(NSInteger)i_window_level;
 
 - (IBAction)buttonAction:(id)sender;
-- (void)sheetDidEnd:(NSWindow *)o_sheet 
+- (IBAction)resetPreferences:(id)sender;
+- (void)sheetDidEnd:(NSWindow *)o_sheet
          returnCode:(int)i_return
         contextInfo:(void *)o_context;
 
@@ -226,6 +242,7 @@ IBOutlet id o_intf_mediakeys_ckb;
 /* input & codecs */
 - (IBAction)inputSettingChanged:(id)sender;
 - (void)showInputSettings;
+- (IBAction)urlHandlerAction:(id)sender;
 
 /* hotkeys */
 - (IBAction)hotkeySettingChanged:(id)sender;

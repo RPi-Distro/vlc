@@ -2,7 +2,7 @@
  * es_out_timeshift.c: Es Out timeshift.
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: ca4d8d01ecca28b20235f7086b0264d29af1f103 $
+ * $Id: c12d73ad496dd7e8313fa4c7809ace09a64c02c2 $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org>
  *
@@ -31,19 +31,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-#if defined (WIN32) && !defined (UNDER_CE)
+#if defined (_WIN32)
 #  include <direct.h>
 #endif
-#ifdef HAVE_SYS_STAT_H
-#   include <sys/stat.h>
-#endif
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include <vlc_common.h>
 #include <vlc_fs.h>
-#ifdef WIN32
+#ifdef _WIN32
 #  include <vlc_charset.h>
 #endif
 #include <vlc_input.h>
@@ -1201,7 +1197,7 @@ static void TsStoragePopCmd( ts_storage_t *p_storage, ts_cmd_t *p_cmd, bool b_fl
         }
         else
         {
-            //fprintf( stderr, "TsStoragePopCmd: %m\n" );
+            //perror( "TsStoragePopCmd" );
             p_cmd->u.send.p_block = block_Alloc( 1 );
         }
     }
@@ -1373,7 +1369,8 @@ static int CmdInitControl( ts_cmd_t *p_cmd, int i_query, va_list args, bool b_co
                 vlc_epg_AddEvent( p_cmd->u.control.u.int_epg.p_epg,
                                   p_evt->i_start, p_evt->i_duration,
                                   p_evt->psz_name,
-                                  p_evt->psz_short_description, p_evt->psz_description );
+                                  p_evt->psz_short_description,
+                                  p_evt->psz_description, 0 );
             }
             vlc_epg_SetCurrent( p_cmd->u.control.u.int_epg.p_epg,
                                 p_epg->p_current ? p_epg->p_current->i_start : -1 );
@@ -1554,7 +1551,7 @@ static char *GetTmpPath( char *psz_path )
     free( psz_path );
 
     /* Create a suitable path */
-#if defined (WIN32) && !defined (UNDER_CE)
+#if defined (_WIN32) && !VLC_WINSTORE_APP
     const DWORD dwCount = GetTempPathW( 0, NULL );
     wchar_t *psw_path = calloc( dwCount + 1, sizeof(wchar_t) );
     if( psw_path )
@@ -1597,7 +1594,7 @@ static FILE *GetTmpFile( char **ppsz_file, const char *psz_path )
 
     /* */
     *ppsz_file = NULL;
-    if( asprintf( &psz_name, "%s/vlc-timeshift.XXXXXX", psz_path ) < 0 )
+    if( asprintf( &psz_name, "%s"DIR_SEP"vlc-timeshift.XXXXXX", psz_path ) < 0 )
         return NULL;
 
     /* */

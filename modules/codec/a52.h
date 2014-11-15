@@ -2,39 +2,32 @@
  * a52.h
  *****************************************************************************
  * Copyright (C) 2001-2009 Laurent Aimar
- * $Id: 204be334fd9b8dfbe22ac1b191f65676d80efe8d $
+ * $Id: 00078d39854297fbde59dbb63c8a08ce7aef78fa $
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef _VLC_A52_H
 #define _VLC_A52_H 1
 
-#include <vlc_aout.h>
 #include <vlc_bits.h>
-
-typedef struct
-{
-    unsigned int i_count;
-    unsigned int i_configuration;
-} vlc_a52_acmod_t;
 
 /**
  * Minimum AC3 header size that vlc_a52_header_Parse needs.
@@ -67,7 +60,7 @@ typedef struct
  */
 static inline int vlc_a52_header_ParseAc3( vlc_a52_header_t *p_header,
                                            const uint8_t *p_buf,
-                                           const vlc_a52_acmod_t *p_acmod )
+                                           const uint32_t *p_acmod )
 {
     static const uint8_t pi_halfrate[12] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3 };
     static const unsigned int pi_bitrate[] = { 32,  40,  48,  56,  64,  80,  96, 112,
@@ -82,23 +75,15 @@ static inline int vlc_a52_header_ParseAc3( vlc_a52_header_t *p_header,
     /* acmod, dsurmod and lfeon */
     const unsigned i_acmod = p_buf[6] >> 5;
     if( (p_buf[6] & 0xf8) == 0x50 )
-    {
         /* Dolby surround = stereo + Dolby */
-        p_header->i_channels = 2;
-        p_header->i_channels_conf = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT
-                            | AOUT_CHAN_DOLBYSTEREO;
-    }
+        p_header->i_channels_conf = AOUT_CHANS_STEREO | AOUT_CHAN_DOLBYSTEREO;
     else
-    {
-        p_header->i_channels      = p_acmod[i_acmod].i_count;
-        p_header->i_channels_conf = p_acmod[i_acmod].i_configuration;
-    }
-
+        p_header->i_channels_conf = p_acmod[i_acmod];
     if( p_buf[6] & pi_lfeon[i_acmod] )
-    {
-        p_header->i_channels++;
         p_header->i_channels_conf |= AOUT_CHAN_LFE;
-    }
+
+    p_header->i_channels = popcount(p_header->i_channels_conf
+                                                         & AOUT_CHAN_PHYSMASK);
 
     const unsigned i_frmsizecod = p_buf[4] & 63;
     if( i_frmsizecod >= 38 )
@@ -134,7 +119,7 @@ static inline int vlc_a52_header_ParseAc3( vlc_a52_header_t *p_header,
  */
 static inline int vlc_a52_header_ParseEac3( vlc_a52_header_t *p_header,
                                             const uint8_t *p_buf,
-                                            const vlc_a52_acmod_t *p_acmod )
+                                            const uint32_t *p_acmod )
 {
     static const unsigned pi_samplerate[3] = { 48000, 44100, 32000 };
     unsigned i_numblkscod;
@@ -170,9 +155,13 @@ static inline int vlc_a52_header_ParseEac3( vlc_a52_header_t *p_header,
     const unsigned i_acmod = bs_read( &s, 3 );
     const unsigned i_lfeon = bs_read1( &s );
 
-    p_header->i_channels      = p_acmod[i_acmod].i_count + i_lfeon;
-    p_header->i_channels_conf = p_acmod[i_acmod].i_configuration | ( i_lfeon ? AOUT_CHAN_LFE : 0);
-    p_header->i_bitrate = 8 * p_header->i_size * (p_header->i_rate) / (i_numblkscod * 256);
+    p_header->i_channels_conf = p_acmod[i_acmod];
+    if( i_lfeon )
+        p_header->i_channels_conf |= AOUT_CHAN_LFE;
+    p_header->i_channels = popcount(p_header->i_channels_conf
+                                                         & AOUT_CHAN_PHYSMASK);
+    p_header->i_bitrate = 8 * p_header->i_size * (p_header->i_rate)
+                                               / (i_numblkscod * 256);
     p_header->i_samples = i_numblkscod * 256;
 
     p_header->b_eac3 = true;
@@ -188,18 +177,15 @@ static inline int vlc_a52_header_ParseEac3( vlc_a52_header_t *p_header,
 static inline int vlc_a52_header_Parse( vlc_a52_header_t *p_header,
                                         const uint8_t *p_buffer, int i_buffer )
 {
-    static const vlc_a52_acmod_t p_acmod[8] = {
-        { 2, AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_DUALMONO },   /* Dual-channel 1+1 */
-        { 1, AOUT_CHAN_CENTER },                                        /* Mono 1/0 */
-        { 2, AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT },                        /* Stereo 2/0 */
-        { 3, AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER },     /* 3F 3/0 */
-        { 3, AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_REARCENTER }, /* 2F1R 2/1 */
-        { 4, AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER |
-             AOUT_CHAN_REARCENTER },                                    /* 3F1R 3/1 */
-        { 4, AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT |
-             AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT },                /* 2F2R 2/2 */
-        { 5, AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER |
-             AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT },                /* 3F2R 3/2 */
+    static const uint32_t p_acmod[8] = {
+        AOUT_CHANS_2_0 | AOUT_CHAN_DUALMONO,
+        AOUT_CHAN_CENTER,
+        AOUT_CHANS_2_0,
+        AOUT_CHANS_3_0,
+        AOUT_CHANS_FRONT | AOUT_CHAN_REARCENTER, /* 2F1R */
+        AOUT_CHANS_FRONT | AOUT_CHANS_CENTER,    /* 3F1R */
+        AOUT_CHANS_4_0,
+        AOUT_CHANS_5_0,
     };
 
     if( i_buffer < VLC_A52_HEADER_SIZE )
@@ -228,4 +214,3 @@ static inline int vlc_a52_header_Parse( vlc_a52_header_t *p_header,
 }
 
 #endif
-

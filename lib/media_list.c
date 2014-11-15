@@ -2,7 +2,7 @@
  * media_list.c: libvlc new API media list functions
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: 749d3c5a2013013a9485b009c9b7bf4f9fa701b5 $
+ * $Id: 1d5702539eace11e9bbb47d469f99b123fe0faaa $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -166,8 +166,6 @@ libvlc_media_list_new( libvlc_instance_t * p_inst )
         return NULL;
     }
 
-    /* Code for that one should be handled in flat_media_list.c */
-    p_mlist->p_flat_mlist = NULL;
     p_mlist->b_read_only = false;
 
     libvlc_event_manager_register_event_type( p_mlist->p_event_manager,

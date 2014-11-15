@@ -2,7 +2,7 @@
  * openurl.cpp: Open a MRL or clipboard content
  *****************************************************************************
  * Copyright © 2009 the VideoLAN team
- * $Id: 56ab915b86efa9ea7f608663da5a75c5b876ba7b $
+ * $Id: f31abab571a52a80c38a6a702d14ca6822eae72b $
  *
  * Authors: Jean-Philippe André <jpeg@videolan.org>
  *
@@ -27,6 +27,7 @@
 
 #include "dialogs/openurl.hpp"
 #include "util/searchlineedit.hpp"
+#include "util/validators.hpp"
 
 #include <QPushButton>
 #include <QDialogButtonBox>
@@ -62,9 +63,10 @@ OpenUrlDialog::OpenUrlDialog( intf_thread_t *_p_intf,
 
     /* Info label and line edit */
     edit = new ClickLineEdit( qtr( "Enter URL here..." ), this );
+    edit->setValidator( new UrlValidator( edit ) );
 
     QLabel *info = new QLabel( qtr( "Please enter the URL or path "
-                                    "to the media you want to play"),
+                                    "to the media you want to play."),
                                this );
 
     setToolTip( qtr( "If your clipboard contains a valid URL\n"

@@ -2,7 +2,7 @@
  * loadsave.c : Playlist loading / saving functions
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 59d1a7e40682312622422a99080f478a3a039742 $
+ * $Id: 605059fef537b15bab8d113ad8a01d62bbda1257 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -24,6 +24,11 @@
 # include "config.h"
 #endif
 
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include <vlc_common.h>
 #include <vlc_playlist.h>
 #include <vlc_events.h>
@@ -33,10 +38,6 @@
 #include <vlc_url.h>
 #include <vlc_modules.h>
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-
 int playlist_Export( playlist_t * p_playlist, const char *psz_filename,
                      playlist_item_t *p_export_root, const char *psz_type )
 {
@@ -44,7 +45,7 @@ int playlist_Export( playlist_t * p_playlist, const char *psz_filename,
 
     playlist_export_t *p_export =
         vlc_custom_create( p_playlist, sizeof( *p_export ), "playlist export" );
-    if( !p_export )
+    if( unlikely(p_export == NULL) )
         return VLC_ENOMEM;
 
     msg_Dbg( p_export, "saving %s to file %s",
@@ -57,26 +58,32 @@ int playlist_Export( playlist_t * p_playlist, const char *psz_filename,
     p_export->psz_filename = psz_filename;
     p_export->p_file = vlc_fopen( psz_filename, "wt" );
     if( p_export->p_file == NULL )
-        msg_Err( p_export, "could not create playlist file %s (%m)",
-                 psz_filename );
-    else
     {
-        module_t *p_module;
+        msg_Err( p_export, "could not create playlist file %s: %s",
+                 psz_filename, vlc_strerror_c(errno) );
+        goto out;
+    }
 
-        /* And call the module ! All work is done now */
-        playlist_Lock( p_playlist );
-        p_module = module_need( p_export, "playlist export", psz_type, true );
-        playlist_Unlock( p_playlist );
+    module_t *p_module;
 
-        if( p_module == NULL )
-            msg_Err( p_playlist, "could not export playlist" );
-        else
-        {
-            module_unneed( p_export, p_module );
+    /* And call the module ! All work is done now */
+    playlist_Lock( p_playlist );
+    p_module = module_need( p_export, "playlist export", psz_type, true );
+    playlist_Unlock( p_playlist );
+
+    if( p_module != NULL )
+    {
+        module_unneed( p_export, p_module );
+        if( !ferror( p_export->p_file ) )
             ret = VLC_SUCCESS;
-        }
-        fclose( p_export->p_file );
-   }
+        else
+            msg_Err( p_playlist, "could not write playlist file: %s",
+                     vlc_strerror_c(errno) );
+    }
+    else
+        msg_Err( p_playlist, "could not export playlist" );
+   fclose( p_export->p_file );
+out:
    vlc_object_release( p_export );
    return ret;
 }
@@ -85,7 +92,7 @@ int playlist_Import( playlist_t *p_playlist, const char *psz_file )
 {
     input_item_t *p_input;
     const char *const psz_option = "meta-file";
-    char *psz_uri = make_URI( psz_file, NULL );
+    char *psz_uri = vlc_path2uri( psz_file, NULL );
 
     if( psz_uri == NULL )
         return VLC_EGENERIC;
@@ -133,7 +140,7 @@ int playlist_MLLoad( playlist_t *p_playlist )
     if( psz_file == NULL )
         return VLC_ENOMEM;
 
-    /* loosy check for media library file */
+    /* lousy check for media library file */
     struct stat st;
     if( vlc_stat( psz_file, &st ) )
     {
@@ -141,7 +148,7 @@ int playlist_MLLoad( playlist_t *p_playlist )
         return VLC_EGENERIC;
     }
 
-    char *psz_uri = make_URI( psz_file, "file/xspf-open" );
+    char *psz_uri = vlc_path2uri( psz_file, "file/xspf-open" );
     free( psz_file );
     if( psz_uri == NULL )
         return VLC_ENOMEM;
@@ -167,9 +174,7 @@ int playlist_MLLoad( playlist_t *p_playlist )
     pl_priv(p_playlist)->b_doing_ml = true;
     PL_UNLOCK;
 
-    stats_TimerStart( p_playlist, "ML Load", STATS_TIMER_ML_LOAD );
     input_Read( p_playlist, p_input );
-    stats_TimerStop( p_playlist,STATS_TIMER_ML_LOAD );
 
     PL_LOCK;
     pl_priv(p_playlist)->b_doing_ml = false;
@@ -183,19 +188,19 @@ int playlist_MLLoad( playlist_t *p_playlist )
 
 int playlist_MLDump( playlist_t *p_playlist )
 {
-    char *psz_datadir;
+    char *psz_temp;
 
-    psz_datadir = config_GetUserDir( VLC_DATA_DIR );
+    psz_temp = config_GetUserDir( VLC_DATA_DIR );
 
-    if( !psz_datadir ) /* XXX: This should never happen */
+    if( !psz_temp ) /* XXX: This should never happen */
     {
         msg_Err( p_playlist, "no data directory, cannot save media library") ;
         return VLC_EGENERIC;
     }
 
-    char psz_dirname[ strlen( psz_datadir ) + sizeof( DIR_SEP "ml.xspf")];
-    strcpy( psz_dirname, psz_datadir );
-    free( psz_datadir );
+    char psz_dirname[ strlen( psz_temp ) + sizeof( DIR_SEP "ml.xspf")];
+    strcpy( psz_dirname, psz_temp );
+    free( psz_temp );
     if( config_CreateDir( (vlc_object_t *)p_playlist, psz_dirname ) )
     {
         return VLC_EGENERIC;
@@ -203,10 +208,25 @@ int playlist_MLDump( playlist_t *p_playlist )
 
     strcat( psz_dirname, DIR_SEP "ml.xspf" );
 
-    stats_TimerStart( p_playlist, "ML Dump", STATS_TIMER_ML_DUMP );
-    playlist_Export( p_playlist, psz_dirname, p_playlist->p_media_library,
-                     "export-xspf" );
-    stats_TimerStop( p_playlist, STATS_TIMER_ML_DUMP );
+    if ( asprintf( &psz_temp, "%s.tmp%"PRIu32, psz_dirname, (uint32_t)getpid() ) < 1 )
+        return VLC_EGENERIC;
 
+    int i_ret = playlist_Export( p_playlist, psz_temp, p_playlist->p_media_library,
+                     "export-xspf" );
+    if ( i_ret != VLC_SUCCESS )
+    {
+        vlc_unlink( psz_temp );
+        free( psz_temp );
+        return i_ret;
+    }
+
+    i_ret = vlc_rename( psz_temp, psz_dirname );
+    free( psz_temp );
+    if( i_ret == -1 )
+    {
+        msg_Err( p_playlist, "could not rename %s.tmp: %s",
+                 psz_dirname, vlc_strerror_c(errno) );
+        return VLC_EGENERIC;
+    }
     return VLC_SUCCESS;
 }

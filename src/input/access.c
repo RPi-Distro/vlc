@@ -2,7 +2,7 @@
  * access.c
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 6c569435bda7045aa6739c86245dd9024a716dad $
+ * $Id: 850fccd363c516b5a2979d582e2d23522ccdf597 $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -31,7 +31,7 @@
 #include <vlc_modules.h>
 
 /* Decode URL (which has had its scheme stripped earlier) to a file path. */
-static char *get_path(const char *location)
+char *get_path(const char *location)
 {
     char *url, *path;
 

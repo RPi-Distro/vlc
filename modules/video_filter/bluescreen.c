@@ -1,24 +1,24 @@
 /*****************************************************************************
  * bluescreen.c : Bluescreen (weather channel like) video filter for vlc
  *****************************************************************************
- * Copyright (C) 2005-2007 the VideoLAN team
- * $Id: 3d5828e7c9a5b67eb571af3aa203a59ee9367247 $
+ * Copyright (C) 2005-2007 VLC authors and VideoLAN
+ * $Id: 81362ce995d51ad1397c1850f7c2b50575a079c3 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -209,7 +209,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         }
     }
     /* Gaussian convolution to make it look cleaner */
-    vlc_memset( p_a, 0, 2 * i_pitch );
+    memset( p_a, 0, 2 * i_pitch );
     for( i = 2; i < i_lines - 2; i++ )
     {
         p_a[i*i_pitch] = 0x00;

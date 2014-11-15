@@ -1,24 +1,24 @@
 /*****************************************************************************
  * trivial.c : trivial channel mixer plug-in (drops unwanted channels)
  *****************************************************************************
- * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: 9211751e50044156bf759c11de7bc6b02f6374ba $
+ * Copyright (C) 2002, 2006 VLC authors and VideoLAN
+ * $Id: b5d845751bb7988e388bb49fbef16b7e4172ffde $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -46,7 +46,7 @@ static block_t *DoWork( filter_t *, block_t * );
  *****************************************************************************/
 vlc_module_begin ()
     set_description( N_("Audio filter for trivial channel mixing") )
-    set_capability( "audio filter", 1 )
+    set_capability( "audio converter", 1 )
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_MISC )
     set_callbacks( Create, NULL )
@@ -65,8 +65,7 @@ static int Create( vlc_object_t *p_this )
                == p_filter->fmt_out.audio.i_original_channels)
           || p_filter->fmt_in.audio.i_format != p_filter->fmt_out.audio.i_format
           || p_filter->fmt_in.audio.i_rate != p_filter->fmt_out.audio.i_rate
-          || (p_filter->fmt_in.audio.i_format != VLC_CODEC_FL32
-               && p_filter->fmt_in.audio.i_format != VLC_CODEC_FI32) )
+          || p_filter->fmt_in.audio.i_format != VLC_CODEC_FL32 )
     {
         return VLC_EGENERIC;
     }
@@ -78,7 +77,7 @@ static int Create( vlc_object_t *p_this )
 /*****************************************************************************
  * SparseCopy: trivially downmix or upmix a buffer
  *****************************************************************************/
-static void SparseCopy( int32_t * p_dest, const int32_t * p_src, size_t i_len,
+static void SparseCopy( float * p_dest, const float * p_src, size_t i_len,
                         int i_output_stride, int i_input_stride )
 {
     int i;
@@ -106,27 +105,36 @@ static block_t *DoWork( filter_t * p_filter, block_t * p_in_buf )
     if( i_input_nb >= i_output_nb )
     {
         p_out_buf = p_in_buf; /* mix in place */
-        p_out_buf->i_buffer = p_in_buf->i_buffer / i_input_nb * i_output_nb;
+        p_out_buf->i_buffer = p_in_buf->i_buffer * i_output_nb / i_input_nb;
     }
     else
     {
-        p_out_buf = filter_NewAudioBuffer( p_filter,
-                              p_in_buf->i_buffer / i_input_nb * i_output_nb );
+        p_out_buf = block_Alloc(
+                              p_in_buf->i_buffer * i_output_nb / i_input_nb );
         if( !p_out_buf )
             goto out;
+        /* on upmixing case, zero out buffer */
+        memset( p_out_buf->p_buffer, 0, p_out_buf->i_buffer );
         p_out_buf->i_nb_samples = p_in_buf->i_nb_samples;
         p_out_buf->i_dts        = p_in_buf->i_dts;
         p_out_buf->i_pts        = p_in_buf->i_pts;
         p_out_buf->i_length     = p_in_buf->i_length;
     }
 
-    int32_t * p_dest = (int32_t *)p_out_buf->p_buffer;
-    const int32_t * p_src = (int32_t *)p_in_buf->p_buffer;
+    float * p_dest = (float *)p_out_buf->p_buffer;
+    const float * p_src = (float *)p_in_buf->p_buffer;
+    const bool b_reverse_stereo = p_filter->fmt_out.audio.i_original_channels & AOUT_CHAN_REVERSESTEREO;
+    bool b_dualmono2stereo = (p_filter->fmt_in.audio.i_original_channels & AOUT_CHAN_DUALMONO );
+    b_dualmono2stereo &= (p_filter->fmt_out.audio.i_physical_channels & ( AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT ));
+    b_dualmono2stereo &= ((p_filter->fmt_out.audio.i_physical_channels & AOUT_CHAN_PHYSMASK) != (p_filter->fmt_in.audio.i_physical_channels & AOUT_CHAN_PHYSMASK));
 
-    if ( (p_filter->fmt_out.audio.i_original_channels & AOUT_CHAN_PHYSMASK)
-                != (p_filter->fmt_in.audio.i_original_channels & AOUT_CHAN_PHYSMASK)
-           && (p_filter->fmt_in.audio.i_original_channels & AOUT_CHAN_PHYSMASK)
-                == (AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT) )
+    if( likely( !b_reverse_stereo && ! b_dualmono2stereo ) )
+    {
+        SparseCopy( p_dest, p_src, p_in_buf->i_nb_samples, i_output_nb,
+                    i_input_nb );
+    }
+    /* Special case from dual mono to stereo */
+    else if ( b_dualmono2stereo )
     {
         int i;
         /* This is a bit special. */
@@ -157,25 +165,19 @@ static block_t *DoWork( filter_t * p_filter, block_t * p_in_buf )
             }
         }
     }
-    else if ( p_filter->fmt_out.audio.i_original_channels
-                                    & AOUT_CHAN_REVERSESTEREO )
+    else if ( b_reverse_stereo )
     {
         /* Reverse-stereo mode */
         int i;
         for ( i = p_in_buf->i_nb_samples; i--; )
         {
-            int32_t i_tmp = p_src[0];
+            float i_tmp = p_src[0];
             p_dest[0] = p_src[1];
             p_dest[1] = i_tmp;
 
             p_dest += 2;
             p_src += 2;
         }
-    }
-    else
-    {
-        SparseCopy( p_dest, p_src, p_in_buf->i_nb_samples, i_output_nb,
-                    i_input_nb );
     }
 out:
     if( p_in_buf != p_out_buf )

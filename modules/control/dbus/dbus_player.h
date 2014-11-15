@@ -1,10 +1,10 @@
 /*****************************************************************************
- * dbus-player.h : dbus control module (mpris v1.0) - /Player object
+ * dbus_player.h : dbus control module (mpris v2.2) - Player object
  *****************************************************************************
  * Copyright © 2006-2008 Rafaël Carré
  * Copyright © 2007-2010 Mirsal Ennaime
  * Copyright © 2009-2010 The VideoLAN team
- * $Id: 20b00de7d05609819157c3b803cbead90e13f2a6 $
+ * $Id: 56c0de33b5ffe05828194a2297dc671386ed797d $
  *
  * Authors:    Mirsal Ennaime <mirsal at mirsal fr>
  *             Rafaël Carré <funman at videolanorg>

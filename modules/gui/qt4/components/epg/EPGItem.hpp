@@ -1,8 +1,8 @@
 /*****************************************************************************
- * EPGItem.h : EPGItem
+ * EPGItem.hpp : EPGItem
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: 7bf5cc38f0667b5fd7efaa0a0f97300657ef473a $
+ * $Id: b4e1ea99206b8712fcee0f23116c4f156c751aef $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -44,15 +44,17 @@ public:
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
 
     const QDateTime& start() const;
-    QDateTime end();
+    QDateTime end() const;
 
     int duration() const;
-    const QString& name() { return m_name; };
-    QString description();
+    const QString& name() const { return m_name; }
+    QString description() const;
+    int rating() const { return m_rating; }
     bool setData( vlc_epg_event_t * );
     void setRow( unsigned int );
     void setCurrent( bool );
     void setDuration( int duration );
+    void setRating( uint8_t i_rating );
     void updatePos();
     bool endsBefore( const QDateTime & ) const;
     bool playsAt( const QDateTime & ) const;
@@ -73,6 +75,7 @@ private:
     QString     m_description;
     QString     m_shortDescription;
     bool        m_current;
+    uint8_t     m_rating;
 };
 
 #endif // EPGITEM_H

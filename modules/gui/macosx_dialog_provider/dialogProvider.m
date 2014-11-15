@@ -1,25 +1,25 @@
 /*****************************************************************************
  * dialogProvider.m: Minimal Dialog Provider for Mac OS X
  *****************************************************************************
- * Copyright (C) 2009-2011 the VideoLAN team
- * $Id: 785fe00b1e63c4d5939a12751ae67a9eeff909cb $
+ * Copyright (C) 2009-2011 VLC authors and VideoLAN
+ * $Id: 2e78a72f82f42c4c1de129e9d26fc89987044945 $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *          Pierre d'Herbemont <pdherbemont # videolan dot>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -94,8 +94,8 @@ struct intf_sys_t
 vlc_module_begin()
     /* Minimal interface. see intf.m */
     set_shortname("Mac OS X Dialogs")
-    add_shortcut("macosx_dialog_provider", "miosx")
-    set_description("Minimal Mac OS X Dialog Provider")
+    add_shortcut("macosx_dialog_provider")
+    set_description("Mac OS X Dialog Provider")
     set_capability("interface", 0)
 
     /* This setting is interesting, because when used with a libvlc app
@@ -275,8 +275,8 @@ void updateProgressPanel (void *priv, const char *text, float value)
     intf_sys_t *sys = (intf_sys_t *)priv;
 
     NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
-                          [NSNumber numberWithFloat:value], @"value",
-                          text ? [NSString stringWithUTF8String:text] : nil, @"text",
+                          @(value), @"value",
+                          text ? @(text) : nil, @"text",
                           nil];
 
     [sys->displayer performSelectorOnMainThread:@selector(updateProgressPanel:) withObject:dict waitUntilDone:YES];
@@ -306,6 +306,8 @@ bool checkProgressPanel (void *priv)
     return ret;
 }
 
+@interface VLCDialogDisplayer() <NSWindowDelegate>
+@end
 
 @implementation VLCDialogDisplayer
 - (void)dealloc
@@ -329,15 +331,15 @@ bool checkProgressPanel (void *priv)
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     if (title)
-        [dict setObject:[NSString stringWithUTF8String:title] forKey:@"title"];
+        [dict setObject:@(title) forKey:@"title"];
     if (message)
-        [dict setObject:[NSString stringWithUTF8String:message] forKey:@"message"];
+        [dict setObject:@(message) forKey:@"message"];
     if (yes)
-        [dict setObject:[NSString stringWithUTF8String:yes] forKey:@"yes"];
+        [dict setObject:@(yes) forKey:@"yes"];
     if (no)
-        [dict setObject:[NSString stringWithUTF8String:no] forKey:@"no"];
+        [dict setObject:@(no) forKey:@"no"];
     if (cancel)
-        [dict setObject:[NSString stringWithUTF8String:cancel] forKey:@"cancel"];
+        [dict setObject:@(cancel) forKey:@"cancel"];
 
     return dict;
 }
@@ -371,7 +373,7 @@ bool checkProgressPanel (void *priv)
                               defaultButton:[dialog objectForKey:@"yes"]
                             alternateButton:[dialog objectForKey:@"no"]
                                 otherButton:[dialog objectForKey:@"cancel"]
-                  informativeTextWithFormat:[dialog objectForKey:@"message"]];
+                  informativeTextWithFormat:@"%@", [dialog objectForKey:@"message"]];
     [alert setAlertStyle:NSInformationalAlertStyle];
     alertRet = [alert runModal];
 
@@ -392,7 +394,7 @@ bool checkProgressPanel (void *priv)
             break;
     }
 
-    return [NSNumber numberWithInt:ret];
+    return @(ret);
 }
 
 - (NSDictionary *)displayLogin:(NSDictionary *)dialog
@@ -456,7 +458,7 @@ bool checkProgressPanel (void *priv)
 {
     VLCAssertIsMainThread();
 
-    return [NSNumber numberWithBool:[_currentProgressBarPanel isCancelled]];
+    return @([_currentProgressBarPanel isCancelled]);
 }
 
 #pragma mark -
@@ -597,6 +599,17 @@ static NSView *createControlFromWidget(extension_widget_t *widget, id self)
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncTextField:)  name:NSControlTextDidChangeNotification object:field];
             return field;
         }
+        case EXTENSION_WIDGET_CHECK_BOX:
+        {
+            VLCDialogButton *button = [[VLCDialogButton alloc] init];
+            [button setButtonType:NSSwitchButton];
+            [button setWidget:widget];
+            [button setAction:@selector(triggerClick:)];
+            [button setTarget:self];
+            [[button cell] setControlSize:NSRegularControlSize];
+            [button setAutoresizingMask:NSViewWidthSizable];
+            return button;
+        }
         case EXTENSION_WIDGET_BUTTON:
         {
             VLCDialogButton *button = [[VLCDialogButton alloc] init];
@@ -672,7 +685,7 @@ static void updateControlFromWidget(NSView *control, extension_widget_t *widget,
 //
 //            assert([control isKindOfClass:[NSTextView class]]);
 //            NSTextView *textView = (NSTextView *)control;
-//            NSString *string = [NSString stringWithUTF8String:widget->psz_text];
+//            NSString *string = @(widget->psz_text);
 //            NSAttributedString *attrString = [[NSAttributedString alloc] initWithHTML:[string dataUsingEncoding:NSISOLatin1StringEncoding] documentAttributes:NULL];
 //            [[textView textStorage] setAttributedString:[[NSAttributedString alloc] initWithString:@"Hello"]];
 //            [textView setNeedsDisplay:YES];
@@ -684,7 +697,7 @@ static void updateControlFromWidget(NSView *control, extension_widget_t *widget,
         {
             assert([control isKindOfClass:[NSTextView class]]);
             NSTextView *textView = (NSTextView *)control;
-            NSString *string = [NSString stringWithUTF8String:widget->psz_text];
+            NSString *string = @(widget->psz_text);
             NSAttributedString *attrString = [[NSAttributedString alloc] initWithHTML:[string dataUsingEncoding:NSISOLatin1StringEncoding] documentAttributes:NULL];
             [[textView textStorage] setAttributedString:attrString];
             [textView setNeedsDisplay:YES];
@@ -701,7 +714,7 @@ static void updateControlFromWidget(NSView *control, extension_widget_t *widget,
                 break;
             assert([control isKindOfClass:[NSControl class]]);
             NSControl *field = (NSControl *)control;
-            NSString *string = [NSString stringWithUTF8String:widget->psz_text];
+            NSString *string = @(widget->psz_text);
             NSAttributedString *attrString = [[NSAttributedString alloc] initWithHTML:[string dataUsingEncoding:NSISOLatin1StringEncoding] documentAttributes:NULL];
             [field setAttributedStringValue:attrString];
             [attrString release];
@@ -714,7 +727,7 @@ static void updateControlFromWidget(NSView *control, extension_widget_t *widget,
             NSButton *button = (NSButton *)control;
             if (!widget->psz_text)
                 break;
-            [button setTitle:[NSString stringWithUTF8String:widget->psz_text]];
+            [button setTitle:@(widget->psz_text)];
             break;
         }
         case EXTENSION_WIDGET_DROPDOWN:
@@ -725,7 +738,7 @@ static void updateControlFromWidget(NSView *control, extension_widget_t *widget,
             struct extension_widget_value_t *value;
             for(value = widget->p_values; value != NULL; value = value->p_next)
             {
-                [popup addItemWithTitle:[NSString stringWithUTF8String:value->psz_text]];
+                [popup addItemWithTitle:@(value->psz_text)];
             }
             [popup synchronizeTitleAndSelectedItem];
             [self popUpSelectionChanged:popup];
@@ -744,8 +757,8 @@ static void updateControlFromWidget(NSView *control, extension_widget_t *widget,
             for(value = widget->p_values; value != NULL; value = value->p_next)
             {
                 NSDictionary *entry = [NSDictionary dictionaryWithObjectsAndKeys:
-                                       [NSNumber numberWithInt:value->i_id], @"id",
-                                       [NSString stringWithUTF8String:value->psz_text], @"text",
+                                       @(value->i_id), @"id",
+                                       @(value->psz_text), @"text",
                                        nil];
                 [contentArray addObject:entry];
             }
@@ -757,7 +770,7 @@ static void updateControlFromWidget(NSView *control, extension_widget_t *widget,
         {
             assert([control isKindOfClass:[NSImageView class]]);
             NSImageView *imageView = (NSImageView *)control;
-            NSString *string = widget->psz_text ? [NSString stringWithUTF8String:widget->psz_text] : nil;
+            NSString *string = widget->psz_text ? @(widget->psz_text) : nil;
             NSImage *image = nil;
             if (string)
                 image = [[NSImage alloc] initWithContentsOfURL:[NSURL fileURLWithPath:string]];
@@ -855,7 +868,7 @@ static void updateControlFromWidget(NSView *control, extension_widget_t *widget,
         window = [[VLCDialogWindow alloc] initWithContentRect:content styleMask:NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask backing:NSBackingStoreBuffered defer:NO];
         [window setDelegate:self];
         [window setDialog:dialog];
-        [window setTitle:[NSString stringWithUTF8String:dialog->psz_title]];
+        [window setTitle:@(dialog->psz_title)];
         VLCDialogGridView *gridView = [[VLCDialogGridView alloc] init];
         [gridView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
         [window setContentView:gridView];

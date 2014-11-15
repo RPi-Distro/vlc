@@ -1,24 +1,24 @@
 /*****************************************************************************
  * sftp.c: SFTP input module
  *****************************************************************************
- * Copyright (C) 2009 the VideoLAN team
- * $Id: 0dba0fc5fa25db16029d8574618d59cb7183ce28 $
+ * Copyright (C) 2009 VLC authors and VideoLAN
+ * $Id: 4152d2a3058c95ab5ffe1eeabe3cbfec6fb94dea $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -48,10 +48,6 @@
 static int  Open ( vlc_object_t* );
 static void Close( vlc_object_t* );
 
-#define USER_TEXT N_("SFTP user name")
-#define USER_LONGTEXT N_("User name that will be used for the connection.")
-#define PASS_TEXT N_("SFTP password")
-#define PASS_LONGTEXT N_("Password that will be used for the connection.")
 #define PORT_TEXT N_("SFTP port")
 #define PORT_LONGTEXT N_("SFTP port number to use on the server")
 #define MTU_TEXT N_("Read size")
@@ -84,7 +80,8 @@ struct access_sys_t
     LIBSSH2_SESSION* ssh_session;
     LIBSSH2_SFTP* sftp_session;
     LIBSSH2_SFTP_HANDLE* file;
-    int i_read_size;
+    uint64_t filesize;
+    size_t i_read_size;
 };
 
 
@@ -171,10 +168,12 @@ static int Open( vlc_object_t* p_this )
 
     char *psz_home = config_GetUserDir( VLC_HOME_DIR );
     char *psz_knownhosts_file;
-    asprintf( &psz_knownhosts_file, "%s/.ssh/known_hosts", psz_home );
-    libssh2_knownhost_readfile( ssh_knownhosts, psz_knownhosts_file,
-                                LIBSSH2_KNOWNHOST_FILE_OPENSSH );
-    free( psz_knownhosts_file );
+    if( asprintf( &psz_knownhosts_file, "%s/.ssh/known_hosts", psz_home ) != -1 )
+    {
+        libssh2_knownhost_readfile( ssh_knownhosts, psz_knownhosts_file,
+                LIBSSH2_KNOWNHOST_FILE_OPENSSH );
+        free( psz_knownhosts_file );
+    }
     free( psz_home );
 
     const char *fingerprint = libssh2_session_hostkey( p_sys->ssh_session, &i_len, &i_type );
@@ -235,7 +234,7 @@ static int Open( vlc_object_t* p_this )
         msg_Err( p_access, "Impossible to get information about the remote file %s", url.psz_path );
         goto error;
     }
-    p_access->info.i_size = attributes.filesize;
+    p_sys->filesize = attributes.filesize;
 
     p_sys->i_read_size = var_InheritInteger( p_access, "sftp-readsize" );
 
@@ -271,13 +270,15 @@ static void Close( vlc_object_t* p_this )
 
 static block_t* Block( access_t* p_access )
 {
+    access_sys_t *p_sys = p_access->p_sys;
+
     if( p_access->info.b_eof )
         return NULL;
 
     /* Allocate the buffer we need */
-    size_t i_len = __MIN( p_access->p_sys->i_read_size, p_access->info.i_size -
-                                              p_access->info.i_pos );
-    block_t* p_block = block_New( p_access, i_len );
+    size_t i_len = __MIN( p_sys->i_read_size,
+                          p_sys->filesize - p_access->info.i_pos );
+    block_t* p_block = block_Alloc( i_len );
     if( !p_block )
         return NULL;
 
@@ -337,6 +338,10 @@ static int Control( access_t* p_access, int i_query, va_list args )
         *pb_bool = true;
         break;
 
+    case ACCESS_GET_SIZE:
+        *va_arg( args, uint64_t * ) = p_access->p_sys->filesize;
+        break;
+
     case ACCESS_GET_PTS_DELAY:
         pi_64 = (int64_t*)va_arg( args, int64_t* );
         *pi_64 = INT64_C(1000)
@@ -346,17 +351,7 @@ static int Control( access_t* p_access, int i_query, va_list args )
     case ACCESS_SET_PAUSE_STATE:
         break;
 
-    case ACCESS_GET_TITLE_INFO:
-    case ACCESS_SET_TITLE:
-    case ACCESS_SET_SEEKPOINT:
-    case ACCESS_SET_PRIVATE_ID_STATE:
-    case ACCESS_GET_META:
-    case ACCESS_GET_PRIVATE_ID_STATE:
-    case ACCESS_GET_CONTENT_TYPE:
-        return VLC_EGENERIC;
-
     default:
-        msg_Warn( p_access, "unimplemented query %d in control", i_query );
         return VLC_EGENERIC;
     }
 

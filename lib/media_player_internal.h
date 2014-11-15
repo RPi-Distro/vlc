@@ -1,9 +1,9 @@
 /*****************************************************************************
- * libvlc_internal.h : Definition of opaque structures for libvlc exported API
+ * media_player_internal.h : Definition of opaque structures for libvlc exported API
  * Also contains some internal utility functions
  *****************************************************************************
  * Copyright (C) 2005-2009 VLC authors and VideoLAN
- * $Id: 5e504fb7c38ec918fc4f11b7301c4188abdbf2a3 $
+ * $Id: 27fbf1ff9185e5d4665e91363de08916d0d125fa $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -34,6 +34,8 @@
 #include <vlc/libvlc_media.h>
 #include <vlc_input.h>
 
+#include "../modules/audio_filter/equalizer_presets.h"
+
 struct libvlc_media_player_t
 {
     VLC_COMMON_MEMBERS
@@ -61,5 +63,14 @@ input_thread_t *libvlc_get_input_thread(libvlc_media_player_t * );
 libvlc_track_description_t * libvlc_get_track_description(
         libvlc_media_player_t *p_mi,
         const char *psz_variable );
+
+/**
+ * Internal equalizer structure.
+ */
+struct libvlc_equalizer_t
+{
+    float f_preamp;
+    float f_amp[EQZ_BANDS_MAX];
+};
 
 #endif

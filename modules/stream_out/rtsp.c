@@ -1,27 +1,27 @@
 /*****************************************************************************
  * rtsp.c: RTSP support for RTP stream output module
  *****************************************************************************
- * Copyright (C) 2003-2004, 2010 the VideoLAN team
+ * Copyright (C) 2003-2004, 2010 VLC authors and VideoLAN
  * Copyright © 2007 Rémi Denis-Courmont
  *
- * $Id: 2f9569ae5c65a047b862e44bde525685862fe03e $
+ * $Id: 0939d5e05ef3b2a2c5856c4e52f1b4ee0ce9e54e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Pierre Ynard
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -45,7 +45,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#ifndef WIN32
+#ifndef _WIN32
 # include <locale.h>
 #endif
 #ifdef HAVE_XLOCALE_H
@@ -125,8 +125,7 @@ rtsp_stream_t *RtspSetup( vlc_object_t *owner, vod_media_t *media,
     char *user = var_InheritString(owner, "sout-rtsp-user");
     char *pwd = var_InheritString(owner, "sout-rtsp-pwd");
 
-    rtsp->url = httpd_UrlNewUnique( rtsp->host, rtsp->psz_path,
-                                    user, pwd, NULL );
+    rtsp->url = httpd_UrlNew( rtsp->host, rtsp->psz_path, user, pwd );
     free(user);
     free(pwd);
     if( rtsp->url == NULL )
@@ -171,7 +170,7 @@ void RtspUnsetup( rtsp_stream_t *rtsp )
 struct rtsp_stream_id_t
 {
     rtsp_stream_t    *stream;
-    sout_stream_id_t *sout_id;
+    sout_stream_id_sys_t *sout_id;
     httpd_url_t      *url;
     unsigned          track_id;
     uint32_t          ssrc;
@@ -199,7 +198,7 @@ struct rtsp_session_t
 struct rtsp_strack_t
 {
     rtsp_stream_id_t  *id;
-    sout_stream_id_t  *sout_id;
+    sout_stream_id_sys_t  *sout_id;
     int          setup_fd;  /* socket created by the SETUP request */
     int          rtp_fd;    /* socket used by the RTP output, when playing */
     uint32_t     ssrc;
@@ -222,7 +221,7 @@ char *RtspAppendTrackPath( rtsp_stream_id_t *id, const char *base )
 }
 
 
-rtsp_stream_id_t *RtspAddId( rtsp_stream_t *rtsp, sout_stream_id_t *sid,
+rtsp_stream_id_t *RtspAddId( rtsp_stream_t *rtsp, sout_stream_id_sys_t *sid,
                              uint32_t ssrc, unsigned clock_rate,
                              int mcast_fd)
 {
@@ -258,7 +257,7 @@ rtsp_stream_id_t *RtspAddId( rtsp_stream_t *rtsp, sout_stream_id_t *sid,
     char *user = var_InheritString(rtsp->owner, "sout-rtsp-user");
     char *pwd = var_InheritString(rtsp->owner, "sout-rtsp-pwd");
 
-    url = id->url = httpd_UrlNewUnique( rtsp->host, urlbuf, user, pwd, NULL );
+    url = id->url = httpd_UrlNew( rtsp->host, urlbuf, user, pwd );
     free( user );
     free( pwd );
     free( urlbuf );
@@ -423,7 +422,7 @@ static void RtspClientAlive( rtsp_session_t *session )
 static int dup_socket(int oldfd)
 {
     int newfd;
-#if !defined(WIN32) || defined(UNDER_CE)
+#ifndef _WIN32
     newfd = vlc_dup(oldfd);
 #else
     WSAPROTOCOL_INFO info;
@@ -437,7 +436,7 @@ static int dup_socket(int oldfd)
 /* Attach a starting VoD RTP id to its RTSP track, and let it
  * initialize with the parameters of the SETUP request */
 int RtspTrackAttach( rtsp_stream_t *rtsp, const char *name,
-                     rtsp_stream_id_t *id, sout_stream_id_t *sout_id,
+                     rtsp_stream_id_t *id, sout_stream_id_sys_t *sout_id,
                      uint32_t *ssrc, uint16_t *seq_init )
 {
     int val = VLC_EGENERIC;
@@ -499,7 +498,7 @@ out:
 
 /* Remove references to the RTP id when it is stopped */
 void RtspTrackDetach( rtsp_stream_t *rtsp, const char *name,
-                      sout_stream_id_t *sout_id )
+                      sout_stream_id_sys_t *sout_id )
 {
     rtsp_session_t *session;
 
@@ -990,7 +989,7 @@ static int RtspHandler( rtsp_stream_t *rtsp, rtsp_stream_id_t *id,
                 size_t infolen = 0;
                 RtspClientAlive(ses);
 
-                sout_stream_id_t *sout_id = NULL;
+                sout_stream_id_sys_t *sout_id = NULL;
                 if (vod)
                 {
                     /* We don't keep a reference to the sout_stream_t,
@@ -1078,8 +1077,7 @@ static int RtspHandler( rtsp_stream_t *rtsp, rtsp_stream_id_t *id,
             {
                 answer->i_status = 405;
                 httpd_MsgAdd( answer, "Allow",
-                              "%s, TEARDOWN, PLAY, GET_PARAMETER",
-                              ( id != NULL ) ? "SETUP" : "DESCRIBE" );
+                              "DESCRIBE, TEARDOWN, PLAY, GET_PARAMETER" );
                 break;
             }
 

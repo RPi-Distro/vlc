@@ -2,7 +2,7 @@
  * skin_parser.hpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: f9d955097983f4c695c550c3c276a2b9e854118d $
+ * $Id: fb85adaee93589d04c0002124d477e1f3cc337db $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -98,8 +98,7 @@ private:
     const string uniqueId( const string &id );
 
     /// Management of relative positions
-    int getRefWidth( bool toScreen );
-    int getRefHeight( bool toScreen );
+    void getRefDimensions( int &rWidth, int &rHeight, bool toScreen );
     int getDimension( string value, int refDimension );
     int getPosition( string value );
     void updateWindowPos( int width, int height );

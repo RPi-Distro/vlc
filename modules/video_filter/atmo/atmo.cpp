@@ -1,25 +1,25 @@
 /*****************************************************************************
-* atmo.cpp : "Atmo Light" video filter
-*****************************************************************************
-* Copyright (C) 2000-2006 the VideoLAN team
-* $Id: 52f3d1833ddf0457d6927eebaaa87264defc9ab0 $
-*
-* Authors: André Weber (WeberAndre@gmx.de)
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
-*****************************************************************************/
+ * atmo.cpp : "Atmo Light" video filter
+ *****************************************************************************
+ * Copyright (C) 2000-2006 VLC authors and VideoLAN
+ * $Id: 518e2c5aee10ff393ebf7aa498b17d56f2c29458 $
+ *
+ * Authors: André Weber (WeberAndre@gmx.de)
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -41,9 +41,9 @@
 #include <vlc_plugin.h>
 #include <vlc_vout.h>
 
-#include <vlc_playlist.h>
 #include <vlc_filter.h>
 #include <vlc_atomic.h>
+#include <vlc_charset.h>
 
 #include "filter_picture.h"
 
@@ -64,12 +64,6 @@
 static int  CreateFilter    ( vlc_object_t * );
 static void DestroyFilter   ( vlc_object_t * );
 static picture_t * Filter( filter_t *, picture_t *);
-
-/* callback for global variable state pause / continue / stop events */
-static void AddStateVariableCallback( filter_t *);
-static void DelStateVariableCallback( filter_t *);
-static int StateCallback(vlc_object_t *, char const *,
-                         vlc_value_t, vlc_value_t, void *);
 
 /* callback for atmo settings variables whose change
    should be immediately realized and applied to output
@@ -137,7 +131,7 @@ strings for settings menus and hints
                                   "process - with more options")
 
 static const int pi_device_type_values[] = {
-#if defined( WIN32 )
+#if defined( _WIN32 )
      0, /* use AtmoWinA.exe userspace driver */
 #endif
      1, /* AtmoLight classic */
@@ -147,7 +141,7 @@ static const int pi_device_type_values[] = {
      5  /* fnordlicht */
 };
 static const char *const ppsz_device_type_descriptions[] = {
-#if defined( WIN32 )
+#if defined( _WIN32 )
         N_("AtmoWin Software"),
 #endif
         N_("Classic AtmoLight"),
@@ -173,7 +167,7 @@ static const char *const ppsz_device_type_descriptions[] = {
                                    "fnordlicht hardware " \
                                    "choose 1 to 254 channels")
 
-#if defined( WIN32 )
+#if defined( _WIN32 )
 #  define DEFAULT_DEVICE   0
 #else
 #  define DEFAULT_DEVICE   1
@@ -256,12 +250,12 @@ static const char *const ppsz_device_type_descriptions[] = {
                                 "On Windows usually something like COM1 or " \
                                 "COM2. On Linux /dev/ttyS01 f.e.")
 
-#define EDGE_TEXT            N_("Edge Weightning")
+#define EDGE_TEXT            N_("Edge weightning")
 #define EDGE_LONGTEXT        N_("Increasing this value will result in color "\
                                 "more depending on the border of the frame.")
 #define BRIGHTNESS_TEXT     N_("Brightness")
 #define BRIGHTNESS_LONGTEXT N_("Overall brightness of your LED stripes")
-#define DARKNESS_TEXT       N_("Darkness Limit")
+#define DARKNESS_TEXT       N_("Darkness limit")
 #define DARKNESS_LONGTEXT   N_("Pixels with a saturation lower than this will "\
                                "be ignored. Should be greater than one for "\
                                "letterboxed videos.")
@@ -276,7 +270,7 @@ static const char *const ppsz_device_type_descriptions[] = {
 #define MEANTHRESHOLD_TEXT     N_("Filter threshold")
 #define MEANTHRESHOLD_LONGTEXT N_("How much a color has to be changed for an "\
                                   "immediate color change.")
-#define MEANPERCENTNEW_TEXT     N_("Filter Smoothness (in %)")
+#define MEANPERCENTNEW_TEXT     N_("Filter smoothness (%)")
 #define MEANPERCENTNEW_LONGTEXT N_("Filter Smoothness")
 
 #define FILTERMODE_TEXT        N_("Output Color filter mode")
@@ -348,7 +342,7 @@ static const char *const ppsz_zone_assignment_descriptions[] = {
     "bitmaps, put them as zone_0.bmp, zone_1.bmp etc. into one folder and "\
     "set the foldername here")
 
-#if defined( WIN32 )
+#if defined( _WIN32 )
 #   define ATMOWINEXE_TEXT      N_("Filename of AtmoWin*.exe")
 #   define ATMOWINEXE_LONGTEXT  N_("if you want the AtmoLight control "\
                                    "software to be launched by VLC, enter the "\
@@ -377,7 +371,7 @@ add_integer( CFG_PREFIX "device", DEFAULT_DEVICE,
 change_integer_list( pi_device_type_values,
                      ppsz_device_type_descriptions )
 
-#if defined(WIN32)
+#if defined(_WIN32)
 add_string(CFG_PREFIX "serialdev", "COM1",
            SERIALDEV_TEXT, SERIALDEV_LONGTEXT, false )
 /*
@@ -672,7 +666,7 @@ static const char *const ppsz_filter_options[] = {
         "momo-channels",
         "fnordlicht-amount",
 
-#if defined(WIN32 )
+#if defined(_WIN32 )
         "atmowinexe",
 #endif
 #if defined(__ATMO_DEBUG__)
@@ -702,7 +696,7 @@ typedef struct
 {
     filter_t *p_filter;
     vlc_thread_t thread;
-    vlc_atomic_t abort;
+    atomic_bool abort;
 
     /* tell the thread which color should be the target of fading */
     uint8_t ui_red;
@@ -752,13 +746,6 @@ struct filter_sys_t
     char sz_framepath[MAX_PATH];
 #endif
 
-    /* light color durring movie pause ... */
-    bool  b_usepausecolor;
-    uint8_t ui_pausecolor_red;
-    uint8_t ui_pausecolor_green;
-    uint8_t ui_pausecolor_blue;
-    int i_fadesteps;
-
     /* light color on movie finish ... */
     uint8_t ui_endcolor_red;
     uint8_t ui_endcolor_green;
@@ -792,7 +779,7 @@ struct filter_sys_t
         picture_t *p_inpic,
         uint8_t *p_transfer_dest);
 
-#if defined( WIN32 )
+#if defined( _WIN32 )
     /* External Library as wrapper arround COM Stuff */
     HINSTANCE h_AtmoCtrl;
     int32_t (*pf_ctrl_atmo_initialize) (void);
@@ -835,7 +822,7 @@ static int32_t AtmoInitialize(filter_t *p_filter, bool b_for_thread)
                                   "some other software/driver may use it?");
             }
         }
-#if defined(WIN32)
+#if defined(_WIN32)
     } else if(p_sys->pf_ctrl_atmo_initialize)
     {
         /* on win32 with active ctrl dll */
@@ -907,7 +894,7 @@ static void AtmoFinalize(filter_t *p_filter, int32_t what)
                 p_atmo_dyndata->UnLockCriticalSection();
             }
         }
-#if defined(WIN32)
+#if defined(_WIN32)
     } else if(p_sys->pf_ctrl_atmo_finalize)
     {
         /* on win32 with active ctrl dll */
@@ -928,7 +915,7 @@ static int32_t AtmoSwitchEffect(filter_t *p_filter, int32_t newMode)
     if(p_sys->p_atmo_config)
     {
        return CAtmoTools::SwitchEffect(p_sys->p_atmo_dyndata, emLivePicture);
-#if defined(WIN32)
+#if defined(_WIN32)
     } else if(p_sys->pf_ctrl_atmo_switch_effect)
     {
         /* on win32 with active ctrl dll */
@@ -958,7 +945,7 @@ static int32_t AtmoSetLiveSource(filter_t *p_filter, int32_t newSource)
         function call would just do nothing special
         in this case
         */
-#if defined(WIN32)
+#if defined(_WIN32)
     } else if(p_sys->pf_ctrl_atmo_set_live_source)
     {
         /* on win32 with active ctrl dll */
@@ -999,7 +986,7 @@ static void AtmoCreateTransferBuffers(filter_t *p_filter,
         p_sys->mini_image_format.biBitCount = bytePerPixel*8;
         p_sys->mini_image_format.biCompression = FourCC;
 
-#if defined(WIN32)
+#if defined(_WIN32)
     } else if(p_sys->pf_ctrl_atmo_create_transfer_buffers)
     {
         /* on win32 with active ctrl dll */
@@ -1023,7 +1010,7 @@ static uint8_t* AtmoLockTransferBuffer(filter_t *p_filter)
     if(p_sys->p_atmo_config)
     {
         return p_sys->p_atmo_transfer_buffer;
-#if defined(WIN32)
+#if defined(_WIN32)
     } else if(p_sys->pf_ctrl_atmo_lock_transfer_buffer)
     {
         /* on win32 with active ctrl dll */
@@ -1070,7 +1057,7 @@ static void AtmoSendPixelData(filter_t *p_filter)
                                                p_sys->p_atmo_transfer_buffer);
             }
         }
-#if defined(WIN32)
+#if defined(_WIN32)
     } else if(p_sys->pf_ctrl_atmo_send_pixel_data)
     {
         /* on win32 with active ctrl dll */
@@ -1119,7 +1106,7 @@ static void Atmo_Shutdown(filter_t *p_filter)
           p_sys->p_fadethread->i_steps  = 1;
         else
           p_sys->p_fadethread->i_steps  = p_sys->i_endfadesteps;
-        vlc_atomic_set(&p_sys->p_fadethread->abort, 0);
+        atomic_store(&p_sys->p_fadethread->abort, false);
 
         if( vlc_clone( &p_sys->p_fadethread->thread,
                        FadeToColorThread,
@@ -1181,7 +1168,7 @@ static void Atmo_SetupImageSize(filter_t *p_filter)
 
     if(p_sys->p_atmo_config)
     {
-#if defined(WIN32)
+#if defined(_WIN32)
     } else if(p_sys->pf_ctrl_atmo_get_image_size)
     {
         /* on win32 with active ctrl dll */
@@ -1585,9 +1572,9 @@ static void Atmo_SetupParameters(filter_t *p_filter)
     */
 
 
-#if defined(WIN32)
+#if defined(_WIN32)
     /*
-    only on WIN32 the user has the choice between
+    only on _WIN32 the user has the choice between
     internal driver and external
     */
 
@@ -1598,7 +1585,7 @@ static void Atmo_SetupParameters(filter_t *p_filter)
         if(p_sys->h_AtmoCtrl == NULL)
         {
             /*
-              be clever if the location of atmowina.exe is set
+              be clever if the location of atmowin.exe is set
               try to load the dll from the same folder :-)
             */
             char *psz_path = var_CreateGetStringCommand( p_filter,
@@ -1617,7 +1604,9 @@ static void Atmo_SetupParameters(filter_t *p_filter)
                     if( psz_dllname )
                     {
                         msg_Dbg( p_filter, "Try Loading '%s'", psz_dllname );
-                        p_sys->h_AtmoCtrl = LoadLibraryA( psz_dllname );
+                        TCHAR* ptsz_dllname = ToT(psz_dllname);
+                        p_sys->h_AtmoCtrl = LoadLibrary( ptsz_dllname );
+                        free(ptsz_dllname);
                     }
                     free( psz_dllname );
                 }
@@ -1773,7 +1762,7 @@ static void Atmo_SetupParameters(filter_t *p_filter)
     if(psz_path != NULL)
     {
         strcpy(p_sys->sz_framepath, psz_path);
-#if defined( WIN32 ) || defined( __OS2__ )
+#if defined( _WIN32 ) || defined( __OS2__ )
         size_t i_strlen = strlen(p_sys->sz_framepath);
         if((i_strlen>0) && (p_sys->sz_framepath[i_strlen-1] != '\\'))
         {
@@ -1786,30 +1775,6 @@ static void Atmo_SetupParameters(filter_t *p_filter)
     msg_Dbg(p_filter,"saveframesfolder %s",p_sys->sz_framepath);
 #endif
 
-
-    /*
-    because atmowin could also be used for lighten up the room - I think if you
-    pause the video it would be useful to get a little bit more light into to
-    your living room? - instead switching on a lamp?
-    */
-    p_sys->b_usepausecolor = var_CreateGetBoolCommand( p_filter,
-        CFG_PREFIX "usepausecolor" );
-    p_sys->ui_pausecolor_red = (uint8_t)var_CreateGetIntegerCommand( p_filter,
-        CFG_PREFIX "pcolor-red");
-    p_sys->ui_pausecolor_green = (uint8_t)var_CreateGetIntegerCommand( p_filter,
-        CFG_PREFIX "pcolor-green");
-    p_sys->ui_pausecolor_blue = (uint8_t)var_CreateGetIntegerCommand( p_filter,
-        CFG_PREFIX "pcolor-blue");
-    p_sys->i_fadesteps = var_CreateGetIntegerCommand( p_filter,
-        CFG_PREFIX "fadesteps");
-    if(p_sys->i_fadesteps < 1)
-        p_sys->i_fadesteps = 1;
-    msg_Dbg(p_filter,"use pause color %d, RGB: %d, %d, %d, Fadesteps: %d",
-        (int)p_sys->b_usepausecolor,
-        p_sys->ui_pausecolor_red,
-        p_sys->ui_pausecolor_green,
-        p_sys->ui_pausecolor_blue,
-        p_sys->i_fadesteps);
 
     /*
     this color is use on shutdown of the filter - the define the
@@ -1840,7 +1805,7 @@ static void Atmo_SetupParameters(filter_t *p_filter)
     */
     int i = AtmoInitialize(p_filter, false);
 
-#if defined( WIN32 )
+#if defined( _WIN32 )
     if((i != 1) && (p_sys->i_device_type == 0))
     {
         /*
@@ -1849,16 +1814,17 @@ static void Atmo_SetupParameters(filter_t *p_filter)
         */
         char *psz_path = var_CreateGetStringCommand( p_filter,
                                                CFG_PREFIX "atmowinexe" );
+        LPTSTR ptsz_path = ToT(psz_path);
         if(psz_path != NULL)
         {
             STARTUPINFO startupinfo;
             PROCESS_INFORMATION pinfo;
             memset(&startupinfo, 0, sizeof(STARTUPINFO));
             startupinfo.cb = sizeof(STARTUPINFO);
-            if(CreateProcess(psz_path, NULL, NULL, NULL,
+            if(CreateProcess(ptsz_path, NULL, NULL, NULL,
                 FALSE, 0, NULL, NULL, &startupinfo, &pinfo) == TRUE)
             {
-                msg_Dbg(p_filter,"launched AtmoWin from %s",psz_path);
+                msg_Dbg(p_filter,"launched AtmoWin from %s", psz_path);
                 WaitForInputIdle(pinfo.hProcess, 5000);
                 /*
                   retry to initialize the library COM ... functionality
@@ -1869,6 +1835,7 @@ static void Atmo_SetupParameters(filter_t *p_filter)
                 msg_Err(p_filter,"failed to launch AtmoWin from %s", psz_path);
             }
             free(psz_path);
+            free(ptsz_path);
         }
     }
 #endif
@@ -1950,8 +1917,6 @@ static int CreateFilter( vlc_object_t *p_this )
     config_ChainParse( p_filter, CFG_PREFIX, ppsz_filter_options,
                        p_filter->p_cfg );
 
-    AddStateVariableCallback(p_filter);
-
     AddAtmoSettingsVariablesCallbacks(p_filter);
 
     Atmo_SetupParameters(p_filter);
@@ -1975,13 +1940,11 @@ static void DestroyFilter( vlc_object_t *p_this )
 
     msg_Dbg( p_filter, "Destroy Atmo Filter");
 
-    DelStateVariableCallback(p_filter);
-
     DelAtmoSettingsVariablesCallbacks(p_filter);
 
     Atmo_Shutdown(p_filter);
 
-#if defined( WIN32 )
+#if defined( _WIN32 )
     if(p_sys->h_AtmoCtrl != NULL)
     {
         FreeLibrary(p_sys->h_AtmoCtrl);
@@ -2062,7 +2025,7 @@ static void ExtractMiniImage_YUV(filter_sys_t *p_sys,
 
     /*  these two ugly loops extract the small image - goes it faster? how?
     the loops are so designed that there is a small border around the extracted
-    image so we wont get column and row - zero from the frame, and not the most
+    image so we won't get column and row - zero from the frame, and not the most
     right and bottom pixels --- which may be clipped on computers useing TV out
     - through overscan!
 
@@ -2385,7 +2348,7 @@ static void *FadeToColorThread(void *obj)
             /* send the same pixel data again... to unlock the buffer! */
             AtmoSendPixelData( p_fadethread->p_filter );
 
-            while( (!vlc_atomic_get (&p_fadethread->abort)) &&
+            while( (!atomic_load (&p_fadethread->abort)) &&
                 (i_steps_done < p_fadethread->i_steps))
             {
                 p_transfer = AtmoLockTransferBuffer( p_fadethread->p_filter );
@@ -2398,7 +2361,7 @@ static void *FadeToColorThread(void *obj)
                 thread improvements wellcome!
                 */
                 for(i_index = 0;
-                    (i_index < i_size) && (!vlc_atomic_get (&p_fadethread->abort));
+                    (i_index < i_size) && (!atomic_load (&p_fadethread->abort));
                     i_index+=4)
                 {
                     i_src_blue  = p_source[i_index+0];
@@ -2454,113 +2417,13 @@ static void CheckAndStopFadeThread(filter_t *p_filter)
     {
         msg_Dbg(p_filter, "kill still running fadeing thread...");
 
-        vlc_atomic_set(&p_sys->p_fadethread->abort, 1);
+        atomic_store(&p_sys->p_fadethread->abort, true);
 
         vlc_join(p_sys->p_fadethread->thread, NULL);
         free(p_sys->p_fadethread);
         p_sys->p_fadethread = NULL;
     }
     vlc_mutex_unlock( &p_sys->filter_lock );
-}
-
-/*****************************************************************************
-* StateCallback: Callback for the inputs variable "State" to get notified
-* about Pause and Continue Playback events.
-*****************************************************************************/
-static int StateCallback( vlc_object_t *, char const *,
-                         vlc_value_t oldval, vlc_value_t newval,
-                         void *p_data )
-{
-    filter_t *p_filter = (filter_t *)p_data;
-    filter_sys_t *p_sys = (filter_sys_t *)p_filter->p_sys;
-
-    if(p_sys->b_usepausecolor && p_sys->b_enabled)
-    {
-        msg_Dbg(p_filter, "state change from: %"PRId64" to %"PRId64, oldval.i_int,
-            newval.i_int);
-
-        if((newval.i_int == PAUSE_S) && (oldval.i_int == PLAYING_S))
-        {
-            /* tell the other thread to stop sending images to light
-               controller */
-            p_sys->b_pause_live = true;
-
-            // clean up old thread - should not happen....
-            CheckAndStopFadeThread( p_filter );
-
-            // perpare spawn fadeing thread
-            vlc_mutex_lock( &p_sys->filter_lock );
-            /*
-            launch only a new thread if there is none active!
-            or waiting for cleanup
-            */
-            if(p_sys->p_fadethread == NULL)
-            {
-                p_sys->p_fadethread = (fadethread_t *)calloc( 1, sizeof(fadethread_t) );
-                p_sys->p_fadethread->p_filter = p_filter;
-                p_sys->p_fadethread->ui_red   = p_sys->ui_pausecolor_red;
-                p_sys->p_fadethread->ui_green = p_sys->ui_pausecolor_green;
-                p_sys->p_fadethread->ui_blue  = p_sys->ui_pausecolor_blue;
-                p_sys->p_fadethread->i_steps  = p_sys->i_fadesteps;
-                vlc_atomic_set(&p_sys->p_fadethread->abort, 0);
-
-                if( vlc_clone( &p_sys->p_fadethread->thread,
-                               FadeToColorThread,
-                               p_sys->p_fadethread,
-                               VLC_THREAD_PRIORITY_LOW ) )
-                {
-                    msg_Err( p_filter, "cannot create FadeToColorThread" );
-                    free( p_sys->p_fadethread );
-                    p_sys->p_fadethread = NULL;
-                }
-            }
-            vlc_mutex_unlock( &p_sys->filter_lock );
-        }
-
-        if((newval.i_int == PLAYING_S) && (oldval.i_int == PAUSE_S))
-        {
-            /* playback continues check thread state */
-            CheckAndStopFadeThread( p_filter );
-            /* reactivate the Render function... to do its normal work */
-            p_sys->b_pause_live = false;
-        }
-    }
-
-    return VLC_SUCCESS;
-}
-
-/*****************************************************************************
-* AddPlaylistInputThreadStateCallback: Setup call back on "State" Variable
-*****************************************************************************
-* Add Callback function to the "state" variable of the input thread..
-* first find the PlayList and get the input thread from there to attach
-* my callback?
-*****************************************************************************/
-static void AddStateVariableCallback(filter_t *p_filter)
-{
-    input_thread_t *p_input = playlist_CurrentInput( pl_Get( p_filter ) );
-    if(p_input)
-    {
-        var_AddCallback( p_input, "state", StateCallback, p_filter );
-        vlc_object_release( p_input );
-    }
-}
-
-/*****************************************************************************
-* DelPlaylistInputThreadStateCallback: Remove call back on "State" Variable
-*****************************************************************************
-* Delete the callback function to the "state" variable of the input thread...
-* first find the PlayList and get the input thread from there to attach
-* my callback.
-*****************************************************************************/
-static void DelStateVariableCallback( filter_t *p_filter )
-{
-    input_thread_t *p_input = playlist_CurrentInput( pl_Get ( p_filter ) );
-    if(p_input)
-    {
-        var_DelCallback( p_input, "state", StateCallback, p_filter );
-        vlc_object_release( p_input );
-    }
 }
 
 /****************************************************************************

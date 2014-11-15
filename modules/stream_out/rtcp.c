@@ -2,7 +2,7 @@
  * rtcp.c: RTCP stream output support
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 92c31549266cba77fc078236b5761e3e0e0cf612 $
+ * $Id: 6a85bfaf2cb2b1269732f73113e20237a5eb0753 $
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -11,7 +11,7 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
@@ -82,11 +82,8 @@ rtcp_sender_t *OpenRTCP (vlc_object_t *obj, int rtp_fd, int proto,
     if (mux)
     {
         /* RTP/RTCP mux: duplicate the socket */
-#ifndef WIN32
+#ifndef _WIN32
         fd = vlc_dup (rtp_fd);
-#elif defined(UNDER_CE)
- #warning Muxed RTP/RTCP unimplemented!
-        fd = -1;
 #else
         WSAPROTOCOL_INFO info;
         WSADuplicateSocket (rtp_fd, GetCurrentProcessId (), &info);

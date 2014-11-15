@@ -1,8 +1,8 @@
 /*****************************************************************************
  * about.h: MacOS X About Panel
  *****************************************************************************
- * Copyright (C) 2001-2012 VLC authors and VideoLAN
- * $Id: d96efb07e7f875b5c4b43b3666f53b4598850c62 $
+ * Copyright (C) 2001-2013 VLC authors and VideoLAN
+ * $Id: 8bab02e484f7e96bc733ce5cae2e7c8d8a2271c2 $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne -at- videolan.org>
@@ -37,15 +37,21 @@
     IBOutlet id o_credits_textview;
     IBOutlet id o_credits_scrollview;
     IBOutlet id o_gpl_btn;
+    IBOutlet id o_credits_btn;
+    IBOutlet id o_authors_btn;
     IBOutlet id o_name_field;
-    id o_color_backdrop;
+    IBOutlet id o_icon_view;
+    IBOutlet id o_joinus_txt;
+    IBOutlet id o_trademarks_txt;
 
     NSTimer *o_scroll_timer;
     float f_current;
-    float f_end;
+    CGFloat f_end;
     NSTimeInterval i_start;
     BOOL b_restart;
     BOOL b_isSetUp;
+
+    NSString *o_authors;
 
     /* generic help window */
     IBOutlet id o_help_window;
@@ -53,20 +59,13 @@
     IBOutlet id o_help_bwd_btn;
     IBOutlet id o_help_fwd_btn;
     IBOutlet id o_help_home_btn;
-
-    /* licence window */
-    IBOutlet id o_gpl_window;
-    IBOutlet id o_gpl_field;
 }
 
 + (VLAboutBox *)sharedInstance;
 - (void)showAbout;
 - (void)showHelp;
-- (IBAction)showGPL:(id)sender;
+- (void)showGPL;
+- (IBAction)buttonAction:(id)sender;
 - (IBAction)helpGoHome:(id)sender;
-
-@end
-
-@interface VLAboutColoredBackdrop : NSView
 
 @end

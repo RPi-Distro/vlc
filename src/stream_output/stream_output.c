@@ -2,7 +2,7 @@
  * stream_output.c : stream output module
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: 9587cf7314e73e81dc457c2bfc9677c55c75c578 $
+ * $Id: bbc22bd7820c213d1927a3dfc856135e99cdc2a6 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -109,9 +109,7 @@ sout_instance_t *sout_NewInstance( vlc_object_t *p_parent, const char *psz_dest 
 
     /* *** init descriptor *** */
     p_sout->psz_sout    = strdup( psz_dest );
-    p_sout->p_meta      = NULL;
     p_sout->i_out_pace_nocontrol = 0;
-    p_sout->p_sys       = NULL;
 
     vlc_mutex_init( &p_sout->lock );
     p_sout->p_stream = NULL;
@@ -130,6 +128,7 @@ sout_instance_t *sout_NewInstance( vlc_object_t *p_parent, const char *psz_dest 
 
     FREENULL( p_sout->psz_sout );
 
+    vlc_mutex_destroy( &p_sout->lock );
     vlc_object_release( p_sout );
     return NULL;
 }
@@ -144,12 +143,6 @@ void sout_DeleteInstance( sout_instance_t * p_sout )
 
     /* *** free all string *** */
     FREENULL( p_sout->psz_sout );
-
-    /* delete meta */
-    if( p_sout->p_meta )
-    {
-        vlc_meta_Delete( p_sout->p_meta );
-    }
 
     vlc_mutex_destroy( &p_sout->lock );
 
@@ -268,9 +261,6 @@ sout_access_out_t *sout_AccessOutNew( vlc_object_t *p_sout,
     p_access->pf_write   = NULL;
     p_access->pf_control = NULL;
     p_access->p_module   = NULL;
-
-    p_access->i_writes = 0;
-    p_access->i_sent_bytes = 0;
 
     p_access->p_module   =
         module_need( p_access, "sout access", p_access->psz_access, true );
@@ -465,7 +455,6 @@ sout_input_t *sout_MuxAddStream( sout_mux_t *p_mux, es_format_t *p_fmt )
     p_input = malloc( sizeof( sout_input_t ) );
     if( !p_input )
         return NULL;
-    p_input->p_sout = p_mux->p_sout;
     p_input->p_fmt  = p_fmt;
     p_input->p_fifo = block_FifoNew();
     p_input->p_sys  = NULL;
@@ -523,17 +512,18 @@ void sout_MuxDeleteStream( sout_mux_t *p_mux, sout_input_t *p_input )
 /*****************************************************************************
  * sout_MuxSendBuffer:
  *****************************************************************************/
-void sout_MuxSendBuffer( sout_mux_t *p_mux, sout_input_t *p_input,
+int sout_MuxSendBuffer( sout_mux_t *p_mux, sout_input_t *p_input,
                          block_t *p_buffer )
 {
+    mtime_t i_dts = p_buffer->i_dts;
     block_FifoPut( p_input->p_fifo, p_buffer );
 
     if( p_mux->p_sout->i_out_pace_nocontrol )
     {
         mtime_t current_date = mdate();
-        if ( current_date > p_buffer->i_dts )
+        if ( current_date > i_dts )
             msg_Warn( p_mux, "late buffer for mux input (%"PRId64")",
-                      current_date - p_buffer->i_dts );
+                      current_date - i_dts );
     }
 
     if( p_mux->b_waiting_stream )
@@ -541,15 +531,15 @@ void sout_MuxSendBuffer( sout_mux_t *p_mux, sout_input_t *p_input,
         const int64_t i_caching = var_GetInteger( p_mux->p_sout, "sout-mux-caching" ) * INT64_C(1000);
 
         if( p_mux->i_add_stream_start < 0 )
-            p_mux->i_add_stream_start = p_buffer->i_dts;
+            p_mux->i_add_stream_start = i_dts;
 
         /* Wait until we have enought data before muxing */
         if( p_mux->i_add_stream_start < 0 ||
-            p_buffer->i_dts < p_mux->i_add_stream_start + i_caching )
-            return;
+            i_dts < p_mux->i_add_stream_start + i_caching )
+            return VLC_SUCCESS;
         p_mux->b_waiting_stream = false;
     }
-    p_mux->pf_mux( p_mux );
+    return p_mux->pf_mux( p_mux );
 }
 
 
@@ -567,14 +557,7 @@ int sout_MuxGetStream( sout_mux_t *p_mux, int i_blocks, mtime_t *pi_dts )
         block_t *p_data;
 
         if( block_FifoCount( p_input->p_fifo ) < i_blocks )
-        {
-            if( p_input->p_fmt->i_cat != SPU_ES )
-            {
-                return -1;
-            }
-            /* FIXME: SPU muxing */
             continue;
-        }
 
         p_data = block_FifoShow( p_input->p_fifo );
         if( i_stream < 0 || p_data->i_dts < i_dts )
@@ -620,7 +603,7 @@ static int mrl_Parse( mrl_t *p_mrl, const char *psz_mrl )
             psz_parser++;
         }
     }
-#if defined( WIN32 ) || defined( UNDER_CE ) || defined( __OS2__ )
+#if defined( _WIN32 ) || defined( __OS2__ )
     if( psz_parser - psz_dup == 1 )
     {
         /* msg_Warn( p_sout, "drive letter %c: found in source string",
@@ -729,9 +712,14 @@ static void mrl_Clean( mrl_t *p_mrl )
 /* Destroy a "stream_out" module */
 static void sout_StreamDelete( sout_stream_t *p_stream )
 {
+    sout_instance_t *p_sout = (sout_instance_t *)(p_stream->p_parent);
+
     msg_Dbg( p_stream, "destroying chain... (name=%s)", p_stream->psz_name );
 
-    if( p_stream->p_module ) module_unneed( p_stream, p_stream->p_module );
+    p_sout->i_out_pace_nocontrol -= p_stream->pace_nocontrol;
+
+    if( p_stream->p_module != NULL )
+        module_unneed( p_stream, p_stream->p_module );
 
     FREENULL( p_stream->psz_name );
 
@@ -777,10 +765,11 @@ static sout_stream_t *sout_StreamNew( sout_instance_t *p_sout, char *psz_name,
         return NULL;
 
     p_stream->p_sout   = p_sout;
-    p_stream->p_sys    = NULL;
     p_stream->psz_name = psz_name;
     p_stream->p_cfg    = p_cfg;
     p_stream->p_next   = p_next;
+    p_stream->pace_nocontrol = false;
+    p_stream->p_sys = NULL;
 
     msg_Dbg( p_sout, "stream=`%s'", p_stream->psz_name );
 
@@ -797,6 +786,7 @@ static sout_stream_t *sout_StreamNew( sout_instance_t *p_sout, char *psz_name,
         return NULL;
     }
 
+    p_sout->i_out_pace_nocontrol += p_stream->pace_nocontrol;
     return p_stream;
 }
 

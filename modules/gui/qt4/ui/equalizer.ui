@@ -19,7 +19,16 @@
      <property name="spacing">
       <number>6</number>
      </property>
-     <property name="margin">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
       <number>0</number>
      </property>
      <item>
@@ -79,25 +88,15 @@
      <property name="maximum">
       <number>400</number>
      </property>
+     <property name="value">
+      <number>320</number>
+     </property>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="invertedAppearance">
-      <bool>false</bool>
-     </property>
     </widget>
    </item>
-   <item row="1" column="2" rowspan="2">
-    <widget class="QFrame" name="frame">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="2">
+   <item row="3" column="0" colspan="2">
     <widget class="QLabel" name="preampLabel">
      <property name="text">
       <string>Preamp</string>
@@ -122,6 +121,23 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="1" column="2" rowspan="4">
+    <widget class="QWidget" name="slidersPlaceholder" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QLabel" name="preampValue">
+     <property name="text">
+      <string>0.00 dB</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

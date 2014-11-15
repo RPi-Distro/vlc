@@ -2,7 +2,7 @@
  * playlist_fetcher.h:
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 348ebc2fd5932c414c7bda5df6ea6f52f0c012a1 $
+ * $Id: c7d9c2d7f868df98016dd1cfe188fe85e5411fe6 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -25,6 +25,8 @@
 #ifndef _PLAYLIST_FETCHER_H
 #define _PLAYLIST_FETCHER_H 1
 
+#include <vlc_input_item.h>
+
 /**
  * Fetcher opaque structure.
  *
@@ -36,7 +38,7 @@ typedef struct playlist_fetcher_t playlist_fetcher_t;
 /**
  * This function creates the fetcher object and thread.
  */
-playlist_fetcher_t *playlist_fetcher_New( playlist_t * );
+playlist_fetcher_t *playlist_fetcher_New( vlc_object_t * );
 
 /**
  * This function enqueues the provided item to be art fetched.
@@ -44,7 +46,8 @@ playlist_fetcher_t *playlist_fetcher_New( playlist_t * );
  * The input item is retained until the art fetching is done or until the
  * fetcher object is destroyed.
  */
-void playlist_fetcher_Push( playlist_fetcher_t *, input_item_t * );
+void playlist_fetcher_Push( playlist_fetcher_t *, input_item_t *,
+                            input_item_meta_request_option_t );
 
 /**
  * This function destroys the fetcher object and thread.

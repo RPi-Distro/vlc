@@ -1,9 +1,9 @@
 /*****************************************************************************
- * libvlc_internal.h : Definition of opaque structures for libvlc exported API
+ * media_list_internal.h : Definition of opaque structures for libvlc exported API
  * Also contains some internal utility functions
  *****************************************************************************
  * Copyright (C) 2005-2009 VLC authors and VideoLAN
- * $Id: 3dd9c35c7eb357f59d0daae3932f0f52ae995794 $
+ * $Id: 8df6579a80a103284310e9450b6e31de023d5653 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -45,10 +45,6 @@ struct libvlc_media_list_t
     libvlc_media_t * p_md; /* The media from which the
                                        * mlist comes, if any. */
     vlc_array_t                items;
-
-    /* Other way to see that media list */
-    /* Used in flat_media_list.c */
-    libvlc_media_list_t *       p_flat_mlist;
 
     /* This indicates if this media list is read-only
      * from a user point of view */

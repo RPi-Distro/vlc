@@ -2,23 +2,23 @@
  * rar.h: uncompressed RAR parser
  *****************************************************************************
  * Copyright (C) 2008-2010 Laurent Aimar
- * $Id: 174879cfe26d39a7393c1c0f91c0729e5255d640 $
+ * $Id: 889309fa20b787f16fe5ead302fac275f8093a0e $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 typedef struct {
@@ -40,5 +40,9 @@ typedef struct {
 
 int  RarProbe(stream_t *);
 void RarFileDelete(rar_file_t *);
-int  RarParse(stream_t *, int *, rar_file_t ***);
+int  RarParse(stream_t *, int *, rar_file_t ***, bool);
 
+int RarAccessOpen(vlc_object_t *);
+void RarAccessClose(vlc_object_t *);
+int RarStreamOpen(vlc_object_t *);
+void RarStreamClose(vlc_object_t *);

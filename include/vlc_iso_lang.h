@@ -1,8 +1,8 @@
 /*****************************************************************************
- * iso_lang.h: function to decode language code (in dvd or a52 for instance).
+ * vlc_iso_lang.h: function to decode language code (in dvd or a52 for instance).
  *****************************************************************************
  * Copyright (C) 1998-2001 VLC authors and VideoLAN
- * $Id: c3ded4afb7ab772812b964a708a75357e4105eff $
+ * $Id: f27fb665f3db2754e137610a74f14d157bb647e9 $
  *
  * Author: Stéphane Borel <stef@via.ecp.fr>
  *         Arnaud de Bossoreille de Ribou <bozo@via.ecp.fr>
@@ -30,7 +30,6 @@
 struct iso639_lang_t
 {
     const char *psz_eng_name;    /* Description in English */
-    const char *psz_native_name; /* Description in native language */
     const char psz_iso639_1[3];  /* ISO-639-1 (2 characters) code */
     const char psz_iso639_2T[4]; /* ISO-639-2/T (3 characters) English code */
     const char psz_iso639_2B[4]; /* ISO-639-2/B (3 characters) native code */

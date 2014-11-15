@@ -19,7 +19,6 @@ def add_info(report):
 		"libqtgui4",
 		"libsdl-image1.2",
 		"libsdl1.2debian",
-		"libtar",
 		"libx11-6",
 		"libx264-85",
 		"libxcb-keysyms1",

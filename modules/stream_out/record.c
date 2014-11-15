@@ -1,24 +1,24 @@
 /*****************************************************************************
  * record.c: record stream output module
  *****************************************************************************
- * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: b8f1ac190f05997ae32facbb1fe6b74b72faca02 $
+ * Copyright (C) 2008-2009 VLC authors and VideoLAN
+ * $Id: 8231f487fb2e52ae056c1ee5f1dce752a95d28bd $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -75,19 +75,19 @@ static const char *const ppsz_sout_options[] = {
 };
 
 /* */
-static sout_stream_id_t *Add ( sout_stream_t *, es_format_t * );
-static int               Del ( sout_stream_t *, sout_stream_id_t * );
-static int               Send( sout_stream_t *, sout_stream_id_t *, block_t* );
+static sout_stream_id_sys_t *Add ( sout_stream_t *, es_format_t * );
+static int               Del ( sout_stream_t *, sout_stream_id_sys_t * );
+static int               Send( sout_stream_t *, sout_stream_id_sys_t *, block_t* );
 
 /* */
-struct sout_stream_id_t
+struct sout_stream_id_sys_t
 {
     es_format_t fmt;
 
     block_t *p_first;
     block_t **pp_last;
 
-    sout_stream_id_t *id;
+    sout_stream_id_sys_t *id;
 
     bool b_wait_key;
     bool b_wait_start;
@@ -108,12 +108,12 @@ struct sout_stream_sys_t
     bool        b_drop;
 
     int              i_id;
-    sout_stream_id_t **id;
+    sout_stream_id_sys_t **id;
     mtime_t     i_dts_start;
 };
 
 static void OutputStart( sout_stream_t *p_stream );
-static void OutputSend( sout_stream_t *p_stream, sout_stream_id_t *id, block_t * );
+static void OutputSend( sout_stream_t *p_stream, sout_stream_id_sys_t *id, block_t * );
 
 /*****************************************************************************
  * Open:
@@ -180,10 +180,10 @@ static void Close( vlc_object_t * p_this )
 /*****************************************************************************
  *
  *****************************************************************************/
-static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
+static sout_stream_id_sys_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
-    sout_stream_id_t *id;
+    sout_stream_id_sys_t *id;
 
     id = malloc( sizeof(*id) );
     if( !id )
@@ -201,7 +201,7 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     return id;
 }
 
-static int Del( sout_stream_t *p_stream, sout_stream_id_t *id )
+static int Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
 
@@ -230,7 +230,7 @@ static int Del( sout_stream_t *p_stream, sout_stream_id_t *id )
     return VLC_SUCCESS;
 }
 
-static int Send( sout_stream_t *p_stream, sout_stream_id_t *id,
+static int Send( sout_stream_t *p_stream, sout_stream_id_sys_t *id,
                  block_t *p_buffer )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
@@ -256,8 +256,8 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_t *id,
  *****************************************************************************/
 typedef struct
 {
-    const char  *psz_muxer;
-    const char  *psz_extension;
+    const char  psz_muxer[4];
+    const char  psz_extension[4];
     int         i_es_max;
     vlc_fourcc_t codec[128];
 } muxer_properties_t;
@@ -276,7 +276,7 @@ static const muxer_properties_t p_muxers[] = {
     M( "wav", "wav", 1,         VLC_CODEC_U8,   VLC_CODEC_S16L,
                                 VLC_CODEC_S24L, VLC_CODEC_S32L, VLC_CODEC_FL32 ),
 
-    //M( "ffmpeg{mux=flac}", "flac", 1, VLC_CODEC_FLAC ), BROKEN
+    //M( "avformat{mux=flac}", "flac", 1, VLC_CODEC_FLAC ), BROKEN
 
     M( "ogg", "ogg", INT_MAX,   VLC_CODEC_VORBIS, VLC_CODEC_SPEEX,  VLC_CODEC_FLAC,
                                 VLC_CODEC_SUBT,   VLC_CODEC_THEORA, VLC_CODEC_DIRAC  ),
@@ -292,13 +292,19 @@ static const muxer_properties_t p_muxers[] = {
                                 VLC_CODEC_DTS,
                                 VLC_CODEC_SPU ),
 
+    M( "avi", "avi", 100,       VLC_CODEC_A52, VLC_CODEC_MPGA,
+                                VLC_CODEC_WMA1, VLC_CODEC_WMA2, VLC_CODEC_WMAP, VLC_CODEC_WMAL,
+                                VLC_CODEC_U8, VLC_CODEC_S16L, VLC_CODEC_S24L,
+                                VLC_CODEC_MP4V ),
+
     M( "ts", "ts", 8000,        VLC_CODEC_MPGV,
                                 VLC_CODEC_H264,
                                 VLC_CODEC_MPGA, VLC_CODEC_DVD_LPCM, VLC_CODEC_A52,
                                 VLC_CODEC_DTS,  VLC_CODEC_MP4A,
                                 VLC_CODEC_DVBS, VLC_CODEC_TELETEXT ),
 
-    M( NULL, NULL, 0, 0 )
+    M( "mkv", "mkv", 32,        VLC_CODEC_H264, VLC_CODEC_VP8, VLC_CODEC_MP4V,
+                                VLC_CODEC_A52,  VLC_CODEC_MP4A, VLC_CODEC_VORBIS, VLC_CODEC_FLAC ),
 };
 #undef M
 
@@ -324,8 +330,8 @@ static int OutputNew( sout_stream_t *p_stream,
     }
     free( psz_tmp );
 
-    if( asprintf( &psz_output, "std{access=file,mux='%s',dst='%s'}",
-                  psz_muxer, psz_file ) < 0 )
+    if( asprintf( &psz_output, "std{access=file{no-append,no-format},"
+                  "mux='%s',dst='%s'}", psz_muxer, psz_file ) < 0 )
     {
         psz_output = NULL;
         goto error;
@@ -343,7 +349,7 @@ static int OutputNew( sout_stream_t *p_stream,
     i_count = 0;
     for( int i = 0; i < p_sys->i_id; i++ )
     {
-        sout_stream_id_t *id = p_sys->id[i];
+        sout_stream_id_sys_t *id = p_sys->id[i];
 
         id->id = sout_StreamIdAdd( p_sys->p_out, &id->fmt );
         if( id->id )
@@ -385,7 +391,7 @@ static void OutputStart( sout_stream_t *p_stream )
      * TODO we could insert transcode in a few cases like
      * s16l <-> s16b
      */
-    for( int i = 0; p_muxers[i].psz_muxer != NULL; i++ )
+    for( unsigned i = 0; i < sizeof(p_muxers) / sizeof(*p_muxers); i++ )
     {
         bool b_ok;
         if( p_sys->i_id > p_muxers[i].i_es_max )
@@ -420,25 +426,25 @@ static void OutputStart( sout_stream_t *p_stream )
      * keeps most of our stream */
     if( !psz_muxer || !psz_extension )
     {
-        static const char *ppsz_muxers[][2] = {
+        static const char ppsz_muxers[][2][4] = {
             { "avi", "avi" }, { "mp4", "mp4" }, { "ogg", "ogg" },
             { "asf", "asf" }, {  "ts",  "ts" }, {  "ps", "mpg" },
+            { "mkv", "mkv" },
 #if 0
             // XXX ffmpeg sefault really easily if you try an unsupported codec
             // mov and avi at least segfault
-            { "ffmpeg{mux=avi}", "avi" },
-            { "ffmpeg{mux=mov}", "mov" },
-            { "ffmpeg{mux=mp4}", "mp4" },
-            { "ffmpeg{mux=nsv}", "nsv" },
-            { "ffmpeg{mux=flv}", "flv" },
+            { "avformat{mux=avi}", "avi" },
+            { "avformat{mux=mov}", "mov" },
+            { "avformat{mux=mp4}", "mp4" },
+            { "avformat{mux=nsv}", "nsv" },
+            { "avformat{mux=flv}", "flv" },
 #endif
-            { NULL, NULL }
         };
         int i_best = 0;
         int i_best_es = 0;
 
         msg_Warn( p_stream, "failed to find an adequate muxer, probing muxers" );
-        for( int i = 0; ppsz_muxers[i][0] != NULL; i++ )
+        for( unsigned i = 0; i < sizeof(ppsz_muxers) / sizeof(*ppsz_muxers); i++ )
         {
             char *psz_file;
             int i_es;
@@ -460,7 +466,7 @@ static void OutputStart( sout_stream_t *p_stream )
             /* */
             for( int i = 0; i < p_sys->i_id; i++ )
             {
-                sout_stream_id_t *id = p_sys->id[i];
+                sout_stream_id_sys_t *id = p_sys->id[i];
 
                 if( id->id )
                     sout_StreamIdDel( p_sys->p_out, id->id );
@@ -500,7 +506,7 @@ static void OutputStart( sout_stream_t *p_stream )
     p_sys->i_dts_start = 0;
     for( int i = 0; i < p_sys->i_id; i++ )
     {
-        sout_stream_id_t *id = p_sys->id[i];
+        sout_stream_id_sys_t *id = p_sys->id[i];
         block_t *p_block;
 
         if( !id->id || !id->p_first )
@@ -523,7 +529,7 @@ static void OutputStart( sout_stream_t *p_stream )
     /* Send buffered data */
     for( int i = 0; i < p_sys->i_id; i++ )
     {
-        sout_stream_id_t *id = p_sys->id[i];
+        sout_stream_id_sys_t *id = p_sys->id[i];
 
         if( !id->id )
             continue;
@@ -545,7 +551,7 @@ static void OutputStart( sout_stream_t *p_stream )
     }
 }
 
-static void OutputSend( sout_stream_t *p_stream, sout_stream_id_t *id, block_t *p_block )
+static void OutputSend( sout_stream_t *p_stream, sout_stream_id_sys_t *id, block_t *p_block )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
 

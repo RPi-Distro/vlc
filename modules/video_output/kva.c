@@ -1,23 +1,23 @@
 /*****************************************************************************
  * kva.c: KVA video output plugin for vlc
  *****************************************************************************
- * Copyright (C) 2010, 2011 the VideoLAN team
+ * Copyright (C) 2010, 2011, 2012 VLC authors and VideoLAN
  *
  * Authors: KO Myung-Hun <komh@chollian.net>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -67,8 +67,8 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_VIDEO_VOUT )
     add_string( "kva-video-mode", ppsz_kva_video_mode[0], KVA_VIDEO_MODE_TEXT,
                 KVA_VIDEO_MODE_LONGTEXT, false )
-        change_string_list( ppsz_kva_video_mode, ppsz_kva_video_mode_text, 0 )
-    add_bool( "kva-fixt23", false, KVA_FIXT23_TEXT, KVA_FIXT23_LONGTEXT, true );
+        change_string_list( ppsz_kva_video_mode, ppsz_kva_video_mode_text )
+    add_bool( "kva-fixt23", false, KVA_FIXT23_TEXT, KVA_FIXT23_LONGTEXT, true )
     set_description( N_("K Video Acceleration video output") )
     set_capability( "vout display", 100 )
     add_shortcut( "kva" )
@@ -101,9 +101,9 @@ struct vout_display_sys_t
     HWND               parent;
     RECTL              parent_rect;
     picture_pool_t    *pool;
-    picture_resource_t resource;
     unsigned           button_pressed;
     bool               is_mouse_hidden;
+    bool               is_on_top;
 };
 
 struct picture_sys_t
@@ -151,7 +151,8 @@ static void PMThread( void *arg )
     ULONG i_kva_mode;
 
     /* */
-    video_format_t fmt = vd->fmt;
+    video_format_t fmt;
+    video_format_ApplyRotation(&fmt, &vd->fmt);
 
     /* */
     vout_display_info_t info = vd->info;
@@ -193,13 +194,6 @@ static void PMThread( void *arg )
     {
         sys->parent = ( HWND )sys->parent_window->handle.hwnd;
 
-        /* Workaround :
-         * When an embedded window opened first, it is not positioned
-         * correctly. So reposition it here, again.
-         */
-        WinSetWindowPos( WinQueryWindow( sys->parent, QW_PARENT ),
-                         HWND_TOP, 0, 0, 0, 0, SWP_MOVE );
-
         ULONG i_style = WinQueryWindowULong( sys->parent, QWL_STYLE );
         WinSetWindowULong( sys->parent, QWL_STYLE,
                            i_style | WS_CLIPCHILDREN );
@@ -234,7 +228,7 @@ static void PMThread( void *arg )
 
     WinSetWindowPtr( sys->client, 0, vd );
 
-    if( sys->b_fixt23 )
+    if( !sys->parent_window )
     {
         WinSetWindowPtr( sys->frame, 0, vd );
         sys->p_old_frame = WinSubclassWindow( sys->frame, MyFrameWndProc );
@@ -300,8 +294,14 @@ static void PMThread( void *arg )
     sys->i_result = VLC_SUCCESS;
     DosPostEventSem( sys->ack_event );
 
+    if( !sys->parent_window )
+        WinSetVisibleRegionNotify( sys->frame, TRUE );
+
     while( WinGetMsg( sys->hab, &qm, NULLHANDLE, 0, 0 ))
         WinDispatchMsg( sys->hab, &qm );
+
+    if( !sys->parent_window )
+        WinSetVisibleRegionNotify( sys->frame, FALSE );
 
     kvaEnableScreenSaver();
 
@@ -313,7 +313,7 @@ exit_open_display :
     kvaDone();
 
 exit_kva_init :
-    if( sys->b_fixt23 )
+    if( !sys->parent_window )
         WinSubclassWindow( sys->frame, sys->p_old_frame );
 
     WinDestroyWindow( sys->frame );
@@ -437,7 +437,8 @@ static int Control( vout_display_t *vd, int query, va_list args )
         POINTL ptl;
 
         WinQueryPointerPos( HWND_DESKTOP, &ptl );
-        if( WinWindowFromPoint( HWND_DESKTOP, &ptl, TRUE ) == sys->client )
+        if( !sys->is_mouse_hidden &&
+            WinWindowFromPoint( HWND_DESKTOP, &ptl, TRUE ) == sys->client )
         {
             WinShowPointer( HWND_DESKTOP, FALSE );
             sys->is_mouse_hidden = true;
@@ -459,10 +460,30 @@ static int Control( vout_display_t *vd, int query, va_list args )
         return VLC_SUCCESS;
     }
 
+    case VOUT_DISPLAY_CHANGE_WINDOW_STATE:
+    {
+        const unsigned state = va_arg( args, unsigned );
+        const bool is_on_top = (state & VOUT_WINDOW_STATE_ABOVE) != 0;
+
+        if( sys->parent_window )
+        {
+            if( vout_window_SetState( sys->parent_window, state ))
+                return VLC_EGENERIC;
+        }
+        else if( is_on_top )
+            WinSetWindowPos( sys->frame, HWND_TOP, 0, 0, 0, 0, SWP_ZORDER );
+
+        sys->is_on_top = is_on_top;
+
+        return VLC_SUCCESS;
+    }
+
     case VOUT_DISPLAY_CHANGE_DISPLAY_SIZE:
+    case VOUT_DISPLAY_CHANGE_ZOOM:
     {
         const vout_display_cfg_t *cfg = va_arg(args, const vout_display_cfg_t *);
-        bool  is_forced = va_arg(args, int);
+        bool  is_forced = query == VOUT_DISPLAY_CHANGE_ZOOM ||
+                          va_arg(args, int);
 
         if( is_forced )
         {
@@ -470,15 +491,6 @@ static int Control( vout_display_t *vd, int query, va_list args )
             {
                 vout_window_SetSize(sys->parent_window,
                                     cfg->display.width, cfg->display.height);
-
-                /* Workaround :
-                 * If changing aspect ratio after resizing a main window,
-                 * an embedded window is misplaced. So reposition it, here.
-                 */
-                WinSetWindowPos( WinQueryWindow( sys->parent, QW_PARENT ),
-                                 HWND_TOP, 0, 1, 0, 0, SWP_MOVE );
-                WinSetWindowPos( WinQueryWindow( sys->parent, QW_PARENT ),
-                                 HWND_TOP, 0, 0, 0, 0, SWP_MOVE );
             }
             else
                 WinPostMsg( sys->client, WM_VLC_SIZE_CHANGE,
@@ -492,22 +504,27 @@ static int Control( vout_display_t *vd, int query, va_list args )
     case VOUT_DISPLAY_CHANGE_SOURCE_ASPECT:
     case VOUT_DISPLAY_CHANGE_SOURCE_CROP:
     {
-        const video_format_t *source = va_arg(args, const video_format_t *);
+        const video_format_t *src = va_arg(args, const video_format_t *);
 
         if( query == VOUT_DISPLAY_CHANGE_SOURCE_ASPECT )
         {
-            sys->kvas.ulAspectWidth  = ( int64_t )source->i_width *
-                                       source->i_sar_num / source->i_sar_den;
-            sys->kvas.ulAspectHeight = source->i_height;
+            vout_display_place_t place;
+            vout_display_PlacePicture(&place, src, vd->cfg, false);
+
+            sys->kvas.ulAspectWidth  = place.width;
+            sys->kvas.ulAspectHeight = place.height;
         }
         else
         {
-            sys->kvas.rclSrcRect.xLeft   = source->i_x_offset;
-            sys->kvas.rclSrcRect.yTop    = source->i_y_offset;
-            sys->kvas.rclSrcRect.xRight  = source->i_x_offset +
-                                           source->i_visible_width;
-            sys->kvas.rclSrcRect.yBottom = source->i_y_offset +
-                                           source->i_visible_height;
+            video_format_t src_rot;
+            video_format_ApplyRotation(&src_rot, src);
+
+            sys->kvas.rclSrcRect.xLeft   = src_rot.i_x_offset;
+            sys->kvas.rclSrcRect.yTop    = src_rot.i_y_offset;
+            sys->kvas.rclSrcRect.xRight  = src_rot.i_x_offset +
+                                           src_rot.i_visible_width;
+            sys->kvas.rclSrcRect.yBottom = src_rot.i_y_offset +
+                                           src_rot.i_visible_height;
         }
 
         kvaSetup( &sys->kvas );
@@ -516,9 +533,7 @@ static int Control( vout_display_t *vd, int query, va_list args )
     }
 
     case VOUT_DISPLAY_RESET_PICTURES:
-    case VOUT_DISPLAY_CHANGE_WINDOW_STATE:
     case VOUT_DISPLAY_CHANGE_DISPLAY_FILLED:
-    case VOUT_DISPLAY_CHANGE_ZOOM:
     case VOUT_DISPLAY_GET_OPENGL:
         /* TODO */
         break;
@@ -624,8 +639,8 @@ static int OpenDisplay( vout_display_t *vd, video_format_t *fmt )
     msg_Dbg( vd, "output chroma = %4.4s", ( const char * )&fmt->i_chroma );
     msg_Dbg( vd, "KVA chroma = %4.4s", ( const char * )&i_kva_fourcc );
 
-    w = vd->source.i_width;
-    h = vd->source.i_height;
+    w = fmt->i_width;
+    h = fmt->i_height;
 
     sys->kvas.ulLength           = sizeof( KVASETUP );
     sys->kvas.szlSrcSize.cx      = w;
@@ -648,23 +663,18 @@ static int OpenDisplay( vout_display_t *vd, video_format_t *fmt )
     }
 
     /* Create the associated picture */
-    picture_resource_t *rsc = &sys->resource;
-    rsc->p_sys = malloc( sizeof( *rsc->p_sys ));
-    if( !rsc->p_sys )
-        return VLC_EGENERIC;
+    picture_sys_t *picsys = malloc( sizeof( *picsys ) );
+    if( picsys == NULL )
+        return VLC_ENOMEM;
+    picsys->i_chroma_shift = i_chroma_shift;
 
-    rsc->p_sys->i_chroma_shift = i_chroma_shift;
-
-    for( int i = 0; i < PICTURE_PLANE_MAX; i++ )
-    {
-        rsc->p[ i ].p_pixels = NULL;
-        rsc->p[ i ].i_pitch  = 0;
-        rsc->p[ i ].i_lines  = 0;
-    }
-
-    picture_t *picture = picture_NewFromResource( fmt, rsc );
+    picture_resource_t resource = { .p_sys = picsys };
+    picture_t *picture = picture_NewFromResource( fmt, &resource );
     if( !picture )
-        goto exit_picture;
+    {
+        free( picsys );
+        return VLC_ENOMEM;
+    }
 
     /* Wrap it into a picture pool */
     picture_pool_configuration_t pool_cfg;
@@ -678,8 +688,7 @@ static int OpenDisplay( vout_display_t *vd, video_format_t *fmt )
     if( !sys->pool )
     {
         picture_Release( picture );
-
-        goto exit_picture;
+        return VLC_ENOMEM;
     }
 
     if (vd->cfg->display.title)
@@ -717,11 +726,6 @@ static int OpenDisplay( vout_display_t *vd, video_format_t *fmt )
                      SWP_ACTIVATE );
 
     return VLC_SUCCESS;
-
-exit_picture:
-    free( rsc->p_sys );
-
-    return VLC_EGENERIC;
 }
 
 /*****************************************************************************
@@ -869,10 +873,14 @@ static MRESULT EXPENTRY MyFrameWndProc( HWND hwnd, ULONG msg, MPARAM mp1,
     {
         case WM_QUERYTRACKINFO :
         {
+            MRESULT mr;
+
+            mr = sys->p_old_frame( hwnd, msg, mp1, mp2 );
+            if( !sys->b_fixt23 )
+                return mr;
+
             PTRACKINFO pti = ( PTRACKINFO )mp2;
             RECTL      rcl;
-
-            sys->p_old_frame( hwnd, msg, mp1, mp2 );
 
             pti->rclBoundary.xLeft   = 0;
             pti->rclBoundary.yBottom = 0;
@@ -901,11 +909,15 @@ static MRESULT EXPENTRY MyFrameWndProc( HWND hwnd, ULONG msg, MPARAM mp1,
 
         case WM_ADJUSTWINDOWPOS :
         {
+            if( !sys->b_fixt23 )
+                break;
+
             PSWP  pswp = ( PSWP )mp1;
-            RECTL rcl;
 
             if( pswp->fl & SWP_SIZE )
             {
+                RECTL rcl;
+
                 rcl.xLeft   = pswp->x;
                 rcl.yBottom = pswp->y;
                 rcl.xRight  = rcl.xLeft + pswp->cx;
@@ -945,6 +957,12 @@ static MRESULT EXPENTRY MyFrameWndProc( HWND hwnd, ULONG msg, MPARAM mp1,
 
             break;
         }
+
+        //case WM_VRNDISABLED :
+        case WM_VRNENABLED :
+            if( !vd->cfg->is_fullscreen && sys->is_on_top )
+                WinSetWindowPos( hwnd, HWND_TOP, 0, 0, 0, 0, SWP_ZORDER );
+            break;
     }
 
     return sys->p_old_frame( hwnd, msg, mp1, mp2 );

@@ -964,3 +964,56 @@ reactor leaks ionizing radiations."
 < mru> that is a very good question
  -- #videolan, sunday philosophy
 %
+< jesuitx> consider unblocking safari. mac users are people too.
+ -- #videolan, it's a conspiracy!
+%
+< edwardw> ENOSAMPLES
+< j-b> edwardw: https://people.xiph.org/~tterribe/opus/multichannel/test-1-mono.opus
+< j-b> ENOEXCUSE
+< edwardw> Excuse e = new Excuse();
+< edwardw> e.useOn(j-b);
+< mru> argument-oriented programming?
+< mru> where functions are called demands, variables claims, and errors excuses
+< edwardw> j-b: "centred"
+< funman> try { edward.fixit(); }
+< funman> catch { jb.fixit(); }
+< mru> !jb
+< Hector4212> Fix it!
+< edwardw> finally { funman.runAway() }
+< TypX> finally { featureit(); }
+ -- #videolan
+%
+< courmisch> OSS needs an open device to enumerate devices.
+< courmisch> Because whenever something does not make sense, OSS does it.
+< courmisch> For further informations, refer to the chicken-and-egg problem.
+< funman> you never had to do with the french administration did you? :P
+< courmisch> no but the Finnish immigration process:
+< courmisch> work contract needs tax card
+< courmisch> tax card need residence registration
+< courmisch> residence registration needs work contract
+ -- #videolan, or why OSS is worse than Government administrations
+%
+< j-b> funman patch rejected; /me is afraid
+< TypX> well funman isn't really a good coder anyway
+ * j-b slaps TypX
+< TypX> oh yes
+< TypX> again
+ * funman craps TypX
+< TypX> I don't hate you
+< funman> that might be the most beautiful thing i was ever told <3
+ -- #videolan, BDSM and Litote
+%
+<etix> Who's Barack Obama on the etherpad?
+<TypX> etix: the president of the USA
+<No_se> etix: You really should have heard of him
+<etix> Yeah of course
+ -- #videolan, unexpected attendee to technical discussions at VDD13
+%
+< tmatth> cowboys and endianess
+< tmatth> flac over telegraph
+ -- #videolan, remembering good old times
+%
+<+courmisch> elenril: there are three types of OSes: Windows, those
+ with pthreads, and the useless ones
+ -- IRC, trol^Wdebating on mobile OSes
+%

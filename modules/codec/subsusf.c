@@ -1,24 +1,24 @@
 /*****************************************************************************
  * subsusf.c : USF subtitles decoder
  *****************************************************************************
- * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 80db2bd50e97dfc79453a38a54d10ebc0c410c56 $
+ * Copyright (C) 2000-2006 VLC authors and VideoLAN
+ * $Id: 0952e30b4d2be9d0e2b18232df362188ed1c2161 $
  *
  * Authors: Bernie Purcell <bitmap@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -514,7 +514,7 @@ static int ParseImageAttachments( decoder_t *p_dec )
             {
                 block_t   *p_block;
 
-                p_block = block_New( p_image->p_parent, p_attach->i_data );
+                p_block = block_Alloc( p_attach->i_data );
 
                 if( p_block != NULL )
                 {
@@ -1065,12 +1065,10 @@ static char *StripTags( char *psz_subtitle )
 
         psz_subtitle++;
     }
-    *psz_text = '\0';
+    *psz_text++ = '\0';
 
-    char *psz = realloc( psz_text_start, strlen( psz_text_start ) + 1 );
-    if( psz ) psz_text_start = psz;
-
-    return psz_text_start;
+    char *psz = realloc( psz_text_start, psz_text - psz_text_start );
+    return likely(psz != NULL) ? psz : psz_text_start;
 }
 
 /* Turn a HTML subtitle, turn into a plain-text version,

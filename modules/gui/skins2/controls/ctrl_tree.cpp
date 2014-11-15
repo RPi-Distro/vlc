@@ -2,7 +2,7 @@
  * ctrl_tree.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 533440f040319a9c1cc03daa9df90353d400615d $
+ * $Id: 426587ce536b1ae3d5c24d55260a3d2f088859b5 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -564,17 +564,12 @@ void CtrlTree::draw( OSGraphics &rImage, int xDest, int yDest, int w, int h)
 
 void CtrlTree::makeImage()
 {
-    stats_TimerStart( getIntf(), "[Skins] Playlist image",
-                      STATS_TIMER_SKINS_PLAYTREE_IMAGE );
     delete m_pImage;
 
     // Get the size of the control
     const Position *pPos = getPosition();
     if( !pPos )
-    {
-        stats_TimerStop( getIntf(), STATS_TIMER_SKINS_PLAYTREE_IMAGE );
         return;
-    }
     int width = pPos->getWidth();
     int height = pPos->getHeight();
 
@@ -646,7 +641,6 @@ void CtrlTree::makeImage()
                 m_rFont.drawString( *pStr, color, width-bitmapWidth*depth );
             if( !pText )
             {
-                stats_TimerStop( getIntf(), STATS_TIMER_SKINS_PLAYTREE_IMAGE );
                 return;
             }
             if( it->size() )
@@ -671,7 +665,13 @@ void CtrlTree::makeImage()
                                       __MIN( m_pCurBitmap->getHeight(),
                                              height -  yPos2), true );
             }
-            yPos += i_itemHeight - pText->getHeight();
+            yPos += (i_itemHeight - pText->getHeight());
+            if( yPos >= height )
+            {
+                delete pText;
+                break;
+            }
+
             int ySrc = 0;
             if( yPos < 0 )
             {
@@ -696,7 +696,6 @@ void CtrlTree::makeImage()
             delete pText;
         }
     }
-    stats_TimerStop( getIntf(), STATS_TIMER_SKINS_PLAYTREE_IMAGE );
 }
 
 CtrlTree::Iterator CtrlTree::findItemAtPos( int pos )
@@ -726,13 +725,6 @@ CtrlTree::Iterator CtrlTree::getFirstFromSlider()
         0;
 
     Iterator it_first = m_rTree.getItem( index );
-
-    if( m_lastClicked == m_rTree.end() )
-    {
-        m_lastClicked = it_first;
-        if( m_lastClicked != m_rTree.end() )
-            m_lastClicked->setSelected( true );
-    }
 
     return it_first;
 }

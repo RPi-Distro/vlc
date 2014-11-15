@@ -1,8 +1,8 @@
 /*****************************************************************************
- * stream_output.h : stream output module
+ * vlc_sout.h : stream output module
  *****************************************************************************
  * Copyright (C) 2002-2008 VLC authors and VideoLAN
- * $Id: 8c2e3428113a4900fc9ec197027fa808ff5b267f $
+ * $Id: b9366f790374562525f49d5449ec882fff348ddf $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -40,30 +40,25 @@ extern "C" {
 #include <sys/types.h>
 #include <vlc_es.h>
 
-/** Stream output instance */
+/** Stream output instance (FIXME: should be private to src/ to avoid
+ * invalid unsynchronized access) */
 struct sout_instance_t
 {
     VLC_COMMON_MEMBERS
 
     char *psz_sout;
 
-    /* meta data (Read only) XXX it won't be set before the first packet received */
-    vlc_meta_t          *p_meta;
-
     /** count of output that can't control the space */
     int                 i_out_pace_nocontrol;
 
     vlc_mutex_t         lock;
     sout_stream_t       *p_stream;
-
-    /** Private */
-    sout_instance_sys_t *p_sys;
 };
 
 /****************************************************************************
- * sout_stream_id_t: opaque (private for all sout_stream_t)
+ * sout_stream_id_sys_t: opaque (private for all sout_stream_t)
  ****************************************************************************/
-typedef struct sout_stream_id_t  sout_stream_id_t;
+typedef struct sout_stream_id_sys_t  sout_stream_id_sys_t;
 
 /** Stream output access_output */
 struct sout_access_out_t
@@ -72,10 +67,6 @@ struct sout_access_out_t
 
     module_t                *p_module;
     char                    *psz_access;
-
-    int                      i_writes;
-    /** Local counter reset each time it is transferred to stats */
-    int64_t                  i_sent_bytes;
 
     char                    *psz_path;
     sout_access_out_sys_t   *p_sys;
@@ -90,6 +81,7 @@ struct sout_access_out_t
 enum access_out_query_e
 {
     ACCESS_OUT_CONTROLS_PACE, /* arg1=bool *, can fail (assume true) */
+    ACCESS_OUT_CAN_SEEK, /* arg1=bool *, can fail (assume true) */
 };
 
 VLC_API sout_access_out_t * sout_AccessOutNew( vlc_object_t *, const char *psz_access, const char *psz_name ) VLC_USED;
@@ -154,8 +146,6 @@ enum sout_mux_query_e
 
 struct sout_input_t
 {
-    sout_instance_t *p_sout;
-
     es_format_t     *p_fmt;
     block_fifo_t    *p_fifo;
 
@@ -167,7 +157,7 @@ VLC_API sout_mux_t * sout_MuxNew( sout_instance_t*, const char *, sout_access_ou
 VLC_API sout_input_t * sout_MuxAddStream( sout_mux_t *, es_format_t * ) VLC_USED;
 VLC_API void sout_MuxDeleteStream( sout_mux_t *, sout_input_t * );
 VLC_API void sout_MuxDelete( sout_mux_t * );
-VLC_API void sout_MuxSendBuffer( sout_mux_t *, sout_input_t  *, block_t * );
+VLC_API int sout_MuxSendBuffer( sout_mux_t *, sout_input_t  *, block_t * );
 VLC_API int sout_MuxGetStream(sout_mux_t *, int , mtime_t *);
 
 static inline int sout_MuxControl( sout_mux_t *p_mux, int i_query, ... )
@@ -195,32 +185,29 @@ struct sout_stream_t
     config_chain_t        *p_cfg;
     sout_stream_t     *p_next;
 
-    /* Subpicture unit */
-    spu_t             *p_spu;
-
     /* add, remove a stream */
-    sout_stream_id_t *(*pf_add)( sout_stream_t *, es_format_t * );
-    int               (*pf_del)( sout_stream_t *, sout_stream_id_t * );
+    sout_stream_id_sys_t *(*pf_add)( sout_stream_t *, es_format_t * );
+    int               (*pf_del)( sout_stream_t *, sout_stream_id_sys_t * );
     /* manage a packet */
-    int               (*pf_send)( sout_stream_t *, sout_stream_id_t *, block_t* );
+    int               (*pf_send)( sout_stream_t *, sout_stream_id_sys_t *, block_t* );
 
-    /* private */
     sout_stream_sys_t *p_sys;
+    bool pace_nocontrol;
 };
 
 VLC_API void sout_StreamChainDelete(sout_stream_t *p_first, sout_stream_t *p_last );
 VLC_API sout_stream_t *sout_StreamChainNew(sout_instance_t *p_sout,
         char *psz_chain, sout_stream_t *p_next, sout_stream_t **p_last) VLC_USED;
 
-static inline sout_stream_id_t *sout_StreamIdAdd( sout_stream_t *s, es_format_t *fmt )
+static inline sout_stream_id_sys_t *sout_StreamIdAdd( sout_stream_t *s, es_format_t *fmt )
 {
     return s->pf_add( s, fmt );
 }
-static inline int sout_StreamIdDel( sout_stream_t *s, sout_stream_id_t *id )
+static inline int sout_StreamIdDel( sout_stream_t *s, sout_stream_id_sys_t *id )
 {
     return s->pf_del( s, id );
 }
-static inline int sout_StreamIdSend( sout_stream_t *s, sout_stream_id_t *id, block_t *b )
+static inline int sout_StreamIdSend( sout_stream_t *s, sout_stream_id_sys_t *id, block_t *b )
 {
     return s->pf_send( s, id, b );
 }

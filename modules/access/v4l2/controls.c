@@ -1,36 +1,41 @@
 /*****************************************************************************
  * controls.c : Video4Linux2 device controls for vlc
  *****************************************************************************
- * Copyright (C) 2002-2011 the VideoLAN team
+ * Copyright (C) 2002-2011 VLC authors and VideoLAN
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Richard Hosking <richard at hovis dot net>
  *          Antoine Cellerier <dionoea at videolan d.t org>
  *          Dennis Lou <dlou99 at yahoo dot com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
-#include "v4l2.h"
+#include <stdio.h>
 #include <ctype.h>
 #include <assert.h>
+#include <errno.h>
 #include <sys/ioctl.h>
+
+#include <vlc_common.h>
+
+#include "v4l2.h"
 
 typedef struct vlc_v4l2_ctrl_name
 {
@@ -151,6 +156,7 @@ static int ControlSetCallback (vlc_object_t *obj, const char *var,
         case V4L2_CTRL_TYPE_INTEGER:
         case V4L2_CTRL_TYPE_MENU:
         case V4L2_CTRL_TYPE_BITMASK:
+        case V4L2_CTRL_TYPE_INTEGER_MENU:
             ret = ControlSet (ctrl, cur.i_int);
             break;
         case V4L2_CTRL_TYPE_BOOLEAN:
@@ -171,7 +177,7 @@ static int ControlSetCallback (vlc_object_t *obj, const char *var,
 
     if (ret)
     {
-        msg_Err (obj, "cannot set control %s: %m", var);
+        msg_Err (obj, "cannot set control %s: %s", var, vlc_strerror_c(errno));
         return VLC_EGENERIC;
     }
     (void) old;
@@ -186,6 +192,7 @@ static void ControlsReset (vlc_object_t *obj, vlc_v4l2_ctrl_t *list)
         {
             case V4L2_CTRL_TYPE_INTEGER:
             case V4L2_CTRL_TYPE_MENU:
+            case V4L2_CTRL_TYPE_INTEGER_MENU:
                 var_SetInteger (obj, list->name, list->default_value);
                 break;
             case V4L2_CTRL_TYPE_BOOLEAN:
@@ -248,6 +255,7 @@ next:
                     case V4L2_CTRL_TYPE_INTEGER:
                     case V4L2_CTRL_TYPE_BOOLEAN:
                     case V4L2_CTRL_TYPE_MENU:
+                    case V4L2_CTRL_TYPE_INTEGER_MENU:
                     {
                         long val = strtol (value, &end, 0);
                         if (*end)
@@ -361,7 +369,7 @@ static vlc_v4l2_ctrl_t *ControlAddInteger (vlc_object_t *obj, int fd,
                                            const struct v4l2_queryctrl *query)
 {
     msg_Dbg (obj, " integer  %s (%08"PRIX32")", query->name, query->id);
-    if (query->flags & (CTRL_FLAGS_IGNORE | V4L2_CTRL_FLAG_WRITE_ONLY))
+    if (query->flags & CTRL_FLAGS_IGNORE)
         return NULL;
 
     vlc_v4l2_ctrl_t *c = ControlCreate (fd, query);
@@ -402,7 +410,7 @@ static vlc_v4l2_ctrl_t *ControlAddBoolean (vlc_object_t *obj, int fd,
                                            const struct v4l2_queryctrl *query)
 {
     msg_Dbg (obj, " boolean  %s (%08"PRIX32")", query->name, query->id);
-    if (query->flags & (CTRL_FLAGS_IGNORE | V4L2_CTRL_FLAG_WRITE_ONLY))
+    if (query->flags & CTRL_FLAGS_IGNORE)
         return NULL;
 
     vlc_v4l2_ctrl_t *c = ControlCreate (fd, query);
@@ -435,7 +443,7 @@ static vlc_v4l2_ctrl_t *ControlAddMenu (vlc_object_t *obj, int fd,
                                         const struct v4l2_queryctrl *query)
 {
     msg_Dbg (obj, " menu     %s (%08"PRIX32")", query->name, query->id);
-    if (query->flags & (CTRL_FLAGS_IGNORE | V4L2_CTRL_FLAG_WRITE_ONLY))
+    if (query->flags & CTRL_FLAGS_IGNORE)
         return NULL;
 
     vlc_v4l2_ctrl_t *c = ControlCreate (fd, query);
@@ -508,7 +516,7 @@ static vlc_v4l2_ctrl_t *ControlAddInteger64 (vlc_object_t *obj, int fd,
                                             const struct v4l2_queryctrl *query)
 {
     msg_Dbg (obj, " 64-bits  %s (%08"PRIX32")", query->name, query->id);
-    if (query->flags & (CTRL_FLAGS_IGNORE | V4L2_CTRL_FLAG_WRITE_ONLY))
+    if (query->flags & CTRL_FLAGS_IGNORE)
         return NULL;
 
     vlc_v4l2_ctrl_t *c = ControlCreate (fd, query);
@@ -552,8 +560,7 @@ static vlc_v4l2_ctrl_t *ControlAddString (vlc_object_t *obj, int fd,
                                           const struct v4l2_queryctrl *query)
 {
     msg_Dbg (obj, " string   %s (%08"PRIX32")", query->name, query->id);
-    if (query->flags & (CTRL_FLAGS_IGNORE | V4L2_CTRL_FLAG_WRITE_ONLY)
-     || query->maximum > 65535)
+    if ((query->flags & CTRL_FLAGS_IGNORE) || query->maximum > 65535)
         return NULL;
 
     vlc_v4l2_ctrl_t *c = ControlCreate (fd, query);
@@ -599,7 +606,7 @@ static vlc_v4l2_ctrl_t *ControlAddBitMask (vlc_object_t *obj, int fd,
                                            const struct v4l2_queryctrl *query)
 {
     msg_Dbg (obj, " bit mask %s (%08"PRIX32")", query->name, query->id);
-    if (query->flags & (CTRL_FLAGS_IGNORE | V4L2_CTRL_FLAG_WRITE_ONLY))
+    if (query->flags & CTRL_FLAGS_IGNORE)
         return NULL;
 
     vlc_v4l2_ctrl_t *c = ControlCreate (fd, query);
@@ -628,6 +635,63 @@ static vlc_v4l2_ctrl_t *ControlAddBitMask (vlc_object_t *obj, int fd,
     var_Change (obj, c->name, VLC_VAR_SETMAX, &val, NULL);
     val.i_int = query->default_value;
     var_Change (obj, c->name, VLC_VAR_SETDEFAULT, &val, NULL);
+    return c;
+}
+
+static vlc_v4l2_ctrl_t *ControlAddIntMenu (vlc_object_t *obj, int fd,
+                                           const struct v4l2_queryctrl *query)
+{
+    msg_Dbg (obj, " int menu %s (%08"PRIX32")", query->name, query->id);
+    if (query->flags & CTRL_FLAGS_IGNORE)
+        return NULL;
+
+    vlc_v4l2_ctrl_t *c = ControlCreate (fd, query);
+    if (unlikely(c == NULL))
+        return NULL;
+
+    if (var_Create (obj, c->name, VLC_VAR_INTEGER | VLC_VAR_HASCHOICE
+                                                  | VLC_VAR_ISCOMMAND))
+    {
+        free (c);
+        return NULL;
+    }
+
+    vlc_value_t val;
+    struct v4l2_control ctrl = { .id = query->id };
+
+    if (v4l2_ioctl (fd, VIDIOC_G_CTRL, &ctrl) >= 0)
+    {
+        msg_Dbg (obj, "  current: %"PRId32", default: %"PRId32,
+                 ctrl.value, query->default_value);
+        val.i_int = ctrl.value;
+        var_Change (obj, c->name, VLC_VAR_SETVALUE, &val, NULL);
+    }
+    val.i_int = query->minimum;
+    var_Change (obj, c->name, VLC_VAR_SETMIN, &val, NULL);
+    val.i_int = query->maximum;
+    var_Change (obj, c->name, VLC_VAR_SETMAX, &val, NULL);
+    val.i_int = query->default_value;
+    var_Change (obj, c->name, VLC_VAR_SETDEFAULT, &val, NULL);
+
+    /* Import menu choices */
+    for (uint_fast32_t idx = query->minimum;
+         idx <= (uint_fast32_t)query->maximum;
+         idx++)
+    {
+        struct v4l2_querymenu menu = { .id = query->id, .index = idx };
+        char name[sizeof ("-9223372036854775808")];
+
+        if (v4l2_ioctl (fd, VIDIOC_QUERYMENU, &menu) < 0)
+            continue;
+        msg_Dbg (obj, "  choice %"PRIu32") %"PRId64, menu.index,
+                 (uint64_t)menu.value);
+
+        vlc_value_t text;
+        val.i_int = menu.index;
+        sprintf (name, "%"PRId64, (int64_t)menu.value);
+        text.psz_string = name;
+        var_Change (obj, c->name, VLC_VAR_ADDCHOICE, &val, &text);
+    }
     return c;
 }
 
@@ -663,6 +727,7 @@ vlc_v4l2_ctrl_t *ControlsInit (vlc_object_t *obj, int fd)
         [V4L2_CTRL_TYPE_CTRL_CLASS] = ControlAddClass,
         [V4L2_CTRL_TYPE_STRING] = ControlAddString,
         [V4L2_CTRL_TYPE_BITMASK] = ControlAddBitMask,
+        [V4L2_CTRL_TYPE_INTEGER_MENU] = ControlAddIntMenu,
     };
 
     vlc_v4l2_ctrl_t *list = NULL;

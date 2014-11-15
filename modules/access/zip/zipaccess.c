@@ -1,24 +1,24 @@
 /*****************************************************************************
  * zipaccess.c: Module (access) to extract different archives, based on zlib
  *****************************************************************************
- * Copyright (C) 2009 the VideoLAN team
- * $Id: 1611e787a62a6de5977f939477f389d8d53d8c93 $
+ * Copyright (C) 2009 VLC authors and VideoLAN
+ * $Id: 2f2b4dc167550efb656fe38ee77f5317383b84d6 $
  *
  * Authors: Jean-Philippe André <jpeg@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /** @todo:
@@ -60,7 +60,7 @@ static char *unescapeXml( const char *psz_text );
 static char *unescapeXml( const char *psz_text )
 {
     char *psz_ret = malloc( strlen( psz_text ) + 1 );
-    if( !psz_ret ) return NULL;
+    if( unlikely( !psz_ret ) ) return NULL;
 
     char *psz_tmp = psz_ret;
     for( char *psz_iter = (char*) psz_text; *psz_iter; ++psz_iter, ++psz_tmp )
@@ -101,7 +101,6 @@ int AccessOpen( vlc_object_t *p_this )
     access_t     *p_access = (access_t*)p_this;
     access_sys_t *p_sys;
     int i_ret              = VLC_EGENERIC;
-    unzFile file           = 0;
 
     char *psz_pathToZip = NULL, *psz_path = NULL, *psz_sep = NULL;
 
@@ -113,11 +112,11 @@ int AccessOpen( vlc_object_t *p_this )
 
     p_access->p_sys = p_sys = (access_sys_t*)
             calloc( 1, sizeof( access_sys_t ) );
-    if( !p_sys )
+    if( unlikely( !p_sys ) )
         return VLC_ENOMEM;
 
     /* Split the MRL */
-    psz_path = strdup( p_access->psz_location );
+    psz_path = xstrdup( p_access->psz_location );
     psz_sep = strstr( psz_path, ZIP_SEP );
 
     *psz_sep = '\0';
@@ -128,17 +127,17 @@ int AccessOpen( vlc_object_t *p_this )
         msg_Dbg( p_access, "not an encoded URL  Trying file '%s'",
                  psz_path );
         psz_pathToZip = strdup( psz_path );
-        if( !psz_pathToZip )
+        if( unlikely( !psz_pathToZip ) )
         {
             i_ret = VLC_ENOMEM;
             goto exit;
         }
     }
     p_sys->psz_fileInzip = unescapeXml( psz_sep + ZIP_SEP_LEN );
-    if( !p_sys->psz_fileInzip )
+    if( unlikely( !p_sys->psz_fileInzip ) )
     {
         p_sys->psz_fileInzip = strdup( psz_sep + ZIP_SEP_LEN );
-        if( !p_sys->psz_fileInzip )
+        if( unlikely( !p_sys->psz_fileInzip ) )
         {
             i_ret = VLC_ENOMEM;
             goto exit;
@@ -146,25 +145,19 @@ int AccessOpen( vlc_object_t *p_this )
     }
 
     /* Define IO functions */
-    zlib_filefunc_def *p_func = (zlib_filefunc_def*)
-                                    calloc( 1, sizeof( zlib_filefunc_def ) );
-    if( !p_func )
-    {
-        i_ret = VLC_ENOMEM;
-        goto exit;
-    }
-    p_func->zopen_file   = ZipIO_Open;
-    p_func->zread_file   = ZipIO_Read;
-    p_func->zwrite_file  = ZipIO_Write; // see comment
-    p_func->ztell_file   = ZipIO_Tell;
-    p_func->zseek_file   = ZipIO_Seek;
-    p_func->zclose_file  = ZipIO_Close;
-    p_func->zerror_file  = ZipIO_Error;
-    p_func->opaque       = p_access;
+    zlib_filefunc_def func;
+    func.zopen_file   = ZipIO_Open;
+    func.zread_file   = ZipIO_Read;
+    func.zwrite_file  = ZipIO_Write; // see comment
+    func.ztell_file   = ZipIO_Tell;
+    func.zseek_file   = ZipIO_Seek;
+    func.zclose_file  = ZipIO_Close;
+    func.zerror_file  = ZipIO_Error;
+    func.opaque       = p_access;
 
     /* Open zip archive */
-    file = p_access->p_sys->zipFile = unzOpen2( psz_pathToZip, p_func );
-    if( !file )
+    p_access->p_sys->zipFile = unzOpen2( psz_pathToZip, &func );
+    if( !p_access->p_sys->zipFile )
     {
         msg_Err( p_access, "not a valid zip archive: '%s'", psz_pathToZip );
         i_ret = VLC_EGENERIC;
@@ -178,12 +171,6 @@ int AccessOpen( vlc_object_t *p_this )
     /* Set callback */
     ACCESS_SET_CALLBACKS( AccessRead, NULL, AccessControl, AccessSeek );
 
-    /* Get some infos about current file. Maybe we could want some more ? */
-    unz_file_info z_info;
-    unzGetCurrentFileInfo( file, &z_info, NULL, 0, NULL, 0, NULL, 0 );
-
-    /* Set access information: size is needed for AccessSeek */
-    p_access->info.i_size = z_info.uncompressed_size;
     p_access->info.i_pos  = 0;
     p_access->info.b_eof  = false;
 
@@ -192,10 +179,10 @@ int AccessOpen( vlc_object_t *p_this )
 exit:
     if( i_ret != VLC_SUCCESS )
     {
-        if( file )
+        if( p_access->p_sys->zipFile )
         {
-            unzCloseCurrentFile( file );
-            unzClose( file );
+            unzCloseCurrentFile( p_access->p_sys->zipFile );
+            unzClose( p_access->p_sys->zipFile );
         }
         free( p_sys->psz_fileInzip );
         free( p_sys->fileFunctions );
@@ -238,7 +225,6 @@ static int AccessControl( access_t *p_access, int i_query, va_list args )
 
     switch( i_query )
     {
-        /* */
         case ACCESS_CAN_SEEK:
         case ACCESS_CAN_PAUSE:
         case ACCESS_CAN_CONTROL_PACE:
@@ -251,29 +237,27 @@ static int AccessControl( access_t *p_access, int i_query, va_list args )
             *pb_bool = false;
             break;
 
+        case ACCESS_GET_SIZE:
+        {
+            unz_file_info z_info;
+
+            unzGetCurrentFileInfo( p_access->p_sys->zipFile, &z_info,
+                                   NULL, 0, NULL, 0, NULL, 0 );
+            *va_arg( args, uint64_t * ) = z_info.uncompressed_size;
+            break;
+        }
+
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
             *pi_64 = DEFAULT_PTS_DELAY;
             break;
 
-        /* */
         case ACCESS_SET_PAUSE_STATE:
             /* Nothing to do */
             break;
 
-        case ACCESS_GET_TITLE_INFO:
-        case ACCESS_SET_TITLE:
-        case ACCESS_SET_SEEKPOINT:
-        case ACCESS_SET_PRIVATE_ID_STATE:
-        case ACCESS_GET_META:
-        case ACCESS_GET_PRIVATE_ID_STATE:
-        case ACCESS_GET_CONTENT_TYPE:
-            return VLC_EGENERIC;
-
         default:
-            msg_Warn( p_access, "unimplemented query %d in control", i_query );
             return VLC_EGENERIC;
-
     }
     return VLC_SUCCESS;
 }
@@ -326,6 +310,8 @@ static int AccessSeek( access_t *p_access, uint64_t seek_len )
     unsigned i_seek = 0;
     int i_read = 1;
     char *p_buffer = ( char* ) calloc( 1, ZIP_BUFFER_LEN );
+    if( unlikely( !p_buffer ) )
+        return VLC_EGENERIC;
     while( ( i_seek < seek_len ) && ( i_read > 0 ) )
     {
         i_read = ( seek_len - i_seek < ZIP_BUFFER_LEN )
@@ -390,7 +376,7 @@ static void* ZCALLBACK ZipIO_Open( void* opaque, const char* file, int mode )
     access_t *p_access = (access_t*) opaque;
 
     char *fileUri = malloc( strlen(file) + 8 );
-    if( !fileUri )
+    if( unlikely( !fileUri ) )
         return NULL;
     if( !strstr( file, "://" ) )
     {

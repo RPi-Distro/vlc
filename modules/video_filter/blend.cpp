@@ -2,23 +2,23 @@
  * blend2.cpp: Blend one picture with alpha onto another picture
  *****************************************************************************
  * Copyright (C) 2012 Laurent Aimar
- * $Id: 6c05d68a66d7119685d2e118615b857108646c20 $
+ * $Id: befe88616eaaa49ef0d12b10d4901696f876ad60 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -297,9 +297,29 @@ public:
     void merge(unsigned dx, const CPixel &spx, unsigned a, bool)
     {
         uint8_t *dst = getPointer(dx);
-        ::merge(&dst[offset_r], spx.i, a);
-        ::merge(&dst[offset_g], spx.j, a);
-        ::merge(&dst[offset_b], spx.k, a);
+        if (has_alpha) {
+            // Handle different cases of existing alpha in the
+            // destination buffer. If the existing alpha is 0,
+            // the RGB components should be copied as is and
+            // alpha set to 'a'. If the existing alpha is 255,
+            // this should behave just as the non-alpha case below.
+
+            // First blend the existing color based on its
+            // alpha with the incoming color.
+            ::merge(&dst[offset_r], spx.i, 255 - dst[offset_a]);
+            ::merge(&dst[offset_g], spx.j, 255 - dst[offset_a]);
+            ::merge(&dst[offset_b], spx.k, 255 - dst[offset_a]);
+            // Now blend in the new color on top with the normal formulas.
+            ::merge(&dst[offset_r], spx.i, a);
+            ::merge(&dst[offset_g], spx.j, a);
+            ::merge(&dst[offset_b], spx.k, a);
+            // Finally set dst_a = (255 * src_a + prev_a * (255 - src_a))/255.
+            ::merge(&dst[offset_a], 255, a);
+        } else {
+            ::merge(&dst[offset_r], spx.i, a);
+            ::merge(&dst[offset_g], spx.j, a);
+            ::merge(&dst[offset_b], spx.k, a);
+        }
     }
     void nextLine()
     {
@@ -405,6 +425,7 @@ struct convertBits {
 };
 typedef convertBits< 9, 8> convert8To9Bits;
 typedef convertBits<10, 8> convert8To10Bits;
+typedef convertBits<16, 8> convert8To16Bits;
 
 struct convertRgbToYuv8 {
     convertRgbToYuv8(const video_format_t *, const video_format_t *) {}
@@ -543,6 +564,7 @@ static const struct {
     RGB(VLC_CODEC_RGB16,    CPictureRGB16,    convertRgbToRgbSmall),
     RGB(VLC_CODEC_RGB24,    CPictureRGB24,    convertNone),
     RGB(VLC_CODEC_RGB32,    CPictureRGB32,    convertNone),
+    RGB(VLC_CODEC_RGBA,     CPictureRGBA,     convertNone),
 
     YUV(VLC_CODEC_YV9,      CPictureYV9,      convertNone),
     YUV(VLC_CODEC_I410,     CPictureI410_8,   convertNone),
@@ -577,9 +599,11 @@ static const struct {
 #ifdef WORDS_BIGENDIAN
     YUV(VLC_CODEC_I444_9B,  CPictureI444_16,  convert8To9Bits),
     YUV(VLC_CODEC_I444_10B, CPictureI444_16,  convert8To10Bits),
+    YUV(VLC_CODEC_I444_16B, CPictureI444_16,  convert8To16Bits),
 #else
     YUV(VLC_CODEC_I444_9L,  CPictureI444_16,  convert8To9Bits),
     YUV(VLC_CODEC_I444_10L, CPictureI444_16,  convert8To10Bits),
+    YUV(VLC_CODEC_I444_16L, CPictureI444_16,  convert8To16Bits),
 #endif
 
     YUV(VLC_CODEC_YUYV,     CPictureYUYV,     convertNone),
@@ -606,6 +630,12 @@ static void Blend(filter_t *filter,
                   int x_offset, int y_offset, int alpha)
 {
     filter_sys_t *sys = filter->p_sys;
+
+    if( x_offset < 0 || y_offset < 0 )
+    {
+        msg_Err( filter, "Blend cannot process negative offsets" );
+        return;
+    }
 
     int width  = __MIN((int)filter->fmt_out.video.i_visible_width - x_offset,
                        (int)filter->fmt_in.video.i_visible_width);

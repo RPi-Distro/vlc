@@ -2,7 +2,7 @@
  * sout.hpp : Stream output dialog ( old-style, ala WX )
  ****************************************************************************
  * Copyright ( C ) 2006 the VideoLAN team
- * $Id: 53895ff1d77a5e1f94bc244d89ec04d0be0c3a8c $
+ * $Id: efbbe45e465268f408e53c27cba4c6bd25232d77 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -111,7 +111,7 @@ private:
 };
 
 
-class SoutDialog : public QVLCDialog
+class SoutDialog : public QWizard
 {
     Q_OBJECT
 public:
@@ -120,23 +120,21 @@ public:
 
     QString getMrl(){ return mrl; }
 
+protected:
+    virtual void done( int );
 private:
     Ui::Sout ui;
 
     QString mrl;
     QPushButton *okButton;
-    QToolButton *closeTabButton;
+
+    intf_thread_t* p_intf;
 
 public slots:
     void updateMRL();
 
 private slots:
-    void ok();
-    void cancel();
-    void next();
-    void prev();
-    void closeTab();
-    void tabChanged( int );
+    void closeTab( int );
     void addDest();
 };
 

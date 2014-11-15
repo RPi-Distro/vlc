@@ -2,7 +2,7 @@
  * display.c: "vout display" managment
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 50599d0db1783e62a3592ba99424a84a3457da1c $
+ * $Id: e2b57eaa58e3d965e7ec473f7e2915e75a7ee541 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -147,6 +147,9 @@ static void vout_display_Delete(vout_display_t *vd)
     if (vd->module)
         module_unneed(vd, vd->module);
 
+    video_format_Clean(&vd->source);
+    video_format_Clean(&vd->fmt);
+
     vlc_object_release(vd);
 }
 
@@ -197,6 +200,13 @@ void vout_display_GetDefaultDisplaySize(unsigned *width, unsigned *height,
 
     *width  = *width  * cfg->zoom.num / cfg->zoom.den;
     *height = *height * cfg->zoom.num / cfg->zoom.den;
+
+    if (ORIENT_IS_SWAP(source->orientation)) {
+
+        unsigned store = *width;
+        *width = *height;
+        *height = store;
+    }
 }
 
 /* */
@@ -213,6 +223,10 @@ void vout_display_PlacePicture(vout_display_place_t *place,
     /* */
     unsigned display_width;
     unsigned display_height;
+
+    video_format_t source_rot;
+    video_format_ApplyRotation(&source_rot, source);
+    source = &source_rot;
 
     if (cfg->is_display_filled) {
         display_width  = cfg->display.width;
@@ -273,6 +287,62 @@ void vout_display_PlacePicture(vout_display_place_t *place,
     }
 }
 
+void vout_display_SendMouseMovedDisplayCoordinates(vout_display_t *vd, video_orientation_t orient_display, int m_x, int m_y, vout_display_place_t *place)
+{
+    video_format_t source_rot = vd->source;
+    video_format_TransformTo(&source_rot, orient_display);
+
+    if (place->width > 0 && place->height > 0) {
+
+        int x = (int)(source_rot.i_x_offset +
+                            (int64_t)(m_x - place->x) * source_rot.i_visible_width / place->width);
+        int y = (int)(source_rot.i_y_offset +
+                            (int64_t)(m_y - place->y) * source_rot.i_visible_height/ place->height);
+
+        video_transform_t transform = video_format_GetTransform(vd->source.orientation, orient_display);
+
+        int store;
+
+        switch (transform) {
+
+            case TRANSFORM_R90:
+                store = x;
+                x = y;
+                y = vd->source.i_visible_height - store;
+                break;
+            case TRANSFORM_R180:
+                x = vd->source.i_visible_width - x;
+                y = vd->source.i_visible_height - y;
+                break;
+            case TRANSFORM_R270:
+                store = x;
+                x = vd->source.i_visible_width - y;
+                y = store;
+                break;
+            case TRANSFORM_HFLIP:
+                x = vd->source.i_visible_width - x;
+                break;
+            case TRANSFORM_VFLIP:
+                y = vd->source.i_visible_height - y;
+                break;
+            case TRANSFORM_TRANSPOSE:
+                store = x;
+                x = y;
+                y = store;
+                break;
+            case TRANSFORM_ANTI_TRANSPOSE:
+                store = x;
+                x = vd->source.i_visible_width - y;
+                y = vd->source.i_visible_height - store;
+                break;
+            default:
+                break;
+        }
+
+        vout_display_SendEventMouseMoved (vd, x, y);
+    }
+}
+
 struct vout_display_owner_sys_t {
     vout_thread_t   *vout;
     bool            is_wrapper;  /* Is the current display a wrapper */
@@ -301,8 +371,8 @@ struct vout_display_owner_sys_t {
 
     bool ch_zoom;
     struct {
-        int  num;
-        int  den;
+        unsigned num;
+        unsigned den;
     } zoom;
 
     bool ch_wm_state;
@@ -408,19 +478,20 @@ static void VoutDisplayCreateRender(vout_display_t *vd)
     es_format_InitFromVideo(&src, &v_src);
 
     /* */
-    es_format_t dst;
-
     filter_t *filter;
     for (int i = 0; i < 1 + (v_dst_cmp.i_chroma != v_dst.i_chroma); i++) {
+        es_format_t dst;
 
         es_format_InitFromVideo(&dst, i == 0 ? &v_dst : &v_dst_cmp);
 
         filter_chain_Reset(osys->filters, &src, &dst);
         filter = filter_chain_AppendFilter(osys->filters,
                                            NULL, NULL, &src, &dst);
+        es_format_Clean(&dst);
         if (filter)
             break;
     }
+    es_format_Clean(&src);
     if (!filter)
         msg_Err(vd, "Failed to adapt decoder format to display");
 }
@@ -755,7 +826,7 @@ static void VoutDisplayCropRatio(int *left, int *top, int *right, int *bottom,
     }
 }
 
-void vout_ManageDisplay(vout_display_t *vd, bool allow_reset_pictures)
+bool vout_ManageDisplay(vout_display_t *vd, bool allow_reset_pictures)
 {
     vout_display_owner_sys_t *osys = vd->owner.sys;
 
@@ -859,7 +930,7 @@ void vout_ManageDisplay(vout_display_t *vd, bool allow_reset_pictures)
 
             if (!cfg.is_fullscreen != !display_is_fullscreen ||
                 vout_display_Control(vd, VOUT_DISPLAY_CHANGE_DISPLAY_SIZE, &cfg, display_is_forced)) {
-                if (!cfg.is_fullscreen == !display_is_fullscreen)
+                if (!display_is_forced)
                     msg_Err(vd, "Failed to resize display");
 
                 /* We ignore the resized */
@@ -1055,6 +1126,8 @@ void vout_ManageDisplay(vout_display_t *vd, bool allow_reset_pictures)
     }
     if (reset_render)
         VoutDisplayResetRender(vd);
+
+    return reset_render;
 }
 
 bool vout_AreDisplayPicturesInvalid(vout_display_t *vd)
@@ -1139,9 +1212,16 @@ void vout_SetDisplayFilled(vout_display_t *vd, bool is_filled)
     }
 }
 
-void vout_SetDisplayZoom(vout_display_t *vd, int num, int den)
+void vout_SetDisplayZoom(vout_display_t *vd, unsigned num, unsigned den)
 {
     vout_display_owner_sys_t *osys = vd->owner.sys;
+
+    if (num > 0 && den > 0) {
+        vlc_ureduce(&num, &den, num, den, 0);
+    } else {
+        num = 1;
+        den = 1;
+    }
 
     if (osys->is_display_filled ||
         osys->zoom.num != num || osys->zoom.den != den) {
@@ -1214,7 +1294,7 @@ struct vlc_gl_t *vout_GetDisplayOpengl(vout_display_t *vd)
 }
 
 static vout_display_t *DisplayNew(vout_thread_t *vout,
-                                  const video_format_t *source_org,
+                                  const video_format_t *source,
                                   const vout_display_state_t *state,
                                   const char *module,
                                   bool is_wrapper, vout_display_t *wrapper,
@@ -1231,7 +1311,7 @@ static vout_display_t *DisplayNew(vout_thread_t *vout,
     osys->sar_initial.num = state->sar.num;
     osys->sar_initial.den = state->sar.den;
     vout_display_GetDefaultDisplaySize(&cfg->display.width, &cfg->display.height,
-                                       source_org, cfg);
+                                       source, cfg);
 
     osys->vout = vout;
     osys->is_wrapper = is_wrapper;
@@ -1256,7 +1336,7 @@ static vout_display_t *DisplayNew(vout_thread_t *vout,
         cfg_windowed.display.height = 0;
         vout_display_GetDefaultDisplaySize(&osys->width_saved,
                                            &osys->height_saved,
-                                           source_org, &cfg_windowed);
+                                           source, &cfg_windowed);
     }
     osys->zoom.num = cfg->zoom.num;
     osys->zoom.den = cfg->zoom.den;
@@ -1264,7 +1344,7 @@ static vout_display_t *DisplayNew(vout_thread_t *vout,
     osys->fit_window = 0;
     osys->event.fifo = NULL;
 
-    osys->source = *source_org;
+    osys->source = *source;
     osys->crop.left   = 0;
     osys->crop.top    = 0;
     osys->crop.right  = 0;
@@ -1274,8 +1354,8 @@ static vout_display_t *DisplayNew(vout_thread_t *vout,
     osys->crop.num = 0;
     osys->crop.den = 0;
 
-    osys->sar.num = osys->sar_initial.num ? osys->sar_initial.num : source_org->i_sar_num;
-    osys->sar.den = osys->sar_initial.den ? osys->sar_initial.den : source_org->i_sar_den;
+    osys->sar.num = osys->sar_initial.num ? osys->sar_initial.num : source->i_sar_num;
+    osys->sar.den = osys->sar_initial.den ? osys->sar_initial.den : source->i_sar_den;
 #ifdef ALLOW_DUMMY_VOUT
     vlc_mouse_Init(&osys->vout_mouse);
 #endif
@@ -1290,17 +1370,9 @@ static vout_display_t *DisplayNew(vout_thread_t *vout,
     }
     owner.sys = osys;
 
-    /* */
-    video_format_t source = *source_org;
-
-    source.i_x_offset = 0;
-    source.i_y_offset = 0;
-    source.i_visible_width  = source.i_width;
-    source.i_visible_height = source.i_height;
-
     vout_display_t *p_display = vout_display_New(VLC_OBJECT(vout),
                                                  module, !is_wrapper,
-                                                 &source, cfg, &owner);
+                                                 source, cfg, &owner);
     if (!p_display) {
         free(osys);
         return NULL;
@@ -1309,16 +1381,11 @@ static vout_display_t *DisplayNew(vout_thread_t *vout,
     VoutDisplayCreateRender(p_display);
 
     /* Setup delayed request */
-    if (osys->sar.num != source.i_sar_num ||
-        osys->sar.den != source.i_sar_den)
+    if (osys->sar.num != source->i_sar_num ||
+        osys->sar.den != source->i_sar_den)
         osys->ch_sar = true;
     if (osys->wm_state != osys->wm_state_initial)
         osys->ch_wm_state = true;
-    if (source.i_x_offset       != source_org->i_x_offset ||
-        source.i_y_offset       != source_org->i_y_offset ||
-        source.i_visible_width  != source_org->i_visible_width ||
-        source.i_visible_height != source_org->i_visible_height)
-        osys->ch_crop = true;
 
     return p_display;
 }
@@ -1418,7 +1485,7 @@ static void SplitterEvent(vout_display_t *vd, int event, va_list args)
         break;
 
     default:
-        msg_Err(vd, "SplitterEvent TODO");
+        msg_Err(vd, "splitter event not implemented: %d", event);
         break;
     }
 }

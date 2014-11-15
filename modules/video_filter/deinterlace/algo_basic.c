@@ -1,26 +1,26 @@
 /*****************************************************************************
  * algo_basic.c : Basic algorithms for the VLC deinterlacer
  *****************************************************************************
- * Copyright (C) 2000-2011 the VideoLAN team
- * $Id: 3436356c965e03338605f518a2b0d4852a527923 $
+ * Copyright (C) 2000-2011 VLC authors and VideoLAN
+ * $Id: 858ae93da852f476bc2e1986197bd1d20b564fee $
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *         Damien Lucas <nitrox@videolan.org>  (Bob, Blend)
  *         Laurent Aimar <fenrir@videolan.org> (Bob, Blend)
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -42,8 +42,7 @@
  * RenderDiscard: only keep TOP or BOTTOM field, discard the other.
  *****************************************************************************/
 
-void RenderDiscard( filter_t *p_filter,
-                    picture_t *p_outpic, picture_t *p_pic, int i_field )
+void RenderDiscard( picture_t *p_outpic, picture_t *p_pic, int i_field )
 {
     int i_plane;
 
@@ -51,7 +50,6 @@ void RenderDiscard( filter_t *p_filter,
     for( i_plane = 0 ; i_plane < p_pic->i_planes ; i_plane++ )
     {
         uint8_t *p_in, *p_out_end, *p_out;
-        int i_increment;
 
         p_in = p_pic->p[i_plane].p_pixels
                    + i_field * p_pic->p[i_plane].i_pitch;
@@ -60,50 +58,12 @@ void RenderDiscard( filter_t *p_filter,
         p_out_end = p_out + p_outpic->p[i_plane].i_pitch
                              * p_outpic->p[i_plane].i_visible_lines;
 
-        switch( p_filter->fmt_in.video.i_chroma )
+        for( ; p_out < p_out_end ; )
         {
-        case VLC_CODEC_I420:
-        case VLC_CODEC_J420:
-        case VLC_CODEC_YV12:
+            memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
 
-            for( ; p_out < p_out_end ; )
-            {
-                vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
-
-                p_out += p_outpic->p[i_plane].i_pitch;
-                p_in += 2 * p_pic->p[i_plane].i_pitch;
-            }
-            break;
-
-        case VLC_CODEC_I422:
-        case VLC_CODEC_J422:
-
-            i_increment = 2 * p_pic->p[i_plane].i_pitch;
-
-            if( i_plane == Y_PLANE )
-            {
-                for( ; p_out < p_out_end ; )
-                {
-                    vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
-                    p_out += p_outpic->p[i_plane].i_pitch;
-                    vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
-                    p_out += p_outpic->p[i_plane].i_pitch;
-                    p_in += i_increment;
-                }
-            }
-            else
-            {
-                for( ; p_out < p_out_end ; )
-                {
-                    vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
-                    p_out += p_outpic->p[i_plane].i_pitch;
-                    p_in += i_increment;
-                }
-            }
-            break;
-
-        default:
-            break;
+            p_out += p_outpic->p[i_plane].i_pitch;
+            p_in += 2 * p_pic->p[i_plane].i_pitch;
         }
     }
 }
@@ -112,8 +72,7 @@ void RenderDiscard( filter_t *p_filter,
  * RenderBob: renders a BOB picture - simple copy
  *****************************************************************************/
 
-void RenderBob( filter_t *p_filter,
-                picture_t *p_outpic, picture_t *p_pic, int i_field )
+void RenderBob( picture_t *p_outpic, picture_t *p_pic, int i_field )
 {
     int i_plane;
 
@@ -127,91 +86,36 @@ void RenderBob( filter_t *p_filter,
         p_out_end = p_out + p_outpic->p[i_plane].i_pitch
                              * p_outpic->p[i_plane].i_visible_lines;
 
-        switch( p_filter->fmt_in.video.i_chroma )
+        /* For BOTTOM field we need to add the first line */
+        if( i_field == 1 )
         {
-            case VLC_CODEC_I420:
-            case VLC_CODEC_J420:
-            case VLC_CODEC_YV12:
-                /* For BOTTOM field we need to add the first line */
-                if( i_field == 1 )
-                {
-                    vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
-                    p_in += p_pic->p[i_plane].i_pitch;
-                    p_out += p_outpic->p[i_plane].i_pitch;
-                }
+            memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
+            p_in += p_pic->p[i_plane].i_pitch;
+            p_out += p_outpic->p[i_plane].i_pitch;
+        }
 
-                p_out_end -= 2 * p_outpic->p[i_plane].i_pitch;
+        p_out_end -= 2 * p_outpic->p[i_plane].i_pitch;
 
-                for( ; p_out < p_out_end ; )
-                {
-                    vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
+        for( ; p_out < p_out_end ; )
+        {
+            memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
 
-                    p_out += p_outpic->p[i_plane].i_pitch;
+            p_out += p_outpic->p[i_plane].i_pitch;
 
-                    vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
+            memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
 
-                    p_in += 2 * p_pic->p[i_plane].i_pitch;
-                    p_out += p_outpic->p[i_plane].i_pitch;
-                }
+            p_in += 2 * p_pic->p[i_plane].i_pitch;
+            p_out += p_outpic->p[i_plane].i_pitch;
+        }
 
-                vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
+        memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
 
-                /* For TOP field we need to add the last line */
-                if( i_field == 0 )
-                {
-                    p_in += p_pic->p[i_plane].i_pitch;
-                    p_out += p_outpic->p[i_plane].i_pitch;
-                    vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
-                }
-                break;
-
-            case VLC_CODEC_I422:
-            case VLC_CODEC_J422:
-                /* For BOTTOM field we need to add the first line */
-                if( i_field == 1 )
-                {
-                    vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
-                    p_in += p_pic->p[i_plane].i_pitch;
-                    p_out += p_outpic->p[i_plane].i_pitch;
-                }
-
-                p_out_end -= 2 * p_outpic->p[i_plane].i_pitch;
-
-                if( i_plane == Y_PLANE )
-                {
-                    for( ; p_out < p_out_end ; )
-                    {
-                        vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
-
-                        p_out += p_outpic->p[i_plane].i_pitch;
-
-                        vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
-
-                        p_in += 2 * p_pic->p[i_plane].i_pitch;
-                        p_out += p_outpic->p[i_plane].i_pitch;
-                    }
-                }
-                else
-                {
-                    for( ; p_out < p_out_end ; )
-                    {
-                        vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
-
-                        p_out += p_outpic->p[i_plane].i_pitch;
-                        p_in += 2 * p_pic->p[i_plane].i_pitch;
-                    }
-                }
-
-                vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
-
-                /* For TOP field we need to add the last line */
-                if( i_field == 0 )
-                {
-                    p_in += p_pic->p[i_plane].i_pitch;
-                    p_out += p_outpic->p[i_plane].i_pitch;
-                    vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
-                }
-                break;
+        /* For TOP field we need to add the last line */
+        if( i_field == 0 )
+        {
+            p_in += p_pic->p[i_plane].i_pitch;
+            p_out += p_outpic->p[i_plane].i_pitch;
+            memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
         }
     }
 }
@@ -238,7 +142,7 @@ void RenderLinear( filter_t *p_filter,
         /* For BOTTOM field we need to add the first line */
         if( i_field == 1 )
         {
-            vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
+            memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
             p_in += p_pic->p[i_plane].i_pitch;
             p_out += p_outpic->p[i_plane].i_pitch;
         }
@@ -247,7 +151,7 @@ void RenderLinear( filter_t *p_filter,
 
         for( ; p_out < p_out_end ; )
         {
-            vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
+            memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
 
             p_out += p_outpic->p[i_plane].i_pitch;
 
@@ -258,14 +162,14 @@ void RenderLinear( filter_t *p_filter,
             p_out += p_outpic->p[i_plane].i_pitch;
         }
 
-        vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
+        memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
 
         /* For TOP field we need to add the last line */
         if( i_field == 0 )
         {
             p_in += p_pic->p[i_plane].i_pitch;
             p_out += p_outpic->p[i_plane].i_pitch;
-            vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
+            memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
         }
     }
     EndMerge();
@@ -324,56 +228,18 @@ void RenderBlend( filter_t *p_filter,
         p_out_end = p_out + p_outpic->p[i_plane].i_pitch
                              * p_outpic->p[i_plane].i_visible_lines;
 
-        switch( p_filter->fmt_in.video.i_chroma )
+        /* First line: simple copy */
+        memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
+        p_out += p_outpic->p[i_plane].i_pitch;
+
+        /* Remaining lines: mean value */
+        for( ; p_out < p_out_end ; )
         {
-            case VLC_CODEC_I420:
-            case VLC_CODEC_J420:
-            case VLC_CODEC_YV12:
-                /* First line: simple copy */
-                vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
-                p_out += p_outpic->p[i_plane].i_pitch;
+            Merge( p_out, p_in, p_in + p_pic->p[i_plane].i_pitch,
+                   p_pic->p[i_plane].i_pitch );
 
-                /* Remaining lines: mean value */
-                for( ; p_out < p_out_end ; )
-                {
-                    Merge( p_out, p_in, p_in + p_pic->p[i_plane].i_pitch,
-                           p_pic->p[i_plane].i_pitch );
-
-                    p_out += p_outpic->p[i_plane].i_pitch;
-                    p_in  += p_pic->p[i_plane].i_pitch;
-                }
-                break;
-
-            case VLC_CODEC_I422:
-            case VLC_CODEC_J422:
-                /* First line: simple copy */
-                vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
-                p_out += p_outpic->p[i_plane].i_pitch;
-
-                /* Remaining lines: mean value */
-                if( i_plane == Y_PLANE )
-                {
-                    for( ; p_out < p_out_end ; )
-                    {
-                        Merge( p_out, p_in, p_in + p_pic->p[i_plane].i_pitch,
-                               p_pic->p[i_plane].i_pitch );
-
-                        p_out += p_outpic->p[i_plane].i_pitch;
-                        p_in  += p_pic->p[i_plane].i_pitch;
-                    }
-                }
-                else
-                {
-                    for( ; p_out < p_out_end ; )
-                    {
-                        Merge( p_out, p_in, p_in + p_pic->p[i_plane].i_pitch,
-                               p_pic->p[i_plane].i_pitch );
-
-                        p_out += p_outpic->p[i_plane].i_pitch;
-                        p_in  += 2*p_pic->p[i_plane].i_pitch;
-                    }
-                }
-                break;
+            p_out += p_outpic->p[i_plane].i_pitch;
+            p_in  += p_pic->p[i_plane].i_pitch;
         }
     }
     EndMerge();

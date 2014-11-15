@@ -2,7 +2,7 @@
  * xspf.c : XSPF playlist export functions
  ******************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: ffc1ceeb6385ba7a7859e54512ba55f3c57170fe $
+ * $Id: e41cd258dd7e855b217e8a34efc01f6435ab273d $
  *
  * Authors: Daniel Stränger <vlc at schmaller dot de>
  *          Yoann Peronneau <yoann@videolan.org>
@@ -125,6 +125,11 @@ static void xspf_export_item( playlist_item_t *p_item, FILE *p_file,
     psz = input_xml( p_input, input_item_GetDescription );
     if( psz && *psz )
         fprintf( p_file, "\t\t\t<annotation>%s</annotation>\n", psz );
+    free( psz );
+
+    psz = input_xml( p_input, input_item_GetURL );
+    if( psz && *psz )
+        fprintf( p_file, "\t\t\t<info>%s</info>\n", psz );
     free( psz );
 
     psz = input_xml( p_input, input_item_GetArtURL );

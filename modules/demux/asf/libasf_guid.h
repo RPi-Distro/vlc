@@ -1,23 +1,23 @@
 /*****************************************************************************
  * libasf_guid.h :
  *****************************************************************************
- * Copyright © 2001-2004, 2011 the VideoLAN team
+ * Copyright © 2001-2004, 2011 VLC authors and VideoLAN
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef LIBASG_GUID_H
@@ -62,6 +62,14 @@ static const guid_t asf_object_null_guid =
     { 0x00,0x00, 0x00,0x00,0x00,0x00,0x00,0x00 }
 };
 
+static const guid_t vlc_object_root_guid =
+{
+    0x00000000,
+    0x0000,
+    0x0000,
+    { 0x56, 0x4C, 0x43, 0x52, 0x4F, 0x4F, 0x54, 0x00 }
+};
+
 /* Top-Level object */
 static const guid_t asf_object_header_guid =
 {0x75B22630, 0x668E, 0x11CF, {0xA6, 0xD9, 0x00, 0xAA, 0x00, 0x62, 0xCE, 0x6C}};
@@ -96,6 +104,9 @@ static const guid_t asf_object_content_description_guid =
 
 static const guid_t asf_object_extended_content_description =
 {0xD2D0A440, 0xE307, 0x11D2, {0x97, 0xF0, 0x00, 0xA0, 0xC9, 0x5E, 0xA8, 0x50}};
+
+static const guid_t asf_object_padding =
+{0x1806D474, 0xCADF, 0x4509, {0xA4, 0xBA, 0x9A, 0xAB, 0xCB, 0x96, 0xAA, 0xE8}};
 
 /* Header Extension object */
 static const guid_t asf_object_advanced_mutual_exclusion =
@@ -150,9 +161,6 @@ static const guid_t asf_object_extended_content_encryption_guid =
 static const guid_t asf_object_digital_signature_guid =
 {0x2211B3FC, 0xBD23, 0x11D2, {0xB4, 0xB7, 0x00, 0xA0, 0xC9, 0x55, 0xFC, 0x6E}};
 
-static const guid_t asf_object_padding =
-{0x1806D474, 0xCADF, 0x4509, {0xA4, 0xBA, 0x9A, 0xAB, 0xCB, 0x96, 0xAA, 0xE8}};
-
 // header extension
 static const guid_t asf_object_extended_stream_properties_guid =
 {0x14E6A5CB, 0xC672, 0x4332, {0x83, 0x99, 0xA9, 0x69, 0x52, 0x06, 0x5B, 0x5A}};
@@ -204,16 +212,56 @@ static const guid_t asf_no_error_correction_guid =
 static const guid_t asf_guid_audio_conceal_spread =
 {0xBFC3CD50, 0x618F, 0x11CF, {0x8B, 0xB2, 0x00, 0xAA, 0x00, 0xB4, 0xE2, 0x20}};
 
+// Mutual exclusion
+static const guid_t asf_guid_mutex_language =
+{0xD6E22A00, 0x35DA, 0x11D1, {0x90, 0x34, 0x00, 0xA0, 0xC9, 0x03, 0x49, 0xBE}};
 
-#define ASF_OBJECT_COMMON          \
-    int          i_type;           \
-    guid_t       i_object_id;      \
-    uint64_t     i_object_size;    \
-    uint64_t     i_object_pos;     \
-    union asf_object_u *p_father;  \
-    union asf_object_u *p_first;   \
-    union asf_object_u *p_last;    \
-    union asf_object_u *p_next;
+static const guid_t asf_guid_mutex_bitrate =
+{0xD6E22A01, 0x35DA, 0x11D1, {0x90, 0x34, 0x00, 0xA0, 0xC9, 0x03, 0x49, 0xBE}};
+
+static const guid_t asf_guid_mutex_unknown =
+{0xD6E22A02, 0x35DA, 0x11D1, {0x90, 0x34, 0x00, 0xA0, 0xC9, 0x03, 0x49, 0xBE}};
+
+// Obscure ones
+// http://cpan.uwinnipeg.ca/htdocs/Audio-WMA/Audio/WMA.pm.html
+
+static const guid_t nonasf_object_index_placeholder_guid =
+{0xD9AADE20, 0x7C17, 0x4F9C, {0xBC, 0x28, 0x85, 0x55, 0xDD, 0x98, 0xE2, 0xA2}};
+
+static const guid_t nonasf_object_compatibility =
+{0x26F18B5D, 0x4584, 0x47EC, {0x9F, 0x5F, 0x0E, 0x65, 0x1F, 0x04, 0x52, 0xC9}};
+
+// MS foundations Payload Extensions for non compressed payloads
+// http://msdn.microsoft.com/en-us/library/windows/desktop/dd757606%28v=vs.85%29.aspx
+
+static const guid_t mfasf_sampleextension_sampleduration_guid =
+{0xC6BD9450, 0x867F, 0x4907, {0x83, 0xA3, 0xC7, 0x79, 0x21, 0xB7, 0x33, 0xAD}};
+
+static const guid_t mfasf_sampleextension_outputcleanpoint_guid =
+{0xF72A3C6F, 0x6EB4, 0x4EBC, {0xB1, 0x92, 0x09, 0xAD, 0x97, 0x59, 0xE8, 0x28}};
+
+static const guid_t mfasf_sampleextension_smtpe_guid =
+{0x399595EC, 0x8667, 0x4E2D, {0x8F, 0xDB, 0x98, 0x81, 0x4C, 0xE7, 0x6C, 0x1E}};
+
+static const guid_t mfasf_sampleextension_filename_guid =
+{0xE165EC0E, 0x19ED, 0x45D7, {0xB4, 0xA7, 0x25, 0xCB, 0xD1, 0xE2, 0x8E, 0x9B}};
+
+static const guid_t mfasf_sampleextension_contenttype_guid =
+{0xD590DC20, 0x07BC, 0x436C, {0x9C, 0xF7, 0xF3, 0xBB, 0xFB, 0xF1, 0xA4, 0xDC}};
+
+static const guid_t mfasf_sampleextension_pixelaspectratio_guid =
+{0x1B1EE554, 0xF9EA, 0x4BC8, {0x82, 0x1A, 0x37, 0x6B, 0x74, 0xE4, 0xC4, 0xB8}};
+
+static const guid_t mfasf_sampleextension_encryptionsampleid_guid =
+{0x6698B84E, 0x0AFA, 0x4330, {0xAE, 0xB2, 0x1C, 0x0A, 0x98, 0xD7, 0xA4, 0x4D}};
+
+static const guid_t mfasf_sampleextension_encryptionkeyid_guid =
+{0x76376591, 0x795F, 0x4DA1, {0x86, 0xED, 0x9D, 0x46, 0xEC, 0xA1, 0x09, 0x49}};
+
+// DVR ones
+
+static const guid_t asf_dvr_sampleextension_videoframe_guid =
+{0xDD6432CC, 0xE229, 0x40DB, {0x80, 0xF6, 0xD2, 0x63, 0x28, 0xD2, 0x76, 0x1F}};
 
 /****************************************************************************
  * GUID functions

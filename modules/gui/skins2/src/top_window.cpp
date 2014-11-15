@@ -2,7 +2,7 @@
  * top_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 766a253b2612e0d35ce716dba8d0e3595ee51194 $
+ * $Id: 11b0d0d7dc71dbf28621c4c3836ac683f90d56c8 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -48,6 +48,8 @@
 #include "../utils/ustring.hpp"
 
 #include <vlc_keys.h>
+#include <vlc_input.h>
+#include <vlc_url.h>
 #include <list>
 
 
@@ -277,12 +279,27 @@ void TopWindow::processEvent( EvtDragDrop &rEvtDragDrop )
     }
     else
     {
+        input_thread_t *pInput = getIntf()->p_sys->p_input;
+        bool is_subtitle = false;
         list<string> files = rEvtDragDrop.getFiles();
-        list<string>::const_iterator it = files.begin();
-        for( bool first = true; it != files.end(); ++it, first = false )
+        if( files.size() == 1 && pInput != NULL )
         {
-            bool playOnDrop = m_playOnDrop && first;
-            CmdAddItem( getIntf(), it->c_str(), playOnDrop ).execute();
+            list<string>::const_iterator it = files.begin();
+            char* psz_file = make_path( it->c_str() );
+            if( psz_file )
+            {
+                is_subtitle = !input_AddSubtitleOSD( pInput, psz_file, true, true );
+                free( psz_file );
+            }
+        }
+        if( !is_subtitle )
+        {
+            list<string>::const_iterator it = files.begin();
+            for( bool first = true; it != files.end(); ++it, first = false )
+            {
+                bool playOnDrop = m_playOnDrop && first;
+                CmdAddItem( getIntf(), it->c_str(), playOnDrop ).execute();
+            }
         }
     }
     m_pDragControl = NULL;
@@ -351,6 +368,13 @@ void TopWindow::setActiveLayout( GenericLayout *pLayout )
         }
         // The current layout becomes inactive
         m_pActiveLayout->getActiveVar().set( false );
+
+        // if both layouts have the same original size, infer a
+        // subsequent resize of the active layout has to be applied
+        // to the new layout about to become active
+        if( pLayout->isTightlyCoupledWith( *m_pActiveLayout ) )
+            pLayout->resize( m_pActiveLayout->getWidth(),
+                             m_pActiveLayout->getHeight() );
     }
 
     pLayout->setWindow( this );
@@ -358,13 +382,14 @@ void TopWindow::setActiveLayout( GenericLayout *pLayout )
     // Get the size of the layout and resize the window
     resize( pLayout->getWidth(), pLayout->getHeight() );
 
+    // The new layout is active
+    pLayout->getActiveVar().set( true );
+
     if( isVisible )
     {
         pLayout->onShow();
     }
 
-    // The new layout is active
-    pLayout->getActiveVar().set( true );
 }
 
 

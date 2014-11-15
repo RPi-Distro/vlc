@@ -1,6 +1,6 @@
 if HAVE_WIN32
 BUILT_SOURCES_distclean += \
-	extras/package/win32/vlc.win32.nsi extras/package/win32/spad.nsi
+	extras/package/win32/NSIS/vlc.win32.nsi extras/package/win32/NSIS/spad.nsi
 endif
 
 win32_destdir=$(abs_top_builddir)/vlc-$(VERSION)
@@ -10,13 +10,10 @@ win32_xpi_destdir=$(abs_top_builddir)/vlc-plugin-$(VERSION)
 7Z_OPTS=-t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on
 
 
-if HAVE_WINCE
-build-npapi:
-	touch $@
-else
 if HAVE_WIN32
 include extras/package/npapi.am
-endif
+
+build-npapi: package-win-install
 endif
 
 if HAVE_WIN64
@@ -49,6 +46,9 @@ package-win-common: package-win-install build-npapi
 	cp -r $(prefix)/lib/vlc/plugins $(win32_destdir)
 	-cp -r $(prefix)/share/locale $(win32_destdir)
 
+# BD-J JAR
+	-cp $(CONTRIB_DIR)/share/java/*.jar $(win32_destdir)/plugins/access/
+
 if BUILD_LUA
 	mkdir -p $(win32_destdir)/lua/
 	cp -r $(prefix)/lib/vlc/lua/* $(prefix)/share/vlc/lua/* $(win32_destdir)/lua/
@@ -59,44 +59,42 @@ if BUILD_SKINS
 	cp -r $(prefix)/share/vlc/skins2 $(win32_destdir)/skins
 endif
 
-if BUILD_OSDMENU
-	cp -r $(prefix)/share/vlc/osdmenu "$(win32_destdir)/"
-	for file in $(win32_destdir)/osdmenu/*.cfg; do \
-		sed -i.orig -e 's%share/osdmenu%osdmenu%g' -e 's%/%\\%g' "$$file"; \
-		rm -f -- "$${file}.orig"; \
-	done
-endif
-
-if !HAVE_WINCE
 	cp "$(top_builddir)/npapi-vlc/activex/axvlc.dll.manifest" "$(win32_destdir)/"
 	cp "$(top_builddir)/npapi-vlc/installed/lib/axvlc.dll" "$(win32_destdir)/"
 	cp "$(top_builddir)/npapi-vlc/npapi/package/npvlc.dll.manifest" "$(win32_destdir)/"
 	cp "$(top_builddir)/npapi-vlc/installed/lib/npvlc.dll" "$(win32_destdir)/"
-endif
 
 # Compiler shared DLLs, when using compilers built with --enable-shared
-# If gcc_s_sjlj/stdc++-6 DLLs exist, our C++ modules were linked to them
-	gcc_lib_dir=`$(CXX) -v /dev/null 2>&1 | grep ^LIBRARY_PATH|cut -d= -f2|cut -d: -f1` ; \
-	cp "$${gcc_lib_dir}/libstdc++-6.dll" "$${gcc_lib_dir}/libgcc_s_sjlj-1.dll" "$(win32_destdir)/" ; true
+# The shared DLLs may not necessarily be in the first LIBRARY_PATH, we
+# should check them all.
+	-library_path_list=`$(CXX) -v /dev/null 2>&1 | grep ^LIBRARY_PATH|cut -d= -f2` ;\
+	IFS=':' ;\
+	for x in $$library_path_list ;\
+	do \
+		test -f "$$x/libstdc++-6.dll" && cp "$$x/libstdc++-6.dll" "$(win32_destdir)/" ; \
+		test -f "$$x/libgcc_s_sjlj-1.dll" && cp "$$x/libgcc_s_sjlj-1.dll" "$(win32_destdir)/" ; \
+		test -f "$$x/libgcc_s_seh-1.dll" && cp "$$x/libgcc_s_seh-1.dll" "$(win32_destdir)/" ; \
+		test -f "$$x/libwinpthread-1.dll" && cp "$$x/libwinpthread-1.dll" "$(win32_destdir)/" ; \
+		test -f "$$x/../bin/libwinpthread-1.dll" && cp "$$x/../bin/libwinpthread-1.dll" "$(win32_destdir)/" ; \
+	done
 
 # SDK
 	mkdir -p "$(win32_destdir)/sdk/lib/"
 	cp -r $(prefix)/include "$(win32_destdir)/sdk"
 	cp -r $(prefix)/lib/pkgconfig "$(win32_destdir)/sdk/lib"
-	cd $(prefix)/lib && cp -rv libvlc.dll.a libvlc.la libvlccore.dll.a libvlccore.la "$(win32_destdir)/sdk/lib/"
-if !HAVE_WINCE
+	cd $(prefix)/lib && cp -rv libvlc.la libvlccore.la "$(win32_destdir)/sdk/lib/"
+	cd $(prefix)/lib && cp -rv libvlc.dll.a "$(win32_destdir)/sdk/lib/libvlc.lib"
+	cd $(prefix)/lib && cp -rv libvlccore.dll.a "$(win32_destdir)/sdk/lib/libvlccore.lib"
 	$(DLLTOOL) -D libvlc.dll -l "$(win32_destdir)/sdk/lib/libvlc.lib" -d "$(top_builddir)/lib/.libs/libvlc.dll.def" "$(prefix)/bin/libvlc.dll"
+	echo "INPUT(libvlc.lib)" > "$(win32_destdir)/sdk/lib/vlc.lib"
 	$(DLLTOOL) -D libvlccore.dll -l "$(win32_destdir)/sdk/lib/libvlccore.lib" -d "$(top_builddir)/src/.libs/libvlccore.dll.def" "$(prefix)/bin/libvlccore.dll"
+	echo "INPUT(libvlccore.lib)" > "$(win32_destdir)/sdk/lib/vlccore.lib"
 
 	mkdir -p "$(win32_destdir)/sdk/activex/"
 	cd $(top_builddir)/npapi-vlc && cp activex/README.TXT share/test/test.html $(win32_destdir)/sdk/activex/
-endif
 
 # Convert to DOS line endings
 	find $(win32_destdir) -type f \( -name "*xml" -or -name "*html" -or -name '*js' -or -name '*css' -or -name '*hosts' -or -iname '*txt' -or -name '*.cfg' -or -name '*.lua' \) -exec $(U2D) {} \;
-
-# Enable DEP and ASLR for all the binaries
-	find $(win32_destdir) -type f \( -name '*$(LIBEXT)' -print -o -name '*$(EXEEXT)' -print \) -exec $(top_srcdir)/extras/package/win32/peflags.pl {} \;
 
 # Remove cruft
 	find $(win32_destdir)/plugins/ -type f \( -name '*.a' -or -name '*.la' \) -exec rm -rvf {} \;
@@ -114,27 +112,27 @@ package-win-strip: package-win-common
 
 
 package-win32-webplugin-common: package-win-strip
-	mkdir -p "$(win32_xpi_destdir)/"
-	cp -r $(win32_destdir)/plugins/ "$(win32_xpi_destdir)/"
-	find $(prefix) -maxdepth 4 -name "*$(LIBEXT)" -exec cp {} "$(win32_xpi_destdir)/" \;
+	mkdir -p "$(win32_xpi_destdir)/plugins/"
+	cp -r $(win32_destdir)/plugins/ "$(win32_xpi_destdir)/plugins/"
+	cp "$(win32_destdir)/libvlc.dll" "$(win32_destdir)/libvlccore.dll" "$(win32_destdir)/npvlc.dll" "$(win32_xpi_destdir)/plugins/"
 	cp $(top_builddir)/npapi-vlc/npapi/package/npvlc.dll.manifest "$(win32_xpi_destdir)/plugins/"
 	cp "$(top_srcdir)/extras/package/win32/libvlc.dll.manifest" "$(win32_xpi_destdir)/plugins/"
-	rm -rf "$(win32_xpi_destdir)/plugins/gui/"
+	rm -rf "$(win32_xpi_destdir)/plugins/plugins/gui/"
 
 
 package-win32-xpi: package-win32-webplugin-common
 	cp $(top_builddir)/npapi-vlc/npapi/package/install.rdf "$(win32_xpi_destdir)/"
-	cd $(win32_xpi_destdir) && zip -r -9 "../vlc-$(VERSION).xpi" install.rdf plugins
+	cd $(win32_xpi_destdir) && zip -r -9 "../$(WINVERSION).xpi" install.rdf plugins
 
 
 package-win32-crx: package-win32-webplugin-common
 	cp $(top_builddir)/npapi-vlc/npapi/package/manifest.json "$(win32_xpi_destdir)/"
 	crxmake --pack-extension "$(win32_xpi_destdir)" \
-		--extension-output "$(win32_destdir)/vlc-$(VERSION).crx" --ignore-file install.rdf
+		--extension-output "$(win32_destdir)/$(WINVERSION).crx" --ignore-file install.rdf
 
 
 # nsis is a 32-bits installer, we need to build a 32bits DLL
-$(win32_destdir)/NSIS/UAC.dll: extras/package/win32/UAC/runas.cpp extras/package/win32/UAC/uac.cpp
+$(win32_destdir)/NSIS/UAC.dll: extras/package/win32/NSIS/UAC/runas.cpp extras/package/win32/NSIS/UAC/uac.cpp
 	mkdir -p "$(win32_destdir)/NSIS/"
 if HAVE_WIN64
 	i686-w64-mingw32-g++ $^ -shared -o $@ -lole32 -static-libstdc++ -static-libgcc
@@ -143,14 +141,26 @@ else
 	$(CXX) $^ -D_WIN32_IE=0x0601 -D__forceinline=inline -shared -o $@ -lole32 -static-libstdc++ -static-libgcc
 	$(STRIP) $@
 endif
-
-
-package-win32-exe: package-win-strip $(win32_destdir)/NSIS/UAC.dll
-# Script installer
-	cd "$(top_builddir)/extras/package/win32" && cp vlc.win32.nsi spad.nsi "$(win32_destdir)/"
-	cp -r $(srcdir)/extras/package/win32/languages/ "$(win32_destdir)/"
+$(win32_destdir)/NSIS/nsProcess.dll: extras/package/win32/NSIS/nsProcess/nsProcess.c extras/package/win32/NSIS/nsProcess/pluginapi.c
 	mkdir -p "$(win32_destdir)/NSIS/"
-	cp "$(top_srcdir)/extras/package/win32/UAC.nsh" "$(win32_destdir)/NSIS/"
+if HAVE_WIN64
+	i686-w64-mingw32-gcc $^ -shared -o $@ -lole32 -static-libgcc
+	i686-w64-mingw32-strip $@
+else
+	$(CC) $^ -D_WIN32_IE=0x0601 -shared -o $@ -lole32 -static-libgcc
+	$(STRIP) $@
+endif
+
+
+package-win32-exe: package-win-strip $(win32_destdir)/NSIS/UAC.dll $(win32_destdir)/NSIS/nsProcess.dll extras/package/win32/NSIS/vlc.win32.nsi
+# Script installer
+	cp    $(top_builddir)/extras/package/win32/NSIS/vlc.win32.nsi "$(win32_destdir)/"
+	cp    $(top_builddir)/extras/package/win32/NSIS/spad.nsi      "$(win32_destdir)/"
+	cp -r $(srcdir)/extras/package/win32/NSIS/languages    "$(win32_destdir)/"
+	cp -r $(srcdir)/extras/package/win32/NSIS/helpers      "$(win32_destdir)/"
+	mkdir -p "$(win32_destdir)/NSIS/"
+	cp "$(top_srcdir)/extras/package/win32/NSIS/UAC.nsh" "$(win32_destdir)/NSIS/"
+	cp "$(top_srcdir)/extras/package/win32/NSIS/nsProcess.nsh" "$(win32_destdir)/NSIS/"
 
 # Create package
 	if makensis -VERSION >/dev/null 2>&1; then \

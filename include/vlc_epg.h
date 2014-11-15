@@ -2,7 +2,7 @@
  * vlc_epg.h: Electronic Program Guide
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: 25d8ed275d918e16bf5b12ba494d234ed379cb19 $
+ * $Id: c0fd0f559ac3bb7ed6201889dcda998ebff3a413 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -38,6 +38,7 @@ typedef struct
     char    *psz_short_description;
     char    *psz_description;
 
+    uint8_t i_rating;   /* Parental control, set to 0 when undefined */
 } vlc_epg_event_t;
 
 typedef struct
@@ -66,7 +67,7 @@ VLC_API void vlc_epg_Clean(vlc_epg_t *p_epg);
  *
  * \see vlc_epg_t for the definitions of the parameters.
  */
-VLC_API void vlc_epg_AddEvent(vlc_epg_t *p_epg, int64_t i_start, int i_duration, const char *psz_name, const char *psz_short_description, const char *psz_description);
+VLC_API void vlc_epg_AddEvent(vlc_epg_t *p_epg, int64_t i_start, int i_duration, const char *psz_name, const char *psz_short_description, const char *psz_description, uint8_t i_rating );
 
 /**
  * It creates a new vlc_epg_t*

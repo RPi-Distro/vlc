@@ -1,10 +1,12 @@
 # shout
 
-SHOUT_VERSION := 2.2.2
+SHOUT_VERSION := 2.3.1
 SHOUT_URL := http://downloads.us.xiph.org/releases/libshout/libshout-$(SHOUT_VERSION).tar.gz
 
 ifdef BUILD_ENCODERS
+ifdef BUILD_NETWORK
 PKGS += shout
+endif
 endif
 ifeq ($(call need_pkg,"shout >= 2.1"),)
 PKGS_FOUND += shout
@@ -19,6 +21,8 @@ $(TARBALLS)/libshout-$(SHOUT_VERSION).tar.gz:
 libshout: libshout-$(SHOUT_VERSION).tar.gz .sum-shout
 	$(UNPACK)
 	$(APPLY) $(SRC)/shout/libshout-win32.patch
+	$(APPLY) $(SRC)/shout/bsd.patch
+	$(UPDATE_AUTOCONFIG)
 	$(MOVE)
 
 DEPS_shout = ogg $(DEPS_ogg) theora $(DEPS_theora) speex $(DEPS_speex)

@@ -2,7 +2,7 @@
  * display.h: "vout display" managment
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 86746fd40987b8a8a659064332fc2b7b6b56ec3f $
+ * $Id: 1c22918fd5e47441abd379caf2206317160904d1 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -22,88 +22,6 @@
  *****************************************************************************/
 
 #include <vlc_vout_wrapper.h>
-
-#if 0
-#include <vlc_vout_display.h>
-#include <vlc_filter.h>
-
-/**
- * It retreive a picture from the display
- */
-static inline picture_pool_t *vout_display_Pool(vout_display_t *vd, unsigned count)
-{
-    return vd->pool(vd, count);
-}
-
-/**
- * It preparse a picture for display.
- */
-static inline void vout_display_Prepare(vout_display_t *vd, picture_t *picture)
-{
-    if (vd->prepare )
-        vd->prepare(vd, picture);
-}
-
-/**
- * It display a picture.
- */
-static inline void vout_display_Display(vout_display_t *vd, picture_t *picture)
-{
-    vd->display(vd, picture);
-}
-
-/**
- * It holds a state for a vout display.
- */
-typedef struct {
-    vout_display_cfg_t cfg;
-
-    bool is_on_top;
-    struct {
-        int num;
-        int den;
-    } sar;
-} vout_display_state_t;
-
-/**
- * It creates a vout managed display.
- */
-vout_display_t *vout_NewDisplay( vout_thread_t *,
-                                 const video_format_t *,
-                                 const vout_display_state_t *,
-                                 const char *psz_module,
-                                 mtime_t i_double_click_timeout,
-                                 mtime_t i_hide_timeout );
-/**
- * It creates a vout managed display wrapping a video splitter.
- */
-vout_display_t *vout_NewSplitter(vout_thread_t *,
-                                 const video_format_t *source,
-                                 const vout_display_state_t *state,
-                                 const char *module,
-                                 const char *splitter,
-                                 mtime_t double_click_timeout,
-                                 mtime_t hide_timeout );
-
-/**
- * It destroy a vout managed display.
- */
-void vout_DeleteDisplay(vout_display_t *, vout_display_state_t *);
-
-picture_t *vout_FilterDisplay(vout_display_t *, picture_t *);
-
-void vout_ManageDisplay(vout_display_t *, bool allow_reset_pictures);
-
-void vout_SetDisplayFullscreen(vout_display_t *, bool is_fullscreen);
-void vout_SetDisplayFilled(vout_display_t *, bool is_filled);
-void vout_SetDisplayZoom(vout_display_t *, int num, int den);
-void vout_SetWindowState(vout_display_t *, unsigned state);
-void vout_SetDisplayAspect(vout_display_t *, unsigned sar_num, unsigned sar_den);
-void vout_SetDisplayCrop(vout_display_t *,
-                         unsigned crop_num, unsigned crop_den,
-                         unsigned x, unsigned y, unsigned width, unsigned height);
-
-#endif
 
 vout_display_t *vout_NewSplitter(vout_thread_t *vout,
                                  const video_format_t *source,

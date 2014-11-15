@@ -2,7 +2,7 @@
  * access.c: Real rtsp input
  *****************************************************************************
  * Copyright (C) 2005 VideoLAN
- * $Id: bd1bbc393b70271df6cbdfa477933a7b9a299959 $
+ * $Id: dd786bec42a4e21d43ee21713150b5bed5bf7d3b $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -159,12 +159,8 @@ static int Open( vlc_object_t *p_this )
     p_access->pf_block = BlockRead;
     p_access->pf_seek = Seek;
     p_access->pf_control = Control;
-    p_access->info.i_update = 0;
-    p_access->info.i_size = 0;
     p_access->info.i_pos = 0;
     p_access->info.b_eof = false;
-    p_access->info.i_title = 0;
-    p_access->info.i_seekpoint = 0;
     p_access->p_sys = p_sys = malloc( sizeof( access_sys_t ) );
     if( !p_sys )
         return VLC_ENOMEM;
@@ -230,7 +226,7 @@ static int Open( vlc_object_t *p_this )
             goto error;
         }
 
-        p_sys->p_header = block_New( p_access, 4096 );
+        p_sys->p_header = block_Alloc( 4096 );
         p_sys->p_header->i_buffer =
             rmff_dump_header( h, (char *)p_sys->p_header->p_buffer, 1024 );
         rmff_free_header( h );
@@ -283,7 +279,7 @@ static block_t *BlockRead( access_t *p_access )
     i_size = real_get_rdt_chunk_header( p_access->p_sys->p_rtsp, &pheader );
     if( i_size <= 0 ) return NULL;
 
-    p_block = block_New( p_access, i_size );
+    p_block = block_Alloc( i_size );
     p_block->i_buffer = real_get_rdt_chunk( p_access->p_sys->p_rtsp, &pheader,
                                             &p_block->p_buffer );
 
@@ -307,7 +303,6 @@ static int Control( access_t *p_access, int i_query, va_list args )
 {
     switch( i_query )
     {
-        /* */
         case ACCESS_CAN_SEEK:
         case ACCESS_CAN_FASTSEEK:
         case ACCESS_CAN_PAUSE:
@@ -323,21 +318,11 @@ static int Control( access_t *p_access, int i_query, va_list args )
                 * var_InheritInteger(p_access, "network-caching");
             break;
 
-        /* */
         case ACCESS_SET_PAUSE_STATE:
             /* Nothing to do */
             break;
 
-        case ACCESS_GET_TITLE_INFO:
-        case ACCESS_SET_TITLE:
-        case ACCESS_SET_SEEKPOINT:
-        case ACCESS_SET_PRIVATE_ID_STATE:
-        case ACCESS_GET_META:
-        case ACCESS_GET_CONTENT_TYPE:
-            return VLC_EGENERIC;
-
         default:
-            msg_Warn( p_access, "unimplemented query in control" );
             return VLC_EGENERIC;
     }
 

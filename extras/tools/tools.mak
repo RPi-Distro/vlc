@@ -18,6 +18,11 @@ download = rm -f $@.tmp && \
 	wget --passive -c -p -O $@.tmp "$(1)" && \
 	touch $@.tmp && \
 	mv $@.tmp $@
+else ifeq ($(which fetch >/dev/null 2>&1 || echo FAIL),)
+download = rm -f $@.tmp && \
+	fetch -p -o $@.tmp "$(1)" && \
+	touch $@.tmp && \
+	mv $@.tmp $@
 else
 download = $(error Neither curl nor wget found!)
 endif
@@ -46,7 +51,7 @@ yasm: yasm-$(YASM_VERSION).tar.gz
 	$(MOVE)
 
 .yasm: yasm
-	(cd $<; ./configure --prefix=$(PREFIX) && make && make install)
+	(cd $<; ./configure --prefix=$(PREFIX) && $(MAKE) && $(MAKE) install)
 	touch $@
 
 CLEAN_FILE += .yasm
@@ -63,7 +68,7 @@ cmake: cmake-$(CMAKE_VERSION).tar.gz
 	$(MOVE)
 
 .cmake: cmake
-	(cd $<; ./configure --prefix=$(PREFIX) && make && make install)
+	(cd $<; ./configure --prefix=$(PREFIX) && $(MAKE) && $(MAKE) install)
 	touch $@
 
 CLEAN_FILE += .cmake
@@ -79,8 +84,8 @@ libtool: libtool-$(LIBTOOL_VERSION).tar.gz
 	$(UNPACK)
 	$(MOVE)
 
-.libtool: libtool
-	(cd $<; ./configure --prefix=$(PREFIX) && make && make install)
+.libtool: libtool .automake
+	(cd $<; ./configure --prefix=$(PREFIX) && $(MAKE) && $(MAKE) install)
 	ln -sf libtool $(PREFIX)/bin/glibtool
 	ln -sf libtoolize $(PREFIX)/bin/glibtoolize
 	touch $@
@@ -99,7 +104,7 @@ tar: tar-$(TAR_VERSION).tar.bz2
 	$(MOVE)
 
 .tar: tar
-	(cd $<; ./configure --prefix=$(PREFIX) && make && make install)
+	(cd $<; ./configure --prefix=$(PREFIX) && $(MAKE) && $(MAKE) install)
 	touch $@
 
 CLEAN_PKG += tar
@@ -116,7 +121,7 @@ xz: xz-$(XZ_VERSION).tar.bz2
 	$(MOVE)
 
 .xz: xz
-	(cd $<; ./configure --prefix=$(PREFIX) && make && make install)
+	(cd $<; ./configure --prefix=$(PREFIX) && $(MAKE) && $(MAKE) install)
 	touch $@
 
 CLEAN_PKG += xz
@@ -133,12 +138,12 @@ autoconf: autoconf-$(AUTOCONF_VERSION).tar.gz
 	$(MOVE)
 
 .autoconf: autoconf .pkg-config
-	(cd $<; ./configure --prefix=$(PREFIX) && make && make install)
+	(cd $<; ./configure --prefix=$(PREFIX) && $(MAKE) && $(MAKE) install)
 	touch $@
 
 CLEAN_FILE += .autoconf
 CLEAN_PKG += autoconf
-DISTCLEAN_PKG += autoconf-$(AUTOCONF_VERSION).tar.bz2
+DISTCLEAN_PKG += autoconf-$(AUTOCONF_VERSION).tar.gz
 
 # automake
 
@@ -150,12 +155,29 @@ automake: automake-$(AUTOMAKE_VERSION).tar.gz
 	$(MOVE)
 
 .automake: automake .autoconf
-	(cd $<; ./configure --prefix=$(PREFIX) && make && make install)
+	(cd $<; ./configure --prefix=$(PREFIX) && $(MAKE) && $(MAKE) install)
 	touch $@
 
 CLEAN_FILE += .automake
 CLEAN_PKG += automake
 DISTCLEAN_PKG += automake-$(AUTOMAKE_VERSION).tar.gz
+
+# m4
+
+m4-$(M4_VERSION).tar.gz:
+	$(call download,$(M4_URL))
+
+m4: m4-$(M4_VERSION).tar.gz
+	$(UNPACK)
+	$(MOVE)
+
+.m4: m4
+	(cd $<; ./configure --prefix=$(PREFIX) && $(MAKE) && $(MAKE) install)
+	touch $@
+
+CLEAN_FILE += .m4
+CLEAN_PKG += m4
+DISTCLEAN_PKG += m4-$(M4_VERSION).tar.gz
 
 # pkg-config
 
@@ -164,33 +186,84 @@ pkg-config-$(PKGCFG_VERSION).tar.gz:
 
 pkgconfig: pkg-config-$(PKGCFG_VERSION).tar.gz
 	$(UNPACK)
+	mv pkg-config-lite-$(PKGCFG_VERSION) pkg-config-$(PKGCFG_VERSION)
 	$(MOVE)
 
 .pkg-config: pkgconfig
-	(cd pkgconfig; ./configure --prefix=$(PREFIX) --disable-shared --enable-static && make && make install)
+	(cd pkgconfig; ./configure --prefix=$(PREFIX) --disable-shared --enable-static && $(MAKE) && $(MAKE) install)
 	touch $@
 
 CLEAN_FILE += .pkg-config
 CLEAN_PKG += pkgconfig
 DISTCLEAN_PKG += pkg-config-$(PKGCFG_VERSION).tar.gz
 
-# openssl
-# we need to use -j1 here, since otherwise compilation fails (at least on Darwin)
+# gas-preprocessor
+gas-preprocessor-$(GAS_VERSION).tar.gz:
+	$(call download,$(GAS_URL))
 
-openssl-$(OPENSSL_VERSION).tar.gz:
-	$(call download,$(OPENSSL_URL))
-
-openssl: openssl-$(OPENSSL_VERSION).tar.gz
+gas: gas-preprocessor-$(GAS_VERSION).tar.gz
 	$(UNPACK)
 	$(MOVE)
 
-.openssl: openssl
-	(cd openssl; ./config --prefix=$(PREFIX) no-shared no-zlib && make -j1 && make test && make install)
+.gas: gas
+	cp gas/gas-preprocessor.pl build/bin/
 	touch $@
 
-CLEAN_FILE += .openssl
-CLEAN_PKG += openssl
-DISTCLEAN_PKG += openssl-$(OPENSSL_VERSION).tar.gz
+CLEAN_FILE += .gas
+CLEAN_PKG += gas
+DISTCLEAN_PKG += yuvi-gas-preprocessor-$(GAS_VERSION).tar.gz
+
+# Ragel State Machine Compiler
+ragel-$(RAGEL_VERSION).tar.gz:
+	$(call download,$(RAGEL_URL))
+
+ragel: ragel-$(RAGEL_VERSION).tar.gz
+	$(UNPACK)
+	$(APPLY) ragel-6.8-javacodegen.patch
+	$(MOVE)
+
+
+.ragel: ragel
+	(cd ragel; ./configure --prefix=$(PREFIX) --disable-shared --enable-static && $(MAKE) && $(MAKE) install)
+	touch $@
+
+CLEAN_FILE += .ragel
+CLEAN_PKG += ragel
+DISTCLEAN_PKG += ragel-$(RAGEL_VERSION).tar.gz
+
+# GNU sed
+
+sed-$(SED_VERSION).tar.bz2:
+	$(call download,$(SED_URL))
+
+sed: sed-$(SED_VERSION).tar.bz2
+	$(UNPACK)
+	$(MOVE)
+
+.sed: sed
+	(cd $<; ./configure --prefix=$(PREFIX) && $(MAKE) && $(MAKE) install)
+	touch $@
+
+CLEAN_PKG += sed
+DISTCLEAN_PKG += sed-$(SED_VERSION).tar.bz2
+CLEAN_FILE += .sed
+
+# Apache ANT
+
+apache-ant-$(ANT_VERSION).tar.bz2:
+	$(call download,$(ANT_URL))
+
+ant: apache-ant-$(ANT_VERSION).tar.bz2
+	$(UNPACK)
+	$(MOVE)
+
+.ant: ant
+	(cp $</bin/* build/bin/; cp $</lib/* build/lib/)
+	touch $@
+
+CLEAN_PKG += ant
+DISTCLEAN_PKG += apache-ant-$(ANT_VERSION).tar.bz2
+CLEAN_FILE += .ant
 
 #
 #

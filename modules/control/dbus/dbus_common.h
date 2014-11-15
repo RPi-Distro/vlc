@@ -1,13 +1,15 @@
 /*****************************************************************************
- * dbus-common.h : Common header for D-Bus control modules
+ * dbus_common.h : Common header for D-Bus control modules
  *****************************************************************************
  * Copyright © 2006-2008 Rafaël Carré
  * Copyright © 2007-2010 Mirsal Ennaime
  * Copyright © 2009-2010 The VideoLAN team
- * $Id: c494af04eca61cb2f4f0c01312caf74ec42b8322 $
+ * Copyright © 2013      Alex Merry
+ * $Id: 9579c3f344b183f2aaee1e1f4082f416f870c260 $
  *
  * Authors:    Mirsal Ennaime <mirsal dot ennaime at gmailcom>
  *             Rafaël Carré <funman at videolanorg>
+ *             Alex Merry <dev at randomguy3 me uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,6 +102,7 @@ struct intf_sys_t
     vlc_array_t    *p_watches;
     int             p_pipe_fds[2];
     vlc_mutex_t     lock;
+    vlc_thread_t    thread;
     input_thread_t *p_input;
 
     mtime_t         i_last_input_pos; /* Only access from input thread */
@@ -108,6 +111,7 @@ struct intf_sys_t
 
 enum
 {
+    SIGNAL_NONE=0,
     SIGNAL_ITEM_CURRENT,
     SIGNAL_INTF_CHANGE,
     SIGNAL_PLAYLIST_ITEM_APPEND,
@@ -122,7 +126,8 @@ enum
     SIGNAL_CAN_SEEK,
     SIGNAL_CAN_PAUSE,
     SIGNAL_VOLUME_CHANGE,
-    SIGNAL_VOLUME_MUTED
+    SIGNAL_VOLUME_MUTED,
+    SIGNAL_FULLSCREEN
 };
 
 enum
@@ -135,5 +140,10 @@ enum
 
 int DemarshalSetPropertyValue( DBusMessage *p_msg, void *p_arg );
 int GetInputMeta  ( input_item_t* p_input, DBusMessageIter *args );
+int AddProperty ( intf_thread_t *p_intf,
+                  DBusMessageIter *p_container,
+                  const char* psz_property_name,
+                  const char* psz_signature,
+                  int (*pf_marshaller) (intf_thread_t*, DBusMessageIter*) );
 
 #endif //dbus-common.h

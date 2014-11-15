@@ -1,25 +1,25 @@
 /*****************************************************************************
  * pes.c: PES packetizer used by the MPEG multiplexers
  *****************************************************************************
- * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 5cbb2da439c0192704d2a6178030f4f2f7820931 $
+ * Copyright (C) 2001, 2002 VLC authors and VideoLAN
+ * $Id: 9210b3f3ebd0d47850be4bc461062957ed512884 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -110,7 +110,10 @@ static inline int PESHeader( uint8_t *p_hdr, mtime_t i_pts, mtime_t i_dts,
 
                 if( i_pts > 0 && i_dts > 0 &&
                     ( i_pts != i_dts || ( p_fmt->i_cat == VIDEO_ES &&
-                      p_fmt->i_codec != VLC_CODEC_MPGV ) ) )
+                      p_fmt->i_codec != VLC_CODEC_MPGV &&
+                      p_fmt->i_codec != VLC_CODEC_MP2V &&
+                      p_fmt->i_codec != VLC_CODEC_MP1V 
+                      ) ) )
                 {
                     i_pts_dts = 0x03;
                     if ( !i_header_size ) i_header_size = 0xa;
@@ -313,12 +316,11 @@ static inline int PESHeader( uint8_t *p_hdr, mtime_t i_pts, mtime_t i_dts,
  *                       To allow unbounded PES packets in transport stream
  *                       VIDEO_ES, set to INT_MAX.
  */
-int  EStoPES ( sout_instance_t *p_sout, block_t **pp_pes, block_t *p_es,
+int  EStoPES ( block_t **pp_pes, block_t *p_es,
                    es_format_t *p_fmt, int i_stream_id,
                    int b_mpeg2, int b_data_alignment, int i_header_size,
                    int i_max_pes_size )
 {
-    VLC_UNUSED(p_sout);
     block_t *p_pes;
     mtime_t i_pts, i_dts, i_length;
 
@@ -342,7 +344,8 @@ int  EStoPES ( sout_instance_t *p_sout, block_t **pp_pes, block_t *p_es,
     }
 
     if( ( p_fmt->i_codec == VLC_CODEC_MP4V ||
-          p_fmt->i_codec == VLC_CODEC_H264 ) &&
+          p_fmt->i_codec == VLC_CODEC_H264 ||
+          p_fmt->i_codec == VLC_CODEC_HEVC) &&
         p_es->i_flags & BLOCK_FLAG_TYPE_I )
     {
         /* For MPEG4 video, add VOL before I-frames,
@@ -407,7 +410,7 @@ int  EStoPES ( sout_instance_t *p_sout, block_t **pp_pes, block_t *p_es,
         }
         else
         {
-            p_pes->p_next = block_New( p_sout, i_pes_header + i_pes_payload );
+            p_pes->p_next = block_Alloc( i_pes_header + i_pes_payload );
             p_pes = p_pes->p_next;
 
             p_pes->i_dts    = 0;
@@ -415,7 +418,7 @@ int  EStoPES ( sout_instance_t *p_sout, block_t **pp_pes, block_t *p_es,
             p_pes->i_length = 0;
             if( i_pes_payload > 0 )
             {
-                vlc_memcpy( p_pes->p_buffer + i_pes_header, p_data,
+                memcpy( p_pes->p_buffer + i_pes_header, p_data,
                             i_pes_payload );
             }
             i_pes_count++;

@@ -12,7 +12,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -45,7 +45,6 @@ static void Close (vlc_object_t *);
 
 vlc_module_begin ()
 #if USE_OPENGL_ES == 2
-# error The OpenGL ES2 plugin is incomplete and not functional. FIXME.
 # define API VLC_OPENGL_ES2
 # define MODULE_VARNAME "gles2"
     set_shortname (N_("OpenGL ES2"))
@@ -98,19 +97,28 @@ static int Control (vout_display_t *, int, va_list);
 
 static vout_window_t *MakeWindow (vout_display_t *vd)
 {
-    vout_window_cfg_t wnd_cfg;
+    vout_window_cfg_t cfg = {
+        .x = var_InheritInteger (vd, "video-x"),
+        .y = var_InheritInteger (vd, "video-y"),
+        .width = vd->cfg->display.width,
+        .height = vd->cfg->display.height,
+    };
+    vout_window_t *wnd;
 
-    memset (&wnd_cfg, 0, sizeof (wnd_cfg));
-    wnd_cfg.type = VOUT_WINDOW_TYPE_NATIVE;
-    wnd_cfg.x = var_InheritInteger (vd, "video-x");
-    wnd_cfg.y = var_InheritInteger (vd, "video-y");
-    wnd_cfg.width  = vd->cfg->display.width;
-    wnd_cfg.height = vd->cfg->display.height;
+#if defined(_WIN32)
+    cfg.type = VOUT_WINDOW_TYPE_HWND;
+#elif defined(__ANDROID__)
+    cfg.type = VOUT_WINDOW_TYPE_ANDROID_NATIVE;
+#else
+    cfg.type = VOUT_WINDOW_TYPE_XID;
+#endif
 
-    vout_window_t *wnd = vout_display_NewWindow (vd, &wnd_cfg);
-    if (wnd == NULL)
-        msg_Err (vd, "parent window not available");
-    return wnd;
+    wnd = vout_display_NewWindow (vd, &cfg);
+    if (wnd != NULL)
+        return wnd;
+
+    msg_Err (vd, "parent window not available");
+    return NULL;
 }
 
 /**
@@ -134,17 +142,22 @@ static int Open (vlc_object_t *obj)
     if (sys->gl == NULL)
         goto error;
 
+    /* Initialize video display */
+    const vlc_fourcc_t *spu_chromas;
+
     if (vlc_gl_MakeCurrent (sys->gl))
         goto error;
 
-    /* Initialize video display */
-    sys->vgl = vout_display_opengl_New (&vd->fmt, NULL, sys->gl);
-    if (!sys->vgl)
+    sys->vgl = vout_display_opengl_New (&vd->fmt, &spu_chromas, sys->gl);
+    vlc_gl_ReleaseCurrent (sys->gl);
+
+    if (sys->vgl == NULL)
         goto error;
 
     vd->sys = sys;
     vd->info.has_pictures_invalid = false;
     vd->info.has_event_thread = false;
+    vd->info.subpicture_chromas = spu_chromas;
     vd->pool = Pool;
     vd->prepare = PictureRender;
     vd->display = PictureDisplay;
@@ -169,7 +182,10 @@ static void Close (vlc_object_t *obj)
     vout_display_t *vd = (vout_display_t *)obj;
     vout_display_sys_t *sys = vd->sys;
 
+    vlc_gl_MakeCurrent (sys->gl);
     vout_display_opengl_Delete (sys->vgl);
+    vlc_gl_ReleaseCurrent (sys->gl);
+
     vlc_gl_Destroy (sys->gl);
     vout_display_DeleteWindow (vd, sys->window);
     free (sys);
@@ -183,7 +199,11 @@ static picture_pool_t *Pool (vout_display_t *vd, unsigned count)
     vout_display_sys_t *sys = vd->sys;
 
     if (!sys->pool)
+    {
+        vlc_gl_MakeCurrent (sys->gl);
         sys->pool = vout_display_opengl_GetPool (sys->vgl, count);
+        vlc_gl_ReleaseCurrent (sys->gl);
+    }
     return sys->pool;
 }
 
@@ -191,16 +211,21 @@ static void PictureRender (vout_display_t *vd, picture_t *pic, subpicture_t *sub
 {
     vout_display_sys_t *sys = vd->sys;
 
+    vlc_gl_MakeCurrent (sys->gl);
     vout_display_opengl_Prepare (sys->vgl, pic, subpicture);
+    vlc_gl_ReleaseCurrent (sys->gl);
 }
 
 static void PictureDisplay (vout_display_t *vd, picture_t *pic, subpicture_t *subpicture)
 {
     vout_display_sys_t *sys = vd->sys;
 
+    vlc_gl_MakeCurrent (sys->gl);
     vout_display_opengl_Display (sys->vgl, &vd->source);
+    vlc_gl_ReleaseCurrent (sys->gl);
+
     picture_Release (pic);
-    (void)subpicture;
+    (void) subpicture;
 }
 
 static int Control (vout_display_t *vd, int query, va_list ap)
@@ -253,7 +278,9 @@ static int Control (vout_display_t *vd, int query, va_list ap)
         vout_display_place_t place;
 
         vout_display_PlacePicture (&place, src, cfg, false);
-        glViewport (0, 0, place.width, place.height);
+        vlc_gl_MakeCurrent (sys->gl);
+        glViewport (place.x, place.y, place.width, place.height);
+        vlc_gl_ReleaseCurrent (sys->gl);
         return VLC_SUCCESS;
       }
 
@@ -265,7 +292,9 @@ static int Control (vout_display_t *vd, int query, va_list ap)
         vout_display_place_t place;
 
         vout_display_PlacePicture (&place, src, cfg, false);
-        glViewport (0, 0, place.width, place.height);
+        vlc_gl_MakeCurrent (sys->gl);
+        glViewport (place.x, place.y, place.width, place.height);
+        vlc_gl_ReleaseCurrent (sys->gl);
         return VLC_SUCCESS;
       }
 

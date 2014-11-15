@@ -1,66 +1,45 @@
 /*****************************************************************************
  * common.h: Windows video output header file
  *****************************************************************************
- * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: e7bed61c84c0ab9db9b2dd0c191dea8bcda000b6 $
+ * Copyright (C) 2001-2009 VLC authors and VideoLAN
+ * $Id: 5ddf85e0a7ada5d7dbb25beae1440985015d14de $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien Fouilleul <damienf@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+#ifdef MODULE_NAME_IS_directdraw
+# include <ddraw.h>
+#endif
+#ifdef MODULE_NAME_IS_direct3d
+# include <d3d9.h>
+# include <d3dx9effect.h>
+#endif
+#ifdef MODULE_NAME_IS_glwin32
+# include "../opengl.h"
+#endif
+#ifdef MODULE_NAME_IS_direct2d
+# include <d2d1.h>
+#endif
 
 /*****************************************************************************
  * event_thread_t: event thread
  *****************************************************************************/
-#include <vlc_picture_pool.h>
 #include "events.h"
-
-#ifdef MODULE_NAME_IS_wingapi
-    typedef struct GXDisplayProperties {
-        DWORD cxWidth;
-        DWORD cyHeight;
-        long cbxPitch;
-        long cbyPitch;
-        long cBPP;
-        DWORD ffFormat;
-    } GXDisplayProperties;
-
-    typedef struct GXScreenRect {
-        DWORD dwTop;
-        DWORD dwLeft;
-        DWORD dwWidth;
-        DWORD dwHeight;
-    } GXScreenRect;
-
-#   define GX_FULLSCREEN    0x01
-#   define GX_NORMALKEYS    0x02
-#   define GX_LANDSCAPEKEYS 0x03
-
-#   ifndef kfLandscape
-#       define kfLandscape      0x8
-#       define kfPalette        0x10
-#       define kfDirect         0x20
-#       define kfDirect555      0x40
-#       define kfDirect565      0x80
-#       define kfDirect888      0x100
-#       define kfDirect444      0x200
-#       define kfDirectInverted 0x400
-#   endif
-
-#endif
 
 /*****************************************************************************
  * vout_sys_t: video output method descriptor
@@ -82,7 +61,6 @@ struct vout_display_sys_t
 
     /* size of the display */
     RECT         rect_display;
-    int          display_depth;
 
     /* size of the overall window (including black bands) */
     RECT         rect_parent;
@@ -93,14 +71,8 @@ struct vout_display_sys_t
     bool is_first_display;
     bool is_on_top;
 
-#ifndef UNDER_CE
-
     /* screensaver system settings to be restored when vout is closed */
-    UINT i_spi_lowpowertimeout;
-    UINT i_spi_powerofftimeout;
-    UINT i_spi_screensavetimeout;
-
-#endif
+    UINT i_spi_screensaveactive;
 
     /* Coordinates of src and dest images (used when blitting to display) */
     RECT         rect_src;
@@ -110,7 +82,7 @@ struct vout_display_sys_t
 
     picture_pool_t *pool;
 
-#ifdef MODULE_NAME_IS_directx
+#ifdef MODULE_NAME_IS_directdraw
     /* Multi-monitor support */
     HMONITOR             hmonitor;          /* handle of the current monitor */
     GUID                 *display_driver;
@@ -140,7 +112,7 @@ struct vout_display_sys_t
     LPDIRECTDRAWCLIPPER  clipper;             /* clipper used for blitting */
     HINSTANCE            hddraw_dll;       /* handle of the opened ddraw dll */
 
-    picture_resource_t   resource;
+    picture_sys_t        *picsys;
 
     /* It protects the following variables */
     vlc_mutex_t    lock;
@@ -153,6 +125,7 @@ struct vout_display_sys_t
     HGLRC                 hGLRC;
     vlc_gl_t              gl;
     vout_display_opengl_t *vgl;
+    HDC                   affinityHDC; // DC for the selected GPU
 #endif
 
 #ifdef MODULE_NAME_IS_direct2d
@@ -175,10 +148,13 @@ struct vout_display_sys_t
 
     // core objects
     HINSTANCE               hd3d9_dll;       /* handle of the opened d3d9 dll */
+    HINSTANCE               hd3d9x_dll;      /* handle of the opened d3d9x dll */
+    IDirect3DPixelShader9*  d3dx_shader;
     LPDIRECT3D9             d3dobj;
     D3DCAPS9                d3dcaps;
     LPDIRECT3DDEVICE9       d3ddev;
     D3DPRESENT_PARAMETERS   d3dpp;
+
     // scene objects
     LPDIRECT3DTEXTURE9      d3dtex;
     LPDIRECT3DVERTEXBUFFER9 d3dvtc;
@@ -186,11 +162,12 @@ struct vout_display_sys_t
     int                     d3dregion_count;
     struct d3d_region_t     *d3dregion;
 
-    picture_resource_t      resource;
+    picture_sys_t           *picsys;
 
     /* */
     bool                    reset_device;
     bool                    reopen_device;
+    bool                    lost_not_ready;
     bool                    clear_scene;
 
     /* It protects the following variables */
@@ -199,7 +176,7 @@ struct vout_display_sys_t
     bool           desktop_requested;
 #endif
 
-#if defined(MODULE_NAME_IS_wingdi) || defined(MODULE_NAME_IS_wingapi)
+#if defined(MODULE_NAME_IS_wingdi)
     int  i_depth;
 
     /* Our offscreen bitmap and its framebuffer */
@@ -213,31 +190,8 @@ struct vout_display_sys_t
         RGBQUAD    green;
         RGBQUAD    blue;
     };
-
-#   ifdef MODULE_NAME_IS_wingapi
-    HINSTANCE  gapi_dll;                   /* handle of the opened gapi dll */
-
-    /* GAPI functions */
-    int (*GXOpenDisplay)(HWND hWnd, DWORD dwFlags);
-    int (*GXCloseDisplay)();
-    void *(*GXBeginDraw)();
-    int (*GXEndDraw)();
-    GXDisplayProperties (*GXGetDisplayProperties)();
-    int (*GXSuspend)();
-    int (*GXResume)();
-#   endif
 #endif
 };
-
-#ifdef MODULE_NAME_IS_wingapi
-#   define GXOpenDisplay          vd->sys->GXOpenDisplay
-#   define GXCloseDisplay         vd->sys->GXCloseDisplay
-#   define GXBeginDraw            vd->sys->GXBeginDraw
-#   define GXEndDraw              vd->sys->GXEndDraw
-#   define GXGetDisplayProperties vd->sys->GXGetDisplayProperties
-#   define GXSuspend              vd->sys->GXSuspend
-#   define GXResume               vd->sys->GXResume
-#endif
 
 /*****************************************************************************
  * Prototypes from common.c
@@ -262,58 +216,3 @@ void AlignRect(RECT *, int align_boundary, int align_size);
 #define DX_POSITION_CHANGE 0x1000
 #define DX_WALLPAPER_CHANGE 0x2000
 #define DX_DESKTOP_CHANGE 0x4000
-
-/*****************************************************************************
- * WinCE helpers
- *****************************************************************************/
-#ifdef UNDER_CE
-
-#define AdjustWindowRect(a,b,c) AdjustWindowRectEx(a,b,c,0)
-
-#ifndef GCL_HBRBACKGROUND
-#   define GCL_HBRBACKGROUND (-10)
-#endif
-
-//#define FindWindowEx(a,b,c,d) 0
-
-#define GetWindowPlacement(a,b)
-#define SetWindowPlacement(a,b)
-/*typedef struct _WINDOWPLACEMENT {
-    UINT length;
-    UINT flags;
-    UINT showCmd;
-    POINT ptMinPosition;
-    POINT ptMaxPosition;
-    RECT rcNormalPosition;
-} WINDOWPLACEMENT;*/
-
-#ifndef WM_NCMOUSEMOVE
-#   define WM_NCMOUSEMOVE 160
-#endif
-#ifndef CS_OWNDC
-#   define CS_OWNDC 32
-#endif
-#ifndef SC_SCREENSAVE
-#   define SC_SCREENSAVE 0xF140
-#endif
-#ifndef SC_MONITORPOWER
-#   define SC_MONITORPOWER 0xF170
-#endif
-#ifndef WM_NCPAINT
-#   define WM_NCPAINT 133
-#endif
-#ifndef WS_OVERLAPPEDWINDOW
-#   define WS_OVERLAPPEDWINDOW 0xcf0000
-#endif
-#ifndef WS_EX_NOPARENTNOTIFY
-#   define WS_EX_NOPARENTNOTIFY 4
-#endif
-#ifndef WS_EX_APPWINDOW
-#define WS_EX_APPWINDOW 0x40000
-#endif
-
-//#define SetWindowLongPtr SetWindowLong
-//#define GetWindowLongPtr GetWindowLong
-//#define GWLP_USERDATA GWL_USERDATA
-
-#endif //UNDER_CE

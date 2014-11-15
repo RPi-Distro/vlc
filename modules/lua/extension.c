@@ -2,7 +2,7 @@
  * extension.c: Lua Extensions (meta data, web information, ...)
  *****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 2c4edc1afca8dd97886005e0afd83bad85d92918 $
+ * $Id: 5958af15e41f8db28068e1961317f0ed018203cf $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -36,6 +36,7 @@
 
 #include <vlc_common.h>
 #include <vlc_input.h>
+#include <vlc_interface.h>
 #include <vlc_events.h>
 #include <vlc_dialog.h>
 
@@ -49,26 +50,24 @@ static const luaL_Reg p_reg[] =
  * Extensions capabilities
  * Note: #define and ppsz_capabilities must be in sync
  */
+static const char caps[][20] = {
 #define EXT_HAS_MENU          (1 << 0)   ///< Hook: menu
-#define EXT_TRIGGER_ONLY      (1 << 1)   ///< Hook: trigger. Not activable
-#define EXT_INPUT_LISTENER    (1 << 2)   ///< Hook: input_changed
-#define EXT_META_LISTENER     (1 << 3)   ///< Hook: meta_changed
-#define EXT_PLAYING_LISTENER  (1 << 4)   ///< Hook: status_changed
-
-static const char* const ppsz_capabilities[] = {
     "menu",
+#define EXT_TRIGGER_ONLY      (1 << 1)   ///< Hook: trigger. Not activable
     "trigger",
+#define EXT_INPUT_LISTENER    (1 << 2)   ///< Hook: input_changed
     "input-listener",
+#define EXT_META_LISTENER     (1 << 3)   ///< Hook: meta_changed
     "meta-listener",
+#define EXT_PLAYING_LISTENER  (1 << 4)   ///< Hook: status_changed
     "playing-listener",
-    NULL
 };
 
 #define WATCH_TIMER_PERIOD    (10 * CLOCK_FREQ) ///< 10s period for the timer
 
 static int ScanExtensions( extensions_manager_t *p_this );
 static int ScanLuaCallback( vlc_object_t *p_this, const char *psz_script,
-                            void *dummy );
+                            const struct luabatch_context_t * );
 static int Control( extensions_manager_t *, int, va_list );
 static int GetMenuEntries( extensions_manager_t *p_mgr, extension_t *p_ext,
                     char ***pppsz_titles, uint16_t **ppi_ids );
@@ -276,7 +275,7 @@ static int vlclua_extension_require( lua_State *L )
  * @param dummy: unused
  **/
 int ScanLuaCallback( vlc_object_t *p_this, const char *psz_filename,
-                     void *dummy )
+                     const struct luabatch_context_t *dummy )
 {
     VLC_UNUSED(dummy);
     extensions_manager_t *p_mgr = ( extensions_manager_t* ) p_this;
@@ -381,17 +380,14 @@ int ScanLuaCallback( vlc_object_t *p_this, const char *psz_filename,
                 {
                     /* Key is at index -2 and value at index -1. Discard key */
                     const char *psz_cap = luaL_checkstring( L, -1 );
-                    int i_cap = 0;
                     bool b_ok = false;
                     /* Find this capability's flag */
-                    for( const char *iter = *ppsz_capabilities;
-                         iter != NULL;
-                         iter = ppsz_capabilities[ ++i_cap ])
+                    for( size_t i = 0; i < sizeof(caps)/sizeof(caps[0]); i++ )
                     {
-                        if( !strcmp( iter, psz_cap ) )
+                        if( !strcmp( caps[i], psz_cap ) )
                         {
                             /* Flag it! */
-                            p_ext->p_sys->i_capabilities |= 1 << i_cap;
+                            p_ext->p_sys->i_capabilities |= 1 << i;
                             b_ok = true;
                             break;
                         }
@@ -654,6 +650,8 @@ int lua_ExtensionDeactivate( extensions_manager_t *p_mgr, extension_t *p_ext )
     if( !p_ext->p_sys->L )
         return VLC_SUCCESS;
 
+    vlclua_fd_interrupt( &p_ext->p_sys->dtable );
+
     // Unset and release input objects
     if( p_ext->p_sys->p_input )
     {
@@ -670,6 +668,7 @@ int lua_ExtensionDeactivate( extensions_manager_t *p_mgr, extension_t *p_ext )
     int i_ret = lua_ExecuteFunction( p_mgr, p_ext, "deactivate", LUA_END );
 
     /* Clear Lua State */
+    vlclua_fd_cleanup( &p_ext->p_sys->dtable );
     lua_close( p_ext->p_sys->L );
     p_ext->p_sys->L = NULL;
 
@@ -813,6 +812,8 @@ static lua_State* GetLuaState( extensions_manager_t *p_mgr,
             return NULL;
         }
         vlclua_set_this( L, p_mgr );
+        vlclua_set_playlist_internal( L,
+            pl_Get((intf_thread_t *)(p_mgr->p_parent)) );
         vlclua_extension_set( L, p_ext );
 
         luaL_openlibs( L );
@@ -822,17 +823,19 @@ static lua_State* GetLuaState( extensions_manager_t *p_mgr,
         if( p_ext )
         {
             /* Load more libraries */
-            luaopen_acl( L );
             luaopen_config( L );
             luaopen_dialog( L, p_ext );
             luaopen_input( L );
             luaopen_msg( L );
-            luaopen_net( L );
+            if( vlclua_fd_init( L, &p_ext->p_sys->dtable ) )
+            {
+                lua_close( L );
+                return NULL;
+            }
             luaopen_object( L );
             luaopen_osd( L );
             luaopen_playlist( L );
-            luaopen_sd( L );
-            luaopen_misc_extensions( L );
+            luaopen_sd_intf( L );
             luaopen_stream( L );
             luaopen_strings( L );
             luaopen_variables( L );
@@ -840,6 +843,9 @@ static lua_State* GetLuaState( extensions_manager_t *p_mgr,
             luaopen_vlm( L );
             luaopen_volume( L );
             luaopen_xml( L );
+#if defined(_WIN32) && !VLC_WINSTORE_APP
+            luaopen_win( L );
+#endif
 
             /* Register extension specific functions */
             lua_getglobal( L, "vlc" );
@@ -856,10 +862,11 @@ static lua_State* GetLuaState( extensions_manager_t *p_mgr,
             }
             else
             {
-                if( vlclua_add_modules_path( p_mgr, L, p_ext->psz_name ) )
+                if( vlclua_add_modules_path( L, p_ext->psz_name ) )
                 {
                     msg_Warn( p_mgr, "Error while setting the module "
                               "search path for %s", p_ext->psz_name );
+                    vlclua_fd_cleanup( &p_ext->p_sys->dtable );
                     lua_close( L );
                     return NULL;
                 }
@@ -869,6 +876,7 @@ static lua_State* GetLuaState( extensions_manager_t *p_mgr,
             {
                 msg_Warn( p_mgr, "Error loading script %s: %s", p_ext->psz_name,
                           lua_tostring( L, lua_gettop( L ) ) );
+                vlclua_fd_cleanup( &p_ext->p_sys->dtable );
                 lua_close( L );
                 return NULL;
             }
@@ -1045,7 +1053,10 @@ static int TriggerExtension( extensions_manager_t *p_mgr,
 
     /* Close lua state for trigger-only extensions */
     if( p_ext->p_sys->L )
+    {
+        vlclua_fd_cleanup( &p_ext->p_sys->dtable );
         lua_close( p_ext->p_sys->L );
+    }
     p_ext->p_sys->L = NULL;
 
     return i_ret;
@@ -1211,21 +1222,20 @@ static void WatchTimerCallback( void *data )
 
     vlc_mutex_lock( &p_ext->p_sys->command_lock );
 
-    // Do we have a pending Deactivate command?
-    if( ( p_ext->p_sys->command &&
-          p_ext->p_sys->command->i_command == CMD_DEACTIVATE )
-        || ( p_ext->p_sys->command->next
-             && p_ext->p_sys->command->next->i_command == CMD_DEACTIVATE) )
-    {
-        if( p_ext->p_sys->progress )
-        {
-            dialog_ProgressDestroy( p_ext->p_sys->progress );
-            p_ext->p_sys->progress = NULL;
+    for( struct command_t *cmd = p_ext->p_sys->command;
+         cmd != NULL;
+         cmd = cmd->next )
+        if( cmd->i_command == CMD_DEACTIVATE )
+        {   /* We have a pending Deactivate command... */
+            if( p_ext->p_sys->progress )
+            {
+                dialog_ProgressDestroy( p_ext->p_sys->progress );
+                p_ext->p_sys->progress = NULL;
+            }
+            vlc_mutex_unlock( &p_ext->p_sys->command_lock );
+            KillExtension( p_mgr, p_ext );
+            return;
         }
-        vlc_mutex_unlock( &p_ext->p_sys->command_lock );
-        KillExtension( p_mgr, p_ext );
-        return;
-    }
 
     if( !p_ext->p_sys->progress )
     {

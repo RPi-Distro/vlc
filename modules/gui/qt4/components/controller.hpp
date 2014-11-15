@@ -1,8 +1,8 @@
 /*****************************************************************************
- * Controller.hpp : Controller for the main interface
+ * controller.hpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 3c356334fcd252cf9ad6191c50bdd1e67b475a09 $
+ * $Id: b22e4301f7bb60c4d348f4d4625d4d688cb97905 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -46,8 +46,9 @@ class QPixmap;
 class QLabel;
 
 class QGridLayout;
-class QHBoxLayout;
 class QBoxLayout;
+class QHBoxLayout;
+class QVBoxLayout;
 
 class QAbstractSlider;
 class QAbstractButton;
@@ -121,16 +122,16 @@ static const char* const nameL[BUTTON_MAX] = { N_("Play"), N_("Stop"), N_("Open"
 };
 static const char* const tooltipL[BUTTON_MAX] = { I_PLAY_TOOLTIP,
     N_("Stop playback"), N_("Open a medium"),
-    N_("Previous media in the playlist, skip backward when keep-pressed"),
-    N_("Next media in the playlist, skip forward when keep-pressed"), N_("Slower"), N_("Faster"),
+    N_("Previous media in the playlist, skip backward when held"),
+    N_("Next media in the playlist, skip forward when held"), N_("Slower"), N_("Faster"),
     N_("Toggle the video in fullscreen"), N_("Toggle the video out fullscreen"),
-    N_("Show extended settings" ), N_( "Show playlist" ),
+    N_("Show extended settings" ), N_( "Toggle playlist" ),
     N_( "Take a snapshot" ), N_( "Record" ),
     N_( "Loop from point A to point B continuously." ), N_("Frame by frame"),
     N_("Reverse"), N_("Step backward"), N_("Step forward"), N_("Quit"),
     N_("Random"), N_("Change the loop and repeat modes"), N_("Information"),
     N_("Previous media in the playlist"), N_("Next media in the playlist"),
-    N_("Open subtitles file"),
+    N_("Open subtitle file"),
     N_("Dock/undock fullscreen controller to/from bottom of screen")
 };
 static const QString iconL[BUTTON_MAX] ={ ":/toolbar/play_b", ":/toolbar/stop_b",
@@ -165,7 +166,7 @@ protected:
     intf_thread_t       *p_intf;
 
     QSignalMapper       *toolbarActionsMapper;
-    QHBoxLayout         *controlLayout;
+    QBoxLayout          *controlLayout;
     /* Change to BoxLayout if both dir are needed */
 
     AdvControlsWidget   *advControls;
@@ -248,8 +249,6 @@ signals:
 /* Used to restore the minimum width after a full-width switch */
 #define FSC_WIDTH 800
 
-#define FSC_HEIGHT 72
-
 /***********************************
  * Fullscreen controller
  ***********************************/
@@ -320,6 +319,7 @@ private:
     int i_mouse_last_move_y;
 
     bool isWideFSC;
+    int i_sensitivity;
 };
 
 #endif

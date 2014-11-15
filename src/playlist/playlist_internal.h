@@ -2,7 +2,7 @@
  * playlist_internal.h : Playlist internals
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 75ac585d8b92b4f43ac26afe5f5a76c25fe4b140 $
+ * $Id: 51a37487aa1e2b8ea95c3750cea6d0d7270f3a9d $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -38,16 +38,17 @@
 #include <assert.h>
 
 #include "art.h"
-#include "fetcher.h"
 #include "preparser.h"
 
 typedef struct vlc_sd_internal_t vlc_sd_internal_t;
+
+void playlist_ServicesDiscoveryKillAll( playlist_t *p_playlist );
 
 typedef struct playlist_private_t
 {
     playlist_t           public_data;
     playlist_preparser_t *p_preparser;  /**< Preparser data */
-    playlist_fetcher_t   *p_fetcher;    /**< Meta and art fetcher data */
+    struct intf_thread_t *interface; /**< Linked-list of interfaces */
 
     playlist_item_array_t items_to_delete; /**< Array of items and nodes to
             delete... At the very end. This sucks. */
@@ -82,15 +83,13 @@ typedef struct playlist_private_t
     vlc_thread_t thread; /**< engine thread */
     vlc_mutex_t lock; /**< dah big playlist global lock */
     vlc_cond_t signal; /**< wakes up the playlist engine thread */
+    bool     killed; /**< playlist is shutting down */
 
     int      i_last_playlist_id; /**< Last id to an item */
     bool     b_reset_currently_playing; /** Reset current item array */
 
     bool     b_tree; /**< Display as a tree */
     bool     b_doing_ml; /**< Doing media library stuff  get quicker */
-    bool     b_auto_preparse;
-    mtime_t  last_rebuild_date;
-
 } playlist_private_t;
 
 #define pl_priv( pl ) ((playlist_private_t *)(pl))
@@ -102,11 +101,7 @@ typedef struct playlist_private_t
 /* Creation/Deletion */
 playlist_t *playlist_Create( vlc_object_t * );
 void playlist_Destroy( playlist_t * );
-
-/* */
 void playlist_Activate( playlist_t * );
-void playlist_Deactivate( playlist_t * );
-void pl_Deactivate (libvlc_int_t *);
 
 /* */
 playlist_item_t *playlist_ItemNewFromInput( playlist_t *p_playlist,
@@ -159,15 +154,15 @@ void ResyncCurrentIndex( playlist_t *p_playlist, playlist_item_t *p_cur );
 //#undef PLAYLIST_DEBUG2
 
 #ifdef PLAYLIST_DEBUG
- #define PL_DEBUG( msg, args... ) msg_Dbg( p_playlist, msg, ## args )
+ #define PL_DEBUG( ... ) msg_Dbg( p_playlist, __VA_ARGS__ )
  #ifdef PLAYLIST_DEBUG2
-  #define PL_DEBUG2( msg, args... ) msg_Dbg( p_playlist, msg, ## args )
+  #define PL_DEBUG2( msg, ... ) msg_Dbg( p_playlist, __VA_ARGS__ )
  #else
-  #define PL_DEBUG2( msg, args... ) {}
+  #define PL_DEBUG2( msg, ... ) {}
  #endif
 #else
- #define PL_DEBUG( msg, args ... ) {}
- #define PL_DEBUG2( msg, args... ) {}
+ #define PL_DEBUG( msg, ... ) {}
+ #define PL_DEBUG2( msg, ... ) {}
 #endif
 
 #define PLI_NAME( p ) p && p->p_input ? p->p_input->psz_name : "null"

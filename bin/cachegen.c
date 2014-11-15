@@ -26,13 +26,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
-#ifdef HAVE_SETLOCALE
-# include <locale.h>
-#endif
-
 #ifdef HAVE_GETOPT_H
 # include <getopt.h>
+#endif
+#ifdef WIN32
+# include <windows.h>
 #endif
 
 static void version (void)
@@ -49,12 +47,11 @@ static void usage (const char *path)
             path);
 }
 
-/* Explicit HACK */
-extern void LocaleFree (const char *);
-extern char *FromLocale (const char *);
-
 int main (int argc, char *argv[])
 {
+#ifdef WIN32
+    SetErrorMode(SEM_FAILCRITICALERRORS);
+#endif
     static const struct option opts[] =
     {
         { "force",      no_argument,       NULL, 'f' },
@@ -62,10 +59,6 @@ int main (int argc, char *argv[])
         { "version",    no_argument,       NULL, 'V' },
         { NULL,         no_argument,       NULL, '\0'}
     };
-
-#ifdef HAVE_SETLOCALE
-    setlocale (LC_CTYPE, ""); /* needed by FromLocale() */
-#endif
 
     int c;
     bool force = false;
@@ -89,8 +82,7 @@ int main (int argc, char *argv[])
 
     for (int i = optind; i < argc; i++)
     {
-        /* Note that FromLocale() can be used before libvlc is initialized */
-        const char *path = FromLocale (argv[i]);
+        const char *path = argv[i];
 
         if (setenv ("VLC_PLUGIN_PATH", path, 1))
             abort ();
@@ -109,7 +101,6 @@ int main (int argc, char *argv[])
             libvlc_release (vlc);
         if (vlc == NULL)
             fprintf (stderr, "No plugins in %s\n", path);
-        LocaleFree (path);
         if (vlc == NULL)
             return 1;
     }

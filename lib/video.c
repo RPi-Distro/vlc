@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005-2010 VLC authors and VideoLAN
  *
- * $Id: 121d80cd517d2ccecf6c05e4f3331f38dea0c984 $
+ * $Id: 19065fbdc2cf240999c964f345b381dc44f95942 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Filippo Carone <littlejohn@videolan.org>
@@ -38,6 +38,7 @@
 #include <vlc_vout.h>
 
 #include "media_player_internal.h"
+#include <math.h>
 #include <assert.h>
 
 /*
@@ -147,11 +148,17 @@ libvlc_video_take_snapshot( libvlc_media_player_t *p_mi, unsigned num,
     if (p_vout == NULL)
         return -1;
 
-    /* FIXME: This is not atomic. Someone else could change the values,
-     * at least in theory. */
+    /* FIXME: This is not atomic. All parameters should be passed at once
+     * (obviously _not_ with var_*()). Also, the libvlc object should not be
+     * used for the callbacks: that breaks badly if there are concurrent
+     * media players in the instance. */
+    var_Create( p_vout, "snapshot-width", VLC_VAR_INTEGER );
     var_SetInteger( p_vout, "snapshot-width", i_width);
+    var_Create( p_vout, "snapshot-height", VLC_VAR_INTEGER );
     var_SetInteger( p_vout, "snapshot-height", i_height );
+    var_Create( p_vout, "snapshot-path", VLC_VAR_STRING );
     var_SetString( p_vout, "snapshot-path", psz_filepath );
+    var_Create( p_vout, "snapshot-format", VLC_VAR_STRING );
     var_SetString( p_vout, "snapshot-format", "png" );
     var_TriggerCallback( p_vout, "video-snapshot" );
     vlc_object_release( p_vout );
@@ -231,9 +238,9 @@ float libvlc_video_get_scale( libvlc_media_player_t *mp )
 
 void libvlc_video_set_scale( libvlc_media_player_t *p_mp, float f_scale )
 {
-    if (f_scale != 0.)
+    if (isfinite(f_scale) && f_scale != 0.f)
         var_SetFloat (p_mp, "scale", f_scale);
-    var_SetBool (p_mp, "autoscale", f_scale == 0.);
+    var_SetBool (p_mp, "autoscale", f_scale == 0.f);
 
     /* Apply to current video outputs (if any) */
     size_t n;
@@ -242,9 +249,9 @@ void libvlc_video_set_scale( libvlc_media_player_t *p_mp, float f_scale )
     {
         vout_thread_t *p_vout = pp_vouts[i];
 
-        if (f_scale != 0.)
+        if (isfinite(f_scale) && f_scale != 0.f)
             var_SetFloat (p_vout, "scale", f_scale);
-        var_SetBool (p_vout, "autoscale", f_scale == 0.);
+        var_SetBool (p_vout, "autoscale", f_scale == 0.f);
         vlc_object_release (p_vout);
     }
     free (pp_vouts);

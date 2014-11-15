@@ -1,9 +1,9 @@
 /*****************************************************************************
- * customwidgets.h: Custom widgets
+ * searchlineedit.hpp: Custom widgets
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id: 0faf1fb3feeed896ef558a683539da6dc7f163df $
+ * $Id: fe81b30547f33b579fdbf7010d4defcee97ba913 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin
@@ -72,7 +72,7 @@ private:
 };
 #endif
 
-#ifndef Q_WS_MAC
+#ifndef Q_OS_MAC
 class QFramelessButton;
 class SearchLineEdit : public QLineEdit
 {

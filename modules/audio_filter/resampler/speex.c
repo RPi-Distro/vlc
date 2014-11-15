@@ -1,7 +1,7 @@
 /*****************************************************************************
  * speex.c : libspeex DSP resampler
  *****************************************************************************
- * Copyright © 2011 Rémi Denis-Courmont
+ * Copyright © 2011-2012 Rémi Denis-Courmont
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -10,7 +10,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -34,6 +34,7 @@
     "Resampling quality (0 = worst and fastest, 10 = best and slowest).")
 
 static int Open (vlc_object_t *);
+static int OpenResampler (vlc_object_t *);
 static void Close (vlc_object_t *);
 
 vlc_module_begin ()
@@ -44,20 +45,22 @@ vlc_module_begin ()
     add_integer ("speex-resampler-quality", 4,
                  QUALITY_TEXT, QUALITY_LONGTEXT, true)
         change_integer_range (0, 10)
-    set_capability ("audio filter", 0)
+    set_capability ("audio converter", 0)
     set_callbacks (Open, Close)
+
+    add_submodule ()
+    set_capability ("audio resampler", 0)
+    set_callbacks (OpenResampler, Close)
 vlc_module_end ()
 
 static block_t *Resample (filter_t *, block_t *);
 
-static int Open (vlc_object_t *obj)
+static int OpenResampler (vlc_object_t *obj)
 {
     filter_t *filter = (filter_t *)obj;
 
-    /* Will change rate */
-    if (filter->fmt_in.audio.i_rate == filter->fmt_out.audio.i_rate
     /* Cannot convert format */
-     || filter->fmt_in.audio.i_format != filter->fmt_out.audio.i_format
+    if (filter->fmt_in.audio.i_format != filter->fmt_out.audio.i_format
     /* Cannot remix */
      || filter->fmt_in.audio.i_physical_channels
                                   != filter->fmt_out.audio.i_physical_channels
@@ -92,6 +95,16 @@ static int Open (vlc_object_t *obj)
     filter->p_sys = (filter_sys_t *)st;
     filter->pf_audio_filter = Resample;
     return VLC_SUCCESS;
+}
+
+static int Open (vlc_object_t *obj)
+{
+    filter_t *filter = (filter_t *)obj;
+
+    /* Will change rate */
+    if (filter->fmt_in.audio.i_rate == filter->fmt_out.audio.i_rate)
+        return VLC_EGENERIC;
+    return OpenResampler (obj);
 }
 
 static void Close (vlc_object_t *obj)

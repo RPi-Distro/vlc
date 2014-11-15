@@ -1,25 +1,27 @@
 /*****************************************************************************
  * libasf.h :
  *****************************************************************************
- * Copyright © 2001-2004, 2011 the VideoLAN team
+ * Copyright © 2001-2004, 2011 VLC authors and VideoLAN
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+
+#define ASF_MAX_STREAMNUMBER 127
 
 /*****************************************************************************
  * Structure needed for decoder
@@ -154,8 +156,8 @@ typedef struct
     uint16_t    i_type;
     char        *psz_name;
 
-    int64_t i_val;
-    int i_data;
+    uint64_t i_val;
+    uint16_t i_data;
     uint8_t *p_data;
 
 } asf_metadata_record_t;
@@ -181,16 +183,9 @@ typedef struct
 
 } asf_object_content_description_t;
 
-typedef struct
-{
-    uint16_t i_length;
-    uint16_t *i_char;
-
-} string16_t;
-
 #define ASF_CODEC_TYPE_VIDEO    0x0001
 #define ASF_CODEC_TYPE_AUDIO    0x0002
-#define ASF_CODEC_TYPE_UNKNOW   0xffff
+#define ASF_CODEC_TYPE_UNKNOWN  0xffff
 
 typedef struct
 {
@@ -219,7 +214,7 @@ typedef struct
     uint32_t     i_send_time;
     uint32_t     i_flags;
     uint32_t     i_marker_description_length;
-    uint8_t      *i_marker_description;
+    char         *p_marker_description;
 
 } asf_marker_t;
 
@@ -229,7 +224,7 @@ typedef struct
     guid_t      i_reserved1;
     uint32_t    i_count;
     uint16_t    i_reserved2;
-    string16_t name;
+    char        *name;
     asf_marker_t *marker;
 
 } asf_object_marker_t;
@@ -237,7 +232,7 @@ typedef struct
 typedef struct
 {
     ASF_OBJECT_COMMON
-    int  i_language;
+    uint16_t  i_language;
     char **ppsz_language;
 
 } asf_object_language_list_t;
@@ -246,49 +241,71 @@ typedef struct
 {
     ASF_OBJECT_COMMON
 
-    int i_bitrate;
+    uint16_t i_bitrate;
     struct
     {
-        int      i_stream_number;
+        uint8_t  i_stream_number;
         uint32_t i_avg_bitrate;
-    } bitrate[128];
+    } bitrate[ASF_MAX_STREAMNUMBER + 1];
 } asf_object_stream_bitrate_properties_t;
+
+
+typedef struct
+{
+    guid_t   i_extension_id;
+    uint16_t i_data_size;
+    uint32_t i_info_length;
+    char     *pi_info;
+} asf_payload_extension_system_t;
+#define ASF_EXTENSION_VIDEOFRAME_NEWFRAME  0x08
+#define ASF_EXTENSION_VIDEOFRAME_IFRAME    0x01
+#define ASF_EXTENSION_VIDEOFRAME_TYPE_MASK 0x07
 
 typedef struct
 {
     ASF_OBJECT_COMMON
 
-    int64_t i_start_time;
-    int64_t i_end_time;
-    int32_t i_data_bitrate;
-    int32_t i_buffer_size;
-    int32_t i_initial_buffer_fullness;
-    int32_t i_alternate_data_bitrate;
-    int32_t i_alternate_buffer_size;
-    int32_t i_alternate_initial_buffer_fullness;
-    int32_t i_maximum_object_size;
+    uint64_t i_start_time;
+    uint64_t i_end_time;
+    uint32_t i_data_bitrate;
+    uint32_t i_buffer_size;
+    uint32_t i_initial_buffer_fullness;
+    uint32_t i_alternate_data_bitrate;
+    uint32_t i_alternate_buffer_size;
+    uint32_t i_alternate_initial_buffer_fullness;
+    uint32_t i_maximum_object_size;
 
-    int32_t i_flags;
-    int16_t i_stream_number;
-    int16_t i_language_index;
-    int64_t i_average_time_per_frame;
+    uint32_t i_flags;
+    uint16_t i_stream_number;
+    uint16_t i_language_index;
+    uint64_t i_average_time_per_frame;
 
-    int     i_stream_name_count;
-    int     i_payload_extension_system_count;
+    uint16_t i_stream_name_count;
 
-    int     *pi_stream_name_language;
+    uint16_t i_payload_extension_system_count;
+    asf_payload_extension_system_t *p_ext;
+
+    uint16_t *pi_stream_name_language;
     char    **ppsz_stream_name;
 
     asf_object_stream_properties_t *p_sp;
 } asf_object_extended_stream_properties_t;
 
+#define ASF_MAX_EXCLUSION_TYPE 2
+typedef enum
+{
+    LANGUAGE = ASF_MAX_EXCLUSION_TYPE,
+    BITRATE = 1,
+    UNKNOWN = 0
+} asf_exclusion_type_t;
+
 typedef struct
 {
     ASF_OBJECT_COMMON
 
-    guid_t  type;
-    int16_t i_stream_number_count;
-    int16_t *pi_stream_number;
+    asf_exclusion_type_t exclusion_type;
+    uint16_t i_stream_number_count;
+    uint16_t *pi_stream_number;
 
 } asf_object_advanced_mutual_exclusion_t;
 
@@ -296,16 +313,25 @@ typedef struct
 {
     ASF_OBJECT_COMMON
 
-    int i_priority_count;
-    int *pi_priority_flag;
-    int *pi_priority_stream_number;
+    uint16_t i_priority_count;
+    uint16_t *pi_priority_flag;
+    uint16_t *pi_priority_stream_number;
 } asf_object_stream_prioritization_t;
 
 typedef struct
 {
     ASF_OBJECT_COMMON
 
-    int i_count;
+    asf_exclusion_type_t exclusion_type;
+    uint16_t i_stream_number_count;
+    uint16_t *pi_stream_numbers;
+} asf_object_bitrate_mutual_exclusion_t;
+
+typedef struct
+{
+    ASF_OBJECT_COMMON
+
+    uint16_t i_count;
     char **ppsz_name;
     char **ppsz_value;
 } asf_object_extended_content_description_t;
@@ -352,6 +378,7 @@ typedef union asf_object_u
     asf_object_content_description_t content_description;
     asf_object_advanced_mutual_exclusion_t advanced_mutual_exclusion;
     asf_object_stream_prioritization_t stream_prioritization;
+    asf_object_bitrate_mutual_exclusion_t bitrate_mutual_exclusion;
     asf_object_extended_content_description_t extended_content_description;
 
 } asf_object_t;
@@ -359,8 +386,6 @@ typedef union asf_object_u
 asf_object_root_t *ASF_ReadObjectRoot( stream_t *, int b_seekable );
 void               ASF_FreeObjectRoot( stream_t *, asf_object_root_t *p_root );
 
-#define ASF_CountObject( a, b ) __ASF_CountObject( (asf_object_t*)(a), b )
-int  __ASF_CountObject ( asf_object_t *p_obj, const guid_t *p_guid );
+int ASF_CountObject ( void *p_obj, const guid_t *p_guid );
 
-#define ASF_FindObject( a, b, c )  __ASF_FindObject( (asf_object_t*)(a), b, c )
-void *__ASF_FindObject( asf_object_t *p_obj, const guid_t *p_guid, int i_number );
+void *ASF_FindObject( void *p_obj, const guid_t *p_guid, int i_number );

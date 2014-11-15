@@ -2,23 +2,23 @@
  * yuv.c : yuv video output
  *****************************************************************************
  * Copyright (C) 2008, M2X BV
- * $Id: fbf4501808c26ae7b64bab7aa365d279d43c66e5 $
+ * $Id: 483be2427d8244bcd90268e83edc40219ea23a6f $
  *
  * Authors: Jean-Paul Saman <jpsaman@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -152,7 +152,8 @@ static int Open(vlc_object_t *object)
     free(name);
 
     /* */
-    video_format_t fmt = vd->fmt;
+    video_format_t fmt;
+    video_format_ApplyRotation(&fmt, &vd->fmt);
     fmt.i_chroma = chroma;
     video_format_FixRgb(&fmt);
 
@@ -202,8 +203,17 @@ static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
 
     /* */
     video_format_t fmt = vd->fmt;
-    fmt.i_sar_num = vd->source.i_sar_num;
-    fmt.i_sar_den = vd->source.i_sar_den;
+
+    if (ORIENT_IS_SWAP(vd->source.orientation))
+    {
+        fmt.i_sar_num = vd->source.i_sar_den;
+        fmt.i_sar_den = vd->source.i_sar_num;
+    }
+    else
+    {
+        fmt.i_sar_num = vd->source.i_sar_num;
+        fmt.i_sar_den = vd->source.i_sar_den;
+    }
 
     /* */
     char type;
@@ -247,12 +257,19 @@ static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
     fprintf(sys->f, "FRAME\n");
     for (int i = 0; i < picture->i_planes; i++) {
         const plane_t *plane = &picture->p[i];
+        const uint8_t *pixels = plane->p_pixels;
+
+        pixels += (vd->fmt.i_x_offset * plane->i_visible_pitch)
+                  / vd->fmt.i_visible_height;
+
         for( int y = 0; y < plane->i_visible_lines; y++) {
-            const size_t written = fwrite(&plane->p_pixels[y*plane->i_pitch],
-                                          1, plane->i_visible_pitch, sys->f);
+            const size_t written = fwrite(pixels, 1, plane->i_visible_pitch,
+                                          sys->f);
             if (written != (size_t)plane->i_visible_pitch)
                 msg_Warn(vd, "only %zd of %d bytes written",
                          written, plane->i_visible_pitch);
+
+            pixels += plane->i_pitch;
         }
     }
     fflush(sys->f);

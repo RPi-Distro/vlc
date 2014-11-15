@@ -1,7 +1,7 @@
 --[[
  $Id$
 
- Copyright © 2007-2012 the VideoLAN team
+ Copyright © 2007-2013 the VideoLAN team
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -67,8 +67,101 @@ function get_fmt( fmt_list )
     return fmt
 end
 
+-- Descramble the URL signature using the javascript code that does that
+-- in the web page
+function js_descramble( sig, js_url )
+    -- Fetch javascript code
+    local js = vlc.stream( js_url )
+    if not js then
+        return sig
+    end
+    local lines = {}
+
+    -- Look for the descrambler function's name
+    local descrambler = nil
+    while not descrambler do
+        local line = js:readline()
+        if not line then
+            vlc.msg.err( "Couldn't process youtube video URL, please check for updates to this script" )
+            return sig
+        end
+        -- Buffer lines for later, so we don't have to make a second
+        -- HTTP request later
+        table.insert( lines, line )
+        -- c&&(b.signature=ij(c));
+        descrambler = string.match( line, "%.signature=(.-)%(" )
+    end
+
+    -- Fetch the code of the descrambler function. The function is
+    -- conveniently preceded by the definition of a helper object
+    -- that it uses. Example:
+    -- var Fo={TR:function(a){a.reverse()},TU:function(a,b){var c=a[0];a[0]=a[b%a.length];a[b]=c},sH:function(a,b){a.splice(0,b)}};function Go(a){a=a.split("");Fo.sH(a,2);Fo.TU(a,28);Fo.TU(a,44);Fo.TU(a,26);Fo.TU(a,40);Fo.TU(a,64);Fo.TR(a,26);Fo.sH(a,1);return a.join("")};
+    local transformations = nil
+    local rules = nil
+    while not transformations and not rules do
+        local line
+        if #lines > 0 then
+            line = table.remove( lines )
+        else
+            line = js:readline()
+            if not line then
+                vlc.msg.err( "Couldn't process youtube video URL, please check for updates to this script" )
+                return sig
+            end
+        end
+        transformations, rules = string.match( line, "var ..={(.-)};function "..descrambler.."%([^)]*%){(.-)}" )
+    end
+
+    -- Parse the helper object to map available transformations
+    local trans = {}
+    for meth,code in string.gmatch( transformations, "(..):function%([^)]*%){([^}]*)}" ) do
+        -- a=a.reverse()
+        if string.match( code, "%.reverse%(" ) then
+          trans[meth] = "reverse"
+
+        -- a.splice(0,b)
+        elseif string.match( code, "%.splice%(") then
+          trans[meth] = "slice"
+
+        -- var c=a[0];a[0]=a[b%a.length];a[b]=c
+        elseif string.match( code, "var c=" ) then
+          trans[meth] = "swap"
+        else
+            vlc.msg.warn("Couldn't parse unknown youtube video URL signature transformation")
+        end
+    end
+
+    -- Parse descrambling rules, map them to known transformations
+    -- and apply them on the signature
+    local missing = false
+    for meth,idx in string.gmatch( rules, "..%.(..)%([^,]+,(%d+)%)" ) do
+        idx = tonumber( idx )
+
+        if trans[meth] == "reverse" then
+            sig = string.reverse( sig )
+
+        elseif trans[meth] == "slice" then
+            sig = string.sub( sig, idx + 1 )
+
+        elseif trans[meth] == "swap" then
+            if idx > 1 then
+                sig = string.gsub( sig, "^(.)("..string.rep( ".", idx - 1 )..")(.)(.*)$", "%3%2%1%4" )
+            elseif idx == 1 then
+                sig = string.gsub( sig, "^(.)(.)", "%2%1" )
+            end
+        else
+            vlc.msg.dbg("Couldn't apply unknown youtube video URL signature transformation")
+            missing = true
+        end
+    end
+    if missing then
+        vlc.msg.err( "Couldn't process youtube video URL, please check for updates to this script" )
+    end
+    return sig
+end
+
 -- Parse and pick our video URL
-function pick_url( url_map, fmt )
+function pick_url( url_map, fmt, js_url )
     local path = nil
     for stream in string.gmatch( url_map, "[^,]+" ) do
         -- Apparently formats are listed in quality order,
@@ -80,6 +173,18 @@ function pick_url( url_map, fmt )
                 url = vlc.strings.decode_uri( url )
 
                 local sig = string.match( stream, "sig=([^&,]+)" )
+                if not sig then
+                    -- Scrambled signature
+                    sig = string.match( stream, "s=([^&,]+)" )
+                    if sig then
+                        vlc.msg.dbg( "Found "..string.len( sig ).."-character scrambled signature for youtube video URL, attempting to descramble... " )
+                        if js_url then
+                            sig = js_descramble( sig, js_url )
+                        else
+                            vlc.msg.err( "Couldn't process youtube video URL, please check for updates to this script" )
+                        end
+                    end
+                end
                 local signature = ""
                 if sig then
                     signature = "&signature="..sig
@@ -110,6 +215,7 @@ function probe()
     return (  string.match( vlc.path, "/watch%?" ) -- the html page
             or string.match( vlc.path, "/get_video_info%?" ) -- info API
             or string.match( vlc.path, "/v/" ) -- video in swf player
+            or string.match( vlc.path, "/embed/" ) -- embedded player iframe
             or string.match( vlc.path, "/player2.swf" ) ) -- another player url
 end
 
@@ -138,12 +244,24 @@ function parse()
             if string.match( line, "<meta property=\"og:image\"" ) then
                 _,_,arturl = string.find( line, "content=\"(.-)\"" )
             end
-            if string.match( line, " rel=\"author\"" ) then
-                _,_,artist = string.find( line, "href=\"/user/([^\"]*)\"" )
+            -- This is not available in the video parameters (whereas it
+            -- is given by the get_video_info API as the "author" field)
+            if not artist then
+                artist = string.match( line, "yt%-uix%-sessionlink yt%-user%-name[^>]*>([^<]*)</" )
+                if artist then
+                    artist = vlc.strings.resolve_xml_special_chars( artist )
+                end
             end
             -- JSON parameters, also formerly known as "swfConfig",
-            -- "SWF_ARGS", "swfArgs", "PLAYER_CONFIG" ...
-            if string.match( line, "playerConfig" ) then
+            -- "SWF_ARGS", "swfArgs", "PLAYER_CONFIG", "playerConfig" ...
+            if string.match( line, "ytplayer%.config" ) then
+
+                local js_url = string.match( line, "\"js\": \"(.-)\"" )
+                if js_url then
+                    js_url = string.gsub( js_url, "\\/", "/" )
+                    js_url = string.gsub( js_url, "^//", vlc.access.."://" )
+                end
+
                 if not fmt then
                     fmt_list = string.match( line, "\"fmt_list\": \"(.-)\"" )
                     if fmt_list then
@@ -156,7 +274,7 @@ function parse()
                 if url_map then
                     -- FIXME: do this properly
                     url_map = string.gsub( url_map, "\\u0026", "&" )
-                    path = pick_url( url_map, fmt )
+                    path = pick_url( url_map, fmt, js_url )
                 end
 
                 if not path then
@@ -240,6 +358,10 @@ function parse()
             title = vlc.strings.decode_uri( title )
         end
         local artist = string.match( line, "&author=([^&]*)" )
+        if artist then
+            artist = string.gsub( artist, "+", " " )
+            artist = vlc.strings.decode_uri( artist )
+        end
         local arturl = string.match( line, "&thumbnail_url=([^&]*)" )
         if arturl then
             arturl = vlc.strings.decode_uri( arturl )
@@ -251,6 +373,9 @@ function parse()
         video_id = get_url_param( vlc.path, "video_id" )
         if not video_id then
             _,_,video_id = string.find( vlc.path, "/v/([^?]*)" )
+        end
+        if not video_id then
+            video_id = string.match( vlc.path, "/embed/([^?]*)" )
         end
         if not video_id then
             vlc.msg.err( "Couldn't extract youtube video URL" )

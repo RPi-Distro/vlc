@@ -12,7 +12,6 @@ VLC-dev.app: VLC-tmp
 	cp -R VLC-tmp $@
 	$(INSTALL) -m 0755 $(top_builddir)/bin/.libs/vlc $@/Contents/MacOS/VLC
 	$(LN_S) -f ../../../modules $@/Contents/MacOS/plugins
-	rm -Rf VLC-tmp
 
 # VLC.app for packaging and giving it to your friends
 # use package-macosx to get a nice dmg
@@ -22,10 +21,10 @@ VLC.app: VLC-tmp
 	PRODUCT="$@" ACTION="release-makefile" src_dir=$(srcdir) build_dir=$(top_builddir) sh $(srcdir)/extras/package/macosx/build-package.sh
 	find $@ -type d -exec chmod ugo+rx '{}' \;
 	find $@ -type f -exec chmod ugo+r '{}' \;
-	rm -Rf $@/Contents/Frameworks/BGHUDAppKit.framework/Resources/
-	rm -Rf VLC-tmp
+	rm -Rf $@/Contents/Frameworks/BGHUDAppKit.framework/Versions/A/Resources/BGHUDAppKitPlugin.ibplugin
+	rm -Rf $@/Contents/Frameworks/BGHUDAppKit.framework/Versions/A/Resources/README.textile
 
-# common target to a VLC bundle used by both the dev and the release build
+
 VLC-tmp: vlc
 	$(AM_V_GEN)for i in src lib share; do \
 		(cd $$i && $(MAKE) $(AM_MAKEFLAGS) install $(silentstd)); \
@@ -39,6 +38,7 @@ VLC-tmp: vlc
 	REVISION=`(git --git-dir=$(srcdir)/.git describe --always || echo exported)` && \
 	    sed "s/#REVISION#/$$REVISION/g" $(top_builddir)/extras/package/macosx/Info.plist \
         > $(top_builddir)/tmp/extras/package/macosx/Info.plist
+	xcrun plutil -convert binary1 $(top_builddir)/tmp/extras/package/macosx/Info.plist
 	cp -R $(top_builddir)/extras/package/macosx/Resources $(top_builddir)/tmp/extras/package/macosx/
 	cd "$(srcdir)"; cp AUTHORS COPYING THANKS $(abs_top_builddir)/tmp/
 	mkdir -p $(top_builddir)/tmp/modules/audio_output
@@ -46,12 +46,12 @@ VLC-tmp: vlc
 	cd "$(srcdir)/modules/gui/macosx/" && cp *.h *.m $(abs_top_builddir)/tmp/modules/gui/macosx/
 	cd $(top_builddir)/tmp/extras/package/macosx && \
 		xcodebuild -target vlc SYMROOT=../../../build DSTROOT=../../../build $(silentstd)
-	cp -R -L $(top_builddir)/tmp/build/Default/VLC.bundle $@
-	mkdir -p $@/Contents/Frameworks && cp -R -L $(CONTRIB_DIR)/Growl.framework $@/Contents/Frameworks/
+	cp -R $(top_builddir)/tmp/build/Default/VLC.bundle $@
+	mkdir -p $@/Contents/Frameworks && cp -R $(CONTRIB_DIR)/Growl.framework $@/Contents/Frameworks/
 	mkdir -p $@/Contents/MacOS/share/locale/
 	cp -r "$(prefix)/lib/vlc/lua" "$(prefix)/share/vlc/lua" $@/Contents/MacOS/share/
 	mkdir -p $@/Contents/MacOS/include/
-	cp -r "$(srcdir)/include/vlc" $@/Contents/MacOS/include/
+	(cd "$(prefix)/include" && $(AMTAR) -c --exclude "plugins" vlc) | $(AMTAR) -x -C $@/Contents/MacOS/include/
 	$(INSTALL) -m 644 $(srcdir)/share/vlc512x512.png $@/Contents/MacOS/share/vlc512x512.png
 	cat $(top_srcdir)/po/LINGUAS | while read i; do \
 	  $(INSTALL) -d $@/Contents/MacOS/share/locale/$${i}/LC_MESSAGES ; \
@@ -66,7 +66,6 @@ package-macosx: VLC.app
 	mkdir -p "$(top_builddir)/vlc-$(VERSION)/Goodies/"
 	cp -R "$(top_builddir)/VLC.app" "$(top_builddir)/vlc-$(VERSION)/VLC.app"
 	cd $(srcdir); cp AUTHORS COPYING README THANKS NEWS $(abs_top_builddir)/vlc-$(VERSION)/Goodies/
-	cp -R  $(srcdir)/extras/package/macosx/Delete_Preferences.app $(top_builddir)/vlc-$(VERSION)/Goodies/Delete\ VLC\ Preferences.app
 	cp $(srcdir)/extras/package/macosx/README.MacOSX.rtf $(top_builddir)/vlc-$(VERSION)/Read\ Me.rtf
 	$(LN_S) -f /Applications $(top_builddir)/vlc-$(VERSION)/
 	rm -f "$(top_builddir)/vlc-$(VERSION)-rw.dmg"
@@ -87,16 +86,9 @@ package-macosx-zip: VLC.app
 	mkdir -p $(top_builddir)/vlc-$(VERSION)/Goodies/
 	cp -R $(top_builddir)/VLC.app $(top_builddir)/vlc-$(VERSION)/VLC.app
 	cd $(srcdir); cp -R AUTHORS COPYING README THANKS NEWS $(abs_top_builddir)/vlc-$(VERSION)/Goodies/
-	cp -R  $(srcdir)/extras/package/macosx/Delete_Preferences.app $(top_builddir)/vlc-$(VERSION)/Goodies/Delete\ VLC\ Preferences.app
 	cp $(srcdir)/extras/package/macosx/README.MacOSX.rtf $(top_builddir)/vlc-$(VERSION)/Read\ Me.rtf
 	zip -r -y -9 $(top_builddir)/vlc-$(VERSION).zip $(top_builddir)/vlc-$(VERSION)
 	rm -rf "$(top_builddir)/vlc-$(VERSION)"
-
-package-macosx-framework-zip:
-	mkdir -p $(top_builddir)/vlckit-$(VERSION)/Goodies/
-	cp -R $(srcdir)/projects/macosx/framework/build/Debug/VLCKit.framework $(top_builddir)/vlckit-$(VERSION)/
-	cd $(srcdir); cp AUTHORS COPYING README THANKS NEWS $(abs_top_builddir)/vlckit-$(VERSION)/Goodies/
-	zip -r -y -9 $(top_builddir)/vlckit-$(VERSION).zip $(top_builddir)/vlckit-$(VERSION)
 
 package-translations:
 	mkdir -p "$(srcdir)/vlc-translations-$(VERSION)"
@@ -117,4 +109,4 @@ package-translations:
 	$(AMTAR) chof - $(srcdir)/vlc-translations-$(VERSION) \
 	  | GZIP=$(GZIP_ENV) gzip -c >$(srcdir)/vlc-translations-$(VERSION).tar.gz
 
-.PHONY: package-macosx package-macosx-zip package-macosx-framework-zip package-translations
+.PHONY: package-macosx package-macosx-zip package-translations

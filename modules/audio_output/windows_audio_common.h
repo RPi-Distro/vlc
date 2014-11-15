@@ -1,25 +1,25 @@
 /*****************************************************************************
- * windows_common.h: Windows Audio common code
+ * windows_audio_common.h: Windows Audio common code
  *****************************************************************************
  * Copyright (C) 2001-2009 VideoLAN
- * $Id: 7dc74c20d30a675ae10cd9e472de661cb00c013b $
+ * $Id: 167710d4d714daeff035f923af9dd3c1a7203c93 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #include <windows.h>
@@ -34,17 +34,7 @@
 #define INITGUID /* Doesn't define the DEFINE_GUID as extern */
 #include <initguid.h>
 
-#ifndef WAVE_FORMAT_IEEE_FLOAT
-#   define WAVE_FORMAT_IEEE_FLOAT 0x0003
-#endif
-
-#ifndef WAVE_FORMAT_DOLBY_AC3_SPDIF
-#   define WAVE_FORMAT_DOLBY_AC3_SPDIF 0x0092
-#endif
-
-#ifndef WAVE_FORMAT_EXTENSIBLE
-#define  WAVE_FORMAT_EXTENSIBLE   0xFFFE
-#endif
+#include <vlc_codecs.h>
 
 DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, WAVE_FORMAT_IEEE_FLOAT, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
 DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_PCM, WAVE_FORMAT_PCM, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
@@ -54,26 +44,9 @@ static const GUID __KSDATAFORMAT_SUBTYPE_IEEE_FLOAT = {WAVE_FORMAT_IEEE_FLOAT, 0
 static const GUID __KSDATAFORMAT_SUBTYPE_PCM = {WAVE_FORMAT_PCM, 0x0000, 0x0010, {0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}};
 static const GUID __KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF = {WAVE_FORMAT_DOLBY_AC3_SPDIF, 0x0000, 0x0010, {0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}};
 
-
 #define FRAMES_NUM 8                                      /* Needs to be > 3 */
 
-#ifndef _WAVEFORMATEXTENSIBLE_
-typedef struct {
-    WAVEFORMATEX    Format;
-    union {
-        WORD wValidBitsPerSample;       /* bits of precision  */
-        WORD wSamplesPerBlock;          /* valid if wBitsPerSample==0 */
-        WORD wReserved;                 /* If neither applies, set to zero. */
-    } Samples;
-    DWORD           dwChannelMask;      /* which channels are */
-                                        /* present in stream  */
-    GUID            SubFormat;
-} WAVEFORMATEXTENSIBLE, *PWAVEFORMATEXTENSIBLE;
-#endif
-
-#ifndef UNDER_CE
-#   include <dsound.h>
-#endif
+#include <dsound.h>
 
 #ifndef SPEAKER_FRONT_LEFT
 #   define SPEAKER_FRONT_LEFT             0x1
@@ -134,11 +107,6 @@ typedef struct {
 #   define DSSPEAKER_7POINT1_WIDE         DSSPEAKER_7POINT1
 #endif
 
-static const uint32_t pi_channels_src[] =
-    { AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT,
-      AOUT_CHAN_MIDDLELEFT, AOUT_CHAN_MIDDLERIGHT,
-      AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT, AOUT_CHAN_REARCENTER,
-      AOUT_CHAN_CENTER, AOUT_CHAN_LFE, 0 };
 static const uint32_t pi_channels_in[] =
     { SPEAKER_FRONT_LEFT, SPEAKER_FRONT_RIGHT,
       SPEAKER_SIDE_LEFT, SPEAKER_SIDE_RIGHT,

@@ -1,8 +1,8 @@
 /*****************************************************************************
- * qt4.hpp : QT4 interface
+ * qt4.hpp : Qt interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 3e904e83a1cba526036f07f5978f73228e000815 $
+ * $Id: 44d7db657403d85ae4dfd3d742d84007533f35ac $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -41,12 +41,19 @@
 #endif
 
 #define HAS_QT47 ( QT_VERSION >= 0x040700 )
+#define HAS_QT5  ( QT_VERSION >= 0x050000 )
 
 enum {
-    DialogEventType = 0,
-    IMEventType     = 100,
-    PLEventType     = 200,
-    MsgEventType    = 300,
+    DialogEventTypeOffset = 0,
+    IMEventTypeOffset     = 100,
+    PLEventTypeOffset     = 200,
+    MsgEventTypeOffset    = 300,
+};
+
+enum{
+    NOTIFICATION_NEVER = 0,
+    NOTIFICATION_MINIMIZED = 1,
+    NOTIFICATION_ALWAYS = 2,
 };
 
 class QVLCApp;
@@ -69,15 +76,15 @@ struct intf_sys_t
 
     QString filepath;        /* Last path used in dialogs */
 
-    int  i_screenHeight;     /* Detection of Small screens */
-
+    unsigned voutWindowType; /* Type of vout_window_t provided */
     bool b_isDialogProvider; /* Qt mode or Skins mode */
-#ifdef WIN32
+    playlist_t *p_playlist;  /* playlist */
+#ifdef _WIN32
     bool disable_volume_keys;
 #endif
 };
 
-#define THEPL pl_Get(p_intf)
+#define THEPL p_intf->p_sys->p_playlist
 #define QPL_LOCK playlist_Lock( THEPL );
 #define QPL_UNLOCK playlist_Unlock( THEPL );
 
@@ -86,6 +93,7 @@ struct intf_sys_t
 #define THEAM ActionsManager::getInstance( p_intf )
 
 #define qfu( i ) QString::fromUtf8( i )
+#define qfue( i ) QString::fromUtf8( i ).replace( "&", "&&" ) /* for actions/buttons */
 #define qtr( i ) QString::fromUtf8( vlc_gettext(i) )
 #define qtu( i ) ((i).toUtf8().constData())
 

@@ -24,17 +24,17 @@ dumpmeta.lua: dump a file's meta data on stdout/stderr
 --[[ to dump meta data information in the debug output, run:
        vlc -I luaintf --lua-intf dumpmeta coolmusic.mp3
      Additional options can improve performance and output readability:
-       -V dummy -A dummy --no-video-title --no-media-library --verbose-objects +lua,-all -v=0
+       -V dummy -A dummy --no-video-title --no-media-library -q
 --]]
 
 local item
 repeat
     item = vlc.input.item()
-until (item and item:is_preparsed()) or vlc.misc.should_die()
+until (item and item:is_preparsed())
 
 -- preparsing doesn't always provide all the information we want (like duration)
 repeat
-until item:stats()["demux_read_bytes"] > 0 or vlc.misc.should_die()
+until item:stats()["demux_read_bytes"] > 0
 
 vlc.msg.info("name: "..item:name())
 vlc.msg.info("uri: "..vlc.strings.decode_uri(item:uri()))

@@ -1,9 +1,9 @@
 /*****************************************************************************
- * real.c: rtsp input
+ * real.h: rtsp input
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id: 51392e5ff6a27507e62a1e730fae97d2e963804d $
+ * $Id: 12d694b3c41cd62fa936961e044bea0b9065e65e $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.

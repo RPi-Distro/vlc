@@ -20,75 +20,132 @@
 
 /**
  * \file
- * This file provides CPU-specific optimization flags.
+ * This file provides CPU features detection.
  */
 
 #ifndef VLC_CPU_H
 # define VLC_CPU_H 1
 
+VLC_API unsigned vlc_CPU(void);
+
 # if defined (__i386__) || defined (__x86_64__)
-#  define CPU_CAPABILITY_MMX     (1<<3)
-#  define CPU_CAPABILITY_3DNOW   (1<<4)
-#  define CPU_CAPABILITY_MMXEXT  (1<<5)
-#  define CPU_CAPABILITY_SSE     (1<<6)
-#  define CPU_CAPABILITY_SSE2    (1<<7)
-#  define CPU_CAPABILITY_SSE3    (1<<8)
-#  define CPU_CAPABILITY_SSSE3   (1<<9)
-#  define CPU_CAPABILITY_SSE4_1  (1<<10)
-#  define CPU_CAPABILITY_SSE4_2  (1<<11)
-#  define CPU_CAPABILITY_SSE4A   (1<<12)
+#  define HAVE_FPU 1
+#  define VLC_CPU_MMX    0x00000008
+#  define VLC_CPU_3dNOW  0x00000010
+#  define VLC_CPU_MMXEXT 0x00000020
+#  define VLC_CPU_SSE    0x00000040
+#  define VLC_CPU_SSE2   0x00000080
+#  define VLC_CPU_SSE3   0x00000100
+#  define VLC_CPU_SSSE3  0x00000200
+#  define VLC_CPU_SSE4_1 0x00000400
+#  define VLC_CPU_SSE4_2 0x00000800
+#  define VLC_CPU_SSE4A  0x00001000
+#  define VLC_CPU_AVX    0x00002000
+#  define VLC_CPU_AVX2   0x00004000
+#  define VLC_CPU_XOP    0x00008000
+#  define VLC_CPU_FMA4   0x00010000
 
 # if defined (__MMX__)
+#  define vlc_CPU_MMX() (1)
 #  define VLC_MMX
-# elif VLC_GCC_VERSION(4, 4) || defined(__clang__)
-#  define VLC_MMX __attribute__ ((__target__ ("mmx")))
 # else
-#  define VLC_MMX VLC_MMX_is_not_implemented_on_this_compiler
+#  define vlc_CPU_MMX() ((vlc_CPU() & VLC_CPU_MMX) != 0)
+#  if VLC_GCC_VERSION(4, 4) || defined(__clang__)
+#   define VLC_MMX __attribute__ ((__target__ ("mmx")))
+#  else
+#   define VLC_MMX VLC_MMX_is_not_implemented_on_this_compiler
+#  endif
 # endif
 
 # if defined (__SSE__)
+#  define vlc_CPU_MMXEXT() (1)
+#  define vlc_CPU_SSE() (1)
 #  define VLC_SSE
-# elif VLC_GCC_VERSION(4, 4) || defined(__clang__)
-#  define VLC_SSE __attribute__ ((__target__ ("sse")))
 # else
-#  define VLC_SSE VLC_SSE_is_not_implemented_on_this_compiler
+#  define vlc_CPU_MMXEXT() ((vlc_CPU() & VLC_CPU_MMXEXT) != 0)
+#  define vlc_CPU_SSE() ((vlc_CPU() & VLC_CPU_SSE) != 0)
+#  if VLC_GCC_VERSION(4, 4) || defined(__clang__)
+#   define VLC_SSE __attribute__ ((__target__ ("sse")))
+#  else
+#   define VLC_SSE VLC_SSE_is_not_implemented_on_this_compiler
+#  endif
 # endif
 
+# ifdef __SSE2__
+#  define vlc_CPU_SSE2() (1)
 # else
-#  define CPU_CAPABILITY_MMX     (0)
-#  define CPU_CAPABILITY_3DNOW   (0)
-#  define CPU_CAPABILITY_MMXEXT  (0)
-#  define CPU_CAPABILITY_SSE     (0)
-#  define CPU_CAPABILITY_SSE2    (0)
-#  define CPU_CAPABILITY_SSE3    (0)
-#  define CPU_CAPABILITY_SSSE3   (0)
-#  define CPU_CAPABILITY_SSE4_1  (0)
-#  define CPU_CAPABILITY_SSE4_2  (0)
-#  define CPU_CAPABILITY_SSE4A   (0)
+#  define vlc_CPU_SSE2() ((vlc_CPU() & VLC_CPU_SSE2) != 0)
 # endif
 
-# if defined (__ppc__) || defined (__ppc64__) || defined (__powerpc__)
-#  define CPU_CAPABILITY_ALTIVEC (1<<16)
+# ifdef __SSE3__
+#  define vlc_CPU_SSE3() (1)
 # else
-#  define CPU_CAPABILITY_ALTIVEC (0)
+#  define vlc_CPU_SSE3() ((vlc_CPU() & VLC_CPU_SSE3) != 0)
 # endif
 
-# if defined (__arm__)
-#  define CPU_CAPABILITY_NEON    (1<<24)
+# ifdef __SSSE3__
+#  define vlc_CPU_SSSE3() (1)
 # else
-#  define CPU_CAPABILITY_NEON    (0)
+#  define vlc_CPU_SSSE3() ((vlc_CPU() & VLC_CPU_SSSE3) != 0)
 # endif
 
-VLC_API unsigned vlc_CPU( void );
+# ifdef __SSE4_1__
+#  define vlc_CPU_SSE4_1() (1)
+# else
+#  define vlc_CPU_SSE4_1() ((vlc_CPU() & VLC_CPU_SSE4_1) != 0)
+# endif
 
-/** Are floating point operations fast?
- * If this bit is not set, you should try to use fixed-point instead.
- */
-# if defined (__i386__) || defined (__x86_64__)
+# ifdef __SSE4_2__
+#  define vlc_CPU_SSE4_2() (1)
+# else
+#  define vlc_CPU_SSE4_2() ((vlc_CPU() & VLC_CPU_SSE4_2) != 0)
+# endif
+
+# ifdef __SSE4A__
+#  define vlc_CPU_SSE4A() (1)
+# else
+#  define vlc_CPU_SSE4A() ((vlc_CPU() & VLC_CPU_SSE4A) != 0)
+# endif
+
+# ifdef __AVX__
+#  define vlc_CPU_AVX() (1)
+# else
+#  define vlc_CPU_AVX() ((vlc_CPU() & VLC_CPU_AVX) != 0)
+# endif
+
+# ifdef __AVX2__
+#  define vlc_CPU_AVX2() (1)
+# else
+#  define vlc_CPU_AVX2() ((vlc_CPU() & VLC_CPU_AVX2) != 0)
+# endif
+
+# ifdef __3dNOW__
+#  define vlc_CPU_3dNOW() (1)
+# else
+#  define vlc_CPU_3dNOW() ((vlc_CPU() & VLC_CPU_3dNOW) != 0)
+# endif
+
+# ifdef __XOP__
+#  define vlc_CPU_XOP() (1)
+# else
+#  define vlc_CPU_XOP() ((vlc_CPU() & VLC_CPU_XOP) != 0)
+# endif
+
+# ifdef __FMA4__
+#  define vlc_CPU_FMA4() (1)
+# else
+#  define vlc_CPU_FMA4() ((vlc_CPU() & VLC_CPU_FMA4) != 0)
+# endif
+
+# elif defined (__ppc__) || defined (__ppc64__) || defined (__powerpc__)
 #  define HAVE_FPU 1
+#  define VLC_CPU_ALTIVEC 2
 
-# elif defined (__powerpc__) || defined (__ppc__) || defined (__ppc64__)
-#  define HAVE_FPU 1
+#  ifdef ALTIVEC
+#   define vlc_CPU_ALTIVEC() (1)
+#  else
+#   define vlc_CPU_ALTIVEC() ((vlc_CPU() & VLC_CPU_ALTIVEC) != 0)
+#  endif
 
 # elif defined (__arm__)
 #  if defined (__VFP_FP__) && !defined (__SOFTFP__)
@@ -96,18 +153,46 @@ VLC_API unsigned vlc_CPU( void );
 #  else
 #   define HAVE_FPU 0
 #  endif
+#  define VLC_CPU_ARMv6    4
+#  define VLC_CPU_ARM_NEON 2
+
+#  if defined (__ARM_ARCH_7A__)
+#   define VLC_CPU_ARM_ARCH 7
+#  elif defined (__ARM_ARCH_6__) || defined (__ARM_ARCH_6T2__)
+#   define VLC_CPU_ARM_ARCH 6
+#  else
+#   define VLC_CPU_ARM_ARCH 4
+#  endif
+
+#  if (VLC_CPU_ARM_ARCH >= 6)
+#   define vlc_CPU_ARMv6() (1)
+#  else
+#   define vlc_CPU_ARMv6() ((vlc_CPU() & VLC_CPU_ARMv6) != 0)
+#  endif
+
+#  ifdef __ARM_NEON__
+#   define vlc_CPU_ARM_NEON() (1)
+#  else
+#   define vlc_CPU_ARM_NEON() ((vlc_CPU() & VLC_CPU_ARM_NEON) != 0)
+#  endif
+
+# elif defined (__aarch64__)
+#  define HAVE_FPU 1
 
 # elif defined (__sparc__)
 #  define HAVE_FPU 1
 
+# elif defined (__mips_hard_float)
+#  define HAVE_FPU 1
+
 # else
+/**
+ * Are single precision floating point operations "fast"?
+ * If this preprocessor constant is zero, floating point should be avoided
+ * (especially relevant for audio codecs).
+ */
 #  define HAVE_FPU 0
 
 # endif
 
-typedef void *(*vlc_memcpy_t) (void *tgt, const void *src, size_t n);
-
-VLC_API void vlc_fastmem_register(vlc_memcpy_t cpy);
-
 #endif /* !VLC_CPU_H */
-

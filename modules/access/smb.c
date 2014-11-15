@@ -1,24 +1,24 @@
 /*****************************************************************************
  * smb.c: SMB input module
  *****************************************************************************
- * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: c9b931477a697a5b694e9036c56f73ab34ad87a1 $
+ * Copyright (C) 2001-2009 VLC authors and VideoLAN
+ * $Id: 60b26ee4a46340d3d178a87e650326849f64da09 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -28,18 +28,10 @@
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
-#include <vlc_fs.h>
-#include <vlc_plugin.h>
-#include <vlc_access.h>
-
-#ifdef WIN32
-#   ifdef HAVE_FCNTL_H
-#       include <fcntl.h>
-#   endif
-#   ifdef HAVE_SYS_STAT_H
-#       include <sys/stat.h>
-#   endif
+#include <errno.h>
+#ifdef _WIN32
+#   include <fcntl.h>
+#   include <sys/stat.h>
 #   include <io.h>
 #   define smbc_open(a,b,c) vlc_open(a,b,c)
 #   define smbc_fstat(a,b) _fstati64(a,b)
@@ -50,7 +42,10 @@
 #   include <libsmbclient.h>
 #endif
 
-#include <errno.h>
+#include <vlc_common.h>
+#include <vlc_fs.h>
+#include <vlc_plugin.h>
+#include <vlc_access.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -96,9 +91,10 @@ static int Control( access_t *, int, va_list );
 struct access_sys_t
 {
     int i_smb;
+    uint64_t size;
 };
 
-#ifdef WIN32
+#ifdef _WIN32
 static void Win32AddConnection( access_t *, char *, char *, char *, char * );
 #else
 static void smb_auth( const char *srv, const char *shr, char *wg, int wglen,
@@ -184,7 +180,7 @@ static int Open( vlc_object_t *p_this )
     if( !psz_domain ) psz_domain = var_InheritString( p_access, "smb-domain" );
     if( psz_domain && !*psz_domain ) { free( psz_domain ); psz_domain = NULL; }
 
-#ifdef WIN32
+#ifdef _WIN32
     if( psz_user )
         Win32AddConnection( p_access, psz_location, psz_user, psz_pwd, psz_domain);
     i_ret = asprintf( &psz_uri, "//%s", psz_location );
@@ -205,7 +201,7 @@ static int Open( vlc_object_t *p_this )
     if( i_ret == -1 )
         return VLC_ENOMEM;
 
-#ifndef WIN32
+#ifndef _WIN32
     if( smbc_init( smb_auth, 0 ) )
     {
         free( psz_uri );
@@ -223,8 +219,8 @@ static int Open( vlc_object_t *p_this )
 #endif
     if( (i_smb = smbc_open( psz_uri, O_RDONLY, 0 )) < 0 )
     {
-        msg_Err( p_access, "open failed for '%s' (%m)",
-                 p_access->psz_location );
+        msg_Err( p_access, "open failed for '%s' (%s)",
+                 p_access->psz_location, vlc_strerror_c(errno) );
         free( psz_uri );
         return VLC_EGENERIC;
     }
@@ -236,10 +232,10 @@ static int Open( vlc_object_t *p_this )
     if( i_ret )
     {
         errno = i_ret;
-        msg_Err( p_access, "stat failed (%m)" );
+        msg_Err( p_access, "stat failed (%s)", vlc_strerror_c(errno) );
     }
     else
-        p_access->info.i_size = filestat.st_size;
+        p_sys->size = filestat.st_size;
 
     free( psz_uri );
 
@@ -276,7 +272,7 @@ static int Seek( access_t *p_access, uint64_t i_pos )
     i_ret = smbc_lseek( p_sys->i_smb, i_pos, SEEK_SET );
     if( i_ret == -1 )
     {
-        msg_Err( p_access, "seek failed (%m)" );
+        msg_Err( p_access, "seek failed (%s)", vlc_strerror_c(errno) );
         return VLC_EGENERIC;
     }
 
@@ -299,7 +295,7 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
     i_read = smbc_read( p_sys->i_smb, p_buffer, i_len );
     if( i_read < 0 )
     {
-        msg_Err( p_access, "read failed (%m)" );
+        msg_Err( p_access, "read failed (%s)", vlc_strerror_c(errno) );
         return -1;
     }
 
@@ -323,6 +319,10 @@ static int Control( access_t *p_access, int i_query, va_list args )
         *va_arg( args, bool* ) = true;
         break;
 
+    case ACCESS_GET_SIZE:
+        *va_arg( args, uint64_t * ) = p_access->p_sys->size;
+        break;
+
     case ACCESS_GET_PTS_DELAY:
         *va_arg( args, int64_t * ) = INT64_C(1000)
             * var_InheritInteger( p_access, "network-caching" );
@@ -332,23 +332,14 @@ static int Control( access_t *p_access, int i_query, va_list args )
         /* Nothing to do */
         break;
 
-    case ACCESS_GET_TITLE_INFO:
-    case ACCESS_SET_TITLE:
-    case ACCESS_SET_SEEKPOINT:
-    case ACCESS_SET_PRIVATE_ID_STATE:
-    case ACCESS_GET_CONTENT_TYPE:
-        return VLC_EGENERIC;
-
     default:
-        msg_Warn( p_access, "unimplemented query in control" );
         return VLC_EGENERIC;
-
     }
 
     return VLC_SUCCESS;
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 static void Win32AddConnection( access_t *p_access, char *psz_path,
                                 char *psz_user, char *psz_pwd,
                                 char *psz_domain )
@@ -392,4 +383,4 @@ static void Win32AddConnection( access_t *p_access, char *psz_path,
         msg_Dbg( p_access, "failed to connect to %s", psz_remote );
     }
 }
-#endif // WIN32
+#endif // _WIN32

@@ -3,8 +3,22 @@ libvlc_clearerr
 libvlc_printerr
 libvlc_vprinterr
 libvlc_add_intf
+libvlc_audio_equalizer_get_amp_at_index
+libvlc_audio_equalizer_get_band_count
+libvlc_audio_equalizer_get_band_frequency
+libvlc_audio_equalizer_get_preamp
+libvlc_audio_equalizer_get_preset_count
+libvlc_audio_equalizer_get_preset_name
+libvlc_audio_equalizer_new
+libvlc_audio_equalizer_new_from_preset
+libvlc_audio_equalizer_release
+libvlc_audio_equalizer_set_amp_at_index
+libvlc_audio_equalizer_set_preamp
 libvlc_audio_output_device_count
+libvlc_audio_output_device_enum
 libvlc_audio_output_device_id
+libvlc_audio_output_device_list_get
+libvlc_audio_output_device_list_release
 libvlc_audio_output_device_longname
 libvlc_audio_output_device_set
 libvlc_audio_output_get_device_type
@@ -43,6 +57,11 @@ libvlc_get_fullscreen
 libvlc_get_input_thread
 libvlc_get_log_verbosity
 libvlc_get_version
+libvlc_log_get_context
+libvlc_log_get_object
+libvlc_log_set
+libvlc_log_set_file
+libvlc_log_unset
 libvlc_log_clear
 libvlc_log_close
 libvlc_log_count
@@ -114,6 +133,7 @@ libvlc_media_new_from_input_item
 libvlc_media_parse
 libvlc_media_parse_async
 libvlc_media_player_can_pause
+libvlc_media_player_program_scrambled
 libvlc_media_player_next_frame
 libvlc_media_player_event_manager
 libvlc_media_player_get_agl
@@ -146,6 +166,7 @@ libvlc_media_player_release
 libvlc_media_player_retain
 libvlc_media_player_set_agl
 libvlc_media_player_set_chapter
+libvlc_media_player_set_equalizer
 libvlc_media_player_set_hwnd
 libvlc_media_player_set_media
 libvlc_media_player_set_nsobject
@@ -157,6 +178,7 @@ libvlc_media_player_set_xwindow
 libvlc_media_player_stop
 libvlc_media_player_will_play
 libvlc_media_player_navigate
+libvlc_media_player_set_video_title_display
 libvlc_media_release
 libvlc_media_retain
 libvlc_media_save_meta
@@ -164,6 +186,8 @@ libvlc_media_set_meta
 libvlc_media_set_state
 libvlc_media_set_user_data
 libvlc_media_subitems
+libvlc_media_tracks_get
+libvlc_media_tracks_release
 libvlc_new
 libvlc_playlist_play
 libvlc_release
@@ -171,6 +195,7 @@ libvlc_retain
 libvlc_set_fullscreen
 libvlc_set_log_verbosity
 libvlc_set_user_agent
+libvlc_set_app_id
 libvlc_toggle_fullscreen
 libvlc_toggle_teletext
 libvlc_track_description_release

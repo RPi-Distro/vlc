@@ -1,8 +1,8 @@
 /*****************************************************************************
- * vout_display.c: "vout display" -> "video output" wrapper
+ * vout_wrapper.c: "vout display" -> "video output" wrapper
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: a190f4c30407a2c0078d5b17d7034b75d6a26834 $
+ * $Id: 2e24d63be4f86e0685c4763e983de7c50f1d72c9 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -39,7 +39,7 @@
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-#ifdef WIN32
+#ifdef _WIN32
 static int  Forward(vlc_object_t *, char const *,
                     vlc_value_t, vlc_value_t, void *);
 #endif
@@ -54,7 +54,7 @@ int vout_OpenWrapper(vout_thread_t *vout,
     msg_Dbg(vout, "Opening vout display wrapper");
 
     /* */
-    sys->display.title = var_CreateGetNonEmptyString(vout, "video-title");
+    sys->display.title = var_InheritString(vout, "video-title");
 
     /* */
     const mtime_t double_click_timeout = 300000;
@@ -73,7 +73,7 @@ int vout_OpenWrapper(vout_thread_t *vout,
     }
 
     /* */
-#ifdef WIN32
+#ifdef _WIN32
     var_Create(vout, "video-wallpaper", VLC_VAR_BOOL|VLC_VAR_DOINHERIT);
     var_AddCallback(vout, "video-wallpaper", Forward, NULL);
 #endif
@@ -91,7 +91,7 @@ void vout_CloseWrapper(vout_thread_t *vout, vout_display_state_t *state)
 {
     vout_thread_sys_t *sys = vout->p;
 
-#ifdef WIN32
+#ifdef _WIN32
     var_DelCallback(vout, "video-wallpaper", Forward, NULL);
 #endif
     sys->decoder_pool = NULL; /* FIXME remove */
@@ -113,16 +113,9 @@ static void NoDrInit(vout_thread_t *vout)
     if (sys->display.use_dr)
         sys->display_pool = vout_display_Pool(sys->display.vd, 3);
     else
-        //sys->display_pool = picture_pool_Reserve(sys->decoder_pool, DISPLAY_PICTURE_COUNT);
-        sys->display_pool = picture_pool_NewFromFormat(&sys->display.vd->source, DISPLAY_PICTURE_COUNT);
+        sys->display_pool = NULL;
 }
-static void NoDrClean(vout_thread_t *vout)
-{
-    vout_thread_sys_t *sys = vout->p;
 
-    if (!sys->display.use_dr)
-        picture_pool_Delete(sys->display_pool);
-}
 int vout_InitWrapper(vout_thread_t *vout)
 {
     vout_thread_sys_t *sys = vout->p;
@@ -176,10 +169,8 @@ void vout_EndWrapper(vout_thread_t *vout)
     if (sys->private_pool)
         picture_pool_Delete(sys->private_pool);
 
-    if (sys->decoder_pool != sys->display_pool) {
-        NoDrClean(vout);
+    if (sys->decoder_pool != sys->display_pool)
         picture_pool_Delete(sys->decoder_pool);
-    }
 }
 
 /*****************************************************************************
@@ -190,18 +181,16 @@ void vout_ManageWrapper(vout_thread_t *vout)
     vout_thread_sys_t *sys = vout->p;
     vout_display_t *vd = sys->display.vd;
 
-    bool reset_display_pool = sys->display.use_dr && vout_AreDisplayPicturesInvalid(vd);
-    vout_ManageDisplay(vd, !sys->display.use_dr || reset_display_pool);
+    bool reset_display_pool = vout_AreDisplayPicturesInvalid(vd);
+    reset_display_pool |= vout_ManageDisplay(vd, !sys->display.use_dr || reset_display_pool);
 
     if (reset_display_pool) {
-        NoDrClean(vout);
-
         sys->display.use_dr = !vout_IsDisplayFiltered(vd);
         NoDrInit(vout);
     }
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 static int Forward(vlc_object_t *object, char const *var,
                    vlc_value_t oldval, vlc_value_t newval, void *data)
 {

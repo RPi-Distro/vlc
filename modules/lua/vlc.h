@@ -2,7 +2,7 @@
  * vlc.h: VLC specific lua library functions.
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 5d87914c5a20480028845d4f7bc49fce1cb13f22 $
+ * $Id: efd94f164bd6340166d822d6724040d5244cbdad $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -32,20 +32,28 @@
 #include <vlc_input.h>
 #include <vlc_playlist.h>
 #include <vlc_meta.h>
+#include <vlc_meta_fetcher.h>
 #include <vlc_url.h>
 #include <vlc_strings.h>
 #include <vlc_stream.h>
+#include <vlc_demux.h>
 
+#define LUA_COMPAT_MODULE
 #include <lua.h>        /* Low level lua C API */
 #include <lauxlib.h>    /* Higher level C API */
 #include <lualib.h>     /* Lua libs */
+#if LUA_VERSION_NUM >= 502
+#define lua_equal(L,idx1,idx2)		lua_compare(L,(idx1),(idx2),LUA_OPEQ)
+#define lua_objlen(L,idx)			lua_rawlen(L,idx)
+#define lua_strlen(L,idx)			lua_rawlen(L,idx)
+#endif
 
 /*****************************************************************************
  * Module entry points
  *****************************************************************************/
-int ReadMeta( vlc_object_t * );
-int FetchMeta( vlc_object_t * );
-int FindArt( vlc_object_t * );
+int ReadMeta( demux_meta_t * );
+int FetchMeta( meta_fetcher_t * );
+int FindArt( meta_fetcher_t * );
 
 int Import_LuaPlaylist( vlc_object_t * );
 void Close_LuaPlaylist( vlc_object_t * );
@@ -107,8 +115,8 @@ void vlclua_set_this( lua_State *, vlc_object_t * );
 #define vlclua_set_this(a, b) vlclua_set_this(a, VLC_OBJECT(b))
 vlc_object_t * vlclua_get_this( lua_State * );
 
-struct intf_sys_t;
-void vlclua_set_intf( lua_State *, struct intf_sys_t * );
+void vlclua_set_playlist_internal( lua_State *, playlist_t * );
+playlist_t * vlclua_get_playlist_internal( lua_State * );
 
 /*****************************************************************************
  * Lua function bridge
@@ -120,12 +128,20 @@ int vlclua_push_ret( lua_State *, int i_error );
  * Will execute func on all scripts in luadirname, and stop if func returns
  * success.
  *****************************************************************************/
+typedef struct luabatch_context_t luabatch_context_t;
+struct luabatch_context_t
+{
+    input_item_t *p_item;
+    meta_fetcher_scope_t e_scope;
+    bool (*pf_validator)( const luabatch_context_t *, meta_fetcher_scope_t );
+};
+
 int vlclua_scripts_batch_execute( vlc_object_t *p_this, const char * luadirname,
-        int (*func)(vlc_object_t *, const char *, void *),
+        int (*func)(vlc_object_t *, const char *, const luabatch_context_t *),
         void * user_data );
-int vlclua_dir_list( vlc_object_t *p_this, const char *luadirname, char ***pppsz_dir_list );
+int vlclua_dir_list( const char *luadirname, char ***pppsz_dir_list );
 void vlclua_dir_list_free( char **ppsz_dir_list );
-char *vlclua_find_file( vlc_object_t *p_this, const char *psz_luadirname, const char *psz_name );
+char *vlclua_find_file( const char *psz_luadirname, const char *psz_name );
 
 /*****************************************************************************
  * Replace Lua file reader by VLC input. Allows loadings scripts in Zip pkg.
@@ -146,8 +162,21 @@ int vlclua_playlist_add_internal( vlc_object_t *, lua_State *, playlist_t *,
                                   input_item_t *, bool );
 #define vlclua_playlist_add_internal( a, b, c, d, e ) vlclua_playlist_add_internal( VLC_OBJECT( a ), b, c, d, e )
 
-int vlclua_add_modules_path( vlc_object_t *, lua_State *, const char *psz_filename );
-#define vlclua_add_modules_path( a, b, c ) vlclua_add_modules_path( VLC_OBJECT( a ), b, c )
+int vlclua_add_modules_path( lua_State *, const char *psz_filename );
+
+/**
+ * File descriptors table
+ */
+typedef struct
+{
+    int *fdv;
+    unsigned fdc;
+    int fd[2];
+} vlclua_dtable_t;
+
+int vlclua_fd_init( lua_State *, vlclua_dtable_t * );
+void vlclua_fd_interrupt( vlclua_dtable_t * );
+void vlclua_fd_cleanup( vlclua_dtable_t * );
 
 /**
  * Per-interface private state
@@ -156,11 +185,8 @@ struct intf_sys_t
 {
     char *psz_filename;
     lua_State *L;
-
     vlc_thread_t thread;
-    vlc_mutex_t lock;
-    vlc_cond_t wait;
-    bool exiting;
+    vlclua_dtable_t dtable;
 };
 
 #endif /* VLC_LUA_H */

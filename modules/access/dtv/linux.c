@@ -12,7 +12,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -49,9 +49,6 @@
 #define DVBv5(minor) \
         (DVB_API_VERSION > 5 \
      || (DVB_API_VERSION == 5 && DVB_API_VERSION_MINOR >= (minor)))
-#if !DVBv5(0)
-# error Linux DVB kernel headers version 2.6.28 or later required.
-#endif
 
 typedef struct
 {
@@ -113,7 +110,7 @@ static int dvb_parse_modulation (const char *str, int def)
         { "32APSK", APSK_32   },
         { "32QAM",   QAM_32   },
         { "64QAM",   QAM_64   },
-        { "8PSK",    PSK_8    }, 
+        { "8PSK",    PSK_8    },
         { "8VSB",    VSB_8    },
         { "DQPSK", DQPSK      },
         { "QAM",     QAM_AUTO },
@@ -207,7 +204,8 @@ dvb_device_t *dvb_open (vlc_object_t *obj)
     d->dir = dvb_open_adapter (adapter);
     if (d->dir == -1)
     {
-        msg_Err (obj, "cannot access adapter %"PRIu8": %m", adapter);
+        msg_Err (obj, "cannot access adapter %"PRIu8": %s", adapter,
+                 vlc_strerror_c(errno));
         free (d);
         return NULL;
     }
@@ -224,14 +222,16 @@ dvb_device_t *dvb_open (vlc_object_t *obj)
        d->demux = dvb_open_node (d, "demux", O_RDONLY);
        if (d->demux == -1)
        {
-           msg_Err (obj, "cannot access demultiplexer: %m");
+           msg_Err (obj, "cannot access demultiplexer: %s",
+                    vlc_strerror_c(errno));
            close (d->dir);
            free (d);
            return NULL;
        }
 
        if (ioctl (d->demux, DMX_SET_BUFFER_SIZE, 1 << 20) < 0)
-           msg_Warn (obj, "cannot expand demultiplexing buffer: %m");
+           msg_Warn (obj, "cannot expand demultiplexing buffer: %s",
+                     vlc_strerror_c(errno));
 
        /* We need to filter at least one PID. The tap for TS demultiplexing
         * cannot be configured otherwise. So add the PAT. */
@@ -244,7 +244,8 @@ dvb_device_t *dvb_open (vlc_object_t *obj)
         param.flags = DMX_IMMEDIATE_START;
         if (ioctl (d->demux, DMX_SET_PES_FILTER, &param) < 0)
         {
-            msg_Err (obj, "cannot setup TS demultiplexer: %m");
+            msg_Err (obj, "cannot setup TS demultiplexer: %s",
+                     vlc_strerror_c(errno));
             goto error;
         }
 #ifndef USE_DMX
@@ -256,7 +257,7 @@ dvb_device_t *dvb_open (vlc_object_t *obj)
         d->demux = dvb_open_node (d, "dvr", O_RDONLY);
         if (d->demux == -1)
         {
-            msg_Err (obj, "cannot access DVR: %m");
+            msg_Err (obj, "cannot access DVR: %s", vlc_strerror_c(errno));
             close (d->dir);
             free (d);
             return NULL;
@@ -273,7 +274,8 @@ dvb_device_t *dvb_open (vlc_object_t *obj)
             close (ca);
     }
     else
-        msg_Dbg (obj, "conditional access module not available (%m)");
+        msg_Dbg (obj, "conditional access module not available: %s",
+                 vlc_strerror_c(errno));
 #endif
     return d;
 
@@ -342,7 +344,8 @@ ssize_t dvb_read (dvb_device_t *d, void *buf, size_t len)
                 msg_Err (d->obj, "cannot dequeue events fast enough!");
                 return -1;
             }
-            msg_Err (d->obj, "cannot dequeue frontend event: %m");
+            msg_Err (d->obj, "cannot dequeue frontend event: %s",
+                     vlc_strerror_c(errno));
             return 0;
         }
 
@@ -359,7 +362,7 @@ ssize_t dvb_read (dvb_device_t *d, void *buf, size_t len)
                 msg_Err (d->obj, "cannot demux data fast enough!");
                 return -1;
             }
-            msg_Err (d->obj, "cannot demux: %m");
+            msg_Err (d->obj, "cannot demux: %s", vlc_strerror_c(errno));
             return 0;
         }
         return val;
@@ -408,7 +411,8 @@ int dvb_add_pid (dvb_device_t *d, uint16_t pid)
     errno = EMFILE;
 error:
 #endif
-    msg_Err (d->obj, "cannot add PID 0x%04"PRIu16": %m", pid);
+    msg_Err (d->obj, "cannot add PID 0x%04"PRIu16": %s", pid,
+             vlc_strerror_c(errno));
     return -1;
 }
 
@@ -440,7 +444,7 @@ static int dvb_open_frontend (dvb_device_t *d)
     int fd = dvb_open_node (d, "frontend", O_RDWR);
     if (fd == -1)
     {
-        msg_Err (d->obj, "cannot access frontend: %m");
+        msg_Err (d->obj, "cannot access frontend: %s", vlc_strerror_c(errno));
         return -1;
     }
 
@@ -457,15 +461,103 @@ unsigned dvb_enum_systems (dvb_device_t *d)
 {
     if (dvb_open_frontend (d))
         return 0;
+#if DVBv5(5)
+    struct dtv_property prop[2] = {
+        { .cmd = DTV_API_VERSION },
+        { .cmd = DTV_ENUM_DELSYS },
+    };
+    struct dtv_properties props = {
+        .num = 2,
+        .props = prop
+    };
 
-    struct dvb_frontend_info info;
-    if (ioctl (d->frontend, FE_GET_INFO, &info) < 0)
+    if (ioctl (d->frontend, FE_GET_PROPERTY, &props) < 0)
     {
-        msg_Err (d->obj, "cannot get frontend info: %m");
+         msg_Err (d->obj, "cannot enumerate frontend systems: %s",
+                  vlc_strerror_c(errno));
+         goto legacy;
+    }
+
+    static const unsigned systab[] = {
+        [SYS_UNDEFINED]    = 0,
+        [SYS_DVBC_ANNEX_A] = DVB_C,
+        [SYS_DVBC_ANNEX_B] = CQAM,
+        [SYS_DVBT]         = DVB_T,
+        //[SYS_DSS]
+        [SYS_DVBS]         = DVB_S,
+        [SYS_DVBS2]        = DVB_S2,
+        //[SYS_DVBH]
+        [SYS_ISDBT]        = ISDB_T,
+        [SYS_ISDBS]        = ISDB_S,
+        [SYS_ISDBC]        = ISDB_C, // no drivers exist (as of 3.3-rc6)
+        [SYS_ATSC]         = ATSC,
+        //[SYS_ATSCMH]
+        //[SYS_DMBTH]
+        //[SYS_CMMB]
+        //[SYS_DAB]
+        [SYS_DVBT2]        = DVB_T2,
+        //[SYS_TURBO]
+        [SYS_DVBC_ANNEX_C] = ISDB_C, // another name for ISDB-C?
+    };
+    unsigned systems = 0;
+
+    msg_Dbg (d->obj, "probing frontend (kernel API v%u.%u, user API v%u.%u)",
+             prop[0].u.data >> 8, prop[0].u.data & 0xFF,
+             DVB_API_VERSION, DVB_API_VERSION_MINOR);
+
+    for (size_t i = 0; i < prop[1].u.buffer.len; i++)
+    {
+        unsigned sys = prop[1].u.buffer.data[i];
+
+        if (sys >= (sizeof (systab) / sizeof (systab[0])) || !systab[sys])
+        {
+            msg_Warn (d->obj, "unknown delivery system %u", sys);
+            continue;
+        }
+        msg_Dbg (d->obj, " system %u", sys);
+        systems |= systab[sys];
+    }
+
+    return systems;
+legacy:
+    props.num = 1;
+#else
+    struct dtv_property prop[1] = {
+        { .cmd = DTV_API_VERSION },
+    };
+    struct dtv_properties props = {
+        .num = 1,
+        .props = prop
+    };
+    unsigned systems = 0;
+#endif
+    if (ioctl (d->frontend, FE_GET_PROPERTY, &props) < 0)
+    {
+        msg_Err (d->obj, "unsupported kernel DVB version 3 or older (%s)",
+                 vlc_strerror_c(errno));
         return 0;
     }
 
-    msg_Dbg (d->obj, "probing frontend: %s", info.name);
+    msg_Dbg (d->obj, "probing frontend (kernel API v%u.%u, user API v%u.%u)",
+             prop[0].u.data >> 8, prop[0].u.data & 0xFF,
+             DVB_API_VERSION, DVB_API_VERSION_MINOR);
+#if !DVBv5(5)
+    /* Some delivery systems cannot be detected without the DVB API v5.5.
+     * To run correctly on recent kernels (Linux >= 3.3),
+     * VLC needs to be compiled with up-to-date kernel headers. */
+    if ((prop[0].u.data >> 8) > 5
+     || ((prop[0].u.data >> 8) == 5 && (prop[0].u.data & 0xFF) >= 5))
+        msg_Err (d->obj, "obsolete user API version running on a new kernel");
+        msg_Info (d->obj, "please recompile "PACKAGE_NAME" "PACKAGE_VERSION);
+#endif
+    struct dvb_frontend_info info;
+    if (ioctl (d->frontend, FE_GET_INFO, &info) < 0)
+    {
+        msg_Err (d->obj, "cannot get frontend info: %s",
+                 vlc_strerror_c(errno));
+        return 0;
+    }
+    msg_Dbg (d->obj, " name %s", info.name);
     msg_Dbg (d->obj, " type %u, capabilities 0x%08X", info.type, info.caps);
     msg_Dbg (d->obj, " frequencies %10"PRIu32" to %10"PRIu32,
              info.frequency_min, info.frequency_max);
@@ -475,17 +567,14 @@ unsigned dvb_enum_systems (dvb_device_t *d)
              info.symbol_rate_min, info.symbol_rate_max);
     msg_Dbg (d->obj, " (%"PRIu32" tolerance)", info.symbol_rate_tolerance);
 
-    unsigned systems;
-
     /* DVB first generation and ATSC */
     switch (info.type)
     {
         case FE_QPSK: systems = DVB_S; break;
         case FE_QAM:  systems = DVB_C; break;
         case FE_OFDM: systems = DVB_T; break;
-        case FE_ATSC: systems = ATSC;  break;
+        case FE_ATSC: systems = ATSC | CQAM; break;
         default:
-            systems = 0;
             msg_Err (d->obj, "unknown frontend type %u", info.type);
     }
 
@@ -537,6 +626,8 @@ void dvb_set_ca_pmt (dvb_device_t *d, struct dvbpsi_pmt_s *pmt)
 
 static int dvb_vset_props (dvb_device_t *d, size_t n, va_list ap)
 {
+    assert (n <= DTV_IOCTL_MAX_MSGS);
+
     struct dtv_property buf[n], *prop = buf;
     struct dtv_properties props = { .num = n, .props = buf };
 
@@ -554,7 +645,8 @@ static int dvb_vset_props (dvb_device_t *d, size_t n, va_list ap)
 
     if (ioctl (d->frontend, FE_SET_PROPERTY, &props) < 0)
     {
-        msg_Err (d->obj, "cannot set frontend tuning parameters: %m");
+        msg_Err (d->obj, "cannot set frontend tuning parameters: %s",
+                 vlc_strerror_c(errno));
         return -1;
     }
     return 0;
@@ -634,7 +726,8 @@ int dvb_set_sec (dvb_device_t *d, uint64_t freq_Hz, char pol,
     /* Always try to configure high voltage, but only warn on enable failure */
     int val = var_InheritBool (d->obj, "dvb-high-voltage");
     if (ioctl (d->frontend, FE_ENABLE_HIGH_LNB_VOLTAGE, &val) < 0 && val)
-        msg_Err (d->obj, "cannot enable high LNB voltage: %m");
+        msg_Err (d->obj, "cannot enable high LNB voltage: %s",
+                 vlc_strerror_c(errno));
 
     /* Windows BDA exposes a higher-level API covering LNB oscillators.
      * So lets pretend this is platform-specific stuff and do it here. */
@@ -691,24 +784,63 @@ known:
     unsigned satno = var_InheritInteger (d->obj, "dvb-satno");
     if (satno > 0)
     {
-        /* DiSEqC 1.0 */
 #undef msleep /* we know what we are doing! */
+
+        /* DiSEqC Bus Specification:
+ http://www.eutelsat.com/satellites/pdf/Diseqc/Reference%20docs/bus_spec.pdf */
+
+        /* DiSEqC 1.1 */
+        struct dvb_diseqc_master_cmd uncmd;
+
+        /* DiSEqC 1.0 */
         struct dvb_diseqc_master_cmd cmd;
 
         satno = (satno - 1) & 3;
         cmd.msg[0] = 0xE0; /* framing: master, no reply, 1st TX */
         cmd.msg[1] = 0x10; /* address: all LNB/switch */
-        cmd.msg[2] = 0x38; /* command: Write Port Group 0 */
+        cmd.msg[2] = 0x38; /* command: Write Port Group 0 (committed) */
         cmd.msg[3] = 0xF0  /* data[0]: clear all bits */
                    | (satno << 2) /* LNB (A, B, C or D) */
                    | ((voltage == SEC_VOLTAGE_18) << 1) /* polarization */
                    | (tone == SEC_TONE_ON); /* option */
         cmd.msg[4] = cmd.msg[5] = 0; /* unused */
-        cmd.msg_len = 4; /* length*/
+        cmd.msg_len = 4; /* length */
+
         msleep (15000); /* wait 15 ms before DiSEqC command */
+        unsigned uncommitted = var_InheritInteger (d->obj, "dvb-uncommitted");
+        if (uncommitted > 0)
+        {
+          uncommitted = (uncommitted - 1) & 3;
+          uncmd.msg[0] = 0xE0; /* framing: master, no reply, 1st TX */
+          uncmd.msg[1] = 0x10; /* address: all LNB/switch */
+          uncmd.msg[2] = 0x39; /* command: Write Port Group 1 (uncommitted) */
+          uncmd.msg[3] = 0xF0  /* data[0]: clear all bits */
+                       | (uncommitted << 2) /* LNB (A, B, C or D) */
+                       | ((voltage == SEC_VOLTAGE_18) << 1) /* polarization */
+                       | (tone == SEC_TONE_ON); /* option */
+          uncmd.msg[4] = uncmd.msg[5] = 0; /* unused */
+          uncmd.msg_len = 4; /* length */
+          if (ioctl (d->frontend, FE_DISEQC_SEND_MASTER_CMD, &uncmd) < 0)
+          {
+              msg_Err (d->obj, "cannot send uncommitted DiSEqC command: %s",
+                       vlc_strerror_c(errno));
+              return -1;
+          }
+          /* Repeat uncommitted command */
+          uncmd.msg[0] = 0xE1; /* framing: master, no reply, repeated TX */
+          if (ioctl (d->frontend, FE_DISEQC_SEND_MASTER_CMD, &uncmd) < 0)
+          {
+              msg_Err (d->obj,
+                       "cannot send repeated uncommitted DiSEqC command: %s",
+                       vlc_strerror_c(errno));
+              return -1;
+          }
+          msleep(125000); /* wait 125 ms before committed DiSEqC command */
+        }
         if (ioctl (d->frontend, FE_DISEQC_SEND_MASTER_CMD, &cmd) < 0)
         {
-            msg_Err (d->obj, "cannot send DiSEqC command: %m");
+            msg_Err (d->obj, "cannot send committed DiSEqC command: %s",
+                     vlc_strerror_c(errno));
             return -1;
         }
         msleep (54000 + 15000);
@@ -718,7 +850,8 @@ known:
         if (ioctl (d->frontend, FE_DISEQC_SEND_BURST,
                    satno ? SEC_MINI_B : SEC_MINI_A) < 0)
         {
-            msg_Err (d->obj, "cannot send Mini-DiSEqC tone burst: %m");
+            msg_Err (d->obj, "cannot send Mini-DiSEqC tone burst: %s",
+                     vlc_strerror_c(errno));
             return -1;
         }
         msleep (15000);
@@ -791,9 +924,7 @@ static int dvb_parse_transmit_mode (int i)
         {  1, TRANSMISSION_MODE_1K   },
 #endif
         {  2, TRANSMISSION_MODE_2K   },
-#if DVBv5(1)
         {  4, TRANSMISSION_MODE_4K   },
-#endif
         {  8, TRANSMISSION_MODE_8K   },
 #if DVBv5(3)
         { 16, TRANSMISSION_MODE_16K  },
@@ -860,7 +991,7 @@ int dvb_set_dvbt (dvb_device_t *d, uint32_t freq, const char *modstr,
 
 int dvb_set_dvbt2 (dvb_device_t *d, uint32_t freq, const char *modstr,
                    uint32_t fec, uint32_t bandwidth,
-                   int transmit_mode, uint32_t guard)
+                   int transmit_mode, uint32_t guard, uint32_t plp)
 {
 #if DVBv5(3)
     uint32_t mod = dvb_parse_modulation (modstr, QAM_AUTO);
@@ -871,11 +1002,17 @@ int dvb_set_dvbt2 (dvb_device_t *d, uint32_t freq, const char *modstr,
 
     if (dvb_find_frontend (d, DVB_T2))
         return -1;
-    return dvb_set_props (d, 8, DTV_CLEAR, 0, DTV_DELIVERY_SYSTEM, SYS_DVBT2,
+    return dvb_set_props (d, 9, DTV_CLEAR, 0, DTV_DELIVERY_SYSTEM, SYS_DVBT2,
                           DTV_FREQUENCY, freq, DTV_MODULATION, mod,
                           DTV_INNER_FEC, fec, DTV_BANDWIDTH_HZ, bandwidth,
                           DTV_TRANSMISSION_MODE, transmit_mode,
-                          DTV_GUARD_INTERVAL, guard);
+                          DTV_GUARD_INTERVAL, guard,
+# if DVBv5(8)
+                          DTV_STREAM_ID,
+# else
+                          DTV_DVBT2_PLP_ID,
+# endif
+                          plp);
 #else
 # warning DVB-T2 needs Linux DVB version 5.3 or later.
     msg_Err (d->obj, "DVB-T2 support not compiled-in");
@@ -910,12 +1047,11 @@ int dvb_set_isdbc (dvb_device_t *d, uint32_t freq, const char *modstr,
 /*** ISDB-S ***/
 int dvb_set_isdbs (dvb_device_t *d, uint64_t freq_Hz, uint16_t ts_id)
 {
-#if DVBv5(1)
     uint32_t freq = freq_Hz / 1000;
 
     if (dvb_find_frontend (d, ISDB_S))
         return -1;
-    return dvb_set_props (d, 5, DTV_CLEAR, 0, DTV_DELIVERY_SYSTEM, SYS_ISDBS,
+    return dvb_set_props (d, 4, DTV_CLEAR, 0, DTV_DELIVERY_SYSTEM, SYS_ISDBS,
                           DTV_FREQUENCY, freq,
 #if DVBv5(8)
                           DTV_STREAM_ID,
@@ -923,17 +1059,10 @@ int dvb_set_isdbs (dvb_device_t *d, uint64_t freq_Hz, uint16_t ts_id)
                           DTV_ISDBS_TS_ID,
 #endif
                           (uint32_t)ts_id);
-#else
-# warning ISDB-S needs Linux DVB version 5.1 or later.
-    msg_Err (d->obj, "ISDB-S support not compiled-in");
-    (void) freq_Hz; (void) ts_id;
-    return -1;
-#endif
 }
 
 
 /*** ISDB-T ***/
-#if DVBv5(1)
 static int dvb_set_isdbt_layer (dvb_device_t *d, unsigned num,
                                 const isdbt_layer_t *l)
 {
@@ -950,13 +1079,11 @@ static int dvb_set_isdbt_layer (dvb_device_t *d, unsigned num,
                           DTV_ISDBT_LAYERA_SEGMENT_COUNT + num, count,
                           DTV_ISDBT_LAYERA_TIME_INTERLEAVING + num, ti);
 }
-#endif
 
 int dvb_set_isdbt (dvb_device_t *d, uint32_t freq, uint32_t bandwidth,
                    int transmit_mode, uint32_t guard,
                    const isdbt_layer_t layers[3])
 {
-#if DVBv5(1)
     bandwidth = dvb_parse_bandwidth (bandwidth);
     transmit_mode = dvb_parse_transmit_mode (transmit_mode);
     guard = dvb_parse_guard (guard);
@@ -971,13 +1098,6 @@ int dvb_set_isdbt (dvb_device_t *d, uint32_t freq, uint32_t bandwidth,
         if (dvb_set_isdbt_layer (d, i, layers + i))
             return -1;
     return 0;
-#else
-# warning ISDB-T needs Linux DVB version 5.1 or later.
-    msg_Err (d->obj, "ISDB-T support not compiled-in");
-    (void) freq; (void) bandwidth; (void) transmit_mode; (void) guard;
-    (void) layers;
-    return -1;
-#endif
 }
 
 
@@ -996,7 +1116,7 @@ int dvb_set_cqam (dvb_device_t *d, uint32_t freq, const char *modstr)
 {
     unsigned mod = dvb_parse_modulation (modstr, QAM_AUTO);
 
-    if (dvb_find_frontend (d, ATSC))
+    if (dvb_find_frontend (d, CQAM))
         return -1;
     return dvb_set_props (d, 4, DTV_CLEAR, 0,
                           DTV_DELIVERY_SYSTEM, SYS_DVBC_ANNEX_B,

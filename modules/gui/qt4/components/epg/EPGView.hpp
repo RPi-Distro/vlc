@@ -1,8 +1,8 @@
 /*****************************************************************************
- * EPGView.h : EPGView
+ * EPGView.hpp : EPGView
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: 738857d9916166b94059b52790ff2201bc8d1355 $
+ * $Id: 222deb6e6a26e66c7de8cacfcee548fca782dc1f $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -53,13 +53,13 @@ Q_OBJECT
 
 public:
     explicit EPGView( QWidget *parent = 0 );
-    ~EPGView();
+    virtual ~EPGView();
 
     void            setScale( double scaleFactor );
 
     void            updateStartTime();
-    const QDateTime& startTime();
-    const QDateTime& baseTime();
+    const QDateTime& startTime() const;
+    const QDateTime& baseTime() const;
 
     bool            addEPGEvent( vlc_epg_event_t*, QString, bool );
     void            removeEPGEvent( vlc_epg_event_t*, QString );

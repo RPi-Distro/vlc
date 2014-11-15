@@ -12,7 +12,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -28,6 +28,7 @@ extern "C" {
 
 enum {
     ATSC   = 0x00000001,
+    CQAM   = 0x00000002,
 
     DVB_C  = 0x00000010,
     DVB_C2 = 0x00000020,
@@ -84,7 +85,7 @@ int dvb_set_dvbt (dvb_device_t *, uint32_t freq, const char *mod,
                   int transmission, uint32_t guard, int hierarchy);
 int dvb_set_dvbt2 (dvb_device_t *, uint32_t freq, const char *mod,
                    uint32_t fec, uint32_t bandwidth,
-                   int transmission, uint32_t guard);
+                   int transmission, uint32_t guard, uint32_t plp);
 
 /* ATSC */
 int dvb_set_atsc (dvb_device_t *, uint32_t freq, const char *mod);

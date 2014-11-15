@@ -1,10 +1,10 @@
 /*
- * AtmoSerialConnection.cpp: Class for communication with the serial hardware of
+ * MoMoConnection.cpp: Class for communication with the serial hardware of
  * Atmo Light, opens and configures the serial port
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 5c07741e3aa38b8b61e5e1525c426f8758074d1b $
+ * $Id: c2a0a7af50f5335963a5ec576eada99213a9a742 $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 
-#if !defined(WIN32)
+#if !defined(_WIN32)
 #include <termios.h>
 #include <unistd.h>
 #endif
@@ -52,9 +52,9 @@ ATMO_BOOL CMoMoConnection::OpenConnection() {
      sprintf(serdevice,"com%d",portNummer);
 #endif
 
-#if defined(WIN32)
+#if defined(_WIN32)
 
-     m_hComport = CreateFile(serdevice, GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
+     m_hComport = CreateFileA(serdevice, GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
      if(m_hComport == INVALID_HANDLE_VALUE) {
 //      we have a problem here can't open com port... somebody else may use it?
 //	    m_dwLastWin32Error = GetLastError();
@@ -100,7 +100,7 @@ ATMO_BOOL CMoMoConnection::OpenConnection() {
 
 void CMoMoConnection::CloseConnection() {
   if(m_hComport!=INVALID_HANDLE_VALUE) {
-#if defined(WIN32)
+#if defined(_WIN32)
      CloseHandle(m_hComport);
 #else
      close(m_hComport);
@@ -150,7 +150,7 @@ ATMO_BOOL CMoMoConnection::SendData(pColorPacket data) {
        }
    }
 
-#if defined(WIN32)
+#if defined(_WIN32)
    WriteFile(m_hComport, buffer, bufSize, &iBytesWritten, NULL); // send to COM-Port
 #else
    iBytesWritten = write(m_hComport, buffer, bufSize);
