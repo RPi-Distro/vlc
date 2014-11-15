@@ -269,6 +269,8 @@ endif
 endif
 
 override_dh_install:
+	# Remove plugin cache
+	rm debian/tmp/usr/lib/vlc/plugins/plugins.dat
 	# Remove disabled plugins
 	sed "/\($(shell echo $(removeplugins) | sed 's/ /\\|/g')\)_/d" debian/vlc.install.in > debian/vlc.install
 	sed "/\($(shell echo $(removeplugins) | sed 's/ /\\|/g')\)_/d" debian/vlc-nox.install.in > debian/vlc-nox.install
