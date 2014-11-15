@@ -1,7 +1,0 @@
-#! /bin/sh
-set -e
-
-rm -f /usr/lib/vlc/plugins/plugins-*
-rm -f /usr/lib/vlc/plugins/plugins.dat
-
-#DEBHELPER#
