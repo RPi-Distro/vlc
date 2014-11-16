@@ -1,3 +1,14 @@
+vlc (2.2.0~rc1-1+exp1) unstable; urgency=medium
+
+  * Regenerate plugin cache using triggers. (Closes: #755154) (LP: #1328466)
+    - debian/vlc-nox.postinst: Run vlc-cache-gen.
+    - debian/vlc-nox.postrm: Remove generated cache.
+    - debian/rules: remove plugins.dat generated during the build.
+    - debian/vlc-nox.install.in: Do not install pre-generated plugins.dat.
+  * debian/rules: Build with -Wl,--as-needed.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 16 Nov 2014 02:52:58 +0100
+
 vlc (2.2.0~rc1-1) unstable; urgency=low
 
   * New upstream release.
