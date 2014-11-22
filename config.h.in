@@ -1,5 +1,11 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+
+#ifndef _REENTRANT
+# define _REENTRANT
+#endif
+
+
 #if defined(_WIN32) && !defined(_WIN32_WINNT)
 
 # define _WIN32_WINNT 0x0502 /* Windows XP SP2 */
@@ -387,6 +393,9 @@
 /* Define to 1 if you have the `openat' function. */
 #undef HAVE_OPENAT
 
+/* Define to 1 if you have the `open_memstream' function. */
+#undef HAVE_OPEN_MEMSTREAM
+
 /* Define to 1 if you have the `pipe2' function. */
 #undef HAVE_PIPE2
 
@@ -730,9 +739,6 @@
 
 /* Define to 1 if you need to in order for `stat' and other things to work. */
 #undef _POSIX_SOURCE
-
-/* Define to expose reentrant functions. */
-#undef _REENTRANT
 
 /* Same as _REENTANT for some other OSes. */
 #undef _THREAD_SAFE

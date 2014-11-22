@@ -2,7 +2,7 @@
  * psychedelic.c : Psychedelic video effect plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2006 VLC authors and VideoLAN
- * $Id: fa7cce4bfbd815f6aaed38860c7f10b30d3f4fe9 $
+ * $Id: cbca3785834c12bd9a08f641848763d7f81d20c3 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>
@@ -187,6 +187,8 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     fmt_out = p_filter->fmt_out.video;
     fmt_out.i_width = p_filter->fmt_out.video.i_width*p_filter->p_sys->scale/150;
     fmt_out.i_height = p_filter->fmt_out.video.i_height*p_filter->p_sys->scale/150;
+    fmt_out.i_visible_width = fmt_out.i_width;
+    fmt_out.i_visible_height = fmt_out.i_height;
     p_converted = image_Convert( p_filter->p_sys->p_image, p_pic,
                                  &(p_pic->format), &fmt_out );
 

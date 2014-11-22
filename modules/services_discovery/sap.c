@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 430d234494fc9d91b3325e15dfdc02da7e3bb5fe $
+ * $Id: a044d4e6905c4ba56d77392c655c388ab68950e7 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rémi Denis-Courmont
@@ -582,9 +582,9 @@ static void *Run( void *data )
             mtime_t i_last_period = now - p_announce->i_last;
 
             /* Remove the announcement, if the last announcement was 1 hour ago
-             * or if the last packet emitted was 3 times the average time
+             * or if the last packet emitted was 10 times the average time
              * between two packets */
-            if( ( p_announce->i_period_trust > 5 && i_last_period > 3 * p_announce->i_period ) ||
+            if( ( p_announce->i_period_trust > 5 && i_last_period > 10 * p_announce->i_period ) ||
                 i_last_period > i_timeout )
             {
                 RemoveAnnounce( p_sd, p_announce );
@@ -593,7 +593,7 @@ static void *Run( void *data )
             {
                 /* Compute next timeout */
                 if( p_announce->i_period_trust > 5 )
-                    timeout = min_int((3 * p_announce->i_period - i_last_period) / 1000, timeout);
+                    timeout = min_int((10 * p_announce->i_period - i_last_period) / 1000, timeout);
                 timeout = min_int((i_timeout - i_last_period)/1000, timeout);
             }
         }

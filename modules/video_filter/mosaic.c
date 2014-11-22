@@ -2,7 +2,7 @@
  * mosaic.c : Mosaic video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2004-2008 VLC authors and VideoLAN
- * $Id: a9aef4416b923b94e1b28e78dd2bd57fa41d290e $
+ * $Id: 14703a6148c0ef62a4da261153f037cf3a4101e8 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -651,7 +651,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
             p_filter->pf_sub_buffer_del( p_filter, p_spu );
             vlc_global_unlock( VLC_MOSAIC_MUTEX );
             vlc_mutex_unlock( &p_sys->lock );
-            return p_spu;
+            return NULL;
         }
 
         if( p_es->i_x >= 0 && p_es->i_y >= 0 )

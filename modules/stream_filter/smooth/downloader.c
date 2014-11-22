@@ -2,7 +2,7 @@
  * downloader.c: download thread
  *****************************************************************************
  * Copyright (C) 1996-2012 VLC authors and VideoLAN
- * $Id: 4e43b5b802802a53648610765d8157fd3cb28449 $
+ * $Id: 0c1ae0832b7426d589c9b4c5aa2c2eb3ec971107 $
  *
  * Author: Frédéric Yhuel <fyhuel _AT_ viotech _DOT_ net>
  *
@@ -344,8 +344,9 @@ static int build_smoo_box( stream_t *s, uint8_t *smoo_box )
             if( !qlvl->CodecPrivateData )
                 continue;
             stra_box[98] = stra_box[99] = stra_box[100] = 0; /* reserved */
-            assert( strlen( qlvl->CodecPrivateData ) < 512 );
             stra_box[101] = strlen( qlvl->CodecPrivateData ) / 2;
+            if ( stra_box[101] > STRA_SIZE - 102 )
+                stra_box[101] = STRA_SIZE - 102;
             uint8_t *binary_cpd = decode_string_hex_to_binary( qlvl->CodecPrivateData );
             memcpy( stra_box + 102, binary_cpd, stra_box[101] );
             free( binary_cpd );

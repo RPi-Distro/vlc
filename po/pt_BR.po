@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-11-03 14:06+0100\n"
-"PO-Revision-Date: 2014-07-16 02:37+0000\n"
+"POT-Creation-Date: 2014-11-21 16:54+0100\n"
+"PO-Revision-Date: 2014-08-31 04:32+0000\n"
 "Last-Translator: ssdoria <ssdoria@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/vlc-"
 "trans/language/pt_BR/)\n"
@@ -490,11 +490,11 @@ msgstr "Criar Pasta..."
 
 #: include/vlc_intf_strings.h:70
 msgid "Rename Directory..."
-msgstr ""
+msgstr "Renomear Diretório..."
 
 #: include/vlc_intf_strings.h:71
 msgid "Rename Folder..."
-msgstr ""
+msgstr "Renomear Pasta..."
 
 #: include/vlc_intf_strings.h:72
 msgid "Show Containing Directory..."
@@ -630,7 +630,7 @@ msgstr "O número máximo de filtros (%u) foi atingido."
 
 #: src/audio_output/output.c:229 src/config/core.c:407 src/input/es_out.c:904
 #: src/libvlc-module.c:538 modules/gui/macosx/MainMenu.m:277
-#: modules/gui/macosx/MainWindow.m:1083 modules/video_filter/postproc.c:234
+#: modules/gui/macosx/MainWindow.m:1082 modules/video_filter/postproc.c:234
 msgid "Disable"
 msgstr "Desabilitar"
 
@@ -1100,7 +1100,7 @@ msgstr "Pausar"
 
 #: src/config/keys.c:112
 msgid "Print"
-msgstr ""
+msgstr "Imprimir"
 
 #: src/config/keys.c:114 modules/demux/mp4/id3genres.h:76
 msgid "Space"
@@ -1162,7 +1162,7 @@ msgstr "Command+"
 
 #: src/darwin/error.c:37
 msgid "Unknown error"
-msgstr ""
+msgstr "Erro desconhecido"
 
 #: src/input/control.c:226
 #, c-format
@@ -1195,11 +1195,11 @@ msgstr "O VLC não pode abrir o módulo decodificador."
 
 #: src/input/decoder.c:691
 msgid "No description for this codec"
-msgstr ""
+msgstr "Não há descrição para este codec"
 
 #: src/input/decoder.c:693
 msgid "Codec not supported"
-msgstr ""
+msgstr "Não há suporte a este Codec"
 
 #: src/input/decoder.c:694
 #, c-format
@@ -1208,11 +1208,11 @@ msgstr ""
 
 #: src/input/decoder.c:698
 msgid "Unidentified codec"
-msgstr ""
+msgstr "Codec não identificado"
 
 #: src/input/decoder.c:699
 msgid "VLC could not identify the audio or video codec"
-msgstr ""
+msgstr "O VLC não pôde identificar o codec de áudio ou vídeo"
 
 #: src/input/es_out.c:924 src/input/es_out.c:929 src/libvlc-module.c:228
 #: modules/access/vcdx/access.c:455 modules/access/vcdx/info.c:226
@@ -1384,7 +1384,7 @@ msgstr ""
 msgid "Title"
 msgstr "Título"
 
-#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1202
+#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1205
 #: modules/gui/macosx/playlistinfo.m:74 modules/mux/avi.c:48
 msgid "Artist"
 msgstr "Artista"
@@ -1447,7 +1447,7 @@ msgstr "Identificador da Trilha"
 
 #: src/input/meta.c:72
 msgid "Number of Tracks"
-msgstr ""
+msgstr "Número de Trilhas"
 
 #: src/input/meta.c:73
 msgid "Director"
@@ -1455,19 +1455,19 @@ msgstr "Direção"
 
 #: src/input/meta.c:74
 msgid "Season"
-msgstr ""
+msgstr "Temporada"
 
 #: src/input/meta.c:75
 msgid "Episode"
-msgstr ""
+msgstr "Episódio"
 
 #: src/input/meta.c:76
 msgid "Show Name"
-msgstr ""
+msgstr "Nome do Programa"
 
 #: src/input/meta.c:77
 msgid "Actors"
-msgstr ""
+msgstr "Atores"
 
 #: src/input/var.c:158
 msgid "Bookmark"
@@ -2626,7 +2626,7 @@ msgstr ""
 #: src/libvlc-module.c:538 src/video_output/vout_intf.c:98
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
-#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1006
+#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1016
 #: modules/gui/macosx/AudioEffects.m:86 modules/gui/macosx/MainMenu.m:641
 #: modules/gui/macosx/prefs_widgets.m:1221
 #: modules/gui/macosx/prefs_widgets.m:1284
@@ -2638,7 +2638,7 @@ msgid "Default"
 msgstr "Padrão"
 
 #: src/libvlc-module.c:538 modules/gui/macosx/AudioEffects.m:112
-#: modules/gui/macosx/MainWindow.m:1081 modules/gui/macosx/wizard.m:351
+#: modules/gui/macosx/MainWindow.m:1080 modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/extended_panels.cpp:1053
 #: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:289
 msgid "Enable"
@@ -2755,7 +2755,7 @@ msgstr ""
 
 #: src/libvlc-module.c:596
 msgid "Menu language"
-msgstr ""
+msgstr "Idioma do menu"
 
 #: src/libvlc-module.c:598
 msgid ""
@@ -4921,7 +4921,7 @@ msgstr ""
 msgid "Downloading ..."
 msgstr "Baixando..."
 
-#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2562
+#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2567
 #: modules/gui/macosx/AudioEffects.m:372 modules/gui/macosx/AudioEffects.m:387
 #: modules/gui/macosx/AudioEffects.m:613 modules/gui/macosx/AudioEffects.m:712
 #: modules/gui/macosx/bookmarks.m:111 modules/gui/macosx/BWQuincyUI.m:80
@@ -5784,7 +5784,7 @@ msgstr "Entrada de anexo"
 
 #: modules/access/avio.h:33
 msgid "AVIO"
-msgstr ""
+msgstr "AVIO"
 
 #: modules/access/avio.h:34
 msgid "libavformat AVIO access"
@@ -5939,7 +5939,7 @@ msgstr ""
 
 #: modules/access/dcp/dcp.cpp:75
 msgid "DCP"
-msgstr ""
+msgstr "DCP"
 
 #: modules/access/dcp/dcp.cpp:78
 msgid "Digital Cinema Package module"
@@ -6822,19 +6822,19 @@ msgstr ""
 msgid "DV"
 msgstr "VD"
 
-#: modules/access/dvdnav.c:70 modules/access/dvdread.c:67
+#: modules/access/dvdnav.c:71 modules/access/dvdread.c:67
 msgid "DVD angle"
 msgstr "Ângulo do DVD"
 
-#: modules/access/dvdnav.c:72 modules/access/dvdread.c:69
+#: modules/access/dvdnav.c:73 modules/access/dvdread.c:69
 msgid "Default DVD angle."
 msgstr "Ângulo padrão do DVD."
 
-#: modules/access/dvdnav.c:74
+#: modules/access/dvdnav.c:75
 msgid "Start directly in menu"
 msgstr "Iniciar no menu"
 
-#: modules/access/dvdnav.c:76
+#: modules/access/dvdnav.c:77
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
@@ -6842,20 +6842,20 @@ msgstr ""
 "Inicia o DVD direto no menu principal. O VLC tentará evitar todas as "
 "mensagens informativas."
 
-#: modules/access/dvdnav.c:85
+#: modules/access/dvdnav.c:86
 msgid "DVD with menus"
 msgstr "DVD com menus"
 
-#: modules/access/dvdnav.c:86
+#: modules/access/dvdnav.c:87
 msgid "DVDnav Input"
 msgstr "Entrada DVDnav"
 
-#: modules/access/dvdnav.c:331 modules/access/dvdread.c:200
+#: modules/access/dvdnav.c:332 modules/access/dvdread.c:200
 #: modules/access/dvdread.c:462 modules/access/dvdread.c:530
 msgid "Playback failure"
 msgstr "Falha na reprodução"
 
-#: modules/access/dvdnav.c:332
+#: modules/access/dvdnav.c:333
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
@@ -6902,17 +6902,17 @@ msgid "EyeTV input"
 msgstr "Entrada EyeTV"
 
 #: modules/access/file.c:177 modules/access/file.c:304
-#: modules/access/mtp.c:195 modules/access/mtp.c:286 modules/access/vdr.c:368
-#: modules/access/vdr.c:535
+#: modules/access/mtp.c:195 modules/access/mtp.c:286 modules/access/vdr.c:372
+#: modules/access/vdr.c:539
 msgid "File reading failed"
 msgstr "Erro de leitura do arquivo"
 
-#: modules/access/file.c:178 modules/access/vdr.c:535
+#: modules/access/file.c:178 modules/access/vdr.c:539
 #, c-format
 msgid "VLC could not open the file \"%s\" (%s)."
 msgstr ""
 
-#: modules/access/file.c:305 modules/access/vdr.c:369
+#: modules/access/file.c:305 modules/access/vdr.c:373
 #, c-format
 msgid "VLC could not read the file (%s)."
 msgstr ""
@@ -6936,11 +6936,11 @@ msgstr ""
 
 #: modules/access/fs.c:42
 msgid "Collapse"
-msgstr ""
+msgstr "Recolher"
 
 #: modules/access/fs.c:42
 msgid "Expand"
-msgstr ""
+msgstr "Expandir"
 
 #: modules/access/fs.c:44
 msgid "Ignored extensions"
@@ -7033,28 +7033,28 @@ msgstr "Entrada de FTP"
 msgid "FTP upload output"
 msgstr "Saída de envio do FTP"
 
-#: modules/access/ftp.c:320 modules/access/ftp.c:336 modules/access/ftp.c:460
-#: modules/access/ftp.c:469 modules/access/ftp.c:476
+#: modules/access/ftp.c:319 modules/access/ftp.c:335 modules/access/ftp.c:459
+#: modules/access/ftp.c:468 modules/access/ftp.c:475
 msgid "Network interaction failed"
 msgstr "Falha na interação de rede"
 
-#: modules/access/ftp.c:321
+#: modules/access/ftp.c:320
 msgid "VLC could not connect with the given server."
 msgstr "O VLC não pode se conectar ao servidor fornecido."
 
-#: modules/access/ftp.c:337
+#: modules/access/ftp.c:336
 msgid "VLC's connection to the given server was rejected."
 msgstr "A conexão do VLC ao servidor foi rejeitada."
 
-#: modules/access/ftp.c:461
+#: modules/access/ftp.c:460
 msgid "Your account was rejected."
 msgstr "Sua conta foi rejeitada."
 
-#: modules/access/ftp.c:470
+#: modules/access/ftp.c:469
 msgid "Your password was rejected."
 msgstr "Sua senha foi rejeitada."
 
-#: modules/access/ftp.c:477
+#: modules/access/ftp.c:476
 msgid "Your connection attempt to the server was rejected."
 msgstr "Sua tentativa de conexão ao servidor foi rejeitada."
 
@@ -7688,7 +7688,7 @@ msgstr ""
 
 #: modules/access_output/http.c:61
 msgid "Metacube"
-msgstr ""
+msgstr "Meta cubo"
 
 #: modules/access_output/http.c:62
 msgid ""
@@ -8424,7 +8424,7 @@ msgstr ""
 
 #: modules/access/udp.c:54
 msgid "Receive buffer"
-msgstr ""
+msgstr "Memória de recepção"
 
 #: modules/access/udp.c:55
 msgid "UDP receive buffer size (bytes)"
@@ -9139,11 +9139,11 @@ msgstr "VDR"
 msgid "VDR recordings"
 msgstr "Gravação de VDR"
 
-#: modules/access/vdr.c:809
+#: modules/access/vdr.c:813
 msgid "VDR Cut Marks"
 msgstr "Marcas de edição em VDR"
 
-#: modules/access/vdr.c:872
+#: modules/access/vdr.c:876
 msgid "Start"
 msgstr "Iniciar"
 
@@ -9443,7 +9443,7 @@ msgstr ""
 msgid "Audio filter for simple channel mixing"
 msgstr "Filtro de áudio para mistura simples de canais"
 
-#: modules/audio_filter/channel_mixer/trivial.c:48
+#: modules/audio_filter/channel_mixer/trivial.c:41
 msgid "Audio filter for trivial channel mixing"
 msgstr "Filtro de áudio para mistura trivial de canais"
 
@@ -10346,7 +10346,7 @@ msgstr "Ganho do Programa"
 msgid "This linear gain will be applied in software."
 msgstr "Este ganho linear será aplicado pelo programa."
 
-#: modules/audio_output/wasapi.c:457
+#: modules/audio_output/wasapi.c:459
 msgid "Windows Audio Session API output"
 msgstr ""
 
@@ -10449,7 +10449,7 @@ msgid "FFmpeg audio/video decoder"
 msgstr "Decodificador de áudio/vídeo FFmpeg"
 
 #: modules/codec/avcodec/avcodec.c:97 modules/codec/gstdecode.c:89
-#: modules/codec/omxil/android_mediacodec.c:273 modules/codec/omxil/omxil.c:84
+#: modules/codec/omxil/android_mediacodec.c:276 modules/codec/omxil/omxil.c:84
 msgid "Decoding"
 msgstr "Decidificando"
 
@@ -11605,15 +11605,15 @@ msgstr "Descombinador MPEG de camada de áudio I/II/III"
 msgid "MPEG audio layer I/II/III packetizer"
 msgstr "Empacotador de áudio MPEG camadas I/II/III"
 
-#: modules/codec/omxil/android_mediacodec.c:263
+#: modules/codec/omxil/android_mediacodec.c:266
 msgid "Android direct rendering"
 msgstr ""
 
-#: modules/codec/omxil/android_mediacodec.c:265
+#: modules/codec/omxil/android_mediacodec.c:268
 msgid "Enable Android direct rendering using opaque buffers."
 msgstr ""
 
-#: modules/codec/omxil/android_mediacodec.c:270
+#: modules/codec/omxil/android_mediacodec.c:273
 msgid "Video decoder using Android MediaCodec"
 msgstr ""
 
@@ -13801,7 +13801,7 @@ msgstr "Interface de controle D-Bus"
 
 #: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/MainWindow.m:209
 #: modules/gui/macosx/MainWindow.m:740 modules/gui/macosx/MainWindow.m:746
-#: modules/gui/macosx/MainWindow.m:1366 modules/gui/ncurses.c:1041
+#: modules/gui/macosx/MainWindow.m:1370 modules/gui/ncurses.c:1041
 #: modules/gui/qt4/dialogs/help.cpp:91 modules/gui/qt4/main_interface.cpp:1078
 #: modules/gui/qt4/main_interface.cpp:1082
 #: modules/gui/qt4/main_interface.cpp:1121
@@ -14654,11 +14654,11 @@ msgstr "Corrigir quando necessário"
 msgid "AVI demuxer"
 msgstr "Descombinador AVI"
 
-#: modules/demux/avi/avi.c:728
+#: modules/demux/avi/avi.c:733
 msgid "Broken or missing AVI Index"
 msgstr "Índice AVI danificado ou ausente"
 
-#: modules/demux/avi/avi.c:729
+#: modules/demux/avi/avi.c:734
 msgid ""
 "Because this AVI file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14668,19 +14668,19 @@ msgid ""
 "What do you want to do?"
 msgstr ""
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Build index then play"
 msgstr "Construir índice e reproduzir"
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Play as is"
 msgstr "Reproduzir como está"
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Do not play"
 msgstr "Nao reproduzir"
 
-#: modules/demux/avi/avi.c:2561
+#: modules/demux/avi/avi.c:2566
 msgid "Fixing AVI Index..."
 msgstr "Reparando Índice AVI..."
 
@@ -18068,28 +18068,28 @@ msgstr "Lista de reprodução HTML"
 msgid "Save Playlist"
 msgstr "Salvar Lista de Reprodução"
 
-#: modules/gui/macosx/playlist.m:1202
+#: modules/gui/macosx/playlist.m:1205
 msgid "Meta-information"
 msgstr "Meta-informação"
 
-#: modules/gui/macosx/playlist.m:1535 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/macosx/playlist.m:1541 modules/gui/qt4/qt4.cpp:188
 msgid "Continue playback?"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1535 modules/gui/macosx/simple_prefs.m:837
+#: modules/gui/macosx/playlist.m:1541 modules/gui/macosx/simple_prefs.m:837
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr "Continuar"
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Restart playback"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Always continue"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Playback of \"%@\" will continue at %@"
 msgstr ""
 
@@ -18518,16 +18518,16 @@ msgstr ""
 "Digite novas teclas para\n"
 "\"%@\""
 
-#: modules/gui/macosx/simple_prefs.m:1490
+#: modules/gui/macosx/simple_prefs.m:1486
 msgid "Invalid combination"
 msgstr "Combinação inválida"
 
-#: modules/gui/macosx/simple_prefs.m:1491
+#: modules/gui/macosx/simple_prefs.m:1487
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr "Lamentavelmente, estas teclas não podem ser associadas a atalhos."
 
+#: modules/gui/macosx/simple_prefs.m:1497
 #: modules/gui/macosx/simple_prefs.m:1501
-#: modules/gui/macosx/simple_prefs.m:1505
 msgid "This combination is already taken by \"%@\"."
 msgstr "Esta combinação já é usada por \"%@\"."
 
@@ -20902,7 +20902,7 @@ msgstr "&Metadados"
 
 #: modules/gui/qt4/dialogs/mediainfo.cpp:67
 msgid "Co&dec"
-msgstr ""
+msgstr "Co&dec"
 
 #: modules/gui/qt4/dialogs/mediainfo.cpp:71
 msgid "S&tatistics"
@@ -20990,11 +20990,11 @@ msgstr "Flu&xo"
 
 #: modules/gui/qt4/dialogs/open.cpp:121
 msgid "C&onvert"
-msgstr ""
+msgstr "C&onverter"
 
 #: modules/gui/qt4/dialogs/open.cpp:205
 msgid "C&onvert / Save"
-msgstr ""
+msgstr "C&onverter / Salvar"
 
 #: modules/gui/qt4/dialogs/openurl.cpp:48
 msgid "Open URL"
@@ -21089,7 +21089,7 @@ msgstr ""
 
 #: modules/gui/qt4/dialogs/plugins.cpp:1168
 msgid "Version %1"
-msgstr ""
+msgstr "Versão %1"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:1194
 msgid "%1 downloads"
@@ -21101,7 +21101,7 @@ msgstr ""
 
 #: modules/gui/qt4/dialogs/plugins.cpp:1266
 msgid "&Install"
-msgstr ""
+msgstr "&Instalar"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:1361
 #: modules/gui/qt4/dialogs/plugins.cpp:1464
@@ -22116,7 +22116,7 @@ msgstr ""
 
 #: modules/hw/vdpau/avcodec.c:46
 msgid "VDPAU video decoder"
-msgstr ""
+msgstr "Decodificador de vídeo VDPAU"
 
 #: modules/hw/vdpau/chroma.c:840
 msgid "Temporal-spatial"
@@ -22124,7 +22124,7 @@ msgstr ""
 
 #: modules/hw/vdpau/chroma.c:844 modules/hw/vdpau/display.c:45
 msgid "VDPAU"
-msgstr ""
+msgstr "VDPAU"
 
 #: modules/hw/vdpau/chroma.c:845
 msgid "VDPAU surface conversions"
@@ -22132,7 +22132,7 @@ msgstr ""
 
 #: modules/hw/vdpau/chroma.c:853
 msgid "Deinterlacing algorithm"
-msgstr ""
+msgstr "Algoritmo de desentrelaçamento"
 
 #: modules/hw/vdpau/chroma.c:856
 msgid "Inverse telecine"
@@ -22160,7 +22160,7 @@ msgstr ""
 
 #: modules/hw/vdpau/deinterlace.c:132
 msgid "VDPAU deinterlacing filter"
-msgstr ""
+msgstr "Filtro de desentrelaçamento VDPAU"
 
 #: modules/hw/vdpau/display.c:46
 msgid "VDPAU output"
@@ -22456,11 +22456,11 @@ msgstr ""
 
 #: modules/misc/gnutls.c:326
 msgid "Accept 24 hours"
-msgstr ""
+msgstr "Aceitar por 24 horas"
 
 #: modules/misc/gnutls.c:327
 msgid "Accept permanently"
-msgstr ""
+msgstr "Aceitar permanentemente"
 
 #: modules/misc/inhibit/dbus.c:129
 msgid "Playing some media."
@@ -22686,11 +22686,11 @@ msgstr "Vídeo Desconhecido"
 
 #: modules/mux/avi.c:54
 msgid "Subject"
-msgstr ""
+msgstr "Assunto"
 
 #: modules/mux/avi.c:55
 msgid "Encoder"
-msgstr ""
+msgstr "Codificador"
 
 #: modules/mux/avi.c:56
 msgid "Keywords"
@@ -24267,7 +24267,7 @@ msgstr ""
 
 #: modules/stream_out/transcode/transcode.c:108
 msgid "Subtitle encoder"
-msgstr ""
+msgstr "Codificador de legendas"
 
 #: modules/stream_out/transcode/transcode.c:110
 msgid ""
@@ -26475,7 +26475,7 @@ msgstr "Filtro de vídeo de detecção de movimento"
 
 #: modules/video_filter/oldmovie.c:185
 msgid "Old movie effect video filter"
-msgstr ""
+msgstr "Filtro de efeito de vídeo filme antigo"
 
 #: modules/video_filter/oldmovie.c:186
 msgid "Old movie"
@@ -27234,11 +27234,11 @@ msgstr "Arte ASCII"
 msgid "ASCII-art video output"
 msgstr "Saída de vídeo do ASCII-art"
 
-#: modules/video_output/android/nativewindow.c:53
+#: modules/video_output/android/nativewindow.c:55
 msgid "ANativeWindow"
 msgstr ""
 
-#: modules/video_output/android/nativewindow.c:54
+#: modules/video_output/android/nativewindow.c:56
 msgid "Android native window"
 msgstr ""
 
@@ -29506,47 +29506,6 @@ msgstr "AAAA; "
 msgid "Media Manager List"
 msgstr "Lista do Gerenciador de Mídias"
 
-#~ msgid "Media in Zip"
-#~ msgstr "Mídia em formato Zip"
-
-#~ msgid "Path to the media in the Zip archive"
-#~ msgstr "Caminho para a mídia no arquivo Zip"
-
-#~ msgid "Fast udp streaming"
-#~ msgstr "Fluxo udp rápido"
-
-#~ msgid ""
-#~ "Sends TS to specific ip:port by udp (you must know what you are doing)."
-#~ msgstr ""
-#~ "Envia ip:porta específicos para o TS pelo udp (você deve saber o que está "
-#~ "fazendo)."
-
-#~ msgid "MTU for out mode"
-#~ msgstr "MTU para o modo de saída"
-
-#~ msgid "MTU for out mode."
-#~ msgstr "MTU para o modo de saída."
-
-#~ msgid "&Post processing"
-#~ msgstr "&Pós Processamento"
-
-#~ msgid "Probe DVB card for capabilities"
-#~ msgstr "Detectar recursos em placas DVB"
-
-#~ msgid ""
-#~ "Some DVB cards do not like to be probed for their capabilities, you can "
-#~ "disable this feature if you experience some trouble."
-#~ msgstr ""
-#~ "Algumas placas DVB não gostam de ser examinadas para detecção de "
-#~ "recursos. Você pode desabilitar esta opção se estiver percebendo "
-#~ "problemas."
-
-#~ msgid "filename of config file in share/dvb/dvb-s"
-#~ msgstr "arquivo de configuração em compartilhamento/dvb/dvb-s"
-
-#~ msgid "DVB input with v4l2 support"
-#~ msgstr "Entrada DVB com suporte a v4l2"
-
 #, fuzzy
 #~ msgid ""
 #~ "%.1f MHz (%d services)\n"
@@ -29555,19 +29514,6 @@ msgstr "Lista do Gerenciador de Mídias"
 
 #~ msgid "Scanning DVB"
 #~ msgstr "Procurando DVB"
-
-#~ msgid "Uncompressed RAR"
-#~ msgstr "RAR descomprimido"
-
-#~ msgid "Save this Log..."
-#~ msgstr "Salvar este registro..."
-
-#~ msgid ""
-#~ "Please wait while your font cache is rebuilt.\n"
-#~ "This should take less than a few minutes."
-#~ msgstr ""
-#~ "Por favor, aguarde enquanto o cache de fontes é reorganizado.\n"
-#~ "Isto não vai demorar."
 
 #~ msgid ""
 #~ "SAP is a way to publically announce streams that are being sent using "
@@ -32443,6 +32389,60 @@ msgstr "Lista do Gerenciador de Mídias"
 #~ "amostragem do áudio (em kHz), $T = hora, $U = editor, $V = volume, $_ = "
 #~ "nova linha) "
 
+#~ msgid "Media in Zip"
+#~ msgstr "Mídia em formato Zip"
+
+#~ msgid "Path to the media in the Zip archive"
+#~ msgstr "Caminho para a mídia no arquivo Zip"
+
+#~ msgid "Fast udp streaming"
+#~ msgstr "Fluxo udp rápido"
+
+#~ msgid ""
+#~ "Sends TS to specific ip:port by udp (you must know what you are doing)."
+#~ msgstr ""
+#~ "Envia ip:porta específicos para o TS pelo udp (você deve saber o que está "
+#~ "fazendo)."
+
+#~ msgid "MTU for out mode"
+#~ msgstr "MTU para o modo de saída"
+
+#~ msgid "MTU for out mode."
+#~ msgstr "MTU para o modo de saída."
+
+#~ msgid "&Post processing"
+#~ msgstr "&Pós Processamento"
+
+#~ msgid "Probe DVB card for capabilities"
+#~ msgstr "Detectar recursos em placas DVB"
+
+#~ msgid ""
+#~ "Some DVB cards do not like to be probed for their capabilities, you can "
+#~ "disable this feature if you experience some trouble."
+#~ msgstr ""
+#~ "Algumas placas DVB não gostam de ser examinadas para detecção de "
+#~ "recursos. Você pode desabilitar esta opção se estiver percebendo "
+#~ "problemas."
+
+#~ msgid "filename of config file in share/dvb/dvb-s"
+#~ msgstr "arquivo de configuração em compartilhamento/dvb/dvb-s"
+
+#~ msgid "DVB input with v4l2 support"
+#~ msgstr "Entrada DVB com suporte a v4l2"
+
+#~ msgid "Uncompressed RAR"
+#~ msgstr "RAR descomprimido"
+
+#~ msgid "Save this Log..."
+#~ msgstr "Salvar este registro..."
+
+#~ msgid ""
+#~ "Please wait while your font cache is rebuilt.\n"
+#~ "This should take less than a few minutes."
+#~ msgstr ""
+#~ "Por favor, aguarde enquanto o cache de fontes é reorganizado.\n"
+#~ "Isto não vai demorar."
+
 #~ msgid "Choose your preferred video output and configure it here."
 #~ msgstr "Escolha sua saída de vídeo preferida e configure-a aqui."
 
@@ -32795,7 +32795,7 @@ msgstr "Lista do Gerenciador de Mídias"
 
 #, fuzzy
 #~ msgid "CPU"
-#~ msgstr "TCP"
+#~ msgstr "DCP"
 
 #, fuzzy
 #~ msgid "Aspect-ratio"
@@ -34560,7 +34560,7 @@ msgstr "Lista do Gerenciador de Mídias"
 
 #, fuzzy
 #~ msgid "Unknown soundcard"
-#~ msgstr "Categoria desconhecida"
+#~ msgstr "Erro desconhecido"
 
 #, fuzzy
 #~ msgid "Roku HD1000 audio output"
@@ -35945,3 +35945,6 @@ msgstr "Lista do Gerenciador de Mídias"
 #, fuzzy
 #~ msgid "Remaining time: %i seconds"
 #~ msgstr "Tempo total/restante"
+
+#~ msgid "Subtitle track added"
+#~ msgstr "Trilha de legenda adicionada"

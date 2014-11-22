@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-11-03 14:06+0100\n"
+"POT-Creation-Date: 2014-11-21 16:54+0100\n"
 "PO-Revision-Date: 2014-06-27 23:01+0000\n"
 "Last-Translator: Sortale <sortale.zerok@gmail.com>\n"
 "Language-Team: Vietnamese (http://www.transifex.com/projects/p/vlc-trans/"
@@ -695,7 +695,7 @@ msgstr "Số lượng tối đa dành cho bộ lọc (%u) đã đạt giới h�
 
 #: src/audio_output/output.c:229 src/config/core.c:407 src/input/es_out.c:904
 #: src/libvlc-module.c:538 modules/gui/macosx/MainMenu.m:277
-#: modules/gui/macosx/MainWindow.m:1083 modules/video_filter/postproc.c:234
+#: modules/gui/macosx/MainWindow.m:1082 modules/video_filter/postproc.c:234
 msgid "Disable"
 msgstr "Vô hiệu"
 
@@ -1446,7 +1446,7 @@ msgstr ""
 msgid "Title"
 msgstr "Tiêu đề"
 
-#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1202
+#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1205
 #: modules/gui/macosx/playlistinfo.m:74 modules/mux/avi.c:48
 msgid "Artist"
 msgstr "Nghệ sĩ"
@@ -2727,7 +2727,7 @@ msgstr ""
 #: src/libvlc-module.c:538 src/video_output/vout_intf.c:98
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
-#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1006
+#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1016
 #: modules/gui/macosx/AudioEffects.m:86 modules/gui/macosx/MainMenu.m:641
 #: modules/gui/macosx/prefs_widgets.m:1221
 #: modules/gui/macosx/prefs_widgets.m:1284
@@ -2739,7 +2739,7 @@ msgid "Default"
 msgstr "Mặc định"
 
 #: src/libvlc-module.c:538 modules/gui/macosx/AudioEffects.m:112
-#: modules/gui/macosx/MainWindow.m:1081 modules/gui/macosx/wizard.m:351
+#: modules/gui/macosx/MainWindow.m:1080 modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/extended_panels.cpp:1053
 #: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:289
 msgid "Enable"
@@ -5097,7 +5097,7 @@ msgstr ""
 msgid "Downloading ..."
 msgstr "Đang tải..."
 
-#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2562
+#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2567
 #: modules/gui/macosx/AudioEffects.m:372 modules/gui/macosx/AudioEffects.m:387
 #: modules/gui/macosx/AudioEffects.m:613 modules/gui/macosx/AudioEffects.m:712
 #: modules/gui/macosx/bookmarks.m:111 modules/gui/macosx/BWQuincyUI.m:80
@@ -7016,19 +7016,19 @@ msgstr "Đầu vào video (Firewire/ieee1394) kỹ thuật số"
 msgid "DV"
 msgstr "DV"
 
-#: modules/access/dvdnav.c:70 modules/access/dvdread.c:67
+#: modules/access/dvdnav.c:71 modules/access/dvdread.c:67
 msgid "DVD angle"
 msgstr "Góc độDVD"
 
-#: modules/access/dvdnav.c:72 modules/access/dvdread.c:69
+#: modules/access/dvdnav.c:73 modules/access/dvdread.c:69
 msgid "Default DVD angle."
 msgstr "Góc đo DVD mặc định."
 
-#: modules/access/dvdnav.c:74
+#: modules/access/dvdnav.c:75
 msgid "Start directly in menu"
 msgstr "Phát trực tiếp trong menu"
 
-#: modules/access/dvdnav.c:76
+#: modules/access/dvdnav.c:77
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
@@ -7036,20 +7036,20 @@ msgstr ""
 "Phát trực tiếp DVD trong hệ thống menu chính. Điều này nhằm bỏ qua các màn "
 "giới thiệu hay cảnh báo không quan trọng."
 
-#: modules/access/dvdnav.c:85
+#: modules/access/dvdnav.c:86
 msgid "DVD with menus"
 msgstr "DVD với menu"
 
-#: modules/access/dvdnav.c:86
+#: modules/access/dvdnav.c:87
 msgid "DVDnav Input"
 msgstr "Đầu vào DVDnav"
 
-#: modules/access/dvdnav.c:331 modules/access/dvdread.c:200
+#: modules/access/dvdnav.c:332 modules/access/dvdread.c:200
 #: modules/access/dvdread.c:462 modules/access/dvdread.c:530
 msgid "Playback failure"
 msgstr "Phát lại thất bại"
 
-#: modules/access/dvdnav.c:332
+#: modules/access/dvdnav.c:333
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
@@ -7095,17 +7095,17 @@ msgid "EyeTV input"
 msgstr "Đầu vào EyeTV"
 
 #: modules/access/file.c:177 modules/access/file.c:304
-#: modules/access/mtp.c:195 modules/access/mtp.c:286 modules/access/vdr.c:368
-#: modules/access/vdr.c:535
+#: modules/access/mtp.c:195 modules/access/mtp.c:286 modules/access/vdr.c:372
+#: modules/access/vdr.c:539
 msgid "File reading failed"
 msgstr "Thao tác với tập tin thất bại"
 
-#: modules/access/file.c:178 modules/access/vdr.c:535
+#: modules/access/file.c:178 modules/access/vdr.c:539
 #, c-format
 msgid "VLC could not open the file \"%s\" (%s)."
 msgstr ""
 
-#: modules/access/file.c:305 modules/access/vdr.c:369
+#: modules/access/file.c:305 modules/access/vdr.c:373
 #, c-format
 msgid "VLC could not read the file (%s)."
 msgstr ""
@@ -7230,28 +7230,28 @@ msgstr "Nhập dữ liệu từ FTP"
 msgid "FTP upload output"
 msgstr "Xuất dữ liệu tải từ FTP"
 
-#: modules/access/ftp.c:320 modules/access/ftp.c:336 modules/access/ftp.c:460
-#: modules/access/ftp.c:469 modules/access/ftp.c:476
+#: modules/access/ftp.c:319 modules/access/ftp.c:335 modules/access/ftp.c:459
+#: modules/access/ftp.c:468 modules/access/ftp.c:475
 msgid "Network interaction failed"
 msgstr "Giao tiếp với mạng thất bại"
 
-#: modules/access/ftp.c:321
+#: modules/access/ftp.c:320
 msgid "VLC could not connect with the given server."
 msgstr "VLC không thể kết nối với server mà bạn thiết lập."
 
-#: modules/access/ftp.c:337
+#: modules/access/ftp.c:336
 msgid "VLC's connection to the given server was rejected."
 msgstr "Kết nối của VLC đến server đã cho bị từ chối."
 
-#: modules/access/ftp.c:461
+#: modules/access/ftp.c:460
 msgid "Your account was rejected."
 msgstr "Tài khoản của bạn bị từ chối truy cập."
 
-#: modules/access/ftp.c:470
+#: modules/access/ftp.c:469
 msgid "Your password was rejected."
 msgstr "Mật khẩu của bạn bị từ chối truy cập."
 
-#: modules/access/ftp.c:477
+#: modules/access/ftp.c:476
 msgid "Your connection attempt to the server was rejected."
 msgstr "Kết nối của bạn đến server bị từ chối."
 
@@ -9376,11 +9376,11 @@ msgstr "VDR"
 msgid "VDR recordings"
 msgstr "Ghi hình VDR"
 
-#: modules/access/vdr.c:809
+#: modules/access/vdr.c:813
 msgid "VDR Cut Marks"
 msgstr "Cắt điểm VDR"
 
-#: modules/access/vdr.c:872
+#: modules/access/vdr.c:876
 msgid "Start"
 msgstr "Bắt đầu"
 
@@ -9684,7 +9684,7 @@ msgstr "Định hình lại kênh audio"
 msgid "Audio filter for simple channel mixing"
 msgstr "Bộ lọc audio cho việc trộn kênh đơn giản"
 
-#: modules/audio_filter/channel_mixer/trivial.c:48
+#: modules/audio_filter/channel_mixer/trivial.c:41
 msgid "Audio filter for trivial channel mixing"
 msgstr "Bộ lọc audio cho việc trộn kênh thường"
 
@@ -10611,7 +10611,7 @@ msgstr "Tăng phần mềm"
 msgid "This linear gain will be applied in software."
 msgstr "This linear gain will be applied in software."
 
-#: modules/audio_output/wasapi.c:457
+#: modules/audio_output/wasapi.c:459
 msgid "Windows Audio Session API output"
 msgstr ""
 
@@ -10715,7 +10715,7 @@ msgid "FFmpeg audio/video decoder"
 msgstr "Giải mã audio/video dạng FFmpeg"
 
 #: modules/codec/avcodec/avcodec.c:97 modules/codec/gstdecode.c:89
-#: modules/codec/omxil/android_mediacodec.c:273 modules/codec/omxil/omxil.c:84
+#: modules/codec/omxil/android_mediacodec.c:276 modules/codec/omxil/omxil.c:84
 msgid "Decoding"
 msgstr "Giải mã"
 
@@ -11908,15 +11908,15 @@ msgstr "Giải mã MPEG audio layer I/II/III"
 msgid "MPEG audio layer I/II/III packetizer"
 msgstr "Đóng gói MPEG audio layer I/II/III"
 
-#: modules/codec/omxil/android_mediacodec.c:263
+#: modules/codec/omxil/android_mediacodec.c:266
 msgid "Android direct rendering"
 msgstr ""
 
-#: modules/codec/omxil/android_mediacodec.c:265
+#: modules/codec/omxil/android_mediacodec.c:268
 msgid "Enable Android direct rendering using opaque buffers."
 msgstr ""
 
-#: modules/codec/omxil/android_mediacodec.c:270
+#: modules/codec/omxil/android_mediacodec.c:273
 msgid "Video decoder using Android MediaCodec"
 msgstr "Giải mã Video sử dụng MediaCodec của Android"
 
@@ -14140,7 +14140,7 @@ msgstr ""
 
 #: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/MainWindow.m:209
 #: modules/gui/macosx/MainWindow.m:740 modules/gui/macosx/MainWindow.m:746
-#: modules/gui/macosx/MainWindow.m:1366 modules/gui/ncurses.c:1041
+#: modules/gui/macosx/MainWindow.m:1370 modules/gui/ncurses.c:1041
 #: modules/gui/qt4/dialogs/help.cpp:91 modules/gui/qt4/main_interface.cpp:1078
 #: modules/gui/qt4/main_interface.cpp:1082
 #: modules/gui/qt4/main_interface.cpp:1121
@@ -14973,11 +14973,11 @@ msgstr "Sửa chữa khi cần thiết"
 msgid "AVI demuxer"
 msgstr ""
 
-#: modules/demux/avi/avi.c:728
+#: modules/demux/avi/avi.c:733
 msgid "Broken or missing AVI Index"
 msgstr "Chỉ số thứ tự AVI bị thiếu hoặc bị lỗi"
 
-#: modules/demux/avi/avi.c:729
+#: modules/demux/avi/avi.c:734
 msgid ""
 "Because this AVI file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14993,19 +14993,19 @@ msgstr ""
 "Thao tác này sẽ tốn nhiều thời gian nếu tập tin có kích thước lớn.\n"
 "Bạn có muốn thực hiện thao tác đánh số lại chỉ mục hay không?"
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Build index then play"
 msgstr "Lập danh mục thứ tự sau đó phát"
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Play as is"
 msgstr "Phát dưới dạng"
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Do not play"
 msgstr "Không phát"
 
-#: modules/demux/avi/avi.c:2561
+#: modules/demux/avi/avi.c:2566
 msgid "Fixing AVI Index..."
 msgstr "Đang sửa lại chỉ mục AVI..."
 
@@ -18448,28 +18448,28 @@ msgstr "Danh sách HTML"
 msgid "Save Playlist"
 msgstr "Lưu danh sách"
 
-#: modules/gui/macosx/playlist.m:1202
+#: modules/gui/macosx/playlist.m:1205
 msgid "Meta-information"
 msgstr "Thông tin - bổ sung"
 
-#: modules/gui/macosx/playlist.m:1535 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/macosx/playlist.m:1541 modules/gui/qt4/qt4.cpp:188
 msgid "Continue playback?"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1535 modules/gui/macosx/simple_prefs.m:837
+#: modules/gui/macosx/playlist.m:1541 modules/gui/macosx/simple_prefs.m:837
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr "Tiếp tục"
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Restart playback"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Always continue"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Playback of \"%@\" will continue at %@"
 msgstr ""
 
@@ -18907,16 +18907,16 @@ msgstr ""
 "Ấn phím mới cho\n"
 "\"%@\""
 
-#: modules/gui/macosx/simple_prefs.m:1490
+#: modules/gui/macosx/simple_prefs.m:1486
 msgid "Invalid combination"
 msgstr "Kết hợp không hợp lệ."
 
-#: modules/gui/macosx/simple_prefs.m:1491
+#: modules/gui/macosx/simple_prefs.m:1487
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr "Rất đáng tiếc, những phím này không thể gán thành phím tắt được."
 
+#: modules/gui/macosx/simple_prefs.m:1497
 #: modules/gui/macosx/simple_prefs.m:1501
-#: modules/gui/macosx/simple_prefs.m:1505
 msgid "This combination is already taken by \"%@\"."
 msgstr "Việc kết hợp đã được thực hiện bởi \"%@\"."
 
@@ -27350,11 +27350,11 @@ msgstr "Nghệ thuật ASCII"
 msgid "ASCII-art video output"
 msgstr "Xuất dữ liệu video ASCII"
 
-#: modules/video_output/android/nativewindow.c:53
+#: modules/video_output/android/nativewindow.c:55
 msgid "ANativeWindow"
 msgstr ""
 
-#: modules/video_output/android/nativewindow.c:54
+#: modules/video_output/android/nativewindow.c:56
 msgid "Android native window"
 msgstr ""
 
@@ -29481,7 +29481,7 @@ msgstr "Mặt nạ"
 #: modules/gui/qt4/ui/video_effects.h:1468
 #, fuzzy
 msgid "Output Color Filtermode"
-msgstr "Module xuất Video"
+msgstr "Phương thức xuất dữ liệu"
 
 #: modules/gui/qt4/ui/video_effects.h:1469
 #, fuzzy
@@ -29594,61 +29594,11 @@ msgstr "AAAA; "
 msgid "Media Manager List"
 msgstr "Danh sách quản lý tập tin"
 
-#~ msgid "Subtitle track added"
-#~ msgstr "Đã thêm vào track phụ đề"
-
-#~ msgid "Media in Zip"
-#~ msgstr "Tập tin dạng nén Zip"
-
-#~ msgid "Path to the media in the Zip archive"
-#~ msgstr "Đường dẫn đến tập tin dạng nén"
-
-#~ msgid ""
-#~ "Sends TS to specific ip:port by udp (you must know what you are doing)."
-#~ msgstr ""
-#~ "Gửi TS đến ip xác định: cổng bởi UDP (bạn phải biết chắc bạn đang làm gì)."
-
-#~ msgid "MTU for out mode"
-#~ msgstr "MTU cho chế độ xuất ra"
-
-#~ msgid "MTU for out mode."
-#~ msgstr "MTU cho chế độ nhập vào."
-
-#~ msgid "&Post processing"
-#~ msgstr "&Tiền xử lý"
-
 #, fuzzy
 #~ msgid ""
 #~ "%.1f MHz (%d services)\n"
 #~ "~%s remaining"
 #~ msgstr "%.1f MHz (%d dịch vụ)"
-
-#~ msgid "Uncompressed RAR"
-#~ msgstr "Ngưng giải nén tập tin RAR"
-
-#~ msgid "Save this Log..."
-#~ msgstr "Lưu thông tin này vào tập tin log..."
-
-#~ msgid "VLC Debug Log (%s).rtf"
-#~ msgstr "Nhật trình lỗi của VLC (%s).rtf"
-
-#~ msgid "Empty"
-#~ msgstr "-trống rỗng-"
-
-#~ msgctxt "Tooltip|Clear"
-#~ msgid "Clear"
-#~ msgstr "Xóa"
-
-#~ msgid ""
-#~ "Please wait while your font cache is rebuilt.\n"
-#~ "This should take less than a few minutes."
-#~ msgstr ""
-#~ "Xin vui lòng chờ đợi  trong giây lát khi bộ nhớ đệm phần kiểu chữ được "
-#~ "xây dựng lại.\n"
-#~ "Thao tác này sẽ không kéo dài lâu."
-
-#~ msgid "VLC media player - Flash Viewer"
-#~ msgstr "Chương trình VLC -  Chương trình xem Flash"
 
 #~ msgid ""
 #~ "SAP is a way to publically announce streams that are being sent using "
@@ -30745,6 +30695,56 @@ msgstr "Danh sách quản lý tập tin"
 #~ msgid "Don't repair"
 #~ msgstr "Đừng gửi"
 
+#~ msgid "Subtitle track added"
+#~ msgstr "Đã thêm vào track phụ đề"
+
+#~ msgid "Media in Zip"
+#~ msgstr "Tập tin dạng nén Zip"
+
+#~ msgid "Path to the media in the Zip archive"
+#~ msgstr "Đường dẫn đến tập tin dạng nén"
+
+#~ msgid ""
+#~ "Sends TS to specific ip:port by udp (you must know what you are doing)."
+#~ msgstr ""
+#~ "Gửi TS đến ip xác định: cổng bởi UDP (bạn phải biết chắc bạn đang làm gì)."
+
+#~ msgid "MTU for out mode"
+#~ msgstr "MTU cho chế độ xuất ra"
+
+#~ msgid "MTU for out mode."
+#~ msgstr "MTU cho chế độ nhập vào."
+
+#~ msgid "&Post processing"
+#~ msgstr "&Tiền xử lý"
+
+#~ msgid "Uncompressed RAR"
+#~ msgstr "Ngưng giải nén tập tin RAR"
+
+#~ msgid "Save this Log..."
+#~ msgstr "Lưu thông tin này vào tập tin log..."
+
+#~ msgid "VLC Debug Log (%s).rtf"
+#~ msgstr "Nhật trình lỗi của VLC (%s).rtf"
+
+#~ msgid "Empty"
+#~ msgstr "-trống rỗng-"
+
+#~ msgctxt "Tooltip|Clear"
+#~ msgid "Clear"
+#~ msgstr "Xóa"
+
+#~ msgid ""
+#~ "Please wait while your font cache is rebuilt.\n"
+#~ "This should take less than a few minutes."
+#~ msgstr ""
+#~ "Xin vui lòng chờ đợi  trong giây lát khi bộ nhớ đệm phần kiểu chữ được "
+#~ "xây dựng lại.\n"
+#~ "Thao tác này sẽ không kéo dài lâu."
+
+#~ msgid "VLC media player - Flash Viewer"
+#~ msgstr "Chương trình VLC -  Chương trình xem Flash"
+
 #~ msgid "Choose your preferred video output and configure it here."
 #~ msgstr "Chọn cách xuất dữ liệu cho Video và chỉnh sửa tại đây."
 
@@ -30887,10 +30887,6 @@ msgstr "Danh sách quản lý tập tin"
 
 #~ msgid "Album art download policy"
 #~ msgstr "Chính sách tải Album Art"
-
-#, fuzzy
-#~ msgid "Output module"
-#~ msgstr "Phương thức xuất dữ liệu"
 
 #, fuzzy
 #~ msgid "Graphic Equalizer"

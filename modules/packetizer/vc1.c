@@ -2,7 +2,7 @@
  * vc1.c
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
- * $Id: c1ddd645578c31b934acfc4cc246c07eede71398 $
+ * $Id: f93f5046c96cb631c05d9be054b25fcfa69b5d85 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -168,7 +168,7 @@ static int Open( vlc_object_t *p_this )
         /* With (some) ASF the first byte has to be stripped */
         if( p_extra[0] != 0x00 )
         {
-            memcpy( &p_extra[0], &p_extra[1], p_dec->fmt_out.i_extra - 1 );
+            memmove( &p_extra[0], &p_extra[1], p_dec->fmt_out.i_extra - 1 );
             p_dec->fmt_out.i_extra--;
         }
 

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
  * Copyright © 2006 Rémi Denis-Courmont
- * $Id: 90b2452250da27cfe5de9e06f0bb58db212a4c41 $
+ * $Id: ce3cc795a3993b127cc9b2296fb8a6a3ab857109 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr> - original code
  *          Rémi Denis-Courmont <rem # videolan.org> - EPSV support
@@ -309,7 +309,6 @@ static void clearCmdTLS( access_sys_t *p_sys )
 static int Login( vlc_object_t *p_access, access_sys_t *p_sys )
 {
     int i_answer;
-    char *psz;
 
     /* *** Open a TCP connection with server *** */
     int fd = p_sys->cmd.fd = net_ConnectTCP( p_access, p_sys->url.psz_host,
@@ -339,13 +338,6 @@ static int Login( vlc_object_t *p_access, access_sys_t *p_sys )
     }
 
     msg_Dbg( p_access, "connection accepted (%d)", i_answer );
-
-    if( p_sys->url.psz_username && *p_sys->url.psz_username )
-        psz = strdup( p_sys->url.psz_username );
-    else
-        psz = var_InheritString( p_access, "ftp-user" );
-    if( !psz )
-        return -1;
 
     /* Features check first */
     if( ftp_SendCommand( p_access, p_sys, "FEAT" ) < 0
@@ -387,7 +379,6 @@ static int Login( vlc_object_t *p_access, access_sys_t *p_sys )
             i_answer != 200 )
         {
             msg_Err( p_access, "Can't truncate Protection buffer size for TLS" );
-            free( psz );
             goto error;
         }
 
@@ -396,12 +387,20 @@ static int Login( vlc_object_t *p_access, access_sys_t *p_sys )
             i_answer != 200 )
         {
             msg_Err( p_access, "Can't set Data channel protection" );
-            free( psz );
             goto error;
         }
     }
 
     /* Send credentials over channel */
+    char *psz;
+
+    if( p_sys->url.psz_username && *p_sys->url.psz_username )
+        psz = strdup( p_sys->url.psz_username );
+    else
+        psz = var_InheritString( p_access, "ftp-user" );
+    if( !psz )
+        goto error;
+
     if( ftp_SendCommand( p_access, p_sys, "USER %s", psz ) < 0 ||
         ftp_RecvCommand( p_access, p_sys, &i_answer, NULL ) < 0 )
     {

@@ -4,7 +4,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 167dc80967ce34b9c93529883761afe8e0f4d3bc $
+ * $Id: 5593362862ad4a0f6908a8471dea9afccaa39077 $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -63,7 +63,7 @@ CAtmoConfig::~CAtmoConfig() {
    {
      for(int zone=0; zone<m_AtmoZoneDefCount; zone++)
          delete m_ZoneDefinitions[zone];
-     delete m_ZoneDefinitions;
+     delete[] m_ZoneDefinitions;
      m_ZoneDefinitions = NULL;
    }
 
@@ -392,7 +392,7 @@ void CAtmoConfig::UpdateZoneDefinitionCount()
       {
         for(int zone=0; zone<m_AtmoZoneDefCount; zone++)
             delete m_ZoneDefinitions[zone];
-        delete m_ZoneDefinitions;
+        delete[] m_ZoneDefinitions;
         m_ZoneDefinitions = NULL;
       }
       m_AtmoZoneDefCount = getZoneCount();

@@ -2,7 +2,7 @@
  * mpeg_audio.c: parse MPEG audio sync info and packetize the stream
  *****************************************************************************
  * Copyright (C) 2001-2003 VLC authors and VideoLAN
- * $Id: c9f7bac44fa8e834ee4d112b9ec4295ae67294d1 $
+ * $Id: f893dd257a9ec52728ab1b9ee4356cff89f4582d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -248,7 +248,7 @@ static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             /* New frame, set the Presentation Time Stamp */
             p_sys->i_pts = p_sys->bytestream.p_block->i_pts;
             if( p_sys->i_pts > VLC_TS_INVALID &&
-                p_sys->i_pts != date_Get( &p_sys->end_date ) )
+                p_sys->i_pts > date_Get( &p_sys->end_date ) )
             {
                 date_Set( &p_sys->end_date, p_sys->i_pts );
             }

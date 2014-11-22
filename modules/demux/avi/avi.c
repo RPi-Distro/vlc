@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 2169c8a9c3b8d3ba58088713fa57e86242650ced $
+ * $Id: 3a3170214d309b96374893222a3f21a190462d89 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -443,6 +443,11 @@ static int Open( vlc_object_t * p_this )
                 if( tk->i_codec == VLC_CODEC_VORBIS )
                 {
                     tk->i_blocksize = 0; /* fix vorbis VBR decoding */
+                }
+
+                if ( tk->i_codec == VLC_CODEC_MP4A )
+                {
+                    tk->i_samplesize = 0; /* ADTS/AAC VBR */
                 }
 
                 es_format_Init( &fmt, AUDIO_ES, tk->i_codec );

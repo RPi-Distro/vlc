@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-11-03 14:06+0100\n"
-"PO-Revision-Date: 2014-08-04 02:04+0000\n"
+"POT-Creation-Date: 2014-11-21 16:54+0100\n"
+"PO-Revision-Date: 2014-10-15 15:46+0000\n"
 "Last-Translator: Dean Lee <xslidian@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/vlc-"
 "trans/language/zh_CN/)\n"
@@ -29,7 +29,7 @@ msgid ""
 "Written by the VideoLAN team; see the AUTHORS file.\n"
 msgstr ""
 "本程序在法律许可范围内无任何担保。\n"
-"您可以依照 GNU GPL 许可证再次分发本程序；\n"
+"您可以依照 GNU GPL 许可证的条款再次分发本程序；\n"
 "详情请参阅名为 COPYING 的文件。\n"
 "由 VideoLAN 团队编写；参见 AUTHORS 文件。\n"
 
@@ -605,7 +605,7 @@ msgstr "已达到最大的滤镜数量 (%u)。"
 
 #: src/audio_output/output.c:229 src/config/core.c:407 src/input/es_out.c:904
 #: src/libvlc-module.c:538 modules/gui/macosx/MainMenu.m:277
-#: modules/gui/macosx/MainWindow.m:1083 modules/video_filter/postproc.c:234
+#: modules/gui/macosx/MainWindow.m:1082 modules/video_filter/postproc.c:234
 msgid "Disable"
 msgstr "关闭"
 
@@ -662,7 +662,7 @@ msgstr "立体声"
 #: modules/gui/qt4/ui/video_effects.h:1450
 #: modules/gui/qt4/ui/video_effects.h:1460
 msgid "Left"
-msgstr "左声道"
+msgstr "左"
 
 #: src/audio_output/output.c:438 src/config/keys.c:113 src/libvlc-module.c:187
 #: src/libvlc-module.c:284 src/libvlc-module.c:362
@@ -675,7 +675,7 @@ msgstr "左声道"
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
 #: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1408
 msgid "Right"
-msgstr "右声道"
+msgstr "右"
 
 #: src/audio_output/output.c:441 src/libvlc-module.c:186
 msgid "Reverse stereo"
@@ -892,15 +892,15 @@ msgstr "向下"
 
 #: src/config/keys.c:68 modules/control/rc.c:72
 msgid "End"
-msgstr "结束"
+msgstr "End"
 
 #: src/config/keys.c:69
 msgid "Enter"
-msgstr "回车"
+msgstr "Enter"
 
 #: src/config/keys.c:70
 msgid "Esc"
-msgstr "退出"
+msgstr "Esc"
 
 #: src/config/keys.c:71
 msgid "F1"
@@ -1335,7 +1335,7 @@ msgstr "VLC 无法识别输入格式"
 #, c-format
 msgid ""
 "The format of '%s' cannot be detected. Have a look at the log for details."
-msgstr "'%s' 的格式无法被检测。请查看日志获取详细信息。"
+msgstr "无法侦测“%s”的格式。详情请见日志。"
 
 #: src/input/meta.c:55 src/input/var.c:177 modules/gui/macosx/MainMenu.m:73
 #: modules/gui/macosx/MainMenu.m:415 modules/gui/macosx/MainMenu.m:416
@@ -1347,7 +1347,7 @@ msgstr "'%s' 的格式无法被检测。请查看日志获取详细信息。"
 msgid "Title"
 msgstr "标题"
 
-#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1202
+#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1205
 #: modules/gui/macosx/playlistinfo.m:74 modules/mux/avi.c:48
 msgid "Artist"
 msgstr "艺术家"
@@ -1524,7 +1524,7 @@ msgstr "鼠标手势"
 msgid ""
 "Running vlc with the default interface. Use 'cvlc' to use vlc without "
 "interface."
-msgstr "正在以默认界面运行 vlc，使用 'cvlc' 将 vlc 运行在无界面的状态下。"
+msgstr "正在以默认界面运行 vlc。使用“cvlc”可以无界面模式使用 vlc。"
 
 #. xgettext: Translate "C" to the language code: "fr", "en_GB", "nl", "ru"...
 #: src/libvlc.c:183
@@ -1570,7 +1570,7 @@ msgstr "界面模块"
 msgid ""
 "This is the main interface used by VLC. The default behavior is to "
 "automatically select the best module available."
-msgstr "这是 VLC 使用的主界面。默认的行为是自动选择最佳的可用界面。"
+msgstr "这是 VLC 所使用的主界面。默认行为是自动选择可用的最佳模块。"
 
 #: src/libvlc-module.c:72 modules/control/ntservice.c:58
 msgid "Extra interface modules"
@@ -1583,22 +1583,22 @@ msgid ""
 "list of interface modules. (common values are \"rc\" (remote control), \"http"
 "\", \"gestures\" ...)"
 msgstr ""
-"您可以为 VLC 选择 \"附加界面\"。它们将在启动默认界面时在后台启动。使用冒号分"
-"隔界面模块列表。(常用值有 \"rc\" (远程控制), \"http\", \"gestures\" ...)"
+"您可以为 VLC 选择“附加界面”。它们将在启动默认界面时在后台启动。界面模块的列表"
+"使用冒号分隔。(常用值有“rc”(远程控制)“http”“gestures”...)"
 
 #: src/libvlc-module.c:81
 msgid "You can select control interfaces for VLC."
-msgstr "您可以选择 VLC 的控制界面。"
+msgstr "您可以为 VLC 选择控制界面。"
 
 #: src/libvlc-module.c:83
 msgid "Verbosity (0,1,2)"
-msgstr "提示程度 (0,1,2)"
+msgstr "详尽程度 (0,1,2)"
 
 #: src/libvlc-module.c:85
 msgid ""
 "This is the verbosity level (0=only errors and standard messages, "
 "1=warnings, 2=debug)."
-msgstr "这是提示程度等级 (0=仅错误和标准消息、1=警告、2=调试)。"
+msgstr "详尽程度等级 (0=仅错误和标准消息、1=警告、2=调试)。"
 
 #: src/libvlc-module.c:88
 msgid "Be quiet"
@@ -1606,7 +1606,7 @@ msgstr "安静"
 
 #: src/libvlc-module.c:90
 msgid "Turn off all warning and information messages."
-msgstr "关闭所有警告和信息消息。"
+msgstr "关闭所有警告和信息级别的消息。"
 
 #: src/libvlc-module.c:92
 msgid "Default stream"
@@ -1614,7 +1614,7 @@ msgstr "默认流"
 
 #: src/libvlc-module.c:94
 msgid "This stream will always be opened at VLC startup."
-msgstr "此流将总是在 VLC 启动时被打开。"
+msgstr "每当 VLC 启动时都会打开此流。"
 
 #: src/libvlc-module.c:96
 msgid "Color messages"
@@ -1666,7 +1666,7 @@ msgstr "音频输出模块"
 msgid ""
 "This is the audio output method used by VLC. The default behavior is to "
 "automatically select the best method available."
-msgstr "这是被 VLC 使用的音频输出模块。默认的行为是自动选择最佳的可用模块。"
+msgstr "这是 VLC 将要使用的音频输出方式。默认的行为是自动选择可用的最佳方式。"
 
 #: src/libvlc-module.c:131 modules/gui/macosx/simple_prefs.m:310
 #: modules/stream_out/display.c:40 modules/gui/qt4/ui/sprefs_audio.h:426
@@ -1678,8 +1678,7 @@ msgid ""
 "You can completely disable the audio output. The audio decoding stage will "
 "not take place, thus saving some processing power."
 msgstr ""
-"您可以完全关闭音频输出。音频解码步骤将不会执行，这样就可以节省一些处理器资"
-"源。"
+"您可以完全关闭音频输出。音频解码步骤将不会进行，这样可以节省一些处理器资源。"
 
 #: src/libvlc-module.c:136
 msgid "Audio gain"
@@ -1708,15 +1707,15 @@ msgstr "可以将音量记录下来，并在 VLC 下次启动时自动恢复。"
 
 #: src/libvlc-module.c:150
 msgid "Audio desynchronization compensation"
-msgstr "音频异步补偿"
+msgstr "音频不同步补偿"
 
 #: src/libvlc-module.c:152
 msgid ""
 "This delays the audio output. The delay must be given in milliseconds. This "
 "can be handy if you notice a lag between the video and the audio."
 msgstr ""
-"这将延迟音频输出。延迟的单位是毫秒。如果您感觉到视频和音频之间有延迟的话此功"
-"能将非常方便。"
+"可延迟音频输出。延迟的单位为毫秒。如果您感觉到视频和音频之间有延迟，此功能将"
+"非常方便。"
 
 #: src/libvlc-module.c:155
 msgid "Audio resampler"
@@ -1744,7 +1743,7 @@ msgstr "在可能时使用 S/PDIF"
 msgid ""
 "S/PDIF can be used by default when your hardware supports it as well as the "
 "audio stream being played."
-msgstr "S/PDIF 可以在您的硬件支持时默认使用做播放音频流。"
+msgstr "在您的硬件支持、并有音频流正在播放时，可以默认使用 S/PDIF。"
 
 #: src/libvlc-module.c:169 modules/gui/macosx/simple_prefs.m:308
 msgid "Force detection of Dolby Surround"
@@ -2501,7 +2500,7 @@ msgstr ""
 #: src/libvlc-module.c:538 src/video_output/vout_intf.c:98
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
-#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1006
+#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1016
 #: modules/gui/macosx/AudioEffects.m:86 modules/gui/macosx/MainMenu.m:641
 #: modules/gui/macosx/prefs_widgets.m:1221
 #: modules/gui/macosx/prefs_widgets.m:1284
@@ -2513,7 +2512,7 @@ msgid "Default"
 msgstr "默认"
 
 #: src/libvlc-module.c:538 modules/gui/macosx/AudioEffects.m:112
-#: modules/gui/macosx/MainWindow.m:1081 modules/gui/macosx/wizard.m:351
+#: modules/gui/macosx/MainWindow.m:1080 modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/extended_panels.cpp:1053
 #: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:289
 msgid "Enable"
@@ -4686,7 +4685,7 @@ msgstr ""
 msgid "Downloading ..."
 msgstr "正在下载..."
 
-#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2562
+#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2567
 #: modules/gui/macosx/AudioEffects.m:372 modules/gui/macosx/AudioEffects.m:387
 #: modules/gui/macosx/AudioEffects.m:613 modules/gui/macosx/AudioEffects.m:712
 #: modules/gui/macosx/bookmarks.m:111 modules/gui/macosx/BWQuincyUI.m:80
@@ -6532,38 +6531,38 @@ msgstr "数字视频 (火线/ieee1394) 输入"
 msgid "DV"
 msgstr "DV"
 
-#: modules/access/dvdnav.c:70 modules/access/dvdread.c:67
+#: modules/access/dvdnav.c:71 modules/access/dvdread.c:67
 msgid "DVD angle"
 msgstr "DVD 视角"
 
-#: modules/access/dvdnav.c:72 modules/access/dvdread.c:69
+#: modules/access/dvdnav.c:73 modules/access/dvdread.c:69
 msgid "Default DVD angle."
 msgstr "默认 DVD 视角。"
 
-#: modules/access/dvdnav.c:74
+#: modules/access/dvdnav.c:75
 msgid "Start directly in menu"
 msgstr "直接在菜单中启动"
 
-#: modules/access/dvdnav.c:76
+#: modules/access/dvdnav.c:77
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
 msgstr "直接在主菜单中启动 DVD。这将尝试跳过所有不需要的警告画面。"
 
-#: modules/access/dvdnav.c:85
+#: modules/access/dvdnav.c:86
 msgid "DVD with menus"
 msgstr "有菜单的 DVD"
 
-#: modules/access/dvdnav.c:86
+#: modules/access/dvdnav.c:87
 msgid "DVDnav Input"
 msgstr "DVD 导航输入"
 
-#: modules/access/dvdnav.c:331 modules/access/dvdread.c:200
+#: modules/access/dvdnav.c:332 modules/access/dvdread.c:200
 #: modules/access/dvdread.c:462 modules/access/dvdread.c:530
 msgid "Playback failure"
 msgstr "播放失败"
 
-#: modules/access/dvdnav.c:332
+#: modules/access/dvdnav.c:333
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr "VLC 无法设置 DVD 标题。可能无法解密整张光盘。"
@@ -6607,17 +6606,17 @@ msgid "EyeTV input"
 msgstr "EyeTV 输入"
 
 #: modules/access/file.c:177 modules/access/file.c:304
-#: modules/access/mtp.c:195 modules/access/mtp.c:286 modules/access/vdr.c:368
-#: modules/access/vdr.c:535
+#: modules/access/mtp.c:195 modules/access/mtp.c:286 modules/access/vdr.c:372
+#: modules/access/vdr.c:539
 msgid "File reading failed"
 msgstr "文件读取失败"
 
-#: modules/access/file.c:178 modules/access/vdr.c:535
+#: modules/access/file.c:178 modules/access/vdr.c:539
 #, c-format
 msgid "VLC could not open the file \"%s\" (%s)."
 msgstr "VLC 无法打开文件“%s” (%s)。"
 
-#: modules/access/file.c:305 modules/access/vdr.c:369
+#: modules/access/file.c:305 modules/access/vdr.c:373
 #, c-format
 msgid "VLC could not read the file (%s)."
 msgstr "VLC 无法读取文件 (%s)。"
@@ -6736,28 +6735,28 @@ msgstr "FTP 输入"
 msgid "FTP upload output"
 msgstr "FTP 上传输出"
 
-#: modules/access/ftp.c:320 modules/access/ftp.c:336 modules/access/ftp.c:460
-#: modules/access/ftp.c:469 modules/access/ftp.c:476
+#: modules/access/ftp.c:319 modules/access/ftp.c:335 modules/access/ftp.c:459
+#: modules/access/ftp.c:468 modules/access/ftp.c:475
 msgid "Network interaction failed"
 msgstr "网络交互失败"
 
-#: modules/access/ftp.c:321
+#: modules/access/ftp.c:320
 msgid "VLC could not connect with the given server."
 msgstr "VLC 无法连接给予的服务器。"
 
-#: modules/access/ftp.c:337
+#: modules/access/ftp.c:336
 msgid "VLC's connection to the given server was rejected."
 msgstr "VLC 连接到给予的服务器后被拒绝。"
 
-#: modules/access/ftp.c:461
+#: modules/access/ftp.c:460
 msgid "Your account was rejected."
 msgstr "您的帐号已被拒绝。"
 
-#: modules/access/ftp.c:470
+#: modules/access/ftp.c:469
 msgid "Your password was rejected."
 msgstr "您的密码已被拒绝。"
 
-#: modules/access/ftp.c:477
+#: modules/access/ftp.c:476
 msgid "Your connection attempt to the server was rejected."
 msgstr "您尝试连接服务器的连接被拒绝。"
 
@@ -8787,11 +8786,11 @@ msgstr "VDR"
 msgid "VDR recordings"
 msgstr "VDR 录制"
 
-#: modules/access/vdr.c:809
+#: modules/access/vdr.c:813
 msgid "VDR Cut Marks"
 msgstr "VDR 切割标记"
 
-#: modules/access/vdr.c:872
+#: modules/access/vdr.c:876
 msgid "Start"
 msgstr "开始"
 
@@ -8869,7 +8868,7 @@ msgstr "ARM NEON 视频色度转换"
 
 #: modules/arm_neon/simple_channel_mixer.c:47
 msgid "Audio filter for simple channel mixing using NEON assembly"
-msgstr "采用 NEON 指令集进行简易声道混音的音频滤镜"
+msgstr "采用 NEON 指令集的用于简易声道混音的音频滤镜"
 
 #: modules/arm_neon/volume.c:38
 msgid "ARM NEON audio volume"
@@ -9073,9 +9072,9 @@ msgstr "音频声道重映射器"
 
 #: modules/audio_filter/channel_mixer/simple.c:45
 msgid "Audio filter for simple channel mixing"
-msgstr "用于简易声道混合的音频滤镜"
+msgstr "用于简易声道混音的音频滤镜"
 
-#: modules/audio_filter/channel_mixer/trivial.c:48
+#: modules/audio_filter/channel_mixer/trivial.c:41
 msgid "Audio filter for trivial channel mixing"
 msgstr "用于弱音声道混合的音频滤镜"
 
@@ -9959,7 +9958,7 @@ msgstr "软件增益"
 msgid "This linear gain will be applied in software."
 msgstr "此处的线性增益将在软件中应用。"
 
-#: modules/audio_output/wasapi.c:457
+#: modules/audio_output/wasapi.c:459
 msgid "Windows Audio Session API output"
 msgstr "Windows 音频会话 API 输出"
 
@@ -10059,7 +10058,7 @@ msgid "FFmpeg audio/video decoder"
 msgstr "FFmpeg 音频/视频解码器"
 
 #: modules/codec/avcodec/avcodec.c:97 modules/codec/gstdecode.c:89
-#: modules/codec/omxil/android_mediacodec.c:273 modules/codec/omxil/omxil.c:84
+#: modules/codec/omxil/android_mediacodec.c:276 modules/codec/omxil/omxil.c:84
 msgid "Decoding"
 msgstr "正在解码"
 
@@ -10867,7 +10866,7 @@ msgstr "JPEG 图像编码器"
 
 #: modules/codec/kate.c:194 modules/codec/subsdec.c:174
 msgid "Formatted Subtitles"
-msgstr "格式化字幕"
+msgstr "显示格式化的字幕"
 
 #: modules/codec/kate.c:195
 msgid ""
@@ -11184,15 +11183,15 @@ msgstr "MPEG 音频层 I/II/III 解码器"
 msgid "MPEG audio layer I/II/III packetizer"
 msgstr "MPEG 音频层 I/II/III 封包器"
 
-#: modules/codec/omxil/android_mediacodec.c:263
+#: modules/codec/omxil/android_mediacodec.c:266
 msgid "Android direct rendering"
 msgstr "Android 直接渲染"
 
-#: modules/codec/omxil/android_mediacodec.c:265
+#: modules/codec/omxil/android_mediacodec.c:268
 msgid "Enable Android direct rendering using opaque buffers."
 msgstr "启用 Android 直接渲染，通过不透明缓冲区。"
 
-#: modules/codec/omxil/android_mediacodec.c:270
+#: modules/codec/omxil/android_mediacodec.c:273
 msgid "Video decoder using Android MediaCodec"
 msgstr "Android MediaCodec 视频解码器"
 
@@ -11996,11 +11995,11 @@ msgstr "通用 (UTF-16)"
 
 #: modules/codec/subsdec.c:102
 msgid "Universal (big endian UTF-16)"
-msgstr "通用 (big endian UTF-16)"
+msgstr "通用 (大端序 UTF-16)"
 
 #: modules/codec/subsdec.c:103
 msgid "Universal (little endian UTF-16)"
-msgstr "通用 (little endian UTF-16)"
+msgstr "通用 (小端序 UTF-16)"
 
 #: modules/codec/subsdec.c:104
 msgid "Universal, Chinese (GB18030)"
@@ -12156,7 +12155,7 @@ msgstr "字幕文本编码"
 
 #: modules/codec/subsdec.c:168
 msgid "Set the encoding used in text subtitles"
-msgstr "设置在文本字幕中使用的编码"
+msgstr "设置文本字幕使用的编码"
 
 #: modules/codec/subsdec.c:169
 msgid "Subtitle justification"
@@ -12173,14 +12172,14 @@ msgstr "UTF-8 字幕自动检测"
 #: modules/codec/subsdec.c:172
 msgid ""
 "This enables automatic detection of UTF-8 encoding within subtitle files."
-msgstr "可启用对字幕文件中 UTF-8 编码的自动侦测。"
+msgstr "可启用对字幕文件 UTF-8 编码的自动侦测。"
 
 #: modules/codec/subsdec.c:175
 msgid ""
 "Some subtitle formats allow for text formatting. VLC partly implements this, "
 "but you can choose to disable all formatting."
 msgstr ""
-"有些字幕格式允许格式化文本。VLC 将部分处理它，但是您可以选择关闭所有格式。"
+"有些字幕格式允许格式化文本。VLC 部分实现了该特性，但您可以选择禁用所有格式。"
 
 #: modules/codec/subsdec.c:183
 msgid "Text subtitle decoder"
@@ -13327,7 +13326,7 @@ msgstr "D-Bus 控制界面"
 
 #: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/MainWindow.m:209
 #: modules/gui/macosx/MainWindow.m:740 modules/gui/macosx/MainWindow.m:746
-#: modules/gui/macosx/MainWindow.m:1366 modules/gui/ncurses.c:1041
+#: modules/gui/macosx/MainWindow.m:1370 modules/gui/ncurses.c:1041
 #: modules/gui/qt4/dialogs/help.cpp:91 modules/gui/qt4/main_interface.cpp:1078
 #: modules/gui/qt4/main_interface.cpp:1082
 #: modules/gui/qt4/main_interface.cpp:1121
@@ -14150,11 +14149,11 @@ msgstr "需要时修复"
 msgid "AVI demuxer"
 msgstr "AVI 去复用器"
 
-#: modules/demux/avi/avi.c:728
+#: modules/demux/avi/avi.c:733
 msgid "Broken or missing AVI Index"
 msgstr "AVI 索引损坏或丢失"
 
-#: modules/demux/avi/avi.c:729
+#: modules/demux/avi/avi.c:734
 msgid ""
 "Because this AVI file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14168,19 +14167,19 @@ msgstr ""
 "这一步对于大文件可能要耗费较长时间。\n"
 "您打算如何操作?"
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Build index then play"
 msgstr "建立索引再播放"
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Play as is"
 msgstr "原样播放"
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Do not play"
 msgstr "不要播放"
 
-#: modules/demux/avi/avi.c:2561
+#: modules/demux/avi/avi.c:2566
 msgid "Fixing AVI Index..."
 msgstr "正在修复 AVI 索引..."
 
@@ -16464,11 +16463,11 @@ msgstr "VLC 媒体回放"
 
 #: modules/gui/macosx/intf.m:1783
 msgid "Remove old preferences?"
-msgstr "要移除旧的参数吗?"
+msgstr "是否移除旧的偏好设置?"
 
 #: modules/gui/macosx/intf.m:1784
 msgid "We just found an older version of VLC's preferences files."
-msgstr "我们发现了一个旧版本的 VLC 参数文件。"
+msgstr "我们发现了一个旧版本的 VLC 偏好设置文件。"
 
 #: modules/gui/macosx/intf.m:1785
 msgid "Move To Trash and Relaunch VLC"
@@ -16773,7 +16772,7 @@ msgstr "检测更新..."
 
 #: modules/gui/macosx/MainMenu.m:349
 msgid "Preferences..."
-msgstr "参数设置..."
+msgstr "偏好设置..."
 
 #: modules/gui/macosx/MainMenu.m:355
 msgid "Services"
@@ -17530,28 +17529,28 @@ msgstr "HTML 播放列表"
 msgid "Save Playlist"
 msgstr "保存播放列表"
 
-#: modules/gui/macosx/playlist.m:1202
+#: modules/gui/macosx/playlist.m:1205
 msgid "Meta-information"
 msgstr "源信息"
 
-#: modules/gui/macosx/playlist.m:1535 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/macosx/playlist.m:1541 modules/gui/qt4/qt4.cpp:188
 msgid "Continue playback?"
 msgstr "继续播放?"
 
-#: modules/gui/macosx/playlist.m:1535 modules/gui/macosx/simple_prefs.m:837
+#: modules/gui/macosx/playlist.m:1541 modules/gui/macosx/simple_prefs.m:837
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr "继续"
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Restart playback"
 msgstr "从头播放"
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Always continue"
 msgstr "总是继续"
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Playback of \"%@\" will continue at %@"
 msgstr "“%@”的回放将从 %@ 继续"
 
@@ -17642,7 +17641,7 @@ msgstr "VLC 无法保存元数据。"
 #: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:417
 #: modules/gui/qt4/dialogs/preferences.cpp:54
 msgid "Preferences"
-msgstr "参数设置"
+msgstr "偏好设置"
 
 #: modules/gui/macosx/prefs.m:209 modules/gui/macosx/simple_prefs.m:415
 msgid "Reset All"
@@ -17983,16 +17982,16 @@ msgstr ""
 "请为下述功能按新键\n"
 "\"%@\""
 
-#: modules/gui/macosx/simple_prefs.m:1490
+#: modules/gui/macosx/simple_prefs.m:1486
 msgid "Invalid combination"
 msgstr "无效的组合"
 
-#: modules/gui/macosx/simple_prefs.m:1491
+#: modules/gui/macosx/simple_prefs.m:1487
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr "很遗憾，这些按键无法被分配为热键快捷方式。"
 
+#: modules/gui/macosx/simple_prefs.m:1497
 #: modules/gui/macosx/simple_prefs.m:1501
-#: modules/gui/macosx/simple_prefs.m:1505
 msgid "This combination is already taken by \"%@\"."
 msgstr "此组合已经被 \"%@\" 使用。"
 
@@ -20540,7 +20539,7 @@ msgstr "显示设置"
 
 #: modules/gui/qt4/dialogs/preferences.cpp:74
 msgid "Simple"
-msgstr "简易"
+msgstr "简明"
 
 #: modules/gui/qt4/dialogs/preferences.cpp:75
 msgid "Switch to simple preferences view"
@@ -21053,7 +21052,7 @@ msgstr "全屏(&F)"
 
 #: modules/gui/qt4/menus.cpp:676
 msgid "Always Fit &Window"
-msgstr "总适应窗口(&Wi)"
+msgstr "总适应窗口(&W)"
 
 #: modules/gui/qt4/menus.cpp:677
 msgid "Always &on Top"
@@ -21181,13 +21180,13 @@ msgstr "保存到播放列表(&S)"
 
 #: modules/gui/qt4/qt4.cpp:78
 msgid "Show advanced preferences over simple ones"
-msgstr "显示高级参数设置代替简易设置"
+msgstr "显示高级偏好设置代替简明设置"
 
 #: modules/gui/qt4/qt4.cpp:79
 msgid ""
 "Show advanced preferences and not simple preferences when opening the "
 "preferences dialog."
-msgstr "在打开参数设置对话框时显示高级参数设置而非建议参数设置。"
+msgstr "打开偏好设置对话框时，显示高级偏好设置，而非简明偏好设置。"
 
 #: modules/gui/qt4/qt4.cpp:83 modules/gui/skins2/src/skin_main.cpp:471
 msgid "Systray icon"
@@ -26398,11 +26397,11 @@ msgstr "字符艺术"
 msgid "ASCII-art video output"
 msgstr "字符艺术视频输出"
 
-#: modules/video_output/android/nativewindow.c:53
+#: modules/video_output/android/nativewindow.c:55
 msgid "ANativeWindow"
 msgstr "ANativeWindow"
 
-#: modules/video_output/android/nativewindow.c:54
+#: modules/video_output/android/nativewindow.c:56
 msgid "Android native window"
 msgstr "Android 原生窗口"
 
@@ -28596,67 +28595,6 @@ msgstr "AAAA; "
 msgid "Media Manager List"
 msgstr "媒体管理器列表"
 
-#~ msgid "Subtitle track added"
-#~ msgstr "字幕轨已添加"
-
-#~ msgid "Media in Zip"
-#~ msgstr "Zip 中的媒体"
-
-#~ msgid "Path to the media in the Zip archive"
-#~ msgstr "Zip 压缩包中的媒体路径"
-
-#~ msgid "Fast udp streaming"
-#~ msgstr "快速 udp 流"
-
-#~ msgid ""
-#~ "Sends TS to specific ip:port by udp (you must know what you are doing)."
-#~ msgstr "通过 udp 发送 TS 到指定的 ip:端口 (您必须知道您在做什么)。"
-
-#~ msgid "MTU for out mode"
-#~ msgstr "用于输出模式的 MTU"
-
-#~ msgid "MTU for out mode."
-#~ msgstr "用于输出模式的 MTU。"
-
-#~ msgid "&Post processing"
-#~ msgstr "后期处理(&P)"
-
-#~ msgid "AVFoundation Video Capture"
-#~ msgstr "AVFoundation 视频捕获"
-
-#~ msgid "AVFoundation video capture module."
-#~ msgstr "AVFoundation 视频捕获模块。"
-
-#~ msgid "No video devices found"
-#~ msgstr "未找到视频设备"
-
-#~ msgid ""
-#~ "Your Mac does not seem to be equipped with a suitable video input device. "
-#~ "Please check your connectors and drivers."
-#~ msgstr "您的 Mac 似乎没有安装合适的视频输入设备。请检查您的接线及驱动程序。"
-
-#~ msgid "Probe DVB card for capabilities"
-#~ msgstr "探测 DVB 卡的功能特性"
-
-#~ msgid ""
-#~ "Some DVB cards do not like to be probed for their capabilities, you can "
-#~ "disable this feature if you experience some trouble."
-#~ msgstr ""
-#~ "部分 DVB 卡不乐意被外部程序探测其功能特性，若您遇到此类麻烦，可以尝试禁用"
-#~ "本功能。"
-
-#~ msgid "Satellite scanning config"
-#~ msgstr "卫星扫描配置"
-
-#~ msgid "filename of config file in share/dvb/dvb-s"
-#~ msgstr "share/dvb/dvb-s 中配置文件的文件名"
-
-#~ msgid "DVB"
-#~ msgstr "DVB"
-
-#~ msgid "DVB input with v4l2 support"
-#~ msgstr "DVB 输入，支持 v4l2"
-
 #, fuzzy
 #~ msgid ""
 #~ "%.1f MHz (%d services)\n"
@@ -28665,173 +28603,6 @@ msgstr "媒体管理器列表"
 
 #~ msgid "Scanning DVB"
 #~ msgstr "正在扫描 DVB"
-
-#~ msgid "QTSound"
-#~ msgstr "QTSound"
-
-#~ msgid "QuickTime Sound Capture"
-#~ msgstr "QuickTime 声音捕获"
-
-#~ msgid "No Audio Input device found"
-#~ msgstr "未找到音频输入设备"
-
-#~ msgid ""
-#~ "Your Mac does not seem to be equipped with a suitable audio input device."
-#~ "Please check your connectors and drivers."
-#~ msgstr "您的 Mac 似乎没有安装合适的音频输入设备。请检查您的接线及驱动程序。"
-
-#~ msgid "No audio input device found"
-#~ msgstr "未找到音频输入设备"
-
-#~ msgid "Uncompressed RAR"
-#~ msgstr "未压缩的 RAR"
-
-#~ msgid "Windows Multimedia Device output"
-#~ msgstr "Windows 多媒体设备输出"
-
-#~ msgid "Windows Store audio output"
-#~ msgstr "Windows Store 音频输出"
-
-#~ msgid "SCTE-27 decoder"
-#~ msgstr "SCTE-27 解码器"
-
-#~ msgid "SCTE-27"
-#~ msgstr "SCTE-27"
-
-#~ msgid "Specify the width to decode the image too"
-#~ msgstr "指定解码图像的目标宽度"
-
-#~ msgid "Specify the height to decode the image too"
-#~ msgstr "指定解码图像的目标高度"
-
-#~ msgid "Scale factor to apply to image"
-#~ msgstr "图像的缩放参数"
-
-#~ msgid "SVG video decoder"
-#~ msgstr "SVG 视频解码器"
-
-#~ msgid "WinMsg"
-#~ msgstr "WinMsg"
-
-#~ msgid "Windows messages interface"
-#~ msgstr "Windows 消息接口"
-
-#~ msgid "Save this Log..."
-#~ msgstr "保存此日志..."
-
-#~ msgid "VLC Debug Log (%s).rtf"
-#~ msgstr "VLC 调试日志 (%s).rtf"
-
-#~ msgid "No EPG Data Available"
-#~ msgstr "无 EPG 数据可用"
-
-#~ msgid " (%1+ rated)"
-#~ msgstr " (%1+ 已评分)"
-
-#~ msgid "Empty"
-#~ msgstr "清空"
-
-#~ msgid "Deactivate"
-#~ msgstr "禁用"
-
-#~ msgid "Audio Fingerprinting"
-#~ msgstr "音频指纹识别"
-
-#~ msgid "Select a matching identity"
-#~ msgstr "选择匹配的资料"
-
-#~ msgid "No fingerprint has been found"
-#~ msgstr "未找到匹配指纹"
-
-#~ msgid "Fingerprinting track..."
-#~ msgstr "正在对该轨道进行指纹识别..."
-
-#~ msgctxt "Tooltip|Clear"
-#~ msgid "Clear"
-#~ msgstr "清除"
-
-#~ msgid ""
-#~ "Extension '%s' does not respond.\n"
-#~ "Do you want to kill it now? "
-#~ msgstr ""
-#~ "扩展“%s”已经失去响应。\n"
-#~ "是否立即结束它? "
-
-#~ msgid "Extension not responding!"
-#~ msgstr "扩展无响应!"
-
-#~ msgid "addons local storage"
-#~ msgstr "插件本地存储"
-
-#~ msgid "Addons local storage installer"
-#~ msgstr "插件本地存储安装程序"
-
-#~ msgid "Addons local storage lister"
-#~ msgstr "插件本地存储查看程序"
-
-#~ msgid "Videolan.org's addons finder"
-#~ msgstr "Videolan.org 插件查找器"
-
-#~ msgid "addons.videolan.org addons finder"
-#~ msgstr "addons.videolan.org 插件查找器"
-
-#~ msgid "Videolan.org's single archive addons finder"
-#~ msgstr "Videolan.org 的独立包插件查找器"
-
-#~ msgid "single .vlp archive addons finder"
-#~ msgstr ".vlp 独立包插件查找器"
-
-#~ msgid "acoustid"
-#~ msgstr "acoustid"
-
-#~ msgid "Track fingerprinter (based on Acoustid)"
-#~ msgstr "轨道指纹识别服务 (基于 Acoustid)"
-
-#~ msgid "Duration of the fingerprinting"
-#~ msgstr "指纹识别时长"
-
-#~ msgid "Default: 90sec"
-#~ msgstr "默认: 90 秒"
-
-#~ msgid "Chromaprint stream output"
-#~ msgstr "Chromaprint 串流输出"
-
-#~ msgid ""
-#~ "Please wait while your font cache is rebuilt.\n"
-#~ "This should take less than a few minutes."
-#~ msgstr ""
-#~ "正在重建字体缓存，请稍候。\n"
-#~ "这应该能在一分钟内完成。"
-
-#~ msgid "The width of the visualization window, in pixels."
-#~ msgstr "可视化窗口的宽度，单位为像素。"
-
-#~ msgid "The height of the visualization window, in pixels."
-#~ msgstr "可视化窗口的高度，单位为像素。"
-
-#~ msgid "glSpectrum"
-#~ msgstr "glSpectrum"
-
-#~ msgid "3D OpenGL spectrum visualization"
-#~ msgstr "3D OpenGL spectrum 可视化"
-
-#~ msgid "Hann"
-#~ msgstr "Hann"
-
-#~ msgid "Flat Top"
-#~ msgstr "平顶"
-
-#~ msgid "Blackman-Harris"
-#~ msgstr "Blackman-Harris"
-
-#~ msgid "Kaiser"
-#~ msgstr "Kaiser"
-
-#~ msgid "VLC media player - Flash Viewer"
-#~ msgstr "VLC media player - Flash 查看器"
-
-#~ msgid "Streaming Output"
-#~ msgstr "串流输出"
 
 #~ msgid ""
 #~ "SAP is a way to publically announce streams that are being sent using "
@@ -31657,6 +31428,234 @@ msgstr "媒体管理器列表"
 #~ "= 分级, $S = 音频采样率 (以 kHz), $T = 时间, $U = 发布商, $V = 音量, $_ = "
 #~ "新行) "
 
+#~ msgid "Subtitle track added"
+#~ msgstr "字幕轨已添加"
+
+#~ msgid "Media in Zip"
+#~ msgstr "Zip 中的媒体"
+
+#~ msgid "Path to the media in the Zip archive"
+#~ msgstr "Zip 压缩包中的媒体路径"
+
+#~ msgid "Fast udp streaming"
+#~ msgstr "快速 udp 流"
+
+#~ msgid ""
+#~ "Sends TS to specific ip:port by udp (you must know what you are doing)."
+#~ msgstr "通过 udp 发送 TS 到指定的 ip:端口 (您必须知道您在做什么)。"
+
+#~ msgid "MTU for out mode"
+#~ msgstr "用于输出模式的 MTU"
+
+#~ msgid "MTU for out mode."
+#~ msgstr "用于输出模式的 MTU。"
+
+#~ msgid "&Post processing"
+#~ msgstr "后期处理(&P)"
+
+#~ msgid "AVFoundation Video Capture"
+#~ msgstr "AVFoundation 视频捕获"
+
+#~ msgid "AVFoundation video capture module."
+#~ msgstr "AVFoundation 视频捕获模块。"
+
+#~ msgid "No video devices found"
+#~ msgstr "未找到视频设备"
+
+#~ msgid ""
+#~ "Your Mac does not seem to be equipped with a suitable video input device. "
+#~ "Please check your connectors and drivers."
+#~ msgstr "您的 Mac 似乎没有安装合适的视频输入设备。请检查您的接线及驱动程序。"
+
+#~ msgid "Probe DVB card for capabilities"
+#~ msgstr "探测 DVB 卡的功能特性"
+
+#~ msgid ""
+#~ "Some DVB cards do not like to be probed for their capabilities, you can "
+#~ "disable this feature if you experience some trouble."
+#~ msgstr ""
+#~ "部分 DVB 卡不乐意被外部程序探测其功能特性，若您遇到此类麻烦，可以尝试禁用"
+#~ "本功能。"
+
+#~ msgid "Satellite scanning config"
+#~ msgstr "卫星扫描配置"
+
+#~ msgid "filename of config file in share/dvb/dvb-s"
+#~ msgstr "share/dvb/dvb-s 中配置文件的文件名"
+
+#~ msgid "DVB"
+#~ msgstr "DVB"
+
+#~ msgid "DVB input with v4l2 support"
+#~ msgstr "DVB 输入，支持 v4l2"
+
+#~ msgid "QTSound"
+#~ msgstr "QTSound"
+
+#~ msgid "QuickTime Sound Capture"
+#~ msgstr "QuickTime 声音捕获"
+
+#~ msgid "No Audio Input device found"
+#~ msgstr "未找到音频输入设备"
+
+#~ msgid ""
+#~ "Your Mac does not seem to be equipped with a suitable audio input device."
+#~ "Please check your connectors and drivers."
+#~ msgstr "您的 Mac 似乎没有安装合适的音频输入设备。请检查您的接线及驱动程序。"
+
+#~ msgid "No audio input device found"
+#~ msgstr "未找到音频输入设备"
+
+#~ msgid "Uncompressed RAR"
+#~ msgstr "未压缩的 RAR"
+
+#~ msgid "Windows Multimedia Device output"
+#~ msgstr "Windows 多媒体设备输出"
+
+#~ msgid "Windows Store audio output"
+#~ msgstr "Windows Store 音频输出"
+
+#~ msgid "SCTE-27 decoder"
+#~ msgstr "SCTE-27 解码器"
+
+#~ msgid "SCTE-27"
+#~ msgstr "SCTE-27"
+
+#~ msgid "Specify the width to decode the image too"
+#~ msgstr "指定解码图像的目标宽度"
+
+#~ msgid "Specify the height to decode the image too"
+#~ msgstr "指定解码图像的目标高度"
+
+#~ msgid "Scale factor to apply to image"
+#~ msgstr "图像的缩放参数"
+
+#~ msgid "SVG video decoder"
+#~ msgstr "SVG 视频解码器"
+
+#~ msgid "WinMsg"
+#~ msgstr "WinMsg"
+
+#~ msgid "Windows messages interface"
+#~ msgstr "Windows 消息接口"
+
+#~ msgid "Save this Log..."
+#~ msgstr "保存此日志..."
+
+#~ msgid "VLC Debug Log (%s).rtf"
+#~ msgstr "VLC 调试日志 (%s).rtf"
+
+#~ msgid "No EPG Data Available"
+#~ msgstr "无 EPG 数据可用"
+
+#~ msgid " (%1+ rated)"
+#~ msgstr " (%1+ 已评分)"
+
+#~ msgid "Empty"
+#~ msgstr "清空"
+
+#~ msgid "Deactivate"
+#~ msgstr "禁用"
+
+#~ msgid "Audio Fingerprinting"
+#~ msgstr "音频指纹识别"
+
+#~ msgid "Select a matching identity"
+#~ msgstr "选择匹配的资料"
+
+#~ msgid "No fingerprint has been found"
+#~ msgstr "未找到匹配指纹"
+
+#~ msgid "Fingerprinting track..."
+#~ msgstr "正在对该轨道进行指纹识别..."
+
+#~ msgctxt "Tooltip|Clear"
+#~ msgid "Clear"
+#~ msgstr "清除"
+
+#~ msgid ""
+#~ "Extension '%s' does not respond.\n"
+#~ "Do you want to kill it now? "
+#~ msgstr ""
+#~ "扩展“%s”已经失去响应。\n"
+#~ "是否立即结束它? "
+
+#~ msgid "Extension not responding!"
+#~ msgstr "扩展无响应!"
+
+#~ msgid "addons local storage"
+#~ msgstr "插件本地存储"
+
+#~ msgid "Addons local storage installer"
+#~ msgstr "插件本地存储安装程序"
+
+#~ msgid "Addons local storage lister"
+#~ msgstr "插件本地存储查看程序"
+
+#~ msgid "Videolan.org's addons finder"
+#~ msgstr "Videolan.org 插件查找器"
+
+#~ msgid "addons.videolan.org addons finder"
+#~ msgstr "addons.videolan.org 插件查找器"
+
+#~ msgid "Videolan.org's single archive addons finder"
+#~ msgstr "Videolan.org 的独立包插件查找器"
+
+#~ msgid "single .vlp archive addons finder"
+#~ msgstr ".vlp 独立包插件查找器"
+
+#~ msgid "acoustid"
+#~ msgstr "acoustid"
+
+#~ msgid "Track fingerprinter (based on Acoustid)"
+#~ msgstr "轨道指纹识别服务 (基于 Acoustid)"
+
+#~ msgid "Duration of the fingerprinting"
+#~ msgstr "指纹识别时长"
+
+#~ msgid "Default: 90sec"
+#~ msgstr "默认: 90 秒"
+
+#~ msgid "Chromaprint stream output"
+#~ msgstr "Chromaprint 串流输出"
+
+#~ msgid ""
+#~ "Please wait while your font cache is rebuilt.\n"
+#~ "This should take less than a few minutes."
+#~ msgstr ""
+#~ "正在重建字体缓存，请稍候。\n"
+#~ "这应该能在一分钟内完成。"
+
+#~ msgid "The width of the visualization window, in pixels."
+#~ msgstr "可视化窗口的宽度，单位为像素。"
+
+#~ msgid "The height of the visualization window, in pixels."
+#~ msgstr "可视化窗口的高度，单位为像素。"
+
+#~ msgid "glSpectrum"
+#~ msgstr "glSpectrum"
+
+#~ msgid "3D OpenGL spectrum visualization"
+#~ msgstr "3D OpenGL spectrum 可视化"
+
+#~ msgid "Hann"
+#~ msgstr "Hann"
+
+#~ msgid "Flat Top"
+#~ msgstr "平顶"
+
+#~ msgid "Blackman-Harris"
+#~ msgstr "Blackman-Harris"
+
+#~ msgid "Kaiser"
+#~ msgstr "Kaiser"
+
+#~ msgid "VLC media player - Flash Viewer"
+#~ msgstr "VLC media player - Flash 查看器"
+
+#~ msgid "Streaming Output"
+#~ msgstr "串流输出"
+
 #, fuzzy
 #~ msgid "Couldn't find pixmap file: %s"
 #~ msgstr "VLC 无法读取文件: %s"
@@ -32548,7 +32547,7 @@ msgstr "媒体管理器列表"
 #, fuzzy
 #~ msgid ""
 #~ "This enables automatic detection of UTF-8 encoding within subtitles files."
-#~ msgstr "可启用对字幕文件中 UTF-8 编码的自动侦测。"
+#~ msgstr "可启用对字幕文件 UTF-8 编码的自动侦测。"
 
 #, fuzzy
 #~ msgid ""
@@ -33795,11 +33794,11 @@ msgstr "媒体管理器列表"
 
 #, fuzzy
 #~ msgid "Left rear"
-#~ msgstr "左声道"
+#~ msgstr "左"
 
 #, fuzzy
 #~ msgid "Right rear"
-#~ msgstr "右声道"
+#~ msgstr "右"
 
 #, fuzzy
 #~ msgid ""
@@ -34042,7 +34041,7 @@ msgstr "媒体管理器列表"
 
 #, fuzzy
 #~ msgid "Audio filter for ugly resampling"
-#~ msgstr "用于简易声道混合的音频滤镜"
+#~ msgstr "用于简易声道混音的音频滤镜"
 
 #, fuzzy
 #~ msgid "Quiet mode."
@@ -35361,7 +35360,7 @@ msgstr "媒体管理器列表"
 
 #, fuzzy
 #~ msgid "audio filter for simple channel mixing"
-#~ msgstr "用于简易声道混合的音频滤镜"
+#~ msgstr "用于简易声道混音的音频滤镜"
 
 #, fuzzy
 #~ msgid "Floating-point audio format conversions"
@@ -35724,7 +35723,7 @@ msgstr "媒体管理器列表"
 
 #, fuzzy
 #~ msgid "Preference"
-#~ msgstr "参数设置"
+#~ msgstr "偏好设置"
 
 #, fuzzy
 #~ msgid "QNX RTOS video and audio output"
@@ -36240,7 +36239,7 @@ msgstr "媒体管理器列表"
 
 #, fuzzy
 #~ msgid "&Preferences..."
-#~ msgstr "参数设置..."
+#~ msgstr "偏好设置..."
 
 #, fuzzy
 #~ msgid "Minimal View..."
@@ -36391,8 +36390,8 @@ msgstr "媒体管理器列表"
 #~ "separated list of interface modules. (common values are \"rc\" (remote "
 #~ "control), \"http\", \"gestures\" ...)"
 #~ msgstr ""
-#~ "您可以为 VLC 选择 \"附加界面\"。它们将在启动默认界面时在后台启动。使用冒号"
-#~ "分隔界面模块列表。(常用值有 \"rc\" (远程控制), \"http\", \"gestures\" ...)"
+#~ "您可以为 VLC 选择“附加界面”。它们将在启动默认界面时在后台启动。界面模块的"
+#~ "列表使用冒号分隔。(常用值有“rc”(远程控制)“http”“gestures”...)"
 
 #, fuzzy
 #~ msgid ""
