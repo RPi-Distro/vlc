@@ -2,7 +2,7 @@
  * SSA/ASS subtitle decoder using libass.
  *****************************************************************************
  * Copyright (C) 2008-2009 VLC authors and VideoLAN
- * $Id: 5590df15375907f1578337948e8d10c67c49d5f6 $
+ * $Id: dc247f419aaf7db703091c6d21095b893205e9b7 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *
@@ -627,11 +627,14 @@ static int BuildRegions( rectangle_t *p_region, int i_max_region, ASS_Image *p_i
 #ifdef DEBUG_REGION
             msg_Err( p_spu, "Merging %d and %d", i_best_i, i_best_j );
 #endif
-            r_add( &region[i_best_i], &region[i_best_j] );
+            if( i_best_j >= 0 && i_best_i >= 0 )
+            {
+                r_add( &region[i_best_i], &region[i_best_j] );
 
-            if( i_best_j+1 < i_region )
-                memmove( &region[i_best_j], &region[i_best_j+1], sizeof(*region) * ( i_region - (i_best_j+1)  ) );
-            i_region--;
+                if( i_best_j+1 < i_region )
+                    memmove( &region[i_best_j], &region[i_best_j+1], sizeof(*region) * ( i_region - (i_best_j+1)  ) );
+                i_region--;
+            }
         }
     }
 

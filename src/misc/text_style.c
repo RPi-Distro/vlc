@@ -2,7 +2,7 @@
  * text_style.c
  *****************************************************************************
  * Copyright (C) 1999-2010 VLC authors and VideoLAN
- * $Id: a779814ea4eb4a4e0ef8fecc2cb87292411a58a8 $
+ * $Id: f1327905f7f795752ded8cc8296a425a21232273 $
  *
  * Author: basOS G <noxelia 4t gmail , com>
  *
@@ -69,7 +69,7 @@ text_style_t *text_style_Copy( text_style_t *p_dst, const text_style_t *p_src )
         p_dst->psz_fontname = strdup( p_src->psz_fontname );
 
     if( p_src->psz_monofontname )
-        p_dst->psz_monofontname = strdup( p_src->psz_fontname );
+        p_dst->psz_monofontname = strdup( p_src->psz_monofontname );
 
     return p_dst;
 }

@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-11-03 14:06+0100\n"
+"POT-Creation-Date: 2014-11-21 16:54+0100\n"
 "PO-Revision-Date: 2014-08-09 13:26+0000\n"
 "Last-Translator: imni <if90@chmail.ir>\n"
 "Language-Team: Persian (http://www.transifex.com/projects/p/vlc-trans/"
@@ -629,7 +629,7 @@ msgstr "تعداد پالایه‌ها به حداکثر (%u) رسید."
 
 #: src/audio_output/output.c:229 src/config/core.c:407 src/input/es_out.c:904
 #: src/libvlc-module.c:538 modules/gui/macosx/MainMenu.m:277
-#: modules/gui/macosx/MainWindow.m:1083 modules/video_filter/postproc.c:234
+#: modules/gui/macosx/MainWindow.m:1082 modules/video_filter/postproc.c:234
 msgid "Disable"
 msgstr "غیر‌فعال"
 
@@ -1339,7 +1339,7 @@ msgstr "قالب « %s » شناسایی نشد. برای دیدن جزییات 
 msgid "Title"
 msgstr "عنوان"
 
-#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1202
+#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1205
 #: modules/gui/macosx/playlistinfo.m:74 modules/mux/avi.c:48
 msgid "Artist"
 msgstr "اجرا"
@@ -2554,7 +2554,7 @@ msgstr ""
 #: src/libvlc-module.c:538 src/video_output/vout_intf.c:98
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
-#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1006
+#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1016
 #: modules/gui/macosx/AudioEffects.m:86 modules/gui/macosx/MainMenu.m:641
 #: modules/gui/macosx/prefs_widgets.m:1221
 #: modules/gui/macosx/prefs_widgets.m:1284
@@ -2566,7 +2566,7 @@ msgid "Default"
 msgstr "پیش‌فرض"
 
 #: src/libvlc-module.c:538 modules/gui/macosx/AudioEffects.m:112
-#: modules/gui/macosx/MainWindow.m:1081 modules/gui/macosx/wizard.m:351
+#: modules/gui/macosx/MainWindow.m:1080 modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/extended_panels.cpp:1053
 #: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:289
 msgid "Enable"
@@ -4760,7 +4760,7 @@ msgstr ""
 msgid "Downloading ..."
 msgstr ""
 
-#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2562
+#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2567
 #: modules/gui/macosx/AudioEffects.m:372 modules/gui/macosx/AudioEffects.m:387
 #: modules/gui/macosx/AudioEffects.m:613 modules/gui/macosx/AudioEffects.m:712
 #: modules/gui/macosx/bookmarks.m:111 modules/gui/macosx/BWQuincyUI.m:80
@@ -6572,19 +6572,19 @@ msgstr ""
 msgid "DV"
 msgstr "DV"
 
-#: modules/access/dvdnav.c:70 modules/access/dvdread.c:67
+#: modules/access/dvdnav.c:71 modules/access/dvdread.c:67
 msgid "DVD angle"
 msgstr "زاویهٔ دی‌وی‌دی"
 
-#: modules/access/dvdnav.c:72 modules/access/dvdread.c:69
+#: modules/access/dvdnav.c:73 modules/access/dvdread.c:69
 msgid "Default DVD angle."
 msgstr "زاویهٔ پیش‌فرض دی‌وی‌دی."
 
-#: modules/access/dvdnav.c:74
+#: modules/access/dvdnav.c:75
 msgid "Start directly in menu"
 msgstr "آغاز مستقیماً از منو"
 
-#: modules/access/dvdnav.c:76
+#: modules/access/dvdnav.c:77
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
@@ -6592,20 +6592,20 @@ msgstr ""
 "آغاز دی‌وی‌دی‌ها از منوی اصلی. سعی می‌کند از همهٔ مقدمات و اخطارهای بی‌فایدهٔ اولیه "
 "بگذرد."
 
-#: modules/access/dvdnav.c:85
+#: modules/access/dvdnav.c:86
 msgid "DVD with menus"
 msgstr "دی‌وی‌دی با منو"
 
-#: modules/access/dvdnav.c:86
+#: modules/access/dvdnav.c:87
 msgid "DVDnav Input"
 msgstr "ورودی DVDnav"
 
-#: modules/access/dvdnav.c:331 modules/access/dvdread.c:200
+#: modules/access/dvdnav.c:332 modules/access/dvdread.c:200
 #: modules/access/dvdread.c:462 modules/access/dvdread.c:530
 msgid "Playback failure"
 msgstr ""
 
-#: modules/access/dvdnav.c:332
+#: modules/access/dvdnav.c:333
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
@@ -6648,17 +6648,17 @@ msgid "EyeTV input"
 msgstr ""
 
 #: modules/access/file.c:177 modules/access/file.c:304
-#: modules/access/mtp.c:195 modules/access/mtp.c:286 modules/access/vdr.c:368
-#: modules/access/vdr.c:535
+#: modules/access/mtp.c:195 modules/access/mtp.c:286 modules/access/vdr.c:372
+#: modules/access/vdr.c:539
 msgid "File reading failed"
 msgstr ""
 
-#: modules/access/file.c:178 modules/access/vdr.c:535
+#: modules/access/file.c:178 modules/access/vdr.c:539
 #, c-format
 msgid "VLC could not open the file \"%s\" (%s)."
 msgstr ""
 
-#: modules/access/file.c:305 modules/access/vdr.c:369
+#: modules/access/file.c:305 modules/access/vdr.c:373
 #, c-format
 msgid "VLC could not read the file (%s)."
 msgstr ""
@@ -6770,28 +6770,28 @@ msgstr "ورودی FTP"
 msgid "FTP upload output"
 msgstr ""
 
-#: modules/access/ftp.c:320 modules/access/ftp.c:336 modules/access/ftp.c:460
-#: modules/access/ftp.c:469 modules/access/ftp.c:476
+#: modules/access/ftp.c:319 modules/access/ftp.c:335 modules/access/ftp.c:459
+#: modules/access/ftp.c:468 modules/access/ftp.c:475
 msgid "Network interaction failed"
 msgstr ""
 
-#: modules/access/ftp.c:321
+#: modules/access/ftp.c:320
 msgid "VLC could not connect with the given server."
 msgstr ""
 
-#: modules/access/ftp.c:337
+#: modules/access/ftp.c:336
 msgid "VLC's connection to the given server was rejected."
 msgstr ""
 
-#: modules/access/ftp.c:461
+#: modules/access/ftp.c:460
 msgid "Your account was rejected."
 msgstr ""
 
-#: modules/access/ftp.c:470
+#: modules/access/ftp.c:469
 msgid "Your password was rejected."
 msgstr ""
 
-#: modules/access/ftp.c:477
+#: modules/access/ftp.c:476
 msgid "Your connection attempt to the server was rejected."
 msgstr ""
 
@@ -8777,11 +8777,11 @@ msgstr ""
 msgid "VDR recordings"
 msgstr ""
 
-#: modules/access/vdr.c:809
+#: modules/access/vdr.c:813
 msgid "VDR Cut Marks"
 msgstr ""
 
-#: modules/access/vdr.c:872
+#: modules/access/vdr.c:876
 msgid "Start"
 msgstr ""
 
@@ -9053,7 +9053,7 @@ msgstr ""
 msgid "Audio filter for simple channel mixing"
 msgstr ""
 
-#: modules/audio_filter/channel_mixer/trivial.c:48
+#: modules/audio_filter/channel_mixer/trivial.c:41
 msgid "Audio filter for trivial channel mixing"
 msgstr ""
 
@@ -9916,7 +9916,7 @@ msgstr ""
 msgid "This linear gain will be applied in software."
 msgstr ""
 
-#: modules/audio_output/wasapi.c:457
+#: modules/audio_output/wasapi.c:459
 msgid "Windows Audio Session API output"
 msgstr ""
 
@@ -10012,7 +10012,7 @@ msgid "FFmpeg audio/video decoder"
 msgstr ""
 
 #: modules/codec/avcodec/avcodec.c:97 modules/codec/gstdecode.c:89
-#: modules/codec/omxil/android_mediacodec.c:273 modules/codec/omxil/omxil.c:84
+#: modules/codec/omxil/android_mediacodec.c:276 modules/codec/omxil/omxil.c:84
 msgid "Decoding"
 msgstr "کدگشایی"
 
@@ -11069,15 +11069,15 @@ msgstr ""
 msgid "MPEG audio layer I/II/III packetizer"
 msgstr ""
 
-#: modules/codec/omxil/android_mediacodec.c:263
+#: modules/codec/omxil/android_mediacodec.c:266
 msgid "Android direct rendering"
 msgstr ""
 
-#: modules/codec/omxil/android_mediacodec.c:265
+#: modules/codec/omxil/android_mediacodec.c:268
 msgid "Enable Android direct rendering using opaque buffers."
 msgstr ""
 
-#: modules/codec/omxil/android_mediacodec.c:270
+#: modules/codec/omxil/android_mediacodec.c:273
 msgid "Video decoder using Android MediaCodec"
 msgstr ""
 
@@ -13085,7 +13085,7 @@ msgstr ""
 
 #: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/MainWindow.m:209
 #: modules/gui/macosx/MainWindow.m:740 modules/gui/macosx/MainWindow.m:746
-#: modules/gui/macosx/MainWindow.m:1366 modules/gui/ncurses.c:1041
+#: modules/gui/macosx/MainWindow.m:1370 modules/gui/ncurses.c:1041
 #: modules/gui/qt4/dialogs/help.cpp:91 modules/gui/qt4/main_interface.cpp:1078
 #: modules/gui/qt4/main_interface.cpp:1082
 #: modules/gui/qt4/main_interface.cpp:1121
@@ -13898,11 +13898,11 @@ msgstr ""
 msgid "AVI demuxer"
 msgstr ""
 
-#: modules/demux/avi/avi.c:728
+#: modules/demux/avi/avi.c:733
 msgid "Broken or missing AVI Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:729
+#: modules/demux/avi/avi.c:734
 msgid ""
 "Because this AVI file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -13912,19 +13912,19 @@ msgid ""
 "What do you want to do?"
 msgstr ""
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Build index then play"
 msgstr ""
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Play as is"
 msgstr ""
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Do not play"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2561
+#: modules/demux/avi/avi.c:2566
 msgid "Fixing AVI Index..."
 msgstr ""
 
@@ -17222,28 +17222,28 @@ msgstr ""
 msgid "Save Playlist"
 msgstr "ذخیرهٔ فهرست پخش"
 
-#: modules/gui/macosx/playlist.m:1202
+#: modules/gui/macosx/playlist.m:1205
 msgid "Meta-information"
 msgstr "اطلاعات متا"
 
-#: modules/gui/macosx/playlist.m:1535 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/macosx/playlist.m:1541 modules/gui/qt4/qt4.cpp:188
 msgid "Continue playback?"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1535 modules/gui/macosx/simple_prefs.m:837
+#: modules/gui/macosx/playlist.m:1541 modules/gui/macosx/simple_prefs.m:837
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr "ادامه"
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Restart playback"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Always continue"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Playback of \"%@\" will continue at %@"
 msgstr ""
 
@@ -17665,16 +17665,16 @@ msgid ""
 "\"%@\""
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1490
+#: modules/gui/macosx/simple_prefs.m:1486
 msgid "Invalid combination"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1491
+#: modules/gui/macosx/simple_prefs.m:1487
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr ""
 
+#: modules/gui/macosx/simple_prefs.m:1497
 #: modules/gui/macosx/simple_prefs.m:1501
-#: modules/gui/macosx/simple_prefs.m:1505
 msgid "This combination is already taken by \"%@\"."
 msgstr ""
 
@@ -25801,11 +25801,11 @@ msgstr ""
 msgid "ASCII-art video output"
 msgstr ""
 
-#: modules/video_output/android/nativewindow.c:53
+#: modules/video_output/android/nativewindow.c:55
 msgid "ANativeWindow"
 msgstr ""
 
-#: modules/video_output/android/nativewindow.c:54
+#: modules/video_output/android/nativewindow.c:56
 msgid "Android native window"
 msgstr ""
 
@@ -27200,7 +27200,7 @@ msgstr "ویرایش تنظیمات"
 #: modules/gui/qt4/ui/open.h:256
 #, fuzzy
 msgid "Extra media"
-msgstr "متاداده"
+msgstr "رسانه‌ی ورودی"
 
 #: modules/gui/qt4/ui/open.h:258
 msgid "Complete MRL for VLC internal"
@@ -27232,7 +27232,7 @@ msgstr "حالت استریو"
 #: modules/gui/qt4/ui/open_capture.h:99
 #, fuzzy
 msgid "Select the capture device type"
-msgstr "کلید قطع صدا را انتخاب کنید."
+msgstr "یک شاخه انتخاب کنید"
 
 #: modules/gui/qt4/ui/open_capture.h:101
 #, fuzzy
@@ -27240,9 +27240,8 @@ msgid "Device Selection"
 msgstr "انتخاب نامعتبر"
 
 #: modules/gui/qt4/ui/open_capture.h:102
-#, fuzzy
 msgid "Options"
-msgstr "گزینه‌ها"
+msgstr ""
 
 #: modules/gui/qt4/ui/open_capture.h:104
 msgid "Access advanced options to tweak the device"
@@ -27273,7 +27272,7 @@ msgstr ""
 #: modules/gui/qt4/ui/open_disk.h:306
 #, fuzzy
 msgid "Disc device"
-msgstr "دستگاه‌ها"
+msgstr "دستگاه نمایش"
 
 #: modules/gui/qt4/ui/open_disk.h:308
 #, fuzzy
@@ -27316,7 +27315,7 @@ msgstr ""
 #: modules/gui/qt4/ui/open_net.h:97
 #, fuzzy
 msgid "Network Protocol"
-msgstr "همگام‌سازی شبکه"
+msgstr "شبکه"
 
 #: modules/gui/qt4/ui/open_net.h:98
 msgid "Please enter a network URL:"
@@ -27380,14 +27379,13 @@ msgid "AVI"
 msgstr ""
 
 #: modules/gui/qt4/ui/profiles.h:700
-#, fuzzy
 msgid "Features"
-msgstr "امکانات پردازنده"
+msgstr ""
 
 #: modules/gui/qt4/ui/profiles.h:702
 #, fuzzy
 msgid "Streamable"
-msgstr "نرخ بیتی جریان"
+msgstr "جریان"
 
 #: modules/gui/qt4/ui/profiles.h:703
 #, fuzzy
@@ -27456,7 +27454,7 @@ msgstr ""
 #: modules/gui/qt4/ui/sout.h:205
 #, fuzzy
 msgid "Destination Setup"
-msgstr "شرح"
+msgstr "کُدک ویدئوی هدف"
 
 #: modules/gui/qt4/ui/sout.h:206
 #, fuzzy
@@ -27472,7 +27470,7 @@ msgstr ""
 #: modules/gui/qt4/ui/sout.h:208
 #, fuzzy
 msgid "New destination"
-msgstr "شرح"
+msgstr "مقصد خروجی"
 
 #: modules/gui/qt4/ui/sout.h:210
 #, fuzzy
@@ -27545,9 +27543,8 @@ msgid "Dolby Surround:"
 msgstr "دالبی سراند"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:439
-#, fuzzy
 msgid "Replay gain mode:"
-msgstr "انتخاب پوشه"
+msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_audio.h:440
 msgid "Headphone surround effect"
@@ -27622,7 +27619,7 @@ msgstr "پیشکار HTTP"
 #: modules/gui/qt4/ui/sprefs_input.h:361
 #, fuzzy
 msgid "HTTP (default)"
-msgstr "پیش‌فرض"
+msgstr " (پیش‌فرض فعال)"
 
 #: modules/gui/qt4/ui/sprefs_input.h:362
 msgid "RTP over RTSP (TCP)"
@@ -27690,7 +27687,7 @@ msgstr "پنجره‌های فعال"
 #: modules/gui/qt4/ui/sprefs_interface.h:518
 #, fuzzy
 msgid "Integrate video in interface"
-msgstr "خروجی ویدئو را به صورت توکار در واسط اصلی نمایش می‌دهد."
+msgstr "واسط‌های اصلی"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:519
 #, fuzzy
@@ -27812,7 +27809,7 @@ msgstr "نادَرهم‌بافی"
 #: modules/gui/qt4/ui/sprefs_video.h:337
 #, fuzzy
 msgid "Force Aspect Ratio"
-msgstr "نسبت طول به عرض"
+msgstr "نسبت نسبت طول به عرض مبدأ"
 
 #: modules/gui/qt4/ui/sprefs_video.h:342
 msgid "vlc-snap"
@@ -27852,9 +27849,8 @@ msgid "Status"
 msgstr "وضعیت"
 
 #: modules/gui/qt4/ui/streampanel.h:179
-#, fuzzy
 msgid "P/P"
-msgstr "‏‎UDP/RTP‏"
+msgstr ""
 
 #: modules/gui/qt4/ui/streampanel.h:182
 msgid "Prev"
@@ -27940,7 +27936,7 @@ msgstr "ماسک"
 #: modules/gui/qt4/ui/video_effects.h:1468
 #, fuzzy
 msgid "Output Color Filtermode"
-msgstr "پروندهٔ خروجی"
+msgstr "پیمانهٔ خروجی ویدئو"
 
 #: modules/gui/qt4/ui/video_effects.h:1469
 msgid "Brightness (%)"
@@ -27966,12 +27962,11 @@ msgstr "آینه"
 #: modules/gui/qt4/ui/video_effects.h:1481
 #, fuzzy
 msgid "Motion detect"
-msgstr "اتصال مجدد خودکار"
+msgstr "پروندهٔ شرح"
 
 #: modules/gui/qt4/ui/video_effects.h:1482
-#, fuzzy
 msgid "Spatial blur"
-msgstr "تصویرساز"
+msgstr ""
 
 #: modules/gui/qt4/ui/video_effects.h:1486
 msgid "Anti-Flickering"
@@ -28053,18 +28048,6 @@ msgstr ""
 #, fuzzy
 msgid "Media Manager List"
 msgstr "نگارش مدیر رسانه "
-
-#~ msgid "Subtitle track added"
-#~ msgstr "قطعه زیرنویس افزوده شد"
-
-#~ msgid "Fast udp streaming"
-#~ msgstr "جریان‌سازی UDP سریع"
-
-#~ msgid "DVB input with v4l2 support"
-#~ msgstr "ورودی DVB با پشتیبانی v412"
-
-#~ msgid "Uncompressed RAR"
-#~ msgstr "RAR فشرده نشده"
 
 #, fuzzy
 #~ msgid ""
@@ -28426,10 +28409,6 @@ msgstr "نگارش مدیر رسانه "
 #~ msgid "Quiet mode."
 #~ msgstr "حالت نرخ بیتی)"
 
-#, fuzzy
-#~ msgid "Motion blue"
-#~ msgstr "پروندهٔ شرح"
-
 #~ msgid ""
 #~ "This saves the audio output volume when you use the mute function. You "
 #~ "should not change this option manually."
@@ -28594,10 +28573,6 @@ msgstr "نگارش مدیر رسانه "
 
 #~ msgid "Tuner to use, if there are several ones."
 #~ msgstr "تیونر مورد استفاده، اگر چند تیونر موجود است."
-
-#, fuzzy
-#~ msgid "Set this option if the capture device outputs MJPEG"
-#~ msgstr "یک شاخه انتخاب کنید"
 
 #~ msgid "Quality of the stream."
 #~ msgstr "کیفیت جریان."
@@ -29204,6 +29179,18 @@ msgstr "نگارش مدیر رسانه "
 #~ msgid "Couldn't find any trace of a previous crash."
 #~ msgstr "اثری از فروپاشی قبلی دیده نمی‌شود."
 
+#~ msgid "Subtitle track added"
+#~ msgstr "قطعه زیرنویس افزوده شد"
+
+#~ msgid "Fast udp streaming"
+#~ msgstr "جریان‌سازی UDP سریع"
+
+#~ msgid "DVB input with v4l2 support"
+#~ msgstr "ورودی DVB با پشتیبانی v412"
+
+#~ msgid "Uncompressed RAR"
+#~ msgstr "RAR فشرده نشده"
+
 #, fuzzy
 #~ msgid "Automatically retrieve media infos"
 #~ msgstr "پیش‌تجزیهٔ خودکار پرونده‌ها"
@@ -29721,10 +29708,6 @@ msgstr "نگارش مدیر رسانه "
 #~ msgstr "Command+"
 
 #, fuzzy
-#~ msgid "Maemo hildon interface"
-#~ msgstr "واسط‌های اصلی"
-
-#, fuzzy
 #~ msgid "Subscreen height:"
 #~ msgstr "ارتفاع کناره"
 
@@ -30201,10 +30184,6 @@ msgstr "نگارش مدیر رسانه "
 #, fuzzy
 #~ msgid "Audio output saved volume"
 #~ msgstr "گام تغییر بلندی خروجی صدا"
-
-#, fuzzy
-#~ msgid "Video output filter module"
-#~ msgstr "پیمانهٔ خروجی ویدئو"
 
 #, fuzzy
 #~ msgid "UDP port"
@@ -30805,10 +30784,6 @@ msgstr "نگارش مدیر رسانه "
 #, fuzzy
 #~ msgid "Address:"
 #~ msgstr "نشانی"
-
-#, fuzzy
-#~ msgid "Network: "
-#~ msgstr "شبکه"
 
 #, fuzzy
 #~ msgid "enable"

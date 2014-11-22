@@ -2,7 +2,7 @@
  * dvdnav.c: DVD module using the dvdnav library.
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: 1ba59e20f58bfc95d1dee4139d434ecd5421c318 $
+ * $Id: eb65815ada3a75249a22bf7299ba48bc9185d530 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -43,6 +43,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <unistd.h>     /* close() */
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>

@@ -23,9 +23,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-11-03 14:06+0100\n"
-"PO-Revision-Date: 2014-07-30 00:20+0000\n"
-"Last-Translator: Michał Trzebiatowski <hippie_1968@hotmail.com>\n"
+"POT-Creation-Date: 2014-11-21 16:54+0100\n"
+"PO-Revision-Date: 2014-11-06 02:06+0000\n"
+"Last-Translator: Tobias Bannert\n"
 "Language-Team: German (http://www.transifex.com/projects/p/vlc-trans/"
 "language/de/)\n"
 "Language: de\n"
@@ -44,8 +44,8 @@ msgstr ""
 "Dieses Programm kommt OHNE GEWÄHRLEISTUNG.\n"
 "Sie dürfen das Programm unter den Bedingungen der GNU General Public License "
 "weitergegeben;\n"
-"Schauen Sie für Details in die Datei COPYING.\n"
-"Geschrieben vom VideoLAN Team; Schauen Sie in die Datei AUTHORS.\n"
+"Für Details bitte die Datei COPYING ansehen.\n"
+"Geschrieben von der VideoLAN-Gruppe; zu sehen in der AUTHORS-Datei.\n"
 
 #: include/vlc_config_cat.h:33
 msgid "VLC preferences"
@@ -648,7 +648,7 @@ msgstr "Die Maximalanzahl an Filtern (%u) wurde erreicht."
 
 #: src/audio_output/output.c:229 src/config/core.c:407 src/input/es_out.c:904
 #: src/libvlc-module.c:538 modules/gui/macosx/MainMenu.m:277
-#: modules/gui/macosx/MainWindow.m:1083 modules/video_filter/postproc.c:234
+#: modules/gui/macosx/MainWindow.m:1082 modules/video_filter/postproc.c:234
 msgid "Disable"
 msgstr "Deaktivieren"
 
@@ -1403,7 +1403,7 @@ msgstr ""
 msgid "Title"
 msgstr "Titel"
 
-#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1202
+#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1205
 #: modules/gui/macosx/playlistinfo.m:74 modules/mux/avi.c:48
 msgid "Artist"
 msgstr "Künstler"
@@ -2657,7 +2657,7 @@ msgstr ""
 #: src/libvlc-module.c:538 src/video_output/vout_intf.c:98
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
-#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1006
+#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1016
 #: modules/gui/macosx/AudioEffects.m:86 modules/gui/macosx/MainMenu.m:641
 #: modules/gui/macosx/prefs_widgets.m:1221
 #: modules/gui/macosx/prefs_widgets.m:1284
@@ -2669,7 +2669,7 @@ msgid "Default"
 msgstr "Standard"
 
 #: src/libvlc-module.c:538 modules/gui/macosx/AudioEffects.m:112
-#: modules/gui/macosx/MainWindow.m:1081 modules/gui/macosx/wizard.m:351
+#: modules/gui/macosx/MainWindow.m:1080 modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/extended_panels.cpp:1053
 #: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:289
 msgid "Enable"
@@ -3314,7 +3314,7 @@ msgid ""
 "authenticate remote clients in TLS sessions."
 msgstr ""
 "Diese optionale X.509-Zertifikatsdatei (PEM-Format) kann für die "
-"Authentifizierung von Remoteclients in TLS-Sizungen verwendet werden."
+"Legitimierung von entfernten Programmen in TLS-Sizungen verwendet werden."
 
 #: src/libvlc-module.c:844
 msgid "HTTP/TLS Certificate Revocation List"
@@ -3366,7 +3366,7 @@ msgstr "Hier können Sie \"title\" (Titel)-Metadaten für einen Input festlegen.
 
 #: src/libvlc-module.c:866
 msgid "Author metadata"
-msgstr "Autor-Metadaten"
+msgstr "Autormetadaten"
 
 #: src/libvlc-module.c:868
 msgid "Allows you to specify an \"author\" metadata for an input."
@@ -3783,9 +3783,10 @@ msgid ""
 msgstr ""
 "Nur eine laufende Instanz von VLC zu erlauben kann manchmal nützlich sein, z."
 "B. wenn Sie einige Medientypen mit VLC verknüpft haben und nicht jedes Mal "
-"eine neue Instanz von VLC möchten, wenn Sie auf eine Datei in Ihrem "
-"Dateimanager einen Doppelklick machen. Diese Option wird Ihnen erlauben, die "
-"Datei mit der bereits laufenden Instanz abzuspielen oder sie einzureihen."
+"eine neue Instanz von VLC öffnen wollen, wenn Sie auf eine Datei, in Ihrer "
+"Dateiverwaltung, einen Doppelklick tätigen. Diese Option wird es Ihnen "
+"erlauben, die Datei mit der bereits laufenden Instanz abzuspielen oder sie "
+"einzureihen."
 
 #: src/libvlc-module.c:1071
 msgid ""
@@ -3816,7 +3817,8 @@ msgstr ""
 
 #: src/libvlc-module.c:1085 modules/gui/qt4/ui/sprefs_interface.h:524
 msgid "Use only one instance when started from file manager"
-msgstr "Nur eine Instanz nutzen, wenn aus dem Dateimanager gestartet"
+msgstr ""
+"Nur eine Instanz benutzen, wenn aus der Dateiverwaltung gestartet wurde"
 
 #: src/libvlc-module.c:1087
 msgid "Increase the priority of the process"
@@ -5004,7 +5006,7 @@ msgstr ""
 msgid "Downloading ..."
 msgstr "Herunterladen …"
 
-#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2562
+#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2567
 #: modules/gui/macosx/AudioEffects.m:372 modules/gui/macosx/AudioEffects.m:387
 #: modules/gui/macosx/AudioEffects.m:613 modules/gui/macosx/AudioEffects.m:712
 #: modules/gui/macosx/bookmarks.m:111 modules/gui/macosx/BWQuincyUI.m:80
@@ -6928,19 +6930,19 @@ msgstr "Digitaler Video-Eingang (Firewire/IEEE 1394)"
 msgid "DV"
 msgstr "DV"
 
-#: modules/access/dvdnav.c:70 modules/access/dvdread.c:67
+#: modules/access/dvdnav.c:71 modules/access/dvdread.c:67
 msgid "DVD angle"
 msgstr "DVD-Winkel"
 
-#: modules/access/dvdnav.c:72 modules/access/dvdread.c:69
+#: modules/access/dvdnav.c:73 modules/access/dvdread.c:69
 msgid "Default DVD angle."
 msgstr "Standard-DVD-Winkel."
 
-#: modules/access/dvdnav.c:74
+#: modules/access/dvdnav.c:75
 msgid "Start directly in menu"
 msgstr "Direkt im Menü starten"
 
-#: modules/access/dvdnav.c:76
+#: modules/access/dvdnav.c:77
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
@@ -6948,20 +6950,20 @@ msgstr ""
 "Die DVD direkt im Hauptmenü starten. Dadurch wird versucht, alle unnützen "
 "Warnungen am Anfang zu überspringen."
 
-#: modules/access/dvdnav.c:85
+#: modules/access/dvdnav.c:86
 msgid "DVD with menus"
 msgstr "DVD mit Menüs"
 
-#: modules/access/dvdnav.c:86
+#: modules/access/dvdnav.c:87
 msgid "DVDnav Input"
 msgstr "DVDnav-Input"
 
-#: modules/access/dvdnav.c:331 modules/access/dvdread.c:200
+#: modules/access/dvdnav.c:332 modules/access/dvdread.c:200
 #: modules/access/dvdread.c:462 modules/access/dvdread.c:530
 msgid "Playback failure"
 msgstr "Wiedergabefehler"
 
-#: modules/access/dvdnav.c:332
+#: modules/access/dvdnav.c:333
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
@@ -7008,17 +7010,17 @@ msgid "EyeTV input"
 msgstr "EyeTV Auswahl"
 
 #: modules/access/file.c:177 modules/access/file.c:304
-#: modules/access/mtp.c:195 modules/access/mtp.c:286 modules/access/vdr.c:368
-#: modules/access/vdr.c:535
+#: modules/access/mtp.c:195 modules/access/mtp.c:286 modules/access/vdr.c:372
+#: modules/access/vdr.c:539
 msgid "File reading failed"
 msgstr "Einlesen der Datei fehlgeschlagen"
 
-#: modules/access/file.c:178 modules/access/vdr.c:535
+#: modules/access/file.c:178 modules/access/vdr.c:539
 #, c-format
 msgid "VLC could not open the file \"%s\" (%s)."
 msgstr "VLC konnte die Datei „%s“ nicht öffnen (%s)."
 
-#: modules/access/file.c:305 modules/access/vdr.c:369
+#: modules/access/file.c:305 modules/access/vdr.c:373
 #, c-format
 msgid "VLC could not read the file (%s)."
 msgstr "VLC konnte diese Datei nicht lesen (%s)."
@@ -7148,28 +7150,28 @@ msgstr "FTP-Input"
 msgid "FTP upload output"
 msgstr "Ausgabe des FTP-Uploads"
 
-#: modules/access/ftp.c:320 modules/access/ftp.c:336 modules/access/ftp.c:460
-#: modules/access/ftp.c:469 modules/access/ftp.c:476
+#: modules/access/ftp.c:319 modules/access/ftp.c:335 modules/access/ftp.c:459
+#: modules/access/ftp.c:468 modules/access/ftp.c:475
 msgid "Network interaction failed"
 msgstr "Zusammenspiel im Netzwerk fehlgeschlagen"
 
-#: modules/access/ftp.c:321
+#: modules/access/ftp.c:320
 msgid "VLC could not connect with the given server."
 msgstr "VLC konnte mit dem angegebenen Server keine Verbindung aufbauen."
 
-#: modules/access/ftp.c:337
+#: modules/access/ftp.c:336
 msgid "VLC's connection to the given server was rejected."
 msgstr "VLCs Verbindung mit dem angegebenen Server wurde abgewiesen."
 
-#: modules/access/ftp.c:461
+#: modules/access/ftp.c:460
 msgid "Your account was rejected."
 msgstr "Ihr Benutzerkonto wurde abgewiesen."
 
-#: modules/access/ftp.c:470
+#: modules/access/ftp.c:469
 msgid "Your password was rejected."
 msgstr "Ihr Passwort wurde abgewiesen."
 
-#: modules/access/ftp.c:477
+#: modules/access/ftp.c:476
 msgid "Your connection attempt to the server was rejected."
 msgstr "Der Verbindungsaufbau zum Server wurde abgewiesen."
 
@@ -7264,7 +7266,7 @@ msgstr "HTTP(S)"
 
 #: modules/access/http.c:458
 msgid "HTTP authentication"
-msgstr "HTTP-Authentifizierung"
+msgstr "HTTP-Legitimierung"
 
 #: modules/access/http.c:459
 #, c-format
@@ -7626,7 +7628,7 @@ msgstr "Zu benutzender Port, um RTSP/RTP über HTTP zu tunneln."
 
 #: modules/access/live555.cpp:630
 msgid "RTSP authentication"
-msgstr "RTSP-Authentifizierung"
+msgstr "RTSP-Legitimierung"
 
 #: modules/access/live555.cpp:631
 msgid "Please enter a valid login name and a password."
@@ -8125,11 +8127,11 @@ msgstr ""
 
 #: modules/access/rdp.c:65
 msgid "RDP auth username"
-msgstr "RDP Auth. Benutzername"
+msgstr "RDP-Legitimierungsbenutzername"
 
 #: modules/access/rdp.c:66
 msgid "RDP auth password"
-msgstr "RDP Auth. Passwort"
+msgstr "RDP-Legitimierungspasswort"
 
 #: modules/access/rdp.c:67
 msgid "RDP Password"
@@ -8172,8 +8174,8 @@ msgid ""
 "RTP packets will be authenticated and deciphered with this Secure RTP master "
 "shared secret key. This must be a 32-character-long hexadecimal string."
 msgstr ""
-"Mit diesem gemeinsamen geheimen Schlüssel des Master-Secure RTP werden RTP-"
-"Pakete authentifiziert und entschlüsselt. Das muss eine 32-Zeichen lange "
+"Mit diesem gemeinsamen geheimen Schlüssel des Master-Secure-RTP werden RTP-"
+"Pakete legitimiert und entschlüsselt. Das muss eine 32-Zeichen lange "
 "hexadezimale Zeichenfolge sein."
 
 #: modules/access/rtp/rtp.c:55 modules/stream_out/rtp.c:152
@@ -8440,7 +8442,7 @@ msgstr "SFTP-Input"
 
 #: modules/access/sftp.c:131
 msgid "SFTP authentication"
-msgstr "SFTP-Authentifizierung"
+msgstr "SFTP-Legitimierung"
 
 #: modules/access/sftp.c:132
 #, c-format
@@ -9287,11 +9289,11 @@ msgstr "VDR"
 msgid "VDR recordings"
 msgstr "VDR-Aufnahmen"
 
-#: modules/access/vdr.c:809
+#: modules/access/vdr.c:813
 msgid "VDR Cut Marks"
 msgstr "VDR Schnittmarken"
 
-#: modules/access/vdr.c:872
+#: modules/access/vdr.c:876
 msgid "Start"
 msgstr "Start"
 
@@ -9318,7 +9320,7 @@ msgstr "X.509-Client-Zertifikat"
 
 #: modules/access/vnc.c:53
 msgid "Certificate for client authentification"
-msgstr "Zertifikat für Client-Authentifizierung"
+msgstr "Zertifikat für Programmlegitimierung"
 
 #: modules/access/vnc.c:54
 msgid "X.509 Client private key"
@@ -9326,7 +9328,7 @@ msgstr "X.509-Client privater Schlüssel"
 
 #: modules/access/vnc.c:55
 msgid "Private key for authentification by certificate"
-msgstr "Privater Schlüssel zur Zertifikat-Authentifizierung "
+msgstr "Privater Schlüssel zur Zertifikatlegitimierung"
 
 #: modules/access/vnc.c:58
 msgid "RGB chroma (RV32, RV24, RV16, RGB2)"
@@ -9593,7 +9595,7 @@ msgstr "Audiokanal-Remapper"
 msgid "Audio filter for simple channel mixing"
 msgstr "Audiofilter für einfache Kanalmischung"
 
-#: modules/audio_filter/channel_mixer/trivial.c:48
+#: modules/audio_filter/channel_mixer/trivial.c:41
 msgid "Audio filter for trivial channel mixing"
 msgstr "Audiofilter für triviale Kanalmischung"
 
@@ -10512,7 +10514,7 @@ msgstr "Softwareverstärker"
 msgid "This linear gain will be applied in software."
 msgstr "Diese lineare Verstärkung wird im Programm angewandt."
 
-#: modules/audio_output/wasapi.c:457
+#: modules/audio_output/wasapi.c:459
 msgid "Windows Audio Session API output"
 msgstr "API-Ausgabe der Windows-Audio-Sitzung"
 
@@ -10616,7 +10618,7 @@ msgid "FFmpeg audio/video decoder"
 msgstr "FFmpeg-Audio/Video-Decoder"
 
 #: modules/codec/avcodec/avcodec.c:97 modules/codec/gstdecode.c:89
-#: modules/codec/omxil/android_mediacodec.c:273 modules/codec/omxil/omxil.c:84
+#: modules/codec/omxil/android_mediacodec.c:276 modules/codec/omxil/omxil.c:84
 msgid "Decoding"
 msgstr "Decoding"
 
@@ -11814,16 +11816,16 @@ msgstr "MPEG audio layer I/II/III-Decoder"
 msgid "MPEG audio layer I/II/III packetizer"
 msgstr "MPEG Audio Layer I/II/III-Paketisierer"
 
-#: modules/codec/omxil/android_mediacodec.c:263
+#: modules/codec/omxil/android_mediacodec.c:266
 msgid "Android direct rendering"
 msgstr "Direktes Rendern in Android"
 
-#: modules/codec/omxil/android_mediacodec.c:265
+#: modules/codec/omxil/android_mediacodec.c:268
 msgid "Enable Android direct rendering using opaque buffers."
 msgstr ""
 "Aktiviert das direkte Rendering in Android unter Nutzung des Opaque-Puffers."
 
-#: modules/codec/omxil/android_mediacodec.c:270
+#: modules/codec/omxil/android_mediacodec.c:273
 msgid "Video decoder using Android MediaCodec"
 msgstr "Videodecoder, der Android MediaCodec verwendet"
 
@@ -14075,7 +14077,7 @@ msgstr "D-Bus-Kontrollinterface"
 
 #: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/MainWindow.m:209
 #: modules/gui/macosx/MainWindow.m:740 modules/gui/macosx/MainWindow.m:746
-#: modules/gui/macosx/MainWindow.m:1366 modules/gui/ncurses.c:1041
+#: modules/gui/macosx/MainWindow.m:1370 modules/gui/ncurses.c:1041
 #: modules/gui/qt4/dialogs/help.cpp:91 modules/gui/qt4/main_interface.cpp:1078
 #: modules/gui/qt4/main_interface.cpp:1082
 #: modules/gui/qt4/main_interface.cpp:1121
@@ -14919,11 +14921,11 @@ msgstr "Wenn nötig korrigieren"
 msgid "AVI demuxer"
 msgstr "AVI-Demuxer"
 
-#: modules/demux/avi/avi.c:728
+#: modules/demux/avi/avi.c:733
 msgid "Broken or missing AVI Index"
 msgstr "Fehlerhafter oder fehlender AVI-Index"
 
-#: modules/demux/avi/avi.c:729
+#: modules/demux/avi/avi.c:734
 msgid ""
 "Because this AVI file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14939,19 +14941,19 @@ msgstr ""
 "Dieser Schritt könnte bei einer großen Datei viel Zeit in Anspruch nehmen.\n"
 "Was möchten Sie tun?"
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Build index then play"
 msgstr "Index erstellen, dann wiedergeben"
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Play as is"
 msgstr "Unverändert abspielen"
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Do not play"
 msgstr "Nicht abspielen"
 
-#: modules/demux/avi/avi.c:2561
+#: modules/demux/avi/avi.c:2566
 msgid "Fixing AVI Index..."
 msgstr "AVI-Index wird repariert …"
 
@@ -18418,28 +18420,28 @@ msgstr "HTML-Wiedergabeliste"
 msgid "Save Playlist"
 msgstr "Wiedergabeliste speichern"
 
-#: modules/gui/macosx/playlist.m:1202
+#: modules/gui/macosx/playlist.m:1205
 msgid "Meta-information"
 msgstr "Meta-Information"
 
-#: modules/gui/macosx/playlist.m:1535 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/macosx/playlist.m:1541 modules/gui/qt4/qt4.cpp:188
 msgid "Continue playback?"
 msgstr "Wiedergabe fortsetzen?"
 
-#: modules/gui/macosx/playlist.m:1535 modules/gui/macosx/simple_prefs.m:837
+#: modules/gui/macosx/playlist.m:1541 modules/gui/macosx/simple_prefs.m:837
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr "Fortfahren"
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Restart playback"
 msgstr "Wiedergabe neu starten"
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Always continue"
 msgstr "Immer fortsetzen"
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Playback of \"%@\" will continue at %@"
 msgstr "Die Wiedergabe von \"%@\" wird ab %@ fortgesetzt"
 
@@ -18878,17 +18880,17 @@ msgstr ""
 "Drücken Sie neue Tasten für\n"
 "\"%@\""
 
-#: modules/gui/macosx/simple_prefs.m:1490
+#: modules/gui/macosx/simple_prefs.m:1486
 msgid "Invalid combination"
 msgstr "Ungültige Kombination"
 
-#: modules/gui/macosx/simple_prefs.m:1491
+#: modules/gui/macosx/simple_prefs.m:1487
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr ""
 "Leider können diese Tasten nicht als Hotkey-Tastenkürzel zugewiesen werden."
 
+#: modules/gui/macosx/simple_prefs.m:1497
 #: modules/gui/macosx/simple_prefs.m:1501
-#: modules/gui/macosx/simple_prefs.m:1505
 msgid "This combination is already taken by \"%@\"."
 msgstr "Diese Kombination ist bereits von \"%@\" belegt."
 
@@ -22792,7 +22794,7 @@ msgstr "Wiedergegebene Songs an Last.fm übermitteln"
 
 #: modules/misc/audioscrobbler.c:581
 msgid "last.fm: Authentication failed"
-msgstr "Last.fm: Authentifizierung fehlgeschlagen"
+msgstr "Last.fm: Legitimierung fehlgeschlagen"
 
 #: modules/misc/audioscrobbler.c:582
 msgid ""
@@ -22865,9 +22867,9 @@ msgid ""
 msgstr ""
 "Sie haben versucht, %s zu erreichen. Doch das vom Server bereitgestellte "
 "Sicherheitszertifikat ist unbekannt und konnte von keiner vertrauenswürdigen "
-"Zertifizierungsstelle authentifiziert werden. Dieses Problem könnte durch "
-"einen Konfigurationsfehler oder dem Versuch, Ihre Sicherheit und Ihre "
-"Privatsphäre zu verletzen, verursacht werden sein.\n"
+"Zertifizierungsstelle legitimiert werden. Dieses Problem könnte durch einen "
+"Konfigurationsfehler oder dem Versuch, Ihre Sicherheit und Ihre Privatsphäre "
+"zu verletzen, verursacht werden sein.\n"
 "\n"
 "Wenn Sie Zweifel haben, brechen Sie jetzt ab.\n"
 
@@ -22883,7 +22885,7 @@ msgid ""
 msgstr ""
 "Sie haben versucht, %s zu erreichen. Doch das vom Server bereitgestellte "
 "Sicherheitszertifikat hat sich seit dem letzten Besuch geändert und konnte "
-"von keiner vertrauenswürdigen Zertifizierungsstelle authentifiziert werden. "
+"von keiner vertrauenswürdigen Zertifizierungsstelle legitimiert werden. "
 "Dieses Problem könnte durch einen Konfigurationsfehler oder dem Versuch, "
 "Ihre Sicherheit und Ihre Privatsphäre zu verletzen, verursacht werden sein.\n"
 "\n"
@@ -23742,7 +23744,7 @@ msgstr "Bildschirmaufnahme"
 
 #: modules/services_discovery/xcb_apps.c:152
 msgid "Your window manager does not provide a list of applications."
-msgstr "Ihr Fenster-Manager liefert keine Liste von Anwendungen."
+msgstr "Ihre Fensterverwaltung liefert keine Liste von Anwendungen."
 
 #: modules/services_discovery/xcb_apps.c:275
 msgid "Applications"
@@ -27752,11 +27754,11 @@ msgstr "ASCII-Art"
 msgid "ASCII-art video output"
 msgstr "ASCII-Art-Videoausgabe"
 
-#: modules/video_output/android/nativewindow.c:53
+#: modules/video_output/android/nativewindow.c:55
 msgid "ANativeWindow"
 msgstr "ANativeWindow"
 
-#: modules/video_output/android/nativewindow.c:54
+#: modules/video_output/android/nativewindow.c:56
 msgid "Android native window"
 msgstr "Natives Fenster auf Android"
 
@@ -30058,72 +30060,6 @@ msgstr "AAAA; "
 msgid "Media Manager List"
 msgstr "Media Manager-Liste"
 
-#~ msgid "Subtitle track added"
-#~ msgstr "Untertitelspur hinzugefügt"
-
-#~ msgid "Media in Zip"
-#~ msgstr "Medium im Zip"
-
-#~ msgid "Path to the media in the Zip archive"
-#~ msgstr "Pfad zum Medium im Zip Archiv"
-
-#~ msgid "Fast udp streaming"
-#~ msgstr "Schnelles UDP-Streaming"
-
-#~ msgid ""
-#~ "Sends TS to specific ip:port by udp (you must know what you are doing)."
-#~ msgstr ""
-#~ "Sendet über UDP einen TS-Stream an einen bestimmten IP-Port (Sie müssen "
-#~ "wissen, was Sie tun)."
-
-#~ msgid "MTU for out mode"
-#~ msgstr "MTU für Out-Modus"
-
-#~ msgid "MTU for out mode."
-#~ msgstr "MTU für Out-Modus."
-
-#~ msgid "&Post processing"
-#~ msgstr "&Nachbearbeitung"
-
-#~ msgid "AVFoundation Video Capture"
-#~ msgstr "AVFoundation-Videoaufzeichnung"
-
-#~ msgid "AVFoundation video capture module."
-#~ msgstr "AVFoundation-Videoaufnahmemodul"
-
-#~ msgid "No video devices found"
-#~ msgstr "Kein Video-Aufnahmegerät gefunden"
-
-#~ msgid ""
-#~ "Your Mac does not seem to be equipped with a suitable video input device. "
-#~ "Please check your connectors and drivers."
-#~ msgstr ""
-#~ "Ihr Mac scheint nicht mit einem passenden Video-Aufnahmegerät "
-#~ "ausgestattet zu sein. Bitte überprüfen Sie die Verbindungen und die "
-#~ "Treiber."
-
-#~ msgid "Probe DVB card for capabilities"
-#~ msgstr "Funktionen der DVB-Karte testen"
-
-#~ msgid ""
-#~ "Some DVB cards do not like to be probed for their capabilities, you can "
-#~ "disable this feature if you experience some trouble."
-#~ msgstr ""
-#~ "Einige DVB-Karten vertragen das Testen ihrer Fähigkeiten nicht. Diese "
-#~ "Funktionen deaktivieren, falls Probleme auftreten."
-
-#~ msgid "Satellite scanning config"
-#~ msgstr "Konfiguration zur Satelliten-Suche"
-
-#~ msgid "filename of config file in share/dvb/dvb-s"
-#~ msgstr "Dateiname der Konfigurationsdatei unter share/dvb/dvb-s"
-
-#~ msgid "DVB"
-#~ msgstr "DVB"
-
-#~ msgid "DVB input with v4l2 support"
-#~ msgstr "DVB-Eingang mit v4l2 Unterstützung"
-
 #, fuzzy
 #~ msgid ""
 #~ "%.1f MHz (%d services)\n"
@@ -30132,176 +30068,6 @@ msgstr "Media Manager-Liste"
 
 #~ msgid "Scanning DVB"
 #~ msgstr "Scanne DVB"
-
-#~ msgid "QTSound"
-#~ msgstr "QTSound"
-
-#~ msgid "QuickTime Sound Capture"
-#~ msgstr "Quicktime-Tonaufnahme"
-
-#~ msgid "No Audio Input device found"
-#~ msgstr "Kein Audio-Aufnahmegerät gefunden"
-
-#~ msgid ""
-#~ "Your Mac does not seem to be equipped with a suitable audio input device."
-#~ "Please check your connectors and drivers."
-#~ msgstr ""
-#~ "Ihr Mac scheint nicht mit einem passenden Audio-Aufnahmegerät "
-#~ "ausgestattet zu sein. Bitte überprüfen Sie die Verbindungen und die "
-#~ "Treiber."
-
-#~ msgid "No audio input device found"
-#~ msgstr "Kein Aufnahmegerät gefunden"
-
-#~ msgid "Uncompressed RAR"
-#~ msgstr "Unkomprimiertes RAR"
-
-#~ msgid "Windows Multimedia Device output"
-#~ msgstr "Windows-Multimedia-Gerät Ausgabe"
-
-#~ msgid "Windows Store audio output"
-#~ msgstr "Windows-Store Audioausgabe"
-
-#~ msgid "SCTE-27 decoder"
-#~ msgstr "SCTE-27 Decoder"
-
-#~ msgid "SCTE-27"
-#~ msgstr "SCTE-27"
-
-#~ msgid "Specify the width to decode the image too"
-#~ msgstr "Ziel-Breite des Bildes zur Dekodierung spezifizieren"
-
-#~ msgid "Specify the height to decode the image too"
-#~ msgstr "Ziel-Höhe des Bildes zur Dekodierung spezifizieren"
-
-#~ msgid "Scale factor to apply to image"
-#~ msgstr "Anzuwendender Skalierungsfaktor für das Bild"
-
-#~ msgid "SVG video decoder"
-#~ msgstr "SVG-Videodecoder"
-
-#~ msgid "WinMsg"
-#~ msgstr "WinMsg"
-
-#~ msgid "Windows messages interface"
-#~ msgstr "Windows-Meldungen-Interface"
-
-#~ msgid "Save this Log..."
-#~ msgstr "Protokoll speichern …"
-
-#~ msgid "VLC Debug Log (%s).rtf"
-#~ msgstr "VLC-Fehlerdiagnoseprotokoll (%s).rtf"
-
-#~ msgid "No EPG Data Available"
-#~ msgstr "Keine EPG-Daten verfügbar"
-
-#~ msgid " (%1+ rated)"
-#~ msgstr " (%1+ bewertet)"
-
-#~ msgid "Empty"
-#~ msgstr "Leer"
-
-#~ msgid "Deactivate"
-#~ msgstr "Deaktivieren"
-
-#~ msgid "Audio Fingerprinting"
-#~ msgstr "Audio-Fingerabdruck"
-
-#~ msgid "Select a matching identity"
-#~ msgstr "Eine passende Übereinstimmung auswählen"
-
-#~ msgid "No fingerprint has been found"
-#~ msgstr "Kein Fingerabdruck gefunden"
-
-#~ msgid "Fingerprinting track..."
-#~ msgstr "Von Titel wird Fingerabdruck erstellt …"
-
-#~ msgctxt "Tooltip|Clear"
-#~ msgid "Clear"
-#~ msgstr "Löschen"
-
-#~ msgid ""
-#~ "Extension '%s' does not respond.\n"
-#~ "Do you want to kill it now? "
-#~ msgstr ""
-#~ "Erweiterung '%s' antwortet nicht.\n"
-#~ "Möchten Sie diese jetzt beenden?"
-
-#~ msgid "Extension not responding!"
-#~ msgstr "Erweiterung reagiert nicht!"
-
-#~ msgid "addons local storage"
-#~ msgstr "Lokaler Speicher der Erweiterungen"
-
-#~ msgid "Addons local storage installer"
-#~ msgstr "Installationsprogramm für lokal gespeicherte Erweiterungen"
-
-#~ msgid "Addons local storage lister"
-#~ msgstr "Auflistung lokal gespeicherter Erweiterungen"
-
-#~ msgid "Videolan.org's addons finder"
-#~ msgstr "Videolan.org-Erweiterungsfinder"
-
-#~ msgid "addons.videolan.org addons finder"
-#~ msgstr "addons.videolan.org - Erweiterungsfinder"
-
-#~ msgid "Videolan.org's single archive addons finder"
-#~ msgstr "Videolan.org-Einzelarchiv vom Erweiterungsfinder"
-
-#~ msgid "single .vlp archive addons finder"
-#~ msgstr "Erweiterungsfinder für Einzelarchive .vlp"
-
-#~ msgid "acoustid"
-#~ msgstr "Acoustid"
-
-#~ msgid "Track fingerprinter (based on Acoustid)"
-#~ msgstr "Erstellung von Titel-Fingerabdrücken  (auf Acoustid basierend)"
-
-#~ msgid "Duration of the fingerprinting"
-#~ msgstr "Dauer zur Erstellung des Fingerabdrucks"
-
-#~ msgid "Default: 90sec"
-#~ msgstr "Vorgabe: 90 s"
-
-#~ msgid "Chromaprint stream output"
-#~ msgstr "Farbsättigung der Streamausgabe"
-
-#~ msgid ""
-#~ "Please wait while your font cache is rebuilt.\n"
-#~ "This should take less than a few minutes."
-#~ msgstr ""
-#~ "Bitte warten Sie, während der Fontcache erneuert wird.\n"
-#~ "Dies sollte weniger als ein paar Minuten dauern."
-
-#~ msgid "The width of the visualization window, in pixels."
-#~ msgstr "Die Breite des Visualisierungsfensters in Pixeln."
-
-#~ msgid "The height of the visualization window, in pixels."
-#~ msgstr "Die Höhe des Visualisierungsfensters in Pixeln."
-
-#~ msgid "glSpectrum"
-#~ msgstr "glSpektrum"
-
-#~ msgid "3D OpenGL spectrum visualization"
-#~ msgstr "3D-OpenGL Spektrum-Visualisierung"
-
-#~ msgid "Hann"
-#~ msgstr "Hann"
-
-#~ msgid "Flat Top"
-#~ msgstr "Flat Top"
-
-#~ msgid "Blackman-Harris"
-#~ msgstr "Blackman-Harris"
-
-#~ msgid "Kaiser"
-#~ msgstr "Kaiser"
-
-#~ msgid "VLC media player - Flash Viewer"
-#~ msgstr "VLC media player - Flash-Anzeige"
-
-#~ msgid "Streaming Output"
-#~ msgstr "Streaming-Ausgabe"
 
 #~ msgid ""
 #~ "SAP is a way to publically announce streams that are being sent using "
@@ -32480,6 +32246,242 @@ msgstr "Media Manager-Liste"
 #~ "Abtastrate (in kHz), $T = Zeit, $U = Herausgeber, $V = Lautstärke, $_ = "
 #~ "Zeilenumbruch) "
 
+#~ msgid "Subtitle track added"
+#~ msgstr "Untertitelspur hinzugefügt"
+
+#~ msgid "Media in Zip"
+#~ msgstr "Medium im Zip"
+
+#~ msgid "Path to the media in the Zip archive"
+#~ msgstr "Pfad zum Medium im Zip Archiv"
+
+#~ msgid "Fast udp streaming"
+#~ msgstr "Schnelles UDP-Streaming"
+
+#~ msgid ""
+#~ "Sends TS to specific ip:port by udp (you must know what you are doing)."
+#~ msgstr ""
+#~ "Sendet über UDP einen TS-Stream an einen bestimmten IP-Port (Sie müssen "
+#~ "wissen, was Sie tun)."
+
+#~ msgid "MTU for out mode"
+#~ msgstr "MTU für Out-Modus"
+
+#~ msgid "MTU for out mode."
+#~ msgstr "MTU für Out-Modus."
+
+#~ msgid "&Post processing"
+#~ msgstr "&Nachbearbeitung"
+
+#~ msgid "AVFoundation Video Capture"
+#~ msgstr "AVFoundation-Videoaufzeichnung"
+
+#~ msgid "AVFoundation video capture module."
+#~ msgstr "AVFoundation-Videoaufnahmemodul"
+
+#~ msgid "No video devices found"
+#~ msgstr "Kein Video-Aufnahmegerät gefunden"
+
+#~ msgid ""
+#~ "Your Mac does not seem to be equipped with a suitable video input device. "
+#~ "Please check your connectors and drivers."
+#~ msgstr ""
+#~ "Ihr Mac scheint nicht mit einem passenden Video-Aufnahmegerät "
+#~ "ausgestattet zu sein. Bitte überprüfen Sie die Verbindungen und die "
+#~ "Treiber."
+
+#~ msgid "Probe DVB card for capabilities"
+#~ msgstr "Funktionen der DVB-Karte testen"
+
+#~ msgid ""
+#~ "Some DVB cards do not like to be probed for their capabilities, you can "
+#~ "disable this feature if you experience some trouble."
+#~ msgstr ""
+#~ "Einige DVB-Karten vertragen das Testen ihrer Fähigkeiten nicht. Diese "
+#~ "Funktionen deaktivieren, falls Probleme auftreten."
+
+#~ msgid "Satellite scanning config"
+#~ msgstr "Konfiguration zur Satelliten-Suche"
+
+#~ msgid "filename of config file in share/dvb/dvb-s"
+#~ msgstr "Dateiname der Konfigurationsdatei unter share/dvb/dvb-s"
+
+#~ msgid "DVB"
+#~ msgstr "DVB"
+
+#~ msgid "DVB input with v4l2 support"
+#~ msgstr "DVB-Eingang mit v4l2 Unterstützung"
+
+#~ msgid "QTSound"
+#~ msgstr "QTSound"
+
+#~ msgid "QuickTime Sound Capture"
+#~ msgstr "Quicktime-Tonaufnahme"
+
+#~ msgid "No Audio Input device found"
+#~ msgstr "Kein Audio-Aufnahmegerät gefunden"
+
+#~ msgid ""
+#~ "Your Mac does not seem to be equipped with a suitable audio input device."
+#~ "Please check your connectors and drivers."
+#~ msgstr ""
+#~ "Ihr Mac scheint nicht mit einem passenden Audio-Aufnahmegerät "
+#~ "ausgestattet zu sein. Bitte überprüfen Sie die Verbindungen und die "
+#~ "Treiber."
+
+#~ msgid "No audio input device found"
+#~ msgstr "Kein Aufnahmegerät gefunden"
+
+#~ msgid "Uncompressed RAR"
+#~ msgstr "Unkomprimiertes RAR"
+
+#~ msgid "Windows Multimedia Device output"
+#~ msgstr "Windows-Multimedia-Gerät Ausgabe"
+
+#~ msgid "Windows Store audio output"
+#~ msgstr "Windows-Store Audioausgabe"
+
+#~ msgid "SCTE-27 decoder"
+#~ msgstr "SCTE-27 Decoder"
+
+#~ msgid "SCTE-27"
+#~ msgstr "SCTE-27"
+
+#~ msgid "Specify the width to decode the image too"
+#~ msgstr "Ziel-Breite des Bildes zur Dekodierung spezifizieren"
+
+#~ msgid "Specify the height to decode the image too"
+#~ msgstr "Ziel-Höhe des Bildes zur Dekodierung spezifizieren"
+
+#~ msgid "Scale factor to apply to image"
+#~ msgstr "Anzuwendender Skalierungsfaktor für das Bild"
+
+#~ msgid "SVG video decoder"
+#~ msgstr "SVG-Videodecoder"
+
+#~ msgid "WinMsg"
+#~ msgstr "WinMsg"
+
+#~ msgid "Windows messages interface"
+#~ msgstr "Windows-Meldungen-Interface"
+
+#~ msgid "Save this Log..."
+#~ msgstr "Protokoll speichern …"
+
+#~ msgid "VLC Debug Log (%s).rtf"
+#~ msgstr "VLC-Fehlerdiagnoseprotokoll (%s).rtf"
+
+#~ msgid "No EPG Data Available"
+#~ msgstr "Keine EPG-Daten verfügbar"
+
+#~ msgid " (%1+ rated)"
+#~ msgstr " (%1+ bewertet)"
+
+#~ msgid "Empty"
+#~ msgstr "Leer"
+
+#~ msgid "Deactivate"
+#~ msgstr "Deaktivieren"
+
+#~ msgid "Audio Fingerprinting"
+#~ msgstr "Audio-Fingerabdruck"
+
+#~ msgid "Select a matching identity"
+#~ msgstr "Eine passende Übereinstimmung auswählen"
+
+#~ msgid "No fingerprint has been found"
+#~ msgstr "Kein Fingerabdruck gefunden"
+
+#~ msgid "Fingerprinting track..."
+#~ msgstr "Von Titel wird Fingerabdruck erstellt …"
+
+#~ msgctxt "Tooltip|Clear"
+#~ msgid "Clear"
+#~ msgstr "Löschen"
+
+#~ msgid ""
+#~ "Extension '%s' does not respond.\n"
+#~ "Do you want to kill it now? "
+#~ msgstr ""
+#~ "Erweiterung '%s' antwortet nicht.\n"
+#~ "Möchten Sie diese jetzt beenden?"
+
+#~ msgid "Extension not responding!"
+#~ msgstr "Erweiterung reagiert nicht!"
+
+#~ msgid "addons local storage"
+#~ msgstr "Lokaler Speicher der Erweiterungen"
+
+#~ msgid "Addons local storage installer"
+#~ msgstr "Installationsprogramm für lokal gespeicherte Erweiterungen"
+
+#~ msgid "Addons local storage lister"
+#~ msgstr "Auflistung lokal gespeicherter Erweiterungen"
+
+#~ msgid "Videolan.org's addons finder"
+#~ msgstr "Videolan.org-Erweiterungsfinder"
+
+#~ msgid "addons.videolan.org addons finder"
+#~ msgstr "addons.videolan.org - Erweiterungsfinder"
+
+#~ msgid "Videolan.org's single archive addons finder"
+#~ msgstr "Videolan.org-Einzelarchiv vom Erweiterungsfinder"
+
+#~ msgid "single .vlp archive addons finder"
+#~ msgstr "Erweiterungsfinder für Einzelarchive .vlp"
+
+#~ msgid "acoustid"
+#~ msgstr "Acoustid"
+
+#~ msgid "Track fingerprinter (based on Acoustid)"
+#~ msgstr "Erstellung von Titel-Fingerabdrücken  (auf Acoustid basierend)"
+
+#~ msgid "Duration of the fingerprinting"
+#~ msgstr "Dauer zur Erstellung des Fingerabdrucks"
+
+#~ msgid "Default: 90sec"
+#~ msgstr "Vorgabe: 90 s"
+
+#~ msgid "Chromaprint stream output"
+#~ msgstr "Farbsättigung der Streamausgabe"
+
+#~ msgid ""
+#~ "Please wait while your font cache is rebuilt.\n"
+#~ "This should take less than a few minutes."
+#~ msgstr ""
+#~ "Bitte warten Sie, während der Fontcache erneuert wird.\n"
+#~ "Dies sollte weniger als ein paar Minuten dauern."
+
+#~ msgid "The width of the visualization window, in pixels."
+#~ msgstr "Die Breite des Visualisierungsfensters in Pixeln."
+
+#~ msgid "The height of the visualization window, in pixels."
+#~ msgstr "Die Höhe des Visualisierungsfensters in Pixeln."
+
+#~ msgid "glSpectrum"
+#~ msgstr "glSpektrum"
+
+#~ msgid "3D OpenGL spectrum visualization"
+#~ msgstr "3D-OpenGL Spektrum-Visualisierung"
+
+#~ msgid "Hann"
+#~ msgstr "Hann"
+
+#~ msgid "Flat Top"
+#~ msgstr "Flat Top"
+
+#~ msgid "Blackman-Harris"
+#~ msgstr "Blackman-Harris"
+
+#~ msgid "Kaiser"
+#~ msgstr "Kaiser"
+
+#~ msgid "VLC media player - Flash Viewer"
+#~ msgstr "VLC media player - Flash-Anzeige"
+
+#~ msgid "Streaming Output"
+#~ msgstr "Streaming-Ausgabe"
+
 #~ msgid "Choose your preferred video output and configure it here."
 #~ msgstr ""
 #~ "Wählen Sie Ihre bevorzugte Videoausgabe und konfigurieren Sie diese hier."
@@ -32765,7 +32767,8 @@ msgstr "Media Manager-Liste"
 
 #, fuzzy
 #~ msgid "One instance when started from file"
-#~ msgstr "Nur eine Instanz nutzen, wenn aus dem Dateimanager gestartet"
+#~ msgstr ""
+#~ "Nur eine Instanz benutzen, wenn aus der Dateiverwaltung gestartet wurde"
 
 #, fuzzy
 #~ msgid "Enqueue items to playlist when in one instance mode"
@@ -33202,14 +33205,15 @@ msgstr "Media Manager-Liste"
 #~ msgstr ""
 #~ "Nur eine laufende Instanz von VLC zu erlauben kann manchmal nützlich "
 #~ "sein, z.B. wenn Sie einige Medientypen mit VLC verknüpft haben und nicht "
-#~ "jedes Mal eine neue Instanz von VLC möchten, wenn Sie auf eine Datei in "
-#~ "Ihrem Dateimanager einen Doppelklick machen. Diese Option wird Ihnen "
-#~ "erlauben, die Datei mit der bereits laufenden Instanz abzuspielen oder "
-#~ "sie einzureihen."
+#~ "jedes Mal eine neue Instanz von VLC öffnen wollen, wenn Sie auf eine "
+#~ "Datei, in Ihrer Dateiverwaltung, einen Doppelklick tätigen. Diese Option "
+#~ "wird es Ihnen erlauben, die Datei mit der bereits laufenden Instanz "
+#~ "abzuspielen oder sie einzureihen."
 
 #, fuzzy
 #~ msgid "Allow only one running instance when started from file."
-#~ msgstr "Nur eine Instanz nutzen, wenn aus dem Dateimanager gestartet"
+#~ msgstr ""
+#~ "Nur eine Instanz benutzen, wenn aus der Dateiverwaltung gestartet wurde"
 
 #, fuzzy
 #~ msgid "Leave fullscreen"
@@ -34722,9 +34726,9 @@ msgstr "Media Manager-Liste"
 #~ "RTP packets will be authenticated and deciphered with this Secure RTP "
 #~ "master shared secret key."
 #~ msgstr ""
-#~ "Mit diesem gemeinsamen geheimen Schlüssel des Master-Secure RTP werden "
-#~ "RTP-Pakete authentifiziert und entschlüsselt. Das muss eine 32-Zeichen "
-#~ "lange hexadezimale Zeichenfolge sein."
+#~ "Mit diesem gemeinsamen geheimen Schlüssel des Master-Secure-RTP werden "
+#~ "RTP-Pakete legitimiert und entschlüsselt. Das muss eine 32-Zeichen lange "
+#~ "hexadezimale Zeichenfolge sein."
 
 #, fuzzy
 #~ msgid "Secure RTP requires a (non-secret) master salt value."

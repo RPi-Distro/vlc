@@ -2,7 +2,7 @@
  * omxil.c: Video decoder module making use of OpenMAX IL components.
  *****************************************************************************
  * Copyright (C) 2010 VLC authors and VideoLAN
- * $Id: 66ed1615da6d66cad3e7e877b829554caa299713 $
+ * $Id: 5fb77221c5d34177508680069e2dcabd5a7280de $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -57,11 +57,12 @@ static const char *ppsz_dll_list[] =
     "libiomx.so", /* Not used when using IOMX, the lib should already be loaded */
 #elif defined(RPI_OMX)
     "/opt/vc/lib/libopenmaxil.so",  /* Broadcom IL core */
-#else
+#elif 1
     "libOMX_Core.so", /* TI OMAP IL core */
     "libOmxCore.so", /* Qualcomm IL core */
-    "libomxil-bellagio.so",  /* Bellagio IL core */
     "libnvomx.so", /* Tegra3 IL core */
+#else
+    "libomxil-bellagio.so",  /* Bellagio IL core reference implementation */
 #endif
     0
 };

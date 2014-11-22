@@ -1,4 +1,4 @@
-Changes between 2.1.x and 2.2.0-rc1:
+Changes between 2.1.x and 2.2.0-rc2:
 --------------------------------
 
 Important changes:
@@ -162,7 +162,16 @@ Removed modules:
  * dirac encoder: use schroedinger
 
 Translations:
- * Update of all translations
+ * New translation in Urdu, Tatar, Silesian, Samoan, Kapampangan, N'ko,
+   Kurdish, Kabyle, Mexican Spanish, Catalan, Amharic
+ * Update of all translations:
+   Traditional Chinese, Simplified Chinese, Vietnamese, Uzbek, Ukrainian,
+   Turkish, Thai, Swedish, Serbian, Albanian, Slovenian, Slovak, Russian,
+   Romanian, Brazilian Portuguese, Polish, Punjabi, Dutch, Nepali, Norwegian
+   Bokmål, Malay, Marathi, Latvian, Lithuanian, Korean, Kannada, Khmer,
+   Japanese, Italian, Icelandic, Indonesian, Hebrew, Galician, Scottish
+   Gaelic, French, Finnish, Persian, Estonian, Spanish, Modern Greek, German,
+   Danish, Welsh, Czech, Bosnian, Bengali, Asturian
 
 
 Changes between 2.1.4 and 2.1.5:

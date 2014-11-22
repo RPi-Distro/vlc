@@ -2,7 +2,7 @@
  * flac.c: flac packetizer module.
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 3303a27639f96675423521f75a6f3cb866905a27 $
+ * $Id: ecf854f0eb36c6aa1906304b02d802b07c03be3d $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -642,6 +642,8 @@ static block_t *Packetize(decoder_t *p_dec, block_t **pp_block)
                     if (stream_crc != crc) {
                         msg_Warn(p_dec, "Bad CRC for frame size %zu: 0x%x != 0x%x",
                             p_sys->i_frame_size, crc, stream_crc);
+                        block_SkipByte(&p_sys->bytestream);
+                        p_sys->i_state = STATE_NOSYNC;
                     } else {
                         p_sys->i_state = STATE_SEND_DATA;
                         p_sys->crc = 0;

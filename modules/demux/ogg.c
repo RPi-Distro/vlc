@@ -2,7 +2,7 @@
  * ogg.c : ogg stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: d69a675d96335bd59a9cf8ae491c2b82dfd2342a $
+ * $Id: 5fd8e9aa468de00df524a3559cc718723db2f0fc $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Andre Pang <Andre.Pang@csiro.au> (Annodex support)
@@ -1340,6 +1340,18 @@ static void Ogg_DecodePacket( demux_t *p_demux,
     }
     else if( p_stream->fmt.i_cat == AUDIO_ES )
     {
+        if ( p_stream->fmt.i_codec == VLC_CODEC_FLAC &&
+             p_stream->p_es && 0 >= p_oggpacket->granulepos &&
+             p_stream->fmt.b_packetized )
+        {
+            /* Handle OggFlac spec violation (multiple frame/packet
+             * by turning on packetizer */
+            msg_Warn( p_demux, "Invalid FLAC in ogg detected. Restarting ES with packetizer." );
+            p_stream->fmt.b_packetized = false;
+            es_out_Del( p_demux->out, p_stream->p_es );
+            p_stream->p_es = es_out_Add( p_demux->out, &p_stream->fmt );
+        }
+
         /* Blatant abuse of the i_length field. */
         p_block->i_length = p_stream->i_end_trim;
     }

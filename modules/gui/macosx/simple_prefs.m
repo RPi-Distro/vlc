@@ -2,7 +2,7 @@
 * simple_prefs.m: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2014 VLC authors and VideoLAN
-* $Id: 3b89472a6a07261977193af351aefc4e83b432ad $
+* $Id: d51e1fd7396e0b4f83d22be55b94287638e942d4 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -1451,10 +1451,6 @@ static inline void save_string_list(intf_thread_t * p_intf, id object, const cha
         [o_hotkeys_listbox reloadData];
         b_hotkeyChanged = YES;
     }
-
-    [[NSNotificationCenter defaultCenter] postNotificationName: @"VLCMediaKeySupportSettingChanged"
-                                                        object: nil
-                                                      userInfo: nil];
 }
 
 - (void)showHotkeySettings

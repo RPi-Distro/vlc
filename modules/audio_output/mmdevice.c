@@ -975,7 +975,7 @@ static HRESULT MMSession(audio_output_t *aout, IMMDeviceEnumerator *it)
         {
             msg_Dbg(aout, "volume from %+f dB to %+f dB with %f dB increments",
                     min, max, inc);
-            base_volume = powf(10.f, max / 20.f + .3f);
+            base_volume = powf(10.f, max / 20.f);
         }
         else
             msg_Err(aout, "cannot get volume range (error 0x%lx)", hr);

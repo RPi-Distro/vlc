@@ -2,7 +2,7 @@
  * MainWindow.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 35a658a8a48742865e18d1f121828d8ebf0363d8 $
+ * $Id: 875c71fb6e498a1d94cdbb12a6a779f0d446d80c $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -949,14 +949,13 @@ static VLCMainWindow *_o_sharedInstance = nil;
 {
     playlist_t * p_playlist = pl_Get(VLCIntf);
     PL_LOCK;
-    playlist_item_t * currentPlaylistRoot = [[[VLCMain sharedInstance] playlist] currentPlaylistRoot];
+    playlist_item_t *currentPlaylistRoot = [[[VLCMain sharedInstance] playlist] currentPlaylistRoot];
     PL_UNLOCK;
-    if (currentPlaylistRoot == p_playlist->p_local_category || currentPlaylistRoot == p_playlist->p_ml_category) {
-        if (currentPlaylistRoot == p_playlist->p_local_category)
-            [o_chosen_category_lbl setStringValue: [_NS("Playlist") stringByAppendingString:[self _playbackDurationOfNode:p_playlist->p_local_category]]];
-        else
-            [o_chosen_category_lbl setStringValue: [_NS("Media Library") stringByAppendingString:[self _playbackDurationOfNode:p_playlist->p_ml_category]]];
-    }
+
+    if (currentPlaylistRoot == p_playlist->p_local_category)
+        [o_chosen_category_lbl setStringValue: [_NS("Playlist") stringByAppendingString:[self _playbackDurationOfNode:p_playlist->p_local_category]]];
+    else if (currentPlaylistRoot == p_playlist->p_ml_category)
+        [o_chosen_category_lbl setStringValue: [_NS("Media Library") stringByAppendingString:[self _playbackDurationOfNode:p_playlist->p_ml_category]]];
 }
 
 - (NSString *)_playbackDurationOfNode:(playlist_item_t*)node
@@ -1279,11 +1278,13 @@ static VLCMainWindow *_o_sharedInstance = nil;
 
 - (IBAction)removePodcast:(id)sender
 {
-    if (config_GetPsz(VLCIntf, "podcast-urls") != NULL) {
+    char *psz_urls = var_InheritString(pl_Get(VLCIntf), "podcast-urls");
+    if (psz_urls != NULL) {
         [o_podcast_unsubscribe_pop removeAllItems];
-        [o_podcast_unsubscribe_pop addItemsWithTitles:[[NSString stringWithUTF8String:config_GetPsz(VLCIntf, "podcast-urls")] componentsSeparatedByString:@"|"]];
+        [o_podcast_unsubscribe_pop addItemsWithTitles:[toNSStr(psz_urls) componentsSeparatedByString:@"|"]];
         [NSApp beginSheet:o_podcast_unsubscribe_window modalForWindow:self modalDelegate:self didEndSelector:NULL contextInfo:nil];
     }
+    free(psz_urls);
 }
 
 - (IBAction)removePodcastWindowAction:(id)sender
@@ -1292,17 +1293,20 @@ static VLCMainWindow *_o_sharedInstance = nil;
     [NSApp endSheet: o_podcast_unsubscribe_window];
 
     if (sender == o_podcast_unsubscribe_ok_btn) {
+        playlist_t * p_playlist = pl_Get(VLCIntf);
+        char *psz_urls = var_InheritString(p_playlist, "podcast-urls");
+
         NSMutableArray * urls = [[NSMutableArray alloc] initWithArray:[[NSString stringWithUTF8String:config_GetPsz(VLCIntf, "podcast-urls")] componentsSeparatedByString:@"|"]];
         [urls removeObjectAtIndex: [o_podcast_unsubscribe_pop indexOfSelectedItem]];
-        config_PutPsz(VLCIntf, "podcast-urls", [[urls componentsJoinedByString:@"|"] UTF8String]);
-        var_SetString(pl_Get(VLCIntf), "podcast-urls", config_GetPsz(VLCIntf, "podcast-urls"));
+        const char *psz_new_urls = [[urls componentsJoinedByString:@"|"] UTF8String];
+        var_SetString(pl_Get(VLCIntf), "podcast-urls", psz_new_urls);
+        config_PutPsz(VLCIntf, "podcast-urls", psz_new_urls);
         [urls release];
 
-        /* reload the podcast module, since it won't update its list when removing podcasts */
-        playlist_t * p_playlist = pl_Get(VLCIntf);
+        free(psz_urls);
+
+        /* update playlist table */
         if (playlist_IsServicesDiscoveryLoaded(p_playlist, "podcast{longname=\"Podcasts\"}")) {
-            playlist_ServicesDiscoveryRemove(p_playlist, "podcast{longname=\"Podcasts\"}");
-            playlist_ServicesDiscoveryAdd(p_playlist, "podcast{longname=\"Podcasts\"}");
             [[[VLCMain sharedInstance] playlist] playlistUpdated];
         }
     }

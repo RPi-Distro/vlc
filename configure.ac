@@ -2,12 +2,12 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2014 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 2.2.0-rc1)
+AC_INIT(vlc, 2.2.0-rc2)
 VERSION_MAJOR=2
 VERSION_MINOR=2
 VERSION_REVISION=0
 VERSION_EXTRA=0
-VERSION_DEV=rc1
+VERSION_DEV=rc2
 
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
@@ -56,7 +56,11 @@ AC_PROG_CC_C99
 AC_USE_SYSTEM_EXTENSIONS
 AC_DEFINE([_FORTIFY_SOURCE], 2, [Define to 2 to get glibc warnings.])
 AC_DEFINE([_FILE_OFFSET_BITS], 64, [Define to 64 for large files support.])
-AC_DEFINE([_REENTRANT],, [Define to expose reentrant functions.])
+AH_TOP([
+#ifndef _REENTRANT
+# define _REENTRANT
+#endif
+])
 AC_DEFINE([_THREAD_SAFE],, [Same as _REENTANT for some other OSes.])
 AC_DEFINE([__LIBVLC__],, [Define within the LibVLC source code tree.])
 AC_DEFINE([WIN32_LEAN_AND_MEAN],, [Define to limit the scope of <windows.h>.])
@@ -529,7 +533,7 @@ need_libc=false
 
 dnl Check for usual libc functions
 AC_CHECK_DECLS([nanosleep],,,[#include <time.h>])
-AC_CHECK_FUNCS([daemon fcntl fstatvfs fork getenv getpwuid_r isatty lstat memalign mmap openat pread posix_fadvise posix_madvise setlocale stricmp strnicmp strptime uselocale])
+AC_CHECK_FUNCS([daemon fcntl fstatvfs fork getenv getpwuid_r isatty lstat memalign mmap open_memstream openat pread posix_fadvise posix_madvise setlocale stricmp strnicmp strptime uselocale])
 AC_REPLACE_FUNCS([atof atoll dirfd fdopendir flockfile fsync getdelim getpid gmtime_r lldiv localtime_r nrand48 poll posix_memalign rewind setenv strcasecmp strcasestr strdup strlcpy strndup strnlen strsep strtof strtok_r strtoll swab tdestroy strverscmp])
 AC_CHECK_FUNCS(fdatasync,,
   [AC_DEFINE(fdatasync, fsync, [Alias fdatasync() to fsync() if missing.])
@@ -3717,9 +3721,9 @@ AS_IF([test "${enable_qt}" != "no"], [
       ])
       QT_PATH="$(eval $PKG_CONFIG --variable=exec_prefix Qt5Core)"
       QT_HOST_PATH="$(eval $PKG_CONFIG --variable=host_bins Qt5Core)"
-      AC_PATH_PROGS(MOC, [moc-qt5 moc], moc, [${QT_HOST_PATH} ${QT_PATH}/bin ${CONTRIB_DIR}/bin])
-      AC_PATH_PROGS(RCC, [rcc-qt5 rcc], rcc, [${QT_HOST_PATH} ${QT_PATH}/bin ${CONTRIB_DIR}/bin])
-      AC_PATH_PROGS(UIC, [uic-qt5 uic], uic, [${QT_HOST_PATH} ${QT_PATH}/bin ${CONTRIB_DIR}/bin])
+      AC_PATH_PROGS(MOC, [moc-qt5 moc], moc, ["${QT_HOST_PATH}" "${QT_PATH}/bin" "${CONTRIB_DIR}/bin"])
+      AC_PATH_PROGS(RCC, [rcc-qt5 rcc], rcc, ["${QT_HOST_PATH}" "${QT_PATH}/bin" "${CONTRIB_DIR}/bin"])
+      AC_PATH_PROGS(UIC, [uic-qt5 uic], uic, ["${QT_HOST_PATH}" "${QT_PATH}/bin" "${CONTRIB_DIR}/bin"])
     ], [
       PKG_CHECK_MODULES([QT], [QtCore QtGui >= 4.6.0],, [
         AS_IF([test -n "${enable_qt}"],[
@@ -3730,9 +3734,9 @@ AS_IF([test "${enable_qt}" != "no"], [
         enable_qt="no"
       ])
       QT_PATH="$(eval $PKG_CONFIG --variable=exec_prefix QtCore)"
-      AC_PATH_PROGS(MOC, [moc-qt4 moc], moc, [${QT_PATH}/bin ${CONTRIB_DIR}/bin])
+      AC_PATH_PROGS(MOC, [moc-qt4 moc], moc, ["${QT_PATH}/bin" "${CONTRIB_DIR}/bin"])
       AC_PATH_PROG(RCC, rcc, rcc, [${QT_PATH}/bin ${CONTRIB_DIR}/bin])
-      AC_PATH_PROGS(UIC, [uic-qt4 uic], uic, [${QT_PATH}/bin ${CONTRIB_DIR}/bin])
+      AC_PATH_PROGS(UIC, [uic-qt4 uic], uic, ["${QT_PATH}/bin" "${CONTRIB_DIR}/bin"])
     ])
 ])
 AS_IF([test "${enable_qt}" != "no"], [

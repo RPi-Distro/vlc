@@ -13,13 +13,14 @@
 # Mohammed Nazmul Ferdous <mohammed.nazmul.ferdous@gmail.com>, 2013
 # Sadia Afroz <sadia@ankur.org.bd>, 2009-2010
 # Simos Xenitellis <simos74@gmx.net>, 2005
+# Tapu Afrad (তপু আফ্রাদ) <tapu_afrad@hotmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-11-03 14:06+0100\n"
-"PO-Revision-Date: 2014-06-30 23:43+0000\n"
-"Last-Translator: Aftabuzzaman ullah <Leemon432@gmail.com>\n"
+"POT-Creation-Date: 2014-11-21 16:54+0100\n"
+"PO-Revision-Date: 2014-08-19 04:04+0000\n"
+"Last-Translator: Tapu Afrad (তপু আফ্রাদ) <tapu_afrad@hotmail.com>\n"
 "Language-Team: Bengali (Bangladesh) (http://www.transifex.com/projects/p/vlc-"
 "trans/language/bn_BD/)\n"
 "Language: bn\n"
@@ -488,7 +489,7 @@ msgstr "ফোল্ডার তৈরি..."
 
 #: include/vlc_intf_strings.h:70
 msgid "Rename Directory..."
-msgstr ""
+msgstr "ডিরেক্টরি রিনেম করুন..."
 
 #: include/vlc_intf_strings.h:71
 msgid "Rename Folder..."
@@ -626,7 +627,7 @@ msgstr ""
 
 #: src/audio_output/output.c:229 src/config/core.c:407 src/input/es_out.c:904
 #: src/libvlc-module.c:538 modules/gui/macosx/MainMenu.m:277
-#: modules/gui/macosx/MainWindow.m:1083 modules/video_filter/postproc.c:234
+#: modules/gui/macosx/MainWindow.m:1082 modules/video_filter/postproc.c:234
 msgid "Disable"
 msgstr "নিষ্ক্রিয়"
 
@@ -834,15 +835,15 @@ msgstr ""
 
 #: src/config/keys.c:56
 msgid "Backspace"
-msgstr ""
+msgstr "ব্যাকস্পেস"
 
 #: src/config/keys.c:57
 msgid "Brightness Down"
-msgstr ""
+msgstr "উজ্জ্বলতা হ্রাস"
 
 #: src/config/keys.c:58
 msgid "Brightness Up"
-msgstr ""
+msgstr "উজ্জ্বলতা বৃদ্ধি"
 
 #: src/config/keys.c:59
 msgid "Browser Back"
@@ -1340,7 +1341,7 @@ msgstr "'%s'-এর ফরম্যাট শনাক্ত করা যায়
 msgid "Title"
 msgstr "শিরোনাম"
 
-#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1202
+#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1205
 #: modules/gui/macosx/playlistinfo.m:74 modules/mux/avi.c:48
 msgid "Artist"
 msgstr "শিল্পী"
@@ -2560,7 +2561,7 @@ msgstr ""
 #: src/libvlc-module.c:538 src/video_output/vout_intf.c:98
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
-#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1006
+#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1016
 #: modules/gui/macosx/AudioEffects.m:86 modules/gui/macosx/MainMenu.m:641
 #: modules/gui/macosx/prefs_widgets.m:1221
 #: modules/gui/macosx/prefs_widgets.m:1284
@@ -2572,7 +2573,7 @@ msgid "Default"
 msgstr "পূর্বনির্ধারিত"
 
 #: src/libvlc-module.c:538 modules/gui/macosx/AudioEffects.m:112
-#: modules/gui/macosx/MainWindow.m:1081 modules/gui/macosx/wizard.m:351
+#: modules/gui/macosx/MainWindow.m:1080 modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/extended_panels.cpp:1053
 #: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:289
 msgid "Enable"
@@ -4779,7 +4780,7 @@ msgstr ""
 msgid "Downloading ..."
 msgstr "ডাউনলোড করা হচ্ছে ..."
 
-#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2562
+#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2567
 #: modules/gui/macosx/AudioEffects.m:372 modules/gui/macosx/AudioEffects.m:387
 #: modules/gui/macosx/AudioEffects.m:613 modules/gui/macosx/AudioEffects.m:712
 #: modules/gui/macosx/bookmarks.m:111 modules/gui/macosx/BWQuincyUI.m:80
@@ -6618,19 +6619,19 @@ msgstr ""
 msgid "DV"
 msgstr "DV"
 
-#: modules/access/dvdnav.c:70 modules/access/dvdread.c:67
+#: modules/access/dvdnav.c:71 modules/access/dvdread.c:67
 msgid "DVD angle"
 msgstr "DVD অ্যাঙ্গেল"
 
-#: modules/access/dvdnav.c:72 modules/access/dvdread.c:69
+#: modules/access/dvdnav.c:73 modules/access/dvdread.c:69
 msgid "Default DVD angle."
 msgstr "পূর্বনির্ধারিত DVD অ্যাঙ্গেল।"
 
-#: modules/access/dvdnav.c:74
+#: modules/access/dvdnav.c:75
 msgid "Start directly in menu"
 msgstr "সরাসরি মেনুতে শুরু করা হবে"
 
-#: modules/access/dvdnav.c:76
+#: modules/access/dvdnav.c:77
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
@@ -6638,20 +6639,20 @@ msgstr ""
 "DVD সরাসরি প্রধান মেনুতে শুরু করা হবে। এতে সব অপ্রয়োজনীয় সতর্কবানীগুলো উপেক্ষা করার "
 "চেষ্টা করা হবে।"
 
-#: modules/access/dvdnav.c:85
+#: modules/access/dvdnav.c:86
 msgid "DVD with menus"
 msgstr "মেনুসহ DVD"
 
-#: modules/access/dvdnav.c:86
+#: modules/access/dvdnav.c:87
 msgid "DVDnav Input"
 msgstr "DVDnav ইনপুট"
 
-#: modules/access/dvdnav.c:331 modules/access/dvdread.c:200
+#: modules/access/dvdnav.c:332 modules/access/dvdread.c:200
 #: modules/access/dvdread.c:462 modules/access/dvdread.c:530
 msgid "Playback failure"
 msgstr "প্লেব্যাক ব্যর্থতা"
 
-#: modules/access/dvdnav.c:332
+#: modules/access/dvdnav.c:333
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
@@ -6698,17 +6699,17 @@ msgid "EyeTV input"
 msgstr "EyeTV ইনপুট"
 
 #: modules/access/file.c:177 modules/access/file.c:304
-#: modules/access/mtp.c:195 modules/access/mtp.c:286 modules/access/vdr.c:368
-#: modules/access/vdr.c:535
+#: modules/access/mtp.c:195 modules/access/mtp.c:286 modules/access/vdr.c:372
+#: modules/access/vdr.c:539
 msgid "File reading failed"
 msgstr "ফাইল পড়তে ব্যর্থ"
 
-#: modules/access/file.c:178 modules/access/vdr.c:535
+#: modules/access/file.c:178 modules/access/vdr.c:539
 #, c-format
 msgid "VLC could not open the file \"%s\" (%s)."
 msgstr ""
 
-#: modules/access/file.c:305 modules/access/vdr.c:369
+#: modules/access/file.c:305 modules/access/vdr.c:373
 #, c-format
 msgid "VLC could not read the file (%s)."
 msgstr ""
@@ -6827,28 +6828,28 @@ msgstr "FTP ইনপুট"
 msgid "FTP upload output"
 msgstr "FTP আপলোড আউটপুট"
 
-#: modules/access/ftp.c:320 modules/access/ftp.c:336 modules/access/ftp.c:460
-#: modules/access/ftp.c:469 modules/access/ftp.c:476
+#: modules/access/ftp.c:319 modules/access/ftp.c:335 modules/access/ftp.c:459
+#: modules/access/ftp.c:468 modules/access/ftp.c:475
 msgid "Network interaction failed"
 msgstr "নেটওয়ার্কে তথ্য বিনিময় ব্যর্থ"
 
-#: modules/access/ftp.c:321
+#: modules/access/ftp.c:320
 msgid "VLC could not connect with the given server."
 msgstr "VLC প্রদত্ত সার্ভারের সাথে সংযুক্ত হতে পারেনি।"
 
-#: modules/access/ftp.c:337
+#: modules/access/ftp.c:336
 msgid "VLC's connection to the given server was rejected."
 msgstr "প্রদত্ত সার্ভারের সাথে VLC-র সংযোগ বাতিল করা হয়েছে।"
 
-#: modules/access/ftp.c:461
+#: modules/access/ftp.c:460
 msgid "Your account was rejected."
 msgstr "আপনার অ্যাকাউন্টটি বাতিল করা হয়েছে।"
 
-#: modules/access/ftp.c:470
+#: modules/access/ftp.c:469
 msgid "Your password was rejected."
 msgstr "আপনার পাসওয়ার্ড বাতিল করা হয়েছে।"
 
-#: modules/access/ftp.c:477
+#: modules/access/ftp.c:476
 msgid "Your connection attempt to the server was rejected."
 msgstr "সার্ভারের সাথে আপনার সংযোগ বাতিল করা হয়েছে।"
 
@@ -8897,11 +8898,11 @@ msgstr "VDR"
 msgid "VDR recordings"
 msgstr ""
 
-#: modules/access/vdr.c:809
+#: modules/access/vdr.c:813
 msgid "VDR Cut Marks"
 msgstr ""
 
-#: modules/access/vdr.c:872
+#: modules/access/vdr.c:876
 msgid "Start"
 msgstr "শুরু"
 
@@ -9198,7 +9199,7 @@ msgstr ""
 msgid "Audio filter for simple channel mixing"
 msgstr "সরল চ্যানেল মিক্সিং এর জন্য অডিও পরিশোধক"
 
-#: modules/audio_filter/channel_mixer/trivial.c:48
+#: modules/audio_filter/channel_mixer/trivial.c:41
 msgid "Audio filter for trivial channel mixing"
 msgstr "ট্রিভিয়াল চ্যানেল মিক্সিং এর জন্য অডিও পরিশোধক"
 
@@ -10086,7 +10087,7 @@ msgstr ""
 msgid "This linear gain will be applied in software."
 msgstr ""
 
-#: modules/audio_output/wasapi.c:457
+#: modules/audio_output/wasapi.c:459
 msgid "Windows Audio Session API output"
 msgstr ""
 
@@ -10189,7 +10190,7 @@ msgid "FFmpeg audio/video decoder"
 msgstr "FFmpeg অডিও/ভিডিও ডিকোডার"
 
 #: modules/codec/avcodec/avcodec.c:97 modules/codec/gstdecode.c:89
-#: modules/codec/omxil/android_mediacodec.c:273 modules/codec/omxil/omxil.c:84
+#: modules/codec/omxil/android_mediacodec.c:276 modules/codec/omxil/omxil.c:84
 msgid "Decoding"
 msgstr "ডিকোড করা হচ্ছে"
 
@@ -11313,15 +11314,15 @@ msgstr "MPEG অডিও লেয়ার I/II/III ডিকোডার"
 msgid "MPEG audio layer I/II/III packetizer"
 msgstr "MPEG অডিও লেয়ার I/II/III প্যাকেটাইজার"
 
-#: modules/codec/omxil/android_mediacodec.c:263
+#: modules/codec/omxil/android_mediacodec.c:266
 msgid "Android direct rendering"
 msgstr ""
 
-#: modules/codec/omxil/android_mediacodec.c:265
+#: modules/codec/omxil/android_mediacodec.c:268
 msgid "Enable Android direct rendering using opaque buffers."
 msgstr ""
 
-#: modules/codec/omxil/android_mediacodec.c:270
+#: modules/codec/omxil/android_mediacodec.c:273
 msgid "Video decoder using Android MediaCodec"
 msgstr ""
 
@@ -13444,7 +13445,7 @@ msgstr "D-Bus কন্ট্রোল ইন্টারফেস"
 
 #: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/MainWindow.m:209
 #: modules/gui/macosx/MainWindow.m:740 modules/gui/macosx/MainWindow.m:746
-#: modules/gui/macosx/MainWindow.m:1366 modules/gui/ncurses.c:1041
+#: modules/gui/macosx/MainWindow.m:1370 modules/gui/ncurses.c:1041
 #: modules/gui/qt4/dialogs/help.cpp:91 modules/gui/qt4/main_interface.cpp:1078
 #: modules/gui/qt4/main_interface.cpp:1082
 #: modules/gui/qt4/main_interface.cpp:1121
@@ -14278,11 +14279,11 @@ msgstr ""
 msgid "AVI demuxer"
 msgstr "AVI ডিমাক্সার"
 
-#: modules/demux/avi/avi.c:728
+#: modules/demux/avi/avi.c:733
 msgid "Broken or missing AVI Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:729
+#: modules/demux/avi/avi.c:734
 msgid ""
 "Because this AVI file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14292,19 +14293,19 @@ msgid ""
 "What do you want to do?"
 msgstr ""
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Build index then play"
 msgstr ""
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Play as is"
 msgstr ""
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Do not play"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2561
+#: modules/demux/avi/avi.c:2566
 msgid "Fixing AVI Index..."
 msgstr "AVI ইনডেক্স মেরামত করা হচ্ছে..."
 
@@ -17659,28 +17660,28 @@ msgstr "HTML প্লেলিস্ট"
 msgid "Save Playlist"
 msgstr "প্লে-লিস্ট সংরক্ষণ"
 
-#: modules/gui/macosx/playlist.m:1202
+#: modules/gui/macosx/playlist.m:1205
 msgid "Meta-information"
 msgstr "মেটা-তথ্য"
 
-#: modules/gui/macosx/playlist.m:1535 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/macosx/playlist.m:1541 modules/gui/qt4/qt4.cpp:188
 msgid "Continue playback?"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1535 modules/gui/macosx/simple_prefs.m:837
+#: modules/gui/macosx/playlist.m:1541 modules/gui/macosx/simple_prefs.m:837
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr "চালিয়ে যান"
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Restart playback"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Always continue"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Playback of \"%@\" will continue at %@"
 msgstr ""
 
@@ -18106,16 +18107,16 @@ msgstr ""
 "এর জন্য নতুন কী চাপুন\n"
 "\"%@\""
 
-#: modules/gui/macosx/simple_prefs.m:1490
+#: modules/gui/macosx/simple_prefs.m:1486
 msgid "Invalid combination"
 msgstr "অবৈধ সমাহার"
 
-#: modules/gui/macosx/simple_prefs.m:1491
+#: modules/gui/macosx/simple_prefs.m:1487
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr "আফসোস, এই কী-গুলো হট-কী শর্টকাট হিসেবে নিয়োগ করা যাবে না।"
 
+#: modules/gui/macosx/simple_prefs.m:1497
 #: modules/gui/macosx/simple_prefs.m:1501
-#: modules/gui/macosx/simple_prefs.m:1505
 msgid "This combination is already taken by \"%@\"."
 msgstr "এই সমাহারটি ইতোমধ্যেই \"%@\" দ্বারা সংগ্রহ করা হয়েছে।"
 
@@ -26613,11 +26614,11 @@ msgstr "ASCII আর্ট"
 msgid "ASCII-art video output"
 msgstr "ASCII-আর্ট ভিডিও আউটপুট"
 
-#: modules/video_output/android/nativewindow.c:53
+#: modules/video_output/android/nativewindow.c:55
 msgid "ANativeWindow"
 msgstr ""
 
-#: modules/video_output/android/nativewindow.c:54
+#: modules/video_output/android/nativewindow.c:56
 msgid "Android native window"
 msgstr ""
 
@@ -28862,43 +28863,6 @@ msgstr "AAAA; "
 msgid "Media Manager List"
 msgstr "মিডিয়া ব্যবস্থাপকের তালিকা"
 
-#~ msgid "Media in Zip"
-#~ msgstr "জিপ করা মিডিয়া"
-
-#~ msgid "Path to the media in the Zip archive"
-#~ msgstr "জিপ আর্কাইভে মিডিয়ায় যাবার পাথ"
-
-#~ msgid "Fast udp streaming"
-#~ msgstr "দ্রুত udp স্ট্রীমিং"
-
-#~ msgid ""
-#~ "Sends TS to specific ip:port by udp (you must know what you are doing)."
-#~ msgstr ""
-#~ "udp এর মাধ্যমে উল্লেখিত আইপি:পোর্ট এ TS প্রেরন করে (নিশ্চিত হয়ে নিন আপনি কি "
-#~ "করছেন)।"
-
-#~ msgid "MTU for out mode"
-#~ msgstr "আউট মোডের জন্য MTU"
-
-#~ msgid "MTU for out mode."
-#~ msgstr "আউট মোডের জন্য MTU ।"
-
-#~ msgid "&Post processing"
-#~ msgstr "&প্রসেসিং এর পর"
-
-#~ msgid "Probe DVB card for capabilities"
-#~ msgstr "ক্ষমতা সম্পর্কে নিশ্চিত হওয়ার জন্য DVB কার্ড পরীক্ষা করা হবে"
-
-#~ msgid ""
-#~ "Some DVB cards do not like to be probed for their capabilities, you can "
-#~ "disable this feature if you experience some trouble."
-#~ msgstr ""
-#~ "কিছু DVB কার্ড ক্ষমতা নিশ্চিতকরণ পরীক্ষা পছন্দ করে না, আপনি কোনো সমস্যা অনুভব "
-#~ "করলে এই বৈশিষ্ট্যটি নিষ্ক্রিয় করতে পারেন।"
-
-#~ msgid "DVB input with v4l2 support"
-#~ msgstr "v4l2 সমর্থন সহ DVB ইনপুট"
-
 #, fuzzy
 #~ msgid ""
 #~ "%.1f MHz (%d services)\n"
@@ -28907,19 +28871,6 @@ msgstr "মিডিয়া ব্যবস্থাপকের তালিক�
 
 #~ msgid "Scanning DVB"
 #~ msgstr "DVB স্ক্যান করা হচ্ছে"
-
-#~ msgid "Uncompressed RAR"
-#~ msgstr "কম্প্রেশ না করা RAR"
-
-#~ msgid "Save this Log..."
-#~ msgstr "লগটি সংরক্ষণ করুন..."
-
-#~ msgid ""
-#~ "Please wait while your font cache is rebuilt.\n"
-#~ "This should take less than a few minutes."
-#~ msgstr ""
-#~ "অনুগ্রহ করে আপনার ফন্ট ক্যাশ পুনর্গঠিত হওয়া পর্যন্ত অপেক্ষা করা হবে।\n"
-#~ "এতে হয়ত ১ মিনিটেরও কম সময় লাগবে।"
 
 #~ msgid ""
 #~ "SAP is a way to publically announce streams that are being sent using "
@@ -31030,6 +30981,56 @@ msgstr "মিডিয়া ব্যবস্থাপকের তালিক�
 #~ "নাম, $I = শিরোনাম, $L = অবশিষ্ট সময়, $N = নাম, $O = অডিও ভাষা, $P = অবস্থান "
 #~ "(% এ), $R = হার, $S = অডিও স্যাম্পল হার (কিলোহার্জে), $T = সময়, $U = প্রকাশক, "
 #~ "$V = ভলিউম, $_ = নতুন লাইন) "
+
+#~ msgid "Media in Zip"
+#~ msgstr "জিপ করা মিডিয়া"
+
+#~ msgid "Path to the media in the Zip archive"
+#~ msgstr "জিপ আর্কাইভে মিডিয়ায় যাবার পাথ"
+
+#~ msgid "Fast udp streaming"
+#~ msgstr "দ্রুত udp স্ট্রীমিং"
+
+#~ msgid ""
+#~ "Sends TS to specific ip:port by udp (you must know what you are doing)."
+#~ msgstr ""
+#~ "udp এর মাধ্যমে উল্লেখিত আইপি:পোর্ট এ TS প্রেরন করে (নিশ্চিত হয়ে নিন আপনি কি "
+#~ "করছেন)।"
+
+#~ msgid "MTU for out mode"
+#~ msgstr "আউট মোডের জন্য MTU"
+
+#~ msgid "MTU for out mode."
+#~ msgstr "আউট মোডের জন্য MTU ।"
+
+#~ msgid "&Post processing"
+#~ msgstr "&প্রসেসিং এর পর"
+
+#~ msgid "Probe DVB card for capabilities"
+#~ msgstr "ক্ষমতা সম্পর্কে নিশ্চিত হওয়ার জন্য DVB কার্ড পরীক্ষা করা হবে"
+
+#~ msgid ""
+#~ "Some DVB cards do not like to be probed for their capabilities, you can "
+#~ "disable this feature if you experience some trouble."
+#~ msgstr ""
+#~ "কিছু DVB কার্ড ক্ষমতা নিশ্চিতকরণ পরীক্ষা পছন্দ করে না, আপনি কোনো সমস্যা অনুভব "
+#~ "করলে এই বৈশিষ্ট্যটি নিষ্ক্রিয় করতে পারেন।"
+
+#~ msgid "DVB input with v4l2 support"
+#~ msgstr "v4l2 সমর্থন সহ DVB ইনপুট"
+
+#~ msgid "Uncompressed RAR"
+#~ msgstr "কম্প্রেশ না করা RAR"
+
+#~ msgid "Save this Log..."
+#~ msgstr "লগটি সংরক্ষণ করুন..."
+
+#~ msgid ""
+#~ "Please wait while your font cache is rebuilt.\n"
+#~ "This should take less than a few minutes."
+#~ msgstr ""
+#~ "অনুগ্রহ করে আপনার ফন্ট ক্যাশ পুনর্গঠিত হওয়া পর্যন্ত অপেক্ষা করা হবে।\n"
+#~ "এতে হয়ত ১ মিনিটেরও কম সময় লাগবে।"
 
 #, fuzzy
 #~ msgid "Audio volume (0-65535)."
@@ -33342,3 +33343,6 @@ msgstr "মিডিয়া ব্যবস্থাপকের তালিক�
 #, fuzzy
 #~ msgid "Automate picture coding mode"
 #~ msgstr "ছবি কোডিং মোড"
+
+#~ msgid "Subtitle track added"
+#~ msgstr "সাবটাইটেল ট্র্যাক যোগ করা হয়েছে"

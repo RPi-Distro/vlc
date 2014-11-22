@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-11-03 14:06+0100\n"
-"PO-Revision-Date: 2014-08-08 01:30+0000\n"
+"POT-Creation-Date: 2014-11-21 16:54+0100\n"
+"PO-Revision-Date: 2014-10-24 17:04+0000\n"
 "Last-Translator: Potato <sheppaul@naver.com>\n"
 "Language-Team: Korean (http://www.transifex.com/projects/p/vlc-trans/"
 "language/ko/)\n"
@@ -622,7 +622,7 @@ msgstr "최대 필터수(%u) 에 도달했습니다."
 
 #: src/audio_output/output.c:229 src/config/core.c:407 src/input/es_out.c:904
 #: src/libvlc-module.c:538 modules/gui/macosx/MainMenu.m:277
-#: modules/gui/macosx/MainWindow.m:1083 modules/video_filter/postproc.c:234
+#: modules/gui/macosx/MainWindow.m:1082 modules/video_filter/postproc.c:234
 msgid "Disable"
 msgstr "사용 안함"
 
@@ -1368,7 +1368,7 @@ msgstr "'%s' 형식을 감지할수 없습니다. 상세정보는 로그를 보�
 msgid "Title"
 msgstr "제목"
 
-#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1202
+#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1205
 #: modules/gui/macosx/playlistinfo.m:74 modules/mux/avi.c:48
 msgid "Artist"
 msgstr "아티스트"
@@ -2578,7 +2578,7 @@ msgstr ""
 #: src/libvlc-module.c:538 src/video_output/vout_intf.c:98
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
-#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1006
+#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1016
 #: modules/gui/macosx/AudioEffects.m:86 modules/gui/macosx/MainMenu.m:641
 #: modules/gui/macosx/prefs_widgets.m:1221
 #: modules/gui/macosx/prefs_widgets.m:1284
@@ -2590,7 +2590,7 @@ msgid "Default"
 msgstr "기본"
 
 #: src/libvlc-module.c:538 modules/gui/macosx/AudioEffects.m:112
-#: modules/gui/macosx/MainWindow.m:1081 modules/gui/macosx/wizard.m:351
+#: modules/gui/macosx/MainWindow.m:1080 modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/extended_panels.cpp:1053
 #: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:289
 msgid "Enable"
@@ -4824,7 +4824,7 @@ msgstr ""
 msgid "Downloading ..."
 msgstr "다운로드중..."
 
-#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2562
+#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2567
 #: modules/gui/macosx/AudioEffects.m:372 modules/gui/macosx/AudioEffects.m:387
 #: modules/gui/macosx/AudioEffects.m:613 modules/gui/macosx/AudioEffects.m:712
 #: modules/gui/macosx/bookmarks.m:111 modules/gui/macosx/BWQuincyUI.m:80
@@ -6707,19 +6707,19 @@ msgstr "디지털 비디오 (Firewire/ieee1394) 입력"
 msgid "DV"
 msgstr "DV"
 
-#: modules/access/dvdnav.c:70 modules/access/dvdread.c:67
+#: modules/access/dvdnav.c:71 modules/access/dvdread.c:67
 msgid "DVD angle"
 msgstr "DVD 시점"
 
-#: modules/access/dvdnav.c:72 modules/access/dvdread.c:69
+#: modules/access/dvdnav.c:73 modules/access/dvdread.c:69
 msgid "Default DVD angle."
 msgstr "기본 DVD 시점."
 
-#: modules/access/dvdnav.c:74
+#: modules/access/dvdnav.c:75
 msgid "Start directly in menu"
 msgstr "메뉴에서 바로 시작"
 
-#: modules/access/dvdnav.c:76
+#: modules/access/dvdnav.c:77
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
@@ -6727,20 +6727,20 @@ msgstr ""
 "메인 메뉴에서 DVD를 직접 시작합니다. 이것은 모든 쓸모없는 경고 도입부를 건너"
 "뛰게 해 줄 것입니다."
 
-#: modules/access/dvdnav.c:85
+#: modules/access/dvdnav.c:86
 msgid "DVD with menus"
 msgstr "메뉴있는 DVD"
 
-#: modules/access/dvdnav.c:86
+#: modules/access/dvdnav.c:87
 msgid "DVDnav Input"
 msgstr "DVDnav 입력"
 
-#: modules/access/dvdnav.c:331 modules/access/dvdread.c:200
+#: modules/access/dvdnav.c:332 modules/access/dvdread.c:200
 #: modules/access/dvdread.c:462 modules/access/dvdread.c:530
 msgid "Playback failure"
 msgstr "재생 실패"
 
-#: modules/access/dvdnav.c:332
+#: modules/access/dvdnav.c:333
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
@@ -6786,17 +6786,17 @@ msgid "EyeTV input"
 msgstr "EyeTV 입력"
 
 #: modules/access/file.c:177 modules/access/file.c:304
-#: modules/access/mtp.c:195 modules/access/mtp.c:286 modules/access/vdr.c:368
-#: modules/access/vdr.c:535
+#: modules/access/mtp.c:195 modules/access/mtp.c:286 modules/access/vdr.c:372
+#: modules/access/vdr.c:539
 msgid "File reading failed"
 msgstr "파일 읽기 실패"
 
-#: modules/access/file.c:178 modules/access/vdr.c:535
+#: modules/access/file.c:178 modules/access/vdr.c:539
 #, c-format
 msgid "VLC could not open the file \"%s\" (%s)."
 msgstr "VLC가 \"%s\" (%s) 파일을 열 수 없습니다."
 
-#: modules/access/file.c:305 modules/access/vdr.c:369
+#: modules/access/file.c:305 modules/access/vdr.c:373
 #, c-format
 msgid "VLC could not read the file (%s)."
 msgstr "VLC가 파일(%s)을 읽을 수 없습니다."
@@ -6917,28 +6917,28 @@ msgstr "FTP 입력"
 msgid "FTP upload output"
 msgstr "파일 업로드 출력"
 
-#: modules/access/ftp.c:320 modules/access/ftp.c:336 modules/access/ftp.c:460
-#: modules/access/ftp.c:469 modules/access/ftp.c:476
+#: modules/access/ftp.c:319 modules/access/ftp.c:335 modules/access/ftp.c:459
+#: modules/access/ftp.c:468 modules/access/ftp.c:475
 msgid "Network interaction failed"
 msgstr "네트워크 상호작용 실패"
 
-#: modules/access/ftp.c:321
+#: modules/access/ftp.c:320
 msgid "VLC could not connect with the given server."
 msgstr "VLC 이 지정된 서버에 접속할수 없습니다."
 
-#: modules/access/ftp.c:337
+#: modules/access/ftp.c:336
 msgid "VLC's connection to the given server was rejected."
 msgstr "지정된 서버에 VLC 의 연결이 거부 되었습니다."
 
-#: modules/access/ftp.c:461
+#: modules/access/ftp.c:460
 msgid "Your account was rejected."
 msgstr "계정이 거부됨."
 
-#: modules/access/ftp.c:470
+#: modules/access/ftp.c:469
 msgid "Your password was rejected."
 msgstr "비밀번호가 거부됨."
 
-#: modules/access/ftp.c:477
+#: modules/access/ftp.c:476
 msgid "Your connection attempt to the server was rejected."
 msgstr "서버에 연결 시도가 거부됨."
 
@@ -9000,11 +9000,11 @@ msgstr "VDR"
 msgid "VDR recordings"
 msgstr "VDR 녹화"
 
-#: modules/access/vdr.c:809
+#: modules/access/vdr.c:813
 msgid "VDR Cut Marks"
 msgstr "VDR 자르기 표시"
 
-#: modules/access/vdr.c:872
+#: modules/access/vdr.c:876
 msgid "Start"
 msgstr "시작"
 
@@ -9298,7 +9298,7 @@ msgstr "오디오 채널 재구성"
 msgid "Audio filter for simple channel mixing"
 msgstr "단순 채널 믹싱을 위한 오디오 필터"
 
-#: modules/audio_filter/channel_mixer/trivial.c:48
+#: modules/audio_filter/channel_mixer/trivial.c:41
 msgid "Audio filter for trivial channel mixing"
 msgstr "단순 채널 믹싱을 위한 오디오 필터"
 
@@ -10200,7 +10200,7 @@ msgstr "소프트웨어 이득"
 msgid "This linear gain will be applied in software."
 msgstr "이 선형 이득은 소프트웨어로 적용이 될 것입니다."
 
-#: modules/audio_output/wasapi.c:457
+#: modules/audio_output/wasapi.c:459
 msgid "Windows Audio Session API output"
 msgstr "윈도우 오디오 세션 API 출력"
 
@@ -10303,7 +10303,7 @@ msgid "FFmpeg audio/video decoder"
 msgstr "FFmpeg 오디오/비디오 디코더"
 
 #: modules/codec/avcodec/avcodec.c:97 modules/codec/gstdecode.c:89
-#: modules/codec/omxil/android_mediacodec.c:273 modules/codec/omxil/omxil.c:84
+#: modules/codec/omxil/android_mediacodec.c:276 modules/codec/omxil/omxil.c:84
 msgid "Decoding"
 msgstr "디코딩"
 
@@ -11455,15 +11455,15 @@ msgstr "MPEG 오디오 레이어 1/2/3 디코더"
 msgid "MPEG audio layer I/II/III packetizer"
 msgstr "MPEG 오디오 레이어 1/2/3 패킷타이저"
 
-#: modules/codec/omxil/android_mediacodec.c:263
+#: modules/codec/omxil/android_mediacodec.c:266
 msgid "Android direct rendering"
 msgstr "안드로이드 직접 렌더링"
 
-#: modules/codec/omxil/android_mediacodec.c:265
+#: modules/codec/omxil/android_mediacodec.c:268
 msgid "Enable Android direct rendering using opaque buffers."
 msgstr "불투명 버퍼를 사용해서 안드로이드 직접 렌더링 사용하기"
 
-#: modules/codec/omxil/android_mediacodec.c:270
+#: modules/codec/omxil/android_mediacodec.c:273
 msgid "Video decoder using Android MediaCodec"
 msgstr "안드로이드 MediaCodec을 이용한 비디오 디코더"
 
@@ -13642,7 +13642,7 @@ msgstr "D-Bus 제어 인터페이스"
 
 #: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/MainWindow.m:209
 #: modules/gui/macosx/MainWindow.m:740 modules/gui/macosx/MainWindow.m:746
-#: modules/gui/macosx/MainWindow.m:1366 modules/gui/ncurses.c:1041
+#: modules/gui/macosx/MainWindow.m:1370 modules/gui/ncurses.c:1041
 #: modules/gui/qt4/dialogs/help.cpp:91 modules/gui/qt4/main_interface.cpp:1078
 #: modules/gui/qt4/main_interface.cpp:1082
 #: modules/gui/qt4/main_interface.cpp:1121
@@ -14475,11 +14475,11 @@ msgstr "필요시 고치기"
 msgid "AVI demuxer"
 msgstr "AVI 디먹서"
 
-#: modules/demux/avi/avi.c:728
+#: modules/demux/avi/avi.c:733
 msgid "Broken or missing AVI Index"
 msgstr "깨지거나 없는 AVI 인덱스"
 
-#: modules/demux/avi/avi.c:729
+#: modules/demux/avi/avi.c:734
 msgid ""
 "Because this AVI file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14494,19 +14494,19 @@ msgstr ""
 "이 작업은 파일이 크면 시간이 오래 걸릴 수 있습니다.\n"
 "어떻게 할까요?"
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Build index then play"
 msgstr "인덱스를 만들고 재생"
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Play as is"
 msgstr "그대로 재생"
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Do not play"
 msgstr "재생하지 않음"
 
-#: modules/demux/avi/avi.c:2561
+#: modules/demux/avi/avi.c:2566
 msgid "Fixing AVI Index..."
 msgstr "AVI 인덱스 수정..."
 
@@ -17917,28 +17917,28 @@ msgstr "HTML 재생목록"
 msgid "Save Playlist"
 msgstr "재생목록 저장"
 
-#: modules/gui/macosx/playlist.m:1202
+#: modules/gui/macosx/playlist.m:1205
 msgid "Meta-information"
 msgstr "메타-정보"
 
-#: modules/gui/macosx/playlist.m:1535 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/macosx/playlist.m:1541 modules/gui/qt4/qt4.cpp:188
 msgid "Continue playback?"
 msgstr "이어서 재생할까요?"
 
-#: modules/gui/macosx/playlist.m:1535 modules/gui/macosx/simple_prefs.m:837
+#: modules/gui/macosx/playlist.m:1541 modules/gui/macosx/simple_prefs.m:837
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr "계속"
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Restart playback"
 msgstr "재생 재시작하기"
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Always continue"
 msgstr "항상 이어서 재생하기"
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Playback of \"%@\" will continue at %@"
 msgstr "\"%@\" 재생은 %@ 에서 이어서 재생합니다"
 
@@ -18372,16 +18372,16 @@ msgstr ""
 "Press new keys for\n"
 "\"%@\""
 
-#: modules/gui/macosx/simple_prefs.m:1490
+#: modules/gui/macosx/simple_prefs.m:1486
 msgid "Invalid combination"
 msgstr "잘못된 조합"
 
-#: modules/gui/macosx/simple_prefs.m:1491
+#: modules/gui/macosx/simple_prefs.m:1487
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr "유감스럽게도, 이 키는 단축키로 등록할 수 없습니다."
 
+#: modules/gui/macosx/simple_prefs.m:1497
 #: modules/gui/macosx/simple_prefs.m:1501
-#: modules/gui/macosx/simple_prefs.m:1505
 msgid "This combination is already taken by \"%@\"."
 msgstr "이 조합은 \"%@\" 로 이미 사용중입니다."
 
@@ -20318,7 +20318,7 @@ msgstr "in"
 
 #: modules/gui/qt4/components/preferences_widgets.cpp:1141
 msgid "Any field"
-msgstr "아무 필드"
+msgstr "전체 영역"
 
 #: modules/gui/qt4/components/preferences_widgets.cpp:1142
 msgid "Actions"
@@ -26220,7 +26220,7 @@ msgstr ""
 
 #: modules/video_filter/mosaic.c:166
 msgid "auto"
-msgstr "auto"
+msgstr "자동"
 
 #: modules/video_filter/mosaic.c:166
 msgid "fixed"
@@ -26997,11 +26997,11 @@ msgstr "아스키 아트"
 msgid "ASCII-art video output"
 msgstr "아스키-아트 비디오 출력"
 
-#: modules/video_output/android/nativewindow.c:53
+#: modules/video_output/android/nativewindow.c:55
 msgid "ANativeWindow"
 msgstr "ANativeWindow"
 
-#: modules/video_output/android/nativewindow.c:54
+#: modules/video_output/android/nativewindow.c:56
 msgid "Android native window"
 msgstr "안드로이드 본래의 창"
 
@@ -28767,7 +28767,7 @@ msgstr "헤드폰 서라운드 효과"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:441
 msgid "Normalize volume to:"
-msgstr "볼륨 노멀라이즈하기:"
+msgstr "볼륨  평준화하기:"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:443
 msgid "Preferred audio language:"
@@ -29231,70 +29231,6 @@ msgstr "AAAA; "
 msgid "Media Manager List"
 msgstr "미디어 관리자 목록"
 
-#~ msgid "Subtitle track added"
-#~ msgstr "자막 트랙이 추가되었습니다"
-
-#~ msgid "Media in Zip"
-#~ msgstr "Zip 안의 미디어"
-
-#~ msgid "Path to the media in the Zip archive"
-#~ msgstr "Zip 압축파일 안의 미디어 경로"
-
-#~ msgid "Fast udp streaming"
-#~ msgstr "빠른 UDP 스트리밍"
-
-#~ msgid ""
-#~ "Sends TS to specific ip:port by udp (you must know what you are doing)."
-#~ msgstr ""
-#~ "TS를 특정한 ip:port 에 udp로 전송합니다 (뭘 하고 있는지 알고 사용하세요)."
-
-#~ msgid "MTU for out mode"
-#~ msgstr "출력 모드의 MTU"
-
-#~ msgid "MTU for out mode."
-#~ msgstr "출력 모드의 MTU"
-
-#~ msgid "&Post processing"
-#~ msgstr "후처리(&P)"
-
-#~ msgid "AVFoundation Video Capture"
-#~ msgstr "AVFoundation 비디오 캡처"
-
-#~ msgid "AVFoundation video capture module."
-#~ msgstr "AVFoundation 비디오 캡처 모듈."
-
-#~ msgid "No video devices found"
-#~ msgstr "비디오 장치가 없습니다"
-
-#~ msgid ""
-#~ "Your Mac does not seem to be equipped with a suitable video input device. "
-#~ "Please check your connectors and drivers."
-#~ msgstr ""
-#~ "당신의 맥은 적당한 비디오 출력 장치를 갖추고 있지 않는 것 같습니다. 컨넥터"
-#~ "와 드라이버를 확인하세요."
-
-#~ msgid "Probe DVB card for capabilities"
-#~ msgstr "DVB 카드 성능 탐지"
-
-#~ msgid ""
-#~ "Some DVB cards do not like to be probed for their capabilities, you can "
-#~ "disable this feature if you experience some trouble."
-#~ msgstr ""
-#~ "일부 DVB 카드는 성능 탐지가 되지 않는것 같습니다, 만약 어떤 문제점을 경험"
-#~ "한다면 기능을 사용안함으로 할수 있습니다."
-
-#~ msgid "Satellite scanning config"
-#~ msgstr "위성 스캐닝 설정"
-
-#~ msgid "filename of config file in share/dvb/dvb-s"
-#~ msgstr "share/dvb/dvb-s 의 환경 설정 파일명"
-
-#~ msgid "DVB"
-#~ msgstr "DVB"
-
-#~ msgid "DVB input with v4l2 support"
-#~ msgstr "v4l2 지원 DVB 입력"
-
 #, fuzzy
 #~ msgid ""
 #~ "%.1f MHz (%d services)\n"
@@ -29304,175 +29240,6 @@ msgstr "미디어 관리자 목록"
 #, fuzzy
 #~ msgid "Scanning DVB"
 #~ msgstr "DVB-T 검색"
-
-#~ msgid "QTSound"
-#~ msgstr "QTSound"
-
-#~ msgid "QuickTime Sound Capture"
-#~ msgstr "퀵타임 사운드 캡처"
-
-#~ msgid "No Audio Input device found"
-#~ msgstr "오디오 입력 장치를 찾을 수 없습니다"
-
-#~ msgid ""
-#~ "Your Mac does not seem to be equipped with a suitable audio input device."
-#~ "Please check your connectors and drivers."
-#~ msgstr ""
-#~ "당신의 맥은 적당한 오디오 입력 장치를 갖추지 못한 것 같습니다. 컨넥터와 드"
-#~ "라이버를 확인하세요."
-
-#~ msgid "No audio input device found"
-#~ msgstr "오디오 입력 장치를 찾을 수 없습니다"
-
-#~ msgid "Uncompressed RAR"
-#~ msgstr "압축해제된 RAR"
-
-#~ msgid "Windows Multimedia Device output"
-#~ msgstr "윈도우 멀티미디어 장치 출력"
-
-#~ msgid "Windows Store audio output"
-#~ msgstr "윈도우 스토어 오디오 출력"
-
-#~ msgid "SCTE-27 decoder"
-#~ msgstr "SCTE-27 디코더"
-
-#~ msgid "SCTE-27"
-#~ msgstr "SCTE-27"
-
-#~ msgid "Specify the width to decode the image too"
-#~ msgstr "이미지를 디코드할 폭도 지정하기"
-
-#~ msgid "Specify the height to decode the image too"
-#~ msgstr "이미지를 디코더할 높이도 지정하기"
-
-#~ msgid "Scale factor to apply to image"
-#~ msgstr "이미지에 적용할 스케일 요소"
-
-#~ msgid "SVG video decoder"
-#~ msgstr "SVG 비디오 디코더"
-
-#~ msgid "WinMsg"
-#~ msgstr "WinMsg"
-
-#~ msgid "Windows messages interface"
-#~ msgstr "윈도우 메시지 인터페이스"
-
-#~ msgid "Save this Log..."
-#~ msgstr "이 로그 저장..."
-
-#~ msgid "VLC Debug Log (%s).rtf"
-#~ msgstr "VLC 디버그 로그 (%s).rtf"
-
-#~ msgid "No EPG Data Available"
-#~ msgstr "사용가능한 EPG 자료가 없습니다"
-
-#~ msgid " (%1+ rated)"
-#~ msgstr " (%1+ 평가됨)"
-
-#~ msgid "Empty"
-#~ msgstr "비었음"
-
-#~ msgid "Deactivate"
-#~ msgstr "비활성화하기"
-
-#~ msgid "Audio Fingerprinting"
-#~ msgstr "오디오 지문"
-
-#~ msgid "Select a matching identity"
-#~ msgstr "일치하는 것을 선택하기"
-
-#~ msgid "No fingerprint has been found"
-#~ msgstr "지문을 찾을 수 없습니다"
-
-#~ msgid "Fingerprinting track..."
-#~ msgstr "트랙 지문 생성하기..."
-
-#~ msgctxt "Tooltip|Clear"
-#~ msgid "Clear"
-#~ msgstr "지우기"
-
-#~ msgid ""
-#~ "Extension '%s' does not respond.\n"
-#~ "Do you want to kill it now? "
-#~ msgstr ""
-#~ "확장 프로그램 '%s' 가 응답하지 않습니다.\n"
-#~ "그것을 지금 종료할까요?"
-
-#~ msgid "Extension not responding!"
-#~ msgstr "확장 프로그램이 응답하지 않습니다!"
-
-#~ msgid "addons local storage"
-#~ msgstr "애드온 로컬 저장소"
-
-#~ msgid "Addons local storage installer"
-#~ msgstr "애드온 로컬 저장소 설치 프로그램"
-
-#~ msgid "Addons local storage lister"
-#~ msgstr "애드론 로컬 저장소 목록 생성자"
-
-#~ msgid "Videolan.org's addons finder"
-#~ msgstr "Videolan.org의 애드온 검색기"
-
-#~ msgid "addons.videolan.org addons finder"
-#~ msgstr "addons.videolan.org 애드온 검색기"
-
-#~ msgid "Videolan.org's single archive addons finder"
-#~ msgstr "Videolan.org의 단일 보관소 애드온 검색기"
-
-#~ msgid "single .vlp archive addons finder"
-#~ msgstr "단일 .vlp 보관소 애드온 검색기"
-
-#~ msgid "acoustid"
-#~ msgstr "acoustid"
-
-#~ msgid "Track fingerprinter (based on Acoustid)"
-#~ msgstr "트랙 지문 (Acoustid에 기반)"
-
-#~ msgid "Duration of the fingerprinting"
-#~ msgstr "지문의 지속시간"
-
-#~ msgid "Default: 90sec"
-#~ msgstr "기본: 90초"
-
-#~ msgid "Chromaprint stream output"
-#~ msgstr "색상프린트 스트림 출력"
-
-#~ msgid ""
-#~ "Please wait while your font cache is rebuilt.\n"
-#~ "This should take less than a few minutes."
-#~ msgstr ""
-#~ "글꼴 캐쉬가 재구축되는 동안 잠시 기다리세요.\n"
-#~ "몇 분 정도 걸릴 것입니다."
-
-#~ msgid "The width of the visualization window, in pixels."
-#~ msgstr "시각화 창의 폭, 픽셀단위."
-
-#~ msgid "The height of the visualization window, in pixels."
-#~ msgstr "시각화 창의 높이, 픽셀단위."
-
-#~ msgid "glSpectrum"
-#~ msgstr "glSpectrum"
-
-#~ msgid "3D OpenGL spectrum visualization"
-#~ msgstr "3D OpenGL 스펙트럼 시각화"
-
-#~ msgid "Hann"
-#~ msgstr "Hann"
-
-#~ msgid "Flat Top"
-#~ msgstr "Flat Top"
-
-#~ msgid "Blackman-Harris"
-#~ msgstr "Blackman-Harris"
-
-#~ msgid "Kaiser"
-#~ msgstr "Kaiser"
-
-#~ msgid "VLC media player - Flash Viewer"
-#~ msgstr "VLC 미디어 재생기 - 플래시 보기"
-
-#~ msgid "Streaming Output"
-#~ msgstr "스트리밍 출력"
 
 #~ msgid ""
 #~ "SAP is a way to publically announce streams that are being sent using "
@@ -32244,6 +32011,239 @@ msgstr "미디어 관리자 목록"
 #, fuzzy
 #~ msgid "&Jump..."
 #~ msgstr "도움말(&H)..."
+
+#~ msgid "Subtitle track added"
+#~ msgstr "자막 트랙이 추가되었습니다"
+
+#~ msgid "Media in Zip"
+#~ msgstr "Zip 안의 미디어"
+
+#~ msgid "Path to the media in the Zip archive"
+#~ msgstr "Zip 압축파일 안의 미디어 경로"
+
+#~ msgid "Fast udp streaming"
+#~ msgstr "빠른 UDP 스트리밍"
+
+#~ msgid ""
+#~ "Sends TS to specific ip:port by udp (you must know what you are doing)."
+#~ msgstr ""
+#~ "TS를 특정한 ip:port 에 udp로 전송합니다 (뭘 하고 있는지 알고 사용하세요)."
+
+#~ msgid "MTU for out mode"
+#~ msgstr "출력 모드의 MTU"
+
+#~ msgid "MTU for out mode."
+#~ msgstr "출력 모드의 MTU"
+
+#~ msgid "&Post processing"
+#~ msgstr "후처리(&P)"
+
+#~ msgid "AVFoundation Video Capture"
+#~ msgstr "AVFoundation 비디오 캡처"
+
+#~ msgid "AVFoundation video capture module."
+#~ msgstr "AVFoundation 비디오 캡처 모듈."
+
+#~ msgid "No video devices found"
+#~ msgstr "비디오 장치가 없습니다"
+
+#~ msgid ""
+#~ "Your Mac does not seem to be equipped with a suitable video input device. "
+#~ "Please check your connectors and drivers."
+#~ msgstr ""
+#~ "당신의 맥은 적당한 비디오 출력 장치를 갖추고 있지 않는 것 같습니다. 컨넥터"
+#~ "와 드라이버를 확인하세요."
+
+#~ msgid "Probe DVB card for capabilities"
+#~ msgstr "DVB 카드 성능 탐지"
+
+#~ msgid ""
+#~ "Some DVB cards do not like to be probed for their capabilities, you can "
+#~ "disable this feature if you experience some trouble."
+#~ msgstr ""
+#~ "일부 DVB 카드는 성능 탐지가 되지 않는것 같습니다, 만약 어떤 문제점을 경험"
+#~ "한다면 기능을 사용안함으로 할수 있습니다."
+
+#~ msgid "Satellite scanning config"
+#~ msgstr "위성 스캐닝 설정"
+
+#~ msgid "filename of config file in share/dvb/dvb-s"
+#~ msgstr "share/dvb/dvb-s 의 환경 설정 파일명"
+
+#~ msgid "DVB"
+#~ msgstr "DVB"
+
+#~ msgid "DVB input with v4l2 support"
+#~ msgstr "v4l2 지원 DVB 입력"
+
+#~ msgid "QTSound"
+#~ msgstr "QTSound"
+
+#~ msgid "QuickTime Sound Capture"
+#~ msgstr "퀵타임 사운드 캡처"
+
+#~ msgid "No Audio Input device found"
+#~ msgstr "오디오 입력 장치를 찾을 수 없습니다"
+
+#~ msgid ""
+#~ "Your Mac does not seem to be equipped with a suitable audio input device."
+#~ "Please check your connectors and drivers."
+#~ msgstr ""
+#~ "당신의 맥은 적당한 오디오 입력 장치를 갖추지 못한 것 같습니다. 컨넥터와 드"
+#~ "라이버를 확인하세요."
+
+#~ msgid "No audio input device found"
+#~ msgstr "오디오 입력 장치를 찾을 수 없습니다"
+
+#~ msgid "Uncompressed RAR"
+#~ msgstr "압축해제된 RAR"
+
+#~ msgid "Windows Multimedia Device output"
+#~ msgstr "윈도우 멀티미디어 장치 출력"
+
+#~ msgid "Windows Store audio output"
+#~ msgstr "윈도우 스토어 오디오 출력"
+
+#~ msgid "SCTE-27 decoder"
+#~ msgstr "SCTE-27 디코더"
+
+#~ msgid "SCTE-27"
+#~ msgstr "SCTE-27"
+
+#~ msgid "Specify the width to decode the image too"
+#~ msgstr "이미지를 디코드할 폭도 지정하기"
+
+#~ msgid "Specify the height to decode the image too"
+#~ msgstr "이미지를 디코더할 높이도 지정하기"
+
+#~ msgid "Scale factor to apply to image"
+#~ msgstr "이미지에 적용할 스케일 요소"
+
+#~ msgid "SVG video decoder"
+#~ msgstr "SVG 비디오 디코더"
+
+#~ msgid "WinMsg"
+#~ msgstr "WinMsg"
+
+#~ msgid "Windows messages interface"
+#~ msgstr "윈도우 메시지 인터페이스"
+
+#~ msgid "Save this Log..."
+#~ msgstr "이 로그 저장..."
+
+#~ msgid "VLC Debug Log (%s).rtf"
+#~ msgstr "VLC 디버그 로그 (%s).rtf"
+
+#~ msgid "No EPG Data Available"
+#~ msgstr "사용가능한 EPG 자료가 없습니다"
+
+#~ msgid " (%1+ rated)"
+#~ msgstr " (%1+ 평가됨)"
+
+#~ msgid "Empty"
+#~ msgstr "비었음"
+
+#~ msgid "Deactivate"
+#~ msgstr "비활성화하기"
+
+#~ msgid "Audio Fingerprinting"
+#~ msgstr "오디오 지문"
+
+#~ msgid "Select a matching identity"
+#~ msgstr "일치하는 것을 선택하기"
+
+#~ msgid "No fingerprint has been found"
+#~ msgstr "지문을 찾을 수 없습니다"
+
+#~ msgid "Fingerprinting track..."
+#~ msgstr "트랙 지문 생성하기..."
+
+#~ msgctxt "Tooltip|Clear"
+#~ msgid "Clear"
+#~ msgstr "지우기"
+
+#~ msgid ""
+#~ "Extension '%s' does not respond.\n"
+#~ "Do you want to kill it now? "
+#~ msgstr ""
+#~ "확장 프로그램 '%s' 가 응답하지 않습니다.\n"
+#~ "그것을 지금 종료할까요?"
+
+#~ msgid "Extension not responding!"
+#~ msgstr "확장 프로그램이 응답하지 않습니다!"
+
+#~ msgid "addons local storage"
+#~ msgstr "애드온 로컬 저장소"
+
+#~ msgid "Addons local storage installer"
+#~ msgstr "애드온 로컬 저장소 설치 프로그램"
+
+#~ msgid "Addons local storage lister"
+#~ msgstr "애드론 로컬 저장소 목록 생성자"
+
+#~ msgid "Videolan.org's addons finder"
+#~ msgstr "Videolan.org의 애드온 검색기"
+
+#~ msgid "addons.videolan.org addons finder"
+#~ msgstr "addons.videolan.org 애드온 검색기"
+
+#~ msgid "Videolan.org's single archive addons finder"
+#~ msgstr "Videolan.org의 단일 보관소 애드온 검색기"
+
+#~ msgid "single .vlp archive addons finder"
+#~ msgstr "단일 .vlp 보관소 애드온 검색기"
+
+#~ msgid "acoustid"
+#~ msgstr "acoustid"
+
+#~ msgid "Track fingerprinter (based on Acoustid)"
+#~ msgstr "트랙 지문 (Acoustid에 기반)"
+
+#~ msgid "Duration of the fingerprinting"
+#~ msgstr "지문의 지속시간"
+
+#~ msgid "Default: 90sec"
+#~ msgstr "기본: 90초"
+
+#~ msgid "Chromaprint stream output"
+#~ msgstr "색상프린트 스트림 출력"
+
+#~ msgid ""
+#~ "Please wait while your font cache is rebuilt.\n"
+#~ "This should take less than a few minutes."
+#~ msgstr ""
+#~ "글꼴 캐쉬가 재구축되는 동안 잠시 기다리세요.\n"
+#~ "몇 분 정도 걸릴 것입니다."
+
+#~ msgid "The width of the visualization window, in pixels."
+#~ msgstr "시각화 창의 폭, 픽셀단위."
+
+#~ msgid "The height of the visualization window, in pixels."
+#~ msgstr "시각화 창의 높이, 픽셀단위."
+
+#~ msgid "glSpectrum"
+#~ msgstr "glSpectrum"
+
+#~ msgid "3D OpenGL spectrum visualization"
+#~ msgstr "3D OpenGL 스펙트럼 시각화"
+
+#~ msgid "Hann"
+#~ msgstr "Hann"
+
+#~ msgid "Flat Top"
+#~ msgstr "Flat Top"
+
+#~ msgid "Blackman-Harris"
+#~ msgstr "Blackman-Harris"
+
+#~ msgid "Kaiser"
+#~ msgstr "Kaiser"
+
+#~ msgid "VLC media player - Flash Viewer"
+#~ msgstr "VLC 미디어 재생기 - 플래시 보기"
+
+#~ msgid "Streaming Output"
+#~ msgstr "스트리밍 출력"
 
 #, fuzzy
 #~ msgid "Path to OSD menu images"
