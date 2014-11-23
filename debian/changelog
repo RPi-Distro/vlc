@@ -1,10 +1,10 @@
-vlc (2.2.0~rc2-1) UNRELEASED; urgency=medium
+vlc (2.2.0~rc2-1) unstable; urgency=medium
 
   * New upstream release.
     - Fix segfault in ASCII art plugin. (Closes: #768873)
     - Fix selection of left/right channel in stereo mode. (Closes: #765830)
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sat, 22 Nov 2014 22:37:06 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 23 Nov 2014 13:14:07 +0100
 
 vlc (2.2.0~rc1-1) unstable; urgency=low
 
