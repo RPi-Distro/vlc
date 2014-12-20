@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: ff070888ca5ba6808726260633e2eb6836ae96fd $
+ * $Id: 9d7fe8ea64986e387ad389c4703057e1deb50a04 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan.org>
@@ -1833,18 +1833,23 @@ static const int kCurrentPreferencesVersion = 3;
 - (void)coreChangedMediaKeySupportSetting: (NSNotification *)o_notification
 {
     b_mediaKeySupport = var_InheritBool(VLCIntf, "macosx-mediakeys");
-    if (b_mediaKeySupport) {
-        if (!o_mediaKeyController)
-            o_mediaKeyController = [[SPMediaKeyTap alloc] initWithDelegate:self];
+    if (b_mediaKeySupport && !o_mediaKeyController)
+        o_mediaKeyController = [[SPMediaKeyTap alloc] initWithDelegate:self];
 
-        if ([[[VLCMain sharedInstance] playlist] currentPlaylistRoot]->i_children > 0 ||
-            p_current_input)
+    if (b_mediaKeySupport && ([[[VLCMain sharedInstance] playlist] currentPlaylistRoot]->i_children > 0 ||
+                              p_current_input)) {
+        if (!b_mediaKeyTrapEnabled) {
+            b_mediaKeyTrapEnabled = YES;
+            msg_Dbg(p_intf, "Enable media key support");
             [o_mediaKeyController startWatchingMediaKeys];
-        else
+        }
+    } else {
+        if (b_mediaKeyTrapEnabled) {
+            b_mediaKeyTrapEnabled = NO;
+            msg_Dbg(p_intf, "Disable media key support");
             [o_mediaKeyController stopWatchingMediaKeys];
+        }
     }
-    else if (!b_mediaKeySupport && o_mediaKeyController)
-        [o_mediaKeyController stopWatchingMediaKeys];
 }
 
 @end

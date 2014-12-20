@@ -2,7 +2,7 @@
  * interlacing.c
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 13ec36febca165567f2e1b377b8f33361592a623 $
+ * $Id: 6177a3aec919872fdd6d03454c5c66555ef04352 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -103,7 +103,7 @@ static void DeinterlaceRemove(vout_thread_t *vout)
     /* */
     strcpy(&start[0], &start[strlen("deinterlace")]);
     if (*start == ':')
-        strcpy(&start[0], &start[1]);
+        memmove(start, start + 1, strlen(start) /* + 1 - 1 */);
 
     var_SetString(vout, "video-filter", filter);
     free(filter);

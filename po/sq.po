@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-11-03 14:06+0100\n"
+"POT-Creation-Date: 2014-11-21 16:54+0100\n"
 "PO-Revision-Date: 2014-07-03 07:31+0000\n"
 "Last-Translator: Rigels Gordani <rgordani@gmail.com>\n"
 "Language-Team: Albanian (http://www.transifex.com/projects/p/vlc-trans/"
@@ -606,7 +606,7 @@ msgstr "Numri maksimal i filtrave (%u) u arrit."
 
 #: src/audio_output/output.c:229 src/config/core.c:407 src/input/es_out.c:904
 #: src/libvlc-module.c:538 modules/gui/macosx/MainMenu.m:277
-#: modules/gui/macosx/MainWindow.m:1083 modules/video_filter/postproc.c:234
+#: modules/gui/macosx/MainWindow.m:1082 modules/video_filter/postproc.c:234
 msgid "Disable"
 msgstr "Gjymto"
 
@@ -1319,7 +1319,7 @@ msgstr ""
 msgid "Title"
 msgstr "Titull"
 
-#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1202
+#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1205
 #: modules/gui/macosx/playlistinfo.m:74 modules/mux/avi.c:48
 msgid "Artist"
 msgstr "Artisti"
@@ -2469,7 +2469,7 @@ msgstr ""
 #: src/libvlc-module.c:538 src/video_output/vout_intf.c:98
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
-#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1006
+#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1016
 #: modules/gui/macosx/AudioEffects.m:86 modules/gui/macosx/MainMenu.m:641
 #: modules/gui/macosx/prefs_widgets.m:1221
 #: modules/gui/macosx/prefs_widgets.m:1284
@@ -2481,7 +2481,7 @@ msgid "Default"
 msgstr ""
 
 #: src/libvlc-module.c:538 modules/gui/macosx/AudioEffects.m:112
-#: modules/gui/macosx/MainWindow.m:1081 modules/gui/macosx/wizard.m:351
+#: modules/gui/macosx/MainWindow.m:1080 modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/extended_panels.cpp:1053
 #: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:289
 msgid "Enable"
@@ -4562,7 +4562,7 @@ msgstr ""
 msgid "Downloading ..."
 msgstr "Shkarkimi ..."
 
-#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2562
+#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2567
 #: modules/gui/macosx/AudioEffects.m:372 modules/gui/macosx/AudioEffects.m:387
 #: modules/gui/macosx/AudioEffects.m:613 modules/gui/macosx/AudioEffects.m:712
 #: modules/gui/macosx/bookmarks.m:111 modules/gui/macosx/BWQuincyUI.m:80
@@ -6383,38 +6383,38 @@ msgstr ""
 msgid "DV"
 msgstr "DV"
 
-#: modules/access/dvdnav.c:70 modules/access/dvdread.c:67
+#: modules/access/dvdnav.c:71 modules/access/dvdread.c:67
 msgid "DVD angle"
 msgstr "Kënd DVD"
 
-#: modules/access/dvdnav.c:72 modules/access/dvdread.c:69
+#: modules/access/dvdnav.c:73 modules/access/dvdread.c:69
 msgid "Default DVD angle."
 msgstr ""
 
-#: modules/access/dvdnav.c:74
+#: modules/access/dvdnav.c:75
 msgid "Start directly in menu"
 msgstr ""
 
-#: modules/access/dvdnav.c:76
+#: modules/access/dvdnav.c:77
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
 msgstr ""
 
-#: modules/access/dvdnav.c:85
+#: modules/access/dvdnav.c:86
 msgid "DVD with menus"
 msgstr ""
 
-#: modules/access/dvdnav.c:86
+#: modules/access/dvdnav.c:87
 msgid "DVDnav Input"
 msgstr ""
 
-#: modules/access/dvdnav.c:331 modules/access/dvdread.c:200
+#: modules/access/dvdnav.c:332 modules/access/dvdread.c:200
 #: modules/access/dvdread.c:462 modules/access/dvdread.c:530
 msgid "Playback failure"
 msgstr ""
 
-#: modules/access/dvdnav.c:332
+#: modules/access/dvdnav.c:333
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
@@ -6457,17 +6457,17 @@ msgid "EyeTV input"
 msgstr ""
 
 #: modules/access/file.c:177 modules/access/file.c:304
-#: modules/access/mtp.c:195 modules/access/mtp.c:286 modules/access/vdr.c:368
-#: modules/access/vdr.c:535
+#: modules/access/mtp.c:195 modules/access/mtp.c:286 modules/access/vdr.c:372
+#: modules/access/vdr.c:539
 msgid "File reading failed"
 msgstr ""
 
-#: modules/access/file.c:178 modules/access/vdr.c:535
+#: modules/access/file.c:178 modules/access/vdr.c:539
 #, c-format
 msgid "VLC could not open the file \"%s\" (%s)."
 msgstr ""
 
-#: modules/access/file.c:305 modules/access/vdr.c:369
+#: modules/access/file.c:305 modules/access/vdr.c:373
 #, c-format
 msgid "VLC could not read the file (%s)."
 msgstr ""
@@ -6579,28 +6579,28 @@ msgstr "Hyrja FTP"
 msgid "FTP upload output"
 msgstr ""
 
-#: modules/access/ftp.c:320 modules/access/ftp.c:336 modules/access/ftp.c:460
-#: modules/access/ftp.c:469 modules/access/ftp.c:476
+#: modules/access/ftp.c:319 modules/access/ftp.c:335 modules/access/ftp.c:459
+#: modules/access/ftp.c:468 modules/access/ftp.c:475
 msgid "Network interaction failed"
 msgstr "Ndërfaqja rrjetit dështoi"
 
-#: modules/access/ftp.c:321
+#: modules/access/ftp.c:320
 msgid "VLC could not connect with the given server."
 msgstr "VLC'ja nuk mund të lidhet me serverin e dhënë."
 
-#: modules/access/ftp.c:337
+#: modules/access/ftp.c:336
 msgid "VLC's connection to the given server was rejected."
 msgstr "Lidhja e VLC'së tek serveri i dhënë u refuzua."
 
-#: modules/access/ftp.c:461
+#: modules/access/ftp.c:460
 msgid "Your account was rejected."
 msgstr "Llogaria juaj u refuzua."
 
-#: modules/access/ftp.c:470
+#: modules/access/ftp.c:469
 msgid "Your password was rejected."
 msgstr "Fjalëkalimi juaj u refuzua."
 
-#: modules/access/ftp.c:477
+#: modules/access/ftp.c:476
 msgid "Your connection attempt to the server was rejected."
 msgstr "Përpjekja juaj për tu lidhur me serverin është refuzuar."
 
@@ -8619,11 +8619,11 @@ msgstr ""
 msgid "VDR recordings"
 msgstr ""
 
-#: modules/access/vdr.c:809
+#: modules/access/vdr.c:813
 msgid "VDR Cut Marks"
 msgstr ""
 
-#: modules/access/vdr.c:872
+#: modules/access/vdr.c:876
 msgid "Start"
 msgstr ""
 
@@ -8895,7 +8895,7 @@ msgstr ""
 msgid "Audio filter for simple channel mixing"
 msgstr ""
 
-#: modules/audio_filter/channel_mixer/trivial.c:48
+#: modules/audio_filter/channel_mixer/trivial.c:41
 msgid "Audio filter for trivial channel mixing"
 msgstr ""
 
@@ -9758,7 +9758,7 @@ msgstr ""
 msgid "This linear gain will be applied in software."
 msgstr ""
 
-#: modules/audio_output/wasapi.c:457
+#: modules/audio_output/wasapi.c:459
 msgid "Windows Audio Session API output"
 msgstr ""
 
@@ -9854,7 +9854,7 @@ msgid "FFmpeg audio/video decoder"
 msgstr ""
 
 #: modules/codec/avcodec/avcodec.c:97 modules/codec/gstdecode.c:89
-#: modules/codec/omxil/android_mediacodec.c:273 modules/codec/omxil/omxil.c:84
+#: modules/codec/omxil/android_mediacodec.c:276 modules/codec/omxil/omxil.c:84
 msgid "Decoding"
 msgstr ""
 
@@ -10911,15 +10911,15 @@ msgstr ""
 msgid "MPEG audio layer I/II/III packetizer"
 msgstr ""
 
-#: modules/codec/omxil/android_mediacodec.c:263
+#: modules/codec/omxil/android_mediacodec.c:266
 msgid "Android direct rendering"
 msgstr ""
 
-#: modules/codec/omxil/android_mediacodec.c:265
+#: modules/codec/omxil/android_mediacodec.c:268
 msgid "Enable Android direct rendering using opaque buffers."
 msgstr ""
 
-#: modules/codec/omxil/android_mediacodec.c:270
+#: modules/codec/omxil/android_mediacodec.c:273
 msgid "Video decoder using Android MediaCodec"
 msgstr ""
 
@@ -12922,7 +12922,7 @@ msgstr ""
 
 #: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/MainWindow.m:209
 #: modules/gui/macosx/MainWindow.m:740 modules/gui/macosx/MainWindow.m:746
-#: modules/gui/macosx/MainWindow.m:1366 modules/gui/ncurses.c:1041
+#: modules/gui/macosx/MainWindow.m:1370 modules/gui/ncurses.c:1041
 #: modules/gui/qt4/dialogs/help.cpp:91 modules/gui/qt4/main_interface.cpp:1078
 #: modules/gui/qt4/main_interface.cpp:1082
 #: modules/gui/qt4/main_interface.cpp:1121
@@ -13736,11 +13736,11 @@ msgstr ""
 msgid "AVI demuxer"
 msgstr ""
 
-#: modules/demux/avi/avi.c:728
+#: modules/demux/avi/avi.c:733
 msgid "Broken or missing AVI Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:729
+#: modules/demux/avi/avi.c:734
 msgid ""
 "Because this AVI file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -13750,19 +13750,19 @@ msgid ""
 "What do you want to do?"
 msgstr ""
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Build index then play"
 msgstr ""
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Play as is"
 msgstr ""
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Do not play"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2561
+#: modules/demux/avi/avi.c:2566
 msgid "Fixing AVI Index..."
 msgstr ""
 
@@ -17053,28 +17053,28 @@ msgstr ""
 msgid "Save Playlist"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1202
+#: modules/gui/macosx/playlist.m:1205
 msgid "Meta-information"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1535 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/macosx/playlist.m:1541 modules/gui/qt4/qt4.cpp:188
 msgid "Continue playback?"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1535 modules/gui/macosx/simple_prefs.m:837
+#: modules/gui/macosx/playlist.m:1541 modules/gui/macosx/simple_prefs.m:837
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Restart playback"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Always continue"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Playback of \"%@\" will continue at %@"
 msgstr ""
 
@@ -17496,16 +17496,16 @@ msgid ""
 "\"%@\""
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1490
+#: modules/gui/macosx/simple_prefs.m:1486
 msgid "Invalid combination"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1491
+#: modules/gui/macosx/simple_prefs.m:1487
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr ""
 
+#: modules/gui/macosx/simple_prefs.m:1497
 #: modules/gui/macosx/simple_prefs.m:1501
-#: modules/gui/macosx/simple_prefs.m:1505
 msgid "This combination is already taken by \"%@\"."
 msgstr ""
 
@@ -25627,11 +25627,11 @@ msgstr ""
 msgid "ASCII-art video output"
 msgstr ""
 
-#: modules/video_output/android/nativewindow.c:53
+#: modules/video_output/android/nativewindow.c:55
 msgid "ANativeWindow"
 msgstr ""
 
-#: modules/video_output/android/nativewindow.c:54
+#: modules/video_output/android/nativewindow.c:56
 msgid "Android native window"
 msgstr ""
 
@@ -26949,9 +26949,8 @@ msgid "Dialog"
 msgstr "Dialog"
 
 #: modules/gui/qt4/ui/about.h:288 modules/gui/qt4/ui/about.h:289
-#, fuzzy
 msgid "Update"
-msgstr "Opcionet video"
+msgstr ""
 
 #: modules/gui/qt4/ui/equalizer.h:132 modules/gui/qt4/ui/open_disk.h:296
 #: modules/gui/qt4/ui/open_net.h:96 modules/gui/qt4/ui/sprefs_audio.h:425
@@ -27016,9 +27015,8 @@ msgid "Start Time"
 msgstr "Koha fillimit"
 
 #: modules/gui/qt4/ui/open.h:255
-#, fuzzy
 msgid "Edit Options"
-msgstr "Opcionet audio"
+msgstr ""
 
 #: modules/gui/qt4/ui/open.h:256
 msgid "Extra media"
@@ -27031,7 +27029,7 @@ msgstr ""
 #: modules/gui/qt4/ui/open.h:261
 #, fuzzy
 msgid "Select the file"
-msgstr "Fitltri i treguesit"
+msgstr "Përzgjedh Dosje"
 
 #: modules/gui/qt4/ui/open.h:265
 msgid "Change the start time for the media"
@@ -27048,12 +27046,11 @@ msgstr ""
 #: modules/gui/qt4/ui/open_capture.h:97
 #, fuzzy
 msgid "Capture mode"
-msgstr "Fitltri i treguesit"
+msgstr "Pamja grafike"
 
 #: modules/gui/qt4/ui/open_capture.h:99
-#, fuzzy
 msgid "Select the capture device type"
-msgstr "Fitltri i treguesit"
+msgstr ""
 
 #: modules/gui/qt4/ui/open_capture.h:101
 #, fuzzy
@@ -27061,9 +27058,8 @@ msgid "Device Selection"
 msgstr "Zgjedhja pavlefshme"
 
 #: modules/gui/qt4/ui/open_capture.h:102
-#, fuzzy
 msgid "Options"
-msgstr "Opcionet audio"
+msgstr ""
 
 #: modules/gui/qt4/ui/open_capture.h:104
 msgid "Access advanced options to tweak the device"
@@ -27114,7 +27110,7 @@ msgstr "Nentitujt / Titrat"
 #: modules/gui/qt4/ui/open_file.h:145
 #, fuzzy
 msgid "Select the subtitle file"
-msgstr "Media Titra"
+msgstr "Teletekst titrash"
 
 #: modules/gui/qt4/ui/open_file.h:149
 #, fuzzy
@@ -27472,9 +27468,8 @@ msgid "Use native style"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_interface.h:512
-#, fuzzy
 msgid "Resize interface to video size"
-msgstr "Moduli ndërfaqja"
+msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_interface.h:513
 #, fuzzy
@@ -27619,7 +27614,7 @@ msgstr "KVA"
 #: modules/gui/qt4/ui/sprefs_video.h:335
 #, fuzzy
 msgid "Deinterlacing"
-msgstr "Ndërfaqja"
+msgstr "Ndërkombëtare"
 
 #: modules/gui/qt4/ui/sprefs_video.h:337
 #, fuzzy
@@ -27646,7 +27641,7 @@ msgstr "Konfigurimet e zërit"
 #: modules/gui/qt4/ui/streampanel.h:174
 #, fuzzy
 msgid "Control"
-msgstr "Krijo Dosje..."
+msgstr "Kontrolli i pamjes"
 
 #: modules/gui/qt4/ui/streampanel.h:175
 msgid "Run manually"
@@ -27662,9 +27657,8 @@ msgid "Run on schedule"
 msgstr ""
 
 #: modules/gui/qt4/ui/streampanel.h:178
-#, fuzzy
 msgid "Status"
-msgstr "Opcionet video"
+msgstr ""
 
 #: modules/gui/qt4/ui/streampanel.h:179
 msgid "P/P"
@@ -27757,9 +27751,8 @@ msgid "Mask"
 msgstr ""
 
 #: modules/gui/qt4/ui/video_effects.h:1468
-#, fuzzy
 msgid "Output Color Filtermode"
-msgstr "Output FIFO"
+msgstr ""
 
 #: modules/gui/qt4/ui/video_effects.h:1469
 #, fuzzy
@@ -27784,9 +27777,8 @@ msgid "Mirror"
 msgstr "Gabim:"
 
 #: modules/gui/qt4/ui/video_effects.h:1481
-#, fuzzy
 msgid "Motion detect"
-msgstr "Fitltri i treguesit"
+msgstr ""
 
 #: modules/gui/qt4/ui/video_effects.h:1482
 msgid "Spatial blur"
@@ -27844,7 +27836,7 @@ msgstr "hyrje"
 #: modules/gui/qt4/ui/vlm.h:291
 #, fuzzy
 msgid "Select Input"
-msgstr "Përzgjedh Dosje"
+msgstr "Hyrje SDI"
 
 #: modules/gui/qt4/ui/vlm.h:292
 #, fuzzy
@@ -27878,48 +27870,6 @@ msgstr ""
 msgid "Media Manager List"
 msgstr "Kënd Media"
 
-#~ msgid "DVB"
-#~ msgstr "DVB"
-
-#~ msgid "QTSound"
-#~ msgstr "QTSound"
-
-#~ msgid "Uncompressed RAR"
-#~ msgstr "RAR Jo'kompresuar"
-
-#~ msgid "SCTE-27 decoder"
-#~ msgstr "SCTE-27 decoder"
-
-#~ msgid "SCTE-27"
-#~ msgstr "SCTE-27"
-
-#~ msgid "SVG video decoder"
-#~ msgstr "SVG video decoder"
-
-#~ msgid "WinMsg"
-#~ msgstr "WinMsg"
-
-#~ msgid "Save this Log..."
-#~ msgstr "Ruaj kete log."
-
-#~ msgid "glSpectrum"
-#~ msgstr "glSpectrum"
-
-#~ msgid "3D OpenGL spectrum visualization"
-#~ msgstr "3D OpenGL spectrum visualization"
-
-#~ msgid "Hann"
-#~ msgstr "Hann"
-
-#~ msgid "Flat Top"
-#~ msgstr "Flat Top"
-
-#~ msgid "Blackman-Harris"
-#~ msgstr "Blackman-Harris"
-
-#~ msgid "Kaiser"
-#~ msgstr "Kaiser"
-
 #, fuzzy
 #~ msgid "General Input"
 #~ msgstr "Te pergjithshme"
@@ -27951,10 +27901,6 @@ msgstr "Kënd Media"
 #, fuzzy
 #~ msgid "Force interleaved method."
 #~ msgstr "Pamja grafike"
-
-#, fuzzy
-#~ msgid "Load subtitles file:"
-#~ msgstr "Nentitujt / Titrat"
 
 #, fuzzy
 #~ msgid "Outline Color"
@@ -28019,10 +27965,6 @@ msgstr "Kënd Media"
 #, fuzzy
 #~ msgid "Refresh Streams"
 #~ msgstr "Filtrat"
-
-#, fuzzy
-#~ msgid "Quiet mode."
-#~ msgstr "Pamja grafike"
 
 #, fuzzy
 #~ msgid "Max number of redirection"
@@ -28149,14 +28091,6 @@ msgstr "Kënd Media"
 #~ msgstr "Fitltri i treguesit"
 
 #, fuzzy
-#~ msgid "VLC - Controller"
-#~ msgstr "Kontrolli i pamjes"
-
-#, fuzzy
-#~ msgid "Check for updates..."
-#~ msgstr "Preferenca te pergjithsme mbi pamjen"
-
-#, fuzzy
 #~ msgid "Skip Frames"
 #~ msgstr "Opcionet video"
 
@@ -28200,6 +28134,48 @@ msgstr "Kënd Media"
 
 #~ msgid "FFmpeg access"
 #~ msgstr "FFmpeg akses"
+
+#~ msgid "DVB"
+#~ msgstr "DVB"
+
+#~ msgid "QTSound"
+#~ msgstr "QTSound"
+
+#~ msgid "Uncompressed RAR"
+#~ msgstr "RAR Jo'kompresuar"
+
+#~ msgid "SCTE-27 decoder"
+#~ msgstr "SCTE-27 decoder"
+
+#~ msgid "SCTE-27"
+#~ msgstr "SCTE-27"
+
+#~ msgid "SVG video decoder"
+#~ msgstr "SVG video decoder"
+
+#~ msgid "WinMsg"
+#~ msgstr "WinMsg"
+
+#~ msgid "Save this Log..."
+#~ msgstr "Ruaj kete log."
+
+#~ msgid "glSpectrum"
+#~ msgstr "glSpectrum"
+
+#~ msgid "3D OpenGL spectrum visualization"
+#~ msgstr "3D OpenGL spectrum visualization"
+
+#~ msgid "Hann"
+#~ msgstr "Hann"
+
+#~ msgid "Flat Top"
+#~ msgstr "Flat Top"
+
+#~ msgid "Blackman-Harris"
+#~ msgstr "Blackman-Harris"
+
+#~ msgid "Kaiser"
+#~ msgstr "Kaiser"
 
 #, fuzzy
 #~ msgid "RealVideo library decoder"
@@ -28298,10 +28274,6 @@ msgstr "Kënd Media"
 #, fuzzy
 #~ msgid "Image file"
 #~ msgstr "Dokument indeksi"
-
-#, fuzzy
-#~ msgid "Maemo hildon interface"
-#~ msgstr "Ndërfaqja Kryesore"
 
 #, fuzzy
 #~ msgid "Image width:"
@@ -28458,10 +28430,6 @@ msgstr "Kënd Media"
 #, fuzzy
 #~ msgid "Video Filters..."
 #~ msgstr "Titull video"
-
-#, fuzzy
-#~ msgid "Speed of the subtitles:"
-#~ msgstr "Teletekst titrash"
 
 #, fuzzy
 #~ msgid "ALSA device"
@@ -28869,10 +28837,6 @@ msgstr "Kënd Media"
 #, fuzzy
 #~ msgid "Advanced Information"
 #~ msgstr "&Kodeks Informacion"
-
-#, fuzzy
-#~ msgid "Subtitles preferred language"
-#~ msgstr "Gjuhë titra"
 
 #, fuzzy
 #~ msgid "General interface setttings"

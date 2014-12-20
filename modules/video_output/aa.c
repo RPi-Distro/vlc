@@ -2,7 +2,7 @@
  * aa.c: "vout display" module using aalib
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: 5a848cf6b57636d9982aba93473c8420cedc7455 $
+ * $Id: fe696861c019d47a8d306f8b151553e283c484ab $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -119,6 +119,8 @@ static int Open(vlc_object_t *object)
     fmt.i_chroma = VLC_CODEC_RGB8;
     fmt.i_width  = aa_imgwidth(sys->aa_context);
     fmt.i_height = aa_imgheight(sys->aa_context);
+    fmt.i_visible_width = fmt.i_width;
+    fmt.i_visible_height = fmt.i_height;
 
     /* */
     vout_display_info_t info = vd->info;

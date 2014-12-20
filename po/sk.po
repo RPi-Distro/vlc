@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-11-03 14:06+0100\n"
+"POT-Creation-Date: 2014-11-21 16:54+0100\n"
 "PO-Revision-Date: 2014-08-14 20:20+0000\n"
 "Last-Translator: Marián Hikaník <podnety@mojepreklady.net>\n"
 "Language-Team: Slovak (http://www.transifex.com/projects/p/vlc-trans/"
@@ -634,7 +634,7 @@ msgstr "Bol dosiahnutý maximálny počet (%u) filtrov."
 
 #: src/audio_output/output.c:229 src/config/core.c:407 src/input/es_out.c:904
 #: src/libvlc-module.c:538 modules/gui/macosx/MainMenu.m:277
-#: modules/gui/macosx/MainWindow.m:1083 modules/video_filter/postproc.c:234
+#: modules/gui/macosx/MainWindow.m:1082 modules/video_filter/postproc.c:234
 msgid "Disable"
 msgstr "Zablokovať"
 
@@ -1390,7 +1390,7 @@ msgstr ""
 msgid "Title"
 msgstr "Titul"
 
-#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1202
+#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1205
 #: modules/gui/macosx/playlistinfo.m:74 modules/mux/avi.c:48
 msgid "Artist"
 msgstr "Interpret"
@@ -2658,7 +2658,7 @@ msgstr ""
 #: src/libvlc-module.c:538 src/video_output/vout_intf.c:98
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
-#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1006
+#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1016
 #: modules/gui/macosx/AudioEffects.m:86 modules/gui/macosx/MainMenu.m:641
 #: modules/gui/macosx/prefs_widgets.m:1221
 #: modules/gui/macosx/prefs_widgets.m:1284
@@ -2670,7 +2670,7 @@ msgid "Default"
 msgstr "Predvolený"
 
 #: src/libvlc-module.c:538 modules/gui/macosx/AudioEffects.m:112
-#: modules/gui/macosx/MainWindow.m:1081 modules/gui/macosx/wizard.m:351
+#: modules/gui/macosx/MainWindow.m:1080 modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/extended_panels.cpp:1053
 #: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:289
 msgid "Enable"
@@ -5021,7 +5021,7 @@ msgstr ""
 msgid "Downloading ..."
 msgstr "Prebieha sťahovanie ..."
 
-#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2562
+#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2567
 #: modules/gui/macosx/AudioEffects.m:372 modules/gui/macosx/AudioEffects.m:387
 #: modules/gui/macosx/AudioEffects.m:613 modules/gui/macosx/AudioEffects.m:712
 #: modules/gui/macosx/bookmarks.m:111 modules/gui/macosx/BWQuincyUI.m:80
@@ -6953,19 +6953,19 @@ msgstr "Vstup digitálneho videa (Firewire/ieee1394)"
 msgid "DV"
 msgstr "DV"
 
-#: modules/access/dvdnav.c:70 modules/access/dvdread.c:67
+#: modules/access/dvdnav.c:71 modules/access/dvdread.c:67
 msgid "DVD angle"
 msgstr "Uhol snímok na DVD"
 
-#: modules/access/dvdnav.c:72 modules/access/dvdread.c:69
+#: modules/access/dvdnav.c:73 modules/access/dvdread.c:69
 msgid "Default DVD angle."
 msgstr "Predvolený uhol snímok na DVD. "
 
-#: modules/access/dvdnav.c:74
+#: modules/access/dvdnav.c:75
 msgid "Start directly in menu"
 msgstr "Spustiť priamo v menu"
 
-#: modules/access/dvdnav.c:76
+#: modules/access/dvdnav.c:77
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
@@ -6973,20 +6973,20 @@ msgstr ""
 "Spustiť DVD priamo v hlavnom menu. Po aktivovaní tejto voľby sa program "
 "pokúsi preskočiť upozornenia na začiatku disku."
 
-#: modules/access/dvdnav.c:85
+#: modules/access/dvdnav.c:86
 msgid "DVD with menus"
 msgstr "DVD s menu"
 
-#: modules/access/dvdnav.c:86
+#: modules/access/dvdnav.c:87
 msgid "DVDnav Input"
 msgstr "Vstup DVDnav"
 
-#: modules/access/dvdnav.c:331 modules/access/dvdread.c:200
+#: modules/access/dvdnav.c:332 modules/access/dvdread.c:200
 #: modules/access/dvdread.c:462 modules/access/dvdread.c:530
 msgid "Playback failure"
 msgstr "Prehrávanie zlyhalo"
 
-#: modules/access/dvdnav.c:332
+#: modules/access/dvdnav.c:333
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
@@ -7033,17 +7033,17 @@ msgid "EyeTV input"
 msgstr "Vstup EyeTV"
 
 #: modules/access/file.c:177 modules/access/file.c:304
-#: modules/access/mtp.c:195 modules/access/mtp.c:286 modules/access/vdr.c:368
-#: modules/access/vdr.c:535
+#: modules/access/mtp.c:195 modules/access/mtp.c:286 modules/access/vdr.c:372
+#: modules/access/vdr.c:539
 msgid "File reading failed"
 msgstr "Nepodarilo sa prečítať súbor"
 
-#: modules/access/file.c:178 modules/access/vdr.c:535
+#: modules/access/file.c:178 modules/access/vdr.c:539
 #, c-format
 msgid "VLC could not open the file \"%s\" (%s)."
 msgstr "Program VLC nemohol otvoriť súbor \"%s\" (%s)."
 
-#: modules/access/file.c:305 modules/access/vdr.c:369
+#: modules/access/file.c:305 modules/access/vdr.c:373
 #, c-format
 msgid "VLC could not read the file (%s)."
 msgstr "Program VLC nemohol prečítať súbor (%s)."
@@ -7168,28 +7168,28 @@ msgstr "Vstup FTP"
 msgid "FTP upload output"
 msgstr "Výstup z FTP upload-u"
 
-#: modules/access/ftp.c:320 modules/access/ftp.c:336 modules/access/ftp.c:460
-#: modules/access/ftp.c:469 modules/access/ftp.c:476
+#: modules/access/ftp.c:319 modules/access/ftp.c:335 modules/access/ftp.c:459
+#: modules/access/ftp.c:468 modules/access/ftp.c:475
 msgid "Network interaction failed"
 msgstr "Zlyhala interakcia so sieťou"
 
-#: modules/access/ftp.c:321
+#: modules/access/ftp.c:320
 msgid "VLC could not connect with the given server."
 msgstr "Program VLC sa nedokáže spojiť so zadaným serverom."
 
-#: modules/access/ftp.c:337
+#: modules/access/ftp.c:336
 msgid "VLC's connection to the given server was rejected."
 msgstr "Server zamietol a zrušil pripojenie programu VLC."
 
-#: modules/access/ftp.c:461
+#: modules/access/ftp.c:460
 msgid "Your account was rejected."
 msgstr "Prístup k vášmu účtu bol zamietnutý serverom."
 
-#: modules/access/ftp.c:470
+#: modules/access/ftp.c:469
 msgid "Your password was rejected."
 msgstr "Vaše prístupové heslo bolo zamietnuté."
 
-#: modules/access/ftp.c:477
+#: modules/access/ftp.c:476
 msgid "Your connection attempt to the server was rejected."
 msgstr "Váš pokus o pripojenie k serveru bol zamietnutý."
 
@@ -9302,11 +9302,11 @@ msgstr "VDR"
 msgid "VDR recordings"
 msgstr "Nahrávky VDR"
 
-#: modules/access/vdr.c:809
+#: modules/access/vdr.c:813
 msgid "VDR Cut Marks"
 msgstr "Strihové značky VDR"
 
-#: modules/access/vdr.c:872
+#: modules/access/vdr.c:876
 msgid "Start"
 msgstr "Štart"
 
@@ -9607,7 +9607,7 @@ msgstr "Menič mapovania zvukových kanálov"
 msgid "Audio filter for simple channel mixing"
 msgstr "Zvukový filter pre jednoduché mixovanie kanálov"
 
-#: modules/audio_filter/channel_mixer/trivial.c:48
+#: modules/audio_filter/channel_mixer/trivial.c:41
 msgid "Audio filter for trivial channel mixing"
 msgstr "Zvukový filter pre jednoduché mixovanie kanálov"
 
@@ -10521,7 +10521,7 @@ msgstr "Softvérové zosilnenie"
 msgid "This linear gain will be applied in software."
 msgstr "Toto lineárne zosilnenie bude aplikované v programe."
 
-#: modules/audio_output/wasapi.c:457
+#: modules/audio_output/wasapi.c:459
 msgid "Windows Audio Session API output"
 msgstr "Výstup API relácie Windows Audio"
 
@@ -10625,7 +10625,7 @@ msgid "FFmpeg audio/video decoder"
 msgstr "Dekodér videa/zvuku FFmpeg"
 
 #: modules/codec/avcodec/avcodec.c:97 modules/codec/gstdecode.c:89
-#: modules/codec/omxil/android_mediacodec.c:273 modules/codec/omxil/omxil.c:84
+#: modules/codec/omxil/android_mediacodec.c:276 modules/codec/omxil/omxil.c:84
 msgid "Decoding"
 msgstr "Dekódovanie"
 
@@ -11828,17 +11828,17 @@ msgstr "Dekodér zvuku MPEGI/II/III"
 msgid "MPEG audio layer I/II/III packetizer"
 msgstr "Paketizér pre zvuk vo formáte MPEG I/II/III"
 
-#: modules/codec/omxil/android_mediacodec.c:263
+#: modules/codec/omxil/android_mediacodec.c:266
 msgid "Android direct rendering"
 msgstr "Priame vykresľovanie systémom Android"
 
-#: modules/codec/omxil/android_mediacodec.c:265
+#: modules/codec/omxil/android_mediacodec.c:268
 msgid "Enable Android direct rendering using opaque buffers."
 msgstr ""
 "Aktivovať priame vykresľovanie v systéme Android, pri použití vyrovnávacej "
 "pamäte pre nepriehľadnosť."
 
-#: modules/codec/omxil/android_mediacodec.c:270
+#: modules/codec/omxil/android_mediacodec.c:273
 msgid "Video decoder using Android MediaCodec"
 msgstr "Dekodér videa s použitím Android MediaCodec"
 
@@ -14100,7 +14100,7 @@ msgstr "Ovládacie rozhranie D-Bus"
 
 #: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/MainWindow.m:209
 #: modules/gui/macosx/MainWindow.m:740 modules/gui/macosx/MainWindow.m:746
-#: modules/gui/macosx/MainWindow.m:1366 modules/gui/ncurses.c:1041
+#: modules/gui/macosx/MainWindow.m:1370 modules/gui/ncurses.c:1041
 #: modules/gui/qt4/dialogs/help.cpp:91 modules/gui/qt4/main_interface.cpp:1078
 #: modules/gui/qt4/main_interface.cpp:1082
 #: modules/gui/qt4/main_interface.cpp:1121
@@ -14948,11 +14948,11 @@ msgstr "Opraviť, ak je to potrebné"
 msgid "AVI demuxer"
 msgstr "Demultiplexor AVI"
 
-#: modules/demux/avi/avi.c:728
+#: modules/demux/avi/avi.c:733
 msgid "Broken or missing AVI Index"
 msgstr "Poškodený alebo chýbajúci index AVI"
 
-#: modules/demux/avi/avi.c:729
+#: modules/demux/avi/avi.c:734
 msgid ""
 "Because this AVI file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14968,19 +14968,19 @@ msgstr ""
 "Tento krok môže trvať dlho, najmä pri veľkom súbore.\n"
 "Čo chcete urobiť?"
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Build index then play"
 msgstr "Vytvoriť index, potom prehrávať"
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Play as is"
 msgstr "Prehrať tak ako je"
 
-#: modules/demux/avi/avi.c:735
+#: modules/demux/avi/avi.c:740
 msgid "Do not play"
 msgstr "Neprehrávať"
 
-#: modules/demux/avi/avi.c:2561
+#: modules/demux/avi/avi.c:2566
 msgid "Fixing AVI Index..."
 msgstr "Opravuje sa index súboru AVI..."
 
@@ -18440,28 +18440,28 @@ msgstr "HTML playlist"
 msgid "Save Playlist"
 msgstr "Uložiť playlist"
 
-#: modules/gui/macosx/playlist.m:1202
+#: modules/gui/macosx/playlist.m:1205
 msgid "Meta-information"
 msgstr "Meta-informácia"
 
-#: modules/gui/macosx/playlist.m:1535 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/macosx/playlist.m:1541 modules/gui/qt4/qt4.cpp:188
 msgid "Continue playback?"
 msgstr "Pokračovať v prehrávaní?"
 
-#: modules/gui/macosx/playlist.m:1535 modules/gui/macosx/simple_prefs.m:837
+#: modules/gui/macosx/playlist.m:1541 modules/gui/macosx/simple_prefs.m:837
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr "Pokračovať"
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Restart playback"
 msgstr "Reštartovať prehrávanie"
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Always continue"
 msgstr "Vždy pokračovať"
 
-#: modules/gui/macosx/playlist.m:1535
+#: modules/gui/macosx/playlist.m:1541
 msgid "Playback of \"%@\" will continue at %@"
 msgstr "Prehrávanie \"%@\" bude pokračovať na %@"
 
@@ -18899,17 +18899,17 @@ msgstr ""
 "Stlačte novú klávesovú skratku pre\n"
 "\"%@\""
 
-#: modules/gui/macosx/simple_prefs.m:1490
+#: modules/gui/macosx/simple_prefs.m:1486
 msgid "Invalid combination"
 msgstr "Neplatná kombinácia"
 
-#: modules/gui/macosx/simple_prefs.m:1491
+#: modules/gui/macosx/simple_prefs.m:1487
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr ""
 "Prepáčte, tieto klávesy nemožno použiť na vytvorenie klávesovej skratky."
 
+#: modules/gui/macosx/simple_prefs.m:1497
 #: modules/gui/macosx/simple_prefs.m:1501
-#: modules/gui/macosx/simple_prefs.m:1505
 msgid "This combination is already taken by \"%@\"."
 msgstr "Takúto kombináciu už používa \"%@\"."
 
@@ -27773,11 +27773,11 @@ msgstr "ASCII Art"
 msgid "ASCII-art video output"
 msgstr "Výstup videa ASCII-art"
 
-#: modules/video_output/android/nativewindow.c:53
+#: modules/video_output/android/nativewindow.c:55
 msgid "ANativeWindow"
 msgstr "ANativeWindow"
 
-#: modules/video_output/android/nativewindow.c:54
+#: modules/video_output/android/nativewindow.c:56
 msgid "Android native window"
 msgstr "Natívne okno systému Android"
 
@@ -30077,71 +30077,6 @@ msgstr "AAAA; "
 msgid "Media Manager List"
 msgstr "Zoznam správcov médií"
 
-#~ msgid "Subtitle track added"
-#~ msgstr "Stopa s titulkami bola pridaná"
-
-#~ msgid "Media in Zip"
-#~ msgstr "Médium v ZIP archíve"
-
-#~ msgid "Path to the media in the Zip archive"
-#~ msgstr "Cesta k médiu v ZIP archíve"
-
-#~ msgid "Fast udp streaming"
-#~ msgstr "Rýchle UDP streamovanie"
-
-#~ msgid ""
-#~ "Sends TS to specific ip:port by udp (you must know what you are doing)."
-#~ msgstr ""
-#~ "Odoslať TS na špecifickú IP-adresu: port vybrať podľa protokolu UDP "
-#~ "(pozor, mali by ste presne vedieť, čo nastavujete)."
-
-#~ msgid "MTU for out mode"
-#~ msgstr "Max. veľkosť paketu na výstupe režim."
-
-#~ msgid "MTU for out mode."
-#~ msgstr "Max. veľkosť paketu na výstupe."
-
-#~ msgid "&Post processing"
-#~ msgstr "Do&datočné spracovávanie"
-
-#~ msgid "AVFoundation Video Capture"
-#~ msgstr "Zaznamenávanie videa AVFoundation"
-
-#~ msgid "AVFoundation video capture module."
-#~ msgstr "Modul na zaznamenávanie videa AVFoundation"
-
-#~ msgid "No video devices found"
-#~ msgstr "Nenašli sa žiadne zariadenia pre video"
-
-#~ msgid ""
-#~ "Your Mac does not seem to be equipped with a suitable video input device. "
-#~ "Please check your connectors and drivers."
-#~ msgstr ""
-#~ "Zdá sa, že váš Mac nie je vybavený vhodným zariadením pre vstup videa. "
-#~ "Prosím skontrolujte konektory a ovládače."
-
-#~ msgid "Probe DVB card for capabilities"
-#~ msgstr "Preveriť schopnosti karty DVB"
-
-#~ msgid ""
-#~ "Some DVB cards do not like to be probed for their capabilities, you can "
-#~ "disable this feature if you experience some trouble."
-#~ msgstr ""
-#~ "Niektoré karty DVB nepodporujú kontrolu svojich schopností. Ak máte s "
-#~ "touto funkciou nejaký problém, môžete ju zablokovať."
-
-#~ msgid "Satellite scanning config"
-#~ msgstr "Konfigurácia skenovania družíc"
-
-#~ msgid "filename of config file in share/dvb/dvb-s"
-#~ msgstr "názov konfiguračného súboru v zložke share/dvb/dvb-s"
-
-#~ msgid "DVB"
-#~ msgstr "DVB"
-
-#~ msgid "DVB input with v4l2 support"
-#~ msgstr "Vstup DVB s podporou v4l2"
-
 #, fuzzy
 #~ msgid ""
 #~ "%.1f MHz (%d services)\n"
@@ -30150,175 +30085,6 @@ msgstr "Zoznam správcov médií"
 
 #~ msgid "Scanning DVB"
 #~ msgstr "Skenovanie DVB"
-
-#~ msgid "QTSound"
-#~ msgstr "QTSound"
-
-#~ msgid "QuickTime Sound Capture"
-#~ msgstr "Zaznamenávanie zvuku QuickTime"
-
-#~ msgid "No Audio Input device found"
-#~ msgstr "Nenašlo sa žiadne zariadenie pre vstup zvuku"
-
-#~ msgid ""
-#~ "Your Mac does not seem to be equipped with a suitable audio input device."
-#~ "Please check your connectors and drivers."
-#~ msgstr ""
-#~ "Zdá sa, že váš Mac nie je vybavený vhodným zariadením pre vstup zvuku. "
-#~ "Prosím skontrolujte konektory a ovládače."
-
-#~ msgid "No audio input device found"
-#~ msgstr "Nenašlo sa žiadne vstupné zvukové zariadenie"
-
-#~ msgid "Uncompressed RAR"
-#~ msgstr "Nekomprimovaný archív vo formáte RAR"
-
-#~ msgid "Windows Multimedia Device output"
-#~ msgstr "Výstup Windows Multimedia Device"
-
-#~ msgid "Windows Store audio output"
-#~ msgstr "Výstup zvuku Windows Store"
-
-#~ msgid "SCTE-27 decoder"
-#~ msgstr "Dekodér SCTE-27"
-
-#~ msgid "SCTE-27"
-#~ msgstr "SCTE-27"
-
-#~ msgid "Specify the width to decode the image too"
-#~ msgstr "Zadajte aj šírku pre dekódovanie obrázka"
-
-#~ msgid "Specify the height to decode the image too"
-#~ msgstr "Zadajte aj výšku pre dekódovanie obrázka"
-
-#~ msgid "Scale factor to apply to image"
-#~ msgstr "Faktor mierky, ktorý sa použije pre obrázok"
-
-#~ msgid "SVG video decoder"
-#~ msgstr "Dekodér videa SVG"
-
-#~ msgid "WinMsg"
-#~ msgstr "WinMsg"
-
-#~ msgid "Windows messages interface"
-#~ msgstr "Rozhranie Windows messages interface"
-
-#~ msgid "Save this Log..."
-#~ msgstr "Uložiť tento záznam..."
-
-#~ msgid "VLC Debug Log (%s).rtf"
-#~ msgstr "Záznam pre ladenie VLC (%s).rtf"
-
-#~ msgid "No EPG Data Available"
-#~ msgstr "Nie sú dostupné žiadne údaje EPG"
-
-#~ msgid " (%1+ rated)"
-#~ msgstr " (%1+ hodnotené)"
-
-#~ msgid "Empty"
-#~ msgstr "Prázdne"
-
-#~ msgid "Deactivate"
-#~ msgstr "Deaktivovať"
-
-#~ msgid "Audio Fingerprinting"
-#~ msgstr "Odtlačok zvuku"
-
-#~ msgid "Select a matching identity"
-#~ msgstr "Vybrať vhodnú zhodu"
-
-#~ msgid "No fingerprint has been found"
-#~ msgstr "Nenašiel sa žiadny odtlačok"
-
-#~ msgid "Fingerprinting track..."
-#~ msgstr "Vytvára sa odtlačok stopy..."
-
-#~ msgctxt "Tooltip|Clear"
-#~ msgid "Clear"
-#~ msgstr "Vyčistiť"
-
-#~ msgid ""
-#~ "Extension '%s' does not respond.\n"
-#~ "Do you want to kill it now? "
-#~ msgstr ""
-#~ "Rozšírenie '%s' neodpovedá.\n"
-#~ "Chcete ho teraz ukončiť?"
-
-#~ msgid "Extension not responding!"
-#~ msgstr "Rozšírenie neodpovedá!"
-
-#~ msgid "addons local storage"
-#~ msgstr "Lokálne uloženie doplnkov"
-
-#~ msgid "Addons local storage installer"
-#~ msgstr "Inštalátor lokálneho uloženia doplnkov"
-
-#~ msgid "Addons local storage lister"
-#~ msgstr "Zoznam lokálne uložených rozšírení"
-
-#~ msgid "Videolan.org's addons finder"
-#~ msgstr "Vyhľadávač rozšírení na videolan.org"
-
-#~ msgid "addons.videolan.org addons finder"
-#~ msgstr "addons.videolan.org - Vyhľadávač rozšírení"
-
-#~ msgid "Videolan.org's single archive addons finder"
-#~ msgstr "Vyhľadávač rozšírení v jednotlivých archívoch na videolan.org,"
-
-#~ msgid "single .vlp archive addons finder"
-#~ msgstr "Vyhľadávač rozšírení pre jednotlivé archívy .vlp"
-
-#~ msgid "acoustid"
-#~ msgstr "acoustid"
-
-#~ msgid "Track fingerprinter (based on Acoustid)"
-#~ msgstr "Vytváranie odtlačkov stopy (založené na Acoustid)"
-
-#~ msgid "Duration of the fingerprinting"
-#~ msgstr "Trvanie vytvárania odtlačku"
-
-#~ msgid "Default: 90sec"
-#~ msgstr "Predvolené: 90 sekúnd"
-
-#~ msgid "Chromaprint stream output"
-#~ msgstr "Farebná sýtosť výstupu streamu"
-
-#~ msgid ""
-#~ "Please wait while your font cache is rebuilt.\n"
-#~ "This should take less than a few minutes."
-#~ msgstr ""
-#~ "Čakajte prosím pokiaľ sa opäť nevytvorí vyrovnávacia pamäť pre písmo.\n"
-#~ "Tento proces by mal trvať menej ako niekoľko minút."
-
-#~ msgid "The width of the visualization window, in pixels."
-#~ msgstr "Šírka okna vizualizácie, v pixeloch."
-
-#~ msgid "The height of the visualization window, in pixels."
-#~ msgstr "Výška okna vizualizácie, v pixeloch."
-
-#~ msgid "glSpectrum"
-#~ msgstr "glSpectrum"
-
-#~ msgid "3D OpenGL spectrum visualization"
-#~ msgstr "Vizualizácia spektra 3D OpenGL"
-
-#~ msgid "Hann"
-#~ msgstr "Hann"
-
-#~ msgid "Flat Top"
-#~ msgstr "Flat Top"
-
-#~ msgid "Blackman-Harris"
-#~ msgstr "Blackman-Harris"
-
-#~ msgid "Kaiser"
-#~ msgstr "Kaiser"
-
-#~ msgid "VLC media player - Flash Viewer"
-#~ msgstr "VLC media player - prehliadač Flash"
-
-#~ msgid "Streaming Output"
-#~ msgstr "Výstup streamovania"
 
 #~ msgid ""
 #~ "SAP is a way to publically announce streams that are being sent using "
@@ -32528,6 +32294,240 @@ msgstr "Zoznam správcov médií"
 #~ "= názov, $O = jazyk zvuk. stopy, $P = pozícia (v %), $R = hodnotenie, $S "
 #~ "= vzorkovacia frekvencia zvuku (v kHz), $T = čas, $U = vydavateľ, $V = "
 #~ "hlasitosť, $_ = nový riadok) "
+
+#~ msgid "Subtitle track added"
+#~ msgstr "Stopa s titulkami bola pridaná"
+
+#~ msgid "Media in Zip"
+#~ msgstr "Médium v ZIP archíve"
+
+#~ msgid "Path to the media in the Zip archive"
+#~ msgstr "Cesta k médiu v ZIP archíve"
+
+#~ msgid "Fast udp streaming"
+#~ msgstr "Rýchle UDP streamovanie"
+
+#~ msgid ""
+#~ "Sends TS to specific ip:port by udp (you must know what you are doing)."
+#~ msgstr ""
+#~ "Odoslať TS na špecifickú IP-adresu: port vybrať podľa protokolu UDP "
+#~ "(pozor, mali by ste presne vedieť, čo nastavujete)."
+
+#~ msgid "MTU for out mode"
+#~ msgstr "Max. veľkosť paketu na výstupe režim."
+
+#~ msgid "MTU for out mode."
+#~ msgstr "Max. veľkosť paketu na výstupe."
+
+#~ msgid "&Post processing"
+#~ msgstr "Do&datočné spracovávanie"
+
+#~ msgid "AVFoundation Video Capture"
+#~ msgstr "Zaznamenávanie videa AVFoundation"
+
+#~ msgid "AVFoundation video capture module."
+#~ msgstr "Modul na zaznamenávanie videa AVFoundation"
+
+#~ msgid "No video devices found"
+#~ msgstr "Nenašli sa žiadne zariadenia pre video"
+
+#~ msgid ""
+#~ "Your Mac does not seem to be equipped with a suitable video input device. "
+#~ "Please check your connectors and drivers."
+#~ msgstr ""
+#~ "Zdá sa, že váš Mac nie je vybavený vhodným zariadením pre vstup videa. "
+#~ "Prosím skontrolujte konektory a ovládače."
+
+#~ msgid "Probe DVB card for capabilities"
+#~ msgstr "Preveriť schopnosti karty DVB"
+
+#~ msgid ""
+#~ "Some DVB cards do not like to be probed for their capabilities, you can "
+#~ "disable this feature if you experience some trouble."
+#~ msgstr ""
+#~ "Niektoré karty DVB nepodporujú kontrolu svojich schopností. Ak máte s "
+#~ "touto funkciou nejaký problém, môžete ju zablokovať."
+
+#~ msgid "Satellite scanning config"
+#~ msgstr "Konfigurácia skenovania družíc"
+
+#~ msgid "filename of config file in share/dvb/dvb-s"
+#~ msgstr "názov konfiguračného súboru v zložke share/dvb/dvb-s"
+
+#~ msgid "DVB"
+#~ msgstr "DVB"
+
+#~ msgid "DVB input with v4l2 support"
+#~ msgstr "Vstup DVB s podporou v4l2"
+
+#~ msgid "QTSound"
+#~ msgstr "QTSound"
+
+#~ msgid "QuickTime Sound Capture"
+#~ msgstr "Zaznamenávanie zvuku QuickTime"
+
+#~ msgid "No Audio Input device found"
+#~ msgstr "Nenašlo sa žiadne zariadenie pre vstup zvuku"
+
+#~ msgid ""
+#~ "Your Mac does not seem to be equipped with a suitable audio input device."
+#~ "Please check your connectors and drivers."
+#~ msgstr ""
+#~ "Zdá sa, že váš Mac nie je vybavený vhodným zariadením pre vstup zvuku. "
+#~ "Prosím skontrolujte konektory a ovládače."
+
+#~ msgid "No audio input device found"
+#~ msgstr "Nenašlo sa žiadne vstupné zvukové zariadenie"
+
+#~ msgid "Uncompressed RAR"
+#~ msgstr "Nekomprimovaný archív vo formáte RAR"
+
+#~ msgid "Windows Multimedia Device output"
+#~ msgstr "Výstup Windows Multimedia Device"
+
+#~ msgid "Windows Store audio output"
+#~ msgstr "Výstup zvuku Windows Store"
+
+#~ msgid "SCTE-27 decoder"
+#~ msgstr "Dekodér SCTE-27"
+
+#~ msgid "SCTE-27"
+#~ msgstr "SCTE-27"
+
+#~ msgid "Specify the width to decode the image too"
+#~ msgstr "Zadajte aj šírku pre dekódovanie obrázka"
+
+#~ msgid "Specify the height to decode the image too"
+#~ msgstr "Zadajte aj výšku pre dekódovanie obrázka"
+
+#~ msgid "Scale factor to apply to image"
+#~ msgstr "Faktor mierky, ktorý sa použije pre obrázok"
+
+#~ msgid "SVG video decoder"
+#~ msgstr "Dekodér videa SVG"
+
+#~ msgid "WinMsg"
+#~ msgstr "WinMsg"
+
+#~ msgid "Windows messages interface"
+#~ msgstr "Rozhranie Windows messages interface"
+
+#~ msgid "Save this Log..."
+#~ msgstr "Uložiť tento záznam..."
+
+#~ msgid "VLC Debug Log (%s).rtf"
+#~ msgstr "Záznam pre ladenie VLC (%s).rtf"
+
+#~ msgid "No EPG Data Available"
+#~ msgstr "Nie sú dostupné žiadne údaje EPG"
+
+#~ msgid " (%1+ rated)"
+#~ msgstr " (%1+ hodnotené)"
+
+#~ msgid "Empty"
+#~ msgstr "Prázdne"
+
+#~ msgid "Deactivate"
+#~ msgstr "Deaktivovať"
+
+#~ msgid "Audio Fingerprinting"
+#~ msgstr "Odtlačok zvuku"
+
+#~ msgid "Select a matching identity"
+#~ msgstr "Vybrať vhodnú zhodu"
+
+#~ msgid "No fingerprint has been found"
+#~ msgstr "Nenašiel sa žiadny odtlačok"
+
+#~ msgid "Fingerprinting track..."
+#~ msgstr "Vytvára sa odtlačok stopy..."
+
+#~ msgctxt "Tooltip|Clear"
+#~ msgid "Clear"
+#~ msgstr "Vyčistiť"
+
+#~ msgid ""
+#~ "Extension '%s' does not respond.\n"
+#~ "Do you want to kill it now? "
+#~ msgstr ""
+#~ "Rozšírenie '%s' neodpovedá.\n"
+#~ "Chcete ho teraz ukončiť?"
+
+#~ msgid "Extension not responding!"
+#~ msgstr "Rozšírenie neodpovedá!"
+
+#~ msgid "addons local storage"
+#~ msgstr "Lokálne uloženie doplnkov"
+
+#~ msgid "Addons local storage installer"
+#~ msgstr "Inštalátor lokálneho uloženia doplnkov"
+
+#~ msgid "Addons local storage lister"
+#~ msgstr "Zoznam lokálne uložených rozšírení"
+
+#~ msgid "Videolan.org's addons finder"
+#~ msgstr "Vyhľadávač rozšírení na videolan.org"
+
+#~ msgid "addons.videolan.org addons finder"
+#~ msgstr "addons.videolan.org - Vyhľadávač rozšírení"
+
+#~ msgid "Videolan.org's single archive addons finder"
+#~ msgstr "Vyhľadávač rozšírení v jednotlivých archívoch na videolan.org,"
+
+#~ msgid "single .vlp archive addons finder"
+#~ msgstr "Vyhľadávač rozšírení pre jednotlivé archívy .vlp"
+
+#~ msgid "acoustid"
+#~ msgstr "acoustid"
+
+#~ msgid "Track fingerprinter (based on Acoustid)"
+#~ msgstr "Vytváranie odtlačkov stopy (založené na Acoustid)"
+
+#~ msgid "Duration of the fingerprinting"
+#~ msgstr "Trvanie vytvárania odtlačku"
+
+#~ msgid "Default: 90sec"
+#~ msgstr "Predvolené: 90 sekúnd"
+
+#~ msgid "Chromaprint stream output"
+#~ msgstr "Farebná sýtosť výstupu streamu"
+
+#~ msgid ""
+#~ "Please wait while your font cache is rebuilt.\n"
+#~ "This should take less than a few minutes."
+#~ msgstr ""
+#~ "Čakajte prosím pokiaľ sa opäť nevytvorí vyrovnávacia pamäť pre písmo.\n"
+#~ "Tento proces by mal trvať menej ako niekoľko minút."
+
+#~ msgid "The width of the visualization window, in pixels."
+#~ msgstr "Šírka okna vizualizácie, v pixeloch."
+
+#~ msgid "The height of the visualization window, in pixels."
+#~ msgstr "Výška okna vizualizácie, v pixeloch."
+
+#~ msgid "glSpectrum"
+#~ msgstr "glSpectrum"
+
+#~ msgid "3D OpenGL spectrum visualization"
+#~ msgstr "Vizualizácia spektra 3D OpenGL"
+
+#~ msgid "Hann"
+#~ msgstr "Hann"
+
+#~ msgid "Flat Top"
+#~ msgstr "Flat Top"
+
+#~ msgid "Blackman-Harris"
+#~ msgstr "Blackman-Harris"
+
+#~ msgid "Kaiser"
+#~ msgstr "Kaiser"
+
+#~ msgid "VLC media player - Flash Viewer"
+#~ msgstr "VLC media player - prehliadač Flash"
+
+#~ msgid "Streaming Output"
+#~ msgstr "Výstup streamovania"
 
 #~ msgid "Choose your preferred video output and configure it here."
 #~ msgstr "Tu si môžete vybrať preferovaný výstup videa a nakonfigurovať ho. "

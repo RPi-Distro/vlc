@@ -1,4 +1,4 @@
-vlc (2.2.0~rc1-1+exp1) unstable; urgency=medium
+vlc (2.2.0~rc2-1+exp1) UNRELEASED; urgency=medium
 
   * Regenerate plugin cache using triggers. (Closes: #755154) (LP: #1328466)
     - debian/vlc-nox.postinst: Run vlc-cache-gen.
@@ -8,6 +8,14 @@ vlc (2.2.0~rc1-1+exp1) unstable; urgency=medium
   * debian/rules: Build with -Wl,--as-needed.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Sun, 16 Nov 2014 02:52:58 +0100
+
+vlc (2.2.0~rc2-1) unstable; urgency=medium
+
+  * New upstream release.
+    - Fix segfault in ASCII art plugin. (Closes: #768873)
+    - Fix selection of left/right channel in stereo mode. (Closes: #765830)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 23 Nov 2014 13:14:07 +0100
 
 vlc (2.2.0~rc1-1) unstable; urgency=low
 
