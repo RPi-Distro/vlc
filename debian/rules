@@ -104,6 +104,7 @@ confflags += \
 	--enable-vnc \
 	--enable-vorbis \
 	--enable-x264 \
+	--enable-x265 \
 	--enable-zvbi \
 	--with-kde-solid=/usr/share/kde4/apps/solid/actions/ \
 	$(NULL)
