@@ -81,7 +81,7 @@ Build-Depends: autopoint,
                libshine-dev (>= 3.0.0),
                libshout3-dev,
                libsidplay2-dev,
-               libsmbclient-dev,
+               libsmbclient-dev [!hurd-any],
                libspeex-dev (>= 1.0.5),
                libspeexdsp-dev (>= 1.0.5),
                libssh2-1-dev,
@@ -335,7 +335,7 @@ Description: VBI teletext plugin for VLC
  podcasts, and multimedia streams from various network sources.
 
 Package: vlc-plugin-samba
-Architecture: any
+Architecture: linux-any kfreebsd-any
 Breaks: vlc-nox (<< 2.2.0~pre2-2~)
 Replaces: vlc-nox (<< 2.2.0~pre2-2~)
 Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
