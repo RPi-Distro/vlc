@@ -6,7 +6,12 @@ vlc (2.2.0~rc2-1+exp1) UNRELEASED; urgency=medium
     - debian/vlc-nox.postrm: Remove generated cache.
     - debian/rules: remove plugins.dat generated during the build.
     - debian/vlc-nox.install.in: Do not install pre-generated plugins.dat.
-  * debian/rules: Build with -Wl,--as-needed.
+  * debian/control: Add libx265-dev to Build-Depends.
+  * debian/rules:
+    - Build with -Wl,--as-needed.
+    - Enable x265 plugin.
+  * debian/vlc-nox.install.in:
+    - Install x265 plugin.
 
   [ Mateusz Łukasik ]
   * Disable build samba plugin on hurd for fix FTBFS. (Closes: #765578)
