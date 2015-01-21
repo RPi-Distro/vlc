@@ -1,3 +1,17 @@
+vlc (2.2.0~rc2-2) unstable; urgency=medium
+
+  * debian/patches: Apply upstream patches for security vulnerabilities.
+    (Closes: #775866)
+    - codec-schroedinger-fix-potential-buffer-overflow.patch: fix potential
+      buffer overflow. (CVE-2014-9629)
+    - demux-mp4-fix-buffer-overflow-in-parsing-of-string-b.patch: fix buffer
+      overflow in parsing of string boxes. (CVE-2014-9626, CVE-2014-9627,
+      CVE-2014-9628)
+    - stream_out-rtp-don-t-use-VLA-for-user-controlled-dat.patch: don't use
+      VLA for user controlled data. (CVE-2014-9630)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 21 Jan 2015 22:41:57 +0100
+
 vlc (2.2.0~rc2-1) unstable; urgency=medium
 
   * New upstream release.
