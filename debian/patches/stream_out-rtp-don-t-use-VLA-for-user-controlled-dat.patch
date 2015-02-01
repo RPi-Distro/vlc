@@ -1,0 +1,42 @@
+From: Fabian Yamaguchi <fyamagu@gwdg.de>
+Subject: [PATCH] stream_out: rtp: don't use VLA for user controlled data
+ It should fix a possible invalid memory access
+ .
+ When streaming ogg-files via rtp, an ogg-file can trigger an invalid
+ write access using an overly long 'configuration' string.
+ .
+ The original code attemps to allocate space to hold the string on the stack
+ and hence, cannot verify if allocation succeeds. Instead, we now allocate the
+ buffer on the heap and return if allocation fails.
+ .
+ In detail, rtp_packetize_xiph_config allocates a buffer on the stack at (1) where
+ the size depends on the local variable 'len'. The variable 'len' is
+ calculated at (0) to be the length of a string contained in a specially
+ crafted Ogg Vorbis file, and therefore, it is attacker-controlled.
+Origin: upstream, http://git.videolan.org/?p=vlc/vlc-2.2.git;a=commitdiff;h=3199c5dd837bc641962e9c1c8d0cd2d7c9b8bb37
+Bug-Debian: https://bugs.debian.org/775866
+Last-Update: 2015-01-21
+
+--- a/modules/stream_out/rtpfmt.c
++++ b/modules/stream_out/rtpfmt.c
+@@ -540,7 +540,11 @@
+     char *end = strchr(start, ';');
+     assert(end != NULL);
+     size_t len = end - start;
+-    char b64[len + 1];
++
++    char *b64 = malloc(len + 1);
++    if(!b64)
++        return VLC_EGENERIC;
++
+     memcpy(b64, start, len);
+     b64[len] = '\0';
+ 
+@@ -550,6 +554,7 @@
+     int i_data;
+ 
+     i_data = vlc_b64_decode_binary(&p_orig, b64);
++    free(b64);
+     if (i_data == 0)
+         return VLC_EGENERIC;
+     assert(i_data > 9);

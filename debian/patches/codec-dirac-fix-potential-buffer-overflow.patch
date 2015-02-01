@@ -1,0 +1,23 @@
+From: Alessandro Ghedini <ghedo@debian.org>
+Subject: [PATCH] codec: dirac: fix potential buffer overflow.
+ The variable len is a raw 32 bit value read using GetDWBE. If this
+ value is larger than UINT32_MAX - sizeof(eos), this will cause an
+ integer overflow in the subsequent call to malloc, and finally a
+ buffer overflow when calling memcpy. We fix this by checking len
+ accordingly.
+Bug-Debian: https://bugs.debian.org/775866
+Last-Update: 2015-02-01
+
+--- a/modules/codec/dirac.c
++++ b/modules/codec/dirac.c
+@@ -920,6 +920,10 @@
+                      * is appended to the sequence header to allow guard
+                      * against poor streaming servers */
+                     /* XXX, should this be done using the packetizer ? */
++
++                    if( len > UINT32_MAX - sizeof( eos ) )
++                        return NULL;
++
+                     p_enc->fmt_out.p_extra = malloc( len + sizeof(eos) );
+                     if( !p_enc->fmt_out.p_extra )
+                         return NULL;

@@ -6,4 +6,7 @@ CVE-2012-5470.patch
 CVE-2013-1868.patch
 CVE-2013-1954.patch
 CVE-2013-4388.patch
-
+codec-schroedinger-fix-potential-buffer-overflow.patch
+codec-dirac-fix-potential-buffer-overflow.patch
+demux-mp4-fix-buffer-overflow-in-parsing-of-string-b.patch
+stream_out-rtp-don-t-use-VLA-for-user-controlled-dat.patch

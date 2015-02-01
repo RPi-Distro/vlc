@@ -1,0 +1,23 @@
+From: Fabian Yamaguchi <fyamagu@gwdg.de>
+Subject: [PATCH] demux: mp4: fix buffer overflow in parsing of string boxes.
+ We ensure that pbox->i_size is never smaller than 8 to avoid an
+ integer underflow in the third argument of the subsequent call to
+ memcpy. We also make sure no truncation occurs when passing values
+ derived from the 64 bit integer p_box->i_size to arguments of malloc
+ and memcpy that may be 32 bit integers on 32 bit platforms.
+Origin: upstream, http://git.videolan.org/?p=vlc/vlc-2.2.git;a=commitdiff;h=914462405f8e90d9b2b1184ff047fdfb1f800b48
+Bug-Debian: https://bugs.debian.org/775866
+Last-Update: 2015-01-21
+
+--- a/modules/demux/mp4/libmp4.c
++++ b/modules/demux/mp4/libmp4.c
+@@ -2478,6 +2478,9 @@
+ {
+     MP4_READBOX_ENTER( MP4_Box_data_name_t );
+ 
++    if( p_box->i_size < 8 || p_box->i_size > SIZE_MAX )
++        MP4_READBOX_EXIT( 0 );
++
+     p_box->data.p_name->psz_text = malloc( p_box->i_size + 1 - 8 ); /* +\0, -name, -size */
+     if( p_box->data.p_name->psz_text == NULL )
+         MP4_READBOX_EXIT( 0 );

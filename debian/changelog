@@ -1,3 +1,15 @@
+vlc (2.0.3-5+deb7u2) wheezy-security; urgency=high
+
+  * Fix multiple vulnerabilities (Closes: #775866):
+    - Fix potential buffer overflow in the Dirac and Schroedinger encoders
+      as per CVE-2014-9629
+    - Fix buffer overflow when parsing string boxes in the MP4 demuxer
+      as per CVE-2014-9626, CVE-2014-9627, CVE-2014-9628
+    - Fix possible invalid memory access in the RTP code as per CVE-2014-9630
+  * Set urgency=high accordingly
+
+ -- Alessandro Ghedini <ghedo@debian.org>  Sun, 01 Feb 2015 11:53:45 +0100
+
 vlc (2.0.3-5+deb7u1) wheezy-security; urgency=low
 
   * CVE-2013-1868 CVE-2013-1954 CVE-2013-4388
