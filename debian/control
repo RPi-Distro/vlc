@@ -134,7 +134,7 @@ Description: development files for libvlc
 Package: libvlc5
 Section: libs
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}, libvlccore8 (= ${binary:Version})
 Description: multimedia player and streamer library
  This package contains the shared library required by applications using VLC
  features.
