@@ -2,7 +2,7 @@
  * playlistinfo.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 8deb36f75994b6d53c0811ac30e588b8a7c385a5 $
+ * $Id: 5574cf87cbe035289c48e02942299a4aa57a54c4 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -113,6 +113,7 @@
 - (void)initMediaPanelStats;
 - (void)updatePanelWithItem:(input_item_t *)_p_item;
 - (void)setMeta: (char *)meta forLabel: (id)theItem;
+- (void)updateMetadata;
 - (void)updateStatistics;
 
 + (VLCInfo *)sharedInstance;

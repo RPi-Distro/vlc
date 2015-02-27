@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the core (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 VLC authors and VideoLAN
- * $Id: f0ee030c9045243d775c1673da4988e0cf4e8c79 $
+ * $Id: 449ac6dba98d06ef5d148af31807b371944c617d $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -1873,7 +1873,6 @@ vlc_module_begin ()
 
     set_subcategory( SUBCAT_INPUT_DEMUX )
     add_module( "demux", "demux", "any", DEMUX_TEXT, DEMUX_LONGTEXT, true )
-    set_subcategory( SUBCAT_INPUT_VCODEC )
     set_subcategory( SUBCAT_INPUT_ACODEC )
     set_subcategory( SUBCAT_INPUT_SCODEC )
     add_obsolete_bool( "prefer-system-codecs" )

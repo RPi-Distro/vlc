@@ -17,7 +17,7 @@ StrCpy $Desc_Section02b "Pictogram aan het bureaublad toevoegen voor eenvoudige 
 StrCpy $Desc_Section03 "De VLC Mozilla- en Mozilla-Firefox-plugin"
 StrCpy $Desc_Section04 "De VLC ActiveX-plugin"
 StrCpy $Desc_Section05 "Dvd- en cd-afspeelregistratie"
-StrCpy $Desc_Section06 "Stelt VLC Media Player als standaardtoepassing in voor het opgegeven bestandstype"
+StrCpy $Desc_Section06 "Stelt VLC Media Player in als standaardtoepassing in voor het opgegeven bestandstype"
 StrCpy $Desc_Section07 "Contextmenu-ingangen toevoegen ('Afspelen met VLC Media Player',...)"
 StrCpy $Desc_Section08 "Verwijdert voorkeuren en bufferbestanden die van vorige installaties van VLC Media Player overgebleven zijn"
 StrCpy $Name_Section91 "Verwijderen"

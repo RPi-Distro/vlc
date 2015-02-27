@@ -2,7 +2,7 @@
  * toolbar.cpp : ToolbarEdit dialog
  ****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: f102133aa1e266ea89ad178b11c860d56852cf02 $
+ * $Id: c1e667ae807669003978d03ac12c3d6be493ee51 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -673,7 +673,7 @@ void DroppingController::createAndAddWidget( QBoxLayout *newControlLayout,
         widg->installEventFilter( this );
 
         /* We are in a complex widget, we need to stop events on children too */
-        if( i_type >= VOLUME && i_type < SPECIAL_MAX )
+        if( i_type >= TIME_LABEL && i_type < SPECIAL_MAX )
         {
             QList<QObject *>children = widg->children();
 
@@ -690,7 +690,7 @@ void DroppingController::createAndAddWidget( QBoxLayout *newControlLayout,
 
             /* Decorating the frames when possible */
             QFrame *frame;
-            if( i_type >= MENU_BUTTONS  /* Don't bother to check for volume */
+            if( (i_type >= MENU_BUTTONS || i_type == TIME_LABEL) /* Don't bother to check for volume */
                 && ( frame = qobject_cast<QFrame *>( widg ) ) != NULL )
             {
                 frame->setFrameStyle( QFrame::Panel | QFrame::Raised );

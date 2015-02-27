@@ -2,7 +2,7 @@
  * resource.c
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 779c921a2c69a87cfee59de2071dcd49c4dba96e $
+ * $Id: 34402885ec500db3ed22f7c8e431d96ed30d1cca $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
@@ -158,7 +158,7 @@ static void DisplayVoutTitle( input_resource_t *p_resource,
 
     input_item_t *p_item = input_GetItem( p_resource->p_input );
 
-    char *psz_nowplaying = input_item_GetNowPlaying( p_item );
+    char *psz_nowplaying = input_item_GetNowPlayingFb( p_item );
     if( psz_nowplaying && *psz_nowplaying )
     {
         vout_DisplayTitle( p_vout, psz_nowplaying );

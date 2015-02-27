@@ -130,6 +130,7 @@ RequestExecutionLevel admin
   !insertmacro MUI_LANGUAGE "Russian"
   !insertmacro MUI_LANGUAGE "Portuguese"
   !insertmacro MUI_LANGUAGE "PortugueseBR"
+  !insertmacro MUI_LANGUAGE "Albanian"
   !insertmacro MUI_LANGUAGE "Welsh"
   !insertmacro MUI_LANGUAGE "Uzbek"
   !insertmacro MUI_LANGUAGE "Ukrainian"
@@ -151,6 +152,8 @@ RequestExecutionLevel admin
   !insertmacro MUI_LANGUAGE "Slovak"
   !insertmacro MUI_LANGUAGE "Serbian"
   !insertmacro MUI_LANGUAGE "Hungarian"
+  !insertmacro MUI_LANGUAGE "Croatian"
+  !insertmacro MUI_LANGUAGE "Icelandic"
   !insertmacro MUI_LANGUAGE "Catalan"
   !insertmacro MUI_LANGUAGE "Bulgarian"
   !insertmacro MUI_LANGUAGE "Estonian"
@@ -550,6 +553,9 @@ UAC_Success:
   StrCmp $LANGUAGE ${LANG_UKRAINIAN} Ukrainian 0
   StrCmp $LANGUAGE ${LANG_UZBEK} Uzbek 0
   StrCmp $LANGUAGE ${LANG_WELSH} Welsh 0
+  StrCmp $LANGUAGE ${LANG_ALBANIAN} Albanian 0
+  StrCmp $LANGUAGE ${LANG_CROATIAN} Croatian 0
+  StrCmp $LANGUAGE ${LANG_ICELANDIC} Icelandic 0
   StrCmp $LANGUAGE ${LANG_PORTUGUESEBR} Brazilian EndLanguageCmp
   French:
   !include "languages\french.nsh"
@@ -679,6 +685,15 @@ UAC_Success:
   Goto EndLanguageCmp
   Welsh:
   !include "languages\welsh.nsh"
+  Goto EndLanguageCmp
+  Albanian:
+  !include "languages\albanian.nsh"
+  Goto EndLanguageCmp
+  Croatian:
+  !include "languages\croatian.nsh"
+  Goto EndLanguageCmp
+  Icelandic:
+  !include "languages\icelandic.nsh"
   Goto EndLanguageCmp
   Brazilian:
   !include "languages\brazilian_portuguese.nsh"
@@ -1075,6 +1090,9 @@ UAC_Success:
   StrCmp $LANGUAGE ${LANG_UKRAINIAN} Ukrainian 0
   StrCmp $LANGUAGE ${LANG_UZBEK} Uzbek 0
   StrCmp $LANGUAGE ${LANG_WELSH} Welsh 0
+  StrCmp $LANGUAGE ${LANG_ALBANIAN} Albanian 0
+  StrCmp $LANGUAGE ${LANG_CROATIAN} Croatian 0
+  StrCmp $LANGUAGE ${LANG_ICELANDIC} Icelandic 0
   StrCmp $LANGUAGE ${LANG_PORTUGUESEBR} Brazilian EndLanguageCmp
   French:
   !include "languages\french.nsh"
@@ -1204,6 +1222,15 @@ UAC_Success:
   Goto EndLanguageCmp
   Welsh:
   !include "languages\welsh.nsh"
+  Goto EndLanguageCmp
+  Albanian:
+  !include "languages\albanian.nsh"
+  Goto EndLanguageCmp
+  Croatian:
+  !include "languages\croatian.nsh"
+  Goto EndLanguageCmp
+  Icelandic:
+  !include "languages\icelandic.nsh"
   Goto EndLanguageCmp
   Brazilian:
   !include "languages\brazilian_portuguese.nsh"

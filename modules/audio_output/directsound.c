@@ -2,7 +2,7 @@
  * directsound.c: DirectSound audio output plugin for VLC
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 39ae95358f4cc930b57f935ad43c13d7763c09f7 $
+ * $Id: 480089bb7efa895787b70dc38bf35e62083c9cc9 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -70,7 +70,7 @@ static const char *const speaker_list[] = { "Windows default", "Mono", "Stereo",
 vlc_module_begin ()
     set_description( N_("DirectX audio output") )
     set_shortname( "DirectX" )
-    set_capability( "audio output", 100 )
+    set_capability( "audio output", 200 )
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_AOUT )
     add_shortcut( "directx", "aout_directx" )
@@ -633,6 +633,9 @@ static HRESULT Start( vlc_object_t *obj, aout_stream_sys_t *sys,
     }
     free( psz_speaker );
 
+    vlc_mutex_init(&sys->lock);
+    vlc_cond_init(&sys->cond);
+
     if( AOUT_FMT_SPDIF( fmt ) && var_InheritBool( obj, "spdif" ) )
     {
         hr = CreateDSBuffer( obj, sys, VLC_CODEC_SPDIFL,
@@ -769,8 +772,7 @@ static HRESULT Start( vlc_object_t *obj, aout_stream_sys_t *sys,
         }
     }
 
-    vlc_mutex_init(&sys->lock);
-    vlc_cond_init(&sys->cond);
+    fmt->i_original_channels = fmt->i_physical_channels;
 
     int ret = vlc_clone(&sys->eraser_thread, PlayedDataEraser, (void*) obj,
                         VLC_THREAD_PRIORITY_LOW);

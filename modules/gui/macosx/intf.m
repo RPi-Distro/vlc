@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 9d7fe8ea64986e387ad389c4703057e1deb50a04 $
+ * $Id: 490c5b7106d62867343281767420d66108aa6400 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan.org>
@@ -1336,6 +1336,9 @@ static bool f_appExit = false;
 - (void)plItemUpdated
 {
     [o_mainwindow updateName];
+
+    if (o_info != NULL)
+        [o_info updateMetadata];
 }
 
 - (void)updateMainMenu

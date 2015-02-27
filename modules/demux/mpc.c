@@ -2,7 +2,7 @@
  * mpc.c : MPC stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 989eca49c7be41b2768563f98eb64ff69b0a2dbb $
+ * $Id: 838f7fe6ef6933b1c968e1447623834f49626341 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr.com>
  *
@@ -192,20 +192,32 @@ static int Open( vlc_object_t * p_this )
     fmt.audio.i_bitspersample = 32;
     fmt.i_bitrate = fmt.i_bitrate * fmt.audio.i_channels *
                     fmt.audio.i_bitspersample;
+
+#ifdef HAVE_MPC_MPCDEC_H
+#   define CONVERT_PEAK( mpc_peak ) (pow( 10, (mpc_peak) / 256.0 / 20.0 ) / 32767.0)
+#   define CONVERT_GAIN( mpc_gain ) (MPC_OLD_GAIN_REF - (mpc_gain) / 256.0)
+#else
+#   define CONVERT_PEAK( mpc_peak ) ((mpc_peak) / 32767.0)
+#   define CONVERT_GAIN( mpc_gain ) ((mpc_gain) / 100.0)
+#endif
+
     if( p_sys->info.peak_title > 0 )
     {
         fmt.audio_replay_gain.pb_peak[AUDIO_REPLAY_GAIN_TRACK] = true;
-        fmt.audio_replay_gain.pf_peak[AUDIO_REPLAY_GAIN_TRACK] = (float)p_sys->info.peak_title / 32767.0;
+        fmt.audio_replay_gain.pf_peak[AUDIO_REPLAY_GAIN_TRACK] = (float) CONVERT_PEAK( p_sys->info.peak_title );
         fmt.audio_replay_gain.pb_gain[AUDIO_REPLAY_GAIN_TRACK] = true;
-        fmt.audio_replay_gain.pf_gain[AUDIO_REPLAY_GAIN_TRACK] = (float)p_sys->info.gain_title / 100.0;
+        fmt.audio_replay_gain.pf_gain[AUDIO_REPLAY_GAIN_TRACK] = (float) CONVERT_GAIN( p_sys->info.gain_title );
     }
     if( p_sys->info.peak_album > 0 )
     {
         fmt.audio_replay_gain.pb_peak[AUDIO_REPLAY_GAIN_ALBUM] = true;
-        fmt.audio_replay_gain.pf_peak[AUDIO_REPLAY_GAIN_ALBUM] = (float)p_sys->info.peak_album / 32767.0;
+        fmt.audio_replay_gain.pf_peak[AUDIO_REPLAY_GAIN_ALBUM] = (float) CONVERT_PEAK( p_sys->info.peak_album );
         fmt.audio_replay_gain.pb_gain[AUDIO_REPLAY_GAIN_ALBUM] = true;
-        fmt.audio_replay_gain.pf_gain[AUDIO_REPLAY_GAIN_ALBUM] = (float)p_sys->info.gain_album / 100.0;
+        fmt.audio_replay_gain.pf_gain[AUDIO_REPLAY_GAIN_ALBUM] = (float) CONVERT_GAIN( p_sys->info.gain_album );
     }
+
+#undef CONVERT_GAIN
+#undef CONVERT_PEAK
 
     p_sys->p_es = es_out_Add( p_demux->out, &fmt );
     if( !p_sys->p_es )

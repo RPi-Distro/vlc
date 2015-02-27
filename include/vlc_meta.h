@@ -2,7 +2,7 @@
  * vlc_meta.h: Stream meta-data
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: c3bf801e11201513ab8133c76f134db7baffcbf6 $
+ * $Id: 4292095290d804f6e22303de88ecae86be983fc0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -45,6 +45,7 @@ typedef enum vlc_meta_type_t
     vlc_meta_URL,
     vlc_meta_Language,
     vlc_meta_NowPlaying,
+    vlc_meta_ESNowPlaying,
     vlc_meta_Publisher,
     vlc_meta_EncodedBy,
     vlc_meta_ArtworkURL,
@@ -57,7 +58,7 @@ typedef enum vlc_meta_type_t
     vlc_meta_Actors,
 } vlc_meta_type_t;
 
-#define VLC_META_TYPE_COUNT 23
+#define VLC_META_TYPE_COUNT 24
 
 #define ITEM_PREPARSED       1
 #define ITEM_ARTURL_FETCHED  2

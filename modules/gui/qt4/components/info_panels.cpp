@@ -2,7 +2,7 @@
  * info_panels.cpp : Panels for the information dialogs
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: a982b8839f6e3e8100684200e16c7cd3b6b79aa1 $
+ * $Id: a2d8db1bce20f697e0afda6d7b649d35350a4f75 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -158,6 +158,7 @@ MetaPanel::MetaPanel( QWidget *parent,
     lblURL = new QLabel;
     lblURL->setOpenExternalLinks( true );
     lblURL->setTextFormat( Qt::RichText );
+    lblURL->setMaximumWidth( 128 );
     metaLayout->addWidget( lblURL, line -1, 7, 1, -1 );
 
     ADD_META( VLC_META_COPYRIGHT, copyright_text, 0,  7 ); line++;

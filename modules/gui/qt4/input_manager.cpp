@@ -2,7 +2,7 @@
  * input_manager.cpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 1a04f513632a53169fa19efe857a9c1738d08b6e $
+ * $Id: d260fe02bee315f3b06386d9cc1ef70a60a86fc6 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka  <ileoo@videolan.org>
@@ -127,18 +127,25 @@ void InputManager::setInput( input_thread_t *_p_input )
         p_item = input_GetItem( p_input );
         emit rateChanged( var_GetFloat( p_input, "rate" ) );
 
+        char *uri = input_item_GetURI( p_item );
+
         /* Get Saved Time */
         if( p_item->i_type == ITEM_TYPE_FILE )
         {
             int i_time = RecentsMRL::getInstance( p_intf )->time( p_item->psz_uri );
-            if( i_time > 0 &&
+            if( i_time > 0 && qfu( uri ) != lastURI &&
                     !var_GetFloat( p_input, "run-time" ) &&
                     !var_GetFloat( p_input, "start-time" ) &&
                     !var_GetFloat( p_input, "stop-time" ) )
             {
-                emit continuePlayback( (int64_t)i_time * 1000 );
+                emit resumePlayback( (int64_t)i_time * 1000 );
             }
         }
+
+        // Save the latest URI to avoid asking to restore the
+        // position on the same input file.
+        lastURI = qfu( uri );
+        free( uri );
     }
     else
     {
@@ -1097,6 +1104,7 @@ void MainInputManager::customEvent( QEvent *event )
 void MainInputManager::stop()
 {
    playlist_Stop( THEPL );
+   getIM()->lastURI.clear();
 }
 
 void MainInputManager::next()

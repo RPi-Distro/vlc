@@ -2,7 +2,7 @@
  * zvbi.c : VBI and Teletext PES demux and decoder using libzvbi
  *****************************************************************************
  * Copyright (C) 2007, M2X
- * $Id: abcd27f5355953f68a13b4e7d6f848d58f7aa4c1 $
+ * $Id: 6a6343983530c2ed51ee1f5654237aa875fe5773 $
  *
  * Authors: Derk-Jan Hartman <djhartman at m2x dot nl>
  *          Jean-Paul Saman <jpsaman at m2x dot nl>
@@ -522,6 +522,7 @@ static subpicture_t *Subpicture( decoder_t *p_dec, video_format_t *p_fmt,
         fmt.i_width = fmt.i_visible_width = i_columns * 12;
         fmt.i_height = fmt.i_visible_height = i_rows * 10;
         fmt.i_bits_per_pixel = 32;
+        fmt.i_sar_num = fmt.i_sar_den = 0; /* let the vout set the correct AR */
     }
     fmt.i_x_offset = fmt.i_y_offset = 0;
 

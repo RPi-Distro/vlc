@@ -2,7 +2,7 @@
  * matroska_segment_parse.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: 036403b9e29eb89cf10ace3768b68d561a6f9eca $
+ * $Id: 845d38771477285cfd44b4f0afc3c47f699082c8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -1369,6 +1369,7 @@ int32_t matroska_segment_c::TrackInit( mkv_track_t * p_tk )
     else if( !strncmp( p_tk->psz_codec, "V_VP9", 5 ) )
     {
         p_tk->fmt.i_codec = VLC_CODEC_VP9;
+        p_tk->fmt.b_packetized = false;
         fill_extra_data( p_tk, 0 );
     }
     else if( !strncmp( p_tk->psz_codec, "V_MPEG4", 7 ) )
@@ -1496,6 +1497,12 @@ int32_t matroska_segment_c::TrackInit( mkv_track_t * p_tk )
     }
     else if( !strcmp( p_tk->psz_codec, "A_AC3" ) )
     {
+        // the AC-3 default duration cannot be trusted, see #8512
+        if ( p_tk->fmt.audio.i_rate == 8000 )
+        {
+            p_tk->b_no_duration = true;
+            p_tk->i_default_duration = 0;
+        }
         p_tk->fmt.i_codec = VLC_CODEC_A52;
     }
     else if( !strcmp( p_tk->psz_codec, "A_EAC3" ) )

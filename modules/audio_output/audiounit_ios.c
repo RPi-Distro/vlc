@@ -2,7 +2,7 @@
  * audiounit_ios.c: AudioUnit output plugin for iOS
  *****************************************************************************
  * Copyright (C) 2012 - 2013 VLC authors and VideoLAN
- * $Id: cd45d10e666f960cdc6e76958407d05ddb8c0f89 $
+ * $Id: 4645306afb4305ed00d6905f7ef55bb216cde5cf $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *
@@ -200,7 +200,7 @@ static int StartAnalog(audio_output_t *p_aout, audio_sample_format_t *fmt)
     AudioStreamBasicDescription streamDescription;
     streamDescription.mSampleRate = fmt->i_rate;
     fmt->i_format = VLC_CODEC_FL32;
-    fmt->i_physical_channels = AOUT_CHANS_STEREO;
+    fmt->i_physical_channels = fmt->i_original_channels = AOUT_CHANS_STEREO;
     streamDescription.mFormatID = kAudioFormatLinearPCM;
     streamDescription.mFormatFlags = kAudioFormatFlagsNativeFloatPacked; // FL32
     streamDescription.mChannelsPerFrame = aout_FormatNbChannels(fmt);

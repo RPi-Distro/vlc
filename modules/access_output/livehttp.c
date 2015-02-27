@@ -182,6 +182,7 @@ struct sout_access_out_sys_t
     char *psz_keyfile;
     mtime_t i_keyfile_modification;
     mtime_t i_opendts;
+    mtime_t i_dts_offset;
     mtime_t  i_seglenm;
     uint32_t i_segment;
     size_t  i_seglen;
@@ -195,6 +196,7 @@ struct sout_access_out_sys_t
     bool b_splitanywhere;
     bool b_caching;
     bool b_generate_iv;
+    bool b_segment_has_data;
     uint8_t aes_ivs[16];
     gcry_cipher_hd_t aes_ctx;
     char *key_uri;
@@ -240,11 +242,13 @@ static int Open( vlc_object_t *p_this )
     p_sys->b_ratecontrol = var_GetBool( p_access, SOUT_CFG_PREFIX "ratecontrol") ;
     p_sys->b_caching = var_GetBool( p_access, SOUT_CFG_PREFIX "caching") ;
     p_sys->b_generate_iv = var_GetBool( p_access, SOUT_CFG_PREFIX "generate-iv") ;
+    p_sys->b_segment_has_data = false;
 
     p_sys->segments_t = vlc_array_new();
 
     p_sys->stuffing_size = 0;
     p_sys->i_opendts = VLC_TS_INVALID;
+    p_sys->i_dts_offset  = 0;
 
     p_sys->psz_indexPath = NULL;
     psz_idx = var_GetNonEmptyString( p_access, SOUT_CFG_PREFIX "index" );
@@ -762,10 +766,11 @@ static void Close( vlc_object_t * p_this )
 
         /* Since we are flushing, check the segment change by hand and don't wait
          * possible keyframe*/
-        if( ((float)(output_block->i_length * CLOCK_FREQ / INT64_C(1000000) ) +
-            (float)(output_block->i_dts - p_sys->i_opendts)) >= p_sys->i_seglenm )
+        if( p_sys->b_segment_has_data &&  (float)(output_block->i_length + p_sys->i_dts_offset +
+                     output_block->i_dts - p_sys->i_opendts) >= p_sys->i_seglenm )
         {
             closeCurrentSegment( p_access, p_sys, false );
+            p_sys->i_dts_offset = 0;
             if( unlikely(openNextFile( p_access, p_sys ) < 0 ) )
             {
                 block_ChainRelease( output_block );
@@ -893,6 +898,7 @@ static ssize_t openNextFile( sout_access_out_t *p_access, sout_access_out_sys_t 
     p_sys->psz_cursegPath = strdup(segment->psz_filename);
     p_sys->i_handle = fd;
     p_sys->i_segment = i_newseg;
+    p_sys->b_segment_has_data = false;
     return fd;
 }
 /*****************************************************************************
@@ -903,16 +909,28 @@ static int CheckSegmentChange( sout_access_out_t *p_access, block_t *p_buffer )
     sout_access_out_sys_t *p_sys = p_access->p_sys;
     block_t *output = p_sys->block_buffer;
 
-    if( p_sys->i_handle > 0 &&
-        ( ( p_buffer->i_dts - p_sys->i_opendts +
-          ( p_buffer->i_length * CLOCK_FREQ / INT64_C(1000000) )
-        ) >= p_sys->i_seglenm ) )
-     {
-        closeCurrentSegment( p_access, p_sys, false );
-     }
-
-    if ( p_sys->i_handle < 0 )
+    /* let's check if we need to store offset to keep
+     * better count of actual duration */
+    if( unlikely( p_buffer->i_dts < p_sys->i_opendts ) )
     {
+        block_t *last_buffer = p_sys->block_buffer;
+        while( last_buffer->p_next )
+            last_buffer = last_buffer->p_next;
+        p_sys->i_dts_offset += last_buffer->i_dts - p_sys->i_opendts;
+        p_sys->i_opendts    = p_buffer->i_dts;
+        msg_Dbg( p_access, "dts offset %"PRId64, p_sys->i_dts_offset );
+    }
+
+    if( p_sys->i_handle > 0 && p_sys->b_segment_has_data &&
+       (( p_buffer->i_length + p_buffer->i_dts - p_sys->i_opendts +
+          p_sys->i_dts_offset ) >= p_sys->i_seglenm ) )
+    {
+        closeCurrentSegment( p_access, p_sys, false );
+    }
+
+    if ( unlikely( p_sys->i_handle < 0 ) )
+    {
+        p_sys->i_dts_offset = 0;
         p_sys->i_opendts = output ? output->i_dts : p_buffer->i_dts;
         //For first segment we can get negative duration otherwise...?
         if( ( p_sys->i_opendts != VLC_TS_INVALID ) &&
@@ -928,7 +946,7 @@ static int CheckSegmentChange( sout_access_out_t *p_access, block_t *p_buffer )
 static ssize_t writeSegment( sout_access_out_t *p_access )
 {
     sout_access_out_sys_t *p_sys = p_access->p_sys;
-    block_t *output = p_sys->block_buffer;
+    block_t *output = p_sys->block_buffer ? block_ChainGather( p_sys->block_buffer ) : NULL;
     p_sys->block_buffer = NULL;
     ssize_t i_write=0;
     bool crypted = false;
@@ -973,8 +991,8 @@ static ssize_t writeSegment( sout_access_out_t *p_access )
         }
 
         p_sys->f_seglen =
-            (float)(output->i_length / INT64_C(1000000) ) +
-            (float)(output->i_dts - p_sys->i_opendts) / CLOCK_FREQ;
+            (float)(output->i_length +
+                    output->i_dts - p_sys->i_opendts + p_sys->i_dts_offset) / CLOCK_FREQ;
 
         if ( (size_t)val >= output->i_buffer )
         {
@@ -1017,6 +1035,7 @@ static ssize_t Write( sout_access_out_t *p_access, block_t *p_buffer )
                 block_ChainRelease ( p_buffer );
                 return -1;
             }
+            p_sys->b_segment_has_data = true;
             i_write += writevalue;
         }
 

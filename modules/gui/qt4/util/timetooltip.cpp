@@ -1,6 +1,6 @@
 /*****************************************************************************
  * Copyright © 2011-2012 VideoLAN
- * $Id: bb472d7111e33c13d4e03dd4954767f03e69e98e $
+ * $Id: 574eca9d259c5c69645ff4cba5936df36ea66460 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -33,12 +33,14 @@
 TimeTooltip::TimeTooltip( QWidget *parent ) :
     QWidget( parent )
 {
-    setWindowFlags( Qt::Window                  |
+    setWindowFlags(
+#if defined( Q_OS_WIN )
+                    Qt::ToolTip
+#else
+                    Qt::Window                  |
                     Qt::WindowStaysOnTopHint    |
                     Qt::FramelessWindowHint     |
                     Qt::X11BypassWindowManagerHint
-#if HAS_QT5
-                    | Qt::WindowDoesNotAcceptFocus
 #endif
                     );
 

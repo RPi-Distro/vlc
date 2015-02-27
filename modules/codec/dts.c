@@ -2,7 +2,7 @@
  * dts.c: parse DTS audio sync info and packetize the stream
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 09ebc0d75727cb402aa26df3cefc97a58785d9bb $
+ * $Id: 5d777d4f01eb29dd47e0d4fb5693d7e52e9d49f3 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -548,18 +548,20 @@ static int SyncInfo( const uint8_t *p_buf,
                                 AOUT_CHAN_REARRIGHT | AOUT_CHAN_LFE;
             break;
 
+        case 0xF:
         default:
-            if( i_audio_mode <= 63 )
+            if( (i_audio_mode & 0xFFFF) >= 0x10 )
             {
                 /* User defined */
                 *pi_channels = 0;
                 *pi_channels_conf = 0;
             }
             else return 0;
+
             break;
     }
 
-    if( i_audio_mode & 0x10000 )
+    if( *pi_channels && (i_audio_mode & 0x10000) )
     {
         (*pi_channels)++;
         *pi_channels_conf |= AOUT_CHAN_LFE;

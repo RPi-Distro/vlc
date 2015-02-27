@@ -875,7 +875,8 @@ int dvb_set_dvbs (dvb_device_t *d, uint64_t freq_Hz,
 }
 
 int dvb_set_dvbs2 (dvb_device_t *d, uint64_t freq_Hz, const char *modstr,
-                   uint32_t srate, uint32_t fec, int pilot, int rolloff)
+                   uint32_t srate, uint32_t fec, int pilot, int rolloff,
+                   uint8_t sid)
 {
     uint32_t freq = freq_Hz / 1000;
     unsigned mod = dvb_parse_modulation (modstr, QPSK);
@@ -898,10 +899,11 @@ int dvb_set_dvbs2 (dvb_device_t *d, uint64_t freq_Hz, const char *modstr,
 
     if (dvb_find_frontend (d, DVB_S2))
         return -1;
-    return dvb_set_props (d, 8, DTV_CLEAR, 0, DTV_DELIVERY_SYSTEM, SYS_DVBS2,
+    return dvb_set_props (d, 9, DTV_CLEAR, 0, DTV_DELIVERY_SYSTEM, SYS_DVBS2,
                           DTV_FREQUENCY, freq, DTV_MODULATION, mod,
                           DTV_SYMBOL_RATE, srate, DTV_INNER_FEC, fec,
-                          DTV_PILOT, pilot, DTV_ROLLOFF, rolloff);
+                          DTV_PILOT, pilot, DTV_ROLLOFF, rolloff,
+                          DTV_STREAM_ID, (uint32_t)sid);
 }
 
 
@@ -991,7 +993,7 @@ int dvb_set_dvbt (dvb_device_t *d, uint32_t freq, const char *modstr,
 
 int dvb_set_dvbt2 (dvb_device_t *d, uint32_t freq, const char *modstr,
                    uint32_t fec, uint32_t bandwidth,
-                   int transmit_mode, uint32_t guard, uint32_t plp)
+                   int transmit_mode, uint32_t guard, uint8_t plp)
 {
 #if DVBv5(3)
     uint32_t mod = dvb_parse_modulation (modstr, QAM_AUTO);
@@ -1012,7 +1014,7 @@ int dvb_set_dvbt2 (dvb_device_t *d, uint32_t freq, const char *modstr,
 # else
                           DTV_DVBT2_PLP_ID,
 # endif
-                          plp);
+                          (uint32_t)plp);
 #else
 # warning DVB-T2 needs Linux DVB version 5.3 or later.
     msg_Err (d->obj, "DVB-T2 support not compiled-in");

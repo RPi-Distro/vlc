@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2007-2009 the VideoLAN team
  *
- * $Id: b647bded8e00e78bd386e60c64cd1191dfb8c198 $
+ * $Id: cb4fc1e76de074b2bfc600716dd6005c9288b6b1 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -88,7 +88,10 @@ SoutDialog::SoutDialog( QWidget *parent, intf_thread_t *_p_intf, const QString& 
     CB( localOutput ); CB( transcodeBox );
     CONNECT( ui.profileSelect, optionsChanged(), this, updateMRL() );
 
-    setButtonText( QWizard::FinishButton, "Stream" );
+    setButtonText( QWizard::BackButton, qtr("Back") );
+    setButtonText( QWizard::CancelButton, qtr("Cancel") );
+    setButtonText( QWizard::NextButton, qtr("Next") );
+    setButtonText( QWizard::FinishButton, qtr("Stream") );
 
 #undef CC
 #undef CS
