@@ -1,10 +1,13 @@
-vlc (2.2.0~rc2-2.1) UNRELEASED; urgency=medium
+vlc (2.2.0-1) UNRELEASED; urgency=medium
 
-  * Non-maintainer upload.
+  [ Helmut Grohne ]
   * Add versioned depends on libvlccore8 to libvlc5 which shares
     /usr/share/doc to comply with Debian policy 12.3. (Closes: #779251)
 
- -- Helmut Grohne <helmut@subdivi.de>  Wed, 25 Feb 2015 22:40:30 +0100
+  [ Mateusz Łukasik ]
+  * New upstream release.
+
+ -- Mateusz Łukasik <mati75@linuxmint.pl>  Fri, 27 Feb 2015 22:41:49 +0100
 
 vlc (2.2.0~rc2-2) unstable; urgency=medium
 
