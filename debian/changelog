@@ -2,7 +2,7 @@ vlc (2.2.0~rc2-2.1) UNRELEASED; urgency=medium
 
   * Non-maintainer upload.
   * Add versioned depends on libvlccore8 to libvlc5 which shares
-    /usr/share/doc to comply with Debian policy 12.3. (Closes: #-1)                                                                                                                    
+    /usr/share/doc to comply with Debian policy 12.3. (Closes: #779251)
 
  -- Helmut Grohne <helmut@subdivi.de>  Wed, 25 Feb 2015 22:40:30 +0100
 
