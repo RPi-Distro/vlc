@@ -2,7 +2,7 @@
  * events.c: Windows video output events handler
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: a1fe0185a6dd612f9423c23c0b2414f1aea91ad5 $
+ * $Id: 6e3c4214581ac4735a5b0abc66fcb6fb6ed35acb $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -681,18 +681,19 @@ static int Win32VoutCreateWindow( event_thread_t *p_event )
 
     #ifdef MODULE_NAME_IS_direct3d
     if( !p_event->use_desktop )
-    {
     #endif
+    {
         /* If an external window was specified, we'll draw in it. */
         p_event->parent_window = vout_display_NewWindow(vd, &p_event->wnd_cfg );
         if( p_event->parent_window )
             p_event->hparent = p_event->parent_window->handle.hwnd;
         else
             p_event->hparent = NULL;
-    #ifdef MODULE_NAME_IS_direct3d
     }
+    #ifdef MODULE_NAME_IS_direct3d
     else
     {
+        vout_display_DeleteWindow(vd, NULL);
         p_event->parent_window = NULL;
         p_event->hparent = GetDesktopHandle(vd);
     }
@@ -871,6 +872,9 @@ static void Win32VoutCloseWindow( event_thread_t *p_event )
     vout_display_t *vd = p_event->vd;
     msg_Dbg( vd, "Win32VoutCloseWindow" );
 
+    #ifdef MODULE_NAME_IS_direct3d9
+    DestroyWindow( p_event->hvideownd );
+    #endif
     DestroyWindow( p_event->hwnd );
     if( p_event->hfswnd )
         DestroyWindow( p_event->hfswnd );

@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2005 VLC authors and VideoLAN
- * $Id: 8c78b5f2d3852945a444dbff875a38a84ae4cb59 $
+ * $Id: 5cc580bf423fa257be735d5732ca29f7e12c1470 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -2161,10 +2161,10 @@ static void PCRHandle( demux_t *p_demux, ts_pid_t *pid, block_t *p_bk )
         p_sys->i_current_pcr = AdjustPCRWrapAround( p_demux, i_pcr );
 
     /* Search program and set the PCR */
-    int i_group = -1;
-    for( int i = 0; i < p_sys->i_pmt && i_group < 0 ; i++ )
+    for( int i = 0; i < p_sys->i_pmt; i++ )
     {
         bool b_pmt_has_es = false;
+        int i_group = -1;
 
         for( int i_prg = 0; i_prg < p_sys->pmt[i]->psi->i_prg; i_prg++ )
         {

@@ -2,7 +2,7 @@
  * i420_yuy2.c : YUV to YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 VLC authors and VideoLAN
- * $Id: 5457f9572590d442088f498caf3f5fcd15798a25 $
+ * $Id: cd99dd652042b2fbea13a06af7153fad3d1a5f32 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damien@videolan.org>
@@ -134,7 +134,7 @@ static int Activate( vlc_object_t *p_this )
 
     switch( p_filter->fmt_in.video.i_chroma )
     {
-        case VLC_CODEC_YV12:
+//        case VLC_CODEC_YV12: FIXME invert U and V in the filters :)
         case VLC_CODEC_I420:
             switch( p_filter->fmt_out.video.i_chroma )
             {

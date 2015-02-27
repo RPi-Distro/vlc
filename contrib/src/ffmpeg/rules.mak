@@ -2,14 +2,16 @@
 
 #Uncomment the one you want
 #USE_LIBAV ?= 1
-#USE_FFMPEG ?= 1
+USE_FFMPEG ?= 1
 
 ifdef USE_FFMPEG
-HASH=ea0b921
+HASH=fe47cba
 FFMPEG_SNAPURL := http://git.videolan.org/?p=ffmpeg.git;a=snapshot;h=$(HASH);sf=tgz
+FFMPEG_GITURL := git://git.videolan.org/ffmpeg.git
 else
-HASH=2f221b6
+HASH=3a6dfec
 FFMPEG_SNAPURL := http://git.libav.org/?p=libav.git;a=snapshot;h=$(HASH);sf=tgz
+FFMPEG_GITURL := git://git.libav.org/libav.git
 endif
 
 FFMPEGCONF = \
@@ -26,7 +28,6 @@ FFMPEGCONF = \
 	--disable-filters \
 	--disable-bsfs \
 	--disable-bzlib \
-	--disable-programs \
 	--disable-avresample
 
 ifdef USE_FFMPEG
@@ -59,7 +60,7 @@ endif
 endif
 
 ifdef HAVE_CROSS_COMPILE
-FFMPEGCONF += --enable-cross-compile
+FFMPEGCONF += --enable-cross-compile --disable-programs
 ifndef HAVE_DARWIN_OS
 FFMPEGCONF += --cross-prefix=$(HOST)-
 endif
@@ -96,6 +97,9 @@ endif
 # Darwin
 ifdef HAVE_DARWIN_OS
 FFMPEGCONF += --arch=$(ARCH) --target-os=darwin
+ifdef USE_FFMPEG
+FFMPEGCONF += --disable-lzma
+endif
 ifeq ($(ARCH),x86_64)
 FFMPEGCONF += --cpu=core2
 endif
@@ -149,17 +153,17 @@ ifeq ($(call need_pkg,"libavcodec >= 54.25.0 libavformat >= 53.21.0 libswscale")
 PKGS_FOUND += ffmpeg
 endif
 
-$(TARBALLS)/ffmpeg-$(HASH).tar.gz:
-	$(call download,$(FFMPEG_SNAPURL))
+$(TARBALLS)/ffmpeg-$(HASH).tar.xz:
+	$(call download_git,$(FFMPEG_GITURL),,$(HASH))
 
-.sum-ffmpeg: $(TARBALLS)/ffmpeg-$(HASH).tar.gz
+.sum-ffmpeg: $(TARBALLS)/ffmpeg-$(HASH).tar.xz
 	$(warning Not implemented.)
 	touch $@
 
-ffmpeg: ffmpeg-$(HASH).tar.gz .sum-ffmpeg
+ffmpeg: ffmpeg-$(HASH).tar.xz .sum-ffmpeg
 	rm -Rf $@ $@-$(HASH)
 	mkdir -p $@-$(HASH)
-	$(ZCAT) "$<" | (cd $@-$(HASH) && tar xv --strip-components=1)
+	$(XZCAT) "$<" | (cd $@-$(HASH) && tar xv --strip-components=1)
 	$(MOVE)
 
 .ffmpeg: ffmpeg

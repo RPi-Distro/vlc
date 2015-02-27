@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 5cf8fc930674afea99e8a8b15962c7496ffc2d83 $
+ * $Id: 5c6d08b8c6f930222471d4d64b3c11a8d361eeba $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -58,8 +58,12 @@ static const char *const ppsz_language[] =
 {
     "auto",
     "en",
+    "an",
     "ar",
+    "ast",
     "bn",
+    "bn_IN",
+    "bs",
     "pt_BR",
     "en_GB",
     "el",
@@ -87,9 +91,12 @@ static const char *const ppsz_language[] =
     "id",
     "it",
     "ja",
+    "kn",
     "ko",
     "lt",
+    "lv",
     "mn",
+    "mr",
     "ms",
     "nb",
     "nn",
@@ -110,8 +117,10 @@ static const char *const ppsz_language[] =
     "sl",
     "ckb",
     "es",
+    "es_MX",
     "sv",
     "te",
+    "th",
     "tr",
     "uk",
     "vi",
@@ -123,8 +132,12 @@ static const char *const ppsz_language_text[] =
 {
     N_("Auto"),
     "American English",
+    "aragonés",
     "ﻉﺮﺒﻳ",
+    "asturianu",
     "বাংলা",
+    "বাংলা (ভারত)",
+    "bosanski",
     "Português Brasileiro",
     "British English",
     "Νέα Ελληνικά",
@@ -152,9 +165,12 @@ static const char *const ppsz_language_text[] =
     "Bahasa Indonesia",
     "Italiano",
     "日本語",
+    "ಕನ್ನಡ",
     "한국어",
     "lietuvių",
+    "latviešu valoda",
     "Монгол хэл",
+    "मराठी",
     "Melayu",
     "Bokmål",
     "Nynorsk",
@@ -175,8 +191,10 @@ static const char *const ppsz_language_text[] =
     "slovenščina",
     "کوردیی سۆرانی",
     "Español",
+    "Español mexicano",
     "Svenska",
     "తెలుగు",
+    "ภาษาไทย",
     "Türkçe",
     "украї́нська мо́ва",
     "tiếng Việt",
@@ -978,6 +996,11 @@ void SPrefsPanel::updateAudioOptions( int number)
     optionWidgets["spdifChB"]->setVisible( ( value == "alsa" || value == "oss" || value == "auhal" ||
                                            value == "directsound" || value == "waveout" ) );
 
+#ifdef _WIN32
+    // FIXME
+    if( value == "any" )
+        value = "directsound";
+#endif
     int volume = getDefaultAudioVolume(VLC_OBJECT(p_intf), qtu(value));
     bool save = true;
 

@@ -2,7 +2,7 @@
  * avcodec.c: video and audio decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 2a710f3db23bd9355b50568fbcf164f65c9accae $
+ * $Id: 07902af9d38a603fc47ce15ebf9a4c67e9b2cd29 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -76,6 +76,7 @@ static const char *const enc_hq_list_text[] = {
 #ifdef MERGE_FFMPEG
 # include "../../demux/avformat/avformat.h"
 # include "../../access/avio.h"
+# include "../../packetizer/avparser.h"
 #endif
 
 /*****************************************************************************
@@ -215,7 +216,7 @@ vlc_module_begin ()
                  ENC_QMAX_TEXT, ENC_QMAX_LONGTEXT, true )
     add_bool( ENC_CFG_PREFIX "trellis", false,
               ENC_TRELLIS_TEXT, ENC_TRELLIS_LONGTEXT, true )
-    add_float( ENC_CFG_PREFIX "qscale", 0,
+    add_float( ENC_CFG_PREFIX "qscale", 3,
                ENC_QSCALE_TEXT, ENC_QSCALE_LONGTEXT, true )
     add_integer( ENC_CFG_PREFIX "strict", 0,
                  ENC_STRICT_TEXT, ENC_STRICT_LONGTEXT, true )
@@ -245,6 +246,8 @@ vlc_module_begin ()
 #   include "../../demux/avformat/avformat.c"
     add_submodule ()
         AVIO_MODULE
+    add_submodule ()
+        AVPARSER_MODULE
 #endif
 vlc_module_end ()
 

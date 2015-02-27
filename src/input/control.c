@@ -2,7 +2,7 @@
  * control.c
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 8a03b1c2422c56bb58029347d25246a224816963 $
+ * $Id: 2e4633ff689f575e6ef90e7e29274f79b1e4a6a4 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -535,7 +535,7 @@ static void UpdateBookmarksOption( input_thread_t *p_input )
     {
         strcpy( psz_value, "bookmarks=" );
 
-        char *psz_next = psz_value + strlen( "bookmarks" );
+        char *psz_next = psz_value + strlen( "bookmarks=" );
 
         for( int i = 0; i < p_input->p->i_bookmark && psz_value != NULL; i++ )
         {

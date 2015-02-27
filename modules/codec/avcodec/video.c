@@ -2,7 +2,7 @@
  * video.c: video decoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: ad9be3b695901e0428aaa8b9981e8f7fef3f66c8 $
+ * $Id: a063754229315e3383bca4dce2aa6c026aa26bc0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -440,6 +440,9 @@ int InitVideoDec( decoder_t *p_dec, AVCodecContext *p_context,
         free( p_sys );
         return VLC_EGENERIC;
     }
+
+    if ( p_dec->fmt_in.i_codec == VLC_CODEC_VP9 )
+        p_dec->b_need_packetized = true;
 
     return VLC_SUCCESS;
 }

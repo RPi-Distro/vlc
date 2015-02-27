@@ -2,7 +2,7 @@
  * mkv.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2005, 2008 VLC authors and VideoLAN
- * $Id: 063891462fe164830b02a39675f74bbefd5c2f58 $
+ * $Id: 36938e84f5d1900c5a2706719ceaac70b8af0cb1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -45,9 +45,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 
-#ifdef HAVE_TIME_H
-#   include <time.h>                                               /* time() */
-#endif
+#include <time.h>
 
 #include <vlc_meta.h>
 #include <vlc_charset.h>

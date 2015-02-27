@@ -2,7 +2,7 @@
  * input.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 5b800802ac53d8941e38c5952bbbc139fe7af143 $
+ * $Id: 2d6d835eea60aeca31b36f7c2118ef06b0a8fafb $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -349,6 +349,7 @@ static int vlclua_input_item_set_meta( lua_State *L )
         META_TYPE( URL, "url" )
         META_TYPE( Language, "language" )
         META_TYPE( NowPlaying, "now_playing" )
+        META_TYPE( ESNowPlaying, "now_playing" )
         META_TYPE( Publisher, "publisher" )
         META_TYPE( EncodedBy, "encoded_by" )
         META_TYPE( ArtworkURL, "artwork_url" )

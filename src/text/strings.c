@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
  * Copyright (C) 2008-2009 Rémi Denis-Courmont
- * $Id: d7212ea3a3b21fea7a79b1a0785ace643eabc7e9 $
+ * $Id: a9464f884563a06c612bf490b1c8f526288e8a32 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *          Daniel Stranger <vlc at schmaller dot de>
@@ -534,6 +534,8 @@ char *str_format_meta(input_thread_t *input, const char *s)
     size_t len;
 #ifdef HAVE_OPEN_MEMSTREAM
     FILE *stream = open_memstream(&str, &len);
+#elif defined( _WIN32 )
+    FILE *stream = vlc_win32_tmpfile();
 #else
     FILE *stream = tmpfile();
 #endif
@@ -603,7 +605,16 @@ char *str_format_meta(input_thread_t *input, const char *s)
                 write_meta(stream, item, vlc_meta_TrackNumber);
                 break;
             case 'p':
-                write_meta(stream, item, vlc_meta_NowPlaying);
+                if (item == NULL)
+                    break;
+                {
+                    char *value = input_item_GetNowPlayingFb(item);
+                    if (value == NULL)
+                        break;
+
+                    fputs(value, stream);
+                    free(value);
+                }
                 break;
             case 'r':
                 write_meta(stream, item, vlc_meta_Rating);
@@ -761,18 +772,28 @@ char *str_format_meta(input_thread_t *input, const char *s)
                 fputc('\n', stream);
                 break;
             case 'Z':
-                if (write_meta(stream, item, vlc_meta_NowPlaying) == EOF)
+                if (item == NULL)
+                    break;
                 {
-                    char *title = input_item_GetTitleFbName(item);
-
-                    if (write_meta(stream, item, vlc_meta_Artist) >= 0
-                     && title != NULL)
-                        fputs(" - ", stream);
-
-                    if (title != NULL)
+                    char *value = input_item_GetNowPlayingFb(item);
+                    if (value != NULL)
                     {
-                        fputs(title, stream);
-                        free(title);
+                        fputs(value, stream);
+                        free(value);
+                    }
+                    else
+                    {
+                        char *title = input_item_GetTitleFbName(item);
+
+                        if (write_meta(stream, item, vlc_meta_Artist) >= 0
+                            && title != NULL)
+                            fputs(" - ", stream);
+
+                        if (title != NULL)
+                        {
+                            fputs(title, stream);
+                            free(title);
+                        }
                     }
                 }
                 break;

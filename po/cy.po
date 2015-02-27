@@ -1,16 +1,16 @@
 # Welsh translation
-# Copyright (C) 2014 VideoLAN
+# Copyright (C) 2015 VideoLAN
 # This file is distributed under the same license as the VLC package.
 #
 # Translators:
-# Aled Powell <cymrodor@gmail.com>, 2013-2014
+# Aled Powell <cymrodor@gmail.com>, 2013-2015
 # Huw Waters <huwwaters@gmail.com>, 2012-2013
 msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2014-11-21 16:54+0100\n"
-"PO-Revision-Date: 2014-11-01 20:42+0000\n"
+"POT-Creation-Date: 2015-02-27 15:34+0100\n"
+"PO-Revision-Date: 2015-01-04 21:11+0000\n"
 "Last-Translator: Aled Powell <cymrodor@gmail.com>\n"
 "Language-Team: Welsh (http://www.transifex.com/projects/p/vlc-trans/language/"
 "cy/)\n"
@@ -41,8 +41,8 @@ msgstr "Dewisiadau VLC"
 msgid "Select \"Advanced Options\" to see all options."
 msgstr "Dewiswch \"Gosodiadau Uwch\" i weld yr holl opsiynau."
 
-#: include/vlc_config_cat.h:38 modules/gui/macosx/simple_prefs.m:269
-#: modules/gui/qt4/components/simple_preferences.cpp:270
+#: include/vlc_config_cat.h:38 modules/gui/macosx/simple_prefs.m:288
+#: modules/gui/qt4/components/simple_preferences.cpp:288
 #: modules/gui/qt4/menus.cpp:1074
 msgid "Interface"
 msgstr "Rhyngwyneb"
@@ -72,17 +72,17 @@ msgid "Settings for VLC's control interfaces"
 msgstr "Gosodiadau i ryngwynebau rheoli VLC"
 
 #: include/vlc_config_cat.h:49 include/vlc_config_cat.h:50
-#: modules/gui/macosx/simple_prefs.m:279
+#: modules/gui/macosx/simple_prefs.m:298
 msgid "Hotkeys settings"
 msgstr "Gosodiadau bysellau brys"
 
-#: include/vlc_config_cat.h:53 src/input/es_out.c:2878 src/input/es_out.c:2919
+#: include/vlc_config_cat.h:53 src/input/es_out.c:2879 src/input/es_out.c:2920
 #: src/libvlc-module.c:1443 modules/access/imem.c:64
-#: modules/gui/macosx/ConvertAndSave.m:185 modules/gui/macosx/MainMenu.m:420
+#: modules/gui/macosx/ConvertAndSave.m:185 modules/gui/macosx/MainMenu.m:423
 #: modules/gui/macosx/output.m:161 modules/gui/macosx/playlistinfo.m:111
-#: modules/gui/macosx/simple_prefs.m:271 modules/gui/macosx/wizard.m:377
-#: modules/gui/qt4/components/info_panels.cpp:564
-#: modules/gui/qt4/components/simple_preferences.cpp:272
+#: modules/gui/macosx/simple_prefs.m:290 modules/gui/macosx/wizard.m:377
+#: modules/gui/qt4/components/info_panels.cpp:565
+#: modules/gui/qt4/components/simple_preferences.cpp:290
 #: modules/services_discovery/mediadirs.c:76 modules/stream_out/es.c:93
 #: modules/stream_out/transcode/transcode.c:183
 #: share/lua/http/dialogs/create_stream.html:150
@@ -108,11 +108,11 @@ msgid "Audio filters are used to process the audio stream."
 msgstr "Defnyddir hidlyddion sain i brosesu'r ffrwd sain."
 
 #: include/vlc_config_cat.h:61 src/audio_output/output.c:226
-#: modules/gui/macosx/MainMenu.m:430 modules/gui/macosx/MainMenu.m:431
+#: modules/gui/macosx/MainMenu.m:433 modules/gui/macosx/MainMenu.m:434
 msgid "Visualizations"
 msgstr "Patrymau Symudol"
 
-#: include/vlc_config_cat.h:62 src/audio_output/output.c:285
+#: include/vlc_config_cat.h:62 src/audio_output/output.c:287
 #: src/libvlc-module.c:195
 msgid "Audio visualizations"
 msgstr "Patrymau sain symudol"
@@ -125,7 +125,7 @@ msgstr "Modiwlau allbwn"
 msgid "General settings for audio output modules."
 msgstr "Gosodiadau cyffredin ar gyfer modiwlau allbwn sain."
 
-#: include/vlc_config_cat.h:67 src/libvlc-module.c:1954
+#: include/vlc_config_cat.h:67 src/libvlc-module.c:1953
 #: modules/gui/macosx/VideoEffects.m:83
 #: modules/stream_out/transcode/transcode.c:216
 msgid "Miscellaneous"
@@ -135,14 +135,14 @@ msgstr "Amrywiol"
 msgid "Miscellaneous audio settings and modules."
 msgstr "Gosodiadau amrywiol ar gyfer sain a modiwlau"
 
-#: include/vlc_config_cat.h:71 src/input/es_out.c:2881 src/input/es_out.c:2963
+#: include/vlc_config_cat.h:71 src/input/es_out.c:2882 src/input/es_out.c:2964
 #: src/libvlc-module.c:1497 modules/access/imem.c:64
-#: modules/gui/macosx/ConvertAndSave.m:175 modules/gui/macosx/MainMenu.m:433
+#: modules/gui/macosx/ConvertAndSave.m:175 modules/gui/macosx/MainMenu.m:436
 #: modules/gui/macosx/output.m:151 modules/gui/macosx/playlistinfo.m:101
-#: modules/gui/macosx/simple_prefs.m:273 modules/gui/macosx/simple_prefs.m:410
+#: modules/gui/macosx/simple_prefs.m:292 modules/gui/macosx/simple_prefs.m:429
 #: modules/gui/macosx/wizard.m:378
-#: modules/gui/qt4/components/info_panels.cpp:565
-#: modules/gui/qt4/components/simple_preferences.cpp:274
+#: modules/gui/qt4/components/info_panels.cpp:566
+#: modules/gui/qt4/components/simple_preferences.cpp:292
 #: modules/services_discovery/mediadirs.c:69 modules/stream_out/es.c:101
 #: modules/stream_out/transcode/transcode.c:154
 #: share/lua/http/dialogs/create_stream.html:147
@@ -160,9 +160,8 @@ msgid "General video settings"
 msgstr "Gosodiadau fideo cyffredinol"
 
 #: include/vlc_config_cat.h:77
-#, fuzzy
 msgid "General settings for video output modules."
-msgstr "Gosodiadau cyffredin ar gyfer modiwlau allbwn sain."
+msgstr "Gosodiadau cyffredin ar gyfer modiwlau allbwn fideo."
 
 #: include/vlc_config_cat.h:80
 msgid "Video filters are used to process the video stream."
@@ -245,7 +244,7 @@ msgstr ""
 msgid "General input settings. Use with care..."
 msgstr "Gosodiadau mewnbwn cyffredin. Addaswch gyda gofal..."
 
-#: include/vlc_config_cat.h:121 src/libvlc-module.c:1889
+#: include/vlc_config_cat.h:121 src/libvlc-module.c:1888
 #: modules/access/avio.h:50
 msgid "Stream output"
 msgstr "Allbwn ffrwd"
@@ -336,7 +335,7 @@ msgstr "Fideo ar Alw (VOD)"
 msgid "VLC's implementation of Video On Demand"
 msgstr ""
 
-#: include/vlc_config_cat.h:167 src/libvlc-module.c:1994
+#: include/vlc_config_cat.h:167 src/libvlc-module.c:1993
 #: src/playlist/engine.c:243 modules/demux/playlist/playlist.c:64
 #: modules/demux/playlist/playlist.c:65 modules/gui/macosx/MainWindow.m:329
 #: modules/gui/macosx/MainWindow.m:956
@@ -449,10 +448,10 @@ msgid "&About"
 msgstr "&Ynghylch"
 
 #: include/vlc_intf_strings.h:65 modules/control/rc.c:70
-#: modules/gui/macosx/ControlsBar.m:441 modules/gui/macosx/MainMenu.m:393
-#: modules/gui/macosx/MainMenu.m:500 modules/gui/macosx/MainMenu.m:507
-#: modules/gui/macosx/MainMenu.m:1296 modules/gui/macosx/MainMenu.m:1297
-#: modules/gui/macosx/MainMenu.m:1298 modules/gui/macosx/playlist.m:582
+#: modules/gui/macosx/ControlsBar.m:441 modules/gui/macosx/MainMenu.m:397
+#: modules/gui/macosx/MainMenu.m:503 modules/gui/macosx/MainMenu.m:510
+#: modules/gui/macosx/MainMenu.m:1308 modules/gui/macosx/MainMenu.m:1309
+#: modules/gui/macosx/MainMenu.m:1310 modules/gui/macosx/playlist.m:582
 #: modules/gui/qt4/components/controller.hpp:115
 #: modules/gui/qt4/dialogs/vlm.cpp:550 modules/gui/qt4/ui/open.h:243
 msgid "Play"
@@ -499,17 +498,17 @@ msgid "Save..."
 msgstr "Cadw..."
 
 #: include/vlc_intf_strings.h:79 modules/gui/macosx/CoreInteraction.m:394
-#: modules/gui/macosx/MainMenu.m:407 modules/gui/macosx/MainMenu.m:1573
+#: modules/gui/macosx/MainMenu.m:410 modules/gui/macosx/MainMenu.m:1589
 msgid "Repeat All"
 msgstr "Ailchwarae'r Cyfan"
 
 #: include/vlc_intf_strings.h:80 modules/gui/macosx/CoreInteraction.m:414
-#: modules/gui/macosx/MainMenu.m:406 modules/gui/macosx/MainMenu.m:1568
+#: modules/gui/macosx/MainMenu.m:409 modules/gui/macosx/MainMenu.m:1584
 msgid "Repeat One"
 msgstr "Ailchwarae Un"
 
 #: include/vlc_intf_strings.h:81 src/libvlc-module.c:1386
-#: modules/gui/macosx/MainMenu.m:405 modules/gui/macosx/MainMenu.m:1563
+#: modules/gui/macosx/MainMenu.m:408 modules/gui/macosx/MainMenu.m:1579
 #: modules/gui/qt4/components/controller.hpp:119
 #: modules/gui/qt4/components/controller.hpp:132
 msgid "Random"
@@ -578,7 +577,7 @@ msgid ""
 "can <b>promote</b> VLC media player.</p></body></html>"
 msgstr ""
 "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; "
-"charset=utf-8\" /></head><body><h2>Croeso i Gymorth chwaraewr VLC</"
+"charset=utf-8\" /></head><body><h2>Croeso i Gymorth chwaraeydd VLC</"
 "h2><p><b>Yn anffodus, nid oes cymorth ar gael yn y Gymraeg ar hyn o'r bryd, "
 "ond mae amryw o ffyrdd i gael cymorth drwy'r Saesneg.</b></"
 "p><h3>Documentation</h3><p>You can find VLC documentation on VideoLAN's <a "
@@ -615,7 +614,7 @@ msgid "The maximum number of filters (%u) was reached."
 msgstr "Mae'r uchafswm o hidlyddion (%u) wedi'i gyrraedd."
 
 #: src/audio_output/output.c:229 src/config/core.c:407 src/input/es_out.c:904
-#: src/libvlc-module.c:538 modules/gui/macosx/MainMenu.m:277
+#: src/libvlc-module.c:538 modules/gui/macosx/MainMenu.m:279
 #: modules/gui/macosx/MainWindow.m:1082 modules/video_filter/postproc.c:234
 msgid "Disable"
 msgstr "Analluogi"
@@ -636,31 +635,31 @@ msgstr "Sbectrwm"
 msgid "Vu meter"
 msgstr "Mesurydd Vu"
 
-#: src/audio_output/output.c:280 src/libvlc-module.c:190
+#: src/audio_output/output.c:282 src/libvlc-module.c:190
 msgid "Audio filters"
 msgstr "Hidlyddion Sain"
 
-#: src/audio_output/output.c:291
+#: src/audio_output/output.c:293
 msgid "Replay gain"
 msgstr "Ailchwarae "
 
-#: src/audio_output/output.c:385 modules/gui/macosx/MainMenu.m:426
-#: modules/gui/macosx/MainMenu.m:427
+#: src/audio_output/output.c:387 modules/gui/macosx/MainMenu.m:429
+#: modules/gui/macosx/MainMenu.m:430
 msgid "Stereo audio mode"
 msgstr "Modd sain stereo"
 
-#: src/audio_output/output.c:420 src/libvlc-module.c:187
+#: src/audio_output/output.c:422 src/libvlc-module.c:187
 msgid "Dolby Surround"
 msgstr "Dolby Surround"
 
-#: src/audio_output/output.c:425 src/libvlc-module.c:186
+#: src/audio_output/output.c:427 src/libvlc-module.c:186
 #: modules/access/alsa.c:38 modules/access/oss.c:64
 #: modules/access/v4l2/v4l2.c:268 modules/audio_output/alsa.c:76
 #: modules/codec/twolame.c:70
 msgid "Stereo"
 msgstr "Stereo"
 
-#: src/audio_output/output.c:430 src/config/keys.c:85 src/libvlc-module.c:187
+#: src/audio_output/output.c:432 src/config/keys.c:85 src/libvlc-module.c:187
 #: src/libvlc-module.c:284 src/libvlc-module.c:362
 #: modules/audio_filter/channel_mixer/mono.c:88
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
@@ -675,7 +674,7 @@ msgstr "Stereo"
 msgid "Left"
 msgstr "Chwith"
 
-#: src/audio_output/output.c:438 src/config/keys.c:113 src/libvlc-module.c:187
+#: src/audio_output/output.c:440 src/config/keys.c:113 src/libvlc-module.c:187
 #: src/libvlc-module.c:284 src/libvlc-module.c:362
 #: modules/audio_filter/channel_mixer/mono.c:88
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
@@ -688,14 +687,14 @@ msgstr "Chwith"
 msgid "Right"
 msgstr "De"
 
-#: src/audio_output/output.c:441 src/libvlc-module.c:186
+#: src/audio_output/output.c:443 src/libvlc-module.c:186
 msgid "Reverse stereo"
 msgstr "Gwrthdroi stereo"
 
 #: src/config/core.c:397 modules/access/dtv/access.c:91
 #: modules/access/dtv/access.c:106 modules/access/dtv/access.c:115
 #: modules/access/dtv/access.c:123 modules/access/dtv/access.c:132
-#: modules/access/dtv/access.c:140 modules/access/dtv/access.c:160
+#: modules/access/dtv/access.c:140 modules/access/dtv/access.c:162
 #: modules/access/v4l2/v4l2.c:137
 #: modules/gui/qt4/components/open_panels.cpp:948
 msgid "Automatic"
@@ -1042,8 +1041,8 @@ msgid "Page Up"
 msgstr "Page Up"
 
 #: src/config/keys.c:111 modules/control/rc.c:71
-#: modules/gui/macosx/ControlsBar.m:434 modules/gui/macosx/MainMenu.m:1303
-#: modules/gui/macosx/MainMenu.m:1304 modules/gui/macosx/MainMenu.m:1305
+#: modules/gui/macosx/ControlsBar.m:434 modules/gui/macosx/MainMenu.m:1315
+#: modules/gui/macosx/MainMenu.m:1316 modules/gui/macosx/MainMenu.m:1317
 #: modules/gui/qt4/menus.cpp:823
 msgid "Pause"
 msgstr "Seibio"
@@ -1070,7 +1069,7 @@ msgstr "Dadosod"
 msgid "Up"
 msgstr "I Fyny"
 
-#: src/config/keys.c:118 modules/gui/macosx/MainMenu.m:512
+#: src/config/keys.c:118 modules/gui/macosx/MainMenu.m:515
 msgid "Volume Down"
 msgstr "Sain i Lawr"
 
@@ -1078,7 +1077,7 @@ msgstr "Sain i Lawr"
 msgid "Volume Mute"
 msgstr "Tewi'r Sain"
 
-#: src/config/keys.c:120 modules/gui/macosx/MainMenu.m:511
+#: src/config/keys.c:120 modules/gui/macosx/MainMenu.m:514
 msgid "Volume Up"
 msgstr "Sain i Fyny"
 
@@ -1149,12 +1148,12 @@ msgstr "Nid oes disgrifiad o'r codec hwn."
 
 #: src/input/decoder.c:693
 msgid "Codec not supported"
-msgstr ""
+msgstr "Codec anghydnaws"
 
 #: src/input/decoder.c:694
 #, c-format
 msgid "VLC could not decode the format \"%4.4s\" (%s)"
-msgstr ""
+msgstr "Methodd VLC â datgodio'r fformat \"%4.4s\" (%s)."
 
 #: src/input/decoder.c:698
 msgid "Unidentified codec"
@@ -1162,7 +1161,7 @@ msgstr "Methu adnabod y codec"
 
 #: src/input/decoder.c:699
 msgid "VLC could not identify the audio or video codec"
-msgstr ""
+msgstr "Methodd VLC ag adnabod y codec sain neu fideo."
 
 #: src/input/es_out.c:924 src/input/es_out.c:929 src/libvlc-module.c:228
 #: modules/access/vcdx/access.c:455 modules/access/vcdx/info.c:226
@@ -1176,45 +1175,45 @@ msgid "%s [%s %d]"
 msgstr "%s [%s %d]"
 
 #: src/input/es_out.c:1135 src/input/es_out.c:1140 src/input/var.c:167
-#: src/libvlc-module.c:562 modules/gui/macosx/MainMenu.m:413
-#: modules/gui/macosx/MainMenu.m:414
+#: src/libvlc-module.c:562 modules/gui/macosx/MainMenu.m:416
+#: modules/gui/macosx/MainMenu.m:417
 msgid "Program"
 msgstr "Rhaglen"
 
-#: src/input/es_out.c:1338 src/input/es_out.c:1340
+#: src/input/es_out.c:1339 src/input/es_out.c:1341
 msgid "Scrambled"
 msgstr "Tameidiog"
 
-#: src/input/es_out.c:1338
+#: src/input/es_out.c:1339
 msgid "Yes"
 msgstr "Ie"
 
-#: src/input/es_out.c:2010
+#: src/input/es_out.c:2011
 #, c-format
 msgid "Closed captions %u"
 msgstr "Capsiynau cyfyng %u"
 
-#: src/input/es_out.c:2868
+#: src/input/es_out.c:2869
 #, c-format
 msgid "Stream %d"
 msgstr "Ffrwd %d"
 
-#: src/input/es_out.c:2884 src/input/es_out.c:2999 modules/access/imem.c:64
+#: src/input/es_out.c:2885 src/input/es_out.c:3000 modules/access/imem.c:64
 msgid "Subtitle"
 msgstr "Isdeitlau"
 
-#: src/input/es_out.c:2892 src/input/es_out.c:2919 src/input/es_out.c:2963
-#: src/input/es_out.c:2999 modules/gui/macosx/AddonManager.m:123
+#: src/input/es_out.c:2893 src/input/es_out.c:2920 src/input/es_out.c:2964
+#: src/input/es_out.c:3000 modules/gui/macosx/AddonManager.m:123
 #: modules/gui/macosx/ConvertAndSave.m:197 modules/gui/macosx/output.m:144
 #: modules/gui/qt4/dialogs/plugins.cpp:1457
 msgid "Type"
 msgstr "Math"
 
-#: src/input/es_out.c:2895
+#: src/input/es_out.c:2896
 msgid "Original ID"
 msgstr "ID Gwreiddiol"
 
-#: src/input/es_out.c:2903 src/input/es_out.c:2906 modules/access/imem.c:67
+#: src/input/es_out.c:2904 src/input/es_out.c:2907 modules/access/imem.c:67
 #: modules/gui/macosx/ConvertAndSave.m:177
 #: modules/gui/macosx/ConvertAndSave.m:187 modules/gui/macosx/wizard.m:382
 #: modules/gui/qt4/ui/profiles.h:711 modules/gui/qt4/ui/profiles.h:737
@@ -1222,38 +1221,38 @@ msgstr "ID Gwreiddiol"
 msgid "Codec"
 msgstr "Codec"
 
-#: src/input/es_out.c:2910 src/input/meta.c:66 modules/access/imem.c:71
-#: modules/gui/macosx/MainMenu.m:80 modules/gui/macosx/simple_prefs.m:355
+#: src/input/es_out.c:2911 src/input/meta.c:66 modules/access/imem.c:71
+#: modules/gui/macosx/MainMenu.m:80 modules/gui/macosx/simple_prefs.m:374
 #: modules/stream_out/setid.c:49 modules/gui/qt4/ui/sprefs_interface.h:504
 msgid "Language"
 msgstr "Iaith"
 
-#: src/input/es_out.c:2913 src/input/meta.c:61
+#: src/input/es_out.c:2914 src/input/meta.c:61
 #: modules/gui/macosx/bookmarks.m:103 modules/gui/macosx/MainMenu.m:78
 #: modules/gui/qt4/dialogs/bookmarks.cpp:75
 msgid "Description"
 msgstr "Disgrifiad"
 
-#: src/input/es_out.c:2922 modules/gui/macosx/ConvertAndSave.m:189
+#: src/input/es_out.c:2923 modules/gui/macosx/ConvertAndSave.m:189
 #: modules/gui/macosx/output.m:167 modules/gui/qt4/ui/profiles.h:739
 msgid "Channels"
 msgstr "Sianeli"
 
-#: src/input/es_out.c:2927 modules/access/alsa.c:39 modules/access/imem.c:75
+#: src/input/es_out.c:2928 modules/access/alsa.c:39 modules/access/imem.c:75
 #: modules/audio_output/amem.c:45 modules/codec/fluidsynth.c:60
 msgid "Sample rate"
 msgstr "Cydradd sampl"
 
-#: src/input/es_out.c:2927
+#: src/input/es_out.c:2928
 #, c-format
 msgid "%u Hz"
 msgstr "%u Hz"
 
-#: src/input/es_out.c:2937
+#: src/input/es_out.c:2938
 msgid "Bits per sample"
 msgstr "Didiau ym mhob sampl"
 
-#: src/input/es_out.c:2942 modules/access_output/shout.c:92
+#: src/input/es_out.c:2943 modules/access_output/shout.c:92
 #: modules/demux/playlist/shoutcast.c:335
 #: modules/gui/macosx/ConvertAndSave.m:178
 #: modules/gui/macosx/ConvertAndSave.m:188 modules/gui/qt4/ui/profiles.h:712
@@ -1261,34 +1260,34 @@ msgstr "Didiau ym mhob sampl"
 msgid "Bitrate"
 msgstr "Didradd"
 
-#: src/input/es_out.c:2942
+#: src/input/es_out.c:2943
 #, c-format
 msgid "%u kb/s"
 msgstr "%u kb/e"
 
-#: src/input/es_out.c:2954
+#: src/input/es_out.c:2955
 msgid "Track replay gain"
 msgstr "Cynnydd sain wrth ailchwarae'r trac"
 
-#: src/input/es_out.c:2956
+#: src/input/es_out.c:2957
 msgid "Album replay gain"
 msgstr "Cynydd sain wrth ail-chwarae'r albwm"
 
-#: src/input/es_out.c:2957
+#: src/input/es_out.c:2958
 #, c-format
 msgid "%.2f dB"
 msgstr "%.2f dB"
 
-#: src/input/es_out.c:2966 modules/gui/macosx/ConvertAndSave.m:180
+#: src/input/es_out.c:2967 modules/gui/macosx/ConvertAndSave.m:180
 #: modules/gui/qt4/ui/profiles.h:732
 msgid "Resolution"
 msgstr "Cydraniad"
 
-#: src/input/es_out.c:2971
+#: src/input/es_out.c:2972
 msgid "Display resolution"
 msgstr "Cydraniad sgrin"
 
-#: src/input/es_out.c:2981 src/input/es_out.c:2984 modules/access/imem.c:93
+#: src/input/es_out.c:2982 src/input/es_out.c:2985 modules/access/imem.c:93
 #: modules/access/rdp.c:69 modules/access/screen/screen.c:42
 #: modules/access/screen/xcb.c:39 modules/access/shm.c:42
 #: modules/access/timecode.c:34 modules/access/v4l2/v4l2.c:70
@@ -1297,31 +1296,31 @@ msgstr "Cydraniad sgrin"
 msgid "Frame rate"
 msgstr "Fframiau yr eiliad"
 
-#: src/input/es_out.c:2992
+#: src/input/es_out.c:2993
 msgid "Decoded format"
 msgstr "Fformat datgodwyd"
 
-#: src/input/input.c:2302
+#: src/input/input.c:2303
 msgid "Your input can't be opened"
 msgstr "Methwyd agor y mewnbwn"
 
-#: src/input/input.c:2303
+#: src/input/input.c:2304
 #, c-format
 msgid "VLC is unable to open the MRL '%s'. Check the log for details."
 msgstr "Ni all VLC agor yr MRL '%s'. Gwelwch y log am fanylion."
 
-#: src/input/input.c:2415
+#: src/input/input.c:2416
 msgid "VLC can't recognize the input's format"
 msgstr "Nid yw VLC yn nabod ffurf y mewnbwn"
 
-#: src/input/input.c:2416
+#: src/input/input.c:2417
 #, c-format
 msgid ""
 "The format of '%s' cannot be detected. Have a look at the log for details."
 msgstr "Methwyd canfod fformat '%s'. Gwelwch y log am fanylion."
 
 #: src/input/meta.c:55 src/input/var.c:177 modules/gui/macosx/MainMenu.m:73
-#: modules/gui/macosx/MainMenu.m:415 modules/gui/macosx/MainMenu.m:416
+#: modules/gui/macosx/MainMenu.m:418 modules/gui/macosx/MainMenu.m:419
 #: modules/gui/macosx/open.m:169 modules/gui/macosx/open.m:171
 #: modules/gui/macosx/playlistinfo.m:73 modules/gui/macosx/wizard.m:345
 #: modules/gui/qt4/components/open_panels.cpp:484
@@ -1330,7 +1329,7 @@ msgstr "Methwyd canfod fformat '%s'. Gwelwch y log am fanylion."
 msgid "Title"
 msgstr "Teitl"
 
-#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1205
+#: src/input/meta.c:56 modules/gui/macosx/playlist.m:1203
 #: modules/gui/macosx/playlistinfo.m:74 modules/mux/avi.c:48
 msgid "Artist"
 msgstr "Artist"
@@ -1370,48 +1369,48 @@ msgstr "Gosodiad"
 msgid "URL"
 msgstr "URL"
 
-#: src/input/meta.c:67 modules/notify/notify.c:318
+#: src/input/meta.c:67 src/input/meta.c:68 modules/notify/notify.c:318
 msgid "Now Playing"
 msgstr "Yn Chwarae Nawr"
 
-#: src/input/meta.c:68 modules/access/vcdx/info.c:70
+#: src/input/meta.c:69 modules/access/vcdx/info.c:70
 #: modules/demux/mp4/mp4.c:1478
 msgid "Publisher"
 msgstr "Cyhoeddwr"
 
-#: src/input/meta.c:69
+#: src/input/meta.c:70
 msgid "Encoded by"
 msgstr "Amgodwyd gan"
 
-#: src/input/meta.c:70
+#: src/input/meta.c:71
 msgid "Artwork URL"
 msgstr "URL Clawr"
 
-#: src/input/meta.c:71
+#: src/input/meta.c:72
 msgid "Track ID"
 msgstr "ID Trac"
 
-#: src/input/meta.c:72
+#: src/input/meta.c:73
 msgid "Number of Tracks"
 msgstr "Nifer o Draciau"
 
-#: src/input/meta.c:73
+#: src/input/meta.c:74
 msgid "Director"
 msgstr "Cyfarwyddwr"
 
-#: src/input/meta.c:74
+#: src/input/meta.c:75
 msgid "Season"
 msgstr "Cyfres"
 
-#: src/input/meta.c:75
+#: src/input/meta.c:76
 msgid "Episode"
 msgstr "Pennod"
 
-#: src/input/meta.c:76
+#: src/input/meta.c:77
 msgid "Show Name"
 msgstr "Enw Rhaglen"
 
-#: src/input/meta.c:77
+#: src/input/meta.c:78
 msgid "Actors"
 msgstr "Actorion"
 
@@ -1423,8 +1422,8 @@ msgstr "Nod"
 msgid "Programs"
 msgstr "Rhaglenni"
 
-#: src/input/var.c:182 modules/gui/macosx/MainMenu.m:417
-#: modules/gui/macosx/MainMenu.m:418 modules/gui/macosx/open.m:170
+#: src/input/var.c:182 modules/gui/macosx/MainMenu.m:420
+#: modules/gui/macosx/MainMenu.m:421 modules/gui/macosx/open.m:170
 #: modules/gui/macosx/open.m:172 modules/gui/qt4/ui/open_disk.h:310
 msgid "Chapter"
 msgstr "Pennod"
@@ -1433,13 +1432,13 @@ msgstr "Pennod"
 msgid "Navigation"
 msgstr "Llywio"
 
-#: src/input/var.c:200 modules/gui/macosx/MainMenu.m:441
-#: modules/gui/macosx/MainMenu.m:442
+#: src/input/var.c:200 modules/gui/macosx/MainMenu.m:444
+#: modules/gui/macosx/MainMenu.m:445
 msgid "Video Track"
 msgstr "Trac Fideo"
 
-#: src/input/var.c:205 modules/gui/macosx/MainMenu.m:424
-#: modules/gui/macosx/MainMenu.m:425
+#: src/input/var.c:205 modules/gui/macosx/MainMenu.m:427
+#: modules/gui/macosx/MainMenu.m:428
 msgid "Audio Track"
 msgstr "Trac Sain"
 
@@ -1478,8 +1477,8 @@ msgstr "Pennod diwethaf"
 msgid "Media: %s"
 msgstr "Cyfrwng: %s"
 
-#: src/interface/interface.c:84 modules/gui/macosx/MainMenu.m:353
-#: modules/gui/macosx/MainMenu.m:354
+#: src/interface/interface.c:84 modules/gui/macosx/MainMenu.m:355
+#: modules/gui/macosx/MainMenu.m:356
 msgid "Add Interface"
 msgstr "Ychwanegu rhyngwyneb"
 
@@ -1508,6 +1507,8 @@ msgid ""
 "Running vlc with the default interface. Use 'cvlc' to use vlc without "
 "interface."
 msgstr ""
+"Mae VLC yn rhedeg gyda'r rhyngwyneb rhagosodedig. Ddefnyddiwch 'cvlc' i "
+"ddefnyddio VLC heb rhyngwyneb."
 
 #. xgettext: Translate "C" to the language code: "fr", "en_GB", "nl", "ru"...
 #: src/libvlc.c:183
@@ -1515,8 +1516,8 @@ msgid "C"
 msgstr "cy"
 
 #: src/libvlc.h:134 src/libvlc-module.c:1389 src/libvlc-module.c:1390
-#: src/libvlc-module.c:2543 src/video_output/vout_intf.c:186
-#: modules/gui/macosx/MainMenu.m:477
+#: src/libvlc-module.c:2542 src/video_output/vout_intf.c:186
+#: modules/gui/macosx/MainMenu.m:480
 msgid "Zoom"
 msgstr "Chwyddo"
 
@@ -1542,6 +1543,9 @@ msgid ""
 "select the main interface, additional interface modules, and define various "
 "related options."
 msgstr ""
+"Mae'r dewisiadau hyn yn eich galluogi i ffurfweddu'r rhyngwynebau mae VLC yn "
+"eu defnyddio. Gallech ddewis y prif ryngwyneb, modiwlau rhyngwyneb "
+"ychwanegol, a dewis amryw o opsiynau eraill."
 
 #: src/libvlc-module.c:66
 msgid "Interface module"
@@ -1658,7 +1662,7 @@ msgstr ""
 "Dyma'r dull allbwn sain sy'n cael ei ddefnyddio gan VLC. Yr ymarweddiad "
 "arferol yw dewis y dull gorau ar gael yn awtomatig."
 
-#: src/libvlc-module.c:131 modules/gui/macosx/simple_prefs.m:310
+#: src/libvlc-module.c:131 modules/gui/macosx/simple_prefs.m:329
 #: modules/stream_out/display.c:40 modules/gui/qt4/ui/sprefs_audio.h:426
 msgid "Enable audio"
 msgstr "Galluogi sain"
@@ -1721,7 +1725,7 @@ msgid ""
 "played)."
 msgstr ""
 
-#: src/libvlc-module.c:164 modules/gui/macosx/simple_prefs.m:316
+#: src/libvlc-module.c:164 modules/gui/macosx/simple_prefs.m:335
 #: modules/gui/qt4/ui/sprefs_audio.h:434
 msgid "Use S/PDIF when available"
 msgstr "Defnyddio S/PDIF pan ar gael"
@@ -1732,7 +1736,7 @@ msgid ""
 "audio stream being played."
 msgstr ""
 
-#: src/libvlc-module.c:169 modules/gui/macosx/simple_prefs.m:308
+#: src/libvlc-module.c:169 modules/gui/macosx/simple_prefs.m:327
 msgid "Force detection of Dolby Surround"
 msgstr "Gorfodi canfod Dolby Surround"
 
@@ -1744,12 +1748,12 @@ msgid ""
 "your experience, especially when combined with the Headphone Channel Mixer."
 msgstr ""
 
-#: src/libvlc-module.c:178 src/win32/thread.c:888
+#: src/libvlc-module.c:178 src/win32/thread.c:885
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:442
-#: modules/gui/macosx/simple_prefs.m:110
-#: modules/gui/qt4/components/simple_preferences.cpp:124
-#: modules/gui/qt4/components/sout/profile_selector.cpp:560
-#: modules/video_output/kva.c:62 modules/video_output/xcb/xvideo.c:888
+#: modules/gui/macosx/simple_prefs.m:119
+#: modules/gui/qt4/components/simple_preferences.cpp:133
+#: modules/gui/qt4/components/sout/profile_selector.cpp:561
+#: modules/video_output/kva.c:62 modules/video_output/xcb/xvideo.c:870
 #: modules/gui/qt4/ui/profiles.h:727 modules/gui/qt4/ui/profiles.h:730
 msgid "Auto"
 msgstr "Awto"
@@ -1858,7 +1862,7 @@ msgstr ""
 "Hwn yw'r dull allbwn fideo a ddefnyddir gan VLC. Fel arfer, mae'n dewis y "
 "dull gorau ar gael yn awtomatig."
 
-#: src/libvlc-module.c:247 modules/gui/macosx/simple_prefs.m:397
+#: src/libvlc-module.c:247 modules/gui/macosx/simple_prefs.m:416
 #: modules/stream_out/display.c:42 modules/gui/qt4/ui/sprefs_video.h:321
 msgid "Enable video"
 msgstr "Galluogi fideo"
@@ -2118,8 +2122,8 @@ msgid "Hide mouse cursor and fullscreen controller after n milliseconds."
 msgstr "Cuddio'r cyrchwr a'r bar rheoli sgrin lawn ar ôl n milieiliad"
 
 #: src/libvlc-module.c:336 src/libvlc-module.c:338
-#: src/video_output/interlacing.c:180 modules/gui/macosx/MainMenu.m:449
-#: modules/gui/macosx/MainMenu.m:450 modules/gui/macosx/simple_prefs.m:408
+#: src/video_output/interlacing.c:180 modules/gui/macosx/MainMenu.m:452
+#: modules/gui/macosx/MainMenu.m:453 modules/gui/macosx/simple_prefs.m:427
 #: modules/gui/qt4/dialogs/convert.cpp:95 modules/hw/vdpau/chroma.c:853
 #: modules/video_filter/deinterlace/deinterlace.c:97
 #: share/lua/http/dialogs/create_stream.html:346
@@ -2127,8 +2131,8 @@ msgid "Deinterlace"
 msgstr "Datblethu"
 
 #: src/libvlc-module.c:346 src/video_output/interlacing.c:196
-#: modules/gui/macosx/MainMenu.m:451 modules/gui/macosx/MainMenu.m:452
-#: modules/gui/macosx/simple_prefs.m:409
+#: modules/gui/macosx/MainMenu.m:454 modules/gui/macosx/MainMenu.m:455
+#: modules/gui/macosx/simple_prefs.m:428
 #: modules/video_filter/deinterlace/deinterlace.c:53
 msgid "Deinterlace mode"
 msgstr "Modd datblethu"
@@ -2185,7 +2189,7 @@ msgid ""
 "computer being suspended because of inactivity."
 msgstr ""
 
-#: src/libvlc-module.c:372 modules/gui/macosx/simple_prefs.m:399
+#: src/libvlc-module.c:372 modules/gui/macosx/simple_prefs.m:418
 #: modules/gui/qt4/ui/sprefs_video.h:327
 msgid "Window decorations"
 msgstr "Addurniadau'r ffenestr"
@@ -2384,7 +2388,7 @@ msgstr ""
 "arfer yn sgwâr (1:1). Os oes gennych sgrin lydan 16:9, mae'n bosib fyddwch "
 "angen newid hwn i 4:3 i gadw'r un cyfrannedd."
 
-#: src/libvlc-module.c:466 modules/gui/macosx/simple_prefs.m:401
+#: src/libvlc-module.c:466 modules/gui/macosx/simple_prefs.m:420
 msgid "Skip frames"
 msgstr "Neidio fframiau"
 
@@ -2439,7 +2443,7 @@ msgstr ""
 
 #: src/libvlc-module.c:499
 msgid "File caching (ms)"
-msgstr ""
+msgstr "Cofio dros dro (ms) - Ffeil"
 
 #: src/libvlc-module.c:501
 msgid "Caching value for local files, in milliseconds."
@@ -2449,7 +2453,7 @@ msgstr ""
 
 #: src/libvlc-module.c:503
 msgid "Live capture caching (ms)"
-msgstr ""
+msgstr "Cofio dros dro (ms) - Cipio byw"
 
 #: src/libvlc-module.c:505
 msgid "Caching value for cameras and microphones, in milliseconds."
@@ -2459,7 +2463,7 @@ msgstr ""
 
 #: src/libvlc-module.c:507
 msgid "Disc caching (ms)"
-msgstr ""
+msgstr "Cofio dros dro (ms) - Disg"
 
 #: src/libvlc-module.c:509
 msgid "Caching value for optical media, in milliseconds."
@@ -2469,7 +2473,7 @@ msgstr ""
 
 #: src/libvlc-module.c:511
 msgid "Network caching (ms)"
-msgstr ""
+msgstr "Cofio dros dro (ms) - Rhwydwaith"
 
 #: src/libvlc-module.c:513
 msgid "Caching value for network resources, in milliseconds."
@@ -2523,11 +2527,11 @@ msgstr ""
 #: src/libvlc-module.c:538 src/video_output/vout_intf.c:98
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
-#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1016
+#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1018
 #: modules/gui/macosx/AudioEffects.m:86 modules/gui/macosx/MainMenu.m:641
 #: modules/gui/macosx/prefs_widgets.m:1221
 #: modules/gui/macosx/prefs_widgets.m:1284
-#: modules/gui/macosx/simple_prefs.m:665 modules/gui/macosx/VideoEffects.m:55
+#: modules/gui/macosx/simple_prefs.m:684 modules/gui/macosx/VideoEffects.m:55
 #: modules/gui/qt4/components/preferences_widgets.cpp:546
 #: modules/video_filter/marq.c:60 modules/video_filter/rss.c:71
 #: modules/video_filter/rss.c:184 modules/video_output/msw/directx.c:1438
@@ -2785,12 +2789,12 @@ msgid ""
 "{...}\""
 msgstr ""
 
-#: src/libvlc-module.c:665 modules/gui/macosx/simple_prefs.m:332
+#: src/libvlc-module.c:665 modules/gui/macosx/simple_prefs.m:351
 #: modules/gui/qt4/ui/sprefs_input.h:355
 msgid "Record directory or filename"
 msgstr "Cyfeiriadur neu enw ffeil i'w recordio"
 
-#: src/libvlc-module.c:667 modules/gui/macosx/simple_prefs.m:334
+#: src/libvlc-module.c:667 modules/gui/macosx/simple_prefs.m:353
 msgid "Directory or filename where the records will be stored"
 msgstr "Y cyfeiriadur neu ffeil ble caiff cofnodion eu cadw"
 
@@ -2863,7 +2867,7 @@ msgid "You can completely disable the sub-picture processing."
 msgstr ""
 
 #: src/libvlc-module.c:706 src/libvlc-module.c:1621 src/text/iso-639_def.h:145
-#: modules/gui/macosx/simple_prefs.m:386
+#: modules/gui/macosx/simple_prefs.m:405
 #: modules/stream_out/transcode/transcode.c:212
 #: modules/gui/qt4/ui/sprefs_subtitles.h:290
 msgid "On Screen Display"
@@ -3592,11 +3596,11 @@ msgid ""
 "metadata)."
 msgstr ""
 
-#: src/libvlc-module.c:1116 modules/gui/macosx/simple_prefs.m:366
+#: src/libvlc-module.c:1116 modules/gui/macosx/simple_prefs.m:385
 #: modules/gui/qt4/dialogs/firstrun.cpp:98
 #: modules/gui/qt4/ui/sprefs_interface.h:537
 msgid "Allow metadata network access"
-msgstr ""
+msgstr "Caniatáu mynediad rhwydwaith metaddata"
 
 #: src/libvlc-module.c:1118
 msgid "Services discovery modules"
@@ -3648,7 +3652,7 @@ msgstr "Chwarae a cau"
 
 #: src/libvlc-module.c:1141
 msgid "Exit if there are no more items in the playlist."
-msgstr "Cau'r chwaraewr pan does dim mwy o eitemau yn y rhestr chwarae."
+msgstr "Cau'r chwaraeydd pan does dim mwy o eitemau yn y rhestr chwarae."
 
 #: src/libvlc-module.c:1143
 msgid "Play and pause"
@@ -3706,7 +3710,7 @@ msgstr ""
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr ""
 
-#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1785
+#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1788
 msgid "Ignore"
 msgstr "Anwybyddu"
 
@@ -3729,9 +3733,9 @@ msgid ""
 msgstr ""
 
 #: src/libvlc-module.c:1189 src/video_output/vout_intf.c:291
-#: modules/gui/macosx/MainMenu.m:438 modules/gui/macosx/MainMenu.m:514
-#: modules/gui/macosx/MainMenu.m:1600 modules/gui/macosx/MainMenu.m:1610
-#: modules/gui/macosx/simple_prefs.m:398
+#: modules/gui/macosx/MainMenu.m:441 modules/gui/macosx/MainMenu.m:517
+#: modules/gui/macosx/MainMenu.m:1616 modules/gui/macosx/MainMenu.m:1626
+#: modules/gui/macosx/simple_prefs.m:417
 #: modules/gui/qt4/components/controller.hpp:116
 #: modules/gui/qt4/ui/sprefs_video.h:323
 msgid "Fullscreen"
@@ -3774,7 +3778,7 @@ msgstr "Chwarae yn unig"
 msgid "Select the hotkey to use to play."
 msgstr "Dewis bysell frys i chwarae."
 
-#: src/libvlc-module.c:1199 modules/gui/macosx/MainMenu.m:401
+#: src/libvlc-module.c:1199 modules/gui/macosx/MainMenu.m:404
 #: modules/gui/qt4/components/controller.hpp:116
 #: modules/gui/qt4/components/controller.hpp:126
 msgid "Faster"
@@ -3784,7 +3788,7 @@ msgstr "Cyflymach"
 msgid "Select the hotkey to use for fast forward playback."
 msgstr "Dewis bysell frys i chwarae'n gyflym."
 
-#: src/libvlc-module.c:1201 modules/gui/macosx/MainMenu.m:399
+#: src/libvlc-module.c:1201 modules/gui/macosx/MainMenu.m:402
 #: modules/gui/qt4/components/controller.hpp:116
 #: modules/gui/qt4/components/controller.hpp:126
 msgid "Slower"
@@ -3813,11 +3817,12 @@ msgstr "Arafach (mymryn)"
 #: src/libvlc-module.c:1209 modules/control/hotkeys.c:208
 #: modules/gui/macosx/about.m:268 modules/gui/macosx/ControlsBar.m:771
 #: modules/gui/macosx/ControlsBar.m:772 modules/gui/macosx/fspanel.m:424
-#: modules/gui/macosx/MainMenu.m:404 modules/gui/macosx/MainMenu.m:502
-#: modules/gui/macosx/MainMenu.m:510 modules/gui/macosx/MainMenu.m:1559
+#: modules/gui/macosx/MainMenu.m:407 modules/gui/macosx/MainMenu.m:505
+#: modules/gui/macosx/MainMenu.m:513 modules/gui/macosx/MainMenu.m:1575
 #: modules/gui/macosx/wizard.m:306 modules/gui/macosx/wizard.m:318
 #: modules/gui/macosx/wizard.m:1559
-#: modules/gui/qt4/components/controller.hpp:120 modules/notify/notify.c:339
+#: modules/gui/qt4/components/controller.hpp:120
+#: modules/gui/qt4/dialogs/sout.cpp:93 modules/notify/notify.c:339
 #: modules/gui/qt4/ui/streampanel.h:181
 msgid "Next"
 msgstr "Nesaf"
@@ -3829,8 +3834,8 @@ msgstr "Dewis bysell frys i neidio i'r eitem nesaf yn y rhestr chwarae."
 #: src/libvlc-module.c:1211 modules/control/hotkeys.c:212
 #: modules/gui/macosx/about.m:269 modules/gui/macosx/ControlsBar.m:760
 #: modules/gui/macosx/ControlsBar.m:761 modules/gui/macosx/fspanel.m:420
-#: modules/gui/macosx/MainMenu.m:403 modules/gui/macosx/MainMenu.m:503
-#: modules/gui/macosx/MainMenu.m:509 modules/gui/macosx/MainMenu.m:1558
+#: modules/gui/macosx/MainMenu.m:406 modules/gui/macosx/MainMenu.m:506
+#: modules/gui/macosx/MainMenu.m:512 modules/gui/macosx/MainMenu.m:1574
 #: modules/gui/qt4/components/controller.hpp:120 modules/notify/notify.c:337
 msgid "Previous"
 msgstr "Blaenorol"
@@ -3840,8 +3845,8 @@ msgid "Select the hotkey to use to skip to the previous item in the playlist."
 msgstr "Dewis bysell frys i neidio i'r eitem blaenorol yn y rhestr chwarae."
 
 #: src/libvlc-module.c:1213 modules/gui/macosx/ControlsBar.m:481
-#: modules/gui/macosx/MainMenu.m:394 modules/gui/macosx/MainMenu.m:501
-#: modules/gui/macosx/MainMenu.m:508 modules/gui/macosx/MainMenu.m:1554
+#: modules/gui/macosx/MainMenu.m:398 modules/gui/macosx/MainMenu.m:504
+#: modules/gui/macosx/MainMenu.m:511 modules/gui/macosx/MainMenu.m:1566
 #: modules/gui/qt4/components/controller.hpp:115
 #: modules/gui/qt4/dialogs/vlm.cpp:556 modules/gui/qt4/ui/streampanel.h:180
 msgid "Stop"
@@ -3851,8 +3856,7 @@ msgstr "Stopio"
 msgid "Select the hotkey to stop playback."
 msgstr "Dewis bysell frys i stopio chwarae."
 
-#: src/libvlc-module.c:1215 modules/gui/macosx/bookmarks.m:105
-#: modules/gui/macosx/bookmarks.m:114 modules/gui/macosx/ControlsBar.m:67
+#: src/libvlc-module.c:1215 modules/gui/macosx/ControlsBar.m:67
 #: modules/gui/macosx/fspanel.m:448 modules/gui/macosx/VideoEffects.m:163
 #: modules/gui/macosx/VideoEffects.m:185 modules/video_filter/marq.c:150
 #: modules/video_filter/rss.c:200 modules/gui/qt4/ui/sprefs_subtitles.h:293
@@ -4076,9 +4080,9 @@ msgid "Select the key to decrease audio volume."
 msgstr "Dewiswch bysell i ostwng uchder y sain."
 
 #: src/libvlc-module.c:1282 modules/access/v4l2/v4l2.c:181
-#: modules/gui/macosx/ControlsBar.m:500 modules/gui/macosx/MainMenu.m:423
-#: modules/gui/macosx/MainMenu.m:504 modules/gui/macosx/MainMenu.m:513
-#: modules/gui/macosx/MainMenu.m:1591
+#: modules/gui/macosx/ControlsBar.m:500 modules/gui/macosx/MainMenu.m:426
+#: modules/gui/macosx/MainMenu.m:507 modules/gui/macosx/MainMenu.m:516
+#: modules/gui/macosx/MainMenu.m:1607
 msgid "Mute"
 msgstr "Tewi"
 
@@ -4324,9 +4328,8 @@ msgid "Cycle through the available subtitle tracks."
 msgstr ""
 
 #: src/libvlc-module.c:1352
-#, fuzzy
 msgid "Toggle subtitles"
-msgstr "Isdeitlau Teletext"
+msgstr ""
 
 #: src/libvlc-module.c:1353
 msgid "Toggle subtitle track visibility."
@@ -4424,7 +4427,8 @@ msgstr "Tynnu ciplun o'r fideo"
 msgid "Takes a video snapshot and writes it to disk."
 msgstr "Tynnu ciplun o'r fideo a'i gadw fel ffeil delwedd"
 
-#: src/libvlc-module.c:1380 modules/gui/macosx/MainMenu.m:395
+#: src/libvlc-module.c:1380 modules/gui/macosx/MainMenu.m:399
+#: modules/gui/macosx/MainMenu.m:1570
 #: modules/gui/qt4/components/controller.hpp:118
 #: modules/gui/qt4/components/controller.hpp:129 modules/gui/qt4/menus.cpp:849
 #: modules/stream_out/record.c:60
@@ -4500,8 +4504,8 @@ msgid "Cycle through available audio devices"
 msgstr ""
 
 #: src/libvlc-module.c:1547 src/video_output/vout_intf.c:297
-#: modules/gui/macosx/MainMenu.m:440 modules/gui/macosx/MainMenu.m:515
-#: modules/gui/macosx/MainMenu.m:1599
+#: modules/gui/macosx/MainMenu.m:443 modules/gui/macosx/MainMenu.m:518
+#: modules/gui/macosx/MainMenu.m:1615
 #: modules/gui/qt4/components/controller.hpp:117
 msgid "Snapshot"
 msgstr "Ciplun"
@@ -4517,7 +4521,7 @@ msgstr "Is-luniau"
 #: src/libvlc-module.c:1630 modules/codec/subsdec.c:182
 #: modules/demux/subtitle.c:69 modules/demux/xiph_metadata.h:49
 #: modules/demux/xiph_metadata.h:62 modules/gui/macosx/ConvertAndSave.m:173
-#: modules/gui/macosx/ConvertAndSave.m:191 modules/gui/macosx/MainMenu.m:456
+#: modules/gui/macosx/ConvertAndSave.m:191 modules/gui/macosx/MainMenu.m:459
 #: share/lua/http/dialogs/create_stream.html:153
 #: modules/gui/qt4/ui/profiles.h:701 modules/gui/qt4/ui/profiles.h:745
 #: modules/gui/qt4/ui/profiles.h:748
@@ -4561,121 +4565,121 @@ msgstr "Datgodwyr"
 msgid "Input"
 msgstr "Mewnbwn"
 
-#: src/libvlc-module.c:1907
+#: src/libvlc-module.c:1906
 msgid "VLM"
 msgstr "VLM"
 
-#: src/libvlc-module.c:1953
+#: src/libvlc-module.c:1952
 msgid "Special modules"
 msgstr "Modiwlau arbennig"
 
-#: src/libvlc-module.c:1958 modules/gui/qt4/dialogs/plugins.cpp:84
+#: src/libvlc-module.c:1957 modules/gui/qt4/dialogs/plugins.cpp:84
 msgid "Plugins"
 msgstr "Ategion"
 
-#: src/libvlc-module.c:1964
+#: src/libvlc-module.c:1963
 msgid "Performance options"
 msgstr "Dewisiadau perfformiad"
 
-#: src/libvlc-module.c:1985
+#: src/libvlc-module.c:1984
 msgid "Clock source"
 msgstr "Ffynhonnel y cloc"
 
-#: src/libvlc-module.c:2094
+#: src/libvlc-module.c:2093
 msgid "Hot keys"
 msgstr "Allweddau brys"
 
-#: src/libvlc-module.c:2553
+#: src/libvlc-module.c:2552
 msgid "Jump sizes"
 msgstr "Maint neidiau"
 
-#: src/libvlc-module.c:2632
+#: src/libvlc-module.c:2631
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr ""
 
-#: src/libvlc-module.c:2635
+#: src/libvlc-module.c:2634
 msgid "Exhaustive help for VLC and its modules"
 msgstr ""
 
-#: src/libvlc-module.c:2637
+#: src/libvlc-module.c:2636
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
 "--help-verbose)"
 msgstr ""
 
-#: src/libvlc-module.c:2640
+#: src/libvlc-module.c:2639
 msgid "ask for extra verbosity when displaying help"
 msgstr ""
 
-#: src/libvlc-module.c:2642
+#: src/libvlc-module.c:2641
 msgid "print a list of available modules"
 msgstr "argraffu rhestr o'r modiwlau ar gael"
 
-#: src/libvlc-module.c:2644
+#: src/libvlc-module.c:2643
 msgid "print a list of available modules with extra detail"
 msgstr "argraffu rhestr o'r modiwlau ar gael gyda mwy o fanylion"
 
-#: src/libvlc-module.c:2646
+#: src/libvlc-module.c:2645
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
 "verbose). Prefix the module name with = for strict matches."
 msgstr ""
 
-#: src/libvlc-module.c:2650
+#: src/libvlc-module.c:2649
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr ""
 
-#: src/libvlc-module.c:2652
+#: src/libvlc-module.c:2651
 msgid "reset the current config to the default values"
 msgstr ""
 
-#: src/libvlc-module.c:2654
+#: src/libvlc-module.c:2653
 msgid "use alternate config file"
 msgstr ""
 
-#: src/libvlc-module.c:2656
+#: src/libvlc-module.c:2655
 msgid "resets the current plugins cache"
 msgstr ""
 
-#: src/libvlc-module.c:2658
+#: src/libvlc-module.c:2657
 msgid "print version information"
 msgstr "argraffu gwybodaeth fersiwn"
 
-#: src/libvlc-module.c:2696
+#: src/libvlc-module.c:2695
 msgid "core program"
 msgstr ""
 
-#: src/misc/update.c:473
+#: src/misc/update.c:480
 #, c-format
 msgid "%.1f GiB"
 msgstr "%.1f GiB"
 
-#: src/misc/update.c:475
+#: src/misc/update.c:482
 #, c-format
 msgid "%.1f MiB"
 msgstr "%.1f MiB"
 
-#: src/misc/update.c:477 modules/gui/macosx/playlistinfo.m:160
+#: src/misc/update.c:484 modules/gui/macosx/playlistinfo.m:160
 #: modules/gui/macosx/playlistinfo.m:162 modules/gui/macosx/playlistinfo.m:172
 #, c-format
 msgid "%.1f KiB"
 msgstr "%.1f KiB"
 
-#: src/misc/update.c:479
+#: src/misc/update.c:486
 #, c-format
 msgid "%ld B"
 msgstr "%ld B"
 
-#: src/misc/update.c:571
+#: src/misc/update.c:578
 msgid "Saving file failed"
 msgstr "Methwyd cadw'r ffeil"
 
-#: src/misc/update.c:572
+#: src/misc/update.c:579
 #, c-format
 msgid "Failed to open \"%s\" for writing"
 msgstr "Methwyd agor \"%s\" i'w ysgrifennu"
 
-#: src/misc/update.c:585
+#: src/misc/update.c:592
 #, c-format
 msgid ""
 "%s\n"
@@ -4684,14 +4688,14 @@ msgstr ""
 "%s\n"
 "Yn lawrlwytho... %s/%s %.1f%% wedi'i cwblhau"
 
-#: src/misc/update.c:589
+#: src/misc/update.c:596
 msgid "Downloading ..."
 msgstr "Lawrlwytho..."
 
-#: src/misc/update.c:590 src/misc/update.c:717 modules/demux/avi/avi.c:2567
+#: src/misc/update.c:597 src/misc/update.c:724 modules/demux/avi/avi.c:2567
 #: modules/gui/macosx/AudioEffects.m:372 modules/gui/macosx/AudioEffects.m:387
 #: modules/gui/macosx/AudioEffects.m:613 modules/gui/macosx/AudioEffects.m:712
-#: modules/gui/macosx/bookmarks.m:111 modules/gui/macosx/BWQuincyUI.m:80
+#: modules/gui/macosx/bookmarks.m:109 modules/gui/macosx/BWQuincyUI.m:80
 #: modules/gui/macosx/controls.m:54 modules/gui/macosx/ConvertAndSave.m:168
 #: modules/gui/macosx/ConvertAndSave.m:194
 #: modules/gui/macosx/ConvertAndSave.m:372
@@ -4699,17 +4703,18 @@ msgstr "Lawrlwytho..."
 #: modules/gui/macosx/coredialogs.m:63 modules/gui/macosx/coredialogs.m:168
 #: modules/gui/macosx/MainWindow.m:186 modules/gui/macosx/MainWindow.m:191
 #: modules/gui/macosx/open.m:128 modules/gui/macosx/open.m:183
-#: modules/gui/macosx/prefs.m:208 modules/gui/macosx/simple_prefs.m:324
-#: modules/gui/macosx/simple_prefs.m:352 modules/gui/macosx/simple_prefs.m:414
-#: modules/gui/macosx/simple_prefs.m:836 modules/gui/macosx/VideoEffects.m:678
+#: modules/gui/macosx/prefs.m:209 modules/gui/macosx/simple_prefs.m:343
+#: modules/gui/macosx/simple_prefs.m:371 modules/gui/macosx/simple_prefs.m:433
+#: modules/gui/macosx/simple_prefs.m:855 modules/gui/macosx/VideoEffects.m:678
 #: modules/gui/macosx/VideoEffects.m:742 modules/gui/macosx/wizard.m:317
 #: modules/gui/qt4/components/open_panels.cpp:1334
 #: modules/gui/qt4/components/preferences_widgets.cpp:1426
 #: modules/gui/qt4/components/sout/profile_selector.cpp:427
+#: modules/gui/qt4/dialogs/sout.cpp:92
 msgid "Cancel"
 msgstr "Diddymu"
 
-#: src/misc/update.c:610
+#: src/misc/update.c:617
 #, c-format
 msgid ""
 "%s\n"
@@ -4718,11 +4723,11 @@ msgstr ""
 "%s\n"
 "Yn lawrlwytho... %s/%s - %.1f%% wedi'i cwblhau"
 
-#: src/misc/update.c:642
+#: src/misc/update.c:649
 msgid "File could not be verified"
 msgstr "Methwyd gwireddu'r ffeil"
 
-#: src/misc/update.c:643
+#: src/misc/update.c:650
 #, c-format
 msgid ""
 "It was not possible to download a cryptographic signature for the downloaded "
@@ -4731,11 +4736,11 @@ msgstr ""
 "Nid oedd yn bosib lawrlwytho llofnod cryptograffig ar gyfer y ffeil \"%s\" a "
 "lawrlwythwyd. O ganlyniad, cafodd y ffeil ei ddileu."
 
-#: src/misc/update.c:654 src/misc/update.c:666
+#: src/misc/update.c:661 src/misc/update.c:673
 msgid "Invalid signature"
 msgstr "Llofnod annilys"
 
-#: src/misc/update.c:655 src/misc/update.c:667
+#: src/misc/update.c:662 src/misc/update.c:674
 #, c-format
 msgid ""
 "The cryptographic signature for the downloaded file \"%s\" was invalid and "
@@ -4745,11 +4750,11 @@ msgstr ""
 "annilys a ni fedrwyd ei ddefnyddio i wireddu'r ffeil yn ddiogel. O "
 "ganlyniad, cafodd y ffeil ei ddileu."
 
-#: src/misc/update.c:679
+#: src/misc/update.c:686
 msgid "File not verifiable"
 msgstr "Dim posib gwireddu'r ffeil"
 
-#: src/misc/update.c:680
+#: src/misc/update.c:687
 #, c-format
 msgid ""
 "It was not possible to securely verify the downloaded file \"%s\". Thus, it "
@@ -4758,22 +4763,22 @@ msgstr ""
 "Nid oedd yn bosib gwireddu'r ffeil \"%s\" a lawrlwythwyd. O ganlyniad, "
 "cafodd y ffeil ei ddileu. "
 
-#: src/misc/update.c:691 src/misc/update.c:703
+#: src/misc/update.c:698 src/misc/update.c:710
 msgid "File corrupted"
 msgstr "Ffeil yn llwgr"
 
-#: src/misc/update.c:692 src/misc/update.c:704
+#: src/misc/update.c:699 src/misc/update.c:711
 #, c-format
 msgid "Downloaded file \"%s\" was corrupted. Thus, it was deleted."
 msgstr ""
 "Roedd y ffeil \"%s\" a lawrlwythwyd gyda gwallau. O ganlyniad, cafodd y "
 "ffeil ei ddileu."
 
-#: src/misc/update.c:715
+#: src/misc/update.c:722
 msgid "Update VLC media player"
-msgstr "Diweddaru chwaraewr VLC"
+msgstr "Diweddaru chwaraeydd VLC"
 
-#: src/misc/update.c:716
+#: src/misc/update.c:723
 msgid ""
 "The new version was successfully downloaded. Do you want to close VLC and "
 "install it now?"
@@ -4781,11 +4786,11 @@ msgstr ""
 "Mae'r fersiwn newydd wedi'i lawrlwytho. Ydych am gau VLC a gosod y fersiwn "
 "newydd nawr?"
 
-#: src/misc/update.c:717 modules/gui/macosx/AddonManager.m:192
+#: src/misc/update.c:724 modules/gui/macosx/AddonManager.m:192
 msgid "Install"
 msgstr "Gosod"
 
-#: src/playlist/engine.c:256 src/playlist/loadsave.c:159 lib/media_list.c:252
+#: src/playlist/engine.c:256 src/playlist/loadsave.c:159 lib/media_list.c:253
 #: modules/gui/macosx/MainWindow.m:331 modules/gui/macosx/MainWindow.m:958
 #: modules/gui/qt4/components/playlist/selector.cpp:238
 msgid "Media Library"
@@ -5464,8 +5469,8 @@ msgstr ""
 msgid "Scale factor"
 msgstr ""
 
-#: src/video_output/vout_intf.c:220 modules/gui/macosx/MainMenu.m:445
-#: modules/gui/macosx/MainMenu.m:446 modules/gui/macosx/VideoEffects.m:80
+#: src/video_output/vout_intf.c:220 modules/gui/macosx/MainMenu.m:448
+#: modules/gui/macosx/MainMenu.m:449 modules/gui/macosx/VideoEffects.m:80
 #: modules/video_filter/croppadd.c:86 modules/gui/qt4/ui/video_effects.h:1415
 msgid "Crop"
 msgstr "Tocio"
@@ -5473,8 +5478,8 @@ msgstr "Tocio"
 #: src/video_output/vout_intf.c:250 modules/access/decklink.cpp:94
 #: modules/access/linsys/linsys_hdsdi.c:78
 #: modules/access/linsys/linsys_sdi.c:73 modules/demux/rawvid.c:59
-#: modules/gui/macosx/MainMenu.m:443 modules/gui/macosx/MainMenu.m:444
-#: modules/gui/macosx/MainMenu.m:1417
+#: modules/gui/macosx/MainMenu.m:446 modules/gui/macosx/MainMenu.m:447
+#: modules/gui/macosx/MainMenu.m:1429
 msgid "Aspect ratio"
 msgstr "Cymhareb agwedd"
 
@@ -5633,7 +5638,7 @@ msgstr ""
 
 #: modules/access/bluray.c:377
 msgid "AACS MMC failed."
-msgstr "Methwyd AACS MMC."
+msgstr "Methodd AACS MMC."
 
 #: modules/access/bluray.c:387
 msgid ""
@@ -6072,7 +6077,7 @@ msgstr "Ffurfweddu"
 #: modules/access/dshow/dshow.cpp:527 modules/access/dshow/dshow.cpp:601
 #: modules/access/dshow/dshow.cpp:1040 modules/access/dshow/dshow.cpp:1093
 msgid "Capture failed"
-msgstr "Methwyd y cipiad"
+msgstr "Methodd y cipiad"
 
 #: modules/access/dshow/dshow.cpp:528
 msgid "No video or audio device selected."
@@ -6289,127 +6294,132 @@ msgid "Layer C time interleaving"
 msgstr ""
 
 #: modules/access/dtv/access.c:154
+#, fuzzy
+msgid "Stream identifier"
+msgstr "Hidlyddion ffrydiau"
+
+#: modules/access/dtv/access.c:156
 msgid "Pilot"
 msgstr "Peilot"
 
-#: modules/access/dtv/access.c:156
+#: modules/access/dtv/access.c:158
 msgid "Roll-off factor"
 msgstr ""
 
-#: modules/access/dtv/access.c:161
+#: modules/access/dtv/access.c:163
 msgid "0.35 (same as DVB-S)"
 msgstr "0.35 (yr un fath a DVB-S)"
 
-#: modules/access/dtv/access.c:161
+#: modules/access/dtv/access.c:163
 msgid "0.20"
 msgstr "0.20"
 
-#: modules/access/dtv/access.c:161
+#: modules/access/dtv/access.c:163
 msgid "0.25"
 msgstr "0.25"
 
-#: modules/access/dtv/access.c:164
+#: modules/access/dtv/access.c:166
 msgid "Transport stream ID"
 msgstr "ID Transport Stream (TS)"
 
-#: modules/access/dtv/access.c:166
+#: modules/access/dtv/access.c:168
 msgid "Polarization (Voltage)"
 msgstr ""
 
-#: modules/access/dtv/access.c:168
+#: modules/access/dtv/access.c:170
 msgid ""
 "To select the polarization of the transponder, a different voltage is "
 "normally applied to the low noise block-downconverter (LNB)."
 msgstr ""
 
-#: modules/access/dtv/access.c:171
+#: modules/access/dtv/access.c:173
 msgid "Unspecified (0V)"
 msgstr ""
 
-#: modules/access/dtv/access.c:172
+#: modules/access/dtv/access.c:174
 msgid "Vertical (13V)"
 msgstr "Fertigol (13V)"
 
-#: modules/access/dtv/access.c:172
+#: modules/access/dtv/access.c:174
 msgid "Horizontal (18V)"
 msgstr "Llorweddol (18V)"
 
-#: modules/access/dtv/access.c:173
+#: modules/access/dtv/access.c:175
 msgid "Circular Right Hand (13V)"
 msgstr ""
 
-#: modules/access/dtv/access.c:173
+#: modules/access/dtv/access.c:175
 msgid "Circular Left Hand (18V)"
 msgstr ""
 
-#: modules/access/dtv/access.c:175
+#: modules/access/dtv/access.c:177
 msgid "High LNB voltage"
 msgstr ""
 
-#: modules/access/dtv/access.c:177
+#: modules/access/dtv/access.c:179
 msgid ""
 "If the cables between the satellilte low noise block-downconverter and the "
 "receiver are long, higher voltage may be required.\n"
 "Not all receivers support this."
 msgstr ""
 
-#: modules/access/dtv/access.c:181
+#: modules/access/dtv/access.c:183
 msgid "Local oscillator low frequency (kHz)"
 msgstr ""
 
-#: modules/access/dtv/access.c:182
+#: modules/access/dtv/access.c:184
 msgid "Local oscillator high frequency (kHz)"
 msgstr ""
 
-#: modules/access/dtv/access.c:184
+#: modules/access/dtv/access.c:186
 msgid ""
 "The downconverter (LNB) will substract the local oscillator frequency from "
 "the satellite transmission frequency. The intermediate frequency (IF) on the "
 "RF cable is the result."
 msgstr ""
 
-#: modules/access/dtv/access.c:187
+#: modules/access/dtv/access.c:189
 msgid "Universal LNB switch frequency (kHz)"
 msgstr ""
 
-#: modules/access/dtv/access.c:189
+#: modules/access/dtv/access.c:191
 msgid ""
 "If the satellite transmission frequency exceeds the switch frequency, the "
 "oscillator high frequency will be used as reference. Furthermore the "
 "automatic continuous 22kHz tone will be sent."
 msgstr ""
 
-#: modules/access/dtv/access.c:192
+#: modules/access/dtv/access.c:194
 msgid "Continuous 22kHz tone"
 msgstr ""
 
-#: modules/access/dtv/access.c:194
+#: modules/access/dtv/access.c:196
 msgid ""
 "A continuous tone at 22kHz can be sent on the cable. This normally selects "
 "the higher frequency band from a universal LNB."
 msgstr ""
 
-#: modules/access/dtv/access.c:197
+#: modules/access/dtv/access.c:199
 msgid "DiSEqC LNB number"
 msgstr ""
 
-#: modules/access/dtv/access.c:199
+#: modules/access/dtv/access.c:201
 msgid ""
 "If the satellite receiver is connected to multiple low noise block-"
 "downconverters (LNB) through a DiSEqC 1.0 switch, the correct LNB can be "
 "selected (1 to 4). If there is no switch, this parameter should be 0."
 msgstr ""
 
-#: modules/access/dtv/access.c:205 modules/access/v4l2/v4l2.c:136
+#: modules/access/dtv/access.c:207 modules/access/v4l2/v4l2.c:136
 #: modules/access/v4l2/v4l2.c:163 modules/access/v4l2/v4l2.c:201
 msgid "Unspecified"
 msgstr ""
 
-#: modules/access/dtv/access.c:209
+#: modules/access/dtv/access.c:211
 msgid "Uncommitted DiSEqC LNB number"
 msgstr ""
 
-#: modules/access/dtv/access.c:211
+#: modules/access/dtv/access.c:213
 msgid ""
 "If the satellite receiver is connected to multiple low noise block-"
 "downconverters (LNB) through a cascade formed from DiSEqC 1.1 uncommitted "
@@ -6418,99 +6428,99 @@ msgid ""
 "be 0."
 msgstr ""
 
-#: modules/access/dtv/access.c:218
+#: modules/access/dtv/access.c:220
 msgid "Network identifier"
 msgstr ""
 
-#: modules/access/dtv/access.c:219
+#: modules/access/dtv/access.c:221
 msgid "Satellite azimuth"
 msgstr ""
 
-#: modules/access/dtv/access.c:220
+#: modules/access/dtv/access.c:222
 msgid "Satellite azimuth in tenths of degree"
 msgstr ""
 
-#: modules/access/dtv/access.c:221
+#: modules/access/dtv/access.c:223
 msgid "Satellite elevation"
 msgstr ""
 
-#: modules/access/dtv/access.c:222
+#: modules/access/dtv/access.c:224
 msgid "Satellite elevation in tenths of degree"
 msgstr ""
 
-#: modules/access/dtv/access.c:223
+#: modules/access/dtv/access.c:225
 msgid "Satellite longitude"
 msgstr ""
 
-#: modules/access/dtv/access.c:225
+#: modules/access/dtv/access.c:227
 msgid "Satellite longitude in tenths of degree. West is negative."
 msgstr ""
 
-#: modules/access/dtv/access.c:227
+#: modules/access/dtv/access.c:229
 msgid "Satellite range code"
 msgstr ""
 
-#: modules/access/dtv/access.c:228
+#: modules/access/dtv/access.c:230
 msgid "Satellite range code as defined by manufacturer e.g. DISEqC switch code"
 msgstr ""
 
-#: modules/access/dtv/access.c:232
+#: modules/access/dtv/access.c:234
 msgid "Major channel"
 msgstr ""
 
-#: modules/access/dtv/access.c:233
+#: modules/access/dtv/access.c:235
 msgid "ATSC minor channel"
 msgstr ""
 
-#: modules/access/dtv/access.c:234
+#: modules/access/dtv/access.c:236
 msgid "Physical channel"
 msgstr ""
 
-#: modules/access/dtv/access.c:240
+#: modules/access/dtv/access.c:242
 msgid "DTV"
 msgstr "DTV"
 
-#: modules/access/dtv/access.c:241
+#: modules/access/dtv/access.c:243
 msgid "Digital Television and Radio"
 msgstr "Teledu a Radio Digidol (Digital TV)"
 
-#: modules/access/dtv/access.c:279
+#: modules/access/dtv/access.c:281
 msgid "Terrestrial reception parameters"
 msgstr ""
 
-#: modules/access/dtv/access.c:291
+#: modules/access/dtv/access.c:293
 msgid "DVB-T reception parameters"
 msgstr ""
 
-#: modules/access/dtv/access.c:307
+#: modules/access/dtv/access.c:309
 msgid "ISDB-T reception parameters"
 msgstr ""
 
-#: modules/access/dtv/access.c:348
+#: modules/access/dtv/access.c:350
 msgid "Cable and satellite reception parameters"
 msgstr ""
 
-#: modules/access/dtv/access.c:360
+#: modules/access/dtv/access.c:362
 msgid "DVB-S2 parameters"
 msgstr "Paramedrau DVB-S2"
 
-#: modules/access/dtv/access.c:368
+#: modules/access/dtv/access.c:373
 msgid "ISDB-S parameters"
 msgstr ""
 
-#: modules/access/dtv/access.c:373
+#: modules/access/dtv/access.c:378
 msgid "Satellite equipment control"
 msgstr ""
 
-#: modules/access/dtv/access.c:415
+#: modules/access/dtv/access.c:420
 msgid "ATSC reception parameters"
 msgstr ""
 
-#: modules/access/dtv/access.c:471
+#: modules/access/dtv/access.c:476
 msgid "Digital broadcasting"
 msgstr ""
 
-#: modules/access/dtv/access.c:472
+#: modules/access/dtv/access.c:477
 msgid ""
 "The selected digital tuner does not support the specified parameters.\n"
 "Please check the preferences."
@@ -6598,17 +6608,17 @@ msgid "EyeTV input"
 msgstr ""
 
 #: modules/access/file.c:177 modules/access/file.c:304
-#: modules/access/mtp.c:195 modules/access/mtp.c:286 modules/access/vdr.c:372
-#: modules/access/vdr.c:539
+#: modules/access/mtp.c:195 modules/access/mtp.c:286 modules/access/vdr.c:374
+#: modules/access/vdr.c:541
 msgid "File reading failed"
 msgstr ""
 
-#: modules/access/file.c:178 modules/access/vdr.c:539
+#: modules/access/file.c:178 modules/access/vdr.c:541
 #, c-format
 msgid "VLC could not open the file \"%s\" (%s)."
 msgstr ""
 
-#: modules/access/file.c:305 modules/access/vdr.c:373
+#: modules/access/file.c:305 modules/access/vdr.c:375
 #, c-format
 msgid "VLC could not read the file (%s)."
 msgstr ""
@@ -6677,7 +6687,7 @@ msgstr "Mewnbwn ffeil"
 #: modules/gui/macosx/open.m:587 modules/gui/macosx/output.m:133
 #: modules/gui/macosx/output.m:217 modules/gui/macosx/output.m:341
 #: modules/gui/qt4/dialogs/plugins.cpp:1391
-#: modules/gui/qt4/dialogs/sout.cpp:69 modules/gui/qt4/dialogs/sout.cpp:118
+#: modules/gui/qt4/dialogs/sout.cpp:69 modules/gui/qt4/dialogs/sout.cpp:121
 #: share/lua/http/dialogs/create_stream.html:204
 #: share/lua/http/dialogs/stream_config_window.html:36
 #: share/lua/http/dialogs/stream_window.html:95
@@ -7132,7 +7142,7 @@ msgid "RTSP/RTP access and demux"
 msgstr "Cyrchiad a datblecsiad RTSP/RTP"
 
 #: modules/access/live555.cpp:115 modules/access/live555.cpp:116
-#: modules/gui/macosx/simple_prefs.m:343
+#: modules/gui/macosx/simple_prefs.m:362
 msgid "Use RTP over RTSP (TCP)"
 msgstr "Defnyddio RTP dros RTSP (TCP)"
 
@@ -7322,8 +7332,8 @@ msgid "User name that will be requested to access the stream."
 msgstr ""
 
 #: modules/access_output/http.c:55 modules/access/vnc.c:47
-#: modules/gui/macosx/coredialogs.m:60 modules/gui/macosx/simple_prefs.m:314
-#: modules/gui/macosx/simple_prefs.m:373
+#: modules/gui/macosx/coredialogs.m:60 modules/gui/macosx/simple_prefs.m:333
+#: modules/gui/macosx/simple_prefs.m:392
 #: modules/gui/qt4/dialogs/external.cpp:118 modules/lua/vlc.c:51
 #: modules/lua/vlc.c:67 modules/misc/audioscrobbler.c:116
 #: modules/stream_out/raop.c:154 modules/stream_out/rtp.c:178
@@ -7454,9 +7464,8 @@ msgid "Number of first segment"
 msgstr ""
 
 #: modules/access_output/livehttp.c:106
-#, fuzzy
 msgid "The number of the first segment generated"
-msgstr "Y nifer o droeon caiff y cymysgu ei ailadrodd"
+msgstr ""
 
 #: modules/access_output/livehttp.c:109
 msgid "HTTP Live streaming output"
@@ -7841,7 +7850,7 @@ msgstr "Mewnbwn Sgrin"
 #: modules/access/screen/screen.c:98 modules/access/screen/xcb.c:70
 #: modules/gui/macosx/MainMenu.m:649 modules/gui/macosx/open.m:200
 #: modules/gui/macosx/open.m:204 modules/gui/macosx/open.m:489
-#: modules/gui/macosx/open.m:1353 modules/gui/macosx/simple_prefs.m:670
+#: modules/gui/macosx/open.m:1353 modules/gui/macosx/simple_prefs.m:689
 msgid "Screen"
 msgstr "Sgrin"
 
@@ -8733,11 +8742,11 @@ msgstr "VDR"
 msgid "VDR recordings"
 msgstr "Recordiadau VDR"
 
-#: modules/access/vdr.c:813
+#: modules/access/vdr.c:815
 msgid "VDR Cut Marks"
 msgstr ""
 
-#: modules/access/vdr.c:876
+#: modules/access/vdr.c:878
 msgid "Start"
 msgstr "Dechrau"
 
@@ -9435,16 +9444,16 @@ msgstr "Q amledd 3"
 msgid "Audio filter for band-limited interpolation resampling"
 msgstr ""
 
-#: modules/audio_filter/resampler/speex.c:32
+#: modules/audio_filter/resampler/speex.c:34
 msgid "Resampling quality"
 msgstr "Ansawdd ailsamplu"
 
-#: modules/audio_filter/resampler/speex.c:34
+#: modules/audio_filter/resampler/speex.c:36
 msgid "Resampling quality (0 = worst and fastest, 10 = best and slowest)."
 msgstr ""
 
-#: modules/audio_filter/resampler/speex.c:41
-#: modules/audio_filter/resampler/speex.c:42
+#: modules/audio_filter/resampler/speex.c:43
+#: modules/audio_filter/resampler/speex.c:44
 msgid "Speex resampler"
 msgstr ""
 
@@ -9728,11 +9737,11 @@ msgid ""
 "Applications/Utilities. VLC will output Stereo only."
 msgstr ""
 
-#: modules/audio_output/auhal.c:1206
+#: modules/audio_output/auhal.c:1207
 msgid "System Sound Output Device"
 msgstr "Dyfais Allbwn Sain y System"
 
-#: modules/audio_output/auhal.c:1287
+#: modules/audio_output/auhal.c:1288
 #, c-format
 msgid "%s (Encoded Output)"
 msgstr "%s (Allbwn wedi'i Amgodio)"
@@ -9962,29 +9971,29 @@ msgstr "didau"
 msgid "simple"
 msgstr "syml"
 
-#: modules/codec/avcodec/avcodec.c:84
+#: modules/codec/avcodec/avcodec.c:85
 msgid ""
 "Various audio and video decoders/encoders delivered by the FFmpeg library. "
 "This includes (MS)MPEG4, DivX, SV1,H261, H263, H264, WMV, WMA, AAC, AMR, DV, "
 "MJPEG and other codecs"
 msgstr ""
 
-#: modules/codec/avcodec/avcodec.c:94
+#: modules/codec/avcodec/avcodec.c:95
 msgid "FFmpeg audio/video decoder"
 msgstr "Datgodiwr sain/fideo FFmpeg"
 
-#: modules/codec/avcodec/avcodec.c:97 modules/codec/gstdecode.c:89
+#: modules/codec/avcodec/avcodec.c:98 modules/codec/gstdecode.c:89
 #: modules/codec/omxil/android_mediacodec.c:276 modules/codec/omxil/omxil.c:84
 msgid "Decoding"
 msgstr "Datgodiad"
 
-#: modules/codec/avcodec/avcodec.c:150 modules/codec/jpeg.c:117
+#: modules/codec/avcodec/avcodec.c:151 modules/codec/jpeg.c:117
 #: modules/codec/omxil/omxil.c:96 modules/codec/png.c:99
 #: modules/codec/schroedinger.c:370
 msgid "Encoding"
 msgstr "Amgodiad"
 
-#: modules/codec/avcodec/avcodec.c:151
+#: modules/codec/avcodec/avcodec.c:152
 msgid "FFmpeg audio/video encoder"
 msgstr "Amgodiwr sain/fideo FFmpeg"
 
@@ -10095,7 +10104,7 @@ msgid ""
 "To visualize all vectors, the value should be 7."
 msgstr ""
 
-#: modules/codec/avcodec/avcodec.h:128 modules/gui/macosx/simple_prefs.m:344
+#: modules/codec/avcodec/avcodec.h:128 modules/gui/macosx/simple_prefs.m:363
 msgid "Skip the loop filter for H.264 decoding"
 msgstr ""
 
@@ -10552,7 +10561,7 @@ msgstr "Amgodiwr dymi"
 msgid "AAC audio decoder (using libfaad2)"
 msgstr "Datgodiwr sain AAC (yn defnyddio libfaad2)"
 
-#: modules/codec/faad.c:431
+#: modules/codec/faad.c:436
 msgid "AAC extension"
 msgstr ""
 
@@ -10784,8 +10793,8 @@ msgstr "Gwyn"
 msgid "Maroon"
 msgstr "Marŵn"
 
-#: modules/codec/kate.c:211 modules/gui/macosx/MainMenu.m:470
-#: modules/gui/macosx/MainMenu.m:1077 modules/text_renderer/freetype.c:148
+#: modules/codec/kate.c:211 modules/gui/macosx/MainMenu.m:473
+#: modules/gui/macosx/MainMenu.m:1079 modules/text_renderer/freetype.c:148
 #: modules/text_renderer/quartztext.c:116 modules/text_renderer/win32text.c:90
 #: modules/video_filter/ball.c:119 modules/video_filter/colorthres.c:64
 #: modules/video_filter/marq.c:61 modules/video_filter/rss.c:72
@@ -10799,8 +10808,8 @@ msgstr "Coch"
 msgid "Fuchsia"
 msgstr ""
 
-#: modules/codec/kate.c:211 modules/gui/macosx/MainMenu.m:472
-#: modules/gui/macosx/MainMenu.m:1081 modules/text_renderer/freetype.c:148
+#: modules/codec/kate.c:211 modules/gui/macosx/MainMenu.m:475
+#: modules/gui/macosx/MainMenu.m:1083 modules/text_renderer/freetype.c:148
 #: modules/text_renderer/quartztext.c:116 modules/text_renderer/win32text.c:90
 #: modules/video_filter/colorthres.c:64 modules/video_filter/marq.c:62
 #: modules/video_filter/rss.c:73
@@ -10813,8 +10822,8 @@ msgstr "Melyn"
 msgid "Olive"
 msgstr "Olewydden"
 
-#: modules/codec/kate.c:211 modules/gui/macosx/MainMenu.m:471
-#: modules/gui/macosx/MainMenu.m:1079 modules/text_renderer/freetype.c:148
+#: modules/codec/kate.c:211 modules/gui/macosx/MainMenu.m:474
+#: modules/gui/macosx/MainMenu.m:1081 modules/text_renderer/freetype.c:148
 #: modules/text_renderer/quartztext.c:116 modules/text_renderer/win32text.c:90
 #: modules/video_filter/ball.c:119 modules/video_filter/marq.c:62
 #: modules/video_filter/rss.c:73
@@ -10846,8 +10855,8 @@ msgstr "Piws"
 msgid "Navy"
 msgstr ""
 
-#: modules/codec/kate.c:212 modules/gui/macosx/MainMenu.m:473
-#: modules/gui/macosx/MainMenu.m:1083 modules/text_renderer/freetype.c:149
+#: modules/codec/kate.c:212 modules/gui/macosx/MainMenu.m:476
+#: modules/gui/macosx/MainMenu.m:1085 modules/text_renderer/freetype.c:149
 #: modules/text_renderer/quartztext.c:117 modules/text_renderer/win32text.c:91
 #: modules/video_filter/ball.c:120 modules/video_filter/colorthres.c:64
 #: modules/video_filter/marq.c:63 modules/video_filter/rss.c:74
@@ -12944,9 +12953,9 @@ msgstr ""
 msgid "Fast"
 msgstr "Cyflym"
 
-#: modules/codec/x264.c:437 modules/gui/macosx/MainMenu.m:400
-#: modules/gui/macosx/simple_prefs.m:705
-#: modules/gui/qt4/components/simple_preferences.cpp:692
+#: modules/codec/x264.c:437 modules/gui/macosx/MainMenu.m:403
+#: modules/gui/macosx/simple_prefs.m:724
+#: modules/gui/qt4/components/simple_preferences.cpp:710
 #: modules/misc/gnutls.c:64 modules/text_renderer/freetype.c:136
 #: modules/text_renderer/freetype.c:155 modules/text_renderer/quartztext.c:121
 #: modules/text_renderer/win32text.c:82
@@ -13067,17 +13076,17 @@ msgstr ""
 #: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/MainWindow.m:209
 #: modules/gui/macosx/MainWindow.m:740 modules/gui/macosx/MainWindow.m:746
 #: modules/gui/macosx/MainWindow.m:1370 modules/gui/ncurses.c:1041
-#: modules/gui/qt4/dialogs/help.cpp:91 modules/gui/qt4/main_interface.cpp:1078
-#: modules/gui/qt4/main_interface.cpp:1082
-#: modules/gui/qt4/main_interface.cpp:1121
-#: modules/gui/qt4/main_interface.cpp:1123
-#: modules/gui/qt4/main_interface.cpp:1231
-#: modules/gui/qt4/main_interface.cpp:1248
-#: modules/gui/qt4/main_interface.cpp:1256
-#: modules/gui/qt4/main_interface.cpp:1279 modules/lua/libs/httpd.c:80
+#: modules/gui/qt4/dialogs/help.cpp:91 modules/gui/qt4/main_interface.cpp:1102
+#: modules/gui/qt4/main_interface.cpp:1106
+#: modules/gui/qt4/main_interface.cpp:1145
+#: modules/gui/qt4/main_interface.cpp:1147
+#: modules/gui/qt4/main_interface.cpp:1255
+#: modules/gui/qt4/main_interface.cpp:1272
+#: modules/gui/qt4/main_interface.cpp:1280
+#: modules/gui/qt4/main_interface.cpp:1303 modules/lua/libs/httpd.c:80
 #: modules/notify/growl.m:281 modules/video_output/xcb/window.c:313
 msgid "VLC media player"
-msgstr "Chwaraewr VLC"
+msgstr "Chwaraeydd VLC"
 
 #: modules/control/dummy.c:37 modules/control/rc.c:175
 msgid "Do not open a DOS command box interface"
@@ -13133,9 +13142,9 @@ msgstr ""
 msgid "Global Hotkeys interface"
 msgstr ""
 
-#: modules/control/hotkeys.c:88 modules/gui/macosx/simple_prefs.m:279
+#: modules/control/hotkeys.c:88 modules/gui/macosx/simple_prefs.m:298
 #: modules/gui/qt4/components/preferences_widgets.cpp:1143
-#: modules/gui/qt4/components/simple_preferences.cpp:280
+#: modules/gui/qt4/components/simple_preferences.cpp:298
 msgid "Hotkeys"
 msgstr ""
 
@@ -13805,7 +13814,7 @@ msgstr "Datblecsydd AIFF"
 msgid "ASF/WMV demuxer"
 msgstr "Datblecsydd ASF/WMV"
 
-#: modules/demux/asf/asf.c:215 modules/demux/asf/asf.c:1195
+#: modules/demux/asf/asf.c:215 modules/demux/asf/asf.c:1194
 msgid "Could not demux ASF stream"
 msgstr "Methwyd datblecsu'r ffrwd ASF"
 
@@ -13813,7 +13822,7 @@ msgstr "Methwyd datblecsu'r ffrwd ASF"
 msgid "VLC failed to load the ASF header."
 msgstr ""
 
-#: modules/demux/asf/asf.c:1196
+#: modules/demux/asf/asf.c:1195
 msgid "DRM protected streams are not supported."
 msgstr ""
 
@@ -14076,7 +14085,7 @@ msgstr "Codecs penodau"
 msgid "Use chapter codecs found in the segment."
 msgstr ""
 
-#: modules/demux/mkv/mkv.cpp:62 modules/gui/macosx/simple_prefs.m:345
+#: modules/demux/mkv/mkv.cpp:62 modules/gui/macosx/simple_prefs.m:364
 #: modules/gui/qt4/ui/sprefs_input.h:358
 msgid "Preload MKV files in the same directory"
 msgstr ""
@@ -14747,7 +14756,7 @@ msgstr "Cyfansoddwr"
 msgid "Producer"
 msgstr "Cynhyrchydd"
 
-#: modules/demux/mp4/mp4.c:1453 modules/gui/macosx/playlistinfo.m:383
+#: modules/demux/mp4/mp4.c:1453 modules/gui/macosx/playlistinfo.m:391
 #: modules/gui/qt4/components/controller.hpp:120
 #: modules/gui/qt4/components/controller.hpp:132
 msgid "Information"
@@ -15302,8 +15311,8 @@ msgstr ""
 msgid "MPEG Transport Stream demuxer"
 msgstr "Datblecsydd MPET Transport Sream (TS)"
 
-#: modules/demux/ts.c:164 modules/gui/macosx/MainMenu.m:467
-#: modules/gui/macosx/MainMenu.m:1636 modules/gui/qt4/dialogs/toolbar.cpp:512
+#: modules/demux/ts.c:164 modules/gui/macosx/MainMenu.m:470
+#: modules/gui/macosx/MainMenu.m:1652 modules/gui/qt4/dialogs/toolbar.cpp:512
 msgid "Teletext"
 msgstr "Teletext"
 
@@ -15435,15 +15444,15 @@ msgstr "Sleidiau (delweddau)"
 msgid "Unknown category"
 msgstr "Categori anhysbys"
 
-#: modules/gui/macosx/about.m:88 modules/gui/macosx/MainMenu.m:346
+#: modules/gui/macosx/about.m:88 modules/gui/macosx/MainMenu.m:348
 msgid "About VLC media player"
-msgstr "Ynghylch chwaraewr VLC"
+msgstr "Ynghylch chwaraeydd VLC"
 
 #: modules/gui/macosx/about.m:91 modules/gui/qt4/dialogs/help.cpp:125
 msgid "Credits"
 msgstr "Clodrestr"
 
-#: modules/gui/macosx/about.m:94 modules/gui/macosx/MainMenu.m:493
+#: modules/gui/macosx/about.m:94 modules/gui/macosx/MainMenu.m:496
 #: modules/gui/qt4/dialogs/help.cpp:119
 msgid "License"
 msgstr "Trwydded"
@@ -15455,7 +15464,7 @@ msgstr "Awduron"
 #: modules/gui/macosx/about.m:100
 msgid ""
 "VLC media player and VideoLAN are trademarks of the VideoLAN Association."
-msgstr "Nodau masnachol Cymdeithas VideoLAN yw chwaraewr VLC a VideoLAN."
+msgstr "Nodau masnachol Cymdeithas VideoLAN yw chwaraeydd VLC a VideoLAN."
 
 #: modules/gui/macosx/about.m:109
 msgid "Compiled by %s with %@"
@@ -15472,7 +15481,7 @@ msgid ""
 "\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: "
 "underline; color:#0057ae;\">Help and join us!</span></a>"
 msgstr ""
-"<p>Chwaraewr cyfryngau cod agored ac am ddim yw VLC, ac mae hefyd yn medru "
+"<p>Chwaraeydd cyfryngau cod agored ac am ddim yw VLC, ac mae hefyd yn medru "
 "amgodi a ffrydio sain a fideo. Creuwyd VLC gan wirfoddolwyr y gymuned <a "
 "href=\"http://www.videolan.org/\"><span style=\" text-decoration: underline; "
 "color:#0057ae;\">VideoLAN</span></a>.</p><p>Mae VLC yn defnyddio codecs "
@@ -15484,10 +15493,10 @@ msgstr ""
 
 #: modules/gui/macosx/about.m:267
 msgid "VLC media player Help"
-msgstr "Cymorth chwaraewr VLC"
+msgstr "Cymorth chwaraeydd VLC"
 
-#: modules/gui/macosx/about.m:270 modules/gui/macosx/MainMenu.m:469
-#: modules/gui/macosx/MainMenu.m:1075
+#: modules/gui/macosx/about.m:270 modules/gui/macosx/MainMenu.m:472
+#: modules/gui/macosx/MainMenu.m:1077
 msgid "Index"
 msgstr "Mynegai"
 
@@ -15502,7 +15511,7 @@ msgid "Service Discovery"
 msgstr ""
 
 #: modules/gui/macosx/AddonManager.m:102 modules/gui/macosx/AddonManager.m:351
-#: modules/gui/macosx/MainMenu.m:350 modules/gui/macosx/MainMenu.m:351
+#: modules/gui/macosx/MainMenu.m:352 modules/gui/macosx/MainMenu.m:353
 #: modules/gui/qt4/dialogs/plugins.cpp:386
 msgid "Extensions"
 msgstr "Estyniadau"
@@ -15516,7 +15525,7 @@ msgstr "Dangos Dim Ond y Rhai wedi'i Mewnosod"
 msgid "Find more addons online"
 msgstr "Canfod mwy o ychwanegion ar-lein"
 
-#: modules/gui/macosx/AddonManager.m:117 modules/gui/macosx/MainMenu.m:352
+#: modules/gui/macosx/AddonManager.m:117 modules/gui/macosx/MainMenu.m:354
 #: modules/gui/qt4/dialogs/plugins.cpp:80
 msgid "Addons Manager"
 msgstr "Rheolydd Ychwanegion"
@@ -15527,7 +15536,7 @@ msgstr "Rheolydd Ychwanegion"
 msgid "Installed"
 msgstr "Wedi'i osod"
 
-#: modules/gui/macosx/AddonManager.m:121 modules/gui/macosx/bookmarks.m:112
+#: modules/gui/macosx/AddonManager.m:121 modules/gui/macosx/bookmarks.m:110
 #: modules/gui/macosx/playlist.m:167 modules/gui/qt4/dialogs/plugins.cpp:123
 #: modules/mux/avi.c:53
 msgid "Name"
@@ -15607,7 +15616,7 @@ msgid "Filter"
 msgstr "Hidlo"
 
 #: modules/gui/macosx/AudioEffects.m:147 modules/gui/macosx/ControlsBar.m:507
-#: modules/gui/macosx/simple_prefs.m:309
+#: modules/gui/macosx/simple_prefs.m:328
 #: modules/gui/qt4/dialogs/extended.cpp:73
 msgid "Audio Effects"
 msgstr "Effeithiau Sain"
@@ -15634,8 +15643,8 @@ msgstr "Enw ar gyfer y proffil newydd:"
 #: modules/gui/macosx/AudioEffects.m:373 modules/gui/macosx/AudioEffects.m:614
 #: modules/gui/macosx/ConvertAndSave.m:373
 #: modules/gui/macosx/ConvertAndSave.m:405 modules/gui/macosx/output.m:456
-#: modules/gui/macosx/playlist.m:781 modules/gui/macosx/prefs.m:207
-#: modules/gui/macosx/simple_prefs.m:351 modules/gui/macosx/simple_prefs.m:416
+#: modules/gui/macosx/playlist.m:779 modules/gui/macosx/prefs.m:208
+#: modules/gui/macosx/simple_prefs.m:370 modules/gui/macosx/simple_prefs.m:435
 #: modules/gui/macosx/VideoEffects.m:679
 #: modules/gui/qt4/components/sout/profile_selector.cpp:424
 #: modules/gui/qt4/ui/vlm.h:301
@@ -15692,13 +15701,13 @@ msgstr ""
 msgid "Add"
 msgstr "Ychwanegu"
 
-#: modules/gui/macosx/bookmarks.m:98 modules/gui/macosx/MainMenu.m:377
-#: modules/gui/macosx/simple_prefs.m:326
+#: modules/gui/macosx/bookmarks.m:98 modules/gui/macosx/MainMenu.m:381
+#: modules/gui/macosx/simple_prefs.m:345
 #: modules/gui/qt4/dialogs/bookmarks.cpp:53 modules/gui/qt4/ui/vlm.h:300
 msgid "Clear"
 msgstr "Clirio"
 
-#: modules/gui/macosx/bookmarks.m:99 modules/gui/macosx/MainMenu.m:373
+#: modules/gui/macosx/bookmarks.m:99 modules/gui/macosx/MainMenu.m:377
 msgid "Edit"
 msgstr "Golygu"
 
@@ -15707,22 +15716,22 @@ msgstr "Golygu"
 msgid "Extract"
 msgstr "Echdynnu"
 
-#: modules/gui/macosx/bookmarks.m:107 modules/gui/macosx/bookmarks.m:113
+#: modules/gui/macosx/bookmarks.m:105 modules/gui/macosx/bookmarks.m:111
 #: modules/gui/qt4/dialogs/bookmarks.cpp:77
 #: modules/gui/qt4/dialogs/toolbar.cpp:464
 msgid "Time"
 msgstr "Amser"
 
-#: modules/gui/macosx/bookmarks.m:110 modules/gui/macosx/bookmarks.m:232
-#: modules/gui/macosx/bookmarks.m:236 modules/gui/macosx/bookmarks.m:287
-#: modules/gui/macosx/bookmarks.m:292 modules/gui/macosx/controls.m:55
+#: modules/gui/macosx/bookmarks.m:108 modules/gui/macosx/bookmarks.m:228
+#: modules/gui/macosx/bookmarks.m:232 modules/gui/macosx/bookmarks.m:282
+#: modules/gui/macosx/bookmarks.m:287 modules/gui/macosx/controls.m:55
 #: modules/gui/macosx/ConvertAndSave.m:288
 #: modules/gui/macosx/ConvertAndSave.m:483
 #: modules/gui/macosx/ConvertAndSave.m:490
 #: modules/gui/macosx/ConvertAndSave.m:497 modules/gui/macosx/coredialogs.m:62
 #: modules/gui/macosx/coredialogs.m:99 modules/gui/macosx/coredialogs.m:146
 #: modules/gui/macosx/open.m:374 modules/gui/macosx/output.m:129
-#: modules/gui/macosx/playlistinfo.m:360 modules/gui/macosx/simple_prefs.m:325
+#: modules/gui/macosx/playlistinfo.m:368 modules/gui/macosx/simple_prefs.m:344
 #: modules/gui/macosx/wizard.m:592 modules/gui/macosx/wizard.m:653
 #: modules/gui/macosx/wizard.m:992 modules/gui/macosx/wizard.m:1073
 #: modules/gui/macosx/wizard.m:1080 modules/gui/macosx/wizard.m:1608
@@ -15732,42 +15741,42 @@ msgstr "Amser"
 msgid "OK"
 msgstr "Iawn"
 
-#: modules/gui/macosx/bookmarks.m:147 modules/gui/macosx/playlist.m:771
+#: modules/gui/macosx/bookmarks.m:144 modules/gui/macosx/playlist.m:769
 msgid "Untitled"
 msgstr "Di-deitl"
 
-#: modules/gui/macosx/bookmarks.m:232
+#: modules/gui/macosx/bookmarks.m:228
 msgid "No input"
 msgstr "Dim mewnbwn"
 
-#: modules/gui/macosx/bookmarks.m:232
+#: modules/gui/macosx/bookmarks.m:228
 msgid ""
 "No input found. A stream must be playing or paused for bookmarks to work."
 msgstr ""
 
-#: modules/gui/macosx/bookmarks.m:236
+#: modules/gui/macosx/bookmarks.m:232
 msgid "Input has changed"
 msgstr "Mewnbwn wedi newid"
 
-#: modules/gui/macosx/bookmarks.m:236
+#: modules/gui/macosx/bookmarks.m:232
 msgid ""
 "Input has changed, unable to save bookmark. Suspending playback with \"Pause"
 "\" while editing bookmarks to ensure to keep the same input."
 msgstr ""
 
-#: modules/gui/macosx/bookmarks.m:287 modules/gui/macosx/wizard.m:992
+#: modules/gui/macosx/bookmarks.m:282 modules/gui/macosx/wizard.m:992
 msgid "Invalid selection"
 msgstr ""
 
-#: modules/gui/macosx/bookmarks.m:287
+#: modules/gui/macosx/bookmarks.m:282
 msgid "Two bookmarks have to be selected."
 msgstr ""
 
-#: modules/gui/macosx/bookmarks.m:292
+#: modules/gui/macosx/bookmarks.m:287
 msgid "No input found"
 msgstr "Ni ddarganfuwyd mewnbwn"
 
-#: modules/gui/macosx/bookmarks.m:292
+#: modules/gui/macosx/bookmarks.m:287
 msgid "The stream must be playing or paused for bookmarks to work."
 msgstr ""
 
@@ -15790,7 +15799,7 @@ msgid ""
 msgstr ""
 
 #: modules/gui/macosx/BWQuincyUI.m:83
-#: modules/gui/qt4/components/info_panels.cpp:171
+#: modules/gui/qt4/components/info_panels.cpp:172
 msgid "Comments"
 msgstr "Sylwadau"
 
@@ -15811,7 +15820,7 @@ msgid "No personal information will be sent with this report."
 msgstr ""
 
 #: modules/gui/macosx/controls.m:53 modules/gui/macosx/controls.m:57
-#: modules/gui/macosx/MainMenu.m:1585
+#: modules/gui/macosx/MainMenu.m:1601
 msgid "Jump to Time"
 msgstr ""
 
@@ -15966,9 +15975,9 @@ msgstr "Nodwch gyrchfan yr allbwn"
 #: modules/gui/macosx/ConvertAndSave.m:161 modules/gui/macosx/open.m:138
 #: modules/gui/macosx/open.m:361 modules/gui/macosx/output.m:136
 #: modules/gui/macosx/prefs_widgets.m:1121
-#: modules/gui/macosx/simple_prefs.m:333 modules/gui/macosx/simple_prefs.m:403
+#: modules/gui/macosx/simple_prefs.m:352 modules/gui/macosx/simple_prefs.m:422
 #: modules/gui/qt4/components/preferences_widgets.cpp:264
-#: modules/gui/qt4/components/simple_preferences.cpp:472
+#: modules/gui/qt4/components/simple_preferences.cpp:490
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:111
 #: modules/gui/qt4/ui/open.h:263 modules/gui/qt4/ui/open_disk.h:307
 #: modules/gui/qt4/ui/open_file.h:147 modules/gui/qt4/ui/sprefs_audio.h:433
@@ -15987,6 +15996,7 @@ msgstr "Cadw fel Ffeil"
 #: modules/gui/macosx/ConvertAndSave.m:165
 #: modules/gui/macosx/ConvertAndSave.m:420 modules/gui/macosx/output.m:134
 #: modules/gui/macosx/output.m:236 modules/gui/macosx/output.m:352
+#: modules/gui/qt4/dialogs/sout.cpp:94
 msgid "Stream"
 msgstr "Ffrwd"
 
@@ -16147,13 +16157,13 @@ msgid "A SDP export is requested, but no URL is provided."
 msgstr ""
 
 #: modules/gui/macosx/ConvertAndSave.m:1056
-#: modules/gui/macosx/simple_prefs.m:704 modules/gui/macosx/simple_prefs.m:728
-#: modules/gui/macosx/simple_prefs.m:1284
-#: modules/gui/qt4/components/simple_preferences.cpp:689
+#: modules/gui/macosx/simple_prefs.m:723 modules/gui/macosx/simple_prefs.m:747
+#: modules/gui/macosx/simple_prefs.m:1307
+#: modules/gui/qt4/components/simple_preferences.cpp:707
 msgid "Custom"
 msgstr "Dewisedig"
 
-#: modules/gui/macosx/coredialogs.m:59 modules/gui/macosx/simple_prefs.m:315
+#: modules/gui/macosx/coredialogs.m:59 modules/gui/macosx/simple_prefs.m:334
 #: modules/gui/qt4/dialogs/external.cpp:113
 msgid "User name"
 msgstr "Enw defnyddiwr"
@@ -16192,19 +16202,19 @@ msgstr "(does dim eitem yn chwarae)"
 msgid "Click to exit fullscreen playback."
 msgstr "Cliciwch i adael y sgrin lawn."
 
-#: modules/gui/macosx/intf.m:1495 modules/gui/macosx/intf.m:1512
+#: modules/gui/macosx/intf.m:1498 modules/gui/macosx/intf.m:1515
 msgid "VLC media playback"
 msgstr "Chwarae gyda VLC"
 
-#: modules/gui/macosx/intf.m:1783
+#: modules/gui/macosx/intf.m:1786
 msgid "Remove old preferences?"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1784
+#: modules/gui/macosx/intf.m:1787
 msgid "We just found an older version of VLC's preferences files."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1785
+#: modules/gui/macosx/intf.m:1788
 msgid "Move To Trash and Relaunch VLC"
 msgstr ""
 
@@ -16269,7 +16279,7 @@ msgstr ""
 "Fel rhagosodiad, mae VLC yn cadw rhestr o'r 10 eitem ddiwethaf i'w chwarae. "
 "Mae'n bosib diffodd y nodwedd hon yma."
 
-#: modules/gui/macosx/macosx.m:75 modules/gui/macosx/simple_prefs.m:363
+#: modules/gui/macosx/macosx.m:75 modules/gui/macosx/simple_prefs.m:382
 msgid "Control playback with the Apple Remote"
 msgstr "Rheoli'r chwarae gydag Apple Remote"
 
@@ -16277,7 +16287,7 @@ msgstr "Rheoli'r chwarae gydag Apple Remote"
 msgid "By default, VLC can be remotely controlled with the Apple Remote."
 msgstr "Fel rhagosodiad, mae'n bosib rheoli VLC o bell gydag Apple Remote."
 
-#: modules/gui/macosx/macosx.m:78 modules/gui/macosx/simple_prefs.m:364
+#: modules/gui/macosx/macosx.m:78 modules/gui/macosx/simple_prefs.m:383
 msgid "Control system volume with the Apple Remote"
 msgstr "Rheoli sain y system gydag Apple Remote"
 
@@ -16301,7 +16311,7 @@ msgstr ""
 "Fel rhagosodiad, mae VLC yn caniatáu newid i'r eitem nesaf neu flaenorol "
 "gydag Apple Remote. Mae'n bosib diffodd y nodwedd hon yma."
 
-#: modules/gui/macosx/macosx.m:84 modules/gui/macosx/simple_prefs.m:365
+#: modules/gui/macosx/macosx.m:84 modules/gui/macosx/simple_prefs.m:384
 msgid "Control playback with media keys"
 msgstr "Rheoli chwarae gyda bysellau cyfryngau"
 
@@ -16325,7 +16335,7 @@ msgstr ""
 "Dewis i ddefnyddio rhyngwyneb tywyll VLC neu, fel arall, i ddefnyddio'r "
 "rhyngwyneb llwyd."
 
-#: modules/gui/macosx/macosx.m:91 modules/gui/macosx/simple_prefs.m:360
+#: modules/gui/macosx/macosx.m:91 modules/gui/macosx/simple_prefs.m:379
 msgid "Use the native fullscreen mode"
 msgstr ""
 
@@ -16336,7 +16346,7 @@ msgid ""
 "later."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:94 modules/gui/macosx/simple_prefs.m:370
+#: modules/gui/macosx/macosx.m:94 modules/gui/macosx/simple_prefs.m:389
 #: modules/gui/qt4/qt4.cpp:92
 msgid "Resize interface to the native video size"
 msgstr ""
@@ -16352,7 +16362,7 @@ msgstr ""
 "arall, mae'r fideo yn cael ei lleihau/mwyhau i ffitio yn ffenestr y "
 "rhyngwyneb"
 
-#: modules/gui/macosx/macosx.m:100 modules/gui/macosx/simple_prefs.m:371
+#: modules/gui/macosx/macosx.m:100 modules/gui/macosx/simple_prefs.m:390
 #: modules/gui/qt4/qt4.cpp:176
 msgid "Pause the video playback when minimized"
 msgstr "Seibio chwarae fideo wrth leihau'r ffenestr"
@@ -16376,11 +16386,11 @@ msgstr ""
 "Mae'r opsiwn hwn yn galluogi'r rhyngwyneb i newid ei heiconau ar wahanol "
 "achlysuron."
 
-#: modules/gui/macosx/macosx.m:107 modules/gui/macosx/MainMenu.m:1419
+#: modules/gui/macosx/macosx.m:107 modules/gui/macosx/MainMenu.m:1431
 msgid "Lock Aspect Ratio"
 msgstr "Cloi'r Cymhareb Agwedd"
 
-#: modules/gui/macosx/macosx.m:109 modules/gui/macosx/MainMenu.m:381
+#: modules/gui/macosx/macosx.m:109 modules/gui/macosx/MainMenu.m:385
 msgid "Show Previous & Next Buttons"
 msgstr "Dangos Botymau Nesaf a Blaenorol"
 
@@ -16388,7 +16398,7 @@ msgstr "Dangos Botymau Nesaf a Blaenorol"
 msgid "Shows the previous and next buttons in the main window."
 msgstr "Dangos botymau nesaf a blaenorol yn y brif ffenestr."
 
-#: modules/gui/macosx/macosx.m:112 modules/gui/macosx/MainMenu.m:383
+#: modules/gui/macosx/macosx.m:112 modules/gui/macosx/MainMenu.m:387
 msgid "Show Shuffle & Repeat Buttons"
 msgstr "Dangos Botymau Cymysgu ac Ail-chwarae"
 
@@ -16396,7 +16406,7 @@ msgstr "Dangos Botymau Cymysgu ac Ail-chwarae"
 msgid "Shows the shuffle and repeat buttons in the main window."
 msgstr "Dangos y botwm cymysgu a'r botwm ail-chwarae yn y brif ffenestr"
 
-#: modules/gui/macosx/macosx.m:115 modules/gui/macosx/MainMenu.m:385
+#: modules/gui/macosx/macosx.m:115 modules/gui/macosx/MainMenu.m:389
 msgid "Show Audio Effects Button"
 msgstr "Dangos Botwm Effeithiau Sain"
 
@@ -16404,7 +16414,7 @@ msgstr "Dangos Botwm Effeithiau Sain"
 msgid "Shows the audio effects button in the main window."
 msgstr "Dangos botymau effeithiau sain yn y brif ffenestr."
 
-#: modules/gui/macosx/macosx.m:118 modules/gui/macosx/MainMenu.m:387
+#: modules/gui/macosx/macosx.m:118 modules/gui/macosx/MainMenu.m:391
 msgid "Show Sidebar"
 msgstr "Dangos y Dewislen Ochr"
 
@@ -16414,7 +16424,7 @@ msgstr ""
 "Dangos dewislen yn rhestru ffynonellau cyfryngau ar yr ochr yn y brif "
 "ffenestr"
 
-#: modules/gui/macosx/macosx.m:121 modules/gui/macosx/simple_prefs.m:374
+#: modules/gui/macosx/macosx.m:121 modules/gui/macosx/simple_prefs.m:393
 msgid "Control external music players"
 msgstr ""
 
@@ -16505,286 +16515,290 @@ msgstr "URI"
 msgid "File Size"
 msgstr ""
 
-#: modules/gui/macosx/MainMenu.m:283
+#: modules/gui/macosx/MainMenu.m:285
 #, c-format
 msgid "Level %i"
 msgstr ""
 
-#: modules/gui/macosx/MainMenu.m:348
+#: modules/gui/macosx/MainMenu.m:350
 msgid "Check for Update..."
 msgstr "Gwirio am Ddiweddariadau..."
 
-#: modules/gui/macosx/MainMenu.m:349
+#: modules/gui/macosx/MainMenu.m:351
 msgid "Preferences..."
 msgstr "Dewisiadau..."
 
-#: modules/gui/macosx/MainMenu.m:355
+#: modules/gui/macosx/MainMenu.m:357
 msgid "Services"
 msgstr "Gwasanaethau"
 
-#: modules/gui/macosx/MainMenu.m:356
+#: modules/gui/macosx/MainMenu.m:358
 msgid "Hide VLC"
 msgstr "Cuddio VLC"
 
-#: modules/gui/macosx/MainMenu.m:357
+#: modules/gui/macosx/MainMenu.m:359
 msgid "Hide Others"
 msgstr "Cuddio Eraill"
 
-#: modules/gui/macosx/MainMenu.m:358 modules/gui/macosx/simple_prefs.m:413
+#: modules/gui/macosx/MainMenu.m:360 modules/gui/macosx/simple_prefs.m:432
 msgid "Show All"
 msgstr "Dangos y Cyfan"
 
-#: modules/gui/macosx/MainMenu.m:359
+#: modules/gui/macosx/MainMenu.m:361
 msgid "Quit VLC"
 msgstr "Cau VLC"
 
-#: modules/gui/macosx/MainMenu.m:361
+#: modules/gui/macosx/MainMenu.m:363
 msgid "1:File"
 msgstr "1:Ffeil"
 
-#: modules/gui/macosx/MainMenu.m:362
+#: modules/gui/macosx/MainMenu.m:364
 msgid "Advanced Open File..."
 msgstr "Agor Ffeil (Uwch)..."
 
-#: modules/gui/macosx/MainMenu.m:363
+#: modules/gui/macosx/MainMenu.m:365
 msgid "Open File..."
 msgstr "Agor Ffeil..."
 
-#: modules/gui/macosx/MainMenu.m:364
+#: modules/gui/macosx/MainMenu.m:366
 msgid "Open Disc..."
 msgstr "Agor Disg..."
 
-#: modules/gui/macosx/MainMenu.m:365
+#: modules/gui/macosx/MainMenu.m:367
 msgid "Open Network..."
 msgstr "Agor Rhwydwaith..."
 
-#: modules/gui/macosx/MainMenu.m:366
+#: modules/gui/macosx/MainMenu.m:368
 msgid "Open Capture Device..."
 msgstr "Agor Dyfais Cipio..."
 
-#: modules/gui/macosx/MainMenu.m:367
+#: modules/gui/macosx/MainMenu.m:369
 msgid "Open Recent"
 msgstr "Agor Diweddar..."
 
-#: modules/gui/macosx/MainMenu.m:368
+#: modules/gui/macosx/MainMenu.m:370
 msgid "Close Window"
 msgstr "Cau'r Ffenestr"
 
-#: modules/gui/macosx/MainMenu.m:369
+#: modules/gui/macosx/MainMenu.m:371
 msgid "Streaming/Exporting Wizard..."
 msgstr "Dewin Ffrydio/Allforio..."
 
-#: modules/gui/macosx/MainMenu.m:370
+#: modules/gui/macosx/MainMenu.m:372
 msgid "Convert / Stream..."
 msgstr "Trawsnewid / Ffrydio..."
 
-#: modules/gui/macosx/MainMenu.m:371
+#: modules/gui/macosx/MainMenu.m:373
 msgid "Save Playlist..."
 msgstr "Cadw Rhestr Chwarae..."
 
-#: modules/gui/macosx/MainMenu.m:374
+#: modules/gui/macosx/MainMenu.m:374 modules/gui/macosx/playlist.m:589
+msgid "Reveal in Finder"
+msgstr ""
+
+#: modules/gui/macosx/MainMenu.m:378
 msgid "Cut"
 msgstr "Torri"
 
-#: modules/gui/macosx/MainMenu.m:375
+#: modules/gui/macosx/MainMenu.m:379
 msgid "Copy"
 msgstr "Copïo"
 
-#: modules/gui/macosx/MainMenu.m:376
+#: modules/gui/macosx/MainMenu.m:380
 msgid "Paste"
 msgstr "Gludo"
 
-#: modules/gui/macosx/MainMenu.m:378 modules/gui/macosx/playlist.m:585
+#: modules/gui/macosx/MainMenu.m:382 modules/gui/macosx/playlist.m:585
 msgid "Select All"
 msgstr "Dewis y Cyfan"
 
-#: modules/gui/macosx/MainMenu.m:380
+#: modules/gui/macosx/MainMenu.m:384
 msgid "View"
 msgstr "Gweld"
 
-#: modules/gui/macosx/MainMenu.m:389 modules/gui/macosx/MainMenu.m:390
+#: modules/gui/macosx/MainMenu.m:393 modules/gui/macosx/MainMenu.m:394
 msgid "Playlist Table Columns"
 msgstr "Colofnau Tabl y  Rhestr Chwarae"
 
-#: modules/gui/macosx/MainMenu.m:392
+#: modules/gui/macosx/MainMenu.m:396
 msgid "Playback"
 msgstr "Chwarae"
 
-#: modules/gui/macosx/MainMenu.m:397 modules/gui/macosx/MainMenu.m:398
+#: modules/gui/macosx/MainMenu.m:401
 msgid "Playback Speed"
 msgstr "Cyflymder Chwarae"
 
-#: modules/gui/macosx/MainMenu.m:402
+#: modules/gui/macosx/MainMenu.m:405
 #: modules/gui/macosx/TrackSynchronization.m:59
 msgid "Track Synchronization"
 msgstr "Cydamseriad Traciau"
 
-#: modules/gui/macosx/MainMenu.m:408
+#: modules/gui/macosx/MainMenu.m:411
 msgid "A→B Loop"
 msgstr "Cylchrediad A→B"
 
-#: modules/gui/macosx/MainMenu.m:409 modules/gui/macosx/MainMenu.m:1578
+#: modules/gui/macosx/MainMenu.m:412 modules/gui/macosx/MainMenu.m:1594
 msgid "Quit after Playback"
 msgstr "Cau ar ol Chwarae"
 
-#: modules/gui/macosx/MainMenu.m:410 modules/gui/macosx/MainMenu.m:1583
+#: modules/gui/macosx/MainMenu.m:413 modules/gui/macosx/MainMenu.m:1599
 msgid "Step Forward"
 msgstr "Cam Ymlaen"
 
-#: modules/gui/macosx/MainMenu.m:411 modules/gui/macosx/MainMenu.m:1584
+#: modules/gui/macosx/MainMenu.m:414 modules/gui/macosx/MainMenu.m:1600
 msgid "Step Backward"
 msgstr "Cam yn Ôl"
 
-#: modules/gui/macosx/MainMenu.m:421
+#: modules/gui/macosx/MainMenu.m:424
 msgid "Increase Volume"
 msgstr "Sain i Fyny"
 
-#: modules/gui/macosx/MainMenu.m:422
+#: modules/gui/macosx/MainMenu.m:425
 msgid "Decrease Volume"
 msgstr "Sain i Lawr"
 
-#: modules/gui/macosx/MainMenu.m:428 modules/gui/macosx/MainMenu.m:429
+#: modules/gui/macosx/MainMenu.m:431 modules/gui/macosx/MainMenu.m:432
 msgid "Audio Device"
 msgstr "Dyfais Sain"
 
-#: modules/gui/macosx/MainMenu.m:434 modules/gui/macosx/MainMenu.m:1595
+#: modules/gui/macosx/MainMenu.m:437 modules/gui/macosx/MainMenu.m:1611
 msgid "Half Size"
 msgstr "Hanner y Maint"
 
-#: modules/gui/macosx/MainMenu.m:435 modules/gui/macosx/MainMenu.m:1596
-#: modules/gui/macosx/MainMenu.m:1635
+#: modules/gui/macosx/MainMenu.m:438 modules/gui/macosx/MainMenu.m:1612
+#: modules/gui/macosx/MainMenu.m:1651
 msgid "Normal Size"
 msgstr "Maint Arferol"
 
-#: modules/gui/macosx/MainMenu.m:436 modules/gui/macosx/MainMenu.m:1597
+#: modules/gui/macosx/MainMenu.m:439 modules/gui/macosx/MainMenu.m:1613
 msgid "Double Size"
 msgstr "Dwywaith y Maint"
 
-#: modules/gui/macosx/MainMenu.m:437 modules/gui/macosx/MainMenu.m:1598
+#: modules/gui/macosx/MainMenu.m:440 modules/gui/macosx/MainMenu.m:1614
 msgid "Fit to Screen"
 msgstr "Ffitio i'r Sgrin"
 
-#: modules/gui/macosx/MainMenu.m:439 modules/gui/macosx/MainMenu.m:1601
-#: modules/gui/macosx/MainMenu.m:1607 modules/gui/macosx/simple_prefs.m:400
+#: modules/gui/macosx/MainMenu.m:442 modules/gui/macosx/MainMenu.m:1617
+#: modules/gui/macosx/MainMenu.m:1623 modules/gui/macosx/simple_prefs.m:419
 msgid "Float on Top"
 msgstr ""
 
-#: modules/gui/macosx/MainMenu.m:447 modules/gui/macosx/MainMenu.m:448
-#: modules/gui/macosx/simple_prefs.m:395
+#: modules/gui/macosx/MainMenu.m:450 modules/gui/macosx/MainMenu.m:451
+#: modules/gui/macosx/simple_prefs.m:414
 msgid "Fullscreen Video Device"
 msgstr "Dyfais Fideo Sgrin Lawn"
 
-#: modules/gui/macosx/MainMenu.m:453 modules/gui/macosx/MainMenu.m:454
+#: modules/gui/macosx/MainMenu.m:456 modules/gui/macosx/MainMenu.m:457
 #: modules/video_filter/postproc.c:200
 msgid "Post processing"
 msgstr "Ôl-brosesu"
 
-#: modules/gui/macosx/MainMenu.m:457 modules/gui/macosx/MainMenu.m:1620
+#: modules/gui/macosx/MainMenu.m:460 modules/gui/macosx/MainMenu.m:1636
 msgid "Add Subtitle File..."
 msgstr "Ychwanegu Ffeil Isdeitlau..."
 
-#: modules/gui/macosx/MainMenu.m:458 modules/gui/macosx/MainMenu.m:459
+#: modules/gui/macosx/MainMenu.m:461 modules/gui/macosx/MainMenu.m:462
 msgid "Subtitles Track"
 msgstr "Trac Isdeitlau"
 
-#: modules/gui/macosx/MainMenu.m:460
+#: modules/gui/macosx/MainMenu.m:463
 msgid "Text Size"
 msgstr "Maint y Testun"
 
-#: modules/gui/macosx/MainMenu.m:461
+#: modules/gui/macosx/MainMenu.m:464
 msgid "Text Color"
 msgstr "Lliw y Testun"
 
-#: modules/gui/macosx/MainMenu.m:462
+#: modules/gui/macosx/MainMenu.m:465
 msgid "Outline Thickness"
 msgstr "Trwch yr Amlinell"
 
-#: modules/gui/macosx/MainMenu.m:464 modules/gui/macosx/MainMenu.m:465
+#: modules/gui/macosx/MainMenu.m:467 modules/gui/macosx/MainMenu.m:468
 msgid "Background Opacity"
 msgstr "Anhryloywder y Cefndir"
 
-#: modules/gui/macosx/MainMenu.m:466
+#: modules/gui/macosx/MainMenu.m:469
 msgid "Background Color"
 msgstr "Lliw'r Cefndir"
 
-#: modules/gui/macosx/MainMenu.m:468
+#: modules/gui/macosx/MainMenu.m:471
 msgid "Transparent"
 msgstr "Tryloyw"
 
-#: modules/gui/macosx/MainMenu.m:475
+#: modules/gui/macosx/MainMenu.m:478
 msgid "Window"
 msgstr "Ffenestr"
 
-#: modules/gui/macosx/MainMenu.m:476
+#: modules/gui/macosx/MainMenu.m:479
 msgid "Minimize"
 msgstr ""
 
-#: modules/gui/macosx/MainMenu.m:478
+#: modules/gui/macosx/MainMenu.m:481
 msgid "Player..."
-msgstr "Chwaraewr..."
+msgstr "Chwaraeydd..."
 
-#: modules/gui/macosx/MainMenu.m:479
+#: modules/gui/macosx/MainMenu.m:482
 msgid "Main Window..."
 msgstr "Prif Ffenestr..."
 
-#: modules/gui/macosx/MainMenu.m:480
+#: modules/gui/macosx/MainMenu.m:483
 msgid "Audio Effects..."
 msgstr "Effeithiau Sain..."
 
-#: modules/gui/macosx/MainMenu.m:481
+#: modules/gui/macosx/MainMenu.m:484
 msgid "Video Effects..."
 msgstr "Effeithiau Fideo..."
 
-#: modules/gui/macosx/MainMenu.m:482
+#: modules/gui/macosx/MainMenu.m:485
 msgid "Bookmarks..."
 msgstr "Nodau..."
 
-#: modules/gui/macosx/MainMenu.m:483
+#: modules/gui/macosx/MainMenu.m:486
 msgid "Playlist..."
 msgstr "Rhestr chwarae..."
 
-#: modules/gui/macosx/MainMenu.m:484 modules/gui/macosx/playlist.m:586
+#: modules/gui/macosx/MainMenu.m:487 modules/gui/macosx/playlist.m:586
 msgid "Media Information..."
 msgstr "Gwybodaeth Cyfrwng..."
 
-#: modules/gui/macosx/MainMenu.m:485
+#: modules/gui/macosx/MainMenu.m:488
 msgid "Messages..."
 msgstr "Negeseuon..."
 
-#: modules/gui/macosx/MainMenu.m:486
+#: modules/gui/macosx/MainMenu.m:489
 msgid "Errors and Warnings..."
 msgstr "Gwallau a rhybyddion..."
 
-#: modules/gui/macosx/MainMenu.m:488
+#: modules/gui/macosx/MainMenu.m:491
 msgid "Bring All to Front"
 msgstr ""
 
-#: modules/gui/macosx/MainMenu.m:490 modules/gui/qt4/dialogs/help.cpp:54
+#: modules/gui/macosx/MainMenu.m:493 modules/gui/qt4/dialogs/help.cpp:54
 #: modules/gui/qt4/menus.cpp:942
 msgid "Help"
 msgstr "Cymorth"
 
-#: modules/gui/macosx/MainMenu.m:491
+#: modules/gui/macosx/MainMenu.m:494
 msgid "VLC media player Help..."
-msgstr "Cymorth chwaraewr VLC..."
+msgstr "Cymorth chwaraeydd VLC..."
 
-#: modules/gui/macosx/MainMenu.m:492
+#: modules/gui/macosx/MainMenu.m:495
 msgid "ReadMe / FAQ..."
 msgstr ""
 
-#: modules/gui/macosx/MainMenu.m:494
+#: modules/gui/macosx/MainMenu.m:497
 msgid "Online Documentation..."
 msgstr "Dogfennau Arlein..."
 
-#: modules/gui/macosx/MainMenu.m:495
+#: modules/gui/macosx/MainMenu.m:498
 msgid "VideoLAN Website..."
 msgstr "Gwefan VideoLAN..."
 
-#: modules/gui/macosx/MainMenu.m:496
+#: modules/gui/macosx/MainMenu.m:499
 msgid "Make a donation..."
 msgstr "Gwneud cyfraniad..."
 
-#: modules/gui/macosx/MainMenu.m:497
+#: modules/gui/macosx/MainMenu.m:500
 msgid "Online Forum..."
 msgstr "Fforwm Arlein..."
 
@@ -16925,7 +16939,7 @@ msgid ""
 msgstr ""
 
 #: modules/gui/macosx/open.m:133 modules/gui/macosx/open.m:591
-#: modules/gui/macosx/simple_prefs.m:340 modules/gui/qt4/ui/sprefs_input.h:359
+#: modules/gui/macosx/simple_prefs.m:359 modules/gui/qt4/ui/sprefs_input.h:359
 msgid "Network"
 msgstr "Rhwydwaith"
 
@@ -16951,7 +16965,7 @@ msgid "Play another media synchronously"
 msgstr "Chwarae eitem arall ar yr un pryd"
 
 #: modules/gui/macosx/open.m:143 modules/gui/macosx/open.m:359
-#: modules/gui/macosx/simple_prefs.m:380 modules/gui/macosx/wizard.m:343
+#: modules/gui/macosx/simple_prefs.m:399 modules/gui/macosx/wizard.m:343
 #: modules/gui/macosx/wizard.m:411 modules/gui/qt4/ui/sprefs_interface.h:521
 msgid "Choose..."
 msgstr "Dewis..."
@@ -17118,7 +17132,7 @@ msgstr "Ff/e"
 msgid "Subtitle encoding"
 msgstr "Amgodiad isdeitlau"
 
-#: modules/gui/macosx/open.m:370 modules/gui/macosx/simple_prefs.m:382
+#: modules/gui/macosx/open.m:370 modules/gui/macosx/simple_prefs.m:401
 #: modules/gui/qt4/ui/sprefs_subtitles.h:300
 msgid "Font size"
 msgstr "Maint ffont"
@@ -17219,64 +17233,60 @@ msgstr "Lawrlwytho Delwedd Clawr"
 msgid "Fetch Meta Data"
 msgstr "Nôl Metaddata"
 
-#: modules/gui/macosx/playlist.m:589 modules/gui/macosx/playlist.m:590
-msgid "Reveal in Finder"
-msgstr ""
-
-#: modules/gui/macosx/playlist.m:592
+#: modules/gui/macosx/playlist.m:590
 msgid "Sort Node by Name"
 msgstr "Trefnu Nodau yn ôl Enw"
 
-#: modules/gui/macosx/playlist.m:593
+#: modules/gui/macosx/playlist.m:591
 msgid "Sort Node by Author"
 msgstr "Trefnu Nodau yn ôl Awdur"
 
-#: modules/gui/macosx/playlist.m:595
+#: modules/gui/macosx/playlist.m:593
 msgid "Search in Playlist"
 msgstr "Chwilio yn y Rhestr Chwarae"
 
-#: modules/gui/macosx/playlist.m:775
+#: modules/gui/macosx/playlist.m:773
 msgid "File Format:"
 msgstr "Fformat Ffeil:"
 
-#: modules/gui/macosx/playlist.m:776
+#: modules/gui/macosx/playlist.m:774
 msgid "Extended M3U"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:777
+#: modules/gui/macosx/playlist.m:775
 msgid "XML Shareable Playlist Format (XSPF)"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:778 modules/gui/qt4/dialogs_provider.cpp:563
+#: modules/gui/macosx/playlist.m:776 modules/gui/qt4/dialogs_provider.cpp:563
 msgid "HTML playlist"
 msgstr "Rhestr chwarae HTML"
 
-#: modules/gui/macosx/playlist.m:780
+#: modules/gui/macosx/playlist.m:778
 msgid "Save Playlist"
 msgstr "Cadw'r Rhestr Chwarae"
 
-#: modules/gui/macosx/playlist.m:1205
+#: modules/gui/macosx/playlist.m:1203
 msgid "Meta-information"
 msgstr "Gwybodaeth Meta"
 
-#: modules/gui/macosx/playlist.m:1541 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/macosx/playlist.m:1518 modules/gui/macosx/playlist.m:1563
+msgid "Restart playback"
+msgstr ""
+
+#: modules/gui/macosx/playlist.m:1565 modules/gui/qt4/qt4.cpp:188
 msgid "Continue playback?"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1541 modules/gui/macosx/simple_prefs.m:837
+#: modules/gui/macosx/playlist.m:1565 modules/gui/macosx/simple_prefs.m:856
 #: modules/gui/qt4/dialogs/firstrun.cpp:109
 msgid "Continue"
 msgstr "Parhau"
 
-#: modules/gui/macosx/playlist.m:1541
-msgid "Restart playback"
-msgstr ""
-
-#: modules/gui/macosx/playlist.m:1541
+#: modules/gui/macosx/playlist.m:1565
 msgid "Always continue"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:1541
+#: modules/gui/macosx/playlist.m:1565
 msgid "Playback of \"%@\" will continue at %@"
 msgstr ""
 
@@ -17307,7 +17317,7 @@ msgid "Read at media"
 msgstr ""
 
 #: modules/gui/macosx/playlistinfo.m:97
-#: modules/gui/qt4/components/info_panels.cpp:571
+#: modules/gui/qt4/components/info_panels.cpp:572
 msgid "Input bitrate"
 msgstr "Didradd mewnbwn"
 
@@ -17356,24 +17366,24 @@ msgstr "Byfferau wedi'u chwarae"
 msgid "Lost buffers"
 msgstr "Byfferi coll"
 
-#: modules/gui/macosx/playlistinfo.m:358
+#: modules/gui/macosx/playlistinfo.m:366
 msgid "Error while saving meta"
 msgstr "Gwall wrth gadw meta"
 
-#: modules/gui/macosx/playlistinfo.m:359
+#: modules/gui/macosx/playlistinfo.m:367
 msgid "VLC was unable to save the meta data."
 msgstr "Ni allai VLC cadw'r metaddata."
 
-#: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:417
+#: modules/gui/macosx/prefs.m:207 modules/gui/macosx/simple_prefs.m:436
 #: modules/gui/qt4/dialogs/preferences.cpp:54
 msgid "Preferences"
 msgstr "Dewisiadau"
 
-#: modules/gui/macosx/prefs.m:209 modules/gui/macosx/simple_prefs.m:415
+#: modules/gui/macosx/prefs.m:210 modules/gui/macosx/simple_prefs.m:434
 msgid "Reset All"
 msgstr "Ailosod y Cyfan"
 
-#: modules/gui/macosx/prefs.m:210
+#: modules/gui/macosx/prefs.m:211
 msgid "Show Basic"
 msgstr "Dangos y Sylfaenol"
 
@@ -17389,279 +17399,279 @@ msgstr "Dewis ffeil"
 msgid "Select"
 msgstr "Dewis"
 
-#: modules/gui/macosx/simple_prefs.m:269
-#: modules/gui/qt4/components/simple_preferences.cpp:270
-#: modules/gui/qt4/components/simple_preferences.cpp:716
+#: modules/gui/macosx/simple_prefs.m:288
+#: modules/gui/qt4/components/simple_preferences.cpp:288
+#: modules/gui/qt4/components/simple_preferences.cpp:734
 #: modules/gui/qt4/dialogs/plugins.cpp:372
 msgid "Interface Settings"
 msgstr "Gosodiadau Rhyngwyneb"
 
-#: modules/gui/macosx/simple_prefs.m:271
-#: modules/gui/qt4/components/simple_preferences.cpp:272
-#: modules/gui/qt4/components/simple_preferences.cpp:447
+#: modules/gui/macosx/simple_prefs.m:290
+#: modules/gui/qt4/components/simple_preferences.cpp:290
+#: modules/gui/qt4/components/simple_preferences.cpp:465
 msgid "Audio Settings"
 msgstr "Gosodiadau Sain"
 
-#: modules/gui/macosx/simple_prefs.m:273
-#: modules/gui/qt4/components/simple_preferences.cpp:274
-#: modules/gui/qt4/components/simple_preferences.cpp:401
+#: modules/gui/macosx/simple_prefs.m:292
+#: modules/gui/qt4/components/simple_preferences.cpp:292
+#: modules/gui/qt4/components/simple_preferences.cpp:419
 msgid "Video Settings"
 msgstr "Gosodiadau Fideo"
 
-#: modules/gui/macosx/simple_prefs.m:275
-#: modules/gui/qt4/components/simple_preferences.cpp:276
-#: modules/gui/qt4/components/simple_preferences.cpp:855
+#: modules/gui/macosx/simple_prefs.m:294
+#: modules/gui/qt4/components/simple_preferences.cpp:294
+#: modules/gui/qt4/components/simple_preferences.cpp:873
 msgid "Subtitle & On Screen Display Settings"
 msgstr "Gosodiadau Isdeitlau a Dangosiad ar y Sgrin (OSD)"
 
-#: modules/gui/macosx/simple_prefs.m:277
+#: modules/gui/macosx/simple_prefs.m:296
 msgid "Input & Codec Settings"
 msgstr "Gosodiadau Mewnbwn a Chodecs"
 
-#: modules/gui/macosx/simple_prefs.m:311
+#: modules/gui/macosx/simple_prefs.m:330
 msgid "General Audio"
 msgstr "Sain cyffredin"
 
-#: modules/gui/macosx/simple_prefs.m:312
+#: modules/gui/macosx/simple_prefs.m:331
 msgid "Preferred Audio language"
 msgstr "Dewis iaith sain"
 
-#: modules/gui/macosx/simple_prefs.m:313
+#: modules/gui/macosx/simple_prefs.m:332
 msgid "Enable Last.fm submissions"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:317
+#: modules/gui/macosx/simple_prefs.m:336
 msgid "Visualization"
 msgstr "Patrymau symudol"
 
-#: modules/gui/macosx/simple_prefs.m:318
+#: modules/gui/macosx/simple_prefs.m:337
 msgid "Keep audio level between sessions"
 msgstr "Cadw'r un uchder sain rhwng sesiynnau"
 
-#: modules/gui/macosx/simple_prefs.m:319 modules/gui/qt4/ui/sprefs_audio.h:429
+#: modules/gui/macosx/simple_prefs.m:338 modules/gui/qt4/ui/sprefs_audio.h:429
 msgid "Always reset audio start level to:"
 msgstr "Ailosod uchder y sain wrth ddechrau i:"
 
-#: modules/gui/macosx/simple_prefs.m:322 modules/gui/qt4/dialogs/vlm.cpp:506
+#: modules/gui/macosx/simple_prefs.m:341 modules/gui/qt4/dialogs/vlm.cpp:506
 msgid "Change"
 msgstr "Newid"
 
-#: modules/gui/macosx/simple_prefs.m:323
+#: modules/gui/macosx/simple_prefs.m:342
 msgid "Change Hotkey"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:327
+#: modules/gui/macosx/simple_prefs.m:346
 msgid "Select an action to change the associated hotkey:"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:328
+#: modules/gui/macosx/simple_prefs.m:347
 #: modules/gui/qt4/components/preferences_widgets.cpp:1148
 msgid "Action"
 msgstr "Gweithred"
 
-#: modules/gui/macosx/simple_prefs.m:329
+#: modules/gui/macosx/simple_prefs.m:348
 msgid "Shortcut"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:335
+#: modules/gui/macosx/simple_prefs.m:354
 msgid "Repair AVI Files"
 msgstr "Atgyweirio Ffeiliau AVI"
 
-#: modules/gui/macosx/simple_prefs.m:336
+#: modules/gui/macosx/simple_prefs.m:355
 msgid "Default Caching Level"
 msgstr "Amser Rhagosodedig i'w Gofio Dros Dro"
 
-#: modules/gui/macosx/simple_prefs.m:337 modules/gui/qt4/ui/open.h:248
+#: modules/gui/macosx/simple_prefs.m:356 modules/gui/qt4/ui/open.h:248
 msgid "Caching"
 msgstr "Cof Dros Dro"
 
-#: modules/gui/macosx/simple_prefs.m:338
+#: modules/gui/macosx/simple_prefs.m:357
 msgid ""
 "Use the complete preferences to configure custom caching values for each "
 "access module."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:339
+#: modules/gui/macosx/simple_prefs.m:358
 msgid "Codecs / Muxers"
 msgstr "Codecs / Amlblecsyddion"
 
-#: modules/gui/macosx/simple_prefs.m:341
+#: modules/gui/macosx/simple_prefs.m:360
 msgid "Hardware Acceleration"
 msgstr "Cyflymiad Caledwedd"
 
-#: modules/gui/macosx/simple_prefs.m:342
+#: modules/gui/macosx/simple_prefs.m:361
 msgid "Post-Processing Quality"
 msgstr "Answadd Ôl-brosesu"
 
-#: modules/gui/macosx/simple_prefs.m:346
+#: modules/gui/macosx/simple_prefs.m:365
 msgid "Edit default application settings for network protocols"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:349
+#: modules/gui/macosx/simple_prefs.m:368
 msgid "Open network streams using the following protocols"
 msgstr "Agor ffrydiau rhwydwaith gyda'r protocolau canlynol"
 
-#: modules/gui/macosx/simple_prefs.m:350
+#: modules/gui/macosx/simple_prefs.m:369
 msgid "Note that these are system-wide settings."
 msgstr "Nodwch bod y gosodiadau hyn ar gyfer y system cyfan."
 
-#: modules/gui/macosx/simple_prefs.m:356
+#: modules/gui/macosx/simple_prefs.m:375
 msgid "Interface style"
 msgstr "Arddull y rhyngwyneb"
 
-#: modules/gui/macosx/simple_prefs.m:357
+#: modules/gui/macosx/simple_prefs.m:376
 msgid "Dark"
 msgstr "Tywyll"
 
-#: modules/gui/macosx/simple_prefs.m:358
+#: modules/gui/macosx/simple_prefs.m:377
 msgid "Bright"
 msgstr "Golau"
 
-#: modules/gui/macosx/simple_prefs.m:359
+#: modules/gui/macosx/simple_prefs.m:378
 msgid "Show video within the main window"
 msgstr "Dangos fideo o fewn i'r brif ffenestr"
 
-#: modules/gui/macosx/simple_prefs.m:361
+#: modules/gui/macosx/simple_prefs.m:380
 msgid "Show Fullscreen Controller"
 msgstr "Dangos rheolwr sgrin lawn"
 
-#: modules/gui/macosx/simple_prefs.m:362
+#: modules/gui/macosx/simple_prefs.m:381
 #: modules/gui/qt4/ui/sprefs_interface.h:528
 msgid "Privacy / Network Interaction"
 msgstr "Preifatrwydd / Rhyngweithiad Rhwydwaith"
 
-#: modules/gui/macosx/simple_prefs.m:367
+#: modules/gui/macosx/simple_prefs.m:386
 msgid "Automatically check for updates"
 msgstr "Gwirio am ddiweddariadau yn awtomatig"
 
-#: modules/gui/macosx/simple_prefs.m:369
+#: modules/gui/macosx/simple_prefs.m:388
 msgid "Enable Growl notifications (on playlist item change)"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:372 modules/lua/vlc.c:94
+#: modules/gui/macosx/simple_prefs.m:391 modules/lua/vlc.c:94
 #: modules/lua/vlc.c:101
 msgid "Lua HTTP"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:375
+#: modules/gui/macosx/simple_prefs.m:394
 msgid "Continue playback"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:378
+#: modules/gui/macosx/simple_prefs.m:397
 msgid "Default Encoding"
 msgstr "Amgodiad Rhagosodedig"
 
-#: modules/gui/macosx/simple_prefs.m:379
+#: modules/gui/macosx/simple_prefs.m:398
 msgid "Display Settings"
 msgstr "Gosodiadau Arddangos"
 
-#: modules/gui/macosx/simple_prefs.m:381
+#: modules/gui/macosx/simple_prefs.m:400
 #: modules/gui/qt4/ui/sprefs_subtitles.h:301
 msgid "Font color"
 msgstr "Lliw ffont"
 
-#: modules/gui/macosx/simple_prefs.m:383 modules/text_renderer/freetype.c:95
+#: modules/gui/macosx/simple_prefs.m:402 modules/text_renderer/freetype.c:95
 #: modules/text_renderer/quartztext.c:92 modules/text_renderer/win32text.c:59
 #: modules/video_filter/marq.c:156 modules/video_filter/rss.c:206
 #: modules/gui/qt4/ui/sprefs_subtitles.h:299
 msgid "Font"
 msgstr "Ffont"
 
-#: modules/gui/macosx/simple_prefs.m:384
+#: modules/gui/macosx/simple_prefs.m:403
 msgid "Subtitle languages"
 msgstr "Iaith isdeitlau"
 
-#: modules/gui/macosx/simple_prefs.m:385
+#: modules/gui/macosx/simple_prefs.m:404
 #: modules/gui/qt4/ui/sprefs_subtitles.h:296
 msgid "Preferred subtitle language"
 msgstr "Iaith isdeitlau dewisol"
 
-#: modules/gui/macosx/simple_prefs.m:387
+#: modules/gui/macosx/simple_prefs.m:406
 msgid "Enable OSD"
 msgstr "Galluogi Dangosiad ar y Sgrin (OSD)"
 
-#: modules/gui/macosx/simple_prefs.m:388 modules/text_renderer/win32text.c:66
+#: modules/gui/macosx/simple_prefs.m:407 modules/text_renderer/win32text.c:66
 #: modules/video_filter/marq.c:107 modules/video_filter/rss.c:146
 msgid "Opacity"
 msgstr "Anhryloywder"
 
-#: modules/gui/macosx/simple_prefs.m:389 modules/text_renderer/freetype.c:119
+#: modules/gui/macosx/simple_prefs.m:408 modules/text_renderer/freetype.c:119
 msgid "Force bold"
 msgstr "Gorfodi ffont trwm"
 
-#: modules/gui/macosx/simple_prefs.m:390 modules/text_renderer/freetype.c:125
+#: modules/gui/macosx/simple_prefs.m:409 modules/text_renderer/freetype.c:125
 #: modules/gui/qt4/ui/sprefs_subtitles.h:303
 msgid "Outline color"
 msgstr "Lliw yr amlinell"
 
-#: modules/gui/macosx/simple_prefs.m:391 modules/text_renderer/freetype.c:126
+#: modules/gui/macosx/simple_prefs.m:410 modules/text_renderer/freetype.c:126
 #: modules/gui/qt4/ui/sprefs_subtitles.h:302
 msgid "Outline thickness"
 msgstr "Trwch yr amlinell"
 
-#: modules/gui/macosx/simple_prefs.m:394
+#: modules/gui/macosx/simple_prefs.m:413
 msgid "Black screens in Fullscreen mode"
 msgstr "Srin du mewn modd sgrin lawn"
 
-#: modules/gui/macosx/simple_prefs.m:396 modules/stream_out/display.c:53
+#: modules/gui/macosx/simple_prefs.m:415 modules/stream_out/display.c:53
 #: modules/gui/qt4/ui/sprefs_video.h:322
 msgid "Display"
 msgstr "Dangosiad"
 
-#: modules/gui/macosx/simple_prefs.m:402 modules/gui/qt4/ui/sprefs_video.h:338
+#: modules/gui/macosx/simple_prefs.m:421 modules/gui/qt4/ui/sprefs_video.h:338
 msgid "Video snapshots"
 msgstr "Cipluniau fideo"
 
-#: modules/gui/macosx/simple_prefs.m:404 modules/meta_engine/folder.c:63
+#: modules/gui/macosx/simple_prefs.m:423 modules/meta_engine/folder.c:63
 msgid "Folder"
 msgstr "Ffolder"
 
-#: modules/gui/macosx/simple_prefs.m:405 modules/gui/qt4/ui/sprefs_video.h:344
+#: modules/gui/macosx/simple_prefs.m:424 modules/gui/qt4/ui/sprefs_video.h:344
 msgid "Format"
 msgstr "Fformat"
 
-#: modules/gui/macosx/simple_prefs.m:406 modules/gui/qt4/ui/sprefs_video.h:341
+#: modules/gui/macosx/simple_prefs.m:425 modules/gui/qt4/ui/sprefs_video.h:341
 msgid "Prefix"
 msgstr "Rhagddodiad"
 
-#: modules/gui/macosx/simple_prefs.m:407 modules/gui/qt4/ui/sprefs_video.h:343
+#: modules/gui/macosx/simple_prefs.m:426 modules/gui/qt4/ui/sprefs_video.h:343
 msgid "Sequential numbering"
 msgstr "Rhifo'n dilyniannol"
 
-#: modules/gui/macosx/simple_prefs.m:581
+#: modules/gui/macosx/simple_prefs.m:600
 msgid "Last check on: %@"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:583
+#: modules/gui/macosx/simple_prefs.m:602
 msgid "No check was performed yet."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:704
-#: modules/gui/qt4/components/simple_preferences.cpp:690
+#: modules/gui/macosx/simple_prefs.m:723
+#: modules/gui/qt4/components/simple_preferences.cpp:708
 msgid "Lowest latency"
 msgstr "Cuddni isaf"
 
-#: modules/gui/macosx/simple_prefs.m:705
-#: modules/gui/qt4/components/simple_preferences.cpp:691
+#: modules/gui/macosx/simple_prefs.m:724
+#: modules/gui/qt4/components/simple_preferences.cpp:709
 msgid "Low latency"
 msgstr "Cuddni isel"
 
-#: modules/gui/macosx/simple_prefs.m:705
-#: modules/gui/qt4/components/simple_preferences.cpp:693
+#: modules/gui/macosx/simple_prefs.m:724
+#: modules/gui/qt4/components/simple_preferences.cpp:711
 msgid "High latency"
 msgstr "Cuddni uchel"
 
-#: modules/gui/macosx/simple_prefs.m:705
-#: modules/gui/qt4/components/simple_preferences.cpp:694
+#: modules/gui/macosx/simple_prefs.m:724
+#: modules/gui/qt4/components/simple_preferences.cpp:712
 msgid "Higher latency"
 msgstr "Cuddni Uchaf"
 
-#: modules/gui/macosx/simple_prefs.m:836
+#: modules/gui/macosx/simple_prefs.m:855
 #: modules/gui/qt4/dialogs/preferences.cpp:327
 msgid "Reset Preferences"
 msgstr "Ailosod Dewisiadau"
 
-#: modules/gui/macosx/simple_prefs.m:839
+#: modules/gui/macosx/simple_prefs.m:858
 msgid ""
 "This will reset VLC media player's preferences.\n"
 "\n"
@@ -17674,40 +17684,40 @@ msgid ""
 "Are you sure you want to continue?"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1135
+#: modules/gui/macosx/simple_prefs.m:1154
 msgid ""
 "This setting cannot be changed because the native fullscreen mode is enabled."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1197
+#: modules/gui/macosx/simple_prefs.m:1216
 msgid "Choose the folder to save your video snapshots to."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1199
-#: modules/gui/macosx/simple_prefs.m:1296
+#: modules/gui/macosx/simple_prefs.m:1218
+#: modules/gui/macosx/simple_prefs.m:1319
 msgid "Choose"
 msgstr "Dewis"
 
-#: modules/gui/macosx/simple_prefs.m:1294
+#: modules/gui/macosx/simple_prefs.m:1317
 msgid "Choose the directory or filename where the records will be stored."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1413
+#: modules/gui/macosx/simple_prefs.m:1436
 msgid ""
 "Press new keys for\n"
 "\"%@\""
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1486
+#: modules/gui/macosx/simple_prefs.m:1509
 msgid "Invalid combination"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1487
+#: modules/gui/macosx/simple_prefs.m:1510
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1497
-#: modules/gui/macosx/simple_prefs.m:1501
+#: modules/gui/macosx/simple_prefs.m:1520
+#: modules/gui/macosx/simple_prefs.m:1524
 msgid "This combination is already taken by \"%@\"."
 msgstr ""
 
@@ -18211,7 +18221,7 @@ msgid ""
 "but it won't work over Internet. RTP headers will be added to the stream"
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:316
+#: modules/gui/macosx/wizard.m:316 modules/gui/qt4/dialogs/sout.cpp:91
 msgid "Back"
 msgstr "Nôl"
 
@@ -18774,7 +18784,7 @@ msgstr " .                      Dangos/Cuddio ffeiliau wedi'u cuddio"
 
 #: modules/gui/ncurses.c:938
 msgid "[Player]"
-msgstr "[Chwaraewr]"
+msgstr "[Chwaraeydd]"
 
 #. xgettext: You can use ↑ and ↓ characters
 #: modules/gui/ncurses.c:941
@@ -19185,12 +19195,12 @@ msgstr ""
 msgid "Find meta data using audio fingerprinting"
 msgstr ""
 
-#: modules/gui/qt4/components/info_panels.cpp:391
+#: modules/gui/qt4/components/info_panels.cpp:392
 msgid "Extra metadata and other information are shown in this panel.\n"
 msgstr ""
 "Caiff metaddata ychwanegol a gwybodaeth arall ei ddangos yn y panel hwn.\n"
 
-#: modules/gui/qt4/components/info_panels.cpp:463
+#: modules/gui/qt4/components/info_panels.cpp:464
 msgid ""
 "Information about what your media or stream is made of.\n"
 "Muxer, Audio and Video Codecs, Subtitles are shown."
@@ -19198,89 +19208,89 @@ msgstr ""
 "Gwybodaeth am wahanol ffrydiau'r eitem.\n"
 "Dangosir yr amlblecsydd, isdeitlau a chodecs sain a fideo."
 
-#: modules/gui/qt4/components/info_panels.cpp:540
+#: modules/gui/qt4/components/info_panels.cpp:541
 msgid "Current media / stream statistics"
 msgstr "Ystadegau'r eitem / ffrwd bresennol"
 
-#: modules/gui/qt4/components/info_panels.cpp:566
+#: modules/gui/qt4/components/info_panels.cpp:567
 msgid "Input/Read"
 msgstr "Mewnbwn/Darllen"
 
-#: modules/gui/qt4/components/info_panels.cpp:567
+#: modules/gui/qt4/components/info_panels.cpp:568
 msgid "Output/Written/Sent"
 msgstr "Allbwn/Ysgrifennu/Anfon"
 
-#: modules/gui/qt4/components/info_panels.cpp:569
+#: modules/gui/qt4/components/info_panels.cpp:570
 msgid "Media data size"
 msgstr "Maint o ddata'r eitem"
 
-#: modules/gui/qt4/components/info_panels.cpp:575
+#: modules/gui/qt4/components/info_panels.cpp:576
 msgid "Demuxed data size"
 msgstr "Maint o ddata a datblecswyd"
 
-#: modules/gui/qt4/components/info_panels.cpp:576
+#: modules/gui/qt4/components/info_panels.cpp:577
 msgid "Content bitrate"
 msgstr "Didradd cynnwys"
 
-#: modules/gui/qt4/components/info_panels.cpp:578
+#: modules/gui/qt4/components/info_panels.cpp:579
 msgid "Discarded (corrupted)"
 msgstr "Wedi'i waredu (llygredig)"
 
-#: modules/gui/qt4/components/info_panels.cpp:580
+#: modules/gui/qt4/components/info_panels.cpp:581
 msgid "Dropped (discontinued)"
 msgstr "Wedi'i disgyn (terfynedig)"
 
-#: modules/gui/qt4/components/info_panels.cpp:583
-#: modules/gui/qt4/components/info_panels.cpp:596
+#: modules/gui/qt4/components/info_panels.cpp:584
+#: modules/gui/qt4/components/info_panels.cpp:597
 msgid "Decoded"
 msgstr "Wedi'i ddatgodio"
 
-#: modules/gui/qt4/components/info_panels.cpp:584
-#: modules/gui/qt4/components/info_panels.cpp:597
+#: modules/gui/qt4/components/info_panels.cpp:585
+#: modules/gui/qt4/components/info_panels.cpp:598
 msgid "blocks"
 msgstr "bloc"
 
-#: modules/gui/qt4/components/info_panels.cpp:585
+#: modules/gui/qt4/components/info_panels.cpp:586
 msgid "Displayed"
 msgstr "Wedi'i ddangos"
 
-#: modules/gui/qt4/components/info_panels.cpp:586
-#: modules/gui/qt4/components/info_panels.cpp:588
+#: modules/gui/qt4/components/info_panels.cpp:587
+#: modules/gui/qt4/components/info_panels.cpp:589
 msgid "frames"
 msgstr "ffrâm"
 
-#: modules/gui/qt4/components/info_panels.cpp:587
-#: modules/gui/qt4/components/info_panels.cpp:600
+#: modules/gui/qt4/components/info_panels.cpp:588
+#: modules/gui/qt4/components/info_panels.cpp:601
 msgid "Lost"
 msgstr "Wedi'i golli"
 
-#: modules/gui/qt4/components/info_panels.cpp:590
 #: modules/gui/qt4/components/info_panels.cpp:591
+#: modules/gui/qt4/components/info_panels.cpp:592
 msgid "Sent"
 msgstr "Wedi'i anfon"
 
-#: modules/gui/qt4/components/info_panels.cpp:590
+#: modules/gui/qt4/components/info_panels.cpp:591
 msgid "packets"
 msgstr "pecynnau"
 
-#: modules/gui/qt4/components/info_panels.cpp:593
+#: modules/gui/qt4/components/info_panels.cpp:594
 msgid "Upstream rate"
 msgstr "Cyfradd uwchffrydio"
 
-#: modules/gui/qt4/components/info_panels.cpp:598
+#: modules/gui/qt4/components/info_panels.cpp:599
 msgid "Played"
 msgstr "Wedi'i chwarae"
 
-#: modules/gui/qt4/components/info_panels.cpp:599
 #: modules/gui/qt4/components/info_panels.cpp:600
+#: modules/gui/qt4/components/info_panels.cpp:601
 msgid "buffers"
 msgstr "byfferau"
 
-#: modules/gui/qt4/components/info_panels.cpp:622
+#: modules/gui/qt4/components/info_panels.cpp:623
 msgid "Last 60 seconds"
 msgstr "60 eiliad diwethaf"
 
-#: modules/gui/qt4/components/info_panels.cpp:623
+#: modules/gui/qt4/components/info_panels.cpp:624
 msgid "Overall"
 msgstr "Cyffredinol"
 
@@ -19296,45 +19306,45 @@ msgstr ""
 "Cyflymder chwarae presennol: %1\n"
 "Cliciwch i'w addasu."
 
-#: modules/gui/qt4/components/interface_widgets.cpp:544
+#: modules/gui/qt4/components/interface_widgets.cpp:542
 msgid "Revert to normal play speed"
 msgstr "Dychwelyd i'r cyflymder chwarae arferol"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:650
+#: modules/gui/qt4/components/interface_widgets.cpp:648
 msgid "Download cover art"
 msgstr "Lawrlwytho delwedd clawr"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:654
+#: modules/gui/qt4/components/interface_widgets.cpp:652
 msgid "Add cover art from file"
 msgstr "Ychwanegu darlun clawr o ffeil"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:720
+#: modules/gui/qt4/components/interface_widgets.cpp:718
 msgid "Choose Cover Art"
 msgstr "Dewis Darlun Clawr"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:721
+#: modules/gui/qt4/components/interface_widgets.cpp:719
 msgid "Image Files (*.gif *.jpg *.jpeg *.png)"
 msgstr "Ffeiliau Delwedd (*.gif *.jpg *.jpeg *.png)"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:745
+#: modules/gui/qt4/components/interface_widgets.cpp:743
 #: modules/gui/qt4/dialogs/toolbar.cpp:544
 msgid "Elapsed time"
 msgstr "Amser wedi mynd heibio"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:749
+#: modules/gui/qt4/components/interface_widgets.cpp:747
 #: modules/gui/qt4/dialogs/toolbar.cpp:548
 msgid "Total/Remaining time"
 msgstr "Cyfanswm / Ar ôl"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:751
+#: modules/gui/qt4/components/interface_widgets.cpp:749
 msgid "Click to toggle between total and remaining time"
 msgstr "Clicia i doglo rhwng yr hyd a'r amser sy'n weddill."
 
-#: modules/gui/qt4/components/interface_widgets.cpp:757
+#: modules/gui/qt4/components/interface_widgets.cpp:755
 msgid "Click to toggle between elapsed and remaining time"
 msgstr "Clicia i doglo rhwng yr amser wedi mynd heibio a'r amser sy'n weddill"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:759
+#: modules/gui/qt4/components/interface_widgets.cpp:757
 msgid "Double click to jump to a chosen time position"
 msgstr "Clicia dwywaith i neidio at amser penodol."
 
@@ -19623,21 +19633,21 @@ msgstr ""
 msgid "Key: "
 msgstr "Allwedd:"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:278
-#: modules/gui/qt4/components/simple_preferences.cpp:618
+#: modules/gui/qt4/components/simple_preferences.cpp:296
+#: modules/gui/qt4/components/simple_preferences.cpp:636
 msgid "Input & Codecs Settings"
 msgstr "Gosodiadau Mewnbwn a Chodecs"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:280
-#: modules/gui/qt4/components/simple_preferences.cpp:899
+#: modules/gui/qt4/components/simple_preferences.cpp:298
+#: modules/gui/qt4/components/simple_preferences.cpp:917
 msgid "Configure Hotkeys"
 msgstr ""
 
-#: modules/gui/qt4/components/simple_preferences.cpp:455
+#: modules/gui/qt4/components/simple_preferences.cpp:473
 msgid "Device:"
 msgstr "Dyfais"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:623
+#: modules/gui/qt4/components/simple_preferences.cpp:641
 msgid ""
 "If this property is blank, different values\n"
 "for DVD, VCD, and CDDA are set.\n"
@@ -19645,43 +19655,43 @@ msgid ""
 "individually in the advanced preferences."
 msgstr ""
 
-#: modules/gui/qt4/components/simple_preferences.cpp:742
+#: modules/gui/qt4/components/simple_preferences.cpp:760
 msgid "This is VLC's skinnable interface. You can download other skins at"
 msgstr ""
 "Dyma rhyngwyneb addasedig VLC. Mae crwyn eraill ar gael i'w lawrlwytho o "
 
-#: modules/gui/qt4/components/simple_preferences.cpp:744
+#: modules/gui/qt4/components/simple_preferences.cpp:762
 msgid "VLC skins website"
 msgstr "gwefan crwyn VLC"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:768
+#: modules/gui/qt4/components/simple_preferences.cpp:786
 msgid "System's default"
 msgstr "Dewis Rhagosodedig y System"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1267
+#: modules/gui/qt4/components/simple_preferences.cpp:1290
 msgid "File associations"
 msgstr "Cydgysylltiadau ffeiliau"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1276
+#: modules/gui/qt4/components/simple_preferences.cpp:1299
 #: modules/gui/qt4/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "Ffeiliau Sain"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1277
+#: modules/gui/qt4/components/simple_preferences.cpp:1300
 #: modules/gui/qt4/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "Ffeiliau Fideo"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1278
+#: modules/gui/qt4/components/simple_preferences.cpp:1301
 #: modules/gui/qt4/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "Ffeiliau Rhestrau Chwarae"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1330
+#: modules/gui/qt4/components/simple_preferences.cpp:1353
 msgid "&Apply"
 msgstr "&Gweithredu"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1331
+#: modules/gui/qt4/components/simple_preferences.cpp:1354
 #: modules/gui/qt4/dialogs/convert.cpp:109
 #: modules/gui/qt4/dialogs/gototime.cpp:49
 #: modules/gui/qt4/dialogs/open.cpp:108 modules/gui/qt4/dialogs/openurl.cpp:61
@@ -19718,11 +19728,15 @@ msgstr ""
 "Dyw'r amlblecsydd hwn ddim yn cael ei darparu yn uniongyrchol gan VLC. Fe "
 "all fod ar goll."
 
-#: modules/gui/qt4/components/sout/profile_selector.cpp:748
+#: modules/gui/qt4/components/sout/profile_selector.cpp:609
+msgid "This muxer is missing. Using this profile will fail"
+msgstr ""
+
+#: modules/gui/qt4/components/sout/profile_selector.cpp:753
 msgid " Profile Name Missing"
 msgstr " Enw Proffil ar Goll"
 
-#: modules/gui/qt4/components/sout/profile_selector.cpp:749
+#: modules/gui/qt4/components/sout/profile_selector.cpp:754
 msgid "You must set a name for the profile."
 msgstr "Rhaid rhoi enw ar gyfer y proffil."
 
@@ -19836,7 +19850,7 @@ msgstr "Dileu'r holl nodau"
 #: modules/gui/qt4/dialogs/errors.cpp:49
 #: modules/gui/qt4/dialogs/extended.cpp:110
 #: modules/gui/qt4/dialogs/help.cpp:66 modules/gui/qt4/dialogs/help.cpp:212
-#: modules/gui/qt4/dialogs/mediainfo.cpp:79
+#: modules/gui/qt4/dialogs/mediainfo.cpp:80
 #: modules/gui/qt4/dialogs/messages.cpp:81
 #: modules/gui/qt4/dialogs/plugins.cpp:88
 #: modules/gui/qt4/dialogs/plugins.cpp:1400
@@ -19973,7 +19987,7 @@ msgstr "&Na"
 
 #: modules/gui/qt4/dialogs/help.cpp:222 modules/gui/qt4/ui/update.h:147
 msgid "VLC media player updates"
-msgstr "Diweddariadau chwaraewr VLC"
+msgstr "Diweddariadau chwaraeydd VLC"
 
 #: modules/gui/qt4/dialogs/help.cpp:294
 msgid "A new version of VLC (%1.%2.%3%4) is available."
@@ -19981,7 +19995,7 @@ msgstr "Mae fersiwn newydd o VLC (%1.%2.%3%4) ar gael."
 
 #: modules/gui/qt4/dialogs/help.cpp:319
 msgid "You have the latest version of VLC media player."
-msgstr "Rwyt gyda'r fersiwn diweddaraf o chwaraewr VLC."
+msgstr "Rwyt gyda'r fersiwn diweddaraf o chwaraeydd VLC."
 
 #: modules/gui/qt4/dialogs/help.cpp:326
 msgid "An error occurred while checking for updates..."
@@ -19991,27 +20005,27 @@ msgstr "Roedd gwall wrth wirio am ddiweddariadau..."
 msgid "Current Media Information"
 msgstr "Gwybodaeth y Cyfrwn Presennol"
 
-#: modules/gui/qt4/dialogs/mediainfo.cpp:63
+#: modules/gui/qt4/dialogs/mediainfo.cpp:64
 msgid "&General"
 msgstr "&Cyffredin"
 
-#: modules/gui/qt4/dialogs/mediainfo.cpp:65
+#: modules/gui/qt4/dialogs/mediainfo.cpp:66
 msgid "&Metadata"
 msgstr "&Metaddata"
 
-#: modules/gui/qt4/dialogs/mediainfo.cpp:67
+#: modules/gui/qt4/dialogs/mediainfo.cpp:68
 msgid "Co&dec"
 msgstr "Co&dec"
 
-#: modules/gui/qt4/dialogs/mediainfo.cpp:71
+#: modules/gui/qt4/dialogs/mediainfo.cpp:72
 msgid "S&tatistics"
 msgstr "&Ystadegau"
 
-#: modules/gui/qt4/dialogs/mediainfo.cpp:77
+#: modules/gui/qt4/dialogs/mediainfo.cpp:78
 msgid "&Save Metadata"
 msgstr "&Cadw Metaddata"
 
-#: modules/gui/qt4/dialogs/mediainfo.cpp:82
+#: modules/gui/qt4/dialogs/mediainfo.cpp:83
 msgid "Location:"
 msgstr "Lleoliad:"
 
@@ -20081,7 +20095,7 @@ msgstr "&Ciwio"
 #: modules/gui/qt4/dialogs/open.cpp:117 modules/gui/qt4/dialogs/open.cpp:212
 #: modules/gui/qt4/dialogs/openurl.cpp:55 modules/gui/qt4/menus.cpp:815
 msgid "&Play"
-msgstr "&Chwarae"
+msgstr "C&hwarae"
 
 #: modules/gui/qt4/dialogs/open.cpp:119 modules/gui/qt4/dialogs/open.cpp:202
 msgid "&Stream"
@@ -20274,7 +20288,7 @@ msgstr "Methwyd cadw'r ffeil dewisiadau"
 
 #: modules/gui/qt4/dialogs/preferences.cpp:328
 msgid "Are you sure you want to reset your VLC media player preferences?"
-msgstr "Ydych yn sicr am ailosod eich dewisiadau chwaraewr VLC?"
+msgstr "Ydych yn sicr am ailosod eich dewisiadau chwaraeydd VLC?"
 
 #: modules/gui/qt4/dialogs_provider.cpp:65
 msgid "Open Directory"
@@ -20531,20 +20545,19 @@ msgstr "Amserlen:"
 msgid "VOD: "
 msgstr "Fideo ar Alw (VOD):"
 
-#: modules/gui/qt4/main_interface.cpp:379
+#: modules/gui/qt4/main_interface.cpp:382
 msgid "Do you want to restart the playback where left off?"
 msgstr "Hoffech barhau i chwarae o'r man diwethaf?"
 
-#: modules/gui/qt4/main_interface.cpp:383
-#, fuzzy
+#: modules/gui/qt4/main_interface.cpp:388
 msgid "&Continue"
-msgstr "Parhau"
+msgstr ""
 
-#: modules/gui/qt4/main_interface.cpp:1232
+#: modules/gui/qt4/main_interface.cpp:1256
 msgid "Control menu for the player"
-msgstr "Dewislen rheoli ar gyfer y chwaraewr"
+msgstr "Dewislen rheoli ar gyfer y chwaraeydd"
 
-#: modules/gui/qt4/main_interface.cpp:1276
+#: modules/gui/qt4/main_interface.cpp:1300
 msgid "Paused"
 msgstr "Wedi'i seibio"
 
@@ -20578,11 +20591,11 @@ msgstr "&Golwg"
 
 #: modules/gui/qt4/menus.cpp:349 modules/gui/qt4/menus.cpp:777
 msgid "&Help"
-msgstr "&Cymorth"
+msgstr "C&ymorth"
 
 #: modules/gui/qt4/menus.cpp:362
 msgid "Open &File..."
-msgstr "Agor &Ffeil..."
+msgstr "&Agor Ffeil..."
 
 #: modules/gui/qt4/menus.cpp:364
 msgid "&Open Multiple Files..."
@@ -20846,11 +20859,11 @@ msgstr "&Chwarae"
 
 #: modules/gui/qt4/menus.cpp:1146
 msgid "&Hide VLC media player in taskbar"
-msgstr "&Cuddio chwaraewr VLC yn y bar tasgau"
+msgstr "&Cuddio chwaraeydd VLC yn y bar tasgau"
 
 #: modules/gui/qt4/menus.cpp:1152
 msgid "Sho&w VLC media player"
-msgstr "&Dangos chwaraewr VLC"
+msgstr "&Dangos chwaraeydd VLC"
 
 #: modules/gui/qt4/menus.cpp:1163
 msgid "&Open Media"
@@ -22044,6 +22057,11 @@ msgstr ""
 #: modules/notify/notify.c:60
 msgid "LibNotify Notification Plugin"
 msgstr ""
+
+#: modules/packetizer/avparser.h:49
+#, fuzzy
+msgid "avparser packetizer"
+msgstr "Pecynnydd Copy"
 
 #: modules/packetizer/copy.c:48
 msgid "Copy packetizer"
@@ -26522,7 +26540,7 @@ msgstr ""
 #: modules/video_output/xcb/window.c:282
 msgctxt "ASCII"
 msgid "VLC media player"
-msgstr "Chwaraewr VLC"
+msgstr "Chwaraeydd VLC"
 
 #. xgettext: This is a plain ASCII spelling of "VLC"
 #. for the ICCCM window name. This must be pure ASCII.
@@ -26569,19 +26587,6 @@ msgstr "XVideo"
 
 #: modules/video_output/xcb/xvideo.c:63
 msgid "XVideo output (XCB)"
-msgstr ""
-
-#: modules/video_output/xcb/xvideo.c:335
-msgid "Video acceleration not available"
-msgstr ""
-
-#: modules/video_output/xcb/xvideo.c:336
-#, c-format
-msgid ""
-"The XVideo rendering acceleration driver does not support the required "
-"resolution of %ux%u pixels but %<PRIu32>x%<PRIu32> pixels instead.\n"
-"Acceleration will thus be disabled. Performance may be degraded severely if "
-"the resolution is large."
 msgstr ""
 
 #: modules/video_output/yuv.c:41
@@ -27222,7 +27227,7 @@ msgstr "Amser:"
 #: share/lua/http/index.html:26 share/lua/http/mobile_browse.html:25
 #: share/lua/http/mobile_equalizer.html:25 share/lua/http/mobile_view.html:25
 msgid "VLC media player - Web Interface"
-msgstr "Chwaraewr VLC - Rhyngwyneb Gwe"
+msgstr "Chwaraeydd VLC - Rhyngwyneb Gwe"
 
 #: share/lua/http/index.html:215
 msgid "Hide / Show Library"
@@ -27266,7 +27271,7 @@ msgstr "Ail-lwytho'r Rhestr"
 
 #: share/lua/http/index.html:252
 msgid "Loading flowplayer..."
-msgstr "Yn llwytho llif-chwaraewr..."
+msgstr "Yn llwytho llif-chwaraeydd..."
 
 #: share/lua/http/index.html:252
 msgid "If nothing appears, check your internet connection."
@@ -27302,7 +27307,7 @@ msgstr ""
 msgid ""
 "Volume will be controlled by the player, and not the <i>Main Controls</i>."
 msgstr ""
-"Caiff lefel y sain ei reoli gan y chwaraewr, nid y <i>Prif Reolaeth</i>."
+"Caiff lefel y sain ei reoli gan y chwaraeydd, nid y <i>Prif Reolaeth</i>."
 
 #: share/lua/http/index.html:272
 msgid ""
@@ -27409,9 +27414,8 @@ msgid "Select the file"
 msgstr "Dewis y ffeil"
 
 #: modules/gui/qt4/ui/open.h:265
-#, fuzzy
 msgid "Change the start time for the media"
-msgstr "Amser, mewn milieiliadau (me), i'w gadw mewn cof dros dro (cache)"
+msgstr ""
 
 #: modules/gui/qt4/ui/open.h:267
 msgid "HH'H':mm'm':ss's'.zzz"
@@ -27656,9 +27660,8 @@ msgid "Transcoding Options"
 msgstr "Dewisiadau trawsgodio"
 
 #: modules/gui/qt4/ui/sout.h:213
-#, fuzzy
 msgid "Select and choose transcoding options"
-msgstr "Dewisiadau Ffrydio a Trawsgodio"
+msgstr ""
 
 #: modules/gui/qt4/ui/sout.h:214
 msgid "Activate Transcoding"
@@ -27669,23 +27672,20 @@ msgid "Option Setup"
 msgstr "Gosod Dewisiadau"
 
 #: modules/gui/qt4/ui/sout.h:216
-#, fuzzy
 msgid "Set up any additional options for streaming"
-msgstr "Dewis cyrchfannau i'w ffrydio iddynt"
+msgstr ""
 
 #: modules/gui/qt4/ui/sout.h:217
 msgid "Miscellaneous Options"
 msgstr "Dewisiadau Amrywiol"
 
 #: modules/gui/qt4/ui/sout.h:218
-#, fuzzy
 msgid "Stream all elementary streams"
-msgstr "Newid ID ffrwd elfennol (elementary stream)"
+msgstr ""
 
 #: modules/gui/qt4/ui/sout.h:219
-#, fuzzy
 msgid "Generated stream output string"
-msgstr "Gosodiadau cyffredin allanbwn ffrwd"
+msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_audio.h:428
 msgid " %"
@@ -27712,14 +27712,12 @@ msgid "Dolby Surround:"
 msgstr "Dolby Surround:"
 
 #: modules/gui/qt4/ui/sprefs_audio.h:439
-#, fuzzy
 msgid "Replay gain mode:"
-msgstr "Dull cynyddu wrth ail-chwarae"
+msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_audio.h:440
-#, fuzzy
 msgid "Headphone surround effect"
-msgstr "Effaith clustffonau"
+msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_audio.h:441
 msgid "Normalize volume to:"
@@ -27778,28 +27776,24 @@ msgid "Damaged or incomplete AVI file"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_input.h:360
-#, fuzzy
 msgid "HTTP proxy URL"
-msgstr "Procsi HTTP"
+msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_input.h:361
 msgid "HTTP (default)"
 msgstr "HTTP (rhagosodedig)"
 
 #: modules/gui/qt4/ui/sprefs_input.h:362
-#, fuzzy
 msgid "RTP over RTSP (TCP)"
-msgstr "Defnyddio RTP dros RTSP (TCP)"
+msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_input.h:363
-#, fuzzy
 msgid "Live555 stream transport"
-msgstr "Allbwn ffrwd ffeil"
+msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_input.h:364
-#, fuzzy
 msgid "Default caching policy"
-msgstr "Amser Rhagosodedig i'w Gofio Dros Dro"
+msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_interface.h:505
 msgid "Menus language:"
@@ -28084,9 +28078,8 @@ msgid "Mask"
 msgstr "Masg"
 
 #: modules/gui/qt4/ui/video_effects.h:1468
-#, fuzzy
 msgid "Output Color Filtermode"
-msgstr "Modiwlau allbwn"
+msgstr ""
 
 #: modules/gui/qt4/ui/video_effects.h:1469
 msgid "Brightness (%)"
@@ -28097,14 +28090,12 @@ msgid "Mark analyzed Pixels"
 msgstr ""
 
 #: modules/gui/qt4/ui/video_effects.h:1473
-#, fuzzy
 msgid "Filter threshold (%)"
-msgstr "Trothwy lliwiau"
+msgstr ""
 
 #: modules/gui/qt4/ui/video_effects.h:1476
-#, fuzzy
 msgid "Anaglyph 3D"
-msgstr "Anaglyff"
+msgstr ""
 
 #: modules/gui/qt4/ui/video_effects.h:1477
 msgid "Mirror"
@@ -28127,14 +28118,12 @@ msgid "Soften"
 msgstr "Lleddfu"
 
 #: modules/gui/qt4/ui/video_effects.h:1488
-#, fuzzy
 msgid "Denoiser"
-msgstr "Sŵn"
+msgstr ""
 
 #: modules/gui/qt4/ui/video_effects.h:1489
-#, fuzzy
 msgid "Spatial luma strength"
-msgstr "Aneglurder gofodol"
+msgstr ""
 
 #: modules/gui/qt4/ui/video_effects.h:1490
 msgid "Temporal luma strength"
@@ -28153,9 +28142,8 @@ msgid "VLM configurator"
 msgstr "Ffurfweddwr VLM"
 
 #: modules/gui/qt4/ui/vlm.h:287
-#, fuzzy
 msgid "Media Manager Edition"
-msgstr "Rhestr Rheolwyr Cyfryngau"
+msgstr ""
 
 #: modules/gui/qt4/ui/vlm.h:288
 msgid "Name:"
@@ -28523,18 +28511,6 @@ msgstr "Rhestr Rheolwyr Cyfryngau"
 #~ msgid "Signals a silence and displays and alert (0=no alarm, 1=alarm)."
 #~ msgstr "Mae'n nodi taweli ac yn dangos rhybydd (0=dim larwm, 1=larwm)."
 
-#~ msgid "Subtitle track added"
-#~ msgstr "Ychwanegwyd trac isdeitlau"
-
-#~ msgid "Media in Zip"
-#~ msgstr "Cyfrwng mewn Zip"
-
-#~ msgid "&Post processing"
-#~ msgstr "Ôl-&brosesu"
-
-#~ msgid "Save this Log..."
-#~ msgstr "Cadw'r Log hwn..."
-
 #~ msgid "Choose your preferred video output and configure it here."
 #~ msgstr "Dewiswch eich allbwn fideo a'i ffurfweddu yma."
 
@@ -28543,11 +28519,37 @@ msgstr "Rhestr Rheolwyr Cyfryngau"
 #~ "Mae'r modiwlau hyn yn darparu gweithredoedd rhwydwaith i bob rhan arall o "
 #~ "VLC."
 
+#, fuzzy
+#~ msgid "Manual download only"
+#~ msgstr "Polisi lawrlwytho delweddau albymau"
+
+#~ msgid "Album art download policy"
+#~ msgstr "Polisi lawrlwytho delweddau albymau"
+
+#, fuzzy
+#~ msgid "Album art download policy:"
+#~ msgstr "Polisi lawrlwytho delweddau albymau"
+
+#, fuzzy
+#~ msgid "Subtitle track added"
+#~ msgstr "Trac isdeitlau"
+
+#, fuzzy
+#~ msgid "Media in Zip"
+#~ msgstr "Ailddirwyn y Cyfrwng"
+
+#, fuzzy
+#~ msgid "&Post processing"
+#~ msgstr "Ôl-brosesu"
+
+#, fuzzy
+#~ msgid "Save this Log..."
+#~ msgstr "&Cadw fel..."
+
+#, fuzzy
 #~ msgid ""
 #~ "These are general settings for video/audio/subtitle encoding modules."
-#~ msgstr ""
-#~ "Rhain yw'r gosodiadau cyffredin ar gyfer modiwlau amgodio fideo/sain/"
-#~ "isdeitlau."
+#~ msgstr "Gosodiadau cyffredin ar gyfer modiwlau allbwn fideo."
 
 #, fuzzy
 #~ msgid "No suitable decoder module"
@@ -28555,11 +28557,7 @@ msgstr "Rhestr Rheolwyr Cyfryngau"
 
 #, fuzzy
 #~ msgid "Album art policy"
-#~ msgstr "Polisi lawrlwytho delweddau albymau"
-
-#, fuzzy
-#~ msgid "Manual download only"
-#~ msgstr "Polisi lawrlwytho delweddau albymau"
+#~ msgstr "Cynydd sain wrth ail-chwarae'r albwm"
 
 #, fuzzy
 #~ msgid "Load Media Library"
@@ -28597,9 +28595,6 @@ msgstr "Rhestr Rheolwyr Cyfryngau"
 #~ msgid "Pause iTunes during VLC playback"
 #~ msgstr "Oedi'r chwarae"
 
-#~ msgid "Album art download policy"
-#~ msgstr "Polisi lawrlwytho delweddau albymau"
-
 #, fuzzy
 #~ msgid "Graphic Equalizer"
 #~ msgstr "Cydraddolydd (equalizer)"
@@ -28618,7 +28613,7 @@ msgstr "Rhestr Rheolwyr Cyfryngau"
 
 #, fuzzy
 #~ msgid "&Help..."
-#~ msgstr "&Cymorth"
+#~ msgstr "C&ymorth"
 
 #, fuzzy
 #~ msgid "Synchronise on audio track"
@@ -28627,10 +28622,6 @@ msgstr "Rhestr Rheolwyr Cyfryngau"
 #, fuzzy
 #~ msgid "Add a subtitle file"
 #~ msgstr "Defnyddio ffeil &isdeitlau"
-
-#, fuzzy
-#~ msgid "Album art download policy:"
-#~ msgstr "Polisi lawrlwytho delweddau albymau"
 
 #, fuzzy
 #~ msgid "Configure Media Library"
@@ -29070,11 +29061,11 @@ msgstr "Rhestr Rheolwyr Cyfryngau"
 
 #, fuzzy
 #~ msgid "Hide VLC media player in taskbar"
-#~ msgstr "&Cuddio chwaraewr VLC yn y bar tasgau"
+#~ msgstr "&Cuddio chwaraeydd VLC yn y bar tasgau"
 
 #, fuzzy
 #~ msgid "Show VLC media player"
-#~ msgstr "&Dangos chwaraewr VLC"
+#~ msgstr "&Dangos chwaraeydd VLC"
 
 #, fuzzy
 #~ msgid "Advanced options"

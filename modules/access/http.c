@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2008 VLC authors and VideoLAN
- * $Id: 78a186c6653cc5df1a62c7ed42b0da4cb0ff326d $
+ * $Id: 65fee248c9d37d02555e1b1b32e30c22a88cf31d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -1459,6 +1459,8 @@ static int Request( access_t *p_access, uint64_t i_tell )
             p_sys->psz_icy_name = EnsureUTF8( psz_tmp );
             if( !p_sys->psz_icy_name )
                 free( psz_tmp );
+            else
+                resolve_xml_special_chars( p_sys->psz_icy_name );
             msg_Dbg( p_access, "Icy-Name: %s", p_sys->psz_icy_name );
             input_thread_t *p_input = access_GetParentInput( p_access );
             if ( p_input )
@@ -1480,6 +1482,8 @@ static int Request( access_t *p_access, uint64_t i_tell )
             p_sys->psz_icy_genre = EnsureUTF8( psz_tmp );
             if( !p_sys->psz_icy_genre )
                 free( psz_tmp );
+            else
+                resolve_xml_special_chars( p_sys->psz_icy_genre );
             msg_Dbg( p_access, "Icy-Genre: %s", p_sys->psz_icy_genre );
             input_thread_t *p_input = access_GetParentInput( p_access );
             if( p_input )

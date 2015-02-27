@@ -2,7 +2,7 @@
  * views.cpp : Views for the Playlist
  ****************************************************************************
  * Copyright © 2010 the VideoLAN team
- * $Id: 45306607ab7596929751dffb71c58c034dc5877b $
+ * $Id: 59f6535d7ccf01c7e44d3cf05bc8449953db2a36 $
  *
  * Authors:         Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -484,6 +484,9 @@ PicFlowView::PicFlowView( QAbstractItemModel *p_model, QWidget *parent ) : QAbst
     QHBoxLayout *layout = new QHBoxLayout( this );
     layout->setMargin( 0 );
     picFlow = new PictureFlow( this, p_model );
+    picFlow->setContextMenuPolicy( Qt::CustomContextMenu );
+    connect( picFlow, SIGNAL(customContextMenuRequested( const QPoint & )),
+             this,    SIGNAL(customContextMenuRequested( const QPoint & )) );
     layout->addWidget( picFlow );
     picFlow->setSlideSize(QSize( 4*LISTVIEW_ART_SIZE, 3*LISTVIEW_ART_SIZE) );
     setSelectionMode( QAbstractItemView::SingleSelection );

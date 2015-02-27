@@ -2,7 +2,7 @@
  * main_interface.hpp : Main Interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: e3f36a74158113bdfb364c43380ea966fd80b194 $
+ * $Id: 8d59f653e99cc3fc89819b1d79a6a6ebaef49e58 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -54,6 +54,7 @@ class SpeedControlWidget;
 class QVBoxLayout;
 class QMenu;
 class QSize;
+class QTimer;
 class StandardPLPanel;
 
 class MainInterface : public QVLCMW
@@ -111,7 +112,7 @@ private:
     void createMainWidget( QSettings* );
     void createStatusBar();
     void createPlaylist();
-    void createContinueDialog( QWidget *w );
+    void createResumePanel( QWidget *w );
 
     /* Systray */
     void createSystray();
@@ -147,9 +148,10 @@ private:
     PlaylistWidget      *playlistWidget;
     //VisualSelector      *visualSelector;
 
-    /* continue */
-    QWidget             *continueDialog;
-    int64_t             i_continueTime;
+    /* resume panel */
+    QWidget             *resumePanel;
+    QTimer              *resumeTimer;
+    int64_t             i_resumeTime;
 
     /* Status Bar */
     QLabel              *nameLabel;
@@ -259,8 +261,9 @@ private slots:
     void setBoss();
     void setRaise();
 
-    void showContinueDialog( int64_t);
-    void continuePlayback();
+    void showResumePanel( int64_t);
+    void hideResumePanel();
+    void resumePlayback();
 
 signals:
     void askGetVideo( WId *p_id, int *pi_x, int *pi_y,

@@ -2,7 +2,7 @@
  * bookmarks.m: MacOS X Bookmarks window
  *****************************************************************************
  * Copyright (C) 2005 - 2012 VLC authors and VideoLAN
- * $Id: a322cdda2cc9a3066161b9cb55cb56f67d7555bd $
+ * $Id: 03d4b6298544019d070e93cc6d28c8909dfd26ce $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *
@@ -101,8 +101,6 @@ static VLCBookmarks *_o_sharedInstance = nil;
     [o_btn_rm setTitle: _NS("Remove")];
     [[[o_tbl_dataTable tableColumnWithIdentifier:@"description"] headerCell]
         setStringValue: _NS("Description")];
-    [[[o_tbl_dataTable tableColumnWithIdentifier:@"size_offset"] headerCell]
-        setStringValue: _NS("Position")];
     [[[o_tbl_dataTable tableColumnWithIdentifier:@"time_offset"] headerCell]
         setStringValue: _NS("Time")];
 
@@ -111,7 +109,6 @@ static VLCBookmarks *_o_sharedInstance = nil;
     [o_edit_btn_cancel setTitle: _NS("Cancel")];
     [o_edit_lbl_name setStringValue: _NS("Name")];
     [o_edit_lbl_time setStringValue: _NS("Time")];
-    [o_edit_lbl_bytes setStringValue: _NS("Position")];
 }
 
 - (void)updateCocoaWindowLevel:(NSInteger)i_level
@@ -198,7 +195,6 @@ static VLCBookmarks *_o_sharedInstance = nil;
     int min = (total - hour*60*60) / 60;
     int sec = total - hour*60*60 - min*60;
     [o_edit_fld_time setStringValue: [NSString stringWithFormat:@"%02d:%02d:%02d", hour, min, sec]];
-    [o_edit_fld_bytes setStringValue: [NSString stringWithFormat:@"%lli", pp_bookmarks[row]->i_byte_offset]];
 
     /* Just keep the pointer value to check if it
      * changes. Note, we don't need to keep a reference to the object.
@@ -248,16 +244,15 @@ static VLCBookmarks *_o_sharedInstance = nil;
     free(pp_bookmarks[i]->psz_name);
 
     pp_bookmarks[i]->psz_name = strdup([[o_edit_fld_name stringValue] UTF8String]);
-    pp_bookmarks[i]->i_byte_offset = [[o_edit_fld_bytes stringValue] intValue];
 
     NSArray * components = [[o_edit_fld_time stringValue] componentsSeparatedByString:@":"];
     NSUInteger componentCount = [components count];
     if (componentCount == 1)
-        pp_bookmarks[i]->i_time_offset = 1000000 * ([[components objectAtIndex:0] intValue]);
+        pp_bookmarks[i]->i_time_offset = 1000000LL * ([[components objectAtIndex:0] longLongValue]);
     else if (componentCount == 2)
-        pp_bookmarks[i]->i_time_offset = 1000000 * ([[components objectAtIndex:0] intValue] * 60 + [[components objectAtIndex:1] intValue]);
+        pp_bookmarks[i]->i_time_offset = 1000000LL * ([[components objectAtIndex:0] longLongValue] * 60 + [[components objectAtIndex:1] longLongValue]);
     else if (componentCount == 3)
-        pp_bookmarks[i]->i_time_offset = 1000000 * ([[components objectAtIndex:0] intValue] * 3600 + [[components objectAtIndex:1] intValue] * 60 + [[components objectAtIndex:2] intValue]);
+        pp_bookmarks[i]->i_time_offset = 1000000LL * ([[components objectAtIndex:0] longLongValue] * 3600 + [[components objectAtIndex:1] longLongValue] * 60 + [[components objectAtIndex:2] longLongValue]);
     else {
         msg_Err(VLCIntf, "Invalid string format for time");
         goto clear;
@@ -401,9 +396,7 @@ clear:
         NSString * identifier = [theTableColumn identifier];
         if ([identifier isEqualToString: @"description"])
             ret = toNSStr(pp_bookmarks[row]->psz_name);
-        else if ([identifier isEqualToString: @"size_offset"])
-            ret = [NSString stringWithFormat:@"%lli", pp_bookmarks[row]->i_byte_offset];
-        else if ([identifier isEqualToString: @"time_offset"]) {
+		else if ([identifier isEqualToString: @"time_offset"]) {
             int total = pp_bookmarks[row]->i_time_offset/ 1000000;
             int hour = total / (60*60);
             int min = (total - hour*60*60) / 60;
