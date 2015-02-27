@@ -1,3 +1,1 @@
 codec-schroedinger-fix-potential-buffer-overflow.patch
-demux-mp4-fix-buffer-overflow-in-parsing-of-string-b.patch
-stream_out-rtp-don-t-use-VLA-for-user-controlled-dat.patch

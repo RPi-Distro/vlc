@@ -6,6 +6,9 @@ vlc (2.2.0-1) UNRELEASED; urgency=medium
 
   [ Mateusz Łukasik ]
   * New upstream release.
+  * Drop patches included upstream:
+    - demux-mp4-fix-buffer-overflow-in-parsing-of-string-b.patch
+    - stream_out-rtp-don-t-use-VLA-for-user-controlled-dat.patch
 
  -- Mateusz Łukasik <mati75@linuxmint.pl>  Fri, 27 Feb 2015 22:41:49 +0100
 
