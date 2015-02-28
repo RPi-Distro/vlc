@@ -236,6 +236,14 @@ CFLAGS += -mtune=8548
 CXXFLAGS += -mtune=8548
 endif
 
+# Disable samba on hurd
+ifneq (,$(filter-out $(DEB_HOST_ARCH),hurd-i386))
+confflags += --enable-smbclient
+else
+confflags += --disable-smbclient
+removeplugins += smbclient
+endif
+
 confflags += \
 	CFLAGS="$(CFLAGS)" \
 	CXXFLAGS="$(CXXFLAGS)" \

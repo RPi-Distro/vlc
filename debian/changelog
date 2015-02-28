@@ -9,6 +9,7 @@ vlc (2.2.0-1) UNRELEASED; urgency=medium
   * Drop patches included upstream:
     - demux-mp4-fix-buffer-overflow-in-parsing-of-string-b.patch
     - stream_out-rtp-don-t-use-VLA-for-user-controlled-dat.patch
+  * Disable build samba plugin on hurd for fix FTBFS. (Closes: #765578)
 
  -- Mateusz Łukasik <mati75@linuxmint.pl>  Fri, 27 Feb 2015 22:41:49 +0100
 
