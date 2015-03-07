@@ -61,7 +61,6 @@ confflags += \
 	--enable-fribidi \
 	--enable-gles1 \
 	--enable-gles2 \
-	--enable-glx \
 	--enable-gnutls \
 	--enable-jack \
 	--enable-kate \
