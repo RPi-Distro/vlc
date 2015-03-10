@@ -13,6 +13,7 @@ vlc (2.2.0-1) UNRELEASED; urgency=medium
   
   [ Benjamin Drung ]
   * Point Vcs-Browser to cgit instead of gitweb.
+  * Drop removed --enable-glx configure flag.
 
  -- Mateusz Łukasik <mati75@linuxmint.pl>  Fri, 27 Feb 2015 22:41:49 +0100
 
