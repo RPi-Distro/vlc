@@ -1,11 +1,11 @@
-vlc (2.2.0-1) UNRELEASED; urgency=medium
+vlc (2.2.0-1) unstable; urgency=medium
 
   [ Helmut Grohne ]
   * Add versioned depends on libvlccore8 to libvlc5 which shares
     /usr/share/doc to comply with Debian policy 12.3. (Closes: #779251)
 
   [ Mateusz Łukasik ]
-  * New upstream release.
+  * New upstream release. (Closes: #757462, #780476)
   * Drop patches included upstream:
     - demux-mp4-fix-buffer-overflow-in-parsing-of-string-b.patch
     - stream_out-rtp-don-t-use-VLA-for-user-controlled-dat.patch
@@ -15,7 +15,7 @@ vlc (2.2.0-1) UNRELEASED; urgency=medium
   * Point Vcs-Browser to cgit instead of gitweb.
   * Drop removed --enable-glx configure flag.
 
- -- Mateusz Łukasik <mati75@linuxmint.pl>  Fri, 27 Feb 2015 22:41:49 +0100
+ -- Mateusz Łukasik <mati75@linuxmint.pl>  Mon, 16 Mar 2015 23:05:48 +0100
 
 vlc (2.2.0~rc2-2) unstable; urgency=medium
 
