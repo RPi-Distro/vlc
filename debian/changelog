@@ -6,16 +6,18 @@ vlc (2.2.0-1) unstable; urgency=medium
 
   [ Mateusz Łukasik ]
   * New upstream release. (Closes: #757462, #780476)
+    - Fix various (potentially exploitable) heap overflows and heap buffer
+      overflows in different demuxers (LP: #1390491)
   * Drop patches included upstream:
     - demux-mp4-fix-buffer-overflow-in-parsing-of-string-b.patch
     - stream_out-rtp-don-t-use-VLA-for-user-controlled-dat.patch
   * Disable build samba plugin on hurd for fix FTBFS. (Closes: #765578)
-  
+
   [ Benjamin Drung ]
   * Point Vcs-Browser to cgit instead of gitweb.
   * Drop removed --enable-glx configure flag.
 
- -- Mateusz Łukasik <mati75@linuxmint.pl>  Mon, 16 Mar 2015 23:05:48 +0100
+ -- Benjamin Drung <bdrung@debian.org>  Mon, 06 Apr 2015 21:27:42 +0200
 
 vlc (2.2.0~rc2-2) unstable; urgency=medium
 
