@@ -1,7 +1,7 @@
 # qt4
 
 QT4_VERSION = 4.8.5
-QT4_URL := http://download.qt-project.org/official_releases/qt/4.8/$(QT4_VERSION)/qt-everywhere-opensource-src-$(QT4_VERSION).tar.gz
+QT4_URL := http://download.qt-project.org/archive/qt/4.8/$(QT4_VERSION)/qt-everywhere-opensource-src-$(QT4_VERSION).tar.gz
 
 ifdef HAVE_MACOSX
 #PKGS += qt4

@@ -1,3 +1,62 @@
+Changes between 2.2.0 and 2.2.1:
+--------------------------------
+
+Codec:
+ * Fix compilation with older libavcodec versions
+ * Fix some VP9 decoding
+ * Fix flac crashes
+ * Fix lpcm channel ordering
+ * Fix potential NULL dereference in dmo
+ * Fix teletext framing code in DVB PES packets
+ * Fix potential buffer overflow in schroendinger decoder
+ * Fix AAC samplerate
+
+Demuxers:
+ * Fix MP4 chapters
+ * Fix MKV overseeking, introducing slowness over network shares
+ * Fix crash when playing SPC files
+ * Fix ATRAC3 playback in MKV
+ * Revert to older ASX code
+ * Workaround TS issue with mpeg-audio
+
+Access:
+ * Fix sftp read and close sockets
+ * Fix DTV build with Linux DVB versions < 5.8
+ * Fix UDP/RTP input on Windows
+
+Audio output:
+ * Fix Alsa HDMI plugs
+ * Improve Alsa output, with larger buffers
+ * Fix DirectSound output with multi-channel files
+
+OS X:
+ * Fix numerous crashes in the UI
+ * Fix video-wallpaper mode
+ * Fix race when starting VLC from command line
+
+Qt:
+ * Fix recent items behaviour
+ * Fix rotation filter activation
+ * Fix mux modules names for the streaming wizard
+
+Win32:
+ * Timestamp the signature of the dlls
+ * Fix extensions registration during install
+ * Fix extensions dialog crash
+ * Default to no DxVA decoding
+
+libVLC:
+ * fix libvlc_media_get_stats
+
+Translations:
+ * Update of Afrikaans, Albanian, Azerbaijani, Catalan, Czech, Danish, Dutch,
+   English (United Kingdom), Finnish, French, German, Hebrew, Hindi, Italian,
+   Japanese, Korean, Latvian, Macedonian, Malay, Modern Greek, Norwegian Bokmål,
+   Norwegian Nynorsk, Polish, Portuguese, Russian, Scottish Gaelic, Serbian,
+   Simplified Chinese, Slovak, Slovenian, Spanish, Swedish, Tamil, Thai,
+   Traditional Chinese, Turkish, Ukrainian translations
+
+
 Changes between 2.1.6 and 2.2.0:
 --------------------------------
 

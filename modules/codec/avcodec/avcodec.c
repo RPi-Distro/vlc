@@ -2,7 +2,7 @@
  * avcodec.c: video and audio decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 07902af9d38a603fc47ce15ebf9a4c67e9b2cd29 $
+ * $Id: bea5374122f072c75faaeabae078f432e8c0c7cc $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -136,7 +136,13 @@ vlc_module_begin ()
     add_obsolete_string( "ffmpeg-codec" ) /* removed since 2.1.0 */
     add_string( "avcodec-codec", NULL, CODEC_TEXT, CODEC_LONGTEXT, true )
     add_obsolete_bool( "ffmpeg-hw" ) /* removed since 2.1.0 */
-    add_module( "avcodec-hw", "hw decoder", "any", HW_TEXT, HW_LONGTEXT, false )
+    add_module( "avcodec-hw", "hw decoder",
+#ifdef _WIN32
+            "none"
+#else
+            "any"
+#endif
+            , HW_TEXT, HW_LONGTEXT, false )
 #if defined(FF_THREAD_FRAME)
     add_obsolete_integer( "ffmpeg-threads" ) /* removed since 2.1.0 */
     add_integer( "avcodec-threads", 0, THREADS_TEXT, THREADS_LONGTEXT, true );

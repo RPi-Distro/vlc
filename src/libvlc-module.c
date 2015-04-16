@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the core (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 VLC authors and VideoLAN
- * $Id: 449ac6dba98d06ef5d148af31807b371944c617d $
+ * $Id: f8adbf3c0f6a1fff3d304e031c7b981bb6b41482 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -2074,7 +2074,7 @@ vlc_module_begin ()
     add_bool( "interact", true, INTERACTION_TEXT,
               INTERACTION_LONGTEXT, false )
 
-    add_bool ( "stats", false, STATS_TEXT, STATS_LONGTEXT, true )
+    add_bool ( "stats", true, STATS_TEXT, STATS_LONGTEXT, true )
 
     set_subcategory( SUBCAT_INTERFACE_MAIN )
     add_module_cat( "intf", SUBCAT_INTERFACE_MAIN, NULL, INTF_TEXT,

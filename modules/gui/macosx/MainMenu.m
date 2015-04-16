@@ -2,7 +2,7 @@
  * MainMenu.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2013 Felix Paul Kühne
- * $Id: 2cd8901e8838858ebfd56c18e92ba0ee71129864 $
+ * $Id: 8dd02b8ee50b3a74f4c67643d98ae4a096a5eafe $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -140,12 +140,12 @@ static VLCMainMenu *_o_sharedInstance = nil;
     }
 
     [self setRateControlsEnabled:NO];
+
+    p_intf = VLCIntf;
 }
 
 - (void)applicationWillFinishLaunching:(NSNotification *)o_notification
 {
-    p_intf = VLCIntf;
-
     NSString* o_key;
     playlist_t *p_playlist;
     vlc_value_t val;

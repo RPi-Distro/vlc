@@ -2,7 +2,7 @@
  * m3u.c : M3U playlist format import
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: 02a95984d5fe1968163cb435268a9874f0c65eb9 $
+ * $Id: 58f6006deb41b13fe9fac8b90cbdb8d8961bb1bf $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -48,6 +48,7 @@ struct demux_sys_t
 static int Demux( demux_t *p_demux);
 static void parseEXTINF( char *psz_string, char **ppsz_artist, char **ppsz_name, int *pi_duration );
 static bool ContainsURL( demux_t *p_demux );
+static bool CheckContentType( stream_t * p_stream, const char * psz_ctype );
 
 static char *GuessEncoding (const char *str)
 {
@@ -146,6 +147,24 @@ static bool ContainsURL( demux_t *p_demux )
             p_peek++;
     }
     return false;
+}
+
+static bool CheckContentType( stream_t * p_stream, const char * psz_ctype )
+{
+    char *psz_check = stream_ContentType( p_stream );
+    if( !psz_check ) return false;
+
+    int i_len = strlen( psz_check );
+    if ( i_len == 0 )
+    {
+        free( psz_check );
+        return false;
+    }
+
+    int i_res = strncasecmp( psz_check, psz_ctype, i_len );
+    free( psz_check );
+
+    return ( i_res == 0 ) ? true : false;
 }
 
 /*****************************************************************************

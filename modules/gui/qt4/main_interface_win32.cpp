@@ -2,7 +2,7 @@
  * main_interface_win32.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: c16293aaf0e5ddbaaa09dafd5e670d10fcfabfca $
+ * $Id: 602fbb2be9e351a5733018397adc0b3863e7bc91 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -115,9 +115,11 @@ void MainInterface::createTaskBarButtons()
     FIXME:the play button's picture doesn't changed to pause when clicked
     */
 
-    CoInitializeEx( NULL, COINIT_MULTITHREADED );
+    HRESULT hr = CoInitializeEx( NULL, COINIT_MULTITHREADED );
+    if( hr == RPC_E_CHANGED_MODE )
+        hr = CoInitializeEx( NULL, COINIT_APARTMENTTHREADED );
 
-    if( S_OK == CoCreateInstance( CLSID_TaskbarList,
+    if( SUCCEEDED(hr) && S_OK == CoCreateInstance( CLSID_TaskbarList,
                 NULL, CLSCTX_INPROC_SERVER,
                 IID_ITaskbarList3,
                 (void **)&p_taskbl) )
@@ -186,7 +188,6 @@ void MainInterface::createTaskBarButtons()
         himl = NULL;
         p_taskbl = NULL;
     }
-
 }
 
 bool MainInterface::winEvent ( MSG * msg, long * result )

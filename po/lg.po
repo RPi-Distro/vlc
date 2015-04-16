@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 1.1.8\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2015-02-27 15:34+0100\n"
+"POT-Creation-Date: 2015-04-13 00:13+0200\n"
 "PO-Revision-Date: 2011-05-02 18:38+0200\n"
 "Last-Translator: James Olweny <sjolweny85@yahoo.co.uk>\n"
 "Language-Team: Ganda\n"
@@ -1227,9 +1227,9 @@ msgid "Subtitle"
 msgstr "Omutwe ogwokubiri"
 
 #: src/input/es_out.c:2893 src/input/es_out.c:2920 src/input/es_out.c:2964
-#: src/input/es_out.c:3000 modules/gui/macosx/AddonManager.m:123
+#: src/input/es_out.c:3000 modules/gui/macosx/AddonManager.m:127
 #: modules/gui/macosx/ConvertAndSave.m:197 modules/gui/macosx/output.m:144
-#: modules/gui/qt4/dialogs/plugins.cpp:1457
+#: modules/gui/qt4/dialogs/plugins.cpp:1469
 msgid "Type"
 msgstr "Ekyika"
 
@@ -1872,8 +1872,8 @@ msgstr ""
 #: modules/access/fs.c:42 modules/access/v4l2/v4l2.c:163
 #: modules/codec/avcodec/avcodec.c:68 modules/codec/kate.c:202
 #: modules/codec/x264.c:437 modules/codec/x264.c:442
-#: modules/gui/macosx/ConvertAndSave.m:204 modules/gui/macosx/open.m:245
-#: modules/gui/macosx/open.m:271 modules/gui/macosx/open.m:272
+#: modules/gui/macosx/ConvertAndSave.m:204 modules/gui/macosx/open.m:246
+#: modules/gui/macosx/open.m:274 modules/gui/macosx/open.m:275
 #: modules/gui/qt4/components/interface_widgets.cpp:433
 #: modules/text_renderer/freetype.c:155
 #: share/lua/http/dialogs/create_stream.html:196
@@ -2539,7 +2539,7 @@ msgstr ""
 #: src/libvlc-module.c:538 src/video_output/vout_intf.c:98
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
-#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1018
+#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1020
 #: modules/gui/macosx/AudioEffects.m:86 modules/gui/macosx/MainMenu.m:641
 #: modules/gui/macosx/prefs_widgets.m:1221
 #: modules/gui/macosx/prefs_widgets.m:1284
@@ -3717,7 +3717,7 @@ msgstr ""
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr ""
 
-#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1788
+#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1838
 msgid "Ignore"
 msgstr "Obutafayo"
 
@@ -4802,8 +4802,8 @@ msgstr "Wanula Ebyogerezako"
 #: modules/gui/macosx/controls.m:54 modules/gui/macosx/ConvertAndSave.m:168
 #: modules/gui/macosx/ConvertAndSave.m:194
 #: modules/gui/macosx/ConvertAndSave.m:372
-#: modules/gui/macosx/ConvertAndSave.m:386 modules/gui/macosx/coredialogs.m:61
-#: modules/gui/macosx/coredialogs.m:63 modules/gui/macosx/coredialogs.m:168
+#: modules/gui/macosx/ConvertAndSave.m:386 modules/gui/macosx/coredialogs.m:63
+#: modules/gui/macosx/coredialogs.m:65 modules/gui/macosx/coredialogs.m:170
 #: modules/gui/macosx/MainWindow.m:186 modules/gui/macosx/MainWindow.m:191
 #: modules/gui/macosx/open.m:128 modules/gui/macosx/open.m:183
 #: modules/gui/macosx/prefs.m:209 modules/gui/macosx/simple_prefs.m:343
@@ -4880,7 +4880,7 @@ msgid ""
 "install it now?"
 msgstr ""
 
-#: src/misc/update.c:724 modules/gui/macosx/AddonManager.m:192
+#: src/misc/update.c:724 modules/gui/macosx/AddonManager.m:196
 #, fuzzy
 msgid "Install"
 msgstr "Okwefaniriza"
@@ -6726,22 +6726,27 @@ msgid ""
 "useless warning introductions."
 msgstr ""
 
-#: modules/access/dvdnav.c:86
+#: modules/access/dvdnav.c:91
 #, fuzzy
 msgid "DVD with menus"
 msgstr "Ebirimu DVD"
 
-#: modules/access/dvdnav.c:87
+#: modules/access/dvdnav.c:92
 msgid "DVDnav Input"
 msgstr ""
 
-#: modules/access/dvdnav.c:332 modules/access/dvdread.c:200
+#: modules/access/dvdnav.c:104
+#, fuzzy
+msgid "DVDnav demuxer"
+msgstr "Ewereza"
+
+#: modules/access/dvdnav.c:299 modules/access/dvdread.c:200
 #: modules/access/dvdread.c:462 modules/access/dvdread.c:530
 #, fuzzy
 msgid "Playback failure"
 msgstr "Nzanya emabega"
 
-#: modules/access/dvdnav.c:333
+#: modules/access/dvdnav.c:300
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
@@ -6868,9 +6873,9 @@ msgstr "S-VIDEO ebinyigize"
 
 #: modules/access/fs.c:63 modules/access_output/file.c:82
 #: modules/audio_output/file.c:113 modules/gui/macosx/open.m:130
-#: modules/gui/macosx/open.m:587 modules/gui/macosx/output.m:133
+#: modules/gui/macosx/open.m:590 modules/gui/macosx/output.m:133
 #: modules/gui/macosx/output.m:217 modules/gui/macosx/output.m:341
-#: modules/gui/qt4/dialogs/plugins.cpp:1391
+#: modules/gui/qt4/dialogs/plugins.cpp:1403
 #: modules/gui/qt4/dialogs/sout.cpp:69 modules/gui/qt4/dialogs/sout.cpp:121
 #: share/lua/http/dialogs/create_stream.html:204
 #: share/lua/http/dialogs/stream_config_window.html:36
@@ -7078,7 +7083,7 @@ msgstr ""
 msgid "Set the category of the elementary stream"
 msgstr "Sengeeja byonna ebintu ngyeri esengeeje"
 
-#: modules/access/imem.c:64 modules/gui/macosx/AddonManager.m:353
+#: modules/access/imem.c:64 modules/gui/macosx/AddonManager.m:357
 msgid "Unknown"
 msgstr ""
 
@@ -7571,7 +7576,7 @@ msgid "User name that will be requested to access the stream."
 msgstr ""
 
 #: modules/access_output/http.c:55 modules/access/vnc.c:47
-#: modules/gui/macosx/coredialogs.m:60 modules/gui/macosx/simple_prefs.m:333
+#: modules/gui/macosx/coredialogs.m:62 modules/gui/macosx/simple_prefs.m:333
 #: modules/gui/macosx/simple_prefs.m:392
 #: modules/gui/qt4/dialogs/external.cpp:118 modules/lua/vlc.c:51
 #: modules/lua/vlc.c:67 modules/misc/audioscrobbler.c:116
@@ -8036,12 +8041,12 @@ msgstr ""
 msgid "VLC could not connect to \"%s:%d\"."
 msgstr ""
 
-#: modules/access/rtsp/access.c:224
+#: modules/access/rtsp/access.c:231
 #, fuzzy
 msgid "Session failed"
 msgstr "Ekomerero ya fayiro:"
 
-#: modules/access/rtsp/access.c:225
+#: modules/access/rtsp/access.c:232
 msgid "The requested RTSP session could not be established."
 msgstr ""
 
@@ -8130,8 +8135,8 @@ msgstr "Ekwata ye Biyingizidwa mu Sikulini "
 
 #: modules/access/screen/screen.c:98 modules/access/screen/xcb.c:70
 #: modules/gui/macosx/MainMenu.m:649 modules/gui/macosx/open.m:200
-#: modules/gui/macosx/open.m:204 modules/gui/macosx/open.m:489
-#: modules/gui/macosx/open.m:1353 modules/gui/macosx/simple_prefs.m:689
+#: modules/gui/macosx/open.m:204 modules/gui/macosx/open.m:492
+#: modules/gui/macosx/open.m:1356 modules/gui/macosx/simple_prefs.m:689
 msgid "Screen"
 msgstr "Sikulini"
 
@@ -8212,11 +8217,11 @@ msgstr ""
 msgid "SFTP input"
 msgstr "Teki tekedwamu"
 
-#: modules/access/sftp.c:131
+#: modules/access/sftp.c:132
 msgid "SFTP authentication"
 msgstr ""
 
-#: modules/access/sftp.c:132
+#: modules/access/sftp.c:133
 #, c-format
 msgid "Please enter a valid login and password for the sftp connexion to %s"
 msgstr ""
@@ -8930,7 +8935,7 @@ msgid "LID"
 msgstr "ID"
 
 #: modules/access/vcdx/info.c:54 modules/gui/macosx/open.m:132
-#: modules/gui/macosx/open.m:589
+#: modules/gui/macosx/open.m:592
 msgid "Disc"
 msgstr "Disiki"
 
@@ -9420,7 +9425,7 @@ msgstr ""
 msgid "Sound Delay"
 msgstr "Kidwawo"
 
-#: modules/audio_filter/chorus_flanger.c:75 modules/gui/macosx/open.m:364
+#: modules/audio_filter/chorus_flanger.c:75 modules/gui/macosx/open.m:367
 #: modules/stream_out/bridge.c:51 modules/stream_out/delay.c:54
 #: modules/video_filter/mosaic.c:154
 msgid "Delay"
@@ -10108,12 +10113,12 @@ msgstr "Eddoboozzi lya Dolby:"
 msgid "ALSA audio output"
 msgstr ""
 
-#: modules/audio_output/alsa.c:383 modules/audio_output/auhal.c:425
+#: modules/audio_output/alsa.c:389 modules/audio_output/auhal.c:425
 #, fuzzy
 msgid "Audio output failed"
 msgstr "Fayiro za Malobozi"
 
-#: modules/audio_output/alsa.c:384
+#: modules/audio_output/alsa.c:390
 #, c-format
 msgid ""
 "The audio device \"%s\" could not be used:\n"
@@ -10444,14 +10449,14 @@ msgstr ""
 msgid "Decoding"
 msgstr "Okukirila"
 
-#: modules/codec/avcodec/avcodec.c:151 modules/codec/jpeg.c:117
+#: modules/codec/avcodec/avcodec.c:157 modules/codec/jpeg.c:117
 #: modules/codec/omxil/omxil.c:96 modules/codec/png.c:99
 #: modules/codec/schroedinger.c:370
 #, fuzzy
 msgid "Encoding"
 msgstr "Enkusike Yekalira"
 
-#: modules/codec/avcodec/avcodec.c:152
+#: modules/codec/avcodec/avcodec.c:158
 msgid "FFmpeg audio/video encoder"
 msgstr ""
 
@@ -10833,7 +10838,7 @@ msgid ""
 "enabled libavcodec"
 msgstr ""
 
-#: modules/codec/avcodec/dxva2.c:58
+#: modules/codec/avcodec/dxva2.c:59
 #, fuzzy
 msgid "DirectX Video Acceleration (DXVA) 2.0"
 msgstr "Endima ya vidiyo enfulumye (Kwawamu)"
@@ -11032,7 +11037,7 @@ msgstr "Y ekwananganya kulwo kulabisa ekifananyi"
 msgid "DVB subtitles decoder"
 msgstr "Enkusike ye mitwe yokubiri"
 
-#: modules/codec/dvbsub.c:121 modules/demux/ts.c:3562 modules/demux/ts.c:3619
+#: modules/codec/dvbsub.c:121 modules/demux/ts.c:3585 modules/demux/ts.c:3642
 #, fuzzy
 msgid "DVB subtitles"
 msgstr "Omutwe ogwokubiri"
@@ -11051,7 +11056,7 @@ msgstr "Bikwate"
 msgid "AAC audio decoder (using libfaad2)"
 msgstr ""
 
-#: modules/codec/faad.c:436
+#: modules/codec/faad.c:438
 #, fuzzy
 msgid "AAC extension"
 msgstr "Ebyogeredwako"
@@ -16072,20 +16077,20 @@ msgstr "Enteekateeka ye ntegeka"
 msgid "Teletext subtitles: hearing impaired"
 msgstr ""
 
-#: modules/demux/ts.c:3626
+#: modules/demux/ts.c:3649
 msgid "DVB subtitles: hearing impaired"
 msgstr ""
 
-#: modules/demux/ts.c:3911
+#: modules/demux/ts.c:3934
 #, fuzzy
 msgid "clean effects"
 msgstr "Okukosebwa amajji"
 
-#: modules/demux/ts.c:3912
+#: modules/demux/ts.c:3935
 msgid "hearing impaired"
 msgstr ""
 
-#: modules/demux/ts.c:3913
+#: modules/demux/ts.c:3936
 msgid "visual impaired commentary"
 msgstr ""
 
@@ -16242,65 +16247,76 @@ msgstr "VLC enyimbiso eyamba"
 msgid "Index"
 msgstr "Enamba"
 
-#: modules/gui/macosx/AddonManager.m:98 modules/gui/macosx/AddonManager.m:347
+#: modules/gui/macosx/AddonManager.m:98 modules/gui/macosx/AddonManager.m:351
 #: modules/gui/qt4/dialogs/plugins.cpp:378
 #, fuzzy
 msgid "Playlist parsers"
 msgstr "Fayiro yo Lukalala lwenyimba"
 
-#: modules/gui/macosx/AddonManager.m:100 modules/gui/macosx/AddonManager.m:349
+#: modules/gui/macosx/AddonManager.m:100 modules/gui/macosx/AddonManager.m:353
 #: modules/gui/qt4/dialogs/plugins.cpp:382
 #, fuzzy
 msgid "Service Discovery"
 msgstr "&Epeereza Enzuula"
 
-#: modules/gui/macosx/AddonManager.m:102 modules/gui/macosx/AddonManager.m:351
-#: modules/gui/macosx/MainMenu.m:352 modules/gui/macosx/MainMenu.m:353
+#: modules/gui/macosx/AddonManager.m:102
 #: modules/gui/qt4/dialogs/plugins.cpp:386
+#, fuzzy
+msgid "Interfaces"
+msgstr "Enyanjula"
+
+#: modules/gui/macosx/AddonManager.m:104
+#: modules/gui/qt4/dialogs/plugins.cpp:389
+msgid "Art and meta fetchers"
+msgstr ""
+
+#: modules/gui/macosx/AddonManager.m:106 modules/gui/macosx/AddonManager.m:355
+#: modules/gui/macosx/MainMenu.m:352 modules/gui/macosx/MainMenu.m:353
+#: modules/gui/qt4/dialogs/plugins.cpp:392
 msgid "Extensions"
 msgstr "Ebyogeredwako"
 
-#: modules/gui/macosx/AddonManager.m:105
+#: modules/gui/macosx/AddonManager.m:109
 msgid "Show Installed Only"
 msgstr ""
 
-#: modules/gui/macosx/AddonManager.m:107
-#: modules/gui/qt4/dialogs/plugins.cpp:414
+#: modules/gui/macosx/AddonManager.m:111
+#: modules/gui/qt4/dialogs/plugins.cpp:420
 msgid "Find more addons online"
 msgstr ""
 
-#: modules/gui/macosx/AddonManager.m:117 modules/gui/macosx/MainMenu.m:354
+#: modules/gui/macosx/AddonManager.m:121 modules/gui/macosx/MainMenu.m:354
 #: modules/gui/qt4/dialogs/plugins.cpp:80
 #, fuzzy
 msgid "Addons Manager"
 msgstr "Segejja Vidiyo"
 
-#: modules/gui/macosx/AddonManager.m:120
-#: modules/gui/qt4/dialogs/plugins.cpp:1137
-#: modules/gui/qt4/dialogs/plugins.cpp:1150
+#: modules/gui/macosx/AddonManager.m:124
+#: modules/gui/qt4/dialogs/plugins.cpp:1149
+#: modules/gui/qt4/dialogs/plugins.cpp:1162
 #, fuzzy
 msgid "Installed"
 msgstr "Okwefaniriza"
 
-#: modules/gui/macosx/AddonManager.m:121 modules/gui/macosx/bookmarks.m:110
+#: modules/gui/macosx/AddonManager.m:125 modules/gui/macosx/bookmarks.m:110
 #: modules/gui/macosx/playlist.m:167 modules/gui/qt4/dialogs/plugins.cpp:123
 #: modules/mux/avi.c:53
 msgid "Name"
 msgstr "Erinnya"
 
-#: modules/gui/macosx/AddonManager.m:122 modules/gui/macosx/MainMenu.m:74
+#: modules/gui/macosx/AddonManager.m:126 modules/gui/macosx/MainMenu.m:74
 #: modules/gui/macosx/playlist.m:168 modules/gui/macosx/wizard.m:347
-#: modules/gui/qt4/dialogs/plugins.cpp:1367
-#: modules/gui/qt4/dialogs/plugins.cpp:1472 modules/mux/asf.c:58
+#: modules/gui/qt4/dialogs/plugins.cpp:1379
+#: modules/gui/qt4/dialogs/plugins.cpp:1484 modules/mux/asf.c:58
 msgid "Author"
 msgstr "Omuwandisi"
 
-#: modules/gui/macosx/AddonManager.m:189
+#: modules/gui/macosx/AddonManager.m:193
 #, fuzzy
 msgid "Uninstall"
 msgstr "Okwefaniriza"
 
-#: modules/gui/macosx/AddonManager.m:345
+#: modules/gui/macosx/AddonManager.m:349
 #: modules/gui/qt4/dialogs/plugins.cpp:374
 #: modules/gui/skins2/src/skin_main.cpp:507
 msgid "Skins"
@@ -16486,9 +16502,9 @@ msgstr "Sawa"
 #: modules/gui/macosx/ConvertAndSave.m:288
 #: modules/gui/macosx/ConvertAndSave.m:483
 #: modules/gui/macosx/ConvertAndSave.m:490
-#: modules/gui/macosx/ConvertAndSave.m:497 modules/gui/macosx/coredialogs.m:62
-#: modules/gui/macosx/coredialogs.m:99 modules/gui/macosx/coredialogs.m:146
-#: modules/gui/macosx/open.m:374 modules/gui/macosx/output.m:129
+#: modules/gui/macosx/ConvertAndSave.m:497 modules/gui/macosx/coredialogs.m:64
+#: modules/gui/macosx/coredialogs.m:101 modules/gui/macosx/coredialogs.m:148
+#: modules/gui/macosx/open.m:377 modules/gui/macosx/output.m:129
 #: modules/gui/macosx/playlistinfo.m:368 modules/gui/macosx/simple_prefs.m:344
 #: modules/gui/macosx/wizard.m:592 modules/gui/macosx/wizard.m:653
 #: modules/gui/macosx/wizard.m:992 modules/gui/macosx/wizard.m:1073
@@ -16749,7 +16765,7 @@ msgid "Choose an output location"
 msgstr ""
 
 #: modules/gui/macosx/ConvertAndSave.m:161 modules/gui/macosx/open.m:138
-#: modules/gui/macosx/open.m:361 modules/gui/macosx/output.m:136
+#: modules/gui/macosx/open.m:364 modules/gui/macosx/output.m:136
 #: modules/gui/macosx/prefs_widgets.m:1121
 #: modules/gui/macosx/simple_prefs.m:352 modules/gui/macosx/simple_prefs.m:422
 #: modules/gui/qt4/components/preferences_widgets.cpp:264
@@ -16955,16 +16971,16 @@ msgstr ""
 msgid "Custom"
 msgstr "Edabika"
 
-#: modules/gui/macosx/coredialogs.m:59 modules/gui/macosx/simple_prefs.m:334
+#: modules/gui/macosx/coredialogs.m:61 modules/gui/macosx/simple_prefs.m:334
 #: modules/gui/qt4/dialogs/external.cpp:113
 msgid "User name"
 msgstr "Erinnya lyo mukozesa"
 
-#: modules/gui/macosx/coredialogs.m:243
+#: modules/gui/macosx/coredialogs.m:240
 msgid "Errors and Warnings"
 msgstr "Ensobi era Okulabula"
 
-#: modules/gui/macosx/coredialogs.m:244
+#: modules/gui/macosx/coredialogs.m:241
 msgid "Clean up"
 msgstr "Yonja wo"
 
@@ -16994,20 +17010,20 @@ msgstr "(teri ekintu ekibadde kizanyidwa)"
 msgid "Click to exit fullscreen playback."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1498 modules/gui/macosx/intf.m:1515
+#: modules/gui/macosx/intf.m:1548 modules/gui/macosx/intf.m:1565
 #, fuzzy
 msgid "VLC media playback"
 msgstr "VLC enyimbiso"
 
-#: modules/gui/macosx/intf.m:1786
+#: modules/gui/macosx/intf.m:1836
 msgid "Remove old preferences?"
 msgstr "Jjamu ebyagalwa bikadde?"
 
-#: modules/gui/macosx/intf.m:1787
+#: modules/gui/macosx/intf.m:1837
 msgid "We just found an older version of VLC's preferences files."
 msgstr "Tuzzuude fayiro ze kyika kya VLC`s ezagalwa ekadde."
 
-#: modules/gui/macosx/intf.m:1788
+#: modules/gui/macosx/intf.m:1838
 msgid "Move To Trash and Relaunch VLC"
 msgstr "Genda Ku Bisanyidwawo era Otongoze buto VLC"
 
@@ -17691,24 +17707,24 @@ msgstr ""
 msgid "INTERNET"
 msgstr ""
 
-#: modules/gui/macosx/misc.m:980
+#: modules/gui/macosx/misc.m:966
 #, fuzzy
 msgid "B"
 msgstr "dB"
 
-#: modules/gui/macosx/misc.m:987
+#: modules/gui/macosx/misc.m:973
 msgid "KB"
 msgstr ""
 
-#: modules/gui/macosx/misc.m:994
+#: modules/gui/macosx/misc.m:980
 msgid "MB"
 msgstr ""
 
-#: modules/gui/macosx/misc.m:1002
+#: modules/gui/macosx/misc.m:988
 msgid "GB"
 msgstr ""
 
-#: modules/gui/macosx/misc.m:1007
+#: modules/gui/macosx/misc.m:993
 msgid "TB"
 msgstr ""
 
@@ -17733,8 +17749,8 @@ msgid "Media Resource Locator (MRL)"
 msgstr "Empuuliziganya Ewereza Ebikozesa (MRL)"
 
 #: modules/gui/macosx/open.m:127 modules/gui/macosx/open.m:184
-#: modules/gui/macosx/open.m:665 modules/gui/macosx/open.m:740
-#: modules/gui/macosx/open.m:1118 modules/gui/macosx/open.m:1551
+#: modules/gui/macosx/open.m:668 modules/gui/macosx/open.m:743
+#: modules/gui/macosx/open.m:1121 modules/gui/macosx/open.m:1554
 #: modules/gui/qt4/components/controller.hpp:115
 msgid "Open"
 msgstr "Ggulawo"
@@ -17747,17 +17763,17 @@ msgid ""
 "screen or TV streams if the EyeTV application is installed."
 msgstr ""
 
-#: modules/gui/macosx/open.m:133 modules/gui/macosx/open.m:591
+#: modules/gui/macosx/open.m:133 modules/gui/macosx/open.m:594
 #: modules/gui/macosx/simple_prefs.m:359 modules/gui/qt4/ui/sprefs_input.h:359
 msgid "Network"
 msgstr "Omukuttu"
 
-#: modules/gui/macosx/open.m:134 modules/gui/macosx/open.m:488
-#: modules/gui/macosx/open.m:593
+#: modules/gui/macosx/open.m:134 modules/gui/macosx/open.m:491
+#: modules/gui/macosx/open.m:596
 msgid "Capture"
 msgstr "Kwata"
 
-#: modules/gui/macosx/open.m:136 modules/gui/macosx/open.m:356
+#: modules/gui/macosx/open.m:136 modules/gui/macosx/open.m:359
 #, fuzzy
 msgid "Choose a file"
 msgstr "Londa ebinyigize"
@@ -17774,7 +17790,7 @@ msgstr "Labirira nga payipo kusiga nga fayiro"
 msgid "Play another media synchronously"
 msgstr "Zanya enyimbiso eddala kimu ku kimu"
 
-#: modules/gui/macosx/open.m:143 modules/gui/macosx/open.m:359
+#: modules/gui/macosx/open.m:143 modules/gui/macosx/open.m:362
 #: modules/gui/macosx/simple_prefs.m:399 modules/gui/macosx/wizard.m:343
 #: modules/gui/macosx/wizard.m:411 modules/gui/qt4/ui/sprefs_interface.h:521
 msgid "Choose..."
@@ -17847,18 +17863,18 @@ msgstr "Ggulawo RTP/UDP Ekyokugoberera"
 msgid "Protocol"
 msgstr "Obugobelezi"
 
-#: modules/gui/macosx/open.m:190 modules/gui/macosx/open.m:1234
-#: modules/gui/macosx/open.m:1283
+#: modules/gui/macosx/open.m:190 modules/gui/macosx/open.m:1237
+#: modules/gui/macosx/open.m:1286
 msgid "Unicast"
 msgstr "Ekyuusa"
 
-#: modules/gui/macosx/open.m:191 modules/gui/macosx/open.m:1247
-#: modules/gui/macosx/open.m:1296
+#: modules/gui/macosx/open.m:191 modules/gui/macosx/open.m:1250
+#: modules/gui/macosx/open.m:1299
 msgid "Multicast"
 msgstr "Ekyuusa mu bungi"
 
-#: modules/gui/macosx/open.m:199 modules/gui/macosx/open.m:507
-#: modules/gui/macosx/open.m:1401
+#: modules/gui/macosx/open.m:199 modules/gui/macosx/open.m:510
+#: modules/gui/macosx/open.m:1404
 #, fuzzy
 msgid "Input Devices"
 msgstr "Ekikozesa:"
@@ -17897,7 +17913,7 @@ msgstr "Omukutu Oguyise"
 msgid "Next Channel"
 msgstr "Omukutu Oguddako"
 
-#: modules/gui/macosx/open.m:214 modules/gui/macosx/open.m:1482
+#: modules/gui/macosx/open.m:214 modules/gui/macosx/open.m:1485
 msgid "Retrieving Channel Info..."
 msgstr "Okusika Amawulire go Mukutu..."
 
@@ -17929,71 +17945,71 @@ msgstr "Kyuusa ekifananyi"
 msgid "Image height"
 msgstr "Fayiro ye kifananyi"
 
-#: modules/gui/macosx/open.m:355
+#: modules/gui/macosx/open.m:358
 #, fuzzy
 msgid "Add Subtitle File:"
 msgstr "Fayiro ye Mitwe yokubiri"
 
-#: modules/gui/macosx/open.m:360
+#: modules/gui/macosx/open.m:363
 msgid "Click to setup subtitle playback in full detail."
 msgstr ""
 
-#: modules/gui/macosx/open.m:362
+#: modules/gui/macosx/open.m:365
 #, fuzzy
 msgid "Click to select a subtitle file."
 msgstr "Londa obutundu bwe mitwe zafayiro"
 
-#: modules/gui/macosx/open.m:363
+#: modules/gui/macosx/open.m:366
 #, fuzzy
 msgid "Override parameters"
 msgstr "Wandiika wangulu wekiriko mu nkola"
 
-#: modules/gui/macosx/open.m:366
+#: modules/gui/macosx/open.m:369
 msgid "FPS"
 msgstr "FPS"
 
-#: modules/gui/macosx/open.m:368
+#: modules/gui/macosx/open.m:371
 #, fuzzy
 msgid "Subtitle encoding"
 msgstr "Enkusike ye mitwe yokubiri"
 
-#: modules/gui/macosx/open.m:370 modules/gui/macosx/simple_prefs.m:401
+#: modules/gui/macosx/open.m:373 modules/gui/macosx/simple_prefs.m:401
 #: modules/gui/qt4/ui/sprefs_subtitles.h:300
 msgid "Font size"
 msgstr "Obunene bwe nukuta"
 
-#: modules/gui/macosx/open.m:372
+#: modules/gui/macosx/open.m:375
 #, fuzzy
 msgid "Subtitle alignment"
 msgstr "Etereza ye mitwe yokubiri"
 
-#: modules/gui/macosx/open.m:375
+#: modules/gui/macosx/open.m:378
 msgid "Click to dismiss the subtitle setup dialog."
 msgstr ""
 
-#: modules/gui/macosx/open.m:376
+#: modules/gui/macosx/open.m:379
 msgid "Font Properties"
 msgstr "Ebikwata ku nukuta"
 
-#: modules/gui/macosx/open.m:377
+#: modules/gui/macosx/open.m:380
 msgid "Subtitle File"
 msgstr "Fayiro ye Mitwe yokubiri"
 
-#: modules/gui/macosx/open.m:664 modules/gui/macosx/open.m:739
-#: modules/gui/macosx/open.m:1550 modules/gui/qt4/ui/open_file.h:142
+#: modules/gui/macosx/open.m:667 modules/gui/macosx/open.m:742
+#: modules/gui/macosx/open.m:1553 modules/gui/qt4/ui/open_file.h:142
 msgid "Open File"
 msgstr "Ggulawo Fayiro"
 
-#: modules/gui/macosx/open.m:981
+#: modules/gui/macosx/open.m:984
 #, fuzzy, c-format
 msgid "%i tracks"
 msgstr "Goberera eddobozzi"
 
-#: modules/gui/macosx/open.m:1488
+#: modules/gui/macosx/open.m:1491
 msgid "Composite input"
 msgstr "Ebikola ebinyigize"
 
-#: modules/gui/macosx/open.m:1491
+#: modules/gui/macosx/open.m:1494
 msgid "S-Video input"
 msgstr "S-VIDEO ebinyigize"
 
@@ -20575,31 +20591,31 @@ msgstr "VLC esabika olutimbe"
 msgid "System's default"
 msgstr "Sisitimu y`Ekalalira"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1290
+#: modules/gui/qt4/components/simple_preferences.cpp:1296
 #, fuzzy
 msgid "File associations"
 msgstr "Egatta ye ttegeka..."
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1299
+#: modules/gui/qt4/components/simple_preferences.cpp:1305
 #: modules/gui/qt4/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "Fayiro za Malobozi"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1300
+#: modules/gui/qt4/components/simple_preferences.cpp:1306
 #: modules/gui/qt4/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "Fayiro za Vidiyo"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1301
+#: modules/gui/qt4/components/simple_preferences.cpp:1307
 #: modules/gui/qt4/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "Fayiro yo Lukalala lwenyimba"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1353
+#: modules/gui/qt4/components/simple_preferences.cpp:1371
 msgid "&Apply"
 msgstr "&Wewandise"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1354
+#: modules/gui/qt4/components/simple_preferences.cpp:1372
 #: modules/gui/qt4/dialogs/convert.cpp:109
 #: modules/gui/qt4/dialogs/gototime.cpp:49
 #: modules/gui/qt4/dialogs/open.cpp:108 modules/gui/qt4/dialogs/openurl.cpp:61
@@ -20757,8 +20773,8 @@ msgstr "Sangula Obulambe bwona"
 #: modules/gui/qt4/dialogs/mediainfo.cpp:80
 #: modules/gui/qt4/dialogs/messages.cpp:81
 #: modules/gui/qt4/dialogs/plugins.cpp:88
-#: modules/gui/qt4/dialogs/plugins.cpp:1400
-#: modules/gui/qt4/dialogs/plugins.cpp:1513
+#: modules/gui/qt4/dialogs/plugins.cpp:1412
+#: modules/gui/qt4/dialogs/plugins.cpp:1525
 #: modules/gui/qt4/dialogs/podcast_configuration.cpp:36
 #: modules/gui/qt4/dialogs/vlm.cpp:136
 msgid "&Close"
@@ -20874,8 +20890,8 @@ msgid "Go to time"
 msgstr "Genda ku biseera"
 
 #: modules/gui/qt4/dialogs/help.cpp:86
-#: modules/gui/qt4/dialogs/plugins.cpp:1338
-#: modules/gui/qt4/dialogs/plugins.cpp:1421
+#: modules/gui/qt4/dialogs/plugins.cpp:1350
+#: modules/gui/qt4/dialogs/plugins.cpp:1433
 msgid "About"
 msgstr "Kku"
 
@@ -21065,7 +21081,7 @@ msgid "&Search:"
 msgstr "&Noonya:"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:247
-#: modules/gui/qt4/dialogs/plugins.cpp:1254
+#: modules/gui/qt4/dialogs/plugins.cpp:1266
 msgid "More information..."
 msgstr "Amawulire agasigawo..."
 
@@ -21091,59 +21107,63 @@ msgid ""
 "video websites, ..."
 msgstr ""
 
-#: modules/gui/qt4/dialogs/plugins.cpp:387
+#: modules/gui/qt4/dialogs/plugins.cpp:390
+msgid "Retrieves extra info and art for playlist items"
+msgstr ""
+
+#: modules/gui/qt4/dialogs/plugins.cpp:393
 msgid ""
 "Extensions brings various enhancements. Check descriptions for more details"
 msgstr ""
 
-#: modules/gui/qt4/dialogs/plugins.cpp:408
+#: modules/gui/qt4/dialogs/plugins.cpp:414
 msgid "Only installed"
 msgstr ""
 
-#: modules/gui/qt4/dialogs/plugins.cpp:503
+#: modules/gui/qt4/dialogs/plugins.cpp:509
 #, fuzzy
 msgid "Retrieving addons..."
 msgstr "Okusika Amawulire go Mukutu..."
 
-#: modules/gui/qt4/dialogs/plugins.cpp:514
+#: modules/gui/qt4/dialogs/plugins.cpp:520
 #, fuzzy
 msgid "No addons found"
 msgstr "Tteri %@s ezuuse"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:793
+#: modules/gui/qt4/dialogs/plugins.cpp:799
 msgid "This addon has been installed manually. VLC can't manage it by itself."
 msgstr ""
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1168
+#: modules/gui/qt4/dialogs/plugins.cpp:1180
 #, fuzzy
 msgid "Version %1"
 msgstr "Ekyikka"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1194
+#: modules/gui/qt4/dialogs/plugins.cpp:1206
 msgid "%1 downloads"
 msgstr ""
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1263
+#: modules/gui/qt4/dialogs/plugins.cpp:1275
 #, fuzzy
 msgid "&Uninstall"
 msgstr "Okwefaniriza"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1266
+#: modules/gui/qt4/dialogs/plugins.cpp:1278
 #, fuzzy
 msgid "&Install"
 msgstr "Okwefaniriza"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1361
-#: modules/gui/qt4/dialogs/plugins.cpp:1464
+#: modules/gui/qt4/dialogs/plugins.cpp:1373
+#: modules/gui/qt4/dialogs/plugins.cpp:1476
 msgid "Version"
 msgstr "Ekyikka"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1381
-#: modules/gui/qt4/dialogs/plugins.cpp:1491
+#: modules/gui/qt4/dialogs/plugins.cpp:1393
+#: modules/gui/qt4/dialogs/plugins.cpp:1503
 msgid "Website"
 msgstr "Olutimbe"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1503
+#: modules/gui/qt4/dialogs/plugins.cpp:1515
 #: modules/gui/qt4/ui/sprefs_input.h:354
 msgid "Files"
 msgstr "Fayiro"

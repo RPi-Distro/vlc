@@ -2,7 +2,7 @@
  * directsound.c: DirectSound audio output plugin for VLC
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 480089bb7efa895787b70dc38bf35e62083c9cc9 $
+ * $Id: 88326d01869e066968049e3e028d20e640e4ac68 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -147,8 +147,10 @@ static HRESULT TimeGet( aout_stream_sys_t *sys, mtime_t *delay )
     mtime_t size;
 
     hr = IDirectSoundBuffer_GetStatus( sys->p_dsbuffer, &status );
-    if(hr != DS_OK || !(status & DSBSTATUS_PLAYING))
-        return 1;
+    if( hr != DS_OK )
+        return hr;
+    if( !(status & DSBSTATUS_PLAYING) )
+        return DSERR_INVALIDCALL ;
 
     hr = IDirectSoundBuffer_GetCurrentPosition( sys->p_dsbuffer, &read, NULL );
     if( hr != DS_OK )
@@ -159,7 +161,7 @@ static HRESULT TimeGet( aout_stream_sys_t *sys, mtime_t *delay )
     /* GetCurrentPosition cannot be trusted if the return doesn't change
      * Just return an error */
     if( size ==  0 )
-        return 1;
+        return DSERR_GENERIC ;
     else if( size < 0 )
       size += DS_BUF_SIZE;
 

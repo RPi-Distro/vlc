@@ -2,7 +2,7 @@
  * vlc.c: the VLC player
  *****************************************************************************
  * Copyright (C) 1998-2013 the VideoLAN team
- * $Id: 2e133345e44f2a53dfb6b18d4b078da055c6ac09 $
+ * $Id: e0deebe474e2d2b96ed9d18fdd46b4d9816aec58 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -201,12 +201,11 @@ int main( int i_argc, const char *ppsz_argv[] )
     pthread_t self = pthread_self ();
     pthread_sigmask (SIG_SETMASK, &set, NULL);
 
-    const char *argv[i_argc + 3];
+    const char *argv[i_argc + 2];
     int argc = 0;
 
     argv[argc++] = "--no-ignore-config";
     argv[argc++] = "--media-library";
-    argv[argc++] = "--stats";
     ppsz_argv++; i_argc--; /* skip executable path */
 
 #ifdef __OS2__

@@ -2,7 +2,7 @@
  * matroska_segment_parse.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: 845d38771477285cfd44b4f0afc3c47f699082c8 $
+ * $Id: 0aa5924173a22fc4497821121265c6be174ce81a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -1370,6 +1370,7 @@ int32_t matroska_segment_c::TrackInit( mkv_track_t * p_tk )
     {
         p_tk->fmt.i_codec = VLC_CODEC_VP9;
         p_tk->fmt.b_packetized = false;
+        p_tk->b_pts_only = true;
         fill_extra_data( p_tk, 0 );
     }
     else if( !strncmp( p_tk->psz_codec, "V_MPEG4", 7 ) )
@@ -1688,7 +1689,10 @@ int32_t matroska_segment_c::TrackInit( mkv_track_t * p_tk )
                     p_tk->fmt.audio.i_blockalign = hton16(priv->sub_packet_size);
                 }
                 else if( !strcmp( p_tk->psz_codec, "A_REAL/ATRC" ) )
+                {
                     p_tk->fmt.i_codec = VLC_CODEC_ATRAC3;
+                    p_tk->fmt.audio.i_blockalign = hton16(priv->sub_packet_size);
+                }
                 else if( !strcmp( p_tk->psz_codec, "A_REAL/28_8" ) )
                     p_tk->fmt.i_codec = VLC_CODEC_RA_288;
                 /* FIXME RALF and SIPR */
