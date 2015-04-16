@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 8b6dc5f7a8909f7150e715d6409d422d6667fc4d $
+ * $Id: 372031915a2d7f59ff15219c4fece1496cda8b56 $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -50,6 +50,7 @@
 #include "avcodec.h"
 #include "va.h"
 #include "../../video_chroma/copy.h"
+#include "../../demux/asf/libasf_guid.h"
 
 static int Open(vlc_va_t *, AVCodecContext *, const es_format_t *);
 static void Close(vlc_va_t *);
@@ -771,8 +772,7 @@ static int DxFindVideoServiceConversion(vlc_va_t *va, GUID *input, D3DFORMAT *ou
         if (mode) {
             msg_Dbg(va, "- '%s' is supported by hardware", mode->name);
         } else {
-            msg_Warn(va, "- Unknown GUID = %08X-%04x-%04x-XXXX",
-                     (unsigned)g->Data1, g->Data2, g->Data3);
+            msg_Warn(va, "- Unknown GUID = " GUID_FMT, GUID_PRINT( *g ) );
         }
     }
 

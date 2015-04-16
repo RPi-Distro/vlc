@@ -325,9 +325,31 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
     }
 
     const char *device = sys->device;
-    char *devbuf = NULL;
+
     /* Choose the IEC device for S/PDIF output */
+    char sep = '\0';
     if (spdif)
+    {
+        const char *opt;
+
+        if (!strcmp (device, "default"))
+            device = "iec958"; /* TODO: hdmi */
+
+        if (!strncmp (device, "iec958", 6))
+            opt = device + 6;
+        if (!strncmp (device, "hdmi", 4))
+            opt = device + 4;
+
+        if (opt != NULL)
+            switch (*opt)
+            {
+                case ':':  sep = ','; break;
+                case '\0': sep = ':'; break;
+            }
+    }
+
+    char *devbuf = NULL;
+    if (sep != '\0')
     {
         unsigned aes3;
 
@@ -345,23 +367,8 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
                 break;
         }
 
-        char *opt = NULL;
-        if (!strcmp (device, "default"))
-            device = "iec958"; /* TODO: hdmi */
-        else
-        {
-            opt = strchr(device, ':');
-            if (opt && opt[1] == '\0') {
-                /* if device is terminated by : but there's no options,
-                 * remove ':', we'll add it back in the format string. */
-                *opt = '\0';
-                opt = NULL;
-            }
-        }
-
-        if (asprintf (&devbuf,
-                      "%s%cAES0=0x%x,AES1=0x%x,AES2=0x%x,AES3=0x%x", device,
-                      opt ? ',' : ':',
+        if (asprintf (&devbuf, "%s%cAES0=0x%x,AES1=0x%x,AES2=0x%x,AES3=0x%x",
+                      device, sep,
                       IEC958_AES0_CON_EMPHASIS_NONE | IEC958_AES0_NONAUDIO,
                       IEC958_AES1_CON_ORIGINAL | IEC958_AES1_CON_PCM_CODER,
                       0, aes3) == -1)
@@ -375,20 +382,21 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
     const int mode = SND_PCM_NO_AUTO_RESAMPLE;
 
     int val = snd_pcm_open (&pcm, device, SND_PCM_STREAM_PLAYBACK, mode);
-    free (devbuf);
     if (val != 0)
     {
-        msg_Err (aout, "cannot open ALSA device \"%s\": %s", sys->device,
+        msg_Err (aout, "cannot open ALSA device \"%s\": %s", device,
                  snd_strerror (val));
         dialog_Fatal (aout, _("Audio output failed"),
                       _("The audio device \"%s\" could not be used:\n%s."),
                       sys->device, snd_strerror (val));
+        free (devbuf);
         return VLC_EGENERIC;
     }
     sys->pcm = pcm;
 
     /* Print some potentially useful debug */
-    msg_Dbg (aout, "using ALSA device: %s", sys->device);
+    msg_Dbg (aout, "using ALSA device: %s", device);
+    free (devbuf);
     DumpDevice (VLC_OBJECT(aout), pcm);
 
     /* Get Initial hardware parameters */
@@ -487,15 +495,6 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
     }
     sys->rate = fmt->i_rate;
 
-#if 1 /* work-around for period-long latency outputs (e.g. PulseAudio): */
-    param = AOUT_MIN_PREPARE_TIME;
-    val = snd_pcm_hw_params_set_period_time_near (pcm, hw, &param, NULL);
-    if (val)
-    {
-        msg_Err (aout, "cannot set period: %s", snd_strerror (val));
-        goto error;
-    }
-#endif
     /* Set buffer size */
     param = AOUT_MAX_ADVANCE_TIME;
     val = snd_pcm_hw_params_set_buffer_time_near (pcm, hw, &param, NULL);
@@ -504,22 +503,14 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
         msg_Err (aout, "cannot set buffer duration: %s", snd_strerror (val));
         goto error;
     }
-#if 0
-    val = snd_pcm_hw_params_get_buffer_time (hw, &param, NULL);
-    if (val)
-    {
-        msg_Warn (aout, "cannot get buffer time: %s", snd_strerror(val));
-        param = AOUT_MIN_PREPARE_TIME;
-    }
-    else
-        param /= 2;
+
+    param = AOUT_MIN_PREPARE_TIME;
     val = snd_pcm_hw_params_set_period_time_near (pcm, hw, &param, NULL);
     if (val)
     {
         msg_Err (aout, "cannot set period: %s", snd_strerror (val));
         goto error;
     }
-#endif
 
     /* Commit hardware parameters */
     val = snd_pcm_hw_params (pcm, hw);

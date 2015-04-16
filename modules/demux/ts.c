@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2005 VLC authors and VideoLAN
- * $Id: 5cc580bf423fa257be735d5732ca29f7e12c1470 $
+ * $Id: 377db21ebba5ffddc3047bdb32a4e85c6c899eab $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -2025,6 +2025,29 @@ static int Seek( demux_t *p_demux, double f_percent )
     }
     else
     {
+        for( int i = 2; i < 8192; i++ )
+        {
+            ts_pid_t *pid = &p_sys->pid[i];
+
+            if( !pid->b_valid || !pid->es || !pid->es->id )
+                continue;
+
+            if( pid->es->p_data )
+            {
+                block_ChainRelease( pid->es->p_data );
+                pid->es->p_data = NULL;
+                pid->es->i_data_size = 0;
+                pid->es->i_data_gathered = 0;
+                pid->es->pp_last = &pid->es->p_data;
+            }
+            block_t *p_reset = block_Alloc(1);
+            if( p_reset )
+            {
+                p_reset->i_buffer = 0;
+                p_reset->i_flags = BLOCK_FLAG_DISCONTINUITY | BLOCK_FLAG_CORRUPTED;
+                es_out_Send( p_demux->out, pid->es->id, p_reset );
+            }
+        }
         msg_Dbg( p_demux, "Seek():can find a time position. i_cnt:%d", i_cnt );
         return VLC_SUCCESS;
     }

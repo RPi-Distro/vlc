@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
  * Copyright (C) 2008-2009 Rémi Denis-Courmont
- * $Id: a9464f884563a06c612bf490b1c8f526288e8a32 $
+ * $Id: d864211921b6e562350109cd3c727ebc5c9d564b $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *          Daniel Stranger <vlc at schmaller dot de>
@@ -818,6 +818,8 @@ char *str_format_meta(input_thread_t *input, const char *s)
         fread(str, len, 1, stream);
         str[len] = '\0';
     }
+    else
+        str = NULL;
     fclose(stream);
     return str;
 #endif

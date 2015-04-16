@@ -2,7 +2,7 @@
  * ios2.m: iOS OpenGL ES 2 provider
  *****************************************************************************
  * Copyright (C) 2001-2014 VLC authors and VideoLAN
- * $Id: 24ab213bbd6492914fd55165c5530bc5217374f7 $
+ * $Id: b9559d7dfb8265edf36bafefc5240dfbb068e265 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -165,7 +165,7 @@ static int Open(vlc_object_t *this)
                 [sys->viewContainer.superview addGestureRecognizer:sys->tapRecognizer];
         }
     }
-    sys->tapRecognizer.cancelsTouchesInView = YES;
+    sys->tapRecognizer.cancelsTouchesInView = NO;
 
     /* Initialize common OpenGL video display */
     sys->gl.lock = OpenglESClean;

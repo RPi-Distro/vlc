@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2015-02-27 15:34+0100\n"
-"PO-Revision-Date: 2015-02-04 10:59+0000\n"
+"POT-Creation-Date: 2015-04-13 00:13+0200\n"
+"PO-Revision-Date: 2015-03-08 11:58+0000\n"
 "Last-Translator: Ingmārs Dīriņš <melhiors14@gmail.com>\n"
 "Language-Team: Latvian (http://www.transifex.com/projects/p/vlc-trans/"
 "language/lv/)\n"
@@ -174,13 +174,13 @@ msgstr "Video filtri tiek lietoti, lai apstrādātu video straumi."
 
 #: include/vlc_config_cat.h:82
 msgid "Subtitles / OSD"
-msgstr "Subtitri / ekrāna norādījumi (OSD)"
+msgstr "Subtitri / ekrāna displejs (OSD)"
 
 #: include/vlc_config_cat.h:83
 msgid ""
 "Settings related to On-Screen-Display, subtitles and \"overlay subpictures\""
 msgstr ""
-"Iestatījumi, kas saistīti ar ekrāna norādījumiem, subtitriem un \"pārklājuma "
+"Iestatījumi, kas saistīti ar ekrāna displeju, subtitriem un \"pārklājuma "
 "apakšbildēm\"."
 
 #: include/vlc_config_cat.h:91
@@ -1267,9 +1267,9 @@ msgid "Subtitle"
 msgstr "Subtitrs"
 
 #: src/input/es_out.c:2893 src/input/es_out.c:2920 src/input/es_out.c:2964
-#: src/input/es_out.c:3000 modules/gui/macosx/AddonManager.m:123
+#: src/input/es_out.c:3000 modules/gui/macosx/AddonManager.m:127
 #: modules/gui/macosx/ConvertAndSave.m:197 modules/gui/macosx/output.m:144
-#: modules/gui/qt4/dialogs/plugins.cpp:1457
+#: modules/gui/qt4/dialogs/plugins.cpp:1469
 msgid "Type"
 msgstr "Tips"
 
@@ -1923,8 +1923,8 @@ msgstr ""
 #: modules/access/fs.c:42 modules/access/v4l2/v4l2.c:163
 #: modules/codec/avcodec/avcodec.c:68 modules/codec/kate.c:202
 #: modules/codec/x264.c:437 modules/codec/x264.c:442
-#: modules/gui/macosx/ConvertAndSave.m:204 modules/gui/macosx/open.m:245
-#: modules/gui/macosx/open.m:271 modules/gui/macosx/open.m:272
+#: modules/gui/macosx/ConvertAndSave.m:204 modules/gui/macosx/open.m:246
+#: modules/gui/macosx/open.m:274 modules/gui/macosx/open.m:275
 #: modules/gui/qt4/components/interface_widgets.cpp:433
 #: modules/text_renderer/freetype.c:155
 #: share/lua/http/dialogs/create_stream.html:196
@@ -2628,7 +2628,7 @@ msgstr ""
 #: src/libvlc-module.c:538 src/video_output/vout_intf.c:98
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
-#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1018
+#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1020
 #: modules/gui/macosx/AudioEffects.m:86 modules/gui/macosx/MainMenu.m:641
 #: modules/gui/macosx/prefs_widgets.m:1221
 #: modules/gui/macosx/prefs_widgets.m:1284
@@ -3005,15 +3005,15 @@ msgstr "Jūs varat pilnībā atspējot apakšbilžu apstrādāšanu."
 #: modules/stream_out/transcode/transcode.c:212
 #: modules/gui/qt4/ui/sprefs_subtitles.h:290
 msgid "On Screen Display"
-msgstr "Ekrāna norādījumi (OSD)"
+msgstr "Ekrāna displejs (OSD)"
 
 #: src/libvlc-module.c:708
 msgid ""
 "VLC can display messages on the video. This is called OSD (On Screen "
 "Display)."
 msgstr ""
-"VLC var attēlot ziņojumus uz video. Šis tiek saukts par ekrāna norādījumiem "
-"(On Screen Display)."
+"VLC var attēlot ziņojumus uz video. Šis tiek saukts par ekrāna displeju (On "
+"Screen Display)."
 
 #: src/libvlc-module.c:711
 msgid "Text rendering module"
@@ -3932,7 +3932,7 @@ msgstr ""
 "Šie iestatījumi ir globālie VLC taustiņu saistījumi, zināmi kā \"karstie "
 "taustiņi\"."
 
-#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1788
+#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1838
 msgid "Ignore"
 msgstr "Ignorēt"
 
@@ -4948,8 +4948,8 @@ msgstr "Lejupielādējas ..."
 #: modules/gui/macosx/controls.m:54 modules/gui/macosx/ConvertAndSave.m:168
 #: modules/gui/macosx/ConvertAndSave.m:194
 #: modules/gui/macosx/ConvertAndSave.m:372
-#: modules/gui/macosx/ConvertAndSave.m:386 modules/gui/macosx/coredialogs.m:61
-#: modules/gui/macosx/coredialogs.m:63 modules/gui/macosx/coredialogs.m:168
+#: modules/gui/macosx/ConvertAndSave.m:386 modules/gui/macosx/coredialogs.m:63
+#: modules/gui/macosx/coredialogs.m:65 modules/gui/macosx/coredialogs.m:170
 #: modules/gui/macosx/MainWindow.m:186 modules/gui/macosx/MainWindow.m:191
 #: modules/gui/macosx/open.m:128 modules/gui/macosx/open.m:183
 #: modules/gui/macosx/prefs.m:209 modules/gui/macosx/simple_prefs.m:343
@@ -5032,7 +5032,7 @@ msgstr ""
 "Jauna versija tika veiksmīgi lejupielādēta. Vai Jūs vēlaties aizvērt VLC un "
 "instalēt to tagad?"
 
-#: src/misc/update.c:724 modules/gui/macosx/AddonManager.m:192
+#: src/misc/update.c:724 modules/gui/macosx/AddonManager.m:196
 msgid "Install"
 msgstr "Instalēt"
 
@@ -6588,9 +6588,8 @@ msgid "Layer C time interleaving"
 msgstr "Slāņa C laika mijiedarbība"
 
 #: modules/access/dtv/access.c:154
-#, fuzzy
 msgid "Stream identifier"
-msgstr "Tīkla identifikators"
+msgstr "Straumes identifikators"
 
 #: modules/access/dtv/access.c:156
 msgid "Pilot"
@@ -6874,20 +6873,25 @@ msgstr ""
 "Sākt DVD tieši galvenajā izvēlnē. Šis mēģinās izlaist visus bezjēdzīgos "
 "brīdinājuma ievadus."
 
-#: modules/access/dvdnav.c:86
+#: modules/access/dvdnav.c:91
 msgid "DVD with menus"
 msgstr "DVD ar izvēlnēm"
 
-#: modules/access/dvdnav.c:87
+#: modules/access/dvdnav.c:92
 msgid "DVDnav Input"
 msgstr "DVDnav ievade"
 
-#: modules/access/dvdnav.c:332 modules/access/dvdread.c:200
+#: modules/access/dvdnav.c:104
+#, fuzzy
+msgid "DVDnav demuxer"
+msgstr "Nuv atmuksētājs"
+
+#: modules/access/dvdnav.c:299 modules/access/dvdread.c:200
 #: modules/access/dvdread.c:462 modules/access/dvdread.c:530
 msgid "Playback failure"
 msgstr "Atskaņošana neizdevās"
 
-#: modules/access/dvdnav.c:333
+#: modules/access/dvdnav.c:300
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
@@ -7024,9 +7028,9 @@ msgstr "Datnes ievade"
 
 #: modules/access/fs.c:63 modules/access_output/file.c:82
 #: modules/audio_output/file.c:113 modules/gui/macosx/open.m:130
-#: modules/gui/macosx/open.m:587 modules/gui/macosx/output.m:133
+#: modules/gui/macosx/open.m:590 modules/gui/macosx/output.m:133
 #: modules/gui/macosx/output.m:217 modules/gui/macosx/output.m:341
-#: modules/gui/qt4/dialogs/plugins.cpp:1391
+#: modules/gui/qt4/dialogs/plugins.cpp:1403
 #: modules/gui/qt4/dialogs/sout.cpp:69 modules/gui/qt4/dialogs/sout.cpp:121
 #: share/lua/http/dialogs/create_stream.html:204
 #: share/lua/http/dialogs/stream_config_window.html:36
@@ -7228,7 +7232,7 @@ msgstr "Kategorija"
 msgid "Set the category of the elementary stream"
 msgstr "Uzstādīt elementārās straumes kategoriju"
 
-#: modules/access/imem.c:64 modules/gui/macosx/AddonManager.m:353
+#: modules/access/imem.c:64 modules/gui/macosx/AddonManager.m:357
 msgid "Unknown"
 msgstr "Nezināms"
 
@@ -7709,7 +7713,7 @@ msgid "User name that will be requested to access the stream."
 msgstr "Lietotāja vārds, kurš tiks pieprasīts, lai piekļūtu straumei."
 
 #: modules/access_output/http.c:55 modules/access/vnc.c:47
-#: modules/gui/macosx/coredialogs.m:60 modules/gui/macosx/simple_prefs.m:333
+#: modules/gui/macosx/coredialogs.m:62 modules/gui/macosx/simple_prefs.m:333
 #: modules/gui/macosx/simple_prefs.m:392
 #: modules/gui/qt4/dialogs/external.cpp:118 modules/lua/vlc.c:51
 #: modules/lua/vlc.c:67 modules/misc/audioscrobbler.c:116
@@ -8184,11 +8188,11 @@ msgstr "Savienojums neizdevās"
 msgid "VLC could not connect to \"%s:%d\"."
 msgstr "VLC nevarēja pieslēgties pie  \"%s:%d\"."
 
-#: modules/access/rtsp/access.c:224
+#: modules/access/rtsp/access.c:231
 msgid "Session failed"
 msgstr "Sesija neizdevās"
 
-#: modules/access/rtsp/access.c:225
+#: modules/access/rtsp/access.c:232
 msgid "The requested RTSP session could not be established."
 msgstr "Pieprasītā RTSP sesija nevarēja tikt nodibināta."
 
@@ -8261,7 +8265,7 @@ msgstr "Ekrāna indekss"
 
 #: modules/access/screen/screen.c:84
 msgid "Index of screen (1, 2, 3, ...). Alternative to Display ID."
-msgstr "Ekrāna indekss (1, 2, 3, ...). Alternatīvs Displeja ID."
+msgstr "Ekrāna indekss (1, 2, 3, ...). Alternatīva Displeja ID."
 
 #: modules/access/screen/screen.c:97
 msgid "Screen Input"
@@ -8269,8 +8273,8 @@ msgstr "Ekrāna ievade"
 
 #: modules/access/screen/screen.c:98 modules/access/screen/xcb.c:70
 #: modules/gui/macosx/MainMenu.m:649 modules/gui/macosx/open.m:200
-#: modules/gui/macosx/open.m:204 modules/gui/macosx/open.m:489
-#: modules/gui/macosx/open.m:1353 modules/gui/macosx/simple_prefs.m:689
+#: modules/gui/macosx/open.m:204 modules/gui/macosx/open.m:492
+#: modules/gui/macosx/open.m:1356 modules/gui/macosx/simple_prefs.m:689
 msgid "Screen"
 msgstr "Ekrāns"
 
@@ -8343,11 +8347,11 @@ msgstr "Pieprasījuma izmērs rakstīšanas pieejai"
 msgid "SFTP input"
 msgstr "SFTP ievade"
 
-#: modules/access/sftp.c:131
+#: modules/access/sftp.c:132
 msgid "SFTP authentication"
 msgstr "SFTP autentifikācija"
 
-#: modules/access/sftp.c:132
+#: modules/access/sftp.c:133
 #, c-format
 msgid "Please enter a valid login and password for the sftp connexion to %s"
 msgstr ""
@@ -9011,7 +9015,7 @@ msgid "LID"
 msgstr "LID"
 
 #: modules/access/vcdx/info.c:54 modules/gui/macosx/open.m:132
-#: modules/gui/macosx/open.m:589
+#: modules/gui/macosx/open.m:592
 msgid "Disc"
 msgstr "Disks"
 
@@ -9500,7 +9504,7 @@ msgstr "Audio filtrs triviālai kanālu sajaukšanai"
 msgid "Sound Delay"
 msgstr "Skaņas aizture"
 
-#: modules/audio_filter/chorus_flanger.c:75 modules/gui/macosx/open.m:364
+#: modules/audio_filter/chorus_flanger.c:75 modules/gui/macosx/open.m:367
 #: modules/stream_out/bridge.c:51 modules/stream_out/delay.c:54
 #: modules/video_filter/mosaic.c:154
 msgid "Delay"
@@ -10182,11 +10186,11 @@ msgstr "Ieskaujošā 7.1"
 msgid "ALSA audio output"
 msgstr "ALSA audio izvade"
 
-#: modules/audio_output/alsa.c:383 modules/audio_output/auhal.c:425
+#: modules/audio_output/alsa.c:389 modules/audio_output/auhal.c:425
 msgid "Audio output failed"
 msgstr "Audio izvade neizdevās"
 
-#: modules/audio_output/alsa.c:384
+#: modules/audio_output/alsa.c:390
 #, c-format
 msgid ""
 "The audio device \"%s\" could not be used:\n"
@@ -10512,13 +10516,13 @@ msgstr "FFmpeg audio/video atkodētājs"
 msgid "Decoding"
 msgstr "Atkodēšana"
 
-#: modules/codec/avcodec/avcodec.c:151 modules/codec/jpeg.c:117
+#: modules/codec/avcodec/avcodec.c:157 modules/codec/jpeg.c:117
 #: modules/codec/omxil/omxil.c:96 modules/codec/png.c:99
 #: modules/codec/schroedinger.c:370
 msgid "Encoding"
 msgstr "Iekodēšana"
 
-#: modules/codec/avcodec/avcodec.c:152
+#: modules/codec/avcodec/avcodec.c:158
 msgid "FFmpeg audio/video encoder"
 msgstr "FFmpeg audio/video iekodētājs"
 
@@ -10952,7 +10956,7 @@ msgstr ""
 "hev2 (noklusētais: low). hev1 un hev2 ir šobrīd atbalstīti tikai ar libfdk-"
 "aac iespējotu libavcodec"
 
-#: modules/codec/avcodec/dxva2.c:58
+#: modules/codec/avcodec/dxva2.c:59
 msgid "DirectX Video Acceleration (DXVA) 2.0"
 msgstr "DirectX Video Acceleration (DXVA) 2.0"
 
@@ -11141,7 +11145,7 @@ msgstr "Iekodēto subtitru Y koordināta"
 msgid "DVB subtitles decoder"
 msgstr "DVB subtitru atkodētājs"
 
-#: modules/codec/dvbsub.c:121 modules/demux/ts.c:3562 modules/demux/ts.c:3619
+#: modules/codec/dvbsub.c:121 modules/demux/ts.c:3585 modules/demux/ts.c:3642
 msgid "DVB subtitles"
 msgstr "DVB subtitri"
 
@@ -11157,7 +11161,7 @@ msgstr "Fiktīvais iekodētājs"
 msgid "AAC audio decoder (using libfaad2)"
 msgstr "AAC audio atkodētājs (lietojot libfaad2)"
 
-#: modules/codec/faad.c:436
+#: modules/codec/faad.c:438
 msgid "AAC extension"
 msgstr "AAC paplašinājums"
 
@@ -16270,19 +16274,19 @@ msgstr "Teleteksts: programmas grafiks"
 msgid "Teletext subtitles: hearing impaired"
 msgstr "Teleteksta subtitri: personām ar dzirdes traucējumiem"
 
-#: modules/demux/ts.c:3626
+#: modules/demux/ts.c:3649
 msgid "DVB subtitles: hearing impaired"
 msgstr "DVB subtitri: personām ar dzirdes traucējumiem"
 
-#: modules/demux/ts.c:3911
+#: modules/demux/ts.c:3934
 msgid "clean effects"
 msgstr "notīrīt efektus"
 
-#: modules/demux/ts.c:3912
+#: modules/demux/ts.c:3935
 msgid "hearing impaired"
 msgstr "personām ar dzirdes traucējumiem"
 
-#: modules/demux/ts.c:3913
+#: modules/demux/ts.c:3936
 msgid "visual impaired commentary"
 msgstr "komentāri personām ar redzes traucējumiem"
 
@@ -16423,8 +16427,8 @@ msgstr ""
 "<p>VLC mediju atskaņotājs ir brīvā un atvērtā koda mediju atskaņotājs, "
 "iekodētājs un straumētājs, kuru veidojuši brīvprātīgie no <a href=\"http://"
 "www.videolan.org/\"><span style=\" text-decoration: underline; color:#0057ae;"
-"\">VideoLAN</span></a> kopienas.</p><p>VLC lieto tā iekšējos kodekus, strādā "
-"uz būtībā jebkuras populāras platformas, un var nolasīt gandrīz visas "
+"\">VideoLAN</span></a> kopienas.</p><p>VLC lieto savus iekšējos kodekus, "
+"strādā uz būtībā jebkuras populāras platformas, un var nolasīt gandrīz visas "
 "datnes, CD, DVD, tīkla straumes, tveršanas kartes un citus mediju formātus!</"
 "p><p><a href=\"http://www.videolan.org/contribute/\"><span style=\" text-"
 "decoration: underline; color:#0057ae;\">Palīdzi un pievienojies mums!</"
@@ -16439,60 +16443,72 @@ msgstr "VLC mediju atskaņotāja palīdzība"
 msgid "Index"
 msgstr "Indekss"
 
-#: modules/gui/macosx/AddonManager.m:98 modules/gui/macosx/AddonManager.m:347
+#: modules/gui/macosx/AddonManager.m:98 modules/gui/macosx/AddonManager.m:351
 #: modules/gui/qt4/dialogs/plugins.cpp:378
 msgid "Playlist parsers"
 msgstr "Atskaņošanas sarakstu sintaktiskie analizatori"
 
-#: modules/gui/macosx/AddonManager.m:100 modules/gui/macosx/AddonManager.m:349
+#: modules/gui/macosx/AddonManager.m:100 modules/gui/macosx/AddonManager.m:353
 #: modules/gui/qt4/dialogs/plugins.cpp:382
 msgid "Service Discovery"
 msgstr "Servisu atklāšana"
 
-#: modules/gui/macosx/AddonManager.m:102 modules/gui/macosx/AddonManager.m:351
-#: modules/gui/macosx/MainMenu.m:352 modules/gui/macosx/MainMenu.m:353
+#: modules/gui/macosx/AddonManager.m:102
 #: modules/gui/qt4/dialogs/plugins.cpp:386
+#, fuzzy
+msgid "Interfaces"
+msgstr "Saskarne"
+
+#: modules/gui/macosx/AddonManager.m:104
+#: modules/gui/qt4/dialogs/plugins.cpp:389
+#, fuzzy
+msgid "Art and meta fetchers"
+msgstr "Lua meta ienesējs"
+
+#: modules/gui/macosx/AddonManager.m:106 modules/gui/macosx/AddonManager.m:355
+#: modules/gui/macosx/MainMenu.m:352 modules/gui/macosx/MainMenu.m:353
+#: modules/gui/qt4/dialogs/plugins.cpp:392
 msgid "Extensions"
 msgstr "Paplašinājumi"
 
-#: modules/gui/macosx/AddonManager.m:105
+#: modules/gui/macosx/AddonManager.m:109
 msgid "Show Installed Only"
 msgstr "Parādīt tikai instalētos"
 
-#: modules/gui/macosx/AddonManager.m:107
-#: modules/gui/qt4/dialogs/plugins.cpp:414
+#: modules/gui/macosx/AddonManager.m:111
+#: modules/gui/qt4/dialogs/plugins.cpp:420
 msgid "Find more addons online"
 msgstr "Atrast vairāk papildinājumu tiešsaistē"
 
-#: modules/gui/macosx/AddonManager.m:117 modules/gui/macosx/MainMenu.m:354
+#: modules/gui/macosx/AddonManager.m:121 modules/gui/macosx/MainMenu.m:354
 #: modules/gui/qt4/dialogs/plugins.cpp:80
 msgid "Addons Manager"
 msgstr "Papildinājumu pārvaldnieks"
 
-#: modules/gui/macosx/AddonManager.m:120
-#: modules/gui/qt4/dialogs/plugins.cpp:1137
-#: modules/gui/qt4/dialogs/plugins.cpp:1150
+#: modules/gui/macosx/AddonManager.m:124
+#: modules/gui/qt4/dialogs/plugins.cpp:1149
+#: modules/gui/qt4/dialogs/plugins.cpp:1162
 msgid "Installed"
 msgstr "Instalēts"
 
-#: modules/gui/macosx/AddonManager.m:121 modules/gui/macosx/bookmarks.m:110
+#: modules/gui/macosx/AddonManager.m:125 modules/gui/macosx/bookmarks.m:110
 #: modules/gui/macosx/playlist.m:167 modules/gui/qt4/dialogs/plugins.cpp:123
 #: modules/mux/avi.c:53
 msgid "Name"
 msgstr "Nosaukums"
 
-#: modules/gui/macosx/AddonManager.m:122 modules/gui/macosx/MainMenu.m:74
+#: modules/gui/macosx/AddonManager.m:126 modules/gui/macosx/MainMenu.m:74
 #: modules/gui/macosx/playlist.m:168 modules/gui/macosx/wizard.m:347
-#: modules/gui/qt4/dialogs/plugins.cpp:1367
-#: modules/gui/qt4/dialogs/plugins.cpp:1472 modules/mux/asf.c:58
+#: modules/gui/qt4/dialogs/plugins.cpp:1379
+#: modules/gui/qt4/dialogs/plugins.cpp:1484 modules/mux/asf.c:58
 msgid "Author"
 msgstr "Autors"
 
-#: modules/gui/macosx/AddonManager.m:189
+#: modules/gui/macosx/AddonManager.m:193
 msgid "Uninstall"
 msgstr "Atinstalēt"
 
-#: modules/gui/macosx/AddonManager.m:345
+#: modules/gui/macosx/AddonManager.m:349
 #: modules/gui/qt4/dialogs/plugins.cpp:374
 #: modules/gui/skins2/src/skin_main.cpp:507
 msgid "Skins"
@@ -16667,9 +16683,9 @@ msgstr "Laiks"
 #: modules/gui/macosx/ConvertAndSave.m:288
 #: modules/gui/macosx/ConvertAndSave.m:483
 #: modules/gui/macosx/ConvertAndSave.m:490
-#: modules/gui/macosx/ConvertAndSave.m:497 modules/gui/macosx/coredialogs.m:62
-#: modules/gui/macosx/coredialogs.m:99 modules/gui/macosx/coredialogs.m:146
-#: modules/gui/macosx/open.m:374 modules/gui/macosx/output.m:129
+#: modules/gui/macosx/ConvertAndSave.m:497 modules/gui/macosx/coredialogs.m:64
+#: modules/gui/macosx/coredialogs.m:101 modules/gui/macosx/coredialogs.m:148
+#: modules/gui/macosx/open.m:377 modules/gui/macosx/output.m:129
 #: modules/gui/macosx/playlistinfo.m:368 modules/gui/macosx/simple_prefs.m:344
 #: modules/gui/macosx/wizard.m:592 modules/gui/macosx/wizard.m:653
 #: modules/gui/macosx/wizard.m:992 modules/gui/macosx/wizard.m:1073
@@ -16933,7 +16949,7 @@ msgid "Choose an output location"
 msgstr "Izvēlieties izvades atrašanās vietu"
 
 #: modules/gui/macosx/ConvertAndSave.m:161 modules/gui/macosx/open.m:138
-#: modules/gui/macosx/open.m:361 modules/gui/macosx/output.m:136
+#: modules/gui/macosx/open.m:364 modules/gui/macosx/output.m:136
 #: modules/gui/macosx/prefs_widgets.m:1121
 #: modules/gui/macosx/simple_prefs.m:352 modules/gui/macosx/simple_prefs.m:422
 #: modules/gui/qt4/components/preferences_widgets.cpp:264
@@ -17126,16 +17142,16 @@ msgstr "SDP eksports ir pieprasīts, bet nav sniegts URL."
 msgid "Custom"
 msgstr "Pielāgots"
 
-#: modules/gui/macosx/coredialogs.m:59 modules/gui/macosx/simple_prefs.m:334
+#: modules/gui/macosx/coredialogs.m:61 modules/gui/macosx/simple_prefs.m:334
 #: modules/gui/qt4/dialogs/external.cpp:113
 msgid "User name"
 msgstr "Lietotāja vārds"
 
-#: modules/gui/macosx/coredialogs.m:243
+#: modules/gui/macosx/coredialogs.m:240
 msgid "Errors and Warnings"
 msgstr "Kļūdas un brīdinājumi"
 
-#: modules/gui/macosx/coredialogs.m:244
+#: modules/gui/macosx/coredialogs.m:241
 msgid "Clean up"
 msgstr "Sakopt"
 
@@ -17167,19 +17183,19 @@ msgstr "(netiek atskaņots neviens vienums)"
 msgid "Click to exit fullscreen playback."
 msgstr "Klikšķiniet, lai izietu no pilnekrāna atskaņošanas."
 
-#: modules/gui/macosx/intf.m:1498 modules/gui/macosx/intf.m:1515
+#: modules/gui/macosx/intf.m:1548 modules/gui/macosx/intf.m:1565
 msgid "VLC media playback"
 msgstr "VLC mediju atskaņošana"
 
-#: modules/gui/macosx/intf.m:1786
+#: modules/gui/macosx/intf.m:1836
 msgid "Remove old preferences?"
 msgstr "Aizvākt vecos iestatījumus?"
 
-#: modules/gui/macosx/intf.m:1787
+#: modules/gui/macosx/intf.m:1837
 msgid "We just found an older version of VLC's preferences files."
 msgstr "Mēs nupat atradām vecāku versiju VLC iestatījumu datnēm."
 
-#: modules/gui/macosx/intf.m:1788
+#: modules/gui/macosx/intf.m:1838
 msgid "Move To Trash and Relaunch VLC"
 msgstr "Pārvietot uz atkritumu tvertni un no jauna palaist VLC"
 
@@ -17858,23 +17874,23 @@ msgstr "LOKĀLAIS TĪKLS"
 msgid "INTERNET"
 msgstr "INTERNETS"
 
-#: modules/gui/macosx/misc.m:980
+#: modules/gui/macosx/misc.m:966
 msgid "B"
 msgstr "B"
 
-#: modules/gui/macosx/misc.m:987
+#: modules/gui/macosx/misc.m:973
 msgid "KB"
 msgstr "KB"
 
-#: modules/gui/macosx/misc.m:994
+#: modules/gui/macosx/misc.m:980
 msgid "MB"
 msgstr "MB"
 
-#: modules/gui/macosx/misc.m:1002
+#: modules/gui/macosx/misc.m:988
 msgid "GB"
 msgstr "GB"
 
-#: modules/gui/macosx/misc.m:1007
+#: modules/gui/macosx/misc.m:993
 msgid "TB"
 msgstr "TB"
 
@@ -17901,8 +17917,8 @@ msgid "Media Resource Locator (MRL)"
 msgstr "Media Resource Locator (MRL)"
 
 #: modules/gui/macosx/open.m:127 modules/gui/macosx/open.m:184
-#: modules/gui/macosx/open.m:665 modules/gui/macosx/open.m:740
-#: modules/gui/macosx/open.m:1118 modules/gui/macosx/open.m:1551
+#: modules/gui/macosx/open.m:668 modules/gui/macosx/open.m:743
+#: modules/gui/macosx/open.m:1121 modules/gui/macosx/open.m:1554
 #: modules/gui/qt4/components/controller.hpp:115
 msgid "Open"
 msgstr "Atvērt"
@@ -17920,17 +17936,17 @@ msgstr ""
 "kā mikrofoni vai kameras, tekošais ekrāns vai TV straumes, ja EyeTV lietotne "
 "ir instalēta."
 
-#: modules/gui/macosx/open.m:133 modules/gui/macosx/open.m:591
+#: modules/gui/macosx/open.m:133 modules/gui/macosx/open.m:594
 #: modules/gui/macosx/simple_prefs.m:359 modules/gui/qt4/ui/sprefs_input.h:359
 msgid "Network"
 msgstr "Tīkls"
 
-#: modules/gui/macosx/open.m:134 modules/gui/macosx/open.m:488
-#: modules/gui/macosx/open.m:593
+#: modules/gui/macosx/open.m:134 modules/gui/macosx/open.m:491
+#: modules/gui/macosx/open.m:596
 msgid "Capture"
 msgstr "Tvert"
 
-#: modules/gui/macosx/open.m:136 modules/gui/macosx/open.m:356
+#: modules/gui/macosx/open.m:136 modules/gui/macosx/open.m:359
 msgid "Choose a file"
 msgstr "Izvēlieties datni"
 
@@ -17946,7 +17962,7 @@ msgstr "Uztvert drīzāk kā programmkanālu, nevis kā datni"
 msgid "Play another media synchronously"
 msgstr "Atskaņot citu mediju sinhroni"
 
-#: modules/gui/macosx/open.m:143 modules/gui/macosx/open.m:359
+#: modules/gui/macosx/open.m:143 modules/gui/macosx/open.m:362
 #: modules/gui/macosx/simple_prefs.m:399 modules/gui/macosx/wizard.m:343
 #: modules/gui/macosx/wizard.m:411 modules/gui/qt4/ui/sprefs_interface.h:521
 msgid "Choose..."
@@ -18028,18 +18044,18 @@ msgstr "Atvērt RTP/UDP straumi"
 msgid "Protocol"
 msgstr "Protokols"
 
-#: modules/gui/macosx/open.m:190 modules/gui/macosx/open.m:1234
-#: modules/gui/macosx/open.m:1283
+#: modules/gui/macosx/open.m:190 modules/gui/macosx/open.m:1237
+#: modules/gui/macosx/open.m:1286
 msgid "Unicast"
 msgstr "Uniraide"
 
-#: modules/gui/macosx/open.m:191 modules/gui/macosx/open.m:1247
-#: modules/gui/macosx/open.m:1296
+#: modules/gui/macosx/open.m:191 modules/gui/macosx/open.m:1250
+#: modules/gui/macosx/open.m:1299
 msgid "Multicast"
 msgstr "Multiraide"
 
-#: modules/gui/macosx/open.m:199 modules/gui/macosx/open.m:507
-#: modules/gui/macosx/open.m:1401
+#: modules/gui/macosx/open.m:199 modules/gui/macosx/open.m:510
+#: modules/gui/macosx/open.m:1404
 msgid "Input Devices"
 msgstr "Ievades ierīces"
 
@@ -18075,7 +18091,7 @@ msgstr "Iepriekšējais kanāls"
 msgid "Next Channel"
 msgstr "Nākošais kanāls"
 
-#: modules/gui/macosx/open.m:214 modules/gui/macosx/open.m:1482
+#: modules/gui/macosx/open.m:214 modules/gui/macosx/open.m:1485
 msgid "Retrieving Channel Info..."
 msgstr "Iegūst kanāla informāciju..."
 
@@ -18107,66 +18123,66 @@ msgstr "Attēla platums"
 msgid "Image height"
 msgstr "Attēla augstums"
 
-#: modules/gui/macosx/open.m:355
+#: modules/gui/macosx/open.m:358
 msgid "Add Subtitle File:"
 msgstr "Pievienot subtitru datni:"
 
-#: modules/gui/macosx/open.m:360
+#: modules/gui/macosx/open.m:363
 msgid "Click to setup subtitle playback in full detail."
 msgstr "Klikšķiniet, lai uzstādītu subtitru atskaņošanu pilnās detaļās."
 
-#: modules/gui/macosx/open.m:362
+#: modules/gui/macosx/open.m:365
 msgid "Click to select a subtitle file."
 msgstr "Klikšķiniet, lai atlasītu subtitru datni."
 
-#: modules/gui/macosx/open.m:363
+#: modules/gui/macosx/open.m:366
 msgid "Override parameters"
 msgstr "Pārlabot parametrus"
 
-#: modules/gui/macosx/open.m:366
+#: modules/gui/macosx/open.m:369
 msgid "FPS"
 msgstr "K/S"
 
-#: modules/gui/macosx/open.m:368
+#: modules/gui/macosx/open.m:371
 msgid "Subtitle encoding"
 msgstr "Subtitru iekodējums"
 
-#: modules/gui/macosx/open.m:370 modules/gui/macosx/simple_prefs.m:401
+#: modules/gui/macosx/open.m:373 modules/gui/macosx/simple_prefs.m:401
 #: modules/gui/qt4/ui/sprefs_subtitles.h:300
 msgid "Font size"
 msgstr "Šrifta izmērs"
 
-#: modules/gui/macosx/open.m:372
+#: modules/gui/macosx/open.m:375
 msgid "Subtitle alignment"
 msgstr "Subtitru izlīdzinājums"
 
-#: modules/gui/macosx/open.m:375
+#: modules/gui/macosx/open.m:378
 msgid "Click to dismiss the subtitle setup dialog."
 msgstr "Klikšķiniet, lai noraidītu subtitru uzstādīšanas dialoglodziņu."
 
-#: modules/gui/macosx/open.m:376
+#: modules/gui/macosx/open.m:379
 msgid "Font Properties"
 msgstr "Šrifta īpašības"
 
-#: modules/gui/macosx/open.m:377
+#: modules/gui/macosx/open.m:380
 msgid "Subtitle File"
 msgstr "Subtitru datne"
 
-#: modules/gui/macosx/open.m:664 modules/gui/macosx/open.m:739
-#: modules/gui/macosx/open.m:1550 modules/gui/qt4/ui/open_file.h:142
+#: modules/gui/macosx/open.m:667 modules/gui/macosx/open.m:742
+#: modules/gui/macosx/open.m:1553 modules/gui/qt4/ui/open_file.h:142
 msgid "Open File"
 msgstr "Atvērt datni"
 
-#: modules/gui/macosx/open.m:981
+#: modules/gui/macosx/open.m:984
 #, c-format
 msgid "%i tracks"
 msgstr "%i celiņi"
 
-#: modules/gui/macosx/open.m:1488
+#: modules/gui/macosx/open.m:1491
 msgid "Composite input"
 msgstr "Kompozītā ievade"
 
-#: modules/gui/macosx/open.m:1491
+#: modules/gui/macosx/open.m:1494
 msgid "S-Video input"
 msgstr "S-video ievade"
 
@@ -18423,7 +18439,7 @@ msgstr "Video iestatījumi"
 #: modules/gui/qt4/components/simple_preferences.cpp:294
 #: modules/gui/qt4/components/simple_preferences.cpp:873
 msgid "Subtitle & On Screen Display Settings"
-msgstr "Subtitru un ekrāna norādījumu iestatījumi"
+msgstr "Subtitru un ekrāna displeja iestatījumi"
 
 #: modules/gui/macosx/simple_prefs.m:296
 msgid "Input & Codec Settings"
@@ -18591,7 +18607,7 @@ msgstr "Vēlamā subtitru valoda"
 
 #: modules/gui/macosx/simple_prefs.m:406
 msgid "Enable OSD"
-msgstr "Iespējot ekrāna norādījumus (OSD)"
+msgstr "Iespējot ekrāna displeju (OSD)"
 
 #: modules/gui/macosx/simple_prefs.m:407 modules/text_renderer/win32text.c:66
 #: modules/video_filter/marq.c:107 modules/video_filter/rss.c:146
@@ -20787,30 +20803,30 @@ msgstr "VLC ādiņu tīmekļa vietne"
 msgid "System's default"
 msgstr "Sistēmas noklusētais"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1290
+#: modules/gui/qt4/components/simple_preferences.cpp:1296
 msgid "File associations"
 msgstr "Datņu asociācijas"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1299
+#: modules/gui/qt4/components/simple_preferences.cpp:1305
 #: modules/gui/qt4/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "Audio datnes"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1300
+#: modules/gui/qt4/components/simple_preferences.cpp:1306
 #: modules/gui/qt4/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "Video datnes"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1301
+#: modules/gui/qt4/components/simple_preferences.cpp:1307
 #: modules/gui/qt4/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "Atskaņošanas sarakstu datnes"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1353
+#: modules/gui/qt4/components/simple_preferences.cpp:1371
 msgid "&Apply"
 msgstr "Pielietot"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1354
+#: modules/gui/qt4/components/simple_preferences.cpp:1372
 #: modules/gui/qt4/dialogs/convert.cpp:109
 #: modules/gui/qt4/dialogs/gototime.cpp:49
 #: modules/gui/qt4/dialogs/open.cpp:108 modules/gui/qt4/dialogs/openurl.cpp:61
@@ -20847,7 +20863,7 @@ msgstr "Šis muksētājs nav sniegts tieši no VLC: Tas varētu būt trūkstošs
 
 #: modules/gui/qt4/components/sout/profile_selector.cpp:609
 msgid "This muxer is missing. Using this profile will fail"
-msgstr ""
+msgstr "Šis muksētājs ir trūkstošs. Šī profila lietošana neizdosies"
 
 #: modules/gui/qt4/components/sout/profile_selector.cpp:753
 msgid " Profile Name Missing"
@@ -20962,8 +20978,8 @@ msgstr "Izdzēst visas grāmatzīmes"
 #: modules/gui/qt4/dialogs/mediainfo.cpp:80
 #: modules/gui/qt4/dialogs/messages.cpp:81
 #: modules/gui/qt4/dialogs/plugins.cpp:88
-#: modules/gui/qt4/dialogs/plugins.cpp:1400
-#: modules/gui/qt4/dialogs/plugins.cpp:1513
+#: modules/gui/qt4/dialogs/plugins.cpp:1412
+#: modules/gui/qt4/dialogs/plugins.cpp:1525
 #: modules/gui/qt4/dialogs/podcast_configuration.cpp:36
 #: modules/gui/qt4/dialogs/vlm.cpp:136
 msgid "&Close"
@@ -21085,8 +21101,8 @@ msgid "Go to time"
 msgstr "Doties uz laiku"
 
 #: modules/gui/qt4/dialogs/help.cpp:86
-#: modules/gui/qt4/dialogs/plugins.cpp:1338
-#: modules/gui/qt4/dialogs/plugins.cpp:1421
+#: modules/gui/qt4/dialogs/plugins.cpp:1350
+#: modules/gui/qt4/dialogs/plugins.cpp:1433
 msgid "About"
 msgstr "Par"
 
@@ -21269,7 +21285,7 @@ msgid "&Search:"
 msgstr "Meklēt:"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:247
-#: modules/gui/qt4/dialogs/plugins.cpp:1254
+#: modules/gui/qt4/dialogs/plugins.cpp:1266
 msgid "More information..."
 msgstr "Vairāk informācijas..."
 
@@ -21301,56 +21317,60 @@ msgstr ""
 "Servisu atklāšanas pievieno jaunus avotus Jūsu atskaņošanas sarakstam, tādus "
 "kā tīmekļa radio, video tīmekļa vietnes, ..."
 
-#: modules/gui/qt4/dialogs/plugins.cpp:387
+#: modules/gui/qt4/dialogs/plugins.cpp:390
+msgid "Retrieves extra info and art for playlist items"
+msgstr ""
+
+#: modules/gui/qt4/dialogs/plugins.cpp:393
 msgid ""
 "Extensions brings various enhancements. Check descriptions for more details"
 msgstr ""
 "Paplašinājumi ienes dažādus uzlabojumus. Pārbaudiet aprakstus priekš vairāk "
 "detaļām"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:408
+#: modules/gui/qt4/dialogs/plugins.cpp:414
 msgid "Only installed"
 msgstr "Tikai instalētos"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:503
+#: modules/gui/qt4/dialogs/plugins.cpp:509
 msgid "Retrieving addons..."
 msgstr "Iegūst papildinājumus..."
 
-#: modules/gui/qt4/dialogs/plugins.cpp:514
+#: modules/gui/qt4/dialogs/plugins.cpp:520
 msgid "No addons found"
 msgstr "Papildinājumi nav atrasti."
 
-#: modules/gui/qt4/dialogs/plugins.cpp:793
+#: modules/gui/qt4/dialogs/plugins.cpp:799
 msgid "This addon has been installed manually. VLC can't manage it by itself."
 msgstr "Šis papildinājums tika instalēts manuāli. VLC pats to nevar pārvaldīt."
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1168
+#: modules/gui/qt4/dialogs/plugins.cpp:1180
 msgid "Version %1"
 msgstr "Versija %1"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1194
+#: modules/gui/qt4/dialogs/plugins.cpp:1206
 msgid "%1 downloads"
 msgstr "%1 lejupielādes"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1263
+#: modules/gui/qt4/dialogs/plugins.cpp:1275
 msgid "&Uninstall"
 msgstr "Atinstalēt"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1266
+#: modules/gui/qt4/dialogs/plugins.cpp:1278
 msgid "&Install"
 msgstr "Instalēt"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1361
-#: modules/gui/qt4/dialogs/plugins.cpp:1464
+#: modules/gui/qt4/dialogs/plugins.cpp:1373
+#: modules/gui/qt4/dialogs/plugins.cpp:1476
 msgid "Version"
 msgstr "Versija"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1381
-#: modules/gui/qt4/dialogs/plugins.cpp:1491
+#: modules/gui/qt4/dialogs/plugins.cpp:1393
+#: modules/gui/qt4/dialogs/plugins.cpp:1503
 msgid "Website"
 msgstr "Tīmekļa vietne"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1503
+#: modules/gui/qt4/dialogs/plugins.cpp:1515
 #: modules/gui/qt4/ui/sprefs_input.h:354
 msgid "Files"
 msgstr "Datnes"
@@ -23291,9 +23311,8 @@ msgid "LibNotify Notification Plugin"
 msgstr "LibNotify paziņošanas spraudnis"
 
 #: modules/packetizer/avparser.h:49
-#, fuzzy
 msgid "avparser packetizer"
-msgstr "Kopēšanas paketizētājs"
+msgstr "avparser paketizētājs"
 
 #: modules/packetizer/copy.c:48
 msgid "Copy packetizer"
@@ -24565,13 +24584,12 @@ msgstr ""
 
 #: modules/stream_out/transcode/transcode.c:123
 msgid "OSD menu"
-msgstr "Ekrāna norādījumu (OSD) izvēlne"
+msgstr "Ekrāna displeja (OSD) izvēlne"
 
 #: modules/stream_out/transcode/transcode.c:125
 msgid ""
 "Stream the On Screen Display menu (using the osdmenu subpicture module)."
-msgstr ""
-"Straumēt ekrāna norādījumu izvēlni (lietojot osdmenu apakšbilžu moduli)."
+msgstr "Straumēt ekrāna displeja izvēlni (lietojot osdmenu apakšbilžu moduli)."
 
 #: modules/stream_out/transcode/transcode.c:127
 msgid "Number of threads"
@@ -27080,18 +27098,18 @@ msgid ""
 "transparency. The default is being not transparent (value 255) the minimum "
 "is fully transparent (value 0)."
 msgstr ""
-"Ekrāna norādījumu (OSD) VNC caurspīdīgums var tikt mainīts, uzdodot vērtību "
+"Ekrāna displeja (OSD) VNC caurspīdīgums var tikt mainīts, uzdodot vērtību "
 "starp 0 un 255. Zemāka vērtība norāda vairāk caurspīdīguma, augstāka nozīmē "
 "mazāk caurspīdīguma. Noklusētais ir būt necaurspīdīgam (vērtība 255), "
 "minimuma ir pilnībā caurspīdīgs (vērtība 0)."
 
 #: modules/video_filter/remoteosd.c:115
 msgid "Remote-OSD over VNC"
-msgstr "Attālinātie ekrāna norādījumi (OSD) pāri VNC"
+msgstr "Attālinātais ekrāna displejs (OSD) pāri VNC"
 
 #: modules/video_filter/remoteosd.c:117
 msgid "Remote-OSD"
-msgstr "Attālinātie ekrāna norādījumi (OSD)"
+msgstr "Attālinātais ekrāna displejs (OSD)"
 
 #: modules/video_filter/ripple.c:52
 msgid "Ripple video filter"
@@ -27860,7 +27878,7 @@ msgstr "Lietot aparatūras maisīšanas atbalstu"
 #: modules/video_output/msw/direct3d.c:64
 msgid "Try to use hardware acceleration for subtitle/OSD blending."
 msgstr ""
-"Mēģināt lietot aparatūras paātrinājumu subtitru/ekrāna norādījumu (OSD) "
+"Mēģināt lietot aparatūras paātrinājumu subtitru/ekrāna displeja (OSD) "
 "sajaukšanai."
 
 #: modules/video_output/msw/direct3d.c:66
@@ -29452,7 +29470,7 @@ msgstr "Uzstādīt asociācijas..."
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:291
 msgid "Enable On Screen Display (OSD)"
-msgstr "Iespējot ekrāna norādījumus (OSD)"
+msgstr "Iespējot ekrāna displeju (OSD)"
 
 #: modules/gui/qt4/ui/sprefs_subtitles.h:292
 msgid "Show media title on video start"
@@ -29744,9 +29762,6 @@ msgstr "AAAA; "
 msgid "Media Manager List"
 msgstr "Mediju pārvaldnieka saraksts"
 
-#~ msgid "Video acceleration not available"
-#~ msgstr "Video paātrināšana nav pieejama"
-
 #~ msgid ""
 #~ "The XVideo rendering acceleration driver does not support the required "
 #~ "resolution of %ux%u pixels but %<PRIu32>x%<PRIu32> pixels instead.\n"
@@ -29954,6 +29969,10 @@ msgstr "Mediju pārvaldnieka saraksts"
 
 #~ msgid "VLC Debug Log (%s).rtf"
 #~ msgstr "VLC atkļūdošanas žurnāls (%s).rtf"
+
+#, fuzzy
+#~ msgid "Video acceleration not available"
+#~ msgstr "K Video Acceleration video izvade"
 
 #, fuzzy
 #~ msgid "Subtitle track added"
@@ -30579,7 +30598,7 @@ msgstr "Mediju pārvaldnieka saraksts"
 
 #, fuzzy
 #~ msgid "Subtitles/OSD"
-#~ msgstr "Subtitri / ekrāna norādījumi (OSD)"
+#~ msgstr "Subtitri / ekrāna displejs (OSD)"
 
 #, fuzzy
 #~ msgid "Chroma modules settings"
@@ -30699,7 +30718,7 @@ msgstr "Mediju pārvaldnieka saraksts"
 
 #, fuzzy
 #~ msgid "Subtitles && OSD"
-#~ msgstr "Subtitri / ekrāna norādījumi (OSD)"
+#~ msgstr "Subtitri / ekrāna displejs (OSD)"
 
 #, fuzzy
 #~ msgid "Input && Codecs"
@@ -31246,7 +31265,7 @@ msgstr "Mediju pārvaldnieka saraksts"
 
 #, fuzzy
 #~ msgid "Subtitles & OSD settings"
-#~ msgstr "Subtitru un ekrāna norādījumu iestatījumi"
+#~ msgstr "Subtitru un ekrāna displeja iestatījumi"
 
 #, fuzzy
 #~ msgid "Open..."

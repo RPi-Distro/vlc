@@ -2,7 +2,7 @@
  * access.c: Real rtsp input
  *****************************************************************************
  * Copyright (C) 2005 VideoLAN
- * $Id: dd786bec42a4e21d43ee21713150b5bed5bf7d3b $
+ * $Id: e8b0ceca98d336fefb1ad2c5e5de3e3221452569 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -155,6 +155,13 @@ static int Open( vlc_object_t *p_this )
             return VLC_EGENERIC;
     }
 
+    /* Discard legacy username/password syntax - not supported */
+    const char *psz_location = strchr( p_access->psz_location, '@' );
+    if( psz_location != NULL )
+        psz_location++;
+    else
+        psz_location = p_access->psz_location;
+
     p_access->pf_read = NULL;
     p_access->pf_block = BlockRead;
     p_access->pf_seek = Seek;
@@ -179,10 +186,10 @@ static int Open( vlc_object_t *p_this )
     p_sys->p_rtsp->pf_read_line = RtspReadLine;
     p_sys->p_rtsp->pf_write = RtspWrite;
 
-    i_result = rtsp_connect( p_sys->p_rtsp, p_access->psz_location, 0 );
+    i_result = rtsp_connect( p_sys->p_rtsp, psz_location, 0 );
     if( i_result )
     {
-        msg_Dbg( p_access, "could not connect to: %s", p_access->psz_location );
+        msg_Dbg( p_access, "could not connect to: %s", psz_location );
         free( p_sys->p_rtsp );
         p_sys->p_rtsp = NULL;
         goto error;

@@ -2,7 +2,7 @@
  * faad.c: AAC decoder using libfaad2
  *****************************************************************************
  * Copyright (C) 2001, 2003 VLC authors and VideoLAN
- * $Id: a51861ecd5a0f0dabf3de0881ac02eed63f8c7b1 $
+ * $Id: 99a9bbd8b6c6ce8dca06c436268bdaf6ce87e02d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -183,6 +183,8 @@ static int Open( vlc_object_t *p_this )
 
     /* Set the faad config */
     cfg = faacDecGetCurrentConfiguration( p_sys->hfaad );
+    if( p_dec->fmt_in.audio.i_rate )
+        cfg->defSampleRate = p_dec->fmt_in.audio.i_rate;
     cfg->outputFormat = HAVE_FPU ? FAAD_FMT_FLOAT : FAAD_FMT_16BIT;
     faacDecSetConfiguration( p_sys->hfaad, cfg );
 

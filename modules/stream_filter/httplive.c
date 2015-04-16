@@ -2,7 +2,7 @@
  * httplive.c: HTTP Live Streaming stream filter
  *****************************************************************************
  * Copyright (C) 2010-2012 M2X BV
- * $Id: d66ee28dc2231a3a53a243409f3f0381040ff1e0 $
+ * $Id: 72abf15e6548a3191a57b00a823a8971137391b6 $
  *
  * Author: Jean-Paul Saman <jpsaman _AT_ videolan _DOT_ org>
  *
@@ -1381,10 +1381,7 @@ static int hls_UpdatePlaylist(stream_t *s, hls_stream_t *hls_new, hls_stream_t *
     {
         segment_t *p = segment_GetSegment(hls_new, n);
         if (p == NULL)
-        {
-            vlc_mutex_unlock(&hls_old->lock);
-            return VLC_EGENERIC;
-        }
+            continue;
 
         segment_t *segment = segment_Find(hls_old, p->sequence);
         if (segment)
@@ -1426,8 +1423,8 @@ static int hls_UpdatePlaylist(stream_t *s, hls_stream_t *hls_new, hls_stream_t *
                 }
                 free(segment->psz_key_path);
                 segment->psz_key_path = p->psz_key_path ? strdup(p->psz_key_path) : NULL;
-                segment_Free(p);
             }
+            segment_Free(p);
             vlc_mutex_unlock(&segment->lock);
         }
         else
@@ -1436,7 +1433,8 @@ static int hls_UpdatePlaylist(stream_t *s, hls_stream_t *hls_new, hls_stream_t *
             segment_t *l = segment_GetSegment(hls_old, last);
             if (l == NULL) {
                 vlc_mutex_unlock(&hls_old->lock);
-                return VLC_EGENERIC;
+                segment_Free(p);
+                continue;
             }
 
             if ((l->sequence + 1) != p->sequence)
@@ -1459,8 +1457,9 @@ static int hls_UpdatePlaylist(stream_t *s, hls_stream_t *hls_new, hls_stream_t *
     hls_old->duration = (hls_new->duration == -1) ? hls_old->duration : hls_new->duration;
     hls_old->b_cache = hls_new->b_cache;
     vlc_mutex_unlock(&hls_old->lock);
-    return VLC_SUCCESS;
 
+    vlc_array_clear(hls_new->segments);
+    return VLC_SUCCESS;
 }
 
 static int hls_ReloadPlaylist(stream_t *s)
@@ -1508,10 +1507,12 @@ static int hls_ReloadPlaylist(stream_t *s)
 
             // New segment available -  signal download thread
             stream_appended = true;
+            continue;
         }
         else if (hls_UpdatePlaylist(s, hls_new, hls_old, &stream_appended) != VLC_SUCCESS)
             msg_Warn(s, "failed updating HLS stream (id=%d, bandwidth=%"PRIu64")",
                      hls_new->id, hls_new->bandwidth);
+        hls_Free(hls_new);
     }
     vlc_array_destroy(hls_streams);
 

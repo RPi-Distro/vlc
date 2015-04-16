@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2015-02-27 15:34+0100\n"
-"PO-Revision-Date: 2015-02-03 19:52+0000\n"
+"POT-Creation-Date: 2015-04-13 00:13+0200\n"
+"PO-Revision-Date: 2015-03-20 19:31+0000\n"
 "Last-Translator: Marián Hikaník <podnety@mojepreklady.net>\n"
 "Language-Team: Slovak (http://www.transifex.com/projects/p/vlc-trans/"
 "language/sk/)\n"
@@ -414,11 +414,11 @@ msgstr "&Otvoriť súbor..."
 
 #: include/vlc_intf_strings.h:47
 msgid "&Advanced Open..."
-msgstr "&Pokročilé otváranie..."
+msgstr "Pokročilé otvár&anie..."
 
 #: include/vlc_intf_strings.h:48
 msgid "Open D&irectory..."
-msgstr "Otvoriť &priečinok..."
+msgstr "Otvoriť pr&;iečinok..."
 
 #: include/vlc_intf_strings.h:49
 msgid "Open &Folder..."
@@ -462,7 +462,7 @@ msgstr "Konfigurácia &VLM"
 
 #: include/vlc_intf_strings.h:62
 msgid "&About"
-msgstr "&O programe"
+msgstr "O progr&ame"
 
 #: include/vlc_intf_strings.h:65 modules/control/rc.c:70
 #: modules/gui/macosx/ControlsBar.m:441 modules/gui/macosx/MainMenu.m:397
@@ -1259,9 +1259,9 @@ msgid "Subtitle"
 msgstr "Titulky"
 
 #: src/input/es_out.c:2893 src/input/es_out.c:2920 src/input/es_out.c:2964
-#: src/input/es_out.c:3000 modules/gui/macosx/AddonManager.m:123
+#: src/input/es_out.c:3000 modules/gui/macosx/AddonManager.m:127
 #: modules/gui/macosx/ConvertAndSave.m:197 modules/gui/macosx/output.m:144
-#: modules/gui/qt4/dialogs/plugins.cpp:1457
+#: modules/gui/qt4/dialogs/plugins.cpp:1469
 msgid "Type"
 msgstr "Typ"
 
@@ -1392,7 +1392,7 @@ msgstr "Titul"
 #: src/input/meta.c:56 modules/gui/macosx/playlist.m:1203
 #: modules/gui/macosx/playlistinfo.m:74 modules/mux/avi.c:48
 msgid "Artist"
-msgstr "Interpret"
+msgstr "Umelec"
 
 #: src/input/meta.c:57 modules/demux/mp4/mp4.c:1469
 #: modules/gui/macosx/MainMenu.m:76 modules/mux/avi.c:50
@@ -1924,8 +1924,8 @@ msgstr ""
 #: modules/access/fs.c:42 modules/access/v4l2/v4l2.c:163
 #: modules/codec/avcodec/avcodec.c:68 modules/codec/kate.c:202
 #: modules/codec/x264.c:437 modules/codec/x264.c:442
-#: modules/gui/macosx/ConvertAndSave.m:204 modules/gui/macosx/open.m:245
-#: modules/gui/macosx/open.m:271 modules/gui/macosx/open.m:272
+#: modules/gui/macosx/ConvertAndSave.m:204 modules/gui/macosx/open.m:246
+#: modules/gui/macosx/open.m:274 modules/gui/macosx/open.m:275
 #: modules/gui/qt4/components/interface_widgets.cpp:433
 #: modules/text_renderer/freetype.c:155
 #: share/lua/http/dialogs/create_stream.html:196
@@ -2151,7 +2151,7 @@ msgstr "Výstup videa na celú obrazovku"
 
 #: src/libvlc-module.c:302
 msgid "Start video in fullscreen mode"
-msgstr "Spustiť video v celoobrazovkovom režime."
+msgstr "Spustiť video so zobrazením na celú obrazovku."
 
 #: src/libvlc-module.c:304
 msgid "Overlay video output"
@@ -2215,12 +2215,14 @@ msgstr ""
 
 #: src/libvlc-module.c:330
 msgid "Hide cursor and fullscreen controller after x milliseconds"
-msgstr "Skryť kurzor a ovládač celoobrazovkového režimu po x milisekundách"
+msgstr ""
+"Skryť kurzor a ovládač pri zobrazovaní na celú obrazovku, po x milisekundách"
 
 #: src/libvlc-module.c:333
 msgid "Hide mouse cursor and fullscreen controller after n milliseconds."
 msgstr ""
-"Skryť kurzor myši a ovládač celoobrazovkového režimu po n milisekundách."
+"Skryť kurzor myši a ovládač pri zobrazovaní na celú obrazovku po n "
+"milisekundách."
 
 #: src/libvlc-module.c:336 src/libvlc-module.c:338
 #: src/video_output/interlacing.c:180 modules/gui/macosx/MainMenu.m:452
@@ -2482,10 +2484,10 @@ msgid ""
 "incorrectly sets height to 1088 lines. You should only disable this option "
 "if your video has a non-standard format requiring all 1088 lines."
 msgstr ""
-"Toto nastavenie umožňuje korektne zobrazovať video v rozlíšení HDTV, ktoré "
-"má 1080 riadkov, ale kodér chybne nastavil jeho výšku na 1088 riadkov. Túto "
-"funkciu by ste mali vypnúť iba v prípade, že chcete prehrávať neštandardné "
-"video, vyžadujúce všetkých 1088 riadkov."
+"Toto nastavenie umožňuje korektne zobrazovať video v rozlíšení HDTV-1080 aj "
+"v prípade, keď poškodený kodér chybne nastaví výšku na 1088 riadkov. Túto "
+"funkciu by ste mali vypnúť iba v prípade, že vaše video má neštandardný "
+"formát vyžadujúci všetkých 1088 riadkov."
 
 #: src/libvlc-module.c:460
 msgid "Monitor pixel aspect ratio"
@@ -2578,7 +2580,7 @@ msgstr ""
 
 #: src/libvlc-module.c:503
 msgid "Live capture caching (ms)"
-msgstr "Ukladanie priameho záznamu do vyrovnávacej pamäte (ms)"
+msgstr "Ukladanie živého záznamu do vyrovnávacej pamäte (ms)"
 
 #: src/libvlc-module.c:505
 msgid "Caching value for cameras and microphones, in milliseconds."
@@ -2657,7 +2659,7 @@ msgstr ""
 #: src/libvlc-module.c:538 src/video_output/vout_intf.c:98
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
-#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1018
+#: modules/access/dshow/dshow.cpp:2014 modules/audio_output/directsound.c:1020
 #: modules/gui/macosx/AudioEffects.m:86 modules/gui/macosx/MainMenu.m:641
 #: modules/gui/macosx/prefs_widgets.m:1221
 #: modules/gui/macosx/prefs_widgets.m:1284
@@ -3353,13 +3355,11 @@ msgstr ""
 
 #: src/libvlc-module.c:858
 msgid "SOCKS password"
-msgstr "Heslo na serveri SOCKS"
+msgstr "Heslo SOCKS"
 
 #: src/libvlc-module.c:860
 msgid "Password to be used for connection to the SOCKS proxy."
-msgstr ""
-"Prihláste sa tým heslom, ktoré vám bolo pridelené pre prístup na SOCKS proxy-"
-"server."
+msgstr "Heslo používané na prihlásenie k SOCKS proxy."
 
 #: src/libvlc-module.c:862
 msgid "Title metadata"
@@ -3367,7 +3367,7 @@ msgstr "Metadáta titulu"
 
 #: src/libvlc-module.c:864
 msgid "Allows you to specify a \"title\" metadata for an input."
-msgstr "Tu môžete zadať metadáta \"titul\"."
+msgstr "Tu môžete zadať metadáta \"titul\" pre daný vstup."
 
 #: src/libvlc-module.c:866
 msgid "Author metadata"
@@ -3375,23 +3375,23 @@ msgstr "Metadáta o autorovi"
 
 #: src/libvlc-module.c:868
 msgid "Allows you to specify an \"author\" metadata for an input."
-msgstr "Tu môžete zadať metadáta o \"autorovi\"."
+msgstr "Tu môžete zadať metadáta o \"autorovi\" pre daný vstup."
 
 #: src/libvlc-module.c:870
 msgid "Artist metadata"
-msgstr "Metadáta o hercoch"
+msgstr "Metadáta o umelcovi"
 
 #: src/libvlc-module.c:872
 msgid "Allows you to specify an \"artist\" metadata for an input."
-msgstr "Tu môžete zadať metadáta o \"hercoch\"."
+msgstr "Tu môžete zadať metadáta o \"umelcovi\"."
 
 #: src/libvlc-module.c:874
 msgid "Genre metadata"
-msgstr "Metadáta žánru"
+msgstr "Metadáta o žánri"
 
 #: src/libvlc-module.c:876
 msgid "Allows you to specify a \"genre\" metadata for an input."
-msgstr "Tu môžete zadať metadáta o \"žánri\"."
+msgstr "Tu môžete zadať metadáta o \"žánri\" pre daný vstup."
 
 #: src/libvlc-module.c:878
 msgid "Copyright metadata"
@@ -3399,7 +3399,7 @@ msgstr "Metadáta autorských práv"
 
 #: src/libvlc-module.c:880
 msgid "Allows you to specify a \"copyright\" metadata for an input."
-msgstr "Tu môžete zadať metadáta o \"autorských právach\". "
+msgstr "Tu môžete zadať metadáta o \"autorských právach\" pre daný vstup. "
 
 #: src/libvlc-module.c:882
 msgid "Description metadata"
@@ -3407,23 +3407,23 @@ msgstr "Metadáta popisu"
 
 #: src/libvlc-module.c:884
 msgid "Allows you to specify a \"description\" metadata for an input."
-msgstr "Tu môžete zadať metadáta \"popis\"."
+msgstr "Tu môžete zadať metadáta s \"popisom\" pre daný vstup."
 
 #: src/libvlc-module.c:886
 msgid "Date metadata"
-msgstr "Metadáta dátumu"
+msgstr "Metadáta pre dátum"
 
 #: src/libvlc-module.c:888
 msgid "Allows you to specify a \"date\" metadata for an input."
-msgstr "Tu môžete pre nejaký vstup špecifikovať metadáta o \"dátume\"."
+msgstr "Tu môžete špecifikovať metadáta o \"dátume\" pre daný vstup."
 
 #: src/libvlc-module.c:890
 msgid "URL metadata"
-msgstr "Metadáta URL"
+msgstr "Metadáta o URL"
 
 #: src/libvlc-module.c:892
 msgid "Allows you to specify a \"url\" metadata for an input."
-msgstr "Tu môžete zadať metadáta typu \"url\"."
+msgstr "Tu môžete zadať metadáta o adrese \"url\" pre daný vstup."
 
 #: src/libvlc-module.c:896
 msgid ""
@@ -3857,14 +3857,14 @@ msgid ""
 "Automatically preparse files added to the playlist (to retrieve some "
 "metadata)."
 msgstr ""
-"Automaticky načítať informácie zo súborov pridaných do playlistu (umožňuje "
+"Automaticky predbežne analyzovať súbory pridané do playlistu (umožňuje "
 "načítanie metadát)."
 
 #: src/libvlc-module.c:1116 modules/gui/macosx/simple_prefs.m:385
 #: modules/gui/qt4/dialogs/firstrun.cpp:98
 #: modules/gui/qt4/ui/sprefs_interface.h:537
 msgid "Allow metadata network access"
-msgstr "Povoliť sieťový prístup k metadátam"
+msgstr "Povoliť sieťový prístup pre metadáta"
 
 #: src/libvlc-module.c:1118
 msgid "Services discovery modules"
@@ -3976,7 +3976,7 @@ msgstr ""
 "V tejto časti si môžete nastaviť svoje vlastné \"klávesové skratky\" "
 "programu VLC, platné globálne pre celý program."
 
-#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1788
+#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1838
 msgid "Ignore"
 msgstr "Ignorovať"
 
@@ -4007,7 +4007,7 @@ msgstr ""
 #: modules/gui/qt4/components/controller.hpp:116
 #: modules/gui/qt4/ui/sprefs_video.h:323
 msgid "Fullscreen"
-msgstr "Celoobrazovkový režim"
+msgstr "Zobrazovanie na celú obrazovku"
 
 #: src/libvlc-module.c:1190
 msgid "Select the hotkey to use to swap fullscreen state."
@@ -4015,11 +4015,11 @@ msgstr "Vyberte si kláves na prepínanie zobrazenia na celú obrazovku."
 
 #: src/libvlc-module.c:1191
 msgid "Exit fullscreen"
-msgstr "Ukončiť celoobrazovkový režim"
+msgstr "Ukončiť zobrazovanie na celú obrazovku"
 
 #: src/libvlc-module.c:1192
 msgid "Select the hotkey to use to exit fullscreen state."
-msgstr "Vyberte si kláves na ukončenie prehrávania na celej obrazovke."
+msgstr "Vyberte si kláves na ukončenie prehrávania na celú obrazovku."
 
 #: src/libvlc-module.c:1193 modules/gui/macosx/ControlsBar.m:55
 #: modules/gui/macosx/fspanel.m:422
@@ -4398,7 +4398,7 @@ msgstr ""
 #: src/libvlc-module.c:1292
 msgid "Subtitle sync / synchronize audio & subtitle timestamps"
 msgstr ""
-"Synchronizácia titulkov / synchronizovať časové pečiatky zvuku & titulkov"
+"Synchronizácia titulkov / synchronizovať zvuk & časové pečiatky titulkov"
 
 #: src/libvlc-module.c:1293
 msgid "Select the key to synchronize bookmarked audio & subtitle timestamps."
@@ -4684,7 +4684,7 @@ msgstr "Cyklicky prechádzať dostupnými režimami rozkladania"
 
 #: src/libvlc-module.c:1372
 msgid "Show controller in fullscreen"
-msgstr "Zobraziť ovládač v celoobrazovkovom režime"
+msgstr "Zobraziť ovládač pri zobrazení na celú obrazovku"
 
 #: src/libvlc-module.c:1373
 msgid "Boss key"
@@ -4992,8 +4992,8 @@ msgstr "Prebieha sťahovanie ..."
 #: modules/gui/macosx/controls.m:54 modules/gui/macosx/ConvertAndSave.m:168
 #: modules/gui/macosx/ConvertAndSave.m:194
 #: modules/gui/macosx/ConvertAndSave.m:372
-#: modules/gui/macosx/ConvertAndSave.m:386 modules/gui/macosx/coredialogs.m:61
-#: modules/gui/macosx/coredialogs.m:63 modules/gui/macosx/coredialogs.m:168
+#: modules/gui/macosx/ConvertAndSave.m:386 modules/gui/macosx/coredialogs.m:63
+#: modules/gui/macosx/coredialogs.m:65 modules/gui/macosx/coredialogs.m:170
 #: modules/gui/macosx/MainWindow.m:186 modules/gui/macosx/MainWindow.m:191
 #: modules/gui/macosx/open.m:128 modules/gui/macosx/open.m:183
 #: modules/gui/macosx/prefs.m:209 modules/gui/macosx/simple_prefs.m:343
@@ -5075,7 +5075,7 @@ msgstr ""
 "Nová verzia bola úspešne stiahnutá. Chcete ukončiť program VLC a "
 "nainštalovať novú verziu?"
 
-#: src/misc/update.c:724 modules/gui/macosx/AddonManager.m:192
+#: src/misc/update.c:724 modules/gui/macosx/AddonManager.m:196
 msgid "Install"
 msgstr "Nainštalovať"
 
@@ -6028,8 +6028,8 @@ msgid ""
 "DeckLink capture card to use, if multiple exist. The cards are numbered from "
 "0."
 msgstr ""
-"Záznamová karta, ktorá sa má použiť v prípade existencie viacerých. Karty sú "
-"číslované od 0."
+"Záznamová karta DeckLink, ktorá sa má použiť v prípade existencie viacerých. "
+"Karty sú číslované od 0."
 
 #: modules/access/decklink.cpp:51
 msgid "Desired input video mode. Leave empty for autodetection."
@@ -6658,9 +6658,8 @@ msgid "Layer C time interleaving"
 msgstr "Časové prekladanie vrstvy C"
 
 #: modules/access/dtv/access.c:154
-#, fuzzy
 msgid "Stream identifier"
-msgstr "Identifikátor siete"
+msgstr "Identifikátor streamu"
 
 #: modules/access/dtv/access.c:156
 msgid "Pilot"
@@ -6943,20 +6942,25 @@ msgstr ""
 "Spustiť DVD priamo v hlavnom menu. Po aktivovaní tejto voľby sa program "
 "pokúsi preskočiť upozornenia na začiatku disku."
 
-#: modules/access/dvdnav.c:86
+#: modules/access/dvdnav.c:91
 msgid "DVD with menus"
 msgstr "DVD s menu"
 
-#: modules/access/dvdnav.c:87
+#: modules/access/dvdnav.c:92
 msgid "DVDnav Input"
 msgstr "Vstup DVDnav"
 
-#: modules/access/dvdnav.c:332 modules/access/dvdread.c:200
+#: modules/access/dvdnav.c:104
+#, fuzzy
+msgid "DVDnav demuxer"
+msgstr "Demultiplexor Nuv"
+
+#: modules/access/dvdnav.c:299 modules/access/dvdread.c:200
 #: modules/access/dvdread.c:462 modules/access/dvdread.c:530
 msgid "Playback failure"
 msgstr "Prehrávanie zlyhalo"
 
-#: modules/access/dvdnav.c:333
+#: modules/access/dvdnav.c:300
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
@@ -7092,9 +7096,9 @@ msgstr "Vstup súboru"
 
 #: modules/access/fs.c:63 modules/access_output/file.c:82
 #: modules/audio_output/file.c:113 modules/gui/macosx/open.m:130
-#: modules/gui/macosx/open.m:587 modules/gui/macosx/output.m:133
+#: modules/gui/macosx/open.m:590 modules/gui/macosx/output.m:133
 #: modules/gui/macosx/output.m:217 modules/gui/macosx/output.m:341
-#: modules/gui/qt4/dialogs/plugins.cpp:1391
+#: modules/gui/qt4/dialogs/plugins.cpp:1403
 #: modules/gui/qt4/dialogs/sout.cpp:69 modules/gui/qt4/dialogs/sout.cpp:121
 #: share/lua/http/dialogs/create_stream.html:204
 #: share/lua/http/dialogs/stream_config_window.html:36
@@ -7116,11 +7120,11 @@ msgstr "Meno používateľa, ktoré sa použije pri spojení."
 
 #: modules/access/ftp.c:68
 msgid "FTP password"
-msgstr "Heslo pre FTP server"
+msgstr "Heslo pre FTP"
 
 #: modules/access/ftp.c:69 modules/access/smb.c:60
 msgid "Password that will be used for the connection."
-msgstr "Heslo používané pri spojení."
+msgstr "Heslo používané pre pripojenie."
 
 #: modules/access/ftp.c:71
 msgid "FTP account"
@@ -7157,7 +7161,7 @@ msgstr "Prístup k vášmu účtu bol zamietnutý serverom."
 
 #: modules/access/ftp.c:469
 msgid "Your password was rejected."
-msgstr "Vaše prístupové heslo bolo zamietnuté."
+msgstr "Vaše prístupové heslo bolo odmietnuté."
 
 #: modules/access/ftp.c:476
 msgid "Your connection attempt to the server was rejected."
@@ -7259,7 +7263,7 @@ msgstr "Autentifikácia HTTP"
 #: modules/access/http.c:459
 #, c-format
 msgid "Please enter a valid login name and a password for realm %s."
-msgstr "Prosím zadajte platné meno používateľa a heslo pre realm %s."
+msgstr "Prosím zadajte platné prihlasovacie meno a heslo pre realm %s."
 
 #: modules/access/idummy.c:42 modules/access_output/dummy.c:45
 #: modules/audio_output/adummy.c:36 modules/codec/ddummy.c:46
@@ -7297,7 +7301,7 @@ msgstr "Kategória"
 msgid "Set the category of the elementary stream"
 msgstr "Nastavenie kategórie elementárneho streamu"
 
-#: modules/access/imem.c:64 modules/gui/macosx/AddonManager.m:353
+#: modules/access/imem.c:64 modules/gui/macosx/AddonManager.m:357
 msgid "Unknown"
 msgstr "Neznáme"
 
@@ -7544,8 +7548,8 @@ msgid ""
 "Sets the username for the connection, if no username or password are set in "
 "the url."
 msgstr ""
-"Nastaví meno používateľa pre spojenie, ak nie je žiadne meno používateľa a "
-"heslo nastavené v adrese URL."
+"Nastaví meno používateľa pre pripojenie, ak nie je žiadne meno používateľa "
+"alebo heslo nastavené v adrese URL."
 
 #: modules/access/live555.cpp:91
 msgid "RTSP password"
@@ -7556,7 +7560,7 @@ msgid ""
 "Sets the password for the connection, if no username or password are set in "
 "the url."
 msgstr ""
-"Nastaví heslo pre spojenie, ak nie je žiadne meno používateľa alebo heslo "
+"Nastaví heslo pre pripojenie, ak nie je žiadne meno používateľa alebo heslo "
 "nastavené v adrese URL."
 
 #: modules/access/live555.cpp:94
@@ -7614,7 +7618,7 @@ msgstr "Autentifikácia RTSP"
 
 #: modules/access/live555.cpp:631
 msgid "Please enter a valid login name and a password."
-msgstr "Prosím zadajte platné meno používateľa a heslo."
+msgstr "Prosím zadajte platné prihlasovacie meno a heslo."
 
 #: modules/access/live555.cpp:655
 msgid "RTSP connection failed"
@@ -7691,7 +7695,7 @@ msgstr "Program VLC nemohol otvoriť súbor \"%s\" : %s"
 
 #: modules/access/oss.c:66
 msgid "Capture the audio stream in stereo."
-msgstr "Zachytávať zvukový stream v stereo-režime."
+msgstr "Zaznamenať zvukový stream v stereo-režime."
 
 #: modules/access/oss.c:67 modules/access_output/shout.c:95
 #: modules/gui/macosx/ConvertAndSave.m:190
@@ -7780,7 +7784,7 @@ msgid "User name that will be requested to access the stream."
 msgstr "Používateľské meno, ktoré je potrebné pre prístup k streamu."
 
 #: modules/access_output/http.c:55 modules/access/vnc.c:47
-#: modules/gui/macosx/coredialogs.m:60 modules/gui/macosx/simple_prefs.m:333
+#: modules/gui/macosx/coredialogs.m:62 modules/gui/macosx/simple_prefs.m:333
 #: modules/gui/macosx/simple_prefs.m:392
 #: modules/gui/qt4/dialogs/external.cpp:118 modules/lua/vlc.c:51
 #: modules/lua/vlc.c:67 modules/misc/audioscrobbler.c:116
@@ -7790,7 +7794,7 @@ msgstr "Heslo"
 
 #: modules/access_output/http.c:56 modules/stream_out/rtp.c:179
 msgid "Password that will be requested to access the stream."
-msgstr "Heslo, ktoré je potrebné pre prístup k streamu."
+msgstr "Heslo, ktoré je vyžadované na prístup k streamu."
 
 #: modules/access_output/http.c:58 modules/demux/playlist/qtl.c:242
 #: modules/demux/playlist/shoutcast.c:334
@@ -8259,11 +8263,11 @@ msgstr "Spojenie bolo predčasne ukončené"
 msgid "VLC could not connect to \"%s:%d\"."
 msgstr "Program VLC sa nemôže pripojiť na \"%s:%d\"."
 
-#: modules/access/rtsp/access.c:224
+#: modules/access/rtsp/access.c:231
 msgid "Session failed"
 msgstr "Predčasné ukončenie sedenia"
 
-#: modules/access/rtsp/access.c:225
+#: modules/access/rtsp/access.c:232
 msgid "The requested RTSP session could not be established."
 msgstr "Požadovanú reláciu RTSP nemožno vytvoriť."
 
@@ -8274,7 +8278,7 @@ msgstr "Cieľová frekvencia snímok pre záznam."
 
 #: modules/access/screen/screen.c:47
 msgid "Capture fragment size"
-msgstr "Zachytávať veľkosť fragmentu"
+msgstr "Zaznamenávať veľkosť fragmentu"
 
 #: modules/access/screen/screen.c:49
 msgid ""
@@ -8347,8 +8351,8 @@ msgstr "Obrazový vstup"
 
 #: modules/access/screen/screen.c:98 modules/access/screen/xcb.c:70
 #: modules/gui/macosx/MainMenu.m:649 modules/gui/macosx/open.m:200
-#: modules/gui/macosx/open.m:204 modules/gui/macosx/open.m:489
-#: modules/gui/macosx/open.m:1353 modules/gui/macosx/simple_prefs.m:689
+#: modules/gui/macosx/open.m:204 modules/gui/macosx/open.m:492
+#: modules/gui/macosx/open.m:1356 modules/gui/macosx/simple_prefs.m:689
 msgid "Screen"
 msgstr "Obrazovka"
 
@@ -8425,15 +8429,16 @@ msgstr "Veľkosť požiadavky na prístup na čítanie"
 msgid "SFTP input"
 msgstr "Vstup SFTP"
 
-#: modules/access/sftp.c:131
+#: modules/access/sftp.c:132
 msgid "SFTP authentication"
 msgstr "Autentifikácia SFTP"
 
-#: modules/access/sftp.c:132
+#: modules/access/sftp.c:133
 #, c-format
 msgid "Please enter a valid login and password for the sftp connexion to %s"
 msgstr ""
-"Prosím zadajte platné meno používateľa a heslo pre pripojenie cez sftp na %s"
+"Prosím zadajte platné prihlasovacie meno a heslo pre pripojenie cez sftp na "
+"%s"
 
 #: modules/access/shm.c:46 modules/access/vnc.c:57
 msgid "Frame buffer depth"
@@ -9049,7 +9054,7 @@ msgstr "Ovládacie prvky"
 #: modules/access/v4l2/v4l2.c:333
 msgid "Video capture controls (if supported by the device)"
 msgstr ""
-"Ovládanie zachytávania videa (ak je táto funkcia podporovaná ovládačom)"
+"Ovládanie zaznamenávania videa (ak je táto funkcia podporovaná ovládačom)"
 
 #: modules/access/v4l2/v4l2.c:424
 msgid "Video4Linux compressed A/V input"
@@ -9091,7 +9096,7 @@ msgid "LID"
 msgstr "LID"
 
 #: modules/access/vcdx/info.c:54 modules/gui/macosx/open.m:132
-#: modules/gui/macosx/open.m:589
+#: modules/gui/macosx/open.m:592
 msgid "Disc"
 msgstr "Disk"
 
@@ -9584,7 +9589,7 @@ msgstr "Zvukový filter pre jednoduché mixovanie kanálov"
 msgid "Sound Delay"
 msgstr "Oneskorenie zvuku"
 
-#: modules/audio_filter/chorus_flanger.c:75 modules/gui/macosx/open.m:364
+#: modules/audio_filter/chorus_flanger.c:75 modules/gui/macosx/open.m:367
 #: modules/stream_out/bridge.c:51 modules/stream_out/delay.c:54
 #: modules/video_filter/mosaic.c:154
 msgid "Delay"
@@ -10270,11 +10275,11 @@ msgstr "Surround 7.1"
 msgid "ALSA audio output"
 msgstr "Zvukový výstup ALSA"
 
-#: modules/audio_output/alsa.c:383 modules/audio_output/auhal.c:425
+#: modules/audio_output/alsa.c:389 modules/audio_output/auhal.c:425
 msgid "Audio output failed"
 msgstr "Nesprávny výstup zvuku"
 
-#: modules/audio_output/alsa.c:384
+#: modules/audio_output/alsa.c:390
 #, c-format
 msgid ""
 "The audio device \"%s\" could not be used:\n"
@@ -10598,13 +10603,13 @@ msgstr "Dekodér videa/zvuku FFmpeg"
 msgid "Decoding"
 msgstr "Dekódovanie"
 
-#: modules/codec/avcodec/avcodec.c:151 modules/codec/jpeg.c:117
+#: modules/codec/avcodec/avcodec.c:157 modules/codec/jpeg.c:117
 #: modules/codec/omxil/omxil.c:96 modules/codec/png.c:99
 #: modules/codec/schroedinger.c:370
 msgid "Encoding"
 msgstr "Kódovanie"
 
-#: modules/codec/avcodec/avcodec.c:152
+#: modules/codec/avcodec/avcodec.c:158
 msgid "FFmpeg audio/video encoder"
 msgstr "Kodér videa/zvuku FFmpeg"
 
@@ -10912,11 +10917,10 @@ msgid ""
 "distortion of motion vectors (hq), and raise the noise reduction threshold "
 "to ease the encoder's task."
 msgstr ""
-"Ak je váš procesor slabší a nezvláda kódovanie touto rýchlosťou, môže kodér "
-"v priebehu kódovania pristúpiť k vytvoreniu snímok nižšej, (ale stále "
-"dobrej) kvality. Ak povolíte túto voľbu, zablokuje sa aj kvantizácia "
-"trellis, zníži sa rýchlosť skresľovania pohybových vektorov a zvýši sa "
-"hranica redukcie šumu. "
+"Ak váš procesor nezvláda kódovanie touto rýchlosťou, môže kodér v priebehu "
+"kódovania pristúpiť k vytvoreniu snímok nižšej kvality. Ak povolíte túto "
+"voľbu, zablokuje sa aj kvantizácia trellis, zníži sa rýchlosť skresľovania "
+"vektorov pohybu (hq) a zvýši sa hranica redukcie šumu. "
 
 #: modules/codec/avcodec/avcodec.h:207
 msgid "Minimum video quantizer scale"
@@ -11051,7 +11055,7 @@ msgstr ""
 "(nepodporované), ltp, hev1, hev2 (predvolená voľba: nízky). Voľby hev1 a "
 "hev2 sú momentálne podporované len so zapnutím libavcodec libfdk-aac"
 
-#: modules/codec/avcodec/dxva2.c:58
+#: modules/codec/avcodec/dxva2.c:59
 msgid "DirectX Video Acceleration (DXVA) 2.0"
 msgstr "Akcelerácia videa DirectX (DXVA) 2.0"
 
@@ -11241,7 +11245,7 @@ msgstr "Súradnica Y kódovaných titulkov"
 msgid "DVB subtitles decoder"
 msgstr "Dekodér DVB titulkov"
 
-#: modules/codec/dvbsub.c:121 modules/demux/ts.c:3562 modules/demux/ts.c:3619
+#: modules/codec/dvbsub.c:121 modules/demux/ts.c:3585 modules/demux/ts.c:3642
 msgid "DVB subtitles"
 msgstr "Titulky DVB"
 
@@ -11251,13 +11255,13 @@ msgstr "Kodér DVB titulkov"
 
 #: modules/codec/edummy.c:40
 msgid "Dummy encoder"
-msgstr "Fiktívny enkodér"
+msgstr "Fiktívny kodér"
 
 #: modules/codec/faad.c:52
 msgid "AAC audio decoder (using libfaad2)"
 msgstr "Dekodér zvuku AAC (s použitím libfaad2)"
 
-#: modules/codec/faad.c:436
+#: modules/codec/faad.c:438
 msgid "AAC extension"
 msgstr "Prípona AAC"
 
@@ -12531,7 +12535,7 @@ msgstr "Komplexnosť kódovania"
 
 #: modules/codec/speex.c:69
 msgid "Enforce the complexity of the encoder."
-msgstr "Vynútiť si komplexnosť dekodéra."
+msgstr "Vynútiť si komplexnosť kodéra."
 
 #: modules/codec/speex.c:71
 msgid "Maximal bitrate"
@@ -12886,7 +12890,7 @@ msgstr "Paketizér titulkov vo formáte Philips OGT (SVCD)"
 
 #: modules/codec/t140.c:35
 msgid "T.140 text encoder"
-msgstr "Textový kodér T.140"
+msgstr "Kodér textu T.140"
 
 #: modules/codec/telx.c:54
 msgid "Override page"
@@ -12953,7 +12957,7 @@ msgstr "Paketizér pre video vo formáte Theora"
 
 #: modules/codec/theora.c:129
 msgid "Theora video encoder"
-msgstr "Video kodér Theora"
+msgstr "Kodér videa Theora"
 
 #: modules/codec/twolame.c:56
 msgid ""
@@ -13039,7 +13043,7 @@ msgstr "Paketizér pre zvuk vo formáte Vorbis"
 
 #: modules/codec/vorbis.c:205
 msgid "Vorbis audio encoder"
-msgstr "Dekodér zvuku Vorbis"
+msgstr "Kodér zvuku Vorbis"
 
 #: modules/codec/vpx.c:49
 msgid "WebM video decoder"
@@ -14613,7 +14617,8 @@ msgstr "| frame . . . . . . . .  prehravat snimku za snimkou"
 
 #: modules/control/rc.c:812
 msgid "| f [on|off] . . . . . . . . . . . . toggle fullscreen"
-msgstr "| f [on|off] . . . . . . . . . . prepnut do celoobrazovkoveho rezimu"
+msgstr ""
+"| f [on|off] . . . . . . . . . . prepnut zobrazovanie na celu obrazovku"
 
 #: modules/control/rc.c:813
 msgid "| info . . . . .  information about the current stream"
@@ -16406,19 +16411,19 @@ msgstr "Teletext: plánovaný program"
 msgid "Teletext subtitles: hearing impaired"
 msgstr "Teletextové titulky: sluchovo postihnutí"
 
-#: modules/demux/ts.c:3626
+#: modules/demux/ts.c:3649
 msgid "DVB subtitles: hearing impaired"
 msgstr "DVB titulky: sluchovo postihnutí"
 
-#: modules/demux/ts.c:3911
+#: modules/demux/ts.c:3934
 msgid "clean effects"
 msgstr "čistiace efekty"
 
-#: modules/demux/ts.c:3912
+#: modules/demux/ts.c:3935
 msgid "hearing impaired"
 msgstr "sluchovo postihnutí"
 
-#: modules/demux/ts.c:3913
+#: modules/demux/ts.c:3936
 msgid "visual impaired commentary"
 msgstr "komentár pre zrakovo postihnutých"
 
@@ -16574,60 +16579,72 @@ msgstr "Pomocník programu VLC media player"
 msgid "Index"
 msgstr "Index"
 
-#: modules/gui/macosx/AddonManager.m:98 modules/gui/macosx/AddonManager.m:347
+#: modules/gui/macosx/AddonManager.m:98 modules/gui/macosx/AddonManager.m:351
 #: modules/gui/qt4/dialogs/plugins.cpp:378
 msgid "Playlist parsers"
 msgstr "Analyzátory playlistu"
 
-#: modules/gui/macosx/AddonManager.m:100 modules/gui/macosx/AddonManager.m:349
+#: modules/gui/macosx/AddonManager.m:100 modules/gui/macosx/AddonManager.m:353
 #: modules/gui/qt4/dialogs/plugins.cpp:382
 msgid "Service Discovery"
 msgstr "Zisťovanie služieb"
 
-#: modules/gui/macosx/AddonManager.m:102 modules/gui/macosx/AddonManager.m:351
-#: modules/gui/macosx/MainMenu.m:352 modules/gui/macosx/MainMenu.m:353
+#: modules/gui/macosx/AddonManager.m:102
 #: modules/gui/qt4/dialogs/plugins.cpp:386
+#, fuzzy
+msgid "Interfaces"
+msgstr "Rozhranie"
+
+#: modules/gui/macosx/AddonManager.m:104
+#: modules/gui/qt4/dialogs/plugins.cpp:389
+#, fuzzy
+msgid "Art and meta fetchers"
+msgstr "Nosič metadát Lua"
+
+#: modules/gui/macosx/AddonManager.m:106 modules/gui/macosx/AddonManager.m:355
+#: modules/gui/macosx/MainMenu.m:352 modules/gui/macosx/MainMenu.m:353
+#: modules/gui/qt4/dialogs/plugins.cpp:392
 msgid "Extensions"
 msgstr "Prípony"
 
-#: modules/gui/macosx/AddonManager.m:105
+#: modules/gui/macosx/AddonManager.m:109
 msgid "Show Installed Only"
 msgstr "Zobraziť len nainštalované"
 
-#: modules/gui/macosx/AddonManager.m:107
-#: modules/gui/qt4/dialogs/plugins.cpp:414
+#: modules/gui/macosx/AddonManager.m:111
+#: modules/gui/qt4/dialogs/plugins.cpp:420
 msgid "Find more addons online"
 msgstr "Vyhľadať viac doplnkov online"
 
-#: modules/gui/macosx/AddonManager.m:117 modules/gui/macosx/MainMenu.m:354
+#: modules/gui/macosx/AddonManager.m:121 modules/gui/macosx/MainMenu.m:354
 #: modules/gui/qt4/dialogs/plugins.cpp:80
 msgid "Addons Manager"
 msgstr "Manažér doplnkov"
 
-#: modules/gui/macosx/AddonManager.m:120
-#: modules/gui/qt4/dialogs/plugins.cpp:1137
-#: modules/gui/qt4/dialogs/plugins.cpp:1150
+#: modules/gui/macosx/AddonManager.m:124
+#: modules/gui/qt4/dialogs/plugins.cpp:1149
+#: modules/gui/qt4/dialogs/plugins.cpp:1162
 msgid "Installed"
 msgstr "Nainštalované"
 
-#: modules/gui/macosx/AddonManager.m:121 modules/gui/macosx/bookmarks.m:110
+#: modules/gui/macosx/AddonManager.m:125 modules/gui/macosx/bookmarks.m:110
 #: modules/gui/macosx/playlist.m:167 modules/gui/qt4/dialogs/plugins.cpp:123
 #: modules/mux/avi.c:53
 msgid "Name"
 msgstr "Názov"
 
-#: modules/gui/macosx/AddonManager.m:122 modules/gui/macosx/MainMenu.m:74
+#: modules/gui/macosx/AddonManager.m:126 modules/gui/macosx/MainMenu.m:74
 #: modules/gui/macosx/playlist.m:168 modules/gui/macosx/wizard.m:347
-#: modules/gui/qt4/dialogs/plugins.cpp:1367
-#: modules/gui/qt4/dialogs/plugins.cpp:1472 modules/mux/asf.c:58
+#: modules/gui/qt4/dialogs/plugins.cpp:1379
+#: modules/gui/qt4/dialogs/plugins.cpp:1484 modules/mux/asf.c:58
 msgid "Author"
 msgstr "Autor"
 
-#: modules/gui/macosx/AddonManager.m:189
+#: modules/gui/macosx/AddonManager.m:193
 msgid "Uninstall"
 msgstr "Odinštalovať"
 
-#: modules/gui/macosx/AddonManager.m:345
+#: modules/gui/macosx/AddonManager.m:349
 #: modules/gui/qt4/dialogs/plugins.cpp:374
 #: modules/gui/skins2/src/skin_main.cpp:507
 msgid "Skins"
@@ -16802,9 +16819,9 @@ msgstr "Čas"
 #: modules/gui/macosx/ConvertAndSave.m:288
 #: modules/gui/macosx/ConvertAndSave.m:483
 #: modules/gui/macosx/ConvertAndSave.m:490
-#: modules/gui/macosx/ConvertAndSave.m:497 modules/gui/macosx/coredialogs.m:62
-#: modules/gui/macosx/coredialogs.m:99 modules/gui/macosx/coredialogs.m:146
-#: modules/gui/macosx/open.m:374 modules/gui/macosx/output.m:129
+#: modules/gui/macosx/ConvertAndSave.m:497 modules/gui/macosx/coredialogs.m:64
+#: modules/gui/macosx/coredialogs.m:101 modules/gui/macosx/coredialogs.m:148
+#: modules/gui/macosx/open.m:377 modules/gui/macosx/output.m:129
 #: modules/gui/macosx/playlistinfo.m:368 modules/gui/macosx/simple_prefs.m:344
 #: modules/gui/macosx/wizard.m:592 modules/gui/macosx/wizard.m:653
 #: modules/gui/macosx/wizard.m:992 modules/gui/macosx/wizard.m:1073
@@ -16949,12 +16966,11 @@ msgstr ""
 
 #: modules/gui/macosx/ControlsBar.m:71 modules/gui/macosx/fspanel.m:425
 msgid "Toggle Fullscreen mode"
-msgstr "Prepnúť na celoobrazovkový režim"
+msgstr "Prepnúť zobrazovanie na celú obrazovku"
 
 #: modules/gui/macosx/ControlsBar.m:72
 msgid "Click to enable fullscreen video playback."
-msgstr ""
-"Pre zapnutie prehrávania videa v celoobrazovkovom režime, kliknite sem."
+msgstr "Pre zapnutie prehrávania videa na celej obrazovke, kliknite sem."
 
 #: modules/gui/macosx/ControlsBar.m:176 modules/gui/macosx/fspanel.m:421
 msgid "Click and hold to skip backward through the current media."
@@ -17070,7 +17086,7 @@ msgid "Choose an output location"
 msgstr "Vyberte umiestnenie výstupu"
 
 #: modules/gui/macosx/ConvertAndSave.m:161 modules/gui/macosx/open.m:138
-#: modules/gui/macosx/open.m:361 modules/gui/macosx/output.m:136
+#: modules/gui/macosx/open.m:364 modules/gui/macosx/output.m:136
 #: modules/gui/macosx/prefs_widgets.m:1121
 #: modules/gui/macosx/simple_prefs.m:352 modules/gui/macosx/simple_prefs.m:422
 #: modules/gui/qt4/components/preferences_widgets.cpp:264
@@ -17264,16 +17280,16 @@ msgstr "Je požadovaný SDP export, nie je však poskytnutá žiadna adresa URL
 msgid "Custom"
 msgstr "Prispôsobiť"
 
-#: modules/gui/macosx/coredialogs.m:59 modules/gui/macosx/simple_prefs.m:334
+#: modules/gui/macosx/coredialogs.m:61 modules/gui/macosx/simple_prefs.m:334
 #: modules/gui/qt4/dialogs/external.cpp:113
 msgid "User name"
 msgstr "Meno používateľa"
 
-#: modules/gui/macosx/coredialogs.m:243
+#: modules/gui/macosx/coredialogs.m:240
 msgid "Errors and Warnings"
 msgstr "Chyby a upozornenia"
 
-#: modules/gui/macosx/coredialogs.m:244
+#: modules/gui/macosx/coredialogs.m:241
 msgid "Clean up"
 msgstr "Vyčistiť"
 
@@ -17303,21 +17319,21 @@ msgstr "(momentálne sa neprehráva žiadna položka)"
 
 #: modules/gui/macosx/fspanel.m:425
 msgid "Click to exit fullscreen playback."
-msgstr "Kliknutím ukončíte prehrávanie v celoobrazovkovom režime."
+msgstr "Kliknutím ukončíte prehrávanie so zobrazovaním na celú obrazovku."
 
-#: modules/gui/macosx/intf.m:1498 modules/gui/macosx/intf.m:1515
+#: modules/gui/macosx/intf.m:1548 modules/gui/macosx/intf.m:1565
 msgid "VLC media playback"
 msgstr "Prehrávanie VLC media"
 
-#: modules/gui/macosx/intf.m:1786
+#: modules/gui/macosx/intf.m:1836
 msgid "Remove old preferences?"
 msgstr "Odstrániť staršie nastavenia?"
 
-#: modules/gui/macosx/intf.m:1787
+#: modules/gui/macosx/intf.m:1837
 msgid "We just found an older version of VLC's preferences files."
 msgstr "Našla sa staršia verzia nastavení programu VLC."
 
-#: modules/gui/macosx/intf.m:1788
+#: modules/gui/macosx/intf.m:1838
 msgid "Move To Trash and Relaunch VLC"
 msgstr "Presunúť do koša a reštartovať program VLC"
 
@@ -17331,9 +17347,9 @@ msgid ""
 "The screen number correspondance can be found in the video device selection "
 "menu."
 msgstr ""
-"Číslo obrazovky použitej na zobrazenie videa v celoobrazovkovom režime. "
-"Číslo obrazovky, ktorý treba zadať, nájdete aj v menu pre výber video-"
-"zariadenia."
+"Číslo obrazovky predvolene použitej na zobrazovanie na celú obrazovku. Číslo "
+"obrazovky, ktoré treba zadať, nájdete aj v menu pre výber zariadenia pre "
+"video."
 
 #: modules/gui/macosx/macosx.m:55
 msgid "Opaqueness"
@@ -17349,21 +17365,23 @@ msgstr ""
 
 #: modules/gui/macosx/macosx.m:59
 msgid "Black screens in fullscreen"
-msgstr "Čierne obrazovky pri celoobr. režime"
+msgstr "Čierne obrazovky pri zobrazení na celú obrazovku"
 
 #: modules/gui/macosx/macosx.m:60
 msgid "In fullscreen mode, keep screen where there is no video displayed black"
 msgstr ""
-"V celoobrazovkovom režime sa bude na obrazovkách, na ktorých nie je "
-"zobrazené žiadne video, objavovať čierna plocha. "
+"V režime zobrazovania na celú obrazovku sa bude na obrazovkách bez videa "
+"vykresľovať čierna plocha. "
 
 #: modules/gui/macosx/macosx.m:63
 msgid "Show Fullscreen controller"
-msgstr "Zobraziť ovládač celoobrazovkového režimu"
+msgstr "Zobraziť ovládač pri zobrazovaní na celú obrazovku"
 
 #: modules/gui/macosx/macosx.m:64
 msgid "Shows a lucent controller when moving the mouse in fullscreen mode."
-msgstr "Zobrazí ovládač, keď sa v celoobrazovkovom režime pohne kurzor myši."
+msgstr ""
+"Zobrazí ovládač vtedy, keď sa pri zobrazovaní na celú obrazovku pohne kurzor "
+"myši."
 
 #: modules/gui/macosx/macosx.m:67
 msgid "Auto-playback of new items"
@@ -17447,7 +17465,7 @@ msgstr ""
 
 #: modules/gui/macosx/macosx.m:91 modules/gui/macosx/simple_prefs.m:379
 msgid "Use the native fullscreen mode"
-msgstr "Použiť natívny celoobrazovkový režim"
+msgstr "Použiť natívny režim zobrazenia na celú obrazovku"
 
 #: modules/gui/macosx/macosx.m:92
 msgid ""
@@ -17455,9 +17473,10 @@ msgid ""
 "releases. It can also use the native fullscreen mode on Mac OS X 10.7 and "
 "later."
 msgstr ""
-"Predvolene používa program VLC natívny celoobrazovkový režim z "
-"predchádzajúcich vydaní systému Mac OS X. Takisto sa dá použiť natívny "
-"celoobrazovkový režim na systéme Mac OS X 10.7 a novšom."
+"Štandardne používa program VLC režim zobrazenia na celú obrazovku "
+"pochádzajúci z minulých vydaní systému Mac OS X. Takisto sa dá použiť "
+"natívny režim zobrazenia na celú obrazovku, využívaný v systéme Mac OS X "
+"10.7 a novších."
 
 #: modules/gui/macosx/macosx.m:94 modules/gui/macosx/simple_prefs.m:389
 #: modules/gui/qt4/qt4.cpp:92
@@ -17801,7 +17820,7 @@ msgstr "Plávať navrchu"
 #: modules/gui/macosx/MainMenu.m:450 modules/gui/macosx/MainMenu.m:451
 #: modules/gui/macosx/simple_prefs.m:414
 msgid "Fullscreen Video Device"
-msgstr "Celoobrazovkové video-zariadenie"
+msgstr "Zariadenie pre video zobrazované na celú obrazovku"
 
 #: modules/gui/macosx/MainMenu.m:456 modules/gui/macosx/MainMenu.m:457
 #: modules/video_filter/postproc.c:200
@@ -17962,11 +17981,11 @@ msgstr "Vyberte podcast, z odberu ktorého sa chcete odhlásiť:"
 
 #: modules/gui/macosx/MainWindow.m:243
 msgid "Check for album art and metadata?"
-msgstr "Skontrolovať druh albumu a meta-údaje?"
+msgstr "Skontrolovať druh albumu a metadáta?"
 
 #: modules/gui/macosx/MainWindow.m:243
 msgid "Enable Metadata Retrieval"
-msgstr "Zapnúť preberanie meta-údajov"
+msgstr "Zapnúť preberanie metadát"
 
 #: modules/gui/macosx/MainWindow.m:243
 msgid "No, Thanks"
@@ -17979,7 +17998,7 @@ msgid ""
 "provide this functionality, VLC will send information about your contents to "
 "trusted services in an anonymized form."
 msgstr ""
-"Program VLC môže online skontrolovať druh albumu a meta-údaje, aby tak "
+"Program VLC môže online skontrolovať druh albumu a metadáta, aby tak "
 "obohatil zážitok z prehrávania, napríklad poskytnutím informácií o stope pri "
 "prehrávaní hudobného CD. Pri týchto funkciách musí program VLC odoslať "
 "informáciu o vašom obsahu dôveryhodným službám, v anonymnej forme."
@@ -18004,23 +18023,23 @@ msgstr "LOKÁLNA SIEŤ"
 msgid "INTERNET"
 msgstr "INTERNET"
 
-#: modules/gui/macosx/misc.m:980
+#: modules/gui/macosx/misc.m:966
 msgid "B"
 msgstr "B"
 
-#: modules/gui/macosx/misc.m:987
+#: modules/gui/macosx/misc.m:973
 msgid "KB"
 msgstr "KB"
 
-#: modules/gui/macosx/misc.m:994
+#: modules/gui/macosx/misc.m:980
 msgid "MB"
 msgstr "MB"
 
-#: modules/gui/macosx/misc.m:1002
+#: modules/gui/macosx/misc.m:988
 msgid "GB"
 msgstr "GB"
 
-#: modules/gui/macosx/misc.m:1007
+#: modules/gui/macosx/misc.m:993
 msgid "TB"
 msgstr "TB"
 
@@ -18047,8 +18066,8 @@ msgid "Media Resource Locator (MRL)"
 msgstr "Vyhľadávač médií (MRL)"
 
 #: modules/gui/macosx/open.m:127 modules/gui/macosx/open.m:184
-#: modules/gui/macosx/open.m:665 modules/gui/macosx/open.m:740
-#: modules/gui/macosx/open.m:1118 modules/gui/macosx/open.m:1551
+#: modules/gui/macosx/open.m:668 modules/gui/macosx/open.m:743
+#: modules/gui/macosx/open.m:1121 modules/gui/macosx/open.m:1554
 #: modules/gui/qt4/components/controller.hpp:115
 msgid "Open"
 msgstr "Otvoriť"
@@ -18062,21 +18081,21 @@ msgid ""
 msgstr ""
 "4 karty na výber spomedzi vstupu médií. Vyberte možnosť 'Súbor' pre súbory, "
 "'Disk' pre optické médiá ako sú napríklad DVD, Audio CD alebo BR, 'Sieť' pre "
-"sieťové streamy alebo 'Záznam' pre vstupné zariadenia, ako sú napríklad "
-"mikrofóny alebo kamery, aktuálnu obrazovku TV streamu, ak je nainštalovaná "
+"sieťové streamy alebo 'Záznam' pre také vstupné zariadenia, ako sú napríklad "
+"mikrofóny alebo kamery, aktuálnu obrazovku TV streamov, ak je nainštalovaná "
 "aplikácia EyeTV."
 
-#: modules/gui/macosx/open.m:133 modules/gui/macosx/open.m:591
+#: modules/gui/macosx/open.m:133 modules/gui/macosx/open.m:594
 #: modules/gui/macosx/simple_prefs.m:359 modules/gui/qt4/ui/sprefs_input.h:359
 msgid "Network"
 msgstr "Sieť"
 
-#: modules/gui/macosx/open.m:134 modules/gui/macosx/open.m:488
-#: modules/gui/macosx/open.m:593
+#: modules/gui/macosx/open.m:134 modules/gui/macosx/open.m:491
+#: modules/gui/macosx/open.m:596
 msgid "Capture"
 msgstr "Snímať"
 
-#: modules/gui/macosx/open.m:136 modules/gui/macosx/open.m:356
+#: modules/gui/macosx/open.m:136 modules/gui/macosx/open.m:359
 msgid "Choose a file"
 msgstr "Zvoľte si súbor"
 
@@ -18092,7 +18111,7 @@ msgstr "Považovať radšej za vedenie, nie za súbor"
 msgid "Play another media synchronously"
 msgstr "Prehrávať iné médium synchronizovane"
 
-#: modules/gui/macosx/open.m:143 modules/gui/macosx/open.m:359
+#: modules/gui/macosx/open.m:143 modules/gui/macosx/open.m:362
 #: modules/gui/macosx/simple_prefs.m:399 modules/gui/macosx/wizard.m:343
 #: modules/gui/macosx/wizard.m:411 modules/gui/qt4/ui/sprefs_interface.h:521
 msgid "Choose..."
@@ -18174,18 +18193,18 @@ msgstr "Otvoriť stream RTP/UDP"
 msgid "Protocol"
 msgstr "Protokol"
 
-#: modules/gui/macosx/open.m:190 modules/gui/macosx/open.m:1234
-#: modules/gui/macosx/open.m:1283
+#: modules/gui/macosx/open.m:190 modules/gui/macosx/open.m:1237
+#: modules/gui/macosx/open.m:1286
 msgid "Unicast"
 msgstr "Unicast"
 
-#: modules/gui/macosx/open.m:191 modules/gui/macosx/open.m:1247
-#: modules/gui/macosx/open.m:1296
+#: modules/gui/macosx/open.m:191 modules/gui/macosx/open.m:1250
+#: modules/gui/macosx/open.m:1299
 msgid "Multicast"
 msgstr "Multicast"
 
-#: modules/gui/macosx/open.m:199 modules/gui/macosx/open.m:507
-#: modules/gui/macosx/open.m:1401
+#: modules/gui/macosx/open.m:199 modules/gui/macosx/open.m:510
+#: modules/gui/macosx/open.m:1404
 msgid "Input Devices"
 msgstr "Vstupné zariadenia"
 
@@ -18221,7 +18240,7 @@ msgstr "Predchádzajúci kanál"
 msgid "Next Channel"
 msgstr "Ďalší kanál"
 
-#: modules/gui/macosx/open.m:214 modules/gui/macosx/open.m:1482
+#: modules/gui/macosx/open.m:214 modules/gui/macosx/open.m:1485
 msgid "Retrieving Channel Info..."
 msgstr "Zisťujú sa informácie o kanáli..."
 
@@ -18253,66 +18272,66 @@ msgstr "Šírka obrázka"
 msgid "Image height"
 msgstr "Výška obrázka"
 
-#: modules/gui/macosx/open.m:355
+#: modules/gui/macosx/open.m:358
 msgid "Add Subtitle File:"
 msgstr "Pridať súbor s titulkami"
 
-#: modules/gui/macosx/open.m:360
+#: modules/gui/macosx/open.m:363
 msgid "Click to setup subtitle playback in full detail."
 msgstr "Kliknutím otvoríte úplne podrobné nastavenie prehrávania titulkov."
 
-#: modules/gui/macosx/open.m:362
+#: modules/gui/macosx/open.m:365
 msgid "Click to select a subtitle file."
 msgstr "Kliknutím vyberte súbor s titulkami."
 
-#: modules/gui/macosx/open.m:363
+#: modules/gui/macosx/open.m:366
 msgid "Override parameters"
 msgstr "Nedodržiavať parametre"
 
-#: modules/gui/macosx/open.m:366
+#: modules/gui/macosx/open.m:369
 msgid "FPS"
 msgstr "FPS"
 
-#: modules/gui/macosx/open.m:368
+#: modules/gui/macosx/open.m:371
 msgid "Subtitle encoding"
 msgstr "Kódovanie titulkov"
 
-#: modules/gui/macosx/open.m:370 modules/gui/macosx/simple_prefs.m:401
+#: modules/gui/macosx/open.m:373 modules/gui/macosx/simple_prefs.m:401
 #: modules/gui/qt4/ui/sprefs_subtitles.h:300
 msgid "Font size"
 msgstr "Veľkosť písma"
 
-#: modules/gui/macosx/open.m:372
+#: modules/gui/macosx/open.m:375
 msgid "Subtitle alignment"
 msgstr "Zarovnanie titulkov"
 
-#: modules/gui/macosx/open.m:375
+#: modules/gui/macosx/open.m:378
 msgid "Click to dismiss the subtitle setup dialog."
 msgstr "Dialóg pre nastavenia titulkov vypnete kliknutím sem."
 
-#: modules/gui/macosx/open.m:376
+#: modules/gui/macosx/open.m:379
 msgid "Font Properties"
 msgstr "Nastavenia písma"
 
-#: modules/gui/macosx/open.m:377
+#: modules/gui/macosx/open.m:380
 msgid "Subtitle File"
 msgstr "Súbor s titulkami"
 
-#: modules/gui/macosx/open.m:664 modules/gui/macosx/open.m:739
-#: modules/gui/macosx/open.m:1550 modules/gui/qt4/ui/open_file.h:142
+#: modules/gui/macosx/open.m:667 modules/gui/macosx/open.m:742
+#: modules/gui/macosx/open.m:1553 modules/gui/qt4/ui/open_file.h:142
 msgid "Open File"
 msgstr "Otvoriť súbor"
 
-#: modules/gui/macosx/open.m:981
+#: modules/gui/macosx/open.m:984
 #, c-format
 msgid "%i tracks"
 msgstr "%i stôp"
 
-#: modules/gui/macosx/open.m:1488
+#: modules/gui/macosx/open.m:1491
 msgid "Composite input"
 msgstr "Kompozitný vstup"
 
-#: modules/gui/macosx/open.m:1491
+#: modules/gui/macosx/open.m:1494
 msgid "S-Video input"
 msgstr "Vstup S-Video"
 
@@ -18567,7 +18586,7 @@ msgstr "Nastavenia videa"
 #: modules/gui/qt4/components/simple_preferences.cpp:294
 #: modules/gui/qt4/components/simple_preferences.cpp:873
 msgid "Subtitle & On Screen Display Settings"
-msgstr "Nastavenia titulkov & OSD"
+msgstr "Titulky & Nastavenia OSD"
 
 #: modules/gui/macosx/simple_prefs.m:296
 msgid "Input & Codec Settings"
@@ -18680,7 +18699,7 @@ msgstr "Zobraziť video v rámci okna"
 
 #: modules/gui/macosx/simple_prefs.m:380
 msgid "Show Fullscreen Controller"
-msgstr "Zobraziť ovládač celoobrazovkového režimu"
+msgstr "Zobraziť ovládač pri zobrazovaní na celú obrazovku"
 
 #: modules/gui/macosx/simple_prefs.m:381
 #: modules/gui/qt4/ui/sprefs_interface.h:528
@@ -18758,7 +18777,7 @@ msgstr "Hrúbka kontúry"
 
 #: modules/gui/macosx/simple_prefs.m:413
 msgid "Black screens in Fullscreen mode"
-msgstr "Čierne obrazovky pri celoobr. režime"
+msgstr "Čierne obrazovky pri režime zobrazenia na celú obrazovku"
 
 #: modules/gui/macosx/simple_prefs.m:415 modules/stream_out/display.c:53
 #: modules/gui/qt4/ui/sprefs_video.h:322
@@ -18845,12 +18864,12 @@ msgstr ""
 msgid ""
 "This setting cannot be changed because the native fullscreen mode is enabled."
 msgstr ""
-"Toto nastavenie nie je možné zmeniť, pretože je zapnutý natívny režim celej "
-"obrazovky"
+"Toto nastavenie nie je možné zmeniť, pretože je zapnutý natívny režim "
+"zobrazenia na celú obrazovku."
 
 #: modules/gui/macosx/simple_prefs.m:1216
 msgid "Choose the folder to save your video snapshots to."
-msgstr "Tu si zvoľte priečinok, do ktorého sa uložia snímky z videa."
+msgstr "Tu si vyberte priečinok, do ktorého sa uložia snímky z videa."
 
 #: modules/gui/macosx/simple_prefs.m:1218
 #: modules/gui/macosx/simple_prefs.m:1319
@@ -19939,7 +19958,7 @@ msgstr " <medzeranik>                Pozastavit/prehrat"
 
 #: modules/gui/ncurses.c:893
 msgid " f                      Toggle Fullscreen"
-msgstr " f                      Prepnut celoobrazovkovy rezim"
+msgstr " f                      Prepnut zobrazovanie na celu obrazovku"
 
 #: modules/gui/ncurses.c:894
 msgid " c                      Cycle through audio tracks"
@@ -20176,7 +20195,7 @@ msgstr "Dopredu / Ďalej"
 
 #: modules/gui/qt4/components/controller.hpp:117
 msgid "De-Fullscreen"
-msgstr "Vypnúť celoobrazovkový režim"
+msgstr "Vypnúť zobrazovanie na celú obrazovku"
 
 #: modules/gui/qt4/components/controller.hpp:117
 msgid "Extended panel"
@@ -20214,7 +20233,7 @@ msgstr "Otvoriť titulky"
 
 #: modules/gui/qt4/components/controller.hpp:121
 msgid "Dock fullscreen controller"
-msgstr "Dokovať ovládač celoobrazovkového režimu"
+msgstr "Prichytiť ovládač pri zobrazení na celú obrazovku"
 
 #: modules/gui/qt4/components/controller.hpp:124
 msgid "Stop playback"
@@ -20235,11 +20254,11 @@ msgstr "Ďalšie médium v playliste, pri držaní môžete preskakovať dopredu
 
 #: modules/gui/qt4/components/controller.hpp:127
 msgid "Toggle the video in fullscreen"
-msgstr "Prepnúť video do celoobrazovkového režimu"
+msgstr "Zapnúť režim zobrazenia videa na celú obrazovku"
 
 #: modules/gui/qt4/components/controller.hpp:127
 msgid "Toggle the video out fullscreen"
-msgstr "Prepnúť výstup videa do celoobrazovkového režimu"
+msgstr "Vypnúť režim zobrazenia videa na celú obrazovku"
 
 #: modules/gui/qt4/components/controller.hpp:128
 msgid "Show extended settings"
@@ -20285,7 +20304,8 @@ msgstr "Otvoriť súbor s titulkami"
 #: modules/gui/qt4/components/controller.hpp:135
 msgid "Dock/undock fullscreen controller to/from bottom of screen"
 msgstr ""
-"Pridať/odstrániť ovládač celoobrazovkového režimu do/z dolnej časti obrazovky"
+"Prichytiť/odpojiť ovládač pri zobrazovaní na celú obrazovku k/od spodnej "
+"časti obrazovky"
 
 #: modules/gui/qt4/components/controller_widget.cpp:132
 msgctxt "Tooltip|Unmute"
@@ -20792,7 +20812,7 @@ msgstr "Zadajte nový názov priečinka."
 
 #: modules/gui/qt4/components/playlist/standardpanel.cpp:57
 msgid "Enter a new name for the folder:"
-msgstr "Zadajte nový názov priečinka"
+msgstr "Zadajte nový názov priečinka:"
 
 #: modules/gui/qt4/components/playlist/standardpanel.cpp:242
 msgid "Sort by"
@@ -20928,7 +20948,7 @@ msgstr "Kľúč:"
 #: modules/gui/qt4/components/simple_preferences.cpp:296
 #: modules/gui/qt4/components/simple_preferences.cpp:636
 msgid "Input & Codecs Settings"
-msgstr "Nastavenia vstupu a kodekov"
+msgstr "Nastavenia vstupu & kodekov"
 
 #: modules/gui/qt4/components/simple_preferences.cpp:298
 #: modules/gui/qt4/components/simple_preferences.cpp:917
@@ -20965,30 +20985,30 @@ msgstr "internetovej stránky so súbormi vzhľadu pre program VLC"
 msgid "System's default"
 msgstr "Predvolené v systéme"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1290
+#: modules/gui/qt4/components/simple_preferences.cpp:1296
 msgid "File associations"
 msgstr "Asociácie súborov"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1299
+#: modules/gui/qt4/components/simple_preferences.cpp:1305
 #: modules/gui/qt4/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "Zvukové súbory"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1300
+#: modules/gui/qt4/components/simple_preferences.cpp:1306
 #: modules/gui/qt4/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "Súbory s videom"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1301
+#: modules/gui/qt4/components/simple_preferences.cpp:1307
 #: modules/gui/qt4/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "Súbory s playlistom"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1353
+#: modules/gui/qt4/components/simple_preferences.cpp:1371
 msgid "&Apply"
 msgstr "Po&užiť"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:1354
+#: modules/gui/qt4/components/simple_preferences.cpp:1372
 #: modules/gui/qt4/dialogs/convert.cpp:109
 #: modules/gui/qt4/dialogs/gototime.cpp:49
 #: modules/gui/qt4/dialogs/open.cpp:108 modules/gui/qt4/dialogs/openurl.cpp:61
@@ -21027,6 +21047,7 @@ msgstr ""
 #: modules/gui/qt4/components/sout/profile_selector.cpp:609
 msgid "This muxer is missing. Using this profile will fail"
 msgstr ""
+"Tento multiplexor nie je prítomný. Použitie tohto profilu nebude úspešné"
 
 #: modules/gui/qt4/components/sout/profile_selector.cpp:753
 msgid " Profile Name Missing"
@@ -21150,8 +21171,8 @@ msgstr "Vymazať všetky záložky"
 #: modules/gui/qt4/dialogs/mediainfo.cpp:80
 #: modules/gui/qt4/dialogs/messages.cpp:81
 #: modules/gui/qt4/dialogs/plugins.cpp:88
-#: modules/gui/qt4/dialogs/plugins.cpp:1400
-#: modules/gui/qt4/dialogs/plugins.cpp:1513
+#: modules/gui/qt4/dialogs/plugins.cpp:1412
+#: modules/gui/qt4/dialogs/plugins.cpp:1525
 #: modules/gui/qt4/dialogs/podcast_configuration.cpp:36
 #: modules/gui/qt4/dialogs/vlm.cpp:136
 msgid "&Close"
@@ -21273,14 +21294,14 @@ msgid "Go to time"
 msgstr "Prejsť na čas"
 
 #: modules/gui/qt4/dialogs/help.cpp:86
-#: modules/gui/qt4/dialogs/plugins.cpp:1338
-#: modules/gui/qt4/dialogs/plugins.cpp:1421
+#: modules/gui/qt4/dialogs/plugins.cpp:1350
+#: modules/gui/qt4/dialogs/plugins.cpp:1433
 msgid "About"
 msgstr "O programe"
 
 #: modules/gui/qt4/dialogs/help.cpp:214
 msgid "&Recheck version"
-msgstr "&Znova skontrolovať verziu"
+msgstr "Znova skont&rolovať verziu"
 
 #: modules/gui/qt4/dialogs/help.cpp:217
 msgid "&Yes"
@@ -21386,7 +21407,7 @@ msgstr "&Sieť"
 
 #: modules/gui/qt4/dialogs/open.cpp:96
 msgid "Capture &Device"
-msgstr "&Snímacie zariadenie"
+msgstr "Snímacie zaria&denie"
 
 #: modules/gui/qt4/dialogs/open.cpp:111
 msgid "&Select"
@@ -21457,7 +21478,7 @@ msgid "&Search:"
 msgstr "&Hľadať:"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:247
-#: modules/gui/qt4/dialogs/plugins.cpp:1254
+#: modules/gui/qt4/dialogs/plugins.cpp:1266
 msgid "More information..."
 msgstr "Viac informácií..."
 
@@ -21489,58 +21510,62 @@ msgstr ""
 "Objavovanie služieb pridá do vášho playlistu nové zdroje, ako sú napríklad "
 "internetové rádiá, webové stránky s videom, ..."
 
-#: modules/gui/qt4/dialogs/plugins.cpp:387
+#: modules/gui/qt4/dialogs/plugins.cpp:390
+msgid "Retrieves extra info and art for playlist items"
+msgstr ""
+
+#: modules/gui/qt4/dialogs/plugins.cpp:393
 msgid ""
 "Extensions brings various enhancements. Check descriptions for more details"
 msgstr ""
 "Rozšírenia prinášajú viaceré vylepšenia. Bližšie informácie získate v "
 "popisoch."
 
-#: modules/gui/qt4/dialogs/plugins.cpp:408
+#: modules/gui/qt4/dialogs/plugins.cpp:414
 msgid "Only installed"
 msgstr "Len nainštalované"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:503
+#: modules/gui/qt4/dialogs/plugins.cpp:509
 msgid "Retrieving addons..."
 msgstr "Preberajú sa doplnky..."
 
-#: modules/gui/qt4/dialogs/plugins.cpp:514
+#: modules/gui/qt4/dialogs/plugins.cpp:520
 msgid "No addons found"
 msgstr "Nenašli sa žiadne doplnky"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:793
+#: modules/gui/qt4/dialogs/plugins.cpp:799
 msgid "This addon has been installed manually. VLC can't manage it by itself."
 msgstr ""
 "Tento doplnok bol nainštalovaný manuálne. Program VLC ho nemôže samočinne "
 "spravovať."
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1168
+#: modules/gui/qt4/dialogs/plugins.cpp:1180
 msgid "Version %1"
 msgstr "Verzia %1"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1194
+#: modules/gui/qt4/dialogs/plugins.cpp:1206
 msgid "%1 downloads"
 msgstr "%1 stiahnutí"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1263
+#: modules/gui/qt4/dialogs/plugins.cpp:1275
 msgid "&Uninstall"
 msgstr "&Odinštalovať"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1266
+#: modules/gui/qt4/dialogs/plugins.cpp:1278
 msgid "&Install"
 msgstr "Na&inštalovať"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1361
-#: modules/gui/qt4/dialogs/plugins.cpp:1464
+#: modules/gui/qt4/dialogs/plugins.cpp:1373
+#: modules/gui/qt4/dialogs/plugins.cpp:1476
 msgid "Version"
 msgstr "Verzia"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1381
-#: modules/gui/qt4/dialogs/plugins.cpp:1491
+#: modules/gui/qt4/dialogs/plugins.cpp:1393
+#: modules/gui/qt4/dialogs/plugins.cpp:1503
 msgid "Website"
 msgstr "Webová stránka"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:1503
+#: modules/gui/qt4/dialogs/plugins.cpp:1515
 #: modules/gui/qt4/ui/sprefs_input.h:354
 msgid "Files"
 msgstr "Súbory"
@@ -21575,7 +21600,7 @@ msgstr "Uložiť a zatvoriť dialóg"
 
 #: modules/gui/qt4/dialogs/preferences.cpp:95
 msgid "&Reset Preferences"
-msgstr "&Obnoviť nastavenia"
+msgstr "&Reset nastavení"
 
 #: modules/gui/qt4/dialogs/preferences.cpp:159
 msgid "Only show current"
@@ -21729,7 +21754,7 @@ msgstr "Pokročilý widget"
 
 #: modules/gui/qt4/dialogs/toolbar.cpp:137
 msgid "Fullscreen Controller"
-msgstr "Ovládač celoobrazovkového režimu"
+msgstr "Ovládač pri zobrazovaní na celú obrazovku"
 
 #: modules/gui/qt4/dialogs/toolbar.cpp:146
 msgid "New profile"
@@ -21749,7 +21774,7 @@ msgstr "Náhľad"
 
 #: modules/gui/qt4/dialogs/toolbar.cpp:194
 msgid "Cl&ose"
-msgstr "&Zatvoriť"
+msgstr "Zatv&oriť"
 
 #: modules/gui/qt4/dialogs/toolbar.cpp:224 modules/gui/qt4/ui/profiles.h:749
 msgid "Profile Name"
@@ -21906,11 +21931,11 @@ msgstr "N&ástroje"
 
 #: modules/gui/qt4/menus.cpp:347 modules/gui/qt4/menus.cpp:1102
 msgid "V&iew"
-msgstr "Zo&braziť"
+msgstr "Zobraz&iť"
 
 #: modules/gui/qt4/menus.cpp:349 modules/gui/qt4/menus.cpp:777
 msgid "&Help"
-msgstr "&Pomocník"
+msgstr "Po&mocník"
 
 #: modules/gui/qt4/menus.cpp:362
 msgid "Open &File..."
@@ -21930,19 +21955,19 @@ msgstr "Otvoriť stream v &sieti..."
 
 #: modules/gui/qt4/menus.cpp:372 modules/gui/qt4/menus.cpp:935
 msgid "Open &Capture Device..."
-msgstr "Otvoriť &snímacie zariadenie..."
+msgstr "Otvoriť &zaznamenávacie zariadenie..."
 
 #: modules/gui/qt4/menus.cpp:375
 msgid "Open &Location from clipboard"
-msgstr "Otvoriť &umiestnenie uložené v schránke"
+msgstr "Otvoriť umiestnenie u&ložené v schránke"
 
 #: modules/gui/qt4/menus.cpp:380
 msgid "Open &Recent Media"
-msgstr "Otvoriť &posledné médium"
+msgstr "Otvo&riť posledné médium"
 
 #: modules/gui/qt4/menus.cpp:390
 msgid "Conve&rt / Save..."
-msgstr "Kon&vertovať / Uložiť..."
+msgstr "Konve&rtovať / Uložiť..."
 
 #: modules/gui/qt4/menus.cpp:392
 msgid "&Stream..."
@@ -21966,7 +21991,7 @@ msgstr "&Efekty a filtre"
 
 #: modules/gui/qt4/menus.cpp:421
 msgid "&Track Synchronization"
-msgstr "Synchronizácia &stopy"
+msgstr "Synchronizácia s&topy"
 
 #: modules/gui/qt4/menus.cpp:434
 msgid "Program Guide"
@@ -21978,7 +22003,7 @@ msgstr "Prídavné &moduly a rozšírenia"
 
 #: modules/gui/qt4/menus.cpp:445
 msgid "Customi&ze Interface..."
-msgstr "Prispôso&biť rozhranie..."
+msgstr "Prispôsobiť ro&zhranie..."
 
 #: modules/gui/qt4/menus.cpp:448
 msgid "&Preferences"
@@ -22010,11 +22035,11 @@ msgstr "Ctrl+H"
 
 #: modules/gui/qt4/menus.cpp:515
 msgid "&Fullscreen Interface"
-msgstr "Prepnúť &celoobrazovkové rozhranie"
+msgstr "Rozhranie pre &zobrazovanie na celú obrazovku"
 
 #: modules/gui/qt4/menus.cpp:523
 msgid "&Advanced Controls"
-msgstr "Po&kročilé ovládače"
+msgstr "Pokročilé ovlád&ače"
 
 #: modules/gui/qt4/menus.cpp:529
 msgid "Status Bar"
@@ -22026,7 +22051,7 @@ msgstr "Výber vizualizácií"
 
 #: modules/gui/qt4/menus.cpp:592
 msgid "&Increase Volume"
-msgstr "&Zvýšiť hlasitosť"
+msgstr "Zvýš&iť hlasitosť"
 
 #: modules/gui/qt4/menus.cpp:595
 msgid "&Decrease Volume"
@@ -22038,11 +22063,11 @@ msgstr "Stl&miť"
 
 #: modules/gui/qt4/menus.cpp:615
 msgid "Audio &Track"
-msgstr "&Zvuková stopa"
+msgstr "Zvuková s&topa"
 
 #: modules/gui/qt4/menus.cpp:616
 msgid "Audio &Device"
-msgstr "Z&vukové zariadenie"
+msgstr "Zvukové zaria&denie"
 
 #: modules/gui/qt4/menus.cpp:618
 msgid "&Stereo Mode"
@@ -22054,7 +22079,7 @@ msgstr "&Vizualizácie"
 
 #: modules/gui/qt4/menus.cpp:647
 msgid "Add &Subtitle File..."
-msgstr "Pridať sú&bor s titulkami..."
+msgstr "Pridať súbor &s titulkami..."
 
 #: modules/gui/qt4/menus.cpp:649
 msgid "Sub &Track"
@@ -22062,11 +22087,11 @@ msgstr "Stopa s &titulkami"
 
 #: modules/gui/qt4/menus.cpp:671
 msgid "Video &Track"
-msgstr "Video &stopa"
+msgstr "S&topa s videom"
 
 #: modules/gui/qt4/menus.cpp:675
 msgid "&Fullscreen"
-msgstr "&Celoobrazovkový režim"
+msgstr "Zobrazovanie na &celú obrazovku"
 
 #: modules/gui/qt4/menus.cpp:676
 msgid "Always Fit &Window"
@@ -22078,15 +22103,15 @@ msgstr "Vždy &navrchu"
 
 #: modules/gui/qt4/menus.cpp:678
 msgid "Set as Wall&paper"
-msgstr "Použiť ako po&zadie"
+msgstr "Použiť ako &pozadie"
 
 #: modules/gui/qt4/menus.cpp:682
 msgid "&Zoom"
-msgstr "Pri&blížiť"
+msgstr "Priblí&žiť"
 
 #: modules/gui/qt4/menus.cpp:683
 msgid "&Aspect Ratio"
-msgstr "&Stranový pomer"
+msgstr "Str&anový pomer"
 
 #: modules/gui/qt4/menus.cpp:684
 msgid "&Crop"
@@ -22094,11 +22119,11 @@ msgstr "O&rezať"
 
 #: modules/gui/qt4/menus.cpp:688
 msgid "&Deinterlace"
-msgstr "&Odstránenie prekladania"
+msgstr "O&dstránenie prekladania"
 
 #: modules/gui/qt4/menus.cpp:689
 msgid "&Deinterlace mode"
-msgstr "Režim &odstránenia prekladania"
+msgstr "Režim o&dstránenia prekladania"
 
 #: modules/gui/qt4/menus.cpp:695
 msgid "Take &Snapshot"
@@ -22106,7 +22131,7 @@ msgstr "Vytvoriť &snímku"
 
 #: modules/gui/qt4/menus.cpp:714
 msgid "T&itle"
-msgstr "Ti&tul"
+msgstr "T&itul"
 
 #: modules/gui/qt4/menus.cpp:715
 msgid "&Chapter"
@@ -22122,7 +22147,7 @@ msgstr "&Spravovať"
 
 #: modules/gui/qt4/menus.cpp:780
 msgid "Check for &Updates..."
-msgstr "Skontrolovať dostupnosť &aktualizácií..."
+msgstr "Skontrolovať dostupnosť akt&ualizácií..."
 
 #: modules/gui/qt4/menus.cpp:829
 msgid "&Stop"
@@ -22170,15 +22195,15 @@ msgstr "Otvoriť súbor v &sieti..."
 
 #: modules/gui/qt4/menus.cpp:1023
 msgid "Leave Fullscreen"
-msgstr "Vypnúť celoobrazovkový režim"
+msgstr "Vypnúť zobrazovanie na celú obrazovku"
 
 #: modules/gui/qt4/menus.cpp:1057
 msgid "&Playback"
-msgstr "P&rehrávanie"
+msgstr "&Prehrávanie"
 
 #: modules/gui/qt4/menus.cpp:1146
 msgid "&Hide VLC media player in taskbar"
-msgstr "Skryť &VLC media player do panela úloh"
+msgstr "Skryť VLC media player do panela úlo&h"
 
 #: modules/gui/qt4/menus.cpp:1152
 msgid "Sho&w VLC media player"
@@ -22190,7 +22215,7 @@ msgstr "&Otvoriť médium"
 
 #: modules/gui/qt4/menus.cpp:1639
 msgid "&Clear"
-msgstr "Vyčis&tiť"
+msgstr "Vy&čistiť"
 
 #: modules/gui/qt4/menus.cpp:1640
 msgid "&Save To Playlist"
@@ -22245,9 +22270,9 @@ msgid ""
 "Show a notification popup with the artist and track name when the current "
 "playlist item changes, when VLC is minimized or hidden."
 msgstr ""
-"Zobraziť notifikačné vyskakovacie okno s menom interpreta a názvom skladby "
-"pri zmene skladby. Zobrazí sa v prípade, že je VLC minimalizovaný alebo "
-"skrytý."
+"Zobraziť notifikačné vyskakovacie okno s menom umelca a názvom skladby pri "
+"zmene položky v playliste. Zobrazí sa v prípade, že je VLC minimalizovaný "
+"alebo skrytý."
 
 #: modules/gui/qt4/qt4.cpp:107
 msgid "Windows opacity between 0.1 and 1"
@@ -22265,7 +22290,7 @@ msgstr ""
 
 #: modules/gui/qt4/qt4.cpp:113
 msgid "Fullscreen controller opacity between 0.1 and 1"
-msgstr "Nepriehľadnosť ovládačov pri celoobrazovkovom režime, od 0.1 do 1"
+msgstr "Nepriehľadnosť ovládačov pri zobrazení na celú obrazovku, od 0.1 do 1"
 
 #: modules/gui/qt4/qt4.cpp:114
 msgid ""
@@ -22273,8 +22298,8 @@ msgid ""
 "playlist and extended panel. This option only works with Windows and X11 "
 "with composite extensions."
 msgstr ""
-"Nastaví nepriehľadnosť ovládača v celoobrazovkovom režime, v rozmedzí od "
-"hodnoty 0.1 do 1 v hlavnom rozhraní, playliste a rozšírenom paneli. Túto "
+"Nastaví nepriehľadnosť ovládača pri zobrazovaní na celú obrazovku, v "
+"rozmedzí 0.1 až 1 pre hlavné rozhranie, playlist a rozšírený panel. Túto "
 "funkciu možno použiť len v systéme Windows a X11 s kompozitnými rozšíreniami."
 
 #: modules/gui/qt4/qt4.cpp:120
@@ -22347,7 +22372,7 @@ msgstr ""
 
 #: modules/gui/qt4/qt4.cpp:149
 msgid "Show a controller in fullscreen mode"
-msgstr "Zobraziť ovládač v celoobrazovkovom režime"
+msgstr "Zobraziť ovládač pri zobrazovaní na celú obrazovku"
 
 #: modules/gui/qt4/qt4.cpp:150
 msgid "Embed the file browser in open dialog"
@@ -22355,13 +22380,13 @@ msgstr "Vstavať prehliadač súborov do dialógu na otvorenie súboru"
 
 #: modules/gui/qt4/qt4.cpp:152
 msgid "Define which screen fullscreen goes"
-msgstr "Definícia toho, ktoré obrazovky budú v celooobraz. režime"
+msgstr "Definícia toho, ktoré obrazovky budú zobrazovať na celej svojej ploche"
 
 #: modules/gui/qt4/qt4.cpp:153
 msgid "Screennumber of fullscreen, instead of same screen where interface is"
 msgstr ""
-"Číslo obrazovky v celoobrazovkovom režime, namiesto tej obrazovky, kde sa "
-"nachádza rozhranie"
+"Číslo obrazovky v režime zobrazovania na celú obrazovku, namiesto tej "
+"obrazovky, kde sa nachádza rozhranie"
 
 #: modules/gui/qt4/qt4.cpp:156
 msgid "Load extensions on startup"
@@ -22414,7 +22439,7 @@ msgstr ""
 
 #: modules/gui/qt4/qt4.cpp:186
 msgid "Fullscreen controller mouse sensitivity"
-msgstr "Citlivosť ovládania myšou pri režime celej obrazovky"
+msgstr "Citlivosť ovládača pre zobrazovanie na celú obrazovku na pohyby myši"
 
 #: modules/gui/qt4/qt4.cpp:194
 msgid "When minimized"
@@ -22787,7 +22812,7 @@ msgid ""
 "last.fm username or password is incorrect. Please verify your settings and "
 "relaunch VLC."
 msgstr ""
-"Meno používateľa alebo heslo pre Last.fm nie je správne, overte prosím "
+"Meno používateľa alebo heslo pre Last.fm nie je správne. Overte prosím "
 "nastavenia a znovu spustite program VLC."
 
 #: modules/misc/audioscrobbler.c:723
@@ -23493,9 +23518,8 @@ msgid "LibNotify Notification Plugin"
 msgstr "Prídavný notifikačný modul LibNotify "
 
 #: modules/packetizer/avparser.h:49
-#, fuzzy
 msgid "avparser packetizer"
-msgstr "Paketizér pre kopírovanie"
+msgstr "Paketizér avparser"
 
 #: modules/packetizer/copy.c:48
 msgid "Copy packetizer"
@@ -24198,7 +24222,7 @@ msgstr "Súbor s heslom"
 
 #: modules/stream_out/raop.c:158
 msgid "Read password for target device from file."
-msgstr "Prečítať heslá pre cieľové zariadenie zo súboru."
+msgstr "Prečítať heslo pre cieľové zariadenie zo súboru."
 
 #: modules/stream_out/raop.c:161
 msgid "RAOP"
@@ -24801,7 +24825,7 @@ msgstr "Vysoká priorita"
 #: modules/stream_out/transcode/transcode.c:132
 msgid ""
 "Runs the optional encoder thread at the OUTPUT priority instead of VIDEO."
-msgstr "Spustí doplnkový kodér na výstupe, nie vo videu. "
+msgstr "Spustí doplnkové vlákno pre kodér na VÝSTUPE, nie vo VIDEU. "
 
 #: modules/stream_out/transcode/transcode.c:148
 msgid "Transcode stream output"
@@ -25333,7 +25357,7 @@ msgstr "Uložiť snímky na analyzáciu"
 
 #: modules/video_filter/atmo/atmo.cpp:178
 msgid "Write every 128th miniframe to a folder."
-msgstr "Zapísať každý 128. minisnímku do priečinka."
+msgstr "Zapísať každú 128. minisnímku do priečinka."
 
 #: modules/video_filter/atmo/atmo.cpp:179
 msgid "Debug Frame Folder"
@@ -25745,9 +25769,9 @@ msgid ""
 "Now preferred option to assign gradient bitmaps, put them as zone_0.bmp, "
 "zone_1.bmp etc. into one folder and set the foldername here"
 msgstr ""
-"Preferovaná funkcia na prideľovanie bitmáp s gradientom. Bitmapy vložte do "
-"jedného spoločného priečinka, pomenujte ich napr. zone_0.bmp, zone_1.bmp "
-"atď. Potom sem zadajte názov priečinka"
+"Preferovaná funkcia na prideľovanie bitmáp s gradientom. Vložte ich do "
+"jedného priečinka, pomenujte ich napr. zone_0.bmp, zone_1.bmp atď. Potom tu "
+"nastavte názov priečinka"
 
 #: modules/video_filter/atmo/atmo.cpp:346
 msgid "Filename of AtmoWin*.exe"
@@ -29212,7 +29236,7 @@ msgstr "0.00 dB"
 
 #: modules/gui/qt4/ui/messages_panel.h:139
 msgid "&Verbosity:"
-msgstr "&Komunikatívnosť:"
+msgstr "Komunikatí&vnosť:"
 
 #: modules/gui/qt4/ui/messages_panel.h:140
 msgid "&Filter:"
@@ -29280,11 +29304,11 @@ msgstr "Synchrónne prehrávať iné médium (napr. osobitný zvukový súbor...
 
 #: modules/gui/qt4/ui/open_capture.h:97
 msgid "Capture mode"
-msgstr "Režim snímania"
+msgstr "Režim zaznamenávania"
 
 #: modules/gui/qt4/ui/open_capture.h:99
 msgid "Select the capture device type"
-msgstr "Zvoľte si typ snímacieho zariadenia"
+msgstr "Zvoľte si typ zaznamenávacieho zariadenia"
 
 #: modules/gui/qt4/ui/open_capture.h:101
 msgid "Device Selection"
@@ -30036,9 +30060,6 @@ msgstr "AAAA; "
 #: modules/gui/qt4/ui/vlm.h:302
 msgid "Media Manager List"
 msgstr "Zoznam správcov médií"
-
-#~ msgid "Video acceleration not available"
-#~ msgstr "Akcelerácia videa nie je dostupná"
 
 #~ msgid ""
 #~ "The XVideo rendering acceleration driver does not support the required "
@@ -32398,6 +32419,23 @@ msgstr "Zoznam správcov médií"
 #~ msgstr "Záznam pre ladenie VLC (%s).rtf"
 
 #, fuzzy
+#~ msgid ""
+#~ "Your video output acceleration driver does not support the required "
+#~ "resolution: %ux%u pixels. The maximum supported resolution is %<PRIu32>x"
+#~ "%<PRIu32>.\n"
+#~ "Video output acceleration will be disabled. However, rendering videos "
+#~ "with overly large resolution may cause severe performance degration."
+#~ msgstr ""
+#~ "Ovládač akcelerácie XVideo nepodporuje požadované rozlíšenie %ux%u "
+#~ "pixelov, ale namiesto toho %<PRIu32>x%<PRIu32> pixelov.\n"
+#~ "Akcelerácia bude teda zablokovaná. Výkon môže byť mierne zvýšený v "
+#~ "prípade, že je rozlíšenie príliš veľké."
+
+#, fuzzy
+#~ msgid "Video acceleration not available"
+#~ msgstr "Výstup videa K Video Acceleration"
+
+#, fuzzy
 #~ msgid "Subtitle track added"
 #~ msgstr "Stopa s titulkami"
 
@@ -32744,7 +32782,7 @@ msgstr "Zoznam správcov médií"
 
 #, fuzzy
 #~ msgid "&Help..."
-#~ msgstr "&Pomocník"
+#~ msgstr "Po&mocník"
 
 #, fuzzy
 #~ msgid "Synchronise on audio track"
@@ -32869,7 +32907,7 @@ msgstr "Zoznam správcov médií"
 
 #, fuzzy
 #~ msgid "Advanced Open..."
-#~ msgstr "&Pokročilé otváranie..."
+#~ msgstr "Pokročilé otvár&anie..."
 
 #, fuzzy
 #~ msgid "Open Play&list..."
@@ -33007,7 +33045,7 @@ msgstr "Zoznam správcov médií"
 
 #, fuzzy
 #~ msgid "Leave fullscreen"
-#~ msgstr "Vypnúť celoobrazovkový režim"
+#~ msgstr "Vypnúť zobrazovanie na celú obrazovku"
 
 #, fuzzy
 #~ msgid "Select the hotkey to use to leave fullscreen state."
@@ -33075,7 +33113,7 @@ msgstr "Zoznam správcov médií"
 
 #, fuzzy
 #~ msgid "Capture format of audio stream."
-#~ msgstr "Zachytávať zvukový stream v stereo-režime."
+#~ msgstr "Zaznamenať zvukový stream v stereo-režime."
 
 #, fuzzy
 #~ msgid "GSM Audio"
@@ -33260,7 +33298,7 @@ msgstr "Zoznam správcov médií"
 
 #, fuzzy
 #~ msgid "SFTP password"
-#~ msgstr "Heslo pre FTP server"
+#~ msgstr "Heslo pre FTP"
 
 #, fuzzy
 #~ msgid "Pixel width of the frame buffer"
@@ -33806,7 +33844,7 @@ msgstr "Zoznam správcov médií"
 
 #, fuzzy
 #~ msgid "Use the native fullscreen mode on OS X Lion"
-#~ msgstr "Použiť natívny celoobrazovkový režim"
+#~ msgstr "Použiť natívny režim zobrazenia na celú obrazovku"
 
 #, fuzzy
 #~ msgid "Automatically save the volume on exit"
@@ -33814,7 +33852,7 @@ msgstr "Zoznam správcov médií"
 
 #, fuzzy
 #~ msgid "Capture Device"
-#~ msgstr "&Snímacie zariadenie"
+#~ msgstr "Snímacie zaria&denie"
 
 #, fuzzy
 #~ msgid "Frames per Second:"
@@ -33886,7 +33924,7 @@ msgstr "Zoznam správcov médií"
 
 #, fuzzy
 #~ msgid "Subtitles & On Screen Display Settings"
-#~ msgstr "Nastavenia titulkov & OSD"
+#~ msgstr "Titulky & Nastavenia OSD"
 
 #, fuzzy
 #~ msgid "Input & Codecs"
@@ -34232,7 +34270,7 @@ msgstr "Zoznam správcov médií"
 
 #, fuzzy
 #~ msgid "Hide VLC media player in taskbar"
-#~ msgstr "Skryť &VLC media player do panela úloh"
+#~ msgstr "Skryť VLC media player do panela úlo&h"
 
 #, fuzzy
 #~ msgid "Show VLC media player"
@@ -34541,19 +34579,6 @@ msgstr "Zoznam správcov médií"
 #~ "Pokúsiť sa o použitie hardvérovej akcelerácie pre titulky/zmiešavanie OSD."
 
 #, fuzzy
-#~ msgid ""
-#~ "Your video output acceleration driver does not support the required "
-#~ "resolution: %ux%u pixels. The maximum supported resolution is %<PRIu32>x"
-#~ "%<PRIu32>.\n"
-#~ "Video output acceleration will be disabled. However, rendering videos "
-#~ "with overly large resolution may cause severe performance degration."
-#~ msgstr ""
-#~ "Ovládač akcelerácie XVideo nepodporuje požadované rozlíšenie %ux%u "
-#~ "pixelov, ale namiesto toho %<PRIu32>x%<PRIu32> pixelov.\n"
-#~ "Akcelerácia bude teda zablokovaná. Výkon môže byť mierne zvýšený v "
-#~ "prípade, že je rozlíšenie príliš veľké."
-
-#, fuzzy
 #~ msgid "Stream Name"
 #~ msgstr "Názov streamu"
 
@@ -34659,7 +34684,7 @@ msgstr "Zoznam správcov médií"
 
 #, fuzzy
 #~ msgid "Verbosity:"
-#~ msgstr "&Komunikatívnosť:"
+#~ msgstr "Komunikatí&vnosť:"
 
 #, fuzzy
 #~ msgid "Add a subtitles file"
@@ -34846,9 +34871,10 @@ msgstr "Zoznam správcov médií"
 #~ "later. It can also use the custom mode known from previous Mac OS X "
 #~ "releases."
 #~ msgstr ""
-#~ "Predvolene používa program VLC natívny celoobrazovkový režim z "
-#~ "predchádzajúcich vydaní systému Mac OS X. Takisto sa dá použiť natívny "
-#~ "celoobrazovkový režim na systéme Mac OS X 10.7 a novšom."
+#~ "Štandardne používa program VLC režim zobrazenia na celú obrazovku "
+#~ "pochádzajúci z minulých vydaní systému Mac OS X. Takisto sa dá použiť "
+#~ "natívny režim zobrazenia na celú obrazovku, využívaný v systéme Mac OS X "
+#~ "10.7 a novších."
 
 #, fuzzy
 #~ msgid "Clear Menu"
@@ -34960,7 +34986,7 @@ msgstr "Zoznam správcov médií"
 
 #, fuzzy
 #~ msgid "Full Screen"
-#~ msgstr "Celoobrazovkový režim"
+#~ msgstr "Zobrazovanie na celú obrazovku"
 
 #, fuzzy
 #~ msgid "Easy Stream"
@@ -34984,7 +35010,7 @@ msgstr "Zoznam správcov médií"
 
 #, fuzzy
 #~ msgid "Capture Screen"
-#~ msgstr "Režim snímania"
+#~ msgstr "Režim zaznamenávania"
 
 #, fuzzy
 #~ msgid "Close"
@@ -35133,7 +35159,8 @@ msgstr "Zoznam správcov médií"
 #~ "Hide mouse cursor and fullscreen controller after n milliseconds, default "
 #~ "is 3000 ms (3 sec.)"
 #~ msgstr ""
-#~ "Skryť kurzor myši a ovládač celoobrazovkového režimu po n milisekundách."
+#~ "Skryť kurzor myši a ovládač pri zobrazovaní na celú obrazovku po n "
+#~ "milisekundách."
 
 #, fuzzy
 #~ msgid "Video output filter module"
@@ -35165,7 +35192,7 @@ msgstr "Zoznam správcov médií"
 
 #, fuzzy
 #~ msgid "IPv6 will be used by default for all connections."
-#~ msgstr "Heslo používané pri spojení."
+#~ msgstr "Heslo používané pre pripojenie."
 
 #, fuzzy
 #~ msgid "Force IPv4"
@@ -35173,7 +35200,7 @@ msgstr "Zoznam správcov médií"
 
 #, fuzzy
 #~ msgid "IPv4 will be used by default for all connections."
-#~ msgstr "Heslo používané pri spojení."
+#~ msgstr "Heslo používané pre pripojenie."
 
 #, fuzzy
 #~ msgid "Enable CPU MMX support"
@@ -35301,7 +35328,7 @@ msgstr "Zoznam správcov médií"
 
 #, fuzzy
 #~ msgid "HTTP password"
-#~ msgstr "Heslo pre FTP server"
+#~ msgstr "Heslo pre FTP"
 
 #, fuzzy
 #~ msgid "Certificate file"
@@ -35536,7 +35563,7 @@ msgstr "Zoznam správcov médií"
 
 #, fuzzy
 #~ msgid "Set this option if the capture device outputs MJPEG"
-#~ msgstr "Zvoľte si typ snímacieho zariadenia"
+#~ msgstr "Zvoľte si typ zaznamenávacieho zariadenia"
 
 #, fuzzy
 #~ msgid "Decimation"
@@ -35557,27 +35584,27 @@ msgstr "Zoznam správcov médií"
 #, fuzzy
 #~ msgid "Brightness of the video input (if supported by the v4l2 driver)."
 #~ msgstr ""
-#~ "Ovládanie zachytávania videa (ak je táto funkcia podporovaná ovládačom)"
+#~ "Ovládanie zaznamenávania videa (ak je táto funkcia podporovaná ovládačom)"
 
 #, fuzzy
 #~ msgid "Contrast of the video input (if supported by the v4l2 driver)."
 #~ msgstr ""
-#~ "Ovládanie zachytávania videa (ak je táto funkcia podporovaná ovládačom)"
+#~ "Ovládanie zaznamenávania videa (ak je táto funkcia podporovaná ovládačom)"
 
 #, fuzzy
 #~ msgid "Saturation of the video input (if supported by the v4l2 driver)."
 #~ msgstr ""
-#~ "Ovládanie zachytávania videa (ak je táto funkcia podporovaná ovládačom)"
+#~ "Ovládanie zaznamenávania videa (ak je táto funkcia podporovaná ovládačom)"
 
 #, fuzzy
 #~ msgid "Hue of the video input (if supported by the v4l2 driver)."
 #~ msgstr ""
-#~ "Ovládanie zachytávania videa (ak je táto funkcia podporovaná ovládačom)"
+#~ "Ovládanie zaznamenávania videa (ak je táto funkcia podporovaná ovládačom)"
 
 #, fuzzy
 #~ msgid "Black level of the video input (if supported by the v4l2 driver)."
 #~ msgstr ""
-#~ "Ovládanie zachytávania videa (ak je táto funkcia podporovaná ovládačom)"
+#~ "Ovládanie zaznamenávania videa (ak je táto funkcia podporovaná ovládačom)"
 
 #, fuzzy
 #~ msgid "Do white balance"
@@ -35586,17 +35613,17 @@ msgstr "Zoznam správcov médií"
 #, fuzzy
 #~ msgid "Red balance of the video input (if supported by the v4l2 driver)."
 #~ msgstr ""
-#~ "Ovládanie zachytávania videa (ak je táto funkcia podporovaná ovládačom)"
+#~ "Ovládanie zaznamenávania videa (ak je táto funkcia podporovaná ovládačom)"
 
 #, fuzzy
 #~ msgid "Gamma of the video input (if supported by the v4l2 driver)."
 #~ msgstr ""
-#~ "Ovládanie zachytávania videa (ak je táto funkcia podporovaná ovládačom)"
+#~ "Ovládanie zaznamenávania videa (ak je táto funkcia podporovaná ovládačom)"
 
 #, fuzzy
 #~ msgid "Exposure of the video input (if supported by the v4L2 driver)."
 #~ msgstr ""
-#~ "Ovládanie zachytávania videa (ak je táto funkcia podporovaná ovládačom)"
+#~ "Ovládanie zaznamenávania videa (ak je táto funkcia podporovaná ovládačom)"
 
 #, fuzzy
 #~ msgid "Auto gain"
@@ -35611,12 +35638,12 @@ msgstr "Zoznam správcov médií"
 #, fuzzy
 #~ msgid "Flip the video horizontally (if supported by the v4l2 driver)."
 #~ msgstr ""
-#~ "Ovládanie zachytávania videa (ak je táto funkcia podporovaná ovládačom)"
+#~ "Ovládanie zaznamenávania videa (ak je táto funkcia podporovaná ovládačom)"
 
 #, fuzzy
 #~ msgid "Flip the video vertically (if supported by the v4l2 driver)."
 #~ msgstr ""
-#~ "Ovládanie zachytávania videa (ak je táto funkcia podporovaná ovládačom)"
+#~ "Ovládanie zaznamenávania videa (ak je táto funkcia podporovaná ovládačom)"
 
 #, fuzzy
 #~ msgid "Horizontal centering"
@@ -35630,12 +35657,12 @@ msgstr "Zoznam správcov médií"
 #~ msgid ""
 #~ "Set the camera's vertical centering (if supported by the v4l2 driver)."
 #~ msgstr ""
-#~ "Ovládanie zachytávania videa (ak je táto funkcia podporovaná ovládačom)"
+#~ "Ovládanie zaznamenávania videa (ak je táto funkcia podporovaná ovládačom)"
 
 #, fuzzy
 #~ msgid "Volume of the audio input (if supported by the v4l2 driver)."
 #~ msgstr ""
-#~ "Ovládanie zachytávania videa (ak je táto funkcia podporovaná ovládačom)"
+#~ "Ovládanie zaznamenávania videa (ak je táto funkcia podporovaná ovládačom)"
 
 #, fuzzy
 #~ msgid "Balance"
@@ -35644,22 +35671,22 @@ msgstr "Zoznam správcov médií"
 #, fuzzy
 #~ msgid "Balance of the audio input (if supported by the v4l2 driver)."
 #~ msgstr ""
-#~ "Ovládanie zachytávania videa (ak je táto funkcia podporovaná ovládačom)"
+#~ "Ovládanie zaznamenávania videa (ak je táto funkcia podporovaná ovládačom)"
 
 #, fuzzy
 #~ msgid "Mute audio input (if supported by the v4l2 driver)."
 #~ msgstr ""
-#~ "Ovládanie zachytávania videa (ak je táto funkcia podporovaná ovládačom)"
+#~ "Ovládanie zaznamenávania videa (ak je táto funkcia podporovaná ovládačom)"
 
 #, fuzzy
 #~ msgid "Bass level of the audio input (if supported by the v4l2 driver)."
 #~ msgstr ""
-#~ "Ovládanie zachytávania videa (ak je táto funkcia podporovaná ovládačom)"
+#~ "Ovládanie zaznamenávania videa (ak je táto funkcia podporovaná ovládačom)"
 
 #, fuzzy
 #~ msgid "Loudness of the audio input (if supported by the v4l2 driver)."
 #~ msgstr ""
-#~ "Ovládanie zachytávania videa (ak je táto funkcia podporovaná ovládačom)"
+#~ "Ovládanie zaznamenávania videa (ak je táto funkcia podporovaná ovládačom)"
 
 #, fuzzy
 #~ msgid ""
@@ -35671,7 +35698,7 @@ msgstr "Zoznam správcov médií"
 #, fuzzy
 #~ msgid "v4l2 driver controls, if supported by your v4l2 driver."
 #~ msgstr ""
-#~ "Ovládanie zachytávania videa (ak je táto funkcia podporovaná ovládačom)"
+#~ "Ovládanie zaznamenávania videa (ak je táto funkcia podporovaná ovládačom)"
 
 #, fuzzy
 #~ msgid "Caching value for VCDs. This value should be set in milliseconds."
@@ -35969,7 +35996,7 @@ msgstr "Zoznam správcov médií"
 
 #, fuzzy
 #~ msgid "On Screen Display/Subtitle Settings not saved"
-#~ msgstr "Nastavenia titulkov & OSD"
+#~ msgstr "Titulky & Nastavenia OSD"
 
 #, fuzzy
 #~ msgid "Hotkeys not saved"
@@ -36288,7 +36315,7 @@ msgstr "Zoznam správcov médií"
 
 #, fuzzy
 #~ msgid "Advanced video filter controls"
-#~ msgstr "Po&kročilé ovládače"
+#~ msgstr "Pokročilé ovlád&ače"
 
 #, fuzzy
 #~ msgid "Automate picture coding mode"
