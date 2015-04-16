@@ -1,6 +1,9 @@
 vlc (2.2.1-1) UNRELEASED; urgency=medium
 
   * New upstream release.
+  * debian/patches:
+    - Remove codec-schroedinger-fix-potential-buffer-overflow.patch
+    -- included upstream.
 
  -- Mateusz Łukasik <mati75@linuxmint.pl>  Thu, 16 Apr 2015 19:37:11 +0200
 
