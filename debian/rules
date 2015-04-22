@@ -63,7 +63,6 @@ confflags += \
 	--enable-fribidi \
 	--enable-gles1 \
 	--enable-gles2 \
-	--enable-glx \
 	--enable-gnutls \
 	--enable-jack \
 	--enable-kate \
@@ -92,7 +91,6 @@ confflags += \
 	--enable-shine \
 	--enable-shout \
 	--enable-skins2 \
-	--enable-smbclient \
 	--enable-speex \
 	--enable-svg \
 	--enable-taglib \
@@ -185,10 +183,10 @@ endif
 
 # Linux and kFreeBSD specific flags (disabled on Hurd)
 ifeq (,$(filter-out linux kfreebsd,$(DEB_HOST_ARCH_OS)))
-confflags += --enable-libva --enable-vcd
+confflags += --enable-libva --enable-vcd --enable-smbclient
 else
-confflags += --disable-libva --disable-vcd
-removeplugins += cdda libvaapi vcd
+confflags += --disable-libva --disable-vcd --disable-smbclient
+removeplugins += cdda libvaapi smbclient vcd
 endif
 
 # kFreeBSD specific flags
@@ -238,15 +236,6 @@ ifeq (,$(filter-out powerpcspe,$(DEB_HOST_ARCH)))
 CFLAGS += -mtune=8548
 CXXFLAGS += -mtune=8548
 endif
-
-# Disable samba on hurd
-ifneq (,$(filter-out $(DEB_HOST_ARCH),hurd-i386))
-confflags += --enable-smbclient
-else
-confflags += --disable-smbclient
-removeplugins += smbclient
-endif
-
 
 confflags += \
 	CFLAGS="$(CFLAGS)" \

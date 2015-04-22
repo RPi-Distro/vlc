@@ -2,7 +2,7 @@
  * demux.c :  Lua playlist demux module
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: eac4f249edce222cf5aa51a9b438b2d3373671cb $
+ * $Id: 13ccf61673429aca2499ec610b4af30117fab495 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -163,7 +163,7 @@ static int probe_luascript( vlc_object_t *p_this, const char * psz_filename,
     }
 
     /* Load and run the script(s) */
-    if( luaL_dofile( L, psz_filename ) )
+    if( vlclua_dofile( VLC_OBJECT(p_demux), L, psz_filename ) )
     {
         msg_Warn( p_demux, "Error loading script %s: %s", psz_filename,
                   lua_tostring( L, lua_gettop( L ) ) );

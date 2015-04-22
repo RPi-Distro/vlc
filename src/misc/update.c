@@ -2,7 +2,7 @@
  * update.c: VLC update checking and downloading
  *****************************************************************************
  * Copyright © 2005-2008 VLC authors and VideoLAN
- * $Id: b00eb27bbf79dc78e922472aa6812e329659c9d7 $
+ * $Id: e1257b7d8230e215886e00fa4c462ffead12fa45 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *          Rémi Duraffort <ivoire at via.ecp.fr>
@@ -193,6 +193,13 @@ static bool GetUpdateFile( update_t *p_update )
     }
 
     const int64_t i_read = stream_Size( p_stream );
+
+    if( i_read < 0 || i_read >= UINT16_MAX)
+    {
+        msg_Err(p_update->p_libvlc, "Status file too large");
+        goto error;
+    }
+
     psz_update_data = malloc( i_read + 1 ); /* terminating '\0' */
     if( !psz_update_data )
         goto error;

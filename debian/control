@@ -118,7 +118,7 @@ Build-Depends: autopoint,
 Standards-Version: 3.9.6
 Homepage: http://www.videolan.org/vlc/
 Vcs-Git: git://anonscm.debian.org/pkg-multimedia/vlc.git
-Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-multimedia/vlc.git
+Vcs-Browser: https://anonscm.debian.org/cgit/pkg-multimedia/vlc.git
 
 Package: libvlc-dev
 Section: libdevel
@@ -135,7 +135,7 @@ Description: development files for libvlc
 Package: libvlc5
 Section: libs
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}, libvlccore8 (= ${binary:Version})
 Description: multimedia player and streamer library
  This package contains the shared library required by applications using VLC
  features.

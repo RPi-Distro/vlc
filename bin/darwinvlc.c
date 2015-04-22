@@ -2,7 +2,7 @@
  * darwinvlc.c: the darwin-specific VLC player
  *****************************************************************************
  * Copyright (C) 1998-2013 the VideoLAN team
- * $Id: 0a35dc58914f17960d2f4db113921aade7276fd6 $
+ * $Id: 1841acad0fc8b776a3af949d3a820af1719bc65b $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -150,12 +150,11 @@ int main( int i_argc, const char *ppsz_argv[] )
     /* Block all these signals */
     pthread_sigmask (SIG_SETMASK, &set, NULL);
 
-    const char *argv[i_argc + 3];
+    const char *argv[i_argc + 2];
     int argc = 0;
 
     argv[argc++] = "--no-ignore-config";
     argv[argc++] = "--media-library";
-    argv[argc++] = "--stats";
 
     /* overwrite system language on Mac */
 #if !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR // TARGET_OS_MAC is unspecific
@@ -222,10 +221,9 @@ int main( int i_argc, const char *ppsz_argv[] )
     libvlc_set_app_id (vlc, "org.VideoLAN.VLC", PACKAGE_VERSION, PACKAGE_NAME);
     libvlc_set_user_agent (vlc, "VLC media player", "VLC/"PACKAGE_VERSION);
 
-    libvlc_playlist_play (vlc, -1, 0, NULL);
-
     libvlc_add_intf (vlc, "hotkeys,none");
 
+    libvlc_playlist_play (vlc, -1, 0, NULL);
     if (libvlc_add_intf (vlc, NULL))
         goto out;
 

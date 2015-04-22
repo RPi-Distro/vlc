@@ -2,7 +2,7 @@
  * auhal.c: AUHAL and Coreaudio output plugin
  *****************************************************************************
  * Copyright (C) 2005 - 2014 VLC authors and VideoLAN
- * $Id: 9bdd4fd6d835e78390eb200a4b48d5a48ddc11af $
+ * $Id: 10459f06c4940d210ec622bb256e9b061c139ea4 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -635,6 +635,7 @@ static int StartAnalog(audio_output_t *p_aout, audio_sample_format_t *fmt)
         msg_Warn(p_aout, "device driver does not support kAudioDevicePropertyPreferredChannelLayout - using stereo fallback [%4.4s]", (char *)&err);
         fmt->i_physical_channels = AOUT_CHANS_STEREO;
     }
+    fmt->i_original_channels = fmt->i_physical_channels;
 
     msg_Dbg(p_aout, "selected %d physical channels for device output", aout_FormatNbChannels(fmt));
     msg_Dbg(p_aout, "VLC will output: %s", aout_FormatPrintChannels(fmt));

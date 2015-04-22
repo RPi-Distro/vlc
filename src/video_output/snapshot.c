@@ -2,7 +2,7 @@
  * snapshot.c : vout internal snapshot
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: c8096ef60930bbf20670c68bf19b77be9e936c9c $
+ * $Id: 7b89803740174cb81ad09718d4a7f997d37a6f18 $
  *
  * Authors: Gildas Bazin <gbazin _AT_ videolan _DOT_ org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -190,9 +190,9 @@ int vout_snapshot_SaveImage(char **name, int *sequential,
                          &curtime) == 0)
                 strcpy(buffer, "error");
 
-            if (asprintf(&filename, "%s" DIR_SEP "%s%s%03lu.%s",
-                         cfg->path, prefix, buffer, tv.tv_usec / 1000,
-                         cfg->format) < 0)
+            if (asprintf(&filename, "%s" DIR_SEP "%s%s%03u.%s",
+                         cfg->path, prefix, buffer,
+                         (unsigned)tv.tv_usec / 1000, cfg->format) < 0)
                 filename = NULL;
         }
         free(prefix);

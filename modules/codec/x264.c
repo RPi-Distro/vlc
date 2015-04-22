@@ -2,7 +2,7 @@
  * x264.c: h264 video encoder
  *****************************************************************************
  * Copyright (C) 2004-2010 the VideoLAN team
- * $Id: b7778c18f9b3d159ff30c4a3f1edf5eae8b98e6a $
+ * $Id: be5d0006deaba92a6532fa2cfdbd75ccd5f04cf4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Ilkka Ollakka <ileoo (at)videolan org>
@@ -1150,8 +1150,8 @@ static int  Open ( vlc_object_t *p_this )
        {
            p_sys->param.analyse.i_me_method = X264_ME_TESA;
        }
-       free( psz_val );
     }
+    free( psz_val );
 
     i_val = var_GetInteger( p_enc, SOUT_CFG_PREFIX "merange" );
     if( i_val >= 0 && i_val <= 64 && i_val != 16 )

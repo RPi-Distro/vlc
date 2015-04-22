@@ -2,7 +2,7 @@
  * Windows.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012-2014 VLC authors and VideoLAN
- * $Id: 48b1d82f6ebe73a4c76b231cd8ee8ceb07a75b11 $
+ * $Id: 331da6158e814dd141d4403357b7d5ef340d594b $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -720,12 +720,13 @@
 
 - (void)windowWillEnterFullScreen:(NSNotification *)notification
 {
-    i_originalLevel = [self level];
     b_windowShouldExitFullscreenWhenFinished = [[VLCMain sharedInstance] activeVideoPlayback];
 
+    NSInteger i_currLevel = [self level];
     // b_fullscreen and b_in_fullscreen_transition must not be true yet
     [[[VLCMain sharedInstance] voutController] updateWindowLevelForHelperWindows: NSNormalWindowLevel];
     [self setLevel:NSNormalWindowLevel];
+    i_originalLevel = i_currLevel;
 
     b_in_fullscreen_transition = YES;
 
@@ -877,10 +878,11 @@
         [screen blackoutOtherScreens];
 
     /* Make sure we don't see the window flashes in float-on-top mode */
-    i_originalLevel = [self level];
+    NSInteger i_currLevel = [self level];
     // b_fullscreen must not be true yet
     [[[VLCMain sharedInstance] voutController] updateWindowLevelForHelperWindows: NSNormalWindowLevel];
     [self setLevel:NSNormalWindowLevel];
+    i_originalLevel = i_currLevel; // would be overwritten by previous call
 
     /* Only create the o_fullscreen_window if we are not in the middle of the zooming animation */
     if (!o_fullscreen_window) {

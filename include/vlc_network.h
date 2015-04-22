@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2005 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: d1c63b1e76dbf462062cb6c1a36b2c8c7fd4427a $
+ * $Id: 70281a229d0acf031b71e0d22ac0a08be0712c68 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -238,18 +238,6 @@ VLC_API ssize_t net_vaPrintf( vlc_object_t *p_this, int fd, const v_socket_t *, 
 #  define NI_NAMEREQD    0x08
 #  define NI_DGRAM       0x10
 # endif
-
-struct addrinfo
-{
-    int ai_flags;
-    int ai_family;
-    int ai_socktype;
-    int ai_protocol;
-    size_t ai_addrlen;
-    struct sockaddr *ai_addr;
-    char *ai_canonname;
-    struct addrinfo *ai_next;
-};
 
 # define AI_PASSIVE     1
 # define AI_CANONNAME   2

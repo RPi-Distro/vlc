@@ -2,7 +2,7 @@
  * transcode.c: transcoding stream output module
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: e925e80e3fa0e0bf0dc2104caacdf38696411f33 $
+ * $Id: 4bd72c28c92bef94845dbb3b401d1fb0fd1e5d3d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -341,7 +341,7 @@ static int Open( vlc_object_t *p_this )
 
     p_sys->f_scale = var_GetFloat( p_stream, SOUT_CFG_PREFIX "scale" );
 
-    p_sys->b_master_sync = var_InheritURational( p_stream, &p_sys->fps_num, &p_sys->fps_den, SOUT_CFG_PREFIX "fps" );
+    p_sys->b_master_sync = var_InheritURational( p_stream, &p_sys->fps_num, &p_sys->fps_den, SOUT_CFG_PREFIX "fps" ) == VLC_SUCCESS;
 
     p_sys->i_width = var_GetInteger( p_stream, SOUT_CFG_PREFIX "width" );
 

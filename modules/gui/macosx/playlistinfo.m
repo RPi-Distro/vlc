@@ -2,7 +2,7 @@
  r playlistinfo.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: bbf00ba752110720bbe4d03381751ed434ae571c $
+ * $Id: 9ec4cf5cebb49edae7eee60275f605fdf24de08f $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -177,6 +177,14 @@ static VLCInfo *_o_sharedInstance = nil;
     [o_played_abuffers_txt setIntValue: 0];
     [o_lost_abuffers_txt setIntValue: 0];
 
+}
+
+- (void)updateMetadata
+{
+    if (!p_item)
+        return;
+
+    [self updatePanelWithItem:p_item];
 }
 
 - (void)updatePanelWithItem:(input_item_t *)_p_item;

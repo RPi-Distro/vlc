@@ -247,6 +247,7 @@ audio_output_t *aout_New (vlc_object_t *parent)
         text.psz_string = (char *)"Goom";
         var_Change (aout, "visual", VLC_VAR_ADDCHOICE, &val, &text);
     }
+#ifndef _WIN32
     /* Look for libprojectM plugin */
     if (module_exists ("projectm"))
     {
@@ -268,6 +269,7 @@ audio_output_t *aout_New (vlc_object_t *parent)
         text.psz_string = (char*)"3D spectrum";
         var_Change (aout, "visual", VLC_VAR_ADDCHOICE, &val, &text);
     }
+#endif
     str = var_GetNonEmptyString (aout, "effect-list");
     if (str != NULL)
     {

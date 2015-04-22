@@ -2,7 +2,7 @@
  * sftp.c: SFTP input module
  *****************************************************************************
  * Copyright (C) 2009 VLC authors and VideoLAN
- * $Id: 4152d2a3058c95ab5ffe1eeabe3cbfec6fb94dea $
+ * $Id: b4577ac939a5b53180eac92afc80a7e8ec56533f $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *
@@ -107,6 +107,7 @@ static int Open( vlc_object_t* p_this )
         return VLC_EGENERIC;
 
     STANDARD_BLOCK_ACCESS_INIT;
+    p_sys->i_socket = -1;
 
     /* Parse the URL */
     const char* path = p_access->psz_location;
@@ -143,6 +144,11 @@ static int Open( vlc_object_t* p_this )
 
     /* Connect to the server using a regular socket */
     p_sys->i_socket = net_Connect( p_access, url.psz_host, i_port, SOCK_STREAM, 0 );
+    if( p_sys->i_socket < 0 )
+    {
+        msg_Err( p_access, "Impossible to open the connection to %s:%i", url.psz_host, i_port );
+        goto error;
+    }
 
     /* Create the ssh connexion and wait until the server answer */
     if( ( p_sys->ssh_session = libssh2_session_init() ) == NULL )
@@ -244,11 +250,14 @@ static int Open( vlc_object_t* p_this )
     return VLC_SUCCESS;
 
 error:
+    if( p_sys->file )
+        libssh2_sftp_close_handle( p_sys->file );
     if( p_sys->ssh_session )
         libssh2_session_free( p_sys->ssh_session );
     free( psz_password );
     free( psz_username );
     vlc_UrlClean( &url );
+    net_Close( p_sys->i_socket );
     free( p_sys );
     return VLC_EGENERIC;
 }
@@ -264,6 +273,7 @@ static void Close( vlc_object_t* p_this )
     libssh2_sftp_shutdown( p_sys->sftp_session );
 
     libssh2_session_free( p_sys->ssh_session );
+    net_Close( p_sys->i_socket );
     free( p_sys );
 }
 
@@ -299,6 +309,7 @@ static block_t* Block( access_t* p_access )
     }
     else
     {
+        p_block->i_buffer = i_ret;
         p_access->info.i_pos += i_ret;
         return p_block;
     }

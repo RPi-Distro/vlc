@@ -9,6 +9,14 @@ SOURCES_packetizer_dirac = dirac.c
 SOURCES_packetizer_flac = flac.c
 SOURCES_packetizer_hevc = hevc.c
 
+libpacketizer_avparser_plugin_la_SOURCES = avparser.c avparser.h \
+                              ../codec/avcodec/avcommon.h \
+                              ../codec/avcodec/avcodec.h \
+                              ../codec/avcodec/fourcc.c
+
+libpacketizer_avparser_plugin_la_CFLAGS = $(AVCODEC_CFLAGS) $(AVUTIL_CFLAGS) $(AM_CFLAGS)
+libpacketizer_avparser_plugin_la_LIBADD = $(AVCODEC_LIBS) $(AVUTIL_LIBS) $(LIBM)
+
 noinst_HEADERS = packetizer_helper.h
 
 packetizer_LTLIBRARIES += \
@@ -24,4 +32,9 @@ packetizer_LTLIBRARIES += \
 	$(NULL)
 if ENABLE_SOUT
 packetizer_LTLIBRARIES += libpacketizer_copy_plugin.la
+endif
+if HAVE_AVCODEC
+if !MERGE_FFMPEG
+packetizer_LTLIBRARIES += libpacketizer_avparser_plugin.la
+endif
 endif

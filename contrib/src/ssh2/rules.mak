@@ -18,12 +18,14 @@ $(TARBALLS)/libssh2-$(LIBSSH2_VERSION).tar.gz:
 ssh2: libssh2-$(LIBSSH2_VERSION).tar.gz .sum-ssh2
 	$(UNPACK)
 	$(APPLY) $(SRC)/ssh2/no-tests.patch
+	$(APPLY) $(SRC)/ssh2/configure-zlib.patch
+	$(APPLY) $(SRC)/ssh2/gpg-error-pc.patch
 	$(MOVE)
 
 DEPS_ssh2 = gcrypt $(DEPS_gcrypt)
 
 .ssh2: ssh2
 	$(RECONF)
-	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) --disable-examples-build
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) --disable-examples-build --with-libgcrypt --without-openssl
 	cd $< && $(MAKE) install
 	touch $@

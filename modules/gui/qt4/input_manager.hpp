@@ -2,7 +2,7 @@
  * input_manager.hpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 60719b88a34cd050380bcb2bb08511432bf1f02f $
+ * $Id: b69b6f930b13712b282f6a1a18374c127b8730f0 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste <jb@videolan.org>
@@ -154,6 +154,7 @@ private:
     input_item_t   *p_item;
     int             i_old_playing_status;
     QString         oldName;
+    QString         lastURI;
     QString         artUrl;
     float           f_rate;
     float           f_cache;
@@ -223,8 +224,8 @@ signals:
     void titleChanged( bool );
     void chapterChanged( bool );
     void inputCanSeek( bool );
-    /// You can continuePlayback
-    void continuePlayback( int64_t );
+    /// You can resume playback
+    void resumePlayback( int64_t );
     /// Statistics are updated
     void statisticsUpdated( input_item_t* );
     void infoChanged( input_item_t* );

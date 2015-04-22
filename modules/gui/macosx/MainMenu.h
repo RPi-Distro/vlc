@@ -2,7 +2,7 @@
  * MainMenu.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2013 Felix Paul Kühne
- * $Id: 7e126f01523bb5cd516092cc2450275e9983b0a1 $
+ * $Id: 72c8d29fb7849411ae28531ad0c0fe534506e65b $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -74,6 +74,7 @@
     IBOutlet NSMenuItem * o_mi_open_wizard;
     IBOutlet NSMenuItem * o_mi_convertandsave;
     IBOutlet NSMenuItem * o_mi_save_playlist;
+    IBOutlet NSMenuItem * o_mi_revealInFinder;
 
     IBOutlet NSMenu * o_mu_edit;
     IBOutlet NSMenuItem * o_mi_cut;
@@ -98,7 +99,6 @@
     IBOutlet NSMenuItem * o_mi_rate;
     IBOutlet NSView * o_mi_rate_view;
     IBOutlet id o_mi_rate_lbl;
-    IBOutlet id o_mi_rate_lbl_gray;
     IBOutlet id o_mi_rate_slower_lbl;
     IBOutlet id o_mi_rate_normal_lbl;
     IBOutlet id o_mi_rate_faster_lbl;
@@ -247,6 +247,8 @@
 - (IBAction)intfOpenNet:(id)sender;
 - (IBAction)intfOpenCapture:(id)sender;
 - (IBAction)savePlaylist:(id)sender;
+- (IBAction)revealItemInFinder:(id)sender;
+- (void)setCanRevealInFinder:(BOOL)b_value;
 
 - (IBAction)toggleEffectsButton:(id)sender;
 - (IBAction)toggleJumpButtons:(id)sender;

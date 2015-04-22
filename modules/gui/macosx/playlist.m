@@ -2,7 +2,7 @@
  * playlist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2014 VLC authors and VideoLAN
- * $Id: 38643c46482d24c60368d05e831252af1ef6c078 $
+ * $Id: a59298b9c23de6c8487fd6ad928129d3806460c4 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>
@@ -587,8 +587,6 @@
     [o_mi_dl_cover_art setTitle: _NS("Download Cover Art")];
     [o_mi_preparse setTitle: _NS("Fetch Meta Data")];
     [o_mi_revealInFinder setTitle: _NS("Reveal in Finder")];
-    [o_mm_mi_revealInFinder setTitle: _NS("Reveal in Finder")];
-    [[o_mm_mi_revealInFinder menu] setAutoenablesItems: NO];
     [o_mi_sort_name setTitle: _NS("Sort Node by Name")];
     [o_mi_sort_author setTitle: _NS("Sort Node by Author")];
 
@@ -626,7 +624,7 @@
         char *psz_uri = input_item_GetURI(p_item->p_input);
 
         [o_mi_revealInFinder setEnabled: NO];
-        [o_mm_mi_revealInFinder setEnabled: NO];
+        [[[VLCMain sharedInstance] mainMenu] setCanRevealInFinder: NO];
         if (psz_uri) {
             o_mrl = [NSMutableString stringWithUTF8String: psz_uri];
 
@@ -637,7 +635,7 @@
 
             if ([o_mrl characterAtIndex:0] == '/') {
                 [o_mi_revealInFinder setEnabled: YES];
-                [o_mm_mi_revealInFinder setEnabled: YES];
+                [[[VLCMain sharedInstance] mainMenu] setCanRevealInFinder: YES];
             }
             free(psz_uri);
         }
@@ -1327,6 +1325,7 @@
     [o_mi_recursive_expand setEnabled: b_item_sel];
     [o_mi_sort_name setEnabled: b_item_sel];
     [o_mi_sort_author setEnabled: b_item_sel];
+    [o_mi_dl_cover_art setEnabled: b_item_sel];
 
     return o_ctx_menu;
 }
@@ -1506,56 +1505,88 @@
     return YES;
 }
 
+- (void)updateAlertWindow:(NSTimer *)timer
+{
+    NSAlert *alert = [timer userInfo];
+
+    --currentResumeTimeout;
+    if (currentResumeTimeout <= 0) {
+        [[alert window] close];
+        [NSApp abortModal];
+    }
+
+    NSString *buttonLabel = _NS("Restart playback");
+    buttonLabel = [buttonLabel stringByAppendingFormat:@" (%d)", currentResumeTimeout];
+
+    [[[alert buttons] objectAtIndex:2] setTitle:buttonLabel];
+}
+
 - (void)continuePlaybackWhereYouLeftOff:(input_thread_t *)p_input_thread
 {
     NSDictionary *recentlyPlayedFiles = [[NSUserDefaults standardUserDefaults] objectForKey:@"recentlyPlayedMedia"];
-    if (recentlyPlayedFiles) {
-        input_item_t *p_item = input_GetItem(p_input_thread);
-        if (!p_item)
-            return;
+    if (!recentlyPlayedFiles)
+        return;
 
-        /* allow the user to over-write the start/stop/run-time */
-        if (var_GetFloat(p_input_thread, "run-time") > 0 ||
-            var_GetFloat(p_input_thread, "start-time") > 0 ||
-            var_GetFloat(p_input_thread, "stop-time") > 0) {
-            return;
-        }
+    input_item_t *p_item = input_GetItem(p_input_thread);
+    if (!p_item)
+        return;
 
-        /* check for file existance before resuming */
-        if (![self isValidResumeItem:p_item])
-            return;
-
-        char *psz_url = decode_URI(input_item_GetURI(p_item));
-        if (!psz_url)
-            return;
-        NSString *url = toNSStr(psz_url);
-        free(psz_url);
-
-        NSNumber *lastPosition = [recentlyPlayedFiles objectForKey:url];
-        if (lastPosition && lastPosition.intValue > 0) {
-
-            int settingValue = config_GetInt(VLCIntf, "macosx-continue-playback");
-            NSInteger returnValue = NSAlertErrorReturn;
-
-            if (settingValue == 0) {
-                NSAlert *theAlert = [NSAlert alertWithMessageText:_NS("Continue playback?") defaultButton:_NS("Continue") alternateButton:_NS("Restart playback") otherButton:_NS("Always continue") informativeTextWithFormat:_NS("Playback of \"%@\" will continue at %@"), [NSString stringWithUTF8String:input_item_GetTitleFbName(p_item)], [[VLCStringUtility sharedInstance] stringForTime:lastPosition.intValue]];
-
-                [[VLCCoreInteraction sharedInstance] pause];
-                returnValue = [theAlert runModal];
-                [[VLCCoreInteraction sharedInstance] playOrPause];
-            }
-
-            if (returnValue == NSAlertAlternateReturn || settingValue == 2)
-                lastPosition = [NSNumber numberWithInt:0];
-
-            mtime_t lastPos = (mtime_t)lastPosition.intValue * 1000000;
-            msg_Dbg(VLCIntf, "continuing playback at %lld", lastPos);
-            var_SetTime(p_input_thread, "time", lastPos);
-
-            if (returnValue == NSAlertOtherReturn)
-                config_PutInt(VLCIntf, "macosx-continue-playback", 1);
-        }
+    /* allow the user to over-write the start/stop/run-time */
+    if (var_GetFloat(p_input_thread, "run-time") > 0 ||
+        var_GetFloat(p_input_thread, "start-time") > 0 ||
+        var_GetFloat(p_input_thread, "stop-time") > 0) {
+        return;
     }
+
+    /* check for file existance before resuming */
+    if (![self isValidResumeItem:p_item])
+        return;
+
+    char *psz_url = decode_URI(input_item_GetURI(p_item));
+    if (!psz_url)
+        return;
+    NSString *url = toNSStr(psz_url);
+    free(psz_url);
+
+    NSNumber *lastPosition = [recentlyPlayedFiles objectForKey:url];
+    if (!lastPosition || lastPosition.intValue <= 0)
+        return;
+
+    int settingValue = config_GetInt(VLCIntf, "macosx-continue-playback");
+    if (settingValue == 2) // never resume
+        return;
+
+    NSInteger returnValue = NSAlertErrorReturn;
+    if (settingValue == 0) { // ask
+
+        currentResumeTimeout = 6;
+        NSString *o_restartButtonLabel = _NS("Restart playback");
+        o_restartButtonLabel = [o_restartButtonLabel stringByAppendingFormat:@" (%d)", currentResumeTimeout];
+        NSAlert *theAlert = [NSAlert alertWithMessageText:_NS("Continue playback?") defaultButton:_NS("Continue") alternateButton:o_restartButtonLabel otherButton:_NS("Always continue") informativeTextWithFormat:_NS("Playback of \"%@\" will continue at %@"), [NSString stringWithUTF8String:input_item_GetTitleFbName(p_item)], [[VLCStringUtility sharedInstance] stringForTime:lastPosition.intValue]];
+
+        NSTimer *timer = [NSTimer timerWithTimeInterval:1
+                                                 target:self
+                                               selector:@selector(updateAlertWindow:)
+                                               userInfo:theAlert
+                                                repeats:YES];
+
+        [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSModalPanelRunLoopMode];
+
+        returnValue = [theAlert runModal];
+        [timer invalidate];
+
+        // restart button was pressed or timeout happened
+        if (returnValue == NSAlertAlternateReturn ||
+            returnValue == NSRunAbortedResponse)
+            return;
+    }
+
+    mtime_t lastPos = (mtime_t)lastPosition.intValue * 1000000;
+    msg_Dbg(VLCIntf, "continuing playback at %lld", lastPos);
+    var_SetTime(p_input_thread, "time", lastPos);
+
+    if (returnValue == NSAlertOtherReturn)
+        config_PutInt(VLCIntf, "macosx-continue-playback", 1);
 }
 
 - (void)storePlaybackPositionForItem:(input_thread_t *)p_input_thread

@@ -44,7 +44,7 @@ fi
 }
 
 check() {
-if ! $1 --version >/dev/null 2>&1
+if ! $1 --version >/dev/null 2>&1 && ! $1 -version >/dev/null 2>&1
 then
     echo "$1 not found"
     NEEDED="$NEEDED .$1"
@@ -80,6 +80,7 @@ check yasm
 check_tar
 check ragel
 check_sed
+check xz
 
 [ -n "$NEEDED" ] && mkdir -p build/
 

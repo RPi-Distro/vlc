@@ -2,7 +2,7 @@
  * faad.c: AAC decoder using libfaad2
  *****************************************************************************
  * Copyright (C) 2001, 2003 VLC authors and VideoLAN
- * $Id: 9aaaed63e9977324bdccdbe1d6588f5a90e9637f $
+ * $Id: 99a9bbd8b6c6ce8dca06c436268bdaf6ce87e02d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -183,6 +183,8 @@ static int Open( vlc_object_t *p_this )
 
     /* Set the faad config */
     cfg = faacDecGetCurrentConfiguration( p_sys->hfaad );
+    if( p_dec->fmt_in.audio.i_rate )
+        cfg->defSampleRate = p_dec->fmt_in.audio.i_rate;
     cfg->outputFormat = HAVE_FPU ? FAAD_FMT_FLOAT : FAAD_FMT_16BIT;
     faacDecSetConfiguration( p_sys->hfaad, cfg );
 
@@ -313,7 +315,7 @@ static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     }
 
     /* Decode all data */
-    if( p_sys->i_buffer )
+    if( p_sys->i_buffer > 1)
     {
         void *samples;
         faacDecFrameInfo frame;
@@ -395,10 +397,15 @@ static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
             /* Flush the buffer */
             p_sys->i_buffer -= frame.bytesconsumed;
-            if( p_sys->i_buffer > 0 )
+            if( p_sys->i_buffer > 1 )
             {
                 memmove( p_sys->p_buffer,&p_sys->p_buffer[frame.bytesconsumed],
                          p_sys->i_buffer );
+            }
+            else
+            {
+                /* Drop byte of padding */
+                p_sys->i_buffer = 0;
             }
             block_Release( p_block );
             return NULL;
@@ -491,22 +498,16 @@ static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         p_sys->i_buffer -= frame.bytesconsumed;
         if( p_sys->i_buffer > 0 )
         {
-            /* drop byte of raw AAC padding (if present) */
-            if ( frame.header_type == RAW &&
-                 p_sys->i_buffer == 1 &&
-                 p_sys->p_buffer[0] == 0x21 &&
-                 p_sys->p_buffer[frame.bytesconsumed] == 0 )
-            {
-                p_sys->i_buffer = 0;
-            }
-            else
-            {
-                memmove( p_sys->p_buffer, &p_sys->p_buffer[frame.bytesconsumed],
-                         p_sys->i_buffer );
-            }
+            memmove( p_sys->p_buffer, &p_sys->p_buffer[frame.bytesconsumed],
+                     p_sys->i_buffer );
         }
 
         return p_out;
+    }
+    else
+    {
+        /* Drop byte of padding */
+        p_sys->i_buffer = 0;
     }
 
     block_Release( p_block );

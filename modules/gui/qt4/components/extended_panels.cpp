@@ -2,7 +2,7 @@
  * extended_panels.cpp : Extended controls panels
  ****************************************************************************
  * Copyright (C) 2006-2013 the VideoLAN team
- * $Id: 4ee8eed31ed8626fa7feac855cfe2fd5a3197a53 $
+ * $Id: 00c0cdbd2438ede0dd920c56658e7d9d28bd150f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea .t videolan d@t org>
@@ -548,7 +548,7 @@ void ExtVideo::setWidgetValue( QObject *widget )
         else if( checkbox ) checkbox->setCheckState( val.i_int? Qt::Checked
                                                               : Qt::Unchecked );
         else if( spinbox )  spinbox->setValue( val.i_int );
-        else if( dial )     dial->setValue( ( 540-val.i_int )%360 );
+        else if( dial )     dial->setValue( (360 - val.i_int) % 360 );
         else if( lineedit )
         {
             char str[30];
@@ -563,7 +563,7 @@ void ExtVideo::setWidgetValue( QObject *widget )
     {
         if( slider ) slider->setValue( ( int )( val.f_float*( double )slider->tickInterval() ) ); /* hack alert! */
         else if( doublespinbox ) doublespinbox->setValue( val.f_float );
-        else if( dial ) dial->setValue( (540 - lroundf(val.f_float)) % 360 );
+        else if( dial ) dial->setValue( (360 - lroundf(val.f_float)) % 360 );
         else msg_Warn( p_intf, "Could not find the correct Float widget" );
     }
     else if( i_type == VLC_VAR_STRING )
@@ -682,8 +682,8 @@ void ExtVideo::updateFilterOptions()
     else if( spinbox ) i_int = spinbox->value();
     else if( doublespinbox ) f_float = doublespinbox->value();
     else if( dial ) {
-        i_int = (540 - dial->value()) % 360;
-        f_float = (540 - dial->value()) / 360.;
+        i_int = (360 - dial->value()) % 360;
+        f_float = i_int;
     }
     else if( lineedit ) {
         i_int = lineedit->text().toInt( NULL,16 );

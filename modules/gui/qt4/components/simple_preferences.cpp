@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 5cf8fc930674afea99e8a8b15962c7496ffc2d83 $
+ * $Id: 831ccdf463638076c0aabb671616a220d2caec5e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -58,8 +58,12 @@ static const char *const ppsz_language[] =
 {
     "auto",
     "en",
+    "an",
     "ar",
+    "ast",
     "bn",
+    "bn_IN",
+    "bs",
     "pt_BR",
     "en_GB",
     "el",
@@ -87,9 +91,12 @@ static const char *const ppsz_language[] =
     "id",
     "it",
     "ja",
+    "kn",
     "ko",
     "lt",
+    "lv",
     "mn",
+    "mr",
     "ms",
     "nb",
     "nn",
@@ -110,8 +117,10 @@ static const char *const ppsz_language[] =
     "sl",
     "ckb",
     "es",
+    "es_MX",
     "sv",
     "te",
+    "th",
     "tr",
     "uk",
     "vi",
@@ -123,8 +132,12 @@ static const char *const ppsz_language_text[] =
 {
     N_("Auto"),
     "American English",
+    "aragonés",
     "ﻉﺮﺒﻳ",
+    "asturianu",
     "বাংলা",
+    "বাংলা (ভারত)",
+    "bosanski",
     "Português Brasileiro",
     "British English",
     "Νέα Ελληνικά",
@@ -152,9 +165,12 @@ static const char *const ppsz_language_text[] =
     "Bahasa Indonesia",
     "Italiano",
     "日本語",
+    "ಕನ್ನಡ",
     "한국어",
     "lietuvių",
+    "latviešu valoda",
     "Монгол хэл",
+    "मराठी",
     "Melayu",
     "Bokmål",
     "Nynorsk",
@@ -175,8 +191,10 @@ static const char *const ppsz_language_text[] =
     "slovenščina",
     "کوردیی سۆرانی",
     "Español",
+    "Español mexicano",
     "Svenska",
     "తెలుగు",
+    "ภาษาไทย",
     "Türkçe",
     "украї́нська мо́ва",
     "tiếng Việt",
@@ -978,6 +996,11 @@ void SPrefsPanel::updateAudioOptions( int number)
     optionWidgets["spdifChB"]->setVisible( ( value == "alsa" || value == "oss" || value == "auhal" ||
                                            value == "directsound" || value == "waveout" ) );
 
+#ifdef _WIN32
+    // FIXME
+    if( value == "any" )
+        value = "directsound";
+#endif
     int volume = getDefaultAudioVolume(VLC_OBJECT(p_intf), qtu(value));
     bool save = true;
 
@@ -1220,48 +1243,54 @@ bool SPrefsPanel::addType( const char * psz_ext, QTreeWidgetItem* current,
     if( strstr( qvReg->ReadRegistryString( psz_ext, "", "" ), psz_VLC ) )
     {
         current->setCheckState( 0, Qt::Checked );
-        b_temp = false;
+        b_temp = true;
     }
     else
     {
         current->setCheckState( 0, Qt::Unchecked );
-        b_temp = true;
+        b_temp = false;
     }
     listAsso.append( current );
     return b_temp;
 }
 
-void SPrefsPanel::assoDialog()
-{
 #if !defined(__IApplicationAssociationRegistrationUI_INTERFACE_DEFINED__)
 #define __IApplicationAssociationRegistrationUI_INTERFACE_DEFINED__
     const GUID IID_IApplicationAssociationRegistrationUI = {0x1f76a169,0xf994,0x40ac, {0x8f,0xc8,0x09,0x59,0xe8,0x87,0x47,0x10}};
-    const GUID CLSID_ApplicationAssociationRegistrationUI = { 0x1968106d,0xf3b5,0x44cf,{0x89,0x0e,0x11,0x6f,0xcb,0x9e,0xce,0xf1}};
-#ifdef __cplusplus
+    extern const GUID CLSID_ApplicationAssociationRegistrationUI;
     interface IApplicationAssociationRegistrationUI : public IUnknown
     {
         virtual HRESULT STDMETHODCALLTYPE LaunchAdvancedAssociationUI(
                 LPCWSTR pszAppRegName) = 0;
     };
-#endif /* __cplusplus */
 #endif /* __IApplicationAssociationRegistrationUI_INTERFACE_DEFINED__ */
 
-    IApplicationAssociationRegistrationUI *p_appassoc;
-    CoInitializeEx( NULL, COINIT_MULTITHREADED );
-
-    if( S_OK == CoCreateInstance(CLSID_ApplicationAssociationRegistrationUI,
-                NULL, CLSCTX_INPROC_SERVER,
-                IID_IApplicationAssociationRegistrationUI,
-                (void **)&p_appassoc) )
+void SPrefsPanel::assoDialog()
+{
+    HRESULT hr;
+    hr = CoInitializeEx( NULL, COINIT_MULTITHREADED );
+    if( hr == RPC_E_CHANGED_MODE )
+        hr = CoInitializeEx( NULL, COINIT_APARTMENTTHREADED );
+    if( SUCCEEDED(hr) )
     {
-        if(S_OK == p_appassoc->LaunchAdvancedAssociationUI(L"VLC" ) )
+        void *p;
+
+        hr = CoCreateInstance(CLSID_ApplicationAssociationRegistrationUI,
+                              NULL, CLSCTX_INPROC_SERVER,
+                              IID_IApplicationAssociationRegistrationUI, &p);
+        if( SUCCEEDED(hr) )
         {
-            CoUninitialize();
-            return;
+            IApplicationAssociationRegistrationUI *p_regui =
+                (IApplicationAssociationRegistrationUI *)p;
+
+            hr = p_regui->LaunchAdvancedAssociationUI(L"VLC" );
+            p_regui->Release();
         }
+        CoUninitialize();
     }
 
-    CoUninitialize();
+    if( SUCCEEDED(hr) )
+        return;
 
     QDialog *d = new QDialog( this );
     d->setWindowTitle( qtr( "File associations" ) );
@@ -1292,33 +1321,45 @@ void SPrefsPanel::assoDialog()
 #define aTv( name ) i_temp += addType( name, currentItem, videoType, qvReg )
 #define aTo( name ) i_temp += addType( name, currentItem, otherType, qvReg )
 
-    aTa( ".a52" ); aTa( ".aac" ); aTa( ".ac3" ); aTa( ".dts" ); aTa( ".flac" );
-    aTa( ".m4a" ); aTa( ".m4p" ); aTa( ".mka" ); aTa( ".mod" ); aTa( ".mp1" );
-    aTa( ".mp2" ); aTa( ".mp3" ); aTa( ".oma" ); aTa( ".oga" ); aTa( ".opus" );
-    aTa( ".spx" ); aTa( ".tta" ); aTa( ".wav" ); aTa( ".wma" ); aTa( ".xm" );
+    aTa( ".3ga" ); aTa( ".669" ); aTa( ".a52" ); aTa( ".aac" ); aTa( ".ac3" );
+    aTa( ".adt" ); aTa( ".adts" ); aTa( ".aif" ); aTa( ".aifc" ); aTa( ".aiff" );
+    aTa( ".au" ); aTa( ".amr" ); aTa( ".aob" ); aTa( ".ape" ); aTa( ".caf" );
+    aTa( ".cda" ); aTa( ".dts" ); aTa( ".flac" ); aTa( ".it" ); aTa( ".m4a" );
+    aTa( ".m4p" ); aTa( ".mid" ); aTa( ".mka" ); aTa( ".mlp" ); aTa( ".mod" );
+    aTa( ".mp1" ); aTa( ".mp2" ); aTa( ".mp3" ); aTa( ".mpc" ); aTa( ".mpga" );
+    aTa( ".oga" ); aTa( ".oma" ); aTa( ".opus" ); aTa( ".qcp" ); aTa( ".ra" );
+    aTa( ".rmi" ); aTa( ".snd" ); aTa( ".s3m" ); aTa( ".spx" ); aTa( ".tta" );
+    aTa( ".voc" ); aTa( ".vqf" ); aTa( ".w64" ); aTa( ".wav" ); aTa( ".wma" );
+    aTa( ".wv" ); aTa( ".xa" ); aTa( ".xm" );
     audioType->setCheckState( 0, ( i_temp > 0 ) ?
                               ( ( i_temp == audioType->childCount() ) ?
                                Qt::Checked : Qt::PartiallyChecked )
                             : Qt::Unchecked );
 
     i_temp = 0;
-    aTv( ".asf" ); aTv( ".avi" ); aTv( ".divx" ); aTv( ".dv" ); aTv( ".flv" );
-    aTv( ".gxf" ); aTv( ".m1v" ); aTv( ".m2v" ); aTv( ".m2ts" ); aTv( ".m4v" );
-    aTv( ".mkv" ); aTv( ".mov" ); aTv( ".mp2" ); aTv( ".mp4" ); aTv( ".mpeg" );
-    aTv( ".mpeg1" ); aTv( ".mpeg2" ); aTv( ".mpeg4" ); aTv( ".mpg" );
-    aTv( ".mts" ); aTv( ".mtv" ); aTv( ".mxf" );
-    aTv( ".ogg" ); aTv( ".ogm" ); aTv( ".ogx" ); aTv( ".ogv" );  aTv( ".ts" );
-    aTv( ".vob" ); aTv( ".vro" ); aTv( ".wmv" );
+    aTv( ".3g2" ); aTv( ".3gp" ); aTv( ".3gp2" ); aTv( ".3gpp" ); aTv( ".amv" );
+    aTv( ".asf" ); aTv( ".avi" ); aTv( ".bik" ); aTv( ".divx" ); aTv( ".drc" );
+    aTv( ".dv" ); aTv( ".f4v" ); aTv( ".flv" ); aTv( ".gvi" ); aTv( ".gxf" );
+    aTv( ".m1v" ); aTv( ".m2t" ); aTv( ".m2v" ); aTv( ".m2ts" ); aTv( ".m4v" );
+    aTv( ".mkv" ); aTv( ".mov" ); aTv( ".mp2" ); aTv( ".mp2v" ); aTv( ".mp4" );
+    aTv( ".mp4v" ); aTv( ".mpa" ); aTv( ".mpe" ); aTv( ".mpeg" ); aTv( ".mpeg1" );
+    aTv( ".mpeg2" ); aTv( ".mpeg4" ); aTv( ".mpg" ); aTv( ".mpv2" ); aTv( ".mts" );
+    aTv( ".mtv" ); aTv( ".mxf" ); aTv( ".nsv" ); aTv( ".nuv" ); aTv( ".ogg" );
+    aTv( ".ogm" ); aTv( ".ogx" ); aTv( ".ogv" ); aTv( ".rec" ); aTv( ".rm" );
+    aTv( ".rmvb" ); aTv( ".rpl" ); aTv( ".thp" ); aTv( ".tod" ); aTv( ".ts" );
+    aTv( ".tts" ); aTv( ".vob" ); aTv( ".vro" ); aTv( ".webm" ); aTv( ".wmv" );
+    aTv( ".xesc" );
     videoType->setCheckState( 0, ( i_temp > 0 ) ?
-                              ( ( i_temp == audioType->childCount() ) ?
+                              ( ( i_temp == videoType->childCount() ) ?
                                Qt::Checked : Qt::PartiallyChecked )
                             : Qt::Unchecked );
 
     i_temp = 0;
-    aTo( ".asx" ); aTo( ".b4s" ); aTo( ".ifo" ); aTo( ".m3u" ); aTo( ".pls" );
-    aTo( ".sdp" ); aTo( ".vlc" ); aTo( ".xspf" );
+    aTo( ".asx" ); aTo( ".b4s" ); aTo( ".cue" ); aTo( ".ifo" ); aTo( ".m3u" );
+    aTo( ".m3u8" ); aTo( ".pls" ); aTo( ".ram" ); aTo( ".sdp" ); aTo( ".vlc" );
+    aTo( ".wvx" ); aTo( ".xspf" );
     otherType->setCheckState( 0, ( i_temp > 0 ) ?
-                              ( ( i_temp == audioType->childCount() ) ?
+                              ( ( i_temp == otherType->childCount() ) ?
                                Qt::Checked : Qt::PartiallyChecked )
                             : Qt::Unchecked );
 
@@ -1350,7 +1391,7 @@ void addAsso( QVLCRegistry *qvReg, const char *psz_ext )
     /* Save a backup if already assigned */
     char *psz_value = qvReg->ReadRegistryString( psz_ext, "", ""  );
 
-    if( !EMPTY_STR(psz_value) )
+    if( !EMPTY_STR(psz_value) && strcmp( qtu(s_path), psz_value ) )
         qvReg->WriteRegistryString( psz_ext, "VLC.backup", psz_value );
     free( psz_value );
 
@@ -1392,17 +1433,16 @@ void delAsso( QVLCRegistry *qvReg, const char *psz_ext )
         if( psz_value )
             qvReg->WriteRegistryString( psz_ext, "", psz_value );
 
-        qvReg->DeleteKey( psz_ext, "VLC.backup" );
+        qvReg->DeleteValue( psz_ext, "VLC.backup" );
     }
     free( psz_value );
 }
 
 void SPrefsPanel::saveAsso()
 {
-    QVLCRegistry * qvReg = NULL;
+    QVLCRegistry * qvReg = new QVLCRegistry( HKEY_CLASSES_ROOT );
     for( int i = 0; i < listAsso.size(); i ++ )
     {
-        qvReg  = new QVLCRegistry( HKEY_CLASSES_ROOT );
         if( listAsso[i]->checkState( 0 ) > 0 )
         {
             addAsso( qvReg, qtu( listAsso[i]->text( 0 ) ) );

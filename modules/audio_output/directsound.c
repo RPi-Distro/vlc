@@ -2,7 +2,7 @@
  * directsound.c: DirectSound audio output plugin for VLC
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 39ae95358f4cc930b57f935ad43c13d7763c09f7 $
+ * $Id: 88326d01869e066968049e3e028d20e640e4ac68 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -70,7 +70,7 @@ static const char *const speaker_list[] = { "Windows default", "Mono", "Stereo",
 vlc_module_begin ()
     set_description( N_("DirectX audio output") )
     set_shortname( "DirectX" )
-    set_capability( "audio output", 100 )
+    set_capability( "audio output", 200 )
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_AOUT )
     add_shortcut( "directx", "aout_directx" )
@@ -147,8 +147,10 @@ static HRESULT TimeGet( aout_stream_sys_t *sys, mtime_t *delay )
     mtime_t size;
 
     hr = IDirectSoundBuffer_GetStatus( sys->p_dsbuffer, &status );
-    if(hr != DS_OK || !(status & DSBSTATUS_PLAYING))
-        return 1;
+    if( hr != DS_OK )
+        return hr;
+    if( !(status & DSBSTATUS_PLAYING) )
+        return DSERR_INVALIDCALL ;
 
     hr = IDirectSoundBuffer_GetCurrentPosition( sys->p_dsbuffer, &read, NULL );
     if( hr != DS_OK )
@@ -159,7 +161,7 @@ static HRESULT TimeGet( aout_stream_sys_t *sys, mtime_t *delay )
     /* GetCurrentPosition cannot be trusted if the return doesn't change
      * Just return an error */
     if( size ==  0 )
-        return 1;
+        return DSERR_GENERIC ;
     else if( size < 0 )
       size += DS_BUF_SIZE;
 
@@ -633,6 +635,9 @@ static HRESULT Start( vlc_object_t *obj, aout_stream_sys_t *sys,
     }
     free( psz_speaker );
 
+    vlc_mutex_init(&sys->lock);
+    vlc_cond_init(&sys->cond);
+
     if( AOUT_FMT_SPDIF( fmt ) && var_InheritBool( obj, "spdif" ) )
     {
         hr = CreateDSBuffer( obj, sys, VLC_CODEC_SPDIFL,
@@ -769,8 +774,7 @@ static HRESULT Start( vlc_object_t *obj, aout_stream_sys_t *sys,
         }
     }
 
-    vlc_mutex_init(&sys->lock);
-    vlc_cond_init(&sys->cond);
+    fmt->i_original_channels = fmt->i_physical_channels;
 
     int ret = vlc_clone(&sys->eraser_thread, PlayedDataEraser, (void*) obj,
                         VLC_THREAD_PRIORITY_LOW);
