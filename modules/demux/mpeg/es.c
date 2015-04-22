@@ -2,7 +2,7 @@
  * es.c : Generic audio ES input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2008 VLC authors and VideoLAN
- * $Id: 5f10f692122e8da24967daa27772cf4a2d051641 $
+ * $Id: 819b89be9b54feb03ccee5c70dc72aa9f286699b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -612,7 +612,12 @@ static int GenericProbe( demux_t *p_demux, int64_t *pi_offset,
             for( int t = 0; t < 1 + !!b_wav; t++ )
             {
                 if( t == 1 )
+                {
+                    if(!i_samples)
+                        break;
                     i_size = i_samples * 2 * 2;
+                }
+
                 if( i_skip + i_check_size + i_size <= i_peek )
                 {
                     b_ok = pf_check( &p_peek[i_skip+i_size], NULL ) >= 0;

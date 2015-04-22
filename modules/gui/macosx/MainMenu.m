@@ -2,7 +2,7 @@
  * MainMenu.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2013 Felix Paul Kühne
- * $Id: 117bf4f239768bb5fbfe367efcaccba1d32ebe22 $
+ * $Id: 8dd02b8ee50b3a74f4c67643d98ae4a096a5eafe $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -138,12 +138,14 @@ static VLCMainMenu *_o_sharedInstance = nil;
         msg_Dbg(VLCIntf, "adapting interface since '%s' is a RTL language", [preferredLanguage UTF8String]);
         [o_mi_rate_fld setAlignment: NSLeftTextAlignment];
     }
+
+    [self setRateControlsEnabled:NO];
+
+    p_intf = VLCIntf;
 }
 
 - (void)applicationWillFinishLaunching:(NSNotification *)o_notification
 {
-    p_intf = VLCIntf;
-
     NSString* o_key;
     playlist_t *p_playlist;
     vlc_value_t val;
@@ -369,6 +371,8 @@ static VLCMainMenu *_o_sharedInstance = nil;
     [o_mi_open_wizard setTitle: _NS("Streaming/Exporting Wizard...")];
     [o_mi_convertandsave setTitle: _NS("Convert / Stream...")];
     [o_mi_save_playlist setTitle: _NS("Save Playlist...")];
+    [o_mi_revealInFinder setTitle: _NS("Reveal in Finder")];
+    [[o_mi_revealInFinder menu] setAutoenablesItems: NO];
 
     [o_mu_edit setTitle: _NS("Edit")];
     [o_mi_cut setTitle: _NS("Cut")];
@@ -395,7 +399,6 @@ static VLCMainMenu *_o_sharedInstance = nil;
     [o_mi_record setTitle: _NS("Record")];
     [o_mi_rate setView: o_mi_rate_view];
     [o_mi_rate_lbl setStringValue: _NS("Playback Speed")];
-    [o_mi_rate_lbl_gray setStringValue: _NS("Playback Speed")];
     [o_mi_rate_slower_lbl setStringValue: _NS("Slower")];
     [o_mi_rate_normal_lbl setStringValue: _NS("Normal")];
     [o_mi_rate_faster_lbl setStringValue: _NS("Faster")];
@@ -570,8 +573,6 @@ static VLCMainMenu *_o_sharedInstance = nil;
     playlist_t * p_playlist = pl_Get(p_intf);
     input_thread_t * p_input = playlist_CurrentInput(p_playlist);
     if (p_input != NULL) {
-        [o_mi_record setEnabled: var_GetBool(p_input, "can-record")];
-
         [self setupVarMenuItem: o_mi_program target: (vlc_object_t *)p_input
                                  var: "program" selector: @selector(toggleVar:)];
 
@@ -622,7 +623,6 @@ static VLCMainMenu *_o_sharedInstance = nil;
         [o_mi_ffmpeg_pp setEnabled:YES];
         vlc_object_release(p_input);
     } else {
-        [o_mi_record setEnabled: NO];
         [o_mi_ffmpeg_pp setEnabled:NO];
     }
 }
@@ -695,13 +695,15 @@ static VLCMainMenu *_o_sharedInstance = nil;
     int i = [[VLCCoreInteraction sharedInstance] playbackRate];
     double speed =  pow(2, (double)i / 17);
     [o_mi_rate_fld setStringValue: [NSString stringWithFormat:@"%.2fx", speed]];
-    if (b_enabled) {
-        [o_mi_rate_lbl setHidden: NO];
-        [o_mi_rate_lbl_gray setHidden: YES];
-    } else {
-        [o_mi_rate_lbl setHidden: YES];
-        [o_mi_rate_lbl_gray setHidden: NO];
-    }
+
+    NSColor *o_color = b_enabled ? [NSColor controlTextColor] : [NSColor disabledControlTextColor];
+
+    [o_mi_rate_lbl setTextColor:o_color];
+    [o_mi_rate_slower_lbl setTextColor:o_color];
+    [o_mi_rate_normal_lbl setTextColor:o_color];
+    [o_mi_rate_faster_lbl setTextColor:o_color];
+    [o_mi_rate_fld setTextColor:o_color];
+
     [self setSubtitleMenuEnabled: b_enabled];
     [o_pool release];
 }
@@ -1130,6 +1132,16 @@ static VLCMainMenu *_o_sharedInstance = nil;
     [[[VLCMain sharedInstance] playlist] savePlaylist:sender];
 }
 
+- (IBAction)revealItemInFinder:(id)sender
+{
+    [[[VLCMain sharedInstance] playlist] revealItemInFinder:sender];
+}
+
+- (void)setCanRevealInFinder:(BOOL)b_value
+{
+    [o_mi_revealInFinder setEnabled:b_value];
+}
+
 - (IBAction)showConvertAndSave:(id)sender
 {
     if (o_convertandsave == nil)
@@ -1555,6 +1567,10 @@ static VLCMainMenu *_o_sharedInstance = nil;
         if (!p_input)
             bEnabled = FALSE;
         [self setupMenus]; /* Make sure input menu is up to date */
+    } else if ([o_title isEqualToString: _NS("Record")]) {
+        bEnabled = FALSE;
+        if (p_input)
+            bEnabled = var_GetBool(p_input, "can-record");
     } else if ([o_title isEqualToString: _NS("Previous")] ||
             [o_title isEqualToString: _NS("Next")]) {
         PL_LOCK;

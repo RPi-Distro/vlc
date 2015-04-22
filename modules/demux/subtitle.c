@@ -2,7 +2,7 @@
  * subtitle.c: Demux for subtitle text files.
  *****************************************************************************
  * Copyright (C) 1999-2007 VLC authors and VideoLAN
- * $Id: c2a7642643b05a9832f99c1dc38f5160461b9d50 $
+ * $Id: c2877a0b9f45bdabcfeed75edae2ac8577035fa6 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -1156,6 +1156,9 @@ static int  ParseSSA( demux_t *p_demux, subtitle_t *p_subtitle,
         free( psz_text );
 
         /* All the other stuff we add to the header field */
+        if( header_len == 0 && p_sys->psz_header )
+            header_len = strlen( p_sys->psz_header );
+
         size_t s_len = strlen( s );
         p_sys->psz_header = realloc_or_free( p_sys->psz_header, header_len + s_len + 2 );
         if( !p_sys->psz_header )

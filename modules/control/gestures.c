@@ -2,7 +2,7 @@
  * gestures.c: control vlc with mouse gestures
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 2e50eecc1a99e5c564614f1cae230b3c6701e79d $
+ * $Id: 3aa2ff27990b680533a485f4c28856e2b3ad5be9 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -417,6 +417,11 @@ static int MovedEvent( vlc_object_t *p_this, char const *psz_var,
                     != pattern )
             {
                 p_sys->i_pattern |= pattern << ( p_sys->i_num_gestures * 4 );
+                p_sys->i_num_gestures++;
+            }
+            else if( p_sys->i_num_gestures == 0 )
+            {
+                p_sys->i_pattern = pattern;
                 p_sys->i_num_gestures++;
             }
         }

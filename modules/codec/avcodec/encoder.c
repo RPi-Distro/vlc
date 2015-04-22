@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: c0098d34448cef24a9f6cf3672374951a547aa23 $
+ * $Id: 0b25b6c3f5658f9c0defa34532fb4ecd123d8613 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -627,7 +627,7 @@ int OpenEncoder( vlc_object_t *p_this )
 
         p_context->mb_decision = p_sys->i_hq;
 
-        if( p_sys->i_quality )
+        if( p_sys->i_quality && !p_enc->fmt_out.i_bitrate )
         {
             p_context->flags |= CODEC_FLAG_QSCALE;
             p_context->global_quality = p_sys->i_quality;

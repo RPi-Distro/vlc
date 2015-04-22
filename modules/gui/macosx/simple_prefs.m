@@ -2,7 +2,7 @@
 * simple_prefs.m: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2014 VLC authors and VideoLAN
-* $Id: d51e1fd7396e0b4f83d22be55b94287638e942d4 $
+* $Id: ddc0957455efe1a5b61a247629904b4661481532 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -44,8 +44,12 @@ static const char *const ppsz_language[] =
 {
     "auto",
     "en",
+    "an",
     "ar",
+    "ast",
     "bn",
+    "bn_IN",
+    "bs",
     "pt_BR",
     "en_GB",
     "el",
@@ -73,9 +77,12 @@ static const char *const ppsz_language[] =
     "id",
     "it",
     "ja",
+    "kn",
     "ko",
     "lt",
+    "lv",
     "mn",
+    "mr",
     "ms",
     "nb",
     "nn",
@@ -96,8 +103,10 @@ static const char *const ppsz_language[] =
     "sl",
     "ckb",
     "es",
+    "es_MX",
     "sv",
     "te",
+    "th",
     "tr",
     "uk",
     "vi",
@@ -109,8 +118,12 @@ static const char *const ppsz_language_text[] =
 {
     N_("Auto"),
     "American English",
+    "aragonés",
     "ﻉﺮﺒﻳ",
+    "asturianu",
     "বাংলা",
+    "বাংলা (ভারত)",
+    "bosanski",
     "Português Brasileiro",
     "British English",
     "Νέα Ελληνικά",
@@ -138,9 +151,12 @@ static const char *const ppsz_language_text[] =
     "Bahasa Indonesia",
     "Italiano",
     "日本語",
+    "ಕನ್ನಡ",
     "한국어",
     "lietuvių",
+    "latviešu valoda",
     "Монгол хэл",
+    "मराठी",
     "Melayu",
     "Bokmål",
     "Nynorsk",
@@ -161,8 +177,10 @@ static const char *const ppsz_language_text[] =
     "slovenščina",
     "کوردیی سۆرانی",
     "Español",
+    "Español mexicano",
     "Svenska",
     "తెలుగు",
+    "ภาษาไทย",
     "Türkçe",
     "украї́нська мо́ва",
     "tiếng Việt",
@@ -229,6 +247,7 @@ static VLCSimplePrefs *_o_sharedInstance = nil;
 
     if (!OSX_SNOW_LEOPARD)
         [o_sprefs_win setCollectionBehavior: NSWindowCollectionBehaviorFullScreenAuxiliary];
+    [o_sprefs_win setHidesOnDeactivate:YES];
 
     [o_hotkeys_listbox setTarget:self];
     [o_hotkeys_listbox setDoubleAction:@selector(hotkeyTableDoubleClick:)];
@@ -1268,8 +1287,12 @@ static inline void save_string_list(intf_thread_t * p_intf, id object, const cha
 
 - (void)changeFont:(id)sender
 {
-    NSFont * font = [sender convertFont:[[NSFontManager sharedFontManager] selectedFont]];
-    [o_osd_font_fld setStringValue:[font fontName]];
+    NSFont *someFont = [NSFont systemFontOfSize:12];
+
+    // converts given font to changes in font panel. Original font is irrelevant
+    NSFont *selectedFont = [sender convertFont:someFont];
+
+    [o_osd_font_fld setStringValue:[selectedFont fontName]];
     [self osdSettingChanged:self];
 }
 

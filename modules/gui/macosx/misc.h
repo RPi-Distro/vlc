@@ -2,7 +2,7 @@
  * misc.h: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003-2014 VLC authors and VideoLAN
- * $Id: a84437a963f23637b15a89257f11314faba4f05e $
+ * $Id: bbad86122b68fdc1c7a7298db88591216ab599bc $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -187,8 +187,6 @@
     BOOL b_time_remaining;
 }
 @property (readonly) BOOL timeRemaining;
-
--(id)initWithFrame:(NSRect)frameRect;
 
 - (void)setRemainingIdentifier:(NSString *)o_string;
 

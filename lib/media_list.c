@@ -2,7 +2,7 @@
  * media_list.c: libvlc new API media list functions
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: 1d5702539eace11e9bbb47d469f99b123fe0faaa $
+ * $Id: 39bc354b0cd5fcc57f3c645d10c07f402f044f53 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -220,6 +220,7 @@ void libvlc_media_list_release( libvlc_media_list_t * p_mlist )
     }
 
     vlc_mutex_destroy( &p_mlist->object_lock );
+    vlc_mutex_destroy( &p_mlist->refcount_lock );
     vlc_array_clear( &p_mlist->items );
 
     free( p_mlist );

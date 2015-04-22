@@ -1,6 +1,6 @@
 /*****************************************************************************
  * Copyright (C) 2000-2013 VLC authors and VideoLAN
- * $Id: c945a85bc7084d81cccc6d31eb9545ed093cc78b $
+ * $Id: 312fcb9eada673f7c71d034a26cd1d078c8de202 $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *          Rémi Denis-Courmont
@@ -144,7 +144,7 @@ static int Start(audio_output_t *p_aout, audio_sample_format_t *restrict fmt)
     if (error != noErr)
         return VLC_EGENERIC;
     fmt->i_format = VLC_CODEC_FL32;
-    fmt->i_physical_channels = AOUT_CHANS_STEREO;
+    fmt->i_original_channels = fmt->i_physical_channels = AOUT_CHANS_STEREO;
     aout_FormatPrepare(fmt);
     p_aout->sys->i_rate = fmt->i_rate;
 

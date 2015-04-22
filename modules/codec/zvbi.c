@@ -2,7 +2,7 @@
  * zvbi.c : VBI and Teletext PES demux and decoder using libzvbi
  *****************************************************************************
  * Copyright (C) 2007, M2X
- * $Id: abcd27f5355953f68a13b4e7d6f848d58f7aa4c1 $
+ * $Id: b967f00567a112ed2ad6b599c677f05e13ddc6ee $
  *
  * Authors: Derk-Jan Hartman <djhartman at m2x dot nl>
  *          Jean-Paul Saman <jpsaman at m2x dot nl>
@@ -331,17 +331,20 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
 
             if( ( i_id == 0x02 || i_id == 0x03 ) && i_size >= 44 && i_lines < MAX_SLICES )
             {
-                unsigned line_offset  = p_block->p_buffer[2] & 0x1f;
-                unsigned field_parity = p_block->p_buffer[2] & 0x20;
+                if(p_block->p_buffer[3] == 0xE4 )    /* framing_code */
+                {
+                    unsigned line_offset  = p_block->p_buffer[2] & 0x1f;
+                    unsigned field_parity = p_block->p_buffer[2] & 0x20;
 
-                p_sliced[i_lines].id = VBI_SLICED_TELETEXT_B;
-                if( line_offset > 0 )
-                    p_sliced[i_lines].line = line_offset + (field_parity ? 0 : 313);
-                else
-                    p_sliced[i_lines].line = 0;
-                for( int i = 0; i < 42; i++ )
-                    p_sliced[i_lines].data[i] = vbi_rev8( p_block->p_buffer[4 + i] );
-                i_lines++;
+                    p_sliced[i_lines].id = VBI_SLICED_TELETEXT_B;
+                    if( line_offset > 0 )
+                        p_sliced[i_lines].line = line_offset + (field_parity ? 0 : 313);
+                    else
+                        p_sliced[i_lines].line = 0;
+                    for( int i = 0; i < 42; i++ )
+                        p_sliced[i_lines].data[i] = vbi_rev8( p_block->p_buffer[4 + i] );
+                    i_lines++;
+                }
             }
 
             p_block->i_buffer -= 2 + i_size;
@@ -522,6 +525,7 @@ static subpicture_t *Subpicture( decoder_t *p_dec, video_format_t *p_fmt,
         fmt.i_width = fmt.i_visible_width = i_columns * 12;
         fmt.i_height = fmt.i_visible_height = i_rows * 10;
         fmt.i_bits_per_pixel = 32;
+        fmt.i_sar_num = fmt.i_sar_den = 0; /* let the vout set the correct AR */
     }
     fmt.i_x_offset = fmt.i_y_offset = 0;
 

@@ -2,7 +2,7 @@
  * coredialogs.h: Mac OS X Core Dialogs
  *****************************************************************************
  * Copyright (C) 2005-2012 VLC authors and VideoLAN
- * $Id: 239600b08c4047b59b59f35c751d517bab5ebdfe $
+ * $Id: 2c9624713d0edfb27652b1328180a9b339214a74 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -76,6 +76,8 @@
 }
 + (VLCCoreDialogProvider *)sharedInstance;
 
+@property (atomic,readwrite) BOOL progressCancelled;
+
 -(void)performEventWithObject: (NSValue *)o_value ofType: (const char*)type;
 
 -(void)showFatalDialog: (NSValue *)o_value;
@@ -88,7 +90,6 @@
 -(void)showProgressDialogOnMainThread: (NSValue *)o_value;
 -(void)showProgressDialog: (NSValue *)o_value;
 -(IBAction)progDialogAction:(id)sender;
--(BOOL)progressCancelled;
 -(void)updateProgressPanelWithText: (NSString *)string andNumber: (double)d_number;
 -(void)destroyProgressPanel;
 

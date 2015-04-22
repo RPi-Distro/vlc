@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 9d7fe8ea64986e387ad389c4703057e1deb50a04 $
+ * $Id: 05779af18d607819fc66312f7221f512c8b340d1 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan.org>
@@ -99,6 +99,10 @@ static int BossCallback(vlc_object_t *, const char *,
 #pragma mark -
 #pragma mark VLC Interface Object Callbacks
 
+static bool b_intf_starting = false;
+static vlc_mutex_t start_mutex = VLC_STATIC_MUTEX;
+static vlc_cond_t  start_cond = VLC_STATIC_COND;
+
 /*****************************************************************************
  * OpenIntf: initialize interface
  *****************************************************************************/
@@ -108,6 +112,7 @@ int OpenIntf (vlc_object_t *p_this)
     [VLCApplication sharedApplication];
 
     intf_thread_t *p_intf = (intf_thread_t*) p_this;
+    msg_Dbg(p_intf, "Starting macosx interface");
     Run(p_intf);
 
     [o_pool release];
@@ -120,13 +125,34 @@ static int WindowControl(vout_window_t *, int i_query, va_list);
 
 int WindowOpen(vout_window_t *p_wnd, const vout_window_cfg_t *cfg)
 {
-    NSAutoreleasePool *o_pool = [[NSAutoreleasePool alloc] init];
-    intf_thread_t *p_intf = VLCIntf;
-    if (!p_intf) {
-        msg_Err(p_wnd, "Mac OS X interface not found");
-        [o_pool release];
+    msg_Dbg(p_wnd, "Opening video window");
+
+    /*
+     * HACK: Wait 200ms for the interface to come up.
+     * WindowOpen might be called before the mac intf is started. Lets wait until OpenIntf gets called
+     * and does basic initialization. Enqueuing the vout controller request into the main loop later on
+     * ensures that the actual window is created after the interface is fully initialized
+     * (applicationDidFinishLaunching).
+     *
+     * Timeout is needed as the mac intf is not always started at all.
+     */
+    mtime_t deadline = mdate() + 200000;
+    vlc_mutex_lock(&start_mutex);
+    while (!b_intf_starting) {
+        if (vlc_cond_timedwait(&start_cond, &start_mutex, deadline)) {
+            break; // timeout
+        }
+    }
+
+    if (!b_intf_starting) {
+        msg_Err(p_wnd, "Cannot create vout as Mac OS X interface was not found");
+        vlc_mutex_unlock(&start_mutex);
         return VLC_EGENERIC;
     }
+    vlc_mutex_unlock(&start_mutex);
+
+    NSAutoreleasePool *o_pool = [[NSAutoreleasePool alloc] init];
+
     NSRect proposedVideoViewPosition = NSMakeRect(cfg->x, cfg->y, cfg->width, cfg->height);
 
     [o_vout_provider_lock lock];
@@ -181,6 +207,12 @@ static int WindowControl(vout_window_t *p_wnd, int i_query, va_list args)
         {
             unsigned i_state = va_arg(args, unsigned);
 
+            if (i_state & VOUT_WINDOW_STATE_BELOW)
+            {
+                msg_Dbg(p_wnd, "Ignore change to VOUT_WINDOW_STATE_BELOW");
+                goto out;
+            }
+
             NSInteger i_cooca_level = NSNormalWindowLevel;
             if (i_state & VOUT_WINDOW_STATE_ABOVE)
                 i_cooca_level = NSStatusWindowLevel;
@@ -198,7 +230,6 @@ static int WindowControl(vout_window_t *p_wnd, int i_query, va_list args)
         }
         case VOUT_WINDOW_SET_SIZE:
         {
-
             unsigned int i_width  = va_arg(args, unsigned int);
             unsigned int i_height = va_arg(args, unsigned int);
 
@@ -216,6 +247,11 @@ static int WindowControl(vout_window_t *p_wnd, int i_query, va_list args)
         }
         case VOUT_WINDOW_SET_FULLSCREEN:
         {
+            if (var_InheritBool(VLCIntf, "video-wallpaper")) {
+                msg_Dbg(p_wnd, "Ignore fullscreen event as video-wallpaper is on");
+                goto out;
+            }
+
             int i_full = va_arg(args, int);
             BOOL b_animation = YES;
 
@@ -240,6 +276,7 @@ static int WindowControl(vout_window_t *p_wnd, int i_query, va_list args)
         }
     }
 
+out:
     [o_vout_provider_lock unlock];
     [o_pool release];
     return VLC_SUCCESS;
@@ -285,8 +322,12 @@ static void Run(intf_thread_t *p_intf)
     o_vout_provider_lock = [[NSLock alloc] init];
 
     libvlc_SetExitHandler(p_intf->p_libvlc, QuitVLC, p_intf);
-
     [[VLCMain sharedInstance] setIntf: p_intf];
+
+    vlc_mutex_lock(&start_mutex);
+    b_intf_starting = true;
+    vlc_cond_signal(&start_cond);
+    vlc_mutex_unlock(&start_mutex);
 
     [NSBundle loadNibNamed: @"MainMenu" owner: NSApp];
 
@@ -326,7 +367,9 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
             [[VLCMain sharedInstance] performSelectorOnMainThread:@selector(updateMainWindow) withObject: nil waitUntilDone: NO];
             break;
         case INPUT_EVENT_STATISTICS:
-            [[[VLCMain sharedInstance] info] performSelectorOnMainThread:@selector(updateStatistics) withObject: nil waitUntilDone: NO];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[[VLCMain sharedInstance] info] updateStatistics];
+            });
             break;
         case INPUT_EVENT_ES:
             break;
@@ -510,13 +553,10 @@ void updateProgressPanel (void *priv, const char *text, float value)
 {
     NSAutoreleasePool *o_pool = [[NSAutoreleasePool alloc] init];
 
-    NSString *o_txt;
-    if (text != NULL)
-        o_txt = [NSString stringWithUTF8String:text];
-    else
-        o_txt = @"";
-
-    [[[VLCMain sharedInstance] coreDialogProvider] updateProgressPanelWithText: o_txt andNumber: (double)(value * 1000.)];
+    NSString *o_txt = toNSStr(text);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[[VLCMain sharedInstance] coreDialogProvider] updateProgressPanelWithText: o_txt andNumber: (double)(value * 1000.)];
+    });
 
     [o_pool release];
 }
@@ -743,7 +783,10 @@ static VLCMain *_o_sharedMainInstance = nil;
     PL_UNLOCK;
 
     [NSBundle loadNibNamed:@"MainWindow" owner: self];
-    [o_mainwindow makeKeyAndOrderFront:nil];
+
+    // This cannot be called directly here, as the main loop is not running yet so it would have no effect.
+    // So lets enqueue it into the loop for later execution.
+    [o_mainwindow performSelector:@selector(makeKeyAndOrderFront:) withObject:nil afterDelay:0];
 
     [[SUUpdater sharedUpdater] setDelegate:self];
 }
@@ -788,6 +831,13 @@ static VLCMain *_o_sharedMainInstance = nil;
     [o_mainwindow updateWindow];
     [o_mainwindow updateTimeSlider];
     [o_mainwindow updateVolumeSlider];
+
+    /* Hack: Playlist is started before the interface.
+     * Thus, call additional updaters as we might miss these events if posted before
+     * the callbacks are registered.
+     */
+    [self PlaylistItemChanged];
+    [self playbackModeUpdated];
 
     // respect playlist-autostart
     // note that PLAYLIST_PLAY will not stop any playback if already started
@@ -1336,6 +1386,9 @@ static bool f_appExit = false;
 - (void)plItemUpdated
 {
     [o_mainwindow updateName];
+
+    if (o_info != NULL)
+        [o_info updateMetadata];
 }
 
 - (void)updateMainMenu

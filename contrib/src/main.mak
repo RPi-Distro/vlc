@@ -185,6 +185,10 @@ endif
 ACLOCAL_AMFLAGS += -I$(PREFIX)/share/aclocal
 export ACLOCAL_AMFLAGS
 
+#########
+# Tools #
+#########
+
 PKG_CONFIG ?= pkg-config
 ifdef HAVE_CROSS_COMPILE
 # This inhibits .pc file from within the cross-compilation toolchain sysroot.
@@ -224,6 +228,12 @@ download = rm -f $@.tmp && \
 	mv $@.tmp $@
 else
 download = $(error Neither curl nor wget found!)
+endif
+
+ifeq ($(shell which xzcat >/dev/null 2>&1 || echo FAIL),)
+XZCAT = xzcat
+else
+XZCAT ?= $(error xz and lzma client not found!)
 endif
 
 ifeq ($(shell which bzcat >/dev/null 2>&1 || echo FAIL),)
@@ -317,8 +327,13 @@ UPDATE_AUTOCONFIG = for dir in $(AUTOMAKE_DATA_DIRS); do \
 		fi; \
 	done
 
+ifdef HAVE_IOS
+AUTORECONF = AUTOPOINT=true autoreconf
+else
+AUTORECONF = autoreconf
+endif
 RECONF = mkdir -p -- $(PREFIX)/share/aclocal && \
-	cd $< && autoreconf -fiv $(ACLOCAL_AMFLAGS)
+	cd $< && $(AUTORECONF) -fiv $(ACLOCAL_AMFLAGS)
 CMAKE = cmake . -DCMAKE_TOOLCHAIN_FILE=$(abspath toolchain.cmake) \
 		-DCMAKE_INSTALL_PREFIX=$(PREFIX)
 
@@ -369,13 +384,19 @@ vlc-contrib-$(HOST)-latest.tar.bz2:
 
 prebuilt: vlc-contrib-$(HOST)-latest.tar.bz2
 	-$(UNPACK)
+ifdef HAVE_WIN32
+ifndef HAVE_CROSS_COMPILE
+	$(RM) `find $(HOST) | file -f- | grep ELF | awk -F: '{print $1}' | xargs`
+endif
+endif
+	$(RM) -r $(TOPDST)/$(HOST)
 	mv $(HOST) $(TOPDST)
 	cd $(TOPDST)/$(HOST) && $(SRC)/change_prefix.sh
 
 package: install
 	rm -Rf tmp/
 	mkdir -p tmp/
-	cp -r $(PREFIX) tmp/
+	cp -R $(PREFIX) tmp/
 	# remove useless files
 	cd tmp/$(notdir $(PREFIX)); \
 		cd share; rm -Rf man doc gtk-doc info lua projectM gettext; cd ..; \

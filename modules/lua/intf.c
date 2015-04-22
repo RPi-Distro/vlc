@@ -2,7 +2,7 @@
  * intf.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 61943549abcaf4278f8e9a151e688e9a976e4646 $
+ * $Id: 841587f2222471414b1069473205c51443a2397e $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -402,7 +402,7 @@ static void *Run( void *data )
     intf_sys_t *p_sys = p_intf->p_sys;
     lua_State *L = p_sys->L;
 
-    if( luaL_dofile( L, p_sys->psz_filename ) )
+    if( vlclua_dofile( VLC_OBJECT(p_intf), L, p_sys->psz_filename ) )
     {
         msg_Err( p_intf, "Error loading script %s: %s", p_sys->psz_filename,
                  lua_tostring( L, lua_gettop( L ) ) );

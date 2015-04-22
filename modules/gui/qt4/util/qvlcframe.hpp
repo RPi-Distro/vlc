@@ -2,7 +2,7 @@
  * qvlcframe.hpp : A few helpers
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 2747a4a332b6d98ccdc9721cdfd5c7ae8ab27ecc $
+ * $Id: eff2154899e031f4835d3ca6cdcc30b90e8f8740 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -152,7 +152,10 @@ class QVLCDialog : public QDialog
 public:
     QVLCDialog( QWidget* parent, intf_thread_t *_p_intf ) :
                                     QDialog( parent ), p_intf( _p_intf )
-    {}
+    {
+        setWindowFlags( Qt::Dialog|Qt::WindowMinMaxButtonsHint|
+                        Qt::WindowSystemMenuHint|Qt::WindowCloseButtonHint );
+    }
     virtual ~QVLCDialog() {};
     void toggleVisible()
     {

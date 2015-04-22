@@ -2,7 +2,7 @@
  * controller.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: a006ff0a8e7eb51ceb06082ee97aa8ba39a433af $
+ * $Id: 6624509b787beb230406d1f5a9018a2fe7193434 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -953,7 +953,7 @@ void FullscreenControllerWidget::toggleFullwidth()
 
 int FullscreenControllerWidget::targetScreen()
 {
-    if( i_screennumber == -1 || i_screennumber > QApplication::desktop()->numScreens() )
+    if( i_screennumber < 0 || i_screennumber > QApplication::desktop()->numScreens() )
         return QApplication::desktop()->screenNumber( p_intf->p_sys->p_mi );
     return i_screennumber;
 }

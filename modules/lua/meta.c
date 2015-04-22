@@ -2,7 +2,7 @@
  * meta.c: Get meta/artwork using lua scripts
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 34c5d87bce95c8c567d0fa04f0173761760062f9 $
+ * $Id: b78fa935a7aa03ce0adfbe1c3900ae4736847e8a $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -89,7 +89,7 @@ static int run( vlc_object_t *p_this, const char * psz_filename,
     lua_setglobal( L, luafunction );
 
     /* Load and run the script(s) */
-    if( luaL_dofile( L, psz_filename ) )
+    if( vlclua_dofile( p_this, L, psz_filename ) )
     {
         msg_Warn( p_this, "Error loading script %s: %s", psz_filename,
                  lua_tostring( L, lua_gettop( L ) ) );

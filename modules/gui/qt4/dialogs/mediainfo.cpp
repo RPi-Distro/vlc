@@ -2,7 +2,7 @@
  * mediainfo.cpp : Information about an item
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 23db28089826c0dd69e220e5d7af6775b2a9c8f4 $
+ * $Id: 809ff2878dca199fc86661b035e61ad3a8673d0e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -54,7 +54,8 @@ MediaInfoDialog::MediaInfoDialog( intf_thread_t *_p_intf,
         setWindowTitle( qtr( "Media Information" ) );
     setWindowRole( "vlc-media-info" );
 
-    setWindowFlags( Qt::Window | Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint );
+    setWindowFlags( Qt::Window | Qt::CustomizeWindowHint |
+                    Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint );
 
     /* TabWidgets and Tabs creation */
     infoTabW = new QTabWidget;

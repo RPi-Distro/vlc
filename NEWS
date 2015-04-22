@@ -1,4 +1,63 @@
-Changes between 2.1.x and 2.2.0-rc2:
+Changes between 2.2.0 and 2.2.1:
+--------------------------------
+
+Codec:
+ * Fix compilation with older libavcodec versions
+ * Fix some VP9 decoding
+ * Fix flac crashes
+ * Fix lpcm channel ordering
+ * Fix potential NULL dereference in dmo
+ * Fix teletext framing code in DVB PES packets
+ * Fix potential buffer overflow in schroendinger decoder
+ * Fix AAC samplerate
+
+Demuxers:
+ * Fix MP4 chapters
+ * Fix MKV overseeking, introducing slowness over network shares
+ * Fix crash when playing SPC files
+ * Fix ATRAC3 playback in MKV
+ * Revert to older ASX code
+ * Workaround TS issue with mpeg-audio
+
+Access:
+ * Fix sftp read and close sockets
+ * Fix DTV build with Linux DVB versions < 5.8
+ * Fix UDP/RTP input on Windows
+
+Audio output:
+ * Fix Alsa HDMI plugs
+ * Improve Alsa output, with larger buffers
+ * Fix DirectSound output with multi-channel files
+
+OS X:
+ * Fix numerous crashes in the UI
+ * Fix video-wallpaper mode
+ * Fix race when starting VLC from command line
+
+Qt:
+ * Fix recent items behaviour
+ * Fix rotation filter activation
+ * Fix mux modules names for the streaming wizard
+
+Win32:
+ * Timestamp the signature of the dlls
+ * Fix extensions registration during install
+ * Fix extensions dialog crash
+ * Default to no DxVA decoding
+
+libVLC:
+ * fix libvlc_media_get_stats
+
+Translations:
+ * Update of Afrikaans, Albanian, Azerbaijani, Catalan, Czech, Danish, Dutch,
+   English (United Kingdom), Finnish, French, German, Hebrew, Hindi, Italian,
+   Japanese, Korean, Latvian, Macedonian, Malay, Modern Greek, Norwegian Bokmål,
+   Norwegian Nynorsk, Polish, Portuguese, Russian, Scottish Gaelic, Serbian,
+   Simplified Chinese, Slovak, Slovenian, Spanish, Swedish, Tamil, Thai,
+   Traditional Chinese, Turkish, Ukrainian translations
+
+
+Changes between 2.1.6 and 2.2.0:
 --------------------------------
 
 Important changes:
@@ -19,6 +78,7 @@ Access:
    and BD-J navigation
  * Digital Cinema Package support, including encrypted DCP with KDM
  * Partial fixes for Arccos protected DVDs
+ * Fix CDDB lookups, including pregap data
 
 Decoder:
  * Support VDPAU acceleration for GPU-zerocopy decoding
@@ -68,7 +128,7 @@ Demuxer:
  * Support microseconds in SubRip subtitles
  * FLAC packets validation using CRC
  * Improvements in metadata support in Ogg/Opus/Vorbis files
- * Fix encoding issues in some XML playlist formats
+ * Fix encoding issues and relative paths in some XML playlist formats
  * Support THP Wii/Gamecube, RenderWare and Escape Replay game video files
  * New HEVC raw packetizer and demuxer
  * TS support for WiDi/Miracast LPCM
@@ -140,6 +200,7 @@ Interfaces:
  * Support to continue media playback where it was left off for Qt and OS X
 
 Mac OS X Interface:
+ * Support for OS X Yosemite
  * Avoid grey bars in fullscreen when using Mavericks with multiple monitors
  * Improve fullscreen behavior for the native and VLCs own mode
  * Fixes for advanced preferences
@@ -152,6 +213,7 @@ Misc:
  * New module for TLS on OS X and iOS
  * Windows installer will kill running instance before installing
  * Teletext navigation buttons support in Qt4 gui
+ * Update and improve Koreus, Dailymotion, Soundcloud and Youtube scripts
 
 Security:
  * Numerous integer and heap overflow in Ogg, AVI, ASF, TTA and MP4 demuxers
@@ -172,6 +234,26 @@ Translations:
    Japanese, Italian, Icelandic, Indonesian, Hebrew, Galician, Scottish
    Gaelic, French, Finnish, Persian, Estonian, Spanish, Modern Greek, German,
    Danish, Welsh, Czech, Bosnian, Bengali, Asturian
+
+
+Changes between 2.1.5 and 2.1.6:
+--------------------------------
+
+Audio output:
+ * Fix OSS stuttering
+
+Security:
+ * Fix heap overflow in decomp stream filter
+ * Fix buffer overflow in updater
+ * Fix potential buffer overflow in schroedinger encoder
+ * Fix null-pointer dereference in DMO decoder
+ * Fix buffer overflow in parsing of string boxes in mp4 demuxer
+ * Fix SRTP integer overflow
+ * Fix potential crash in zip access
+ * Fix read overflow in Ogg demuxer
+
+Win32 installer:
+ * Update translations and greek encoding
 
 
 Changes between 2.1.4 and 2.1.5:
