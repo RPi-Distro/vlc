@@ -1,8 +1,13 @@
 vlc (2.2.1-1~deb8u1) UNRELEASED; urgency=medium
 
+  [ Sebastian Ramacher ]
   * New upstream release.
+  * debian/patches: Remove patches, no longer needed.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sat, 25 Apr 2015 18:40:56 +0200
+  [ Benjamin Drung ]
+  * drop/rules: Drop removed --enable-glx configure flag.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 25 Apr 2015 23:00:04 +0200
 
 vlc (2.2.0~rc2-2) unstable; urgency=medium
 
