@@ -2,7 +2,7 @@
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2002 - 2012 VLC authors and VideoLAN
- * $Id: f7fcd80f34338d9c1dbc569f997904ed4a8d0f30 $
+ * $Id: b9da7bf28c044be7ce38bf87a525615e3b9317c7 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1359,6 +1359,12 @@ static int ProcessLines( filter_t *p_filter,
                 const text_style_t *p_glyph_style = pp_styles[i_index];
                 uni_char_t character = psz_text[i_index];
                 int i_glyph_index = FT_Get_Char_Index( p_current_face, character );
+
+                /* If the missing glyph is U+FEFF (ZERO WIDTH NO-BREAK SPACE) */
+                /* we can safely ignore it. Otherwise extra squares show up   */
+                /* in Arabic text.                                            */
+                if( i_glyph_index == 0 && character == 0xFEFF )
+                    goto next;
 
                 /* Get kerning vector */
                 FT_Vector kerning = { .x = 0, .y = 0 };

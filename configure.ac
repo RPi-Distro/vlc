@@ -1,20 +1,20 @@
 dnl Autoconf settings for vlc
 
-AC_COPYRIGHT([Copyright 2002-2014 VLC authors and VideoLAN])
+AC_COPYRIGHT([Copyright 1999-2015 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 2.2.0-rc2)
+AC_INIT(vlc, 2.2.1)
 VERSION_MAJOR=2
 VERSION_MINOR=2
-VERSION_REVISION=0
+VERSION_REVISION=1
 VERSION_EXTRA=0
-VERSION_DEV=rc2
+VERSION_DEV=
 
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
 
 CONFIGURE_LINE="`echo "$0 $ac_configure_args" | sed -e 's/\\\/\\\\\\\/g'`"
-CODENAME="Weatherwax"
-COPYRIGHT_YEARS="1996-2014"
+CODENAME="Terry Pratchett (Weatherwax)"
+COPYRIGHT_YEARS="1996-2015"
 
 AC_CONFIG_SRCDIR(src/libvlc.c)
 AC_CONFIG_AUX_DIR(autotools)
@@ -293,6 +293,7 @@ case "${host_os}" in
   *os2*)
     SYS=os2
     LDFLAGS="${LDFLAGS} -Zomf -Zbin-files -Zargs-wild -Zhigh-mem"
+    AC_LIBOBJ([freeaddrinfo])
     ;;
   *)
     SYS="${host_os}"
@@ -605,8 +606,8 @@ AC_SEARCH_LIBS(connect, [socket], [
 ])
 
 AC_SEARCH_LIBS([inet_pton], [nsl], [
- AS_IF([test "$ac_cv_search_getaddrinfo" != "none required"], [
-    SOCKET_LIBS="$ac_cv_search_getaddrinfo $SOCKET_LIBS"
+ AS_IF([test "$ac_cv_search_inet_pton" != "none required"], [
+    SOCKET_LIBS="$ac_cv_search_inet_pton $SOCKET_LIBS"
   ])
 ],, [${SOCKET_LIBS}])
 
@@ -1719,7 +1720,7 @@ dnl
 dnl  libsmbclient plugin
 dnl
 PKG_ENABLE_MODULES_VLC([SMBCLIENT], [smb], [smbclient], (SMB/CIFS support), [auto])
-AS_IF([test "${SYS}" = "mingw32"], [ VLC_ADD_PLUGIN([access_smb]) ])
+AS_IF([test "${SYS}" = "mingw32"], [ VLC_ADD_PLUGIN([smb]) ])
 
 
 dnl
@@ -3100,10 +3101,6 @@ AC_ARG_ENABLE(xcb,
 AC_ARG_ENABLE(xvideo,
   [  --enable-xvideo         XVideo support (default enabled)],, [
     enable_xvideo="$enable_xcb"
-])
-AC_ARG_ENABLE(glx,
-  [  --enable-glx            OpenGL support through GLX (default enabled)],, [
-  enable_glx="$enable_xcb"
 ])
 
 have_xcb="no"

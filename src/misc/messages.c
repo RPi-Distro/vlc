@@ -4,7 +4,7 @@
  * modules, especially intf modules. See vlc_config.h for output configuration.
  *****************************************************************************
  * Copyright (C) 1998-2005 VLC authors and VideoLAN
- * $Id: 8452a5a99d12badd17d259300a0489f65cdbe94a $
+ * $Id: f75fd67e7a401daf41e5d0947b4228f51806c485 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -40,6 +40,10 @@
 #include <vlc_interface.h>
 #include <vlc_charset.h>
 #include "../libvlc.h"
+
+#ifdef __ANDROID__
+#include <android/log.h>
+#endif
 
 /**
  * Emit a log message.
@@ -227,6 +231,43 @@ static void Win32DebugOutputMsg (void* d, int type, const vlc_log_t *p_item,
 }
 #endif
 
+#ifdef __ANDROID__
+static void AndroidPrintMsg (void *d, int type, const vlc_log_t *p_item,
+                             const char *format, va_list ap)
+{
+    int verbose = (intptr_t)d;
+    int prio;
+
+    if (verbose < 0 || verbose < (type - VLC_MSG_ERR))
+        return;
+
+    int canc = vlc_savecancel ();
+
+    char *format2;
+    if (asprintf (&format2, "[%0*"PRIxPTR"] %s %s: %s",
+                  ptr_width, p_item->i_object_id, p_item->psz_module,
+                  p_item->psz_object_type, format) < 0)
+        return;
+    switch (type) {
+        case VLC_MSG_INFO:
+            prio = ANDROID_LOG_INFO;
+            break;
+        case VLC_MSG_ERR:
+            prio = ANDROID_LOG_ERROR;
+            break;
+        case VLC_MSG_WARN:
+            prio = ANDROID_LOG_WARN;
+            break;
+        default:
+        case VLC_MSG_DBG:
+            prio = ANDROID_LOG_DEBUG;
+    }
+    __android_log_vprint (prio, "VLC", format2, ap);
+    free (format2);
+    vlc_restorecancel (canc);
+}
+#endif
+
 /**
  * Sets the message logging callback.
  * \param cb message callback, or NULL to reset
@@ -238,12 +279,16 @@ void vlc_LogSet (libvlc_int_t *vlc, vlc_log_cb cb, void *opaque)
 
     if (cb == NULL)
     {
+#ifdef __ANDROID__
+        cb = AndroidPrintMsg;
+#else
 #if defined (HAVE_ISATTY) && !defined (_WIN32)
         if (isatty (STDERR_FILENO) && var_InheritBool (vlc, "color"))
             cb = PrintColorMsg;
         else
 #endif
             cb = PrintMsg;
+#endif // __ANDROID__
         opaque = (void *)(intptr_t)priv->log.verbose;
     }
 

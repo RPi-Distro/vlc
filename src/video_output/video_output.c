@@ -6,7 +6,7 @@
  * thread, and destroy a previously oppened video output thread.
  *****************************************************************************
  * Copyright (C) 2000-2007 VLC authors and VideoLAN
- * $Id: 1b01ee08d8579469179f491da817821c46d48374 $
+ * $Id: bc1fd6c5f849cbdbb0207f2d3c14758b56b11d6c $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1264,7 +1264,14 @@ static void ThreadStep(vout_thread_t *vout, mtime_t *duration)
 
 static void ThreadChangeFullscreen(vout_thread_t *vout, bool fullscreen)
 {
-    vout_SetDisplayFullscreen(vout->p->display.vd, fullscreen);
+    vout_window_t *window = vout->p->window.object;
+
+    if (window != NULL)
+        vout_window_SetFullScreen(window, fullscreen);
+    else
+    if (vout->p->display.vd != NULL)
+        vout_display_SendEvent(vout->p->display.vd,
+                               VOUT_DISPLAY_EVENT_FULLSCREEN, fullscreen);
 }
 
 static void ThreadChangeWindowState(vout_thread_t *vout, unsigned state)

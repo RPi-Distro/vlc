@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005-2009 VLC authors and VideoLAN
  * Copyright (C) 2013      Vianney Boyer
- * $Id: 2fe5e0c8afe025f38acda864c16782276c83b7e5 $
+ * $Id: 6c6433bbeea541dfe0b7e4292a96195491acd78e $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *          Vianney Boyer <vlcvboyer -at- gmail -dot- com>
@@ -289,9 +289,12 @@ picture_t *Filter( filter_t *p_filter, picture_t *p_pic_in ) {
     /* assert no mismatch between sizes */
     if (    p_sys->s_current_param.i_pict_width  != p_sys->s_current_param.i_desk_width
          || p_sys->s_current_param.i_pict_height != p_sys->s_current_param.i_desk_height
-         || p_sys->s_current_param.i_pict_width  != (int) p_fmt_in->i_width
-         || p_sys->s_current_param.i_pict_height != (int) p_fmt_in->i_height )
+         || p_sys->s_current_param.i_pict_width  != (int) p_fmt_in->i_visible_width
+         || p_sys->s_current_param.i_pict_height != (int) p_fmt_in->i_visible_height ) {
+        picture_Release(p_pic_in);
+        picture_Release(p_pic_out);
         return NULL;
+    }
 
     vlc_mutex_lock( &p_sys->lock );
 

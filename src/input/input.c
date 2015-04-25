@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: 41c1a997881a8b77f492244676b68c65b118c45c $
+ * $Id: 05e4ff36eb72d929889aed480c5c9ee20d7e2316 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -449,6 +449,7 @@ static input_thread_t *Create( vlc_object_t *p_parent, input_item_t *p_item,
 
     /* Remove 'Now playing' info as it is probably outdated */
     input_item_SetNowPlaying( p_item, NULL );
+    input_item_SetESNowPlaying( p_item, NULL );
     input_SendEventMeta( p_input );
 
     /* */

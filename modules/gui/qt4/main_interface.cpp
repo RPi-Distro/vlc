@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2011 VideoLAN and AUTHORS
- * $Id: 4734749a0b0e7133563862e5ccd63e887de54031 $
+ * $Id: 8c911e87c7874ab93b84d878e3aaa528e7339704 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -368,54 +368,77 @@ void MainInterface::reloadPrefs()
     }
 }
 
-void MainInterface::createContinueDialog( QWidget *w )
+void MainInterface::createResumePanel( QWidget *w )
 {
-    /* Create non-modal continueDialog */
-    continueDialog = new QWidget( w );
-    continueDialog->hide();
-    QHBoxLayout *continueDialogLayout = new QHBoxLayout( continueDialog );
-    continueDialogLayout->setSpacing( 0 ); continueDialogLayout->setMargin( 0 );
+    resumePanel = new QWidget( w );
+    resumePanel->hide();
+    QHBoxLayout *resumePanelLayout = new QHBoxLayout( resumePanel );
+    resumePanelLayout->setSpacing( 0 ); resumePanelLayout->setMargin( 0 );
+
+    QLabel *continuePixmapLabel = new QLabel();
+    continuePixmapLabel->setPixmap( QPixmap( ":/menu/help" ) );
+    continuePixmapLabel->setContentsMargins( 5, 0, 5, 0 );
 
     QLabel *continueLabel = new QLabel( qtr( "Do you want to restart the playback where left off?") );
-    QToolButton *cancel = new QToolButton( continueDialog );
+
+    QToolButton *cancel = new QToolButton( resumePanel );
     cancel->setAutoRaise( true );
     cancel->setText( "X" );
-    QPushButton *ok = new QPushButton( qtr("&Continue")  );
 
-    continueDialogLayout->addWidget(continueLabel);
-    continueDialogLayout->addStretch( 1 );
-    continueDialogLayout->addWidget( ok );
-    continueDialogLayout->addWidget( cancel );
+    QPushButton *ok = new QPushButton( qtr( "&Continue" )  );
 
-    CONNECT( cancel, clicked(), continueDialog, hide() );
-    BUTTONACT(ok, continuePlayback() );
+    resumePanelLayout->addWidget( continuePixmapLabel );
+    resumePanelLayout->addWidget( continueLabel );
+    resumePanelLayout->addStretch( 1 );
+    resumePanelLayout->addWidget( ok );
+    resumePanelLayout->addWidget( cancel );
 
-    CONNECT( THEMIM->getIM(), continuePlayback(int64_t), this, showContinueDialog(int64_t) );
+    resumeTimer = new QTimer( resumePanel );
+    resumeTimer->setSingleShot( true );
+    resumeTimer->setInterval( 6000 );
 
-    w->layout()->addWidget( continueDialog );
+    CONNECT( resumeTimer, timeout(), this, hideResumePanel() );
+    CONNECT( cancel, clicked(), this, hideResumePanel() );
+    CONNECT( THEMIM->getIM(), resumePlayback(int64_t), this, showResumePanel(int64_t) );
+    BUTTONACT( ok, resumePlayback() );
+
+    w->layout()->addWidget( resumePanel );
 }
 
-void MainInterface::showContinueDialog( int64_t _time ) {
+void MainInterface::showResumePanel( int64_t _time ) {
     int setting = var_InheritInteger( p_intf, "qt-continue" );
 
     if( setting == 0 )
         return;
 
-    i_continueTime = _time;
+    i_resumeTime = _time;
 
     if( setting == 2)
-        continuePlayback();
+        resumePlayback();
     else
     {
-        continueDialog->setVisible(true);
-        QTimer::singleShot(6000, continueDialog, SLOT(hide()));
+        resumePanel->setVisible(true);
+        resumeTimer->start();
     }
 }
 
-void MainInterface::continuePlayback()
+void MainInterface::hideResumePanel()
 {
-    var_SetTime( THEMIM->getInput(), "time", i_continueTime );
-    continueDialog->hide();
+    if( resumePanel->isVisible() )
+    {
+        if( !isFullScreen() && !isMaximized() )
+            resize( width(), height() - resumePanel->height() );
+        resumePanel->hide();
+        resumeTimer->stop();
+    }
+}
+
+void MainInterface::resumePlayback()
+{
+    if( THEMIM->getIM()->hasInput() ) {
+        var_SetTime( THEMIM->getInput(), "time", i_resumeTime );
+    }
+    hideResumePanel();
 }
 
 void MainInterface::createMainWidget( QSettings *creationSettings )
@@ -427,7 +450,7 @@ void MainInterface::createMainWidget( QSettings *creationSettings )
     main->setContentsMargins( 0, 0, 0, 0 );
     mainLayout->setSpacing( 0 ); mainLayout->setMargin( 0 );
 
-    createContinueDialog( main );
+    createResumePanel( main );
     /* */
     stackCentralW = new QVLCStackedWidget( main );
 
@@ -744,6 +767,7 @@ void MainInterface::releaseVideoSlot( void )
     videoWidget->release();
     setVideoOnTop( false );
     setVideoFullScreen( false );
+    hideResumePanel();
 
     if( stackCentralW->currentWidget() == videoWidget )
         restoreStackOldWidget();

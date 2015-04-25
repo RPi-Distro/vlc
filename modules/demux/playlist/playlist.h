@@ -2,7 +2,7 @@
  * playlist.h:  Playlist import module common functions
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: 5f7db991eeecd7c97da3e82e7796617d29730570 $
+ * $Id: 657a34456bf4bcf1691c90477892ee3ca0aed226 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -79,8 +79,6 @@ int Import_ZPL ( vlc_object_t * );
 void Close_ZPL ( vlc_object_t * );
 
 extern input_item_t * GetCurrentItem(demux_t *p_demux);
-
-bool CheckContentType( stream_t * p_stream, const char * psz_ctype );
 
 #define STANDARD_DEMUX_INIT_MSG( msg ) do { \
     DEMUX_INIT_COMMON();                    \

@@ -2,7 +2,7 @@
  * avcodec.c: video and audio decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 2a710f3db23bd9355b50568fbcf164f65c9accae $
+ * $Id: bea5374122f072c75faaeabae078f432e8c0c7cc $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -76,6 +76,7 @@ static const char *const enc_hq_list_text[] = {
 #ifdef MERGE_FFMPEG
 # include "../../demux/avformat/avformat.h"
 # include "../../access/avio.h"
+# include "../../packetizer/avparser.h"
 #endif
 
 /*****************************************************************************
@@ -135,7 +136,13 @@ vlc_module_begin ()
     add_obsolete_string( "ffmpeg-codec" ) /* removed since 2.1.0 */
     add_string( "avcodec-codec", NULL, CODEC_TEXT, CODEC_LONGTEXT, true )
     add_obsolete_bool( "ffmpeg-hw" ) /* removed since 2.1.0 */
-    add_module( "avcodec-hw", "hw decoder", "any", HW_TEXT, HW_LONGTEXT, false )
+    add_module( "avcodec-hw", "hw decoder",
+#ifdef _WIN32
+            "none"
+#else
+            "any"
+#endif
+            , HW_TEXT, HW_LONGTEXT, false )
 #if defined(FF_THREAD_FRAME)
     add_obsolete_integer( "ffmpeg-threads" ) /* removed since 2.1.0 */
     add_integer( "avcodec-threads", 0, THREADS_TEXT, THREADS_LONGTEXT, true );
@@ -215,7 +222,7 @@ vlc_module_begin ()
                  ENC_QMAX_TEXT, ENC_QMAX_LONGTEXT, true )
     add_bool( ENC_CFG_PREFIX "trellis", false,
               ENC_TRELLIS_TEXT, ENC_TRELLIS_LONGTEXT, true )
-    add_float( ENC_CFG_PREFIX "qscale", 0,
+    add_float( ENC_CFG_PREFIX "qscale", 3,
                ENC_QSCALE_TEXT, ENC_QSCALE_LONGTEXT, true )
     add_integer( ENC_CFG_PREFIX "strict", 0,
                  ENC_STRICT_TEXT, ENC_STRICT_LONGTEXT, true )
@@ -245,6 +252,8 @@ vlc_module_begin ()
 #   include "../../demux/avformat/avformat.c"
     add_submodule ()
         AVIO_MODULE
+    add_submodule ()
+        AVPARSER_MODULE
 #endif
 vlc_module_end ()
 

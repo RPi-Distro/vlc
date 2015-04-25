@@ -2,7 +2,7 @@
  * ios2.m: iOS OpenGL ES 2 provider
  *****************************************************************************
  * Copyright (C) 2001-2014 VLC authors and VideoLAN
- * $Id: e369307920b7a8c154e4e6ddd375dfa800e335d1 $
+ * $Id: b9559d7dfb8265edf36bafefc5240dfbb068e265 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -159,7 +159,6 @@ static int Open(vlc_object_t *this)
     /* add tap gesture recognizer for DVD menus and stuff */
     sys->tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:sys->glESView
                                                                  action:@selector(tapRecognized:)];
-    sys->tapRecognizer.numberOfTapsRequired = 2;
     if (sys->viewContainer.window) {
         if (sys->viewContainer.window.rootViewController) {
             if (sys->viewContainer.window.rootViewController.view)
@@ -231,7 +230,7 @@ void Close (vlc_object_t *this)
     vout_display_sys_t *sys = vd->sys;
 
     if (sys->tapRecognizer) {
-        [sys->glESView removeGestureRecognizer:sys->tapRecognizer];
+        [sys->tapRecognizer.view removeGestureRecognizer:sys->tapRecognizer];
         [sys->tapRecognizer release];
     }
 

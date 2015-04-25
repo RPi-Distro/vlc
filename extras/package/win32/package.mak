@@ -26,8 +26,7 @@ package-win-install:
 	$(MAKE) install
 	touch $@
 
-
-package-win-common: package-win-install build-npapi
+package-win-common: package-win-install
 	mkdir -p "$(win32_destdir)"/
 
 # Executables, major libs+manifests
@@ -59,11 +58,6 @@ if BUILD_SKINS
 	cp -r $(prefix)/share/vlc/skins2 $(win32_destdir)/skins
 endif
 
-	cp "$(top_builddir)/npapi-vlc/activex/axvlc.dll.manifest" "$(win32_destdir)/"
-	cp "$(top_builddir)/npapi-vlc/installed/lib/axvlc.dll" "$(win32_destdir)/"
-	cp "$(top_builddir)/npapi-vlc/npapi/package/npvlc.dll.manifest" "$(win32_destdir)/"
-	cp "$(top_builddir)/npapi-vlc/installed/lib/npvlc.dll" "$(win32_destdir)/"
-
 # Compiler shared DLLs, when using compilers built with --enable-shared
 # The shared DLLs may not necessarily be in the first LIBRARY_PATH, we
 # should check them all.
@@ -71,11 +65,8 @@ endif
 	IFS=':' ;\
 	for x in $$library_path_list ;\
 	do \
-		test -f "$$x/libstdc++-6.dll" && cp "$$x/libstdc++-6.dll" "$(win32_destdir)/" ; \
 		test -f "$$x/libgcc_s_sjlj-1.dll" && cp "$$x/libgcc_s_sjlj-1.dll" "$(win32_destdir)/" ; \
 		test -f "$$x/libgcc_s_seh-1.dll" && cp "$$x/libgcc_s_seh-1.dll" "$(win32_destdir)/" ; \
-		test -f "$$x/libwinpthread-1.dll" && cp "$$x/libwinpthread-1.dll" "$(win32_destdir)/" ; \
-		test -f "$$x/../bin/libwinpthread-1.dll" && cp "$$x/../bin/libwinpthread-1.dll" "$(win32_destdir)/" ; \
 	done
 
 # SDK
@@ -90,17 +81,21 @@ endif
 	$(DLLTOOL) -D libvlccore.dll -l "$(win32_destdir)/sdk/lib/libvlccore.lib" -d "$(top_builddir)/src/.libs/libvlccore.dll.def" "$(prefix)/bin/libvlccore.dll"
 	echo "INPUT(libvlccore.lib)" > "$(win32_destdir)/sdk/lib/vlccore.lib"
 
-	mkdir -p "$(win32_destdir)/sdk/activex/"
-	cd $(top_builddir)/npapi-vlc && cp activex/README.TXT share/test/test.html $(win32_destdir)/sdk/activex/
-
 # Convert to DOS line endings
 	find $(win32_destdir) -type f \( -name "*xml" -or -name "*html" -or -name '*js' -or -name '*css' -or -name '*hosts' -or -iname '*txt' -or -name '*.cfg' -or -name '*.lua' \) -exec $(U2D) {} \;
 
 # Remove cruft
 	find $(win32_destdir)/plugins/ -type f \( -name '*.a' -or -name '*.la' \) -exec rm -rvf {} \;
 
+package-win-npapi: build-npapi
+	cp "$(top_builddir)/npapi-vlc/activex/axvlc.dll.manifest" "$(win32_destdir)/"
+	cp "$(top_builddir)/npapi-vlc/installed/lib/axvlc.dll" "$(win32_destdir)/"
+	cp "$(top_builddir)/npapi-vlc/npapi/package/npvlc.dll.manifest" "$(win32_destdir)/"
+	cp "$(top_builddir)/npapi-vlc/installed/lib/npvlc.dll" "$(win32_destdir)/"
+	mkdir -p "$(win32_destdir)/sdk/activex/"
+	cd $(top_builddir)/npapi-vlc && cp activex/README.TXT share/test/test.html $(win32_destdir)/sdk/activex/
 
-package-win-strip: package-win-common
+package-win-strip: package-win-common package-win-npapi
 	mkdir -p "$(win32_debugdir)"/
 	cd $(win32_destdir); find . -type f \( -name '*$(LIBEXT)' -or -name '*$(EXEEXT)' \) | while read i; \
 	do if test -n "$$i" ; then \
@@ -112,7 +107,7 @@ package-win-strip: package-win-common
 	if test -n "$(SIGNATURE)"; then \
 	  cd $(win32_destdir); find . -type f \( -name '*$(LIBEXT)' -or -name '*$(EXEEXT)' \) | while read i; \
 	  do if test -n "$$i" ; then \
-	    osslsigncode sign -certs $(SIGNATURE)/cert.cer -key $(SIGNATURE)/videolan.key -n "VLC media player" -i http://www.videolan.org/ -in "$$i" -out "$$i.sign"; \
+	    osslsigncode sign -certs $(SIGNATURE)/cert.cer -key $(SIGNATURE)/videolan.key -n "VLC media player" -i http://www.videolan.org/ -t http://timestamp.verisign.com/scripts/timstamp.dll -in "$$i" -out "$$i.sign"; \
 	    mv "$$i.sign" "$$i" ; \
 	  fi ; \
 	  done \
@@ -185,7 +180,7 @@ package-win32-exe: package-win-strip $(win32_destdir)/NSIS/UAC.dll $(win32_destd
 	eval "$$MAKENSIS $(win32_destdir)/spad.nsi"; \
 	eval "$$MAKENSIS $(win32_destdir)/vlc.win32.nsi"
 	if test -n "$(SIGNATURE)"; then \
-	    osslsigncode sign -certs $(SIGNATURE)/cert.cer -key $(SIGNATURE)/videolan.key -n "VLC media player" -i http://www.videolan.org/ -in "$(WINVERSION).exe" -out "$(WINVERSION).exe.sign"; \
+		osslsigncode sign -certs $(SIGNATURE)/cert.cer -key $(SIGNATURE)/videolan.key -n "VLC media player" -i http://www.videolan.org/ -t http://timestamp.verisign.com/scripts/timstamp.dll -in "$(WINVERSION).exe" -out "$(WINVERSION).exe.sign"; \
 	    mv "$(WINVERSION).exe.sign" "$(WINVERSION).exe" ; \
 	fi
 

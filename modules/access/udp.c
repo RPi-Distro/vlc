@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2005 VLC authors and VideoLAN
  * Copyright (C) 2007 Remi Denis-Courmont
- * $Id: 00f298919c40ba9660ddecb4b88ead6adfcd21b7 $
+ * $Id: 8139d05a0079b5e3d9506eb5010aedfa8c6b8d00 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Tristan Leteurtre <tooney@via.ecp.fr>
@@ -232,8 +232,14 @@ static int Control( access_t *p_access, int i_query, va_list args )
 static block_t *BlockUDP( access_t *p_access )
 {
     access_sys_t *sys = p_access->p_sys;
+    block_t *block;
 
-    return block_FifoGet( sys->fifo );
+    if( p_access->info.b_eof )
+        return NULL;
+
+    block = block_FifoGet( sys->fifo );
+    p_access->info.b_eof = block == NULL;
+    return block;
 }
 
 /*****************************************************************************
