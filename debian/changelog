@@ -1,4 +1,4 @@
-vlc (2.2.1-1) UNRELEASED; urgency=medium
+vlc (2.2.1-1) unstable; urgency=medium
 
   [ Sebastian Ramacher ]
   * Regenerate plugin cache using triggers. (Closes: #755154) (LP: #1328466)
@@ -6,10 +6,11 @@ vlc (2.2.1-1) UNRELEASED; urgency=medium
     - debian/vlc-nox.postrm: Remove generated cache.
     - debian/rules: remove plugins.dat generated during the build.
     - debian/vlc-nox.install.in: Do not install pre-generated plugins.dat.
-  * debian/control: Add libx265-dev to Build-Depends.
+  * debian/control: Add libx265-dev and zsh to Build-Depends.
   * debian/rules:
     - Build with -Wl,--as-needed.
     - Enable x265 plugin.
+    - Build zsh completion. (Closes: #316357)
   * debian/vlc-nox.install.in:
     - Install x265 plugin.
 
@@ -19,7 +20,7 @@ vlc (2.2.1-1) UNRELEASED; urgency=medium
     - Remove codec-schroedinger-fix-potential-buffer-overflow.patch
     -- included upstream.
 
- -- Mateusz Łukasik <mati75@linuxmint.pl>  Thu, 16 Apr 2015 19:37:11 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 25 Apr 2015 11:57:32 +0200
 
 vlc (2.2.0-1) unstable; urgency=medium
 
