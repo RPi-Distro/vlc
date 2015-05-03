@@ -87,6 +87,7 @@ confflags += \
 	--enable-samplerate \
 	--enable-schroedinger \
 	--enable-sdl \
+	--enable-sdl-image \
 	--enable-sftp \
 	--enable-shine \
 	--enable-shout \
