@@ -7,6 +7,7 @@ usr/lib/vlc/plugins/access/libvnc_plugin.so
 usr/lib/vlc/plugins/access/libxcb_screen_plugin.so
 usr/lib/vlc/plugins/audio_output/libpulse_plugin.so
 usr/lib/vlc/plugins/codec/libsdl_image_plugin.so
+usr/lib/vlc/plugins/codec/libsvgdec_plugin.so
 usr/lib/vlc/plugins/codec/libvaapi_drm_plugin.so
 usr/lib/vlc/plugins/codec/libvaapi_x11_plugin.so
 usr/lib/vlc/plugins/control/libxcb_hotkeys_plugin.so
