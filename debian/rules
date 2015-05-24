@@ -324,6 +324,3 @@ override_dh_installchangelogs:
 
 override_dh_makeshlibs:
 	dh_makeshlibs -Xusr/lib/vlc/libvlc_vdpau
-
-override_dh_builddeb:
-	dh_builddeb -- -Zxz
