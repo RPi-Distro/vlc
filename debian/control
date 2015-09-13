@@ -182,7 +182,6 @@ Depends: fonts-freefont-ttf,
 Recommends: vlc-plugin-notify (= ${binary:Version}),
             vlc-plugin-samba (= ${binary:Version}),
             xdg-utils
-Suggests: videolan-doc
 Breaks: vlc-nox (<< 2.2.0~pre2-2~),
         vlc-plugin-pulse (<< 2.2.0~pre2-2~)
 Replaces: vlc-nox (<< 2.2.0~pre2-2~),
