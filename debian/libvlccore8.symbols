@@ -206,7 +206,7 @@ libvlccore.so.8 libvlccore8 #MINVER#
  input_item_DelInfo@Base 2.0.0
  input_item_GetDuration@Base 2.0.0
  input_item_GetInfo@Base 2.0.0
- input_item_GetMeta@Base 2.0.0
+ input_item_GetMeta@Base 2.2.0
  input_item_GetName@Base 2.0.0
  input_item_GetTitleFbName@Base 2.0.0
  input_item_GetURI@Base 2.0.0
@@ -215,14 +215,14 @@ libvlccore.so.8 libvlccore8 #MINVER#
  input_item_IsArtFetched@Base 2.0.0
  input_item_IsPreparsed@Base 2.0.0
  input_item_MergeInfos@Base 2.0.0
- input_item_MetaMatch@Base 2.0.0
+ input_item_MetaMatch@Base 2.2.0
  input_item_NewExt@Base 2.0.0
  input_item_NewWithType@Base 2.0.0
  input_item_PostSubItem@Base 2.0.0
  input_item_Release@Base 2.1.0
  input_item_ReplaceInfos@Base 2.0.0
  input_item_SetDuration@Base 2.0.0
- input_item_SetMeta@Base 2.0.0
+ input_item_SetMeta@Base 2.2.0
  input_item_SetName@Base 2.0.0
  input_item_SetURI@Base 2.0.0
  input_item_WriteMeta@Base 2.0.0
@@ -532,15 +532,15 @@ libvlccore.so.8 libvlccore8 #MINVER#
  vlc_meta_AddExtra@Base 2.0.0
  vlc_meta_CopyExtraNames@Base 2.0.0
  vlc_meta_Delete@Base 2.0.0
- vlc_meta_Get@Base 2.0.0
+ vlc_meta_Get@Base 2.2.0
  vlc_meta_GetExtra@Base 2.0.0
  vlc_meta_GetExtraCount@Base 2.0.0
  vlc_meta_GetStatus@Base 2.0.0
  vlc_meta_Merge@Base 2.0.0
  vlc_meta_New@Base 2.0.0
- vlc_meta_Set@Base 2.0.0
+ vlc_meta_Set@Base 2.2.0
  vlc_meta_SetStatus@Base 2.0.0
- vlc_meta_TypeToLocalizedString@Base 2.0.0
+ vlc_meta_TypeToLocalizedString@Base 2.2.0
  vlc_mime_Ext2Mime@Base 2.1.0
  vlc_mkdir@Base 2.0.0
  vlc_mkstemp@Base 2.0.0
