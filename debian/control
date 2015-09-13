@@ -229,8 +229,6 @@ Package: vlc-nox
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Suggests: libdvdcss2
-Breaks: vlc (<< 2.1.0)
-Replaces: vlc (<< 2.1.0)
 Provides: mp3-decoder
 Description: multimedia player and streamer (without X support)
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
