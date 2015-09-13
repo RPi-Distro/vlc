@@ -1,3 +1,13 @@
+vlc (2.2.0~rc2-2+deb8u1) jessie-security; urgency=high
+
+  * Non-maintainer upload by the Security Team.
+  * Add CVE-2015-5949.patch patch.
+    CVE-2015-5949: Insufficient restrictions on a writable buffer in the 3GP
+    file format parser can be exploited to execute arbitrary code via a
+    specially crafted 3GP file.
+
+ -- Salvatore Bonaccorso <carnil@debian.org>  Wed, 19 Aug 2015 15:45:17 +0200
+
 vlc (2.2.0~rc2-2) unstable; urgency=medium
 
   * debian/patches: Apply upstream patches for security vulnerabilities.
