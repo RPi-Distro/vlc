@@ -342,12 +342,3 @@ Description: Samba plugin for VLC
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
  podcasts, and multimedia streams from various network sources.
-
-Package: vlc-plugin-pulse
-Architecture: all
-Depends: vlc (>= ${source:Version}),
-         vlc-data (= ${source:Version}),
-         ${misc:Depends}
-Description: transitional dummy package for vlc
- This is a transitional dummy package for vlc. The PulseAudio plugin is now
- included in vlc. This package can safely be removed.
