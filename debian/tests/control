@@ -1,0 +1,19 @@
+Tests: vlc-nox
+Depends: vlc-nox
+Restrictions: allow-stderr
+
+Tests: vlc
+Depends: vlc
+Restrictions: allow-stderr
+
+Tests: vlc-all
+Depends:
+ vlc,
+ vlc-plugin-fluidsynth,
+ vlc-plugin-jack,
+ vlc-plugin-notify,
+ vlc-plugin-sdl,
+ vlc-plugin-svg,
+ vlc-plugin-zvbi,
+ vlc-plugin-samba
+Restrictions: allow-stderr
