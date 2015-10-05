@@ -241,9 +241,9 @@ Description: multimedia player and streamer (without X support)
  .
  VLC has support for on-the-fly transcoding of audio and video formats, either
  for broadcasting purposes or for movie format transformations. Support for
- most output methods is provided by this package, but features can be added
- by installing additional audio plugins (vlc-plugin-pulse, vlc-plugin-sdl,
- vlc-plugin-jack) or video plugins (vlc-plugin-sdl).
+ most output methods is provided by this package, but features can be added by
+ installing additional audio plugins (vlc-plugin-sdl,  vlc-plugin-jack) or
+ video plugins (vlc-plugin-sdl).
  .
  This package contains a version of VLC that does not require X and that is
  thus suitable for headless servers.
