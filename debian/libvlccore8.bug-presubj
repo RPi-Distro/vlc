@@ -3,8 +3,12 @@ Debugging and bug reporting advices:
 VLC media player is highly modular. So in case a feature is not working
 at all, you need to check that the module handling it is present.
 
+ * Make sure that the plugins cache in /usr/lib/vlc/plugins/plugins.dat is
+   up-to-date. Run "/usr/lib/vlc/vlc-cache-gen -f /usr/lib/vlc/plugins" as
+   root to regenerate the cache.
 
- * Use "rm ~/.cache/vlc/plugins-*.dat" to remove your plugins cache.
+ * If you have set custom plugin paths (e.g. with VLC_PLUGIN_PATH), remove
+   caches in these paths.
 
  * Check that modules are correctly loaded: "vlc -vvv --color --list"
    If you have yellow warning lines at the top, that could well be the
