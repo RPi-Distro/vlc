@@ -1,6 +1,12 @@
 vlc (2.2.1-5) UNRELEASED; urgency=medium
 
-  * debian/control: Update Breaks + Replaces. (Closes: #799594)
+  * debian/control:
+    - Update Breaks + Replaces. (Closes: #799594)
+    - Remove vlc-plugin-pulse from Description.
+  * Add DEP-8 tests
+  * debian/libvlccore8.bug-control: Update libavutil package name.
+  * debian/libvlccore8.bug-presubj: Mention global plugins cache and
+    VLC_PLUGIN_PATH. (Closes: #801439)
 
  -- Sebastian Ramacher <sramacher@debian.org>  Sun, 20 Sep 2015 22:43:12 +0200
 
