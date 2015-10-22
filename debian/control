@@ -179,7 +179,7 @@ Depends: fonts-freefont-ttf,
          vlc-nox (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
-         libqt5xcbqpa5
+         libqt5xcbqpa5 | libqt5gui5 (<< 5.5.0~)
 Recommends: vlc-plugin-notify (= ${binary:Version}),
             vlc-plugin-samba (= ${binary:Version}),
             xdg-utils
