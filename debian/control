@@ -178,7 +178,8 @@ Architecture: any
 Depends: fonts-freefont-ttf,
          vlc-nox (= ${binary:Version}),
          ${misc:Depends},
-         ${shlibs:Depends}
+         ${shlibs:Depends},
+         libqt5xcbqpa5
 Recommends: vlc-plugin-notify (= ${binary:Version}),
             vlc-plugin-samba (= ${binary:Version}),
             xdg-utils
