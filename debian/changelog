@@ -3,10 +3,16 @@ vlc (2.2.1-5) UNRELEASED; urgency=medium
   * debian/control:
     - Update Breaks + Replaces. (Closes: #799594)
     - Remove vlc-plugin-pulse from Description.
+    - Add libxi-dev to B-D for debian/patches/unsubscribe-disable-motion.patch.
   * Add DEP-8 tests
   * debian/libvlccore8.bug-control: Update libavutil package name.
   * debian/libvlccore8.bug-presubj: Mention global plugins cache and
     VLC_PLUGIN_PATH. (Closes: #801439)
+  * debian/patches:
+    - unsubscribe-disable-motion.patch: Unsubscribe disable motion and
+      XI2 mouse events. Fixes mouse event issues with Qt 5.5.
+    - alsa-fix-changing-audio-device.patch: Fix changing of audio devices.
+      (Closes: #801448)
 
  -- Sebastian Ramacher <sramacher@debian.org>  Sun, 20 Sep 2015 22:43:12 +0200
 
