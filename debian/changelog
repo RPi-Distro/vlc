@@ -1,4 +1,4 @@
-vlc (2.2.1-5) UNRELEASED; urgency=medium
+vlc (2.2.1-5) unstable; urgency=medium
 
   * debian/control:
     - Update Breaks + Replaces. (Closes: #799594)
@@ -13,8 +13,10 @@ vlc (2.2.1-5) UNRELEASED; urgency=medium
       XI2 mouse events. Fixes mouse event issues with Qt 5.5.
     - alsa-fix-changing-audio-device.patch: Fix changing of audio devices.
       (Closes: #801448)
+  * debian/vlc-data.{postinst,maintscript}, debian/vlc.postinst: Remove
+    obsolete maintainer scripts.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sun, 20 Sep 2015 22:43:12 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 27 Oct 2015 23:45:06 +0100
 
 vlc (2.2.1-4) unstable; urgency=medium
 
