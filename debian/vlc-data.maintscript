@@ -1,2 +1,0 @@
-rm_conffile /etc/vlc/lua/http/dialogs/.hosts 2.1.1
-rm_conffile /etc/vlc/lua/http/.hosts 2.1.1
