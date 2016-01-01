@@ -2,19 +2,8 @@
 
 export DEB_LDFLAGS_MAINT_APPEND=-Wl,--as-needed
 
-DEB_BUILD_GNU_TYPE ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
-DEB_HOST_ARCH      ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
-DEB_HOST_ARCH_CPU  ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_CPU)
-DEB_HOST_ARCH_OS   ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_OS)
-DEB_HOST_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-VERSION = $(shell dpkg-parsechangelog|sed -n 's/^Version: //p')
-DEBIAN_VERSION = $(shell echo $(VERSION)|sed -nr 's/[^:]+://; s/.*-([^-]+$$)/\1/p')
-
-ifeq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
-confflags := --build=$(DEB_BUILD_GNU_TYPE)
-else
-confflags := --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE)
-endif
+include /usr/share/dpkg/pkg-info.mk
+include /usr/share/dpkg/architecture.mk
 
 ifneq (,$(filter debug,$(DEB_BUILD_OPTIONS)))
 confflags += --enable-debug
@@ -24,13 +13,8 @@ ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
 confflags += --disable-optimizations --disable-mmx --disable-sse --disable-altivec
 endif
 
-CFLAGS := $(shell dpkg-buildflags --get CFLAGS)
-CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS)
-
 # configure flags
 confflags += \
-	CPPFLAGS="$(shell dpkg-buildflags --get CPPFLAGS)" \
-	LDFLAGS="$(shell dpkg-buildflags --get LDFLAGS)" \
 	--config-cache \
 	--disable-maintainer-mode \
 	--disable-silent-rules \
@@ -40,7 +24,7 @@ confflags += \
 	--docdir=/usr/share/doc/vlc-nox \
 	--libdir=/usr/lib \
 	--sysconfdir=/etc \
-	--with-binary-version=$(DEBIAN_VERSION) \
+	--with-binary-version=$(DEB_VERSION) \
 	$(NULL)
 # configure features
 confflags += \
@@ -233,14 +217,12 @@ endif
 
 # PowerPCSPE specific optimizations
 ifeq (,$(filter-out powerpcspe,$(DEB_HOST_ARCH)))
-CFLAGS += -mtune=8548
-CXXFLAGS += -mtune=8548
+DEB_CFLAGS_MAINT_APPEND += -mtune=8548
+DEB_CXXFLAGS_MAINT_APPEND += -mtune=8548
 endif
 
-confflags += \
-	CFLAGS="$(CFLAGS)" \
-	CXXFLAGS="$(CXXFLAGS)" \
-	$(NULL)
+export DEB_CFLAGS_MAINT_APPEND
+export DEB_CXXFLAGS_MAINT_APPEND
 
 %:
 	dh $@ --parallel --with autoreconf
