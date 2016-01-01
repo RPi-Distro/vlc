@@ -12,7 +12,7 @@ Uploaders: Clément Stenac <zorglub@debian.org>,
            Mateusz Łukasik <mati75@linuxmint.pl>,
            Sebastian Ramacher <sramacher@debian.org>
 Build-Depends: autopoint,
-               debhelper (>= 9),
+               debhelper (>= 9.20151219),
                dh-autoreconf,
                dh-buildinfo,
                gettext,
@@ -213,18 +213,6 @@ Description: Common data for VLC
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
  podcasts, and multimedia streams from various network sources.
-
-Package: vlc-dbg
-Section: debug
-Priority: extra
-Architecture: any
-Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}
-Description: debugging symbols for vlc
- VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
- DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
- podcasts, and multimedia streams from various network sources.
- .
- This package contains the debugging symbols for vlc.
 
 Package: vlc-nox
 Architecture: any
