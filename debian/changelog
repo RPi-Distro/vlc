@@ -1,19 +1,19 @@
-vlc (2.2.1-1~deb8u1) UNRELEASED; urgency=medium
+vlc (2.2.1-1~deb8u1) jessie; urgency=medium
 
   [ Sebastian Ramacher ]
   * New upstream release.
   * debian/patches: Removed
     codec-schroedinger-fix-potential-buffer-overflow.patch,
     demux-mp4-fix-buffer-overflow-in-parsing-of-string-b.patch, and
-    stream_out-rtp-don-t-use-VLA-for-user-controlled-dat.patch. They are no
-    longer needed.
+    stream_out-rtp-don-t-use-VLA-for-user-controlled-dat.patch. They are
+    included upstream.
   * debian/libvlccore8.symbols: Bump version requirements for meta data
     change. (Closes: #798763, #798899)
 
   [ Benjamin Drung ]
   * drop/rules: Drop removed --enable-glx configure flag.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sat, 25 Apr 2015 23:00:04 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 01 Jan 2016 20:21:31 +0100
 
 vlc (2.2.0~rc2-2+deb8u1) jessie-security; urgency=high
 
