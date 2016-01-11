@@ -23,14 +23,10 @@ endif
 # configure flags
 confflags += \
 	--config-cache \
-	--disable-maintainer-mode \
-	--disable-silent-rules \
 	--disable-update-check \
 	--enable-fast-install \
-	--prefix=/usr \
 	--docdir=/usr/share/doc/vlc-data \
 	--libdir=/usr/lib \
-	--sysconfdir=/etc \
 	--with-binary-version=$(DEB_VERSION) \
 	$(NULL)
 # configure features
