@@ -143,12 +143,12 @@ Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: multimedia player and streamer library
- This package contains the shared library required by applications using VLC
- features.
- .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
  podcasts, and multimedia streams from various network sources.
+ .
+ This package contains the shared library required by applications using VLC
+ features.
 
 Package: libvlccore-dev
 Section: libdevel
@@ -156,12 +156,12 @@ Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Depends: libvlccore8 (= ${binary:Version}), pkg-config, ${misc:Depends}
 Description: development files for libvlccore
- This package contains headers and a static library required to build plugins
- for VLC.
- .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
  podcasts, and multimedia streams from various network sources.
+ .
+ This package contains headers and a static library required to build plugins
+ for VLC.
 
 Package: libvlccore8
 Section: libs
@@ -172,11 +172,11 @@ Depends: libproxy-tools,
          ${misc:Depends},
          ${shlibs:Depends}
 Description: base library for VLC and its modules
- This package contains the shared library required by VLC modules and libvlc.
- .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
  podcasts, and multimedia streams from various network sources.
+ .
+ This package contains the shared library required by VLC modules and libvlc.
 
 Package: vlc
 Architecture: any
@@ -213,11 +213,12 @@ Package: vlc-data
 Depends: ${misc:Depends}
 Architecture: all
 Description: Common data for VLC
- Localisations, HTTP interface files, Lua scripts for VLC media player
- .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
  podcasts, and multimedia streams from various network sources.
+ .
+ This package contains localisations, HTTP interface files, and Lua scripts for
+ VLC media player.
 
 Package: vlc-nox
 Architecture: any
@@ -250,77 +251,77 @@ Depends: fluid-soundfont-gm | musescore-soundfont-gm,
          ${shlibs:Depends}
 Enhances: vlc
 Description: FluidSynth plugin for VLC
- This plugin adds support for playing MIDI file via the FluidSynth software
- synthesizer to the VLC media player.
- .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
  podcasts, and multimedia streams from various network sources.
+ .
+ This plugin adds support for playing MIDI file via the FluidSynth software
+ synthesizer to the VLC media player.
 
 Package: vlc-plugin-jack
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
 Description: Jack audio plugins for VLC
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
  These plugins add support for JACK to the VLC media player. To
  activate the audio output module, use the `--aout jack' flag or
  select the `jack' audio output plugin from the preferences menu.
  For the jack input, use `vlc jack://channels=...:ports=...'
- .
- VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
- DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
- podcasts, and multimedia streams from various network sources.
 
 Package: vlc-plugin-notify
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
 Description: LibNotify plugin for VLC
- This plugin adds support for libnotify track change notification to the
- VLC media player.
- .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
  podcasts, and multimedia streams from various network sources.
+ .
+ This plugin adds support for libnotify track change notification to the
+ VLC media player.
 
 Package: vlc-plugin-sdl
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
 Description: SDL video and audio output plugin for VLC
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
  This plugin adds support for the Simple DirectMedia Layer library to
  the VLC media player. To activate it, use the `--vout sdl' or
  `--aout sdl' flags or select the `sdl' video or audio output plugin
  from the preferences menu.
- .
- VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
- DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
- podcasts, and multimedia streams from various network sources.
 
 Package: vlc-plugin-svg
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
 Description: SVG plugin for VLC
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
  This plugin allows you to render SVG graphics on top of the video. It is a text
  renderer, and must be activated through the '--text-renderer svg' option. When
  sent non-SVG data, it will convert it to SVG using a template that can be
  specified by the svg-template-file option.
- .
- VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
- DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
- podcasts, and multimedia streams from various network sources.
 
 Package: vlc-plugin-zvbi
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
 Description: VBI teletext plugin for VLC
- This plugin adds support for VBI teletext to the VLC media player.
- .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
  podcasts, and multimedia streams from various network sources.
+ .
+ This plugin adds support for VBI teletext to the VLC media player.
 
 Package: vlc-plugin-samba
 Architecture: linux-any kfreebsd-any
@@ -329,8 +330,8 @@ Breaks: vlc-nox (<< 2.2.0~pre2-2~)
 Replaces: vlc-nox (<< 2.2.0~pre2-2~)
 Enhances: vlc
 Description: Samba plugin for VLC
- This plugin adds support to access Samba shares from the VLC media player.
- .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
  podcasts, and multimedia streams from various network sources.
+ .
+ This plugin adds support to access Samba shares from the VLC media player.
