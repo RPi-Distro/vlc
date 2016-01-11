@@ -127,6 +127,7 @@ Vcs-Browser: https://anonscm.debian.org/cgit/pkg-multimedia/vlc.git
 Package: libvlc-dev
 Section: libdevel
 Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
 Depends: libvlc5 (= ${binary:Version}), pkg-config, ${misc:Depends}
 Description: development files for libvlc
  This package contains headers and a static library required to build
@@ -139,7 +140,8 @@ Description: development files for libvlc
 Package: libvlc5
 Section: libs
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, libvlccore8 (= ${binary:Version})
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: multimedia player and streamer library
  This package contains the shared library required by applications using VLC
  features.
@@ -151,6 +153,7 @@ Description: multimedia player and streamer library
 Package: libvlccore-dev
 Section: libdevel
 Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
 Depends: libvlccore8 (= ${binary:Version}), pkg-config, ${misc:Depends}
 Description: development files for libvlccore
  This package contains headers and a static library required to build plugins
@@ -163,6 +166,7 @@ Description: development files for libvlccore
 Package: libvlccore8
 Section: libs
 Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
 Depends: libproxy-tools,
          vlc-data (= ${source:Version}),
          ${misc:Depends},
@@ -176,6 +180,7 @@ Description: base library for VLC and its modules
 
 Package: vlc
 Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
 Depends: fonts-freefont-ttf,
          vlc-nox (= ${binary:Version}),
          ${misc:Depends},
@@ -216,7 +221,8 @@ Description: Common data for VLC
 
 Package: vlc-nox
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
 Suggests: libdvdcss2
 Provides: mp3-decoder
 Description: multimedia player and streamer (without X support)
@@ -240,7 +246,6 @@ Description: multimedia player and streamer (without X support)
 Package: vlc-plugin-fluidsynth
 Architecture: any
 Depends: fluid-soundfont-gm | musescore-soundfont-gm,
-         vlc-nox (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
 Enhances: vlc
@@ -254,7 +259,7 @@ Description: FluidSynth plugin for VLC
 
 Package: vlc-plugin-jack
 Architecture: any
-Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
 Description: Jack audio plugins for VLC
  These plugins add support for JACK to the VLC media player. To
@@ -268,7 +273,7 @@ Description: Jack audio plugins for VLC
 
 Package: vlc-plugin-notify
 Architecture: any
-Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
 Description: LibNotify plugin for VLC
  This plugin adds support for libnotify track change notification to the
@@ -280,7 +285,7 @@ Description: LibNotify plugin for VLC
 
 Package: vlc-plugin-sdl
 Architecture: any
-Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
 Description: SDL video and audio output plugin for VLC
  This plugin adds support for the Simple DirectMedia Layer library to
@@ -294,7 +299,7 @@ Description: SDL video and audio output plugin for VLC
 
 Package: vlc-plugin-svg
 Architecture: any
-Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
 Description: SVG plugin for VLC
  This plugin allows you to render SVG graphics on top of the video. It is a text
@@ -308,7 +313,7 @@ Description: SVG plugin for VLC
 
 Package: vlc-plugin-zvbi
 Architecture: any
-Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
 Description: VBI teletext plugin for VLC
  This plugin adds support for VBI teletext to the VLC media player.
@@ -319,9 +324,9 @@ Description: VBI teletext plugin for VLC
 
 Package: vlc-plugin-samba
 Architecture: linux-any kfreebsd-any
+Depends: ${misc:Depends}, ${shlibs:Depends}
 Breaks: vlc-nox (<< 2.2.0~pre2-2~)
 Replaces: vlc-nox (<< 2.2.0~pre2-2~)
-Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
 Description: Samba plugin for VLC
  This plugin adds support to access Samba shares from the VLC media player.

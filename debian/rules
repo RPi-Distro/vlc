@@ -5,6 +5,13 @@ export DEB_LDFLAGS_MAINT_APPEND=-Wl,--as-needed
 include /usr/share/dpkg/pkg-info.mk
 include /usr/share/dpkg/architecture.mk
 
+pluginpackages  = fluidsynth
+pluginpackages += jack
+pluginpackages += notify
+pluginpackages += sdl
+pluginpackages += svg
+pluginpackages += zvbi
+
 ifneq (,$(filter debug,$(DEB_BUILD_OPTIONS)))
 confflags += --enable-debug
 endif
@@ -21,7 +28,7 @@ confflags += \
 	--disable-update-check \
 	--enable-fast-install \
 	--prefix=/usr \
-	--docdir=/usr/share/doc/vlc-nox \
+	--docdir=/usr/share/doc/vlc-data \
 	--libdir=/usr/lib \
 	--sysconfdir=/etc \
 	--with-binary-version=$(DEB_VERSION) \
@@ -168,6 +175,7 @@ endif
 # Linux and kFreeBSD specific flags (disabled on Hurd)
 ifeq (,$(filter-out linux kfreebsd,$(DEB_HOST_ARCH_OS)))
 confflags += --enable-libva --enable-vcd --enable-smbclient
+pluginpackages += samba
 else
 confflags += --disable-libva --disable-vcd --disable-smbclient
 removeplugins += cdda libvaapi smbclient vcd
@@ -273,7 +281,11 @@ override_dh_install:
 	rm -f debian/tmp/usr/share/man/man1/vlc-config.1
 	# Remove additional license files
 	find debian/tmp -name LICENSE -delete
-	# Install stuff
+	# Remove examples installed in -dev packages
+	rm -rf debian/tmp/usr/share/doc/vlc-data/libvlc
+	# Contains only a 404 link
+	find debian/tmp -name bugreport-howto.txt -delete
+	# Install
 	dh_install --fail-missing
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
 	# Check that we did not install a plugin linked with libX11 or
@@ -296,13 +308,15 @@ endif
 override_dh_strip:
 	dh_strip --ddeb-migration='vlc-dbg (<< 2.2.1-6)'
 
-override_dh_installdocs:
-	dh_installdocs -p vlc-data
-	dh_installdocs -p vlc-nox
-
 override_dh_installchangelogs:
-	dh_installchangelogs NEWS -p vlc-data
-	dh_installchangelogs NEWS -p vlc-nox
+	dh_installchangelogs NEWS $(pluginpackages:%=-Nvlc-plugin-%)
+
+override_dh_installdocs:
+	dh_installdocs $(pluginpackages:%=-Nvlc-plugin-%)
+	dh_installdocs --link-doc=libvlccore8 --remaining-packages
 
 override_dh_makeshlibs:
 	dh_makeshlibs -Xusr/lib/vlc/libvlc_vdpau
+
+override_dh_bugfiles:
+	dh_bugfiles -A

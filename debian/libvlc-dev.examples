@@ -1,0 +1,5 @@
+doc/libvlc/QtPlayer
+doc/libvlc/gtk_player.c
+doc/libvlc/libvlc_DVD_ripper.c
+doc/libvlc/wx_player.cpp
+doc/libvlc/vlc-thumb.c
