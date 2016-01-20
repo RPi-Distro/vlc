@@ -222,6 +222,7 @@ Description: Common data for VLC
 
 Package: vlc-nox
 Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Suggests: libdvdcss2
@@ -246,6 +247,7 @@ Description: multimedia player and streamer (without X support)
 
 Package: vlc-plugin-fluidsynth
 Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
 Depends: fluid-soundfont-gm | musescore-soundfont-gm,
          ${misc:Depends},
          ${shlibs:Depends}
@@ -260,6 +262,7 @@ Description: FluidSynth plugin for VLC
 
 Package: vlc-plugin-jack
 Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
 Description: Jack audio plugins for VLC
@@ -274,6 +277,7 @@ Description: Jack audio plugins for VLC
 
 Package: vlc-plugin-notify
 Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
 Description: LibNotify plugin for VLC
@@ -286,6 +290,7 @@ Description: LibNotify plugin for VLC
 
 Package: vlc-plugin-sdl
 Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
 Description: SDL video and audio output plugin for VLC
@@ -300,6 +305,7 @@ Description: SDL video and audio output plugin for VLC
 
 Package: vlc-plugin-svg
 Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
 Description: SVG plugin for VLC
@@ -314,6 +320,7 @@ Description: SVG plugin for VLC
 
 Package: vlc-plugin-zvbi
 Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
 Description: VBI teletext plugin for VLC
@@ -325,6 +332,7 @@ Description: VBI teletext plugin for VLC
 
 Package: vlc-plugin-samba
 Architecture: linux-any kfreebsd-any
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Breaks: vlc-nox (<< 2.2.0~pre2-2~)
 Replaces: vlc-nox (<< 2.2.0~pre2-2~)
