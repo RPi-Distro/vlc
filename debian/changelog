@@ -1,6 +1,18 @@
 vlc (2.2.1-6) UNRELEASED; urgency=medium
 
-  * 
+  * Migrate to automatic debug packages.
+  * Tell reportbug to report bugs against src:vlc and install reportbug
+    control files in every package.
+  * Remove some of the /usr/share/doc/<pkg> symlinks to clean up dependencies.
+  * debian/vlc.menu: Removed since vlc contains a desktop file.
+  * debian/rules:
+    - Remove some parts that are handled by dpkg-dev and
+      debhelper.
+    - Install NEWS as upstream changelog.
+    - Remove options passed twice to configure.
+  * debian/README.{Debian,source}: Removed, outdated.
+  * debian/libvlc-dev.examples: Install programming examples.
+  * debian/{vlc.,source/}lintian-overrides: Override false positives.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Sun, 20 Dec 2015 00:47:31 +0100
 
