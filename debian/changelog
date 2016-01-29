@@ -13,6 +13,8 @@ vlc (2.2.1-6) UNRELEASED; urgency=medium
   * debian/README.{Debian,source}: Removed, outdated.
   * debian/libvlc-dev.examples: Install programming examples.
   * debian/{vlc.,source/}lintian-overrides: Override false positives.
+  * debian/NEWS: Fix spelling error.
+  * debian/control: Update Vcs-Git.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Sun, 20 Dec 2015 00:47:31 +0100
 
