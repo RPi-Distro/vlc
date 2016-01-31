@@ -302,7 +302,7 @@ endif
 	dh_buildinfo -p vlc-nox
 
 override_dh_strip:
-	dh_strip --ddeb-migration='vlc-dbg (<< 2.2.1-6)'
+	dh_strip --ddeb-migration='vlc-dbg (<< 2.2.2-1)'
 
 override_dh_installchangelogs:
 	dh_installchangelogs NEWS $(pluginpackages:%=-Nvlc-plugin-%)
