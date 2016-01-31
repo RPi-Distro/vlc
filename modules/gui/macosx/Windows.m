@@ -2,7 +2,7 @@
  * Windows.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012-2014 VLC authors and VideoLAN
- * $Id: 331da6158e814dd141d4403357b7d5ef340d594b $
+ * $Id: a8f4f78f2e5c44e4c684fd55bd54ae6ab0df3df8 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -335,6 +335,9 @@
 
     if (b_nativeFullscreenMode) {
         [self setCollectionBehavior: NSWindowCollectionBehaviorFullScreenPrimary];
+    } else if (OSX_EL_CAPITAN) {
+        // Native fullscreen seems to be default on El Capitan, this disables it explicitely
+        [self setCollectionBehavior: NSWindowCollectionBehaviorFullScreenAuxiliary];
     }
 
 

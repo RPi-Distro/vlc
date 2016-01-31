@@ -1,8 +1,8 @@
 /*****************************************************************************
  * ExtensionsDialogProvider.m: Mac OS X Extensions Dialogs
  *****************************************************************************
- * Copyright (C) 2010-2013 VLC authors and VideoLAN
- * $Id: c7d6d08e9cd0d97dd60ddc8805e9ab1c288c1f55 $
+ * Copyright (C) 2010-2015 VLC authors and VideoLAN
+ * $Id: 7855d308928d657043f762d3af6b912ddd4aefb9 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan org>
  *          Brendon Justin <brendonjustin@gmail.com>,
@@ -111,6 +111,7 @@ static NSView *createControlFromWidget(extension_widget_t *widget, id self)
             VLCDialogList *list = [[VLCDialogList alloc] init];
             [list setUsesAlternatingRowBackgroundColors:YES];
             [list setHeaderView:nil];
+            [list setAllowsMultipleSelection:YES];
             [scrollView setDocumentView:list];
             [scrollView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
 
@@ -191,9 +192,9 @@ static void updateControlFromWidget(NSView *control, extension_widget_t *widget,
         {
             assert([control isKindOfClass:[NSButton class]]);
             NSButton *button = (NSButton *)control;
-            if (!widget->psz_text)
-                break;
-            [button setTitle:[NSString stringWithUTF8String:widget->psz_text]];
+            [button setTitle:toNSStr(widget->psz_text)];
+            if (widget->type == EXTENSION_WIDGET_CHECK_BOX)
+                [button setState:widget->b_checked ? NSOnState : NSOffState];
             break;
         }
         case EXTENSION_WIDGET_DROPDOWN:
@@ -203,7 +204,8 @@ static void updateControlFromWidget(NSView *control, extension_widget_t *widget,
             [popup removeAllItems];
             struct extension_widget_value_t *value;
             for (value = widget->p_values; value != NULL; value = value->p_next)
-                [popup addItemWithTitle:[NSString stringWithUTF8String:value->psz_text]];
+                [[popup menu] addItemWithTitle:toNSStr(value->psz_text) action:nil keyEquivalent:@""];
+
             [popup synchronizeTitleAndSelectedItem];
             [self popUpSelectionChanged:popup];
             break;
@@ -340,7 +342,10 @@ static ExtensionsDialogProvider *_o_sharedInstance = nil;
     extension_widget_t *widget = [button widget];
 
     vlc_mutex_lock(&widget->p_dialog->lock);
-    extension_WidgetClicked(widget->p_dialog, widget);
+    if (widget->type == EXTENSION_WIDGET_BUTTON)
+        extension_WidgetClicked(widget->p_dialog, widget);
+    else
+        widget->b_checked = [button state] == NSOnState;
     vlc_mutex_unlock(&widget->p_dialog->lock);
 }
 
@@ -365,8 +370,9 @@ static ExtensionsDialogProvider *_o_sharedInstance = nil;
 
     struct extension_widget_value_t *value;
     unsigned i = 0;
+    NSIndexSet *selectedIndexes = [list selectedRowIndexes];
     for (value = [list widget]->p_values; value != NULL; value = value->p_next, i++)
-        value->b_selected = (i == [list selectedRow]);
+        value->b_selected = (YES == [selectedIndexes containsIndex:i]);
 }
 
 - (void)popUpSelectionChanged:(id)sender
@@ -439,7 +445,7 @@ static ExtensionsDialogProvider *_o_sharedInstance = nil;
             }
 
             VLCDialogGridView *gridView = (VLCDialogGridView *)[dialogWindow contentView];
-            [gridView addSubview:control atRow:row column:col rowSpan:vsp colSpan:hsp];
+            [gridView updateSubview:control atRow:row column:col rowSpan:vsp colSpan:hsp];
 
             widget->b_update = false;
         }

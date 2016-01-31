@@ -763,6 +763,9 @@ static int Open( vlc_object_t * p_this )
     return VLC_SUCCESS;
 
 error:
+    if( stream_Tell( p_demux->s ) > 0 )
+        stream_Seek( p_demux->s, 0 );
+
     if( p_sys->p_root )
     {
         MP4_BoxFree( p_demux->s, p_sys->p_root );
@@ -3929,6 +3932,7 @@ static int ReInitDecoder( demux_t *p_demux, mp4_track_t *p_track )
 
     i_sample = p_track->i_sample;
     es_out_Del( p_demux->out, p_track->p_es );
+    p_track->p_es = NULL;
     es_format_Clean( &p_track->fmt );
 
     if( b_smooth )
@@ -3942,8 +3946,8 @@ static int ReInitDecoder( demux_t *p_demux, mp4_track_t *p_track )
     p_track->b_selected = true;
     p_track->b_ok = true;
     p_track->b_enable = true;
-
-    p_track->p_es = es_out_Add( p_demux->out, &p_track->fmt );
+    if(!p_track->p_es)
+        p_track->p_es = es_out_Add( p_demux->out, &p_track->fmt );
     p_track->b_codec_need_restart = false;
 
     return VLC_SUCCESS;
@@ -4864,13 +4868,16 @@ static int LeafParseTRUN( demux_t *p_demux, mp4_track_t *p_track,
             es_out_Control( p_demux->out, ES_OUT_SET_PCR, VLC_TS_0 + i_nzdts );
         }
 
-        if ( p_track->p_es )
+        if ( p_block )
         {
-            p_block->i_dts = VLC_TS_0 + i_nzdts;
-            p_block->i_pts = VLC_TS_0 + i_nzpts;
-            es_out_Send( p_demux->out, p_track->p_es, p_block );
+            if ( p_track->p_es )
+            {
+                p_block->i_dts = VLC_TS_0 + i_nzdts;
+                p_block->i_pts = VLC_TS_0 + i_nzpts;
+                es_out_Send( p_demux->out, p_track->p_es, p_block );
+            }
+            else block_Release( p_block );
         }
-        else free( p_block );
 
         chunk_size += len;
     }
@@ -5143,6 +5150,7 @@ error:
         msg_Err( p_demux, "mdat had still %"PRIu32" bytes unparsed as samples",
                  p_sys->context.i_mdatbytesleft );
         stream_ReadU32( p_demux->s, NULL, p_sys->context.i_mdatbytesleft );
+        p_sys->context.i_mdatbytesleft = 0;
     }
     p_sys->context.i_current_box_type = 0;
 
@@ -5367,6 +5375,7 @@ end:
     {
         msg_Warn( p_demux, "mdat had still %"PRIu32" bytes unparsed as samples", p_sys->context.i_mdatbytesleft - 8 );
         stream_ReadU32( p_demux->s, NULL, p_sys->context.i_mdatbytesleft );
+        p_sys->context.i_mdatbytesleft = 0;
     }
 
     p_sys->context.i_current_box_type = 0;

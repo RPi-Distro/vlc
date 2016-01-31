@@ -51,4 +51,6 @@ libvdpau_display_plugin_la_CFLAGS = $(AM_CFLAGS) $(XCB_CFLAGS)
 libvdpau_display_plugin_la_LIBADD = libvlc_vdpau.la \
 	../../video_output/libvlc_xcb_events.la \
 	$(AM_LIBADD) $(X_LIBS) $(X_PRE_LIBS) -lX11 $(XCB_LIBS)
+if HAVE_XCB
 vdpau_LTLIBRARIES += libvdpau_display_plugin.la
+endif

@@ -2,7 +2,7 @@
  * libavi.c : LibAVI
  *****************************************************************************
  * Copyright (C) 2001 VLC authors and VideoLAN
- * $Id: d0cfe714168642e90d09d6b72e1b0c986f051146 $
+ * $Id: 44aa99a2e3b208d5bda78b662e56c878012f122d $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -126,7 +126,7 @@ static int AVI_ChunkRead_list( stream_t *s, avi_chunk_t *p_container )
         return VLC_EGENERIC;
     }
 
-    stream_Control( s, STREAM_CAN_FASTSEEK, &b_seekable );
+    stream_Control( s, STREAM_CAN_SEEK, &b_seekable );
 
     p_container->list.i_type = GetFOURCC( p_peek + 8 );
 
@@ -1051,7 +1051,7 @@ int AVI_ChunkReadRoot( stream_t *s, avi_chunk_t *p_root )
     avi_chunk_t      *p_chk;
     bool b_seekable;
 
-    stream_Control( s, STREAM_CAN_FASTSEEK, &b_seekable );
+    stream_Control( s, STREAM_CAN_SEEK, &b_seekable );
 
     p_list->i_chunk_pos  = 0;
     p_list->i_chunk_size = stream_Size( s );

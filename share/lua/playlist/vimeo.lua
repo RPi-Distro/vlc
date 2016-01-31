@@ -22,17 +22,6 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
 --]]
 
-function get_prefres()
-    local prefres = -1
-    if vlc.var and vlc.var.inherit then
-        prefres = vlc.var.inherit(nil, "preferred-resolution")
-        if prefres == nil then
-            prefres = -1
-        end
-    end
-    return prefres
-end
-
 -- Probe function.
 function probe()
     return ( vlc.access == "http" or vlc.access == "https" )
@@ -60,19 +49,27 @@ function parse()
 
     else -- API URL
 
-        local prefres = get_prefres()
+        local prefres = vlc.var.inherit(nil, "preferred-resolution")
         local line = vlc.readline() -- data is on one line only
 
         for stream in string.gmatch( line, "{([^}]*\"profile\":[^}]*)}" ) do
             local url = string.match( stream, "\"url\":\"(.-)\"" )
             if url then
-                path = url
-                if prefres < 0 then
-                    break
-                end
+                -- Apparently the different formats available are listed
+                -- in uncertain order of quality, so compare with what
+                -- we have so far.
                 local height = string.match( stream, "\"height\":(%d+)[,}]" )
-                if not height or tonumber(height) <= prefres then
-                    break
+                height = tonumber( height )
+
+                -- Better than nothing
+                if not path or ( height and ( not bestres
+            -- Better quality within limits
+            or ( ( prefres < 0 or height <= prefres ) and height > bestres )
+            -- Lower quality more suited to limits
+            or ( prefres > -1 and bestres > prefres and height < bestres )
+                ) ) then
+                    path = url
+                    bestres = height
                 end
             end
         end

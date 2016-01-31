@@ -2,7 +2,7 @@
  * ft2_font.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 51a9ade572247b8f01b698d23a90e4437e42202e $
+ * $Id: 855640bfe1076041298523f9e6a338cda9e0ba50 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -62,7 +62,7 @@ bool FT2Font::init()
         return false;
     }
 
-    FILE *file = fopen( m_name.c_str(), "rb" );
+    FILE *file = vlc_fopen( m_name.c_str(), "rb" );
     if( !file )
     {
         msg_Dbg( getIntf(), "failed to open font %s (%s)",

@@ -2,7 +2,7 @@
  * fetcher.c: Art fetcher thread.
  *****************************************************************************
  * Copyright © 1999-2009 VLC authors and VideoLAN
- * $Id: 41e0c32ed08d1323792b5ee9371868c1daa52ad8 $
+ * $Id: a8b7b110176d2d5da0da32cf495c92e3a2f76544 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -168,6 +168,14 @@ void playlist_fetcher_Delete( playlist_fetcher_t *p_fetcher )
 
     vlc_cond_destroy( &p_fetcher->wait );
     vlc_mutex_destroy( &p_fetcher->lock );
+
+    playlist_album_t album;
+    FOREACH_ARRAY( album, p_fetcher->albums )
+        free( album.psz_album );
+        free( album.psz_artist );
+        free( album.psz_arturl );
+    FOREACH_END()
+    ARRAY_RESET( p_fetcher->albums );
 
     free( p_fetcher );
 }

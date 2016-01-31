@@ -2,7 +2,7 @@
  * menus.cpp : Qt menus
  *****************************************************************************
  * Copyright © 2006-2011 the VideoLAN team
- * $Id: 15a14b9260de226e962ce0291b57b38d1839ab12 $
+ * $Id: 116e98c8c45ab96ee18e36c2c5f2354fe63c5d6c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -1583,7 +1583,7 @@ void VLCMenuBar::updateAudioDevice( intf_thread_t * p_intf, audio_output_t *p_ao
             action->setChecked( true );
         actionGroup->addAction( action );
         current->addAction( action );
-        CONNECT(action, changed(), THEMIM->menusAudioMapper, map());
+        CONNECT(action, triggered(), THEMIM->menusAudioMapper, map());
         THEMIM->menusAudioMapper->setMapping(action, ids[i]);
         free( ids[i] );
         free( names[i] );
@@ -1647,7 +1647,7 @@ QMenu *VLCMenuBar::PPMenu( intf_thread_t *p_intf )
 {
     int i_q = ExtVideo::getPostprocessing( p_intf );
 
-    QMenu *submenu = new QMenu( "&Post processing" );
+    QMenu *submenu = new QMenu( qtr("&Post processing") );
 
     QActionGroup *actionGroup = new QActionGroup(submenu);
     QAction *action;

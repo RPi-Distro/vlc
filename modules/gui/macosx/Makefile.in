@@ -193,7 +193,8 @@ am__objects_2 = libmacosx_plugin_la-StringUtility.lo \
 	libmacosx_plugin_la-VLCVoutWindowController.lo \
 	libmacosx_plugin_la-DebugMessageVisualizer.lo \
 	libmacosx_plugin_la-BWQuincyManager.lo \
-	libmacosx_plugin_la-BWQuincyUI.lo $(am__objects_1)
+	libmacosx_plugin_la-BWQuincyUI.lo \
+	libmacosx_plugin_la-ResumeDialogController.lo $(am__objects_1)
 am_libmacosx_plugin_la_OBJECTS = $(am__objects_2)
 libmacosx_plugin_la_OBJECTS = $(am_libmacosx_plugin_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -824,7 +825,6 @@ LTLIBx26410b = @LTLIBx26410b@
 LTLIBx265 = @LTLIBx265@
 LTLIBxml = @LTLIBxml@
 LTLIBzvbi = @LTLIBzvbi@
-LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 LUAC = @LUAC@
 LUA_CFLAGS = @LUA_CFLAGS@
 LUA_LIBS = @LUA_LIBS@
@@ -994,6 +994,8 @@ XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XINERAMA_CFLAGS = @XINERAMA_CFLAGS@
 XINERAMA_LIBS = @XINERAMA_LIBS@
+XI_CFLAGS = @XI_CFLAGS@
+XI_LIBS = @XI_LIBS@
 XMKMF = @XMKMF@
 XPM_CFLAGS = @XPM_CFLAGS@
 XPM_LIBS = @XPM_LIBS@
@@ -1054,6 +1056,7 @@ pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
+runstatedir = @runstatedir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 soliddatadir = @soliddatadir@
@@ -1182,6 +1185,8 @@ SOURCES_macosx = \
 	BWQuincyUI.m \
 	iTunes.h \
 	Spotify.h \
+	ResumeDialogController.h \
+	ResumeDialogController.m \
 	$(NULL)
 
 libmacosx_plugin_la_SOURCES = $(SOURCES_macosx)
@@ -1287,6 +1292,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-MainWindow.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-MainWindowTitle.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-PXSourceList.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-ResumeDialogController.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-SPInvocationGrabbing.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-SPMediaKeyTap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-SharedDialogs.Plo@am__quote@
@@ -1655,6 +1661,13 @@ libmacosx_plugin_la-BWQuincyUI.lo: BWQuincyUI.m
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(AM_V_OBJC)source='BWQuincyUI.m' object='libmacosx_plugin_la-BWQuincyUI.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmacosx_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_plugin_la-BWQuincyUI.lo `test -f 'BWQuincyUI.m' || echo '$(srcdir)/'`BWQuincyUI.m
+
+libmacosx_plugin_la-ResumeDialogController.lo: ResumeDialogController.m
+@am__fastdepOBJC_TRUE@	$(AM_V_OBJC)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmacosx_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_plugin_la-ResumeDialogController.lo -MD -MP -MF $(DEPDIR)/libmacosx_plugin_la-ResumeDialogController.Tpo -c -o libmacosx_plugin_la-ResumeDialogController.lo `test -f 'ResumeDialogController.m' || echo '$(srcdir)/'`ResumeDialogController.m
+@am__fastdepOBJC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmacosx_plugin_la-ResumeDialogController.Tpo $(DEPDIR)/libmacosx_plugin_la-ResumeDialogController.Plo
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(AM_V_OBJC)source='ResumeDialogController.m' object='libmacosx_plugin_la-ResumeDialogController.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmacosx_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_plugin_la-ResumeDialogController.lo `test -f 'ResumeDialogController.m' || echo '$(srcdir)/'`ResumeDialogController.m
 
 mostlyclean-libtool:
 	-rm -f *.lo

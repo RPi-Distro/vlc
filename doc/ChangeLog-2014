@@ -21115,3 +21115,67 @@ Date:   Wed Jan 1 22:35:36 2014 +0100
     Remove faulty return when vobsub doesn't define a size.
     
     Close #10111
+
+commit 776f719e75bad42a1e684b5c074a95cf7f9fc3b1
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 1 20:31:26 2014 +0200
+
+    input_CreateFilename: take explicit input thread pointer
+    
+    This should fix meta-data expansion in LibVLC (i.e. when recording).
+
+commit 68bc7fd968916a68eb16873431d48e4185669838
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 1 20:25:52 2014 +0200
+
+    str_format_meta: take input thread pointer rather than playlist
+
+commit 098f3844b086a18c332f663a13c586bf1881b297
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 1 20:17:32 2014 +0200
+
+    str_format_meta: clean up
+
+commit 27da83668571d11e8fed3bd87d2b396dfd5b57b0
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 1 19:19:26 2014 +0200
+
+    dbus: use pl_CurrentInput()
+
+commit 5be88dcfc4e3585a90b8cdcbe6aee28c471173d4
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 1 19:19:13 2014 +0200
+
+    pl_CurrentInput: more specific prototype
+
+commit b3f95b9594696b80ad5c3f0053b1507306c9ccb5
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 1 18:07:45 2014 +0200
+
+    intf-add: small simplification
+
+commit 11c1769c986a690a75e8fe5df11e293f5f52e206
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 1 18:55:49 2014 +0200
+
+    libvlc: look "syslog" value only once, simplify
+
+commit bc1fa152b3f17a26eef9cf57596c8368b6e30829
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 1 18:52:01 2014 +0200
+
+    libvlc: look the value of intf up only once when used
+
+commit d19530bcb2f4721e5c4b2704865c0d86440d899b
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 1 18:38:19 2014 +0200
+
+    libvlc: remove "evil" daemon global variable and clean up
+    
+    (The unlikely corner case of ENOMEM remains unhandled/unfixed.)
+
+commit ec44ae90ab3beb3f06371d506fd3e2ad104f9796
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 1 17:57:26 2014 +0200
+
+    Remove stray comment

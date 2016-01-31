@@ -2,7 +2,7 @@
  * quartztext.c : Put text on the video, using Mac OS X Quartz Engine
  *****************************************************************************
  * Copyright (C) 2007, 2009, 2012 VLC authors and VideoLAN
- * $Id: 8de10818f21591f2d8160082799fa405590c4e52 $
+ * $Id: 3e75a08a74e2f3a487e03c386fec4c9fa96d177f $
  *
  * Authors: Bernie Purcell <bitmap@videolan.org>
  *          Pierre d'Herbemont <pdherbemont # videolan dot>
@@ -231,7 +231,7 @@ static void Destroy(vlc_object_t *p_this)
     filter_sys_t *p_sys = p_filter->p_sys;
 #ifndef TARGET_OS_IPHONE
     if (p_sys->p_fonts) {
-        for (int k = 0; k < p_sys->i_fonts; k++) {
+        for (int k = 0; k < p_sys->i_fonts; k++)
             ATSFontDeactivate(p_sys->p_fonts[k], NULL, kATSOptionFlagsDefault);
 
         free(p_sys->p_fonts);
@@ -470,7 +470,8 @@ static int HandleFontAttributes(xml_reader_t *p_xml_reader,
                                 &psz_fontname,
                                 &i_font_size,
                                 &i_font_color)) {
-        psz_fontname = strdup(psz_fontname);
+        if (psz_fontname)
+            psz_fontname = strdup(psz_fontname);
         i_font_size = i_font_size;
     }
     i_font_alpha = (i_font_color >> 24) & 0xff;
@@ -479,7 +480,8 @@ static int HandleFontAttributes(xml_reader_t *p_xml_reader,
     while ((attr = xml_ReaderNextAttr(p_xml_reader, &value))) {
         if (!strcasecmp("face", attr)) {
             free(psz_fontname);
-            psz_fontname = strdup(value);
+            if (value)
+                psz_fontname = strdup(value);
         } else if (!strcasecmp("size", attr)) {
             if ((*value == '+') || (*value == '-')) {
                 int i_value = atoi(value);
@@ -707,6 +709,8 @@ static int ProcessNodes(filter_t *p_filter,
                 int           len;
 
                 // Turn any multiple-whitespaces into single spaces
+                if (!node)
+                    break;
                 char *dup = strdup(node);
                 if (!dup)
                     break;
@@ -852,7 +856,7 @@ static CGContextRef CreateOffScreenContext(int i_width, int i_height,
                                 *pp_colorSpace, kCGImageAlphaPremultipliedFirst);
 
         if (p_context) {
-            if (CGContextSetAllowsAntialiasing != NULL)
+            if (&CGContextSetAllowsAntialiasing != NULL)
                 CGContextSetAllowsAntialiasing(p_context, true);
         }
         *pp_memory = p_bitmap;

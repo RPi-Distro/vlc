@@ -2,7 +2,7 @@
 * simple_prefs.m: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2014 VLC authors and VideoLAN
-* $Id: ddc0957455efe1a5b61a247629904b4661481532 $
+* $Id: 06bb9e3cdff800a7fb4112d7843086ad8e70b2c3 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -88,6 +88,8 @@ static const char *const ppsz_language[] =
     "nn",
     "kk",
     "km",
+    "ks_IN",
+    "mai",
     "ne",
     "oc",
     "fa",
@@ -105,6 +107,7 @@ static const char *const ppsz_language[] =
     "es",
     "es_MX",
     "sv",
+    "ta",
     "te",
     "th",
     "tr",
@@ -162,6 +165,8 @@ static const char *const ppsz_language_text[] =
     "Nynorsk",
     "Қазақ тілі",
     "ភាសាខ្មែរ",
+    "कॉशुर",
+    "मैथिली",
     "नेपाली",
     "Occitan",
     "ﻑﺍﺮﺳی",
@@ -179,6 +184,7 @@ static const char *const ppsz_language_text[] =
     "Español",
     "Español mexicano",
     "Svenska",
+    "தமிழ்",
     "తెలుగు",
     "ภาษาไทย",
     "Türkçe",
@@ -719,15 +725,30 @@ static inline char * __config_GetLabel(vlc_object_t *p_this, const char *psz_nam
 
     [self setupButton: o_input_mkv_preload_dir_ckb forBoolValue: "mkv-preload-local-dir"];
 
+    /* do not trust translators to do the correct thing,
+     * so re-build the menu in an unorthodox way (#15106) */
     [o_input_cachelevel_pop removeAllItems];
-    [o_input_cachelevel_pop addItemsWithTitles: [NSArray arrayWithObjects:_NS("Custom"), _NS("Lowest latency"),
-     _NS("Low latency"), _NS("Normal"), _NS("High latency"), _NS("Higher latency"), nil]];
-    [[o_input_cachelevel_pop itemAtIndex: 0] setTag: 0];
-    [[o_input_cachelevel_pop itemAtIndex: 1] setTag: 100];
-    [[o_input_cachelevel_pop itemAtIndex: 2] setTag: 200];
-    [[o_input_cachelevel_pop itemAtIndex: 3] setTag: 300];
-    [[o_input_cachelevel_pop itemAtIndex: 4] setTag: 500];
-    [[o_input_cachelevel_pop itemAtIndex: 5] setTag: 1000];
+    NSArray *plainTitles = [NSArray arrayWithObjects: @"Custom", @"Lowest latency", @"Low latency", @"Normal", @"High latency", @"Higher latency", nil];
+    NSMenuItem *workerItem;
+    [o_input_cachelevel_pop addItemsWithTitles: plainTitles];
+    workerItem = [o_input_cachelevel_pop itemAtIndex: 0];
+    [workerItem setTag: 0];
+    [workerItem setTitle:_NS("Custom")];
+    workerItem = [o_input_cachelevel_pop itemAtIndex: 1];
+    [workerItem setTag: 100];
+    [workerItem setTitle:_NS("Lowest Latency")];
+    workerItem = [o_input_cachelevel_pop itemAtIndex: 2];
+    [workerItem setTag: 200];
+    [workerItem setTitle:_NS("Low Latency")];
+    workerItem = [o_input_cachelevel_pop itemAtIndex: 3];
+    [workerItem setTag: 300];
+    [workerItem setTitle:_NS("Normal")];
+    workerItem = [o_input_cachelevel_pop itemAtIndex: 4];
+    [workerItem setTag: 500];
+    [workerItem setTitle:_NS("Higher Latency")];
+    workerItem = [o_input_cachelevel_pop itemAtIndex: 5];
+    [workerItem setTag: 1000];
+    [workerItem setTitle:_NS("Highest Latency")];
 
     #define TestCaC(name, factor) \
     b_cache_equal =  b_cache_equal && \

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2000-2010 VLC authors and VideoLAN
  * Copyright (C) 2009-2010 Laurent Aimar
- * $Id: 7c6fa6a5107a21f7ae870333d9b505cb595970f7 $
+ * $Id: d7cc482c7ba7f4fa04b15755eaa65d6737cd35ce $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -37,6 +37,14 @@
 #include <vlc_picture.h>
 #include <vlc_image.h>
 #include <vlc_block.h>
+
+#if (__STDC_VERSION__ >= 201112L)
+# include <stdalign.h>
+static_assert(sizeof (uintptr_t) == sizeof (atomic_uintptr_t),
+              "Please compile in C99 mode (or update to LibVLC 3.0).");
+static_assert(alignof (uintptr_t) == alignof (atomic_uintptr_t),
+              "Please compile in C99 mode (or update to LibVLC 3.0).");
+#endif
 
 /**
  * Allocate a new picture in the heap.

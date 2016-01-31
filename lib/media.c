@@ -2,7 +2,7 @@
  * media.c: Libvlc API media descripor management
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: c2a4ef5ec684bcbde288e595a46b12d7a5ee07db $
+ * $Id: 18d6e6d34dc7d4638d0d561e8d855d57cf5c1056 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont@videolan.org>
  *
@@ -435,10 +435,11 @@ void libvlc_media_release( libvlc_media_t *p_md )
     if( p_md->i_refcount > 0 )
         return;
 
+    uninstall_input_item_observer( p_md );
+
     if( p_md->p_subitems )
         libvlc_media_list_release( p_md->p_subitems );
 
-    uninstall_input_item_observer( p_md );
     vlc_gc_decref( p_md->p_input_item );
 
     vlc_cond_destroy( &p_md->parsed_cond );
@@ -766,8 +767,8 @@ libvlc_media_get_tracks_info( libvlc_media_t *p_md, libvlc_media_track_info_t **
             break;
         case VIDEO_ES:
             p_mes->i_type = libvlc_track_video;
-            p_mes->u.video.i_height = p_es->video.i_height;
-            p_mes->u.video.i_width = p_es->video.i_width;
+            p_mes->u.video.i_height = p_es->video.i_visible_height;
+            p_mes->u.video.i_width = p_es->video.i_visible_width;
             break;
         case AUDIO_ES:
             p_mes->i_type = libvlc_track_audio;
@@ -842,8 +843,8 @@ libvlc_media_tracks_get( libvlc_media_t *p_md, libvlc_media_track_t *** pp_es )
             break;
         case VIDEO_ES:
             p_mes->i_type = libvlc_track_video;
-            p_mes->video->i_height = p_es->video.i_height;
-            p_mes->video->i_width = p_es->video.i_width;
+            p_mes->video->i_height = p_es->video.i_visible_height;
+            p_mes->video->i_width = p_es->video.i_visible_width;
             p_mes->video->i_sar_num = p_es->video.i_sar_num;
             p_mes->video->i_sar_den = p_es->video.i_sar_den;
             p_mes->video->i_frame_rate_num = p_es->video.i_frame_rate;

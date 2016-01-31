@@ -2,7 +2,7 @@
  * simple_preferences.hpp : Simple prefs
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: d6c05f3d2ef44c3fe897392456481165b0b5d81b $
+ * $Id: 8e2bf6e24895cae64d8423223dabafa54d6b3342 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -126,6 +126,7 @@ private slots:
     void langChanged( int );
 #ifdef _WIN32
     void assoDialog();
+    void updateCheckBoxes( QTreeWidgetItem*, int );
     void saveAsso();
 #endif
     void configML();

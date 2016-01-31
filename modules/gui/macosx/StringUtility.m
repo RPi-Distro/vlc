@@ -2,7 +2,7 @@
  * StringUtility.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2014 VLC authors and VideoLAN
- * $Id: 37301e9b81da614ad9960a1c37f81c20b58202d1 $
+ * $Id: 27ff1a28f1c9fae7a1cc4508e61c5505e96feb63 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -398,7 +398,7 @@ NSString *toNSStr(const char *str) {
 NSImage *imageFromRes(NSString *o_id)
 {
     NSString *result = @"";
-    if (OSX_YOSEMITE) {
+    if (OSX_YOSEMITE || OSX_EL_CAPITAN) {
         result = [result stringByAppendingString:@"ys-"];
     }
 

@@ -2,7 +2,7 @@
  * caf.c: Core Audio File Format demuxer
  *****************************************************************************
  * Copyright (C) 2013 VLC authors and VideoLAN
- * $Id: 465caf66866235d960b99148701afbb605780d96 $
+ * $Id: f5c63fc006b22651dcdfa6b8100377c63b625003 $
  *
  * Authors: Matthias Keiser <matthias@tristan-inc.com>
  *
@@ -277,7 +277,11 @@ static int FrameSpanAddDescription( demux_t *p_demux, uint64_t i_desc_offset, fr
     }
 
     const uint8_t *p_peek;
-    uint32_t i_peek_len = stream_Peek( p_demux->s, &p_peek, 2 * 10 ); /* Peeking the maximum number of bytes that two 64 bit numbers could use (( 64 + 6 ) / 7 = 10 ). */
+    int i_peek_len = stream_Peek( p_demux->s, &p_peek, 2 * 10 );
+    /* Peeking the maximum number of bytes that two 64 bit numbers could use
+     * (( 64 + 6 ) / 7 = 10). */
+    if( i_peek_len < 0 )
+        i_peek_len = 0;
 
     if( p_sys->fmt.audio.i_bytes_per_frame )
     {
@@ -302,7 +306,7 @@ static int FrameSpanAddDescription( demux_t *p_demux, uint64_t i_desc_offset, fr
     }
     else
     {
-        if( i_desc_size >= i_peek_len )
+        if( i_desc_size >= (unsigned)i_peek_len )
         {
             return VLC_EGENERIC;
         }

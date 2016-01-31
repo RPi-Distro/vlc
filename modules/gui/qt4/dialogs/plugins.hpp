@@ -2,7 +2,7 @@
  * plugins.hpp : Plug-ins and extensions listing
  ****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: d49c70c97296be92d3f1d3e953a41bfd8e206eb8 $
+ * $Id: 91bc94e0ddaac0e2535a3e07212495712ddd9c13 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -129,6 +129,9 @@ class AddonsTab : public QVLCFrame
 {
     Q_OBJECT
     friend class PluginDialog;
+
+protected:
+    void keyPressEvent( QKeyEvent *keyEvent );
 
 private slots:
     void moreInformation();

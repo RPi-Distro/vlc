@@ -2,7 +2,7 @@
  * x11_display.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9647263d3a4a3445136be6d6f4681628e0044111 $
+ * $Id: dea86e2a8909daf5913fe7793a20045e0c1f0e06 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -36,6 +36,8 @@
 #define XGC m_rDisplay.getGC()
 
 #define NET_WM_SUPPORTED          m_rDisplay.m_net_wm_supported
+#define NET_WM_WINDOW_TYPE        m_rDisplay.m_net_wm_window_type
+#define NET_WM_WINDOW_TYPE_NORMAL m_rDisplay.m_net_wm_window_type_normal
 #define NET_WM_STATE              m_rDisplay.m_net_wm_state
 #define NET_WM_STATE_FULLSCREEN   m_rDisplay.m_net_wm_state_fullscreen
 #define NET_WM_STATE_ABOVE        m_rDisplay.m_net_wm_state_above
@@ -85,6 +87,10 @@ public:
 
     /// EWMH spec
     Atom m_net_wm_supported;
+
+    Atom m_net_wm_window_type;
+    Atom m_net_wm_window_type_normal;
+
     Atom m_net_wm_state;
     Atom m_net_wm_state_above;
     Atom m_net_wm_state_fullscreen;

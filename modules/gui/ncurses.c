@@ -2,7 +2,7 @@
  * ncurses.c : NCurses interface for vlc
  *****************************************************************************
  * Copyright © 2001-2011 the VideoLAN team
- * $Id: 7a4e1755f8ac4ab6e2eac3b061be60e30a98015e $
+ * $Id: 291506a8005c93e46d4703686a2b3b3d507eab09 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -303,10 +303,11 @@ static void ReadDir(intf_thread_t *intf)
         continue;
     }
 
-    qsort(sys->dir_entries, sys->n_dir_entries,
-           sizeof(struct dir_entry_t*), &comdir_entries);
-
     closedir(current_dir);
+
+    if (sys->n_dir_entries > 0)
+        qsort(sys->dir_entries, sys->n_dir_entries,
+              sizeof(struct dir_entry_t*), &comdir_entries);
 }
 
 /*****************************************************************************

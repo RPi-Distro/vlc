@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id: 7b1e606df0d1d9363bd9757e616027f269d7c2fe $
+ * $Id: f044a9d3512b4ec28f635c11c63a0039dd92e0f0 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.
@@ -88,7 +88,7 @@ const char rtsp_protocol_version[]="RTSP/1.0";
  
 static char *rtsp_get( rtsp_client_t *rtsp )
 {
-  char *psz_buffer = malloc( BUF_SIZE );
+  char *psz_buffer = xmalloc( BUF_SIZE );
   char *psz_string = NULL;
 
   if( rtsp->pf_read_line( rtsp->p_userdata, (uint8_t*)psz_buffer, (unsigned int)BUF_SIZE ) >= 0 )
@@ -109,7 +109,7 @@ static char *rtsp_get( rtsp_client_t *rtsp )
 static int rtsp_put( rtsp_client_t *rtsp, const char *psz_string )
 {
     unsigned int i_buffer = strlen( psz_string );
-    char *psz_buffer = malloc( i_buffer + 3 );
+    char *psz_buffer = xmalloc( i_buffer + 3 );
     int i_ret;
 
     strcpy( psz_buffer, psz_string );
@@ -162,7 +162,7 @@ static int rtsp_send_request( rtsp_client_t *rtsp, const char *psz_type,
     char *psz_buffer;
     int i_ret;
 
-    psz_buffer = malloc( strlen(psz_type) + strlen(psz_what) +
+    psz_buffer = xmalloc( strlen(psz_type) + strlen(psz_what) +
                          sizeof("RTSP/1.0") + 2 );
 
     sprintf( psz_buffer, "%s %s %s", psz_type, psz_what, "RTSP/1.0" );
@@ -187,15 +187,15 @@ static int rtsp_send_request( rtsp_client_t *rtsp, const char *psz_type,
 
 static void rtsp_schedule_standard( rtsp_client_t *rtsp )
 {
-    char tmp[17];
+    char tmp[sizeof("CSeq: ") + 3 * sizeof(int)];
 
-    sprintf( tmp, "Cseq: %u", rtsp->p_private->cseq);
+    sprintf( tmp, "CSeq: %u", rtsp->p_private->cseq);
     rtsp_schedule_field( rtsp, tmp );
 
     if( rtsp->p_private->session )
     {
         char *buf;
-        buf = malloc( strlen(rtsp->p_private->session) + 15 );
+        buf = xmalloc( strlen(rtsp->p_private->session) + 15 );
         sprintf( buf, "Session: %s", rtsp->p_private->session );
         rtsp_schedule_field( rtsp, buf );
         free( buf );
@@ -226,7 +226,7 @@ static int rtsp_get_answers( rtsp_client_t *rtsp )
       answer = rtsp_get( rtsp );
       if( !answer ) return 0;
 
-      if( !strncasecmp( answer, "Cseq:", 5 ) )
+      if( !strncasecmp( answer, "CSeq:", 5 ) )
       {
           sscanf( answer, "%*s %u", &answer_seq );
           if( rtsp->p_private->cseq != answer_seq )
@@ -239,14 +239,14 @@ static int rtsp_get_answers( rtsp_client_t *rtsp )
       }
       if( !strncasecmp( answer, "Server:", 7 ) )
       {
-          char *buf = malloc( strlen(answer) );
+          char *buf = xmalloc( strlen(answer) );
           sscanf( answer, "%*s %s", buf );
           free( rtsp->p_private->server );
           rtsp->p_private->server = buf;
       }
       if( !strncasecmp( answer, "Session:", 8 ) )
       {
-          char *buf = malloc( strlen(answer) );
+          char *buf = xmalloc( strlen(answer) );
           sscanf( answer, "%*s %s", buf );
           if( rtsp->p_private->session )
           {
@@ -284,7 +284,7 @@ static int rtsp_get_answers( rtsp_client_t *rtsp )
 
 int rtsp_send_ok( rtsp_client_t *rtsp )
 {
-    char cseq[16];
+    char cseq[sizeof("CSeq: ") + 3 * sizeof(int)];
 
     rtsp_put( rtsp, "RTSP/1.0 200 OK" );
     sprintf( cseq, "CSeq: %u", rtsp->p_private->cseq );
@@ -305,7 +305,7 @@ int rtsp_request_options( rtsp_client_t *rtsp, const char *what )
     if( what ) buf = strdup(what);
     else
     {
-        buf = malloc( strlen(rtsp->p_private->host) + 16 );
+        buf = xmalloc( strlen(rtsp->p_private->host) + 16 );
         sprintf( buf, "rtsp://%s:%i", rtsp->p_private->host,
                  rtsp->p_private->port );
     }
@@ -325,7 +325,7 @@ int rtsp_request_describe( rtsp_client_t *rtsp, const char *what )
     }
     else
     {
-        buf = malloc( strlen(rtsp->p_private->host) +
+        buf = xmalloc( strlen(rtsp->p_private->host) +
                       strlen(rtsp->p_private->path) + 16 );
         sprintf( buf, "rtsp://%s:%i/%s", rtsp->p_private->host,
                  rtsp->p_private->port, rtsp->p_private->path );
@@ -352,7 +352,7 @@ int rtsp_request_setparameter( rtsp_client_t *rtsp, const char *what )
     }
     else
     {
-        buf = malloc( strlen(rtsp->p_private->host) +
+        buf = xmalloc( strlen(rtsp->p_private->host) +
                       strlen(rtsp->p_private->path) + 16 );
         sprintf( buf, "rtsp://%s:%i/%s", rtsp->p_private->host,
                  rtsp->p_private->port, rtsp->p_private->path );
@@ -374,7 +374,7 @@ int rtsp_request_play( rtsp_client_t *rtsp, const char *what )
     }
     else
     {
-        buf = malloc( strlen(rtsp->p_private->host) +
+        buf = xmalloc( strlen(rtsp->p_private->host) +
                       strlen(rtsp->p_private->path) + 16 );
         sprintf( buf, "rtsp://%s:%i/%s", rtsp->p_private->host,
                  rtsp->p_private->port, rtsp->p_private->path );
@@ -418,7 +418,7 @@ int rtsp_read_data( rtsp_client_t *rtsp, uint8_t *buffer, unsigned int size )
                 rest = rtsp_get( rtsp );
                 if( !rest ) return -1;
 
-                if( !strncasecmp( rest, "Cseq:", 5 ) )
+                if( !strncasecmp( rest, "CSeq:", 5 ) )
                     sscanf( rest, "%*s %u", &seq );
             } while( *rest );
             free( rest );
@@ -431,7 +431,7 @@ int rtsp_read_data( rtsp_client_t *rtsp, uint8_t *buffer, unsigned int size )
 
             /* lets make the server happy */
             rtsp_put( rtsp, "RTSP/1.0 451 Parameter Not Understood" );
-            rest = malloc(17);
+            rest = xmalloc(sizeof("Cseq: ") + 3 * sizeof(int));
             sprintf( rest,"CSeq: %u", seq );
             rtsp_put( rtsp, rest );
             rtsp_put( rtsp, "" );
@@ -464,7 +464,7 @@ int rtsp_connect( rtsp_client_t *rtsp, const char *psz_mrl,
     unsigned int hostend, pathbegin, i;
 
     if( !psz_mrl ) return -1;
-    s = malloc( sizeof(rtsp_t) );
+    s = xmalloc( sizeof(rtsp_t) );
     rtsp->p_private = s;
 
     if( !strncmp( psz_mrl, "rtsp://", 7 ) ) psz_mrl += 7;
@@ -502,7 +502,7 @@ int rtsp_connect( rtsp_client_t *rtsp, const char *psz_mrl,
     pathbegin = slash - mrl_ptr;
     hostend = colon - mrl_ptr;
 
-    s->host = malloc(hostend+1);
+    s->host = xmalloc(hostend+1);
     strncpy( s->host, mrl_ptr, hostend );
     s->host[hostend] = 0;
 

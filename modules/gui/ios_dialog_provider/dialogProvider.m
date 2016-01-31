@@ -2,7 +2,7 @@
  * dialogProvider.m: iOS Dialog Provider
  *****************************************************************************
  * Copyright (C) 2009, 2014 VLC authors and VideoLAN
- * $Id: 8b9e1f80835b06f94fb2255094bfcd99c51db5bc $
+ * $Id: 9deacf20bc45ca6c606f579a4b7994a7a6aaaedc $
  *
  * Authors: Felix Paul Kühne <fkuehne # videolan org>
  *          Pierre d'Herbemont <pdherbemont # videolan org>
@@ -226,6 +226,7 @@ static int DisplayLogin(vlc_object_t *p_this, const char *type, vlc_value_t prev
         [dict setObject:@(no) forKey:@"no"];
     if (cancel)
         [dict setObject:@(cancel) forKey:@"cancel"];
+    [dict retain];
 
     return dict;
 }
@@ -238,6 +239,7 @@ static int DisplayLogin(vlc_object_t *p_this, const char *type, vlc_value_t prev
     VLCBlockingAlertView *alert = [[VLCBlockingAlertView alloc] initWithTitle:[dialog objectForKey:@"title"] message:[dialog objectForKey:@"message"] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     alert.completion = ^(BOOL cancelled, NSInteger buttonIndex) {
         [alert release];
+        [dialog release];
     };
     [alert show];
 }
@@ -249,6 +251,7 @@ static int DisplayLogin(vlc_object_t *p_this, const char *type, vlc_value_t prev
     VLCBlockingAlertView *alert = [[VLCBlockingAlertView alloc] initWithTitle:[dialog objectForKey:@"title"] message:[dialog objectForKey:@"message"] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     alert.completion = ^(BOOL cancelled, NSInteger buttonIndex) {
         [alert release];
+        [dialog release];
     };
     [alert show];
 }
@@ -276,6 +279,7 @@ static int DisplayLogin(vlc_object_t *p_this, const char *type, vlc_value_t prev
 
     dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
     [alert release];
+    [dialog release];
 
     return @(ret);
 }
@@ -309,6 +313,7 @@ static int DisplayLogin(vlc_object_t *p_this, const char *type, vlc_value_t prev
     dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
 
     [alert release];
+    [dialog release];
     return dict;
 }
 

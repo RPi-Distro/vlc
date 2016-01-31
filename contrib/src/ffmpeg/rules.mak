@@ -5,11 +5,11 @@
 USE_FFMPEG ?= 1
 
 ifdef USE_FFMPEG
-HASH=3553b81
+HASH=cdb0225
 FFMPEG_SNAPURL := http://git.videolan.org/?p=ffmpeg.git;a=snapshot;h=$(HASH);sf=tgz
 FFMPEG_GITURL := git://git.videolan.org/ffmpeg.git
 else
-HASH=8d26c19
+HASH=c457bde
 FFMPEG_SNAPURL := http://git.libav.org/?p=libav.git;a=snapshot;h=$(HASH);sf=tgz
 FFMPEG_GITURL := git://git.libav.org/libav.git
 endif
@@ -26,6 +26,7 @@ FFMPEGCONF = \
 	--disable-devices \
 	--disable-avfilter \
 	--disable-filters \
+	--disable-protocol=concat \
 	--disable-bsfs \
 	--disable-bzlib \
 	--disable-avresample

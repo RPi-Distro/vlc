@@ -2,7 +2,7 @@
  * cdrom.c: cdrom tools
  *****************************************************************************
  * Copyright (C) 1998-2001 VLC authors and VideoLAN
- * $Id: efa3cd2fa32c3e364790db2594240ef6d1581d57 $
+ * $Id: 58dbcaa9bb6530c5aa1daeb2f2a94c506a1e4087 $
  *
  * Authors: Johan Bilien <jobi@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -903,6 +903,7 @@ static int OpenVCDImage( vlc_object_t * p_this, const char *psz_dev,
              (int)i_tracks, (int)p_sectors[i_tracks] );
     p_vcddev->i_tracks = ++i_tracks;
     p_vcddev->p_sectors = p_sectors;
+    p_sectors = NULL;
     i_ret = 0;
 
 error:

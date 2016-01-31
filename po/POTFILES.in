@@ -586,6 +586,8 @@ modules/gui/macosx/prefs.h
 modules/gui/macosx/prefs.m
 modules/gui/macosx/prefs_widgets.h
 modules/gui/macosx/prefs_widgets.m
+modules/gui/macosx/ResumeDialogController.h
+modules/gui/macosx/ResumeDialogController.m
 modules/gui/macosx/simple_prefs.h
 modules/gui/macosx/simple_prefs.m
 modules/gui/macosx/StringUtility.h
@@ -961,7 +963,6 @@ modules/lua/vlc.h
 modules/meta_engine/folder.c
 modules/meta_engine/taglib.cpp
 modules/misc/audioscrobbler.c
-modules/misc/dhparams.h
 modules/misc/gnutls.c
 modules/misc/inhibit/dbus.c
 modules/misc/inhibit/xdg.c
