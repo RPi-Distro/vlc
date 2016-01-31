@@ -46,7 +46,7 @@ libvlc.so.5 libvlc5 #MINVER#
  libvlc_errmsg@Base 1.1.0
  libvlc_event_attach@Base 1.1.0
  libvlc_event_detach@Base 1.1.0
- libvlc_event_type_name@Base 1.1.0
+ libvlc_event_type_name@Base 2.2.2
  libvlc_free@Base 2.0.0
  libvlc_get_changeset@Base 1.1.0
  libvlc_get_compiler@Base 1.1.0
