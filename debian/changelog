@@ -9,8 +9,7 @@ vlc (2.2.2-1) UNRELEASED; urgency=medium
   * Remove some of the /usr/share/doc/<pkg> symlinks to clean up dependencies.
   * debian/vlc.menu: Removed since vlc contains a desktop file.
   * debian/rules:
-    - Remove some parts that are handled by dpkg-dev and
-      debhelper.
+    - Remove some parts that are handled by dpkg-dev and debhelper.
     - Install NEWS as upstream changelog.
     - Remove options passed twice to configure.
   * debian/README.{Debian,source}: Removed, outdated.
@@ -18,6 +17,7 @@ vlc (2.2.2-1) UNRELEASED; urgency=medium
   * debian/{vlc.,source/}lintian-overrides: Override false positives.
   * debian/NEWS: Fix spelling error.
   * debian/control: Update Vcs-Git.
+  * debian/patches: Removed, all patches applied upstream.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Sun, 31 Jan 2016 21:58:42 +0100
 
