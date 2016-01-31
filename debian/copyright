@@ -13,7 +13,7 @@ With the exception of other files mentioned in this document, all code and
 artwork belongs to members of the VideoLAN team <videolan@videolan.org>. See
 each file for precise details about its respective authors.
 
-Copyright (c) 1996-2013 the VideoLAN Team
+Copyright (c) 1996-2016 the VideoLAN Team
 Rémi Denis-Courmont
 Jean-Baptiste Kempf
 Laurent Aimar
@@ -624,7 +624,7 @@ mozilla/support/npwin.cpp:
   hence used under the GNU General Public License, version 2 or later.
 
 Files in src/:
-  Copyright (c) 1996-2013 the VideoLAN Team
+  Copyright (c) 1996-2016 the VideoLAN Team
   Licensed under the GNU Lesser General Public License, version 2.1 or later.
 
 The following files and folders:
@@ -1001,7 +1001,7 @@ modules/misc/gnutls.c
 modules/misc/fingerprinter.c
 modules/misc/xml
 modules/stream_filter
-  Copyright (c) 1996-2013 the VideoLAN Team
+  Copyright (c) 1996-2016 the VideoLAN Team
   Licensed under the GNU Lesser General Public License, version 2.1 or later.
 
 share/skins2/fonts/FreeSans.ttf:
