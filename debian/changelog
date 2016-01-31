@@ -17,9 +17,14 @@ vlc (2.2.2-1) UNRELEASED; urgency=medium
   * debian/{vlc.,source/}lintian-overrides: Override false positives.
   * debian/NEWS: Fix spelling error.
   * debian/control: Update Vcs-Git.
-  * debian/patches: Removed, all patches applied upstream.
+  * debian/patches:
+    - Removed all patches applied upstream.
+    - freenchtv-links.patch: Fix links to French TV icons. Thanks to Mathieu
+      Malaterre (Closes: #782229).
+  * debian/libvlc5.symbols: Bump version of libvlc_event_type_name for new
+    event names.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sun, 31 Jan 2016 21:58:42 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 31 Jan 2016 22:36:58 +0100
 
 vlc (2.2.1-5) unstable; urgency=medium
 
