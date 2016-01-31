@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 VLC authors and VideoLAN
- * $Id: e8ba5a2bdf82259a7dcdd430bd3096cbc5f9c9fa $
+ * $Id: fba3b88e533a47114afc97f61abb50a4d2102be6 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -319,7 +319,7 @@ static int  Open ( vlc_object_t *p_this )
     p_sys->f_seek_request = -1;
 
     /* parse URL for rtsp://[user:[passwd]@]serverip:port/options */
-    vlc_UrlParse( &p_sys->url, p_sys->psz_path, 0 );
+    vlc_UrlParse( &p_sys->url, p_sys->psz_path, '?' );
 
     if( ( p_sys->scheduler = BasicTaskScheduler::createNew() ) == NULL )
     {
@@ -561,10 +561,12 @@ static int Connect( demux_t *p_demux )
         /* Create the URL by stripping away the username/password part */
         if( p_sys->url.i_port == 0 )
             p_sys->url.i_port = 554;
-        if( asprintf( &psz_url, "rtsp://%s:%d%s",
+        if( asprintf( &psz_url, "rtsp://%s:%d%s%s%s",
                       strempty( p_sys->url.psz_host ),
                       p_sys->url.i_port,
-                      strempty( p_sys->url.psz_path ) ) == -1 )
+                      strempty( p_sys->url.psz_path ),
+                      p_sys->url.psz_option ? "?" : "",
+                      strempty(p_sys->url.psz_option) ) == -1 )
             return VLC_ENOMEM;
 
         psz_user = strdup( strempty( p_sys->url.psz_username ) );

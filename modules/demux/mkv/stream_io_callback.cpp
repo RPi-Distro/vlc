@@ -2,7 +2,7 @@
  * stream_io_callback.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004, 2010 VLC authors and VideoLAN
- * $Id: 7af087182118601d3c4d20e2f770882491703676 $
+ * $Id: 555cc9b639c9df8f6398a0fdad0a75c26988cdec $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -98,7 +98,7 @@ uint64 vlc_stream_io_callback::toRead( void )
     if( s == NULL)
         return 0;
 
-    stream_Control( s, STREAM_GET_SIZE, &i_size );
+    i_size = stream_Size( s );
 
     if( i_size == 0 )
         return UINT64_MAX;

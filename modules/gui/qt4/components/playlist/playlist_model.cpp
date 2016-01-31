@@ -2,7 +2,7 @@
  * playlist_model.cpp : Manage playlist model
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: c318e0f0bcfd34b8a72409f40fa22b0c198bded9 $
+ * $Id: c468c048aceea667f5507719f0ce2525a56fe176 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakkka <ileoo (at) videolan dot org>
@@ -569,9 +569,9 @@ void PLModel::processInputItemUpdate( )
     {
         PLItem *item = findByInputId( rootItem, input_GetItem( p_input )->i_id );
         if( item ) emit currentIndexChanged( index( item, 0 ) );
-    }
 
-    processInputItemUpdate( input_GetItem( p_input ) );
+        processInputItemUpdate( input_GetItem( p_input ) );
+    }
 }
 
 void PLModel::processInputItemUpdate( input_item_t *p_item )
@@ -772,7 +772,7 @@ void PLModel::sort( QModelIndex caller, QModelIndex rootIndex, const int column,
     msg_Dbg( p_intf, "Sorting by column %i, order %i", column, order );
 
     int meta = columnToMeta( column );
-    if( meta == COLUMN_END ) return;
+    if( meta == COLUMN_END || meta == COLUMN_COVER ) return;
 
     PLItem *item = ( rootIndex.isValid() ) ? getItem( rootIndex )
                                            : rootItem;

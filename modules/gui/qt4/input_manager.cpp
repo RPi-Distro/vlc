@@ -2,7 +2,7 @@
  * input_manager.cpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 8283fdc247f736c062bd994641a4fafb7e898217 $
+ * $Id: 707f114314c246ca9d8ad2275ec67631fc8a705d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka  <ileoo@videolan.org>
@@ -142,10 +142,17 @@ void InputManager::setInput( input_thread_t *_p_input )
             }
         }
 
-        // Save the latest URI to avoid asking to restore the
-        // position on the same input file.
-        lastURI = qfu( uri );
-        RecentsMRL::getInstance( p_intf )->addRecent( lastURI );
+        playlist_Lock( THEPL );
+        // Add root items only
+        playlist_item_t* p_node = playlist_CurrentPlayingItem( THEPL );
+        if ( p_node != NULL && p_node->p_parent == NULL )
+        {
+            // Save the latest URI to avoid asking to restore the
+            // position on the same input file.
+            lastURI = qfu( uri );
+            RecentsMRL::getInstance( p_intf )->addRecent( lastURI );
+        }
+        playlist_Unlock( THEPL );
         free( uri );
     }
     else
@@ -512,10 +519,17 @@ void InputManager::UpdateName()
 
     /* Try to get the nowplaying */
     char *format = var_InheritString( p_intf, "input-title-format" );
-    char *formated = str_format_meta( p_input, format );
-    free( format );
-    name = qfu(formated);
-    free( formated );
+    char *formatted = NULL;
+    if (format != NULL)
+    {
+        formatted = str_format_meta( p_input, format );
+        free( format );
+        if( formatted != NULL )
+        {
+            name = qfu(formatted);
+            free( formatted );
+        }
+    }
 
     /* If we have Nothing */
     if( name.simplified().isEmpty() )
@@ -1032,11 +1046,6 @@ MainInputManager::MainInputManager( intf_thread_t *_p_intf )
     DCONNECT( this, inputChanged(),
               im, inputChangedHandler() );
 
-    /* initialize p_input (an input can already be running) */
-    p_input = playlist_CurrentInput( THEPL );
-    if( p_input )
-        emit inputChanged( );
-
     /* Audio Menu */
     menusAudioMapper = new QSignalMapper();
     CONNECT( menusAudioMapper, mapped(QString), this, menusUpdateAudio( QString ) );
@@ -1099,7 +1108,11 @@ void MainInputManager::customEvent( QEvent *event )
     default:
         if( type != IMEvent::ItemChanged ) return;
     }
+    probeCurrentInput();
+}
 
+void MainInputManager::probeCurrentInput()
+{
     if( p_input != NULL )
         vlc_object_release( p_input );
     p_input = playlist_CurrentInput( THEPL );

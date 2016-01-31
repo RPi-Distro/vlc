@@ -1346,6 +1346,11 @@
 	<string>http://update.videolan.org/vlc/sparkle/vlc-intel64.xml</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+	<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>CFBundleExecutable</key>
 	<string>VLC</string>
 	<key>CFBundleGetInfoString</key>
@@ -1370,10 +1375,13 @@
 			<key>CFBundleURLIconFile</key>
 			<string>generic</string>
 			<key>CFBundleURLName</key>
-			<string>http url</string>
+			<string>http(s) url</string>
+			<key>LSHandlerRank</key>
+			<string>None</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>http</string>
+				<string>https</string>
 			</array>
 		</dict>
 		<dict>

@@ -95,4 +95,6 @@ SOURCES_macosx = \
 	BWQuincyUI.m \
 	iTunes.h \
 	Spotify.h \
+	ResumeDialogController.h \
+	ResumeDialogController.m \
 	$(NULL)

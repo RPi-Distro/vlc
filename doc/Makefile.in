@@ -703,7 +703,6 @@ LTLIBx26410b = @LTLIBx26410b@
 LTLIBx265 = @LTLIBx265@
 LTLIBxml = @LTLIBxml@
 LTLIBzvbi = @LTLIBzvbi@
-LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 LUAC = @LUAC@
 LUA_CFLAGS = @LUA_CFLAGS@
 LUA_LIBS = @LUA_LIBS@
@@ -873,6 +872,8 @@ XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XINERAMA_CFLAGS = @XINERAMA_CFLAGS@
 XINERAMA_LIBS = @XINERAMA_LIBS@
+XI_CFLAGS = @XI_CFLAGS@
+XI_LIBS = @XI_LIBS@
 XMKMF = @XMKMF@
 XPM_CFLAGS = @XPM_CFLAGS@
 XPM_LIBS = @XPM_LIBS@
@@ -933,6 +934,7 @@ pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
+runstatedir = @runstatedir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 soliddatadir = @soliddatadir@
@@ -982,6 +984,7 @@ CHANGELOGS = \
 	ChangeLog-2013 \
 	ChangeLog-2014 \
 	ChangeLog-2015 \
+	ChangeLog-2016 \
 	$(NULL)
 
 man1_MANS = \
@@ -1315,7 +1318,7 @@ $(CHANGELOGS): Makefile.am
 	fi
 
 # This one needs to be rebuilt all the time :)
-.PHONY: ChangeLog-2015 changelogs doc
+.PHONY: ChangeLog-2016 changelogs doc
 
 changelogs: $(CHANGELOGS)
 

@@ -2,7 +2,7 @@
  * win32.c: Screen capture module.
  *****************************************************************************
  * Copyright (C) 2004-2011 VLC authors and VideoLAN
- * $Id: 0092df96faf673a9456dfa0ddc2467d37048caca $
+ * $Id: 1139c394e77df46a82fe4c118bd9cbae5a527b2d $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -99,7 +99,9 @@ int screen_InitCapture( demux_t *p_demux )
     p_sys->fmt.video.i_visible_height =
     p_sys->fmt.video.i_height         = GetDeviceCaps( p_data->hdc_src, VERTRES );
     p_sys->fmt.video.i_bits_per_pixel = i_bits_per_pixel;
+    p_sys->fmt.video.i_sar_num = p_sys->fmt.video.i_sar_den = 1;
     p_sys->fmt.video.i_chroma         = i_chroma;
+    p_sys->fmt.video.i_sar_num = p_sys->fmt.video.i_sar_den = 1;
 
     switch( i_chroma )
     {

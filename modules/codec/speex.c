@@ -2,7 +2,7 @@
  * speex.c: speex decoder/packetizer/encoder module making use of libspeex.
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: c93fbc679a786522cb44fa6a5ab62caf82651848 $
+ * $Id: e21c7faf41989cb2e80a48aa4328f3fd45c6b86f $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -1061,7 +1061,7 @@ static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
     if( unlikely( !p_aout_buf ) ) return NULL;
 
     unsigned char *p_buffer = p_aout_buf->p_buffer;
-    int i_samples = p_aout_buf->i_nb_samples;
+    unsigned i_samples = p_aout_buf->i_nb_samples;
     int i_samples_delay = p_sys->i_samples_delay;
 
     mtime_t i_pts = p_aout_buf->i_pts -

@@ -2,7 +2,7 @@
  * ogg.c : ogg stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: 9982367c0b0a171c5daf353dd095a9de6e5b93c6 $
+ * $Id: 94d88942e090f58cc8d6619f360e8dc4781aca7f $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Andre Pang <Andre.Pang@csiro.au> (Annodex support)
@@ -2199,7 +2199,9 @@ static void Ogg_CleanSpecificData( logical_stream_t *p_stream )
 #ifdef HAVE_LIBVORBIS
     if ( p_stream->fmt.i_codec == VLC_CODEC_VORBIS )
     {
+        vorbis_info_clear( p_stream->special.vorbis.p_info );
         FREENULL( p_stream->special.vorbis.p_info );
+        vorbis_comment_clear( p_stream->special.vorbis.p_comment );
         FREENULL( p_stream->special.vorbis.p_comment );
         p_stream->special.vorbis.i_headers_flags = 0;
     }

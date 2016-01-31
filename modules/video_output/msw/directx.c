@@ -2,7 +2,7 @@
  * directx.c: Windows DirectDraw video output
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: afaa8f8df3023791b345e2149c1334d143d8fb33 $
+ * $Id: 6ce1eab7c8a19c27ee01963daec45be63c991c06 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -851,8 +851,8 @@ static int DirectXCreateSurface(vout_display_t *vd,
     ddsd.dwSize   = sizeof(ddsd);
     ddsd.ddpfPixelFormat.dwSize = sizeof(ddsd.ddpfPixelFormat);
     ddsd.dwFlags  = DDSD_HEIGHT | DDSD_WIDTH;
-    ddsd.dwWidth  = fmt->i_visible_width;
-    ddsd.dwHeight = fmt->i_visible_height;
+    ddsd.dwWidth  = fmt->i_width;
+    ddsd.dwHeight = fmt->i_height;
     if (fourcc) {
         ddsd.dwFlags |= DDSD_PIXELFORMAT;
         ddsd.ddpfPixelFormat.dwFlags = DDPF_FOURCC;

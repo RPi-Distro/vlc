@@ -2,7 +2,7 @@
  * vout_manager.cpp
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: f6ea8eb50df778350039d75ba0f8ea197adb35bf $
+ * $Id: 5c9e67cbd2ea91a8deb659b9d8457afc129b2afd $
  *
  * Authors: Erwan Tulou <brezhoneg1 at yahoo.fr>
  *
@@ -177,15 +177,6 @@ CtrlVideo* VoutManager::getBestCtrlVideo( )
     for( it = m_pCtrlVideoVec.begin(); it != m_pCtrlVideoVec.end(); ++it )
     {
         if( (*it)->isUseable() && !(*it)->isUsed() )
-        {
-            return (*it);
-        }
-    }
-
-    // as a fallback, look up any video control that is unused
-    for( it = m_pCtrlVideoVec.begin(); it != m_pCtrlVideoVec.end(); ++it )
-    {
-        if( !(*it)->isUsed() )
         {
             return (*it);
         }

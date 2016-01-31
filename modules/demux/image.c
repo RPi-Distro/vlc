@@ -2,7 +2,7 @@
  * image.c: Image demuxer
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 5b56913bf5bd9b9e0338b1d751333447bedcc2f3 $
+ * $Id: 78093128631d6ae0181b46e945cfea986d582974 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -147,8 +147,7 @@ static block_t *Decode(demux_t *demux,
 
     size_t size = 0;
     for (int i = 0; i < image->i_planes; i++)
-        size += image->p[i].i_visible_pitch *
-                image->p[i].i_visible_lines;
+        size += image->p[i].i_pitch * image->p[i].i_lines;
 
     data = block_Alloc(size);
     if (!data) {

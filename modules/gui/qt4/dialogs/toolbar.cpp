@@ -2,7 +2,7 @@
  * toolbar.cpp : ToolbarEdit dialog
  ****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: c1e667ae807669003978d03ac12c3d6be493ee51 $
+ * $Id: 4a8d48adee2d835e8bd6a0f930c604864bc572c2 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -888,6 +888,8 @@ bool DroppingController::eventFilter( QObject *obj, QEvent *event )
             /* Start the effective drag */
             drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::MoveAction);
             b_draging = false;
+
+            delete dI;
             }
             return true;
 

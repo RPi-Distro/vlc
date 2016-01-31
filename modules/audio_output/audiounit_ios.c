@@ -2,7 +2,7 @@
  * audiounit_ios.c: AudioUnit output plugin for iOS
  *****************************************************************************
  * Copyright (C) 2012 - 2013 VLC authors and VideoLAN
- * $Id: 4645306afb4305ed00d6905f7ef55bb216cde5cf $
+ * $Id: 48e0c6d5278aefb06c353d33268f2e41f82c4479 $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *
@@ -252,13 +252,6 @@ static int StartAnalog(audio_output_t *p_aout, audio_sample_format_t *fmt)
         return false;
     }
 
-    /* AU init */
-    status = AudioUnitInitialize(p_sys->au_unit);
-    if (status != noErr) {
-        msg_Err(p_aout, "failed to init AudioUnit (%i)", (int)status);
-        return false;
-    }
-
     /* setup circular buffer */
     TPCircularBufferInit(&p_sys->circular_buffer, AUDIO_BUFFER_SIZE_IN_SECONDS * fmt->i_rate * fmt->i_bytes_per_frame);
 
@@ -268,10 +261,17 @@ static int StartAnalog(audio_output_t *p_aout, audio_sample_format_t *fmt)
                             NULL,
                             NULL);
 
-	/* Set audio session to mediaplayback */
-	UInt32 sessionCategory = kAudioSessionCategory_MediaPlayback;
-	AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(sessionCategory),&sessionCategory);
-	AudioSessionSetActive(true);
+    /* Set audio session to mediaplayback */
+    UInt32 sessionCategory = kAudioSessionCategory_MediaPlayback;
+    AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(sessionCategory),&sessionCategory);
+    AudioSessionSetActive(true);
+
+    /* AU init */
+    status = AudioUnitInitialize(p_sys->au_unit);
+    if (status != noErr) {
+        msg_Err(p_aout, "failed to init AudioUnit (%i)", (int)status);
+        return false;
+    }
 
     /* start the unit */
     status = AudioOutputUnitStart(p_sys->au_unit);
@@ -291,6 +291,10 @@ static void Stop(audio_output_t *p_aout)
         status = AudioOutputUnitStop(p_sys->au_unit);
         if (status != noErr)
             msg_Warn(p_aout, "failed to stop AudioUnit (%i)", (int)status);
+
+        status = AudioUnitUninitialize(p_sys->au_unit);
+        if (status != noErr)
+            msg_Warn(p_aout, "failed to uninit AudioUnit (%i)", (int)status);
 
         status = AudioComponentInstanceDispose(p_sys->au_unit);
         if (status != noErr)
@@ -340,10 +344,10 @@ static void Pause (audio_output_t *p_aout, bool pause, mtime_t date)
         AudioOutputUnitStop(p_sys->au_unit);
         AudioSessionSetActive(false);
     } else {
-        AudioOutputUnitStart(p_sys->au_unit);
         UInt32 sessionCategory = kAudioSessionCategory_MediaPlayback;
         AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(sessionCategory),&sessionCategory);
         AudioSessionSetActive(true);
+        AudioOutputUnitStart(p_sys->au_unit);
     }
 }
 
@@ -411,11 +415,13 @@ static OSStatus RenderCallback(vlc_object_t *p_obj,
     /* Pull audio from buffer */
     int32_t availableBytes;
     Float32 *buffer = TPCircularBufferTail(&p_sys->circular_buffer, &availableBytes);
+    if (unlikely(bytesRequested == 0)) /* cannot be negative */
+        return noErr;
 
     /* check if we have enough data */
     if (!availableBytes || p_sys->b_paused) {
         /* return an empty buffer so silence is played until we have data */
-        memset(targetBuffer, 0, ioData->mBuffers[0].mDataByteSize);
+        memset(targetBuffer, 0, bytesRequested);
     } else {
         int32_t bytesToCopy = __MIN(bytesRequested, availableBytes);
 

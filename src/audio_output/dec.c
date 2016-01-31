@@ -2,7 +2,7 @@
  * dec.c : audio output API towards decoders
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: 2dfcff013b4e863acfaa2d868411507e9a1adba6 $
+ * $Id: ef03894b99e5f8ce6bfa5330165e8c837ab0a5e9 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -92,6 +92,7 @@ int aout_DecNew( audio_output_t *p_aout,
         aout_OutputDelete (p_aout);
 error:
         aout_volume_Delete (owner->volume);
+        owner->volume = NULL;
         aout_OutputUnlock (p_aout);
         return -1;
     }
@@ -119,6 +120,7 @@ void aout_DecDelete (audio_output_t *aout)
         aout_OutputDelete (aout);
     }
     aout_volume_Delete (owner->volume);
+    owner->volume = NULL;
     aout_OutputUnlock (aout);
     var_Destroy (aout, "stereo-mode");
 }

@@ -2,7 +2,7 @@
  * libvlc_audio.c: New libvlc audio control API
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: c919eb20585a1f54fc1ed520d411eac4d314206c $
+ * $Id: 13378fff2749c47b722bce6e909d7c97e6769c7b $
  *
  * Authors: Filippo Carone <filippo@carone.org>
  *          Jean-Paul Saman <jpsaman _at_ m2x _dot_ nl>
@@ -86,6 +86,8 @@ libvlc_audio_output_t *
         item->psz_description = strdup( module_get_name( module, true ) );
         if( unlikely(item->psz_name == NULL || item->psz_description == NULL) )
         {
+            free( item->psz_name );
+            free( item->psz_description );
             free( item );
             goto error;
         }

@@ -2,7 +2,7 @@
  * dvdnav.c: DVD module using the dvdnav library.
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: 2f08bbfcc649bc8706d7087a2371a30207c2fa99 $
+ * $Id: 384401f608f783f5eca089579a44509c01f5c557 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -82,7 +82,7 @@
 static int  AccessDemuxOpen ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-#if DVDREAD_VERSION >= 50300
+#if DVDREAD_VERSION >= 50300 && defined( HAVE_STREAM_CB_IN_DVDNAV_H )
 #define HAVE_DVDNAV_DEMUX
 static int  DemuxOpen ( vlc_object_t * );
 #endif

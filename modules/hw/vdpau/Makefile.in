@@ -102,6 +102,7 @@ host_triplet = @host@
 
 # FIXME: hwdummy only needs libavutil, and only if avcodec < 55.13.0
 @HAVE_AVCODEC_VDPAU_TRUE@am__append_4 = libvdpau_avcodec_plugin.la
+@HAVE_XCB_TRUE@am__append_5 = libvdpau_display_plugin.la
 subdir = modules/hw/vdpau
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/dolt.m4 \
@@ -210,6 +211,8 @@ libvdpau_display_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libvdpau_display_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
+@HAVE_XCB_TRUE@am_libvdpau_display_plugin_la_rpath = -rpath \
+@HAVE_XCB_TRUE@	$(vdpaudir)
 libvdpau_sharpen_plugin_la_DEPENDENCIES = libvlc_vdpau.la
 am_libvdpau_sharpen_plugin_la_OBJECTS =  \
 	libvdpau_sharpen_plugin_la-sharpen.lo \
@@ -844,7 +847,6 @@ LTLIBx26410b = @LTLIBx26410b@
 LTLIBx265 = @LTLIBx265@
 LTLIBxml = @LTLIBxml@
 LTLIBzvbi = @LTLIBzvbi@
-LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 LUAC = @LUAC@
 LUA_CFLAGS = @LUA_CFLAGS@
 LUA_LIBS = @LUA_LIBS@
@@ -1014,6 +1016,8 @@ XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XINERAMA_CFLAGS = @XINERAMA_CFLAGS@
 XINERAMA_LIBS = @XINERAMA_LIBS@
+XI_CFLAGS = @XI_CFLAGS@
+XI_LIBS = @XI_LIBS@
 XMKMF = @XMKMF@
 XPM_CFLAGS = @XPM_CFLAGS@
 XPM_LIBS = @XPM_LIBS@
@@ -1074,6 +1078,7 @@ pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
+runstatedir = @runstatedir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 soliddatadir = @soliddatadir@
@@ -1116,7 +1121,7 @@ libvlc_vdpau_la_LDFLAGS = \
 pkglib_LTLIBRARIES = libvlc_vdpau.la
 vdpau_LTLIBRARIES = $(am__append_4) libvdpau_deinterlace_plugin.la \
 	libvdpau_adjust_plugin.la libvdpau_sharpen_plugin.la \
-	libvdpau_chroma_plugin.la libvdpau_display_plugin.la
+	libvdpau_chroma_plugin.la $(am__append_5)
 libvdpau_avcodec_plugin_la_SOURCES = avcodec.c picture.c
 libvdpau_avcodec_plugin_la_CFLAGS = $(AM_CFLAGS) \
 	$(X_CFLAGS) $(AVCODEC_CFLAGS)
@@ -1262,7 +1267,7 @@ libvdpau_deinterlace_plugin.la: $(libvdpau_deinterlace_plugin_la_OBJECTS) $(libv
 	$(AM_V_CCLD)$(libvdpau_deinterlace_plugin_la_LINK) -rpath $(vdpaudir) $(libvdpau_deinterlace_plugin_la_OBJECTS) $(libvdpau_deinterlace_plugin_la_LIBADD) $(LIBS)
 
 libvdpau_display_plugin.la: $(libvdpau_display_plugin_la_OBJECTS) $(libvdpau_display_plugin_la_DEPENDENCIES) $(EXTRA_libvdpau_display_plugin_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libvdpau_display_plugin_la_LINK) -rpath $(vdpaudir) $(libvdpau_display_plugin_la_OBJECTS) $(libvdpau_display_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libvdpau_display_plugin_la_LINK) $(am_libvdpau_display_plugin_la_rpath) $(libvdpau_display_plugin_la_OBJECTS) $(libvdpau_display_plugin_la_LIBADD) $(LIBS)
 
 libvdpau_sharpen_plugin.la: $(libvdpau_sharpen_plugin_la_OBJECTS) $(libvdpau_sharpen_plugin_la_DEPENDENCIES) $(EXTRA_libvdpau_sharpen_plugin_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libvdpau_sharpen_plugin_la_LINK) -rpath $(vdpaudir) $(libvdpau_sharpen_plugin_la_OBJECTS) $(libvdpau_sharpen_plugin_la_LIBADD) $(LIBS)

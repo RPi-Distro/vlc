@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 05779af18d607819fc66312f7221f512c8b340d1 $
+ * $Id: 5623e073bbeede217d0e77b46b25a9b9cf20b1c4 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan.org>
@@ -63,6 +63,7 @@
 #import "ExtensionsManager.h"
 #import "BWQuincyManager.h"
 #import "ControlsBar.h"
+#import "ResumeDialogController.h"
 
 #import "VideoEffects.h"
 #import "AudioEffects.h"
@@ -330,6 +331,9 @@ static void Run(intf_thread_t *p_intf)
     vlc_mutex_unlock(&start_mutex);
 
     [NSBundle loadNibNamed: @"MainMenu" owner: NSApp];
+
+    [NSBundle loadNibNamed:@"MainWindow" owner: [VLCMain sharedInstance]];
+    [[[VLCMain sharedInstance] mainWindow] makeKeyAndOrderFront:nil];
 
     [NSApp run];
     msg_Dbg(p_intf, "Run loop has been stopped");
@@ -782,12 +786,6 @@ static VLCMain *_o_sharedMainInstance = nil;
     items_at_launch = p_playlist->p_local_category->i_children;
     PL_UNLOCK;
 
-    [NSBundle loadNibNamed:@"MainWindow" owner: self];
-
-    // This cannot be called directly here, as the main loop is not running yet so it would have no effect.
-    // So lets enqueue it into the loop for later execution.
-    [o_mainwindow performSelector:@selector(makeKeyAndOrderFront:) withObject:nil afterDelay:0];
-
     [[SUUpdater sharedUpdater] setDelegate:self];
 }
 
@@ -949,6 +947,8 @@ static bool f_appExit = false;
 
     if (!o_bookmarks)
         [o_bookmarks release];
+
+    [o_resume_dialog release];
 
     [o_coredialogs release];
     [o_eyetv release];
@@ -1561,7 +1561,7 @@ static bool f_appExit = false;
 
         IOReturn success;
         /* work-around a bug in 10.7.4 and 10.7.5, so check for 10.7.x < 10.7.4, 10.8 and 10.6 */
-        if ((NSAppKitVersionNumber >= 1115.2 && NSAppKitVersionNumber < 1138.45) || OSX_MOUNTAIN_LION || OSX_MAVERICKS || OSX_YOSEMITE || OSX_SNOW_LEOPARD) {
+        if ((NSAppKitVersionNumber >= 1115.2 && NSAppKitVersionNumber < 1138.45) || OSX_MOUNTAIN_LION || OSX_MAVERICKS || OSX_YOSEMITE || OSX_EL_CAPITAN || OSX_SNOW_LEOPARD) {
             CFStringRef reasonForActivity = CFStringCreateWithCString(kCFAllocatorDefault, _("VLC media playback"), kCFStringEncodingUTF8);
             if ([self activeVideoPlayback])
                 success = IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, reasonForActivity, &systemSleepAssertionID);
@@ -1756,6 +1756,14 @@ static bool f_appExit = false;
     }
 
     return o_coredialogs;
+}
+
+- (ResumeDialogController *)resumeDialog
+{
+    if (!o_resume_dialog)
+        o_resume_dialog = [[ResumeDialogController alloc] init];
+
+    return o_resume_dialog;
 }
 
 - (id)eyeTVController

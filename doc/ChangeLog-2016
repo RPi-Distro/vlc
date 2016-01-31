@@ -1,0 +1,235 @@
+commit 3306474f7c39541eaabcb616abb804e772108ff4
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Apr 13 14:58:45 2015 +0200
+
+    Win32: do not package the sdk folder
+    
+    It is present in the .zip and .7zip since forever
+    
+    It takes bandwidth and space that is not useful.
+    
+    (cherry picked from commit 16b6f69f50f5f7d0733203790e01e9f75d5a4446)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 6259d80d343c4307b29603b2d88c081c57d68564
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Jan 20 12:09:54 2016 +0100
+
+    Update NEWS for 2.2.2
+
+commit f88e58fbf5d5ce0dd67973c92091ac6ba16a96a6
+Author: Thomas Nigro <tn@thomasnigro.fr>
+Date:   Mon Jan 18 16:59:49 2016 +0100
+
+    Win32: fix the copying of the plugins in the installer
+    
+    Also, don't copy the sdk folder
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 93787b31ab3a5df283f14ef271baadd83a54712c)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit ef9930fcbebdb4ac2d771943ffcb4874ae5ea287
+Author: Kornel Lesiński <kornel@geekhood.net>
+Date:   Wed Jan 20 11:44:39 2016 +0100
+
+    contrib/sparkle: secure updates
+    
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+    (cherry picked from commit f03cb6720e8fcdbaad86893dfcd327baccdf9cac)
+
+commit 4def5bbbff24982ecb379df3c55e2f9f442b6e28
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Thu Jan 14 13:10:15 2016 +0100
+
+    contrib/live555: update version and fetch from v.o instead
+    
+    Upstream removes the current tarball on every update and therefore breaks VLC's compilation, which is extremely annoying
+    
+    (cherry picked from commit 2929dada4d63cc865968c2f0d2ab801ee2e24c8a)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 4d31ee8668dbc7d10f7dafc5b875629487a24f80
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Jan 18 22:19:58 2016 +0100
+
+    Update PO
+
+commit 4235ee1a7837e6e051da110a4e77cd00f7a758e7
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Jan 18 21:57:42 2016 +0100
+
+    Welcome to 2016
+
+commit dcaf118eecb68361e93346bee58b013c390014df
+Author: Hannes Domani <ssbssa@yahoo.de>
+Date:   Thu Jan 14 19:48:19 2016 +0100
+
+    avformat: use av_malloc() for io buffer (fix #16379)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 7c85e3ed843ec1974569f63d1c8e1456dd705d68)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit dc6068d611c8dac7f0062d86b77df45ddfcad309
+Author: Hannes Domani <ssbssa@yahoo.de>
+Date:   Fri Jan 15 15:49:47 2016 +0100
+
+    demux: ogg: fix memory leaks
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit b651591e9a3fa4932f7e2fe8804c304176dbe3aa)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 02b3f65bf4bf559d024f93e95af633a4811bd58b
+Author: Hannes Domani <ssbssa@yahoo.de>
+Date:   Fri Jan 15 15:49:46 2016 +0100
+
+    Qt: don't sort playlist by cover (fix #15372)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit c111bfead47e2e2629cb586fca00e9cfef3aad57)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 316b5c5a08617b0746464026febcbe88b7b2be69
+Author: Hannes Domani <ssbssa@yahoo.de>
+Date:   Sat Jan 16 14:01:40 2016 +0100
+
+    vobsub: fix memory leak
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit d11e004ceb785e96b6115114455fd132b1728733)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit fb70035a4823a1c1d6069f746c5735129f56db74
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jan 16 15:55:33 2016 +0200
+
+    contrib: ffmpeg: do not build the concat protocol
+    
+    This protocol is now proven insecure and is of no use in VLC.
+    
+    (cherry picked from commit 2fc4c0c1cd05bf7814e1261f1350d3f52b3ccf1d)
+
+commit 7623225de8be40c91b76a60cf83d0a010a0c1101
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Wed Jan 13 23:03:44 2016 +0100
+
+    youtube.lua: fix artist parsing
+    
+    It does happen to occasionally break due to random field ordering.
+    
+    (cherry picked from commit a4ced6b4ece2f97ca89cffe304f04660e1ea9965)
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 9b1e1db4c1a6c89ef9fc90f6ce9a78e128e10615
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Feb 18 19:17:47 2015 +0100
+
+    Youtube: improve description parsing
+    
+    Close #13973
+    
+    (cherry picked from commit f568fd431f42e1fd21bc6f55af93d119861c54bf)
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 3254200fc85a91e537f532c6b72acb022e27c492
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Thu Oct 29 03:46:11 2015 +0100
+
+    lua: remove obsolete preferred-resolution safeguards
+    
+    These checked for the availability of vlc.var.inherit and
+    preferred-resolution at the time they were introduced, for script
+    compatibility with older VLC versions. By now it should be safe to
+    assume it's always available.
+    
+    (cherry picked from commit d2d4277c62582aeb6c0ff829f0b4149e50cf798d)
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 0e56e9c061cb931eab72a93dcc335025af1da135
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Wed Jan 13 08:24:23 2016 +0100
+
+    youtube.lua: fix title parsing for website changes
+    
+    Shallow fix only, but improved rationalization
+    
+    (cherry picked from commit 064449074c771c3b1177cfd8f1a3e2615bdb27a8)
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 74f120e8ba327a76ddbd0480775f19f6da4865d5
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jan 9 20:51:19 2016 +0200
+
+    gnutls: fix double free
+    
+    (cherry picked from commit 1617e9a8b05a0a06dd6fb51e1653f4c0f5360445)
+
+commit dc6703ead386e05b337ff1747e54bc428be8d178
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Jan 8 16:49:13 2016 +0100
+
+    Qt: display the continue playback option in SPrefs
+    
+    (cherry picked from commit b73f0f971813a454b7f4a28dd8ca6528b5bbe0dd)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 07c33e45988e72d4afd9cf1df8b14d23665f9827
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Jan 7 17:22:50 2016 +0100
+
+    demux: ts: check for EAC3 before AC3 logic channels descriptor (fix #16316)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit cb24e4f17548c961493a5e1a367ca299624d0cb1
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Jan 7 18:34:34 2016 +0200
+
+    configure: FFmpeg hwaccel requires libavcodec < 57.10.100
+    
+    Since n2.9-dev-1400-g31741ae, the VLC avcodec plug-in will fail to
+    initialize hwaccel. This is by FFmpeg design.
+    
+    (cherry picked from commit e57d32f664ff63ead57dca1fed7aedd59edac9fb)
+
+commit bdfc5c8f300f18e6400024a49150d280141e6e8c
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Mon Jan 4 16:07:54 2016 +0100
+
+    contribs: Fix iconv build when using gcc 5.x
+    
+    GCC 5.x defaults to -std=gnu11, which changes the __inline keyword
+    semantics, causing some iconv functions not to be inlined, but they are
+    not declared as exported, thus causing linking to iconv to fail
+    
+    (cherry picked from commit ba25882ce80553dc098f41d39cada8eaf9587f32)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 40e58b57fa46a2d611f00395da500f9f1b88e388
+Author: Andreas Hartmetz <ahartmetz@gmail.com>
+Date:   Sun Jan 3 14:33:39 2016 +0100
+
+    Make ALSA devices without description appear in Qt4 config.
+    
+    If an /etc/asound.conf or $HOME/.asoundrc creates devices, those do not have a
+    description (a null pointer is returned). Relatedly, redefining the "default"
+    device results in it being listed without a description, thus disabling the
+    code that adds "default" WITH a description.
+    Possibly fixes other problems where ALSA devices with a NULL
+    description are disregarded. In Qt4 config, the NULL check is in
+    StringListConfigControl::finish().
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit a5fb9f78f3dbf087eed3744db15a3cb9301b92e0)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 02f59c2da162140bf18fde2d4b5faa80baec4ab8
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Dec 22 11:58:39 2015 +0100
+
+    Contribs: update live555
+    
+    (cherry picked from commit f8d477943052c336ca9953ea8566ab56daddf832)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>

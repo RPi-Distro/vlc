@@ -2,7 +2,7 @@
  * preferences_widgets.cpp : Widgets for preferences displays
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: da724dca1b20aa24231f08d533e03f48edaa302c $
+ * $Id: 6cfb4bdd75eaf14f870c8e59177f10109292c13c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -214,8 +214,8 @@ StringConfigControl::StringConfigControl( vlc_object_t *_p_this,
                                           bool pwd ) :
                            VStringConfigControl( _p_this, _p_item )
 {
-    label = new QLabel( qtr(p_item->psz_text), _parent );
-    text = new QLineEdit( qfu(p_item->value.psz), _parent );
+    label = new QLabel( p_item->psz_text ? qtr(p_item->psz_text) : "", _parent );
+    text = new QLineEdit( p_item->value.psz ? qfu(p_item->value.psz) : "", _parent );
     if( pwd ) text->setEchoMode( QLineEdit::Password );
     finish();
 }
@@ -504,6 +504,7 @@ void setfillVLCConfigCombo( const char *configname, intf_thread_t *p_intf,
             free( texts[i] );
         }
         free( texts );
+        free( values );
     }
 
     if( p_config->psz_longtext != NULL )
@@ -622,6 +623,8 @@ void ModuleListConfigControl::fillGrid( QGridLayout *l, int line )
 
 ModuleListConfigControl::~ModuleListConfigControl()
 {
+    foreach ( checkBoxListItem *it, modules )
+        free( it->psz_module );
     qDeleteAll( modules );
     modules.clear();
     delete groupBox;

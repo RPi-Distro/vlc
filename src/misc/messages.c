@@ -4,7 +4,7 @@
  * modules, especially intf modules. See vlc_config.h for output configuration.
  *****************************************************************************
  * Copyright (C) 1998-2005 VLC authors and VideoLAN
- * $Id: f75fd67e7a401daf41e5d0947b4228f51806c485 $
+ * $Id: 3f4122ce4b28744bbfd66c30f7da69544e2678d4 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -120,9 +120,11 @@ void vlc_vaLog (vlc_object_t *obj, int type, const char *module,
 #endif
 
     if (priv) {
+        int canc = vlc_savecancel ();
         vlc_rwlock_rdlock (&priv->log.lock);
         priv->log.cb (priv->log.opaque, type, &msg, format, args);
         vlc_rwlock_unlock (&priv->log.lock);
+        vlc_restorecancel (canc);
     }
 }
 

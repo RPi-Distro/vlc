@@ -2,7 +2,7 @@
  * events.c: Windows video output events handler
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 6e3c4214581ac4735a5b0abc66fcb6fb6ed35acb $
+ * $Id: dfa5095a2bb6101f341686844de1b9349f322126 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

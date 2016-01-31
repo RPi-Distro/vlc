@@ -995,7 +995,6 @@ LTLIBx26410b = @LTLIBx26410b@
 LTLIBx265 = @LTLIBx265@
 LTLIBxml = @LTLIBxml@
 LTLIBzvbi = @LTLIBzvbi@
-LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 LUAC = @LUAC@
 LUA_CFLAGS = @LUA_CFLAGS@
 LUA_LIBS = @LUA_LIBS@
@@ -1165,6 +1164,8 @@ XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XINERAMA_CFLAGS = @XINERAMA_CFLAGS@
 XINERAMA_LIBS = @XINERAMA_LIBS@
+XI_CFLAGS = @XI_CFLAGS@
+XI_LIBS = @XI_LIBS@
 XMKMF = @XMKMF@
 XPM_CFLAGS = @XPM_CFLAGS@
 XPM_LIBS = @XPM_LIBS@
@@ -1225,6 +1226,7 @@ pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
+runstatedir = @runstatedir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 soliddatadir = @soliddatadir@
@@ -1349,6 +1351,7 @@ EXTRA_DIST = extras/package/win32/vlc.exe.manifest \
 	extras/package/macosx/Resources/English.lproj/PlaylistAccessoryView.xib \
 	extras/package/macosx/Resources/English.lproj/PlaylistMenu.xib \
 	extras/package/macosx/Resources/English.lproj/Preferences.xib \
+	extras/package/macosx/Resources/English.lproj/ResumeDialog.xib \
 	extras/package/macosx/Resources/English.lproj/SharedDialogs.xib \
 	extras/package/macosx/Resources/English.lproj/SyncTracks.xib \
 	extras/package/macosx/Resources/English.lproj/VideoEffects.xib \
@@ -2946,11 +2949,12 @@ VLC-dev.app: VLC-tmp
 VLC.app: VLC-tmp
 	rm -Rf $@
 	cp -R VLC-tmp $@
-	PRODUCT="$@" ACTION="release-makefile" src_dir=$(srcdir) build_dir=$(top_builddir) sh $(srcdir)/extras/package/macosx/build-package.sh
-	find $@ -type d -exec chmod ugo+rx '{}' \;
-	find $@ -type f -exec chmod ugo+r '{}' \;
 	rm -Rf $@/Contents/Frameworks/BGHUDAppKit.framework/Versions/A/Resources/BGHUDAppKitPlugin.ibplugin
 	rm -Rf $@/Contents/Frameworks/BGHUDAppKit.framework/Versions/A/Resources/README.textile
+	PRODUCT="$@" ACTION="release-makefile" src_dir=$(srcdir) build_dir=$(top_builddir) sh $(srcdir)/extras/package/macosx/build-package.sh
+	bin/vlc-cache-gen $@/Contents/MacOS/plugins
+	find $@ -type d -exec chmod ugo+rx '{}' \;
+	find $@ -type f -exec chmod ugo+r '{}' \;
 
 VLC-tmp: vlc
 	$(AM_V_GEN)for i in src lib share; do \
@@ -3047,8 +3051,11 @@ package-translations:
 @HAVE_WIN32_TRUE@		cd npapi-vlc && \
 @HAVE_WIN32_TRUE@		git fetch origin && \
 @HAVE_WIN32_TRUE@		git reset --hard origin/master; \
+@HAVE_WIN32_TRUE@		git submodule update; \
 @HAVE_WIN32_TRUE@	else \
-@HAVE_WIN32_TRUE@		git clone git://git.videolan.org/npapi-vlc.git npapi-vlc ; \
+@HAVE_WIN32_TRUE@		git clone https://code.videolan.org/videolan/npapi-vlc.git npapi-vlc && \
+@HAVE_WIN32_TRUE@		cd npapi-vlc && \
+@HAVE_WIN32_TRUE@		git submodule update --init; \
 @HAVE_WIN32_TRUE@	fi
 @HAVE_WIN32_TRUE@	git --git-dir=npapi-vlc/.git describe --long --always > stamp-npapi.tmp
 @HAVE_WIN32_TRUE@	if diff stamp-npapi.tmp stamp-npapi >/dev/null 2>&1; then \

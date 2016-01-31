@@ -91,7 +91,9 @@ int main (int argc, char *argv[])
         int vlc_argc = 0;
 
         vlc_argv[vlc_argc++] = "--quiet";
+#ifndef __APPLE__
         if (force)
+#endif
             vlc_argv[vlc_argc++] = "--reset-plugins-cache";
         vlc_argv[vlc_argc++] = "--"; /* end of options */
         vlc_argv[vlc_argc] = NULL;

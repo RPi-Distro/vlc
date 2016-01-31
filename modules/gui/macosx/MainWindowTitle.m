@@ -2,7 +2,7 @@
  * MainWindowTitle.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: edb20ca99fa534fffa637b9836d28e884fdac494 $
+ * $Id: d6799d6f0786aca7cb7ae0448f93d4d90eaaf6a2 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -78,7 +78,7 @@
         b_nativeFullscreenMode = var_InheritBool(VLCIntf, "macosx-nativefullscreenmode");
 #endif
 
-    if (!b_nativeFullscreenMode || OSX_YOSEMITE) {
+    if (!b_nativeFullscreenMode || OSX_YOSEMITE || OSX_EL_CAPITAN) {
         [o_fullscreen_btn setHidden: YES];
     }
 
@@ -114,7 +114,7 @@
     NSString *o_name = @"";
     if (OSX_SNOW_LEOPARD) {
         o_name = @"snowleo-";
-    } else if (OSX_YOSEMITE) {
+    } else if (OSX_YOSEMITE || OSX_EL_CAPITAN) {
         o_name = @"yosemite-";
     } else { // OSX_LION, OSX_MOUNTAIN_LION, OSX_MAVERICKS
         o_name = @"lion-";
@@ -158,7 +158,7 @@
     o_green_on_img = [[self getButtonImage:@"window-zoom-on"] retain];
 
     // these files are only available in the yosemite variant
-    if (OSX_YOSEMITE) {
+    if (OSX_YOSEMITE || OSX_EL_CAPITAN) {
         o_fullscreen_img = [[self getButtonImage:@"window-fullscreen"] retain];
         o_fullscreen_over_img = [[self getButtonImage:@"window-fullscreen-over"] retain];
         o_fullscreen_on_img = [[self getButtonImage:@"window-fullscreen-on"] retain];
@@ -193,7 +193,7 @@
 {
     // default image for old version, or if native fullscreen is
     // disabled on yosemite, or if alt key is pressed
-    if (!OSX_YOSEMITE || !b_nativeFullscreenMode || b_alt_pressed) {
+    if (!(OSX_YOSEMITE || OSX_EL_CAPITAN) || !b_nativeFullscreenMode || b_alt_pressed) {
 
         if (b_mouse_over) {
             [o_green_btn setImage: o_green_over_img];
@@ -226,7 +226,7 @@
     else if (sender == o_yellow_btn)
         [[self window] miniaturize: sender];
     else if (sender == o_green_btn) {
-        if (OSX_YOSEMITE && b_nativeFullscreenMode && !b_alt_pressed) {
+        if ((OSX_YOSEMITE || OSX_EL_CAPITAN) && b_nativeFullscreenMode && !b_alt_pressed) {
             [[self window] toggleFullScreen:self];
         } else {
             [[self window] performZoom: sender];

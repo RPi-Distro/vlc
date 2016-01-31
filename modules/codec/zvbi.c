@@ -2,7 +2,7 @@
  * zvbi.c : VBI and Teletext PES demux and decoder using libzvbi
  *****************************************************************************
  * Copyright (C) 2007, M2X
- * $Id: b967f00567a112ed2ad6b599c677f05e13ddc6ee $
+ * $Id: 51272b5a6f3604ff51e72a8b567c792a013f105c $
  *
  * Authors: Derk-Jan Hartman <djhartman at m2x dot nl>
  *          Jean-Paul Saman <jpsaman at m2x dot nl>
@@ -615,7 +615,7 @@ static int get_last_visible_row( vbi_char *p_text, int rows, int columns)
     {
         if (p_text[i].opacity != VBI_TRANSPARENT_SPACE)
         {
-            return ( i + columns - 1) / columns;
+            return i / columns;
         }
     }
 

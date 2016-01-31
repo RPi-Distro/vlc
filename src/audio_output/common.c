@@ -2,7 +2,7 @@
  * common.c : audio output management of common data structures
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: f92230ec0d051c521e37b196021e03cfd973c0b3 $
+ * $Id: 09dca5c1892ccc6468c2a840982d6ff4b05aec74 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -511,7 +511,7 @@ bool aout_CheckChannelExtraction( int *pi_selection,
         if( pi_selection[i] != i )
             return true;
     }
-    return i_out == i_channels;
+    return i_out != i_channels;
 }
 
 /* Return the order in which filters should be inserted */

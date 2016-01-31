@@ -2,7 +2,7 @@
  r playlistinfo.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 9ec4cf5cebb49edae7eee60275f605fdf24de08f $
+ * $Id: 9e94701a9ebf7ad817b6ded9836d6e763ca6446a $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -363,9 +363,9 @@ static VLCInfo *_o_sharedInstance = nil;
     return;
 
 error:
-    NSRunAlertPanel(_NS("Error while saving meta"),
-        @"%@",_NS("VLC was unable to save the meta data."),
-        _NS("OK"), nil, nil);
+    NSRunAlertPanel(_NS("Error while saving meta"), @"%@",
+                    _NS("OK"), nil, nil,
+                    _NS("VLC was unable to save the meta data."));
 }
 
 - (IBAction)downloadCoverArt:(id)sender

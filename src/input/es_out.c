@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: ddf01e13c185e74020afd1c4bc929c977cb90f04 $
+ * $Id: b2b098842c9d48400525b5db52d94c5e2b4acd7e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -1339,6 +1339,7 @@ static void EsOutProgramUpdateScrambled( es_out_t *p_out, es_out_pgrm_t *p_pgrm 
         input_Control( p_input, INPUT_ADD_INFO, psz_cat, _("Scrambled"), _("Yes") );
     else
         input_Control( p_input, INPUT_DEL_INFO, psz_cat, _("Scrambled") );
+    free( psz_cat );
 
     input_SendEventProgramScrambled( p_input, p_pgrm->i_id, b_scrambled );
 }
@@ -1443,6 +1444,12 @@ static es_out_id_t *EsOutAdd( es_out_t *out, const es_format_t *fmt )
     else
         es->fmt.i_codec = vlc_fourcc_GetCodec( es->fmt.i_cat,
                                                es->fmt.i_codec );
+    if( es->fmt.i_cat == VIDEO_ES
+     && (!es->fmt.video.i_visible_width || !es->fmt.video.i_visible_height))
+    {
+        es->fmt.video.i_visible_width = es->fmt.video.i_width;
+        es->fmt.video.i_visible_height = es->fmt.video.i_height;
+    }
 
     es->i_id = es->fmt.i_id;
     es->i_meta_id = out->p_sys->i_id;

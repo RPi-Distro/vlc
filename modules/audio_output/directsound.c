@@ -2,7 +2,7 @@
  * directsound.c: DirectSound audio output plugin for VLC
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 88326d01869e066968049e3e028d20e640e4ac68 $
+ * $Id: 51788f5b6a4d0da78a8ce4503578b4f60e56344e $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -29,6 +29,7 @@
 # include "config.h"
 #endif
 
+#include <assert.h>
 #include <math.h>
 
 #include <vlc_common.h>
@@ -286,7 +287,7 @@ static HRESULT Play( vlc_object_t *obj, aout_stream_sys_t *sys,
                                             0, 0, DSBPLAY_LOOPING );
     }
     if( dsresult != DS_OK )
-        msg_Err( obj, "cannot start playing buffer" );
+        msg_Err( obj, "cannot start playing buffer: (hr=0x%0lx)", dsresult );
     else
     {
         vlc_mutex_lock( &sys->lock );

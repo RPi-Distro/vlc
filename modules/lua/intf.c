@@ -2,7 +2,7 @@
  * intf.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 841587f2222471414b1069473205c51443a2397e $
+ * $Id: c1835303d50cfea6498c68108bf5a9dd1a6ada22 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -390,8 +390,8 @@ void Close_LuaIntf( vlc_object_t *p_this )
     vlclua_fd_interrupt( &p_sys->dtable );
     vlc_join( p_sys->thread, NULL );
 
-    vlclua_fd_cleanup( &p_sys->dtable );
     lua_close( p_sys->L );
+    vlclua_fd_cleanup( &p_sys->dtable );
     free( p_sys->psz_filename );
     free( p_sys );
 }
