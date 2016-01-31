@@ -1,5 +1,8 @@
-vlc (2.2.1-6) UNRELEASED; urgency=medium
+vlc (2.2.2-1) UNRELEASED; urgency=medium
 
+  * New upstream release.
+    - pulse: compute latency correctly if negative. (Closes: #784640)
+    - Fix build failure with newer libdvdread-dev. (Closes: #797207)
   * Migrate to automatic debug packages.
   * Tell reportbug to report bugs against src:vlc and install reportbug
     control files in every package.
@@ -16,7 +19,7 @@ vlc (2.2.1-6) UNRELEASED; urgency=medium
   * debian/NEWS: Fix spelling error.
   * debian/control: Update Vcs-Git.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sun, 20 Dec 2015 00:47:31 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 31 Jan 2016 21:58:42 +0100
 
 vlc (2.2.1-5) unstable; urgency=medium
 
