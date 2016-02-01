@@ -1,4 +1,4 @@
-vlc (2.2.2-1) UNRELEASED; urgency=medium
+vlc (2.2.2-1) unstable; urgency=medium
 
   * New upstream release.
     - pulse: compute latency correctly if negative. (Closes: #784640)
@@ -24,7 +24,7 @@ vlc (2.2.2-1) UNRELEASED; urgency=medium
   * debian/libvlc5.symbols: Bump version of libvlc_event_type_name for new
     event names.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sun, 31 Jan 2016 22:36:58 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 01 Feb 2016 20:43:05 +0100
 
 vlc (2.2.1-5) unstable; urgency=medium
 
