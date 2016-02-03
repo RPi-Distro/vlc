@@ -244,9 +244,12 @@ override_dh_auto_configure:
 override_dh_auto_build:
 	dh_auto_build
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
-	# Build zsh completion
-	BUILDDIR=$(CURDIR) \
-	cd extras/analyser && ./zsh_completion.sh
+	# Build zsh completion and remove it if it fails.
+	# This is workaround until we find out why it fails on praetorius.
+	( \
+		BUILDDIR=$(CURDIR) \
+		cd extras/analyser && ./zsh_completion.sh \
+	) || rm -f extras/analyser/_zsh
 endif
 
 override_dh_auto_test:
@@ -295,8 +298,9 @@ ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
 		fi; \
 	done; \
 	if test "$$BORKED" = yes; then exit 1; fi
-	# Install zsh completion
-	dh_install -pvlc-nox extras/analyser/_vlc usr/share/zsh/vendor-completions
+	# Install zsh completion if available
+	find extras/analyser/_vlc -exec \
+		dh_install -pvlc-nox '{}' usr/share/zsh/vendor-completions \;
 endif
 	$(if $(shell dpkg-vendor --is Ubuntu && echo true),dh_install -pvlc-nox debian/source_vlc.py usr/share/apport/package-hooks/)
 	dh_buildinfo -p vlc-nox
