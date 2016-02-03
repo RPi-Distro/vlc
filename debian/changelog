@@ -1,3 +1,11 @@
+vlc (2.2.2-2) unstable; urgency=medium
+
+  * debian/*.maintscript: Handle more symlink to directory conversions.
+  * debian/rules: Do not fail to build if zsh completion fails to generate.
+    This is a temporary workaround for a FTBFS on praetorius.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 03 Feb 2016 18:37:02 +0100
+
 vlc (2.2.2-1) unstable; urgency=medium
 
   * New upstream release.
