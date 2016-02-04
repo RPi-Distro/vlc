@@ -1,3 +1,11 @@
+vlc (2.2.2-3) unstable; urgency=medium
+
+  * debian/*.maintscript: Handle all cases.
+  * debian/patches/zsh-completion.patch: Upstream patch to fix zsh completion
+    generation.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 04 Feb 2016 20:53:28 +0100
+
 vlc (2.2.2-2) unstable; urgency=medium
 
   * debian/*.maintscript: Handle more symlink to directory conversions.
