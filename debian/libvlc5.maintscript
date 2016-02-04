@@ -1,1 +1,3 @@
+symlink_to_dir /usr/share/doc/libvlc5 /usr/share/doc/libvlccore8 2.2.2-3~
+symlink_to_dir /usr/share/doc/libvlc5 /usr/share/doc/vlc-data 2.2.2-3~
 symlink_to_dir /usr/share/bug/libvlc5 /usr/share/bug/libvlccore8 2.2.2-1~
