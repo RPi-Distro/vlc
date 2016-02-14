@@ -1,0 +1,66 @@
+Description: Revert invalid translations
+Bug: https://trac.videolan.org/vlc/ticket/16598
+Bug-Debian: https://bugs.debian.org/814258
+
+diff --git a/po/de.po b/po/de.po
+index b9b19aa..9b82fb0 100644
+--- a/po/de.po
++++ b/po/de.po
+@@ -22012,7 +22012,7 @@ msgstr "&Wiedergabeliste"
+ 
+ #: modules/gui/qt4/menus.cpp:491
+ msgid "Ctrl+L"
+-msgstr "Strg+L"
++msgstr "Ctrl+L"
+ 
+ #: modules/gui/qt4/menus.cpp:494
+ msgid "Docked Playlist"
+@@ -22024,7 +22024,7 @@ msgstr "Mi&nimale Ansicht"
+ 
+ #: modules/gui/qt4/menus.cpp:506
+ msgid "Ctrl+H"
+-msgstr "Strg+H"
++msgstr "Ctrl+H"
+ 
+ #: modules/gui/qt4/menus.cpp:515
+ msgid "&Fullscreen Interface"
+@@ -22180,7 +22180,7 @@ msgstr "&Rückwärts springen"
+ 
+ #: modules/gui/qt4/menus.cpp:918
+ msgid "Ctrl+T"
+-msgstr "Strg+T"
++msgstr "Ctrl+T"
+ 
+ #: modules/gui/qt4/menus.cpp:933
+ msgid "Open &Network..."
+diff --git a/po/mr.po b/po/mr.po
+index 195fa3e..d9c5042 100644
+--- a/po/mr.po
++++ b/po/mr.po
+@@ -21567,7 +21567,7 @@ msgstr "चालविण्याची यादी"
+ 
+ #: modules/gui/qt4/menus.cpp:491
+ msgid "Ctrl+L"
+-msgstr "कंट्रोल + एल"
++msgstr "Ctrl+L"
+ 
+ #: modules/gui/qt4/menus.cpp:494
+ msgid "Docked Playlist"
+@@ -21579,7 +21579,7 @@ msgstr "किमान आंतरपृष्ठ"
+ 
+ #: modules/gui/qt4/menus.cpp:506
+ msgid "Ctrl+H"
+-msgstr "कंट्रोल + एच"
++msgstr "Ctrl+H
+ 
+ #: modules/gui/qt4/menus.cpp:515
+ msgid "&Fullscreen Interface"
+@@ -21735,7 +21735,7 @@ msgstr "मागे उडी मारा"
+ 
+ #: modules/gui/qt4/menus.cpp:918
+ msgid "Ctrl+T"
+-msgstr "कंट्रोल + टी"
++msgstr "Ctrl+T"
+ 
+ #: modules/gui/qt4/menus.cpp:933
+ msgid "Open &Network..."
