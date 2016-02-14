@@ -1,2 +1,4 @@
 extras/analyser/vlc
 extras/analyser/zsh_gen
+po/*.gmo
+po/stamp-po
