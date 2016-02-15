@@ -1,1 +1,1 @@
-symlink_to_dir /usr/share/bug/vlc-nox /usr/share/bug/libvlccore8 2.2.2-1~
+symlink_to_dir /usr/share/bug/vlc-nox libvlccore8 2.2.2-4~
