@@ -2,6 +2,8 @@ vlc (2.2.2-4) UNRELEASED; urgency=medium
 
   * debian/patches/fix-translation.patch: Fix translation of Shortcuts.
     (Closes: #814258)
+  * debian/*.maintscript: Switch from absolute to relative paths to better
+    handle symlink chains. (Closes: #814646)
 
  -- Sebastian Ramacher <sramacher@debian.org>  Sun, 14 Feb 2016 18:36:26 +0100
 
