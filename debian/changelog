@@ -1,3 +1,15 @@
+vlc (2.2.2-5) UNRELEASED; urgency=medium
+
+  * debian/patches:
+    - qt4-Fix-resume-where-you-left-off.patch,
+      qt4-input_manager-Always-reset-lastURI-when-stopping.patch: Apply
+      upstream patches to fix issues with "resume playback" feature.
+    - avcodec-pass-consistent-dimensions-to-hardware-decod.patch: Apply
+      upstream patch to fix hardware decoding with libvdpau-va-gl.
+      (Closes: #813370)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 13 Mar 2016 21:16:27 +0100
+
 vlc (2.2.2-4) unstable; urgency=medium
 
   * debian/patches/fix-translation.patch: Fix translation of Shortcuts.

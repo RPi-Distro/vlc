@@ -1,3 +1,6 @@
 frenchtv-links.patch
 zsh-completion.patch
 fix-translation.patch
+qt4-Fix-resume-where-you-left-off.patch
+qt4-input_manager-Always-reset-lastURI-when-stopping.patch
+avcodec-pass-consistent-dimensions-to-hardware-decod.patch
