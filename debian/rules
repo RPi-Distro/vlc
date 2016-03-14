@@ -101,6 +101,7 @@ confflags += \
 # fdkaac -> in Debian non-free
 # gnomevfs -> poorly maintained
 # goom -> not in Debian
+# gst-decode -> not needed when having libavcodec
 # libtar -> security issue (#737534)
 # mfx -> currently not supported on Linux
 # opencv -> developer plugin not required by end users
@@ -116,6 +117,7 @@ confflags += \
 	--disable-fdkaac \
 	--disable-gnomevfs \
 	--disable-goom \
+	--disable-gst-decode \
 	--disable-libtar \
 	--disable-mfx \
 	--disable-opencv \
