@@ -13,7 +13,6 @@ usr/lib/vlc/plugins/access/libaccess_mtp_plugin.so
 usr/lib/vlc/plugins/access/libaccess_oss_plugin.so [oss]
 usr/lib/vlc/plugins/access/libaccess_realrtsp_plugin.so
 usr/lib/vlc/plugins/access/libattachment_plugin.so
-usr/lib/vlc/plugins/access/libavio_plugin.so
 usr/lib/vlc/plugins/access/libcdda_plugin.so [cdda]
 usr/lib/vlc/plugins/access/libdc1394_plugin.so [dc1394]
 usr/lib/vlc/plugins/access/libdtv_plugin.so [dtv]
