@@ -306,9 +306,6 @@ endif
 	$(if $(shell dpkg-vendor --is Ubuntu && echo true),dh_install -pvlc-nox debian/source_vlc.py usr/share/apport/package-hooks/)
 	dh_buildinfo -p vlc-nox
 
-override_dh_strip:
-	dh_strip --ddeb-migration='vlc-dbg (<< 2.2.2-1)'
-
 override_dh_installchangelogs:
 	dh_installchangelogs NEWS $(pluginpackages:%=-Nvlc-plugin-%)
 
