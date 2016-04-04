@@ -16,15 +16,6 @@ ifneq (,$(filter debug,$(DEB_BUILD_OPTIONS)))
 confflags += --enable-debug
 endif
 
-ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
-confflags += \
-	--disable-optimizations \
-	--disable-mmx \
-	--disable-sse \
-	--disable-altivec \
-	$(NULL)
-endif
-
 # configure flags
 confflags += \
 	--config-cache \
@@ -201,6 +192,15 @@ confflags += --disable-crystalhd
 removeplugins += libcrystalhd
 endif
 
+ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
+confflags += \
+	--disable-optimizations \
+	--disable-mmx \
+	--disable-sse \
+	--disable-altivec \
+	$(NULL)
+removeplugins += mmx sse2 altivec neon
+else
 # amd64 and i386 specific optimizations
 ifeq (,$(filter-out amd64 i386,$(DEB_HOST_ARCH_CPU)))
 confflags += --enable-mmx --enable-sse
@@ -229,6 +229,7 @@ endif
 ifeq (,$(filter-out powerpcspe,$(DEB_HOST_ARCH)))
 DEB_CFLAGS_MAINT_APPEND += -mtune=8548
 DEB_CXXFLAGS_MAINT_APPEND += -mtune=8548
+endif
 endif
 
 export DEB_CFLAGS_MAINT_APPEND
