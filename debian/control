@@ -117,6 +117,7 @@ Build-Depends: autopoint,
                lua5.2,
                oss4-dev [kfreebsd-any],
                pkg-config,
+               python3,
                qtbase5-dev (>= 5.1),
                zlib1g-dev,
                zsh
