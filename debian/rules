@@ -17,7 +17,12 @@ confflags += --enable-debug
 endif
 
 ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
-confflags += --disable-optimizations --disable-mmx --disable-sse --disable-altivec
+confflags += \
+	--disable-optimizations \
+	--disable-mmx \
+	--disable-sse \
+	--disable-altivec \
+	$(NULL)
 endif
 
 # configure flags
