@@ -152,16 +152,16 @@ confflags += \
 	$(NULL)
 removeplugins += \
 	alsa \
-	libatmo \
-	libdc1394 \
-	libdtv \
-	libdvb \
-	libdv1394 \
-	libfb \
-	libomxil \
+	atmo \
+	dc1394 \
+	dtv \
+	dv1394 \
+	dvb \
+	fb \
 	linsys \
-	libudev \
-	libv4l2 \
+	omxil \
+	udev \
+	v4l2 \
 	$(NULL)
 endif
 
@@ -171,7 +171,7 @@ confflags += --enable-libva --enable-vcd --enable-smbclient
 pluginpackages += samba
 else
 confflags += --disable-libva --disable-vcd --disable-smbclient
-removeplugins += cdda libvaapi smbclient vcd
+removeplugins += cdda libva smbclient vcd
 endif
 
 # kFreeBSD specific flags
@@ -189,7 +189,7 @@ ifeq (,$(filter-out amd64 i386,$(DEB_HOST_ARCH)))
 confflags += --enable-crystalhd
 else
 confflags += --disable-crystalhd
-removeplugins += libcrystalhd
+removeplugins += crystalhd
 endif
 
 ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))

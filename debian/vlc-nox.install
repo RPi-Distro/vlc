@@ -15,10 +15,10 @@ usr/lib/vlc/plugins/access/libaccess_realrtsp_plugin.so
 usr/lib/vlc/plugins/access/libattachment_plugin.so
 usr/lib/vlc/plugins/access/libavio_plugin.so
 usr/lib/vlc/plugins/access/libcdda_plugin.so [cdda]
-usr/lib/vlc/plugins/access/libdc1394_plugin.so [libdc1394]
-usr/lib/vlc/plugins/access/libdtv_plugin.so [libdtv]
-usr/lib/vlc/plugins/access/libdv1394_plugin.so [libdv1394]
-usr/lib/vlc/plugins/access/libdvb_plugin.so [libdvb]
+usr/lib/vlc/plugins/access/libdc1394_plugin.so [dc1394]
+usr/lib/vlc/plugins/access/libdtv_plugin.so [dtv]
+usr/lib/vlc/plugins/access/libdv1394_plugin.so [dv1394]
+usr/lib/vlc/plugins/access/libdvb_plugin.so [dvb]
 usr/lib/vlc/plugins/access/libdvdnav_plugin.so
 usr/lib/vlc/plugins/access/libdvdread_plugin.so
 usr/lib/vlc/plugins/access/libfilesystem_plugin.so
@@ -38,7 +38,7 @@ usr/lib/vlc/plugins/access/libshm_plugin.so
 usr/lib/vlc/plugins/access/libtcp_plugin.so
 usr/lib/vlc/plugins/access/libtimecode_plugin.so
 usr/lib/vlc/plugins/access/libudp_plugin.so
-usr/lib/vlc/plugins/access/libv4l2_plugin.so [libv4l2]
+usr/lib/vlc/plugins/access/libv4l2_plugin.so [v4l2]
 usr/lib/vlc/plugins/access/libvcd_plugin.so [vcd]
 usr/lib/vlc/plugins/access/libvcdx_plugin.so
 usr/lib/vlc/plugins/access/libvdr_plugin.so
@@ -60,7 +60,7 @@ usr/lib/vlc/plugins/codec/libaraw_plugin.so
 usr/lib/vlc/plugins/codec/libavcodec_plugin.so
 usr/lib/vlc/plugins/codec/libcc_plugin.so
 usr/lib/vlc/plugins/codec/libcdg_plugin.so
-usr/lib/vlc/plugins/codec/libcrystalhd_plugin.so [libcrystalhd]
+usr/lib/vlc/plugins/codec/libcrystalhd_plugin.so [crystalhd]
 usr/lib/vlc/plugins/codec/libcvdsub_plugin.so
 usr/lib/vlc/plugins/codec/libddummy_plugin.so
 usr/lib/vlc/plugins/codec/libdts_plugin.so
@@ -76,7 +76,7 @@ usr/lib/vlc/plugins/codec/liblibass_plugin.so
 usr/lib/vlc/plugins/codec/liblibmpeg2_plugin.so
 usr/lib/vlc/plugins/codec/liblpcm_plugin.so
 usr/lib/vlc/plugins/codec/libmpeg_audio_plugin.so
-usr/lib/vlc/plugins/codec/libomxil_plugin.so [libomxil]
+usr/lib/vlc/plugins/codec/libomxil_plugin.so [omxil]
 usr/lib/vlc/plugins/codec/libopus_plugin.so
 usr/lib/vlc/plugins/codec/libpng_plugin.so
 usr/lib/vlc/plugins/codec/librawvideo_plugin.so
@@ -128,7 +128,7 @@ usr/lib/vlc/plugins/services_discovery/libmediadirs_plugin.so
 usr/lib/vlc/plugins/services_discovery/libmtp_plugin.so
 usr/lib/vlc/plugins/services_discovery/libpodcast_plugin.so
 usr/lib/vlc/plugins/services_discovery/libsap_plugin.so
-usr/lib/vlc/plugins/services_discovery/libudev_plugin.so [libudev]
+usr/lib/vlc/plugins/services_discovery/libudev_plugin.so [udev]
 usr/lib/vlc/plugins/services_discovery/libupnp_plugin.so
 usr/lib/vlc/plugins/stream_filter
 usr/lib/vlc/plugins/stream_out
@@ -139,7 +139,7 @@ usr/lib/vlc/plugins/video_filter/libadjust_plugin.so
 usr/lib/vlc/plugins/video_filter/libalphamask_plugin.so
 usr/lib/vlc/plugins/video_filter/libanaglyph_plugin.so
 usr/lib/vlc/plugins/video_filter/libantiflicker_plugin.so
-usr/lib/vlc/plugins/video_filter/libatmo_plugin.so [libatmo]
+usr/lib/vlc/plugins/video_filter/libatmo_plugin.so [atmo]
 usr/lib/vlc/plugins/video_filter/libaudiobargraph_v_plugin.so
 usr/lib/vlc/plugins/video_filter/libball_plugin.so
 usr/lib/vlc/plugins/video_filter/libblend_plugin.so
@@ -185,7 +185,7 @@ usr/lib/vlc/plugins/video_filter/libvhs_plugin.so
 usr/lib/vlc/plugins/video_filter/libwave_plugin.so
 usr/lib/vlc/plugins/video_filter/libyuvp_plugin.so
 usr/lib/vlc/plugins/video_output/libdirectfb_plugin.so
-usr/lib/vlc/plugins/video_output/libfb_plugin.so [libfb]
+usr/lib/vlc/plugins/video_output/libfb_plugin.so [fb]
 usr/lib/vlc/plugins/video_output/libvdummy_plugin.so
 usr/lib/vlc/plugins/video_output/libvmem_plugin.so
 usr/lib/vlc/plugins/video_output/libyuv_plugin.so
