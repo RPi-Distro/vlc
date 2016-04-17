@@ -1,3 +1,17 @@
+vlc (2.2.2-6) UNRELEASED; urgency=medium
+
+  * Use embedded copy of ffmpeg 2.8.6. (Closes: #803868)
+  * debian/rules:
+    * Explicitly disable gst-decode.
+    * Enable sndio plugin.
+    * Drop unnecessary override.
+    * Fix noopt handling.
+  * debian/vlc{-nox}.install: Filter plugins with a helper script.
+  * debian/control: Bump Standards-Version.
+  * debian/watch: Update to version 4.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 18 Apr 2016 00:43:22 +0200
+
 vlc (2.2.2-5) unstable; urgency=medium
 
   * debian/patches:
