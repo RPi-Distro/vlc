@@ -1,4 +1,4 @@
-vlc (2.2.2-6) UNRELEASED; urgency=medium
+vlc (2.2.2-6) unstable; urgency=medium
 
   * Use embedded copy of ffmpeg 2.8.6. (Closes: #803868)
   * debian/rules:
@@ -10,7 +10,7 @@ vlc (2.2.2-6) UNRELEASED; urgency=medium
   * debian/control: Bump Standards-Version.
   * debian/watch: Update to version 4.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Mon, 18 Apr 2016 00:43:22 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 18 Apr 2016 01:00:56 +0200
 
 vlc (2.2.2-5) unstable; urgency=medium
 
