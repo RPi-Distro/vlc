@@ -2,7 +2,7 @@
  * video.c: video decoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 0ecd7fec5484e8386652e5458fa3b888ce7d08e8 $
+ * $Id: ae600e8d05e37cf8a726f193c2cb43946802fc5c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1004,7 +1004,7 @@ static picture_t *lavc_dr_GetFrame(struct AVCodecContext *ctx,
     if (GetVlcChroma(&dec->fmt_out.video, ctx->pix_fmt) != VLC_SUCCESS)
         return NULL;
     dec->fmt_out.i_codec = dec->fmt_out.video.i_chroma;
-    if (ctx->pix_fmt == PIX_FMT_PAL8)
+    if (ctx->pix_fmt == AV_PIX_FMT_PAL8)
         return NULL;
 
     int width = frame->width;
@@ -1180,7 +1180,7 @@ static picture_t *ffmpeg_dr_GetFrameBuf(struct AVCodecContext *p_context)
     if (GetVlcChroma(&p_dec->fmt_out.video, p_context->pix_fmt) != VLC_SUCCESS)
         goto no_dr;
 
-    if (p_context->pix_fmt == PIX_FMT_PAL8)
+    if (p_context->pix_fmt == AV_PIX_FMT_PAL8)
         goto no_dr;
 
     p_dec->fmt_out.i_codec = p_dec->fmt_out.video.i_chroma;
@@ -1215,7 +1215,7 @@ static picture_t *ffmpeg_dr_GetFrameBuf(struct AVCodecContext *p_context)
             goto no_dr;
     }
 
-    if( p_context->pix_fmt == PIX_FMT_YUV422P )
+    if( p_context->pix_fmt == AV_PIX_FMT_YUV422P )
     {
         if( 2 * p_pic->p[1].i_pitch != p_pic->p[0].i_pitch ||
             2 * p_pic->p[2].i_pitch != p_pic->p[0].i_pitch )
@@ -1325,7 +1325,7 @@ static enum PixelFormat ffmpeg_GetFormat( AVCodecContext *p_context,
 
     /* Enumerate available formats */
     bool can_hwaccel = false;
-    for( size_t i = 0; pi_fmt[i] != PIX_FMT_NONE; i++ )
+    for( size_t i = 0; pi_fmt[i] != AV_PIX_FMT_NONE; i++ )
     {
         const AVPixFmtDescriptor *dsc = av_pix_fmt_desc_get(pi_fmt[i]);
         if (dsc == NULL)
@@ -1352,17 +1352,17 @@ static enum PixelFormat ffmpeg_GetFormat( AVCodecContext *p_context,
     if( p_va == NULL )
         goto end;
 
-    for( size_t i = 0; pi_fmt[i] != PIX_FMT_NONE; i++ )
+    for( size_t i = 0; pi_fmt[i] != AV_PIX_FMT_NONE; i++ )
     {
         if( p_va->pix_fmt != pi_fmt[i] )
             continue;
 
         /* We try to call vlc_va_Setup when possible to detect errors when
          * possible (later is too late) */
-        if( p_context->width > 0 && p_context->height > 0
+        if( p_context->coded_width > 0 && p_context->coded_height > 0
          && vlc_va_Setup( p_va, &p_context->hwaccel_context,
                           &p_dec->fmt_out.video.i_chroma,
-                          p_context->width, p_context->height ) )
+                          p_context->coded_width, p_context->coded_height ) )
         {
             msg_Err( p_dec, "acceleration setup failure" );
             break;

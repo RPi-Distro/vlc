@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 5623e073bbeede217d0e77b46b25a9b9cf20b1c4 $
+ * $Id: 9f78d16d57997ffdb71a9da40f203643d07f9c60 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan.org>
@@ -1539,11 +1539,13 @@ static bool f_appExit = false;
             }
         }
 
+        BOOL shouldDisableScreensaver = var_InheritInteger(p_intf, "disable-screensaver");
+
         /* Declare user activity.
          This wakes the display if it is off, and postpones display sleep according to the users system preferences
          Available from 10.7.3 */
 #ifdef MAC_OS_X_VERSION_10_7
-        if ([self activeVideoPlayback] && IOPMAssertionDeclareUserActivity)
+        if ([self activeVideoPlayback] && IOPMAssertionDeclareUserActivity && shouldDisableScreensaver)
         {
             CFStringRef reasonForActivity = CFStringCreateWithCString(kCFAllocatorDefault, _("VLC media playback"), kCFStringEncodingUTF8);
             IOPMAssertionDeclareUserActivity(reasonForActivity,
@@ -1563,14 +1565,14 @@ static bool f_appExit = false;
         /* work-around a bug in 10.7.4 and 10.7.5, so check for 10.7.x < 10.7.4, 10.8 and 10.6 */
         if ((NSAppKitVersionNumber >= 1115.2 && NSAppKitVersionNumber < 1138.45) || OSX_MOUNTAIN_LION || OSX_MAVERICKS || OSX_YOSEMITE || OSX_EL_CAPITAN || OSX_SNOW_LEOPARD) {
             CFStringRef reasonForActivity = CFStringCreateWithCString(kCFAllocatorDefault, _("VLC media playback"), kCFStringEncodingUTF8);
-            if ([self activeVideoPlayback])
+            if ([self activeVideoPlayback] && shouldDisableScreensaver)
                 success = IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, reasonForActivity, &systemSleepAssertionID);
             else
                 success = IOPMAssertionCreateWithName(kIOPMAssertionTypeNoIdleSleep, kIOPMAssertionLevelOn, reasonForActivity, &systemSleepAssertionID);
             CFRelease(reasonForActivity);
         } else {
             /* fall-back on the 10.5 mode, which also works on 10.7.4 and 10.7.5 */
-            if ([self activeVideoPlayback])
+            if ([self activeVideoPlayback] && shouldDisableScreensaver)
                 success = IOPMAssertionCreate(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, &systemSleepAssertionID);
             else
                 success = IOPMAssertionCreate(kIOPMAssertionTypeNoIdleSleep, kIOPMAssertionLevelOn, &systemSleepAssertionID);

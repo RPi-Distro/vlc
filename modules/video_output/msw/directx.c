@@ -2,7 +2,7 @@
  * directx.c: Windows DirectDraw video output
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 6ce1eab7c8a19c27ee01963daec45be63c991c06 $
+ * $Id: 5b2522f5f71a6ef2d509d05e7358c4de1cd3ee4f $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -861,8 +861,9 @@ static int DirectXCreateSurface(vout_display_t *vd,
     if (use_overlay) {
         ddsd.dwFlags |= DDSD_CAPS;
         ddsd.ddsCaps.dwCaps = DDSCAPS_OVERLAY | DDSCAPS_VIDEOMEMORY;
+        ddsd.ddsCaps.dwCaps |= DDSCAPS_FLIP | DDSCAPS_FRONTBUFFER;
         if (backbuffer_count > 0)
-            ddsd.ddsCaps.dwCaps |= DDSCAPS_COMPLEX | DDSCAPS_FLIP;
+            ddsd.ddsCaps.dwCaps |= DDSCAPS_COMPLEX;
 
         if (backbuffer_count > 0) {
             ddsd.dwFlags |= DDSD_BACKBUFFERCOUNT;
@@ -1335,7 +1336,7 @@ static int DirectXUpdateOverlay(vout_display_t *vd, LPDIRECTDRAWSURFACE2 surface
     sys->restore_overlay = hr != DD_OK;
 
     if (hr != DD_OK) {
-        msg_Warn(vd, "DirectDrawUpdateOverlay cannot move/resize overlay");
+        msg_Warn(vd, "DirectDrawUpdateOverlay cannot move/resize overlay. (hr=0x%lX)", hr);
         return VLC_EGENERIC;
     }
     return VLC_SUCCESS;

@@ -130,6 +130,7 @@ RequestExecutionLevel admin
   !insertmacro MUI_LANGUAGE "Russian"
   !insertmacro MUI_LANGUAGE "Portuguese"
   !insertmacro MUI_LANGUAGE "PortugueseBR"
+  !insertmacro MUI_LANGUAGE "Latvian"
   !insertmacro MUI_LANGUAGE "Indonesian"
   !insertmacro MUI_LANGUAGE "Afrikaans"
   !insertmacro MUI_LANGUAGE "Albanian"
@@ -559,6 +560,7 @@ UAC_Success:
   StrCmp $LANGUAGE ${LANG_ICELANDIC} Icelandic 0
   StrCmp $LANGUAGE ${LANG_AFRIKAANS} Afrikaans 0
   StrCmp $LANGUAGE ${LANG_INDONESIAN} Indonesian 0
+  StrCmp $LANGUAGE ${LANG_LATVIAN} Latvian 0
   StrCmp $LANGUAGE ${LANG_PORTUGUESEBR} Brazilian EndLanguageCmp
   French:
   !include "languages\french.nsh"
@@ -703,6 +705,9 @@ UAC_Success:
   Goto EndLanguageCmp
   Indonesian:
   !include "languages\indonesian.nsh"
+  Goto EndLanguageCmp
+  Latvian:
+  !include "languages\latvian.nsh"
   Goto EndLanguageCmp
   Brazilian:
   !include "languages\brazilian_portuguese.nsh"
@@ -1104,6 +1109,7 @@ UAC_Success:
   StrCmp $LANGUAGE ${LANG_ICELANDIC} Icelandic 0
   StrCmp $LANGUAGE ${LANG_AFRIKAANS} Afrikaans 0
   StrCmp $LANGUAGE ${LANG_INDONESIAN} Indonesian 0
+  StrCmp $LANGUAGE ${LANG_LATVIAN} Latvian 0
   StrCmp $LANGUAGE ${LANG_PORTUGUESEBR} Brazilian EndLanguageCmp
   French:
   !include "languages\french.nsh"
@@ -1248,6 +1254,9 @@ UAC_Success:
   Goto EndLanguageCmp
   Indonesian:
   !include "languages\indonesian.nsh"
+  Goto EndLanguageCmp
+  Latvian:
+  !include "languages\latvian.nsh"
   Goto EndLanguageCmp
   Brazilian:
   !include "languages\brazilian_portuguese.nsh"

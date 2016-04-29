@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id: f044a9d3512b4ec28f635c11c63a0039dd92e0f0 $
+ * $Id: ceba0e6b6dfab2f961a101e81f19cd6848c17766 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.
@@ -29,6 +29,8 @@
 #endif
 
 #include <vlc_common.h>
+#include <vlc_access.h>
+#include <vlc_messages.h>
 
 #include "rtsp.h"
 
@@ -129,13 +131,12 @@ static int rtsp_put( rtsp_client_t *rtsp, const char *psz_string )
 static int rtsp_get_status_code( rtsp_client_t *rtsp, const char *psz_string )
 {
     VLC_UNUSED(rtsp);
-    char psz_buffer[4];
+    char psz_buffer[4] = {0,0,0,0};
     int i_code = 0;
 
     if( !strncmp( psz_string, "RTSP/1.0", sizeof("RTSP/1.0") - 1 ) )
     {
-        memcpy( psz_buffer, psz_string + sizeof("RTSP/1.0"), 3 );
-        psz_buffer[3] = 0;
+        strncpy(psz_buffer, psz_string + sizeof("RTSP/1.0"), 3);
         i_code = atoi( psz_buffer );
     }
     else if( !strncmp( psz_string, "SET_PARAMETER", sizeof("SET_PARAMETER") - 1 ) )
@@ -158,9 +159,14 @@ static int rtsp_get_status_code( rtsp_client_t *rtsp, const char *psz_string )
 static int rtsp_send_request( rtsp_client_t *rtsp, const char *psz_type,
                               const char *psz_what )
 {
-    char **ppsz_payload = rtsp->p_private->scheduled;
+    char **ppsz_payload;
     char *psz_buffer;
-    int i_ret;
+    int i_ret, i;
+
+    if (rtsp->p_private == NULL)
+      return -1;
+
+    ppsz_payload = rtsp->p_private->scheduled;
 
     psz_buffer = xmalloc( strlen(psz_type) + strlen(psz_what) +
                          sizeof("RTSP/1.0") + 2 );
@@ -169,12 +175,13 @@ static int rtsp_send_request( rtsp_client_t *rtsp, const char *psz_type,
     i_ret = rtsp_put( rtsp, psz_buffer );
     free( psz_buffer );
 
-    if( ppsz_payload )
-        while( *ppsz_payload )
-        {
-            rtsp_put( rtsp, *ppsz_payload );
-            ppsz_payload++;
-        }
+    for (i = 0; i < MAX_FIELDS; ++i) {
+      if (!ppsz_payload[i])
+        break;
+
+      rtsp_put (rtsp, ppsz_payload[i]);
+    }
+
     rtsp_put( rtsp, "" );
     rtsp_unschedule_all( rtsp );
 
@@ -208,6 +215,7 @@ static void rtsp_schedule_standard( rtsp_client_t *rtsp )
 
 static int rtsp_get_answers( rtsp_client_t *rtsp )
 {
+    access_t *p_access = (access_t*)rtsp->p_userdata;
     char *answer = NULL;
     unsigned int answer_seq;
     char **answer_ptr = rtsp->p_private->answers;
@@ -228,40 +236,46 @@ static int rtsp_get_answers( rtsp_client_t *rtsp )
 
       if( !strncasecmp( answer, "CSeq:", 5 ) )
       {
-          sscanf( answer, "%*s %u", &answer_seq );
-          if( rtsp->p_private->cseq != answer_seq )
-          {
-            //fprintf( stderr, "warning: Cseq mismatch. got %u, assumed %u",
-            //       answer_seq, rtsp->p_private->cseq );
-
-              rtsp->p_private->cseq = answer_seq;
+          if (sscanf( answer, "%*s %u", &answer_seq ) == 1) {
+              if( rtsp->p_private->cseq != answer_seq )
+              {
+                msg_Warn (p_access, "Cseq mismatch, got %u, assumed %u", answer_seq, rtsp->p_private->cseq);
+                rtsp->p_private->cseq = answer_seq;
+              }
+          } else {
+            msg_Warn (p_access, "remote server sent CSeq without payload, ignoring.");
           }
       }
       if( !strncasecmp( answer, "Server:", 7 ) )
       {
           char *buf = xmalloc( strlen(answer) );
-          sscanf( answer, "%*s %s", buf );
-          free( rtsp->p_private->server );
-          rtsp->p_private->server = buf;
+          if (sscanf( answer, "%*s %s", buf ) == 1) {
+            free( rtsp->p_private->server );
+            rtsp->p_private->server = buf;
+          } else {
+            msg_Warn(p_access, "remote server sent Server without payload, ignoring.");
+          }
       }
       if( !strncasecmp( answer, "Session:", 8 ) )
       {
           char *buf = xmalloc( strlen(answer) );
-          sscanf( answer, "%*s %s", buf );
-          if( rtsp->p_private->session )
-          {
-              if( strcmp( buf, rtsp->p_private->session ) )
+          if (sscanf( answer, "%*s %s", buf ) == 1) { // TODO: ignore attributes "Session: ${session-id};${attribute=value...}"
+              if( rtsp->p_private->session )
               {
-                  //fprintf( stderr,
-                  //         "rtsp: warning: setting NEW session: %s\n", buf );
-                  free( rtsp->p_private->session );
+                  if( strcmp( buf, rtsp->p_private->session ) )
+                  {
+                      msg_Warn (p_access, "setting NEW session: %s", buf);
+                      free( rtsp->p_private->session );
+                      rtsp->p_private->session = strdup( buf );
+                  }
+              }
+              else
+              {
+                  msg_Dbg (p_access, "session id: '%s'", buf);
                   rtsp->p_private->session = strdup( buf );
               }
-          }
-          else
-          {
-              //fprintf( stderr, "setting session id to: %s\n", buf );
-              rtsp->p_private->session = strdup( buf );
+          } else {
+            msg_Warn(p_access, "remote server sent Session without payload, ignoring.");
           }
           free( buf );
       }
@@ -272,7 +286,10 @@ static int rtsp_get_answers( rtsp_client_t *rtsp )
 
     rtsp->p_private->cseq++;
 
-    *answer_ptr = NULL;
+    if (ans_count != MAX_FIELDS) {
+      *answer_ptr = NULL;
+    }
+
     rtsp_schedule_standard( rtsp );
 
     return code;
@@ -578,22 +595,30 @@ void rtsp_close( rtsp_client_t *rtsp )
 
 char *rtsp_search_answers( rtsp_client_t *rtsp, const char *tag )
 {
-    char **answer;
+    char **answers;
     char *ptr;
+    int i;
 
-    if( !rtsp->p_private->answers ) return NULL;
-    answer = rtsp->p_private->answers;
+    if(rtsp->p_private->answers == NULL || tag == NULL)
+      return NULL;
 
-    while(*answer)
-    {
-        if( !strncasecmp( *answer, tag, strlen(tag) ) )
-        {
-            ptr = strchr(*answer, ':');
-            ptr++;
-            while( *ptr == ' ' ) ptr++;
-            return ptr;
-        }
-        answer++;
+    answers = rtsp->p_private->answers;
+
+    for (i = 0; i < MAX_FIELDS; ++i) {
+      if (answers[i] == NULL)
+        break;
+
+      if (!strncasecmp(answers[i], tag, strlen(tag))){
+        ptr = strchr(answers[i], ':');
+
+        if (ptr == NULL)
+          return answers[i] + strlen(answers[i]); /* no payload => empty string */
+
+        for (++ptr; *ptr == ' '; ++ptr)
+          ;
+
+        return ptr;
+      }
     }
 
     return NULL;
@@ -623,37 +648,73 @@ char *rtsp_get_mrl( rtsp_client_t *rtsp )
  * schedules a field for transmission
  */
 
-void rtsp_schedule_field( rtsp_client_t *rtsp, const char *string )
+void rtsp_schedule_field( rtsp_client_t *rtsp, const char *data )
 {
+    access_t * p_access = (access_t*)rtsp->p_userdata;
+    char **pptr;
     int i = 0;
 
-    if( !string ) return;
+    if( rtsp->p_private == NULL || data == NULL)
+      return;
 
-    while( rtsp->p_private->scheduled[i] ) i++;
+    pptr = rtsp->p_private->scheduled;
 
-    rtsp->p_private->scheduled[i] = strdup(string);
+    for (i = 0; i < MAX_FIELDS; ++i) {
+      if (pptr[i] == NULL) {
+        pptr[i] = strdup(data);
+        break;
+      }
+    }
+
+    if (i == MAX_FIELDS) {
+      msg_Warn (p_access, "Unable to schedule '%s': the buffer is full!", data);
+    }
 }
 
 /*
  * removes the first scheduled field which prefix matches string.
  */
 
-void rtsp_unschedule_field( rtsp_client_t *rtsp, const char *string )
+void rtsp_unschedule_field( rtsp_client_t *rtsp, const char *needle )
 {
-    char **ptr = rtsp->p_private->scheduled;
+    char **pptr;
+    int i;
 
-    if( !string ) return;
+    if (rtsp->p_private == NULL || needle == NULL)
+      return;
 
-    while( *ptr )
-    {
-      if( !strncmp(*ptr, string, strlen(string)) ) break;
+    pptr = rtsp->p_private->scheduled;
+
+    for (i = 0; i < MAX_FIELDS; ++i) {
+      if (pptr[i] == NULL)
+        break;
+
+      if (!strncmp (pptr[i], needle, strlen(needle))) {
+        free (pptr[i]);
+        pptr[i] = NULL;
+        break;
+      }
     }
-    free( *ptr );
-    ptr++;
-    do
-    {
-        *(ptr-1) = *ptr;
-    } while( *ptr );
+
+    for (i++; i < MAX_FIELDS && pptr[i]; ++i) {
+      pptr[i-1] = pptr[i];
+    }
+
+    if (i < MAX_FIELDS) {
+      pptr[i] = NULL;
+    }
+}
+
+static void pp_free_helper_ (char **pptr, int max_length) {
+  int i;
+
+  for (i = 0; i < max_length; ++i) {
+    if (pptr[i] == NULL)
+      break;
+
+    free (pptr[i]);
+    pptr[i] = NULL;
+  }
 }
 
 /*
@@ -662,17 +723,10 @@ void rtsp_unschedule_field( rtsp_client_t *rtsp, const char *string )
 
 void rtsp_unschedule_all( rtsp_client_t *rtsp )
 {
-    char **ptr;
+  if (rtsp->p_private == NULL)
+    return;
 
-    if( !rtsp->p_private->scheduled ) return;
-    ptr = rtsp->p_private->scheduled;
-
-    while( *ptr )
-    {
-        free( *ptr );
-        *ptr = NULL;
-        ptr++;
-    }
+  pp_free_helper_ (rtsp->p_private->scheduled, MAX_FIELDS);
 }
 /*
  * free answers
@@ -680,15 +734,8 @@ void rtsp_unschedule_all( rtsp_client_t *rtsp )
 
 void rtsp_free_answers( rtsp_client_t *rtsp )
 {
-    char **answer;
+  if (rtsp->p_private == NULL)
+    return;
 
-    if( !rtsp->p_private->answers ) return;
-    answer = rtsp->p_private->answers;
-
-    while( *answer )
-    {
-        free( *answer );
-        *answer = NULL;
-        answer++;
-    }
+  pp_free_helper_ (rtsp->p_private->answers, MAX_FIELDS);
 }

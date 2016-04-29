@@ -606,7 +606,7 @@ static void SendPacket(demux_t *p_demux, asf_track_t *tk)
 
 static int DemuxSubPayload(demux_t *p_demux, asf_track_t *tk,
         uint32_t i_sub_payload_data_length, mtime_t i_pts, mtime_t i_dts,
-        uint32_t i_media_object_offset, bool b_keyframe, bool b_pts_delta )
+        uint32_t i_media_object_offset, bool b_keyframe )
 {
     /* FIXME I don't use i_media_object_number, sould I ? */
     if( tk->p_frame && i_media_object_offset == 0 )
@@ -618,8 +618,7 @@ static int DemuxSubPayload(demux_t *p_demux, asf_track_t *tk,
         return -1;
     }
 
-    p_frag->i_pts = (tk->i_cat == VIDEO_ES && !b_pts_delta) ? VLC_TS_INVALID
-						            : VLC_TS_0 + i_pts;
+    p_frag->i_pts = VLC_TS_0 + i_pts;
     p_frag->i_dts = VLC_TS_0 + i_dts;
     if ( b_keyframe )
         p_frag->i_flags |= BLOCK_FLAG_TYPE_I;
@@ -760,7 +759,6 @@ static int DemuxPayload(demux_t *p_demux, struct asf_packet_t *pkt, int i_payloa
 
     mtime_t i_base_pts;
     uint8_t i_pts_delta = 0;
-    bool b_has_delta = false;
     uint32_t i_payload_data_length = 0;
     uint32_t i_temp_payload_length = 0;
     p_sys->p_fp->i_preroll = __MIN( p_sys->p_fp->i_preroll, INT64_MAX );
@@ -796,7 +794,6 @@ static int DemuxPayload(demux_t *p_demux, struct asf_packet_t *pkt, int i_payloa
         /* i_media_object_offset is presentation time */
         /* Next byte is Presentation Time Delta */
         i_pts_delta = pkt->p_peek[pkt->i_skip];
-        b_has_delta = true;
         i_base_pts = (mtime_t)i_media_object_offset;
         i_base_pts -= p_sys->p_fp->i_preroll;
         pkt->i_skip++;
@@ -902,7 +899,7 @@ static int DemuxPayload(demux_t *p_demux, struct asf_packet_t *pkt, int i_payloa
         if ( i_sub_payload_data_length &&
              DemuxSubPayload(p_demux, tk, i_sub_payload_data_length,
                         i_payload_pts, i_payload_dts, i_media_object_offset,
-                        b_packet_keyframe, b_has_delta ) < 0)
+                        b_packet_keyframe ) < 0)
             return -1;
 
         if ( pkt->left > pkt->i_skip + i_sub_payload_data_length )

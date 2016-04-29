@@ -2,7 +2,7 @@
  * httplive.c: HTTP Live Streaming stream filter
  *****************************************************************************
  * Copyright (C) 2010-2012 M2X BV
- * $Id: ed88c7f7492e1cdccb74ea8abb90d1aac6a624ed $
+ * $Id: 9be173899f52908294a4eb40655f2d3bfc09c2c4 $
  *
  * Author: Jean-Paul Saman <jpsaman _AT_ videolan _DOT_ org>
  *
@@ -967,7 +967,9 @@ static int hls_CompareStreams( const void* a, const void* b )
  * ALLOW-CACHE, EXT-X-STREAM-INF, EXT-X-ENDLIST, EXT-X-DISCONTINUITY,
  * and EXT-X-VERSION.
  */
-static int parse_M3U8(stream_t *s, vlc_array_t *streams, uint8_t *buffer, const ssize_t len)
+
+static int parse_M3U8(stream_t *s, vlc_array_t *streams, uint8_t *buffer,
+                      const ssize_t len, bool b_parent_is_meta)
 {
     stream_sys_t *p_sys = s->p_sys;
     uint8_t *p_read, *p_begin, *p_end;
@@ -1018,6 +1020,8 @@ static int parse_M3U8(stream_t *s, vlc_array_t *streams, uint8_t *buffer, const 
 
     /* Is it a meta index file ? */
     bool b_meta = (strstr((const char *)buffer, "#EXT-X-STREAM-INF") == NULL) ? false : true;
+    if(b_meta && b_parent_is_meta) /* Nested meta playlists ?? */
+        return VLC_EGENERIC;
 
     int err = VLC_SUCCESS;
 
@@ -1034,7 +1038,7 @@ static int parse_M3U8(stream_t *s, vlc_array_t *streams, uint8_t *buffer, const 
             p_begin = p_read;
 
             /* */
-            if (strncmp(line, "#EXT-X-STREAM-INF", 17) == 0 && !p_sys->b_meta)
+            if (strncmp(line, "#EXT-X-STREAM-INF", 17) == 0)
             {
                 p_sys->b_meta = true;
                 char *uri = ReadLine(p_begin, &p_read, p_end - p_begin);
@@ -1076,7 +1080,7 @@ static int parse_M3U8(stream_t *s, vlc_array_t *streams, uint8_t *buffer, const 
                             else
                             {
                                 /* Parse HLS m3u8 content. */
-                                err = parse_M3U8(s, streams, buf, len);
+                                err = parse_M3U8(s, streams, buf, len, b_meta);
                                 free(buf);
                             }
 
@@ -1366,7 +1370,7 @@ static int get_HTTPLiveMetaPlaylist(stream_t *s, vlc_array_t **streams)
         else
         {
             /* Parse HLS m3u8 content. */
-            err = parse_M3U8(s, *streams, buf, len);
+            err = parse_M3U8(s, *streams, buf, len, false);
             free(buf);
         }
     }
@@ -2088,7 +2092,7 @@ static int Open(vlc_object_t *p_this)
     ssize_t len = read_M3U8_from_stream(s->p_source, &buffer);
     if (len < 0)
         goto fail;
-    if (parse_M3U8(s, p_sys->hls_stream, buffer, len) != VLC_SUCCESS)
+    if (parse_M3U8(s, p_sys->hls_stream, buffer, len, false) != VLC_SUCCESS)
     {
         free(buffer);
         goto fail;

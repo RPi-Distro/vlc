@@ -2,7 +2,7 @@
  * video.c: transcoding stream output module (video)
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 8e3ce670337339b533c11856bb00f5c00b41b6f4 $
+ * $Id: 73b09413959ad61d42778cfb7de255beb7b0e8f1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -174,6 +174,7 @@ int transcode_video_new( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
     id->p_decoder->fmt_out = id->p_decoder->fmt_in;
     id->p_decoder->fmt_out.i_extra = 0;
     id->p_decoder->fmt_out.p_extra = 0;
+    id->p_decoder->fmt_out.psz_language = NULL;
     id->p_decoder->pf_decode_video = NULL;
     id->p_decoder->pf_get_cc = NULL;
     id->p_decoder->pf_get_cc = 0;

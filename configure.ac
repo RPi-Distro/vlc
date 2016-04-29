@@ -2,10 +2,10 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 1999-2016 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 2.2.2)
+AC_INIT(vlc, 2.2.3)
 VERSION_MAJOR=2
 VERSION_MINOR=2
-VERSION_REVISION=2
+VERSION_REVISION=3
 VERSION_EXTRA=0
 VERSION_DEV=
 
@@ -694,9 +694,9 @@ dnl Check for dynamic plugins
 LIBDL=""
 have_dynamic_objects="no"
 VLC_SAVE_FLAGS
-AC_SEARCH_LIBS(dlopen, [dl svld], [
-  AS_IF([test "$ac_cv_search_dlopen" != "none required"], [
-    LIBDL="$ac_cv_search_dlopen"
+AC_SEARCH_LIBS(dlsym, [dl svld], [
+  AS_IF([test "$ac_cv_search_dlsym" != "none required"], [
+    LIBDL="$ac_cv_search_dlsym"
   ])
   have_dynamic_objects="yes"
 ])
@@ -3754,6 +3754,9 @@ AS_IF([test "${enable_qt}" != "no"], [
           AC_MSG_WARN([Not building Qt Interface with X11 helpers.])
       ])
 
+      PKG_CHECK_EXISTS([Qt5Core >= 5.5.0 Qt5Core < 5.6.0], [
+        AC_MSG_ERROR(["You cannot build VLC with Qt-5.5.0. You need to backport I78ef29975181ee22429c9bd4b11d96d9e68b7a9c"])
+      ])
 
       QT_PATH="$(eval $PKG_CONFIG --variable=exec_prefix Qt5Core)"
       QT_HOST_PATH="$(eval $PKG_CONFIG --variable=host_bins Qt5Core)"
