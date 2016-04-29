@@ -1,1 +1,1 @@
-const char psz_vlc_changeset[] = "2.2.2-0-g6259d80";
+const char psz_vlc_changeset[] = "2.2.3-1-gfd02e68";

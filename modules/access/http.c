@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2008 VLC authors and VideoLAN
- * $Id: 271e37a9b0ff30697b48bad389bfe6706c58e971 $
+ * $Id: 0abe269b6297e20e573a8a36b6caf23d9743d263 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>

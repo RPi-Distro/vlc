@@ -2,7 +2,7 @@
  r playlistinfo.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 9e94701a9ebf7ad817b6ded9836d6e763ca6446a $
+ * $Id: aa54d1e76baeb6dafd135cd015002ce818d4f77c $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -471,7 +471,7 @@ error:
             vlc_mutex_lock(&p_item->lock);
             o_children = [[NSMutableArray alloc] initWithCapacity: p_item->i_categories];
             for (int i = 0 ; i < p_item->i_categories ; i++) {
-                NSString * name = [NSString stringWithUTF8String:p_item->pp_categories[i]->psz_name];
+                NSString * name = toNSStr(p_item->pp_categories[i]->psz_name);
                 VLCInfoTreeItem * item = [[VLCInfoTreeItem alloc] initWithName:name value:@"" ID:i parent:self];
                 [item autorelease];
                 [o_children addObject:item];
@@ -483,8 +483,8 @@ error:
             info_category_t * cat = p_item->pp_categories[i_object_id];
             o_children = [[NSMutableArray alloc] initWithCapacity: cat->i_infos];
             for (int i = 0 ; i < cat->i_infos ; i++) {
-                NSString * name = [NSString stringWithUTF8String:cat->pp_infos[i]->psz_name];
-                NSString * value = [NSString stringWithUTF8String:cat->pp_infos[i]->psz_value ? : ""];
+                NSString * name = toNSStr(cat->pp_infos[i]->psz_name);
+                NSString * value = toNSStr(cat->pp_infos[i]->psz_value);
                 VLCInfoTreeItem * item = [[VLCInfoTreeItem alloc] initWithName:name value:value ID:i parent:self];
                 [item autorelease];
                 [o_children addObject:item];

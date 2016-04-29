@@ -68,9 +68,9 @@ static picture_t *Decode(decoder_t *dec, block_t **pp_block)
 {
     struct vpx_codec_ctx *ctx = &dec->p_sys->ctx;
 
-    block_t *block = *pp_block;
-    if (!block)
+    if( !pp_block || !*pp_block )
         return NULL;
+    block_t *block = *pp_block;
 
     if (block->i_flags & (BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED))
         return NULL;

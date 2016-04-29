@@ -2,7 +2,7 @@
  * controller.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 6624509b787beb230406d1f5a9018a2fe7193434 $
+ * $Id: d93e0dbfd17162d7c0f3869a3c2517467fd7baed $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -399,6 +399,7 @@ QWidget *AbstractController::createWidget( buttonType_e button, int options )
         }
         break;
     case ADVANCED_CONTROLLER:
+        if( qobject_cast<AdvControlsWidget *>(this) == NULL )
         {
             advControls = new AdvControlsWidget( p_intf, this );
             widget = advControls;
@@ -1171,6 +1172,7 @@ void FullscreenControllerWidget::setVoutList( vout_thread_t **pp_vout, int i_vou
         vout.append( p_vout );
         var_AddCallback( p_vout, "fullscreen",
                          FullscreenControllerWidgetFullscreenChanged, this );
+	CONNECT( this, fullscreenChanged( bool ), THEMIM, changeFullscreen( bool ) );
         /* I miss a add and fire */
         fullscreenChanged( p_vout, var_GetBool( p_vout, "fullscreen" ),
                            var_GetInteger( p_vout, "mouse-hide-timeout" ) );
@@ -1208,6 +1210,7 @@ void FullscreenControllerWidget::fullscreenChanged( vout_thread_t *p_vout,
         IMEvent *eHide = new IMEvent( IMEvent::FullscreenControlHide, 0 );
         QApplication::postEvent( this, eHide );
     }
+    emit fullscreenChanged( b_fullscreen );
     vlc_mutex_unlock( &lock );
 }
 

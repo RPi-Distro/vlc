@@ -2,7 +2,7 @@
  * input_manager.hpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: d9edcb61381d1ef7914b039809a0518450bd1e9b $
+ * $Id: 7d3b76af17b5923e5566aedaf2d0b579407a7faa $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste <jb@videolan.org>
@@ -308,6 +308,7 @@ public slots:
     void activatePlayQuit( bool );
 
     void loopRepeatLoopStatus();
+    void changeFullscreen( bool );
 
 private slots:
     void notifyRandom( bool );

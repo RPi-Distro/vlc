@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id: 12d694b3c41cd62fa936961e044bea0b9065e65e $
+ * $Id: 87e7e0d36d0ae35fd86b5628a59547d3788dd759 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.
@@ -38,8 +38,8 @@
 #include "real_rmff.h"
 #include "real_sdpplin.h"
 
-#ifdef REALDEBUG
-#   define lprintf printf
+#if 0 /*def REALDEBUG*/
+#   define lprintf(...) fprintf (stderr, __VA_ARGS__)
 #else
     static inline void lprintf( const char *dummy, ... ) { (void)dummy; }
 #endif

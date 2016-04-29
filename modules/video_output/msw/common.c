@@ -2,7 +2,7 @@
  * common.c: Windows video output common code
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 04419579e395db07369ce21d22303e361bcd3a9b $
+ * $Id: ec4a3ebf5f391f1f505ffbf5effdac1dc237a90a $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -403,8 +403,8 @@ void UpdateRects(vout_display_t *vd,
     /* src image dimensions */
     rect_src.left   = 0;
     rect_src.top    = 0;
-    rect_src.right  = vd->fmt.i_visible_width;
-    rect_src.bottom = vd->fmt.i_visible_height;
+    rect_src.right  = vd->fmt.i_width;
+    rect_src.bottom = vd->fmt.i_height;
 
     /* Clip the source image */
     rect_src_clipped.left = source->i_x_offset +

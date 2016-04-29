@@ -2,7 +2,7 @@
  * matroska_segment.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: f4eb52343dbcdf01d8c1eff7767156f50b7d4de3 $
+ * $Id: aee8988c7114496a2c73c0fb6b0076742a0cc70e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -270,6 +270,7 @@ static const struct {
                      {vlc_meta_Publisher,   "PUBLISHER",     0},
                      {vlc_meta_EncodedBy,   "ENCODED_BY",    0},
                      {vlc_meta_TrackTotal,  "TOTAL_PARTS",   0},
+                     {vlc_meta_Album,       "ALBUM",         0},
                      {vlc_meta_Title,       NULL,            0},
 };
 

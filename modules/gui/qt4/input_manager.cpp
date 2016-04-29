@@ -2,7 +2,7 @@
  * input_manager.cpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 707f114314c246ca9d8ad2275ec67631fc8a705d $
+ * $Id: fd45f4a89e7999ab5d4b02f1d83e6a8e0ccd87f9 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka  <ileoo@videolan.org>
@@ -127,11 +127,11 @@ void InputManager::setInput( input_thread_t *_p_input )
         p_item = input_GetItem( p_input );
         emit rateChanged( var_GetFloat( p_input, "rate" ) );
 
-        char *uri = input_item_GetURI( p_item );
-
         /* Get Saved Time */
         if( p_item->i_type == ITEM_TYPE_FILE )
         {
+            char *uri = input_item_GetURI( p_item );
+
             int i_time = RecentsMRL::getInstance( p_intf )->time( qfu(uri) );
             if( i_time > 0 && qfu( uri ) != lastURI &&
                     !var_GetFloat( p_input, "run-time" ) &&
@@ -140,24 +140,24 @@ void InputManager::setInput( input_thread_t *_p_input )
             {
                 emit resumePlayback( (int64_t)i_time * 1000 );
             }
+            playlist_Lock( THEPL );
+            // Add root items only
+            playlist_item_t* p_node = playlist_CurrentPlayingItem( THEPL );
+            if ( p_node != NULL && p_node->p_parent != NULL && p_node->p_parent->i_id == THEPL->p_playing->i_id )
+            {
+                // Save the latest URI to avoid asking to restore the
+                // position on the same input file.
+                lastURI = qfu( uri );
+                RecentsMRL::getInstance( p_intf )->addRecent( lastURI );
+            }
+            playlist_Unlock( THEPL );
+            free( uri );
         }
-
-        playlist_Lock( THEPL );
-        // Add root items only
-        playlist_item_t* p_node = playlist_CurrentPlayingItem( THEPL );
-        if ( p_node != NULL && p_node->p_parent == NULL )
-        {
-            // Save the latest URI to avoid asking to restore the
-            // position on the same input file.
-            lastURI = qfu( uri );
-            RecentsMRL::getInstance( p_intf )->addRecent( lastURI );
-        }
-        playlist_Unlock( THEPL );
-        free( uri );
     }
     else
     {
         p_item = NULL;
+        lastURI.clear();
         assert( !p_input_vbi );
         emit rateChanged( var_InheritFloat( p_intf, "rate" ) );
     }
@@ -1123,7 +1123,6 @@ void MainInputManager::probeCurrentInput()
 void MainInputManager::stop()
 {
    playlist_Stop( THEPL );
-   getIM()->lastURI.clear();
 }
 
 void MainInputManager::next()
@@ -1320,4 +1319,10 @@ static int PLItemRemoved
         QApplication::postEvent( mim, event );
     }
     return VLC_SUCCESS;
+}
+
+void MainInputManager::changeFullscreen( bool new_val )
+{
+    if ( var_GetBool( THEPL, "fullscreen" ) != new_val)
+	var_SetBool( THEPL, "fullscreen", new_val );
 }
