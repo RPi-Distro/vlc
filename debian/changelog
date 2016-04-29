@@ -7,7 +7,6 @@ vlc (2.2.3-1) UNRELEASED; urgency=medium
       qt4-input_manager-Always-reset-lastURI-when-stopping.patch,
       avcodec-pass-consistent-dimensions-to-hardware-decod.patch: included upstream.
     - Add drop-check-qt-check.patch: to ignore check qt version.
-  * debian/control: Bump qtbase5-dev version.
 
  -- Mateusz Łukasik <mati75@linuxmint.pl>  Fri, 29 Apr 2016 08:45:23 +0200
 

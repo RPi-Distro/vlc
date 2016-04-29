@@ -118,7 +118,7 @@ Build-Depends: autopoint,
                oss4-dev [kfreebsd-any],
                pkg-config,
                python3,
-               qtbase5-dev (>= 5.5.1),
+               qtbase5-dev (>= 5.1),
                zlib1g-dev,
                zsh,
 # for embedded ffmpeg
