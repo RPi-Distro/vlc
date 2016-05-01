@@ -1,0 +1,46 @@
+From 425f4e12ca869d58e74d3edca4ff400b45167b73 Mon Sep 17 00:00:00 2001
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Date: Wed, 27 Apr 2016 13:47:13 +0200
+Subject: [PATCH 2/2] Fix Hurd build
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+theme_loader.cpp contains an unconditional use of PATH_MAX,
+which is not defined on GNU/Hurd to avoid imposing build-time
+limits. This change replaces its use with dynamic allocation of the
+required size.
+
+Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+(cherry picked from commit daa50fbf8e7d009ff1b224bdc06c7f68dfd61eaf)
+---
+ modules/gui/skins2/src/theme_loader.cpp | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/modules/gui/skins2/src/theme_loader.cpp b/modules/gui/skins2/src/theme_loader.cpp
+index 6766be5..5100249 100644
+--- a/modules/gui/skins2/src/theme_loader.cpp
++++ b/modules/gui/skins2/src/theme_loader.cpp
+@@ -549,7 +549,9 @@ int tar_extract_all( TAR *t, char *prefix )
+     union tar_buffer buffer;
+     int   len, err, getheader = 1, remaining = 0;
+     FILE  *outfile = NULL;
+-    char  fname[BLOCKSIZE + PATH_MAX];
++    long  path_max = pathconf (".", _PC_PATH_MAX);
++    size_t maxsize = (path_max == -1 || path_max > 4096) ? 4096 : path_max;
++    char  fname[BLOCKSIZE + maxsize];
+ 
+     while( 1 )
+     {
+@@ -583,7 +585,7 @@ int tar_extract_all( TAR *t, char *prefix )
+                 break;
+             }
+ 
+-            sprintf( fname, "%s/%s", prefix, buffer.header.name );
++            snprintf( fname, sizeof(fname), "%s/%s", prefix, buffer.header.name );
+ 
+             /* Check magic value in header */
+             if( strncmp( buffer.header.magic, "GNUtar", 6 ) &&
+-- 
+2.8.1
+

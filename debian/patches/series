@@ -2,3 +2,5 @@ frenchtv-links.patch
 zsh-completion.patch
 fix-translation.patch
 drop-check-qt-check.patch
+the-Hurd-also-uses-the-.so-extension-for-libraries.patch
+Fix-Hurd-build.patch

@@ -1,0 +1,30 @@
+From a6f3a6832f953951e7f6ed39aa11963c1ccdacf8 Mon Sep 17 00:00:00 2001
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Date: Tue, 26 Apr 2016 20:18:37 +0200
+Subject: [PATCH 1/2] the Hurd also uses the .so extension for libraries
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+(cherry picked from commit 8d99c0fe7d38297aedd336d8712380e8311ba554)
+---
+ extras/analyser/zsh_completion.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/extras/analyser/zsh_completion.sh b/extras/analyser/zsh_completion.sh
+index a380a90..156b4d9 100755
+--- a/extras/analyser/zsh_completion.sh
++++ b/extras/analyser/zsh_completion.sh
+@@ -11,7 +11,7 @@ case $HOST in
+     *cygwin*|*mingw*)
+         SUFFIX=dll
+     ;;
+-    *linux*|*bsd*)
++    *linux*|*bsd*|*gnu*)
+         SUFFIX=so
+     ;;
+     *)
+-- 
+2.8.1
+
