@@ -1,5 +1,6 @@
 vlc (2.2.3-1) UNRELEASED; urgency=medium
 
+  [ Mateusz Łukasik ]
   * New upstream release.
   * debian/patches:
     - Refresh fix-translation.patch: remove parts included upstream.
@@ -7,6 +8,11 @@ vlc (2.2.3-1) UNRELEASED; urgency=medium
       qt4-input_manager-Always-reset-lastURI-when-stopping.patch,
       avcodec-pass-consistent-dimensions-to-hardware-decod.patch: included upstream.
     - Add drop-check-qt-check.patch: to ignore check qt version.
+
+  [ Sebastian Ramacher ]
+  * debian/patches: Fix build on hurd-i386. Thanks to Samuel Thibault. (Closes:
+    #765578)
+  * Update ffmpeg to 2.8.7
 
  -- Mateusz Łukasik <mati75@linuxmint.pl>  Fri, 29 Apr 2016 08:45:23 +0200
 
