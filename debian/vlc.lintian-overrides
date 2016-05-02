@@ -6,3 +6,5 @@ vlc binary: spelling-error-in-binary usr/lib/vlc/plugins/gui/libqt4_plugin.so me
 vlc binary: hardening-no-fortify-functions usr/lib/vlc/plugins/video_output/libxcb_window_plugin.so
 vlc binary: hardening-no-fortify-functions usr/lib/vlc/plugins/access/libpulsesrc_plugin.so
 vlc binary: hardening-no-fortify-functions usr/lib/vlc/plugins/audio_output/libpulse_plugin.so
+# vlc is currently not compatible with ffmpeg 3.0
+vlc binary: embedded-library usr/lib/vlc/plugins/vdpau/libvdpau_avcodec_plugin.so: libavutil

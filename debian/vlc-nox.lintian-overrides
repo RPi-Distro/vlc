@@ -1,2 +1,9 @@
 # Hardening compiler flags are correctly passed (bug #695319)
 vlc-nox binary: hardening-no-fortify-functions usr/lib/vlc/plugins/*_plugin.so
+# vlc is currently not compatible with ffmpeg 3.0.
+vlc-nox binary: embedded-library usr/lib/vlc/plugins/codec/libavcodec_plugin.so: libavutil
+vlc-nox binary: embedded-library usr/lib/vlc/plugins/codec/libhwdummy_plugin.so: libavutil
+vlc-nox binary: embedded-library usr/lib/vlc/plugins/video_chroma/libswscale_plugin.so: libavutil
+vlc-nox binary: embedded-library usr/lib/vlc/plugins/video_chroma/libswscale_plugin.so: libswscale
+vlc-nox binary: embedded-library usr/lib/vlc/plugins/video_filter/libpostproc_plugin.so: libavutil
+vlc-nox binary: embedded-library usr/lib/vlc/plugins/video_filter/libpostproc_plugin.so: libpostproc
