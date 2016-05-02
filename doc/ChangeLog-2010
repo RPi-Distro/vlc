@@ -38613,9 +38613,3 @@ Author: Pierre d'Herbemont <pdherbemont@free.fr>
 Date:   Thu Dec 31 19:30:49 2009 +0100
 
     contrib: Build fat binary using binary contrib on Mac OS X.
-
-commit 40c3a9fd60956b814ca0ccd20068e96051cd5467
-Author: Pierre Ynard <linkfanel@yahoo.fr>
-Date:   Fri Jan 1 00:57:52 2010 +0100
-
-    logger: build fix

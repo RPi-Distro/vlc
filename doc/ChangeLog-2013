@@ -25792,9 +25792,3 @@ Date:   Sat Dec 29 00:13:40 2012 +0100
     it follows the principle of least surprise.
     
     Signed-off-by: Rafaël Carré <funman@videolan.org>
-
-commit 7939c3e5258149392e14f410497a2d437f21a26b
-Author: Francois Cartegnie <fcvlcdev@free.fr>
-Date:   Tue Jan 1 15:16:27 2013 +0100
-
-    Qt: Compressor/Spatializer: missing signal routing
