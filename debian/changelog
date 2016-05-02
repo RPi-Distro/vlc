@@ -1,4 +1,4 @@
-vlc (2.2.3-1) UNRELEASED; urgency=medium
+vlc (2.2.3-1) unstable; urgency=medium
 
   [ Mateusz Łukasik ]
   * New upstream release.
@@ -6,15 +6,17 @@ vlc (2.2.3-1) UNRELEASED; urgency=medium
     - Refresh fix-translation.patch: remove parts included upstream.
     - Remove qt4-Fix-resume-where-you-left-off.patch,
       qt4-input_manager-Always-reset-lastURI-when-stopping.patch,
-      avcodec-pass-consistent-dimensions-to-hardware-decod.patch: included upstream.
+      avcodec-pass-consistent-dimensions-to-hardware-decod.patch: included
+      upstream.
     - Add drop-check-qt-check.patch: to ignore check qt version.
 
   [ Sebastian Ramacher ]
   * debian/patches: Fix build on hurd-i386. Thanks to Samuel Thibault. (Closes:
     #765578)
-  * Update ffmpeg to 2.8.7
+  * Update ffmpeg to 2.8.7.
+  * debian/vlc{,-nox}.lintian-overrides: Override embedded-libary.
 
- -- Mateusz Łukasik <mati75@linuxmint.pl>  Fri, 29 Apr 2016 08:45:23 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 02 May 2016 22:38:58 +0200
 
 vlc (2.2.2-6) unstable; urgency=medium
 
