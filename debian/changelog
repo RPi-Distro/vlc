@@ -15,8 +15,9 @@ vlc (2.2.3-1) unstable; urgency=medium
     #765578)
   * Update ffmpeg to 2.8.7.
   * debian/vlc{,-nox}.lintian-overrides: Override embedded-libary.
+  * debian/source/lintian-overrides: Update overrides.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Mon, 02 May 2016 22:38:58 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 02 May 2016 22:55:00 +0200
 
 vlc (2.2.2-6) unstable; urgency=medium
 
