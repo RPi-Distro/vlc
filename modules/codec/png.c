@@ -2,7 +2,7 @@
  * png.c: png decoder module making use of libpng.
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 33f75155b9a8f8feec30445aafc3dc26854e5f78 $
+ * $Id: 36ed4446e7910308bf69d0c37c480c59144958f5 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -371,6 +371,11 @@ static block_t *EncodeBlock(encoder_t *p_enc, picture_t *p_pic)
         block_Release( p_block );
         return NULL;
     }
+
+    /* Disable filtering to speed-up encoding */
+    png_set_filter( p_png, 0, PNG_NO_FILTERS );
+    /* 1 == best speed */
+    png_set_compression_level( p_png, 1 );
 
     /* save buffer start */
     uint8_t *p_start = p_block->p_buffer;

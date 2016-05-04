@@ -83,18 +83,20 @@ static int CorksCallback( vlc_object_t *obj, char const *var,
     if( !old.i_int == !cur.i_int )
         return VLC_SUCCESS; /* nothing to do */
 
-    if( cur.i_int )
-    {
-        if( var_InheritBool( obj, "playlist-cork" ) )
-        {
-            msg_Dbg( obj, "corked" );
-            playlist_Pause( pl );
-        }
-        else
-            msg_Dbg( obj, "not corked" );
-    }
-    else
-        msg_Dbg( obj, "uncorked" );
+    if( !var_InheritBool( obj, "playlist-cork" ) )
+        return VLC_SUCCESS;
+
+    input_thread_t *input = playlist_CurrentInput(pl);
+    if( input == NULL )
+        return VLC_SUCCESS;
+
+    bool playing = var_GetInteger(input, "state") == PLAYING_S;
+    vlc_object_release(input);
+    if( playing == !cur.i_int )
+        return VLC_SUCCESS;
+
+    msg_Dbg( obj, "%scorked", cur.i_int ? "" : "un" );
+    playlist_Pause( pl );
 
     (void) var; (void) dummy;
     return VLC_SUCCESS;

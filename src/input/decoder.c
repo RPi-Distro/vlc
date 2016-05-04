@@ -2,7 +2,7 @@
  * decoder.c: Functions for the management of decoders
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: b9565514b522c10d9d54b2f8e7b7b235e62ac187 $
+ * $Id: ef865e922078c8ac1dedbc5b56938d58b9bface5 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -666,7 +666,7 @@ static mtime_t DecoderGetDisplayDate( decoder_t *p_dec, mtime_t i_ts )
     if( !p_owner->p_clock || i_ts <= VLC_TS_INVALID )
         return i_ts;
 
-    if( input_clock_ConvertTS( p_owner->p_clock, NULL, &i_ts, NULL, INT64_MAX ) ) {
+    if( input_clock_ConvertTS( VLC_OBJECT(p_dec), p_owner->p_clock, NULL, &i_ts, NULL, INT64_MAX ) ) {
         msg_Err(p_dec, "Could not get display date for timestamp %"PRId64"", i_ts);
         return VLC_TS_INVALID;
     }
@@ -1066,7 +1066,7 @@ static void DecoderFixTs( decoder_t *p_dec, mtime_t *pi_ts0, mtime_t *pi_ts1,
         *pi_ts0 += i_es_delay;
         if( pi_ts1 && *pi_ts1 > VLC_TS_INVALID )
             *pi_ts1 += i_es_delay;
-        if( input_clock_ConvertTS( p_clock, &i_rate, pi_ts0, pi_ts1, i_ts_bound ) ) {
+        if( input_clock_ConvertTS( VLC_OBJECT(p_dec), p_clock, &i_rate, pi_ts0, pi_ts1, i_ts_bound ) ) {
             if( pi_ts1 != NULL )
                 msg_Err(p_dec, "Could not convert timestamps %"PRId64
                         ", %"PRId64"", *pi_ts0, *pi_ts1);

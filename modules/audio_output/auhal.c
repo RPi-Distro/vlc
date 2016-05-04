@@ -2,7 +2,7 @@
  * auhal.c: AUHAL and Coreaudio output plugin
  *****************************************************************************
  * Copyright (C) 2005 - 2014 VLC authors and VideoLAN
- * $Id: 10459f06c4940d210ec622bb256e9b061c139ea4 $
+ * $Id: 39a479e912b30de95a4a1d9c6b3ad3d17ee84296 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -441,8 +441,14 @@ static int Start(audio_output_t *p_aout, audio_sample_format_t *restrict fmt)
         msg_Warn(p_aout, "Cannot get device latency [%4.4s]",
                  (char *)&err);
     }
-    msg_Dbg(p_aout, "Current device has a latency of %u frames", p_sys->i_device_latency);
+    float f_latency_in_sec = (float)p_sys->i_device_latency / (float)fmt->i_rate;
+    msg_Dbg(p_aout, "Current device has a latency of %u frames (%f sec)", p_sys->i_device_latency, f_latency_in_sec);
 
+    // Ignore long Airplay latency as this is not correctly working yet
+    if (f_latency_in_sec > 0.5f) {
+        msg_Info(p_aout, "Ignore high latency as it causes problems currently.");
+        p_sys->i_device_latency = 0;
+    }
 
     bool b_success = false;
 

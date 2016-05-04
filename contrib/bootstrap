@@ -228,7 +228,7 @@ test -z "$GPL" || add_make_enabled "GPL"
 #
 OS="${HOST#*-}" # strip architecture
 case "${OS}" in
-	apple-darwin*)
+	*-darwin*)
 		if test -z "$BUILDFORIOS"
 		then
 			check_macosx_sdk

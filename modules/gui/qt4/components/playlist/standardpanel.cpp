@@ -2,7 +2,7 @@
  * standardpanel.cpp : The "standard" playlist panel : just a treeview
  ****************************************************************************
  * Copyright © 2000-2010 VideoLAN
- * $Id: 19c67dc87931324ce62719c9386df5c35fd027f3 $
+ * $Id: f6ef2ab36ef8a606ef4cc5e3566d1b111eedb068 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -352,9 +352,7 @@ void StandardPLPanel::popupAction( QAction *action )
         foreach( const QString &file, uris )
             a.uris << qtu( toURI( toNativeSeparators( file ) ) );
         action->setData( QVariant::fromValue( a ) );
-        if ( model->action( action, list ) )
-            foreach( const QString &file, a.uris )
-                RecentsMRL::getInstance( p_intf )->addRecent( file );
+        model->action( action, list );
         break;
 
     case VLCModelSubInterface::ACTION_ENQUEUEDIR:
@@ -373,9 +371,7 @@ void StandardPLPanel::popupAction( QAction *action )
         a.options = dialog->getOptions();
         if ( a.uris.isEmpty() ) return;
         action->setData( QVariant::fromValue( a ) );
-        if ( model->action( action, list ) )
-            foreach( const QString &file, a.uris )
-                RecentsMRL::getInstance( p_intf )->addRecent( file );
+        model->action( action, list );
         break;
 
     case VLCModelSubInterface::ACTION_SAVETOPLAYLIST:

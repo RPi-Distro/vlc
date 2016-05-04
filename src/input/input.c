@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: 05e4ff36eb72d929889aed480c5c9ee20d7e2316 $
+ * $Id: 6ca3cd951b73f2cce05047728dec26ea16790b1f $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -1037,7 +1037,7 @@ static void LoadSubtitles( input_thread_t *p_input )
         if( !a )
             continue;
         char *psz_mrl;
-        if( a->psz_name[i] &&
+        if( a->psz_name[0] &&
             asprintf( &psz_mrl, "attachment://%s", a->psz_name ) >= 0 )
         {
             var_SetString( p_input, "sub-description", a->psz_description ? a->psz_description : "");
@@ -2228,7 +2228,7 @@ static int InputSourceInit( input_thread_t *p_input,
             /* special hack for forcing a demuxer with --demux=module
              * (and do nothing with a list) */
             psz_var_demux = var_GetNonEmptyString( p_input, "demux" );
-            psz_demux = psz_var_demux;
+            psz_demux = (psz_var_demux != NULL) ? psz_var_demux : "any";
             msg_Dbg( p_input, "specified demux `%s'", psz_demux );
         }
 

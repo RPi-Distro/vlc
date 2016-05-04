@@ -2,7 +2,7 @@
  * misc.m: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003-2014 VLC authors and VideoLAN
- * $Id: 9769172172ac0bac094053401d54353a75aea9de $
+ * $Id: 9eae3ae364a01e458fc14900a14fbfbcbe1cfd20 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -173,7 +173,7 @@ static bool b_old_spaces_style = YES;
     /* init our fake object attribute */
     blackoutWindows = [[NSMutableArray alloc] initWithCapacity:1];
 
-    if (OSX_MAVERICKS || OSX_YOSEMITE) {
+    if (OSX_MAVERICKS || OSX_YOSEMITE || OSX_EL_CAPITAN) {
         NSUserDefaults *userDefaults = [[NSUserDefaults alloc] init];
         [userDefaults addSuiteNamed:@"com.apple.spaces"];
         /* this is system settings -> mission control -> monitors using different spaces */

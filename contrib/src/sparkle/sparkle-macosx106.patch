@@ -1,0 +1,14 @@
+diff -ru sparkle-clean/SUAppcast.m sparkle/SUAppcast.m
+--- sparkle-clean/SUAppcast.m	2016-04-06 11:15:10.000000000 +0200
++++ sparkle/SUAppcast.m	2016-04-06 11:18:58.000000000 +0200
+@@ -15,6 +15,10 @@
+ #import "SUConstants.h"
+ #import "SULog.h"
+ 
++#ifndef NSXMLNodeLoadExternalEntitiesNever
++#define NSXMLNodeLoadExternalEntitiesNever 1UL << 19
++#endif
++
+ @interface NSXMLElement (SUAppcastExtensions)
+ - (NSDictionary *)attributesAsDictionary;
+ @end

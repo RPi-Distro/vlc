@@ -2,7 +2,7 @@
  * vlcproc.cpp
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: dcf3b30c74462cf266fb6edcbab02210f6430243 $
+ * $Id: f490737ec37367407c82b4237cc545862be8d955 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -738,9 +738,15 @@ void VlcProc::update_current_input()
     {
         // Update short name (as defined by --input-title-format)
         char *psz_fmt = var_InheritString( getIntf(), "input-title-format" );
-        char *psz_name = str_format_meta( pInput, psz_fmt );
-        SET_TEXT( m_cVarStreamName, UString( getIntf(), psz_name ) );
-        free( psz_fmt );
+        char *psz_name = NULL;
+        if( psz_fmt != NULL )
+        {
+            psz_name = str_format_meta( pInput, psz_fmt );
+            free( psz_fmt );
+        }
+
+        SET_TEXT( m_cVarStreamName, UString( getIntf(),
+                                             psz_name ? psz_name : "" ) );
         free( psz_name );
 
         // Update local path (if possible) or full uri

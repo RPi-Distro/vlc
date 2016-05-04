@@ -1,7 +1,7 @@
 --[[
  $Id$
 
- Copyright © 2007-2013 the VideoLAN team
+ Copyright © 2007-2015 the VideoLAN team
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -33,23 +33,12 @@ function get_arturl()
     if not video_id then
         return nil
     end
-    return "http://img.youtube.com/vi/"..video_id.."/default.jpg"
-end
-
-function get_prefres()
-    local prefres = -1
-    if vlc.var and vlc.var.inherit then
-        prefres = vlc.var.inherit(nil, "preferred-resolution")
-        if prefres == nil then
-            prefres = -1
-        end
-    end
-    return prefres
+    return vlc.access.."://img.youtube.com/vi/"..video_id.."/default.jpg"
 end
 
 -- Pick the most suited format available
 function get_fmt( fmt_list )
-    local prefres = get_prefres()
+    local prefres = vlc.var.inherit(nil, "preferred-resolution")
     if prefres < 0 then
         return nil
     end
@@ -67,49 +56,81 @@ function get_fmt( fmt_list )
     return fmt
 end
 
+-- Buffering iterator to parse through the HTTP stream several times
+-- without making several HTTP requests
+function buf_iter( s )
+    s.i = s.i + 1
+    local line = s.lines[s.i]
+    if not line then
+        -- Put back together statements split across several lines,
+        -- otherwise we won't be able to parse them
+        repeat
+            local l = s.stream:readline()
+            if not l then break end
+            line = line and line..l or l -- Ternary operator
+        until string.match( line, "};$" )
+
+        if line then
+            s.lines[s.i] = line
+        end
+    end
+    return line
+end
+
+-- Helper to search and extract code from javascript stream
+function js_extract( js, pattern, alt )
+    js.i = 0 -- Reset to beginning
+    for line in buf_iter, js do
+        local ex = string.match( line, pattern )
+        if not ex and alt then
+            ex = string.match( line, alt )
+        end
+        if ex then
+            return ex
+        end
+    end
+    vlc.msg.err( "Couldn't process youtube video URL, please check for updates to this script" )
+    return nil
+end
+
 -- Descramble the URL signature using the javascript code that does that
 -- in the web page
 function js_descramble( sig, js_url )
     -- Fetch javascript code
-    local js = vlc.stream( js_url )
-    if not js then
+    local js = { stream = vlc.stream( js_url ), lines = {}, i = 0 }
+    if not js.stream then
+        vlc.msg.err( "Couldn't process youtube video URL, please check for updates to this script" )
         return sig
     end
-    local lines = {}
 
     -- Look for the descrambler function's name
-    local descrambler = nil
-    while not descrambler do
-        local line = js:readline()
-        if not line then
-            vlc.msg.err( "Couldn't process youtube video URL, please check for updates to this script" )
-            return sig
-        end
-        -- Buffer lines for later, so we don't have to make a second
-        -- HTTP request later
-        table.insert( lines, line )
-        -- c&&a.set("signature",br(c));
-        descrambler = string.match( line, "%.set%(\"signature\",(.-)%(" )
+    -- c&&a.set("signature",br(c));
+    local descrambler = js_extract( js, "%.set%(\"signature\",(.-)%(", nil )
+    if not descrambler then
+        return sig
     end
 
-    -- Fetch the code of the descrambler function. The function is
-    -- conveniently preceded by the definition of a helper object
-    -- that it uses. Example:
-    -- var Fo={TR:function(a){a.reverse()},TU:function(a,b){var c=a[0];a[0]=a[b%a.length];a[b]=c},sH:function(a,b){a.splice(0,b)}};function Go(a){a=a.split("");Fo.sH(a,2);Fo.TU(a,28);Fo.TU(a,44);Fo.TU(a,26);Fo.TU(a,40);Fo.TU(a,64);Fo.TR(a,26);Fo.sH(a,1);return a.join("")};
-    local transformations = nil
-    local rules = nil
-    while not transformations and not rules do
-        local line
-        if #lines > 0 then
-            line = table.remove( lines )
-        else
-            line = js:readline()
-            if not line then
-                vlc.msg.err( "Couldn't process youtube video URL, please check for updates to this script" )
-                return sig
-            end
-        end
-        transformations, rules = string.match( line, "var ..={(.-)};function "..descrambler.."%([^)]*%){(.-)}" )
+    -- Fetch the code of the descrambler function
+    -- var Go=function(a){a=a.split("");Fo.sH(a,2);Fo.TU(a,28);Fo.TU(a,44);Fo.TU(a,26);Fo.TU(a,40);Fo.TU(a,64);Fo.TR(a,26);Fo.sH(a,1);return a.join("")};
+    local rules = js_extract( js, "[ ,]"..descrambler.."=function%([^)]*%){(.-)};",
+                                  -- Legacy/alternate format
+                                  "function "..descrambler.."%([^)]*%){(.-)}" )
+    if not rules then
+        return sig
+    end
+
+    -- Get the name of the helper object providing transformation definitions
+    local helper = string.match( rules, ";(..)%...%(" )
+    if not helper then
+        vlc.msg.err( "Couldn't process youtube video URL, please check for updates to this script" )
+        return sig
+    end
+
+    -- Fetch the helper object code
+    -- var Fo={TR:function(a){a.reverse()},TU:function(a,b){var c=a[0];a[0]=a[b%a.length];a[b]=c},sH:function(a,b){a.splice(0,b)}};
+    local transformations = js_extract( js, "[ ,]"..helper.."={(.-)};", nil )
+    if not transformations then
+        return sig
     end
 
     -- Parse the helper object to map available transformations
@@ -230,28 +251,27 @@ function parse()
             -- Try to find the video's title
             line = vlc.readline()
             if not line then break end
-            if string.match( line, "<meta name=\"title\"" ) then
+            if string.match( line, "<meta property=\"og:title\"" ) then
                 _,_,name = string.find( line, "content=\"(.-)\"" )
                 name = vlc.strings.resolve_xml_special_chars( name )
                 name = vlc.strings.resolve_xml_special_chars( name )
             end
-            if string.match( line, "<meta name=\"description\"" ) then
-               -- Don't ask me why they double encode ...
-                _,_,description = string.find( line, "content=\"(.-)\"" )
-                description = vlc.strings.resolve_xml_special_chars( description )
+
+            if string.match( line, "<p id=\"eow[-]description\" >" ) then
+                _,_,description = string.find( line, "<p id=\"eow[-]description\" >(.-)<[/]p>" )
                 description = vlc.strings.resolve_xml_special_chars( description )
             end
+
+
             if string.match( line, "<meta property=\"og:image\"" ) then
                 _,_,arturl = string.find( line, "content=\"(.-)\"" )
+                arturl = vlc.strings.resolve_xml_special_chars( arturl )
             end
-            -- This is not available in the video parameters (whereas it
-            -- is given by the get_video_info API as the "author" field)
-            if not artist then
-                artist = string.match( line, "yt%-uix%-sessionlink yt%-user%-name[^>]*>([^<]*)</" )
-                if artist then
-                    artist = vlc.strings.resolve_xml_special_chars( artist )
-                end
+
+            if string.match(line, "\"author\": *\"(.-)\"")    then
+                _,_,artist = string.find(line, "\"author\": *\"(.-)\"")
             end
+
             -- JSON parameters, also formerly known as "swfConfig",
             -- "SWF_ARGS", "swfArgs", "PLAYER_CONFIG", "playerConfig" ...
             if string.match( line, "ytplayer%.config" ) then
@@ -279,7 +299,7 @@ function parse()
 
                 if not path then
                     -- If this is a live stream, the URL map will be empty
-                    -- and we get the URL from this field instead 
+                    -- and we get the URL from this field instead
                     local hlsvp = string.match( line, "\"hlsvp\": *\"(.-)\"" )
                     if hlsvp then
                         hlsvp = string.gsub( hlsvp, "\\/", "/" )
@@ -299,11 +319,11 @@ function parse()
                     format = "&fmt=" .. fmt
                 else
                     format = ""
-                end 
+                end
                 -- Without "el=detailpage", /get_video_info fails for many
                 -- music videos with errors about copyrighted content being
                 -- "restricted from playback on certain sites"
-                path = "http://www.youtube.com/get_video_info?video_id="..video_id..format.."&el=detailpage"
+                path = vlc.access.."://www.youtube.com/get_video_info?video_id="..video_id..format.."&el=detailpage"
                 vlc.msg.warn( "Couldn't extract video URL, falling back to alternate youtube API" )
             end
         end
@@ -339,7 +359,7 @@ function parse()
 
         if not path then
             -- If this is a live stream, the URL map will be empty
-            -- and we get the URL from this field instead 
+            -- and we get the URL from this field instead
             local hlsvp = string.match( line, "&hlsvp=([^&]*)" )
             if hlsvp then
                 hlsvp = vlc.strings.decode_uri( hlsvp )
@@ -387,6 +407,6 @@ function parse()
         else
             format = ""
         end
-        return { { path = "http://www.youtube.com/watch?v="..video_id..format } }
+        return { { path = vlc.access.."://www.youtube.com/watch?v="..video_id..format } }
     end
 end

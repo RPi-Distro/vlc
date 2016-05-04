@@ -2,7 +2,7 @@
  * matroska_segment_parse.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: 0aa5924173a22fc4497821121265c6be174ce81a $
+ * $Id: ff911a13ce76b77299f2e0ca3b8207c3d4f0bd39 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -41,6 +41,21 @@ extern "C" {
 static vlc_fourcc_t __GetFOURCC( uint8_t *p )
 {
     return VLC_FOURCC( p[0], p[1], p[2], p[3] );
+}
+
+static inline void fill_extra_data_alac( mkv_track_t *p_tk )
+{
+    if( p_tk->i_extra_data <= 0 ) return;
+    p_tk->fmt.p_extra = malloc( p_tk->i_extra_data + 12 );
+    if( unlikely( !p_tk->fmt.p_extra ) ) return;
+    p_tk->fmt.i_extra = p_tk->i_extra_data + 12;
+    uint8_t *p_extra = (uint8_t *)p_tk->fmt.p_extra;
+    /* See "ALAC Specific Info (36 bytes) (required)" from
+       alac.macosforge.org/trac/browser/trunk/ALACMagicCookieDescription.txt */
+    SetDWBE( p_extra, p_tk->fmt.i_extra );
+    memcpy( p_extra + 4, "alac", 4 );
+    SetDWBE( p_extra + 8, 0 );
+    memcpy( p_extra + 12, p_tk->p_extra_data, p_tk->fmt.i_extra - 12 );
 }
 
 static inline void fill_extra_data( mkv_track_t *p_tk, unsigned int offset )
@@ -1622,7 +1637,7 @@ int32_t matroska_segment_c::TrackInit( mkv_track_t * p_tk )
     else if( !strcmp( p_tk->psz_codec, "A_ALAC" ) )
     {
         p_tk->fmt.i_codec =  VLC_CODEC_ALAC;
-        fill_extra_data( p_tk, 0 );
+        fill_extra_data_alac( p_tk );
     }
     else if( !strcmp( p_tk->psz_codec, "A_WAVPACK4" ) )
     {

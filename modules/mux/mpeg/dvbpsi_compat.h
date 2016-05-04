@@ -52,7 +52,7 @@
 # define dvbpsi_DetachPMT(pmt)          dvbpsi_pmt_detach((pmt))
 /* SDT */
 # define dvbpsi_InitSDT(sdt,id,version,curnext,netid) \
-         dvbpsi_sdt_init((sdt),(id),(0),(version),(bool)(curnext),(netid))
+         dvbpsi_sdt_init((sdt),0x42,(id),(version),(bool)(curnext),(netid))
 # define dvbpsi_SDTAddService(sdt,id,schedule,present,status,ca) \
          dvbpsi_sdt_service_add((sdt),(id),(bool)(schedule),(bool)(present),(status),(bool)(ca))
 # define dvbpsi_EmptySDT(sdt) dvbpsi_sdt_empty((sdt))

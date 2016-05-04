@@ -2,7 +2,7 @@
  * intf.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2014 VLC authors and VideoLAN
- * $Id: db5baccdbcb119f3a1a78c00049b4bb5447eb48f $
+ * $Id: 1b25621f237eedecea521cc3dab2dd06378b0d4b $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -65,6 +65,7 @@ static NSString * VLCInputChangedNotification = @"VLCInputChangedNotification";
 @class AppleRemote;
 @class VLCControls;
 @class VLCPlaylist;
+@class ResumeDialogController;
 
 @interface VLCMain : NSObject <NSWindowDelegate, NSApplicationDelegate>
 {
@@ -82,6 +83,8 @@ static NSString * VLCInputChangedNotification = @"VLCInputChangedNotification";
     id o_eyetv;                 /* VLCEyeTVController */
     id o_bookmarks;             /* VLCBookmarks */
     id o_coreinteraction;       /* VLCCoreInteraction */
+    ResumeDialogController *o_resume_dialog;
+
     BOOL nib_main_loaded;       /* main nibfile */
     BOOL nib_open_loaded;       /* open nibfile */
     BOOL nib_about_loaded;      /* about nibfile */
@@ -144,6 +147,7 @@ static NSString * VLCInputChangedNotification = @"VLCInputChangedNotification";
 - (id)info;
 - (id)wizard;
 - (id)coreDialogProvider;
+- (ResumeDialogController *)resumeDialog;
 - (id)eyeTVController;
 - (id)appleRemoteController;
 - (void)setActiveVideoPlayback:(BOOL)b_value;

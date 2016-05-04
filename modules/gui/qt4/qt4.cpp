@@ -2,7 +2,7 @@
  * qt4.cpp : Qt interface
  ****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: fa77a4afb1b17c19ba9be5ae84bd078b29c84d6a $
+ * $Id: 36e43f093da190ede49d78a49a91eeb8f710d96b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -507,7 +507,8 @@ static void *Thread( void *obj )
 
     /* Initialize the Dialog Provider and the Main Input Manager */
     DialogsProvider::getInstance( p_intf );
-    MainInputManager::getInstance( p_intf );
+    MainInputManager* mim = MainInputManager::getInstance( p_intf );
+    mim->probeCurrentInput();
 
 #ifdef UPDATE_CHECK
     /* Checking for VLC updates */

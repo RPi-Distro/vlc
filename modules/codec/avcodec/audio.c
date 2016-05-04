@@ -2,7 +2,7 @@
  * audio.c: audio decoder using libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2003 VLC authors and VideoLAN
- * $Id: 34c83527b020e8f65276458986f59c298dcefc77 $
+ * $Id: 7068499d829897a74d5dfb18e1f9d2d98e81736b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -265,6 +265,7 @@ block_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     AVCodecContext *ctx = p_sys->p_context;
+    AVFrame *frame = NULL;
 
     if( !pp_block || !*pp_block )
         return NULL;
@@ -312,11 +313,11 @@ block_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
     }
 
 #if (LIBAVCODEC_VERSION_MAJOR >= 55)
-    AVFrame *frame = av_frame_alloc();
+    frame = av_frame_alloc();
     if (unlikely(frame == NULL))
         goto end;
 #else
-    AVFrame *frame = &(AVFrame) { };
+    frame = &(AVFrame) { };
 #endif
 
     for( int got_frame = 0; !got_frame; )
@@ -395,6 +396,7 @@ block_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
         p_block = vlc_av_frame_Wrap(frame);
         if (unlikely(p_block == NULL))
             goto drop;
+        frame = NULL;
     }
 #else
     {
@@ -449,6 +451,9 @@ block_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
 end:
     *pp_block = NULL;
 drop:
+#if (LIBAVCODEC_VERSION_MAJOR >= 55)
+    av_frame_free(&frame);
+#endif
     if( p_block != NULL )
         block_Release(p_block);
     return NULL;

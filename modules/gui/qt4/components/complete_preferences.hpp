@@ -2,7 +2,7 @@
  * complete_preferences.hpp : Tree of modules for preferences
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 3b32c3a21f621e4a2c8889f89d86642cc9d6d837 $
+ * $Id: 7be56887e00e8f198548e3550a0f0deab80c3488 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -42,7 +42,7 @@ class PrefsItemData : public QObject
 {
     Q_OBJECT
 public:
-    PrefsItemData();
+    PrefsItemData( QObject * );
     virtual ~PrefsItemData() { free( psz_shortcut ); };
     bool contains( const QString &text, Qt::CaseSensitivity cs );
     AdvPrefsPanel *panel;

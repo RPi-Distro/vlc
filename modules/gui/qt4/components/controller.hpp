@@ -2,7 +2,7 @@
  * controller.hpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: b22e4301f7bb60c4d348f4d4625d4d688cb97905 $
+ * $Id: 2a65e19bfd34e3f6fdf82c518c064b5717c1de4f $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -268,6 +268,7 @@ public:
 
 signals:
     void keyPressed( QKeyEvent * );
+    void fullscreenChanged( bool );
 
 public slots:
     void setVoutList( vout_thread_t **, int );

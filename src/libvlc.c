@@ -2,7 +2,7 @@
  * libvlc.c: libvlc instances creation and deletion, interfaces handling
  *****************************************************************************
  * Copyright (C) 1998-2008 VLC authors and VideoLAN
- * $Id: 946ce2e3f199ffa89bd0a746e07dcf249dbb2b71 $
+ * $Id: da5964195c500c5404aa9d19a4e9118d4fea7a00 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -337,7 +337,7 @@ int libvlc_InternalInit( libvlc_int_t *p_libvlc, int i_argc,
         }
         /* we unreference the connection when we've finished with it */
         dbus_connection_unref( conn );
-        exit( 1 );
+        exit( 0 );
     }
 #undef MPRIS_APPEND
 #undef MPRIS_BUS_NAME

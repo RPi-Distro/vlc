@@ -2,7 +2,7 @@
  * x11_display.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ac02312cf7994210a7adca806d3ab0faea3eb829 $
+ * $Id: eac50c9c2f0e7336fa33f2062b1b0e47104a2eb8 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -329,6 +329,9 @@ void X11Display::testEWMH()
     else\
         msg_Dbg( getIntf(), "%s support: yes", value );\
 }
+
+    TEST_EWMH( m_net_wm_window_type, "_NET_WM_WINDOW_TYPE" )
+    TEST_EWMH( m_net_wm_window_type_normal, "_NET_WM_WINDOW_TYPE_NORMAL" )
 
     TEST_EWMH( m_net_wm_state, "_NET_WM_STATE" )
     TEST_EWMH( m_net_wm_state_fullscreen, "_NET_WM_STATE_FULLSCREEN" )

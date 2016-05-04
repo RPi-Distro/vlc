@@ -2,7 +2,7 @@
  * plugins.cpp : Plug-ins and extensions listing
  ****************************************************************************
  * Copyright (C) 2008-2010 the VideoLAN team
- * $Id: ea2602981395e2eb8b960c411c338e26ffa62a7e $
+ * $Id: 9008ec5bf4cb2bc55ba827f912be894e8ca98591 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *          Jean-Philippe André <jpeg (at) videolan.org>
@@ -487,6 +487,16 @@ AddonsTab::AddonsTab( intf_thread_t *p_intf_ ) : QVLCFrame( p_intf_ )
 AddonsTab::~AddonsTab()
 {
     delete spinnerAnimation;
+}
+
+// Do not close on ESC or ENTER
+void AddonsTab::keyPressEvent( QKeyEvent *keyEvent )
+{
+    if( keyEvent->key() == Qt::Key_Return ||
+        keyEvent->key() == Qt::Key_Enter )
+        keyEvent->accept();
+    else
+        keyEvent->ignore();
 }
 
 bool AddonsTab::eventFilter( QObject *obj, QEvent *event )

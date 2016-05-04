@@ -2,7 +2,7 @@
  * upnp.cpp :  UPnP discovery module (libupnp)
  *****************************************************************************
  * Copyright (C) 2004-2011 the VideoLAN team
- * $Id: 483f374d4b837d68a61bb8e4ae5ff578ccf5a0db $
+ * $Id: b5f74097fb10fd3f1a4b689044e8c7e4c20d2fd0 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org> (original plugin)
  *          Christian Henz <henz # c-lab.de>
@@ -110,7 +110,7 @@ static int Open( vlc_object_t *p_this )
     if( !( p_sd->p_sys = p_sys ) )
         return VLC_ENOMEM;
 
-#ifdef UPNP_ENABLE_IPV6
+#if defined( UPNP_ENABLE_IPV6 ) && !defined(_WIN32)
     char* psz_miface;
     psz_miface = var_InheritString( p_sd, "miface" );
     msg_Info( p_sd, "Initializing libupnp on '%s' interface", psz_miface );

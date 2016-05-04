@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: 53059c93488ec446d70f1ac291df3f2d087c3a8d $
+ * $Id: 6ff18a600cfe1d7b150110fe1cec45440eaa27f4 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -340,7 +340,9 @@ DiscOpenPanel::DiscOpenPanel( QWidget *_parent, intf_thread_t *_p_intf ) :
     };
     QComboBox *discCombo = ui.deviceCombo; /* avoid namespacing in macro */
     POPULATE_WITH_DEVS( ppsz_discdevices, discCombo );
-    int temp = ui.deviceCombo->findData( config_GetPsz( p_intf, "dvd" ), Qt::UserRole, Qt::MatchStartsWith );
+    char *psz_config = config_GetPsz( p_intf, "dvd" );
+    int temp = ui.deviceCombo->findData( psz_config, Qt::UserRole, Qt::MatchStartsWith );
+    free( psz_config );
     if( temp != -1 )
         ui.deviceCombo->setCurrentIndex( temp );
 #endif
@@ -383,13 +385,15 @@ void DiscOpenPanel::onFocus()
                 wchar_t psz_name[512] = L"";
                 GetVolumeInformationW( drive, psz_name, 511, NULL, NULL, NULL, NULL, 0 );
 
-                QString displayName = FromWide( drive );
+                char *psz_drive = FromWide( drive );
+                QString displayName = psz_drive;
                 char *psz_title = FromWide( psz_name );
                 if( !EMPTY_STR(psz_title)) {
                     displayName = displayName + " - "  + psz_title;
                 }
 
-                ui.deviceCombo->addItem( displayName, FromWide( drive ) );
+                ui.deviceCombo->addItem( displayName, psz_drive );
+                free( psz_drive );
                 free( psz_title );
             }
 
@@ -399,7 +403,9 @@ void DiscOpenPanel::onFocus()
         SetErrorMode(oldMode);
     }
 
-    int temp = ui.deviceCombo->findData( config_GetPsz( p_intf, "dvd" ), Qt::UserRole, Qt::MatchStartsWith );
+    char *psz_config = config_GetPsz( p_intf, "dvd" );
+    int temp = ui.deviceCombo->findData( psz_config, Qt::UserRole, Qt::MatchStartsWith );
+    free( psz_config );
     if( temp != -1 )
         ui.deviceCombo->setCurrentIndex( temp );
 }
@@ -710,6 +716,10 @@ CaptureOpenPanel::CaptureOpenPanel( QWidget *_parent, intf_thread_t *_p_intf ) :
                                 OpenPanel( _parent, _p_intf )
 {
     isInitialized = false;
+#ifdef _WIN32
+    vdevDshowW = NULL;
+    adevDshowW = NULL;
+#endif
 }
 
 void CaptureOpenPanel::initialize()
@@ -1106,6 +1116,10 @@ void CaptureOpenPanel::initialize()
 
 CaptureOpenPanel::~CaptureOpenPanel()
 {
+#ifdef _WIN32
+    delete vdevDshowW;
+    delete adevDshowW;
+#endif
 }
 
 void CaptureOpenPanel::clear()

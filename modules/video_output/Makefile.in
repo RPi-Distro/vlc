@@ -230,8 +230,7 @@ libcaca_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libcaca_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libcaca_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-@HAVE_OSX_TRUE@libcaopengllayer_plugin_la_DEPENDENCIES =  \
-@HAVE_OSX_TRUE@	$(am__DEPENDENCIES_1)
+libcaopengllayer_plugin_la_LIBADD =
 am__libcaopengllayer_plugin_la_SOURCES_DIST = caopengllayer.m opengl.c \
 	opengl.h
 @HAVE_OSX_TRUE@am_libcaopengllayer_plugin_la_OBJECTS =  \
@@ -424,8 +423,7 @@ libvout_ios2_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) \
 	$(libvout_ios2_plugin_la_OBJCFLAGS) $(OBJCFLAGS) \
 	$(libvout_ios2_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
 @HAVE_IOS_TRUE@am_libvout_ios2_plugin_la_rpath = -rpath $(voutdir)
-@HAVE_OSX_TRUE@libvout_macosx_plugin_la_DEPENDENCIES =  \
-@HAVE_OSX_TRUE@	$(am__DEPENDENCIES_1)
+libvout_macosx_plugin_la_LIBADD =
 am__libvout_macosx_plugin_la_SOURCES_DIST = macosx.m opengl.c opengl.h
 @HAVE_OSX_TRUE@am_libvout_macosx_plugin_la_OBJECTS = macosx.lo \
 @HAVE_OSX_TRUE@	libvout_macosx_plugin_la-opengl.lo
@@ -1191,7 +1189,6 @@ LTLIBx26410b = @LTLIBx26410b@
 LTLIBx265 = @LTLIBx265@
 LTLIBxml = @LTLIBxml@
 LTLIBzvbi = @LTLIBzvbi@
-LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 LUAC = @LUAC@
 LUA_CFLAGS = @LUA_CFLAGS@
 LUA_LIBS = @LUA_LIBS@
@@ -1361,6 +1358,8 @@ XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XINERAMA_CFLAGS = @XINERAMA_CFLAGS@
 XINERAMA_LIBS = @XINERAMA_LIBS@
+XI_CFLAGS = @XI_CFLAGS@
+XI_LIBS = @XI_LIBS@
 XMKMF = @XMKMF@
 XPM_CFLAGS = @XPM_CFLAGS@
 XPM_LIBS = @XPM_LIBS@
@@ -1421,6 +1420,7 @@ pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
+runstatedir = @runstatedir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 soliddatadir = @soliddatadir@
@@ -1483,12 +1483,10 @@ SOURCES_android_opaque = android/opaque.c
 @HAVE_DECKLINK_TRUE@libdecklinkoutput_plugin_la_CXXFLAGS = $(AM_CFLAGS) $(CPPFLAGS_decklinkoutput)
 @HAVE_DECKLINK_TRUE@libdecklinkoutput_plugin_la_LIBADD = $(LIBS_decklink) $(LIBDL)
 @HAVE_OSX_TRUE@libvout_macosx_plugin_la_SOURCES = macosx.m opengl.c opengl.h
-@HAVE_OSX_TRUE@libvout_macosx_plugin_la_CFLAGS = $(AM_CFLAGS) $(GL_CFLAGS)
-@HAVE_OSX_TRUE@libvout_macosx_plugin_la_LIBADD = $(GL_LIBS)
+@HAVE_OSX_TRUE@libvout_macosx_plugin_la_CFLAGS = $(AM_CFLAGS)
 @HAVE_OSX_TRUE@libvout_macosx_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)' -Wl,-framework,OpenGL,-framework,Cocoa
 @HAVE_OSX_TRUE@libcaopengllayer_plugin_la_SOURCES = caopengllayer.m opengl.c opengl.h
-@HAVE_OSX_TRUE@libcaopengllayer_plugin_la_CFLAGS = $(AM_CFLAGS) $(GL_CFLAGS)
-@HAVE_OSX_TRUE@libcaopengllayer_plugin_la_LIBADD = $(GL_LIBS)
+@HAVE_OSX_TRUE@libcaopengllayer_plugin_la_CFLAGS = $(AM_CFLAGS)
 @HAVE_OSX_TRUE@libcaopengllayer_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)' -Wl,-framework,OpenGL,-framework,Cocoa,-framework,QuartzCore
 libvout_ios2_plugin_la_SOURCES = ios2.m opengl.h opengl.c
 libvout_ios2_plugin_la_CFLAGS = $(AM_CFLAGS) $(GL_CFLAGS)

@@ -1,7 +1,7 @@
 /*****************************************************************************
  * gnutls.c
  *****************************************************************************
- * Copyright (C) 2004-2012 Rémi Denis-Courmont
+ * Copyright (C) 2004-2015 Rémi Denis-Courmont
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -38,7 +38,6 @@
 
 #include <gnutls/gnutls.h>
 #include <gnutls/x509.h>
-#include "dhparams.h"
 
 /*****************************************************************************
  * Module descriptor
@@ -102,6 +101,7 @@ static int gnutls_Init (vlc_object_t *obj)
 
 # define gnutls_Deinit() (void)0
 #else
+#define GNUTLS_SEC_PARAM_MEDIUM GNUTLS_SEC_PARAM_NORMAL
 static vlc_mutex_t gnutls_mutex = VLC_STATIC_MUTEX;
 
 /**
@@ -710,23 +710,21 @@ static int OpenServer (vlc_tls_creds_t *crd, const char *cert, const char *key)
     if (val < 0)
     {
         msg_Err (crd, "cannot load X.509 key: %s", gnutls_strerror (val));
-        gnutls_certificate_free_credentials (sys->x509_cred);
         goto error;
     }
 
     /* FIXME:
+     * - regenerate these regularly
      * - support other cipher suites
      */
     val = gnutls_dh_params_init (&sys->dh_params);
     if (val >= 0)
     {
-        const gnutls_datum_t data = {
-            .data = (unsigned char *)dh_params,
-            .size = sizeof (dh_params) - 1,
-        };
+        gnutls_sec_param_t sec = GNUTLS_SEC_PARAM_MEDIUM;
+        unsigned bits = gnutls_sec_param_to_pk_bits (GNUTLS_PK_DH, sec);
 
-        val = gnutls_dh_params_import_pkcs3 (sys->dh_params, &data,
-                                             GNUTLS_X509_FMT_PEM);
+        msg_Dbg (crd, "generating Diffie-Hellman %u-bits parameters...", bits);
+        val = gnutls_dh_params_generate2 (sys->dh_params, bits);
         if (val == 0)
             gnutls_certificate_set_dh_params (sys->x509_cred,
                                               sys->dh_params);
@@ -737,6 +735,7 @@ static int OpenServer (vlc_tls_creds_t *crd, const char *cert, const char *key)
                  gnutls_strerror (val));
     }
 
+    msg_Dbg (crd, "ciphers parameters loaded");
     return VLC_SUCCESS;
 
 error:

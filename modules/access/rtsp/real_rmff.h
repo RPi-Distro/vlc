@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id: e4fd2d2e719067eb3e499af05fd6cbb84bbaf4e4 $
+ * $Id: fd29a46f712739b636f84cd50287b8a0d27f36de $
  *
  * some functions for real media file headers
  * adopted from joschkas real tools
@@ -26,6 +26,7 @@
 #ifndef HAVE_RMFF_H
 #define HAVE_RMFF_H
 
+#include <vlc_access.h>
 
 #define RMFF_HEADER_SIZE 0x12
 
@@ -230,7 +231,7 @@ void rmff_print_header(rmff_header_t *h);
 /*
  * does some checks and fixes header if possible
  */
-void rmff_fix_header(rmff_header_t *h);
+void rmff_fix_header(access_t *p_access, rmff_header_t *h);
 
 /*
  * returns the size of the header (incl. first data-header)

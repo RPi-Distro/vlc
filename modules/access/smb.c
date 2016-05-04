@@ -2,7 +2,7 @@
  * smb.c: SMB input module
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 60b26ee4a46340d3d178a87e650326849f64da09 $
+ * $Id: b766b9bd447c9080fcbc8df2d421c0ce8dcc420f $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -296,6 +296,7 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
     if( i_read < 0 )
     {
         msg_Err( p_access, "read failed (%s)", vlc_strerror_c(errno) );
+        p_access->info.b_eof = true;
         return -1;
     }
 
