@@ -1,6 +1,9 @@
 vlc (2.2.3-1~deb8u1) UNRELEASED; urgency=medium
 
   * New upstream release.
+    - pulse: compute latency correctly if negative, fixing missing audio on
+      high network latency. (Closes: #784640)
+  * debian/patches/CVE-2015-5949.patch: Removed, included upstream.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Wed, 04 May 2016 19:56:07 +0200
 
