@@ -1,11 +1,32 @@
 vlc (2.2.3-1~deb8u1) UNRELEASED; urgency=medium
 
   * New upstream release.
-    - pulse: compute latency correctly if negative, fixing missing audio on
+    - pulse: Compute latency correctly if negative, fixing missing audio on
       high network latency. (Closes: #784640)
+    - hls: Fix hang on stop, crashes and stack overflow.
+    - mkv: Fix infinite loop.
+    - vpx: Fix crash.
+    - mxf: Fix crash on stop.
+    - adpcm: Fix double-free.
+    - zvbi: Fix crash.
+    - skins2: Fix crash on malformed skin bitmaps.
+    - swscale: Fix crashes in swscale resizing.
+    - mp4: Fix divide-by-zero crash in mux.
+    - rtsp: Fix off-by-one buffer overflow.
+    - mms: Fix segmentation fault on large allocation, fix overflows.
+    - lua: Fix use-after-free.
+    - httplive: Fix stack overflow.
+    - avformat: Fix heap overflow, NULL dereference and double-free.
+    - avcodec: Fix invalid free.
+    - sdp: Fix read overflow.
+    - vcd: Fix double-free.
+    - aout: Fix use-after-free.
+    - vout: Fix use-after-free.
+    - realrtsp: Fix off-by-one and various crashes.
+    - Fix various memory leaks.
   * debian/patches/CVE-2015-5949.patch: Removed, included upstream.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Wed, 04 May 2016 19:56:07 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 26 May 2016 14:37:52 +0200
 
 vlc (2.2.1-1~deb8u1) jessie; urgency=medium
 
