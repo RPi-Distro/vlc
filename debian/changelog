@@ -1,4 +1,4 @@
-vlc (2.2.3-1~deb8u1) UNRELEASED; urgency=medium
+vlc (2.2.3-1~deb8u1) jessie; urgency=medium
 
   * New upstream release.
     - pulse: Compute latency correctly if negative, fixing missing audio on
@@ -27,6 +27,8 @@ vlc (2.2.3-1~deb8u1) UNRELEASED; urgency=medium
     - Fix various memory leaks.
   * debian/patches/CVE-2015-5949.patch: Removed, included upstream.
   * debian/copyright: Update copyright years.
+  * debian/libvlc5.symbols: Bump version of libvlc_event_type_name for new
+    event names.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Thu, 26 May 2016 14:37:52 +0200
 
