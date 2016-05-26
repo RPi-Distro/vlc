@@ -3,6 +3,7 @@ vlc (2.2.3-1~deb8u1) UNRELEASED; urgency=medium
   * New upstream release.
     - pulse: Compute latency correctly if negative, fixing missing audio on
       high network latency. (Closes: #784640)
+    - alsa: Fix audio device selection. (Closes: #801448)
     - hls: Fix hang on stop, crashes and stack overflow.
     - mkv: Fix infinite loop.
     - vpx: Fix crash.
@@ -25,6 +26,7 @@ vlc (2.2.3-1~deb8u1) UNRELEASED; urgency=medium
     - realrtsp: Fix off-by-one and various crashes.
     - Fix various memory leaks.
   * debian/patches/CVE-2015-5949.patch: Removed, included upstream.
+  * debian/copyright: Update copyright years.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Thu, 26 May 2016 14:37:52 +0200
 
