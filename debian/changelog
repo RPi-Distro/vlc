@@ -25,12 +25,15 @@ vlc (2.2.3-1~deb8u1) jessie; urgency=medium
     - vout: Fix use-after-free.
     - realrtsp: Fix off-by-one and various crashes.
     - Fix various memory leaks.
-  * debian/patches/CVE-2015-5949.patch: Removed, included upstream.
+  * debian/patches
+    - CVE-2015-5949.patch: Removed, included upstream.
+    - adpcm-reject-invalid-QuickTime-IMA-files.patch: Apply upstream patch for
+      CVE-2016-5108. (Closes: #825728)
   * debian/copyright: Update copyright years.
   * debian/libvlc5.symbols: Bump version of libvlc_event_type_name for new
     event names.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Thu, 26 May 2016 14:37:52 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 29 May 2016 14:37:21 +0200
 
 vlc (2.2.1-1~deb8u1) jessie; urgency=medium
 
