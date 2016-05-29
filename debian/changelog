@@ -1,3 +1,13 @@
+vlc (2.2.3-2) unstable; urgency=medium
+
+  * debian/patches:
+    - g711-fix-dangling-pointer-fixes-16909.patch: Upstream patch to fix issue
+      with some WAV files.
+    - adpcm-reject-invalid-QuickTime-IMA-files.patch: Apply upstream patch for
+      CVE-2016-5108. (Closes: #825728)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 29 May 2016 12:53:09 +0200
+
 vlc (2.2.3-1) unstable; urgency=medium
 
   [ Mateusz Łukasik ]
