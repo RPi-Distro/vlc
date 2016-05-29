@@ -5,8 +5,10 @@ vlc (2.2.3-2) unstable; urgency=medium
       with some WAV files.
     - adpcm-reject-invalid-QuickTime-IMA-files.patch: Apply upstream patch for
       CVE-2016-5108. (Closes: #825728)
+  * debian/rules: Reduce libX11 and libxcb linkage to a warning. Moving the
+    ffmpeg and libtheora plugins to vlc does not make much sense.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sun, 29 May 2016 12:53:09 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 29 May 2016 13:09:00 +0200
 
 vlc (2.2.3-1) unstable; urgency=medium
 
