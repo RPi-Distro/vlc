@@ -297,12 +297,6 @@ ffmpegflags += \
 	--disable-opengl \
 	--disable-x11grab
 
-# Disable i686 optimizations on i386, because they are not always available on
-# this architecture.
-ifneq (,$(filter $(DEB_HOST_ARCH),i386 hurd-i386))
-ffmpegflags += --disable-i686
-endif
-
 # Disable altivec optimizations on powerpc, because they are not always
 # available on this architecture.
 ifeq ($(DEB_HOST_ARCH),powerpc)
