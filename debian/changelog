@@ -1,3 +1,9 @@
+vlc (2.2.4-1) UNRELEASED; urgency=medium
+
+  * New upstream release.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 01 Jun 2016 19:46:59 +0200
+
 vlc (2.2.3-2) unstable; urgency=medium
 
   * debian/patches:
