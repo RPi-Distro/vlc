@@ -1,2 +1,3 @@
 fix-translation.patch
 drop-check-qt-check.patch
+generated-mimetypes.patch
