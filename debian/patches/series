@@ -1,5 +1,2 @@
 fix-translation.patch
 drop-check-qt-check.patch
-the-Hurd-also-uses-the-.so-extension-for-libraries.patch
-Fix-Hurd-build.patch
-g711-fix-dangling-pointer-fixes-16909.patch
