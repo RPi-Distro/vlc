@@ -2,7 +2,7 @@
  * dshow.cpp : DirectShow access and access_demux module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2004, 2006, 2008, 2010 the VideoLAN team
- * $Id: 684e2c2db34c0802c95f3fa78d0fef7a9ad45c77 $
+ * $Id: 380b95c11e38f757f8dd2213d8e668160cd08779 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *         Damien Fouilleul <damienf@videolan.org>
@@ -1903,7 +1903,7 @@ static int Demux( demux_t *p_demux )
                 i_pts += VLC_TS_0;
             }
 #if 0
-            msg_Dbg( p_demux, "Read() stream: %i, size: %i, PTS: %"PRId64,
+            msg_Dbg( p_demux, "Read() stream: %i, size: %i, PTS: %" PRId64,
                      i_stream, i_data_size, i_pts );
 #endif
 

@@ -2,7 +2,7 @@
  * input_slider.cpp : VolumeSlider and SeekSlider
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: d947d861f1d089d564e8481e2fd466bf1e8fcff0 $
+ * $Id: 7aade81f6d9602d9fc62c14a0a641f1d56f95e9d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -100,7 +100,7 @@ SeekSlider::SeekSlider( Qt::Orientation q, QWidget *_parent, bool _static )
     seekLimitTimer->setSingleShot( true );
 
     /* Tooltip bubble */
-    mTimeTooltip = new TimeTooltip( this );
+    mTimeTooltip = new TimeTooltip( NULL );
     mTimeTooltip->setMouseTracking( true );
 
     /* Properties */
@@ -143,6 +143,7 @@ SeekSlider::~SeekSlider()
     delete chapters;
     if ( alternativeStyle )
         delete alternativeStyle;
+    delete mTimeTooltip;
 }
 
 /***

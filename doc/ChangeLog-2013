@@ -25758,37 +25758,3 @@ Date:   Wed Jan 2 00:49:01 2013 +0100
     The left and right arrow keys have not any real advantage / functionality for
     the playlist view or sidebar but are used by default for several hotkeys.
     So lets allow these as VLC hotkeys (also for audio files).
-
-commit fccc6ab913cad66c50b98d1ac14d2fe1f41f7453
-Author: Rafaël Carré <funman@videolan.org>
-Date:   Tue Jan 1 20:18:09 2013 +0100
-
-    Happy new year 2013
-
-commit 10af2bf60149ab5ae08cb82d4fadfbb7b65897c4
-Author: Timo Rothenpieler <timo@rothenpieler.org>
-Date:   Tue Jan 1 18:23:00 2013 +0100
-
-    vaapi: Use vaDeriveImage instead of vaGetImage if available
-    
-    Signed-off-by: Rafaël Carré <funman@videolan.org>
-
-commit 10d7463d9b9f664f7ccffd77da583db4304653d0
-Author: Rafaël Carré <funman@videolan.org>
-Date:   Tue Jan 1 18:04:54 2013 +0100
-
-    oldrc: fix segfault
-
-commit d750f80cdbdb70723d3dba4cd7ce747c70f5f457
-Author: Nil Geiswiller <ngeiswei@googlemail.com>
-Date:   Sat Dec 29 00:13:40 2012 +0100
-
-    Add Mute shortcut to nvlc
-    
-    I added the shortcut 'm' in nvlc for toggle mute. The volume status is
-    replaced my 'Mute' when enabled.
-    
-    I also remapped the shortcut of metadata box from 'm' to 'M', I think
-    it follows the principle of least surprise.
-    
-    Signed-off-by: Rafaël Carré <funman@videolan.org>

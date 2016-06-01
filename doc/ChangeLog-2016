@@ -1,3 +1,393 @@
+commit 888b7e89d78e7073075fc0a007d47b93f4570fab
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Jun 1 12:15:19 2016 +0200
+
+    Update NEWS
+
+commit de49c6e2287baa7ef58df5a8c4ff00018076d314
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue May 17 18:21:55 2016 +0200
+
+    Contribs: update libbluray to 0.9.3
+    
+    (cherry picked from commit 183da075970e1ffc92d639c0927da34c0656baad)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit e5414d581dde7a4e8c0725915a2f9b4f7c914a39
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue May 31 12:05:26 2016 +0200
+
+    Contribs: make projectM depend on the toolchain.cmake target
+    
+    (cherry picked from commit 3bfb935677cfe27396bde338fd7d6cb926cd3be6)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 6245b69426eafebb34819dcd7e08688cb7aed124
+Author: Sean McGovern <gseanmcg@gmail.com>
+Date:   Sun May 29 10:39:06 2016 -0400
+
+    extras/tools: bump automake to 1.15
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit f9f218118878760df4d9ea8a4c1cee8e3ec5b4bd)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 275298004d6ddd96e3ff8ddd88416eacf71d78da
+Author: Mathieu Malaterre <malat@debian.org>
+Date:   Fri Apr 10 05:54:01 2015 +0000
+
+    Fix links to French TV icons
+    
+    Control: forwarded -1 vlc-devel@videolan.org
+    
+    Hi,
+    
+    Some links pointing to TV icons were broken. Attached patch fixes that.
+    Original report: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=782229
+    
+    Typical output:
+    
+    [0x1e2ba18] access_http access error: error: HTTP/1.1 404 Not Found
+    [0x1e2ba18] access_http access error: error: HTTP/1.1 404 Not Found
+    [0x1e2ba18] access_mms access error: error: HTTP/1.1 403 Requested
+    target domain not allowed.
+    [0x1b3f7a8] main playlist error: no suitable access module for
+    `http://upload.wikimedia.org/wikipedia/fr/4/4b/Logo_de_TMC.gif'
+    [0x1e3fbc8] access_http access error: error: HTTP/1.1 404 Not Found
+    [0x1e3fbc8] access_http access error: error: HTTP/1.1 404 Not Found
+    [0x1e3fbc8] access_mms access error: error: HTTP/1.1 403 Requested
+    target domain not allowed.
+    [0x1b3f7a8] main playlist error: no suitable access module for
+    `http://upload.wikimedia.org/wikipedia/fr/4/4b/Logo_de_TMC.gif'
+    [0x4b52bc8] access_http access error: error: HTTP/1.1 404 Not Found
+    [0x4b52bc8] access_http access error: error: HTTP/1.1 404 Not Found
+    [0x4b52bc8] access_mms access error: error: HTTP/1.1 403 Requested
+    target domain not allowed.
+    [0x1b3f7a8] main playlist error: no suitable access module for
+    `http://upload.wikimedia.org/wikipedia/fr/9/98/Public-Senat-LCP-An_logo_2010.png'
+    [0x7fd8cc0133e8] access_http access error: error: HTTP/1.1 404 Not Found
+    [0x7fd8cc0133e8] access_http access error: error: HTTP/1.1 404 Not Found
+    [0x7fd8cc0133e8] access_mms access error: error: HTTP/1.1 403
+    Requested target domain not allowed.
+    [0x1b3f7a8] main playlist error: no suitable access module for
+    `http://upload.wikimedia.org/wikipedia/fr/9/98/Public-Senat-LCP-An_logo_2010.png'
+    [0x3567038] access_http access error: error: HTTP/1.1 404 Not Found
+    [0x3567038] access_http access error: error: HTTP/1.1 404 Not Found
+    [0x3567038] access_mms access error: error: HTTP/1.1 403 Requested
+    target domain not allowed.
+    [0x1b3f7a8] main playlist error: no suitable access module for
+    `http://upload.wikimedia.org/wikipedia/fr/3/30/Bfm_tv.jpg'
+    [0x1ba7748] access_http access error: error: HTTP/1.1 404 Not Found
+    [0x1ba7748] access_http access error: error: HTTP/1.1 404 Not Found
+    [0x1ba7748] access_mms access error: error: HTTP/1.1 403 Requested
+    target domain not allowed.
+    [0x1b3f7a8] main playlist error: no suitable access module for
+    `http://upload.wikimedia.org/wikipedia/fr/3/30/Bfm_tv.jpg'
+    [0x1ba7748] access_http access error: error: HTTP/1.1 404 Not Found
+    [0x1ba7748] access_http access error: error: HTTP/1.1 404 Not Found
+    [0x1ba7748] access_mms access error: error: HTTP/1.1 403 Requested
+    target domain not allowed.
+    [0x1b3f7a8] main playlist error: no suitable access module for
+    `http://upload.wikimedia.org/wikipedia/fr/3/30/Bfm_tv.jpg'
+    [0x1ba7748] access_http access error: error: HTTP/1.1 404 Not Found
+    [0x1ba7748] access_http access error: error: HTTP/1.1 404 Not Found
+    [0x1ba7748] access_mms access error: error: HTTP/1.1 403 Requested
+    target domain not allowed.
+    [0x1b3f7a8] main playlist error: no suitable access module for
+    `http://upload.wikimedia.org/wikipedia/fr/5/56/Logo_I_tele.png'
+    
+    Description: Fix broken links
+    Author: Mathieu Malaterre <malat@debian.org>
+    Bug-Debian: https://bugs.debian.org/
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 5bcaf6c90585d6d37263bfa7ad77a31eb2996048)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d2ddf1a2f5c95253a07461db7a50047415a40acb
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Wed Feb 3 19:31:28 2016 +0100
+
+    zsh completion: fix argv passing
+    
+    (cherry picked from commit c85a2dd8a43e5036614a6a1998a9cddb6c28ca05)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 3957dc6a27183272a89d973f218953c9314d77a6
+Author: Sebastian Ramacher <sramacher@debian.org>
+Date:   Wed Feb 3 18:33:59 2016 +0100
+
+    zsh completion: Add missing newlines
+    
+    Signed-off-by: Rafaël Carré <funman@videolan.org>
+    (cherry picked from commit 32796b8960efb2421fdb79a46834dad5af1eadc0)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 5dce56079cbdc6924d16c1ccf004a46dcd9f7234
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat May 28 00:12:02 2016 +0200
+
+    NEWS: mention the CVE number
+
+commit 4789dc903b1592d897cf9690da19590efebb99dc
+Author: VideoLAN <videolan@videolan.org>
+Date:   Fri May 27 16:45:30 2016 -0400
+
+    l10n: Traditional Chinese update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit aa7442fc54ee592e41da6d93f898aa48f45834cc
+Author: VideoLAN <videolan@videolan.org>
+Date:   Fri May 27 16:44:33 2016 -0400
+
+    l10n: Simplified Chinese update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 6767ca990f09ea377b207099b11c3a14e5d88a79
+Author: A. Regnander <anton_r_3@hotmail.com>
+Date:   Fri May 27 16:39:04 2016 -0400
+
+    l10n: Swedish update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 7602316dfd8b5a293747459d8d39bea6b59c80aa
+Author: Marián Hikaník <mhikanik@users.sourceforge.net>
+Date:   Fri May 27 16:35:38 2016 -0400
+
+    l10n: Slovak update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 2139c5522cdb696f4f3a7916e4b789f6e989f41d
+Author: VideoLAN <videolan@videolan.org>
+Date:   Fri May 27 16:33:19 2016 -0400
+
+    l10n: Portuguese update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit e3b70d29dca8e5f208d34e5a1fd4d21390c6b5ab
+Author: VideoLAN <videolan@videolan.org>
+Date:   Fri May 27 16:28:35 2016 -0400
+
+    l10n: Norwegian Nynorsk update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 8ad8b1d5ac37adaa1d74175cb798cb2d6e81c363
+Author: VideoLAN <videolan@videolan.org>
+Date:   Fri May 27 16:25:39 2016 -0400
+
+    l10n: Norwegian Bokmål update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 11b2336df8a0bbcb4f67203dad84660a76ad7b5b
+Author: Rajanikant Kumbhar <rajnikant.kumbhar@gmail.com>
+Date:   Fri May 27 15:50:14 2016 -0400
+
+    l10n: Marathi update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 9eb6705ef848efe0e1a7fb251f886cd3e907c36b
+Author: VideoLAN <videolan@videolan.org>
+Date:   Fri May 27 15:45:19 2016 -0400
+
+    l10n: Italian update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 76cbc891988a809787331274d11a734cbc6d066d
+Author: VideoLAN <videolan@videolan.org>
+Date:   Fri May 27 15:40:03 2016 -0400
+
+    l10n: French update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit f13bd30dc45e1a559e38d9cceaa5ef0428802a8c
+Author: VideoLAN <videolan@videolan.org>
+Date:   Fri May 27 15:33:14 2016 -0400
+
+    l10n: Spanish (Mexico) update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 3cfd02115c5a7912e57aafe269592926652475f7
+Author: VideoLAN <videolan@videolan.org>
+Date:   Fri May 27 15:29:52 2016 -0400
+
+    l10n: German update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 550db334436591cc628cedacda004ee586d34a13
+Author: Benet R. i Camps <bennybeat@gmail.com>
+Date:   Fri May 27 15:19:22 2016 -0400
+
+    l10n: Catalan update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit bf70e5df6932a4b52eaf92336255f2dd96b8c4f9
+Author: VideoLAN <videolan@videolan.org>
+Date:   Fri May 27 15:15:16 2016 -0400
+
+    l10n: Bulgarian update
+    
+    Signed-off-by: Christoph Miebach <christoph.miebach@web.de>
+
+commit 0fc5fad20e9203bf1602e5577815144823efa539
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu May 26 18:45:06 2016 +0200
+
+    Update NEWS for 2.2.4
+
+commit c2d2c3698e47402ec36ecc6c8a85781dbd88b6a9
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Wed May 25 10:00:25 2016 +0200
+
+    adpcm: reject invalid QuickTime IMA files
+    
+    DecodeAdpcmImaQT() can only decode up to stereo files.
+    Fix out of bound write.
+    
+    Reported by: Patrick Coleman <blinken@gmail.com>
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 458ed62bbeb9d1bddf7b8df104e14936408a3db9)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 9ec17d122ab12f3b66a81877805f38f9fd295003
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed May 25 19:07:51 2016 +0200
+
+    contribs: mad: Don't read past the input buffer
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 6bb12484082f6ba6217f57c967984eade05a81a0)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 5e72b88d69a480ba77518d697ae6519a21abae08
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Fri May 20 18:02:22 2016 +0200
+
+    contrib: mad: don't create dummy files, use foreign automake
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit a4c8871abb0c7ea2458999c918aa0bc6100d12f3)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a1b16c53a274e60797ec4eb8150fbe69e6d4d8bb
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu May 26 18:36:30 2016 +0200
+
+    Revert "directdraw: in overlay mode we need to use DDSCAPS_FLIP and DDSCAPS_FRONTBUFFER"
+    
+    This reverts commit 11f7a3676d9717970f7240ba9f251ae47f7c9a08.
+
+commit 3e39b615c113ab8b78eb6679f1a399919f55ff4b
+Author: Benoit du Payrat <benoit@videolabs.io>
+Date:   Thu May 26 14:49:12 2016 +0200
+
+    Qt: fix the Win32/Qt5 tooltip focus/raising issue
+    
+    The time tooltip no longer puts the window in front on Windows, when
+    compiling VLC with Qt5
+    
+    Close #12084 #8532
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 93ef5e5b18888dfc1fc2a24dd5e4a0caecfdad17)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit b6f63d60f13258576a14d3b5865208bd408ba566
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue May 3 09:32:08 2016 +0200
+
+    skins: fix WIN32 build
+    
+    Maybe we should add a vlc_get_pathmax.
+    
+    (cherry picked from commit 9635f7466e550ae7a694e69ee82e5b03ca1438e0)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit db521592b7300555c4c6d265735622049b015974
+Author: Benoit du Payrat <benoit@videolabs.io>
+Date:   Thu May 12 10:32:43 2016 +0200
+
+    Qt: Leaves minimal view on quit to prevent size issues on start
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit bf2a7faff9f804cc7c65b72e3714de02910628b7)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 509c54c45da31b655b0bcc88d6e196be4a49dfc5
+Author: Petter Reinholdtsen <pere@hungry.com>
+Date:   Sun May 8 08:09:16 2016 +0200
+
+    Add MIME type video/vnd.mpegurl to desktop file.
+    
+    The MIME type is used by The Norwegian National Broadcasting company
+    (tv.nrk.no) when configuring it to run an external player.
+    
+    Solves Debian bug #822245.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit e6040034d95dbde33be0cecb228e92bc0725d609)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 527a714cde1f8962bc40188532b8bd0496c0871b
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat May 7 19:10:53 2016 +0200
+
+    On the road to 2.2.4
+
+commit 4459e439067265290b0d21f8974a0888e4f9b9cb
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed May 4 20:03:35 2016 +0300
+
+    Fix use of PRI* macros in C++
+
+commit 924a4a596ceba6a99f252f1efe7c048e830e6e8c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed May 4 20:01:49 2016 +0300
+
+    g711: fix dangling pointer (fixes #16909)
+
+commit 425f4e12ca869d58e74d3edca4ff400b45167b73
+Author: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Date:   Wed Apr 27 13:47:13 2016 +0200
+
+    Fix Hurd build
+    
+    theme_loader.cpp contains an unconditional use of PATH_MAX,
+    which is not defined on GNU/Hurd to avoid imposing build-time
+    limits. This change replaces its use with dynamic allocation of the
+    required size.
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit daa50fbf8e7d009ff1b224bdc06c7f68dfd61eaf)
+
+commit a6f3a6832f953951e7f6ed39aa11963c1ccdacf8
+Author: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Date:   Tue Apr 26 20:18:37 2016 +0200
+
+    the Hurd also uses the .so extension for libraries
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 8d99c0fe7d38297aedd336d8712380e8311ba554)
+
+commit fd02e6807d4f1d0802bde74086b912cad6aa3fc7
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Apr 27 23:24:13 2016 +0300
+
+    fr: fix nonsensical translation for optical drive
+
 commit 7370183a29c7a69e5561e45656a5c647eb3901bd
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Tue Apr 26 13:58:46 2016 +0200
