@@ -2,7 +2,7 @@
  * atmo.cpp : "Atmo Light" video filter
  *****************************************************************************
  * Copyright (C) 2000-2006 VLC authors and VideoLAN
- * $Id: 518e2c5aee10ff393ebf7aa498b17d56f2c29458 $
+ * $Id: 54fab7d3600b5e9c9659800ead8fcf7a80c15a51 $
  *
  * Authors: André Weber (WeberAndre@gmx.de)
  *
@@ -2448,7 +2448,7 @@ static int AtmoSettingsCallback( vlc_object_t *, char const *psz_var,
     if(p_atmo_config)
     {
 
-       msg_Dbg(p_filter, "apply AtmoSettingsCallback %s (int: %"PRId64" -> %"PRId64")",
+       msg_Dbg(p_filter, "apply AtmoSettingsCallback %s (int: %" PRId64 " -> %" PRId64 ")",
              psz_var,
              oldval.i_int,
              newval.i_int

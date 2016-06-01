@@ -2,7 +2,7 @@
  * directx.c: Windows DirectDraw video output
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 5b2522f5f71a6ef2d509d05e7358c4de1cd3ee4f $
+ * $Id: d8a002caf9c159cbb4e72817c47bcab2506dd5ef $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -861,9 +861,8 @@ static int DirectXCreateSurface(vout_display_t *vd,
     if (use_overlay) {
         ddsd.dwFlags |= DDSD_CAPS;
         ddsd.ddsCaps.dwCaps = DDSCAPS_OVERLAY | DDSCAPS_VIDEOMEMORY;
-        ddsd.ddsCaps.dwCaps |= DDSCAPS_FLIP | DDSCAPS_FRONTBUFFER;
         if (backbuffer_count > 0)
-            ddsd.ddsCaps.dwCaps |= DDSCAPS_COMPLEX;
+            ddsd.ddsCaps.dwCaps |= DDSCAPS_COMPLEX | DDSCAPS_FLIP;
 
         if (backbuffer_count > 0) {
             ddsd.dwFlags |= DDSD_BACKBUFFERCOUNT;

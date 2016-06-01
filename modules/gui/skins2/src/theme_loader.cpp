@@ -2,7 +2,7 @@
  * theme_loader.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 6766be5a2ad68abb60f4f2567a8ad2d5085b7931 $
+ * $Id: afb8e2cf4b5771024e4a70599610b3e220f68a24 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -549,7 +549,13 @@ int tar_extract_all( TAR *t, char *prefix )
     union tar_buffer buffer;
     int   len, err, getheader = 1, remaining = 0;
     FILE  *outfile = NULL;
-    char  fname[BLOCKSIZE + PATH_MAX];
+#if defined( _WIN32 )
+    long  path_max = PATH_MAX;
+#else
+    long  path_max = pathconf (".", _PC_PATH_MAX);
+#endif
+    size_t maxsize = (path_max == -1 || path_max > 4096) ? 4096 : path_max;
+    char  fname[BLOCKSIZE + maxsize];
 
     while( 1 )
     {
@@ -583,7 +589,7 @@ int tar_extract_all( TAR *t, char *prefix )
                 break;
             }
 
-            sprintf( fname, "%s/%s", prefix, buffer.header.name );
+            snprintf( fname, sizeof(fname), "%s/%s", prefix, buffer.header.name );
 
             /* Check magic value in header */
             if( strncmp( buffer.header.magic, "GNUtar", 6 ) &&

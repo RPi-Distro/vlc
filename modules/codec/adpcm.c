@@ -2,7 +2,7 @@
  * adpcm.c : adpcm variant audio decoder
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: e655c45ca990e3171f3d6f356754473b19d6af30 $
+ * $Id: 0071077bdc8a6a922fdf1421c9f66e2bbe5068cb $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -174,6 +174,12 @@ static int OpenDecoder( vlc_object_t *p_this )
     switch( p_dec->fmt_in.i_codec )
     {
         case VLC_FOURCC('i','m','a', '4'): /* IMA ADPCM */
+            if (p_dec->fmt_in.audio.i_channels > 2) {
+                free(p_sys);
+                msg_Err(p_dec, "Invalid number of channels %i",
+                        p_dec->fmt_in.audio.i_channels );
+                return VLC_EGENERIC;
+            }
             p_sys->codec = ADPCM_IMA_QT;
             break;
         case VLC_CODEC_ADPCM_IMA_WAV: /* IMA ADPCM */

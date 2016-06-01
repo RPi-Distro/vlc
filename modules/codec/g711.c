@@ -2,7 +2,7 @@
  * g711.c: G.711 µ-law and A-law codec
  *****************************************************************************
  * Copyright (C) 2001, 2003 VLC authors and VideoLAN
- * $Id: 5d89471e3ed3aaaa1aa8fe584e0863b4b1a52967 $
+ * $Id: ce5fb531c785b6c79cb0dd789bff314a7491e1f2 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -219,6 +219,7 @@ static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     if( pp_block == NULL )
         return NULL;
     block_t *p_block = *pp_block;
+    *pp_block = NULL;
     if( p_block == NULL )
         return NULL;
 
