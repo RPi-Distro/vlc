@@ -1,6 +1,14 @@
 vlc (2.2.4-1) UNRELEASED; urgency=medium
 
   * New upstream release.
+  * debian/patches:
+    g711-fix-dangling-pointer-fixes-16909.patch,
+    adpcm-reject-invalid-QuickTime-IMA-files.patch, zsh-completion.patch,
+    frenchtv-links.patch, fix-Hurd-build.patch,
+    the-Hurd-also-uses-the-.so-extension-for-libraries.patch: Removed, all
+    included upstream.
+  * debian/{rules,vlc-nox.install}: No longer install old BluRay access
+    plugin. (LP: #864933)
 
  -- Sebastian Ramacher <sramacher@debian.org>  Wed, 01 Jun 2016 19:46:59 +0200
 
