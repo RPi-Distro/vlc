@@ -1,6 +1,7 @@
 vlc (2.2.4-1~deb8u1) jessie-security; urgency=medium
 
   * New upstream release.
+    - quicktime: Reject invalid IMA files (CVE-2016-5108). (Closes: #825728)
     - pulse: Compute latency correctly if negative, fixing missing audio on
       high network latency. (Closes: #784640)
     - alsa: Fix audio device selection. (Closes: #801448)
@@ -25,6 +26,7 @@ vlc (2.2.4-1~deb8u1) jessie-security; urgency=medium
     - vout: Fix use-after-free.
     - realrtsp: Fix off-by-one and various crashes.
     - Fix various memory leaks.
+    - Fix links to French TV icons. (Closes: #782229)
   * debian/patches/CVE-2015-5949.patch: Removed, included upstream.
   * debian/copyright: Update copyright years.
   * debian/libvlc5.symbols: Bump version of libvlc_event_type_name for new
