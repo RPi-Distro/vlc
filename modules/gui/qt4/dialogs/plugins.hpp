@@ -2,7 +2,7 @@
  * plugins.hpp : Plug-ins and extensions listing
  ****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 91bc94e0ddaac0e2535a3e07212495712ddd9c13 $
+ * $Id: 26ee90ad15d3798c07d0fe06f15a580f3d3b2212 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *

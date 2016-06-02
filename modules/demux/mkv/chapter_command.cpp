@@ -2,7 +2,7 @@
  * chapter_command.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 0c8be439809cb5f6798478945fa8e9b1943a3b19 $
+ * $Id: 36d728012f8b5e3d1e22b534d01a8c83766fd1ac $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -745,7 +745,7 @@ bool matroska_script_interpretor_c::Interpret( const binary * p_command, size_t 
         virtual_chapter_c *p_chapter = sys.FindChapter( i_chapter_uid, p_segment );
 
         if ( p_chapter == NULL )
-            msg_Dbg( &sys.demuxer, "Chapter %"PRId64" not found", i_chapter_uid);
+            msg_Dbg( &sys.demuxer, "Chapter %" PRId64 " not found", i_chapter_uid);
         else
         {
             if ( !p_chapter->EnterAndLeave( sys.p_current_segment->CurrentChapter() ) )

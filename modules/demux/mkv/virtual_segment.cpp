@@ -2,7 +2,7 @@
  * virtual_segment.cpp : virtual segment implementation in the MKV demuxer
  *****************************************************************************
  * Copyright © 2003-2011 VideoLAN and VLC authors
- * $Id: 362fc3cddf617296c693fe38977f6fdebfdaf6f0 $
+ * $Id: b5a89d5433e947dd80ac47049158abb5c894026d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -88,7 +88,7 @@ virtual_chapter_c * virtual_chapter_c::CreateVirtualChapter( chapter_item_c * p_
         *usertime_offset = tmp;
 
     msg_Dbg( &p_main_segment->sys.demuxer,
-             "Virtual chapter %s from %"PRId64" to %"PRId64" - " ,
+             "Virtual chapter %s from %" PRId64 " to %" PRId64 " - " ,
              p_chap->psz_name.c_str(), p_vchap->i_virtual_start_time, p_vchap->i_virtual_stop_time );
 
     return p_vchap;
@@ -409,7 +409,7 @@ bool virtual_segment_c::UpdateCurrentToChapter( demux_t & demux )
     /* we have moved to a new chapter */
     if ( p_cur_chapter != NULL && p_current_chapter != p_cur_chapter )
         {
-            msg_Dbg( &demux, "NEW CHAPTER %"PRId64, sys.i_pts );
+            msg_Dbg( &demux, "NEW CHAPTER %" PRId64, sys.i_pts );
             if ( p_cur_edition->b_ordered )
             {
                 /* FIXME EnterAndLeave has probably been broken for a long time */
@@ -613,7 +613,7 @@ bool virtual_chapter_c::Leave( bool b_do_subs )
 #if MKV_DEBUG
 void virtual_chapter_c::print() 
 {
-    msg_Dbg( &p_segment->sys.demuxer, "*** chapter %"PRId64" - %"PRId64" (%u)",
+    msg_Dbg( &p_segment->sys.demuxer, "*** chapter %" PRId64 " - %" PRId64 " (%u)",
              i_virtual_start_time, i_virtual_stop_time, sub_chapters.size() );
     for( size_t i = 0; i < sub_chapters.size(); i++ )
         sub_chapters[i]->print();

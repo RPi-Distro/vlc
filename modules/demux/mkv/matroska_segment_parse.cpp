@@ -2,7 +2,7 @@
  * matroska_segment_parse.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: ff911a13ce76b77299f2e0ca3b8207c3d4f0bd39 $
+ * $Id: f8e37f8e37142866ea66c55f50f3c09388d28c52 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -141,42 +141,42 @@ void matroska_segment_c::ParseSeekHead( KaxSeekHead *seekhead )
             {
                 if( id == EBML_ID(KaxCues) )
                 {
-                    msg_Dbg( &sys.demuxer, "|   - cues at %"PRId64, i_pos );
+                    msg_Dbg( &sys.demuxer, "|   - cues at %" PRId64, i_pos );
                     LoadSeekHeadItem( EBML_INFO(KaxCues), i_pos );
                 }
                 else if( id == EBML_ID(KaxInfo) )
                 {
-                    msg_Dbg( &sys.demuxer, "|   - info at %"PRId64, i_pos );
+                    msg_Dbg( &sys.demuxer, "|   - info at %" PRId64, i_pos );
                     LoadSeekHeadItem( EBML_INFO(KaxInfo), i_pos );
                 }
                 else if( id == EBML_ID(KaxChapters) )
                 {
-                    msg_Dbg( &sys.demuxer, "|   - chapters at %"PRId64, i_pos );
+                    msg_Dbg( &sys.demuxer, "|   - chapters at %" PRId64, i_pos );
                     LoadSeekHeadItem( EBML_INFO(KaxChapters), i_pos );
                 }
                 else if( id == EBML_ID(KaxTags) )
                 {
-                    msg_Dbg( &sys.demuxer, "|   - tags at %"PRId64, i_pos );
+                    msg_Dbg( &sys.demuxer, "|   - tags at %" PRId64, i_pos );
                     LoadSeekHeadItem( EBML_INFO(KaxTags), i_pos );
                 }
                 else if( id == EBML_ID(KaxSeekHead) )
                 {
-                    msg_Dbg( &sys.demuxer, "|   - chained seekhead at %"PRId64, i_pos );
+                    msg_Dbg( &sys.demuxer, "|   - chained seekhead at %" PRId64, i_pos );
                     LoadSeekHeadItem( EBML_INFO(KaxSeekHead), i_pos );
                 }
                 else if( id == EBML_ID(KaxTracks) )
                 {
-                    msg_Dbg( &sys.demuxer, "|   - tracks at %"PRId64, i_pos );
+                    msg_Dbg( &sys.demuxer, "|   - tracks at %" PRId64, i_pos );
                     LoadSeekHeadItem( EBML_INFO(KaxTracks), i_pos );
                 }
                 else if( id == EBML_ID(KaxAttachments) )
                 {
-                    msg_Dbg( &sys.demuxer, "|   - attachments at %"PRId64, i_pos );
+                    msg_Dbg( &sys.demuxer, "|   - attachments at %" PRId64, i_pos );
                     LoadSeekHeadItem( EBML_INFO(KaxAttachments), i_pos );
                 }
 #ifdef MKV_DEBUG
                 else
-                    msg_Dbg( &sys.demuxer, "|   - unknown seekhead reference at %"PRId64, i_pos );
+                    msg_Dbg( &sys.demuxer, "|   - unknown seekhead reference at %" PRId64, i_pos );
 #endif
             }
         }
@@ -349,7 +349,7 @@ void matroska_segment_c::ParseTrackEntry( KaxTrackEntry *m )
             KaxTrackDefaultDuration &defd = *(KaxTrackDefaultDuration*)l;
 
             tk->i_default_duration = uint64(defd);
-            msg_Dbg( &sys.demuxer, "|   |   |   + Track Default Duration=%"PRId64, uint64(defd) );
+            msg_Dbg( &sys.demuxer, "|   |   |   + Track Default Duration=%" PRId64, uint64(defd) );
         }
         else  if( MKV_IS_ID( l, KaxTrackTimecodeScale ) )
         {
@@ -398,7 +398,7 @@ void matroska_segment_c::ParseTrackEntry( KaxTrackEntry *m )
                 tk->p_extra_data = (uint8_t*)malloc( tk->i_extra_data );
                 memcpy( tk->p_extra_data, cpriv.GetBuffer(), tk->i_extra_data );
             }
-            msg_Dbg( &sys.demuxer, "|   |   |   + Track CodecPrivate size=%"PRId64, cpriv.GetSize() );
+            msg_Dbg( &sys.demuxer, "|   |   |   + Track CodecPrivate size=%" PRId64, cpriv.GetSize() );
         }
         else if( MKV_IS_ID( l, KaxCodecName ) )
         {
@@ -425,14 +425,14 @@ void matroska_segment_c::ParseTrackEntry( KaxTrackEntry *m )
         {
             KaxCodecDelay &codecdelay = *(KaxCodecDelay*)l;
             tk->i_codec_delay = uint64_t( codecdelay ) / 1000;
-            msg_Dbg( &sys.demuxer, "|   |   |   + Track Codec Delay =%"PRIu64,
+            msg_Dbg( &sys.demuxer, "|   |   |   + Track Codec Delay =%" PRIu64,
                      tk->i_codec_delay );
         }
         else if( MKV_IS_ID( l, KaxSeekPreRoll ) )
         {
             KaxSeekPreRoll &spr = *(KaxSeekPreRoll*)l;
             tk->i_seek_preroll = uint64_t(spr) / 1000;
-            msg_Dbg( &sys.demuxer, "|   |   |   + Track Seek Preroll =%"PRIu64, tk->i_seek_preroll );
+            msg_Dbg( &sys.demuxer, "|   |   |   + Track Seek Preroll =%" PRIu64, tk->i_seek_preroll );
         }
 #endif
         else if( MKV_IS_ID( l, KaxContentEncodings ) )
@@ -852,7 +852,7 @@ void matroska_segment_c::ParseInfo( KaxInfo *info )
 
             i_timescale = uint64(tcs);
 
-            msg_Dbg( &sys.demuxer, "|   |   + TimecodeScale=%"PRId64,
+            msg_Dbg( &sys.demuxer, "|   |   + TimecodeScale=%" PRId64,
                      i_timescale );
         }
         else if( MKV_IS_ID( l, KaxDuration ) )
@@ -861,7 +861,7 @@ void matroska_segment_c::ParseInfo( KaxInfo *info )
 
             i_duration = mtime_t( double( dur ) );
 
-            msg_Dbg( &sys.demuxer, "|   |   + Duration=%"PRId64,
+            msg_Dbg( &sys.demuxer, "|   |   + Duration=%" PRId64,
                      i_duration );
         }
         else if( MKV_IS_ID( l, KaxMuxingApp ) )
@@ -987,7 +987,7 @@ void matroska_segment_c::ParseChapterAtom( int i_level, KaxChapterAtom *ca, chap
         if( MKV_IS_ID( l, KaxChapterUID ) )
         {
             chapters.i_uid = uint64_t(*(KaxChapterUID*)l);
-            msg_Dbg( &sys.demuxer, "|   |   |   |   + ChapterUID: %"PRIu64"", chapters.i_uid );
+            msg_Dbg( &sys.demuxer, "|   |   |   |   + ChapterUID: %" PRIu64, chapters.i_uid );
         }
         else if( MKV_IS_ID( l, KaxChapterFlagHidden ) )
         {
@@ -1018,14 +1018,14 @@ void matroska_segment_c::ParseChapterAtom( int i_level, KaxChapterAtom *ca, chap
             KaxChapterTimeStart &start =*(KaxChapterTimeStart*)l;
             chapters.i_start_time = uint64( start ) / INT64_C(1000);
 
-            msg_Dbg( &sys.demuxer, "|   |   |   |   + ChapterTimeStart: %"PRId64"", chapters.i_start_time );
+            msg_Dbg( &sys.demuxer, "|   |   |   |   + ChapterTimeStart: %" PRId64, chapters.i_start_time );
         }
         else if( MKV_IS_ID( l, KaxChapterTimeEnd ) )
         {
             KaxChapterTimeEnd &end =*(KaxChapterTimeEnd*)l;
             chapters.i_end_time = uint64( end ) / INT64_C(1000);
 
-            msg_Dbg( &sys.demuxer, "|   |   |   |   + ChapterTimeEnd: %"PRId64"", chapters.i_end_time );
+            msg_Dbg( &sys.demuxer, "|   |   |   |   + ChapterTimeEnd: %" PRId64, chapters.i_end_time );
         }
         else if( MKV_IS_ID( l, KaxChapterDisplay ) )
         {

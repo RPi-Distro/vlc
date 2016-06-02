@@ -2,7 +2,7 @@
  * extended_panels.cpp : Extended controls panels
  ****************************************************************************
  * Copyright (C) 2006-2013 the VideoLAN team
- * $Id: 00c0cdbd2438ede0dd920c56658e7d9d28bd150f $
+ * $Id: 7ac3fd6f31c466ab3448716d83e7356f71f9a069 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea .t videolan d@t org>
@@ -552,7 +552,7 @@ void ExtVideo::setWidgetValue( QObject *widget )
         else if( lineedit )
         {
             char str[30];
-            snprintf( str, sizeof(str), "%06"PRIX64, val.i_int );
+            snprintf( str, sizeof(str), "%06" PRIX64, val.i_int );
             lineedit->setText( str );
         }
         else if( combobox ) combobox->setCurrentIndex(
@@ -787,7 +787,7 @@ void ExtV4l2::Refresh( void )
 
             QString name = qtr( vartext.psz_string );
             free( vartext.psz_string );
-            msg_Dbg( p_intf, "v4l2 control \"%"PRIx64"\": %s (%s)",
+            msg_Dbg( p_intf, "v4l2 control \"%" PRIx64 "\": %s (%s)",
                      val.p_list->p_values[i].i_int, psz_var, qtu( name ) );
 
             int i_type = var_Type( p_obj, psz_var );
