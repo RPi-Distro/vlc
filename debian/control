@@ -2,8 +2,7 @@ Source: vlc
 Section: video
 Priority: optional
 Maintainer: Debian Multimedia Maintainers <pkg-multimedia-maintainers@lists.alioth.debian.org>
-Uploaders: Clément Stenac <zorglub@debian.org>,
-           Loic Minier <lool@dooz.org>,
+Uploaders: Loic Minier <lool@dooz.org>,
            Christophe Mutricy <xtophe@videolan.org>,
            Mohammed Adnène Trojette <adn+deb@diwi.org>,
            Reinhard Tartler <siretart@tauware.de>,
