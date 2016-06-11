@@ -1,3 +1,13 @@
+vlc (2.2.4-2) unstable; urgency=medium
+
+  * Build ffmpeg without libopenjpeg (Closes: #826827)
+    - debian/control: Remove libopenjpeg-dev from B-D.
+    - debian/rules: Build ffmpeg with --disable-libopenjpeg.
+  * debian/rules: Revert workaround for zsh completion build failures on
+    powerpc. The underlying issue seems to be fixed.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 11 Jun 2016 11:44:37 +0200
+
 vlc (2.2.4-1) unstable; urgency=medium
 
   * New upstream release.
