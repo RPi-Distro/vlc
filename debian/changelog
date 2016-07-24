@@ -1,9 +1,15 @@
 vlc (2.2.4-3) UNRELEASED; urgency=medium
 
+  [ Mateusz Łukasik ]
   * debian/control:
     - Remove Clément Stenac from Uploaders. Thanks for your job!
 
- -- Mateusz Łukasik <mati75@linuxmint.pl>  Sun, 05 Jun 2016 19:50:30 +0200
+  [ Sebastian Ramacher ]
+  * Fix FTBFS with GCC 6 (Closes: #831199)
+    - debian/patches/vlc_atomic*: Upstream patches to fix the use of atomic_*.
+    - debian/rules: Build with -std=gnu11 and -std=gnu++98.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 14 Jul 2016 10:41:37 +0200
 
 vlc (2.2.4-2) unstable; urgency=medium
 
