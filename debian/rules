@@ -343,9 +343,7 @@ override_dh_auto_configure:
 	dh_auto_build --sourcedirectory $(ffmpegbuild) -- V=1
 	$(MAKE) -C $(ffmpegbuild) install-libs install-headers V=1
 	PKG_CONFIG_PATH=$(ffmpegprefix)/lib/pkgconfig \
-		dh_auto_configure -- $(confflags) \
-		CFLAGS="$$CFLAGS -std=gnu11" \
-		CXXFLAGS="$$CXXFLAGS -std=gnu++98"
+		dh_auto_configure -- $(confflags)
 
 override_dh_auto_build:
 	dh_auto_build
