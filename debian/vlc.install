@@ -33,5 +33,5 @@ usr/lib/vlc/plugins/video_output/libxcb_xv_plugin.so
 usr/lib/vlc/plugins/video_splitter
 usr/lib/vlc/plugins/visualization
 usr/share/applications
-usr/share/kde4
+usr/share/solid
 EOF

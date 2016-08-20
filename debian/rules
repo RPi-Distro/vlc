@@ -90,7 +90,7 @@ confflags += \
 	--enable-x264 \
 	--enable-x265 \
 	--enable-zvbi \
-	--with-kde-solid=/usr/share/kde4/apps/solid/actions/ \
+	--with-kde-solid=/usr/share/solid/actions/ \
 	$(NULL)
 # Reasons for disabling features:
 # decklink -> not in Debian
