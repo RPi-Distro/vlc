@@ -1,9 +1,12 @@
-vlc (2.2.4-4) UNRELEASED; urgency=medium
+vlc (2.2.4-4) unstable; urgency=medium
 
   [ Pino Toscano ]
   * Install solid actions in Frameworks location. (Closes: #834884)
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sat, 20 Aug 2016 12:43:46 +0200
+  [ Sebastian Ramacher ]
+  * Bump debhelper compat to 10.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 13 Sep 2016 21:29:23 +0200
 
 vlc (2.2.4-3) unstable; urgency=medium
 
