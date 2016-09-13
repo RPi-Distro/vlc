@@ -327,7 +327,7 @@ export DEB_LDFLAGS_MAINT_APPEND
 export removeplugins
 
 %:
-	dh $@ --parallel --with autoreconf
+	dh $@
 
 override_dh_auto_clean:
 	rm -rf $(ffmpegprefix) $(ffmpegbuild)
