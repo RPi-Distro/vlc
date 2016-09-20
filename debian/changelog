@@ -1,3 +1,9 @@
+vlc (2.2.4-5) UNRELEASED; urgency=medium
+
+  * Update ffmpeg to 2.8.8.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 20 Sep 2016 23:00:59 +0200
+
 vlc (2.2.4-4) unstable; urgency=medium
 
   [ Pino Toscano ]
