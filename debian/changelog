@@ -1,9 +1,9 @@
-vlc (2.2.4-6) UNRELEASED; urgency=medium
+vlc (2.2.4-6) unstable; urgency=medium
 
   * debian/*.maintscript: Bump all versions to fix symlink-to-directory
     conversions. (Closes: #814646)
 
- -- Sebastian Ramacher <sramacher@debian.org>  Fri, 23 Sep 2016 19:41:57 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 23 Sep 2016 21:08:42 +0200
 
 vlc (2.2.4-5) unstable; urgency=medium
 
