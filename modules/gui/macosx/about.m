@@ -2,7 +2,7 @@
  * about.m: MacOS X About Panel
  *****************************************************************************
  * Copyright (C) 2001-2014 VLC authors and VideoLAN
- * $Id: d0d644d84fc0a7f63e550946a38b7976446a4f79 $
+ * $Id: 54ea23da607b2b69b19a1f313a8dccacb92e8d9c $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne -at- videolan.org>
@@ -133,7 +133,7 @@ static VLAboutBox *_o_sharedInstance = nil;
                                                             "\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: "
                                                             "underline; color:#0057ae;\">Help and join us!</span></a>")];
         NSString *fontfamily;
-        if (OSX_YOSEMITE)
+        if (OSX_YOSEMITE || OSX_EL_CAPITAN)
             fontfamily = @"Helvetica Neue";
         else
             fontfamily = @"Lucida Grande";

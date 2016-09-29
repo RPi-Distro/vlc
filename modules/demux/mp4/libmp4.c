@@ -114,11 +114,10 @@ int MP4_ReadBoxCommon( stream_t *p_stream, MP4_Box_t *p_box )
         /* XXX size of 0 means that the box extends to end of file */
     }
 
-    if( p_box->i_type == ATOM_uuid )
+    if( p_box->i_type == ATOM_uuid && i_read >= 16 )
     {
         /* get extented type on 16 bytes */
         GetUUID( &p_box->i_uuid, p_peek );
-        p_peek += 16; i_read -= 16;
     }
     else
     {
@@ -379,10 +378,9 @@ static int MP4_ReadBox_mvhd(  stream_t *p_stream, MP4_Box_t *p_box )
     MP4_ConvertDate2Str( s_creation_time, p_box->data.p_mvhd->i_creation_time, false );
     MP4_ConvertDate2Str( s_modification_time,
                          p_box->data.p_mvhd->i_modification_time, false );
-    if( p_box->data.p_mvhd->i_rate )
+    if( p_box->data.p_mvhd->i_rate && p_box->data.p_mvhd->i_timescale )
     {
-        MP4_ConvertDate2Str( s_duration,
-                 p_box->data.p_mvhd->i_duration / p_box->data.p_mvhd->i_rate, true );
+        MP4_ConvertDate2Str( s_duration, p_box->data.p_mvhd->i_duration / p_box->data.p_mvhd->i_timescale, true );
     }
     else
     {
@@ -3576,6 +3574,15 @@ static MP4_Box_t *MP4_ReadBox( stream_t *p_stream, MP4_Box_t *p_father )
         free( p_box );
         return NULL;
     }
+
+    if( p_father && p_father->i_size > 0 &&
+        p_father->i_pos + p_father->i_size < p_box->i_pos + p_box->i_size )
+    {
+        msg_Dbg( p_stream, "out of bound child" );
+        free( p_box );
+        return NULL;
+    }
+
     if( !p_box->i_size )
     {
         msg_Dbg( p_stream, "found an empty box (null size)" );
@@ -3634,6 +3641,11 @@ void MP4_BoxFree( stream_t *s, MP4_Box_t *p_box )
     {
         for( i_index = 0; ; i_index++ )
         {
+            if ( MP4_Box_Function[i_index].i_parent &&
+                 p_box->p_father &&
+                 p_box->p_father->i_type != MP4_Box_Function[i_index].i_parent )
+                continue;
+
             if( ( MP4_Box_Function[i_index].i_type == p_box->i_type )||
                 ( MP4_Box_Function[i_index].i_type == 0 ) )
             {

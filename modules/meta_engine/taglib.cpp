@@ -2,7 +2,7 @@
  * taglib.cpp: Taglib tag parser/writer
  *****************************************************************************
  * Copyright (C) 2003-2011 VLC authors and VideoLAN
- * $Id: f0c382ef841b6463cbf0648c15e6d58be4eeeda3 $
+ * $Id: 669ff34d7cda311145327d2940db76b6567c2803 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rafaël Carré <funman@videolanorg>
@@ -566,6 +566,7 @@ static void ReadMetaFromXiph( Ogg::XiphComment* tag, demux_meta_t* p_demux_meta,
         /* TODO: Use i_cover_score / i_cover_idx to select the picture. */
         p_attachment = ParseFlacPicture( p_data, i_data, 0,
             &i_cover_score, &i_cover_idx );
+        free( p_data );
     }
 
     TAB_INIT( p_demux_meta->i_attachments, p_demux_meta->attachments );

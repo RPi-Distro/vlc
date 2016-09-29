@@ -2,7 +2,7 @@
  * au.c : au file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: 19f8752247aff174d04aa55f40698cd84711cf7f $
+ * $Id: b9267eae2f7abda56180f146651f4434459fb99d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -90,7 +90,7 @@ struct demux_sys_t
     int             i_frame_size;
     mtime_t         i_frame_length;
 
-    int             i_header_size;
+    uint32_t        i_header_size;
 };
 
 static int Demux( demux_t * );

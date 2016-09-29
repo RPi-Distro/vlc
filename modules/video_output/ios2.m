@@ -2,7 +2,7 @@
  * ios2.m: iOS OpenGL ES 2 provider
  *****************************************************************************
  * Copyright (C) 2001-2014 VLC authors and VideoLAN
- * $Id: b9559d7dfb8265edf36bafefc5240dfbb068e265 $
+ * $Id: 1a1c1b97ff5f537ff136ccb0d3ca36dfa96d4a6b $
  *
  * Authors: Pierre d'Herbemont <pdherbemont at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -135,7 +135,13 @@ static int Open(vlc_object_t *this)
 
     /* get the object we will draw into */
     UIView* viewContainer = var_CreateGetAddress (vd, "drawable-nsobject");
-    if (!viewContainer || ![viewContainer isKindOfClass:[UIView class]])
+    if (unlikely(viewContainer == nil))
+        goto bailout;
+
+    if (unlikely(![viewContainer respondsToSelector:@selector(isKindOfClass:)]))
+        goto bailout;
+
+    if (![viewContainer isKindOfClass:[UIView class]])
         goto bailout;
 
     vout_display_DeleteWindow (vd, NULL);
@@ -146,6 +152,7 @@ static int Open(vlc_object_t *this)
 
     /* setup the actual OpenGL ES view */
     sys->glESView = [[VLCOpenGLES2VideoView alloc] initWithFrame:[viewContainer bounds]];
+    sys->glESView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 
     if (!sys->glESView)
         goto bailout;
@@ -198,9 +205,10 @@ static int Open(vlc_object_t *this)
     vd->control = Control;
 
     /* forward our dimensions to the vout core */
-    CGSize viewSize = sys->viewContainer.frame.size;
+    CGFloat scaleFactor = sys->viewContainer.contentScaleFactor;
+    CGSize viewSize = sys->viewContainer.bounds.size;
     vout_display_SendEventFullscreen(vd, false);
-    vout_display_SendEventDisplaySize(vd, (int)viewSize.width, (int)viewSize.height, false);
+    vout_display_SendEventDisplaySize(vd, viewSize.width * scaleFactor, viewSize.height * scaleFactor, false);
 
     /* */
     [[NSNotificationCenter defaultCenter] addObserver:sys->glESView
@@ -241,8 +249,12 @@ void Close (vlc_object_t *this)
     [sys->glESView performSelectorOnMainThread:@selector(removeFromSuperview) withObject:nil waitUntilDone:NO];
 
     if (sys->gl.sys != NULL) {
-        msg_Dbg(this, "deleting display");
-        vout_display_opengl_Delete(sys->vgl);
+        @synchronized (sys->glESView) {
+            msg_Dbg(this, "deleting display");
+
+            if (likely([sys->glESView isAppActive]))
+                vout_display_opengl_Delete(sys->vgl);
+        }
     }
 
     [sys->glESView release];
@@ -333,8 +345,10 @@ static void PictureDisplay(vout_display_t *vd, picture_t *pic, subpicture_t *sub
 {
     vout_display_sys_t *sys = vd->sys;
     sys->has_first_frame = true;
-    if (likely([sys->glESView isAppActive]))
-        vout_display_opengl_Display(sys->vgl, &vd->source);
+    @synchronized (sys->glESView) {
+        if (likely([sys->glESView isAppActive]))
+            vout_display_opengl_Display(sys->vgl, &vd->source);
+    }
 
     picture_Release(pic);
 
@@ -396,20 +410,24 @@ static void OpenglESSwap(vlc_gl_t *gl)
     if (!self)
         return nil;
 
-    CAEAGLLayer * layer = (CAEAGLLayer *)self.layer;
-    layer.drawableProperties = [NSDictionary dictionaryWithObject:kEAGLColorFormatRGBA8 forKey: kEAGLDrawablePropertyColorFormat];
-    layer.opaque = YES;
+    @synchronized (self) {
+        _appActive = ([UIApplication sharedApplication].applicationState == UIApplicationStateActive);
+        if (unlikely(!_appActive))
+            return nil;
 
-    _eaglContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-    if (!_eaglContext)
-        return nil;
-    [EAGLContext setCurrentContext:_eaglContext];
+        CAEAGLLayer * layer = (CAEAGLLayer *)self.layer;
+        layer.drawableProperties = [NSDictionary dictionaryWithObject:kEAGLColorFormatRGBA8 forKey: kEAGLDrawablePropertyColorFormat];
+        layer.opaque = YES;
 
-    [self performSelectorOnMainThread:@selector(createBuffers) withObject:nil waitUntilDone:YES];
-    [self performSelectorOnMainThread:@selector(reshape) withObject:nil waitUntilDone:NO];
-    [self setAutoresizingMask: UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
+        _eaglContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+        if (!_eaglContext)
+            return nil;
+        [EAGLContext setCurrentContext:_eaglContext];
 
-    _appActive = ([UIApplication sharedApplication].applicationState == UIApplicationStateActive);
+        [self performSelectorOnMainThread:@selector(createBuffers) withObject:nil waitUntilDone:YES];
+        [self performSelectorOnMainThread:@selector(reshape) withObject:nil waitUntilDone:NO];
+        [self setAutoresizingMask: UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
+    }
 
     return self;
 }
@@ -490,7 +508,7 @@ static void OpenglESSwap(vlc_gl_t *gl)
 
     vout_display_place_t place;
 
-    @synchronized(self) {
+    @synchronized (self) {
         if (_voutDisplay) {
             vout_display_cfg_t cfg_tmp = *(_voutDisplay->cfg);
             CGFloat scaleFactor = self.contentScaleFactor;
@@ -525,18 +543,20 @@ static void OpenglESSwap(vlc_gl_t *gl)
 
 - (void)applicationStateChanged:(NSNotification *)notification
 {
+    @synchronized (self) {
     if ([[notification name] isEqualToString:UIApplicationWillResignActiveNotification]
         || [[notification name] isEqualToString:UIApplicationDidEnterBackgroundNotification]
         || [[notification name] isEqualToString:UIApplicationWillTerminateNotification])
         _appActive = NO;
     else
         _appActive = YES;
+    }
 }
 
 - (void)updateConstraints
 {
-    [self reshape];
     [super updateConstraints];
+    [self reshape];
 }
 
 - (BOOL)isOpaque

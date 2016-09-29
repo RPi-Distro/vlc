@@ -2,7 +2,7 @@
  * image.c : wrapper for image reading/writing facilities
  *****************************************************************************
  * Copyright (C) 2004-2007 VLC authors and VideoLAN
- * $Id: f5be25b32c8579d86fc5da931013be94166bdbe5 $
+ * $Id: 0f25609ee215df5d22850b6f6996c9c9d896ed3c $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -711,7 +711,9 @@ static encoder_t *CreateEncoder( vlc_object_t *p_this, video_format_t *fmt_in,
     p_enc->fmt_in.video = *fmt_in;
 
     if( p_enc->fmt_in.video.i_visible_width == 0 ||
-        p_enc->fmt_in.video.i_visible_height == 0 )
+        p_enc->fmt_in.video.i_visible_height == 0 ||
+        p_enc->fmt_out.video.i_visible_width == 0 ||
+        p_enc->fmt_out.video.i_visible_height == 0 )
     {
         if( fmt_out->i_width > 0 && fmt_out->i_height > 0 )
         {
@@ -730,17 +732,16 @@ static encoder_t *CreateEncoder( vlc_object_t *p_this, video_format_t *fmt_in,
                 p_enc->fmt_in.video.i_visible_height = fmt_out->i_height;
             }
         }
-        else if( fmt_out->i_sar_num && fmt_out->i_sar_den &&
-                 fmt_out->i_sar_num * fmt_in->i_sar_den !=
-                 fmt_out->i_sar_den * fmt_in->i_sar_num )
-        {
-            p_enc->fmt_in.video.i_width =
-                fmt_in->i_sar_num * (int64_t)fmt_out->i_sar_den * fmt_in->i_width /
-                fmt_in->i_sar_den / fmt_out->i_sar_num;
-            p_enc->fmt_in.video.i_visible_width =
-                fmt_in->i_sar_num * (int64_t)fmt_out->i_sar_den *
-                fmt_in->i_visible_width / fmt_in->i_sar_den / fmt_out->i_sar_num;
-        }
+    } else if( fmt_out->i_sar_num && fmt_out->i_sar_den &&
+               fmt_out->i_sar_num * fmt_in->i_sar_den !=
+               fmt_out->i_sar_den * fmt_in->i_sar_num )
+    {
+        p_enc->fmt_in.video.i_width =
+            fmt_in->i_sar_num * (int64_t)fmt_out->i_sar_den * fmt_in->i_width /
+            fmt_in->i_sar_den / fmt_out->i_sar_num;
+        p_enc->fmt_in.video.i_visible_width =
+            fmt_in->i_sar_num * (int64_t)fmt_out->i_sar_den *
+            fmt_in->i_visible_width / fmt_in->i_sar_den / fmt_out->i_sar_num;
     }
 
     p_enc->fmt_in.video.i_frame_rate = 25;

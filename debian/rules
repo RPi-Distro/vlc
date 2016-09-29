@@ -1,46 +1,29 @@
 #!/usr/bin/make -f
 
-export DEB_LDFLAGS_MAINT_APPEND=-Wl,--as-needed
+DEB_LDFLAGS_MAINT_APPEND=-Wl,--as-needed
 
-DEB_BUILD_GNU_TYPE ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
-DEB_HOST_ARCH      ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
-DEB_HOST_ARCH_CPU  ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_CPU)
-DEB_HOST_ARCH_OS   ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_OS)
-DEB_HOST_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-VERSION = $(shell dpkg-parsechangelog|sed -n 's/^Version: //p')
-DEBIAN_VERSION = $(shell echo $(VERSION)|sed -nr 's/[^:]+://; s/.*-([^-]+$$)/\1/p')
+include /usr/share/dpkg/pkg-info.mk
+include /usr/share/dpkg/architecture.mk
 
-ifeq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
-confflags := --build=$(DEB_BUILD_GNU_TYPE)
-else
-confflags := --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE)
-endif
+pluginpackages  = fluidsynth
+pluginpackages += jack
+pluginpackages += notify
+pluginpackages += sdl
+pluginpackages += svg
+pluginpackages += zvbi
 
 ifneq (,$(filter debug,$(DEB_BUILD_OPTIONS)))
 confflags += --enable-debug
 endif
 
-ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
-confflags += --disable-optimizations --disable-mmx --disable-sse --disable-altivec
-endif
-
-CFLAGS := $(shell dpkg-buildflags --get CFLAGS)
-CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS)
-
 # configure flags
 confflags += \
-	CPPFLAGS="$(shell dpkg-buildflags --get CPPFLAGS)" \
-	LDFLAGS="$(shell dpkg-buildflags --get LDFLAGS)" \
 	--config-cache \
-	--disable-maintainer-mode \
-	--disable-silent-rules \
 	--disable-update-check \
 	--enable-fast-install \
-	--prefix=/usr \
-	--docdir=/usr/share/doc/vlc-nox \
+	--docdir=/usr/share/doc/vlc-data \
 	--libdir=/usr/lib \
-	--sysconfdir=/etc \
-	--with-binary-version=$(DEBIAN_VERSION) \
+	--with-binary-version=$(DEB_VERSION) \
 	$(NULL)
 # configure features
 confflags += \
@@ -87,12 +70,15 @@ confflags += \
 	--enable-samplerate \
 	--enable-schroedinger \
 	--enable-sdl \
+	--enable-sdl-image \
 	--enable-sftp \
 	--enable-shine \
 	--enable-shout \
 	--enable-skins2 \
+	--enable-sndio \
 	--enable-speex \
 	--enable-svg \
+	--enable-svgdec \
 	--enable-taglib \
 	--enable-theora \
 	--enable-twolame \
@@ -104,7 +90,7 @@ confflags += \
 	--enable-x264 \
 	--enable-x265 \
 	--enable-zvbi \
-	--with-kde-solid=/usr/share/kde4/apps/solid/actions/ \
+	--with-kde-solid=/usr/share/solid/actions/ \
 	$(NULL)
 # Reasons for disabling features:
 # decklink -> not in Debian
@@ -112,12 +98,11 @@ confflags += \
 # fdkaac -> in Debian non-free
 # gnomevfs -> poorly maintained
 # goom -> not in Debian
+# gst-decode -> not needed when having libavcodec
 # libtar -> security issue (#737534)
 # mfx -> currently not supported on Linux
 # opencv -> developer plugin not required by end users
 # projectm -> broken
-# sndio -> not in Debian
-# svgdev -> libcairo2-dev is not new enough
 # telx -> incompatible with zvbi
 # vpx -> not needed when having libavcodec
 # vsxu -> not in Debian
@@ -128,12 +113,11 @@ confflags += \
 	--disable-fdkaac \
 	--disable-gnomevfs \
 	--disable-goom \
+	--disable-gst-decode \
 	--disable-libtar \
 	--disable-mfx \
 	--disable-opencv \
 	--disable-projectm \
-	--disable-sndio \
-	--disable-svgdec \
 	--disable-telx \
 	--disable-vpx \
 	--disable-vsxu \
@@ -168,25 +152,26 @@ confflags += \
 	$(NULL)
 removeplugins += \
 	alsa \
-	libatmo \
-	libdc1394 \
-	libdtv \
-	libdvb \
-	libdv1394 \
-	libfb \
-	libomxil \
+	atmo \
+	dc1394 \
+	dtv \
+	dv1394 \
+	dvb \
+	fb \
 	linsys \
-	libudev \
-	libv4l2 \
+	omxil \
+	udev \
+	v4l2 \
 	$(NULL)
 endif
 
 # Linux and kFreeBSD specific flags (disabled on Hurd)
 ifeq (,$(filter-out linux kfreebsd,$(DEB_HOST_ARCH_OS)))
 confflags += --enable-libva --enable-vcd --enable-smbclient
+pluginpackages += samba
 else
 confflags += --disable-libva --disable-vcd --disable-smbclient
-removeplugins += cdda libvaapi smbclient vcd
+removeplugins += cdda libva smbclient vcd
 endif
 
 # kFreeBSD specific flags
@@ -204,9 +189,18 @@ ifeq (,$(filter-out amd64 i386,$(DEB_HOST_ARCH)))
 confflags += --enable-crystalhd
 else
 confflags += --disable-crystalhd
-removeplugins += libcrystalhd
+removeplugins += crystalhd
 endif
 
+ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
+confflags += \
+	--disable-optimizations \
+	--disable-mmx \
+	--disable-sse \
+	--disable-altivec \
+	$(NULL)
+removeplugins += mmx sse2 altivec neon
+else
 # amd64 and i386 specific optimizations
 ifeq (,$(filter-out amd64 i386,$(DEB_HOST_ARCH_CPU)))
 confflags += --enable-mmx --enable-sse
@@ -233,36 +227,131 @@ endif
 
 # PowerPCSPE specific optimizations
 ifeq (,$(filter-out powerpcspe,$(DEB_HOST_ARCH)))
-CFLAGS += -mtune=8548
-CXXFLAGS += -mtune=8548
+DEB_CFLAGS_MAINT_APPEND += -mtune=8548
+DEB_CXXFLAGS_MAINT_APPEND += -mtune=8548
+endif
 endif
 
-# Disable samba on hurd
-ifneq (,$(filter-out $(DEB_HOST_ARCH),hurd-i386))
-confflags += --enable-smbclient
-else
-confflags += --disable-smbclient
-removeplugins += smbclient
+# configuration for embedded ffmpeg
+ffmpegprefix = $(CURDIR)/ffmpeg/install
+ffmpegbuild = $(CURDIR)/ffmpeg/build
+
+ffmpegflags = \
+	--prefix=$(ffmpegprefix) \
+	--enable-pic \
+	--disable-stripping \
+	--enable-static \
+	--disable-shared
+
+# mostly based on contrib/src/ffmpeg/rules.mak
+ffmpegflags += \
+	--disable-doc \
+	--disable-avdevice \
+	--disable-devices \
+	--disable-avfilter \
+	--disable-avresample \
+	--disable-swresample \
+	--disable-programs \
+	--disable-filters \
+	--disable-bsfs \
+	--disable-protocol=concat
+
+# from ffmpeg 7:2.8.6-1 debian/rules and contrib/src/ffmpeg/rules.mak
+ffmpegflags += \
+	--enable-gpl \
+	--disable-decoder=libschroedinger \
+	--enable-gnutls \
+	--disable-libass \
+	--enable-libbluray \
+	--disable-libbs2b \
+	--disable-libcaca \
+	--disable-libcdio \
+	--disable-libflite \
+	--disable-libfontconfig \
+	--disable-libfreetype \
+	--disable-libfribidi \
+	--disable-libopenjpeg \
+	--enable-libgme \
+	--enable-libgsm \
+	--enable-libmodplug \
+	--enable-libmp3lame \
+	--enable-libopus \
+	--enable-librtmp \
+	--enable-libschroedinger \
+	--enable-libshine \
+	--enable-libsnappy \
+	--enable-libsoxr \
+	--enable-libspeex \
+	--enable-libssh \
+	--enable-libtheora \
+	--enable-libtwolame \
+	--enable-libvorbis \
+	--enable-libvpx \
+	--enable-libwavpack \
+	--enable-libwebp \
+	--enable-libx265 \
+	--enable-libxvid \
+	--enable-libzvbi \
+	--disable-openal \
+	--disable-opengl \
+	--disable-x11grab
+
+# Disable altivec optimizations on powerpc, because they are not always
+# available on this architecture.
+ifeq ($(DEB_HOST_ARCH),powerpc)
+ffmpegflags += --disable-altivec
 endif
 
+# Disable assembly optimizations on x32, because they don't work (yet).
+ifneq (,$(filter $(DEB_HOST_ARCH),x32))
+ffmpegflags += --disable-asm
+endif
 
-confflags += \
-	CFLAGS="$(CFLAGS)" \
-	CXXFLAGS="$(CXXFLAGS)" \
-	$(NULL)
+# Disable optimizations on mips(el) and some on mips64(el), because they are not
+# always available on these architectures.
+ifneq (,$(filter $(DEB_HOST_ARCH),mips mipsel mips64 mips64el))
+ffmpegflags += --disable-mipsdspr1 \
+	--disable-mipsdspr2 \
+	--disable-loongson3
+endif
+ifneq (,$(filter $(DEB_HOST_ARCH),mips mipsel))
+ffmpegflags += --disable-mipsfpu
+endif
+
+# merge ffmpeg based plugins to reduce installation size
+confflags += --enable-merge-ffmpeg
+
+export DEB_CFLAGS_MAINT_APPEND
+export DEB_CXXFLAGS_MAINT_APPEND
+export DEB_LDFLAGS_MAINT_APPEND
+export removeplugins
 
 %:
-	dh $@ --parallel --with autoreconf
+	dh $@
+
+override_dh_auto_clean:
+	rm -rf $(ffmpegprefix) $(ffmpegbuild)
+	dh_auto_clean
 
 override_dh_autoreconf:
 	dh_autoreconf --as-needed
 
-override_dh_auto_clean:
-	rm -f debian/vlc.install debian/vlc-nox.install
-	dh_auto_clean
-
 override_dh_auto_configure:
-	dh_auto_configure -- $(confflags)
+	mkdir -p $(ffmpegbuild) $(ffmpegprefix)
+	cd $(ffmpegbuild) && \
+		$(CURDIR)/ffmpeg-2-8-8/configure $(ffmpegflags)
+	dh_auto_build --sourcedirectory $(ffmpegbuild) -- V=1
+	$(MAKE) -C $(ffmpegbuild) install-libs install-headers V=1
+	PKG_CONFIG_PATH=$(ffmpegprefix)/lib/pkgconfig \
+		dh_auto_configure -- $(confflags)
+
+override_dh_auto_build:
+	dh_auto_build
+ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
+	# Build zsh completion
+	BUILDDIR=$(CURDIR) \
+	cd extras/analyser && ./zsh_completion.sh
+endif
 
 override_dh_auto_test:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
@@ -281,9 +370,6 @@ endif
 override_dh_install:
 	# Remove plugin cache
 	rm debian/tmp/usr/lib/vlc/plugins/plugins.dat
-	# Remove disabled plugins
-	sed "/\($(shell echo $(removeplugins) | sed 's/ /\\|/g')\)_/d" debian/vlc.install.in > debian/vlc.install
-	sed "/\($(shell echo $(removeplugins) | sed 's/ /\\|/g')\)_/d" debian/vlc-nox.install.in > debian/vlc-nox.install
 	# Clean up libtool crap
 	find debian/tmp -name '*.la' -delete
 	# Remove useless stuff
@@ -292,37 +378,38 @@ override_dh_install:
 	rm -f debian/tmp/usr/share/man/man1/vlc-config.1
 	# Remove additional license files
 	find debian/tmp -name LICENSE -delete
-	# Install stuff
+	# Remove examples installed in -dev packages
+	rm -rf debian/tmp/usr/share/doc/vlc-data/libvlc
+	# Contains only a 404 link
+	find debian/tmp -name bugreport-howto.txt -delete
+	# Remove old BluRay plugin
+	find debian/tmp -name libaccess_bd_plugin.so -delete
+	# Install
 	dh_install --fail-missing
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
 	# Check that we did not install a plugin linked with libX11 or
 	# libxcb in vlc-nox
-	BORKED=no; \
 	LD_LIBRARY_PATH="debian/libvlccore8/usr/lib:debian/libvlc5/usr/lib$${LD_LIBRARY_PATH:+:}$${LD_LIBRARY_PATH:-}"; \
 	for file in $$(find debian/vlc-nox/usr/lib/vlc -name '*.so'); do \
 		if ldd -r $$file | egrep -q -e 'libX11\.so' -e 'libxcb\.so'; then \
-			BORKED=yes; \
-			echo $$file depends on libX11 or libxcb; \
+			echo warning: $$file depends on libX11 or libxcb; \
 		fi; \
 	done; \
-	if test "$$BORKED" = yes; then exit 1; fi
+	# Install zsh completion
+	dh_install -pvlc-nox extras/analyser/_vlc usr/share/zsh/vendor-completions
 endif
 	$(if $(shell dpkg-vendor --is Ubuntu && echo true),dh_install -pvlc-nox debian/source_vlc.py usr/share/apport/package-hooks/)
 	dh_buildinfo -p vlc-nox
 
-override_dh_strip:
-	dh_strip --dbg-package=vlc-dbg
+override_dh_installchangelogs:
+	dh_installchangelogs NEWS $(pluginpackages:%=-Nvlc-plugin-%)
 
 override_dh_installdocs:
-	dh_installdocs -p vlc-data
-	dh_installdocs -p vlc-nox
-
-override_dh_installchangelogs:
-	dh_installchangelogs ChangeLog -p vlc-data
-	dh_installchangelogs ChangeLog -p vlc-nox
+	dh_installdocs $(pluginpackages:%=-Nvlc-plugin-%)
+	dh_installdocs --link-doc=libvlccore8 --remaining-packages
 
 override_dh_makeshlibs:
 	dh_makeshlibs -Xusr/lib/vlc/libvlc_vdpau
 
-override_dh_builddeb:
-	dh_builddeb -- -Zxz
+override_dh_bugfiles:
+	dh_bugfiles -A

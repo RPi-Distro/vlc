@@ -2,7 +2,7 @@
  * mmstu.h: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: 31593f98030f1c92f56d843f6ad827965586c95c $
+ * $Id: ee65939cba57138187eaa76d18441d463bb0bb15 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -51,10 +51,10 @@ struct access_sys_t
 
     /* */
     uint8_t     buffer_tcp[MMS_BUFFER_SIZE];
-    int         i_buffer_tcp;
+    size_t      i_buffer_tcp;
 
     uint8_t     buffer_udp[MMS_BUFFER_SIZE];
-    int         i_buffer_udp;
+    size_t      i_buffer_udp;
 
     /* data necessary to send data to server */
     guid_t      guid;
@@ -89,7 +89,7 @@ struct access_sys_t
     uint32_t    i_media_length;
     size_t      i_packet_length;
     uint32_t    i_packet_count;
-    int         i_max_bit_rate;
+    uint32_t    i_max_bit_rate;
     size_t      i_header_size;
 
     /* misc */

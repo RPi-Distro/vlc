@@ -2,7 +2,7 @@
  * VLCVoutWindowController.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012-2014 VLC authors and VideoLAN
- * $Id: 2d17a99162b107a794e56872189a6efade7f8830 $
+ * $Id: cb1cb3130af409f6a00fc5085fc54631d4be9d15 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -33,6 +33,8 @@
 #import "playlistinfo.h"
 #import "bookmarks.h"
 #import "TrackSynchronization.h"
+#import "ResumeDialogController.h"
+#import "playlist.h"
 
 @implementation VLCVoutWindowController
 
@@ -411,6 +413,8 @@
     [[[VLCMain sharedInstance] info] updateCocoaWindowLevel:i_currentFloatingWindowLevel];
     [[VLCBookmarks sharedInstance] updateCocoaWindowLevel:i_currentFloatingWindowLevel];
     [[VLCTrackSynchronization sharedInstance] updateCocoaWindowLevel:i_currentFloatingWindowLevel];
+
+    [[[VLCMain sharedInstance] resumeDialog] updateCocoaWindowLevel:i_currentFloatingWindowLevel];
 }
 
 @synthesize currentStatusWindowLevel=i_currentFloatingWindowLevel;

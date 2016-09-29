@@ -2,7 +2,7 @@
  * playlist.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 59e72766c4b346cdb7547e583a1ffccab475899e $
+ * $Id: d84c5de48f6c248b2102ab551d5e110d30a19977 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -105,8 +105,6 @@
     IBOutlet id o_save_accessory_text;
 
     IBOutlet id o_playlist_header;
-
-    int currentResumeTimeout;
 }
 
 - (void)searchfieldChanged:(NSNotification *)o_notification;

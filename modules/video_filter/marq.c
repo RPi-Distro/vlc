@@ -2,7 +2,7 @@
  * marq.c : marquee display video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2008 VLC authors and VideoLAN
- * $Id: af87d304f93aaf7eeedff5dda35887689764c87b $
+ * $Id: ce7911c17d073d98c533d1fe801a0211a83c2dbf $
  *
  * Authors: Mark Moriarty
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -300,6 +300,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     fmt.i_width = fmt.i_height = 0;
     fmt.i_x_offset = 0;
     fmt.i_y_offset = 0;
+    fmt.i_sar_den = fmt.i_sar_num = 1;
     p_spu->p_region = subpicture_region_New( &fmt );
     if( !p_spu->p_region )
     {

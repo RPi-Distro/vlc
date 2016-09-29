@@ -3,7 +3,7 @@
  * EbmlParser for the matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 6890f418d7cad14aa151e393a2b8a33d4b9b06f2 $
+ * $Id: 21e219e1432a6e2fe829ec3a900aa8f2277fef62 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -231,7 +231,7 @@ EbmlElement *EbmlParser::Get( int n_call )
               m_el[mi_level]->GetEndPosition() <= m_el[mi_level-1]->GetEndPosition() ) )
         {
             /* The element fits inside its upper element */
-            msg_Warn( p_demux, "Dummy element found %"PRIu64"... skipping it",
+            msg_Warn( p_demux, "Dummy element found %" PRIu64 "... skipping it",
                       m_el[mi_level]->GetElementPosition() );
             return Get( ++n_call );
         }
@@ -239,7 +239,7 @@ EbmlElement *EbmlParser::Get( int n_call )
         {
             /* Too large, misplaced or 10 successive dummy elements */
             msg_Err( p_demux,
-                     "Dummy element too large or misplaced at %"PRIu64"... skipping to next upper element",
+                     "Dummy element too large or misplaced at %" PRIu64 "... skipping to next upper element",
                      m_el[mi_level]->GetElementPosition() );
 
             if( mi_level >= 1 &&

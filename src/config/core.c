@@ -2,7 +2,7 @@
  * core.c management of the modules configuration
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: 9882c525cc24fcbd4303b4c850b7d18bc5b17226 $
+ * $Id: 7eaa86509f3b00df5400b704eb5d3b0388ee8fea $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -387,6 +387,7 @@ static ssize_t config_ListModules (const char *cap, char ***restrict values,
     if (n <= 0)
     {
         *values = *texts = NULL;
+        module_list_free (list);
         return n;
     }
 
@@ -408,6 +409,7 @@ static ssize_t config_ListModules (const char *cap, char ***restrict values,
 
     *values = vals;
     *texts = txts;
+    module_list_free (list);
     return n + 2;
 }
 

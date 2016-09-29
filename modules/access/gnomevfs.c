@@ -2,7 +2,7 @@
  * gnomevfs.c: GnomeVFS input
  *****************************************************************************
  * Copyright (C) 2005 VLC authors and VideoLAN
- * $Id: 9a07e461a790b5b81af6227948029af88e2aa9ca $
+ * $Id: e4d7f1ab6af140de1b050f81a985e8a6b63bba8f $
  *
  * Authors: Benjamin Pracht <bigben -AT- videolan -DOT- org>
  *
@@ -225,10 +225,11 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    if( p_sys->b_seekable && !p_sys->p_file_info->size )
+    if( p_sys->b_seekable
+    && !(p_sys->p_file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_SIZE) )
     {
         /* FIXME that's bad because all others access will be probed */
-        msg_Warn( p_access, "file %s is empty, aborting", psz_name );
+        msg_Warn( p_access, "file %s size is unknown, aborting", psz_name );
         gnome_vfs_file_info_unref( p_sys->p_file_info );
         gnome_vfs_uri_unref( p_uri);
         free( p_sys );

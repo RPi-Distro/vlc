@@ -1,0 +1,27 @@
+From ec34ff174f04d1e81c939ed0325a0073c6f68fce Mon Sep 17 00:00:00 2001
+From: Francois Cartegnie <fcvlcdev@free.fr>
+Date: Fri, 22 Jul 2016 13:37:15 +0200
+Subject: [PATCH 2/2] vlc_atomic: atomic_compare_exchange_strong_explicit takes
+ 5 parameters
+
+Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+---
+ include/vlc_atomic.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/vlc_atomic.h b/include/vlc_atomic.h
+index 01e0f85..15ccf8c 100644
+--- a/include/vlc_atomic.h
++++ b/include/vlc_atomic.h
+@@ -152,7 +152,7 @@ typedef         uintmax_t atomic_uintmax_t;
+ #  define atomic_compare_exchange_strong(object,expected,desired) \
+     atomic_compare_exchange(object, expected, desired)
+ 
+-#  define atomic_compare_exchange_strong_explicit(object,expected,desired,order) \
++#  define atomic_compare_exchange_strong_explicit(object,expected,desired,order,order_different) \
+     atomic_compare_exchange_strong(object, expected, desired)
+ 
+ #  define atomic_compare_exchange_weak(object,expected,desired) \
+-- 
+2.8.1
+

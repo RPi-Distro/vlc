@@ -1,0 +1,33 @@
+Description: Revert invalid translations
+Bug: https://trac.videolan.org/vlc/ticket/16598
+Bug-Debian: https://bugs.debian.org/814258
+
+--- a/po/mr.po
++++ b/po/mr.po
+@@ -21567,7 +21567,7 @@
+ 
+ #: modules/gui/qt4/menus.cpp:491
+ msgid "Ctrl+L"
+-msgstr "कंट्रोल + एल"
++msgstr "Ctrl+L"
+ 
+ #: modules/gui/qt4/menus.cpp:494
+ msgid "Docked Playlist"
+@@ -21579,7 +21579,7 @@
+ 
+ #: modules/gui/qt4/menus.cpp:506
+ msgid "Ctrl+H"
+-msgstr "कंट्रोल + एच"
++msgstr "Ctrl+H"
+ 
+ #: modules/gui/qt4/menus.cpp:515
+ msgid "&Fullscreen Interface"
+@@ -21735,7 +21735,7 @@
+ 
+ #: modules/gui/qt4/menus.cpp:918
+ msgid "Ctrl+T"
+-msgstr "कंट्रोल + टी"
++msgstr "Ctrl+T"
+ 
+ #: modules/gui/qt4/menus.cpp:933
+ msgid "Open &Network..."

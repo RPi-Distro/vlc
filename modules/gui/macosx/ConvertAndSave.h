@@ -2,7 +2,7 @@
  * ConvertAndSave.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012 Felix Paul Kühne
- * $Id: 9e8a8a92c514640dfa6a57bc394d6a6d2092faac $
+ * $Id: 9d7cc9483e105aab473f918c54895eadd554c651 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -112,8 +112,10 @@
     IBOutlet id _stream_port_lbl;
     IBOutlet id _stream_port_fld;
     IBOutlet id _stream_sap_ckb;
+    IBOutlet id _stream_channel_lbl;
     IBOutlet id _stream_channel_fld;
     IBOutlet id _stream_sdp_matrix;
+    IBOutlet id _stream_sdp_lbl;
     IBOutlet id _stream_sdp_fld;
     IBOutlet id _stream_sdp_browsefile_btn;
 

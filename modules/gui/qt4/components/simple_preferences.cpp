@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 831ccdf463638076c0aabb671616a220d2caec5e $
+ * $Id: 1a717662a08fc8167c9609603437d072065b543a $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -102,6 +102,8 @@ static const char *const ppsz_language[] =
     "nn",
     "kk",
     "km",
+    "ks_IN",
+    "mai",
     "ne",
     "oc",
     "fa",
@@ -119,6 +121,7 @@ static const char *const ppsz_language[] =
     "es",
     "es_MX",
     "sv",
+    "ta",
     "te",
     "th",
     "tr",
@@ -176,6 +179,8 @@ static const char *const ppsz_language_text[] =
     "Nynorsk",
     "Қазақ тілі",
     "ភាសាខ្មែរ",
+    "कॉशुर",
+    "मैथिली",
     "नेपाली",
     "Occitan",
     "ﻑﺍﺮﺳی",
@@ -193,6 +198,7 @@ static const char *const ppsz_language_text[] =
     "Español",
     "Español mexicano",
     "Svenska",
+    "தமிழ்",
     "తెలుగు",
     "ภาษาไทย",
     "Türkçe",
@@ -864,6 +870,7 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
                      ui.recentlyPlayedFilters, setEnabled( bool ) );
             ui.recentlyPlayedFilters->setEnabled( false );
             CONFIG_BOOL( "qt-recentplay", saveRecentlyPlayed );
+            CONFIG_BOOL( "qt-continue", continueBox );
             CONFIG_GENERIC( "qt-recentplay-filter", String, ui.filterLabel,
                     recentlyPlayedFilters );
 
@@ -1022,6 +1029,7 @@ void SPrefsPanel::updateAudioOptions( int number)
 SPrefsPanel::~SPrefsPanel()
 {
     qDeleteAll( controls ); controls.clear();
+    free( lang );
 }
 
 void SPrefsPanel::updateAudioVolume( int volume )
@@ -1196,6 +1204,7 @@ void SPrefsPanel::changeStyle( QString s_style )
 
 void SPrefsPanel::langChanged( int i )
 {
+    free( lang );
     lang = strdup( ppsz_language[i] );
 }
 
@@ -1268,9 +1277,8 @@ bool SPrefsPanel::addType( const char * psz_ext, QTreeWidgetItem* current,
 void SPrefsPanel::assoDialog()
 {
     HRESULT hr;
-    hr = CoInitializeEx( NULL, COINIT_MULTITHREADED );
-    if( hr == RPC_E_CHANGED_MODE )
-        hr = CoInitializeEx( NULL, COINIT_APARTMENTTHREADED );
+
+    hr = CoInitializeEx( NULL, COINIT_APARTMENTTHREADED );
     if( SUCCEEDED(hr) )
     {
         void *p;
@@ -1341,14 +1349,13 @@ void SPrefsPanel::assoDialog()
     aTv( ".asf" ); aTv( ".avi" ); aTv( ".bik" ); aTv( ".divx" ); aTv( ".drc" );
     aTv( ".dv" ); aTv( ".f4v" ); aTv( ".flv" ); aTv( ".gvi" ); aTv( ".gxf" );
     aTv( ".m1v" ); aTv( ".m2t" ); aTv( ".m2v" ); aTv( ".m2ts" ); aTv( ".m4v" );
-    aTv( ".mkv" ); aTv( ".mov" ); aTv( ".mp2" ); aTv( ".mp2v" ); aTv( ".mp4" );
-    aTv( ".mp4v" ); aTv( ".mpa" ); aTv( ".mpe" ); aTv( ".mpeg" ); aTv( ".mpeg1" );
-    aTv( ".mpeg2" ); aTv( ".mpeg4" ); aTv( ".mpg" ); aTv( ".mpv2" ); aTv( ".mts" );
-    aTv( ".mtv" ); aTv( ".mxf" ); aTv( ".nsv" ); aTv( ".nuv" ); aTv( ".ogg" );
-    aTv( ".ogm" ); aTv( ".ogx" ); aTv( ".ogv" ); aTv( ".rec" ); aTv( ".rm" );
-    aTv( ".rmvb" ); aTv( ".rpl" ); aTv( ".thp" ); aTv( ".tod" ); aTv( ".ts" );
-    aTv( ".tts" ); aTv( ".vob" ); aTv( ".vro" ); aTv( ".webm" ); aTv( ".wmv" );
-    aTv( ".xesc" );
+    aTv( ".mkv" ); aTv( ".mov" ); aTv( ".mp2v" ); aTv( ".mp4" ); aTv( ".mp4v" );
+    aTv( ".mpa" ); aTv( ".mpe" ); aTv( ".mpeg" ); aTv( ".mpeg1" ); aTv( ".mpeg2" );
+    aTv( ".mpeg4" ); aTv( ".mpg" ); aTv( ".mpv2" ); aTv( ".mts" ); aTv( ".mtv" );
+    aTv( ".mxf" ); aTv( ".nsv" ); aTv( ".nuv" ); aTv( ".ogg" ); aTv( ".ogm" );
+    aTv( ".ogx" ); aTv( ".ogv" ); aTv( ".rec" ); aTv( ".rm" ); aTv( ".rmvb" );
+    aTv( ".rpl" ); aTv( ".thp" ); aTv( ".tod" ); aTv( ".ts" ); aTv( ".tts" );
+    aTv( ".vob" ); aTv( ".vro" ); aTv( ".webm" ); aTv( ".wmv" ); aTv( ".xesc" );
     videoType->setCheckState( 0, ( i_temp > 0 ) ?
                               ( ( i_temp == videoType->childCount() ) ?
                                Qt::Checked : Qt::PartiallyChecked )
@@ -1367,6 +1374,8 @@ void SPrefsPanel::assoDialog()
 #undef aTv
 #undef aTa
 
+    CONNECT( filetypeList, itemChanged(QTreeWidgetItem*, int), this, updateCheckBoxes(QTreeWidgetItem*, int) );
+
     QDialogButtonBox *buttonBox = new QDialogButtonBox( d );
     QPushButton *closeButton = new QPushButton( qtr( "&Apply" ) );
     QPushButton *clearButton = new QPushButton( qtr( "&Cancel" ) );
@@ -1381,6 +1390,47 @@ void SPrefsPanel::assoDialog()
     d->exec();
     delete qvReg;
     listAsso.clear();
+}
+
+void SPrefsPanel::updateCheckBoxes(QTreeWidgetItem* item, int column)
+{
+    if( column != 0 )
+        return;
+
+    /* temporarily block signals to avoid signal loops */
+    bool b_signalsBlocked = item->treeWidget()->blockSignals(true);
+
+    /* A parent checkbox was changed */
+    if( item->parent() == 0 )
+    {
+        Qt::CheckState checkState = item->checkState(0);
+        for( int i = 0; i < item->childCount(); i++ )
+        {
+            item->child(i)->setCheckState(0, checkState);
+        }
+    }
+
+    /* A child checkbox was changed */
+    else
+    {
+        bool b_diff = false;
+        for( int i = 0; i < item->parent()->childCount(); i++ )
+        {
+            if( i != item->parent()->indexOfChild(item) && item->checkState(0) != item->parent()->child(i)->checkState(0) )
+            {
+                b_diff = true;
+                break;
+            }
+        }
+
+        if( b_diff )
+            item->parent()->setCheckState(0, Qt::PartiallyChecked);
+        else
+            item->parent()->setCheckState(0, item->checkState(0));
+    }
+
+    /* Stop signal blocking */
+    item->treeWidget()->blockSignals(b_signalsBlocked);
 }
 
 void addAsso( QVLCRegistry *qvReg, const char *psz_ext )

@@ -2,7 +2,7 @@
  * ft2_bitmap.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: daaab7258e40a1f25090e803b6777833bd08da19 $
+ * $Id: c60845df467e17e6009410459bc89df0aa33d7f3 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -56,7 +56,7 @@ public:
 
 private:
     /// Bitmap size
-    int m_width, m_height;
+    unsigned int m_width, m_height;
     /// Image data buffer
     uint8_t *m_pData;
 };

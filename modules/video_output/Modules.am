@@ -21,13 +21,11 @@ endif
 
 if HAVE_OSX
 libvout_macosx_plugin_la_SOURCES = macosx.m opengl.c opengl.h
-libvout_macosx_plugin_la_CFLAGS = $(AM_CFLAGS) $(GL_CFLAGS)
-libvout_macosx_plugin_la_LIBADD = $(GL_LIBS)
+libvout_macosx_plugin_la_CFLAGS = $(AM_CFLAGS)
 libvout_macosx_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)' -Wl,-framework,OpenGL,-framework,Cocoa
 
 libcaopengllayer_plugin_la_SOURCES = caopengllayer.m opengl.c opengl.h
-libcaopengllayer_plugin_la_CFLAGS = $(AM_CFLAGS) $(GL_CFLAGS)
-libcaopengllayer_plugin_la_LIBADD = $(GL_LIBS)
+libcaopengllayer_plugin_la_CFLAGS = $(AM_CFLAGS)
 libcaopengllayer_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)' -Wl,-framework,OpenGL,-framework,Cocoa,-framework,QuartzCore
 vout_LTLIBRARIES += libvout_macosx_plugin.la libcaopengllayer_plugin.la
 endif

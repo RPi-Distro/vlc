@@ -2,7 +2,7 @@
  * dialogs.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 3bda3b94eba4117fa6e28de68aff78165620b1b3 $
+ * $Id: 9a7a55b99d50f242ae2caa690828485a43f00539 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -42,7 +42,7 @@ void Dialogs::showChangeSkinCB( intf_dialog_args_t *pArg )
         {
             // Create a change skin command
             CmdChangeSkin *pCmd =
-                new CmdChangeSkin( pIntf, sFromLocale( pArg->psz_results[0] ) );
+                new CmdChangeSkin( pIntf, pArg->psz_results[0] );
 
             // Push the command in the asynchronous command queue
             AsyncQueue *pQueue = AsyncQueue::instance( pIntf );
@@ -66,7 +66,7 @@ void Dialogs::showPlaylistLoadCB( intf_dialog_args_t *pArg )
     {
         // Create a Playlist Load command
         CmdPlaylistLoad *pCmd =
-            new CmdPlaylistLoad( pIntf, sFromLocale( pArg->psz_results[0] ) );
+            new CmdPlaylistLoad( pIntf, pArg->psz_results[0] );
 
         // Push the command in the asynchronous command queue
         AsyncQueue *pQueue = AsyncQueue::instance( pIntf );

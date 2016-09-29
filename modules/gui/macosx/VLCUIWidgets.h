@@ -1,8 +1,8 @@
 /*****************************************************************************
  * VLCUIWidgets.h: Widgets for VLC's extensions dialogs for Mac OS X
  *****************************************************************************
- * Copyright (C) 2009-2014 the VideoLAN team and authors
- * $Id: 548965dc46fba9121b007e04fe303735679f8d8b $
+ * Copyright (C) 2009-2015 the VideoLAN team and authors
+ * $Id: a34229531149ff1b7d18c31396e0f4f3fbbe600c $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan dot>,
  *          Brendon Justin <brendonjustin@gmail.com>
@@ -84,6 +84,11 @@
 
 - (void)addSubview:(NSView *)view atRow:(NSUInteger)row column:(NSUInteger)column rowSpan:(NSUInteger)rowSpan colSpan:(NSUInteger)colSpan;
 - (NSSize)flexSize:(NSSize)size;
+- (void)updateSubview:(NSView *)view
+                atRow:(NSUInteger)row
+               column:(NSUInteger)column
+              rowSpan:(NSUInteger)rowSpan
+              colSpan:(NSUInteger)colSpan;
 - (void)removeSubview:(NSView *)view;
 
 @property (readonly) NSUInteger numViews;

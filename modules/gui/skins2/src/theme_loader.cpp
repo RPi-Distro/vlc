@@ -2,7 +2,7 @@
  * theme_loader.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 5783cdaa707222fb95c4247a53d2bcefd12f6322 $
+ * $Id: afb8e2cf4b5771024e4a70599610b3e220f68a24 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -64,6 +64,9 @@ int makedir( const char *newdir );
 #define WINAMP2_XML_FILE "winamp2.xml"
 #define ZIP_BUFFER_SIZE 4096
 
+#ifndef O_BINARY
+#   define O_BINARY 0
+#endif
 
 bool ThemeLoader::load( const string &fileName )
 {
@@ -78,7 +81,7 @@ bool ThemeLoader::load( const string &fileName )
     // file...
 
 #if defined( HAVE_ZLIB_H )
-    if( ! extract( sToLocale( fileName ) ) && ! parse( path, fileName ) )
+    if( ! extract( fileName ) && ! parse( path, fileName ) )
         return false;
 #else
     if( ! parse( path, fileName ) )
@@ -115,6 +118,8 @@ bool ThemeLoader::extractTarGz( const string &tarFile, const string &rootDir )
     if( tar_open( &t, (char *)tarFile.c_str(), O_RDONLY ) == -1 )
 #endif
     {
+        msg_Dbg( getIntf(), "failed to open %s as a gzip tar file",
+                            tarFile.c_str() );
         return false;
     }
 
@@ -132,17 +137,40 @@ bool ThemeLoader::extractTarGz( const string &tarFile, const string &rootDir )
     return true;
 }
 
+static voidpf ZCALLBACK open_vlc( voidpf opaque, const char *filename, int mode)
+{
+    (void)mode;
+    intf_thread_t *pIntf = (intf_thread_t *)opaque;
+
+    FILE *stream = vlc_fopen( filename, "rb" );
+    if( stream == NULL )
+        msg_Dbg( pIntf, "vlc_fopen failed for %s", filename );
+    return stream;
+}
 
 bool ThemeLoader::extractZip( const string &zipFile, const string &rootDir )
 {
     bool b_isWsz = strstr( zipFile.c_str(), ".wsz" );
 
     // Try to open the ZIP file
-    unzFile file = unzOpen( zipFile.c_str() );
-    unz_global_info info;
+    zlib_filefunc_def descr;
+    fill_fopen_filefunc( &descr );
+    descr.zopen_file = open_vlc;
+    descr.opaque = getIntf();
 
+    unzFile file = unzOpen2( zipFile.c_str(), &descr );
+    if( file == 0 )
+    {
+        msg_Dbg( getIntf(), "failed to open %s as a zip file",
+                 zipFile.c_str() );
+        return false;
+    }
+    unz_global_info info;
     if( unzGetGlobalInfo( file, &info ) != UNZ_OK )
     {
+        msg_Dbg( getIntf(), "failed to read zip info from %s",
+                 zipFile.c_str() );
+        unzClose( file );
         return false;
     }
     // Extract all the files in the archive
@@ -159,7 +187,7 @@ bool ThemeLoader::extractZip( const string &zipFile, const string &rootDir )
         if( i < info.number_entry - 1 )
         {
             // Go the next file in the archive
-            if( unzGoToNextFile( file ) !=UNZ_OK )
+            if( unzGoToNextFile( file ) != UNZ_OK )
             {
                 msg_Warn( getIntf(), "error while unzipping %s",
                           zipFile.c_str() );
@@ -213,7 +241,7 @@ bool ThemeLoader::extractFileInZip( unzFile file, const string &rootDir,
             return false;
         }
         makedir( basePath.c_str() );
-        FILE *fout = fopen( fullPath.c_str(), "wb" );
+        FILE *fout = vlc_fopen( fullPath.c_str(), "wb" );
         if( fout == NULL )
         {
             msg_Err( getIntf(), "error opening %s", fullPath.c_str() );
@@ -263,9 +291,9 @@ bool ThemeLoader::extractFileInZip( unzFile file, const string &rootDir,
 bool ThemeLoader::extract( const string &fileName )
 {
     bool result = true;
-    char *tmpdir = tempnam( NULL, "vlt" );
-    string tempPath = sFromLocale( tmpdir );
-    free( tmpdir );
+    string tempPath = getTmpDir();
+    if( tempPath.empty() )
+        return false;
 
     // Extract the file in a temporary directory
     if( ! extractTarGz( fileName, tempPath ) &&
@@ -491,14 +519,26 @@ int tar_open( TAR **t, char *pathname, int oflags )
 {
     (void)oflags;
 
-    gzFile f = gzopen( pathname, "rb" );
+    int fd = vlc_open( pathname, O_BINARY | O_RDONLY );
+    if( !fd )
+    {
+        fprintf( stderr, "Couldn't open %s\n", pathname );
+        return -1;
+    }
+    gzFile f = gzdopen( fd, "rb" );
     if( f == NULL )
     {
         fprintf( stderr, "Couldn't gzopen %s\n", pathname );
+        close( fd );
         return -1;
     }
 
     *t = (gzFile *)malloc( sizeof(gzFile) );
+    if( *t == NULL )
+    {
+        gzclose( f );
+        return -1;
+    }
     **t = f;
     return 0;
 }
@@ -509,7 +549,13 @@ int tar_extract_all( TAR *t, char *prefix )
     union tar_buffer buffer;
     int   len, err, getheader = 1, remaining = 0;
     FILE  *outfile = NULL;
-    char  fname[BLOCKSIZE + PATH_MAX];
+#if defined( _WIN32 )
+    long  path_max = PATH_MAX;
+#else
+    long  path_max = pathconf (".", _PC_PATH_MAX);
+#endif
+    size_t maxsize = (path_max == -1 || path_max > 4096) ? 4096 : path_max;
+    char  fname[BLOCKSIZE + maxsize];
 
     while( 1 )
     {
@@ -543,7 +589,7 @@ int tar_extract_all( TAR *t, char *prefix )
                 break;
             }
 
-            sprintf( fname, "%s/%s", prefix, buffer.header.name );
+            snprintf( fname, sizeof(fname), "%s/%s", prefix, buffer.header.name );
 
             /* Check magic value in header */
             if( strncmp( buffer.header.magic, "GNUtar", 6 ) &&
@@ -563,7 +609,7 @@ int tar_extract_all( TAR *t, char *prefix )
                 remaining = getoct( buffer.header.size, 12 );
                 if( !remaining ) outfile = NULL; else
                 {
-                    outfile = fopen( fname, "wb" );
+                    outfile = vlc_fopen( fname, "wb" );
                     if( outfile == NULL )
                     {
                         /* try creating directory */
@@ -573,7 +619,7 @@ int tar_extract_all( TAR *t, char *prefix )
                             *p = '\0';
                             makedir( fname );
                             *p = '/';
-                            outfile = fopen( fname, "wb" );
+                            outfile = vlc_fopen( fname, "wb" );
                             if( !outfile )
                             {
                                 fprintf( stderr, "tar couldn't create %s\n",
@@ -603,7 +649,7 @@ int tar_extract_all( TAR *t, char *prefix )
                     fprintf( stderr, "error writing %s skipping...\n", fname );
                     fclose( outfile );
                     outfile = NULL;
-                    unlink( fname );
+                    vlc_unlink( fname );
                 }
             }
             remaining -= bytes;
@@ -725,11 +771,17 @@ int gzopen_frontend( const char *pathname, int oflags, int mode )
         errno = EINVAL;
         return -1;
     }
-
-    gzf = gzopen( pathname, gzflags );
+    int fd = vlc_open( pathname, oflags );
+    if( !fd )
+    {
+        fprintf( stderr, "Couldn't open %s\n", pathname );
+        return -1;
+    }
+    gzf = gzdopen( fd, gzflags );
     if( !gzf )
     {
         errno = ENOMEM;
+        close( fd );
         return -1;
     }
 
@@ -767,6 +819,34 @@ int gzwrite_frontend( int fd, const void * p_buffer, size_t i_length )
         return gzwrite( (gzFile) currentGzVp, const_cast<void*>(p_buffer), i_length );
     }
     return -1;
+}
+
+// FIXME: could become a skins2 OS factory function or a vlc core function
+string ThemeLoader::getTmpDir( )
+{
+#if defined( _WIN32 )
+    wchar_t *tmpdir = _wtempnam( NULL, L"vlt" );
+    if( tmpdir == NULL )
+        return "";
+    char* utf8 = FromWide( tmpdir );
+    free( tmpdir );
+    string tempPath( utf8 ? utf8 : "" );
+    free( utf8 );
+    return tempPath;
+
+#elif defined( __OS2__ )
+    char *tmpdir = tempnam( NULL, "vlt" );
+    if( tmpdir == NULL )
+        return "";
+    string tempPath( sFromLocale( tmpdir ));
+    free( tmpdir );
+    return tempPath;
+
+#else
+    char templ[] = "/tmp/vltXXXXXX";
+    char *tmpdir = mkdtemp( templ );
+    return string( tmpdir ? tmpdir : "");
+#endif
 }
 
 #endif

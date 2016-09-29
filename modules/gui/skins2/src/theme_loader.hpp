@@ -2,7 +2,7 @@
  * theme_loader.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 99d43ac4d3f176821e15c5ed6a81e7cb7505ac38 $
+ * $Id: 9025904504eee1b4bf0eaa29514df4a5a044c8aa $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -71,6 +71,9 @@ private:
      * Expects a string from the current locale.
      */
     void deleteTempFiles( const string &path );
+
+    /// Get a unique temporary directory
+    string getTmpDir( );
 #endif
 
     /// Parse the XML file given as a parameter and build the skin

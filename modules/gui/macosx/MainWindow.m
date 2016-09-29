@@ -2,7 +2,7 @@
  * MainWindow.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 875c71fb6e498a1d94cdbb12a6a779f0d446d80c $
+ * $Id: b7124136c9573f1af1b6e2e0dccb01c4dfbb69b7 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -695,14 +695,16 @@ static VLCMainWindow *_o_sharedInstance = nil;
     input_thread_t * p_input;
     p_input = pl_CurrentInput(VLCIntf);
     if (p_input) {
-        NSString *aString;
+        NSString *aString = @"";
 
         if (!config_GetPsz(VLCIntf, "video-title")) {
             char *format = var_InheritString(VLCIntf, "input-title-format");
-            char *formated = str_format_meta(p_input, format);
-            free(format);
-            aString = [NSString stringWithUTF8String:formated];
-            free(formated);
+            if (format) {
+                char *formated = str_format_meta(p_input, format);
+                free(format);
+                aString = toNSStr(formated);
+                free(formated);
+            }
         } else
             aString = [NSString stringWithUTF8String:config_GetPsz(VLCIntf, "video-title")];
 

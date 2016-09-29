@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id: 0a08d0dd699e64d91b34e9e109f59c9bae535a39 $
+ * $Id: 411979526742d6bb1e8f8479ae186f1e9c2dbc49 $
  *
  * sdp/sdpplin parser.
  *
@@ -32,7 +32,15 @@ static inline char *nl(char *data) {
   return (nlptr) ? nlptr + 1 : NULL;
 }
 
-static int filter(const char *in, const char *filter, char **out, size_t outlen) {
+static inline int line_length(char * data) {
+  char const * p = nl(data);
+  if (p) {
+    return p - data - 1;
+  }
+  return strlen(data);
+}
+
+static int filter(access_t *p_access, const char *in, const char *filter, char **out, size_t outlen) {
 
   int flen=strlen(filter);
   size_t len;
@@ -46,7 +54,7 @@ static int filter(const char *in, const char *filter, char **out, size_t outlen)
     if(in[len-1]=='"') len--;
     if( len-flen+1 > outlen )
     {
-        printf("Discarding end of string to avoid overflow");
+        msg_Warn(p_access, "Discarding end of string to avoid overflow");
         len=outlen+flen-1;
     }
     memcpy(*out, in+flen, len-flen+1);
@@ -56,7 +64,7 @@ static int filter(const char *in, const char *filter, char **out, size_t outlen)
   return 0;
 }
 
-static sdpplin_stream_t *sdpplin_parse_stream(char **data) {
+static sdpplin_stream_t *sdpplin_parse_stream(access_t *p_access, char **data) {
 
   sdpplin_stream_t *desc;
   char* buf = NULL;
@@ -75,10 +83,10 @@ static sdpplin_stream_t *sdpplin_parse_stream(char **data) {
   if( !decoded )
     goto error;
 
-  if (filter(*data, "m=", &buf, BUFLEN)) {
+  if (filter(p_access, *data, "m=", &buf, BUFLEN)) {
     desc->id = strdup(buf);
   } else {
-    lprintf("sdpplin: no m= found.\n");
+    msg_Dbg(p_access, "sdpplin: no m= found.");
     goto error;
   }
   *data=nl(*data);
@@ -86,60 +94,60 @@ static sdpplin_stream_t *sdpplin_parse_stream(char **data) {
   while (*data && **data && *data[0]!='m') {
     handled=0;
 
-    if(filter(*data,"a=control:streamid=",&buf, BUFLEN)) {
+    if(filter(p_access, *data,"a=control:streamid=",&buf, BUFLEN)) {
         /* This way negative values are mapped to unfeasibly high
          * values, and will be discarded afterward
          */
         unsigned long tmp = strtoul(buf, NULL, 10);
         if ( tmp > UINT16_MAX )
-            lprintf("stream id out of bound: %lu\n", tmp);
+            msg_Warn(p_access, "stream id out of bound: %lu", tmp);
         else
             desc->stream_id=tmp;
         handled=1;
         *data=nl(*data);
     }
-    if(filter(*data,"a=MaxBitRate:integer;",&buf, BUFLEN)) {
+    if(filter(p_access, *data,"a=MaxBitRate:integer;",&buf, BUFLEN)) {
       desc->max_bit_rate=atoi(buf);
       if (!desc->avg_bit_rate)
         desc->avg_bit_rate=desc->max_bit_rate;
       handled=1;
       *data=nl(*data);
     }
-    if(filter(*data,"a=MaxPacketSize:integer;",&buf, BUFLEN)) {
+    if(filter(p_access, *data,"a=MaxPacketSize:integer;",&buf, BUFLEN)) {
       desc->max_packet_size=atoi(buf);
       if (!desc->avg_packet_size)
         desc->avg_packet_size=desc->max_packet_size;
       handled=1;
       *data=nl(*data);
     }
-    if(filter(*data,"a=StartTime:integer;",&buf, BUFLEN)) {
+    if(filter(p_access, *data,"a=StartTime:integer;",&buf, BUFLEN)) {
       desc->start_time=atoi(buf);
       handled=1;
       *data=nl(*data);
     }
-    if(filter(*data,"a=Preroll:integer;",&buf, BUFLEN)) {
+    if(filter(p_access, *data,"a=Preroll:integer;",&buf, BUFLEN)) {
       desc->preroll=atoi(buf);
       handled=1;
       *data=nl(*data);
     }
-    if(filter(*data,"a=length:npt=",&buf, BUFLEN)) {
+    if(filter(p_access, *data,"a=length:npt=",&buf, BUFLEN)) {
       desc->duration=(uint32_t)(atof(buf)*1000);
       handled=1;
       *data=nl(*data);
     }
-    if(filter(*data,"a=StreamName:string;",&buf, BUFLEN)) {
+    if(filter(p_access, *data,"a=StreamName:string;",&buf, BUFLEN)) {
       desc->stream_name=strdup(buf);
       desc->stream_name_size=strlen(desc->stream_name);
       handled=1;
       *data=nl(*data);
     }
-    if(filter(*data,"a=mimetype:string;",&buf, BUFLEN)) {
+    if(filter(p_access, *data,"a=mimetype:string;",&buf, BUFLEN)) {
       desc->mime_type=strdup(buf);
       desc->mime_type_size=strlen(desc->mime_type);
       handled=1;
       *data=nl(*data);
     }
-    if(filter(*data,"a=OpaqueData:buffer;",&buf, BUFLEN)) {
+    if(filter(p_access, *data,"a=OpaqueData:buffer;",&buf, BUFLEN)) {
       desc->mlti_data_size =
           vlc_b64_decode_binary_to_buffer(decoded, BUFLEN, buf );
       if ( desc->mlti_data_size ) {
@@ -147,10 +155,10 @@ static sdpplin_stream_t *sdpplin_parse_stream(char **data) {
           memcpy(desc->mlti_data, decoded, desc->mlti_data_size);
           handled=1;
           *data=nl(*data);
-          lprintf("mlti_data_size: %i\n", desc->mlti_data_size);
+          msg_Dbg(p_access, "mlti_data_size: %i", desc->mlti_data_size);
       }
     }
-    if(filter(*data,"a=ASMRuleBook:string;",&buf, BUFLEN)) {
+    if(filter(p_access, *data,"a=ASMRuleBook:string;",&buf, BUFLEN)) {
       desc->asm_rule_book=strdup(buf);
       handled=1;
       *data=nl(*data);
@@ -158,12 +166,13 @@ static sdpplin_stream_t *sdpplin_parse_stream(char **data) {
 
     if(!handled) {
 #ifdef LOG
-      int len=strchr(*data,'\n')-(*data);
-      memcpy(buf, *data, len+1);
-      buf[len]=0;
-      printf("libreal: sdpplin: not handled: '%s'\n", buf);
+      int len = line_length(*data);
+      ;   len = len < BUFLEN ? len : BUFLEN-1;
+      buf[len] = '\0';
+      strncpy (buf, *data, len);
+      msg_Warn(p_access, "libreal: sdpplin: not handled: '%s'", buf);
 #endif
-      *data=nl(*data);
+      *data=nl(*data); /* always move to next line */
     }
   }
   free( buf );
@@ -178,7 +187,7 @@ error:
 }
 
 
-sdpplin_t *sdpplin_parse(char *data)
+sdpplin_t *sdpplin_parse(access_t *p_access, char *data)
 {
   sdpplin_t*        desc;
   sdpplin_stream_t* stream;
@@ -209,61 +218,62 @@ sdpplin_t *sdpplin_parse(char *data)
   while (data && *data) {
     handled=0;
 
-    if (filter(data, "m=", &buf, BUFLEN)) {
+    if (filter(p_access, data, "m=", &buf, BUFLEN)) {
         if ( !desc->stream ) {
-            fprintf(stderr, "sdpplin.c: stream identifier found before stream count, skipping.");
+            msg_Warn(p_access, "sdpplin.c: stream identifier found before stream count, skipping.");
+            data = nl(data);
             continue;
         }
-        stream=sdpplin_parse_stream(&data);
-        lprintf("got data for stream id %u\n", stream->stream_id);
+        stream=sdpplin_parse_stream(p_access, &data);
+        msg_Dbg(p_access, "got data for stream id %u", stream->stream_id);
         if ( stream->stream_id >= desc->stream_count )
-            lprintf("stream id %u is greater than stream count %u\n", stream->stream_id, desc->stream_count);
+            msg_Warn(p_access, "stream id %u is greater than stream count %u\n", stream->stream_id, desc->stream_count);
         else
             desc->stream[stream->stream_id]=stream;
         continue;
     }
-    if(filter(data,"a=Title:buffer;",&buf, BUFLEN)) {
+    if(filter(p_access, data,"a=Title:buffer;",&buf, BUFLEN)) {
       desc->title=vlc_b64_decode(buf);
       if(desc->title) {
         handled=1;
         data=nl(data);
       }
     }
-    if(filter(data,"a=Author:buffer;",&buf, BUFLEN)) {
+    if(filter(p_access, data,"a=Author:buffer;",&buf, BUFLEN)) {
       desc->author=vlc_b64_decode(buf);
       if(desc->author) {
         handled=1;
         data=nl(data);
       }
     }
-    if(filter(data,"a=Copyright:buffer;",&buf, BUFLEN)) {
+    if(filter(p_access, data,"a=Copyright:buffer;",&buf, BUFLEN)) {
       desc->copyright=vlc_b64_decode(buf);
       if(desc->copyright) {
         handled=1;
         data=nl(data);
       }
     }
-    if(filter(data,"a=Abstract:buffer;",&buf, BUFLEN)) {
+    if(filter(p_access, data,"a=Abstract:buffer;",&buf, BUFLEN)) {
       desc->abstract=vlc_b64_decode(buf);
       if(desc->abstract) {
         handled=1;
         data=nl(data);
       }
     }
-    if(filter(data,"a=StreamCount:integer;",&buf, BUFLEN)) {
+    if(filter(p_access, data,"a=StreamCount:integer;",&buf, BUFLEN)) {
         /* This way negative values are mapped to unfeasibly high
          * values, and will be discarded afterward
          */
         unsigned long tmp = strtoul(buf, NULL, 10);
         if ( tmp > UINT16_MAX )
-            lprintf("stream count out of bound: %lu\n", tmp);
+            msg_Warn(p_access, "stream count out of bound: %lu\n", tmp);
         else
             desc->stream_count = tmp;
         desc->stream = malloc(sizeof(sdpplin_stream_t*)*desc->stream_count);
         handled=1;
         data=nl(data);
     }
-    if(filter(data,"a=Flags:integer;",&buf, BUFLEN)) {
+    if(filter(p_access, data,"a=Flags:integer;",&buf, BUFLEN)) {
       desc->flags=atoi(buf);
       handled=1;
       data=nl(data);
@@ -271,10 +281,11 @@ sdpplin_t *sdpplin_parse(char *data)
 
     if(!handled) {
 #ifdef LOG
-      int len=strchr(data,'\n')-data;
-      memcpy(buf, data, len+1);
-      buf[len]=0;
-      printf("libreal: sdpplin: not handled: '%s'\n", buf);
+      int len = line_length(data);
+      ;   len = len < BUFLEN ? len : BUFLEN-1;
+      buf[len] = '\0';
+      strncpy (buf, data, len);
+      msg_Warn(p_access, "libreal: sdpplin: not handled: '%s'", buf);
 #endif
       data=nl(data);
     }

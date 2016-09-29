@@ -4,7 +4,7 @@
  * VLC specific code:
  *
  * Copyright © 2008,2011,2012 the VideoLAN team
- * $Id: e8e522635834362db62aac37437ae903301213aa $
+ * $Id: 9662312f527dca047b8f2acd0bc861da592ed66f $
  *
  * Authors: Rafaël Carré <funman@videolanorg>
  *          Felix Paul Kühne <fkuehne@videolan.org
@@ -308,7 +308,8 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
                                    iconData: o_art
                                    priority: 0
                                    isSticky: NO
-                               clickContext: nil];
+                               clickContext: nil
+                                 identifier: @"VLCNowPlayingNotification"];
     [o_pool drain];
 }
 

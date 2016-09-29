@@ -1,0 +1,2 @@
+Submit-As: src:vlc
+Report-With: vlc vlc-nox vlc-data libvlc5 libvlccore8 vlc-plugin-fluidsynth vlc-plugin-jack vlc-plugin-notify vlc-plugin-sdl vlc-plugin-svg vlc-plugin-zvbi

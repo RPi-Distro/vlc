@@ -2,7 +2,7 @@
  * CoreInteraction.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2014 Felix Paul Kühne
- * $Id: 1fc4d6efddc2baed1ac32c9599bcb63f1595bc22 $
+ * $Id: b749512916eb212480081fd2084e8482659dea98 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -258,12 +258,14 @@ static VLCCoreInteraction *_o_sharedInstance = nil;
         return nil;
     }
 
-    NSString *o_name;
+    NSString *o_name = @"";
     char *format = var_InheritString(VLCIntf, "input-title-format");
-    char *formated = str_format_meta(p_input, format);
-    free(format);
-    o_name = [NSString stringWithUTF8String:formated];
-    free(formated);
+    if (format) {
+        char *formated = str_format_meta(p_input, format);
+        free(format);
+        o_name = toNSStr(formated);
+        free(formated);
+    }
 
     NSURL * o_url = [NSURL URLWithString:[NSString stringWithUTF8String:psz_uri]];
     free(psz_uri);

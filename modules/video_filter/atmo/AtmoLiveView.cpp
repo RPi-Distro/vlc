@@ -5,7 +5,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 987bb6115ad6da3016a852fab5c62a0aeb67505b $
+ * $Id: 8cef916f71d08268296f63b197994b5c93ff97c9 $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -98,7 +98,7 @@ DWORD CAtmoLiveView::Execute(void)
         if( frameDelay > 0 )
             do_sleep( frameDelay );
 #if defined(_ATMO_VLC_PLUGIN_)
-        msg_Dbg( m_pLog, "First Packet got %"PRId64" ms", (get_time - t) / 1000  );
+        msg_Dbg( m_pLog, "First Packet got %" PRId64 " ms", (get_time - t) / 1000  );
 #endif
     }
 
@@ -139,7 +139,7 @@ DWORD CAtmoLiveView::Execute(void)
                     if( frameDelay > 0 )
                         do_sleep( frameDelay );
 #if defined(_ATMO_VLC_PLUGIN_)
-                    msg_Dbg( m_pLog, "got delayed packet %"PRId64" ms", (mdate() - t) / 1000  );
+                    msg_Dbg( m_pLog, "got delayed packet %" PRId64 " ms", (mdate() - t) / 1000  );
 #endif
                     continue;
                 }

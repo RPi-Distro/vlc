@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2011 VideoLAN and AUTHORS
- * $Id: 8c911e87c7874ab93b84d878e3aaa528e7339704 $
+ * $Id: 10efc018b8c3562a6a7975af8b11ba8f1d0d939d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -417,6 +417,8 @@ void MainInterface::showResumePanel( int64_t _time ) {
         resumePlayback();
     else
     {
+        if( !isFullScreen() && !isMaximized() )
+            resize( width(), height() + resumePanel->height() );
         resumePanel->setVisible(true);
         resumeTimer->start();
     }
@@ -823,7 +825,7 @@ void MainInterface::setVideoFullScreen( bool fs )
         }
 
         /* */
-        setMinimalView( true );
+        displayNormalView();
         setInterfaceFullScreen( true );
     }
     else
@@ -983,15 +985,67 @@ void MainInterface::dockPlaylist( bool p_docked )
 }
 
 /*
+ * displayNormalView is the private function used by
+ * the SLOT setVideoFullScreen to restore the menuBar
+ * if minimal view is off
+ */
+void MainInterface::displayNormalView()
+{
+    menuBar()->setVisible( false );
+    controls->setVisible( false );
+    statusBar()->setVisible( false );
+    inputC->setVisible( false );
+}
+
+/*
  * setMinimalView is the private function used by
  * the SLOT toggleMinimalView and setVideoFullScreen
  */
 void MainInterface::setMinimalView( bool b_minimal )
 {
+    bool b_menuBarVisible = menuBar()->isVisible();
+    bool b_controlsVisible = controls->isVisible();
+    bool b_statusBarVisible = statusBar()->isVisible();
+    bool b_inputCVisible = inputC->isVisible();
+
+    if( !isFullScreen() && !isMaximized() && b_minimal )
+    {
+        int i_heightChange = 0;
+
+        if( b_menuBarVisible )
+            i_heightChange += menuBar()->height();
+        if( b_controlsVisible )
+            i_heightChange += controls->height();
+        if( b_statusBarVisible )
+            i_heightChange += statusBar()->height();
+        if( b_inputCVisible )
+            i_heightChange += inputC->height();
+
+        if( i_heightChange != 0 )
+            resize( width(), height() - i_heightChange );
+    }
+
     menuBar()->setVisible( !b_minimal );
     controls->setVisible( !b_minimal );
     statusBar()->setVisible( !b_minimal && b_statusbarVisible );
     inputC->setVisible( !b_minimal );
+
+    if( !isFullScreen() && !isMaximized() && !b_minimal )
+    {
+        int i_heightChange = 0;
+
+        if( !b_menuBarVisible && menuBar()->isVisible() )
+            i_heightChange += menuBar()->height();
+        if( !b_controlsVisible && controls->isVisible() )
+            i_heightChange += controls->height();
+        if( !b_statusBarVisible && statusBar()->isVisible() )
+            i_heightChange += statusBar()->height();
+        if( !b_inputCVisible && inputC->isVisible() )
+            i_heightChange += inputC->height();
+
+        if( i_heightChange != 0 )
+            resize( width(), height() + i_heightChange );
+    }
 }
 
 /*
@@ -1478,6 +1532,8 @@ void MainInterface::wheelEvent( QWheelEvent *e )
 void MainInterface::closeEvent( QCloseEvent *e )
 {
 //  hide();
+    if ( b_minimalView )
+        setMinimalView( false );
     emit askToQuit(); /* ask THEDP to quit, so we have a unique method */
     /* Accept session quit. Otherwise we break the desktop mamager. */
     e->accept();

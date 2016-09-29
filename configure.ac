@@ -1,11 +1,11 @@
 dnl Autoconf settings for vlc
 
-AC_COPYRIGHT([Copyright 1999-2015 VLC authors and VideoLAN])
+AC_COPYRIGHT([Copyright 1999-2016 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 2.2.1)
+AC_INIT(vlc, 2.2.4)
 VERSION_MAJOR=2
 VERSION_MINOR=2
-VERSION_REVISION=1
+VERSION_REVISION=4
 VERSION_EXTRA=0
 VERSION_DEV=
 
@@ -13,8 +13,8 @@ PKGDIR="vlc"
 AC_SUBST(PKGDIR)
 
 CONFIGURE_LINE="`echo "$0 $ac_configure_args" | sed -e 's/\\\/\\\\\\\/g'`"
-CODENAME="Terry Pratchett (Weatherwax)"
-COPYRIGHT_YEARS="1996-2015"
+CODENAME="Weatherwax"
+COPYRIGHT_YEARS="1996-2016"
 
 AC_CONFIG_SRCDIR(src/libvlc.c)
 AC_CONFIG_AUX_DIR(autotools)
@@ -694,9 +694,9 @@ dnl Check for dynamic plugins
 LIBDL=""
 have_dynamic_objects="no"
 VLC_SAVE_FLAGS
-AC_SEARCH_LIBS(dlopen, [dl svld], [
-  AS_IF([test "$ac_cv_search_dlopen" != "none required"], [
-    LIBDL="$ac_cv_search_dlopen"
+AC_SEARCH_LIBS(dlsym, [dl svld], [
+  AS_IF([test "$ac_cv_search_dlsym" != "none required"], [
+    LIBDL="$ac_cv_search_dlsym"
   ])
   have_dynamic_objects="yes"
 ])
@@ -1704,6 +1704,15 @@ dnl
 dnl libdvdnav plugin
 dnl
 PKG_ENABLE_MODULES_VLC([DVDNAV], [], [dvdnav > 4.9.0], [DVD with navigation input module (dvdnav)], [auto])
+AS_IF([test "${enable_dvdnav}" != "no"], [
+  AC_MSG_CHECKING(for dvdnav_stream_cb in dvdnav/dvdnav.h)
+    AC_EGREP_HEADER(dvdnav_stream_cb,dvdnav/dvdnav.h,[
+      AC_MSG_RESULT(yes)
+      AC_DEFINE(HAVE_STREAM_CB_IN_DVDNAV_H, 1, For dvdnav demux support)
+      ],[
+      AC_MSG_RESULT(no)
+    ])
+])
 
 dnl
 dnl  Blu-ray Disc Support with libbluray
@@ -2314,9 +2323,9 @@ AC_ARG_ENABLE(avcodec,
 [  --enable-avcodec        libavcodec codec (default enabled)])
 AS_IF([test "${enable_avcodec}" != "no"], [
   PKG_CHECK_MODULES(AVCODEC,[libavcodec >= 53.34.0 libavutil >= 51.22.0], [
-    dnl PKG_CHECK_EXISTS([libavcodec < 56],, [
-    dnl   AC_MSG_ERROR([libavcodec versions 56 and later are not supported yet.])
-    dnl ])
+    PKG_CHECK_EXISTS([libavutil < 55],, [
+      AC_MSG_ERROR([libavutil versions 55 and later are not supported.])
+    ])
     VLC_SAVE_FLAGS
     CPPFLAGS="${CPPFLAGS} ${AVCODEC_CFLAGS}"
     CFLAGS="${CFLAGS} ${AVCODEC_CFLAGS}"
@@ -2371,11 +2380,18 @@ AM_CONDITIONAL([HAVE_VAAPI_X11], [test "${have_vaapi_x11}" = "yes"])
 
 have_avcodec_vaapi="no"
 AS_IF([test "${have_vaapi}" = "yes" -a "${have_avcodec}" = "yes"], [
+  case "${avfork}" in
+    ffmpeg)
+      PKG_CHECK_EXISTS([libavcodec >= 57.10.100], [
+        AC_MSG_ERROR([VA API requires FFmpeg libavcodec < 57.10 or libav.])
+      ])
+      ;;
+  esac
   VLC_SAVE_FLAGS
   CPPFLAGS="${CPPFLAGS} ${AVCODEC_CFLAGS}"
   CFLAGS="${CFLAGS} ${AVCODEC_CFLAGS}"
   AC_CHECK_HEADERS([libavcodec/vaapi.h], [
-    AC_MSG_NOTICE([VAAPI acceleration activated])
+    AC_MSG_NOTICE([VA API acceleration activated])
     have_avcodec_vaapi="yes"
   ],[
     AS_IF([test -n "${enable_libva}"], [
@@ -2398,6 +2414,13 @@ have_avcodec_dxva2="no"
 AS_IF([test "${enable_dxva2}" != "no"], [
   if test "${SYS}" = "mingw32"; then
   AS_IF([test "x${have_avcodec}" = "xyes"], [
+    case "${avfork}" in
+      ffmpeg)
+        PKG_CHECK_EXISTS([libavcodec >= 57.10.100], [
+          AC_MSG_ERROR([DXVA2 requires FFmpeg libavcodec < 57.10 or libav.])
+        ])
+        ;;
+    esac
     AC_CHECK_HEADERS(dxva2api.h,
       [
         AC_CHECK_HEADERS(libavcodec/dxva2.h, [
@@ -3156,7 +3179,11 @@ have_avcodec_vdpau="no"
 AS_IF([test "${have_vdpau}" = "yes" -a "${have_avcodec}" = "yes"], [
   case "${avfork}" in
     libav) av_vdpau_ver="55.26.0" ;;
-    ffmpeg) av_vdpau_ver="55.42.100" ;;
+    ffmpeg) av_vdpau_ver="55.42.100"
+      PKG_CHECK_EXISTS([libavcodec >= 57.10.100], [
+        AC_MSG_ERROR([VDPAU requires FFmpeg libavcodec < 57.10 or libav.])
+      ])
+      ;;
   esac
   PKG_CHECK_EXISTS([libavutil >= 52.4.0 libavcodec >= ${av_vdpau_ver}], [
     have_avcodec_vdpau="yes"
@@ -3713,9 +3740,24 @@ AS_IF([test "${enable_qt}" != "no"], [
       PKG_CHECK_MODULES([QTX11], [Qt5X11Extras], [
           VLC_ADD_LIBS([qt4],[${QTX11_LIBS}])
           VLC_ADD_CXXFLAGS([qt4],[${QTX11_CFLAGS} -DQT5_HAS_X11])
+          PKG_CHECK_MODULES([XI], [xi], [
+            VLC_ADD_LIBS([qt4], [${XI_LIBS}])
+            VLC_ADD_CXXFLAGS([qt4], [${XI_CFLAGS} -DHAVE_XI])
+          ], [
+            PKG_CHECK_EXISTS([Qt5Gui >= 5.5], [
+              AC_MSG_ERROR([${XI_PKG_ERRORS}.])
+            ], [
+              AC_MSG_WARN([${XI_PKG_ERRORS}.])
+            ])
+          ])
       ],[
           AC_MSG_WARN([Not building Qt Interface with X11 helpers.])
       ])
+
+      PKG_CHECK_EXISTS([Qt5Core >= 5.5.0 Qt5Core < 5.6.0], [
+        AC_MSG_ERROR(["You cannot build VLC with Qt-5.5.0. You need to backport I78ef29975181ee22429c9bd4b11d96d9e68b7a9c"])
+      ])
+
       QT_PATH="$(eval $PKG_CONFIG --variable=exec_prefix Qt5Core)"
       QT_HOST_PATH="$(eval $PKG_CONFIG --variable=host_bins Qt5Core)"
       AC_PATH_PROGS(MOC, [moc-qt5 moc], moc, ["${QT_HOST_PATH}" "${QT_PATH}/bin" "${CONTRIB_DIR}/bin"])

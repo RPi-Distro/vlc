@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
  * Copyright (C) 2008 Laurent Aimar
- * $Id: ee1492ba7af8eba578a8ce822e3a223817609ab4 $
+ * $Id: dc4c8bd9352ed669930fe4b36dcd601783d6026c $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
@@ -108,7 +108,8 @@ void    input_clock_ChangeSystemOrigin( input_clock_t *, bool b_absolute, mtime_
  * this case, *p_ts0 and *p_ts1 will hold an invalid timestamp.
  * Otherwise it will return VLC_SUCCESS.
  */
-int input_clock_ConvertTS( input_clock_t *, int *pi_rate, mtime_t *pi_ts0, mtime_t *pi_ts1, mtime_t i_ts_bound );
+int input_clock_ConvertTS( vlc_object_t *, input_clock_t *, int *pi_rate,
+                           mtime_t *pi_ts0, mtime_t *pi_ts1, mtime_t i_ts_bound );
 
 /**
  * This function returns the current rate.

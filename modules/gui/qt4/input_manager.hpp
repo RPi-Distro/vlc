@@ -2,7 +2,7 @@
  * input_manager.hpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: b69b6f930b13712b282f6a1a18374c127b8730f0 $
+ * $Id: 7d3b76af17b5923e5566aedaf2d0b579407a7faa $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste <jb@videolan.org>
@@ -56,8 +56,8 @@ public:
         ItemEsChanged,
         ItemTeletextChanged,
         InterfaceVoutUpdate,
-        StatisticsUpdate, /*10*/
-        InterfaceAoutUpdate,
+        StatisticsUpdate,
+        InterfaceAoutUpdate, /* 10 */
         MetaChanged,
         NameChanged,
         InfoChanged,
@@ -67,11 +67,11 @@ public:
         RecordingEvent,
         ProgramChanged,
         RandomChanged,
-        LoopOrRepeatChanged,
+        LoopOrRepeatChanged, /* 20 */
         EPGEvent,
     /*    SignalChanged, */
 
-        FullscreenControlToggle = QEvent::User + IMEventTypeOffset + 20,
+        FullscreenControlToggle = QEvent::User + IMEventTypeOffset + 50,
         FullscreenControlShow,
         FullscreenControlHide,
         FullscreenControlPlanHide,
@@ -276,6 +276,9 @@ public:
     bool hasEmptyPlaylist();
 
     void requestVoutUpdate() { return im->UpdateVout(); }
+    // Probe for initial input. Doing this from the constructor would cause
+    // the getInstance to call itself recursively from the inputChangedHandler
+    void probeCurrentInput();
 
 protected:
     QSignalMapper *menusAudioMapper;
@@ -305,6 +308,7 @@ public slots:
     void activatePlayQuit( bool );
 
     void loopRepeatLoopStatus();
+    void changeFullscreen( bool );
 
 private slots:
     void notifyRandom( bool );

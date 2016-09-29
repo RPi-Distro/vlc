@@ -3,7 +3,7 @@ vlc (1.1.0-1) unstable; urgency=low
   Teletext decoding is now done through zvbi. It requires installing an
   extra packages: vlc-plugin-zvbi.
 
-  Some control interace are now implemented in lua. The C equivalents are
+  Some control interface are now implemented in lua. The C equivalents are
   still present.
     + HTTP: Default is still the C-implemented one. Use -I luahttp to
       test the lua one. Remember to edit /etc/vlc/lua/http/.hosts

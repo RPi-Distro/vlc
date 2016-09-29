@@ -2,7 +2,7 @@
  * output.c : internal management of output streams for the audio output
  *****************************************************************************
  * Copyright (C) 2002-2004 VLC authors and VideoLAN
- * $Id: 3b6999c09550c2cab3d147ec9560bb04cc9c73dd $
+ * $Id: ad9f6760b436f1c8341a931db61aeb23b878cd71 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -684,7 +684,7 @@ int aout_DeviceSet (audio_output_t *aout, const char *id)
  * The function will heap-allocate two tables of heap-allocated strings;
  * the caller is responsible for freeing all strings and both tables.
  *
- * \param ids pointer to a table of device identifiers [OUT]
+ * \param ids pointer to a table of device identifiers [OUT]
  * \param names pointer to a table of device human-readable descriptions [OUT]
  * \return the number of devices, or negative on error.
  * \note In case of error, *ids and *names are undefined.

@@ -21107,11 +21107,3 @@ Author: Rémi Duraffort <ivoire@videolan.org>
 Date:   Tue Dec 31 15:52:43 2013 +0100
 
     chorus: remove wrong (and uneeded) dealocations
-
-commit 33f3158d5e79432b06ae8014aa999514f6f19f90
-Author: Denis Charmet <typx@dinauz.org>
-Date:   Wed Jan 1 22:35:36 2014 +0100
-
-    Remove faulty return when vobsub doesn't define a size.
-    
-    Close #10111

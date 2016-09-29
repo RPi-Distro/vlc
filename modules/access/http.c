@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2008 VLC authors and VideoLAN
- * $Id: 65fee248c9d37d02555e1b1b32e30c22a88cf31d $
+ * $Id: 0abe269b6297e20e573a8a36b6caf23d9743d263 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -534,7 +534,8 @@ connect:
 
     if( !strcmp( p_sys->psz_protocol, "ICY" ) || p_sys->b_icecast )
     {
-        if( p_sys->psz_mime && strcasecmp( p_sys->psz_mime, "application/ogg" ) )
+        if( p_sys->psz_mime && strcasecmp( p_sys->psz_mime, "application/ogg" )
+                            && strcasecmp( p_sys->psz_mime, "audio/x-mpegurl" ) )
         {
             if( !strcasecmp( p_sys->psz_mime, "video/nsv" ) ||
                 !strcasecmp( p_sys->psz_mime, "video/nsa" ) )
@@ -1545,6 +1546,13 @@ static int Request( access_t *p_access, uint64_t i_tell )
         }
 
         free( psz );
+    }
+
+    if( p_sys->b_icecast && p_sys->psz_mime && !strcasecmp( p_sys->psz_mime, "audio/x-mpegurl" ) )
+    {
+       p_sys->b_icecast = false;
+       p_sys->b_reconnect = false;
+       p_sys->b_pace_control = true;
     }
     /* We close the stream for zero length data, unless of course the
      * server has already promised to do this for us.

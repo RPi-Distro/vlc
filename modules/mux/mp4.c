@@ -2,7 +2,7 @@
  * mp4.c: mp4/mov muxer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2003, 2006 VLC authors and VideoLAN
- * $Id: 9b39eb203178f3e9198cc495261694bb57abe929 $
+ * $Id: e6d705bab43348b1760846458230d4850e1e4722 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin at videolan dot org>
@@ -377,6 +377,7 @@ static int AddStream(sout_mux_t *p_mux, sout_input_t *p_input)
     case VLC_CODEC_MP4A:
     case VLC_CODEC_MP4V:
     case VLC_CODEC_MPGA:
+    case VLC_CODEC_MP3:
     case VLC_CODEC_MPGV:
     case VLC_CODEC_MP2V:
     case VLC_CODEC_MP1V:
@@ -479,7 +480,7 @@ static int Mux(sout_mux_t *p_mux)
                 block_t *p_next = block_FifoShow(p_input->p_fifo);
                 if ( p_next->i_flags & BLOCK_FLAG_DISCONTINUITY )
                 { /* we have no way to know real length except by decoding */
-                    if ( p_stream->fmt.i_cat == VIDEO_ES )
+                    if ( p_stream->fmt.i_cat == VIDEO_ES && p_stream->fmt.video.i_frame_rate )
                     {
                         p_data->i_length = CLOCK_FREQ *
                                            p_stream->fmt.video.i_frame_rate_base /
@@ -489,7 +490,7 @@ static int Mux(sout_mux_t *p_mux)
                     }
                     else if ( p_stream->fmt.i_cat == AUDIO_ES &&
                               p_stream->fmt.audio.i_rate &&
-                              p_data->i_nb_samples )
+                              p_data->i_nb_samples && p_stream->fmt.audio.i_rate )
                     {
                         p_data->i_length = CLOCK_FREQ * p_data->i_nb_samples /
                                            p_stream->fmt.audio.i_rate;

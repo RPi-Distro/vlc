@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: a044d4e6905c4ba56d77392c655c388ab68950e7 $
+ * $Id: bc658f90871afc44d1737d456464e3dfc36275e0 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rémi Denis-Courmont
@@ -553,8 +553,7 @@ static void *Run( void *data )
                     uint8_t p_buffer[MAX_SAP_BUFFER+1];
                     ssize_t i_read;
 
-                    i_read = net_Read (p_sd, ufd[i].fd, NULL, p_buffer,
-                                       MAX_SAP_BUFFER, false);
+                    i_read = recv (ufd[i].fd, p_buffer, MAX_SAP_BUFFER, 0);
                     if (i_read < 0)
                         msg_Warn (p_sd, "receive error: %s",
                                   vlc_strerror_c(errno));

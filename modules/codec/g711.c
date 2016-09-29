@@ -2,7 +2,7 @@
  * g711.c: G.711 µ-law and A-law codec
  *****************************************************************************
  * Copyright (C) 2001, 2003 VLC authors and VideoLAN
- * $Id: 0473c73017a9677f91c4e02cf80959bbcebae042 $
+ * $Id: ce5fb531c785b6c79cb0dd789bff314a7491e1f2 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -219,6 +219,7 @@ static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     if( pp_block == NULL )
         return NULL;
     block_t *p_block = *pp_block;
+    *pp_block = NULL;
     if( p_block == NULL )
         return NULL;
 
@@ -244,9 +245,6 @@ static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         return NULL;
     }
 
-    /* Create chunks of max 1024 samples */
-    if( samples > 1024 ) samples = 1024;
-
     block_t *p_out = decoder_NewAudioBuffer( p_dec, samples );
     if( p_out == NULL )
     {
@@ -269,9 +267,7 @@ static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     for( unsigned i = 0; i < samples; i++ )
        *(dst++) = p_sys->table[*(src++)];
 
-    p_block->p_buffer += samples;
-    p_block->i_buffer -= samples;
-
+    block_Release( p_block );
     return p_out;
 }
 

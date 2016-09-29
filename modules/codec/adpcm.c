@@ -2,7 +2,7 @@
  * adpcm.c : adpcm variant audio decoder
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: b052965920a53a875464f6c86128a4f3eb6054fa $
+ * $Id: 0071077bdc8a6a922fdf1421c9f66e2bbe5068cb $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -72,6 +72,7 @@ struct decoder_sys_t
     size_t              i_samplesperblock;
 
     date_t              end_date;
+    int16_t            *prev;
 };
 
 static void DecodeAdpcmMs    ( decoder_t *, int16_t *, uint8_t * );
@@ -164,13 +165,21 @@ static int OpenDecoder( vlc_object_t *p_this )
     }
 
     /* Allocate the memory needed to store the decoder's structure */
-    if( ( p_dec->p_sys = p_sys =
-          (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
+    p_sys = malloc(sizeof(*p_sys));
+    if( unlikely(p_sys == NULL) )
         return VLC_ENOMEM;
+
+    p_sys->prev = NULL;
 
     switch( p_dec->fmt_in.i_codec )
     {
         case VLC_FOURCC('i','m','a', '4'): /* IMA ADPCM */
+            if (p_dec->fmt_in.audio.i_channels > 2) {
+                free(p_sys);
+                msg_Err(p_dec, "Invalid number of channels %i",
+                        p_dec->fmt_in.audio.i_channels );
+                return VLC_EGENERIC;
+            }
             p_sys->codec = ADPCM_IMA_QT;
             break;
         case VLC_CODEC_ADPCM_IMA_WAV: /* IMA ADPCM */
@@ -187,9 +196,9 @@ static int OpenDecoder( vlc_object_t *p_this )
             break;
         case VLC_FOURCC('X','A','J', 0): /* EA ADPCM */
             p_sys->codec = ADPCM_EA;
-            p_dec->fmt_in.p_extra = calloc( 2 * p_dec->fmt_in.audio.i_channels,
-                                            sizeof( int16_t ) );
-            if( p_dec->fmt_in.p_extra == NULL )
+            p_sys->prev = calloc( 2 * p_dec->fmt_in.audio.i_channels,
+                                  sizeof( int16_t ) );
+            if( unlikely(p_sys->prev == NULL) )
             {
                 free( p_sys );
                 return VLC_ENOMEM;
@@ -245,6 +254,7 @@ static int OpenDecoder( vlc_object_t *p_this )
              p_dec->fmt_in.audio.i_bitspersample, p_sys->i_block,
              p_sys->i_samplesperblock );
 
+    p_dec->p_sys = p_sys;
     p_dec->fmt_out.i_cat = AUDIO_ES;
     p_dec->fmt_out.i_codec = VLC_CODEC_S16N;
     p_dec->fmt_out.audio.i_rate = p_dec->fmt_in.audio.i_rate;
@@ -349,8 +359,7 @@ static void CloseDecoder( vlc_object_t *p_this )
     decoder_t *p_dec = (decoder_t *)p_this;
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    if( p_sys->codec == ADPCM_EA )
-        free( p_dec->fmt_in.p_extra );
+    free( p_sys->prev );
     free( p_sys );
 }
 
@@ -741,7 +750,7 @@ static void DecodeAdpcmEA( decoder_t *p_dec, int16_t *p_sample,
 
     unsigned chans = p_dec->fmt_in.audio.i_channels;
     const uint8_t *p_end = &p_buffer[p_sys->i_block];
-    int16_t *prev = (int16_t *)p_dec->fmt_in.p_extra;
+    int16_t *prev = p_sys->prev;
     int16_t *cur = prev + chans;
 
     for (unsigned c = 0; c < chans; c++)
