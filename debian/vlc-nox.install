@@ -1,10 +1,5 @@
 #!/bin/bash
 exec python3 $(dirname $0)/filter-plugin.py <<EOF
-usr/bin/cvlc
-usr/bin/nvlc
-usr/bin/rvlc
-usr/bin/vlc
-usr/bin/vlc-wrapper
 usr/lib/vlc/lua/
 usr/lib/vlc/plugins/access/libaccess_alsa_plugin.so [alsa]
 usr/lib/vlc/plugins/access/libaccess_mms_plugin.so
@@ -187,5 +182,4 @@ usr/lib/vlc/plugins/video_output/libfb_plugin.so [fb]
 usr/lib/vlc/plugins/video_output/libvdummy_plugin.so
 usr/lib/vlc/plugins/video_output/libvmem_plugin.so
 usr/lib/vlc/plugins/video_output/libyuv_plugin.so
-usr/share/man
 EOF

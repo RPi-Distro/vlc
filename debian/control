@@ -207,6 +207,20 @@ Description: tools for VLC's base library
  .
  This package contains the vlc-cache-gen binary.
 
+Package: vlc-bin
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         libvlc-bin (= ${binary:Version})
+Breaks: vlc-nox (<< 2.2.4-6~)
+Replaces: vlc-nox (<< 2.2.4-6~)
+Description: binaries from VLC
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
+ DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
+ podcasts, and multimedia streams from various network sources.
+ .
+ This package contains the VLC's binaries.
+
 Package: vlc
 Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
@@ -253,7 +267,8 @@ Package: vlc-nox
 Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends},
-         ${shlibs:Depends}
+         ${shlibs:Depends},
+         vlc-bin (= ${binary:Version})
 Suggests: libdvdcss2
 Provides: mp3-decoder
 Description: multimedia player and streamer (without X support)
