@@ -257,6 +257,7 @@ Description: binaries from VLC
 
 Package: vlc-data
 Architecture: all
+Multi-Arch: foreign
 Depends: ${misc:Depends}
 Description: Common data for VLC
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
