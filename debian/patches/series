@@ -4,3 +4,4 @@ generated-mimetypes.patch
 vlc_atomic-atomic_compare_exchange_weak_explicit-tak.patch
 vlc_atomic-atomic_compare_exchange_strong_explicit-t.patch
 Fix-build-using-old-GCC-intrinsics.patch
+video_splliter-Add-XCB-flags-for-panoramix.patch
