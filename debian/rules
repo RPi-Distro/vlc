@@ -375,7 +375,7 @@ endif
 
 override_dh_install:
 	# Remove plugin cache
-	rm debian/tmp/usr/lib/vlc/plugins/plugins.dat
+	find debian/tmp/usr/lib -name plugins.dat -delete
 	# Clean up libtool crap
 	find debian/tmp -name '*.la' -delete
 	# Remove useless stuff
