@@ -1,2 +1,2 @@
-symlink_to_dir /usr/share/doc/libvlccore-dev libvlccore8 2.2.2-4~
-symlink_to_dir /usr/share/bug/libvlccore-dev libvlccore8 2.2.2-4~
+symlink_to_dir /usr/share/doc/libvlccore-dev libvlccore8 2.2.4-1~z
+symlink_to_dir /usr/share/bug/libvlccore-dev libvlccore8 2.2.4-1~z
