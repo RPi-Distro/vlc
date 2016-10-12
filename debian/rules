@@ -5,7 +5,13 @@ DEB_LDFLAGS_MAINT_APPEND=-Wl,--as-needed
 include /usr/share/dpkg/pkg-info.mk
 include /usr/share/dpkg/architecture.mk
 
-pluginpackages  = fluidsynth
+pluginpackages += access-extra
+pluginpackages += base
+pluginpackages += visualization
+pluginpackages += video-splitter
+pluginpackages += skins2
+pluginpackages += qt
+pluginpackages += fluidsynth
 pluginpackages += jack
 pluginpackages += notify
 pluginpackages += sdl

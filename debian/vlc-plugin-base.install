@@ -1,5 +1,6 @@
 #!/bin/bash
 exec python3 $(dirname $0)/filter-plugin.py <<EOF
+usr/lib/vlc/libvlc_vdpau.so*
 usr/lib/vlc/lua/
 usr/lib/vlc/plugins/access/libaccess_alsa_plugin.so [alsa]
 usr/lib/vlc/plugins/access/libaccess_mms_plugin.so
@@ -23,6 +24,7 @@ usr/lib/vlc/plugins/access/liblibbluray_plugin.so
 usr/lib/vlc/plugins/access/liblinsys_hdsdi_plugin.so [linsys]
 usr/lib/vlc/plugins/access/liblinsys_sdi_plugin.so [linsys]
 usr/lib/vlc/plugins/access/liblive555_plugin.so
+usr/lib/vlc/plugins/access/libpulsesrc_plugin.so
 usr/lib/vlc/plugins/access/librar_plugin.so
 usr/lib/vlc/plugins/access/librtp_plugin.so
 usr/lib/vlc/plugins/access/libsdp_plugin.so
@@ -45,6 +47,7 @@ usr/lib/vlc/plugins/audio_output/libafile_plugin.so
 usr/lib/vlc/plugins/audio_output/libalsa_plugin.so [alsa]
 usr/lib/vlc/plugins/audio_output/libamem_plugin.so
 usr/lib/vlc/plugins/audio_output/liboss_plugin.so [oss]
+usr/lib/vlc/plugins/audio_output/libpulse_plugin.so
 usr/lib/vlc/plugins/audio_output/libsndio_plugin.so
 usr/lib/vlc/plugins/codec/liba52_plugin.so
 usr/lib/vlc/plugins/codec/libadpcm_plugin.so
@@ -75,6 +78,7 @@ usr/lib/vlc/plugins/codec/libpng_plugin.so
 usr/lib/vlc/plugins/codec/librawvideo_plugin.so
 usr/lib/vlc/plugins/codec/libschroedinger_plugin.so
 usr/lib/vlc/plugins/codec/libscte27_plugin.so
+usr/lib/vlc/plugins/codec/libsdl_image_plugin.so
 usr/lib/vlc/plugins/codec/libshine_plugin.so
 usr/lib/vlc/plugins/codec/libspeex_plugin.so
 usr/lib/vlc/plugins/codec/libspudec_plugin.so
@@ -83,10 +87,13 @@ usr/lib/vlc/plugins/codec/libsubsdec_plugin.so
 usr/lib/vlc/plugins/codec/libsubstx3g_plugin.so
 usr/lib/vlc/plugins/codec/libsubsusf_plugin.so
 usr/lib/vlc/plugins/codec/libsvcdsub_plugin.so
+usr/lib/vlc/plugins/codec/libsvgdec_plugin.so
 usr/lib/vlc/plugins/codec/libt140_plugin.so
 usr/lib/vlc/plugins/codec/libtheora_plugin.so
 usr/lib/vlc/plugins/codec/libtwolame_plugin.so
 usr/lib/vlc/plugins/codec/libuleaddvaudio_plugin.so
+usr/lib/vlc/plugins/codec/libvaapi_drm_plugin.so [libva]
+usr/lib/vlc/plugins/codec/libvaapi_x11_plugin.so [libva]
 usr/lib/vlc/plugins/codec/libvorbis_plugin.so
 usr/lib/vlc/plugins/codec/libx264_plugin.so
 usr/lib/vlc/plugins/codec/libx265_plugin.so
@@ -99,6 +106,7 @@ usr/lib/vlc/plugins/control/liblirc_plugin.so
 usr/lib/vlc/plugins/control/libmotion_plugin.so
 usr/lib/vlc/plugins/control/libnetsync_plugin.so
 usr/lib/vlc/plugins/control/liboldrc_plugin.so
+usr/lib/vlc/plugins/control/libxcb_hotkeys_plugin.so
 usr/lib/vlc/plugins/demux
 usr/lib/vlc/plugins/gui/libncurses_plugin.so
 usr/lib/vlc/plugins/lua/liblua_plugin.so
@@ -113,6 +121,7 @@ usr/lib/vlc/plugins/misc/libgnutls_plugin.so
 usr/lib/vlc/plugins/misc/liblogger_plugin.so
 usr/lib/vlc/plugins/misc/libstats_plugin.so
 usr/lib/vlc/plugins/misc/libvod_rtsp_plugin.so
+usr/lib/vlc/plugins/misc/libxdg_screensaver_plugin.so
 usr/lib/vlc/plugins/misc/libxml_plugin.so
 usr/lib/vlc/plugins/mux
 usr/lib/vlc/plugins/packetizer
@@ -120,13 +129,16 @@ usr/lib/vlc/plugins/services_discovery/libbonjour_plugin.so
 usr/lib/vlc/plugins/services_discovery/libmediadirs_plugin.so
 usr/lib/vlc/plugins/services_discovery/libmtp_plugin.so
 usr/lib/vlc/plugins/services_discovery/libpodcast_plugin.so
+usr/lib/vlc/plugins/services_discovery/libpulselist_plugin.so
 usr/lib/vlc/plugins/services_discovery/libsap_plugin.so
 usr/lib/vlc/plugins/services_discovery/libudev_plugin.so [udev]
 usr/lib/vlc/plugins/services_discovery/libupnp_plugin.so
+usr/lib/vlc/plugins/services_discovery/libxcb_apps_plugin.so
 usr/lib/vlc/plugins/stream_filter
 usr/lib/vlc/plugins/stream_out
 usr/lib/vlc/plugins/text_renderer/libfreetype_plugin.so
 usr/lib/vlc/plugins/text_renderer/libtdummy_plugin.so
+usr/lib/vlc/plugins/vdpau
 usr/lib/vlc/plugins/video_chroma
 usr/lib/vlc/plugins/video_filter/libadjust_plugin.so
 usr/lib/vlc/plugins/video_filter/libalphamask_plugin.so
