@@ -407,7 +407,7 @@ override_dh_installdocs:
 	dh_installdocs --link-doc=libvlccore8 --remaining-packages
 
 override_dh_makeshlibs:
-	dh_makeshlibs -Xusr/lib/vlc/libvlc_vdpau
+	dh_makeshlibs -Xlibvlc_vdpau
 
 override_dh_bugfiles:
 	dh_bugfiles -A
