@@ -150,7 +150,7 @@ Depends: fonts-freefont-ttf,
          ${shlibs:Depends}
 Recommends: vlc-plugin-notify (= ${binary:Version}),
             vlc-plugin-samba (= ${binary:Version}),
-            vlc-plugin-skins (= ${binary:Version}),
+            vlc-plugin-skins2 (= ${binary:Version}),
             vlc-plugin-access-extra (= ${binary:Version}),
             xdg-utils
 Breaks: vlc-nox (<< 2.2.0~pre2-2~),
