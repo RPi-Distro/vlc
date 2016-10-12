@@ -142,8 +142,7 @@ Vcs-Browser: https://anonscm.debian.org/cgit/pkg-multimedia/vlc.git
 Package: vlc
 Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
-Depends: fonts-freefont-ttf,
-         vlc-plugin-base (= ${binary:Version}),
+Depends: vlc-plugin-base (= ${binary:Version}),
          vlc-plugin-qt (= ${binary:Version}),
          vlc-l10n (= ${source:Version}),
          ${misc:Depends},
