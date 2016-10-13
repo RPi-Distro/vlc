@@ -300,8 +300,8 @@ Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Enhances: vlc
-Breaks: vlc (<< 2.2.4-7~)
-Replaces: vlc (<< 2.2.4-7~)
+Breaks: vlc (<< 2.2.4-7~), vlc-plugin-rdp (<< 2.2.4-6+rpi1~)
+Replaces: vlc (<< 2.2.4-7~), vlc-plugin-rdp (<< 2.2.4-6+rpi1~)
 Description: multimedia player and streamer (extra access plugins)
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
