@@ -1,4 +1,2 @@
-# The vlc executable is in vlc-nox but the .desktop file is only relevant to vlc(-with-x)
+# The vlc executable is in vlc-bin but the .desktop file is only relevant to vlc(-with-x)
 vlc binary: desktop-command-not-in-package usr/share/applications/vlc.desktop usr/bin/vlc
-# Hardening compiler flags are correctly passed (bug #695319)
-vlc binary: hardening-no-fortify-functions usr/lib/*/vlc/plugins/*_plugin.so
