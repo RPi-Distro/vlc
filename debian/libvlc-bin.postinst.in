@@ -13,6 +13,9 @@ case "$1" in
         run_vlc_cache_gen
         exit 0
         ;;
+    configure)
+        dpkg-trigger /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins
+        ;;
 esac
 
 #DEBHELPER#
