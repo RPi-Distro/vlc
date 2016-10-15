@@ -7,15 +7,15 @@ include /usr/share/dpkg/architecture.mk
 
 pluginpackages += access-extra
 pluginpackages += base
-pluginpackages += visualization
-pluginpackages += video-splitter
-pluginpackages += skins2
-pluginpackages += qt
 pluginpackages += fluidsynth
 pluginpackages += jack
 pluginpackages += notify
+pluginpackages += qt
 pluginpackages += sdl
+pluginpackages += skins2
 pluginpackages += svg
+pluginpackages += video-splitter
+pluginpackages += visualization
 pluginpackages += zvbi
 
 ifneq (,$(filter debug,$(DEB_BUILD_OPTIONS)))
