@@ -28,7 +28,6 @@ confflags += \
 	--disable-update-check \
 	--enable-fast-install \
 	--docdir=/usr/share/doc/vlc-data \
-	--libdir=/usr/lib \
 	--with-binary-version=$(DEB_VERSION) \
 	$(NULL)
 # configure features
@@ -411,3 +410,11 @@ override_dh_makeshlibs:
 
 override_dh_bugfiles:
 	dh_bugfiles -A
+
+override_dh_installdeb:
+	sed 's/#DEB_HOST_MULTIARCH#/${DEB_HOST_MULTIARCH}/g' \
+		debian/libvlc-bin.postinst.in > debian/libvlc-bin.postinst
+	sed 's/#DEB_HOST_MULTIARCH#/${DEB_HOST_MULTIARCH}/g' \
+		debian/libvlc-bin.postrm.in > debian/libvlc-bin.postrm
+	echo 'interest-noawait /usr/lib/${DEB_HOST_MULTIARCH}/vlc/plugins' > debian/libvlc-bin.triggers
+	dh_installdeb

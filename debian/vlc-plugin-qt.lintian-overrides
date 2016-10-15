@@ -1,0 +1,2 @@
+# Lintian fails to detect UTF-8 names (bug #588661)
+vlc-plugin-qt binary: spelling-error-in-binary usr/lib/*/vlc/plugins/gui/libqt4_plugin.so ment meant

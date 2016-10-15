@@ -176,6 +176,7 @@ Description: multimedia player and streamer
 Package: libvlc-dev
 Section: libdevel
 Architecture: any
+Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 Depends: libvlc5 (= ${binary:Version}), pkg-config, ${misc:Depends}
 Description: development files for libvlc
@@ -189,6 +190,7 @@ Description: development files for libvlc
 Package: libvlc5
 Section: libs
 Architecture: any
+Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Recommends: libvlc-bin (= ${binary:Version})
@@ -203,6 +205,7 @@ Description: multimedia player and streamer library
 Package: libvlccore-dev
 Section: libdevel
 Architecture: any
+Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 Depends: libvlccore8 (= ${binary:Version}), pkg-config, ${misc:Depends}
 Description: development files for libvlccore
@@ -215,11 +218,12 @@ Description: development files for libvlccore
 
 Package: libvlccore8
 Section: libs
+Multi-Arch: same
 Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
-Depends: libproxy-tools,
          ${misc:Depends},
          ${shlibs:Depends}
+Recommends: libproxy-tools
 Description: base library for VLC and its modules
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
@@ -229,6 +233,7 @@ Description: base library for VLC and its modules
 
 Package: libvlc-bin
 Architecture: any
+Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Breaks: vlc-nox (<< 2.2.4-7~)
@@ -282,6 +287,7 @@ Description: Translations for VLC
 
 Package: vlc-plugin-base
 Architecture: any
+Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          vlc-data (= ${source:Version})
@@ -296,6 +302,7 @@ Description: multimedia player and streamer (base plugins)
 
 Package: vlc-plugin-access-extra
 Architecture: any
+Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Enhances: vlc
@@ -310,6 +317,7 @@ Description: multimedia player and streamer (extra access plugins)
 
 Package: vlc-plugin-video-splitter
 Architecture: any
+Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Enhances: vlc
@@ -324,6 +332,7 @@ Description: multimedia player and streamer (video splitter plugins)
 
 Package: vlc-plugin-visualization
 Architecture: any
+Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Enhances: vlc
@@ -338,6 +347,7 @@ Description: multimedia player and streamer (visualization plugins)
 
 Package: vlc-plugin-skins2
 Architecture: any
+Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          fonts-freefont-ttf
@@ -355,9 +365,9 @@ Description: multimedia player and streamer (Skins2 plugin)
 
 Package: vlc-plugin-qt
 Architecture: any
+Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-Enhances: vlc
 Breaks: vlc (<< 2.2.4-7~)
 Replaces: vlc (<< 2.2.4-7~)
 Description: multimedia player and streamer (Qt plugin)
@@ -369,6 +379,7 @@ Description: multimedia player and streamer (Qt plugin)
 
 Package: vlc-plugin-fluidsynth
 Architecture: any
+Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 Depends: fluid-soundfont-gm | musescore-soundfont-gm,
          ${misc:Depends},
@@ -384,6 +395,7 @@ Description: FluidSynth plugin for VLC
 
 Package: vlc-plugin-jack
 Architecture: any
+Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
@@ -399,6 +411,7 @@ Description: Jack audio plugins for VLC
 
 Package: vlc-plugin-notify
 Architecture: any
+Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
@@ -412,6 +425,7 @@ Description: LibNotify plugin for VLC
 
 Package: vlc-plugin-sdl
 Architecture: any
+Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
@@ -427,6 +441,7 @@ Description: SDL video and audio output plugin for VLC
 
 Package: vlc-plugin-svg
 Architecture: any
+Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
@@ -442,6 +457,7 @@ Description: SVG plugin for VLC
 
 Package: vlc-plugin-zvbi
 Architecture: any
+Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Enhances: vlc
@@ -454,6 +470,7 @@ Description: VBI teletext plugin for VLC
 
 Package: vlc-plugin-samba
 Architecture: linux-any kfreebsd-any
+Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Breaks: vlc-nox (<< 2.2.0~pre2-2~)

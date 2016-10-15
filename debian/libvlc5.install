@@ -1,1 +1,1 @@
-usr/lib/libvlc.so.*
+usr/lib/*/libvlc.so.*
