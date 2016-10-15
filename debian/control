@@ -154,10 +154,6 @@ Recommends: vlc-plugin-notify (= ${binary:Version}),
             vlc-plugin-access-extra (= ${binary:Version}),
             vlc-plugin-video-splitter (= ${binary:Version}),
             vlc-plugin-visualization (= ${binary:Version})
-Breaks: vlc-nox (<< 2.2.0~pre2-2~),
-        vlc-plugin-pulse (<< 2.2.1-4~)
-Replaces: vlc-nox (<< 2.2.0~pre2-2~),
-          vlc-plugin-pulse (<< 2.2.1-4~)
 Provides: mp3-decoder
 Description: multimedia player and streamer
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
@@ -295,6 +291,10 @@ Depends: ${misc:Depends},
          vlc-data (= ${source:Version})
 Recommends: xdg-utils
 Suggests: libdvdcss2
+Breaks: vlc-plugin-pulse (<< 2.2.1-4~),
+        vlc-nox (<< 2.2.4-7~)
+Replaces: vlc-plugin-pulse (<< 2.2.1-4~),
+          vlc-nox (<< 2.2.4-7~)
 Description: multimedia player and streamer (base plugins)
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
@@ -309,8 +309,12 @@ Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Enhances: vlc
-Breaks: vlc (<< 2.2.4-7~), vlc-plugin-rdp (<< 2.2.4-6+rpi1~)
-Replaces: vlc (<< 2.2.4-7~), vlc-plugin-rdp (<< 2.2.4-6+rpi1~)
+Breaks: vlc (<< 2.2.4-7~),
+        vlc-nox (<< 2.2.0~pre2-2~),
+        vlc-plugin-rdp (<< 2.2.4-6+rpi1~)
+Replaces: vlc (<< 2.2.4-7~),
+          vlc-nox (<< 2.2.0~pre2-2~),
+          vlc-plugin-rdp (<< 2.2.4-6+rpi1~)
 Description: multimedia player and streamer (extra access plugins)
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
