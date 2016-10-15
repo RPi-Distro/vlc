@@ -14,6 +14,7 @@ pluginpackages += qt
 pluginpackages += sdl
 pluginpackages += skins2
 pluginpackages += svg
+pluginpackages += video-output
 pluginpackages += video-splitter
 pluginpackages += visualization
 pluginpackages += zvbi
