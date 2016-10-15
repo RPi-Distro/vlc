@@ -223,7 +223,7 @@ Section: libs
 Multi-Arch: same
 Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
-         ${misc:Depends},
+Depends: ${misc:Depends},
          ${shlibs:Depends}
 Recommends: libproxy-tools
 Description: base library for VLC and its modules
