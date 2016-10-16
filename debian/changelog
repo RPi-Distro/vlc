@@ -1,6 +1,25 @@
 vlc (2.2.4-7) UNRELEASED; urgency=medium
 
-  * 
+  * Split plugins and binaries into different packages. (Closes: #513177)
+    - libvlc-bin: constains vlc-cache-gen and triggers plugin cache
+      generation.
+    - vlc-bin: the VLC binaries.
+    - vlc-plugin-base: "base" set of plugins.
+    - vlc-plugin-qt: the Qt interface.
+    - vlc-plugin-skins2: the Skins2 interface.
+    - vlc-plugin-access-extra: extra access plugins.
+    - vlc-plugin-visualization: visualization plugins.
+    - vlc-plugin-video-splitter: video splitter plugins.
+    - vlc-plugin-video-output: video output plugins.
+    - vlc-l10n: translations.
+    - vlc: contains desktop integration and pulls in most plugins as before.
+    - vlc-nox: transitional dummy package
+  * Move libraries and plugins to multi-arch locations.
+    - debian/control:
+      + Add M-A: same for library and plugin packages.
+      + Remove most Breaks and Replaces as they are now obsolete.
+    - debian/rules: Do not override libdir.
+    - debian/*.{lintian-overrides,install}: Update paths for M-A locations.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Wed, 12 Oct 2016 01:31:14 +0200
 
