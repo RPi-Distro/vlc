@@ -151,7 +151,6 @@ Depends: vlc-plugin-base (= ${binary:Version}),
 Recommends: vlc-plugin-notify (= ${binary:Version}),
             vlc-plugin-samba (= ${binary:Version}),
             vlc-plugin-skins2 (= ${binary:Version}),
-            vlc-plugin-access-extra (= ${binary:Version}),
             vlc-plugin-video-splitter (= ${binary:Version}),
             vlc-plugin-visualization (= ${binary:Version})
 Provides: mp3-decoder
