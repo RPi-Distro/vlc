@@ -1,3 +1,11 @@
+vlc (2.2.4-7) unstable; urgency=medium
+
+  The vlc packaging was re-structured. vlc-nox is now vlc-plugin-base (for the
+  plugins) and vlc-bin (containing the binaries). vlc was split into multiple
+  vlc-plugin-* packages and now contains the DE integration.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 16 Oct 2016 23:28:41 +0200
+
 vlc (1.1.0-1) unstable; urgency=low
 
   Teletext decoding is now done through zvbi. It requires installing an
@@ -30,7 +38,7 @@ vlc (1.0.0~rc2-1) experimental; urgency=low
       accesses. Use --input-slave alsa:// or oss:// if needed.
 
     + Image video output has been rewritten into a video-filter named 'scene'.
- 
+
   For other changes, see /usr/share/doc/vlc-nox/NEWS.gz
 
  -- Christophe Mutricy <xtophe@videolan.org>  Wed, 13 May 2009 14:36:54 +0200
