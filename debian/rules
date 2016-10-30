@@ -204,6 +204,7 @@ confflags += \
 	--disable-mmx \
 	--disable-sse \
 	--disable-altivec \
+	--disable-neon \
 	$(NULL)
 removeplugins += mmx sse2 altivec neon
 else
