@@ -147,8 +147,7 @@ Depends: vlc-bin (= ${binary:Version}),
          vlc-plugin-qt (= ${binary:Version}),
          vlc-plugin-video-output (= ${binary:Version}),
          vlc-l10n (= ${source:Version}),
-         ${misc:Depends},
-         ${shlibs:Depends}
+         ${misc:Depends}
 Recommends: vlc-plugin-notify (= ${binary:Version}),
             vlc-plugin-samba (= ${binary:Version}),
             vlc-plugin-skins2 (= ${binary:Version}),
