@@ -1,8 +1,9 @@
 vlc (2.2.4-7) unstable; urgency=medium
 
-  The vlc packaging was re-structured. vlc-nox is now vlc-plugin-base (for the
-  plugins) and vlc-bin (containing the binaries). vlc was split into multiple
-  vlc-plugin-* packages and now contains the DE integration.
+  The skins2 interface plugin as well as the visualization, video splitter and
+  RDP plugins have been moved from the vlc package to separate packages. If
+  you use those plugins, make sure to install the corresponding vlc-plugin-*
+  packages.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Sun, 16 Oct 2016 23:28:41 +0200
 
