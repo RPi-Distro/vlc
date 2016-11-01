@@ -1,4 +1,4 @@
-vlc (2.2.4-8) UNRELEASED; urgency=medium
+vlc (2.2.4-8) unstable; urgency=medium
 
   * debian/NEWS: Remove NEWS entry on package split. On upgrade, new
     Recommends are installed by apt anyway.
@@ -11,7 +11,7 @@ vlc (2.2.4-8) UNRELEASED; urgency=medium
     - multiple: Add upstream patches to generate default skins2 skin
       reproducibly. (Closes: #841525)
 
- -- Sebastian Ramacher <sramacher@debian.org>  Mon, 31 Oct 2016 19:37:03 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 01 Nov 2016 13:34:46 +0100
 
 vlc (2.2.4-7) unstable; urgency=medium
 
