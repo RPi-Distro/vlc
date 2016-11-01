@@ -8,11 +8,9 @@ Subject: [PATCH 5/5] skins2: do not generate (broken) default.vlt on error
  share/Makefile.am | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/share/Makefile.am b/share/Makefile.am
-index a24d729..b08b3e8 100644
 --- a/share/Makefile.am
 +++ b/share/Makefile.am
-@@ -77,10 +77,12 @@ skins2_default_vlt_FILES = \
+@@ -78,10 +78,12 @@
  
  skins2/default.vlt: $(skins2_default_vlt_FILES)
  	$(AM_V_at)mkdir -p skins2
@@ -26,6 +24,3 @@ index a24d729..b08b3e8 100644
  
  #
  # LUA
--- 
-2.10.2
-

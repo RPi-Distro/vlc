@@ -8,11 +8,9 @@ Subject: [PATCH 3/5] skins: remove timestamp from default.vlt (fixes #4562)
  share/Makefile.am | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/share/Makefile.am b/share/Makefile.am
-index ef78505..06bfa1c 100644
 --- a/share/Makefile.am
 +++ b/share/Makefile.am
-@@ -77,6 +77,7 @@ skins2_default_vlt_FILES = \
+@@ -78,6 +78,7 @@
  
  skins2/default.vlt: $(skins2_default_vlt_FILES)
  	mkdir -p skins2
@@ -20,6 +18,3 @@ index ef78505..06bfa1c 100644
  	tar cvvzf skins2/default.vlt \
  		--owner=root --group=root --directory="$(srcdir)/skins2" \
  		default/
--- 
-2.10.2
-

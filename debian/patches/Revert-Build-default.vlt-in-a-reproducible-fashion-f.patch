@@ -13,11 +13,9 @@ This reverts commit ceacef3bbb0c34d67aa84e6ca91b360cbe2419e5.
  share/Makefile.am | 5 +----
  1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/share/Makefile.am b/share/Makefile.am
-index 9894ebb..7f56458 100644
 --- a/share/Makefile.am
 +++ b/share/Makefile.am
-@@ -77,10 +77,7 @@ skins2_default_vlt_FILES = \
+@@ -78,10 +78,7 @@
  
  skins2/default.vlt: $(skins2_default_vlt_FILES)
  	mkdir -p skins2
@@ -29,6 +27,3 @@ index 9894ebb..7f56458 100644
  
  #
  # LUA
--- 
-2.10.2
-

@@ -8,11 +8,9 @@ Subject: [PATCH 4/5] skins: implement silent mode make
  share/Makefile.am | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/share/Makefile.am b/share/Makefile.am
-index 06bfa1c..a24d729 100644
 --- a/share/Makefile.am
 +++ b/share/Makefile.am
-@@ -76,8 +76,8 @@ skins2_default_vlt_FILES = \
+@@ -77,8 +77,8 @@
  	skins2/default/subX/vol_slider.png
  
  skins2/default.vlt: $(skins2_default_vlt_FILES)
@@ -23,6 +21,3 @@ index 06bfa1c..a24d729 100644
  	tar cvvzf skins2/default.vlt \
  		--owner=root --group=root --directory="$(srcdir)/skins2" \
  		default/
--- 
-2.10.2
-
