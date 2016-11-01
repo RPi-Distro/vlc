@@ -206,7 +206,7 @@ confflags += \
 	--disable-altivec \
 	--disable-neon \
 	$(NULL)
-removeplugins += mmx sse2 neon
+removeplugins += mmx sse2 altivec neon
 else
 # amd64 and i386 specific optimizations
 ifeq (,$(filter-out amd64 i386,$(DEB_HOST_ARCH_CPU)))
@@ -229,6 +229,7 @@ ifeq (,$(filter-out powerpc,$(DEB_HOST_ARCH_CPU))$(filter powerpcspe,$(DEB_HOST_
 confflags += --enable-altivec
 else
 confflags += --disable-altivec
+removeplugins += altivec
 endif
 
 # PowerPCSPE specific optimizations
