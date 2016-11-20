@@ -74,7 +74,6 @@ confflags += \
 	--enable-qt \
 	--enable-realrtsp \
 	--enable-samplerate \
-	--enable-schroedinger \
 	--enable-sdl \
 	--enable-sdl-image \
 	--enable-sftp \
@@ -99,20 +98,21 @@ confflags += \
 	--with-kde-solid=/usr/share/solid/actions/ \
 	$(NULL)
 # Reasons for disabling features:
-# decklink -> not in Debian
-# dxva2 -> Windows only
-# fdkaac -> in Debian non-free
-# gnomevfs -> poorly maintained
-# goom -> not in Debian
-# gst-decode -> not needed when having libavcodec
-# libtar -> security issue (#737534)
-# mfx -> currently not supported on Linux
-# opencv -> developer plugin not required by end users
-# projectm -> broken
-# telx -> incompatible with zvbi
-# vpx -> not needed when having libavcodec
-# vsxu -> not in Debian
-# wasapi -> Windows only
+# decklink: not in Debian
+# dxva2: Windows only
+# fdkaac: in Debian non-free
+# gnomevfs: poorly maintained
+# goom: not in Debian
+# gst-decode: not needed when having libavcodec
+# libtar: security issue (#737534)
+# mfx: currently not supported on Linux
+# opencv: developer plugin not required by end users
+# projectm: broken
+# schroedinger: removed from Debian (#845037)
+# telx: incompatible with zvbi
+# vpx: not needed when having libavcodec
+# vsxu: not in Debian
+# wasapi: Windows only
 confflags += \
 	--disable-decklink \
 	--disable-dxva2 \
@@ -124,6 +124,7 @@ confflags += \
 	--disable-mfx \
 	--disable-opencv \
 	--disable-projectm \
+	--disable-schroedinger \
 	--disable-telx \
 	--disable-vpx \
 	--disable-vsxu \
@@ -266,7 +267,6 @@ ffmpegflags += \
 # from ffmpeg 7:2.8.6-1 debian/rules and contrib/src/ffmpeg/rules.mak
 ffmpegflags += \
 	--enable-gpl \
-	--disable-decoder=libschroedinger \
 	--enable-gnutls \
 	--disable-libass \
 	--enable-libbluray \
@@ -278,13 +278,13 @@ ffmpegflags += \
 	--disable-libfreetype \
 	--disable-libfribidi \
 	--disable-libopenjpeg \
+	--disable-libschroedinger \
 	--enable-libgme \
 	--enable-libgsm \
 	--enable-libmodplug \
 	--enable-libmp3lame \
 	--enable-libopus \
 	--enable-librtmp \
-	--enable-libschroedinger \
 	--enable-libshine \
 	--enable-libsnappy \
 	--enable-libsoxr \
