@@ -12,7 +12,6 @@ Uploaders: Loic Minier <lool@dooz.org>,
            Sebastian Ramacher <sramacher@debian.org>
 Build-Depends: autopoint,
                debhelper (>= 10),
-               dh-buildinfo,
                gettext,
                liba52-0.7.4-dev,
                libaa1-dev,

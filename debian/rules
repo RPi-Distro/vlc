@@ -398,7 +398,6 @@ ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
 	dh_install -pvlc-bin extras/analyser/_vlc usr/share/zsh/vendor-completions
 endif
 	$(if $(shell dpkg-vendor --is Ubuntu && echo true),dh_install -pvlc-bin debian/source_vlc.py usr/share/apport/package-hooks/)
-	dh_buildinfo -p vlc
 
 override_dh_installchangelogs:
 	dh_installchangelogs NEWS $(pluginpackages:%=-Nvlc-plugin-%)
