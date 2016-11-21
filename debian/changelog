@@ -1,3 +1,13 @@
+vlc (2.2.4-9) unstable; urgency=medium
+
+  * debian/control: Drop dh_buildinfo. This is now automatically recorded by
+    dpkg.
+  * debian/bug-control: Update list of packages.
+  * debian/{control,rules,vlc-plugin-base.install}: Remove libschroedinger
+    plugin since the library is about to be removed. See #845037 for details.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 22 Nov 2016 00:16:46 +0100
+
 vlc (2.2.4-8) unstable; urgency=medium
 
   * debian/NEWS: Remove NEWS entry on package split. On upgrade, new
