@@ -165,16 +165,17 @@ Description: multimedia player and streamer
  for broadcasting purposes or for movie format transformations. Support for
  most output methods is provided by this package, but features can be added by
  installing additional plugins:
+  * vlc-plugin-access-extra
   * vlc-plugin-fluidsynth
   * vlc-plugin-jack
   * vlc-plugin-notify
   * vlc-plugin-samba
   * vlc-plugin-sdl
+  * vlc-plugin-skins2
   * vlc-plugin-svg
-  * vlc-plugin-zvbi
-  * vlc-plugin-access-extra
   * vlc-plugin-video-splitter
   * vlc-plugin-visualization
+  * vlc-plugin-zvbi
 
 Package: libvlc-dev
 Section: libdevel
@@ -366,9 +367,10 @@ Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          fonts-freefont-ttf
+Recommends: vlc-bin
 Enhances: vlc
-Breaks: vlc-data (<< 2.2.4-7~)
-Replaces: vlc-data (<< 2.2.4-7~)
+Breaks: vlc (<< 2.2.4-10~), vlc-data (<< 2.2.4-7~)
+Replaces: vlc (<< 2.2.4-10~), vlc-data (<< 2.2.4-7~)
 Description: multimedia player and streamer (Skins2 plugin)
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
@@ -380,9 +382,10 @@ Package: vlc-plugin-qt
 Architecture: any
 Multi-Arch: same
 Depends: ${misc:Depends},
-         ${shlibs:Depends},
-Breaks: vlc (<< 2.2.4-7~)
-Replaces: vlc (<< 2.2.4-7~)
+         ${shlibs:Depends}
+Recommends: vlc-bin
+Breaks: vlc (<< 2.2.4-10~)
+Replaces: vlc (<< 2.2.4-10~)
 Description: multimedia player and streamer (Qt plugin)
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
