@@ -1,3 +1,11 @@
+vlc (2.2.4-10) UNRELEASED; urgency=medium
+
+  * debian/{control,*.links,*.install}: Move qvlc and svlc binaries to
+    vlc-plugin-qt and vlc-plugin-skins2. Also add vlc-bin to Recommends.
+    (Closes: #841530)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 22 Nov 2016 01:38:03 +0100
+
 vlc (2.2.4-9) unstable; urgency=medium
 
   * debian/control: Drop dh_buildinfo. This is now automatically recorded by
