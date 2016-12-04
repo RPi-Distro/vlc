@@ -3,6 +3,7 @@ vlc (2.2.4-10) UNRELEASED; urgency=medium
   * debian/{control,*.links,*.install}: Move qvlc and svlc binaries to
     vlc-plugin-qt and vlc-plugin-skins2. Also add vlc-bin to Recommends.
     (Closes: #841530)
+  * Update to ffmpeg 2.8.9.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Tue, 22 Nov 2016 01:38:03 +0100
 
