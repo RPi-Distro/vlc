@@ -346,7 +346,7 @@ override_dh_autoreconf:
 override_dh_auto_configure:
 	mkdir -p $(ffmpegbuild) $(ffmpegprefix)
 	cd $(ffmpegbuild) && \
-		$(CURDIR)/ffmpeg-2-8-8/configure $(ffmpegflags)
+		$(CURDIR)/ffmpeg-2-8-9/configure $(ffmpegflags)
 	dh_auto_build --sourcedirectory $(ffmpegbuild) -- V=1
 	$(MAKE) -C $(ffmpegbuild) install-libs install-headers V=1
 	PKG_CONFIG_PATH=$(ffmpegprefix)/lib/pkgconfig \
