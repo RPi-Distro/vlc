@@ -1,3 +1,10 @@
+vlc (2.2.4-11) UNRELEASED; urgency=medium
+
+  * debian/patches: Apply upstream to fix VLSub incorrectly announcing HTTP
+    1.1 support. (Closes: #847559)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 09 Dec 2016 15:13:14 +0100
+
 vlc (2.2.4-10) unstable; urgency=medium
 
   * debian/{control,*.links,*.install}: Move qvlc and svlc binaries to
