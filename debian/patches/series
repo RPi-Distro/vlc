@@ -9,3 +9,4 @@ skins2-do-not-save-user-and-group-names-in-the-defau.patch
 skins-remove-timestamp-from-default.vlt-fixes-4562.patch
 skins-implement-silent-mode-make.patch
 skins2-do-not-generate-broken-default.vlt-on-error.patch
+VLSub-don-t-pretend-to-support-HTTP-1.1.patch
