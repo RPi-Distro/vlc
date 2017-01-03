@@ -1,3 +1,9 @@
+vlc (2.2.4-12) UNRELEASED; urgency=medium
+
+  * Update to ffmpeg 2.8.10.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 03 Jan 2017 20:57:01 +0100
+
 vlc (2.2.4-11) unstable; urgency=medium
 
   * debian/patches: Apply upstream to fix VLSub incorrectly announcing HTTP
