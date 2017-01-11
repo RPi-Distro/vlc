@@ -1,3 +1,9 @@
+vlc (2.2.4-13) unstable; urgency=medium
+
+  * debian/control: Switch to libopenmpt's libmodplug comat layer.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 11 Jan 2017 19:50:54 +0100
+
 vlc (2.2.4-12) unstable; urgency=medium
 
   * Update to ffmpeg 2.8.10.
