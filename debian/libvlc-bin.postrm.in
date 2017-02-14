@@ -1,0 +1,9 @@
+#! /bin/sh
+set -e
+
+#DEBHELPER#
+
+if [ -d /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins ] ; then
+  rm -f /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins/plugins.dat
+  rmdir -p --ignore-fail-on-non-empty /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins
+fi

@@ -1,2 +1,2 @@
-usr/lib/vlc/plugins/access/libaccess_jack_plugin.so
-usr/lib/vlc/plugins/audio_output/libjack_plugin.so
+usr/lib/*/vlc/plugins/access/libaccess_jack_plugin.so
+usr/lib/*/vlc/plugins/audio_output/libjack_plugin.so

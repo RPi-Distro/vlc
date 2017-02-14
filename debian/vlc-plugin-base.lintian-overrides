@@ -1,0 +1,10 @@
+# Hardening compiler flags are correctly passed (bug #695319)
+vlc-plugin-base binary: hardening-no-fortify-functions usr/lib/*/vlc/plugins/*_plugin.so
+# vlc is currently not compatible with ffmpeg 3.0.
+vlc-plugin-base binary: embedded-library usr/lib/*/vlc/plugins/codec/libavcodec_plugin.so: libavutil
+vlc-plugin-base binary: embedded-library usr/lib/*/vlc/plugins/codec/libhwdummy_plugin.so: libavutil
+vlc-plugin-base binary: embedded-library usr/lib/*/vlc/plugins/video_chroma/libswscale_plugin.so: libavutil
+vlc-plugin-base binary: embedded-library usr/lib/*/vlc/plugins/video_chroma/libswscale_plugin.so: libswscale
+vlc-plugin-base binary: embedded-library usr/lib/*/vlc/plugins/video_filter/libpostproc_plugin.so: libavutil
+vlc-plugin-base binary: embedded-library usr/lib/*/vlc/plugins/video_filter/libpostproc_plugin.so: libpostproc
+vlc-plugin-base binary: embedded-library usr/lib/*/vlc/plugins/vdpau/libvdpau_avcodec_plugin.so: libavutil

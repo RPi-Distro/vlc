@@ -1,3 +1,82 @@
+vlc (2.2.4-13) unstable; urgency=medium
+
+  * debian/control: Switch to libopenmpt's libmodplug comat layer.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 11 Jan 2017 19:50:54 +0100
+
+vlc (2.2.4-12) unstable; urgency=medium
+
+  * Update to ffmpeg 2.8.10.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 03 Jan 2017 21:11:29 +0100
+
+vlc (2.2.4-11) unstable; urgency=medium
+
+  * debian/patches: Apply upstream to fix VLSub incorrectly announcing HTTP
+    1.1 support. (Closes: #847559)
+  * debian/control: Make vlc-plugin-skins2 depend on vlc-plugin-qt.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 18 Dec 2016 21:29:12 +0100
+
+vlc (2.2.4-10) unstable; urgency=medium
+
+  * debian/{control,*.links,*.install}: Move qvlc and svlc binaries to
+    vlc-plugin-qt and vlc-plugin-skins2. Also add vlc-bin to Recommends.
+    (Closes: #841530)
+  * Update to ffmpeg 2.8.9.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 04 Dec 2016 15:12:16 +0100
+
+vlc (2.2.4-9) unstable; urgency=medium
+
+  * debian/control: Drop dh_buildinfo. This is now automatically recorded by
+    dpkg.
+  * debian/bug-control: Update list of packages.
+  * debian/{control,rules,vlc-plugin-base.install}: Remove libschroedinger
+    plugin since the library is about to be removed. See #845037 for details.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 22 Nov 2016 00:16:46 +0100
+
+vlc (2.2.4-8) unstable; urgency=medium
+
+  * debian/NEWS: Remove NEWS entry on package split. On upgrade, new
+    Recommends are installed by apt anyway.
+  * debian/control:
+    - Switch from liblircclient-dev to liblirc-dev.
+    - Remove shlibs:Depends from vlc's Depends.
+  * debian/rules: Add --disable-neon when building with noopt.
+  * debian/patches:
+    - drop-check-qt-check.patch: Remove obsolete patches.
+    - multiple: Add upstream patches to generate default skins2 skin
+      reproducibly. (Closes: #841525)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 01 Nov 2016 13:34:46 +0100
+
+vlc (2.2.4-7) unstable; urgency=medium
+
+  * Split plugins and binaries into different packages. (Closes: #513177)
+    - libvlc-bin: constains vlc-cache-gen and triggers plugin cache
+      generation.
+    - vlc-bin: the VLC binaries.
+    - vlc-plugin-base: "base" set of plugins.
+    - vlc-plugin-qt: the Qt interface.
+    - vlc-plugin-skins2: the Skins2 interface.
+    - vlc-plugin-access-extra: extra access plugins.
+    - vlc-plugin-visualization: visualization plugins.
+    - vlc-plugin-video-splitter: video splitter plugins.
+    - vlc-plugin-video-output: video output plugins.
+    - vlc-l10n: translations.
+    - vlc: contains desktop integration and pulls in most plugins as before.
+    - vlc-nox: transitional dummy package
+  * Move libraries and plugins to multi-arch locations.
+    - debian/control:
+      + Add M-A: same for library and plugin packages.
+      + Remove most Breaks and Replaces as they are now obsolete.
+    - debian/rules: Do not override libdir.
+    - debian/*.{lintian-overrides,install}: Update paths for M-A locations.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 19 Oct 2016 17:59:18 +0200
+
 vlc (2.2.4-6) unstable; urgency=medium
 
   * debian/*.maintscript: Bump all versions to fix symlink-to-directory

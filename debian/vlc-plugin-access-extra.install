@@ -1,0 +1,3 @@
+usr/lib/*/vlc/plugins/access/librdp_plugin.so
+usr/lib/*/vlc/plugins/access/libvnc_plugin.so
+usr/lib/*/vlc/plugins/access/libxcb_screen_plugin.so

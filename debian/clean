@@ -2,3 +2,6 @@ extras/analyser/vlc
 extras/analyser/zsh_gen
 po/*.gmo
 po/stamp-po
+debian/libvlc-bin.postinst
+debian/libvlc-bin.postrm
+debian/libvlc-bin.triggers

@@ -1,0 +1,3 @@
+usr/bin/svlc
+usr/lib/*/vlc/plugins/gui/libskins2_plugin.so
+usr/share/vlc/skins2

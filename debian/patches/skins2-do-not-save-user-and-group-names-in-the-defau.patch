@@ -1,0 +1,24 @@
+From cac50d90bae28f7125a46422cc6d497f316c9ad6 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?R=C3=A9mi=20Denis-Courmont?= <remi@remlab.net>
+Date: Fri, 21 Oct 2016 15:35:18 +0300
+Subject: [PATCH 2/5] skins2: do not save user and group names in the default
+ skin
+
+(cherry picked from commit 79bed730df73ff241545e4ffe85ed293bf52adc1)
+---
+ share/Makefile.am | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+--- a/share/Makefile.am
++++ b/share/Makefile.am
+@@ -78,7 +78,9 @@
+ 
+ skins2/default.vlt: $(skins2_default_vlt_FILES)
+ 	mkdir -p skins2
+-	tar cvvzf skins2/default.vlt -C $(srcdir)/skins2 default/
++	tar cvvzf skins2/default.vlt \
++		--owner=root --group=root --directory="$(srcdir)/skins2" \
++		default/
+ 
+ #
+ # LUA

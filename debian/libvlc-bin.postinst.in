@@ -1,0 +1,21 @@
+#!/bin/sh
+set -e
+
+run_vlc_cache_gen() {
+    if ! /usr/lib/#DEB_HOST_MULTIARCH#/vlc/vlc-cache-gen -f /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins ; then
+        echo "WARNING: Regenerating VLC plugin cache failed."
+        echo "Please run '/usr/lib/#DEB_HOST_MULTIARCH#/vlc/vlc-cache-gen -f /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins' manually."
+    fi
+}
+
+case "$1" in
+    triggered)
+        run_vlc_cache_gen
+        exit 0
+        ;;
+    configure)
+        dpkg-trigger /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins
+        ;;
+esac
+
+#DEBHELPER#

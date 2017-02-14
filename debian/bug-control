@@ -1,2 +1,2 @@
 Submit-As: src:vlc
-Report-With: vlc vlc-nox vlc-data libvlc5 libvlccore8 vlc-plugin-fluidsynth vlc-plugin-jack vlc-plugin-notify vlc-plugin-sdl vlc-plugin-svg vlc-plugin-zvbi
+Report-With: libvlc-bin libvlc5 libvlccore8 vlc vlc-bin vlc-data vlc-l10n vlc-plugin-access-extra vlc-plugin-base vlc-plugin-fluidsynth vlc-plugin-jack vlc-plugin-notify vlc-plugin-qt vlc-plugin-sdl vlc-plugin-skins2 vlc-plugin-svg vlc-plugin-video-output vlc-plugin-video-splitter vlc-plugin-visualization vlc-plugin-zvbi

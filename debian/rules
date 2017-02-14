@@ -5,11 +5,18 @@ DEB_LDFLAGS_MAINT_APPEND=-Wl,--as-needed
 include /usr/share/dpkg/pkg-info.mk
 include /usr/share/dpkg/architecture.mk
 
-pluginpackages  = fluidsynth
+pluginpackages += access-extra
+pluginpackages += base
+pluginpackages += fluidsynth
 pluginpackages += jack
 pluginpackages += notify
+pluginpackages += qt
 pluginpackages += sdl
+pluginpackages += skins2
 pluginpackages += svg
+pluginpackages += video-output
+pluginpackages += video-splitter
+pluginpackages += visualization
 pluginpackages += zvbi
 
 ifneq (,$(filter debug,$(DEB_BUILD_OPTIONS)))
@@ -22,7 +29,6 @@ confflags += \
 	--disable-update-check \
 	--enable-fast-install \
 	--docdir=/usr/share/doc/vlc-data \
-	--libdir=/usr/lib \
 	--with-binary-version=$(DEB_VERSION) \
 	$(NULL)
 # configure features
@@ -68,7 +74,6 @@ confflags += \
 	--enable-qt \
 	--enable-realrtsp \
 	--enable-samplerate \
-	--enable-schroedinger \
 	--enable-sdl \
 	--enable-sdl-image \
 	--enable-sftp \
@@ -93,20 +98,21 @@ confflags += \
 	--with-kde-solid=/usr/share/solid/actions/ \
 	$(NULL)
 # Reasons for disabling features:
-# decklink -> not in Debian
-# dxva2 -> Windows only
-# fdkaac -> in Debian non-free
-# gnomevfs -> poorly maintained
-# goom -> not in Debian
-# gst-decode -> not needed when having libavcodec
-# libtar -> security issue (#737534)
-# mfx -> currently not supported on Linux
-# opencv -> developer plugin not required by end users
-# projectm -> broken
-# telx -> incompatible with zvbi
-# vpx -> not needed when having libavcodec
-# vsxu -> not in Debian
-# wasapi -> Windows only
+# decklink: not in Debian
+# dxva2: Windows only
+# fdkaac: in Debian non-free
+# gnomevfs: poorly maintained
+# goom: not in Debian
+# gst-decode: not needed when having libavcodec
+# libtar: security issue (#737534)
+# mfx: currently not supported on Linux
+# opencv: developer plugin not required by end users
+# projectm: broken
+# schroedinger: removed from Debian (#845037)
+# telx: incompatible with zvbi
+# vpx: not needed when having libavcodec
+# vsxu: not in Debian
+# wasapi: Windows only
 confflags += \
 	--disable-decklink \
 	--disable-dxva2 \
@@ -118,6 +124,7 @@ confflags += \
 	--disable-mfx \
 	--disable-opencv \
 	--disable-projectm \
+	--disable-schroedinger \
 	--disable-telx \
 	--disable-vpx \
 	--disable-vsxu \
@@ -198,6 +205,7 @@ confflags += \
 	--disable-mmx \
 	--disable-sse \
 	--disable-altivec \
+	--disable-neon \
 	$(NULL)
 removeplugins += mmx sse2 altivec neon
 else
@@ -259,7 +267,6 @@ ffmpegflags += \
 # from ffmpeg 7:2.8.6-1 debian/rules and contrib/src/ffmpeg/rules.mak
 ffmpegflags += \
 	--enable-gpl \
-	--disable-decoder=libschroedinger \
 	--enable-gnutls \
 	--disable-libass \
 	--enable-libbluray \
@@ -271,13 +278,13 @@ ffmpegflags += \
 	--disable-libfreetype \
 	--disable-libfribidi \
 	--disable-libopenjpeg \
+	--disable-libschroedinger \
 	--enable-libgme \
 	--enable-libgsm \
 	--enable-libmodplug \
 	--enable-libmp3lame \
 	--enable-libopus \
 	--enable-librtmp \
-	--enable-libschroedinger \
 	--enable-libshine \
 	--enable-libsnappy \
 	--enable-libsoxr \
@@ -339,7 +346,7 @@ override_dh_autoreconf:
 override_dh_auto_configure:
 	mkdir -p $(ffmpegbuild) $(ffmpegprefix)
 	cd $(ffmpegbuild) && \
-		$(CURDIR)/ffmpeg-2-8-8/configure $(ffmpegflags)
+		$(CURDIR)/ffmpeg-2-8-10/configure $(ffmpegflags)
 	dh_auto_build --sourcedirectory $(ffmpegbuild) -- V=1
 	$(MAKE) -C $(ffmpegbuild) install-libs install-headers V=1
 	PKG_CONFIG_PATH=$(ffmpegprefix)/lib/pkgconfig \
@@ -369,7 +376,7 @@ endif
 
 override_dh_install:
 	# Remove plugin cache
-	rm debian/tmp/usr/lib/vlc/plugins/plugins.dat
+	find debian/tmp/usr/lib -name plugins.dat -delete
 	# Clean up libtool crap
 	find debian/tmp -name '*.la' -delete
 	# Remove useless stuff
@@ -387,19 +394,10 @@ override_dh_install:
 	# Install
 	dh_install --fail-missing
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
-	# Check that we did not install a plugin linked with libX11 or
-	# libxcb in vlc-nox
-	LD_LIBRARY_PATH="debian/libvlccore8/usr/lib:debian/libvlc5/usr/lib$${LD_LIBRARY_PATH:+:}$${LD_LIBRARY_PATH:-}"; \
-	for file in $$(find debian/vlc-nox/usr/lib/vlc -name '*.so'); do \
-		if ldd -r $$file | egrep -q -e 'libX11\.so' -e 'libxcb\.so'; then \
-			echo warning: $$file depends on libX11 or libxcb; \
-		fi; \
-	done; \
 	# Install zsh completion
-	dh_install -pvlc-nox extras/analyser/_vlc usr/share/zsh/vendor-completions
+	dh_install -pvlc-bin extras/analyser/_vlc usr/share/zsh/vendor-completions
 endif
-	$(if $(shell dpkg-vendor --is Ubuntu && echo true),dh_install -pvlc-nox debian/source_vlc.py usr/share/apport/package-hooks/)
-	dh_buildinfo -p vlc-nox
+	$(if $(shell dpkg-vendor --is Ubuntu && echo true),dh_install -pvlc-bin debian/source_vlc.py usr/share/apport/package-hooks/)
 
 override_dh_installchangelogs:
 	dh_installchangelogs NEWS $(pluginpackages:%=-Nvlc-plugin-%)
@@ -409,7 +407,15 @@ override_dh_installdocs:
 	dh_installdocs --link-doc=libvlccore8 --remaining-packages
 
 override_dh_makeshlibs:
-	dh_makeshlibs -Xusr/lib/vlc/libvlc_vdpau
+	dh_makeshlibs -Xlibvlc_vdpau
 
 override_dh_bugfiles:
 	dh_bugfiles -A
+
+override_dh_installdeb:
+	sed 's/#DEB_HOST_MULTIARCH#/${DEB_HOST_MULTIARCH}/g' \
+		debian/libvlc-bin.postinst.in > debian/libvlc-bin.postinst
+	sed 's/#DEB_HOST_MULTIARCH#/${DEB_HOST_MULTIARCH}/g' \
+		debian/libvlc-bin.postrm.in > debian/libvlc-bin.postrm
+	echo 'interest-noawait /usr/lib/${DEB_HOST_MULTIARCH}/vlc/plugins' > debian/libvlc-bin.triggers
+	dh_installdeb
