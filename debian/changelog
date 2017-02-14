@@ -1,8 +1,9 @@
-vlc (2.2.4-14) UNRELEASED; urgency=medium
+vlc (2.2.4-14) unstable; urgency=medium
 
+  [ Mateusz Łukasik ]
   * Update to ffmpeg 2.8.11.
 
- -- Mateusz Łukasik <mati75@linuxmint.pl>  Tue, 14 Feb 2017 20:03:56 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 14 Feb 2017 20:17:50 +0100
 
 vlc (2.2.4-13) unstable; urgency=medium
 
