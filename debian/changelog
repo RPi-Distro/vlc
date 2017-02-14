@@ -1,3 +1,9 @@
+vlc (2.2.4-14) UNRELEASED; urgency=medium
+
+  * Update to ffmpeg 2.8.11.
+
+ -- Mateusz Łukasik <mati75@linuxmint.pl>  Tue, 14 Feb 2017 20:03:56 +0100
+
 vlc (2.2.4-13) unstable; urgency=medium
 
   * debian/control: Switch to libopenmpt's libmodplug comat layer.
