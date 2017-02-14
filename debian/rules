@@ -50,7 +50,6 @@ confflags += \
 	--enable-freerdp \
 	--enable-freetype \
 	--enable-fribidi \
-	--enable-gles1 \
 	--enable-gles2 \
 	--enable-gnutls \
 	--enable-jack \

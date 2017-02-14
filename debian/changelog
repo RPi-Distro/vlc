@@ -1,6 +1,8 @@
 vlc (2.2.4-14) UNRELEASED; urgency=medium
 
   * Update to ffmpeg 2.8.11.
+  * debian/{control,rules,vlc-plugin-video-output.install}: Disable OpenGL
+    ES 1 support, mesa has dropped it. (Closes: #855117)
 
  -- Mateusz Łukasik <mati75@linuxmint.pl>  Tue, 14 Feb 2017 20:03:56 +0100
 
