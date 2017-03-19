@@ -1,4 +1,4 @@
-vlc (2.2.5-1) UNRELEASED; urgency=medium
+vlc (2.2.5-1) unstable; urgency=medium
 
   * New upstream releases. (Closes: #850529)
   * debian/patches:
@@ -8,7 +8,7 @@ vlc (2.2.5-1) UNRELEASED; urgency=medium
     properly handle symlink to directory conversions once 2.2.5 is available
     in stretch.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sun, 19 Mar 2017 21:05:13 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 19 Mar 2017 21:50:23 +0100
 
 vlc (2.2.4-14) unstable; urgency=medium
 
