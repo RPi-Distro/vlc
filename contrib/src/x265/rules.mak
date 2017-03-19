@@ -27,6 +27,7 @@ x265: x265-$(X265_VERSION).tar.bz2 .sum-x265
 	mkdir -p $@-$(X265_VERSION)
 	$(BZCAT) "$<" | (cd $@-$(X265_VERSION) && tar xv --strip-components=1)
 	$(call pkg_static,"source/x265.pc.in")
+	$(APPLY) $(SRC)/x265/gcc6-build.patch
 	$(MOVE)
 
 .x265: x265 toolchain.cmake

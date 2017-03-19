@@ -373,7 +373,7 @@ Date:   Tue Dec 28 14:53:28 2010 +0100
     
     Conflicts:
     
-    	modules/stream_filter/httplive.c
+            modules/stream_filter/httplive.c
 
 commit cb87768b569875c011c58120100095451bb9032c
 Author: Jean-Paul Saman <jean-paul.saman@m2x.nl>
@@ -863,7 +863,7 @@ Date:   Tue Dec 14 12:10:13 2010 +0100
     
     Conflicts:
     
-    	modules/stream_filter/httplive.c
+            modules/stream_filter/httplive.c
 
 commit c44a8218833415bb456a9c708165c482eaeb3971
 Author: Jean-Paul Saman <jean-paul.saman@m2x.nl>
@@ -901,8 +901,8 @@ Date:   Fri Dec 3 16:11:26 2010 +0100
     The framerate as specified by the user or detected by the v4l2 access input was
     overwritten by the rawvideo decoder. The module did not specify:
     
-    	es_fmt.video.i_frame_rate
-    	es_fmt.video.i_frame_rate_base
+            es_fmt.video.i_frame_rate
+            es_fmt.video.i_frame_rate_base
     
     Their default values are 0. The rawvideo decoder detects that there is no framerate
     specified and resorts to its own default (fps 25.0). Through setting framerate and
@@ -1425,7 +1425,7 @@ Date:   Sun Dec 5 19:12:38 2010 +0200
     
     Conflicts:
     
-    	src/win32/thread.c
+            src/win32/thread.c
 
 commit c97e19592729332a491ec0912b9d18976f39153c
 Author: Rémi Denis-Courmont <remi@remlab.net>
@@ -1659,7 +1659,7 @@ Date:   Thu Dec 2 22:18:40 2010 +0100
     
     Conflicts:
     
-    	include/vlc/libvlc_media.h
+            include/vlc/libvlc_media.h
 
 commit 4bf6ddb1c54a3bc614a81e126508c2ac85cddfa5
 Author: Laurent Aimar <fenrir@videolan.org>
@@ -7009,7 +7009,7 @@ Date:   Sun Oct 10 12:43:38 2010 +0300
     
     Conflicts:
     
-    	modules/demux/ps.h
+            modules/demux/ps.h
 
 commit 2bbfeddf9631c255d72bff8f36650ca46c74f000
 Author: Pierre d'Herbemont <pdherbemont@free.fr>
@@ -7449,7 +7449,7 @@ Date:   Sat Oct 2 18:54:53 2010 +0300
     
     Conflicts:
     
-    	include/vlc/libvlc.h
+            include/vlc/libvlc.h
 
 commit 39349f5c16dbf4d7dc7e474e7b596bd34c380730
 Author: Tony Vankrunkelsven <Tony.Vankrunkelsven@otnsystems.com>
@@ -8362,8 +8362,8 @@ Date:   Fri Jul 30 11:51:12 2010 +0200
     
     Conflicts:
     
-    	projects/mozilla/vlcplugin.cpp
-    	projects/mozilla/vlcplugin.h
+            projects/mozilla/vlcplugin.cpp
+            projects/mozilla/vlcplugin.h
 
 commit 5e07b00c3432b2dd79d6134cab6992afaabbca94
 Author: Rémi Denis-Courmont <remi@remlab.net>
@@ -11389,7 +11389,7 @@ Date:   Wed Jul 21 20:25:59 2010 +0300
     Disable swscale if avcodec is disabled
 
 commit 1c6ac615a82aa1d8bab6295c828238e126ad201a
-Merge: c1cf203 a81518d
+Merge: c1cf203b27 a81518d6c9
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Wed Jul 21 18:16:32 2010 +0200
 
@@ -12857,7 +12857,7 @@ Date:   Wed Jul 7 16:46:17 2010 +0200
     
     Conflicts:
     
-    	projects/mozilla/vlcshell.cpp
+            projects/mozilla/vlcshell.cpp
 
 commit 87c1d81632bf8c90fbe8f50b74f8326baa02b500
 Author: Jean-Paul Saman <jean-paul.saman@m2x.nl>
@@ -20359,7 +20359,7 @@ Date:   Wed Apr 21 21:33:32 2010 +0300
     
     Conflicts:
     
-    	src/modules/modules.h
+            src/modules/modules.h
 
 commit aa4b22e8cb36212724fc3dab0aa7586f175bc97e
 Author: Laurent Aimar <fenrir@videolan.org>
@@ -22004,9 +22004,9 @@ Date:   Wed Apr 7 21:27:17 2010 +0300
     
     Conflicts:
     
-    	bindings/phonon
-    	bindings/python
-    	configure.ac
+            bindings/phonon
+            bindings/python
+            configure.ac
 
 commit 2a68b1d53d86ee50c8f2b06009519e0345d998f2
 Author: Erwan Tulou <erwan10@videolan.org>
@@ -24139,7 +24139,7 @@ Date:   Sat Mar 13 18:17:07 2010 +0200
     
     Conflicts:
     
-    	bindings/python
+            bindings/python
 
 commit afcdbd2da4b1072c0c20c274b15e1177942fc784
 Author: Jakob Leben <jleben@videolan.org>
@@ -25148,7 +25148,7 @@ Date:   Wed Mar 3 10:02:12 2010 +0100
     
     Conflicts:
     
-    	projects/mozilla/vlcplugin.cpp
+            projects/mozilla/vlcplugin.cpp
 
 commit 37a18cbfcc90f731a4b6843c21c3dfab80d6fd1b
 Author: Jean-Paul Saman <jean-paul.saman@m2x.nl>
@@ -25249,7 +25249,7 @@ Date:   Wed Mar 3 20:51:49 2010 +0200
     kilobit is kb, not kB
 
 commit 778a6f0719a6bf547917ff9f2ef7fd84769fd901
-Merge: 8d76c39 f8aeca6
+Merge: 8d76c39a23 f8aeca6aea
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Wed Mar 3 20:09:49 2010 +0200
 
@@ -27414,8 +27414,8 @@ Date:   Wed Feb 17 23:23:50 2010 +0200
     
     Conflicts:
     
-    	bindings/python
-    	src/control/media_player.c
+            bindings/python
+            src/control/media_player.c
 
 commit 1994eafa59427665edd4488445304597986bc14f
 Author: Rémi Denis-Courmont <remi@remlab.net>
@@ -27677,7 +27677,7 @@ Date:   Tue Feb 16 01:51:17 2010 +0100
     
     Conflicts:
     
-    	modules/services_discovery/freebox.c
+            modules/services_discovery/freebox.c
     
     freebox luasd is doing a wonderful job now.
 
@@ -31900,7 +31900,7 @@ Date:   Mon Feb 1 01:56:02 2010 +0100
     macosx/framework: Get rid of VLCMediaListAspect, and remove a bunch of exception.
 
 commit cb9e605beef6ce4134bec22a90aa54746444e667
-Merge: 0afbf87 58b0476
+Merge: 0afbf87808 58b047635b
 Author: JP Dinger <jpd@videolan.org>
 Date:   Mon Feb 1 01:57:41 2010 +0100
 
@@ -32479,12 +32479,12 @@ Date:   Sat Jan 30 17:22:25 2010 +0200
     
     Conflicts:
     
-    	modules/gui/qt4/qt4.cpp
-    	modules/video_output/msw/events_vo.c
-    	modules/video_output/x11/xcommon.c
-    	modules/video_output/xcb/common.c
-    	modules/video_output/xcb/window.c
-    	src/video_output/window.c
+            modules/gui/qt4/qt4.cpp
+            modules/video_output/msw/events_vo.c
+            modules/video_output/x11/xcommon.c
+            modules/video_output/xcb/common.c
+            modules/video_output/xcb/window.c
+            src/video_output/window.c
 
 commit c460870aebf217e8b73ef48dde04dd4fd34532f3
 Author: Felix Paul Kühne <fkuehne@videolan.org>
@@ -37833,8 +37833,8 @@ Date:   Wed Jan 6 14:22:34 2010 +0200
     
     Conflicts:
     
-    	compat/tdestroy.c
-    	include/vlc_fixups.h
+            compat/tdestroy.c
+            include/vlc_fixups.h
 
 commit 9106655f0284fbdafae896d9f25ed0545df4c719
 Author: Pierre Ynard <linkfanel@yahoo.fr>
@@ -38317,7 +38317,7 @@ Date:   Mon Jan 4 13:30:13 2010 +0100
     
     Conflicts:
     
-    	extras/contrib/Makefile
+            extras/contrib/Makefile
     
     We can't use a fat set of contribs, because the headers do differ
     between 32bits & 64 bits builds
@@ -38586,3 +38586,30 @@ Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Fri Jan 1 23:55:10 2010 +0100
 
     Win32: Be sure to strip axvlc.dll and npvlc.dll
+
+commit f40ec470c9a04e91c9102c764db5b92828ad1849
+Author: Pierre d'Herbemont <pdherbemont@free.fr>
+Date:   Fri Jan 1 18:42:30 2010 +0100
+
+    macosx/framework: contrib are fat now.
+
+commit 5a20b90e8c6920a79d7d7b7ca56fb011b97dfc73
+Author: Pierre d'Herbemont <pdherbemont@free.fr>
+Date:   Thu Dec 31 20:36:00 2009 +0100
+
+    macosx/framework: Support multiple architectures.
+    
+    Warning, building fat are not supported by automake if dependency-tracking is enabled.
+    That's why this fat build is disabled by default.
+
+commit 65ed93af7b623248bae389f656698248fe52bf8f
+Author: Pierre d'Herbemont <pdherbemont@free.fr>
+Date:   Thu Dec 31 19:33:06 2009 +0100
+
+    configure: Detect fat contribs.
+
+commit 2e024847e1bbfad3ddf4aa9fcb01c90c0e41c854
+Author: Pierre d'Herbemont <pdherbemont@free.fr>
+Date:   Thu Dec 31 19:30:49 2009 +0100
+
+    contrib: Build fat binary using binary contrib on Mac OS X.

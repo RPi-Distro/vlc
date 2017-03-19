@@ -227,7 +227,7 @@ Date:   Fri Dec 12 18:41:18 2014 +0200
     Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
     
     Conflicts:
-    	modules/video_chroma/swscale.c
+            modules/video_chroma/swscale.c
 
 commit a09ec05d4250ecb59694e9d845fb37bc8ef13305
 Author: Jean-Baptiste Kempf <jb@videolan.org>
@@ -524,7 +524,7 @@ Date:   Wed Dec 3 11:47:01 2014 +0900
     Signed-off-by: KO Myung-Hun <komh@chollian.net>
     
     Conflicts:
-    	configure.ac
+            configure.ac
     Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
 
 commit 37e310d3e4901c1199a991d36b07d03b647c5fd6
@@ -1440,7 +1440,7 @@ Date:   Fri Nov 14 19:14:24 2014 +0200
     (cherry picked from commit 1d410d6d4cb3de58125cbb5db431d6ad9381b0e0)
     
     Conflicts:
-    	configure.ac
+            configure.ac
 
 commit e35772f8a82e83fc11c2059c535aa5419d8ea7f1
 Author: Rémi Denis-Courmont <remi@remlab.net>
@@ -2431,7 +2431,7 @@ Date:   Sat Oct 25 20:45:58 2014 +0300
     (cherry picked from commit 44d4685b1ca4d1b58c4ce77d479103d482be5d14)
     
     Conflicts:
-    	modules/video_chroma/swscale.c
+            modules/video_chroma/swscale.c
 
 commit de72116538fcf1bf3bd60dae8bda1fd9689d2a70
 Author: Rémi Denis-Courmont <remi@remlab.net>
@@ -2731,7 +2731,7 @@ Date:   Wed Oct 1 21:52:01 2014 +0200
     Signed-off-by: David Fuhrmann <dfuhrmann@videolan.org>
     
     Conflicts:
-    	modules/gui/macosx/StringUtility.m
+            modules/gui/macosx/StringUtility.m
 
 commit 0baaf44f1be63abc714f175927e1e67af3d8994d
 Author: David Fuhrmann <dfuhrmann@videolan.org>
@@ -2880,7 +2880,7 @@ Date:   Sat Oct 11 21:42:10 2014 -0400
     Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
     
     Conflicts:
-    	contrib/src/speexdsp/rules.mak
+            contrib/src/speexdsp/rules.mak
 
 commit 41cbb49b15d67c0b03299fdebe7e56e16b5d4313
 Author: Felix Paul Kühne <fkuehne@videolan.org>
@@ -3079,7 +3079,7 @@ Date:   Tue Oct 7 23:16:11 2014 +0300
     (cherry picked from commit 1a4dc0bd85d94c9ad0b50268aed009840bf2d30e)
     
     Conflicts:
-    	include/vlc_tls.h
+            include/vlc_tls.h
 
 commit ef84c9c97d85131a0fe33dd59a5bf02e34615cfb
 Author: Igor Prokopenkov <cmyk777@gmail.com>
@@ -3186,7 +3186,7 @@ Date:   Sat Oct 4 16:29:59 2014 +0300
     (cherry picked from commit f6da7e32f09d9671e92d90d98b7a2c51c28290b5)
     
     Conflicts:
-    	modules/hw/vdpau/avcodec.c
+            modules/hw/vdpau/avcodec.c
 
 commit 77db2e04bea273991ab7079a25b94afb59ec28f9
 Author: Rémi Denis-Courmont <remi@remlab.net>
@@ -3720,7 +3720,7 @@ Date:   Mon Sep 15 19:16:18 2014 +0300
     (cherry picked from commit 6e82ebed93d6f017af4369d8712f7063421ee9ca)
     
     Conflicts:
-    	modules/hw/vdpau/chroma.c
+            modules/hw/vdpau/chroma.c
 
 commit 246d92bc05bb4e6e63d207d95242f1461b5549c0
 Author: Rémi Denis-Courmont <remi@remlab.net>
@@ -3739,7 +3739,7 @@ Date:   Sun Sep 14 17:53:03 2014 +0300
     (cherry picked from commit 7df464879acb66d7a0a19905e3d48b7e6b5fcf33)
     
     Conflicts:
-    	src/input/decoder.c
+            src/input/decoder.c
 
 commit 001134195f8392f3f3e649091dc98f9250a31dec
 Author: Thierry Foucu <tfoucu@gmail.com>
@@ -4454,7 +4454,7 @@ Date:   Sat Aug 23 17:26:19 2014 +0300
     (cherry picked from commit 6c12257639281c7631c2159d1efd3a052df09c34)
     
     Conflicts:
-    	modules/misc/gnutls.c
+            modules/misc/gnutls.c
 
 commit 2be9caa6c902499a23c27a5866f954f684f480e9
 Author: Rémi Denis-Courmont <remi@remlab.net>
@@ -5247,7 +5247,7 @@ Date:   Fri Aug 15 20:07:07 2014 +0300
     (cherry picked from commit fdb9f79e5ffdb566a1b5f5940d83f8cd93f08783)
     
     Conflicts:
-    	src/input/input.c
+            src/input/input.c
 
 commit ed203d9397547c208ba5e933db98cab6b2b14e5c
 Author: Jean-Baptiste Kempf <jb@videolan.org>
@@ -5512,7 +5512,7 @@ Date:   Sun Jul 13 17:33:44 2014 +0200
     Signed-off-by: David Fuhrmann <dfuhrmann@videolan.org>
     
     Conflicts:
-    	modules/gui/macosx/MainMenu.m
+            modules/gui/macosx/MainMenu.m
 
 commit c2ceef83fd36fe009c1ef5b4eae239c27538673a
 Author: Felix Paul Kühne <fkuehne@videolan.org>
@@ -5891,7 +5891,7 @@ Date:   Sun Jul 13 17:33:44 2014 +0200
     (cherry picked from commit e972fb43c372c90e0f2963fe702b77455ddc7639)
     
     Conflicts:
-    	modules/gui/macosx/MainMenu.m
+            modules/gui/macosx/MainMenu.m
 
 commit b03c160c9d940a26373686f58a847ce76661907a
 Author: Sean McGovern <gseanmcg@gmail.com>
@@ -8561,7 +8561,7 @@ Date:   Thu May 29 17:13:21 2014 +0200
     This reverts commit 72b60566a25ca24cb4cf54d394a8275bee5cc9e8.
     
     Conflicts:
-    	modules/gui/macosx/macosx.m
+            modules/gui/macosx/macosx.m
 
 commit f694412284ad5b40599badcaceafee7c77863205
 Author: David Fuhrmann <dfuhrmann@videolan.org>
@@ -8655,7 +8655,7 @@ Date:   Thu May 29 20:03:01 2014 +0800
     This reverts commit 85d23edc2c6ad74caf0b10afd51fecc81dc200d2.
     
     Conflicts:
-    	po/lv.po
+            po/lv.po
     
     This broke subtitles.
 
@@ -12818,7 +12818,7 @@ Date:   Tue Jan 14 14:43:23 2014 +0100
     Signed-off-by: Rafaël Carré <funman@videolan.org>
     
     Conflicts:
-    	extras/package/win32/NSIS/languages/danish.nsh
+            extras/package/win32/NSIS/languages/danish.nsh
 
 commit 61fb6dc5d4f4be0993db38b25dd53b1cdb77ba42
 Author: Rafaël Carré <funman@videolan.org>
@@ -19297,7 +19297,7 @@ Date:   Sun Jan 26 18:57:05 2014 +0100
     This reverts commit d39285a18cd99fdc76a20fc317074e0ee862a504.
     
     Conflicts:
-    	modules/gui/qt4/components/simple_preferences.cpp
+            modules/gui/qt4/components/simple_preferences.cpp
 
 commit 0206828ae8f09f856bd4ee02b112202b977f7cc9
 Author: David Fuhrmann <david.fuhrmann@googlemail.com>
@@ -21107,3 +21107,75 @@ Author: Rémi Duraffort <ivoire@videolan.org>
 Date:   Tue Dec 31 15:52:43 2013 +0100
 
     chorus: remove wrong (and uneeded) dealocations
+
+commit 33f3158d5e79432b06ae8014aa999514f6f19f90
+Author: Denis Charmet <typx@dinauz.org>
+Date:   Wed Jan 1 22:35:36 2014 +0100
+
+    Remove faulty return when vobsub doesn't define a size.
+    
+    Close #10111
+
+commit 776f719e75bad42a1e684b5c074a95cf7f9fc3b1
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 1 20:31:26 2014 +0200
+
+    input_CreateFilename: take explicit input thread pointer
+    
+    This should fix meta-data expansion in LibVLC (i.e. when recording).
+
+commit 68bc7fd968916a68eb16873431d48e4185669838
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 1 20:25:52 2014 +0200
+
+    str_format_meta: take input thread pointer rather than playlist
+
+commit 098f3844b086a18c332f663a13c586bf1881b297
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 1 20:17:32 2014 +0200
+
+    str_format_meta: clean up
+
+commit 27da83668571d11e8fed3bd87d2b396dfd5b57b0
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 1 19:19:26 2014 +0200
+
+    dbus: use pl_CurrentInput()
+
+commit 5be88dcfc4e3585a90b8cdcbe6aee28c471173d4
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 1 19:19:13 2014 +0200
+
+    pl_CurrentInput: more specific prototype
+
+commit b3f95b9594696b80ad5c3f0053b1507306c9ccb5
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 1 18:07:45 2014 +0200
+
+    intf-add: small simplification
+
+commit 11c1769c986a690a75e8fe5df11e293f5f52e206
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 1 18:55:49 2014 +0200
+
+    libvlc: look "syslog" value only once, simplify
+
+commit bc1fa152b3f17a26eef9cf57596c8368b6e30829
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 1 18:52:01 2014 +0200
+
+    libvlc: look the value of intf up only once when used
+
+commit d19530bcb2f4721e5c4b2704865c0d86440d899b
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 1 18:38:19 2014 +0200
+
+    libvlc: remove "evil" daemon global variable and clean up
+    
+    (The unlikely corner case of ENOMEM remains unhandled/unfixed.)
+
+commit ec44ae90ab3beb3f06371d506fd3e2ad104f9796
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 1 17:57:26 2014 +0200
+
+    Remove stray comment

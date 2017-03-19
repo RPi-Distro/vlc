@@ -2,7 +2,7 @@
  * screen.c: Screen capture module.
  *****************************************************************************
  * Copyright (C) 2004-2008 VLC authors and VideoLAN
- * $Id: 4b1f4f528b3c7b894a1c194fbba9d0e91e58dfde $
+ * $Id: 862dbb42cae2a1b7ddeea2a203cea8c4ce7dc8ca $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan dot org>
@@ -178,6 +178,9 @@ static int Open( vlc_object_t *p_this )
         free( p_sys );
         return VLC_EGENERIC;
     }
+
+    p_sys->fmt.video.i_frame_rate      = 1000000;
+    p_sys->fmt.video.i_frame_rate_base = p_sys->i_incr;
 
     msg_Dbg( p_demux, "screen width: %i, height: %i, depth: %i",
              p_sys->fmt.video.i_width, p_sys->fmt.video.i_height,

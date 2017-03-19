@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
  * Copyright © 2006 Rémi Denis-Courmont
- * $Id: ce3cc795a3993b127cc9b2296fb8a6a3ab857109 $
+ * $Id: 54a2aa487814b1a1c1df23b71025f894bb84e917 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr> - original code
  *          Rémi Denis-Courmont <rem # videolan.org> - EPSV support
@@ -939,10 +939,7 @@ static int ftp_StartStream( vlc_object_t *p_access, access_sys_t *p_sys,
 
     if( *psz_ip )
     {
-        char psz_fmt[7] = "(|||%u";
-        psz_fmt[1] = psz_fmt[2] = psz_fmt[3] = psz_parser[1];
-
-        if( sscanf( psz_parser, psz_fmt, &i_port ) < 1 )
+        if( sscanf( psz_parser, "(%*3c%u", &i_port ) < 1 )
         {
             free( psz_arg );
             msg_Err( p_access, "cannot parse passive mode response" );

@@ -7684,8 +7684,8 @@ Author: Benjamin Pracht <bigben@videolan.org>
 Date:   Fri Aug 6 20:56:46 2004 +0000
 
     * All :
-    	- added a sdp=file option
-    	- it is now possible to have a sap and a rtsp/http/file announce at the same time
+            - added a sdp=file option
+            - it is now possible to have a sap and a rtsp/http/file announce at the same time
 
 commit b5c2d452c919c7ae398969e5a8875858b35f2fa3
 Author: Sam Hocevar <sam@videolan.org>
@@ -10412,18 +10412,18 @@ Author: Clément Stenac <zorglub@videolan.org>
 Date:   Sat Jun 12 00:19:59 2004 +0000
 
     * Added new functions to the Mozilla plugin
-    	- set_volume
-       	- get_volume
-    	- mute
-    	- clear_playlist
-    	- add_item
-    	- next
-    	- previous
-    	- isplaying
-    	- ge_length
-    	- get_position
-    	- get_time
-    	- seek
+            - set_volume
+            - get_volume
+            - mute
+            - clear_playlist
+            - add_item
+            - next
+            - previous
+            - isplaying
+            - ge_length
+            - get_position
+            - get_time
+            - seek
     
     * Fixed VLC_VolumeSet and a description
 
@@ -11225,7 +11225,7 @@ Author: Clément Stenac <zorglub@videolan.org>
 Date:   Mon May 31 17:48:38 2004 +0000
 
     * wizard.cpp : - TTL and SAP support
-    	       - Sanity checks for transcode output file
+                   - Sanity checks for transcode output file
     
     * Modules.am : Added new "icons" to dist
 
@@ -11410,10 +11410,10 @@ Date:   Sun May 30 14:43:12 2004 +0000
 
     * New wizard is now about usable, yet unfinished
         Todo
-    	- Heavy testing
-    	- Missing sanity checks
-    	- Extra options
-    	- Fix layout bugs
+            - Heavy testing
+            - Missing sanity checks
+            - Extra options
+            - Fix layout bugs
     
     * playlist.cpp : Smaller layout, icons to do...
     
@@ -13155,17 +13155,17 @@ Date:   Fri Apr 30 16:44:59 2004 +0000
 
      + macosx/vout*: use two pictures and OpenGL textures so a texture
                      cannot be affected by VLC loading the next picture
-    		 (should fix the artifacts when moving or resizing
-    		  the window)
+                     (should fix the artifacts when moving or resizing
+                      the window)
 
 commit 90376941d2b260f4319b81345064a271f2f25b02
 Author: Benjamin Pracht <bigben@videolan.org>
 Date:   Fri Apr 30 15:44:06 2004 +0000
 
     * Use the playlist info panel instead of the old one everywhere
-    	- old VLCInfo and InfoPanel have been removed from nib file
-    	- VLCPlaylistInfo and PlaylistInfoPanel have been renamed
-    	- old info.c and info.h are still in repository, but not compiled, should I remove them ?
+            - old VLCInfo and InfoPanel have been removed from nib file
+            - VLCPlaylistInfo and PlaylistInfoPanel have been renamed
+            - old info.c and info.h are still in repository, but not compiled, should I remove them ?
 
 commit 4a3df5558818356c879d3c55337082bb4fd57671
 Author: Gildas Bazin <gbazin@videolan.org>
@@ -13858,10 +13858,10 @@ commit 2673f050dd7c9032ff7cb729a50f0f2ae5dcb0fa
 Author: Jean-Paul Saman <jpsaman@videolan.org>
 Date:   Sat Apr 24 10:18:08 2004 +0000
 
-    dvb/access.c 	removed old commandline syntax
-    		better debug information
-    dvb/dvb.c	debug message beautifying
-    dvb/qpsk.c	textual changes
+    dvb/access.c    removed old commandline syntax
+                    better debug information
+    dvb/dvb.c       debug message beautifying
+    dvb/qpsk.c      textual changes
 
 commit 82608ffe7f76950fbe2835beebf8e71473d8e81b
 Author: Jean-Paul Saman <jpsaman@videolan.org>
@@ -14581,9 +14581,9 @@ Date:   Sun Apr 18 18:21:09 2004 +0000
     
       - The SAP handler now runs in a separate thread.
       - RTP sessions can be announced with sap (sdp=sap://,name=...)
-    	TODO: Make this more configurable
+            TODO: Make this more configurable
       - Better SDP generation (the timestamp problem is not resolved)
-    	About this, there is a problem : as, for a RTP session, the URI
+            About this, there is a problem : as, for a RTP session, the URI
             is the complete SDP, if the session is recreated, as the URI has
             changed, a new item is added to the playlist
       - Experimental flow control algorithm :
@@ -18632,9 +18632,9 @@ Author: Clément Stenac <zorglub@videolan.org>
 Date:   Mon Feb 16 17:16:24 2004 +0000
 
     Added an option "recursive"
-    	- none: subdirectories are skipped
-    	- collapse: former behaviour, subdirectories are not expanded
-    	- expand: all subdirectories are fully expanded
+            - none: subdirectories are skipped
+            - collapse: former behaviour, subdirectories are not expanded
+            - expand: all subdirectories are fully expanded
     
     I dislike these strings, please find other ones :)
 
@@ -21543,7 +21543,7 @@ Author: Simon Latapie <garf@videolan.org>
 Date:   Sun Jan 11 14:53:36 2004 +0000
 
      * ncurses.c : 5% forward and backward are definitely not precise enough.
-     	       put 1% instead.
+                   put 1% instead.
 
 commit a566e8b48ad1c05afa9847572ab490fb5d44520f
 Author: Clément Stenac <zorglub@videolan.org>
@@ -22550,3 +22550,16 @@ Author: Rocky Bernstein <rocky@videolan.org>
 Date:   Fri Jan 2 04:44:34 2004 +0000
 
     Attempt to make easier to understand and easier to complete.
+
+commit 78e3a1d6b6300901766a16ab784dafd80d45ee01
+Author: Clément Stenac <zorglub@videolan.org>
+Date:   Thu Jan 1 17:41:25 2004 +0000
+
+    * Updated german and french translations
+    * Updated version number and Changelog
+
+commit 05f98788679813a111a48589f12699043e461313
+Author: Rocky Bernstein <rocky@videolan.org>
+Date:   Thu Jan 1 15:56:56 2004 +0000
+
+    RenderRV16 handles scaling. But seems to slow to render subtitles.

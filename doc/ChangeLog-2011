@@ -5352,7 +5352,7 @@ Date:   Fri Nov 18 16:19:51 2011 +0200
     
     Conflicts:
     
-    	COMMITTERS
+            COMMITTERS
 
 commit a30d9526b9bda1f15b9361ceb40c3ebb5effd830
 Author: Jean-Baptiste Kempf <jb@videolan.org>
@@ -7569,7 +7569,7 @@ Date:   Mon Oct 24 03:33:11 2011 +0200
     
     Conflicts:
     
-    	src/network/httpd.c
+            src/network/httpd.c
 
 commit e20af8a81f5188342659557a4e962376faec82ff
 Author: Christophe Mutricy <xtophe@chewa.net>
@@ -8731,7 +8731,7 @@ Date:   Mon Oct 10 14:49:21 2011 +0200
     
     Conflicts:
     
-    	modules/stream_filter/httplive.c
+            modules/stream_filter/httplive.c
 
 commit 5d772b7e8e59afa61c3efa79a6236ecfcf1fea4b
 Author: Jean-Baptiste Kempf <jb@videolan.org>
@@ -13312,7 +13312,7 @@ Date:   Thu Jun 16 23:39:01 2011 +0100
     
     Conflicts:
     
-    	extras/package/win32/vlc.win32.nsi.in
+            extras/package/win32/vlc.win32.nsi.in
     
     Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
 
@@ -14324,7 +14324,7 @@ Date:   Sun Aug 28 18:42:35 2011 +0300
     
     Conflicts:
     
-    	src/win32/thread.c
+            src/win32/thread.c
 
 commit 6a0baf64e2b1674918b99494305e06ef9f3b032d
 Author: Jean-Baptiste Kempf <jb@videolan.org>
@@ -23695,7 +23695,7 @@ Date:   Mon Jun 6 23:07:00 2011 +0300
     
     Conflicts:
     
-    	modules/codec/schroedinger.c
+            modules/codec/schroedinger.c
 
 commit 767026d4a0efea827347fbfc1cbb42e09a2f7b1c
 Author: Laurent Aimar <fenrir@videolan.org>

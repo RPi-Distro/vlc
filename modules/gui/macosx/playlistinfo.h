@@ -2,7 +2,7 @@
  * playlistinfo.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 5574cf87cbe035289c48e02942299a4aa57a54c4 $
+ * $Id: ca3d463478b6dd62e4f2be667ee9fe539c24af4e $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -132,6 +132,8 @@
 @property (readonly) int numberOfChildren;
 @property (readonly) NSString * name;
 @property (readonly) NSString * value;
+
+- (void)setChildren:(NSMutableArray *)children;
 
 - (VLCInfoTreeItem *)childAtIndex:(NSUInteger)i_index;
 - (void)refresh;

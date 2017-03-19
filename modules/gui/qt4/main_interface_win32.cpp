@@ -2,7 +2,7 @@
  * main_interface_win32.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: 19269f731d703e7f2328795e7012cdf135f6edf0 $
+ * $Id: 25b653e43a81a96910c5f82174b39ed0d27a6d71 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -112,7 +112,6 @@ void MainInterface::createTaskBarButtons()
 {
     /*Here is the code for the taskbar thumb buttons
     FIXME:We need pretty buttons in 16x16 px that are handled correctly by masks in Qt
-    FIXME:the play button's picture doesn't changed to pause when clicked
     */
     p_taskbl = NULL;
     himl = NULL;
@@ -194,7 +193,16 @@ void MainInterface::createTaskBarButtons()
     }
     CONNECT( THEMIM->getIM(), playingStatusChanged( int ),
              this, changeThumbbarButtons( int ) );
+    if( THEMIM->getIM()->playingStatus() == PLAYING_S )
+        changeThumbbarButtons( THEMIM->getIM()->playingStatus() );
 }
+
+#if HAS_QT5
+bool MainInterface::nativeEvent(const QByteArray &, void *message, long *result)
+{
+    return winEvent( static_cast<MSG*>( message ), result );
+}
+#endif
 
 bool MainInterface::winEvent ( MSG * msg, long * result )
 {
@@ -343,12 +351,19 @@ void MainInterface::changeThumbbarButtons( int i_status )
             return;
     }
 
-    HRESULT hr;
-    if( videoWidget && THEMIM->getIM()->hasVideo() )
-        hr =  p_taskbl->ThumbBarUpdateButtons(WinId(videoWidget), 3, thbButtons);
-    else
-        hr =  p_taskbl->ThumbBarUpdateButtons(WinId(this), 3, thbButtons);
+    HRESULT hr =  p_taskbl->ThumbBarUpdateButtons(WinId(this), 3, thbButtons);
 
     if(S_OK != hr)
         msg_Err( p_intf, "ThumbBarUpdateButtons failed with error %08lx", hr );
+
+    if( videoWidget && THEMIM->getIM()->hasVideo() )
+    {
+        RECT rect;
+        GetClientRect(WinId(videoWidget), &rect);
+        hr = p_taskbl->SetThumbnailClip(WinId(this), &rect);
+    }
+    else
+        hr = p_taskbl->SetThumbnailClip(WinId(this), NULL);
+    if(S_OK != hr)
+        msg_Err( p_intf, "SetThumbnailClip failed with error %08lx", hr );
 }

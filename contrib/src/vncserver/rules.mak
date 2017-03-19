@@ -1,7 +1,7 @@
 # vncserver
 
 VNCSERVER_VERSION := 0.9.9
-VNCSERVER_URL := $(SF)/libvncserver/libvncserver/$(VNCSERVER_VERSION)/LibVNCServer-$(VNCSERVER_VERSION).tar.gz
+VNCSERVER_URL := $(CONTRIB_VIDEOLAN)/vncclient/LibVNCServer-$(VNCSERVER_VERSION).tar.gz
 
 ifdef BUILD_NETWORK
 PKGS += vncserver

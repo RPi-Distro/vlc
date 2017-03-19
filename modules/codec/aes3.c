@@ -2,7 +2,7 @@
  * aes3.c: aes3 decoder/packetizer module
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
- * $Id: 61feef47b338feb81864d51f18da6313c13f2d51 $
+ * $Id: 0a39d1a95c47fbebed5b10cd9be36af9bf9aca4b $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *
@@ -202,7 +202,7 @@ static block_t *Decode( decoder_t *p_dec, block_t **pp_block )
         while( p_block->i_buffer / 5 )
         {
             *(p_out++) =  reverse[p_block->p_buffer[0]]
-                        | reverse[p_block->p_buffer[1]];
+                        |(reverse[p_block->p_buffer[1]] <<  8);
             *(p_out++) = (reverse[p_block->p_buffer[2]] >>  4)
                        | (reverse[p_block->p_buffer[3]] <<  4)
                        | (reverse[p_block->p_buffer[4]] << 12);

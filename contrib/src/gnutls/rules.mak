@@ -13,7 +13,7 @@ PKGS_FOUND += gnutls
 endif
 
 $(TARBALLS)/gnutls-$(GNUTLS_VERSION).tar.xz:
-	$(call download,$(GNUTLS_URL))
+	$(call download_pkg,$(GNUTLS_URL),gnutls)
 
 .sum-gnutls: gnutls-$(GNUTLS_VERSION).tar.xz
 

@@ -2,7 +2,7 @@
  * vlm.hpp : VLM Management
  ****************************************************************************
  * Copyright ( C ) 2006 the VideoLAN team
- * $Id: a3c6e5df84174a3955edcaefc38feb4203215c0f $
+ * $Id: dcf7110fe163dc8d0980c899b73dc8c2c8d45d4d $
  *
  * Authors: Jean-François Massol <jf.massol@gmail.com>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -25,8 +25,10 @@
 #ifndef QVLC_VLM_DIALOG_H_
 #define QVLC_VLM_DIALOG_H_ 1
 
+#include "qt4.hpp"
+
 #ifdef HAVE_CONFIG_H
-# include "config.h"
+#include "config.h"
 #endif
 
 #ifdef ENABLE_VLM

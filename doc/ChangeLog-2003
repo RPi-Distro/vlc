@@ -2996,7 +2996,7 @@ Author: Simon Latapie <garf@videolan.org>
 Date:   Thu Nov 20 08:44:30 2003 +0000
 
      * http.c: little keep and del functions fix ( don't remove currently
-     	   playing playlist item ).
+               playing playlist item ).
 
 commit de409e6f596a398a2f89cd40d671a748c539cbd7
 Author: Rocky Bernstein <rocky@videolan.org>
@@ -3664,7 +3664,7 @@ Author: Simon Latapie <garf@videolan.org>
 Date:   Sun Nov 9 05:22:56 2003 +0000
 
      * http.c: removed a completely useless check (now you can change volume
-     	   value without playing anything)
+               value without playing anything)
 
 commit fe2d68958103eb6c823c0b712eed37db48361db4
 Author: Simon Latapie <garf@videolan.org>
@@ -3677,14 +3677,14 @@ Author: Simon Latapie <garf@videolan.org>
 Date:   Sun Nov 9 03:43:25 2003 +0000
 
      * http interface: changed index.html for new seek function. small change
-      		   in css.
+                       in css.
 
 commit 637b0249baf0576b8a29b4af896af5233c518aec
 Author: Simon Latapie <garf@videolan.org>
 Date:   Sun Nov 9 03:41:50 2003 +0000
 
      * http.c: modify seek function (now you can put almost everything which
-     	   looks like a time/length)
+               looks like a time/length)
 
 commit c7897a28504494e5e0e3c431772bc732c1700292
 Author: Rocky Bernstein <rocky@videolan.org>
@@ -4081,7 +4081,7 @@ Author: Simon Latapie <garf@videolan.org>
 Date:   Thu Nov 6 01:49:19 2003 +0000
 
      * http interface: added volume control (relative or absolute) and
-     		   sort playlist function.
+                       sort playlist function.
 
 commit 323dfafae8386d9d08f10a22d5be02db4e933a5b
 Author: Gildas Bazin <gbazin@videolan.org>
@@ -6301,24 +6301,24 @@ Author: Clément Stenac <zorglub@videolan.org>
 Date:   Mon Sep 22 14:40:12 2003 +0000
 
     * modules/gui/wxwindows/preferences.cpp:
-    	- Created the "General Settings" section
-    	- Added help strings in the two main sections,
-    		in the libvlc categories,
-    		and in the module capabilities
+            - Created the "General Settings" section
+            - Added help strings in the two main sections,
+                    in the libvlc categories,
+                    and in the module capabilities
     
     * modules/gui/wxwindows/playlist.cpp & wxwindows.h
-    	-Implemented random, loop and repeat using variables
-    	-The eye candy of the dialog box is not very good
-    	 but I have no idea how to improve it.
-    	-Focus on the currently playing item
+            -Implemented random, loop and repeat using variables
+            -The eye candy of the dialog box is not very good
+             but I have no idea how to improve it.
+            -Focus on the currently playing item
     
     * src/libvlc.h:
-    	- Added help strings for the libvlc categories
-    	- Changed a few "advanced" flag
+            - Added help strings for the libvlc categories
+            - Changed a few "advanced" flag
     
     * include/vlc_help.h:
-    	- Help strings for the two main sections
-    	- Help string for the module capabilities (both by Anil)
+            - Help strings for the two main sections
+            - Help string for the module capabilities (both by Anil)
     
     * po/*: updated potfiles with the new strings
 
@@ -6637,7 +6637,7 @@ Date:   Sun Sep 14 16:41:48 2003 +0000
     * modules/access/slp.c : do not add udp:@ automatically
     
     * modules/stream_out/announce.c : always use the same service name
-    				  add udp:@ (hack !)
+                                      add udp:@ (hack !)
 
 commit 69fd5c2fd1340cb2e0564958fe5628252161ad42
 Author: Sigmund Augdal Helberg <sigmunau@videolan.org>
@@ -6832,8 +6832,8 @@ Date:   Mon Sep 8 22:00:47 2003 +0000
 
     * modules/visualisation/visual/effects.c
       modules/visualisation/visual/visual.h:
-    	- Change default effect-height
-    	- Less scaling in spectrum analyser
+            - Change default effect-height
+            - Less scaling in spectrum analyser
 
 commit 49dc6f8ebdb9a42ad356fc137d96fe283d446222
 Author: Laurent Aimar <fenrir@videolan.org>
@@ -6855,8 +6855,8 @@ Date:   Mon Sep 8 12:48:53 2003 +0000
 
     * modules/gui/wxwindows/playlist.cpp
       modules/gui/wxwindows/wxwindows.h:
-    	- give default to the search button when user enters text
-    	- case-insensitive search
+            - give default to the search button when user enters text
+            - case-insensitive search
 
 commit 8f02c0351d208c6342a0dc7147b17ff008e819bc
 Author: Clément Stenac <zorglub@videolan.org>
@@ -6864,20 +6864,20 @@ Date:   Mon Sep 8 12:02:16 2003 +0000
 
     * src/playlist/playlist.c
            include/playlist.h: playlist sorting
-     		(function playlist_Sort( playlist_t * , int type)
+                    (function playlist_Sort( playlist_t * , int type)
     
     * modules/gui/wxwindows/playlist.cpp
       modules/gui/wxwindows/wxwindows.h :
-    	* Implement playlist sorting & reverse sorting
-    	* Playlist search
+            * Implement playlist sorting & reverse sorting
+            * Playlist search
 
 commit 0ff7dbd8345de619de93caa27d268014e337bc53
 Author: Benjamin Pracht <bigben@videolan.org>
 Date:   Mon Sep 8 11:05:02 2003 +0000
 
     -pvr.c
-    	*reflects a change in ivtv_ioctl_codec struct
-    	*adds he bitratemode commandline option (values are vbr and cbr
+            *reflects a change in ivtv_ioctl_codec struct
+            *adds he bitratemode commandline option (values are vbr and cbr
 
 commit 66ecba4d5766395e98bcc0ab5b79bf2c959a07cb
 Author: Laurent Aimar <fenrir@videolan.org>
@@ -7007,11 +7007,11 @@ commit c0d906e65abf1286680b5705b4e497b24b630aaf
 Author: Benjamin Pracht <bigben@videolan.org>
 Date:   Wed Sep 3 11:28:32 2003 +0000
 
-    	* qdsk.c : fix a typo
-    	* access.c :
-    		- new syntax : dvb:frequency=1234500:fec=3:poalrization=H:program=2499... (all parameters should be parsed
-    		- "program" is still untested (anybody with a DVB card to try it ?)
-    		- old syntax should still work, with a warning.
+            * qdsk.c : fix a typo
+            * access.c :
+                    - new syntax : dvb:frequency=1234500:fec=3:poalrization=H:program=2499... (all parameters should be parsed
+                    - "program" is still untested (anybody with a DVB card to try it ?)
+                    - old syntax should still work, with a warning.
 
 commit 50daa2756446c123d5409228779e68044966ad72
 Author: Gildas Bazin <gbazin@videolan.org>
@@ -7170,18 +7170,18 @@ Date:   Fri Aug 29 16:56:43 2003 +0000
     * effects.c :
       - added a spectrum analyser
       options are:
-    	-nb :  number of bands , 20 or 80 (80 is default)
-    	-separ : how many blank pixels between bands (1 default)
-    	-amp : vertical amplification ( 3 default)
-    	-peaks: draw peaks ? (default 1)
+            -nb :  number of bands , 20 or 80 (80 is default)
+            -separ : how many blank pixels between bands (1 default)
+            -amp : vertical amplification ( 3 default)
+            -peaks: draw peaks ? (default 1)
     
       - improved options parsing
     
     * fft.c, fft.h :
-    	FFT code mainly taken from XMMS (adapted coding style)
+            FFT code mainly taken from XMMS (adapted coding style)
     
     * visual.c:
-    	Sanity checks (users aren't stupid, are they ? )
+            Sanity checks (users aren't stupid, are they ? )
     
     * LIST: updated the list
 
@@ -7773,15 +7773,15 @@ Date:   Tue Aug 19 21:20:00 2003 +0000
     * src/audio_output/input.c: forgot to free something
     
     * modules/visualisation/visual/* :
-    	visualization system. It supports multi-effects.
+            visualization system. It supports multi-effects.
     At the moment:
-    	-dummy (guess what ? it does nothing)
-    	-scope (adapted and fixed from sam's one)
-    	-random (displays random plots)
+            -dummy (guess what ? it does nothing)
+            -scope (adapted and fixed from sam's one)
+            -random (displays random plots)
     Todo:
-    	- spectrum analyser
-    	- movement effects (rotations, scrolls,...)
-    	- blur effect ?
+            - spectrum analyser
+            - movement effects (rotations, scrolls,...)
+            - blur effect ?
 
 commit 84c6ecb2b20340071acfd3c4802aa2a399273666
 Author: Mohammed Adnène Trojette <adn@videolan.org>
@@ -7860,14 +7860,14 @@ Date:   Mon Aug 18 13:16:43 2003 +0000
            First try to implement "user audio filters"
            You can provide a list of audio filters that you want to add to
            the pipeline (only the "headphone", at that time).
-    	(use --audio-filter filter1,filter2,...)
+            (use --audio-filter filter1,filter2,...)
     
        ***Warning***
        It seems to work, but no guarantee at all. Perhaps all is bad
        and the commit should be reverted, as it could break audio output
     
     * modules/codec/libmpeg2.c :
-    	Fixed a segfault when vout creation fails
+            Fixed a segfault when vout creation fails
 
 commit 236aa93228fdd732213b67cd4209a881762e67a7
 Author: Jean-Paul Saman <jpsaman@videolan.org>
@@ -8322,7 +8322,7 @@ Date:   Sun Aug 10 12:45:52 2003 +0000
      (should probably be added to toolbox or trashed)
     
     * modules/access/slp.c : Fixed service detection
-    	(findsrvtypes returns a comma-separated list of services)
+            (findsrvtypes returns a comma-separated list of services)
 
 commit f64bdcc0bf9a00e23a882f1da94c0021a9f3df66
 Author: Gildas Bazin <gbazin@videolan.org>
@@ -8815,7 +8815,7 @@ Author: Benjamin Pracht <bigben@videolan.org>
 Date:   Thu Jul 31 21:18:59 2003 +0000
 
     * modules/access/http.c :
-    	- using new var_Create/var_Get method to get parametters.
+            - using new var_Create/var_Get method to get parametters.
 
 commit f08ad433dff6c5c0fa25104ee9f42df5aaf31f6a
 Author: Renaud Dartus <reno@videolan.org>
@@ -8915,16 +8915,16 @@ Author: Clément Stenac <zorglub@videolan.org>
 Date:   Thu Jul 31 08:18:30 2003 +0000
 
     * modules/control/joystick.c
-    	* Allow the user to remap the actions.
-    	* Improved the strings (please check)
-    	* Prevent 0 seconds seeks
+            * Allow the user to remap the actions.
+            * Improved the strings (please check)
+            * Prevent 0 seconds seeks
     
     * share/http/*.html
-    	* partial HTML validation fixes
-    	* Improved the look
+            * partial HTML validation fixes
+            * Improved the look
     
     * src/stream_output/announce.c
-    	* minor fixes (thanks sam)
+            * minor fixes (thanks sam)
 
 commit fa06cb361f1a78a625c1781760e4d19330825bee
 Author: Gildas Bazin <gbazin@videolan.org>
@@ -9650,10 +9650,10 @@ Date:   Sun Jul 20 08:30:41 2003 +0000
     disabled by default, use --enable-joystick & --extraintf joystick
     
     actions are:
-    	left-right: variable speed seek
-    	up-down: browse the playlist
-    	button 1: play/pause
-    	button 2: fullscreen
+            left-right: variable speed seek
+            up-down: browse the playlist
+            button 1: play/pause
+            button 2: fullscreen
 
 commit d523d1af33bd9701784ceeb117b652c255cb510e
 Author: Gildas Bazin <gbazin@videolan.org>
@@ -9979,7 +9979,7 @@ commit 362d08e0e5421ec628fbe98c62209a7a7dfdfe2b
 Author: Sigmund Augdal Helberg <sigmunau@videolan.org>
 Date:   Mon Jul 14 22:25:13 2003 +0000
 
-    	 had to forget something :)
+             had to forget something :)
 
 commit 14b3f0cfa16fa0147dafd44b64bf94403a0095fb
 Author: Sigmund Augdal Helberg <sigmunau@videolan.org>
@@ -10009,7 +10009,7 @@ Date:   Mon Jul 14 20:36:55 2003 +0000
 
     toolbox: made a --add-include that can be used by doxygen to get proper
              includes in the .h files, since they are parsed out of context by
-    	 doxygen
+             doxygen
     Doxyfile: misc fixes, use ./toolbox --add-include as filter for sources.
     include/vlc_common.h: doxygenized VLC_COMMON_MEMBERS
     
@@ -10408,8 +10408,8 @@ Date:   Sat Jul 5 15:00:28 2003 +0000
     * sap.c: Improved IPv6 multicast detection
     
     * announce.c:
-    	- coding style fixes
-    	- fixed port detection in IPv6 addresses (with ':' inside)
+            - coding style fixes
+            - fixed port detection in IPv6 addresses (with ':' inside)
 
 commit 09496f19392df3684c51ff5950234cafbedc11ec
 Author: Sam Hocevar <sam@videolan.org>
@@ -13128,7 +13128,7 @@ Date:   Tue May 20 16:20:33 2003 +0000
 
     All: Support for SAP advertising in stream output
     
-    	add sap, or sap="Name" in the stream output options
+            add sap, or sap="Name" in the stream output options
 
 commit 37d5d8c662896103a2ecf039adff2d67298cd359
 Author: Sigmund Augdal Helberg <sigmunau@videolan.org>
@@ -19104,37 +19104,37 @@ Date:   Sun Feb 9 17:10:52 2003 +0000
 
     modules/gui/beos/PreferenceWindow.h/.cpp
     
-    	- added settings for screenshot path and image format
+            - added settings for screenshot path and image format
     
-    	- removed "Save" button, added "Cancel" and "Revert" buttons
+            - removed "Save" button, added "Cancel" and "Revert" buttons
     
-    	- added revert functionality
+            - added revert functionality
     
-    	- changed class design for cleaner functionality,
-    		separated ApplyChanges() into more functions
-    		to have finer control
+            - changed class design for cleaner functionality,
+                    separated ApplyChanges() into more functions
+                    to have finer control
     
-    	- added more error checking and fixed memory leaks
-    		(config_GetPsz() returns char*, not const char*!)
+            - added more error checking and fixed memory leaks
+                    (config_GetPsz() returns char*, not const char*!)
     
-    	- all settings are now correctly saved and restored
+            - all settings are now correctly saved and restored
     
-    	- some more cosmetic changes
+            - some more cosmetic changes
     
     
     modules/gui/beos/InterfaceWindow.h/.cpp
     
-    	- updated vlc way of saving settings to be on par with BeOS way
-    		and made it selectable in the code which way is used.
-    		However, the VideoSettings are still only savable in
-    		the BeOS way.
+            - updated vlc way of saving settings to be on par with BeOS way
+                    and made it selectable in the code which way is used.
+                    However, the VideoSettings are still only savable in
+                    the BeOS way.
     
-    	- if dvd menus are used, the navigation menu enables a
-    		"Goto Menu" item. Unfortunately, I don't see a clean
-    		way to really detect the usage of dvd/dvdold in the
-    		currently playing stream. I wouldn't want to see
-    		if a playlist item has "dvd:" or "dvdold:" prepended
-    		at each interface update.
+            - if dvd menus are used, the navigation menu enables a
+                    "Goto Menu" item. Unfortunately, I don't see a clean
+                    way to really detect the usage of dvd/dvdold in the
+                    currently playing stream. I wouldn't want to see
+                    if a playlist item has "dvd:" or "dvdold:" prepended
+                    at each interface update.
 
 commit 0d558bdfcebf6f8172c1e2ed88c10655384657ab
 Author: Laurent Aimar <fenrir@videolan.org>
@@ -19527,34 +19527,34 @@ Date:   Mon Feb 3 17:18:48 2003 +0000
 
     modules/gui/beos/InterfaceWindow.h/.cpp
     
-    	- improved file loading:
-    		- contents of sub folders can optionally be loaded too
-    		- files are loaded in expected order from filepanel
-    			_and_ drag'n'drop
-    		- file panel accepts folders to load
-    	- saving of playlist's display mode
-    	- added updating of interface when playlist is modified
-    		while nothing is playing
-    	- added compatibility for SoundPlay's drag'n'drop message format
+            - improved file loading:
+                    - contents of sub folders can optionally be loaded too
+                    - files are loaded in expected order from filepanel
+                            _and_ drag'n'drop
+                    - file panel accepts folders to load
+            - saving of playlist's display mode
+            - added updating of interface when playlist is modified
+                    while nothing is playing
+            - added compatibility for SoundPlay's drag'n'drop message format
     
     
     modules/gui/beos/ListViews.h/.cpp
     
-    	- implemented reversal of playlist
-    	- list can display full path or file name only
-    	- drag'n'drop interaction with SoundPlay
+            - implemented reversal of playlist
+            - list can display full path or file name only
+            - drag'n'drop interaction with SoundPlay
     
     
     modules/gui/beos/MediaControlView.cpp
     
-    	- cosmetic fix
+            - cosmetic fix
     
     
     modules/gui/beos/PlayListWindow.h/.cpp
     
-    	- added reverse sort command to edit menu
-    	- added view menu, to allow the user to display paths
-    		or only names in the list
+            - added reverse sort command to edit menu
+            - added view menu, to allow the user to display paths
+                    or only names in the list
 
 commit 9578d2578a2cc0afc35034b9ec89d31b12e44490
 Author: Alexis de Lattre <alexis@videolan.org>

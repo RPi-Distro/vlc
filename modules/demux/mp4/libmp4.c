@@ -105,6 +105,8 @@ int MP4_ReadBoxCommon( stream_t *p_stream, MP4_Box_t *p_box )
 
     if( p_box->i_shortsize == 1 )
     {
+        if( i_read < 8 )
+            return 0;
         /* get the true size on 64 bits */
         MP4_GET8BYTES( p_box->i_size );
     }
@@ -114,8 +116,13 @@ int MP4_ReadBoxCommon( stream_t *p_stream, MP4_Box_t *p_box )
         /* XXX size of 0 means that the box extends to end of file */
     }
 
-    if( p_box->i_type == ATOM_uuid && i_read >= 16 )
+    if( UINT64_MAX - p_box->i_size < p_box->i_pos )
+        return 0;
+
+    if( p_box->i_type == ATOM_uuid )
     {
+        if( i_read < 16 )
+            return 0;
         /* get extented type on 16 bytes */
         GetUUID( &p_box->i_uuid, p_peek );
     }
@@ -164,8 +171,8 @@ static int MP4_NextBox( stream_t *p_stream, MP4_Box_t *p_box )
          * and we skip the followong check */
         if( p_box->p_father->i_size > 0 )
         {
-            const off_t i_box_end = p_box->i_size + p_box->i_pos;
-            const off_t i_father_end = p_box->p_father->i_size + p_box->p_father->i_pos;
+            const uint64_t i_box_end = p_box->i_size + p_box->i_pos;
+            const uint64_t i_father_end = p_box->p_father->i_size + p_box->p_father->i_pos;
 
             /* check if it's within p-father */
             if( i_box_end >= i_father_end )
@@ -197,9 +204,12 @@ int MP4_ReadBoxContainerChildren( stream_t *p_stream,
 
     /* Size of root container is set to 0 when unknown, for exemple
      * with a DASH stream. In that case, we skip the following check */
-    if( p_container->i_size
-            && ( stream_Tell( p_stream ) + 8 >
-        (off_t)(p_container->i_pos + p_container->i_size) )
+    int64_t i_tell = stream_Tell( p_stream );
+    if( unlikely(i_tell < 0 || (UINT64_MAX - 8 < (uint64_t)i_tell)) )
+        return 0;
+
+    if( p_container->i_size && ( (uint64_t)i_tell + 8 >
+        p_container->i_pos + p_container->i_size )
       )
     {
         /* there is no box to load */
@@ -1230,20 +1240,21 @@ static int MP4_ReadBox_esds( stream_t *p_stream, MP4_Box_t *p_box )
         {
             MP4_GET2BYTES( es_descriptor.i_depend_on_ES_ID );
         }
-        if( es_descriptor.b_url )
+        if( es_descriptor.b_url && i_read > 0 )
         {
-            unsigned int i_len;
+            uint8_t i_url;
 
-            MP4_GET1BYTE( i_len );
-            i_len = __MIN(i_read, i_len);
-            es_descriptor.psz_URL = malloc( i_len + 1 );
+            MP4_GET1BYTE( i_url );
+            if( i_url > i_read )
+                MP4_READBOX_EXIT( 1 );
+            es_descriptor.psz_URL = malloc( (unsigned) i_url + 1 );
             if( es_descriptor.psz_URL )
             {
-                memcpy( es_descriptor.psz_URL, p_peek, i_len );
-                es_descriptor.psz_URL[i_len] = 0;
+                memcpy( es_descriptor.psz_URL, p_peek, i_url );
+                es_descriptor.psz_URL[i_url] = 0;
             }
-            p_peek += i_len;
-            i_read -= i_len;
+            p_peek += i_url;
+            i_read -= i_url;
         }
         else
         {

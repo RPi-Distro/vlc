@@ -2,7 +2,7 @@
  * views.cpp : Views for the Playlist
  ****************************************************************************
  * Copyright © 2010 the VideoLAN team
- * $Id: 59f6535d7ccf01c7e44d3cf05bc8449953db2a36 $
+ * $Id: 00662051294b010755a7c6ed953b340efa96f464 $
  *
  * Authors:         Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -20,6 +20,12 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "qt4.hpp"
 
 #include "components/playlist/views.hpp"
 #include "components/playlist/vlc_model.hpp"      /* VLCModel */

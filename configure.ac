@@ -1,11 +1,11 @@
 dnl Autoconf settings for vlc
 
-AC_COPYRIGHT([Copyright 1999-2016 VLC authors and VideoLAN])
+AC_COPYRIGHT([Copyright 1999-2017 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 2.2.4)
+AC_INIT(vlc, 2.2.5)
 VERSION_MAJOR=2
 VERSION_MINOR=2
-VERSION_REVISION=4
+VERSION_REVISION=5
 VERSION_EXTRA=0
 VERSION_DEV=
 
@@ -14,7 +14,7 @@ AC_SUBST(PKGDIR)
 
 CONFIGURE_LINE="`echo "$0 $ac_configure_args" | sed -e 's/\\\/\\\\\\\/g'`"
 CODENAME="Weatherwax"
-COPYRIGHT_YEARS="1996-2016"
+COPYRIGHT_YEARS="1996-2017"
 
 AC_CONFIG_SRCDIR(src/libvlc.c)
 AC_CONFIG_AUX_DIR(autotools)
@@ -222,6 +222,9 @@ case "${host_os}" in
     fi
     ;;
   *mingw32* | *cygwin* | *wince* | *mingwce*)
+    dnl Force libtool to not link to (shared) libgcc_s when detecting C++ dependencies
+    dnl When doing this test with -static-libgcc it will link on (static) libgcc_eh
+    CXXFLAGS="${CXXFLAGS} -static-libgcc"
     AC_CHECK_TOOL(WINDRES, windres, :)
     AC_CHECK_TOOL(OBJCOPY, objcopy, :)
     AH_TOP([#if defined(_WIN32) && !defined(_WIN32_WINNT)])
@@ -978,24 +981,15 @@ AS_IF([test "${enable_optimizations}" != "no"], [
     ])
   ])
 
-  dnl Check for -ffast-math
-  VLC_SAVE_FLAGS
-  CFLAGS="${CFLAGS} -ffast-math"
-  CXXFLAGS="${CXXFLAGS} -ffast-math"
-  OBJCFLAGS="${OBJCFLAGS} -ffast-math"
-  AC_CACHE_CHECK([if $CC accepts -ffast-math], [ac_cv_c_fast_math], [
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM()], [
-      ac_cv_c_fast_math=yes
-    ], [
-      ac_cv_c_fast_math=no
-    ])
-  ])
-  AS_IF([test "${ac_cv_c_fast_math}" = "no"], [VLC_RESTORE_FLAGS])
-  AH_BOTTOM([
-#ifndef __FAST_MATH__
+  dnl Check for fast maths
+  RDC_PROG_CC_FFLAGS([no-math-errno unsafe-math-optimizations no-rounding-math no-signaling-nans cx-limited-range])
+  AC_LANG_PUSH(C++)
+  RDC_PROG_CXX_FFLAGS([no-math-errno unsafe-math-optimizations no-rounding-math no-signaling-nans cx-limited-range])
+  AC_LANG_POP
+
+AH_BOTTOM([
 # pragma STDC FENV_ACCESS OFF
 # pragma STDC FP_CONTRACT ON
-#endif
 ])
 
   dnl Check for -funroll-loops
@@ -1436,7 +1430,7 @@ AS_IF([test "${enable_altivec}" = "yes"], [
     CPPFLAGS="${CPPFLAGS} ${ac_cv_c_altivec}"
     AC_DEFINE(CAN_COMPILE_C_ALTIVEC, 1, [Define to 1 if C AltiVec extensions are available.])
     VLC_ADD_CFLAGS([libvlccore],[${ac_cv_c_altivec}])
-    ALTIVEC_CFLAGS="$ALTIVEC_FLAGS ${ac_cv_c_altivec} ${ac_cv_c_altivec_abi}"
+    ALTIVEC_CFLAGS="$ALTIVEC_CFLAGS ${ac_cv_c_altivec} ${ac_cv_c_altivec_abi}"
     VLC_ADD_CFLAGS([deinterlace],[${ac_cv_c_altivec} ${ac_cv_c_altivec_abi}])
     have_altivec="yes"
   ])

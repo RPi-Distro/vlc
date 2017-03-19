@@ -2,7 +2,7 @@
  * lpcm.c: lpcm decoder/packetizer module
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: e040133d96548037b9ddd19f0d3f5221c41f178b $
+ * $Id: d158ad37ebc054010be1827de04b83390d9bb246 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Henri Fallon <henri@videolan.org>
@@ -433,6 +433,20 @@ static block_t *DecodeFrame( decoder_t *p_dec, block_t **pp_block )
 
         p_block->p_buffer += p_sys->i_header_size + i_padding;
         p_block->i_buffer -= p_sys->i_header_size + i_padding;
+
+        const unsigned block_nb_frames = p_block->i_buffer / ( i_bits * 4 / 8 );
+        const unsigned aout_nb_frames = p_aout_buffer->i_nb_samples
+            / ( p_dec->fmt_out.audio.i_bitspersample / 8 );
+
+        if( block_nb_frames > aout_nb_frames )
+        {
+            msg_Warn( p_dec, "invalid block size" );
+
+            block_Release( p_block );
+            block_Release( p_aout_buffer );
+
+            return NULL;
+        }
 
         switch( p_sys->i_type )
         {
