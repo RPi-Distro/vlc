@@ -1,6 +1,12 @@
 vlc (2.2.5-1) UNRELEASED; urgency=medium
 
-  * New upstream releases. (Closes:# 850529)
+  * New upstream releases. (Closes: #850529)
+  * debian/patches:
+    - fix-translation.patch: Refreshed.
+    - Removed patches taken from upstream included in 2.2.5.
+  * debian/*.maintscript: Bump all versions to 2.2.5-1~z. This is necessary to
+    properly handle symlink to directory conversions once 2.2.5 is available
+    in stretch.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Sun, 19 Mar 2017 21:05:13 +0100
 
