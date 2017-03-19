@@ -2,7 +2,7 @@
  * controller.hpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 2a65e19bfd34e3f6fdf82c518c064b5717c1de4f $
+ * $Id: 20865a23964b6834409c0f5138f2c7d9408a2541 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -265,6 +265,10 @@ public:
     void toggleFullwidth();
     void updateFullwidthGeometry( int number );
     int targetScreen();
+
+private:
+    static int FullscreenChanged( vlc_object_t *obj,
+                    const char *, vlc_value_t, vlc_value_t new_val, void *data );
 
 signals:
     void keyPressed( QKeyEvent * );

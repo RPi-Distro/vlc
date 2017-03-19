@@ -2,7 +2,7 @@
  * projectm.cpp: visualization module based on libprojectM
  *****************************************************************************
  * Copyright © 2009-2011 VLC authors and VideoLAN
- * $Id: e80fbf45b49752a2dd764cde39f3f5a4af4a9dbe $
+ * $Id: 96d532d05942267e976ab15e6e8f4870fee7c0d5 $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *          Laurent Aimar
@@ -30,6 +30,10 @@
 #endif
 
 #include <assert.h>
+#if defined(__GNUC__) && \
+           ( __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7 ) )
+  #define VLC_ATOMIC_H /* Ensure C atomics wont collide with old intrinsics */
+#endif
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>

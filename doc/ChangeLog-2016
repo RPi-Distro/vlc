@@ -1,3 +1,1317 @@
+commit a006455bc441f7b67119bad9b90ed094b5db7c40
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Thu Dec 29 19:49:20 2016 +0100
+
+    macosx: Fix parsing of item information
+    
+    All items need to be passed to local tree items within one lock.
+    This code is already rewritten in vlc.git branch.
+    
+    fixes #17765
+
+commit 3d79a0e6f1f037f0085c9221508333c3dd7c877b
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Dec 29 16:30:38 2016 +0100
+
+    gui: qt: Fix build with Qt4
+    
+    (cherry picked from commit d9961de0126a54ee549107e21f0a9bb5f1a532b3)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 9da06e303204c3eac476dfacd8555da671a9c9af
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Dec 29 11:32:47 2016 +0100
+
+    qt: preferences: Always use a combobox for resume playback
+    
+    Using a checkbox would force the value back to 0/1 when saving the
+    simple preferences, while it can be set to 2 from advanced preferences.
+    This also moves this setting out of the Privacy/Network interactions
+    category, as it doesn't belong there
+    
+    Fix #17061
+    
+    (cherry picked from commit 7d5370679e7c2af711d2e7a2431770a5e9bde569)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit b43d090274b063f326107c82133a8b75606febd9
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Dec 29 10:46:46 2016 +0100
+
+    Update PO files for 2.2.5
+
+commit a64ebd0d4f904e6bbcfb1857f95bdb2ec5ef1710
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Dec 29 10:03:02 2016 +0100
+
+    Update NEWS for 2.2.5
+
+commit 4ff7fe9ff8b8894dcaa8a9e2b297fb83dbd28e78
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Dec 27 17:28:58 2016 +0100
+
+    directsound: Fix volume range
+    
+    Setting an integer limit on a float will yield UB when trying to clamp
+    the volume within its given range.
+    Fix #17659
+    
+    (cherry picked from commit 2068e2f6f69aef3f950757644e95ed9d78f48ab9)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 806efd462e3a763052035a8f3ba3cf326274dd74
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Dec 29 09:35:24 2016 +0100
+
+    main_interface_win32: Display the taskbar buttons upon creation if required
+    
+    fix #6868
+    
+    (cherry picked from commit b7a2ed7c23ba555797ca284e1a8425a7387e4a62)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 358046310ca2d43364c4a4b4742c976d168ef5f4
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Dec 29 09:29:57 2016 +0100
+
+    core/picture: add null check
+    
+    (cherry picked from commit 88a6650274e2a46f89427fffee5a91a1060d0d92)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 5d4e7f86f3935e5a6db0ba4ede5f5f8d54d00a38
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Dec 29 09:29:22 2016 +0100
+
+    core/picture: use visible size in picture_Export
+    
+    Fix #16789
+    
+    (cherry picked from commit 04335a2fdf70cd33995afe081c0cf004ef39d6cd)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 2586b1f22df5755cf56102b45e92a1b4ffa27a2f
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Dec 28 17:16:37 2016 +0100
+
+    main_interface_win32: Use the video as thumbnail image
+    
+    Or the full interface when no video is playing
+    
+    (cherry picked from commit 345754bdf1f0a17544106f11321fc2043f45a4f8)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 44e33d774da1bf3007a81ac1df8a182c7ac1ab45
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Dec 28 16:58:31 2016 +0100
+
+    main_interface_win32: Fix play/pause button not being updated
+    
+    The buttons are created upon the main intf winID, so we need to update
+    the buttons with the same winID as parameter
+    
+    (cherry picked from commit 0f9a6c411211a69210f4e34882ac59c749f1c29b)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 248afeb6e6943ac9fde7cd9282c3e8c70b6a9449
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Dec 28 16:42:20 2016 +0100
+
+    main_interface: Don't silently ignore failure to register a message
+    
+    (cherry picked from commit 691dbca5616b9140e7f5f3907c389dba90f55686)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 8fac54469556b42206c6d5447c6aa14e07852e01
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Dec 28 16:41:23 2016 +0100
+
+    main_interface_win32: Fix missing taskbar icons
+    
+    Fix #14003
+    
+    (cherry picked from commit 494d36c4102dd9c55af868494daceb2bd18180c0)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 7722017e2e5cc750abc853e16aa1f0b7d6654bbe
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Dec 27 19:02:34 2016 +0100
+
+    qt: controller: Only react to external fullscreen changes
+    
+    And assume the playlist's "fullscreen" variable to be the reference
+    value.
+    Fix #17054
+    
+    (cherry picked from commit ba9689033cd471536efb0d030e08f4f13beb6bdb)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c6b757c112ce99e3ea851a22bbb6396071cac928
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Dec 27 18:34:04 2016 +0100
+
+    qt: controller: Don't connect the controller and MIM in a loop
+    
+    This ends up connecting the 2 way too many times
+    
+    (cherry picked from commit eea941425cc9a463841042627bf9d52ef1979a1c)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit f271abec3b718a1b9c67d13b8036cf81a1fbe7e4
+Author: Josef Andersson <josef.andersson@fripost.org>
+Date:   Mon Nov 28 20:41:10 2016 +0100
+
+    Corrected Swedish desktop name to be in line with other Swedish FOSS translations
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit b52e4833e651c40384b4871aec0104955e8fdb6b)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 9745e9d0f2d0749afc971dc311cacc4a9acdcab6
+Author: Filip Roséen <filip@atch.se>
+Date:   Wed Dec 14 15:51:06 2016 +0100
+
+    demux/xiph_metadata: fix overflow/leaks in vorbis_ParseComment
+    
+    The previous implementation would suffer from a read overflow due to a
+    mismatch between the length of psz_comment and comment_size (because
+    of the usage of strndup).
+    
+    These changes make sure that:
+    
+     - psz_comment always refer to a buffer of length comment_size
+     - we do not leak memory on "continues" when encountering unexpected
+       data
+    
+    fixes #17776
+    fixes #17779
+    
+    Signed-off-by: Francois Cartegnie <fcvlcdev@free.fr>
+    (cherry picked from commit e8dde09cac172b5ae4be9266575b6615e315b801)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c48acd16019c5fe9cb97e8bfd4cacb8a3a01dd78
+Author: Gilles Sabourin <gilles.sabourin@free.fr>
+Date:   Sat Dec 17 15:38:08 2016 +0100
+
+    Qt: Do not use Q_DECL_OVERRIDE macro with qt4
+    
+            Warning: this patch should only be applied to 2.2 maintenance branch
+            since Q_DECL_OVERRIDE macro was introduced in Qt 5.0
+    
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit d2682f67ba2ff21f62b1489c76b5056758ab5836
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Dec 16 15:52:03 2016 +0100
+
+    codec: scte27: fix reading YCrCb into YCbCr (fix #17787)
+
+commit 63a97e4d6eba8849debc0851e7c7a5699aebc336
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Dec 15 17:25:14 2016 +0100
+
+    Qt: rate limit EPG updates
+    
+    As we don't have discrete updates due to use of input variable
+    for events, we're updating far too many times on EPG tables updates,
+    reprocessing the whole EPG set. This is mainly the performance
+    issue with large EPG updates.
+    
+    Also no longer updates internal event storage when hidden.
+    
+    backport of ba78a1fe00edbbb34502704347788f3455faccf4
+
+commit 63a97cc44423db8f8af14fbad322c670b3b7a83a
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Dec 7 18:28:05 2016 +0100
+
+    contribs: cddb requires gettext
+    
+    (cherry picked from commit 0f43bb061a9c28b02fc7638d3f54d64f4b3e0690)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 431e9c514170cfc8f1941a4531108a9b7654e1e0
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Dec 14 18:43:34 2016 +0100
+
+    contrib: dshow: Fetch d2d headers from our server
+
+commit 06bdc7a67167b27d3db2dad4e4b30e8b1b7675f8
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Wed Dec 14 11:25:12 2016 +0100
+
+    vimeo.lua: update for website changes
+    
+    (cherry picked from commit 73d3b86d7451aae6828940cdaf64a9a282ce8dd4)
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit 1f43ec0be9c81c8309efecaaef03beb5240a1a04
+Author: Filip Roséen <filip@atch.se>
+Date:   Thu Dec 8 11:14:19 2016 +0100
+
+    playlist/preparser: do not "download" local art
+    
+    The previous implementation would consider FILE:///art.jpg to be a
+    remote resources, meaning that it would try to "download" the file and
+    put it in the cache.
+    
+    Given that the scheme part of an URI is case-insensitive (as stated in
+    RFC3986 3.1.), these changes make sure that we treat the affected
+    schemes in the way which was intended.
+    
+    fixes #17759
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit f1195781c0fd53d14cda88bc08c0ea5ed464dcd0)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d2d450853e95a19f67b221fa22a349b4da6fa59d
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Dec 7 19:45:38 2016 +0100
+
+    codec: opus: check comment size overflow
+    
+    (cherry picked from commit d72019e145262567f0fc3168eeaa757c5e54f6ae)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 98166a88112275ce83d6d85a12bd9d9df9cf78ca
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Dec 7 15:23:52 2016 +0100
+
+    NEWS: mention the lpcm issue
+
+commit d75cb6ebc89f89f91ee940c55fc8345aa1f7a35d
+Author: Filip Roséen <filip@atch.se>
+Date:   Wed Dec 7 15:19:09 2016 +0100
+
+    lpcm: validate block_nb_frames in DVD/LPCM cases
+    
+    Fix heap overflow due to invalid header data
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 8447e3d87b65c36d57a2c55d4afb717bb1945321)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 9bc7799573de778458778a24862883f568eba74f
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Dec 7 13:38:30 2016 +0100
+
+    contribs: projectM: Fix build C++11 build
+
+commit 1ec161336a07103a3291792fb7512b2c5e698ec3
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Dec 7 11:41:31 2016 +0100
+
+    contribs: Fix x265 build with recent GCC
+
+commit 2750a174c3679dcdfa031fe6a0f338b11489924b
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Dec 7 10:45:32 2016 +0100
+
+    contribs: qt4: Fix QAccessibleTable::unselectColumn logic & build
+
+commit 4ca45a0abe701068a701b3c9f8ac4e00775d33a8
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Dec 6 17:18:43 2016 +0100
+
+    Update NEWS
+
+commit fd409b86d82f27cd6626bc22730b87f9d57407bb
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Dec 6 16:30:36 2016 +0100
+
+    Contribs: fix libavcodec xwd crash
+    
+    Close #17418
+
+commit 07283a71bf29d324c9b2b7fc34f71e4de5939397
+Author: Filip Roséen <filip@atch.se>
+Date:   Mon Oct 31 01:13:31 2016 +0100
+
+    demux/aiff: integer-overflow leads to infinite loop
+    
+    Given that the previous implementation stored the size of the current
+    chunk-payload in an uint32_t, it would potentially overflow when
+    adding the size of the chunk header and conditional padding.
+    
+    These changes fixes the previously described by storing the
+    chunk-total size in a larger integer type, as well as making sure that
+    we do not pass a too big of a value to vlc_stream_Read (that would
+    cause problems on 32bit platforms).
+    
+    Fixes #17562
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 6a08e8e3b1cdfa7193d48cc842f1ae7e3fa0593e)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit fad42291258b6916479a7cb343f5483ea20f236c
+Author: Filip Roséen <filip@atch.se>
+Date:   Tue Dec 6 09:02:40 2016 +0100
+
+    demux/xiph_metadata: prevent integer overflow (#17593)
+    
+    The previous implementation assumed that a 32-bit integer would fit
+    in an `int`, something which is not guaranteed and might cause an
+    integer overflow.
+    
+    These changes changes the declared type of the relevant variables, by
+    also making a slight amount of clean-up on the affected paths, such
+    as:
+    
+      - merging declaration and initialization
+      - fixing redundant if-conditions
+    
+    fixes #17593
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit f931a00f6a1ee581fec66c59964bf0e95a4b7411)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 9fe413ea1cc1caef546b8413c4eb077cad34dab2
+Author: Filip Roséen <filip@atch.se>
+Date:   Mon Dec 5 13:52:54 2016 +0100
+
+    demux/xiph_metadata: prevent null-pointer dereference
+    
+    modules/demux/flac.c invokes vorbis_ParseComment with NULL as argument
+    for both i_seekpoint and ppp_seekpoint since the demuxer lacks support
+    for these entities.
+    
+    These changes simply make sure that we do not treat the two parameters
+    as valid, if they are actually NULL.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 335114f7742682dbfebcea2437d6f18de25e4405
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Fri Dec 2 11:30:14 2016 +0100
+
+    soundcloud.lua: update API magic
+    
+    (cherry picked from commit f7686767fc7f135d45e294e7ff2409d65240145a)
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit b899529f9966c5df576ac101cbaf72c0319c2180
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Wed Nov 9 01:29:40 2016 +0100
+
+    lua/http: remove bad conversion from URL to file path of VLM input
+    
+    The conversion is pointless, limiting, unsafe, error-prone and indeed
+    buggy as it's done in a naive way oblivious of Windows file URL schemes.
+    
+    Should fix #14842
+    
+    (cherry picked from commit 8cbc5caea9fa95411fb416ee53dee629c262c77c)
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit 27468f02e3fd6741c8de5dad314cd75e82c16f45
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Mon Oct 31 20:51:59 2016 +0100
+
+    appletrailers.lua: Fix script for website changes
+    
+    Fix the Script to work again with the changed
+    Apple trailers website.
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+    (cherry picked from commit dafab63ab29c507ebf5a0b756231371add948d4f)
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit 34d41f7d0a336022d96115ce95d61291a6bd5bff
+Author: Filip Roséen <filip@atch.se>
+Date:   Wed Oct 26 16:18:17 2016 +0200
+
+    lua/intf/cli: fix invalid concatenation of empty string
+    
+    If an item lacks a name the value of "item.name" is nil, meaning that
+    it is an error trying to use it during concatenation.
+    
+    These changes simply falls back to "item.path" in case the mentioned
+    metadata is missing.
+    
+    fixes #17545
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+    (cherry picked from commit 1d1e6a42cc64ce190c67a6c62c636f695c43d26d)
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit 1ce9e2413ddb6d5f62bcc80a5254814f62ca794d
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Tue Oct 25 07:27:48 2016 +0200
+
+    youtube.lua: fix description parsing
+    
+    (cherry picked from commit 1d9366011209e670fcf8b1fb15d084d901594108)
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit 2c94606bb3571efbb888a4769ace22abd65b2b35
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Mon Oct 24 15:37:38 2016 +0200
+
+    dailymotion.lua: update for website changes
+    
+    (cherry picked from commit 9475988ca43181b8dc2a5ff4308e1e618b601790)
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit 71987e3092b600a2e1189bbdf046f82e8afd292c
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Mon Oct 24 08:10:26 2016 +0200
+
+    youtube.lua: improve interoperability when calling API
+    
+    (cherry picked from commit 503e8753f0ff894dae5a037b83f4a34067a884a4)
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit a27ae000c42c8f1a2e03a809034bdbdfa17e223c
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Tue Feb 2 03:21:12 2016 +0100
+
+    vimeo.lua: fix video quality parsing
+    
+    (cherry picked from commit 7ccee74013b8a9274185d5ef06df77b57d1c5233)
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit a9c515c78dac7635c4d01cecaf93aa6bfaea31ea
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Tue Feb 2 03:19:34 2016 +0100
+
+    vimeo.lua: update to website changes
+    
+    (cherry picked from commit 9c5430dcfd7541818b7f067e4034f8c2a0e3094c)
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit 4b1c65d5da017d807efea415fb3ab069945da75d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Dec 4 14:36:29 2016 +0200
+
+    VLSub: don't pretend to support HTTP 1.1
+    
+    (cherry picked from commit 5c26ad66d4b3b1d3de13ae778161f9ddde25cd59)
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 4589965edd5fe8c093d185c6663be622936816a1
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Sat Dec 3 13:01:14 2016 +0300
+
+    Changed LibVNCServer fetch URL to the VideoLAN server.
+    
+    Some SF mirrors are serving the file with incorrect checksum:
+    https://mailman.videolan.org/pipermail/vlc-devel/2016-November/110638.html
+
+commit cf98cb2238b0f31f57830f6623f5a79d318b2ebc
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Nov 21 23:24:53 2016 +0200
+
+    dvb: downgrade error messages
+    
+    The old DVB plugin generate syntax error messages on valid MRLs that
+    the normal DTV plugin just fails to open (e.g. due to missing tuner).
+    This has proven very confusing.
+    
+    (cherry picked from commit 2ffa685a93a4348baf458a22a2470f8b5db3c63b)
+
+commit 59259c8d49ea18dfc1dac546124d1e5d10da9740
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Nov 10 15:13:29 2016 +0100
+
+    packetizer: h264: fix invalid dereference (fix #17585)
+
+commit 6ab6b75910e9bb4d8895ab96510f6f94df2774fe
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Nov 10 14:52:52 2016 +0100
+
+    demux: mp4: fix uninitialized vars on failure handling
+    
+    cherry-picked from 0456bcdc30d01bc2918f62a413dd4f472a94dee1
+
+commit 96ca420e294a40f86716d09d6c8ccec39a80dfe5
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Nov 10 12:24:46 2016 +0100
+
+    demux: mp4: missing return in GetPTSDelta
+
+commit bfe14f47b1814a364b201a7b6506b21de1cdda58
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Nov 4 19:51:53 2016 +0100
+
+    demux: mp4: check for overflows in PeekBoxHeader
+    
+    refs #17584
+    cherry-picked from 8466176518508a3268ffe1272d998bcb2340e603
+
+commit 0bd722bb26894cc93bec908775dd42b187eddde7
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Nov 10 10:59:51 2016 +0100
+
+    demux: mp4: absolute pos is unsigned
+    
+    backported from ba3a2185e5b13b5587d7e8feeeb4e8b25bf1dae5
+
+commit a88132b34ebb1e09cfe7355125270012e7a85f8d
+Author: Filip Roséen <filip@atch.se>
+Date:   Sun Oct 30 23:27:36 2016 +0100
+
+    demux/nsv: invalid NSVf header size leads to infinite loop (fixes #17563)
+    
+    According to the specification of nsv, a file header size of 0 (and
+    0xFFFFFFFF) is invalid; these changes prevents an infinite loop if the
+    size is specified as the former, while also making sure that we do not
+    try to parse files containing the latter.
+    
+     - http://multimedia.cx/nsv-format.txt
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 87cf24c252569d13335cee006ae59c1fe0718705)
+    
+    Conflicts:
+            modules/demux/nsv.c
+
+commit a9dd17b9f49312c919851ce012a4a2925262d9cd
+Author: Filip Roséen <filip@atch.se>
+Date:   Tue Nov 1 02:33:03 2016 +0100
+
+    demux/avi: do not call FromACP with NULL (fixes #17581)
+    
+    FromACP is used to convert a c-style string from one charset to the
+    other, as such it does not make sense to call the function with NULL
+    (especially given that NULL is not a valid input for the function).
+    
+    These changes fixes the checks to see whether or not the function is
+    applicable or not by properly checking the argument that would-be
+    passed (instead of just the object that contains it).
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit e082cac10bfd47e78f8e7096351323f3040348a8)
+
+commit c6afb1a6bd64669fc2f09971a7e35a8566d7ba21
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Nov 1 16:27:30 2016 +0200
+
+    xiph: rewrite ParseFlacPicture() w/o integer overflows (fixes #17592)
+    
+    (cherry picked from commit d076af4e46cdb25d2b33494fa57d444ceb591ae3)
+
+commit 52559dbed8c3518bd1d39458d3fa286744eab6b0
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Oct 31 21:11:05 2016 +0100
+
+    demux: mp4: esds heap buffer ofw (fix #17856)
+    
+    cherry-picked from d3e233c59fdbc7511e22a966a5cfebcde7dc9ba9
+
+commit ed12d84559ae4be21c3e3fbe220e02bc13cb69c7
+Author: Sebastian Ramacher <sramacher@debian.org>
+Date:   Sun Oct 30 12:20:31 2016 +0100
+
+    configure: fix typo in ALTIVEC_CFLAGS assignment
+    
+    This looks like a typo to me and should have been ALTIVEC_CFLAGS instead.
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 7994ce346dfba741fa0fc535145dfef02e8abda0)
+
+commit 90a19d81074e58f56935658443fb356be6ab9753
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Oct 28 17:59:38 2016 +0300
+
+    smf: fix division by zero
+    
+    (cherry picked from commit edc9d41049db000d9a3d4c6453037b6e0b3cab1d)
+
+commit 000f10b585c255c253f76a4178fd26575f677121
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Oct 28 17:11:55 2016 +0300
+
+    xa: fix divisions by zero
+    
+    (cherry picked from commit bc835c8fcac52e7e9d9d371324abbee95bca59a0)
+
+commit 94065b51e99874ea536ff10769366288353c27ec
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Oct 28 16:39:28 2016 +0300
+
+    smf: fix leak on invalid input
+    
+    (cherry picked from commit e1f4fa7bc0b1232444a3d324b004b0d6ea4c8b7b)
+
+commit 83e8b6054eef002758140e64bffbb45003c58cea
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Oct 28 16:15:55 2016 +0300
+
+    voc: fix division by zero
+    
+    If buf[3] == 0xff, i_channels wraps to 0, and i_rate triggers SIGFPE.
+    
+    (cherry picked from commit 5a0122f3df98b4eb3bcd2976acf4eefca1731731)
+
+commit 315d4c0a42479363b5027dfad59491c1c312f872
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Oct 25 15:04:41 2016 +0300
+
+    http: simplify and fix size handling (fixes #17540)
+    
+    The Content-Range header line indicates the size of the underlying
+    resource; it has bearings on the size of the response body at the
+    HTTP protocol level.
+    
+    Also the start offset in the Content-Range should be ignored, as
+    overriding it can lead to unexpected situations in VLC. Only a broken
+    server will not match the requested value anyway.
+
+commit 953263bf5839054b162fe114db6b132521747bf7
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Oct 21 16:08:25 2016 +0300
+
+    skins2: do not generate (broken) default.vlt on error
+    
+    (cherry picked from commit 096c3544b55a88ca07ece9a5624671484e362945)
+
+commit 43f830f9e81e2534c42496005391104005cab6d6
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Oct 21 16:05:02 2016 +0300
+
+    skins: implement silent mode make
+    
+    (cherry picked from commit 0bdddcb8dcebe18cecfeed5805ceaaf50432a658)
+
+commit 75b4a84c0b7061807f13a734331287d24dd46ffe
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Oct 21 16:04:21 2016 +0300
+
+    skins: remove timestamp from default.vlt (fixes #4562)
+    
+    (cherry picked from commit 7b4bcf17d1f493c2d49f74ff573591e662a03924)
+
+commit cac50d90bae28f7125a46422cc6d497f316c9ad6
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Oct 21 15:35:18 2016 +0300
+
+    skins2: do not save user and group names in the default skin
+    
+    (cherry picked from commit 79bed730df73ff241545e4ffe85ed293bf52adc1)
+
+commit d0339fa10a29e78155a9d32a9c0ecf6cfda10a4d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Oct 21 15:56:51 2016 +0300
+
+    Revert "Build default.vlt in a reproducible fashion (fixes #4562)"
+    
+    This broke error propagation.
+    
+    This reverts commit ceacef3bbb0c34d67aa84e6ca91b360cbe2419e5.
+    
+    (cherry picked from commit 9f2f2165b7f7afa912fdf7ffbe8b3f0db51f687a)
+
+commit 403454dbfb0b0787be650061544c681be28a6d38
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Oct 19 11:35:10 2016 +0200
+
+    codec: aes3: fix 16bps decoding (fix #17522)
+
+commit 653111fb7d354e98365a85e658f72635d30c2183
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Fri Oct 14 15:40:04 2016 +0200
+
+    macosx: Initialize VLCDocumentController in run method
+    
+    Unfortunately, the way we init in vlc.git does not work.
+
+commit 5ecbf1e0ec5e0f31babb416d818abcc9cdb21d06
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Thu Oct 13 23:03:37 2016 +0200
+
+    NEWS: Mention change regarding resume points
+
+commit 4d863a4987c2d1bfd457eda251d6f0167746a74d
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Sun Oct 9 00:41:02 2016 +0200
+
+    macosx: clear resume points as well once the user clear recent items list
+    
+    (cherry picked from commit a071bc7c4f91274cf78e57335ac7718851eac8c0)
+    Signed-off-by: David Fuhrmann <dfuhrmann@videolan.org>
+
+commit f993307698099cf37a654674b05ce433c775bb63
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Sun Jul 17 00:19:15 2016 +0200
+
+    youtube.lua: debug messages for signature descrambling javascript parsing
+    
+    (cherry picked from commit ec081ff8c60a4d200f2bf67ab1f03cf525d08ac8)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit b123f94b8593cf2f97680c96cb0f444e3efa400a
+Author: Vinson Lee <vlee@freedesktop.org>
+Date:   Sat Aug 20 06:02:27 2016 +0000
+
+    video_splliter: Add XCB flags for panoramix.
+    
+    This patch fixes this build error.
+    
+    video_splitter/.libs/libpanoramix_plugin_la-panoramix.o: In function `CountMonitors':
+    modules/video_splitter/panoramix.c:352: undefined reference to `xcb_connect'
+    modules/video_splitter/panoramix.c:354: undefined reference to `xcb_connection_has_error'
+    modules/video_splitter/panoramix.c:357: undefined reference to `xcb_get_setup'
+    modules/video_splitter/panoramix.c:359: undefined reference to `xcb_setup_roots_iterator'
+    modules/video_splitter/panoramix.c:360: undefined reference to `xcb_screen_next'
+    modules/video_splitter/panoramix.c:407: undefined reference to `xcb_disconnect'
+    modules/video_splitter/panoramix.c:407: undefined reference to `xcb_disconnect'
+    modules/video_splitter/panoramix.c:407: undefined reference to `xcb_disconnect'
+    
+    Signed-off-by: Vinson Lee <vlee@freedesktop.org>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit a854dc7108cdb70b5f58a1232868c74ad3620c99)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 6255459e6d291cd367e0be5e0f197f65954c0127
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Sep 29 11:40:29 2016 +0200
+
+    codec: adpcm: set IMA WAV max channels
+    
+    only ADPCM EA allows > 2 channels
+    
+    (cherry picked from commit 2bf06d17054ec3e23482aa02b6a6e10039cbde82)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 8f5dbde4055ed0196f413dae58d64c0047817815
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Sep 29 11:35:32 2016 +0200
+
+    codec: adpcm: check min samples prior read
+    
+    (cherry picked from commit 4c17d06b91323a175c676e9878b3a263bf66055b)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 606431b7ce1bf006b094fd91160625bf9230f6fe
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Sep 29 11:32:07 2016 +0200
+
+    codec: adpcm: check computing of samples per block
+    
+    we should not trust block size
+    
+    (cherry picked from commit 7f2eeddd05ec8d889ad9bda67c440db408055834)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d171e2d7ea8ea2e71fc1850a04d10dccf66b1221
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Sep 29 11:11:50 2016 +0200
+
+    codec: adpcm: unify max channels checks
+    
+    (cherry picked from commit 301753e2a012f501de915feeb7ad4360e50f73f1)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 3f179bce7c325f54d888f905022588a16a2a562b
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Sep 29 11:11:24 2016 +0200
+
+    Update NEWS for 2.2.5
+
+commit b9803429fb7e94682a962ac5d633b1e66acbe6c6
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Sep 29 11:00:21 2016 +0200
+
+    codec: adpcm: check max channels
+    
+    (cherry picked from commit bd85994455bd35e7e83816e65d84b0a873d8ca8d)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d08c1bfb2329b898650d6c247002106245de7c8b
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Sep 29 10:38:40 2016 +0200
+
+    codec: adpcm: adpcm_ms: use samples count for extracting data (refs #17448)
+    
+    Buffer is allocated according to samples count, but a fixed
+    depends on header which max only to 2 when
+    reading, and allow overflowing
+    
+    (cherry picked from commit ac73e91ba72ce812415ade36a75af441457cd8be)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 57dfd58532ec7086f8cd745969f9203a260823cf
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Sep 27 09:26:29 2016 +0200
+
+    avcodec: fix palette propagation
+    
+    closes #9940, #14975
+
+commit 586b781174d08be8a0a580816c6e9bc3f677c47f
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Tue Sep 27 08:10:26 2016 +0200
+
+    macosx: Fix warning about incorrect usage of negator
+    
+    Not cherry picked from 88b85b54fc0e65b4cdafa2d43cd5fd6283d61bcb
+
+commit 52807c8c4eb88022c619e88dd13c7d8cb7007460
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Sat Sep 17 20:59:41 2016 +0200
+
+    macosx: Reset scrolling direction with timer, decrease timeout
+    
+    Reset the fixed scrolling direction with a timer and decrease
+    timeout to 0.4 seconds. This makes switching between horizontal
+    scrolling and vertical scrolling a bit easier.
+    
+    (cherry picked from commit a3005d3db8c57592d2dc6b907e693875e0f03c27)
+    Signed-off-by: David Fuhrmann <dfuhrmann@videolan.org>
+
+commit f318ffc4480153b7b8b75947ca95f1d03a597965
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Sat Sep 17 20:43:51 2016 +0200
+
+    macosx: Refine scroll wheel event forwarding
+    
+    Starting with Sierra, the platform emits more fine granular
+    scrolling events than before. Now, the deltas from each event
+    are accumulated and forwarded after they reach a certain threshold.
+    
+    close #17349
+    
+    (cherry picked from commit 3eb0885f611df44e6ed336920bbe7e011a10c589)
+    (cherry picked from commit 64a447df3f02f2e5628498ff2c01116174cd042f)
+    Signed-off-by: David Fuhrmann <dfuhrmann@videolan.org>
+
+commit 620c9cef9d7c237eb3bbb87a7456b9295cdf0629
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Sep 15 14:11:42 2016 +0300
+
+    ftp: fix scan string injection
+    
+    (cherry picked from commit 09a26099cfd8d708d40127d4faa64ade01f36775)
+
+commit 5d7ebf65718e36f6356761175db2f5f850c4898c
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Aug 30 17:12:07 2016 +0200
+
+    contribs: qt: Disable PCH
+
+commit 0e205d42bae881f4218564f6193dc06ecbb5ee71
+Author: Rinat Ibragimov <ibragimovrinat@mail.ru>
+Date:   Mon Jun 13 19:53:02 2016 +0300
+
+    vdpau: fix video scaling
+    
+    There is a possible issue in VdpVideoMixerRender [1] call. While
+    destination_rect is set to dst_rect, which is fine, destination_video_rect
+    parameter is set to NULL, which makes video keep the size, while it's
+    expected to fill the entire output rectangle.
+    
+    Proposed patch sets destination_video_rect to dst_rect, which makes
+    video scale when player window is resized.
+    
+    [1] http://http.download.nvidia.com/XFree86/vdpau/doxygen/html/group___vdp_video_mixer.html#ga62bf3bf8c5f01322a03b07065c5ea3db
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    
+    There has been no clarifications about the intended behaviour of NULL
+    destination_video_rect in the VDPAU API specification; presumably the
+    behaviour of the NVIDIA driver is intended. But the VA-GL driver has
+    had a different behaviour. This patch avoids relying on either by
+    setting the destination_video_rect explicitly always since it is not
+    clear what is correct.
+    
+    (cherry picked from commit 7df48e30dc0f176cb86da361faa1da718593bc29)
+
+commit d5427879e56147bc9c7316d3cbb757ec013624c1
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Aug 24 12:49:05 2016 +0200
+
+    configure: check only for adequate math optimizations (fix #16907)
+    
+    Manually cherry-picked from 273ec260a1f1912d39c2180db642f24127b8f6b7
+    
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit b2967d6b7f045f1c7cdf6a6c19115553d5e2038c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun May 29 22:46:27 2016 +0300
+
+    m4: helper for -f flags
+    
+    (cherry picked from commit 03df6aeeddbd807599847a6f8722ae7d03d31e96)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit db24511e60967e0208346d3f1a2288bbc3b6d7f7
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Mon Aug 8 19:18:54 2016 +0200
+
+    run_vlc.sh: Don't fail when running without a TTY
+    
+    This should help the test to pass on our buildbots
+    
+    (cherry picked from commit 40f53204f88eb07e508380a88783d075a9eac33b)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit dd30a50f5fb27173b0eb4943857a17a8db409129
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Aug 24 10:29:38 2016 +0200
+
+    share: Fix make distcheck
+
+commit cce7b512a37dbb9e93934aa2af61d7773ea0ff51
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Aug 23 10:49:58 2016 +0200
+
+    Update NEWS for 2.2.5
+
+commit 85a64e10d665edf8a29526543b5c6fd4923437fd
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Aug 22 16:52:10 2016 +0800
+
+    demux: mp4: fill fragmented timescale on missing mvhd
+    
+    Potential divide-by-zero issue.
+    Reported-by: Xiangkun Jia (ajax4sec@hotmail.com)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 4f12d2a2fd664c63da5cbd60f264167521a926d3
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Aug 16 11:09:20 2016 +0200
+
+    mux: mp4: handle scaled conversion drift (fix #17219)
+    
+    double loss in both microtime to time scale
+    then time scale to microtime
+    
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 7774f801494a39cf340a515f751ad4e354104600
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Aug 16 11:09:19 2016 +0200
+
+    mux: mp4: fix spu duration
+    
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 92ba135b8d2f86bd2c542196a12583f97f741936
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Aug 16 11:09:18 2016 +0200
+
+    mux: mp4: fix edit list / start offsets
+    
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 8b0a359be21c8b66c7f7f5d34b85df3cf6689035
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Sun Jul 24 12:59:20 2016 +0200
+
+    Fix build using old GCC intrinsics
+    
+    As the 2.2 headers are still using vlc_atomics (picture)
+    we cannot have a way to avoid collisions with early
+    or late <atomic> inclusion when using GCC >= 4.7
+    
+    Conditionals in vlc_atomic won't work.
+    
+    Happens in ProjectM and Qt5.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit e8bd39c10be4bf971888d64654cc22a0f1e6c2c2
+Author: Steve Lhomme <robux4@videolabs.io>
+Date:   Tue Jul 26 16:14:12 2016 +0200
+
+    screen: set the output frame rate based on the fps
+    
+    Fixes #14646
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 5bd216d755c6aff4529d9c1d6ca2e466b3610478
+Author: Steve Lhomme <robux4@gmail.com>
+Date:   Tue Jul 26 13:15:21 2016 +0200
+
+    direct3d9: don't use any texture filtering when the dimensions are the same
+    
+    On AMD cards the linear interpolation adds a green line when converting from
+    YV12 to RGB even though the dimensions are the same.
+    
+    Fixes #17062
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 2ca67a601aad476358b0b45dd3f9872cfa567fe5)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit e9511cec1064092a2cb5d65b63f3d917501ad742
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Jul 25 23:27:37 2016 +0300
+
+    picture: only include vlc_atomic when needed
+    
+    <vlc_atomic.h> does not support C++ properly in VLC 2.2.
+    This should avoids build breakages in C++ modules.
+
+commit ec34ff174f04d1e81c939ed0325a0073c6f68fce
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Jul 22 13:37:15 2016 +0200
+
+    vlc_atomic: atomic_compare_exchange_strong_explicit takes 5 parameters
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit ce8cc916ab43e12b85abd6a1b850f1ccf43319c8
+Author: Steve Lhomme <robux4@videolabs.io>
+Date:   Fri Jul 22 13:37:14 2016 +0200
+
+    vlc_atomic: atomic_compare_exchange_weak_explicit takes 5 parameters
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 58b64da19c082e128cc92c3d5852c981be9312f3
+Author: Vinson Lee <vlee@freedesktop.org>
+Date:   Fri Jul 22 13:37:13 2016 +0200
+
+    rdp: Fix build with FreeRDP 2.0.0.
+    
+    Signed-off-by: Vinson Lee <vlee@freedesktop.org>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c32dd114a67e51fba4dc06667f8698b46ed80947
+Author: Hannes Domani <ssbssa@yahoo.de>
+Date:   Fri Jul 8 18:31:29 2016 +0200
+
+    contrib: libmad: fix memory leak
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 94821a37ff9ab6b133f8a95e5f7ea28c64c3a701)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 76b637f9dc3389a835e29da2bf18653cc436d0a8
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Tue Jul 19 00:21:46 2016 +0200
+
+    lua: Do not compile broken metachannels script
+    
+    The current metachannels script is broken, as the API it uses was
+    deprecated and it's not trivial to migrate to the new API, which uses
+    OAuth. This removes it from the makefile so it's not compiled and not
+    included in VLC, as a broken script is not useful for the user.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 2bfd9e803684b8d2ff3b1b4b961dd7094f746b35)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d4b507dc490ce2b6f2c211d3cf52d8c95ee036c1
+Author: Filip Roséen <filip@videolabs.io>
+Date:   Sat Jul 16 04:55:02 2016 +0200
+
+    demux/asf: prevent integer overflow in ASF_NextObject
+    
+    Before returning from ASF_NextObject, the former implementation would
+    simply calculate "p_obj->common.i_object_pos + p_obj->common.i_object_size",
+    and pass the result to stream_Seek.
+    
+    Of course this is rather dangerous given that the value of ".i_object_size"
+    is populated by simply reading the input stream.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit bcdc90fadce053ae56a98d09ed93ffc3c25f1c00)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit bdc56822a60c4bf9d876a8ffba61dda96e25e7df
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Jul 17 21:56:15 2016 +0200
+
+    NSIS: fix Unquoted Path issue on the uninstaller
+    
+    Reported by Cyril Vallicari from Ug_0 Security
+    
+    (cherry picked from commit 0d170a029610bcdf5de6e2eadf5357ce8f2c93b9)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 628b1860d2f6bbb5a1dbb2f5b14a6c520a4ccba3
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Wed Jul 13 10:53:17 2016 +0200
+
+    extras/tools: prefer to download all packages from v.o
+    
+    (cherry picked from commit a09dbdefd4d25ee6524f1d1df9be7aaf4d267ae2)
+
+commit f8d59095d810da29f46b67c5d9c8b8faae3cb837
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Wed Jul 13 10:24:14 2016 +0200
+
+    contrib: prefer downloads of glew, upnp, zlib and zvbi from v.o
+    
+    (cherry picked from commit 31f451a3a1285be5eaad172d749a0eb3fbacc369)
+
+commit df0cc4a64aa1f1068299dc6e4cbb95cb2ab17940
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Tue May 3 13:44:40 2016 +0200
+
+    win32: Use -static rather than undocumented --static when linking
+    
+    Also remove -static-libgcc which is redundant with -static
+    
+    (cherry picked from commit 56b8d4831c15164df304eae30a758f20ae81ddb6)
+    Signed-off-by: Rafaël Carré <funman@videolan.org>
+
+commit eea2d9d001caecc57365e06d37ab9458aa2b24a4
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Tue May 3 13:45:18 2016 +0200
+
+    win32: also statically link libgcc to C++ code
+    
+    If libtool is dumb then we can be dumber
+    
+    (cherry picked from commit bd63d6f28d7b6534630bf32a990352e6b9440f4d)
+    Signed-off-by: Rafaël Carré <funman@videolan.org>
+
+commit 9cefe33b9c9f811c48d6726a59fd1bdbd58f45b4
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Jun 14 15:08:50 2016 +0200
+
+    Contrib: mpeg2, reconf after patching configure.ac
+    
+    (cherry picked from commit b8692562ff82d82462dbbc889a4298af23a93520)
+    Signed-off-by: Rafaël Carré <funman@videolan.org>
+
+commit 734486e0e3647b13e8bd16ee7156551244cb3bdc
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Jun 20 14:28:10 2016 +0200
+
+    Contribs: Only display FTP message when needed
+    
+    (cherry picked from commit de7421aa03f0861be5178541a4bbcd7d907f3b09)
+
+commit 392c3c604685285df18db754d25f02f69e6055c4
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Jun 20 14:22:28 2016 +0200
+
+    Contribs: fix dual-download with wget
+    
+    (cherry picked from commit 61ba4c1571ee1d1ef77c0b0e492d93bc94b7ee47)
+
+commit 6315b2ca5f41f7eeaaa16489484cc2ba2a108e10
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Jun 20 12:32:16 2016 +0200
+
+    Contribs: move more contribs to VideoLAN mirror
+    
+    (cherry picked from commit a8d7dae0227505bc8d3050084055cb4117f30daa)
+
+commit 7a45b046f2e398c8cedaa7a3751b5cb9d57b9684
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Jun 20 12:18:44 2016 +0200
+
+    Contribs: use VideoLAN ftp first and then fallback on upstream
+    
+    (cherry picked from commit 39c72adce6ac939769ea829b7d72558fd31f0f8a)
+
+commit 7394048b906730fdeffd324f1f8c33be46c829f3
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Jun 20 12:01:00 2016 +0200
+
+    Contribs: provide a macro to do dual downloading
+    
+    First from videolan ftp, then original page
+    
+    There might be a more elegant way of doing so...
+    
+    (cherry picked from commit 29fc50d7fa68f6318d942b1f3dfa5d7ad75660ff)
+
+commit 82da842e737e9a64f3db8a3b7a0a61c9e4b48ab7
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Jun 20 12:15:02 2016 +0200
+
+    Contribs: change contribs URLs on our FTP
+    
+    (cherry picked from commit ba6c6589d65412c2c2df6f165431544bc6243d70)
+
+commit bc577284e6496b50f8984d4defaa0fb074854731
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Jul 5 12:02:52 2016 +0200
+
+    win32: specific: Include system32 to our dll search path.
+    
+    (cherry picked from commit 2ec72a2a45b528c85dca958271f002b9fabfd98b)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit c38d9521052fee1f9ec6406e2d7fd76b8154009a
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Jul 1 13:26:19 2016 +0200
+
+    Win32: modify the LoadLibrary PATHS used
+    
+    We used to load system libraries without the full path, notably for
+    DirectX-related libraries. This is a bad idea if someone puts a
+    similarly-named DLL in the VLC folder, because they would be loaded.
+    
+    Indeed, even if we don't load from CWD, we still load from the
+    application, which could be an issue, if you install a DLL next to
+    libvlccore.dll.
+    
+    Therefore, on modern Windows systems, now LoadLibrary calls are
+    completely limited to SYSTEM32; except when loading vlc modules,
+    where they are limited to the application folder.
+    
+    (cherry picked from commit c220ddc927d1a97f72a0c5bf86de56301e3483ad)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit fa086405773be54a9e9c59a015f9731990c1f6fb
+Author: Shlomi Fish <shlomif@shlomifish.org>
+Date:   Sun Jun 26 21:56:08 2016 +0200
+
+    Contribs: fix libmad sound issue
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 93b8a9a6185a018caad2e6ef929a63e53b31b789)
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 433fc7ad5f6ea5170d75f91719e37db546886dd0
+Author: Mark Becwar <mark@thebecwar.com>
+Date:   Tue Jun 21 21:33:07 2016 -0400
+
+    Fix Malformed Windows VERSIONINFO structures. (#17090)
+    
+    The VERSIONINFO structures supplied in the Windows resource files have a mismatch between the codepage specified in the translation table, and the codepage specified in the string tables. This patch fixes both of the rc.in files that are broken.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit e61c12c60b8cc88ae086ea57bf5da2c77c9ff93b)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 83baa49871d4c437707d8dd32134d2729999cdf3
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Fri Jun 24 03:50:24 2016 +0200
+
+    youtube.lua: update signature descrambling javascript parsing
+    
+    Quick fix as definitions now start on the beginning of lines
+    
+    (cherry picked from commit feb851a03443d8f8d3068107a31995bf2158d881)
+
+commit 4c9a5ac7cd9a0586e8feee791ef6013b07b5945a
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Tue Jun 21 15:44:24 2016 +0200
+
+    macosx: fix time format overflow if playlist duration is > 24h
+    
+    (cherry picked from commit 62dfbc3856fbcdec5fa9c592089b3cc8a228b292)
+
+commit d924a937f774805962cbd3cd14729430e14656ca
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Fri Jun 17 16:27:45 2016 +0200
+
+    On the road to 2.2.5
+
+commit b6e93c1cdf2087aeba99b634235212a39bfa5952
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Jun 13 20:31:15 2016 +0300
+
+    text: fix decoding of 4-bytes UTF-8 sequences
+    
+    (cherry picked from commit 221462198b2e32c74cfcb0d0b5645042d7fb3c79)
+
 commit 888b7e89d78e7073075fc0a007d47b93f4570fab
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Wed Jun 1 12:15:19 2016 +0200
@@ -874,8 +2188,8 @@ Date:   Mon Aug 31 08:19:00 2015 +0200
     Signed-off-by: Rafaël Carré <funman@videolan.org>
     
     Conflicts:
-    	modules/codec/avcodec/chroma.c
-    	modules/codec/avcodec/video.c
+            modules/codec/avcodec/chroma.c
+            modules/codec/avcodec/video.c
 
 commit b35e17ec9dc54812bdece6ec4c693bc70b89dc43
 Author: Jean-Baptiste Kempf <jb@videolan.org>

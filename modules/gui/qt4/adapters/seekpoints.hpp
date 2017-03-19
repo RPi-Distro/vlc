@@ -22,9 +22,7 @@
 #ifndef SEEKPOINTS_HPP
 #define SEEKPOINTS_HPP
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#include "qt4.hpp"
 
 #include <vlc_common.h>
 #include <vlc_interface.h>

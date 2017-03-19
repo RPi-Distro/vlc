@@ -2,7 +2,7 @@
  * main_interface.hpp : Main Interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: 85967f79eff883b47f9c4a5b6667713f3254ec98 $
+ * $Id: eed3cba6d9f741f077b738e462dbab381be6f8a5 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -95,6 +95,9 @@ protected:
     void dropEventPlay( QDropEvent* event, bool b_play ) { dropEventPlay(event, b_play, true); }
     void dropEventPlay( QDropEvent *, bool, bool );
 #ifdef _WIN32
+#if HAS_QT5
+    virtual bool nativeEvent(const QByteArray &eventType, void *message, long *result);
+#endif
     virtual bool winEvent( MSG *, long * );
 #endif
     virtual void changeEvent( QEvent * );

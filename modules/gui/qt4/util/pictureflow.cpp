@@ -29,6 +29,8 @@
   THE SOFTWARE.
 */
 
+#include "qt4.hpp"
+
 #include "pictureflow.hpp"
 
 #include <QApplication>

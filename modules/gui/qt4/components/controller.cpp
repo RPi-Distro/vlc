@@ -2,7 +2,7 @@
  * controller.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: d93e0dbfd17162d7c0f3869a3c2517467fd7baed $
+ * $Id: 59f348a41ff5743857ed3ea9b73f2bcb35fe6509 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -25,6 +25,8 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+
+#include "qt4.hpp"
 
 #include <vlc_vout.h>                       /* vout_thread_t for FSC */
 
@@ -818,6 +820,8 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i, QWi
     screenRes = getSettings()->value( "FullScreen/screen" ).toRect();
     isWideFSC = getSettings()->value( "FullScreen/wide" ).toBool();
     i_screennumber = var_InheritInteger( p_intf, "qt-fullscreen-screennumber" );
+
+    CONNECT( this, fullscreenChanged( bool ), THEMIM, changeFullscreen( bool ) );
 }
 
 FullscreenControllerWidget::~FullscreenControllerWidget()
@@ -1089,7 +1093,7 @@ void FullscreenControllerWidget::keyPressEvent( QKeyEvent *event )
 }
 
 /* */
-static int FullscreenControllerWidgetFullscreenChanged( vlc_object_t *vlc_object,
+int FullscreenControllerWidget::FullscreenChanged( vlc_object_t *vlc_object,
                 const char *variable, vlc_value_t old_val,
                 vlc_value_t new_val,  void *data )
 {
@@ -1101,6 +1105,7 @@ static int FullscreenControllerWidgetFullscreenChanged( vlc_object_t *vlc_object
     FullscreenControllerWidget *p_fs = (FullscreenControllerWidget *)data;
 
     p_fs->fullscreenChanged( p_vout, new_val.b_bool, var_GetInteger( p_vout, "mouse-hide-timeout" ) );
+    p_fs->emit fullscreenChanged( new_val.b_bool );
 
     return VLC_SUCCESS;
 }
@@ -1146,7 +1151,7 @@ void FullscreenControllerWidget::setVoutList( vout_thread_t **pp_vout, int i_vou
     foreach( vout_thread_t *p_vout, del )
     {
         var_DelCallback( p_vout, "fullscreen",
-                         FullscreenControllerWidgetFullscreenChanged, this );
+                         FullscreenControllerWidget::FullscreenChanged, this );
         vlc_mutex_lock( &lock );
         fullscreenChanged( p_vout, false, 0 );
         vout.removeAll( p_vout );
@@ -1171,10 +1176,9 @@ void FullscreenControllerWidget::setVoutList( vout_thread_t **pp_vout, int i_vou
         vlc_mutex_lock( &lock );
         vout.append( p_vout );
         var_AddCallback( p_vout, "fullscreen",
-                         FullscreenControllerWidgetFullscreenChanged, this );
-	CONNECT( this, fullscreenChanged( bool ), THEMIM, changeFullscreen( bool ) );
+                         FullscreenControllerWidget::FullscreenChanged, this );
         /* I miss a add and fire */
-        fullscreenChanged( p_vout, var_GetBool( p_vout, "fullscreen" ),
+        fullscreenChanged( p_vout, var_GetBool( THEPL, "fullscreen" ),
                            var_GetInteger( p_vout, "mouse-hide-timeout" ) );
         vlc_mutex_unlock( &lock );
     }
@@ -1210,7 +1214,6 @@ void FullscreenControllerWidget::fullscreenChanged( vout_thread_t *p_vout,
         IMEvent *eHide = new IMEvent( IMEvent::FullscreenControlHide, 0 );
         QApplication::postEvent( this, eHide );
     }
-    emit fullscreenChanged( b_fullscreen );
     vlc_mutex_unlock( &lock );
 }
 

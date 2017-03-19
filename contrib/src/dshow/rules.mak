@@ -2,7 +2,7 @@
 
 DSHOW_HEADERS_URL := $(CONTRIB_VIDEOLAN)/dshow-headers-oss.tar.bz2
 D2D_HASH := b1affb70c021200b410eccd377ad5aeef2c5a85b
-D2D_URL := http://github.com/2of1/d2d1headers/archive/master.zip
+D2D_URL := $(CONTRIB_VIDEOLAN)/d2d_headers.zip
 # FIXME: ^ D2D not working
 
 ifdef HAVE_WIN32

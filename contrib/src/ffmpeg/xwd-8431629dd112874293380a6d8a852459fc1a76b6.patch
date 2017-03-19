@@ -1,0 +1,31 @@
+From 8431629dd112874293380a6d8a852459fc1a76b6 Mon Sep 17 00:00:00 2001
+From: Andreas Cadhalpun <Andreas.Cadhalpun@googlemail.com>
+Date: Fri, 18 Dec 2015 19:28:51 +0100
+Subject: [PATCH 1/1] xwddec: prevent overflow of lsize * avctx->height
+
+This is used to check if the input buffer is larger enough, so if this
+overflows it can cause a false negative leading to a segmentation fault
+in bytestream2_get_bufferu.
+
+Signed-off-by: Andreas Cadhalpun <Andreas.Cadhalpun@googlemail.com>
+Signed-off-by: Anton Khirnov <anton@khirnov.net>
+---
+ libavcodec/xwddec.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libavcodec/xwddec.c b/libavcodec/xwddec.c
+index f6d3d97..1c9874a 100644
+--- a/libavcodec/xwddec.c
++++ b/libavcodec/xwddec.c
+@@ -141,7 +141,7 @@ static int xwd_decode_frame(AVCodecContext *avctx, void *data,
+         return AVERROR_INVALIDDATA;
+     }
+ 
+-    if (bytestream2_get_bytes_left(&gb) < ncolors * XWD_CMAP_SIZE + avctx->height * lsize) {
++    if (bytestream2_get_bytes_left(&gb) < ncolors * XWD_CMAP_SIZE + (uint64_t)avctx->height * lsize) {
+         av_log(avctx, AV_LOG_ERROR, "input buffer too small\n");
+         return AVERROR_INVALIDDATA;
+     }
+-- 
+1.7.10.4
+

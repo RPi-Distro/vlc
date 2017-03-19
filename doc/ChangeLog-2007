@@ -7972,9 +7972,9 @@ Date:   Fri Oct 12 22:55:19 2007 +0000
     Import new http://tivo-vlc.sf.net tivo demuxer version. (The author
     is Neal Symms, patch made by Dave Still)
     Changelog is
-    	* v2.0.0 - 21-Mar-2005 - Series 2 support!  No AC-3 on S2 DTivo yet.
-    	* v2.1.0 - 22-Mar-2005 - Support for AC-3 on S2 DTivo (long ac3 packets)
-    	* v3.0.0 - 14-Jul-2005 - Support for skipping fwd/back via VLC hotkeys
+            * v2.0.0 - 21-Mar-2005 - Series 2 support!  No AC-3 on S2 DTivo yet.
+            * v2.1.0 - 22-Mar-2005 - Support for AC-3 on S2 DTivo (long ac3 packets)
+            * v3.0.0 - 14-Jul-2005 - Support for skipping fwd/back via VLC hotkeys
     Please test and report any regression. (The patch is too big to be
     correctly reviewed)
 
@@ -8679,7 +8679,7 @@ Author: Christophe Mutricy <xtophe@videolan.org>
 Date:   Mon Oct 8 17:26:51 2007 +0000
 
     galaktos: -distribute fftsg.h
-    	  -get rid of bad merge remnant
+              -get rid of bad merge remnant
 
 commit 36eedf407fcec5b1e377ada3654de1ab633cc53e
 Author: Rafaël Carré <funman@videolan.org>
@@ -15022,7 +15022,7 @@ Date:   Fri Aug 24 09:38:09 2007 +0000
     Implement framedropping algorithm using avcontext.skip_frames and added two new options:
     
     - ffmpeg-skip-frames    values: -1=None, 0=Default, 1=B-frames, 2=P-frames, 3=B+P frames, 4=all frames
-    - ffmpeg-skip-idct	values: -1=None, 0=Default, 1=B-frames, 2=P-frames, 3=B+P frames, 4=all frame)
+    - ffmpeg-skip-idct      values: -1=None, 0=Default, 1=B-frames, 2=P-frames, 3=B+P frames, 4=all frame)
 
 commit 41303be0e6c310391093b36ea42bbaa8237ee036
 Author: Jean-Paul Saman <jpsaman@videolan.org>
@@ -19157,7 +19157,7 @@ Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Wed Jul 11 16:44:40 2007 +0000
 
     Contribs: Freetype 2.3.4 => 2.3.5
-    	  Speex 1.2b1 => 1.2b2
+              Speex 1.2b1 => 1.2b2
 
 commit 0f182a175a38aebb130e3e3b3e9f8a4dcff90f68
 Author: Jean-Baptiste Kempf <jb@videolan.org>
@@ -19680,7 +19680,7 @@ Date:   Fri Jun 29 22:41:49 2007 +0000
     first subtitle)
     All: simplify
          check malloc (what a boring thing)
-    	 do not allocate up to 160ko on the stack
+             do not allocate up to 160ko on the stack
     ( I have tested all formats with a small sample but please test/report any
     regression on your files. )
 
@@ -21421,9 +21421,9 @@ Author: Laurent Aimar <fenrir@videolan.org>
 Date:   Thu May 31 19:22:27 2007 +0000
 
     all: added support for demuxer attachment (Patch by Bernie Purcell)
-    	Use decoder_GetInputAttachment to get attachment from a decoder module.
+            Use decoder_GetInputAttachment to get attachment from a decoder module.
         You need to release the memory with vlc_input_attachment_Delete.
-    	Untested...
+            Untested...
     
     modules/playlist/* cosmetic.
 
@@ -21484,7 +21484,7 @@ Date:   Wed May 30 18:50:15 2007 +0000
     video: fixed preroll
     audio: use avcodec_decode_audio2
            use block_Realloc to pad buffer.
-    	   fixed decoding when SplitBuffer is used (flac)
+               fixed decoding when SplitBuffer is used (flac)
 
 commit 7263355f44f9072cca34849fb72edcfdb1a1a74d
 Author: Laurent Aimar <fenrir@videolan.org>
@@ -22290,7 +22290,7 @@ Author: Christophe Mutricy <xtophe@videolan.org>
 Date:   Sat May 19 22:46:20 2007 +0000
 
     Lua configuration: Add a test for system with no .pc
-    		   Revert [20203]
+                       Revert [20203]
 
 commit 1b3d52831477fdec6a348d696861ca2070578050
 Author: Christophe Mutricy <xtophe@videolan.org>
@@ -26328,7 +26328,7 @@ Author: Christophe Mutricy <xtophe@videolan.org>
 Date:   Tue Mar 27 22:26:24 2007 +0000
 
     qt4/menu.cpp:  * Work around libqt4 opening gconf
-    	       * improve readability of macros
+                   * improve readability of macros
 
 commit 90cf67720e68db8fc3a909ef9544ad58656031c5
 Author: Jean-Baptiste Kempf <jb@videolan.org>
@@ -29749,9 +29749,9 @@ Author: Laurent Aimar <fenrir@videolan.org>
 Date:   Tue Feb 20 22:52:12 2007 +0000
 
     ffmpeg: ask a packetizer for audio too (needed since ffmpeg r6098,
-    	fixed mpeg audio decoding)
+            fixed mpeg audio decoding)
     vlc_demux.h: fixed COMMON_INIT_PACKETIZER (create a packetizer and not a decoder,
-    	fixed mpeg audio packetizer)
+            fixed mpeg audio packetizer)
 
 commit 2f1ab71400642cfa21ae6f37777694c4af799d37
 Author: Jean-Baptiste Kempf <jb@videolan.org>
@@ -32311,3 +32311,15 @@ Author: Felix Paul Kühne <fkuehne@videolan.org>
 Date:   Mon Jan 1 22:39:01 2007 +0000
 
     * using GCC 3.3 with the 10.3.9 SDK is definitelly no good idea. x264 and libtwolame remain broken for future d. releases
+
+commit 2a35ffae6fc5f9ee8b8c81177a4902f72f6239ce
+Author: Jean-Paul Saman <jpsaman@videolan.org>
+Date:   Mon Jan 1 18:56:37 2007 +0000
+
+    Patch by Mikko Hirvonen <masse at astro dot helsinki dot fi> for Firefox-1.5.x development tools detection in configure.ac. The patch is applied with some modifications of me
+
+commit 641707d30e39c4cfa108587019817c96695cef21
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Mon Jan 1 17:05:32 2007 +0000
+
+    * added out-of-the-box support for future darwin releases. right now, the following libraries are broken (due to linking issues): cdio, cddb, vcdimager and twolame. additionally, x264 doesn't compile because of a bug in makefile/config.mak.

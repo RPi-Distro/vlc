@@ -76,11 +76,13 @@ skins2_default_vlt_FILES = \
 	skins2/default/subX/vol_slider.png
 
 skins2/default.vlt: $(skins2_default_vlt_FILES)
-	mkdir -p skins2
-	(cd "$(srcdir)/skins2"; find default -print0 | \
-		LC_ALL=C sort -z | \
-		tar cvv --exclude .svn --no-recursion --null -T -) | \
-	gzip -n > skins2/default.vlt
+	$(AM_V_at)mkdir -p skins2
+	$(AM_V_at)rm -f -- skins2/default.vlt.tmp
+	$(AM_V_GEN)GZIP=--no-name \
+	tar cvvzf skins2/default.vlt.tmp \
+		--owner=root --group=root --directory="$(srcdir)/skins2" \
+		default/
+	$(AM_V_at)mv -f -- skins2/default.vlt.tmp skins2/default.vlt
 
 #
 # LUA
@@ -152,7 +154,6 @@ nobase_vlclib_DATA = \
 	lua/sd/icecast.luac \
 	lua/sd/icast.luac \
 	lua/sd/jamendo.luac \
-	lua/sd/metachannels.luac \
 	$(NULL)
 
 nobase_doc_DATA = \
@@ -244,8 +245,7 @@ EXTRA_DIST += \
 	lua/sd/fmc.lua \
 	lua/sd/icecast.lua \
 	lua/sd/icast.lua \
-	lua/sd/jamendo.lua \
-	lua/sd/metachannels.lua
+	lua/sd/jamendo.lua
 
 DIST_http_lua = \
 	lua/http/view.html \

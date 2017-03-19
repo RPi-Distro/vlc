@@ -165,6 +165,7 @@ ffmpeg: ffmpeg-$(HASH).tar.xz .sum-ffmpeg
 	rm -Rf $@ $@-$(HASH)
 	mkdir -p $@-$(HASH)
 	$(XZCAT) "$<" | (cd $@-$(HASH) && tar xv --strip-components=1)
+	$(APPLY) $(SRC)/ffmpeg/xwd-8431629dd112874293380a6d8a852459fc1a76b6.patch
 	$(MOVE)
 
 .ffmpeg: ffmpeg

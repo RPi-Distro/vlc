@@ -74,8 +74,8 @@ EpgDialog::EpgDialog( intf_thread_t *_p_intf ): QVLCFrame( _p_intf )
     layout->addWidget( descBox );
 
     CONNECT( epg, itemSelectionChanged( EPGItem *), this, displayEvent( EPGItem *) );
-    CONNECT( THEMIM->getIM(), epgChanged(), this, updateInfos() );
-    CONNECT( THEMIM, inputChanged( ), this, updateInfos() );
+    CONNECT( THEMIM->getIM(), epgChanged(), this, scheduleUpdate() );
+    CONNECT( THEMIM, inputChanged( bool ), this, updateInfos() );
 
     QDialogButtonBox *buttonsBox = new QDialogButtonBox( this );
 
@@ -92,8 +92,8 @@ EpgDialog::EpgDialog( intf_thread_t *_p_intf ): QVLCFrame( _p_intf )
 
     timer = new QTimer( this );
     timer->setSingleShot( true );
-    timer->setInterval( 1000 * 60 );
-    CONNECT( timer, timeout(), this, updateInfos() );
+    timer->setInterval( 5000 );
+    CONNECT( timer, timeout(), this, timeout() );
 
     updateInfos();
     restoreWidgetPosition( "EPGDialog", QSize( 650, 450 ) );
@@ -102,6 +102,25 @@ EpgDialog::EpgDialog( intf_thread_t *_p_intf ): QVLCFrame( _p_intf )
 EpgDialog::~EpgDialog()
 {
     saveWidgetPosition( "EPGDialog" );
+}
+
+void EpgDialog::showEvent(QShowEvent *)
+{
+    scheduleUpdate();
+}
+
+void EpgDialog::timeout()
+{
+    if( !isVisible() )
+        scheduleUpdate();
+    else
+        updateInfos();
+}
+
+void EpgDialog::scheduleUpdate()
+{
+    if( !timer->isActive() )
+        timer->start( 5000 );
 }
 
 void EpgDialog::displayEvent( EPGItem *epgItem )
@@ -122,7 +141,6 @@ void EpgDialog::displayEvent( EPGItem *epgItem )
 
 void EpgDialog::updateInfos()
 {
-    timer->stop();
     input_item_t *p_input_item = NULL;
     playlist_t *p_playlist = THEPL;
     input_thread_t *p_input_thread = playlist_CurrentInput( p_playlist ); /* w/hold */
@@ -137,7 +155,6 @@ void EpgDialog::updateInfos()
         {
             epg->updateEPG( p_input_item );
             vlc_gc_decref( p_input_item );
-            if ( isVisible() ) timer->start();
         }
     }
 }

@@ -2,7 +2,7 @@
  * playlist_model.hpp : Model for a playlist tree
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: f9d1d0c3b32bae40c8ba1ed255bbf7bbecbc2339 $
+ * $Id: 1f71ac9d2a0dcb9b1179c4b599e807a81b5280f2 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jakob Leben <jleben@videolan.org>
@@ -25,9 +25,7 @@
 #ifndef _PLAYLIST_MODEL_H_
 #define _PLAYLIST_MODEL_H_
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
+#include "qt4.hpp"
 
 #include <vlc_input.h>
 #include <vlc_playlist.h>

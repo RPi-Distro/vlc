@@ -11,7 +11,7 @@ PKGS_FOUND += ssh2
 endif
 
 $(TARBALLS)/libssh2-$(LIBSSH2_VERSION).tar.gz:
-	$(call download,$(LIBSSH2_URL))
+	$(call download_pkg,$(LIBSSH2_URL),ssh2)
 
 .sum-ssh2: libssh2-$(LIBSSH2_VERSION).tar.gz
 

@@ -37,10 +37,16 @@ function parse()
         while true do
             local line = vlc.readline()
             if not line then break end
-            path = string.match( line, "data%-config%-url=\"(.-)\"" )
-            if path then
-                path = vlc.strings.resolve_xml_special_chars( path )
-                return { { path = path } }
+
+            -- Get the appropriate ubiquitous meta tag
+            -- <meta name="twitter:player" content="https://player.vimeo.com/video/123456789">
+            local meta = string.match( line, "(<meta[^>]- name=\"twitter:player\"[^>]->)" )
+            if meta then
+                local path = string.match( meta, " content=\"(.-)\"" )
+                if path then
+                    path = vlc.strings.resolve_xml_special_chars( path )
+                    return { { path = path } }
+                end
             end
         end
 
@@ -58,7 +64,7 @@ function parse()
                 -- Apparently the different formats available are listed
                 -- in uncertain order of quality, so compare with what
                 -- we have so far.
-                local height = string.match( stream, "\"height\":(%d+)[,}]" )
+                local height = string.match( stream, "\"height\":(%d+)" )
                 height = tonumber( height )
 
                 -- Better than nothing

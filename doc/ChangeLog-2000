@@ -1077,17 +1077,17 @@ Author: Pierre Baillet <octplane@videolan.org>
 Date:   Mon Aug 21 16:22:03 2000 +0000
 
     .SDL:
-    	.removed the YUV thing from the SDL
-    	.cleaned up the makefile to remove it
-    	.UNTESTED (seems to compile).
+            .removed the YUV thing from the SDL
+            .cleaned up the makefile to remove it
+            .UNTESTED (seems to compile).
 
 commit 16bba4b625a0f578a54cbebc6311ea6cd6b71917
 Author: Pierre Baillet <octplane@videolan.org>
 Date:   Mon Aug 21 09:40:11 2000 +0000
 
     Plugin handling:
-    	. switched low and high order vout plugins
-    	. removed yuvsdl plugin.
+            . switched low and high order vout plugins
+            . removed yuvsdl plugin.
 
 commit 9ac8c0ec7d1ca8c58e3b90f3e435ca0fe1d57ad2
 Author: Pierre Baillet <octplane@videolan.org>
@@ -1095,21 +1095,21 @@ Date:   Mon Aug 21 09:33:42 2000 +0000
 
     A few new things:
     
-    	. The interface part:
-    			. created intf_AssignKey, intf_getKey and intf_AssignNormalKeys
-    			these new function are a first abstraction of the the key handling system.			It makes use of a new structure in the interface : p_keys.
+            . The interface part:
+                            . created intf_AssignKey, intf_getKey and intf_AssignNormalKeys
+                            these new function are a first abstraction of the the key handling system.                      It makes use of a new structure in the interface : p_keys.
     
-    			. AssignNormalKeys is commonly used in all the interface plugins.
-    			AssignKey is used to allow the SDL interface to react nicely.
+                            . AssignNormalKeys is commonly used in all the interface plugins.
+                            AssignKey is used to allow the SDL interface to react nicely.
     
-    			. Now the plugin struct element psz_filename is filled (and freed
-    				at the end of the program).
+                            . Now the plugin struct element psz_filename is filled (and freed
+                                    at the end of the program).
     
-    	. the SDL plugin:
-    			works but does only display a green screen for now. so don't use it !
+            . the SDL plugin:
+                            works but does only display a green screen for now. so don't use it !
     
-    	. Please try and compile the client on your box with this version.
-    		I've tried a few output plugin but not all.
+            . Please try and compile the client on your box with this version.
+                    I've tried a few output plugin but not all.
 
 commit c45d72198afd1e4eee98a7cbdca90688d1e93511
 Author: Sam Hocevar <sam@videolan.org>
@@ -1142,8 +1142,8 @@ Date:   Fri Aug 18 08:25:23 2000 +0000
     My first contribution.
     
     * Added SDL plugin
-    	* support fullscreen display with --display fullscreen
-    	* complete keyboard handling
+            * support fullscreen display with --display fullscreen
+            * complete keyboard handling
     * Added --enable_sdl to configure
     
     Octplane.
@@ -2564,9 +2564,9 @@ Author: Vincent Seguin <seguin@videolan.org>
 Date:   Sun Feb 6 13:13:10 2000 +0000
 
     IMPORTANT:
-    	p_vout->i_depth est maintenant la profondeur SIGNIFICATIVE de
-    		l'�cran (8, 15, 16 ou 24)
-    	p_vout->i_bytes_per_pixel est la profondeur r�elle (1, 2, 3 ou 4)
+            p_vout->i_depth est maintenant la profondeur SIGNIFICATIVE de
+                    l'�cran (8, 15, 16 ou 24)
+            p_vout->i_bytes_per_pixel est la profondeur r�elle (1, 2, 3 ou 4)
     
     Ajout du calcul des d�calages � video_output.
     Refonte de l'initialisation des tables.

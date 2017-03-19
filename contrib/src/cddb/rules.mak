@@ -12,7 +12,7 @@ PKGS_FOUND += cddb
 endif
 
 $(TARBALLS)/libcddb-$(CDDB_VERSION).tar.bz2:
-	$(call download,$(CDDB_URL))
+	$(call download_pkg,$(CDDB_URL),cddb)
 
 .sum-cddb: libcddb-$(CDDB_VERSION).tar.bz2
 
@@ -26,7 +26,7 @@ ifdef HAVE_WIN32
 endif
 	$(MOVE)
 
-DEPS_cddb = regex $(DEPS_regex)
+DEPS_cddb = regex $(DEPS_regex) gettext $(DEPS_gettext)
 
 .cddb: cddb
 	$(RECONF)
