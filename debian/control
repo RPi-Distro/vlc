@@ -227,8 +227,7 @@ Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Recommends: libproxy-tools
-Breaks: vlc-nox (<< 2.2.4-7~),
-        vlc (<< 2.2.4-7~)
+Breaks: vlc (<< 2.2.4-7~)
 Description: base library for VLC and its modules
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
@@ -241,8 +240,6 @@ Architecture: any
 Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends}
-Breaks: vlc-nox (<< 2.2.4-7~)
-Replaces: vlc-nox (<< 2.2.4-7~)
 Description: tools for VLC's base library
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
@@ -255,8 +252,6 @@ Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          libvlc-bin (= ${binary:Version})
-Breaks: vlc-nox (<< 2.2.4-7~)
-Replaces: vlc-nox (<< 2.2.4-7~)
 Description: binaries from VLC
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
@@ -496,15 +491,3 @@ Description: Samba plugin for VLC
  podcasts, and multimedia streams from various network sources.
  .
  This plugin adds support to access Samba shares from the VLC media player.
-
-Package: vlc-nox
-Architecture: any
-Section: oldlibs
-Priority: extra
-Pre-Depends: ${misc:Pre-Depends}
-Depends: ${misc:Depends},
-         vlc-plugin-base (= ${binary:Version}),
-         vlc-bin (= ${binary:Version})
-Description: transitional dummy package
- This is a transitional dummy package for vlc-bin and vlc-plugin-base. This
- package can safely be removed.

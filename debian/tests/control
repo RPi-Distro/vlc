@@ -1,5 +1,5 @@
-Tests: vlc-nox
-Depends: vlc-nox
+Tests: vlc-bin
+Depends: vlc-bin
 Restrictions: allow-stderr
 
 Tests: vlc
@@ -15,5 +15,8 @@ Depends:
  vlc-plugin-sdl,
  vlc-plugin-svg,
  vlc-plugin-zvbi,
- vlc-plugin-samba
+ vlc-plugin-samba,
+ vlc-plugin-skins2,
+ vlc-plugin-video-splitter,
+ vlc-plugin-visualization
 Restrictions: allow-stderr
