@@ -100,6 +100,7 @@ confflags += \
 # decklink: not in Debian
 # dxva2: Windows only
 # fdkaac: in Debian non-free
+# gles1: disabled in mesa
 # gnomevfs: poorly maintained
 # goom: not in Debian
 # gst-decode: not needed when having libavcodec
@@ -116,6 +117,7 @@ confflags += \
 	--disable-decklink \
 	--disable-dxva2 \
 	--disable-fdkaac \
+	--disable-gles1 \
 	--disable-gnomevfs \
 	--disable-goom \
 	--disable-gst-decode \
