@@ -399,6 +399,8 @@ ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
 	dh_install -pvlc-bin extras/analyser/_vlc usr/share/zsh/vendor-completions
 endif
 	$(if $(shell dpkg-vendor --is Ubuntu && echo true),dh_install -pvlc-bin debian/source_vlc.py usr/share/apport/package-hooks/)
+	# Create empty directory for plugins.dat
+	mkdir -p debian/libvlc-bin/usr/lib/${DEB_HOST_MULTIARCH}/vlc/plugins
 
 override_dh_installchangelogs:
 	dh_installchangelogs NEWS $(pluginpackages:%=-Nvlc-plugin-%)
@@ -417,6 +419,6 @@ override_dh_installdeb:
 	sed 's/#DEB_HOST_MULTIARCH#/${DEB_HOST_MULTIARCH}/g' \
 		debian/libvlc-bin.postinst.in > debian/libvlc-bin.postinst
 	sed 's/#DEB_HOST_MULTIARCH#/${DEB_HOST_MULTIARCH}/g' \
-		debian/libvlc-bin.postrm.in > debian/libvlc-bin.postrm
+		debian/libvlc-bin.prerm.in > debian/libvlc-bin.prerm
 	echo 'interest-noawait /usr/lib/${DEB_HOST_MULTIARCH}/vlc/plugins' > debian/libvlc-bin.triggers
 	dh_installdeb
