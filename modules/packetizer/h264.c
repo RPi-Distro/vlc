@@ -2,7 +2,7 @@
  * h264.c: h264/avc video packetizer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
- * $Id: e671f6e92bc97347bd50355db4ddc5664974f547 $
+ * $Id: 7e29b8683e0c3d1e07146b7b6952c0175d98b6d8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -572,7 +572,7 @@ static void CreateDecodedNAL( uint8_t **pp_ret, int *pi_ret,
     *pi_ret = dst - *pp_ret;
 }
 
-static inline int bs_read_ue( bs_t *s )
+static inline uint32_t bs_read_ue( bs_t *s )
 {
     int i = 0;
 
@@ -580,7 +580,7 @@ static inline int bs_read_ue( bs_t *s )
     {
         i++;
     }
-    return( ( 1 << i) - 1 + bs_read( s, i ) );
+    return( ( 1u << i) - 1 + bs_read( s, i ) );
 }
 
 static inline int bs_read_se( bs_t *s )
@@ -794,7 +794,7 @@ static void PutSPS( decoder_t *p_dec, block_t *p_frag )
     int     i_dec = 0;
     bs_t s;
     int i_tmp;
-    int i_sps_id;
+    uint32_t i_sps_id;
 
     CreateDecodedNAL( &pb_dec, &i_dec, &p_frag->p_buffer[5],
                      p_frag->i_buffer - 5 );
@@ -807,9 +807,9 @@ static void PutSPS( decoder_t *p_dec, block_t *p_frag )
     p_dec->fmt_out.i_level = bs_read( &s, 8 );
     /* sps id */
     i_sps_id = bs_read_ue( &s );
-    if( i_sps_id >= SPS_MAX || i_sps_id < 0 )
+    if( i_sps_id >= SPS_MAX )
     {
-        msg_Warn( p_dec, "invalid SPS (sps_id=%d)", i_sps_id );
+        msg_Warn( p_dec, "invalid SPS (sps_id=%u)", i_sps_id );
         free( pb_dec );
         block_Release( p_frag );
         return;
@@ -989,8 +989,8 @@ static void PutPPS( decoder_t *p_dec, block_t *p_frag )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     bs_t s;
-    int i_pps_id;
-    int i_sps_id;
+    uint32_t i_pps_id;
+    uint32_t i_sps_id;
 
     bs_init( &s, &p_frag->p_buffer[5], p_frag->i_buffer - 5 );
     i_pps_id = bs_read_ue( &s ); // pps id

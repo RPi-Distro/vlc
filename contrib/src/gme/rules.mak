@@ -6,7 +6,7 @@ GME_URL := http://game-music-emu.googlecode.com/files/game-music-emu-$(GME_VERSI
 PKGS += gme
 
 $(TARBALLS)/game-music-emu-$(GME_VERSION).tar.bz2:
-	$(call download,$(GME_URL))
+	$(call download_pkg,$(GME_URL),gme)
 
 .sum-gme: game-music-emu-$(GME_VERSION).tar.bz2
 

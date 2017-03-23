@@ -2,7 +2,7 @@
  * playlist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2014 VLC authors and VideoLAN
- * $Id: 2b652c6d886f71c2068c72f4e45a4f6a01ee218d $
+ * $Id: a64f3c16cf675ea8628a9ed051d7219f3fde31b1 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>
@@ -684,6 +684,11 @@
 
     id o_item = [o_outline_dict objectForKey:[NSString stringWithFormat: @"%p", p_item]];
     NSInteger i_index = [o_outline_view rowForItem:o_item];
+    if (i_index == -1) {
+        i_index = [o_outline_view numberOfRows] - 1;
+        msg_Dbg(VLCIntf, "Cannot find playing item, assuming last one with index %ld", (long)i_index);
+    }
+
     [o_outline_view selectRowIndexes:[NSIndexSet indexSetWithIndex:i_index] byExtendingSelection:NO];
     [o_outline_view setNeedsDisplay:YES];
 }

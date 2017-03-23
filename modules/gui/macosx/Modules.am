@@ -97,4 +97,6 @@ SOURCES_macosx = \
 	Spotify.h \
 	ResumeDialogController.h \
 	ResumeDialogController.m \
+	VLCDocumentController.h \
+	VLCDocumentController.m \
 	$(NULL)

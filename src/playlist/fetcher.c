@@ -2,7 +2,7 @@
  * fetcher.c: Art fetcher thread.
  *****************************************************************************
  * Copyright © 1999-2009 VLC authors and VideoLAN
- * $Id: a8b7b110176d2d5da0da32cf495c92e3a2f76544 $
+ * $Id: 93315495ea1523592e4918c108b069284b458256 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -351,7 +351,7 @@ static int DownloadArt( playlist_fetcher_t *p_fetcher, input_item_t *p_item )
     char *psz_arturl = input_item_GetArtURL( p_item );
     assert( *psz_arturl );
 
-    if( !strncmp( psz_arturl , "file://", 7 ) )
+    if( !strncasecmp( psz_arturl , "file://", 7 ) )
     {
         msg_Dbg( p_fetcher->object,
                  "Album art is local file, no need to cache" );

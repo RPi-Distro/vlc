@@ -1,0 +1,11 @@
+--- qt4/src/plugins/accessible/widgets/itemviews.cpp.orig	2016-12-07 10:38:13.562018465 +0100
++++ qt4/src/plugins/accessible/widgets/itemviews.cpp	2016-12-07 10:38:19.150015850 +0100
+@@ -393,7 +393,7 @@
+     QModelIndex index = view()->model()->index(0, column, view()->rootIndex());
+     if (!index.isValid() || view()->selectionMode() & QAbstractItemView::NoSelection)
+         return false;
+-    view()->selectionModel()->select(index, QItemSelectionModel::Columns & QItemSelectionModel::Deselect);
++    view()->selectionModel()->select(index, QItemSelectionModel::Columns | QItemSelectionModel::Deselect);
+     return true;
+ }
+ 

@@ -2,7 +2,7 @@
  * input_manager.hpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 7d3b76af17b5923e5566aedaf2d0b579407a7faa $
+ * $Id: 4fbecbb38681ed19b1baf9103a030b19e2090f55 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste <jb@videolan.org>
@@ -29,9 +29,10 @@
 # include "config.h"
 #endif
 
+#include "qt4.hpp"
+
 #include <vlc_input.h>
 
-#include "qt4.hpp"
 #include "util/singleton.hpp"
 #include "adapters/variables.hpp"
 

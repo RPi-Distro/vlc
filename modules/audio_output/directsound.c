@@ -2,7 +2,7 @@
  * directsound.c: DirectSound audio output plugin for VLC
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 51788f5b6a4d0da78a8ce4503578b4f60e56344e $
+ * $Id: ed11194cb44a1007981c7c2b7b08a0580ada957f $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -87,7 +87,7 @@ vlc_module_begin ()
         change_string_list( speaker_list, speaker_list )
     add_float( "directx-volume", 1.0f,
                  VOLUME_TEXT, VOLUME_LONGTEXT, true )
-        change_integer_range( DSBVOLUME_MIN, DSBVOLUME_MAX )
+        change_float_range( 0.f, 2.f )
 
     set_callbacks( Open, Close )
 

@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2011 VideoLAN and AUTHORS
- * $Id: 10efc018b8c3562a6a7975af8b11ba8f1d0d939d $
+ * $Id: aeadbcafa096c5b62260da4386e0fe4a2a53af12 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -175,6 +175,8 @@ MainInterface::MainInterface( intf_thread_t *_p_intf ) : QVLCMW( _p_intf )
     himl = NULL;
     p_taskbl = NULL;
     taskbar_wmsg = RegisterWindowMessage(TEXT("TaskbarButtonCreated"));
+    if (taskbar_wmsg == 0)
+        msg_Warn( p_intf, "Failed to register TaskbarButtonCreated message" );
 #endif
 
     /*********************************

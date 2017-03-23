@@ -5843,7 +5843,7 @@ Date:   Tue Jul 23 19:56:19 2002 +0000
     *first version of plugin for libdvdplay. To test it, you need to have
      libdvdplay installed (available from videolan CVS), and request plugins
     compilation in the usual way:
-    	--enable-dvdplay.
+            --enable-dvdplay.
     Note that libdvdplay needs libdvdread and libdvdcss.
     
     Currently it has only been tested under linux, with gnome interface (optional)

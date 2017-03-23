@@ -2,7 +2,7 @@
  * qt4.hpp : Qt interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 44d7db657403d85ae4dfd3d742d84007533f35ac $
+ * $Id: 5aec9570c3507ef2e657ef9517acaba97fac4402 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -29,12 +29,7 @@
 # include "config.h"
 #endif
 
-#include <vlc_common.h>    /* VLC_COMMON_MEMBERS for vlc_interface.h */
-#include <vlc_interface.h> /* intf_thread_t */
-#include <vlc_playlist.h>  /* playlist_t */
-
-#define QT_NO_CAST_TO_ASCII
-#include <QString>
+#include <QtGlobal>
 
 #if ( QT_VERSION < 0x040600 )
 # error Update your Qt version to at least 4.6.0
@@ -42,6 +37,31 @@
 
 #define HAS_QT47 ( QT_VERSION >= 0x040700 )
 #define HAS_QT5  ( QT_VERSION >= 0x050000 )
+
+#if HAS_QT5
+  #include <QtCore/qcompilerdetection.h>
+  #if defined(Q_COMPILER_ATOMICS) && \
+             ( __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7 ) )
+   #define VLC_ATOMIC_H
+   #include <atomic>
+   using namespace std;
+   #  define atomic_store(object,desired) \
+      do { \
+          *(object) = (desired); \
+          __sync_synchronize(); \
+      } while (0)
+
+   #  define atomic_load(object) \
+       (__sync_synchronize(), *(object))
+  #endif
+#endif
+
+#include <vlc_common.h>    /* VLC_COMMON_MEMBERS for vlc_interface.h */
+#include <vlc_interface.h> /* intf_thread_t */
+#include <vlc_playlist.h>  /* playlist_t */
+
+#define QT_NO_CAST_TO_ASCII
+#include <QString>
 
 enum {
     DialogEventTypeOffset = 0,

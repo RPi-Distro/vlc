@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2008 VLC authors and VideoLAN
- * $Id: 0abe269b6297e20e573a8a36b6caf23d9743d263 $
+ * $Id: 1ccd8fd9d08173351b96f0a8b0a7b3303f6f3993 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -175,7 +175,7 @@ struct access_sys_t
     char       *psz_icy_genre;
     char       *psz_icy_title;
 
-    uint64_t i_remaining;
+    uintmax_t i_remaining;
     uint64_t size;
 
     bool b_seekable;
@@ -183,7 +183,6 @@ struct access_sys_t
     bool b_continuous;
     bool b_pace_control;
     bool b_persist;
-    bool b_has_size;
 
     vlc_array_t * cookies;
 };
@@ -275,10 +274,9 @@ static int OpenWithCookies( vlc_object_t *p_this, const char *psz_access,
     p_sys->psz_icy_name = NULL;
     p_sys->psz_icy_genre = NULL;
     p_sys->psz_icy_title = NULL;
-    p_sys->i_remaining = 0;
+    p_sys->i_remaining = -1;
     p_sys->b_persist = false;
-    p_sys->b_has_size = false;
-    p_sys->size = 0;
+    p_sys->size = -1;
     p_access->info.i_pos  = 0;
     p_access->info.b_eof  = false;
 
@@ -724,15 +722,9 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
     if( p_sys->fd == -1 )
         goto fatal;
 
-    if( p_sys->b_has_size )
-    {
-        /* Remaining bytes in the file */
-        uint64_t remainder = p_sys->size - p_access->info.i_pos;
-        if( remainder < i_len )
-            i_len = remainder;
-
-        /* Remaining bytes in the response */
-        if( p_sys->i_remaining < i_len )
+    if( p_sys->i_remaining != UINTMAX_MAX )
+    {   /* Remaining bytes in the response */
+        if( i_len > p_sys->i_remaining )
             i_len = p_sys->i_remaining;
     }
     if( i_len == 0 )
@@ -798,9 +790,8 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
 
     assert( i_read >= 0 );
     p_access->info.i_pos += i_read;
-    if( p_sys->b_has_size )
+    if( p_sys->i_remaining != UINTMAX_MAX )
     {
-        assert( p_access->info.i_pos <= p_sys->size );
         assert( (unsigned)i_read <= p_sys->i_remaining );
         p_sys->i_remaining -= i_read;
     }
@@ -936,7 +927,7 @@ static int Seek( access_t *p_access, uint64_t i_pos )
     msg_Dbg( p_access, "trying to seek to %"PRId64, i_pos );
     Disconnect( p_access );
 
-    if( p_sys->size && i_pos >= p_sys->size )
+    if( p_sys->size != UINT64_MAX && i_pos >= p_sys->size )
     {
         msg_Err( p_access, "seek too far" );
         int retval = Seek( p_access, p_sys->size - 1 );
@@ -996,9 +987,10 @@ static int Control( access_t *p_access, int i_query, va_list args )
             break;
 
         case ACCESS_GET_SIZE:
-            pi_64 = (int64_t*)va_arg( args, int64_t * );
-            *pi_64 = p_sys->size;
-           break;
+            if( p_sys->size == UINT64_MAX )
+                return VLC_EGENERIC;
+            *va_arg( args, int64_t * ) = p_sys->size;
+            break;
 
         /* */
         case ACCESS_SET_PAUSE_STATE:
@@ -1045,10 +1037,9 @@ static int Connect( access_t *p_access, uint64_t i_tell )
     p_sys->psz_icy_name = NULL;
     p_sys->psz_icy_genre = NULL;
     p_sys->psz_icy_title = NULL;
-    p_sys->i_remaining = 0;
+    p_sys->i_remaining = -1;
     p_sys->b_persist = false;
-    p_sys->b_has_size = false;
-    p_sys->size = 0;
+    p_sys->size = -1;
     p_access->info.i_pos  = i_tell;
     p_access->info.b_eof  = false;
 
@@ -1149,7 +1140,7 @@ static int Request( access_t *p_access, uint64_t i_tell )
     v_socket_t     *pvs = p_sys->p_vs;
     p_sys->b_persist = false;
 
-    p_sys->i_remaining = 0;
+    p_sys->i_remaining = -1;
 
     const char *psz_path = p_sys->url.psz_path;
     if( !psz_path || !*psz_path )
@@ -1326,30 +1317,36 @@ static int Request( access_t *p_access, uint64_t i_tell )
 
         if( !strcasecmp( psz, "Content-Length" ) )
         {
-            uint64_t i_size = i_tell + (p_sys->i_remaining = (uint64_t)atoll( p ));
-            if(i_size > p_sys->size) {
-                p_sys->b_has_size = true;
-                p_sys->size = i_size;
+            if( sscanf( p, "%"SCNuMAX, &p_sys->i_remaining ) < 1 )
+            {
+                free( psz );
+                goto error;
             }
-            msg_Dbg( p_access, "this frame size=%"PRIu64, p_sys->i_remaining );
+
+            msg_Dbg( p_access, "response body size=%"PRIuMAX,
+                     p_sys->i_remaining );
+            if( p_sys->size == UINT64_MAX )
+                p_sys->size = i_tell + p_sys->i_remaining;
         }
         else if( !strcasecmp( psz, "Content-Range" ) ) {
-            uint64_t i_ntell = i_tell;
-            uint64_t i_nend = (p_sys->size > 0) ? (p_sys->size - 1) : i_tell;
-            uint64_t i_nsize = p_sys->size;
-            sscanf(p,"bytes %"SCNu64"-%"SCNu64"/%"SCNu64,&i_ntell,&i_nend,&i_nsize);
-            if(i_nend > i_ntell ) {
-                p_access->info.i_pos = i_ntell;
-                p_sys->i_icy_offset  = i_ntell;
-                p_sys->i_remaining = i_nend+1-i_ntell;
-                uint64_t i_size = (i_nsize > i_nend) ? i_nsize : (i_nend + 1);
-                if(i_size > p_sys->size) {
-                    p_sys->b_has_size = true;
-                    p_sys->size = i_size;
-                }
-                msg_Dbg( p_access, "stream size=%"PRIu64",pos=%"PRIu64",remaining=%"PRIu64,
-                         i_nsize, i_ntell, p_sys->i_remaining);
+            uint64_t end, size;
+
+            p_sys->size = -1;
+
+            switch( sscanf( p, "bytes %*u-%"SCNu64"/%"SCNu64, &end, &size ) )
+            {
+                case 1:
+                    if( unlikely(size == UINT64_MAX) )
+                        break;
+                    size = end + 1;
+                    /* fall through */
+                case 2:
+                    p_sys->size = size;
+                    msg_Dbg( p_access, "resource size=%"PRIu64, size );
+                    break;
             }
+
+            p_sys->i_icy_offset  = i_tell;
         }
         else if( !strcasecmp( psz, "Connection" ) ) {
             msg_Dbg( p_access, "Connection: %s",p );
@@ -1557,7 +1554,7 @@ static int Request( access_t *p_access, uint64_t i_tell )
     /* We close the stream for zero length data, unless of course the
      * server has already promised to do this for us.
      */
-    if( p_sys->b_has_size && p_sys->i_remaining == 0 && p_sys->b_persist ) {
+    if( p_sys->i_remaining == 0 && p_sys->b_persist ) {
         Disconnect( p_access );
     }
     return VLC_SUCCESS;

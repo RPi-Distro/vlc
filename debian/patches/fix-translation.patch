@@ -4,30 +4,30 @@ Bug-Debian: https://bugs.debian.org/814258
 
 --- a/po/mr.po
 +++ b/po/mr.po
-@@ -21589,7 +21589,7 @@
+@@ -21567,7 +21567,7 @@
  
- #: modules/gui/qt4/menus.cpp:491
+ #: modules/gui/qt4/menus.cpp:493
  msgid "Ctrl+L"
 -msgstr "कंट्रोल + एल"
 +msgstr "Ctrl+L"
  
- #: modules/gui/qt4/menus.cpp:494
+ #: modules/gui/qt4/menus.cpp:496
  msgid "Docked Playlist"
-@@ -21601,7 +21601,7 @@
+@@ -21579,7 +21579,7 @@
  
- #: modules/gui/qt4/menus.cpp:506
+ #: modules/gui/qt4/menus.cpp:508
  msgid "Ctrl+H"
 -msgstr "कंट्रोल + एच"
 +msgstr "Ctrl+H"
  
- #: modules/gui/qt4/menus.cpp:515
+ #: modules/gui/qt4/menus.cpp:517
  msgid "&Fullscreen Interface"
-@@ -21757,7 +21757,7 @@
+@@ -21735,7 +21735,7 @@
  
- #: modules/gui/qt4/menus.cpp:918
+ #: modules/gui/qt4/menus.cpp:920
  msgid "Ctrl+T"
 -msgstr "कंट्रोल + टी"
 +msgstr "Ctrl+T"
  
- #: modules/gui/qt4/menus.cpp:933
+ #: modules/gui/qt4/menus.cpp:935
  msgid "Open &Network..."

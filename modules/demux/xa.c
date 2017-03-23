@@ -2,7 +2,7 @@
  * xa.c : xa file demux module for vlc
  *****************************************************************************
  * Copyright (C) 2005 Rémi Denis-Courmont
- * $Id: b11ed79cda999cc494e7b69b6ea183ecb59927dc $
+ * $Id: 850352543c303d5a2e547d953394294c64201e5a $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -141,6 +141,12 @@ static int Open( vlc_object_t * p_this )
              "freq: %d Hz, bitrate: %dKo/s, blockalign: %d",
              (char *)&fmt.i_codec, fmt.audio.i_channels, fmt.audio.i_rate,
              fmt.i_bitrate / 8192, fmt.audio.i_blockalign );
+
+    if( fmt.audio.i_rate == 0 || fmt.audio.i_channels == 0 )
+    {
+        free( p_sys );
+        return VLC_EGENERIC;
+    }
 
     p_sys->p_es = es_out_Add( p_demux->out, &fmt );
 

@@ -2,7 +2,7 @@
  * smf.c : Standard MIDI File (.mid) demux module for vlc
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 02fdfdd077dc254e0a667c9aba1b745d86e92330 $
+ * $Id: 32ca805d91730b277969962613be4c8a64a2a079 $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -336,6 +336,7 @@ int HandleMessage (demux_t *p_demux, mtrk_t *tr, es_out_t *out)
         if (datalen == 0)
         {
             msg_Err (p_demux, "malformatted MIDI event");
+            block_Release(block);
             return -1; /* implicit running status requires non-empty payload */
         }
 
@@ -612,6 +613,11 @@ static int Open (vlc_object_t *obj)
     }
     else
     {
+        if (ppqn == 0)
+        {
+            msg_Err(demux, "invalid SMF file PPQN: %u", ppqn);
+            return VLC_EGENERIC;
+        }
         msg_Dbg (demux, " %u pulses per quarter note", ppqn);
     }
 

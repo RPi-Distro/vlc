@@ -27,6 +27,7 @@ qt4: qt-$(QT4_VERSION).tar.gz .sum-qt4
 	$(APPLY) $(SRC)/qt4/chroot.patch
 	$(APPLY) $(SRC)/qt4/imageformats.patch
 	$(APPLY) $(SRC)/qt4/win64.patch
+	$(APPLY) $(SRC)/qt4/itemviews.patch
 	$(MOVE)
 
 ifdef HAVE_MACOSX

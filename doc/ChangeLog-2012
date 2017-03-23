@@ -7953,7 +7953,7 @@ Date:   Sun Sep 16 18:37:44 2012 +0200
     This reverts commit 84e4fd26d7b9b6674066afb4701b15152cd8dc85.
     
     Conflicts:
-    	extras/package/macosx/vlc.xcodeproj/project.pbxproj
+            extras/package/macosx/vlc.xcodeproj/project.pbxproj
 
 commit e1bb86cdb67c974c526542f3b57c8de51be450f6
 Author: John Peterson <john.peterson3@hotmail.com>
@@ -11547,7 +11547,7 @@ Date:   Mon Aug 20 15:43:28 2012 +0300
     This broke threading rules for Qt4 GUI.
     
     Conflicts:
-    	modules/gui/qt4/dialogs/external.cpp
+            modules/gui/qt4/dialogs/external.cpp
 
 commit accf189a2554fb52e4a362be55124f13f510fdfb
 Author: Rémi Denis-Courmont <remi@remlab.net>
@@ -23527,7 +23527,7 @@ Date:   Tue Mar 27 22:21:40 2012 +0300
     
     Conflicts:
     
-    	modules/demux/playlist/dvb.c
+            modules/demux/playlist/dvb.c
 
 commit 9ddd70f711e163499e68839616ebc495aef2c30a
 Author: Rémi Denis-Courmont <remi@remlab.net>
@@ -25963,7 +25963,7 @@ Date:   Sun Mar 11 17:10:51 2012 +0100
     
     Conflicts:
     
-    	modules/access/bluray.c
+            modules/access/bluray.c
 
 commit c68373380984bbf16687997e426b25ac90558751
 Author: Hugo Beauzée-Luyssen <beauze.h@gmail.com>
@@ -27613,7 +27613,7 @@ Date:   Tue Feb 28 02:37:24 2012 -0500
     
     Conflicts:
     
-    	contrib/src/ffmpeg/rules.mak
+            contrib/src/ffmpeg/rules.mak
     
     Modules have been updated to new API
 
@@ -30541,7 +30541,7 @@ Date:   Thu Jan 26 18:21:41 2012 +0100
     
     Conflicts:
     
-    	modules/stream_filter/dash/mpd/Segment.h
+            modules/stream_filter/dash/mpd/Segment.h
 
 commit 7a14bb56ac0d47de9a9fc0ac02cdec074461756e
 Author: Hugo Beauzée-Luyssen <beauze.h@gmail.com>
@@ -30569,8 +30569,8 @@ Date:   Wed Jan 25 18:08:59 2012 +0100
     
     Conflicts:
     
-    	modules/stream_filter/dash/mpd/Segment.cpp
-    	modules/stream_filter/dash/mpd/Segment.h
+            modules/stream_filter/dash/mpd/Segment.cpp
+            modules/stream_filter/dash/mpd/Segment.h
 
 commit 466e3f4412eca748fc4cf6ce2e9499738be20ea9
 Author: Hugo Beauzée-Luyssen <beauze.h@gmail.com>
@@ -32194,7 +32194,7 @@ Date:   Wed Jan 25 00:14:26 2012 -0500
     
     Conflicts:
     
-    	include/vlc_fixups.h
+            include/vlc_fixups.h
 
 commit 56018495fb0f8d6258fc99da599f2d2aee0e1011
 Author: Rafaël Carré <funman@videolan.org>
@@ -34620,7 +34620,7 @@ Date:   Thu Jan 5 04:22:35 2012 -0500
     
     Conflicts:
     
-    	contrib/src/dvbpsi/rules.mak
+            contrib/src/dvbpsi/rules.mak
 
 commit 6309ae8cb1f75aba2b6a5b3473dc635073c9ab3d
 Author: Rafaël Carré <funman@videolan.org>
@@ -35085,3 +35085,12 @@ Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Mon Jan 2 01:00:51 2012 +0100
 
     Happy New Year
+
+commit f4ef5cd57b7086b2d2bd32f831ce63f8273c6d57
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Sun Jan 1 16:56:01 2012 +0100
+
+    NEWS: --http-host expects URL-style bracket-enclosed IPv6 addresses
+    
+    Unfortunately there is not much we can do until we ditch the legacy
+    <host>:<port> syntax for good

@@ -2,7 +2,7 @@
  * messages.cpp : Information about an item
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 30793a20d4b51526728b8441335c1681e997800a $
+ * $Id: 9c79c9972721a63a11a97018e2421dbc6813c9cf $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -23,6 +23,8 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+
+#include "qt4.hpp"
 
 #include "dialogs/messages.hpp"
 

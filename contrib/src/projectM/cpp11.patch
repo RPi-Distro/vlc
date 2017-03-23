@@ -1,0 +1,47 @@
+--- projectM/MilkdropPresetFactory/Parser.cpp.orig	2016-12-07 13:28:30.846142849 +0100
++++ projectM/MilkdropPresetFactory/Parser.cpp	2016-12-07 13:36:11.389931717 +0100
+@@ -1405,7 +1405,7 @@
+   PerFrameEqn * per_frame_eqn;
+   GenExpr * gen_expr;
+ 
+-  if (fs == NULL)
++  if (!fs)
+     return NULL;
+   if (param_string == NULL)
+     return NULL;
+@@ -1560,7 +1560,7 @@
+ 
+   if (preset == NULL)
+     return NULL;
+-  if (fs == NULL)
++  if (!fs)
+     return NULL;
+ 
+   if ((token = parseToken(fs, name)) != tEq)
+@@ -1874,7 +1874,7 @@
+   /* Null argument checks */
+   if (preset == NULL)
+     return PROJECTM_FAILURE;
+-  if (fs == NULL)
++  if (!fs)
+     return PROJECTM_FAILURE;
+   if (token == NULL)
+     return PROJECTM_FAILURE;
+@@ -2165,7 +2165,7 @@
+ 
+   if (token == NULL)
+     return PROJECTM_FAILURE;
+-  if (fs == NULL)
++  if (!fs)
+     return PROJECTM_FAILURE;
+   if (preset == NULL)
+     return PROJECTM_FAILURE;
+@@ -2347,7 +2347,7 @@
+   if (token == NULL)
+ 
+     return PROJECTM_FAILURE;
+-  if (fs == NULL)
++  if (!fs)
+     return PROJECTM_FAILURE;
+   if (preset == NULL)
+     return PROJECTM_FAILURE;

@@ -944,8 +944,8 @@ Date:   Mon Nov 19 15:13:11 2001 +0000
     -fixed a bug in libdvdcss: the key wasn't searched when it had to.
     
     dvdcss_seek : searches a new title key when
-    	-the flag is DVDCSS_SEEK_KEY,
-    	-the flag is DVDCSS_SEEK_MPEG, only if method is not "title".
+            -the flag is DVDCSS_SEEK_KEY,
+            -the flag is DVDCSS_SEEK_MPEG, only if method is not "title".
     
     dvdcss_seek with DVDCSS_SEEK_KEY flags does actually the same things as
     dvdcss_title (which might eventually be removed).
@@ -3483,10 +3483,10 @@ Date:   Mon May 14 15:58:04 2001 +0000
     
     If you have a PIII or a Athlon and you want to try this, just comment #if 0
     in ac3_downmix.c and ac3_imdct.c and add in AC3_DECODER section of Makefile :
-    	src/ac3_decoder/ac3_imdct_sse.o \
-    	src/ac3_decoder/ac3_srfft_sse.o \
-    	src/ac3_decoder/ac3_downmix_sse.o \
-    	src/ac3_decoder/ac3_downmix_3dn.o \
+            src/ac3_decoder/ac3_imdct_sse.o \
+            src/ac3_decoder/ac3_srfft_sse.o \
+            src/ac3_decoder/ac3_downmix_sse.o \
+            src/ac3_decoder/ac3_downmix_3dn.o \
 
 commit c1df815923570bf13060baff0a7480597719b1eb
 Author: Henri Fallon <henri@videolan.org>

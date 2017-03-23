@@ -782,6 +782,8 @@
 		1C4A192A1B52CF8D007833EC /* ResumeDialogController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ResumeDialogController.h; path = ../../../modules/gui/macosx/ResumeDialogController.h; sourceTree = "<group>"; };
 		1C4A192B1B52CF8D007833EC /* ResumeDialogController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ResumeDialogController.m; path = ../../../modules/gui/macosx/ResumeDialogController.m; sourceTree = "<group>"; };
 		1C57690D19DC93620099F5A6 /* topbar_background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = topbar_background.png; path = Resources/mainwindow/topbar_background.png; sourceTree = "<group>"; };
+		1C5E52351DB02CE100B8355C /* VLCDocumentController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VLCDocumentController.h; path = ../../../modules/gui/macosx/VLCDocumentController.h; sourceTree = "<group>"; };
+		1C5E52361DB02CE100B8355C /* VLCDocumentController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = VLCDocumentController.m; path = ../../../modules/gui/macosx/VLCDocumentController.m; sourceTree = "<group>"; };
 		1C88BA2419DC7B2200645190 /* yosemite-window-close-graphite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yosemite-window-close-graphite.png"; sourceTree = "<group>"; };
 		1C88BA2519DC7B2200645190 /* yosemite-window-close-graphite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yosemite-window-close-graphite@2x.png"; sourceTree = "<group>"; };
 		1C88BA2619DC7B2200645190 /* yosemite-window-close-on-graphite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yosemite-window-close-on-graphite.png"; sourceTree = "<group>"; };
@@ -1733,6 +1735,8 @@
 				7DB65D5318ABD6380053B874 /* AddonManager.m */,
 				5CCED71414C0D4A90057F8D1 /* VLCUIWidgets.h */,
 				5CCED71514C0D4A90057F8D1 /* VLCUIWidgets.m */,
+				1C5E52351DB02CE100B8355C /* VLCDocumentController.h */,
+				1C5E52361DB02CE100B8355C /* VLCDocumentController.m */,
 				8E6BC6FA041684EC0059A3A7 /* controls.h */,
 				8ED6C27B03E2EB1C0059A3A7 /* controls.m */,
 				8E6BC6F6041643860059A3A7 /* applescript.h */,
