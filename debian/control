@@ -227,7 +227,6 @@ Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Recommends: libproxy-tools
-Breaks: vlc (<< 2.2.4-7~)
 Description: base library for VLC and its modules
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
@@ -276,8 +275,6 @@ Section: localization
 Architecture: all
 Multi-Arch: foreign
 Depends: ${misc:Depends}
-Breaks: vlc-data (<< 2.2.4-7~)
-Replaces: vlc-data (<< 2.2.4-7~)
 Description: Translations for VLC
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
@@ -307,8 +304,6 @@ Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Enhances: vlc
-Breaks: vlc-plugin-rdp (<< 2.2.4-7~)
-Replaces: vlc-plugin-rdp (<< 2.2.4-7~)
 Description: multimedia player and streamer (extra access plugins)
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
@@ -364,8 +359,6 @@ Depends: ${misc:Depends},
          vlc-plugin-qt (= ${binary:Version})
 Recommends: vlc-bin
 Enhances: vlc
-Breaks: vlc (<< 2.2.4-10~), vlc-data (<< 2.2.4-7~)
-Replaces: vlc (<< 2.2.4-10~), vlc-data (<< 2.2.4-7~)
 Description: multimedia player and streamer (Skins2 plugin)
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
@@ -379,8 +372,6 @@ Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Recommends: vlc-bin
-Breaks: vlc (<< 2.2.4-10~)
-Replaces: vlc (<< 2.2.4-10~)
 Description: multimedia player and streamer (Qt plugin)
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
