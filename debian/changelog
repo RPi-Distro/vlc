@@ -6,7 +6,7 @@ vlc (2.2.5-1) unstable; urgency=medium
     - Removed patches taken from upstream included in 2.2.5.
   * debian/*.maintscript: Bump all versions to 2.2.5-1~z. This is necessary to
     properly handle symlink to directory conversions once 2.2.5 is available
-    in stretch.
+    in jessie.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Sun, 19 Mar 2017 21:50:23 +0100
 
