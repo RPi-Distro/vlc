@@ -10,7 +10,7 @@ vlc (2.2.5-2) experimental; urgency=medium
     - Update tests to new package layout.
     - Remove obsolete Breaks+Replaces.
   * debian/rules: Be explicit about GLES 1
-  * debian/{rules,libvlc-bin.*}: Fix warning from about non-empty directory
+  * debian/{rules,libvlc-bin.*}: Fix warning about non-empty directory
     (Closes: #854928)
 
  -- Sebastian Ramacher <sramacher@debian.org>  Thu, 23 Mar 2017 17:56:16 +0100
@@ -23,7 +23,7 @@ vlc (2.2.5-1) unstable; urgency=medium
     - Removed patches taken from upstream included in 2.2.5.
   * debian/*.maintscript: Bump all versions to 2.2.5-1~z. This is necessary to
     properly handle symlink to directory conversions once 2.2.5 is available
-    in stretch.
+    in jessie.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Sun, 19 Mar 2017 21:50:23 +0100
 
