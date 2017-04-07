@@ -1,3 +1,15 @@
+vlc (2.2.5-3) UNRELEASED; urgency=medium
+
+  * Fix typos in changelog
+  * debian/rules: Also enable NEON on arm64.
+  * debian/control: Build-Conflict with Qt in experimental to work around
+    #858762.
+  * debian/patches:
+    - Use gbp-pq for patch management.
+    - Apply upstream patch for WebVTT support. (Closes: #858963)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 07 Apr 2017 18:56:46 +0200
+
 vlc (2.2.5-2) experimental; urgency=medium
 
   [ Mateusz Łukasik ]
