@@ -2,7 +2,7 @@
  * adpcm.c : adpcm variant audio decoder
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: 0071077bdc8a6a922fdf1421c9f66e2bbe5068cb $
+ * $Id: 61a5d654e62bd00c8f8bd278734492b45da4c518 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -150,14 +150,6 @@ static int OpenDecoder( vlc_object_t *p_this )
             return VLC_EGENERIC;
     }
 
-    if( p_dec->fmt_in.audio.i_channels <= 0 ||
-        p_dec->fmt_in.audio.i_channels > 5 )
-    {
-        msg_Err( p_dec, "invalid number of channel (not between 1 and 5): %i",
-                 p_dec->fmt_in.audio.i_channels );
-        return VLC_EGENERIC;
-    }
-
     if( p_dec->fmt_in.audio.i_rate <= 0 )
     {
         msg_Err( p_dec, "bad samplerate" );
@@ -170,29 +162,30 @@ static int OpenDecoder( vlc_object_t *p_this )
         return VLC_ENOMEM;
 
     p_sys->prev = NULL;
+    p_sys->i_samplesperblock = 0;
 
+    uint8_t i_max_channels = 5;
     switch( p_dec->fmt_in.i_codec )
     {
         case VLC_FOURCC('i','m','a', '4'): /* IMA ADPCM */
-            if (p_dec->fmt_in.audio.i_channels > 2) {
-                free(p_sys);
-                msg_Err(p_dec, "Invalid number of channels %i",
-                        p_dec->fmt_in.audio.i_channels );
-                return VLC_EGENERIC;
-            }
             p_sys->codec = ADPCM_IMA_QT;
+            i_max_channels = 2;
             break;
         case VLC_CODEC_ADPCM_IMA_WAV: /* IMA ADPCM */
             p_sys->codec = ADPCM_IMA_WAV;
+            i_max_channels = 2;
             break;
         case VLC_CODEC_ADPCM_MS: /* MS ADPCM */
             p_sys->codec = ADPCM_MS;
+            i_max_channels = 2;
             break;
         case VLC_CODEC_ADPCM_DK4: /* Duck DK4 ADPCM */
             p_sys->codec = ADPCM_DK4;
+            i_max_channels = 2;
             break;
         case VLC_CODEC_ADPCM_DK3: /* Duck DK3 ADPCM */
             p_sys->codec = ADPCM_DK3;
+            i_max_channels = 2;
             break;
         case VLC_FOURCC('X','A','J', 0): /* EA ADPCM */
             p_sys->codec = ADPCM_EA;
@@ -204,6 +197,15 @@ static int OpenDecoder( vlc_object_t *p_this )
                 return VLC_ENOMEM;
             }
             break;
+    }
+
+    if (p_dec->fmt_in.audio.i_channels > i_max_channels ||
+        p_dec->fmt_in.audio.i_channels == 0)
+    {
+        free(p_sys->prev);
+        free(p_sys);
+        msg_Err( p_dec, "Invalid number of channels %i", p_dec->fmt_in.audio.i_channels );
+        return VLC_EGENERIC;
     }
 
     if( p_dec->fmt_in.audio.i_blockalign <= 0 )
@@ -224,28 +226,41 @@ static int OpenDecoder( vlc_object_t *p_this )
         p_sys->i_samplesperblock = 64;
         break;
     case ADPCM_IMA_WAV:
-        p_sys->i_samplesperblock =
-            2 * ( p_sys->i_block - 4 * p_dec->fmt_in.audio.i_channels ) /
-            p_dec->fmt_in.audio.i_channels;
+        if( p_sys->i_block >= 4 * p_dec->fmt_in.audio.i_channels )
+        {
+            p_sys->i_samplesperblock =
+                2 * ( p_sys->i_block - 4 * p_dec->fmt_in.audio.i_channels ) /
+                p_dec->fmt_in.audio.i_channels;
+        }
         break;
     case ADPCM_MS:
-        p_sys->i_samplesperblock =
-            2 * (p_sys->i_block - 7 * p_dec->fmt_in.audio.i_channels) /
-            p_dec->fmt_in.audio.i_channels + 2;
+        if( p_sys->i_block >= 7 * p_dec->fmt_in.audio.i_channels )
+        {
+            p_sys->i_samplesperblock =
+                2 * (p_sys->i_block - 7 * p_dec->fmt_in.audio.i_channels) /
+                p_dec->fmt_in.audio.i_channels + 2;
+        }
         break;
     case ADPCM_DK4:
-        p_sys->i_samplesperblock =
-            2 * (p_sys->i_block - 4 * p_dec->fmt_in.audio.i_channels) /
-            p_dec->fmt_in.audio.i_channels + 1;
+        if( p_sys->i_block >= 4 * p_dec->fmt_in.audio.i_channels )
+        {
+            p_sys->i_samplesperblock =
+                2 * (p_sys->i_block - 4 * p_dec->fmt_in.audio.i_channels) /
+                p_dec->fmt_in.audio.i_channels + 1;
+        }
         break;
     case ADPCM_DK3:
         p_dec->fmt_in.audio.i_channels = 2;
-        p_sys->i_samplesperblock = ( 4 * ( p_sys->i_block - 16 ) + 2 )/ 3;
+        if( p_sys->i_block >= 16 )
+            p_sys->i_samplesperblock = ( 4 * ( p_sys->i_block - 16 ) + 2 )/ 3;
         break;
     case ADPCM_EA:
-        p_sys->i_samplesperblock =
-            2 * (p_sys->i_block - p_dec->fmt_in.audio.i_channels) /
-            p_dec->fmt_in.audio.i_channels;
+        if( p_sys->i_block >= p_dec->fmt_in.audio.i_channels )
+        {
+            p_sys->i_samplesperblock =
+                2 * (p_sys->i_block - p_dec->fmt_in.audio.i_channels) /
+                p_dec->fmt_in.audio.i_channels;
+        }
     }
 
     msg_Dbg( p_dec, "format: samplerate:%d Hz channels:%d bits/sample:%d "
@@ -253,6 +268,14 @@ static int OpenDecoder( vlc_object_t *p_this )
              p_dec->fmt_in.audio.i_rate, p_dec->fmt_in.audio.i_channels,
              p_dec->fmt_in.audio.i_bitspersample, p_sys->i_block,
              p_sys->i_samplesperblock );
+
+    if (p_sys->i_samplesperblock == 0)
+    {
+        free(p_sys->prev);
+        free(p_sys);
+        msg_Err( p_dec, "Error computing number of samples per block");
+        return VLC_EGENERIC;
+    }
 
     p_dec->p_sys = p_sys;
     p_dec->fmt_out.i_cat = AUDIO_ES;
@@ -422,9 +445,12 @@ static void DecodeAdpcmMs( decoder_t *p_dec, int16_t *p_sample,
 {
     decoder_sys_t *p_sys  = p_dec->p_sys;
     adpcm_ms_channel_t channel[2];
-    int i_nibbles;
     int b_stereo;
     int i_block_predictor;
+
+    size_t i_total_samples = p_sys->i_samplesperblock;
+    if(i_total_samples < 2)
+        return;
 
     b_stereo = p_dec->fmt_in.audio.i_channels == 2 ? 1 : 0;
 
@@ -471,8 +497,7 @@ static void DecodeAdpcmMs( decoder_t *p_dec, int16_t *p_sample,
         *p_sample++ = channel[0].i_sample1;
     }
 
-    for( i_nibbles = 2 * (p_sys->i_block - 7 * p_dec->fmt_in.audio.i_channels);
-         i_nibbles > 0; i_nibbles -= 2, p_buffer++ )
+    for( i_total_samples -= 2; i_total_samples >= 2; i_total_samples -= 2, p_buffer++ )
     {
         *p_sample++ = AdpcmMsExpandNibble( &channel[0], (*p_buffer) >> 4);
         *p_sample++ = AdpcmMsExpandNibble( &channel[b_stereo ? 1 : 0],

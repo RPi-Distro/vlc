@@ -3336,7 +3336,7 @@ Date:   Mon May 25 18:59:52 2015 +0300
     (cherry picked from commit e64a051e9a111306ab8b2ca0ac361b1801bc1772)
     
     Conflicts:
-    	modules/gui/qt4/components/simple_preferences.cpp
+            modules/gui/qt4/components/simple_preferences.cpp
 
 commit 9ef40dc9e207f17b5ec1697db7099af0781f4ca1
 Author: Rémi Denis-Courmont <remi@remlab.net>
@@ -3685,7 +3685,7 @@ Date:   Tue Apr 28 23:42:23 2015 +0300
     (cherry picked from commit 3b3bd7e49d52875024c6f1b0ef4eac124a637c2d)
     
     Conflicts:
-    	modules/hw/vdpau/chroma.c
+            modules/hw/vdpau/chroma.c
 
 commit 88fa0c4b9d5196c53241fa27f2315ae6553d3808
 Author: Erwan Tulou <erwan10@videolan.org>
@@ -3882,7 +3882,7 @@ Date:   Thu Apr 16 20:58:52 2015 +0300
     (cherry picked from commit c354efa3a2843d479c8fa9e929ff1064e5526bfa)
     
     Conflicts:
-    	modules/hw/vdpau/Makefile.am
+            modules/hw/vdpau/Makefile.am
 
 commit 16d20fe43e39d3f52e82e05e9a40fbb2c58622e7
 Author: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
@@ -5534,7 +5534,7 @@ Date:   Wed Feb 18 19:35:22 2015 +0200
     (cherry picked from commit fd0970abdfc80fe92cf6b87ed6b6987526919035)
     
     Conflicts:
-    	modules/access/dtv/bdagraph.cpp
+            modules/access/dtv/bdagraph.cpp
 
 commit f687ca2447a2b2a0496b37129c7ab78b018c153f
 Author: Rémi Denis-Courmont <remi@remlab.net>

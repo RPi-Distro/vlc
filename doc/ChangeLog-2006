@@ -14300,7 +14300,7 @@ Author: Christophe Mutricy <xtophe@videolan.org>
 Date:   Fri May 26 19:00:36 2006 +0000
 
     extras/contrib: FFMpeg has switched to SVN
-    		wxWidgets 2.6.3
+                    wxWidgets 2.6.3
 
 commit f87a7197913d4e0a1156785d772fdb883575eec7
 Author: Mohammed Adnène Trojette <adn@videolan.org>
@@ -18407,8 +18407,8 @@ Author: Christophe Mutricy <xtophe@videolan.org>
 Date:   Thu Mar 23 22:54:31 2006 +0000
 
     wx/interfaces.cpp: Add an option to display tool bar buton name.
-    		   Warning hack inside.
-    		   refs #495 close it for linux and win32
+                       Warning hack inside.
+                       refs #495 close it for linux and win32
 
 commit b5d4a11a6e22de1b9c0ceaa6368abf838ad0da81
 Author: Antoine Cellerier <dionoea@videolan.org>
@@ -19167,8 +19167,8 @@ Author: Christophe Mutricy <xtophe@videolan.org>
 Date:   Tue Mar 14 22:40:33 2006 +0000
 
     ALL: Fix make distcheck
-    	- add a modules.am for mux/rtp It is just there to please autotools nothing is built by default
-    	- update-po
+            - add a modules.am for mux/rtp It is just there to please autotools nothing is built by default
+            - update-po
 
 commit 3db675f5300b042d544f463bd1e51e144c62bd76
 Author: Derk-Jan Hartman <hartman@videolan.org>
@@ -23992,7 +23992,7 @@ Author: Christophe Mutricy <xtophe@videolan.org>
 Date:   Tue Jan 24 23:06:43 2006 +0000
 
     configure.ac: Use AC_PATH_XTRA.
-    	      Still got to find a cleaner way to determine if we have Xv.so or Xv_pic, ...
+                  Still got to find a cleaner way to determine if we have Xv.so or Xv_pic, ...
 
 commit a3d50543b6ad1a56e2c2c94ecf46f9f61c9faac5
 Author: Christophe Mutricy <xtophe@videolan.org>
@@ -24071,7 +24071,7 @@ Author: Christophe Mutricy <xtophe@videolan.org>
 Date:   Mon Jan 23 15:35:02 2006 +0000
 
     http.c: add an option to disable bonjour (closes #509).
-    	Please review and improve the option text and longtext strings.
+            Please review and improve the option text and longtext strings.
 
 commit 3d24634c3622bcb54d086eefc5d21c8b107774d9
 Author: Damien Fouilleul <damienf@videolan.org>

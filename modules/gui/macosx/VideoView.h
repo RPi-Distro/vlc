@@ -2,7 +2,7 @@
  * VideoView.h: MacOS X video output module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 3ba9e05d086b1564095e2a9032a8ddd3473ba9d7 $
+ * $Id: 0a119f557d46167d867d4225d1c347d053c1a575 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Eric Petit <titer@m0k.org>
@@ -28,14 +28,17 @@
 
 #import <vlc_vout.h>
 
-
 /*****************************************************************************
  * VLCVoutView interface
  *****************************************************************************/
 @interface VLCVoutView : NSView
 {
+    NSTimer *p_scrollTimer;
+
     NSInteger i_lastScrollWheelDirection;
-    NSTimeInterval t_lastScrollEvent;
+
+    CGFloat f_cumulatedXScrollValue;
+    CGFloat f_cumulatedYScrollValue;
 
     CGFloat f_cumulated_magnification;
 

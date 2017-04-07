@@ -2,7 +2,7 @@
  * voc.c : Creative Voice File (.VOC) demux module for vlc
  *****************************************************************************
  * Copyright (C) 2005 Rémi Denis-Courmont
- * $Id: af4f1633daa07e418d6818d19fb78dce833dba04 $
+ * $Id: 87b1059002ac7b140c2dc3d868401aa72e711f15 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -270,6 +270,8 @@ static int ReadBlockHeader( demux_t *p_demux )
             }
 
             new_fmt.i_codec = VLC_CODEC_U8;
+            if (buf[3] >= 32)
+                goto corrupt;
             new_fmt.audio.i_channels = buf[3] + 1; /* can't be nul */
             new_fmt.audio.i_rate = 256000000L /
                           ((65536L - GetWLE(buf)) * new_fmt.audio.i_channels);

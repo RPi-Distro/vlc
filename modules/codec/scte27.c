@@ -2,7 +2,7 @@
  * scte27.c : SCTE-27 subtitles decoder
  *****************************************************************************
  * Copyright (C) Laurent Aimar
- * $Id: 527e4e45048217fcb2e2157928c02036ef37d00a $
+ * $Id: edf5d500d7146da872b9f611416786831bc785a9 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -76,8 +76,8 @@ static scte27_color_t bs_read_color(bs_t *bs)
     /* XXX it's unclear if a value of 0 in Y/U/V means a transparent pixel */
     color.y     = bs_read(bs, 5) << 3;
     color.alpha = bs_read1(bs) ? 0xff : 0x80;
-    color.u     = bs_read(bs, 5) << 3;
     color.v     = bs_read(bs, 5) << 3;
+    color.u     = bs_read(bs, 5) << 3;
 
     return color;
 }

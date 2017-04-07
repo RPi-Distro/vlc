@@ -1,3 +1,55 @@
+Changes between 2.2.4 and 2.2.5:
+--------------------------------
+
+Decoder:
+ * Fix mp3 playback quality regression in libmad
+ * Fix video scaling in VDPAU
+ * Fix playback of palettized codecs
+ * Fix ADPCM heap corruption (FG-VD-16-067)
+ * Fix AES3 16bps decoding
+ * Fix DVD/LPCM heap corruption (FG-VD-16-090)
+ * Fix SCTE-27 colors
+
+Demuxer:
+ * Fix possible ASF integer overflow
+ * Fix MP4, VOC, XA, SMF divide-by-zero errors
+ * Fix MP4 heap buffer overflows
+ * Fix Flac metadata integer overflow
+ * Fix NSVf and AIFF infinite loops
+ * Fix flac null-pointer dereference
+ * Fix vorbis and opus comments integer overflows and leaks
+
+Video output:
+ * Fix green line on Windows with AMD drivers
+ * Fix screenshots size
+
+Access:
+ * Fix crash in screen recording on Windows
+ * Fix FTP scan string injection
+ * Fix HTTP size handling
+
+Mux:
+ * Fix mp4 drift
+
+Lua:
+ * Fix vimeo, youtube, dailymotion, cli, appletrailers, http,
+   soundcloud scripts
+
+Audio filter:
+ * Fix heap write in stereo_widen audio filter
+
+Windows:
+ * The plugins loading will not load external DLLs by default.
+   Plugins will need to LoadLibrary explicitely.
+ * Fix uninstaller path handling
+ * Fix taskbar buttons behavior
+
+MacOS:
+ * Fix scrolling sensitivity on Sierra
+ * Resume points are deleted now if the user clears the list of
+   recent items
+
+
 Changes between 2.2.3 and 2.2.4:
 --------------------------------
 

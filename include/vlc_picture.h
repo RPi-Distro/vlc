@@ -2,7 +2,7 @@
  * vlc_picture.h: picture definitions
  *****************************************************************************
  * Copyright (C) 1999 - 2009 VLC authors and VideoLAN
- * $Id: dea3f7f0c608416e89b75197430dd66db61e0639 $
+ * $Id: e45374ba04791df4b80ebda3987d4897757b5663 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -32,7 +32,9 @@
  */
 
 #include <vlc_es.h>
-#include <vlc_atomic.h>
+#if (defined (__LIBVLC__) && !defined (__PLUGIN__))
+# include <vlc_atomic.h>
+#endif
 
 /** Description of a planar graphic field */
 typedef struct plane_t

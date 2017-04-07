@@ -4117,8 +4117,8 @@ Date:   Tue Nov 1 11:30:23 2005 +0000
     ALL: Merge the win32-contrib branch.
     
     Todo:
-    	Fix FLAC
-    	SDL patch by Meuh
+            Fix FLAC
+            SDL patch by Meuh
 
 commit 77609b74c1bf8b53cab5c2a3906c0ad53bfff590
 Author: Gildas Bazin <gbazin@videolan.org>
@@ -14137,7 +14137,7 @@ Author: Christophe Mutricy <xtophe@videolan.org>
 Date:   Wed Jun 1 13:16:18 2005 +0000
 
     zsh.cpp: fix a potential segfault
-    	 skip deprecated options
+             skip deprecated options
 
 commit b87e98018a111c49b819ee2b044055241480af84
 Author: Gildas Bazin <gbazin@videolan.org>
@@ -14679,7 +14679,7 @@ Author: Christophe Mutricy <xtophe@videolan.org>
 Date:   Sat May 21 14:53:54 2005 +0000
 
     vlc.win32.nsi: Add a "Reset VLC preferences" shortcut
-    	       Untested.
+                   Untested.
 
 commit 0cb4c8f9bd8bcce2b8705788f64bacbe963f30ae
 Author: Sigmund Augdal Helberg <sigmunau@videolan.org>
@@ -22502,8 +22502,8 @@ Author: Benjamin Pracht <bigben@videolan.org>
 Date:   Sun Jan 9 22:45:24 2005 +0000
 
     * v4l.c:
-    	- Add --v4l-* options for all the parametters that can be set from the MRL, so we have a complete Panel in the wx interface and some doc in the command line
-    	- Only declaration for now, options don't make anything yet
+            - Add --v4l-* options for all the parametters that can be set from the MRL, so we have a complete Panel in the wx interface and some doc in the command line
+            - Only declaration for now, options don't make anything yet
     * pvr.c: describe height as height, not width
 
 commit 93cdb2f11deb35fa7359a5a3f4d2259b93fade8e
@@ -22696,3 +22696,29 @@ Author: Felix Paul Kühne <fkuehne@videolan.org>
 Date:   Sun Jan 2 18:58:53 2005 +0000
 
     * moved the preferences-window to a seperate nib-file
+
+commit 46f1af78e551014ce2e88d6924b71b5f4502f34c
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sat Jan 1 18:13:51 2005 +0000
+
+    * give credit to Jonas Larsen for creating the Danish l10n
+    * replace all "@" with " at "
+
+commit d1ddeb74fd85b4837e5a2d37a2088b7405397aa6
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sat Jan 1 17:54:05 2005 +0000
+
+    * build libiconv without i18n-support, so it can be compiled without gettext -- gettext will be compiled afterwards, so it can take advantage of libiconv
+
+commit 5fc224c4aadc7f7eb1085a207341105838231ca9
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sat Jan 1 16:29:51 2005 +0000
+
+    * make sure gettext is built before libiconv, since it is needed for its compilation
+
+commit 3d673c28f04c970a29f2d67d2329a3ee31940cd7
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sat Jan 1 15:41:08 2005 +0000
+
+    * use "heanet.dl.sourceforge.net" for downloading FreeType, since www.freetype.org does not respond
+    * use "ftp.heanet.ie" instead of "ftp.gnu.org" as GNU mirror, since the main-server does not respond (I'll revoke this change, when the main-server is usable again)

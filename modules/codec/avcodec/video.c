@@ -2,7 +2,7 @@
  * video.c: video decoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: ae600e8d05e37cf8a726f193c2cb43946802fc5c $
+ * $Id: 971238612c9cb5f57edd0fa9d35af48070a250ec $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -680,6 +680,27 @@ picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
             if( i_used == 0 ) break;
             continue;
         }
+
+#if LIBAVCODEC_VERSION_MAJOR >= 54
+        if( p_context->pix_fmt == AV_PIX_FMT_PAL8
+         && !p_dec->fmt_out.video.p_palette && p_sys->p_ff_pic->data[1] )
+        {
+            video_palette_t *p_palette;
+            p_palette = p_dec->fmt_out.video.p_palette
+                      = malloc( sizeof(video_palette_t) );
+            if( !p_palette )
+            {
+                if( p_block )
+                    block_Release( p_block );
+                return NULL;
+            }
+            static_assert( sizeof(p_palette->palette) == AVPALETTE_SIZE,
+                           "Palette size mismatch between vlc and libavutil" );
+            memcpy( p_palette->palette, p_sys->p_ff_pic->data[1],
+                    AVPALETTE_SIZE );
+            p_palette->i_entries = AVPALETTE_COUNT;
+        }
+#endif
 
         /* Sanity check (seems to be needed for some streams) */
         if( p_sys->p_ff_pic->pict_type == AV_PICTURE_TYPE_B)

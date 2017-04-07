@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 1a717662a08fc8167c9609603437d072065b543a $
+ * $Id: 56a08895c911dcef57ef487deb8412c962e108d0 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -870,7 +870,7 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
                      ui.recentlyPlayedFilters, setEnabled( bool ) );
             ui.recentlyPlayedFilters->setEnabled( false );
             CONFIG_BOOL( "qt-recentplay", saveRecentlyPlayed );
-            CONFIG_BOOL( "qt-continue", continueBox );
+            CONFIG_GENERIC( "qt-continue", IntegerList, ui.continuePlaybackLabel, continuePlaybackComboBox );
             CONFIG_GENERIC( "qt-recentplay-filter", String, ui.filterLabel,
                     recentlyPlayedFilters );
 

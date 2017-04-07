@@ -35,7 +35,7 @@ QT_PLATFORM := -xplatform win32-g++ -device-option CROSS_COMPILE=$(HOST)-
 endif
 
 .qt: qt
-	cd $< && ./configure $(QT_PLATFORM) -static -release -no-sql-sqlite -no-gif -qt-libjpeg -no-openssl -no-opengl -opensource -confirm-license
+	cd $< && ./configure $(QT_PLATFORM) -static -release -no-sql-sqlite -no-gif -qt-libjpeg -no-openssl -no-opengl -opensource -confirm-license -no-pch
 	cd $< && $(MAKE) sub-src
 	# INSTALLING LIBRARIES
 	for lib in Widgets Gui Core; \

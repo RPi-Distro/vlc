@@ -2,7 +2,7 @@
  * VideoView.m: MacOS X video output module
  *****************************************************************************
  * Copyright (C) 2002-2014 VLC authors and VideoLAN
- * $Id: c02e4495c135762dd63ee4e548a3fbb4ebd20773 $
+ * $Id: 6cc583b5ea970056df8e327f0f0e7dfa8f010b71 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Eric Petit <titer@m0k.org>
@@ -189,13 +189,17 @@
 
 - (void)resetScrollWheelDirection
 {
-    /* release the scroll direction 0.8 secs after the last event */
-    if (([NSDate timeIntervalSinceReferenceDate] - t_lastScrollEvent) >= 0.80)
-        i_lastScrollWheelDirection = 0;
+    i_lastScrollWheelDirection = 0;
+    f_cumulatedXScrollValue = f_cumulatedYScrollValue = 0.;
+    msg_Dbg(VLCIntf, "Reset scrolling timer");
 }
 
 - (void)scrollWheel:(NSEvent *)theEvent
 {
+    const CGFloat f_xThreshold = 0.8;
+    const CGFloat f_yThreshold = 1.0;
+    const CGFloat f_directionThreshold = 0.05;
+
     intf_thread_t * p_intf = VLCIntf;
     CGFloat f_deltaX = [theEvent deltaX];
     CGFloat f_deltaY = [theEvent deltaY];
@@ -205,50 +209,56 @@
         f_deltaY = -f_deltaY;
     }
 
-    CGFloat f_yabsvalue = f_deltaY > 0.0f ? f_deltaY : -f_deltaY;
-    CGFloat f_xabsvalue = f_deltaX > 0.0f ? f_deltaX : -f_deltaX;
+    CGFloat f_deltaXAbs = ABS(f_deltaX);
+    CGFloat f_deltaYAbs = ABS(f_deltaY);
 
-    int i_yvlckey, i_xvlckey = 0;
-    if (f_deltaY < 0.0f)
-        i_yvlckey = KEY_MOUSEWHEELDOWN;
-    else
-        i_yvlckey = KEY_MOUSEWHEELUP;
+    // A mouse scroll wheel has lower sensitivity. We want to scroll at least
+    // with every event here.
+    BOOL isMouseScrollWheel = ([theEvent subtype] == NSMouseEventSubtype);
+    if (isMouseScrollWheel && f_deltaYAbs < f_yThreshold)
+        f_deltaY = f_deltaY > 0. ? f_yThreshold : -f_yThreshold;
 
-    if (f_deltaX < 0.0f)
-        i_xvlckey = KEY_MOUSEWHEELRIGHT;
-    else
-        i_xvlckey = KEY_MOUSEWHEELLEFT;
+    if (isMouseScrollWheel && f_deltaXAbs < f_xThreshold)
+        f_deltaX = f_deltaX > 0. ? f_xThreshold : -f_xThreshold;
 
     /* in the following, we're forwarding either a x or a y event */
     /* Multiple key events are send depending on the intensity of the event */
-    /* the opposite direction is being blocked for 0.8 secs */
-    if (f_yabsvalue > 0.05) {
+    /* the opposite direction is being blocked for a couple of milli seconds */
+    if (f_deltaYAbs > f_directionThreshold) {
         if (i_lastScrollWheelDirection < 0) // last was a X
             return;
-
         i_lastScrollWheelDirection = 1; // Y
-        for (NSUInteger i = 0; i < (int)(f_yabsvalue/4.+1.); i++)
-            var_SetInteger(p_intf->p_libvlc, "key-pressed", i_yvlckey);
 
-        t_lastScrollEvent = [NSDate timeIntervalSinceReferenceDate];
-        [self performSelector:@selector(resetScrollWheelDirection)
-                   withObject: NULL
-                   afterDelay:1.00];
-        return;
-    }
-    if (f_xabsvalue > 0.05) {
+        f_cumulatedYScrollValue += f_deltaY;
+        int key = f_cumulatedYScrollValue < 0.0f ? KEY_MOUSEWHEELDOWN : KEY_MOUSEWHEELUP;
+
+        while (ABS(f_cumulatedYScrollValue) >= f_yThreshold) {
+            f_cumulatedYScrollValue -= (f_cumulatedYScrollValue > 0 ? f_yThreshold : -f_yThreshold);
+            var_SetInteger(p_intf->p_libvlc, "key-pressed", key);
+            msg_Dbg(p_intf, "Scrolling in y direction");
+        }
+
+    } else if (f_deltaXAbs > f_directionThreshold) {
         if (i_lastScrollWheelDirection > 0) // last was a Y
             return;
-
         i_lastScrollWheelDirection = -1; // X
-        for (NSUInteger i = 0; i < (int)(f_xabsvalue/6.+1.); i++)
-            var_SetInteger(p_intf->p_libvlc, "key-pressed", i_xvlckey);
 
-        t_lastScrollEvent = [NSDate timeIntervalSinceReferenceDate];
-        [self performSelector:@selector(resetScrollWheelDirection)
-                   withObject: NULL
-                   afterDelay:1.00];
+        f_cumulatedXScrollValue += f_deltaX;
+        int key = f_cumulatedXScrollValue < 0.0f ? KEY_MOUSEWHEELRIGHT : KEY_MOUSEWHEELLEFT;
+
+        while (ABS(f_cumulatedXScrollValue) >= f_xThreshold) {
+            f_cumulatedXScrollValue -= (f_cumulatedXScrollValue > 0 ? f_xThreshold : -f_xThreshold);
+            var_SetInteger(p_intf->p_libvlc, "key-pressed", key);
+            msg_Dbg(p_intf, "Scrolling in x direction");
+        }
     }
+
+    if (p_scrollTimer) {
+        [p_scrollTimer invalidate];
+        [p_scrollTimer release];
+        p_scrollTimer = nil;
+    }
+    p_scrollTimer = [[NSTimer scheduledTimerWithTimeInterval:0.4 target:self selector:@selector(resetScrollWheelDirection) userInfo:nil repeats:NO] retain];
 }
 
 #pragma mark -

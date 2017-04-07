@@ -277,6 +277,7 @@ static inline int64_t MP4_TrackGetPTSDelta( demux_t *p_demux, mp4_track_t *p_tra
 
         i_sample -= ck->p_sample_count_pts[i_index];
     }
+    return -1;
 }
 
 static inline int64_t MP4_GetMoviePTS(demux_sys_t *p_sys )
@@ -874,6 +875,8 @@ static int Demux( demux_t *p_demux )
         }
     }
 
+    uint32_t i_nb_samples = 0;
+    uint32_t i_samplessize = 0;
     if ( !tk )
     {
         msg_Dbg( p_demux, "Could not select track by data position" );
@@ -896,8 +899,7 @@ static int Demux( demux_t *p_demux )
              MP4_GetMoviePTS( p_sys ), i_candidate_pos );
 #endif
 
-    uint32_t i_nb_samples = 0;
-    uint32_t i_samplessize = MP4_TrackGetReadSize( tk, &i_nb_samples );
+    i_samplessize = MP4_TrackGetReadSize( tk, &i_nb_samples );
     if( i_samplessize > 0 )
     {
         block_t *p_block;
@@ -4395,7 +4397,7 @@ static MP4_Box_t * LoadNextChunk( demux_t *p_demux )
     return p_chunk;
 }
 
-static bool BoxExistsInRootTree( MP4_Box_t *p_root, uint32_t i_type, off_t i_pos )
+static bool BoxExistsInRootTree( MP4_Box_t *p_root, uint32_t i_type, uint64_t i_pos )
 {
     while ( p_root )
     {
@@ -4427,6 +4429,12 @@ static bool AddFragment( demux_t *p_demux, MP4_Box_t *p_moox )
             {
                 p_sys->i_timescale = BOXDATA(p_mvhd)->i_timescale;
                 p_sys->i_overall_duration = BOXDATA(p_mvhd)->i_duration;
+            }
+            else
+            {
+                p_sys->i_timescale = CLOCK_FREQ;
+                p_sys->i_overall_duration = CLOCK_FREQ;
+                msg_Warn( p_demux, "No valid mvhd found" );
             }
 
             if ( MP4_BoxCount( p_moox, "mvex" ) || !p_mvhd )
@@ -5427,7 +5435,8 @@ static int DemuxAsLeaf( demux_t *p_demux )
 
         if ( p_sys->context.i_current_box_type != ATOM_mdat )
         {
-            if ( ! BoxExistsInRootTree( p_sys->p_root, p_sys->context.i_current_box_type, stream_Tell( p_demux->s ) ) )
+            const int64_t i_tell = stream_Tell( p_demux->s );
+            if ( i_tell >= 0 && ! BoxExistsInRootTree( p_sys->p_root, p_sys->context.i_current_box_type, (uint64_t) i_tell ) )
             {// only if !b_probed ??
                 MP4_Box_t *p_vroot = LoadNextChunk( p_demux );
                 switch( p_sys->context.i_current_box_type )

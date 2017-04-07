@@ -2,7 +2,7 @@
  * MainWindow.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: b7124136c9573f1af1b6e2e0dccb01c4dfbb69b7 $
+ * $Id: 03a70197ac3d994c6549c5ccca9b60f1a9c7a41c $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -977,7 +977,11 @@ static VLCMainWindow *_o_sharedInstance = nil;
 
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:mt_duration];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"HH:mm:ss"];
+    if (mt_duration >= 86400) {
+        [formatter setDateFormat:@"dd:HH:mm:ss"];
+    } else {
+        [formatter setDateFormat:@"HH:mm:ss"];
+    }
     [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 
     NSString *playbackDuration = [NSString stringWithFormat:@" — %@",[formatter stringFromDate:date]];

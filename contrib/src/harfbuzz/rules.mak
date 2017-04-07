@@ -8,7 +8,7 @@ PKGS_FOUND += harfbuzz
 endif
 
 $(TARBALLS)/harfbuzz-$(HARFBUZZ_VERSION).tar.bz2:
-	$(call download,$(HARFBUZZ_URL))
+	$(call download_pkg,$(HARFBUZZ_URL),harfbuzz)
 
 .sum-harfbuzz: harfbuzz-$(HARFBUZZ_VERSION).tar.bz2
 

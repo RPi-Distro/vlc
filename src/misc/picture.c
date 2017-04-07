@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2000-2010 VLC authors and VideoLAN
  * Copyright (C) 2009-2010 Laurent Aimar
- * $Id: d7cc482c7ba7f4fa04b15755eaa65d6737cd35ce $
+ * $Id: cfc138341252069444269368deb48deb739481a2 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -396,17 +396,26 @@ int picture_Export( vlc_object_t *p_obj,
     fmt_out.i_chroma  = i_format;
 
     /* compute original width/height */
-    unsigned int i_original_width;
-    unsigned int i_original_height;
-    if( fmt_in.i_sar_num >= fmt_in.i_sar_den )
+    unsigned int i_width, i_height, i_original_width, i_original_height;
+    if( fmt_in.i_visible_width > 0 && fmt_in.i_visible_height > 0 )
     {
-        i_original_width = (int64_t)fmt_in.i_width * fmt_in.i_sar_num / fmt_in.i_sar_den;
-        i_original_height = fmt_in.i_height;
+        i_width = fmt_in.i_visible_width;
+        i_height = fmt_in.i_visible_height;
     }
     else
     {
-        i_original_width =  fmt_in.i_width;
-        i_original_height = (int64_t)fmt_in.i_height * fmt_in.i_sar_den / fmt_in.i_sar_num;
+        i_width = fmt_in.i_width;
+        i_height = fmt_in.i_height;
+    }
+    if( fmt_in.i_sar_num >= fmt_in.i_sar_den )
+    {
+        i_original_width = (int64_t)i_width * fmt_in.i_sar_num / fmt_in.i_sar_den;
+        i_original_height = i_height;
+    }
+    else
+    {
+        i_original_width =  i_width;
+        i_original_height = i_height * fmt_in.i_sar_den / fmt_in.i_sar_num;
     }
 
     /* */
@@ -418,16 +427,18 @@ int picture_Export( vlc_object_t *p_obj,
     /* scale if only one direction is provided */
     if( fmt_out.i_height == 0 && fmt_out.i_width > 0 )
     {
-        fmt_out.i_height = fmt_in.i_height * fmt_out.i_width
-                     * fmt_in.i_sar_den / fmt_in.i_width / fmt_in.i_sar_num;
+        fmt_out.i_height = i_height * fmt_out.i_width
+                         * fmt_in.i_sar_den / fmt_in.i_width / fmt_in.i_sar_num;
     }
     else if( fmt_out.i_width == 0 && fmt_out.i_height > 0 )
     {
-        fmt_out.i_width  = fmt_in.i_width * fmt_out.i_height
-                     * fmt_in.i_sar_num / fmt_in.i_height / fmt_in.i_sar_den;
+        fmt_out.i_width  = i_width * fmt_out.i_height
+                         * fmt_in.i_sar_num / fmt_in.i_height / fmt_in.i_sar_den;
     }
 
     image_handler_t *p_image = image_HandlerCreate( p_obj );
+    if( !p_image )
+        return VLC_ENOMEM;
 
     block_t *p_block = image_Write( p_image, p_picture, &fmt_in, &fmt_out );
 
