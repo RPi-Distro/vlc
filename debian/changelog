@@ -1,8 +1,19 @@
-vlc (2.2.5-1~deb8u1) UNRELEASED; urgency=medium
+vlc (2.2.5-1~deb8u1) jessie; urgency=medium
 
   * New upstream release.
+    - adpcm: Fix heap corruption.
+    - dvd: Fix heap corruption.
+    - asf: Fix integer overflow.
+    - mp4: Fix divide-by-zero error and heap buffer overflow.
+    - flac: Fix integer overflow and NULL pointer dereference.
+    - ftp: Fix scan string injection.
+    - voc: Fix divide-by-zero error.
+    - xa: Fix divide-by-zero error.
+    - smf: Fix divide-by-zero error.
+    - nsvf: Fix infinite loop.
+    - aiff: Fix infinite loop.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Fri, 07 Apr 2017 19:19:23 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 07 Apr 2017 19:32:28 +0200
 
 vlc (2.2.4-1~deb8u1) jessie-security; urgency=medium
 
