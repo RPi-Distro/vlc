@@ -1,0 +1,221 @@
+From: Petter Reinholdtsen <pere@hungry.com>
+Date: Mon, 9 May 2016 11:52:20 +0200
+Subject: Restructure desktop MIME type list with comments
+
+Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+---
+ share/vlc.desktop.mimetypes | 168 ++++++++++++++++++--------------------------
+ 1 file changed, 70 insertions(+), 98 deletions(-)
+
+diff --git a/share/vlc.desktop.mimetypes b/share/vlc.desktop.mimetypes
+index f567458..edaf11a 100644
+--- a/share/vlc.desktop.mimetypes
++++ b/share/vlc.desktop.mimetypes
+@@ -1,137 +1,109 @@
+ # List of MIME types to announce in the desktop file, to let desktop
+ # environments and browsers know which file types to pass on to VLC.
+ 
+-# DV files
+-video/dv
+-
+-video/mpeg
+-
+-video/x-mpeg
++# Ogg Vorbis and Theora
++application/ogg                  # IANA-registered
++application/x-ogg
++audio/ogg                        # IANA-registered
++audio/x-vorbis+ogg
++video/ogg                        # IANA-registered
++video/x-ogm+ogg
+ 
++# Microsoft audio and video
++audio/x-ms-asf
++audio/x-ms-asx
++audio/x-ms-wax
++audio/x-pn-windows-acm
+ video/msvideo
+-
+-video/quicktime
+-
+-video/x-anim
+-
+ video/x-avi
+-
+ video/x-ms-asf
+-
+ video/x-ms-wmv
+-
+ video/x-msvideo
+ 
+-video/x-nsv
+-
+-video/x-flc
+-
+-video/x-fli
+-
+-video/x-flv
+-
++# Real audio and video
++application/vnd.rn-realmedia
++audio/vnd.rn-realaudio
++audio/x-pn-realaudio
++audio/x-pn-realaudio-plugin
++audio/x-real-audio
+ video/vnd.rn-realvideo
+ 
+-video/mp4
+-
+-video/mp4v-es
+-
++# MPEG related audio, video and transport
++application/x-extension-mp4
++audio/mp4                        # IANA-registered
++audio/mpeg                       # IANA-registered
++audio/x-m4a
++audio/x-mp3
++audio/x-mpeg
+ video/mp2t
++video/mp4                        # IANA-registered
++video/mp4v-es
++video/mpeg
++video/x-mpeg
+ 
+-application/ogg
+-
+-application/x-ogg
+-
+-video/x-ogm+ogg
+-
+-audio/x-vorbis+ogg
+-
+-audio/ogg
+-
+-video/ogg
++# FLAC lossless audio
++application/x-flac
++audio/x-flac
+ 
++# Matroska container format
+ application/x-matroska
+-
+ audio/x-matroska
+-
+ video/x-matroska
+ 
++# WebM (Matroska + Vorbis + VP8)
+ video/webm
+-
+ audio/webm
+ 
+-audio/x-mp3
+-
+-audio/x-mpeg
++# RTSP related
++audio/amr
++audio/amr-wb
+ 
+-audio/mpeg
++# URI scheme handlers (ie IP protocol support)
++x-scheme-handler/mms
++x-scheme-handler/rtmp
++x-scheme-handler/rtsp
+ 
+-audio/x-wav
++# Linux desktop environment hooks for ISOs etc.
++x-content/video-vcd
++x-content/video-svcd
++x-content/video-dvd
++x-content/audio-cdda
++x-content/audio-player
+ 
++# Playlists / text/xml list with URLs
++application/xspf+xml
+ audio/x-mpegurl
+-
+ audio/x-scpls
++video/vnd.mpegurl                # IANA-registered
+ 
+-audio/x-m4a
+-
+-audio/x-ms-asf
+-
+-audio/x-ms-asx
+-
+-audio/x-ms-wax
++# Digital Video
++video/dv
+ 
+-application/vnd.rn-realmedia
++# Apple QuickTime
++video/quicktime                  # IANA-registered
+ 
+-audio/x-real-audio
++# IFF related formats
++audio/x-pn-aiff
++video/x-anim
+ 
+-audio/x-pn-realaudio
++# NullSoft video
++video/x-nsv
+ 
+-application/x-flac
++# Autodesk animation format
++video/x-flc
++video/x-fli
++video/x-flv
+ 
+-audio/x-flac
++# Audio sample formats
++audio/x-wav
++audio/x-pn-au
++audio/x-pn-wav
+ 
++# Adobe Flash player related
+ application/x-shockwave-flash
+ 
++# SHOUTcast 2
+ misc/ultravox
+ 
+-audio/vnd.rn-realaudio
+-
+-audio/x-pn-aiff
+-
+-audio/x-pn-au
+-
+-audio/x-pn-wav
+-
+-audio/x-pn-windows-acm
+-
++# RealPix
+ image/vnd.rn-realpix
+-
+-audio/x-pn-realaudio-plugin
+-
+-application/x-extension-mp4
+-
+-audio/mp4
+-
+-audio/amr
+-
+-audio/amr-wb
+-
+-x-content/video-vcd
+-
+-x-content/video-svcd
+-
+-x-content/video-dvd
+-
+-x-content/audio-cdda
+-
+-x-content/audio-player
+-
+-application/xspf+xml
+-
+-x-scheme-handler/mms
+-
+-x-scheme-handler/rtmp
+-
+-x-scheme-handler/rtsp
+-
+-video/vnd.mpegurl

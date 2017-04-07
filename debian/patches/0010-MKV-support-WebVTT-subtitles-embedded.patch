@@ -1,0 +1,24 @@
+From: Jean-Baptiste Kempf <jb@videolan.org>
+Date: Wed, 15 Jul 2015 23:32:10 +0200
+Subject: MKV: support WebVTT subtitles embedded
+
+---
+ modules/demux/mkv/matroska_segment_parse.cpp | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/modules/demux/mkv/matroska_segment_parse.cpp b/modules/demux/mkv/matroska_segment_parse.cpp
+index e8a6852..2620206 100644
+--- a/modules/demux/mkv/matroska_segment_parse.cpp
++++ b/modules/demux/mkv/matroska_segment_parse.cpp
+@@ -1837,6 +1837,11 @@ int32_t matroska_segment_c::TrackInit( mkv_track_t * p_tk )
+     {
+         p_tk->fmt.i_codec = VLC_CODEC_BD_PG;
+     }
++    else if( !strcmp( p_tk->psz_codec, "D_WEBVTT/SUBTITLES" ) )
++    {
++        p_tk->fmt.i_codec = VLC_CODEC_SUBT;
++        p_tk->fmt.subs.psz_encoding = strdup( "UTF-8" );
++    }
+     else if( !strcmp( p_tk->psz_codec, "B_VOBBTN" ) )
+     {
+         p_tk->fmt.i_cat = NAV_ES;

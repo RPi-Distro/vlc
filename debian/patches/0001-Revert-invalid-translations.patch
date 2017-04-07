@@ -1,10 +1,18 @@
-Description: Revert invalid translations
+From: Sebastian Ramacher <sramacher@debian.org>
+Date: Fri, 7 Apr 2017 18:44:36 +0200
+Subject: Revert invalid translations
+
 Bug: https://trac.videolan.org/vlc/ticket/16598
 Bug-Debian: https://bugs.debian.org/814258
+---
+ po/mr.po | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/po/mr.po b/po/mr.po
+index 2a2b109..3c4ba40 100644
 --- a/po/mr.po
 +++ b/po/mr.po
-@@ -21567,7 +21567,7 @@
+@@ -21567,7 +21567,7 @@ msgstr "चालविण्याची यादी"
  
  #: modules/gui/qt4/menus.cpp:493
  msgid "Ctrl+L"
@@ -13,7 +21,7 @@ Bug-Debian: https://bugs.debian.org/814258
  
  #: modules/gui/qt4/menus.cpp:496
  msgid "Docked Playlist"
-@@ -21579,7 +21579,7 @@
+@@ -21579,7 +21579,7 @@ msgstr "किमान आंतरपृष्ठ"
  
  #: modules/gui/qt4/menus.cpp:508
  msgid "Ctrl+H"
@@ -22,7 +30,7 @@ Bug-Debian: https://bugs.debian.org/814258
  
  #: modules/gui/qt4/menus.cpp:517
  msgid "&Fullscreen Interface"
-@@ -21735,7 +21735,7 @@
+@@ -21735,7 +21735,7 @@ msgstr "मागे उडी मारा"
  
  #: modules/gui/qt4/menus.cpp:920
  msgid "Ctrl+T"

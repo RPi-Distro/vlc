@@ -1,2 +1,10 @@
-fix-translation.patch
-generated-mimetypes.patch
+0001-Revert-invalid-translations.patch
+0002-Move-MIME-types-in-desktop-file-to-separate-file-for.patch
+0003-Restructure-desktop-MIME-type-list-with-comments.patch
+0004-Add-MIME-types-listed-in-the-VLC-browser-plugin.patch
+0005-Add-MIME-types-imported-from-Totem.patch
+0006-vlc.desktop-mimetypes-reordering-and-comments.patch
+0007-More-mimetypes-reordering-comments-and-additions.patch
+0008-desktop-file-We-understand-gvp-and-ram-format.patch
+0009-desktop-file-more-mimetypes-from-iana.org.patch
+0010-MKV-support-WebVTT-subtitles-embedded.patch
