@@ -219,7 +219,7 @@ removeplugins += mmx sse2
 endif
 
 # ARM specific optimizations
-ifeq (,$(filter-out armhf arm64,$(DEB_HOST_ARCH_CPU)))
+ifeq (,$(filter-out armhf,$(DEB_HOST_ARCH_CPU)))
 confflags += --enable-neon
 else
 confflags += --disable-neon
