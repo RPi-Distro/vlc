@@ -1,8 +1,8 @@
-vlc (2.2.5-4) UNRELEASED; urgency=medium
+vlc (2.2.5-4) experimental; urgency=medium
 
   * debian/rules: Revert "Also enable NEON on arm64". (LP: #1685444)
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sat, 22 Apr 2017 12:22:10 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 23 Apr 2017 15:52:57 +0200
 
 vlc (2.2.5-3) experimental; urgency=medium
 
