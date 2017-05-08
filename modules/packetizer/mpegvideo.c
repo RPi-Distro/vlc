@@ -2,7 +2,7 @@
  * mpegvideo.c: parse and packetize an MPEG1/2 video stream
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
- * $Id: 038366cbbe1a497835b68af574d33be9d8b689b1 $
+ * $Id: 9cba57445cee3f62b4dce49ca3a8195299942b8d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -619,7 +619,7 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
 #endif
 
         }
-        else if( i_type == 0x08 )
+        else if( i_type == 0x08 && p_frag->i_buffer > 8 )
         {
             /* picture extension */
             p_sys->i_picture_structure = p_frag->p_buffer[6]&0x03;

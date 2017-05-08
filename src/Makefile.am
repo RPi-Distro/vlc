@@ -199,7 +199,7 @@ if HAVE_DBUS
 libvlccore_la_LIBADD += $(DBUS_LIBS)
 endif
 
-libvlc_win32_rc.$(OBJEXT): libvlc_win32_rc.rc
+libvlc_win32_rc.$(OBJEXT): libvlc_win32_rc.rc $(top_srcdir)/extras/package/win32/libvlc.dll.manifest
 	$(WINDRES) --include-dir $(top_srcdir)/share --include-dir $(top_srcdir)/extras/package/win32 -i $< -o $@
 
 EXTRA_libvlccore_la_SOURCES = \

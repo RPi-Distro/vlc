@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005-2010 VLC authors and VideoLAN
  *
- * $Id: 19065fbdc2cf240999c964f345b381dc44f95942 $
+ * $Id: 0e3ccb5767938a40428393032cdbe672fcce89fe $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Filippo Carone <littlejohn@videolan.org>
@@ -466,11 +466,14 @@ void libvlc_video_set_teletext( libvlc_media_player_t *p_mi, int i_page )
     }
 
     telx = var_GetInteger( p_input_thread, "teletext-es" );
-    if( input_GetEsObjects( p_input_thread, telx, &p_zvbi, NULL, NULL )
-        == VLC_SUCCESS )
+    if( telx >= 0 )
     {
-        var_SetInteger( p_zvbi, "vbi-page", i_page );
-        vlc_object_release( p_zvbi );
+        if( input_GetEsObjects( p_input_thread, telx, &p_zvbi, NULL, NULL )
+            == VLC_SUCCESS )
+        {
+            var_SetInteger( p_zvbi, "vbi-page", i_page );
+            vlc_object_release( p_zvbi );
+        }
     }
     vlc_object_release( p_input_thread );
 }

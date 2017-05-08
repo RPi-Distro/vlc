@@ -2,7 +2,7 @@
  * flac.c: flac decoder/encoder module making use of libflac
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 32ae7fb066e30758f269985a331056c7ea23ca95 $
+ * $Id: 87c1e6cb7b84d4ba2b5eef18f9dc861b40cf6393 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -235,9 +235,12 @@ static void DecoderMetadataCallback( const FLAC__StreamDecoder *decoder,
     /* Setup the format */
     p_dec->fmt_out.audio.i_rate     = metadata->data.stream_info.sample_rate;
     p_dec->fmt_out.audio.i_channels = metadata->data.stream_info.channels;
-    p_dec->fmt_out.audio.i_physical_channels =
+    if(metadata->data.stream_info.channels < 9)
+    {
+    	p_dec->fmt_out.audio.i_physical_channels =
         p_dec->fmt_out.audio.i_original_channels =
             pi_channels_maps[metadata->data.stream_info.channels];
+    }
     if (!p_dec->fmt_out.audio.i_bitspersample)
         p_dec->fmt_out.audio.i_bitspersample =
             metadata->data.stream_info.bits_per_sample;
