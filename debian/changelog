@@ -1,3 +1,9 @@
+vlc (2.2.5.1-1) UNRELEASED; urgency=medium
+
+  * New upstream release.
+
+ -- Mateusz Łukasik <mati75@linuxmint.pl>  Mon, 08 May 2017 20:00:46 +0200
+
 vlc (2.2.5-4) experimental; urgency=medium
 
   * debian/rules: Revert "Also enable NEON on arm64". (LP: #1685444)
