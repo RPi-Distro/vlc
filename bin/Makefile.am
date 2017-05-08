@@ -48,7 +48,7 @@ vlc_static_LDADD = $(vlc_LDADD)
 vlc_static_LDFLAGS = $(vlc_LDFLAGS)
 
 if HAVE_WIN32
-vlc_LDADD += -lpsapi -lwininet vlc_win32_rc.$(OBJEXT)
+vlc_LDADD += -lpsapi vlc_win32_rc.$(OBJEXT)
 vlc_DEPENDENCIES = vlc_win32_rc.$(OBJEXT)
 else
 vlc_LDADD += $(LIBDL)
@@ -59,7 +59,7 @@ vlc_win32_rc.rc: $(top_builddir)/config.status vlc_win32_rc.rc.in
 	cd "$(top_builddir)" && \
 	$(SHELL) ./config.status --file="bin/$@"
 
-vlc_win32_rc.$(OBJEXT): vlc_win32_rc.rc
+vlc_win32_rc.$(OBJEXT): vlc_win32_rc.rc $(top_srcdir)/extras/package/win32/vlc.exe.manifest
 	$(WINDRES) --include-dir $(top_srcdir)/share/icons --include-dir $(top_srcdir)/extras/package/win32 -i $< -o $@
 
 vlc_cache_gen_SOURCES = cachegen.c

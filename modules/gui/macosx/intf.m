@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: d7e1b6306232fb0c533ce88a15a1d258be397cbb $
+ * $Id: b4e057107ae3eb4607168d6a034ce7a51fab4516 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan.org>
@@ -113,15 +113,21 @@ static VLCDocumentController *documentController = nil;
 int OpenIntf (vlc_object_t *p_this)
 {
     NSAutoreleasePool *o_pool = [[NSAutoreleasePool alloc] init];
-    [VLCApplication sharedApplication];
-    // Register subclass for recent items controller
-    documentController = [[VLCDocumentController alloc] init];
+    @try {
+        [VLCApplication sharedApplication];
+        // Register subclass for recent items controller
+        documentController = [[VLCDocumentController alloc] init];
 
-    intf_thread_t *p_intf = (intf_thread_t*) p_this;
-    msg_Dbg(p_intf, "Starting macosx interface");
-    Run(p_intf);
+        intf_thread_t *p_intf = (intf_thread_t*) p_this;
+        msg_Dbg(p_intf, "Starting macosx interface");
+        Run(p_intf);
 
-    [documentController release];
+        [documentController release];
+    } @catch (NSException *exception) {
+        [o_pool release];
+        return VLC_EGENERIC;
+    }
+
     [o_pool release];
     return VLC_SUCCESS;
 }

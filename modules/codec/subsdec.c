@@ -2,7 +2,7 @@
  * subsdec.c : text subtitle decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 VLC authors and VideoLAN
- * $Id: 1b4276e299a2a6668047231d29ac705ae93076ba $
+ * $Id: addd8c71f30d53558fffd19059b374be45cf0f8e $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -664,7 +664,7 @@ static char *CreateHtmlSubtitle( int *pi_align, char *psz_subtitle )
                 HtmlCopy( &psz_html, &psz_subtitle, "<font " );
                 HtmlPut( &psz_tag, "f" );
 
-                while( *psz_subtitle != '>' )
+                while( *psz_subtitle != '>' && *psz_subtitle)
                 {
                     int  k;
 
@@ -722,7 +722,7 @@ static char *CreateHtmlSubtitle( int *pi_align, char *psz_subtitle )
                                 i_len++;
                         }
                         /* Not a tag, something else we do not understand */
-                        if( i_len == 0 )
+                        if( i_len == 0 && *psz_subtitle != '\0' )
                             psz_subtitle++;
 
                         psz_subtitle += i_len;
@@ -731,6 +731,7 @@ static char *CreateHtmlSubtitle( int *pi_align, char *psz_subtitle )
                     HtmlNPut( &psz_html, psz_subtitle, strspn(psz_subtitle, " ") );
                 }
                 HtmlPut( &psz_html, ">" );
+                if (*psz_subtitle == '\0') break;
                 psz_subtitle++;
             }
             else if( !strncmp( psz_subtitle, "</", 2 ))
@@ -912,7 +913,7 @@ static char *CreateHtmlSubtitle( int *pi_align, char *psz_subtitle )
             }
             psz_subtitle = strchr( psz_subtitle, '}' ) + 1;
         }
-        else if( psz_subtitle[0] == '{' &&  psz_subtitle[2] == ':' && strchr( psz_subtitle, '}' ) )
+        else if( psz_subtitle[0] == '{' &&  psz_subtitle[1] != '\0' && psz_subtitle[2] == ':' && strchr( psz_subtitle, '}' ) )
         {
             // Hide other {x:y} atrocities, like {c:$bbggrr} or {P:x}
             psz_subtitle = strchr( psz_subtitle, '}' ) + 1;
