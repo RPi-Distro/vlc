@@ -1,2 +1,2 @@
-symlink_to_dir /usr/share/doc/libvlc-dev libvlc5 2.2.5-1~z
-symlink_to_dir /usr/share/bug/libvlc-dev libvlc5 2.2.5-1~z
+symlink_to_dir /usr/share/doc/libvlc-dev libvlc5 2.2.5.1-1~z
+symlink_to_dir /usr/share/bug/libvlc-dev libvlc5 2.2.5.1-1~z
