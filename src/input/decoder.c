@@ -2,7 +2,7 @@
  * decoder.c: Functions for the management of decoders
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: ef865e922078c8ac1dedbc5b56938d58b9bface5 $
+ * $Id: 2c0823feb51643f9fa8170e8d026118eef3e8f23 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1954,8 +1954,9 @@ static int aout_update_format( decoder_t *p_dec )
 {
     decoder_owner_sys_t *p_owner = p_dec->p_owner;
 
-    if( p_owner->p_aout
-     && !AOUT_FMTS_IDENTICAL(&p_dec->fmt_out.audio, &p_owner->audio) )
+    if( p_owner->p_aout &&
+       ( !AOUT_FMTS_IDENTICAL(&p_dec->fmt_out.audio, &p_owner->audio) ||
+         p_dec->fmt_out.i_codec != p_dec->fmt_out.audio.i_format ) )
     {
         audio_output_t *p_aout = p_owner->p_aout;
 

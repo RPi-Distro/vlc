@@ -29,9 +29,8 @@ package-win-install:
 package-win-common: package-win-install
 	mkdir -p "$(win32_destdir)"/
 
-# Executables, major libs+manifests
+# Executables, major libs
 	find $(prefix) -maxdepth 4 \( -name "*$(LIBEXT)" -o -name "*$(EXEEXT)" \) -exec cp {} "$(win32_destdir)/" \;
-	cd $(top_srcdir)/extras/package/win32 && cp vlc$(EXEEXT).manifest libvlc$(LIBEXT).manifest "$(win32_destdir)/"
 
 # Text files, clean them from mail addresses
 	for file in AUTHORS THANKS ; \
@@ -77,9 +76,7 @@ endif
 	find $(win32_destdir)/plugins/ -type f \( -name '*.a' -or -name '*.la' \) -exec rm -rvf {} \;
 
 package-win-npapi: build-npapi
-	cp "$(top_builddir)/npapi-vlc/activex/axvlc.dll.manifest" "$(win32_destdir)/"
 	cp "$(top_builddir)/npapi-vlc/installed/lib/axvlc.dll" "$(win32_destdir)/"
-	cp "$(top_builddir)/npapi-vlc/npapi/package/npvlc.dll.manifest" "$(win32_destdir)/"
 	cp "$(top_builddir)/npapi-vlc/installed/lib/npvlc.dll" "$(win32_destdir)/"
 	mkdir -p "$(win32_destdir)/sdk/activex/"
 	cd $(top_builddir)/npapi-vlc && cp activex/README.TXT share/test/test.html $(win32_destdir)/sdk/activex/
@@ -96,7 +93,9 @@ package-win-strip: package-win-common package-win-npapi
 	if test -n "$(SIGNATURE)"; then \
 	  cd $(win32_destdir); find . -type f \( -name '*$(LIBEXT)' -or -name '*$(EXEEXT)' \) | while read i; \
 	  do if test -n "$$i" ; then \
-	    osslsigncode sign -certs $(SIGNATURE)/cert.cer -key $(SIGNATURE)/videolan.key -n "VLC media player" -i http://www.videolan.org/ -t http://timestamp.verisign.com/scripts/timstamp.dll -in "$$i" -out "$$i.sign"; \
+	    osslsigncode sign -certs $(SIGNATURE)/cert.cer -key $(SIGNATURE)/videolan.key -n "VLC media player" -i http://www.videolan.org/ -t http://timestamp.verisign.com/scripts/timstamp.dll -h sha1 -in "$$i" -out "$$i.sign"; \
+	    mv "$$i.sign" "$$i" ; \
+	    osslsigncode sign -certs $(SIGNATURE)/cert.cer -key $(SIGNATURE)/videolan.key -n "VLC media player" -i http://www.videolan.org/ -t http://timestamp.verisign.com/scripts/timstamp.dll -nest -h sha2 -in "$$i" -out "$$i.sign"; \
 	    mv "$$i.sign" "$$i" ; \
 	  fi ; \
 	  done \
@@ -107,8 +106,6 @@ package-win32-webplugin-common: package-win-strip
 	mkdir -p "$(win32_xpi_destdir)/plugins/"
 	cp -r $(win32_destdir)/plugins/ "$(win32_xpi_destdir)/plugins/"
 	cp "$(win32_destdir)/libvlc.dll" "$(win32_destdir)/libvlccore.dll" "$(win32_destdir)/npvlc.dll" "$(win32_xpi_destdir)/plugins/"
-	cp $(top_builddir)/npapi-vlc/npapi/package/npvlc.dll.manifest "$(win32_xpi_destdir)/plugins/"
-	cp "$(top_srcdir)/extras/package/win32/libvlc.dll.manifest" "$(win32_xpi_destdir)/plugins/"
 	rm -rf "$(win32_xpi_destdir)/plugins/plugins/gui/"
 
 
@@ -169,7 +166,9 @@ package-win32-exe: package-win-strip $(win32_destdir)/NSIS/UAC.dll $(win32_destd
 	eval "$$MAKENSIS $(win32_destdir)/spad.nsi"; \
 	eval "$$MAKENSIS $(win32_destdir)/vlc.win32.nsi"
 	if test -n "$(SIGNATURE)"; then \
-		osslsigncode sign -certs $(SIGNATURE)/cert.cer -key $(SIGNATURE)/videolan.key -n "VLC media player" -i http://www.videolan.org/ -t http://timestamp.verisign.com/scripts/timstamp.dll -in "$(WINVERSION).exe" -out "$(WINVERSION).exe.sign"; \
+		osslsigncode sign -certs $(SIGNATURE)/cert.cer -key $(SIGNATURE)/videolan.key -n "VLC media player" -i http://www.videolan.org/ -t http://timestamp.verisign.com/scripts/timstamp.dll -h sha1 -in "$(WINVERSION).exe" -out "$(WINVERSION).exe.sign"; \
+	    mv "$(WINVERSION).exe.sign" "$(WINVERSION).exe" ; \
+		osslsigncode sign -certs $(SIGNATURE)/cert.cer -key $(SIGNATURE)/videolan.key -n "VLC media player" -i http://www.videolan.org/ -t http://timestamp.verisign.com/scripts/timstamp.dll -nest -h sha2 -in "$(WINVERSION).exe" -out "$(WINVERSION).exe.sign"; \
 	    mv "$(WINVERSION).exe.sign" "$(WINVERSION).exe" ; \
 	fi
 

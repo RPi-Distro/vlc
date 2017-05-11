@@ -97,7 +97,7 @@ EXTRA_PROGRAMS = vlc-wrapper$(EXEEXT)
 @HAVE_WIN32_FALSE@am__append_2 = vlc-wrapper
 @HAVE_WIN32_TRUE@am__append_3 = vlc_win32_rc.rc
 @HAVE_DARWIN_TRUE@am__append_4 = -Wl,-framework,CoreFoundation
-@HAVE_WIN32_TRUE@am__append_5 = -lpsapi -lwininet vlc_win32_rc.$(OBJEXT)
+@HAVE_WIN32_TRUE@am__append_5 = -lpsapi vlc_win32_rc.$(OBJEXT)
 @HAVE_WIN32_FALSE@vlc_DEPENDENCIES = ../lib/libvlc.la \
 @HAVE_WIN32_FALSE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2) \
 @HAVE_WIN32_FALSE@	$(am__DEPENDENCIES_3)
@@ -1517,7 +1517,7 @@ vlc_win32_rc.rc: $(top_builddir)/config.status vlc_win32_rc.rc.in
 	cd "$(top_builddir)" && \
 	$(SHELL) ./config.status --file="bin/$@"
 
-vlc_win32_rc.$(OBJEXT): vlc_win32_rc.rc
+vlc_win32_rc.$(OBJEXT): vlc_win32_rc.rc $(top_srcdir)/extras/package/win32/vlc.exe.manifest
 	$(WINDRES) --include-dir $(top_srcdir)/share/icons --include-dir $(top_srcdir)/extras/package/win32 -i $< -o $@
 
 .PHONY: ../modules/plugins.dat

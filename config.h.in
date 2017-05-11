@@ -420,6 +420,10 @@
 /* Define to 1 if you have the `pread' function. */
 #undef HAVE_PREAD
 
+/* Define to 1 if the system has the type
+   `PROCESS_MITIGATION_IMAGE_LOAD_POLICY'. */
+#undef HAVE_PROCESS_MITIGATION_IMAGE_LOAD_POLICY
+
 /* Define to 1 if using libprojectM 2.x */
 #undef HAVE_PROJECTM2
 

@@ -2,7 +2,7 @@
  * subtitle.c: Demux for subtitle text files.
  *****************************************************************************
  * Copyright (C) 1999-2007 VLC authors and VideoLAN
- * $Id: c2877a0b9f45bdabcfeed75edae2ac8577035fa6 $
+ * $Id: 3e790fd307ff08f92fd3b754863f7a91f34fd85f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -1271,6 +1271,7 @@ static int  ParseSami( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
 
     i_text = 0;
     text[0] = '\0';
+    const char *psz_startline = s;
     /* now get all txt until  a "Start=" line */
     for( ;; )
     {
@@ -1287,7 +1288,8 @@ static int  ParseSami( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
             {
                 c = '\n';
             }
-            else if( strcasestr( s, "Start=" ) )
+            else if( strcasestr( s, "Start=" ) &&
+                     psz_startline != s )
             {
                 TextPreviousLine( txt );
                 break;
@@ -1807,8 +1809,8 @@ static int ParseJSS( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
     /* Parse the directives */
     if( isalpha( (unsigned char)*psz_text ) || *psz_text == '[' )
     {
-        while( *psz_text != ' ' )
-        { psz_text++ ;};
+        while( *psz_text && *psz_text != ' ' )
+            ++psz_text;
 
         /* Directives are NOT parsed yet */
         /* This has probably a better place in a decoder ? */
@@ -1865,7 +1867,7 @@ static int ParseJSS( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
             if( ( toupper((unsigned char)*(psz_text + 1 ) ) == 'C' ) ||
                     ( toupper((unsigned char)*(psz_text + 1 ) ) == 'F' ) )
             {
-                psz_text++; psz_text++;
+                psz_text++;
                 break;
             }
             if( (*(psz_text + 1 ) ) == 'B' || (*(psz_text + 1 ) ) == 'b' ||

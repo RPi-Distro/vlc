@@ -61,6 +61,56 @@ static char *FromWide (const wchar_t *wide)
     return out;
 }
 
+#if (_WIN32_WINNT < _WIN32_WINNT_WIN8)
+static BOOL SetDefaultDllDirectories_(DWORD flags)
+{
+    HMODULE h = GetModuleHandle(TEXT("kernel32.dll"));
+    if (h == NULL)
+        return FALSE;
+
+    BOOL WINAPI (*SetDefaultDllDirectoriesReal)(DWORD);
+
+    SetDefaultDllDirectoriesReal = GetProcAddress(h,
+                                                  "SetDefaultDllDirectories");
+    if (SetDefaultDllDirectoriesReal == NULL)
+        return FALSE;
+
+    return SetDefaultDllDirectoriesReal(flags);
+}
+# define SetDefaultDllDirectories SetDefaultDllDirectories_
+
+#endif
+
+static void PrioritizeSystem32(void)
+{
+#ifndef HAVE_PROCESS_MITIGATION_IMAGE_LOAD_POLICY
+    typedef struct _PROCESS_MITIGATION_IMAGE_LOAD_POLICY {
+      union {
+        DWORD  Flags;
+        struct {
+          DWORD NoRemoteImages  :1;
+          DWORD NoLowMandatoryLabelImages  :1;
+          DWORD PreferSystem32Images  :1;
+          DWORD ReservedFlags  :29;
+        };
+      };
+    } PROCESS_MITIGATION_IMAGE_LOAD_POLICY;
+#endif
+#if _WIN32_WINNT < _WIN32_WINNT_WIN8
+    BOOL WINAPI (*SetProcessMitigationPolicy)(PROCESS_MITIGATION_POLICY, PVOID, SIZE_T);
+    HINSTANCE h_Kernel32 = GetModuleHandle(TEXT("kernel32.dll"));
+    if ( !h_Kernel32 )
+        return;
+    SetProcessMitigationPolicy = (BOOL (WINAPI *)(PROCESS_MITIGATION_POLICY, PVOID, SIZE_T))
+                                   GetProcAddress(h_Kernel32, "SetProcessMitigationPolicy");
+    if (SetProcessMitigationPolicy == NULL)
+        return;
+#endif
+    PROCESS_MITIGATION_IMAGE_LOAD_POLICY m = { .Flags = 0 };
+    m.PreferSystem32Images = 1;
+    SetProcessMitigationPolicy( 10 /* ProcessImageLoadPolicy */, &m, sizeof( m ) );
+}
+
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
                     LPSTR lpCmdLine,
                     int nCmdShow )
@@ -103,6 +153,12 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
         FreeLibrary(h_Kernel32);
     }
+
+    SetDefaultDllDirectories(LOAD_LIBRARY_SEARCH_SYSTEM32);
+    /***
+     * Load DLLs from system32 before any other folder (when possible)
+     */
+    PrioritizeSystem32();
 
     /* Args */
     wchar_t **wargv = CommandLineToArgvW (GetCommandLine (), &argc);
@@ -224,11 +280,34 @@ static void check_crashdump(void)
 
     if(answer == IDYES)
     {
-        HINTERNET Hint = InternetOpen(L"VLC Crash Reporter",
+        HMODULE hWininet = LoadLibrary(TEXT("wininet.dll"));
+        if (hWininet == NULL)
+        {
+            fprintf(stderr, "There was an error loading the network"
+                    " 0x%08lx\n", (unsigned long)GetLastError());
+            goto done;
+        }
+
+        HINTERNET (WINAPI *InternetOpenW_)(LPCWSTR ,DWORD dwAccessType,LPCWSTR lpszProxy,LPCWSTR lpszProxyBypass,DWORD dwFlags);
+        HINTERNET (WINAPI *InternetConnectW_)(HINTERNET hInternet,LPCWSTR lpszServerName,INTERNET_PORT nServerPort,LPCWSTR lpszUserName,LPCWSTR lpszPassword,DWORD dwService,DWORD dwFlags,DWORD_PTR dwContext);
+        BOOL (WINAPI *InternetCloseHandle_)(HINTERNET hInternet);
+        BOOL (WINAPI *FtpPutFileW_)(HINTERNET hConnect,LPCWSTR lpszLocalFile,LPCWSTR lpszNewRemoteFile,DWORD dwFlags,DWORD_PTR dwContext);
+        InternetOpenW_       = (void*)GetProcAddress(hWininet, "InternetOpenW");
+        InternetConnectW_    = (void*)GetProcAddress(hWininet, "InternetConnectW");
+        InternetCloseHandle_ = (void*)GetProcAddress(hWininet, "InternetCloseHandle");
+        FtpPutFileW_         = (void*)GetProcAddress(hWininet, "FtpPutFileW");
+        if (!InternetOpenW_ || !InternetConnectW_ || !InternetCloseHandle_ || !FtpPutFileW_)
+        {
+            fprintf(stderr, "There was an error loading the network API entries"
+                    " 0x%08lx\n", (unsigned long)GetLastError());
+            goto done;
+        }
+
+        HINTERNET Hint = InternetOpenW_(L"VLC Crash Reporter",
                 INTERNET_OPEN_TYPE_PRECONFIG, NULL,NULL,0);
         if(Hint)
         {
-            HINTERNET ftp = InternetConnect(Hint, L"crash.videolan.org",
+            HINTERNET ftp = InternetConnectW_(Hint, L"crash.videolan.org",
                         INTERNET_DEFAULT_FTP_PORT, NULL, NULL,
                         INTERNET_SERVICE_FTP, INTERNET_FLAG_PASSIVE, 0);
             if(ftp)
@@ -241,16 +320,15 @@ static void check_crashdump(void)
                         now.wYear, now.wMonth, now.wDay, now.wHour,
                         now.wMinute, now.wSecond );
 
-                if( FtpPutFile( ftp, mv_crashdump_path, remote_file,
+                if( FtpPutFileW_( ftp, mv_crashdump_path, remote_file,
                             FTP_TRANSFER_TYPE_BINARY, 0) )
-                    MessageBox( NULL, L"Report sent correctly. Thanks a lot " \
-                                "for the help.", L"Report sent", MB_OK);
+                    fprintf(stderr, "Report sent correctly to FTP.\n");
                 else
                     MessageBox( NULL, L"There was an error while "\
                                 "transferring the data to the FTP server.\n"\
                                 "Thanks a lot for the help.",
                                 L"Report sending failed", MB_OK);
-                InternetCloseHandle(ftp);
+                InternetCloseHandle_(ftp);
             }
             else
             {
@@ -261,7 +339,7 @@ static void check_crashdump(void)
                 fprintf(stderr,"Can't connect to FTP server 0x%08lu\n",
                         (unsigned long)GetLastError());
             }
-            InternetCloseHandle(Hint);
+            InternetCloseHandle_(Hint);
         }
         else
         {
@@ -269,6 +347,11 @@ static void check_crashdump(void)
                                 "Thanks a lot for the help anyway.",
                                 L"Report sending failed", MB_OK);
         }
+done:
+        if (hWininet != NULL)
+            FreeLibrary(hWininet);
+        MessageBox( NULL, L"Thanks a lot for helping improving VLC!",
+                    L"VLC crash report" , MB_OK);
     }
 
     _wremove(mv_crashdump_path);
