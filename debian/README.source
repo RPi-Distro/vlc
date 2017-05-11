@@ -3,6 +3,9 @@ Embedded copy of ffmpeg
 
 Until the release of vlc 3.0, vlc needs an embedded copy of ffmpeg 2.8.X. The
 embedded copy is implemented using 3.0 (quilt)'s support for multiple orig
-tarballs. Since gbp does not play very well with them, you need to ensure that
-you have vlc_2.2.2.orig-ffmpeg-2-8-6.tar.xz when building the package and have
-it unpacked as ffmpeg-2-8-6.
+tarballs. When importing new upstream tarballs with gbp, do not forget to
+specify ffmpeg as a component. For example, run
+
+$ gbp import-orig ../vlc-2.2.X.tar.xz --component ffmpeg-2-8-Y
+
+to import a vlc upstream tarball and ffmpeg as component.
