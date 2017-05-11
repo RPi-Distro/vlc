@@ -4,7 +4,7 @@ Bug-Debian: https://bugs.debian.org/814258
 
 --- a/po/mr.po
 +++ b/po/mr.po
-@@ -21567,7 +21567,7 @@
+@@ -21466,7 +21466,7 @@
  
  #: modules/gui/qt4/menus.cpp:493
  msgid "Ctrl+L"
@@ -13,7 +13,7 @@ Bug-Debian: https://bugs.debian.org/814258
  
  #: modules/gui/qt4/menus.cpp:496
  msgid "Docked Playlist"
-@@ -21579,7 +21579,7 @@
+@@ -21478,7 +21478,7 @@
  
  #: modules/gui/qt4/menus.cpp:508
  msgid "Ctrl+H"
@@ -22,7 +22,7 @@ Bug-Debian: https://bugs.debian.org/814258
  
  #: modules/gui/qt4/menus.cpp:517
  msgid "&Fullscreen Interface"
-@@ -21735,7 +21735,7 @@
+@@ -21634,7 +21634,7 @@
  
  #: modules/gui/qt4/menus.cpp:920
  msgid "Ctrl+T"
