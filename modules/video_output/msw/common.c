@@ -2,7 +2,7 @@
  * common.c: Windows video output common code
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: ec4a3ebf5f391f1f505ffbf5effdac1dc237a90a $
+ * $Id: 219b816851e89ff3985efdb7c7ff1af44515941f $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -426,7 +426,7 @@ void UpdateRects(vout_display_t *vd,
     /* Apply overlay hardware constraints */
     if (sys->use_overlay)
         AlignRect(&rect_src_clipped, sys->i_align_src_boundary, sys->i_align_src_size);
-#elif defined(MODULE_NAME_IS_direct3d) || defined(MODULE_NAME_IS_direct2d)
+#elif defined(MODULE_NAME_IS_direct2d)
     /* Needed at least with YUV content */
     rect_src_clipped.left &= ~1;
     rect_src_clipped.right &= ~1;

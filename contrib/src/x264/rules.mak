@@ -28,7 +28,8 @@ X264CONF = --prefix="$(PREFIX)" --host="$(HOST)" \
 	--disable-avs \
 	--disable-lavf \
 	--disable-cli \
-	--disable-ffms
+	--disable-ffms \
+	--disable-opencl
 ifndef HAVE_WIN32
 X264CONF += --enable-pic
 else

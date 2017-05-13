@@ -2,7 +2,7 @@
  * misc.m: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003-2014 VLC authors and VideoLAN
- * $Id: 9eae3ae364a01e458fc14900a14fbfbcbe1cfd20 $
+ * $Id: e48b46bb8d755fffda85cd3caa10edc356da0723 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -407,7 +407,7 @@ static bool b_old_spaces_style = YES;
         NSRect frameRect = [self bounds];
 
         [[NSColor selectedControlColor] set];
-        NSFrameRectWithWidthUsingOperation(frameRect, 2., NSCompositeHighlight);
+        NSFrameRectWithWidthUsingOperation(frameRect, 2., NSCompositeSourceOver);
     }
 
     [super drawRect:dirtyRect];
