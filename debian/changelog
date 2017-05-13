@@ -1,8 +1,12 @@
-vlc (2.2.5.1-1) UNRELEASED; urgency=medium
+vlc (2.2.5.1-1) experimental; urgency=medium
 
+  [ Mateusz Łukasik ]
   * New upstream release.
 
- -- Mateusz Łukasik <mati75@linuxmint.pl>  Mon, 08 May 2017 20:00:46 +0200
+  [ Sebastian Ramacher ]
+  * debian/patches: Refreshed.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 13 May 2017 15:04:10 +0200
 
 vlc (2.2.5-4) experimental; urgency=medium
 
