@@ -370,8 +370,8 @@ Depends: ${misc:Depends},
          vlc-plugin-qt (= ${binary:Version})
 Recommends: vlc-bin
 Enhances: vlc
-Breaks: vlc (<< 2.2.4-10~), vlc-data (<< 2.2.5.1-1~deb9u1)
-Replaces: vlc (<< 2.2.4-10~), vlc-data (<< 2.2.5.1-1~deb9u1)
+Breaks: vlc (<< 2.2.5.1-1~deb9u1), vlc-data (<< 2.2.5.1-1~deb9u1)
+Replaces: vlc (<< 2.2.5.1-1~deb9u1), vlc-data (<< 2.2.5.1-1~deb9u1)
 Description: multimedia player and streamer (Skins2 plugin)
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
@@ -385,8 +385,8 @@ Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Recommends: vlc-bin
-Breaks: vlc (<< 2.2.4-10~)
-Replaces: vlc (<< 2.2.4-10~)
+Breaks: vlc (<< 2.2.5.1-1~deb9u1)
+Replaces: vlc (<< 2.2.5.1-1~deb9u1)
 Description: multimedia player and streamer (Qt plugin)
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
