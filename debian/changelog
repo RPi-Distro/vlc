@@ -1,3 +1,10 @@
+vlc (2.2.6-1) UNRELEASED; urgency=medium
+
+  * New upstream release.
+    - demuxer: Fix heap buffer overflows (CVE-2017-8312).
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 24 May 2017 17:35:12 +0200
+
 vlc (2.2.5.1-1) experimental; urgency=medium
 
   [ Mateusz Łukasik ]
