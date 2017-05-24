@@ -2,7 +2,7 @@
  * direct3d.c: Windows Direct3D video output module
  *****************************************************************************
  * Copyright (C) 2006-2014 VLC authors and VideoLAN
- *$Id: f395fad23686b5e71c76b66bbc6036767669f5e4 $
+ *$Id: 98e9eef368bd4472392f95e979079b40a4d73e45 $
  *
  * Authors: Damien Fouilleul <damienf@videolan.org>,
  *          Sasha Koruga <skoruga@gmail.com>,
@@ -1399,7 +1399,6 @@ static void Direct3DSetupVertices(CUSTOMVERTEX *vertices,
         { dst.right, dst.bottom },
         { dst.left,  dst.bottom },
     };
-    bool has_src = src != NULL && src_clipped != NULL;
 
     /* Compute index remapping necessary to implement the rotation. */
     int vertex_order[4];
@@ -1410,17 +1409,22 @@ static void Direct3DSetupVertices(CUSTOMVERTEX *vertices,
         vertices[i].y  = vertices_coords[vertex_order[i]][1];
     }
 
-    vertices[0].tu = .0f;
-    vertices[0].tv = .0f;
+    float right = (float)src_clipped->right / (float)src->right;
+    float left = (float)src_clipped->left / (float)src->right;
+    float top = (float)src_clipped->top / (float)src->bottom;
+    float bottom = (float)src_clipped->bottom / (float)src->bottom;
 
-    vertices[1].tu = has_src ? (float)src_clipped->right / (float)src->right : 1.0f;
-    vertices[1].tv = .0f;
+    vertices[0].tu = left;
+    vertices[0].tv = top;
 
-    vertices[2].tu = has_src ? (float)src_clipped->right / (float)src->right : 1.0f;
-    vertices[2].tv = has_src ? ((float)src_clipped->bottom) / (float)src->bottom : 1.0f;
+    vertices[1].tu = right;
+    vertices[1].tv = top;
 
-    vertices[3].tu = .0f;
-    vertices[3].tv = has_src ? ((float)src_clipped->bottom) / (float)src->bottom : 1.0f;
+    vertices[2].tu = right;
+    vertices[2].tv = bottom;
+
+    vertices[3].tu = left;
+    vertices[3].tv = bottom;
 
     for (int i = 0; i < 4; i++) {
         /* -0.5f is a "feature" of DirectX and it seems to apply to Direct3d also */
@@ -1459,7 +1463,14 @@ static int Direct3DImportPicture(vout_display_t *vd,
 
     /* Copy picture surface into texture surface
      * color space conversion happen here */
-    hr = IDirect3DDevice9_StretchRect(sys->d3ddev, source, &vd->sys->rect_src, destination, NULL, D3DTEXF_NONE );
+    RECT copy_rect = vd->sys->rect_src_clipped;
+    // On nVidia & AMD, StretchRect will fail if the visible size isn't even.
+    // When copying the entire buffer, the margin end up being blended in the actual picture
+    // on nVidia (regardless of even/odd dimensions)
+    if ( copy_rect.right & 1 ) copy_rect.right++;
+    if ( copy_rect.bottom & 1 ) copy_rect.bottom++;
+    hr = IDirect3DDevice9_StretchRect(sys->d3ddev, source, &copy_rect, destination,
+                                      &copy_rect, D3DTEXF_NONE);
     IDirect3DSurface9_Release(destination);
     if (FAILED(hr)) {
         msg_Dbg(vd, "%s:%d (hr=0x%0lX)", __FUNCTION__, __LINE__, hr);
@@ -1579,12 +1590,24 @@ static void Direct3DImportSubpicture(vout_display_t *vd,
 
         RECT dst;
         dst.left   = video.left + scale_w * r->i_x,
-        dst.right  = dst.left + scale_w * r->fmt.i_width,
+        dst.right  = dst.left + scale_w * r->fmt.i_visible_width,
         dst.top    = video.top  + scale_h * r->i_y,
-        dst.bottom = dst.top  + scale_h * r->fmt.i_height,
-        Direct3DSetupVertices(d3dr->vertex, NULL, NULL,
-                              dst,
-                              subpicture->i_alpha * r->i_alpha / 255, ORIENT_NORMAL);
+        dst.bottom = dst.top  + scale_h * r->fmt.i_visible_height;
+
+        RECT src;
+        src.left = 0;
+        src.right = r->fmt.i_width;
+        src.top = 0;
+        src.bottom = r->fmt.i_height;
+
+        RECT src_clipped;
+        src_clipped.left = r->fmt.i_x_offset;
+        src_clipped.right = r->fmt.i_x_offset + r->fmt.i_visible_width;
+        src_clipped.top = r->fmt.i_y_offset;
+        src_clipped.bottom = r->fmt.i_y_offset + r->fmt.i_visible_height;
+
+        Direct3DSetupVertices(d3dr->vertex, &src, &src_clipped,
+                              dst, subpicture->i_alpha * r->i_alpha / 255, ORIENT_NORMAL);
     }
 }
 
