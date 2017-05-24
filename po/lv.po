@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-04-28 03:55+0200\n"
+"POT-Creation-Date: 2017-05-24 15:01+0200\n"
 "PO-Revision-Date: 2016-02-27 16:59+0000\n"
 "Last-Translator: Ingmārs Dīriņš <melhiors14@gmail.com>\n"
 "Language-Team: Latvian (http://www.transifex.com/yaron/vlc-trans/language/"
@@ -95,6 +95,7 @@ msgstr "Karsto taustiņu iestatījumi"
 #: modules/services_discovery/mediadirs.c:76 modules/stream_out/es.c:93
 #: modules/stream_out/transcode/transcode.c:183
 #: share/lua/http/dialogs/create_stream.html:150
+#: modules/gui/qt4/ui/profiles.h:721 modules/gui/qt4/ui/profiles.h:752
 msgid "Audio"
 msgstr "Audio"
 
@@ -107,6 +108,7 @@ msgid "General audio settings"
 msgstr "Pamata audio iestatījumi"
 
 #: include/vlc_config_cat.h:58 include/vlc_config_cat.h:79
+#: modules/gui/qt4/ui/profiles.h:750 modules/gui/qt4/ui/profiles.h:760
 msgid "Filters"
 msgstr "Filtri"
 
@@ -153,6 +155,8 @@ msgstr "Dažādi audio iestatījumi un moduļi."
 #: modules/services_discovery/mediadirs.c:69 modules/stream_out/es.c:101
 #: modules/stream_out/transcode/transcode.c:154
 #: share/lua/http/dialogs/create_stream.html:147
+#: modules/gui/qt4/ui/profiles.h:722 modules/gui/qt4/ui/profiles.h:726
+#: modules/gui/qt4/ui/sprefs_video.h:334
 msgid "Video"
 msgstr "Video"
 
@@ -390,6 +394,7 @@ msgstr ""
 "vienumus atskaņošanas sarakstam."
 
 #: include/vlc_config_cat.h:178 src/libvlc-module.c:1790
+#: modules/gui/qt4/ui/video_effects.h:1495
 msgid "Advanced"
 msgstr "Paplašināti"
 
@@ -474,7 +479,7 @@ msgstr "Par"
 #: modules/gui/macosx/MainMenu.m:1308 modules/gui/macosx/MainMenu.m:1309
 #: modules/gui/macosx/MainMenu.m:1310 modules/gui/macosx/playlist.m:583
 #: modules/gui/qt4/components/controller.hpp:115
-#: modules/gui/qt4/dialogs/vlm.cpp:546
+#: modules/gui/qt4/dialogs/vlm.cpp:546 modules/gui/qt4/ui/open.h:243
 msgid "Play"
 msgstr "Atskaņot"
 
@@ -565,6 +570,7 @@ msgid "Search"
 msgstr "Meklēt"
 
 #: include/vlc_intf_strings.h:99 modules/gui/macosx/VideoEffects.m:157
+#: modules/gui/qt4/ui/video_effects.h:1479
 msgid "Waves"
 msgstr "Viļņi"
 
@@ -688,7 +694,9 @@ msgstr "Stereo"
 #: modules/gui/macosx/VideoEffects.m:167 modules/gui/macosx/VideoEffects.m:189
 #: modules/video_filter/audiobargraph_v.c:64 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
-#: modules/video_filter/rss.c:173
+#: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1407
+#: modules/gui/qt4/ui/video_effects.h:1450
+#: modules/gui/qt4/ui/video_effects.h:1460
 msgid "Left"
 msgstr "Kreisais"
 
@@ -701,7 +709,7 @@ msgstr "Kreisais"
 #: modules/gui/macosx/VideoEffects.m:169 modules/gui/macosx/VideoEffects.m:191
 #: modules/video_filter/audiobargraph_v.c:64 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
-#: modules/video_filter/rss.c:173
+#: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1408
 msgid "Right"
 msgstr "Labais"
 
@@ -923,6 +931,8 @@ msgstr "Pārlūka apturēšana"
 
 #: src/config/keys.c:66 modules/gui/macosx/playlist.m:584
 #: modules/gui/qt4/dialogs/bookmarks.cpp:50
+#: modules/gui/qt4/ui/podcast_configuration.h:104
+#: modules/gui/qt4/ui/streampanel.h:172
 msgid "Delete"
 msgstr "Delete"
 
@@ -1274,12 +1284,14 @@ msgstr "Oriģinālais ID"
 #: src/input/es_out.c:2911 src/input/es_out.c:2914 modules/access/imem.c:67
 #: modules/gui/macosx/ConvertAndSave.m:177
 #: modules/gui/macosx/ConvertAndSave.m:187 modules/gui/macosx/wizard.m:382
+#: modules/gui/qt4/ui/profiles.h:728 modules/gui/qt4/ui/profiles.h:754
+#: modules/gui/qt4/ui/profiles.h:763
 msgid "Codec"
 msgstr "Kodeks"
 
 #: src/input/es_out.c:2918 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/MainMenu.m:80 modules/gui/macosx/simple_prefs.m:380
-#: modules/stream_out/setid.c:49
+#: modules/stream_out/setid.c:49 modules/gui/qt4/ui/sprefs_interface.h:517
 msgid "Language"
 msgstr "Valoda"
 
@@ -1290,7 +1302,7 @@ msgid "Description"
 msgstr "Apraksts"
 
 #: src/input/es_out.c:2930 modules/gui/macosx/ConvertAndSave.m:189
-#: modules/gui/macosx/output.m:167
+#: modules/gui/macosx/output.m:167 modules/gui/qt4/ui/profiles.h:756
 msgid "Channels"
 msgstr "Kanāli"
 
@@ -1311,7 +1323,8 @@ msgstr "Biti uz nolasi"
 #: src/input/es_out.c:2950 modules/access_output/shout.c:92
 #: modules/demux/playlist/shoutcast.c:335
 #: modules/gui/macosx/ConvertAndSave.m:178
-#: modules/gui/macosx/ConvertAndSave.m:188
+#: modules/gui/macosx/ConvertAndSave.m:188 modules/gui/qt4/ui/profiles.h:729
+#: modules/gui/qt4/ui/profiles.h:755
 msgid "Bitrate"
 msgstr "Bitu pārraides ātrums"
 
@@ -1334,6 +1347,7 @@ msgid "%.2f dB"
 msgstr "%.2f dB"
 
 #: src/input/es_out.c:2974 modules/gui/macosx/ConvertAndSave.m:180
+#: modules/gui/qt4/ui/profiles.h:749
 msgid "Resolution"
 msgstr "Izšķirtspēja"
 
@@ -1382,6 +1396,7 @@ msgstr ""
 #: modules/gui/macosx/playlistinfo.m:73 modules/gui/macosx/wizard.m:345
 #: modules/gui/qt4/components/open_panels.cpp:490
 #: modules/gui/qt4/components/open_panels.cpp:504 modules/mux/asf.c:56
+#: modules/gui/qt4/ui/open_disk.h:309
 msgid "Title"
 msgstr "Virsraksts"
 
@@ -1421,6 +1436,7 @@ msgid "Setting"
 msgstr "Iestatījums"
 
 #: src/input/meta.c:65 modules/gui/macosx/open.m:179
+#: modules/gui/qt4/ui/podcast_configuration.h:102
 msgid "URL"
 msgstr "URL"
 
@@ -1479,7 +1495,7 @@ msgstr "Programmas"
 
 #: src/input/var.c:182 modules/gui/macosx/MainMenu.m:420
 #: modules/gui/macosx/MainMenu.m:421 modules/gui/macosx/open.m:170
-#: modules/gui/macosx/open.m:172
+#: modules/gui/macosx/open.m:172 modules/gui/qt4/ui/open_disk.h:310
 msgid "Chapter"
 msgstr "Nodaļa"
 
@@ -1724,7 +1740,7 @@ msgstr ""
 "atlasīt labāko pieejamo metodi."
 
 #: src/libvlc-module.c:131 modules/gui/macosx/simple_prefs.m:335
-#: modules/stream_out/display.c:40
+#: modules/stream_out/display.c:40 modules/gui/qt4/ui/sprefs_audio.h:426
 msgid "Enable audio"
 msgstr "Ieslēgt audio"
 
@@ -1794,6 +1810,7 @@ msgstr ""
 "kura tiek atskaņota)."
 
 #: src/libvlc-module.c:164 modules/gui/macosx/simple_prefs.m:341
+#: modules/gui/qt4/ui/sprefs_audio.h:434
 msgid "Use S/PDIF when available"
 msgstr "Lieto S/PDIF, kad pieejams"
 
@@ -1827,6 +1844,7 @@ msgstr ""
 #: modules/gui/qt4/components/simple_preferences.cpp:136
 #: modules/gui/qt4/components/sout/profile_selector.cpp:563
 #: modules/video_output/kva.c:62 modules/video_output/xcb/xvideo.c:870
+#: modules/gui/qt4/ui/profiles.h:744 modules/gui/qt4/ui/profiles.h:747
 msgid "Auto"
 msgstr "Automātiski"
 
@@ -1943,7 +1961,7 @@ msgstr ""
 "atlasīt labāko pieejamo metodi."
 
 #: src/libvlc-module.c:247 modules/gui/macosx/simple_prefs.m:422
-#: modules/stream_out/display.c:42
+#: modules/stream_out/display.c:42 modules/gui/qt4/ui/sprefs_video.h:321
 msgid "Enable video"
 msgstr "Ieslēgt video"
 
@@ -2048,7 +2066,9 @@ msgstr "Centrā"
 #: modules/gui/macosx/VideoEffects.m:171 modules/gui/macosx/VideoEffects.m:193
 #: modules/video_filter/audiobargraph_v.c:64 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
-#: modules/video_filter/rss.c:173
+#: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1405
+#: modules/gui/qt4/ui/video_effects.h:1448
+#: modules/gui/qt4/ui/video_effects.h:1459
 msgid "Top"
 msgstr "Virspusē"
 
@@ -2057,7 +2077,7 @@ msgstr "Virspusē"
 #: modules/gui/macosx/VideoEffects.m:173 modules/gui/macosx/VideoEffects.m:195
 #: modules/video_filter/audiobargraph_v.c:64 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
-#: modules/video_filter/rss.c:173
+#: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1409
 msgid "Bottom"
 msgstr "Apakšpusē"
 
@@ -2146,6 +2166,7 @@ msgstr ""
 "atveidot video tieši). VLC mēģinās to lietot pēc noklusējuma."
 
 #: src/libvlc-module.c:309 src/video_output/vout_intf.c:276
+#: modules/gui/qt4/ui/sprefs_video.h:326
 msgid "Always on top"
 msgstr "Vienmēr virspusē"
 
@@ -2267,6 +2288,7 @@ msgstr ""
 "lai izvairītos no datora iemigšanas dēļ neaktivitātes."
 
 #: src/libvlc-module.c:372 modules/gui/macosx/simple_prefs.m:424
+#: modules/gui/qt4/ui/sprefs_video.h:327
 msgid "Window decorations"
 msgstr "Logu dekorācijas"
 
@@ -2624,6 +2646,7 @@ msgstr "Noklusējuma"
 #: src/libvlc-module.c:538 modules/gui/macosx/AudioEffects.m:112
 #: modules/gui/macosx/MainWindow.m:1086 modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/extended_panels.cpp:1053
+#: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:289
 msgid "Enable"
 msgstr "Ieslēgt"
 
@@ -2693,7 +2716,7 @@ msgstr ""
 "Pakalpojuma IDiem (SID). Lietojiet šo opciju tikai, ja jūs gribat nolasīt "
 "vairāk-programmu straumi (piemēram, kā DVB straumes)."
 
-#: src/libvlc-module.c:576
+#: src/libvlc-module.c:576 modules/gui/qt4/ui/open_disk.h:312
 msgid "Audio track"
 msgstr "Audio celiņš"
 
@@ -2701,7 +2724,7 @@ msgstr "Audio celiņš"
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "Straumes numurs audio celiņam, kuru lietot (no 0 līdz n)."
 
-#: src/libvlc-module.c:581
+#: src/libvlc-module.c:581 modules/gui/qt4/ui/open_disk.h:313
 msgid "Subtitle track"
 msgstr "Subtitra celiņš"
 
@@ -2892,6 +2915,7 @@ msgstr ""
 "nobīde},{...}\""
 
 #: src/libvlc-module.c:665 modules/gui/macosx/simple_prefs.m:357
+#: modules/gui/qt4/ui/sprefs_input.h:355
 msgid "Record directory or filename"
 msgstr "Ierakstīt datņu katalogu vai datnes nosaukumu"
 
@@ -2960,7 +2984,7 @@ msgstr ""
 "filtrus šeit un konfigurējiet tos \"apakšavotu filtru\" moduļu sadaļā. Jūs "
 "varat arī iestatīt daudzas dažādas apakšbilžu opcijas."
 
-#: src/libvlc-module.c:697
+#: src/libvlc-module.c:697 modules/gui/qt4/ui/sprefs_subtitles.h:305
 msgid "Force subtitle position"
 msgstr "Piespiest subtitru novietojumu"
 
@@ -2983,6 +3007,7 @@ msgstr "Jūs varat pilnībā izslēgt apakšbilžu apstrādāšanu."
 #: src/libvlc-module.c:706 src/libvlc-module.c:1621 src/text/iso-639_def.h:145
 #: modules/gui/macosx/simple_prefs.m:411
 #: modules/stream_out/transcode/transcode.c:212
+#: modules/gui/qt4/ui/sprefs_subtitles.h:290
 msgid "On Screen Display"
 msgstr "Attēlojums uz ekrāna (OSD)"
 
@@ -3737,7 +3762,7 @@ msgstr "VLC ir palaists no datnes asociācijas"
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr "Pateikt VLC, ka tas tika palaists dēļ datnes asociācijas iekš OS"
 
-#: src/libvlc-module.c:1085
+#: src/libvlc-module.c:1085 modules/gui/qt4/ui/sprefs_interface.h:538
 msgid "Use only one instance when started from file manager"
 msgstr "Lietot tikai vienu instanci, kad sākts no datņu pārvaldnieka"
 
@@ -3761,7 +3786,7 @@ msgstr ""
 "padarīt visu sistēmu nereaģējošu, kas varētu pieprasīt jūsu mašīnas "
 "atsāknēšanu."
 
-#: src/libvlc-module.c:1097
+#: src/libvlc-module.c:1097 modules/gui/qt4/ui/sprefs_interface.h:541
 msgid "Enqueue items into playlist in one instance mode"
 msgstr "Ierindot vienumus iekšā atskaņošanas sarakstā vienas instances režīmā"
 
@@ -3795,6 +3820,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1116 modules/gui/macosx/simple_prefs.m:391
 #: modules/gui/qt4/dialogs/firstrun.cpp:98
+#: modules/gui/qt4/ui/sprefs_interface.h:551
 msgid "Allow metadata network access"
 msgstr "Atļaut metadatu tīkla piekļuvi"
 
@@ -3893,7 +3919,7 @@ msgstr ""
 "Mediju bibliotēka tiek automātiski saglabāta un pārlādēta katru reizi, kad "
 "jūs sākat VLC."
 
-#: src/libvlc-module.c:1161
+#: src/libvlc-module.c:1161 modules/gui/qt4/ui/sprefs_interface.h:539
 msgid "Display playlist tree"
 msgstr "Attēlot atskaņošanas saraksta koku"
 
@@ -3940,6 +3966,7 @@ msgstr ""
 #: modules/gui/macosx/MainMenu.m:1616 modules/gui/macosx/MainMenu.m:1626
 #: modules/gui/macosx/simple_prefs.m:423
 #: modules/gui/qt4/components/controller.hpp:116
+#: modules/gui/qt4/ui/sprefs_video.h:323
 msgid "Fullscreen"
 msgstr "Pilnekrāna"
 
@@ -4030,6 +4057,7 @@ msgstr "Lēnāk (smalki)"
 #: modules/gui/macosx/wizard.m:1559
 #: modules/gui/qt4/components/controller.hpp:120
 #: modules/gui/qt4/dialogs/sout.cpp:93 modules/notify/notify.c:339
+#: modules/gui/qt4/ui/streampanel.h:181
 msgid "Next"
 msgstr "Nākošais"
 
@@ -4058,7 +4086,7 @@ msgstr ""
 #: modules/gui/macosx/MainMenu.m:398 modules/gui/macosx/MainMenu.m:504
 #: modules/gui/macosx/MainMenu.m:511 modules/gui/macosx/MainMenu.m:1566
 #: modules/gui/qt4/components/controller.hpp:115
-#: modules/gui/qt4/dialogs/vlm.cpp:552
+#: modules/gui/qt4/dialogs/vlm.cpp:552 modules/gui/qt4/ui/streampanel.h:180
 msgid "Stop"
 msgstr "Apturēt"
 
@@ -4069,7 +4097,8 @@ msgstr "Atlasiet karsto taustiņu, lai pārtrauktu atskaņošanu. "
 #: src/libvlc-module.c:1215 modules/gui/macosx/ControlsBar.m:67
 #: modules/gui/macosx/fspanel.m:448 modules/gui/macosx/VideoEffects.m:163
 #: modules/gui/macosx/VideoEffects.m:185 modules/video_filter/marq.c:150
-#: modules/video_filter/rss.c:200
+#: modules/video_filter/rss.c:200 modules/gui/qt4/ui/sprefs_subtitles.h:293
+#: modules/gui/qt4/ui/video_effects.h:1456
 msgid "Position"
 msgstr "Novietojums"
 
@@ -4741,6 +4770,8 @@ msgstr "Apakšbildes"
 #: modules/demux/xiph_metadata.h:62 modules/gui/macosx/ConvertAndSave.m:173
 #: modules/gui/macosx/ConvertAndSave.m:191 modules/gui/macosx/MainMenu.m:459
 #: share/lua/http/dialogs/create_stream.html:153
+#: modules/gui/qt4/ui/profiles.h:718 modules/gui/qt4/ui/profiles.h:762
+#: modules/gui/qt4/ui/profiles.h:765
 msgid "Subtitles"
 msgstr "Subtitri"
 
@@ -5692,7 +5723,7 @@ msgstr "Mērogošanas faktors"
 
 #: src/video_output/vout_intf.c:220 modules/gui/macosx/MainMenu.m:448
 #: modules/gui/macosx/MainMenu.m:449 modules/gui/macosx/VideoEffects.m:80
-#: modules/video_filter/croppadd.c:86
+#: modules/video_filter/croppadd.c:86 modules/gui/qt4/ui/video_effects.h:1415
 msgid "Crop"
 msgstr "Apcirpt"
 
@@ -5821,6 +5852,7 @@ msgstr ""
 "pareizu reģiona kodu."
 
 #: modules/access/bluray.c:87 modules/services_discovery/udev.c:597
+#: modules/gui/qt4/ui/open_disk.h:299
 msgid "Blu-ray"
 msgstr "Blu-ray"
 
@@ -5895,6 +5927,7 @@ msgid "First Play"
 msgstr "Pirmā atskaņošana"
 
 #: modules/access/cdda.c:62 modules/gui/macosx/open.m:160
+#: modules/gui/qt4/ui/open_disk.h:300
 msgid "Audio CD"
 msgstr "Audio CD"
 
@@ -7009,7 +7042,7 @@ msgstr "Datnes ievade"
 msgid "File"
 msgstr "Datne"
 
-#: modules/access/fs.c:72
+#: modules/access/fs.c:72 modules/gui/qt4/ui/sprefs_video.h:339
 msgid "Directory"
 msgstr "Datņu katalogs"
 
@@ -7237,6 +7270,7 @@ msgstr "Audio elementārās straumes kanālu skaits"
 #: modules/gui/qt4/components/extended_panels.cpp:1432
 #: modules/video_filter/mosaic.c:94 modules/video_output/vmem.c:42
 #: share/lua/http/dialogs/mosaic_window.html:108
+#: modules/gui/qt4/ui/profiles.h:743
 msgid "Width"
 msgstr "Platums"
 
@@ -7248,6 +7282,7 @@ msgstr "Video vai subtitru elementārās straumes platums"
 #: modules/demux/rawvid.c:52 modules/gui/macosx/ConvertAndSave.m:183
 #: modules/video_filter/mosaic.c:92 modules/video_output/vmem.c:45
 #: share/lua/http/dialogs/mosaic_window.html:126
+#: modules/gui/qt4/ui/profiles.h:746
 msgid "Height"
 msgstr "Augstums"
 
@@ -8559,6 +8594,7 @@ msgstr "Atstatīt vadīklas uz noklusējumiem."
 
 #: modules/access/v4l2/v4l2.c:84 modules/gui/macosx/VideoEffects.m:90
 #: modules/video_filter/atmo/atmo.cpp:256
+#: modules/gui/qt4/ui/video_effects.h:1393
 msgid "Brightness"
 msgstr "Spilgtums"
 
@@ -8575,6 +8611,7 @@ msgid "Automatically adjust the picture brightness."
 msgstr "Automātiski pielāgot bildes spilgtumu."
 
 #: modules/access/v4l2/v4l2.c:89 modules/gui/macosx/VideoEffects.m:89
+#: modules/gui/qt4/ui/video_effects.h:1395
 msgid "Contrast"
 msgstr "Kontrasts"
 
@@ -8584,6 +8621,8 @@ msgstr "Bildes kontrasta vai luma ieguvums."
 
 #: modules/access/v4l2/v4l2.c:91 modules/gui/macosx/VideoEffects.m:92
 #: modules/gui/macosx/VideoEffects.m:132
+#: modules/gui/qt4/ui/video_effects.h:1396
+#: modules/gui/qt4/ui/video_effects.h:1428
 msgid "Saturation"
 msgstr "Piesātinājums"
 
@@ -8592,6 +8631,7 @@ msgid "Picture saturation or chroma gain."
 msgstr "Bildes piesātinājuma vai krāsainības ieguvums."
 
 #: modules/access/v4l2/v4l2.c:93 modules/gui/macosx/VideoEffects.m:88
+#: modules/gui/qt4/ui/video_effects.h:1392
 msgid "Hue"
 msgstr "Nokrāsa"
 
@@ -8644,6 +8684,7 @@ msgid "Blue chroma balance."
 msgstr "Zilā krāsainības balanss."
 
 #: modules/access/v4l2/v4l2.c:111 modules/gui/macosx/VideoEffects.m:93
+#: modules/gui/qt4/ui/video_effects.h:1397
 msgid "Gamma"
 msgstr "Gamma"
 
@@ -8771,7 +8812,7 @@ msgid "Black & white"
 msgstr "Melns un balts"
 
 #: modules/access/v4l2/v4l2.c:164 modules/gui/macosx/VideoEffects.m:134
-#: modules/video_filter/sepia.c:65
+#: modules/video_filter/sepia.c:65 modules/gui/qt4/ui/video_effects.h:1430
 msgid "Sepia"
 msgstr "Sēpija"
 
@@ -9007,7 +9048,7 @@ msgstr "Skaļuma uzstādīšana"
 
 #: modules/access/vcdx/info.c:69 modules/gui/macosx/ControlsBar.m:497
 #: modules/gui/macosx/fspanel.m:467 modules/gui/qt4/dialogs/toolbar.cpp:448
-#: modules/stream_out/raop.c:150
+#: modules/stream_out/raop.c:150 modules/gui/qt4/ui/sprefs_audio.h:427
 msgid "Volume"
 msgstr "Skaļums"
 
@@ -9019,7 +9060,7 @@ msgstr "Sistēmas Id"
 msgid "Entries"
 msgstr "Ieraksti"
 
-#: modules/access/vcdx/info.c:75
+#: modules/access/vcdx/info.c:75 modules/gui/qt4/ui/sprefs_audio.h:442
 msgid "Tracks"
 msgstr "Celiņi"
 
@@ -12354,6 +12395,8 @@ msgstr "MP3 fiksētā punkta audio iekodētājs"
 
 #: modules/codec/speex.c:59 modules/codec/speex.c:867
 #: modules/gui/macosx/open.m:186 modules/gui/macosx/VideoEffects.m:138
+#: modules/gui/qt4/ui/sprefs_video.h:336
+#: modules/gui/qt4/ui/video_effects.h:1422
 msgid "Mode"
 msgstr "Režīms"
 
@@ -13689,6 +13732,7 @@ msgid "Quiet mode"
 msgstr "Klusais režīms"
 
 #: modules/codec/x264.c:402 modules/gui/macosx/playlistinfo.m:79
+#: modules/gui/qt4/ui/streampanel.h:170
 msgid "Statistics"
 msgstr "Statistika"
 
@@ -14927,6 +14971,7 @@ msgid "Use chapter codecs found in the segment."
 msgstr "Lietot nodaļas kodekus, atrastus segmentā."
 
 #: modules/demux/mkv/mkv.cpp:62 modules/gui/macosx/simple_prefs.m:370
+#: modules/gui/qt4/ui/sprefs_input.h:358
 msgid "Preload MKV files in the same directory"
 msgstr "Priekšielādēt MKV datnes tajā pašā datņu katalogā"
 
@@ -15272,6 +15317,7 @@ msgstr "Jaunā viļņa"
 
 #: modules/demux/mp4/id3genres.h:99 modules/gui/macosx/VideoEffects.m:158
 #: modules/video_filter/psychedelic.c:55
+#: modules/gui/qt4/ui/video_effects.h:1478
 msgid "Psychedelic"
 msgstr "Psihodēliskā"
 
@@ -16446,12 +16492,13 @@ msgstr "Atinstalēt"
 msgid "Skins"
 msgstr "Ādiņas"
 
-#: modules/gui/macosx/AudioEffects.m:113
+#: modules/gui/macosx/AudioEffects.m:113 modules/gui/qt4/ui/equalizer.h:134
 msgid "2 Pass"
 msgstr "2 cauriešanu"
 
 #: modules/gui/macosx/AudioEffects.m:114
 #: modules/gui/qt4/components/extended_panels.cpp:1246
+#: modules/gui/qt4/ui/equalizer.h:136
 msgid "Preamp"
 msgstr "Priekšpastiprinātājs"
 
@@ -16532,6 +16579,7 @@ msgstr "Ievadiet nosaukumu jaunajam profilam:"
 #: modules/gui/macosx/simple_prefs.m:376 modules/gui/macosx/simple_prefs.m:441
 #: modules/gui/macosx/VideoEffects.m:679
 #: modules/gui/qt4/components/sout/profile_selector.cpp:424
+#: modules/gui/qt4/ui/vlm.h:301
 msgid "Save"
 msgstr "Saglabāt"
 
@@ -16547,7 +16595,7 @@ msgstr "Atlasiet priekšstatījumu, kuru jūs vēlētos noņemt:"
 
 #: modules/gui/macosx/AudioEffects.m:386 modules/gui/macosx/AudioEffects.m:711
 #: modules/gui/macosx/bookmarks.m:101 modules/gui/macosx/ConvertAndSave.m:388
-#: modules/gui/macosx/VideoEffects.m:741
+#: modules/gui/macosx/VideoEffects.m:741 modules/gui/qt4/ui/open_file.h:154
 msgid "Remove"
 msgstr "Noņemt"
 
@@ -16580,12 +16628,14 @@ msgid "Bookmarks"
 msgstr "Grāmatzīmes"
 
 #: modules/gui/macosx/bookmarks.m:97
+#: modules/gui/qt4/ui/podcast_configuration.h:103 modules/gui/qt4/ui/sout.h:209
+#: modules/gui/qt4/ui/vlm.h:299
 msgid "Add"
 msgstr "Pievienot"
 
 #: modules/gui/macosx/bookmarks.m:98 modules/gui/macosx/MainMenu.m:381
 #: modules/gui/macosx/simple_prefs.m:351
-#: modules/gui/qt4/dialogs/bookmarks.cpp:53
+#: modules/gui/qt4/dialogs/bookmarks.cpp:53 modules/gui/qt4/ui/vlm.h:300
 msgid "Clear"
 msgstr "Notīrīt"
 
@@ -16883,6 +16933,9 @@ msgstr "Izvēlieties izvades atrašanās vietu"
 #: modules/gui/qt4/components/preferences_widgets.cpp:264
 #: modules/gui/qt4/components/simple_preferences.cpp:496
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:111
+#: modules/gui/qt4/ui/open.h:263 modules/gui/qt4/ui/open_disk.h:307
+#: modules/gui/qt4/ui/open_file.h:147 modules/gui/qt4/ui/sprefs_audio.h:433
+#: modules/gui/qt4/ui/sprefs_input.h:356 modules/gui/qt4/ui/sprefs_video.h:340
 msgid "Browse..."
 msgstr "Pārlūkot..."
 
@@ -16914,25 +16967,27 @@ msgstr "Pielietot"
 msgid "Save as new Profile..."
 msgstr "Saglabāt kā jaunu profilu..."
 
-#: modules/gui/macosx/ConvertAndSave.m:170
+#: modules/gui/macosx/ConvertAndSave.m:170 modules/gui/qt4/ui/profiles.h:725
 msgid "Encapsulation"
 msgstr "Iekapsulēšana"
 
 #: modules/gui/macosx/ConvertAndSave.m:171
 #: share/lua/http/dialogs/create_stream.html:160
+#: modules/gui/qt4/ui/profiles.h:751
 msgid "Video codec"
 msgstr "Video kodeks"
 
 #: modules/gui/macosx/ConvertAndSave.m:172
 #: share/lua/http/dialogs/create_stream.html:178
+#: modules/gui/qt4/ui/profiles.h:761
 msgid "Audio codec"
 msgstr "Audio kodeks"
 
-#: modules/gui/macosx/ConvertAndSave.m:176
+#: modules/gui/macosx/ConvertAndSave.m:176 modules/gui/qt4/ui/profiles.h:727
 msgid "Keep original video track"
 msgstr "Paturēt oriģinālo video celiņu"
 
-#: modules/gui/macosx/ConvertAndSave.m:181
+#: modules/gui/macosx/ConvertAndSave.m:181 modules/gui/qt4/ui/profiles.h:740
 msgid ""
 "You just need to fill one of the three following parameters, VLC will "
 "autodetect the other using the original aspect ratio"
@@ -16941,14 +16996,15 @@ msgstr ""
 "automātiski noteiks citus, lietojot oriģinālās malu proporcijas"
 
 #: modules/gui/macosx/ConvertAndSave.m:184 modules/gui/macosx/output.m:157
+#: modules/gui/qt4/ui/profiles.h:741
 msgid "Scale"
 msgstr "Mērogot"
 
-#: modules/gui/macosx/ConvertAndSave.m:186
+#: modules/gui/macosx/ConvertAndSave.m:186 modules/gui/qt4/ui/profiles.h:753
 msgid "Keep original audio track"
 msgstr "Paturēt oriģinālo audio celiņu"
 
-#: modules/gui/macosx/ConvertAndSave.m:192
+#: modules/gui/macosx/ConvertAndSave.m:192 modules/gui/qt4/ui/profiles.h:764
 msgid "Overlay subtitles on the video"
 msgstr "Pārklāt subtitrus uz video"
 
@@ -17871,7 +17927,7 @@ msgstr ""
 "ir instalēta."
 
 #: modules/gui/macosx/open.m:133 modules/gui/macosx/open.m:594
-#: modules/gui/macosx/simple_prefs.m:365
+#: modules/gui/macosx/simple_prefs.m:365 modules/gui/qt4/ui/sprefs_input.h:359
 msgid "Network"
 msgstr "Tīkls"
 
@@ -17898,7 +17954,7 @@ msgstr "Atskaņot citu mediju sinhroni"
 
 #: modules/gui/macosx/open.m:143 modules/gui/macosx/open.m:362
 #: modules/gui/macosx/simple_prefs.m:405 modules/gui/macosx/wizard.m:343
-#: modules/gui/macosx/wizard.m:411
+#: modules/gui/macosx/wizard.m:411 modules/gui/qt4/ui/sprefs_interface.h:535
 msgid "Choose..."
 msgstr "Izvēlēties..."
 
@@ -18082,6 +18138,7 @@ msgid "Subtitle encoding"
 msgstr "Subtitru iekodējums"
 
 #: modules/gui/macosx/open.m:373 modules/gui/macosx/simple_prefs.m:407
+#: modules/gui/qt4/ui/sprefs_subtitles.h:300
 msgid "Font size"
 msgstr "Šrifta izmērs"
 
@@ -18102,7 +18159,7 @@ msgid "Subtitle File"
 msgstr "Subtitru datne"
 
 #: modules/gui/macosx/open.m:667 modules/gui/macosx/open.m:742
-#: modules/gui/macosx/open.m:1553
+#: modules/gui/macosx/open.m:1553 modules/gui/qt4/ui/open_file.h:142
 msgid "Open File"
 msgstr "Atvērt datni"
 
@@ -18319,6 +18376,7 @@ msgid "Select"
 msgstr "Atlasīt"
 
 #: modules/gui/macosx/ResumeDialogController.m:44 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/qt4/ui/sprefs_interface.h:533
 msgid "Continue playback?"
 msgstr "Vai turpināt atskaņošanu?"
 
@@ -18390,7 +18448,7 @@ msgstr "Vizualizācija"
 msgid "Keep audio level between sessions"
 msgstr "Paturēt audio līmeni starp sesijām"
 
-#: modules/gui/macosx/simple_prefs.m:344
+#: modules/gui/macosx/simple_prefs.m:344 modules/gui/qt4/ui/sprefs_audio.h:429
 msgid "Always reset audio start level to:"
 msgstr "Vienmēr atstatīt audio sākuma līmeni uz:"
 
@@ -18423,7 +18481,7 @@ msgstr "Salabot AVI datnes"
 msgid "Default Caching Level"
 msgstr "Noklusētais kešošanas līmenis"
 
-#: modules/gui/macosx/simple_prefs.m:362
+#: modules/gui/macosx/simple_prefs.m:362 modules/gui/qt4/ui/open.h:248
 msgid "Caching"
 msgstr "Kešošana"
 
@@ -18480,6 +18538,7 @@ msgid "Show Fullscreen Controller"
 msgstr "Parādīt pilnekrāna kontrolieri"
 
 #: modules/gui/macosx/simple_prefs.m:387
+#: modules/gui/qt4/ui/sprefs_interface.h:542
 msgid "Privacy / Network Interaction"
 msgstr "Privātums / tīkla mijiedarbība"
 
@@ -18509,12 +18568,14 @@ msgid "Display Settings"
 msgstr "Displeja iestatījumi"
 
 #: modules/gui/macosx/simple_prefs.m:406
+#: modules/gui/qt4/ui/sprefs_subtitles.h:301
 msgid "Font color"
 msgstr "Šrifta krāsa"
 
 #: modules/gui/macosx/simple_prefs.m:408 modules/text_renderer/freetype.c:95
 #: modules/text_renderer/quartztext.c:92 modules/text_renderer/win32text.c:59
 #: modules/video_filter/marq.c:156 modules/video_filter/rss.c:206
+#: modules/gui/qt4/ui/sprefs_subtitles.h:299
 msgid "Font"
 msgstr "Šrifts"
 
@@ -18523,6 +18584,7 @@ msgid "Subtitle languages"
 msgstr "Subtitru valodas"
 
 #: modules/gui/macosx/simple_prefs.m:410
+#: modules/gui/qt4/ui/sprefs_subtitles.h:296
 msgid "Preferred subtitle language"
 msgstr "Vēlamā subtitru valoda"
 
@@ -18540,10 +18602,12 @@ msgid "Force bold"
 msgstr "Piespiest treknrakstu"
 
 #: modules/gui/macosx/simple_prefs.m:415 modules/text_renderer/freetype.c:125
+#: modules/gui/qt4/ui/sprefs_subtitles.h:303
 msgid "Outline color"
 msgstr "Kontūras krāsa"
 
 #: modules/gui/macosx/simple_prefs.m:416 modules/text_renderer/freetype.c:126
+#: modules/gui/qt4/ui/sprefs_subtitles.h:302
 msgid "Outline thickness"
 msgstr "Kontūras biezums"
 
@@ -18552,10 +18616,11 @@ msgid "Black screens in Fullscreen mode"
 msgstr "Melni ekrāni pilnekrāna režīmā"
 
 #: modules/gui/macosx/simple_prefs.m:421 modules/stream_out/display.c:53
+#: modules/gui/qt4/ui/sprefs_video.h:322
 msgid "Display"
 msgstr "Displejs"
 
-#: modules/gui/macosx/simple_prefs.m:427
+#: modules/gui/macosx/simple_prefs.m:427 modules/gui/qt4/ui/sprefs_video.h:338
 msgid "Video snapshots"
 msgstr "Video momentuzņēmumi"
 
@@ -18563,15 +18628,15 @@ msgstr "Video momentuzņēmumi"
 msgid "Folder"
 msgstr "Mape"
 
-#: modules/gui/macosx/simple_prefs.m:430
+#: modules/gui/macosx/simple_prefs.m:430 modules/gui/qt4/ui/sprefs_video.h:344
 msgid "Format"
 msgstr "Formāts"
 
-#: modules/gui/macosx/simple_prefs.m:431
+#: modules/gui/macosx/simple_prefs.m:431 modules/gui/qt4/ui/sprefs_video.h:341
 msgid "Prefix"
 msgstr "Priedēklis"
 
-#: modules/gui/macosx/simple_prefs.m:432
+#: modules/gui/macosx/simple_prefs.m:432 modules/gui/qt4/ui/sprefs_video.h:343
 msgid "Sequential numbering"
 msgstr "Secīga numerācija"
 
@@ -18756,14 +18821,16 @@ msgstr "Video efekti"
 msgid "Basic"
 msgstr "Pamata"
 
-#: modules/gui/macosx/VideoEffects.m:81
+#: modules/gui/macosx/VideoEffects.m:81 modules/gui/qt4/ui/video_effects.h:1444
 msgid "Geometry"
 msgstr "Ģeometrija"
 
 #: modules/gui/macosx/VideoEffects.m:82 modules/gui/macosx/VideoEffects.m:131
 #: modules/gui/macosx/VideoEffects.m:146 modules/gui/macosx/VideoEffects.m:149
 #: modules/video_filter/colorthres.c:54 modules/video_filter/marq.c:114
-#: modules/video_filter/rss.c:154
+#: modules/video_filter/rss.c:154 modules/gui/qt4/ui/video_effects.h:1417
+#: modules/gui/qt4/ui/video_effects.h:1423
+#: modules/gui/qt4/ui/video_effects.h:1426
 msgid "Color"
 msgstr "Krāsa"
 
@@ -18771,43 +18838,50 @@ msgstr "Krāsa"
 msgid "Image Adjust"
 msgstr "Attēla pielāgošana"
 
-#: modules/gui/macosx/VideoEffects.m:91
+#: modules/gui/macosx/VideoEffects.m:91 modules/gui/qt4/ui/video_effects.h:1394
 msgid "Brightness Threshold"
 msgstr "Spilgtuma slieksnis"
 
 #: modules/gui/macosx/VideoEffects.m:95 modules/video_filter/sharpen.c:67
+#: modules/gui/qt4/ui/video_effects.h:1398
 msgid "Sharpen"
 msgstr "Asināt"
 
-#: modules/gui/macosx/VideoEffects.m:96
+#: modules/gui/macosx/VideoEffects.m:96 modules/gui/qt4/ui/video_effects.h:1399
+#: modules/gui/qt4/ui/video_effects.h:1483
 msgid "Sigma"
 msgstr "Sigma"
 
-#: modules/gui/macosx/VideoEffects.m:97
+#: modules/gui/macosx/VideoEffects.m:97 modules/gui/qt4/ui/video_effects.h:1400
 msgid "Banding removal"
 msgstr "Joslošanās noņemšana"
 
 #: modules/gui/macosx/VideoEffects.m:98 modules/video_filter/gradfun.c:49
+#: modules/gui/qt4/ui/video_effects.h:1401
 msgid "Radius"
 msgstr "Rādiuss"
 
-#: modules/gui/macosx/VideoEffects.m:99
+#: modules/gui/macosx/VideoEffects.m:99 modules/gui/qt4/ui/video_effects.h:1402
 msgid "Film Grain"
 msgstr "Fotofilmas graudainība"
 
 #: modules/gui/macosx/VideoEffects.m:100 modules/video_filter/grain.c:53
+#: modules/gui/qt4/ui/video_effects.h:1403
 msgid "Variance"
 msgstr "Dispersija"
 
 #: modules/gui/macosx/VideoEffects.m:105
+#: modules/gui/qt4/ui/video_effects.h:1411
 msgid "Synchronize top and bottom"
 msgstr "Sinhronizēt augšu un apakšu"
 
 #: modules/gui/macosx/VideoEffects.m:106
+#: modules/gui/qt4/ui/video_effects.h:1412
 msgid "Synchronize left and right"
 msgstr "Sinhronizēt kreiso un labo"
 
 #: modules/gui/macosx/VideoEffects.m:108
+#: modules/gui/qt4/ui/video_effects.h:1437
 msgid "Transform"
 msgstr "Transformēt"
 
@@ -18836,45 +18910,57 @@ msgid "Magnification/Zoom"
 msgstr "Palielināšana/tālummainīšana"
 
 #: modules/gui/macosx/VideoEffects.m:121
+#: modules/gui/qt4/ui/video_effects.h:1440
 msgid "Puzzle game"
 msgstr "Puzles spēle"
 
 #: modules/gui/macosx/VideoEffects.m:122 modules/gui/macosx/VideoEffects.m:127
 #: share/lua/http/dialogs/mosaic_window.html:96
+#: modules/gui/qt4/ui/video_effects.h:1435
+#: modules/gui/qt4/ui/video_effects.h:1441
 msgid "Rows"
 msgstr "Rindas"
 
 #: modules/gui/macosx/VideoEffects.m:123 modules/gui/macosx/VideoEffects.m:128
 #: share/lua/http/dialogs/mosaic_window.html:114
+#: modules/gui/qt4/ui/video_effects.h:1436
+#: modules/gui/qt4/ui/video_effects.h:1442
 msgid "Columns"
 msgstr "Kolonnas"
 
 #: modules/gui/macosx/VideoEffects.m:124 modules/video_splitter/clone.c:57
+#: modules/gui/qt4/ui/video_effects.h:1493
 msgid "Clone"
 msgstr "Klonēt"
 
 #: modules/gui/macosx/VideoEffects.m:125 modules/video_splitter/clone.c:39
+#: modules/gui/qt4/ui/video_effects.h:1494
 msgid "Number of clones"
 msgstr "Klonu skaits"
 
 #: modules/gui/macosx/VideoEffects.m:126
+#: modules/gui/qt4/ui/video_effects.h:1434
 msgid "Wall"
 msgstr "Siena"
 
 #: modules/gui/macosx/VideoEffects.m:130 modules/video_filter/colorthres.c:70
+#: modules/gui/qt4/ui/video_effects.h:1425
 msgid "Color threshold"
 msgstr "Krāsu slieksnis"
 
 #: modules/gui/macosx/VideoEffects.m:133
+#: modules/gui/qt4/ui/video_effects.h:1429
 msgid "Similarity"
 msgstr "Līdzība"
 
 #: modules/gui/macosx/VideoEffects.m:135
+#: modules/gui/qt4/ui/video_effects.h:1431
 msgid "Intensity"
 msgstr "Intensitāte"
 
 #: modules/gui/macosx/VideoEffects.m:137 modules/gui/macosx/VideoEffects.m:140
 #: modules/video_filter/gradient.c:76 modules/video_filter/gradient.c:82
+#: modules/gui/qt4/ui/video_effects.h:1421
 msgid "Gradient"
 msgstr "Gradients"
 
@@ -18887,10 +18973,12 @@ msgid "Hough"
 msgstr "Hafa"
 
 #: modules/gui/macosx/VideoEffects.m:147
+#: modules/gui/qt4/ui/video_effects.h:1424
 msgid "Cartoon"
 msgstr "Animācijas filma"
 
 #: modules/gui/macosx/VideoEffects.m:148
+#: modules/gui/qt4/ui/video_effects.h:1416
 msgid "Color extraction"
 msgstr "Krāsu izvilkšana"
 
@@ -18899,6 +18987,7 @@ msgid "Invert colors"
 msgstr "Invertēt krāsas"
 
 #: modules/gui/macosx/VideoEffects.m:151 modules/video_filter/posterize.c:68
+#: modules/gui/qt4/ui/video_effects.h:1420
 msgid "Posterize"
 msgstr "Posterizācija"
 
@@ -18907,10 +18996,12 @@ msgid "Posterize level"
 msgstr "Posterizācijas līmenis"
 
 #: modules/gui/macosx/VideoEffects.m:153 modules/video_filter/motionblur.c:59
+#: modules/gui/qt4/ui/video_effects.h:1484
 msgid "Motion blur"
 msgstr "Kustības aizmiglošana"
 
 #: modules/gui/macosx/VideoEffects.m:154
+#: modules/gui/qt4/ui/video_effects.h:1485
 msgid "Factor"
 msgstr "Faktors"
 
@@ -18919,6 +19010,7 @@ msgid "Motion Detect"
 msgstr "Kustības noteikšana"
 
 #: modules/gui/macosx/VideoEffects.m:156
+#: modules/gui/qt4/ui/video_effects.h:1480
 msgid "Water effect"
 msgstr "Ūdens efekts"
 
@@ -18927,24 +19019,27 @@ msgid "Anaglyph"
 msgstr "Anaglifs"
 
 #: modules/gui/macosx/VideoEffects.m:161
+#: modules/gui/qt4/ui/video_effects.h:1455
 msgid "Add text"
 msgstr "Pievienot tekstu"
 
 #: modules/gui/macosx/VideoEffects.m:162 modules/misc/logger.c:109
-#: modules/video_filter/marq.c:87
+#: modules/video_filter/marq.c:87 modules/gui/qt4/ui/video_effects.h:1457
 msgid "Text"
 msgstr "Teksts"
 
 #: modules/gui/macosx/VideoEffects.m:183
+#: modules/gui/qt4/ui/video_effects.h:1445
 msgid "Add logo"
 msgstr "Pievienot logo"
 
 #: modules/gui/macosx/VideoEffects.m:184
+#: modules/gui/qt4/ui/video_effects.h:1446
 msgid "Logo"
 msgstr "Logo"
 
 #: modules/gui/macosx/VideoEffects.m:205 modules/stream_out/mosaic_bridge.c:128
-#: modules/video_filter/mosaic.c:87
+#: modules/video_filter/mosaic.c:87 modules/gui/qt4/ui/video_effects.h:1453
 msgid "Transparency"
 msgstr "Caurspīdīgums"
 
@@ -20365,6 +20460,7 @@ msgid "File names:"
 msgstr "Datņu nosaukumi:"
 
 #: modules/gui/qt4/components/open_panels.cpp:162
+#: modules/gui/qt4/ui/sprefs_interface.h:545
 msgid "Filter:"
 msgstr "Filtrs:"
 
@@ -20771,6 +20867,7 @@ msgid "File/Folder"
 msgstr "Datne/mape"
 
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:47
+#: modules/gui/qt4/ui/sout.h:202
 msgid "Source"
 msgstr "Avots"
 
@@ -20882,7 +20979,7 @@ msgstr "Baiti"
 msgid "Convert"
 msgstr "Pārveidot"
 
-#: modules/gui/qt4/dialogs/convert.cpp:58
+#: modules/gui/qt4/dialogs/convert.cpp:58 modules/gui/qt4/ui/sprefs_audio.h:432
 msgid "Destination file:"
 msgstr "Galamērķa datne:"
 
@@ -21004,7 +21101,7 @@ msgstr "Jā"
 msgid "&No"
 msgstr "Nē"
 
-#: modules/gui/qt4/dialogs/help.cpp:222
+#: modules/gui/qt4/dialogs/help.cpp:222 modules/gui/qt4/ui/update.h:147
 msgid "VLC media player updates"
 msgstr "VLC mediju atskaņotāja atjauninājumi"
 
@@ -21049,6 +21146,8 @@ msgid "Location:"
 msgstr "Atrašanās vieta: "
 
 #: modules/gui/qt4/dialogs/messages.cpp:79
+#: modules/gui/qt4/ui/messages_panel.h:138
+#: modules/gui/qt4/ui/messages_panel.h:142
 msgid "Messages"
 msgstr "Ziņojumi"
 
@@ -21256,6 +21355,7 @@ msgid "Website"
 msgstr "Tīmekļa vietne"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:1525
+#: modules/gui/qt4/ui/sprefs_input.h:354
 msgid "Files"
 msgstr "Datnes"
 
@@ -21365,7 +21465,7 @@ msgstr "Subtitru datnes"
 msgid "All Files"
 msgstr "Visas datnes"
 
-#: modules/gui/qt4/dialogs/sout.cpp:45
+#: modules/gui/qt4/dialogs/sout.cpp:45 modules/gui/qt4/ui/sout.h:201
 msgid "Stream Output"
 msgstr "Straumes izvade"
 
@@ -21544,6 +21644,7 @@ msgid "Repeat delay:"
 msgstr "Atkārtošanas aizture:"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:107
+#: modules/gui/qt4/ui/sprefs_interface.h:543
 msgid " days"
 msgstr " dienām"
 
@@ -23304,6 +23405,7 @@ msgid "Local drives"
 msgstr "Lokālie diski"
 
 #: modules/services_discovery/podcast.c:54
+#: modules/gui/qt4/ui/podcast_configuration.h:101
 msgid "Podcast URLs list"
 msgstr "Podraižu URL saraksts"
 
@@ -23417,7 +23519,7 @@ msgstr "Audio tveršana (ALSA)"
 msgid "CD"
 msgstr "CD"
 
-#: modules/services_discovery/udev.c:595
+#: modules/services_discovery/udev.c:595 modules/gui/qt4/ui/open_disk.h:298
 msgid "DVD"
 msgstr "DVD"
 
@@ -24842,7 +24944,7 @@ msgstr "Uzstādīt attēla gammu, starp 0.01 un 10. Noklusējas uz 1."
 msgid "Image properties filter"
 msgstr "Attēla īpašību filtrs"
 
-#: modules/video_filter/adjust.c:83
+#: modules/video_filter/adjust.c:83 modules/gui/qt4/ui/video_effects.h:1391
 msgid "Image adjust"
 msgstr "Attēla pielāgošana"
 
@@ -25212,6 +25314,7 @@ msgstr ""
 "ttyS01"
 
 #: modules/video_filter/atmo/atmo.cpp:253
+#: modules/gui/qt4/ui/video_effects.h:1467
 msgid "Edge weightning"
 msgstr "Malu svēršana"
 
@@ -25228,6 +25331,7 @@ msgid "Overall brightness of your LED stripes"
 msgstr "Jūsu LED strīpu kopējais spilgtums"
 
 #: modules/video_filter/atmo/atmo.cpp:258
+#: modules/gui/qt4/ui/video_effects.h:1470
 msgid "Darkness limit"
 msgstr "Tumšuma ierobežojums"
 
@@ -25253,6 +25357,7 @@ msgid "Sat windowing"
 msgstr "Piesātinājuma logošana"
 
 #: modules/video_filter/atmo/atmo.cpp:267
+#: modules/gui/qt4/ui/video_effects.h:1472
 msgid "Filter length (ms)"
 msgstr "Filtra garums (ms)"
 
@@ -25272,6 +25377,7 @@ msgid "How much a color has to be changed for an immediate color change."
 msgstr "Cik daudz krāsai vajag būt mainītai priekš tūlītējas krāsas maiņas."
 
 #: modules/video_filter/atmo/atmo.cpp:273
+#: modules/gui/qt4/ui/video_effects.h:1474
 msgid "Filter smoothness (%)"
 msgstr "Filtra gludums (%)"
 
@@ -25439,6 +25545,8 @@ msgid "AtmoLight Filter"
 msgstr "AtmoLight filtrs"
 
 #: modules/video_filter/atmo/atmo.cpp:360
+#: modules/gui/qt4/ui/video_effects.h:1466
+#: modules/gui/qt4/ui/video_effects.h:1475
 msgid "AtmoLight"
 msgstr "AtmoLight"
 
@@ -26013,6 +26121,7 @@ msgstr "Dinamiskā video pārklāšana"
 
 #: modules/video_filter/dynamicoverlay/dynamicoverlay.c:68
 #: share/lua/http/dialogs/create_stream.html:245
+#: modules/gui/qt4/ui/video_effects.h:1465
 msgid "Overlay"
 msgstr "Pārklāt"
 
@@ -27015,7 +27124,7 @@ msgstr "Lietot kustības sensorus"
 msgid "Rotate video filter"
 msgstr "Rotēšanas video filtrs"
 
-#: modules/video_filter/rotate.c:67
+#: modules/video_filter/rotate.c:67 modules/gui/qt4/ui/video_effects.h:1438
 msgid "Rotate"
 msgstr "Rotēt"
 
@@ -27664,7 +27773,7 @@ msgstr "GLX paplašinājums priekš OpenGL"
 msgid "iOS OpenGL video output"
 msgstr "iOS OpenGL video izvade"
 
-#: modules/video_output/kva.c:50
+#: modules/video_output/kva.c:50 modules/gui/qt4/ui/sprefs_video.h:332
 msgid "Enable a workaround for T23"
 msgstr "Ieslēgt aprisinājumu priekš T23"
 
@@ -27676,7 +27785,7 @@ msgstr ""
 "Ieslēgt šo opciju, ja tiek attēlotas diagonālās strīpas, kad loga izmērs ir "
 "vienāds ar vai mazāks par filmas izmēru."
 
-#: modules/video_output/kva.c:55
+#: modules/video_output/kva.c:55 modules/gui/qt4/ui/sprefs_video.h:333
 msgid "Video mode"
 msgstr "Video režīms"
 
@@ -27783,7 +27892,7 @@ msgstr "Ieteicamā video izvade priekš Windows Vista un vēlākām versijām"
 msgid "Direct3D video output"
 msgstr "Direct3D video izvade"
 
-#: modules/video_output/msw/directx.c:65
+#: modules/video_output/msw/directx.c:65 modules/gui/qt4/ui/sprefs_video.h:325
 msgid "Use hardware YUV->RGB conversions"
 msgstr "Lietot aparatūras YUV->RGB pārveidošanu"
 
@@ -28588,6 +28697,7 @@ msgid "Play List"
 msgstr "Atskaņot sarakstu"
 
 #: share/lua/http/dialogs/create_stream.html:156
+#: modules/gui/qt4/ui/sprefs_audio.h:430 modules/gui/qt4/ui/sprefs_video.h:328
 msgid "Output"
 msgstr "Izvade"
 
@@ -28702,7 +28812,7 @@ msgstr "Celiņa sinhronizācija"
 msgid "VLM Batch Commands"
 msgstr "VLM paketes komandas"
 
-#: share/lua/http/index.html:240
+#: share/lua/http/index.html:240 modules/gui/qt4/ui/vlm.h:298
 msgid "Loop"
 msgstr "Cikls"
 
@@ -28783,639 +28893,877 @@ msgstr ""
 msgid "Are you sure you wish to create the stream?"
 msgstr "Vai jūs esat pārliecināts, ka vēlaties izveidot straumi?"
 
-#~ msgid "Dialog"
-#~ msgstr "Dialoglodziņš"
+#: modules/gui/qt4/ui/about.h:287 modules/gui/qt4/ui/open.h:242
+#: modules/gui/qt4/ui/podcast_configuration.h:100
+msgid "Dialog"
+msgstr "Dialoglodziņš"
 
-#~ msgid "Update"
-#~ msgstr "Atjaunināt"
+#: modules/gui/qt4/ui/about.h:288 modules/gui/qt4/ui/about.h:289
+msgid "Update"
+msgstr "Atjaunināt"
 
-#~ msgid "Form"
-#~ msgstr "Forma"
+#: modules/gui/qt4/ui/equalizer.h:132 modules/gui/qt4/ui/open_disk.h:296
+#: modules/gui/qt4/ui/open_net.h:96 modules/gui/qt4/ui/sprefs_audio.h:425
+#: modules/gui/qt4/ui/sprefs_input.h:345
+#: modules/gui/qt4/ui/sprefs_interface.h:516
+#: modules/gui/qt4/ui/sprefs_subtitles.h:289
+#: modules/gui/qt4/ui/sprefs_video.h:320 modules/gui/qt4/ui/streampanel.h:167
+msgid "Form"
+msgstr "Forma"
 
-#~ msgid "Preset"
-#~ msgstr "Priekšstatījums"
+#: modules/gui/qt4/ui/equalizer.h:135
+msgid "Preset"
+msgstr "Priekšstatījums"
 
-#~ msgid "0.00 dB"
-#~ msgstr "0.00 dB"
+#: modules/gui/qt4/ui/equalizer.h:137
+msgid "0.00 dB"
+msgstr "0.00 dB"
 
-#~ msgid "&Verbosity:"
-#~ msgstr "Runīgums:"
+#: modules/gui/qt4/ui/messages_panel.h:139
+msgid "&Verbosity:"
+msgstr "Runīgums:"
 
-#~ msgid "&Filter:"
-#~ msgstr "Filtrs:"
+#: modules/gui/qt4/ui/messages_panel.h:140
+msgid "&Filter:"
+msgstr "Filtrs:"
 
-#~ msgid "&Save as..."
-#~ msgstr "Saglabāt kā..."
+#: modules/gui/qt4/ui/messages_panel.h:141
+msgid "&Save as..."
+msgstr "Saglabāt kā..."
 
-#~ msgid "Modules Tree"
-#~ msgstr "Moduļu koks"
+#: modules/gui/qt4/ui/messages_panel.h:143
+msgid "Modules Tree"
+msgstr "Moduļu koks"
 
-#~ msgid "Show extended options"
-#~ msgstr "Parādīt paplašinātas opcijas"
+#: modules/gui/qt4/ui/open.h:245
+msgid "Show extended options"
+msgstr "Parādīt paplašinātas opcijas"
 
-#~ msgid "Show &more options"
-#~ msgstr "Parādīt vairāk opciju"
+#: modules/gui/qt4/ui/open.h:247
+msgid "Show &more options"
+msgstr "Parādīt vairāk opciju"
 
-#~ msgid "Change the caching for the media"
-#~ msgstr "Mainīt mediju kešošanu"
+#: modules/gui/qt4/ui/open.h:250
+msgid "Change the caching for the media"
+msgstr "Mainīt mediju kešošanu"
 
-#~ msgid " ms"
-#~ msgstr " ms"
+#: modules/gui/qt4/ui/open.h:252
+msgid " ms"
+msgstr " ms"
 
-#~ msgid "MRL"
-#~ msgstr "MRL"
+#: modules/gui/qt4/ui/open.h:253
+msgid "MRL"
+msgstr "MRL"
 
-#~ msgid "Start Time"
-#~ msgstr "Sākuma laiks"
+#: modules/gui/qt4/ui/open.h:254
+msgid "Start Time"
+msgstr "Sākuma laiks"
 
-#~ msgid "Edit Options"
-#~ msgstr "Rediģēt opcijas"
+#: modules/gui/qt4/ui/open.h:255
+msgid "Edit Options"
+msgstr "Rediģēt opcijas"
 
-#~ msgid "Extra media"
-#~ msgstr "Papildus mediji"
+#: modules/gui/qt4/ui/open.h:256
+msgid "Extra media"
+msgstr "Papildus mediji"
 
-#~ msgid "Complete MRL for VLC internal"
-#~ msgstr "Pilnīgais MRL priekš VLC iekšēji"
+#: modules/gui/qt4/ui/open.h:258
+msgid "Complete MRL for VLC internal"
+msgstr "Pilnīgais MRL priekš VLC iekšēji"
 
-#~ msgid "Select the file"
-#~ msgstr "Atlasīt datni"
+#: modules/gui/qt4/ui/open.h:261
+msgid "Select the file"
+msgstr "Atlasīt datni"
 
-#~ msgid "Change the start time for the media"
-#~ msgstr "Mainīt sākuma laiku priekš medija"
+#: modules/gui/qt4/ui/open.h:265
+msgid "Change the start time for the media"
+msgstr "Mainīt sākuma laiku priekš medija"
 
-#~ msgid "HH'H':mm'm':ss's'.zzz"
-#~ msgstr "HH'H':mm'm':ss's'.zzz"
+#: modules/gui/qt4/ui/open.h:267
+msgid "HH'H':mm'm':ss's'.zzz"
+msgstr "HH'H':mm'm':ss's'.zzz"
 
-#~ msgid "Play another media synchronously (extra audio file, ...)"
-#~ msgstr "Atskaņot citu mediju sinhroni (papildu audio datni, ...)"
+#: modules/gui/qt4/ui/open.h:268
+msgid "Play another media synchronously (extra audio file, ...)"
+msgstr "Atskaņot citu mediju sinhroni (papildu audio datni, ...)"
 
-#~ msgid "Capture mode"
-#~ msgstr "Tveršanas režīms"
+#: modules/gui/qt4/ui/open_capture.h:97
+msgid "Capture mode"
+msgstr "Tveršanas režīms"
 
-#~ msgid "Select the capture device type"
-#~ msgstr "Izvēlieties tveršanas ierīces tipu"
+#: modules/gui/qt4/ui/open_capture.h:99
+msgid "Select the capture device type"
+msgstr "Izvēlieties tveršanas ierīces tipu"
 
-#~ msgid "Device Selection"
-#~ msgstr "Ierīces izvēle"
+#: modules/gui/qt4/ui/open_capture.h:101
+msgid "Device Selection"
+msgstr "Ierīces izvēle"
 
-#~ msgid "Options"
-#~ msgstr "Opcijas"
+#: modules/gui/qt4/ui/open_capture.h:102
+msgid "Options"
+msgstr "Opcijas"
 
-#~ msgid "Access advanced options to tweak the device"
-#~ msgstr "Piekļūt paplašinātām opcijām, lai piedarītu ierīci"
+#: modules/gui/qt4/ui/open_capture.h:104
+msgid "Access advanced options to tweak the device"
+msgstr "Piekļūt paplašinātām opcijām, lai piedarītu ierīci"
 
-#~ msgid "Advanced options..."
-#~ msgstr "Paplašinātas opcijas..."
+#: modules/gui/qt4/ui/open_capture.h:106
+msgid "Advanced options..."
+msgstr "Paplašinātas opcijas..."
 
-#~ msgid "Disc Selection"
-#~ msgstr "Diska atlasīšana"
+#: modules/gui/qt4/ui/open_disk.h:297
+msgid "Disc Selection"
+msgstr "Diska atlasīšana"
 
-#~ msgid "SVCD/VCD"
-#~ msgstr "SVCD/VCD"
+#: modules/gui/qt4/ui/open_disk.h:301
+msgid "SVCD/VCD"
+msgstr "SVCD/VCD"
 
-#~ msgid "Disable Disc Menus"
-#~ msgstr "Izspējot disku izvēlnes"
+#: modules/gui/qt4/ui/open_disk.h:303
+msgid "Disable Disc Menus"
+msgstr "Izspējot disku izvēlnes"
 
-#~ msgid "No disc menus"
-#~ msgstr "Nav diska izvēlnes"
+#: modules/gui/qt4/ui/open_disk.h:305
+msgid "No disc menus"
+msgstr "Nav diska izvēlnes"
 
-#~ msgid "Disc device"
-#~ msgstr "Disku ierīce"
+#: modules/gui/qt4/ui/open_disk.h:306
+msgid "Disc device"
+msgstr "Disku ierīce"
 
-#~ msgid "Starting Position"
-#~ msgstr "Sākuma pozīcija"
+#: modules/gui/qt4/ui/open_disk.h:308
+msgid "Starting Position"
+msgstr "Sākuma pozīcija"
 
-#~ msgid "Audio and Subtitles"
-#~ msgstr "Audio un subtitri"
+#: modules/gui/qt4/ui/open_disk.h:311
+msgid "Audio and Subtitles"
+msgstr "Audio un subtitri"
 
-#~ msgid "Use a sub&title file"
-#~ msgstr "Lietot subtitru datni"
+#: modules/gui/qt4/ui/open_file.h:143
+msgid "Use a sub&title file"
+msgstr "Lietot subtitru datni"
 
-#~ msgid "Select the subtitle file"
-#~ msgstr "Atlasīt subtitru datni"
+#: modules/gui/qt4/ui/open_file.h:145
+msgid "Select the subtitle file"
+msgstr "Atlasīt subtitru datni"
 
-#~ msgid "Choose one or more media file to open"
-#~ msgstr "Izvēlieties vienu vai vairākas mediju datnes, kuras atvērt"
+#: modules/gui/qt4/ui/open_file.h:149
+msgid "Choose one or more media file to open"
+msgstr "Izvēlieties vienu vai vairākas mediju datnes, kuras atvērt"
 
-#~ msgid "File Selection"
-#~ msgstr "Datnes atlase"
+#: modules/gui/qt4/ui/open_file.h:151
+msgid "File Selection"
+msgstr "Datnes atlase"
 
-#~ msgid "You can select local files with the following list and buttons."
-#~ msgstr "Jūs varat atlasīt lokālās datnes ar sekojošo sarakstu un pogām."
+#: modules/gui/qt4/ui/open_file.h:152
+msgid "You can select local files with the following list and buttons."
+msgstr "Jūs varat atlasīt lokālās datnes ar sekojošo sarakstu un pogām."
 
-#~ msgid "Add..."
-#~ msgstr "Pievienot..."
+#: modules/gui/qt4/ui/open_file.h:153
+msgid "Add..."
+msgstr "Pievienot..."
 
-#~ msgid "Network Protocol"
-#~ msgstr "Tīkla protokols"
+#: modules/gui/qt4/ui/open_net.h:97
+msgid "Network Protocol"
+msgstr "Tīkla protokols"
 
-#~ msgid "Please enter a network URL:"
-#~ msgstr "Lūdzu, ievadiet tīkla URL:"
+#: modules/gui/qt4/ui/open_net.h:98
+msgid "Please enter a network URL:"
+msgstr "Lūdzu, ievadiet tīkla URL:"
 
-#~ msgid "Profile edition"
-#~ msgstr "Profila izlaidums"
+#: modules/gui/qt4/ui/profiles.h:701
+msgid "Profile edition"
+msgstr "Profila izlaidums"
 
+#: modules/gui/qt4/ui/profiles.h:702
+msgid "FLAC"
+msgstr ""
+
+#: modules/gui/qt4/ui/profiles.h:703
 #, fuzzy
-#~ msgid "MP&4/MOV"
-#~ msgstr "MP4/MOV"
+msgid "MP&4/MOV"
+msgstr "MP4/MOV"
 
-#~ msgid "Ogg/Ogm"
-#~ msgstr "Ogg/Ogm"
+#: modules/gui/qt4/ui/profiles.h:704
+msgid "Ogg/Ogm"
+msgstr "Ogg/Ogm"
 
+#: modules/gui/qt4/ui/profiles.h:705
+msgid "M&KV"
+msgstr ""
+
+#: modules/gui/qt4/ui/profiles.h:706
 #, fuzzy
-#~ msgid "M&JPEG"
-#~ msgstr "MJPEG"
+msgid "M&JPEG"
+msgstr "MJPEG"
 
-#~ msgid "MPEG-PS"
-#~ msgstr "MPEG-PS"
+#: modules/gui/qt4/ui/profiles.h:707
+msgid "MPEG-PS"
+msgstr "MPEG-PS"
 
+#: modules/gui/qt4/ui/profiles.h:708
+msgid "F&LV"
+msgstr ""
+
+#: modules/gui/qt4/ui/profiles.h:709
 #, fuzzy
-#~ msgid "&MPEG-TS"
-#~ msgstr "MPEG-TS"
+msgid "&MPEG-TS"
+msgstr "MPEG-TS"
 
-#~ msgid "RAW"
-#~ msgstr "RAW"
+#: modules/gui/qt4/ui/profiles.h:710
+msgid "RAW"
+msgstr "RAW"
 
-#~ msgid "WAV"
-#~ msgstr "WAV"
+#: modules/gui/qt4/ui/profiles.h:711
+msgid "WAV"
+msgstr "WAV"
 
-#~ msgid "Webm"
-#~ msgstr "Webm"
+#: modules/gui/qt4/ui/profiles.h:712
+msgid "Webm"
+msgstr "Webm"
 
+#: modules/gui/qt4/ui/profiles.h:713
 #, fuzzy
-#~ msgid "MPEG &1"
-#~ msgstr "MPEG 1"
+msgid "MPEG &1"
+msgstr "MPEG 1"
 
-#~ msgid "AVI"
-#~ msgstr "AVI"
+#: modules/gui/qt4/ui/profiles.h:714
+msgid "AVI"
+msgstr "AVI"
 
-#~ msgid "ASF/WMV"
-#~ msgstr "ASF/WMV"
+#: modules/gui/qt4/ui/profiles.h:715
+msgid "ASF/WMV"
+msgstr "ASF/WMV"
 
-#~ msgid "Features"
-#~ msgstr "Līdzekļi"
+#: modules/gui/qt4/ui/profiles.h:716
+msgid "MP&3"
+msgstr ""
 
-#~ msgid "Streamable"
-#~ msgstr "Straumējams"
+#: modules/gui/qt4/ui/profiles.h:717
+msgid "Features"
+msgstr "Līdzekļi"
 
-#~ msgid "Chapters"
-#~ msgstr "Nodaļas"
+#: modules/gui/qt4/ui/profiles.h:719
+msgid "Streamable"
+msgstr "Straumējams"
 
-#~ msgid "Menus"
-#~ msgstr "Izvēlnes"
+#: modules/gui/qt4/ui/profiles.h:720
+msgid "Chapters"
+msgstr "Nodaļas"
 
+#: modules/gui/qt4/ui/profiles.h:723
+msgid "Menus"
+msgstr "Izvēlnes"
+
+#: modules/gui/qt4/ui/profiles.h:730
 #, fuzzy
-#~ msgid "Fra&me Rate"
-#~ msgstr "Kadru nomaiņas ātrums"
+msgid "Fra&me Rate"
+msgstr "Kadru nomaiņas ātrums"
 
-#~ msgid "Same as source"
-#~ msgstr "Tāds kā avotā"
+#: modules/gui/qt4/ui/profiles.h:731
+msgid "Same as source"
+msgstr "Tāds kā avotā"
 
-#~ msgid " fps"
-#~ msgstr "k/s"
+#: modules/gui/qt4/ui/profiles.h:733
+msgid " fps"
+msgstr "k/s"
 
-#~ msgid "Custom options"
-#~ msgstr "Pielāgotas opcijas"
+#: modules/gui/qt4/ui/profiles.h:734
+msgid "Custom options"
+msgstr "Pielāgotas opcijas"
 
+#: modules/gui/qt4/ui/profiles.h:735
 #, fuzzy
-#~ msgid "&Quality"
-#~ msgstr "Kvalitāte"
+msgid "&Quality"
+msgstr "Kvalitāte"
 
-#~ msgid "Not Used"
-#~ msgstr "Nav lietots"
+#: modules/gui/qt4/ui/profiles.h:736 modules/gui/qt4/ui/profiles.h:737
+msgid "Not Used"
+msgstr "Nav lietots"
 
-#~ msgid " kb/s"
-#~ msgstr " kb/s"
+#: modules/gui/qt4/ui/profiles.h:738 modules/gui/qt4/ui/profiles.h:757
+msgid " kb/s"
+msgstr " kb/s"
 
-#~ msgid "Encoding parameters"
-#~ msgstr "Kodēšanas parametri"
+#: modules/gui/qt4/ui/profiles.h:739 modules/gui/qt4/ui/profiles.h:759
+msgid "Encoding parameters"
+msgstr "Kodēšanas parametri"
 
-#~ msgid "Frame size"
-#~ msgstr "Kadra izmērs"
+#: modules/gui/qt4/ui/profiles.h:742
+msgid "Frame size"
+msgstr "Kadra izmērs"
 
-#~ msgid "px"
-#~ msgstr "piks."
+#: modules/gui/qt4/ui/profiles.h:745 modules/gui/qt4/ui/profiles.h:748
+msgid "px"
+msgstr "piks."
 
+#: modules/gui/qt4/ui/profiles.h:758
 #, fuzzy
-#~ msgid "Sa&mple Rate"
-#~ msgstr "Diskretizācijas frekvence"
+msgid "Sa&mple Rate"
+msgstr "Diskretizācijas frekvence"
 
+#: modules/gui/qt4/ui/profiles.h:766
 #, fuzzy
-#~ msgid "Profile &Name"
-#~ msgstr "Profila nosaukums"
-
-#~ msgid "Set up media sources to stream"
-#~ msgstr "Uzstādiet mediju avotus, kurus straumēt"
-
-#~ msgid "Destination Setup"
-#~ msgstr "Galamērķa uzstādīšana"
-
-#~ msgid "Select destinations to stream to"
-#~ msgstr "Atlasiet galamērķus, uz kuriem straumēt"
-
-#~ msgid ""
-#~ "Add destinations following the streaming methods you need. Be sure to "
-#~ "check with transcoding that the format is compatible with the method used."
-#~ msgstr ""
-#~ "Pievienot galamērķus, sekojot jums vajadzīgajām straumēšanas metodēm. "
-#~ "Noteikti pārbaudiet ar pārkodēšanu, ka formāts ir saderīgs ar lietoto "
-#~ "metodi."
-
-#~ msgid "New destination"
-#~ msgstr "Jauns gala mērķis"
-
-#~ msgid "Display locally"
-#~ msgstr "Attēlot lokāli"
-
-#~ msgid "Transcoding Options"
-#~ msgstr "Pārkodēšanas opcijas"
-
-#~ msgid "Select and choose transcoding options"
-#~ msgstr "Atlasiet un izvēlieties pārkodēšanas opcijas"
-
-#~ msgid "Activate Transcoding"
-#~ msgstr "Aktivizēt pārkodēšanu"
-
-#~ msgid "Option Setup"
-#~ msgstr "Opciju uzstādīšana"
-
-#~ msgid "Set up any additional options for streaming"
-#~ msgstr "Uzstādīt jebkuras papildu opcijas straumēšanai"
-
-#~ msgid "Miscellaneous Options"
-#~ msgstr "Dažādas opcijas"
-
-#~ msgid "Stream all elementary streams"
-#~ msgstr "Straumēt visas elementārās straumes"
-
-#~ msgid "Generated stream output string"
-#~ msgstr "Ģenerētā straumes izvades virkne"
-
-#~ msgid " %"
-#~ msgstr " %"
-
-#~ msgid "Output module:"
-#~ msgstr "Izvades modulis:"
-
-#~ msgid "Effects"
-#~ msgstr "Efekti"
-
-#~ msgid "Visualization:"
-#~ msgstr "Vizualizācija:"
-
-#~ msgid "Enable Time-Stretching audio"
-#~ msgstr "Ieslēgt laika-stiepto audio"
-
-#~ msgid "Dolby Surround:"
-#~ msgstr "Dolby Surround:"
-
-#~ msgid "Replay gain mode:"
-#~ msgstr "Skaļuma izlīdzināšanas režīms:"
-
-#~ msgid "Headphone surround effect"
-#~ msgstr "Austiņu ieskaušanas efekts"
-
-#~ msgid "Normalize volume to:"
-#~ msgstr "Normalizēt skaļumu uz:"
-
-#~ msgid "Preferred audio language:"
-#~ msgstr "Vēlamā audio valoda:"
-
-#~ msgid "Password:"
-#~ msgstr "Parole:"
-
-#~ msgid "Username:"
-#~ msgstr "Lietotājvārds:"
-
-#~ msgid "Submit played tracks stats to Last.fm"
-#~ msgstr "Iesniegt atskaņoto celiņu statistiku Last.fm"
-
-#~ msgid "Codecs"
-#~ msgstr "Kodeki"
-
-#~ msgid "x264 profile and level selection"
-#~ msgstr "x264 profila un līmeņa atlase"
-
-#~ msgid "x264 preset and tuning selection"
-#~ msgstr "x264 priekšstatījumu un skaņojumu atlase"
-
-#~ msgid "Hardware-accelerated decoding"
-#~ msgstr "Aparatūras paātrinātā atkodēšana"
-
-#~ msgid "Skip H.264 in-loop deblocking filter"
-#~ msgstr "Izlaist H.264 iekš-cikla atblokošanas filtru"
-
-#~ msgid "Video quality post-processing level"
-#~ msgstr "Video kvalitātes pēcapstrādes līmenis"
-
-#~ msgid "Optical drive"
-#~ msgstr "Optiskais diskdzinis"
-
-#~ msgid "Default optical device"
-#~ msgstr "Noklusējuma optiskā ierīce"
-
-#~ msgid "Damaged or incomplete AVI file"
-#~ msgstr "Bojāta vai nepabeigta AVI datne"
-
-#~ msgid "HTTP proxy URL"
-#~ msgstr "HTTP starpniekservera URL"
-
-#~ msgid "HTTP (default)"
-#~ msgstr "HTTP (noklusējuma)"
-
-#~ msgid "RTP over RTSP (TCP)"
-#~ msgstr "RTP pāri RTSP (TCP)"
-
-#~ msgid "Live555 stream transport"
-#~ msgstr "Live555 straumes transports"
-
-#~ msgid "Default caching policy"
-#~ msgstr "Noklusētā kešošanas politika"
-
-#~ msgid "Menus language:"
-#~ msgstr "Valoda izvēlnēm:"
-
-#~ msgid "Look and feel"
-#~ msgstr "Izskats un sajūtas"
-
-#~ msgid "Use custom skin"
-#~ msgstr "Lietot pielāgotu ādiņu"
-
-#~ msgid "This is VLC's default interface, with a native look and feel."
-#~ msgstr "Šī ir VLC noklusētā saskarne ar dzimto izskatu un sajūtām."
-
-#~ msgid "Use native style"
-#~ msgstr "Lietot dzimto stilu"
-
-#~ msgid "Resize interface to video size"
-#~ msgstr "Mainīt saskarnes izmēru uz video izmēru"
-
-#~ msgid "Show controls in full screen mode"
-#~ msgstr "Parādīt vadīklas pilnekrāna režīmā"
-
-#~ msgid "Pause playback when minimized"
-#~ msgstr "Pauzēt atskaņošanu, kad minimizēts"
-
-#~ msgid "Show media change popup:"
-#~ msgstr "Parādīt medija maiņas uzlecošo logu:"
-
-#~ msgid "Start in minimal view mode"
-#~ msgstr "Sākt minimālā skatījuma režīmā"
-
-#~ msgid "Force window style:"
-#~ msgstr "Piespiest loga stilu:"
-
-#~ msgid "Integrate video in interface"
-#~ msgstr "Integrēt video saskarnē"
-
-#~ msgid "Show systray icon"
-#~ msgstr "Parādīt sistēmjoslas ikonu"
-
-#~ msgid "Skin resource file:"
-#~ msgstr "Ādiņu resursu datne:"
-
-#~ msgid "Playlist and Instances"
-#~ msgstr "Atskaņošanas saraksts un instances"
-
-#~ msgid "Allow only one instance"
-#~ msgstr "Atļaut tikai vienu instanci"
-
-#~ msgid "Pause on the last frame of a video"
-#~ msgstr "Pauzēt uz pēdējā video kadra"
-
-#~ msgid "Every "
-#~ msgstr "Ik pēc "
-
-#~ msgid "Separate words by | (without space)"
-#~ msgstr "Atdalīt vārdus ar | (bez atstarpes)"
-
-#~ msgid "Save recently played items"
-#~ msgstr "Saglabāt nesen atskaņotos vienumus"
-
-#~ msgid "Activate updates notifier"
-#~ msgstr "Aktivizēt atjauninājumu paziņotāju"
-
-#~ msgid "Operating System Integration"
-#~ msgstr "Operētājsistēmas integrācija"
-
-#~ msgid "File extensions association"
-#~ msgstr "Datņu paplašinājumu asociācijas"
-
-#~ msgid "Set up associations..."
-#~ msgstr "Uzstādīt asociācijas..."
-
-#~ msgid "Enable On Screen Display (OSD)"
-#~ msgstr "Ieslēgt attēlojumu uz ekrāna (OSD)"
-
-#~ msgid "Show media title on video start"
-#~ msgstr "Parādīt medija virsrakstu video sākumā"
-
-#~ msgid "Enable subtitles"
-#~ msgstr "Ieslēgt subtitrus"
-
-#~ msgid "Subtitle Language"
-#~ msgstr "Subtitru valoda"
-
-#~ msgid "Default encoding"
-#~ msgstr "Noklusētais kodējums"
-
-#~ msgid "Subtitle effects"
-#~ msgstr "Suttitru efekti"
-
-#~ msgid "Add a shadow"
-#~ msgstr "Pievienot ēnu"
-
-#~ msgid " px"
-#~ msgstr " piks."
-
-#~ msgid "Add a background"
-#~ msgstr "Pievienot fonu"
-
-#~ msgid "Accelerated video output (Overlay)"
-#~ msgstr "Paātrinātā video izvade (Pārklājums)"
-
-#~ msgid "DirectX"
-#~ msgstr "DirectX"
-
-#~ msgid "Display device"
-#~ msgstr "Displeja ierīce"
-
-#~ msgid "KVA"
-#~ msgstr "KVA"
-
-#~ msgid "Deinterlacing"
-#~ msgstr "Rindpārleces novēršana"
-
-#~ msgid "Force Aspect Ratio"
-#~ msgstr "Piespiest malu proporcijas"
-
-#~ msgid "vlc-snap"
-#~ msgstr "vlc-snap"
-
-#~ msgid "1"
-#~ msgstr "1"
-
-#~ msgid "Stuff"
-#~ msgstr "Materiāls"
-
-#~ msgid "Edit settings"
-#~ msgstr "Rediģēt iestatījumus"
-
-#~ msgid "Control"
-#~ msgstr "Kontrole"
-
-#~ msgid "Run manually"
-#~ msgstr "Palaist manuāli"
-
-#~ msgid "Setup schedule"
-#~ msgstr "Uzstādīt plānotāju"
-
-#~ msgid "Run on schedule"
-#~ msgstr "Palaist no plānotāja"
-
-#~ msgid "Status"
-#~ msgstr "Statuss"
-
-#~ msgid "P/P"
-#~ msgstr "P/P"
-
-#~ msgid "Prev"
-#~ msgstr "Iepriekšējais"
-
-#~ msgid "Add Input"
-#~ msgstr "Pievienot ievadi"
-
-#~ msgid "Edit Input"
-#~ msgstr "Rediģēt ievadi"
-
-#~ msgid "Clear List"
-#~ msgstr "Notīrīt sarakstu"
-
-#~ msgid "Check for VLC updates"
-#~ msgstr "Pārbaudīt VLC atjauninājumus"
-
-#~ msgid "Launching an update request..."
-#~ msgstr "Palaižu atjauninājuma pieprasījumu"
-
-#~ msgid "Do you want to download it?"
-#~ msgstr "Vai jūs vēlaties to lejupielādēt?"
-
-#~ msgid "Essential"
-#~ msgstr "Svarīgie"
-
-#~ msgid ">HHHHHH;#"
-#~ msgstr ">HHHHHH;#"
-
-#~ msgid "Negate colors"
-#~ msgstr "Noliegt krāsas"
-
-#~ msgid "Colors"
-#~ msgstr "Krāsas"
-
-#~ msgid "Interactive Zoom"
-#~ msgstr "Interaktīvā tālummaiņa"
-
-#~ msgid "Angle"
-#~ msgstr "Leņķis"
-
-#~ msgid "Black Slot"
-#~ msgstr "Melnais slots"
-
-#~ msgid "..."
-#~ msgstr "..."
-
-#~ msgid "full"
-#~ msgstr "pilns"
-
-#~ msgid "none"
-#~ msgstr "nekāds"
-
-#~ msgid "Logo erase"
-#~ msgstr "Logo dzēšana"
-
-#~ msgid "Mask"
-#~ msgstr "Maska"
-
-#~ msgid "Output Color Filtermode"
-#~ msgstr "Izvadīt krāsas filtrēšanas režīmu"
-
-#~ msgid "Brightness (%)"
-#~ msgstr "Spilgtums (%)"
-
-#~ msgid "Mark analyzed Pixels"
-#~ msgstr "Atzīmēt analizētos pikseļus"
-
-#~ msgid "Filter threshold (%)"
-#~ msgstr "Filtra slieksnis (%)"
-
-#~ msgid "Anaglyph 3D"
-#~ msgstr "Anaglifs 3D"
-
-#~ msgid "Mirror"
-#~ msgstr "Spoguļot"
-
-#~ msgid "Motion detect"
-#~ msgstr "Kustību noteikšana"
-
-#~ msgid "Spatial blur"
-#~ msgstr "Telpiskā aizmiglošana"
-
-#~ msgid "Anti-Flickering"
-#~ msgstr "Pretmirgošanas"
-
-#~ msgid "Soften"
-#~ msgstr "Mīkstināt"
-
-#~ msgid "Denoiser"
-#~ msgstr "Attrokšņotājs"
-
-#~ msgid "Spatial luma strength"
-#~ msgstr "Telpiskās luma stiprums"
-
-#~ msgid "Temporal luma strength"
-#~ msgstr "Pagaidu luma stiprums"
-
-#~ msgid "Spatial chroma strength"
-#~ msgstr "Telpiskās krāsainības stiprums"
-
-#~ msgid "Temporal chroma strength"
-#~ msgstr "Pagaidu krāsainības stiprums"
-
-#~ msgid "VLM configurator"
-#~ msgstr "VLM konfigurātors"
-
-#~ msgid "Media Manager Edition"
-#~ msgstr "Mediju pārvaldnieka izlaidums"
-
-#~ msgid "Name:"
-#~ msgstr "Nosaukums:"
-
-#~ msgid "Input:"
-#~ msgstr "Ievade:"
-
-#~ msgid "Select Input"
-#~ msgstr "Atlasīt ievadi"
-
-#~ msgid "Output:"
-#~ msgstr "Izvade:"
-
-#~ msgid "Select Output"
-#~ msgstr "Atlasīt izvadi"
-
-#~ msgid "Time Control"
-#~ msgstr "Laika kontrole"
-
-#~ msgid "Mux Control"
-#~ msgstr "Multipleksēšanas kontrole"
-
-#~ msgid "Muxer:"
-#~ msgstr "Multipleksors:"
-
-#~ msgid "AAAA; "
-#~ msgstr "AAAA; "
-
-#~ msgid "Media Manager List"
-#~ msgstr "Mediju pārvaldnieka saraksts"
+msgid "Profile &Name"
+msgstr "Profila nosaukums"
+
+#: modules/gui/qt4/ui/sout.h:203
+msgid "Set up media sources to stream"
+msgstr "Uzstādiet mediju avotus, kurus straumēt"
+
+#: modules/gui/qt4/ui/sout.h:205
+msgid "Destination Setup"
+msgstr "Galamērķa uzstādīšana"
+
+#: modules/gui/qt4/ui/sout.h:206
+msgid "Select destinations to stream to"
+msgstr "Atlasiet galamērķus, uz kuriem straumēt"
+
+#: modules/gui/qt4/ui/sout.h:207
+msgid ""
+"Add destinations following the streaming methods you need. Be sure to check "
+"with transcoding that the format is compatible with the method used."
+msgstr ""
+"Pievienot galamērķus, sekojot jums vajadzīgajām straumēšanas metodēm. "
+"Noteikti pārbaudiet ar pārkodēšanu, ka formāts ir saderīgs ar lietoto metodi."
+
+#: modules/gui/qt4/ui/sout.h:208
+msgid "New destination"
+msgstr "Jauns gala mērķis"
+
+#: modules/gui/qt4/ui/sout.h:210
+msgid "Display locally"
+msgstr "Attēlot lokāli"
+
+#: modules/gui/qt4/ui/sout.h:212
+msgid "Transcoding Options"
+msgstr "Pārkodēšanas opcijas"
+
+#: modules/gui/qt4/ui/sout.h:213
+msgid "Select and choose transcoding options"
+msgstr "Atlasiet un izvēlieties pārkodēšanas opcijas"
+
+#: modules/gui/qt4/ui/sout.h:214
+msgid "Activate Transcoding"
+msgstr "Aktivizēt pārkodēšanu"
+
+#: modules/gui/qt4/ui/sout.h:215
+msgid "Option Setup"
+msgstr "Opciju uzstādīšana"
+
+#: modules/gui/qt4/ui/sout.h:216
+msgid "Set up any additional options for streaming"
+msgstr "Uzstādīt jebkuras papildu opcijas straumēšanai"
+
+#: modules/gui/qt4/ui/sout.h:217
+msgid "Miscellaneous Options"
+msgstr "Dažādas opcijas"
+
+#: modules/gui/qt4/ui/sout.h:218
+msgid "Stream all elementary streams"
+msgstr "Straumēt visas elementārās straumes"
+
+#: modules/gui/qt4/ui/sout.h:219
+msgid "Generated stream output string"
+msgstr "Ģenerētā straumes izvades virkne"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:428
+msgid " %"
+msgstr " %"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:431
+msgid "Output module:"
+msgstr "Izvades modulis:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:435
+msgid "Effects"
+msgstr "Efekti"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:436
+msgid "Visualization:"
+msgstr "Vizualizācija:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:437
+msgid "Enable Time-Stretching audio"
+msgstr "Ieslēgt laika-stiepto audio"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:438
+msgid "Dolby Surround:"
+msgstr "Dolby Surround:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:439
+msgid "Replay gain mode:"
+msgstr "Skaļuma izlīdzināšanas režīms:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:440
+msgid "Headphone surround effect"
+msgstr "Austiņu ieskaušanas efekts"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:441
+msgid "Normalize volume to:"
+msgstr "Normalizēt skaļumu uz:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:443
+msgid "Preferred audio language:"
+msgstr "Vēlamā audio valoda:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:444
+msgid "Password:"
+msgstr "Parole:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:445
+msgid "Username:"
+msgstr "Lietotājvārds:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:446
+msgid "Submit played tracks stats to Last.fm"
+msgstr "Iesniegt atskaņoto celiņu statistiku Last.fm"
+
+#: modules/gui/qt4/ui/sprefs_input.h:346
+msgid "Codecs"
+msgstr "Kodeki"
+
+#: modules/gui/qt4/ui/sprefs_input.h:347
+msgid "x264 profile and level selection"
+msgstr "x264 profila un līmeņa atlase"
+
+#: modules/gui/qt4/ui/sprefs_input.h:348
+msgid "x264 preset and tuning selection"
+msgstr "x264 priekšstatījumu un skaņojumu atlase"
+
+#: modules/gui/qt4/ui/sprefs_input.h:349
+msgid "Hardware-accelerated decoding"
+msgstr "Aparatūras paātrinātā atkodēšana"
+
+#: modules/gui/qt4/ui/sprefs_input.h:350
+msgid "Skip H.264 in-loop deblocking filter"
+msgstr "Izlaist H.264 iekš-cikla atblokošanas filtru"
+
+#: modules/gui/qt4/ui/sprefs_input.h:351
+msgid "Video quality post-processing level"
+msgstr "Video kvalitātes pēcapstrādes līmenis"
+
+#: modules/gui/qt4/ui/sprefs_input.h:352
+msgid "Optical drive"
+msgstr "Optiskais diskdzinis"
+
+#: modules/gui/qt4/ui/sprefs_input.h:353
+msgid "Default optical device"
+msgstr "Noklusējuma optiskā ierīce"
+
+#: modules/gui/qt4/ui/sprefs_input.h:357
+msgid "Damaged or incomplete AVI file"
+msgstr "Bojāta vai nepabeigta AVI datne"
+
+#: modules/gui/qt4/ui/sprefs_input.h:360
+msgid "HTTP proxy URL"
+msgstr "HTTP starpniekservera URL"
+
+#: modules/gui/qt4/ui/sprefs_input.h:361
+msgid "HTTP (default)"
+msgstr "HTTP (noklusējuma)"
+
+#: modules/gui/qt4/ui/sprefs_input.h:362
+msgid "RTP over RTSP (TCP)"
+msgstr "RTP pāri RTSP (TCP)"
+
+#: modules/gui/qt4/ui/sprefs_input.h:363
+msgid "Live555 stream transport"
+msgstr "Live555 straumes transports"
+
+#: modules/gui/qt4/ui/sprefs_input.h:364
+msgid "Default caching policy"
+msgstr "Noklusētā kešošanas politika"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:518
+msgid "Menus language:"
+msgstr "Valoda izvēlnēm:"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:519
+msgid "Look and feel"
+msgstr "Izskats un sajūtas"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:520
+msgid "Use custom skin"
+msgstr "Lietot pielāgotu ādiņu"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:522
+msgid "This is VLC's default interface, with a native look and feel."
+msgstr "Šī ir VLC noklusētā saskarne ar dzimto izskatu un sajūtām."
+
+#: modules/gui/qt4/ui/sprefs_interface.h:524
+msgid "Use native style"
+msgstr "Lietot dzimto stilu"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:525
+msgid "Resize interface to video size"
+msgstr "Mainīt saskarnes izmēru uz video izmēru"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:526
+msgid "Show controls in full screen mode"
+msgstr "Parādīt vadīklas pilnekrāna režīmā"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:527
+msgid "Pause playback when minimized"
+msgstr "Pauzēt atskaņošanu, kad minimizēts"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:528
+msgid "Show media change popup:"
+msgstr "Parādīt medija maiņas uzlecošo logu:"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:529
+msgid "Start in minimal view mode"
+msgstr "Sākt minimālā skatījuma režīmā"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:530
+msgid "Force window style:"
+msgstr "Piespiest loga stilu:"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:531
+msgid "Integrate video in interface"
+msgstr "Integrēt video saskarnē"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:532
+msgid "Show systray icon"
+msgstr "Parādīt sistēmjoslas ikonu"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:534
+msgid "Skin resource file:"
+msgstr "Ādiņu resursu datne:"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:536
+msgid "Playlist and Instances"
+msgstr "Atskaņošanas saraksts un instances"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:537
+msgid "Allow only one instance"
+msgstr "Atļaut tikai vienu instanci"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:540
+msgid "Pause on the last frame of a video"
+msgstr "Pauzēt uz pēdējā video kadra"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:544
+msgid "Every "
+msgstr "Ik pēc "
+
+#: modules/gui/qt4/ui/sprefs_interface.h:547
+msgid "Separate words by | (without space)"
+msgstr "Atdalīt vārdus ar | (bez atstarpes)"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:549
+msgid "Save recently played items"
+msgstr "Saglabāt nesen atskaņotos vienumus"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:550
+msgid "Activate updates notifier"
+msgstr "Aktivizēt atjauninājumu paziņotāju"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:552
+msgid "Operating System Integration"
+msgstr "Operētājsistēmas integrācija"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:553
+msgid "File extensions association"
+msgstr "Datņu paplašinājumu asociācijas"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:554
+msgid "Set up associations..."
+msgstr "Uzstādīt asociācijas..."
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:291
+msgid "Enable On Screen Display (OSD)"
+msgstr "Ieslēgt attēlojumu uz ekrāna (OSD)"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:292
+msgid "Show media title on video start"
+msgstr "Parādīt medija virsrakstu video sākumā"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:294
+msgid "Enable subtitles"
+msgstr "Ieslēgt subtitrus"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:295
+msgid "Subtitle Language"
+msgstr "Subtitru valoda"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:297
+msgid "Default encoding"
+msgstr "Noklusētais kodējums"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:298
+msgid "Subtitle effects"
+msgstr "Suttitru efekti"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:304
+msgid "Add a shadow"
+msgstr "Pievienot ēnu"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:306
+#: modules/gui/qt4/ui/video_effects.h:1406
+#: modules/gui/qt4/ui/video_effects.h:1410
+#: modules/gui/qt4/ui/video_effects.h:1413
+#: modules/gui/qt4/ui/video_effects.h:1414
+#: modules/gui/qt4/ui/video_effects.h:1449
+#: modules/gui/qt4/ui/video_effects.h:1451
+#: modules/gui/qt4/ui/video_effects.h:1461
+#: modules/gui/qt4/ui/video_effects.h:1462
+msgid " px"
+msgstr " piks."
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:307
+msgid "Add a background"
+msgstr "Pievienot fonu"
+
+#: modules/gui/qt4/ui/sprefs_video.h:324
+msgid "Accelerated video output (Overlay)"
+msgstr "Paātrinātā video izvade (Pārklājums)"
+
+#: modules/gui/qt4/ui/sprefs_video.h:329
+msgid "DirectX"
+msgstr "DirectX"
+
+#: modules/gui/qt4/ui/sprefs_video.h:330
+msgid "Display device"
+msgstr "Displeja ierīce"
+
+#: modules/gui/qt4/ui/sprefs_video.h:331
+msgid "KVA"
+msgstr "KVA"
+
+#: modules/gui/qt4/ui/sprefs_video.h:335
+msgid "Deinterlacing"
+msgstr "Rindpārleces novēršana"
+
+#: modules/gui/qt4/ui/sprefs_video.h:337
+msgid "Force Aspect Ratio"
+msgstr "Piespiest malu proporcijas"
+
+#: modules/gui/qt4/ui/sprefs_video.h:342
+msgid "vlc-snap"
+msgstr "vlc-snap"
+
+#: modules/gui/qt4/ui/streampanel.h:169
+msgid "1"
+msgstr "1"
+
+#: modules/gui/qt4/ui/streampanel.h:171
+msgid "Stuff"
+msgstr "Materiāls"
+
+#: modules/gui/qt4/ui/streampanel.h:173
+msgid "Edit settings"
+msgstr "Rediģēt iestatījumus"
+
+#: modules/gui/qt4/ui/streampanel.h:174
+msgid "Control"
+msgstr "Kontrole"
+
+#: modules/gui/qt4/ui/streampanel.h:175
+msgid "Run manually"
+msgstr "Palaist manuāli"
+
+#: modules/gui/qt4/ui/streampanel.h:176
+msgid "Setup schedule"
+msgstr "Uzstādīt plānotāju"
+
+#: modules/gui/qt4/ui/streampanel.h:177
+msgid "Run on schedule"
+msgstr "Palaist no plānotāja"
+
+#: modules/gui/qt4/ui/streampanel.h:178
+msgid "Status"
+msgstr "Statuss"
+
+#: modules/gui/qt4/ui/streampanel.h:179
+msgid "P/P"
+msgstr "P/P"
+
+#: modules/gui/qt4/ui/streampanel.h:182
+msgid "Prev"
+msgstr "Iepriekšējais"
+
+#: modules/gui/qt4/ui/streampanel.h:183
+msgid "Add Input"
+msgstr "Pievienot ievadi"
+
+#: modules/gui/qt4/ui/streampanel.h:184
+msgid "Edit Input"
+msgstr "Rediģēt ievadi"
+
+#: modules/gui/qt4/ui/streampanel.h:185
+msgid "Clear List"
+msgstr "Notīrīt sarakstu"
+
+#: modules/gui/qt4/ui/update.h:148
+msgid "Check for VLC updates"
+msgstr "Pārbaudīt VLC atjauninājumus"
+
+#: modules/gui/qt4/ui/update.h:149
+msgid "Launching an update request..."
+msgstr "Palaižu atjauninājuma pieprasījumu"
+
+#: modules/gui/qt4/ui/update.h:150
+msgid "Do you want to download it?"
+msgstr "Vai jūs vēlaties to lejupielādēt?"
+
+#: modules/gui/qt4/ui/video_effects.h:1404
+msgid "Essential"
+msgstr "Svarīgie"
+
+#: modules/gui/qt4/ui/video_effects.h:1418
+#: modules/gui/qt4/ui/video_effects.h:1427
+msgid ">HHHHHH;#"
+msgstr ">HHHHHH;#"
+
+#: modules/gui/qt4/ui/video_effects.h:1419
+msgid "Negate colors"
+msgstr "Noliegt krāsas"
+
+#: modules/gui/qt4/ui/video_effects.h:1432
+msgid "Colors"
+msgstr "Krāsas"
+
+#: modules/gui/qt4/ui/video_effects.h:1433
+msgid "Interactive Zoom"
+msgstr "Interaktīvā tālummaiņa"
+
+#: modules/gui/qt4/ui/video_effects.h:1439
+msgid "Angle"
+msgstr "Leņķis"
+
+#: modules/gui/qt4/ui/video_effects.h:1443
+msgid "Black Slot"
+msgstr "Melnais slots"
+
+#: modules/gui/qt4/ui/video_effects.h:1447
+#: modules/gui/qt4/ui/video_effects.h:1464
+msgid "..."
+msgstr "..."
+
+#: modules/gui/qt4/ui/video_effects.h:1452
+msgid "full"
+msgstr "pilns"
+
+#: modules/gui/qt4/ui/video_effects.h:1454
+msgid "none"
+msgstr "nekāds"
+
+#: modules/gui/qt4/ui/video_effects.h:1458
+msgid "Logo erase"
+msgstr "Logo dzēšana"
+
+#: modules/gui/qt4/ui/video_effects.h:1463
+msgid "Mask"
+msgstr "Maska"
+
+#: modules/gui/qt4/ui/video_effects.h:1468
+msgid "Output Color Filtermode"
+msgstr "Izvadīt krāsas filtrēšanas režīmu"
+
+#: modules/gui/qt4/ui/video_effects.h:1469
+msgid "Brightness (%)"
+msgstr "Spilgtums (%)"
+
+#: modules/gui/qt4/ui/video_effects.h:1471
+msgid "Mark analyzed Pixels"
+msgstr "Atzīmēt analizētos pikseļus"
+
+#: modules/gui/qt4/ui/video_effects.h:1473
+msgid "Filter threshold (%)"
+msgstr "Filtra slieksnis (%)"
+
+#: modules/gui/qt4/ui/video_effects.h:1476
+msgid "Anaglyph 3D"
+msgstr "Anaglifs 3D"
+
+#: modules/gui/qt4/ui/video_effects.h:1477
+msgid "Mirror"
+msgstr "Spoguļot"
+
+#: modules/gui/qt4/ui/video_effects.h:1481
+msgid "Motion detect"
+msgstr "Kustību noteikšana"
+
+#: modules/gui/qt4/ui/video_effects.h:1482
+msgid "Spatial blur"
+msgstr "Telpiskā aizmiglošana"
+
+#: modules/gui/qt4/ui/video_effects.h:1486
+msgid "Anti-Flickering"
+msgstr "Pretmirgošanas"
+
+#: modules/gui/qt4/ui/video_effects.h:1487
+msgid "Soften"
+msgstr "Mīkstināt"
+
+#: modules/gui/qt4/ui/video_effects.h:1488
+msgid "Denoiser"
+msgstr "Attrokšņotājs"
+
+#: modules/gui/qt4/ui/video_effects.h:1489
+msgid "Spatial luma strength"
+msgstr "Telpiskās luma stiprums"
+
+#: modules/gui/qt4/ui/video_effects.h:1490
+msgid "Temporal luma strength"
+msgstr "Pagaidu luma stiprums"
+
+#: modules/gui/qt4/ui/video_effects.h:1491
+msgid "Spatial chroma strength"
+msgstr "Telpiskās krāsainības stiprums"
+
+#: modules/gui/qt4/ui/video_effects.h:1492
+msgid "Temporal chroma strength"
+msgstr "Pagaidu krāsainības stiprums"
+
+#: modules/gui/qt4/ui/vlm.h:286
+msgid "VLM configurator"
+msgstr "VLM konfigurātors"
+
+#: modules/gui/qt4/ui/vlm.h:287
+msgid "Media Manager Edition"
+msgstr "Mediju pārvaldnieka izlaidums"
+
+#: modules/gui/qt4/ui/vlm.h:288
+msgid "Name:"
+msgstr "Nosaukums:"
+
+#: modules/gui/qt4/ui/vlm.h:290
+msgid "Input:"
+msgstr "Ievade:"
+
+#: modules/gui/qt4/ui/vlm.h:291
+msgid "Select Input"
+msgstr "Atlasīt ievadi"
+
+#: modules/gui/qt4/ui/vlm.h:292
+msgid "Output:"
+msgstr "Izvade:"
+
+#: modules/gui/qt4/ui/vlm.h:293
+msgid "Select Output"
+msgstr "Atlasīt izvadi"
+
+#: modules/gui/qt4/ui/vlm.h:294
+msgid "Time Control"
+msgstr "Laika kontrole"
+
+#: modules/gui/qt4/ui/vlm.h:295
+msgid "Mux Control"
+msgstr "Multipleksēšanas kontrole"
+
+#: modules/gui/qt4/ui/vlm.h:296
+msgid "Muxer:"
+msgstr "Multipleksors:"
+
+#: modules/gui/qt4/ui/vlm.h:297
+msgid "AAAA; "
+msgstr "AAAA; "
+
+#: modules/gui/qt4/ui/vlm.h:302
+msgid "Media Manager List"
+msgstr "Mediju pārvaldnieka saraksts"
 
 #~ msgid "MKV"
 #~ msgstr "MKV"
