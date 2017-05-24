@@ -1,3 +1,10 @@
+vlc (2.2.6-1~deb9u1) UNRELEASED; urgency=high
+
+  * New upstream release.
+    demux: Fix heap buffer overflows (CVE-2017-8312)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 24 May 2017 17:52:54 +0200
+
 vlc (2.2.5.1-1~deb9u2) unstable; urgency=medium
 
   * debian/control:
