@@ -1,9 +1,14 @@
-vlc (2.2.6-1~deb9u1) UNRELEASED; urgency=high
+vlc (2.2.6-1~deb9u1) unstable; urgency=high
 
   * New upstream release.
-    demux: Fix heap buffer overflows (CVE-2017-8312)
+    - demux: Fix heap buffer overflows (CVE-2017-8312)
+  * debian/*.maintscript: Bump all versions to 2.2.6-1~z. This is necessary to
+    properly handle symlink to directory conversions once 2.2.6 is available
+    in jessie.
+  * debian/control: Bump Breaks + Replaces to 2.2.6-1~deb9u1 where necessary
+    to ensure proper upgrades from jessie.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Wed, 24 May 2017 17:52:54 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 24 May 2017 18:00:59 +0200
 
 vlc (2.2.5.1-1~deb9u2) unstable; urgency=medium
 
