@@ -1,8 +1,15 @@
-vlc (2.2.6-1~deb8u1) UNRELEASED; urgency=medium
+vlc (2.2.6-1~deb8u1) jessie-security; urgency=medium
 
   * New upstream release.
+    - subtitle: Fix heap buffer overflows (CVE-2017-8312).
+    - subtitle: Fix invalid double increment (CVE-2017-8311).
+    - flac: Fix potential out-of-band dereference.
+    - mpeg: Fix potential out-of-band reads.
+    - subtitle: Fix infinite loop.
+    - ogg: Fix incorrect memory free.
+    - subtitle: Fix potential out-of-band reads (CVE-2017-8310, CVE-2017-8313).
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sat, 13 May 2017 15:01:28 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 25 May 2017 11:57:56 +0200
 
 vlc (2.2.5-1~deb8u1) jessie; urgency=medium
 
