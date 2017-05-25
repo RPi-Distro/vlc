@@ -1,8 +1,8 @@
-vlc (2.2.5.1-1~deb8u1) UNRELEASED; urgency=medium
+vlc (2.2.6-1~deb8u1) UNRELEASED; urgency=medium
 
   * New upstream release.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sat, 13 May 2017 15:00:03 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 13 May 2017 15:01:28 +0200
 
 vlc (2.2.5-1~deb8u1) jessie; urgency=medium
 
