@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-04-28 03:55+0200\n"
+"POT-Creation-Date: 2017-05-24 15:01+0200\n"
 "PO-Revision-Date: 2016-04-18 09:42+0000\n"
 "Last-Translator: pingplug <pingplug@foxmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/yaron/vlc-trans/"
@@ -89,6 +89,7 @@ msgstr "热键设置"
 #: modules/services_discovery/mediadirs.c:76 modules/stream_out/es.c:93
 #: modules/stream_out/transcode/transcode.c:183
 #: share/lua/http/dialogs/create_stream.html:150
+#: modules/gui/qt4/ui/profiles.h:721 modules/gui/qt4/ui/profiles.h:752
 msgid "Audio"
 msgstr "音频"
 
@@ -101,6 +102,7 @@ msgid "General audio settings"
 msgstr "常规音频设置"
 
 #: include/vlc_config_cat.h:58 include/vlc_config_cat.h:79
+#: modules/gui/qt4/ui/profiles.h:750 modules/gui/qt4/ui/profiles.h:760
 msgid "Filters"
 msgstr "滤镜"
 
@@ -147,6 +149,8 @@ msgstr "其它音频设置及模块。"
 #: modules/services_discovery/mediadirs.c:69 modules/stream_out/es.c:101
 #: modules/stream_out/transcode/transcode.c:154
 #: share/lua/http/dialogs/create_stream.html:147
+#: modules/gui/qt4/ui/profiles.h:722 modules/gui/qt4/ui/profiles.h:726
+#: modules/gui/qt4/ui/sprefs_video.h:334
 msgid "Video"
 msgstr "视频"
 
@@ -363,6 +367,7 @@ msgid ""
 msgstr "服务发现模块是可以自动将项目添加到播放列表的装置。"
 
 #: include/vlc_config_cat.h:178 src/libvlc-module.c:1790
+#: modules/gui/qt4/ui/video_effects.h:1495
 msgid "Advanced"
 msgstr "高级"
 
@@ -446,7 +451,7 @@ msgstr "关于(&A)"
 #: modules/gui/macosx/MainMenu.m:1308 modules/gui/macosx/MainMenu.m:1309
 #: modules/gui/macosx/MainMenu.m:1310 modules/gui/macosx/playlist.m:583
 #: modules/gui/qt4/components/controller.hpp:115
-#: modules/gui/qt4/dialogs/vlm.cpp:546
+#: modules/gui/qt4/dialogs/vlm.cpp:546 modules/gui/qt4/ui/open.h:243
 msgid "Play"
 msgstr "播放"
 
@@ -537,6 +542,7 @@ msgid "Search"
 msgstr "搜索"
 
 #: include/vlc_intf_strings.h:99 modules/gui/macosx/VideoEffects.m:157
+#: modules/gui/qt4/ui/video_effects.h:1479
 msgid "Waves"
 msgstr "波形"
 
@@ -654,7 +660,9 @@ msgstr "立体声"
 #: modules/gui/macosx/VideoEffects.m:167 modules/gui/macosx/VideoEffects.m:189
 #: modules/video_filter/audiobargraph_v.c:64 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
-#: modules/video_filter/rss.c:173
+#: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1407
+#: modules/gui/qt4/ui/video_effects.h:1450
+#: modules/gui/qt4/ui/video_effects.h:1460
 msgid "Left"
 msgstr "左"
 
@@ -667,7 +675,7 @@ msgstr "左"
 #: modules/gui/macosx/VideoEffects.m:169 modules/gui/macosx/VideoEffects.m:191
 #: modules/video_filter/audiobargraph_v.c:64 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
-#: modules/video_filter/rss.c:173
+#: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1408
 msgid "Right"
 msgstr "右"
 
@@ -875,6 +883,8 @@ msgstr "浏览器停止"
 
 #: src/config/keys.c:66 modules/gui/macosx/playlist.m:584
 #: modules/gui/qt4/dialogs/bookmarks.cpp:50
+#: modules/gui/qt4/ui/podcast_configuration.h:104
+#: modules/gui/qt4/ui/streampanel.h:172
 msgid "Delete"
 msgstr "删除"
 
@@ -1226,12 +1236,14 @@ msgstr "原始 ID"
 #: src/input/es_out.c:2911 src/input/es_out.c:2914 modules/access/imem.c:67
 #: modules/gui/macosx/ConvertAndSave.m:177
 #: modules/gui/macosx/ConvertAndSave.m:187 modules/gui/macosx/wizard.m:382
+#: modules/gui/qt4/ui/profiles.h:728 modules/gui/qt4/ui/profiles.h:754
+#: modules/gui/qt4/ui/profiles.h:763
 msgid "Codec"
 msgstr "编码格式"
 
 #: src/input/es_out.c:2918 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/MainMenu.m:80 modules/gui/macosx/simple_prefs.m:380
-#: modules/stream_out/setid.c:49
+#: modules/stream_out/setid.c:49 modules/gui/qt4/ui/sprefs_interface.h:517
 msgid "Language"
 msgstr "语言"
 
@@ -1242,7 +1254,7 @@ msgid "Description"
 msgstr "描述"
 
 #: src/input/es_out.c:2930 modules/gui/macosx/ConvertAndSave.m:189
-#: modules/gui/macosx/output.m:167
+#: modules/gui/macosx/output.m:167 modules/gui/qt4/ui/profiles.h:756
 msgid "Channels"
 msgstr "声道"
 
@@ -1263,7 +1275,8 @@ msgstr "位每采样"
 #: src/input/es_out.c:2950 modules/access_output/shout.c:92
 #: modules/demux/playlist/shoutcast.c:335
 #: modules/gui/macosx/ConvertAndSave.m:178
-#: modules/gui/macosx/ConvertAndSave.m:188
+#: modules/gui/macosx/ConvertAndSave.m:188 modules/gui/qt4/ui/profiles.h:729
+#: modules/gui/qt4/ui/profiles.h:755
 msgid "Bitrate"
 msgstr "位率"
 
@@ -1286,6 +1299,7 @@ msgid "%.2f dB"
 msgstr "%.2f dB"
 
 #: src/input/es_out.c:2974 modules/gui/macosx/ConvertAndSave.m:180
+#: modules/gui/qt4/ui/profiles.h:749
 msgid "Resolution"
 msgstr "分辨率"
 
@@ -1331,6 +1345,7 @@ msgstr "无法侦测“%s”的格式。详情请见日志。"
 #: modules/gui/macosx/playlistinfo.m:73 modules/gui/macosx/wizard.m:345
 #: modules/gui/qt4/components/open_panels.cpp:490
 #: modules/gui/qt4/components/open_panels.cpp:504 modules/mux/asf.c:56
+#: modules/gui/qt4/ui/open_disk.h:309
 msgid "Title"
 msgstr "标题"
 
@@ -1370,6 +1385,7 @@ msgid "Setting"
 msgstr "设置"
 
 #: src/input/meta.c:65 modules/gui/macosx/open.m:179
+#: modules/gui/qt4/ui/podcast_configuration.h:102
 msgid "URL"
 msgstr "URL"
 
@@ -1428,7 +1444,7 @@ msgstr "程序"
 
 #: src/input/var.c:182 modules/gui/macosx/MainMenu.m:420
 #: modules/gui/macosx/MainMenu.m:421 modules/gui/macosx/open.m:170
-#: modules/gui/macosx/open.m:172
+#: modules/gui/macosx/open.m:172 modules/gui/qt4/ui/open_disk.h:310
 msgid "Chapter"
 msgstr "章节"
 
@@ -1655,7 +1671,7 @@ msgid ""
 msgstr "这是 VLC 将要使用的音频输出方式。默认的行为是自动选择可用的最佳方式。"
 
 #: src/libvlc-module.c:131 modules/gui/macosx/simple_prefs.m:335
-#: modules/stream_out/display.c:40
+#: modules/stream_out/display.c:40 modules/gui/qt4/ui/sprefs_audio.h:426
 msgid "Enable audio"
 msgstr "启用音频"
 
@@ -1721,6 +1737,7 @@ msgstr ""
 "音频输出声道模式 。"
 
 #: src/libvlc-module.c:164 modules/gui/macosx/simple_prefs.m:341
+#: modules/gui/qt4/ui/sprefs_audio.h:434
 msgid "Use S/PDIF when available"
 msgstr "在可能时使用 S/PDIF"
 
@@ -1751,6 +1768,7 @@ msgstr ""
 #: modules/gui/qt4/components/simple_preferences.cpp:136
 #: modules/gui/qt4/components/sout/profile_selector.cpp:563
 #: modules/video_output/kva.c:62 modules/video_output/xcb/xvideo.c:870
+#: modules/gui/qt4/ui/profiles.h:744 modules/gui/qt4/ui/profiles.h:747
 msgid "Auto"
 msgstr "自动"
 
@@ -1858,7 +1876,7 @@ msgid ""
 msgstr "这是 VLC 使用的视频输出模块。默认的行为是自动选择最佳的可用模块。"
 
 #: src/libvlc-module.c:247 modules/gui/macosx/simple_prefs.m:422
-#: modules/stream_out/display.c:42
+#: modules/stream_out/display.c:42 modules/gui/qt4/ui/sprefs_video.h:321
 msgid "Enable video"
 msgstr "启用视频"
 
@@ -1954,7 +1972,9 @@ msgstr "居中"
 #: modules/gui/macosx/VideoEffects.m:171 modules/gui/macosx/VideoEffects.m:193
 #: modules/video_filter/audiobargraph_v.c:64 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
-#: modules/video_filter/rss.c:173
+#: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1405
+#: modules/gui/qt4/ui/video_effects.h:1448
+#: modules/gui/qt4/ui/video_effects.h:1459
 msgid "Top"
 msgstr "上"
 
@@ -1963,7 +1983,7 @@ msgstr "上"
 #: modules/gui/macosx/VideoEffects.m:173 modules/gui/macosx/VideoEffects.m:195
 #: modules/video_filter/audiobargraph_v.c:64 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
-#: modules/video_filter/rss.c:173
+#: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1409
 msgid "Bottom"
 msgstr "下"
 
@@ -2049,6 +2069,7 @@ msgstr ""
 "覆盖层是您显卡的硬件加速功能 (直接渲染视频的能力)。VLC 默认会尝试使用它。"
 
 #: src/libvlc-module.c:309 src/video_output/vout_intf.c:276
+#: modules/gui/qt4/ui/sprefs_video.h:326
 msgid "Always on top"
 msgstr "总在最前"
 
@@ -2166,6 +2187,7 @@ msgid ""
 msgstr "在播放时关闭电源管理服务，防止计算机由于长时间无活动而被关闭。"
 
 #: src/libvlc-module.c:372 modules/gui/macosx/simple_prefs.m:424
+#: modules/gui/qt4/ui/sprefs_video.h:327
 msgid "Window decorations"
 msgstr "窗口装饰"
 
@@ -2493,6 +2515,7 @@ msgstr "默认"
 #: src/libvlc-module.c:538 modules/gui/macosx/AudioEffects.m:112
 #: modules/gui/macosx/MainWindow.m:1086 modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/extended_panels.cpp:1053
+#: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:289
 msgid "Enable"
 msgstr "启用"
 
@@ -2556,7 +2579,7 @@ msgstr ""
 "按照给予的服务 ID (SID) 逗号分隔列表选择程序。仅在您希望读取多程序流时使用此"
 "选项 (类似 DVB 流)。"
 
-#: src/libvlc-module.c:576
+#: src/libvlc-module.c:576 modules/gui/qt4/ui/open_disk.h:312
 msgid "Audio track"
 msgstr "音频轨道"
 
@@ -2564,7 +2587,7 @@ msgstr "音频轨道"
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "要使用的音轨流编号 (从 0 到 n)。"
 
-#: src/libvlc-module.c:581
+#: src/libvlc-module.c:581 modules/gui/qt4/ui/open_disk.h:313
 msgid "Subtitle track"
 msgstr "字幕轨道"
 
@@ -2748,6 +2771,7 @@ msgstr ""
 "{...}”的形式给出一个串流的书签列表"
 
 #: src/libvlc-module.c:665 modules/gui/macosx/simple_prefs.m:357
+#: modules/gui/qt4/ui/sprefs_input.h:355
 msgid "Record directory or filename"
 msgstr "录制目录或文件名"
 
@@ -2809,7 +2833,7 @@ msgstr ""
 "在此启用滤镜并在“子画面滤镜”模块区域配置它们。您还可以设置很多其它子画面选"
 "项。"
 
-#: src/libvlc-module.c:697
+#: src/libvlc-module.c:697 modules/gui/qt4/ui/sprefs_subtitles.h:305
 msgid "Force subtitle position"
 msgstr "强制字幕位置"
 
@@ -2832,6 +2856,7 @@ msgstr "您可以完全关闭子画面处理。"
 #: src/libvlc-module.c:706 src/libvlc-module.c:1621 src/text/iso-639_def.h:145
 #: modules/gui/macosx/simple_prefs.m:411
 #: modules/stream_out/transcode/transcode.c:212
+#: modules/gui/qt4/ui/sprefs_subtitles.h:290
 msgid "On Screen Display"
 msgstr "屏幕显示"
 
@@ -3521,7 +3546,7 @@ msgstr "从文件管理中启动 VLC"
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr "告诉 VLC 它是被 OS 的文件关联所驱动的"
 
-#: src/libvlc-module.c:1085
+#: src/libvlc-module.c:1085 modules/gui/qt4/ui/sprefs_interface.h:538
 msgid "Use only one instance when started from file manager"
 msgstr "从文件管理器启动时，只允许一个实例"
 
@@ -3542,7 +3567,7 @@ msgstr ""
 "将占用更多的处理器时间。不过要注意在某些情况下 (bug) VLC 会占用全部的处理器时"
 "间并且整个系统将无法响应，只有重新启动您的机器才能还原。"
 
-#: src/libvlc-module.c:1097
+#: src/libvlc-module.c:1097 modules/gui/qt4/ui/sprefs_interface.h:541
 msgid "Enqueue items into playlist in one instance mode"
 msgstr "在单实例模式中将项目添加到播放列表队列中"
 
@@ -3571,6 +3596,7 @@ msgstr "自动预分析被添加到播放列表中的文件 (恢复某些元数�
 
 #: src/libvlc-module.c:1116 modules/gui/macosx/simple_prefs.m:391
 #: modules/gui/qt4/dialogs/firstrun.cpp:98
+#: modules/gui/qt4/ui/sprefs_interface.h:551
 msgid "Allow metadata network access"
 msgstr "允许访问网络查询元数据"
 
@@ -3660,7 +3686,7 @@ msgid ""
 "VLC."
 msgstr "媒体库将被自动保存并在每次您启动 VLC 时重新载入。"
 
-#: src/libvlc-module.c:1161
+#: src/libvlc-module.c:1161 modules/gui/qt4/ui/sprefs_interface.h:539
 msgid "Display playlist tree"
 msgstr "显示播放列表树"
 
@@ -3701,6 +3727,7 @@ msgstr "鼠标滚轮纵轴可控制音量或位置，也可以忽略滚轮事件
 #: modules/gui/macosx/MainMenu.m:1616 modules/gui/macosx/MainMenu.m:1626
 #: modules/gui/macosx/simple_prefs.m:423
 #: modules/gui/qt4/components/controller.hpp:116
+#: modules/gui/qt4/ui/sprefs_video.h:323
 msgid "Fullscreen"
 msgstr "全屏"
 
@@ -3786,6 +3813,7 @@ msgstr "较慢 (微调)"
 #: modules/gui/macosx/wizard.m:1559
 #: modules/gui/qt4/components/controller.hpp:120
 #: modules/gui/qt4/dialogs/sout.cpp:93 modules/notify/notify.c:339
+#: modules/gui/qt4/ui/streampanel.h:181
 msgid "Next"
 msgstr "下一个"
 
@@ -3810,7 +3838,7 @@ msgstr "选择用于跳到上一个播放列表项目的热键。"
 #: modules/gui/macosx/MainMenu.m:398 modules/gui/macosx/MainMenu.m:504
 #: modules/gui/macosx/MainMenu.m:511 modules/gui/macosx/MainMenu.m:1566
 #: modules/gui/qt4/components/controller.hpp:115
-#: modules/gui/qt4/dialogs/vlm.cpp:552
+#: modules/gui/qt4/dialogs/vlm.cpp:552 modules/gui/qt4/ui/streampanel.h:180
 msgid "Stop"
 msgstr "停止"
 
@@ -3821,7 +3849,8 @@ msgstr "选择用于停止播放的热键。"
 #: src/libvlc-module.c:1215 modules/gui/macosx/ControlsBar.m:67
 #: modules/gui/macosx/fspanel.m:448 modules/gui/macosx/VideoEffects.m:163
 #: modules/gui/macosx/VideoEffects.m:185 modules/video_filter/marq.c:150
-#: modules/video_filter/rss.c:200
+#: modules/video_filter/rss.c:200 modules/gui/qt4/ui/sprefs_subtitles.h:293
+#: modules/gui/qt4/ui/video_effects.h:1456
 msgid "Position"
 msgstr "位置"
 
@@ -4484,6 +4513,8 @@ msgstr "子画面"
 #: modules/demux/xiph_metadata.h:62 modules/gui/macosx/ConvertAndSave.m:173
 #: modules/gui/macosx/ConvertAndSave.m:191 modules/gui/macosx/MainMenu.m:459
 #: share/lua/http/dialogs/create_stream.html:153
+#: modules/gui/qt4/ui/profiles.h:718 modules/gui/qt4/ui/profiles.h:762
+#: modules/gui/qt4/ui/profiles.h:765
 msgid "Subtitles"
 msgstr "字幕"
 
@@ -5424,7 +5455,7 @@ msgstr "缩放因数"
 
 #: src/video_output/vout_intf.c:220 modules/gui/macosx/MainMenu.m:448
 #: modules/gui/macosx/MainMenu.m:449 modules/gui/macosx/VideoEffects.m:80
-#: modules/video_filter/croppadd.c:86
+#: modules/video_filter/croppadd.c:86 modules/gui/qt4/ui/video_effects.h:1415
 msgid "Crop"
 msgstr "裁剪"
 
@@ -5551,6 +5582,7 @@ msgid ""
 msgstr "Blu-Ray 播放器的区域码。部分光盘只有在区域码正确时才可以播放。"
 
 #: modules/access/bluray.c:87 modules/services_discovery/udev.c:597
+#: modules/gui/qt4/ui/open_disk.h:299
 msgid "Blu-ray"
 msgstr "蓝光"
 
@@ -5619,6 +5651,7 @@ msgid "First Play"
 msgstr "首先播放"
 
 #: modules/access/cdda.c:62 modules/gui/macosx/open.m:160
+#: modules/gui/qt4/ui/open_disk.h:300
 msgid "Audio CD"
 msgstr "音频 CD"
 
@@ -6674,7 +6707,7 @@ msgstr "文件输入"
 msgid "File"
 msgstr "文件"
 
-#: modules/access/fs.c:72
+#: modules/access/fs.c:72 modules/gui/qt4/ui/sprefs_video.h:339
 msgid "Directory"
 msgstr "目录"
 
@@ -6897,6 +6930,7 @@ msgstr "音频通量流的声道数目"
 #: modules/gui/qt4/components/extended_panels.cpp:1432
 #: modules/video_filter/mosaic.c:94 modules/video_output/vmem.c:42
 #: share/lua/http/dialogs/mosaic_window.html:108
+#: modules/gui/qt4/ui/profiles.h:743
 msgid "Width"
 msgstr "宽度"
 
@@ -6908,6 +6942,7 @@ msgstr "视频或字幕通量流的宽度"
 #: modules/demux/rawvid.c:52 modules/gui/macosx/ConvertAndSave.m:183
 #: modules/video_filter/mosaic.c:92 modules/video_output/vmem.c:45
 #: share/lua/http/dialogs/mosaic_window.html:126
+#: modules/gui/qt4/ui/profiles.h:746
 msgid "Height"
 msgstr "高度"
 
@@ -8167,6 +8202,7 @@ msgstr "重置控件为默认值。"
 
 #: modules/access/v4l2/v4l2.c:84 modules/gui/macosx/VideoEffects.m:90
 #: modules/video_filter/atmo/atmo.cpp:256
+#: modules/gui/qt4/ui/video_effects.h:1393
 msgid "Brightness"
 msgstr "亮度"
 
@@ -8183,6 +8219,7 @@ msgid "Automatically adjust the picture brightness."
 msgstr "自动调整画面亮度。"
 
 #: modules/access/v4l2/v4l2.c:89 modules/gui/macosx/VideoEffects.m:89
+#: modules/gui/qt4/ui/video_effects.h:1395
 msgid "Contrast"
 msgstr "对比度"
 
@@ -8192,6 +8229,8 @@ msgstr "画面对比度或亮度增益。"
 
 #: modules/access/v4l2/v4l2.c:91 modules/gui/macosx/VideoEffects.m:92
 #: modules/gui/macosx/VideoEffects.m:132
+#: modules/gui/qt4/ui/video_effects.h:1396
+#: modules/gui/qt4/ui/video_effects.h:1428
 msgid "Saturation"
 msgstr "饱和度"
 
@@ -8200,6 +8239,7 @@ msgid "Picture saturation or chroma gain."
 msgstr "画面饱和度或色度增益。"
 
 #: modules/access/v4l2/v4l2.c:93 modules/gui/macosx/VideoEffects.m:88
+#: modules/gui/qt4/ui/video_effects.h:1392
 msgid "Hue"
 msgstr "色调"
 
@@ -8251,6 +8291,7 @@ msgid "Blue chroma balance."
 msgstr "蓝色色度平衡。"
 
 #: modules/access/v4l2/v4l2.c:111 modules/gui/macosx/VideoEffects.m:93
+#: modules/gui/qt4/ui/video_effects.h:1397
 msgid "Gamma"
 msgstr "伽玛"
 
@@ -8374,7 +8415,7 @@ msgid "Black & white"
 msgstr "黑白"
 
 #: modules/access/v4l2/v4l2.c:164 modules/gui/macosx/VideoEffects.m:134
-#: modules/video_filter/sepia.c:65
+#: modules/video_filter/sepia.c:65 modules/gui/qt4/ui/video_effects.h:1430
 msgid "Sepia"
 msgstr "深褐"
 
@@ -8608,7 +8649,7 @@ msgstr "音量设置"
 
 #: modules/access/vcdx/info.c:69 modules/gui/macosx/ControlsBar.m:497
 #: modules/gui/macosx/fspanel.m:467 modules/gui/qt4/dialogs/toolbar.cpp:448
-#: modules/stream_out/raop.c:150
+#: modules/stream_out/raop.c:150 modules/gui/qt4/ui/sprefs_audio.h:427
 msgid "Volume"
 msgstr "音量"
 
@@ -8620,7 +8661,7 @@ msgstr "系统 Id"
 msgid "Entries"
 msgstr "条目"
 
-#: modules/access/vcdx/info.c:75
+#: modules/access/vcdx/info.c:75 modules/gui/qt4/ui/sprefs_audio.h:442
 msgid "Tracks"
 msgstr "轨道"
 
@@ -11817,6 +11858,8 @@ msgstr "MP3 定点音频编码器"
 
 #: modules/codec/speex.c:59 modules/codec/speex.c:867
 #: modules/gui/macosx/open.m:186 modules/gui/macosx/VideoEffects.m:138
+#: modules/gui/qt4/ui/sprefs_video.h:336
+#: modules/gui/qt4/ui/video_effects.h:1422
 msgid "Mode"
 msgstr "模式"
 
@@ -13078,6 +13121,7 @@ msgid "Quiet mode"
 msgstr "静默模式"
 
 #: modules/codec/x264.c:402 modules/gui/macosx/playlistinfo.m:79
+#: modules/gui/qt4/ui/streampanel.h:170
 msgid "Statistics"
 msgstr "统计信息"
 
@@ -14276,6 +14320,7 @@ msgid "Use chapter codecs found in the segment."
 msgstr "使用剪辑中找到的章节编解码。"
 
 #: modules/demux/mkv/mkv.cpp:62 modules/gui/macosx/simple_prefs.m:370
+#: modules/gui/qt4/ui/sprefs_input.h:358
 msgid "Preload MKV files in the same directory"
 msgstr "预加载同目录中的 MKV 文件"
 
@@ -14615,6 +14660,7 @@ msgstr "新潮"
 
 #: modules/demux/mp4/id3genres.h:99 modules/gui/macosx/VideoEffects.m:158
 #: modules/video_filter/psychedelic.c:55
+#: modules/gui/qt4/ui/video_effects.h:1478
 msgid "Psychedelic"
 msgstr "幻觉"
 
@@ -15761,12 +15807,13 @@ msgstr "卸载"
 msgid "Skins"
 msgstr "皮肤"
 
-#: modules/gui/macosx/AudioEffects.m:113
+#: modules/gui/macosx/AudioEffects.m:113 modules/gui/qt4/ui/equalizer.h:134
 msgid "2 Pass"
 msgstr "两轮"
 
 #: modules/gui/macosx/AudioEffects.m:114
 #: modules/gui/qt4/components/extended_panels.cpp:1246
+#: modules/gui/qt4/ui/equalizer.h:136
 msgid "Preamp"
 msgstr "前置放大"
 
@@ -15847,6 +15894,7 @@ msgstr "输入新配置文件的名称:"
 #: modules/gui/macosx/simple_prefs.m:376 modules/gui/macosx/simple_prefs.m:441
 #: modules/gui/macosx/VideoEffects.m:679
 #: modules/gui/qt4/components/sout/profile_selector.cpp:424
+#: modules/gui/qt4/ui/vlm.h:301
 msgid "Save"
 msgstr "保存"
 
@@ -15862,7 +15910,7 @@ msgstr "选择希望移除的预设:"
 
 #: modules/gui/macosx/AudioEffects.m:386 modules/gui/macosx/AudioEffects.m:711
 #: modules/gui/macosx/bookmarks.m:101 modules/gui/macosx/ConvertAndSave.m:388
-#: modules/gui/macosx/VideoEffects.m:741
+#: modules/gui/macosx/VideoEffects.m:741 modules/gui/qt4/ui/open_file.h:154
 msgid "Remove"
 msgstr "移除"
 
@@ -15895,12 +15943,14 @@ msgid "Bookmarks"
 msgstr "书签"
 
 #: modules/gui/macosx/bookmarks.m:97
+#: modules/gui/qt4/ui/podcast_configuration.h:103 modules/gui/qt4/ui/sout.h:209
+#: modules/gui/qt4/ui/vlm.h:299
 msgid "Add"
 msgstr "添加"
 
 #: modules/gui/macosx/bookmarks.m:98 modules/gui/macosx/MainMenu.m:381
 #: modules/gui/macosx/simple_prefs.m:351
-#: modules/gui/qt4/dialogs/bookmarks.cpp:53
+#: modules/gui/qt4/dialogs/bookmarks.cpp:53 modules/gui/qt4/ui/vlm.h:300
 msgid "Clear"
 msgstr "清除"
 
@@ -16180,6 +16230,9 @@ msgstr "选择一个输出位置"
 #: modules/gui/qt4/components/preferences_widgets.cpp:264
 #: modules/gui/qt4/components/simple_preferences.cpp:496
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:111
+#: modules/gui/qt4/ui/open.h:263 modules/gui/qt4/ui/open_disk.h:307
+#: modules/gui/qt4/ui/open_file.h:147 modules/gui/qt4/ui/sprefs_audio.h:433
+#: modules/gui/qt4/ui/sprefs_input.h:356 modules/gui/qt4/ui/sprefs_video.h:340
 msgid "Browse..."
 msgstr "浏览..."
 
@@ -16211,25 +16264,27 @@ msgstr "应用"
 msgid "Save as new Profile..."
 msgstr "另存为新的配置文件..."
 
-#: modules/gui/macosx/ConvertAndSave.m:170
+#: modules/gui/macosx/ConvertAndSave.m:170 modules/gui/qt4/ui/profiles.h:725
 msgid "Encapsulation"
 msgstr "封装"
 
 #: modules/gui/macosx/ConvertAndSave.m:171
 #: share/lua/http/dialogs/create_stream.html:160
+#: modules/gui/qt4/ui/profiles.h:751
 msgid "Video codec"
 msgstr "视频编解码器"
 
 #: modules/gui/macosx/ConvertAndSave.m:172
 #: share/lua/http/dialogs/create_stream.html:178
+#: modules/gui/qt4/ui/profiles.h:761
 msgid "Audio codec"
 msgstr "音频编解码器"
 
-#: modules/gui/macosx/ConvertAndSave.m:176
+#: modules/gui/macosx/ConvertAndSave.m:176 modules/gui/qt4/ui/profiles.h:727
 msgid "Keep original video track"
 msgstr "保持原视频轨"
 
-#: modules/gui/macosx/ConvertAndSave.m:181
+#: modules/gui/macosx/ConvertAndSave.m:181 modules/gui/qt4/ui/profiles.h:740
 msgid ""
 "You just need to fill one of the three following parameters, VLC will "
 "autodetect the other using the original aspect ratio"
@@ -16237,14 +16292,15 @@ msgstr ""
 "您只需填写下列三个参数中的任意一个，VLC 将使用原始宽高比自动确定其他两项"
 
 #: modules/gui/macosx/ConvertAndSave.m:184 modules/gui/macosx/output.m:157
+#: modules/gui/qt4/ui/profiles.h:741
 msgid "Scale"
 msgstr "比例"
 
-#: modules/gui/macosx/ConvertAndSave.m:186
+#: modules/gui/macosx/ConvertAndSave.m:186 modules/gui/qt4/ui/profiles.h:753
 msgid "Keep original audio track"
 msgstr "保持原音频轨"
 
-#: modules/gui/macosx/ConvertAndSave.m:192
+#: modules/gui/macosx/ConvertAndSave.m:192 modules/gui/qt4/ui/profiles.h:764
 msgid "Overlay subtitles on the video"
 msgstr "将字幕覆盖在视频上"
 
@@ -17145,7 +17201,7 @@ msgstr ""
 "程序）。"
 
 #: modules/gui/macosx/open.m:133 modules/gui/macosx/open.m:594
-#: modules/gui/macosx/simple_prefs.m:365
+#: modules/gui/macosx/simple_prefs.m:365 modules/gui/qt4/ui/sprefs_input.h:359
 msgid "Network"
 msgstr "网络"
 
@@ -17172,7 +17228,7 @@ msgstr "同时播放一个其它的媒体"
 
 #: modules/gui/macosx/open.m:143 modules/gui/macosx/open.m:362
 #: modules/gui/macosx/simple_prefs.m:405 modules/gui/macosx/wizard.m:343
-#: modules/gui/macosx/wizard.m:411
+#: modules/gui/macosx/wizard.m:411 modules/gui/qt4/ui/sprefs_interface.h:535
 msgid "Choose..."
 msgstr "选择..."
 
@@ -17348,6 +17404,7 @@ msgid "Subtitle encoding"
 msgstr "字幕编码"
 
 #: modules/gui/macosx/open.m:373 modules/gui/macosx/simple_prefs.m:407
+#: modules/gui/qt4/ui/sprefs_subtitles.h:300
 msgid "Font size"
 msgstr "字体"
 
@@ -17368,7 +17425,7 @@ msgid "Subtitle File"
 msgstr "字幕文件"
 
 #: modules/gui/macosx/open.m:667 modules/gui/macosx/open.m:742
-#: modules/gui/macosx/open.m:1553
+#: modules/gui/macosx/open.m:1553 modules/gui/qt4/ui/open_file.h:142
 msgid "Open File"
 msgstr "打开文件"
 
@@ -17585,6 +17642,7 @@ msgid "Select"
 msgstr "选择"
 
 #: modules/gui/macosx/ResumeDialogController.m:44 modules/gui/qt4/qt4.cpp:188
+#: modules/gui/qt4/ui/sprefs_interface.h:533
 msgid "Continue playback?"
 msgstr "继续播放?"
 
@@ -17656,7 +17714,7 @@ msgstr "可视化"
 msgid "Keep audio level between sessions"
 msgstr "会话期间保留音频层级"
 
-#: modules/gui/macosx/simple_prefs.m:344
+#: modules/gui/macosx/simple_prefs.m:344 modules/gui/qt4/ui/sprefs_audio.h:429
 msgid "Always reset audio start level to:"
 msgstr "总将音频启动层级重置为:"
 
@@ -17689,7 +17747,7 @@ msgstr "修复 AVI 文件"
 msgid "Default Caching Level"
 msgstr "默认缓冲等级"
 
-#: modules/gui/macosx/simple_prefs.m:362
+#: modules/gui/macosx/simple_prefs.m:362 modules/gui/qt4/ui/open.h:248
 msgid "Caching"
 msgstr "正在缓冲"
 
@@ -17744,6 +17802,7 @@ msgid "Show Fullscreen Controller"
 msgstr "显示全屏控制器"
 
 #: modules/gui/macosx/simple_prefs.m:387
+#: modules/gui/qt4/ui/sprefs_interface.h:542
 msgid "Privacy / Network Interaction"
 msgstr "隐私 / 网络交互"
 
@@ -17773,12 +17832,14 @@ msgid "Display Settings"
 msgstr "显示设置"
 
 #: modules/gui/macosx/simple_prefs.m:406
+#: modules/gui/qt4/ui/sprefs_subtitles.h:301
 msgid "Font color"
 msgstr "字体颜色"
 
 #: modules/gui/macosx/simple_prefs.m:408 modules/text_renderer/freetype.c:95
 #: modules/text_renderer/quartztext.c:92 modules/text_renderer/win32text.c:59
 #: modules/video_filter/marq.c:156 modules/video_filter/rss.c:206
+#: modules/gui/qt4/ui/sprefs_subtitles.h:299
 msgid "Font"
 msgstr "字体"
 
@@ -17787,6 +17848,7 @@ msgid "Subtitle languages"
 msgstr "字幕语言"
 
 #: modules/gui/macosx/simple_prefs.m:410
+#: modules/gui/qt4/ui/sprefs_subtitles.h:296
 msgid "Preferred subtitle language"
 msgstr "首选的字幕语言"
 
@@ -17804,10 +17866,12 @@ msgid "Force bold"
 msgstr "强制加粗"
 
 #: modules/gui/macosx/simple_prefs.m:415 modules/text_renderer/freetype.c:125
+#: modules/gui/qt4/ui/sprefs_subtitles.h:303
 msgid "Outline color"
 msgstr "轮廓颜色"
 
 #: modules/gui/macosx/simple_prefs.m:416 modules/text_renderer/freetype.c:126
+#: modules/gui/qt4/ui/sprefs_subtitles.h:302
 msgid "Outline thickness"
 msgstr "轮廓宽度"
 
@@ -17816,10 +17880,11 @@ msgid "Black screens in Fullscreen mode"
 msgstr "全屏模式中的黑屏"
 
 #: modules/gui/macosx/simple_prefs.m:421 modules/stream_out/display.c:53
+#: modules/gui/qt4/ui/sprefs_video.h:322
 msgid "Display"
 msgstr "显示"
 
-#: modules/gui/macosx/simple_prefs.m:427
+#: modules/gui/macosx/simple_prefs.m:427 modules/gui/qt4/ui/sprefs_video.h:338
 msgid "Video snapshots"
 msgstr "显示截图"
 
@@ -17827,15 +17892,15 @@ msgstr "显示截图"
 msgid "Folder"
 msgstr "文件夹"
 
-#: modules/gui/macosx/simple_prefs.m:430
+#: modules/gui/macosx/simple_prefs.m:430 modules/gui/qt4/ui/sprefs_video.h:344
 msgid "Format"
 msgstr "格式"
 
-#: modules/gui/macosx/simple_prefs.m:431
+#: modules/gui/macosx/simple_prefs.m:431 modules/gui/qt4/ui/sprefs_video.h:341
 msgid "Prefix"
 msgstr "前缀"
 
-#: modules/gui/macosx/simple_prefs.m:432
+#: modules/gui/macosx/simple_prefs.m:432 modules/gui/qt4/ui/sprefs_video.h:343
 msgid "Sequential numbering"
 msgstr "顺序编码"
 
@@ -18015,14 +18080,16 @@ msgstr "视频效果"
 msgid "Basic"
 msgstr "基础"
 
-#: modules/gui/macosx/VideoEffects.m:81
+#: modules/gui/macosx/VideoEffects.m:81 modules/gui/qt4/ui/video_effects.h:1444
 msgid "Geometry"
 msgstr "几何"
 
 #: modules/gui/macosx/VideoEffects.m:82 modules/gui/macosx/VideoEffects.m:131
 #: modules/gui/macosx/VideoEffects.m:146 modules/gui/macosx/VideoEffects.m:149
 #: modules/video_filter/colorthres.c:54 modules/video_filter/marq.c:114
-#: modules/video_filter/rss.c:154
+#: modules/video_filter/rss.c:154 modules/gui/qt4/ui/video_effects.h:1417
+#: modules/gui/qt4/ui/video_effects.h:1423
+#: modules/gui/qt4/ui/video_effects.h:1426
 msgid "Color"
 msgstr "颜色"
 
@@ -18030,43 +18097,50 @@ msgstr "颜色"
 msgid "Image Adjust"
 msgstr "图像调整"
 
-#: modules/gui/macosx/VideoEffects.m:91
+#: modules/gui/macosx/VideoEffects.m:91 modules/gui/qt4/ui/video_effects.h:1394
 msgid "Brightness Threshold"
 msgstr "亮度阈值"
 
 #: modules/gui/macosx/VideoEffects.m:95 modules/video_filter/sharpen.c:67
+#: modules/gui/qt4/ui/video_effects.h:1398
 msgid "Sharpen"
 msgstr "锐利"
 
-#: modules/gui/macosx/VideoEffects.m:96
+#: modules/gui/macosx/VideoEffects.m:96 modules/gui/qt4/ui/video_effects.h:1399
+#: modules/gui/qt4/ui/video_effects.h:1483
 msgid "Sigma"
 msgstr "Sigma"
 
-#: modules/gui/macosx/VideoEffects.m:97
+#: modules/gui/macosx/VideoEffects.m:97 modules/gui/qt4/ui/video_effects.h:1400
 msgid "Banding removal"
 msgstr "Banding 移除"
 
 #: modules/gui/macosx/VideoEffects.m:98 modules/video_filter/gradfun.c:49
+#: modules/gui/qt4/ui/video_effects.h:1401
 msgid "Radius"
 msgstr "半径"
 
-#: modules/gui/macosx/VideoEffects.m:99
+#: modules/gui/macosx/VideoEffects.m:99 modules/gui/qt4/ui/video_effects.h:1402
 msgid "Film Grain"
 msgstr "胶片颗粒"
 
 #: modules/gui/macosx/VideoEffects.m:100 modules/video_filter/grain.c:53
+#: modules/gui/qt4/ui/video_effects.h:1403
 msgid "Variance"
 msgstr "差量"
 
 #: modules/gui/macosx/VideoEffects.m:105
+#: modules/gui/qt4/ui/video_effects.h:1411
 msgid "Synchronize top and bottom"
 msgstr "上下校准"
 
 #: modules/gui/macosx/VideoEffects.m:106
+#: modules/gui/qt4/ui/video_effects.h:1412
 msgid "Synchronize left and right"
 msgstr "左右校准"
 
 #: modules/gui/macosx/VideoEffects.m:108
+#: modules/gui/qt4/ui/video_effects.h:1437
 msgid "Transform"
 msgstr "传输"
 
@@ -18095,45 +18169,57 @@ msgid "Magnification/Zoom"
 msgstr "放大/扩大"
 
 #: modules/gui/macosx/VideoEffects.m:121
+#: modules/gui/qt4/ui/video_effects.h:1440
 msgid "Puzzle game"
 msgstr "智力游戏"
 
 #: modules/gui/macosx/VideoEffects.m:122 modules/gui/macosx/VideoEffects.m:127
 #: share/lua/http/dialogs/mosaic_window.html:96
+#: modules/gui/qt4/ui/video_effects.h:1435
+#: modules/gui/qt4/ui/video_effects.h:1441
 msgid "Rows"
 msgstr "行"
 
 #: modules/gui/macosx/VideoEffects.m:123 modules/gui/macosx/VideoEffects.m:128
 #: share/lua/http/dialogs/mosaic_window.html:114
+#: modules/gui/qt4/ui/video_effects.h:1436
+#: modules/gui/qt4/ui/video_effects.h:1442
 msgid "Columns"
 msgstr "列"
 
 #: modules/gui/macosx/VideoEffects.m:124 modules/video_splitter/clone.c:57
+#: modules/gui/qt4/ui/video_effects.h:1493
 msgid "Clone"
 msgstr "克隆"
 
 #: modules/gui/macosx/VideoEffects.m:125 modules/video_splitter/clone.c:39
+#: modules/gui/qt4/ui/video_effects.h:1494
 msgid "Number of clones"
 msgstr "克隆数量"
 
 #: modules/gui/macosx/VideoEffects.m:126
+#: modules/gui/qt4/ui/video_effects.h:1434
 msgid "Wall"
 msgstr "墙"
 
 #: modules/gui/macosx/VideoEffects.m:130 modules/video_filter/colorthres.c:70
+#: modules/gui/qt4/ui/video_effects.h:1425
 msgid "Color threshold"
 msgstr "色彩阈值"
 
 #: modules/gui/macosx/VideoEffects.m:133
+#: modules/gui/qt4/ui/video_effects.h:1429
 msgid "Similarity"
 msgstr "相似"
 
 #: modules/gui/macosx/VideoEffects.m:135
+#: modules/gui/qt4/ui/video_effects.h:1431
 msgid "Intensity"
 msgstr "强度"
 
 #: modules/gui/macosx/VideoEffects.m:137 modules/gui/macosx/VideoEffects.m:140
 #: modules/video_filter/gradient.c:76 modules/video_filter/gradient.c:82
+#: modules/gui/qt4/ui/video_effects.h:1421
 msgid "Gradient"
 msgstr "斜度"
 
@@ -18146,10 +18232,12 @@ msgid "Hough"
 msgstr "破碎"
 
 #: modules/gui/macosx/VideoEffects.m:147
+#: modules/gui/qt4/ui/video_effects.h:1424
 msgid "Cartoon"
 msgstr "卡通"
 
 #: modules/gui/macosx/VideoEffects.m:148
+#: modules/gui/qt4/ui/video_effects.h:1416
 msgid "Color extraction"
 msgstr "色彩提取"
 
@@ -18158,6 +18246,7 @@ msgid "Invert colors"
 msgstr "反转色彩"
 
 #: modules/gui/macosx/VideoEffects.m:151 modules/video_filter/posterize.c:68
+#: modules/gui/qt4/ui/video_effects.h:1420
 msgid "Posterize"
 msgstr "色调分离"
 
@@ -18166,10 +18255,12 @@ msgid "Posterize level"
 msgstr "色调分离层级"
 
 #: modules/gui/macosx/VideoEffects.m:153 modules/video_filter/motionblur.c:59
+#: modules/gui/qt4/ui/video_effects.h:1484
 msgid "Motion blur"
 msgstr "动态模糊"
 
 #: modules/gui/macosx/VideoEffects.m:154
+#: modules/gui/qt4/ui/video_effects.h:1485
 msgid "Factor"
 msgstr "因素"
 
@@ -18178,6 +18269,7 @@ msgid "Motion Detect"
 msgstr "运动检测"
 
 #: modules/gui/macosx/VideoEffects.m:156
+#: modules/gui/qt4/ui/video_effects.h:1480
 msgid "Water effect"
 msgstr "水面效果"
 
@@ -18186,24 +18278,27 @@ msgid "Anaglyph"
 msgstr "立体"
 
 #: modules/gui/macosx/VideoEffects.m:161
+#: modules/gui/qt4/ui/video_effects.h:1455
 msgid "Add text"
 msgstr "添加文本"
 
 #: modules/gui/macosx/VideoEffects.m:162 modules/misc/logger.c:109
-#: modules/video_filter/marq.c:87
+#: modules/video_filter/marq.c:87 modules/gui/qt4/ui/video_effects.h:1457
 msgid "Text"
 msgstr "文本"
 
 #: modules/gui/macosx/VideoEffects.m:183
+#: modules/gui/qt4/ui/video_effects.h:1445
 msgid "Add logo"
 msgstr "添加标志"
 
 #: modules/gui/macosx/VideoEffects.m:184
+#: modules/gui/qt4/ui/video_effects.h:1446
 msgid "Logo"
 msgstr "标志"
 
 #: modules/gui/macosx/VideoEffects.m:205 modules/stream_out/mosaic_bridge.c:128
-#: modules/video_filter/mosaic.c:87
+#: modules/video_filter/mosaic.c:87 modules/gui/qt4/ui/video_effects.h:1453
 msgid "Transparency"
 msgstr "透明"
 
@@ -19567,6 +19662,7 @@ msgid "File names:"
 msgstr "文件名:"
 
 #: modules/gui/qt4/components/open_panels.cpp:162
+#: modules/gui/qt4/ui/sprefs_interface.h:545
 msgid "Filter:"
 msgstr "筛选:"
 
@@ -19967,6 +20063,7 @@ msgid "File/Folder"
 msgstr "文件/文件夹"
 
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:47
+#: modules/gui/qt4/ui/sout.h:202
 msgid "Source"
 msgstr "来源"
 
@@ -20078,7 +20175,7 @@ msgstr "字节"
 msgid "Convert"
 msgstr "转换"
 
-#: modules/gui/qt4/dialogs/convert.cpp:58
+#: modules/gui/qt4/dialogs/convert.cpp:58 modules/gui/qt4/ui/sprefs_audio.h:432
 msgid "Destination file:"
 msgstr "目标文件:"
 
@@ -20196,7 +20293,7 @@ msgstr "是(&Y)"
 msgid "&No"
 msgstr "否(&N)"
 
-#: modules/gui/qt4/dialogs/help.cpp:222
+#: modules/gui/qt4/dialogs/help.cpp:222 modules/gui/qt4/ui/update.h:147
 msgid "VLC media player updates"
 msgstr "VLC media player 更新"
 
@@ -20241,6 +20338,8 @@ msgid "Location:"
 msgstr "位置:"
 
 #: modules/gui/qt4/dialogs/messages.cpp:79
+#: modules/gui/qt4/ui/messages_panel.h:138
+#: modules/gui/qt4/ui/messages_panel.h:142
 msgid "Messages"
 msgstr "消息"
 
@@ -20439,6 +20538,7 @@ msgid "Website"
 msgstr "网站"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:1525
+#: modules/gui/qt4/ui/sprefs_input.h:354
 msgid "Files"
 msgstr "文件"
 
@@ -20546,7 +20646,7 @@ msgstr "字幕文件"
 msgid "All Files"
 msgstr "所有文件"
 
-#: modules/gui/qt4/dialogs/sout.cpp:45
+#: modules/gui/qt4/dialogs/sout.cpp:45 modules/gui/qt4/ui/sout.h:201
 msgid "Stream Output"
 msgstr "流输出"
 
@@ -20722,6 +20822,7 @@ msgid "Repeat delay:"
 msgstr "重复延迟:"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:107
+#: modules/gui/qt4/ui/sprefs_interface.h:543
 msgid " days"
 msgstr " 天"
 
@@ -22422,6 +22523,7 @@ msgid "Local drives"
 msgstr "本地驱动器"
 
 #: modules/services_discovery/podcast.c:54
+#: modules/gui/qt4/ui/podcast_configuration.h:101
 msgid "Podcast URLs list"
 msgstr "Podcast URL 列表"
 
@@ -22527,7 +22629,7 @@ msgstr "音频捕获 (ALSA)"
 msgid "CD"
 msgstr "CD"
 
-#: modules/services_discovery/udev.c:595
+#: modules/services_discovery/udev.c:595 modules/gui/qt4/ui/open_disk.h:298
 msgid "DVD"
 msgstr "DVD"
 
@@ -23874,7 +23976,7 @@ msgstr "设置图像色度，在 0.01 和 10 之间。默认为 1。"
 msgid "Image properties filter"
 msgstr "图像属性滤镜"
 
-#: modules/video_filter/adjust.c:83
+#: modules/video_filter/adjust.c:83 modules/gui/qt4/ui/video_effects.h:1391
 msgid "Image adjust"
 msgstr "调节图像"
 
@@ -24229,6 +24331,7 @@ msgstr ""
 "在 Windows 通常使用 COM1 或 COM2。Linux 使用  /dev/ttyS01 f.e。"
 
 #: modules/video_filter/atmo/atmo.cpp:253
+#: modules/gui/qt4/ui/video_effects.h:1467
 msgid "Edge weightning"
 msgstr "边缘宽度"
 
@@ -24243,6 +24346,7 @@ msgid "Overall brightness of your LED stripes"
 msgstr "您的 LED 块的总体亮度"
 
 #: modules/video_filter/atmo/atmo.cpp:258
+#: modules/gui/qt4/ui/video_effects.h:1470
 msgid "Darkness limit"
 msgstr "暗度限制"
 
@@ -24266,6 +24370,7 @@ msgid "Sat windowing"
 msgstr "亮度窗口"
 
 #: modules/video_filter/atmo/atmo.cpp:267
+#: modules/gui/qt4/ui/video_effects.h:1472
 msgid "Filter length (ms)"
 msgstr "过滤长度 (毫秒)"
 
@@ -24283,6 +24388,7 @@ msgid "How much a color has to be changed for an immediate color change."
 msgstr "用于一个立即更改的颜色数量。"
 
 #: modules/video_filter/atmo/atmo.cpp:273
+#: modules/gui/qt4/ui/video_effects.h:1474
 msgid "Filter smoothness (%)"
 msgstr "过滤平滑度 (%)"
 
@@ -24441,6 +24547,8 @@ msgid "AtmoLight Filter"
 msgstr "AtmoLight 滤镜"
 
 #: modules/video_filter/atmo/atmo.cpp:360
+#: modules/gui/qt4/ui/video_effects.h:1466
+#: modules/gui/qt4/ui/video_effects.h:1475
 msgid "AtmoLight"
 msgstr "AtmoLight"
 
@@ -24987,6 +25095,7 @@ msgstr "动态视频覆盖"
 
 #: modules/video_filter/dynamicoverlay/dynamicoverlay.c:68
 #: share/lua/http/dialogs/create_stream.html:245
+#: modules/gui/qt4/ui/video_effects.h:1465
 msgid "Overlay"
 msgstr "覆盖"
 
@@ -25945,7 +26054,7 @@ msgstr "使用运动传感器"
 msgid "Rotate video filter"
 msgstr "旋转视频滤镜"
 
-#: modules/video_filter/rotate.c:67
+#: modules/video_filter/rotate.c:67 modules/gui/qt4/ui/video_effects.h:1438
 msgid "Rotate"
 msgstr "旋转"
 
@@ -26558,7 +26667,7 @@ msgstr "OpenGL 的 GLX 扩展"
 msgid "iOS OpenGL video output"
 msgstr "iOS OpenGL 视频输出"
 
-#: modules/video_output/kva.c:50
+#: modules/video_output/kva.c:50 modules/gui/qt4/ui/sprefs_video.h:332
 msgid "Enable a workaround for T23"
 msgstr "启用 T23 兼容措施"
 
@@ -26568,7 +26677,7 @@ msgid ""
 "size is equal to or smaller than the movie size."
 msgstr "如果窗口尺寸等于或小于电影尺寸时显示斜条纹，请启用本项。"
 
-#: modules/video_output/kva.c:55
+#: modules/video_output/kva.c:55 modules/gui/qt4/ui/sprefs_video.h:333
 msgid "Video mode"
 msgstr "视频模式"
 
@@ -26670,7 +26779,7 @@ msgstr "推荐供 Windows Vista 及更新版本使用的视频输出"
 msgid "Direct3D video output"
 msgstr "Direct3D 视频输出"
 
-#: modules/video_output/msw/directx.c:65
+#: modules/video_output/msw/directx.c:65 modules/gui/qt4/ui/sprefs_video.h:325
 msgid "Use hardware YUV->RGB conversions"
 msgstr "使用硬件 YUV->RGB 转换"
 
@@ -27444,6 +27553,7 @@ msgid "Play List"
 msgstr "播放列表"
 
 #: share/lua/http/dialogs/create_stream.html:156
+#: modules/gui/qt4/ui/sprefs_audio.h:430 modules/gui/qt4/ui/sprefs_video.h:328
 msgid "Output"
 msgstr "输出"
 
@@ -27558,7 +27668,7 @@ msgstr "轨道同步"
 msgid "VLM Batch Commands"
 msgstr "VLM 批处理命令"
 
-#: share/lua/http/index.html:240
+#: share/lua/http/index.html:240 modules/gui/qt4/ui/vlm.h:298
 msgid "Loop"
 msgstr "循环"
 
@@ -27631,638 +27741,877 @@ msgstr "要停止串流并恢复常规控件，请再次点击 <i>打开流</i> 
 msgid "Are you sure you wish to create the stream?"
 msgstr "是否确定要创建流?"
 
-#~ msgid "Dialog"
-#~ msgstr "对话框"
+#: modules/gui/qt4/ui/about.h:287 modules/gui/qt4/ui/open.h:242
+#: modules/gui/qt4/ui/podcast_configuration.h:100
+msgid "Dialog"
+msgstr "对话框"
 
-#~ msgid "Update"
-#~ msgstr "更新"
+#: modules/gui/qt4/ui/about.h:288 modules/gui/qt4/ui/about.h:289
+msgid "Update"
+msgstr "更新"
 
-#~ msgid "Form"
-#~ msgstr "形式"
+#: modules/gui/qt4/ui/equalizer.h:132 modules/gui/qt4/ui/open_disk.h:296
+#: modules/gui/qt4/ui/open_net.h:96 modules/gui/qt4/ui/sprefs_audio.h:425
+#: modules/gui/qt4/ui/sprefs_input.h:345
+#: modules/gui/qt4/ui/sprefs_interface.h:516
+#: modules/gui/qt4/ui/sprefs_subtitles.h:289
+#: modules/gui/qt4/ui/sprefs_video.h:320 modules/gui/qt4/ui/streampanel.h:167
+msgid "Form"
+msgstr "形式"
 
-#~ msgid "Preset"
-#~ msgstr "预设"
+#: modules/gui/qt4/ui/equalizer.h:135
+msgid "Preset"
+msgstr "预设"
 
-#~ msgid "0.00 dB"
-#~ msgstr "0.00 dB"
+#: modules/gui/qt4/ui/equalizer.h:137
+msgid "0.00 dB"
+msgstr "0.00 dB"
 
-#~ msgid "&Verbosity:"
-#~ msgstr "详尽程度(&V):"
+#: modules/gui/qt4/ui/messages_panel.h:139
+msgid "&Verbosity:"
+msgstr "详尽程度(&V):"
 
-#~ msgid "&Filter:"
-#~ msgstr "滤镜(&F):"
+#: modules/gui/qt4/ui/messages_panel.h:140
+msgid "&Filter:"
+msgstr "滤镜(&F):"
 
-#~ msgid "&Save as..."
-#~ msgstr "另存为(&S)..."
+#: modules/gui/qt4/ui/messages_panel.h:141
+msgid "&Save as..."
+msgstr "另存为(&S)..."
 
-#~ msgid "Modules Tree"
-#~ msgstr "模块树"
+#: modules/gui/qt4/ui/messages_panel.h:143
+msgid "Modules Tree"
+msgstr "模块树"
 
-#~ msgid "Show extended options"
-#~ msgstr "显示扩展选项"
+#: modules/gui/qt4/ui/open.h:245
+msgid "Show extended options"
+msgstr "显示扩展选项"
 
-#~ msgid "Show &more options"
-#~ msgstr "显示更多选项(&M)"
+#: modules/gui/qt4/ui/open.h:247
+msgid "Show &more options"
+msgstr "显示更多选项(&M)"
 
-#~ msgid "Change the caching for the media"
-#~ msgstr "更改媒体的缓冲"
+#: modules/gui/qt4/ui/open.h:250
+msgid "Change the caching for the media"
+msgstr "更改媒体的缓冲"
 
-#~ msgid " ms"
-#~ msgstr " ms"
+#: modules/gui/qt4/ui/open.h:252
+msgid " ms"
+msgstr " ms"
 
-#~ msgid "MRL"
-#~ msgstr "MRL"
+#: modules/gui/qt4/ui/open.h:253
+msgid "MRL"
+msgstr "MRL"
 
-#~ msgid "Start Time"
-#~ msgstr "起始时间"
+#: modules/gui/qt4/ui/open.h:254
+msgid "Start Time"
+msgstr "起始时间"
 
-#~ msgid "Edit Options"
-#~ msgstr "编辑选项"
+#: modules/gui/qt4/ui/open.h:255
+msgid "Edit Options"
+msgstr "编辑选项"
 
-#~ msgid "Extra media"
-#~ msgstr "扩展媒体"
+#: modules/gui/qt4/ui/open.h:256
+msgid "Extra media"
+msgstr "扩展媒体"
 
-#~ msgid "Complete MRL for VLC internal"
-#~ msgstr "用于 VLC 内部的完整 MRL"
+#: modules/gui/qt4/ui/open.h:258
+msgid "Complete MRL for VLC internal"
+msgstr "用于 VLC 内部的完整 MRL"
 
-#~ msgid "Select the file"
-#~ msgstr "选择文件"
+#: modules/gui/qt4/ui/open.h:261
+msgid "Select the file"
+msgstr "选择文件"
 
-#~ msgid "Change the start time for the media"
-#~ msgstr "更改媒体的起始时间"
+#: modules/gui/qt4/ui/open.h:265
+msgid "Change the start time for the media"
+msgstr "更改媒体的起始时间"
 
-#~ msgid "HH'H':mm'm':ss's'.zzz"
-#~ msgstr "HH'H':mm'm':ss's'.zzz"
+#: modules/gui/qt4/ui/open.h:267
+msgid "HH'H':mm'm':ss's'.zzz"
+msgstr "HH'H':mm'm':ss's'.zzz"
 
-#~ msgid "Play another media synchronously (extra audio file, ...)"
-#~ msgstr "同时播放其它媒体 (外部音频文件, ...)"
+#: modules/gui/qt4/ui/open.h:268
+msgid "Play another media synchronously (extra audio file, ...)"
+msgstr "同时播放其它媒体 (外部音频文件, ...)"
 
-#~ msgid "Capture mode"
-#~ msgstr "捕获模式"
+#: modules/gui/qt4/ui/open_capture.h:97
+msgid "Capture mode"
+msgstr "捕获模式"
 
-#~ msgid "Select the capture device type"
-#~ msgstr "选择捕获设备类型"
+#: modules/gui/qt4/ui/open_capture.h:99
+msgid "Select the capture device type"
+msgstr "选择捕获设备类型"
 
-#~ msgid "Device Selection"
-#~ msgstr "设备选择"
+#: modules/gui/qt4/ui/open_capture.h:101
+msgid "Device Selection"
+msgstr "设备选择"
 
-#~ msgid "Options"
-#~ msgstr "选项"
+#: modules/gui/qt4/ui/open_capture.h:102
+msgid "Options"
+msgstr "选项"
 
-#~ msgid "Access advanced options to tweak the device"
-#~ msgstr "访问高级选项来优化设备"
+#: modules/gui/qt4/ui/open_capture.h:104
+msgid "Access advanced options to tweak the device"
+msgstr "访问高级选项来优化设备"
 
-#~ msgid "Advanced options..."
-#~ msgstr "高级选项..."
+#: modules/gui/qt4/ui/open_capture.h:106
+msgid "Advanced options..."
+msgstr "高级选项..."
 
-#~ msgid "Disc Selection"
-#~ msgstr "光盘选择"
+#: modules/gui/qt4/ui/open_disk.h:297
+msgid "Disc Selection"
+msgstr "光盘选择"
 
-#~ msgid "SVCD/VCD"
-#~ msgstr "SVCD/VCD"
+#: modules/gui/qt4/ui/open_disk.h:301
+msgid "SVCD/VCD"
+msgstr "SVCD/VCD"
 
-#~ msgid "Disable Disc Menus"
-#~ msgstr "禁用光盘菜单"
+#: modules/gui/qt4/ui/open_disk.h:303
+msgid "Disable Disc Menus"
+msgstr "禁用光盘菜单"
 
-#~ msgid "No disc menus"
-#~ msgstr "无光盘菜单"
+#: modules/gui/qt4/ui/open_disk.h:305
+msgid "No disc menus"
+msgstr "无光盘菜单"
 
-#~ msgid "Disc device"
-#~ msgstr "光盘设备 "
+#: modules/gui/qt4/ui/open_disk.h:306
+msgid "Disc device"
+msgstr "光盘设备 "
 
-#~ msgid "Starting Position"
-#~ msgstr "起始位置"
+#: modules/gui/qt4/ui/open_disk.h:308
+msgid "Starting Position"
+msgstr "起始位置"
 
-#~ msgid "Audio and Subtitles"
-#~ msgstr "音频和字幕"
+#: modules/gui/qt4/ui/open_disk.h:311
+msgid "Audio and Subtitles"
+msgstr "音频和字幕"
 
-#~ msgid "Use a sub&title file"
-#~ msgstr "使用字幕文件(&T)"
+#: modules/gui/qt4/ui/open_file.h:143
+msgid "Use a sub&title file"
+msgstr "使用字幕文件(&T)"
 
-#~ msgid "Select the subtitle file"
-#~ msgstr "选择字幕文件"
+#: modules/gui/qt4/ui/open_file.h:145
+msgid "Select the subtitle file"
+msgstr "选择字幕文件"
 
-#~ msgid "Choose one or more media file to open"
-#~ msgstr "选择一个或多个要打开的媒体文件"
+#: modules/gui/qt4/ui/open_file.h:149
+msgid "Choose one or more media file to open"
+msgstr "选择一个或多个要打开的媒体文件"
 
-#~ msgid "File Selection"
-#~ msgstr "文件选择"
+#: modules/gui/qt4/ui/open_file.h:151
+msgid "File Selection"
+msgstr "文件选择"
 
-#~ msgid "You can select local files with the following list and buttons."
-#~ msgstr "您可以使用以下列表及按钮选择本地文件。"
+#: modules/gui/qt4/ui/open_file.h:152
+msgid "You can select local files with the following list and buttons."
+msgstr "您可以使用以下列表及按钮选择本地文件。"
 
-#~ msgid "Add..."
-#~ msgstr "添加..."
+#: modules/gui/qt4/ui/open_file.h:153
+msgid "Add..."
+msgstr "添加..."
 
-#~ msgid "Network Protocol"
-#~ msgstr "网络协议"
+#: modules/gui/qt4/ui/open_net.h:97
+msgid "Network Protocol"
+msgstr "网络协议"
 
-#~ msgid "Please enter a network URL:"
-#~ msgstr "请输入网络 URL:"
+#: modules/gui/qt4/ui/open_net.h:98
+msgid "Please enter a network URL:"
+msgstr "请输入网络 URL:"
 
-#~ msgid "Profile edition"
-#~ msgstr "配置文件版本"
+#: modules/gui/qt4/ui/profiles.h:701
+msgid "Profile edition"
+msgstr "配置文件版本"
 
+#: modules/gui/qt4/ui/profiles.h:702
+msgid "FLAC"
+msgstr ""
+
+#: modules/gui/qt4/ui/profiles.h:703
 #, fuzzy
-#~ msgid "MP&4/MOV"
-#~ msgstr "MP4/MOV"
+msgid "MP&4/MOV"
+msgstr "MP4/MOV"
 
-#~ msgid "Ogg/Ogm"
-#~ msgstr "Ogg/Ogm"
+#: modules/gui/qt4/ui/profiles.h:704
+msgid "Ogg/Ogm"
+msgstr "Ogg/Ogm"
 
+#: modules/gui/qt4/ui/profiles.h:705
+msgid "M&KV"
+msgstr ""
+
+#: modules/gui/qt4/ui/profiles.h:706
 #, fuzzy
-#~ msgid "M&JPEG"
-#~ msgstr "MJPEG"
+msgid "M&JPEG"
+msgstr "MJPEG"
 
-#~ msgid "MPEG-PS"
-#~ msgstr "MPEG-PS"
+#: modules/gui/qt4/ui/profiles.h:707
+msgid "MPEG-PS"
+msgstr "MPEG-PS"
 
+#: modules/gui/qt4/ui/profiles.h:708
+msgid "F&LV"
+msgstr ""
+
+#: modules/gui/qt4/ui/profiles.h:709
 #, fuzzy
-#~ msgid "&MPEG-TS"
-#~ msgstr "MPEG-TS"
+msgid "&MPEG-TS"
+msgstr "MPEG-TS"
 
-#~ msgid "RAW"
-#~ msgstr "RAW"
+#: modules/gui/qt4/ui/profiles.h:710
+msgid "RAW"
+msgstr "RAW"
 
-#~ msgid "WAV"
-#~ msgstr "WAV"
+#: modules/gui/qt4/ui/profiles.h:711
+msgid "WAV"
+msgstr "WAV"
 
-#~ msgid "Webm"
-#~ msgstr "WebM"
+#: modules/gui/qt4/ui/profiles.h:712
+msgid "Webm"
+msgstr "WebM"
 
+#: modules/gui/qt4/ui/profiles.h:713
 #, fuzzy
-#~ msgid "MPEG &1"
-#~ msgstr "MPEG 1"
+msgid "MPEG &1"
+msgstr "MPEG 1"
 
-#~ msgid "AVI"
-#~ msgstr "AVI"
+#: modules/gui/qt4/ui/profiles.h:714
+msgid "AVI"
+msgstr "AVI"
 
-#~ msgid "ASF/WMV"
-#~ msgstr "ASF/WMV"
+#: modules/gui/qt4/ui/profiles.h:715
+msgid "ASF/WMV"
+msgstr "ASF/WMV"
 
-#~ msgid "Features"
-#~ msgstr "功能"
+#: modules/gui/qt4/ui/profiles.h:716
+msgid "MP&3"
+msgstr ""
 
-#~ msgid "Streamable"
-#~ msgstr "可串流"
+#: modules/gui/qt4/ui/profiles.h:717
+msgid "Features"
+msgstr "功能"
 
-#~ msgid "Chapters"
-#~ msgstr "章节"
+#: modules/gui/qt4/ui/profiles.h:719
+msgid "Streamable"
+msgstr "可串流"
 
-#~ msgid "Menus"
-#~ msgstr "菜单"
+#: modules/gui/qt4/ui/profiles.h:720
+msgid "Chapters"
+msgstr "章节"
 
+#: modules/gui/qt4/ui/profiles.h:723
+msgid "Menus"
+msgstr "菜单"
+
+#: modules/gui/qt4/ui/profiles.h:730
 #, fuzzy
-#~ msgid "Fra&me Rate"
-#~ msgstr "帧率"
+msgid "Fra&me Rate"
+msgstr "帧率"
 
-#~ msgid "Same as source"
-#~ msgstr "与来源相同"
+#: modules/gui/qt4/ui/profiles.h:731
+msgid "Same as source"
+msgstr "与来源相同"
 
-#~ msgid " fps"
-#~ msgstr " fps"
+#: modules/gui/qt4/ui/profiles.h:733
+msgid " fps"
+msgstr " fps"
 
-#~ msgid "Custom options"
-#~ msgstr "自定义选项"
+#: modules/gui/qt4/ui/profiles.h:734
+msgid "Custom options"
+msgstr "自定义选项"
 
+#: modules/gui/qt4/ui/profiles.h:735
 #, fuzzy
-#~ msgid "&Quality"
-#~ msgstr "质量"
+msgid "&Quality"
+msgstr "质量"
 
-#~ msgid "Not Used"
-#~ msgstr "未使用"
+#: modules/gui/qt4/ui/profiles.h:736 modules/gui/qt4/ui/profiles.h:737
+msgid "Not Used"
+msgstr "未使用"
 
-#~ msgid " kb/s"
-#~ msgstr " kb/s"
+#: modules/gui/qt4/ui/profiles.h:738 modules/gui/qt4/ui/profiles.h:757
+msgid " kb/s"
+msgstr " kb/s"
 
-#~ msgid "Encoding parameters"
-#~ msgstr "编码参数"
+#: modules/gui/qt4/ui/profiles.h:739 modules/gui/qt4/ui/profiles.h:759
+msgid "Encoding parameters"
+msgstr "编码参数"
 
-#~ msgid "Frame size"
-#~ msgstr "帧尺寸"
+#: modules/gui/qt4/ui/profiles.h:742
+msgid "Frame size"
+msgstr "帧尺寸"
 
-#~ msgid "px"
-#~ msgstr "px"
+#: modules/gui/qt4/ui/profiles.h:745 modules/gui/qt4/ui/profiles.h:748
+msgid "px"
+msgstr "px"
 
+#: modules/gui/qt4/ui/profiles.h:758
 #, fuzzy
-#~ msgid "Sa&mple Rate"
-#~ msgstr "采样率"
+msgid "Sa&mple Rate"
+msgstr "采样率"
 
+#: modules/gui/qt4/ui/profiles.h:766
 #, fuzzy
-#~ msgid "Profile &Name"
-#~ msgstr "配置文件名称"
-
-#~ msgid "Set up media sources to stream"
-#~ msgstr "设置要串流的媒体源"
-
-#~ msgid "Destination Setup"
-#~ msgstr "目标设置"
-
-#~ msgid "Select destinations to stream to"
-#~ msgstr "选择要串流的目标位置"
-
-#~ msgid ""
-#~ "Add destinations following the streaming methods you need. Be sure to "
-#~ "check with transcoding that the format is compatible with the method used."
-#~ msgstr ""
-#~ "根据您需要的流化方式添加目的地。一定要检查转码器所设的格式是否与所用方式兼"
-#~ "容。"
-
-#~ msgid "New destination"
-#~ msgstr "新目标"
-
-#~ msgid "Display locally"
-#~ msgstr "在本地显示"
-
-#~ msgid "Transcoding Options"
-#~ msgstr "转码选项"
-
-#~ msgid "Select and choose transcoding options"
-#~ msgstr "选择转码选项"
-
-#~ msgid "Activate Transcoding"
-#~ msgstr "激活转码"
-
-#~ msgid "Option Setup"
-#~ msgstr "选项设置"
-
-#~ msgid "Set up any additional options for streaming"
-#~ msgstr "设置其他串流选项"
-
-#~ msgid "Miscellaneous Options"
-#~ msgstr "杂项选项"
-
-#~ msgid "Stream all elementary streams"
-#~ msgstr "流所有通量流"
-
-#~ msgid "Generated stream output string"
-#~ msgstr "生成串流输出字符串"
-
-#~ msgid " %"
-#~ msgstr " %"
-
-#~ msgid "Output module:"
-#~ msgstr "输出模块:"
-
-#~ msgid "Effects"
-#~ msgstr "效果"
-
-#~ msgid "Visualization:"
-#~ msgstr "可视化:"
-
-#~ msgid "Enable Time-Stretching audio"
-#~ msgstr "启用音频时间拉伸"
-
-#~ msgid "Dolby Surround:"
-#~ msgstr "杜比环绕:"
-
-#~ msgid "Replay gain mode:"
-#~ msgstr "回放增益模式:"
-
-#~ msgid "Headphone surround effect"
-#~ msgstr "耳机环绕声效果"
-
-#~ msgid "Normalize volume to:"
-#~ msgstr "将音量规格化为:"
-
-#~ msgid "Preferred audio language:"
-#~ msgstr "首选的音频语言:"
-
-#~ msgid "Password:"
-#~ msgstr "密码:"
-
-#~ msgid "Username:"
-#~ msgstr "用户名:"
-
-#~ msgid "Submit played tracks stats to Last.fm"
-#~ msgstr "将已播放轨道的统计信息提交到 last.fm"
-
-#~ msgid "Codecs"
-#~ msgstr "编解码器"
-
-#~ msgid "x264 profile and level selection"
-#~ msgstr "x264 配置文件与等级选择"
-
-#~ msgid "x264 preset and tuning selection"
-#~ msgstr "x264 预设文件与调谐选择"
-
-#~ msgid "Hardware-accelerated decoding"
-#~ msgstr "硬件加速解码"
-
-#~ msgid "Skip H.264 in-loop deblocking filter"
-#~ msgstr "跳过 H.264 环内去块滤镜"
-
-#~ msgid "Video quality post-processing level"
-#~ msgstr "视频质量后处理层级"
-
-#~ msgid "Optical drive"
-#~ msgstr "光盘驱动器"
-
-#~ msgid "Default optical device"
-#~ msgstr "默认光盘设备"
-
-#~ msgid "Damaged or incomplete AVI file"
-#~ msgstr "损坏的或不完整的 avi 文件"
-
-#~ msgid "HTTP proxy URL"
-#~ msgstr "HTTP 代理 URL"
-
-#~ msgid "HTTP (default)"
-#~ msgstr "HTTP (默认)"
-
-#~ msgid "RTP over RTSP (TCP)"
-#~ msgstr "RTP over RTSP (TCP)"
-
-#~ msgid "Live555 stream transport"
-#~ msgstr "Live555 流传输"
-
-#~ msgid "Default caching policy"
-#~ msgstr "默认缓存策略"
-
-#~ msgid "Menus language:"
-#~ msgstr "菜单语言:"
-
-#~ msgid "Look and feel"
-#~ msgstr "外观及感觉"
-
-#~ msgid "Use custom skin"
-#~ msgstr "使用自定义皮肤"
-
-#~ msgid "This is VLC's default interface, with a native look and feel."
-#~ msgstr "这是 VLC 的默认界面，有原生的外观和感觉。"
-
-#~ msgid "Use native style"
-#~ msgstr "使用原生样式"
-
-#~ msgid "Resize interface to video size"
-#~ msgstr "缩放界面至视频大小"
-
-#~ msgid "Show controls in full screen mode"
-#~ msgstr "在全屏模式中显示控制板"
-
-#~ msgid "Pause playback when minimized"
-#~ msgstr "最小化时暂停回放"
-
-#~ msgid "Show media change popup:"
-#~ msgstr "显示媒体变更弹出提示:"
-
-#~ msgid "Start in minimal view mode"
-#~ msgstr "以精简外观模式启动"
-
-#~ msgid "Force window style:"
-#~ msgstr "强制窗口样式:"
-
-#~ msgid "Integrate video in interface"
-#~ msgstr "将视频嵌入到界面"
-
-#~ msgid "Show systray icon"
-#~ msgstr "显示系统托盘图标"
-
-#~ msgid "Skin resource file:"
-#~ msgstr "皮肤资源文件:"
-
-#~ msgid "Playlist and Instances"
-#~ msgstr "播放列表与实例管理"
-
-#~ msgid "Allow only one instance"
-#~ msgstr "仅允许一个实例"
-
-#~ msgid "Pause on the last frame of a video"
-#~ msgstr "在视频最后一帧处暂停"
-
-#~ msgid "Every "
-#~ msgstr "每 "
-
-#~ msgid "Separate words by | (without space)"
-#~ msgstr "用 | (不含空格) 分隔单词"
-
-#~ msgid "Save recently played items"
-#~ msgstr "保存最近播放的项目"
-
-#~ msgid "Activate updates notifier"
-#~ msgstr "激活更新通知器"
-
-#~ msgid "Operating System Integration"
-#~ msgstr "操作系统整合"
-
-#~ msgid "File extensions association"
-#~ msgstr "文件扩展名关联"
-
-#~ msgid "Set up associations..."
-#~ msgstr "设置关联..."
-
-#~ msgid "Enable On Screen Display (OSD)"
-#~ msgstr "启用屏幕显示 (OSD)"
-
-#~ msgid "Show media title on video start"
-#~ msgstr "在视频开始播放时显示媒体标题"
-
-#~ msgid "Enable subtitles"
-#~ msgstr "启用字幕"
-
-#~ msgid "Subtitle Language"
-#~ msgstr "字幕语言"
-
-#~ msgid "Default encoding"
-#~ msgstr "默认编码"
-
-#~ msgid "Subtitle effects"
-#~ msgstr "字幕效果"
-
-#~ msgid "Add a shadow"
-#~ msgstr "添加阴影"
-
-#~ msgid " px"
-#~ msgstr " px"
-
-#~ msgid "Add a background"
-#~ msgstr "添加背景"
-
-#~ msgid "Accelerated video output (Overlay)"
-#~ msgstr "加速视频输出 (重叠)"
-
-#~ msgid "DirectX"
-#~ msgstr "DirectX"
-
-#~ msgid "Display device"
-#~ msgstr "显示设备"
-
-#~ msgid "KVA"
-#~ msgstr "KVA"
-
-#~ msgid "Deinterlacing"
-#~ msgstr "反交错"
-
-#~ msgid "Force Aspect Ratio"
-#~ msgstr "强制宽高比"
-
-#~ msgid "vlc-snap"
-#~ msgstr "vlc-截图"
-
-#~ msgid "1"
-#~ msgstr "1"
-
-#~ msgid "Stuff"
-#~ msgstr "东西"
-
-#~ msgid "Edit settings"
-#~ msgstr "编辑设置"
-
-#~ msgid "Control"
-#~ msgstr "控制"
-
-#~ msgid "Run manually"
-#~ msgstr "手动运行"
-
-#~ msgid "Setup schedule"
-#~ msgstr "安装计划"
-
-#~ msgid "Run on schedule"
-#~ msgstr "按计划运行"
-
-#~ msgid "Status"
-#~ msgstr "状态"
-
-#~ msgid "P/P"
-#~ msgstr "P/P"
-
-#~ msgid "Prev"
-#~ msgstr "上一个"
-
-#~ msgid "Add Input"
-#~ msgstr "添加输入"
-
-#~ msgid "Edit Input"
-#~ msgstr "编辑输入"
-
-#~ msgid "Clear List"
-#~ msgstr "清除列表"
-
-#~ msgid "Check for VLC updates"
-#~ msgstr "检查 VLC 更新"
-
-#~ msgid "Launching an update request..."
-#~ msgstr "正在启动一个更新请求..."
-
-#~ msgid "Do you want to download it?"
-#~ msgstr "是否希望下载它?"
-
-#~ msgid "Essential"
-#~ msgstr "必要"
-
-#~ msgid ">HHHHHH;#"
-#~ msgstr ">HHHHHH;#"
-
-#~ msgid "Negate colors"
-#~ msgstr "反转色彩"
-
-#~ msgid "Colors"
-#~ msgstr "色彩"
-
-#~ msgid "Interactive Zoom"
-#~ msgstr "交互缩放"
-
-#~ msgid "Angle"
-#~ msgstr "角度"
-
-#~ msgid "Black Slot"
-#~ msgstr "黑槽"
-
-#~ msgid "..."
-#~ msgstr "..."
-
-#~ msgid "full"
-#~ msgstr "完全"
-
-#~ msgid "none"
-#~ msgstr "无"
-
-#~ msgid "Logo erase"
-#~ msgstr "消除标志"
-
-#~ msgid "Mask"
-#~ msgstr "掩码"
-
-#~ msgid "Output Color Filtermode"
-#~ msgstr "输出颜色过滤模式"
-
-#~ msgid "Brightness (%)"
-#~ msgstr "亮度 (%)"
-
-#~ msgid "Mark analyzed Pixels"
-#~ msgstr "标记已分析像素"
-
-#~ msgid "Filter threshold (%)"
-#~ msgstr "过滤阈值 (%)"
-
-#~ msgid "Anaglyph 3D"
-#~ msgstr "立体 3D"
-
-#~ msgid "Mirror"
-#~ msgstr "镜像"
-
-#~ msgid "Motion detect"
-#~ msgstr "运动检测"
-
-#~ msgid "Spatial blur"
-#~ msgstr "空间模糊"
-
-#~ msgid "Anti-Flickering"
-#~ msgstr "防闪烁"
-
-#~ msgid "Soften"
-#~ msgstr "柔化"
-
-#~ msgid "Denoiser"
-#~ msgstr "降噪器"
-
-#~ msgid "Spatial luma strength"
-#~ msgstr "空序亮度强度"
-
-#~ msgid "Temporal luma strength"
-#~ msgstr "时序亮度强度"
-
-#~ msgid "Spatial chroma strength"
-#~ msgstr "空序色度强度"
-
-#~ msgid "Temporal chroma strength"
-#~ msgstr "时序色度强度"
-
-#~ msgid "VLM configurator"
-#~ msgstr "VLM 配置工具"
-
-#~ msgid "Media Manager Edition"
-#~ msgstr "媒体管理器版本"
-
-#~ msgid "Name:"
-#~ msgstr "名称："
-
-#~ msgid "Input:"
-#~ msgstr "输入:"
-
-#~ msgid "Select Input"
-#~ msgstr "选择输入"
-
-#~ msgid "Output:"
-#~ msgstr "输出:"
-
-#~ msgid "Select Output"
-#~ msgstr "选择输出"
-
-#~ msgid "Time Control"
-#~ msgstr "时间控制"
-
-#~ msgid "Mux Control"
-#~ msgstr "复用控制"
-
-#~ msgid "Muxer:"
-#~ msgstr "复用器:"
-
-#~ msgid "AAAA; "
-#~ msgstr "AAAA; "
-
-#~ msgid "Media Manager List"
-#~ msgstr "媒体管理器列表"
+msgid "Profile &Name"
+msgstr "配置文件名称"
+
+#: modules/gui/qt4/ui/sout.h:203
+msgid "Set up media sources to stream"
+msgstr "设置要串流的媒体源"
+
+#: modules/gui/qt4/ui/sout.h:205
+msgid "Destination Setup"
+msgstr "目标设置"
+
+#: modules/gui/qt4/ui/sout.h:206
+msgid "Select destinations to stream to"
+msgstr "选择要串流的目标位置"
+
+#: modules/gui/qt4/ui/sout.h:207
+msgid ""
+"Add destinations following the streaming methods you need. Be sure to check "
+"with transcoding that the format is compatible with the method used."
+msgstr ""
+"根据您需要的流化方式添加目的地。一定要检查转码器所设的格式是否与所用方式兼"
+"容。"
+
+#: modules/gui/qt4/ui/sout.h:208
+msgid "New destination"
+msgstr "新目标"
+
+#: modules/gui/qt4/ui/sout.h:210
+msgid "Display locally"
+msgstr "在本地显示"
+
+#: modules/gui/qt4/ui/sout.h:212
+msgid "Transcoding Options"
+msgstr "转码选项"
+
+#: modules/gui/qt4/ui/sout.h:213
+msgid "Select and choose transcoding options"
+msgstr "选择转码选项"
+
+#: modules/gui/qt4/ui/sout.h:214
+msgid "Activate Transcoding"
+msgstr "激活转码"
+
+#: modules/gui/qt4/ui/sout.h:215
+msgid "Option Setup"
+msgstr "选项设置"
+
+#: modules/gui/qt4/ui/sout.h:216
+msgid "Set up any additional options for streaming"
+msgstr "设置其他串流选项"
+
+#: modules/gui/qt4/ui/sout.h:217
+msgid "Miscellaneous Options"
+msgstr "杂项选项"
+
+#: modules/gui/qt4/ui/sout.h:218
+msgid "Stream all elementary streams"
+msgstr "流所有通量流"
+
+#: modules/gui/qt4/ui/sout.h:219
+msgid "Generated stream output string"
+msgstr "生成串流输出字符串"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:428
+msgid " %"
+msgstr " %"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:431
+msgid "Output module:"
+msgstr "输出模块:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:435
+msgid "Effects"
+msgstr "效果"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:436
+msgid "Visualization:"
+msgstr "可视化:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:437
+msgid "Enable Time-Stretching audio"
+msgstr "启用音频时间拉伸"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:438
+msgid "Dolby Surround:"
+msgstr "杜比环绕:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:439
+msgid "Replay gain mode:"
+msgstr "回放增益模式:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:440
+msgid "Headphone surround effect"
+msgstr "耳机环绕声效果"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:441
+msgid "Normalize volume to:"
+msgstr "将音量规格化为:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:443
+msgid "Preferred audio language:"
+msgstr "首选的音频语言:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:444
+msgid "Password:"
+msgstr "密码:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:445
+msgid "Username:"
+msgstr "用户名:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:446
+msgid "Submit played tracks stats to Last.fm"
+msgstr "将已播放轨道的统计信息提交到 last.fm"
+
+#: modules/gui/qt4/ui/sprefs_input.h:346
+msgid "Codecs"
+msgstr "编解码器"
+
+#: modules/gui/qt4/ui/sprefs_input.h:347
+msgid "x264 profile and level selection"
+msgstr "x264 配置文件与等级选择"
+
+#: modules/gui/qt4/ui/sprefs_input.h:348
+msgid "x264 preset and tuning selection"
+msgstr "x264 预设文件与调谐选择"
+
+#: modules/gui/qt4/ui/sprefs_input.h:349
+msgid "Hardware-accelerated decoding"
+msgstr "硬件加速解码"
+
+#: modules/gui/qt4/ui/sprefs_input.h:350
+msgid "Skip H.264 in-loop deblocking filter"
+msgstr "跳过 H.264 环内去块滤镜"
+
+#: modules/gui/qt4/ui/sprefs_input.h:351
+msgid "Video quality post-processing level"
+msgstr "视频质量后处理层级"
+
+#: modules/gui/qt4/ui/sprefs_input.h:352
+msgid "Optical drive"
+msgstr "光盘驱动器"
+
+#: modules/gui/qt4/ui/sprefs_input.h:353
+msgid "Default optical device"
+msgstr "默认光盘设备"
+
+#: modules/gui/qt4/ui/sprefs_input.h:357
+msgid "Damaged or incomplete AVI file"
+msgstr "损坏的或不完整的 avi 文件"
+
+#: modules/gui/qt4/ui/sprefs_input.h:360
+msgid "HTTP proxy URL"
+msgstr "HTTP 代理 URL"
+
+#: modules/gui/qt4/ui/sprefs_input.h:361
+msgid "HTTP (default)"
+msgstr "HTTP (默认)"
+
+#: modules/gui/qt4/ui/sprefs_input.h:362
+msgid "RTP over RTSP (TCP)"
+msgstr "RTP over RTSP (TCP)"
+
+#: modules/gui/qt4/ui/sprefs_input.h:363
+msgid "Live555 stream transport"
+msgstr "Live555 流传输"
+
+#: modules/gui/qt4/ui/sprefs_input.h:364
+msgid "Default caching policy"
+msgstr "默认缓存策略"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:518
+msgid "Menus language:"
+msgstr "菜单语言:"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:519
+msgid "Look and feel"
+msgstr "外观及感觉"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:520
+msgid "Use custom skin"
+msgstr "使用自定义皮肤"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:522
+msgid "This is VLC's default interface, with a native look and feel."
+msgstr "这是 VLC 的默认界面，有原生的外观和感觉。"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:524
+msgid "Use native style"
+msgstr "使用原生样式"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:525
+msgid "Resize interface to video size"
+msgstr "缩放界面至视频大小"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:526
+msgid "Show controls in full screen mode"
+msgstr "在全屏模式中显示控制板"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:527
+msgid "Pause playback when minimized"
+msgstr "最小化时暂停回放"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:528
+msgid "Show media change popup:"
+msgstr "显示媒体变更弹出提示:"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:529
+msgid "Start in minimal view mode"
+msgstr "以精简外观模式启动"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:530
+msgid "Force window style:"
+msgstr "强制窗口样式:"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:531
+msgid "Integrate video in interface"
+msgstr "将视频嵌入到界面"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:532
+msgid "Show systray icon"
+msgstr "显示系统托盘图标"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:534
+msgid "Skin resource file:"
+msgstr "皮肤资源文件:"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:536
+msgid "Playlist and Instances"
+msgstr "播放列表与实例管理"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:537
+msgid "Allow only one instance"
+msgstr "仅允许一个实例"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:540
+msgid "Pause on the last frame of a video"
+msgstr "在视频最后一帧处暂停"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:544
+msgid "Every "
+msgstr "每 "
+
+#: modules/gui/qt4/ui/sprefs_interface.h:547
+msgid "Separate words by | (without space)"
+msgstr "用 | (不含空格) 分隔单词"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:549
+msgid "Save recently played items"
+msgstr "保存最近播放的项目"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:550
+msgid "Activate updates notifier"
+msgstr "激活更新通知器"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:552
+msgid "Operating System Integration"
+msgstr "操作系统整合"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:553
+msgid "File extensions association"
+msgstr "文件扩展名关联"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:554
+msgid "Set up associations..."
+msgstr "设置关联..."
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:291
+msgid "Enable On Screen Display (OSD)"
+msgstr "启用屏幕显示 (OSD)"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:292
+msgid "Show media title on video start"
+msgstr "在视频开始播放时显示媒体标题"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:294
+msgid "Enable subtitles"
+msgstr "启用字幕"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:295
+msgid "Subtitle Language"
+msgstr "字幕语言"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:297
+msgid "Default encoding"
+msgstr "默认编码"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:298
+msgid "Subtitle effects"
+msgstr "字幕效果"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:304
+msgid "Add a shadow"
+msgstr "添加阴影"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:306
+#: modules/gui/qt4/ui/video_effects.h:1406
+#: modules/gui/qt4/ui/video_effects.h:1410
+#: modules/gui/qt4/ui/video_effects.h:1413
+#: modules/gui/qt4/ui/video_effects.h:1414
+#: modules/gui/qt4/ui/video_effects.h:1449
+#: modules/gui/qt4/ui/video_effects.h:1451
+#: modules/gui/qt4/ui/video_effects.h:1461
+#: modules/gui/qt4/ui/video_effects.h:1462
+msgid " px"
+msgstr " px"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:307
+msgid "Add a background"
+msgstr "添加背景"
+
+#: modules/gui/qt4/ui/sprefs_video.h:324
+msgid "Accelerated video output (Overlay)"
+msgstr "加速视频输出 (重叠)"
+
+#: modules/gui/qt4/ui/sprefs_video.h:329
+msgid "DirectX"
+msgstr "DirectX"
+
+#: modules/gui/qt4/ui/sprefs_video.h:330
+msgid "Display device"
+msgstr "显示设备"
+
+#: modules/gui/qt4/ui/sprefs_video.h:331
+msgid "KVA"
+msgstr "KVA"
+
+#: modules/gui/qt4/ui/sprefs_video.h:335
+msgid "Deinterlacing"
+msgstr "反交错"
+
+#: modules/gui/qt4/ui/sprefs_video.h:337
+msgid "Force Aspect Ratio"
+msgstr "强制宽高比"
+
+#: modules/gui/qt4/ui/sprefs_video.h:342
+msgid "vlc-snap"
+msgstr "vlc-截图"
+
+#: modules/gui/qt4/ui/streampanel.h:169
+msgid "1"
+msgstr "1"
+
+#: modules/gui/qt4/ui/streampanel.h:171
+msgid "Stuff"
+msgstr "东西"
+
+#: modules/gui/qt4/ui/streampanel.h:173
+msgid "Edit settings"
+msgstr "编辑设置"
+
+#: modules/gui/qt4/ui/streampanel.h:174
+msgid "Control"
+msgstr "控制"
+
+#: modules/gui/qt4/ui/streampanel.h:175
+msgid "Run manually"
+msgstr "手动运行"
+
+#: modules/gui/qt4/ui/streampanel.h:176
+msgid "Setup schedule"
+msgstr "安装计划"
+
+#: modules/gui/qt4/ui/streampanel.h:177
+msgid "Run on schedule"
+msgstr "按计划运行"
+
+#: modules/gui/qt4/ui/streampanel.h:178
+msgid "Status"
+msgstr "状态"
+
+#: modules/gui/qt4/ui/streampanel.h:179
+msgid "P/P"
+msgstr "P/P"
+
+#: modules/gui/qt4/ui/streampanel.h:182
+msgid "Prev"
+msgstr "上一个"
+
+#: modules/gui/qt4/ui/streampanel.h:183
+msgid "Add Input"
+msgstr "添加输入"
+
+#: modules/gui/qt4/ui/streampanel.h:184
+msgid "Edit Input"
+msgstr "编辑输入"
+
+#: modules/gui/qt4/ui/streampanel.h:185
+msgid "Clear List"
+msgstr "清除列表"
+
+#: modules/gui/qt4/ui/update.h:148
+msgid "Check for VLC updates"
+msgstr "检查 VLC 更新"
+
+#: modules/gui/qt4/ui/update.h:149
+msgid "Launching an update request..."
+msgstr "正在启动一个更新请求..."
+
+#: modules/gui/qt4/ui/update.h:150
+msgid "Do you want to download it?"
+msgstr "是否希望下载它?"
+
+#: modules/gui/qt4/ui/video_effects.h:1404
+msgid "Essential"
+msgstr "必要"
+
+#: modules/gui/qt4/ui/video_effects.h:1418
+#: modules/gui/qt4/ui/video_effects.h:1427
+msgid ">HHHHHH;#"
+msgstr ">HHHHHH;#"
+
+#: modules/gui/qt4/ui/video_effects.h:1419
+msgid "Negate colors"
+msgstr "反转色彩"
+
+#: modules/gui/qt4/ui/video_effects.h:1432
+msgid "Colors"
+msgstr "色彩"
+
+#: modules/gui/qt4/ui/video_effects.h:1433
+msgid "Interactive Zoom"
+msgstr "交互缩放"
+
+#: modules/gui/qt4/ui/video_effects.h:1439
+msgid "Angle"
+msgstr "角度"
+
+#: modules/gui/qt4/ui/video_effects.h:1443
+msgid "Black Slot"
+msgstr "黑槽"
+
+#: modules/gui/qt4/ui/video_effects.h:1447
+#: modules/gui/qt4/ui/video_effects.h:1464
+msgid "..."
+msgstr "..."
+
+#: modules/gui/qt4/ui/video_effects.h:1452
+msgid "full"
+msgstr "完全"
+
+#: modules/gui/qt4/ui/video_effects.h:1454
+msgid "none"
+msgstr "无"
+
+#: modules/gui/qt4/ui/video_effects.h:1458
+msgid "Logo erase"
+msgstr "消除标志"
+
+#: modules/gui/qt4/ui/video_effects.h:1463
+msgid "Mask"
+msgstr "掩码"
+
+#: modules/gui/qt4/ui/video_effects.h:1468
+msgid "Output Color Filtermode"
+msgstr "输出颜色过滤模式"
+
+#: modules/gui/qt4/ui/video_effects.h:1469
+msgid "Brightness (%)"
+msgstr "亮度 (%)"
+
+#: modules/gui/qt4/ui/video_effects.h:1471
+msgid "Mark analyzed Pixels"
+msgstr "标记已分析像素"
+
+#: modules/gui/qt4/ui/video_effects.h:1473
+msgid "Filter threshold (%)"
+msgstr "过滤阈值 (%)"
+
+#: modules/gui/qt4/ui/video_effects.h:1476
+msgid "Anaglyph 3D"
+msgstr "立体 3D"
+
+#: modules/gui/qt4/ui/video_effects.h:1477
+msgid "Mirror"
+msgstr "镜像"
+
+#: modules/gui/qt4/ui/video_effects.h:1481
+msgid "Motion detect"
+msgstr "运动检测"
+
+#: modules/gui/qt4/ui/video_effects.h:1482
+msgid "Spatial blur"
+msgstr "空间模糊"
+
+#: modules/gui/qt4/ui/video_effects.h:1486
+msgid "Anti-Flickering"
+msgstr "防闪烁"
+
+#: modules/gui/qt4/ui/video_effects.h:1487
+msgid "Soften"
+msgstr "柔化"
+
+#: modules/gui/qt4/ui/video_effects.h:1488
+msgid "Denoiser"
+msgstr "降噪器"
+
+#: modules/gui/qt4/ui/video_effects.h:1489
+msgid "Spatial luma strength"
+msgstr "空序亮度强度"
+
+#: modules/gui/qt4/ui/video_effects.h:1490
+msgid "Temporal luma strength"
+msgstr "时序亮度强度"
+
+#: modules/gui/qt4/ui/video_effects.h:1491
+msgid "Spatial chroma strength"
+msgstr "空序色度强度"
+
+#: modules/gui/qt4/ui/video_effects.h:1492
+msgid "Temporal chroma strength"
+msgstr "时序色度强度"
+
+#: modules/gui/qt4/ui/vlm.h:286
+msgid "VLM configurator"
+msgstr "VLM 配置工具"
+
+#: modules/gui/qt4/ui/vlm.h:287
+msgid "Media Manager Edition"
+msgstr "媒体管理器版本"
+
+#: modules/gui/qt4/ui/vlm.h:288
+msgid "Name:"
+msgstr "名称："
+
+#: modules/gui/qt4/ui/vlm.h:290
+msgid "Input:"
+msgstr "输入:"
+
+#: modules/gui/qt4/ui/vlm.h:291
+msgid "Select Input"
+msgstr "选择输入"
+
+#: modules/gui/qt4/ui/vlm.h:292
+msgid "Output:"
+msgstr "输出:"
+
+#: modules/gui/qt4/ui/vlm.h:293
+msgid "Select Output"
+msgstr "选择输出"
+
+#: modules/gui/qt4/ui/vlm.h:294
+msgid "Time Control"
+msgstr "时间控制"
+
+#: modules/gui/qt4/ui/vlm.h:295
+msgid "Mux Control"
+msgstr "复用控制"
+
+#: modules/gui/qt4/ui/vlm.h:296
+msgid "Muxer:"
+msgstr "复用器:"
+
+#: modules/gui/qt4/ui/vlm.h:297
+msgid "AAAA; "
+msgstr "AAAA; "
+
+#: modules/gui/qt4/ui/vlm.h:302
+msgid "Media Manager List"
+msgstr "媒体管理器列表"
 
 #~ msgid "MKV"
 #~ msgstr "MKV"
