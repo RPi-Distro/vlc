@@ -1,4 +1,4 @@
-vlc (2.2.6-1~deb8u1) jessie-security; urgency=medium
+vlc (2.2.6-1~deb8u1) jessie-security; urgency=high
 
   * New upstream release.
     - subtitle: Fix heap buffer overflows (CVE-2017-8312).
