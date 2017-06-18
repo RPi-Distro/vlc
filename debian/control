@@ -131,8 +131,6 @@ Build-Depends: autopoint,
                libwebp-dev,
                libxvidcore-dev,
                yasm
-Build-Conflicts: libqt5x11extras5-dev (>= 5.8),
-                 qtbase5-dev (>= 5.8)
 Standards-Version: 3.9.8
 Homepage: https://www.videolan.org/vlc/
 Vcs-Git: https://anonscm.debian.org/git/pkg-multimedia/vlc.git
