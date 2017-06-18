@@ -1,12 +1,13 @@
-vlc (2.2.6-2) UNRELEASED; urgency=medium
+vlc (2.2.6-2) unstable; urgency=medium
 
   * Upload to unstable.
   * Update to ffmpeg 2.8.12.
   * debian/control:
     - Remove Build-Conflicts.
     - Bump Standards-Version.
+  * debian/rules: Build with hardening=+all.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sun, 18 Jun 2017 13:50:56 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 18 Jun 2017 18:15:34 +0200
 
 vlc (2.2.6-1) experimental; urgency=medium
 
