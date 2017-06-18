@@ -1,6 +1,7 @@
 vlc (2.2.6-2) UNRELEASED; urgency=medium
 
   * Upload to unstable.
+  * Update to ffmpeg 2.8.12.
   * debian/control:
     - Remove Build-Conflicts.
     - Bump Standards-Version.
