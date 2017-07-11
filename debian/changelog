@@ -1,8 +1,13 @@
-vlc (2.2.6-3) UNRELEASED; urgency=medium
+vlc (2.2.6-3) unstable; urgency=medium
 
-  * Fix CVE-2017-10699.
+  [ Mateusz Łukasik ]
+  * debian/patches: avcodec: Check visible sizes (CVE-2017-10699).
 
- -- Mateusz Łukasik <mati75@linuxmint.pl>  Mon, 03 Jul 2017 10:29:34 +0200
+  [ Sebastian Ramacher ]
+  * debian/patches: flac: Fix heap write overflow on frame format change.
+    (CVE-2017-9300)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 11 Jul 2017 21:35:32 +0200
 
 vlc (2.2.6-2) unstable; urgency=medium
 
