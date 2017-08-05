@@ -9,10 +9,10 @@ Bug-Debian: https://bugs.debian.org/814258
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/po/mr.po b/po/mr.po
-index abf83b0..88ee357 100644
+index 831b622..11b96b4 100644
 --- a/po/mr.po
 +++ b/po/mr.po
-@@ -21466,7 +21466,7 @@ msgstr "चालविण्याची यादी"
+@@ -21567,7 +21567,7 @@ msgstr "चालविण्याची यादी"
  
  #: modules/gui/qt4/menus.cpp:493
  msgid "Ctrl+L"
@@ -21,7 +21,7 @@ index abf83b0..88ee357 100644
  
  #: modules/gui/qt4/menus.cpp:496
  msgid "Docked Playlist"
-@@ -21478,7 +21478,7 @@ msgstr "किमान आंतरपृष्ठ"
+@@ -21579,7 +21579,7 @@ msgstr "किमान आंतरपृष्ठ"
  
  #: modules/gui/qt4/menus.cpp:508
  msgid "Ctrl+H"
@@ -30,7 +30,7 @@ index abf83b0..88ee357 100644
  
  #: modules/gui/qt4/menus.cpp:517
  msgid "&Fullscreen Interface"
-@@ -21634,7 +21634,7 @@ msgstr "मागे उडी मारा"
+@@ -21735,7 +21735,7 @@ msgstr "मागे उडी मारा"
  
  #: modules/gui/qt4/menus.cpp:920
  msgid "Ctrl+T"

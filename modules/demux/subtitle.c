@@ -2,7 +2,7 @@
  * subtitle.c: Demux for subtitle text files.
  *****************************************************************************
  * Copyright (C) 1999-2007 VLC authors and VideoLAN
- * $Id: 3e790fd307ff08f92fd3b754863f7a91f34fd85f $
+ * $Id: c4402edfb9b9c02121b7037c4ae907a9eb914439 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -1667,7 +1667,7 @@ static int ParseJSS( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
 
     demux_sys_t  *p_sys = p_demux->p_sys;
     text_t       *txt = &p_sys->txt;
-    char         *psz_text, *psz_orig;
+    char         *psz_text, *psz_orig = NULL;
     char         *psz_text2, *psz_orig2;
     int h1, h2, m1, m2, s1, s2, f1, f2;
 
@@ -1683,11 +1683,13 @@ static int ParseJSS( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
     /* Parse the main lines */
     for( ;; )
     {
+        free(psz_orig);
         const char *s = TextGetLine( txt );
         if( !s )
             return VLC_EGENERIC;
 
-        psz_orig = malloc( strlen( s ) + 1 );
+        size_t line_length = strlen( s );
+        psz_orig = malloc( line_length + 1 );
         if( !psz_orig )
             return VLC_ENOMEM;
         psz_text = psz_orig;
@@ -1727,6 +1729,8 @@ static int ParseJSS( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
             {
             case 'S':
                  shift = isalpha( (unsigned char)psz_text[2] ) ? 6 : 2 ;
+                 if ( shift > line_length )
+                     continue;
 
                  if( sscanf( &psz_text[shift], "%d", &h ) )
                  {
@@ -1764,20 +1768,16 @@ static int ParseJSS( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
 
             case 'T':
                 shift = isalpha( (unsigned char)psz_text[2] ) ? 8 : 2 ;
+                if ( shift > line_length )
+                    continue;
 
                 sscanf( &psz_text[shift], "%d", &p_sys->jss.i_time_resolution );
                 break;
             }
-            free( psz_orig );
-            continue;
-        }
-        else
-            /* Unkown type line, probably a comment */
-        {
-            free( psz_orig );
-            continue;
         }
     }
+    free( psz_orig );
+    psz_orig = NULL;
 
     while( psz_text[ strlen( psz_text ) - 1 ] == '\\' )
     {
@@ -1881,8 +1881,8 @@ static int ParseJSS( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
             if( (*(psz_text + 1 ) ) == '~' || (*(psz_text + 1 ) ) == '{' ||
                 (*(psz_text + 1 ) ) == '\\' )
                 psz_text++;
-            else if( *(psz_text + 1 ) == '\r' ||  *(psz_text + 1 ) == '\n' ||
-                     *(psz_text + 1 ) == '\0' )
+            else if( ( *(psz_text + 1 ) == '\r' ||  *(psz_text + 1 ) == '\n' ) &&
+                     *(psz_text + 1 ) != '\0' )
             {
                 psz_text++;
             }

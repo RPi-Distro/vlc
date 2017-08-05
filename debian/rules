@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 
 DEB_LDFLAGS_MAINT_APPEND=-Wl,--as-needed
+DEB_BUILD_MAINT_OPTIONS=hardening=+all
 
 include /usr/share/dpkg/pkg-info.mk
 include /usr/share/dpkg/architecture.mk
@@ -329,6 +330,7 @@ endif
 # merge ffmpeg based plugins to reduce installation size
 confflags += --enable-merge-ffmpeg
 
+export DEB_BUILD_MAINT_OPTION
 export DEB_CFLAGS_MAINT_APPEND
 export DEB_CXXFLAGS_MAINT_APPEND
 export DEB_LDFLAGS_MAINT_APPEND
@@ -347,7 +349,7 @@ override_dh_autoreconf:
 override_dh_auto_configure:
 	mkdir -p $(ffmpegbuild) $(ffmpegprefix)
 	cd $(ffmpegbuild) && \
-		$(CURDIR)/ffmpeg-2-8-11/configure $(ffmpegflags)
+		$(CURDIR)/ffmpeg-2-8-12/configure $(ffmpegflags)
 	dh_auto_build --sourcedirectory $(ffmpegbuild) -- V=1
 	$(MAKE) -C $(ffmpegbuild) install-libs install-headers V=1
 	PKG_CONFIG_PATH=$(ffmpegprefix)/lib/pkgconfig \

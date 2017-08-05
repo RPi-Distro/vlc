@@ -1,3 +1,32 @@
+vlc (2.2.6-3) unstable; urgency=medium
+
+  [ Mateusz Łukasik ]
+  * debian/patches: avcodec: Check visible sizes (CVE-2017-10699).
+
+  [ Sebastian Ramacher ]
+  * debian/patches: flac: Fix heap write overflow on frame format change.
+    (CVE-2017-9300)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 11 Jul 2017 21:35:32 +0200
+
+vlc (2.2.6-2) unstable; urgency=medium
+
+  * Upload to unstable.
+  * Update to ffmpeg 2.8.12.
+  * debian/control:
+    - Remove Build-Conflicts.
+    - Bump Standards-Version.
+  * debian/rules: Build with hardening=+all.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 18 Jun 2017 18:15:34 +0200
+
+vlc (2.2.6-1) experimental; urgency=medium
+
+  * New upstream release.
+    - demuxer: Fix heap buffer overflows (CVE-2017-8312).
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 24 May 2017 17:35:55 +0200
+
 vlc (2.2.5.1-1) experimental; urgency=medium
 
   [ Mateusz Łukasik ]
