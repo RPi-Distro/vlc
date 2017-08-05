@@ -383,7 +383,7 @@ Package: vlc-plugin-fluidsynth
 Architecture: any
 Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
-Depends: fluid-soundfont-gm | musescore-soundfont-gm,
+Depends: fluid-soundfont-gm | timgm6mb-soundfont,
          ${misc:Depends},
          ${shlibs:Depends}
 Enhances: vlc
