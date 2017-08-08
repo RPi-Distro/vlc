@@ -188,7 +188,6 @@ usr/lib/*/vlc/plugins/video_filter/libtransform_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libvhs_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libwave_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libyuvp_plugin.so
-usr/lib/*/vlc/plugins/video_output/libdirectfb_plugin.so
 usr/lib/*/vlc/plugins/video_output/libfb_plugin.so [fb]
 usr/lib/*/vlc/plugins/video_output/libvdummy_plugin.so
 usr/lib/*/vlc/plugins/video_output/libvmem_plugin.so
