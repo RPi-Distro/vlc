@@ -98,9 +98,9 @@ confflags += \
 	$(NULL)
 # Reasons for disabling features:
 # decklink: not in Debian
-# directfb: removed upstream in 3.0
+# directfb: directfb upstream not active anymore, removed upstream in 3.0
 # dxva2: Windows only
-# fdkaac: in Debian non-free
+# fdkaac: in Debian contrib
 # gles1: disabled in mesa
 # gnomevfs: poorly maintained
 # goom: not in Debian
