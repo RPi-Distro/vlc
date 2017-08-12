@@ -1,3 +1,15 @@
+vlc (2.2.6-4) unstable; urgency=medium
+
+  * debian/upstream: Add DEP-12 metadata.
+  * debian/control:
+    - Restrict Recommends on vlc-plugin-samba to linux-any kfreebsd-any.
+    - Switch to timgm6mb-soundfont. (Closes: #870790)
+    - Bump Standards-Version.
+  * debian/{rules,control,vlc-plugin-base}: No longer build directfb plugin.
+    directfb upstream is inactive and the plugin got removed for vlc 3.0.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 12 Aug 2017 12:38:48 +0200
+
 vlc (2.2.6-3) unstable; urgency=medium
 
   [ Mateusz Łukasik ]
