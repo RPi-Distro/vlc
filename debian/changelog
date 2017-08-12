@@ -7,8 +7,11 @@ vlc (2.2.6-4) unstable; urgency=medium
     - Bump Standards-Version.
   * debian/{rules,control,vlc-plugin-base}: No longer build directfb plugin.
     directfb upstream is inactive and the plugin got removed for vlc 3.0.
+  * debian/vlc-plugin-base.lintian-overrides: Override
+    shlibs-with-non-pic-code. See lintian overrides of ffmpeg for more
+    details.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sat, 12 Aug 2017 12:38:48 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 12 Aug 2017 12:56:58 +0200
 
 vlc (2.2.6-3) unstable; urgency=medium
 
