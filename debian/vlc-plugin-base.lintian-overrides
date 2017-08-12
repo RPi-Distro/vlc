@@ -8,3 +8,9 @@ vlc-plugin-base binary: embedded-library usr/lib/*/vlc/plugins/video_chroma/libs
 vlc-plugin-base binary: embedded-library usr/lib/*/vlc/plugins/video_filter/libpostproc_plugin.so: libavutil
 vlc-plugin-base binary: embedded-library usr/lib/*/vlc/plugins/video_filter/libpostproc_plugin.so: libpostproc
 vlc-plugin-base binary: embedded-library usr/lib/*/vlc/plugins/vdpau/libvdpau_avcodec_plugin.so: libavutil
+# hand-written assembler optimizations from ffmpeg
+vlc-plugin-base [i386] binary: shlib-with-non-pic-code usr/lib/i386-linux-gnu/vlc/plugins/codec/libavcodec_plugin.so
+vlc-plugin-base [i386] binary: shlib-with-non-pic-code usr/lib/i386-linux-gnu/vlc/plugins/codec/libhwdummy_plugin.so
+vlc-plugin-base [i386] binary: shlib-with-non-pic-code usr/lib/i386-linux-gnu/vlc/plugins/vdpau/libvdpau_avcodec_plugin.so
+vlc-plugin-base [i386] binary: shlib-with-non-pic-code usr/lib/i386-linux-gnu/vlc/plugins/video_chroma/libswscale_plugin.so
+vlc-plugin-base [i386] binary: shlib-with-non-pic-code usr/lib/i386-linux-gnu/vlc/plugins/video_filter/libpostproc_plugin.so
