@@ -40,10 +40,11 @@ index 8ab1cb4..8cb1222 100644
  /*****************************************************************************
   * Local prototypes
   *****************************************************************************/
-@@ -143,6 +158,29 @@ static void Interleave( int32_t *p_out, const int32_t * const *pp_in,
+@@ -142,6 +157,29 @@ static void Interleave( int32_t *p_out, const int32_t * const *pp_in,
+         }
  }
  
- /*****************************************************************************
++/*****************************************************************************
 + * DecoderSetOutputFormat: helper function to convert and check frame format
 + *****************************************************************************/
 +static int DecoderSetOutputFormat( unsigned i_channels, unsigned i_rate,
@@ -66,10 +67,9 @@ index 8ab1cb4..8cb1222 100644
 +    return VLC_SUCCESS;
 +}
 +
-+/*****************************************************************************
+ /*****************************************************************************
   * DecoderWriteCallback: called by libflac to output decoded samples
   *****************************************************************************/
- static FLAC__StreamDecoderWriteStatus
 @@ -150,30 +188,31 @@ DecoderWriteCallback( const FLAC__StreamDecoder *decoder,
                        const FLAC__Frame *frame,
                        const FLAC__int32 *const buffer[], void *client_data )

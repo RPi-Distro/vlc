@@ -11,3 +11,4 @@
 0011-codec-avcodec-check-avcodec-visible-sizes.patch
 0012-decoder-check-visible-size-when-creating-buffer.patch
 0013-codec-flac-fix-heap-write-overflow-on-frame-format-c.patch
+0014-upnp-Add-support-for-libupnp-1.8.patch
