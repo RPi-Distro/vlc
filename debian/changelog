@@ -1,3 +1,9 @@
+vlc (2.2.6-6) unstable; urgency=medium
+
+  * Update to ffmpeg 2.8.13.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 05 Sep 2017 19:37:57 +0200
+
 vlc (2.2.6-5) unstable; urgency=medium
 
   * debian/control: Bump Standards-Version.
