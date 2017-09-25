@@ -243,94 +243,6 @@ DEB_CXXFLAGS_MAINT_APPEND += -mtune=8548
 endif
 endif
 
-# configuration for embedded ffmpeg
-ffmpegprefix = $(CURDIR)/ffmpeg/install
-ffmpegbuild = $(CURDIR)/ffmpeg/build
-
-ffmpegflags = \
-	--prefix=$(ffmpegprefix) \
-	--enable-pic \
-	--disable-stripping \
-	--enable-static \
-	--disable-shared
-
-# mostly based on contrib/src/ffmpeg/rules.mak
-ffmpegflags += \
-	--disable-doc \
-	--disable-avdevice \
-	--disable-devices \
-	--disable-avfilter \
-	--disable-avresample \
-	--disable-swresample \
-	--disable-programs \
-	--disable-filters \
-	--disable-bsfs \
-	--disable-protocol=concat
-
-# from ffmpeg 7:2.8.6-1 debian/rules and contrib/src/ffmpeg/rules.mak
-ffmpegflags += \
-	--enable-gpl \
-	--enable-gnutls \
-	--disable-libass \
-	--enable-libbluray \
-	--disable-libbs2b \
-	--disable-libcaca \
-	--disable-libcdio \
-	--disable-libflite \
-	--disable-libfontconfig \
-	--disable-libfreetype \
-	--disable-libfribidi \
-	--disable-libopenjpeg \
-	--disable-libschroedinger \
-	--enable-libgme \
-	--enable-libgsm \
-	--enable-libmodplug \
-	--enable-libmp3lame \
-	--enable-libopus \
-	--enable-librtmp \
-	--enable-libshine \
-	--enable-libsnappy \
-	--enable-libsoxr \
-	--enable-libspeex \
-	--enable-libssh \
-	--enable-libtheora \
-	--enable-libtwolame \
-	--enable-libvorbis \
-	--enable-libvpx \
-	--enable-libwavpack \
-	--enable-libwebp \
-	--enable-libx265 \
-	--enable-libxvid \
-	--enable-libzvbi \
-	--disable-openal \
-	--disable-opengl \
-	--disable-x11grab
-
-# Disable altivec optimizations on powerpc, because they are not always
-# available on this architecture.
-ifeq ($(DEB_HOST_ARCH),powerpc)
-ffmpegflags += --disable-altivec
-endif
-
-# Disable assembly optimizations on x32, because they don't work (yet).
-ifneq (,$(filter $(DEB_HOST_ARCH),x32))
-ffmpegflags += --disable-asm
-endif
-
-# Disable optimizations on mips(el) and some on mips64(el), because they are not
-# always available on these architectures.
-ifneq (,$(filter $(DEB_HOST_ARCH),mips mipsel mips64 mips64el))
-ffmpegflags += --disable-mipsdspr1 \
-	--disable-mipsdspr2 \
-	--disable-loongson3
-endif
-ifneq (,$(filter $(DEB_HOST_ARCH),mips mipsel))
-ffmpegflags += --disable-mipsfpu
-endif
-
-# merge ffmpeg based plugins to reduce installation size
-confflags += --enable-merge-ffmpeg
-
 export DEB_BUILD_MAINT_OPTION
 export DEB_CFLAGS_MAINT_APPEND
 export DEB_CXXFLAGS_MAINT_APPEND
@@ -340,21 +252,11 @@ export removeplugins
 %:
 	dh $@
 
-override_dh_auto_clean:
-	rm -rf $(ffmpegprefix) $(ffmpegbuild)
-	dh_auto_clean
-
 override_dh_autoreconf:
 	dh_autoreconf --as-needed
 
 override_dh_auto_configure:
-	mkdir -p $(ffmpegbuild) $(ffmpegprefix)
-	cd $(ffmpegbuild) && \
-		$(CURDIR)/ffmpeg-2-8-13/configure $(ffmpegflags)
-	dh_auto_build --sourcedirectory $(ffmpegbuild) -- V=1
-	$(MAKE) -C $(ffmpegbuild) install-libs install-headers V=1
-	PKG_CONFIG_PATH=$(ffmpegprefix)/lib/pkgconfig \
-		dh_auto_configure -- $(confflags)
+	dh_auto_configure -- $(confflags)
 
 override_dh_auto_build:
 	dh_auto_build
