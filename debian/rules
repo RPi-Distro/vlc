@@ -298,7 +298,7 @@ override_dh_install:
 	rm -rf debian/tmp/usr/share/doc/vlc-data/libvlc
 	# Contains only a 404 link
 	find debian/tmp -name bugreport-howto.txt -delete
-	# Remove macosx
+	# Remove MacOS X resources
 	rm -rf debian/tmp/usr/share/macosx
 	# Install
 	dh_install
