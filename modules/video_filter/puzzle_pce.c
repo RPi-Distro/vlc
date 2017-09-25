@@ -2,7 +2,7 @@
  * puzzle_pce.c : Puzzle game filter - pieces functions
  *****************************************************************************
  * Copyright (C) 2013 Vianney Boyer
- * $Id: d11cecbc4f95780d139c51452438aafbadbea4f5 $
+ * $Id: 9427cf3c24ed195c42851ca221fef16b1f76bc82 $
  *
  * Author:  Vianney Boyer <vlcvboyer -at- gmail -dot- com>
  *
@@ -33,6 +33,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
+#include <vlc_picture.h>
 #include <vlc_rand.h>
 
 #include "filter_picture.h"
@@ -290,7 +291,7 @@ void puzzle_rotate_pce( filter_t *p_filter, int32_t i_piece, int8_t i_rotate_mir
     for ( uint8_t i=0; i < abs( i_rotate_mirror ); i++) {
         int32_t i_tempx, i_tempy;
 
-        /* piece has to be rotated by 90° */
+        /* piece has to be rotated by 90Â° */
         if ( i_rotate_mirror > 0 ) {
             ps_piece->i_actual_angle++;
             ps_piece->i_actual_angle &= 0x03;
@@ -552,8 +553,8 @@ void puzzle_draw_pieces( filter_t *p_filter, picture_t *p_pic_in, picture_t *p_p
             {
                 puzzle_drw_basic_pce_in_plane(p_filter, p_pic_in, p_pic_out, i_plane, ps_piece);
             }
-            else if ( ( p_sys->s_current_param.i_shape_size == 0)  || !p_sys->b_shape_init
-                    || (p_sys->ps_pieces_shapes == NULL) || (!p_sys->b_shape_init) )
+            else if ( ( p_sys->s_current_param.i_shape_size == 0) ||
+                      (p_sys->ps_pieces_shapes == NULL) || (!p_sys->b_shape_init) )
             {
                 puzzle_drw_adv_pce_in_plane(p_filter, p_pic_in, p_pic_out, i_plane, ps_piece);
             }

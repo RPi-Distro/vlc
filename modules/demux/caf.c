@@ -2,7 +2,7 @@
  * caf.c: Core Audio File Format demuxer
  *****************************************************************************
  * Copyright (C) 2013 VLC authors and VideoLAN
- * $Id: f5c63fc006b22651dcdfa6b8100377c63b625003 $
+ * $Id: cce8e93afb3db7875da0c3d38ae5e22bdf855aaa $
  *
  * Authors: Matthias Keiser <matthias@tristan-inc.com>
  *
@@ -270,14 +270,14 @@ static int FrameSpanAddDescription( demux_t *p_demux, uint64_t i_desc_offset, fr
 
     uint32_t i_desc_size = 0;
 
-    if( stream_Seek( p_demux->s, p_sys->packet_table.i_descriptions_start + i_desc_offset ))
+    if( vlc_stream_Seek( p_demux->s, p_sys->packet_table.i_descriptions_start + i_desc_offset ))
     {
         msg_Err( p_demux, "Couldn't seek packet description." );
         return VLC_EGENERIC;
     }
 
     const uint8_t *p_peek;
-    int i_peek_len = stream_Peek( p_demux->s, &p_peek, 2 * 10 );
+    int i_peek_len = vlc_stream_Peek( p_demux->s, &p_peek, 2 * 10 );
     /* Peeking the maximum number of bytes that two 64 bit numbers could use
      * (( 64 + 6 ) / 7 = 10). */
     if( i_peek_len < 0 )
@@ -405,7 +405,7 @@ static int NextChunk( demux_t *p_demux, vlc_fourcc_t *p_fcc, uint64_t *pi_size )
 {
     uint8_t p_read[12];
 
-    if( stream_Read( p_demux->s, p_read, 12 ) < 12 )
+    if( vlc_stream_Read( p_demux->s, p_read, 12 ) < 12 )
         return VLC_EGENERIC;
 
     *p_fcc = ReadFOURCC( p_read );
@@ -432,7 +432,7 @@ static int ReadDescChunk( demux_t *p_demux )
 
     const uint8_t *p_peek;
 
-    if ( stream_Peek( p_demux->s, &p_peek, 8 + 6 * 4 ) < ( 8 + 6 * 4 ))
+    if ( vlc_stream_Peek( p_demux->s, &p_peek, 8 + 6 * 4 ) < ( 8 + 6 * 4 ))
     {
         return VLC_EGENERIC;
     }
@@ -684,14 +684,14 @@ static int ReadKukiChunk( demux_t *p_demux, uint64_t i_size )
     demux_sys_t *p_sys = p_demux->p_sys;
     const uint8_t *p_peek;
 
-    /* stream_Peek can't handle sizes bigger than INT32_MAX, and also p_sys->fmt.i_extra is of type 'int'*/
+    /* vlc_stream_Peek can't handle sizes bigger than INT32_MAX, and also p_sys->fmt.i_extra is of type 'int'*/
     if( i_size > INT32_MAX )
     {
         msg_Err( p_demux, "Magic Cookie chunk too big" );
         return VLC_EGENERIC;
     }
 
-    if( (unsigned int)stream_Peek( p_demux->s, &p_peek, (int)i_size ) < i_size )
+    if( (unsigned int)vlc_stream_Peek( p_demux->s, &p_peek, (int)i_size ) < i_size )
     {
         msg_Err( p_demux, "Couldn't peek extra data" );
         return VLC_EGENERIC;
@@ -729,7 +729,7 @@ static int ReadDataChunk( demux_t *p_demux, uint64_t i_size )
 
     demux_sys_t *p_sys = p_demux->p_sys;
 
-    p_sys->i_data_offset = stream_Tell( p_demux->s ) + 4; /* skip edit count */
+    p_sys->i_data_offset = vlc_stream_Tell( p_demux->s ) + 4; /* skip edit count */
     p_sys->i_data_size = i_size == kCHUNK_SIZE_EOF ? kCHUNK_SIZE_EOF : ( i_size - 4 );
 
     return VLC_SUCCESS;
@@ -741,7 +741,7 @@ static int ReadPaktChunk( demux_t *p_demux )
 
     const uint8_t *p_peek;
 
-    if ( stream_Peek( p_demux->s, &p_peek, 8 + 8 + 4 + 4 ) < ( 8 + 8 + 4 + 4 ))
+    if ( vlc_stream_Peek( p_demux->s, &p_peek, 8 + 8 + 4 + 4 ) < ( 8 + 8 + 4 + 4 ))
     {
         msg_Err( p_demux, "Couldn't peek packet descriptions" );
         return VLC_EGENERIC;
@@ -768,7 +768,7 @@ static int ReadPaktChunk( demux_t *p_demux )
         return VLC_EGENERIC;
     }
 
-    p_sys->packet_table.i_descriptions_start = stream_Tell( p_demux->s ) + 24;
+    p_sys->packet_table.i_descriptions_start = vlc_stream_Tell( p_demux->s ) + 24;
 
     return VLC_SUCCESS;
 }
@@ -785,7 +785,7 @@ static int Open( vlc_object_t *p_this )
 
     const uint8_t *p_peek;
 
-    if( stream_Peek( p_demux->s, &p_peek, 8 ) < 8 )
+    if( vlc_stream_Peek( p_demux->s, &p_peek, 8 ) < 8 )
         return VLC_EGENERIC;
 
     /* Is it a caf file? */
@@ -808,7 +808,7 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    if( stream_Read( p_demux->s, NULL, 8 ) < 8 )
+    if( vlc_stream_Read( p_demux->s, NULL, 8 ) < 8 )
         return VLC_EGENERIC; /* This would be very strange since we justed peeked at these bytes. */
 
     p_demux->p_sys = calloc( 1, sizeof( demux_sys_t ));
@@ -817,7 +817,7 @@ static int Open( vlc_object_t *p_this )
     /* From this point on, we have to free p_sys if we return an error (e.g. "goto caf_open_end") */
 
     p_sys = p_demux->p_sys;
-    es_format_Init( &p_sys->fmt, UNKNOWN_ES, 0 );
+    es_format_Init( &p_sys->fmt, AUDIO_ES, 0 );
 
     vlc_fourcc_t i_fcc;
     uint64_t i_size;
@@ -873,7 +873,7 @@ static int Open( vlc_object_t *p_this )
         if( i_size == kCHUNK_SIZE_EOF )
             break;
 
-        if( stream_Seek( p_demux->s, stream_Tell( p_demux->s ) + i_size ) != VLC_SUCCESS )
+        if( vlc_stream_Seek( p_demux->s, vlc_stream_Tell( p_demux->s ) + i_size ) != VLC_SUCCESS )
             break;
 
         i_idx++;
@@ -903,7 +903,7 @@ caf_open_end:
         free( p_sys->fmt.p_extra );
         free( p_sys  );
 
-        if( stream_Seek( p_demux->s, 0 ))
+        if( vlc_stream_Seek( p_demux->s, 0 ))
         {
             msg_Warn(p_demux, "Could not reset stream position to 0.");
         }
@@ -965,7 +965,7 @@ static int Demux( demux_t *p_demux )
         return -1;
     }
 
-    if( stream_Seek( p_demux->s, p_sys->i_data_offset + p_sys->position.i_bytes ))
+    if( vlc_stream_Seek( p_demux->s, p_sys->i_data_offset + p_sys->position.i_bytes ))
     {
         if( p_sys->i_data_size == kCHUNK_SIZE_EOF)
             return 0;
@@ -974,7 +974,8 @@ static int Demux( demux_t *p_demux )
         return -1;
     }
 
-    if(( p_block = stream_Block( p_demux->s, (int)advance.i_bytes )) == NULL )
+    p_block = vlc_stream_Block( p_demux->s, (int)advance.i_bytes );
+    if( p_block == NULL )
     {
         msg_Err( p_demux, "cannot read data" );
         return -1;
@@ -986,7 +987,7 @@ static int Demux( demux_t *p_demux )
     FrameSpanAddSpan( &p_sys->position, &advance );
 
     /* set PCR */
-    es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_block->i_pts );
+    es_out_SetPCR( p_demux->out, p_block->i_pts );
 
     es_out_Send( p_demux->out, p_sys->es, p_block );
 
@@ -1007,23 +1008,27 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
     switch( i_query )
     {
+        case DEMUX_CAN_SEEK:
+            *va_arg( args, bool * ) = true;
+            return VLC_SUCCESS;
+
         case DEMUX_GET_LENGTH:
-            pi64 = ( int64_t* )va_arg( args, int64_t * );
+            pi64 = va_arg( args, int64_t * );
             *pi64 = CLOCK_FREQ * ( i_num_samples / p_sys->fmt.audio.i_rate );
             return VLC_SUCCESS;
 
         case DEMUX_GET_TIME:
-            pi64 = ( int64_t* )va_arg( args, int64_t * );
+            pi64 = va_arg( args, int64_t * );
             *pi64 = CLOCK_FREQ * ( p_sys->position.i_samples / p_sys->fmt.audio.i_rate );
             return VLC_SUCCESS;
 
         case DEMUX_GET_POSITION:
-            pf = (double*)va_arg( args, double * );
+            pf = va_arg( args, double * );
             *pf = i_num_samples ? (double)p_sys->position.i_samples / (double)i_num_samples : 0.0;
             return VLC_SUCCESS;
 
         case DEMUX_SET_POSITION:
-            f = (double)va_arg( args, double );
+            f = va_arg( args, double );
             i_sample = f * i_num_samples;
             if( SetSpanWithSample( p_demux, &position, i_sample ))
                 return VLC_EGENERIC;
@@ -1031,7 +1036,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             return VLC_SUCCESS;
 
         case DEMUX_SET_TIME:
-            i64 = (int64_t)va_arg( args, int64_t );
+            i64 = va_arg( args, int64_t );
             i_sample = i64 * p_sys->fmt.audio.i_rate / INT64_C( 1000000 );
             if( SetSpanWithSample( p_demux, &position, i_sample ))
                 return VLC_EGENERIC;
@@ -1039,7 +1044,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             return VLC_SUCCESS;
 
         case DEMUX_GET_META:
-            return stream_Control( p_demux->s, STREAM_GET_META, args );
+            return vlc_stream_Control( p_demux->s, STREAM_GET_META, args );
 
         default:
             return VLC_EGENERIC;

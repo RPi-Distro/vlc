@@ -2,7 +2,7 @@
  * algo_x.c : "X" algorithm for vlc deinterlacer
  *****************************************************************************
  * Copyright (C) 2000-2011 VLC authors and VideoLAN
- * $Id: a42861043c2ceb2cd70ed0276fbdafb016c9b9f9 $
+ * $Id: 164dc3e8224ccbe26499ccc1add8fd359cb13aa1 $
  *
  * Author: Laurent Aimar <fenrir@videolan.org>
  *
@@ -206,14 +206,6 @@ static inline void XDeint8x8MergeMMXEXT( uint8_t *dst,  int i_dst,
 }
 
 #endif
-
-/* For debug */
-static inline void XDeint8x8Set( uint8_t *dst, int i_dst, uint8_t v )
-{
-    int y;
-    for( y = 0; y < 8; y++ )
-        memset( &dst[y*i_dst], v, 8 );
-}
 
 /* XDeint8x8FieldE: Stupid deinterlacing (1,0,1) for block that miss a
  * neighbour
@@ -448,23 +440,6 @@ static inline void XDeintNxN( uint8_t *dst, int i_dst, uint8_t *src, int i_src,
         XDeintNxNFrame( dst, i_dst, src, i_src, i_width, i_height );
 }
 
-static inline int median( int a, int b, int c )
-{
-    int min = a, max =a;
-    if( b < min )
-        min = b;
-    else
-        max = b;
-
-    if( c < min )
-        min = c;
-    else if( c > max )
-        max = c;
-
-    return a + b + c - min - max;
-}
-
-
 /* XDeintBand8x8:
  */
 static inline void XDeintBand8x8C( uint8_t *dst, int i_dst,
@@ -537,8 +512,9 @@ static inline void XDeintBand8x8MMXEXT( uint8_t *dst, int i_dst,
  * Public functions
  *****************************************************************************/
 
-void RenderX( picture_t *p_outpic, picture_t *p_pic )
+int RenderX( filter_t *p_filter, picture_t *p_outpic, picture_t *p_pic )
 {
+    VLC_UNUSED(p_filter);
     int i_plane;
 #if defined (CAN_COMPILE_MMXEXT)
     const bool mmxext = vlc_CPU_MMXEXT();
@@ -594,4 +570,5 @@ void RenderX( picture_t *p_outpic, picture_t *p_pic )
     if( mmxext )
         emms();
 #endif
+    return VLC_SUCCESS;
 }

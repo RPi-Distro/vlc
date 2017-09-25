@@ -1,7 +1,7 @@
 /*****************************************************************************
  * AppleRemote.h
  * AppleRemote
- * $Id: fb84611e9883e28c021f580f116dea45dbfb9210 $
+ * $Id: 396fbc5a05591c35398599191df272620f832b2d $
  *
  * Created by Martin Kahr on 11.03.06 under a MIT-style license.
  * Copyright (c) 2006 martinkahr.com. All rights reserved.
@@ -93,25 +93,18 @@ The class is not thread safe
     NSDictionary*   _cookieToButtonMapping;
     CFRunLoopSourceRef     eventSource;
 
-    BOOL _openInExclusiveMode;
-    BOOL _simulatePlusMinusHold;
-    BOOL _processesBacklog;
-
     /* state for simulating plus/minus hold */
     BOOL lastEventSimulatedHold;
     AppleRemoteEventIdentifier lastPlusMinusEvent;
     NSTimeInterval lastPlusMinusEventTime;
 
     int remoteId;
-    unsigned int _clickCountEnabledButtons;
-    NSTimeInterval _maxClickTimeDifference;
     NSTimeInterval lastClickCountEventTime;
     AppleRemoteEventIdentifier lastClickCountEvent;
     unsigned int eventClickCount;
 
     id delegate;
 }
-+ (AppleRemote *)sharedInstance;
 
 @property (readonly) int remoteId;
 @property (readonly) BOOL remoteAvailable;
@@ -186,7 +179,7 @@ The class is not thread safe
 /* A NSApplication delegate which is used to activate and deactivate listening to the remote control
  * dependent on the activation state of your application.
  * All events are delegated to the original NSApplication delegate if necessary */
-@interface AppleRemoteApplicationDelegate : NSObject {
+@interface AppleRemoteApplicationDelegate : NSObject<NSApplicationDelegate> {
     id applicationDelegate;
 }
 

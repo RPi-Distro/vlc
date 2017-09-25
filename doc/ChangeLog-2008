@@ -53715,3 +53715,57 @@ Author: Pierre d'Herbemont <pdherbemont@videolan.org>
 Date:   Tue Jan 1 15:29:05 2008 +0000
 
     MacOSX/Framework: Support event collapsing, and save the media list thats own the media list aspect.
+
+commit 18e91eef2c923effb5d0365cc3f28d80962c91ad
+Author: Pierre d'Herbemont <pdherbemont@videolan.org>
+Date:   Tue Jan 1 15:26:55 2008 +0000
+
+    VLCMedia.m: Don't flood the event manager with unused meta change notification. Remove uneeded willChangeValueForKey: notification, as per Julien Robert suggestion.
+
+commit dba0ce597e5300a8cd977aef0e43faa7eccf6d97
+Author: Pierre d'Herbemont <pdherbemont@videolan.org>
+Date:   Tue Jan 1 15:21:45 2008 +0000
+
+    VLCEventManager.m: Support event collapsing.
+
+commit 7f88d114a3cf5e1f92cd26129e52cd96d7f879f9
+Author: Pierre d'Herbemont <pdherbemont@videolan.org>
+Date:   Tue Jan 1 15:17:15 2008 +0000
+
+    VLCMediaPlayer.m: Be closer to libvlc.
+
+commit 3f6da3f359036eef516b7ba53d50261d4e230271
+Author: Pierre d'Herbemont <pdherbemont@videolan.org>
+Date:   Tue Jan 1 14:55:21 2008 +0000
+
+    input/item.c: Move SetMeta into a non static exported function.
+
+commit 7f4aba6183dab7a43b2d87ce8b73383aa5d79aa0
+Author: Antoine Cellerier <dionoea@videolan.org>
+Date:   Tue Jan 1 14:54:42 2008 +0000
+
+    v4l2: Factorize code, fix the video controls init, add Dennis Lou's contributions to the v4l2 module in THANKS.
+
+commit 5ceb0f293b338279011f5aa7cafa8b86888e3768
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Tue Jan 1 14:54:06 2008 +0000
+
+    macosx: forgot a corner case in the previous commit
+
+commit 8be68853f19e3b764cd9e416cf4bb2025729779c
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Tue Jan 1 14:48:25 2008 +0000
+
+    macosx: if an input item includes a NowPlaying meta item, display it in our controller window instead some bogus MRL parsing stuff nobody can understand
+
+commit 192a2076ddccdb60053ae5be615ae1303353bbe4
+Author: Pierre d'Herbemont <pdherbemont@videolan.org>
+Date:   Tue Jan 1 14:33:18 2008 +0000
+
+    misc/events.c: Fix event sending, by properly supporting event_manager edition (event_detach) while executing a callback (vlc_event_send). This is done through a recursive lock.
+
+commit 22599f0153a69e2271eafc727e02d07f9954281e
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Tue Jan 1 14:15:03 2008 +0000
+
+    add mutex to the sdl video_output

@@ -2,7 +2,7 @@
  * algo_phosphor.c : Phosphor algorithm for the VLC deinterlacer
  *****************************************************************************
  * Copyright (C) 2011 VLC authors and VideoLAN
- * $Id: 30f5e4bbc17b684dbc05dd7b67394e6646369d06 $
+ * $Id: cd954c631df0df5accdf224033a4c96cc1649e51 $
  *
  * Author: Juha Jeronen <juha.jeronen@jyu.fi>
  *
@@ -27,6 +27,7 @@
 
 #ifdef CAN_COMPILE_MMXEXT
 #   include "mmx.h"
+#   include <stdalign.h>
 #endif
 
 #include <stdint.h>
@@ -228,7 +229,10 @@ static void DarkenFieldMMX( picture_t *p_dst,
                 int x = 0;
 
                 /* See also easy-to-read C version below. */
-                static const mmx_t b128 = { .uq = 0x8080808080808080ULL };
+                static alignas (8) const mmx_t b128 = {
+                    .uq = 0x8080808080808080ULL
+                };
+
                 movq_m2r( b128, mm5 );
                 movq_m2r( i_strength_u64,  mm6 );
                 movq_m2r( remove_high_u64, mm7 );
@@ -274,9 +278,10 @@ static void DarkenFieldMMX( picture_t *p_dst,
 
 /* See header for function doc. */
 int RenderPhosphor( filter_t *p_filter,
-                    picture_t *p_dst,
+                    picture_t *p_dst, picture_t *p_pic,
                     int i_order, int i_field )
 {
+    VLC_UNUSED(p_pic);
     assert( p_filter != NULL );
     assert( p_dst != NULL );
     assert( i_order >= 0 && i_order <= 2 ); /* 2 = soft field repeat */
@@ -285,8 +290,8 @@ int RenderPhosphor( filter_t *p_filter,
     filter_sys_t *p_sys = p_filter->p_sys;
 
     /* Last two input frames */
-    picture_t *p_in  = p_sys->pp_history[HISTORY_SIZE-1];
-    picture_t *p_old = p_sys->pp_history[HISTORY_SIZE-2];
+    picture_t *p_in  = p_sys->context.pp_history[HISTORY_SIZE-1];
+    picture_t *p_old = p_sys->context.pp_history[HISTORY_SIZE-2];
 
     /* Use the same input picture as "old" at the first frame after startup */
     if( !p_old )
@@ -336,7 +341,7 @@ int RenderPhosphor( filter_t *p_filter,
             break;
         default:
             /* The above are the only possibilities, if there are no bugs. */
-            assert(0);
+            vlc_assert_unreachable();
             break;
         }
     }

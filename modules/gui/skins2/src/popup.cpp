@@ -2,7 +2,7 @@
  * popup.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 073b97352941bb50615e9bf39ab29a22fea3add4 $
+ * $Id: 1001f3f36b489edaaba340168705311ff46d8b39 $
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *
@@ -56,7 +56,7 @@ void Popup::hide()
 }
 
 
-void Popup::addItem( const string &rLabel, CmdGeneric &rCmd, int pos )
+void Popup::addItem( const std::string &rLabel, CmdGeneric &rCmd, int pos )
 {
     m_pOsPopup->addItem( rLabel, pos );
     m_actions[pos] = &rCmd;

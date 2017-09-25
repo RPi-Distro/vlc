@@ -2,7 +2,7 @@
  * stats.c: Statistics handling
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: ba13f0558cb84b82419a77eecf7acb27f5fc3c26 $
+ * $Id: d7ee85a6e1fbd9210a38ef75237b57cd3d807a65 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -80,43 +80,45 @@ input_stats_t *stats_NewInputStats( input_thread_t *p_input )
 
 void stats_ComputeInputStats(input_thread_t *input, input_stats_t *st)
 {
+    input_thread_private_t *priv = input_priv(input);
+
     if (!libvlc_stats(input))
         return;
 
-    vlc_mutex_lock(&input->p->counters.counters_lock);
+    vlc_mutex_lock(&priv->counters.counters_lock);
     vlc_mutex_lock(&st->lock);
 
     /* Input */
-    st->i_read_packets = stats_GetTotal(input->p->counters.p_read_packets);
-    st->i_read_bytes = stats_GetTotal(input->p->counters.p_read_bytes);
-    st->f_input_bitrate = stats_GetRate(input->p->counters.p_input_bitrate);
-    st->i_demux_read_bytes = stats_GetTotal(input->p->counters.p_demux_read);
-    st->f_demux_bitrate = stats_GetRate(input->p->counters.p_demux_bitrate);
-    st->i_demux_corrupted = stats_GetTotal(input->p->counters.p_demux_corrupted);
-    st->i_demux_discontinuity = stats_GetTotal(input->p->counters.p_demux_discontinuity);
+    st->i_read_packets = stats_GetTotal(priv->counters.p_read_packets);
+    st->i_read_bytes = stats_GetTotal(priv->counters.p_read_bytes);
+    st->f_input_bitrate = stats_GetRate(priv->counters.p_input_bitrate);
+    st->i_demux_read_bytes = stats_GetTotal(priv->counters.p_demux_read);
+    st->f_demux_bitrate = stats_GetRate(priv->counters.p_demux_bitrate);
+    st->i_demux_corrupted = stats_GetTotal(priv->counters.p_demux_corrupted);
+    st->i_demux_discontinuity = stats_GetTotal(priv->counters.p_demux_discontinuity);
 
     /* Decoders */
-    st->i_decoded_video = stats_GetTotal(input->p->counters.p_decoded_video);
-    st->i_decoded_audio = stats_GetTotal(input->p->counters.p_decoded_audio);
+    st->i_decoded_video = stats_GetTotal(priv->counters.p_decoded_video);
+    st->i_decoded_audio = stats_GetTotal(priv->counters.p_decoded_audio);
 
     /* Sout */
-    if (input->p->counters.p_sout_send_bitrate)
+    if (priv->counters.p_sout_send_bitrate)
     {
-        st->i_sent_packets = stats_GetTotal(input->p->counters.p_sout_sent_packets);
-        st->i_sent_bytes = stats_GetTotal(input->p->counters.p_sout_sent_bytes);
-        st->f_send_bitrate = stats_GetRate(input->p->counters.p_sout_send_bitrate);
+        st->i_sent_packets = stats_GetTotal(priv->counters.p_sout_sent_packets);
+        st->i_sent_bytes = stats_GetTotal(priv->counters.p_sout_sent_bytes);
+        st->f_send_bitrate = stats_GetRate(priv->counters.p_sout_send_bitrate);
     }
 
     /* Aout */
-    st->i_played_abuffers = stats_GetTotal(input->p->counters.p_played_abuffers);
-    st->i_lost_abuffers = stats_GetTotal(input->p->counters.p_lost_abuffers);
+    st->i_played_abuffers = stats_GetTotal(priv->counters.p_played_abuffers);
+    st->i_lost_abuffers = stats_GetTotal(priv->counters.p_lost_abuffers);
 
     /* Vouts */
-    st->i_displayed_pictures = stats_GetTotal(input->p->counters.p_displayed_pictures);
-    st->i_lost_pictures = stats_GetTotal(input->p->counters.p_lost_pictures);
+    st->i_displayed_pictures = stats_GetTotal(priv->counters.p_displayed_pictures);
+    st->i_lost_pictures = stats_GetTotal(priv->counters.p_lost_pictures);
 
     vlc_mutex_unlock(&st->lock);
-    vlc_mutex_unlock(&input->p->counters.counters_lock);
+    vlc_mutex_unlock(&priv->counters.counters_lock);
 }
 
 void stats_ReinitInputStats( input_stats_t *p_stats )
@@ -139,14 +141,9 @@ void stats_CounterClean( counter_t *p_c )
 {
     if( p_c )
     {
-        int i = p_c->i_samples - 1 ;
-        while( i >= 0 )
-        {
-            counter_sample_t *p_s = p_c->pp_samples[i];
-            REMOVE_ELEM( p_c->pp_samples, p_c->i_samples, i );
-            free( p_s );
-            i--;
-        }
+        for( int i = 0; i < p_c->i_samples; i++ )
+            free( p_c->pp_samples[i] );
+        TAB_CLEAN(p_c->i_samples, p_c->pp_samples);
         free( p_c );
     }
 }
@@ -174,15 +171,17 @@ void stats_Update( counter_t *p_counter, uint64_t val, uint64_t *new_val )
         p_counter->last_update = now;
         /* Insert the new one at the beginning */
         p_new = (counter_sample_t*)malloc( sizeof( counter_sample_t ) );
+        if (unlikely(p_new == NULL))
+            return; /* NOTE: Losing sample here */
+
         p_new->value = val;
         p_new->date = p_counter->last_update;
-        INSERT_ELEM( p_counter->pp_samples, p_counter->i_samples,
-                     0, p_new );
+        TAB_INSERT(p_counter->i_samples, p_counter->pp_samples, p_new, 0);
 
         if( p_counter->i_samples == 3 )
         {
             p_old = p_counter->pp_samples[2];
-            REMOVE_ELEM( p_counter->pp_samples, p_counter->i_samples, 2 );
+            TAB_ERASE(p_counter->i_samples, p_counter->pp_samples, 2);
             free( p_old );
         }
         break;
@@ -192,10 +191,12 @@ void stats_Update( counter_t *p_counter, uint64_t val, uint64_t *new_val )
         {
             counter_sample_t *p_new = (counter_sample_t*)malloc(
                                                sizeof( counter_sample_t ) );
+            if (unlikely(p_new == NULL))
+                return; /* NOTE: Losing sample here */
+
             p_new->value = 0;
 
-            INSERT_ELEM( p_counter->pp_samples, p_counter->i_samples,
-                         p_counter->i_samples, p_new );
+            TAB_APPEND(p_counter->i_samples, p_counter->pp_samples, p_new);
         }
         if( p_counter->i_samples == 1 )
         {

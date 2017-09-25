@@ -2,7 +2,7 @@
  * bezier.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 6c3a9b422ce3cf896983fbfb13174b4df1a6f4dd $
+ * $Id: 532d1932e56e4f63c4d9a49946e77c910a71eaed $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -46,8 +46,8 @@ public:
     };
 
     Bezier( intf_thread_t *p_intf,
-            const vector<float> &pAbscissas,
-            const vector<float> &pOrdinates,
+            const std::vector<float> &pAbscissas,
+            const std::vector<float> &pOrdinates,
             Flag_t flag = kCoordsBoth );
     ~Bezier() { }
 
@@ -77,18 +77,18 @@ private:
     /// Number of control points
     int m_nbCtrlPt;
     /// vectors containing the coordinates of the control points
-    vector<float> m_ptx;
-    vector<float> m_pty;
+    std::vector<float> m_ptx;
+    std::vector<float> m_pty;
     /// Vector containing precalculated factoriels
-    vector<float> m_ft;
+    std::vector<float> m_ft;
 
     /// Number of points (=pixels) used by the curve
     int m_nbPoints;
     /// Vectors with the coordinates of the different points of the curve
-    vector<int> m_leftVect;
-    vector<int> m_topVect;
+    std::vector<int> m_leftVect;
+    std::vector<int> m_topVect;
     /// Vector with the percentages associated with the points of the curve
-    vector<float> m_percVect;
+    std::vector<float> m_percVect;
 
     /// Return the index of the curve point that is the nearest from (x, y)
     int findNearestPoint( int x, int y ) const;

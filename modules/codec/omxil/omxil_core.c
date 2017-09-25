@@ -2,7 +2,7 @@
  * omxil.c: Video decoder module making use of OpenMAX IL components.
  *****************************************************************************
  * Copyright (C) 2010 VLC authors and VideoLAN
- * $Id: 5fb77221c5d34177508680069e2dcabd5a7280de $
+ * $Id: e55488c9dadf1d9185e236384c0954e4528b5583 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -88,6 +88,9 @@ OMX_ERRORTYPE (*pf_get_handle) (OMX_HANDLETYPE *, OMX_STRING,
 OMX_ERRORTYPE (*pf_free_handle) (OMX_HANDLETYPE);
 OMX_ERRORTYPE (*pf_component_enum)(OMX_STRING, OMX_U32, OMX_U32);
 OMX_ERRORTYPE (*pf_get_roles_of_component)(OMX_STRING, OMX_U32 *, OMX_U8 **);
+OMX_ERRORTYPE (*pf_enable_graphic_buffers)(OMX_HANDLETYPE, OMX_U32, OMX_BOOL);
+OMX_ERRORTYPE (*pf_get_graphic_buffer_usage)(OMX_HANDLETYPE, OMX_U32, OMX_U32*);
+OMX_ERRORTYPE (*pf_get_hal_format) (const char *, int *);
 
 #ifdef RPI_OMX
 static void *extra_dll_handle;
@@ -161,6 +164,11 @@ int InitOmxCore(vlc_object_t *p_this)
         vlc_mutex_unlock( &omx_core_mutex );
         return VLC_EGENERIC;
     }
+#if defined(USE_IOMX)
+    pf_enable_graphic_buffers = dlsym( dll_handle, "OMXAndroid_EnableGraphicBuffers" );
+    pf_get_graphic_buffer_usage = dlsym( dll_handle, "OMXAndroid_GetGraphicBufferUsage" );
+    pf_get_hal_format = dlsym( dll_handle, "OMXAndroid_GetHalFormat" );
+#endif
 
     /* Initialise the OMX core */
     OMX_ERRORTYPE omx_error = pf_init();

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005 VLC authors and VideoLAN
  *
- * $Id: c612e87ab516cc709eeeefc87bb014288b1f5df2 $
+ * $Id: f3a769a9ba21ee635c172afbeb8fe51074975c4a $
  *
  * Authors: Damien Fouilleul <damienf@videolan.org>
  *
@@ -27,7 +27,7 @@
 #endif
 
 #include <assert.h>
-#include <vlc/libvlc.h>
+#include <vlc/vlc.h>
 #include "libvlc_internal.h"
 #include <vlc_common.h>
 #include <vlc_interface.h>
@@ -42,9 +42,9 @@ void libvlc_log_get_context(const libvlc_log_t *ctx,
     if (module != NULL)
         *module = ctx->psz_module;
     if (file != NULL)
-        *file = NULL;
+        *file = ctx->file;
     if (line != NULL)
-        *line = 0;
+        *line = ctx->line;
 }
 
 void libvlc_log_get_object(const libvlc_log_t *ctx,
@@ -124,7 +124,7 @@ void libvlc_set_log_verbosity( libvlc_instance_t *p_instance, unsigned level )
 libvlc_log_t *libvlc_log_open( libvlc_instance_t *p_instance )
 {
     (void) p_instance;
-    return malloc(1);
+    return malloc(sizeof(libvlc_log_t));
 }
 
 void libvlc_log_close( libvlc_log_t *p_log )

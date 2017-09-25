@@ -2,7 +2,7 @@
  * win32_popup.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 6aefd08df7c71d18b20f21e4dde5230685d1a403 $
+ * $Id: 97380e3aa1aaadea39a5dcedc49f89612800661e $
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *
@@ -43,7 +43,7 @@ public:
     virtual void hide();
 
     /// Append a new menu item with the given label to the popup menu
-    virtual void addItem( const string &rLabel, int pos );
+    virtual void addItem( const std::string &rLabel, int pos );
 
     /// Create a dummy menu item to separate sections
     virtual void addSeparator( int pos );

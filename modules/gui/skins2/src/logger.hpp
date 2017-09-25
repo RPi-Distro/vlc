@@ -2,7 +2,7 @@
  * logger.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 6f9094ccf1b2d0de8de8f03be180a071fbe04c30 $
+ * $Id: caedc70e504d15581178a9675479035f975f1635 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -46,10 +46,10 @@ public:
     static void destroy( intf_thread_t *pIntf );
 
     /// Print an error message
-    void error( const string &rMsg );
+    void error( const std::string &rMsg );
 
     /// Print a warning
-    void warn( const string &rMsg );
+    void warn( const std::string &rMsg );
 
 private:
     // Private because it's a singleton

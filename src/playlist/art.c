@@ -2,7 +2,7 @@
  * art.c : Art metadata handling
  *****************************************************************************
  * Copyright (C) 1998-2008 VLC authors and VideoLAN
- * $Id: 18a376441f26fabdfcf27894e49815c0990e6ae5 $
+ * $Id: 53133e5598f632d1f6c4fd325f3529b9728eb39e $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org
@@ -139,17 +139,19 @@ end:
 static char *ArtCacheName( input_item_t *p_item, const char *psz_type )
 {
     char *psz_path = ArtCachePath( p_item );
-    if( !psz_path )
-        return NULL;
+    char *psz_ext = strdup( psz_type ? psz_type : "" );
+    char *psz_filename = NULL;
+
+    if( unlikely( !psz_path || !psz_ext ) )
+        goto end;
 
     ArtCacheCreateDir( psz_path );
-
-    char *psz_ext = strdup( psz_type ? psz_type : "" );
     filename_sanitize( psz_ext );
-    char *psz_filename;
+
     if( asprintf( &psz_filename, "%s" DIR_SEP "art%s", psz_path, psz_ext ) < 0 )
         psz_filename = NULL;
 
+end:
     free( psz_ext );
     free( psz_path );
 

@@ -2,7 +2,7 @@
  * art_manager.cpp
  *****************************************************************************
  * Copyright (C) 2010 the VideoLAN team
- * $Id: f9e3041032041b1105c0d6a5515867a6ac11c400 $
+ * $Id: f4dec63de64e2126469c67cfd6f83b3b1c8faaa4 $
  *
  * Author: Erwan Tulou      <erwan10@vidoelan.org>
  *
@@ -27,6 +27,8 @@
 
 #include "art_manager.hpp"
 #include <vlc_image.h>
+
+#include <new>
 
 #define MAX_ART_CACHED    2
 
@@ -67,14 +69,14 @@ ArtManager::~ArtManager( )
         m_pImageHandler = NULL;
     }
 
-    list<ArtBitmap*>::const_iterator it;
+    std::list<ArtBitmap*>::const_iterator it;
     for( it = m_listBitmap.begin(); it != m_listBitmap.end(); ++it )
         delete *it;
     m_listBitmap.clear();
 }
 
 
-ArtBitmap* ArtManager::getArtBitmap( string uriName )
+ArtBitmap* ArtManager::getArtBitmap( std::string uriName )
 {
     if( !uriName.size() )
         return NULL;
@@ -83,7 +85,7 @@ ArtBitmap* ArtManager::getArtBitmap( string uriName )
         return NULL;
 
     // check whether art is already loaded
-    list<ArtBitmap*>::const_iterator it;
+    std::list<ArtBitmap*>::const_iterator it;
     for( it = m_listBitmap.begin(); it != m_listBitmap.end(); ++it )
     {
         if( (*it)->getUriName() == uriName )
@@ -91,7 +93,7 @@ ArtBitmap* ArtManager::getArtBitmap( string uriName )
     }
 
     // create and retain a new ArtBitmap since uri is not yet known
-    ArtBitmap* pArt = new ArtBitmap( getIntf(), m_pImageHandler, uriName );
+    ArtBitmap* pArt = new (std::nothrow) ArtBitmap( getIntf(), m_pImageHandler, uriName );
     if( pArt && pArt->getWidth() && pArt->getHeight() )
     {
         if( m_listBitmap.size() == MAX_ART_CACHED )

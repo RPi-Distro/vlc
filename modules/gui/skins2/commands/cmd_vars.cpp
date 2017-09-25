@@ -2,7 +2,7 @@
  * cmd_vars.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: dfde4f3cd3bda02eea8f5cecdcc9d142da859267 $
+ * $Id: 2da80a275921e08070ec55c0082d7b5241f9312a $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -34,7 +34,7 @@ void CmdItemUpdate::execute()
         return;
 
     // update playtree
-    playlist_t* pPlaylist = getIntf()->p_sys->p_playlist;
+    playlist_t* pPlaylist = getPL();
     playlist_Lock( pPlaylist );
     playlist_item_t* p_plItem = playlist_ItemGetByInput( pPlaylist, m_pItem );
     int id = p_plItem ? p_plItem->i_id : 0;
@@ -63,7 +63,7 @@ bool CmdItemUpdate::checkRemove( CmdGeneric *pQueuedCommand ) const
 
 void CmdPlaytreeAppend::execute()
 {
-    VlcProc::instance( getIntf() )->getPlaytreeVar().onAppend( m_pAdd );
+    VlcProc::instance( getIntf() )->getPlaytreeVar().onAppend( m_id );
 }
 
 void CmdPlaytreeDelete::execute()

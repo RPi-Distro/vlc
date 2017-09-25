@@ -2,7 +2,7 @@
  * cdrom.h: cdrom tools header
  *****************************************************************************
  * Copyright (C) 1998-2001 VLC authors and VideoLAN
- * $Id: bafb73ed90af786768ba067b3e3d489e76e91c25 $
+ * $Id: 4278e245e4357199558696e009e63500111c77db $
  *
  * Authors: Johan Bilien <jobi@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -22,34 +22,53 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#define CDDA_TYPE 0
-#define VCD_TYPE 1
+#ifndef VLC_CDROM_H
+#define VLC_CDROM_H
+
+enum {
+    CDDA_TYPE = 0,
+    VCD_TYPE  = 1,
+};
+
+/* size of a CD sector */
+#define CD_RAW_SECTOR_SIZE  2352
+#define CD_ROM_MODE1_DATA_SIZE 2048
+#define CD_ROM_MODE2_DATA_SIZE 2336
+
+#define CD_ROM_XA_MODE2_F1_DATA_SIZE 2048
+#define CD_ROM_XA_MODE2_F2_DATA_SIZE 2324
+
+/* size of a CD sector */
+#define CD_SECTOR_SIZE      CD_ROM_MODE1_DATA_SIZE
 
 /* where the data start on a VCD sector */
-#define VCD_DATA_START 24
-/* size of the availablr data on a VCD sector */
-#define VCD_DATA_SIZE 2324
+#define VCD_DATA_START      24
+/* size of the available data on a VCD sector */
+#define VCD_DATA_SIZE       CD_ROM_XA_MODE2_F2_DATA_SIZE
 /* size of a VCD sector, header and tail included */
-#define VCD_SECTOR_SIZE 2352
-/* size of a CD sector */
-#define CD_SECTOR_SIZE 2048
+#define VCD_SECTOR_SIZE     CD_RAW_SECTOR_SIZE
 /* sector containing the entry points */
-#define VCD_ENTRIES_SECTOR 151
+#define VCD_ENTRIES_SECTOR  151
 
 /* where the data start on a CDDA sector */
-#define CDDA_DATA_START 0
-/* size of the availablr data on a CDDA sector */
-#define CDDA_DATA_SIZE 2352
+#define CDDA_DATA_START     0
+/* size of the available data on a CDDA sector */
+#define CDDA_DATA_SIZE      CD_RAW_SECTOR_SIZE
 /* size of a CDDA sector, header and tail included */
-#define CDDA_SECTOR_SIZE 2352
+#define CDDA_SECTOR_SIZE    CD_RAW_SECTOR_SIZE
 
 /*****************************************************************************
  * Misc. Macros
  *****************************************************************************/
-/* LBA = msf.frame + 75 * ( msf.second + 60 * msf.minute ) */
-#define MSF_TO_LBA(min, sec, frame) ((int)frame + 75 * (sec + 60 * min))
-/* LBA = msf.frame + 75 * ( msf.second - 2 + 60 * msf.minute ) */
-#define MSF_TO_LBA2(min, sec, frame) ((int)frame + 75 * (sec -2 + 60 * min))
+static inline int MSF_TO_LBA(uint8_t min, uint8_t sec, uint8_t frame)
+{
+    return (int)(frame + 75 * (sec + 60 * min));
+}
+static inline int MSF_TO_LBA2(uint8_t min, uint8_t sec, uint8_t frame)
+{
+    return (int)(frame + 75 * (sec -2 + 60 * min));
+}
+
 /* Converts BCD to Binary data */
 #define BCD_TO_BIN(i) \
     (uint8_t)((uint8_t)(0xf & (uint8_t)i)+((uint8_t)10*((uint8_t)i >> 4)))
@@ -100,3 +119,5 @@ int       ioctl_ReadSectors  ( vlc_object_t *, const vcddev_t *,
  * The track 0 is for album meta data */
 int       ioctl_GetCdText( vlc_object_t *, const vcddev_t *,
                            vlc_meta_t ***ppp_tracks, int *pi_tracks );
+
+#endif /* VLC_CDROM_H */

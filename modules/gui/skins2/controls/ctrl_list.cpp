@@ -2,7 +2,7 @@
  * ctrl_list.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 015c7b86d253f43f73e8b9ac20e620a5b29957eb $
+ * $Id: c5f7055682186ad1756c90aee8458d8b88662dda $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -34,7 +34,7 @@
 #include "../events/evt_key.hpp"
 #include "../events/evt_mouse.hpp"
 #include "../events/evt_scroll.hpp"
-#include <vlc_keys.h>
+#include <vlc_actions.h>
 
 #define SCROLL_STEP 0.05f
 #define LINE_INTERVAL 1  // Number of pixels inserted between 2 lines
@@ -153,7 +153,7 @@ void CtrlList::onPositionChange()
 
 void CtrlList::handleEvent( EvtGeneric &rEvent )
 {
-    if( rEvent.getAsString().find( "key:down" ) != string::npos )
+    if( rEvent.getAsString().find( "key:down" ) != std::string::npos )
     {
         int key = ((EvtKey&)rEvent).getKey();
         VarList::Iterator it = m_rList.begin();
@@ -200,7 +200,7 @@ void CtrlList::handleEvent( EvtGeneric &rEvent )
         notifyLayout();
     }
 
-    else if( rEvent.getAsString().find( "mouse:left" ) != string::npos )
+    else if( rEvent.getAsString().find( "mouse:left" ) != std::string::npos )
     {
         EvtMouse &rEvtMouse = (EvtMouse&)rEvent;
         const Position *pos = getPosition();
@@ -210,7 +210,7 @@ void CtrlList::handleEvent( EvtGeneric &rEvent )
         int index = 0;
 
         if( rEvent.getAsString().find( "mouse:left:down:ctrl,shift" ) !=
-                 string::npos )
+                 std::string::npos )
         {
             // Flag to know if the current item must be selected
             bool select = false;
@@ -236,7 +236,7 @@ void CtrlList::handleEvent( EvtGeneric &rEvent )
         }
 
         else if( rEvent.getAsString().find( "mouse:left:down:ctrl" ) !=
-                 string::npos )
+                 std::string::npos )
         {
             for( it = m_rList.begin(); it != m_rList.end(); ++it )
             {
@@ -251,7 +251,7 @@ void CtrlList::handleEvent( EvtGeneric &rEvent )
         }
 
         else if( rEvent.getAsString().find( "mouse:left:down:shift" ) !=
-                 string::npos )
+                 std::string::npos )
         {
             // Flag to know if the current item must be selected
             bool select = false;
@@ -277,7 +277,7 @@ void CtrlList::handleEvent( EvtGeneric &rEvent )
         }
 
         else if( rEvent.getAsString().find( "mouse:left:down" ) !=
-                 string::npos )
+                 std::string::npos )
         {
             for( it = m_rList.begin(); it != m_rList.end(); ++it )
             {
@@ -295,7 +295,7 @@ void CtrlList::handleEvent( EvtGeneric &rEvent )
         }
 
         else if( rEvent.getAsString().find( "mouse:left:dblclick" ) !=
-                 string::npos )
+                 std::string::npos )
         {
             for( it = m_rList.begin(); it != m_rList.end(); ++it )
             {
@@ -319,7 +319,7 @@ void CtrlList::handleEvent( EvtGeneric &rEvent )
         notifyLayout();
     }
 
-    else if( rEvent.getAsString().find( "scroll" ) != string::npos )
+    else if( rEvent.getAsString().find( "scroll" ) != std::string::npos )
     {
         int direction = ((EvtScroll&)rEvent).getDirection();
 

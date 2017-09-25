@@ -2,7 +2,7 @@
  * ctrl_video.hpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 93e23b01840589a5a5d8ff8fbcd8c9a1e9420955 $
+ * $Id: 1e5e1eb42628c7c4046670afc4305604ed5c36c4 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -54,7 +54,7 @@ public:
     virtual void draw( OSGraphics &rImage, int xDest, int yDest, int w, int h );
 
     /// Get the type of control (custom RTTI)
-    virtual string getType() const { return "video"; }
+    virtual std::string getType() const { return "video"; }
 
     /// Method called when visibility or ActiveLayout is updated
     virtual void onUpdate( Subject<VarBool> &rVariable , void* );

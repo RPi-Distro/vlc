@@ -2,7 +2,7 @@
  * tdummy.c : dummy text rendering functions
  *****************************************************************************
  * Copyright (C) 2000, 2001 VLC authors and VideoLAN
- * $Id: 80b7f5da3423df807777b71bf81cf900f344d40b $
+ * $Id: 38c1b807580da9e0da70aa55e8778fc6c522433a $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -51,7 +51,6 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
 static int OpenRenderer( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
-    p_filter->pf_render_text = RenderText;
-    p_filter->pf_render_html = NULL;
+    p_filter->pf_render = RenderText;
     return VLC_SUCCESS;
 }

@@ -2,7 +2,7 @@
  * directsound.c: DirectSound audio output plugin for VLC
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: ed11194cb44a1007981c7c2b7b08a0580ada957f $
+ * $Id: a38035121f3aaa68161978df3af66a65d30e98b7 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -36,6 +36,7 @@
 #include <vlc_plugin.h>
 #include <vlc_aout.h>
 #include <vlc_charset.h>
+#include <vlc_memory.h>
 
 #include "audio_output/windows_audio_common.h"
 #include "audio_output/mmdevice.h"
@@ -71,10 +72,10 @@ static const char *const speaker_list[] = { "Windows default", "Mono", "Stereo",
 vlc_module_begin ()
     set_description( N_("DirectX audio output") )
     set_shortname( "DirectX" )
-    set_capability( "audio output", 200 )
+    set_capability( "audio output", 100 )
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_AOUT )
-    add_shortcut( "directx", "aout_directx" )
+    add_shortcut( "directx", "aout_directx", "directsound", "dsound" )
 
     add_string( "directx-audio-device", NULL,
              DEVICE_TEXT, DEVICE_LONGTEXT, false )
@@ -137,7 +138,6 @@ struct aout_sys_t
         LONG          mb;
         bool          mute;
     } volume;
-    HINSTANCE         hdsound_dll; /*< handle of the opened dsound DLL */
 };
 
 static HRESULT Flush( aout_stream_sys_t *sys, bool drain);
@@ -591,8 +591,11 @@ static void OutputStop( audio_output_t *aout )
 }
 
 static HRESULT Start( vlc_object_t *obj, aout_stream_sys_t *sys,
-                      audio_sample_format_t *restrict fmt )
+                      audio_sample_format_t *restrict pfmt )
 {
+    if( aout_FormatNbChannels( pfmt ) == 0 )
+        return E_FAIL;
+
 #if !VLC_WINSTORE_APP
     /* Set DirectSound Cooperative level, ie what control we want over Windows
      * sound device. In our case, DSSCL_EXCLUSIVE means that we can modify the
@@ -609,10 +612,14 @@ static HRESULT Start( vlc_object_t *obj, aout_stream_sys_t *sys,
         msg_Warn( obj, "cannot set direct sound cooperative level" );
 #endif
 
+    if( AOUT_FMT_HDMI( pfmt ) )
+        return E_FAIL;
+
+    audio_sample_format_t fmt = *pfmt;
     const char *const *ppsz_compare = speaker_list;
     char *psz_speaker;
     int i = 0;
-    HRESULT hr;
+    HRESULT hr = DSERR_UNSUPPORTED;
 
     /* Retrieve config values */
     var_Create( obj, "directx-audio-float32",
@@ -639,23 +646,29 @@ static HRESULT Start( vlc_object_t *obj, aout_stream_sys_t *sys,
     vlc_mutex_init(&sys->lock);
     vlc_cond_init(&sys->cond);
 
-    if( AOUT_FMT_SPDIF( fmt ) && var_InheritBool( obj, "spdif" ) )
+    if( AOUT_FMT_SPDIF( &fmt ) )
     {
-        hr = CreateDSBuffer( obj, sys, VLC_CODEC_SPDIFL,
-                             fmt->i_physical_channels,
-                             aout_FormatNbChannels(fmt), fmt->i_rate, false );
+        if( var_InheritBool( obj, "spdif" ) )
+            hr = CreateDSBuffer( obj, sys, VLC_CODEC_SPDIFL,
+                                 fmt.i_physical_channels,
+                                 aout_FormatNbChannels(&fmt), fmt.i_rate, false );
+
         if( hr == DS_OK )
         {
             msg_Dbg( obj, "using A/52 pass-through over S/PDIF" );
-            fmt->i_format = VLC_CODEC_SPDIFL;
+            fmt.i_format = VLC_CODEC_SPDIFL;
 
             /* Calculate the frame size in bytes */
-            fmt->i_bytes_per_frame = AOUT_SPDIF_SIZE;
-            fmt->i_frame_length = A52_FRAME_NB;
+            fmt.i_bytes_per_frame = AOUT_SPDIF_SIZE;
+            fmt.i_frame_length = A52_FRAME_NB;
+        }
+        else
+        {
+            vlc_mutex_destroy(&sys->lock);
+            vlc_cond_destroy(&sys->cond);
+            return E_FAIL;
         }
     }
-    else
-        hr = DSERR_UNSUPPORTED;
 
     if( hr != DS_OK )
     {
@@ -663,7 +676,7 @@ static HRESULT Start( vlc_object_t *obj, aout_stream_sys_t *sys,
         {
             DWORD ui_speaker_config;
             int i_channels = 2; /* Default to stereo */
-            int i_orig_channels = aout_FormatNbChannels( fmt );
+            int i_orig_channels = aout_FormatNbChannels( &fmt );
 
             /* Check the speaker configuration to determine which channel
              * config should be the default */
@@ -719,18 +732,18 @@ static HRESULT Start( vlc_object_t *obj, aout_stream_sys_t *sys,
             switch( i_channels )
             {
                 case 8:
-                    fmt->i_physical_channels = AOUT_CHANS_7_1;
+                    fmt.i_physical_channels = AOUT_CHANS_7_1;
                     break;
                 case 7:
                 case 6:
-                    fmt->i_physical_channels = AOUT_CHANS_5_1;
+                    fmt.i_physical_channels = AOUT_CHANS_5_1;
                     break;
                 case 5:
                 case 4:
-                    fmt->i_physical_channels = AOUT_CHANS_4_0;
+                    fmt.i_physical_channels = AOUT_CHANS_4_0;
                     break;
                 default:
-                    fmt->i_physical_channels = AOUT_CHANS_2_0;
+                    fmt.i_physical_channels = AOUT_CHANS_2_0;
                     break;
             }
         }
@@ -741,41 +754,39 @@ static HRESULT Start( vlc_object_t *obj, aout_stream_sys_t *sys,
             {
                 case 1: /* Mono */
                     name = "Mono";
-                    fmt->i_physical_channels = AOUT_CHAN_CENTER;
+                    fmt.i_physical_channels = AOUT_CHAN_CENTER;
                     break;
                 case 2: /* Stereo */
                     name = "Stereo";
-                    fmt->i_physical_channels = AOUT_CHANS_2_0;
+                    fmt.i_physical_channels = AOUT_CHANS_2_0;
                     break;
                 case 3: /* Quad */
                     name = "Quad";
-                    fmt->i_physical_channels = AOUT_CHANS_4_0;
+                    fmt.i_physical_channels = AOUT_CHANS_4_0;
                     break;
                 case 4: /* 5.1 */
                     name = "5.1";
-                    fmt->i_physical_channels = AOUT_CHANS_5_1;
+                    fmt.i_physical_channels = AOUT_CHANS_5_1;
                     break;
                 case 5: /* 7.1 */
                     name = "7.1";
-                    fmt->i_physical_channels = AOUT_CHANS_7_1;
+                    fmt.i_physical_channels = AOUT_CHANS_7_1;
                     break;
             }
             msg_Dbg( obj, "%s speaker config: %s", "VLC", name );
         }
 
         /* Open the device */
-        aout_FormatPrepare( fmt );
+        aout_FormatPrepare( &fmt );
 
-        hr = CreateDSBufferPCM( obj, sys, &fmt->i_format,
-                                fmt->i_physical_channels, fmt->i_rate, false );
+        hr = CreateDSBufferPCM( obj, sys, &fmt.i_format,
+                                fmt.i_physical_channels, fmt.i_rate, false );
         if( hr != DS_OK )
         {
             msg_Err( obj, "cannot open directx audio device" );
             goto error;
         }
     }
-
-    fmt->i_original_channels = fmt->i_physical_channels;
 
     int ret = vlc_clone(&sys->eraser_thread, PlayedDataEraser, (void*) obj,
                         VLC_THREAD_PRIORITY_LOW);
@@ -798,6 +809,10 @@ static HRESULT Start( vlc_object_t *obj, aout_stream_sys_t *sys,
         sys->p_dsobject = NULL;
         return ret;
     }
+
+    fmt.channel_type = AUDIO_CHANNEL_TYPE_BITMAP;
+
+    *pfmt = fmt;
     sys->b_playing = false;
     sys->i_write = 0;
     sys->i_last_read =  0;
@@ -859,16 +874,6 @@ static int InitDirectSound( audio_output_t *p_aout )
 {
     aout_sys_t *sys = p_aout->sys;
     GUID guid, *p_guid = NULL;
-    HRESULT (WINAPI *OurDirectSoundCreate)(LPGUID, LPDIRECTSOUND *, LPUNKNOWN);
-
-    OurDirectSoundCreate = (void *)
-        GetProcAddress( p_aout->sys->hdsound_dll,
-                        "DirectSoundCreate" );
-    if( OurDirectSoundCreate == NULL )
-    {
-        msg_Warn( p_aout, "GetProcAddress FAILED" );
-        goto error;
-    }
 
     char *dev = var_GetNonEmptyString( p_aout, "directx-audio-device" );
     if( dev != NULL )
@@ -884,7 +889,7 @@ static int InitDirectSound( audio_output_t *p_aout )
     }
 
     /* Create the direct sound object */
-    if FAILED( OurDirectSoundCreate( p_guid, &sys->s.p_dsobject, NULL ) )
+    if FAILED( DirectSoundCreate( p_guid, &sys->s.p_dsobject, NULL ) )
     {
         msg_Warn( p_aout, "cannot create a direct sound device" );
         goto error;
@@ -995,12 +1000,17 @@ static int CALLBACK DeviceEnumCallback( LPGUID guid, LPCWSTR desc,
         return true;
 
     list->count++;
-    list->ids = xrealloc( list->ids, list->count * sizeof(char *) );
-    list->names = xrealloc( list->names, list->count * sizeof(char *) );
+    list->ids = realloc_or_free( list->ids, list->count * sizeof(char *) );
+    if( list->ids == NULL )
+        return false;
+    list->names = realloc_or_free( list->names, list->count * sizeof(char *) );
+    if( list->names == NULL )
+    {
+        free( list->ids );
+        return false;
+    }
     list->ids[list->count - 1] = FromWide( buf );
     list->names[list->count - 1] = FromWide( desc );
-    if( list->ids == NULL || list->names == NULL )
-        abort();
 
     (void) mod;
     return true;
@@ -1022,24 +1032,9 @@ static int ReloadDirectXDevices( vlc_object_t *p_this, char const *psz_name,
 
     (void) psz_name;
 
-    HANDLE hdsound_dll = LoadLibrary(_T("DSOUND.DLL"));
-    if( hdsound_dll == NULL )
-    {
-        msg_Warn( p_this, "cannot open DSOUND.DLL" );
-        goto out;
-    }
+    DirectSoundEnumerate( DeviceEnumCallback, &list );
+    msg_Dbg( p_this, "found %u devices", list.count );
 
-    /* Get DirectSoundEnumerate */
-    HRESULT (WINAPI *OurDirectSoundEnumerate)(LPDSENUMCALLBACKW, LPVOID) =
-            (void *)GetProcAddress( hdsound_dll, "DirectSoundEnumerateW" );
-    if( OurDirectSoundEnumerate != NULL )
-    {
-        OurDirectSoundEnumerate( DeviceEnumCallback, &list );
-        msg_Dbg( p_this, "found %u devices", list.count );
-    }
-    FreeLibrary(hdsound_dll);
-
-out:
     *values = list.ids;
     *descs = list.names;
     return list.count;
@@ -1056,19 +1051,9 @@ static int DeviceSelect (audio_output_t *aout, const char *id)
 static int Open(vlc_object_t *obj)
 {
     audio_output_t *aout = (audio_output_t *)obj;
-
-    HINSTANCE hdsound_dll = LoadLibrary(_T("DSOUND.DLL"));
-    if (hdsound_dll == NULL)
-    {
-        msg_Warn(aout, "cannot open DSOUND.DLL");
-        return VLC_EGENERIC;
-    }
-
     aout_sys_t *sys = calloc(1, sizeof (*sys));
     if (unlikely(sys == NULL))
         return VLC_ENOMEM;
-
-    sys->hdsound_dll = hdsound_dll;
 
     aout->sys = sys;
     aout->start = OutputStart;
@@ -1110,7 +1095,6 @@ static void Close(vlc_object_t *obj)
     aout_sys_t *sys = aout->sys;
 
     var_Destroy(aout, "directx-audio-device");
-    FreeLibrary(sys->hdsound_dll); /* free DSOUND.DLL */
     free(sys);
 }
 

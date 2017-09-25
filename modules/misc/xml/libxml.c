@@ -2,7 +2,7 @@
  * libxml.c: XML parser using libxml2
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: b7cf654322083cd06aab3cb9f6ca83f327bfcd80 $
+ * $Id: 059c26976e354830bfd2f209716eff3920640056 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -223,7 +223,7 @@ skip:
         case 0: /* EOF */
             return XML_READER_NONE;
         case -1: /* error */
-            return -1;
+            return XML_READER_ERROR;
     }
 
     switch( xmlTextReaderNodeType( p_sys->xml ) )
@@ -245,19 +245,19 @@ skip:
             break;
 
         case -1:
-            return -1;
+            return XML_READER_ERROR;
 
         default:
             goto skip;
     }
 
     if( unlikely(node == NULL) )
-        return -1;
+        return XML_READER_ERROR;
 
     p_sys->node = strdup( (const char *)node );
     if( pval != NULL )
         *pval = p_sys->node;
-    return likely(p_sys->node != NULL) ? ret : -1;
+    return likely(p_sys->node != NULL) ? ret : XML_READER_ERROR;
 }
 
 #if 0
@@ -287,7 +287,7 @@ static const char *ReaderNextAttr( xml_reader_t *p_reader, const char **pval )
 static int StreamRead( void *p_context, char *p_buffer, int i_buffer )
 {
     stream_t *s = (stream_t*)p_context;
-    return stream_Read( s, p_buffer, i_buffer );
+    return vlc_stream_Read( s, p_buffer, i_buffer );
 }
 
 static int ReaderIsEmptyElement( xml_reader_t *p_reader )

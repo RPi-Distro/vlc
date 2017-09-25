@@ -2,7 +2,7 @@
  * real.c: Real demuxer.
  *****************************************************************************
  * Copyright (C) 2004, 2006-2007 the VideoLAN team
- * $Id: fa3219867c8905bb55893ef2ae3b201f0bbba2fc $
+ * $Id: 72dba3b0991b1a88b3a6959743f1b5b7231960a0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -51,6 +51,7 @@
 # include "config.h"
 #endif
 
+#define VLC_MODULE_LICENSE VLC_LICENSE_GPL_2_PLUS
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 
@@ -179,13 +180,13 @@ static int Open( vlc_object_t *p_this )
     const uint8_t *p_peek;
     bool           b_real_audio = false;
 
-    if( stream_Peek( p_demux->s, &p_peek, 10 ) < 10 )
+    if( vlc_stream_Peek( p_demux->s, &p_peek, 10 ) < 10 )
         return VLC_EGENERIC;
 
     /* Real Audio */
     if( !memcmp( p_peek, ".ra", 3 ) )
     {
-        msg_Err( p_demux, ".ra files unsuported" );
+        msg_Err( p_demux, ".ra files unsupported" );
         b_real_audio = true;
     }
     /* Real Media Format */
@@ -281,13 +282,13 @@ static int Demux( demux_t *p_demux )
     if( p_sys->i_data_packets >= p_sys->i_data_packets_count &&
         p_sys->i_data_packets_count )
     {
-        if( stream_Read( p_demux->s, header, 18 ) < 18 )
+        if( vlc_stream_Read( p_demux->s, header, 18 ) < 18 )
             return 0;
 
         if( memcmp( header, "DATA", 4 ) )
             return 0;
 
-        p_sys->i_data_offset = stream_Tell( p_demux->s ) - 18;
+        p_sys->i_data_offset = vlc_stream_Tell( p_demux->s ) - 18;
         p_sys->i_data_size   = GetDWBE( &header[4] );
         p_sys->i_data_packets_count = GetDWBE( &header[10] );
         p_sys->i_data_packets = 0;
@@ -299,7 +300,7 @@ static int Demux( demux_t *p_demux )
     }
 
     /* Read Packet Header */
-    if( stream_Read( p_demux->s, header, 12 ) < 12 )
+    if( vlc_stream_Read( p_demux->s, header, 12 ) < 12 )
         return 0;
     //const int i_version = GetWBE( &header[0] );
     const size_t  i_size = GetWBE( &header[2] ) - 12;
@@ -314,7 +315,7 @@ static int Demux( demux_t *p_demux )
         return 1;
     }
 
-    p_sys->i_buffer = stream_Read( p_demux->s, p_sys->buffer, i_size );
+    p_sys->i_buffer = vlc_stream_Read( p_demux->s, p_sys->buffer, i_size );
     if( p_sys->i_buffer < i_size )
         return 0;
 
@@ -345,7 +346,7 @@ static int Demux( demux_t *p_demux )
     mtime_t i_pcr = VLC_TS_INVALID;
     for( int i = 0; i < p_sys->i_track; i++ )
     {
-        real_track_t *tk = p_sys->track[i];
+        tk = p_sys->track[i];
 
         if( i_pcr <= VLC_TS_INVALID || ( tk->i_last_dts > VLC_TS_INVALID && tk->i_last_dts < i_pcr ) )
             i_pcr = tk->i_last_dts;
@@ -353,7 +354,7 @@ static int Demux( demux_t *p_demux )
     if( i_pcr > VLC_TS_INVALID && i_pcr != p_sys->i_pcr )
     {
         p_sys->i_pcr = i_pcr;
-        es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_sys->i_pcr );
+        es_out_SetPCR( p_demux->out, p_sys->i_pcr );
     }
     return 1;
 }
@@ -370,8 +371,24 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
     switch( i_query )
     {
+        case DEMUX_CAN_SEEK:
+        {
+            bool *b = va_arg( args, bool * );
+
+            if( stream_Size( p_demux->s ) == 0 )
+                *b = true; /* FIXME: kludge for Real-dialectal RTSP */
+            else
+            if( p_sys->p_index == NULL )
+                *b = false;
+            else
+            if( vlc_stream_Control( p_demux->s, STREAM_CAN_SEEK, &b ) )
+                *b = false;
+
+            return VLC_SUCCESS;
+        }
+
         case DEMUX_GET_POSITION:
-            pf = (double*) va_arg( args, double* );
+            pf = va_arg( args, double * );
 
             /* read stream size maybe failed in rtsp streaming, 
                so use duration to determin the position at first  */
@@ -386,13 +403,13 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
             i64 = stream_Size( p_demux->s );
             if( i64 > 0 )
-                *pf = (double)1.0*stream_Tell( p_demux->s ) / (double)i64;
+                *pf = (double)1.0*vlc_stream_Tell( p_demux->s ) / (double)i64;
             else
                 *pf = 0.0;
             return VLC_SUCCESS;
 
         case DEMUX_GET_TIME:
-            pi64 = (int64_t*)va_arg( args, int64_t * );
+            pi64 = va_arg( args, int64_t * );
 
             if( p_sys->i_our_duration > 0 )
             {
@@ -404,7 +421,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             i64 = stream_Size( p_demux->s );
             if( p_sys->i_our_duration > 0 && i64 > 0 )
             {
-                *pi64 = (int64_t)( 1000.0 * p_sys->i_our_duration * stream_Tell( p_demux->s ) / i64 );
+                *pi64 = (int64_t)( 1000.0 * p_sys->i_our_duration * vlc_stream_Tell( p_demux->s ) / i64 );
                 return VLC_SUCCESS;
             }
 
@@ -412,7 +429,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             return VLC_EGENERIC;
 
         case DEMUX_SET_POSITION:
-            f = (double) va_arg( args, double );
+            f = va_arg( args, double );
             i64 = (int64_t) ( stream_Size( p_demux->s ) * f );
 
             if( !p_sys->p_index && i64 != 0 )
@@ -427,7 +444,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 msg_Dbg(p_demux, "Seek in real rtsp stream!");
                 p_sys->i_pcr = VLC_TS_0 + INT64_C(1000) * ( p_sys->i_our_duration * f  );
                 p_sys->b_seek = true;
-                return stream_Seek( p_demux->s, p_sys->i_pcr - VLC_TS_0 );
+                return vlc_stream_Seek( p_demux->s, p_sys->i_pcr - VLC_TS_0 );
             }
             return ControlSeekByte( p_demux, i64 );
 
@@ -435,11 +452,11 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             if( !p_sys->p_index )
                 return VLC_EGENERIC;
 
-            i64 = (int64_t) va_arg( args, int64_t );
+            i64 = va_arg( args, int64_t );
             return ControlSeekTime( p_demux, i64 );
 
         case DEMUX_GET_LENGTH:
-            pi64 = (int64_t*)va_arg( args, int64_t * );
+            pi64 = va_arg( args, int64_t * );
  
             if( p_sys->i_our_duration <= 0 )
             {
@@ -453,7 +470,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
         case DEMUX_GET_META:
         {
-            vlc_meta_t *p_meta = (vlc_meta_t*)va_arg( args, vlc_meta_t* );
+            vlc_meta_t *p_meta = va_arg( args, vlc_meta_t * );
 
             /* the core will crash if we provide NULL strings, so check
              * every string first */
@@ -489,7 +506,7 @@ static void CheckPcr( demux_t *p_demux, real_track_t *tk, mtime_t i_dts )
         return;
 
     p_sys->i_pcr = i_dts;
-    es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_sys->i_pcr );
+    es_out_SetPCR( p_demux->out, p_sys->i_pcr );
 }
 
 static void DemuxVideo( demux_t *p_demux, real_track_t *tk, mtime_t i_dts, unsigned i_flags )
@@ -901,7 +918,7 @@ static int ControlGoToIndex( demux_t *p_demux, real_index_t *p_index )
     p_sys->i_pcr = INT64_C(1000) * p_index->i_time_offset;
     for( int i = 0; i < p_sys->i_track; i++ )
         p_sys->track[i]->i_last_dts = 0;
-    return stream_Seek( p_demux->s, p_index->i_file_offset );
+    return vlc_stream_Seek( p_demux->s, p_index->i_file_offset );
 }
 static int ControlSeekTime( demux_t *p_demux, mtime_t i_time )
 {
@@ -947,7 +964,7 @@ static int ControlSeekByte( demux_t *p_demux, int64_t i_bytes )
  *****************************************************************************/
 
 /**
- * This function will read a pascal string with size stored in 2 bytes from
+ * This function will read a Pascal string with size stored in 2 bytes from
  * a stream_t.
  *
  * FIXME what is the right charset ?
@@ -956,19 +973,25 @@ static char *StreamReadString2( stream_t *s )
 {
     uint8_t p_tmp[2];
 
-    if( stream_Read( s, p_tmp, 2 ) < 2 )
+    if( vlc_stream_Read( s, p_tmp, 2 ) < 2 )
         return NULL;
 
     const int i_length = GetWBE( p_tmp );
     if( i_length <= 0 )
         return NULL;
 
-    char *psz_string = xcalloc( 1, i_length + 1 );
+    char *psz_string = malloc( i_length + 1 );
+    if( unlikely(psz_string == NULL) )
+        return NULL;
 
-    stream_Read( s, psz_string, i_length ); /* Valid even if !psz_string */
+    if( vlc_stream_Read( s, psz_string, i_length ) < i_length )
+    {
+        free( psz_string );
+        return NULL;
+    }
 
-    if( psz_string )
-        EnsureUTF8( psz_string );
+    psz_string[i_length] = '\0';
+    EnsureUTF8( psz_string );
     return psz_string;
 }
 
@@ -1015,7 +1038,7 @@ static int HeaderRMF( demux_t *p_demux )
 {
     uint8_t p_buffer[8];
 
-    if( stream_Read( p_demux->s, p_buffer, 8 ) < 8 )
+    if( vlc_stream_Read( p_demux->s, p_buffer, 8 ) < 8 )
         return VLC_EGENERIC;
 
     msg_Dbg( p_demux, "    - file version=0x%x num headers=%d",
@@ -1032,7 +1055,7 @@ static int HeaderPROP( demux_t *p_demux )
     uint8_t p_buffer[40];
     int i_flags;
 
-    if( stream_Read( p_demux->s, p_buffer, 40 ) < 40 )
+    if( vlc_stream_Read( p_demux->s, p_buffer, 40 ) < 40 )
         return VLC_EGENERIC;
 
     msg_Dbg( p_demux, "    - max bitrate=%d avg bitrate=%d",
@@ -1096,7 +1119,7 @@ static int HeaderMDPR( demux_t *p_demux )
 {
     uint8_t p_buffer[30];
 
-    if( stream_Read( p_demux->s, p_buffer, 30 ) < 30 )
+    if( vlc_stream_Read( p_demux->s, p_buffer, 30 ) < 30 )
         return VLC_EGENERIC;
 
     const int i_num = GetWBE( &p_buffer[0] );
@@ -1111,7 +1134,7 @@ static int HeaderMDPR( demux_t *p_demux )
 
     /* */
     const uint8_t *p_peek;
-    int i_peek_org = stream_Peek( p_demux->s, &p_peek, 2 * 256 );
+    int i_peek_org = vlc_stream_Peek( p_demux->s, &p_peek, 2 * 256 );
     int i_peek = i_peek_org;
     if( i_peek <= 0 )
         return VLC_EGENERIC;
@@ -1129,18 +1152,18 @@ static int HeaderMDPR( demux_t *p_demux )
         free( psz_mime );
     }
     const int i_skip = i_peek_org - i_peek;
-    if( i_skip > 0 && stream_Read( p_demux->s, NULL, i_skip ) < i_skip )
+    if( i_skip > 0 && vlc_stream_Read( p_demux->s, NULL, i_skip ) < i_skip )
         return VLC_EGENERIC;
 
     /* */
-    if( stream_Read( p_demux->s, p_buffer, 4 ) < 4 )
+    if( vlc_stream_Read( p_demux->s, p_buffer, 4 ) < 4 )
         return VLC_EGENERIC;
 
     const uint32_t i_size = GetDWBE( p_buffer );
     if( i_size > 0 )
     {
         CodecParse( p_demux, i_size, i_num );
-        unsigned size = stream_Read( p_demux->s, NULL, i_size );
+        unsigned size = vlc_stream_Read( p_demux->s, NULL, i_size );
         if( size < i_size )
             return VLC_EGENERIC;
     }
@@ -1154,10 +1177,10 @@ static int HeaderDATA( demux_t *p_demux, uint32_t i_size )
     demux_sys_t *p_sys = p_demux->p_sys;
     uint8_t p_buffer[8];
 
-    if( stream_Read( p_demux->s, p_buffer, 8 ) < 8 )
+    if( vlc_stream_Read( p_demux->s, p_buffer, 8 ) < 8 )
         return VLC_EGENERIC;
 
-    p_sys->i_data_offset    = stream_Tell( p_demux->s ) - 10;
+    p_sys->i_data_offset    = vlc_stream_Tell( p_demux->s ) - 10;
     p_sys->i_data_size      = i_size;
     p_sys->i_data_packets_count = GetDWBE( p_buffer );
     p_sys->i_data_packets   = 0;
@@ -1182,9 +1205,8 @@ static void HeaderINDX( demux_t *p_demux )
     if( p_sys->i_index_offset == 0 )
         return;
 
-    stream_Seek( p_demux->s, p_sys->i_index_offset );
-
-    if( stream_Read( p_demux->s, buffer, 20 ) < 20 )
+    if( vlc_stream_Seek( p_demux->s, p_sys->i_index_offset )
+     || vlc_stream_Read( p_demux->s, buffer, 20 ) < 20 )
         return ;
 
     const uint32_t i_id = VLC_FOURCC( buffer[0], buffer[1], buffer[2], buffer[3] );
@@ -1219,7 +1241,7 @@ static void HeaderINDX( demux_t *p_demux )
     {
         uint8_t p_entry[14];
 
-        if( stream_Read( p_demux->s, p_entry, 14 ) < 14 )
+        if( vlc_stream_Read( p_demux->s, p_entry, 14 ) < 14 )
             return ;
 
         if( GetWBE( &p_entry[0] ) != 0 )
@@ -1256,11 +1278,11 @@ static int HeaderRead( demux_t *p_demux )
 
     for( ;; )
     {
-        const int64_t i_stream_position = stream_Tell( p_demux->s );
+        const int64_t i_stream_position = vlc_stream_Tell( p_demux->s );
         uint8_t header[100];    /* FIXME */
 
         /* Read the header */
-        if( stream_Read( p_demux->s, header, 10 ) < 10 )
+        if( vlc_stream_Read( p_demux->s, header, 10 ) < 10 )
             return VLC_EGENERIC;
 
         const uint32_t i_id = VLC_FOURCC( header[0], header[1],
@@ -1297,7 +1319,7 @@ static int HeaderRead( demux_t *p_demux )
             i_ret = HeaderDATA( p_demux, i_size );
             break;
         default:
-            /* unknow header */
+            /* unknown header */
             msg_Dbg( p_demux, "unknown chunk" );
             i_ret = VLC_SUCCESS;
             break;
@@ -1309,12 +1331,12 @@ static int HeaderRead( demux_t *p_demux )
             break;
 
         /* Skip unread data */
-        const int64_t i_stream_current = stream_Tell( p_demux->s );
+        const int64_t i_stream_current = vlc_stream_Tell( p_demux->s );
         const int64_t i_stream_skip = (i_stream_position + i_size) - i_stream_current;
 
         if( i_stream_skip > 0 )
         {
-            if( stream_Read( p_demux->s, NULL, i_stream_skip ) != i_stream_skip )
+            if( vlc_stream_Read( p_demux->s, NULL, i_stream_skip ) != i_stream_skip )
                 return VLC_EGENERIC;
         }
         else if( i_stream_skip < 0 )
@@ -1326,11 +1348,11 @@ static int HeaderRead( demux_t *p_demux )
     /* read index if possible */
     if( p_sys->i_index_offset > 0 )
     {
-        const int64_t i_position = stream_Tell( p_demux->s );
+        const int64_t i_position = vlc_stream_Tell( p_demux->s );
 
         HeaderINDX( p_demux );
 
-        if( stream_Seek( p_demux->s, i_position ) )
+        if( vlc_stream_Seek( p_demux->s, i_position ) )
             return VLC_EGENERIC;
     }
     return VLC_SUCCESS;
@@ -1374,6 +1396,8 @@ static int CodecVideoParse( demux_t *p_demux, int i_tk_id, const uint8_t *p_data
                     VLC_FOURCC( p_data[8], p_data[9], p_data[10], p_data[11] ) );
     fmt.video.i_width = GetWBE( &p_data[12] );
     fmt.video.i_height= GetWBE( &p_data[14] );
+    fmt.video.i_visible_width = fmt.video.i_width;
+    fmt.video.i_visible_height = fmt.video.i_height;
     fmt.video.i_frame_rate = (GetWBE( &p_data[22] ) << 16) | GetWBE( &p_data[24] );
     fmt.video.i_frame_rate_base = 1 << 16;
 
@@ -1592,6 +1616,7 @@ static int CodecAudioParse( demux_t *p_demux, int i_tk_id, const uint8_t *p_data
         // can be selected.
         fmt.i_bitrate = fmt.audio.i_rate;
         msg_Dbg( p_demux, "    - sipr flavor=%i", i_flavor );
+        /* fall through */
 
     case VLC_CODEC_COOK:
     case VLC_CODEC_ATRAC3:
@@ -1626,7 +1651,6 @@ static int CodecAudioParse( demux_t *p_demux, int i_tk_id, const uint8_t *p_data
                 (char*)&fmt.i_codec );
         es_format_Clean( &fmt );
         return VLC_EGENERIC;
-        break;
     }
     msg_Dbg( p_demux, "    - extra data=%d", fmt.i_extra );
 
@@ -1700,7 +1724,7 @@ static int CodecParse( demux_t *p_demux, int i_len, int i_num )
     const uint8_t *p_peek;
 
     msg_Dbg( p_demux, "    - specific data len=%d", i_len );
-    if( stream_Peek( p_demux->s, &p_peek, i_len ) < i_len )
+    if( vlc_stream_Peek( p_demux->s, &p_peek, i_len ) < i_len )
         return VLC_EGENERIC;
 
     if( i_len >= 8 && !memcmp( &p_peek[4], "VIDO", 4 ) )

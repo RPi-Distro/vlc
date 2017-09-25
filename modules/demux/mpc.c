@@ -2,7 +2,7 @@
  * mpc.c : MPC stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 838f7fe6ef6933b1c968e1447623834f49626341 $
+ * $Id: f8648b7b85b5fa40bf343475d813ceb90a562848 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr.com>
  *
@@ -28,6 +28,7 @@
 # include "config.h"
 #endif
 
+#define VLC_MODULE_LICENSE VLC_LICENSE_GPL_2_PLUS
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_demux.h>
@@ -114,7 +115,7 @@ static int Open( vlc_object_t * p_this )
     es_format_t fmt;
     const uint8_t *p_peek;
 
-    if( stream_Peek( p_demux->s, &p_peek, 4 ) < 4 )
+    if( vlc_stream_Peek( p_demux->s, &p_peek, 4 ) < 4 )
         return VLC_EGENERIC;
 
     if( memcmp( p_peek, "MP+", 3 )
@@ -129,7 +130,7 @@ static int Open( vlc_object_t * p_this )
         if( i_version  < 4 || i_version > 6 )
             return VLC_EGENERIC;
 
-        if( !p_demux->b_force )
+        if( !p_demux->obj.force )
         {
             /* Check file name extension */
             if( !demux_IsPathExtension( p_demux, ".mpc" ) &&
@@ -292,9 +293,9 @@ static int Demux( demux_t *p_demux )
     /* */
     p_data->i_buffer = i_ret * sizeof(MPC_SAMPLE_FORMAT) * p_sys->info.channels;
     p_data->i_dts = p_data->i_pts =
-            VLC_TS_0 + INT64_C(1000000) * p_sys->i_position / p_sys->info.sample_freq;
+            VLC_TS_0 + CLOCK_FREQ * p_sys->i_position / p_sys->info.sample_freq;
 
-    es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_data->i_dts );
+    es_out_SetPCR( p_demux->out, p_data->i_dts );
 
     es_out_Send( p_demux->out, p_sys->p_es, p_data );
 
@@ -316,25 +317,28 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
     switch( i_query )
     {
+        case DEMUX_CAN_SEEK:
+            return vlc_stream_vaControl( p_demux->s, i_query, args );
+
         case DEMUX_HAS_UNSUPPORTED_META:
-            pb_bool = (bool*)va_arg( args, bool* );
+            pb_bool = va_arg( args, bool* );
             *pb_bool = true;
             return VLC_SUCCESS;
 
         case DEMUX_GET_LENGTH:
-            pi64 = (int64_t*)va_arg( args, int64_t * );
+            pi64 = va_arg( args, int64_t * );
 #ifndef HAVE_MPC_MPCDEC_H
-            *pi64 = INT64_C(1000000) * p_sys->info.pcm_samples /
+            *pi64 = CLOCK_FREQ * p_sys->info.pcm_samples /
                         p_sys->info.sample_freq;
 #else
-            *pi64 = INT64_C(1000000) * (p_sys->info.samples -
+            *pi64 = CLOCK_FREQ * (p_sys->info.samples -
                                         p_sys->info.beg_silence) /
                 p_sys->info.sample_freq;
 #endif
             return VLC_SUCCESS;
 
         case DEMUX_GET_POSITION:
-            pf = (double*)va_arg( args, double * );
+            pf = va_arg( args, double * );
 #ifndef HAVE_MPC_MPCDEC_H
             if( p_sys->info.pcm_samples > 0 )
                 *pf = (double) p_sys->i_position /
@@ -349,13 +353,13 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             return VLC_SUCCESS;
 
         case DEMUX_GET_TIME:
-            pi64 = (int64_t*)va_arg( args, int64_t * );
-            *pi64 = INT64_C(1000000) * p_sys->i_position /
+            pi64 = va_arg( args, int64_t * );
+            *pi64 = CLOCK_FREQ * p_sys->i_position /
                         p_sys->info.sample_freq;
             return VLC_SUCCESS;
 
         case DEMUX_SET_POSITION:
-            f = (double)va_arg( args, double );
+            f = va_arg( args, double );
 #ifndef HAVE_MPC_MPCDEC_H
             i64 = (int64_t)(f * p_sys->info.pcm_samples);
             if( mpc_decoder_seek_sample( &p_sys->decoder, i64 ) )
@@ -371,7 +375,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             return VLC_EGENERIC;
 
         case DEMUX_SET_TIME:
-            i64 = (int64_t)va_arg( args, int64_t );
+            i64 = va_arg( args, int64_t );
 #ifndef HAVE_MPC_MPCDEC_H
             if( mpc_decoder_seek_sample( &p_sys->decoder, i64 ) )
 #else
@@ -397,7 +401,7 @@ static mpc_int32_t ReaderRead( mpc_reader *p_private, void *dst, mpc_int32_t i_s
 {
     demux_t *p_demux = (demux_t*)p_private->data;
 #endif
-    return stream_Read( p_demux->s, dst, i_size );
+    return vlc_stream_Read( p_demux->s, dst, i_size );
 }
 
 #ifndef HAVE_MPC_MPCDEC_H
@@ -409,7 +413,7 @@ static mpc_bool_t ReaderSeek( mpc_reader *p_private, mpc_int32_t i_offset )
 {
     demux_t *p_demux = (demux_t*)p_private->data;
 #endif
-    return !stream_Seek( p_demux->s, i_offset );
+    return !vlc_stream_Seek( p_demux->s, i_offset );
 }
 
 #ifndef HAVE_MPC_MPCDEC_H
@@ -421,7 +425,7 @@ static mpc_int32_t ReaderTell( mpc_reader *p_private)
 {
     demux_t *p_demux = (demux_t*)p_private->data;
 #endif
-    return stream_Tell( p_demux->s );
+    return vlc_stream_Tell( p_demux->s );
 }
 
 #ifndef HAVE_MPC_MPCDEC_H
@@ -447,7 +451,7 @@ static mpc_bool_t ReaderCanSeek( mpc_reader *p_private )
 #endif
     bool b_canseek;
 
-    stream_Control( p_demux->s, STREAM_CAN_SEEK, &b_canseek );
+    vlc_stream_Control( p_demux->s, STREAM_CAN_SEEK, &b_canseek );
     return b_canseek;
 }
 

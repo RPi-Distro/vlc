@@ -2,7 +2,7 @@
  * t140.c : trivial T.140 text encoder
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: babbd47d440def485ce81aee3ea5e16933e0ca24 $
+ * $Id: a4f186b1e71e55488f87d11f4e88ddedb9bfb888 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 # include "config.h"
 #endif
 
+#define VLC_MODULE_LICENSE VLC_LICENSE_GPL_2_PLUS
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
@@ -59,7 +60,7 @@ static int Open( vlc_object_t *p_this )
             break;
 
         default:
-            if( !p_enc->b_force )
+            if( !p_enc->obj.force )
                 return VLC_EGENERIC;
 
             p_enc->fmt_out.i_codec = VLC_CODEC_ITU_T140;
@@ -93,13 +94,14 @@ static block_t *Encode( encoder_t *p_enc, subpicture_t *p_spu )
     p_region = p_spu->p_region;
     if( ( p_region == NULL )
      || ( p_region->fmt.i_chroma != VLC_CODEC_TEXT )
-     || ( p_region->psz_text == NULL ) )
+     || ( p_region->p_text == NULL )
+     || ( p_region->p_text->psz_text == NULL) )
         return NULL;
 
     /* This should already be UTF-8 encoded, so not much effort... */
-    len = strlen( p_region->psz_text );
+    len = strlen( p_region->p_text->psz_text );
     p_block = block_Alloc( len );
-    memcpy( p_block->p_buffer, p_region->psz_text, len );
+    memcpy( p_block->p_buffer, p_region->p_text->psz_text, len );
 
     p_block->i_pts = p_block->i_dts = p_spu->i_start;
     if( !p_spu->b_ephemer && ( p_spu->i_stop > p_spu->i_start ) )

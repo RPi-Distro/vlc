@@ -2,7 +2,7 @@
  * i422_yuy2.h : YUV to YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2002 VLC authors and VideoLAN
- * $Id: 7d2c469128180e8a7721c90f6cb8bf6044da96f6 $
+ * $Id: 655ab32365fa07727f7253c06cbcc59f6b48f631 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -77,9 +77,6 @@ punpcklbw %%mm0, %%mm2  #                     y3 v1 y2 u1 y1 v0 y0 u0     \n\
 movq      %%mm2, (%0)   # Store low UYVY                                  \n\
 punpckhbw %%mm0, %%mm1  #                     y7 v3 y6 u3 y5 v2 y4 u2     \n\
 movq      %%mm1, 8(%0)  # Store high UYVY                                 \n\
-"
-
-#define MMX_YUV422_Y211 "                                                 \n\
 "
 
 #elif defined(HAVE_MMX_INTRINSICS)

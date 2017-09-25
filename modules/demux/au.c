@@ -2,7 +2,7 @@
  * au.c : au file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: b9267eae2f7abda56180f146651f4434459fb99d $
+ * $Id: 0cda4bf73e504bd793b2ebf9231f0132d1524434 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -29,6 +29,7 @@
 # include "config.h"
 #endif
 
+#include <limits.h>
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_demux.h>
@@ -107,19 +108,19 @@ static int Open( vlc_object_t *p_this )
     uint8_t      hdr[20];
     const uint8_t *p_peek;
     int          i_cat;
-    int          i_samples, i_modulo;
 
-    if( stream_Peek( p_demux->s , &p_peek, 4 ) < 4 )
+    if( vlc_stream_Peek( p_demux->s , &p_peek, 4 ) < 4 )
         return VLC_EGENERIC;
 
     if( memcmp( p_peek, ".snd", 4 ) )
         return VLC_EGENERIC;
 
     /* skip signature */
-    stream_Read( p_demux->s, NULL, 4 );   /* cannot fail */
+    if( vlc_stream_Read( p_demux->s, NULL, 4 ) < 4 )
+        return VLC_EGENERIC;
 
     /* read header */
-    if( stream_Read( p_demux->s, hdr, 20 ) < 20 )
+    if( vlc_stream_Read( p_demux->s, hdr, 20 ) < 20 )
     {
         msg_Err( p_demux, "cannot read" );
         return VLC_EGENERIC;
@@ -131,14 +132,23 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    DEMUX_INIT_COMMON(); p_sys = p_demux->p_sys;
+    p_sys = malloc( sizeof (*p_sys) );
+    if( unlikely(p_sys == NULL) )
+        return VLC_ENOMEM;
+
     p_sys->i_time = 0;
     p_sys->i_header_size = GetDWBE( &hdr[0] );
 
     /* skip extra header data */
     if( p_sys->i_header_size > 24 )
     {
-        stream_Read( p_demux->s, NULL, p_sys->i_header_size - 24 );
+#if (SSIZE_MAX <= INT32_MAX)
+        if( p_sys->i_header_size > SSIZE_MAX )
+            goto error;
+#endif
+        size_t skip = p_sys->i_header_size - 24;
+        if( vlc_stream_Read( p_demux->s, NULL, skip ) < (ssize_t)skip )
+            goto error;
     }
 
     /* init fmt */
@@ -170,28 +180,28 @@ static int Open( vlc_object_t *p_this )
             break;
 
         case AU_LINEAR_8:      /* 8-bit linear PCM */
-            p_sys->fmt.i_codec               = VLC_FOURCC( 't','w','o','s' );
+            p_sys->fmt.i_codec               = VLC_CODEC_S8;
             p_sys->fmt.audio.i_bitspersample = 8;
             p_sys->fmt.audio.i_blockalign    = 1 * p_sys->fmt.audio.i_channels;
             i_cat                    = AU_CAT_PCM;
             break;
 
         case AU_LINEAR_16:     /* 16-bit linear PCM */
-            p_sys->fmt.i_codec               = VLC_FOURCC( 't','w','o','s' );
+            p_sys->fmt.i_codec               = VLC_CODEC_S16B;
             p_sys->fmt.audio.i_bitspersample = 16;
             p_sys->fmt.audio.i_blockalign    = 2 * p_sys->fmt.audio.i_channels;
             i_cat                    = AU_CAT_PCM;
             break;
 
         case AU_LINEAR_24:     /* 24-bit linear PCM */
-            p_sys->fmt.i_codec               = VLC_FOURCC( 't','w','o','s' );
+            p_sys->fmt.i_codec               = VLC_CODEC_S24B;
             p_sys->fmt.audio.i_bitspersample = 24;
             p_sys->fmt.audio.i_blockalign    = 3 * p_sys->fmt.audio.i_channels;
             i_cat                    = AU_CAT_PCM;
             break;
 
         case AU_LINEAR_32:     /* 32-bit linear PCM */
-            p_sys->fmt.i_codec               = VLC_FOURCC( 't','w','o','s' );
+            p_sys->fmt.i_codec               = VLC_CODEC_S32B;
             p_sys->fmt.audio.i_bitspersample = 32;
             p_sys->fmt.audio.i_blockalign    = 4 * p_sys->fmt.audio.i_channels;
             i_cat                    = AU_CAT_PCM;
@@ -240,7 +250,7 @@ static int Open( vlc_object_t *p_this )
             break;
 
         default:
-            msg_Warn( p_demux, "unknow encoding=0x%x", GetDWBE( &hdr[8] ) );
+            msg_Warn( p_demux, "unknown encoding=0x%x", GetDWBE( &hdr[8] ) );
             p_sys->fmt.audio.i_bitspersample = 0;
             p_sys->fmt.audio.i_blockalign    = 0;
             i_cat                    = AU_CAT_UNKNOWN;
@@ -253,40 +263,42 @@ static int Open( vlc_object_t *p_this )
 
     if( i_cat == AU_CAT_UNKNOWN || i_cat == AU_CAT_ADPCM )
     {
-        p_sys->i_frame_size = 0;
-        p_sys->i_frame_length = 0;
-
         msg_Err( p_demux, "unsupported codec/type (Please report it)" );
-        free( p_sys );
-        return VLC_EGENERIC;
+        goto error;
     }
 
     if( p_sys->fmt.audio.i_rate == 0 )
     {
         msg_Err( p_demux, "invalid samplerate: 0" );
-        free( p_sys );
-        return VLC_EGENERIC;
+        goto error;
     }
 
     /* add the es */
     p_sys->es = es_out_Add( p_demux->out, &p_sys->fmt );
 
     /* calculate 50ms frame size/time */
-    i_samples = __MAX( p_sys->fmt.audio.i_rate / 20, 1 );
+    unsigned i_samples = __MAX( p_sys->fmt.audio.i_rate / 20, 1 );
     p_sys->i_frame_size = i_samples * p_sys->fmt.audio.i_channels *
                           ( (p_sys->fmt.audio.i_bitspersample + 7) / 8 );
     if( p_sys->fmt.audio.i_blockalign > 0 )
     {
-        if( ( i_modulo = p_sys->i_frame_size % p_sys->fmt.audio.i_blockalign ) != 0 )
+        unsigned mod = p_sys->i_frame_size % p_sys->fmt.audio.i_blockalign;
+        if( mod != 0 )
         {
-            p_sys->i_frame_size += p_sys->fmt.audio.i_blockalign - i_modulo;
+            p_sys->i_frame_size += p_sys->fmt.audio.i_blockalign - mod;
         }
     }
     p_sys->i_frame_length = (mtime_t)1000000 *
                             (mtime_t)i_samples /
                             (mtime_t)p_sys->fmt.audio.i_rate;
 
+    p_demux->p_sys = p_sys;
+    p_demux->pf_demux = Demux;
+    p_demux->pf_control = Control;
     return VLC_SUCCESS;
+error:
+    free( p_sys );
+    return VLC_EGENERIC;
 }
 
 /*****************************************************************************
@@ -300,9 +312,10 @@ static int Demux( demux_t *p_demux )
     block_t     *p_block;
 
     /* set PCR */
-    es_out_Control( p_demux->out, ES_OUT_SET_PCR, VLC_TS_0 + p_sys->i_time );
+    es_out_SetPCR( p_demux->out, VLC_TS_0 + p_sys->i_time );
 
-    if( ( p_block = stream_Block( p_demux->s, p_sys->i_frame_size ) ) == NULL )
+    p_block = vlc_stream_Block( p_demux->s, p_sys->i_frame_size );
+    if( p_block == NULL )
     {
         msg_Warn( p_demux, "cannot read data" );
         return 0;

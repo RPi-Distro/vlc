@@ -2,7 +2,7 @@
  * win32_dragdrop.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f43f5534f9b0922b80a08a2539db91b6830da7bd $
+ * $Id: bb936ac6f91c57c1656e776cbe7982b1939537fd $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -24,7 +24,7 @@
 
 #ifdef WIN32_SKINS
 
-#include "win32/win32_dragdrop.hpp"
+#include "win32_dragdrop.hpp"
 #include "../commands/cmd_add_item.hpp"
 #include "../events/evt_dragndrop.hpp"
 #include <list>
@@ -162,7 +162,7 @@ STDMETHODIMP Win32DragDrop::Drop( LPDATAOBJECT pDataObj, DWORD grfKeyState,
 
 void Win32DragDrop::HandleDrop( HDROP HDrop, int x, int y )
 {
-    list<string> files;
+    std::list<std::string> files;
 
     // Get the number of dropped files
     int nbFiles = DragQueryFileW( HDrop, 0xFFFFFFFF, NULL, 0 );

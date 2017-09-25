@@ -2,7 +2,7 @@
  * pes.h
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: efdf1d246d8054c1dd7337575214fe59912a7a0c $
+ * $Id: 0ddaecb1750a40ef6b1b77ca3e0582119460569e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -35,7 +35,7 @@
 
 #define PES_PAYLOAD_SIZE_MAX 65500
 
-int  EStoPES ( block_t **pp_pes, block_t *p_es,
-                   es_format_t *p_fmt, int i_stream_id,
+void EStoPES ( block_t **pp_pes,
+                   const es_format_t *p_fmt, int i_stream_id,
                    int b_mpeg2, int b_data_alignment, int i_header_size,
-                   int i_max_pes_size );
+                   int i_max_pes_size, mtime_t ts_offset );

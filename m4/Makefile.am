@@ -1,8 +1,12 @@
 NULL =
 
 EXTRA_DIST = \
+	ax_append_compile_flags.m4 \
+	ax_append_flag.m4 \
+	ax_check_compile_flag.m4 \
+	ax_require_defined.m4 \
 	codeset.m4 \
-	flags.m4 \
+	extern-inline.m4 \
 	gettext.m4 \
 	glibc21.m4 \
 	glibc2.m4 \
@@ -23,9 +27,9 @@ EXTRA_DIST = \
 	nls.m4 \
 	po.m4 \
 	printf-posix.m4 \
-	private.m4 \
 	progtest.m4 \
 	size_max.m4 \
+	stdcxx_11.m4 \
 	stdint_h.m4 \
 	uintmax_t.m4 \
 	visibility.m4 \

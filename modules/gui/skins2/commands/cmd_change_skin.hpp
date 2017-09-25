@@ -2,7 +2,7 @@
  * cmd_change_skin.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e686a436d6a5855d86af373bddcd8a8067f3de49 $
+ * $Id: cf8e5979ba4a47b6db2f734c3827dcd8cf9909c8 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -32,15 +32,15 @@
 class CmdChangeSkin: public CmdGeneric
 {
 public:
-    CmdChangeSkin( intf_thread_t *pIntf, const string &rFile ):
+    CmdChangeSkin( intf_thread_t *pIntf, const std::string &rFile ):
         CmdGeneric( pIntf ), m_file( rFile ) { }
     virtual ~CmdChangeSkin() { }
     virtual void execute();
-    virtual string getType() const { return "change skin"; }
+    virtual std::string getType() const { return "change skin"; }
 
 private:
     /// Skin file to load
-    string m_file;
+    std::string m_file;
 };
 
 #endif

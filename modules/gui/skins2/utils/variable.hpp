@@ -2,7 +2,7 @@
  * variable.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 857e9e2521f17004edda68a561233fc9bffdf994 $
+ * $Id: e45e73fe583c014fee4aea184bd252a3c8565c86 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -37,7 +37,7 @@ public:
     virtual ~Variable() { }
 
     /// Get the variable type
-    virtual const string &getType() const = 0;
+    virtual const std::string &getType() const = 0;
 
 protected:
     Variable( intf_thread_t *pIntf ): SkinObject( pIntf ) { }

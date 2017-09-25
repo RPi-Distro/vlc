@@ -41,7 +41,8 @@ package-win-common: package-win-install
 	done
 
 	cp $(srcdir)/share/icons/vlc.ico $(win32_destdir)
-	cp -r $(prefix)/lib/vlc/plugins $(win32_destdir)
+	mkdir -p "$(win32_destdir)"/plugins
+	(cd $(prefix)/lib/vlc/plugins/ && find . -type f \( -not -name '*.la' -and -not -name '*.a' \) -exec cp -v --parents "{}" "$(win32_destdir)/plugins/" \;)
 	-cp -r $(prefix)/share/locale $(win32_destdir)
 
 # BD-J JAR
@@ -49,13 +50,16 @@ package-win-common: package-win-install
 
 if BUILD_LUA
 	mkdir -p $(win32_destdir)/lua/
-	cp -r $(prefix)/lib/vlc/lua/* $(prefix)/share/vlc/lua/* $(win32_destdir)/lua/
+	cp -r $(prefix)/share/vlc/lua/* $(win32_destdir)/lua/
 endif
 
 if BUILD_SKINS
 	rm -fr $(win32_destdir)/skins
 	cp -r $(prefix)/share/vlc/skins2 $(win32_destdir)/skins
 endif
+
+# HRTF
+	cp -r $(srcdir)/share/hrtfs $(win32_destdir)/
 
 # SDK
 	mkdir -p "$(win32_destdir)/sdk/lib/"
@@ -70,10 +74,7 @@ endif
 	echo "INPUT(libvlccore.lib)" > "$(win32_destdir)/sdk/lib/vlccore.lib"
 
 # Convert to DOS line endings
-	find $(win32_destdir) -type f \( -name "*xml" -or -name "*html" -or -name '*js' -or -name '*css' -or -name '*hosts' -or -iname '*txt' -or -name '*.cfg' -or -name '*.lua' \) -exec $(U2D) {} \;
-
-# Remove cruft
-	find $(win32_destdir)/plugins/ -type f \( -name '*.a' -or -name '*.la' \) -exec rm -rvf {} \;
+	find $(win32_destdir) -type f \( -name "*xml" -or -name "*html" -or -name '*js' -or -name '*css' -or -name '*hosts' -or -iname '*txt' -or -name '*.cfg' -or -name '*.lua' \) -exec $(U2D) -q {} \;
 
 package-win-npapi: build-npapi
 	cp "$(top_builddir)/npapi-vlc/installed/lib/axvlc.dll" "$(win32_destdir)/"
@@ -202,3 +203,59 @@ package-wince: package-win-strip
 	zip -r -9 vlc-$(VERSION)-wince.zip vlc-$(VERSION)
 
 .PHONY: package-win-install package-win-common package-win-strip package-win32-webplugin-common package-win32-xpi package-win32-crx package-win32-exe package-win32-zip package-win32-debug-zip package-win32-7zip package-win32-debug-7zip package-win32-cleanup package-win32 package-win32-debug package-wince
+
+EXTRA_DIST += \
+	extras/package/win32/vlc.exe.manifest \
+	extras/package/win32/libvlc.dll.manifest \
+	extras/package/win32/configure.sh \
+	extras/package/win32/NSIS/vlc.win32.nsi.in \
+	extras/package/win32/NSIS/spad.nsi.in \
+	extras/package/win32/NSIS/UAC/examples \
+	extras/package/win32/NSIS/UAC/examples/UAC_AllowLUA.nsi \
+	extras/package/win32/NSIS/UAC/examples/UAC_AdminOnly.nsi \
+	extras/package/win32/NSIS/UAC/examples/UAC_Uninstaller.nsi \
+	extras/package/win32/NSIS/UAC/examples/UAC.nsh \
+	extras/package/win32/NSIS/UAC/examples/UAC_GetUserShellFolderPath.nsi \
+	extras/package/win32/NSIS/UAC/examples/UAC_RealWorldFullyLoadedDualModeExample.nsi \
+	extras/package/win32/NSIS/UAC/History.txt \
+	extras/package/win32/NSIS/UAC/License.txt \
+	extras/package/win32/NSIS/UAC/nsisutil.h \
+	extras/package/win32/NSIS/UAC/resource.h \
+	extras/package/win32/NSIS/UAC/resource.rc \
+	extras/package/win32/NSIS/UAC/runas.cpp \
+	extras/package/win32/NSIS/UAC/uac.cpp \
+	extras/package/win32/NSIS/UAC/uac.h \
+	extras/package/win32/NSIS/UAC/Readme.html \
+	extras/package/win32/NSIS/UAC.nsh \
+	extras/package/win32/NSIS/languages/declaration.nsh \
+	extras/package/win32/NSIS/languages/bengali.nsh \
+	extras/package/win32/NSIS/languages/basque.nsh \
+	extras/package/win32/NSIS/languages/brazilian_portuguese.nsh \
+	extras/package/win32/NSIS/languages/bulgarian.nsh \
+	extras/package/win32/NSIS/languages/catalan.nsh \
+	extras/package/win32/NSIS/languages/danish.nsh \
+	extras/package/win32/NSIS/languages/dutch.nsh \
+	extras/package/win32/NSIS/languages/english.nsh \
+	extras/package/win32/NSIS/languages/estonian.nsh \
+	extras/package/win32/NSIS/languages/finnish.nsh \
+	extras/package/win32/NSIS/languages/french.nsh \
+	extras/package/win32/NSIS/languages/galician.nsh \
+	extras/package/win32/NSIS/languages/german.nsh \
+	extras/package/win32/NSIS/languages/hebrew.nsh \
+	extras/package/win32/NSIS/languages/hungarian.nsh \
+	extras/package/win32/NSIS/languages/italian.nsh \
+	extras/package/win32/NSIS/languages/japanese.nsh \
+	extras/package/win32/NSIS/languages/lithuanian.nsh \
+	extras/package/win32/NSIS/languages/occitan.nsh \
+	extras/package/win32/NSIS/languages/polish.nsh \
+	extras/package/win32/NSIS/languages/punjabi.nsh \
+	extras/package/win32/NSIS/languages/russian.nsh \
+	extras/package/win32/NSIS/languages/romanian.nsh \
+	extras/package/win32/NSIS/languages/schinese.nsh \
+	extras/package/win32/NSIS/languages/slovak.nsh \
+	extras/package/win32/NSIS/languages/slovenian.nsh \
+	extras/package/win32/NSIS/languages/sorani.nsh \
+	extras/package/win32/NSIS/languages/spanish.nsh \
+	extras/package/win32/NSIS/languages/swedish.nsh
+
+

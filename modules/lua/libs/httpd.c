@@ -2,7 +2,7 @@
  * httpd.c: HTTPd wrapper
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 12051027630aae8000ff6d9f62a52c6794599e9e $
+ * $Id: f0d28e97a9e69ea455b612cf9ff18faf73829443 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -112,20 +112,21 @@ static int vlclua_httpd_host_delete( lua_State *L )
 /*****************************************************************************
  * HTTPd Handler
  *****************************************************************************/
-struct httpd_handler_sys_t
+typedef struct
 {
     lua_State *L;
     bool password;
     int ref;
-};
+} httpd_handler_lua_t;
 
 static int vlclua_httpd_handler_callback(
-     httpd_handler_sys_t *p_sys, httpd_handler_t *p_handler, char *psz_url,
+     void *opaque, httpd_handler_t *p_handler, char *psz_url,
      uint8_t *psz_request, int i_type, uint8_t *p_in, int i_in,
      char *psz_remote_addr, char *psz_remote_host,
      uint8_t **pp_data, int *pi_data )
 {
     VLC_UNUSED(p_handler);
+    httpd_handler_lua_t *p_sys = opaque;
     lua_State *L = p_sys->L;
 
     /* function data */
@@ -190,8 +191,7 @@ static int vlclua_httpd_handler_new( lua_State * L )
     luaL_argcheck( L, lua_isfunction( L, 5 ), 5, "Should be a function" );
     /* Stack item 6 is the callback data */
     lua_settop( L, 6 );
-    httpd_handler_sys_t *p_sys = (httpd_handler_sys_t*)
-                                 malloc( sizeof( httpd_handler_sys_t ) );
+    httpd_handler_lua_t *p_sys = malloc( sizeof( *p_sys ) );
     if( !p_sys )
         return luaL_error( L, "Failed to allocate private buffer." );
     p_sys->L = lua_newthread( L );
@@ -225,7 +225,7 @@ static int vlclua_httpd_handler_new( lua_State * L )
 static int vlclua_httpd_handler_delete( lua_State *L )
 {
     httpd_handler_t **pp_handler = (httpd_handler_t**)luaL_checkudata( L, 1, "httpd_handler" );
-    httpd_handler_sys_t *p_sys = httpd_HandlerDelete( *pp_handler );
+    httpd_handler_lua_t *p_sys = httpd_HandlerDelete( *pp_handler );
     luaL_unref( p_sys->L, LUA_REGISTRYINDEX, p_sys->ref );
     free( p_sys );
     return 0;

@@ -2,7 +2,7 @@
  * export.c :  Playlist export module
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: a42ef39358e40703576edbb3b54575a063c2279c $
+ * $Id: 2aa57f0b7a9c85355f5344b7a0fa1d7447b0d6a1 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -28,6 +28,7 @@
 # include "config.h"
 #endif
 
+#define VLC_MODULE_LICENSE VLC_LICENSE_GPL_2_PLUS
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 

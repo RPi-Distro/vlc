@@ -2,7 +2,7 @@
  * volume.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: b361647545c9f847087877e5ba8ad1a589cd6528 $
+ * $Id: 81a6156c2aeadc70466ad3e3cc2334c4bf47177c $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -68,7 +68,7 @@ static int vlclua_volume_up( lua_State *L )
     playlist_t *p_this = vlclua_get_playlist_internal( L );
     float volume;
 
-    playlist_VolumeUp( p_this, luaL_optint( L, 1, 1 ), &volume );
+    playlist_VolumeUp( p_this, (int)luaL_optinteger( L, 1, 1 ), &volume );
     lua_pushnumber( L, lroundf(volume * AOUT_VOLUME_DEFAULT) );
     return 1;
 }
@@ -78,7 +78,7 @@ static int vlclua_volume_down( lua_State *L )
     playlist_t *p_this = vlclua_get_playlist_internal( L );
     float volume;
 
-    playlist_VolumeDown( p_this, luaL_optint( L, 1, 1 ), &volume );
+    playlist_VolumeDown( p_this, (int)luaL_optinteger( L, 1, 1 ), &volume );
     lua_pushnumber( L, lroundf(volume * AOUT_VOLUME_DEFAULT) );
     return 1;
 }

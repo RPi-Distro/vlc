@@ -2,7 +2,7 @@
  * strings.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 39ae85e70aa10fdd2a89497346d1a00ac6f98da3 $
+ * $Id: 66fb754c8fb326974d98eae73ce763e644b6dfd4 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -51,11 +51,10 @@ static int vlclua_decode_uri( lua_State *L )
     for( i = 1; i <= i_top; i++ )
     {
         const char *psz_cstring = luaL_checkstring( L, 1 );
-        char *psz_string = strdup( psz_cstring );
+        char *psz_string = vlc_uri_decode_duplicate( psz_cstring );
         lua_remove( L, 1 ); /* remove elements to prevent being limited by
                              * the stack's size (this function will work with
                              * up to (stack size - 1) arguments */
-        decode_URI( psz_string );
         lua_pushstring( L, psz_string );
         free( psz_string );
     }
@@ -69,7 +68,7 @@ static int vlclua_encode_uri_component( lua_State *L )
     for( i = 1; i <= i_top; i++ )
     {
         const char *psz_cstring = luaL_checkstring( L, 1 );
-        char *psz_string = encode_URI_component( psz_cstring );
+        char *psz_string = vlc_uri_encode( psz_cstring );
         lua_remove( L,1 );
         lua_pushstring( L, psz_string );
         free( psz_string );
@@ -95,9 +94,37 @@ static int vlclua_make_uri( lua_State *L )
 static int vlclua_make_path( lua_State *L )
 {
     const char *psz_input = luaL_checkstring( L, 1 );
-    char *psz_path = make_path( psz_input);
+    char *psz_path = vlc_uri2path( psz_input);
     lua_pushstring( L, psz_path );
     free( psz_path );
+    return 1;
+}
+
+int vlclua_url_parse( lua_State *L )
+{
+    const char *psz_url = luaL_checkstring( L, 1 );
+    vlc_url_t url;
+
+    vlc_UrlParse( &url, psz_url );
+
+    lua_newtable( L );
+    lua_pushstring( L, url.psz_protocol );
+    lua_setfield( L, -2, "protocol" );
+    lua_pushstring( L, url.psz_username );
+    lua_setfield( L, -2, "username" );
+    lua_pushstring( L, url.psz_password );
+    lua_setfield( L, -2, "password" );
+    lua_pushstring( L, url.psz_host );
+    lua_setfield( L, -2, "host" );
+    lua_pushinteger( L, url.i_port );
+    lua_setfield( L, -2, "port" );
+    lua_pushstring( L, url.psz_path );
+    lua_setfield( L, -2, "path" );
+    lua_pushstring( L, url.psz_option );
+    lua_setfield( L, -2, "option" );
+
+    vlc_UrlClean( &url );
+
     return 1;
 }
 
@@ -112,7 +139,7 @@ static int vlclua_resolve_xml_special_chars( lua_State *L )
         lua_remove( L, 1 ); /* remove elements to prevent being limited by
                              * the stack's size (this function will work with
                              * up to (stack size - 1) arguments */
-        resolve_xml_special_chars( psz_string );
+        vlc_xml_decode( psz_string );
         lua_pushstring( L, psz_string );
         free( psz_string );
     }
@@ -125,7 +152,7 @@ static int vlclua_convert_xml_special_chars( lua_State *L )
     int i;
     for( i = 1; i <= i_top; i++ )
     {
-        char *psz_string = convert_xml_special_chars( luaL_checkstring(L,1) );
+        char *psz_string = vlc_xml_encode( luaL_checkstring(L,1) );
         lua_remove( L, 1 );
         lua_pushstring( L, psz_string );
         free( psz_string );
@@ -156,6 +183,7 @@ static const luaL_Reg vlclua_strings_reg[] = {
     { "encode_uri_component", vlclua_encode_uri_component },
     { "make_uri", vlclua_make_uri },
     { "make_path", vlclua_make_path },
+    { "url_parse", vlclua_url_parse },
     { "resolve_xml_special_chars", vlclua_resolve_xml_special_chars },
     { "convert_xml_special_chars", vlclua_convert_xml_special_chars },
     { "from_charset", vlclua_from_charset },

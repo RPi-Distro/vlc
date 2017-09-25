@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005, 2007 VLC authors and VideoLAN
  * Copyright © 2005-2006 Rémi Denis-Courmont
- * $Id: d8832e21f0b503a7bada50e75978c0a6d04899ef $
+ * $Id: 0e6bc1be2ca69eec2e217a52f9ea3a5b3b346e84 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -32,46 +32,22 @@
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
-
 #include <errno.h>
 #include <assert.h>
 
-#include <fcntl.h>
 #include <unistd.h>
-#ifdef HAVE_POLL
-#   include <poll.h>
-#endif
-
-#include <vlc_network.h>
-
-#ifndef INADDR_ANY
-#   define INADDR_ANY  0x00000000
-#endif
-#ifndef INADDR_NONE
-#   define INADDR_NONE 0xFFFFFFFF
-#endif
-
-#if defined(_WIN32)
-# undef EAFNOSUPPORT
-# define EAFNOSUPPORT WSAEAFNOSUPPORT
-# undef EWOULDBLOCK
-# define EWOULDBLOCK WSAEWOULDBLOCK
-# undef EAGAIN
-# define EAGAIN WSAEWOULDBLOCK
-#endif
-
 #ifdef HAVE_LINUX_DCCP_H
 /* TODO: use glibc instead of linux-kernel headers */
 # include <linux/dccp.h>
 # define SOL_DCCP 269
 #endif
 
-#include "libvlc.h" /* vlc_object_waitpipe */
+#include <vlc_common.h>
+#include <vlc_network.h>
+#include <vlc_interrupt.h>
 
 extern int rootwrap_bind (int family, int socktype, int protocol,
                           const struct sockaddr *addr, size_t alen);
@@ -185,6 +161,7 @@ int *net_Listen (vlc_object_t *p_this, const char *psz_host,
 #endif
         if (bind (fd, ptr->ai_addr, ptr->ai_addrlen))
         {
+            int err = net_errno;
             net_Close (fd);
 #if !defined(_WIN32)
             fd = rootwrap_bind (ptr->ai_family, ptr->ai_socktype,
@@ -197,8 +174,7 @@ int *net_Listen (vlc_object_t *p_this, const char *psz_host,
             else
 #endif
             {
-                msg_Err (p_this, "socket bind error: %s",
-                         vlc_strerror_c(net_errno));
+                msg_Err (p_this, "socket bind error: %s", vlc_strerror_c(err));
                 continue;
             }
         }
@@ -248,211 +224,102 @@ int *net_Listen (vlc_object_t *p_this, const char *psz_host,
     return sockv;
 }
 
-#undef net_Read
-/*****************************************************************************
- * net_Read:
- *****************************************************************************
- * Reads from a network socket. Cancellation point.
- * If waitall is true, then we repeat until we have read the right amount of
- * data; in that case, a short count means EOF has been reached or the VLC
- * object has been signaled.
- *****************************************************************************/
-ssize_t
-net_Read (vlc_object_t *restrict p_this, int fd, const v_socket_t *vs,
-          void *restrict p_buf, size_t i_buflen, bool waitall)
+/**
+ * Reads data from a socket, blocking until all requested data is received or
+ * the end of the stream is reached.
+ * This function is a cancellation point.
+ * @return -1 on error, or the number of bytes of read.
+ */
+ssize_t (net_Read)(vlc_object_t *restrict obj, int fd,
+                   void *restrict buf, size_t len)
 {
-    struct pollfd ufd[2];
+    size_t rd = 0;
 
-    ufd[0].fd = fd;
-    ufd[0].events = POLLIN;
-    ufd[1].fd = vlc_object_waitpipe (p_this);
-    ufd[1].events = POLLIN;
-
-    size_t i_total = 0;
-#if VLC_WINSTORE_APP
-    /* With winrtsock winsocks emulation library, the first call to read()
-     * before poll() starts an asynchronous transfer and returns 0.
-     * Always call poll() first.
-     *
-     * However if we have a virtual socket handler, try to read() first.
-     * See bug #8972 for details.
-     */
-    if (vs == NULL)
-        goto do_poll;
-#endif
     do
     {
-        ssize_t n;
-        if (vs != NULL)
+        if (vlc_killed())
         {
-            int canc = vlc_savecancel ();
-            n = vs->pf_recv (vs->p_sys, p_buf, i_buflen);
-            vlc_restorecancel (canc);
-        }
-        else
-        {
-#ifdef _WIN32
-            n = recv (fd, p_buf, i_buflen, 0);
-#else
-            n = read (fd, p_buf, i_buflen);
-#endif
+            vlc_testcancel();
+            errno = EINTR;
+            return -1;
         }
 
-        if (n < 0)
+        ssize_t val = vlc_recv_i11e(fd, buf, len, 0);
+        if (val < 0)
         {
-            switch (net_errno)
+            if (errno == EINTR || errno == EAGAIN)
+                continue;
+#ifdef _WIN32
+            else if (WSAGetLastError() == WSAEMSGSIZE) /* datagram too big */
             {
-                case EAGAIN: /* no data */
-#if (EAGAIN != EWOULDBLOCK)
-                case EWOULDBLOCK:
+                msg_Warn(obj, "read truncated to %zu bytes", len);
+                val = len;
+            }
 #endif
-                    break;
-#ifndef _WIN32
-                case EINTR:  /* asynchronous signal */
-                    continue;
-#else
-                case WSAEMSGSIZE: /* datagram too big */
-                    n = i_buflen;
-                    break;
-#endif
-                default:
-                    goto error;
+            else
+            {
+                msg_Err(obj, "read error: %s", vlc_strerror_c(errno));
+                return rd ? (ssize_t)rd : -1;
             }
         }
-        else
-        if (n > 0)
-        {
-            i_total += n;
-            p_buf = (char *)p_buf + n;
-            i_buflen -= n;
 
-            if (!waitall || i_buflen == 0)
-                break;
-        }
-        else /* n == 0 */
-            break;/* end of stream or empty packet */
+        rd += val;
 
-        if (ufd[1].fd == -1)
-        {
-            errno = EINTR;
-            return -1;
-        }
-#if VLC_WINSTORE_APP
-do_poll:
-#endif
-        /* Wait for more data */
-        if (poll (ufd, sizeof (ufd) / sizeof (ufd[0]), -1) < 0)
-        {
-            if (errno == EINTR)
-                continue;
-            goto error;
-        }
+        if (val == 0)
+            break;
 
-        if (ufd[1].revents)
-        {
-            msg_Dbg (p_this, "socket %d polling interrupted", fd);
-            errno = EINTR;
-            return -1;
-        }
-
-        assert (ufd[0].revents);
+        assert(len >= (size_t)val);
+        len -= val;
+        buf = ((char *)buf) + val;
     }
-    while (i_buflen > 0);
+    while (len > 0);
 
-    return i_total;
-error:
-    msg_Err (p_this, "read error: %s", vlc_strerror_c(errno));
-    return -1;
+    return rd;
 }
 
-#undef net_Write
 /**
- * Writes data to a file descriptor.
+ * Writes data to a socket.
  * This blocks until all data is written or an error occurs.
  *
- * This function is a cancellation point if p_vs is NULL.
- * This function is not cancellation-safe if p_vs is not NULL.
+ * This function is a cancellation point.
  *
  * @return the total number of bytes written, or -1 if an error occurs
  * before any data is written.
  */
-ssize_t net_Write( vlc_object_t *p_this, int fd, const v_socket_t *p_vs,
-                   const void *restrict p_data, size_t i_data )
+ssize_t (net_Write)(vlc_object_t *obj, int fd, const void *buf, size_t len)
 {
-    size_t i_total = 0;
-    struct pollfd ufd[2] = {
-        { .fd = fd,                           .events = POLLOUT },
-        { .fd = vlc_object_waitpipe (p_this), .events = POLLIN  },
-    };
+    size_t written = 0;
 
-    if (unlikely(ufd[1].fd == -1))
+    do
     {
-        vlc_testcancel ();
-        return -1;
-    }
-
-    while( i_data > 0 )
-    {
-        ssize_t val;
-
-        ufd[0].revents = ufd[1].revents = 0;
-
-        if (poll (ufd, sizeof (ufd) / sizeof (ufd[0]), -1) == -1)
+        if (vlc_killed())
         {
-            if (errno == EINTR)
-                continue;
-            msg_Err (p_this, "Polling error: %s", vlc_strerror_c(errno));
+            vlc_testcancel();
+            errno = EINTR;
             return -1;
         }
 
-        if (i_total > 0)
-        {   /* If POLLHUP resp. POLLERR|POLLNVAL occurs while we have already
-             * read some data, it is important that we first return the number
-             * of bytes read, and then return 0 resp. -1 on the NEXT call. */
-            if (ufd[0].revents & (POLLHUP|POLLERR|POLLNVAL))
-                break;
-            if (ufd[1].revents) /* VLC object signaled */
-                break;
-        }
-        else
-        {
-            if (ufd[1].revents)
-            {
-                errno = EINTR;
-                goto error;
-            }
-        }
-
-        if (p_vs != NULL)
-            val = p_vs->pf_send (p_vs->p_sys, p_data, i_data);
-        else
-#ifdef _WIN32
-            val = send (fd, p_data, i_data, 0);
-#else
-            val = write (fd, p_data, i_data);
-#endif
-
+        ssize_t val = vlc_send_i11e (fd, buf, len, MSG_NOSIGNAL);
         if (val == -1)
         {
-            if (errno == EINTR)
+            if (errno == EINTR || errno == EAGAIN)
                 continue;
-            msg_Err (p_this, "Write error: %s", vlc_strerror_c(errno));
-            break;
+
+            msg_Err(obj, "write error: %s", vlc_strerror_c(errno));
+            return written ? (ssize_t)written : -1;
         }
 
-        p_data = (const char *)p_data + val;
-        i_data -= val;
-        i_total += val;
+        if (val == 0)
+            break;
+
+        written += val;
+        assert(len >= (size_t)val);
+        len -= val;
+        buf = ((const char *)buf) + val;
     }
+    while (len > 0);
 
-    if (unlikely(i_data == 0))
-        vlc_testcancel (); /* corner case */
-
-    if ((i_total > 0) || (i_data == 0))
-        return i_total;
-
-error:
-    return -1;
+    return written;
 }
 
 #undef net_Gets
@@ -466,59 +333,68 @@ error:
  *
  * @return nul-terminated heap-allocated string, or NULL on I/O error.
  */
-char *net_Gets(vlc_object_t *obj, int fd, const v_socket_t *vs)
+char *net_Gets(vlc_object_t *obj, int fd)
 {
     char *buf = NULL;
-    size_t bufsize = 0, buflen = 0;
+    size_t size = 0, len = 0;
 
     for (;;)
     {
-        if (buflen == bufsize)
+        if (len == size)
         {
-            if (unlikely(bufsize >= (1 << 16)))
+            if (unlikely(size >= (1 << 16)))
+            {
+                errno = EMSGSIZE;
                 goto error; /* put sane buffer size limit */
+            }
 
-            char *newbuf = realloc(buf, bufsize + 1024);
+            char *newbuf = realloc(buf, size + 1024);
             if (unlikely(newbuf == NULL))
                 goto error;
             buf = newbuf;
-            bufsize += 1024;
+            size += 1024;
         }
+        assert(len < size);
 
-        ssize_t val = net_Read(obj, fd, vs, buf + buflen, 1, false);
-        if (val < 1)
+        ssize_t val = vlc_recv_i11e(fd, buf + len, size - len, MSG_PEEK);
+        if (val <= 0)
             goto error;
 
-        if (buf[buflen] == '\n')
+        char *end = memchr(buf + len, '\n', val);
+        if (end != NULL)
+            val = (end + 1) - (buf + len);
+        if (recv(fd, buf + len, val, 0) != val)
+            goto error;
+        len += val;
+        if (end != NULL)
             break;
-
-        buflen++;
     }
 
-    buf[buflen] = '\0';
-    if (buflen > 0 && buf[buflen - 1] == '\r')
-        buf[buflen - 1] = '\0';
+    assert(len > 0);
+    buf[--len] = '\0';
+    if (len > 0 && buf[--len] == '\r')
+        buf[len] = '\0';
     return buf;
 error:
+    msg_Err(obj, "read error: %s", vlc_strerror_c(errno));
     free(buf);
     return NULL;
 }
 
 #undef net_Printf
-ssize_t net_Printf( vlc_object_t *p_this, int fd, const v_socket_t *p_vs,
-                    const char *psz_fmt, ... )
+ssize_t net_Printf( vlc_object_t *p_this, int fd, const char *psz_fmt, ... )
 {
     int i_ret;
     va_list args;
     va_start( args, psz_fmt );
-    i_ret = net_vaPrintf( p_this, fd, p_vs, psz_fmt, args );
+    i_ret = net_vaPrintf( p_this, fd, psz_fmt, args );
     va_end( args );
 
     return i_ret;
 }
 
 #undef net_vaPrintf
-ssize_t net_vaPrintf( vlc_object_t *p_this, int fd, const v_socket_t *p_vs,
+ssize_t net_vaPrintf( vlc_object_t *p_this, int fd,
                       const char *psz_fmt, va_list args )
 {
     char    *psz;
@@ -527,7 +403,7 @@ ssize_t net_vaPrintf( vlc_object_t *p_this, int fd, const v_socket_t *p_vs,
     int i_size = vasprintf( &psz, psz_fmt, args );
     if( i_size == -1 )
         return -1;
-    i_ret = net_Write( p_this, fd, p_vs, psz, i_size ) < i_size
+    i_ret = net_Write( p_this, fd, psz, i_size ) < i_size
         ? -1 : i_size;
     free( psz );
 

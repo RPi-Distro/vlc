@@ -2,7 +2,7 @@
  * vdummy.c: Dummy video output display method for testing purposes
  *****************************************************************************
  * Copyright (C) 2000-2009 VLC authors and VideoLAN
- * $Id: 94d1255fef952d3cf6cfdfd337c94b2f5e5c096a $
+ * $Id: 40d54b9b96d35861df23f71253c1b665bf82c3f4 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -102,7 +102,8 @@ static int Open(vlc_object_t *object,
     vd->prepare = NULL;
     vd->display = display;
     vd->control = Control;
-    vd->manage  = NULL;
+
+    vout_display_DeleteWindow(vd, NULL);
 
     return VLC_SUCCESS;
 }
@@ -123,7 +124,7 @@ static void Close(vlc_object_t *object)
     vout_display_sys_t *sys = vd->sys;
 
     if (sys->pool)
-        picture_pool_Delete(sys->pool);
+        picture_pool_Release(sys->pool);
     free(sys);
 }
 

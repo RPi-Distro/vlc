@@ -2,7 +2,7 @@
  * control.c : vout internal control
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: f317196b4139e438e5bb49c63f6148f2fec63086 $
+ * $Id: e4cca29d2a6ade21f4536d3e82c99d133f5fb607 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -172,24 +172,21 @@ void vout_control_PushString(vout_control_t *ctrl, int type, const char *string)
     vout_control_cmd_t cmd;
 
     vout_control_cmd_Init(&cmd, type);
-    cmd.u.string = strdup(string);
+    cmd.u.string = string ? strdup(string) : NULL;
     vout_control_Push(ctrl, &cmd);
 }
 
 int vout_control_Pop(vout_control_t *ctrl, vout_control_cmd_t *cmd,
-                     mtime_t deadline, mtime_t timeout)
+                     mtime_t deadline)
 {
     vlc_mutex_lock(&ctrl->lock);
     if (ctrl->cmd.i_size <= 0) {
         ctrl->is_processing = false;
         vlc_cond_broadcast(&ctrl->wait_acknowledge);
 
-        const mtime_t max_deadline = mdate() + timeout;
-        const mtime_t wait_deadline = deadline <= VLC_TS_INVALID ? max_deadline : __MIN(deadline, max_deadline);
-
         /* Spurious wakeups are perfectly fine */
-        if (ctrl->can_sleep)
-            vlc_cond_timedwait(&ctrl->wait_request, &ctrl->lock, wait_deadline);
+        if (deadline > VLC_TS_INVALID && ctrl->can_sleep)
+            vlc_cond_timedwait(&ctrl->wait_request, &ctrl->lock, deadline);
     }
 
     bool has_cmd;

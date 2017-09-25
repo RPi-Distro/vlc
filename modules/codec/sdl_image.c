@@ -2,7 +2,7 @@
  * sdl_image.c: sdl decoder module making use of libsdl_image.
  *****************************************************************************
  * Copyright (C) 2005 VLC authors and VideoLAN
- * $Id: e3d7bc6da7ce8cd2eca21aae154a7fbf462b1e8d $
+ * $Id: 65a1223e1a4b76d5c92cc2027e7cccf800688139 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -49,7 +49,7 @@ struct decoder_sys_t
 static int  OpenDecoder   ( vlc_object_t * );
 static void CloseDecoder  ( vlc_object_t * );
 
-static picture_t *DecodeBlock  ( decoder_t *, block_t ** );
+static int DecodeBlock  ( decoder_t *, block_t * );
 
 /*****************************************************************************
  * Module descriptor
@@ -59,7 +59,7 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_INPUT_VCODEC )
     set_shortname( N_("SDL Image decoder"))
     set_description( N_("SDL_image video decoder") )
-    set_capability( "decoder", 60 )
+    set_capability( "video decoder", 60 )
     set_callbacks( OpenDecoder, CloseDecoder )
     add_shortcut( "sdl_image" )
 vlc_module_end ()
@@ -112,11 +112,10 @@ static int OpenDecoder( vlc_object_t *p_this )
     p_sys->psz_sdl_type = p_supported_fmt[i].psz_sdl_type;
 
     /* Set output properties - this is a decoy and isn't used anywhere */
-    p_dec->fmt_out.i_cat = VIDEO_ES;
     p_dec->fmt_out.i_codec = VLC_CODEC_RGB32;
 
     /* Set callbacks */
-    p_dec->pf_decode_video = DecodeBlock;
+    p_dec->pf_decode = DecodeBlock;
 
     return VLC_SUCCESS;
 }
@@ -126,21 +125,20 @@ static int OpenDecoder( vlc_object_t *p_this )
  ****************************************************************************
  * This function must be fed with a complete compressed frame.
  ****************************************************************************/
-static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
+static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    block_t *p_block;
     picture_t *p_pic = NULL;
     SDL_Surface *p_surface;
     SDL_RWops *p_rw;
 
-    if( pp_block == NULL || *pp_block == NULL ) return NULL;
-    p_block = *pp_block;
+    if( p_block == NULL ) /* No Drain */
+        return VLCDEC_SUCCESS;
 
-    if( p_block->i_flags & BLOCK_FLAG_DISCONTINUITY )
+    if( p_block->i_flags & BLOCK_FLAG_CORRUPTED )
     {
-        block_Release( p_block ); *pp_block = NULL;
-        return NULL;
+        block_Release( p_block );
+        return VLCDEC_SUCCESS;
     }
 
     p_rw = SDL_RWFromConstMem( p_block->p_buffer, p_block->i_buffer );
@@ -177,6 +175,8 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     p_dec->fmt_out.video.i_sar_den = 1;
 
     /* Get a new picture. */
+    if( decoder_UpdateVideoFormat( p_dec ) )
+        goto error;
     p_pic = decoder_NewPicture( p_dec );
     if ( p_pic == NULL ) goto error;
 
@@ -184,15 +184,13 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     {
         case 8:
         {
-            int i, j;
-            uint8_t *p_src, *p_dst;
-            uint8_t r, g, b;
-            for ( i = 0; i < p_surface->h; i++ )
+            for ( int i = 0; i < p_surface->h; i++ )
             {
-                p_src = (uint8_t*)p_surface->pixels + i * p_surface->pitch;
-                p_dst = p_pic->p[0].p_pixels + i * p_pic->p[0].i_pitch;
-                for ( j = 0; j < p_surface->w; j++ )
+                uint8_t *p_src = (uint8_t*)p_surface->pixels + i * p_surface->pitch;
+                uint8_t *p_dst = p_pic->p[0].p_pixels + i * p_pic->p[0].i_pitch;
+                for ( int j = 0; j < p_surface->w; j++ )
                 {
+                    uint8_t r, g, b;
                     SDL_GetRGB( *(p_src++), p_surface->format,
                                 &r, &g, &b );
                     *(p_dst++) = r;
@@ -204,13 +202,12 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         }
         case 16:
         {
-            int i;
             uint8_t *p_src = p_surface->pixels;
             uint8_t *p_dst = p_pic->p[0].p_pixels;
             int i_pitch = p_pic->p[0].i_pitch < p_surface->pitch ?
                 p_pic->p[0].i_pitch : p_surface->pitch;
 
-            for ( i = 0; i < p_surface->h; i++ )
+            for ( int i = 0; i < p_surface->h; i++ )
             {
                 memcpy( p_dst, p_src, i_pitch );
                 p_src += p_surface->pitch;
@@ -220,15 +217,13 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         }
         case 24:
         {
-            int i, j;
-            uint8_t *p_src, *p_dst;
-            uint8_t r, g, b;
-            for ( i = 0; i < p_surface->h; i++ )
+            for ( int i = 0; i < p_surface->h; i++ )
             {
-                p_src = (uint8_t*)p_surface->pixels + i * p_surface->pitch;
-                p_dst = p_pic->p[0].p_pixels + i * p_pic->p[0].i_pitch;
-                for ( j = 0; j < p_surface->w; j++ )
+                uint8_t *p_src = (uint8_t*)p_surface->pixels + i * p_surface->pitch;
+                uint8_t *p_dst = p_pic->p[0].p_pixels + i * p_pic->p[0].i_pitch;
+                for ( int j = 0; j < p_surface->w; j++ )
                 {
+                    uint8_t r, g, b;
                     SDL_GetRGB( *(uint32_t*)p_src, p_surface->format,
                                 &r, &g, &b );
                     *(p_dst++) = r;
@@ -241,15 +236,13 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         }
         case 32:
         {
-            int i, j;
-            uint8_t *p_src, *p_dst;
-            uint8_t r, g, b, a;
-            for ( i = 0; i < p_surface->h; i++ )
+            for ( int i = 0; i < p_surface->h; i++ )
             {
-                p_src = (uint8_t*)p_surface->pixels + i * p_surface->pitch;
-                p_dst = p_pic->p[0].p_pixels + i * p_pic->p[0].i_pitch;
-                for ( j = 0; j < p_surface->w; j++ )
+                uint8_t *p_src = (uint8_t*)p_surface->pixels + i * p_surface->pitch;
+                uint8_t *p_dst = p_pic->p[0].p_pixels + i * p_pic->p[0].i_pitch;
+                for ( int j = 0; j < p_surface->w; j++ )
                 {
+                    uint8_t r, g, b, a;
                     SDL_GetRGBA( *(uint32_t*)p_src, p_surface->format,
                                 &r, &g, &b, &a );
                     *(p_dst++) = b;
@@ -266,14 +259,12 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     p_pic->date = (p_block->i_pts > VLC_TS_INVALID) ?
         p_block->i_pts : p_block->i_dts;
 
-    SDL_FreeSurface( p_surface );
-    block_Release( p_block ); *pp_block = NULL;
-    return p_pic;
+    decoder_QueueVideo( p_dec, p_pic );
 
 error:
     if ( p_surface != NULL ) SDL_FreeSurface( p_surface );
-    block_Release( p_block ); *pp_block = NULL;
-    return NULL;
+    block_Release( p_block );
+    return VLCDEC_SUCCESS;
 }
 
 /*****************************************************************************

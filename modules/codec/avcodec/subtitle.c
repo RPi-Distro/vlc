@@ -2,7 +2,7 @@
  * subtitle.c: subtitle decoder using libavcodec library
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: db2fbf4c4b72f495c079806402e5f4f5888af6ac $
+ * $Id: 5cac6339d60e736270ae08725e58fe22c894ac82 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -39,44 +39,52 @@
 #include "avcodec.h"
 
 struct decoder_sys_t {
-    AVCODEC_COMMON_MEMBERS
+    AVCodecContext *p_context;
+    const AVCodec  *p_codec;
+    bool b_need_ephemer; /* Does the format need the ephemer flag (no end time set) */
 };
 
 static subpicture_t *ConvertSubtitle(decoder_t *, AVSubtitle *, mtime_t pts,
                                      AVCodecContext *avctx);
+static int  DecodeSubtitle(decoder_t *, block_t *);
+static void Flush(decoder_t *);
 
 /**
  * Initialize subtitle decoder
  */
-int InitSubtitleDec(decoder_t *dec, AVCodecContext *context,
-                    AVCodec *codec, int codec_id, const char *namecodec)
+int InitSubtitleDec(vlc_object_t *obj)
 {
+    decoder_t *dec = (decoder_t *)obj;
+    const AVCodec *codec;
+    AVCodecContext *context = ffmpeg_AllocContext(dec, &codec);
+    if (context == NULL)
+        return VLC_EGENERIC;
+
     decoder_sys_t *sys;
 
     /* */
-    switch (codec_id) {
+    switch (codec->id) {
     case AV_CODEC_ID_HDMV_PGS_SUBTITLE:
     case AV_CODEC_ID_XSUB:
     case AV_CODEC_ID_DVB_SUBTITLE:
         break;
     default:
         msg_Warn(dec, "refusing to decode non validated subtitle codec");
+        avcodec_free_context(&context);
         return VLC_EGENERIC;
     }
 
     /* */
     dec->p_sys = sys = malloc(sizeof(*sys));
-    if (!sys)
+    if (unlikely(sys == NULL))
+    {
+        avcodec_free_context(&context);
         return VLC_ENOMEM;
+    }
 
-    codec->type = AVMEDIA_TYPE_SUBTITLE;
-    context->codec_type = AVMEDIA_TYPE_SUBTITLE;
-    context->codec_id = codec_id;
     sys->p_context = context;
     sys->p_codec = codec;
-    sys->i_codec_id = codec_id;
-    sys->psz_namecodec = namecodec;
-    sys->b_delayed_open = false;
+    sys->b_need_ephemer = codec->id == AV_CODEC_ID_HDMV_PGS_SUBTITLE;
 
     /* */
     context->extradata_size = 0;
@@ -90,9 +98,10 @@ int InitSubtitleDec(decoder_t *dec, AVCodecContext *context,
     int ret;
     char *psz_opts = var_InheritString(dec, "avcodec-options");
     AVDictionary *options = NULL;
-    if (psz_opts && *psz_opts)
-        options = vlc_av_get_options(psz_opts);
-    free(psz_opts);
+    if (psz_opts) {
+        vlc_av_get_options(psz_opts, &options);
+        free(psz_opts);
+    }
 
     vlc_avcodec_lock();
     ret = avcodec_open2(context, codec, options ? &options : NULL);
@@ -105,23 +114,44 @@ int InitSubtitleDec(decoder_t *dec, AVCodecContext *context,
     av_dict_free(&options);
 
     if (ret < 0) {
-        msg_Err(dec, "cannot open codec (%s)", namecodec);
-        free(context->extradata);
+        msg_Err(dec, "cannot open codec (%s)", codec->name);
         free(sys);
+        avcodec_free_context(&context);
         return VLC_EGENERIC;
     }
 
     /* */
-    msg_Dbg(dec, "libavcodec codec (%s) started", namecodec);
-    dec->fmt_out.i_cat = SPU_ES;
+    msg_Dbg(dec, "libavcodec codec (%s) started", codec->name);
+    dec->pf_decode = DecodeSubtitle;
+    dec->pf_flush  = Flush;
 
     return VLC_SUCCESS;
+}
+
+void EndSubtitleDec(vlc_object_t *obj)
+{
+    decoder_t *dec = (decoder_t *)obj;
+    decoder_sys_t *sys = dec->p_sys;
+    AVCodecContext *ctx = sys->p_context;
+
+    avcodec_free_context(&ctx);
+    free(sys);
+}
+
+/**
+ * Flush
+ */
+static void Flush(decoder_t *dec)
+{
+    decoder_sys_t *sys = dec->p_sys;
+
+    avcodec_flush_buffers(sys->p_context);
 }
 
 /**
  * Decode one subtitle
  */
-subpicture_t *DecodeSubtitle(decoder_t *dec, block_t **block_ptr)
+static subpicture_t *DecodeBlock(decoder_t *dec, block_t **block_ptr)
 {
     decoder_sys_t *sys = dec->p_sys;
 
@@ -130,10 +160,12 @@ subpicture_t *DecodeSubtitle(decoder_t *dec, block_t **block_ptr)
 
     block_t *block = *block_ptr;
 
-    if (block->i_flags & (BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED)) {
-        block_Release(block);
-        avcodec_flush_buffers(sys->p_context);
-        return NULL;
+    if (block->i_flags & (BLOCK_FLAG_DISCONTINUITY | BLOCK_FLAG_CORRUPTED)) {
+        if (block->i_flags & BLOCK_FLAG_CORRUPTED) {
+            Flush(dec);
+            block_Release(block);
+            return NULL;
+        }
     }
 
     if (block->i_buffer <= 0) {
@@ -190,6 +222,15 @@ subpicture_t *DecodeSubtitle(decoder_t *dec, block_t **block_ptr)
     return spu;
 }
 
+static int DecodeSubtitle(decoder_t *dec, block_t *block)
+{
+    block_t **block_ptr = block ? &block : NULL;
+    subpicture_t *spu;
+    while ((spu = DecodeBlock(dec, block_ptr)) != NULL)
+        decoder_QueueSub(dec, spu);
+    return VLCDEC_SUCCESS;
+}
+
 /**
  * Convert a RGBA libavcodec region to our format.
  */
@@ -200,7 +241,7 @@ static subpicture_region_t *ConvertRegionRGBA(AVSubtitleRect *ffregion)
 
     video_format_t fmt;
     memset(&fmt, 0, sizeof(fmt));
-    fmt.i_chroma         = VLC_FOURCC('R','G','B','A');
+    fmt.i_chroma         = VLC_CODEC_RGBA;
     fmt.i_width          =
     fmt.i_visible_width  = ffregion->w;
     fmt.i_height         =
@@ -220,11 +261,11 @@ static subpicture_region_t *ConvertRegionRGBA(AVSubtitleRect *ffregion)
     for (int y = 0; y < ffregion->h; y++) {
         for (int x = 0; x < ffregion->w; x++) {
             /* I don't think don't have paletized RGB_A_ */
-            const uint8_t index = ffregion->pict.data[0][y * ffregion->w+x];
+            const uint8_t index = ffregion->data[0][y * ffregion->w+x];
             assert(index < ffregion->nb_colors);
 
             uint32_t color;
-            memcpy(&color, &ffregion->pict.data[1][4*index], 4);
+            memcpy(&color, &ffregion->data[1][4*index], 4);
 
             uint8_t *p_rgba = &p->p_pixels[y * p->i_pitch + x * p->i_pixel_pitch];
             p_rgba[0] = (color >> 16) & 0xff;
@@ -251,8 +292,9 @@ static subpicture_t *ConvertSubtitle(decoder_t *dec, AVSubtitle *ffsub, mtime_t 
     //        pts, ffsub->start_display_time, ffsub->end_display_time);
     spu->i_start    = pts + ffsub->start_display_time * INT64_C(1000);
     spu->i_stop     = pts + ffsub->end_display_time * INT64_C(1000);
-    spu->b_absolute = true; /* FIXME How to set it right ? */
-    spu->b_ephemer  = true; /* FIXME How to set it right ? */
+    spu->b_absolute = true; /* We have offset and size for subtitle */
+    spu->b_ephemer  = dec->p_sys->b_need_ephemer;
+                    /* We only show subtitle for i_stop time only */
 
     if (avctx->coded_width != 0 && avctx->coded_height != 0) {
         spu->i_original_picture_width = avctx->coded_width;
@@ -286,11 +328,8 @@ static subpicture_t *ConvertSubtitle(decoder_t *dec, AVSubtitle *ffsub, mtime_t 
             *region_next = region;
             region_next = &region->p_next;
         }
-        /* Free AVSubtitleRect */
-        avpicture_free(&rec->pict);
-        av_free(rec);
     }
-    av_free(ffsub->rects);
+    avsubtitle_free(ffsub);
 
     return spu;
 }

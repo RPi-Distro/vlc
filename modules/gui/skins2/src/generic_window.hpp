@@ -2,7 +2,7 @@
  * generic_window.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 058dd52ecf04d2883911e33435cafb97faee669e $
+ * $Id: b8f4b70660342ce7ac17945894e34674d8cdbda6 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -109,7 +109,7 @@ public:
     VarBool &getVisibleVar() { return *m_pVarVisible; }
 
     /// Window type, mainly useful when overloaded (for VoutWindow)
-    virtual string getType() const { return "Generic"; }
+    virtual std::string getType() const { return "Generic"; }
 
     /// windows handle
     vlc_wnd_type getOSHandle() const;

@@ -36,7 +36,7 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_codec.h>                              /* decoder_DeletePicture */
+#include <vlc_codec.h>
 
 #include <schroedinger/schro.h>
 
@@ -361,7 +361,7 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_INPUT_VCODEC )
     set_shortname( "Schroedinger" )
     set_description( N_("Dirac video decoder using libschroedinger") )
-    set_capability( "decoder", 200 )
+    set_capability( "video decoder", 200 )
     set_callbacks( OpenDecoder, CloseDecoder )
     add_shortcut( "schroedinger" )
 
@@ -524,7 +524,8 @@ vlc_module_end ()
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static picture_t *DecodeBlock  ( decoder_t *p_dec, block_t **pp_block );
+static int DecodeBlock  ( decoder_t *p_dec, block_t *p_block );
+static void Flush( decoder_t * );
 
 struct picture_free_t
 {
@@ -583,11 +584,11 @@ static int OpenDecoder( vlc_object_t *p_this )
     p_sys->i_frame_pts_delta = 0;
 
     /* Set output properties */
-    p_dec->fmt_out.i_cat = VIDEO_ES;
     p_dec->fmt_out.i_codec = VLC_CODEC_I420;
 
     /* Set callbacks */
-    p_dec->pf_decode_video = DecodeBlock;
+    p_dec->pf_decode = DecodeBlock;
+    p_dec->pf_flush  = Flush;
 
     return VLC_SUCCESS;
 }
@@ -646,7 +647,7 @@ static void SchroFrameFree( SchroFrame *frame, void *priv)
     if( !p_free )
         return;
 
-    decoder_DeletePicture( p_free->p_dec, p_free->p_pic );
+    picture_Release( p_free->p_pic );
     free(p_free);
     (void)frame;
 }
@@ -664,6 +665,8 @@ static SchroFrame *CreateSchroFrameFromPic( decoder_t *p_dec )
     if( !p_schroframe )
         return NULL;
 
+    if( decoder_UpdateVideoFormat( p_dec ) )
+        return NULL;
     p_pic = decoder_NewPicture( p_dec );
 
     if( !p_pic )
@@ -738,35 +741,41 @@ static void CloseDecoder( vlc_object_t *p_this )
     free( p_sys );
 }
 
+/*****************************************************************************
+ * Flush:
+ *****************************************************************************/
+static void Flush( decoder_t *p_dec )
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+
+    schro_decoder_reset( p_sys->p_schro );
+    p_sys->i_lastpts = VLC_TS_INVALID;
+}
+
 /****************************************************************************
  * DecodeBlock: the whole thing
  ****************************************************************************
  * Blocks need not be Dirac dataunit aligned.
  * If a block has a PTS signaled, it applies to the first picture at or after p_block
- *
- * If this function returns a picture (!NULL), it is called again and the
- * same block is resubmitted.  To avoid this, set *pp_block to NULL;
- * If this function returns NULL, the *pp_block is lost (and leaked).
- * This function must free all blocks when finished with them.
  ****************************************************************************/
-static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
+static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    if( !pp_block ) return NULL;
-
-    if ( *pp_block ) {
-        block_t *p_block = *pp_block;
+    if( !p_block ) /* No Drain */
+        return VLCDEC_SUCCESS;
+    else {
 
         /* reset the decoder when seeking as the decode in progress is invalid */
         /* discard the block as it is just a null magic block */
-        if( p_block->i_flags & BLOCK_FLAG_DISCONTINUITY ) {
-            schro_decoder_reset( p_sys->p_schro );
-
-            p_sys->i_lastpts = VLC_TS_INVALID;
-            block_Release( p_block );
-            *pp_block = NULL;
-            return NULL;
+        if( p_block->i_flags & (BLOCK_FLAG_CORRUPTED|BLOCK_FLAG_DISCONTINUITY) )
+        {
+            Flush( p_dec );
+            if( p_block->i_flags & BLOCK_FLAG_CORRUPTED )
+            {
+                block_Release( p_block );
+                return VLCDEC_SUCCESS;
+            }
         }
 
         SchroBuffer *p_schrobuffer;
@@ -784,7 +793,6 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
         /* this stops the same block being fed back into this function if
          * we were on the next iteration of this loop to output a picture */
-        *pp_block = NULL;
         schro_decoder_autoparse_push( p_sys->p_schro, p_schrobuffer );
         /* DO NOT refer to p_block after this point, it may have been freed */
     }
@@ -802,7 +810,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             break;
 
         case SCHRO_DECODER_NEED_BITS:
-            return NULL;
+            return VLCDEC_SUCCESS;
 
         case SCHRO_DECODER_NEED_FRAME:
             p_schroframe = CreateSchroFrameFromPic( p_dec );
@@ -810,7 +818,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             if( !p_schroframe )
             {
                 msg_Err( p_dec, "Could not allocate picture for decoder");
-                return NULL;
+                return VLCDEC_SUCCESS;
             }
 
             schro_decoder_add_output_picture( p_sys->p_schro, p_schroframe);
@@ -848,7 +856,8 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             p_sys->i_lastpts = p_pic->date;
 
             schro_frame_unref( p_schroframe );
-            return p_pic;
+            decoder_QueueVideo( p_dec, p_pic );
+            return VLCDEC_SUCCESS;
         }
         case SCHRO_DECODER_EOS:
             /* NB, the new api will not emit _EOS, it handles the reset internally */
@@ -856,7 +865,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
         case SCHRO_DECODER_ERROR:
             msg_Err( p_dec, "SCHRO_DECODER_ERROR");
-            return NULL;
+            return VLCDEC_SUCCESS;
         }
     }
 }
@@ -1066,7 +1075,7 @@ static int OpenEncoder( vlc_object_t *p_this )
     char *psz_tmp;
 
     if( p_enc->fmt_out.i_codec != VLC_CODEC_DIRAC &&
-        !p_enc->b_force )
+        !p_enc->obj.force )
     {
         return VLC_EGENERIC;
     }

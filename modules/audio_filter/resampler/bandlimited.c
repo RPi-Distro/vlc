@@ -2,7 +2,7 @@
  * bandlimited.c : band-limited interpolation resampler
  *****************************************************************************
  * Copyright (C) 2002, 2006 VLC authors and VideoLAN
- * $Id: f86be17da148af4ebc2039b3f0876a10d1c1f883 $
+ * $Id: abd8a5016143701d2c8e9ed88eefe62348dd715c $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
@@ -85,7 +85,7 @@ struct filter_sys_t
  *****************************************************************************/
 vlc_module_begin ()
     set_category( CAT_AUDIO )
-    set_subcategory( SUBCAT_AUDIO_MISC )
+    set_subcategory( SUBCAT_AUDIO_RESAMPLER )
     set_description( N_("Audio filter for band-limited interpolation resampling") )
     set_capability( "audio converter", 20 )
     set_callbacks( OpenFilter, CloseFilter )
@@ -109,7 +109,7 @@ static block_t *Resample( filter_t * p_filter, block_t * p_in_buf )
 
     filter_sys_t *p_sys = p_filter->p_sys;
     unsigned int i_out_rate = p_filter->fmt_out.audio.i_rate;
-    int i_nb_channels = aout_FormatNbChannels( &p_filter->fmt_in.audio );
+    int i_nb_channels = p_filter->fmt_in.audio.i_channels;
 
     /* Check if we really need to run the resampler */
     if( i_out_rate == p_filter->fmt_in.audio.i_rate )
@@ -291,10 +291,7 @@ static int OpenFilter( vlc_object_t *p_this )
 
     if ( p_filter->fmt_in.audio.i_rate == p_filter->fmt_out.audio.i_rate
       || p_filter->fmt_in.audio.i_format != p_filter->fmt_out.audio.i_format
-      || p_filter->fmt_in.audio.i_physical_channels
-              != p_filter->fmt_out.audio.i_physical_channels
-      || p_filter->fmt_in.audio.i_original_channels
-              != p_filter->fmt_out.audio.i_original_channels
+      || p_filter->fmt_in.audio.i_channels != p_filter->fmt_out.audio.i_channels
       || p_filter->fmt_in.audio.i_format != VLC_CODEC_FL32 )
     {
         return VLC_EGENERIC;

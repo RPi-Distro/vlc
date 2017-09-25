@@ -2,7 +2,7 @@
  * vc1.c : VC1 Video demuxer
  *****************************************************************************
  * Copyright (C) 2002-2004 VLC authors and VideoLAN
- * $Id: 9360902eb2b283d0cf526e4dafb986fa2337cfb8 $
+ * $Id: 41d23669216376d0d16cf81e874122d47ac49618 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -81,12 +81,12 @@ static int Open( vlc_object_t * p_this )
     const uint8_t *p_peek;
     es_format_t fmt;
 
-    if( stream_Peek( p_demux->s, &p_peek, 4 ) < 4 ) return VLC_EGENERIC;
+    if( vlc_stream_Peek( p_demux->s, &p_peek, 4 ) < 4 ) return VLC_EGENERIC;
 
     if( p_peek[0] != 0x00 || p_peek[1] != 0x00 ||
         p_peek[2] != 0x01 || p_peek[3] != 0x0f ) /* Sequence header */
     {
-        if( !p_demux->b_force )
+        if( !p_demux->obj.force )
         {
             msg_Warn( p_demux, "vc-1 module discarded (no startcode)" );
             return VLC_EGENERIC;
@@ -106,8 +106,8 @@ static int Open( vlc_object_t * p_this )
     p_sys->p_es        = NULL;
     p_sys->i_dts       = 0;
     p_sys->f_fps = var_CreateGetFloat( p_demux, "vc1-fps" );
-    if( p_sys->f_fps < 0.001 )
-        p_sys->f_fps = 0.0;
+    if( p_sys->f_fps < 0.001f )
+        p_sys->f_fps = 0.0f;
 
     /* Load the packetizer */
     es_format_Init( &fmt, VIDEO_ES, VLC_CODEC_VC1 );
@@ -141,15 +141,22 @@ static int Demux( demux_t *p_demux)
 {
     demux_sys_t *p_sys = p_demux->p_sys;
     block_t *p_block_in, *p_block_out;
+    bool b_eof = false;
 
-    if( ( p_block_in = stream_Block( p_demux->s, VC1_PACKET_SIZE ) ) == NULL )
-        return 0;
+    p_block_in = vlc_stream_Block( p_demux->s, VC1_PACKET_SIZE );
+    if( p_block_in == NULL )
+    {
+        b_eof = true;
+    }
+    else
+    {
+        /*  */
+        p_block_in->i_dts = VLC_TS_0;
+        p_block_in->i_pts = VLC_TS_0;
+    }
 
-    /*  */
-    p_block_in->i_dts = VLC_TS_0;
-    p_block_in->i_pts = VLC_TS_0;
-
-    while( (p_block_out = p_sys->p_packetizer->pf_packetize( p_sys->p_packetizer, &p_block_in )) )
+    while( (p_block_out = p_sys->p_packetizer->pf_packetize( p_sys->p_packetizer,
+                                                             p_block_in ? &p_block_in : NULL )) )
     {
         while( p_block_out )
         {
@@ -163,7 +170,7 @@ static int Demux( demux_t *p_demux)
                 p_sys->p_es = es_out_Add( p_demux->out, &p_sys->p_packetizer->fmt_out);
             }
 
-            es_out_Control( p_demux->out, ES_OUT_SET_PCR, VLC_TS_0 + p_sys->i_dts );
+            es_out_SetPCR( p_demux->out, VLC_TS_0 + p_sys->i_dts );
             p_block_out->i_dts = VLC_TS_0 + p_sys->i_dts;
             p_block_out->i_pts = VLC_TS_0 + p_sys->i_dts;
 
@@ -173,16 +180,17 @@ static int Demux( demux_t *p_demux)
 
             if( p_sys->p_packetizer->fmt_out.video.i_frame_rate > 0 &&
                 p_sys->p_packetizer->fmt_out.video.i_frame_rate_base > 0 )
-                p_sys->i_dts += INT64_C(1000000) *
+                p_sys->i_dts += CLOCK_FREQ *
                     p_sys->p_packetizer->fmt_out.video.i_frame_rate_base /
                     p_sys->p_packetizer->fmt_out.video.i_frame_rate;
-            else if( p_sys->f_fps > 0.001 )
-                p_sys->i_dts += (int64_t)((double)1000000.0 / p_sys->f_fps);
+            else if( p_sys->f_fps > 0.001f )
+                p_sys->i_dts += (int64_t)((float) CLOCK_FREQ / p_sys->f_fps);
             else
-                p_sys->i_dts += INT64_C(1000000) / 25;
+                p_sys->i_dts += CLOCK_FREQ / 25;
         }
     }
-    return 1;
+
+    return b_eof ? VLC_DEMUXER_EOF : VLC_DEMUXER_SUCCESS;
 }
 
 /*****************************************************************************

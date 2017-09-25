@@ -2,7 +2,7 @@
  * scene.c : scene video filter (based on modules/video_output/image.c)
  *****************************************************************************
  * Copyright (C) 2004-2008 VLC authors and VideoLAN
- * $Id: 3b8ad6f6446d68eb90d9812f9348f995694f40ba $
+ * $Id: 6ed0bfe62217a7eb0976ff4838518fbad1ae5cbd $
  *
  * Authors: Jean-Paul Saman <jpsaman@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -35,8 +35,8 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-
 #include <vlc_filter.h>
+#include <vlc_picture.h>
 #include "filter_picture.h"
 #include <vlc_image.h>
 #include <vlc_strings.h>
@@ -97,7 +97,7 @@ vlc_module_begin ()
     set_help(SCENE_HELP)
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
-    set_capability( "video filter2", 0 )
+    set_capability( "video filter", 0 )
 
     /* General options */
     add_string(  CFG_PREFIX "format", "png",
@@ -280,7 +280,6 @@ static void SavePicture( filter_t *p_filter, picture_t *p_pic )
     char *psz_temp = NULL;
     int i_ret;
 
-    memset( &fmt_in, 0, sizeof(video_format_t) );
     memset( &fmt_out, 0, sizeof(video_format_t) );
 
     /* Save snapshot psz_format to a memory zone */
@@ -308,7 +307,6 @@ static void SavePicture( filter_t *p_filter, picture_t *p_pic )
         msg_Err( p_filter, "could not create snapshot %s", psz_filename );
         goto error;
     }
-    path_sanitize( psz_filename );
 
     i_ret = asprintf( &psz_temp, "%s.swp", psz_filename );
     if( i_ret == -1 )
@@ -316,7 +314,6 @@ static void SavePicture( filter_t *p_filter, picture_t *p_pic )
         msg_Err( p_filter, "could not create snapshot temporarily file %s", psz_temp );
         goto error;
     }
-    path_sanitize( psz_temp );
 
     /* Save the image */
     i_ret = image_WriteUrl( p_sys->p_image, p_pic, &fmt_in, &fmt_out,

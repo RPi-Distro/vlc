@@ -1,5 +1,5 @@
 # SAMPLERATE
-SAMPLERATE_VERSION := 0.1.8
+SAMPLERATE_VERSION := 0.1.9
 SAMPLERATE_URL := http://www.mega-nerd.com/SRC/libsamplerate-$(SAMPLERATE_VERSION).tar.gz
 
 ifdef GPL
@@ -21,5 +21,5 @@ samplerate: libsamplerate-$(SAMPLERATE_VERSION).tar.gz .sum-samplerate
 
 .samplerate: samplerate
 	cd $< && $(HOSTVARS) ./configure $(HOSTCONF)
-	cd $< && $(MAKE) install
+	cd $< && $(MAKE) -C src install && $(MAKE) install-data
 	touch $@

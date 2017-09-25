@@ -2,7 +2,7 @@
  * bitmap_font.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: f7594c8e77e3ed009ac408eba8f021e1ccfa0866 $
+ * $Id: ba83fd74d438a3c4647480a03436feff543335fe $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -27,7 +27,7 @@
 
 
 BitmapFont::BitmapFont( intf_thread_t *pIntf, const GenericBitmap &rBitmap,
-                        const string &rType ):
+                        const std::string &rType ):
     GenericFont( pIntf ), m_rBitmap( rBitmap )
 {
     int i;

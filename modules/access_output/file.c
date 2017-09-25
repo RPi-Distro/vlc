@@ -2,7 +2,7 @@
  * file.c
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: 846a0b3fe5e6eb8a6313c504146dcf0695e73131 $
+ * $Id: fbefce0be841161dc457281d4d0240bad26d3abc $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -30,77 +30,192 @@
 # include "config.h"
 #endif
 
+#include <assert.h>
+#include <signal.h>
 #include <sys/types.h>
-#include <time.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#ifdef __OS2__
+#   include <io.h>      /* setmode() */
+#endif
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_sout.h>
 #include <vlc_block.h>
 #include <vlc_fs.h>
+#include <vlc_network.h>
 #include <vlc_strings.h>
 #include <vlc_dialog.h>
-
-#if defined( _WIN32 ) || defined( __OS2__ )
-#   include <io.h>
-#endif
-
-#ifndef _WIN32
-#   include <unistd.h>
-#endif
 
 #ifndef O_LARGEFILE
 #   define O_LARGEFILE 0
 #endif
-
-/*****************************************************************************
- * Module descriptor
- *****************************************************************************/
-static int  Open ( vlc_object_t * );
-static void Close( vlc_object_t * );
+#ifndef _POSIX_REALTIME_SIGNALS
+# define _POSIX_REALTIME_SIGNALS (-1)
+#endif
 
 #define SOUT_CFG_PREFIX "sout-file-"
-#define OVERWRITE_TEXT N_("Overwrite existing file")
-#define OVERWRITE_LONGTEXT N_( \
-    "If the file already exists, it will be overwritten.")
-#define APPEND_TEXT N_("Append to file")
-#define APPEND_LONGTEXT N_( "Append to file if it exists instead " \
-                            "of replacing it.")
-#define FORMAT_TEXT N_("Format time and date")
-#define FORMAT_LONGTEXT N_("Perform ISO C time and date formatting " \
-    "on the file path")
-#define SYNC_TEXT N_("Synchronous writing")
-#define SYNC_LONGTEXT N_( "Open the file with synchronous writing.")
-
-vlc_module_begin ()
-    set_description( N_("File stream output") )
-    set_shortname( N_("File" ))
-    set_capability( "sout access", 50 )
-    set_category( CAT_SOUT )
-    set_subcategory( SUBCAT_SOUT_ACO )
-    add_shortcut( "file", "stream", "fd" )
-    add_bool( SOUT_CFG_PREFIX "overwrite", true, OVERWRITE_TEXT,
-              OVERWRITE_LONGTEXT, true )
-    add_bool( SOUT_CFG_PREFIX "append", false, APPEND_TEXT,APPEND_LONGTEXT,
-              true )
-    add_bool( SOUT_CFG_PREFIX "format", false, FORMAT_TEXT, FORMAT_LONGTEXT,
-              true )
-#ifdef O_SYNC
-    add_bool( SOUT_CFG_PREFIX "sync", false, SYNC_TEXT,SYNC_LONGTEXT,
-              false )
-#endif
-    set_callbacks( Open, Close )
-vlc_module_end ()
-
 
 /*****************************************************************************
- * Exported prototypes
+ * Read: standard read on a file descriptor.
  *****************************************************************************/
+static ssize_t Read( sout_access_out_t *p_access, block_t *p_buffer )
+{
+    ssize_t val;
+
+    do
+        val = read( (intptr_t)p_access->p_sys, p_buffer->p_buffer,
+                    p_buffer->i_buffer );
+    while (val == -1 && errno == EINTR);
+    return val;
+}
+
+/*****************************************************************************
+ * Write: standard write on a file descriptor.
+ *****************************************************************************/
+static ssize_t Write( sout_access_out_t *p_access, block_t *p_buffer )
+{
+    size_t i_write = 0;
+
+    while( p_buffer )
+    {
+        ssize_t val = write ((intptr_t)p_access->p_sys,
+                             p_buffer->p_buffer, p_buffer->i_buffer);
+        if (val <= 0)
+        {
+            if (errno == EINTR)
+                continue;
+            block_ChainRelease (p_buffer);
+            msg_Err( p_access, "cannot write: %s", vlc_strerror_c(errno) );
+            return -1;
+        }
+
+        if ((size_t)val >= p_buffer->i_buffer)
+        {
+            block_t *p_next = p_buffer->p_next;
+            block_Release (p_buffer);
+            p_buffer = p_next;
+        }
+        else
+        {
+            p_buffer->p_buffer += val;
+            p_buffer->i_buffer -= val;
+        }
+        i_write += val;
+    }
+    return i_write;
+}
+
+static ssize_t WritePipe(sout_access_out_t *access, block_t *block)
+{
+    int fd = (intptr_t)access->p_sys;
+    ssize_t total = 0;
+
+    while (block != NULL)
+    {
+        if (block->i_buffer == 0)
+        {
+            block_t *next = block->p_next;
+            block_Release(block);
+            block = next;
+            continue;
+        }
+
+        /* TODO: vectorized I/O with writev() */
+        ssize_t val = vlc_write(fd, block->p_buffer, block->i_buffer);
+        if (val < 0)
+        {
+            if (errno == EINTR)
+                continue;
+
+            block_ChainRelease(block);
+            msg_Err(access, "cannot write: %s", vlc_strerror_c(errno));
+            total = -1;
+            break;
+        }
+
+        total += val;
+
+        assert((size_t)val <= block->i_buffer);
+        block->p_buffer += val;
+        block->i_buffer -= val;
+    }
+
+    return total;
+}
+
+#ifdef S_ISSOCK
+static ssize_t Send(sout_access_out_t *access, block_t *block)
+{
+    int fd = (intptr_t)access->p_sys;
+    size_t total = 0;
+
+    while (block != NULL)
+    {
+        if (block->i_buffer == 0)
+        {
+            block_t *next = block->p_next;
+            block_Release(block);
+            block = next;
+            continue;
+        }
+
+        /* TODO: vectorized I/O with sendmsg() */
+        ssize_t val = send(fd, block->p_buffer, block->i_buffer, MSG_NOSIGNAL);
+        if (val <= 0)
+        {   /* FIXME: errno is meaningless if val is zero */
+            if (errno == EINTR)
+                continue;
+            block_ChainRelease(block);
+            msg_Err(access, "cannot write: %s", vlc_strerror_c(errno));
+            return -1;
+        }
+
+        total += val;
+
+        assert((size_t)val <= block->i_buffer);
+        block->p_buffer += val;
+        block->i_buffer -= val;
+    }
+    return total;
+}
+#endif
+
+/*****************************************************************************
+ * Seek: seek to a specific location in a file
+ *****************************************************************************/
+static int Seek( sout_access_out_t *p_access, off_t i_pos )
+{
+    return lseek( (intptr_t)p_access->p_sys, i_pos, SEEK_SET );
+}
+
+static int Control( sout_access_out_t *p_access, int i_query, va_list args )
+{
+    switch( i_query )
+    {
+        case ACCESS_OUT_CONTROLS_PACE:
+        {
+            bool *pb = va_arg( args, bool * );
+            *pb = strcmp( p_access->psz_access, "stream" );
+            break;
+        }
+
+        case ACCESS_OUT_CAN_SEEK:
+        {
+            bool *pb = va_arg( args, bool * );
+            *pb = p_access->pf_seek != NULL;
+            break;
+        }
+
+        default:
+            return VLC_EGENERIC;
+    }
+    return VLC_SUCCESS;
+}
+
 static const char *const ppsz_sout_options[] = {
     "append",
     "format",
@@ -110,11 +225,6 @@ static const char *const ppsz_sout_options[] = {
 #endif
     NULL
 };
-
-static ssize_t Write( sout_access_out_t *, block_t * );
-static int Seek ( sout_access_out_t *, off_t  );
-static ssize_t Read ( sout_access_out_t *, block_t * );
-static int Control( sout_access_out_t *, int, va_list );
 
 /*****************************************************************************
  * Open: open the file
@@ -176,8 +286,7 @@ static int Open( vlc_object_t *p_this )
 
         if (var_InheritBool (p_access, SOUT_CFG_PREFIX"format"))
         {
-            buf = str_format_time (path);
-            path_sanitize (buf);
+            buf = vlc_strftime (path);
             path = buf;
         }
 
@@ -202,20 +311,45 @@ static int Open( vlc_object_t *p_this )
                 break;
             flags &= ~O_EXCL;
         }
-        while (dialog_Question (p_access, path,
-                                _("The output file already exists. "
-                                "If recording continues, the file will be "
-                                "overridden and its content will be lost."),
-                                _("Keep existing file"),
-                                _("Overwrite"), NULL) == 2);
+        while (vlc_dialog_wait_question (p_access, VLC_DIALOG_QUESTION_NORMAL,
+                                         _("Keep existing file"),
+                                         _("Overwrite"), NULL, path,
+                                         _("The output file already exists. "
+                                         "If recording continues, the file will be "
+                                         "overridden and its content will be lost.")) == 1);
         free (buf);
         if (fd == -1)
             return VLC_EGENERIC;
     }
 
-    p_access->pf_write = Write;
+    struct stat st;
+
+    if (fstat (fd, &st))
+    {
+        msg_Err (p_access, "write error: %s", vlc_strerror_c(errno));
+        vlc_close (fd);
+        return VLC_EGENERIC;
+    }
+
     p_access->pf_read  = Read;
-    p_access->pf_seek  = Seek;
+
+    if (S_ISREG(st.st_mode) || S_ISBLK(st.st_mode))
+    {
+        p_access->pf_write = Write;
+        p_access->pf_seek  = Seek;
+    }
+#ifdef S_ISSOCK
+    else if (S_ISSOCK(st.st_mode))
+    {
+        p_access->pf_write = Send;
+        p_access->pf_seek = NULL;
+    }
+#endif
+    else
+    {
+        p_access->pf_write = WritePipe;
+        p_access->pf_seek = NULL;
+    }
     p_access->pf_control = Control;
     p_access->p_sys    = (void *)(intptr_t)fd;
 
@@ -233,93 +367,39 @@ static void Close( vlc_object_t * p_this )
 {
     sout_access_out_t *p_access = (sout_access_out_t*)p_this;
 
-    close( (intptr_t)p_access->p_sys );
+    vlc_close( (intptr_t)p_access->p_sys );
 
     msg_Dbg( p_access, "file access output closed" );
 }
 
-static int Control( sout_access_out_t *p_access, int i_query, va_list args )
-{
-    switch( i_query )
-    {
-        case ACCESS_OUT_CONTROLS_PACE:
-        {
-            bool *pb = va_arg( args, bool * );
-            *pb = strcmp( p_access->psz_access, "stream" );
-            break;
-        }
+#define OVERWRITE_TEXT N_("Overwrite existing file")
+#define OVERWRITE_LONGTEXT N_( \
+    "If the file already exists, it will be overwritten.")
+#define APPEND_TEXT N_("Append to file")
+#define APPEND_LONGTEXT N_( "Append to file if it exists instead " \
+                            "of replacing it.")
+#define FORMAT_TEXT N_("Format time and date")
+#define FORMAT_LONGTEXT N_("Perform ISO C time and date formatting " \
+    "on the file path")
+#define SYNC_TEXT N_("Synchronous writing")
+#define SYNC_LONGTEXT N_( "Open the file with synchronous writing.")
 
-        case ACCESS_OUT_CAN_SEEK:
-        {
-            bool *pb = va_arg( args, bool * );
-            struct stat st;
-            if( fstat( (intptr_t)p_access->p_sys, &st ) == -1 )
-                *pb = false;
-            else
-                *pb = S_ISREG( st.st_mode ) || S_ISBLK( st.st_mode );
-            break;
-        }
-
-        default:
-            return VLC_EGENERIC;
-    }
-    return VLC_SUCCESS;
-}
-
-/*****************************************************************************
- * Read: standard read on a file descriptor.
- *****************************************************************************/
-static ssize_t Read( sout_access_out_t *p_access, block_t *p_buffer )
-{
-    ssize_t val;
-
-    do
-        val = read( (intptr_t)p_access->p_sys, p_buffer->p_buffer,
-                    p_buffer->i_buffer );
-    while (val == -1 && errno == EINTR);
-    return val;
-}
-
-/*****************************************************************************
- * Write: standard write on a file descriptor.
- *****************************************************************************/
-static ssize_t Write( sout_access_out_t *p_access, block_t *p_buffer )
-{
-    size_t i_write = 0;
-
-    while( p_buffer )
-    {
-        ssize_t val = write ((intptr_t)p_access->p_sys,
-                             p_buffer->p_buffer, p_buffer->i_buffer);
-        if (val <= 0)
-        {
-            if (errno == EINTR)
-                continue;
-            block_ChainRelease (p_buffer);
-            msg_Err( p_access, "cannot write: %s", vlc_strerror_c(errno) );
-            return -1;
-        }
-
-        if ((size_t)val >= p_buffer->i_buffer)
-        {
-            block_t *p_next = p_buffer->p_next;
-            block_Release (p_buffer);
-            p_buffer = p_next;
-        }
-        else
-        {
-            p_buffer->p_buffer += val;
-            p_buffer->i_buffer -= val;
-        }
-        i_write += val;
-    }
-    return i_write;
-}
-
-/*****************************************************************************
- * Seek: seek to a specific location in a file
- *****************************************************************************/
-static int Seek( sout_access_out_t *p_access, off_t i_pos )
-{
-    return lseek( (intptr_t)p_access->p_sys, i_pos, SEEK_SET );
-}
+vlc_module_begin ()
+    set_description( N_("File stream output") )
+    set_shortname( N_("File" ))
+    set_capability( "sout access", 50 )
+    set_category( CAT_SOUT )
+    set_subcategory( SUBCAT_SOUT_ACO )
+    add_shortcut( "file", "stream", "fd" )
+    add_bool( SOUT_CFG_PREFIX "overwrite", true, OVERWRITE_TEXT,
+              OVERWRITE_LONGTEXT, true )
+    add_bool( SOUT_CFG_PREFIX "append", false, APPEND_TEXT,APPEND_LONGTEXT,
+              true )
+    add_bool( SOUT_CFG_PREFIX "format", false, FORMAT_TEXT, FORMAT_LONGTEXT,
+              true )
+#ifdef O_SYNC
+    add_bool( SOUT_CFG_PREFIX "sync", false, SYNC_TEXT,SYNC_LONGTEXT,
+              false )
+#endif
+    set_callbacks( Open, Close )
+vlc_module_end ()

@@ -2,7 +2,7 @@
  * evt_special.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f284516331e881e8a720ef04506b3e3c87d2deff $
+ * $Id: a6fb797a0cefb0a189270fd035863e3e83057971 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -43,7 +43,7 @@ public:
     EvtSpecial( intf_thread_t *pIntf, ActionType_t action )
               : EvtGeneric( pIntf ), m_action( action ) { }
     virtual ~EvtSpecial() { }
-    virtual const string getAsString() const;
+    virtual const std::string getAsString() const;
 
 private:
     /// Type of action

@@ -2,7 +2,7 @@
  * cmd_input.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: fc391641e88bb2877a67595e34b6a9e1ae685103 $
+ * $Id: e0a6ecf93905c649d521c65fa945ffda1aee6779 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -29,15 +29,13 @@
 
 void CmdPlay::execute()
 {
-    playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
-    if( pPlaylist == NULL )
-        return;
+    playlist_t *pPlaylist = getPL();
 
     // if already playing an input, reset rate to normal speed
     input_thread_t *pInput = playlist_CurrentInput( pPlaylist );
     if( pInput )
     {
-        var_SetFloat( pPlaylist, "rate", 1.0 );
+        var_SetFloat( getPL(), "rate", 1.0 );
         vlc_object_release( pInput );
     }
 
@@ -59,60 +57,42 @@ void CmdPlay::execute()
 
 void CmdPause::execute()
 {
-    playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
-    if( pPlaylist != NULL )
-        playlist_Pause( pPlaylist );
+    playlist_TogglePause( getPL() );
 }
 
 
 void CmdStop::execute()
 {
-    playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
-    if( pPlaylist != NULL )
-        playlist_Stop( pPlaylist );
+    playlist_Stop( getPL() );
 }
 
 
 void CmdSlower::execute()
 {
-    playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
-    input_thread_t *pInput = playlist_CurrentInput( pPlaylist );
-
-    if( pInput )
-    {
-        var_TriggerCallback( pPlaylist, "rate-slower" );
-        vlc_object_release( pInput );
-    }
+    var_TriggerCallback( getPL(), "rate-slower" );
 }
 
 
 void CmdFaster::execute()
 {
-    playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
-    input_thread_t *pInput = playlist_CurrentInput( pPlaylist );
-
-    if( pInput )
-    {
-        var_TriggerCallback( pPlaylist, "rate-faster" );
-        vlc_object_release( pInput );
-    }
+    var_TriggerCallback( getPL(), "rate-faster" );
 }
 
 
 void CmdMute::execute()
 {
-    playlist_MuteToggle( getIntf()->p_sys->p_playlist );
+    playlist_MuteToggle( getPL() );
 }
 
 
 void CmdVolumeUp::execute()
 {
-    playlist_VolumeUp( getIntf()->p_sys->p_playlist, 1, NULL );
+    playlist_VolumeUp( getPL(), 1, NULL );
 }
 
 
 void CmdVolumeDown::execute()
 {
-    playlist_VolumeDown( getIntf()->p_sys->p_playlist, 1, NULL );
+    playlist_VolumeDown( getPL(), 1, NULL );
 }
 

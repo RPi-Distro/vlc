@@ -2,7 +2,7 @@
  * cmd_dialogs.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: aa38e3125d3e48b2dd23ebf92c1d7f0c441ed10b $
+ * $Id: 8c2b39e51016a30b9d576c3e0bc3ac31f3bb81c6 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -42,7 +42,7 @@ class CmdDlg##a: public CmdGeneric                              \
         Dialogs *dlg = Dialogs::instance( getIntf() );          \
         if( dlg ) dlg->c;                                       \
     }                                                           \
-    virtual string getType() const { return #a" dialog"; }      \
+    virtual std::string getType() const { return #a" dialog"; }      \
 };
 
 DEFC( ChangeSkin,         showChangeSkin() )
@@ -85,7 +85,7 @@ public:
         if( pDialogs != NULL )
             pDialogs->showInteraction( m_pDialog );
     }
-    virtual string getType() const { return "interaction"; }
+    virtual std::string getType() const { return "interaction"; }
 private:
     interaction_dialog_t *m_pDialog;
 };

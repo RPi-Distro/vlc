@@ -2,7 +2,7 @@
  * event.c: Events
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 453e04bb6666389a887aa592e73924b27963b482 $
+ * $Id: 201c5c6fe374bb8f3d4a1afd8cc5c57906bf21a5 $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org>
  *
@@ -51,13 +51,7 @@ static void VarListSelect( input_thread_t *,
  *****************************************************************************/
 void input_SendEventDead( input_thread_t *p_input )
 {
-    p_input->b_dead = true;
-
     Trigger( p_input, INPUT_EVENT_DEAD );
-}
-void input_SendEventAbort( input_thread_t *p_input )
-{
-    Trigger( p_input, INPUT_EVENT_ABORT );
 }
 
 void input_SendEventPosition( input_thread_t *p_input, double f_position, mtime_t i_time )
@@ -69,7 +63,7 @@ void input_SendEventPosition( input_thread_t *p_input, double f_position, mtime_
     var_Change( p_input, "position", VLC_VAR_SETVALUE, &val, NULL );
 
     /* */
-    val.i_time = i_time;
+    val.i_int = i_time;
     var_Change( p_input, "time", VLC_VAR_SETVALUE, &val, NULL );
 
     Trigger( p_input, INPUT_EVENT_POSITION );
@@ -79,12 +73,12 @@ void input_SendEventLength( input_thread_t *p_input, mtime_t i_length )
     vlc_value_t val;
 
     /* FIXME ugly + what about meta change event ? */
-    if( var_GetTime( p_input, "length" ) == i_length )
+    if( var_GetInteger( p_input, "length" ) == i_length )
         return;
 
-    input_item_SetDuration( p_input->p->p_item, i_length );
+    input_item_SetDuration( input_priv(p_input)->p_item, i_length );
 
-    val.i_time = i_length;
+    val.i_int = i_length;
     var_Change( p_input, "length", VLC_VAR_SETVALUE, &val, NULL );
 
     Trigger( p_input, INPUT_EVENT_LENGTH );
@@ -106,7 +100,7 @@ void input_SendEventAudioDelay( input_thread_t *p_input, mtime_t i_delay )
 {
     vlc_value_t val;
 
-    val.i_time = i_delay;
+    val.i_int = i_delay;
     var_Change( p_input, "audio-delay", VLC_VAR_SETVALUE, &val, NULL );
 
     Trigger( p_input, INPUT_EVENT_AUDIO_DELAY );
@@ -116,7 +110,7 @@ void input_SendEventSubtitleDelay( input_thread_t *p_input, mtime_t i_delay )
 {
     vlc_value_t val;
 
-    val.i_time = i_delay;
+    val.i_int = i_delay;
     var_Change( p_input, "spu-delay", VLC_VAR_SETVALUE, &val, NULL );
 
     Trigger( p_input, INPUT_EVENT_SUBTITLE_DELAY );
@@ -153,9 +147,9 @@ void input_SendEventSeekpoint( input_thread_t *p_input, int i_title, int i_seekp
     val.i_int = i_seekpoint;
     var_Change( p_input, "chapter", VLC_VAR_SETVALUE, &val, NULL );
 
-    /* "title %2i" */
-    char psz_title[10];
-    snprintf( psz_title, sizeof(psz_title), "title %2i", i_title );
+    /* "title %2u" */
+    char psz_title[sizeof ("title ") + 3 * sizeof (int)];
+    sprintf( psz_title, "title %2u", i_title );
     var_Change( p_input, psz_title, VLC_VAR_SETVALUE, &val, NULL );
 
     /* */
@@ -195,42 +189,14 @@ void input_SendEventCache( input_thread_t *p_input, double f_level )
     Trigger( p_input, INPUT_EVENT_CACHE );
 }
 
-/* FIXME: review them because vlc_event_send might be
- * moved inside input_item* functions.
- */
 void input_SendEventMeta( input_thread_t *p_input )
 {
     Trigger( p_input, INPUT_EVENT_ITEM_META );
-
-    /* FIXME remove this ugliness ? */
-    vlc_event_t event;
-
-    event.type = vlc_InputItemMetaChanged;
-    event.u.input_item_meta_changed.meta_type = vlc_meta_ArtworkURL;
-    vlc_event_send( &p_input->p->p_item->event_manager, &event );
 }
 
 void input_SendEventMetaInfo( input_thread_t *p_input )
 {
     Trigger( p_input, INPUT_EVENT_ITEM_INFO );
-
-    /* FIXME remove this ugliness */
-    vlc_event_t event;
-
-    event.type = vlc_InputItemInfoChanged;
-    vlc_event_send( &p_input->p->p_item->event_manager, &event );
-}
-
-void input_SendEventMetaName( input_thread_t *p_input, const char *psz_name )
-{
-    Trigger( p_input, INPUT_EVENT_ITEM_NAME );
-
-    /* FIXME remove this ugliness */
-    vlc_event_t event;
-
-    event.type = vlc_InputItemNameChanged;
-    event.u.input_item_name_changed.new_name = psz_name;
-    vlc_event_send( &p_input->p->p_item->event_manager, &event );
 }
 
 void input_SendEventMetaEpg( input_thread_t *p_input )
@@ -262,7 +228,7 @@ void input_SendEventProgramScrambled( input_thread_t *p_input, int i_group, bool
     Trigger( p_input, INPUT_EVENT_PROGRAM );
 }
 
-static const char *GetEsVarName( int i_cat )
+static const char *GetEsVarName( enum es_format_category_e i_cat )
 {
     switch( i_cat )
     {
@@ -270,27 +236,30 @@ static const char *GetEsVarName( int i_cat )
         return "video-es";
     case AUDIO_ES:
         return "audio-es";
-    default:
-        assert( i_cat == SPU_ES );
+    case SPU_ES:
         return "spu-es";
+    default:
+        return NULL;
     }
 }
-void input_SendEventEsAdd( input_thread_t *p_input, int i_cat, int i_id, const char *psz_text )
+void input_SendEventEsAdd( input_thread_t *p_input, enum es_format_category_e i_cat, int i_id, const char *psz_text )
 {
-    if( i_cat != UNKNOWN_ES )
-        VarListAdd( p_input, GetEsVarName( i_cat ), INPUT_EVENT_ES,
-                    i_id, psz_text );
+    const char *psz_varname = GetEsVarName( i_cat );
+    if( psz_varname )
+        VarListAdd( p_input, psz_varname, INPUT_EVENT_ES, i_id, psz_text );
 }
-void input_SendEventEsDel( input_thread_t *p_input, int i_cat, int i_id )
+void input_SendEventEsDel( input_thread_t *p_input, enum es_format_category_e i_cat, int i_id )
 {
-    if( i_cat != UNKNOWN_ES )
-        VarListDel( p_input, GetEsVarName( i_cat ), INPUT_EVENT_ES, i_id );
+    const char *psz_varname = GetEsVarName( i_cat );
+    if( psz_varname )
+        VarListDel( p_input, psz_varname, INPUT_EVENT_ES, i_id );
 }
 /* i_id == -1 will unselect */
-void input_SendEventEsSelect( input_thread_t *p_input, int i_cat, int i_id )
+void input_SendEventEsSelect( input_thread_t *p_input, enum es_format_category_e i_cat, int i_id )
 {
-    if( i_cat != UNKNOWN_ES )
-        VarListSelect( p_input, GetEsVarName( i_cat ), INPUT_EVENT_ES, i_id );
+    const char *psz_varname = GetEsVarName( i_cat );
+    if( psz_varname )
+        VarListSelect( p_input, psz_varname, INPUT_EVENT_ES, i_id );
 }
 
 void input_SendEventTeletextAdd( input_thread_t *p_input,

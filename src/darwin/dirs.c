@@ -1,7 +1,7 @@
 /*****************************************************************************
- * darwin_dirs.c: Mac OS X directories configuration
+ * darwin_dirs.c: Darwin directories configuration
  *****************************************************************************
- * Copyright (C) 2001-2014 VLC authors and VideoLAN
+ * Copyright (C) 2001-2016 VLC authors and VideoLAN
  * Copyright (C) 2007-2012 Rémi Denis-Courmont
  *
  * Authors: Rémi Denis-Courmont
@@ -23,25 +23,18 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <CoreFoundation/CoreFoundation.h>
-
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
 #include <vlc_common.h>
-
 #include "../libvlc.h"
-#include <vlc_configuration.h>
-#include "config/configuration.h"
 
 #include <libgen.h>
 #include <dlfcn.h>
 #include <mach-o/dyld.h>
 
-#ifndef MAXPATHLEN
-# define MAXPATHLEN 1024
-#endif
+#include <CoreFoundation/CoreFoundation.h>
 
 char *config_GetLibDir (void)
 {
@@ -73,6 +66,14 @@ char *config_GetLibDir (void)
 
         /* Do we end by "VLC-Plugin"? oh, we must be the NPAPI plugin */
         if (len >= 10 && !strcmp( psz_img_name + len - 10, "VLC-Plugin"))
+            return strdup( dirname(psz_img_name) );
+
+        /* Do we end by "VLC for iOS"? so we are the iOS app */
+        if (len >= 11 && !strcmp( psz_img_name + len - 11, "VLC for iOS"))
+            return strdup( dirname(psz_img_name) );
+
+        /* Do we end by "VLC-TV"? so we are the tvOS app */
+        if (len >= 6 && !strcmp( psz_img_name + len - 6, "VLC-TV"))
             return strdup( dirname(psz_img_name) );
     }
 
@@ -132,7 +133,7 @@ static char *getAppDependentDir(vlc_userdir_t type)
             psz_path = "%s/Library/Caches/%s";
             break;
         default:
-            assert(0);
+            vlc_assert_unreachable();
             break;
     }
 
@@ -146,7 +147,7 @@ static char *getAppDependentDir(vlc_userdir_t type)
             char identifier[256];
             Boolean ret = CFStringGetCString(identifierAsNS, identifier, sizeof(identifier), kCFStringEncodingUTF8);
             if (ret)
-                name = identifier;            
+                name = identifier;
         }
     }
 
@@ -156,7 +157,7 @@ static char *getAppDependentDir(vlc_userdir_t type)
         psz_dir = NULL;
     free(psz_parent);
 
-    return psz_dir;    
+    return psz_dir;
 }
 
 char *config_GetUserDir (vlc_userdir_t type)

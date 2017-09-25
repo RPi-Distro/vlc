@@ -2,7 +2,7 @@
  * x11_factory.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: bfd5033e9dbd78771242645a82a29572a79b8e64 $
+ * $Id: 6e7c671884d6765939a2e80b6864772d8e39c5d4 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -24,9 +24,9 @@
 
 #ifdef X11_SKINS
 
+#include <errno.h>
 #include <unistd.h>
 #include <dirent.h>
-#include <sys/stat.h>
 #include <X11/Xlib.h>
 #include <X11/extensions/Xinerama.h>
 
@@ -84,11 +84,11 @@ bool X11Factory::init()
 
     // Initialize the resource path
     char *datadir = config_GetUserDir( VLC_DATA_DIR );
-    m_resourcePath.push_back( (string)datadir + "/skins2" );
+    m_resourcePath.push_back( (std::string)datadir + "/skins2" );
     free( datadir );
-    m_resourcePath.push_back( (string)"share/skins2" );
+    m_resourcePath.push_back( (std::string)"share/skins2" );
     datadir = config_GetDataDir();
-    m_resourcePath.push_back( (string)datadir + "/skins2" );
+    m_resourcePath.push_back( (std::string)datadir + "/skins2" );
     free( datadir );
 
     // Determine the monitor geometry
@@ -338,7 +338,7 @@ void X11Factory::getMousePos( int &rXPos, int &rYPos ) const
 }
 
 
-void X11Factory::rmDir( const string &rPath )
+void X11Factory::rmDir( const std::string &rPath )
 {
     struct dirent *file;
     DIR *dir;
@@ -349,8 +349,7 @@ void X11Factory::rmDir( const string &rPath )
     // Parse the directory and remove everything it contains
     while( (file = readdir( dir )) )
     {
-        struct stat statbuf;
-        string filename = file->d_name;
+        std::string filename = file->d_name;
 
         // Skip "." and ".."
         if( filename == "." || filename == ".." )
@@ -360,14 +359,8 @@ void X11Factory::rmDir( const string &rPath )
 
         filename = rPath + "/" + filename;
 
-        if( !stat( filename.c_str(), &statbuf ) && statbuf.st_mode & S_IFDIR )
-        {
-            rmDir( filename );
-        }
-        else
-        {
+        if( rmdir( filename.c_str() ) && errno == ENOTDIR )
             unlink( filename.c_str() );
-        }
     }
 
     // Close the directory

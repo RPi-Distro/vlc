@@ -2,7 +2,7 @@
  * cmd_playtree.hpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 97d6fa1e329f6a25426fe174ca8096823ff4ad25 $
+ * $Id: 2f2245f0659f2b95b4f68f74e349b7ef59fa8d06 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -38,7 +38,7 @@ public:
                   : CmdGeneric( pIntf ), m_rTree( rTree ) { }
     virtual ~CmdPlaytreeDel() { }
     virtual void execute();
-    virtual string getType() const { return "playtree del"; }
+    virtual std::string getType() const { return "playtree del"; }
 
 private:
     /// Tree

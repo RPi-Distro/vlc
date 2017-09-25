@@ -2,7 +2,7 @@
  * ctrl_tree.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 6044716c145a56e015c9f44714e1a7cb0d3154c7 $
+ * $Id: 15284a429e402d312164e47f888a3a9485cf5009 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -75,7 +75,7 @@ public:
     virtual bool isScrollable() const { return true; }
 
     /// Get the type of control (custom RTTI)
-    virtual string getType() const { return "tree"; }
+    virtual std::string getType() const { return "tree"; }
 
     /// Make sure an item is visible
     /// \param item an iterator to a tree item

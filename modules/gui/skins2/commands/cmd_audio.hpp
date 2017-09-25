@@ -2,7 +2,7 @@
  * cmd_audio.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e9c8ee72dedb807fc5ceca8c3c857f8b9fc679ee $
+ * $Id: c171a0f38e1387e2f39cd71d1d480363d12068de $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -34,7 +34,7 @@ public:
                    : CmdGeneric( pIntf ), m_enable( iEnable ) { }
     virtual ~CmdSetEqualizer() { }
     virtual void execute();
-    virtual string getType() const { return "set equalizer"; }
+    virtual std::string getType() const { return "set equalizer"; }
 
 private:
     /// Enable or disable the equalizer

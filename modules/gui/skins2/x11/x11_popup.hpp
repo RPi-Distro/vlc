@@ -2,7 +2,7 @@
  * x11_popup.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 31a78fa6354e7d30a9bf4ef3c57aa8612ebc44c3 $
+ * $Id: c20488c86a212ba374cc84601ba764709799dc55 $
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *
@@ -43,7 +43,7 @@ public:
     virtual void hide();
 
     /// Append a new menu item with the given label to the popup menu
-    virtual void addItem( const string &rLabel, int pos );
+    virtual void addItem( const std::string &rLabel, int pos );
 
     /// Create a dummy menu item to separate sections
     virtual void addSeparator( int pos );

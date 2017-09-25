@@ -2,7 +2,7 @@
  * meta.c : Metadata handling
  *****************************************************************************
  * Copyright (C) 1998-2004 VLC authors and VideoLAN
- * $Id: 2fb14d81921ae84945325fecd5c28cfa1220c43a $
+ * $Id: 241b926079ff186952b18c3ff7dedab377ea6705 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org
@@ -50,7 +50,7 @@ struct vlc_meta_t
 /* FIXME bad name convention */
 const char * vlc_meta_TypeToLocalizedString( vlc_meta_type_t meta_type )
 {
-    static const char posix_names[][17] =
+    static const char posix_names[][18] =
     {
         [vlc_meta_Title]       = N_("Title"),
         [vlc_meta_Artist]      = N_("Artist"),
@@ -64,8 +64,8 @@ const char * vlc_meta_TypeToLocalizedString( vlc_meta_type_t meta_type )
         [vlc_meta_Setting]     = N_("Setting"),
         [vlc_meta_URL]         = N_("URL"),
         [vlc_meta_Language]    = N_("Language"),
-        [vlc_meta_NowPlaying]  = N_("Now Playing"),
         [vlc_meta_ESNowPlaying]= N_("Now Playing"),
+        [vlc_meta_NowPlaying]  = N_("Now Playing"),
         [vlc_meta_Publisher]   = N_("Publisher"),
         [vlc_meta_EncodedBy]   = N_("Encoded by"),
         [vlc_meta_ArtworkURL]  = N_("Artwork URL"),
@@ -76,6 +76,8 @@ const char * vlc_meta_TypeToLocalizedString( vlc_meta_type_t meta_type )
         [vlc_meta_Episode]     = N_("Episode"),
         [vlc_meta_ShowName]    = N_("Show Name"),
         [vlc_meta_Actors]      = N_("Actors"),
+        [vlc_meta_AlbumArtist] = N_("Album Artist"),
+        [vlc_meta_DiscNumber]  = N_("Disc number")
     };
 
     assert (meta_type < (sizeof(posix_names) / sizeof(posix_names[0])));
@@ -107,8 +109,7 @@ static void vlc_meta_FreeExtraKey( void *p_data, void *p_obj )
 
 void vlc_meta_Delete( vlc_meta_t *m )
 {
-    int i;
-    for( i = 0; i < VLC_META_TYPE_COUNT ; i++ )
+    for( int i = 0; i < VLC_META_TYPE_COUNT ; i++ )
         free( m->ppsz_meta[i] );
     vlc_dictionary_clear( &m->extra_tags, vlc_meta_FreeExtraKey, NULL );
     free( m );
@@ -175,13 +176,10 @@ void vlc_meta_SetStatus( vlc_meta_t *m, int status )
  */
 void vlc_meta_Merge( vlc_meta_t *dst, const vlc_meta_t *src )
 {
-    char **ppsz_all_keys;
-    int i;
-
     if( !dst || !src )
         return;
 
-    for( i = 0; i < VLC_META_TYPE_COUNT; i++ )
+    for( int i = 0; i < VLC_META_TYPE_COUNT; i++ )
     {
         if( src->ppsz_meta[i] )
         {
@@ -191,8 +189,8 @@ void vlc_meta_Merge( vlc_meta_t *dst, const vlc_meta_t *src )
     }
 
     /* XXX: If speed up are needed, it is possible */
-    ppsz_all_keys = vlc_dictionary_all_keys( &src->extra_tags );
-    for( i = 0; ppsz_all_keys && ppsz_all_keys[i]; i++ )
+    char **ppsz_all_keys = vlc_dictionary_all_keys( &src->extra_tags );
+    for( int i = 0; ppsz_all_keys && ppsz_all_keys[i]; i++ )
     {
         /* Always try to remove the previous value */
         vlc_dictionary_remove_value_for_key( &dst->extra_tags, ppsz_all_keys[i], vlc_meta_FreeExtraKey, NULL );
@@ -205,66 +203,54 @@ void vlc_meta_Merge( vlc_meta_t *dst, const vlc_meta_t *src )
 }
 
 
-void input_ExtractAttachmentAndCacheArt( input_thread_t *p_input )
+void input_ExtractAttachmentAndCacheArt( input_thread_t *p_input,
+                                         const char *name )
 {
-    input_item_t *p_item = p_input->p->p_item;
-
-    /* */
-    char *psz_arturl = input_item_GetArtURL( p_item );
-    if( !psz_arturl || strncmp( psz_arturl, "attachment://", strlen("attachment://") ) )
-    {
-        msg_Err( p_input, "internal input error with input_ExtractAttachmentAndCacheArt" );
-        free( psz_arturl );
-        return;
-    }
+    input_item_t *p_item = input_priv(p_input)->p_item;
 
     if( input_item_IsArtFetched( p_item ) )
-    {
-        /* XXX Weird, we should not have end up with attachment:// art url unless there is a race
-         * condition */
-        msg_Warn( p_input, "internal input error with input_ExtractAttachmentAndCacheArt" );
-        playlist_FindArtInCache( p_item );
-        goto exit;
+    {   /* XXX Weird, we should not end up with attachment:// art URL
+         * unless there is a race condition */
+        msg_Warn( p_input, "art already fetched" );
+        if( likely(playlist_FindArtInCache( p_item ) == VLC_SUCCESS) )
+            return;
     }
 
     /* */
     input_attachment_t *p_attachment = NULL;
 
     vlc_mutex_lock( &p_item->lock );
-    for( int i_idx = 0; i_idx < p_input->p->i_attachment; i_idx++ )
+    for( int i_idx = 0; i_idx < input_priv(p_input)->i_attachment; i_idx++ )
     {
-        if( !strcmp( p_input->p->attachment[i_idx]->psz_name,
-                     &psz_arturl[strlen("attachment://")] ) )
+        input_attachment_t *a = input_priv(p_input)->attachment[i_idx];
+
+        if( !strcmp( a->psz_name, name ) )
         {
-            p_attachment = vlc_input_attachment_Duplicate( p_input->p->attachment[i_idx] );
+            p_attachment = vlc_input_attachment_Duplicate( a );
             break;
         }
     }
     vlc_mutex_unlock( &p_item->lock );
 
-    if( !p_attachment || p_attachment->i_data <= 0 )
+    if( p_attachment == NULL )
     {
-        if( p_attachment )
-            vlc_input_attachment_Delete( p_attachment );
-        msg_Warn( p_input, "internal input error with input_ExtractAttachmentAndCacheArt" );
-        goto exit;
+        msg_Warn( p_input, "art attachment %s not found", name );
+        return;
     }
 
     /* */
     const char *psz_type = NULL;
+
     if( !strcmp( p_attachment->psz_mime, "image/jpeg" ) )
         psz_type = ".jpg";
     else if( !strcmp( p_attachment->psz_mime, "image/png" ) )
         psz_type = ".png";
+    else if( !strcmp( p_attachment->psz_mime, "image/x-pict" ) )
+        psz_type = ".pct";
 
-    /* */
     playlist_SaveArt( VLC_OBJECT(p_input), p_item,
                       p_attachment->p_data, p_attachment->i_data, psz_type );
-
     vlc_input_attachment_Delete( p_attachment );
-
-exit:
-    free( psz_arturl );
 }
 
 int input_item_WriteMeta( vlc_object_t *obj, input_item_t *p_item )
@@ -283,7 +269,7 @@ int input_item_WriteMeta( vlc_object_t *obj, input_item_t *p_item )
         goto error;
 
     char *psz_uri = input_item_GetURI( p_item );
-    p_export->psz_file = make_path( psz_uri );
+    p_export->psz_file = vlc_uri2path( psz_uri );
     if( p_export->psz_file == NULL )
         msg_Err( p_export, "cannot write meta to remote media %s", psz_uri );
     free( psz_uri );

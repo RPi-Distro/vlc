@@ -3,7 +3,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: d957e95f9a73a063d203b00da0a5904c02f9d9b6 $
+ * $Id: 97be3fde040014313704118226ca395b827d565e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -27,7 +27,7 @@
 #include "stream_io_callback.hpp"
 #include "Ebml_parser.hpp"
 
-#include <vlc_keys.h>
+#include <vlc_actions.h>
 
 event_thread_t::event_thread_t(demux_t *p_demux) : p_demux(p_demux)
 {
@@ -87,9 +87,8 @@ void event_thread_t::ResetPci()
     is_running = false;
 }
 int event_thread_t::EventMouse( vlc_object_t *p_this, char const *psz_var,
-                                vlc_value_t oldval, vlc_value_t newval, void *p_data )
+                                vlc_value_t, vlc_value_t, void *p_data )
 {
-    VLC_UNUSED( oldval ); VLC_UNUSED( newval );
     event_thread_t *p_ev = (event_thread_t *) p_data;
     vlc_mutex_lock( &p_ev->lock );
     if( psz_var[6] == 'c' )
@@ -146,9 +145,9 @@ void event_thread_t::EventThread()
     b_vout       = true;
 
     /* catch all key event */
-    var_AddCallback( p_demux->p_libvlc, "key-action", EventKey, this );
+    var_AddCallback( p_demux->obj.libvlc, "key-action", EventKey, this );
     /* catch input event */
-    var_AddCallback( p_sys->p_input, "intf-event", EventInput, this );
+    var_AddCallback( p_demux->p_input, "intf-event", EventInput, this );
 
     /* main loop */
     for( ;; )
@@ -368,17 +367,17 @@ void event_thread_t::EventThread()
                         }
 
                         vlc_global_lock( VLC_HIGHLIGHT_MUTEX );
-                        var_SetInteger( p_sys->p_input, "x-start",
+                        var_SetInteger( p_demux->p_input, "x-start",
                                         button_ptr.x_start );
-                        var_SetInteger( p_sys->p_input, "x-end",
+                        var_SetInteger( p_demux->p_input, "x-end",
                                         button_ptr.x_end );
-                        var_SetInteger( p_sys->p_input, "y-start",
+                        var_SetInteger( p_demux->p_input, "y-start",
                                         button_ptr.y_start );
-                        var_SetInteger( p_sys->p_input, "y-end",
+                        var_SetInteger( p_demux->p_input, "y-end",
                                         button_ptr.y_end );
-                        var_SetAddress( p_sys->p_input, "menu-palette",
+                        var_SetAddress( p_demux->p_input, "menu-palette",
                                         p_sys->palette );
-                        var_SetBool( p_sys->p_input, "highlight", true );
+                        var_SetBool( p_demux->p_input, "highlight", true );
                         vlc_global_unlock( VLC_HIGHLIGHT_MUTEX );
                     }
                     vlc_mutex_unlock( &p_sys->lock_demuxer );
@@ -398,17 +397,9 @@ void event_thread_t::EventThread()
         vlc_mutex_unlock( &lock );
 
         /* Always check vout */
-        if( p_vout && !vlc_object_alive (p_vout) )
+        if( p_vout == NULL )
         {
-            var_DelCallback( p_vout, "mouse-moved", EventMouse, this );
-            var_DelCallback( p_vout, "mouse-clicked", EventMouse, this );
-            vlc_object_release( p_vout );
-            p_vout = NULL;
-        }
-
-        else if( p_vout == NULL )
-        {
-            p_vout = (vlc_object_t*) input_GetVout(p_sys->p_input);
+            p_vout = (vlc_object_t*) input_GetVout(p_demux->p_input);
             if( p_vout)
             {
                 var_AddCallback( p_vout, "mouse-moved", EventMouse, this );
@@ -424,8 +415,8 @@ void event_thread_t::EventThread()
         var_DelCallback( p_vout, "mouse-clicked", EventMouse, this );
         vlc_object_release( p_vout );
     }
-    var_DelCallback( p_sys->p_input, "intf-event", EventInput, this );
-    var_DelCallback( p_demux->p_libvlc, "key-action", EventKey, this );
+    var_DelCallback( p_demux->p_input, "intf-event", EventInput, this );
+    var_DelCallback( p_demux->obj.libvlc, "key-action", EventKey, this );
 
     vlc_restorecancel (canc);
 }
@@ -445,8 +436,8 @@ demux_sys_t::~demux_sys_t()
         delete streams[i];
     for ( i=0; i<opened_segments.size(); i++ )
         delete opened_segments[i];
-    for ( i=0; i<used_segments.size(); i++ )
-        delete used_segments[i];
+    for ( i=0; i<used_vsegments.size(); i++ )
+        delete used_vsegments[i];
     for ( i=0; i<stored_attachments.size(); i++ )
         delete stored_attachments[i];
     if( meta ) vlc_meta_Delete( meta );
@@ -511,12 +502,15 @@ matroska_stream_c *demux_sys_t::AnalyseAllSegmentsFound( demux_t *p_demux, EbmlS
 
     while (p_l0 != 0)
     {
+        bool b_l0_handled = false;
+
         if ( MKV_IS_ID( p_l0, KaxSegment) )
         {
             EbmlParser  *ep;
             matroska_segment_c *p_segment1 = new matroska_segment_c( *this, *p_estream );
 
-            ep = new EbmlParser(p_estream, p_l0, &demuxer );
+            ep = new EbmlParser(p_estream, p_l0, &demuxer,
+                                var_InheritBool( &demuxer, "mkv-use-dummy" ) );
             p_segment1->ep = ep;
             p_segment1->segment = (KaxSegment*)p_l0;
 
@@ -527,7 +521,7 @@ matroska_stream_c *demux_sys_t::AnalyseAllSegmentsFound( demux_t *p_demux, EbmlS
                     // find the families of this segment
                     KaxInfo *p_info = static_cast<KaxInfo*>(p_l1);
                     b_keep_segment = b_initial;
-                    if( unlikely( p_info->GetSize() >= SIZE_MAX ) )
+                    if( unlikely( p_info->IsFiniteSize() && p_info->GetSize() >= SIZE_MAX ) )
                     {
                         msg_Err( p_demux, "KaxInfo too big aborting" );
                         break;
@@ -585,7 +579,12 @@ matroska_stream_c *demux_sys_t::AnalyseAllSegmentsFound( demux_t *p_demux, EbmlS
                 p_segment1->segment = NULL;
                 delete p_segment1;
             }
+
+            b_l0_handled = true;
         }
+
+        EbmlElement* p_l0_prev = p_l0;
+
         if (p_l0->IsFiniteSize() )
         {
             p_l0->SkipData(*p_estream, KaxMatroska_Context);
@@ -595,6 +594,9 @@ matroska_stream_c *demux_sys_t::AnalyseAllSegmentsFound( demux_t *p_demux, EbmlS
         {
             p_l0 = NULL;
         }
+
+        if( b_l0_handled == false )
+            delete p_l0_prev;
     }
 
     if ( !b_keep_stream )
@@ -612,7 +614,7 @@ void demux_sys_t::InitUi()
 
     /* FIXME hack hack hack hack FIXME */
     /* Get p_input and create variable */
-    p_input = demux_GetParentInput( &demuxer );
+    p_input = demuxer.p_input;
     if( p_input )
     {
         var_Create( p_input, "x-start", VLC_VAR_INTEGER );
@@ -642,8 +644,6 @@ void demux_sys_t::CleanUi()
         var_Destroy( p_input, "y-end" );
         var_Destroy( p_input, "color" );
         var_Destroy( p_input, "menu-palette" );
-
-        vlc_object_release( p_input );
     }
 
     msg_Dbg( &demuxer, "Stopping the UI Hook" );
@@ -661,23 +661,42 @@ void demux_sys_t::PreloadFamily( const matroska_segment_c & of_segment )
 bool demux_sys_t::PreloadLinked()
 {
     size_t i, j, ij = 0;
-    virtual_segment_c *p_seg;
+    virtual_segment_c *p_vseg;
 
-    p_current_segment = VirtualFromSegments( &opened_segments );
-    if ( !p_current_segment )
+    if ( unlikely(opened_segments.size() == 0) )
         return false;
 
-    used_segments.push_back( p_current_segment );
+    p_current_vsegment = new (std::nothrow) virtual_segment_c( *(opened_segments[0]), opened_segments );
+    if ( !p_current_vsegment )
+        return false;
+
+    /* Set current chapter */
+    p_current_vsegment->p_current_vchapter = p_current_vsegment->veditions[p_current_vsegment->i_current_edition]->getChapterbyTimecode(0);
+    msg_Dbg( &demuxer, "NEW START CHAPTER uid=%" PRId64, p_current_vsegment->p_current_vchapter && p_current_vsegment->p_current_vchapter->p_chapter ?
+                 p_current_vsegment->p_current_vchapter->p_chapter->i_uid : 0 );
+
+    used_vsegments.push_back( p_current_vsegment );
+
+    for ( i=1; i< opened_segments.size(); i++ )
+    {
+        /* add segments from the same family to used_segments */
+        if ( opened_segments[0]->SameFamily( *(opened_segments[i]) ) )
+        {
+            virtual_segment_c *p_vsegment = new (std::nothrow) virtual_segment_c( *(opened_segments[i]), opened_segments );
+            if ( likely(p_vsegment != NULL) )
+                used_vsegments.push_back( p_vsegment );
+        }
+    }
 
     // publish all editions of all usable segment
-    for ( i=0; i< used_segments.size(); i++ )
+    for ( i=0; i< used_vsegments.size(); i++ )
     {
-        p_seg = used_segments[i];
-        if ( p_seg->Editions() != NULL )
+        p_vseg = used_vsegments[i];
+        if ( p_vseg->Editions() != NULL )
         {
-            for ( j=0; j<p_seg->Editions()->size(); j++ )
+            for ( j=0; j<p_vseg->Editions()->size(); j++ )
             {
-                virtual_edition_c * p_ved = (*p_seg->Editions())[j];
+                virtual_edition_c * p_ved = (*p_vseg->Editions())[j];
                 input_title_t *p_title = vlc_input_title_New();
                 int i_chapters;
 
@@ -691,21 +710,21 @@ bool demux_sys_t::PreloadLinked()
                         /* Check in tags if the edition has a name */
 
                         /* We use only the tags of the first segment as it contains the edition */
-                        std::vector<Tag*> &tags = opened_segments[0]->tags;
+                        matroska_segment_c::tags_t const& tags = opened_segments[0]->tags;
                         uint64_t i_ed_uid = 0;
                         if( p_ved->p_edition )
                             i_ed_uid = (uint64_t) p_ved->p_edition->i_uid;
 
                         for( size_t k = 0; k < tags.size(); k++ )
                         {
-                            if( tags[k]->i_tag_type == EDITION_UID && tags[k]->i_uid == i_ed_uid )
-                                for( size_t l = 0; l < tags[k]->simple_tags.size(); l++ )
+                            if( tags[k].i_tag_type == EDITION_UID && tags[k].i_uid == i_ed_uid )
+                                for( size_t l = 0; l < tags[k].simple_tags.size(); l++ )
                                 {
-                                    SimpleTag * p_st = tags[k]->simple_tags[l];
-                                    if( !strcmp(p_st->psz_tag_name,"TITLE") )
+                                    SimpleTag const& st = tags[k].simple_tags[l];
+                                    if ( st.tag_name == "TITLE" )
                                     {
-                                        msg_Dbg( &demuxer, "Using title \"%s\" from tag for edition %" PRIu64, p_st->p_value, i_ed_uid );
-                                        p_title->psz_name = strdup( p_st->p_value );
+                                        msg_Dbg( &demuxer, "Using title \"%s\" from tag for edition %" PRIu64, st.value.c_str (), i_ed_uid );
+                                        p_title->psz_name = strdup( st.value.c_str () );
                                         break;
                                     }
                                 }
@@ -727,7 +746,7 @@ bool demux_sys_t::PreloadLinked()
                 titles.push_back( p_title );
             }
         }
-        p_seg->i_sys_title = p_seg->i_current_edition;
+        p_vseg->i_sys_title = p_vseg->i_current_edition;
     }
 
     // TODO decide which segment should be first used (VMG for DVD)
@@ -766,59 +785,42 @@ void demux_sys_t::FreeUnused()
     }
 }
 
-virtual_segment_c *demux_sys_t::VirtualFromSegments( std::vector<matroska_segment_c*> *p_segments ) const
+bool demux_sys_t::PreparePlayback( virtual_segment_c & new_vsegment, mtime_t i_mk_date )
 {
-    if ( p_segments->empty() )
-        return NULL;
-    virtual_segment_c *p_result = new virtual_segment_c( p_segments );
-    return p_result;
-}
-
-bool demux_sys_t::PreparePlayback( virtual_segment_c *p_new_segment )
-{
-    if ( p_new_segment != NULL && p_new_segment != p_current_segment )
+    if ( p_current_vsegment != &new_vsegment )
     {
-        if ( p_current_segment != NULL && p_current_segment->CurrentSegment() != NULL )
-            p_current_segment->CurrentSegment()->UnSelect();
+        if ( p_current_vsegment->CurrentSegment() != NULL )
+            p_current_vsegment->CurrentSegment()->ESDestroy();
 
-        p_current_segment = p_new_segment;
-        i_current_title = p_new_segment->i_sys_title;
+        p_current_vsegment = &new_vsegment;
+        p_current_vsegment->CurrentSegment()->ESCreate();
+        i_current_title = p_current_vsegment->i_sys_title;
     }
-    if( !p_current_segment->CurrentSegment() )
+    if( !p_current_vsegment->CurrentSegment() )
         return false;
-    if( !p_current_segment->CurrentSegment()->b_cues )
-        msg_Warn( &p_current_segment->CurrentSegment()->sys.demuxer, "no cues/empty cues found->seek won't be precise" );
+    if( !p_current_vsegment->CurrentSegment()->b_cues )
+        msg_Warn( &p_current_vsegment->CurrentSegment()->sys.demuxer, "no cues/empty cues found->seek won't be precise" );
 
-    f_duration = p_current_segment->Duration();
+    f_duration = p_current_vsegment->Duration();
 
     /* add information */
-    p_current_segment->CurrentSegment()->InformationCreate( );
-    p_current_segment->CurrentSegment()->Select( 0 );
+    p_current_vsegment->CurrentSegment()->InformationCreate( );
+    p_current_vsegment->CurrentSegment()->ESCreate( );
 
     /* Seek to the beginning */
-    p_current_segment->Seek(p_current_segment->CurrentSegment()->sys.demuxer,
-                            0, 0, NULL, -1);
+    p_current_vsegment->Seek(p_current_vsegment->CurrentSegment()->sys.demuxer,
+                             i_mk_date, p_current_vsegment->p_current_vchapter );
 
     return true;
 }
 
-void demux_sys_t::JumpTo( virtual_segment_c & vsegment, virtual_chapter_c * p_chapter )
+void demux_sys_t::JumpTo( virtual_segment_c & vsegment, virtual_chapter_c & vchapter )
 {
-    // if the segment is not part of the current segment, select the new one
-    if ( &vsegment != p_current_segment )
+    if ( !vchapter.p_chapter || !vchapter.p_chapter->Enter( true ) )
     {
-        PreparePlayback( &vsegment );
+        // jump to the location in the found segment
+        vsegment.Seek( demuxer, vchapter.i_mk_virtual_start_time, &vchapter );
     }
-
-    if ( p_chapter )
-    {
-        if ( !p_chapter->p_chapter || !p_chapter->p_chapter->Enter( true ) )
-        {
-            // jump to the location in the found segment
-            vsegment.Seek( demuxer, p_chapter->i_virtual_start_time, -1, p_chapter, -1 );
-        }
-    }
-
 }
 
 matroska_segment_c *demux_sys_t::FindSegment( const EbmlBinary & uid ) const
@@ -835,30 +837,30 @@ virtual_chapter_c *demux_sys_t::BrowseCodecPrivate( unsigned int codec_id,
                                         bool (*match)(const chapter_codec_cmds_c &data, const void *p_cookie, size_t i_cookie_size ),
                                         const void *p_cookie,
                                         size_t i_cookie_size,
-                                        virtual_segment_c * &p_segment_found )
+                                        virtual_segment_c * &p_vsegment_found )
 {
     virtual_chapter_c *p_result = NULL;
-    for (size_t i=0; i<used_segments.size(); i++)
+    for (size_t i=0; i<used_vsegments.size(); i++)
     {
-        p_result = used_segments[i]->BrowseCodecPrivate( codec_id, match, p_cookie, i_cookie_size );
+        p_result = used_vsegments[i]->BrowseCodecPrivate( codec_id, match, p_cookie, i_cookie_size );
         if ( p_result != NULL )
         {
-            p_segment_found = used_segments[i];
+            p_vsegment_found = used_vsegments[i];
             break;
         }
     }
     return p_result;
 }
 
-virtual_chapter_c *demux_sys_t::FindChapter( int64_t i_find_uid, virtual_segment_c * & p_segment_found )
+virtual_chapter_c *demux_sys_t::FindChapter( int64_t i_find_uid, virtual_segment_c * & p_vsegment_found )
 {
     virtual_chapter_c *p_result = NULL;
-    for (size_t i=0; i<used_segments.size(); i++)
+    for (size_t i=0; i<used_vsegments.size(); i++)
     {
-        p_result = used_segments[i]->FindChapter( i_find_uid );
+        p_result = used_vsegments[i]->FindChapter( i_find_uid );
         if ( p_result != NULL )
         {
-            p_segment_found = used_segments[i];
+            p_vsegment_found = used_vsegments[i];
             break;
         }
     }

@@ -2,7 +2,7 @@
  * cmd_callbacks.hpp
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: e3f3cfb0395c9dbbe3b1e509ad83d47951202d1d $
+ * $Id: 945a4e777c3ed5002260e1b3897a87056de783f9 $
  *
  * Author: Erwan Tulou      <erwan10 aT videolan doT org >
  *         JP Dinger        <jpd (at) videolan (dot) org>
@@ -34,7 +34,7 @@ class CmdCallback : public CmdGeneric
 public:
     CmdCallback( intf_thread_t *pIntf, vlc_object_t *pObj, vlc_value_t newVal,
                  void (VlcProc::*func)(vlc_object_t *,vlc_value_t),
-                 string label )
+                 std::string label )
         : CmdGeneric( pIntf ), m_pObj( pObj ), m_newVal( newVal ),
           m_label( label ), m_pfExecute( func )
     {
@@ -56,12 +56,12 @@ public:
         vlc_object_release( m_pObj );
         m_pObj = NULL;
     }
-    virtual string getType() const { return m_label; }
+    virtual std::string getType() const { return m_label; }
 
 private:
     vlc_object_t* m_pObj;
     vlc_value_t   m_newVal;
-    string        m_label;
+    std::string   m_label;
     void (VlcProc::*m_pfExecute)(vlc_object_t *,vlc_value_t);
 };
 
@@ -122,7 +122,7 @@ public:
         vlc_cond_signal( &m_wait );
     }
 
-    virtual string getType() const { return "CmdExecuteBlock"; }
+    virtual std::string getType() const { return "CmdExecuteBlock"; }
 
 private:
     vlc_object_t* m_pObj;

@@ -23,6 +23,7 @@ libshout: libshout-$(SHOUT_VERSION).tar.gz .sum-shout
 	$(APPLY) $(SRC)/shout/bsd.patch
 	$(APPLY) $(SRC)/shout/libshout-arpa.patch
 	$(APPLY) $(SRC)/shout/fix-xiph_openssl.patch
+	$(call pkg_static,"shout.pc.in")
 	$(UPDATE_AUTOCONFIG)
 	$(MOVE)
 
@@ -32,6 +33,9 @@ DEPS_shout += vorbis $(DEPS_vorbis)
 SHOUT_CONF :=
 
 ifdef HAVE_WIN32
+SHOUT_CONF += "--disable-thread"
+endif
+ifdef HAVE_ANDROID
 SHOUT_CONF += "--disable-thread"
 endif
 

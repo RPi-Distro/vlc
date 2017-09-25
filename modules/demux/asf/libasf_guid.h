@@ -28,14 +28,6 @@
 /*****************************************************************************
  * Structure needed for decoder
  *****************************************************************************/
-#define GUID_FMT "0x%x-0x%x-0x%x-0x%2.2x%2.2x%2.2x%2.2x%2.2x%2.2x%2.2x%2.2x"
-#define GUID_PRINT( guid )  \
-    (unsigned)(guid).Data1,              \
-    (guid).Data2,              \
-    (guid).Data3,              \
-    (guid).Data4[0],(guid).Data4[1],(guid).Data4[2],(guid).Data4[3],    \
-    (guid).Data4[4],(guid).Data4[5],(guid).Data4[6],(guid).Data4[7]
-
 enum
 {
     ASF_OBJECT_NULL = 0,
@@ -128,6 +120,9 @@ static const guid_t asf_object_stream_type_video =
 static const guid_t asf_object_stream_type_command =
 {0x59DACFC0, 0x59E6, 0x11D0, {0xA3, 0xAC, 0x00, 0xA0, 0xC9, 0x03, 0x48, 0xF6}};
 
+static const guid_t asf_object_stream_type_binary =
+{0x3AFB65E2, 0x47EF, 0x40F2, {0xAC, 0x2C, 0x70, 0xA9, 0x0D, 0x71, 0xD3, 0x43}};
+
 /* TODO */
 // top-level
 static const guid_t asf_object_media_index_guid =
@@ -193,9 +188,6 @@ static const guid_t asf_object_advanced_content_encryption_guid =
 {0x43058533, 0x6981, 0x49E6, {0x9B, 0x74, 0xAD, 0x12, 0xCB, 0x86, 0xD5, 0x8C}};
 
 //
-static const guid_t asf_object_extended_stream_header =
-{0x3AFB65E2, 0x47EF, 0x40F2, {0xAC, 0x2C, 0x70, 0xA9, 0x0D, 0x71, 0xD3, 0x43}};
-
 static const guid_t asf_object_extended_stream_type_audio =
 {0x31178C9D, 0x03E1, 0x4528, {0xB5, 0x82, 0x3D, 0xF9, 0xDB, 0x22, 0xF5, 0x03}};
 
@@ -262,6 +254,9 @@ static const guid_t mfasf_sampleextension_encryptionkeyid_guid =
 
 static const guid_t asf_dvr_sampleextension_videoframe_guid =
 {0xDD6432CC, 0xE229, 0x40DB, {0x80, 0xF6, 0xD2, 0x63, 0x28, 0xD2, 0x76, 0x1F}};
+
+static const guid_t asf_dvr_sampleextension_timing_rep_data_guid =
+{0xFD3CC02A, 0x06DB, 0x4CFA, {0x80, 0x1C, 0x72, 0x12, 0xd3, 0x87, 0x45, 0xE4}};
 
 /****************************************************************************
  * GUID functions

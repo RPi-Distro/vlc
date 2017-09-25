@@ -2,7 +2,7 @@
  * tta.c : The Lossless True Audio parser
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: be48a9a52b3756bfc2db5e669f6820ddda5b69ef $
+ * $Id: 2da7460cc9e6e330c72743baa9ab934e4aea84ff $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -33,6 +33,7 @@
 #include <vlc_demux.h>
 #include <vlc_codec.h>
 #include <math.h>
+#include <limits.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -91,12 +92,12 @@ static int Open( vlc_object_t * p_this )
     //char        psz_info[4096];
     //module_t    *p_id3;
 
-    if( stream_Peek( p_demux->s, &p_peek, 4 ) < 4 )
+    if( vlc_stream_Peek( p_demux->s, &p_peek, 4 ) < 4 )
         return VLC_EGENERIC;
 
     if( memcmp( p_peek, "TTA1", 4 ) )
     {
-        if( !p_demux->b_force )
+        if( !p_demux->obj.force )
             return VLC_EGENERIC;
 
         /* User forced */
@@ -104,7 +105,7 @@ static int Open( vlc_object_t * p_this )
                  "continuing anyway" );
     }
 
-    if( stream_Read( p_demux->s, p_header, 22 ) < 22 )
+    if( vlc_stream_Read( p_demux->s, p_header, 22 ) < 22 )
         return VLC_EGENERIC;
 
     /* Fill p_demux fields */
@@ -134,7 +135,7 @@ static int Open( vlc_object_t * p_this )
     p_sys->i_totalframes = p_sys->i_datalength / p_sys->i_framelength +
                           ((p_sys->i_datalength % p_sys->i_framelength) != 0);
     p_sys->i_currentframe = 0;
-    if( p_sys->i_totalframes > (1 << 29))
+    if( (INT_MAX - 22 - 4) / sizeof(uint32_t) < p_sys->i_totalframes )
         goto error;
 
     i_seektable_size = sizeof(uint32_t)*p_sys->i_totalframes;
@@ -143,11 +144,14 @@ static int Open( vlc_object_t * p_this )
     fmt.i_extra = 22 + i_seektable_size + 4;
     fmt.p_extra = p_fullheader = malloc( fmt.i_extra );
     if( !p_fullheader )
+    {
+        fmt.i_extra = 0;
         goto error;
+    }
 
     memcpy( p_fullheader, p_header, 22 );
     p_fullheader += 22;
-    if( stream_Read( p_demux->s, p_fullheader, i_seektable_size )
+    if( vlc_stream_Read( p_demux->s, p_fullheader, i_seektable_size )
              != i_seektable_size )
         goto error;
 
@@ -160,11 +164,13 @@ static int Open( vlc_object_t * p_this )
         p_fullheader += 4;
     }
 
-    stream_Read( p_demux->s, p_fullheader, 4 ); /* CRC */
+    if( 4 != vlc_stream_Read( p_demux->s, p_fullheader, 4 ) ) /* CRC */
+        goto error;
     p_fullheader += 4;
 
     p_sys->p_es = es_out_Add( p_demux->out, &fmt );
     p_sys->i_start = p_fullheader - (uint8_t *)fmt.p_extra;
+    es_format_Clean( &fmt );
 
     return VLC_SUCCESS;
 error:
@@ -198,14 +204,16 @@ static int Demux( demux_t *p_demux )
     if( p_sys->i_currentframe >= p_sys->i_totalframes )
         return 0;
 
-    p_data = stream_Block( p_demux->s, p_sys->pi_seektable[p_sys->i_currentframe] );
+    p_data = vlc_stream_Block( p_demux->s,
+                               p_sys->pi_seektable[p_sys->i_currentframe] );
     if( p_data == NULL ) return 0;
     p_data->i_dts = p_data->i_pts = VLC_TS_0 + (int64_t)(INT64_C(1000000) * p_sys->i_currentframe) * TTA_FRAMETIME;
 
     p_sys->i_currentframe++;
 
-    es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_data->i_dts );
-    es_out_Send( p_demux->out, p_sys->p_es, p_data );
+    es_out_SetPCR( p_demux->out, p_data->i_dts );
+    if( p_sys->p_es )
+        es_out_Send( p_demux->out, p_sys->p_es, p_data );
 
     return 1;
 }
@@ -221,12 +229,15 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
     switch( i_query )
     {
+        case DEMUX_CAN_SEEK:
+            return vlc_stream_vaControl( p_demux->s, i_query, args );
+
         case DEMUX_GET_POSITION:
-            pf = (double*) va_arg( args, double* );
+            pf = va_arg( args, double * );
             i64 = stream_Size( p_demux->s ) - p_sys->i_start;
             if( i64 > 0 )
             {
-                *pf = (double)(stream_Tell( p_demux->s ) - p_sys->i_start )/ (double)i64;
+                *pf = (double)(vlc_stream_Tell( p_demux->s ) - p_sys->i_start )/ (double)i64;
             }
             else
             {
@@ -235,7 +246,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             return VLC_SUCCESS;
 
         case DEMUX_SET_POSITION:
-            f = (double)va_arg( args, double );
+            f = va_arg( args, double );
             i64 = (int64_t)(f * (stream_Size( p_demux->s ) - p_sys->i_start));
             if( i64 > 0 )
             {
@@ -245,19 +256,20 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 {
                     tmp += p_sys->pi_seektable[i];
                 }
-                stream_Seek( p_demux->s, tmp+p_sys->i_start );
+                if( vlc_stream_Seek( p_demux->s, tmp+p_sys->i_start ) )
+                    return VLC_EGENERIC;
                 p_sys->i_currentframe = i;
                 return VLC_SUCCESS;
             }
             return VLC_EGENERIC;
 
         case DEMUX_GET_LENGTH:
-            pi64 = (int64_t*)va_arg( args, int64_t * );
+            pi64 = va_arg( args, int64_t * );
             *pi64 = INT64_C(1000000) * p_sys->i_totalframes * TTA_FRAMETIME;
             return VLC_SUCCESS;
 
         case DEMUX_GET_TIME:
-            pi64 = (int64_t*)va_arg( args, int64_t * );
+            pi64 = va_arg( args, int64_t * );
             *pi64 = INT64_C(1000000) * p_sys->i_currentframe * TTA_FRAMETIME;
             return VLC_SUCCESS;
 

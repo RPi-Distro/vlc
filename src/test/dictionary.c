@@ -3,7 +3,7 @@
  * dictionary.c: Tests for vlc_dictionary_t
  *****************************************************************************
  * Copyright (C) 2007 Pierre d'Herbemont
- * $Id: f56b28c5f08aca9a0e76d673cfe851d488dab26c $
+ * $Id: 44d1b50924beeebeac698bd2d0f0303e82e831eb $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -74,6 +74,7 @@ int main (void)
     vlc_dictionary_init( &dict, 0 );
 
     assert( vlc_dictionary_keys_count( &dict ) == 0 );
+    assert( vlc_dictionary_is_empty( &dict ) );
 
     keys = vlc_dictionary_all_keys( &dict );
     assert( keys && !keys[0] );
@@ -82,8 +83,14 @@ int main (void)
 
     /* Insert some values */
     for( i = 0; i < size; i++ )
+    {
         vlc_dictionary_insert( &dict, our_keys[i], (void *)i );
+        assert( vlc_dictionary_has_key(&dict, our_keys[i]) );
+        for( int j = i + 1; j < size; j++ )
+            assert( !vlc_dictionary_has_key(&dict, our_keys[j]) );
+    }
 
+    assert( !vlc_dictionary_is_empty( &dict ) );
     test_dictionary_validity( &dict, our_keys, size );
 
     vlc_dictionary_remove_value_for_key( &dict, our_keys[size-1], NULL, NULL );
@@ -93,5 +100,6 @@ int main (void)
     vlc_dictionary_clear( &dict, NULL, NULL );
 
     assert( vlc_dictionary_keys_count( &dict ) == 0 );
+    assert( vlc_dictionary_is_empty( &dict ) );
     return 0;
 }

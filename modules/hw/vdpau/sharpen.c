@@ -27,6 +27,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
+#include <vlc_picture.h>
 #include <vlc_atomic.h>
 #include "vlc_vdpau.h"
 
@@ -60,7 +61,7 @@ static int SharpenCallback(vlc_object_t *obj, const char *varname,
 static picture_t *Sharpen(filter_t *filter, picture_t *pic)
 {
     filter_sys_t *sys = filter->p_sys;
-    vlc_vdp_video_field_t *f = pic->context;
+    vlc_vdp_video_field_t *f = (vlc_vdp_video_field_t *)pic->context;
     union { uint32_t u; float f; } u;
 
     if (unlikely(f == NULL))
@@ -82,8 +83,9 @@ static int Open(vlc_object_t *obj)
 {
     filter_t *filter = (filter_t *)obj;
 
-    if (filter->fmt_in.video.i_chroma != VLC_CODEC_VDPAU_VIDEO_422
-     && filter->fmt_in.video.i_chroma != VLC_CODEC_VDPAU_VIDEO_420)
+    if (filter->fmt_in.video.i_chroma != VLC_CODEC_VDPAU_VIDEO_420
+     && filter->fmt_in.video.i_chroma != VLC_CODEC_VDPAU_VIDEO_422
+     && filter->fmt_in.video.i_chroma != VLC_CODEC_VDPAU_VIDEO_444)
         return VLC_EGENERIC;
     if (!video_format_IsSimilar(&filter->fmt_in.video, &filter->fmt_out.video))
         return VLC_EGENERIC;
@@ -141,7 +143,7 @@ vlc_module_begin()
     set_description(N_("VDPAU sharpen video filter"))
     set_category(CAT_VIDEO)
     set_subcategory(SUBCAT_VIDEO_VFILTER)
-    set_capability("video filter2", 0)
+    set_capability("video filter", 0)
     add_shortcut("sharpen")
     set_callbacks(Open, Close)
 vlc_module_end()

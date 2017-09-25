@@ -1,7 +1,7 @@
 /*
  * test.h - libvlc smoke test common definitions
  *
- * $Id: fc41f51582bc03b25ada367d2591405c2f3f576e $
+ * $Id: 62e260fd89847a4690cfe40f73acae31ff0e2335 $
  */
 
 /**********************************************************************
@@ -48,13 +48,7 @@
  */
 
 static const char * test_defaults_args[] = {
-    "-v",
-    "--ignore-config",
-    "-I",
-    "dummy",
-    "--no-media-library",
-    "--vout=dummy",
-    "--aout=dummy"
+    "-v", "--vout=vdummy",
 };
 
 static const int test_defaults_nargs =
@@ -62,6 +56,7 @@ static const int test_defaults_nargs =
 
 /*static const char test_default_sample[] = "samples/test.sample";*/
 static const char test_default_sample[] = SRCDIR"/samples/empty.voc";
+static const char test_default_video[] = SRCDIR"/samples/image.jpg";
 
 
 /*********************************************************************

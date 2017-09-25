@@ -2,7 +2,7 @@
  * spudec.c : SPU decoder thread
  *****************************************************************************
  * Copyright (C) 2000-2001, 2006 VLC authors and VideoLAN
- * $Id: 1ec624312eb65a8b7f212c0727c734361b511ade $
+ * $Id: 09aeb376e8c277c5bbfaee7da1a8febcd0e254f0 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -49,7 +49,7 @@ static void Close         ( vlc_object_t * );
 vlc_module_begin ()
     set_description( N_("DVD subtitles decoder") )
     set_shortname( N_("DVD subtitles") )
-    set_capability( "decoder", 75 )
+    set_capability( "spu decoder", 75 )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_SCODEC )
     set_callbacks( DecoderOpen, Close )
@@ -65,8 +65,8 @@ vlc_module_end ()
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static block_t *      Reassemble( decoder_t *, block_t ** );
-static subpicture_t * Decode    ( decoder_t *, block_t ** );
+static block_t *      Reassemble( decoder_t *, block_t * );
+static int            Decode    ( decoder_t *, block_t * );
 static block_t *      Packetize ( decoder_t *, block_t ** );
 
 /*****************************************************************************
@@ -91,10 +91,10 @@ static int DecoderOpen( vlc_object_t *p_this )
     p_sys->i_spu      = 0;
     p_sys->p_block    = NULL;
 
-    es_format_Init( &p_dec->fmt_out, SPU_ES, VLC_CODEC_SPU );
+    p_dec->fmt_out.i_codec = VLC_CODEC_SPU;
 
-    p_dec->pf_decode_sub = Decode;
-    p_dec->pf_packetize  = NULL;
+    p_dec->pf_decode    = Decode;
+    p_dec->pf_packetize = NULL;
 
     return VLC_SUCCESS;
 }
@@ -140,17 +140,19 @@ static void Close( vlc_object_t *p_this )
 /*****************************************************************************
  * Decode:
  *****************************************************************************/
-static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
+static int Decode( decoder_t *p_dec, block_t *p_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     block_t       *p_spu_block;
     subpicture_t  *p_spu;
 
-    p_spu_block = Reassemble( p_dec, pp_block );
+    if( p_block == NULL ) /* No Drain */
+        return VLCDEC_SUCCESS;
+    p_spu_block = Reassemble( p_dec, p_block );
 
     if( ! p_spu_block )
     {
-        return NULL;
+        return VLCDEC_SUCCESS;
     }
 
     /* FIXME: what the, we shouldn’t need to allocate 64k of buffer --sam. */
@@ -167,7 +169,9 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
     p_sys->i_spu      = 0;
     p_sys->p_block    = NULL;
 
-    return p_spu;
+    if( p_spu != NULL )
+        decoder_QueueSub( p_dec, p_spu );
+    return VLCDEC_SUCCESS;
 }
 
 /*****************************************************************************
@@ -176,7 +180,13 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
 static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    block_t       *p_spu = Reassemble( p_dec, pp_block );
+    if( pp_block == NULL ) /* No Drain */
+        return NULL;
+    block_t *p_block = *pp_block; *pp_block = NULL;
+    if( p_block == NULL )
+        return NULL;
+
+    block_t *p_spu = Reassemble( p_dec, p_block );
 
     if( ! p_spu )
     {
@@ -198,14 +208,15 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
 /*****************************************************************************
  * Reassemble:
  *****************************************************************************/
-static block_t *Reassemble( decoder_t *p_dec, block_t **pp_block )
+static block_t *Reassemble( decoder_t *p_dec, block_t *p_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    block_t *p_block;
 
-    if( pp_block == NULL || *pp_block == NULL ) return NULL;
-    p_block = *pp_block;
-    *pp_block = NULL;
+    if( p_block->i_flags & BLOCK_FLAG_CORRUPTED )
+    {
+        block_Release( p_block );
+        return NULL;
+    }
 
     if( p_sys->i_spu_size <= 0 &&
         ( p_block->i_pts <= VLC_TS_INVALID || p_block->i_buffer < 4 ) )

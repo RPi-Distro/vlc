@@ -2,7 +2,7 @@
  * var_list.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 7d3c681409e5f6a4651c50319788551081bd2af2 $
+ * $Id: 9ece48c7c3e6b75f8d07dacaed8a8a86b6697f0e $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -41,7 +41,7 @@ public:
     virtual ~VarList();
 
     /// Get the variable type
-    virtual const string &getType() const { return m_type; }
+    virtual const std::string &getType() const { return m_type; }
 
     /// Add a pointer on a string in the list
     virtual void add( const UStringPtr &rcString );
@@ -69,8 +69,8 @@ public:
     };
 
     /// Iterators
-    typedef list<Elem_t>::iterator Iterator;
-    typedef list<Elem_t>::const_iterator ConstIterator;
+    typedef std::list<Elem_t>::iterator Iterator;
+    typedef std::list<Elem_t>::const_iterator ConstIterator;
 
     /// Beginning of the list
     Iterator begin() { return m_list.begin(); }
@@ -96,11 +96,11 @@ public:
 
 protected:
     /// List of elements
-    list<Elem_t> m_list;
+    std::list<Elem_t> m_list;
 
 private:
     /// Variable type
-    static const string m_type;
+    static const std::string m_type;
     /// Position variable
     VariablePtr m_cPosition;
 };

@@ -2,7 +2,7 @@
  * logger.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 606a4422895ccfe18721ff6eed14133cc610436b $
+ * $Id: 931981c170804cca56c5e8ecb18523535ac23c70 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -57,13 +57,13 @@ void Logger::destroy( intf_thread_t *pIntf )
 }
 
 
-void Logger::error( const string &rMsg )
+void Logger::error( const std::string &rMsg )
 {
     msg_Err( getIntf(), "%s", rMsg.c_str() );
 }
 
 
-void Logger::warn( const string &rMsg )
+void Logger::warn( const std::string &rMsg )
 {
     msg_Warn( getIntf(), "%s", rMsg.c_str() );
 }

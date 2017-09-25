@@ -5,7 +5,7 @@
  * Copyright © 2007-2010 Mirsal Ennaime
  * Copyright © 2009-2010 The VideoLAN team
  * Copyright © 2013      Alex Merry
- * $Id: 9579c3f344b183f2aaee1e1f4082f416f870c260 $
+ * $Id: 58780d0847cc9a44b9ad8718d4eb2464ed861128 $
  *
  * Authors:    Mirsal Ennaime <mirsal dot ennaime at gmailcom>
  *             Rafaël Carré <funman at videolanorg>
@@ -26,8 +26,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _VLC_DBUS_COMMON_H
-#define _VLC_DBUS_COMMON_H
+#ifndef VLC_DBUS_DBUS_COMMON_H_
+#define VLC_DBUS_DBUS_COMMON_H_
 
 #include <vlc_common.h>
 #include <vlc_interface.h>
@@ -97,9 +97,9 @@ struct intf_sys_t
     dbus_int32_t    i_playing_state;
     bool            b_can_play;
     bool            b_dead;
-    vlc_array_t    *p_events;
-    vlc_array_t    *p_timeouts;
-    vlc_array_t    *p_watches;
+    vlc_array_t     events;
+    vlc_array_t     timeouts;
+    vlc_array_t     watches;
     int             p_pipe_fds[2];
     vlc_mutex_t     lock;
     vlc_thread_t    thread;
@@ -113,7 +113,6 @@ enum
 {
     SIGNAL_NONE=0,
     SIGNAL_ITEM_CURRENT,
-    SIGNAL_INTF_CHANGE,
     SIGNAL_PLAYLIST_ITEM_APPEND,
     SIGNAL_PLAYLIST_ITEM_DELETED,
     SIGNAL_INPUT_METADATA,
@@ -139,11 +138,11 @@ enum
 };
 
 int DemarshalSetPropertyValue( DBusMessage *p_msg, void *p_arg );
-int GetInputMeta  ( input_item_t* p_input, DBusMessageIter *args );
+int GetInputMeta( playlist_item_t *, DBusMessageIter *args );
 int AddProperty ( intf_thread_t *p_intf,
                   DBusMessageIter *p_container,
                   const char* psz_property_name,
                   const char* psz_signature,
                   int (*pf_marshaller) (intf_thread_t*, DBusMessageIter*) );
 
-#endif //dbus-common.h
+#endif /* include-guard */

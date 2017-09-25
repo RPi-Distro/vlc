@@ -2,7 +2,7 @@
  * var_tree.cpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 025876afe6aa910d0543cef68cc5c488d3434ec2 $
+ * $Id: b77985a7acb6aeed9f1ac86dc552bd678bfd6bfb $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -26,7 +26,7 @@
 #include "var_tree.hpp"
 #include <math.h>
 
-const string VarTree::m_type = "tree";
+const std::string VarTree::m_type = "tree";
 
 VarTree::VarTree( intf_thread_t *pIntf )
     : Variable( pIntf ), m_pParent( NULL ), m_id( 0 ),

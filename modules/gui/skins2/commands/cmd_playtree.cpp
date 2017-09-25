@@ -2,7 +2,7 @@
  * cmd_playtree.cpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 6943d70548e20a5bed30710912fec21485ab07c0 $
+ * $Id: 626ba09b03156290eba9bc3bb654ec031a8f75de $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -36,9 +36,9 @@ void CmdPlaytreeSort::execute()
 {
     /// \todo Choose sort method/order - Need more commands
     /// \todo Choose the correct view
-    playlist_t *p_playlist = getIntf()->p_sys->p_playlist;
+    playlist_t *p_playlist = getPL();
     PL_LOCK;
-    playlist_RecursiveNodeSort( p_playlist, p_playlist->p_root_onelevel,
+    playlist_RecursiveNodeSort( p_playlist, &p_playlist->root,
                                 SORT_TITLE, ORDER_NORMAL );
     PL_UNLOCK;
 

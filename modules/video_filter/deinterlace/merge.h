@@ -2,7 +2,7 @@
  * merge.h : Merge (line blending) routines for the VLC deinterlacer
  *****************************************************************************
  * Copyright (C) 2011 VLC authors and VideoLAN
- * $Id: d342522c9bd9de34d5669c11099453fd4ce6e9fa $
+ * $Id: 74b5ab57ffa653c38e0ae1e7270d940775cecdbc $
  *
  * Author: Sam Hocevar <sam@zoy.org>                      (generic C routine)
  *         Sigmund Augdal Helberg <sigmunau@videolan.org> (MMXEXT, 3DNow, SSE2)
@@ -170,6 +170,15 @@ void merge16_arm_neon (void *, const void *, const void *, size_t);
  */
 void merge8_armv6 (void *, const void *, const void *, size_t);
 void merge16_armv6 (void *, const void *, const void *, size_t);
+#endif
+
+#if defined(CAN_COMPILE_ARM64)
+/**
+ * ARM64 NEON routine to blend pixels from two picture lines.
+ */
+void merge8_arm64_neon (void *, const void *, const void *, size_t);
+void merge16_arm64_neon (void *, const void *, const void *, size_t);
+
 #endif
 
 /*****************************************************************************

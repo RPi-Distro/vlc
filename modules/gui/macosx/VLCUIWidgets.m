@@ -2,7 +2,7 @@
  * VLCUIWidgets.m: Widgets for VLC's extensions dialogs for Mac OS X
  *****************************************************************************
  * Copyright (C) 2009-2015 the VideoLAN team and authors
- * $Id: 215352a22e0090a3559d10630983abf3d9f47e26 $
+ * $Id: 2cddcb40eb0648e0bceba1aee6850de495a7f411 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan dot>,
  *          Brendon Justin <brendonjustin@gmail.com>
@@ -28,41 +28,44 @@
 #import <stdlib.h>
 
 @implementation VLCDialogButton
-@synthesize widget;
+
 @end
 
 
 @implementation VLCDialogPopUpButton
-@synthesize widget;
+
 @end
 
 
 @implementation VLCDialogTextField
-@synthesize widget;
+
 @end
 
 
 @implementation VLCDialogWindow
-@synthesize dialog;
-@synthesize has_lock;
+
 @end
 
 
 @implementation VLCDialogList
-@synthesize widget;
-@synthesize contentArray;
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
-    return [contentArray count];
+    return [self.contentArray count];
 }
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
-    return [[contentArray objectAtIndex:rowIndex] objectForKey:@"text"];
+    return [[self.contentArray objectAtIndex:rowIndex] objectForKey:@"text"];
 }
 @end
 
+@interface VLCDialogGridView()
+{
+    NSUInteger _rowCount, _colCount;
+    NSMutableArray *_griddedViews;
+}
+@end
 
 @implementation VLCDialogGridView
 
@@ -80,11 +83,6 @@
     }
 
     return self;
-}
-- (void)dealloc
-{
-    [_griddedViews release];
-    [super dealloc];
 }
 
 - (void)recomputeCount

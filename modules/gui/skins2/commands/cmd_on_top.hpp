@@ -2,7 +2,7 @@
  * cmd_on_top.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 458ae3cff9821f69e52caeadef329b9d8f8f893c $
+ * $Id: c6b84f8a5ab85b92c13faa0c56088a41054c7126 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -38,7 +38,7 @@ public:
         : CmdGeneric( pIntf ), m_ontop( b_ontop ) { }
     virtual ~CmdSetOnTop() { }
     virtual void execute();
-    virtual string getType() const { return "set on top"; }
+    virtual std::string getType() const { return "set on top"; }
 
 private:
     bool m_ontop;

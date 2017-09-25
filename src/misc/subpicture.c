@@ -2,7 +2,7 @@
  * subpicture.c: Subpicture functions
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
- * $Id: 9e2fbb7dcb5f57da1320661f429c516b820125c7 $
+ * $Id: fdf111fb69b6d7c9e621df14fcfeaf8af579f8d6 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -88,6 +88,12 @@ void subpicture_Delete( subpicture_t *p_subpic )
     if( p_subpic->updater.pf_destroy )
         p_subpic->updater.pf_destroy( p_subpic );
 
+    if( p_subpic->p_private )
+    {
+        video_format_Clean( &p_subpic->p_private->src );
+        video_format_Clean( &p_subpic->p_private->dst );
+    }
+
     free( p_subpic->p_private );
     free( p_subpic );
 }
@@ -122,8 +128,8 @@ subpicture_t *subpicture_NewFromPicture( vlc_object_t *p_obj,
          return NULL;
     }
 
-    p_subpic->i_original_picture_width  = fmt_out.i_width;
-    p_subpic->i_original_picture_height = fmt_out.i_height;
+    p_subpic->i_original_picture_width  = fmt_out.i_visible_width;
+    p_subpic->i_original_picture_height = fmt_out.i_visible_height;
 
     fmt_out.i_sar_num =
     fmt_out.i_sar_den = 0;
@@ -179,15 +185,13 @@ subpicture_region_private_t *subpicture_region_private_New( video_format_t *p_fm
     if( !p_private )
         return NULL;
 
-    p_private->fmt = *p_fmt;
-    if( p_fmt->p_palette )
+    if ( video_format_Copy( &p_private->fmt, p_fmt ) != VLC_SUCCESS )
     {
-        p_private->fmt.p_palette = malloc( sizeof(*p_private->fmt.p_palette) );
-        if( p_private->fmt.p_palette )
-            *p_private->fmt.p_palette = *p_fmt->p_palette;
+        free( p_private );
+        return NULL;
     }
-    p_private->p_picture = NULL;
 
+    p_private->p_picture = NULL;
     return p_private;
 }
 
@@ -195,7 +199,7 @@ void subpicture_region_private_Delete( subpicture_region_private_t *p_private )
 {
     if( p_private->p_picture )
         picture_Release( p_private->p_picture );
-    free( p_private->fmt.p_palette );
+    video_format_Clean( &p_private->fmt );
     free( p_private );
 }
 
@@ -205,20 +209,28 @@ subpicture_region_t *subpicture_region_New( const video_format_t *p_fmt )
     if( !p_region )
         return NULL;
 
-    p_region->fmt = *p_fmt;
-    p_region->fmt.p_palette = NULL;
-    if( p_fmt->i_chroma == VLC_CODEC_YUVP )
+    if ( p_fmt->i_chroma == VLC_CODEC_YUVP )
     {
-        p_region->fmt.p_palette = calloc( 1, sizeof(*p_region->fmt.p_palette) );
-        if( p_fmt->p_palette )
-            *p_region->fmt.p_palette = *p_fmt->p_palette;
+        video_format_Copy( &p_region->fmt, p_fmt );
+        /* YUVP should have a palette */
+        if( p_region->fmt.p_palette == NULL )
+        {
+            p_region->fmt.p_palette = calloc( 1, sizeof(*p_region->fmt.p_palette) );
+            if( p_region->fmt.p_palette == NULL )
+            {
+                free( p_region );
+                return NULL;
+            }
+        }
     }
+    else
+    {
+        p_region->fmt = *p_fmt;
+        p_region->fmt.p_palette = NULL;
+    }
+
     p_region->i_alpha = 0xff;
-    p_region->p_next = NULL;
-    p_region->p_private = NULL;
-    p_region->psz_text = NULL;
-    p_region->p_style = NULL;
-    p_region->p_picture = NULL;
+    p_region->b_balanced_text = true;
 
     if( p_fmt->i_chroma == VLC_CODEC_TEXT )
         return p_region;
@@ -226,7 +238,7 @@ subpicture_region_t *subpicture_region_New( const video_format_t *p_fmt )
     p_region->p_picture = picture_NewFromFormat( p_fmt );
     if( !p_region->p_picture )
     {
-        free( p_region->fmt.p_palette );
+        video_format_Clean( &p_region->fmt );
         free( p_region );
         return NULL;
     }
@@ -245,12 +257,8 @@ void subpicture_region_Delete( subpicture_region_t *p_region )
     if( p_region->p_picture )
         picture_Release( p_region->p_picture );
 
-    free( p_region->fmt.p_palette );
-
-    free( p_region->psz_text );
-    free( p_region->psz_html );
-    if( p_region->p_style )
-        text_style_Delete( p_region->p_style );
+    text_segment_ChainDelete( p_region->p_text );
+    video_format_Clean( &p_region->fmt );
     free( p_region );
 }
 
@@ -266,3 +274,49 @@ void subpicture_region_ChainDelete( subpicture_region_t *p_head )
     }
 }
 
+#include <vlc_filter.h>
+
+unsigned picture_BlendSubpicture(picture_t *dst,
+                                 filter_t *blend, subpicture_t *src)
+{
+    unsigned done = 0;
+
+    assert(src && !src->b_fade && src->b_absolute);
+
+    for (subpicture_region_t *r = src->p_region; r != NULL; r = r->p_next) {
+        assert(r->p_picture && r->i_align == 0);
+        if (filter_ConfigureBlend(blend, dst->format.i_width,
+                                  dst->format.i_height,  &r->fmt)
+         || filter_Blend(blend, dst, r->i_x, r->i_y, r->p_picture,
+                         src->i_alpha * r->i_alpha / 255))
+            msg_Err(blend, "blending %4.4s to %4.4s failed",
+                    (char *)&blend->fmt_in.video.i_chroma,
+                    (char *)&blend->fmt_out.video.i_chroma );
+        else
+            done++;
+    }
+    return done;
+}
+
+subpicture_region_t* subpicture_region_Copy( subpicture_region_t *p_region_src )
+{
+    if (!p_region_src)
+        return NULL;
+    subpicture_region_t *p_region_dst = subpicture_region_New(&p_region_src->fmt);
+    if (unlikely(!p_region_dst))
+        return NULL;
+
+    p_region_dst->i_x      = p_region_src->i_x;
+    p_region_dst->i_y      = p_region_src->i_y;
+    p_region_dst->i_align  = p_region_src->i_align;
+    p_region_dst->i_alpha  = p_region_src->i_alpha;
+
+    p_region_dst->p_text = text_segment_Copy( p_region_src->p_text );
+
+    //Palette is already copied by subpicture_region_New, we just have to duplicate p_pixels
+    for (int i = 0; i < p_region_src->p_picture->i_planes; i++)
+        memcpy(p_region_dst->p_picture->p[i].p_pixels,
+               p_region_src->p_picture->p[i].p_pixels,
+               p_region_src->p_picture->p[i].i_lines * p_region_src->p_picture->p[i].i_pitch);
+    return p_region_dst;
+}

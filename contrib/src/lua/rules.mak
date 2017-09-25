@@ -25,16 +25,17 @@ LUA_TARGET := solaris
 endif
 
 # Feel free to add autodetection if you need to...
-PKGS += lua
+PKGS += lua luac
+PKGS_ALL += luac
 ifeq ($(call need_pkg,"lua5.2"),)
-PKGS_FOUND += lua
+PKGS_FOUND += lua luac
 endif
 ifeq ($(call need_pkg,"lua5.1"),)
-PKGS_FOUND += lua
+PKGS_FOUND += lua luac
 endif
 
 $(TARBALLS)/lua-$(LUA_VERSION).tar.gz:
-	$(call download,$(LUA_URL))
+	$(call download_pkg,$(LUA_URL),lua)
 
 .sum-lua: lua-$(LUA_VERSION).tar.gz
 
@@ -45,6 +46,9 @@ lua: lua-$(LUA_VERSION).tar.gz .sum-lua
 	$(APPLY) $(SRC)/lua/luac-32bits.patch
 	$(APPLY) $(SRC)/lua/no-localeconv.patch
 	$(APPLY) $(SRC)/lua/lua-ios-support.patch
+ifdef HAVE_WINSTORE
+	$(APPLY) $(SRC)/lua/lua-winrt.patch
+endif
 ifdef HAVE_DARWIN_OS
 	(cd $(UNPACK_DIR) && \
 	sed -e 's%gcc%$(CC)%' \
@@ -60,9 +64,9 @@ ifdef HAVE_WIN32
 	cd $(UNPACK_DIR) && sed -i.orig -e 's/lua luac/lua.exe luac.exe/' Makefile
 endif
 	cd $(UNPACK_DIR)/src && sed -i.orig \
-		-e 's/CC=/#CC=/' \
-		-e 's/= *strip/=$(STRIP)/' \
-		-e 's/= *ranlib/= $(RANLIB)/' \
+		-e 's%CC=%#CC=%' \
+		-e 's%= *strip%=$(STRIP)%' \
+		-e 's%= *ranlib%= $(RANLIB)%' \
 		Makefile
 	$(MOVE)
 
@@ -77,8 +81,27 @@ ifdef HAVE_WIN32
 	mkdir -p -- "$(PREFIX)/lib/pkgconfig"
 	cp $</etc/lua.pc "$(PREFIX)/lib/pkgconfig/"
 endif
-ifdef HAVE_CROSS_COMPILE
-	cd $</src && $(MAKE) clean && $(MAKE) liblua.a && ranlib liblua.a && $(MAKE) luac
-	cp $</src/luac $(PREFIX)/bin
+	touch $@
+
+.sum-luac: .sum-lua
+	touch $@
+
+ifdef HAVE_WIN32
+ifndef HAVE_CROSS_COMPILE
+LUACVARS=CPPFLAGS="-DLUA_DL_DLL"
 endif
+endif
+
+luac: lua-$(LUA_VERSION).tar.gz .sum-luac
+	# DO NOT use the same intermediate directory as the lua target
+	rm -Rf -- $@-$(LUA_VERSION) $@
+	mkdir -- $@-$(LUA_VERSION)
+	tar -x -v -z -C $@-$(LUA_VERSION) --strip-components=1 -f $<
+	(cd luac-$(LUA_VERSION) && patch -p1) < $(SRC)/lua/luac-32bits.patch
+	mv luac-$(LUA_VERSION) luac
+
+.luac: luac
+	cd $< && $(LUACVARS) $(MAKE) generic
+	mkdir -p -- $(BUILDBINDIR)
+	install -m 0755 -s -- $</src/luac $(BUILDBINDIR)/$(HOST)-luac
 	touch $@

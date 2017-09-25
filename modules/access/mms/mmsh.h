@@ -2,7 +2,7 @@
  * mmsh.h:
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: c277bf32622d963d76ba01e8b0162018265a9ccd $
+ * $Id: 27f77bacf23a001f1edc4de5a11192c626e9d919 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -21,8 +21,8 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _MMSH_H_
-#define _MMSH_H_ 1
+#ifndef VLC_MMS_MMSH_H_
+#define VLC_MMS_MMSH_H_
 
 typedef struct
 {
@@ -65,6 +65,7 @@ struct access_sys_t
     unsigned int    i_packet_length;
 
     uint64_t        i_start;
+    uint64_t        i_position;
 
     asf_header_t    asfh;
     guid_t          guid;

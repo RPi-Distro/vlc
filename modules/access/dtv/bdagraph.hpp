@@ -24,8 +24,6 @@
  * Preamble
  *****************************************************************************/
 
-using namespace std;
-
 #include <wtypes.h>
 #include <unknwn.h>
 #include <ole2.h>
@@ -38,6 +36,45 @@ using namespace std;
 
 #include <comcat.h>
 #include "dtv/bdadefs.h"
+#include <stdexcept>
+
+
+// TBS tuner extension headers
+
+typedef struct _tbs_plp_info // PLP info for TBS tuners struct
+{
+
+    unsigned char plpId; //The Rel PLPID need to set
+
+    unsigned char plpCount; //PLP count number
+
+    unsigned char plpResered1;//
+
+    unsigned char plpResered2;//  memory size set to 4
+
+    unsigned char plpIdList[256];//store the Rel PLPID
+
+} TBS_PLP_INFO,*p_TBS_PLP_INFO;
+
+const GUID KSPROPSETID_BdaTunerExtensionProperties = {0xfaa8f3e5, 0x31d4, 0x4e41, {0x88, 0xef, 0xd9, 0xeb, 0x71, 0x6f, 0x6e, 0xc9}};
+
+DWORD KSPROPERTY_BDA_PLPINFO = 22;
+
+// End of TBS tuner extension headers
+
+
+struct ComContext
+{
+    ComContext( int mode )
+    {
+        if( FAILED( CoInitializeEx( NULL, mode ) ) )
+            throw std::runtime_error( "CoInitializeEx failed" );
+    }
+    ~ComContext()
+    {
+        CoUninitialize();
+    }
+};
 
 class BDAOutput
 {
@@ -46,7 +83,7 @@ public:
     ~BDAOutput();
 
     void    Push( block_t * );
-    ssize_t Pop(void *, size_t);
+    ssize_t Pop(void *, size_t, int);
     void    Empty();
 
 private:
@@ -74,11 +111,12 @@ public:
     int SetCQAM(long);
     int SetATSC(long);
     int SetDVBT(long, uint32_t, uint32_t, long, int, uint32_t, int);
+    int SetDVBT2(long, uint32_t, long, int, uint32_t, int);
     int SetDVBC(long, const char *, long);
     int SetDVBS(long, long, uint32_t, int, char, long, long, long);
 
     /* */
-    ssize_t Pop(void *, size_t);
+    ssize_t Pop(void *, size_t, int);
 
 private:
     /* ISampleGrabberCB methods */
@@ -102,12 +140,9 @@ private:
 
     IMediaControl*  p_media_control;
     IGraphBuilder*  p_filter_graph;
-    ITuningSpaceContainer*      p_tuning_space_container;
     ITuningSpace*               p_tuning_space;
     ITuneRequest*               p_tune_request;
 
-    IDVBTuningSpace*            p_dvb_tuning_space;
-    IDVBSTuningSpace*           p_dvbs_tuning_space;
 #if 0
     IDigitalCableTuningSpace*   p_cqam_tuning_space;
     IATSCTuningSpace*           p_atsc_tuning_space;
@@ -129,6 +164,7 @@ private:
     HRESULT Check( REFCLSID guid_this_network_type );
     HRESULT GetFilterName( IBaseFilter* p_filter, char** psz_bstr_name );
     HRESULT GetPinName( IPin* p_pin, char** psz_bstr_name );
+    IPin* FindPinOnFilter( IBaseFilter* pBaseFilter, const char* pPinName);
     unsigned GetSystem( REFCLSID clsid );
     HRESULT ListFilters( REFCLSID this_clsid );
     HRESULT FindFilter( REFCLSID clsid, long* i_moniker_used,

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1998-2008 VLC authors and VideoLAN
  * Copyright (C) 2008 Laurent Aimar
- * $Id: bc3499bba4d8bb7ee41b983d781adf77f52fa5fa $
+ * $Id: 226ecde86236ff5acd113faef6242c28bee664e1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -28,15 +28,12 @@
 #include <vlc_common.h>
 #include <vlc_codec.h>
 
-#define BLOCK_FLAG_CORE_FLUSH (1 <<BLOCK_FLAG_CORE_PRIVATE_SHIFT)
-#define BLOCK_FLAG_CORE_EOS   (1 <<(BLOCK_FLAG_CORE_PRIVATE_SHIFT + 1))
-
 decoder_t *input_DecoderNew( input_thread_t *, es_format_t *, input_clock_t *,
                              sout_instance_t * ) VLC_USED;
 
 /**
  * This function changes the pause state.
- * The date parameter MUST hold the exact date at wich the change has been
+ * The date parameter MUST hold the exact date at which the change has been
  * done for proper vout/aout pausing.
  */
 void input_DecoderChangePause( decoder_t *, bool b_paused, mtime_t i_date );

@@ -2,7 +2,7 @@
  * sepia.c : Sepia video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2010 VLC authors and VideoLAN
- * $Id: c0f3ad1a77a1e6b6bf14008238c4bd9a0a8b87b2 $
+ * $Id: 2a00130fbfe19beefd163fd8c86ca584ac0d561c $
  *
  * Authors: Branko Kokanovic <branko.kokanovic@gmail.com>
  *
@@ -32,6 +32,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
+#include <vlc_picture.h>
 #include <vlc_cpu.h>
 #include <vlc_atomic.h>
 
@@ -66,7 +67,7 @@ vlc_module_begin ()
     set_help( N_("Gives video a warmer tone by applying sepia effect") )
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
-    set_capability( "video filter2", 0 )
+    set_capability( "video filter", 0 )
     add_integer_with_range( CFG_PREFIX "intensity", 120, 0, 255,
                            SEPIA_INTENSITY_TEXT, SEPIA_INTENSITY_LONGTEXT,
                            false )
@@ -319,7 +320,7 @@ static void PlanarI420Sepia( picture_t *p_pic, picture_t *p_outpic,
     const uint8_t filling_const_8v = 128 + i_intensity / 14;
 
     /* iterate for every two visible line in the frame */
-    for( int y = 0; y < p_pic->p[Y_PLANE].i_visible_lines - 1; y += 2)
+    for( int y = 0; y < p_pic->p[Y_PLANE].i_visible_lines - 1; y += 2 )
     {
         const int i_dy_line1_start = y * p_outpic->p[Y_PLANE].i_pitch;
         const int i_dy_line2_start = ( y + 1 ) * p_outpic->p[Y_PLANE].i_pitch;
@@ -331,7 +332,7 @@ static void PlanarI420Sepia( picture_t *p_pic, picture_t *p_outpic,
                   ? (p_pic->p[Y_PLANE].i_visible_pitch - 1) :
                   (p_outpic->p[Y_PLANE].i_visible_pitch - 1);
         /* iterate for every two visible line in the frame */
-        for( int x = 0; x < i_picture_size_limit; x += 2)
+        for( int x = 0; x < i_picture_size_limit; x += 2 )
         {
             // y = y - y/4 {to prevent overflow} + intensity / 4
             p_outpic->p[Y_PLANE].p_pixels[i_dy_line1_start + x] =

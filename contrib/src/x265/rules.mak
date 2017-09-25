@@ -1,7 +1,7 @@
 # x265
 
 #X265_GITURL := https://github.com/videolan/x265
-X265_VERSION := 1.3
+X265_VERSION := 1.9
 X265_SNAPURL := https://bitbucket.org/multicoreware/x265/get/$(X265_VERSION).tar.bz2
 
 ifdef BUILD_ENCODERS
@@ -25,9 +25,12 @@ $(TARBALLS)/x265-$(X265_VERSION).tar.bz2:
 x265: x265-$(X265_VERSION).tar.bz2 .sum-x265
 	rm -Rf $@-$(X265_VERSION)
 	mkdir -p $@-$(X265_VERSION)
-	$(BZCAT) "$<" | (cd $@-$(X265_VERSION) && tar xv --strip-components=1)
+	tar xvjf "$<" --strip-components=1 -C $@-$(X265_VERSION)
+	$(APPLY) $(SRC)/x265/x265-ldl-linking.patch
 	$(call pkg_static,"source/x265.pc.in")
-	$(APPLY) $(SRC)/x265/gcc6-build.patch
+ifndef HAVE_WIN32
+	$(APPLY) $(SRC)/x265/x265-pkg-libs.patch
+endif
 	$(MOVE)
 
 .x265: x265 toolchain.cmake

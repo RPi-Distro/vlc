@@ -2,7 +2,7 @@
  * cdrom_internals.h: cdrom tools private header
  *****************************************************************************
  * Copyright (C) 1998-2001 VLC authors and VideoLAN
- * $Id: bfef07e5795772aff51602fa270104b393df8ff8 $
+ * $Id: 6fa6aa7d42f938eaca6e82f9c56e3d11256f02f1 $
  *
  * Authors: Johan Bilien <jobi@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -45,15 +45,6 @@ struct vcddev_s
 #endif
 
 };
-
-
-/*****************************************************************************
- * Misc. Macros
- *****************************************************************************/
-/* LBA = msf.frame + 75 * ( msf.second + 60 * msf.minute ) */
-#define MSF_TO_LBA(min, sec, frame) ((int)frame + 75 * (sec + 60 * min))
-/* LBA = msf.frame + 75 * ( msf.second - 2 + 60 * msf.minute ) */
-#define MSF_TO_LBA2(min, sec, frame) ((int)frame + 75 * (sec -2 + 60 * min))
 
 #ifndef O_BINARY
 #   define O_BINARY 0

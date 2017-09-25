@@ -3,8 +3,8 @@ $Id$
 
 See lua/README.txt for generic documentation about Lua usage in VLC.
 
-Examples: See dailymotion.lua, googlevideo.lua, metacafe.lua, youtube.lua
-          and youtube_homepage.lua .
+Examples: See liveleak.lua, dailymotion.lua, youtube.lua,
+          soundcloud.lua, cue.lua ...
 
 VLC Lua playlist modules should define two functions:
  * probe(): returns true if we want to handle the playlist in this script

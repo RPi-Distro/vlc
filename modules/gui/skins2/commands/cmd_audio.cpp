@@ -2,7 +2,7 @@
  * cmd_audio.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: a74198da201259c7bb4083093b341a65015fca89 $
+ * $Id: b57a0927f827df8926e023b5b93131b5c812fd95 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -29,9 +29,7 @@
 
 void CmdSetEqualizer::execute()
 {
-    playlist_t* pPlaylist = getIntf()->p_sys->p_playlist;
-
-    playlist_EnableAudioFilter( pPlaylist, "equalizer", m_enable );
+    playlist_EnableAudioFilter( getPL(), "equalizer", m_enable );
 }
 
 

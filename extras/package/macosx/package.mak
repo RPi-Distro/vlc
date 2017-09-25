@@ -1,58 +1,46 @@
 if HAVE_DARWIN
-if BUILD_MACOSX_VLC_APP
-# Create the MacOS X app
-noinst_DATA = VLC.app
-endif
+noinst_DATA = pseudo-bundle
 endif
 
-# This is just for development purposes.
-# The resulting VLC-dev.app will only run in this tree.
-VLC-dev.app: VLC-tmp
-	rm -Rf $@
-	cp -R VLC-tmp $@
-	$(INSTALL) -m 0755 $(top_builddir)/bin/.libs/vlc $@/Contents/MacOS/VLC
-	$(LN_S) -f ../../../modules $@/Contents/MacOS/plugins
+# Symlink a pseudo-bundle
+pseudo-bundle:
+	$(MKDIR_P) $(top_builddir)/bin/Contents/Resources/
+	$(LN_S) -hf $(abs_top_builddir)/modules/gui/macosx/UI $(top_builddir)/bin/Contents/Resources/English.lproj
+	$(LN_S) -hf $(abs_top_builddir)/share/macosx/Info.plist $(top_builddir)/bin/Contents/Info.plist
+	$(LN_S) -hf $(CONTRIB_DIR)/Frameworks
+	cd $(top_builddir)/bin/Contents/Resources/ && find $(abs_top_srcdir)/modules/gui/macosx/Resources/ -type f -exec $(LN_S) -f {} \;
 
 # VLC.app for packaging and giving it to your friends
 # use package-macosx to get a nice dmg
-VLC.app: VLC-tmp
+VLC.app: install
 	rm -Rf $@
-	cp -R VLC-tmp $@
-	rm -Rf $@/Contents/Frameworks/BGHUDAppKit.framework/Versions/A/Resources/BGHUDAppKitPlugin.ibplugin
-	rm -Rf $@/Contents/Frameworks/BGHUDAppKit.framework/Versions/A/Resources/README.textile
-	PRODUCT="$@" ACTION="release-makefile" src_dir=$(srcdir) build_dir=$(top_builddir) sh $(srcdir)/extras/package/macosx/build-package.sh
-	bin/vlc-cache-gen $@/Contents/MacOS/plugins
-	find $@ -type d -exec chmod ugo+rx '{}' \;
-	find $@ -type f -exec chmod ugo+r '{}' \;
-
-VLC-tmp: vlc
-	$(AM_V_GEN)for i in src lib share; do \
-		(cd $$i && $(MAKE) $(AM_MAKEFLAGS) install $(silentstd)); \
-	done
-	rm -Rf "$(top_builddir)/tmp" "$@"
-	mkdir -p "$(top_builddir)/tmp/extras/package/macosx"
-	cd $(srcdir)/extras/package/macosx; cp -R Resources README.MacOSX.rtf $(abs_top_builddir)/tmp/extras/package/macosx/
-	mkdir -p $(abs_top_builddir)/tmp/extras/package/macosx/vlc.xcodeproj/
-	sed -e s,../../../contrib,$(CONTRIB_DIR),g $(srcdir)/extras/package/macosx/vlc.xcodeproj/project.pbxproj \
-        > $(abs_top_builddir)/tmp/extras/package/macosx/vlc.xcodeproj/project.pbxproj
-	REVISION=`(git --git-dir=$(srcdir)/.git describe --always || echo exported)` && \
-	    sed "s/#REVISION#/$$REVISION/g" $(top_builddir)/extras/package/macosx/Info.plist \
-        > $(top_builddir)/tmp/extras/package/macosx/Info.plist
-	xcrun plutil -convert binary1 $(top_builddir)/tmp/extras/package/macosx/Info.plist
-	cp -R $(top_builddir)/extras/package/macosx/Resources $(top_builddir)/tmp/extras/package/macosx/
-	cd "$(srcdir)"; cp AUTHORS COPYING THANKS $(abs_top_builddir)/tmp/
-	mkdir -p $(top_builddir)/tmp/modules/audio_output
-	mkdir -p $(top_builddir)/tmp/modules/gui/macosx
-	cd "$(srcdir)/modules/gui/macosx/" && cp *.h *.m $(abs_top_builddir)/tmp/modules/gui/macosx/
-	cd $(top_builddir)/tmp/extras/package/macosx && \
-		xcodebuild -target vlc SYMROOT=../../../build DSTROOT=../../../build $(silentstd)
-	cp -R $(top_builddir)/tmp/build/Default/VLC.bundle $@
-	mkdir -p $@/Contents/Frameworks && cp -R $(CONTRIB_DIR)/Growl.framework $@/Contents/Frameworks/
+	## Copy Contents
+	cp -R $(prefix)/share/macosx/ $@
+	## Copy .strings file and .nib files
+	cp -R $(top_builddir)/modules/gui/macosx/UI $@/Contents/Resources/English.lproj
+	## Copy Info.plist and convert to binary
+	cp -R $(top_builddir)/share/macosx/Info.plist $@/Contents/
+	xcrun plutil -convert binary1 $@/Contents/Info.plist
+	## Create Frameworks dir and copy required ones
+	mkdir -p $@/Contents/Frameworks
+	cp -R $(CONTRIB_DIR)/Frameworks/Growl.framework $@/Contents/Frameworks
+if HAVE_SPARKLE
+	cp -R $(CONTRIB_DIR)/Frameworks/Sparkle.framework $@/Contents/Frameworks
+endif
+if HAVE_BREAKPAD
+	cp -R $(CONTRIB_DIR)/Frameworks/Breakpad.framework $@/Contents/Frameworks
+endif
 	mkdir -p $@/Contents/MacOS/share/locale/
-	cp -r "$(prefix)/lib/vlc/lua" "$(prefix)/share/vlc/lua" $@/Contents/MacOS/share/
+if BUILD_LUA
+	## Copy lua scripts
+	cp -r "$(prefix)/share/vlc/lua" $@/Contents/MacOS/share/
+endif
+	## HRTFs
+	cp -r $(srcdir)/share/hrtfs $@/Contents/MacOS/share/
+	## Copy some other stuff (?)
 	mkdir -p $@/Contents/MacOS/include/
 	(cd "$(prefix)/include" && $(AMTAR) -c --exclude "plugins" vlc) | $(AMTAR) -x -C $@/Contents/MacOS/include/
-	$(INSTALL) -m 644 $(srcdir)/share/vlc512x512.png $@/Contents/MacOS/share/vlc512x512.png
+	## Copy translations
 	cat $(top_srcdir)/po/LINGUAS | while read i; do \
 	  $(INSTALL) -d $@/Contents/MacOS/share/locale/$${i}/LC_MESSAGES ; \
 	  $(INSTALL) $(srcdir)/po/$${i}.gmo $@/Contents/MacOS/share/locale/$${i}/LC_MESSAGES/vlc.mo; \
@@ -61,32 +49,46 @@ VLC-tmp: vlc
 		$@/Contents/Resources/$${i}.lproj/ ; \
 	done
 	printf "APPLVLC#" >| $@/Contents/PkgInfo
+	## Copy libs
+	mkdir -p $@/Contents/MacOS/lib
+	find $(prefix)/lib -name 'libvlc*.dylib' -maxdepth 1 -exec cp -a {} $@/Contents/MacOS/lib \;
+	## Copy plugins
+	mkdir -p $@/Contents/MacOS/plugins
+	find $(prefix)/lib/vlc/plugins -name 'lib*_plugin.dylib' -maxdepth 2 -exec cp -a {} $@/Contents/MacOS/plugins \;
+	## Install binary
+	cp $(prefix)/bin/vlc $@/Contents/MacOS/VLC
+	## Generate plugin cache
+	bin/vlc-cache-gen $@/Contents/MacOS/plugins
+	find $@ -type d -exec chmod ugo+rx '{}' \;
+	find $@ -type f -exec chmod ugo+r '{}' \;
+
 
 package-macosx: VLC.app
-	mkdir -p "$(top_builddir)/vlc-$(VERSION)/Goodies/"
-	cp -R "$(top_builddir)/VLC.app" "$(top_builddir)/vlc-$(VERSION)/VLC.app"
-	cd $(srcdir); cp AUTHORS COPYING README THANKS NEWS $(abs_top_builddir)/vlc-$(VERSION)/Goodies/
-	cp $(srcdir)/extras/package/macosx/README.MacOSX.rtf $(top_builddir)/vlc-$(VERSION)/Read\ Me.rtf
-	$(LN_S) -f /Applications $(top_builddir)/vlc-$(VERSION)/
-	rm -f "$(top_builddir)/vlc-$(VERSION)-rw.dmg"
-	hdiutil create -verbose -srcfolder "$(top_builddir)/vlc-$(VERSION)" "$(top_builddir)/vlc-$(VERSION)-rw.dmg" -scrub -format UDRW
-	mkdir -p ./mount
-	hdiutil attach -readwrite -noverify -noautoopen -mountRoot ./mount "vlc-$(VERSION)-rw.dmg"
-	-osascript "$(srcdir)"/extras/package/macosx/dmg_setup.scpt "vlc-$(VERSION)"
-	hdiutil detach ./mount/"vlc-$(VERSION)"
-# Make sure the image is not writable
-# Note: We can't directly create a read only dmg as we do the bless stuff
 	rm -f "$(top_builddir)/vlc-$(VERSION).dmg"
-	hdiutil convert "$(top_builddir)/vlc-$(VERSION)-rw.dmg" -format UDBZ -o "$(top_builddir)/vlc-$(VERSION).dmg"
-	ls -l "$(top_builddir)/vlc-$(VERSION).dmg"
-	rm -f "$(top_builddir)/vlc-$(VERSION)-rw.dmg"
+if HAVE_DMGBUILD
+	@echo "Packaging fancy DMG using dmgbuild"
+	cd "$(top_srcdir)/extras/package/macosx/dmg" && dmgbuild -s "dmg_settings.py" \
+		-D app="$(abs_top_builddir)/VLC.app" "VLC Media Player" "$(abs_top_builddir)/vlc-$(VERSION).dmg"
+else !HAVE_DMGBUILD
+	@echo "Packaging non-fancy DMG"
+	## Create directory for DMG contents
+	mkdir -p "$(top_builddir)/vlc-$(VERSION)"
+	## Copy contents
+	cp -R "$(top_builddir)/VLC.app" "$(top_builddir)/vlc-$(VERSION)/VLC.app"
+	## Symlink to Applications so users can easily drag-and-drop the App to it
+	$(LN_S) -f /Applications "$(top_builddir)/vlc-$(VERSION)/"
+	## Create DMG
+	hdiutil create -srcfolder "$(top_builddir)/vlc-$(VERSION)" -volname "VLC Media Player" \
+		-format UDBZ -o "$(top_builddir)/vlc-$(VERSION).dmg"
+	## Cleanup
 	rm -rf "$(top_builddir)/vlc-$(VERSION)"
+endif
 
 package-macosx-zip: VLC.app
+	rm -f "$(top_builddir)/vlc-$(VERSION).zip"
 	mkdir -p $(top_builddir)/vlc-$(VERSION)/Goodies/
 	cp -R $(top_builddir)/VLC.app $(top_builddir)/vlc-$(VERSION)/VLC.app
 	cd $(srcdir); cp -R AUTHORS COPYING README THANKS NEWS $(abs_top_builddir)/vlc-$(VERSION)/Goodies/
-	cp $(srcdir)/extras/package/macosx/README.MacOSX.rtf $(top_builddir)/vlc-$(VERSION)/Read\ Me.rtf
 	zip -r -y -9 $(top_builddir)/vlc-$(VERSION).zip $(top_builddir)/vlc-$(VERSION)
 	rm -rf "$(top_builddir)/vlc-$(VERSION)"
 
@@ -109,4 +111,19 @@ package-translations:
 	$(AMTAR) chof - $(srcdir)/vlc-translations-$(VERSION) \
 	  | GZIP=$(GZIP_ENV) gzip -c >$(srcdir)/vlc-translations-$(VERSION).tar.gz
 
-.PHONY: package-macosx package-macosx-zip package-translations
+.PHONY: package-macosx package-macosx-zip package-translations pseudo-bundle
+
+###############################################################################
+# Mac OS X project
+###############################################################################
+
+EXTRA_DIST += \
+	extras/package/macosx/build.sh \
+	extras/package/macosx/codesign.sh \
+	extras/package/macosx/configure.sh \
+	extras/package/macosx/dmg/dmg_settings.py \
+	extras/package/macosx/dmg/disk_image.icns \
+	extras/package/macosx/dmg/background.tiff \
+	extras/package/macosx/asset_sources/vlc_app_icon.svg \
+	extras/package/macosx/VLC.entitlements \
+	extras/package/macosx/VLC.xcodeproj/project.pbxproj

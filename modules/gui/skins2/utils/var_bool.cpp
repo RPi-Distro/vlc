@@ -2,7 +2,7 @@
  * var_bool.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ebbaab8362dd551b5274ac5a62225a794d65fcf6 $
+ * $Id: 9fa79b9307d9cd711ee627234498b6defd935e12 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -25,7 +25,7 @@
 #include "var_bool.hpp"
 
 
-const string VarBool::m_type = "bool";
+const std::string VarBool::m_type = "bool";
 
 
 VarBoolImpl::VarBoolImpl( intf_thread_t *pIntf ):

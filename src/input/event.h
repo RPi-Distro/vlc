@@ -2,7 +2,7 @@
  * event.h: Input event functions
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: c8f1071bbb34a99394dd573da4f1d677a9d7cfa9 $
+ * $Id: 156b992059b7b39f904fecadc9de0edd5eb49989 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ fr>
  *
@@ -30,7 +30,6 @@
  * Event for input.c
  *****************************************************************************/
 void input_SendEventDead( input_thread_t *p_input );
-void input_SendEventAbort( input_thread_t *p_input );
 void input_SendEventPosition( input_thread_t *p_input, double f_position, mtime_t i_time );
 void input_SendEventLength( input_thread_t *p_input, mtime_t i_length );
 void input_SendEventStatistics( input_thread_t *p_input );
@@ -47,7 +46,6 @@ void input_SendEventCache( input_thread_t *p_input, double f_level );
 /* TODO rename Item* */
 void input_SendEventMeta( input_thread_t *p_input );
 void input_SendEventMetaInfo( input_thread_t *p_input );
-void input_SendEventMetaName( input_thread_t *p_input, const char *psz_name );
 void input_SendEventMetaEpg( input_thread_t *p_input );
 
 /*****************************************************************************
@@ -59,9 +57,9 @@ void input_SendEventProgramDel( input_thread_t *p_input, int i_program );
 void input_SendEventProgramSelect( input_thread_t *p_input, int i_program );
 void input_SendEventProgramScrambled( input_thread_t *p_input, int i_group, bool b_scrambled );
 
-void input_SendEventEsDel( input_thread_t *p_input, int i_cat, int i_id );
-void input_SendEventEsAdd( input_thread_t *p_input, int i_cat, int i_id, const char *psz_text );
-void input_SendEventEsSelect( input_thread_t *p_input, int i_cat, int i_id ); /* i_id == -1 will unselect */
+void input_SendEventEsDel( input_thread_t *p_input, enum es_format_category_e i_cat, int i_id );
+void input_SendEventEsAdd( input_thread_t *p_input, enum es_format_category_e i_cat, int i_id, const char *psz_text );
+void input_SendEventEsSelect( input_thread_t *p_input, enum es_format_category_e i_cat, int i_id ); /* i_id == -1 will unselect */
 
 void input_SendEventTeletextAdd( input_thread_t *p_input,
                                  int i_teletext, const char *psz_text );

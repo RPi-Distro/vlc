@@ -2,7 +2,7 @@
  * rtp.h: rtp stream output module header
  *****************************************************************************
  * Copyright (C) 2003-2007 VLC authors and VideoLAN
- * $Id: ff26c69bee04b4ae8ace373d401d20af4b29302d $
+ * $Id: 93adcd3c2764befb560754691e6282382ce3ef08 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont
@@ -55,7 +55,7 @@ int64_t rtp_get_ts( const sout_stream_t *p_stream, const sout_stream_id_sys_t *i
 
 /* RTP packetization */
 void rtp_packetize_common (sout_stream_id_sys_t *id, block_t *out,
-                           int b_marker, int64_t i_pts);
+                           bool b_m_bit, int64_t i_pts);
 void rtp_packetize_send (sout_stream_id_sys_t *id, block_t *out);
 size_t rtp_mtu (const sout_stream_id_sys_t *id);
 
@@ -77,7 +77,7 @@ typedef struct rtp_format_t
     uint8_t      payload_type;
     unsigned     clock_rate;
     unsigned     channels;
-    int          cat;
+    enum es_format_category_e cat;
     /* Used in SDP only */
     unsigned     bitrate;
     const char  *ptname;
@@ -86,8 +86,12 @@ typedef struct rtp_format_t
     pf_rtp_packetizer_t pf_packetize;
 } rtp_format_t;
 
-int rtp_get_fmt( vlc_object_t *obj, es_format_t *p_fmt, const char *mux,
+int rtp_get_fmt( vlc_object_t *obj, const es_format_t *p_fmt, const char *mux,
                  rtp_format_t *p_rtp_fmt );
+
+/* Only used by rtp_packetize_rawvideo */
+void rtp_get_video_geometry( sout_stream_id_sys_t *id, int *width, int *height );
+uint16_t rtp_get_extended_sequence( sout_stream_id_sys_t *id );
 
 /* VoD */
 int  OpenVoD ( vlc_object_t * );

@@ -22,8 +22,6 @@
 # include "config.h"
 #endif
 
-#include <assert.h>
-
 #include <vlc_common.h>
 #include <vlc_aout.h>
 #include <vlc_filter.h>
@@ -54,6 +52,7 @@ static int Open (vlc_object_t *obj)
     }
 
     filter->fmt_in.audio.i_format = VLC_CODEC_FL32;
+    aout_FormatPrepare(&filter->fmt_in.audio);
     filter->fmt_out.audio = filter->fmt_in.audio;
     filter->pf_audio_filter = Process;
     return VLC_SUCCESS;

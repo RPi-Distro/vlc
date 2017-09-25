@@ -2,7 +2,7 @@
  * evt_mouse.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 5328890177fd0ef71fc4ed0e20f77e01bdbe0003 $
+ * $Id: 61e168ec256515806e5ac065d8a3c73ab3748c47 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -51,7 +51,7 @@ public:
             : EvtInput( pIntf, mod ), m_xPos( xPos ), m_yPos( yPos ),
               m_button( button ), m_action( action ) { }
     virtual ~EvtMouse() { }
-    virtual const string getAsString() const;
+    virtual const std::string getAsString() const;
 
     // Return the event coordinates
     int getXPos() const { return m_xPos; }
