@@ -2,7 +2,7 @@
  * volume.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 27887fba23ef87c72822f6bdd6c865f79a87a895 $
+ * $Id: 4a0072c6ae01930f8d0c1ae27ec4870ba42b421e $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -39,8 +39,7 @@ Volume::Volume( intf_thread_t *pIntf ): VarPercent( pIntf )
              / (float)AOUT_VOLUME_MAX;
 
     // set current volume from the playlist
-    playlist_t* pPlaylist = pIntf->p_sys->p_playlist;
-    setVolume( var_GetFloat( pPlaylist, "volume" ), false );
+    setVolume( var_GetFloat( getPL(), "volume" ), false );
 }
 
 
@@ -49,8 +48,7 @@ void Volume::set( float percentage, bool updateVLC )
     VarPercent::set( percentage );
     if( updateVLC )
     {
-        playlist_t* pPlaylist = getIntf()->p_sys->p_playlist;
-        playlist_VolumeSet( pPlaylist, getVolume() );
+        playlist_VolumeSet( getPL(), getVolume() );
     }
 }
 
@@ -72,12 +70,12 @@ float Volume::getVolume() const
 }
 
 
-string Volume::getAsStringPercent() const
+std::string Volume::getAsStringPercent() const
 {
     int value = lround( getVolume() * 100. );
     // 0 <= value <= 200, so we need 4 chars
     char str[4];
     snprintf( str, 4, "%i", value );
-    return string(str);
+    return std::string(str);
 }
 

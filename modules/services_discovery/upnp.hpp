@@ -1,29 +1,32 @@
 /*****************************************************************************
  * upnp.hpp :  UPnP discovery module (libupnp) header
  *****************************************************************************
- * Copyright (C) 2004-2010 the VideoLAN team
- * $Id: 23fe4db9ab4490263934d3a8bba7293f8f92754e $
+ * Copyright (C) 2004-2016 VLC authors and VideoLAN
+ * $Id: 39e19cbd56dbae1d7c554753e53f9a8707bb8581 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org> (original plugin)
  *          Christian Henz <henz # c-lab.de>
  *          Mirsal Ennaime <mirsal dot ennaime at gmail dot com>
+ *          Hugo Beauzée-Luyssen <hugo@beauzee.fr>
  *
- * UPnP Plugin using the Intel SDK (libupnp) instead of CyberLink
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include <vector>
 #include <string>
@@ -32,63 +35,68 @@
 #include <upnp/upnptools.h>
 
 #include <vlc_common.h>
+#include <vlc_url.h>
 
-// Classes
-class Container;
+#if UPNP_VERSION < 10800
+typedef void* UpnpEventPtr;
+#else
+typedef const void* UpnpEventPtr;
+#endif
 
-class MediaServer
+namespace SD
+{
+    class MediaServerList;
+}
+
+/*
+ * libUpnp allows only one instance per process, so we have to share one for
+ * both SD & Access module
+ * Since the callback is bound to the UpnpClient_Handle, we have to register
+ * a wrapper callback, in order for the access module to be able to initialize
+ * libUpnp first.
+ * When a SD wishes to use libUpnp, it will provide its own callback, that the
+ * wrapper will forward.
+ * This way, we always have a register callback & a client handle.
+ */
+class UpnpInstanceWrapper
 {
 public:
-
-    static void parseDeviceDescription( IXML_Document* p_doc,
-                                        const char*    psz_location,
-                                        services_discovery_t* p_sd );
-
-    MediaServer( const char* psz_udn,
-                 const char* psz_friendly_name,
-                 services_discovery_t* p_sd );
-
-    ~MediaServer();
-
-    const char* getUDN() const;
-    const char* getFriendlyName() const;
-
-    void setContentDirectoryEventURL( const char* psz_url );
-    const char* getContentDirectoryEventURL() const;
-
-    void setContentDirectoryControlURL( const char* psz_url );
-    const char* getContentDirectoryControlURL() const;
-
-    void subscribeToContentDirectory();
-    void fetchContents();
-
-    void setInputItem( input_item_t* p_input_item );
-    input_item_t* getInputItem() const;
-
-    bool compareSID( const char* psz_sid );
+    // This increases the refcount before returning the instance
+    static UpnpInstanceWrapper* get(vlc_object_t* p_obj, services_discovery_t *p_sd);
+    void release(bool isSd);
+    UpnpClient_Handle handle() const;
+    static SD::MediaServerList *lockMediaServerList();
+    static void unlockMediaServerList();
 
 private:
+    static int Callback( Upnp_EventType event_type, UpnpEventPtr p_event, void* p_user_data );
 
-    bool _fetchContents( Container* p_parent, int i_starting_index );
-    void _buildPlaylist( Container* p_container, input_item_node_t *p_item_node );
+    UpnpInstanceWrapper();
+    ~UpnpInstanceWrapper();
 
-    IXML_Document* _browseAction( const char*, const char*,
-            const char*, const char*, const char*, const char* );
+private:
+    static UpnpInstanceWrapper* s_instance;
+    static vlc_mutex_t s_lock;
+    UpnpClient_Handle m_handle;
+    static SD::MediaServerList* p_server_list;
+    int m_refcount;
+};
 
-    services_discovery_t* _p_sd;
+namespace SD
+{
 
-    Container* _p_contents;
-    input_item_t* _p_input_item;
-
-    std::string _UDN;
-    std::string _friendly_name;
-
-    std::string _content_directory_event_url;
-    std::string _content_directory_control_url;
-
-    int _i_subscription_timeout;
-    int _i_content_directory_service_version;
-    Upnp_SID _subscription_id;
+struct MediaServerDesc
+{
+    MediaServerDesc( const std::string& udn, const std::string& fName,
+                    const std::string& loc, const std::string& iconUrl );
+    ~MediaServerDesc();
+    std::string UDN;
+    std::string friendlyName;
+    std::string location;
+    std::string iconUrl;
+    input_item_t* inputItem;
+    bool isSatIp;
+    std::string satIpHost;
 };
 
 
@@ -99,87 +107,64 @@ public:
     MediaServerList( services_discovery_t* p_sd );
     ~MediaServerList();
 
-    bool addServer( MediaServer* p_server );
-    void removeServer( const char* psz_udn );
-
-    MediaServer* getServer( const char* psz_udn );
-    MediaServer* getServerBySID( const char* psz_sid );
+    bool addServer(MediaServerDesc *desc );
+    void removeServer(const std::string &udn );
+    MediaServerDesc* getServer( const std::string& udn );
+    static int Callback( Upnp_EventType event_type, UpnpEventPtr p_event );
 
 private:
+    void parseNewServer( IXML_Document* doc, const std::string& location );
+    std::string getIconURL( IXML_Element* p_device_elem , const char* psz_base_url );
 
-    services_discovery_t* _p_sd;
-
-    std::vector<MediaServer*> _list;
+private:
+    services_discovery_t* const m_sd;
+    std::vector<MediaServerDesc*> m_list;
 };
 
+}
 
-class Item
+namespace Access
+{
+
+class Upnp_i11e_cb
 {
 public:
-
-    Item( Container*  parent,
-          const char* objectID,
-          const char* title,
-          const char* subtitles,
-          const char* resource,
-          mtime_t duration );
-    ~Item();
-
-    const char* getObjectID() const;
-    const char* getTitle() const;
-    const char* getResource() const;
-    const char* getSubtitles() const;
-    char* buildInputSlaveOption() const;
-    char* buildSubTrackIdOption() const;
-    mtime_t getDuration() const;
-
-    void setInputItem( input_item_t* p_input_item );
+    Upnp_i11e_cb( Upnp_FunPtr callback, void *cookie );
+    ~Upnp_i11e_cb();
+    void waitAndRelease( void );
+    static int run( Upnp_EventType, UpnpEventPtr, void *);
 
 private:
-
-    input_item_t* _p_input_item;
-
-    Container* _parent;
-    std::string _objectID;
-    std::string _title;
-    std::string _resource;
-    std::string _subtitles;
-    mtime_t _duration;
+    vlc_sem_t       m_sem;
+    vlc_mutex_t     m_lock;
+    int             m_refCount;
+    Upnp_FunPtr     m_callback;
+    void*           m_cookie;
 };
 
-
-class Container
+class MediaServer
 {
 public:
-
-    Container( Container* parent, const char* objectID, const char* title );
-    ~Container();
-
-    void addItem( Item* item );
-    void addContainer( Container* container );
-
-    const char* getObjectID() const;
-    const char* getTitle() const;
-
-    unsigned int getNumItems() const;
-    unsigned int getNumContainers() const;
-
-    Item* getItem( unsigned int i ) const;
-    Container* getContainer( unsigned int i ) const;
-    Container* getParent();
-
-    void setInputItem( input_item_t* p_input_item );
-    input_item_t* getInputItem() const;
+    MediaServer( stream_t* p_access, input_item_node_t* node );
+    ~MediaServer();
+    bool fetchContents();
 
 private:
+    MediaServer(const MediaServer&);
+    MediaServer& operator=(const MediaServer&);
 
-    input_item_t* _p_input_item;
+    bool addContainer( IXML_Element* containerElement );
+    bool addItem( IXML_Element* itemElement );
 
-    Container* _parent;
+    IXML_Document* _browseAction(const char*, const char*,
+            const char*, const char*, const char* );
+    static int sendActionCb( Upnp_EventType, UpnpEventPtr, void *);
 
-    std::string _objectID;
-    std::string _title;
-    std::vector<Item*> _items;
-    std::vector<Container*> _containers;
+private:
+    char* m_psz_root;
+    char* m_psz_objectId;
+    stream_t* m_access;
+    input_item_node_t* m_node;
 };
 
+}

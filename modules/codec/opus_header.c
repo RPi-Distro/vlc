@@ -240,10 +240,10 @@ static char *comment_init(size_t *length, const char *vendor)
     /*The 'vendor' field should be the actual encoding library used.*/
     if (!vendor)
         vendor = "unknown";
-    int vendor_length = strlen(vendor);
+    size_t vendor_length = strlen(vendor);
 
-    int user_comment_list_length = 0;
-    int len = 8 + 4 + vendor_length + 4;
+    size_t user_comment_list_length = 0;
+    size_t len = 8 + 4 + vendor_length + 4;
     char *p = malloc(len);
     if (p == NULL)
         return NULL;
@@ -261,15 +261,16 @@ static int comment_add(char **comments, size_t *length, const char *tag,
                        const char *val)
 {
     char *p = *comments;
-    int vendor_length = GetDWLE(p + 8);
+    uint32_t vendor_length = GetDWLE(p + 8);
     size_t user_comment_list_length = GetDWLE(p + 8 + 4 + vendor_length);
     size_t tag_len = (tag ? strlen(tag) : 0);
     size_t val_len = strlen(val);
     size_t len = (*length) + 4 + tag_len + val_len;
 
-    p = realloc(p, len);
-    if (p == NULL)
+    char *reaced = realloc(p, len);
+    if (reaced == NULL)
         return 1;
+    p = reaced;
 
     SetDWLE(p + *length, tag_len + val_len);          /* length of comment */
     if (tag) memcpy(p + *length + 4, tag, tag_len);         /* comment */
@@ -292,9 +293,10 @@ static int comment_pad(char **comments, size_t *length)
     /* Make sure there is at least "padding" worth of padding free, and
        round up to the maximum that fits in the current ogg segments. */
     size_t newlen = ((*length + padding) / 255 + 1) * 255 - 1;
-    p = realloc(p, newlen);
-    if (p == NULL)
+    char *reaced = realloc(p, newlen);
+    if (reaced == NULL)
         return 1;
+    p = reaced;
 
     memset(p + *length, 0, newlen - *length);
     *comments = p;
@@ -302,7 +304,7 @@ static int comment_pad(char **comments, size_t *length)
     return 0;
 }
 
-int opus_prepare_header(unsigned channels, unsigned rate, OpusHeader *header)
+void opus_prepare_header(unsigned channels, unsigned rate, OpusHeader *header)
 {
     header->version = 1;
     header->channels = channels;
@@ -312,8 +314,6 @@ int opus_prepare_header(unsigned channels, unsigned rate, OpusHeader *header)
     header->gain = 0; // 0dB
     header->channel_mapping = header->channels > 8 ? 255 :
                               header->channels > 2;
-
-    return 0;
 }
 
 static int opus_header_to_packet(const OpusHeader *h, unsigned char *packet, int len)
@@ -376,7 +376,7 @@ int opus_write_header(uint8_t **p_extra, int *i_extra, OpusHeader *header, const
     const int packet_size = opus_header_to_packet(header, header_data,
                                                   sizeof(header_data));
 
-    unsigned char *data[2];
+    const unsigned char *data[2];
     size_t size[2];
 
     data[0] = header_data;
@@ -402,12 +402,20 @@ int opus_write_header(uint8_t **p_extra, int *i_extra, OpusHeader *header, const
     data[1] = (unsigned char *) comments;
     size[1] = comments_length;
 
+    *i_extra = 0;
+    *p_extra = NULL;
+
     for (unsigned i = 0; i < ARRAY_SIZE(data); ++i)
+    {
         if (xiph_AppendHeaders(i_extra, (void **) p_extra, size[i], data[i]))
         {
             *i_extra = 0;
+            free(*p_extra);
             *p_extra = NULL;
         }
+    }
+
+    free(comments);
 
     return 0;
 }

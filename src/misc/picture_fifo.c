@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2009 VLC authors and VideoLAN
  * Copyright (C) 2009 Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
- * $Id: 0734ca96f434a7556014d4136c25834d57a4478e $
+ * $Id: 5e999926ec8cf309ed201373dd1338285a8cfc6a $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -127,12 +127,8 @@ void picture_fifo_Flush(picture_fifo_t *fifo, mtime_t date, bool flush_before)
     }
     vlc_mutex_unlock(&fifo->lock);
 
-    for (;;) {
-        picture_t *picture = PictureFifoPop(&tmp);
-        if (!picture)
-            break;
+    while ((picture = PictureFifoPop(&tmp)) != NULL)
         picture_Release(picture);
-    }
 }
 void picture_fifo_OffsetDate(picture_fifo_t *fifo, mtime_t delta)
 {

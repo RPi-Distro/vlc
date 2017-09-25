@@ -42,7 +42,7 @@ static char *vlc_from_EIT (const void *buf, size_t length)
     }
     else if ((1 << c) & 0x0EFE) /* 1-7, 9-11 -> ISO 8859-(c+4) */
     {
-        snprintf (encbuf, sizeof (encbuf), "ISO_8859-%hhu", 4 + c);
+        snprintf (encbuf, sizeof (encbuf), "ISO_8859-%u", 4u + c);
     }
     else switch (c)
     {
@@ -94,6 +94,7 @@ static char *vlc_from_EIT (const void *buf, size_t length)
         EnsureUTF8 (out);
     }
 
+    length = strlen(out);
     /* Convert control codes */
     for (char *p = strchr (out, '\xC2'); p; p = strchr (p + 1, '\xC2'))
     {
@@ -104,6 +105,16 @@ static char *vlc_from_EIT (const void *buf, size_t length)
          * 0x8B-0x9F are unspecified. */
         if (p[1] == '\x8A')
             memcpy (p, "\r\n", 2);
+
+        /* Strip character emphasis */
+        if (p[1] == '\x86' || p[1] == '\x87') {
+            const size_t n = p - out;
+            memmove (p, p+2, length - n);
+            length -= 2;
+            out[length] = '\0';
+            if (length == n)
+                break;
+        }
     }
 
     /* Private use area */
@@ -114,6 +125,16 @@ static char *vlc_from_EIT (const void *buf, size_t length)
             continue;
         if (p[2] == '\x8A')
             memcpy (p, "\r\r\n", 3); /* we need three bytes, so to CRs ;) */
+
+        /* Strip character emphasis */
+        if (p[2] == '\x86' || p[2] == '\x87') {
+            const size_t n = p - out;
+            memmove (p, p+3, length - n);
+            length -= 3;
+            out[length] = '\0';
+            if (length == n)
+                break;
+        }
     }
 
     return out;

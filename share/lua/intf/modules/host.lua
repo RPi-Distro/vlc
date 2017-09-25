@@ -68,7 +68,14 @@ status = { init = 0, read = 1, write = 2, password = 3 }
 client_type = { net = 1, stdio = 2, fifo = 3, telnet = 4 }
 
 function is_flag_set(val, flag)
-    return (((val - (val % flag)) / flag) % 2 ~= 0)
+    local bit = 65536
+    while bit > 1 do
+        val = val % bit
+        flag = flag % bit
+        bit = bit / 2
+        if val >= bit and flag >= bit then return true end
+    end
+    return false
 end
 
 function host()
@@ -246,7 +253,7 @@ function host()
             if url == "*console" then
                 h:listen_stdio()
             else
-                u = vlc.net.url_parse( url )
+                u = vlc.strings.url_parse( url )
                 h:listen_tcp( u.host, u.port, (u.protocol == "telnet") )
             end
         end

@@ -25,10 +25,12 @@
 # include "config.h"
 #endif
 
+#define VLC_MODULE_LICENSE VLC_LICENSE_GPL_2_PLUS
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_interface.h>
 #include <vlc_playlist.h>
+#include <vlc_input.h>
 #include <vlc_url.h> // FIXME: move URL generation to calling process
 
 #include <windows.h>
@@ -98,13 +100,11 @@ static LRESULT CALLBACK WMCOPYWNDPROC(HWND hwnd, UINT uMsg,
                     psz_URI = vlc_path2uri( ppsz_argv[i_opt], NULL );
                 playlist_AddExt( pl_Get(intf),
                         (psz_URI != NULL) ? psz_URI : ppsz_argv[i_opt],
-                        NULL, PLAYLIST_APPEND |
-                        ( ( i_opt || p_data->enqueue ) ? 0 : PLAYLIST_GO ),
-                        PLAYLIST_END, -1,
+                        NULL, (i_opt == 0 && !p_data->enqueue),
                         i_options,
                         (char const **)( i_options ? &ppsz_argv[i_opt+1] : NULL ),
                         VLC_INPUT_OPTION_TRUSTED,
-                        true, pl_Unlocked );
+                        true );
 
                 i_opt += i_options;
                 free( psz_URI );

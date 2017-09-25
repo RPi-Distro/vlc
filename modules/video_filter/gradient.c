@@ -2,7 +2,7 @@
  * gradient.c : Gradient and edge detection video effects plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2008 VLC authors and VideoLAN
- * $Id: 0c3d5158372eaa04d85b6c4204eb8aac65fb2ba9 $
+ * $Id: 7479377d8d0f95bc75f2e171afe603b233cd274d $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>
@@ -35,8 +35,8 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_sout.h>
-
 #include <vlc_filter.h>
+#include <vlc_picture.h>
 #include "filter_picture.h"
 
 enum { GRADIENT, EDGE, HOUGH };
@@ -81,7 +81,7 @@ vlc_module_begin ()
     set_description( N_("Gradient video filter") )
     set_shortname( N_( "Gradient" ))
     set_help(GRADIENT_HELP)
-    set_capability( "video filter2", 0 )
+    set_capability( "video filter", 0 )
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
 
@@ -294,10 +294,9 @@ static void GaussianConvolution( picture_t *p_inpic, uint32_t *p_smooth )
     const int i_src_visible = p_inpic->p[Y_PLANE].i_visible_pitch;
     const int i_num_lines = p_inpic->p[Y_PLANE].i_visible_lines;
 
-    int x,y;
-    for( y = 2; y < i_num_lines - 2; y++ )
+    for( int y = 2; y < i_num_lines - 2; y++ )
     {
-        for( x = 2; x < i_src_visible - 2; x++ )
+        for( int x = 2; x < i_src_visible - 2; x++ )
         {
             p_smooth[y*i_src_visible+x] = (uint32_t)(
               /* 2 rows up */
@@ -341,7 +340,6 @@ static void GaussianConvolution( picture_t *p_inpic, uint32_t *p_smooth )
 static void FilterGradient( filter_t *p_filter, picture_t *p_inpic,
                                                 picture_t *p_outpic )
 {
-    int x, y;
     const int i_src_pitch = p_inpic->p[Y_PLANE].i_pitch;
     const int i_src_visible = p_inpic->p[Y_PLANE].i_visible_pitch;
     const int i_dst_pitch = p_outpic->p[Y_PLANE].i_pitch;
@@ -380,30 +378,24 @@ static void FilterGradient( filter_t *p_filter, picture_t *p_inpic,
      | -1 0 1 |     | -1 -2 -1 | */
 
 #define FOR                                                     \
-    for( y = 1; y < i_num_lines - 1; y++ )                      \
+    for( int y = 1; y < i_num_lines - 1; y++ )                  \
     {                                                           \
-        for( x = 1; x < i_src_visible - 1; x++ )                \
+        for( int x = 1; x < i_src_visible - 1; x++ )            \
         {                                                       \
-            const uint32_t a =                                  \
-            (                                                   \
-              abs(                                              \
-                 ( p_smooth[(y-1)*i_src_visible+x-1]            \
-                   - p_smooth[(y+1)*i_src_visible+x-1] )        \
-               + ( ( p_smooth[(y-1)*i_src_visible+x]            \
-                    - p_smooth[(y+1)*i_src_visible+x] ) <<1 )   \
-               + ( p_smooth[(y-1)*i_src_visible+x+1]            \
-                   - p_smooth[(y+1)*i_src_visible+x+1] )        \
-              )                                                 \
-            +                                                   \
-              abs(                                              \
-                 ( p_smooth[(y-1)*i_src_visible+x-1]            \
-                   - p_smooth[(y-1)*i_src_visible+x+1] )        \
-               + ( ( p_smooth[y*i_src_visible+x-1]              \
-                    - p_smooth[y*i_src_visible+x+1] ) <<1 )     \
-               + ( p_smooth[(y+1)*i_src_visible+x-1]            \
-                   - p_smooth[(y+1)*i_src_visible+x+1] )        \
-              )                                                 \
-            );
+            const uint32_t a = \
+                  abs(((int)p_smooth[(y - 1) * i_src_visible + x - 1] \
+                     - (int)p_smooth[(y + 1) * i_src_visible + x - 1]) \
+                   + (((int)p_smooth[(y - 1) * i_src_visible + x] \
+                     - (int)p_smooth[(y + 1) * i_src_visible + x]) * 2) \
+                    + ((int)p_smooth[(y - 1) * i_src_visible + x + 1] \
+                     - (int)p_smooth[(y + 1) * i_src_visible + x + 1])) \
+                + abs(((int)p_smooth[(y - 1) * i_src_visible + x - 1] \
+                     - (int)p_smooth[(y - 1) * i_src_visible + x + 1]) \
+                   + (((int)p_smooth[y       * i_src_visible + x - 1] \
+                     - (int)p_smooth[y       * i_src_visible + x + 1]) * 2) \
+                    + ((int)p_smooth[(y + 1) * i_src_visible + x - 1] \
+                     - (int)p_smooth[(y + 1) * i_src_visible + x + 1]));
+
     if( p_filter->p_sys->i_gradient_type )
     {
         if( p_filter->p_sys->b_cartoon )
@@ -467,8 +459,6 @@ static void FilterGradient( filter_t *p_filter, picture_t *p_inpic,
 static void FilterEdge( filter_t *p_filter, picture_t *p_inpic,
                                             picture_t *p_outpic )
 {
-    int x, y;
-
     const int i_src_pitch = p_inpic->p[Y_PLANE].i_pitch;
     const int i_src_visible = p_inpic->p[Y_PLANE].i_visible_pitch;
     const int i_dst_pitch = p_outpic->p[Y_PLANE].i_pitch;
@@ -521,9 +511,9 @@ static void FilterEdge( filter_t *p_filter, picture_t *p_inpic,
      | -2 0 2 | and |  0  0  0 |
      | -1 0 1 |     | -1 -2 -1 | */
 
-    for( y = 1; y < i_num_lines - 1; y++ )
+    for( int y = 1; y < i_num_lines - 1; y++ )
     {
-        for( x = 1; x < i_src_visible - 1; x++ )
+        for( int x = 1; x < i_src_visible - 1; x++ )
         {
 
             const int gradx =
@@ -559,9 +549,9 @@ static void FilterEdge( filter_t *p_filter, picture_t *p_inpic,
     }
 
     /* edge computing */
-    for( y = 1; y < i_num_lines - 1; y++ )
+    for( int y = 1; y < i_num_lines - 1; y++ )
     {
-        for( x = 1; x < i_src_visible - 1; x++ )
+        for( int x = 1; x < i_src_visible - 1; x++ )
         {
             if( p_grad[y*i_src_visible+x] > 40 )
             {
@@ -627,7 +617,6 @@ static void FilterEdge( filter_t *p_filter, picture_t *p_inpic,
 static void FilterHough( filter_t *p_filter, picture_t *p_inpic,
                                              picture_t *p_outpic )
 {
-    int x, y, i;
     int i_src_visible = p_inpic->p[Y_PLANE].i_visible_pitch;
     int i_dst_pitch = p_outpic->p[Y_PLANE].i_pitch;
     int i_num_lines = p_inpic->p[Y_PLANE].i_visible_lines;
@@ -663,12 +652,12 @@ static void FilterHough( filter_t *p_filter, picture_t *p_inpic,
             free( p_hough );
             return;
         }
-        for( i = 0 ; i < i_nb_steps ; i++)
+        for( int i = 0; i < i_nb_steps; i++)
         {
             d_sin = sin(d_step * i);
             d_cos = cos(d_step * i);
-            for( y = 0 ; y < i_num_lines ; y++ )
-                for( x = 0 ; x < i_src_visible ; x++ )
+            for( int y = 0; y < i_num_lines; y++ )
+                for( int x = 0; x < i_src_visible; x++ )
                 {
                     p_pre_hough[(i*i_num_lines+y)*i_src_visible + x] =
                         ceil(x*d_sin + y*d_cos);
@@ -694,33 +683,26 @@ static void FilterHough( filter_t *p_filter, picture_t *p_inpic,
     i_max = 0;
     i_rho_max = 0;
     i_phi_max = 0;
-    for( y = 4; y < i_num_lines - 4; y++ )
+    for( int y = 4; y < i_num_lines - 4; y++ )
     {
-        for( x = 4; x < i_src_visible - 4; x++ )
+        for( int x = 4; x < i_src_visible - 4; x++ )
         {
             uint32_t a =
-            (
-              abs(
-                ( ( p_smooth[(y-1)*i_src_visible+x]
-                    - p_smooth[(y+1)*i_src_visible+x] ) <<1 )
-               + ( p_smooth[(y-1)*i_src_visible+x-1]
-                   - p_smooth[(y+1)*i_src_visible+x-1] )
-               + ( p_smooth[(y-1)*i_src_visible+x+1]
-                   - p_smooth[(y+1)*i_src_visible+x+1] )
-              )
-            +
-              abs(
-                ( ( p_smooth[y*i_src_visible+x-1]
-                    - p_smooth[y*i_src_visible+x+1] ) <<1 )
-               + ( p_smooth[(y-1)*i_src_visible+x-1]
-                   - p_smooth[(y-1)*i_src_visible+x+1] )
-               + ( p_smooth[(y+1)*i_src_visible+x-1]
-                   - p_smooth[(y+1)*i_src_visible+x+1] )
-              )
-            );
+                  abs((((int)p_smooth[(y - 1) * i_src_visible + x]
+                      - (int)p_smooth[(y + 1) * i_src_visible + x]) * 2)
+                     + ((int)p_smooth[(y - 1) * i_src_visible + x - 1]
+                      - (int)p_smooth[(y + 1) * i_src_visible + x - 1])
+                     + ((int)p_smooth[(y - 1) * i_src_visible + x + 1]
+                      - (int)p_smooth[(y + 1) * i_src_visible + x + 1]))
+                + abs((((int)p_smooth[y * i_src_visible + x - 1]
+                      - (int)p_smooth[y * i_src_visible + x + 1]) * 2)
+                     + ((int)p_smooth[(y - 1) * i_src_visible + x - 1]
+                      - (int)p_smooth[(y - 1) * i_src_visible + x + 1])
+                     + ((int)p_smooth[(y + 1) * i_src_visible + x - 1]
+                      - (int)p_smooth[(y + 1) * i_src_visible + x + 1]));
             if( a>>8 )
             {
-                for( i = 0 ; i < i_nb_steps ; i ++ )
+                for( int i = 0; i < i_nb_steps; i++ )
                 {
                     i_rho = p_pre_hough[(i*i_num_lines+y)*i_src_visible + x];
                     if( p_hough[i_rho + i_diag/2 + i * i_diag]++ > i_max )
@@ -738,9 +720,9 @@ static void FilterHough( filter_t *p_filter, picture_t *p_inpic,
     d_cos = cos(i_phi_max*d_step);
     if( d_cos != 0 )
     {
-        for( x = 0 ; x < i_src_visible ; x++ )
+        for( int x = 0; x < i_src_visible; x++ )
         {
-            y = (i_rho_max - x * d_sin) / d_cos;
+            int y = (i_rho_max - x * d_sin) / d_cos;
             if( y >= 0 && y < i_num_lines )
                 p_outpix[y*i_dst_pitch+x] = 255;
         }

@@ -2,7 +2,7 @@
  * anaglyph.c : Create an image compatible with anaglyph glasses from a 3D video
  *****************************************************************************
  * Copyright (C) 2000-2012 VLC authors and VideoLAN
- * $Id: 5e103d4be9e429750fc2853df916a948f969752b $
+ * $Id: 4d05ab166247928f1e88099b477379aa348be730 $
  *
  * Authors: Antoine Cellerier <dionoea .t videolan d@t org>
  *
@@ -27,8 +27,8 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-
 #include <vlc_filter.h>
+#include <vlc_picture.h>
 #include "filter_picture.h"
 
 static int Create(vlc_object_t *);
@@ -45,8 +45,7 @@ static void combine_side_by_side_yuv420(picture_t *, picture_t *, int, int);
  * color schemes */
 enum scheme_e
 {
-    unknown = 0,
-    red_green,
+    red_green = 1,
     red_blue,
     red_cyan,
     trioscopic,
@@ -73,7 +72,7 @@ vlc_module_begin()
     set_shortname(N_("Anaglyph"))
     set_category(CAT_VIDEO)
     set_subcategory(SUBCAT_VIDEO_VFILTER)
-    set_capability("video filter2", 0)
+    set_capability("video filter", 0)
     add_string(FILTER_PREFIX "scheme", "red-cyan", SCHEME_TEXT, SCHEME_LONGTEXT, false)
         change_string_list(ppsz_scheme_values, ppsz_scheme_descriptions)
     set_callbacks(Create, Destroy)
@@ -155,9 +154,6 @@ static int Create(vlc_object_t *p_this)
         case magenta_cyan:
             p_sys->left = 0xff00ff;
             p_sys->right = 0x00ffff;
-            break;
-        case unknown:
-            msg_Err(p_filter, "Oops");
             break;
     }
 

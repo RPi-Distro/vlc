@@ -2,7 +2,7 @@
  * thread.c : Playlist management functions
  *****************************************************************************
  * Copyright © 1999-2008 VLC authors and VideoLAN
- * $Id: c41ea19220936d596c482960b61bb1cfa79bcd7f $
+ * $Id: 076260fb2987dea15757474d1a09682643d98e1a $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -33,7 +33,7 @@
 #include <vlc_interface.h>
 #include <vlc_playlist.h>
 #include <vlc_rand.h>
-#include "stream_output/stream_output.h"
+#include <vlc_renderer_discovery.h>
 #include "playlist_internal.h"
 
 /*****************************************************************************
@@ -191,58 +191,67 @@ void ResetCurrentlyPlaying( playlist_t *p_playlist,
  *
  * \param p_playlist the playlist object
  * \param p_item the item to play
- * \return nothing
  */
-static int PlayItem( playlist_t *p_playlist, playlist_item_t *p_item )
+static bool PlayItem( playlist_t *p_playlist, playlist_item_t *p_item )
 {
     playlist_private_t *p_sys = pl_priv(p_playlist);
     input_item_t *p_input = p_item->p_input;
+    vlc_renderer_item_t *p_renderer;
 
     PL_ASSERT_LOCKED;
 
     msg_Dbg( p_playlist, "creating new input thread" );
 
-    p_input->i_nb_played++;
+    p_item->i_nb_played++;
     set_current_status_item( p_playlist, p_item );
-
-    p_sys->status.i_status = PLAYLIST_RUNNING;
-
+    p_renderer = p_sys->p_renderer;
+    /* Retain the renderer now to avoid it to be released by
+     * playlist_SetRenderer when we exit the locked scope. If the last reference
+     * was to be released, we would use a dangling pointer */
+    if( p_renderer )
+        vlc_renderer_item_hold( p_renderer );
     assert( p_sys->p_input == NULL );
+    PL_UNLOCK;
 
-    input_thread_t *p_input_thread = input_Create( p_playlist, p_input, NULL, p_sys->p_input_resource );
-    if( p_input_thread )
+    libvlc_MetadataCancel( p_playlist->obj.libvlc, p_item );
+
+    input_thread_t *p_input_thread = input_Create( p_playlist, p_input, NULL,
+                                                   p_sys->p_input_resource,
+                                                   p_renderer );
+    if( likely(p_input_thread != NULL) )
     {
-        p_sys->p_input = p_input_thread;
-        var_AddCallback( p_input_thread, "intf-event", InputEvent, p_playlist );
+        var_AddCallback( p_input_thread, "intf-event",
+                         InputEvent, p_playlist );
 
-        var_SetAddress( p_playlist, "input-current", p_input_thread );
-
-        if( input_Start( p_sys->p_input ) )
+        if( input_Start( p_input_thread ) )
         {
+            var_DelCallback( p_input_thread, "intf-event",
+                             InputEvent, p_playlist );
             vlc_object_release( p_input_thread );
-            p_sys->p_input = p_input_thread = NULL;
+            p_input_thread = NULL;
         }
     }
 
     /* TODO store art policy in playlist private data */
     char *psz_arturl = input_item_GetArtURL( p_input );
-    char *psz_name = input_item_GetName( p_input );
     /* p_input->p_meta should not be null after a successful CreateThread */
     bool b_has_art = !EMPTY_STR( psz_arturl );
 
     if( !b_has_art || strncmp( psz_arturl, "attachment://", 13 ) )
     {
-        PL_DEBUG( "requesting art for %s", psz_name );
-        libvlc_ArtRequest( p_playlist->p_libvlc, p_input, META_REQUEST_OPTION_NONE );
+        PL_DEBUG( "requesting art for new input thread" );
+        libvlc_ArtRequest( p_playlist->obj.libvlc, p_input, META_REQUEST_OPTION_NONE );
     }
     free( psz_arturl );
-    free( psz_name );
 
-    PL_UNLOCK;
-    var_TriggerCallback( p_playlist, "activity" );
     PL_LOCK;
+    p_sys->p_input = p_input_thread;
+    PL_UNLOCK;
 
-    return VLC_SUCCESS;
+    var_SetAddress( p_playlist, "input-current", p_input_thread );
+
+    PL_LOCK;
+    return p_input_thread != NULL;
 }
 
 /**
@@ -256,6 +265,10 @@ static playlist_item_t *NextItem( playlist_t *p_playlist )
 {
     playlist_private_t *p_sys = pl_priv(p_playlist);
     playlist_item_t *p_new = NULL;
+    bool requested = p_sys->request.b_request;
+
+    /* Clear the request */
+    p_sys->request.b_request = false;
 
     /* Handle quickly a few special cases */
     /* No items to play */
@@ -266,9 +279,13 @@ static playlist_item_t *NextItem( playlist_t *p_playlist )
     }
 
     /* Start the real work */
-    if( p_sys->request.b_request )
+    if( requested )
     {
         p_new = p_sys->request.p_item;
+
+        if( p_new == NULL && p_sys->request.p_node == NULL )
+            return NULL; /* Stop request! */
+
         int i_skip = p_sys->request.i_skip;
         PL_DEBUG( "processing request item: %s, node: %s, skip: %i",
                         PLI_NAME( p_sys->request.p_item ),
@@ -351,8 +368,6 @@ static playlist_item_t *NextItem( playlist_t *p_playlist )
             p_new = ARRAY_VAL( p_playlist->current,
                                p_playlist->i_current_index );
         }
-        /* Clear the request */
-        p_sys->request.b_request = false;
     }
     /* "Automatic" item change ( next ) */
     else
@@ -367,34 +382,17 @@ static playlist_item_t *NextItem( playlist_t *p_playlist )
             msg_Dbg( p_playlist,"repeating item" );
             return get_current_status_item( p_playlist );
         }
-        if( b_playstop )
+        if( b_playstop && get_current_status_item( p_playlist ) )
         {
             msg_Dbg( p_playlist,"stopping (play and stop)" );
             return NULL;
         }
 
         /* */
-        if( get_current_status_item( p_playlist ) )
-        {
-            playlist_item_t *p_parent = get_current_status_item( p_playlist );
-            while( p_parent )
-            {
-                if( p_parent->i_flags & PLAYLIST_SKIP_FLAG )
-                {
-                    msg_Dbg( p_playlist, "blocking item, stopping") ;
-                    return NULL;
-                }
-                p_parent = p_parent->p_parent;
-            }
-        }
 
         PL_DEBUG( "changing item without a request (current %i/%i)",
                   p_playlist->i_current_index, p_playlist->current.i_size );
-        /* Cant go to next from current item */
-        if( get_current_status_item( p_playlist ) &&
-            get_current_status_item( p_playlist )->i_flags & PLAYLIST_SKIP_FLAG )
-            return NULL;
-
+        /* Can't go to next from current item */
         if( p_sys->b_reset_currently_playing )
             ResetCurrentlyPlaying( p_playlist,
                                    get_current_status_item( p_playlist ) );
@@ -418,9 +416,6 @@ static playlist_item_t *NextItem( playlist_t *p_playlist )
             return NULL;
 
         p_new = ARRAY_VAL( p_playlist->current, p_playlist->i_current_index );
-        /* The new item can't be autoselected  */
-        if( p_new != NULL && p_new->i_flags & PLAYLIST_SKIP_FLAG )
-            return NULL;
     }
     return p_new;
 }
@@ -435,16 +430,19 @@ static void LoopInput( playlist_t *p_playlist )
     if( p_sys->request.b_request || p_sys->killed )
     {
         PL_DEBUG( "incoming request - stopping current input" );
-        input_Stop( p_input, true );
+        input_Stop( p_input );
     }
 
-#warning Unsynchronized access to *p_input flags...
-    /* This input is dead. Remove it ! */
-    if( p_input->b_dead )
+    switch( var_GetInteger( p_input, "state" ) )
     {
+    case END_S:
+    case ERROR_S:
+    /* This input is dead. Remove it ! */
         p_sys->p_input = NULL;
         PL_DEBUG( "dead input" );
         PL_UNLOCK;
+
+        var_SetAddress( p_playlist, "input-current", NULL );
 
         /* WARNING: Input resource manipulation and callback deletion are
          * incompatible with the playlist lock. */
@@ -453,55 +451,22 @@ static void LoopInput( playlist_t *p_playlist )
         var_DelCallback( p_input, "intf-event", InputEvent, p_playlist );
 
         input_Close( p_input );
-        var_TriggerCallback( p_playlist, "activity" );
         PL_LOCK;
-        return;
+        break;
+    default:
+        vlc_cond_wait( &p_sys->signal, &p_sys->lock );
     }
-    /* This input has finished, ask it to die ! */
-    else if( p_input->b_error || p_input->b_eof )
-    {
-        PL_DEBUG( "finished input" );
-        input_Stop( p_input, false );
-    }
-
-    vlc_cond_wait( &p_sys->signal, &p_sys->lock );
 }
 
-static void LoopRequest( playlist_t *p_playlist, int i_status )
+static bool Next( playlist_t *p_playlist )
 {
-    playlist_private_t *p_sys = pl_priv(p_playlist);
-    assert( !p_sys->p_input );
-
-    /* No input. Several cases
-     *  - No request, running status -> start new item
-     *  - No request, stopped status -> collect garbage
-     *  - Request, running requested -> start new item
-     *  - Request, stopped requested -> collect garbage
-    */
-    if( i_status == PLAYLIST_STOPPED )
-    {
-        p_sys->status.i_status = PLAYLIST_STOPPED;
-        vlc_cond_wait( &p_sys->signal, &p_sys->lock );
-        return;
-    }
-
     playlist_item_t *p_item = NextItem( p_playlist );
-    if( p_item )
-    {
-        msg_Dbg( p_playlist, "starting playback of the new playlist item" );
-        ResyncCurrentIndex( p_playlist, p_item );
-        PlayItem( p_playlist, p_item );
-        return;
-    }
+    if( p_item == NULL )
+        return false;
 
-    msg_Dbg( p_playlist, "nothing to play" );
-    p_sys->status.i_status = PLAYLIST_STOPPED;
-
-    if( var_InheritBool( p_playlist, "play-and-exit" ) )
-    {
-        msg_Info( p_playlist, "end of playlist, exiting" );
-        libvlc_Quit( p_playlist->p_libvlc );
-    }
+    msg_Dbg( p_playlist, "starting playback of new item" );
+    ResyncCurrentIndex( p_playlist, p_item );
+    return PlayItem( p_playlist, p_item );
 }
 
 /**
@@ -513,30 +478,41 @@ static void *Thread ( void *data )
     playlist_private_t *p_sys = pl_priv(p_playlist);
 
     PL_LOCK;
-    for( ;; )
+    while( !p_sys->killed )
     {
-        while( p_sys->p_input != NULL )
-            LoopInput( p_playlist );
+        /* Playlist in stopped state */
+        assert(p_sys->p_input == NULL);
 
-        if( p_sys->killed )
-            break; /* THE END */
+        if( !p_sys->request.b_request )
+        {
+            vlc_cond_wait( &p_sys->signal, &p_sys->lock );
+            continue;
+        }
 
-        const int status = p_sys->request.b_request ?
-                           p_sys->request.i_status : p_sys->status.i_status;
+        while( !p_sys->killed && Next( p_playlist ) )
+        {   /* Playlist in running state */
+            assert(p_sys->p_input != NULL);
 
-        /* Destroy any video display if the playlist is supposed to stop */
-        if( status == PLAYLIST_STOPPED
-         && input_resource_HasVout( p_sys->p_input_resource ) )
+            do
+                LoopInput( p_playlist );
+            while( p_sys->p_input != NULL );
+        }
+
+        msg_Dbg( p_playlist, "nothing to play" );
+        if( var_InheritBool( p_playlist, "play-and-exit" ) )
+        {
+            msg_Info( p_playlist, "end of playlist, exiting" );
+            libvlc_Quit( p_playlist->obj.libvlc );
+        }
+
+        /* Destroy any video display now (XXX: ugly hack) */
+        if( input_resource_HasVout( p_sys->p_input_resource ) )
         {
             PL_UNLOCK; /* Mind: NO LOCKS while manipulating input resources! */
             input_resource_TerminateVout( p_sys->p_input_resource );
             PL_LOCK;
-            continue; /* lost lock = lost state */
         }
-
-        LoopRequest( p_playlist, status );
     }
-    p_sys->status.i_status = PLAYLIST_STOPPED;
     PL_UNLOCK;
 
     input_resource_Terminate( p_sys->p_input_resource );

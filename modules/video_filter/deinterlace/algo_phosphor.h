@@ -2,7 +2,7 @@
  * algo_phosphor.h : Phosphor algorithm for the VLC deinterlacer
  *****************************************************************************
  * Copyright (C) 2011 VLC authors and VideoLAN
- * $Id: 8159adb37474ccd1a3d64a1836ead2e9690a3284 $
+ * $Id: 14aa2525023dc43b6b65c867454e74eb84102330 $
  *
  * Author: Juha Jeronen <juha.jeronen@jyu.fi>
  *
@@ -101,7 +101,7 @@ typedef struct
  * @see Deinterlace()
  */
 int RenderPhosphor( filter_t *p_filter,
-                    picture_t *p_dst,
+                    picture_t *p_dst, picture_t *p_pic,
                     int i_order, int i_field );
 
 /*****************************************************************************

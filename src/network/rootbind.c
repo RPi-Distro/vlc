@@ -22,7 +22,7 @@
 # include <config.h>
 #endif
 
-#define _XPG4_2 /* ancilliary data on Solaris */
+#define _XPG4_2 /* ancillary data on Solaris */
 
 #if !defined (_WIN32) && !defined (__OS2__)
 # define ENABLE_ROOTWRAP 1
@@ -56,6 +56,12 @@ int rootwrap_bind (int, int, int, const struct sockaddr *, size_t);
 #endif
 #ifndef CMSG_LEN
 # define CMSG_LEN(len) (CMSG_ALIGN(sizeof(struct cmsghdr)) + (len))
+#endif
+#if !defined(MSG_NOSIGNAL)
+/* If the other end of the pipe hangs up and MSG_NOSIGNAL is missing, the
+ * process will get a (likely fatal) SIGPIPE signal. Then again, the other end
+ * can screw us up in various ways already (e.g. not answer to deadlock). */
+# define MSG_NOSIGNAL 0
 #endif
 
 #if defined(__OS2__) && !defined(ALIGN)
@@ -166,7 +172,7 @@ int rootwrap_bind (int family, int socktype, int protocol,
     memcpy (&ss, addr, (alen > sizeof (ss)) ? sizeof (ss) : alen);
 
     pthread_mutex_lock (&mutex);
-    if (send (sock, &ss, sizeof (ss), 0) != sizeof (ss))
+    if (send (sock, &ss, sizeof (ss), MSG_NOSIGNAL) != sizeof (ss))
     {
         pthread_mutex_unlock (&mutex);
         return -1;

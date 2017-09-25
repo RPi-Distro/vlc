@@ -74,8 +74,8 @@ static const char *const ppsz_sout_options[] = {
     "audio", "video", "delay", NULL
 };
 
-static sout_stream_id_sys_t *Add ( sout_stream_t *, es_format_t * );
-static int               Del ( sout_stream_t *, sout_stream_id_sys_t * );
+static sout_stream_id_sys_t *Add( sout_stream_t *, const es_format_t * );
+static void              Del ( sout_stream_t *, sout_stream_id_sys_t * );
 static int               Send( sout_stream_t *, sout_stream_id_sys_t *, block_t* );
 
 struct sout_stream_sys_t
@@ -136,7 +136,7 @@ static void Close( vlc_object_t * p_this )
     free( p_sys );
 }
 
-static sout_stream_id_sys_t * Add( sout_stream_t *p_stream, es_format_t *p_fmt )
+static sout_stream_id_sys_t * Add( sout_stream_t *p_stream, const es_format_t *p_fmt )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
 
@@ -157,11 +157,10 @@ static sout_stream_id_sys_t * Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     return (sout_stream_id_sys_t *)p_dec;
 }
 
-static int Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
+static void Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
 {
     (void) p_stream;
     input_DecoderDelete( (decoder_t *)id );
-    return VLC_SUCCESS;
 }
 
 static int Send( sout_stream_t *p_stream, sout_stream_id_sys_t *id,

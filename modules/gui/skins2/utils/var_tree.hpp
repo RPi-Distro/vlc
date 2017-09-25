@@ -2,7 +2,7 @@
  * var_tree.hpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 7e2b689fa9b8f2c834392284fec2341467152738 $
+ * $Id: 982f0a1edc7ec56ca6f1264dcfb6d7a04479e2bb $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -52,11 +52,11 @@ public:
     virtual ~VarTree();
 
     /// Iterators
-    typedef list<VarTree>::iterator Iterator;
-    typedef list<VarTree>::const_iterator ConstIterator;
+    typedef std::list<VarTree>::iterator Iterator;
+    typedef std::list<VarTree>::const_iterator ConstIterator;
 
     /// Get the variable type
-    virtual const string &getType() const { return m_type; }
+    virtual const std::string &getType() const { return m_type; }
 
     /// Add a pointer on string in the children's list
     virtual Iterator add( int id, const UStringPtr &rcString, bool selected,
@@ -257,7 +257,7 @@ public:
 protected:
 
     /// List of children
-    list<VarTree> m_children;
+    std::list<VarTree> m_children;
 
 private:
 
@@ -285,7 +285,7 @@ private:
     bool m_dontMove;
 
     /// Variable type
-    static const string m_type;
+    static const std::string m_type;
 
     /// Position variable
     VariablePtr m_cPosition;

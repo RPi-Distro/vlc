@@ -2,7 +2,7 @@
  * win32_factory.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: c192cd26a0b88e95eab0422ffb1baa0335efa4ed $
+ * $Id: c5bf1b08decba27a19e1c97501000697de4b3dee $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -91,10 +91,10 @@ public:
     virtual OSPopup *createOSPopup();
 
     /// Get the directory separator
-    virtual const string &getDirSeparator() const { return m_dirSep; }
+    virtual const std::string &getDirSeparator() const { return m_dirSep; }
 
     /// Get the resource path
-    virtual const list<string> &getResourcePath() const
+    virtual const std::list<std::string> &getResourcePath() const
         { return m_resourcePath; }
 
     /// Get the screen size
@@ -119,10 +119,10 @@ public:
     virtual void changeCursor( CursorType_t type ) const;
 
     /// Delete a directory recursively
-    virtual void rmDir( const string &rPath );
+    virtual void rmDir( const std::string &rPath );
 
     /// Map to find the GenericWindow associated with a Win32Window
-    map<HWND, GenericWindow*> m_windowMap;
+    std::map<HWND, GenericWindow*> m_windowMap;
 
     HWND getParentWindow() { return m_hParentWindow; }
 
@@ -145,11 +145,11 @@ private:
     /// Handle on user32.dll (for SetLayeredWindowAttributes)
     HINSTANCE m_hUser32;
     /// Directory separator
-    const string m_dirSep;
+    const std::string m_dirSep;
     /// Resource path
-    list<string> m_resourcePath;
+    std::list<std::string> m_resourcePath;
     /// Monitors detected
-    list<HMONITOR> m_monitorList;
+    std::list<HMONITOR> m_monitorList;
 };
 
 

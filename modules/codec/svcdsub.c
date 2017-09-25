@@ -2,7 +2,7 @@
  * svcdsub.c : Overlay Graphics Text (SVCD subtitles) decoder
  *****************************************************************************
  * Copyright (C) 2003, 2004 VLC authors and VideoLAN
- * $Id: 953070b68b6e8727aeda88706dd4ef53e9bbf72e $
+ * $Id: 581c9c3059e5bdd0cc5ebfb8b9b29a6ecc96bf29 $
  *
  * Authors: Rocky Bernstein
  *          Gildas Bazin <gbazin@videolan.org>
@@ -48,7 +48,7 @@ vlc_module_begin ()
     set_shortname( N_("SVCD subtitles") )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_SCODEC )
-    set_capability( "decoder", 50 )
+    set_capability( "spu decoder", 50 )
     set_callbacks( DecoderOpen, DecoderClose )
 
     add_obsolete_integer ( MODULE_STRING "-debug" )
@@ -62,7 +62,7 @@ vlc_module_end ()
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static subpicture_t *Decode( decoder_t *, block_t ** );
+static int      Decode( decoder_t *, block_t * );
 static block_t *Packetize  ( decoder_t *, block_t ** );
 static block_t *Reassemble ( decoder_t *, block_t * );
 static void ParseHeader( decoder_t *, block_t * );
@@ -79,13 +79,6 @@ typedef enum  {
   SUBTITLE_BLOCK_PARTIAL  = 1,
   SUBTITLE_BLOCK_COMPLETE = 2
 } packet_state_t;
-
-#ifndef NDEBUG
-# define dbg_print( s, args...) \
-     msg_Dbg(p_dec, "%s: "s, __func__ , ##args)
-#else
-# define dbg_print( s, args...)
-#endif
 
 struct decoder_sys_t
 {
@@ -137,10 +130,10 @@ static int DecoderOpen( vlc_object_t *p_this )
     p_sys->i_state = SUBTITLE_BLOCK_EMPTY;
     p_sys->p_spu   = NULL;
 
-    es_format_Init( &p_dec->fmt_out, SPU_ES, VLC_CODEC_OGT );
+    p_dec->fmt_out.i_codec = VLC_CODEC_OGT;
 
-    p_dec->pf_decode_sub = Decode;
-    p_dec->pf_packetize  = Packetize;
+    p_dec->pf_decode    = Decode;
+    p_dec->pf_packetize = Packetize;
 
     return VLC_SUCCESS;
 }
@@ -170,21 +163,23 @@ void DecoderClose( vlc_object_t *p_this )
 /*****************************************************************************
  * Decode:
  *****************************************************************************/
-static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
+static int Decode( decoder_t *p_dec, block_t *p_block )
 {
-    block_t *p_block, *p_spu;
+#ifndef NDEBUG
+    msg_Dbg( p_dec, "Decode" );
+#endif
 
-    dbg_print( "" );
+    if( p_block == NULL ) /* No Drain */
+        return VLCDEC_SUCCESS;
 
-    if( pp_block == NULL || *pp_block == NULL ) return NULL;
-
-    p_block = *pp_block;
-    *pp_block = NULL;
-
-    if( !(p_spu = Reassemble( p_dec, p_block )) ) return NULL;
+    if( !(p_block = Reassemble( p_dec, p_block )) )
+        return VLCDEC_SUCCESS;
 
     /* Parse and decode */
-    return DecodePacket( p_dec, p_spu );
+    subpicture_t *p_spu = DecodePacket( p_dec, p_block );
+    if( p_spu != NULL )
+        decoder_QueueSub( p_dec, p_spu );
+    return VLCDEC_SUCCESS;
 }
 
 /*****************************************************************************
@@ -239,7 +234,7 @@ static block_t *Reassemble( decoder_t *p_dec, block_t *p_block )
     uint16_t i_expected_image;
     uint8_t  i_packet, i_expected_packet;
 
-    if( p_block->i_flags & (BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
+    if( p_block->i_flags & (BLOCK_FLAG_CORRUPTED) )
     {
         block_Release( p_block );
         return NULL;
@@ -308,16 +303,26 @@ static block_t *Reassemble( decoder_t *p_dec, block_t *p_block )
     {
         block_t *p_spu = block_ChainGather( p_sys->p_spu );
 
+        if( unlikely( !p_spu ) )
+        {
+            block_ChainRelease( p_sys->p_spu );
+            p_sys->i_state = SUBTITLE_BLOCK_EMPTY;
+            p_sys->p_spu = NULL;
+
+            msg_Warn( p_dec, "unable to assemble blocks, discarding" );
+            return NULL;
+        }
+
         if( p_spu->i_buffer != p_sys->i_spu_size )
         {
             msg_Warn( p_dec, "subtitle packets size=%zu should be %zu",
                       p_spu->i_buffer, p_sys->i_spu_size );
         }
 
-        dbg_print( "subtitle packet complete, size=%zu", p_spu->i_buffer );
+        msg_Dbg( p_dec, "subtitle packet complete, size=%zu", p_spu->i_buffer );
 
         p_sys->i_state = SUBTITLE_BLOCK_EMPTY;
-        p_sys->p_spu = 0;
+        p_sys->p_spu = NULL;
         return p_spu;
     }
 
@@ -434,8 +439,7 @@ static subpicture_t *DecodePacket( decoder_t *p_dec, block_t *p_data )
     p_spu->b_ephemer = true;
 
     /* Create new subtitle region */
-    memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = VLC_CODEC_YUVP;
+    video_format_Init( &fmt, VLC_CODEC_YUVP );
 
     /**
        The video on which the subtitle sits, is scaled, probably
@@ -462,10 +466,12 @@ static subpicture_t *DecodePacket( decoder_t *p_dec, block_t *p_data )
     }
 
     p_region = subpicture_region_New( &fmt );
+    fmt.p_palette = NULL;
+    video_format_Clean( &fmt );
     if( !p_region )
     {
         msg_Err( p_dec, "cannot allocate SVCD subtitle region" );
-        decoder_DeleteSubpicture( p_dec, p_spu );
+        subpicture_Delete( p_spu );
         return NULL;
     }
 

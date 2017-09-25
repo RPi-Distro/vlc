@@ -4,6 +4,9 @@ GOOM_VERSION := 2k4-0
 GOOM_URL := $(CONTRIB_VIDEOLAN)/goom/goom-$(GOOM_VERSION)-src.tar.gz
 
 PKGS += goom
+ifeq ($(call need_pkg,"libgoom2"),)
+PKGS_FOUND += goom
+endif
 
 $(TARBALLS)/goom-$(GOOM_VERSION)-src.tar.gz:
 	$(call download,$(GOOM_URL))
@@ -17,7 +20,6 @@ goom: goom-$(GOOM_VERSION)-src.tar.gz .sum-goom
 	$(APPLY) $(SRC)/goom/goom2k4-autotools.patch
 	$(APPLY) $(SRC)/goom/goom2k4-noxmmx.patch
 	$(APPLY) $(SRC)/goom/goom2k4-xmmslibdir.patch
-	$(APPLY) $(SRC)/goom/goom2k4-0-mmx.patch
 ifdef HAVE_WIN32
 	$(APPLY) $(SRC)/goom/goom2k4-0-win32.patch
 endif

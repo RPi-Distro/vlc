@@ -2,7 +2,7 @@
  * algo_basic.c : Basic algorithms for the VLC deinterlacer
  *****************************************************************************
  * Copyright (C) 2000-2011 VLC authors and VideoLAN
- * $Id: 858ae93da852f476bc2e1986197bd1d20b564fee $
+ * $Id: 6ad9b06e0cb4d37bd7042f2b81b74abe08fa29b4 $
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *         Damien Lucas <nitrox@videolan.org>  (Bob, Blend)
@@ -28,6 +28,7 @@
 #endif
 
 #include <stdint.h>
+#include <assert.h>
 
 #include <vlc_common.h>
 #include <vlc_picture.h>
@@ -42,8 +43,9 @@
  * RenderDiscard: only keep TOP or BOTTOM field, discard the other.
  *****************************************************************************/
 
-void RenderDiscard( picture_t *p_outpic, picture_t *p_pic, int i_field )
+int RenderDiscard( filter_t *p_filter, picture_t *p_outpic, picture_t *p_pic )
 {
+    VLC_UNUSED(p_filter);
     int i_plane;
 
     /* Copy image and skip lines */
@@ -51,8 +53,7 @@ void RenderDiscard( picture_t *p_outpic, picture_t *p_pic, int i_field )
     {
         uint8_t *p_in, *p_out_end, *p_out;
 
-        p_in = p_pic->p[i_plane].p_pixels
-                   + i_field * p_pic->p[i_plane].i_pitch;
+        p_in = p_pic->p[i_plane].p_pixels;
 
         p_out = p_outpic->p[i_plane].p_pixels;
         p_out_end = p_out + p_outpic->p[i_plane].i_pitch
@@ -66,14 +67,18 @@ void RenderDiscard( picture_t *p_outpic, picture_t *p_pic, int i_field )
             p_in += 2 * p_pic->p[i_plane].i_pitch;
         }
     }
+    return VLC_SUCCESS;
 }
 
 /*****************************************************************************
  * RenderBob: renders a BOB picture - simple copy
  *****************************************************************************/
 
-void RenderBob( picture_t *p_outpic, picture_t *p_pic, int i_field )
+int RenderBob( filter_t *p_filter, picture_t *p_outpic, picture_t *p_pic,
+               int order, int i_field )
 {
+    VLC_UNUSED(p_filter);
+    VLC_UNUSED(order);
     int i_plane;
 
     /* Copy image and skip lines */
@@ -118,15 +123,18 @@ void RenderBob( picture_t *p_outpic, picture_t *p_pic, int i_field )
             memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
         }
     }
+    return VLC_SUCCESS;
 }
 
 /*****************************************************************************
  * RenderLinear: BOB with linear interpolation
  *****************************************************************************/
 
-void RenderLinear( filter_t *p_filter,
-                   picture_t *p_outpic, picture_t *p_pic, int i_field )
+int RenderLinear( filter_t *p_filter,
+                  picture_t *p_outpic, picture_t *p_pic, int order, int i_field )
 {
+    VLC_UNUSED(p_filter);
+    VLC_UNUSED(order);
     int i_plane;
 
     /* Copy image and skip lines */
@@ -173,15 +181,16 @@ void RenderLinear( filter_t *p_filter,
         }
     }
     EndMerge();
+    return VLC_SUCCESS;
 }
 
 /*****************************************************************************
  * RenderMean: Half-resolution blender
  *****************************************************************************/
 
-void RenderMean( filter_t *p_filter,
-                 picture_t *p_outpic, picture_t *p_pic )
+int RenderMean( filter_t *p_filter, picture_t *p_outpic, picture_t *p_pic )
 {
+    VLC_UNUSED(p_filter);
     int i_plane;
 
     /* Copy image and skip lines */
@@ -206,15 +215,16 @@ void RenderMean( filter_t *p_filter,
         }
     }
     EndMerge();
+    return VLC_SUCCESS;
 }
 
 /*****************************************************************************
  * RenderBlend: Full-resolution blender
  *****************************************************************************/
 
-void RenderBlend( filter_t *p_filter,
-                  picture_t *p_outpic, picture_t *p_pic )
+int RenderBlend( filter_t *p_filter, picture_t *p_outpic, picture_t *p_pic )
 {
+    VLC_UNUSED(p_filter);
     int i_plane;
 
     /* Copy image and skip lines */
@@ -243,4 +253,5 @@ void RenderBlend( filter_t *p_filter,
         }
     }
     EndMerge();
+    return VLC_SUCCESS;
 }

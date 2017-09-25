@@ -2,7 +2,7 @@
  * VLCMinimalVoutWindow.m: MacOS X Minimal interface window
  *****************************************************************************
  * Copyright (C) 2007-2012 VLC authors and VideoLAN
- * $Id: 143291e5d1fe314e558c34d1120fd07680e57a11 $
+ * $Id: 4998e6b03cb2afb1e16d501250259488ec43c0e6 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -25,7 +25,7 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#import "intf.h"
+#import "VLCMain.h"
 #import "VLCMinimalVoutWindow.h"
 #import "misc.h"
 

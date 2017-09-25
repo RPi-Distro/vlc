@@ -2,7 +2,7 @@
  * effects.c : Effects for the visualization system
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: 7b09890f32f5d08c5487bafc85bc760dbcf0ebf2 $
+ * $Id: 56d493247ecc6a8aac88cc0ad11c2ddd0b9d5f3b $
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
  *          Adrien Maglo <magsoft@videolan.org>
@@ -30,8 +30,8 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_vout.h>
-#include <vlc_aout.h>
+#include <vlc_picture.h>
+#include <vlc_block.h>
 
 #include "visual.h"
 #include <math.h>

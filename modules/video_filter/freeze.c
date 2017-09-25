@@ -2,7 +2,7 @@
  * freeze.c : Freezing video filter
  *****************************************************************************
  * Copyright (C) 2013      Vianney Boyer
- * $Id: 015346d3b597ae14a8c0ef2d66cf987e1bdb8f8d $
+ * $Id: a8b2087e5adcb8023dffd00f19d0c215a4d036b5 $
  *
  * Authors: Vianney Boyer <vlcvboyer -at- gmail -dot- com>
  *
@@ -32,7 +32,8 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
-
+#include <vlc_mouse.h>
+#include <vlc_picture.h>
 #include "filter_picture.h"
 
 #ifndef MOD
@@ -76,7 +77,7 @@ static void Close( vlc_object_t * );
 vlc_module_begin()
     set_description( N_("Freezing interactive video filter") )
     set_shortname(   N_("Freeze" ) )
-    set_capability(  "video filter2", 0 )
+    set_capability(  "video filter", 0 )
     set_category(    CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
 

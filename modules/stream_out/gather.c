@@ -2,7 +2,7 @@
  * gather.c: gathering stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: ebad0e1c1fe609b7516bd8367e060e0d71532bbb $
+ * $Id: 2adfbab332933fc93c72bef2a5f8ed0496079e77 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -51,8 +51,8 @@ vlc_module_end ()
 /*****************************************************************************
  * Exported prototypes
  *****************************************************************************/
-static sout_stream_id_sys_t *Add ( sout_stream_t *, es_format_t * );
-static int               Del ( sout_stream_t *, sout_stream_id_sys_t * );
+static sout_stream_id_sys_t *Add ( sout_stream_t *, const es_format_t * );
+static void              Del ( sout_stream_t *, sout_stream_id_sys_t * );
 static int               Send( sout_stream_t *, sout_stream_id_sys_t *, block_t* );
 
 struct sout_stream_id_sys_t
@@ -121,7 +121,7 @@ static void Close( vlc_object_t * p_this )
 /*****************************************************************************
  * Add:
  *****************************************************************************/
-static sout_stream_id_sys_t * Add( sout_stream_t *p_stream, es_format_t *p_fmt )
+static sout_stream_id_sys_t * Add( sout_stream_t *p_stream, const es_format_t *p_fmt )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
     sout_stream_id_sys_t  *id;
@@ -181,6 +181,7 @@ static sout_stream_id_sys_t * Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     if( id == NULL )
         return NULL;
     es_format_Copy( &id->fmt, p_fmt );
+    id->b_streamswap     = false;
     id->b_used           = true;
     id->id               = sout_StreamIdAdd( p_stream->p_next, &id->fmt );
     if( id->id == NULL )
@@ -196,11 +197,10 @@ static sout_stream_id_sys_t * Add( sout_stream_t *p_stream, es_format_t *p_fmt )
 /*****************************************************************************
  * Del:
  *****************************************************************************/
-static int Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
+static void Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
 {
     VLC_UNUSED(p_stream);
     id->b_used = false;
-    return VLC_SUCCESS;
 }
 
 /*****************************************************************************

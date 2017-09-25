@@ -2,7 +2,7 @@
  * vobsub.h: Vobsub support
  *****************************************************************************
  * Copyright (C) 2009 VLC authors and VideoLAN
- * $Id: 63b6bd0914be00c4ed15940eddbcc04133abcef3 $
+ * $Id: 4b9334fc3b974b54439efdcf9943ab6e3f744dd9 $
  *
  * Authors: John Stebbins
  *
@@ -40,10 +40,10 @@ static inline void vobsub_palette_rgb2yuv( uint32_t *pu_palette )
 static inline int vobsub_palette_parse( const char *psz_buf, uint32_t *pu_palette )
 {
     if( sscanf( psz_buf, "palette: "
-                "%" PRIx32 ", %" PRIx32 ", %" PRIx32 ", %" PRIx32 ", "
-                "%" PRIx32 ", %" PRIx32 ", %" PRIx32 ", %" PRIx32 ", "
-                "%" PRIx32 ", %" PRIx32 ", %" PRIx32 ", %" PRIx32 ", "
-                "%" PRIx32 ", %" PRIx32 ", %" PRIx32 ", %" PRIx32,
+                "%" PRIx32", %" PRIx32 ", %" PRIx32 ", %" PRIx32 ", "
+                "%" PRIx32", %" PRIx32 ", %" PRIx32 ", %" PRIx32 ", "
+                "%" PRIx32", %" PRIx32 ", %" PRIx32 ", %" PRIx32 ", "
+                "%" PRIx32", %" PRIx32 ", %" PRIx32 ", %" PRIx32 "",
                 &pu_palette[0], &pu_palette[1], &pu_palette[2], &pu_palette[3],
                 &pu_palette[4], &pu_palette[5], &pu_palette[6], &pu_palette[7],
                 &pu_palette[8], &pu_palette[9], &pu_palette[10], &pu_palette[11],

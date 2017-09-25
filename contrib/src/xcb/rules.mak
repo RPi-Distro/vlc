@@ -1,7 +1,13 @@
 # X protocol C language Bindings
 
-XCB_VERSION := 1.9
+XCB_VERSION := 1.12
 XCB_URL := http://xcb.freedesktop.org/dist/libxcb-$(XCB_VERSION).tar.bz2
+
+ifdef HAVE_LINUX
+ifndef HAVE_ANDROID
+PKGS += xcb
+endif
+endif
 
 ifeq ($(call need_pkg,"xcb >= 1.6 xcb-shm xcb-composite xcb-xv >= 1.1.90.1"),)
 # xcb-randr >= 1.3 is not that useful
@@ -15,6 +21,7 @@ $(TARBALLS)/libxcb-$(XCB_VERSION).tar.bz2:
 
 libxcb: libxcb-$(XCB_VERSION).tar.bz2 .sum-xcb
 	$(UNPACK)
+	$(call pkg_static,"xcb.pc.in")
 	$(MOVE)
 
 XCBCONF := \
@@ -24,14 +31,14 @@ XCBCONF := \
 	--disable-dri2 \
 	--disable-glx \
 	--enable-randr \
-	--disable-render \
+	--enable-render \
 	--disable-resource \
 	--disable-screensaver \
-	--disable-shape \
+	--enable-shape \
 	--enable-shm \
 	--disable-sync \
 	--disable-xevie \
-	--disable-xfixes \
+	--enable-xfixes \
 	--disable-xfree86-dri \
 	--disable-xinerama \
 	--disable-xinput \
@@ -40,9 +47,10 @@ XCBCONF := \
 	--disable-xtest \
 	--enable-xv \
 	--disable-xvmc \
+	--without-doxygen \
 	$(HOSTCONF)
 
-DEPS_xcb = xau $(DEPS_xau)
+DEPS_xcb = xau $(DEPS_xau) xcb-proto $(DEPS_xcb-proto)
 
 .xcb: libxcb
 	cd $< && $(HOSTVARS) ./configure $(XCBCONF)

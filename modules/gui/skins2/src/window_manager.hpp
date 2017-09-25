@@ -2,7 +2,7 @@
  * window_manager.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9d2b41021ee3ee09bf953ae6b725ce2f042bb00c $
+ * $Id: ede1f878ac8296eb85065c3a107d8bb8043b9904 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -170,8 +170,8 @@ public:
 
 private:
     /// Some useful typedefs for lazy people like me
-    typedef set<TopWindow*> WinSet_t;
-    typedef list<Anchor*> AncList_t;
+    typedef std::set<TopWindow*> WinSet_t;
+    typedef std::list<Anchor*> AncList_t;
 
     /// Dependencies map
     /**
@@ -181,7 +181,7 @@ private:
      * m_dep[c], it doesn't mean that a is in m_dep[c] (in fact, it
      * would be extremely rare...)
      */
-    map<TopWindow*, WinSet_t> m_dependencies;
+    std::map<TopWindow*, WinSet_t> m_dependencies;
     /// Store all the windows
     WinSet_t m_allWindows;
     /**

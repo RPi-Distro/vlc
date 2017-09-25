@@ -2,7 +2,7 @@
  * ini_file.hpp
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 59e1574108e25cedd85773008a976ebbfb828ed2 $
+ * $Id: 4d41441f89f63b6fe6522b99aea53b153c7b34b1 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -33,16 +33,16 @@
 class IniFile: public SkinObject
 {
 public:
-    IniFile( intf_thread_t *pIntf, const string &rName,
-             const string &rPath );
+    IniFile( intf_thread_t *pIntf, const std::string &rName,
+             const std::string &rPath );
     virtual ~IniFile() { }
 
     /// Parse the INI file and fill the VarManager
     void parseFile();
 
 private:
-    string m_name;
-    string m_path;
+    std::string m_name;
+    std::string m_path;
 };
 
 

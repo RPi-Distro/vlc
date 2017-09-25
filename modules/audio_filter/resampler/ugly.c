@@ -2,7 +2,7 @@
  * ugly.c : zero-order hold "ugly" resampler
  *****************************************************************************
  * Copyright (C) 2002, 2006 VLC authors and VideoLAN
- * $Id: 796c499a545bebcb8f5f684f327debb3a5f8fc2f $
+ * $Id: fd72e85691a5a3fb12932711aa7f90acd6f2b68b $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -49,7 +49,7 @@ vlc_module_begin ()
     set_description( N_("Nearest-neighbor audio resampler") )
     set_capability( "audio converter", 2 )
     set_category( CAT_AUDIO )
-    set_subcategory( SUBCAT_AUDIO_MISC )
+    set_subcategory( SUBCAT_AUDIO_RESAMPLER )
     set_callbacks( Create, NULL )
 
     add_submodule()
@@ -74,10 +74,7 @@ static int CreateResampler( vlc_object_t *p_this )
     filter_t * p_filter = (filter_t *)p_this;
 
     if( p_filter->fmt_in.audio.i_format != p_filter->fmt_out.audio.i_format
-     || p_filter->fmt_in.audio.i_physical_channels
-                                 != p_filter->fmt_out.audio.i_physical_channels
-     || p_filter->fmt_in.audio.i_original_channels
-                                 != p_filter->fmt_out.audio.i_original_channels
+     || p_filter->fmt_in.audio.i_channels != p_filter->fmt_out.audio.i_channels
      || !AOUT_FMT_LINEAR( &p_filter->fmt_in.audio ) )
         return VLC_EGENERIC;
 

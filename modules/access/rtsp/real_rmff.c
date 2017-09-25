@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id: a529e4bc49f2049b47a9ba8c9c4e4fc97d9c449b $
+ * $Id: 1ec861d1dd820007085ada47c79b4aa2faa9d20a $
  *
  * functions for real media file format
  * adopted from joschkas real tools
@@ -511,7 +511,7 @@ void rmff_print_header(rmff_header_t *h) {
   }
 }
 
-void rmff_fix_header(access_t *p_access, rmff_header_t *h) {
+void rmff_fix_header(stream_t *p_access, rmff_header_t *h) {
 
   unsigned int num_headers=0;
   unsigned int header_size=0;

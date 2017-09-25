@@ -2,7 +2,7 @@
  * ctrl_text.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 34986470c424484190b34f9819e47c913b2f1981 $
+ * $Id: ecc9ee065545ada46eb4c08582757dd9a0a35088 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -81,7 +81,7 @@ public:
     void setText( const UString &rText, uint32_t color = 0xFFFFFFFF );
 
     /// Get the type of control (custom RTTI)
-    virtual string getType() const { return "text"; }
+    virtual std::string getType() const { return "text"; }
 
 private:
     /// Finite state machine of the control

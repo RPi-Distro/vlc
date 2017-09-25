@@ -18,19 +18,17 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-#ifndef _VLC_MP4_H
-#define _VLC_MP4_H 1
+#ifndef VLC_MP4_MP4_H_
+#define VLC_MP4_MP4_H_
 
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
 #include <vlc_common.h>
 #include "libmp4.h"
+#include "fragments.h"
+#include "../asf/asfpacket.h"
 
 /* Contain all information about a chunk */
 typedef struct
@@ -40,13 +38,14 @@ typedef struct
     uint32_t     i_sample_count; /* how many samples in this chunk */
     uint32_t     i_sample_first; /* index of the first sample in this chunk */
     uint32_t     i_sample; /* index of the next sample to read in this chunk */
+    uint32_t     i_virtual_run_number; /* chunks interleaving sequence */
 
     /* now provide way to calculate pts, dts, and offset without too
         much memory and with fast access */
 
     /* with this we can calculate dts/pts without waste memory */
     uint64_t     i_first_dts;   /* DTS of the first sample */
-    uint64_t     i_last_dts;    /* DTS of the last sample */
+    uint64_t     i_duration;    /* total duration of all samples */
 
     uint32_t     i_entries_dts;
     uint32_t     *p_sample_count_dts;
@@ -56,12 +55,23 @@ typedef struct
     uint32_t     *p_sample_count_pts;
     int32_t      *p_sample_offset_pts;  /* pts-dts */
 
-    uint8_t      **p_sample_data;     /* set when b_fragmented is true */
     uint32_t     *p_sample_size;
     /* TODO if needed add pts
         but quickly *add* support for edts and seeking */
 
 } mp4_chunk_t;
+
+typedef struct
+{
+    uint64_t i_offset;
+    stime_t  i_first_dts;
+    const MP4_Box_t *p_trun;
+} mp4_run_t;
+
+typedef enum RTP_timstamp_synchronization_s
+{
+    UNKNOWN_SYNC = 0, UNSYNCHRONIZED = 1, SYNCHRONIZED = 2, RESERVED = 3
+} RTP_timstamp_synchronization_t;
 
  /* Contain all needed information for read all track with vlc */
 typedef struct
@@ -71,11 +81,17 @@ typedef struct
     int b_ok;               /* The track is usable */
     int b_enable;           /* is the trak enable by default */
     bool b_selected;  /* is the trak being played */
-    bool b_chapter;   /* True when used for chapter only */
+    bool b_chapters_source;   /* True when used for chapter only */
+    bool b_forced_spu; /* forced track selection (never done by default/priority) */
+    uint32_t i_switch_group;
 
     bool b_mac_encoding;
 
     es_format_t fmt;
+    uint32_t    i_block_flags;
+    uint32_t    i_next_block_flags;
+    uint8_t     rgi_chans_reordering[AOUT_CHAN_MAX];
+    bool        b_chans_reorder;
     es_out_id_t *p_es;
 
     /* display size only ! */
@@ -85,12 +101,11 @@ typedef struct
 
     /* more internal data */
     uint32_t        i_timescale;    /* time scale for this track only */
-    uint16_t        current_qid;    /* Smooth Streaming quality level ID */
 
     /* elst */
     int             i_elst;         /* current elst */
     int64_t         i_elst_time;    /* current elst start time (in movie time scale)*/
-    MP4_Box_t       *p_elst;        /* elst (could be NULL) */
+    const MP4_Box_t *p_elst;        /* elst (could be NULL) */
 
     /* give the next sample to read, i_chunk is to find quickly where
       the sample is located */
@@ -101,50 +116,79 @@ typedef struct
     uint32_t         i_sample_count;
 
     mp4_chunk_t    *chunk; /* always defined  for each chunk */
-    mp4_chunk_t    *cchunk; /* current chunk if b_fragmented is true */
 
     /* sample size, p_sample_size defined only if i_sample_size == 0
         else i_sample_size is size for all sample */
     uint32_t         i_sample_size;
     uint32_t         *p_sample_size; /* XXX perhaps add file offset if take
-                                    too much time to do sumations each time*/
+//                                    too much time to do sumations each time*/
 
     uint32_t     i_sample_first; /* i_sample_first value
                                                    of the next chunk */
     uint64_t     i_first_dts;    /* i_first_dts value
                                                    of the next chunk */
 
-    MP4_Box_t *p_stbl;  /* will contain all timing information */
-    MP4_Box_t *p_stsd;  /* will contain all data to initialize decoder */
-    MP4_Box_t *p_sample;/* point on actual sdsd */
+    const MP4_Box_t *p_track;
+    const MP4_Box_t *p_stbl;  /* will contain all timing information */
+    const MP4_Box_t *p_stsd;  /* will contain all data to initialize decoder */
+    const MP4_Box_t *p_sample;/* point on actual sdsd */
 
-    bool b_drms;
-    bool b_has_non_empty_cchunk;
+#if 0
     bool b_codec_need_restart;
-    void      *p_drms;
-    MP4_Box_t *p_skcr;
+#endif
 
-    mtime_t i_time;
+    mtime_t i_time; // track scaled
+
+    /* rrtp reception hint track */
+    MP4_Box_t *p_sdp;                         /* parsed for codec and other info */
+    RTP_timstamp_synchronization_t sync_mode; /* whether track is already in sync */
+
+    /* First recorded RTP timestamp offset.
+     * Needed for rrtp synchronization */
+    int32_t         i_tsro_offset;
 
     struct
     {
         /* for moof parsing */
-        MP4_Box_t *p_traf;
-        MP4_Box_t *p_tfhd;
-        MP4_Box_t *p_trun;
-        uint64_t   i_traf_base_offset;
+        /* tfhd defaults */
+        uint32_t i_default_sample_size;
+        uint32_t i_default_sample_duration;
+
+        struct
+        {
+            mp4_run_t *p_array;
+            uint32_t   i_current;
+            uint32_t   i_count;
+        } runs;
+        uint64_t i_trun_sample;
+        uint64_t i_trun_sample_pos;
+
     } context;
 
+    /* ASF packets handling */
+    const MP4_Box_t *p_asf;
+    mtime_t          i_dts_backup;
+    mtime_t          i_pts_backup;
+    asf_track_info_t asfinfo;
 } mp4_track_t;
 
-typedef struct mp4_fragment_t mp4_fragment_t;
-struct mp4_fragment_t
+int SetupVideoES( demux_t *p_demux, mp4_track_t *p_track, MP4_Box_t *p_sample );
+int SetupAudioES( demux_t *p_demux, mp4_track_t *p_track, MP4_Box_t *p_sample );
+int SetupSpuES( demux_t *p_demux, mp4_track_t *p_track, MP4_Box_t *p_sample );
+int SetupCCES( demux_t *p_demux, mp4_track_t *p_track, MP4_Box_t *p_sample );
+void SetupMeta( vlc_meta_t *p_meta, MP4_Box_t *p_udta );
+
+/* format of RTP reception hint track sample constructor */
+typedef struct
 {
-    uint64_t i_chunk_range_min_offset;
-    uint64_t i_chunk_range_max_offset;
-    uint64_t i_duration;
-    MP4_Box_t *p_moox;
-    mp4_fragment_t *p_next;
-};
+    uint8_t  type;
+    int8_t   trackrefindex;
+    uint16_t length;
+    uint32_t samplenumber;
+    uint32_t sampleoffset; /* indicates where the payload is located within sample */
+    uint16_t bytesperblock;
+    uint16_t samplesperblock;
+
+} mp4_rtpsampleconstructor_t;
 
 #endif

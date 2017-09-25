@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
  * Copyright (C) 2012 KO Myung-Hun
- * $Id: c16b827afc294da4a4e5452b7c0a06bc0929ccb1 $
+ * $Id: c57180cfa7e247a74bf95d0929f9569b939f5ed9 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Ethan C. Baldridge <BaldridgeE@cadmus.com>
@@ -30,6 +30,8 @@
 # include "config.h"
 #endif
 
+#include <string.h>
+
 #include <vlc_common.h>
 #include <vlc_charset.h>
 #include "modules/modules.h"
@@ -49,16 +51,16 @@ int module_Load( vlc_object_t *p_this, const char *psz_file,
                  module_handle_t *p_handle, bool lazy )
 {
     const int flags = lazy ? RTLD_LAZY : RTLD_NOW;
-    char *path = ToLocale( psz_file );
+    char *path = ToLocaleDup( psz_file );
 
     module_handle_t handle = dlopen( path, flags );
     if( handle == NULL )
     {
         msg_Warn( p_this, "cannot load module `%s' (%s)", path, dlerror() );
-        LocaleFree( path );
+        free( path );
         return -1;
     }
-    LocaleFree( path );
+    free( path );
     *p_handle = handle;
     return 0;
 }
@@ -90,5 +92,8 @@ void module_Unload( module_handle_t handle )
  */
 void *module_Lookup( module_handle_t handle, const char *psz_function )
 {
-    return dlsym( handle, psz_function );
+    char buf[strlen(psz_function) + 2];
+    buf[0] = '_';
+    strcpy(buf + 1, psz_function);
+    return dlsym( handle, buf );
 }

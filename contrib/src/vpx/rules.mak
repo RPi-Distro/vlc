@@ -1,19 +1,25 @@
 # libvpx
 
-VPX_VERSION := 1.4.0
+VPX_VERSION := 1.6.1
 VPX_URL := http://storage.googleapis.com/downloads.webmproject.org/releases/webm/libvpx-$(VPX_VERSION).tar.bz2
 
+PKGS += vpx
+ifeq ($(call need_pkg,"vpx >= 1.5.0"),)
+PKGS_FOUND += vpx
+endif
+
 $(TARBALLS)/libvpx-$(VPX_VERSION).tar.bz2:
-	$(call download,$(VPX_URL))
+	$(call download_pkg,$(VPX_URL),vpx)
 
 .sum-vpx: libvpx-$(VPX_VERSION).tar.bz2
 
 libvpx: libvpx-$(VPX_VERSION).tar.bz2 .sum-vpx
 	$(UNPACK)
-	$(APPLY) $(SRC)/vpx/libvpx-sysroot.patch
-	$(APPLY) $(SRC)/vpx/libvpx-no-cross.patch
 	$(APPLY) $(SRC)/vpx/libvpx-mac.patch
 	$(APPLY) $(SRC)/vpx/libvpx-ios.patch
+ifdef HAVE_ANDROID
+	$(APPLY) $(SRC)/vpx/libvpx-android.patch
+endif
 	$(MOVE)
 
 DEPS_vpx =
@@ -77,28 +83,47 @@ VPX_CONF := \
 	--disable-examples \
 	--disable-unit-tests \
 	--disable-install-bins \
-	--disable-install-docs
+	--disable-install-docs \
+	--disable-dependency-tracking \
+	--enable-vp9-highbitdepth
 
 ifndef BUILD_ENCODERS
-	VPX_CONF += --disable-vp8-encoder --disable-vp9-encoder
+VPX_CONF += --disable-vp8-encoder --disable-vp9-encoder
 endif
 
 ifndef HAVE_WIN32
 VPX_CONF += --enable-pic
+else
+VPX_CONF += --extra-cflags="-mstackrealign"
 endif
 ifdef HAVE_MACOSX
-VPX_CONF += --sdk-path=$(MACOSX_SDK)
+VPX_CONF += --sdk-path=$(MACOSX_SDK) --extra-cflags="$(EXTRA_CFLAGS)"
 endif
 ifdef HAVE_IOS
-VPX_CONF += --sdk-path=$(IOS_SDK) --enable-vp8-decoder --disable-vp8-encoder --disable-vp9-encoder
-VPX_LDFLAGS := -L$(IOS_SDK)/usr/lib -arch $(ARCH) -syslibroot $(IOS_SDK) -ios_version_min 6.1
+VPX_CONF += --sdk-path=$(IOS_SDK) --enable-vp8-decoder
+ifdef HAVE_TVOS
+VPX_LDFLAGS := -L$(IOS_SDK)/usr/lib -isysroot $(IOS_SDK) -mtvos-version-min=9.0
+else
+VPX_LDFLAGS := -L$(IOS_SDK)/usr/lib -isysroot $(IOS_SDK) -miphoneos-version-min=6.1
+endif
+ifeq ($(ARCH),aarch64)
+VPX_LDFLAGS += -arch arm64
+else
+VPX_LDFLAGS += -arch $(ARCH)
+endif
 endif
 ifdef HAVE_ANDROID
 # vpx configure.sh overrides our sysroot and it looks for it itself, and
 # uses that path to look for the compiler (which we already know)
-VPX_CONF += --sdk-path=$(shell dirname $(shell which $(HOST)-gcc))
-# needed for cpu-features.h
-VPX_CONF += --extra-cflags="-I $(ANDROID_NDK)/sources/cpufeatures/"
+VPX_CONF += --sdk-path=$(shell dirname $(shell which $(HOST)-clang))
+# broken text relocations
+ifeq ($(ARCH),x86_64)
+VPX_CONF += --disable-mmx
+endif
+endif
+
+ifndef WITH_OPTIMIZATION
+VPX_CONF += --enable-debug --disable-optimizations
 endif
 
 .vpx: libvpx

@@ -2,7 +2,7 @@
  * configuration.c: Generic lua<->vlc config interface
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: b5a5cbd01f50558acbc5377e82eb537170a2c5a7 $
+ * $Id: bbb200527c0f20a71b5ef704fd363d8890d8403d $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -44,7 +44,7 @@ static int vlclua_config_get( lua_State *L )
 {
     vlc_object_t * p_this = vlclua_get_this( L );
     const char *psz_name = luaL_checkstring( L, 1 );
-    switch( config_GetType( p_this, psz_name ) )
+    switch( config_GetType( psz_name ) )
     {
         case VLC_VAR_STRING:
         {
@@ -77,14 +77,14 @@ static int vlclua_config_set( lua_State *L )
 {
     vlc_object_t *p_this = vlclua_get_this( L );
     const char *psz_name = luaL_checkstring( L, 1 );
-    switch( config_GetType( p_this, psz_name ) )
+    switch( config_GetType( psz_name ) )
     {
         case VLC_VAR_STRING:
             config_PutPsz( p_this, psz_name, luaL_checkstring( L, 2 ) );
             break;
 
         case VLC_VAR_INTEGER:
-            config_PutInt( p_this, psz_name, luaL_checkint( L, 2 ) );
+            config_PutInt( p_this, psz_name, luaL_checkinteger( L, 2 ) );
             break;
 
         case VLC_VAR_BOOL:

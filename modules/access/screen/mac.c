@@ -2,7 +2,7 @@
  * mac.c: Screen capture module for the Mac.
  *****************************************************************************
  * Copyright (C) 2004 - 2013 VLC authors and VideoLAN
- * $Id: 9d0c58637b5f2d4b76810148f163aabc4b58786e $
+ * $Id: ae8a67fd82386b439895d001efc727051b3a1632 $
  *
  * Authors: FUJISAWA Tooru <arai_a@mac.com>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -77,7 +77,7 @@ int screen_InitCapture(demux_t *p_demux)
 
     /* fetch the screen we should capture */
     p_data->display_id = kCGDirectMainDisplay;
-    p_data->rate = var_InheritFloat (p_demux, "screen-fps");
+    p_data->rate = var_InheritFloat(p_demux, "screen-fps");
 
     unsigned int displayCount = 0;
     returnedError = CGGetOnlineDisplayList(0, NULL, &displayCount);
@@ -124,10 +124,10 @@ int screen_InitCapture(demux_t *p_demux)
     p_sys->fmt.video.i_rmask           = 0x00ff0000;
     p_sys->fmt.video.i_gmask           = 0x0000ff00;
     p_sys->fmt.video.i_bmask           = 0x000000ff;
-    p_sys->fmt.video.i_frame_rate      = 1000 * p_data->rate;
-    p_sys->fmt.video.i_frame_rate_base = 1000;
     p_sys->fmt.video.i_sar_num         =
     p_sys->fmt.video.i_sar_den         = 1;
+    p_sys->fmt.video.i_frame_rate      = 1000 * p_data->rate;
+    p_sys->fmt.video.i_frame_rate_base = 1000;
 
     return VLC_SUCCESS;
 }

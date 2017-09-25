@@ -2,7 +2,7 @@
  * macosx.c: minimal Mac OS X module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2012 VLC authors and VideoLAN
- * $Id: 5b8df7390b26ce32a1960bf06c1234e1c3ca35f3 $
+ * $Id: 8b779d10c69a88aac9a1ca7f4543953185b7afaa $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Eugenio Jarosiewicz <ej0@cise.ufl.edu>
@@ -63,7 +63,7 @@ vlc_module_begin ()
     add_submodule ()
     /* Will be loaded even without interface module. see voutgl.m */
         set_description( "Minimal Mac OS X Video Output Provider" )
-        set_capability( "vout window nsobject", 100 )
+        set_capability( "vout window", 100 )
         set_callbacks( WindowOpen, WindowClose )
 vlc_module_end ()
 

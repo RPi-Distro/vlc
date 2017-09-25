@@ -2,7 +2,7 @@
  * vlc.c: the VLC player
  *****************************************************************************
  * Copyright (C) 1998-2013 the VideoLAN team
- * $Id: e0deebe474e2d2b96ed9d18fdd46b4d9816aec58 $
+ * $Id: 72e0eee4286fb9ed7d670a47a94dc3326962d0d0 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -201,11 +201,14 @@ int main( int i_argc, const char *ppsz_argv[] )
     pthread_t self = pthread_self ();
     pthread_sigmask (SIG_SETMASK, &set, NULL);
 
-    const char *argv[i_argc + 2];
+    const char *argv[i_argc + 3];
     int argc = 0;
 
     argv[argc++] = "--no-ignore-config";
     argv[argc++] = "--media-library";
+#ifdef HAVE_DBUS
+    argv[argc++] = "--dbus";
+#endif
     ppsz_argv++; i_argc--; /* skip executable path */
 
 #ifdef __OS2__
@@ -238,15 +241,12 @@ int main( int i_argc, const char *ppsz_argv[] )
 #if !defined (__OS2__)
     libvlc_add_intf (vlc, "globalhotkeys,none");
 #endif
-#ifdef HAVE_DBUS
-    libvlc_add_intf (vlc, "dbus,none");
-#endif
     if (libvlc_add_intf (vlc, NULL))
         goto out;
 
     libvlc_playlist_play (vlc, -1, 0, NULL);
 
-    /* Qt4 insists on catching SIGCHLD via signal handler. To work around that,
+    /* Qt insists on catching SIGCHLD via signal handler. To work around that,
      * unblock it after all our child threads are created. */
     sigdelset (&set, SIGCHLD);
     pthread_sigmask (SIG_SETMASK, &set, NULL);

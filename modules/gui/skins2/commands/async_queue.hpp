@@ -2,7 +2,7 @@
  * async_queue.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 2a89f117e03e2d0102449dfb491bfdf64ae153a8 $
+ * $Id: 9288465e485c472e5f6269a655a9e3f1dd03ed83 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -49,7 +49,7 @@ public:
     void push( const CmdGenericPtr &rcCommand, bool removePrev = true );
 
     /// Remove the commands of the given type
-    void remove( const string &rType , const CmdGenericPtr &rcCommand );
+    void remove( const std::string &rType , const CmdGenericPtr &rcCommand );
 
     /// Flush the queue and execute the commands
     void flush();

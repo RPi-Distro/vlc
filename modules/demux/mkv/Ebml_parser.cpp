@@ -3,7 +3,7 @@
  * EbmlParser for the matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 21e219e1432a6e2fe829ec3a900aa8f2277fef62 $
+ * $Id: c937a9900d42c3bd97270e8280d780ad8561a556 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -29,18 +29,18 @@
 /*****************************************************************************
  * Ebml Stream parser
  *****************************************************************************/
-EbmlParser::EbmlParser( EbmlStream *es, EbmlElement *el_start, demux_t *p_demux ) :
+EbmlParser::EbmlParser( EbmlStream *es, EbmlElement *el_start, demux_t *p_demux,
+                        bool b_with_dummy ) :
     p_demux( p_demux ),
     m_es( es ),
     mi_level( 1 ),
     m_got( NULL ),
     mi_user_level( 1 ),
-    mb_keep( false )
+    mb_keep( false ),
+    mb_dummy( b_with_dummy )
 {
-    mi_remain_size[0] = el_start->GetSize();
-    memset( m_el, 0, 6 * sizeof( *m_el ) );
+    memset( m_el, 0, sizeof( *m_el ) * M_EL_MAXSIZE);
     m_el[0] = el_start;
-    mb_dummy = var_InheritBool( p_demux, "mkv-use-dummy" );
 }
 
 EbmlParser::~EbmlParser( void )
@@ -62,47 +62,24 @@ EbmlParser::~EbmlParser( void )
     }
 }
 
-EbmlElement* EbmlParser::UnGet( uint64 i_block_pos, uint64 i_cluster_pos )
+void EbmlParser::reconstruct( EbmlStream* es, EbmlElement* el_start, demux_t* p_demux )
 {
-    if ( mi_user_level > mi_level )
-    {
-        while ( mi_user_level != mi_level )
-        {
-            delete m_el[mi_user_level];
-            m_el[mi_user_level] = NULL;
-            mi_user_level--;
-        }
-    }
+    this->reconstruct( es, el_start, p_demux, var_InheritBool( p_demux, "mkv-use-dummy" ) );
+}
 
-    /* Avoid data skip in BlockGet */
-    delete m_el[mi_level];
-    m_el[mi_level] = NULL;
+void EbmlParser::reconstruct( EbmlStream* es, EbmlElement* el_start, demux_t* p_demux,
+  bool b_with_dummy)
+{
+    this->~EbmlParser();
 
-    m_got = NULL;
-    mb_keep = false;
-    if ( m_el[1] && m_el[1]->GetElementPosition() == i_cluster_pos )
-    {
-        m_es->I_O().setFilePointer( i_block_pos, seek_beginning );
-        return m_el[1];
-    }
-    else
-    {
-        // seek to the previous Cluster
-        m_es->I_O().setFilePointer( i_cluster_pos, seek_beginning );
-        while(mi_level > 1)
-        {
-            mi_level--;
-            mi_user_level--;
-            delete m_el[mi_level];
-            m_el[mi_level] = NULL;
-        }
-        return NULL;
-    }
+    new( static_cast<void*>( this ) ) EbmlParser(
+      es, el_start, p_demux, b_with_dummy
+    );
 }
 
 void EbmlParser::Up( void )
 {
-    if( mi_user_level == mi_level )
+    if( mi_user_level == mi_level && m_el[mi_level] )
     {
         msg_Warn( p_demux, "MKV/Ebml Parser: Up cannot escape itself" );
     }
@@ -143,8 +120,22 @@ void EbmlParser::Reset( demux_t *p_demux )
     mi_user_level = mi_level = 1;
     // a little faster and cleaner
     m_es->I_O().setFilePointer( static_cast<KaxSegment*>(m_el[0])->GetGlobalPosition(0) );
-    mb_dummy = var_InheritBool( p_demux, "mkv-use-dummy" );
 }
+
+
+static const EbmlSemanticContext & GetEbmlNoGlobal_Context();
+static const EbmlSemanticContext EbmlNoGlobal_Context = EbmlSemanticContext(0, NULL, NULL, *GetEbmlNoGlobal_Context, NULL);
+static const EbmlSemanticContext & GetEbmlNoGlobal_Context()
+{
+  return EbmlNoGlobal_Context;
+}
+
+// the Segment Context should not allow Void or CRC32 elements to avoid lookup false alarm
+const EbmlSemanticContext Context_KaxSegmentVLC = EbmlSemanticContext(KaxSegment_Context.GetSize(),
+                                                                      KaxSegment_Context.MyTable,
+                                                                      KaxSegment_Context.Parent(),
+                                                                      GetEbmlNoGlobal_Context,
+                                                                      KaxSegment_Context.GetMaster());
 
 EbmlElement *EbmlParser::Get( int n_call )
 {
@@ -170,8 +161,15 @@ EbmlElement *EbmlParser::Get( int n_call )
 
     }
 
+    // If the parent is a segment, use the segment context when creating children
+    // (to prolong their lifetime), otherwise just continue as normal
+    EbmlSemanticContext e_context =
+            EBML_CTX_MASTER( EBML_CONTEXT(m_el[mi_level - 1]) ) == EBML_CTX_MASTER( Context_KaxSegmentVLC )
+            ? Context_KaxSegmentVLC
+            : EBML_CONTEXT(m_el[mi_level - 1]);
+
     /* Ignore unknown level 0 or 1 elements */
-    m_el[mi_level] = m_es->FindNextElement( EBML_CONTEXT(m_el[mi_level - 1]),
+    m_el[mi_level] = m_es->FindNextElement( e_context,
                                             i_ulev, UINT64_MAX,
                                             (  mb_dummy | (mi_level > 1) ), 1 );
     if( i_ulev > 0 )
@@ -181,7 +179,7 @@ EbmlElement *EbmlParser::Get( int n_call )
             if( !mb_keep )
             {
                 if( MKV_IS_ID( p_prev, KaxBlockVirtual ) )
-                    static_cast<KaxBlockVirtualWorkaround*>(p_prev)->Fix();
+                    static_cast<KaxBlockVirtualWorkaround*>(p_prev)->Fix(); // !! WARNING : TODO !! this is undefined-behavior
                 delete p_prev;
             }
             mb_keep = false;
@@ -205,7 +203,7 @@ EbmlElement *EbmlParser::Get( int n_call )
     }
     else if( m_el[mi_level] == NULL )
     {
-        msg_Warn( p_demux,"MKV/Ebml Parser: m_el[mi_level] == NULL\n" );
+        msg_Dbg( p_demux,"MKV/Ebml Parser: m_el[mi_level] == NULL" );
     }
     else if( m_el[mi_level]->IsDummy() && !mb_dummy )
     {
@@ -226,7 +224,7 @@ EbmlElement *EbmlParser::Get( int n_call )
             b_bad_position = true;
         }
 
-        if( n_call < 10 && !b_bad_position && m_el[mi_level]->IsFiniteSize() &&
+        if( n_call < M_EL_MAXSIZE && !b_bad_position && m_el[mi_level]->IsFiniteSize() &&
             ( !m_el[mi_level-1]->IsFiniteSize() ||
               m_el[mi_level]->GetEndPosition() <= m_el[mi_level-1]->GetEndPosition() ) )
         {
@@ -237,7 +235,7 @@ EbmlElement *EbmlParser::Get( int n_call )
         }
         else
         {
-            /* Too large, misplaced or 10 successive dummy elements */
+            /* Too large, misplaced or M_EL_MAXSIZE successive dummy elements */
             msg_Err( p_demux,
                      "Dummy element too large or misplaced at %" PRIu64 "... skipping to next upper element",
                      m_el[mi_level]->GetElementPosition() );
@@ -255,6 +253,8 @@ EbmlElement *EbmlParser::Get( int n_call )
             }
 
             delete m_el[mi_level];
+            delete p_prev;
+
             m_el[mi_level] = NULL;
             m_el[mi_level - 1]->SkipData( *m_es, EBML_CONTEXT(m_el[mi_level - 1]) );
             return Get();

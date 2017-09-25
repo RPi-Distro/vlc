@@ -2,7 +2,7 @@
  * record.c: record stream output module
  *****************************************************************************
  * Copyright (C) 2008-2009 VLC authors and VideoLAN
- * $Id: 8231f487fb2e52ae056c1ee5f1dce752a95d28bd $
+ * $Id: b8d6b94359a1c194a88c1611e5a3af595c838143 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -75,8 +75,8 @@ static const char *const ppsz_sout_options[] = {
 };
 
 /* */
-static sout_stream_id_sys_t *Add ( sout_stream_t *, es_format_t * );
-static int               Del ( sout_stream_t *, sout_stream_id_sys_t * );
+static sout_stream_id_sys_t *Add( sout_stream_t *, const es_format_t * );
+static void              Del ( sout_stream_t *, sout_stream_id_sys_t * );
 static int               Send( sout_stream_t *, sout_stream_id_sys_t *, block_t* );
 
 /* */
@@ -180,7 +180,7 @@ static void Close( vlc_object_t * p_this )
 /*****************************************************************************
  *
  *****************************************************************************/
-static sout_stream_id_sys_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
+static sout_stream_id_sys_t *Add( sout_stream_t *p_stream, const es_format_t *p_fmt )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
     sout_stream_id_sys_t *id;
@@ -201,7 +201,7 @@ static sout_stream_id_sys_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     return id;
 }
 
-static int Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
+static void Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
 
@@ -226,8 +226,6 @@ static int Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
     }
 
     free( id );
-
-    return VLC_SUCCESS;
 }
 
 static int Send( sout_stream_t *p_stream, sout_stream_id_sys_t *id,
@@ -279,12 +277,13 @@ static const muxer_properties_t p_muxers[] = {
     //M( "avformat{mux=flac}", "flac", 1, VLC_CODEC_FLAC ), BROKEN
 
     M( "ogg", "ogg", INT_MAX,   VLC_CODEC_VORBIS, VLC_CODEC_SPEEX,  VLC_CODEC_FLAC,
-                                VLC_CODEC_SUBT,   VLC_CODEC_THEORA, VLC_CODEC_DIRAC  ),
+                                VLC_CODEC_SUBT,   VLC_CODEC_THEORA, VLC_CODEC_DIRAC,
+                                VLC_CODEC_OPUS ),
 
     M( "asf", "asf", 127,       VLC_CODEC_WMA1, VLC_CODEC_WMA2, VLC_CODEC_WMAP, VLC_CODEC_WMAL, VLC_CODEC_WMAS,
                                 VLC_CODEC_WMV1, VLC_CODEC_WMV2, VLC_CODEC_WMV3, VLC_CODEC_VC1 ),
 
-    M( "mp4", "mp4", INT_MAX,   VLC_CODEC_MP4A, VLC_CODEC_H264, VLC_CODEC_MP4V,
+    M( "mp4", "mp4", INT_MAX,   VLC_CODEC_MP4A, VLC_CODEC_H264, VLC_CODEC_MP4V, VLC_CODEC_HEVC,
                                 VLC_CODEC_SUBT ),
 
     M( "ps", "mpg", 16/* FIXME*/,VLC_CODEC_MPGV,
@@ -298,12 +297,12 @@ static const muxer_properties_t p_muxers[] = {
                                 VLC_CODEC_MP4V ),
 
     M( "ts", "ts", 8000,        VLC_CODEC_MPGV,
-                                VLC_CODEC_H264,
+                                VLC_CODEC_H264, VLC_CODEC_HEVC,
                                 VLC_CODEC_MPGA, VLC_CODEC_DVD_LPCM, VLC_CODEC_A52,
                                 VLC_CODEC_DTS,  VLC_CODEC_MP4A,
                                 VLC_CODEC_DVBS, VLC_CODEC_TELETEXT ),
 
-    M( "mkv", "mkv", 32,        VLC_CODEC_H264, VLC_CODEC_VP8, VLC_CODEC_MP4V,
+    M( "mkv", "mkv", 32,        VLC_CODEC_H264, VLC_CODEC_HEVC, VLC_CODEC_VP8, VLC_CODEC_MP4V,
                                 VLC_CODEC_A52,  VLC_CODEC_MP4A, VLC_CODEC_VORBIS, VLC_CODEC_FLAC ),
 };
 #undef M
@@ -330,7 +329,8 @@ static int OutputNew( sout_stream_t *p_stream,
     }
     free( psz_tmp );
 
-    if( asprintf( &psz_output, "std{access=file{no-append,no-format},"
+    if( asprintf( &psz_output,
+                  "std{access=file{no-append,no-format,no-overwrite},"
                   "mux='%s',dst='%s'}", psz_muxer, psz_file ) < 0 )
     {
         psz_output = NULL;
@@ -357,7 +357,7 @@ static int OutputNew( sout_stream_t *p_stream,
     }
 
     if( psz_file && psz_extension )
-        var_SetString( p_stream->p_libvlc, "record-file", psz_file );
+        var_SetString( p_stream->obj.libvlc, "record-file", psz_file );
 
     free( psz_file );
     free( psz_output );
@@ -464,9 +464,9 @@ static void OutputStart( sout_stream_t *p_stream )
             }
 
             /* */
-            for( int i = 0; i < p_sys->i_id; i++ )
+            for( int j = 0; j < p_sys->i_id; j++ )
             {
-                sout_stream_id_sys_t *id = p_sys->id[i];
+                sout_stream_id_sys_t *id = p_sys->id[j];
 
                 if( id->id )
                     sout_StreamIdDel( p_sys->p_out, id->id );
@@ -504,16 +504,24 @@ static void OutputStart( sout_stream_t *p_stream )
 
     /* Compute highest timestamp of first I over all streams */
     p_sys->i_dts_start = 0;
+    mtime_t i_highest_head_dts = 0;
     for( int i = 0; i < p_sys->i_id; i++ )
     {
         sout_stream_id_sys_t *id = p_sys->id[i];
-        block_t *p_block;
 
         if( !id->id || !id->p_first )
             continue;
 
-        mtime_t i_dts = id->p_first->i_dts;
-        for( p_block = id->p_first; p_block != NULL; p_block = p_block->p_next )
+        const block_t *p_block = id->p_first;
+        mtime_t i_dts = p_block->i_dts;
+
+        if( i_dts > i_highest_head_dts &&
+           ( id->fmt.i_cat == AUDIO_ES || id->fmt.i_cat == VIDEO_ES ) )
+        {
+            i_highest_head_dts = i_dts;
+        }
+
+        for( ; p_block != NULL; p_block = p_block->p_next )
         {
             if( p_block->i_flags & BLOCK_FLAG_TYPE_I )
             {
@@ -526,29 +534,42 @@ static void OutputStart( sout_stream_t *p_stream )
             p_sys->i_dts_start = i_dts;
     }
 
-    /* Send buffered data */
-    for( int i = 0; i < p_sys->i_id; i++ )
+    if( p_sys->i_dts_start == 0 )
+        p_sys->i_dts_start = i_highest_head_dts;
+
+    sout_stream_id_sys_t *p_cand;
+    do
     {
-        sout_stream_id_sys_t *id = p_sys->id[i];
+        /* dequeue candidate */
+        p_cand = NULL;
 
-        if( !id->id )
-            continue;
-
-        block_t *p_block = id->p_first;
-        while( p_block )
+        /* Send buffered data in dts order */
+        for( int i = 0; i < p_sys->i_id; i++ )
         {
-            block_t *p_next = p_block->p_next;
+            sout_stream_id_sys_t *id = p_sys->id[i];
 
-            p_block->p_next = NULL;
+            if( !id->id || id->p_first == NULL )
+                continue;
 
-            OutputSend( p_stream, id, p_block );
-
-            p_block = p_next;
+            if( p_cand == NULL || id->p_first->i_dts < p_cand->p_first->i_dts )
+                p_cand = id;
         }
 
-        id->p_first = NULL;
-        id->pp_last = &id->p_first;
-    }
+        if( p_cand != NULL )
+        {
+            block_t *p_block = p_cand->p_first;
+            p_cand->p_first = p_block->p_next;
+            if( p_cand->p_first == NULL )
+                p_cand->pp_last = &p_cand->p_first;
+            p_block->p_next = NULL;
+
+            if( p_block->i_dts >= p_sys->i_dts_start )
+                OutputSend( p_stream, p_cand, p_block );
+            else
+                block_Release( p_block );
+        }
+
+    } while( p_cand != NULL );
 }
 
 static void OutputSend( sout_stream_t *p_stream, sout_stream_id_sys_t *id, block_t *p_block )
@@ -559,7 +580,7 @@ static void OutputSend( sout_stream_t *p_stream, sout_stream_id_sys_t *id, block
     {
         /* We wait until the first key frame (if needed) and
          * to be beyong i_dts_start (for stream without key frame) */
-        if( id->b_wait_key )
+        if( unlikely( id->b_wait_key ) )
         {
             if( p_block->i_flags & BLOCK_FLAG_TYPE_I )
             {
@@ -570,12 +591,12 @@ static void OutputSend( sout_stream_t *p_stream, sout_stream_id_sys_t *id, block
             if( ( p_block->i_flags & BLOCK_FLAG_TYPE_MASK ) == 0 )
                 id->b_wait_key = false;
         }
-        if( id->b_wait_start )
+        if( unlikely( id->b_wait_start ) )
         {
             if( p_block->i_dts >=p_sys->i_dts_start )
                 id->b_wait_start = false;
         }
-        if( id->b_wait_key || id->b_wait_start )
+        if( unlikely( id->b_wait_key || id->b_wait_start ) )
             block_ChainRelease( p_block );
         else
             sout_StreamIdSend( p_sys->p_out, id->id, p_block );

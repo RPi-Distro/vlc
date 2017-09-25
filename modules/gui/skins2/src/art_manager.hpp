@@ -2,7 +2,7 @@
  * art_manager.hpp
  *****************************************************************************
  * Copyright (C) 2010 the VideoLAN team
- * $Id: 6cd80eb793a332e857f50b1953186721d404aedf $
+ * $Id: 2d845c2ae225c2859e0156649bfb44bcd09f760c $
  *
  * Author: Erwan Tulou      <erwan10@vidoelan.org>
  *
@@ -34,18 +34,18 @@ class ArtBitmap: public FileBitmap
 {
 public:
 
-    string getUriName() { return m_uriName; }
+    std::string getUriName() { return m_uriName; }
 
     /// Constructor/destructor
     ArtBitmap( intf_thread_t *pIntf, image_handler_t *pImageHandler,
-               string uriName ) :
+               std::string uriName ) :
         FileBitmap( pIntf, pImageHandler, uriName, -1 ),
         m_uriName( uriName ) {}
     virtual ~ArtBitmap() {}
 
 private:
     /// uriName
-    string m_uriName;
+    std::string m_uriName;
 };
 
 
@@ -61,7 +61,7 @@ public:
     static void destroy( intf_thread_t *pIntf );
 
     /// Retrieve for the art file from uri name
-    ArtBitmap* getArtBitmap( string uriName );
+    ArtBitmap* getArtBitmap( std::string uriName );
 
 protected:
     // Protected because it is a singleton
@@ -73,7 +73,7 @@ private:
     image_handler_t *m_pImageHandler;
 
     // keep a cache of art already open
-    list<ArtBitmap*> m_listBitmap;
+    std::list<ArtBitmap*> m_listBitmap;
 };
 
 #endif

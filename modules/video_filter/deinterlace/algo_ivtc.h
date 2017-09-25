@@ -2,7 +2,7 @@
  * algo_ivtc.h : IVTC (inverse telecine) algorithm for the VLC deinterlacer
  *****************************************************************************
  * Copyright (C) 2010-2011 VLC authors and VideoLAN
- * $Id: 3bc4ff3f0ae8ec12704f65f6021f93b45d902aaa $
+ * $Id: c12dc60abf7d4b557e0d0ce98bc2425f46262387 $
  *
  * Author: Juha Jeronen <juha.jeronen@jyu.fi>
  *
@@ -127,8 +127,6 @@ typedef struct
  * There is no input frame parameter, because the input frames
  * are taken from the history buffer.
  *
- * This algorithm does CUSTOM_PTS timestamp mangling.
- *
  * See the file comment for a detailed description of the algorithm.
  *
  * @param p_filter The filter instance. Must be non-NULL.
@@ -141,7 +139,7 @@ typedef struct
  * @see CalculateInterlaceScore()
  * @see EstimateNumBlocksWithMotion()
  */
-int RenderIVTC( filter_t *p_filter, picture_t *p_dst );
+int RenderIVTC( filter_t *p_filter, picture_t *p_dst, picture_t *p_pic );
 
 /**
  * Clears the inverse telecine subsystem state.

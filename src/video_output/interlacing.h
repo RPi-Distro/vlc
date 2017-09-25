@@ -2,7 +2,7 @@
  * interlacing.h: Interlacing related helpers
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 89c7f3e468191b4341a4b3c23fe80147738512c7 $
+ * $Id: 7000f36be66616b27eb46603fbc0b7585dd21f45 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -24,12 +24,8 @@
 #ifndef LIBVLC_VOUT_INTERLACING_H
 #define LIBVLC_VOUT_INTERLACING_H
 
-typedef struct {
-    bool    is_interlaced;
-    mtime_t date;
-} vout_interlacing_support_t;
-
 void vout_InitInterlacingSupport(vout_thread_t *, bool is_interlaced);
-void vout_SetInterlacingState(vout_thread_t *, vout_interlacing_support_t *, bool is_interlaced);
+void vout_ReinitInterlacingSupport(vout_thread_t *);
+void vout_SetInterlacingState(vout_thread_t *, bool is_interlaced);
 
 #endif

@@ -2,7 +2,7 @@
  * win32_popup.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 05b009413ad9dc1fe5d7bb79c2e60bb9602afebc $
+ * $Id: f508b582b50a39401bdd39a4a28c0c34963d13be $
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *
@@ -66,7 +66,7 @@ void Win32Popup::hide()
 }
 
 
-void Win32Popup::addItem( const string &rLabel, int pos )
+void Win32Popup::addItem( const std::string &rLabel, int pos )
 {
     MENUITEMINFO menuItem;
     menuItem.cbSize = sizeof( MENUITEMINFO );

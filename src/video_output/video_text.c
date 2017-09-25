@@ -2,7 +2,7 @@
  * video_text.c : OSD text manipulation functions
  *****************************************************************************
  * Copyright (C) 1999-2010 VLC authors and VideoLAN
- * $Id: 4ef8865914035e5861d4c66debc7eaba9387b2ec $
+ * $Id: eb20c9a0b9cb8d3cc408260ead9377a66df6ce80 $
  *
  * Author: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *         Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -74,7 +74,7 @@ static void OSDTextUpdate(subpicture_t *subpic,
     if (!r)
         return;
 
-    r->psz_text = strdup(sys->text);
+    r->p_text = text_segment_New( sys->text );
 
     const float margin_ratio = 0.04;
     const int   margin_h     = margin_ratio * fmt_dst->i_visible_width;

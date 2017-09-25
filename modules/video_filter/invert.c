@@ -2,7 +2,7 @@
  * invert.c : Invert video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2006 VLC authors and VideoLAN
- * $Id: 3303030f501e07b08b3f729a6f16a1bff346ab36 $
+ * $Id: 8e41f46fe63e735dbff25948a6a21ed5a76e4bc1 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -31,8 +31,8 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-
 #include <vlc_filter.h>
+#include <vlc_picture.h>
 #include "filter_picture.h"
 
 /*****************************************************************************
@@ -51,7 +51,7 @@ vlc_module_begin ()
     set_shortname( N_("Color inversion" ))
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
-    set_capability( "video filter2", 0 )
+    set_capability( "video filter", 0 )
     add_shortcut( "invert" )
     set_callbacks( Create, Destroy )
 vlc_module_end ()
@@ -100,7 +100,6 @@ static void Destroy( vlc_object_t *p_this )
 static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
 {
     picture_t *p_outpic;
-    int i_index;
     int i_planes;
 
     if( !p_pic ) return NULL;
@@ -126,7 +125,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         i_planes = p_pic->i_planes;
     }
 
-    for( i_index = 0 ; i_index < i_planes ; i_index++ )
+    for( int i_index = 0 ; i_index < i_planes ; i_index++ )
     {
         uint8_t *p_in, *p_in_end, *p_line_end, *p_out;
 
@@ -136,7 +135,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
 
         p_out = p_outpic->p[i_index].p_pixels;
 
-        for( ; p_in < p_in_end ; )
+        while( p_in < p_in_end )
         {
             uint64_t *p_in64, *p_out64;
 
@@ -158,7 +157,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
             p_out = (uint8_t*)p_out64;
             p_line_end += 64;
 
-            for( ; p_in < p_line_end ; )
+            while( p_in < p_line_end )
             {
                 *p_out++ = ~( *p_in++ );
             }

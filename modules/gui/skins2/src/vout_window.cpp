@@ -2,7 +2,7 @@
  * vout_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e2093633994f7ed1a6694914bfc31c467e300482 $
+ * $Id: e50683f4109cf4941cd5e6490f74092161c21eed $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -30,7 +30,7 @@
 #include "os_window.hpp"
 #include "../events/evt_key.hpp"
 
-#include <vlc_keys.h>
+#include <vlc_actions.h>
 
 
 VoutWindow::VoutWindow( intf_thread_t *pIntf, vout_window_t* pWnd,
@@ -77,6 +77,7 @@ void VoutWindow::setCtrlVideo( CtrlVideo* pCtrlVideo )
         setParent( pCtrlVideo->getWindow(), x, y, w, h );
         m_pParentWindow = pCtrlVideo->getWindow();
 
+        resize( w, h );
         show();
     }
     else
@@ -89,6 +90,8 @@ void VoutWindow::setCtrlVideo( CtrlVideo* pCtrlVideo )
                    0, 0, w, h );
         m_pParentWindow =
                   VoutManager::instance( getIntf() )->getVoutMainWindow();
+
+        resize( w, h );
         show();
     }
 
@@ -96,11 +99,19 @@ void VoutWindow::setCtrlVideo( CtrlVideo* pCtrlVideo )
 }
 
 
+void VoutWindow::resize( int width, int height )
+{
+    GenericWindow::resize( width, height );
+
+    if( m_pWnd )
+        vout_window_ReportSize( m_pWnd, width, height );
+}
+
+
 void VoutWindow::processEvent( EvtKey &rEvtKey )
 {
     // Only do the action when the key is down
     if( rEvtKey.getKeyState() == EvtKey::kDown )
-        var_SetInteger( getIntf()->p_libvlc, "key-pressed",
-                         rEvtKey.getModKey() );
+        getIntf()->p_sys->p_dialogs->sendKey( rEvtKey.getModKey() );
 }
 

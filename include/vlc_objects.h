@@ -2,7 +2,7 @@
  * vlc_objects.h: vlc_object_t definition and manipulation methods
  *****************************************************************************
  * Copyright (C) 2002-2008 VLC authors and VideoLAN
- * $Id: c6708750ee9cd68a9fce0246f019ad8aec80432b $
+ * $Id: 171af9cf237153b5a382c9b3f238018d0ab48907 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -22,13 +22,10 @@
  *****************************************************************************/
 
 /**
- * \file
- * This file defines the vlc_object_t structure and object types.
- */
-
-/**
- * \defgroup vlc_object Objects
+ * \defgroup vlc_object VLC objects
  * @{
+ * \file
+ * Common VLC object defintions
  */
 
 /* Object flags */
@@ -56,8 +53,6 @@ VLC_API void vlc_list_release( vlc_list_t * );
 VLC_API char *vlc_object_get_name( const vlc_object_t * ) VLC_USED;
 #define vlc_object_get_name(o) vlc_object_get_name(VLC_OBJECT(o))
 
-/**}@*/
-
 #define vlc_object_create(a,b) vlc_object_create( VLC_OBJECT(a), b )
 
 #define vlc_object_find_name(a,b) \
@@ -72,8 +67,8 @@ VLC_API char *vlc_object_get_name( const vlc_object_t * ) VLC_USED;
 #define vlc_list_children(a) \
     vlc_list_children( VLC_OBJECT(a) )
 
-/* Objects and threading */
-VLC_API VLC_USED VLC_DEPRECATED bool vlc_object_alive (vlc_object_t *);
-#define vlc_object_alive(a) vlc_object_alive( VLC_OBJECT(a) )
+VLC_API VLC_MALLOC void *vlc_malloc(vlc_object_t *, size_t);
+VLC_API VLC_MALLOC void *vlc_calloc(vlc_object_t *, size_t, size_t);
+VLC_API void vlc_free(vlc_object_t *, void *);
 
 /** @} */

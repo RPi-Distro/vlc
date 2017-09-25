@@ -2,7 +2,7 @@
  * dialog.c: Functions to create interface dialogs from Lua extensions
  *****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 55468f3de47ff2ead30b438a4af3fa4ca7f99606 $
+ * $Id: 488b032226f6491b62ccbd12f75760eea82d0bcd $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -33,6 +33,7 @@
 #endif
 
 #include <vlc_common.h>
+#include <vlc_dialog.h>
 #include <vlc_extensions.h>
 
 #include "../vlc.h"
@@ -249,9 +250,9 @@ static int vlclua_dialog_delete( lua_State *L )
     msg_Dbg( p_mgr, "Deleting dialog '%s'", p_dlg->psz_title );
     p_dlg->b_kill = true;
     lua_SetDialogUpdate( L, 0 ); // Reset the update flag
-    dialog_ExtensionUpdate( p_mgr, p_dlg );
+    vlc_ext_dialog_update( p_mgr, p_dlg );
 
-    /* After dialog_ExtensionUpdate, the UI thread must take the lock asap and
+    /* After vlc_ext_dialog_update, the UI thread must take the lock asap and
      * then signal us when it's done deleting the dialog.
      */
     msg_Dbg( p_mgr, "Waiting for the dialog to be deleted..." );
@@ -281,6 +282,7 @@ static int vlclua_dialog_delete( lua_State *L )
             free( p_value->psz_text );
             free( p_value );
         }
+        free( p_widget );
     }
     FOREACH_END()
 
@@ -289,6 +291,7 @@ static int vlclua_dialog_delete( lua_State *L )
     /* Note: At this point, the UI must not use these resources */
     vlc_mutex_destroy( &p_dlg->lock );
     vlc_cond_destroy( &p_dlg->cond );
+    free( p_dlg );
 
     return 1;
 }
@@ -358,7 +361,7 @@ static int vlclua_dialog_update( lua_State *L )
     extension_dialog_t *p_dlg = *pp_dlg;
 
     // Updating dialog immediately
-    dialog_ExtensionUpdate( p_mgr, p_dlg );
+    vlc_ext_dialog_update( p_mgr, p_dlg );
 
     // Reset update flag
     lua_SetDialogUpdate( L, 0 );
@@ -379,7 +382,7 @@ static int lua_GetDialogUpdate( lua_State *L )
     /* Read entry in the Lua registry */
     lua_pushlightuserdata( L, (void*) &key_update );
     lua_gettable( L, LUA_REGISTRYINDEX );
-    return luaL_checkinteger( L, -1 );
+    return luaL_checkint( L, -1 );
 }
 
 /** Manually update a dialog
@@ -400,7 +403,7 @@ int lua_DialogFlush( lua_State *L )
     int i_ret = VLC_SUCCESS;
     if( lua_GetDialogUpdate( L ) )
     {
-        i_ret = dialog_ExtensionUpdate( vlclua_get_this( L ), p_dlg );
+        i_ret = vlc_ext_dialog_update( vlclua_get_this( L ), p_dlg );
         lua_SetDialogUpdate( L, 0 );
     }
 
@@ -570,22 +573,22 @@ static int vlclua_create_widget_inner( lua_State *L, int i_args,
 
     /* Set common arguments: col, row, hspan, vspan, width, height */
     if( lua_isnumber( L, arg ) )
-        p_widget->i_column = luaL_checkinteger( L, arg );
+        p_widget->i_column = luaL_checkint( L, arg );
     else goto end_of_args;
     if( lua_isnumber( L, ++arg ) )
-        p_widget->i_row = luaL_checkinteger( L, arg );
+        p_widget->i_row = luaL_checkint( L, arg );
     else goto end_of_args;
     if( lua_isnumber( L, ++arg ) )
-        p_widget->i_horiz_span = luaL_checkinteger( L, arg );
+        p_widget->i_horiz_span = luaL_checkint( L, arg );
     else goto end_of_args;
     if( lua_isnumber( L, ++arg ) )
-        p_widget->i_vert_span = luaL_checkinteger( L, arg );
+        p_widget->i_vert_span = luaL_checkint( L, arg );
     else goto end_of_args;
     if( lua_isnumber( L, ++arg ) )
-        p_widget->i_width = luaL_checkinteger( L, arg );
+        p_widget->i_width = luaL_checkint( L, arg );
     else goto end_of_args;
     if( lua_isnumber( L, ++arg ) )
-        p_widget->i_height = luaL_checkinteger( L, arg );
+        p_widget->i_height = luaL_checkint( L, arg );
     else goto end_of_args;
 
 end_of_args:
@@ -996,7 +999,7 @@ static int vlclua_dialog_delete_widget( lua_State *L )
     p_widget->b_kill = true;
 
     lua_SetDialogUpdate( L, 0 ); // Reset update flag
-    int i_ret = dialog_ExtensionUpdate( p_mgr, p_dlg );
+    int i_ret = vlc_ext_dialog_update( p_mgr, p_dlg );
 
     if( i_ret != VLC_SUCCESS )
     {

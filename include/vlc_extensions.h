@@ -2,7 +2,7 @@
  * vlc_extensions.h: Extensions (meta data, web information, ...)
  *****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 1b3b90a8b30afe0d11fb3b2c5e27f97619b13e81 $
+ * $Id: 8523fe6c4ce8a644a68db95520bf16f4c00ddb75 $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -277,7 +277,7 @@ struct extension_widget_t
     /* Drop-down & List widgets */
     struct extension_widget_value_t {
         int i_id;          ///< Identifier for the extension module
-                           // (weird behavior may occur if not unique)
+                           ///< (weird behavior may occur if not unique)
         char *psz_text;    ///< String value
         bool b_selected;   ///< True if this item is selected
         struct extension_widget_value_t *p_next; ///< Next value or NULL
@@ -297,7 +297,7 @@ struct extension_widget_t
 
     /* Spinning icon */
     int i_spin_loops;             ///< Number of loops to play (-1 = infinite,
-                                  // 0 = stop animation)
+                                  ///< 0 = stop animation)
 
     /* Orders */
     bool b_kill;                  ///< Destroy this widget
@@ -306,13 +306,9 @@ struct extension_widget_t
     /* Misc */
     void *p_sys;                  ///< Reserved for the extension manager
     void *p_sys_intf;             ///< Reserved for the UI, but:
-                                  // NULL means the UI has destroyed the widget
-                                  // or has not created it yet
+                                  ///< NULL means the UI has destroyed the widget
+                                  ///< or has not created it yet
     extension_dialog_t *p_dialog; ///< Parent dialog
 };
 
-VLC_API int dialog_ExtensionUpdate(vlc_object_t*, extension_dialog_t *);
-#define dialog_ExtensionUpdate(o, d) dialog_ExtensionUpdate(VLC_OBJECT(o), d)
-
 #endif /* VLC_EXTENSIONS_H */
-

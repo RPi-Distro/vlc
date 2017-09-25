@@ -2,7 +2,7 @@
  * objects.c: Generic lua<->vlc object wrapper
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 6517816d2a2b77eb0ed3fb591a1e117e740dad45 $
+ * $Id: 7a847a32f119e84816e2d3cdd043ef0fb658c754 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -59,7 +59,7 @@ static int vlclua_object_find( lua_State *L )
 
 static int vlclua_get_libvlc( lua_State *L )
 {
-    libvlc_int_t *p_libvlc = vlclua_get_this( L )->p_libvlc;
+    libvlc_int_t *p_libvlc = vlclua_get_this( L )->obj.libvlc;
     vlc_object_hold( p_libvlc );
     vlclua_push_vlc_object( L, p_libvlc );
     return 1;

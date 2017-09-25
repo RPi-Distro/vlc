@@ -2,7 +2,7 @@
  * rawdv.c : raw DV input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: 77dc254586388865b7849e462ddbdc20421950ad $
+ * $Id: c081982f698454df7ba25b80170008927b9bfb5a $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Paul Corke <paul dot corke at datatote dot co dot uk>
@@ -138,10 +138,10 @@ static int Open( vlc_object_t * p_this )
      * it is possible to force this demux. */
 
     /* Check for DV file extension */
-    if( !demux_IsPathExtension( p_demux, ".dv" ) && !p_demux->b_force )
+    if( !demux_IsPathExtension( p_demux, ".dv" ) && !p_demux->obj.force )
         return VLC_EGENERIC;
 
-    if( stream_Peek( p_demux->s, &p_peek, DV_PAL_FRAME_SIZE ) <
+    if( vlc_stream_Peek( p_demux->s, &p_peek, DV_PAL_FRAME_SIZE ) <
         DV_NTSC_FRAME_SIZE )
     {
         /* Stream too short ... */
@@ -215,6 +215,8 @@ static int Open( vlc_object_t * p_this )
     es_format_Init( &p_sys->fmt_video, VIDEO_ES, VLC_CODEC_DV );
     p_sys->fmt_video.video.i_width = 720;
     p_sys->fmt_video.video.i_height= dv_header.dsf ? 576 : 480;;
+    p_sys->fmt_video.video.i_visible_width = p_sys->fmt_video.video.i_width;
+    p_sys->fmt_video.video.i_visible_height = p_sys->fmt_video.video.i_height;
 
     p_sys->p_es_video = es_out_Add( p_demux->out, &p_sys->fmt_video );
 
@@ -261,8 +263,8 @@ static int Demux( demux_t *p_demux )
     }
 
     /* Call the pace control */
-    es_out_Control( p_demux->out, ES_OUT_SET_PCR, VLC_TS_0 + p_sys->i_pcr );
-    p_block = stream_Block( p_demux->s, p_sys->frame_size );
+    es_out_SetPCR( p_demux->out, VLC_TS_0 + p_sys->i_pcr );
+    p_block = vlc_stream_Block( p_demux->s, p_sys->frame_size );
     if( p_block == NULL )
     {
         /* EOF */

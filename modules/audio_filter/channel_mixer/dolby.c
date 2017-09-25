@@ -2,7 +2,7 @@
  * dolby.c : simple decoder for dolby surround encoded streams
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: 60819f6a3d2afb477b637dc8ea62878fec57fa9f $
+ * $Id: 5e4f966a09158e1023c69a52f91cd8e0f549f0b1 $
  *
  * Authors: Boris Dorès <babal@via.ecp.fr>
  *
@@ -29,6 +29,7 @@
 # include "config.h"
 #endif
 
+#define VLC_MODULE_LICENSE VLC_LICENSE_GPL_2_PLUS
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_aout.h>
@@ -79,10 +80,10 @@ static int Create( vlc_object_t *p_this )
 
     /* Validate audio filter format */
     if ( p_filter->fmt_in.audio.i_physical_channels != (AOUT_CHAN_LEFT|AOUT_CHAN_RIGHT)
-       || ! ( p_filter->fmt_in.audio.i_original_channels & AOUT_CHAN_DOLBYSTEREO )
-       || aout_FormatNbChannels( &p_filter->fmt_out.audio ) <= 2
-       || ( p_filter->fmt_in.audio.i_original_channels & ~AOUT_CHAN_DOLBYSTEREO )
-          != ( p_filter->fmt_out.audio.i_original_channels & ~AOUT_CHAN_DOLBYSTEREO ) )
+       || ! ( p_filter->fmt_in.audio.i_chan_mode & AOUT_CHANMODE_DOLBYSTEREO )
+       || p_filter->fmt_out.audio.i_channels <= 2
+       || ( p_filter->fmt_in.audio.i_chan_mode & ~AOUT_CHANMODE_DOLBYSTEREO )
+          != ( p_filter->fmt_out.audio.i_chan_mode & ~AOUT_CHANMODE_DOLBYSTEREO ) )
     {
         return VLC_EGENERIC;
     }

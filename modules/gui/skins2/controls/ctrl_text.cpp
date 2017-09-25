@@ -2,7 +2,7 @@
  * ctrl_text.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ee47fd0e395e7e8fb8bbd63cecb30fb761b1e2c1 $
+ * $Id: 729fdab85ded06622fb878fda7a91a85088710bd $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -161,9 +161,9 @@ void CtrlText::draw( OSGraphics &rImage, int xDest, int yDest, int w, int h )
     if( m_pCurrImg )
     {
         // Compute the dimensions to draw
-        int width = min( m_pCurrImg->getWidth() + m_xPos,
+        int width = std::min( m_pCurrImg->getWidth() + m_xPos,
                          getPosition()->getWidth() );
-        int height = min( m_pCurrImg->getHeight(), getPosition()->getHeight() );
+        int height = std::min( m_pCurrImg->getHeight(), getPosition()->getHeight() );
         // Draw the current image
         if( width > 0 && height > 0 )
         {
@@ -281,7 +281,7 @@ void CtrlText::updateContext()
 
     // If the control is in the moving state,
     // automatically start or stop the timer accordingly
-    const string &rState = m_fsm.getState();
+    const std::string &rState = m_fsm.getState();
     if( rState == "moving" || rState == "outMoving" )
     {
         if( m_pCurrImg == m_pImgDouble )

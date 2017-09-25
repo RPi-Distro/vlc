@@ -1,14 +1,14 @@
 # GnuTLS
 
-GNUTLS_VERSION := 3.2.21
-GNUTLS_URL := ftp://ftp.gnutls.org/gcrypt/gnutls/v3.2/gnutls-$(GNUTLS_VERSION).tar.xz
+GNUTLS_VERSION := 3.4.14
+GNUTLS_URL := ftp://ftp.gnutls.org/gcrypt/gnutls/v3.4/gnutls-$(GNUTLS_VERSION).tar.xz
 
 ifdef BUILD_NETWORK
 ifndef HAVE_DARWIN_OS
 PKGS += gnutls
 endif
 endif
-ifeq ($(call need_pkg,"gnutls >= 3.0.20"),)
+ifeq ($(call need_pkg,"gnutls >= 3.3.6"),)
 PKGS_FOUND += gnutls
 endif
 
@@ -19,18 +19,27 @@ $(TARBALLS)/gnutls-$(GNUTLS_VERSION).tar.xz:
 
 gnutls: gnutls-$(GNUTLS_VERSION).tar.xz .sum-gnutls
 	$(UNPACK)
+	$(APPLY) $(SRC)/gnutls/gnutls-pkgconfig-static.patch
 ifdef HAVE_WIN32
 	$(APPLY) $(SRC)/gnutls/gnutls-win32.patch
+	$(APPLY) $(SRC)/gnutls/gnutls-mingw64.patch
+	$(APPLY) $(SRC)/gnutls/gnutls-loadlibrary.patch
+ifdef HAVE_WINSTORE
+	$(APPLY) $(SRC)/gnutls/gnutls-winrt.patch
+	$(APPLY) $(SRC)/gnutls/winrt-topendir.patch
+endif
 endif
 ifdef HAVE_ANDROID
 	$(APPLY) $(SRC)/gnutls/no-create-time-h.patch
+	$(APPLY) $(SRC)/gnutls/gnutls-android.patch
 endif
-	$(APPLY) $(SRC)/gnutls/gnutls-no-egd.patch
 	$(APPLY) $(SRC)/gnutls/read-file-limits.h.patch
 	$(APPLY) $(SRC)/gnutls/mac-keychain-lookup.patch
 ifdef HAVE_MACOSX
 	$(APPLY) $(SRC)/gnutls/gnutls-pkgconfig-osx.patch
+	$(APPLY) $(SRC)/gnutls/gnutls-disable-getentropy-osx.patch
 endif
+	$(APPLY) $(SRC)/gnutls/gnutls-libidn.patch
 	$(call pkg_static,"lib/gnutls.pc.in")
 	$(UPDATE_AUTOCONFIG)
 	$(MOVE)
@@ -49,17 +58,28 @@ GNUTLS_CONF := \
 	--without-libintl-prefix \
 	--disable-doc \
 	--disable-tests \
+	--with-included-libtasn1 \
 	$(HOSTCONF)
+
+GNUTLS_ENV := $(HOSTVARS)
 
 DEPS_gnutls = nettle $(DEPS_nettle)
 
+ifdef HAVE_ANDROID
+GNUTLS_ENV += gl_cv_header_working_stdint_h=yes
+endif
+ifdef HAVE_TIZEN
+	GNUTLS_CONF += --with-default-trust-store-dir=/etc/ssl/certs/
+endif
+ifdef HAVE_WINSTORE
+ifdef HAVE_WIN64
+	GNUTLS_CONF += --disable-hardware-acceleration
+endif
+endif
+
 .gnutls: gnutls
 	$(RECONF)
-ifdef HAVE_ANDROID
-	cd $< && $(HOSTVARS) gl_cv_header_working_stdint_h=yes ./configure $(GNUTLS_CONF)
-else
-	cd $< && $(HOSTVARS) ./configure $(GNUTLS_CONF)
-endif
+	cd $< && $(GNUTLS_ENV) ./configure $(GNUTLS_CONF)
 	cd $</gl && $(MAKE) install
 	cd $</lib && $(MAKE) install
 	touch $@

@@ -34,25 +34,19 @@
 
 #include <sys/types.h>
 #include <unistd.h>
+#include <io.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <dirent.h>
 #include <sys/socket.h>
+#include <signal.h>
 
 #include <vlc_common.h>
 #include <vlc_charset.h>
 #include <vlc_fs.h>
+#include <vlc_network.h>
 #include "libvlc.h" /* vlc_mkdir */
 
-/**
- * Opens a system file handle.
- *
- * @param filename file path to open (with UTF-8 encoding)
- * @param flags open() flags, see the C library open() documentation
- * @return a file handle on success, -1 on error (see errno).
- * @note Contrary to standard open(), this function returns file handles
- * with the close-on-exec flag enabled.
- */
 int vlc_open (const char *filename, int flags, ...)
 {
     unsigned int mode = 0;
@@ -63,7 +57,7 @@ int vlc_open (const char *filename, int flags, ...)
         mode = va_arg (ap, unsigned int);
     va_end (ap);
 
-    const char *local_name = ToLocale (filename);
+    const char *local_name = ToLocaleDup (filename);
 
     if (local_name == NULL)
     {
@@ -75,20 +69,10 @@ int vlc_open (const char *filename, int flags, ...)
     if (fd != -1)
         fcntl (fd, F_SETFD, FD_CLOEXEC);
 
-    LocaleFree (local_name);
+    free (local_name);
     return fd;
 }
 
-/**
- * Opens a system file handle relative to an existing directory handle.
- *
- * @param dir directory file descriptor
- * @param filename file path to open (with UTF-8 encoding)
- * @param flags open() flags, see the C library open() documentation
- * @return a file handle on success, -1 on error (see errno).
- * @note Contrary to standard open(), this function returns file handles
- * with the close-on-exec flag enabled.
- */
 int vlc_openat (int dir, const char *filename, int flags, ...)
 {
     errno = ENOSYS;
@@ -96,18 +80,20 @@ int vlc_openat (int dir, const char *filename, int flags, ...)
     return -1;
 }
 
+int vlc_memfd (void)
+{
+    errno = ENOSYS;
+    return -1;
+}
 
-/**
- * Creates a directory using UTF-8 paths.
- *
- * @param dirname a UTF-8 string with the name of the directory that you
- *        want to create.
- * @param mode directory permissions
- * @return 0 on success, -1 on error (see errno).
- */
+int vlc_close (int fd)
+{
+    return close (fd);
+}
+
 int vlc_mkdir (const char *dirname, mode_t mode)
 {
-    char *locname = ToLocale (dirname);
+    char *locname = ToLocaleDup (dirname);
     if (unlikely(locname == NULL))
     {
         errno = ENOENT;
@@ -115,20 +101,13 @@ int vlc_mkdir (const char *dirname, mode_t mode)
     }
 
     int res = mkdir (locname, mode);
-    LocaleFree (locname);
+    free (locname);
     return res;
 }
 
-/**
- * Opens a DIR pointer.
- *
- * @param dirname UTF-8 representation of the directory name
- * @return a pointer to the DIR struct, or NULL in case of error.
- * Release with standard closedir().
- */
 DIR *vlc_opendir (const char *dirname)
 {
-    const char *locname = ToLocale (dirname);
+    const char *locname = ToLocaleDup (dirname);
     if (unlikely(locname == NULL))
     {
         errno = ENOENT;
@@ -137,21 +116,12 @@ DIR *vlc_opendir (const char *dirname)
 
     DIR *dir = opendir (locname);
 
-    LocaleFree (locname);
+    free (locname);
 
     return dir;
 }
 
-/**
- * Reads the next file name from an open directory.
- *
- * @param dir The directory that is being read
- *
- * @return a UTF-8 string of the directory entry. Use free() to release it.
- * If there are no more entries in the directory, NULL is returned.
- * If an error occurs, errno is set and NULL is returned.
- */
-char *vlc_readdir( DIR *dir )
+const char *vlc_readdir(DIR *dir)
 {
     /* Beware that readdir_r() assumes <buf> is large enough to hold the result
      * dirent including the file name. A buffer overflow could occur otherwise.
@@ -178,14 +148,14 @@ char *vlc_readdir( DIR *dir )
     if (val != 0)
         errno = val;
     else if (ent != NULL)
-        path = FromLocaleDup (ent->d_name);
+        path = FromCharset ("", ent->d_name, strlen(ent->d_name));
     free (buf);
     return path;
 }
 
 static int vlc_statEx (const char *filename, struct stat *buf, bool deref)
 {
-    const char *local_name = ToLocale (filename);
+    const char *local_name = ToLocaleDup (filename);
     if (unlikely(local_name == NULL))
     {
         errno = ENOENT;
@@ -194,42 +164,23 @@ static int vlc_statEx (const char *filename, struct stat *buf, bool deref)
 
     int res = deref ? stat (local_name, buf)
                     : lstat (local_name, buf);
-    LocaleFree (local_name);
+    free (local_name);
     return res;
 }
 
-/**
- * Finds file/inode information, as stat().
- * Consider using fstat() instead, if possible.
- *
- * @param filename UTF-8 file path
- */
 int vlc_stat (const char *filename, struct stat *buf)
 {
     return vlc_statEx (filename, buf, true);
 }
 
-/**
- * Finds file/inode information, as lstat().
- * Consider using fstat() instead, if possible.
- *
- * @param filename UTF-8 file path
- */
 int vlc_lstat (const char *filename, struct stat *buf)
 {
     return vlc_statEx (filename, buf, false);
 }
 
-/**
- * Removes a file.
- *
- * @param filename a UTF-8 string with the name of the file you want to delete.
- * @return A 0 return value indicates success. A -1 return value indicates an
- *        error, and an error code is stored in errno
- */
 int vlc_unlink (const char *filename)
 {
-    const char *local_name = ToLocale (filename);
+    const char *local_name = ToLocaleDup (filename);
     if (unlikely(local_name == NULL))
     {
         errno = ENOENT;
@@ -237,45 +188,31 @@ int vlc_unlink (const char *filename)
     }
 
     int ret = unlink (local_name);
-    LocaleFree (local_name);
+    free (local_name);
     return ret;
 }
 
-/**
- * Moves a file atomically. This only works within a single file system.
- *
- * @param oldpath path to the file before the move
- * @param newpath intended path to the file after the move
- * @return A 0 return value indicates success. A -1 return value indicates an
- *        error, and an error code is stored in errno
- */
 int vlc_rename (const char *oldpath, const char *newpath)
 {
-    const char *lo = ToLocale (oldpath);
+    const char *lo = ToLocaleDup (oldpath);
     if (lo == NULL)
         goto error;
 
-    const char *ln = ToLocale (newpath);
+    const char *ln = ToLocaleDup (newpath);
     if (ln == NULL)
     {
-        LocaleFree (lo);
+        free (lo);
 error:
         errno = ENOENT;
         return -1;
     }
 
     int ret = rename (lo, ln);
-    LocaleFree (lo);
-    LocaleFree (ln);
+    free (lo);
+    free (ln);
     return ret;
 }
 
-/**
- * Determines the current working directory.
- *
- * @return the current working directory (must be free()'d)
- *         or NULL on error
- */
 char *vlc_getcwd (void)
 {
     /* Try $PWD */
@@ -313,11 +250,6 @@ char *vlc_getcwd (void)
     return NULL;
 }
 
-/**
- * Duplicates a file descriptor. The new file descriptor has the close-on-exec
- * descriptor flag set.
- * @return a new file descriptor or -1
- */
 int vlc_dup (int oldfd)
 {
     int newfd;
@@ -329,53 +261,76 @@ int vlc_dup (int oldfd)
     return newfd;
 }
 
-/**
- * Creates a pipe (see "man pipe" for further reference).
- */
 int vlc_pipe (int fds[2])
 {
-    if (pipe (fds))
+    if (vlc_socketpair (AF_LOCAL, SOCK_STREAM, 0, fds, false))
         return -1;
 
-    fcntl (fds[0], F_SETFD, FD_CLOEXEC);
-    fcntl (fds[1], F_SETFD, FD_CLOEXEC);
+    shutdown (fds[0], SHUT_WR);
+    shutdown (fds[1], SHUT_RD);
+
+    setmode (fds[0], O_BINARY);
+    setmode (fds[1], O_BINARY);
+
     return 0;
 }
 
-#include <vlc_network.h>
+ssize_t vlc_write(int fd, const void *buf, size_t len)
+{
+    struct iovec iov = { .iov_base = (void *)buf, .iov_len = len };
 
-/**
- * Creates a socket file descriptor. The new file descriptor has the
- * close-on-exec flag set.
- * @param pf protocol family
- * @param type socket type
- * @param proto network protocol
- * @param nonblock true to create a non-blocking socket
- * @return a new file descriptor or -1
- */
+    return vlc_writev(fd, &iov, 1);
+}
+
+ssize_t vlc_writev(int fd, const struct iovec *iov, int count)
+{
+    sigset_t set, oset;
+
+    sigemptyset(&set);
+    sigaddset(&set, SIGPIPE);
+    pthread_sigmask(SIG_BLOCK, &set, &oset);
+
+    ssize_t val = writev(fd, iov, count);
+    if (val < 0 && errno == EPIPE)
+    {
+        siginfo_t info;
+        struct timespec ts = { 0, 0 };
+
+        while (sigtimedwait(&set, &info, &ts) >= 0 || errno != EAGAIN);
+    }
+
+    if (!sigismember(&oset, SIGPIPE)) /* Restore the signal mask if changed */
+        pthread_sigmask(SIG_SETMASK, &oset, NULL);
+
+    return val;
+}
+
+static void vlc_socket_setup(int fd, bool nonblock)
+{
+    fcntl(fd, F_SETFD, FD_CLOEXEC);
+
+    if (nonblock)
+        fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
+}
+
 int vlc_socket (int pf, int type, int proto, bool nonblock)
 {
-    int fd;
-
-    fd = socket (pf, type, proto);
-    if (fd == -1)
-        return -1;
-
-    fcntl (fd, F_SETFD, FD_CLOEXEC);
-    if (nonblock)
-        fcntl (fd, F_SETFL, fcntl (fd, F_GETFL, 0) | O_NONBLOCK);
+    int fd = socket(pf, type, proto);
+    if (fd != -1)
+        vlc_socket_setup(fd, nonblock);
     return fd;
 }
 
-/**
- * Accepts an inbound connection request on a listening socket.
- * The new file descriptor has the close-on-exec flag set.
- * @param lfd listening socket file descriptor
- * @param addr pointer to the peer address or NULL [OUT]
- * @param alen pointer to the length of the peer address or NULL [OUT]
- * @param nonblock whether to put the new socket in non-blocking mode
- * @return a new file descriptor, or -1 on error.
- */
+int vlc_socketpair(int pf, int type, int proto, int fds[2], bool nonblock)
+{
+    if (socketpair(pf, type, proto, fds))
+        return -1;
+
+    vlc_socket_setup(fds[0], nonblock);
+    vlc_socket_setup(fds[1], nonblock);
+    return 0;
+}
+
 int vlc_accept (int lfd, struct sockaddr *addr, socklen_t *alen, bool nonblock)
 {
     do

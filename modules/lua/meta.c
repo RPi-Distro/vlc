@@ -2,7 +2,7 @@
  * meta.c: Get meta/artwork using lua scripts
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: b78fa935a7aa03ce0adfbe1c3900ae4736847e8a $
+ * $Id: 2dfba8840381b94ec79e6d3919fcdec49652632f $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -55,7 +55,7 @@ static lua_State * init( vlc_object_t *p_this, input_item_t * p_item, const char
     /* Load Lua libraries */
     luaL_openlibs( L ); /* XXX: Don't open all the libs? */
 
-    luaL_register( L, "vlc", p_reg );
+    luaL_register_namespace( L, "vlc", p_reg );
 
     luaopen_msg( L );
     luaopen_stream( L );

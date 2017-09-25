@@ -2,7 +2,7 @@
  * vout_window.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: bdd2fe62ed2b568d9f4e5267e98f1ca7b9288272 $
+ * $Id: ada04473384d0f7deaf50c9765a88992631e9ca6 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -25,6 +25,7 @@
 #define VOUT_WINDOW_HPP
 
 #include "generic_window.hpp"
+#include "dialogs.hpp"
 #include <vlc_vout_window.h>
 
 class OSGraphics;
@@ -68,7 +69,10 @@ public:
     virtual void setOriginalWidth( int width ) { original_width = width; }
     virtual void setOriginalHeight( int height ) { original_height = height; }
 
-    virtual string getType() const { return "Vout"; }
+    /// Resize the window
+    virtual void resize( int width, int height );
+
+    virtual std::string getType() const { return "Vout"; }
 
 private:
 

@@ -71,7 +71,7 @@ cmake: cmake-$(CMAKE_VERSION).tar.gz
 	$(MOVE)
 
 .cmake: cmake
-	(cd $<; ./configure --prefix=$(PREFIX) && $(MAKE) && $(MAKE) install)
+	(cd $<; ./configure --prefix=$(PREFIX) $(CMAKEFLAGS) && $(MAKE) && $(MAKE) install)
 	touch $@
 
 CLEAN_FILE += .cmake
@@ -85,6 +85,7 @@ libtool-$(LIBTOOL_VERSION).tar.gz:
 
 libtool: libtool-$(LIBTOOL_VERSION).tar.gz
 	$(UNPACK)
+	$(APPLY) libtool-2.4.2-bitcode.patch
 	$(MOVE)
 
 .libtool: libtool .automake
@@ -209,7 +210,8 @@ gas: gas-preprocessor-$(GAS_VERSION).tar.gz
 	$(MOVE)
 
 .gas: gas
-	cp gas/gas-preprocessor.pl build/bin/
+	mkdir -p $(PREFIX)/bin
+	cp gas/gas-preprocessor.pl $(PREFIX)/bin/
 	touch $@
 
 CLEAN_FILE += .gas
@@ -261,12 +263,32 @@ ant: apache-ant-$(ANT_VERSION).tar.bz2
 	$(MOVE)
 
 .ant: ant
-	(cp $</bin/* build/bin/; cp $</lib/* build/lib/)
+	(mkdir -p $(PREFIX)/bin && cp $</bin/* $(PREFIX)/bin/)
+	(mkdir -p $(PREFIX)/lib && cp $</lib/* $(PREFIX)/lib/)
 	touch $@
 
 CLEAN_PKG += ant
 DISTCLEAN_PKG += apache-ant-$(ANT_VERSION).tar.bz2
 CLEAN_FILE += .ant
+
+
+# Protobuf Protoc
+
+protobuf-$(PROTOBUF_VERSION).tar.gz:
+	$(call download_pkg,$(PROTOBUF_URL),protobuf)
+
+protobuf: protobuf-$(PROTOBUF_VERSION).tar.gz
+	$(UNPACK)
+	$(MOVE)
+
+.protoc: protobuf
+	(cd $< && ./configure --prefix="$(PREFIX)" --disable-shared --enable-static && $(MAKE) && $(MAKE) install)
+	(find $(PREFIX) -name 'protobuf*.pc' -exec rm -f {} \;)
+	touch $@
+
+CLEAN_PKG += protobuf
+DISTCLEAN_PKG += protobuf-$(PROTOBUF_VERSION).tar.gz
+CLEAN_FILE += .protoc
 
 #
 #
@@ -279,3 +301,5 @@ distclean: clean
 	rm -fr $(DISTCLEAN_PKG)
 
 .PHONY: all clean distclean
+
+.DELETE_ON_ERROR:

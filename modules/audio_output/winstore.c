@@ -57,9 +57,90 @@ struct aout_sys_t
     IAudioClient *client;
 };
 
+static int vlc_FromHR(audio_output_t *aout, HRESULT hr)
+{
+    aout_sys_t* sys = aout->sys;
+    /* Select the default device (and restart) on unplug */
+    if (unlikely(hr == AUDCLNT_E_DEVICE_INVALIDATED ||
+                 hr == AUDCLNT_E_RESOURCES_INVALIDATED))
+    {
+        sys->client = NULL;
+    }
+    return SUCCEEDED(hr) ? 0 : -1;
+}
+
+static int VolumeSet(audio_output_t *aout, float vol)
+{
+    aout_sys_t *sys = aout->sys;
+    if( unlikely( sys->client == NULL ) )
+        return VLC_EGENERIC;
+    HRESULT hr;
+    ISimpleAudioVolume *pc_AudioVolume = NULL;
+    float gain = 1.f;
+
+    vol = vol * vol * vol; /* ISimpleAudioVolume is tapered linearly. */
+
+    if (vol > 1.f)
+    {
+        gain = vol;
+        vol = 1.f;
+    }
+
+    aout_GainRequest(aout, gain);
+
+    hr = IAudioClient_GetService(sys->client, &IID_ISimpleAudioVolume, &pc_AudioVolume);
+    if (FAILED(hr))
+    {
+        msg_Err(aout, "cannot get volume service (error 0x%lx)", hr);
+        goto done;
+    }
+
+    hr = ISimpleAudioVolume_SetMasterVolume(pc_AudioVolume, vol, NULL);
+    if (FAILED(hr))
+    {
+        msg_Err(aout, "cannot set volume (error 0x%lx)", hr);
+        goto done;
+    }
+
+done:
+    ISimpleAudioVolume_Release(pc_AudioVolume);
+
+    return SUCCEEDED(hr) ? 0 : -1;
+}
+
+static int MuteSet(audio_output_t *aout, bool mute)
+{
+    aout_sys_t *sys = aout->sys;
+    if( unlikely( sys->client == NULL ) )
+        return VLC_EGENERIC;
+    HRESULT hr;
+    ISimpleAudioVolume *pc_AudioVolume = NULL;
+
+    hr = IAudioClient_GetService(sys->client, &IID_ISimpleAudioVolume, &pc_AudioVolume);
+    if (FAILED(hr))
+    {
+        msg_Err(aout, "cannot get volume service (error 0x%lx)", hr);
+        goto done;
+    }
+
+    hr = ISimpleAudioVolume_SetMute(pc_AudioVolume, mute, NULL);
+    if (FAILED(hr))
+    {
+        msg_Err(aout, "cannot set mute (error 0x%lx)", hr);
+        goto done;
+    }
+
+done:
+    ISimpleAudioVolume_Release(pc_AudioVolume);
+
+    return SUCCEEDED(hr) ? 0 : -1;
+}
+
 static int TimeGet(audio_output_t *aout, mtime_t *restrict delay)
 {
     aout_sys_t *sys = aout->sys;
+    if( unlikely( sys->client == NULL ) )
+        return VLC_EGENERIC;
     HRESULT hr;
 
     EnterMTA();
@@ -72,39 +153,56 @@ static int TimeGet(audio_output_t *aout, mtime_t *restrict delay)
 static void Play(audio_output_t *aout, block_t *block)
 {
     aout_sys_t *sys = aout->sys;
+    if( unlikely( sys->client == NULL ) )
+        return;
 
     EnterMTA();
-    aout_stream_Play(sys->stream, block);
+    HRESULT hr = aout_stream_Play(sys->stream, block);
     LeaveMTA();
+
+    vlc_FromHR(aout, hr);
 }
 
 static void Pause(audio_output_t *aout, bool paused, mtime_t date)
 {
     aout_sys_t *sys = aout->sys;
+    if( unlikely( sys->client == NULL ) )
+        return;
 
     EnterMTA();
-    aout_stream_Pause(sys->stream, paused);
+    HRESULT hr = aout_stream_Pause(sys->stream, paused);
     LeaveMTA();
 
     (void) date;
+    vlc_FromHR(aout, hr);
 }
 
 static void Flush(audio_output_t *aout, bool wait)
 {
     aout_sys_t *sys = aout->sys;
+    if( unlikely( sys->client == NULL ) )
+        return;
 
     EnterMTA();
-    aout_stream_Flush(sys->stream, wait);
+    HRESULT hr = aout_stream_Flush(sys->stream, wait);
     LeaveMTA();
+
+    vlc_FromHR(aout, hr);
 }
 
 static HRESULT ActivateDevice(void *opaque, REFIID iid, PROPVARIANT *actparms,
                               void **restrict pv)
 {
-    aout_sys_t *sys = opaque;
+    IAudioClient *client = opaque;
 
-    (void)iid; (void)actparms;
-    *pv = sys->client;
+    if (!IsEqualIID(iid, &IID_IAudioClient))
+        return E_NOINTERFACE;
+    if (actparms != NULL || client == NULL )
+        return E_INVALIDARG;
+
+    IAudioClient_AddRef(client);
+    *pv = opaque;
+
     return S_OK;
 }
 
@@ -162,11 +260,27 @@ static void Stop(audio_output_t *aout)
     assert (sys->stream != NULL);
 
     EnterMTA();
-    vlc_module_unload(sys->module, aout_stream_Stop, sys->stream);
+    vlc_module_unload(sys->stream, sys->module, aout_stream_Stop, sys->stream);
     LeaveMTA();
 
     vlc_object_release(sys->stream);
     sys->stream = NULL;
+}
+
+static int DeviceSelect(audio_output_t *aout, const char* psz_device)
+{
+    if( psz_device == NULL )
+        return VLC_EGENERIC;
+    char* psz_end;
+    intptr_t ptr = strtoll( psz_device, &psz_end, 16 );
+    if ( *psz_end != 0 )
+        return VLC_EGENERIC;
+    if (aout->sys->client == (IAudioClient*)ptr)
+        return VLC_SUCCESS;
+    aout->sys->client = (IAudioClient*)ptr;
+    var_SetAddress( aout->obj.parent, "winstore-client", aout->sys->client );
+    aout_RestartRequest( aout, AOUT_RESTART_OUTPUT );
+    return VLC_SUCCESS;
 }
 
 static int Open(vlc_object_t *obj)
@@ -179,14 +293,18 @@ static int Open(vlc_object_t *obj)
 
     aout->sys = sys;
     sys->stream = NULL;
-    sys->client = var_InheritAddress(aout, "mmdevice-audioclient");
-    assert(sys->client != NULL);
+    aout->sys->client = var_CreateGetAddress( aout->obj.parent, "winstore-client" );
+    if (aout->sys->client != NULL)
+        msg_Dbg( aout, "Reusing previous client: %p", aout->sys->client );
     aout->start = Start;
     aout->stop = Stop;
     aout->time_get = TimeGet;
+    aout->volume_set = VolumeSet;
+    aout->mute_set = MuteSet;
     aout->play = Play;
     aout->pause = Pause;
     aout->flush = Flush;
+    aout->device_select = DeviceSelect;
     return VLC_SUCCESS;
 }
 
@@ -195,16 +313,13 @@ static void Close(vlc_object_t *obj)
     audio_output_t *aout = (audio_output_t *)obj;
     aout_sys_t *sys = aout->sys;
 
-    free(sys->client);
     free(sys);
 }
 
 vlc_module_begin()
     set_shortname("winstore")
-    set_description(N_("Windows Store audio output"))
-    set_capability("audio output", 150)
-    /* Pointer to the activated AudioClient* */
-    add_integer("winstore-audioclient", 0x0, NULL, NULL, true);
+    set_description("Windows Store audio output")
+    set_capability("audio output", 0)
     set_category(CAT_AUDIO)
     set_subcategory(SUBCAT_AUDIO_AOUT)
     add_shortcut("wasapi")

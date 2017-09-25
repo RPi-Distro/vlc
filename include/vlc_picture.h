@@ -2,7 +2,7 @@
  * vlc_picture.h: picture definitions
  *****************************************************************************
  * Copyright (C) 1999 - 2009 VLC authors and VideoLAN
- * $Id: e45374ba04791df4b80ebda3987d4897757b5663 $
+ * $Id: e25374634f1a00f8473750528e84c8fbfe2c1187 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -32,9 +32,6 @@
  */
 
 #include <vlc_es.h>
-#if (defined (__LIBVLC__) && !defined (__PLUGIN__))
-# include <vlc_atomic.h>
-#endif
 
 /** Description of a planar graphic field */
 typedef struct plane_t
@@ -59,11 +56,11 @@ typedef struct plane_t
  */
 #define PICTURE_PLANE_MAX (VOUT_MAX_PLANES)
 
-
-/**
- * A private definition to help overloading picture release
- */
-typedef struct picture_gc_sys_t picture_gc_sys_t;
+typedef struct picture_context_t
+{
+    void (*destroy)(struct picture_context_t *);
+    struct picture_context_t *(*copy)(struct picture_context_t *);
+} picture_context_t;
 
 /**
  * Video picture
@@ -93,25 +90,12 @@ struct picture_t
     bool            b_progressive;          /**< is it a progressive frame ? */
     bool            b_top_field_first;             /**< which field is first */
     unsigned int    i_nb_fields;                  /**< # of displayed fields */
-    void          * context;          /**< video format-specific data pointer,
-             * must point to a (void (*)(void*)) pointer to free the context */
+    picture_context_t *context;      /**< video format-specific data pointer */
     /**@}*/
 
     /** Private data - the video output plugin might want to put stuff here to
      * keep track of the picture */
     picture_sys_t * p_sys;
-
-    /** This way the picture_Release can be overloaded */
-    struct
-    {
-#if (defined (__LIBVLC__) && !defined (__PLUGIN__))
-        atomic_uintptr_t refcount;
-#else
-        uintptr_t refcount_placeholder_keep_off;
-#endif
-        void (*pf_destroy)( picture_t * );
-        picture_gc_sys_t *p_sys;
-    } gc;
 
     /** Next picture in a FIFO a pictures */
     struct picture_t *p_next;
@@ -242,19 +226,6 @@ VLC_API int picture_Export( vlc_object_t *p_obj, block_t **pp_image, video_forma
  * It can be useful to get the properties of planes.
  */
 VLC_API int picture_Setup( picture_t *, const video_format_t * );
-
-
-/**
- * This function will blend a given subpicture onto a picture.
- *
- * The subpicture and all its region must:
- *  - be absolute.
- *  - not be ephemere.
- *  - not have the fade flag.
- *  - contains only picture (no text rendering).
- * \return the number of region(s) succesfully blent
- */
-VLC_API unsigned picture_BlendSubpicture( picture_t *, filter_t *p_blend, subpicture_t * );
 
 
 /*****************************************************************************

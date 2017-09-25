@@ -2,7 +2,7 @@
  * libavi.h : LibAVI library
  ******************************************************************************
  * Copyright (C) 2001-2003 VLC authors and VideoLAN
- * $Id: 988066bd7f0868d7a57e738e579964b2256597b1 $
+ * $Id: 5092996412d7a83790ed0e6a7cb6f8ad576d9844 $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -178,7 +178,7 @@ typedef struct avi_chunk_dmlh_s
     uint32_t dwTotalFrames;
 } avi_chunk_dmlh_t;
 
-#define AVI_STRD_ZERO_CHUNK     0xFF
+#define AVI_ZEROSIZED_CHUNK     0xFF
 #define AVI_ZERO_FOURCC         0xFE
 
 #define AVI_INDEX_OF_INDEXES    0x00
@@ -252,19 +252,19 @@ typedef union avi_chunk_u
 int     AVI_ChunkRead( stream_t *,
                        avi_chunk_t *p_chk,
                        avi_chunk_t *p_father );
-void    AVI_ChunkFree( stream_t *, avi_chunk_t * );
+void    AVI_ChunkClean( stream_t *, avi_chunk_t * );
 
-int     _AVI_ChunkCount( avi_chunk_t *, vlc_fourcc_t );
-void   *_AVI_ChunkFind ( avi_chunk_t *, vlc_fourcc_t, int );
+int     AVI_ChunkCount_( avi_chunk_t *, vlc_fourcc_t );
+void   *AVI_ChunkFind_ ( avi_chunk_t *, vlc_fourcc_t, int );
 
 int     AVI_ChunkReadRoot( stream_t *, avi_chunk_t *p_root );
 void    AVI_ChunkFreeRoot( stream_t *, avi_chunk_t *p_chk  );
 int     AVI_ChunkFetchIndexes( stream_t *, avi_chunk_t *p_riff );
 
 #define AVI_ChunkCount( p_chk, i_fourcc ) \
-    _AVI_ChunkCount( AVI_CHUNK(p_chk), i_fourcc )
+    AVI_ChunkCount_( AVI_CHUNK(p_chk), i_fourcc )
 #define AVI_ChunkFind( p_chk, i_fourcc, i_number ) \
-    _AVI_ChunkFind( AVI_CHUNK(p_chk), i_fourcc, i_number )
+    AVI_ChunkFind_( AVI_CHUNK(p_chk), i_fourcc, i_number )
 
 /* *** avi stuff *** */
 

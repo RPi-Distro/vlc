@@ -2,7 +2,7 @@
  * cmd_playlist.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 915f8ddbf4c42498d0994c544c1540588790f76c $
+ * $Id: bbbde615bd0656baa2df9ec6ef98b139be889e93 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -37,7 +37,7 @@ public:
                   : CmdGeneric( pIntf ), m_rList( rList ) { }
     virtual ~CmdPlaylistDel() { }
     virtual void execute();
-    virtual string getType() const { return "playlist del"; }
+    virtual std::string getType() const { return "playlist del"; }
 
 private:
     /// List
@@ -66,7 +66,7 @@ public:
                      : CmdGeneric( pIntf ), m_value( value ) { }
     virtual ~CmdPlaylistRandom() { }
     virtual void execute();
-    virtual string getType() const { return "playlist random"; }
+    virtual std::string getType() const { return "playlist random"; }
 
 private:
     /// Random state
@@ -82,7 +82,7 @@ public:
                    : CmdGeneric( pIntf ), m_value( value ) { }
     virtual ~CmdPlaylistLoop() { }
     virtual void execute();
-    virtual string getType() const { return "playlist loop"; }
+    virtual std::string getType() const { return "playlist loop"; }
 
 private:
     /// Loop state
@@ -98,7 +98,7 @@ public:
                      : CmdGeneric( pIntf ), m_value( value ) { }
     virtual ~CmdPlaylistRepeat() { }
     virtual void execute();
-    virtual string getType() const { return "playlist repeat"; }
+    virtual std::string getType() const { return "playlist repeat"; }
 
 private:
     /// Repeat state
@@ -110,15 +110,15 @@ private:
 class CmdPlaylistLoad: public CmdGeneric
 {
 public:
-    CmdPlaylistLoad( intf_thread_t *pIntf, const string& rFile )
+    CmdPlaylistLoad( intf_thread_t *pIntf, const std::string& rFile )
                    : CmdGeneric( pIntf ), m_file( rFile ) { }
     virtual ~CmdPlaylistLoad() { }
     virtual void execute();
-    virtual string getType() const { return "playlist load"; }
+    virtual std::string getType() const { return "playlist load"; }
 
 private:
     /// Playlist file to load
-    string m_file;
+    std::string m_file;
 };
 
 
@@ -126,15 +126,15 @@ private:
 class CmdPlaylistSave: public CmdGeneric
 {
 public:
-    CmdPlaylistSave( intf_thread_t *pIntf, const string& rFile )
+    CmdPlaylistSave( intf_thread_t *pIntf, const std::string& rFile )
                    : CmdGeneric( pIntf ), m_file( rFile ) { }
     virtual ~CmdPlaylistSave() { }
     virtual void execute();
-    virtual string getType() const { return "playlist save"; }
+    virtual std::string getType() const { return "playlist save"; }
 
 private:
     /// Playlist file to save
-    string m_file;
+    std::string m_file;
 };
 
 

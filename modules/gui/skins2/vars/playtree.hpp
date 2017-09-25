@@ -2,7 +2,7 @@
  * playtree.hpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: cb952e5c127c437181f1305e4dad849c54f757e1 $
+ * $Id: ed930ee019e2b27f3362bdba90add301f9423420 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -53,7 +53,7 @@ public:
     void onUpdateCurrent( bool b_active );
 
     /// Function called to notify playlist item append
-    void onAppend( playlist_add_t * );
+    void onAppend( int );
 
     /// Function called to notify playlist item delete
     void onDelete( int );
@@ -62,14 +62,14 @@ public:
     void onUpdateSlider();
 
     ///
-    void insertItems( VarTree& item, const list<string>& files, bool start );
+    void insertItems( VarTree& item, const std::list<std::string>& files, bool start );
 
 private:
     /// VLC playlist object
     playlist_t *m_pPlaylist;
 
     ///
-    map< int, VarTree* > m_allItems;
+    std::map< int, VarTree* > m_allItems;
 
     /// Build the list from the VLC playlist
     void buildTree();

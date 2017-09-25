@@ -2,7 +2,7 @@
  * time.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ba0686adf94cb723350b8e6d3852f5a4a8b15fab $
+ * $Id: 0089a6e036e5e88422b1561e8150d98d95069285 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -42,17 +42,17 @@ void StreamTime::set( float percentage, bool updateVLC )
 }
 
 
-string StreamTime::getAsStringPercent() const
+std::string StreamTime::getAsStringPercent() const
 {
     int value = (int)(100. * get());
     // 0 <= value <= 100, so we need 4 chars
     char str[4];
     snprintf( str, 4, "%d", value );
-    return string(str);
+    return std::string(str);
 }
 
 
-string StreamTime::formatTime( int seconds, bool bShortFormat ) const
+std::string StreamTime::formatTime( int seconds, bool bShortFormat ) const
 {
     char psz_time[MSTRTIME_MAX_SIZE];
     if( bShortFormat && (seconds < 60 * 60) )
@@ -68,37 +68,37 @@ string StreamTime::formatTime( int seconds, bool bShortFormat ) const
                   (int) (seconds / 60 % 60),
                   (int) (seconds % 60) );
     }
-    return string(psz_time);
+    return std::string(psz_time);
 }
 
 
-string StreamTime::getAsStringCurrTime( bool bShortFormat ) const
+std::string StreamTime::getAsStringCurrTime( bool bShortFormat ) const
 {
     if( !havePosition() )
         return "-:--:--";
 
-    mtime_t time = var_GetTime( getIntf()->p_sys->p_input, "time" );
-    return formatTime( time / 1000000, bShortFormat );
+    mtime_t time = var_GetInteger( getIntf()->p_sys->p_input, "time" );
+    return formatTime( time / CLOCK_FREQ, bShortFormat );
 }
 
 
-string StreamTime::getAsStringTimeLeft( bool bShortFormat ) const
+std::string StreamTime::getAsStringTimeLeft( bool bShortFormat ) const
 {
     if( !havePosition() )
         return "-:--:--";
 
-    mtime_t time = var_GetTime( getIntf()->p_sys->p_input, "time" ),
-        duration = var_GetTime( getIntf()->p_sys->p_input, "length" );
+    mtime_t time = var_GetInteger( getIntf()->p_sys->p_input, "time" ),
+        duration = var_GetInteger( getIntf()->p_sys->p_input, "length" );
 
-    return formatTime( (duration - time) / 1000000, bShortFormat );
+    return formatTime( (duration - time) / CLOCK_FREQ, bShortFormat );
 }
 
 
-string StreamTime::getAsStringDuration( bool bShortFormat ) const
+std::string StreamTime::getAsStringDuration( bool bShortFormat ) const
 {
     if( !havePosition() )
         return "-:--:--";
 
-    mtime_t time = var_GetTime( getIntf()->p_sys->p_input, "length" );
-    return formatTime( time / 1000000, bShortFormat );
+    mtime_t time = var_GetInteger( getIntf()->p_sys->p_input, "length" );
+    return formatTime( time / CLOCK_FREQ, bShortFormat );
 }

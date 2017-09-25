@@ -2,7 +2,7 @@
  * shout.c: This module forwards vorbis streams to an icecast server
  *****************************************************************************
  * Copyright (C) 2005 VLC authors and VideoLAN
- * $Id: f5ce49a2f86197049462fabb6dd39dccd1b44fa2 $
+ * $Id: 2beb131f69c5d1d8e8e77803e3fed2963052fcc1 $
  *
  * Authors: Daniel Fischer <dan at subsignal dot org>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -150,7 +150,6 @@ static const char *const ppsz_sout_options[] = {
  * Exported prototypes
  *****************************************************************************/
 static ssize_t Write( sout_access_out_t *, block_t * );
-static int Seek ( sout_access_out_t *, off_t  );
 static int Control( sout_access_out_t *, int, va_list );
 
 struct sout_access_out_sys_t
@@ -184,7 +183,7 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    vlc_UrlParse( &url , p_access->psz_path, 0 );
+    vlc_UrlParse( &url , p_access->psz_path );
     if( url.i_port <= 0 )
         url.i_port = 8000;
 
@@ -316,11 +315,7 @@ static int Open( vlc_object_t *p_this )
     while ( i_ret != SHOUTERR_CONNECTED )
     {
         /* Shout parameters cannot be changed on an open connection */
-        i_ret = shout_close( p_shout );
-        if( i_ret == SHOUTERR_SUCCESS )
-        {
-            i_ret = SHOUTERR_UNCONNECTED;
-        }
+        shout_close( p_shout );
 
         /* Re-initialize for Shoutcast using ICY protocol. Not needed for initial connection
            but it is when we are reconnecting after other protocol was tried. */
@@ -341,11 +336,7 @@ static int Open( vlc_object_t *p_this )
             msg_Warn( p_access, "failed to connect using 'icy' (shoutcast) protocol" );
 
             /* Shout parameters cannot be changed on an open connection */
-            i_ret = shout_close( p_shout );
-            if( i_ret == SHOUTERR_SUCCESS )
-            {
-                i_ret = SHOUTERR_UNCONNECTED;
-            }
+            shout_close( p_shout );
 
             /* IceCAST using HTTP protocol */
             i_ret = shout_set_protocol( p_shout, SHOUT_PROTOCOL_HTTP );
@@ -386,7 +377,6 @@ static int Open( vlc_object_t *p_this )
     }
 
     p_access->pf_write = Write;
-    p_access->pf_seek  = Seek;
     p_access->pf_control = Control;
 
     msg_Dbg( p_access, "shout access output opened (%s@%s:%i/%s)",
@@ -490,14 +480,3 @@ static ssize_t Write( sout_access_out_t *p_access, block_t *p_buffer )
 
     return i_write;
 }
-
-/*****************************************************************************
- * Seek: seek to a specific location -- not supported
- *****************************************************************************/
-static int Seek( sout_access_out_t *p_access, off_t i_pos )
-{
-    VLC_UNUSED(i_pos);
-    msg_Err( p_access, "cannot seek on shout" );
-    return VLC_EGENERIC;
-}
-

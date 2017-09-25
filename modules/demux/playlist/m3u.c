@@ -2,7 +2,7 @@
  * m3u.c : M3U playlist format import
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: 58f6006deb41b13fe9fac8b90cbdb8d8961bb1bf $
+ * $Id: d95440a9486d39cd49b75cf3b003512efe0252fd $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -31,24 +31,18 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_demux.h>
+#include <vlc_access.h>
 #include <vlc_charset.h>
+#include <vlc_strings.h>
 
 #include "playlist.h"
-
-struct demux_sys_t
-{
-    char *psz_prefix;
-    char *(*pf_dup) (const char *);
-};
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static int Demux( demux_t *p_demux);
+static int ReadDir( stream_t *, input_item_node_t * );
 static void parseEXTINF( char *psz_string, char **ppsz_artist, char **ppsz_name, int *pi_duration );
-static bool ContainsURL( demux_t *p_demux );
-static bool CheckContentType( stream_t * p_stream, const char * psz_ctype );
+static bool ContainsURL(const uint8_t *, size_t);
 
 static char *GuessEncoding (const char *str)
 {
@@ -60,125 +54,163 @@ static char *CheckUnicode (const char *str)
     return IsUTF8 (str) ? strdup (str): NULL;
 }
 
+static bool IsHLS(const unsigned char *buf, size_t length)
+{
+    static const char *const hlsexts[] =
+    {
+        "#EXT-X-MEDIA:",
+        "#EXT-X-VERSION:",
+        "#EXT-X-TARGETDURATION:",
+        "#EXT-X-MEDIA-SEQUENCE:",
+    };
+
+    for (size_t i = 0; i < ARRAY_SIZE(hlsexts); i++)
+        if (strnstr((const char *)buf, hlsexts[i], length) != NULL)
+            return true;
+
+    return false;
+}
+
 /*****************************************************************************
  * Import_M3U: main import function
  *****************************************************************************/
 int Import_M3U( vlc_object_t *p_this )
 {
-    demux_t *p_demux = (demux_t *)p_this;
+    stream_t *p_stream = (stream_t *)p_this;
     const uint8_t *p_peek;
-    char *(*pf_dup) (const char *) = GuessEncoding;
+    ssize_t i_peek;
     int offset = 0;
 
-    if( stream_Peek( p_demux->s, &p_peek, 3 ) == 3
-     && !memcmp( p_peek, "\xef\xbb\xbf", 3) )
+    CHECK_FILE(p_stream);
+    i_peek = vlc_stream_Peek( p_stream->p_source, &p_peek, 1024 );
+    if( i_peek < 8 )
+        return VLC_EGENERIC;
+
+    /* Encoding: UTF-8 or unspecified */
+    char *(*pf_dup) (const char *) = GuessEncoding;
+
+    if (stream_HasExtension(p_stream, ".m3u8")
+     || strncasecmp((const char *)p_peek, "RTSPtext", 8) == 0) /* QuickTime */
+        pf_dup = CheckUnicode;
+    else
+    if (memcmp( p_peek, "\xef\xbb\xbf", 3) == 0) /* UTF-8 Byte Order Mark */
     {
-        pf_dup = CheckUnicode; /* UTF-8 Byte Order Mark */
+        if( i_peek < 12 )
+            return VLC_EGENERIC;
+        pf_dup = CheckUnicode;
         offset = 3;
-    }
-
-    if( demux_IsPathExtension( p_demux, ".m3u8" )
-     || demux_IsForced( p_demux, "m3u8" )
-     || CheckContentType( p_demux->s, "application/vnd.apple.mpegurl" ) )
-        pf_dup = CheckUnicode; /* UTF-8 file type */
-    else
-    if( demux_IsPathExtension( p_demux, ".m3u" )
-     || demux_IsPathExtension( p_demux, ".vlc" )
-     || demux_IsForced( p_demux, "m3u" )
-     || ContainsURL( p_demux )
-     || CheckContentType( p_demux->s, "audio/x-mpegurl") )
-        ; /* Guess encoding */
-    else
-    {
-        if( stream_Peek( p_demux->s, &p_peek, 8 + offset ) < (8 + offset) )
-            return VLC_EGENERIC;
-
         p_peek += offset;
-
-        if( !strncasecmp( (const char *)p_peek, "RTSPtext", 8 ) ) /* QuickTime */
-            pf_dup = CheckUnicode; /* UTF-8 */
-        else
-        if( !memcmp( p_peek, "#EXTM3U", 7 ) )
-            ; /* Guess encoding */
-        else
-            return VLC_EGENERIC;
+        i_peek -= offset;
     }
 
-    stream_Seek( p_demux->s, offset );
+    /* File type: playlist, or not (HLS manifest or whatever else) */
+    char *type = stream_MimeType(p_stream->p_source);
+    bool match;
 
-    STANDARD_DEMUX_INIT_MSG( "found valid M3U playlist" );
-    p_demux->p_sys->psz_prefix = FindPrefix( p_demux );
-    p_demux->p_sys->pf_dup = pf_dup;
+    if (p_stream->obj.force)
+        match = true;
+    else
+    if (type != NULL
+     && !vlc_ascii_strcasecmp(type, "application/vnd.apple.mpegurl")) /* HLS */
+        match = false;
+    else
+    if (memcmp(p_peek, "#EXTM3U", 7 ) == 0
+     || (type != NULL
+      && (vlc_ascii_strcasecmp(type, "application/mpegurl") == 0
+       || vlc_ascii_strcasecmp(type, "application/x-mpegurl") == 0
+       || vlc_ascii_strcasecmp(type, "audio/mpegurl") == 0
+       || vlc_ascii_strcasecmp(type, "vnd.apple.mpegURL") == 0
+       || vlc_ascii_strcasecmp(type, "audio/x-mpegurl") == 0))
+     || stream_HasExtension(p_stream, ".m3u8")
+     || stream_HasExtension(p_stream, ".m3u"))
+        match = !IsHLS(p_peek, i_peek);
+    else
+    if (stream_HasExtension(p_stream, ".vlc")
+     || strncasecmp((const char *)p_peek, "RTSPtext", 8) == 0
+     || ContainsURL(p_peek, i_peek))
+        match = true;
+    else
+        match = false;
+
+    free(type);
+
+    if (!match)
+        return VLC_EGENERIC;
+
+    if (offset != 0 && vlc_stream_Seek(p_stream->p_source, offset))
+        return VLC_EGENERIC;
+
+    msg_Dbg( p_stream, "found valid M3U playlist" );
+    p_stream->p_sys = pf_dup;
+    p_stream->pf_readdir = ReadDir;
+    p_stream->pf_control = access_vaDirectoryControlHelper;
 
     return VLC_SUCCESS;
 }
 
-static bool ContainsURL( demux_t *p_demux )
+static bool ContainsURL(const uint8_t *p_peek, size_t i_peek)
 {
-    const uint8_t *p_peek, *p_peek_end;
-    int i_peek;
+    const char *ps = (const char *)p_peek;
+    const char *ps_end = (const char *) p_peek + i_peek;
+    const size_t i_max = sizeof( "https://" );
+    if( i_peek < i_max + 1 )
+        return false;
 
-    i_peek = stream_Peek( p_demux->s, &p_peek, 1024 );
-    if( i_peek <= 0 ) return false;
-    p_peek_end = p_peek + i_peek;
-
-    while( p_peek + sizeof( "https://" ) < p_peek_end )
+    bool b_newline = true;
+    while( ps + i_max + 1 < ps_end )
     {
-        /* One line starting with a URL is enough */
-        if( !strncasecmp( (const char *)p_peek, "http://", 7 ) ||
-            !strncasecmp( (const char *)p_peek, "mms://", 6 ) ||
-            !strncasecmp( (const char *)p_peek, "rtsp://", 7 ) ||
-            !strncasecmp( (const char *)p_peek, "https://", 8 ) ||
-            !strncasecmp( (const char *)p_peek, "ftp://", 6 ) ||
-            !strncasecmp( (const char *)p_peek, "ftps://", 7 ) ||
-            !strncasecmp( (const char *)p_peek, "ftpes://", 8 ) )
-        {
-            return true;
-        }
-        /* Comments and blank lines are ignored */
-        else if( *p_peek != '#' && *p_peek != '\n' && *p_peek != '\r')
-        {
+        if( *ps <= 0 )
             return false;
+
+        /* Goto next line */
+        if( *ps == '\n' )
+        {
+            ps++;
+            b_newline = true;
+            continue;
         }
 
-        while( p_peek < p_peek_end && *p_peek != '\n' )
-            p_peek++;
-        if ( *p_peek == '\n' )
-            p_peek++;
+        /* One line starting with a URL is enough */
+        if( b_newline )
+        {
+            const char *ps_match = strnstr( ps, "://", i_max );
+            if(ps_match)
+            {
+                switch(ps_match - ps)
+                {
+                    case 3:
+                        if( !strncasecmp( ps, "mms", 3 ) ||
+                            !strncasecmp( ps, "ftp", 3 ) )
+                            return true;
+                        break;
+                    case 4:
+                        if( !strncasecmp( ps, "http", 4 ) ||
+                            !strncasecmp( ps, "rtsp", 4 ) ||
+                            !strncasecmp( ps, "ftps", 4 ) )
+                            return true;
+                        break;
+                    case 5:
+                        if( !strncasecmp( ps, "https", 5 ) ||
+                            !strncasecmp( ps, "ftpes", 5 ) )
+                            return true;
+                    default:
+                        break;
+                }
+            }
+
+            /* Comments and blank lines are ignored */
+            if( *ps != '#' && *ps != '\n' && *ps != '\r')
+                return false;
+
+            b_newline = false;
+        }
+
+        ps++;
     }
     return false;
 }
 
-static bool CheckContentType( stream_t * p_stream, const char * psz_ctype )
-{
-    char *psz_check = stream_ContentType( p_stream );
-    if( !psz_check ) return false;
-
-    int i_len = strlen( psz_check );
-    if ( i_len == 0 )
-    {
-        free( psz_check );
-        return false;
-    }
-
-    int i_res = strncasecmp( psz_check, psz_ctype, i_len );
-    free( psz_check );
-
-    return ( i_res == 0 ) ? true : false;
-}
-
-/*****************************************************************************
- * Deactivate: frees unused data
- *****************************************************************************/
-void Close_M3U( vlc_object_t *p_this )
-{
-    demux_t *p_demux = (demux_t *)p_this;
-    free( p_demux->p_sys->psz_prefix );
-    free( p_demux->p_sys );
-}
-
-
-static int Demux( demux_t *p_demux )
+static int ReadDir( stream_t *p_demux, input_item_node_t *p_subitems )
 {
     char       *psz_line;
     char       *psz_name = NULL;
@@ -187,15 +219,14 @@ static int Demux( demux_t *p_demux )
     int        i_parsed_duration = 0;
     mtime_t    i_duration = -1;
     const char**ppsz_options = NULL;
-    char *    (*pf_dup) (const char *) = p_demux->p_sys->pf_dup;
+    char *    (*pf_dup) (const char *) = p_demux->p_sys;
     int        i_options = 0;
     bool b_cleanup = false;
     input_item_t *p_input;
 
     input_item_t *p_current_input = GetCurrentItem(p_demux);
-    input_item_node_t *p_subitems = input_item_node_Create( p_current_input );
 
-    psz_line = stream_ReadLine( p_demux->s );
+    psz_line = vlc_stream_ReadLine( p_demux->p_source );
     while( psz_line )
     {
         char *psz_parse = psz_line;
@@ -239,8 +270,7 @@ static int Demux( demux_t *p_demux )
 
                 psz_option = pf_dup( psz_parse );
                 if( psz_option )
-                    INSERT_ELEM( ppsz_options, i_options, i_options,
-                                 psz_option );
+                    TAB_APPEND( i_options, ppsz_options, psz_option );
             }
             /* Special case for jamendo which provide the albumart */
             else if( !strncasecmp( psz_parse, "EXTALBUMARTURL:",
@@ -264,7 +294,7 @@ static int Demux( demux_t *p_demux )
                 /* Use filename as name for relative entries */
                 psz_name = strdup( psz_parse );
 
-            psz_mrl = ProcessMRL( psz_parse, p_demux->p_sys->psz_prefix );
+            psz_mrl = ProcessMRL( psz_parse, p_demux->psz_url );
 
             b_cleanup = true;
             if( !psz_mrl )
@@ -273,27 +303,31 @@ static int Demux( demux_t *p_demux )
                 goto error;
             }
 
-            p_input = input_item_NewExt( psz_mrl, psz_name,
-                                        i_options, ppsz_options, 0, i_duration );
-
+            p_input = input_item_NewExt( psz_mrl, psz_name, i_duration,
+                                         ITEM_TYPE_UNKNOWN, ITEM_NET_UNKNOWN );
             free( psz_parse );
             free( psz_mrl );
 
-            if ( !EMPTY_STR(psz_artist) )
+            if( !p_input )
+                goto error;
+            input_item_AddOptions( p_input, i_options, ppsz_options, 0 );
+            input_item_CopyOptions( p_input, p_current_input );
+
+            if( !EMPTY_STR(psz_artist) )
                 input_item_SetArtist( p_input, psz_artist );
             if( psz_name ) input_item_SetTitle( p_input, psz_name );
             if( !EMPTY_STR(psz_album_art) )
                 input_item_SetArtURL( p_input, psz_album_art );
 
             input_item_node_AppendItem( p_subitems, p_input );
-            vlc_gc_decref( p_input );
+            input_item_Release( p_input );
         }
 
  error:
 
         /* Fetch another line */
         free( psz_line );
-        psz_line = stream_ReadLine( p_demux->s );
+        psz_line = vlc_stream_ReadLine( p_demux->p_source );
         if( !psz_line ) b_cleanup = true;
 
         if( b_cleanup )
@@ -311,10 +345,7 @@ static int Demux( demux_t *p_demux )
             b_cleanup = false;
         }
     }
-    input_item_node_PostAndDelete( p_subitems );
-    vlc_gc_decref(p_current_input);
-    var_Destroy( p_demux, "m3u-extvlcopt" );
-    return 0; /* Needed for correct operation of go back */
+    return VLC_SUCCESS; /* Needed for correct operation of go back */
 }
 
 static void parseEXTINF(char *psz_string, char **ppsz_artist,

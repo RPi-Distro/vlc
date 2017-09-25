@@ -2,7 +2,7 @@
  * theme_repository.hpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 7abacee0575cd2c82d91c3ca22b7597bab6b6754 $
+ * $Id: 747570094c228ca246fd2362cebb423882f33a59 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -49,7 +49,7 @@ protected:
 
 private:
     /// Look for themes in a directory
-    void parseDirectory( const string &rDir );
+    void parseDirectory( const std::string &rDir );
 
     /// Callback for menu item selection
     static int changeSkin( vlc_object_t *pThis, char const *pVariable,
@@ -57,7 +57,7 @@ private:
                            void *pData );
 
     /// list of skins available
-    map<string,string> m_skinsMap;
+    std::map<std::string,std::string> m_skinsMap;
 };
 
 

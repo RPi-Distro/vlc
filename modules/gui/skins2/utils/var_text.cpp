@@ -2,7 +2,7 @@
  * var_text.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ccce193a83b883cd45186006f2f8825845bf403b $
+ * $Id: f274be10dbe7e0a3250ee560cad2d4ce105a8a3b $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -29,7 +29,7 @@
 #include "../vars/volume.hpp"
 
 
-const string VarText::m_type = "text";
+const std::string VarText::m_type = "text";
 
 
 VarText::VarText( intf_thread_t *pIntf, bool substVars ): Variable( pIntf ),

@@ -2,7 +2,7 @@
  * evt_input.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 8b947762c51b4d2f397bf8de98739d0fcf3bc082 $
+ * $Id: 80d299f071d586844a76dc3465a2b63fed8f0d32 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -23,7 +23,7 @@
  *****************************************************************************/
 
 #include "evt_input.hpp"
-#include "vlc_keys.h"
+#include "vlc_actions.h"
 
 const int
     EvtInput::kModNone=0,
@@ -37,7 +37,7 @@ EvtInput::EvtInput( intf_thread_t *pIntf, int mod )
     : EvtGeneric( pIntf), m_mod( mod ) { }
 
 
-void EvtInput::addModifier( string &rEvtString ) const
+void EvtInput::addModifier( std::string &rEvtString ) const
 {
     if( m_mod == kModNone )
     {
@@ -45,7 +45,7 @@ void EvtInput::addModifier( string &rEvtString ) const
     }
     else
     {
-        string m = ":";
+        std::string m = ":";
         if( m_mod & kModAlt )
             m += "alt,";
         if( m_mod & kModCtrl )

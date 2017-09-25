@@ -2,7 +2,7 @@
  * aout_internal.h : internal defines for audio output
  *****************************************************************************
  * Copyright (C) 2002 VLC authors and VideoLAN
- * $Id: 10c790b383b8b1989aa71c0c7500230bb2882e51 $
+ * $Id: 77070e093baa59e9e9df43a2fef44dc6a4a2573d $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -25,6 +25,7 @@
 # define LIBVLC_AOUT_INTERNAL_H 1
 
 # include <vlc_atomic.h>
+# include <vlc_viewpoint.h>
 
 /* Max input rate factor (1/4 -> 4) */
 # define AOUT_MAX_INPUT_RATE (4)
@@ -38,7 +39,7 @@ enum {
 struct aout_request_vout
 {
     struct vout_thread_t  *(*pf_request_vout)( void *, struct vout_thread_t *,
-                                               video_format_t *, bool );
+                                               const video_format_t *, bool );
     void *p_private;
 };
 
@@ -69,18 +70,29 @@ typedef struct
 
     struct
     {
+        atomic_bool update;
+        vlc_mutex_t lock;
+        vlc_viewpoint_t value;
+    } vp;
+
+    struct
+    {
         mtime_t end; /**< Last seen PTS */
         unsigned resamp_start_drift; /**< Resampler drift absolute value */
         int resamp_type; /**< Resampler mode (FIXME: redundant / resampling) */
         bool discontinuity;
     } sync;
 
+    int initial_stereo_mode; /**< Initial stereo mode set by options */
+
     audio_sample_format_t input_format;
     audio_sample_format_t mixer_format;
 
     aout_request_vout_t request_vout;
+    aout_filters_cfg_t filters_cfg;
 
     atomic_uint buffers_lost;
+    atomic_uint buffers_played;
     atomic_uchar restart;
 } aout_owner_t;
 
@@ -113,7 +125,8 @@ audio_output_t *aout_New (vlc_object_t *);
 #define aout_New(a) aout_New(VLC_OBJECT(a))
 void aout_Destroy (audio_output_t *);
 
-int aout_OutputNew(audio_output_t *, audio_sample_format_t *);
+int aout_OutputNew(audio_output_t *, audio_sample_format_t *,
+                   aout_filters_cfg_t *filters_cfg);
 int aout_OutputTimeGet(audio_output_t *, mtime_t *);
 void aout_OutputPlay(audio_output_t *, block_t *);
 void aout_OutputPause( audio_output_t * p_aout, bool, mtime_t );
@@ -133,19 +146,41 @@ bool aout_ChangeFilterString( vlc_object_t *manager, vlc_object_t *aout,
                               const char *var, const char *name, bool b_add );
 
 /* From dec.c */
+#define AOUT_DEC_SUCCESS 0
+#define AOUT_DEC_CHANGED 1
+#define AOUT_DEC_FAILED VLC_EGENERIC
+
 int aout_DecNew(audio_output_t *, const audio_sample_format_t *,
                 const audio_replay_gain_t *, const aout_request_vout_t *);
 void aout_DecDelete(audio_output_t *);
 int aout_DecPlay(audio_output_t *, block_t *, int i_input_rate);
-int aout_DecGetResetLost(audio_output_t *);
+void aout_DecGetResetStats(audio_output_t *, unsigned *, unsigned *);
 void aout_DecChangePause(audio_output_t *, bool b_paused, mtime_t i_date);
-void aout_DecFlush(audio_output_t *);
-bool aout_DecIsEmpty(audio_output_t *);
+void aout_DecFlush(audio_output_t *, bool wait);
 void aout_RequestRestart (audio_output_t *, unsigned);
 
 static inline void aout_InputRequestRestart(audio_output_t *aout)
 {
     aout_RequestRestart(aout, AOUT_RESTART_FILTERS);
 }
+
+static inline void aout_SetWavePhysicalChannels(audio_sample_format_t *fmt)
+{
+    static const uint32_t wave_channels[] = {
+        AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT, AOUT_CHAN_CENTER,
+        AOUT_CHAN_LFE, AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT,
+        AOUT_CHAN_MIDDLELEFT, AOUT_CHAN_MIDDLERIGHT, AOUT_CHAN_REARCENTER };
+
+    fmt->i_physical_channels = 0;
+    for (int i = 0; i < fmt->i_channels && i < AOUT_CHAN_MAX; ++i)
+        fmt->i_physical_channels |= wave_channels[i];
+    aout_FormatPrepare(fmt);
+}
+
+/* From filters.c */
+bool aout_FiltersCanResample (aout_filters_t *filters);
+
+void aout_ChangeViewpoint(audio_output_t *aout,
+                          const vlc_viewpoint_t *p_viewpoint);
 
 #endif /* !LIBVLC_AOUT_INTERNAL_H */

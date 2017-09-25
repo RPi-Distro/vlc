@@ -2,7 +2,7 @@
  * mms.c: MMS over tcp, udp and http access plug-in
  *****************************************************************************
  * Copyright (C) 2002-2004 VLC authors and VideoLAN
- * $Id: 5633c103a1448312c969fa011a1b9a50876f59eb $
+ * $Id: 87f42055ff39453e850090189d81a8ccdcf094c2 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -55,12 +55,6 @@ static void Close( vlc_object_t * );
 #define BITRATE_LONGTEXT N_( \
     "Select the stream with the maximum bitrate under that limit."  )
 
-#define PROXY_TEXT N_("HTTP proxy")
-#define PROXY_LONGTEXT N_( \
-    "HTTP proxy to be used It must be of the form " \
-    "http://[user[:pass]@]myproxy.mydomain:myport/ ; " \
-    "if empty, the http_proxy environment variable will be tried." )
-
 #define TIMEOUT_TEXT N_("TCP/UDP timeout (ms)")
 #define TIMEOUT_LONGTEXT N_("Amount of time (in ms) to wait before aborting network reception of data. Note that there will be 10 retries before completely giving up.")
 
@@ -77,10 +71,9 @@ vlc_module_begin ()
     add_bool( "mms-all", false, ALL_TEXT, ALL_LONGTEXT, true )
     add_integer( "mms-maxbitrate", 0, BITRATE_TEXT, BITRATE_LONGTEXT ,
                  false )
-    add_string( "mmsh-proxy", NULL, PROXY_TEXT, PROXY_LONGTEXT,
-                    false )
+    add_obsolete_string( "mmsh-proxy" ) /* since 3.0.0 */
 
-    add_shortcut( "mms", "mmsu", "mmst", "mmsh", "http" )
+    add_shortcut( "mms", "mmsu", "mmst", "mmsh" )
     set_callbacks( Open, Close )
 vlc_module_end ()
 
@@ -97,32 +90,18 @@ struct access_sys_t
  *****************************************************************************/
 static int Open( vlc_object_t *p_this )
 {
-    access_t *p_access = (access_t*)p_this;
+    stream_t *p_access = (stream_t*)p_this;
 
     /* use specified method */
-    if( *p_access->psz_access )
-    {
-        if( !strncmp( p_access->psz_access, "mmsu", 4 ) )
-        {
-            return  MMSTUOpen ( p_access );
-        }
-        else if( !strncmp( p_access->psz_access, "mmst", 4 ) )
-        {
-            return  MMSTUOpen ( p_access );
-        }
-        else if( !strncmp( p_access->psz_access, "mmsh", 4 ) ||
-                 !strncmp( p_access->psz_access, "http", 4 ) )
-        {
-            return  MMSHOpen ( p_access );
-        }
-    }
+    if( !strncmp( p_access->psz_name, "mmsu", 4 ) )
+        return  MMSTUOpen ( p_access );
+    else if( !strncmp( p_access->psz_name, "mmst", 4 ) )
+        return  MMSTUOpen ( p_access );
+    else if( !strncmp( p_access->psz_name, "mmsh", 4 ) )
+        return  MMSHOpen ( p_access );
 
     if( MMSTUOpen ( p_access ) )
-    {
-        if( !vlc_object_alive(p_access) )
-            return VLC_EGENERIC;
-
-        /* try mmsh if mmstu failed */
+    {   /* try mmsh if mmstu failed */
         return  MMSHOpen ( p_access );
     }
     return VLC_SUCCESS;
@@ -133,7 +112,7 @@ static int Open( vlc_object_t *p_this )
  *****************************************************************************/
 static void Close( vlc_object_t *p_this )
 {
-    access_t     *p_access = (access_t*)p_this;
+    stream_t     *p_access = (stream_t*)p_this;
     access_sys_t *p_sys = p_access->p_sys;
 
     if( ( p_sys->i_proto == MMS_PROTO_TCP ) ||

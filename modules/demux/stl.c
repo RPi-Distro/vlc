@@ -2,7 +2,7 @@
  * stl.c: EBU STL demuxer
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 8f04e514877f1d5ff4cbb5a52fd5ab6880c67b6d $
+ * $Id: 238b515cc66f481b889d219a14b1e871e7440aff $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -54,21 +54,23 @@ vlc_module_end()
 typedef struct {
     mtime_t start;
     mtime_t stop;
-    int     index;
-    int     count;
+    size_t  blocknumber;
+    size_t  count;
 } stl_entry_t;
 
 struct demux_sys_t {
-    int         count;
+    size_t      count;
     stl_entry_t *index;
 
     es_out_id_t *es;
 
-    int         current;
+    size_t      current;
     int64_t     next_date;
+    bool        b_slave;
+    bool        b_first_time;
 };
 
-static int ParseInteger(uint8_t *data, size_t size)
+static size_t ParseInteger(uint8_t *data, size_t size)
 {
     char tmp[16];
     assert(size < sizeof(tmp));
@@ -96,6 +98,8 @@ static int Control(demux_t *demux, int query, va_list args)
 {
     demux_sys_t *sys = demux->p_sys;
     switch(query) {
+    case DEMUX_CAN_SEEK:
+        return vlc_stream_vaControl(demux->s, query, args);
     case DEMUX_GET_LENGTH: {
         int64_t *l = va_arg(args, int64_t *);
         *l = sys->count > 0 ? sys->index[sys->count-1].stop : 0;
@@ -103,52 +107,117 @@ static int Control(demux_t *demux, int query, va_list args)
     }
     case DEMUX_GET_TIME: {
         int64_t *t = va_arg(args, int64_t *);
-        *t = sys->current < sys->count ? sys->index[sys->count-1].start : 0;
+        *t = sys->next_date - var_GetInteger(demux->obj.parent, "spu-delay");
+        if( *t < 0 )
+            *t = sys->next_date;
         return VLC_SUCCESS;
     }
     case DEMUX_SET_NEXT_DEMUX_TIME: {
+        sys->b_slave = true;
         sys->next_date = va_arg(args, int64_t);
         return VLC_SUCCESS;
     }
     case DEMUX_SET_TIME: {
         int64_t t = va_arg(args, int64_t);
-        sys->current = 0;
-        while (sys->current < sys->count) {
-            if (sys->index[sys->current].stop > t) {
-                stream_Seek(demux->s, 1024 + 128LL * sys->index[sys->current].index);
-                break;
+        for( size_t i = 0; i + 1< sys->count; i++ )
+        {
+            if( sys->index[i + 1].start >= t &&
+                vlc_stream_Seek(demux->s, 1024 + 128LL * sys->index[i].blocknumber) == VLC_SUCCESS )
+            {
+                sys->current = i;
+                sys->next_date = t;
+                sys->b_first_time = true;
+                return VLC_SUCCESS;
             }
-            sys->current++;
+        }
+        break;
+    }
+    case DEMUX_SET_POSITION:
+    {
+        double f = va_arg( args, double );
+        if(sys->count && sys->index[sys->count-1].stop > 0)
+        {
+            int64_t i64 = f * sys->index[sys->count-1].stop;
+            return demux_Control(demux, DEMUX_SET_TIME, i64);
+        }
+        break;
+    }
+    case DEMUX_GET_POSITION:
+    {
+        double *pf = va_arg(args, double *);
+        if(sys->current >= sys->count)
+        {
+            *pf = 1.0;
+        }
+        else if(sys->count > 0 && sys->index[sys->count-1].stop > 0)
+        {
+            *pf = sys->next_date - var_GetInteger(demux->obj.parent, "spu-delay");
+            if(*pf < 0)
+               *pf = sys->next_date;
+            *pf /= sys->index[sys->count-1].stop;
+        }
+        else
+        {
+            *pf = 0.0;
         }
         return VLC_SUCCESS;
     }
-    case DEMUX_SET_POSITION:
-    case DEMUX_GET_POSITION:
     default:
-        return VLC_EGENERIC;
+        break;
     }
+    return VLC_EGENERIC;
 }
 
 static int Demux(demux_t *demux)
 {
     demux_sys_t *sys = demux->p_sys;
 
-    while(sys->current < sys->count) {
-        stl_entry_t *s = &sys->index[sys->current];
-        if (s->start > sys->next_date)
-            break;
+    int64_t i_barrier = sys->next_date - var_GetInteger(demux->obj.parent, "spu-delay");
+    if(i_barrier < 0)
+        i_barrier = sys->next_date;
 
-        block_t *b = stream_Block(demux->s, 128 * s->count);
-        if (b) {
+    while(sys->current < sys->count &&
+          sys->index[sys->current].start <= i_barrier)
+    {
+        stl_entry_t *s = &sys->index[sys->current];
+
+        if (!sys->b_slave && sys->b_first_time)
+        {
+            es_out_SetPCR(demux->out, VLC_TS_0 + i_barrier);
+            sys->b_first_time = false;
+        }
+
+        /* Might be a gap in block # */
+        const uint64_t i_pos = 1024 + 128LL * s->blocknumber;
+        if(i_pos != vlc_stream_Tell(demux->s) &&
+           vlc_stream_Seek( demux->s, i_pos ) != VLC_SUCCESS )
+            return VLC_DEMUXER_EOF;
+
+        block_t *b = vlc_stream_Block(demux->s, 128);
+        if (b && b->i_buffer == 128)
+        {
             b->i_dts =
             b->i_pts = VLC_TS_0 + s->start;
             if (s->stop > s->start)
                 b->i_length = s->stop - s->start;
             es_out_Send(demux->out, sys->es, b);
         }
+        else
+        {
+            if(b)
+                block_Release(b);
+            return VLC_DEMUXER_EOF;
+        }
         sys->current++;
     }
-    return sys->current < sys->count ? 1 : 0;
+
+    if (!sys->b_slave)
+    {
+        es_out_SetPCR(demux->out, VLC_TS_0 + i_barrier);
+        sys->next_date += CLOCK_FREQ / 8;
+    }
+
+    return sys->current < sys->count ? VLC_DEMUXER_SUCCESS : VLC_DEMUXER_EOF;
 }
 
 static int Open(vlc_object_t *object)
@@ -156,7 +225,7 @@ static int Open(vlc_object_t *object)
     demux_t *demux = (demux_t*)object;
 
     const uint8_t *peek;
-    if (stream_Peek(demux->s, &peek, 11) != 11)
+    if (vlc_stream_Peek(demux->s, &peek, 11) != 11)
         return VLC_EGENERIC;
 
     bool is_stl_25 = !memcmp(&peek[3], "STL25.01", 8);
@@ -166,30 +235,41 @@ static int Open(vlc_object_t *object)
     const double fps = is_stl_25 ? 25 : 30;
 
     uint8_t header[1024];
-    if (stream_Read(demux->s, header, sizeof(header)) != sizeof(header)) {
+    if (vlc_stream_Read(demux->s, header, sizeof(header)) != sizeof(header)) {
         msg_Err(demux, "Incomplete EBU STL header");
         return VLC_EGENERIC;
     }
     const int cct = ParseInteger(&header[12], 2);
     const mtime_t program_start = ParseTextTimeCode(&header[256], fps);
-    const int tti_count = ParseInteger(&header[238], 5);
-    msg_Dbg(demux, "Detected EBU STL : CCT=%d TTI=%d start=%8.8s %"PRId64, cct, tti_count, &header[256], program_start);
+    const size_t tti_count = ParseInteger(&header[238], 5);
+    if (!tti_count)
+        return VLC_EGENERIC;
+    msg_Dbg(demux, "Detected EBU STL : CCT=%d TTI=%zu start=%8.8s %"PRId64, cct, tti_count, &header[256], program_start);
 
-    demux_sys_t *sys = xmalloc(sizeof(*sys));
+    demux_sys_t *sys = malloc(sizeof(*sys));
+    if(!sys)
+        return VLC_EGENERIC;
+
+    sys->b_slave   = false;
+    sys->b_first_time = true;
     sys->next_date = 0;
     sys->current   = 0;
     sys->count     = 0;
-    sys->index     = xcalloc(tti_count, sizeof(*sys->index));
-
+    sys->index     = calloc(tti_count, sizeof(*sys->index));
+    if(!sys->index)
+    {
+        free(sys);
+        return VLC_EGENERIC;
+    }
 
     bool comment = false;
     stl_entry_t *s = &sys->index[0];
     s->count = 0;
 
-    for (int i = 0; i < tti_count; i++) {
+    for (size_t i = 0; i < tti_count; i++) {
         uint8_t tti[16];
-        if (stream_Read(demux->s, tti, 16) != 16 ||
-            stream_Read(demux->s, NULL, 112) != 112) {
+        if (vlc_stream_Read(demux->s, tti, 16) != 16 ||
+            vlc_stream_Read(demux->s, NULL, 112) != 112) {
             msg_Warn(demux, "Incomplete EBU STL file");
             break;
         }
@@ -203,7 +283,7 @@ static int Open(vlc_object_t *object)
             comment  = tti[15] != 0;
             s->start = ParseTimeCode(&tti[5], fps) - program_start;
             s->stop  = ParseTimeCode(&tti[9], fps) - program_start;
-            s->index = i;
+            s->blocknumber = i;
         }
         s->count++;
         if (ebn == 0xff && !comment)
@@ -211,8 +291,14 @@ static int Open(vlc_object_t *object)
         if (ebn == 0xff && sys->count < tti_count)
             s->count = 0;
     }
-    if (sys->count > 0)
-        stream_Seek(demux->s, 1024 + 128LL * sys->index[0].index);
+
+    demux->p_sys = sys;
+    if (sys->count == 0 ||
+        vlc_stream_Seek(demux->s, 1024 + 128LL * sys->index[0].blocknumber) != VLC_SUCCESS)
+    {
+        Close(object);
+        return VLC_EGENERIC;
+    }
 
     es_format_t fmt;
     es_format_Init(&fmt, SPU_ES, VLC_CODEC_EBU_STL);
@@ -220,10 +306,15 @@ static int Open(vlc_object_t *object)
     fmt.p_extra = header;
 
     sys->es = es_out_Add(demux->out, &fmt);
-
     fmt.i_extra = 0;
     fmt.p_extra = NULL;
     es_format_Clean(&fmt);
+
+    if(sys->es == NULL)
+    {
+        Close(object);
+        return VLC_EGENERIC;
+    }
 
     demux->p_sys      = sys;
     demux->pf_demux   = Demux;

@@ -2,7 +2,7 @@
  * skin_common.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 8b880bb1f5d70bd1cad1e142fc99e2edf4bd6721 $
+ * $Id: d748e51283a4e3e9c136bc334a868fbb2b7f80c9 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -35,7 +35,6 @@
 #include <vlc_fs.h>
 
 #include <string>
-using namespace std;
 
 class AsyncQueue;
 class Logger;
@@ -68,34 +67,24 @@ typedef void* vlc_wnd_type;
 #endif
 
 /// Wrapper around FromLocale, to avoid the need to call LocaleFree()
-static inline string sFromLocale( const string &rLocale )
+static inline std::string sFromLocale( const std::string &rLocale )
 {
     const char *s = FromLocale( rLocale.c_str() );
-    string res = s;
+    std::string res = s;
     LocaleFree( s );
     return res;
 }
 
 #ifdef _WIN32
 /// Wrapper around FromWide, to avoid the need to call free()
-static inline string sFromWide( const wstring &rWide )
+static inline std::string sFromWide( const std::wstring &rWide )
 {
     char *s = FromWide( rWide.c_str() );
-    string res = s;
+    std::string res = s;
     free( s );
     return res;
 }
 #endif
-
-/// Wrapper around ToLocale, to avoid the need to call LocaleFree()
-static inline string sToLocale( const string &rUTF8 )
-{
-    const char *s = ToLocale( rUTF8.c_str() );
-    string res = s;
-    LocaleFree( s );
-    return res;
-}
-
 
 //---------------------------------------------------------------------------
 // intf_sys_t: description and status of skin interface
@@ -104,9 +93,6 @@ struct intf_sys_t
 {
     /// The input thread
     input_thread_t *p_input;
-
-    /// The playlist thread
-    playlist_t *p_playlist;
 
     // "Singleton" objects: MUST be initialized to NULL !
     /// Logger
@@ -154,6 +140,7 @@ public:
     /// Getter (public because it is used in C callbacks in the win32
     /// interface)
     intf_thread_t *getIntf() const { return m_pIntf; }
+    playlist_t *getPL() const { return pl_Get(m_pIntf); }
 
 private:
     intf_thread_t *m_pIntf;

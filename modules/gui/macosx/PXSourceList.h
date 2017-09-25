@@ -15,21 +15,18 @@
 {
     id <PXSourceListDelegate> _secondaryDelegate; //Used to store the publicly visible delegate
     id <PXSourceListDataSource> _secondaryDataSource; //Used to store the publicly visible data source
-
-    NSSize _iconSize; //The size of icons in the Source List. Defaults to 16x16
 }
 
 @property (nonatomic) NSSize iconSize;
 
-@property (assign) id<PXSourceListDataSource> dataSource;
-@property (assign) id<PXSourceListDelegate> delegate;
+@property (assign) id<PXSourceListDataSource, NSOutlineViewDataSource> _Nullable dataSource;
+@property (assign) id<PXSourceListDelegate, NSOutlineViewDelegate> _Nullable delegate;
 
 - (NSUInteger)numberOfGroups; //Returns the number of groups in the Source List
-- (BOOL)isGroupItem:(id)item; //Returns whether `item` is a group
-- (BOOL)isGroupAlwaysExpanded:(id)group; //Returns whether `group` is displayed as always expanded
+- (BOOL)isGroupItem:(nonnull id)item; //Returns whether `item` is a group
+- (BOOL)isGroupAlwaysExpanded:(nonnull id)group; //Returns whether `group` is displayed as always expanded
 
-- (BOOL)itemHasBadge:(id)item; //Returns whether `item` has a badge
-- (NSInteger)badgeValueForItem:(id)item; //Returns the badge value for `item`
+- (BOOL)itemHasBadge:(nonnull id)item; //Returns whether `item` has a badge
+- (NSInteger)badgeValueForItem:(nonnull id)item; //Returns the badge value for `item`
 
 @end
-

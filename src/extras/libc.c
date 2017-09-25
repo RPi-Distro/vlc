@@ -229,7 +229,7 @@ static const uint16_t to_ucs4_comb[15][64] =
   }
 };
 
-static size_t ISO6937toUTF8( const unsigned char **inbuf, size_t *inbytesleft,
+static size_t ISO6937toUTF8( const char **inbuf, size_t *inbytesleft,
                              unsigned char **outbuf, size_t *outbytesleft )
 
 
@@ -237,16 +237,17 @@ static size_t ISO6937toUTF8( const unsigned char **inbuf, size_t *inbytesleft,
     if( !inbuf || !(*inbuf) )
         return (size_t)(0);    /* Reset state requested */
 
-    const unsigned char *iptr = *inbuf;
-    const unsigned char *iend = iptr + *inbytesleft;
+    const char *iptr = *inbuf;
+    const char *iend = iptr + *inbytesleft;
     unsigned char *optr = *outbuf;
     unsigned char *oend = optr + *outbytesleft;
-    uint16_t ch;
     int err = 0;
 
     while ( iptr < iend )
     {
-        if( *iptr < 0x80 )
+        unsigned char c1 = *iptr;
+
+        if( c1 < 0x80 )
         {
             if( optr >= oend )
             {
@@ -264,7 +265,7 @@ static size_t ISO6937toUTF8( const unsigned char **inbuf, size_t *inbytesleft,
             break;        /* No space in outbuf for multibyte char */
         }
 
-        ch = to_ucs4[*iptr - 0x80];
+        uint_fast16_t ch = to_ucs4[c1 - 0x80];
 
         if( ch == 0xffff )
         {
@@ -274,8 +275,10 @@ static size_t ISO6937toUTF8( const unsigned char **inbuf, size_t *inbytesleft,
                 err = EINVAL;
                 break;    /* No next character */
             }
-            if ( iptr[1] < 0x40 || iptr[1] >= 0x80 ||
-                 !(ch = to_ucs4_comb[iptr[0] - 0xc1][iptr[1] - 0x40]) )
+
+            unsigned char c2 = iptr[1];
+            if ( c2 < 0x40 || c2 >= 0x80 ||
+                 !(ch = to_ucs4_comb[c1 - 0xc1][c2 - 0x40]) )
             {
                 err = EILSEQ;
                 break;   /* Illegal combination */
@@ -379,17 +382,35 @@ vlc_iconv_t vlc_iconv_open( const char *tocode, const char *fromcode )
 size_t vlc_iconv( vlc_iconv_t cd, const char **inbuf, size_t *inbytesleft,
                   char **outbuf, size_t *outbytesleft )
 {
+    size_t ret;
+
 #ifndef __linux__
     if ( cd == (vlc_iconv_t)(-2) )
-        return ISO6937toUTF8( (const unsigned char **)inbuf, inbytesleft,
-                              (unsigned char **)outbuf, outbytesleft );
+    {
+        unsigned char *out = NULL;
+        if (outbuf != NULL)
+            out = (unsigned char *)*outbuf;
+
+        ret = ISO6937toUTF8( inbuf, inbytesleft, &out, outbytesleft );
+        if (outbuf != NULL)
+            *outbuf = (char *)out;
+    }
+    else
 #endif
 #if defined(HAVE_ICONV)
-    return iconv( cd, (ICONV_CONST char **)inbuf, inbytesleft,
-                  outbuf, outbytesleft );
+    {
+        ICONV_CONST char *cin = NULL;
+        if (inbuf != NULL)
+            cin = (ICONV_CONST char *)*inbuf;
+
+        ret = iconv( cd, &cin, inbytesleft, outbuf, outbytesleft );
+        if (inbuf != NULL)
+            *inbuf = cin;
+    }
 #else
-    abort ();
+        abort ();
 #endif
+    return ret;
 }
 
 int vlc_iconv_close( vlc_iconv_t cd )

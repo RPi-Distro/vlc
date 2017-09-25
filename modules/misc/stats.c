@@ -28,26 +28,29 @@
 /* Example usage:
  *  $ vlc movie.avi --sout="#transcode{aenc=dummy,venc=stats}:\
  *                          std{access=http,mux=dummy,dst=0.0.0.0:8081}"
- *  $ vlc -vvv http://127.0.0.1:8081 --demux=stats --vout=stats --codec=stats
+ *  $ vlc -vv http://127.0.0.1:8081 --demux=stats --vout=stats --codec=stats
  */
 
 #define kBufferSize 0x500
 
+#define VLC_MODULE_LICENSE VLC_LICENSE_GPL_2_PLUS
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
 #include <vlc_demux.h>
 
 /*** Decoder ***/
-static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
+static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
 {
-    block_t *p_block;
     picture_t * p_pic = NULL;
 
-    if( !pp_block || !*pp_block ) return NULL;
-    p_block = *pp_block;
+    if( p_block == NULL ) /* No Drain */
+        return VLCDEC_SUCCESS;
 
-    p_pic = decoder_NewPicture( p_dec );
+    if( !decoder_UpdateVideoFormat( p_dec ) )
+        p_pic = decoder_NewPicture( p_dec );
+    if( !p_pic )
+        goto error;
 
     if( p_block->i_buffer == kBufferSize )
     {
@@ -67,9 +70,10 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             p_block->i_pts : p_block->i_dts;
     p_pic->b_force = true;
 
+error:
     block_Release( p_block );
-    *pp_block = NULL;
-    return p_pic;
+    decoder_QueueVideo( p_dec, p_pic );
+    return VLCDEC_SUCCESS;
 }
 
 static int OpenDecoder ( vlc_object_t *p_this )
@@ -79,12 +83,10 @@ static int OpenDecoder ( vlc_object_t *p_this )
     msg_Dbg( p_this, "opening stats decoder" );
 
     /* Set callbacks */
-    p_dec->pf_decode_video = DecodeBlock;
-    p_dec->pf_decode_audio = NULL;
-    p_dec->pf_decode_sub = NULL;
+    p_dec->pf_decode = DecodeBlock;
 
     /* */
-    es_format_Init( &p_dec->fmt_out, VIDEO_ES, VLC_CODEC_I420 );
+    p_dec->fmt_out.i_codec = VLC_CODEC_I420;
     p_dec->fmt_out.video.i_width = 100;
     p_dec->fmt_out.video.i_height = 100;
     p_dec->fmt_out.video.i_sar_num = 1;
@@ -143,16 +145,17 @@ static int Demux( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
 
-    block_t * p_block = stream_Block( p_demux->s, kBufferSize );
+    block_t * p_block = vlc_stream_Block( p_demux->s, kBufferSize );
 
     if( !p_block ) return 1;
 
     p_block->i_dts = p_block->i_pts =
         date_Increment( &p_sys->pts, kBufferSize );
 
-    msg_Dbg( p_demux, "demux got %d ms offset", (int)(mdate() - *(mtime_t *)p_block->p_buffer) / 1000 );
+    msg_Dbg( p_demux, "demux got %"PRId64" ms offset",
+             (mdate() - *(mtime_t *)p_block->p_buffer) / 1000 );
 
-    //es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_block->i_pts );
+    //es_out_SetPCR( p_demux->out, p_block->i_pts );
 
     es_out_Send( p_demux->out, p_sys->p_es, p_block );
 
@@ -218,7 +221,19 @@ vlc_module_begin ()
 #endif
         set_section( N_( "Stats decoder" ), NULL )
         set_description( N_("Stats decoder function") )
-        set_capability( "decoder", 0 )
+        set_capability( "video decoder", 0 )
+        add_shortcut( "stats" )
+        set_callbacks( OpenDecoder, NULL )
+    add_submodule()
+        set_section( N_( "Stats decoder" ), NULL )
+        set_description( N_("Stats decoder function") )
+        set_capability( "audio decoder", 0 )
+        add_shortcut( "stats" )
+        set_callbacks( OpenDecoder, NULL )
+    add_submodule()
+        set_section( N_( "Stats decoder" ), NULL )
+        set_description( N_("Stats decoder function") )
+        set_capability( "spu decoder", 0 )
         add_shortcut( "stats" )
         set_callbacks( OpenDecoder, NULL )
     add_submodule ()

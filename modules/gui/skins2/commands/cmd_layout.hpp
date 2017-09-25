@@ -2,7 +2,7 @@
  * cmd_layout.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: aacf3d0c2aa260ba7bb61edcb95f32b7fde9c54a $
+ * $Id: dec56d13a2c0a66db91882a80ead0502d184bf74 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -38,7 +38,7 @@ public:
                GenericLayout &rLayout );
     virtual ~CmdLayout() { }
     virtual void execute();
-    virtual string getType() const { return "change layout"; }
+    virtual std::string getType() const { return "change layout"; }
 
 private:
     TopWindow &m_rWindow;

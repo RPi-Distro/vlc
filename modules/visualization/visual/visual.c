@@ -2,7 +2,7 @@
  * visual.c : Visualisation system
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: 628fd7038564d293cff5edecc6b33050d6fb5744 $
+ * $Id: e3239789c1a55e0658e8bd4bde40d607ff1c3740 $
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
  *
@@ -337,11 +337,11 @@ error:
 static block_t *DoRealWork( filter_t *p_filter, block_t *p_in_buf )
 {
     filter_sys_t *p_sys = p_filter->p_sys;
-    picture_t *p_outpic;
 
     /* First, get a new picture */
-    while( ( p_outpic = vout_GetPicture( p_sys->p_vout ) ) == NULL )
-        msleep( VOUT_OUTMEM_SLEEP );
+    picture_t *p_outpic = vout_GetPicture( p_sys->p_vout );
+    if( unlikely(p_outpic == NULL) )
+        return p_in_buf;
 
     /* Blank the picture */
     for( int i = 0 ; i < p_outpic->i_planes ; i++ )
@@ -381,7 +381,7 @@ static void *Thread( void *data )
         block_Release( DoRealWork( p_filter, block ) );
         vlc_restorecancel( canc );
     }
-    assert(0);
+    vlc_assert_unreachable();
 }
 
 static block_t *DoWork( filter_t *p_filter, block_t *p_in_buf )

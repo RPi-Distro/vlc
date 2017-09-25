@@ -2,7 +2,7 @@
  * snapshot.h : vout internal snapshot
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: b81e3e7ba8b547ebe48b215035fdf254e0887e5f $
+ * $Id: b27a7212e925018112a60f671ff7c70bd769e1d3 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -30,9 +30,9 @@ typedef struct {
     vlc_mutex_t lock;
     vlc_cond_t  wait;
 
-	bool        is_available;
-	int         request_count;
-	picture_t   *picture;
+    bool        is_available;
+    int         request_count;
+    picture_t   *picture;
 
 } vout_snapshot_t;
 

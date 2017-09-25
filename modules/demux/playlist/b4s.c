@@ -2,7 +2,7 @@
  * b4s.c : B4S playlist format import
  *****************************************************************************
  * Copyright (C) 2005-2009 VLC authors and VideoLAN
- * $Id: d9c04656b83455d2354f02968227dbfce18ed5fd $
+ * $Id: dd886463e5330615b1ec1b8206b203aa6da15137 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -30,7 +30,7 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_demux.h>
+#include <vlc_access.h>
 #include <vlc_xml.h>
 #include <vlc_strings.h>
 
@@ -39,7 +39,7 @@
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static int Demux( demux_t *p_demux);
+static int ReadDir( stream_t *, input_item_node_t *);
 static bool IsWhitespace( const char *psz_string );
 
 /*****************************************************************************
@@ -47,19 +47,19 @@ static bool IsWhitespace( const char *psz_string );
  *****************************************************************************/
 int Import_B4S( vlc_object_t *p_this )
 {
-    demux_t *demux = (demux_t *)p_this;
+    stream_t *demux = (stream_t *)p_this;
 
-    if( !demux_IsPathExtension( demux, ".b4s" )
-     && !demux_IsForced( demux, "b4s-open" ) )
+    CHECK_FILE(demux);
+    if( !stream_HasExtension( demux, ".b4s" ) )
         return VLC_EGENERIC;
 
-    demux->pf_demux = Demux;
-    demux->pf_control = Control;
+    demux->pf_readdir = ReadDir;
+    demux->pf_control = access_vaDirectoryControlHelper;
 
     return VLC_SUCCESS;
 }
 
-static int Demux( demux_t *p_demux )
+static int ReadDir( stream_t *p_demux, input_item_node_t *p_subitems )
 {
     int i_ret = -1;
 
@@ -69,13 +69,12 @@ static int Demux( demux_t *p_demux )
     input_item_t *p_input;
     char *psz_mrl = NULL, *psz_title = NULL, *psz_genre = NULL;
     char *psz_now = NULL, *psz_listeners = NULL, *psz_bitrate = NULL;
-    input_item_node_t *p_subitems = NULL;
 
     input_item_t *p_current_input = GetCurrentItem(p_demux);
 
-    free( stream_ReadLine( p_demux->s ) );
+    free( vlc_stream_ReadLine( p_demux->p_source ) );
 
-    p_xml_reader = xml_ReaderCreate( p_demux, p_demux->s );
+    p_xml_reader = xml_ReaderCreate( p_demux, p_demux->p_source );
     if( !p_xml_reader )
         return -1;
 
@@ -122,8 +121,6 @@ static int Demux( demux_t *p_demux )
             msg_Warn( p_demux, "stray attribute %s with value %s in element"
                       " <playlist>", attr, value );
     }
-
-    p_subitems = input_item_node_Create( p_current_input );
 
     while( (i_ret = xml_ReaderNextNode( p_xml_reader, &node )) > 0 )
     {
@@ -191,7 +188,7 @@ static int Demux( demux_t *p_demux )
                 // Read the element name
                 if( !strcmp( node, "entry" ) )
                 {
-                    resolve_xml_special_chars( psz_mrl );
+                    vlc_xml_decode( psz_mrl );
                     p_input = input_item_New( psz_mrl, psz_title );
                     if( psz_now )
                         input_item_SetNowPlaying( p_input, psz_now );
@@ -203,7 +200,7 @@ static int Demux( demux_t *p_demux )
                         msg_Err( p_demux, "Unsupported meta bitrate" );
 
                     input_item_node_AppendItem( p_subitems, p_input );
-                    vlc_gc_decref( p_input );
+                    input_item_Release( p_input );
                     FREENULL( psz_title );
                     FREENULL( psz_mrl );
                     FREENULL( psz_genre );
@@ -226,10 +223,6 @@ static int Demux( demux_t *p_demux )
 end:
     free( psz_elname );
 
-    if( p_subitems )
-        input_item_node_PostAndDelete( p_subitems );
-
-    vlc_gc_decref( p_current_input );
     if( p_xml_reader )
         xml_ReaderDelete( p_xml_reader );
     return i_ret;

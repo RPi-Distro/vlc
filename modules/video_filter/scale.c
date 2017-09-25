@@ -3,7 +3,7 @@
  *  Uses the low quality "nearest neighbour" algorithm.
  *****************************************************************************
  * Copyright (C) 2003-2007 VLC authors and VideoLAN
- * $Id: 08842995a929dfc5319a05ff4f52cc51ae6ff227 $
+ * $Id: 003369effe64f373ea17623d3f4f3934bf993794 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea @t videolan dot org>
@@ -33,6 +33,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
+#include <vlc_picture.h>
 
 /****************************************************************************
  * Local prototypes
@@ -45,7 +46,7 @@ static picture_t *Filter( filter_t *, picture_t * );
  *****************************************************************************/
 vlc_module_begin ()
     set_description( N_("Video scaling filter") )
-    set_capability( "video filter2", 10 )
+    set_capability( "video converter", 10 )
     set_callbacks( OpenFilter, NULL )
 vlc_module_end ()
 
@@ -71,6 +72,7 @@ static int OpenFilter( vlc_object_t *p_this )
     if( p_filter->fmt_in.video.orientation != p_filter->fmt_out.video.orientation )
         return VLC_EGENERIC;
 
+#warning Converter cannot (really) change output format.
     video_format_ScaleCropAr( &p_filter->fmt_out.video, &p_filter->fmt_in.video );
     p_filter->pf_video_filter = Filter;
 
@@ -87,18 +89,10 @@ static int OpenFilter( vlc_object_t *p_this )
 static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
 {
     picture_t *p_pic_dst;
-    int i_plane;
 
     if( !p_pic ) return NULL;
 
-    if( (p_filter->fmt_in.video.i_height == 0) ||
-        (p_filter->fmt_in.video.i_width == 0) )
-        return NULL;
-
-    if( (p_filter->fmt_out.video.i_height == 0) ||
-        (p_filter->fmt_out.video.i_width == 0) )
-        return NULL;
-
+#warning Converter cannot (really) change output format.
     video_format_ScaleCropAr( &p_filter->fmt_out.video, &p_filter->fmt_in.video );
 
     /* Request output picture */
@@ -113,7 +107,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         p_filter->fmt_in.video.i_chroma != VLC_CODEC_ARGB &&
         p_filter->fmt_in.video.i_chroma != VLC_CODEC_RGB32 )
     {
-        for( i_plane = 0; i_plane < p_pic_dst->i_planes; i_plane++ )
+        for( int i_plane = 0; i_plane < p_pic_dst->i_planes; i_plane++ )
         {
             const int i_src_pitch    = p_pic->p[i_plane].i_pitch;
             const int i_dst_pitch    = p_pic_dst->p[i_plane].i_pitch;

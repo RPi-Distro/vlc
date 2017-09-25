@@ -2,7 +2,7 @@
  * control.h : vout internal control
  *****************************************************************************
  * Copyright (C) 2009-2010 Laurent Aimar
- * $Id: f52a529c3a2d2f46668f7c496763498084e024b1 $
+ * $Id: 04a66e9fb47d26ba40374fc39ca890f5c93b82e1 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -24,11 +24,15 @@
 #ifndef LIBVLC_VOUT_INTERNAL_CONTROL_H
 #define LIBVLC_VOUT_INTERNAL_CONTROL_H
 
+#include <vlc_vout_window.h>
+#include <vlc_viewpoint.h>
+
 /* */
 enum {
     VOUT_CONTROL_INIT,
     VOUT_CONTROL_CLEAN,
     VOUT_CONTROL_REINIT,                /* cfg */
+    VOUT_CONTROL_CANCEL,
 
 #if 0
     /* */
@@ -39,17 +43,18 @@ enum {
     VOUT_CONTROL_FLUSH_SUBPICTURE,      /* integer */
     VOUT_CONTROL_OSD_TITLE,             /* string */
     VOUT_CONTROL_CHANGE_FILTERS,        /* string */
+    VOUT_CONTROL_CHANGE_INTERLACE,      /* boolean */
     VOUT_CONTROL_CHANGE_SUB_SOURCES,    /* string */
     VOUT_CONTROL_CHANGE_SUB_FILTERS,    /* string */
     VOUT_CONTROL_CHANGE_SUB_MARGIN,     /* integer */
 
     VOUT_CONTROL_PAUSE,
-    VOUT_CONTROL_RESET,
     VOUT_CONTROL_FLUSH,                 /* time */
     VOUT_CONTROL_STEP,                  /* time_ptr */
 
     VOUT_CONTROL_FULLSCREEN,            /* bool */
     VOUT_CONTROL_WINDOW_STATE,          /* unsigned */
+    VOUT_CONTROL_WINDOW_MOUSE,          /* window_mouse */
     VOUT_CONTROL_DISPLAY_FILLED,        /* bool */
     VOUT_CONTROL_ZOOM,                  /* pair */
 
@@ -57,6 +62,7 @@ enum {
     VOUT_CONTROL_CROP_BORDER,           /* border */
     VOUT_CONTROL_CROP_RATIO,            /* pair */
     VOUT_CONTROL_CROP_WINDOW,           /* window */
+    VOUT_CONTROL_VIEWPOINT,             /* viewpoint */
 };
 
 typedef struct {
@@ -92,8 +98,10 @@ typedef struct {
             unsigned width;
             unsigned height;
         } window;
+        vout_window_mouse_event_t window_mouse;
         const vout_configuration_t *cfg;
         subpicture_t *subpicture;
+        vlc_viewpoint_t viewpoint;
     } u;
 } vout_control_cmd_t;
 
@@ -130,7 +138,7 @@ void vout_control_PushString(vout_control_t *, int type, const char *string);
 void vout_control_Wake(vout_control_t *);
 
 /* control inside of the vout thread */
-int vout_control_Pop(vout_control_t *, vout_control_cmd_t *, mtime_t deadline, mtime_t timeout);
+int vout_control_Pop(vout_control_t *, vout_control_cmd_t *, mtime_t deadline);
 void vout_control_Dead(vout_control_t *);
 
 #endif

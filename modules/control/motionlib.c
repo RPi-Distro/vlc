@@ -2,7 +2,7 @@
  * motion.c: laptop built-in motion sensors
  *****************************************************************************
  * Copyright (C) 2006 - 2012 the VideoLAN team
- * $Id: fd13f6fc340212fff0f0377698f12d8d6e993d9d $
+ * $Id: 0dedccd0e5e654acc18b6f24f8e1c90a33b46809 $
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *         Jérôme Decoodt <djc@videolan.org> (unimotion integration)
@@ -70,7 +70,7 @@ motion_sensors_t *motion_create( vlc_object_t *obj )
         return NULL;
     }
 
-    if( access( "/sys/devices/platform/hdaps/position", R_OK ) == 0 
+    if( access( "/sys/devices/platform/hdaps/position", R_OK ) == 0
         && ( f = fopen( "/sys/devices/platform/hdaps/calibrate", "re" ) ) )
     {
         /* IBM HDAPS support */
@@ -85,7 +85,7 @@ motion_sensors_t *motion_create( vlc_object_t *obj )
         motion->sensor = AMS_SENSOR;
         msg_Dbg( obj, "AMS motion detection correctly loaded" );
     }
-    else if( access( "/sys/devices/platform/applesmc.768/position", R_OK ) == 0 
+    else if( access( "/sys/devices/platform/applesmc.768/position", R_OK ) == 0
              && ( f = fopen( "/sys/devices/platform/applesmc.768/calibrate", "re" ) ) )
     {
         /* Apple SMC (newer macbooks) */
@@ -194,7 +194,7 @@ static int GetOrientation( motion_sensors_t *motion )
             return 0;
 #endif
     default:
-        assert( 0 );
+        vlc_assert_unreachable();
     }
 }
 

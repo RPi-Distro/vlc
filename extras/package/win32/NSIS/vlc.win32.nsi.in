@@ -23,6 +23,10 @@
 !define MEMENTO_REGISTRY_ROOT ${PRODUCT_UNINST_ROOT_KEY}
 !define MEMENTO_REGISTRY_KEY "${PRODUCT_UNINST_KEY}"
 
+!if ! 0x3000000 >= ${NSIS_PACKEDVERSION}
+  ManifestDPIAware true
+!endif
+
 !define INSTALL_ACTIVEX
 !define INSTALL_MOZILLA
 
@@ -130,10 +134,6 @@ RequestExecutionLevel admin
   !insertmacro MUI_LANGUAGE "Russian"
   !insertmacro MUI_LANGUAGE "Portuguese"
   !insertmacro MUI_LANGUAGE "PortugueseBR"
-  !insertmacro MUI_LANGUAGE "Latvian"
-  !insertmacro MUI_LANGUAGE "Indonesian"
-  !insertmacro MUI_LANGUAGE "Afrikaans"
-  !insertmacro MUI_LANGUAGE "Albanian"
   !insertmacro MUI_LANGUAGE "Welsh"
   !insertmacro MUI_LANGUAGE "Uzbek"
   !insertmacro MUI_LANGUAGE "Ukrainian"
@@ -155,8 +155,6 @@ RequestExecutionLevel admin
   !insertmacro MUI_LANGUAGE "Slovak"
   !insertmacro MUI_LANGUAGE "Serbian"
   !insertmacro MUI_LANGUAGE "Hungarian"
-  !insertmacro MUI_LANGUAGE "Croatian"
-  !insertmacro MUI_LANGUAGE "Icelandic"
   !insertmacro MUI_LANGUAGE "Catalan"
   !insertmacro MUI_LANGUAGE "Bulgarian"
   !insertmacro MUI_LANGUAGE "Estonian"
@@ -173,9 +171,9 @@ RequestExecutionLevel admin
 ; Macro and Functions ;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-!include helpers/extensions.nsh
-!include helpers/install.nsh
-!include helpers/utils.nsh
+!include helpers\extensions.nsh
+!include helpers\install.nsh
+!include helpers\utils.nsh
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ; Installer sections ;
@@ -233,6 +231,10 @@ ${MementoSection} $Name_Section01 SEC01
   WriteRegStr HKCR Applications\vlc.exe\shell\Open\command "" '"$INSTDIR\vlc.exe" --started-from-file "%1"'
   !insertmacro MacroAllExtensions RegisterExtensionMacro
   !insertmacro MacroSkinExtensions RegisterSkinExtensionMacro
+
+  ; Add VLC to "App Paths" to run VLC from ShellExecute/ShellExecuteEx/run dialog without giving a full path
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\vlc.exe" "" "$INSTDIR\vlc.exe"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\vlc.exe" "Path" "$INSTDIR"
 
   ; Windows default programs Registration
   ; Vista and above detection
@@ -363,6 +365,13 @@ ${MementoSection} $Name_Section05 SEC05
   WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLCPlayMusicFilesOnArrival" "InvokeVerb" "Open"
   WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLCPlayMusicFilesOnArrival" "Provider" "VideoLAN VLC media player"
 
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayBlurayOnArrival" "VLCPlayBlurayOnArrival" ""
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLCPlayBlurayOnArrival" "Action" $Action_OnArrivalBluray
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLCPlayBlurayOnArrival" "DefaultIcon" '"$INSTDIR\vlc.exe",0'
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLCPlayBlurayOnArrival" "InvokeProgID" "VLC.Bluray"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLCPlayBlurayOnArrival" "InvokeVerb" "Open"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLCPlayBlurayOnArrival" "Provider" "VideoLAN VLC media player"
+
   WriteRegStr HKCR "VLC.DVDMovie" "" "VLC DVD Movie"
   WriteRegStr HKCR "VLC.DVDMovie\shell" "" "Open"
   WriteRegStr HKCR "VLC.DVDMovie\shell\Open\command" "" \
@@ -393,19 +402,26 @@ ${MementoSection} $Name_Section05 SEC05
      '"$INSTDIR\vlc.exe" %1'
   WriteRegStr HKCR "VLC.OPENFolder\DefaultIcon" "" '"$INSTDIR\vlc.exe",0'
 
+  WriteRegStr HKCR "VLC.Bluray" "" "VLC Bluray"
+  WriteRegStr HKCR "VLC.Bluray\shell" "" "Open"
+  WriteRegStr HKCR "VLC.Bluray\shell\Open\command" "" \
+    '"$INSTDIR\vlc.exe" --started-from-file bluray:///%1'
+  WriteRegStr HKCR "VLC.Bluray\DefaultIcon" "" '"$INSTDIR\vlc.exe",0'
+
 ${MementoSectionEnd}
 
 
 SectionGroup /e !$Name_Section06 SEC06
   SectionGroup $Name_SectionGroupAudio
-    !insertmacro MacroAudioExtensions RegisterExtensionSection
+    !insertmacro MacroAudioExtensions AssociateExtensionSection
   SectionGroupEnd
   SectionGroup $Name_SectionGroupVideo
-    !insertmacro MacroVideoExtensions RegisterExtensionSection
+    !insertmacro MacroVideoExtensions AssociateExtensionSection
   SectionGroupEnd
   SectionGroup $Name_SectionGroupOther
-    !insertmacro MacroOtherExtensions RegisterExtensionSection
-    !insertmacro MacroSkinExtensions RegisterSkinExtensionSection
+    !insertmacro MacroOtherExtensions AssociateExtensionSection
+    !insertmacro MacroSkinExtensions AssociateSkinExtensionSection
+    !insertmacro MacroUnassociatedExtensions AssociateExtensionUnselectedSection
   SectionGroupEnd
 SectionGroupEnd
 
@@ -547,17 +563,11 @@ UAC_Success:
 ;  StrCmp $LANGUAGE ${LANG_SCOTTISH_GAELIC} Scottish_Gaelic 0
 ;  StrCmp $LANGUAGE ${LANG_SINHALA} Sinhala 0
   StrCmp $LANGUAGE ${LANG_THAI} Thai 0
-  StrCmp $LANGUAGE ${LANG_TRADITIONAL_CHINESE} TradChinese 0
+  StrCmp $LANGUAGE ${LANG_TRADCHINESE} TradChinese 0
   StrCmp $LANGUAGE ${LANG_TURKISH} Turkish 0
   StrCmp $LANGUAGE ${LANG_UKRAINIAN} Ukrainian 0
   StrCmp $LANGUAGE ${LANG_UZBEK} Uzbek 0
   StrCmp $LANGUAGE ${LANG_WELSH} Welsh 0
-  StrCmp $LANGUAGE ${LANG_ALBANIAN} Albanian 0
-  StrCmp $LANGUAGE ${LANG_CROATIAN} Croatian 0
-  StrCmp $LANGUAGE ${LANG_ICELANDIC} Icelandic 0
-  StrCmp $LANGUAGE ${LANG_AFRIKAANS} Afrikaans 0
-  StrCmp $LANGUAGE ${LANG_INDONESIAN} Indonesian 0
-  StrCmp $LANGUAGE ${LANG_LATVIAN} Latvian 0
   StrCmp $LANGUAGE ${LANG_PORTUGUESEBR} Brazilian EndLanguageCmp
   French:
   !include "languages\french.nsh"
@@ -601,12 +611,12 @@ UAC_Success:
   Japanese:
   !include "languages\japanese.nsh"
   Goto EndLanguageCmp
-  Bengali:
-  !include "languages\bengali.nsh"
-  Goto EndLanguageCmp
-  Punjabi:
-  !include "languages\punjabi.nsh"
-  Goto EndLanguageCmp
+;  Bengali:
+;  !include "languages\bengali.nsh"
+;  Goto EndLanguageCmp
+;  Punjabi:
+;  !include "languages\punjabi.nsh"
+;  Goto EndLanguageCmp
   Slovenian:
   !include "languages\slovenian.nsh"
   Goto EndLanguageCmp
@@ -626,7 +636,7 @@ UAC_Success:
   !include "languages\serbian.nsh"
   Goto EndLanguageCmp
   Russian:
-  !include "languages\russian.nsh"
+  !include "languages\Russian.nsh"
   Goto EndLanguageCmp
   Hebrew:
   !include "languages\hebrew.nsh"
@@ -687,24 +697,6 @@ UAC_Success:
   Goto EndLanguageCmp
   Welsh:
   !include "languages\welsh.nsh"
-  Goto EndLanguageCmp
-  Albanian:
-  !include "languages\albanian.nsh"
-  Goto EndLanguageCmp
-  Croatian:
-  !include "languages\croatian.nsh"
-  Goto EndLanguageCmp
-  Icelandic:
-  !include "languages\icelandic.nsh"
-  Goto EndLanguageCmp
-  Afrikaans:
-  !include "languages\afrikaans.nsh"
-  Goto EndLanguageCmp
-  Indonesian:
-  !include "languages\indonesian.nsh"
-  Goto EndLanguageCmp
-  Latvian:
-  !include "languages\latvian.nsh"
   Goto EndLanguageCmp
   Brazilian:
   !include "languages\brazilian_portuguese.nsh"
@@ -970,6 +962,7 @@ Section "un.$Name_Section91" SEC91
   DeleteRegKey HKLM Software\VideoLAN
 
   DeleteRegKey HKCR Applications\vlc.exe
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\vlc.exe"
   DeleteRegKey HKCR AudioCD\shell\PlayWithVLC
   DeleteRegKey HKCR DVD\shell\PlayWithVLC
   DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayDVDMovieOnArrival" "VLCPlayDVDMovieOnArrival"
@@ -995,6 +988,7 @@ Section "un.$Name_Section91" SEC91
   DeleteRegKey HKCR "VLC.VCDMovie"
   DeleteRegKey HKCR "VLC.SVCDMovie"
   DeleteRegKey HKCR "VLC.OPENFolder"
+  DeleteRegKey HKCR "VLC.Bluray"
 
 
   DeleteRegKey HKLM \
@@ -1094,17 +1088,11 @@ UAC_Success:
 ;  StrCmp $LANGUAGE ${LANG_SCOTTISH_GAELIC} Scottish_Gaelic 0
 ;  StrCmp $LANGUAGE ${LANG_SINHALA} Sinhala 0
   StrCmp $LANGUAGE ${LANG_THAI} Thai 0
-  StrCmp $LANGUAGE ${LANG_TRADITIONAL_CHINESE} TradChinese 0
+  StrCmp $LANGUAGE ${LANG_TRADCHINESE} TradChinese 0
   StrCmp $LANGUAGE ${LANG_TURKISH} Turkish 0
   StrCmp $LANGUAGE ${LANG_UKRAINIAN} Ukrainian 0
   StrCmp $LANGUAGE ${LANG_UZBEK} Uzbek 0
   StrCmp $LANGUAGE ${LANG_WELSH} Welsh 0
-  StrCmp $LANGUAGE ${LANG_ALBANIAN} Albanian 0
-  StrCmp $LANGUAGE ${LANG_CROATIAN} Croatian 0
-  StrCmp $LANGUAGE ${LANG_ICELANDIC} Icelandic 0
-  StrCmp $LANGUAGE ${LANG_AFRIKAANS} Afrikaans 0
-  StrCmp $LANGUAGE ${LANG_INDONESIAN} Indonesian 0
-  StrCmp $LANGUAGE ${LANG_LATVIAN} Latvian 0
   StrCmp $LANGUAGE ${LANG_PORTUGUESEBR} Brazilian EndLanguageCmp
   French:
   !include "languages\french.nsh"
@@ -1148,12 +1136,12 @@ UAC_Success:
   Japanese:
   !include "languages\japanese.nsh"
   Goto EndLanguageCmp
-  Bengali:
-  !include "languages\bengali.nsh"
-  Goto EndLanguageCmp
-  Punjabi:
-  !include "languages\punjabi.nsh"
-  Goto EndLanguageCmp
+;  Bengali:
+;  !include "languages\bengali.nsh"
+;  Goto EndLanguageCmp
+;  Punjabi:
+;  !include "languages\punjabi.nsh"
+;  Goto EndLanguageCmp
   Slovenian:
   !include "languages\slovenian.nsh"
   Goto EndLanguageCmp
@@ -1234,24 +1222,6 @@ UAC_Success:
   Goto EndLanguageCmp
   Welsh:
   !include "languages\welsh.nsh"
-  Goto EndLanguageCmp
-  Albanian:
-  !include "languages\albanian.nsh"
-  Goto EndLanguageCmp
-  Croatian:
-  !include "languages\croatian.nsh"
-  Goto EndLanguageCmp
-  Icelandic:
-  !include "languages\icelandic.nsh"
-  Goto EndLanguageCmp
-  Afrikaans:
-  !include "languages\afrikaans.nsh"
-  Goto EndLanguageCmp
-  Indonesian:
-  !include "languages\indonesian.nsh"
-  Goto EndLanguageCmp
-  Latvian:
-  !include "languages\latvian.nsh"
   Goto EndLanguageCmp
   Brazilian:
   !include "languages\brazilian_portuguese.nsh"

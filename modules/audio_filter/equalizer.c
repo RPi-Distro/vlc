@@ -2,7 +2,7 @@
  * equalizer.c:
  *****************************************************************************
  * Copyright (C) 2004-2012 VLC authors and VideoLAN
- * $Id: 98a4a7ee46bfb692639d28d2b25e0805a6b4fd13 $
+ * $Id: 735b2be5728a7406375bab79814feeff45a2f4dd $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -164,6 +164,7 @@ static int Open( vlc_object_t *p_this )
     }
 
     p_filter->fmt_in.audio.i_format = VLC_CODEC_FL32;
+    aout_FormatPrepare(&p_filter->fmt_in.audio);
     p_filter->fmt_out.audio = p_filter->fmt_in.audio;
     p_filter->pf_audio_filter = DoWork;
 
@@ -282,7 +283,7 @@ static int EqzInit( filter_t *p_filter, int i_rate )
     eqz_config_t cfg;
     int i, ch;
     vlc_value_t val1, val2, val3;
-    vlc_object_t *p_aout = p_filter->p_parent;
+    vlc_object_t *p_aout = p_filter->obj.parent;
     int i_ret = VLC_ENOMEM;
 
     bool b_vlcFreqs = var_InheritBool( p_aout, "equalizer-vlcfreqs" );
@@ -451,7 +452,7 @@ static void EqzFilter( filter_t *p_filter, float *out, float *in,
 static void EqzClean( filter_t *p_filter )
 {
     filter_sys_t *p_sys = p_filter->p_sys;
-    vlc_object_t *p_aout = p_filter->p_parent;
+    vlc_object_t *p_aout = p_filter->obj.parent;
 
     var_DelCallback( p_aout, "equalizer-bands", BandsCallback, p_sys );
     var_DelCallback( p_aout, "equalizer-preset", PresetCallback, p_sys );

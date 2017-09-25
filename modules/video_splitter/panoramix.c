@@ -2,7 +2,7 @@
  * panoramix.c : Wall panoramic video with edge blending plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001, 2002, 2003 VideoLAN
- * $Id: 9de7efa53f5fc75c6b51e5123a50b053ca15fcbb $
+ * $Id: 9079c028240b9f84ecce8d19e06c083cf75af60b $
  *
  * Authors: Cedric Cocquebert <cedric.cocquebert@supelec.fr>
  *          based on Samuel Hocevar <sam@zoy.org>
@@ -83,7 +83,7 @@ vlc_module_begin()
     set_help(PANORAMIX_HELP)
     set_capability( "video splitter", 0 )
     set_category( CAT_VIDEO )
-    set_subcategory( SUBCAT_VIDEO_VFILTER )
+    set_subcategory( SUBCAT_VIDEO_SPLITTER )
 
     add_integer( CFG_PREFIX "cols", -1, COLS_TEXT, COLS_LONGTEXT, true )
     change_integer_range( -1, COL_MAX )
@@ -1024,9 +1024,8 @@ static void FilterPlanar( uint8_t *p_out, int i_out_pitch,
         if( b_attenuate_top || b_attenuate_bottom )
         {
             const int i_index = b_attenuate_top ? lambdah[0][y] : lambdah[1][y - (i_copy_lines - p_cfg->attenuate.i_bottom)];
-            uint8_t *p_dst = &p_out[0];
             for( int i = 0; i < i_out_width; i++)
-                p_dst[i] = p_lut[i_index][p_dst[i]];
+                p_out[i] = p_lut[i_index][p_out[i]];
         }
 
         /* */

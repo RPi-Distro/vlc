@@ -2,7 +2,7 @@
  * evt_motion.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 259f87429f56771b05ad8fc70112286ef8652d30 $
+ * $Id: b9501c48474ea72aca0d0e11fc6df8e2948e00f9 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -35,7 +35,7 @@ public:
     EvtMotion( intf_thread_t *pIntf, int xPos, int yPos )
              : EvtInput( pIntf ), m_xPos( xPos ), m_yPos( yPos ) { }
     virtual ~EvtMotion() { }
-    virtual const string getAsString() const { return "motion"; }
+    virtual const std::string getAsString() const { return "motion"; }
 
     // Getters
     int getXPos() const { return m_xPos; }

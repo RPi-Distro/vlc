@@ -22,7 +22,7 @@ endif
 ifdef HAVE_WIN32
 	$(APPLY) $(SRC)/projectM/win32.patch
 endif
-	$(APPLY) $(SRC)/projectM/cpp11.patch
+	$(APPLY) $(SRC)/projectM/gcc6.patch
 	$(MOVE)
 
 DEPS_projectM = glew $(DEPS_glew)

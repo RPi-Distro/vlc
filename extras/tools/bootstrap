@@ -34,7 +34,7 @@ fi
 
 check_sed() {
 tmp="`pwd`/check_sed"
-trap "rm $tmp{,-e} 2>/dev/null" EXIT
+trap "rm \"$tmp\" \"$tmp-e\" 2>/dev/null" EXIT
 echo "test file for GNU sed" > $tmp
 if ! sed -i -e 's/sed//' $tmp >/dev/null 2>&1
 then
@@ -60,7 +60,7 @@ else
     needminor=`echo $2|cut -d. -f2`
     needmicro=`echo $2|cut -d. -f3`
     [ -z "$needmicro" ] && needmicro=0
-    if [ "$needmajor" -gt "$gotmajor" \
+    if [ "$needmajor" -ne "$gotmajor" \
          -o "$needmajor" -eq "$gotmajor" -a "$needminor" -gt "$gotminor" \
          -o "$needmajor" -eq "$gotmajor" -a "$needminor" -eq "$gotminor" -a "$needmicro" -gt "$gotmicro" ]
     then
@@ -71,30 +71,28 @@ fi
 }
 
 check autoconf 2.69
-check automake 1.14
+check automake 1.15
 check m4 1.4.16
 check libtool 2.4
 check pkg-config
-check cmake 2.8.8
+check cmake 3.4.1
 check yasm
 check_tar
 check ragel
 check_sed
+check protoc 2.6.0
+check ant
 check xz
 
-[ -n "$NEEDED" ] && mkdir -p build/
+[ -n "$NEEDED" ] && mkdir -p build/ && echo "To-be-built packages: `echo $NEEDED | sed 's/\.//g'`"
 
 CPUS=
-CC=
-CXX=
 case `uname` in
-    Linux)
+    Linux|MINGW32*|MINGW64*)
         CPUS=`grep -c ^processor /proc/cpuinfo`
      ;;
     Darwin)
-        CPUS=`sysctl hw.ncpu|cut -d: -f2`
-        gcc-4.2 --version >/dev/null 2>&1 && CC=CC=gcc-4.2
-        g++-4.2 --version >/dev/null 2>&1 && CXX=CXX=g++-4.2
+        CPUS=`sysctl hw.ncpu|cut -d" " -f2`
     ;;
     SunOS)
         CPUS=`/usr/bin/kstat -p :::state | grep 'on-line$' | wc -l | sed 's/ //g'`
@@ -107,8 +105,7 @@ esac
 
 cat > Makefile << EOF
 MAKEFLAGS += -j$CPUS
-$CC
-$CXX
+CMAKEFLAGS += --parallel=$CPUS
 PREFIX=\$(abspath ./build)
 
 all: $NEEDED

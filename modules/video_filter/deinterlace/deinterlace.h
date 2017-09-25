@@ -2,7 +2,7 @@
  * deinterlace.h : deinterlacer plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2011 VLC authors and VideoLAN
- * $Id: 7fc036d7f3f440a844f039d008c59befebd0b253 $
+ * $Id: ecc26e0d601a328d5c3790b76ee67a0530cb0590 $
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *         Christophe Massiot <massiot@via.ecp.fr>
@@ -42,6 +42,7 @@ struct vlc_object_t;
 #include "algo_yadif.h"
 #include "algo_phosphor.h"
 #include "algo_ivtc.h"
+#include "common.h"
 
 /*****************************************************************************
  * Local data
@@ -62,41 +63,11 @@ static const char *const mode_list_text[] = {
  *****************************************************************************/
 
 /**
- * Available deinterlace algorithms.
- * @see SetFilterMethod()
- */
-typedef enum { DEINTERLACE_DISCARD, DEINTERLACE_MEAN,    DEINTERLACE_BLEND,
-               DEINTERLACE_BOB,     DEINTERLACE_LINEAR,  DEINTERLACE_X,
-               DEINTERLACE_YADIF,   DEINTERLACE_YADIF2X, DEINTERLACE_PHOSPHOR,
-               DEINTERLACE_IVTC } deinterlace_mode;
-
-#define METADATA_SIZE (3)
-/**
- * Metadata history structure, used for framerate doublers.
- * This is used for computing field duration in Deinterlace().
- * @see Deinterlace()
- */
-typedef struct {
-    mtime_t pi_date[METADATA_SIZE];
-    int     pi_nb_fields[METADATA_SIZE];
-    bool    pb_top_field_first[METADATA_SIZE];
-} metadata_history_t;
-
-#define HISTORY_SIZE (3)
-#define CUSTOM_PTS -1
-/**
  * Top-level deinterlace subsystem state.
  */
 struct filter_sys_t
 {
     const vlc_chroma_description_t *chroma;
-
-    uint8_t  i_mode;              /**< Deinterlace mode */
-
-    /* Algorithm behaviour flags */
-    bool b_double_rate;       /**< Shall we double the framerate? */
-    bool b_half_height;       /**< Shall be divide the height by 2 */
-    bool b_use_frame_history; /**< Use the input frame history buffer? */
 
     /** Merge routine: C, MMX, SSE, ALTIVEC, NEON, ... */
     void (*pf_merge) ( void *, const void *, const void *, size_t );
@@ -105,26 +76,17 @@ struct filter_sys_t
     void (*pf_end_merge) ( void );
 #endif
 
-    /**
-     * Metadata history (PTS, nb_fields, TFF). Used for framerate doublers.
-     * @see metadata_history_t
-     */
-    metadata_history_t meta;
-
-    /** Output frame timing / framerate doubler control
-        (see extra documentation in deinterlace.h) */
-    int i_frame_offset;
-
-    /** Input frame history buffer for algorithms with temporal filtering. */
-    picture_t *pp_history[HISTORY_SIZE];
+    struct deinterlace_ctx   context;
 
     /* Algorithm-specific substructures */
-    phosphor_sys_t phosphor; /**< Phosphor algorithm state. */
-    ivtc_sys_t ivtc;         /**< IVTC algorithm state. */
+    union {
+        phosphor_sys_t phosphor; /**< Phosphor algorithm state. */
+        ivtc_sys_t ivtc;         /**< IVTC algorithm state. */
+    };
 };
 
 /*****************************************************************************
- * video filter2 functions
+ * video filter functions
  *****************************************************************************/
 
 /**
@@ -197,7 +159,7 @@ int Open( vlc_object_t *p_this );
  * Resets the filter state, including resetting all algorithm-specific state
  * and discarding all histories, but does not stop the filter.
  *
- * Open() sets this up as the flush method (pf_video_flush)
+ * Open() sets this up as the flush method (pf_flush)
  * in the filter structure.
  *
  * @param p_filter The filter instance.
@@ -246,7 +208,7 @@ void Close( vlc_object_t *p_this );
 
 /**
  * \file
- * Deinterlacer plugin for vlc. Data structures and video filter2 functions.
+ * Deinterlacer plugin for vlc. Data structures and video filter functions.
  *
  * Note on i_frame_offset:
  *

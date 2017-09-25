@@ -30,8 +30,10 @@
 #include <stdio.h>
 #include <limits.h> /* NAME_MAX */
 #include <errno.h>
+#include <signal.h>
 
 #include <sys/types.h>
+#include <sys/uio.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -40,189 +42,151 @@
 #endif
 #include <dirent.h>
 #include <sys/socket.h>
+#ifndef O_TMPFILE
+# define O_TMPFILE 0
+#endif
 
 #include <vlc_common.h>
 #include <vlc_fs.h>
-#include "libvlc.h" /* vlc_mkdir */
 
-/**
- * Opens a system file handle.
- *
- * @param filename file path to open (with UTF-8 encoding)
- * @param flags open() flags, see the C library open() documentation
- * @return a file handle on success, -1 on error (see errno).
- * @note Contrary to standard open(), this function returns file handles
- * with the close-on-exec flag enabled.
- */
+#if !defined(HAVE_ACCEPT4) || !defined HAVE_MKOSTEMP
+static inline void vlc_cloexec(int fd)
+{
+    fcntl(fd, F_SETFD, FD_CLOEXEC | fcntl(fd, F_GETFD));
+}
+#endif
+
 int vlc_open (const char *filename, int flags, ...)
 {
     unsigned int mode = 0;
     va_list ap;
 
     va_start (ap, flags);
-    if (flags & O_CREAT)
+    if (flags & (O_CREAT|O_TMPFILE))
         mode = va_arg (ap, unsigned int);
     va_end (ap);
 
 #ifdef O_CLOEXEC
-    flags |= O_CLOEXEC;
-#endif
-
-    int fd = open (filename, flags, mode);
+    return open(filename, flags, mode | O_CLOEXEC);
+#else
+    int fd = open(filename, flags, mode);
     if (fd != -1)
-        fcntl (fd, F_SETFD, FD_CLOEXEC);
-    return fd;
+        vlc_cloexec(fd);
+    return -1;
+#endif
 }
 
-/**
- * Opens a system file handle relative to an existing directory handle.
- *
- * @param dir directory file descriptor
- * @param filename file path to open (with UTF-8 encoding)
- * @param flags open() flags, see the C library open() documentation
- * @return a file handle on success, -1 on error (see errno).
- * @note Contrary to standard open(), this function returns file handles
- * with the close-on-exec flag enabled.
- */
 int vlc_openat (int dir, const char *filename, int flags, ...)
 {
     unsigned int mode = 0;
     va_list ap;
 
     va_start (ap, flags);
-    if (flags & O_CREAT)
+    if (flags & (O_CREAT|O_TMPFILE))
         mode = va_arg (ap, unsigned int);
     va_end (ap);
 
-#ifdef O_CLOEXEC
-    flags |= O_CLOEXEC;
-#endif
-
 #ifdef HAVE_OPENAT
-    int fd = openat (dir, filename, flags, mode);
-    if (fd != -1)
-        fcntl (fd, F_SETFD, FD_CLOEXEC);
+    return openat(dir, filename, flags, mode | O_CLOEXEC);
 #else
-	VLC_UNUSED (dir);
-	VLC_UNUSED (filename);
-	VLC_UNUSED (mode);
-
-    int fd = -1;
+    VLC_UNUSED (dir);
+    VLC_UNUSED (filename);
+    VLC_UNUSED (mode);
     errno = ENOSYS;
+    return -1;
 #endif
+}
+
+int vlc_mkstemp (char *template)
+{
+#if defined (HAVE_MKOSTEMP) && defined (O_CLOEXEC)
+    return mkostemp(template, O_CLOEXEC);
+#else
+    int fd = mkstemp(template);
+    if (fd != -1)
+        vlc_cloexec(fd);
+    return fd;
+#endif
+}
+
+int vlc_memfd (void)
+{
+    int fd;
+#ifdef O_TMPFILE
+    fd = vlc_open ("/tmp", O_RDWR|O_TMPFILE, S_IRUSR|S_IWUSR);
+    if (fd != -1)
+        return fd;
+    /* ENOENT means either /tmp is missing (!) or the kernel does not support
+     * O_TMPFILE. EISDIR means /tmp exists but the kernel does not support
+     * O_TMPFILE. EOPNOTSUPP means the kernel supports O_TMPFILE but the /tmp
+     * filesystem does not. Do not fallback on other errors. */
+    if (errno != ENOENT && errno != EISDIR && errno != EOPNOTSUPP)
+        return -1;
+#endif
+
+    char bufpath[] = "/tmp/"PACKAGE_NAME"XXXXXX";
+
+    fd = vlc_mkstemp (bufpath);
+    if (fd != -1)
+        unlink (bufpath);
     return fd;
 }
 
+int vlc_close (int fd)
+{
+    int ret;
+#ifdef POSIX_CLOSE_RESTART
+    ret = posix_close(fd, 0);
+#else
+    ret = close(fd);
+    /* POSIX.2008 (and earlier) does not specify if the file descriptor is
+     * closed on failure. Assume it is as on Linux and most other common OSes.
+     * Also emulate the correct error code as per newer POSIX versions. */
+    if (unlikely(ret != 0) && unlikely(errno == EINTR))
+        errno = EINPROGRESS;
+#endif
+    assert(ret == 0 || errno != EBADF); /* something is corrupt? */
+    return ret;
+}
 
-/**
- * Creates a directory using UTF-8 paths.
- *
- * @param dirname a UTF-8 string with the name of the directory that you
- *        want to create.
- * @param mode directory permissions
- * @return 0 on success, -1 on error (see errno).
- */
 int vlc_mkdir (const char *dirname, mode_t mode)
 {
     return mkdir (dirname, mode);
 }
 
-/**
- * Opens a DIR pointer.
- *
- * @param dirname UTF-8 representation of the directory name
- * @return a pointer to the DIR struct, or NULL in case of error.
- * Release with standard closedir().
- */
 DIR *vlc_opendir (const char *dirname)
 {
     return opendir (dirname);
 }
 
-/**
- * Reads the next file name from an open directory.
- *
- * @param dir directory handle as returned by vlc_opendir()
- *            (must not be used by another thread concurrently)
- *
- * @return a UTF-8 string of the directory entry. The string is valid until
- * the next call to vlc_readdir() or closedir() on the handle.
- * If there are no more entries in the directory, NULL is returned.
- * If an error occurs, errno is set and NULL is returned.
- */
-char *vlc_readdir( DIR *dir )
+const char *vlc_readdir(DIR *dir)
 {
     struct dirent *ent = readdir (dir);
     return (ent != NULL) ? ent->d_name : NULL;
 }
 
-/**
- * Finds file/inode information, as stat().
- * Consider using fstat() instead, if possible.
- *
- * @param filename UTF-8 file path
- */
 int vlc_stat (const char *filename, struct stat *buf)
 {
     return stat (filename, buf);
 }
 
-/**
- * Finds file/inode information, as lstat().
- * Consider using fstat() instead, if possible.
- *
- * @param filename UTF-8 file path
- */
 int vlc_lstat (const char *filename, struct stat *buf)
 {
     return lstat (filename, buf);
 }
 
-/**
- * Removes a file.
- *
- * @param filename a UTF-8 string with the name of the file you want to delete.
- * @return A 0 return value indicates success. A -1 return value indicates an
- *        error, and an error code is stored in errno
- */
 int vlc_unlink (const char *filename)
 {
     return unlink (filename);
 }
 
-/**
- * Moves a file atomically. This only works within a single file system.
- *
- * @param oldpath path to the file before the move
- * @param newpath intended path to the file after the move
- * @return A 0 return value indicates success. A -1 return value indicates an
- *        error, and an error code is stored in errno
- */
 int vlc_rename (const char *oldpath, const char *newpath)
 {
     return rename (oldpath, newpath);
 }
 
-/**
- * Determines the current working directory.
- *
- * @return the current working directory (must be free()'d)
- *         or NULL on error
- */
 char *vlc_getcwd (void)
 {
-    /* Try $PWD */
-    const char *pwd = getenv ("PWD");
-    if (pwd != NULL)
-    {
-        struct stat s1, s2;
-        /* Make sure $PWD is correct */
-        if (stat (pwd, &s1) == 0 && stat (".", &s2) == 0
-         && s1.st_dev == s2.st_dev && s1.st_ino == s2.st_ino)
-            return strdup (pwd);
-    }
-
-    /* Otherwise iterate getcwd() until the buffer is big enough */
     long path_max = pathconf (".", _PC_PATH_MAX);
     size_t size = (path_max == -1 || path_max > 4096) ? 4096 : path_max;
 
@@ -242,92 +206,139 @@ char *vlc_getcwd (void)
     return NULL;
 }
 
-/**
- * Duplicates a file descriptor. The new file descriptor has the close-on-exec
- * descriptor flag set.
- * @return a new file descriptor or -1
- */
 int vlc_dup (int oldfd)
 {
-    int newfd;
-
 #ifdef F_DUPFD_CLOEXEC
-    newfd = fcntl (oldfd, F_DUPFD_CLOEXEC, 0);
-    if (unlikely(newfd == -1 && errno == EINVAL))
-#endif
-    {
-        newfd = dup (oldfd);
-        if (likely(newfd != -1))
-            fcntl (newfd, F_SETFD, FD_CLOEXEC);
-    }
+    return fcntl (oldfd, F_DUPFD_CLOEXEC, 0);
+#else
+    int newfd = dup (oldfd);
+    if (newfd != -1)
+        vlc_cloexec(oldfd);
     return newfd;
+#endif
 }
 
-/**
- * Creates a pipe (see "man pipe" for further reference).
- */
 int vlc_pipe (int fds[2])
 {
 #ifdef HAVE_PIPE2
-    if (pipe2 (fds, O_CLOEXEC) == 0)
-        return 0;
-    if (errno != ENOSYS)
-        return -1;
+    return pipe2(fds, O_CLOEXEC);
+#else
+    int ret = pipe(fds);
+    if (ret == 0)
+    {
+        vlc_cloexec(fds[0]);
+        vlc_cloexec(fds[1]);
+    }
+    return ret;
 #endif
+}
 
-    if (pipe (fds))
-        return -1;
+ssize_t vlc_write(int fd, const void *buf, size_t len)
+{
+    struct iovec iov = { .iov_base = (void *)buf, .iov_len = len };
 
-    fcntl (fds[0], F_SETFD, FD_CLOEXEC);
-    fcntl (fds[1], F_SETFD, FD_CLOEXEC);
-    return 0;
+    return vlc_writev(fd, &iov, 1);
+}
+
+ssize_t vlc_writev(int fd, const struct iovec *iov, int count)
+{
+    sigset_t set, oset;
+
+    sigemptyset(&set);
+    sigaddset(&set, SIGPIPE);
+    pthread_sigmask(SIG_BLOCK, &set, &oset);
+
+    ssize_t val = writev(fd, iov, count);
+    if (val < 0 && errno == EPIPE)
+    {
+#if (_POSIX_REALTIME_SIGNALS > 0)
+        siginfo_t info;
+        struct timespec ts = { 0, 0 };
+
+        while (sigtimedwait(&set, &info, &ts) >= 0 || errno != EAGAIN);
+#else
+        for (;;)
+        {
+            sigset_t s;
+            int num;
+
+            sigpending(&s);
+            if (!sigismember(&s, SIGPIPE))
+                break;
+
+            sigwait(&set, &num);
+            assert(num == SIGPIPE);
+        }
+#endif
+    }
+
+    if (!sigismember(&oset, SIGPIPE)) /* Restore the signal mask if changed */
+        pthread_sigmask(SIG_SETMASK, &oset, NULL);
+    return val;
 }
 
 #include <vlc_network.h>
 
-/**
- * Creates a socket file descriptor. The new file descriptor has the
- * close-on-exec flag set.
- * @param pf protocol family
- * @param type socket type
- * @param proto network protocol
- * @param nonblock true to create a non-blocking socket
- * @return a new file descriptor or -1
- */
-int vlc_socket (int pf, int type, int proto, bool nonblock)
+#ifndef HAVE_ACCEPT4
+static void vlc_socket_setup(int fd, bool nonblock)
 {
-    int fd;
+    vlc_cloexec(fd);
 
-#ifdef SOCK_CLOEXEC
-    type |= SOCK_CLOEXEC;
     if (nonblock)
-        type |= SOCK_NONBLOCK;
-    fd = socket (pf, type, proto);
-    if (fd != -1 || errno != EINVAL)
-        return fd;
+        fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
 
-    type &= ~(SOCK_CLOEXEC|SOCK_NONBLOCK);
+#ifdef SO_NOSIGPIPE
+    setsockopt(fd, SOL_SOCKET, SO_NOSIGPIPE, &(int){ 1 }, sizeof (int));
+#endif
+}
 #endif
 
-    fd = socket (pf, type, proto);
-    if (fd == -1)
-        return -1;
-
-    fcntl (fd, F_SETFD, FD_CLOEXEC);
+int vlc_socket (int pf, int type, int proto, bool nonblock)
+{
+#ifdef SOCK_CLOEXEC
     if (nonblock)
-        fcntl (fd, F_SETFL, fcntl (fd, F_GETFL, 0) | O_NONBLOCK);
+        type |= SOCK_NONBLOCK;
+
+    int fd = socket(pf, type | SOCK_CLOEXEC, proto);
+# ifdef SO_NOSIGPIPE
+    if (fd != -1)
+        setsockopt(fd, SOL_SOCKET, SO_NOSIGPIPE, &(int){ 1 }, sizeof (int));
+# endif
+#else
+    int fd = socket (pf, type, proto);
+    if (fd != -1)
+        vlc_socket_setup(fd, nonblock);
+#endif
     return fd;
 }
 
-/**
- * Accepts an inbound connection request on a listening socket.
- * The new file descriptor has the close-on-exec flag set.
- * @param lfd listening socket file descriptor
- * @param addr pointer to the peer address or NULL [OUT]
- * @param alen pointer to the length of the peer address or NULL [OUT]
- * @param nonblock whether to put the new socket in non-blocking mode
- * @return a new file descriptor, or -1 on error.
- */
+int vlc_socketpair(int pf, int type, int proto, int fds[2], bool nonblock)
+{
+#ifdef SOCK_CLOEXEC
+    if (nonblock)
+        type |= SOCK_NONBLOCK;
+
+    int ret = socketpair(pf, type | SOCK_CLOEXEC, proto, fds);
+# ifdef SO_NOSIGPIPE
+    if (ret == 0)
+    {
+        const int val = 1;
+
+        setsockopt(fds[0], SOL_SOCKET, SO_NOSIGPIPE, &val, sizeof (val));
+        setsockopt(fds[1], SOL_SOCKET, SO_NOSIGPIPE, &val, sizeof (val));
+    }
+# endif
+#else
+    int ret = socketpair(pf, type, proto, fds);
+    if (ret == 0)
+    {
+        vlc_socket_setup(fds[0], nonblock);
+        vlc_socket_setup(fds[1], nonblock);
+    }
+#endif
+    return ret;
+}
+
 int vlc_accept (int lfd, struct sockaddr *addr, socklen_t *alen, bool nonblock)
 {
 #ifdef HAVE_ACCEPT4
@@ -335,30 +346,15 @@ int vlc_accept (int lfd, struct sockaddr *addr, socklen_t *alen, bool nonblock)
     if (nonblock)
         flags |= SOCK_NONBLOCK;
 
-    do
-    {
-        int fd = accept4 (lfd, addr, alen, flags);
-        if (fd != -1)
-            return fd;
-    }
-    while (errno == EINTR);
-
-    if (errno != ENOSYS)
-        return -1;
+    int fd = accept4(lfd, addr, alen, flags);
+# ifdef SO_NOSIGPIPE
+    if (fd != -1)
+        setsockopt(fd, SOL_SOCKET, SO_NOSIGPIPE, &(int){ 1 }, sizeof (int));
+# endif
+#else
+    int fd = accept(lfd, addr, alen);
+    if (fd != -1)
+        vlc_socket_setup(fd, nonblock);
 #endif
-
-    do
-    {
-        int fd = accept (lfd, addr, alen);
-        if (fd != -1)
-        {
-            fcntl (fd, F_SETFD, FD_CLOEXEC);
-            if (nonblock)
-                fcntl (fd, F_SETFL, fcntl (fd, F_GETFL, 0) | O_NONBLOCK);
-            return fd;
-        }
-    }
-    while (errno == EINTR);
-
-    return -1;
+    return fd;
 }

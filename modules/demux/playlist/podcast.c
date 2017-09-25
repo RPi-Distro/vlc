@@ -2,7 +2,7 @@
  * podcast.c : podcast playlist imports
  *****************************************************************************
  * Copyright (C) 2005-2009 VLC authors and VideoLAN
- * $Id: b0c44d9a59f1ee345758505d907d65058ad0dc14 $
+ * $Id: 8c47d5ab6f3614821a00ca2d26af736df9f25898 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -29,7 +29,7 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_demux.h>
+#include <vlc_access.h>
 
 #include "playlist.h"
 #include <vlc_xml.h>
@@ -38,7 +38,7 @@
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static int Demux( demux_t *p_demux);
+static int ReadDir( stream_t *, input_item_node_t * );
 static mtime_t strTimeToMTime( const char *psz );
 
 /*****************************************************************************
@@ -46,20 +46,21 @@ static mtime_t strTimeToMTime( const char *psz );
  *****************************************************************************/
 int Import_podcast( vlc_object_t *p_this )
 {
-    demux_t *p_demux = (demux_t *)p_this;
+    stream_t *p_demux = (stream_t *)p_this;
 
-    if( !demux_IsForced( p_demux, "podcast" ) )
+    CHECK_FILE(p_demux);
+    if( !stream_IsMimeType( p_demux->p_source, "application/rss+xml" ) )
         return VLC_EGENERIC;
 
-    p_demux->pf_demux = Demux;
-    p_demux->pf_control = Control;
+    p_demux->pf_readdir = ReadDir;
+    p_demux->pf_control = access_vaDirectoryControlHelper;
     msg_Dbg( p_demux, "using podcast reader" );
 
     return VLC_SUCCESS;
 }
 
 /* "specs" : http://phobos.apple.com/static/iTunesRSS.html */
-static int Demux( demux_t *p_demux )
+static int ReadDir( stream_t *p_demux, input_item_node_t *p_subitems )
 {
     bool b_item = false;
     bool b_image = false;
@@ -81,11 +82,10 @@ static int Demux( demux_t *p_demux )
     const char *node;
     int i_type;
     input_item_t *p_input;
-    input_item_node_t *p_subitems = NULL;
 
     input_item_t *p_current_input = GetCurrentItem(p_demux);
 
-    p_xml_reader = xml_ReaderCreate( p_demux, p_demux->s );
+    p_xml_reader = xml_ReaderCreate( p_demux, p_demux->p_source );
     if( !p_xml_reader )
         goto error;
 
@@ -103,8 +103,6 @@ static int Demux( demux_t *p_demux )
         goto error;
     }
 
-    p_subitems = input_item_node_Create( p_current_input );
-
     while( (i_type = xml_ReaderNextNode( p_xml_reader, &node )) > 0 )
     {
         switch( i_type )
@@ -113,7 +111,7 @@ static int Demux( demux_t *p_demux )
             {
                 free( psz_elname );
                 psz_elname = strdup( node );
-                if( unlikely(!node) )
+                if( unlikely(!psz_elname) )
                     goto error;
 
                 if( !strcmp( node, "item" ) )
@@ -210,7 +208,7 @@ static int Demux( demux_t *p_demux )
                 }
                 else
                 {
-                    if( !strcmp( psz_elname, "url" ) )
+                    if( !strcmp( psz_elname, "url" ) && *node )
                     {
                         free( psz_art_url );
                         psz_art_url = strdup( node );
@@ -251,8 +249,8 @@ static int Demux( demux_t *p_demux )
                         continue;
                     }
 
-                    resolve_xml_special_chars( psz_item_mrl );
-                    resolve_xml_special_chars( psz_item_name );
+                    vlc_xml_decode( psz_item_mrl );
+                    vlc_xml_decode( psz_item_name );
                     p_input = input_item_New( psz_item_mrl, psz_item_name );
                     FREENULL( psz_item_mrl );
                     FREENULL( psz_item_name );
@@ -262,7 +260,7 @@ static int Demux( demux_t *p_demux )
 
                     /* Set the duration if available */
                     if( psz_item_duration )
-                        input_item_SetDuration( p_input, strTimeToMTime( psz_item_duration ) );
+                        p_input->i_duration = strTimeToMTime( psz_item_duration );
 
 #define ADD_INFO( info, field ) \
     if( field ) { \
@@ -282,7 +280,7 @@ static int Demux( demux_t *p_demux )
                     /* Add the global art url to this item, if any */
                     if( psz_art_url )
                     {
-                        resolve_xml_special_chars( psz_art_url );
+                        vlc_xml_decode( psz_art_url );
                         input_item_SetArtURL( p_input, psz_art_url );
                     }
 
@@ -296,7 +294,7 @@ static int Demux( demux_t *p_demux )
                         FREENULL( psz_item_size );
                     }
                     input_item_node_AppendItem( p_subitems, p_input );
-                    vlc_gc_decref( p_input );
+                    input_item_Release( p_input );
                     b_item = false;
                 }
                 else if( !strcmp( node, "image" ) )
@@ -317,9 +315,7 @@ static int Demux( demux_t *p_demux )
     free( psz_elname );
     xml_ReaderDelete( p_xml_reader );
 
-    input_item_node_PostAndDelete( p_subitems );
-    vlc_gc_decref(p_current_input);
-    return 0; /* Needed for correct operation of go back */
+    return VLC_SUCCESS;
 
 error:
     free( psz_item_name );
@@ -338,11 +334,8 @@ error:
 
     if( p_xml_reader )
         xml_ReaderDelete( p_xml_reader );
-    if( p_subitems )
-        input_item_node_Delete( p_subitems );
 
-    vlc_gc_decref(p_current_input);
-    return -1;
+    return VLC_EGENERIC;
 }
 
 static mtime_t strTimeToMTime( const char *psz )
@@ -354,7 +347,6 @@ static mtime_t strTimeToMTime( const char *psz )
         return (mtime_t)( ( h*60 + m )*60 + s ) * 1000000;
     case 2:
         return (mtime_t)( h*60 + m ) * 1000000;
-        break;
     default:
         return -1;
     }

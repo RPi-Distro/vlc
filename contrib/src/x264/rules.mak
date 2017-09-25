@@ -1,7 +1,7 @@
 # x264
 
 X264_GITURL := git://git.videolan.org/x264.git
-X264_SNAPURL := ftp://ftp.videolan.org/pub/videolan/x264/snapshots/last_stable_x264.tar.bz2
+X264_SNAPURL := http://download.videolan.org/pub/videolan/x264/snapshots/last_stable_x264.tar.bz2
 X262_GITURL := git://git.videolan.org/x262.git
 
 ifdef BUILD_ENCODERS
@@ -18,10 +18,11 @@ ifeq ($(call need_pkg,"x26410b"),)
 PKGS_FOUND += x26410b
 endif
 
-ifeq ($(call need_pkg,"x262"),)
-PKGS_FOUND += x262
-endif
+#ifeq ($(call need_pkg,"x262"),)
+#PKGS_FOUND += x262
+#endif
 
+PKGS_ALL += x26410b
 
 X264CONF = --prefix="$(PREFIX)" --host="$(HOST)" \
 	--enable-static \
@@ -45,12 +46,6 @@ $(TARBALLS)/x262-git.tar.xz:
 $(TARBALLS)/x262-git.tar.gz:
 	$(call download,$(X262_SNAPURL))
 
-$(TARBALLS)/x26410b-git.tar.xz:
-	$(call download_git,$(X264_GITURL))
-
-$(TARBALLS)/x26410b-git.tar.bz2:
-	$(call download,$(X264_SNAPURL))
-
 $(TARBALLS)/x264-git.tar.xz:
 	$(call download_git,$(X264_GITURL))
 
@@ -61,32 +56,24 @@ $(TARBALLS)/x264-git.tar.bz2:
 	$(warning $@ not implemented)
 	touch $@
 
-.sum-x26410b: x26410b-git.tar.bz2
-	$(warning $@ not implemented)
+.sum-x26410b: .sum-x264
 	touch $@
 
 .sum-x264: x264-git.tar.bz2
 	$(warning $@ not implemented)
 	touch $@
 
-x264: x264-git.tar.bz2 .sum-x264
-	rm -Rf $@-git
-	mkdir -p $@-git
-	$(BZCAT) "$<" | (cd $@-git && tar xv --strip-components=1)
+x264 x26410b: %: x264-git.tar.bz2 .sum-%
+	rm -Rf $*-git
+	mkdir -p $*-git
+	tar xvjf "$<" --strip-components=1 -C $*-git
 	$(UPDATE_AUTOCONFIG)
-	$(MOVE)
+	mv $*-git $*
 
-x26410b: x26410b-git.tar.bz2 .sum-x26410b
+x262: x262-git.tar.gz .sum-x262
 	rm -Rf $@-git
 	mkdir -p $@-git
-	$(BZCAT) "$<" | (cd $@-git && tar xv --strip-components=1)
-	$(UPDATE_AUTOCONFIG)
-	$(MOVE)
-
-x262: x262-git.tar.gz .sum-x26410b
-	rm -Rf $@-git
-	mkdir -p $@-git
-	$(ZCAT) "$<" | (cd $@-git && tar xv --strip-components=1)
+	tar xvzf "$<" --strip-components=1 -C $@-git
 	$(UPDATE_AUTOCONFIG)
 	$(MOVE)
 

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005-2009 VLC authors and VideoLAN
  * Copyright (C) 2013      Vianney Boyer
- * $Id: 6c6433bbeea541dfe0b7e4292a96195491acd78e $
+ * $Id: 2a041986b1a42374140e2da44dda1e9a09832c4e $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *          Vianney Boyer <vlcvboyer -at- gmail -dot- com>
@@ -35,6 +35,8 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
+#include <vlc_mouse.h>
+#include <vlc_picture.h>
 #include <vlc_rand.h>
 
 #include "filter_picture.h"
@@ -76,19 +78,19 @@ const char *const ppsz_rotation_descriptions[] = { N_("0"), N_("0/180"), N_("0/9
 
 #define CFG_PREFIX "puzzle-"
 
-int  Open ( vlc_object_t * );
-void Close( vlc_object_t * );
+static int  Open ( vlc_object_t * );
+static void Close( vlc_object_t * );
 
 vlc_module_begin()
     set_description( N_("Puzzle interactive game video filter") )
     set_shortname( N_( "Puzzle" ))
-    set_capability( "video filter2", 0 )
+    set_capability( "video filter", 0 )
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
 
-    add_integer_with_range( CFG_PREFIX "rows", 4, 2, 16,
+    add_integer_with_range( CFG_PREFIX "rows", 4, 2, 42,
                             ROWS_TEXT, ROWS_LONGTEXT, false )
-    add_integer_with_range( CFG_PREFIX "cols", 4, 2, 16,
+    add_integer_with_range( CFG_PREFIX "cols", 4, 2, 42,
                             COLS_TEXT, COLS_LONGTEXT, false )
     add_integer_with_range( CFG_PREFIX "border", 3, 0, 40,
               BORDER_TEXT, BORDER_LONGTEXT, false )
@@ -123,7 +125,7 @@ const char *const ppsz_filter_options[] = {
 /**
  * Open the filter
  */
-int Open( vlc_object_t *p_this )
+static int Open( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys;
@@ -210,7 +212,7 @@ int Open( vlc_object_t *p_this )
 /**
  * Close the filter
  */
-void Close( vlc_object_t *p_this ) {
+static void Close( vlc_object_t *p_this ) {
     filter_t *p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys = p_filter->p_sys;
 

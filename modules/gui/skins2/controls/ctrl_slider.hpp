@@ -2,7 +2,7 @@
  * ctrl_slider.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 8a5911173083db47a0cc8d94c725349848dd95e9 $
+ * $Id: 5f42bb14066e0ece36f0c829601281ba4ab7966a $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -79,7 +79,7 @@ public:
     virtual UString getTooltipText() const { return m_tooltip; }
 
     /// Get the type of control (custom RTTI)
-    virtual string getType() const { return "slider_cursor"; }
+    virtual std::string getType() const { return "slider_cursor"; }
 
 private:
     /// Finite state machine of the control
@@ -162,7 +162,7 @@ public:
                                int xOffSet = 0, int yOffSet = 0 );
 
     /// Get the type of control (custom RTTI)
-    virtual string getType() const { return "slider_bg"; }
+    virtual std::string getType() const { return "slider_bg"; }
 
     /// Associate a cursor to this background
     void associateCursor( CtrlSliderCursor &rCursor );

@@ -1,8 +1,8 @@
 /*****************************************************************************
- * display.h: "vout display" managment
+ * display.h: "vout display" management
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 1c22918fd5e47441abd379caf2206317160904d1 $
+ * $Id: 34c39a35a891bea3797ef66b90a4789e6142cd4c $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -33,7 +33,10 @@ vout_display_t *vout_NewSplitter(vout_thread_t *vout,
 
 /* FIXME should not be there */
 void vout_SendDisplayEventMouse(vout_thread_t *, const vlc_mouse_t *);
-vout_window_t *vout_NewDisplayWindow(vout_thread_t *, vout_display_t *, const vout_window_cfg_t *);
-void vout_DeleteDisplayWindow(vout_thread_t *, vout_display_t *, vout_window_t *);
-void vout_UpdateDisplaySourceProperties(vout_display_t *vd, const video_format_t *);
 
+vout_window_t *vout_NewDisplayWindow(vout_thread_t *, unsigned type);
+void vout_DeleteDisplayWindow(vout_thread_t *, vout_window_t *);
+void vout_SetDisplayWindowSize(vout_thread_t *, unsigned, unsigned);
+int  vout_HideWindowMouse(vout_thread_t *, bool);
+
+void vout_UpdateDisplaySourceProperties(vout_display_t *vd, const video_format_t *);

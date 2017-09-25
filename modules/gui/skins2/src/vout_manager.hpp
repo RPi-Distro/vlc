@@ -2,7 +2,7 @@
  * vout_manager.hpp
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 6d01ca0a3b38bfcd63ec154a2b5e597b948f6bee $
+ * $Id: 60c2713aef8b40fb7223eb74b5197afb2ef5ae19 $
  *
  * Authors: Erwan Tulou < brezhoneg1 at yahoo.fr r>
  *
@@ -28,7 +28,7 @@
 
 #include <vlc_vout.h>
 #include <vlc_vout_window.h>
-#include <vlc_keys.h>
+#include <vlc_actions.h>
 #include "../utils/position.hpp"
 #include "../commands/cmd_generic.hpp"
 #include "../controls/ctrl_video.hpp"
@@ -77,8 +77,7 @@ public:
     {
         // Only do the action when the key is down
         if( rEvtKey.getKeyState() == EvtKey::kDown )
-            var_SetInteger( getIntf()->p_libvlc, "key-pressed",
-                             rEvtKey.getModKey() );
+            getIntf()->p_sys->p_dialogs->sendKey( rEvtKey.getModKey() );
     }
 
     virtual void processEvent( EvtScroll &rEvtScroll )
@@ -89,7 +88,7 @@ public:
         i_vlck |= ( rEvtScroll.getDirection() == EvtScroll::kUp ) ?
                   KEY_MOUSEWHEELUP : KEY_MOUSEWHEELDOWN;
 
-        var_SetInteger( getIntf()->p_libvlc, "key-pressed", i_vlck );
+        getIntf()->p_sys->p_dialogs->sendKey( i_vlck );
     }
 
 #endif
@@ -158,9 +157,9 @@ protected:
 
 private:
 
-    vector<CtrlVideo *> m_pCtrlVideoVec;
-    vector<CtrlVideo *> m_pCtrlVideoVecBackup;
-    vector<SavedWnd> m_SavedWndVec;
+    std::vector<CtrlVideo *> m_pCtrlVideoVec;
+    std::vector<CtrlVideo *> m_pCtrlVideoVecBackup;
+    std::vector<SavedWnd> m_SavedWndVec;
 
     VoutMainWindow* m_pVoutMainWindow;
 

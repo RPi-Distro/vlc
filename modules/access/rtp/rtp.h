@@ -23,11 +23,14 @@
 typedef struct rtp_pt_t rtp_pt_t;
 typedef struct rtp_session_t rtp_session_t;
 
+struct vlc_demux_chained_t;
+
 /** @section RTP payload format */
 struct rtp_pt_t
 {
     void   *(*init) (demux_t *);
     void    (*destroy) (demux_t *, void *);
+    void    (*header) (demux_t *, void *, block_t *);
     void    (*decode) (demux_t *, void *, block_t *);
     uint32_t  frequency; /* RTP clock rate (Hz) */
     uint8_t   number;
@@ -62,7 +65,7 @@ void *rtp_stream_thread (void *data);
 struct demux_sys_t
 {
     rtp_session_t *session;
-    stream_t *chained_demux;
+    struct vlc_demux_chained_t *chained_demux;
 #ifdef HAVE_SRTP
     struct srtp_session_t *srtp;
 #endif
