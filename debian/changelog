@@ -7,7 +7,11 @@ vlc (3.0.0~20170925-1) UNRELEASED; urgency=medium
     - Add support for Wayland. (Closes: #857769)
     - Better support for HLS. (Closes: #792647)
     - Update VLSub. (Closes: #868236)
+    - Re-write UPnP discovery. (LP: #977277)
+    - Complete porting to Qt 5. (LP: #1576175)
+    - Fix issues with green borders. (Closes: #765969) (LP: #405166)
   * Remove embedded ffmpeg copy. (LP: #1546078)
+  * debian/patches: Drop all patches.
 
   * TODO:
     - SONAME bump.
