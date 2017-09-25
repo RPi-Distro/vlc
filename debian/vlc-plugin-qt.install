@@ -1,2 +1,2 @@
 usr/bin/qvlc
-usr/lib/*/vlc/plugins/gui/libqt4_plugin.so
+usr/lib/*/vlc/plugins/gui/libqt_plugin.so
