@@ -12,7 +12,6 @@ pluginpackages += fluidsynth
 pluginpackages += jack
 pluginpackages += notify
 pluginpackages += qt
-pluginpackages += sdl
 pluginpackages += skins2
 pluginpackages += svg
 pluginpackages += video-output

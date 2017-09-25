@@ -156,7 +156,6 @@ Description: multimedia player and streamer
   * vlc-plugin-jack
   * vlc-plugin-notify
   * vlc-plugin-samba
-  * vlc-plugin-sdl
   * vlc-plugin-skins2
   * vlc-plugin-svg
   * vlc-plugin-video-splitter
@@ -411,22 +410,6 @@ Description: LibNotify plugin for VLC
  .
  This plugin adds support for libnotify track change notification to the
  VLC media player.
-
-Package: vlc-plugin-sdl
-Architecture: any
-Multi-Arch: same
-Pre-Depends: ${misc:Pre-Depends}
-Depends: ${misc:Depends}, ${shlibs:Depends}
-Enhances: vlc
-Description: SDL video and audio output plugin for VLC
- VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
- DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
- podcasts, and multimedia streams from various network sources.
- .
- This plugin adds support for the Simple DirectMedia Layer library to
- the VLC media player. To activate it, use the `--vout sdl' or
- `--aout sdl' flags or select the `sdl' video or audio output plugin
- from the preferences menu.
 
 Package: vlc-plugin-svg
 Architecture: any
