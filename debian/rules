@@ -39,6 +39,7 @@ confflags += \
 	--enable-avahi \
 	--enable-caca \
 	--enable-chromaprint \
+	--enable-chromecast \
 	--enable-dbus \
 	--enable-dca \
 	--enable-dvbpsi \
@@ -53,8 +54,10 @@ confflags += \
 	--enable-gnutls \
 	--enable-jack \
 	--enable-kate \
+	--enable-harfbuzz \
 	--enable-libass \
 	--enable-libmpeg2 \
+	--enable-libmpg123 \
 	--enable-libxml2 \
 	--enable-lirc \
 	--enable-live555 \
@@ -94,30 +97,40 @@ confflags += \
 	$(NULL)
 # Reasons for disabling features:
 # decklink: not in Debian
+# d3d11va: Windows only
+# directx: Windows only
 # dxva2: Windows only
 # fdkaac: in Debian contrib
 # goom: not in Debian
 # gst-decode: not needed when having libavcodec
 # libtar: security issue (#737534)
+# macosx*: MacOX only
 # mfx: currently not supported on Linux
 # opencv: developer plugin not required by end users
 # projectm: broken
 # schroedinger: removed from Debian (#845037)
+# sparkle: MacOS X only
 # telx: incompatible with zvbi
 # vpx: not needed when having libavcodec
 # vsxu: not in Debian
 # wasapi: Windows only
 confflags += \
+	--disable-d3d11va \
 	--disable-decklink \
+	--disable-directx \
 	--disable-dxva2 \
 	--disable-fdkaac \
 	--disable-goom \
 	--disable-gst-decode \
 	--disable-libtar \
+	--disable-macosx \
+	--disable-macosx-avfoundation \
+	--disable-macosx-qtkit \
 	--disable-mfx \
 	--disable-opencv \
 	--disable-projectm \
 	--disable-schroedinger \
+	--disable-sparkle \
 	--disable-telx \
 	--disable-vpx \
 	--disable-vsxu \
@@ -157,6 +170,7 @@ removeplugins += \
 	fb \
 	linsys \
 	omxil \
+	systemd \
 	udev \
 	v4l2 \
 	$(NULL)

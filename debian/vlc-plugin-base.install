@@ -27,6 +27,7 @@ usr/lib/*/vlc/plugins/access/liblibbluray_plugin.so
 usr/lib/*/vlc/plugins/access/liblinsys_hdsdi_plugin.so [linsys]
 usr/lib/*/vlc/plugins/access/liblinsys_sdi_plugin.so [linsys]
 usr/lib/*/vlc/plugins/access/liblive555_plugin.so
+usr/lib/*/vlc/plugins/access/libnfs_plugin.so
 usr/lib/*/vlc/plugins/access/libpulsesrc_plugin.so
 usr/lib/*/vlc/plugins/access/librtp_plugin.so
 usr/lib/*/vlc/plugins/access/libsatip_plugin.so
@@ -121,7 +122,7 @@ usr/lib/*/vlc/plugins/keystore/libmemory_keystore_plugin.so
 usr/lib/*/vlc/plugins/keystore/libsecret_plugin.so
 usr/lib/*/vlc/plugins/logger/libconsole_logger_plugin.so
 usr/lib/*/vlc/plugins/logger/libfile_logger_plugin.so
-usr/lib/*/vlc/plugins/logger/libsd_journal_plugin.so
+usr/lib/*/vlc/plugins/logger/libsd_journal_plugin.so [systemd]
 usr/lib/*/vlc/plugins/logger/libsyslog_plugin.so
 usr/lib/*/vlc/plugins/lua/liblua_plugin.so
 usr/lib/*/vlc/plugins/meta_engine
