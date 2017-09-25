@@ -35,7 +35,6 @@ usr/lib/*/vlc/plugins/access/libtimecode_plugin.so
 usr/lib/*/vlc/plugins/access/libudp_plugin.so
 usr/lib/*/vlc/plugins/access/libv4l2_plugin.so [v4l2]
 usr/lib/*/vlc/plugins/access/libvcd_plugin.so [vcd]
-usr/lib/*/vlc/plugins/access/libvcdx_plugin.so
 usr/lib/*/vlc/plugins/access/libvdr_plugin.so
 usr/lib/*/vlc/plugins/access/libzip_plugin.so
 usr/lib/*/vlc/plugins/access_output
@@ -124,7 +123,7 @@ usr/lib/*/vlc/plugins/misc/libxdg_screensaver_plugin.so
 usr/lib/*/vlc/plugins/misc/libxml_plugin.so
 usr/lib/*/vlc/plugins/mux
 usr/lib/*/vlc/plugins/packetizer
-usr/lib/*/vlc/plugins/services_discovery/libbonjour_plugin.so
+usr/lib/*/vlc/plugins/services_discovery/libavahi_plugin.so
 usr/lib/*/vlc/plugins/services_discovery/libmediadirs_plugin.so
 usr/lib/*/vlc/plugins/services_discovery/libmtp_plugin.so
 usr/lib/*/vlc/plugins/services_discovery/libpodcast_plugin.so
@@ -143,7 +142,6 @@ usr/lib/*/vlc/plugins/video_filter/libadjust_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libalphamask_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libanaglyph_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libantiflicker_plugin.so
-usr/lib/*/vlc/plugins/video_filter/libatmo_plugin.so [atmo]
 usr/lib/*/vlc/plugins/video_filter/libaudiobargraph_v_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libball_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libblend_plugin.so

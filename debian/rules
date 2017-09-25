@@ -36,7 +36,7 @@ confflags += \
 	--enable-a52 \
 	--enable-aa \
 	--enable-bluray \
-	--enable-bonjour \
+	--enable-avahi \
 	--enable-caca \
 	--enable-chromaprint \
 	--enable-dbus \
@@ -59,11 +59,10 @@ confflags += \
 	--enable-lirc \
 	--enable-live555 \
 	--enable-mad \
-	--enable-mkv \
+	--enable-matroska \
 	--enable-mod \
 	--enable-mpc \
 	--enable-mtp \
-	--enable-mux_ogg \
 	--enable-ncurses \
 	--enable-notify \
 	--enable-ogg \
@@ -86,7 +85,6 @@ confflags += \
 	--enable-theora \
 	--enable-twolame \
 	--enable-upnp \
-	--enable-vcdx \
 	--enable-vdpau \
 	--enable-vnc \
 	--enable-vorbis \
@@ -97,11 +95,8 @@ confflags += \
 	$(NULL)
 # Reasons for disabling features:
 # decklink: not in Debian
-# directfb: directfb upstream not active anymore, removed upstream in 3.0
 # dxva2: Windows only
 # fdkaac: in Debian contrib
-# gles1: disabled in mesa
-# gnomevfs: poorly maintained
 # goom: not in Debian
 # gst-decode: not needed when having libavcodec
 # libtar: security issue (#737534)
@@ -115,11 +110,8 @@ confflags += \
 # wasapi: Windows only
 confflags += \
 	--disable-decklink \
-	--disable-directfb \
 	--disable-dxva2 \
 	--disable-fdkaac \
-	--disable-gles1 \
-	--disable-gnomevfs \
 	--disable-goom \
 	--disable-gst-decode \
 	--disable-libtar \
@@ -140,7 +132,6 @@ ifeq ($(DEB_HOST_ARCH_OS),linux)
 # V4L2 is disabled on kFreeBSD due to a build failure.
 confflags += \
 	--enable-alsa \
-	--enable-atmo \
 	--enable-dc1394 \
 	--enable-dv1394 \
 	--enable-linsys \
@@ -151,7 +142,6 @@ confflags += \
 else
 confflags += \
 	--disable-alsa \
-	--disable-atmo \
 	--disable-dc1394 \
 	--disable-dv1394 \
 	--disable-linsys \
@@ -161,7 +151,6 @@ confflags += \
 	$(NULL)
 removeplugins += \
 	alsa \
-	atmo \
 	dc1394 \
 	dtv \
 	dv1394 \
