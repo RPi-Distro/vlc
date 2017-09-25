@@ -19,6 +19,7 @@ vlc (3.0.0~20170925-1) UNRELEASED; urgency=medium
     - Check vlc-plugin-* packages and new plugins.
     - Check currently disabled plugins.
     - Check if lua byte-code is Arch: all compatible.
+    - zsh completion is currently broken.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Mon, 25 Sep 2017 19:53:00 +0200
 
