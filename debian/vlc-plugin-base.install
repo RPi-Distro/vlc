@@ -1,6 +1,6 @@
 #!/bin/bash
 exec python3 $(dirname $0)/filter-plugin.py <<EOF
-usr/lib/*/vlc/libvlc_*.so*
+usr/lib/*/vlc/libvlc_pulse.so*
 usr/lib/*/vlc/plugins/access/libaccess_alsa_plugin.so [alsa]
 usr/lib/*/vlc/plugins/access/libaccess_concat_plugin.so
 usr/lib/*/vlc/plugins/access/libaccess_imem_plugin.so
@@ -163,8 +163,6 @@ usr/lib/*/vlc/plugins/stream_filter
 usr/lib/*/vlc/plugins/stream_out
 usr/lib/*/vlc/plugins/text_renderer/libfreetype_plugin.so
 usr/lib/*/vlc/plugins/text_renderer/libtdummy_plugin.so
-usr/lib/*/vlc/plugins/vaapi/libvaapi_filters_plugin.so [libva]
-usr/lib/*/vlc/plugins/vdpau
 usr/lib/*/vlc/plugins/video_chroma
 usr/lib/*/vlc/plugins/video_filter/libadjust_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libalphamask_plugin.so

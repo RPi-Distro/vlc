@@ -314,7 +314,7 @@ override_dh_missing:
 	dh_missing --fail-missing
 
 override_dh_makeshlibs:
-	dh_makeshlibs -Xlibvlc_vdpau
+	dh_makeshlibs -Xlibvlc_vdpau -Xlibvlc_pulse -Xlibvlc_xcb_events
 
 override_dh_bugfiles:
 	dh_bugfiles -A

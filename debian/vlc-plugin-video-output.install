@@ -1,5 +1,9 @@
 #!/bin/bash
 exec python3 $(dirname $0)/filter-plugin.py <<EOF
+usr/lib/*/vlc/libvlc_vdpau.so*
+usr/lib/*/vlc/libvlc_xcb_events.so*
+usr/lib/*/vlc/plugins/vaapi/libvaapi_filters_plugin.so [libva]
+usr/lib/*/vlc/plugins/vdpau
 usr/lib/*/vlc/plugins/video_output/libaa_plugin.so
 usr/lib/*/vlc/plugins/video_output/libcaca_plugin.so
 usr/lib/*/vlc/plugins/video_output/libegl_wl_plugin.so
