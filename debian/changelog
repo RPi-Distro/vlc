@@ -1,3 +1,18 @@
+vlc (3.0.0~20170925-1) UNRELEASED; urgency=medium
+
+  * New upstream snapshot.
+    - Install vlc_interface.h. (Closes: #768808)
+    - Fix stuttering with ALSA output. (Closes: #734100)
+    - Fix CRC errors in some FLAC files. (Closes: #772503)
+    - Add support for Wayland. (Closes: #857769)
+    - Better support for HLS. (Closes: #792647)
+    - Update VLSub. (Closes: #868236)
+  * TODO:
+    - SONAME bump.
+    - Update d/copyright.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 25 Sep 2017 19:53:00 +0200
+
 vlc (2.2.6-6) unstable; urgency=medium
 
   * Update to ffmpeg 2.8.13.
