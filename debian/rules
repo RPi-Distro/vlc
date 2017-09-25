@@ -71,7 +71,6 @@ confflags += \
 	--enable-qt \
 	--enable-realrtsp \
 	--enable-samplerate \
-	--enable-sdl \
 	--enable-sdl-image \
 	--enable-sftp \
 	--enable-shine \
