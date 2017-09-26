@@ -326,3 +326,7 @@ override_dh_installdeb:
 		debian/libvlc-bin.prerm.in > debian/libvlc-bin.prerm
 	echo 'interest-noawait /usr/lib/${DEB_HOST_MULTIARCH}/vlc/plugins' > debian/libvlc-bin.triggers
 	dh_installdeb
+
+override_dh_gencontrol-arch:
+	sed -n 's/^# define MODULE_SYMBOL \([0-9][_0-9a-z]*\)/-Vvlc:PluginABI=vlc-plugin-abi-\1/p' \
+		include/vlc_plugin.h | tr _ - | xargs dh_gencontrol -a --
