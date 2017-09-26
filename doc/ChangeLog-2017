@@ -1,3 +1,58 @@
+commit 02bd34e3580007bd22c9ed16c4fff093862aea9c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Sep 25 21:45:13 2017 +0300
+
+    contrib: FreeType: require GPL
+    
+    Otherwise, there is an advertising clause (which there are currently no
+    ways to handle in contrib).
+
+commit eca53dbe03e71e684c341929899764f5121c3c7d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Sep 25 19:48:37 2017 +0300
+
+    contrib: live555: require LGPLv3
+
+commit e0aae1207254313ed0fc75e6dc2b39b64e0d72fa
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Sep 25 19:48:26 2017 +0300
+
+    contrib: nettle: require GPL or GNUv3
+
+commit c53cc8365ef7382e8d4de4ce153e35ce4d3a3bcc
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Sep 25 19:48:01 2017 +0300
+
+    contrib: gmp: require GPL or GNUv3
+
+commit 7807d25f1620111b592b56de7bf6e40c00cdd76b
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Sep 25 19:30:20 2017 +0300
+
+    contrib: add option to turn off (L)GPL version 3
+
+commit f6b40afddc8582d2ac247a78c03cbfcb954a375d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Sep 25 19:27:48 2017 +0300
+
+    contrib: ensure GPL is enabled if needed
+    
+    Not including a package in $PKGS only prevents it from being built
+    as a direct VLC dependency. This patch adds a sanity check that any
+    GPL package is not pulled either as a dependency or a manual explicit
+    request.
+
+commit 41e1fa53184a3efcbf36e56faa6b46a1115b07f2
+Author: Ilkka Ollakka <ileoo@videolan.org>
+Date:   Fri Sep 22 14:06:25 2017 +0300
+
+    mux:ts: set h264/hevc/mp2v to be able to produce unbounded pes packets
+    
+    Without unbounded PES packets, h264 streams with big enough packets (keyframes)
+    can cause playback corruption on bottomn of the video in hls streaming when
+    played back with browsers. As frames would be splitted to multiple packets
+    without pts/dts.
+
 commit bb7e8b5a71bceee875c88439030dfd662121b5a4
 Author: Felix Paul Kühne <felix@serioese.gmbh>
 Date:   Sun Sep 24 15:05:47 2017 +0200
