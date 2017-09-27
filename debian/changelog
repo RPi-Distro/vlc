@@ -9,7 +9,7 @@ vlc (3.0.0~20170926-1) UNRELEASED; urgency=medium
     - Update VLSub. (Closes: #868236)
     - Re-write UPnP discovery. (LP: #977277, #1318262)
     - Complete porting to Qt 5. (LP: #1576175)
-    - Fix issues with green borders. (Closes: #765969) (LP: #405166)
+    - Fix issues with green borders. (Closes: #765969) (LP: #1405166)
   * Remove embedded ffmpeg copy. (LP: #1546078)
   * debian/patches: Drop all patches.
 
