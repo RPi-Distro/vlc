@@ -2,7 +2,7 @@
  * control.c : Handle control of the playlist & running through it
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 2da525a2d6482c05dec27555ebd0181b7cf08a0d $
+ * $Id: 60d9bae356eedc458f20548e3792a53f099f8294 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -138,11 +138,11 @@ static void playlist_vaControl( playlist_t *p_playlist, int i_query,
     PL_UNLOCK_IF( !locked );
 }
 
-void playlist_Control( playlist_t *p_playlist, int query, bool locked, ... )
+void playlist_Control( playlist_t *p_playlist, int query, int locked, ... )
 {
     va_list args;
 
     va_start( args, locked );
-    playlist_vaControl( p_playlist, query, locked, args );
+    playlist_vaControl( p_playlist, query, (bool)locked, args );
     va_end( args );
 }

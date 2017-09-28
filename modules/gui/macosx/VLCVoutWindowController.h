@@ -2,7 +2,7 @@
  * VLCVoutWindowController.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012-2014 VLC authors and VideoLAN
- * $Id: 8959e2860b05839f65558c788a44e7b10eae267d $
+ * $Id: d144708eab392208c9d2da63a762e1d956b2a509 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -45,5 +45,7 @@
 - (void)updateWindowsUsingBlock:(void (^)(VLCVideoWindowCommon *o_window))windowUpdater;
 
 - (void)updateWindowLevelForHelperWindows:(NSInteger)i_level;
+
+- (void)hideMouseForWindow:(vout_window_t *)p_wnd;
 
 @end

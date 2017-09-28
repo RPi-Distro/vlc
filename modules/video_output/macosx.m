@@ -2,7 +2,7 @@
  * macosx.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2013 VLC authors and VideoLAN
- * $Id: f8447723d78621e78b54a6e28b546003a0f15ef6 $
+ * $Id: c285948f0775441d0909dc1fefdeee6ca2f79872 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Eric Petit <titer@m0k.org>
@@ -78,6 +78,7 @@ vlc_module_begin ()
     set_capability ("vout display", 300)
     set_callbacks (Open, Close)
     add_shortcut ("macosx", "vout_macosx")
+    add_glconv ()
 vlc_module_end ()
 
 /**
@@ -415,12 +416,6 @@ static int Control (vout_display_t *vd, int query, va_list ap)
                     glViewport (place.x, cfg_tmp.display.height - (place.y + place.height), place.width, place.height);
                 vlc_gl_ReleaseCurrent (sys->gl);
 
-                return VLC_SUCCESS;
-            }
-
-            case VOUT_DISPLAY_HIDE_MOUSE: /* FIXME: dead code */
-            {
-                [NSCursor setHiddenUntilMouseMoves: YES];
                 return VLC_SUCCESS;
             }
 

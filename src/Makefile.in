@@ -287,15 +287,15 @@ am__libvlccore_la_SOURCES_DIST = libvlc.c libvlc.h libvlc-module.c \
 	video_output/statistic.h video_output/video_output.c \
 	video_output/video_text.c video_output/video_epg.c \
 	video_output/video_widgets.c video_output/vout_subpictures.c \
-	video_output/window.c video_output/window.h \
-	video_output/opengl.c video_output/vout_intf.c \
-	video_output/vout_internal.h video_output/vout_control.h \
-	video_output/vout_wrapper.c network/getaddrinfo.c \
-	network/http_auth.c network/httpd.c network/io.c network/tcp.c \
-	network/udp.c network/rootbind.c network/tls.c text/charset.c \
-	text/memstream.c text/strings.c text/unicode.c text/url.c \
-	text/filesystem.c text/iso_lang.c text/iso-639_def.h \
-	misc/actions.c misc/background_worker.c \
+	video_output/vout_spuregion_helper.h video_output/window.c \
+	video_output/window.h video_output/opengl.c \
+	video_output/vout_intf.c video_output/vout_internal.h \
+	video_output/vout_control.h video_output/vout_wrapper.c \
+	network/getaddrinfo.c network/http_auth.c network/httpd.c \
+	network/io.c network/tcp.c network/udp.c network/rootbind.c \
+	network/tls.c text/charset.c text/memstream.c text/strings.c \
+	text/unicode.c text/url.c text/filesystem.c text/iso_lang.c \
+	text/iso-639_def.h misc/actions.c misc/background_worker.c \
 	misc/background_worker.h misc/md5.c misc/probe.c misc/rand.c \
 	misc/mtime.c misc/block.c misc/fifo.c misc/fourcc.c \
 	misc/fourcc_list.h misc/es_format.c misc/picture.c \
@@ -1696,15 +1696,15 @@ libvlccore_la_SOURCES = libvlc.c libvlc.h libvlc-module.c missing.c \
 	video_output/statistic.h video_output/video_output.c \
 	video_output/video_text.c video_output/video_epg.c \
 	video_output/video_widgets.c video_output/vout_subpictures.c \
-	video_output/window.c video_output/window.h \
-	video_output/opengl.c video_output/vout_intf.c \
-	video_output/vout_internal.h video_output/vout_control.h \
-	video_output/vout_wrapper.c network/getaddrinfo.c \
-	network/http_auth.c network/httpd.c network/io.c network/tcp.c \
-	network/udp.c network/rootbind.c network/tls.c text/charset.c \
-	text/memstream.c text/strings.c text/unicode.c text/url.c \
-	text/filesystem.c text/iso_lang.c text/iso-639_def.h \
-	misc/actions.c misc/background_worker.c \
+	video_output/vout_spuregion_helper.h video_output/window.c \
+	video_output/window.h video_output/opengl.c \
+	video_output/vout_intf.c video_output/vout_internal.h \
+	video_output/vout_control.h video_output/vout_wrapper.c \
+	network/getaddrinfo.c network/http_auth.c network/httpd.c \
+	network/io.c network/tcp.c network/udp.c network/rootbind.c \
+	network/tls.c text/charset.c text/memstream.c text/strings.c \
+	text/unicode.c text/url.c text/filesystem.c text/iso_lang.c \
+	text/iso-639_def.h misc/actions.c misc/background_worker.c \
 	misc/background_worker.h misc/md5.c misc/probe.c misc/rand.c \
 	misc/mtime.c misc/block.c misc/fifo.c misc/fourcc.c \
 	misc/fourcc_list.h misc/es_format.c misc/picture.c \

@@ -2,7 +2,7 @@
  * video.c: video decoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 316222d33154fb784e95340636f9c3ca35a1d995 $
+ * $Id: e24319169e118cede814a9bc3e8aeea9cbbcea75 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -854,7 +854,7 @@ static void DecodeSidedata( decoder_t *p_dec, const AVFrame *frame, picture_t *p
     if( p_avcc )
     {
         cc_Extract( &p_sys->cc, CC_PAYLOAD_RAW, true, p_avcc->data, p_avcc->size );
-        if( p_sys->cc.i_data )
+        if( p_sys->cc.b_reorder || p_sys->cc.i_data )
         {
             block_t *p_cc = block_Alloc( p_sys->cc.i_data );
             if( p_cc )

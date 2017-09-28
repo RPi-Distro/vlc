@@ -1,3 +1,647 @@
+commit bced5fe7a56bb8373be9100c3bf78bab179d3e06
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Sep 27 19:44:37 2017 +0200
+
+    demux: adaptive: fix download from each adaptation set
+    
+    since gc does not happen after disabling,
+    es is still seen as selected.
+
+commit b4f2ab4fe67096934e75337a7b0a2b17a5dde19e
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Sep 27 19:16:26 2017 +0200
+
+    demux: adaptive: add stream name in deactivation notice
+
+commit 547ce8c47e1abadb18d6999332762e3266ebf245
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Sep 27 19:10:53 2017 +0200
+
+    codec: videotoolbox: don't handle interlaced video on iOS
+    
+    See http://www.openradar.me/30669495
+
+commit 3411f8ba8200878dd291c94b1b546074976c1b6b
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Sep 27 18:56:37 2017 +0200
+
+    codec: videotoolbox: flush before invalidating the session
+    
+    This fixes a deadlock when stopping the VT Session on iOS 11.
+    
+    VTDecompressionSessionInvalidate() can wait indefinitely if
+    VTDecompressionSessionWaitForAsynchronousFrames() is not called before.
+
+commit 9a1ebc738f2eeab01c3531a5aa501c539ebe92e0
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Sep 27 18:52:25 2017 +0200
+
+    codec: videotoolbox: simplify draining
+    
+    VTDecompressionSessionFinishDelayedFrames() is automatically called from
+    VTDecompressionSessionWaitForAsynchronousFrames().
+
+commit efbdf5fb236c88ffe6282524565159d596a6e02b
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Sep 27 16:29:52 2017 +0200
+
+    codec: videotoolbox: handle errors from callback too
+    
+    Some errors are only triggered from the decoder callback and not from the
+    VTDecompressionSessionDecodeFrame() function. We need to handle them in both
+    places.
+
+commit 4ee2be1f629f1eb2e6436c97388f9baa584a9ddb
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Sep 27 17:34:47 2017 +0200
+
+    demux: hls: set non default ID on adaptsets
+
+commit 2ca6b3e4191b855b4514e073b980bcd4d842eb59
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Sep 27 17:12:25 2017 +0200
+
+    demux: adaptive: fix debug string arguments
+
+commit 4c7d9fa968a19a46d13757142685dcb83575e616
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Sep 27 16:19:53 2017 +0200
+
+    ci_filters: error if device API is too old
+    
+    And require kCGColorSpaceITUR_709.
+
+commit 86528b719f284f168581751c2ec05e77436f217f
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Sep 27 16:12:18 2017 +0200
+
+    Revert "ci_filters: change color_space handling"
+    
+    This reverts commit 9367f189bcb804c7996cfb22881d787a16cb19b4.
+
+commit b91b28c11d92a02386da103b694aa80098f55b8a
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Sep 27 15:12:32 2017 +0200
+
+    codec: videotoolbox: check imageBuffer from callback
+    
+    This should not happen, this will still assert in debug mode.
+
+commit cf376a52ec3544b3e27d858e84c01976be66ea4e
+Author: Zhao Zhili <wantlamy@gmail.com>
+Date:   Sun Aug 6 17:36:05 2017 +0800
+
+    demux: adaptive: don't disconnect socket at EOF if connectionClose is false
+    
+    Signed-off-by: Francois Cartegnie <fcvlcdev@free.fr>
+
+commit f25cc7fb4c732184db80543d045f29bdeec70de3
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue May 30 17:42:19 2017 +0200
+
+    vout: refresh EPG OSD
+
+commit 704471cd39c3691b265eaa25f6c9c0c07a01d974
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Sep 27 15:46:29 2017 +0200
+
+    macosx: disable more functions added in macOS 10.13
+    
+    These 2 functions are used by the libarchive version.
+
+commit 1c0216485de84add152a4ae7f7281491789669fe
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Sep 27 11:42:25 2017 +0200
+
+    chroma: cvpx: handle BGRA
+    
+    Fixes #18860
+
+commit ad43f9a43bb10eb95259a817f7382c355ca3efca
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Sep 27 11:34:15 2017 +0200
+
+    vout: ios: use add_glconv()
+    
+    Fixes the "option glconv does not exist" error log.
+
+commit d19f46dec61d9f4f39c775e27f6e1306c1d46921
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Sep 27 11:34:00 2017 +0200
+
+    vout: macosx: use add_glconv()
+    
+    Fixes the "option glconv does not exist" error log.
+
+commit 981e88b23254bfbc063a37067d4ce5f553f78093
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Sep 27 11:33:40 2017 +0200
+
+    vout: win32: gl: use add_glconv()
+    
+    Even if there is not (yet) any gl converter on win32, this fixes the
+    "option glconv does not exist" error log.
+
+commit d51c133d51b3bf91081534350ff6a429b7291f3d
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Sep 26 19:01:10 2017 +0200
+
+    gl: add add_glconv() define
+    
+    Common module option to choose the OpenGL converter.
+
+commit 9367f189bcb804c7996cfb22881d787a16cb19b4
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Sep 27 10:48:54 2017 +0200
+
+    ci_filters: change color_space handling
+    
+    Use the [CIContext render:toCVPixelBuffer:] method (since macos 10.11, iphone
+    5.0) that handle automatically the color space.
+
+commit 5d42a862efdc5faa875dd642edfe15818818933b
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Sep 27 10:48:17 2017 +0200
+
+    ci_filters: fail earlier in case of wrong chromas
+
+commit dd0d00f1d27681677347e687bba08344cbb32657
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Sep 26 19:01:10 2017 +0200
+
+    codec: vt_utils: fix BGRA pool creation
+
+commit 83f5e2e231502249e7576697142513d54df82ce7
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Sep 27 10:14:30 2017 +0200
+
+    Contrib: fix linking of mpg123 on Windows
+
+commit 9b7cf10ff802eb164f446b85851625cf5f83c0f1
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Sep 14 15:03:12 2017 +0200
+
+    direct3d11: use the proper type for QueryInterface() calls
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit ddda4094039e42b510e57879fe946ed307a42456
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Sep 14 15:14:46 2017 +0200
+
+    direct3d11: simplify the locks
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d8d6b99ff55c2890a9dc3c7394371fbeabd86a15
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Sep 14 15:14:45 2017 +0200
+
+    direct3d11: only do the SwapChain Present() during Display
+    
+    Do everything we can during Prepare(). Display() is supposed to be as
+    instantaneous as possible.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 39c8e0f563b586bf70a69706182b06439ff88e34
+Author: Adrien Maglo <magsoft@videolan.org>
+Date:   Fri Sep 15 16:59:04 2017 +0200
+
+    glwin32: add a missing include
+    
+    Fix a compilation error in debug mode caused by the line 171.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit da427d95a98fa16369a3212c585b9a6de0820746
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Sep 18 09:14:45 2017 +0200
+
+    avcodec: be more explicit of what the frame skip values are
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 356aa8b94177f4c27d892d183501764138ba2a8b
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Tue Sep 19 11:03:56 2017 +0200
+
+    libvlc: fix typo
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 266ada4ecb563ed7bbbbcc6f30b30bd828984339
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Sep 26 09:07:31 2017 +0200
+
+    direct3d11: only allow reference drivers explicitly
+    
+    Not in nightly builds.
+    
+    Ref #18844
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit b8cdc6033ddd9eec0719dc55d67cf23eaac94cbf
+Author: KO Myung-Hun <komh78@gmail.com>
+Date:   Thu Sep 21 20:51:08 2017 +0900
+
+    addonsvorepository: fix compilation on OS/2
+    
+    -----
+      CC       misc/addons/vorepository.lo
+    misc/addons/vorepository.c: In function 'Retrieve':
+    misc/addons/vorepository.c:440:9: error: implicit declaration of function 'write' [-Werror=implicit-function-declaration]
+             if ( write( fd, buffer, i_read ) != i_read )
+             ^
+    cc1: some warnings being treated as errors
+    -----
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit bc0caf7d89347a14ad4a32a7abd1d18c8b8ef207
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Sep 26 15:02:52 2017 +0200
+
+    Contribs: update fontconfig to 2.12.3
+
+commit 444c23ed7911caceccddb59fb1fbfcab4d83cbff
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Sep 26 15:01:21 2017 +0200
+
+    Contribs: update libarchive to 3.2.2
+
+commit e341d44d4f5978f0ed0a44bdd9105b395f9d2f22
+Author: Sebastian Ramacher <sramacher@debian.org>
+Date:   Tue Sep 26 02:06:52 2017 +0200
+
+    Move appdata file to $(datarootdir)/metainfo
+    
+    The file location moved. See Section 2.1.2 of [1] for details.
+    
+    [1] https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#sect-Metadata-GenericComponent
+    
+    Signed-off-by: Sebastian Ramacher <sramacher@debian.org>
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 582e2c6aa813646ad0d794b885acc385e22a2093
+Author: Sebastian Ramacher <sramacher@debian.org>
+Date:   Tue Sep 26 23:19:56 2017 +0200
+
+    demux: ts: psip: Fix spelling of 'unknown'
+    
+    Signed-off-by: Sebastian Ramacher <sramacher@debian.org>
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 3c576f319dea58e9b6a9a3e9a40d4f7a16bc5ac7
+Author: Sebastian Ramacher <sramacher@debian.org>
+Date:   Tue Sep 26 23:19:55 2017 +0200
+
+    chromecast: Fix spelling of 'controller'
+    
+    Signed-off-by: Sebastian Ramacher <sramacher@debian.org>
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 0e6f632339661a04929bb43b868aa3b86c4075d1
+Author: Sebastian Ramacher <sramacher@debian.org>
+Date:   Tue Sep 26 23:19:54 2017 +0200
+
+    qtl: Fix spelling of 'controller'
+    
+    Fixes parsing of the controller attribute.
+    
+    Signed-off-by: Sebastian Ramacher <sramacher@debian.org>
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 9201da29d3e0f3ce76a3fea04c232490fb1cfca3
+Author: Sebastian Ramacher <sramacher@debian.org>
+Date:   Tue Sep 26 23:19:53 2017 +0200
+
+    vlc_block: Fix spelling of 'subtract'
+    
+    Signed-off-by: Sebastian Ramacher <sramacher@debian.org>
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 9695191a1cea959be405446ca417da0262c1294d
+Author: Sebastian Ramacher <sramacher@debian.org>
+Date:   Tue Sep 26 23:19:52 2017 +0200
+
+    pulse: Fix spelling of 'subtract'
+    
+    Signed-off-by: Sebastian Ramacher <sramacher@debian.org>
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 570767fdc44ad0f8266c11e551e13fb6db1ac4c3
+Author: Sebastian Ramacher <sramacher@debian.org>
+Date:   Tue Sep 26 23:19:51 2017 +0200
+
+    access: dtv: Fix spelling of 'subtract'
+    
+    Signed-off-by: Sebastian Ramacher <sramacher@debian.org>
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit b4b1b9c82ebf77b258f4b6d53f123d199644f546
+Author: Sebastian Ramacher <sramacher@debian.org>
+Date:   Tue Sep 26 23:19:50 2017 +0200
+
+    demux: subtitle: Fix spelling of 'subtract'
+    
+    Signed-off-by: Sebastian Ramacher <sramacher@debian.org>
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 60f355bea2e03b133ec1b59aff91d18f3754c990
+Author: Sebastian Ramacher <sramacher@debian.org>
+Date:   Tue Sep 26 23:19:49 2017 +0200
+
+    access: dc1394: Fix spelling of 'released'
+    
+    Signed-off-by: Sebastian Ramacher <sramacher@debian.org>
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 908ab4c64f87ab4c34e476eb7e4f2d49c0e992c6
+Author: Sebastian Ramacher <sramacher@debian.org>
+Date:   Tue Sep 26 23:19:48 2017 +0200
+
+    aout: Fix spelling of 'output'
+    
+    Signed-off-by: Sebastian Ramacher <sramacher@debian.org>
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 6b5291c02a857b016e2bf275ea119d43cce2ebb1
+Author: Sebastian Ramacher <sramacher@debian.org>
+Date:   Tue Sep 26 23:19:47 2017 +0200
+
+    mms: Fix spelling of 'stopping'
+    
+    Signed-off-by: Sebastian Ramacher <sramacher@debian.org>
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 6c23fab85e33ccb6a18ca3d37b5d3fc919aba475
+Author: Sebastian Ramacher <sramacher@debian.org>
+Date:   Tue Sep 26 23:19:46 2017 +0200
+
+    chromecast: Fix spelling of 'connection'
+    
+    Signed-off-by: Sebastian Ramacher <sramacher@debian.org>
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit a4a45e75e440d4c8c917d15baf7c31a63035b2d0
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Wed Sep 27 03:45:56 2017 +0200
+
+    macosx: Use specific class for log messages
+    
+    Instead of a NSDictionary, use a dedicated class for log messages.
+    Not only allows this for better abstraction and reusability, it
+    additionally solves a problem where log messages with the same content
+    would be considered equal, because all keys in the dictionary were
+    equal, ending up in wrong selections in the table.
+
+commit 95e3ec247e3edfb33ee9c37aba3c428a8be4688a
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Wed Sep 27 00:37:27 2017 +0200
+
+    macosx: Disable functions added in macOS 10.13
+
+commit 6c9651f1fd83ffdda04a7e2d47b8ae30049001d4
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Sep 26 22:27:46 2017 +0200
+
+    codec: cc: use size_t
+
+commit 3272846cbbce39902a4df187407addb593851b21
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Sep 20 10:51:03 2017 +0200
+
+    codec: feed empty cc blocks when reordering
+    
+    avoids latency in cc processing due to reorder
+
+commit ecb368ef38469b7d53abaf45e33991a7c257b70a
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Sep 19 14:15:22 2017 +0200
+
+    substext: pass margin and font to regions
+
+commit 00473993132381768f69bbbd5285d8aeae310a9d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Sep 26 22:11:22 2017 +0300
+
+    contrib: live555: fix license check placement
+
+commit 81b2932b5fc04fb926a1efd52df93916a189d833
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Sep 26 21:19:55 2017 +0300
+
+    contrib: aribb24: require GPLv3 for now
+
+commit c705f614371dd7914b3e3d186033fb721379859d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Sep 26 21:12:01 2017 +0300
+
+    contrib: print overall contrib license
+
+commit 22bdb82cc96f7a67eeb78925b7ccd49bb38cea8d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Sep 26 21:04:51 2017 +0300
+
+    contrib: add option to build with advertising clause
+    
+    This allows build contribs with 4-clause BSD license or similar.
+    This is not compatible with GPLv2.
+
+commit d50831fb9c30fa19c85a14e0fb261a3580ae26f1
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Tue Sep 26 19:48:46 2017 +0200
+
+    video_filter/ci_filters: Error if necessary colorspace not available
+    
+    kCGColorSpaceITUR_709 was only introduce in 10.11, if this is not
+    available, error instead of still trying to use it.
+
+commit ecb9f19b82b4127dc94e55021f39fa894435bb85
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Thu Sep 21 14:03:30 2017 +0200
+
+    macosx: simple prefs: Remove explicit width and height constraints
+    
+    Each box has contraints for top, left, right and bottom now.
+    This allows growing of the box if needed.
+    Also, this mostly enables horizontal resizes of the whole window.
+    
+    - Make sure not autoresizing constraints are added for all panes
+    - Make more labels single line labels
+
+commit 4f03e47211660a759a98ca541bfa410bb016878c
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Thu Sep 21 12:05:19 2017 +0200
+
+    macosx: Fix width constraints of simple prefs boxes
+
+commit 2f3c89c327b5f4346e811637ad88dba256e5860a
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Wed Sep 20 14:08:35 2017 +0200
+
+    macosx: wrap simple preference panes in scroll view
+    
+    Simple preferences are easily too tall for some screen resolutions
+    (e.g. showing VLC on 720p TV). Therefore, add scroll view so that
+    the height of the window can stay.
+    This also removes old frame based view switching with new
+    constraint based system. Also fixes some constraints to correctly
+    form the size of the view.
+
+commit 1d15bf7dedfa9dda299718012b2c85fc75f832bc
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Wed Sep 20 11:10:32 2017 +0200
+
+    macosx: simple prefs: Fix width of audio matrix
+
+commit 8af629e47359a96fec38af3c0252fb2ee18227b5
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Tue Sep 19 23:05:02 2017 +0200
+
+    macosx: Improve network open panel, fix number formatter
+
+commit c86ca11eb4b5714de1e553ee6a5ca70f50047fa5
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Sep 26 18:54:11 2017 +0200
+
+    codec: videotoolbox: fix double free on kVTVideoDecoderBadDataErr error
+    
+    The decoder callback is also triggered on every error types, therefore we
+    should always free the reorder info from this callback.
+
+commit b43742bd5804bbfae04620b2840e571454a2351f
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Sep 26 18:36:33 2017 +0200
+
+    ci_filters: handle BGRA
+    
+    No need to convert BGRA to NV12 since this color is handled natively.
+
+commit 03a0437836007e7c9970e5f66420745fc563dd66
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Sep 26 18:28:04 2017 +0200
+
+    opengl: no direct rendering if not backed by a vlc_gl_t module
+    
+    When doing direct rendering (persistent), pictures are destroyed when the
+    vlc_gl_t is released. This is not currently possible with the hacked vlc_gl_t
+    on ios/macos but it's not a problem since their OpenGL versions doesn't support
+    PERSISTENT mapping.
+
+commit d3ccd7aed1f1135f99ae673ebfdf378dab42f406
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Sep 26 15:55:12 2017 +0200
+
+    opengl: delete buffers when not in direct rendering
+
+commit 18367a050ea1b8c7cd18902afcdd95c20ca6b798
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Sep 26 18:10:18 2017 +0200
+
+    contribs: Bump microdns to 0.0.8
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit d58ca1ca7084b5ebd5836f6c7369ee66065da13a
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Sep 26 17:48:24 2017 +0200
+
+    aout: coreaudio: increase low latency buffer size
+    
+    See XXX comment. There is a lot of stuttering with few inputs/codecs with 40ms
+    of latency.
+
+commit 43f4b269311df662da74f51a640aea88f48c1876
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Sep 26 14:52:00 2017 +0200
+
+    opensles_android: Fix potential use of uninitialized values
+
+commit fa8d8ee2af927d7ae10a5f6e1473ea483c79da10
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Sep 26 14:37:06 2017 +0200
+
+    playlist: Fix playlist_Control undefined behavior
+    
+    ../../src/playlist/control.c:145:21: warning: passing an object that
+    undergoes default argument promotion to 'va_start' has undefined
+    behavior [-Wvarargs]
+        va_start( args, locked );
+
+commit 5635bdc7157a81a266f7dbd6ed24eb1df6062ded
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Sep 26 14:18:25 2017 +0200
+
+    android: thread: use standard thread_local keyword
+    
+    Instead of the gcc extension
+
+commit e418e3fa1a9f2a8f0d0d15c25525dfaaf99e6c86
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Tue Sep 26 15:14:13 2017 +0200
+
+    macosx: Only hide mouse if inside the video view
+    
+    Ref #18658
+
+commit bfe6ef4fc7dd990ee428d2ad5fdebbfb26e5517b
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Tue Sep 26 14:37:04 2017 +0200
+
+    vout/macosx: Remove dead mouse hiding code
+    
+    Ref #18658
+
+commit 8cac812c9fea4eaf76fb61a9c62244ac49f5add7
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Tue Sep 26 14:36:51 2017 +0200
+
+    vout/caopengllayer: Remove dead mouse hiding code
+    
+    Ref #18658
+
+commit b00d2da193c9465e8100a9df47291c12f5a3ece3
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Tue Sep 26 14:35:42 2017 +0200
+
+    macosx: Use window mouse hide event instead of own timer
+    
+    Instead of a custom timer, use the window mouse hide event that the
+    core sends.
+    
+    Ref #18658
+
+commit 6f22c26a4966fe7cecd3a6eea69979511b20b6ea
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Sep 26 13:39:58 2017 +0200
+
+    asf: fix SIGSEGV when accessing invalid tracks
+
+commit 6db90a58fc88551ed3fa3bd48c11c9e46eef43af
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Sep 26 13:36:59 2017 +0200
+
+    asf: fix sign compare warning
+    
+    Since tk->i_cat = tk->p_fmt->i_cat and is signed;
+
+commit 745361ad2bcc85e7cd73d637f99d9663f4426194
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Sep 26 13:36:16 2017 +0200
+
+    asf: check malloc
+
+commit d44180c06e7d983298476818118c6ce5101341a0
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Sep 26 11:30:50 2017 +0200
+
+    Contribs: update libmpg123 to 1.25.7
+    
+    Close #18834
+
 commit 02bd34e3580007bd22c9ed16c4fff093862aea9c
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Mon Sep 25 21:45:13 2017 +0300

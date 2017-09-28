@@ -2,7 +2,7 @@
  * mmsh.c:
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: 992176d1cda9adef7e7820009714f6751c194a3a $
+ * $Id: d2f497dd947509e9a5cfe7e7c3aa7849ecb377d8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -398,7 +398,7 @@ static int Restart( stream_t *p_access )
     p_sys->i_start = p_sys->i_position;
 
     /* */
-    msg_Dbg( p_access, "stoping the stream" );
+    msg_Dbg( p_access, "stopping the stream" );
     Stop( p_access );
 
     /* */

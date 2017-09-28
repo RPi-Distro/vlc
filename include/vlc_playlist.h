@@ -2,7 +2,7 @@
  * vlc_playlist.h : Playlist functions
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: b74d9b3e559c518e359656f557d5ad258ae00727 $
+ * $Id: 9498e622cac22fc9c70cb4b298cca02722092d2e $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -302,7 +302,7 @@ VLC_API void playlist_Deactivate( playlist_t * );
  * \param b_locked TRUE if playlist is locked when entering this function
  * \param variable number of arguments
  */
-VLC_API void playlist_Control( playlist_t *p_playlist, int i_query, bool b_locked, ...  );
+VLC_API void playlist_Control( playlist_t *p_playlist, int i_query, int b_locked, ...  );
 
 static inline void playlist_ViewPlay(playlist_t *pl, playlist_item_t *node,
                                      playlist_item_t *item)

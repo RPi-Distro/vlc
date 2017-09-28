@@ -2,7 +2,7 @@
  * VLCSimplePrefsWindow.m: Simple Preferences Window subclass for Mac OS X
  *****************************************************************************
  * Copyright (C) 2008-2014 VLC authors and VideoLAN
- * $Id: 84b6678e594e31427283f98a16e95b8e141e2b08 $
+ * $Id: 1e315fec74c4568936c78e8f1ca55ff963c66622 $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *
@@ -35,4 +35,13 @@
 {
     [[[VLCMain sharedInstance] simplePreferences] changeFont: sender];
 }
+@end
+
+@implementation VLCSimplePrefsClipView
+
+- (BOOL)isFlipped
+{
+    return YES;
+}
+
 @end
