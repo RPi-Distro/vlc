@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-09-26 02:29+0000\n"
+"POT-Creation-Date: 2017-09-28 02:28+0000\n"
 "PO-Revision-Date: 2013-12-08 08:16+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Vietnamese (http://www.transifex.com/projects/p/vlc-trans/"
@@ -43,7 +43,7 @@ msgid "Select \"Advanced Options\" to see all options."
 msgstr "Chọn\"Tùy chọn nâng cao\" để có thêm các lựa chọn khác."
 
 #: include/vlc_config_cat.h:38
-#: modules/gui/macosx/VLCSimplePrefsController.m:221
+#: modules/gui/macosx/VLCSimplePrefsController.m:220
 #: modules/gui/qt/components/simple_preferences.cpp:210
 #: modules/gui/qt/menus.cpp:1081
 msgid "Interface"
@@ -74,7 +74,7 @@ msgid "Settings for VLC's control interfaces"
 msgstr "Thiết lập giao diện điều khiển"
 
 #: include/vlc_config_cat.h:49 include/vlc_config_cat.h:50
-#: modules/gui/macosx/VLCSimplePrefsController.m:231
+#: modules/gui/macosx/VLCSimplePrefsController.m:230
 msgid "Hotkeys settings"
 msgstr "Thiết lập phím tắt"
 
@@ -83,7 +83,7 @@ msgstr "Thiết lập phím tắt"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:171
 #: modules/gui/macosx/VLCMainMenu.m:403 modules/gui/macosx/VLCOutput.m:92
 #: modules/gui/macosx/VLCPlaylistInfo.m:101
-#: modules/gui/macosx/VLCSimplePrefsController.m:223
+#: modules/gui/macosx/VLCSimplePrefsController.m:222
 #: modules/gui/qt/components/info_panels.cpp:576
 #: modules/gui/qt/components/simple_preferences.cpp:212
 #: modules/gui/qt/qt.cpp:216 modules/services_discovery/mediadirs.c:77
@@ -145,8 +145,8 @@ msgstr "Tổng hợp thiết lập audio và module."
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:160
 #: modules/gui/macosx/VLCMainMenu.m:416 modules/gui/macosx/VLCOutput.m:82
 #: modules/gui/macosx/VLCPlaylistInfo.m:91
-#: modules/gui/macosx/VLCSimplePrefsController.m:225
-#: modules/gui/macosx/VLCSimplePrefsController.m:368
+#: modules/gui/macosx/VLCSimplePrefsController.m:224
+#: modules/gui/macosx/VLCSimplePrefsController.m:367
 #: modules/gui/qt/components/info_panels.cpp:577
 #: modules/gui/qt/components/simple_preferences.cpp:214
 #: modules/gui/qt/qt.cpp:216 modules/services_discovery/mediadirs.c:70
@@ -1062,7 +1062,7 @@ msgstr "Codec"
 
 #: src/input/es_out.c:3051 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/VLCPlaylist.m:114
-#: modules/gui/macosx/VLCSimplePrefsController.m:305
+#: modules/gui/macosx/VLCSimplePrefsController.m:304
 #: modules/stream_out/setid.c:49
 msgid "Language"
 msgstr "Ngôn ngữ"
@@ -1723,7 +1723,7 @@ msgstr "Góc độ Media"
 msgid "Media (player) role for operating system policy."
 msgstr ""
 
-#: src/libvlc-module.c:130 modules/gui/macosx/VLCSimplePrefsController.m:262
+#: src/libvlc-module.c:130 modules/gui/macosx/VLCSimplePrefsController.m:261
 #: modules/stream_out/display.c:40
 msgid "Enable audio"
 msgstr "Cho phép bật Audio"
@@ -1841,7 +1841,7 @@ msgid ""
 "support."
 msgstr ""
 
-#: src/libvlc-module.c:176 modules/gui/macosx/VLCSimplePrefsController.m:260
+#: src/libvlc-module.c:176 modules/gui/macosx/VLCSimplePrefsController.m:259
 msgid "Force detection of Dolby Surround"
 msgstr "Bắt buộc xác định Dolby Surround - âm thanh nổi"
 
@@ -1951,8 +1951,8 @@ msgstr ""
 #: src/libvlc-module.c:237 src/libvlc-module.c:1118
 #: modules/access/dshow/dshow.cpp:2077 modules/access/dtv/access.c:107
 #: modules/access/dtv/access.c:141 modules/access/v4l2/v4l2.c:163
-#: modules/codec/avcodec/avcodec.c:50 modules/codec/kate.c:199
-#: modules/codec/x264.c:438 modules/codec/x264.c:443
+#: modules/codec/avcodec/avcodec.c:50 modules/codec/avcodec/avcodec.c:54
+#: modules/codec/kate.c:199 modules/codec/x264.c:438 modules/codec/x264.c:443
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:191
 #: modules/gui/macosx/VLCOpenWindowController.m:245
 #: modules/gui/macosx/VLCOpenWindowController.m:274
@@ -1989,7 +1989,7 @@ msgstr ""
 "Phương thức xuất dữ liệu đầu ra này đối với video được sử dụng bởi VLC. "
 "Phương thức này được lựa chọn theo chế độ tự động nhằm đạt hiệu quả cao nhất."
 
-#: src/libvlc-module.c:256 modules/gui/macosx/VLCSimplePrefsController.m:347
+#: src/libvlc-module.c:256 modules/gui/macosx/VLCSimplePrefsController.m:346
 #: modules/stream_out/display.c:42
 msgid "Enable video"
 msgstr "Bật tính năng Video"
@@ -2238,7 +2238,7 @@ msgstr ""
 #: src/libvlc-module.c:340 src/libvlc-module.c:342
 #: src/video_output/interlacing.c:112 modules/gui/macosx/VLCMainMenu.m:432
 #: modules/gui/macosx/VLCMainMenu.m:433
-#: modules/gui/macosx/VLCSimplePrefsController.m:366
+#: modules/gui/macosx/VLCSimplePrefsController.m:365
 #: modules/gui/qt/dialogs/convert.cpp:119 modules/hw/vdpau/chroma.c:884
 #: modules/video_filter/deinterlace/deinterlace.c:98
 #: share/lua/http/dialogs/create_stream.html:346
@@ -2247,7 +2247,7 @@ msgstr "Chống quét mành"
 
 #: src/libvlc-module.c:350 src/video_output/interlacing.c:128
 #: modules/gui/macosx/VLCMainMenu.m:434 modules/gui/macosx/VLCMainMenu.m:435
-#: modules/gui/macosx/VLCSimplePrefsController.m:367
+#: modules/gui/macosx/VLCSimplePrefsController.m:366
 #: modules/video_filter/deinterlace/deinterlace.c:54
 msgid "Deinterlace mode"
 msgstr "Chế độ chống quét mành/deinterlace"
@@ -2302,7 +2302,7 @@ msgstr ""
 "Tắt phần thông báo quản lý điện năng khi đang hiển thị audio/video, điều này "
 "nhằm tránh cho việc trình chiếu bị tạm dừng đột ngột vì một lý do nào đó."
 
-#: src/libvlc-module.c:376 modules/gui/macosx/VLCSimplePrefsController.m:352
+#: src/libvlc-module.c:376 modules/gui/macosx/VLCSimplePrefsController.m:351
 msgid "Window decorations"
 msgstr "Họa tiết cửa sổ"
 
@@ -2516,7 +2516,7 @@ msgstr ""
 "có các điểm ảnh vuông (1:1). Nhưng nếu bạn sở hữu thiết bị có màn hình 16:9, "
 "bạn cần thay đổi tỉ lệ này thành 4:3 nhằm có được phần hiển thị tốt nhất."
 
-#: src/libvlc-module.c:470 modules/gui/macosx/VLCSimplePrefsController.m:295
+#: src/libvlc-module.c:470 modules/gui/macosx/VLCSimplePrefsController.m:294
 msgid "Skip frames"
 msgstr "Bỏ qua khung hình"
 
@@ -2671,12 +2671,12 @@ msgstr ""
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
 #: modules/access/dshow/dshow.cpp:2075 modules/audio_output/alsa.c:767
-#: modules/audio_output/directsound.c:1031
+#: modules/audio_output/directsound.c:1031 modules/codec/avcodec/avcodec.c:50
 #: modules/demux/adaptive/adaptive.cpp:95
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:85
 #: modules/gui/macosx/VLCMainMenu.m:587 modules/gui/macosx/prefs_widgets.m:1217
 #: modules/gui/macosx/prefs_widgets.m:1274
-#: modules/gui/macosx/VLCSimplePrefsController.m:650
+#: modules/gui/macosx/VLCSimplePrefsController.m:649
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:51
 #: modules/gui/qt/components/preferences_widgets.cpp:546 modules/spu/marq.c:61
 #: modules/spu/rss.c:69 modules/spu/rss.c:182
@@ -3069,7 +3069,7 @@ msgstr ""
 "Bạn có thể hoàn toàn vô hiệu hóa tiến trình xử lý hình ảnh đi kèm với phụ đề."
 
 #: src/libvlc-module.c:713 src/libvlc-module.c:1661 src/text/iso-639_def.h:145
-#: modules/gui/macosx/VLCSimplePrefsController.m:339
+#: modules/gui/macosx/VLCSimplePrefsController.m:338
 msgid "On Screen Display"
 msgstr "Hiển thị trên màn hình"
 
@@ -3928,7 +3928,7 @@ msgstr "Thời gian chạy"
 msgid "Maximum time (in milliseconds) allowed to preparse an item"
 msgstr ""
 
-#: src/libvlc-module.c:1113 modules/gui/macosx/VLCSimplePrefsController.m:322
+#: src/libvlc-module.c:1113 modules/gui/macosx/VLCSimplePrefsController.m:321
 #: modules/gui/qt/dialogs/firstrun.cpp:95
 msgid "Allow metadata network access"
 msgstr ""
@@ -5021,7 +5021,7 @@ msgstr "Hiển thị chồng lên màn hình"
 msgid "Track settings"
 msgstr "Thiết lập track"
 
-#: src/libvlc-module.c:1736 modules/gui/macosx/VLCSimplePrefsController.m:310
+#: src/libvlc-module.c:1736 modules/gui/macosx/VLCSimplePrefsController.m:309
 msgid "Playback control"
 msgstr "Điều khiển phát lại"
 
@@ -5474,10 +5474,10 @@ msgstr "Thất bại khi mở \"%s\" để ghi dữ liệu"
 #: modules/gui/macosx/VLCOpenWindowController.m:135
 #: modules/gui/macosx/VLCOpenWindowController.m:193
 #: modules/gui/macosx/prefs.m:189
-#: modules/gui/macosx/VLCSimplePrefsController.m:275
-#: modules/gui/macosx/VLCSimplePrefsController.m:301
-#: modules/gui/macosx/VLCSimplePrefsController.m:372
-#: modules/gui/macosx/VLCSimplePrefsController.m:814
+#: modules/gui/macosx/VLCSimplePrefsController.m:274
+#: modules/gui/macosx/VLCSimplePrefsController.m:300
+#: modules/gui/macosx/VLCSimplePrefsController.m:371
+#: modules/gui/macosx/VLCSimplePrefsController.m:813
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:739
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:807
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:50
@@ -7254,8 +7254,9 @@ msgid "Local oscillator high frequency (kHz)"
 msgstr "Tần số cao của máy dao động hiện tại (kHz)"
 
 #: modules/access/dtv/access.c:186
+#, fuzzy
 msgid ""
-"The downconverter (LNB) will substract the local oscillator frequency from "
+"The downconverter (LNB) will subtract the local oscillator frequency from "
 "the satellite transmission frequency. The intermediate frequency (IF) on the "
 "RF cable is the result."
 msgstr ""
@@ -7541,7 +7542,7 @@ msgstr ""
 #: modules/access_output/http.c:52 modules/access/rdp.c:65
 #: modules/access/sftp.c:55 modules/access/smb_common.h:21
 #: modules/access/vnc.c:46 modules/gui/macosx/VLCCoreDialogProvider.m:191
-#: modules/gui/macosx/VLCSimplePrefsController.m:267
+#: modules/gui/macosx/VLCSimplePrefsController.m:266
 #: modules/gui/qt/dialogs/external.cpp:206 modules/misc/audioscrobbler.c:114
 #: modules/stream_out/rtp.c:173
 msgid "Username"
@@ -7559,8 +7560,8 @@ msgstr "Tên người dùng được dùng cho phần kết nối."
 #: modules/access_output/http.c:55 modules/access/rdp.c:68
 #: modules/access/sftp.c:58 modules/access/smb_common.h:24
 #: modules/access/vnc.c:47 modules/gui/macosx/VLCCoreDialogProvider.m:192
-#: modules/gui/macosx/VLCSimplePrefsController.m:266
-#: modules/gui/macosx/VLCSimplePrefsController.m:328
+#: modules/gui/macosx/VLCSimplePrefsController.m:265
+#: modules/gui/macosx/VLCSimplePrefsController.m:327
 #: modules/gui/qt/dialogs/external.cpp:211 modules/lua/vlc.c:54
 #: modules/lua/vlc.c:70 modules/misc/audioscrobbler.c:116
 #: modules/stream_out/raop.c:155 modules/stream_out/rtp.c:176
@@ -8819,7 +8820,7 @@ msgstr "Dữ liệu màn hình đầu vào"
 #: modules/gui/macosx/VLCOpenWindowController.m:211
 #: modules/gui/macosx/VLCOpenWindowController.m:481
 #: modules/gui/macosx/VLCOpenWindowController.m:1153
-#: modules/gui/macosx/VLCSimplePrefsController.m:655
+#: modules/gui/macosx/VLCSimplePrefsController.m:654
 msgid "Screen"
 msgstr "Màn hình"
 
@@ -9431,7 +9432,8 @@ msgstr ""
 "điều khiển, tăng độ dài (-vvv) hoặc sử dụng ứng dụng v4l2-ctl."
 
 #: modules/access/v4l2/v4l2.c:242 modules/codec/avcodec/avcodec.c:50
-#: modules/codec/x264.c:438 modules/control/hotkeys.c:395
+#: modules/codec/avcodec/avcodec.c:54 modules/codec/x264.c:438
+#: modules/control/hotkeys.c:395
 #: modules/gui/macosx/VLCAddonsWindowController.m:99
 #: modules/gui/qt/dialogs/convert.cpp:160
 #: modules/gui/qt/dialogs/plugins.cpp:374
@@ -10929,31 +10931,31 @@ msgstr "Giải mã phụ đề DVB"
 msgid "ARIB subtitles"
 msgstr "Phụ đề DVD"
 
-#: modules/codec/avcodec/avcodec.c:50
+#: modules/codec/avcodec/avcodec.c:50 modules/codec/avcodec/avcodec.c:54
 msgid "Non-ref"
 msgstr "Non-ref"
 
-#: modules/codec/avcodec/avcodec.c:50
+#: modules/codec/avcodec/avcodec.c:50 modules/codec/avcodec/avcodec.c:54
 msgid "Bidir"
 msgstr "Bidir"
 
-#: modules/codec/avcodec/avcodec.c:50
+#: modules/codec/avcodec/avcodec.c:50 modules/codec/avcodec/avcodec.c:54
 msgid "Non-key"
 msgstr "Không có-khóa"
 
-#: modules/codec/avcodec/avcodec.c:55
+#: modules/codec/avcodec/avcodec.c:59
 msgid "rd"
 msgstr "rd"
 
-#: modules/codec/avcodec/avcodec.c:55
+#: modules/codec/avcodec/avcodec.c:59
 msgid "bits"
 msgstr "bits"
 
-#: modules/codec/avcodec/avcodec.c:55
+#: modules/codec/avcodec/avcodec.c:59
 msgid "simple"
 msgstr "Đơn giản"
 
-#: modules/codec/avcodec/avcodec.c:67
+#: modules/codec/avcodec/avcodec.c:71
 msgid ""
 "Various audio and video decoders/encoders delivered by the FFmpeg library. "
 "This includes (MS)MPEG4, DivX, SV1,H261, H263, H264, WMV, WMA, AAC, AMR, DV, "
@@ -10963,22 +10965,22 @@ msgstr ""
 "từ thư viện FFmpeg. Bao gồm (MS)MPEG4, DivX, SV1,H261, H263, H264, WMV, WMA, "
 "AAC, AMR, DV, MJPEG và các codec khác"
 
-#: modules/codec/avcodec/avcodec.c:76
+#: modules/codec/avcodec/avcodec.c:80
 msgid "FFmpeg audio/video decoder"
 msgstr "Giải mã audio/video dạng FFmpeg"
 
-#: modules/codec/avcodec/avcodec.c:78 modules/codec/gstreamer/gstdecode.c:96
+#: modules/codec/avcodec/avcodec.c:82 modules/codec/gstreamer/gstdecode.c:96
 #: modules/codec/omxil/mediacodec.c:182 modules/codec/omxil/omxil.c:148
 msgid "Decoding"
 msgstr "Giải mã"
 
-#: modules/codec/avcodec/avcodec.c:143 modules/codec/jpeg.c:119
+#: modules/codec/avcodec/avcodec.c:147 modules/codec/jpeg.c:119
 #: modules/codec/omxil/omxil.c:171 modules/codec/png.c:99
 #: modules/codec/schroedinger.c:370
 msgid "Encoding"
 msgstr "Mã hóa"
 
-#: modules/codec/avcodec/avcodec.c:144
+#: modules/codec/avcodec/avcodec.c:148
 msgid "FFmpeg audio/video encoder"
 msgstr "Mã hóa audio/video dạng FFmpeg"
 
@@ -11106,7 +11108,7 @@ msgid "Internal libavcodec codec name"
 msgstr "Tên codec của libavcode"
 
 #: modules/codec/avcodec/avcodec.h:108
-#: modules/gui/macosx/VLCSimplePrefsController.m:293
+#: modules/gui/macosx/VLCSimplePrefsController.m:292
 msgid "Skip the loop filter for H.264 decoding"
 msgstr "Bỏ qua thao tác lặp lại bộ lọc đối với việc giải mã H.264"
 
@@ -11471,7 +11473,7 @@ msgid "BPG image decoder"
 msgstr "Trình giải mã hình ảnh XWD"
 
 #: modules/codec/cc.c:53 modules/codec/zvbi.c:65
-#: modules/gui/macosx/VLCSimplePrefsController.m:341 modules/spu/marq.c:108
+#: modules/gui/macosx/VLCSimplePrefsController.m:340 modules/spu/marq.c:108
 #: modules/spu/rss.c:144
 msgid "Opacity"
 msgstr "Độ mờ"
@@ -14331,7 +14333,7 @@ msgstr "Nhan"
 
 #: modules/codec/x264.c:438 modules/gui/macosx/VLCMainMenu.m:281
 #: modules/gui/macosx/VLCMainMenu.m:383
-#: modules/gui/macosx/VLCSimplePrefsController.m:690
+#: modules/gui/macosx/VLCSimplePrefsController.m:689
 #: modules/gui/qt/components/simple_preferences.cpp:634
 #: modules/misc/gnutls.c:771 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
@@ -14542,7 +14544,7 @@ msgid "Global Hotkeys interface"
 msgstr "Phím tắt giao diện chung"
 
 #: modules/control/hotkeys.c:100
-#: modules/gui/macosx/VLCSimplePrefsController.m:231
+#: modules/gui/macosx/VLCSimplePrefsController.m:230
 #: modules/gui/qt/components/preferences_widgets.cpp:1145
 #: modules/gui/qt/components/simple_preferences.cpp:220
 msgid "Hotkeys"
@@ -15309,7 +15311,7 @@ msgstr ""
 msgid "ASF/WMV demuxer"
 msgstr ""
 
-#: modules/demux/asf/asf.c:267 modules/demux/asf/asf.c:824
+#: modules/demux/asf/asf.c:267 modules/demux/asf/asf.c:821
 msgid "Could not demux ASF stream"
 msgstr ""
 
@@ -16521,7 +16523,7 @@ msgstr "Bộ lọc"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:283
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:88
-#: modules/gui/macosx/VLCSimplePrefsController.m:261
+#: modules/gui/macosx/VLCSimplePrefsController.m:260
 #: modules/gui/qt/dialogs/extended.cpp:96
 msgid "Audio Effects"
 msgstr "Hiệu ứng Audio"
@@ -16553,8 +16555,8 @@ msgstr "Điền vào tên cho hồ sơ mới:"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:476
 #: modules/gui/macosx/VLCMainMenu.m:1144 modules/gui/macosx/VLCOutput.m:411
 #: modules/gui/macosx/prefs.m:188
-#: modules/gui/macosx/VLCSimplePrefsController.m:300
-#: modules/gui/macosx/VLCSimplePrefsController.m:374
+#: modules/gui/macosx/VLCSimplePrefsController.m:299
+#: modules/gui/macosx/VLCSimplePrefsController.m:373
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:740
 #: modules/gui/qt/components/sout/profile_selector.cpp:442
 msgid "Save"
@@ -16615,7 +16617,7 @@ msgid "Add"
 msgstr "Thêm"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:79
-#: modules/gui/macosx/VLCSimplePrefsController.m:277
+#: modules/gui/macosx/VLCSimplePrefsController.m:276
 #: modules/gui/qt/dialogs/bookmarks.cpp:53
 msgid "Clear"
 msgstr "Dọn dẹp"
@@ -16650,7 +16652,7 @@ msgstr "Thời gian"
 #: modules/gui/macosx/VLCCoreDialogProvider.m:236
 #: modules/gui/macosx/VLCOpenWindowController.m:364
 #: modules/gui/macosx/VLCOutput.m:60 modules/gui/macosx/VLCPlaylistInfo.m:359
-#: modules/gui/macosx/VLCSimplePrefsController.m:276
+#: modules/gui/macosx/VLCSimplePrefsController.m:275
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
 #: modules/gui/qt/components/open_panels.cpp:1365
 msgid "OK"
@@ -16805,8 +16807,8 @@ msgstr "Chọn một vị trí để xuất dữ liệu ra"
 #: modules/gui/macosx/VLCOpenWindowController.m:148
 #: modules/gui/macosx/VLCOpenWindowController.m:351
 #: modules/gui/macosx/VLCOutput.m:67 modules/gui/macosx/prefs_widgets.m:1121
-#: modules/gui/macosx/VLCSimplePrefsController.m:284
-#: modules/gui/macosx/VLCSimplePrefsController.m:361
+#: modules/gui/macosx/VLCSimplePrefsController.m:283
+#: modules/gui/macosx/VLCSimplePrefsController.m:360
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:414
 #: modules/gui/qt/components/sout/sout_widgets.cpp:132
@@ -17012,9 +17014,9 @@ msgstr ""
 "chưa được cung cấp."
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:1035
-#: modules/gui/macosx/VLCSimplePrefsController.m:684
-#: modules/gui/macosx/VLCSimplePrefsController.m:712
-#: modules/gui/macosx/VLCSimplePrefsController.m:1265
+#: modules/gui/macosx/VLCSimplePrefsController.m:683
+#: modules/gui/macosx/VLCSimplePrefsController.m:711
+#: modules/gui/macosx/VLCSimplePrefsController.m:1244
 #: modules/gui/qt/components/simple_preferences.cpp:631
 msgid "Custom"
 msgstr "Tự chọn"
@@ -17133,7 +17135,7 @@ msgstr ""
 "Tính năng này có thể được vô hiệu hóa tại đây."
 
 #: modules/gui/macosx/macosx.m:76
-#: modules/gui/macosx/VLCSimplePrefsController.m:312
+#: modules/gui/macosx/VLCSimplePrefsController.m:311
 msgid "Control playback with the Apple Remote"
 msgstr "Điều khiển chế độ phát lại với Apple Remote"
 
@@ -17143,7 +17145,7 @@ msgstr ""
 "Theo mặc định, VLC có thể được điều khiển từ xa bởi thiết bị Apple Remote."
 
 #: modules/gui/macosx/macosx.m:79
-#: modules/gui/macosx/VLCSimplePrefsController.m:314
+#: modules/gui/macosx/VLCSimplePrefsController.m:313
 msgid "Control system volume with the Apple Remote"
 msgstr "Điều khiển hệ thống âm thanh với Điều Khiển Apple"
 
@@ -17157,7 +17159,7 @@ msgstr ""
 "toàn bộ hệ thống."
 
 #: modules/gui/macosx/macosx.m:82
-#: modules/gui/macosx/VLCSimplePrefsController.m:315
+#: modules/gui/macosx/VLCSimplePrefsController.m:314
 msgid "Display VLC status menu icon"
 msgstr ""
 
@@ -17185,7 +17187,7 @@ msgstr ""
 "tác này với tùy chọn này."
 
 #: modules/gui/macosx/macosx.m:88
-#: modules/gui/macosx/VLCSimplePrefsController.m:313
+#: modules/gui/macosx/VLCSimplePrefsController.m:312
 msgid "Control playback with media keys"
 msgstr "Điều khiển chế độ phát lại với phím tắt"
 
@@ -17210,7 +17212,7 @@ msgstr ""
 "giao diện mang phong cách màu xám sẽ được sử dụng."
 
 #: modules/gui/macosx/macosx.m:95
-#: modules/gui/macosx/VLCSimplePrefsController.m:357
+#: modules/gui/macosx/VLCSimplePrefsController.m:356
 msgid "Use the native fullscreen mode"
 msgstr "Sử dụng chế độ toàn màn hình theo mặc định"
 
@@ -17242,7 +17244,7 @@ msgstr ""
 " Theo mặc định, giao diện sẽ tự động canh chỉnh theo kích thước của video."
 
 #: modules/gui/macosx/macosx.m:104
-#: modules/gui/macosx/VLCSimplePrefsController.m:350 modules/gui/qt/qt.cpp:181
+#: modules/gui/macosx/VLCSimplePrefsController.m:349 modules/gui/qt/qt.cpp:181
 msgid "Pause the video playback when minimized"
 msgstr "Tạm dừng phát lại video khi được thu nhỏ"
 
@@ -17316,7 +17318,7 @@ msgstr ""
 "hệ thống."
 
 #: modules/gui/macosx/macosx.m:128
-#: modules/gui/macosx/VLCSimplePrefsController.m:319
+#: modules/gui/macosx/VLCSimplePrefsController.m:318
 #, fuzzy
 msgid "Control external music players"
 msgstr "Menu điều khiển của VLC"
@@ -17450,7 +17452,7 @@ msgid "Hide Others"
 msgstr "Ẩn các thành phần khác"
 
 #: modules/gui/macosx/VLCMainMenu.m:342
-#: modules/gui/macosx/VLCSimplePrefsController.m:371
+#: modules/gui/macosx/VLCSimplePrefsController.m:370
 msgid "Show All"
 msgstr "Hiển thị tất cả"
 
@@ -17596,12 +17598,12 @@ msgid "Fit to Screen"
 msgstr "Vừa vặn với màn hình"
 
 #: modules/gui/macosx/VLCMainMenu.m:422
-#: modules/gui/macosx/VLCSimplePrefsController.m:351
+#: modules/gui/macosx/VLCSimplePrefsController.m:350
 msgid "Float on Top"
 msgstr "Nổi lên trên cùng"
 
 #: modules/gui/macosx/VLCMainMenu.m:430 modules/gui/macosx/VLCMainMenu.m:431
-#: modules/gui/macosx/VLCSimplePrefsController.m:358
+#: modules/gui/macosx/VLCSimplePrefsController.m:357
 msgid "Fullscreen Video Device"
 msgstr "Thiết bị hiển thị video toàn màn hình"
 
@@ -17972,7 +17974,7 @@ msgid "Disc"
 msgstr "Đĩa"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:143
-#: modules/gui/macosx/VLCSimplePrefsController.m:291
+#: modules/gui/macosx/VLCSimplePrefsController.m:290
 msgid "Network"
 msgstr "Mạng lưới"
 
@@ -17999,7 +18001,7 @@ msgstr "Phát tập tin khác theo chế độ đồng bộ hóa"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:153
 #: modules/gui/macosx/VLCOpenWindowController.m:349
-#: modules/gui/macosx/VLCSimplePrefsController.m:333
+#: modules/gui/macosx/VLCSimplePrefsController.m:332
 msgid "Choose..."
 msgstr "Chọn..."
 
@@ -18153,7 +18155,7 @@ msgid "Subtitle encoding"
 msgstr "Mã hóa phụ đề"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:360
-#: modules/gui/macosx/VLCSimplePrefsController.m:335
+#: modules/gui/macosx/VLCSimplePrefsController.m:334
 msgid "Font size"
 msgstr "Kích thước kiểu chữ"
 
@@ -18331,13 +18333,13 @@ msgid "VLC was unable to save the meta data."
 msgstr "VLC không thể lưu các thông tin bổ sung."
 
 #: modules/gui/macosx/prefs.m:187
-#: modules/gui/macosx/VLCSimplePrefsController.m:375
+#: modules/gui/macosx/VLCSimplePrefsController.m:374
 #: modules/gui/qt/dialogs/preferences.cpp:56
 msgid "Preferences"
 msgstr "Tùy Biến"
 
 #: modules/gui/macosx/prefs.m:190
-#: modules/gui/macosx/VLCSimplePrefsController.m:373
+#: modules/gui/macosx/VLCSimplePrefsController.m:372
 msgid "Reset All"
 msgstr "Thiết lập lại toàn bộ"
 
@@ -18363,7 +18365,7 @@ msgid "Continue playback?"
 msgstr "Tùy chọn phát lại"
 
 #: modules/gui/macosx/VLCResumeDialogController.m:49
-#: modules/gui/macosx/VLCSimplePrefsController.m:815
+#: modules/gui/macosx/VLCSimplePrefsController.m:814
 #: modules/gui/qt/dialogs/firstrun.cpp:106
 msgid "Continue"
 msgstr "Tiếp tục"
@@ -18410,102 +18412,102 @@ msgstr "Khám Phá các dịch vụ khác"
 msgid "Disable renderer discovery"
 msgstr "Tắt chế độ màn hình chờ"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:221
+#: modules/gui/macosx/VLCSimplePrefsController.m:220
 #: modules/gui/qt/components/simple_preferences.cpp:210
 #: modules/gui/qt/components/simple_preferences.cpp:658
 #: modules/gui/qt/dialogs/plugins.cpp:374
 msgid "Interface Settings"
 msgstr "Thiết lập giao diện"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:223
+#: modules/gui/macosx/VLCSimplePrefsController.m:222
 #: modules/gui/qt/components/simple_preferences.cpp:212
 #: modules/gui/qt/components/simple_preferences.cpp:389
 msgid "Audio Settings"
 msgstr "Thiết lập Audio"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:225
+#: modules/gui/macosx/VLCSimplePrefsController.m:224
 #: modules/gui/qt/components/simple_preferences.cpp:214
 #: modules/gui/qt/components/simple_preferences.cpp:342
 msgid "Video Settings"
 msgstr "Thiết lập Video"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:227
+#: modules/gui/macosx/VLCSimplePrefsController.m:226
 #: modules/gui/qt/components/simple_preferences.cpp:216
 #: modules/gui/qt/components/simple_preferences.cpp:799
 msgid "Subtitle & On Screen Display Settings"
 msgstr "Thiết lập cho phụ đề & phần hiển thị trên màn hình"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:229
+#: modules/gui/macosx/VLCSimplePrefsController.m:228
 msgid "Input & Codec Settings"
 msgstr "Thiết l&ập codec và dữ liệu đầu vào"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:263
+#: modules/gui/macosx/VLCSimplePrefsController.m:262
 msgid "General Audio"
 msgstr "Tổng quan về Audio"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:264
+#: modules/gui/macosx/VLCSimplePrefsController.m:263
 msgid "Preferred Audio language"
 msgstr "Ngôn ngữ Audio ưa thích"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:265
+#: modules/gui/macosx/VLCSimplePrefsController.m:264
 msgid "Enable Last.fm submissions"
 msgstr "Cho phép đăng ký theo dõi Last.fm"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:268
+#: modules/gui/macosx/VLCSimplePrefsController.m:267
 msgid "Visualization"
 msgstr "Hiệu ứng"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:269
+#: modules/gui/macosx/VLCSimplePrefsController.m:268
 msgid "Keep audio level between sessions"
 msgstr "Giữ mức độ đối với audio giữa các phiên khởi động"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:270
+#: modules/gui/macosx/VLCSimplePrefsController.m:269
 msgid "Always reset audio start level to:"
 msgstr "Luôn thiết đặt lại cấp độ audio ở mức:"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:273
+#: modules/gui/macosx/VLCSimplePrefsController.m:272
 #: modules/gui/qt/dialogs/vlm.cpp:493
 msgid "Change"
 msgstr "Thay đổi"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:274
+#: modules/gui/macosx/VLCSimplePrefsController.m:273
 msgid "Change Hotkey"
 msgstr "Thay đổi phím tắt"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:278
+#: modules/gui/macosx/VLCSimplePrefsController.m:277
 msgid "Select an action to change the associated hotkey:"
 msgstr "Chọn một thao tác để thay đổi các phím tắt tương ứng:"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:279
+#: modules/gui/macosx/VLCSimplePrefsController.m:278
 #: modules/gui/qt/components/preferences_widgets.cpp:1150
 msgid "Action"
 msgstr "Thao tác"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:280
+#: modules/gui/macosx/VLCSimplePrefsController.m:279
 msgid "Shortcut"
 msgstr "Liên kết"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:283
+#: modules/gui/macosx/VLCSimplePrefsController.m:282
 msgid "Record directory or filename"
 msgstr "Thư mục lưu phần ghi âm hoặc tên tập tin"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:285
+#: modules/gui/macosx/VLCSimplePrefsController.m:284
 msgid "Directory or filename where the records will be stored"
 msgstr "Thư mục hoặc tên tập tin để lưu phần ghi âm"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:286
+#: modules/gui/macosx/VLCSimplePrefsController.m:285
 msgid "Repair AVI Files"
 msgstr "Sử lỗi tập tin dạng AVI"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:287
+#: modules/gui/macosx/VLCSimplePrefsController.m:286
 msgid "Default Caching Level"
 msgstr "Cấp độ tạm lưu của bộ nhớ đệm mặc định"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:288
+#: modules/gui/macosx/VLCSimplePrefsController.m:287
 msgid "Caching"
 msgstr "Bộ nhớ đệm"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:289
+#: modules/gui/macosx/VLCSimplePrefsController.m:288
 msgid ""
 "Use the complete preferences to configure custom caching values for each "
 "access module."
@@ -18513,206 +18515,206 @@ msgstr ""
 "Sử dụng các thiết lập sau đây để lực chọn các giá trị lưu trữ của bộ nhớ đệm "
 "cho từng phương thứ truy cập."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:290
+#: modules/gui/macosx/VLCSimplePrefsController.m:289
 msgid "Codecs / Muxers"
 msgstr "Codec/Dồn kênh"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:292
+#: modules/gui/macosx/VLCSimplePrefsController.m:291
 msgid "Post-Processing Quality"
 msgstr "Chất lượng tiền xử lý"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:294
+#: modules/gui/macosx/VLCSimplePrefsController.m:293
 msgid "Edit default application settings for network protocols"
 msgstr ""
 "Chỉnh sửa các thiết lập mặc định của chương trình đối với các giao thức mạng"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:298
+#: modules/gui/macosx/VLCSimplePrefsController.m:297
 msgid "Open network streams using the following protocols"
 msgstr "Mở các luồng dữ liệu mạng bằng các giao thức sau đây"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:299
+#: modules/gui/macosx/VLCSimplePrefsController.m:298
 msgid "Note that these are system-wide settings."
 msgstr "chú ý rằng các thiết lập này thuộc về hệ thống-có màn hình lớn."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:304
+#: modules/gui/macosx/VLCSimplePrefsController.m:303
 #, fuzzy
 msgid "General settings"
 msgstr "Thiết lập chung cho Audio"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:306
+#: modules/gui/macosx/VLCSimplePrefsController.m:305
 msgid "Interface style"
 msgstr "Kiểu giao diện"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:307
+#: modules/gui/macosx/VLCSimplePrefsController.m:306
 msgid "Dark"
 msgstr "Tối"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:308
+#: modules/gui/macosx/VLCSimplePrefsController.m:307
 msgid "Bright"
 msgstr "Sáng"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:311
+#: modules/gui/macosx/VLCSimplePrefsController.m:310
 #, fuzzy
 msgid "Continue playback"
 msgstr "Tùy chọn phát lại"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:317
+#: modules/gui/macosx/VLCSimplePrefsController.m:316
 #, fuzzy
 msgid "Playback behaviour"
 msgstr "Phát lại thất bại"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:318
+#: modules/gui/macosx/VLCSimplePrefsController.m:317
 #, fuzzy
 msgid "Enable notifications on playlist item change"
 msgstr ""
 "Bật tính năng thông báo Growl (khi các đối tượng trong dánh sách phát thay "
 "đổi)"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:321
+#: modules/gui/macosx/VLCSimplePrefsController.m:320
 msgid "Privacy / Network Interaction"
 msgstr "Tương tác về mạng / quyền riêng tư thông tin"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:323
+#: modules/gui/macosx/VLCSimplePrefsController.m:322
 msgid "Automatically check for updates"
 msgstr "Tự động kiểm tra cập nhật"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:326
+#: modules/gui/macosx/VLCSimplePrefsController.m:325
 #, fuzzy
 msgid "HTTP web interface"
 msgstr "Giao diện QT"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:327
+#: modules/gui/macosx/VLCSimplePrefsController.m:326
 #, fuzzy
 msgid "Enable HTTP web interface"
 msgstr "Giao diện có thể thay đổi"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:331
+#: modules/gui/macosx/VLCSimplePrefsController.m:330
 msgid "Default Encoding"
 msgstr "Mã hóa mặc định"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:332
+#: modules/gui/macosx/VLCSimplePrefsController.m:331
 msgid "Display Settings"
 msgstr "Thiết lập hiển thị"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:334
+#: modules/gui/macosx/VLCSimplePrefsController.m:333
 msgid "Font color"
 msgstr "Màu Chữ"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:336 modules/spu/marq.c:157
+#: modules/gui/macosx/VLCSimplePrefsController.m:335 modules/spu/marq.c:157
 #: modules/spu/rss.c:204 modules/text_renderer/freetype/freetype.c:80
 msgid "Font"
 msgstr "Kiểu chữ"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:337
+#: modules/gui/macosx/VLCSimplePrefsController.m:336
 msgid "Subtitle languages"
 msgstr "Ngôn ngữ của phụ đề"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:338
+#: modules/gui/macosx/VLCSimplePrefsController.m:337
 msgid "Preferred subtitle language"
 msgstr "Ngôn ngữ phụ đề ưa thích"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:340
+#: modules/gui/macosx/VLCSimplePrefsController.m:339
 msgid "Enable OSD"
 msgstr "Cho phép hiển thị trên màn hình"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:342
+#: modules/gui/macosx/VLCSimplePrefsController.m:341
 #: modules/text_renderer/freetype/freetype.c:104
 msgid "Force bold"
 msgstr "Bắt buộc in đậm"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:343
+#: modules/gui/macosx/VLCSimplePrefsController.m:342
 #: modules/text_renderer/freetype/freetype.c:110
 msgid "Outline color"
 msgstr "Màu của đường nét biên"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:344
+#: modules/gui/macosx/VLCSimplePrefsController.m:343
 #: modules/text_renderer/freetype/freetype.c:111
 msgid "Outline thickness"
 msgstr "Độ dày nét chữ"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:348
+#: modules/gui/macosx/VLCSimplePrefsController.m:347
 #: modules/stream_out/display.c:53
 msgid "Display"
 msgstr "Hiển thị"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:349
+#: modules/gui/macosx/VLCSimplePrefsController.m:348
 msgid "Show video within the main window"
 msgstr "Hiển thị video trong màn hình chính"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:354
+#: modules/gui/macosx/VLCSimplePrefsController.m:353
 #, fuzzy
 msgid "Fullscreen settings"
 msgstr "Toàn màn hình"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:355
+#: modules/gui/macosx/VLCSimplePrefsController.m:354
 #, fuzzy
 msgid "Start in fullscreen"
 msgstr "Xem video ở chế độ toàn màn hình"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:356
+#: modules/gui/macosx/VLCSimplePrefsController.m:355
 msgid "Black screens in Fullscreen mode"
 msgstr "Hiển thị màn hình màu đen trong chế độ toàn màn hình"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:360
+#: modules/gui/macosx/VLCSimplePrefsController.m:359
 msgid "Video snapshots"
 msgstr "Chụp hình Video"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:362
+#: modules/gui/macosx/VLCSimplePrefsController.m:361
 #: modules/meta_engine/folder.c:69
 msgid "Folder"
 msgstr "Thư mục"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:363
+#: modules/gui/macosx/VLCSimplePrefsController.m:362
 msgid "Format"
 msgstr "Định dạng"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:364
+#: modules/gui/macosx/VLCSimplePrefsController.m:363
 msgid "Prefix"
 msgstr "Tiền tố"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:365
+#: modules/gui/macosx/VLCSimplePrefsController.m:364
 msgid "Sequential numbering"
 msgstr "Đánh số theo thứ tự liên tiếp"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:548
+#: modules/gui/macosx/VLCSimplePrefsController.m:547
 msgid ""
 "Media files cannot be resumed because keeping recent media items is disabled."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:568
+#: modules/gui/macosx/VLCSimplePrefsController.m:567
 msgid "Last check on: %@"
 msgstr "Lần cuối cùng kiểm tra vào: %@"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:570
+#: modules/gui/macosx/VLCSimplePrefsController.m:569
 msgid "No check was performed yet."
 msgstr "Vẫn chưa thực hiện việc kiểm tra."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:686
+#: modules/gui/macosx/VLCSimplePrefsController.m:685
 #, fuzzy
 msgid "Lowest Latency"
 msgstr "Độ trễ thấp nhất"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:688
+#: modules/gui/macosx/VLCSimplePrefsController.m:687
 #, fuzzy
 msgid "Low Latency"
 msgstr "Độ trễ thấp"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:692
+#: modules/gui/macosx/VLCSimplePrefsController.m:691
 #, fuzzy
 msgid "Higher Latency"
 msgstr "Độ trễ cao hơn"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:694
+#: modules/gui/macosx/VLCSimplePrefsController.m:693
 #, fuzzy
 msgid "Highest Latency"
 msgstr "Độ trễ cao hơn"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:814
+#: modules/gui/macosx/VLCSimplePrefsController.m:813
 #: modules/gui/qt/dialogs/preferences.cpp:336
 msgid "Reset Preferences"
 msgstr "Thiết lập lại toàn bộ Tùy Biến"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:817
+#: modules/gui/macosx/VLCSimplePrefsController.m:816
 msgid ""
 "This will reset VLC media player's preferences.\n"
 "\n"
@@ -18734,25 +18736,25 @@ msgstr ""
 "\n"
 "Bạn có chắc muốn thực hiện thao tác này không?"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1107
+#: modules/gui/macosx/VLCSimplePrefsController.m:1086
 msgid ""
 "This setting cannot be changed because the native fullscreen mode is enabled."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1176
+#: modules/gui/macosx/VLCSimplePrefsController.m:1155
 msgid "Choose the folder to save your video snapshots to."
 msgstr "Chọn thư mục mà bạn sẽ lưu phần ảnh chụp các cảnh của video."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1178
-#: modules/gui/macosx/VLCSimplePrefsController.m:1277
+#: modules/gui/macosx/VLCSimplePrefsController.m:1157
+#: modules/gui/macosx/VLCSimplePrefsController.m:1256
 msgid "Choose"
 msgstr "Chọn"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1275
+#: modules/gui/macosx/VLCSimplePrefsController.m:1254
 msgid "Choose the directory or filename where the records will be stored."
 msgstr "Chọn thư mục hoặc điền vào tên tập tin nhằm lưu lại phần ghi âm."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1392
+#: modules/gui/macosx/VLCSimplePrefsController.m:1371
 msgid ""
 "Press new keys for\n"
 "\"%@\""
@@ -18760,16 +18762,16 @@ msgstr ""
 "Ấn phím mới cho\n"
 "\"%@\""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1465
+#: modules/gui/macosx/VLCSimplePrefsController.m:1444
 msgid "Invalid combination"
 msgstr "Kết hợp không hợp lệ."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1466
+#: modules/gui/macosx/VLCSimplePrefsController.m:1445
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr "Rất đáng tiếc, những phím này không thể gán thành phím tắt được."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1476
-#: modules/gui/macosx/VLCSimplePrefsController.m:1480
+#: modules/gui/macosx/VLCSimplePrefsController.m:1455
+#: modules/gui/macosx/VLCSimplePrefsController.m:1459
 msgid "This combination is already taken by \"%@\"."
 msgstr "Việc kết hợp đã được thực hiện bởi \"%@\"."
 
@@ -27251,28 +27253,20 @@ msgstr ""
 msgid "Extension through which to use the Open Graphics Library (OpenGL)."
 msgstr ""
 
-#: modules/video_output/opengl/display.c:45
-msgid "Open GL/GLES hardware converter"
-msgstr ""
-
-#: modules/video_output/opengl/display.c:47
-msgid "Force a \"glconv\" module."
-msgstr ""
-
-#: modules/video_output/opengl/display.c:53
+#: modules/video_output/opengl/display.c:49
 msgid "OpenGL ES2"
 msgstr ""
 
-#: modules/video_output/opengl/display.c:54
+#: modules/video_output/opengl/display.c:50
 msgid "OpenGL for Embedded Systems 2 video output"
 msgstr ""
 
-#: modules/video_output/opengl/display.c:65
+#: modules/video_output/opengl/display.c:61
 msgid "OpenGL"
 msgstr ""
 
-#: modules/video_output/opengl/display.c:66
-#: modules/video_output/win32/glwin32.c:51
+#: modules/video_output/opengl/display.c:62
+#: modules/video_output/win32/glwin32.c:53
 msgid "OpenGL video output"
 msgstr "Xuất dữ liệu video của OpenGL"
 
@@ -27420,7 +27414,7 @@ msgstr ""
 msgid "Wallpaper"
 msgstr "Hình nền"
 
-#: modules/video_output/win32/glwin32.c:45
+#: modules/video_output/win32/glwin32.c:47
 msgid "GPU affinity"
 msgstr ""
 

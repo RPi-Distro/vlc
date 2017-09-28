@@ -91,13 +91,22 @@ vlc_module_end()
 
 #pragma mark - local prototypes
 
+enum vtsession_status
+{
+    VTSESSION_STATUS_OK,
+    VTSESSION_STATUS_RESTART,
+    VTSESSION_STATUS_RESTART_DECAGAIN,
+    VTSESSION_STATUS_ABORT,
+};
+
 static int SetH264DecoderInfo(decoder_t *, CFMutableDictionaryRef);
 static CFMutableDictionaryRef ESDSExtradataInfoCreate(decoder_t *, uint8_t *, uint32_t);
 static CFMutableDictionaryRef ExtradataInfoCreate(CFStringRef, void *, size_t);
 static CFMutableDictionaryRef H264ExtradataInfoCreate(const struct hxxx_helper *hh);
-static int HandleVTStatus(decoder_t *, OSStatus);
+static int HandleVTStatus(decoder_t *, OSStatus, enum vtsession_status *);
 static int DecodeBlock(decoder_t *, block_t *);
-static void Flush(decoder_t *);
+static void RequestFlush(decoder_t *);
+static void Drain(decoder_t *p_dec, bool flush);
 static void DecoderCallback(void *, void *, OSStatus, VTDecodeInfoFlags,
                             CVPixelBufferRef, CMTime, CMTime);
 static BOOL deviceSupportsAdvancedProfiles();
@@ -145,7 +154,9 @@ struct decoder_sys_t
     bool                        b_handle_deint;
 
     bool                        b_format_propagated;
-    bool                        b_abort;
+
+    enum vtsession_status       vtsession_status;
+
     int                         i_forced_cvpx_format;
 
     poc_context_t               pocctx;
@@ -801,7 +812,7 @@ static int StartVideoToolbox(decoder_t *p_dec)
     CFRelease(decoderConfiguration);
     CFRelease(destinationPixelBufferAttributes);
 
-    if (HandleVTStatus(p_dec, status) != VLC_SUCCESS)
+    if (HandleVTStatus(p_dec, status, NULL) != VLC_SUCCESS)
         return VLC_EGENERIC;
 
     /* Check if the current session supports deinterlacing and temporal
@@ -837,6 +848,8 @@ static void StopVideoToolbox(decoder_t *p_dec, bool b_reset_format)
 
     if (p_sys->session != nil)
     {
+        Drain(p_dec, true);
+
         VTDecompressionSessionInvalidate(p_sys->session);
         CFRelease(p_sys->session);
         p_sys->session = nil;
@@ -846,7 +859,6 @@ static void StopVideoToolbox(decoder_t *p_dec, bool b_reset_format)
             p_sys->b_format_propagated = false;
             p_dec->fmt_out.i_codec = 0;
         }
-        DrainDPB(p_dec, true);
     }
 
     if (p_sys->videoFormatDescription != nil) {
@@ -953,7 +965,7 @@ static int OpenDecoder(vlc_object_t *p_this)
     p_sys->b_invalid_pic_reorder_max = false;
     p_sys->b_poc_based_reorder = false;
     p_sys->b_format_propagated = false;
-    p_sys->b_abort = false;
+    p_sys->vtsession_status = VTSESSION_STATUS_OK;
     p_sys->b_enable_temporal_processing =
         var_InheritBool(p_dec, "videotoolbox-temporal-deinterlacing");
 
@@ -1010,7 +1022,7 @@ static int OpenDecoder(vlc_object_t *p_this)
     } /* else: late opening */
 
     p_dec->pf_decode = DecodeBlock;
-    p_dec->pf_flush  = Flush;
+    p_dec->pf_flush  = RequestFlush;
 
     msg_Info(p_dec, "Using Video Toolbox to decode '%4.4s'", (char *)&p_dec->fmt_in.i_codec);
 
@@ -1278,7 +1290,8 @@ static CMSampleBufferRef VTSampleBufferCreate(decoder_t *p_dec,
     return sample_buf;
 }
 
-static int HandleVTStatus(decoder_t *p_dec, OSStatus status)
+static int HandleVTStatus(decoder_t *p_dec, OSStatus status,
+                          enum vtsession_status * p_vtsession_status)
 {
 #define VTERRCASE(x) \
     case x: msg_Err(p_dec, "vt session error: '" #x "'"); break;
@@ -1325,12 +1338,34 @@ static int HandleVTStatus(decoder_t *p_dec, OSStatus status)
             msg_Err(p_dec, "unknown vt session error (%i)", (int)status);
     }
 #undef VTERRCASE
+
+    if (p_vtsession_status)
+    {
+        switch (status)
+        {
+            case -8960 /* codecErr */:
+            case kCVReturnInvalidArgument:
+            case kVTVideoDecoderMalfunctionErr:
+                *p_vtsession_status = VTSESSION_STATUS_ABORT;
+                break;
+            case -8969 /* codecBadDataErr */:
+            case kVTVideoDecoderBadDataErr:
+                *p_vtsession_status = VTSESSION_STATUS_RESTART_DECAGAIN;
+                break;
+            case kVTInvalidSessionErr:
+                *p_vtsession_status = VTSESSION_STATUS_RESTART;
+                break;
+            default:
+                *p_vtsession_status = VTSESSION_STATUS_OK;
+                break;
+        }
+    }
     return VLC_EGENERIC;
 }
 
 #pragma mark - actual decoding
 
-static void Flush(decoder_t *p_dec)
+static void RequestFlush(decoder_t *p_dec)
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
@@ -1342,23 +1377,17 @@ static void Flush(decoder_t *p_dec)
     vlc_mutex_unlock(&p_sys->lock);
 }
 
-static void Drain(decoder_t *p_dec)
+static void Drain(decoder_t *p_dec, bool flush)
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
     /* draining: return last pictures of the reordered queue */
     if (p_sys->session)
-    {
-        OSStatus status =
-            VTDecompressionSessionFinishDelayedFrames(p_sys->session);
-        if (status == noErr)
-            VTDecompressionSessionWaitForAsynchronousFrames(p_sys->session);
-        else
-            msg_Warn(p_dec, "VTDecompressionSessionFinishDelayedFrames failed");
-    }
+        VTDecompressionSessionWaitForAsynchronousFrames(p_sys->session);
 
     vlc_mutex_lock(&p_sys->lock);
-    DrainDPB(p_dec, false);
+    DrainDPB(p_dec, flush);
+    p_sys->b_vt_flush = false;
     vlc_mutex_unlock(&p_sys->lock);
 }
 
@@ -1371,17 +1400,38 @@ static int DecodeBlock(decoder_t *p_dec, block_t *p_block)
 
     if (p_block == NULL)
     {
-        Drain(p_dec);
+        Drain(p_dec, false);
         return VLCDEC_SUCCESS;
     }
 
     vlc_mutex_lock(&p_sys->lock);
-    p_sys->b_vt_flush = false;
 
-    if (p_sys->b_abort) { /* abort from output thread (DecoderCallback) */
+#if TARGET_OS_IPHONE
+    if (p_block->i_flags & BLOCK_FLAG_INTERLACED_MASK)
+    {
+        msg_Warn(p_dec, "VT decoder doesn't handle deinterlacing on iOS, "
+                 "aborting...");
+        p_sys->vtsession_status = VTSESSION_STATUS_ABORT;
+    }
+#endif
+
+    if (p_sys->vtsession_status == VTSESSION_STATUS_RESTART)
+    {
+        msg_Warn(p_dec, "restarting vt session (dec callback failed)");
+
+        vlc_mutex_unlock(&p_sys->lock);
+        int ret = RestartVideoToolbox(p_dec, true);
+        vlc_mutex_lock(&p_sys->lock);
+
+        p_sys->vtsession_status = ret == VLC_SUCCESS ? VTSESSION_STATUS_OK
+                                                     : VTSESSION_STATUS_ABORT;
+    }
+
+    if (p_sys->vtsession_status == VTSESSION_STATUS_ABORT)
+    {
         vlc_mutex_unlock(&p_sys->lock);
         /* Add an empty variable so that videotoolbox won't be loaded again for
-        * this ES */
+         * this ES */
         var_Create(p_dec, "videotoolbox-failed", VLC_VAR_VOID);
         return VLCDEC_RELOAD;
     }
@@ -1391,7 +1441,7 @@ static int DecodeBlock(decoder_t *p_dec, block_t *p_block)
     {
         if (p_sys->b_vt_feed)
         {
-            Drain(p_dec);
+            Drain(p_dec, false);
             RestartVideoToolbox(p_dec, false);
         }
         goto skip;
@@ -1415,10 +1465,10 @@ static int DecodeBlock(decoder_t *p_dec, block_t *p_block)
         if (!p_sys->session ||
             VideoToolboxNeedsToRestartH264(p_dec,p_sys->session, &p_sys->hh))
         {
-            if(p_sys->session)
+            if (p_sys->session)
             {
                 msg_Dbg(p_dec, "SPS/PPS changed: draining H264 decoder");
-                Drain(p_dec);
+                Drain(p_dec, false);
                 msg_Dbg(p_dec, "SPS/PPS changed: restarting H264 decoder");
                 StopVideoToolbox(p_dec, true);
             }
@@ -1457,49 +1507,46 @@ static int DecodeBlock(decoder_t *p_dec, block_t *p_block)
     OSStatus status =
         VTDecompressionSessionDecodeFrame(p_sys->session, sampleBuffer,
                                           decoderFlags, p_info, &flagOut);
-    if (HandleVTStatus(p_dec, status) == VLC_SUCCESS)
+
+    enum vtsession_status vtsession_status;
+    if (HandleVTStatus(p_dec, status, &vtsession_status) == VLC_SUCCESS)
     {
         p_sys->b_vt_feed = true;
         if( p_block->i_flags & BLOCK_FLAG_END_OF_SEQUENCE )
-            Drain( p_dec );
+            Drain( p_dec, false );
     }
     else
     {
-        bool b_abort = false;
-        switch (status)
+        if (vtsession_status == VTSESSION_STATUS_RESTART
+         || vtsession_status == VTSESSION_STATUS_RESTART_DECAGAIN)
         {
-            case -8960 /* codecErr */:
-            case kCVReturnInvalidArgument:
-            case kVTVideoDecoderMalfunctionErr:
-                b_abort = true;
-                break;
-            case -8969 /* codecBadDataErr */:
-            case kVTVideoDecoderBadDataErr:
-                if (RestartVideoToolbox(p_dec, true) == VLC_SUCCESS)
-                {
+            int ret = RestartVideoToolbox(p_dec, true);
+            if (ret == VLC_SUCCESS
+             && vtsession_status == VTSESSION_STATUS_RESTART_DECAGAIN)
+            {
+                /* Duplicate p_info since it is or will be freed by the
+                 * Decoder Callback */
+                p_info = CreateReorderInfo(p_dec, p_block);
+                if (likely(p_info))
                     status = VTDecompressionSessionDecodeFrame(p_sys->session,
                                     sampleBuffer, decoderFlags, p_info, &flagOut);
-
-                    if (status != 0)
-                    {
-                        free( p_info );
-                        b_abort = true;
-                    }
-                }
-                break;
-            case kVTInvalidSessionErr:
-                RestartVideoToolbox(p_dec, true);
-                break;
+                if (status != 0)
+                    ret = VLC_EGENERIC;
+            }
+            if (ret != VLC_SUCCESS) /* restart failed, abort */
+                vtsession_status = VTSESSION_STATUS_ABORT;
         }
-        if (b_abort)
+        vlc_mutex_lock(&p_sys->lock);
+        if (vtsession_status == VTSESSION_STATUS_ABORT)
         {
             msg_Err(p_dec, "decoder failure, Abort.");
             /* The decoder module will be reloaded next time since we already
              * modified the input block */
-            vlc_mutex_lock(&p_sys->lock);
-            p_dec->p_sys->b_abort = true;
-            vlc_mutex_unlock(&p_sys->lock);
+            p_sys->vtsession_status = VTSESSION_STATUS_ABORT;
         }
+        else /* reset status set by the decoder callback during restart */
+            p_sys->vtsession_status = VTSESSION_STATUS_OK;
+        vlc_mutex_unlock(&p_sys->lock);
     }
     CFRelease(sampleBuffer);
 
@@ -1565,7 +1612,7 @@ static int UpdateVideoFormat(decoder_t *p_dec, CVPixelBufferRef imageBuffer)
             assert(CVPixelBufferIsPlanar(imageBuffer) == false);
             break;
         default:
-            p_dec->p_sys->b_abort = true;
+            p_dec->p_sys->vtsession_status = VTSESSION_STATUS_ABORT;
             return -1;
     }
     return decoder_UpdateVideoFormat(p_dec);
@@ -1588,19 +1635,26 @@ static void DecoderCallback(void *decompressionOutputRefCon,
     if (p_sys->b_vt_flush)
         goto end;
 
-    if (HandleVTStatus(p_dec, status) != VLC_SUCCESS)
+    enum vtsession_status vtsession_status;
+    if (HandleVTStatus(p_dec, status, &vtsession_status) != VLC_SUCCESS)
     {
-        if (status == kVTVideoDecoderBadDataErr || status == -8969 )
-            p_info = NULL;
-        if (status == kVTVideoDecoderMalfunctionErr)
-            p_dec->p_sys->b_abort = true;
-        msg_Warn(p_dec, "decoding of a frame failed (%i, %u)", (int)status,
-                 (unsigned int) infoFlags);
+        /* Can't decode again from here */
+        if (vtsession_status == VTSESSION_STATUS_RESTART_DECAGAIN)
+            vtsession_status = VTSESSION_STATUS_RESTART;
+
+        if (p_sys->vtsession_status != VTSESSION_STATUS_ABORT)
+            p_sys->vtsession_status = vtsession_status;
         goto end;
     }
     assert(imageBuffer);
+    if (unlikely(!imageBuffer))
+    {
+        msg_Err(p_dec, "critical: null imageBuffer with a valid status");
+        p_sys->vtsession_status = VTSESSION_STATUS_ABORT;
+        goto end;
+    }
 
-    if (p_dec->p_sys->b_abort)
+    if (p_sys->vtsession_status == VTSESSION_STATUS_ABORT)
         goto end;
 
     if (unlikely(!p_sys->b_format_propagated)) {

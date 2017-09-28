@@ -2,7 +2,7 @@
  * subtitle.c: Demux for subtitle text files.
  *****************************************************************************
  * Copyright (C) 1999-2007 VLC authors and VideoLAN
- * $Id: 71302807e48adb986c2d8b834c51ea8df0b8cc40 $
+ * $Id: 89f119811459faa7d13032fc518d225ea3349a2e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -919,7 +919,7 @@ static int Demux( demux_t *p_demux )
 static int subtitle_cmp( const void *first, const void *second )
 {
     int64_t result = ((subtitle_t *)(first))->i_start - ((subtitle_t *)(second))->i_start;
-    /* Return -1, 0 ,1, and not directly substraction
+    /* Return -1, 0 ,1, and not directly subtraction
      * as result can be > INT_MAX */
     return result == 0 ? 0 : result > 0 ? 1 : -1;
 }

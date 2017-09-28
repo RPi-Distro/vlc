@@ -2464,6 +2464,7 @@ am_libmacosx_plugin_la_OBJECTS =  \
 	gui/macosx/libmacosx_plugin_la-VLCAudioEffectsWindowController.lo \
 	gui/macosx/libmacosx_plugin_la-VLCBookmarksWindowController.lo \
 	gui/macosx/libmacosx_plugin_la-VLCCoreDialogProvider.lo \
+	gui/macosx/libmacosx_plugin_la-VLCLogMessage.lo \
 	gui/macosx/libmacosx_plugin_la-VLCLogWindowController.lo \
 	gui/macosx/libmacosx_plugin_la-VLCHUDSliderCell.lo \
 	gui/macosx/libmacosx_plugin_la-VLCHUDButtonCell.lo \
@@ -8380,6 +8381,7 @@ libmacosx_plugin_la_SOURCES = \
 	gui/macosx/VLCAudioEffectsWindowController.h gui/macosx/VLCAudioEffectsWindowController.m \
 	gui/macosx/VLCBookmarksWindowController.h gui/macosx/VLCBookmarksWindowController.m \
 	gui/macosx/VLCCoreDialogProvider.h gui/macosx/VLCCoreDialogProvider.m \
+	gui/macosx/VLCLogMessage.h gui/macosx/VLCLogMessage.m \
 	gui/macosx/VLCLogWindowController.h gui/macosx/VLCLogWindowController.m \
 	gui/macosx/VLCHUDSliderCell.h gui/macosx/VLCHUDSliderCell.m \
 	gui/macosx/VLCHUDButtonCell.h gui/macosx/VLCHUDButtonCell.m \
@@ -14214,6 +14216,9 @@ gui/macosx/libmacosx_plugin_la-VLCBookmarksWindowController.lo:  \
 gui/macosx/libmacosx_plugin_la-VLCCoreDialogProvider.lo:  \
 	gui/macosx/$(am__dirstamp) \
 	gui/macosx/$(DEPDIR)/$(am__dirstamp)
+gui/macosx/libmacosx_plugin_la-VLCLogMessage.lo:  \
+	gui/macosx/$(am__dirstamp) \
+	gui/macosx/$(DEPDIR)/$(am__dirstamp)
 gui/macosx/libmacosx_plugin_la-VLCLogWindowController.lo:  \
 	gui/macosx/$(am__dirstamp) \
 	gui/macosx/$(DEPDIR)/$(am__dirstamp)
@@ -17976,6 +17981,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCImageButton.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCInputManager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCKeyboardBacklightControl.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCLogMessage.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCLogWindowController.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCMain+OldPrefs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCMain.Plo@am__quote@
@@ -24851,6 +24857,13 @@ gui/macosx/libmacosx_plugin_la-VLCCoreDialogProvider.lo: gui/macosx/VLCCoreDialo
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(AM_V_OBJC)source='gui/macosx/VLCCoreDialogProvider.m' object='gui/macosx/libmacosx_plugin_la-VLCCoreDialogProvider.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o gui/macosx/libmacosx_plugin_la-VLCCoreDialogProvider.lo `test -f 'gui/macosx/VLCCoreDialogProvider.m' || echo '$(srcdir)/'`gui/macosx/VLCCoreDialogProvider.m
+
+gui/macosx/libmacosx_plugin_la-VLCLogMessage.lo: gui/macosx/VLCLogMessage.m
+@am__fastdepOBJC_TRUE@	$(AM_V_OBJC)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT gui/macosx/libmacosx_plugin_la-VLCLogMessage.lo -MD -MP -MF gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCLogMessage.Tpo -c -o gui/macosx/libmacosx_plugin_la-VLCLogMessage.lo `test -f 'gui/macosx/VLCLogMessage.m' || echo '$(srcdir)/'`gui/macosx/VLCLogMessage.m
+@am__fastdepOBJC_TRUE@	$(AM_V_at)$(am__mv) gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCLogMessage.Tpo gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCLogMessage.Plo
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(AM_V_OBJC)source='gui/macosx/VLCLogMessage.m' object='gui/macosx/libmacosx_plugin_la-VLCLogMessage.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o gui/macosx/libmacosx_plugin_la-VLCLogMessage.lo `test -f 'gui/macosx/VLCLogMessage.m' || echo '$(srcdir)/'`gui/macosx/VLCLogMessage.m
 
 gui/macosx/libmacosx_plugin_la-VLCLogWindowController.lo: gui/macosx/VLCLogWindowController.m
 @am__fastdepOBJC_TRUE@	$(AM_V_OBJC)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT gui/macosx/libmacosx_plugin_la-VLCLogWindowController.lo -MD -MP -MF gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCLogWindowController.Tpo -c -o gui/macosx/libmacosx_plugin_la-VLCLogWindowController.lo `test -f 'gui/macosx/VLCLogWindowController.m' || echo '$(srcdir)/'`gui/macosx/VLCLogWindowController.m

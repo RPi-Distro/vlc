@@ -2,7 +2,7 @@
  * cc.h
  *****************************************************************************
  * Copyright (C) 2007 Laurent Aimar
- * $Id: 7af03b22f8bc9c4e01da5a3f0a1dcdfb72498b8c $
+ * $Id: 2caea83218a2ffc65bbaefdf448cef9e9c73d8fb $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -56,7 +56,7 @@ typedef struct
      *  byte[x+1]: cc data 1
      *  byte[x+2]: cc data 2
      */
-    int     i_data;
+    size_t  i_data;
     uint8_t p_data[CC_MAX_DATA_SIZE];
 } cc_data_t;
 

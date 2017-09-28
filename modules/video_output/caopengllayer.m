@@ -2,7 +2,7 @@
  * caopengllayer.m: CAOpenGLLayer (Mac OS X) video output
  *****************************************************************************
  * Copyright (C) 2014-2017 VLC authors and VideoLAN
- * $Id: 90b41f517eadedd4f47ffbc50a80b979d2850c04 $
+ * $Id: 829c8da2ad06804b2f010d7309c0a82cf1165cc8 $
  *
  * Authors: David Fuhrmann <david dot fuhrmann at googlemail dot com>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -364,12 +364,6 @@ static int Control (vout_display_t *vd, int query, va_list ap)
 
             sys->place = place;
 
-            return VLC_SUCCESS;
-        }
-
-        case VOUT_DISPLAY_HIDE_MOUSE: /* FIXME: dead code */
-        {
-            [NSCursor setHiddenUntilMouseMoves: YES];
             return VLC_SUCCESS;
         }
 

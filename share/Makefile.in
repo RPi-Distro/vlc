@@ -1096,7 +1096,7 @@ EXTRA_DIST = vlc.desktop.in vlc.desktop.mimetypes \
 	lua/sd/icast.lua lua/sd/jamendo.lua
 desktopdir = $(datadir)/applications
 @HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@desktop_DATA = vlc.desktop
-@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@appdatadir = $(datarootdir)/appdata
+@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@appdatadir = $(datarootdir)/metainfo
 @HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@appdata_DATA = $(appdata_in_files:.xml.in=.xml)
 @HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@appdata_in_files = vlc.appdata.xml.in
 iconsdatadir = $(datadir)/icons/hicolor

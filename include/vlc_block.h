@@ -2,7 +2,7 @@
  * vlc_block.h: Data blocks management functions
  *****************************************************************************
  * Copyright (C) 2003 VLC authors and VideoLAN
- * $Id: 2bc230f2c7ca593e832e3400684db99c4129a7f2 $
+ * $Id: 1c9478301687233398adbb7de7da4ffc4a101f89 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -158,9 +158,9 @@ VLC_API block_t *block_TryRealloc(block_t *, ssize_t pre, size_t body) VLC_USED;
  *
  * @return the reallocated block on succes, NULL on error.
  *
- * @note Skipping leading bytes can be achieved directly by substracting from
+ * @note Skipping leading bytes can be achieved directly by subtracting from
  * block_t.i_buffer and adding block_t.p_buffer.
- * @note Discard trailing bytes can be achieved directly by substracting from
+ * @note Discard trailing bytes can be achieved directly by subtracting from
  * block_t.i_buffer.
  * @note On error, the block is discarded.
  * To avoid that, use block_TryRealloc() instead.

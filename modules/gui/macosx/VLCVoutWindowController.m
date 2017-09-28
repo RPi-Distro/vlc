@@ -2,7 +2,7 @@
  * VLCVoutWindowController.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012-2014 VLC authors and VideoLAN
- * $Id: 9b086c8f60b5bd3b4f1ae326e5c86662ece22fa2 $
+ * $Id: 5e2a756fd3781fa746b58fd4bd570b6d5748e86f $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -143,6 +143,11 @@ static int WindowControl(vout_window_t *p_wnd, int i_query, va_list args)
 
                 break;
             }
+            case VOUT_WINDOW_HIDE_MOUSE:
+            {
+                [voutController hideMouseForWindow:p_wnd];
+                break;
+            }
             default:
             {
                 msg_Warn(p_wnd, "unsupported control query: %i", i_query );
@@ -207,6 +212,25 @@ void WindowClose(vout_window_t *p_wnd)
 
     if (var_InheritBool(getIntf(), "macosx-dim-keyboard")) {
         [keyboardBacklight switchLightsInstantly:YES];
+    }
+}
+
+#pragma mark -
+#pragma mark Mouse hiding
+
+- (void)hideMouseForWindow:(vout_window_t *)p_wnd
+{
+    VLCVideoWindowCommon *o_current_window = nil;
+    if (p_wnd)
+        o_current_window = [voutWindows objectForKey:[NSValue valueWithPointer:p_wnd]];
+    
+    if (o_current_window == nil)
+        return;
+    
+    if (NSPointInRect([o_current_window mouseLocationOutsideOfEventStream],
+                      [[o_current_window videoView] convertRect:[[o_current_window videoView] bounds]
+                                                         toView:nil])) {
+        [NSCursor setHiddenUntilMouseMoves:YES];
     }
 }
 

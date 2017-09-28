@@ -2,7 +2,7 @@
  * libvlc_media_player.h:  libvlc_media_player external API
  *****************************************************************************
  * Copyright (C) 1998-2015 VLC authors and VideoLAN
- * $Id: 78caed03ff3f81d17234d596a2f750c00d117906 $
+ * $Id: 2e0b56c0666e2c8dc5deb0dad8a7b6a9a11113df $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -2052,7 +2052,7 @@ typedef enum libvlc_media_player_role {
     libvlc_role_Video, /**< Video playback */
     libvlc_role_Communication, /**< Speech, real-time communication */
     libvlc_role_Game, /**< Video game */
-    liblvc_role_Notification, /**< User interaction feedback */
+    libvlc_role_Notification, /**< User interaction feedback */
     libvlc_role_Animation, /**< Embedded animation (e.g. in web page) */
     libvlc_role_Production, /**< Audio editting/production */
     libvlc_role_Accessibility, /**< Accessibility */

@@ -2,7 +2,7 @@
  * mpegvideo.c: parse and packetize an MPEG1/2 video stream
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
- * $Id: 83c403b0d0f2d91269939fe9f2d377c7f87e6763 $
+ * $Id: 71126d897900702a61abd277615151b22ea1bd65 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -322,7 +322,7 @@ static block_t *GetCc( decoder_t *p_dec, bool pb_present[4], int *pi_reorder_dep
     for( i = 0; i < 4; i++ )
         pb_present[i] = p_sys->cc.pb_present[i];
 
-    if( p_sys->cc.i_data <= 0 )
+    if( !p_sys->cc.b_reorder && p_sys->cc.i_data <= 0 )
         return NULL;
 
     p_cc = block_Alloc( p_sys->cc.i_data );

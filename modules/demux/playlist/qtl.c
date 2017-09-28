@@ -2,7 +2,7 @@
  * qtl.c: QuickTime Media Link Importer
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: 1c5004f43b2ea3335f40d68c7135246e2496a01a $
+ * $Id: d24e8b9ea5de6a2d260d68212a9146cad70e189c $
  *
  * Authors: Antoine Cellerier <dionoea -@t- videolan -Dot- org>
  *
@@ -103,7 +103,7 @@ static int ReadDir( stream_t *p_demux, input_item_node_t *p_subitems )
 
     /* List of all possible attributes. The only required one is "src" */
     bool b_autoplay = false;
-    bool b_controler = true;
+    bool b_controller = true;
     qtl_fullscreen_t fullscreen = false;
     char *psz_href = NULL;
     bool b_kioskmode = false;
@@ -143,8 +143,8 @@ static int ReadDir( stream_t *p_demux, input_item_node_t *p_subitems )
     {
         if( !strcmp( attrname, "autoplay" ) )
             b_autoplay = !strcmp( value, "true" );
-        else if( !strcmp( attrname, "controler" ) )
-            b_controler = !strcmp( attrname, "false" );
+        else if( !strcmp( attrname, "controller" ) )
+            b_controller = !strcmp( attrname, "false" );
         else if( !strcmp( attrname, "fullscreen" ) )
         {
             if( !strcmp( value, "double" ) )
@@ -209,8 +209,8 @@ static int ReadDir( stream_t *p_demux, input_item_node_t *p_subitems )
 
     msg_Dbg( p_demux, "autoplay: %s (unused by VLC)",
              b_autoplay ? "true": "false" );
-    msg_Dbg( p_demux, "controler: %s (unused by VLC)",
-             b_controler ? "true": "false" );
+    msg_Dbg( p_demux, "controller: %s (unused by VLC)",
+             b_controller ? "true": "false" );
     msg_Dbg( p_demux, "fullscreen: %s (unused by VLC)",
              ppsz_fullscreen[fullscreen] );
     msg_Dbg( p_demux, "href: %s", psz_href );

@@ -2,7 +2,7 @@
  * VLCSimplePrefsWindow.h: Simple Preferences Window subclass for Mac OS X
  *****************************************************************************
  * Copyright (C) 2008-2014 VLC authors and VideoLAN
- * $Id: 6ebe3f49e0e2769323d969dd387cee48ef5f8028 $
+ * $Id: 525b228376660a95a3df120b966b7ab144a7c8eb $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *
@@ -24,5 +24,9 @@
 #import <Cocoa/Cocoa.h>
 
 @interface VLCSimplePrefsWindow : NSWindow
+
+@end
+
+@interface VLCSimplePrefsClipView : NSClipView
 
 @end

@@ -6,7 +6,7 @@
  * based on code by Christopher Wingert for tivo-mplayer
  * tivo(at)wingert.org, February 2003
  *
- * $Id: 86115504eaf4a1e00246cabeecf2bb17d93cf3b1 $
+ * $Id: 67f7aca70b85953d47be5484ba0dfe8796a86841 $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -166,7 +166,7 @@ typedef enum
 typedef struct
 {
     bool b_started;
-    int        i_data;
+    size_t     i_data;
     uint8_t    p_data[XDS_MAX_DATA_SIZE];
     int        i_sum;
 } xds_packet_t;
@@ -1116,10 +1116,10 @@ static void XdsExit( xds_t *h )
     free( h->meta.future.psz_name );
     free( h->meta.future.psz_rating );
 }
-static void XdsStringUtf8( char dst[2*32+1], const uint8_t *p_src, int i_src )
+static void XdsStringUtf8( char dst[2*32+1], const uint8_t *p_src, size_t i_src )
 {
-    int i_dst = 0;
-    for( int i = 0; i < i_src; i++ )
+    size_t i_dst = 0;
+    for( size_t i = 0; i < i_src; i++ )
     {
         switch( p_src[i] )
         {

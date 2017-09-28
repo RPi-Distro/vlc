@@ -2,7 +2,7 @@
  * avcodec.c: video and audio decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: f286a3adaf56860e42b58ce8c8d428d99de1ea8e $
+ * $Id: 14c5258f79135954eae799401091bb267f706adf $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -45,6 +45,10 @@
 /****************************************************************************
  * Local prototypes
  ****************************************************************************/
+static const int  frame_skip_list[] = { -1, 0, 1, 2, 3, 4 };
+static const char *const frame_skip_list_text[] =
+  { N_("None"), N_("Default"), N_("Non-ref"), N_("Bidir"), N_("Non-key"), N_("All") };
+
 static const int  nloopf_list[] = { 0, 1, 2, 3, 4 };
 static const char *const nloopf_list_text[] =
   { N_("None"), N_("Non-ref"), N_("Bidir"), N_("Non-key"), N_("All") };
@@ -106,7 +110,7 @@ vlc_module_begin ()
     add_obsolete_integer( "ffmpeg-skip-frame") /* removed since 2.1.0 */
     add_integer( "avcodec-skip-frame", 0, SKIP_FRAME_TEXT,
         SKIP_FRAME_LONGTEXT, true )
-        change_integer_range( -1, 4 )
+        change_integer_list( frame_skip_list, frame_skip_list_text )
     add_obsolete_integer( "ffmpeg-skip-idct" ) /* removed since 2.1.0 */
     add_integer( "avcodec-skip-idct", 0, SKIP_IDCT_TEXT,
         SKIP_IDCT_LONGTEXT, true )

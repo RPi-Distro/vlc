@@ -1131,18 +1131,19 @@ static void SetQuadVSProjection(vout_display_t *vd, d3d_quad_t *quad, const vlc_
 static void UpdateSize(vout_display_t *vd)
 {
     vout_display_sys_t *sys = vd->sys;
-#if defined(HAVE_ID3D11VIDEODECODER)
-    if( sys->context_lock != INVALID_HANDLE_VALUE )
-    {
-        WaitForSingleObjectEx( sys->context_lock, INFINITE, FALSE );
-    }
-#endif
     msg_Dbg(vd, "Detected size change %dx%d", RECTWidth(sys->sys.rect_dest_clipped),
             RECTHeight(sys->sys.rect_dest_clipped));
 
     UpdateBackBuffer(vd);
 
     UpdatePicQuadPosition(vd);
+
+#if defined(HAVE_ID3D11VIDEODECODER)
+    if( sys->context_lock != INVALID_HANDLE_VALUE )
+    {
+        WaitForSingleObjectEx( sys->context_lock, INFINITE, FALSE );
+    }
+#endif
 
     UpdateQuadPosition(vd, &sys->picQuad, &sys->sys.rect_src_clipped,
                        vd->fmt.projection_mode, vd->fmt.orientation);
@@ -1220,15 +1221,41 @@ static void Manage(vout_display_t *vd)
     }
 }
 
+static void DisplayD3DPicture(vout_display_sys_t *sys, d3d_quad_t *quad, ID3D11ShaderResourceView *resourceView[D3D11_MAX_SHADER_VIEW])
+{
+    UINT stride = sizeof(d3d_vertex_t);
+    UINT offset = 0;
+
+    /* Render the quad */
+    /* vertex shader */
+    ID3D11DeviceContext_IASetVertexBuffers(sys->d3dcontext, 0, 1, &quad->pVertexBuffer, &stride, &offset);
+    ID3D11DeviceContext_IASetIndexBuffer(sys->d3dcontext, quad->pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+    if ( quad->pVertexShaderConstants )
+        ID3D11DeviceContext_VSSetConstantBuffers(sys->d3dcontext, 0, 1, &quad->pVertexShaderConstants);
+
+    ID3D11DeviceContext_VSSetShader(sys->d3dcontext, quad->d3dvertexShader, NULL, 0);
+
+    /* pixel shader */
+    ID3D11DeviceContext_PSSetShader(sys->d3dcontext, quad->d3dpixelShader, NULL, 0);
+
+    ID3D11DeviceContext_PSSetConstantBuffers(sys->d3dcontext, 0, quad->PSConstantsCount, quad->pPixelShaderConstants);
+    ID3D11DeviceContext_PSSetShaderResources(sys->d3dcontext, 0, D3D11_MAX_SHADER_VIEW, resourceView);
+
+    ID3D11DeviceContext_RSSetViewports(sys->d3dcontext, 1, &quad->cropViewport);
+
+    ID3D11DeviceContext_DrawIndexed(sys->d3dcontext, quad->indexCount, 0, 0);
+}
+
 static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpicture)
 {
     vout_display_sys_t *sys = vd->sys;
 
+    picture_sys_t *p_sys = ActivePictureSys(picture);
+
 #if defined(HAVE_ID3D11VIDEODECODER)
-    if( sys->context_lock != INVALID_HANDLE_VALUE )
+    if (sys->context_lock != INVALID_HANDLE_VALUE && is_d3d11_opaque(picture->format.i_chroma))
         WaitForSingleObjectEx( sys->context_lock, INFINITE, FALSE );
 #endif
-    picture_sys_t *p_sys = ActivePictureSys(picture);
     if (p_sys->formatTexture == DXGI_FORMAT_UNKNOWN)
     {
         Direct3D11UnlockDirectTexture(picture);
@@ -1321,48 +1348,6 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
         sys->d3dregions      = subpicture_regions;
     }
 
-    ID3D11DeviceContext_Flush(sys->d3dcontext);
-#if defined(HAVE_ID3D11VIDEODECODER)
-    if ( sys->context_lock != INVALID_HANDLE_VALUE)
-        ReleaseMutex( sys->context_lock );
-#endif
-}
-
-static void DisplayD3DPicture(vout_display_sys_t *sys, d3d_quad_t *quad, ID3D11ShaderResourceView *resourceView[D3D11_MAX_SHADER_VIEW])
-{
-    UINT stride = sizeof(d3d_vertex_t);
-    UINT offset = 0;
-
-    /* Render the quad */
-    /* vertex shader */
-    ID3D11DeviceContext_IASetVertexBuffers(sys->d3dcontext, 0, 1, &quad->pVertexBuffer, &stride, &offset);
-    ID3D11DeviceContext_IASetIndexBuffer(sys->d3dcontext, quad->pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-    if ( quad->pVertexShaderConstants )
-        ID3D11DeviceContext_VSSetConstantBuffers(sys->d3dcontext, 0, 1, &quad->pVertexShaderConstants);
-
-    ID3D11DeviceContext_VSSetShader(sys->d3dcontext, quad->d3dvertexShader, NULL, 0);
-
-    /* pixel shader */
-    ID3D11DeviceContext_PSSetShader(sys->d3dcontext, quad->d3dpixelShader, NULL, 0);
-
-    ID3D11DeviceContext_PSSetConstantBuffers(sys->d3dcontext, 0, quad->PSConstantsCount, quad->pPixelShaderConstants);
-    ID3D11DeviceContext_PSSetShaderResources(sys->d3dcontext, 0, D3D11_MAX_SHADER_VIEW, resourceView);
-
-    ID3D11DeviceContext_RSSetViewports(sys->d3dcontext, 1, &quad->cropViewport);
-
-    ID3D11DeviceContext_DrawIndexed(sys->d3dcontext, quad->indexCount, 0, 0);
-}
-
-static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpicture)
-{
-    vout_display_sys_t *sys = vd->sys;
-#ifdef HAVE_ID3D11VIDEODECODER
-    if (sys->context_lock != INVALID_HANDLE_VALUE && is_d3d11_opaque(picture->format.i_chroma))
-    {
-        WaitForSingleObjectEx( sys->context_lock, INFINITE, FALSE );
-    }
-#endif
-
     FLOAT blackRGBA[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     ID3D11DeviceContext_ClearRenderTargetView(sys->d3dcontext, sys->d3drenderTargetView, blackRGBA);
 
@@ -1416,6 +1401,12 @@ static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
         IDXGISwapChain4_SetHDRMetaData(sys->dxgiswapChain4, DXGI_HDR_METADATA_TYPE_HDR10, sizeof(hdr10), &hdr10);
     }
 
+    //ID3D11DeviceContext_Flush(sys->d3dcontext);
+}
+
+static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpicture)
+{
+    vout_display_sys_t *sys = vd->sys;
 
     DXGI_PRESENT_PARAMETERS presentParams;
     memset(&presentParams, 0, sizeof(presentParams));
@@ -1516,7 +1507,7 @@ static void D3D11SetColorSpace(vout_display_t *vd)
     IDXGISwapChain3 *dxgiswapChain3 = NULL;
     sys->display.colorspace = &color_spaces[0];
 
-    hr = ID3D11Device_QueryInterface( sys->dxgiswapChain, &IID_IDXGISwapChain3, (void **)&dxgiswapChain3);
+    hr = IDXGISwapChain_QueryInterface( sys->dxgiswapChain, &IID_IDXGISwapChain3, (void **)&dxgiswapChain3);
     if (FAILED(hr)) {
         msg_Warn(vd, "could not get a IDXGISwapChain3");
         goto done;
@@ -1668,7 +1659,7 @@ static int Direct3D11Open(vout_display_t *vd, video_format_t *fmt)
     static const D3D_DRIVER_TYPE driverAttempts[] = {
         D3D_DRIVER_TYPE_HARDWARE,
         D3D_DRIVER_TYPE_WARP,
-#ifndef NDEBUG
+#if 0 /* ifndef NDEBUG */
         D3D_DRIVER_TYPE_REFERENCE,
 #endif
     };
@@ -1726,7 +1717,7 @@ static int Direct3D11Open(vout_display_t *vd, video_format_t *fmt)
     }
 #endif
 
-    ID3D11Device_QueryInterface( sys->dxgiswapChain, &IID_IDXGISwapChain4, (void **)&sys->dxgiswapChain4);
+    IDXGISwapChain_QueryInterface( sys->dxgiswapChain, &IID_IDXGISwapChain4, (void **)&sys->dxgiswapChain4);
 
     D3D11SetColorSpace(vd);
 
@@ -1801,29 +1792,11 @@ static int Direct3D11Open(vout_display_t *vd, video_format_t *fmt)
     UpdateRects(vd, NULL, true);
     AFTER_UPDATE_RECTS;
 
-#if defined(HAVE_ID3D11VIDEODECODER)
-    if( sys->context_lock != INVALID_HANDLE_VALUE )
-    {
-        WaitForSingleObjectEx( sys->context_lock, INFINITE, FALSE );
-    }
-#endif
     if (Direct3D11CreateResources(vd, fmt)) {
-#if defined(HAVE_ID3D11VIDEODECODER)
-        if( sys->context_lock != INVALID_HANDLE_VALUE )
-        {
-            ReleaseMutex( sys->context_lock );
-        }
-#endif
         msg_Err(vd, "Failed to allocate resources");
         Direct3D11DestroyResources(vd);
         return VLC_EGENERIC;
     }
-#if defined(HAVE_ID3D11VIDEODECODER)
-    if( sys->context_lock != INVALID_HANDLE_VALUE )
-    {
-        ReleaseMutex( sys->context_lock );
-    }
-#endif
 
 #if !VLC_WINSTORE_APP
     EventThreadUpdateTitle(sys->sys.event, VOUT_TITLE " (Direct3D11 output)");

@@ -2,7 +2,7 @@
  * filters.c : audio output filters management
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: ab8de7c39f84e814a8f3026a0781b8db4d9e9e4f $
+ * $Id: 585379e7c34d7440afb96eb02327fe4e821b6244 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -538,7 +538,7 @@ aout_filters_t *aout_FiltersNew (vlc_object_t *obj,
     }
     if (aout_FormatNbChannels(outfmt) == 0)
     {
-        msg_Warn (obj, "No ouput channel mask, cannot setup filters");
+        msg_Warn (obj, "No output channel mask, cannot setup filters");
         goto error;
     }
 

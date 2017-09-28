@@ -2,7 +2,7 @@
  * ios.m: iOS OpenGL ES provider
  *****************************************************************************
  * Copyright (C) 2001-2017 VLC authors and VideoLAN
- * $Id: ba87c9606998153749aabe8d56bd885fe3f20976 $
+ * $Id: deeb2640eb0c65ded89304b70dc85934cdbdaf06 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -82,6 +82,7 @@ vlc_module_begin ()
     set_callbacks(Open, Close)
 
     add_shortcut("vout_ios2", "vout_ios")
+    add_glconv()
 vlc_module_end ()
 
 @interface VLCOpenGLES2VideoView : UIView {
