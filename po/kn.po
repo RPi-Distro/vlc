@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-09-28 02:28+0000\n"
+"POT-Creation-Date: 2017-10-04 02:30+0000\n"
 "PO-Revision-Date: 2013-12-15 12:48+0000\n"
 "Last-Translator: Lavakara <hjlava@gmail.com>\n"
 "Language-Team: Kannada (http://www.transifex.com/projects/p/vlc-trans/"
@@ -690,7 +690,7 @@ msgstr "Dolby ಆವರಣ ಧ್ವನಿ"
 msgid "Stereo"
 msgstr "ಸ್ಟೀರಿಯೋ"
 
-#: src/audio_output/output.c:439 src/input/es_out.c:3196
+#: src/audio_output/output.c:439 src/input/es_out.c:3201
 #: src/libvlc-module.c:195 src/libvlc-module.c:293 src/libvlc-module.c:366
 #: src/misc/actions.c:81 modules/audio_filter/channel_mixer/mono.c:89
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
@@ -984,12 +984,12 @@ msgstr "ಹೌದು"
 msgid "Closed captions %u"
 msgstr "ವಿವರಣಾತ್ಮಕ ಉಪಶೀರ್ಷಿಕೆಗಳು %u"
 
-#: src/input/es_out.c:3025 src/input/es_out.c:3286 modules/access/imem.c:64
+#: src/input/es_out.c:3025 src/input/es_out.c:3293 modules/access/imem.c:64
 msgid "Subtitle"
 msgstr "ಉಪಶೀರ್ಷಿಕೆ"
 
 #: src/input/es_out.c:3033 src/input/es_out.c:3060 src/input/es_out.c:3104
-#: src/input/es_out.c:3286 modules/gui/macosx/VLCAddonsWindowController.m:132
+#: src/input/es_out.c:3293 modules/gui/macosx/VLCAddonsWindowController.m:132
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:185
 #: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1498
 msgid "Type"
@@ -1013,7 +1013,7 @@ msgid "Language"
 msgstr "ಭಾಷೆ"
 
 #: src/input/es_out.c:3054 src/input/meta.c:61
-#: modules/gui/macosx/VLCBookmarksWindowController.m:84
+#: modules/gui/macosx/VLCBookmarksWindowController.m:83
 #: modules/gui/macosx/VLCPlaylist.m:112 modules/gui/qt/dialogs/bookmarks.cpp:75
 msgid "Description"
 msgstr "ವಿವರಣೆ"
@@ -1133,52 +1133,57 @@ msgstr "ಬಲ"
 msgid "Orientation"
 msgstr "ಕನ್ನಡಿಯ ನೆಲೆ"
 
-#: src/input/es_out.c:3149 src/input/es_out.c:3163 src/input/es_out.c:3179
-#: src/input/es_out.c:3195 src/playlist/tree.c:67
+#: src/input/es_out.c:3150 src/input/es_out.c:3168 src/input/es_out.c:3186
+#: src/input/es_out.c:3200 src/playlist/tree.c:67
 #: modules/access/dtv/access.c:75 modules/access/v4l2/v4l2.c:242
 msgid "Undefined"
 msgstr "ವಿವರಿಸಲಾಗದಿರ"
 
-#: src/input/es_out.c:3150
+#: src/input/es_out.c:3152
 #, fuzzy
 msgid "ITU-R BT.601 (525 lines, 60 Hz)"
 msgstr "525 ಸಾಲುಗಳು / 60 ಹರ್ಟ್ಝ್"
 
-#: src/input/es_out.c:3151
+#: src/input/es_out.c:3154
 #, fuzzy
 msgid "ITU-R BT.601 (625 lines, 50 Hz)"
 msgstr "625 ಸಾಲುಗಳು / 50 ಹರ್ಟ್ಝ್"
 
-#: src/input/es_out.c:3158
+#: src/input/es_out.c:3162
 #, fuzzy
 msgid "Color primaries"
 msgstr "ವರ್ಣ ಸಂದೇಶಗಳು"
 
-#: src/input/es_out.c:3164 src/libvlc-module.c:360
+#: src/input/es_out.c:3169 src/libvlc-module.c:360
 #: modules/video_filter/deinterlace/deinterlace.h:58
 msgid "Linear"
 msgstr "ರೇಖಾತ್ಮಕ"
 
-#: src/input/es_out.c:3174
+#: src/input/es_out.c:3176
+msgid "Hybrid Log-Gamma"
+msgstr ""
+
+#: src/input/es_out.c:3180
 #, fuzzy
 msgid "Color transfer function"
 msgstr "ಬಣ್ಣ ಹೊರತೆಗೆಯುವಿಕೆ"
 
-#: src/input/es_out.c:3185
-msgid "Limited Range"
-msgstr ""
-
-#: src/input/es_out.c:3186
-#, fuzzy
-msgid "Full Range"
-msgstr "ಪೂರ್ಣ ಬಾಸ್"
-
-#: src/input/es_out.c:3189
+#: src/input/es_out.c:3193
 #, fuzzy
 msgid "Color space"
 msgstr "ಬಣ್ಣ ಯೋಜನೆ"
 
-#: src/input/es_out.c:3197 src/libvlc-module.c:293 src/libvlc-module.c:366
+#: src/input/es_out.c:3193
+#, c-format
+msgid "%s Range"
+msgstr ""
+
+#: src/input/es_out.c:3195
+#, fuzzy
+msgid "Full"
+msgstr "ಪೂರ್ಣ ಬಾಸ್"
+
+#: src/input/es_out.c:3202 src/libvlc-module.c:293 src/libvlc-module.c:366
 #: modules/audio_filter/channel_mixer/mono.c:91
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
 #: modules/codec/subsdec.c:167 modules/codec/zvbi.c:83
@@ -1189,98 +1194,98 @@ msgstr "ಬಣ್ಣ ಯೋಜನೆ"
 msgid "Center"
 msgstr "ಮಧ್ಯ"
 
-#: src/input/es_out.c:3198
+#: src/input/es_out.c:3203
 #, fuzzy
 msgid "Top Left"
 msgstr "ಮೇಲಿನ ಎಡಬದಿ"
 
-#: src/input/es_out.c:3199
+#: src/input/es_out.c:3204
 #, fuzzy
 msgid "Top Center"
 msgstr "ಮಧ್ಯ"
 
-#: src/input/es_out.c:3200
+#: src/input/es_out.c:3205
 #, fuzzy
 msgid "Bottom Left"
 msgstr "ಕೆಳಭಾಗದ ಎಡ"
 
-#: src/input/es_out.c:3201
+#: src/input/es_out.c:3206
 #, fuzzy
 msgid "Bottom Center"
 msgstr "ಕೆಳಭಾಗದ ಎಡ"
 
-#: src/input/es_out.c:3203
+#: src/input/es_out.c:3210
 #, fuzzy
 msgid "Chroma location"
 msgstr "ವರ್ಣಶುದ್ಧತೆಯ ಗಳಿಕೆ"
 
-#: src/input/es_out.c:3212
+#: src/input/es_out.c:3219
 #, fuzzy
 msgid "Rectangular"
 msgstr "ಆಯತಾಕೃತಿಯ ರೇಖಾತ್ಮಕ ಹಂತ"
 
-#: src/input/es_out.c:3215
+#: src/input/es_out.c:3222
 msgid "Equirectangular"
 msgstr ""
 
-#: src/input/es_out.c:3218
+#: src/input/es_out.c:3225
 msgid "Cubemap"
 msgstr ""
 
-#: src/input/es_out.c:3224
+#: src/input/es_out.c:3231
 #, fuzzy
 msgid "Projection"
 msgstr "ದಿಕ್ಕು"
 
-#: src/input/es_out.c:3226
+#: src/input/es_out.c:3233
 msgid "Yaw"
 msgstr ""
 
-#: src/input/es_out.c:3228 modules/video_output/vmem.c:48
+#: src/input/es_out.c:3235 modules/video_output/vmem.c:48
 msgid "Pitch"
 msgstr "ಮಟ್ಟ"
 
-#: src/input/es_out.c:3230
+#: src/input/es_out.c:3237
 msgid "Roll"
 msgstr ""
 
-#: src/input/es_out.c:3232
+#: src/input/es_out.c:3239
 msgid "Field of view"
 msgstr ""
 
-#: src/input/es_out.c:3237
+#: src/input/es_out.c:3244
 msgid "Max luminance"
 msgstr ""
 
-#: src/input/es_out.c:3242
+#: src/input/es_out.c:3249
 msgid "Min luminance"
 msgstr ""
 
-#: src/input/es_out.c:3250
+#: src/input/es_out.c:3257
 #, fuzzy
 msgid "Primary R"
 msgstr "ಪ್ರಾಥಮಿಕ ಭಾಷೆ"
 
-#: src/input/es_out.c:3257
+#: src/input/es_out.c:3264
 #, fuzzy
 msgid "Primary G"
 msgstr "ಪ್ರಾಥಮಿಕ ಭಾಷೆ"
 
-#: src/input/es_out.c:3264
+#: src/input/es_out.c:3271
 #, fuzzy
 msgid "Primary B"
 msgstr "ಪ್ರಾಥಮಿಕ ಭಾಷೆ"
 
-#: src/input/es_out.c:3271
+#: src/input/es_out.c:3278
 #, fuzzy
 msgid "White point"
 msgstr "ಸಂಕೇತ ಅಂಕಗಳು"
 
-#: src/input/es_out.c:3275
+#: src/input/es_out.c:3282
 msgid "MaxCLL"
 msgstr ""
 
-#: src/input/es_out.c:3280
+#: src/input/es_out.c:3287
 msgid "MaxFALL"
 msgstr ""
 
@@ -1297,8 +1302,8 @@ msgstr ""
 
 #: src/input/meta.c:55 src/input/var.c:177 modules/gui/macosx/VLCMainMenu.m:398
 #: modules/gui/macosx/VLCMainMenu.m:399
-#: modules/gui/macosx/VLCOpenWindowController.m:179
-#: modules/gui/macosx/VLCOpenWindowController.m:181
+#: modules/gui/macosx/VLCOpenWindowController.m:178
+#: modules/gui/macosx/VLCOpenWindowController.m:180
 #: modules/gui/macosx/VLCPlaylist.m:107 modules/gui/macosx/VLCPlaylistInfo.m:63
 #: modules/gui/qt/components/open_panels.cpp:509
 #: modules/gui/qt/components/open_panels.cpp:523 modules/mux/asf.c:56
@@ -1341,7 +1346,7 @@ msgstr "ದಿನಾಂಕ"
 msgid "Setting"
 msgstr "ಸಿದ್ಧತೆ"
 
-#: src/input/meta.c:65 modules/gui/macosx/VLCOpenWindowController.m:189
+#: src/input/meta.c:65 modules/gui/macosx/VLCOpenWindowController.m:188
 msgid "URL"
 msgstr "URL"
 
@@ -1412,8 +1417,8 @@ msgstr "ಪ್ರೋಗ್ರಾಂಗಳು"
 
 #: src/input/var.c:182 modules/gui/macosx/VLCMainMenu.m:400
 #: modules/gui/macosx/VLCMainMenu.m:401
-#: modules/gui/macosx/VLCOpenWindowController.m:180
-#: modules/gui/macosx/VLCOpenWindowController.m:182
+#: modules/gui/macosx/VLCOpenWindowController.m:179
+#: modules/gui/macosx/VLCOpenWindowController.m:181
 msgid "Chapter"
 msgstr "ಅಧ್ಯಾಯ"
 
@@ -1887,9 +1892,9 @@ msgstr ""
 #: modules/codec/avcodec/avcodec.c:50 modules/codec/avcodec/avcodec.c:54
 #: modules/codec/kate.c:199 modules/codec/x264.c:438 modules/codec/x264.c:443
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:191
-#: modules/gui/macosx/VLCOpenWindowController.m:245
-#: modules/gui/macosx/VLCOpenWindowController.m:274
-#: modules/gui/macosx/VLCOpenWindowController.m:275
+#: modules/gui/macosx/VLCOpenWindowController.m:243
+#: modules/gui/macosx/VLCOpenWindowController.m:272
+#: modules/gui/macosx/VLCOpenWindowController.m:273
 #: modules/text_renderer/freetype/freetype.c:143
 #: share/lua/http/dialogs/create_stream.html:196
 msgid "None"
@@ -2775,7 +2780,7 @@ msgstr "Input ಪುನರಾವರ್ತನೆಗಳು"
 msgid "Number of time the same input will be repeated"
 msgstr "ಸಮಯ ಅದೇ ಸಂಖ್ಯೆ input ಪುನರಾವರ್ತಿಸುವಂತೆ ಮಾಡುತ್ತದೆ"
 
-#: src/libvlc-module.c:632 modules/gui/macosx/VLCOpenWindowController.m:160
+#: src/libvlc-module.c:632 modules/gui/macosx/VLCOpenWindowController.m:159
 msgid "Start time"
 msgstr "ಆರಂಭದ ಸಮಯ"
 
@@ -2783,7 +2788,7 @@ msgstr "ಆರಂಭದ ಸಮಯ"
 msgid "The stream will start at this position (in seconds)."
 msgstr "ಈ ಸ್ಥಾನದಲ್ಲಿ ಸ್ಟ್ರೀಮ್ ಪ್ರಾರಂಭವಾಗುತ್ತದೆ (ಸೆಕೆಂಡುಗಳಲ್ಲಿ)."
 
-#: src/libvlc-module.c:636 modules/gui/macosx/VLCOpenWindowController.m:162
+#: src/libvlc-module.c:636 modules/gui/macosx/VLCOpenWindowController.m:161
 msgid "Stop time"
 msgstr "ಕೊನೆಯಾಗುವ ಸಮಯ"
 
@@ -5287,7 +5292,7 @@ msgstr "\"% s \" ಅನ್ನು ಬರೆಯುವುದಕ್ಕೆ ತೆರ�
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:834
-#: modules/gui/macosx/VLCBookmarksWindowController.m:90
+#: modules/gui/macosx/VLCBookmarksWindowController.m:89
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:153
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:182
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:339
@@ -5297,8 +5302,8 @@ msgstr "\"% s \" ಅನ್ನು ಬರೆಯುವುದಕ್ಕೆ ತೆರ�
 #: modules/gui/macosx/VLCCoreDialogProvider.m:293
 #: modules/gui/macosx/VLCMainWindow.m:205
 #: modules/gui/macosx/VLCMainWindow.m:211
-#: modules/gui/macosx/VLCOpenWindowController.m:135
-#: modules/gui/macosx/VLCOpenWindowController.m:193
+#: modules/gui/macosx/VLCOpenWindowController.m:134
+#: modules/gui/macosx/VLCOpenWindowController.m:192
 #: modules/gui/macosx/prefs.m:189
 #: modules/gui/macosx/VLCSimplePrefsController.m:274
 #: modules/gui/macosx/VLCSimplePrefsController.m:300
@@ -6282,7 +6287,7 @@ msgstr "ಮೊದಲು ಪ್ಲೇ ಮಾಡಿದ"
 msgid "Audio CD - Track %02i"
 msgstr "ಧ್ವನಿ CD-ಟ್ರ್ಯಾಕ್ %02i"
 
-#: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:170
+#: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:169
 msgid "Audio CD"
 msgstr "ಧ್ವನಿ CD"
 
@@ -6475,7 +6480,7 @@ msgstr "Blackmagic DeckLink SDI ಇನ್ಪುಟ್"
 msgid "10 bits"
 msgstr "10 ಬಿಟ್ಗಳು"
 
-#: modules/access/decklink.cpp:317 modules/demux/ty.c:765
+#: modules/access/decklink.cpp:318 modules/demux/ty.c:765
 msgid "Closed captions 1"
 msgstr "ವಿವರಣಾತ್ಮಕ ಉಪಶೀರ್ಷಿಕೆಗಳು 1"
 
@@ -7331,7 +7336,7 @@ msgstr "ಕಡತದ input"
 
 #: modules/access/fs.c:35 modules/access_output/file.c:389
 #: modules/audio_output/file.c:113
-#: modules/gui/macosx/VLCOpenWindowController.m:140
+#: modules/gui/macosx/VLCOpenWindowController.m:139
 #: modules/gui/macosx/VLCOutput.m:64 modules/gui/macosx/VLCOutput.m:175
 #: modules/gui/macosx/VLCOutput.m:298 modules/gui/qt/dialogs/plugins.cpp:1432
 #: modules/gui/qt/dialogs/sout.cpp:69 modules/gui/qt/dialogs/sout.cpp:121
@@ -8566,7 +8571,7 @@ msgid "Capture region heigh"
 msgstr "ಸೆರೆಹಿಡಿಯುವ ಪ್ರದೇಶದ ಎತ್ತರ"
 
 #: modules/access/screen/screen.c:67 modules/access/screen/xcb.c:59
-#: modules/gui/macosx/VLCOpenWindowController.m:216
+#: modules/gui/macosx/VLCOpenWindowController.m:214
 msgid "Follow the mouse"
 msgstr "ಮೌಸನ್ನು ಅನುಸರಿಸಿ"
 
@@ -8605,10 +8610,10 @@ msgstr "ಪರದೆಯ Input"
 
 #: modules/access/screen/screen.c:99 modules/access/screen/wayland.c:473
 #: modules/access/screen/xcb.c:70 modules/gui/macosx/VLCMainMenu.m:595
-#: modules/gui/macosx/VLCOpenWindowController.m:208
-#: modules/gui/macosx/VLCOpenWindowController.m:211
-#: modules/gui/macosx/VLCOpenWindowController.m:481
-#: modules/gui/macosx/VLCOpenWindowController.m:1153
+#: modules/gui/macosx/VLCOpenWindowController.m:207
+#: modules/gui/macosx/VLCOpenWindowController.m:209
+#: modules/gui/macosx/VLCOpenWindowController.m:479
+#: modules/gui/macosx/VLCOpenWindowController.m:1095
 #: modules/gui/macosx/VLCSimplePrefsController.m:654
 msgid "Screen"
 msgstr "ಪರದೆ"
@@ -9691,7 +9696,7 @@ msgid "Sound Delay"
 msgstr "ಧ್ವನಿ ವಿಳಂಬ"
 
 #: modules/audio_filter/chorus_flanger.c:75
-#: modules/gui/macosx/VLCOpenWindowController.m:354 modules/spu/mosaic.c:154
+#: modules/gui/macosx/VLCOpenWindowController.m:352 modules/spu/mosaic.c:154
 #: modules/stream_out/bridge.c:51 modules/stream_out/delay.c:54
 msgid "Delay"
 msgstr "ವಿಳಂಬ"
@@ -12596,7 +12601,7 @@ msgid "S/PDIF pass-through decoder"
 msgstr ""
 
 #: modules/codec/speex.c:59 modules/codec/speex.c:907
-#: modules/gui/macosx/VLCOpenWindowController.m:196
+#: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:245
 msgid "Mode"
 msgstr "ಕ್ರಮ"
@@ -15272,7 +15277,7 @@ msgstr "ಚಿತ್ರ"
 #: modules/demux/mjpeg.c:46 modules/demux/mpeg/es.c:53
 #: modules/demux/mpeg/h26x.c:46 modules/demux/rawvid.c:43
 #: modules/demux/subtitle.c:77 modules/demux/vc1.c:43
-#: modules/gui/macosx/VLCOpenWindowController.m:210
+#: modules/gui/macosx/VLCOpenWindowController.m:208
 msgid "Frames per Second"
 msgstr "ಪ್ರತಿ ಸೆಕೆಂಡಗೆ ಚೌಕಟ್ಟುಗಳು"
 
@@ -16087,10 +16092,6 @@ msgid ""
 "VLC media player and VideoLAN are trademarks of the VideoLAN Association."
 msgstr "VLC ಮಾಧ್ಯಮ ಪ್ಲೇಯರ್ ಮತ್ತು VideoLAN Videolan ಸಂಘದ ವ್ಯಾಪಾರ ಮುದ್ರೆಯಾಗಿದೆ."
 
-#: modules/gui/macosx/VLCAboutWindowController.m:118
-msgid "Compiled by %s with %@"
-msgstr "ಸಂಕಲಿಸಿದವರು %s ಯಿಂದ %@"
-
 #: modules/gui/macosx/VLCAboutWindowController.m:134
 #: modules/gui/qt/dialogs/help.cpp:94
 msgid ""
@@ -16169,7 +16170,7 @@ msgid "Installed"
 msgstr "ಅನುಸ್ಥಾಪಿಸಿ"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:130
-#: modules/gui/macosx/VLCBookmarksWindowController.m:91
+#: modules/gui/macosx/VLCBookmarksWindowController.m:90
 #: modules/gui/qt/dialogs/plugins.cpp:126 modules/mux/avi.c:54
 msgid "Name"
 msgstr "ಹೆಸರು"
@@ -16312,7 +16313,7 @@ msgstr "ನೀವು ತೆಗೆಯಲು ಬಯಸುವ ಪೂರ್ವಹ
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:532
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:833
-#: modules/gui/macosx/VLCBookmarksWindowController.m:82
+#: modules/gui/macosx/VLCBookmarksWindowController.m:81
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:338
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:806
 msgid "Remove"
@@ -16353,30 +16354,23 @@ msgstr "ತೆರವುಗೊಳಿಸಿ"
 msgid "Edit"
 msgstr "ಪರಿಷ್ಕರಿಸಿ"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:81
-#: modules/gui/qt/dialogs/bookmarks.cpp:57 modules/video_filter/extract.c:68
-msgid "Extract"
-msgstr "ಹೊರತೆಗೆಯಿರಿ"
-
-#: modules/gui/macosx/VLCBookmarksWindowController.m:86
-#: modules/gui/macosx/VLCBookmarksWindowController.m:92
+#: modules/gui/macosx/VLCBookmarksWindowController.m:85
+#: modules/gui/macosx/VLCBookmarksWindowController.m:91
 #: modules/gui/qt/dialogs/bookmarks.cpp:77
 #: modules/gui/qt/dialogs/toolbar.cpp:486
 msgid "Time"
 msgstr "ಸಮಯ"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:89
-#: modules/gui/macosx/VLCBookmarksWindowController.m:210
-#: modules/gui/macosx/VLCBookmarksWindowController.m:214
-#: modules/gui/macosx/VLCBookmarksWindowController.m:266
-#: modules/gui/macosx/VLCBookmarksWindowController.m:271
+#: modules/gui/macosx/VLCBookmarksWindowController.m:88
+#: modules/gui/macosx/VLCBookmarksWindowController.m:211
+#: modules/gui/macosx/VLCBookmarksWindowController.m:215
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:270
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:532
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:539
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:546
 #: modules/gui/macosx/VLCCoreDialogProvider.m:194
 #: modules/gui/macosx/VLCCoreDialogProvider.m:236
-#: modules/gui/macosx/VLCOpenWindowController.m:364
+#: modules/gui/macosx/VLCOpenWindowController.m:362
 #: modules/gui/macosx/VLCOutput.m:60 modules/gui/macosx/VLCPlaylistInfo.m:359
 #: modules/gui/macosx/VLCSimplePrefsController.m:275
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
@@ -16384,49 +16378,33 @@ msgstr "ಸಮಯ"
 msgid "OK"
 msgstr "ಸರಿ"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:130
+#: modules/gui/macosx/VLCBookmarksWindowController.m:131
 #: modules/gui/macosx/VLCMainMenu.m:1134
 msgid "Untitled"
 msgstr "ಹೆಸರಿಡದ"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:210
+#: modules/gui/macosx/VLCBookmarksWindowController.m:211
 msgid "No input"
 msgstr "ಇನ್ಪುಟ್ ಇಲ್ಲ"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:210
+#: modules/gui/macosx/VLCBookmarksWindowController.m:211
 msgid ""
 "No input found. A stream must be playing or paused for bookmarks to work."
 msgstr ""
 "ಯಾವುದೇ ಇನ್ಪುಟ್‍ಗಳು ಕಂಡುಬಂದಿಲ್ಲ. ಒಂದು ಅಚ್ಚು ಮೆಚ್ಚು ಕೆಲಸ  ಮಾಡಬೇಕೆಂದರೆ ಸ್ಟ್ರೀಮ್ ಪ್ಲೇ "
 "ಆಗುತಿರಬೇಕು ಅಥವಾ ವಿರಾಮದಲ್ಲಿರಬೇಕು."
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:214
+#: modules/gui/macosx/VLCBookmarksWindowController.m:215
 msgid "Input has changed"
 msgstr "ಇನ್ಪುಟ್ ಬದಲಾಗಿದೆ"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:214
+#: modules/gui/macosx/VLCBookmarksWindowController.m:215
 msgid ""
 "Input has changed, unable to save bookmark. Suspending playback with \"Pause"
 "\" while editing bookmarks to ensure to keep the same input."
 msgstr ""
 "Input has changed, unable to save bookmark. Suspending playback with \"Pause"
 "\" while editing bookmarks to ensure to keep the same input."
-
-#: modules/gui/macosx/VLCBookmarksWindowController.m:266
-msgid "Invalid selection"
-msgstr "ಅಮಾನ್ಯ ಆಯ್ಕೆ"
-
-#: modules/gui/macosx/VLCBookmarksWindowController.m:266
-msgid "Two bookmarks have to be selected."
-msgstr "ಎರಡು ಅಚ್ಚು ಮೆಚ್ಚು‍ಗಳನ್ನು ಆಯ್ಕೆ ಮಾಡಬೇಕು."
-
-#: modules/gui/macosx/VLCBookmarksWindowController.m:271
-msgid "No input found"
-msgstr "ಯಾವುದೇ ಇನ್ಪುಟ್ ಕಂಡುಬಂದಿಲ್ಲ"
-
-#: modules/gui/macosx/VLCBookmarksWindowController.m:271
-msgid "The stream must be playing or paused for bookmarks to work."
-msgstr "ಅಚ್ಹುಮೆಚ್ಹುಗಳು ಕೆಲಸ ಮಾಡಲು ಸ್ಟ್ರೀಮ್ ಪ್ಲೇ ಆಗಿತಿರಬೇಕು ಅಥವಾ ವಿರಾಮದಲ್ಲಿರಬೇಕು."
 
 #: modules/gui/macosx/VLCControlsBarCommon.m:65
 #: modules/gui/macosx/VLCFSPanelController.m:110
@@ -16524,8 +16502,8 @@ msgstr "ಉತ್ಪಾದನೆಯ ಸ್ಥಳವನ್ನು ಆಯ್ಕೆ�
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:145
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:197
-#: modules/gui/macosx/VLCOpenWindowController.m:148
-#: modules/gui/macosx/VLCOpenWindowController.m:351
+#: modules/gui/macosx/VLCOpenWindowController.m:147
+#: modules/gui/macosx/VLCOpenWindowController.m:349
 #: modules/gui/macosx/VLCOutput.m:67 modules/gui/macosx/prefs_widgets.m:1121
 #: modules/gui/macosx/VLCSimplePrefsController.m:283
 #: modules/gui/macosx/VLCSimplePrefsController.m:360
@@ -16616,7 +16594,7 @@ msgid "Stream Announcement"
 msgstr "ಸ್ಟ್ರೀಮ್ ಪ್ರಕಟಣೆ"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:186
-#: modules/gui/macosx/VLCOpenWindowController.m:198
+#: modules/gui/macosx/VLCOpenWindowController.m:197
 #: modules/gui/macosx/VLCOutput.m:68
 #: modules/gui/qt/components/sout/sout_widgets.cpp:236
 #: modules/gui/qt/components/sout/sout_widgets.cpp:323
@@ -16630,8 +16608,8 @@ msgid "TTL"
 msgstr "TTL"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:189
-#: modules/gui/macosx/VLCOpenWindowController.m:186
-#: modules/gui/macosx/VLCOpenWindowController.m:188
+#: modules/gui/macosx/VLCOpenWindowController.m:185
+#: modules/gui/macosx/VLCOpenWindowController.m:187
 #: modules/gui/macosx/VLCOutput.m:69
 #: modules/gui/qt/components/sout/sout_widgets.cpp:182
 #: modules/gui/qt/components/sout/sout_widgets.cpp:237
@@ -17630,34 +17608,34 @@ msgstr ""
 msgid "TB"
 msgstr ""
 
-#: modules/gui/macosx/VLCOpenWindowController.m:131
+#: modules/gui/macosx/VLCOpenWindowController.m:130
 msgid "Open Source"
 msgstr "ತೆರೆದ ಮೂಲ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:132
+#: modules/gui/macosx/VLCOpenWindowController.m:131
 msgid "Media Resource Locator (MRL)"
 msgstr "ಮಾಧ್ಯಮ ಸಂಪನ್ಮೂಲ ಪತ್ತೆಕಾರಕ (MRL)"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:134
-#: modules/gui/macosx/VLCOpenWindowController.m:194
-#: modules/gui/macosx/VLCOpenWindowController.m:618
-#: modules/gui/macosx/VLCOpenWindowController.m:704
-#: modules/gui/macosx/VLCOpenWindowController.m:935
-#: modules/gui/macosx/VLCOpenWindowController.m:1263
+#: modules/gui/macosx/VLCOpenWindowController.m:133
+#: modules/gui/macosx/VLCOpenWindowController.m:193
+#: modules/gui/macosx/VLCOpenWindowController.m:572
+#: modules/gui/macosx/VLCOpenWindowController.m:658
+#: modules/gui/macosx/VLCOpenWindowController.m:890
+#: modules/gui/macosx/VLCOpenWindowController.m:1258
 #: modules/gui/qt/components/controller.hpp:107
 msgid "Open"
 msgstr "ತೆರೆಯಿರಿ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:137
+#: modules/gui/macosx/VLCOpenWindowController.m:136
 #, fuzzy
 msgid "Stream output:"
 msgstr "Output ಅನ್ನು ಪ್ರವಾಹಿಸಿ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:138
+#: modules/gui/macosx/VLCOpenWindowController.m:137
 msgid "Settings..."
 msgstr "ಸಂಯೋಜನೆಗಳು..."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:141
+#: modules/gui/macosx/VLCOpenWindowController.m:140
 #, fuzzy
 msgid ""
 "4 Tabs to choose between media input. Select 'File' for files, 'Disc' for "
@@ -17669,43 +17647,43 @@ msgstr ""
 "or 'Capture' for Input Devices such as microphones or cameras, the current "
 "screen or TV streams if the EyeTV application is installed."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:142
+#: modules/gui/macosx/VLCOpenWindowController.m:141
 msgid "Disc"
 msgstr "ಡಿಸ್ಕ್"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:143
+#: modules/gui/macosx/VLCOpenWindowController.m:142
 #: modules/gui/macosx/VLCSimplePrefsController.m:290
 msgid "Network"
 msgstr "ಜಾಲಬಂಧ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:144
+#: modules/gui/macosx/VLCOpenWindowController.m:143
 msgid "Capture"
 msgstr "ಸೆರೆಹಿಡಿ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:146
-#: modules/gui/macosx/VLCOpenWindowController.m:346
+#: modules/gui/macosx/VLCOpenWindowController.m:145
+#: modules/gui/macosx/VLCOpenWindowController.m:344
 msgid "Choose a file"
 msgstr "ಕಡತವನ್ನು ಆಯ್ಕೆಮಾಡಿ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:149
+#: modules/gui/macosx/VLCOpenWindowController.m:148
 msgid "Click to select a file for playback"
 msgstr "ಪ್ಲೇಬ್ಯಾಕ್ ಮಾಡಲು ಒಂದು ಕಡತವನ್ನು ಕ್ಲಿಕ್ ಮಾಡಿ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:150
+#: modules/gui/macosx/VLCOpenWindowController.m:149
 msgid "Treat as a pipe rather than as a file"
 msgstr "ಕಡತ ಬದಲು ಒಂದು ಕೊಳವೆಯಂತೆ ನಡೆಸಿಕೂಳ್ಳಿ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:152
+#: modules/gui/macosx/VLCOpenWindowController.m:151
 msgid "Play another media synchronously"
 msgstr "ಏಕಕಾಲಕ್ಕೆ ಮತ್ತೊಂದು ಮಾಧ್ಯಮವನ್ನು ಪ್ಲೇ ಮಾಡಿ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:153
-#: modules/gui/macosx/VLCOpenWindowController.m:349
+#: modules/gui/macosx/VLCOpenWindowController.m:152
+#: modules/gui/macosx/VLCOpenWindowController.m:347
 #: modules/gui/macosx/VLCSimplePrefsController.m:332
 msgid "Choose..."
 msgstr "ಆಯ್ಕೆಮಾಡಿ..."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:154
+#: modules/gui/macosx/VLCOpenWindowController.m:153
 msgid ""
 "Click to select a another file to play it in sync with the previously "
 "selected file."
@@ -17713,32 +17691,32 @@ msgstr ""
 "Click to select a another file to play it in sync with the previously "
 "selected file."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:159
+#: modules/gui/macosx/VLCOpenWindowController.m:158
 msgid "Custom playback"
 msgstr "ಇಚ್ಛೆಯ ಪ್ಲೇಬ್ಯಾಕ್"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:167
+#: modules/gui/macosx/VLCOpenWindowController.m:166
 #, fuzzy
 msgid "Open VIDEO_TS / BDMV folder"
 msgstr "VIDEO_TS ಕಡತ ಕೋಶವನ್ನು ತೆರೆಯಿರಿ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:168
+#: modules/gui/macosx/VLCOpenWindowController.m:167
 msgid "Insert Disc"
 msgstr "ಡಿಸ್ಕ್ ಸೇರಿಸಿ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:174
+#: modules/gui/macosx/VLCOpenWindowController.m:173
 msgid "Disable DVD menus"
 msgstr "ಡಿವಿಡಿ ಮೆನುಗಳನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:177
+#: modules/gui/macosx/VLCOpenWindowController.m:176
 msgid "Enable DVD menus"
 msgstr "ಡಿವಿಡಿ ಮೆನುಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:187
+#: modules/gui/macosx/VLCOpenWindowController.m:186
 msgid "IP Address"
 msgstr "IP ವಿಳಾಸ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:190
+#: modules/gui/macosx/VLCOpenWindowController.m:189
 msgid ""
 "To Open a usual network stream (HTTP, RTSP, RTMP, MMS, FTP, etc.), just "
 "enter the URL in the field above. If you want to open a RTP or UDP stream, "
@@ -17747,141 +17725,133 @@ msgstr ""
 "To Open a usual network stream (HTTP, RTSP, RTMP, MMS, FTP, etc.), just "
 "enter the URL in the field above. If you want to open a RTP or UDP stream, "
 "press the button below."
+
+#: modules/gui/macosx/VLCOpenWindowController.m:190
+msgid ""
+"If you want to open a multicast stream, enter the respective IP address "
+"given by the stream provider. In unicast mode, VLC will use your machine's "
+"IP automatically.\n"
+"\n"
+"To open a stream using a different protocol, just press Cancel to close this "
+"sheet."
+msgstr ""
+"If you want to open a multicast stream, enter the respective IP address "
+"given by the stream provider. In unicast mode, VLC will use your machine's "
+"IP automatically.\n"
+"\n"
+"To open a stream using a different protocol, just press Cancel to close this "
+"sheet."
 
 #: modules/gui/macosx/VLCOpenWindowController.m:191
 msgid ""
-"If you want to open a multicast stream, enter the respective IP address "
-"given by the stream provider. In unicast mode, VLC will use your machine's "
-"IP automatically.\n"
-"\n"
-"To open a stream using a different protocol, just press Cancel to close this "
-"sheet."
-msgstr ""
-"If you want to open a multicast stream, enter the respective IP address "
-"given by the stream provider. In unicast mode, VLC will use your machine's "
-"IP automatically.\n"
-"\n"
-"To open a stream using a different protocol, just press Cancel to close this "
-"sheet."
-
-#: modules/gui/macosx/VLCOpenWindowController.m:192
-msgid ""
 "Enter a URL here to open the network stream. To open RTP or UDP streams, "
 "click on the respective button below."
 msgstr ""
 "Enter a URL here to open the network stream. To open RTP or UDP streams, "
 "click on the respective button below."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:195
+#: modules/gui/macosx/VLCOpenWindowController.m:194
 msgid "Open RTP/UDP Stream"
 msgstr "RTP/UDP ಸ್ಟ್ರೀಮನ್ನು ತೆರೆಯಿರಿ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:197
+#: modules/gui/macosx/VLCOpenWindowController.m:196
 #: share/lua/http/dialogs/stream_config_window.html:24
 #: share/lua/http/dialogs/stream_window.html:83
 msgid "Protocol"
 msgstr "ನಿಯಮಾವಳಿ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:200
-#: modules/gui/macosx/VLCOpenWindowController.m:1050
-#: modules/gui/macosx/VLCOpenWindowController.m:1099
+#: modules/gui/macosx/VLCOpenWindowController.m:199
+#: modules/gui/macosx/VLCOpenWindowController.m:1005
+#: modules/gui/macosx/VLCOpenWindowController.m:1054
 msgid "Unicast"
 msgstr "ಏಕಪ್ರಸಾರಿತ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:201
-#: modules/gui/macosx/VLCOpenWindowController.m:1063
-#: modules/gui/macosx/VLCOpenWindowController.m:1112
+#: modules/gui/macosx/VLCOpenWindowController.m:200
+#: modules/gui/macosx/VLCOpenWindowController.m:1018
+#: modules/gui/macosx/VLCOpenWindowController.m:1067
 msgid "Multicast"
 msgstr "ಬಹುಪ್ರಸಾರಿತ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:207
-#: modules/gui/macosx/VLCOpenWindowController.m:499
-#: modules/gui/macosx/VLCOpenWindowController.m:1202
+#: modules/gui/macosx/VLCOpenWindowController.m:206
+#: modules/gui/macosx/VLCOpenWindowController.m:497
+#: modules/gui/macosx/VLCOpenWindowController.m:1145
 msgid "Input Devices"
 msgstr "ಇನ್ಪುಟ್ ಸಾಧನಗಳು"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:209
-msgid ""
-"This input allows you to save, stream or display your current screen "
-"contents."
-msgstr ""
-"This input allows you to save, stream or display your current screen "
-"contents."
-
-#: modules/gui/macosx/VLCOpenWindowController.m:212
+#: modules/gui/macosx/VLCOpenWindowController.m:210
 msgid "Subscreen left"
 msgstr " ಉಪಪರದೆಯ ಎಡಗಡೆ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:213
+#: modules/gui/macosx/VLCOpenWindowController.m:211
 msgid "Subscreen top"
 msgstr " ಉಪಪರದೆಯ ಮೇಲೆ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:214
+#: modules/gui/macosx/VLCOpenWindowController.m:212
 #, fuzzy
 msgid "Subscreen Width"
 msgstr "ಉಪ ಪರದೆಯ ಅಗಲ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:215
+#: modules/gui/macosx/VLCOpenWindowController.m:213
 #, fuzzy
 msgid "Subscreen Height"
 msgstr "ಉಪ ಪರದೆಯ ಎತ್ತರ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:217
+#: modules/gui/macosx/VLCOpenWindowController.m:215
 msgid "Capture Audio"
 msgstr "ಧ್ವನಿಯನ್ನು ಸೆರೆಹಿಡಿಯಿರಿ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:345
+#: modules/gui/macosx/VLCOpenWindowController.m:343
 msgid "Add Subtitle File:"
 msgstr "ಉಪಶೀರ್ಷಿಕೆ ಕಡತವನ್ನು ಸೇರಿಸಿ:"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:350
+#: modules/gui/macosx/VLCOpenWindowController.m:348
 msgid "Click to setup subtitle playback in full detail."
 msgstr "ಉಪಶೀರ್ಷಿಕೆ ಪ್ಲೇಬ್ಯಾಕ್ ನ ಪೂರ್ಣ ವಿವರ ಹೊಂದಾಣಿಕೆಗೆ ಕ್ಲಿಕ್ ಮಾಡಿ."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:352
+#: modules/gui/macosx/VLCOpenWindowController.m:350
 msgid "Click to select a subtitle file."
 msgstr "ಒಂದು ಉಪಶೀರ್ಷಿಕೆಯ ಕಡತವನ್ನುಆಯ್ಕೆಮಾಡಲು ಕ್ಲಿಕ್ ಮಾಡಿ."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:353
+#: modules/gui/macosx/VLCOpenWindowController.m:351
 msgid "Override parameters"
 msgstr "ಅತಿಕ್ರಮಿಸುವಿಕೆಯ ನಿಯತಾಂಕಗಳು"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:356
+#: modules/gui/macosx/VLCOpenWindowController.m:354
 msgid "FPS"
 msgstr "FPS"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:358
+#: modules/gui/macosx/VLCOpenWindowController.m:356
 msgid "Subtitle encoding"
 msgstr "ಉಪಶೀರ್ಷಿಕೆ ಸಂಕೇತಗೊಳಿಸುವ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:360
+#: modules/gui/macosx/VLCOpenWindowController.m:358
 #: modules/gui/macosx/VLCSimplePrefsController.m:334
 msgid "Font size"
 msgstr "ಅಕ್ಷರಶೈಲಿಯ ಗಾತ್ರ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:362
+#: modules/gui/macosx/VLCOpenWindowController.m:360
 msgid "Subtitle alignment"
 msgstr "ಉಪಶೀರ್ಷಿಕೆ ಜೋಡಣೆ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:365
+#: modules/gui/macosx/VLCOpenWindowController.m:363
 msgid "Click to dismiss the subtitle setup dialog."
 msgstr "ಉಪಶೀರ್ಷಿಕೆ ಸಿದ್ಧತಾ ಸಂವಾದ ವಜಾಮಾಡಲು ಕ್ಲಿಕ್ ಮಾಡಿ."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:366
+#: modules/gui/macosx/VLCOpenWindowController.m:364
 msgid "Font Properties"
 msgstr "ಅಕ್ಷರಶೈಲಿಯ ಗುಣಲಕ್ಷಣಗಳು"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:367
+#: modules/gui/macosx/VLCOpenWindowController.m:365
 msgid "Subtitle File"
 msgstr "ಉಪಶೀರ್ಷಿಕೆ ಕಡತ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:617
-#: modules/gui/macosx/VLCOpenWindowController.m:703
-#: modules/gui/macosx/VLCOpenWindowController.m:1262
+#: modules/gui/macosx/VLCOpenWindowController.m:571
+#: modules/gui/macosx/VLCOpenWindowController.m:657
+#: modules/gui/macosx/VLCOpenWindowController.m:1257
 msgid "Open File"
 msgstr "ಕಡತವನ್ನು ತೆರೆಯಿರಿ"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:801
+#: modules/gui/macosx/VLCOpenWindowController.m:756
 #, c-format
 msgid "%i tracks"
 msgstr "%i ಟ್ರ್ಯಾಕ್"
@@ -20106,6 +20076,10 @@ msgstr "ಆಯ್ಕೆಮಾಡಿದ ಐಟಂಅನ್ನು ಅಳಿಸಿ"
 #: modules/gui/qt/dialogs/bookmarks.cpp:54
 msgid "Delete all the bookmarks"
 msgstr "ಎಲ್ಲಾ ಅಚ್ಚುಮೆಚ್ಚುಗಳನ್ನು ಅಳಿಸಿಹಾಕಿ"
+
+#: modules/gui/qt/dialogs/bookmarks.cpp:57 modules/video_filter/extract.c:68
+msgid "Extract"
+msgstr "ಹೊರತೆಗೆಯಿರಿ"
 
 #: modules/gui/qt/dialogs/bookmarks.cpp:62 modules/gui/qt/dialogs/errors.cpp:49
 #: modules/gui/qt/dialogs/extended.cpp:130 modules/gui/qt/dialogs/help.cpp:66
@@ -28848,8 +28822,23 @@ msgstr "ನೀವು ಸ್ಟ್ರೀಮ್ ರಚಿಸಲು ಖಚಿ
 #~ msgid "MTU for out mode."
 #~ msgstr "ಹೊರಗಿನ ಕ್ರಮಕ್ಕೆ ಫಾರ್ MTU."
 
+#~ msgid "Compiled by %s with %@"
+#~ msgstr "ಸಂಕಲಿಸಿದವರು %s ಯಿಂದ %@"
+
 #~ msgid "VLC media player Help"
 #~ msgstr "VLC ಮಾಧ್ಯಮ ಪ್ಲೇಯರ್ ಸಹಾಯ"
+
+#~ msgid "Invalid selection"
+#~ msgstr "ಅಮಾನ್ಯ ಆಯ್ಕೆ"
+
+#~ msgid "Two bookmarks have to be selected."
+#~ msgstr "ಎರಡು ಅಚ್ಚು ಮೆಚ್ಚು‍ಗಳನ್ನು ಆಯ್ಕೆ ಮಾಡಬೇಕು."
+
+#~ msgid "No input found"
+#~ msgstr "ಯಾವುದೇ ಇನ್ಪುಟ್ ಕಂಡುಬಂದಿಲ್ಲ"
+
+#~ msgid "The stream must be playing or paused for bookmarks to work."
+#~ msgstr "ಅಚ್ಹುಮೆಚ್ಹುಗಳು ಕೆಲಸ ಮಾಡಲು ಸ್ಟ್ರೀಮ್ ಪ್ಲೇ ಆಗಿತಿರಬೇಕು ಅಥವಾ ವಿರಾಮದಲ್ಲಿರಬೇಕು."
 
 #, fuzzy
 #~ msgid "Hide Details"
@@ -28893,6 +28882,13 @@ msgstr "ನೀವು ಸ್ಟ್ರೀಮ್ ರಚಿಸಲು ಖಚಿ
 #~ "No device is selected.\n"
 #~ "\n"
 #~ "Choose available device in above pull-down menu.\n"
+
+#~ msgid ""
+#~ "This input allows you to save, stream or display your current screen "
+#~ "contents."
+#~ msgstr ""
+#~ "This input allows you to save, stream or display your current screen "
+#~ "contents."
 
 #~ msgid "Current channel:"
 #~ msgstr "ಪ್ರಸ್ತುತ ಚಾನಲ್:"

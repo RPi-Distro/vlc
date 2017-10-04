@@ -32,8 +32,12 @@ struct hxxx_helper_nal
 {
     block_t *b;
     union {
+        void                            *xps;
         h264_sequence_parameter_set_t   *h264_sps;
         h264_picture_parameter_set_t    *h264_pps;
+        hevc_sequence_parameter_set_t   *hevc_sps;
+        hevc_picture_parameter_set_t    *hevc_pps;
+        hevc_video_parameter_set_t      *hevc_vps;
     };
 };
 
@@ -54,7 +58,14 @@ struct hxxx_helper
             uint8_t i_pps_count;
         } h264;
         struct {
-            /* TODO: handle VPS/SPS/PPS */
+            struct hxxx_helper_nal sps_list[HEVC_SPS_ID_MAX + 1];
+            struct hxxx_helper_nal pps_list[HEVC_PPS_ID_MAX + 1];
+            struct hxxx_helper_nal vps_list[HEVC_VPS_ID_MAX + 1];
+            uint8_t i_current_sps;
+            uint8_t i_current_vps;
+            uint8_t i_sps_count;
+            uint8_t i_pps_count;
+            uint8_t i_vps_count;
             void *p_annexb_config_nal;
             size_t i_annexb_config_nal;
         } hevc;
@@ -78,14 +89,17 @@ block_t *h264_helper_get_annexb_config(const struct hxxx_helper *hh);
 
 block_t *h264_helper_get_avcc_config(const struct hxxx_helper *hh);
 
-int h264_helper_get_current_picture_size(const struct hxxx_helper *hh,
+int hxxx_helper_get_current_picture_size(const struct hxxx_helper *hh,
                                          unsigned *p_w, unsigned *p_h,
                                          unsigned *p_vw, unsigned *p_vh);
 
-int h264_helper_get_current_sar(const struct hxxx_helper *hh, int *p_num, int *p_den);
+int hxxx_helper_get_current_sar(const struct hxxx_helper *hh, int *p_num, int *p_den);
 
 int h264_helper_get_current_dpb_values(const struct hxxx_helper *hh,
                                        uint8_t *p_depth, unsigned *pi_delay);
+
+int hxxx_helper_get_current_profile_level(const struct hxxx_helper *hh,
+                                          uint8_t *p_profile, uint8_t *p_level);
 
 int hxxx_helper_get_colorimetry(const struct hxxx_helper *hh,
                                 video_color_primaries_t *p_primaries,

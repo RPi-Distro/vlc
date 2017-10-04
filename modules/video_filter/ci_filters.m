@@ -32,6 +32,7 @@
 #include <vlc_picture.h>
 #include <vlc_plugin.h>
 #include <vlc_modules.h>
+#include <vlc_mouse.h>
 #include "filter_picture.h"
 #include "vt_utils.h"
 
@@ -50,6 +51,8 @@ enum    filter_type
     FILTER_POSTERIZE,
     FILTER_SEPIA,
     FILTER_SHARPEN,
+    FILTER_PSYCHEDELIC,
+    FILTER_CUSTOM,
     NUM_FILTERS,
     NUM_MAX_EQUIVALENT_VLC_FILTERS = 3
 };
@@ -62,6 +65,16 @@ struct  filter_chain
     CIFilter *                  ci_filter;
     vlc_atomic_float            ci_params[NUM_FILTER_PARAM_MAX];
     struct filter_chain *       next;
+    union {
+        struct
+        {
+#define PSYCHEDELIC_COUNT_DEFAULT 5
+#define PSYCHEDELIC_COUNT_MIN 3
+#define PSYCHEDELIC_COUNT_MAX 40
+            int x, y;
+            unsigned count;
+        } psychedelic;
+    } ctx;
 };
 
 struct  ci_filters_ctx
@@ -72,13 +85,15 @@ struct  ci_filters_ctx
     CIContext *                 ci_ctx;
     CGColorSpaceRef             color_space;
     struct filter_chain *       fchain;
-    filter_t *                  src_converter;
     filter_t *                  dst_converter;
 };
 
 struct filter_sys_t
 {
     char const *                psz_filter;
+    bool                        mouse_moved;
+    vlc_mouse_t                 old_mouse;
+    vlc_mouse_t                 mouse;
     struct ci_filters_ctx *     ctx;
 };
 
@@ -107,7 +122,12 @@ struct  filter_desc
         }                       ranges[2];
         int                     vlc_type;
     } const             param_descs[NUM_FILTER_PARAM_MAX];
+    void (*pf_init)(filter_t *filter, struct filter_chain *fchain);
+    void (*pf_control)(filter_t *filter, struct filter_chain *fchain);
 };
+
+static void filter_PsychedelicInit(filter_t *filter, struct filter_chain *fchain);
+static void filter_PsychedelicControl(filter_t *filter, struct filter_chain *fchain);
 
 static struct filter_desc       filter_desc_table[] =
 {
@@ -158,7 +178,19 @@ static struct filter_desc       filter_desc_table[] =
         {
             { "sharpen-sigma", @"inputSharpness", {{{.0f, 2.f}, {.0f, 5.f}}}, VLC_VAR_FLOAT }
         }
-    }
+    },
+    [FILTER_PSYCHEDELIC] =
+    {
+        { "psychedelic", @"CIKaleidoscope" }, { { } },
+        filter_PsychedelicInit,
+        filter_PsychedelicControl
+    },
+    [FILTER_CUSTOM] =
+    {
+        { "custom" }, { { } },
+        filter_PsychedelicInit,
+        filter_PsychedelicControl
+    },
 };
 
 #define GET_CI_VALUE(vlc_value, vlc_range, ci_range)               \
@@ -281,6 +313,43 @@ ParamsCallback(vlc_object_t *obj,
     return VLC_SUCCESS;
 }
 
+static void filter_PsychedelicInit(filter_t *filter, struct filter_chain *fchain)
+{
+    filter_sys_t *sys = filter->p_sys;
+    fchain->ctx.psychedelic.x = filter->fmt_in.video.i_width / 2;
+    fchain->ctx.psychedelic.y = filter->fmt_in.video.i_height / 2;
+    fchain->ctx.psychedelic.count = PSYCHEDELIC_COUNT_DEFAULT;
+}
+
+static void filter_PsychedelicControl(filter_t *filter, struct filter_chain *fchain)
+{
+    filter_sys_t *sys = filter->p_sys;
+
+    if (sys->mouse_moved)
+    {
+        fchain->ctx.psychedelic.x = sys->mouse.i_x;
+        fchain->ctx.psychedelic.y = filter->fmt_in.video.i_height
+                                            - sys->mouse.i_y - 1;
+
+        if (sys->mouse.i_pressed)
+        {
+            fchain->ctx.psychedelic.count++;
+            if (fchain->ctx.psychedelic.count > PSYCHEDELIC_COUNT_MAX)
+                fchain->ctx.psychedelic.count = PSYCHEDELIC_COUNT_MIN;
+        }
+    }
+    CIVector *ci_vector =
+        [CIVector vectorWithX: (float)fchain->ctx.psychedelic.x
+                            Y: (float)fchain->ctx.psychedelic.y];
+    @try {
+        [fchain->ci_filter setValue: ci_vector
+                             forKey: @"inputCenter"];
+        [fchain->ci_filter setValue: [NSNumber numberWithFloat: fchain->ctx.psychedelic.count]
+                             forKey: @"inputCount"];
+    }
+    @catch (NSException * e) { /* inputCenter key doesn't exist */ }
+}
+
 static picture_t *
 Filter(filter_t *filter, picture_t *src)
 {
@@ -290,13 +359,6 @@ Filter(filter_t *filter, picture_t *src)
     filter_desc_table_GetFilterTypes(filter->p_sys->psz_filter, filter_types);
     if (ctx->fchain->filter != filter_types[0])
         return src;
-
-    if (ctx->src_converter)
-    {
-        src = ctx->src_converter->pf_video_filter(ctx->src_converter, src);
-        if (!src)
-            return NULL;
-    }
 
     picture_t *dst = picture_NewFromFormat(&ctx->cvpx_pool_fmt);
     if (!dst)
@@ -335,6 +397,8 @@ Filter(filter_t *filter, picture_t *src)
                                      forKey: ci_param_name];
             }
 
+            if (filter_desc_table[fchain->filter].pf_control)
+                filter_desc_table[fchain->filter].pf_control(filter, fchain);
             ci_img = [fchain->ci_filter valueForKey: kCIOutputImageKey];
         }
 
@@ -357,23 +421,51 @@ Filter(filter_t *filter, picture_t *src)
             return NULL;
     }
 
+    filter->p_sys->mouse_moved = false;
     return dst;
 
 error:
     if (dst)
         picture_Release(dst);
     picture_Release(src);
+    filter->p_sys->mouse_moved = false;
     return NULL;
 }
 
-static void
-Open_FilterInit(vlc_object_t *obj, struct filter_chain *filter)
+static int
+Mouse(filter_t *filter, struct vlc_mouse_t *mouse,
+      const struct vlc_mouse_t *old, const struct vlc_mouse_t *new)
+{
+    VLC_UNUSED(mouse);
+    filter_sys_t *sys = filter->p_sys;
+    sys->old_mouse = *old;
+    sys->mouse = *new;
+    sys->mouse_moved = true;
+    *mouse = *new;
+    return VLC_SUCCESS;
+}
+
+static int
+Open_FilterInit(filter_t *filter, struct filter_chain *fchain)
 {
     struct filter_param_desc const *filter_param_descs =
-        filter_desc_table[filter->filter].param_descs;
-    NSString *ci_filter_name = filter_desc_table_GetFilterName(filter->filter);
+        filter_desc_table[fchain->filter].param_descs;
+    NSString *ci_filter_name = filter_desc_table_GetFilterName(fchain->filter);
+    if (ci_filter_name == nil)
+    {
+        char *psz_filter_name = var_InheritString(filter, "ci-filter");
+        if (psz_filter_name)
+            ci_filter_name = [NSString stringWithUTF8String:psz_filter_name];
+        free(psz_filter_name);
+    }
 
-    filter->ci_filter = [CIFilter filterWithName: ci_filter_name];
+    fchain->ci_filter = [CIFilter filterWithName: ci_filter_name];
+    if (!fchain->ci_filter)
+    {
+        msg_Warn(filter, "filter '%s' could not be created",
+                 [ci_filter_name UTF8String]);
+        return VLC_EGENERIC;
+    }
 
     for (int i = 0; i < NUM_FILTER_PARAM_MAX && filter_param_descs[i].vlc; ++i)
     {
@@ -382,26 +474,29 @@ Open_FilterInit(vlc_object_t *obj, struct filter_chain *filter)
 
         float vlc_param_val;
         if (filter_param_descs[i].vlc_type == VLC_VAR_FLOAT)
-            vlc_param_val = var_CreateGetFloatCommand(obj, vlc_param_name);
+            vlc_param_val = var_CreateGetFloatCommand(filter, vlc_param_name);
         else if (filter_param_descs[i].vlc_type == VLC_VAR_INTEGER)
             vlc_param_val =
-                (float)var_CreateGetIntegerCommand(obj, vlc_param_name);
+                (float)var_CreateGetIntegerCommand(filter, vlc_param_name);
         else
             vlc_assert_unreachable();
 
-        vlc_atomic_init_float(filter->ci_params + i,
+        vlc_atomic_init_float(fchain->ci_params + i,
                               filter_ConvertParam(vlc_param_val,
                                                   filter_param_descs + i));
 
-        var_AddCallback(obj, filter_param_descs[i].vlc,
-                        ParamsCallback, filter);
+        var_AddCallback(filter, filter_param_descs[i].vlc,
+                        ParamsCallback, fchain);
     }
+    if (filter_desc_table[fchain->filter].pf_init)
+        filter_desc_table[fchain->filter].pf_init(filter, fchain);
+
+    return VLC_SUCCESS;
 }
 
 static int
-Open_CreateFilters
-(vlc_object_t *obj, struct filter_chain **p_last_filter,
- enum filter_type filter_types[NUM_MAX_EQUIVALENT_VLC_FILTERS])
+Open_CreateFilters(filter_t *filter, struct filter_chain **p_last_filter,
+                   enum filter_type filter_types[NUM_MAX_EQUIVALENT_VLC_FILTERS])
 {
     struct filter_chain *new_filter;
 
@@ -413,7 +508,12 @@ Open_CreateFilters
         if (!new_filter)
             return VLC_EGENERIC;
         p_last_filter = &new_filter;
-        Open_FilterInit(obj, new_filter);
+        if (Open_FilterInit(filter, new_filter) != VLC_SUCCESS)
+        {
+            for (unsigned int j = 0; j < i ; ++j)
+                filter_chain_RemoveFilter(p_last_filter, filter_types[i]);
+            return VLC_EGENERIC;
+        }
     }
 
     return VLC_SUCCESS;
@@ -448,37 +548,15 @@ Close_RemoveConverters(filter_t *filter, struct ci_filters_ctx *ctx)
         vlc_object_release(ctx->dst_converter);
         CVPixelBufferPoolRelease(ctx->outconv_cvpx_pool);
     }
-    if (ctx->src_converter)
-    {
-        module_unneed(ctx->src_converter, ctx->src_converter->p_module);
-        vlc_object_release(ctx->src_converter);
-    }
 }
 
 static int
-Open_AddConverters(filter_t *filter, struct ci_filters_ctx *ctx)
+Open_AddConverter(filter_t *filter, struct ci_filters_ctx *ctx)
 {
-    ctx->src_converter = vlc_object_create(filter, sizeof(filter_t));
-    if (!ctx->src_converter)
-        goto error;
-
-    ctx->src_converter->fmt_in = filter->fmt_in;
-    ctx->src_converter->fmt_out = filter->fmt_in;
-    ctx->src_converter->fmt_out.i_codec = VLC_CODEC_CVPX_NV12;
-    ctx->src_converter->fmt_out.video.i_chroma = VLC_CODEC_CVPX_NV12;
-
-    video_format_Copy(&ctx->cvpx_pool_fmt, &filter->fmt_in.video);
-    ctx->cvpx_pool_fmt.i_chroma = VLC_CODEC_CVPX_NV12;
+    ctx->cvpx_pool_fmt = filter->fmt_in.video;
+    ctx->cvpx_pool_fmt.i_chroma = VLC_CODEC_CVPX_BGRA;
     ctx->cvpx_pool = cvpxpool_create(&ctx->cvpx_pool_fmt, 3);
     if (!ctx->cvpx_pool)
-        goto error;
-
-    ctx->src_converter->owner.sys = ctx->cvpx_pool;
-    ctx->src_converter->owner.video.buffer_new = CVPX_buffer_new;
-
-    ctx->src_converter->p_module =
-        module_need(ctx->src_converter, "video converter", NULL, false);
-    if (!ctx->src_converter->p_module)
         goto error;
 
     ctx->dst_converter = vlc_object_create(filter, sizeof(filter_t));
@@ -487,8 +565,8 @@ Open_AddConverters(filter_t *filter, struct ci_filters_ctx *ctx)
 
     ctx->dst_converter->fmt_in = filter->fmt_out;
     ctx->dst_converter->fmt_out = filter->fmt_out;
-    ctx->dst_converter->fmt_in.i_codec = VLC_CODEC_CVPX_NV12;
-    ctx->dst_converter->fmt_in.video.i_chroma = VLC_CODEC_CVPX_NV12;
+    ctx->dst_converter->fmt_in.video.i_chroma =
+    ctx->dst_converter->fmt_in.i_codec = VLC_CODEC_CVPX_BGRA;
 
     ctx->outconv_cvpx_pool =
         cvpxpool_create(&filter->fmt_out.video, 2);
@@ -513,12 +591,6 @@ error:
         vlc_object_release(ctx->dst_converter);
         if (ctx->outconv_cvpx_pool)
             CVPixelBufferPoolRelease(ctx->outconv_cvpx_pool);
-    }
-    if (ctx->src_converter)
-    {
-        if (ctx->src_converter->p_module)
-            module_unneed(ctx->src_converter, ctx->src_converter->p_module);
-        vlc_object_release(ctx->src_converter);
     }
     return VLC_EGENERIC;
 }
@@ -570,7 +642,7 @@ Open(vlc_object_t *obj, char const *psz_filter)
 
         if (filter->fmt_in.video.i_chroma != VLC_CODEC_CVPX_NV12
          && filter->fmt_in.video.i_chroma != VLC_CODEC_CVPX_BGRA
-         && Open_AddConverters(filter, ctx))
+         && Open_AddConverter(filter, ctx))
             goto error;
 
 #pragma clang diagnostic push
@@ -609,19 +681,20 @@ Open(vlc_object_t *obj, char const *psz_filter)
                 goto error;
         }
 
-        if (Open_CreateFilters(obj, &ctx->fchain, filter_types))
+        if (Open_CreateFilters(filter, &ctx->fchain, filter_types))
             goto error;
 
         var_Create(filter->obj.parent, "ci-filters-ctx", VLC_VAR_ADDRESS);
         var_SetAddress(filter->obj.parent, "ci-filters-ctx", ctx);
     }
-    else if (Open_CreateFilters(obj, &ctx->fchain, filter_types))
+    else if (Open_CreateFilters(filter, &ctx->fchain, filter_types))
         goto error;
 
     filter->p_sys->psz_filter = psz_filter;
     filter->p_sys->ctx = ctx;
 
     filter->pf_video_filter = Filter;
+    filter->pf_video_mouse = Mouse;
 
     return VLC_SUCCESS;
 
@@ -669,6 +742,18 @@ OpenSharpen(vlc_object_t *obj)
     return Open(obj, "sharpen");
 }
 
+static int
+OpenPsychedelic(vlc_object_t *obj)
+{
+    return Open(obj, "psychedelic");
+}
+
+static int
+OpenCustom(vlc_object_t *obj)
+{
+    return Open(obj, "custom");
+}
+
 static void
 Close(vlc_object_t *obj)
 {
@@ -695,6 +780,10 @@ Close(vlc_object_t *obj)
     free(filter->p_sys);
 }
 
+#define CI_CUSTOM_FILTER_TEXT N_("Use a specific Core Image Filter")
+#define CI_CUSTOM_FILTER_LONGTEXT N_( \
+    "Example: 'CICrystallize', 'CIBumpDistortion', 'CIThermal', 'CIComicEffect'")
+
 vlc_module_begin()
     set_capability("video filter", 0)
     set_category(CAT_VIDEO)
@@ -720,4 +809,13 @@ vlc_module_begin()
     add_submodule()
     set_callbacks(OpenSharpen, Close)
     add_shortcut("sharpen")
+
+    add_submodule()
+    set_callbacks(OpenPsychedelic, Close)
+    add_shortcut("psychedelic")
+
+    add_submodule()
+    set_callbacks(OpenCustom, Close)
+    add_shortcut("ci")
+    add_string("ci-filter", "CIComicEffect", CI_CUSTOM_FILTER_TEXT, CI_CUSTOM_FILTER_LONGTEXT, true);
 vlc_module_end()

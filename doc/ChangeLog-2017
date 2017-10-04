@@ -1,3 +1,617 @@
+commit 3acf45b1477f989e271dc0d234d5d9256bc0f758
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Wed Oct 4 01:00:56 2017 +0200
+
+    darwin/dirs: Fix stack-use-after-scope bug
+
+commit 5cb3ee0b3667434768e6db95536e13ec2cdfa9f7
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Oct 3 21:35:41 2017 +0300
+
+    es_out: fix video format tables
+    
+     - Fix missing const (and eliminate relocs)
+     - Remove tautology comparison, use static assertion
+     - Use named indices
+
+commit d8c016412905b090dc411ce159a83933f6b7aab3
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Oct 3 21:15:46 2017 +0300
+
+    input: fix potential signed overflow
+
+commit 057796c1942a2afddfce1d3883b44bbf32c81130
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Tue Oct 3 19:58:49 2017 +0200
+
+    macosx: Do not resize fullscreen panel on long video names
+    
+    All labels with video names should not resize any window. Thus
+    make sure to always set a compression resistance < 500 for those
+    labels.
+
+commit 8370e63ae43a0133ea8b2ff8bcf533d4f4e96a34
+Author: Sebastian Ramacher <sramacher@debian.org>
+Date:   Mon Oct 2 01:11:15 2017 +0200
+
+    zsh: replace printf/puts with std::cout
+    
+    Signed-off-by: Sebastian Ramacher <sramacher@debian.org>
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 38763a6b6e5743ed7d4f4a3fa73ab3f9d6c94d47
+Author: Sebastian Ramacher <sramacher@debian.org>
+Date:   Mon Oct 2 01:11:14 2017 +0200
+
+    zsh completion: use public module interface
+    
+    Signed-off-by: Sebastian Ramacher <sramacher@debian.org>
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 78e28bdc50cfcb73952193cbc0aac85c12aa2992
+Author: Sebastian Ramacher <sramacher@debian.org>
+Date:   Mon Oct 2 01:11:13 2017 +0200
+
+    zsh completion: adapt to module interface changes
+    
+    Use module_config_get to obtain modules. Change ReplaceChars to work on
+    std::strings as we have to copy the strings anyhow. Also psz_type of
+    CONFIG_ITEM_MODULE type module configs can be NULL now.
+    
+    Signed-off-by: Sebastian Ramacher <sramacher@debian.org>
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 9f7d8ed71af2f8285d27698fdb9bd567594c1bb6
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Sep 28 15:35:04 2017 +0200
+
+    shine: Don't assume int == long int
+    
+    shine_encode_buffer expects an integer
+
+commit 8ae1fa3ad65a250a3ec1468c562e021630fbcad6
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Sep 28 15:34:57 2017 +0200
+
+    shine: Remove trailing whitespaces
+
+commit f48d0cb06af3edc19148f9fe5a730547556cbe74
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Oct 3 14:27:42 2017 +0200
+
+    codec: videotoolbox: fix build
+
+commit 1a9816928bf9fefa1f0766788c1934841b3666d6
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Oct 2 17:17:56 2017 +0200
+
+    codec: hxxx_helper: refactor using codec
+
+commit 6406ad5a40d42aa37cd57e62e231fde38d313d94
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Oct 2 16:20:58 2017 +0200
+
+    codec: hxxx_helper: add hevc
+
+commit d2eaa993c8f0e7e79eb72632d7675dd937af6a19
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Oct 3 13:24:54 2017 +0200
+
+    packetizer: hevc: extract sar
+
+commit 628eb070b08d7a14810ae2cf441204218252c53f
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Tue Oct 3 12:57:47 2017 +0200
+
+    macosx: Fix crash when trying to save metadata for empty item
+
+commit 7688c7c602882452838b05ba6f7cbdfb9c764f61
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Oct 2 17:31:40 2017 +0200
+
+    packetizer: hevc: only use prematched vps
+    
+    stop requiring aligned vps list
+
+commit 5f3ca90a5f3f0e42b984bcd0e1a9b0ac59e12e63
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Oct 2 15:56:58 2017 +0200
+
+    packetizer: hevc: check id range in getter
+
+commit a3c984ac64111e30e652a05a264a11124f9bd720
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Oct 2 13:56:34 2017 +0200
+
+    packetizer: hevc_nal: extract reorder depth
+
+commit 6c5cfc7010b3ad3daf07d96f7eda489e1e3712ac
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Oct 2 13:45:52 2017 +0200
+
+    packetizer: hevc_nal: add poc initializer helper
+
+commit 3121eb4c45ca66aa10b9d1bace529817706b9385
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Oct 2 13:45:20 2017 +0200
+
+    packetizer: hevc_nal: retrieve source scan
+
+commit 39ff9cce8de685274bb9083ea88fa0b0b5aa9d4b
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Tue Oct 3 11:41:15 2017 +0200
+
+    macosx: Open panel: Fix enabling audio popup menu in recoding tab
+    
+    Group methods together where they belong.
+    Also fixes autolayout issue in network tab on 10.7.
+
+commit 5162493b26f352e1d30b98a3067aa53a59c4e2b7
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Tue Oct 3 10:54:43 2017 +0200
+
+    macosx: open panel: Integrate capture views into main window
+    
+    Add a tab view for capture and screen panels and move them there.
+    This is important to have their width calculation already respected
+    at showing the open panel. Also cleans up code a bit.
+
+commit 7978f6d6608fe9af7b1592dd33490b3e3ff785f5
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Tue Oct 3 10:04:56 2017 +0200
+
+    macosx: open panel: Make width flexible to allow for l10n grows
+
+commit 601ce1b1afd0aa870b68de3b6f13cb0e9588d105
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Mon Oct 2 16:23:46 2017 +0200
+
+    macosx: simple prefs: Fix some alignment issues for boxes
+
+commit 05a0b21112fc33e611a19603c0c07897540d25b0
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Mon Oct 2 15:23:35 2017 +0200
+
+    macosx: open panel: Fixes lots of warnings about wrappable text fields
+    
+    Usually, most of the description labels shall appear as a single
+    line label only. To enforce that correctly (also for 10.7) the
+    following is set:
+    - Set "Uses single line mode" to YES
+    - Set layout to "truncates"
+    - Important: Set horizontal compression resistance to 750, so that
+      window resizes on larger text
+    - Make sure preferred width is set to automatic
+
+commit 5f4a6cd3af69a529a790153a160353a62c289f6b
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Mon Oct 2 14:50:06 2017 +0200
+
+    macosx: simple prefs: Minimum height for hotkey table
+    
+    Set minimum height for hotkey table view to avoid
+    full collapse on 10.7
+
+commit 2a09384752c5fc3422c5568b6335a4b19f43149c
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Mon Oct 2 14:48:57 2017 +0200
+
+    macosx: open panel: use wrappable text field in network tab
+
+commit 8b20b9d81581627dc88140d7961e76c737e73aa1
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Mon Oct 2 14:41:41 2017 +0200
+
+    macosx: Add helper class for multi-line text fields
+    
+    Autolayout on 10.7 cannot handle multi line text fields
+    automatically. Add a helper class which help calulating the
+    intrinsic size of the text fields.
+    
+    Use that class first in resume dialog.
+    
+    refs #17730
+
+commit 1057e3fe68a415c6c768721387a2521fb6b65a91
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Oct 3 09:12:48 2017 +0200
+
+    opengl: fix fall through warning
+
+commit c6ce03f5cb156743d3e62c0b8e7718a525a90378
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Oct 2 13:20:24 2017 +0200
+
+    codec: videotoolbox: with avcC playback with nal_length_size != 4
+    
+    Fixes #18876
+
+commit 9acba6b739a100e23b0823d34253b8c4e6d9e580
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Mon Oct 2 12:46:57 2017 +0200
+
+    vout: add missing frameworks to libglconv_cvpx LDFLAGS
+
+commit 6e7609fddff44c36c41a7da2324cc314c7b5377f
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Oct 2 10:33:29 2017 +0200
+
+    vout: fix libglconv_cvpx LDFLAGS
+    
+    Fixes #18870
+
+commit 36c90dad5e97a50988574929b9d4cbb1c02a4027
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Oct 2 09:50:32 2017 +0200
+
+    opengl: add BGRA texture support
+    
+    Refs #18870
+
+commit 92e0041f9a0dd115bcd45c352ccdec51ece7762e
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Oct 2 09:24:32 2017 +0200
+
+    chroma: cvpx: add missing error check
+
+commit de3d3898554d644feb9312a4a263a4d31525c189
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Sat Sep 30 11:23:36 2017 +0200
+
+    codec: ttml: fix font size computation
+
+commit 0863f4ee43c41036b55b21be806b8a6fb9f959e2
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Sep 29 19:51:19 2017 +0200
+
+    packetizer: hevc: use global interlaced content tagging
+
+commit 13f54c0a299cb47f995f5057ca8a40681c0a9730
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Sep 29 18:34:03 2017 +0200
+
+    packetizer: h264: prefix poc_context_t
+
+commit 9973c5ef3261f0df062170ccf97de5d203977142
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Fri Sep 29 20:32:28 2017 +0200
+
+    lua: Add alternative hosts to Twitch script
+
+commit 315aba90aa6cefbe82ae9f0aa7c4372b290eff40
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Sat Sep 30 15:39:04 2017 +0200
+
+    macosx: Fix RTL setting for checkbox in simple preferences
+
+commit fd1ba8f1f1ed25fd33c3c71a31d48f01a5bb4b75
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Sat Sep 30 14:13:55 2017 +0200
+
+    macosx: SyncTracks: Fix constraints, remove explicit width and height
+
+commit fee6089bbf9ce63c96eab9bfdabf3eb9097a7e9c
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Sat Sep 30 13:43:02 2017 +0200
+
+    macosx: Allow toggling of bookmark window
+    
+    This unifies behaviour with all the other HUD panels
+
+commit 70816fa15d64a5679be5fa5134e7b213ae8cdd49
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Sat Sep 30 13:34:52 2017 +0200
+
+    macosx: bookmarks panel: Fix layout, set minimum size
+    
+    Fix layout with translated strings. Set minimum sizes for table
+    view.
+
+commit 5dc5544ea5dba2f31f34e2bd4847a70729920f6d
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Sat Sep 30 13:26:56 2017 +0200
+
+    macosx: bookmarks: Remove extract button
+    
+    Extracting between different bookmarks was only possible with the
+    old streaming wizard which is removed since a long time. As the
+    new CAS panel does not support that feature, remove the button
+    for now.
+
+commit 66a97eefe9733e1aa892294a492fa15534672405
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Sat Sep 30 13:20:16 2017 +0200
+
+    macosx: log window: Do not set modal window level
+    
+    Previous level was showing window over all VLC windows and even
+    over windows from different application. This is not that
+    practical for debugging.
+
+commit c3bc38681a5df113399ec4ba59d5f0d137a0223a
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Sat Sep 30 13:05:58 2017 +0200
+
+    macosx: Improve horizontal resizing behaviour in simple prefs
+    
+    Layout popups / etc. in such a way that they increase size
+    in case of horizontal resize.
+    For labels, make sure:
+    - set single line mode to true, truncate
+    - set compression resistency to 750, so they do not get truncated
+    - set hugging priority to 251, so that popups get expanded, not labels
+    - With that, fixes some build warnings for functionality before 10.11
+    
+    Also, set maximum frame size to current frame size. This should
+    disallow excessive horizontal resizes, whereas vertical resizes
+    are still ok.
+    Set better background color for scroll view.
+
+commit d94db1b1b9caf76f174952a30c21376410b46c14
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Sep 29 18:04:23 2017 +0200
+
+    vout: also flush vd render filters
+    
+    This fixes a video freeze after a seek with VDPAU HW rendering. Indeed, the
+    VLC_CODEC_VDPAU_OUTPUT video converter need to be flushed to clear pictures
+    history.
+    
+    Fixes #18423
+
+commit 514951efb0b3dc21c623e5b0ab838a953fe8d292
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Sep 29 17:14:06 2017 +0200
+
+    fourcc: add VLC_CODEC_CVPX_BGRA fallback
+
+commit efdd18912c3e43bdcef10f5f8139586e5b35fad2
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Sep 29 16:38:29 2017 +0200
+
+    chroma: cvpx: also handle direct conversions
+    
+    Handle VLC_CODEC_CVPX_BGRA <=> VLC_CODEC_BGRA without NV12 filter proxy. (same
+    for NV12, YUV2, I420)
+
+commit 84deb956067869e16bf34f3108df51be46e7ca4f
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Sep 29 13:11:42 2017 +0200
+
+    codec: substext: handle blink style
+
+commit 3f11d25891511e66f0d67f9bcf19735d7987febf
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Sep 29 13:12:02 2017 +0200
+
+    vlc_text_style: add blink style
+    
+    required by captions
+
+commit c562884a2aa8b128451d16f8bd083582e348321e
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Sep 29 14:07:41 2017 +0200
+
+    ci_filters: fix pf_video_mouse return value
+
+commit ad9134fdf48b6da92a00cf9bb597558fbf43138d
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Fri Sep 29 11:24:31 2017 +0200
+
+    vout/opengl: module should define capabilities
+    
+      This was notably causing a SEGV in the configuration interface.
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 7a863b6c153d69893dccb029584de0b7130c2d29
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Sep 29 13:11:02 2017 +0200
+
+    ci_filters: add way to load a specific CIFilter
+    
+    For example:
+    vlc --video-filter ci --ci-filter CICrystallize
+
+commit 99ebfddc70b814572fa42f933a2c583c17560660
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Sep 29 13:08:26 2017 +0200
+
+    ci_filters: add psychedelic
+
+commit 3672d3a75fa9241a73c33797f6a27302e42de0e7
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Sep 29 13:09:37 2017 +0200
+
+    ci_filters: add callbacks to control a filter
+
+commit c41d3aa342f627a85b9c8b6275a1f5b5dc3a83e6
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Sep 29 13:06:43 2017 +0200
+
+    ci_filters: handle mouse events
+
+commit a39f72e65fe7475f60aa9b3760dd6c22ae2ea959
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Sep 29 13:04:41 2017 +0200
+
+    ci_filters: fail if the CI filter doesn't exist
+
+commit f71dd96c8b2c941abc9428e86929d993f76507a9
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Sep 28 18:17:23 2017 +0200
+
+    ci_filters: pass filter_t to internal functions
+
+commit 7ca8ea4b4efadbb79bcc227236887b9ae9723201
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Fri Sep 29 13:15:48 2017 +0200
+
+    macosx: Add build date + time to about dialog
+
+commit b40e9aa20f5a117ff21e46e9f455fa46423c156e
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Thu Sep 28 21:27:55 2017 +0200
+
+    macosx: Remove custom HUDOutlineView selection color
+    
+    This is not working fine anymore and causing visual glitches.
+
+commit 05c3bb28f823d301548cb709f7421e840020681c
+Author: Julian Scheel <julian@jusst.de>
+Date:   Wed Sep 27 17:11:20 2017 +0200
+
+    access: decklink: Set video chroma format
+    
+    A properly set chroma field is required for automatic filter selection
+    to work. As this is raw video chroma and codec are equal.
+    
+    Signed-off-by: Julian Scheel <julian@jusst.de>
+    Signed-off-by: Ilkka Ollakka <ileoo@videolan.org>
+
+commit fe0668c889117eff61444af22fd9e37461b806ca
+Author: Zhao Zhili <quinkblack@foxmail.com>
+Date:   Thu Sep 28 10:34:20 2017 +0800
+
+    libvlc: don't check current state in libvlc_media_player_set_pause
+    
+    Since input_Control is executed asynchronously, current state may be
+    different to the state when INPUT_SET_STATE executing. Here is a use
+    case which is broken by check current state in
+    libvlc_media_player_set_pause():
+    
+    1. current state is paused
+    2. call libvlc_media_player_play()
+    3. call libvlc_media_player_set_pause() immediately before
+    INPUT_SET_STATE PLAYING_S is executed, libvlc_media_player_set_pause()
+    will do nothing, so it looks like the pause request is been dropped
+    silently
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit b1ea27b2cd9e6ae6a14174e651d68968f1f1bc1c
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Sep 28 22:07:03 2017 +0200
+
+    codec: ttml: fix applying region > style attributes
+
+commit 3210a76eaa5c9769ffa218d518f265975aa2b63c
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Thu Sep 28 21:01:42 2017 +0200
+
+    macosx: Fix ignoring arguments in application:openFiles:
+    
+    In the past, it was relied on the playlist item count to ignore items
+    that were already parsed by libvlc, but this is not enough as with some
+    command line flag combinations, like
+      -v --video-splitter clone --clone-count 5
+    libvlc would not add any files, but Cocoa would try to open "clone" as
+    a file.
+    
+    Therefore we need to ignore the intersection of the launch arguments and
+    the files to open.
+
+commit c65b1f6a52a72dcf3806a9a914ab0e7c835ebab5
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Sep 28 19:59:47 2017 +0200
+
+    codec: ttml: fix region percent origin
+
+commit d9e35d47a92ab7be2b03cf0621df89eefb4594fd
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Sep 28 15:53:47 2017 +0200
+
+    webservices: acoustid: move to https
+
+commit 21a6d0337cc1a32655338d2973d97229db73ebbe
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Sep 28 18:39:36 2017 +0200
+
+    codec: cc/substext: remove late flags on update
+
+commit f1c456ae9c9cbe262d18e22142bce101e47ec3f2
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Sep 28 17:57:05 2017 +0200
+
+    codec: cc/substext: handle relative offset, don't use cc/row coords
+
+commit 63293a4674ea1b458c74833fe344d04c3df8a706
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Sep 28 18:17:23 2017 +0200
+
+    vout: increase splitted vd pool size
+    
+    Since some vout may hold a reference on the displayed picture.
+    
+    Fixes #18537
+
+commit dad30bc37e135e6be2a0d499d668738b6648e615
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Sep 28 13:50:36 2017 +0200
+
+    ci_filters: output BGRA instead of NV12 as intermediate
+    
+    When filtering a 1080p YUV2 video, CPU goes from 60% to 40%. Ideally, the vout
+    should be reconfigured to switch from YUV2 to BGRA to get the best performances
+    possible.
+
+commit ea8eb91afa76d1f3ca7e14f04dfd3f2abaa11ee3
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Sep 28 13:46:46 2017 +0200
+
+    ci_filters: fix leak
+
+commit 50b2d6ad85046763ba3123a11a4c5d2388117950
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Sep 28 11:11:18 2017 +0200
+
+    ci_filters: use CoreImage converter for source
+    
+    CoreImage can accept YUV2 as input (it'll do a conversion internally), but it
+    can't output this same chroma (so the dst_cnverter is still needed).
+
+commit 9774655f01312d4ef2e2bbae0526b8f2f374a1f5
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Sep 28 12:21:43 2017 +0200
+
+    demux: adaptive: reselect using SET_ES instead of SET_ES_STATE
+    
+    Otherwises other decoders are still active and then streams.
+    Also could trigger dual selected track states.
+
+commit d0b88cac552b728700daff48ad48c769672f90fb
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Sep 28 12:20:09 2017 +0200
+
+    vlc_es_out: update comments to avoid es state control misuses
+
+commit 41ce842d1cdfcbc3c76952f7e999598f5444e309
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Sep 28 11:06:19 2017 +0200
+
+    codec: videotoolbox: always check device capabilities
+    
+    The H264 profile/level check was only done for avcC content and not when a new
+    SPS/PPS was parsed.
+
+commit 6ab01528c3f4e95d1c2522e04c4ee8be743f1db0
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Sep 28 11:04:17 2017 +0200
+
+    codec: videotoolbox: error if SetH264DecoderInfo fails
+
+commit 99a48af34d57a7652e5e13f271c540ed048cfa26
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Sep 28 09:00:23 2017 +0200
+
+    codec: videotoolbox: simplify CodecPrecheck
+
+commit d1f5f4a0a480357f41ad0ba37509cbb62f308834
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Sep 28 09:37:57 2017 +0200
+
+    codec: hxxx_helper: add h264_helper_get_current_profile_level
+
 commit bced5fe7a56bb8373be9100c3bf78bab179d3e06
 Author: Francois Cartegnie <fcvlcdev@free.fr>
 Date:   Wed Sep 27 19:44:37 2017 +0200

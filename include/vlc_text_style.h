@@ -2,7 +2,7 @@
  * vlc_text_style.h: text_style_t definition and helpers.
  *****************************************************************************
  * Copyright (C) 1999-2010 VLC authors and VideoLAN
- * $Id: b3b07bf8cd0252c4aafe66ccbcac92eec725672a $
+ * $Id: c24d76adcfedf63514255bb31483acb9325df1b1 $
  *
  * Authors: Derk-Jan Hartman <hartman _AT_ videolan _DOT_ org>
  *          basOS G <noxelia 4t gmail , com>
@@ -108,6 +108,8 @@ typedef struct
 #define STYLE_HALFWIDTH         (1 << 7)
 #define STYLE_MONOSPACED        (1 << 8)
 #define STYLE_DOUBLEWIDTH       (1 << 9)
+#define STYLE_BLINK_FOREGROUND  (1 << 10)
+#define STYLE_BLINK_BACKGROUND  (1 << 11)
 
 #define STYLE_DEFAULT_FONT_SIZE 20
 #define STYLE_DEFAULT_REL_FONT_SIZE 6.25

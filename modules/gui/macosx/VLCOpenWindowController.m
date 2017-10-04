@@ -2,7 +2,7 @@
  * VLCOpenWindowController.m: Open dialogues for VLC's MacOS X port
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: 11638e187313ffb4c5f665c1e58a4250e31401fd $
+ * $Id: 0524ba8c51d01ab1286f404920b8b425971a0f9f $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -84,7 +84,6 @@ struct display_info_t
     NSArray *_opticalDevices;
     NSMutableArray *_specialMediaFolders;
     NSString *_filePath;
-    NSView *_currentCaptureView;
     NSString *_fileSlavePath;
     NSString *_subPath;
     NSString *_MRL;
@@ -206,7 +205,6 @@ static NSString *kCaptureTabViewId  = @"capture";
     [_captureModePopup removeAllItems];
     [_captureModePopup addItemWithTitle: _NS("Input Devices")];
     [_captureModePopup addItemWithTitle: _NS("Screen")];
-    [_screenlongLabel setStringValue: _NS("This input allows you to save, stream or display your current screen contents.")];
     [_screenFPSLabel setStringValue: [NSString stringWithFormat:@"%@:",_NS("Frames per Second")]];
     [_screenLabel setStringValue: [NSString stringWithFormat:@"%@:",_NS("Screen")]];
     [_screenLeftLabel setStringValue: [NSString stringWithFormat:@"%@:",_NS("Subscreen left")]];
@@ -510,50 +508,6 @@ static NSString *kCaptureTabViewId  = @"capture";
     [[[VLCMain sharedInstance] playlist] addPlaylistItems:[NSArray arrayWithObject:itemOptionsDictionary]];
 }
 
-- (IBAction)screenChanged:(id)sender
-{
-    int selected_index = [_screenPopup indexOfSelectedItem];
-    if (selected_index >= [_displayInfos count]) return;
-
-    NSValue *v = [_displayInfos objectAtIndex:selected_index];
-    struct display_info_t *item = (struct display_info_t *)[v pointerValue];
-
-    [_screenLeftStepper setMaxValue: item->rect.size.width];
-    [_screenTopStepper setMaxValue: item->rect.size.height];
-    [_screenWidthStepper setMaxValue: item->rect.size.width];
-    [_screenHeightStepper setMaxValue: item->rect.size.height];
-
-    [_screenqtkAudioPopup setEnabled: [_screenqtkAudioCheckbox state]];
-}
-
-- (IBAction)qtkChanged:(id)sender
-{
-    NSInteger selectedDevice = [_qtkVideoDevicePopup indexOfSelectedItem];
-    if (_avvideoDevices.count >= 1) {
-        _avCurrentDeviceUID = [[(AVCaptureDevice *)[_avvideoDevices objectAtIndex:selectedDevice] uniqueID] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    }
-}
-
-- (IBAction)qtkAudioChanged:(id)sender
-{
-    NSInteger selectedDevice = [_qtkAudioDevicePopup indexOfSelectedItem];
-    if (_avaudioDevices.count >= 1) {
-        _avCurrentAudioDeviceUID = [[(AVCaptureDevice *)[_avaudioDevices objectAtIndex:selectedDevice] uniqueID] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    }
-    [_screenqtkAudioPopup selectItemAtIndex: selectedDevice];
-    [_qtkAudioDevicePopup selectItemAtIndex: selectedDevice];
-}
-
-- (IBAction)qtkToggleUIElements:(id)sender
-{
-    [_qtkAudioDevicePopup setEnabled:[_qtkAudioCheckbox state]];
-    BOOL b_state = [_qtkVideoCheckbox state];
-    [_qtkVideoDevicePopup setEnabled:b_state];
-    [self qtkAudioChanged:sender];
-    [self qtkChanged:sender];
-    [self openCaptureModeChanged:sender];
-}
-
 #pragma mark -
 #pragma mark Main Actions
 
@@ -754,6 +708,7 @@ static NSString *kCaptureTabViewId  = @"capture";
     NSRect viewRect = [theView frame];
     [theView setFrame: NSMakeRect(233, 0, viewRect.size.width, viewRect.size.height)];
     [theView setAutoresizesSubviews: YES];
+
     NSView *opticalTabView = [[_tabView tabViewItemAtIndex: [_tabView indexOfTabViewItemWithIdentifier:kDiscTabViewId]] view];
     if (_currentOpticalMediaView) {
         [[opticalTabView animator] replaceSubview: _currentOpticalMediaView with: theView];
@@ -1133,25 +1088,13 @@ static NSString *kCaptureTabViewId  = @"capture";
 #pragma mark -
 #pragma mark Capture Panel
 
-- (void)showCaptureView: theView
-{
-    NSRect viewRect = [theView frame];
-    [theView setFrame: NSMakeRect(0, -10, viewRect.size.width, viewRect.size.height)];
-    [theView setAutoresizesSubviews: YES];
-    if (_currentCaptureView) {
-        [[[[_tabView tabViewItemAtIndex: 3] view] animator] replaceSubview: _currentCaptureView with: theView];
-    } else {
-        [[[[_tabView tabViewItemAtIndex: 3] view] animator] addSubview: theView];
-    }
-    _currentCaptureView = theView;
-}
-
 - (IBAction)openCaptureModeChanged:(id)sender
 {
     intf_thread_t * p_intf = getIntf();
 
     if ([[[_captureModePopup selectedItem] title] isEqualToString: _NS("Screen")]) {
-        [self showCaptureView: _screenView];
+        [_captureTabView selectTabViewItemAtIndex:1];
+
         [self setMRL: @"screen://"];
         [_screenHeightTextField setIntValue: config_GetInt(p_intf, "screen-height")];
         [_screenWidthTextField setIntValue: config_GetInt(p_intf, "screen-width")];
@@ -1200,7 +1143,8 @@ static NSString *kCaptureTabViewId  = @"capture";
         }
     }
     else if ([[[_captureModePopup selectedItem] title] isEqualToString: _NS("Input Devices")]) {
-        [self showCaptureView: _qtkView];
+        [_captureTabView selectTabViewItemAtIndex:0];
+
         [self qtkChanged:nil];
         [self qtkAudioChanged:nil];
 
@@ -1213,12 +1157,63 @@ static NSString *kCaptureTabViewId  = @"capture";
     }
 }
 
+// Screen actions
 - (void)screenFPSfieldChanged:(NSNotification *)o_notification
 {
     [_screenFPSStepper setFloatValue: [_screenFPSTextField floatValue]];
     if ([[_screenFPSTextField stringValue] isEqualToString: @""])
         [_screenFPSTextField setFloatValue: 1.0];
     [self setMRL: @"screen://"];
+}
+
+- (IBAction)screenChanged:(id)sender
+{
+    int selected_index = [_screenPopup indexOfSelectedItem];
+    if (selected_index >= [_displayInfos count]) return;
+
+    NSValue *v = [_displayInfos objectAtIndex:selected_index];
+    struct display_info_t *item = (struct display_info_t *)[v pointerValue];
+
+    [_screenLeftStepper setMaxValue: item->rect.size.width];
+    [_screenTopStepper setMaxValue: item->rect.size.height];
+    [_screenWidthStepper setMaxValue: item->rect.size.width];
+    [_screenHeightStepper setMaxValue: item->rect.size.height];
+
+    [_screenqtkAudioPopup setEnabled: [_screenqtkAudioCheckbox state]];
+}
+
+- (IBAction)screenAudioChanged:(id)sender
+{
+    [_screenqtkAudioPopup setEnabled:_screenqtkAudioCheckbox.state];
+}
+
+// QTKit Recording actions
+- (IBAction)qtkChanged:(id)sender
+{
+    NSInteger selectedDevice = [_qtkVideoDevicePopup indexOfSelectedItem];
+    if (_avvideoDevices.count >= 1) {
+        _avCurrentDeviceUID = [[(AVCaptureDevice *)[_avvideoDevices objectAtIndex:selectedDevice] uniqueID] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    }
+}
+
+- (IBAction)qtkAudioChanged:(id)sender
+{
+    NSInteger selectedDevice = [_qtkAudioDevicePopup indexOfSelectedItem];
+    if (_avaudioDevices.count >= 1) {
+        _avCurrentAudioDeviceUID = [[(AVCaptureDevice *)[_avaudioDevices objectAtIndex:selectedDevice] uniqueID] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    }
+    [_screenqtkAudioPopup selectItemAtIndex: selectedDevice];
+    [_qtkAudioDevicePopup selectItemAtIndex: selectedDevice];
+}
+
+- (IBAction)qtkToggleUIElements:(id)sender
+{
+    [_qtkAudioDevicePopup setEnabled:[_qtkAudioCheckbox state]];
+    BOOL b_state = [_qtkVideoCheckbox state];
+    [_qtkVideoDevicePopup setEnabled:b_state];
+    [self qtkAudioChanged:sender];
+    [self qtkChanged:sender];
+    [self openCaptureModeChanged:sender];
 }
 
 #pragma mark -

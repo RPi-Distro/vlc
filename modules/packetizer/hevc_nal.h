@@ -185,13 +185,16 @@ bool hevc_get_sps_profile_tier_level( const hevc_sequence_parameter_set_t *,
 bool hevc_get_picture_size( const hevc_sequence_parameter_set_t *, unsigned *p_w, unsigned *p_h,
                             unsigned *p_vw, unsigned *p_vh );
 bool hevc_get_frame_rate( const hevc_sequence_parameter_set_t *,
-                          hevc_video_parameter_set_t ** /* HEVC_MAX_VPS || NULL */,
+                          const hevc_video_parameter_set_t * /* can be NULL */,
                           unsigned *pi_num, unsigned *pi_den );
+bool hevc_get_aspect_ratio( const hevc_sequence_parameter_set_t *,
+                            unsigned *pi_num, unsigned *pi_den );
 bool hevc_get_colorimetry( const hevc_sequence_parameter_set_t *p_sps,
                            video_color_primaries_t *p_primaries,
                            video_transfer_func_t *p_transfer,
                            video_color_space_t *p_colorspace,
                            bool *p_full_range );
+uint8_t hevc_get_max_num_reorder( const hevc_video_parameter_set_t *p_vps );
 bool hevc_get_slice_type( const hevc_slice_segment_header_t *, enum hevc_slice_type_e * );
 
 /* Get level and Profile from DecoderConfigurationRecord */
@@ -209,6 +212,13 @@ typedef struct
     bool first_picture; /* Must be set on start or on NAL_EOS */
 } hevc_poc_ctx_t;
 
+static inline void hevc_poc_cxt_init( hevc_poc_ctx_t *p_ctx )
+{
+    p_ctx->prevPicOrderCnt.lsb = 0;
+    p_ctx->prevPicOrderCnt.msb = 0;
+    p_ctx->first_picture = true;
+}
+
 int hevc_compute_picture_order_count( const hevc_sequence_parameter_set_t *p_sps,
                                        const hevc_slice_segment_header_t *slice,
                                        hevc_poc_ctx_t *ctx );
@@ -221,5 +231,7 @@ void hevc_release_sei_pic_timing( hevc_sei_pic_timing_t * );
 
 uint8_t hevc_get_num_clock_ts( const hevc_sequence_parameter_set_t *,
                                const hevc_sei_pic_timing_t * /* can be NULL */ );
+bool hevc_frame_is_progressive( const hevc_sequence_parameter_set_t *,
+                                const hevc_sei_pic_timing_t * /* can be NULL */);
 
 #endif /* HEVC_NAL_H */

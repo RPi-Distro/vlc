@@ -2,7 +2,7 @@
  * h264.c: h264/avc video packetizer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
- * $Id: a6814229c1d4785ba4db20cef5f4b88474b52a20 $
+ * $Id: f209ed455ad1a77ab2bbb5b9090acfcd0ccf8716 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -114,7 +114,7 @@ struct decoder_sys_t
     unsigned i_recoveryfnum;
 
     /* POC */
-    poc_context_t pocctx;
+    h264_poc_context_t pocctx;
     struct
     {
         mtime_t pts;

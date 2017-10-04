@@ -2,7 +2,7 @@
  * VLCLogWindowController.m: Log message window controller
  *****************************************************************************
  * Copyright (C) 2004-2013 VLC authors and VideoLAN
- * $Id: 2e976276e1b9baa73eb45f887c1f9a0cfc40f4bc $
+ * $Id: 1f26e1e3bd7a7c80347decd8c4b6a9b77f9d2916 $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *          Pierre d'Herbemont <pdherbemont # videolan org>
@@ -92,7 +92,6 @@ static void MsgCallback(void *data, int type, const vlc_log_t *item, const char 
     [self.window setExcludedFromWindowsMenu:YES];
     [self.window setDelegate:self];
     [self.window setTitle:_NS("Messages")];
-    [self.window setLevel:NSModalPanelWindowLevel];
 
 #define setupButton(target, title, desc)                                              \
     [target accessibilitySetOverrideValue:title                                       \
