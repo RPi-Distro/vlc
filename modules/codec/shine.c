@@ -129,7 +129,7 @@ static int OpenEncoder( vlc_object_t *p_this )
 
     shine_set_config_mpeg_defaults(&cfg.mpeg);
     cfg.mpeg.bitr = p_enc->fmt_out.i_bitrate / 1000;
- 
+
     if (shine_check_config(cfg.wave.samplerate, cfg.mpeg.bitr) == -1) {
         msg_Err(p_enc, "Invalid bitrate %d\n", cfg.mpeg.bitr);
         free(p_sys);
@@ -246,7 +246,7 @@ static block_t *EncodeFrame( encoder_t *p_enc, block_t *p_block )
         aout_Deinterleave( pcm_planar_buf, p_pcm_block->p_buffer,
                 p_sys->samples_per_frame, p_enc->fmt_in.audio.i_channels, p_enc->fmt_in.i_codec);
 
-        long written;
+        int written;
         unsigned char *buf = shine_encode_buffer(p_sys->s, pcm_planar_buf_chans, &written);
         block_Release( p_pcm_block );
 

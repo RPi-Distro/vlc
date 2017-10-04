@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-09-28 02:28+0000\n"
+"POT-Creation-Date: 2017-10-04 02:30+0000\n"
 "PO-Revision-Date: 2014-05-20 09:00+0000\n"
 "Last-Translator: Atanas Beloborodov <arrtedone@gmail.com>\n"
 "Language-Team: Bulgarian (http://www.transifex.com/projects/p/vlc-trans/"
@@ -661,7 +661,7 @@ msgstr "Откриване на Dolby Surround"
 msgid "Stereo"
 msgstr "Стерео"
 
-#: src/audio_output/output.c:439 src/input/es_out.c:3196
+#: src/audio_output/output.c:439 src/input/es_out.c:3201
 #: src/libvlc-module.c:195 src/libvlc-module.c:293 src/libvlc-module.c:366
 #: src/misc/actions.c:81 modules/audio_filter/channel_mixer/mono.c:89
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
@@ -921,12 +921,12 @@ msgstr "Да"
 msgid "Closed captions %u"
 msgstr "Затворени заглавия %u"
 
-#: src/input/es_out.c:3025 src/input/es_out.c:3286 modules/access/imem.c:64
+#: src/input/es_out.c:3025 src/input/es_out.c:3293 modules/access/imem.c:64
 msgid "Subtitle"
 msgstr "Субтитри"
 
 #: src/input/es_out.c:3033 src/input/es_out.c:3060 src/input/es_out.c:3104
-#: src/input/es_out.c:3286 modules/gui/macosx/VLCAddonsWindowController.m:132
+#: src/input/es_out.c:3293 modules/gui/macosx/VLCAddonsWindowController.m:132
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:185
 #: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1498
 msgid "Type"
@@ -950,7 +950,7 @@ msgid "Language"
 msgstr "Език"
 
 #: src/input/es_out.c:3054 src/input/meta.c:61
-#: modules/gui/macosx/VLCBookmarksWindowController.m:84
+#: modules/gui/macosx/VLCBookmarksWindowController.m:83
 #: modules/gui/macosx/VLCPlaylist.m:112 modules/gui/qt/dialogs/bookmarks.cpp:75
 msgid "Description"
 msgstr "Описание"
@@ -1068,50 +1068,55 @@ msgstr "Отдясно"
 msgid "Orientation"
 msgstr "Ориентация на огледалото"
 
-#: src/input/es_out.c:3149 src/input/es_out.c:3163 src/input/es_out.c:3179
-#: src/input/es_out.c:3195 src/playlist/tree.c:67
+#: src/input/es_out.c:3150 src/input/es_out.c:3168 src/input/es_out.c:3186
+#: src/input/es_out.c:3200 src/playlist/tree.c:67
 #: modules/access/dtv/access.c:75 modules/access/v4l2/v4l2.c:242
 msgid "Undefined"
 msgstr "Неопределено"
 
-#: src/input/es_out.c:3150
+#: src/input/es_out.c:3152
 msgid "ITU-R BT.601 (525 lines, 60 Hz)"
 msgstr ""
 
-#: src/input/es_out.c:3151
+#: src/input/es_out.c:3154
 msgid "ITU-R BT.601 (625 lines, 50 Hz)"
 msgstr ""
 
-#: src/input/es_out.c:3158
+#: src/input/es_out.c:3162
 #, fuzzy
 msgid "Color primaries"
 msgstr "Цветни съобщения"
 
-#: src/input/es_out.c:3164 src/libvlc-module.c:360
+#: src/input/es_out.c:3169 src/libvlc-module.c:360
 #: modules/video_filter/deinterlace/deinterlace.h:58
 msgid "Linear"
 msgstr ""
 
-#: src/input/es_out.c:3174
+#: src/input/es_out.c:3176
+msgid "Hybrid Log-Gamma"
+msgstr ""
+
+#: src/input/es_out.c:3180
 #, fuzzy
 msgid "Color transfer function"
 msgstr "Извличане на цвят"
 
-#: src/input/es_out.c:3185
-msgid "Limited Range"
-msgstr ""
-
-#: src/input/es_out.c:3186
-#, fuzzy
-msgid "Full Range"
-msgstr "Пълен бас"
-
-#: src/input/es_out.c:3189
+#: src/input/es_out.c:3193
 #, fuzzy
 msgid "Color space"
 msgstr "Цветни съобщения"
 
-#: src/input/es_out.c:3197 src/libvlc-module.c:293 src/libvlc-module.c:366
+#: src/input/es_out.c:3193
+#, c-format
+msgid "%s Range"
+msgstr ""
+
+#: src/input/es_out.c:3195
+#, fuzzy
+msgid "Full"
+msgstr "Пълен бас"
+
+#: src/input/es_out.c:3202 src/libvlc-module.c:293 src/libvlc-module.c:366
 #: modules/audio_filter/channel_mixer/mono.c:91
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
 #: modules/codec/subsdec.c:167 modules/codec/zvbi.c:83
@@ -1122,94 +1127,94 @@ msgstr "Цветни съобщения"
 msgid "Center"
 msgstr "Центъра"
 
-#: src/input/es_out.c:3198
+#: src/input/es_out.c:3203
 #, fuzzy
 msgid "Top Left"
 msgstr "Горе-вляво"
 
-#: src/input/es_out.c:3199
+#: src/input/es_out.c:3204
 #, fuzzy
 msgid "Top Center"
 msgstr "Центъра"
 
-#: src/input/es_out.c:3200
+#: src/input/es_out.c:3205
 #, fuzzy
 msgid "Bottom Left"
 msgstr "Долу-вляво"
 
-#: src/input/es_out.c:3201
+#: src/input/es_out.c:3206
 #, fuzzy
 msgid "Bottom Center"
 msgstr "Долу-вляво"
 
-#: src/input/es_out.c:3203
+#: src/input/es_out.c:3210
 #, fuzzy
 msgid "Chroma location"
 msgstr "Усилване на цвета"
 
-#: src/input/es_out.c:3212
+#: src/input/es_out.c:3219
 msgid "Rectangular"
 msgstr ""
 
-#: src/input/es_out.c:3215
+#: src/input/es_out.c:3222
 msgid "Equirectangular"
 msgstr ""
 
-#: src/input/es_out.c:3218
+#: src/input/es_out.c:3225
 msgid "Cubemap"
 msgstr ""
 
-#: src/input/es_out.c:3224
+#: src/input/es_out.c:3231
 #, fuzzy
 msgid "Projection"
 msgstr "Посока"
 
-#: src/input/es_out.c:3226
+#: src/input/es_out.c:3233
 msgid "Yaw"
 msgstr ""
 
-#: src/input/es_out.c:3228 modules/video_output/vmem.c:48
+#: src/input/es_out.c:3235 modules/video_output/vmem.c:48
 msgid "Pitch"
 msgstr "Размер на буфера"
 
-#: src/input/es_out.c:3230
+#: src/input/es_out.c:3237
 msgid "Roll"
 msgstr ""
 
-#: src/input/es_out.c:3232
+#: src/input/es_out.c:3239
 msgid "Field of view"
 msgstr ""
 
-#: src/input/es_out.c:3237
+#: src/input/es_out.c:3244
 msgid "Max luminance"
 msgstr ""
 
-#: src/input/es_out.c:3242
+#: src/input/es_out.c:3249
 msgid "Min luminance"
 msgstr ""
 
-#: src/input/es_out.c:3250
+#: src/input/es_out.c:3257
 msgid "Primary R"
 msgstr ""
 
-#: src/input/es_out.c:3257
+#: src/input/es_out.c:3264
 msgid "Primary G"
 msgstr ""
 
-#: src/input/es_out.c:3264
+#: src/input/es_out.c:3271
 msgid "Primary B"
 msgstr ""
 
-#: src/input/es_out.c:3271
+#: src/input/es_out.c:3278
 #, fuzzy
 msgid "White point"
 msgstr "Бяло - Зелен компонент"
 
-#: src/input/es_out.c:3275
+#: src/input/es_out.c:3282
 msgid "MaxCLL"
 msgstr ""
 
-#: src/input/es_out.c:3280
+#: src/input/es_out.c:3287
 msgid "MaxFALL"
 msgstr ""
 
@@ -1224,8 +1229,8 @@ msgstr "VLC не може да отвори MRL '%s'. Вижте отчета з
 
 #: src/input/meta.c:55 src/input/var.c:177 modules/gui/macosx/VLCMainMenu.m:398
 #: modules/gui/macosx/VLCMainMenu.m:399
-#: modules/gui/macosx/VLCOpenWindowController.m:179
-#: modules/gui/macosx/VLCOpenWindowController.m:181
+#: modules/gui/macosx/VLCOpenWindowController.m:178
+#: modules/gui/macosx/VLCOpenWindowController.m:180
 #: modules/gui/macosx/VLCPlaylist.m:107 modules/gui/macosx/VLCPlaylistInfo.m:63
 #: modules/gui/qt/components/open_panels.cpp:509
 #: modules/gui/qt/components/open_panels.cpp:523 modules/mux/asf.c:56
@@ -1268,7 +1273,7 @@ msgstr "Дата"
 msgid "Setting"
 msgstr "Настройка"
 
-#: src/input/meta.c:65 modules/gui/macosx/VLCOpenWindowController.m:189
+#: src/input/meta.c:65 modules/gui/macosx/VLCOpenWindowController.m:188
 msgid "URL"
 msgstr ""
 
@@ -1339,8 +1344,8 @@ msgstr "Програми"
 
 #: src/input/var.c:182 modules/gui/macosx/VLCMainMenu.m:400
 #: modules/gui/macosx/VLCMainMenu.m:401
-#: modules/gui/macosx/VLCOpenWindowController.m:180
-#: modules/gui/macosx/VLCOpenWindowController.m:182
+#: modules/gui/macosx/VLCOpenWindowController.m:179
+#: modules/gui/macosx/VLCOpenWindowController.m:181
 msgid "Chapter"
 msgstr "Глава"
 
@@ -1820,9 +1825,9 @@ msgstr ""
 #: modules/codec/avcodec/avcodec.c:50 modules/codec/avcodec/avcodec.c:54
 #: modules/codec/kate.c:199 modules/codec/x264.c:438 modules/codec/x264.c:443
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:191
-#: modules/gui/macosx/VLCOpenWindowController.m:245
-#: modules/gui/macosx/VLCOpenWindowController.m:274
-#: modules/gui/macosx/VLCOpenWindowController.m:275
+#: modules/gui/macosx/VLCOpenWindowController.m:243
+#: modules/gui/macosx/VLCOpenWindowController.m:272
+#: modules/gui/macosx/VLCOpenWindowController.m:273
 #: modules/text_renderer/freetype/freetype.c:143
 #: share/lua/http/dialogs/create_stream.html:196
 msgid "None"
@@ -2722,7 +2727,7 @@ msgstr "Повторение на входящия поток"
 msgid "Number of time the same input will be repeated"
 msgstr "Колко пъти потока да бъде повторен"
 
-#: src/libvlc-module.c:632 modules/gui/macosx/VLCOpenWindowController.m:160
+#: src/libvlc-module.c:632 modules/gui/macosx/VLCOpenWindowController.m:159
 msgid "Start time"
 msgstr "Начало на възпроизвеждане"
 
@@ -2730,7 +2735,7 @@ msgstr "Начало на възпроизвеждане"
 msgid "The stream will start at this position (in seconds)."
 msgstr "Потокът ще стартира от тази позиция (в секунди)."
 
-#: src/libvlc-module.c:636 modules/gui/macosx/VLCOpenWindowController.m:162
+#: src/libvlc-module.c:636 modules/gui/macosx/VLCOpenWindowController.m:161
 msgid "Stop time"
 msgstr "Край на възпроизвеждане"
 
@@ -5231,7 +5236,7 @@ msgstr "Неуспех при отварянето на \"%s\" за запис"
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:834
-#: modules/gui/macosx/VLCBookmarksWindowController.m:90
+#: modules/gui/macosx/VLCBookmarksWindowController.m:89
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:153
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:182
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:339
@@ -5241,8 +5246,8 @@ msgstr "Неуспех при отварянето на \"%s\" за запис"
 #: modules/gui/macosx/VLCCoreDialogProvider.m:293
 #: modules/gui/macosx/VLCMainWindow.m:205
 #: modules/gui/macosx/VLCMainWindow.m:211
-#: modules/gui/macosx/VLCOpenWindowController.m:135
-#: modules/gui/macosx/VLCOpenWindowController.m:193
+#: modules/gui/macosx/VLCOpenWindowController.m:134
+#: modules/gui/macosx/VLCOpenWindowController.m:192
 #: modules/gui/macosx/prefs.m:189
 #: modules/gui/macosx/VLCSimplePrefsController.m:274
 #: modules/gui/macosx/VLCSimplePrefsController.m:300
@@ -6218,7 +6223,7 @@ msgstr "Възпроизведен първи"
 msgid "Audio CD - Track %02i"
 msgstr "Аудио CD - Пътечка %02i"
 
-#: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:170
+#: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:169
 msgid "Audio CD"
 msgstr "Аудио CD"
 
@@ -6401,7 +6406,7 @@ msgstr ""
 msgid "10 bits"
 msgstr ""
 
-#: modules/access/decklink.cpp:317 modules/demux/ty.c:765
+#: modules/access/decklink.cpp:318 modules/demux/ty.c:765
 msgid "Closed captions 1"
 msgstr "Затворени заглавия 1"
 
@@ -7232,7 +7237,7 @@ msgstr "Въвеждане от файл"
 
 #: modules/access/fs.c:35 modules/access_output/file.c:389
 #: modules/audio_output/file.c:113
-#: modules/gui/macosx/VLCOpenWindowController.m:140
+#: modules/gui/macosx/VLCOpenWindowController.m:139
 #: modules/gui/macosx/VLCOutput.m:64 modules/gui/macosx/VLCOutput.m:175
 #: modules/gui/macosx/VLCOutput.m:298 modules/gui/qt/dialogs/plugins.cpp:1432
 #: modules/gui/qt/dialogs/sout.cpp:69 modules/gui/qt/dialogs/sout.cpp:121
@@ -8435,7 +8440,7 @@ msgid "Capture region heigh"
 msgstr "Височина на захващаната област"
 
 #: modules/access/screen/screen.c:67 modules/access/screen/xcb.c:59
-#: modules/gui/macosx/VLCOpenWindowController.m:216
+#: modules/gui/macosx/VLCOpenWindowController.m:214
 msgid "Follow the mouse"
 msgstr "Следване на мишката"
 
@@ -8476,10 +8481,10 @@ msgstr "Въвеждане от екрана"
 
 #: modules/access/screen/screen.c:99 modules/access/screen/wayland.c:473
 #: modules/access/screen/xcb.c:70 modules/gui/macosx/VLCMainMenu.m:595
-#: modules/gui/macosx/VLCOpenWindowController.m:208
-#: modules/gui/macosx/VLCOpenWindowController.m:211
-#: modules/gui/macosx/VLCOpenWindowController.m:481
-#: modules/gui/macosx/VLCOpenWindowController.m:1153
+#: modules/gui/macosx/VLCOpenWindowController.m:207
+#: modules/gui/macosx/VLCOpenWindowController.m:209
+#: modules/gui/macosx/VLCOpenWindowController.m:479
+#: modules/gui/macosx/VLCOpenWindowController.m:1095
 #: modules/gui/macosx/VLCSimplePrefsController.m:654
 msgid "Screen"
 msgstr "Екран"
@@ -9551,7 +9556,7 @@ msgid "Sound Delay"
 msgstr "Задържане на звука"
 
 #: modules/audio_filter/chorus_flanger.c:75
-#: modules/gui/macosx/VLCOpenWindowController.m:354 modules/spu/mosaic.c:154
+#: modules/gui/macosx/VLCOpenWindowController.m:352 modules/spu/mosaic.c:154
 #: modules/stream_out/bridge.c:51 modules/stream_out/delay.c:54
 msgid "Delay"
 msgstr "Задържане"
@@ -12373,7 +12378,7 @@ msgid "S/PDIF pass-through decoder"
 msgstr ""
 
 #: modules/codec/speex.c:59 modules/codec/speex.c:907
-#: modules/gui/macosx/VLCOpenWindowController.m:196
+#: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:245
 msgid "Mode"
 msgstr "Режим"
@@ -15047,7 +15052,7 @@ msgstr "Изображение"
 #: modules/demux/mjpeg.c:46 modules/demux/mpeg/es.c:53
 #: modules/demux/mpeg/h26x.c:46 modules/demux/rawvid.c:43
 #: modules/demux/subtitle.c:77 modules/demux/vc1.c:43
-#: modules/gui/macosx/VLCOpenWindowController.m:210
+#: modules/gui/macosx/VLCOpenWindowController.m:208
 msgid "Frames per Second"
 msgstr "Кадри в секунда"
 
@@ -15861,10 +15866,6 @@ msgid ""
 "VLC media player and VideoLAN are trademarks of the VideoLAN Association."
 msgstr ""
 
-#: modules/gui/macosx/VLCAboutWindowController.m:118
-msgid "Compiled by %s with %@"
-msgstr ""
-
 #: modules/gui/macosx/VLCAboutWindowController.m:134
 #: modules/gui/qt/dialogs/help.cpp:94
 msgid ""
@@ -15933,7 +15934,7 @@ msgid "Installed"
 msgstr "Инсталиране"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:130
-#: modules/gui/macosx/VLCBookmarksWindowController.m:91
+#: modules/gui/macosx/VLCBookmarksWindowController.m:90
 #: modules/gui/qt/dialogs/plugins.cpp:126 modules/mux/avi.c:54
 msgid "Name"
 msgstr "Име"
@@ -16076,7 +16077,7 @@ msgstr ""
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:532
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:833
-#: modules/gui/macosx/VLCBookmarksWindowController.m:82
+#: modules/gui/macosx/VLCBookmarksWindowController.m:81
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:338
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:806
 msgid "Remove"
@@ -16117,30 +16118,23 @@ msgstr "Изчистване"
 msgid "Edit"
 msgstr "Редактиране"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:81
-#: modules/gui/qt/dialogs/bookmarks.cpp:57 modules/video_filter/extract.c:68
-msgid "Extract"
-msgstr "Извличане"
-
-#: modules/gui/macosx/VLCBookmarksWindowController.m:86
-#: modules/gui/macosx/VLCBookmarksWindowController.m:92
+#: modules/gui/macosx/VLCBookmarksWindowController.m:85
+#: modules/gui/macosx/VLCBookmarksWindowController.m:91
 #: modules/gui/qt/dialogs/bookmarks.cpp:77
 #: modules/gui/qt/dialogs/toolbar.cpp:486
 msgid "Time"
 msgstr "Време"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:89
-#: modules/gui/macosx/VLCBookmarksWindowController.m:210
-#: modules/gui/macosx/VLCBookmarksWindowController.m:214
-#: modules/gui/macosx/VLCBookmarksWindowController.m:266
-#: modules/gui/macosx/VLCBookmarksWindowController.m:271
+#: modules/gui/macosx/VLCBookmarksWindowController.m:88
+#: modules/gui/macosx/VLCBookmarksWindowController.m:211
+#: modules/gui/macosx/VLCBookmarksWindowController.m:215
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:270
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:532
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:539
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:546
 #: modules/gui/macosx/VLCCoreDialogProvider.m:194
 #: modules/gui/macosx/VLCCoreDialogProvider.m:236
-#: modules/gui/macosx/VLCOpenWindowController.m:364
+#: modules/gui/macosx/VLCOpenWindowController.m:362
 #: modules/gui/macosx/VLCOutput.m:60 modules/gui/macosx/VLCPlaylistInfo.m:359
 #: modules/gui/macosx/VLCSimplePrefsController.m:275
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
@@ -16148,27 +16142,27 @@ msgstr "Време"
 msgid "OK"
 msgstr "ОК"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:130
+#: modules/gui/macosx/VLCBookmarksWindowController.m:131
 #: modules/gui/macosx/VLCMainMenu.m:1134
 msgid "Untitled"
 msgstr "Неозаглавен"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:210
+#: modules/gui/macosx/VLCBookmarksWindowController.m:211
 msgid "No input"
 msgstr "Няма входящ поток"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:210
+#: modules/gui/macosx/VLCBookmarksWindowController.m:211
 msgid ""
 "No input found. A stream must be playing or paused for bookmarks to work."
 msgstr ""
 "Няма намерен входящ поток. Потокът трябва да се възпроизвежда или да е "
 "прекъснат за да работят отметките."
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:214
+#: modules/gui/macosx/VLCBookmarksWindowController.m:215
 msgid "Input has changed"
 msgstr "Входящия поток е променен"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:214
+#: modules/gui/macosx/VLCBookmarksWindowController.m:215
 msgid ""
 "Input has changed, unable to save bookmark. Suspending playback with \"Pause"
 "\" while editing bookmarks to ensure to keep the same input."
@@ -16176,24 +16170,6 @@ msgstr ""
 "Входящия поток е променен, невъзможно е да се запази отметката. Спрете "
 "възпроизвеждането с \"Пауза\" когато редактирате отметки за да осигурите "
 "запазването на същия входящ поток."
-
-#: modules/gui/macosx/VLCBookmarksWindowController.m:266
-msgid "Invalid selection"
-msgstr "Невалидно избиране"
-
-#: modules/gui/macosx/VLCBookmarksWindowController.m:266
-msgid "Two bookmarks have to be selected."
-msgstr "Трябва да бъдат избрани две отметки."
-
-#: modules/gui/macosx/VLCBookmarksWindowController.m:271
-msgid "No input found"
-msgstr "Няма намерен входящ поток"
-
-#: modules/gui/macosx/VLCBookmarksWindowController.m:271
-msgid "The stream must be playing or paused for bookmarks to work."
-msgstr ""
-"Не е намерен входящ поток. Потокът трябва да се възпроизвежда или прекъснат "
-"за да работят отметките."
 
 #: modules/gui/macosx/VLCControlsBarCommon.m:65
 #: modules/gui/macosx/VLCFSPanelController.m:110
@@ -16294,8 +16270,8 @@ msgstr "Изберете изходна локация"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:145
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:197
-#: modules/gui/macosx/VLCOpenWindowController.m:148
-#: modules/gui/macosx/VLCOpenWindowController.m:351
+#: modules/gui/macosx/VLCOpenWindowController.m:147
+#: modules/gui/macosx/VLCOpenWindowController.m:349
 #: modules/gui/macosx/VLCOutput.m:67 modules/gui/macosx/prefs_widgets.m:1121
 #: modules/gui/macosx/VLCSimplePrefsController.m:283
 #: modules/gui/macosx/VLCSimplePrefsController.m:360
@@ -16386,7 +16362,7 @@ msgid "Stream Announcement"
 msgstr ""
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:186
-#: modules/gui/macosx/VLCOpenWindowController.m:198
+#: modules/gui/macosx/VLCOpenWindowController.m:197
 #: modules/gui/macosx/VLCOutput.m:68
 #: modules/gui/qt/components/sout/sout_widgets.cpp:236
 #: modules/gui/qt/components/sout/sout_widgets.cpp:323
@@ -16400,8 +16376,8 @@ msgid "TTL"
 msgstr ""
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:189
-#: modules/gui/macosx/VLCOpenWindowController.m:186
-#: modules/gui/macosx/VLCOpenWindowController.m:188
+#: modules/gui/macosx/VLCOpenWindowController.m:185
+#: modules/gui/macosx/VLCOpenWindowController.m:187
 #: modules/gui/macosx/VLCOutput.m:69
 #: modules/gui/qt/components/sout/sout_widgets.cpp:182
 #: modules/gui/qt/components/sout/sout_widgets.cpp:237
@@ -17381,110 +17357,110 @@ msgstr ""
 msgid "TB"
 msgstr ""
 
-#: modules/gui/macosx/VLCOpenWindowController.m:131
+#: modules/gui/macosx/VLCOpenWindowController.m:130
 msgid "Open Source"
 msgstr "Отваряне на източника"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:132
+#: modules/gui/macosx/VLCOpenWindowController.m:131
 msgid "Media Resource Locator (MRL)"
 msgstr "Media Resource Locator (MRL)"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:134
-#: modules/gui/macosx/VLCOpenWindowController.m:194
-#: modules/gui/macosx/VLCOpenWindowController.m:618
-#: modules/gui/macosx/VLCOpenWindowController.m:704
-#: modules/gui/macosx/VLCOpenWindowController.m:935
-#: modules/gui/macosx/VLCOpenWindowController.m:1263
+#: modules/gui/macosx/VLCOpenWindowController.m:133
+#: modules/gui/macosx/VLCOpenWindowController.m:193
+#: modules/gui/macosx/VLCOpenWindowController.m:572
+#: modules/gui/macosx/VLCOpenWindowController.m:658
+#: modules/gui/macosx/VLCOpenWindowController.m:890
+#: modules/gui/macosx/VLCOpenWindowController.m:1258
 #: modules/gui/qt/components/controller.hpp:107
 msgid "Open"
 msgstr "Отваряне"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:137
+#: modules/gui/macosx/VLCOpenWindowController.m:136
 #, fuzzy
 msgid "Stream output:"
 msgstr "Извеждане на поток"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:138
+#: modules/gui/macosx/VLCOpenWindowController.m:137
 msgid "Settings..."
 msgstr "Настройки..."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:141
+#: modules/gui/macosx/VLCOpenWindowController.m:140
 msgid ""
 "4 Tabs to choose between media input. Select 'File' for files, 'Disc' for "
 "optical media such as DVDs, Audio CDs or BRs, 'Network' for network streams "
 "or 'Capture' for Input Devices such as microphones or cameras."
 msgstr ""
 
-#: modules/gui/macosx/VLCOpenWindowController.m:142
+#: modules/gui/macosx/VLCOpenWindowController.m:141
 msgid "Disc"
 msgstr "Диск"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:143
+#: modules/gui/macosx/VLCOpenWindowController.m:142
 #: modules/gui/macosx/VLCSimplePrefsController.m:290
 msgid "Network"
 msgstr "Мрежа"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:144
+#: modules/gui/macosx/VLCOpenWindowController.m:143
 msgid "Capture"
 msgstr "Захващане"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:146
-#: modules/gui/macosx/VLCOpenWindowController.m:346
+#: modules/gui/macosx/VLCOpenWindowController.m:145
+#: modules/gui/macosx/VLCOpenWindowController.m:344
 msgid "Choose a file"
 msgstr "Избор на файл"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:149
+#: modules/gui/macosx/VLCOpenWindowController.m:148
 msgid "Click to select a file for playback"
 msgstr ""
 
-#: modules/gui/macosx/VLCOpenWindowController.m:150
+#: modules/gui/macosx/VLCOpenWindowController.m:149
 msgid "Treat as a pipe rather than as a file"
 msgstr ""
 "Да се интерпретира, като конвейер, а не като файлИнтерпретировать как "
 "конвейер, а не файл"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:152
+#: modules/gui/macosx/VLCOpenWindowController.m:151
 msgid "Play another media synchronously"
 msgstr "Синхронно възпроизвеждане на друга медия"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:153
-#: modules/gui/macosx/VLCOpenWindowController.m:349
+#: modules/gui/macosx/VLCOpenWindowController.m:152
+#: modules/gui/macosx/VLCOpenWindowController.m:347
 #: modules/gui/macosx/VLCSimplePrefsController.m:332
 msgid "Choose..."
 msgstr "Изберете..."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:154
+#: modules/gui/macosx/VLCOpenWindowController.m:153
 msgid ""
 "Click to select a another file to play it in sync with the previously "
 "selected file."
 msgstr ""
 
-#: modules/gui/macosx/VLCOpenWindowController.m:159
+#: modules/gui/macosx/VLCOpenWindowController.m:158
 msgid "Custom playback"
 msgstr ""
 
-#: modules/gui/macosx/VLCOpenWindowController.m:167
+#: modules/gui/macosx/VLCOpenWindowController.m:166
 #, fuzzy
 msgid "Open VIDEO_TS / BDMV folder"
 msgstr "Отваряне на папката VIDEO_TS"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:168
+#: modules/gui/macosx/VLCOpenWindowController.m:167
 msgid "Insert Disc"
 msgstr "Поставяне на диск"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:174
+#: modules/gui/macosx/VLCOpenWindowController.m:173
 msgid "Disable DVD menus"
 msgstr "Изключване на DVD менюта"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:177
+#: modules/gui/macosx/VLCOpenWindowController.m:176
 msgid "Enable DVD menus"
 msgstr "Включване на DVD менюта"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:187
+#: modules/gui/macosx/VLCOpenWindowController.m:186
 msgid "IP Address"
 msgstr "IP Адрес"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:190
+#: modules/gui/macosx/VLCOpenWindowController.m:189
 msgid ""
 "To Open a usual network stream (HTTP, RTSP, RTMP, MMS, FTP, etc.), just "
 "enter the URL in the field above. If you want to open a RTP or UDP stream, "
@@ -17494,7 +17470,7 @@ msgstr ""
 "просто въведете URL адрес в полето горе. Ако искате да отворите RTP или UDP "
 "поток, натиснете бутона долу."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:191
+#: modules/gui/macosx/VLCOpenWindowController.m:190
 msgid ""
 "If you want to open a multicast stream, enter the respective IP address "
 "given by the stream provider. In unicast mode, VLC will use your machine's "
@@ -17510,122 +17486,114 @@ msgstr ""
 "За да отворите поток, който използва различен протокол, просто натиснете "
 "Отказ, за да затворите тази страница."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:192
+#: modules/gui/macosx/VLCOpenWindowController.m:191
 msgid ""
 "Enter a URL here to open the network stream. To open RTP or UDP streams, "
 "click on the respective button below."
 msgstr ""
 
-#: modules/gui/macosx/VLCOpenWindowController.m:195
+#: modules/gui/macosx/VLCOpenWindowController.m:194
 msgid "Open RTP/UDP Stream"
 msgstr "Отваряне на RTP/UDP поток"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:197
+#: modules/gui/macosx/VLCOpenWindowController.m:196
 #: share/lua/http/dialogs/stream_config_window.html:24
 #: share/lua/http/dialogs/stream_window.html:83
 msgid "Protocol"
 msgstr "Протокол"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:200
-#: modules/gui/macosx/VLCOpenWindowController.m:1050
-#: modules/gui/macosx/VLCOpenWindowController.m:1099
+#: modules/gui/macosx/VLCOpenWindowController.m:199
+#: modules/gui/macosx/VLCOpenWindowController.m:1005
+#: modules/gui/macosx/VLCOpenWindowController.m:1054
 msgid "Unicast"
 msgstr "Unicast"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:201
-#: modules/gui/macosx/VLCOpenWindowController.m:1063
-#: modules/gui/macosx/VLCOpenWindowController.m:1112
+#: modules/gui/macosx/VLCOpenWindowController.m:200
+#: modules/gui/macosx/VLCOpenWindowController.m:1018
+#: modules/gui/macosx/VLCOpenWindowController.m:1067
 msgid "Multicast"
 msgstr ""
 
-#: modules/gui/macosx/VLCOpenWindowController.m:207
-#: modules/gui/macosx/VLCOpenWindowController.m:499
-#: modules/gui/macosx/VLCOpenWindowController.m:1202
+#: modules/gui/macosx/VLCOpenWindowController.m:206
+#: modules/gui/macosx/VLCOpenWindowController.m:497
+#: modules/gui/macosx/VLCOpenWindowController.m:1145
 msgid "Input Devices"
 msgstr ""
 
-#: modules/gui/macosx/VLCOpenWindowController.m:209
-msgid ""
-"This input allows you to save, stream or display your current screen "
-"contents."
-msgstr ""
-"Тази функция позволява да запишете потока или да се покаже текущото "
-"съдържание на екрана"
-
-#: modules/gui/macosx/VLCOpenWindowController.m:212
+#: modules/gui/macosx/VLCOpenWindowController.m:210
 msgid "Subscreen left"
 msgstr ""
 
-#: modules/gui/macosx/VLCOpenWindowController.m:213
+#: modules/gui/macosx/VLCOpenWindowController.m:211
 msgid "Subscreen top"
 msgstr ""
 
-#: modules/gui/macosx/VLCOpenWindowController.m:214
+#: modules/gui/macosx/VLCOpenWindowController.m:212
 #, fuzzy
 msgid "Subscreen Width"
 msgstr "Широчина на видеото"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:215
+#: modules/gui/macosx/VLCOpenWindowController.m:213
 #, fuzzy
 msgid "Subscreen Height"
 msgstr "Височина на видеото"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:217
+#: modules/gui/macosx/VLCOpenWindowController.m:215
 msgid "Capture Audio"
 msgstr ""
 
-#: modules/gui/macosx/VLCOpenWindowController.m:345
+#: modules/gui/macosx/VLCOpenWindowController.m:343
 msgid "Add Subtitle File:"
 msgstr "Добавяне на файл със субтитри:"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:350
+#: modules/gui/macosx/VLCOpenWindowController.m:348
 msgid "Click to setup subtitle playback in full detail."
 msgstr ""
 
-#: modules/gui/macosx/VLCOpenWindowController.m:352
+#: modules/gui/macosx/VLCOpenWindowController.m:350
 msgid "Click to select a subtitle file."
 msgstr ""
 
-#: modules/gui/macosx/VLCOpenWindowController.m:353
+#: modules/gui/macosx/VLCOpenWindowController.m:351
 msgid "Override parameters"
 msgstr ""
 
-#: modules/gui/macosx/VLCOpenWindowController.m:356
+#: modules/gui/macosx/VLCOpenWindowController.m:354
 msgid "FPS"
 msgstr "Кадри в секунда (FPS)"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:358
+#: modules/gui/macosx/VLCOpenWindowController.m:356
 msgid "Subtitle encoding"
 msgstr ""
 
-#: modules/gui/macosx/VLCOpenWindowController.m:360
+#: modules/gui/macosx/VLCOpenWindowController.m:358
 #: modules/gui/macosx/VLCSimplePrefsController.m:334
 msgid "Font size"
 msgstr "Размер на шрифта"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:362
+#: modules/gui/macosx/VLCOpenWindowController.m:360
 msgid "Subtitle alignment"
 msgstr ""
 
-#: modules/gui/macosx/VLCOpenWindowController.m:365
+#: modules/gui/macosx/VLCOpenWindowController.m:363
 msgid "Click to dismiss the subtitle setup dialog."
 msgstr ""
 
-#: modules/gui/macosx/VLCOpenWindowController.m:366
+#: modules/gui/macosx/VLCOpenWindowController.m:364
 msgid "Font Properties"
 msgstr "Настройки на шрифта"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:367
+#: modules/gui/macosx/VLCOpenWindowController.m:365
 msgid "Subtitle File"
 msgstr "Файл със субтитри"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:617
-#: modules/gui/macosx/VLCOpenWindowController.m:703
-#: modules/gui/macosx/VLCOpenWindowController.m:1262
+#: modules/gui/macosx/VLCOpenWindowController.m:571
+#: modules/gui/macosx/VLCOpenWindowController.m:657
+#: modules/gui/macosx/VLCOpenWindowController.m:1257
 msgid "Open File"
 msgstr "Отваряне на файл"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:801
+#: modules/gui/macosx/VLCOpenWindowController.m:756
 #, c-format
 msgid "%i tracks"
 msgstr "%i пътечка"
@@ -19829,6 +19797,10 @@ msgstr "Изтриване на избраната отметка"
 #: modules/gui/qt/dialogs/bookmarks.cpp:54
 msgid "Delete all the bookmarks"
 msgstr "Изтриване на всички отметки"
+
+#: modules/gui/qt/dialogs/bookmarks.cpp:57 modules/video_filter/extract.c:68
+msgid "Extract"
+msgstr "Извличане"
 
 #: modules/gui/qt/dialogs/bookmarks.cpp:62 modules/gui/qt/dialogs/errors.cpp:49
 #: modules/gui/qt/dialogs/extended.cpp:130 modules/gui/qt/dialogs/help.cpp:66
@@ -28422,6 +28394,20 @@ msgstr ""
 #~ msgid "VLC media player Help"
 #~ msgstr "Помощ за VLC media player"
 
+#~ msgid "Invalid selection"
+#~ msgstr "Невалидно избиране"
+
+#~ msgid "Two bookmarks have to be selected."
+#~ msgstr "Трябва да бъдат избрани две отметки."
+
+#~ msgid "No input found"
+#~ msgstr "Няма намерен входящ поток"
+
+#~ msgid "The stream must be playing or paused for bookmarks to work."
+#~ msgstr ""
+#~ "Не е намерен входящ поток. Потокът трябва да се възпроизвежда или "
+#~ "прекъснат за да работят отметките."
+
 #, fuzzy
 #~ msgid "Hide Details"
 #~ msgstr "Подробности за кодека"
@@ -28453,6 +28439,13 @@ msgstr ""
 
 #~ msgid "No device is selected"
 #~ msgstr "Не е избрано устройство"
+
+#~ msgid ""
+#~ "This input allows you to save, stream or display your current screen "
+#~ "contents."
+#~ msgstr ""
+#~ "Тази функция позволява да запишете потока или да се покаже текущото "
+#~ "съдържание на екрана"
 
 #~ msgid "Current channel:"
 #~ msgstr "Текущ канал:"

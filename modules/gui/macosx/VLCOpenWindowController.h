@@ -2,7 +2,7 @@
  * VLCOpenWindowController.h: Open dialogues for VLC's MacOS X port
  *****************************************************************************
  * Copyright (C) 2002-2016 VLC authors and VideoLAN
- * $Id: b493cf1ca0141745e6942b62045af5ced81d66a9 $
+ * $Id: e20e7cd0af00c322877aa4ee8e89bb510002ede6 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -153,10 +153,9 @@
 
 /* generic capturing stuff */
 @property (readwrite, weak) IBOutlet NSPopUpButton *captureModePopup;
+@property (readwrite, weak) IBOutlet NSTabView *captureTabView;
 
 /* screen support */
-@property (readwrite, weak) IBOutlet NSView *screenView;
-@property (readwrite, weak) IBOutlet NSTextField *screenlongLabel;
 @property (readwrite, weak) IBOutlet NSTextField *screenFPSTextField;
 @property (readwrite, weak) IBOutlet NSTextField *screenFPSLabel;
 @property (readwrite, weak) IBOutlet NSStepper *screenFPSStepper;
@@ -179,7 +178,6 @@
 @property (readwrite, weak) IBOutlet NSButton *screenqtkAudioCheckbox;
 
 /* QTK support */
-@property (readwrite, weak) IBOutlet NSView *qtkView;
 @property (readwrite, weak) IBOutlet NSPopUpButton *qtkVideoDevicePopup;
 @property (readwrite, weak) IBOutlet NSButton *qtkVideoCheckbox;
 @property (readwrite, weak) IBOutlet NSPopUpButton *qtkAudioDevicePopup;
@@ -215,10 +213,15 @@
 
 - (void)openCapture;
 - (IBAction)openCaptureModeChanged:(id)sender;
+
+// Screen actions
+- (IBAction)screenChanged:(id)sender;
+- (IBAction)screenAudioChanged:(id)sender;
+
+// QTKit actions
 - (IBAction)qtkChanged:(id)sender;
 - (IBAction)qtkAudioChanged:(id)sender;
 - (IBAction)qtkToggleUIElements:(id)sender;
-- (IBAction)screenChanged:(id)sender;
 
 - (IBAction)subsChanged:(id)sender;
 - (IBAction)subSettings:(id)sender;

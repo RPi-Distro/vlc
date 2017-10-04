@@ -159,7 +159,7 @@ struct decoder_sys_t
 
     int                         i_forced_cvpx_format;
 
-    poc_context_t               pocctx;
+    h264_poc_context_t          pocctx;
     date_t                      pts;
 };
 
@@ -399,8 +399,9 @@ static frame_info_t * CreateReorderInfo(decoder_t *p_dec, const block_t *p_block
 
     if (p_sys->b_poc_based_reorder)
     {
-        if(p_sys->codec != kCMVideoCodecType_H264 ||
-           !ParseH264NAL(p_dec, p_block->p_buffer, p_block->i_buffer, 4, p_info))
+        if (p_sys->codec != kCMVideoCodecType_H264 ||
+            !ParseH264NAL(p_dec, p_block->p_buffer, p_block->i_buffer,
+                          p_sys->hh.i_nal_length_size , p_info))
         {
             assert(p_sys->codec == kCMVideoCodecType_H264);
             free(p_info);
@@ -468,72 +469,15 @@ static void OnDecodedFrame(decoder_t *p_dec, frame_info_t *p_info)
     InsertIntoDPB(p_sys, p_info);
 }
 
-static CMVideoCodecType CodecPrecheck(decoder_t *p_dec, int *p_cvpx_chroma)
+static CMVideoCodecType CodecPrecheck(decoder_t *p_dec)
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    uint8_t i_profile = 0xFF, i_level = 0xFF;
-    bool b_ret = false;
-    CMVideoCodecType codec;
 
     /* check for the codec we can and want to decode */
     switch (p_dec->fmt_in.i_codec) {
         case VLC_CODEC_H264:
-            codec = kCMVideoCodecType_H264;
+            return kCMVideoCodecType_H264;
 
-            b_ret = h264_get_profile_level(&p_dec->fmt_in, &i_profile, &i_level, NULL);
-            if (!b_ret) {
-                msg_Warn(p_dec, "H264 profile and level parsing failed because it didn't arrive yet");
-                return kCMVideoCodecType_H264;
-            }
-
-            msg_Dbg(p_dec, "trying to decode MPEG-4 Part 10: profile %" PRIx8 ", level %" PRIx8, i_profile, i_level);
-
-            switch (i_profile) {
-                case PROFILE_H264_BASELINE:
-                case PROFILE_H264_MAIN:
-                case PROFILE_H264_HIGH:
-                    break;
-
-                case PROFILE_H264_HIGH_10:
-                {
-                    if (deviceSupportsAdvancedProfiles())
-                    {
-                        /* FIXME: There is no YUV420 10bits chroma. The
-                         * decoder seems to output RGBA when decoding 10bits
-                         * content, but there is an unknown crash when
-                         * displaying such output, so force NV12 for now. */
-                        *p_cvpx_chroma =
-                                kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange;
-                        break;
-                    }
-                }
-
-                default:
-                {
-                    msg_Dbg(p_dec, "unsupported H264 profile %" PRIx8, i_profile);
-                    return -1;
-                }
-            }
-
-#if !TARGET_OS_IPHONE
-            /* a level higher than 5.2 was not tested, so don't dare to
-             * try to decode it*/
-            if (i_level > 52) {
-                msg_Dbg(p_dec, "unsupported H264 level %" PRIx8, i_level);
-                return -1;
-            }
-#else
-            /* on SoC A8, 4.2 is the highest specified profile */
-            if (i_level > 42) {
-                /* on Twister, we can do up to 5.2 */
-                if (!deviceSupportsAdvancedLevels() || i_level > 52) {
-                    msg_Dbg(p_dec, "unsupported H264 level %" PRIx8, i_level);
-                    return -1;
-                }
-            }
-#endif
-
-            break;
         case VLC_CODEC_MP4V:
         {
             if (p_dec->fmt_in.i_original_fourcc == VLC_FOURCC( 'X','V','I','D' )) {
@@ -542,14 +486,11 @@ static CMVideoCodecType CodecPrecheck(decoder_t *p_dec, int *p_cvpx_chroma)
             }
 
             msg_Dbg(p_dec, "Will decode MP4V with original FourCC '%4.4s'", (char *)&p_dec->fmt_in.i_original_fourcc);
-            codec = kCMVideoCodecType_MPEG4Video;
-
-            break;
+            return kCMVideoCodecType_MPEG4Video;
         }
 #if !TARGET_OS_IPHONE
         case VLC_CODEC_H263:
-            codec = kCMVideoCodecType_H263;
-            break;
+            return kCMVideoCodecType_H263;
 
             /* there are no DV or ProRes decoders on iOS, so bailout early */
         case VLC_CODEC_PRORES:
@@ -557,27 +498,20 @@ static CMVideoCodecType CodecPrecheck(decoder_t *p_dec, int *p_cvpx_chroma)
             switch (p_dec->fmt_in.i_original_fourcc) {
                 case VLC_FOURCC( 'a','p','4','c' ):
                 case VLC_FOURCC( 'a','p','4','h' ):
-                    codec = kCMVideoCodecType_AppleProRes4444;
-                    break;
+                    return kCMVideoCodecType_AppleProRes4444;
 
                 case VLC_FOURCC( 'a','p','c','h' ):
-                    codec = kCMVideoCodecType_AppleProRes422HQ;
-                    break;
+                    return kCMVideoCodecType_AppleProRes422HQ;
 
                 case VLC_FOURCC( 'a','p','c','s' ):
-                    codec = kCMVideoCodecType_AppleProRes422LT;
-                    break;
+                    return kCMVideoCodecType_AppleProRes422LT;
 
                 case VLC_FOURCC( 'a','p','c','o' ):
-                    codec = kCMVideoCodecType_AppleProRes422Proxy;
-                    break;
+                    return kCMVideoCodecType_AppleProRes422Proxy;
 
                 default:
-                    codec = kCMVideoCodecType_AppleProRes422;
-                    break;
+                    return kCMVideoCodecType_AppleProRes422;
             }
-            if (codec != 0)
-                break;
 
         case VLC_CODEC_DV:
             /* the VT decoder can't differenciate between PAL and NTSC, so we need to do it */
@@ -585,30 +519,23 @@ static CMVideoCodecType CodecPrecheck(decoder_t *p_dec, int *p_cvpx_chroma)
                 case VLC_FOURCC( 'd', 'v', 'c', ' '):
                 case VLC_FOURCC( 'd', 'v', ' ', ' '):
                     msg_Dbg(p_dec, "Decoding DV NTSC");
-                    codec = kCMVideoCodecType_DVCNTSC;
-                    break;
+                    return kCMVideoCodecType_DVCNTSC;
 
                 case VLC_FOURCC( 'd', 'v', 's', 'd'):
                 case VLC_FOURCC( 'd', 'v', 'c', 'p'):
                 case VLC_FOURCC( 'D', 'V', 'S', 'D'):
                     msg_Dbg(p_dec, "Decoding DV PAL");
-                    codec = kCMVideoCodecType_DVCPAL;
-                    break;
-
+                    return kCMVideoCodecType_DVCPAL;
                 default:
-                    break;
+                    return -1;
             }
-            if (codec != 0)
-                break;
 #endif
             /* mpgv / mp2v needs fixing, so disable it for now */
 #if 0
         case VLC_CODEC_MPGV:
-            codec = kCMVideoCodecType_MPEG1Video;
-            break;
+            return kCMVideoCodecType_MPEG1Video;
         case VLC_CODEC_MP2V:
-            codec = kCMVideoCodecType_MPEG2Video;
-            break;
+            return kCMVideoCodecType_MPEG2Video;
 #endif
 
         default:
@@ -618,7 +545,7 @@ static CMVideoCodecType CodecPrecheck(decoder_t *p_dec, int *p_cvpx_chroma)
             return -1;
     }
 
-    return codec;
+    vlc_assert_unreachable();
 }
 
 
@@ -699,10 +626,10 @@ static bool VideoToolboxNeedsToRestartH264(decoder_t *p_dec,
     unsigned w, h, vw, vh;
     int sarn, sard;
 
-    if (h264_helper_get_current_picture_size(hh, &w, &h, &vw, &vh) != VLC_SUCCESS)
+    if (hxxx_helper_get_current_picture_size(hh, &w, &h, &vw, &vh) != VLC_SUCCESS)
         return true;
 
-    if (h264_helper_get_current_sar(hh, &sarn, &sard) != VLC_SUCCESS)
+    if (hxxx_helper_get_current_sar(hh, &sarn, &sard) != VLC_SUCCESS)
         return true;
 
     CFMutableDictionaryRef extradataInfo = H264ExtradataInfoCreate(hh);
@@ -903,7 +830,8 @@ static int SetupDecoderExtradata(decoder_t *p_dec)
             p_sys->extradataInfo = ExtradataInfoCreate(CFSTR("avcC"),
                                             p_dec->fmt_in.p_extra,
                                             p_dec->fmt_in.i_extra);
-            SetH264DecoderInfo(p_dec, p_sys->extradataInfo);
+            if (SetH264DecoderInfo(p_dec, p_sys->extradataInfo) != VLC_SUCCESS)
+                return VLC_EGENERIC;
         }
         else
         {
@@ -941,8 +869,8 @@ static int OpenDecoder(vlc_object_t *p_this)
 
     /* check quickly if we can digest the offered data */
     CMVideoCodecType codec;
-    int codec_cvpx_chroma = 0;
-    codec = CodecPrecheck(p_dec, &codec_cvpx_chroma);
+
+    codec = CodecPrecheck(p_dec);
     if (codec == -1)
         return VLC_EGENERIC;
 
@@ -984,7 +912,7 @@ static int OpenDecoder(vlc_object_t *p_this)
         free(cvpx_chroma);
     }
     else
-        p_sys->i_forced_cvpx_format = codec_cvpx_chroma;
+        p_dec->p_sys->i_forced_cvpx_format = 0;
 
     h264_poc_context_init( &p_sys->pocctx );
     vlc_mutex_init(&p_sys->lock);
@@ -1164,6 +1092,55 @@ static CFMutableDictionaryRef H264ExtradataInfoCreate(const struct hxxx_helper *
     return extradataInfo;
 }
 
+static bool IsH264ProfileLevelSupported(decoder_t *p_dec, uint8_t i_profile,
+                                        uint8_t i_level)
+{
+    switch (i_profile) {
+        case PROFILE_H264_BASELINE:
+        case PROFILE_H264_MAIN:
+        case PROFILE_H264_HIGH:
+            break;
+
+        case PROFILE_H264_HIGH_10:
+        {
+            if (deviceSupportsAdvancedProfiles())
+            {
+                /* FIXME: There is no YUV420 10bits chroma. The
+                 * decoder seems to output RGBA when decoding 10bits
+                 * content, but there is an unknown crash when
+                 * displaying such output, so force NV12 for now. */
+                if (p_dec->p_sys->i_forced_cvpx_format == 0)
+                    p_dec->p_sys->i_forced_cvpx_format =
+                        kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange;
+                break;
+            }
+            else
+            {
+                msg_Err(p_dec, "current device doesn't support H264 10bits");
+                return false;
+            }
+        }
+
+        default:
+        {
+            msg_Warn(p_dec, "unknown H264 profile %" PRIx8, i_profile);
+            return false;
+        }
+    }
+
+    /* A level higher than 5.2 was not tested, so don't dare to try to decode
+     * it. On SoC A8, 4.2 is the highest specified profile. on Twister, we can
+     * do up to 5.2 */
+    if (i_level > 52 || (i_level > 42 && !deviceSupportsAdvancedLevels()))
+    {
+        msg_Err(p_dec, "current device doesn't support this H264 level: %"
+                PRIx8, i_level);
+        return false;
+    }
+
+    return true;
+}
+
 static int SetH264DecoderInfo(decoder_t *p_dec, CFMutableDictionaryRef extradataInfo)
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
@@ -1171,15 +1148,23 @@ static int SetH264DecoderInfo(decoder_t *p_dec, CFMutableDictionaryRef extradata
     if (p_sys->hh.h264.i_sps_count == 0 || p_sys->hh.h264.i_pps_count == 0)
         return VLC_EGENERIC;
 
+    uint8_t i_profile, i_level;
     unsigned i_h264_width, i_h264_height, i_video_width, i_video_height;
     int i_sar_num, i_sar_den, i_ret;
-    i_ret = h264_helper_get_current_picture_size(&p_sys->hh,
+
+    i_ret = hxxx_helper_get_current_profile_level(&p_sys->hh, &i_profile, &i_level);
+    if (i_ret != VLC_SUCCESS)
+        return i_ret;
+    if (!IsH264ProfileLevelSupported(p_dec, i_profile, i_level))
+        return VLC_ENOMOD; /* This error is critical */
+
+    i_ret = hxxx_helper_get_current_picture_size(&p_sys->hh,
                                                  &i_h264_width, &i_h264_height,
                                                  &i_video_width, &i_video_height);
     if (i_ret != VLC_SUCCESS)
         return i_ret;
 
-    i_ret = h264_helper_get_current_sar(&p_sys->hh, &i_sar_num, &i_sar_den);
+    i_ret = hxxx_helper_get_current_sar(&p_sys->hh, &i_sar_num, &i_sar_den);
     if (i_ret != VLC_SUCCESS)
         return i_ret;
 
@@ -1480,6 +1465,15 @@ static int DecodeBlock(decoder_t *p_dec, block_t *p_block)
             {
                 msg_Dbg(p_dec, "Got SPS/PPS: late opening of H264 decoder");
                 StartVideoToolbox(p_dec);
+            }
+            else if (i_ret == VLC_ENOMOD)
+            {
+                /* The current device doesn't handle the h264 profile/level,
+                 * abort */
+                vlc_mutex_lock(&p_sys->lock);
+                p_sys->vtsession_status = VTSESSION_STATUS_ABORT;
+                vlc_mutex_unlock(&p_sys->lock);
+                goto skip;
             }
         }
 

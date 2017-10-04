@@ -2,7 +2,7 @@
  * display.c: "vout display" management
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: ef35fae6fffd0ff1f215b355d8e4a50de5995e89 $
+ * $Id: 3a6bba01dce75ad8a8d5068054cde7467d5ddff3 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -993,6 +993,14 @@ picture_t *vout_FilterDisplay(vout_display_t *vd, picture_t *picture)
     return filter_chain_VideoFilter(osys->filters, picture);
 }
 
+void vout_FilterFlush(vout_display_t *vd)
+{
+    vout_display_owner_sys_t *osys = vd->owner.sys;
+
+    if (osys->filters != NULL)
+        filter_chain_VideoFlush(osys->filters);
+}
+
 void vout_UpdateDisplaySourceProperties(vout_display_t *vd, const video_format_t *source)
 {
     vout_display_owner_sys_t *osys = vd->owner.sys;
@@ -1381,7 +1389,7 @@ static int SplitterPictureNew(video_splitter_t *splitter, picture_t *picture[])
             /* TODO use a pool ? */
             picture[i] = picture_NewFromFormat(&wsys->display[i]->source);
         } else {
-            picture_pool_t *pool = vout_display_Pool(wsys->display[i], 1);
+            picture_pool_t *pool = vout_display_Pool(wsys->display[i], 3);
             picture[i] = pool ? picture_pool_Get(pool) : NULL;
         }
         if (!picture[i]) {

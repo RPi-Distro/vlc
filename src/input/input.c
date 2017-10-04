@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: 9d8f1457775d4d12dd6a677df8cbbbedd6c5139a $
+ * $Id: 4d757867c7dd7d4178bcc0f97c70d483db7e18d7 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -2020,7 +2020,7 @@ static bool Control( input_thread_t *p_input,
         case INPUT_CONTROL_SET_RATE:
         {
             /* Get rate and direction */
-            int i_rate = abs( val.i_int );
+            long long i_rate = llabs( val.i_int );
             int i_rate_sign = val.i_int < 0 ? -1 : 1;
 
             /* Check rate bound */

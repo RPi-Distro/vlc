@@ -405,73 +405,76 @@ TESTS = hpack_test$(EXEEXT) hpackenc_test$(EXEEXT) \
 @HAVE_WIN32_DESKTOP_FALSE@@HAVE_XCB_RANDR_TRUE@am__append_197 = libpanoramix_plugin.la
 @HAVE_DECKLINK_TRUE@am__append_198 = libdecklinkoutput_plugin.la
 @HAVE_OSX_TRUE@am__append_199 = codec/vt_utils.c codec/vt_utils.h
-@HAVE_OSX_TRUE@am__append_200 = libvout_macosx_plugin.la libcaopengllayer_plugin.la \
+@HAVE_OSX_TRUE@am__append_200 = -Wl,-framework,IOSurface \
+@HAVE_OSX_TRUE@	-Wl,-framework,Foundation,-framework,CoreVideo,-framework,OpenGL
+
+@HAVE_OSX_TRUE@am__append_201 = libvout_macosx_plugin.la libcaopengllayer_plugin.la \
 @HAVE_OSX_TRUE@	libglconv_cvpx_plugin.la
 
-@HAVE_IOS_TRUE@am__append_201 = libvout_ios_plugin.la libglconv_cvpx_plugin.la
-@HAVE_TVOS_TRUE@am__append_202 = libvout_ios_plugin.la
-@HAVE_GL_TRUE@am__append_203 = libgl_plugin.la
-@HAVE_EGL_TRUE@@HAVE_GL_TRUE@@HAVE_VAAPI_TRUE@@HAVE_VAAPI_WL_TRUE@@HAVE_WAYLAND_EGL_TRUE@am__append_204 = libglconv_vaapi_wl_plugin.la
-@HAVE_EGL_TRUE@@HAVE_GL_TRUE@@HAVE_VAAPI_TRUE@@HAVE_VAAPI_X11_TRUE@@HAVE_XCB_TRUE@am__append_205 = libglconv_vaapi_x11_plugin.la
-@HAVE_EGL_TRUE@@HAVE_GL_TRUE@@HAVE_VAAPI_DRM_TRUE@@HAVE_VAAPI_TRUE@am__append_206 = libglconv_vaapi_drm_plugin.la
-@HAVE_GL_TRUE@@HAVE_VDPAU_TRUE@am__append_207 = libglconv_vdpau_plugin.la
-@HAVE_XCB_TRUE@am__append_208 = libvlc_xcb_events.la
-@HAVE_XCB_TRUE@am__append_209 = libxcb_x11_plugin.la libxcb_window_plugin.la
-@HAVE_XCB_KEYSYMS_TRUE@@HAVE_XCB_TRUE@am__append_210 = -DHAVE_XCB_KEYSYMS
-@HAVE_XCB_TRUE@@HAVE_XCB_XVIDEO_TRUE@am__append_211 = libxcb_xv_plugin.la
-@HAVE_EGL_TRUE@@HAVE_XCB_TRUE@am__append_212 = libegl_x11_plugin.la
-@HAVE_GL_TRUE@@HAVE_XCB_TRUE@am__append_213 = libglx_plugin.la
-@HAVE_WAYLAND_TRUE@am__append_214 =  \
+@HAVE_IOS_TRUE@am__append_202 = libvout_ios_plugin.la libglconv_cvpx_plugin.la
+@HAVE_TVOS_TRUE@am__append_203 = libvout_ios_plugin.la
+@HAVE_GL_TRUE@am__append_204 = libgl_plugin.la
+@HAVE_EGL_TRUE@@HAVE_GL_TRUE@@HAVE_VAAPI_TRUE@@HAVE_VAAPI_WL_TRUE@@HAVE_WAYLAND_EGL_TRUE@am__append_205 = libglconv_vaapi_wl_plugin.la
+@HAVE_EGL_TRUE@@HAVE_GL_TRUE@@HAVE_VAAPI_TRUE@@HAVE_VAAPI_X11_TRUE@@HAVE_XCB_TRUE@am__append_206 = libglconv_vaapi_x11_plugin.la
+@HAVE_EGL_TRUE@@HAVE_GL_TRUE@@HAVE_VAAPI_DRM_TRUE@@HAVE_VAAPI_TRUE@am__append_207 = libglconv_vaapi_drm_plugin.la
+@HAVE_GL_TRUE@@HAVE_VDPAU_TRUE@am__append_208 = libglconv_vdpau_plugin.la
+@HAVE_XCB_TRUE@am__append_209 = libvlc_xcb_events.la
+@HAVE_XCB_TRUE@am__append_210 = libxcb_x11_plugin.la libxcb_window_plugin.la
+@HAVE_XCB_KEYSYMS_TRUE@@HAVE_XCB_TRUE@am__append_211 = -DHAVE_XCB_KEYSYMS
+@HAVE_XCB_TRUE@@HAVE_XCB_XVIDEO_TRUE@am__append_212 = libxcb_xv_plugin.la
+@HAVE_EGL_TRUE@@HAVE_XCB_TRUE@am__append_213 = libegl_x11_plugin.la
+@HAVE_GL_TRUE@@HAVE_XCB_TRUE@am__append_214 = libglx_plugin.la
+@HAVE_WAYLAND_TRUE@am__append_215 =  \
 @HAVE_WAYLAND_TRUE@	$(nodist_libwl_shm_plugin_la_SOURCES) \
 @HAVE_WAYLAND_TRUE@	$(nodist_libxdg_shell_plugin_la_SOURCES)
-@HAVE_WAYLAND_TRUE@am__append_215 = libwl_shm_plugin.la \
+@HAVE_WAYLAND_TRUE@am__append_216 = libwl_shm_plugin.la \
 @HAVE_WAYLAND_TRUE@	libwl_shell_plugin.la \
 @HAVE_WAYLAND_TRUE@	libxdg_shell_plugin.la
-@HAVE_EGL_TRUE@@HAVE_WAYLAND_EGL_TRUE@@HAVE_WAYLAND_TRUE@am__append_216 = libegl_wl_plugin.la
-@HAVE_WIN32_DESKTOP_TRUE@am__append_217 = $(LTLIBdirect3d9)
-@HAVE_WIN32_DESKTOP_TRUE@am__append_218 = $(LTLIBdirect3d9_deinterlace) $(LTLIBdirect3d9_adjust)
-@HAVE_WIN32_DESKTOP_TRUE@am__append_219 = libdirect3d9_plugin.la libdirect3d9_deinterlace_plugin.la libdirect3d9_adjust_plugin.la
-@HAVE_WINSTORE_FALSE@am__append_220 = video_output/win32/events.c \
+@HAVE_EGL_TRUE@@HAVE_WAYLAND_EGL_TRUE@@HAVE_WAYLAND_TRUE@am__append_217 = libegl_wl_plugin.la
+@HAVE_WIN32_DESKTOP_TRUE@am__append_218 = $(LTLIBdirect3d9)
+@HAVE_WIN32_DESKTOP_TRUE@am__append_219 = $(LTLIBdirect3d9_deinterlace) $(LTLIBdirect3d9_adjust)
+@HAVE_WIN32_DESKTOP_TRUE@am__append_220 = libdirect3d9_plugin.la libdirect3d9_deinterlace_plugin.la libdirect3d9_adjust_plugin.la
+@HAVE_WINSTORE_FALSE@am__append_221 = video_output/win32/events.c \
 @HAVE_WINSTORE_FALSE@ video_output/win32/events.h \
 @HAVE_WINSTORE_FALSE@ video_output/win32/sensors.cpp \
 @HAVE_WINSTORE_FALSE@ video_output/win32/win32touch.c video_output/win32/win32touch.h
 
-@HAVE_WIN32_DESKTOP_TRUE@am__append_221 = $(LTLIBdirectdraw) \
+@HAVE_WIN32_DESKTOP_TRUE@am__append_222 = $(LTLIBdirectdraw) \
 @HAVE_WIN32_DESKTOP_TRUE@	$(LTLIBglwin32) $(LTLIBwgl) \
 @HAVE_WIN32_DESKTOP_TRUE@	libwingdi_plugin.la
-@HAVE_WIN32_DESKTOP_TRUE@am__append_222 = libdirectdraw_plugin.la \
+@HAVE_WIN32_DESKTOP_TRUE@am__append_223 = libdirectdraw_plugin.la \
 @HAVE_WIN32_DESKTOP_TRUE@	libglwin32_plugin.la libwgl_plugin.la
-@HAVE_EGL_TRUE@@HAVE_WIN32_TRUE@am__append_223 = libegl_win32_plugin.la
-@HAVE_WIN32_TRUE@am__append_224 = libdrawable_plugin.la
+@HAVE_EGL_TRUE@@HAVE_WIN32_TRUE@am__append_224 = libegl_win32_plugin.la
+@HAVE_WIN32_TRUE@am__append_225 = libdrawable_plugin.la
 
 ### OS/2 ###
-@HAVE_OS2_TRUE@am__append_225 = libdrawable_plugin.la
-@HAVE_KVA_TRUE@am__append_226 = libkva_plugin.la
-@HAVE_ANDROID_TRUE@am__append_227 = libandroid_window_plugin.la libandroid_display_plugin.la
-@HAVE_ANDROID_TRUE@@HAVE_EGL_TRUE@am__append_228 = libegl_android_plugin.la libglconv_android_plugin.la
-@HAVE_WIN32_FALSE@am__append_229 = $(X_LIBS) $(X_PRE_LIBS) -lX11
-@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@am__append_230 = $(X_LIBS) $(X_PRE_LIBS) -lX11
-@HAVE_EVAS_TRUE@am__append_231 = libevas_plugin.la
-@HAVE_GL_TRUE@am__append_232 = libglspectrum_plugin.la
-@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_233 = libaccess_output_livehttp_plugin.la
-@ENABLE_SOUT_TRUE@am__append_234 = libaccess_output_shout_plugin.la \
+@HAVE_OS2_TRUE@am__append_226 = libdrawable_plugin.la
+@HAVE_KVA_TRUE@am__append_227 = libkva_plugin.la
+@HAVE_ANDROID_TRUE@am__append_228 = libandroid_window_plugin.la libandroid_display_plugin.la
+@HAVE_ANDROID_TRUE@@HAVE_EGL_TRUE@am__append_229 = libegl_android_plugin.la libglconv_android_plugin.la
+@HAVE_WIN32_FALSE@am__append_230 = $(X_LIBS) $(X_PRE_LIBS) -lX11
+@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@am__append_231 = $(X_LIBS) $(X_PRE_LIBS) -lX11
+@HAVE_EVAS_TRUE@am__append_232 = libevas_plugin.la
+@HAVE_GL_TRUE@am__append_233 = libglspectrum_plugin.la
+@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_234 = libaccess_output_livehttp_plugin.la
+@ENABLE_SOUT_TRUE@am__append_235 = libaccess_output_shout_plugin.la \
 @ENABLE_SOUT_TRUE@	libmux_ogg_plugin.la \
 @ENABLE_SOUT_TRUE@	libstream_out_chromaprint_plugin.la
-@ENABLE_SOUT_TRUE@@HAVE_DVBPSI_TRUE@am__append_235 = libmux_ts_plugin.la
-@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_236 = -DHAVE_SRTP $(SRTP_CFLAGS) \
+@ENABLE_SOUT_TRUE@@HAVE_DVBPSI_TRUE@am__append_236 = libmux_ts_plugin.la
+@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_237 = -DHAVE_SRTP $(SRTP_CFLAGS) \
 @ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@	$(GCRYPT_CFLAGS)
 
-@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_237 = $(SRTP_LIBS) $(GCRYPT_LIBS)
-@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_238 = libstream_out_raop_plugin.la
+@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_238 = $(SRTP_LIBS) $(GCRYPT_LIBS)
+@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_239 = libstream_out_raop_plugin.la
 
 # Chromecast plugin
-@ENABLE_SOUT_TRUE@am__append_239 = .proto .pb.cc
-@ENABLE_SOUT_TRUE@am__append_240 = $(nodist_libstream_out_chromecast_plugin_la_SOURCES)
-@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_241 = stream_out/chromecast/cast_channel.pb.h
-@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_242 = libstream_out_chromecast_plugin.la
-@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_243 = libdemux_chromecast_plugin.la
-@HAVE_WIN32_TRUE@am__append_244 = module.rc.lo
-@HAVE_WIN32_TRUE@am__append_245 = module.rc
+@ENABLE_SOUT_TRUE@am__append_240 = .proto .pb.cc
+@ENABLE_SOUT_TRUE@am__append_241 = $(nodist_libstream_out_chromecast_plugin_la_SOURCES)
+@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_242 = stream_out/chromecast/cast_channel.pb.h
+@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_243 = libstream_out_chromecast_plugin.la
+@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_244 = libdemux_chromecast_plugin.la
+@HAVE_WIN32_TRUE@am__append_245 = module.rc.lo
+@HAVE_WIN32_TRUE@am__append_246 = module.rc
 subdir = modules
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_append_compile_flags.m4 \
@@ -2463,6 +2466,7 @@ am_libmacosx_plugin_la_OBJECTS =  \
 	gui/macosx/libmacosx_plugin_la-Windows.lo \
 	gui/macosx/libmacosx_plugin_la-VLCAudioEffectsWindowController.lo \
 	gui/macosx/libmacosx_plugin_la-VLCBookmarksWindowController.lo \
+	gui/macosx/libmacosx_plugin_la-VLCBottomBarView.lo \
 	gui/macosx/libmacosx_plugin_la-VLCCoreDialogProvider.lo \
 	gui/macosx/libmacosx_plugin_la-VLCLogMessage.lo \
 	gui/macosx/libmacosx_plugin_la-VLCLogWindowController.lo \
@@ -2497,7 +2501,7 @@ am_libmacosx_plugin_la_OBJECTS =  \
 	gui/macosx/libmacosx_plugin_la-VLCSliderCell.lo \
 	gui/macosx/libmacosx_plugin_la-VLCVolumeSlider.lo \
 	gui/macosx/libmacosx_plugin_la-VLCVolumeSliderCell.lo \
-	gui/macosx/libmacosx_plugin_la-VLCBottomBarView.lo
+	gui/macosx/libmacosx_plugin_la-VLCWrappableTextField.lo
 nodist_libmacosx_plugin_la_OBJECTS =
 libmacosx_plugin_la_OBJECTS = $(am_libmacosx_plugin_la_OBJECTS) \
 	$(nodist_libmacosx_plugin_la_OBJECTS)
@@ -6936,7 +6940,7 @@ vlclibdir = @vlclibdir@
 noinst_LTLIBRARIES = $(am__append_33) libvlc_http.la $(am__append_40) \
 	libvlc_motion.la libevent_thread.la
 pkglib_LTLIBRARIES = $(am__append_54) $(am__append_134) \
-	$(am__append_208)
+	$(am__append_209)
 
 ### OpenMAX ###
 noinst_HEADERS = codec/omxil/OMX_Broadcom.h \
@@ -7010,22 +7014,22 @@ EXTRA_LTLIBRARIES = libaccess_qtsound_plugin.la libdc1394_plugin.la \
 	libchroma_omx_plugin.la libcvpx_plugin.la \
 	libopencv_wrapper_plugin.la libpostproc_plugin.la \
 	libopencv_example_plugin.la libgles2_plugin.la \
-	$(am__append_219) libdirect3d11_plugin.la \
+	$(am__append_220) libdirect3d11_plugin.la \
 	libdirect3d11_deinterlace_plugin.la \
-	libdirect3d11_adjust_plugin.la $(am__append_222) \
+	libdirect3d11_adjust_plugin.la $(am__append_223) \
 	libfb_plugin.la libaa_plugin.la libcaca_plugin.la \
 	libgoom_plugin.la libprojectm_plugin.la libvsxu_plugin.la \
-	$(am__append_234)
+	$(am__append_235)
 AUTOMAKE_OPTIONS = subdir-objects
 NULL = 
 pluginsdir = $(vlclibdir)/plugins
 BUILT_SOURCES = $(am__append_18) $(am__append_114) $(am__append_129) \
-	$(am__append_214) $(am__append_241) dummy.cpp \
-	$(am__append_244)
+	$(am__append_215) $(am__append_242) dummy.cpp \
+	$(am__append_245)
 CLEANFILES = $(BUILT_SOURCES) \
 	$(nodist_libwl_screenshooter_plugin_la_SOURCES) \
-	$(nodist_libwl_shm_plugin_la_SOURCES) $(am__append_240) \
-	$(am__append_245)
+	$(nodist_libwl_shm_plugin_la_SOURCES) $(am__append_241) \
+	$(am__append_246)
 LTLIBVLCCORE = $(top_builddir)/src/libvlccore.la
 
 # Module name from object or executable file name.
@@ -7039,7 +7043,7 @@ AM_LDFLAGS = -avoid-version -module -export-symbols-regex ^vlc_entry \
 	$(am__append_4)
 
 # Wayland
-SUFFIXES = .xib .ui .h .hpp .moc.cpp $(am__append_239) \
+SUFFIXES = .xib .ui .h .hpp .moc.cpp $(am__append_240) \
 	-client-protocol.h -protocol.c .xml
 accessdir = $(pluginsdir)/access
 
@@ -7973,7 +7977,7 @@ demux_LTLIBRARIES = libflacsys_plugin.la $(LTLIBogg) \
 	libdirectory_demux_plugin.la libes_plugin.la libh26x_plugin.la \
 	$(LTLIBmkv) libmp4_plugin.la libmpgv_plugin.la \
 	libplaylist_plugin.la $(am__append_107) libadaptive_plugin.la \
-	libnoseek_plugin.la $(am__append_243)
+	libnoseek_plugin.la $(am__append_244)
 libflacsys_plugin_la_SOURCES = demux/flac.c demux/xiph_metadata.h demux/xiph_metadata.c
 libflacsys_plugin_la_CPPFLAGS = $(AM_CPPFLAGS)
 libogg_plugin_la_SOURCES = demux/ogg.c demux/ogg.h demux/oggseek.c demux/oggseek.h \
@@ -8380,6 +8384,7 @@ libmacosx_plugin_la_SOURCES = \
 	gui/macosx/Windows.h gui/macosx/Windows.m \
 	gui/macosx/VLCAudioEffectsWindowController.h gui/macosx/VLCAudioEffectsWindowController.m \
 	gui/macosx/VLCBookmarksWindowController.h gui/macosx/VLCBookmarksWindowController.m \
+	gui/macosx/VLCBottomBarView.h gui/macosx/VLCBottomBarView.m \
 	gui/macosx/VLCCoreDialogProvider.h gui/macosx/VLCCoreDialogProvider.m \
 	gui/macosx/VLCLogMessage.h gui/macosx/VLCLogMessage.m \
 	gui/macosx/VLCLogWindowController.h gui/macosx/VLCLogWindowController.m \
@@ -8414,7 +8419,7 @@ libmacosx_plugin_la_SOURCES = \
 	gui/macosx/VLCSliderCell.h gui/macosx/VLCSliderCell.m \
 	gui/macosx/VLCVolumeSlider.h gui/macosx/VLCVolumeSlider.m \
 	gui/macosx/VLCVolumeSliderCell.h gui/macosx/VLCVolumeSliderCell.m \
-	gui/macosx/VLCBottomBarView.h gui/macosx/VLCBottomBarView.m
+	gui/macosx/VLCWrappableTextField.h gui/macosx/VLCWrappableTextField.m
 
 
 # User interface compilation
@@ -10009,7 +10014,7 @@ video_filter_LTLIBRARIES = libadjust_plugin.la libalphamask_plugin.la \
 	librotate_plugin.la $(am__append_188) $(am__append_189) \
 	libdeinterlace_plugin.la $(LTLIBopencv_wrapper) \
 	$(LTLIBpostproc) libblend_plugin.la $(LTLIBopencv_example) \
-	$(am__append_218) $(LTLIBdirect3d11_deinterlace) \
+	$(am__append_219) $(LTLIBdirect3d11_deinterlace) \
 	$(LTLIBdirect3d11_adjust)
 
 # macOS / iOS hardware video filters
@@ -10068,16 +10073,16 @@ libpanoramix_plugin_la_SOURCES = video_splitter/panoramix.c
 libpanoramix_plugin_la_CFLAGS = $(AM_CFLAGS) $(am__append_195)
 libpanoramix_plugin_la_LIBADD = $(LIBM) $(am__append_196)
 voutdir = $(pluginsdir)/video_output
-vout_LTLIBRARIES = $(am__append_198) $(am__append_200) \
-	$(am__append_201) $(am__append_202) $(LTLIBgles2) \
-	$(am__append_203) $(am__append_204) $(am__append_205) \
-	$(am__append_206) $(am__append_207) $(am__append_209) \
-	$(am__append_211) $(am__append_212) $(am__append_213) \
-	$(am__append_215) $(am__append_216) $(am__append_217) \
-	$(LTLIBdirect3d11) $(am__append_221) $(am__append_223) \
-	$(am__append_224) $(am__append_225) $(am__append_226) \
-	$(am__append_227) $(am__append_228) $(LTLIBfb) $(LTLIBaa) \
-	$(LTLIBcaca) $(am__append_231) libflaschen_plugin.la \
+vout_LTLIBRARIES = $(am__append_198) $(am__append_201) \
+	$(am__append_202) $(am__append_203) $(LTLIBgles2) \
+	$(am__append_204) $(am__append_205) $(am__append_206) \
+	$(am__append_207) $(am__append_208) $(am__append_210) \
+	$(am__append_212) $(am__append_213) $(am__append_214) \
+	$(am__append_216) $(am__append_217) $(am__append_218) \
+	$(LTLIBdirect3d11) $(am__append_222) $(am__append_224) \
+	$(am__append_225) $(am__append_226) $(am__append_227) \
+	$(am__append_228) $(am__append_229) $(LTLIBfb) $(LTLIBaa) \
+	$(LTLIBcaca) $(am__append_232) libflaschen_plugin.la \
 	libvdummy_plugin.la libvmem_plugin.la libyuv_plugin.la
 OPENGL_COMMONSOURCES = video_output/opengl/vout_helper.c \
 	video_output/opengl/vout_helper.h video_output/opengl/converter.h \
@@ -10090,6 +10095,8 @@ OPENGL_COMMONSOURCES = video_output/opengl/vout_helper.c \
 libglconv_cvpx_plugin_la_SOURCES =  \
 	video_output/opengl/converter_cvpx.c \
 	video_output/opengl/converter.h $(am__append_199)
+libglconv_cvpx_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)' \
+	$(am__append_200)
 @HAVE_OSX_TRUE@libvout_macosx_plugin_la_SOURCES = video_output/macosx.m $(OPENGL_COMMONSOURCES)
 @HAVE_OSX_TRUE@libvout_macosx_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)' \
 @HAVE_OSX_TRUE@	-Wl,-framework,OpenGL,-framework,Cocoa
@@ -10098,7 +10105,6 @@ libglconv_cvpx_plugin_la_SOURCES =  \
 @HAVE_OSX_TRUE@libcaopengllayer_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)' \
 @HAVE_OSX_TRUE@	-Wl,-framework,OpenGL,-framework,Cocoa,-framework,QuartzCore
 
-@HAVE_OSX_TRUE@libglconv_cvpx_plugin_la_LDFLAGS = -Wl,-framework,IOSurface -Wl,-framework,CoreVideo
 @HAVE_IOS_TRUE@libglconv_cvpx_plugin_la_CFLAGS = $(AM_CFLAGS) -DUSE_OPENGL_ES2
 libvout_ios_plugin_la_SOURCES = video_output/ios.m $(OPENGL_COMMONSOURCES)
 libvout_ios_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)' \
@@ -10176,7 +10182,7 @@ libxcb_window_plugin_la_SOURCES = \
 
 libxcb_window_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_xcb_window) \
 	$(XPROTO_CFLAGS) $(XCB_CFLAGS) $(XCB_KEYSYMS_CFLAGS) \
-	$(am__append_210)
+	$(am__append_211)
 libxcb_window_plugin_la_LIBADD = $(XPROTO_LIBS) $(XCB_LIBS) $(XCB_KEYSYMS_LIBS)
 libegl_x11_plugin_la_SOURCES = video_output/opengl/egl.c
 libegl_x11_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) -DUSE_PLATFORM_X11=1
@@ -10247,7 +10253,7 @@ libdirect3d11_plugin_la_SOURCES = video_output/win32/direct3d11.c \
 	video_chroma/d3d11_fmt.h video_chroma/dxgi_fmt.c \
 	video_chroma/dxgi_fmt.h video_output/win32/common.c \
 	video_output/win32/common.h video_chroma/copy.c \
-	video_chroma/copy.h $(am__append_220)
+	video_chroma/copy.h $(am__append_221)
 libdirect3d11_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) \
  -DMODULE_NAME_IS_direct3d11
 
@@ -10339,14 +10345,14 @@ libfb_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
 
 ### ASCII Art ###
 libaa_plugin_la_SOURCES = video_output/aa.c
-libaa_plugin_la_LIBADD = libevent_thread.la -laa $(am__append_229)
+libaa_plugin_la_LIBADD = libevent_thread.la -laa $(am__append_230)
 libaa_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
 
 ### Coloured ASCII art ###
 libcaca_plugin_la_SOURCES = video_output/caca.c
 libcaca_plugin_la_CFLAGS = $(AM_CFLAGS) $(CACA_CFLAGS)
 libcaca_plugin_la_LIBADD = libevent_thread.la $(CACA_LIBS) \
-	$(am__append_230)
+	$(am__append_231)
 libcaca_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
 
 ### EFL Evas video output ###
@@ -10365,7 +10371,7 @@ libevent_thread_la_SOURCES = \
 	video_output/event_thread.c video_output/event_thread.h
 
 visudir = $(pluginsdir)/visualization
-visu_LTLIBRARIES = $(am__append_232) $(LTLIBgoom) $(LTLIBprojectm) \
+visu_LTLIBRARIES = $(am__append_233) $(LTLIBgoom) $(LTLIBprojectm) \
 	libvisual_plugin.la $(LTLIBvsxu)
 libglspectrum_plugin_la_SOURCES = \
 	visualization/glspectrum.c \
@@ -10406,7 +10412,7 @@ libvsxu_plugin_la_LIBADD = $(VSXU_LIBS) $(LIBM)
 @ENABLE_SOUT_TRUE@	libaccess_output_file_plugin.la \
 @ENABLE_SOUT_TRUE@	libaccess_output_http_plugin.la \
 @ENABLE_SOUT_TRUE@	libaccess_output_udp_plugin.la \
-@ENABLE_SOUT_TRUE@	$(am__append_233) \
+@ENABLE_SOUT_TRUE@	$(am__append_234) \
 @ENABLE_SOUT_TRUE@	$(LTLIBaccess_output_shout)
 @ENABLE_SOUT_TRUE@libaccess_output_livehttp_plugin_la_SOURCES = access_output/livehttp.c
 @ENABLE_SOUT_TRUE@libaccess_output_livehttp_plugin_la_CFLAGS = $(AM_CFLAGS) $(GCRYPT_CFLAGS)
@@ -10435,7 +10441,7 @@ libvsxu_plugin_la_LIBADD = $(VSXU_LIBS) $(LIBM)
 @ENABLE_SOUT_TRUE@	libmux_asf_plugin.la libmux_avi_plugin.la \
 @ENABLE_SOUT_TRUE@	libmux_mp4_plugin.la libmux_mpjpeg_plugin.la \
 @ENABLE_SOUT_TRUE@	libmux_ps_plugin.la libmux_wav_plugin.la \
-@ENABLE_SOUT_TRUE@	$(LTLIBmux_ogg) $(am__append_235)
+@ENABLE_SOUT_TRUE@	$(LTLIBmux_ogg) $(am__append_236)
 @ENABLE_SOUT_TRUE@libmux_ogg_plugin_la_SOURCES = mux/ogg.c
 @ENABLE_SOUT_TRUE@libmux_ogg_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(OGG_CFLAGS)
 @ENABLE_SOUT_TRUE@libmux_ogg_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(muxdir)'
@@ -10496,17 +10502,17 @@ libvsxu_plugin_la_LIBADD = $(VSXU_LIBS) $(LIBM)
 @ENABLE_SOUT_TRUE@	libstream_out_setid_plugin.la \
 @ENABLE_SOUT_TRUE@	libstream_out_transcode_plugin.la \
 @ENABLE_SOUT_TRUE@	libstream_out_rtp_plugin.la \
-@ENABLE_SOUT_TRUE@	$(am__append_238) \
+@ENABLE_SOUT_TRUE@	$(am__append_239) \
 @ENABLE_SOUT_TRUE@	$(LTLIBstream_out_chromaprint) \
-@ENABLE_SOUT_TRUE@	$(am__append_242)
+@ENABLE_SOUT_TRUE@	$(am__append_243)
 @ENABLE_SOUT_TRUE@libstream_out_rtp_plugin_la_SOURCES = \
 @ENABLE_SOUT_TRUE@	stream_out/rtp.c stream_out/rtp.h stream_out/rtpfmt.c \
 @ENABLE_SOUT_TRUE@	stream_out/rtcp.c stream_out/rtsp.c stream_out/vod.c
 
 @ENABLE_SOUT_TRUE@libstream_out_rtp_plugin_la_CFLAGS = $(AM_CFLAGS) \
-@ENABLE_SOUT_TRUE@	$(am__append_236)
+@ENABLE_SOUT_TRUE@	$(am__append_237)
 @ENABLE_SOUT_TRUE@libstream_out_rtp_plugin_la_LIBADD = $(SOCKET_LIBS) \
-@ENABLE_SOUT_TRUE@	$(LIBPTHREAD) $(am__append_237)
+@ENABLE_SOUT_TRUE@	$(LIBPTHREAD) $(am__append_238)
 @ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@SRTP_CFLAGS = -I$(srcdir)/access/rtp
 @ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@SRTP_LIBS = libvlc_srtp.la
 
@@ -14213,6 +14219,9 @@ gui/macosx/libmacosx_plugin_la-VLCAudioEffectsWindowController.lo:  \
 gui/macosx/libmacosx_plugin_la-VLCBookmarksWindowController.lo:  \
 	gui/macosx/$(am__dirstamp) \
 	gui/macosx/$(DEPDIR)/$(am__dirstamp)
+gui/macosx/libmacosx_plugin_la-VLCBottomBarView.lo:  \
+	gui/macosx/$(am__dirstamp) \
+	gui/macosx/$(DEPDIR)/$(am__dirstamp)
 gui/macosx/libmacosx_plugin_la-VLCCoreDialogProvider.lo:  \
 	gui/macosx/$(am__dirstamp) \
 	gui/macosx/$(DEPDIR)/$(am__dirstamp)
@@ -14315,7 +14324,7 @@ gui/macosx/libmacosx_plugin_la-VLCVolumeSlider.lo:  \
 gui/macosx/libmacosx_plugin_la-VLCVolumeSliderCell.lo:  \
 	gui/macosx/$(am__dirstamp) \
 	gui/macosx/$(DEPDIR)/$(am__dirstamp)
-gui/macosx/libmacosx_plugin_la-VLCBottomBarView.lo:  \
+gui/macosx/libmacosx_plugin_la-VLCWrappableTextField.lo:  \
 	gui/macosx/$(am__dirstamp) \
 	gui/macosx/$(DEPDIR)/$(am__dirstamp)
 
@@ -18019,6 +18028,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCVolumeSliderCell.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCVoutView.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCVoutWindowController.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCWrappableTextField.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-Windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-applescript.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-macosx.Plo@am__quote@
@@ -24851,6 +24861,13 @@ gui/macosx/libmacosx_plugin_la-VLCBookmarksWindowController.lo: gui/macosx/VLCBo
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o gui/macosx/libmacosx_plugin_la-VLCBookmarksWindowController.lo `test -f 'gui/macosx/VLCBookmarksWindowController.m' || echo '$(srcdir)/'`gui/macosx/VLCBookmarksWindowController.m
 
+gui/macosx/libmacosx_plugin_la-VLCBottomBarView.lo: gui/macosx/VLCBottomBarView.m
+@am__fastdepOBJC_TRUE@	$(AM_V_OBJC)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT gui/macosx/libmacosx_plugin_la-VLCBottomBarView.lo -MD -MP -MF gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCBottomBarView.Tpo -c -o gui/macosx/libmacosx_plugin_la-VLCBottomBarView.lo `test -f 'gui/macosx/VLCBottomBarView.m' || echo '$(srcdir)/'`gui/macosx/VLCBottomBarView.m
+@am__fastdepOBJC_TRUE@	$(AM_V_at)$(am__mv) gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCBottomBarView.Tpo gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCBottomBarView.Plo
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(AM_V_OBJC)source='gui/macosx/VLCBottomBarView.m' object='gui/macosx/libmacosx_plugin_la-VLCBottomBarView.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o gui/macosx/libmacosx_plugin_la-VLCBottomBarView.lo `test -f 'gui/macosx/VLCBottomBarView.m' || echo '$(srcdir)/'`gui/macosx/VLCBottomBarView.m
+
 gui/macosx/libmacosx_plugin_la-VLCCoreDialogProvider.lo: gui/macosx/VLCCoreDialogProvider.m
 @am__fastdepOBJC_TRUE@	$(AM_V_OBJC)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT gui/macosx/libmacosx_plugin_la-VLCCoreDialogProvider.lo -MD -MP -MF gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCCoreDialogProvider.Tpo -c -o gui/macosx/libmacosx_plugin_la-VLCCoreDialogProvider.lo `test -f 'gui/macosx/VLCCoreDialogProvider.m' || echo '$(srcdir)/'`gui/macosx/VLCCoreDialogProvider.m
 @am__fastdepOBJC_TRUE@	$(AM_V_at)$(am__mv) gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCCoreDialogProvider.Tpo gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCCoreDialogProvider.Plo
@@ -25089,12 +25106,12 @@ gui/macosx/libmacosx_plugin_la-VLCVolumeSliderCell.lo: gui/macosx/VLCVolumeSlide
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o gui/macosx/libmacosx_plugin_la-VLCVolumeSliderCell.lo `test -f 'gui/macosx/VLCVolumeSliderCell.m' || echo '$(srcdir)/'`gui/macosx/VLCVolumeSliderCell.m
 
-gui/macosx/libmacosx_plugin_la-VLCBottomBarView.lo: gui/macosx/VLCBottomBarView.m
-@am__fastdepOBJC_TRUE@	$(AM_V_OBJC)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT gui/macosx/libmacosx_plugin_la-VLCBottomBarView.lo -MD -MP -MF gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCBottomBarView.Tpo -c -o gui/macosx/libmacosx_plugin_la-VLCBottomBarView.lo `test -f 'gui/macosx/VLCBottomBarView.m' || echo '$(srcdir)/'`gui/macosx/VLCBottomBarView.m
-@am__fastdepOBJC_TRUE@	$(AM_V_at)$(am__mv) gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCBottomBarView.Tpo gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCBottomBarView.Plo
-@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(AM_V_OBJC)source='gui/macosx/VLCBottomBarView.m' object='gui/macosx/libmacosx_plugin_la-VLCBottomBarView.lo' libtool=yes @AMDEPBACKSLASH@
+gui/macosx/libmacosx_plugin_la-VLCWrappableTextField.lo: gui/macosx/VLCWrappableTextField.m
+@am__fastdepOBJC_TRUE@	$(AM_V_OBJC)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT gui/macosx/libmacosx_plugin_la-VLCWrappableTextField.lo -MD -MP -MF gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCWrappableTextField.Tpo -c -o gui/macosx/libmacosx_plugin_la-VLCWrappableTextField.lo `test -f 'gui/macosx/VLCWrappableTextField.m' || echo '$(srcdir)/'`gui/macosx/VLCWrappableTextField.m
+@am__fastdepOBJC_TRUE@	$(AM_V_at)$(am__mv) gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCWrappableTextField.Tpo gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCWrappableTextField.Plo
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(AM_V_OBJC)source='gui/macosx/VLCWrappableTextField.m' object='gui/macosx/libmacosx_plugin_la-VLCWrappableTextField.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o gui/macosx/libmacosx_plugin_la-VLCBottomBarView.lo `test -f 'gui/macosx/VLCBottomBarView.m' || echo '$(srcdir)/'`gui/macosx/VLCBottomBarView.m
+@am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o gui/macosx/libmacosx_plugin_la-VLCWrappableTextField.lo `test -f 'gui/macosx/VLCWrappableTextField.m' || echo '$(srcdir)/'`gui/macosx/VLCWrappableTextField.m
 
 gui/minimal_macosx/libminimal_macosx_plugin_la-intf.lo: gui/minimal_macosx/intf.m
 @am__fastdepOBJC_TRUE@	$(AM_V_OBJC)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libminimal_macosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT gui/minimal_macosx/libminimal_macosx_plugin_la-intf.lo -MD -MP -MF gui/minimal_macosx/$(DEPDIR)/libminimal_macosx_plugin_la-intf.Tpo -c -o gui/minimal_macosx/libminimal_macosx_plugin_la-intf.lo `test -f 'gui/minimal_macosx/intf.m' || echo '$(srcdir)/'`gui/minimal_macosx/intf.m

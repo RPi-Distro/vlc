@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-09-28 02:28+0000\n"
+"POT-Creation-Date: 2017-10-04 02:30+0000\n"
 "PO-Revision-Date: 2014-04-18 16:23+0000\n"
 "Last-Translator: mhikanik <podnety@mojepreklady.net>\n"
 "Language-Team: Slovak (http://www.transifex.com/projects/p/vlc-trans/"
@@ -689,7 +689,7 @@ msgstr "Dolby Surround"
 msgid "Stereo"
 msgstr "Stereo"
 
-#: src/audio_output/output.c:439 src/input/es_out.c:3196
+#: src/audio_output/output.c:439 src/input/es_out.c:3201
 #: src/libvlc-module.c:195 src/libvlc-module.c:293 src/libvlc-module.c:366
 #: src/misc/actions.c:81 modules/audio_filter/channel_mixer/mono.c:89
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
@@ -989,12 +989,12 @@ msgstr "Áno"
 msgid "Closed captions %u"
 msgstr "Uzatvorené kapitoly %u"
 
-#: src/input/es_out.c:3025 src/input/es_out.c:3286 modules/access/imem.c:64
+#: src/input/es_out.c:3025 src/input/es_out.c:3293 modules/access/imem.c:64
 msgid "Subtitle"
 msgstr "Titulky"
 
 #: src/input/es_out.c:3033 src/input/es_out.c:3060 src/input/es_out.c:3104
-#: src/input/es_out.c:3286 modules/gui/macosx/VLCAddonsWindowController.m:132
+#: src/input/es_out.c:3293 modules/gui/macosx/VLCAddonsWindowController.m:132
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:185
 #: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1498
 msgid "Type"
@@ -1018,7 +1018,7 @@ msgid "Language"
 msgstr "Jazyk"
 
 #: src/input/es_out.c:3054 src/input/meta.c:61
-#: modules/gui/macosx/VLCBookmarksWindowController.m:84
+#: modules/gui/macosx/VLCBookmarksWindowController.m:83
 #: modules/gui/macosx/VLCPlaylist.m:112 modules/gui/qt/dialogs/bookmarks.cpp:75
 msgid "Description"
 msgstr "Popis"
@@ -1138,52 +1138,57 @@ msgstr "Vpravo"
 msgid "Orientation"
 msgstr "Zrkadlová orientácia"
 
-#: src/input/es_out.c:3149 src/input/es_out.c:3163 src/input/es_out.c:3179
-#: src/input/es_out.c:3195 src/playlist/tree.c:67
+#: src/input/es_out.c:3150 src/input/es_out.c:3168 src/input/es_out.c:3186
+#: src/input/es_out.c:3200 src/playlist/tree.c:67
 #: modules/access/dtv/access.c:75 modules/access/v4l2/v4l2.c:242
 msgid "Undefined"
 msgstr "Nedefinované"
 
-#: src/input/es_out.c:3150
+#: src/input/es_out.c:3152
 #, fuzzy
 msgid "ITU-R BT.601 (525 lines, 60 Hz)"
 msgstr "525 riadkov / 60 Hz"
 
-#: src/input/es_out.c:3151
+#: src/input/es_out.c:3154
 #, fuzzy
 msgid "ITU-R BT.601 (625 lines, 50 Hz)"
 msgstr "625 riadkov / 50 Hz"
 
-#: src/input/es_out.c:3158
+#: src/input/es_out.c:3162
 #, fuzzy
 msgid "Color primaries"
 msgstr "Farebné hlásenia"
 
-#: src/input/es_out.c:3164 src/libvlc-module.c:360
+#: src/input/es_out.c:3169 src/libvlc-module.c:360
 #: modules/video_filter/deinterlace/deinterlace.h:58
 msgid "Linear"
 msgstr "Lineárne"
 
-#: src/input/es_out.c:3174
+#: src/input/es_out.c:3176
+msgid "Hybrid Log-Gamma"
+msgstr ""
+
+#: src/input/es_out.c:3180
 #, fuzzy
 msgid "Color transfer function"
 msgstr "Extrakcia farieb"
 
-#: src/input/es_out.c:3185
-msgid "Limited Range"
-msgstr ""
-
-#: src/input/es_out.c:3186
-#, fuzzy
-msgid "Full Range"
-msgstr "Maximum basov"
-
-#: src/input/es_out.c:3189
+#: src/input/es_out.c:3193
 #, fuzzy
 msgid "Color space"
 msgstr "Farebná schéma"
 
-#: src/input/es_out.c:3197 src/libvlc-module.c:293 src/libvlc-module.c:366
+#: src/input/es_out.c:3193
+#, c-format
+msgid "%s Range"
+msgstr ""
+
+#: src/input/es_out.c:3195
+#, fuzzy
+msgid "Full"
+msgstr "Maximum basov"
+
+#: src/input/es_out.c:3202 src/libvlc-module.c:293 src/libvlc-module.c:366
 #: modules/audio_filter/channel_mixer/mono.c:91
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
 #: modules/codec/subsdec.c:167 modules/codec/zvbi.c:83
@@ -1194,99 +1199,99 @@ msgstr "Farebná schéma"
 msgid "Center"
 msgstr "Vycentrovať"
 
-#: src/input/es_out.c:3198
+#: src/input/es_out.c:3203
 #, fuzzy
 msgid "Top Left"
 msgstr "Vľavo hore"
 
-#: src/input/es_out.c:3199
+#: src/input/es_out.c:3204
 #, fuzzy
 msgid "Top Center"
 msgstr "Vycentrovať"
 
-#: src/input/es_out.c:3200
+#: src/input/es_out.c:3205
 #, fuzzy
 msgid "Bottom Left"
 msgstr "Vľavo dole"
 
-#: src/input/es_out.c:3201
+#: src/input/es_out.c:3206
 #, fuzzy
 msgid "Bottom Center"
 msgstr "Vľavo dole"
 
-#: src/input/es_out.c:3203
+#: src/input/es_out.c:3210
 #, fuzzy
 msgid "Chroma location"
 msgstr "Zosilnenie farebnej sýtosti (chroma)"
 
-#: src/input/es_out.c:3212
+#: src/input/es_out.c:3219
 #, fuzzy
 msgid "Rectangular"
 msgstr "Obdĺžníková lineárna fáza"
 
-#: src/input/es_out.c:3215
+#: src/input/es_out.c:3222
 msgid "Equirectangular"
 msgstr ""
 
-#: src/input/es_out.c:3218
+#: src/input/es_out.c:3225
 msgid "Cubemap"
 msgstr ""
 
-#: src/input/es_out.c:3224
+#: src/input/es_out.c:3231
 #, fuzzy
 msgid "Projection"
 msgstr "Smer"
 
-#: src/input/es_out.c:3226
+#: src/input/es_out.c:3233
 msgid "Yaw"
 msgstr ""
 
-#: src/input/es_out.c:3228 modules/video_output/vmem.c:48
+#: src/input/es_out.c:3235 modules/video_output/vmem.c:48
 msgid "Pitch"
 msgstr "Krok"
 
-#: src/input/es_out.c:3230
+#: src/input/es_out.c:3237
 msgid "Roll"
 msgstr ""
 
-#: src/input/es_out.c:3232
+#: src/input/es_out.c:3239
 msgid "Field of view"
 msgstr ""
 
-#: src/input/es_out.c:3237
+#: src/input/es_out.c:3244
 #, fuzzy
 msgid "Max luminance"
 msgstr "Vyváženie modrej farby"
 
-#: src/input/es_out.c:3242
+#: src/input/es_out.c:3249
 msgid "Min luminance"
 msgstr ""
 
-#: src/input/es_out.c:3250
+#: src/input/es_out.c:3257
 #, fuzzy
 msgid "Primary R"
 msgstr "Primárny jazyk"
 
-#: src/input/es_out.c:3257
+#: src/input/es_out.c:3264
 #, fuzzy
 msgid "Primary G"
 msgstr "Primárny jazyk"
 
-#: src/input/es_out.c:3264
+#: src/input/es_out.c:3271
 #, fuzzy
 msgid "Primary B"
 msgstr "Primárny jazyk"
 
-#: src/input/es_out.c:3271
+#: src/input/es_out.c:3278
 #, fuzzy
 msgid "White point"
 msgstr "Kontrolné body"
 
-#: src/input/es_out.c:3275
+#: src/input/es_out.c:3282
 msgid "MaxCLL"
 msgstr ""
 
-#: src/input/es_out.c:3280
+#: src/input/es_out.c:3287
 msgid "MaxFALL"
 msgstr ""
 
@@ -1303,8 +1308,8 @@ msgstr ""
 
 #: src/input/meta.c:55 src/input/var.c:177 modules/gui/macosx/VLCMainMenu.m:398
 #: modules/gui/macosx/VLCMainMenu.m:399
-#: modules/gui/macosx/VLCOpenWindowController.m:179
-#: modules/gui/macosx/VLCOpenWindowController.m:181
+#: modules/gui/macosx/VLCOpenWindowController.m:178
+#: modules/gui/macosx/VLCOpenWindowController.m:180
 #: modules/gui/macosx/VLCPlaylist.m:107 modules/gui/macosx/VLCPlaylistInfo.m:63
 #: modules/gui/qt/components/open_panels.cpp:509
 #: modules/gui/qt/components/open_panels.cpp:523 modules/mux/asf.c:56
@@ -1347,7 +1352,7 @@ msgstr "Dátum"
 msgid "Setting"
 msgstr "Nastavenie"
 
-#: src/input/meta.c:65 modules/gui/macosx/VLCOpenWindowController.m:189
+#: src/input/meta.c:65 modules/gui/macosx/VLCOpenWindowController.m:188
 msgid "URL"
 msgstr "Adresa URL"
 
@@ -1418,8 +1423,8 @@ msgstr "Programy"
 
 #: src/input/var.c:182 modules/gui/macosx/VLCMainMenu.m:400
 #: modules/gui/macosx/VLCMainMenu.m:401
-#: modules/gui/macosx/VLCOpenWindowController.m:180
-#: modules/gui/macosx/VLCOpenWindowController.m:182
+#: modules/gui/macosx/VLCOpenWindowController.m:179
+#: modules/gui/macosx/VLCOpenWindowController.m:181
 msgid "Chapter"
 msgstr "Kapitola"
 
@@ -1903,9 +1908,9 @@ msgstr ""
 #: modules/codec/avcodec/avcodec.c:50 modules/codec/avcodec/avcodec.c:54
 #: modules/codec/kate.c:199 modules/codec/x264.c:438 modules/codec/x264.c:443
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:191
-#: modules/gui/macosx/VLCOpenWindowController.m:245
-#: modules/gui/macosx/VLCOpenWindowController.m:274
-#: modules/gui/macosx/VLCOpenWindowController.m:275
+#: modules/gui/macosx/VLCOpenWindowController.m:243
+#: modules/gui/macosx/VLCOpenWindowController.m:272
+#: modules/gui/macosx/VLCOpenWindowController.m:273
 #: modules/text_renderer/freetype/freetype.c:143
 #: share/lua/http/dialogs/create_stream.html:196
 msgid "None"
@@ -2818,7 +2823,7 @@ msgstr "Opakovania vstupu"
 msgid "Number of time the same input will be repeated"
 msgstr "Udáva, koľkokrát sa zopakuje ten istý vstup."
 
-#: src/libvlc-module.c:632 modules/gui/macosx/VLCOpenWindowController.m:160
+#: src/libvlc-module.c:632 modules/gui/macosx/VLCOpenWindowController.m:159
 msgid "Start time"
 msgstr "Čas spustenia"
 
@@ -2826,7 +2831,7 @@ msgstr "Čas spustenia"
 msgid "The stream will start at this position (in seconds)."
 msgstr "Stream sa spustí na pozícii, ktorú zadáte (v sekundách)."
 
-#: src/libvlc-module.c:636 modules/gui/macosx/VLCOpenWindowController.m:162
+#: src/libvlc-module.c:636 modules/gui/macosx/VLCOpenWindowController.m:161
 msgid "Stop time"
 msgstr "Čas zastavenia"
 
@@ -5389,7 +5394,7 @@ msgstr "Nepodarilo sa otvoriť  \"%s\" a zápis sa nevykonal"
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:834
-#: modules/gui/macosx/VLCBookmarksWindowController.m:90
+#: modules/gui/macosx/VLCBookmarksWindowController.m:89
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:153
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:182
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:339
@@ -5399,8 +5404,8 @@ msgstr "Nepodarilo sa otvoriť  \"%s\" a zápis sa nevykonal"
 #: modules/gui/macosx/VLCCoreDialogProvider.m:293
 #: modules/gui/macosx/VLCMainWindow.m:205
 #: modules/gui/macosx/VLCMainWindow.m:211
-#: modules/gui/macosx/VLCOpenWindowController.m:135
-#: modules/gui/macosx/VLCOpenWindowController.m:193
+#: modules/gui/macosx/VLCOpenWindowController.m:134
+#: modules/gui/macosx/VLCOpenWindowController.m:192
 #: modules/gui/macosx/prefs.m:189
 #: modules/gui/macosx/VLCSimplePrefsController.m:274
 #: modules/gui/macosx/VLCSimplePrefsController.m:300
@@ -6386,7 +6391,7 @@ msgstr "Prvýkrát prehrávané"
 msgid "Audio CD - Track %02i"
 msgstr "Audio CD - Stopa %02i"
 
-#: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:170
+#: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:169
 msgid "Audio CD"
 msgstr "Audio CD"
 
@@ -6585,7 +6590,7 @@ msgstr "Vstup Blackmagic DeckLink SDI"
 msgid "10 bits"
 msgstr "10 bitov"
 
-#: modules/access/decklink.cpp:317 modules/demux/ty.c:765
+#: modules/access/decklink.cpp:318 modules/demux/ty.c:765
 msgid "Closed captions 1"
 msgstr "Uzatvorené kapitoly 1"
 
@@ -7454,7 +7459,7 @@ msgstr "Vstup súboru"
 
 #: modules/access/fs.c:35 modules/access_output/file.c:389
 #: modules/audio_output/file.c:113
-#: modules/gui/macosx/VLCOpenWindowController.m:140
+#: modules/gui/macosx/VLCOpenWindowController.m:139
 #: modules/gui/macosx/VLCOutput.m:64 modules/gui/macosx/VLCOutput.m:175
 #: modules/gui/macosx/VLCOutput.m:298 modules/gui/qt/dialogs/plugins.cpp:1432
 #: modules/gui/qt/dialogs/sout.cpp:69 modules/gui/qt/dialogs/sout.cpp:121
@@ -8704,7 +8709,7 @@ msgid "Capture region heigh"
 msgstr "Výška zaznamenávanej oblasti"
 
 #: modules/access/screen/screen.c:67 modules/access/screen/xcb.c:59
-#: modules/gui/macosx/VLCOpenWindowController.m:216
+#: modules/gui/macosx/VLCOpenWindowController.m:214
 msgid "Follow the mouse"
 msgstr "Sledovať myš"
 
@@ -8745,10 +8750,10 @@ msgstr "Obrazový vstup"
 
 #: modules/access/screen/screen.c:99 modules/access/screen/wayland.c:473
 #: modules/access/screen/xcb.c:70 modules/gui/macosx/VLCMainMenu.m:595
-#: modules/gui/macosx/VLCOpenWindowController.m:208
-#: modules/gui/macosx/VLCOpenWindowController.m:211
-#: modules/gui/macosx/VLCOpenWindowController.m:481
-#: modules/gui/macosx/VLCOpenWindowController.m:1153
+#: modules/gui/macosx/VLCOpenWindowController.m:207
+#: modules/gui/macosx/VLCOpenWindowController.m:209
+#: modules/gui/macosx/VLCOpenWindowController.m:479
+#: modules/gui/macosx/VLCOpenWindowController.m:1095
 #: modules/gui/macosx/VLCSimplePrefsController.m:654
 msgid "Screen"
 msgstr "Obrazovka"
@@ -9838,7 +9843,7 @@ msgid "Sound Delay"
 msgstr "Oneskorenie zvuku"
 
 #: modules/audio_filter/chorus_flanger.c:75
-#: modules/gui/macosx/VLCOpenWindowController.m:354 modules/spu/mosaic.c:154
+#: modules/gui/macosx/VLCOpenWindowController.m:352 modules/spu/mosaic.c:154
 #: modules/stream_out/bridge.c:51 modules/stream_out/delay.c:54
 msgid "Delay"
 msgstr "Oneskorenie"
@@ -12787,7 +12792,7 @@ msgid "S/PDIF pass-through decoder"
 msgstr ""
 
 #: modules/codec/speex.c:59 modules/codec/speex.c:907
-#: modules/gui/macosx/VLCOpenWindowController.m:196
+#: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:245
 msgid "Mode"
 msgstr "Režim"
@@ -15522,7 +15527,7 @@ msgstr "Obrázok"
 #: modules/demux/mjpeg.c:46 modules/demux/mpeg/es.c:53
 #: modules/demux/mpeg/h26x.c:46 modules/demux/rawvid.c:43
 #: modules/demux/subtitle.c:77 modules/demux/vc1.c:43
-#: modules/gui/macosx/VLCOpenWindowController.m:210
+#: modules/gui/macosx/VLCOpenWindowController.m:208
 msgid "Frames per Second"
 msgstr "Snímky za sekundu"
 
@@ -16354,10 +16359,6 @@ msgid ""
 "VLC media player and VideoLAN are trademarks of the VideoLAN Association."
 msgstr "VLC media player a VideoLAN sú ochrannými značkami asociácie VideoLAN."
 
-#: modules/gui/macosx/VLCAboutWindowController.m:118
-msgid "Compiled by %s with %@"
-msgstr "Skompiloval: %s s %@"
-
 #: modules/gui/macosx/VLCAboutWindowController.m:134
 #: modules/gui/qt/dialogs/help.cpp:94
 msgid ""
@@ -16436,7 +16437,7 @@ msgid "Installed"
 msgstr "Nainštalovať"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:130
-#: modules/gui/macosx/VLCBookmarksWindowController.m:91
+#: modules/gui/macosx/VLCBookmarksWindowController.m:90
 #: modules/gui/qt/dialogs/plugins.cpp:126 modules/mux/avi.c:54
 msgid "Name"
 msgstr "Názov"
@@ -16579,7 +16580,7 @@ msgstr "Vyberte prednastavenie, ktoré chcete odstrániť:"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:532
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:833
-#: modules/gui/macosx/VLCBookmarksWindowController.m:82
+#: modules/gui/macosx/VLCBookmarksWindowController.m:81
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:338
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:806
 msgid "Remove"
@@ -16620,30 +16621,23 @@ msgstr "Vyčistiť"
 msgid "Edit"
 msgstr "Úpravy"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:81
-#: modules/gui/qt/dialogs/bookmarks.cpp:57 modules/video_filter/extract.c:68
-msgid "Extract"
-msgstr "Extrahovať"
-
-#: modules/gui/macosx/VLCBookmarksWindowController.m:86
-#: modules/gui/macosx/VLCBookmarksWindowController.m:92
+#: modules/gui/macosx/VLCBookmarksWindowController.m:85
+#: modules/gui/macosx/VLCBookmarksWindowController.m:91
 #: modules/gui/qt/dialogs/bookmarks.cpp:77
 #: modules/gui/qt/dialogs/toolbar.cpp:486
 msgid "Time"
 msgstr "Čas"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:89
-#: modules/gui/macosx/VLCBookmarksWindowController.m:210
-#: modules/gui/macosx/VLCBookmarksWindowController.m:214
-#: modules/gui/macosx/VLCBookmarksWindowController.m:266
-#: modules/gui/macosx/VLCBookmarksWindowController.m:271
+#: modules/gui/macosx/VLCBookmarksWindowController.m:88
+#: modules/gui/macosx/VLCBookmarksWindowController.m:211
+#: modules/gui/macosx/VLCBookmarksWindowController.m:215
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:270
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:532
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:539
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:546
 #: modules/gui/macosx/VLCCoreDialogProvider.m:194
 #: modules/gui/macosx/VLCCoreDialogProvider.m:236
-#: modules/gui/macosx/VLCOpenWindowController.m:364
+#: modules/gui/macosx/VLCOpenWindowController.m:362
 #: modules/gui/macosx/VLCOutput.m:60 modules/gui/macosx/VLCPlaylistInfo.m:359
 #: modules/gui/macosx/VLCSimplePrefsController.m:275
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
@@ -16651,27 +16645,27 @@ msgstr "Čas"
 msgid "OK"
 msgstr "OK"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:130
+#: modules/gui/macosx/VLCBookmarksWindowController.m:131
 #: modules/gui/macosx/VLCMainMenu.m:1134
 msgid "Untitled"
 msgstr "Bez názvu"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:210
+#: modules/gui/macosx/VLCBookmarksWindowController.m:211
 msgid "No input"
 msgstr "Žiaden vstup"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:210
+#: modules/gui/macosx/VLCBookmarksWindowController.m:211
 msgid ""
 "No input found. A stream must be playing or paused for bookmarks to work."
 msgstr ""
 "Nenašiel sa žiaden vstup. Aby fungovali záložky, musí byť spustený (alebo "
 "aspoň dočasne pozastavený) nejaký stream."
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:214
+#: modules/gui/macosx/VLCBookmarksWindowController.m:215
 msgid "Input has changed"
 msgstr "Vstup sa zmenil"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:214
+#: modules/gui/macosx/VLCBookmarksWindowController.m:215
 msgid ""
 "Input has changed, unable to save bookmark. Suspending playback with \"Pause"
 "\" while editing bookmarks to ensure to keep the same input."
@@ -16679,24 +16673,6 @@ msgstr ""
 "Zmenil sa vstup a preto nie je možné uložiť túto záložku. Ak chcete zabrániť "
 "zmene vstupu, počas ukladania záložky pozastavte prehrávanie tlačidlom "
 "\"Pozastaviť\"."
-
-#: modules/gui/macosx/VLCBookmarksWindowController.m:266
-msgid "Invalid selection"
-msgstr "Nesprávny výber"
-
-#: modules/gui/macosx/VLCBookmarksWindowController.m:266
-msgid "Two bookmarks have to be selected."
-msgstr "Musíte vybrať dve záložky."
-
-#: modules/gui/macosx/VLCBookmarksWindowController.m:271
-msgid "No input found"
-msgstr "Nenašiel sa žiaden vstup"
-
-#: modules/gui/macosx/VLCBookmarksWindowController.m:271
-msgid "The stream must be playing or paused for bookmarks to work."
-msgstr ""
-"Aby fungovali záložky, musí byť spustené alebo dočasne pozastavené "
-"prehrávanie dátového toku."
 
 #: modules/gui/macosx/VLCControlsBarCommon.m:65
 #: modules/gui/macosx/VLCFSPanelController.m:110
@@ -16795,8 +16771,8 @@ msgstr "Vyberte umiestnenie výstupu"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:145
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:197
-#: modules/gui/macosx/VLCOpenWindowController.m:148
-#: modules/gui/macosx/VLCOpenWindowController.m:351
+#: modules/gui/macosx/VLCOpenWindowController.m:147
+#: modules/gui/macosx/VLCOpenWindowController.m:349
 #: modules/gui/macosx/VLCOutput.m:67 modules/gui/macosx/prefs_widgets.m:1121
 #: modules/gui/macosx/VLCSimplePrefsController.m:283
 #: modules/gui/macosx/VLCSimplePrefsController.m:360
@@ -16887,7 +16863,7 @@ msgid "Stream Announcement"
 msgstr "Oznamovanie streamu"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:186
-#: modules/gui/macosx/VLCOpenWindowController.m:198
+#: modules/gui/macosx/VLCOpenWindowController.m:197
 #: modules/gui/macosx/VLCOutput.m:68
 #: modules/gui/qt/components/sout/sout_widgets.cpp:236
 #: modules/gui/qt/components/sout/sout_widgets.cpp:323
@@ -16901,8 +16877,8 @@ msgid "TTL"
 msgstr "TTL"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:189
-#: modules/gui/macosx/VLCOpenWindowController.m:186
-#: modules/gui/macosx/VLCOpenWindowController.m:188
+#: modules/gui/macosx/VLCOpenWindowController.m:185
+#: modules/gui/macosx/VLCOpenWindowController.m:187
 #: modules/gui/macosx/VLCOutput.m:69
 #: modules/gui/qt/components/sout/sout_widgets.cpp:182
 #: modules/gui/qt/components/sout/sout_widgets.cpp:237
@@ -17907,34 +17883,34 @@ msgstr ""
 msgid "TB"
 msgstr ""
 
-#: modules/gui/macosx/VLCOpenWindowController.m:131
+#: modules/gui/macosx/VLCOpenWindowController.m:130
 msgid "Open Source"
 msgstr "Otvoriť zdrojový súbor"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:132
+#: modules/gui/macosx/VLCOpenWindowController.m:131
 msgid "Media Resource Locator (MRL)"
 msgstr "Vyhľadávač médií (MRL)"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:134
-#: modules/gui/macosx/VLCOpenWindowController.m:194
-#: modules/gui/macosx/VLCOpenWindowController.m:618
-#: modules/gui/macosx/VLCOpenWindowController.m:704
-#: modules/gui/macosx/VLCOpenWindowController.m:935
-#: modules/gui/macosx/VLCOpenWindowController.m:1263
+#: modules/gui/macosx/VLCOpenWindowController.m:133
+#: modules/gui/macosx/VLCOpenWindowController.m:193
+#: modules/gui/macosx/VLCOpenWindowController.m:572
+#: modules/gui/macosx/VLCOpenWindowController.m:658
+#: modules/gui/macosx/VLCOpenWindowController.m:890
+#: modules/gui/macosx/VLCOpenWindowController.m:1258
 #: modules/gui/qt/components/controller.hpp:107
 msgid "Open"
 msgstr "Otvoriť"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:137
+#: modules/gui/macosx/VLCOpenWindowController.m:136
 #, fuzzy
 msgid "Stream output:"
 msgstr "Výstup streamu"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:138
+#: modules/gui/macosx/VLCOpenWindowController.m:137
 msgid "Settings..."
 msgstr "Nastavenia..."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:141
+#: modules/gui/macosx/VLCOpenWindowController.m:140
 #, fuzzy
 msgid ""
 "4 Tabs to choose between media input. Select 'File' for files, 'Disc' for "
@@ -17947,43 +17923,43 @@ msgstr ""
 "mikrofóny alebo kamery, aktuálnu obrazovku TV streamu, ak je nainštalovaná "
 "aplikácia EyeTV."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:142
+#: modules/gui/macosx/VLCOpenWindowController.m:141
 msgid "Disc"
 msgstr "Disk"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:143
+#: modules/gui/macosx/VLCOpenWindowController.m:142
 #: modules/gui/macosx/VLCSimplePrefsController.m:290
 msgid "Network"
 msgstr "Sieť"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:144
+#: modules/gui/macosx/VLCOpenWindowController.m:143
 msgid "Capture"
 msgstr "Snímať"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:146
-#: modules/gui/macosx/VLCOpenWindowController.m:346
+#: modules/gui/macosx/VLCOpenWindowController.m:145
+#: modules/gui/macosx/VLCOpenWindowController.m:344
 msgid "Choose a file"
 msgstr "Zvoľte si súbor"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:149
+#: modules/gui/macosx/VLCOpenWindowController.m:148
 msgid "Click to select a file for playback"
 msgstr "Kliknite pre výber súboru pre playlist"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:150
+#: modules/gui/macosx/VLCOpenWindowController.m:149
 msgid "Treat as a pipe rather than as a file"
 msgstr "Považovať radšej za vedenie, nie za súbor"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:152
+#: modules/gui/macosx/VLCOpenWindowController.m:151
 msgid "Play another media synchronously"
 msgstr "Prehrávať iné médium synchronizovane"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:153
-#: modules/gui/macosx/VLCOpenWindowController.m:349
+#: modules/gui/macosx/VLCOpenWindowController.m:152
+#: modules/gui/macosx/VLCOpenWindowController.m:347
 #: modules/gui/macosx/VLCSimplePrefsController.m:332
 msgid "Choose..."
 msgstr "Vybrať..."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:154
+#: modules/gui/macosx/VLCOpenWindowController.m:153
 msgid ""
 "Click to select a another file to play it in sync with the previously "
 "selected file."
@@ -17991,32 +17967,32 @@ msgstr ""
 "Kliknutím vyberiete iný súbor na prehrávanie, synchronizovane so súborom, "
 "ktorý ste vybrali predtým."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:159
+#: modules/gui/macosx/VLCOpenWindowController.m:158
 msgid "Custom playback"
 msgstr "Používateľom nastavené prehrávanie"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:167
+#: modules/gui/macosx/VLCOpenWindowController.m:166
 #, fuzzy
 msgid "Open VIDEO_TS / BDMV folder"
 msgstr "Otvoriť priečinok VIDEO_TS"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:168
+#: modules/gui/macosx/VLCOpenWindowController.m:167
 msgid "Insert Disc"
 msgstr "Vloženie disku"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:174
+#: modules/gui/macosx/VLCOpenWindowController.m:173
 msgid "Disable DVD menus"
 msgstr "Vypnúť DVD menu"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:177
+#: modules/gui/macosx/VLCOpenWindowController.m:176
 msgid "Enable DVD menus"
 msgstr "Zapnúť DVD menu"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:187
+#: modules/gui/macosx/VLCOpenWindowController.m:186
 msgid "IP Address"
 msgstr "IP adresa"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:190
+#: modules/gui/macosx/VLCOpenWindowController.m:189
 msgid ""
 "To Open a usual network stream (HTTP, RTSP, RTMP, MMS, FTP, etc.), just "
 "enter the URL in the field above. If you want to open a RTP or UDP stream, "
@@ -18026,7 +18002,7 @@ msgstr ""
 "jeho adresu do políčka hore. Ak chcete otvoriť stream RTP alebo UDP, stlačte "
 "tlačidlo dole."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:191
+#: modules/gui/macosx/VLCOpenWindowController.m:190
 msgid ""
 "If you want to open a multicast stream, enter the respective IP address "
 "given by the stream provider. In unicast mode, VLC will use your machine's "
@@ -18042,7 +18018,7 @@ msgstr ""
 "Ak chcete otvoriť stream pomocou iného protokolu, zatvorte toto okno "
 "stlačením tlačidla Zrušiť."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:192
+#: modules/gui/macosx/VLCOpenWindowController.m:191
 msgid ""
 "Enter a URL here to open the network stream. To open RTP or UDP streams, "
 "click on the respective button below."
@@ -18050,116 +18026,108 @@ msgstr ""
 "Pre otvorenie streamu v sieti, zadajte adresu URL. Pre otvoreni streamov RTP "
 "alebo UDP, kliknite na príslušné tlačidlo dole."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:195
+#: modules/gui/macosx/VLCOpenWindowController.m:194
 msgid "Open RTP/UDP Stream"
 msgstr "Otvoriť stream RTP/UDP"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:197
+#: modules/gui/macosx/VLCOpenWindowController.m:196
 #: share/lua/http/dialogs/stream_config_window.html:24
 #: share/lua/http/dialogs/stream_window.html:83
 msgid "Protocol"
 msgstr "Protokol"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:200
-#: modules/gui/macosx/VLCOpenWindowController.m:1050
-#: modules/gui/macosx/VLCOpenWindowController.m:1099
+#: modules/gui/macosx/VLCOpenWindowController.m:199
+#: modules/gui/macosx/VLCOpenWindowController.m:1005
+#: modules/gui/macosx/VLCOpenWindowController.m:1054
 msgid "Unicast"
 msgstr "Unicast"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:201
-#: modules/gui/macosx/VLCOpenWindowController.m:1063
-#: modules/gui/macosx/VLCOpenWindowController.m:1112
+#: modules/gui/macosx/VLCOpenWindowController.m:200
+#: modules/gui/macosx/VLCOpenWindowController.m:1018
+#: modules/gui/macosx/VLCOpenWindowController.m:1067
 msgid "Multicast"
 msgstr "Multicast"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:207
-#: modules/gui/macosx/VLCOpenWindowController.m:499
-#: modules/gui/macosx/VLCOpenWindowController.m:1202
+#: modules/gui/macosx/VLCOpenWindowController.m:206
+#: modules/gui/macosx/VLCOpenWindowController.m:497
+#: modules/gui/macosx/VLCOpenWindowController.m:1145
 msgid "Input Devices"
 msgstr "Vstupné zariadenia"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:209
-msgid ""
-"This input allows you to save, stream or display your current screen "
-"contents."
-msgstr ""
-"Tento vstup umožňuje ukladať, streamovať alebo zobraziť obsah aktuálnej "
-"obrazovky."
-
-#: modules/gui/macosx/VLCOpenWindowController.m:212
+#: modules/gui/macosx/VLCOpenWindowController.m:210
 msgid "Subscreen left"
 msgstr "Pod-obrazovka vľavo"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:213
+#: modules/gui/macosx/VLCOpenWindowController.m:211
 msgid "Subscreen top"
 msgstr "Pod-obrazovka hore"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:214
+#: modules/gui/macosx/VLCOpenWindowController.m:212
 #, fuzzy
 msgid "Subscreen Width"
 msgstr "Šírka pod-obrázka"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:215
+#: modules/gui/macosx/VLCOpenWindowController.m:213
 #, fuzzy
 msgid "Subscreen Height"
 msgstr "Výška pod-obrazovky"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:217
+#: modules/gui/macosx/VLCOpenWindowController.m:215
 msgid "Capture Audio"
 msgstr "Zaznamenať zvuk"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:345
+#: modules/gui/macosx/VLCOpenWindowController.m:343
 msgid "Add Subtitle File:"
 msgstr "Pridať súbor s titulkami"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:350
+#: modules/gui/macosx/VLCOpenWindowController.m:348
 msgid "Click to setup subtitle playback in full detail."
 msgstr "Kliknutím otvoríte úplne podrobné nastavenie prehrávania titulkov."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:352
+#: modules/gui/macosx/VLCOpenWindowController.m:350
 msgid "Click to select a subtitle file."
 msgstr "Kliknutím vyberte súbor s titulkami."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:353
+#: modules/gui/macosx/VLCOpenWindowController.m:351
 msgid "Override parameters"
 msgstr "Nedodržiavať parametre"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:356
+#: modules/gui/macosx/VLCOpenWindowController.m:354
 msgid "FPS"
 msgstr "FPS (počet snímok za sekundu)"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:358
+#: modules/gui/macosx/VLCOpenWindowController.m:356
 msgid "Subtitle encoding"
 msgstr "Kódovanie titulkov"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:360
+#: modules/gui/macosx/VLCOpenWindowController.m:358
 #: modules/gui/macosx/VLCSimplePrefsController.m:334
 msgid "Font size"
 msgstr "Veľkosť písma"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:362
+#: modules/gui/macosx/VLCOpenWindowController.m:360
 msgid "Subtitle alignment"
 msgstr "Zarovnanie titulkov"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:365
+#: modules/gui/macosx/VLCOpenWindowController.m:363
 msgid "Click to dismiss the subtitle setup dialog."
 msgstr "Na vypnutie dialógu pre nastavenia titulkov, kliknite sem."
 
-#: modules/gui/macosx/VLCOpenWindowController.m:366
+#: modules/gui/macosx/VLCOpenWindowController.m:364
 msgid "Font Properties"
 msgstr "Nastavenia písma"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:367
+#: modules/gui/macosx/VLCOpenWindowController.m:365
 msgid "Subtitle File"
 msgstr "Súbor s titulkami"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:617
-#: modules/gui/macosx/VLCOpenWindowController.m:703
-#: modules/gui/macosx/VLCOpenWindowController.m:1262
+#: modules/gui/macosx/VLCOpenWindowController.m:571
+#: modules/gui/macosx/VLCOpenWindowController.m:657
+#: modules/gui/macosx/VLCOpenWindowController.m:1257
 msgid "Open File"
 msgstr "Otvoriť súbor"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:801
+#: modules/gui/macosx/VLCOpenWindowController.m:756
 #, c-format
 msgid "%i tracks"
 msgstr "%i stôp"
@@ -20401,6 +20369,10 @@ msgstr "Vymazať vybranú položku"
 #: modules/gui/qt/dialogs/bookmarks.cpp:54
 msgid "Delete all the bookmarks"
 msgstr "Vymazať všetky záložky"
+
+#: modules/gui/qt/dialogs/bookmarks.cpp:57 modules/video_filter/extract.c:68
+msgid "Extract"
+msgstr "Extrahovať"
 
 #: modules/gui/qt/dialogs/bookmarks.cpp:62 modules/gui/qt/dialogs/errors.cpp:49
 #: modules/gui/qt/dialogs/extended.cpp:130 modules/gui/qt/dialogs/help.cpp:66
@@ -29286,8 +29258,25 @@ msgstr "Naozaj chcete vytvoriť stream?"
 #~ msgid "MTU for out mode."
 #~ msgstr "Max. veľkosť paketu na výstupe."
 
+#~ msgid "Compiled by %s with %@"
+#~ msgstr "Skompiloval: %s s %@"
+
 #~ msgid "VLC media player Help"
 #~ msgstr "Pomocník programu VLC media player"
+
+#~ msgid "Invalid selection"
+#~ msgstr "Nesprávny výber"
+
+#~ msgid "Two bookmarks have to be selected."
+#~ msgstr "Musíte vybrať dve záložky."
+
+#~ msgid "No input found"
+#~ msgstr "Nenašiel sa žiaden vstup"
+
+#~ msgid "The stream must be playing or paused for bookmarks to work."
+#~ msgstr ""
+#~ "Aby fungovali záložky, musí byť spustené alebo dočasne pozastavené "
+#~ "prehrávanie dátového toku."
 
 #, fuzzy
 #~ msgid "Hide Details"
@@ -29332,6 +29321,13 @@ msgstr "Naozaj chcete vytvoriť stream?"
 #~ "Nie je vybrané žiadne zariadenie.\n"
 #~ "\n"
 #~ "Vyberte si dostupné zariadenie z rozbaľovacieho menu hore.\n"
+
+#~ msgid ""
+#~ "This input allows you to save, stream or display your current screen "
+#~ "contents."
+#~ msgstr ""
+#~ "Tento vstup umožňuje ukladať, streamovať alebo zobraziť obsah aktuálnej "
+#~ "obrazovky."
 
 #~ msgid "Current channel:"
 #~ msgstr "Aktuálny kanál:"

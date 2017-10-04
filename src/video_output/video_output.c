@@ -6,7 +6,7 @@
  * thread, and destroy a previously oppened video output thread.
  *****************************************************************************
  * Copyright (C) 2000-2007 VLC authors and VideoLAN
- * $Id: efb342de9fcf7f444ac98c65b661951b0bf31779 $
+ * $Id: 10e1d87c268220b29fbc00ed00a76b50a86702c6 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1259,6 +1259,7 @@ static void ThreadFlush(vout_thread_t *vout, bool below, mtime_t date)
     }
 
     picture_fifo_Flush(vout->p->decoder_fifo, date, below);
+    vout_FilterFlush(vout->p->display.vd);
 }
 
 static void ThreadStep(vout_thread_t *vout, mtime_t *duration)

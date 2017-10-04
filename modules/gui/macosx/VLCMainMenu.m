@@ -2,7 +2,7 @@
  *MainMenu.m: MacOS X interface module
  *****************************************************************************
  *Copyright (C) 2011-2015 Felix Paul Kühne
- *$Id: 38b329183ec093683392f063b553761cee41eb80 $
+ *$Id: 0cd78e7c255fea5df3092c3a58931948152485b5 $
  *
  *Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -1216,7 +1216,7 @@
 
 - (IBAction)showBookmarks:(id)sender
 {
-    [[[VLCMain sharedInstance] bookmarks] showBookmarks];
+    [[[VLCMain sharedInstance] bookmarks] toggleWindow:sender];
 }
 
 - (IBAction)showPreferences:(id)sender

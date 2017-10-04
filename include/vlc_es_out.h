@@ -2,7 +2,7 @@
  * vlc_es_out.h: es_out (demuxer output) descriptor, queries and methods
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: f8d7aa1b2cc68ecbbbfe5e8dda198ee0c132a5a7 $
+ * $Id: fbed8bd3ae3d810643c1ed0da5eec52f0fe41afe $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -35,7 +35,7 @@
 
 enum es_out_query_e
 {
-    /* set ES selected for the es category (audio/video/spu) */
+    /* set or change the selected ES in its category (audio/video/spu) */
     ES_OUT_SET_ES,      /* arg1= es_out_id_t*                   */
     ES_OUT_RESTART_ES,  /* arg1= es_out_id_t*                   */
     /* Restart all ES, destroying and recreating decoder/sout and potential
@@ -45,7 +45,8 @@ enum es_out_query_e
     /* set 'default' tag on ES (copied across from container) */
     ES_OUT_SET_ES_DEFAULT, /* arg1= es_out_id_t*                */
 
-    /* force selection/unselection of the ES (bypass current mode) */
+    /* force (un)selection of the ES (bypass current mode)
+       XXX: this will not change the state of any other ES ! (see SET_ES) */
     ES_OUT_SET_ES_STATE,/* arg1= es_out_id_t* arg2=bool   */
     ES_OUT_GET_ES_STATE,/* arg1= es_out_id_t* arg2=bool*  */
 

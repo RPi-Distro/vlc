@@ -2,7 +2,7 @@
  * VLCPlaylistInfo.m: Controller for the codec info panel
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: 817ed95eed51bccac3a5c61aa08ae3162ee0f651 $
+ * $Id: 2ff290952b5d78b279f158935ef65a627bac7753 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -358,6 +358,7 @@ FREENULL( psz_##foo );
         [alert setInformativeText:_NS("VLC was unable to save the meta data.")];
         [alert addButtonWithTitle:_NS("OK")];
         [alert runModal];
+        return;
     }
 
     #define utf8( _blub ) \

@@ -23,6 +23,7 @@
 
 #include <vlc_strings.h>
 #include <vlc_text_style.h>
+#include <vlc_subpicture.h>
 
 typedef struct subpicture_updater_sys_region_t subpicture_updater_sys_region_t;
 
@@ -37,18 +38,12 @@ enum subpicture_updater_sys_region_flags_e
     UPDT_REGION_FIX_DONE               = 1 << 31,
 };
 
-#define EIA608_MARGIN  0.10
-#define EIA608_VISIBLE 0.80
-#define EIA608_ROWS 15
-
-#define FONT_TO_LINE_HEIGHT_RATIO 1.06
-
 struct subpicture_updater_sys_region_t
 {
     struct
     {
-        int x;
-        int y;
+        float x;
+        float y;
     } origin, extent;
     /* store above percentile meanings as modifier flags */
     int flags; /* subpicture_updater_sys_region_flags_e */
@@ -67,6 +62,8 @@ struct subpicture_updater_sys_t {
     /* styling */
     text_style_t *p_default_style; /* decoder (full or partial) defaults */
     float margin_ratio;
+    mtime_t i_next_update;
+    bool b_blink_even;
 };
 
 static inline void SubpictureUpdaterSysRegionClean(subpicture_updater_sys_region_t *p_updtregion)
@@ -102,9 +99,10 @@ static int SubpictureTextValidate(subpicture_t *subpic,
                                   mtime_t ts)
 {
     subpicture_updater_sys_t *sys = subpic->updater.p_sys;
-    VLC_UNUSED(fmt_src); VLC_UNUSED(fmt_dst); VLC_UNUSED(ts);
+    VLC_UNUSED(fmt_src); VLC_UNUSED(fmt_dst);
 
-    if (!has_src_changed && !has_dst_changed)
+    if (!has_src_changed && !has_dst_changed &&
+        (sys->i_next_update == VLC_TS_INVALID || sys->i_next_update > ts))
         return VLC_SUCCESS;
 
     subpicture_updater_sys_region_t *p_updtregion = &sys->region;
@@ -132,7 +130,7 @@ static void SubpictureTextUpdate(subpicture_t *subpic,
                                  mtime_t ts)
 {
     subpicture_updater_sys_t *sys = subpic->updater.p_sys;
-    VLC_UNUSED(fmt_src); VLC_UNUSED(ts);
+    VLC_UNUSED(fmt_src);
 
     if (fmt_dst->i_sar_num <= 0 || fmt_dst->i_sar_den <= 0)
         return;
@@ -155,6 +153,7 @@ static void SubpictureTextUpdate(subpicture_t *subpic,
         fmt.i_sar_den = 1;
     }
 
+    bool b_schedule_blink_update = false;
     subpicture_region_t **pp_last_region = &subpic->p_region;
 
     for( subpicture_updater_sys_region_t *p_updtregion = &sys->region;
@@ -170,13 +169,6 @@ static void SubpictureTextUpdate(subpicture_t *subpic,
         r->b_noregionbg = p_updtregion->flags & UPDT_REGION_IGNORE_BACKGROUND;
         r->b_gridmode = p_updtregion->flags & UPDT_REGION_USES_GRID_COORDINATES;
 
-        if( r->b_gridmode )
-        {
-            /* Ensure correct flags are set */
-            r->i_align &= ~(SUBPICTURE_ALIGN_RIGHT | SUBPICTURE_ALIGN_BOTTOM);
-            r->i_align |= (SUBPICTURE_ALIGN_LEFT | SUBPICTURE_ALIGN_TOP);
-        }
-
         if (!(p_updtregion->flags & UPDT_REGION_FIX_DONE))
         {
             const float margin_ratio = sys->margin_ratio;
@@ -184,22 +176,32 @@ static void SubpictureTextUpdate(subpicture_t *subpic,
                                                                          : fmt_dst->i_visible_width );
             const int   margin_v     = margin_ratio * fmt_dst->i_visible_height;
 
+            /* subpic invisible margins sizes */
+            const int outerright_h = fmt_dst->i_width - (fmt_dst->i_visible_width + fmt_dst->i_x_offset);
+            const int outerbottom_v = fmt_dst->i_height - (fmt_dst->i_visible_height + fmt_dst->i_y_offset);
+            /* regions usable */
+            const int inner_w = fmt_dst->i_visible_width - margin_h * 2;
+            const int inner_h = fmt_dst->i_visible_height - margin_v * 2;
+
             if (r->i_align & SUBPICTURE_ALIGN_LEFT)
                 r->i_x = margin_h + fmt_dst->i_x_offset;
             else if (r->i_align & SUBPICTURE_ALIGN_RIGHT)
-                r->i_x = margin_h + fmt_dst->i_width - (fmt_dst->i_visible_width + fmt_dst->i_x_offset);
+                r->i_x = margin_h + outerright_h;
 
             if (r->i_align & SUBPICTURE_ALIGN_TOP )
                 r->i_y = margin_v + fmt_dst->i_y_offset;
             else if (r->i_align & SUBPICTURE_ALIGN_BOTTOM )
-                r->i_y = margin_v + fmt_dst->i_height - (fmt_dst->i_visible_height + fmt_dst->i_y_offset);
+                r->i_y = margin_v + outerbottom_v;
 
-            if( r->b_gridmode )
-            {
-                r->i_y += p_updtregion->origin.y * /* row number */
-                         (EIA608_VISIBLE / EIA608_ROWS) *
-                         (fmt_dst->i_visible_height - r->i_y) * FONT_TO_LINE_HEIGHT_RATIO;
-            }
+            if( p_updtregion->flags & UPDT_REGION_ORIGIN_X_IS_PERCENTILE )
+                r->i_x += p_updtregion->origin.x * inner_w;
+            else
+                r->i_x += p_updtregion->origin.x;
+
+            if( p_updtregion->flags & UPDT_REGION_ORIGIN_Y_IS_PERCENTILE )
+                r->i_y += p_updtregion->origin.y * inner_h;
+            else
+                r->i_y += p_updtregion->origin.y;
 
         } else {
             /* FIXME it doesn't adapt on crop settings changes */
@@ -215,15 +217,39 @@ static void SubpictureTextUpdate(subpicture_t *subpic,
                 text_style_Merge( p_segment->style, sys->p_default_style, false );
             else
                 p_segment->style = text_style_Duplicate( sys->p_default_style );
-            /* Update all segments font sizes in pixels, *** metric used by renderers *** */
-            /* We only do this when a fixed font size isn't set */
-            if( p_segment->style && p_segment->style->f_font_relsize && !p_segment->style->i_font_size )
+
+            if( p_segment->style )
             {
-                p_segment->style->i_font_size = p_segment->style->f_font_relsize *
-                                                subpic->i_original_picture_height / 100;
+                /* Update all segments font sizes in pixels, *** metric used by renderers *** */
+                /* We only do this when a fixed font size isn't set */
+                if( p_segment->style && p_segment->style->f_font_relsize && !p_segment->style->i_font_size )
+                {
+                    p_segment->style->i_font_size = p_segment->style->f_font_relsize *
+                                                    subpic->i_original_picture_height / 100;
+                }
+
+                if( p_segment->style->i_style_flags & (STYLE_BLINK_BACKGROUND|STYLE_BLINK_FOREGROUND) )
+                {
+                    if( sys->b_blink_even ) /* do nothing at first */
+                    {
+                        if( p_segment->style->i_style_flags & STYLE_BLINK_BACKGROUND )
+                            p_segment->style->i_background_alpha =
+                                    (~p_segment->style->i_background_alpha) & 0xFF;
+                        if( p_segment->style->i_style_flags & STYLE_BLINK_FOREGROUND )
+                            p_segment->style->i_font_alpha =
+                                    (~p_segment->style->i_font_alpha) & 0xFF;
+                    }
+                    b_schedule_blink_update = true;
+                }
             }
         }
+    }
 
+    if( b_schedule_blink_update &&
+        (sys->i_next_update == VLC_TS_INVALID || sys->i_next_update < ts) )
+    {
+        sys->i_next_update = ts + CLOCK_FREQ;
+        sys->b_blink_even = !sys->b_blink_even;
     }
 }
 static void SubpictureTextDestroy(subpicture_t *subpic)

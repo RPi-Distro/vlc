@@ -2,7 +2,7 @@
  * vlc_vout_wrapper.h: definitions for vout wrappers (temporary)
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 8ad826f6ccac3a639722027f9c4722edea8fd041 $
+ * $Id: 7c115473f8500ec32e487006ac68c26424886eaf $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -80,6 +80,7 @@ vout_display_t *vout_NewDisplay( vout_thread_t *, const video_format_t *,
 void vout_DeleteDisplay(vout_display_t *, vout_display_state_t *);
 bool vout_IsDisplayFiltered(vout_display_t *);
 picture_t * vout_FilterDisplay(vout_display_t *, picture_t *);
+void vout_FilterFlush(vout_display_t *);
 bool vout_AreDisplayPicturesInvalid(vout_display_t *);
 
 bool vout_ManageDisplay(vout_display_t *, bool allow_reset_pictures);
