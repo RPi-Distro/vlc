@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 6204fd3e326c65adbfe69e511d639333bacfa839 $
+ * $Id: 1d79c6e3d80e1fa9ac90e72e7dc39c1b09dd7f35 $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -330,7 +330,6 @@ static int D3dCreateDevice(vlc_va_t *va)
 
     if (sys->dx_sys.d3ddev) {
         msg_Dbg(va, "Reusing Direct3D9 device");
-        IDirect3DDevice9_AddRef(sys->dx_sys.d3ddev);
         return VLC_SUCCESS;
     }
 
@@ -488,19 +487,6 @@ static int DxCreateVideoService(vlc_va_t *va)
 {
     vlc_va_sys_t *sys = va->sys;
     directx_sys_t *dx_sys = &va->sys->dx_sys;
-
-    HRESULT (WINAPI *CreateVideoService)(IDirect3DDevice9 *,
-                                         REFIID riid,
-                                         void **ppService);
-    CreateVideoService =
-      (void *)GetProcAddress(dx_sys->hdecoder_dll, "DXVA2CreateVideoService");
-
-    if (!CreateVideoService) {
-        msg_Err(va, "cannot load function");
-        return 4;
-    }
-    msg_Info(va, "DXVA2CreateVideoService Success!");
-
     HRESULT hr;
 
     HANDLE device;
@@ -530,7 +516,11 @@ static void DxDestroyVideoService(vlc_va_t *va)
 {
     directx_sys_t *dx_sys = &va->sys->dx_sys;
     if (va->sys->device)
-        IDirect3DDeviceManager9_CloseDeviceHandle(va->sys->devmng, va->sys->device);
+    {
+        HRESULT hr = IDirect3DDeviceManager9_CloseDeviceHandle(va->sys->devmng, va->sys->device);
+        if (FAILED(hr))
+            msg_Warn(va, "Failed to release device handle %x. (hr=0x%lX)", va->sys->device, hr);
+    }
     if (dx_sys->d3ddec)
         IDirectXVideoDecoderService_Release(dx_sys->d3ddec);
 }

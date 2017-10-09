@@ -458,6 +458,7 @@ TESTS = hpack_test$(EXEEXT) hpackenc_test$(EXEEXT) \
 @HAVE_GL_TRUE@am__append_233 = libglspectrum_plugin.la
 @ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_234 = libaccess_output_livehttp_plugin.la
 @ENABLE_SOUT_TRUE@am__append_235 = libaccess_output_shout_plugin.la \
+@ENABLE_SOUT_TRUE@	libaccess_output_srt_plugin.la \
 @ENABLE_SOUT_TRUE@	libmux_ogg_plugin.la \
 @ENABLE_SOUT_TRUE@	libstream_out_chromaprint_plugin.la
 @ENABLE_SOUT_TRUE@@HAVE_DVBPSI_TRUE@am__append_236 = libmux_ts_plugin.la
@@ -465,16 +466,15 @@ TESTS = hpack_test$(EXEEXT) hpackenc_test$(EXEEXT) \
 @ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@	$(GCRYPT_CFLAGS)
 
 @ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_238 = $(SRTP_LIBS) $(GCRYPT_LIBS)
-@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_239 = libstream_out_raop_plugin.la
 
 # Chromecast plugin
-@ENABLE_SOUT_TRUE@am__append_240 = .proto .pb.cc
-@ENABLE_SOUT_TRUE@am__append_241 = $(nodist_libstream_out_chromecast_plugin_la_SOURCES)
-@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_242 = stream_out/chromecast/cast_channel.pb.h
-@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_243 = libstream_out_chromecast_plugin.la
-@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_244 = libdemux_chromecast_plugin.la
-@HAVE_WIN32_TRUE@am__append_245 = module.rc.lo
-@HAVE_WIN32_TRUE@am__append_246 = module.rc
+@ENABLE_SOUT_TRUE@am__append_239 = .proto .pb.cc
+@ENABLE_SOUT_TRUE@am__append_240 = $(nodist_libstream_out_chromecast_plugin_la_SOURCES)
+@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_241 = stream_out/chromecast/cast_channel.pb.h
+@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_242 = libstream_out_chromecast_plugin.la
+@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_243 = libdemux_chromecast_plugin.la
+@HAVE_WIN32_TRUE@am__append_244 = module.rc.lo
+@HAVE_WIN32_TRUE@am__append_245 = module.rc
 subdir = modules
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_append_compile_flags.m4 \
@@ -692,6 +692,17 @@ libaccess_output_shout_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) \
 	$(libaccess_output_shout_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
 @ENABLE_SOUT_TRUE@am_libaccess_output_shout_plugin_la_rpath =
+@ENABLE_SOUT_TRUE@libaccess_output_srt_plugin_la_DEPENDENCIES =  \
+@ENABLE_SOUT_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+am__libaccess_output_srt_plugin_la_SOURCES_DIST = access_output/srt.c
+@ENABLE_SOUT_TRUE@am_libaccess_output_srt_plugin_la_OBJECTS = access_output/libaccess_output_srt_plugin_la-srt.lo
+libaccess_output_srt_plugin_la_OBJECTS =  \
+	$(am_libaccess_output_srt_plugin_la_OBJECTS)
+libaccess_output_srt_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) \
+	$(libaccess_output_srt_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
+@ENABLE_SOUT_TRUE@am_libaccess_output_srt_plugin_la_rpath =
 @ENABLE_SOUT_TRUE@libaccess_output_udp_plugin_la_DEPENDENCIES =  \
 @ENABLE_SOUT_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am__libaccess_output_udp_plugin_la_SOURCES_DIST = access_output/udp.c
@@ -722,6 +733,15 @@ libaccess_realrtsp_plugin_la_OBJECTS =  \
 libaccess_realrtsp_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(libaccess_realrtsp_plugin_la_LDFLAGS) \
+	$(LDFLAGS) -o $@
+libaccess_srt_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+am_libaccess_srt_plugin_la_OBJECTS =  \
+	access/libaccess_srt_plugin_la-srt.lo
+libaccess_srt_plugin_la_OBJECTS =  \
+	$(am_libaccess_srt_plugin_la_OBJECTS)
+libaccess_srt_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(libaccess_srt_plugin_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 libaccess_wasapi_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_libaccess_wasapi_plugin_la_OBJECTS = access/wasapi.lo
@@ -2041,12 +2061,12 @@ libglx_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @HAVE_GL_TRUE@@HAVE_XCB_TRUE@am_libglx_plugin_la_rpath = -rpath \
 @HAVE_GL_TRUE@@HAVE_XCB_TRUE@	$(voutdir)
 libgme_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am_libgme_plugin_la_OBJECTS = demux/gme.lo dummy.lo
+am_libgme_plugin_la_OBJECTS = demux/gme.lo
 libgme_plugin_la_OBJECTS = $(am_libgme_plugin_la_OBJECTS)
-libgme_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
-	$(AM_CXXFLAGS) $(CXXFLAGS) $(libgme_plugin_la_LDFLAGS) \
-	$(LDFLAGS) -o $@
+libgme_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(libgme_plugin_la_LDFLAGS) $(LDFLAGS) \
+	-o $@
 libgnutls_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_7)
 am_libgnutls_plugin_la_OBJECTS = misc/libgnutls_plugin_la-gnutls.lo
@@ -4093,18 +4113,6 @@ libstream_out_mosaic_bridge_plugin_la_OBJECTS =  \
 	$(am_libstream_out_mosaic_bridge_plugin_la_OBJECTS)
 @ENABLE_SOUT_TRUE@am_libstream_out_mosaic_bridge_plugin_la_rpath =  \
 @ENABLE_SOUT_TRUE@	-rpath $(soutdir)
-@ENABLE_SOUT_TRUE@libstream_out_raop_plugin_la_DEPENDENCIES =  \
-@ENABLE_SOUT_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am__libstream_out_raop_plugin_la_SOURCES_DIST = stream_out/raop.c
-@ENABLE_SOUT_TRUE@am_libstream_out_raop_plugin_la_OBJECTS = stream_out/libstream_out_raop_plugin_la-raop.lo
-libstream_out_raop_plugin_la_OBJECTS =  \
-	$(am_libstream_out_raop_plugin_la_OBJECTS)
-libstream_out_raop_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(libstream_out_raop_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
-@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am_libstream_out_raop_plugin_la_rpath =  \
-@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@	-rpath $(soutdir)
 libstream_out_record_plugin_la_LIBADD =
 am__libstream_out_record_plugin_la_SOURCES_DIST = stream_out/record.c
 @ENABLE_SOUT_TRUE@am_libstream_out_record_plugin_la_OBJECTS =  \
@@ -4155,8 +4163,7 @@ libstream_out_smem_plugin_la_OBJECTS =  \
 @ENABLE_SOUT_TRUE@	$(am__DEPENDENCIES_1)
 am__libstream_out_standard_plugin_la_SOURCES_DIST =  \
 	stream_out/standard.c
-@ENABLE_SOUT_TRUE@am_libstream_out_standard_plugin_la_OBJECTS =  \
-@ENABLE_SOUT_TRUE@	stream_out/standard.lo
+@ENABLE_SOUT_TRUE@am_libstream_out_standard_plugin_la_OBJECTS = stream_out/libstream_out_standard_plugin_la-standard.lo
 libstream_out_standard_plugin_la_OBJECTS =  \
 	$(am_libstream_out_standard_plugin_la_OBJECTS)
 @ENABLE_SOUT_TRUE@am_libstream_out_standard_plugin_la_rpath = -rpath \
@@ -4833,12 +4840,11 @@ libx264_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libx264_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libx264_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
 libx265_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am_libx265_plugin_la_OBJECTS = codec/libx265_plugin_la-x265.lo \
-	libx265_plugin_la-dummy.lo
+am_libx265_plugin_la_OBJECTS = codec/libx265_plugin_la-x265.lo
 libx265_plugin_la_OBJECTS = $(am_libx265_plugin_la_OBJECTS)
-libx265_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
-	$(libx265_plugin_la_CXXFLAGS) $(CXXFLAGS) \
+libx265_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libx265_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libx265_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
 libxa_plugin_la_LIBADD =
 am_libxa_plugin_la_OBJECTS = demux/xa.lo
@@ -5114,9 +5120,11 @@ SOURCES = $(liba52_plugin_la_SOURCES) $(libaa_plugin_la_SOURCES) \
 	$(libaccess_output_http_plugin_la_SOURCES) \
 	$(libaccess_output_livehttp_plugin_la_SOURCES) \
 	$(libaccess_output_shout_plugin_la_SOURCES) \
+	$(libaccess_output_srt_plugin_la_SOURCES) \
 	$(libaccess_output_udp_plugin_la_SOURCES) \
 	$(libaccess_qtsound_plugin_la_SOURCES) \
 	$(libaccess_realrtsp_plugin_la_SOURCES) \
+	$(libaccess_srt_plugin_la_SOURCES) \
 	$(libaccess_wasapi_plugin_la_SOURCES) \
 	$(libaccesstweaks_plugin_la_SOURCES) \
 	$(libadaptive_plugin_la_SOURCES) \
@@ -5397,7 +5405,6 @@ SOURCES = $(liba52_plugin_la_SOURCES) $(libaa_plugin_la_SOURCES) \
 	$(libstream_out_es_plugin_la_SOURCES) \
 	$(libstream_out_gather_plugin_la_SOURCES) \
 	$(libstream_out_mosaic_bridge_plugin_la_SOURCES) \
-	$(libstream_out_raop_plugin_la_SOURCES) \
 	$(libstream_out_record_plugin_la_SOURCES) \
 	$(libstream_out_rtp_plugin_la_SOURCES) \
 	$(libstream_out_setid_plugin_la_SOURCES) \
@@ -5501,9 +5508,11 @@ DIST_SOURCES = $(liba52_plugin_la_SOURCES) $(libaa_plugin_la_SOURCES) \
 	$(am__libaccess_output_http_plugin_la_SOURCES_DIST) \
 	$(am__libaccess_output_livehttp_plugin_la_SOURCES_DIST) \
 	$(am__libaccess_output_shout_plugin_la_SOURCES_DIST) \
+	$(am__libaccess_output_srt_plugin_la_SOURCES_DIST) \
 	$(am__libaccess_output_udp_plugin_la_SOURCES_DIST) \
 	$(libaccess_qtsound_plugin_la_SOURCES) \
 	$(libaccess_realrtsp_plugin_la_SOURCES) \
+	$(libaccess_srt_plugin_la_SOURCES) \
 	$(libaccess_wasapi_plugin_la_SOURCES) \
 	$(libaccesstweaks_plugin_la_SOURCES) \
 	$(libadaptive_plugin_la_SOURCES) \
@@ -5789,7 +5798,6 @@ DIST_SOURCES = $(liba52_plugin_la_SOURCES) $(libaa_plugin_la_SOURCES) \
 	$(am__libstream_out_es_plugin_la_SOURCES_DIST) \
 	$(am__libstream_out_gather_plugin_la_SOURCES_DIST) \
 	$(am__libstream_out_mosaic_bridge_plugin_la_SOURCES_DIST) \
-	$(am__libstream_out_raop_plugin_la_SOURCES_DIST) \
 	$(am__libstream_out_record_plugin_la_SOURCES_DIST) \
 	$(am__libstream_out_rtp_plugin_la_SOURCES_DIST) \
 	$(am__libstream_out_setid_plugin_la_SOURCES_DIST) \
@@ -6198,6 +6206,8 @@ CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 CFLAGS_access_mtp = @CFLAGS_access_mtp@
 CFLAGS_access_output_shout = @CFLAGS_access_output_shout@
+CFLAGS_access_output_srt = @CFLAGS_access_output_srt@
+CFLAGS_access_srt = @CFLAGS_access_srt@
 CFLAGS_aom = @CFLAGS_aom@
 CFLAGS_archive = @CFLAGS_archive@
 CFLAGS_aribcam = @CFLAGS_aribcam@
@@ -6275,6 +6285,8 @@ CPPFLAGS = @CPPFLAGS@
 CPPFLAGS_a52 = @CPPFLAGS_a52@
 CPPFLAGS_access_mtp = @CPPFLAGS_access_mtp@
 CPPFLAGS_access_output_shout = @CPPFLAGS_access_output_shout@
+CPPFLAGS_access_output_srt = @CPPFLAGS_access_output_srt@
+CPPFLAGS_access_srt = @CPPFLAGS_access_srt@
 CPPFLAGS_aom = @CPPFLAGS_aom@
 CPPFLAGS_archive = @CPPFLAGS_archive@
 CPPFLAGS_aribcam = @CPPFLAGS_aribcam@
@@ -6462,6 +6474,8 @@ LIBS = @LIBS@
 LIBS_a52 = @LIBS_a52@
 LIBS_access_mtp = @LIBS_access_mtp@
 LIBS_access_output_shout = @LIBS_access_output_shout@
+LIBS_access_output_srt = @LIBS_access_output_srt@
+LIBS_access_srt = @LIBS_access_srt@
 LIBS_aom = @LIBS_aom@
 LIBS_archive = @LIBS_archive@
 LIBS_aribcam = @LIBS_aribcam@
@@ -6565,7 +6579,9 @@ LTLIBa52 = @LTLIBa52@
 LTLIBaa = @LTLIBaa@
 LTLIBaccess_mtp = @LTLIBaccess_mtp@
 LTLIBaccess_output_shout = @LTLIBaccess_output_shout@
+LTLIBaccess_output_srt = @LTLIBaccess_output_srt@
 LTLIBaccess_realrtsp = @LTLIBaccess_realrtsp@
+LTLIBaccess_srt = @LTLIBaccess_srt@
 LTLIBaccesstweaks = @LTLIBaccesstweaks@
 LTLIBaom = @LTLIBaom@
 LTLIBarchive = @LTLIBarchive@
@@ -6787,6 +6803,8 @@ SPEEXDSP_CFLAGS = @SPEEXDSP_CFLAGS@
 SPEEXDSP_LIBS = @SPEEXDSP_LIBS@
 SPEEX_CFLAGS = @SPEEX_CFLAGS@
 SPEEX_LIBS = @SPEEX_LIBS@
+SRT_CFLAGS = @SRT_CFLAGS@
+SRT_LIBS = @SRT_LIBS@
 STRIP = @STRIP@
 SVGDEC_CFLAGS = @SVGDEC_CFLAGS@
 SVGDEC_LIBS = @SVGDEC_LIBS@
@@ -6985,36 +7003,36 @@ EXTRA_LTLIBRARIES = libaccess_qtsound_plugin.la libdc1394_plugin.la \
 	liblive555_plugin.la libsmb_plugin.la libdsm_plugin.la \
 	libsftp_plugin.la libnfs_plugin.la \
 	libaccess_realrtsp_plugin.la libaccess_mtp_plugin.la \
-	$(am__append_47) libspatialaudio_plugin.la \
-	libbandlimited_resampler_plugin.la libsamplerate_plugin.la \
-	libsoxr_plugin.la libtizen_audio_plugin.la liba52_plugin.la \
-	libdca_plugin.la libfaad_plugin.la libfluidsynth_plugin.la \
-	libmpg123_plugin.la libwma_fixed_plugin.la \
-	liblibmpeg2_plugin.la libschroedinger_plugin.la \
-	libpng_plugin.la libjpeg_plugin.la libbpg_plugin.la \
-	libsvgdec_plugin.la libsdl_image_plugin.la liblibass_plugin.la \
-	libaribsub_plugin.la libtelx_plugin.la libzvbi_plugin.la \
-	libflac_plugin.la libkate_plugin.la libopus_plugin.la \
-	libspeex_plugin.la libtheora_plugin.la libdaala_plugin.la \
-	libtremor_plugin.la libvorbis_plugin.la liboggspots_plugin.la \
-	libvideotoolbox_plugin.la libomxil_plugin.la \
-	libomxil_vout_plugin.la libx265_plugin.la libx262_plugin.la \
-	libx264_plugin.la libx26410b_plugin.la libfdkaac_plugin.la \
-	libshine_plugin.la libvpx_plugin.la libaom_plugin.la \
-	libtwolame_plugin.la libcrystalhd_plugin.la libqsv_plugin.la \
-	libogg_plugin.la libmod_plugin.la libmpc_plugin.la \
-	libgme_plugin.la libsid_plugin.la libmkv_plugin.la \
-	libminimal_macosx_plugin.la libsecret_plugin.la \
-	libkwallet_plugin.la libtaglib_plugin.la libgnutls_plugin.la \
-	libxml_plugin.la libosx_notifications_plugin.la \
-	libnotify_plugin.la libavahi_plugin.la libmtp_plugin.la \
-	libupnp_plugin.la libudev_plugin.la libmicrodns_plugin.la \
-	libaribcam_plugin.la libaccesstweaks_plugin.la \
-	libarchive_plugin.la libsvg_plugin.la libswscale_plugin.la \
-	libchroma_omx_plugin.la libcvpx_plugin.la \
-	libopencv_wrapper_plugin.la libpostproc_plugin.la \
-	libopencv_example_plugin.la libgles2_plugin.la \
-	$(am__append_220) libdirect3d11_plugin.la \
+	libaccess_srt_plugin.la $(am__append_47) \
+	libspatialaudio_plugin.la libbandlimited_resampler_plugin.la \
+	libsamplerate_plugin.la libsoxr_plugin.la \
+	libtizen_audio_plugin.la liba52_plugin.la libdca_plugin.la \
+	libfaad_plugin.la libfluidsynth_plugin.la libmpg123_plugin.la \
+	libwma_fixed_plugin.la liblibmpeg2_plugin.la \
+	libschroedinger_plugin.la libpng_plugin.la libjpeg_plugin.la \
+	libbpg_plugin.la libsvgdec_plugin.la libsdl_image_plugin.la \
+	liblibass_plugin.la libaribsub_plugin.la libtelx_plugin.la \
+	libzvbi_plugin.la libflac_plugin.la libkate_plugin.la \
+	libopus_plugin.la libspeex_plugin.la libtheora_plugin.la \
+	libdaala_plugin.la libtremor_plugin.la libvorbis_plugin.la \
+	liboggspots_plugin.la libvideotoolbox_plugin.la \
+	libomxil_plugin.la libomxil_vout_plugin.la libx265_plugin.la \
+	libx262_plugin.la libx264_plugin.la libx26410b_plugin.la \
+	libfdkaac_plugin.la libshine_plugin.la libvpx_plugin.la \
+	libaom_plugin.la libtwolame_plugin.la libcrystalhd_plugin.la \
+	libqsv_plugin.la libogg_plugin.la libmod_plugin.la \
+	libmpc_plugin.la libgme_plugin.la libsid_plugin.la \
+	libmkv_plugin.la libminimal_macosx_plugin.la \
+	libsecret_plugin.la libkwallet_plugin.la libtaglib_plugin.la \
+	libgnutls_plugin.la libxml_plugin.la \
+	libosx_notifications_plugin.la libnotify_plugin.la \
+	libavahi_plugin.la libmtp_plugin.la libupnp_plugin.la \
+	libudev_plugin.la libmicrodns_plugin.la libaribcam_plugin.la \
+	libaccesstweaks_plugin.la libarchive_plugin.la \
+	libsvg_plugin.la libswscale_plugin.la libchroma_omx_plugin.la \
+	libcvpx_plugin.la libopencv_wrapper_plugin.la \
+	libpostproc_plugin.la libopencv_example_plugin.la \
+	libgles2_plugin.la $(am__append_220) libdirect3d11_plugin.la \
 	libdirect3d11_deinterlace_plugin.la \
 	libdirect3d11_adjust_plugin.la $(am__append_223) \
 	libfb_plugin.la libaa_plugin.la libcaca_plugin.la \
@@ -7024,12 +7042,12 @@ AUTOMAKE_OPTIONS = subdir-objects
 NULL = 
 pluginsdir = $(vlclibdir)/plugins
 BUILT_SOURCES = $(am__append_18) $(am__append_114) $(am__append_129) \
-	$(am__append_215) $(am__append_242) dummy.cpp \
-	$(am__append_245)
+	$(am__append_215) $(am__append_241) dummy.cpp \
+	$(am__append_244)
 CLEANFILES = $(BUILT_SOURCES) \
 	$(nodist_libwl_screenshooter_plugin_la_SOURCES) \
-	$(nodist_libwl_shm_plugin_la_SOURCES) $(am__append_241) \
-	$(am__append_246)
+	$(nodist_libwl_shm_plugin_la_SOURCES) $(am__append_240) \
+	$(am__append_245)
 LTLIBVLCCORE = $(top_builddir)/src/libvlccore.la
 
 # Module name from object or executable file name.
@@ -7043,7 +7061,7 @@ AM_LDFLAGS = -avoid-version -module -export-symbols-regex ^vlc_entry \
 	$(am__append_4)
 
 # Wayland
-SUFFIXES = .xib .ui .h .hpp .moc.cpp $(am__append_240) \
+SUFFIXES = .xib .ui .h .hpp .moc.cpp $(am__append_239) \
 	-client-protocol.h -protocol.c .xml
 accessdir = $(pluginsdir)/access
 
@@ -7065,7 +7083,8 @@ access_LTLIBRARIES = libattachment_plugin.la $(am__append_7) \
 	$(LTLIBsmb) $(LTLIBdsm) libtcp_plugin.la libudp_plugin.la \
 	$(LTLIBsftp) $(LTLIBnfs) $(LTLIBaccess_realrtsp) \
 	$(am__append_39) libsatip_plugin.la libaccess_concat_plugin.la \
-	$(LTLIBaccess_mtp) libhttps_plugin.la librtp_plugin.la
+	$(LTLIBaccess_mtp) $(LTLIBaccess_srt) libhttps_plugin.la \
+	librtp_plugin.la
 
 ### Files ###
 libattachment_plugin_la_SOURCES = access/attachment.c
@@ -7292,6 +7311,12 @@ libaccess_mtp_plugin_la_SOURCES = access/mtp.c
 libaccess_mtp_plugin_la_CFLAGS = $(AM_CFLAGS) $(MTP_CFLAGS)
 libaccess_mtp_plugin_la_LIBADD = $(MTP_LIBS)
 libaccess_mtp_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(accessdir)'
+
+### SRT ###
+libaccess_srt_plugin_la_SOURCES = access/srt.c
+libaccess_srt_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(SRT_CPPFLAGS)
+libaccess_srt_plugin_la_LIBADD = $(SRT_LIBS)
+libaccess_srt_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(accessdir)'
 libhttps_plugin_la_SOURCES = access/http/access.c
 libhttps_plugin_la_LIBADD = libvlc_http.la
 libvlc_http_la_SOURCES = \
@@ -7851,9 +7876,9 @@ libmediacodec_plugin_la_SOURCES = codec/omxil/mediacodec.c codec/omxil/mediacode
 
 
 ### X26x encoders ###
-libx265_plugin_la_SOURCES = codec/x265.c dummy.cpp
+libx265_plugin_la_SOURCES = codec/x265.c
 libx265_plugin_la_CPPFLAGS = $(AM_CPPFLAGS)
-libx265_plugin_la_CXXFLAGS = $(AM_CFLAGS) $(CFLAGS_x265)
+libx265_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_x265)
 libx265_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_x265) -rpath '$(codecdir)'
 libx265_plugin_la_LIBADD = $(LIBS_x265)
 libx262_plugin_la_SOURCES = codec/x264.c
@@ -7977,7 +8002,7 @@ demux_LTLIBRARIES = libflacsys_plugin.la $(LTLIBogg) \
 	libdirectory_demux_plugin.la libes_plugin.la libh26x_plugin.la \
 	$(LTLIBmkv) libmp4_plugin.la libmpgv_plugin.la \
 	libplaylist_plugin.la $(am__append_107) libadaptive_plugin.la \
-	libnoseek_plugin.la $(am__append_244)
+	libnoseek_plugin.la $(am__append_243)
 libflacsys_plugin_la_SOURCES = demux/flac.c demux/xiph_metadata.h demux/xiph_metadata.c
 libflacsys_plugin_la_CPPFLAGS = $(AM_CPPFLAGS)
 libogg_plugin_la_SOURCES = demux/ogg.c demux/ogg.h demux/oggseek.c demux/oggseek.h \
@@ -8021,7 +8046,7 @@ libvc1_plugin_la_SOURCES = demux/vc1.c
 libdemux_cdg_plugin_la_SOURCES = demux/cdg.c
 libdemux_cdg_plugin_la_CPPFLAGS = $(AM_CPPFLAGS)
 libsmf_plugin_la_SOURCES = demux/smf.c
-libgme_plugin_la_SOURCES = demux/gme.c dummy.cpp
+libgme_plugin_la_SOURCES = demux/gme.c
 libgme_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(demuxdir)'
 libgme_plugin_la_LIBADD = $(LIBS_gme)
 libsid_plugin_la_SOURCES = demux/sid.cpp
@@ -10413,7 +10438,8 @@ libvsxu_plugin_la_LIBADD = $(VSXU_LIBS) $(LIBM)
 @ENABLE_SOUT_TRUE@	libaccess_output_http_plugin.la \
 @ENABLE_SOUT_TRUE@	libaccess_output_udp_plugin.la \
 @ENABLE_SOUT_TRUE@	$(am__append_234) \
-@ENABLE_SOUT_TRUE@	$(LTLIBaccess_output_shout)
+@ENABLE_SOUT_TRUE@	$(LTLIBaccess_output_shout) \
+@ENABLE_SOUT_TRUE@	$(LTLIBaccess_output_srt)
 @ENABLE_SOUT_TRUE@libaccess_output_livehttp_plugin_la_SOURCES = access_output/livehttp.c
 @ENABLE_SOUT_TRUE@libaccess_output_livehttp_plugin_la_CFLAGS = $(AM_CFLAGS) $(GCRYPT_CFLAGS)
 @ENABLE_SOUT_TRUE@libaccess_output_livehttp_plugin_la_LIBADD = $(GCRYPT_LIBS) -lgpg-error
@@ -10421,6 +10447,12 @@ libvsxu_plugin_la_LIBADD = $(VSXU_LIBS) $(LIBM)
 @ENABLE_SOUT_TRUE@libaccess_output_shout_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(SHOUT_CFLAGS)
 @ENABLE_SOUT_TRUE@libaccess_output_shout_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(access_outdir)'
 @ENABLE_SOUT_TRUE@libaccess_output_shout_plugin_la_LIBADD = $(SHOUT_LIBS) $(SOCKET_LIBS)
+
+### SRT ###
+@ENABLE_SOUT_TRUE@libaccess_output_srt_plugin_la_SOURCES = access_output/srt.c
+@ENABLE_SOUT_TRUE@libaccess_output_srt_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(SRT_CPPFLAGS)
+@ENABLE_SOUT_TRUE@libaccess_output_srt_plugin_la_LIBADD = $(SRT_LIBS) $(LIBPTHREAD)
+@ENABLE_SOUT_TRUE@libaccess_output_srt_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(access_outdir)'
 @ENABLE_SOUT_TRUE@muxdir = $(pluginsdir)/mux
 @ENABLE_SOUT_TRUE@libmux_dummy_plugin_la_SOURCES = mux/dummy.c
 @ENABLE_SOUT_TRUE@libmux_asf_plugin_la_SOURCES = mux/asf.c demux/asf/libasf_guid.h
@@ -10464,6 +10496,7 @@ libvsxu_plugin_la_LIBADD = $(VSXU_LIBS) $(LIBM)
 @ENABLE_SOUT_TRUE@libstream_out_stats_plugin_la_SOURCES = stream_out/stats.c
 @ENABLE_SOUT_TRUE@libstream_out_description_plugin_la_SOURCES = stream_out/description.c
 @ENABLE_SOUT_TRUE@libstream_out_standard_plugin_la_SOURCES = stream_out/standard.c
+@ENABLE_SOUT_TRUE@libstream_out_standard_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_output_srt)
 @ENABLE_SOUT_TRUE@libstream_out_standard_plugin_la_LIBADD = $(SOCKET_LIBS)
 @ENABLE_SOUT_TRUE@libstream_out_duplicate_plugin_la_SOURCES = stream_out/duplicate.c
 @ENABLE_SOUT_TRUE@libstream_out_es_plugin_la_SOURCES = stream_out/es.c
@@ -10502,9 +10535,8 @@ libvsxu_plugin_la_LIBADD = $(VSXU_LIBS) $(LIBM)
 @ENABLE_SOUT_TRUE@	libstream_out_setid_plugin.la \
 @ENABLE_SOUT_TRUE@	libstream_out_transcode_plugin.la \
 @ENABLE_SOUT_TRUE@	libstream_out_rtp_plugin.la \
-@ENABLE_SOUT_TRUE@	$(am__append_239) \
 @ENABLE_SOUT_TRUE@	$(LTLIBstream_out_chromaprint) \
-@ENABLE_SOUT_TRUE@	$(am__append_243)
+@ENABLE_SOUT_TRUE@	$(am__append_242)
 @ENABLE_SOUT_TRUE@libstream_out_rtp_plugin_la_SOURCES = \
 @ENABLE_SOUT_TRUE@	stream_out/rtp.c stream_out/rtp.h stream_out/rtpfmt.c \
 @ENABLE_SOUT_TRUE@	stream_out/rtcp.c stream_out/rtsp.c stream_out/vod.c
@@ -10515,11 +10547,6 @@ libvsxu_plugin_la_LIBADD = $(VSXU_LIBS) $(LIBM)
 @ENABLE_SOUT_TRUE@	$(LIBPTHREAD) $(am__append_238)
 @ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@SRTP_CFLAGS = -I$(srcdir)/access/rtp
 @ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@SRTP_LIBS = libvlc_srtp.la
-
-# RAOP plugin
-@ENABLE_SOUT_TRUE@libstream_out_raop_plugin_la_SOURCES = stream_out/raop.c
-@ENABLE_SOUT_TRUE@libstream_out_raop_plugin_la_CFLAGS = $(AM_CFLAGS) $(GCRYPT_CFLAGS)
-@ENABLE_SOUT_TRUE@libstream_out_raop_plugin_la_LIBADD = $(GCRYPT_LIBS) -lgpg-error $(SOCKET_LIBS) $(LIBS_stream_out_raop)
 
 # Chromaprint plugin
 @ENABLE_SOUT_TRUE@libstream_out_chromaprint_plugin_la_SOURCES = stream_out/chromaprint.c stream_out/chromaprint_data.h dummy.cpp
@@ -11816,6 +11843,12 @@ access_output/libaccess_output_shout_plugin_la-shout.lo:  \
 
 libaccess_output_shout_plugin.la: $(libaccess_output_shout_plugin_la_OBJECTS) $(libaccess_output_shout_plugin_la_DEPENDENCIES) $(EXTRA_libaccess_output_shout_plugin_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libaccess_output_shout_plugin_la_LINK) $(am_libaccess_output_shout_plugin_la_rpath) $(libaccess_output_shout_plugin_la_OBJECTS) $(libaccess_output_shout_plugin_la_LIBADD) $(LIBS)
+access_output/libaccess_output_srt_plugin_la-srt.lo:  \
+	access_output/$(am__dirstamp) \
+	access_output/$(DEPDIR)/$(am__dirstamp)
+
+libaccess_output_srt_plugin.la: $(libaccess_output_srt_plugin_la_OBJECTS) $(libaccess_output_srt_plugin_la_DEPENDENCIES) $(EXTRA_libaccess_output_srt_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libaccess_output_srt_plugin_la_LINK) $(am_libaccess_output_srt_plugin_la_rpath) $(libaccess_output_srt_plugin_la_OBJECTS) $(libaccess_output_srt_plugin_la_LIBADD) $(LIBS)
 access_output/udp.lo: access_output/$(am__dirstamp) \
 	access_output/$(DEPDIR)/$(am__dirstamp)
 
@@ -11853,6 +11886,11 @@ access/rtsp/libaccess_realrtsp_plugin_la-real_asmrp.lo:  \
 
 libaccess_realrtsp_plugin.la: $(libaccess_realrtsp_plugin_la_OBJECTS) $(libaccess_realrtsp_plugin_la_DEPENDENCIES) $(EXTRA_libaccess_realrtsp_plugin_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libaccess_realrtsp_plugin_la_LINK)  $(libaccess_realrtsp_plugin_la_OBJECTS) $(libaccess_realrtsp_plugin_la_LIBADD) $(LIBS)
+access/libaccess_srt_plugin_la-srt.lo: access/$(am__dirstamp) \
+	access/$(DEPDIR)/$(am__dirstamp)
+
+libaccess_srt_plugin.la: $(libaccess_srt_plugin_la_OBJECTS) $(libaccess_srt_plugin_la_DEPENDENCIES) $(EXTRA_libaccess_srt_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libaccess_srt_plugin_la_LINK)  $(libaccess_srt_plugin_la_OBJECTS) $(libaccess_srt_plugin_la_LIBADD) $(LIBS)
 access/wasapi.lo: access/$(am__dirstamp) \
 	access/$(DEPDIR)/$(am__dirstamp)
 
@@ -13638,7 +13676,7 @@ libglx_plugin.la: $(libglx_plugin_la_OBJECTS) $(libglx_plugin_la_DEPENDENCIES) $
 demux/gme.lo: demux/$(am__dirstamp) demux/$(DEPDIR)/$(am__dirstamp)
 
 libgme_plugin.la: $(libgme_plugin_la_OBJECTS) $(libgme_plugin_la_DEPENDENCIES) $(EXTRA_libgme_plugin_la_DEPENDENCIES) 
-	$(AM_V_CXXLD)$(libgme_plugin_la_LINK)  $(libgme_plugin_la_OBJECTS) $(libgme_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libgme_plugin_la_LINK)  $(libgme_plugin_la_OBJECTS) $(libgme_plugin_la_LIBADD) $(LIBS)
 misc/libgnutls_plugin_la-gnutls.lo: misc/$(am__dirstamp) \
 	misc/$(DEPDIR)/$(am__dirstamp)
 
@@ -16238,12 +16276,6 @@ stream_out/mosaic_bridge.lo: stream_out/$(am__dirstamp) \
 
 libstream_out_mosaic_bridge_plugin.la: $(libstream_out_mosaic_bridge_plugin_la_OBJECTS) $(libstream_out_mosaic_bridge_plugin_la_DEPENDENCIES) $(EXTRA_libstream_out_mosaic_bridge_plugin_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK) $(am_libstream_out_mosaic_bridge_plugin_la_rpath) $(libstream_out_mosaic_bridge_plugin_la_OBJECTS) $(libstream_out_mosaic_bridge_plugin_la_LIBADD) $(LIBS)
-stream_out/libstream_out_raop_plugin_la-raop.lo:  \
-	stream_out/$(am__dirstamp) \
-	stream_out/$(DEPDIR)/$(am__dirstamp)
-
-libstream_out_raop_plugin.la: $(libstream_out_raop_plugin_la_OBJECTS) $(libstream_out_raop_plugin_la_DEPENDENCIES) $(EXTRA_libstream_out_raop_plugin_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libstream_out_raop_plugin_la_LINK) $(am_libstream_out_raop_plugin_la_rpath) $(libstream_out_raop_plugin_la_OBJECTS) $(libstream_out_raop_plugin_la_LIBADD) $(LIBS)
 stream_out/record.lo: stream_out/$(am__dirstamp) \
 	stream_out/$(DEPDIR)/$(am__dirstamp)
 
@@ -16277,7 +16309,8 @@ stream_out/smem.lo: stream_out/$(am__dirstamp) \
 
 libstream_out_smem_plugin.la: $(libstream_out_smem_plugin_la_OBJECTS) $(libstream_out_smem_plugin_la_DEPENDENCIES) $(EXTRA_libstream_out_smem_plugin_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK) $(am_libstream_out_smem_plugin_la_rpath) $(libstream_out_smem_plugin_la_OBJECTS) $(libstream_out_smem_plugin_la_LIBADD) $(LIBS)
-stream_out/standard.lo: stream_out/$(am__dirstamp) \
+stream_out/libstream_out_standard_plugin_la-standard.lo:  \
+	stream_out/$(am__dirstamp) \
 	stream_out/$(DEPDIR)/$(am__dirstamp)
 
 libstream_out_standard_plugin.la: $(libstream_out_standard_plugin_la_OBJECTS) $(libstream_out_standard_plugin_la_DEPENDENCIES) $(EXTRA_libstream_out_standard_plugin_la_DEPENDENCIES) 
@@ -16948,7 +16981,7 @@ codec/libx265_plugin_la-x265.lo: codec/$(am__dirstamp) \
 	codec/$(DEPDIR)/$(am__dirstamp)
 
 libx265_plugin.la: $(libx265_plugin_la_OBJECTS) $(libx265_plugin_la_DEPENDENCIES) $(EXTRA_libx265_plugin_la_DEPENDENCIES) 
-	$(AM_V_CXXLD)$(libx265_plugin_la_LINK)  $(libx265_plugin_la_OBJECTS) $(libx265_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libx265_plugin_la_LINK)  $(libx265_plugin_la_OBJECTS) $(libx265_plugin_la_LIBADD) $(LIBS)
 demux/xa.lo: demux/$(am__dirstamp) demux/$(DEPDIR)/$(am__dirstamp)
 
 libxa_plugin.la: $(libxa_plugin_la_OBJECTS) $(libxa_plugin_la_DEPENDENCIES) $(EXTRA_libxa_plugin_la_DEPENDENCIES) 
@@ -17425,9 +17458,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dummy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libstream_out_chromaprint_plugin_la-dummy.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libx265_plugin_la-dummy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@access/$(DEPDIR)/attachment.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@access/$(DEPDIR)/concat.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@access/$(DEPDIR)/ftp.Plo@am__quote@
@@ -17438,6 +17469,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@access/$(DEPDIR)/libaccess_alsa_plugin_la-alsa.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@access/$(DEPDIR)/libaccess_jack_plugin_la-jack.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@access/$(DEPDIR)/libaccess_mtp_plugin_la-mtp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@access/$(DEPDIR)/libaccess_srt_plugin_la-srt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@access/$(DEPDIR)/libavcapture_plugin_la-avcapture.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@access/$(DEPDIR)/libavcodec_plugin_la-avio.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@access/$(DEPDIR)/libavio_plugin_la-avio.Plo@am__quote@
@@ -17560,6 +17592,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@access_output/$(DEPDIR)/http.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@access_output/$(DEPDIR)/libaccess_output_livehttp_plugin_la-livehttp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@access_output/$(DEPDIR)/libaccess_output_shout_plugin_la-shout.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@access_output/$(DEPDIR)/libaccess_output_srt_plugin_la-srt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@access_output/$(DEPDIR)/udp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@arm_neon/$(DEPDIR)/amplify.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@arm_neon/$(DEPDIR)/deinterleave_chroma.Plo@am__quote@
@@ -18472,17 +18505,16 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@stream_out/$(DEPDIR)/es.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@stream_out/$(DEPDIR)/gather.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@stream_out/$(DEPDIR)/libstream_out_chromaprint_plugin_la-chromaprint.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@stream_out/$(DEPDIR)/libstream_out_raop_plugin_la-raop.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@stream_out/$(DEPDIR)/libstream_out_rtp_plugin_la-rtcp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@stream_out/$(DEPDIR)/libstream_out_rtp_plugin_la-rtp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@stream_out/$(DEPDIR)/libstream_out_rtp_plugin_la-rtpfmt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@stream_out/$(DEPDIR)/libstream_out_rtp_plugin_la-rtsp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@stream_out/$(DEPDIR)/libstream_out_rtp_plugin_la-vod.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@stream_out/$(DEPDIR)/libstream_out_standard_plugin_la-standard.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@stream_out/$(DEPDIR)/mosaic_bridge.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@stream_out/$(DEPDIR)/record.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@stream_out/$(DEPDIR)/setid.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@stream_out/$(DEPDIR)/smem.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@stream_out/$(DEPDIR)/standard.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@stream_out/$(DEPDIR)/stats.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@stream_out/chromecast/$(DEPDIR)/libdemux_chromecast_plugin_la-chromecast_demux.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@stream_out/chromecast/$(DEPDIR)/libstream_out_chromecast_plugin_la-cast.Plo@am__quote@
@@ -18839,6 +18871,13 @@ access_output/libaccess_output_shout_plugin_la-shout.lo: access_output/shout.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libaccess_output_shout_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o access_output/libaccess_output_shout_plugin_la-shout.lo `test -f 'access_output/shout.c' || echo '$(srcdir)/'`access_output/shout.c
 
+access_output/libaccess_output_srt_plugin_la-srt.lo: access_output/srt.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libaccess_output_srt_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT access_output/libaccess_output_srt_plugin_la-srt.lo -MD -MP -MF access_output/$(DEPDIR)/libaccess_output_srt_plugin_la-srt.Tpo -c -o access_output/libaccess_output_srt_plugin_la-srt.lo `test -f 'access_output/srt.c' || echo '$(srcdir)/'`access_output/srt.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) access_output/$(DEPDIR)/libaccess_output_srt_plugin_la-srt.Tpo access_output/$(DEPDIR)/libaccess_output_srt_plugin_la-srt.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='access_output/srt.c' object='access_output/libaccess_output_srt_plugin_la-srt.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libaccess_output_srt_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o access_output/libaccess_output_srt_plugin_la-srt.lo `test -f 'access_output/srt.c' || echo '$(srcdir)/'`access_output/srt.c
+
 access/rtsp/libaccess_realrtsp_plugin_la-access.lo: access/rtsp/access.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libaccess_realrtsp_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT access/rtsp/libaccess_realrtsp_plugin_la-access.lo -MD -MP -MF access/rtsp/$(DEPDIR)/libaccess_realrtsp_plugin_la-access.Tpo -c -o access/rtsp/libaccess_realrtsp_plugin_la-access.lo `test -f 'access/rtsp/access.c' || echo '$(srcdir)/'`access/rtsp/access.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) access/rtsp/$(DEPDIR)/libaccess_realrtsp_plugin_la-access.Tpo access/rtsp/$(DEPDIR)/libaccess_realrtsp_plugin_la-access.Plo
@@ -18880,6 +18919,13 @@ access/rtsp/libaccess_realrtsp_plugin_la-real_asmrp.lo: access/rtsp/real_asmrp.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='access/rtsp/real_asmrp.c' object='access/rtsp/libaccess_realrtsp_plugin_la-real_asmrp.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libaccess_realrtsp_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o access/rtsp/libaccess_realrtsp_plugin_la-real_asmrp.lo `test -f 'access/rtsp/real_asmrp.c' || echo '$(srcdir)/'`access/rtsp/real_asmrp.c
+
+access/libaccess_srt_plugin_la-srt.lo: access/srt.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libaccess_srt_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT access/libaccess_srt_plugin_la-srt.lo -MD -MP -MF access/$(DEPDIR)/libaccess_srt_plugin_la-srt.Tpo -c -o access/libaccess_srt_plugin_la-srt.lo `test -f 'access/srt.c' || echo '$(srcdir)/'`access/srt.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) access/$(DEPDIR)/libaccess_srt_plugin_la-srt.Tpo access/$(DEPDIR)/libaccess_srt_plugin_la-srt.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='access/srt.c' object='access/libaccess_srt_plugin_la-srt.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libaccess_srt_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o access/libaccess_srt_plugin_la-srt.lo `test -f 'access/srt.c' || echo '$(srcdir)/'`access/srt.c
 
 stream_filter/libaccesstweaks_plugin_la-accesstweaks.lo: stream_filter/accesstweaks.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaccesstweaks_plugin_la_CFLAGS) $(CFLAGS) -MT stream_filter/libaccesstweaks_plugin_la-accesstweaks.lo -MD -MP -MF stream_filter/$(DEPDIR)/libaccesstweaks_plugin_la-accesstweaks.Tpo -c -o stream_filter/libaccesstweaks_plugin_la-accesstweaks.lo `test -f 'stream_filter/accesstweaks.c' || echo '$(srcdir)/'`stream_filter/accesstweaks.c
@@ -20890,13 +20936,6 @@ misc/webservices/libstream_out_chromecast_plugin_la-json.lo: misc/webservices/js
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libstream_out_chromecast_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o misc/webservices/libstream_out_chromecast_plugin_la-json.lo `test -f 'misc/webservices/json.c' || echo '$(srcdir)/'`misc/webservices/json.c
 
-stream_out/libstream_out_raop_plugin_la-raop.lo: stream_out/raop.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libstream_out_raop_plugin_la_CFLAGS) $(CFLAGS) -MT stream_out/libstream_out_raop_plugin_la-raop.lo -MD -MP -MF stream_out/$(DEPDIR)/libstream_out_raop_plugin_la-raop.Tpo -c -o stream_out/libstream_out_raop_plugin_la-raop.lo `test -f 'stream_out/raop.c' || echo '$(srcdir)/'`stream_out/raop.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) stream_out/$(DEPDIR)/libstream_out_raop_plugin_la-raop.Tpo stream_out/$(DEPDIR)/libstream_out_raop_plugin_la-raop.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='stream_out/raop.c' object='stream_out/libstream_out_raop_plugin_la-raop.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libstream_out_raop_plugin_la_CFLAGS) $(CFLAGS) -c -o stream_out/libstream_out_raop_plugin_la-raop.lo `test -f 'stream_out/raop.c' || echo '$(srcdir)/'`stream_out/raop.c
-
 stream_out/libstream_out_rtp_plugin_la-rtp.lo: stream_out/rtp.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libstream_out_rtp_plugin_la_CFLAGS) $(CFLAGS) -MT stream_out/libstream_out_rtp_plugin_la-rtp.lo -MD -MP -MF stream_out/$(DEPDIR)/libstream_out_rtp_plugin_la-rtp.Tpo -c -o stream_out/libstream_out_rtp_plugin_la-rtp.lo `test -f 'stream_out/rtp.c' || echo '$(srcdir)/'`stream_out/rtp.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) stream_out/$(DEPDIR)/libstream_out_rtp_plugin_la-rtp.Tpo stream_out/$(DEPDIR)/libstream_out_rtp_plugin_la-rtp.Plo
@@ -20931,6 +20970,13 @@ stream_out/libstream_out_rtp_plugin_la-vod.lo: stream_out/vod.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='stream_out/vod.c' object='stream_out/libstream_out_rtp_plugin_la-vod.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libstream_out_rtp_plugin_la_CFLAGS) $(CFLAGS) -c -o stream_out/libstream_out_rtp_plugin_la-vod.lo `test -f 'stream_out/vod.c' || echo '$(srcdir)/'`stream_out/vod.c
+
+stream_out/libstream_out_standard_plugin_la-standard.lo: stream_out/standard.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libstream_out_standard_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT stream_out/libstream_out_standard_plugin_la-standard.lo -MD -MP -MF stream_out/$(DEPDIR)/libstream_out_standard_plugin_la-standard.Tpo -c -o stream_out/libstream_out_standard_plugin_la-standard.lo `test -f 'stream_out/standard.c' || echo '$(srcdir)/'`stream_out/standard.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) stream_out/$(DEPDIR)/libstream_out_standard_plugin_la-standard.Tpo stream_out/$(DEPDIR)/libstream_out_standard_plugin_la-standard.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='stream_out/standard.c' object='stream_out/libstream_out_standard_plugin_la-standard.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libstream_out_standard_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o stream_out/libstream_out_standard_plugin_la-standard.lo `test -f 'stream_out/standard.c' || echo '$(srcdir)/'`stream_out/standard.c
 
 stream_out/transcode/libstream_out_transcode_plugin_la-transcode.lo: stream_out/transcode/transcode.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libstream_out_transcode_plugin_la_CFLAGS) $(CFLAGS) -MT stream_out/transcode/libstream_out_transcode_plugin_la-transcode.lo -MD -MP -MF stream_out/transcode/$(DEPDIR)/libstream_out_transcode_plugin_la-transcode.Tpo -c -o stream_out/transcode/libstream_out_transcode_plugin_la-transcode.lo `test -f 'stream_out/transcode/transcode.c' || echo '$(srcdir)/'`stream_out/transcode/transcode.c
@@ -21682,11 +21728,11 @@ codec/libx264_plugin_la-x264.lo: codec/x264.c
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libx264_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libx264_plugin_la_CFLAGS) $(CFLAGS) -c -o codec/libx264_plugin_la-x264.lo `test -f 'codec/x264.c' || echo '$(srcdir)/'`codec/x264.c
 
 codec/libx265_plugin_la-x265.lo: codec/x265.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libx265_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT codec/libx265_plugin_la-x265.lo -MD -MP -MF codec/$(DEPDIR)/libx265_plugin_la-x265.Tpo -c -o codec/libx265_plugin_la-x265.lo `test -f 'codec/x265.c' || echo '$(srcdir)/'`codec/x265.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libx265_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libx265_plugin_la_CFLAGS) $(CFLAGS) -MT codec/libx265_plugin_la-x265.lo -MD -MP -MF codec/$(DEPDIR)/libx265_plugin_la-x265.Tpo -c -o codec/libx265_plugin_la-x265.lo `test -f 'codec/x265.c' || echo '$(srcdir)/'`codec/x265.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) codec/$(DEPDIR)/libx265_plugin_la-x265.Tpo codec/$(DEPDIR)/libx265_plugin_la-x265.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='codec/x265.c' object='codec/libx265_plugin_la-x265.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libx265_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o codec/libx265_plugin_la-x265.lo `test -f 'codec/x265.c' || echo '$(srcdir)/'`codec/x265.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libx265_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libx265_plugin_la_CFLAGS) $(CFLAGS) -c -o codec/libx265_plugin_la-x265.lo `test -f 'codec/x265.c' || echo '$(srcdir)/'`codec/x265.c
 
 services_discovery/libxcb_apps_plugin_la-xcb_apps.lo: services_discovery/xcb_apps.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libxcb_apps_plugin_la_CFLAGS) $(CFLAGS) -MT services_discovery/libxcb_apps_plugin_la-xcb_apps.lo -MD -MP -MF services_discovery/$(DEPDIR)/libxcb_apps_plugin_la-xcb_apps.Tpo -c -o services_discovery/libxcb_apps_plugin_la-xcb_apps.lo `test -f 'services_discovery/xcb_apps.c' || echo '$(srcdir)/'`services_discovery/xcb_apps.c
@@ -24406,13 +24452,6 @@ video_output/win32/libwingdi_plugin_la-sensors.lo: video_output/win32/sensors.cp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='video_output/win32/sensors.cpp' object='video_output/win32/libwingdi_plugin_la-sensors.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libwingdi_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o video_output/win32/libwingdi_plugin_la-sensors.lo `test -f 'video_output/win32/sensors.cpp' || echo '$(srcdir)/'`video_output/win32/sensors.cpp
-
-libx265_plugin_la-dummy.lo: dummy.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libx265_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libx265_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT libx265_plugin_la-dummy.lo -MD -MP -MF $(DEPDIR)/libx265_plugin_la-dummy.Tpo -c -o libx265_plugin_la-dummy.lo `test -f 'dummy.cpp' || echo '$(srcdir)/'`dummy.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libx265_plugin_la-dummy.Tpo $(DEPDIR)/libx265_plugin_la-dummy.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='dummy.cpp' object='libx265_plugin_la-dummy.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libx265_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libx265_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libx265_plugin_la-dummy.lo `test -f 'dummy.cpp' || echo '$(srcdir)/'`dummy.cpp
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\

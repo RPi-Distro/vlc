@@ -2,7 +2,7 @@
  * demux.c :  Lua playlist demux module
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 70c5fe56bec02e9667dbf227f69ef13e262d3495 $
+ * $Id: a4ea3af1aace67b394caa07df1d631633988f6df $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -275,8 +275,10 @@ static int ReadDir(stream_t *s, input_item_node_t *node)
  *****************************************************************************/
 int Import_LuaPlaylist(vlc_object_t *obj)
 {
-    stream_t *s = (stream_t *)obj;
+    if( lua_Disabled( obj ) )
+        return VLC_EGENERIC;
 
+    stream_t *s = (stream_t *)obj;
     if( !vlc_stream_Control( s->p_source, STREAM_IS_DIRECTORY ) )
         return VLC_EGENERIC;
 

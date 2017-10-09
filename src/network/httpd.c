@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2006 VLC authors and VideoLAN
  * Copyright © 2004-2007 Rémi Denis-Courmont
- * $Id: 902a45748dcbee6e23f95d9aff1f546fa3526d90 $
+ * $Id: 629e762c4702db6fa98cc816e4b0085769c7aa70 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -310,7 +310,7 @@ httpd_FileCallBack(httpd_callback_sys_t *p_sys, httpd_client_t *cl,
                     httpd_message_t *answer, const httpd_message_t *query)
 {
     httpd_file_t *file = (httpd_file_t*)p_sys;
-    uint8_t **pp_body, *p_body; const char *psz_connection;
+    uint8_t **pp_body, *p_body;
     int *pi_body, i_body;
 
     if (!answer || !query )
@@ -347,9 +347,8 @@ httpd_FileCallBack(httpd_callback_sys_t *p_sys, httpd_client_t *cl,
         free(p_body);
 
     /* We respect client request */
-    psz_connection = httpd_MsgGet(&cl->query, "Connection");
-    if (psz_connection)
-        httpd_MsgAdd(answer, "Connection", "%s", psz_connection);
+    if (httpd_MsgGet(&cl->query, "Connection") != NULL)
+        httpd_MsgAdd(answer, "Connection", "close");
 
     httpd_MsgAdd(answer, "Content-Length", "%d", answer->i_body);
 
@@ -552,6 +551,9 @@ static int httpd_RedirectCallBack(httpd_callback_sys_t *p_sys,
 
     httpd_MsgAdd(answer, "Content-Length", "%d", answer->i_body);
 
+    if (httpd_MsgGet(&cl->query, "Connection") != NULL)
+        httpd_MsgAdd(answer, "Connection", "close");
+
     return VLC_SUCCESS;
 }
 
@@ -740,6 +742,9 @@ static int httpd_StreamCallBack(httpd_callback_sys_t *p_sys,
 
         if (!b_has_cache_control)
             httpd_MsgAdd(answer, "Cache-Control", "no-cache");
+
+        httpd_MsgAdd(answer, "Connection", "close");
+
         return VLC_SUCCESS;
     }
 }
@@ -1790,6 +1795,9 @@ static void httpdLoop(httpd_host_t *host)
                             break;
                         }
 
+                        if (httpd_MsgGet(&cl->query, "Connection") != NULL)
+                            httpd_MsgAdd(answer, "Connection", "close");
+
                         cl->i_buffer = -1;  /* Force the creation of the answer in
                                              * httpd_ClientSend */
                         cl->i_state = HTTPD_CLIENT_SENDING;
@@ -1810,6 +1818,7 @@ static void httpdLoop(httpd_host_t *host)
                             answer->i_body = httpd_HtmlError (&p, 501, NULL);
                             answer->p_body = (uint8_t *)p;
                             httpd_MsgAdd(answer, "Content-Length", "%d", answer->i_body);
+                            httpd_MsgAdd(answer, "Connection", "close");
 
                             cl->i_buffer = -1;  /* Force the creation of the answer in httpd_ClientSend */
                             cl->i_state = HTTPD_CLIENT_SENDING;
@@ -1871,6 +1880,8 @@ static void httpdLoop(httpd_host_t *host)
                             cl->i_buffer = -1;  /* Force the creation of the answer in httpd_ClientSend */
                             httpd_MsgAdd(answer, "Content-Length", "%d", answer->i_body);
                             httpd_MsgAdd(answer, "Content-Type", "%s", "text/html");
+                            if (httpd_MsgGet(&cl->query, "Connection") != NULL)
+                                httpd_MsgAdd(answer, "Connection", "close");
                         }
 
                         cl->i_state = HTTPD_CLIENT_SENDING;
@@ -1881,26 +1892,22 @@ static void httpdLoop(httpd_host_t *host)
 
             case HTTPD_CLIENT_SEND_DONE:
                 if (!cl->b_stream_mode || cl->answer.i_body_offset == 0) {
-                    const char *psz_connection = httpd_MsgGet(&cl->answer, "Connection");
-                    const char *psz_query = httpd_MsgGet(&cl->query, "Connection");
-                    bool b_connection = false;
-                    bool b_keepalive = false;
-                    bool b_query = false;
+                    bool do_close = false;
 
                     cl->url = NULL;
-                    if (psz_connection) {
-                        b_connection = (strcasecmp(psz_connection, "Close") == 0);
-                        b_keepalive = (strcasecmp(psz_connection, "Keep-Alive") == 0);
+
+                    if (cl->query.i_proto != HTTPD_PROTO_HTTP
+                     || cl->query.i_version > 0)
+                    {
+                        const char *psz_connection = httpd_MsgGet(&cl->answer,
+                                                                 "Connection");
+                        if (psz_connection != NULL)
+                            do_close = !strcasecmp(psz_connection, "close");
                     }
+                    else
+                        do_close = true;
 
-                    if (psz_query)
-                        b_query = (strcasecmp(psz_query, "Close") == 0);
-
-                    if (((cl->query.i_proto == HTTPD_PROTO_HTTP) &&
-                                ((cl->query.i_version == 0 && b_keepalive) ||
-                                  (cl->query.i_version == 1 && !b_connection))) ||
-                            ((cl->query.i_proto == HTTPD_PROTO_RTSP) &&
-                              !b_query && !b_connection)) {
+                    if (!do_close) {
                         httpd_MsgClean(&cl->query);
                         httpd_MsgInit(&cl->query);
 

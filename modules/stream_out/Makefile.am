@@ -6,6 +6,7 @@ libstream_out_delay_plugin_la_SOURCES = stream_out/delay.c
 libstream_out_stats_plugin_la_SOURCES = stream_out/stats.c
 libstream_out_description_plugin_la_SOURCES = stream_out/description.c
 libstream_out_standard_plugin_la_SOURCES = stream_out/standard.c
+libstream_out_standard_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_output_srt)
 libstream_out_standard_plugin_la_LIBADD = $(SOCKET_LIBS)
 libstream_out_duplicate_plugin_la_SOURCES = stream_out/duplicate.c
 libstream_out_es_plugin_la_SOURCES = stream_out/es.c
@@ -56,14 +57,6 @@ SRTP_LIBS = libvlc_srtp.la
 libstream_out_rtp_plugin_la_CFLAGS += -DHAVE_SRTP $(SRTP_CFLAGS) \
 	$(GCRYPT_CFLAGS)
 libstream_out_rtp_plugin_la_LIBADD += $(SRTP_LIBS) $(GCRYPT_LIBS)
-endif
-
-# RAOP plugin
-libstream_out_raop_plugin_la_SOURCES = stream_out/raop.c
-libstream_out_raop_plugin_la_CFLAGS = $(AM_CFLAGS) $(GCRYPT_CFLAGS)
-libstream_out_raop_plugin_la_LIBADD = $(GCRYPT_LIBS) -lgpg-error $(SOCKET_LIBS) $(LIBS_stream_out_raop)
-if HAVE_GCRYPT
-sout_LTLIBRARIES += libstream_out_raop_plugin.la
 endif
 
 # Chromaprint plugin

@@ -2,7 +2,7 @@
  * VLCPlaylist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: bfb0d0f0a5ae00623aa381690d10e4291643c25b $
+ * $Id: 5e5f6e4a073d2223e0111a2fc6b6b7c5f8945772 $
  *
  * Authors: Derk-Jan Hartman <hartman at videola/n dot org>
  *          Benjamin Pracht <bigben at videolan dot org>
@@ -608,7 +608,7 @@
     if (isSubtitle && array.count == 1 && p_input) {
         int i_result = input_AddSlave(p_input, SLAVE_TYPE_SPU,
                     [[[array firstObject] objectForKey:@"ITEM_URL"] UTF8String],
-                    true, true);
+                    true, true, true);
         if (i_result == VLC_SUCCESS) {
             vlc_object_release(p_input);
             return;

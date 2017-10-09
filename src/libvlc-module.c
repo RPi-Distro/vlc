@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the core (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 VLC authors and VideoLAN
- * $Id: ae6825fa129682c9bef0122cb33fdd7208b63ed9 $
+ * $Id: 6fe8e92ff6ebbed5becb6e78be81e63715b7dda7 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -689,6 +689,9 @@ static const char *const ppsz_prefres[] = {
     "$a: Artist<br>$b: Album<br>$c: Copyright<br>$t: Title<br>$g: Genre<br>"  \
     "$n: Track num<br>$p: Now playing<br>$A: Date<br>$D: Duration<br>"  \
     "$Z: \"Now playing\" (Fall back on Title - Artist)" )
+
+#define INPUT_LUA_TEXT N_( "Disable lua" )
+#define INPUT_LUA_LONGTEXT N_( "Disable all lua plugins" )
 
 // DEPRECATED
 #define SUB_CAT_LONGTEXT N_( \
@@ -1899,6 +1902,8 @@ vlc_module_begin ()
                  INPUT_TIMESHIFT_GRANULARITY_LONGTEXT, true )
 
     add_string( "input-title-format", "$Z", INPUT_TITLE_FORMAT_TEXT, INPUT_TITLE_FORMAT_LONGTEXT, false );
+
+    add_bool( "lua", true, INPUT_LUA_TEXT, INPUT_LUA_LONGTEXT, true );
 
 /* Decoder options */
     set_subcategory( SUBCAT_INPUT_VCODEC )

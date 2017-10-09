@@ -2,7 +2,7 @@
  * input.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: f98818c9cc7c577a5d42f304470fec8688805813 $
+ * $Id: 229f52b6e52c9e10444b203c4c86e477dc9bba11 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -239,13 +239,13 @@ static int vlclua_input_add_subtitle( lua_State *L, bool b_path )
         b_autoselect = lua_toboolean( L, 2 );
     const char *psz_sub = luaL_checkstring( L, 1 );
     if( !b_path )
-        input_AddSlave( p_input, SLAVE_TYPE_SPU, psz_sub, b_autoselect, true );
+        input_AddSlave( p_input, SLAVE_TYPE_SPU, psz_sub, b_autoselect, true, false );
     else
     {
         char* psz_mrl = vlc_path2uri( psz_sub, NULL );
         if ( psz_mrl )
         {
-            input_AddSlave( p_input, SLAVE_TYPE_SPU, psz_mrl, b_autoselect, true );
+            input_AddSlave( p_input, SLAVE_TYPE_SPU, psz_mrl, b_autoselect, true, false );
             free( psz_mrl );
         }
     }

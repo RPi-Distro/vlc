@@ -2,7 +2,7 @@
  * top_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 403eda6af59678948468162f2fa463dff1aea5e7 $
+ * $Id: 260872e42034c55ee45c0633f53598a6f2850556 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -265,7 +265,7 @@ void TopWindow::processEvent( EvtDragDrop &rEvtDragDrop )
         {
             std::list<std::string>::const_iterator it = files.begin();
             is_subtitle = !input_AddSlave( pInput, SLAVE_TYPE_SPU,
-                                           it->c_str(), true, true );
+                                           it->c_str(), true, true, true );
         }
         if( !is_subtitle )
         {

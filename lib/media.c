@@ -2,7 +2,7 @@
  * media.c: Libvlc API media descripor management
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: 30e5bd55f4f40c28667adc0b050c6ac54306bf71 $
+ * $Id: 8da5a130e2df3e7a225bc4b4760a6a4c73637ac2 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont@videolan.org>
  *
@@ -774,16 +774,15 @@ static int media_parse(libvlc_media_t *media, bool b_async,
     {
         libvlc_int_t *libvlc = media->p_libvlc_instance->p_libvlc_int;
         input_item_t *item = media->p_input_item;
-        input_item_meta_request_option_t art_scope = META_REQUEST_OPTION_NONE;
         input_item_meta_request_option_t parse_scope = META_REQUEST_OPTION_SCOPE_LOCAL;
         int ret;
 
-        if (parse_flag & libvlc_media_fetch_local)
-            art_scope |= META_REQUEST_OPTION_SCOPE_LOCAL;
+        /* Ignore libvlc_media_fetch_local flag since local art will be fetched
+         * by libvlc_MetadataRequest */
         if (parse_flag & libvlc_media_fetch_network)
-            art_scope |= META_REQUEST_OPTION_SCOPE_NETWORK;
-        if (art_scope != META_REQUEST_OPTION_NONE) {
-            ret = libvlc_ArtRequest(libvlc, item, art_scope);
+        {
+            ret = libvlc_ArtRequest(libvlc, item,
+                                    META_REQUEST_OPTION_SCOPE_NETWORK);
             if (ret != VLC_SUCCESS)
                 return ret;
         }

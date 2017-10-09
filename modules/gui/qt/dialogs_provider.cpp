@@ -2,7 +2,7 @@
  * dialogs_provider.cpp : Dialog Provider
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: ec645ab62a21be8cc0c9d17d4365aa3a1b3236ce $
+ * $Id: 495cd5497250b3c575612f7bee1def3d3876af27 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -806,7 +806,7 @@ void DialogsProvider::loadSubtitlesFile()
     free( path2 );
     foreach( const QString &qsUrl, qsl )
     {
-        if( input_AddSlave( p_input, SLAVE_TYPE_SPU, qtu( qsUrl ), true, true ) )
+        if( input_AddSlave( p_input, SLAVE_TYPE_SPU, qtu( qsUrl ), true, true, true ) )
             msg_Warn( p_intf, "unable to load subtitles from '%s'",
                       qtu( qsUrl ) );
     }

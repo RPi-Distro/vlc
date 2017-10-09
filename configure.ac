@@ -1134,7 +1134,7 @@ AC_CACHE_CHECK([if linker supports -z,defs], [ac_cv_ld_z_defs], [
     ac_cv_ld_z_defs="no"
   ])
 ])
-AS_IF([test "${ac_cv_ld_z_defs}" = "no" -o "x$with_sanitizer" != xno], [VLC_RESTORE_FLAGS])
+AS_IF([test "${ac_cv_ld_z_defs}" = "no" -o "${with_sanitizer}" != "no"], [VLC_RESTORE_FLAGS])
 
 dnl Check for __attribute__((packed))
 AC_CACHE_CHECK([for __attribute__((packed))],
@@ -2047,7 +2047,15 @@ AC_ARG_ENABLE(gme,
 AS_IF([test "${enable_gme}" != "no"], [
   AC_CHECK_HEADER([gme/gme.h], [
     VLC_ADD_LIBS([gme], [-lgme])
-    VLC_ADD_PLUGIN([gme])
+
+    AC_CHECK_LIB([gme], [gme_identify_header], [
+      VLC_ADD_PLUGIN([gme])
+    ], [
+      AC_CHECK_LIB([gme], [gme_identify_extension], [
+         VLC_ADD_LIBS([gme], [-lstdc++ $LIBM])
+         VLC_ADD_PLUGIN([gme])
+      ],, [-lstdc++ $LIBM])
+    ])
   ], [
     AS_IF([test "x${enable_gme}" != "x"], [
       AC_MSG_ERROR([GME cannot be found. Please install the development files.])
@@ -3877,6 +3885,11 @@ AS_IF([test "${enable_lirc}" = "yes"], [
   ])
 ])
 AM_CONDITIONAL([HAVE_LIRC], [test "${have_lirc}" = "yes"])
+
+dnl
+dnl  SRT plugin
+dnl
+PKG_ENABLE_MODULES_VLC([SRT], [access_srt access_output_srt], [srt >= 1.2.0], [SRT input/output plugin], [auto], [], [], [-DENABLE_SRT])
 
 EXTEND_HELP_STRING([Visualisations and Video filter plugins:])
 dnl

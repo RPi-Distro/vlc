@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-10-04 02:30+0000\n"
+"POT-Creation-Date: 2017-10-09 02:29+0000\n"
 "PO-Revision-Date: 2014-05-09 12:46+0000\n"
 "Last-Translator: kolokotronis <modernphilosopher82-2011@yahoo.com>\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/vlc-trans/language/"
@@ -83,7 +83,7 @@ msgid "Hotkeys settings"
 msgstr "Ρυθμίσεις πλήκτρων συντόμευσης"
 
 #: include/vlc_config_cat.h:53 src/input/es_out.c:3019 src/input/es_out.c:3060
-#: src/libvlc-module.c:1479 modules/access/imem.c:64
+#: src/libvlc-module.c:1482 modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:171
 #: modules/gui/macosx/VLCMainMenu.m:403 modules/gui/macosx/VLCOutput.m:92
 #: modules/gui/macosx/VLCPlaylistInfo.m:101
@@ -135,7 +135,7 @@ msgstr "Ενότητες εξόδου"
 msgid "General settings for audio output modules."
 msgstr "Γενικές ρυθμίσεις για τις ενότητες εξόδου ήχου."
 
-#: include/vlc_config_cat.h:69 src/libvlc-module.c:1995
+#: include/vlc_config_cat.h:69 src/libvlc-module.c:2000
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:183
 #: modules/stream_out/transcode/transcode.c:211
 msgid "Miscellaneous"
@@ -146,7 +146,7 @@ msgid "Miscellaneous audio settings and modules."
 msgstr "Διάφορες ρυθμίσεις και ενότητες ήχου."
 
 #: include/vlc_config_cat.h:73 src/input/es_out.c:3022 src/input/es_out.c:3104
-#: src/libvlc-module.c:140 src/libvlc-module.c:1538 modules/access/imem.c:64
+#: src/libvlc-module.c:140 src/libvlc-module.c:1541 modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:160
 #: modules/gui/macosx/VLCMainMenu.m:416 modules/gui/macosx/VLCOutput.m:82
 #: modules/gui/macosx/VLCPlaylistInfo.m:91
@@ -276,7 +276,7 @@ msgstr ""
 msgid "General input settings. Use with care..."
 msgstr "Ρυθμίσεις γενικής εισόδου. Χρησιμοποιήστε τις με προσοχή......"
 
-#: include/vlc_config_cat.h:127 src/libvlc-module.c:1930
+#: include/vlc_config_cat.h:127 src/libvlc-module.c:1935
 #: modules/access/avio.h:50
 msgid "Stream output"
 msgstr "Έξοδος ροής δεδομένων"
@@ -381,7 +381,7 @@ msgstr "Βίντεο κατ' απαίτηση (VOD)"
 msgid "VLC's implementation of Video On Demand"
 msgstr "Η εφαρμογή του VLC για το βίντεο κατ' απαίτηση (VOD)"
 
-#: include/vlc_config_cat.h:173 src/libvlc-module.c:2039
+#: include/vlc_config_cat.h:173 src/libvlc-module.c:2044
 #: src/playlist/engine.c:233 modules/demux/playlist/playlist.c:64
 #: modules/demux/playlist/playlist.c:65 modules/gui/macosx/VLCMainWindow.m:296
 #: modules/gui/macosx/VLCMainWindow.m:863
@@ -417,7 +417,7 @@ msgstr ""
 "Οι ενότητες ανακάλυψης υπηρεσιών είναι διευκολύνσεις που προσθέτουν αυτόματα "
 "αντικείμενα στη λίστα αναπαραγωγής."
 
-#: include/vlc_config_cat.h:184 src/libvlc-module.c:1832
+#: include/vlc_config_cat.h:184 src/libvlc-module.c:1835
 #: modules/gui/qt/dialogs/extended.cpp:93
 msgid "Advanced"
 msgstr "Για προχωρημένους"
@@ -549,7 +549,7 @@ msgstr "Επανάληψη όλων"
 msgid "Repeat One"
 msgstr "Επανάληψη ενός"
 
-#: include/vlc_intf_strings.h:81 src/libvlc-module.c:1416
+#: include/vlc_intf_strings.h:81 src/libvlc-module.c:1419
 #: modules/gui/macosx/VLCMainMenu.m:388
 #: modules/gui/qt/components/controller.hpp:111
 #: modules/gui/qt/components/controller.hpp:124
@@ -759,15 +759,15 @@ msgstr "Αυτόματα"
 msgid "boolean"
 msgstr "boolean"
 
-#: src/config/file.c:452 src/config/help.c:409
+#: src/config/file.c:452 src/config/help.c:426
 msgid "integer"
 msgstr "ακέραιος"
 
-#: src/config/file.c:460 src/config/help.c:448
+#: src/config/file.c:460 src/config/help.c:476
 msgid "float"
 msgstr "κινητής υποδιαστολής"
 
-#: src/config/file.c:473 src/config/help.c:382
+#: src/config/file.c:473 src/config/help.c:383
 msgid "string"
 msgstr "στοιχειοσειρά"
 
@@ -850,27 +850,27 @@ msgstr ""
 "  vlc://έξοδος                     Ειδικό αντικείμενο για έξοδο από τον VLC\n"
 "\n"
 
-#: src/config/help.c:462
+#: src/config/help.c:490
 #, fuzzy
 msgid "(default enabled)"
 msgstr " (ενεργοποίηση από προεπιλογή)"
 
-#: src/config/help.c:463
+#: src/config/help.c:491
 #, fuzzy
 msgid "(default disabled)"
 msgstr " (απενεργοποίηση από προεπιλογή)"
 
-#: src/config/help.c:623 src/config/help.c:627
+#: src/config/help.c:651 src/config/help.c:655
 msgid "Note:"
 msgstr "Σημείωση:"
 
-#: src/config/help.c:623
+#: src/config/help.c:651
 msgid "add --advanced to your command line to see advanced options."
 msgstr ""
 "Προσθήκη --advanced στη γραμμή εντολών για να δείτε επιλογές για "
 "προχωρημένους."
 
-#: src/config/help.c:628
+#: src/config/help.c:656
 #, c-format
 msgid "%u module was not displayed because it only has advanced options.\n"
 msgid_plural ""
@@ -879,7 +879,7 @@ msgstr[0] "%u ενότητα δεν εμφανίστηκε γιατί έχει �
 msgstr[1] ""
 "%u ενότητες δεν εμφανίστηκαν γιατί έχουν μόνο προηγμένες επιλογές.\n"
 
-#: src/config/help.c:635
+#: src/config/help.c:663
 msgid ""
 "No matching module found. Use --list or --list-verbose to list available "
 "modules."
@@ -887,22 +887,22 @@ msgstr ""
 "Δεν βρέθηκε αντίστοιχη ενότητα. Χρησιμοποιήστε --list ή --list-verbose για "
 "παράθεση των διαθέσιμων ενοτήτων."
 
-#: src/config/help.c:693
+#: src/config/help.c:721
 #, c-format
 msgid "VLC version %s (%s)\n"
 msgstr "Έκδοση VLC %s (%s)\n"
 
-#: src/config/help.c:694
+#: src/config/help.c:722
 #, c-format
 msgid "Compiled by %s on %s (%s)\n"
 msgstr "Μεταγλώττιση από %s σε %s (%s)\n"
 
-#: src/config/help.c:696
+#: src/config/help.c:724
 #, c-format
 msgid "Compiler: %s\n"
 msgstr "Μεταγλωττιστής: %s\n"
 
-#: src/config/help.c:725
+#: src/config/help.c:753
 #, c-format
 msgid ""
 "\n"
@@ -911,7 +911,7 @@ msgstr ""
 "\n"
 "Κατεκτυπωμένο περιεχόμενο στο αρχείο vlc-help.txt.\n"
 
-#: src/config/help.c:740
+#: src/config/help.c:768
 msgid ""
 "\n"
 "Press the RETURN key to continue...\n"
@@ -1317,11 +1317,11 @@ msgstr ""
 msgid "MaxFALL"
 msgstr ""
 
-#: src/input/input.c:2659
+#: src/input/input.c:2643
 msgid "Your input can't be opened"
 msgstr "Η είσοδός σας δεν μπορεί να ανοιχτεί"
 
-#: src/input/input.c:2660
+#: src/input/input.c:2644
 #, c-format
 msgid "VLC is unable to open the MRL '%s'. Check the log for details."
 msgstr ""
@@ -1543,25 +1543,25 @@ msgstr ""
 msgid "C"
 msgstr "el"
 
-#: src/libvlc.h:164 src/libvlc-module.c:1419 src/libvlc-module.c:1420
-#: src/libvlc-module.c:2625 src/video_output/vout_intf.c:176
+#: src/libvlc.h:164 src/libvlc-module.c:1422 src/libvlc-module.c:1423
+#: src/libvlc-module.c:2630 src/video_output/vout_intf.c:176
 #: modules/gui/macosx/VLCMainMenu.m:460
 msgid "Zoom"
 msgstr "Μεγέθυνση"
 
-#: src/libvlc.h:165 src/libvlc-module.c:1333 src/video_output/vout_intf.c:87
+#: src/libvlc.h:165 src/libvlc-module.c:1336 src/video_output/vout_intf.c:87
 msgid "1:4 Quarter"
 msgstr "1:4 Τέταρτο"
 
-#: src/libvlc.h:166 src/libvlc-module.c:1334 src/video_output/vout_intf.c:88
+#: src/libvlc.h:166 src/libvlc-module.c:1337 src/video_output/vout_intf.c:88
 msgid "1:2 Half"
 msgstr "1:2 Ήμισυ"
 
-#: src/libvlc.h:167 src/libvlc-module.c:1335 src/video_output/vout_intf.c:89
+#: src/libvlc.h:167 src/libvlc-module.c:1338 src/video_output/vout_intf.c:89
 msgid "1:1 Original"
 msgstr "1:1 Αρχικό"
 
-#: src/libvlc.h:168 src/libvlc-module.c:1336 src/video_output/vout_intf.c:90
+#: src/libvlc.h:168 src/libvlc-module.c:1339 src/video_output/vout_intf.c:90
 msgid "2:1 Double"
 msgstr "2:1 Διπλάσιο"
 
@@ -1928,7 +1928,7 @@ msgstr ""
 "Αυτό επιτρέπει την αναπαραγωγή του ήχου σε χαμηλότερη ή υψηλότερη ταχύτητα "
 "χωρίς να επηρεάζεται το τονικό ύψος (pitch) του ήχου"
 
-#: src/libvlc-module.c:237 src/libvlc-module.c:1118
+#: src/libvlc-module.c:237 src/libvlc-module.c:1121
 #: modules/access/dshow/dshow.cpp:2077 modules/access/dtv/access.c:107
 #: modules/access/dtv/access.c:141 modules/access/v4l2/v4l2.c:163
 #: modules/codec/avcodec/avcodec.c:50 modules/codec/avcodec/avcodec.c:54
@@ -2996,7 +2996,16 @@ msgstr ""
 "Αναπαράγεται τώρα<br>$A: Ημερομηνία<br>$D: Διάρκεια<br>$Z: \"Αναπαράγεται "
 "τώρα\" (Επαναφορά σε Τίτλο - Καλλιτέχνη)"
 
-#: src/libvlc-module.c:695
+#: src/libvlc-module.c:693
+#, fuzzy
+msgid "Disable lua"
+msgstr "Απενεργοποίηση"
+
+#: src/libvlc-module.c:694
+msgid "Disable all lua plugins"
+msgstr ""
+
+#: src/libvlc-module.c:698
 msgid ""
 "These options allow you to modify the behavior of the subpictures subsystem. "
 "You can for example enable subpictures sources (logo, etc.). Enable these "
@@ -3009,11 +3018,11 @@ msgstr ""
 "στον τομέα ενοτήτων \"φίλτρα βίντεο\". Μπορείτε επίσης να ρυθμίσετε διάφορες "
 "άλλες επιλογές βίντεο."
 
-#: src/libvlc-module.c:701
+#: src/libvlc-module.c:704
 msgid "Force subtitle position"
 msgstr "Επιβολή θέσης υπότιτλων"
 
-#: src/libvlc-module.c:703
+#: src/libvlc-module.c:706
 msgid ""
 "You can use this option to place the subtitles under the movie, instead of "
 "over the movie. Try several positions."
@@ -3021,29 +3030,29 @@ msgstr ""
 "Μπορείτε να χρησιμοποιήσετε αυτή την επιλογή για να τοποθετήσετε τους "
 "υπότιτλους κάτω από την ταινία, αντί για πάνω. Δοκιμάστε διαφορετικές θέσεις."
 
-#: src/libvlc-module.c:706
+#: src/libvlc-module.c:709
 #, fuzzy
 msgid "Subtitles text scaling factor"
 msgstr "Κωδικοποίηση κειμένου υποτίτλων"
 
-#: src/libvlc-module.c:707
+#: src/libvlc-module.c:710
 msgid "Set value to alter subtitles size where possible"
 msgstr ""
 
-#: src/libvlc-module.c:709
+#: src/libvlc-module.c:712
 msgid "Enable sub-pictures"
 msgstr "Ενεργοποίηση υποεικόνων"
 
-#: src/libvlc-module.c:711
+#: src/libvlc-module.c:714
 msgid "You can completely disable the sub-picture processing."
 msgstr "Μπορείτε να απενεργοποιήσετε πλήρως την επεξεργασία της υποεικόνας."
 
-#: src/libvlc-module.c:713 src/libvlc-module.c:1661 src/text/iso-639_def.h:145
+#: src/libvlc-module.c:716 src/libvlc-module.c:1664 src/text/iso-639_def.h:145
 #: modules/gui/macosx/VLCSimplePrefsController.m:338
 msgid "On Screen Display"
 msgstr "Εμφάνιση στην οθόνη (OSD)"
 
-#: src/libvlc-module.c:715
+#: src/libvlc-module.c:718
 msgid ""
 "VLC can display messages on the video. This is called OSD (On Screen "
 "Display)."
@@ -3051,11 +3060,11 @@ msgstr ""
 "Ο VLC μπορεί να εμφανίζει μηνύματα στο βίντεο. Aυτό λέγεται OSD (εμφάνιση "
 "στην οθόνη)."
 
-#: src/libvlc-module.c:718
+#: src/libvlc-module.c:721
 msgid "Text rendering module"
 msgstr "Ενότητα αποτύπωσης κειμένου"
 
-#: src/libvlc-module.c:720
+#: src/libvlc-module.c:723
 msgid ""
 "VLC normally uses Freetype for rendering, but this allows you to use svg for "
 "instance."
@@ -3063,11 +3072,11 @@ msgstr ""
 "O VLC κανονικά χρησιμοποιεί Freetype για την αποτύπωση, αλλά αυτό σας "
 "επιτρέπει να χρησιμοποιήσετε svg για παράδειγμα."
 
-#: src/libvlc-module.c:722
+#: src/libvlc-module.c:725
 msgid "Subpictures source module"
 msgstr "Ενότητα πηγής υποεικόνων"
 
-#: src/libvlc-module.c:724
+#: src/libvlc-module.c:727
 msgid ""
 "This adds so-called \"subpicture sources\". These filters overlay some "
 "images or text over the video (like a logo, arbitrary text, ...)."
@@ -3076,11 +3085,11 @@ msgstr ""
 "επικαλύπτουν κάποιες εικόνες ή κείμενο πάνω στο βίντεο (όπως ένα λογότυπο, "
 "αυθαίρετο κείμενο...)."
 
-#: src/libvlc-module.c:727
+#: src/libvlc-module.c:730
 msgid "Subpictures filter module"
 msgstr "Ενότητα φίλτρου υποεικόνων"
 
-#: src/libvlc-module.c:729
+#: src/libvlc-module.c:732
 msgid ""
 "This adds so-called \"subpicture filters\". These filter subpictures created "
 "by subtitle decoders or other subpictures sources."
@@ -3089,11 +3098,11 @@ msgstr ""
 "υποεικόνων δημιουργήθηκαν από αποκωδικοποιητές υποτίτλων ή άλλες πηγές "
 "υποεικόνων."
 
-#: src/libvlc-module.c:732
+#: src/libvlc-module.c:735
 msgid "Autodetect subtitle files"
 msgstr "Αυτόματη ανίχνευση αρχείων υπότιτλων"
 
-#: src/libvlc-module.c:734
+#: src/libvlc-module.c:737
 msgid ""
 "Automatically detect a subtitle file, if no subtitle filename is specified "
 "(based on the filename of the movie)."
@@ -3101,11 +3110,11 @@ msgstr ""
 "Αυτόματη ανίχνευση αρχείου υπότιτλων, εάν δεν έχει ορισθεί όνομα αρχείου "
 "υπότιτλων (βασισμένο στο όνομα αρχείου της ταινίας)."
 
-#: src/libvlc-module.c:737
+#: src/libvlc-module.c:740
 msgid "Subtitle autodetection fuzziness"
 msgstr "Ασάφεια αυτόματης ανίχνευσης υπότιτλων"
 
-#: src/libvlc-module.c:739
+#: src/libvlc-module.c:742
 msgid ""
 "This determines how fuzzy subtitle and movie filename matching will be. "
 "Options are:\n"
@@ -3124,11 +3133,11 @@ msgstr ""
 "πρόσθετους χαρακτήρες\n"
 "4 = το αρχείο υπότιτλων ταιριάζει ακριβώς με το όνομα της ταινίας "
 
-#: src/libvlc-module.c:747
+#: src/libvlc-module.c:750
 msgid "Subtitle autodetection paths"
 msgstr "Διαδρομές αυτόματης ανίχνευσης υπότιτλων"
 
-#: src/libvlc-module.c:749
+#: src/libvlc-module.c:752
 msgid ""
 "Look for a subtitle file in those paths too, if your subtitle file was not "
 "found in the current directory."
@@ -3136,11 +3145,11 @@ msgstr ""
 "Αναζήτηση αρχείου υπότιτλων και σε αυτές τις διαδρομές, εάν το αρχείο "
 "υπότιτλων σας δεν βρέθηκε στον τρέχοντα κατάλογο."
 
-#: src/libvlc-module.c:752
+#: src/libvlc-module.c:755
 msgid "Use subtitle file"
 msgstr "Χρήση αρχείου υπότιτλων"
 
-#: src/libvlc-module.c:754
+#: src/libvlc-module.c:757
 msgid ""
 "Load this subtitle file. To be used when autodetect cannot detect your "
 "subtitle file."
@@ -3148,19 +3157,19 @@ msgstr ""
 "Φόρτωση αυτού του αρχείου υπότιτλων. Να χρησιμοποιείται όταν η αυτόματη "
 "ανίχνευση δεν μπορεί να ανιχνεύσει το αρχείο υπότιτλων σας."
 
-#: src/libvlc-module.c:758
+#: src/libvlc-module.c:761
 msgid "DVD device"
 msgstr "Συσκευή DVD"
 
-#: src/libvlc-module.c:759
+#: src/libvlc-module.c:762
 msgid "VCD device"
 msgstr "Συσκευή VCD"
 
-#: src/libvlc-module.c:760 modules/access/cdda.c:701
+#: src/libvlc-module.c:763 modules/access/cdda.c:701
 msgid "Audio CD device"
 msgstr "Συσκευή CD ήχου"
 
-#: src/libvlc-module.c:764
+#: src/libvlc-module.c:767
 msgid ""
 "This is the default DVD drive (or file) to use. Don't forget the colon after "
 "the drive letter (e.g. D:)"
@@ -3168,7 +3177,7 @@ msgstr ""
 "Αυτό είναι ο προεπιλεγμένος οδηγός DVD (ή αρχείο) που θα χρησιμοποιηθεί. Μην "
 "ξεχάσετε την άνω-κάτω τελεία μετά το γράμμα του οδηγού (π.χ. D:)"
 
-#: src/libvlc-module.c:767
+#: src/libvlc-module.c:770
 msgid ""
 "This is the default VCD drive (or file) to use. Don't forget the colon after "
 "the drive letter (e.g. D:)"
@@ -3176,7 +3185,7 @@ msgstr ""
 "Αυτός είναι ο προεπιλεγμένος οδηγός VCD (ή αρχείο) που θα χρησιμοποιηθεί. "
 "Μην ξεχάσετε την άνω-κάτω τελεία μετά το γράμμα του οδηγού (π.χ. D:)"
 
-#: src/libvlc-module.c:770 modules/access/cdda.c:704
+#: src/libvlc-module.c:773 modules/access/cdda.c:704
 msgid ""
 "This is the default Audio CD drive (or file) to use. Don't forget the colon "
 "after the drive letter (e.g. D:)"
@@ -3185,32 +3194,32 @@ msgstr ""
 "χρησιμοποιηθεί. Μην ξεχάσετε την άνω-κάτω τελεία μετά το γράμμα του οδηγού "
 "(π.χ. D:)"
 
-#: src/libvlc-module.c:777
+#: src/libvlc-module.c:780
 msgid "This is the default DVD device to use."
 msgstr "Αυτή είναι η προεπιλεγμένη συσκευή DVD που θα χρησιμοποιηθεί."
 
-#: src/libvlc-module.c:779
+#: src/libvlc-module.c:782
 msgid "This is the default VCD device to use."
 msgstr "Αυτή είναι η προεπιλεγμένη συσκευή VCD που θα χρησιμοποιηθεί."
 
-#: src/libvlc-module.c:781 modules/access/cdda.c:709
+#: src/libvlc-module.c:784 modules/access/cdda.c:709
 msgid "This is the default Audio CD device to use."
 msgstr "Αυτή είναι η προεπιλεγμένη συσκευή CD ήχου που θα χρησιμοποιηθεί."
 
-#: src/libvlc-module.c:795
+#: src/libvlc-module.c:798
 msgid "TCP connection timeout"
 msgstr "Υπέρβαση χρονικού ορίου σύνδεσης TCP"
 
-#: src/libvlc-module.c:797
+#: src/libvlc-module.c:800
 #, fuzzy
 msgid "Default TCP connection timeout (in milliseconds)."
 msgstr "Προεπιλεγμένη υπέρβαση χρονικού ορίου σύνδεσης TCP (σε msec)."
 
-#: src/libvlc-module.c:799
+#: src/libvlc-module.c:802
 msgid "HTTP server address"
 msgstr "Διεύθυνση εξυπηρετητή HTTP"
 
-#: src/libvlc-module.c:801
+#: src/libvlc-module.c:804
 msgid ""
 "By default, the server will listen on any local IP address. Specify an IP "
 "address (e.g. ::1 or 127.0.0.1) or a host name (e.g. localhost) to restrict "
@@ -3221,11 +3230,11 @@ msgstr ""
 "υπολογιστή (π.χ. τοπικός κεντρικός υπολογιστής) για να τους περιορίσετε σε "
 "μία συγκεκριμένη διεπαφή δικτύου."
 
-#: src/libvlc-module.c:805
+#: src/libvlc-module.c:808
 msgid "RTSP server address"
 msgstr "Διεύθυνση εξυπηρετητή RTSP"
 
-#: src/libvlc-module.c:807
+#: src/libvlc-module.c:810
 msgid ""
 "This defines the address the RTSP server will listen on, along with the base "
 "path of the RTSP VOD media. Syntax is address/path. By default, the server "
@@ -3240,11 +3249,11 @@ msgstr ""
 "υπολογιστή (π.χ. τοπικός κεντρικός υπολογιστής) για να τους περιορίσετε σε "
 "μία συγκεκριμένη διεπαφή δικτύου."
 
-#: src/libvlc-module.c:813
+#: src/libvlc-module.c:816
 msgid "HTTP server port"
 msgstr "Θύρα εξυπηρετητή HTTP"
 
-#: src/libvlc-module.c:815
+#: src/libvlc-module.c:818
 msgid ""
 "The HTTP server will listen on this TCP port. The standard HTTP port number "
 "is 80. However allocation of port numbers below 1025 is usually restricted "
@@ -3254,11 +3263,11 @@ msgstr ""
 "HTTP είναι 80. Ωστόσο η καταχώρηση αριθμών θύρας κάτω από 1025 περιορίζεται "
 "αυστηρά από το λειτουργικό σύστημα."
 
-#: src/libvlc-module.c:820
+#: src/libvlc-module.c:823
 msgid "HTTPS server port"
 msgstr "Θύρα εξυπηρετητή HTTPS"
 
-#: src/libvlc-module.c:822
+#: src/libvlc-module.c:825
 msgid ""
 "The HTTPS server will listen on this TCP port. The standard HTTPS port "
 "number is 443. However allocation of port numbers below 1025 is usually "
@@ -3268,11 +3277,11 @@ msgstr ""
 "θύρας HTTPs είναι 443. Ωστόσο η καταχώρηση αριθμών θύρας κάτω από 1025 "
 "περιορίζεται αυστηρά από το λειτουργικό σύστημα."
 
-#: src/libvlc-module.c:827
+#: src/libvlc-module.c:830
 msgid "RTSP server port"
 msgstr "Θύρα εξυπηρετητή RTSP"
 
-#: src/libvlc-module.c:829
+#: src/libvlc-module.c:832
 msgid ""
 "The RTSP server will listen on this TCP port. The standard RTSP port number "
 "is 554. However allocation of port numbers below 1025 is usually restricted "
@@ -3282,11 +3291,11 @@ msgstr ""
 "θύρας RTSP είναι 554. Ωστόσο η καταχώρηση αριθμών θύρας κάτω από 1025 "
 "περιορίζεται αυστηρά από το λειτουργικό σύστημα."
 
-#: src/libvlc-module.c:834
+#: src/libvlc-module.c:837
 msgid "HTTP/TLS server certificate"
 msgstr "Πιστοποιητικό εξυπηρετητή HTTP/TLS"
 
-#: src/libvlc-module.c:836
+#: src/libvlc-module.c:839
 #, fuzzy
 msgid ""
 "This X.509 certicate file (PEM format) is used for server-side TLS. On OS X, "
@@ -3295,21 +3304,21 @@ msgstr ""
 "Αυτό το αρχείο πιστοποιητικού X.509 (τύπος PEM) χρησιμοποιείται για TLS "
 "πλευράς εξυπηρετητή."
 
-#: src/libvlc-module.c:839
+#: src/libvlc-module.c:842
 msgid "HTTP/TLS server private key"
 msgstr "Ιδιωτικό κλειδί εξυπηρετητή HTTP/TLS"
 
-#: src/libvlc-module.c:841
+#: src/libvlc-module.c:844
 msgid "This private key file (PEM format) is used for server-side TLS."
 msgstr ""
 "Αυτό το αρχείο ιδιωτικού κλειδιού (τύπος PEM) χρησιμοποιείται για TLS "
 "πλευράς εξυπηρετητή."
 
-#: src/libvlc-module.c:843
+#: src/libvlc-module.c:846
 msgid "SOCKS server"
 msgstr "Εξυπηρετητής SOCKS"
 
-#: src/libvlc-module.c:845
+#: src/libvlc-module.c:848
 msgid ""
 "SOCKS proxy server to use. This must be of the form address:port. It will be "
 "used for all TCP connections"
@@ -3317,93 +3326,93 @@ msgstr ""
 "Διαμεσολαβητής εξυπηρετητής SOCKS που θα χρησιμοποιηθεί. Θα πρέπει να είναι "
 "της μορφής: διεύθυνση:θύρα. Θα χρησιμοποιηθεί για όλες τις συνδέσεις TCP"
 
-#: src/libvlc-module.c:848
+#: src/libvlc-module.c:851
 msgid "SOCKS user name"
 msgstr "Όνομα χρήστη SOCKS"
 
-#: src/libvlc-module.c:850
+#: src/libvlc-module.c:853
 msgid "User name to be used for connection to the SOCKS proxy."
 msgstr ""
 "Όνομα χρήστη που θα χρησιμοποιηθεί για σύνδεση με το διαμεσολαβητή SOCKS."
 
-#: src/libvlc-module.c:852
+#: src/libvlc-module.c:855
 msgid "SOCKS password"
 msgstr "Κωδικός χρήστη SOCKS"
 
-#: src/libvlc-module.c:854
+#: src/libvlc-module.c:857
 msgid "Password to be used for connection to the SOCKS proxy."
 msgstr ""
 "Κωδικός χρήστη που θα χρησιμοποιηθεί για σύνδεση με το διαμεσολαβητή SOCKS."
 
-#: src/libvlc-module.c:856
+#: src/libvlc-module.c:859
 msgid "Title metadata"
 msgstr "Τιτλοδότηση μεταδεδομένων"
 
-#: src/libvlc-module.c:858
+#: src/libvlc-module.c:861
 msgid "Allows you to specify a \"title\" metadata for an input."
 msgstr "Σας επιτρέπει να ορίσετε ένα μεταδεδομένο \"τίτλος\" για μία εισαγωγή."
 
-#: src/libvlc-module.c:860
+#: src/libvlc-module.c:863
 msgid "Author metadata"
 msgstr "Μεταδεδομένα συντάκτη"
 
-#: src/libvlc-module.c:862
+#: src/libvlc-module.c:865
 msgid "Allows you to specify an \"author\" metadata for an input."
 msgstr "Σας επιτρέπει να ορίσετε μεταδεδομένα \"συντάκτης\" ως είσοδο."
 
-#: src/libvlc-module.c:864
+#: src/libvlc-module.c:867
 msgid "Artist metadata"
 msgstr "Μεταδεδομένα καλλιτέχνη"
 
-#: src/libvlc-module.c:866
+#: src/libvlc-module.c:869
 msgid "Allows you to specify an \"artist\" metadata for an input."
 msgstr "Σας επιτρέπει να ορίσετε μεταδεδομένα \"καλλιτέχνη\" για μία είσοδο."
 
-#: src/libvlc-module.c:868
+#: src/libvlc-module.c:871
 msgid "Genre metadata"
 msgstr "Μεταδεδομένα είδους"
 
-#: src/libvlc-module.c:870
+#: src/libvlc-module.c:873
 msgid "Allows you to specify a \"genre\" metadata for an input."
 msgstr "Σας επιτρέπει να ορίσετε μεταδεδομένα \"είδους\" για μία είσοδο."
 
-#: src/libvlc-module.c:872
+#: src/libvlc-module.c:875
 msgid "Copyright metadata"
 msgstr "Μεταδεδομένα πνευματικών δικαιωμάτων"
 
-#: src/libvlc-module.c:874
+#: src/libvlc-module.c:877
 msgid "Allows you to specify a \"copyright\" metadata for an input."
 msgstr ""
 "Σας επιτρέπει να ορίσετε μεταδεδομένα \"πνευματικών δικαιωμάτων\" για μία "
 "είσοδο."
 
-#: src/libvlc-module.c:876
+#: src/libvlc-module.c:879
 msgid "Description metadata"
 msgstr "Μεταδεδομένα περιγραφής"
 
-#: src/libvlc-module.c:878
+#: src/libvlc-module.c:881
 msgid "Allows you to specify a \"description\" metadata for an input."
 msgstr "Σας επιτρέπει να ορίσετε μεταδεδομένα \"περιγραφής\" για μία είσοδο."
 
-#: src/libvlc-module.c:880
+#: src/libvlc-module.c:883
 msgid "Date metadata"
 msgstr "Μεταδεδομένα ημερομηνίας"
 
-#: src/libvlc-module.c:882
+#: src/libvlc-module.c:885
 msgid "Allows you to specify a \"date\" metadata for an input."
 msgstr ""
 "Σας επιτρέπει να ορίσετε ένα μεταδεδομένο \"ημερομηνία\" για μία εισαγωγή."
 
-#: src/libvlc-module.c:884
+#: src/libvlc-module.c:887
 msgid "URL metadata"
 msgstr "Μεταδεδομένα διεύθυνσης URL"
 
-#: src/libvlc-module.c:886
+#: src/libvlc-module.c:889
 msgid "Allows you to specify a \"url\" metadata for an input."
 msgstr ""
 "Σας επιτρέπει να ορίσετε μεταδεδομένα \"διεύθυνσης url\" για μία είσοδο."
 
-#: src/libvlc-module.c:890
+#: src/libvlc-module.c:893
 msgid ""
 "This option can be used to alter the way VLC selects its codecs "
 "(decompression methods). Only advanced users should alter this option as it "
@@ -3414,11 +3423,11 @@ msgstr ""
 "πρέπει να μεταβάλλουν αυτή την επιλογή καθώς μπορεί να διακόψει την "
 "αναπαραγωγή όλων των συνεχών ροών δεδομένων σας."
 
-#: src/libvlc-module.c:894
+#: src/libvlc-module.c:897
 msgid "Preferred decoders list"
 msgstr "Λίστα προτιμώμενων αποκωδικοποιητών"
 
-#: src/libvlc-module.c:896
+#: src/libvlc-module.c:899
 msgid ""
 "List of codecs that VLC will use in priority. For instance, 'dummy,a52' will "
 "try the dummy and a52 codecs before trying the other ones. Only advanced "
@@ -3429,18 +3438,18 @@ msgstr ""
 "άλλους codecs. Μόνο προχωρημένοι χρήστες θα πρέπει να τροποποιήσουν αυτή την "
 "επιλογή καθώς μπορεί να διακόψει την αναπαραγωγή όλων των ροών δεδομένων σας."
 
-#: src/libvlc-module.c:901
+#: src/libvlc-module.c:904
 msgid "Preferred encoders list"
 msgstr "Λίστα προτιμώμενων κωδικοποιητών"
 
-#: src/libvlc-module.c:903
+#: src/libvlc-module.c:906
 msgid ""
 "This allows you to select a list of encoders that VLC will use in priority."
 msgstr ""
 "Αυτό σας επιτρέπει να επιλέξετε μία λίστα κωδικοποιητών τους οποίους ο VLC "
 "θα χρησιμοποιεί κατά προτεραιότητα."
 
-#: src/libvlc-module.c:912
+#: src/libvlc-module.c:915
 msgid ""
 "These options allow you to set default global options for the stream output "
 "subsystem."
@@ -3448,11 +3457,11 @@ msgstr ""
 "Αυτές οι επιλογές σας επιτρέπουν να ρυθμίσετε τις προεπιλεγμένες γενικές "
 "επιλογές για το υποσύστημα εξόδου ροής δεδομένων."
 
-#: src/libvlc-module.c:915
+#: src/libvlc-module.c:918
 msgid "Default stream output chain"
 msgstr "Προεπιλεγμένη αλυσίδα εξόδου ροής δεδομένων"
 
-#: src/libvlc-module.c:917
+#: src/libvlc-module.c:920
 msgid ""
 "You can enter here a default stream output chain. Refer to the documentation "
 "to learn how to build such chains. Warning: this chain will be enabled for "
@@ -3462,30 +3471,30 @@ msgstr ""
 "Ανατρέξτε στην τεκμηρίωση για να μάθετε πώς δομούνται τέτοιες αλυσίδες. "
 "Προειδοποίηση: αυτή η αλυσίδα θα ενεργοποιηθεί για όλες τις ροές δεδομένων."
 
-#: src/libvlc-module.c:921
+#: src/libvlc-module.c:924
 msgid "Enable streaming of all ES"
 msgstr "Ενεργοποίηση της συνεχούς ροής δεδομένων όλων των ES"
 
-#: src/libvlc-module.c:923
+#: src/libvlc-module.c:926
 msgid "Stream all elementary streams (video, audio and subtitles)"
 msgstr ""
 "Ενεργοποίηση των κύριων συνεχών ροών δεδομένων (βίντεο, ήχου και υπότιτλων)"
 
-#: src/libvlc-module.c:925
+#: src/libvlc-module.c:928
 msgid "Display while streaming"
 msgstr "Εμφάνιση κατά τη διάρκεια της συνεχούς ροής δεδομένων"
 
-#: src/libvlc-module.c:927
+#: src/libvlc-module.c:930
 msgid "Play locally the stream while streaming it."
 msgstr ""
 "Τοπική αναπαραγωγή της συνεχούς ροής δεδομένων κατά τη διάρκεια της τεχνικής "
 "της εφαρμογής."
 
-#: src/libvlc-module.c:929
+#: src/libvlc-module.c:932
 msgid "Enable video stream output"
 msgstr "Ενεργοποίηση της εξόδου ροής δεδομένων βίντεο"
 
-#: src/libvlc-module.c:931
+#: src/libvlc-module.c:934
 msgid ""
 "Choose whether the video stream should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3493,11 +3502,11 @@ msgstr ""
 "Επιλέξτε εάν η ροή δεδομένων βίντεο πρέπει να ανακατευθυνθεί στο σύστημα "
 "εξόδου ροής δεδομένων όταν το τελευταίο είναι ενεργοποιημένο."
 
-#: src/libvlc-module.c:934
+#: src/libvlc-module.c:937
 msgid "Enable audio stream output"
 msgstr "Ενεργοποίηση της εξόδου ροής δεδομένων ήχου"
 
-#: src/libvlc-module.c:936
+#: src/libvlc-module.c:939
 msgid ""
 "Choose whether the audio stream should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3505,11 +3514,11 @@ msgstr ""
 "Επιλέξτε εάν η ροή δεδομένων ήχου πρέπει να ανακατευθυνθεί στο σύστημα "
 "εξόδου ροής δεδομένων όταν το τελευταίο είναι ενεργοποιημένο."
 
-#: src/libvlc-module.c:939
+#: src/libvlc-module.c:942
 msgid "Enable SPU stream output"
 msgstr "Ενεργοποίηση της εξόδου ροής δεδομένων SPU"
 
-#: src/libvlc-module.c:941
+#: src/libvlc-module.c:944
 msgid ""
 "Choose whether the SPU streams should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3517,11 +3526,11 @@ msgstr ""
 "Επιλέξτε εάν οι ροές δεδομένων SPU πρέπει να ανακατευθυνθούν στο σύστημα "
 "εξόδου ροής δεδομένων όταν το τελευταίο είναι ενεργοποιημένο."
 
-#: src/libvlc-module.c:944
+#: src/libvlc-module.c:947
 msgid "Keep stream output open"
 msgstr "Διατήρηση της εξόδου ροής δεδομένων ανοιχτής"
 
-#: src/libvlc-module.c:946
+#: src/libvlc-module.c:949
 msgid ""
 "This allows you to keep an unique stream output instance across multiple "
 "playlist item (automatically insert the gather stream output if not "
@@ -3531,11 +3540,11 @@ msgstr ""
 "δεδομένων μέσω πολλαπλού αντικειμένου λίστας αναπαραγωγής (εισάγετε αυτόματα "
 "τη συγκεντρωθείσα έξοδο ροής δεδομένων εάν δεν έχει καθοριστεί)"
 
-#: src/libvlc-module.c:950
+#: src/libvlc-module.c:953
 msgid "Stream output muxer caching (ms)"
 msgstr "Αποθήκευση σε κρυφή μνήμη του πολυπλέκτη εξόδου ροής δεδομένων (msec)"
 
-#: src/libvlc-module.c:952
+#: src/libvlc-module.c:955
 msgid ""
 "This allow you to configure the initial caching amount for stream output "
 "muxer. This value should be set in milliseconds."
@@ -3543,38 +3552,38 @@ msgstr ""
 "Αυτό σας επιτρέπει να ρυθμίσετε το ποσό αρχικής αποθήκευσης της εξόδου ροής "
 "μίξης. Αυτή η τιμή πρέπει να ρυθμιστεί σε χιλιοστά δευτερολέπτου. "
 
-#: src/libvlc-module.c:955
+#: src/libvlc-module.c:958
 msgid "Preferred packetizer list"
 msgstr "Λίστα προτιμώμενων πακετοποιητών"
 
-#: src/libvlc-module.c:957
+#: src/libvlc-module.c:960
 msgid ""
 "This allows you to select the order in which VLC will choose its packetizers."
 msgstr ""
 "Αυτό σας επιτρέπει να επιλέξετε τη σειρά με την οποία ο VLC θα επιλέγει τους "
 "πακετοποιητές του."
 
-#: src/libvlc-module.c:960
+#: src/libvlc-module.c:963
 msgid "Mux module"
 msgstr "Ενότητα πολυπλεξίας"
 
-#: src/libvlc-module.c:962
+#: src/libvlc-module.c:965
 msgid "This is a legacy entry to let you configure mux modules"
 msgstr ""
 "Αυτό είναι ένα κληροδοτημένο λήμμα που σας επιτρέπει να ρυθμίσετε τις "
 "ενότητες πολυπλεξίας"
 
-#: src/libvlc-module.c:964
+#: src/libvlc-module.c:967
 msgid "Access output module"
 msgstr "Ενότητα πρόσβασης εξόδου"
 
-#: src/libvlc-module.c:966
+#: src/libvlc-module.c:969
 msgid "This is a legacy entry to let you configure access output modules"
 msgstr ""
 "Αυτό είναι ένα κληροδοτημένο λήμμα που σας επιτρέπει να ρυθμίσετε τις "
 "ενότητες πρόσβασης εξόδου"
 
-#: src/libvlc-module.c:969
+#: src/libvlc-module.c:972
 msgid ""
 "If this option is enabled, the flow on the SAP multicast address will be "
 "controlled. This is needed if you want to make announcements on the MBone."
@@ -3583,11 +3592,11 @@ msgstr ""
 "πολυεκπομπής SAP. Αυτό είναι απαραίτητο εάν θέλετε να κάνετε ανακοινώσεις "
 "στο MBone."
 
-#: src/libvlc-module.c:973
+#: src/libvlc-module.c:976
 msgid "SAP announcement interval"
 msgstr "Διάστημα ανακοίνωσης SAP"
 
-#: src/libvlc-module.c:975
+#: src/libvlc-module.c:978
 msgid ""
 "When the SAP flow control is disabled, this lets you set the fixed interval "
 "between SAP announcements."
@@ -3595,7 +3604,7 @@ msgstr ""
 "Όταν ο έλεγχος ροής SAP είναι απενεργοποιημένος, αυτό σας επιτρέπει να "
 "ρυθμίσετε το προκαθορισμένο διάστημα μεταξύ ανακοινώσεων SAP."
 
-#: src/libvlc-module.c:984
+#: src/libvlc-module.c:987
 msgid ""
 "These options allow you to select default modules. Leave these alone unless "
 "you really know what you are doing."
@@ -3603,11 +3612,11 @@ msgstr ""
 "Αυτές επιλογές σας επιτρέπουν να επιλέξετε τις προεπιλεγμένες ενότητες. Μην "
 "τις επιλέξετε εάν πραγματικά δεν ξέρετε τι κάνετε."
 
-#: src/libvlc-module.c:987
+#: src/libvlc-module.c:990
 msgid "Access module"
 msgstr "Ενότητα πρόσβασης"
 
-#: src/libvlc-module.c:989
+#: src/libvlc-module.c:992
 msgid ""
 "This allows you to force an access module. You can use it if the correct "
 "access is not automatically detected. You should not set this as a global "
@@ -3617,22 +3626,22 @@ msgstr ""
 "χρησιμοποιήσετε εάν η σωστή πρόσβαση δεν ανιχνεύεται αυτόματα. Δεν θα πρέπει "
 "να το ρυθμίσετε ως συνολική επιλογή εκτός εάν πραγματικά ξέρετε τι κάνετε."
 
-#: src/libvlc-module.c:993
+#: src/libvlc-module.c:996
 msgid "Stream filter module"
 msgstr "Ενότητα φίλτρου ροής δεδομένων"
 
-#: src/libvlc-module.c:995
+#: src/libvlc-module.c:998
 msgid "Stream filters are used to modify the stream that is being read. "
 msgstr ""
 "Τα φίλτρα βίντεο χρησιμοποιούνται για να τροποποιήσουν τη συνεχή ροή "
 "δεδομένων υπό ανάγνωση."
 
-#: src/libvlc-module.c:997
+#: src/libvlc-module.c:1000
 #, fuzzy
 msgid "Demux filter module"
 msgstr "Ενότητα φίλτρου ροής δεδομένων"
 
-#: src/libvlc-module.c:999
+#: src/libvlc-module.c:1002
 #, fuzzy
 msgid ""
 "Demux filters are used to modify/control the stream that is being read. "
@@ -3640,11 +3649,11 @@ msgstr ""
 "Τα φίλτρα βίντεο χρησιμοποιούνται για να τροποποιήσουν τη συνεχή ροή "
 "δεδομένων υπό ανάγνωση."
 
-#: src/libvlc-module.c:1001
+#: src/libvlc-module.c:1004
 msgid "Demux module"
 msgstr "Ενότητα αποπολυπλεξίας"
 
-#: src/libvlc-module.c:1003
+#: src/libvlc-module.c:1006
 msgid ""
 "Demultiplexers are used to separate the \"elementary\" streams (like audio "
 "and video streams). You can use it if the correct demuxer is not "
@@ -3657,11 +3666,11 @@ msgstr ""
 "πρέπει να το ρυθμίσετε ως συνολική επιλογή εκτός εάν πραγματικά ξέρετε τι "
 "κάνετε."
 
-#: src/libvlc-module.c:1008
+#: src/libvlc-module.c:1011
 msgid "VoD server module"
 msgstr "Ενότητα εξυπηρετητή VoD"
 
-#: src/libvlc-module.c:1010
+#: src/libvlc-module.c:1013
 #, fuzzy
 msgid ""
 "You can select which VoD server module you want to use. Set this to "
@@ -3671,11 +3680,11 @@ msgstr ""
 "χρησιμοποιήσετε. Ρυθμίστε το στο `vod_rtsp' για να μεταβείτε ξανά στην "
 "παλιά, κληροδοτημένη ενότητα."
 
-#: src/libvlc-module.c:1013
+#: src/libvlc-module.c:1016
 msgid "Allow real-time priority"
 msgstr "Να επιτρέπεται η προτεραιότητα πραγματικού χρόνου"
 
-#: src/libvlc-module.c:1015
+#: src/libvlc-module.c:1018
 msgid ""
 "Running VLC in real-time priority will allow for much more precise "
 "scheduling and yield better, especially when streaming content. It can "
@@ -3688,11 +3697,11 @@ msgstr ""
 "ή να το καταστήσει πάρα πολύ αργό. Θα πρέπει να το ενεργοποιήσετε μόνον εάν "
 "γνωρίζετε τι κάνετε."
 
-#: src/libvlc-module.c:1021
+#: src/libvlc-module.c:1024
 msgid "Adjust VLC priority"
 msgstr "Προσαρμογή προτεραιότητας του VLC"
 
-#: src/libvlc-module.c:1023
+#: src/libvlc-module.c:1026
 msgid ""
 "This option adds an offset (positive or negative) to VLC default priorities. "
 "You can use it to tune VLC priority against other programs, or against other "
@@ -3703,83 +3712,83 @@ msgstr ""
 "συντονίσετε τις προτεραιότητες του VLC έναντι άλλων προγραμμάτων ή έναντι "
 "άλλων περιπτώσεων του VLC."
 
-#: src/libvlc-module.c:1028
+#: src/libvlc-module.c:1031
 msgid ""
 "This option is useful if you want to lower the latency when reading a stream"
 msgstr ""
 "Αυτή η επιλογή είναι χρήσιμη εάν θέλετε να μειώσετε τη λανθάνουσα κατάσταση "
 "κατά την ανάγνωση μίας ροής δεδομένων"
 
-#: src/libvlc-module.c:1031
+#: src/libvlc-module.c:1034
 msgid "VLM configuration file"
 msgstr "Αρχείο ρυθμίσεων VLM"
 
-#: src/libvlc-module.c:1033
+#: src/libvlc-module.c:1036
 msgid "Read a VLM configuration file as soon as VLM is started."
 msgstr ""
 "Ανάγνωση ενός αρχείου ρυθμίσεων VLM αμέσως μόλις γίνεται η εκκίνηση του VLM."
 
-#: src/libvlc-module.c:1035
+#: src/libvlc-module.c:1038
 msgid "Use a plugins cache"
 msgstr "Χρήση κρυφής μνήμης εμφυτευμάτων"
 
-#: src/libvlc-module.c:1037
+#: src/libvlc-module.c:1040
 msgid "Use a plugins cache which will greatly improve the startup time of VLC."
 msgstr ""
 "Χρησιμοποιήστε μία κρυφή μνήμη εμφυτευμάτων η οποία θα βελτιώσει σημαντικά "
 "το χρόνο εκκίνησης του VLC."
 
-#: src/libvlc-module.c:1039
+#: src/libvlc-module.c:1042
 msgid "Scan for new plugins"
 msgstr ""
 
-#: src/libvlc-module.c:1041
+#: src/libvlc-module.c:1044
 msgid ""
 "Scan plugin directories for new plugins at startup. This increases the "
 "startup time of VLC."
 msgstr ""
 
-#: src/libvlc-module.c:1044
+#: src/libvlc-module.c:1047
 #, fuzzy
 msgid "Preferred keystore list"
 msgstr "Λίστα προτιμώμενων πακετοποιητών"
 
-#: src/libvlc-module.c:1046
+#: src/libvlc-module.c:1049
 msgid ""
 "List of keystores that VLC will use in priority. Only advanced users should "
 "alter this option."
 msgstr ""
 
-#: src/libvlc-module.c:1049
+#: src/libvlc-module.c:1052
 msgid "Locally collect statistics"
 msgstr "Συλλογή στατιστικών τοπικά"
 
-#: src/libvlc-module.c:1051
+#: src/libvlc-module.c:1054
 msgid "Collect miscellaneous local statistics about the playing media."
 msgstr ""
 "Συλλογή διαφόρων τοπικών στατιστικών σχετικά με το αναπαραγόμενο πολυμέσο."
 
-#: src/libvlc-module.c:1053
+#: src/libvlc-module.c:1056
 msgid "Run as daemon process"
 msgstr "Εκτέλεση ως διεργασία δαίμονα"
 
-#: src/libvlc-module.c:1055
+#: src/libvlc-module.c:1058
 msgid "Runs VLC as a background daemon process."
 msgstr "Εκτελεί τον VLC ως μία διεργασία δαίμονα παρασκηνίου."
 
-#: src/libvlc-module.c:1057
+#: src/libvlc-module.c:1060
 msgid "Write process id to file"
 msgstr "Εγγραφή ταυτότητας της διεργασίας σε αρχείο"
 
-#: src/libvlc-module.c:1059
+#: src/libvlc-module.c:1062
 msgid "Writes process id into specified file."
 msgstr "Γράφει την ταυτότητα της διεργασίας στο καθορισμένο αρχείο."
 
-#: src/libvlc-module.c:1061
+#: src/libvlc-module.c:1064
 msgid "Allow only one running instance"
 msgstr "Να επιτρέπεται μόνο μία υπόσταση εκτέλεσης"
 
-#: src/libvlc-module.c:1063
+#: src/libvlc-module.c:1066
 msgid ""
 "Allowing only one running instance of VLC can sometimes be useful, for "
 "example if you associated VLC with some media types and you don't want a new "
@@ -3794,27 +3803,27 @@ msgstr ""
 "σας επιτρέψει να παίξετε το αρχείο με την υπόσταση που ήδη τρέχει ή να το "
 "βάλετε στην ουρά της λίστας αναπαραγωγής."
 
-#: src/libvlc-module.c:1069
+#: src/libvlc-module.c:1072
 msgid "VLC is started from file association"
 msgstr "Ο VLC εκκινήθηκε από συσχέτιση αρχείου"
 
-#: src/libvlc-module.c:1071
+#: src/libvlc-module.c:1074
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr ""
 "Πείτε στον VLC ότι εκκινείται λόγω μίας συσχέτισης αρχείου στο λειτουργικό "
 "σύστημα"
 
-#: src/libvlc-module.c:1074
+#: src/libvlc-module.c:1077
 msgid "Use only one instance when started from file manager"
 msgstr ""
 "Χρησιμοποιήστε μόνο μία υπόσταση όταν γίνεται εκκίνηση από διαχειριστή "
 "αρχείων"
 
-#: src/libvlc-module.c:1076
+#: src/libvlc-module.c:1079
 msgid "Increase the priority of the process"
 msgstr "Αύξηση της προτεραιότητας της διεργασίας"
 
-#: src/libvlc-module.c:1078
+#: src/libvlc-module.c:1081
 msgid ""
 "Increasing the priority of the process will very likely improve your playing "
 "experience as it allows VLC not to be disturbed by other applications that "
@@ -3831,13 +3840,13 @@ msgstr ""
 "καταστήσει το όλο σύστημα μη ανταποκρινόμενο, κάτι το οποίο ίσως απαιτήσει "
 "την επανεκκίνηση του συστήματός σας."
 
-#: src/libvlc-module.c:1086
+#: src/libvlc-module.c:1089
 msgid "Enqueue items into playlist in one instance mode"
 msgstr ""
 "Τοποθετήστε αντικείμενα στην ουρά της λίστας αναπαραγωγής στη λειτουργία "
 "μίας υπόστασης"
 
-#: src/libvlc-module.c:1088
+#: src/libvlc-module.c:1091
 msgid ""
 "When using the one instance only option, enqueue items to playlist and keep "
 "playing current item."
@@ -3846,18 +3855,18 @@ msgstr ""
 "προστίθενται τα αντικείμενα στην ουρά της λίστας αναπαραγωγής και να "
 "συνεχίζεται η αναπαραγωγή του τρέχοντος αντικειμένου."
 
-#: src/libvlc-module.c:1091
+#: src/libvlc-module.c:1094
 #, fuzzy
 msgid "Expose media player via D-Bus"
 msgstr "Ενημερώσεις αναπαραγωγού πολυμέσων VLC"
 
-#: src/libvlc-module.c:1092
+#: src/libvlc-module.c:1095
 msgid ""
 "Allow other applications to control the VLC media player using the D-Bus "
 "MPRIS protocol."
 msgstr ""
 
-#: src/libvlc-module.c:1101
+#: src/libvlc-module.c:1104
 msgid ""
 "These options define the behavior of the playlist. Some of them can be "
 "overridden in the playlist dialog box."
@@ -3866,12 +3875,12 @@ msgstr ""
 "Κάποιες από αυτές μπορούν να παρακαμφθούν στο πλαίσιο διαλόγου της λίστας "
 "αναπαραγωγής."
 
-#: src/libvlc-module.c:1104
+#: src/libvlc-module.c:1107
 #, fuzzy
 msgid "Automatically preparse items"
 msgstr "Αυτόματη προανάλυση αρχείων"
 
-#: src/libvlc-module.c:1106
+#: src/libvlc-module.c:1109
 #, fuzzy
 msgid ""
 "Automatically preparse items added to the playlist (to retrieve some "
@@ -3880,33 +3889,33 @@ msgstr ""
 "Αυτόματη προανάλυση αρχείων που προστίθενται στη λίστα αναπαραγωγής "
 "(προκειμένου να ανακτηθούν κάποια μεταδεδομένα)."
 
-#: src/libvlc-module.c:1109
+#: src/libvlc-module.c:1112
 #, fuzzy
 msgid "Preparsing timeout"
 msgstr "Υπέρβαση χρονικού ορίου"
 
-#: src/libvlc-module.c:1111
+#: src/libvlc-module.c:1114
 msgid "Maximum time (in milliseconds) allowed to preparse an item"
 msgstr ""
 
-#: src/libvlc-module.c:1113 modules/gui/macosx/VLCSimplePrefsController.m:321
+#: src/libvlc-module.c:1116 modules/gui/macosx/VLCSimplePrefsController.m:321
 #: modules/gui/qt/dialogs/firstrun.cpp:95
 msgid "Allow metadata network access"
 msgstr ""
 
-#: src/libvlc-module.c:1118
+#: src/libvlc-module.c:1121
 msgid "Collapse"
 msgstr "Κατάρρευση"
 
-#: src/libvlc-module.c:1118
+#: src/libvlc-module.c:1121
 msgid "Expand"
 msgstr "Επέκταση"
 
-#: src/libvlc-module.c:1120
+#: src/libvlc-module.c:1123
 msgid "Subdirectory behavior"
 msgstr "Συμπεριφορά υποκαταλόγου"
 
-#: src/libvlc-module.c:1122
+#: src/libvlc-module.c:1125
 msgid ""
 "Select whether subdirectories must be expanded.\n"
 "none: subdirectories do not appear in the playlist.\n"
@@ -3919,11 +3928,11 @@ msgstr ""
 "αναπαραγωγή.\n"
 "επέκταση: όλοι οι υποκατάλογοι επεκτείνονται.\n"
 
-#: src/libvlc-module.c:1127
+#: src/libvlc-module.c:1130
 msgid "Ignored extensions"
 msgstr "Αγνοημένες επεκτάσεις"
 
-#: src/libvlc-module.c:1129
+#: src/libvlc-module.c:1132
 msgid ""
 "Files with these extensions will not be added to playlist when opening a "
 "directory.\n"
@@ -3936,20 +3945,20 @@ msgstr ""
 "αναπαραγωγής για παράδειγμα. Χρησιμοποιήστε μία λίστα επεκτάσεων χωρισμένη "
 "με κόμματα."
 
-#: src/libvlc-module.c:1134
+#: src/libvlc-module.c:1137
 #, fuzzy
 msgid "Show hidden files"
 msgstr "Λεπτομέρειες Codec"
 
-#: src/libvlc-module.c:1136
+#: src/libvlc-module.c:1139
 msgid "Ignore files starting with '.'"
 msgstr ""
 
-#: src/libvlc-module.c:1138
+#: src/libvlc-module.c:1141
 msgid "Services discovery modules"
 msgstr "Ενότητες ανακάλυψης υπηρεσιών"
 
-#: src/libvlc-module.c:1140
+#: src/libvlc-module.c:1143
 msgid ""
 "Specifies the services discovery modules to preload, separated by colons. "
 "Typical value is \"sap\"."
@@ -3957,84 +3966,84 @@ msgstr ""
 "Ορίζει τις ενότητες ανακάλυψης υπηρεσιών που θα προφορτωθούν και είναι "
 "χωρισμένες με άνω-κάτω τελείες. Η τυπική τιμή είναι \"sap\"."
 
-#: src/libvlc-module.c:1143
+#: src/libvlc-module.c:1146
 msgid "Play files randomly forever"
 msgstr "Τυχαία αναπαραγωγή αρχείων επ' άπειρον"
 
-#: src/libvlc-module.c:1145
+#: src/libvlc-module.c:1148
 msgid "VLC will randomly play files in the playlist until interrupted."
 msgstr ""
 "Ο VLC θα αναπαράγει τυχαία τα αρχεία της λίστας αναπαραγωγής έως ότου να "
 "διακοπεί."
 
-#: src/libvlc-module.c:1147
+#: src/libvlc-module.c:1150
 msgid "Repeat all"
 msgstr "Επανάληψη όλων"
 
-#: src/libvlc-module.c:1149
+#: src/libvlc-module.c:1152
 msgid "VLC will keep playing the playlist indefinitely."
 msgstr ""
 "Ο VLC θα εξακολουθήσει να αναπαράγει τη λίστα αναπαραγωγής για αόριστο χρόνο."
 
-#: src/libvlc-module.c:1151
+#: src/libvlc-module.c:1154
 msgid "Repeat current item"
 msgstr "Επανάληψη του τρέχοντος αντικειμένου"
 
-#: src/libvlc-module.c:1153
+#: src/libvlc-module.c:1156
 msgid "VLC will keep playing the current playlist item."
 msgstr ""
 "Ο VLC θα συνεχίσει να αναπαράγει το τρέχον στοιχείο της λίστας αναπαραγωγής."
 
-#: src/libvlc-module.c:1155
+#: src/libvlc-module.c:1158
 msgid "Play and stop"
 msgstr "Αναπαραγωγή και διακοπή"
 
-#: src/libvlc-module.c:1157
+#: src/libvlc-module.c:1160
 msgid "Stop the playlist after each played playlist item."
 msgstr ""
 "Διακοπή της λίστας αναπαραγωγής μετά από το κάθε αναπαραχθέν αντικείμενό της."
 
-#: src/libvlc-module.c:1159
+#: src/libvlc-module.c:1162
 msgid "Play and exit"
 msgstr "Αναπαραγωγή και έξοδος"
 
-#: src/libvlc-module.c:1161
+#: src/libvlc-module.c:1164
 msgid "Exit if there are no more items in the playlist."
 msgstr "Έξοδος εάν δεν υπάρχουν άλλα αντικείμενα στη λίστα αναπαραγωγής."
 
-#: src/libvlc-module.c:1163
+#: src/libvlc-module.c:1166
 msgid "Play and pause"
 msgstr "Αναπαραγωγή και παύση"
 
-#: src/libvlc-module.c:1165
+#: src/libvlc-module.c:1168
 msgid "Pause each item in the playlist on the last frame."
 msgstr "Παύση κάθε αντικειμένου της λίστας αναπαραγωγής στο τελευταίο καρέ."
 
-#: src/libvlc-module.c:1167
+#: src/libvlc-module.c:1170
 #, fuzzy
 msgid "Start paused"
 msgstr "Χρόνος έναρξης"
 
-#: src/libvlc-module.c:1169
+#: src/libvlc-module.c:1172
 #, fuzzy
 msgid "Pause each item in the playlist on the first frame."
 msgstr "Παύση κάθε αντικειμένου της λίστας αναπαραγωγής στο τελευταίο καρέ."
 
-#: src/libvlc-module.c:1171
+#: src/libvlc-module.c:1174
 msgid "Auto start"
 msgstr "Αυτόματη έναρξη"
 
-#: src/libvlc-module.c:1172
+#: src/libvlc-module.c:1175
 msgid "Automatically start playing the playlist content once it's loaded."
 msgstr ""
 "Αυτόματη έναρξη αναπαραγωγής του περιεχομένου της λίστας αναπαραγωγής όταν "
 "αυτή φορτωθεί."
 
-#: src/libvlc-module.c:1175
+#: src/libvlc-module.c:1178
 msgid "Pause on audio communication"
 msgstr "Παύση κατά την ηχητική επικοινωνία"
 
-#: src/libvlc-module.c:1177
+#: src/libvlc-module.c:1180
 msgid ""
 "If pending audio communication is detected, playback will be paused "
 "automatically."
@@ -4042,11 +4051,11 @@ msgstr ""
 "Εάν μια αναμενόμενη ηχητική επικοινωνία ανιχνευθεί, η αναπαραγωγή θα παυθεί "
 "αυτόματα."
 
-#: src/libvlc-module.c:1180
+#: src/libvlc-module.c:1183
 msgid "Use media library"
 msgstr "Χρήση βιβλιοθήκης πολυμέσων"
 
-#: src/libvlc-module.c:1182
+#: src/libvlc-module.c:1185
 msgid ""
 "The media library is automatically saved and reloaded each time you start "
 "VLC."
@@ -4054,11 +4063,11 @@ msgstr ""
 "Η βιβλιοθήκη πολυμέσων αποθηκεύεται αυτόματα και επαναφορτώνεται κάθε φορά "
 "που εκκινείτε τον VLC."
 
-#: src/libvlc-module.c:1185
+#: src/libvlc-module.c:1188
 msgid "Display playlist tree"
 msgstr "Εμφάνιση του δέντρου αναπαραγωγής"
 
-#: src/libvlc-module.c:1187
+#: src/libvlc-module.c:1190
 msgid ""
 "The playlist can use a tree to categorize some items, like the contents of a "
 "directory."
@@ -4066,37 +4075,37 @@ msgstr ""
 "Η λίστα αναπαραγωγής μπορεί να χρησιμοποιήσει ένα δέντρο για να "
 "κατηγοριοποιήσει κάποια αντικείμενα, όπως τα περιεχόμενα ενός καταλόγου."
 
-#: src/libvlc-module.c:1196
+#: src/libvlc-module.c:1199
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr ""
 "Αυτές οι ρυθμίσεις είναι οι συνολικές διαδέσεις πλήκτρων του VLC, γνωστές "
 "και ως \"πλήκτρα συντόμευσης\"."
 
-#: src/libvlc-module.c:1201 modules/gui/macosx/VLCMain+OldPrefs.m:103
+#: src/libvlc-module.c:1204 modules/gui/macosx/VLCMain+OldPrefs.m:103
 msgid "Ignore"
 msgstr "Αγνόηση"
 
-#: src/libvlc-module.c:1201
+#: src/libvlc-module.c:1204
 #, fuzzy
 msgid "Volume control"
 msgstr "Έλεγχος έντασης ήχου"
 
-#: src/libvlc-module.c:1202
+#: src/libvlc-module.c:1205
 #, fuzzy
 msgid "Position control"
 msgstr "Έλεγχος θέσης"
 
-#: src/libvlc-module.c:1202
+#: src/libvlc-module.c:1205
 #, fuzzy
 msgid "Position control reversed"
 msgstr "Έλεγχος θέσης"
 
-#: src/libvlc-module.c:1205
+#: src/libvlc-module.c:1208
 #, fuzzy
 msgid "Mouse wheel vertical axis control"
 msgstr "Έλεγχος τροχού του ποντικιού στον άξονα πάνω-κάτω"
 
-#: src/libvlc-module.c:1207
+#: src/libvlc-module.c:1210
 #, fuzzy
 msgid ""
 "The mouse wheel vertical (up/down) axis can control volume, position or be "
@@ -4106,12 +4115,12 @@ msgstr ""
 "να ελέγξει την ένταση ήχου, η θέση ή το γεγονός του τροχού του ποντικιού "
 "μπορούν να αγνοηθούν"
 
-#: src/libvlc-module.c:1209
+#: src/libvlc-module.c:1212
 #, fuzzy
 msgid "Mouse wheel horizontal axis control"
 msgstr "Έλεγχος τροχού του ποντικιού στον άξονα πάνω-κάτω"
 
-#: src/libvlc-module.c:1211
+#: src/libvlc-module.c:1214
 #, fuzzy
 msgid ""
 "The mouse wheel horizontal (left/right) axis can control volume, position or "
@@ -4121,99 +4130,99 @@ msgstr ""
 "να ελέγξει την ένταση ήχου, η θέση ή το γεγονός του τροχού του ποντικιού "
 "μπορούν να αγνοηθούν"
 
-#: src/libvlc-module.c:1213 src/video_output/vout_intf.c:268
+#: src/libvlc-module.c:1216 src/video_output/vout_intf.c:268
 #: modules/gui/macosx/VLCMainMenu.m:421 modules/gui/macosx/VLCMainMenu.m:496
 #: modules/gui/qt/components/controller.hpp:108
 msgid "Fullscreen"
 msgstr "Πλήρης οθόνη"
 
-#: src/libvlc-module.c:1214
+#: src/libvlc-module.c:1217
 msgid "Select the hotkey to use to swap fullscreen state."
 msgstr ""
 "Επιλογή του πλήκτρου συντόμευσης για την εναλλαγή της κατάστασης πλήρους "
 "οθόνης."
 
-#: src/libvlc-module.c:1215
+#: src/libvlc-module.c:1218
 msgid "Exit fullscreen"
 msgstr "Έξοδος από την πλήρη οθόνη"
 
-#: src/libvlc-module.c:1216
+#: src/libvlc-module.c:1219
 msgid "Select the hotkey to use to exit fullscreen state."
 msgstr ""
 "Επιλογή του πλήκτρου συντόμευσης για την έξοδο από την κατάσταση πλήρους "
 "οθόνης."
 
-#: src/libvlc-module.c:1217 modules/gui/macosx/VLCControlsBarCommon.m:64
+#: src/libvlc-module.c:1220 modules/gui/macosx/VLCControlsBarCommon.m:64
 #: modules/gui/macosx/VLCFSPanelController.m:109
 msgid "Play/Pause"
 msgstr "Αναπαραγωγή/Παύση"
 
-#: src/libvlc-module.c:1218
+#: src/libvlc-module.c:1221
 msgid "Select the hotkey to use to swap paused state."
 msgstr ""
 "Επιλογή του πλήκτρου συντόμευσης που θα χρησιμοποιείται για την εναλλαγή της "
 "κατάστασης παύσης."
 
-#: src/libvlc-module.c:1219
+#: src/libvlc-module.c:1222
 msgid "Pause only"
 msgstr "Παύση μόνο"
 
-#: src/libvlc-module.c:1220
+#: src/libvlc-module.c:1223
 msgid "Select the hotkey to use to pause."
 msgstr "Επιλογή του πλήκτρου συντόμευσης που θα χρησιμοποιείται για την παύση."
 
-#: src/libvlc-module.c:1221
+#: src/libvlc-module.c:1224
 msgid "Play only"
 msgstr "Αναπαραγωγή μόνο"
 
-#: src/libvlc-module.c:1222
+#: src/libvlc-module.c:1225
 msgid "Select the hotkey to use to play."
 msgstr ""
 "Επιλογή του πλήκτρου συντόμευσης που θα χρησιμοποιείται για την αναπαραγωγή."
 
-#: src/libvlc-module.c:1223 modules/gui/macosx/VLCMainMenu.m:384
+#: src/libvlc-module.c:1226 modules/gui/macosx/VLCMainMenu.m:384
 #: modules/gui/qt/components/controller.hpp:108
 #: modules/gui/qt/components/controller.hpp:118
 msgid "Faster"
 msgstr "Πιο γρήγορα"
 
-#: src/libvlc-module.c:1224 src/libvlc-module.c:1230
+#: src/libvlc-module.c:1227 src/libvlc-module.c:1233
 msgid "Select the hotkey to use for fast forward playback."
 msgstr ""
 "Επιλογή του πλήκτρου συντόμευσης που θα χρησιμοποιείται για την αναπαραγωγή "
 "γρήγορης κίνησης προς τα εμπρός."
 
-#: src/libvlc-module.c:1225 modules/gui/macosx/VLCMainMenu.m:382
+#: src/libvlc-module.c:1228 modules/gui/macosx/VLCMainMenu.m:382
 #: modules/gui/qt/components/controller.hpp:108
 #: modules/gui/qt/components/controller.hpp:118
 msgid "Slower"
 msgstr "Πιο αργά"
 
-#: src/libvlc-module.c:1226 src/libvlc-module.c:1232
+#: src/libvlc-module.c:1229 src/libvlc-module.c:1235
 msgid "Select the hotkey to use for slow motion playback."
 msgstr ""
 "Επιλογή του πλήκτρου συντόμευσης που θα χρησιμοποιείται για την αναπαραγωγή "
 "αργής κίνησης προς τα εμπρός."
 
-#: src/libvlc-module.c:1227
+#: src/libvlc-module.c:1230
 msgid "Normal rate"
 msgstr "Κανονική ταχύτητα"
 
-#: src/libvlc-module.c:1228
+#: src/libvlc-module.c:1231
 msgid "Select the hotkey to set the playback rate back to normal."
 msgstr ""
 "Επιλογή του πλήκτρου συντόμευσης για τη ρύθμιση της ταχύτητας αναπαραγωγής "
 "σε κανονική."
 
-#: src/libvlc-module.c:1229 modules/gui/qt/menus.cpp:871
+#: src/libvlc-module.c:1232 modules/gui/qt/menus.cpp:871
 msgid "Faster (fine)"
 msgstr "Πιο γρήγορα (ακριβής ρύθμιση)"
 
-#: src/libvlc-module.c:1231 modules/gui/qt/menus.cpp:879
+#: src/libvlc-module.c:1234 modules/gui/qt/menus.cpp:879
 msgid "Slower (fine)"
 msgstr "Πιο αργά (ακριβής ρύθμιση)"
 
-#: src/libvlc-module.c:1233 modules/control/hotkeys.c:410
+#: src/libvlc-module.c:1236 modules/control/hotkeys.c:410
 #: modules/gui/macosx/VLCFSPanelController.m:112
 #: modules/gui/macosx/VLCMainMenu.m:387 modules/gui/macosx/VLCMainMenu.m:484
 #: modules/gui/macosx/VLCMainMenu.m:492
@@ -4223,13 +4232,13 @@ msgstr "Πιο αργά (ακριβής ρύθμιση)"
 msgid "Next"
 msgstr "Επόμενο"
 
-#: src/libvlc-module.c:1234
+#: src/libvlc-module.c:1237
 msgid "Select the hotkey to use to skip to the next item in the playlist."
 msgstr ""
 "Επιλογή του πλήκτρου συντόμευσης που θα χρησιμοποιείται για υπερπήδηση στο "
 "επόμενο στοιχείο της λίστας αναπαραγωγής."
 
-#: src/libvlc-module.c:1235 modules/control/hotkeys.c:414
+#: src/libvlc-module.c:1238 modules/control/hotkeys.c:414
 #: modules/gui/macosx/VLCFSPanelController.m:115
 #: modules/gui/macosx/VLCMainMenu.m:386 modules/gui/macosx/VLCMainMenu.m:485
 #: modules/gui/macosx/VLCMainMenu.m:491
@@ -4238,13 +4247,13 @@ msgstr ""
 msgid "Previous"
 msgstr "Προηγούμενο"
 
-#: src/libvlc-module.c:1236
+#: src/libvlc-module.c:1239
 msgid "Select the hotkey to use to skip to the previous item in the playlist."
 msgstr ""
 "Επιλογή του πλήκτρου συντόμευσης που θα χρησιμοποιείται για υπερπήδηση στο "
 "προηγούμενο στοιχείο της λίστας αναπαραγωγής."
 
-#: src/libvlc-module.c:1237 modules/gui/macosx/VLCMainMenu.m:378
+#: src/libvlc-module.c:1240 modules/gui/macosx/VLCMainMenu.m:378
 #: modules/gui/macosx/VLCMainMenu.m:483 modules/gui/macosx/VLCMainMenu.m:490
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:61
 #: modules/gui/qt/components/controller.hpp:107
@@ -4252,11 +4261,11 @@ msgstr ""
 msgid "Stop"
 msgstr "Διακοπή"
 
-#: src/libvlc-module.c:1238
+#: src/libvlc-module.c:1241
 msgid "Select the hotkey to stop playback."
 msgstr "Επιλογή του πλήκτρου συντόμευσης για τη διακοπή της αναπαραγωγής."
 
-#: src/libvlc-module.c:1239 modules/gui/macosx/VLCControlsBarCommon.m:76
+#: src/libvlc-module.c:1242 modules/gui/macosx/VLCControlsBarCommon.m:76
 #: modules/gui/macosx/VLCFSPanelController.m:130
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:273
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:295
@@ -4264,141 +4273,141 @@ msgstr "Επιλογή του πλήκτρου συντόμευσης για τ�
 msgid "Position"
 msgstr "Θέση"
 
-#: src/libvlc-module.c:1240
+#: src/libvlc-module.c:1243
 msgid "Select the hotkey to display the position."
 msgstr "Επιλογή του πλήκτρου συντόμευσης για την εμφάνιση της θέσης."
 
-#: src/libvlc-module.c:1242
+#: src/libvlc-module.c:1245
 msgid "Very short backwards jump"
 msgstr "Πολύ σύντομη μεταπήδηση προς τα πίσω"
 
-#: src/libvlc-module.c:1244
+#: src/libvlc-module.c:1247
 msgid "Select the hotkey to make a very short backwards jump."
 msgstr ""
 "Επιλογή του πλήκτρου συντόμευσης για μία πολύ σύντομη μεταπήδηση προς τα "
 "πίσω."
 
-#: src/libvlc-module.c:1245
+#: src/libvlc-module.c:1248
 msgid "Short backwards jump"
 msgstr "Σύντομη μεταπήδηση προς τα πίσω"
 
-#: src/libvlc-module.c:1247
+#: src/libvlc-module.c:1250
 msgid "Select the hotkey to make a short backwards jump."
 msgstr ""
 "Επιλογή του πλήκτρου συντόμευσης για μία σύντομη μεταπήδηση προς τα πίσω."
 
-#: src/libvlc-module.c:1248
+#: src/libvlc-module.c:1251
 msgid "Medium backwards jump"
 msgstr "Μέτρια μεταπήδηση προς τα πίσω"
 
-#: src/libvlc-module.c:1250
+#: src/libvlc-module.c:1253
 msgid "Select the hotkey to make a medium backwards jump."
 msgstr ""
 "Επιλογή του πλήκτρου συντόμευσης για μία μέτρια μεταπήδηση προς τα πίσω."
 
-#: src/libvlc-module.c:1251
+#: src/libvlc-module.c:1254
 msgid "Long backwards jump"
 msgstr "Μεγάλη μεταπήδηση προς τα πίσω"
 
-#: src/libvlc-module.c:1253
+#: src/libvlc-module.c:1256
 msgid "Select the hotkey to make a long backwards jump."
 msgstr ""
 "Επιλογή του πλήκτρου συντόμευσης για μία μεγάλη μεταπήδηση προς τα πίσω."
 
-#: src/libvlc-module.c:1255
+#: src/libvlc-module.c:1258
 msgid "Very short forward jump"
 msgstr "Πολύ σύντομη μεταπήδηση προς τα εμπρός"
 
-#: src/libvlc-module.c:1257
+#: src/libvlc-module.c:1260
 msgid "Select the hotkey to make a very short forward jump."
 msgstr ""
 "Επιλογή του πλήκτρου συντόμευσης για μία πολύ σύντομη μεταπήδηση προς τα "
 "εμπρός."
 
-#: src/libvlc-module.c:1258
+#: src/libvlc-module.c:1261
 msgid "Short forward jump"
 msgstr "Σύντομη μεταπήδηση προς τα εμπρός"
 
-#: src/libvlc-module.c:1260
+#: src/libvlc-module.c:1263
 msgid "Select the hotkey to make a short forward jump."
 msgstr ""
 "Επιλογή του πλήκτρου συντόμευσης για μία σύντομη μεταπήδηση προς τα εμπρός."
 
-#: src/libvlc-module.c:1261
+#: src/libvlc-module.c:1264
 msgid "Medium forward jump"
 msgstr "Μέτρια μεταπήδηση προς τα εμπρός"
 
-#: src/libvlc-module.c:1263
+#: src/libvlc-module.c:1266
 msgid "Select the hotkey to make a medium forward jump."
 msgstr ""
 "Επιλογή του πλήκτρου συντόμευσης για μία μέτρια μεταπήδηση προς τα εμπρός."
 
-#: src/libvlc-module.c:1264
+#: src/libvlc-module.c:1267
 msgid "Long forward jump"
 msgstr "Μεγάλη μεταπήδηση προς τα εμπρός"
 
-#: src/libvlc-module.c:1266
+#: src/libvlc-module.c:1269
 msgid "Select the hotkey to make a long forward jump."
 msgstr ""
 "Επιλογή του πλήκτρου συντόμευσης για μία μεγάλη μεταπήδηση προς τα εμπρός."
 
-#: src/libvlc-module.c:1267 modules/control/hotkeys.c:599
+#: src/libvlc-module.c:1270 modules/control/hotkeys.c:599
 msgid "Next frame"
 msgstr "Επόμενο καρέ"
 
-#: src/libvlc-module.c:1269
+#: src/libvlc-module.c:1272
 msgid "Select the hotkey to got to the next video frame."
 msgstr ""
 "Επιλογή του πλήκτρου συντόμευσης για τη μετάβαση στο επόμενο καρέ βίντεο."
 
-#: src/libvlc-module.c:1271
+#: src/libvlc-module.c:1274
 msgid "Very short jump length"
 msgstr "Πολύ μικρό μήκος μεταπήδησης"
 
-#: src/libvlc-module.c:1272
+#: src/libvlc-module.c:1275
 msgid "Very short jump length, in seconds."
 msgstr "Πολύ μικρό μήκος μεταπήδησης, σε δευτερόλεπτα."
 
-#: src/libvlc-module.c:1273
+#: src/libvlc-module.c:1276
 msgid "Short jump length"
 msgstr "Μικρό μήκος μεταπήδησης"
 
-#: src/libvlc-module.c:1274
+#: src/libvlc-module.c:1277
 msgid "Short jump length, in seconds."
 msgstr "Μικρό μήκος μεταπήδησης, σε δευτερόλεπτα."
 
-#: src/libvlc-module.c:1275
+#: src/libvlc-module.c:1278
 msgid "Medium jump length"
 msgstr "Μέτριο μήκος μεταπήδησης"
 
-#: src/libvlc-module.c:1276
+#: src/libvlc-module.c:1279
 msgid "Medium jump length, in seconds."
 msgstr "Μέτριο μήκος μεταπήδησης, σε δευτερόλεπτα."
 
-#: src/libvlc-module.c:1277
+#: src/libvlc-module.c:1280
 msgid "Long jump length"
 msgstr "Μεγάλο μήκος μεταπήδησης"
 
-#: src/libvlc-module.c:1278
+#: src/libvlc-module.c:1281
 msgid "Long jump length, in seconds."
 msgstr "Μεγάλο μήκος μεταπήδησης, σε δευτερόλεπτα."
 
-#: src/libvlc-module.c:1280 modules/control/hotkeys.c:361
+#: src/libvlc-module.c:1283 modules/control/hotkeys.c:361
 #: modules/gui/qt/components/controller.hpp:111
 #: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:942
 #: modules/gui/qt/menus.cpp:1128 modules/gui/skins2/commands/cmd_quit.cpp:45
 msgid "Quit"
 msgstr "Έξοδος"
 
-#: src/libvlc-module.c:1281
+#: src/libvlc-module.c:1284
 msgid "Select the hotkey to quit the application."
 msgstr "Επιλογή του πλήκτρου συντόμευσης για έξοδο από την εφαρμογή."
 
-#: src/libvlc-module.c:1282
+#: src/libvlc-module.c:1285
 msgid "Navigate up"
 msgstr "Πλοήγηση πάνω"
 
-#: src/libvlc-module.c:1283
+#: src/libvlc-module.c:1286
 #, fuzzy
 msgid ""
 "Select the key to move the selector up in DVD menus / Move viewpoint to up "
@@ -4406,11 +4415,11 @@ msgid ""
 msgstr ""
 "Επιλογή του πλήκτρου για μετακίνηση του επιλογέα στα μενού DVD προς τα πάνω."
 
-#: src/libvlc-module.c:1284
+#: src/libvlc-module.c:1287
 msgid "Navigate down"
 msgstr "Πλοήγηση κάτω"
 
-#: src/libvlc-module.c:1285
+#: src/libvlc-module.c:1288
 #, fuzzy
 msgid ""
 "Select the key to move the selector down in DVD menus / Move viewpoint to "
@@ -4418,11 +4427,11 @@ msgid ""
 msgstr ""
 "Επιλογή του πλήκτρου για μετακίνηση του επιλογέα στα μενού DVD προς τα κάτω."
 
-#: src/libvlc-module.c:1286
+#: src/libvlc-module.c:1289
 msgid "Navigate left"
 msgstr "Πλοήγηση αριστερά"
 
-#: src/libvlc-module.c:1287
+#: src/libvlc-module.c:1290
 #, fuzzy
 msgid ""
 "Select the key to move the selector left in DVD menus / Move viewpoint to "
@@ -4431,11 +4440,11 @@ msgstr ""
 "Επιλογή του πλήκτρου για μετακίνηση του επιλογέα στα μενού DVD προς τα "
 "αριστερά."
 
-#: src/libvlc-module.c:1288
+#: src/libvlc-module.c:1291
 msgid "Navigate right"
 msgstr "Πλοήγηση δεξιά"
 
-#: src/libvlc-module.c:1289
+#: src/libvlc-module.c:1292
 #, fuzzy
 msgid ""
 "Select the key to move the selector right in DVD menus / Move viewpoint to "
@@ -4443,572 +4452,572 @@ msgid ""
 msgstr ""
 "Επιλογή του πλήκτρου για μετακίνηση του επιλογέα στα μενού DVD προς τα δεξιά."
 
-#: src/libvlc-module.c:1290
+#: src/libvlc-module.c:1293
 msgid "Activate"
 msgstr "Ενεργοποίηση"
 
-#: src/libvlc-module.c:1291
+#: src/libvlc-module.c:1294
 msgid "Select the key to activate selected item in DVD menus."
 msgstr ""
 "Επιλογή του πλήκτρου για την ενεργοποίηση του επιλεγμένου στοιχείου στα "
 "μενού των DVD."
 
-#: src/libvlc-module.c:1292 modules/gui/qt/dialogs/toolbar.cpp:502
+#: src/libvlc-module.c:1295 modules/gui/qt/dialogs/toolbar.cpp:502
 msgid "Go to the DVD menu"
 msgstr "Μετάβαση στο μενού DVD"
 
-#: src/libvlc-module.c:1293
+#: src/libvlc-module.c:1296
 msgid "Select the key to take you to the DVD menu"
 msgstr "Επιλογή του πλήκτρου που θα σας μεταφέρει στο μενού DVD"
 
-#: src/libvlc-module.c:1294
+#: src/libvlc-module.c:1297
 msgid "Select previous DVD title"
 msgstr "Επιλογή προηγούμενου τίτλου DVD"
 
-#: src/libvlc-module.c:1295
+#: src/libvlc-module.c:1298
 msgid "Select the key to choose the previous title from the DVD"
 msgstr ""
 "Επιλογή του πλήκτρου για την επιλογή του προηγούμενου τίτλου από το DVD"
 
-#: src/libvlc-module.c:1296
+#: src/libvlc-module.c:1299
 msgid "Select next DVD title"
 msgstr "Επιλογή επόμενου τίτλου DVD"
 
-#: src/libvlc-module.c:1297
+#: src/libvlc-module.c:1300
 msgid "Select the key to choose the next title from the DVD"
 msgstr "Επιλογή του πλήκτρου για την επιλογή του επόμενου τίτλου από το DVD"
 
-#: src/libvlc-module.c:1298
+#: src/libvlc-module.c:1301
 msgid "Select prev DVD chapter"
 msgstr "Επιλογή προηγούμενου κεφαλαίου DVD"
 
-#: src/libvlc-module.c:1299
+#: src/libvlc-module.c:1302
 msgid "Select the key to choose the previous chapter from the DVD"
 msgstr ""
 "Επιλογή του πλήκτρου για την επιλογή του προηγούμενου κεφαλαίου από το DVD"
 
-#: src/libvlc-module.c:1300
+#: src/libvlc-module.c:1303
 msgid "Select next DVD chapter"
 msgstr "Επιλογή επόμενου κεφαλαίου DVD"
 
-#: src/libvlc-module.c:1301
+#: src/libvlc-module.c:1304
 msgid "Select the key to choose the next chapter from the DVD"
 msgstr "Επιλογή του πλήκτρου για την επιλογή του επόμενου κεφαλαίου από το DVD"
 
-#: src/libvlc-module.c:1302
+#: src/libvlc-module.c:1305
 msgid "Volume up"
 msgstr "Αύξηση έντασης ήχου"
 
-#: src/libvlc-module.c:1303
+#: src/libvlc-module.c:1306
 msgid "Select the key to increase audio volume."
 msgstr "Επιλογή του πλήκτρου για την αύξηση της έντασης ήχου."
 
-#: src/libvlc-module.c:1304
+#: src/libvlc-module.c:1307
 msgid "Volume down"
 msgstr "Μείωση έντασης ήχου"
 
-#: src/libvlc-module.c:1305
+#: src/libvlc-module.c:1308
 msgid "Select the key to decrease audio volume."
 msgstr "Επιλογή του πλήκτρου για τη μείωση της έντασης ήχου."
 
-#: src/libvlc-module.c:1306 modules/access/v4l2/v4l2.c:181
+#: src/libvlc-module.c:1309 modules/access/v4l2/v4l2.c:181
 #: modules/gui/macosx/VLCMainMenu.m:406 modules/gui/macosx/VLCMainMenu.m:486
 #: modules/gui/macosx/VLCMainMenu.m:495
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:81
 msgid "Mute"
 msgstr "Σίγαση"
 
-#: src/libvlc-module.c:1307
+#: src/libvlc-module.c:1310
 msgid "Select the key to mute audio."
 msgstr "Επιλέξτε το πλήκτρο για τη σίγαση του ήχου."
 
-#: src/libvlc-module.c:1308
+#: src/libvlc-module.c:1311
 msgid "Subtitle delay up"
 msgstr "Αύξηση της καθυστέρησης υπότιτλων"
 
-#: src/libvlc-module.c:1309
+#: src/libvlc-module.c:1312
 msgid "Select the key to increase the subtitle delay."
 msgstr "Επιλογή πλήκτρου για την αύξηση της καθυστέρησης υπότιτλων."
 
-#: src/libvlc-module.c:1310
+#: src/libvlc-module.c:1313
 msgid "Subtitle delay down"
 msgstr "Μείωση της καθυστέρησης υπότιτλων"
 
-#: src/libvlc-module.c:1311
+#: src/libvlc-module.c:1314
 msgid "Select the key to decrease the subtitle delay."
 msgstr "Επιλογή πλήκτρου για τη μείωση της καθυστέρησης υπότιτλων."
 
-#: src/libvlc-module.c:1312
+#: src/libvlc-module.c:1315
 #, fuzzy
 msgid "Reset subtitles text scale"
 msgstr "Αποκωδικοποιητής υπότιτλων Teletext"
 
-#: src/libvlc-module.c:1313
+#: src/libvlc-module.c:1316
 #, fuzzy
 msgid "Scale up subtitles text"
 msgstr "Ενεργοποίηση υπότιτλων"
 
-#: src/libvlc-module.c:1314
+#: src/libvlc-module.c:1317
 #, fuzzy
 msgid "Scale down subtitles text"
 msgstr "Ενεργοποίηση υπότιτλων"
 
-#: src/libvlc-module.c:1315
+#: src/libvlc-module.c:1318
 #, fuzzy
 msgid "Select the key to change subtitles text scaling"
 msgstr "Επιλέξτε το πλήκτρο για τη μετακίνηση των υπότιτλων ψηλότερα."
 
-#: src/libvlc-module.c:1316
+#: src/libvlc-module.c:1319
 msgid "Subtitle sync / bookmark audio timestamp"
 msgstr "Συγχρονισμός υποτίτλων / χρονοσφραγίδα σελιδοδείκτη ήχου"
 
-#: src/libvlc-module.c:1317
+#: src/libvlc-module.c:1320
 msgid "Select the key to bookmark audio timestamp when syncing subtitles."
 msgstr ""
 "Επιλέξτε το πλήκτρο για να προσθέσετε μία χρονοσφραγίδα σελιδοδείκτη ήχου "
 "κατά το συγχρονισμό υποτίτλων."
 
-#: src/libvlc-module.c:1318
+#: src/libvlc-module.c:1321
 msgid "Subtitle sync / bookmark subtitle timestamp"
 msgstr "Συγχρονισμός υποτίτλων / χρονοσφραγίδα σελιδοδείκτη υποτίτλων"
 
-#: src/libvlc-module.c:1319
+#: src/libvlc-module.c:1322
 msgid "Select the key to bookmark subtitle timestamp when syncing subtitles."
 msgstr ""
 "Επιλέξτε το πλήκτρο για να προσθέσετε μία χρονοσφραγίδα σελιδοδείκτη "
 "υποτίτλων κατά το συγχρονισμό υποτίτλων."
 
-#: src/libvlc-module.c:1320
+#: src/libvlc-module.c:1323
 msgid "Subtitle sync / synchronize audio & subtitle timestamps"
 msgstr "Συγχρονισμός υποτίτλων / συγχρονίστε χρονοσφραγίδες ήχου & υποτίτλων"
 
-#: src/libvlc-module.c:1321
+#: src/libvlc-module.c:1324
 msgid "Select the key to synchronize bookmarked audio & subtitle timestamps."
 msgstr ""
 "Επιλέξτε το πλήκτρο για να συγχρονίσετε χρονοσφραγίδες σελιδοδεικτών ήχου & "
 "υποτίτλων."
 
-#: src/libvlc-module.c:1322
+#: src/libvlc-module.c:1325
 msgid "Subtitle sync / reset audio & subtitle synchronization"
 msgstr "Συγχρονισμός υποτίτλων / επαναφορά συγχρονισμού ήχου & υποτίτλων"
 
-#: src/libvlc-module.c:1323
+#: src/libvlc-module.c:1326
 msgid "Select the key to reset synchronization of audio & subtitle timestamps."
 msgstr ""
 "Επιλέξτε το πλήκτρο για να επαναφέρετε το συγχρονισμό των χρονοσφραγίδων "
 "ήχου & υποτίτλων."
 
-#: src/libvlc-module.c:1324
+#: src/libvlc-module.c:1327
 msgid "Subtitle position up"
 msgstr "Θέση υπότιτλου επάνω"
 
-#: src/libvlc-module.c:1325
+#: src/libvlc-module.c:1328
 msgid "Select the key to move subtitles higher."
 msgstr "Επιλέξτε το πλήκτρο για τη μετακίνηση των υπότιτλων ψηλότερα."
 
-#: src/libvlc-module.c:1326
+#: src/libvlc-module.c:1329
 msgid "Subtitle position down"
 msgstr "Θέση υπότιτλου κάτω"
 
-#: src/libvlc-module.c:1327
+#: src/libvlc-module.c:1330
 msgid "Select the key to move subtitles lower."
 msgstr "Επιλέξτε το πλήκτρο για τη μετακίνηση των υπότιτλων χαμηλότερα."
 
-#: src/libvlc-module.c:1328
+#: src/libvlc-module.c:1331
 msgid "Audio delay up"
 msgstr "Αύξηση της καθυστέρησης ήχου"
 
-#: src/libvlc-module.c:1329
+#: src/libvlc-module.c:1332
 msgid "Select the key to increase the audio delay."
 msgstr "Επιλογή πλήκτρου για την αύξηση της καθυστέρησης ήχου."
 
-#: src/libvlc-module.c:1330
+#: src/libvlc-module.c:1333
 msgid "Audio delay down"
 msgstr "Μείωση της καθυστέρησης ήχου"
 
-#: src/libvlc-module.c:1331
+#: src/libvlc-module.c:1334
 msgid "Select the key to decrease the audio delay."
 msgstr "Επιλογή πλήκτρου για τη μείωση της καθυστέρησης ήχου."
 
-#: src/libvlc-module.c:1338
+#: src/libvlc-module.c:1341
 msgid "Play playlist bookmark 1"
 msgstr "Αναπαραγωγή σελιδοδείκτη 1 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1339
+#: src/libvlc-module.c:1342
 msgid "Play playlist bookmark 2"
 msgstr "Αναπαραγωγή σελιδοδείκτη 2 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1340
+#: src/libvlc-module.c:1343
 msgid "Play playlist bookmark 3"
 msgstr "Αναπαραγωγή σελιδοδείκτη 3 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1341
+#: src/libvlc-module.c:1344
 msgid "Play playlist bookmark 4"
 msgstr "Αναπαραγωγή σελιδοδείκτη 4 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1342
+#: src/libvlc-module.c:1345
 msgid "Play playlist bookmark 5"
 msgstr "Αναπαραγωγή σελιδοδείκτη 5 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1343
+#: src/libvlc-module.c:1346
 msgid "Play playlist bookmark 6"
 msgstr "Αναπαραγωγή σελιδοδείκτη 6 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1344
+#: src/libvlc-module.c:1347
 msgid "Play playlist bookmark 7"
 msgstr "Αναπαραγωγή σελιδοδείκτη 7 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1345
+#: src/libvlc-module.c:1348
 msgid "Play playlist bookmark 8"
 msgstr "Αναπαραγωγή σελιδοδείκτη 8 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1346
+#: src/libvlc-module.c:1349
 msgid "Play playlist bookmark 9"
 msgstr "Αναπαραγωγή σελιδοδείκτη 9 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1347
+#: src/libvlc-module.c:1350
 msgid "Play playlist bookmark 10"
 msgstr "Αναπαραγωγή σελιδοδείκτη 10 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1348
+#: src/libvlc-module.c:1351
 msgid "Select the key to play this bookmark."
 msgstr "Επιλογή πλήκτρου για την αναπαραγωγή αυτού του σελιδοδείκτη."
 
-#: src/libvlc-module.c:1349
+#: src/libvlc-module.c:1352
 msgid "Set playlist bookmark 1"
 msgstr "Ρύθμιση σελιδοδείκτη 1 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1350
+#: src/libvlc-module.c:1353
 msgid "Set playlist bookmark 2"
 msgstr "Ρύθμιση σελιδοδείκτη 2 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1351
+#: src/libvlc-module.c:1354
 msgid "Set playlist bookmark 3"
 msgstr "Ρύθμιση σελιδοδείκτη 3 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1352
+#: src/libvlc-module.c:1355
 msgid "Set playlist bookmark 4"
 msgstr "Ρύθμιση σελιδοδείκτη 4 της λίστας αναπαραγωγήςς"
 
-#: src/libvlc-module.c:1353
+#: src/libvlc-module.c:1356
 msgid "Set playlist bookmark 5"
 msgstr "Ρύθμιση σελιδοδείκτη 5 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1354
+#: src/libvlc-module.c:1357
 msgid "Set playlist bookmark 6"
 msgstr "Ρύθμιση σελιδοδείκτη 6 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1355
+#: src/libvlc-module.c:1358
 msgid "Set playlist bookmark 7"
 msgstr "Ρύθμιση σελιδοδείκτη 7 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1356
+#: src/libvlc-module.c:1359
 msgid "Set playlist bookmark 8"
 msgstr "Ρύθμιση σελιδοδείκτη 8 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1357
+#: src/libvlc-module.c:1360
 msgid "Set playlist bookmark 9"
 msgstr "Ρύθμιση σελιδοδείκτη 9 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1358
+#: src/libvlc-module.c:1361
 msgid "Set playlist bookmark 10"
 msgstr "Ρύθμιση σελιδοδείκτη 10 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1359
+#: src/libvlc-module.c:1362
 msgid "Select the key to set this playlist bookmark."
 msgstr "Επιλογή πλήκτρου για τη ρύθμιση αυτού του σελιδοδείκτη."
 
-#: src/libvlc-module.c:1360
+#: src/libvlc-module.c:1363
 #: modules/gui/qt/components/playlist/standardpanel.cpp:242
 msgid "Clear the playlist"
 msgstr "Καθαρισμός της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1361
+#: src/libvlc-module.c:1364
 msgid "Select the key to clear the current playlist."
 msgstr ""
 "Επιλέξτε το πλήκτρο για τον καθαρισμό της τρέχουσας λίστας αναπαραγωγής."
 
-#: src/libvlc-module.c:1363
+#: src/libvlc-module.c:1366
 msgid "Playlist bookmark 1"
 msgstr "Σελιδοδείκτης 1 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1364
+#: src/libvlc-module.c:1367
 msgid "Playlist bookmark 2"
 msgstr "Σελιδοδείκτης 2 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1365
+#: src/libvlc-module.c:1368
 msgid "Playlist bookmark 3"
 msgstr "Σελιδοδείκτης 3 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1366
+#: src/libvlc-module.c:1369
 msgid "Playlist bookmark 4"
 msgstr "Σελιδοδείκτης 4 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1367
+#: src/libvlc-module.c:1370
 msgid "Playlist bookmark 5"
 msgstr "Σελιδοδείκτης 5 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1368
+#: src/libvlc-module.c:1371
 msgid "Playlist bookmark 6"
 msgstr "Σελιδοδείκτης 6 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1369
+#: src/libvlc-module.c:1372
 msgid "Playlist bookmark 7"
 msgstr "Σελιδοδείκτης 7 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1370
+#: src/libvlc-module.c:1373
 msgid "Playlist bookmark 8"
 msgstr "Σελιδοδείκτης 8 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1371
+#: src/libvlc-module.c:1374
 msgid "Playlist bookmark 9"
 msgstr "Σελιδοδείκτης 9 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1372
+#: src/libvlc-module.c:1375
 msgid "Playlist bookmark 10"
 msgstr "Σελιδοδείκτης 10 της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1374
+#: src/libvlc-module.c:1377
 msgid "This allows you to define playlist bookmarks."
 msgstr ""
 "Αυτό σας επιτρέπει να ορίσετε τους σελιδοδείκτες της λίστας αναπαραγωγής."
 
-#: src/libvlc-module.c:1376
+#: src/libvlc-module.c:1379
 msgid "Cycle audio track"
 msgstr "Περικύκλωση κομματιού ήχου"
 
-#: src/libvlc-module.c:1377
+#: src/libvlc-module.c:1380
 msgid "Cycle through the available audio tracks(languages)."
 msgstr "Περικύκλωση μέσα από τα διαθέσιμα κομμάτια ήχου (γλώσσες)."
 
-#: src/libvlc-module.c:1378
+#: src/libvlc-module.c:1381
 #, fuzzy
 msgid "Cycle subtitle track in reverse order"
 msgstr "Περικύκλωση κομματιού υπότιτλου"
 
-#: src/libvlc-module.c:1379
+#: src/libvlc-module.c:1382
 #, fuzzy
 msgid "Cycle through the available subtitle tracks in reverse order."
 msgstr "Περικύκλωση μέσα από τα διαθέσιμα κομμάτια υπότιτλων."
 
-#: src/libvlc-module.c:1380
+#: src/libvlc-module.c:1383
 msgid "Cycle subtitle track"
 msgstr "Περικύκλωση κομματιού υπότιτλου"
 
-#: src/libvlc-module.c:1381
+#: src/libvlc-module.c:1384
 msgid "Cycle through the available subtitle tracks."
 msgstr "Περικύκλωση μέσα από τα διαθέσιμα κομμάτια υπότιτλων."
 
-#: src/libvlc-module.c:1382
+#: src/libvlc-module.c:1385
 #, fuzzy
 msgid "Toggle subtitles"
 msgstr "Υπότιτλοι teletext"
 
-#: src/libvlc-module.c:1383
+#: src/libvlc-module.c:1386
 #, fuzzy
 msgid "Toggle subtitle track visibility."
 msgstr "Περικύκλωση κομματιού υπότιτλου"
 
-#: src/libvlc-module.c:1384
+#: src/libvlc-module.c:1387
 msgid "Cycle next program Service ID"
 msgstr "Περικύκλωση επόμενου προγράμματος Service ID"
 
-#: src/libvlc-module.c:1385
+#: src/libvlc-module.c:1388
 msgid "Cycle through the available next program Service IDs (SIDs)."
 msgstr "Περικυκλώστε τα διαθέσιμα επόμενα προγράμματα Service IDs (SIDs)."
 
-#: src/libvlc-module.c:1386
+#: src/libvlc-module.c:1389
 msgid "Cycle previous program Service ID"
 msgstr "Περικυκλώστε το προηγούμενο πρόγραμμα Service ID"
 
-#: src/libvlc-module.c:1387
+#: src/libvlc-module.c:1390
 msgid "Cycle through the available previous program Service IDs (SIDs)."
 msgstr "Περικυκλώστε τα διαθέσιμα προηγούμενα πραγράμματα Service IDs (SIDs)."
 
-#: src/libvlc-module.c:1388
+#: src/libvlc-module.c:1391
 msgid "Cycle source aspect ratio"
 msgstr "Περικύκλωση αναλογίας διαστάσεων της πηγής"
 
-#: src/libvlc-module.c:1389
+#: src/libvlc-module.c:1392
 msgid "Cycle through a predefined list of source aspect ratios."
 msgstr ""
 "Περικύκλωση μέσα από μία προκαθορισμένη λίστα αναλογιών διαστάσεων της πηγής."
 
-#: src/libvlc-module.c:1390
+#: src/libvlc-module.c:1393
 msgid "Cycle video crop"
 msgstr "Περικύκλωση αποκοπής βίντεο"
 
-#: src/libvlc-module.c:1391
+#: src/libvlc-module.c:1394
 msgid "Cycle through a predefined list of crop formats."
 msgstr "Περικύκλωση μέσα από μία προκαθορισμένη λίστα τύπων αποκοπής."
 
-#: src/libvlc-module.c:1392
+#: src/libvlc-module.c:1395
 msgid "Toggle autoscaling"
 msgstr "Εναλλαγή αυτόματης κλίμακας"
 
-#: src/libvlc-module.c:1393
+#: src/libvlc-module.c:1396
 msgid "Activate or deactivate autoscaling."
 msgstr "Ενεργοποίηση ή απενεργοποίηση αυτόματης κλίμακας."
 
-#: src/libvlc-module.c:1394
+#: src/libvlc-module.c:1397
 msgid "Increase scale factor"
 msgstr "Αύξηση συντελεστή κλίμακας"
 
-#: src/libvlc-module.c:1396
+#: src/libvlc-module.c:1399
 msgid "Decrease scale factor"
 msgstr "Μείωση συντελεστή κλίμακας"
 
-#: src/libvlc-module.c:1398
+#: src/libvlc-module.c:1401
 msgid "Toggle deinterlacing"
 msgstr "Εναλλαγή αποδιαπλοκής"
 
-#: src/libvlc-module.c:1399
+#: src/libvlc-module.c:1402
 msgid "Activate or deactivate deinterlacing."
 msgstr "Ενεργοποίηση ή απενεργοποίηση διαπλοκής."
 
-#: src/libvlc-module.c:1400
+#: src/libvlc-module.c:1403
 msgid "Cycle deinterlace modes"
 msgstr "Περικύκλωση λειτουργιών αποδιαπλοκής"
 
-#: src/libvlc-module.c:1401
+#: src/libvlc-module.c:1404
 msgid "Cycle through available deinterlace modes."
 msgstr "Περικύκλωση διαθέσιμων λειτουργιών αποδιαπλοκής."
 
-#: src/libvlc-module.c:1402
+#: src/libvlc-module.c:1405
 msgid "Show controller in fullscreen"
 msgstr "Προβολή ελεγκτή στην πλήρη οθόνη"
 
-#: src/libvlc-module.c:1403
+#: src/libvlc-module.c:1406
 msgid "Boss key"
 msgstr "Boss key"
 
-#: src/libvlc-module.c:1404
+#: src/libvlc-module.c:1407
 msgid "Hide the interface and pause playback."
 msgstr "Απόκρυψη της διεπαφής και παύση αναπαραγωγής."
 
-#: src/libvlc-module.c:1405
+#: src/libvlc-module.c:1408
 msgid "Context menu"
 msgstr "Μενού περιεχομένου"
 
-#: src/libvlc-module.c:1406
+#: src/libvlc-module.c:1409
 msgid "Show the contextual popup menu."
 msgstr "Εμφάνιση αναδυόμενου μενού συμφραζομένων."
 
-#: src/libvlc-module.c:1407
+#: src/libvlc-module.c:1410
 msgid "Take video snapshot"
 msgstr "Λήψη στιγμιότυπου βίντεο"
 
-#: src/libvlc-module.c:1408
+#: src/libvlc-module.c:1411
 msgid "Takes a video snapshot and writes it to disk."
 msgstr "Λαμβάνει στιγμιότυπο βίντεο και το εγγράφει στο δίσκο."
 
-#: src/libvlc-module.c:1410 modules/gui/macosx/VLCMainMenu.m:379
+#: src/libvlc-module.c:1413 modules/gui/macosx/VLCMainMenu.m:379
 #: modules/gui/qt/components/controller.hpp:110
 #: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:845
 #: modules/stream_out/record.c:60
 msgid "Record"
 msgstr "Εγγραφή"
 
-#: src/libvlc-module.c:1411
+#: src/libvlc-module.c:1414
 msgid "Record access filter start/stop."
 msgstr "Έναρξη/διακοπή φίλτρου πρόσβασης εγγραφής."
 
-#: src/libvlc-module.c:1413
+#: src/libvlc-module.c:1416
 msgid "Normal/Loop/Repeat"
 msgstr "Κανονικό/Βρόχος/Επανάληψη"
 
-#: src/libvlc-module.c:1414
+#: src/libvlc-module.c:1417
 msgid "Toggle Normal/Loop/Repeat playlist modes"
 msgstr "Εναλλαγή λειτουργιών λίστας αναπαραγωγής \"Κανονικό/Βρόχος/Επανάληψη\""
 
-#: src/libvlc-module.c:1417
+#: src/libvlc-module.c:1420
 msgid "Toggle random playlist playback"
 msgstr "Εναλλαγή τυχαίας αναπαραγωγής της λίστας αναπαραγωγής"
 
-#: src/libvlc-module.c:1422 src/libvlc-module.c:1423
+#: src/libvlc-module.c:1425 src/libvlc-module.c:1426
 msgid "Un-Zoom"
 msgstr "Σμίκρυνση"
 
-#: src/libvlc-module.c:1425 src/libvlc-module.c:1426
+#: src/libvlc-module.c:1428 src/libvlc-module.c:1429
 msgid "Crop one pixel from the top of the video"
 msgstr "Αποκοπή ενός εικονοστοιχείου από την κορυφή του βίντεο"
 
-#: src/libvlc-module.c:1427 src/libvlc-module.c:1428
+#: src/libvlc-module.c:1430 src/libvlc-module.c:1431
 msgid "Uncrop one pixel from the top of the video"
 msgstr "Αναίρεση αποκοπής ενός εικονοστοιχείου από την κορυφή του βίντεο"
 
-#: src/libvlc-module.c:1430 src/libvlc-module.c:1431
+#: src/libvlc-module.c:1433 src/libvlc-module.c:1434
 msgid "Crop one pixel from the left of the video"
 msgstr "Αποκοπή ενός εικονοστοιχείου από την αριστερή πλευρά του βίντεο"
 
-#: src/libvlc-module.c:1432 src/libvlc-module.c:1433
+#: src/libvlc-module.c:1435 src/libvlc-module.c:1436
 msgid "Uncrop one pixel from the left of the video"
 msgstr ""
 "Αναίρεση αποκοπής ενός εικονοστοιχείου από την αριστερή πλευρά του βίντεο"
 
-#: src/libvlc-module.c:1435 src/libvlc-module.c:1436
+#: src/libvlc-module.c:1438 src/libvlc-module.c:1439
 msgid "Crop one pixel from the bottom of the video"
 msgstr "Αποκοπή ενός εικονοστοιχείου από το κάτω μέρος του βίντεο"
 
-#: src/libvlc-module.c:1437 src/libvlc-module.c:1438
+#: src/libvlc-module.c:1440 src/libvlc-module.c:1441
 msgid "Uncrop one pixel from the bottom of the video"
 msgstr "Αναίρεση αποκοπής ενός εικονοστοιχείου από το κάτω μέρος του βίντεο"
 
-#: src/libvlc-module.c:1440 src/libvlc-module.c:1441
+#: src/libvlc-module.c:1443 src/libvlc-module.c:1444
 msgid "Crop one pixel from the right of the video"
 msgstr "Αποκοπή ενός εικονοστοιχείου από τη δεξιά πλευρά του βίντεο"
 
-#: src/libvlc-module.c:1442 src/libvlc-module.c:1443
+#: src/libvlc-module.c:1445 src/libvlc-module.c:1446
 msgid "Uncrop one pixel from the right of the video"
 msgstr "Αναίρεση αποκοπής ενός εικονοστοιχείου από τη δεξιά πλευρά του βίντεο"
 
-#: src/libvlc-module.c:1446
+#: src/libvlc-module.c:1449
 msgid "Shrink the viewpoint field of view (360°)"
 msgstr ""
 
-#: src/libvlc-module.c:1447
+#: src/libvlc-module.c:1450
 msgid "Expand the viewpoint field of view (360°)"
 msgstr ""
 
-#: src/libvlc-module.c:1448
+#: src/libvlc-module.c:1451
 msgid "Roll the viewpoint clockwise (360°)"
 msgstr ""
 
-#: src/libvlc-module.c:1449
+#: src/libvlc-module.c:1452
 msgid "Roll the viewpoint anti-clockwise (360°)"
 msgstr ""
 
-#: src/libvlc-module.c:1451
+#: src/libvlc-module.c:1454
 msgid "Toggle wallpaper mode in video output"
 msgstr "Λειτουργία εναλλαγής ταπετσαριών στην έξοδο βίντεο"
 
-#: src/libvlc-module.c:1453
+#: src/libvlc-module.c:1456
 msgid "Toggle wallpaper mode in video output."
 msgstr "Λειτουργία εναλλαγής ταπετσαριών στην έξοδο βίντεο."
 
-#: src/libvlc-module.c:1455
+#: src/libvlc-module.c:1458
 msgid "Cycle through audio devices"
 msgstr "Περικύκλωση συσκευών ήχου"
 
-#: src/libvlc-module.c:1456
+#: src/libvlc-module.c:1459
 msgid "Cycle through available audio devices"
 msgstr "Περικύκλωση διαθέσιμων συσκευών ήχου"
 
-#: src/libvlc-module.c:1585 src/video_output/vout_intf.c:274
+#: src/libvlc-module.c:1588 src/video_output/vout_intf.c:274
 #: modules/gui/macosx/VLCMainMenu.m:423 modules/gui/macosx/VLCMainMenu.m:497
 #: modules/gui/qt/components/controller.hpp:109
 msgid "Snapshot"
 msgstr "Στιγμιότυπο οθόνης"
 
-#: src/libvlc-module.c:1602
+#: src/libvlc-module.c:1605
 msgid "Window properties"
 msgstr "Ιδιότητες παραθύρου"
 
-#: src/libvlc-module.c:1662
+#: src/libvlc-module.c:1665
 msgid "Subpictures"
 msgstr "Υποεικόνες"
 
-#: src/libvlc-module.c:1670 modules/codec/subsdec.c:181
+#: src/libvlc-module.c:1673 modules/codec/subsdec.c:181
 #: modules/demux/subtitle.c:71 modules/demux/xiph_metadata.h:49
 #: modules/demux/xiph_metadata.h:62
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:158
@@ -5018,82 +5027,82 @@ msgstr "Υποεικόνες"
 msgid "Subtitles"
 msgstr "Υπότιτλοι"
 
-#: src/libvlc-module.c:1690 modules/stream_out/transcode/transcode.c:116
+#: src/libvlc-module.c:1693 modules/stream_out/transcode/transcode.c:116
 msgid "Overlays"
 msgstr "Επικαλύψεις"
 
-#: src/libvlc-module.c:1700
+#: src/libvlc-module.c:1703
 msgid "Track settings"
 msgstr "Ρυθμίσεις κομματιού"
 
-#: src/libvlc-module.c:1736 modules/gui/macosx/VLCSimplePrefsController.m:309
+#: src/libvlc-module.c:1739 modules/gui/macosx/VLCSimplePrefsController.m:309
 msgid "Playback control"
 msgstr "Έλεγχος αναπαραγωγής"
 
-#: src/libvlc-module.c:1765
+#: src/libvlc-module.c:1768
 msgid "Default devices"
 msgstr "Προεπιλεγμένες συσκευές"
 
-#: src/libvlc-module.c:1772
+#: src/libvlc-module.c:1775
 msgid "Network settings"
 msgstr "Ρυθμίσεις δικτύου"
 
-#: src/libvlc-module.c:1797
+#: src/libvlc-module.c:1800
 msgid "Socks proxy"
 msgstr "Διαμεσολαβητής socks"
 
-#: src/libvlc-module.c:1806 modules/demux/xiph_metadata.h:55
+#: src/libvlc-module.c:1809 modules/demux/xiph_metadata.h:55
 msgid "Metadata"
 msgstr "Μεταδεδομένα"
 
-#: src/libvlc-module.c:1905
+#: src/libvlc-module.c:1910
 msgid "Decoders"
 msgstr "Αποκωδικοποιητές"
 
-#: src/libvlc-module.c:1912 modules/access/avio.h:40
+#: src/libvlc-module.c:1917 modules/access/avio.h:40
 #: modules/access/v4l2/v4l2.c:59 modules/gui/macosx/VLCPlaylistInfo.m:85
 msgid "Input"
 msgstr "Είσοδος"
 
-#: src/libvlc-module.c:1948
+#: src/libvlc-module.c:1953
 msgid "VLM"
 msgstr "VLM"
 
-#: src/libvlc-module.c:1994
+#: src/libvlc-module.c:1999
 msgid "Special modules"
 msgstr "Ειδικές ενότητες"
 
-#: src/libvlc-module.c:1999 modules/gui/qt/dialogs/plugins.cpp:84
+#: src/libvlc-module.c:2004 modules/gui/qt/dialogs/plugins.cpp:84
 msgid "Plugins"
 msgstr "Εμφυτεύματα"
 
-#: src/libvlc-module.c:2011
+#: src/libvlc-module.c:2016
 msgid "Performance options"
 msgstr "Eπιλογές απόδοσης"
 
-#: src/libvlc-module.c:2030
+#: src/libvlc-module.c:2035
 msgid "Clock source"
 msgstr "Πηγή ρολογιού"
 
-#: src/libvlc-module.c:2145
+#: src/libvlc-module.c:2150
 msgid "Hot keys"
 msgstr "Πλήκτρα συντόμευσης"
 
-#: src/libvlc-module.c:2635
+#: src/libvlc-module.c:2640
 msgid "Jump sizes"
 msgstr "Μεγέθη μεταπήδησης"
 
-#: src/libvlc-module.c:2720
+#: src/libvlc-module.c:2725
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr ""
 "εκτύπωση βοήθειας για τον VLC (μπορεί να συνδυαστεί με --για προχωρημένους "
 "και --αναλυτικότητα-βοήθειας)"
 
-#: src/libvlc-module.c:2723
+#: src/libvlc-module.c:2728
 msgid "Exhaustive help for VLC and its modules"
 msgstr "Εξαντλητική βοήθεια για το VLC και τις ενότητες του"
 
-#: src/libvlc-module.c:2725
+#: src/libvlc-module.c:2730
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
 "--help-verbose)"
@@ -5101,19 +5110,19 @@ msgstr ""
 "εκτύπωση βοήθειας για τον VLC και όλες του τις ενότητες (μπορεί να "
 "συνδυαστεί με --για προχωρημένους και --αναλυτικότητα-βοήθειας)"
 
-#: src/libvlc-module.c:2728
+#: src/libvlc-module.c:2733
 msgid "ask for extra verbosity when displaying help"
 msgstr "αναζήτηση για επιπρόσθετη αναλυτικότητα κατά την εμφάνιση βοήθειας"
 
-#: src/libvlc-module.c:2730
+#: src/libvlc-module.c:2735
 msgid "print a list of available modules"
 msgstr "εκτύπωση λίστας διαθέσιμων ενοτήτων"
 
-#: src/libvlc-module.c:2732
+#: src/libvlc-module.c:2737
 msgid "print a list of available modules with extra detail"
 msgstr "εκτύπωση λίστας διαθέσιμων ενοτήτων με επιπρόσθετες λεπτομέρειες"
 
-#: src/libvlc-module.c:2734
+#: src/libvlc-module.c:2739
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
 "verbose). Prefix the module name with = for strict matches."
@@ -5122,29 +5131,29 @@ msgstr ""
 "για προχωρημένους και --αναλυτικότητα-βοήθειας). Προτάξτε το όνομα της "
 "ενότητας με = για ακριβή ταιριάσματα."
 
-#: src/libvlc-module.c:2738
+#: src/libvlc-module.c:2743
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr ""
 "Ούτε θα φορτώνεται ούτε θα αποθηκεύεται καμία επιλογή ρυθμίσεων στο αρχείο "
 "ρυθμίσεων"
 
-#: src/libvlc-module.c:2740
+#: src/libvlc-module.c:2745
 msgid "reset the current config to the default values"
 msgstr "επαναφορά της τρέχουσας ρύθμισης στις προεπιλεγμένες τιμές"
 
-#: src/libvlc-module.c:2742
+#: src/libvlc-module.c:2747
 msgid "use alternate config file"
 msgstr "χρήση εναλλακτικού αρχείου ρυθμίσεων"
 
-#: src/libvlc-module.c:2744
+#: src/libvlc-module.c:2749
 msgid "resets the current plugins cache"
 msgstr "επαναφέρει την κρυφή μνήμη εμφυτευμάτων"
 
-#: src/libvlc-module.c:2746
+#: src/libvlc-module.c:2751
 msgid "print version information"
 msgstr "εκτύπωση πληροφοριών έκδοσης"
 
-#: src/libvlc-module.c:2786
+#: src/libvlc-module.c:2791
 #, fuzzy
 msgid "core program"
 msgstr "κύριο πρόγραμμα"
@@ -5462,7 +5471,7 @@ msgstr "Η αποθήκευση του αρχείου απέτυχε"
 msgid "Failed to open \"%s\" for writing"
 msgstr "Αποτυχία ανοίγματος \"%s\" για εγγραφή"
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2659
+#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2682
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -7578,7 +7587,7 @@ msgstr "Το όνομα χρήστη που θα χρησιμοποιηθεί γ
 #: modules/gui/macosx/VLCSimplePrefsController.m:327
 #: modules/gui/qt/dialogs/external.cpp:211 modules/lua/vlc.c:54
 #: modules/lua/vlc.c:70 modules/misc/audioscrobbler.c:116
-#: modules/stream_out/raop.c:155 modules/stream_out/rtp.c:176
+#: modules/stream_out/rtp.c:176
 msgid "Password"
 msgstr "Κωδικός χρήστη"
 
@@ -7636,11 +7645,11 @@ msgstr "Η σύνδεση του VLC στο δοθέντα εξυπηρετητ�
 msgid "Your account was rejected."
 msgstr "Ο λογαριασμός σας απορρίφθηκε."
 
-#: modules/access/http/access.c:214 modules/access/http.c:320
+#: modules/access/http/access.c:214 modules/access/http.c:318
 msgid "HTTP authentication"
 msgstr "Πιστοποίηση HTTP"
 
-#: modules/access/http/access.c:215 modules/access/http.c:321
+#: modules/access/http/access.c:215 modules/access/http.c:319
 #, c-format
 msgid "Please enter a valid login name and a password for realm %s."
 msgstr "Παρακαλώ εισάγετε ένα έγκυρο όνομα και κωδικό χρήστη για το realm %s."
@@ -8739,7 +8748,7 @@ msgstr "Επιλογή μίας ροής δεδομένων"
 msgid "Request server to send stream as multicast"
 msgstr ""
 
-#: modules/access/satip.c:66 modules/lua/vlc.c:62 modules/stream_out/raop.c:148
+#: modules/access/satip.c:66 modules/lua/vlc.c:62
 #: share/lua/http/dialogs/stream_config_window.html:28
 #: share/lua/http/dialogs/stream_window.html:87
 msgid "Host"
@@ -9069,7 +9078,7 @@ msgstr ""
 "Ο κόμβος συσκευής όπου θα μπορούν να διαβάζονται τα δεδομένα VBI (για "
 "κλειστές λεζάντες)"
 
-#: modules/access/v4l2/v4l2.c:50 modules/stream_out/standard.c:86
+#: modules/access/v4l2/v4l2.c:50 modules/stream_out/standard.c:92
 msgid "Standard"
 msgstr "Πρότυπο"
 
@@ -15538,7 +15547,7 @@ msgstr "Επιδιόρθωση όταν χρειαστεί"
 msgid "AVI demuxer"
 msgstr "Αποπολυπλέκτης AVI"
 
-#: modules/demux/avi/avi.c:771 modules/demux/mp4/mp4.c:1686
+#: modules/demux/avi/avi.c:772 modules/demux/mp4/mp4.c:1707
 #, fuzzy
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
@@ -15555,28 +15564,28 @@ msgstr ""
 "Αυτό το βήμα θα πάρει αρκετό χρόνο σε ένα μεγάλο αρχείο.\n"
 "Τι θέλετε να κάνετε;"
 
-#: modules/demux/avi/avi.c:779
+#: modules/demux/avi/avi.c:780
 msgid "Do not play"
 msgstr "Να μη γίνει αναπαραγωγή"
 
-#: modules/demux/avi/avi.c:780
+#: modules/demux/avi/avi.c:781
 msgid "Build index then play"
 msgstr "Δημιουργία ευρετηρίου και μετά αναπαραγωγή"
 
-#: modules/demux/avi/avi.c:781
+#: modules/demux/avi/avi.c:782
 msgid "Play as is"
 msgstr "Αναπαραγωγή όπως είναι"
 
-#: modules/demux/avi/avi.c:782 modules/demux/mp4/mp4.c:1697
+#: modules/demux/avi/avi.c:783 modules/demux/mp4/mp4.c:1718
 #, fuzzy
 msgid "Broken or missing Index"
 msgstr "Το ευρετήριο AVI λείπει ή είναι κατακερματισμένο"
 
-#: modules/demux/avi/avi.c:2660
+#: modules/demux/avi/avi.c:2683
 msgid "Broken or missing AVI Index"
 msgstr "Το ευρετήριο AVI λείπει ή είναι κατακερματισμένο"
 
-#: modules/demux/avi/avi.c:2661
+#: modules/demux/avi/avi.c:2684
 msgid "Fixing AVI Index..."
 msgstr "Επιδιόρθωση ευρετηρίου AVI..."
 
@@ -15864,12 +15873,12 @@ msgstr "Αποπολυπλέκτης ροής δεδομένων MP4"
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:1694
+#: modules/demux/mp4/mp4.c:1715
 #, fuzzy
 msgid "Do not seek"
 msgstr "Να μη γίνει αναπαραγωγή"
 
-#: modules/demux/mp4/mp4.c:1695
+#: modules/demux/mp4/mp4.c:1716
 #, fuzzy
 msgid "Build index"
 msgstr "Δημιουργία ευρετηρίου και μετά αναπαραγωγή"
@@ -17212,7 +17221,7 @@ msgid "Click to exit fullscreen playback."
 msgstr "Κάντε κλικ για να εγκαταλείψετε την αναπαραγωγή πλήρους οθόνης."
 
 #: modules/gui/macosx/VLCFSPanelController.m:127
-#: modules/gui/qt/dialogs/toolbar.cpp:470 modules/stream_out/raop.c:151
+#: modules/gui/qt/dialogs/toolbar.cpp:470
 msgid "Volume"
 msgstr "Ένταση ήχου"
 
@@ -25264,38 +25273,6 @@ msgstr "Γέφυρα μωσαϊκού"
 msgid "Mosaic bridge stream output"
 msgstr "Έξοδος ροής δεδομένων γέφυρας μωσαϊκού"
 
-#: modules/stream_out/raop.c:149
-msgid "Hostname or IP address of target device"
-msgstr "Όνομα κεντρικού υπολογιστή ή διεύθυνση IP της συσκευής-στόχου"
-
-#: modules/stream_out/raop.c:152
-msgid ""
-"Output volume for analog output: 0 for silence, 1..255 from almost silent to "
-"very loud."
-msgstr ""
-"Ένταση ήχου εξόδου για αναλογική έξοδο: 0 για σιωπή και 1..255 για ένταση "
-"από ελάχιστη (σχεδόν σιωπή) έως πολύ μεγάλη."
-
-#: modules/stream_out/raop.c:156
-msgid "Password for target device."
-msgstr "Κωδικός για τη συσκευή-στόχο."
-
-#: modules/stream_out/raop.c:158
-msgid "Password file"
-msgstr "Αρχείο κωδικού χρήστη"
-
-#: modules/stream_out/raop.c:159
-msgid "Read password for target device from file."
-msgstr "Ανάγνωση κωδικού από αρχείο για τη συσκευή-στόχο."
-
-#: modules/stream_out/raop.c:162
-msgid "RAOP"
-msgstr "RAOP"
-
-#: modules/stream_out/raop.c:163
-msgid "Remote Audio Output Protocol stream output"
-msgstr "Έξοδος ροής δεδομένων πρωτοκόλλου εξόδου απομακρυσμένου ήχου (RAOP)"
-
 #: modules/stream_out/record.c:50
 msgid "Destination prefix"
 msgstr "Πρόθεμα προορισμού"
@@ -25682,7 +25659,7 @@ msgstr ""
 "Όνομα αρχείου για τη ρύθμιση του βοηθού ροής δεδομένων dst, dst=σύνδεση"
 "+'/'+διαδρομή, η παράμετρος dst-το παρακάμπτει"
 
-#: modules/stream_out/standard.c:87
+#: modules/stream_out/standard.c:93
 msgid "Standard stream output"
 msgstr "Προκαθορισμένη έξοδος ροής δεδομένων"
 
@@ -30372,6 +30349,31 @@ msgstr "Είστε σίγουρος ότι θέλετε να δημιουργή�
 
 #~ msgid "Dynamic language setting from teletext"
 #~ msgstr "Δυναμική ρύθμιση γλώσσας από το teletext"
+
+#~ msgid "Hostname or IP address of target device"
+#~ msgstr "Όνομα κεντρικού υπολογιστή ή διεύθυνση IP της συσκευής-στόχου"
+
+#~ msgid ""
+#~ "Output volume for analog output: 0 for silence, 1..255 from almost silent "
+#~ "to very loud."
+#~ msgstr ""
+#~ "Ένταση ήχου εξόδου για αναλογική έξοδο: 0 για σιωπή και 1..255 για ένταση "
+#~ "από ελάχιστη (σχεδόν σιωπή) έως πολύ μεγάλη."
+
+#~ msgid "Password for target device."
+#~ msgstr "Κωδικός για τη συσκευή-στόχο."
+
+#~ msgid "Password file"
+#~ msgstr "Αρχείο κωδικού χρήστη"
+
+#~ msgid "Read password for target device from file."
+#~ msgstr "Ανάγνωση κωδικού από αρχείο για τη συσκευή-στόχο."
+
+#~ msgid "RAOP"
+#~ msgstr "RAOP"
+
+#~ msgid "Remote Audio Output Protocol stream output"
+#~ msgstr "Έξοδος ροής δεδομένων πρωτοκόλλου εξόδου απομακρυσμένου ήχου (RAOP)"
 
 #~ msgid "Session phone number"
 #~ msgstr "Αριθμός τηλεφώνου συνεδρίας"
