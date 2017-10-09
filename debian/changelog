@@ -1,4 +1,4 @@
-vlc (3.0.0~20171004-1) UNRELEASED; urgency=medium
+vlc (3.0.0~20171009-1) UNRELEASED; urgency=medium
 
   * New upstream snapshot.
     - Install vlc_interface.h. (Closes: #768808)
@@ -20,7 +20,7 @@ vlc (3.0.0~20171004-1) UNRELEASED; urgency=medium
     - Check currently disabled plugins.
     - Update Breaks+Replaces for moved plugins.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Mon, 25 Sep 2017 19:53:00 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 09 Oct 2017 21:01:57 +0200
 
 vlc (2.2.6-6) unstable; urgency=medium
 
