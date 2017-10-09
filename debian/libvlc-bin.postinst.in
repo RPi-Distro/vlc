@@ -2,7 +2,7 @@
 set -e
 
 run_vlc_cache_gen() {
-    files = `find /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins -name '*.so' -type -f -print -quit`
+    files=`find /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins -name '*.so' -type f -print -quit`
     if test -n "$files"
     then
       # run vlc-cache-gen since there are plugins
