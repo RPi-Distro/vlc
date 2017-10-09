@@ -12,6 +12,8 @@ vlc (3.0.0~20171009-1) UNRELEASED; urgency=medium
     - Fix issues with green borders. (Closes: #765969) (LP: #1405166)
   * Remove embedded ffmpeg copy. (LP: #1546078)
   * debian/patches: Drop all patches.
+  * debian/libvlc-bin.postinst.in: Skip plugin cache generation if no plugins
+    are installed. (Closes: #878026)
 
   * TODO:
     - libvlccore needs a SONAME bump.
