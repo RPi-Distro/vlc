@@ -2,7 +2,7 @@
  * control.c
  *****************************************************************************
  * Copyright (C) 1999-2015 VLC authors and VideoLAN
- * $Id: df3ab765a3aa048a423d35b35ea81caf571affc8 $
+ * $Id: 8d9ffc0b8a961495c3094dcdec34f29beca41087 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -412,8 +412,12 @@ int input_vaControl( input_thread_t *p_input, int i_query, va_list args )
             psz = va_arg( args, char * );
             b_bool = va_arg( args, int );
             bool b_notify = va_arg( args, int );
+            bool b_check_ext = va_arg( args, int );
 
             if( !psz || ( type != SLAVE_TYPE_SPU && type != SLAVE_TYPE_AUDIO ) )
+                return VLC_EGENERIC;
+            if( b_check_ext && type == SLAVE_TYPE_SPU &&
+                !subtitles_Filter( psz ) )
                 return VLC_EGENERIC;
 
             input_item_slave_t *p_slave =
@@ -445,19 +449,6 @@ int input_vaControl( input_thread_t *p_input, int i_query, va_list args )
             }
             return VLC_SUCCESS;
         }
-
-        case INPUT_ADD_SUBTITLE:
-            psz = va_arg( args, char * );
-            b_bool = va_arg( args, int );
-
-            if( !psz || *psz == '\0' )
-                return VLC_EGENERIC;
-            if( b_bool && !subtitles_Filter( psz ) )
-                return VLC_EGENERIC;
-
-            val.psz_string = strdup( psz );
-            input_ControlPush( p_input, INPUT_CONTROL_ADD_SUBTITLE, &val );
-            return VLC_SUCCESS;
 
         case INPUT_GET_ATTACHMENTS: /* arg1=input_attachment_t***, arg2=int*  res=can fail */
         {

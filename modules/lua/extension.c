@@ -2,7 +2,7 @@
  * extension.c: Lua Extensions (meta data, web information, ...)
  *****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: fbfccbc670a46d4b301bc082853ec96a0349b883 $
+ * $Id: 342ce2182723d0ef79bafedb7f16c3bb5d935f13 $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -96,6 +96,9 @@ static void inputItemMetaChanged( const vlc_event_t *p_event,
  **/
 int Open_Extension( vlc_object_t *p_this )
 {
+    if( lua_Disabled( p_this ) )
+        return VLC_EGENERIC;
+
     msg_Dbg( p_this, "Opening Lua Extension module" );
 
     extensions_manager_t *p_mgr = ( extensions_manager_t* ) p_this;

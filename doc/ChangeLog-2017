@@ -1,3 +1,319 @@
+commit 7c04db8c27362e31d348bd2efb099ea274c5dae3
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Oct 8 22:30:19 2017 +0300
+
+    configure: actually test needed libraries for gme (fixes #18902)
+
+commit c711cf7ccfe387e343224f64c2af8120796a138a
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Oct 8 18:22:26 2017 +0300
+
+    httpd: simplify/fix connection closing
+    
+    Close the connection if request is HTTP/1.0 or if the connection header
+    line in the response exists and is "close". This works because close is
+    the only that ever gets set as response so far; it wouldn't work if any
+    other token were emitted by the server.
+    
+    Note: the RTSP server and the Lua art callback do not handle connection
+    close correctly still.
+
+commit 2f398c08bfc40569814a95d4bf63161a55e60015
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Oct 8 18:18:19 2017 +0300
+
+    httpd: handle Connection header on unauthenticated requests
+
+commit 394c9c90b5a267082930a4288e884451f2a97ca2
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Oct 8 18:18:05 2017 +0300
+
+    httpd: handle Connection header on unknown requests
+
+commit 7c0ae26a405e90a13238862e4d28025f7373a0f4
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Oct 8 18:17:37 2017 +0300
+
+    httpd: handle Connection header in OPTIONS requests
+
+commit 64462809c10639e45c64509ee57209032db15d0d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Oct 8 18:08:07 2017 +0300
+
+    httpd: handle Connection header in "streams"
+
+commit 292ce626dbf1c93a6780f192ddb36ae6b87014a5
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Oct 8 18:07:52 2017 +0300
+
+    httpd: handle Connection header in redirections
+
+commit a81000187840432b27fba9ee36543548e3423efb
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Oct 8 17:52:43 2017 +0300
+
+    httpd: do not blindly echo the Connection header line
+    
+    Only the "close" token should actually be echoed. Other token would be
+    header line names, and must not be echoed unless we specifically do not
+    want a proxy to pass it up.
+    
+    For now, force theclose token if there is an inbound connection header.
+    This is not optimal as it might close a connection needlessly, but at
+    least it works correctly.
+
+commit 399f680f4176c384b5b230ff72887a15aa60abf0
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Oct 8 17:43:31 2017 +0300
+
+    httpd: remove dead keep-alive code
+    
+    No code path inserts the keep-alive token in the response.
+
+commit 4222bcb93c8266ed6d612fbcbcb3dbc9cc35d67e
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Oct 8 12:47:40 2017 +0300
+
+    http_auth: fix potential NULL deref (fixes #18595)
+
+commit 10c2c932afe8e980575b1896405b7bee5e78043b
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Oct 8 12:16:53 2017 +0300
+
+    raop: remove obsolete and unmaintained plugin
+
+commit 5e48de5cd18b76c4a40b4621104194b84158cd07
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Oct 8 11:00:52 2017 +0300
+
+    Revert "Link GME with CXXLD"
+    
+    This reverts commit 3267797ea727e1ab298545cc6fc33709fef72609.
+
+commit 0c98ed76b0250ebc25ff7bb981117b1d99bd2ce6
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Oct 8 10:48:51 2017 +0300
+
+    Revert "modules: x265 is a C++ module"
+    
+    This reverts commit a1f9dfd57c84f2340755443200e6f03d2c895548.
+    This fixes linking.
+
+commit 91451241c7489844c9319fdc2f455e162924d4fb
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Fri Oct 6 10:51:24 2017 +0200
+
+    help: retreive choices from config rather than modules directly
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 91be8dac2039a34d399e8db4c36b5d5b59a7118f
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Fri Oct 6 16:18:30 2017 +0200
+
+    directx_va: Fix leak
+    
+    refs #18849
+
+commit b37800b83505ee8fb9fdfa49a9712c713fd63989
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Thu Oct 5 19:12:32 2017 +0200
+
+    Revert "configure: Do not use -no-undefined with sanitizers on darwin"
+    
+    This reverts commit 76118f582697ef0776f87ca6d69c4048a3fefe02.
+    
+    It turns out this is actually an issue with libtool, cleaning the flags
+    when in link mode and removing the sanitizer flag.
+    
+    It was fixed in libtool a5c6466528c060cc4660ad0319c00740db0e42ba
+    but there was no release since this fix.
+
+commit 168bd3f8e7283f72250d8753ddb3ad63bc7dd54b
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Oct 6 11:43:17 2017 +0200
+
+    demux: mp4: avoid audio cuts on seek
+    
+    mostly with fast seek
+
+commit 7f5b62aac481e55caefc494ad1f81caf9e18bef7
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Oct 6 10:43:59 2017 +0200
+
+    demux: avi: flag discontinuity on seek
+
+commit 341d50ffa447a4718395e921efd33980994bb46e
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Oct 6 10:24:38 2017 +0200
+
+    demux: avi: handle fastseek
+
+commit 72e434da7fd4025c124489bc605c67b4bee20e83
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Oct 6 10:24:56 2017 +0200
+
+    demux: avi: start decoding from lowest seek point
+
+commit 44278639b83003792c5b681f6565714dfb99b985
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Oct 5 19:14:55 2017 +0200
+
+    avi: Always use stream_Seek when the stream is seekable
+
+commit 938fb514f52d22625fb8da11dd3db6394788cfaf
+Author: Justin Kim <justin.kim@collabora.com>
+Date:   Wed Sep 27 14:02:35 2017 +0900
+
+    stream_out: standard: add 'srt'
+    
+    SRT is similar to UDP.
+    
+    Signed-off-by: Justin Kim <justin.kim@collabora.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 67cbd82882b2cab5d9ceec249e620913acbe30d6
+Author: Justin Kim <justin.kim@collabora.com>
+Date:   Wed Sep 27 14:02:34 2017 +0900
+
+    access_out:srt: introduce SRT ouput module
+    
+    The access_output_srt module is a SRT client to send a stream.
+    
+    Signed-off-by: Justin Kim <justin.kim@collabora.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit f38c0bc9316b8496d70fdb9f5051bc6cc4b6492a
+Author: Justin Kim <justin.kim@collabora.com>
+Date:   Wed Sep 27 14:02:33 2017 +0900
+
+    access: srt: introduce srt input module
+    
+    Secure Reliable Transport (SRT) is a proprietary transport technology
+    that optimizes streaming performance across unpredictable networks.
+    This patch is an imlementation of input module which works as a SRT
+    client based on SRT Library[0].
+    
+    [0] https://github.com/Haivision/srt/releases
+    
+    Signed-off-by: Justin Kim <justin.kim@collabora.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 04c370c2eb887116d6dd592441fc62f83083dc1a
+Author: Steve Lhomme <robux4@gmail.com>
+Date:   Fri Sep 29 14:45:27 2017 +0200
+
+    dxva2: fix interface leak
+    
+    We don't need to get this one, we already hold a reference from calling
+    IDirect3DSurface9_GetDevice().
+    
+    Close #18849
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c63c6b53148cb34c76a1b78807d32bac12ee7549
+Author: Steve Lhomme <robux4@gmail.com>
+Date:   Fri Sep 29 14:45:26 2017 +0200
+
+    dxva2: warn when closing the device handle failed
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 1814614a9831cb790a395411b3c25b1c84bf72de
+Author: Steve Lhomme <robux4@gmail.com>
+Date:   Fri Sep 29 14:45:25 2017 +0200
+
+    dxva2: remove dead code
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 2f5b3542c73c617ef443f8cc414af1041d8c3da4
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Wed Oct 4 01:51:09 2017 +0200
+
+    configure: Use consistent test style
+
+commit 76118f582697ef0776f87ca6d69c4048a3fefe02
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Wed Oct 4 01:50:42 2017 +0200
+
+    configure: Do not use -no-undefined with sanitizers on darwin
+    
+    Using sanitizer and no-undefined will cause linker errors on darwin due
+    to undefined symbols of the sanitizer.
+    
+    This is adapted from a patch by Filip Roséen.
+
+commit 9264da8448b1451d5ea773fa01af99fc736a5320
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Oct 5 10:35:47 2017 +0200
+
+    lib/media: don't request local art twice
+
+commit c972cfd0f142d52ea1bf0afd87117036b5244839
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Oct 5 10:00:33 2017 +0200
+
+    libvlc: add an option to disable lua
+    
+    Playlist lua modules are probed for each opened input. This can take a lot of
+    time, it can double the time of a local parsing where no lua module are needed.
+    This time is negligible when playing a file.
+    
+    Playlist lua probe can take 5ms on desktop (in comparison of 5ms for parsing),
+    or 50ms on some android devices.
+    
+    This new option can be used by VLC ports to disable lua when using VLC for
+    parsing.
+
+commit 2dc1cb57f40faa3747729c879a9b0430acc0ab1d
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Wed Oct 4 22:34:37 2017 +0200
+
+    macosx: Fix height of playlist export accessory view
+    
+    Fix #18891
+
+commit adb8097716ac0c1fc4bb52313ce31d267e2fea40
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Oct 4 20:00:06 2017 +0300
+
+    http: fix NULL deref if password is missing
+    
+    Basic authentication requires both username and password.
+
+commit 9bc4991ebcb02d477bea1f75b2f6d9e90c8ee77a
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Oct 4 19:58:39 2017 +0300
+
+    old http: fix leak on reconnect
+    
+    The auth state machine must be reinitialized at every connection.
+    
+    NOTE: There are still (probably, untested) leaks if HTTP response
+    contains multiple auth-related header lines with the same name.
+
+commit ef7c26f5a76c1239b17dffb51879ee61753cfce0
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Oct 3 18:11:00 2017 +0200
+
+    input: Remove dead code
+
+commit 31e424004db5da4f8b6e247b0d27ec03f7dc7bce
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Oct 3 18:07:33 2017 +0200
+
+    input: Reintroduce subtitle extension check
+    
+    Fix #18882
+
+commit 649e477b6eca5bb4d4f2abfad3bf613fa0d55edd
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Wed Oct 4 08:25:34 2017 +0200
+
+    darwin/dirs: Remove accidentally added strdup
+
 commit 3acf45b1477f989e271dc0d234d5d9256bc0f758
 Author: Marvin Scholz <epirat07@gmail.com>
 Date:   Wed Oct 4 01:00:56 2017 +0200

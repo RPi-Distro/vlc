@@ -4,7 +4,7 @@
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
  * Copyright (C) 2015 Steve Lhomme
- * $Id: ea2c2095a6662fac2579253e02e7ba1faf1528dc $
+ * $Id: 1f51e4c2278cb059b4c7e9c559e1ca0f6e8b506f $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -274,9 +274,9 @@ char *directx_va_GetDecoderName(const GUID *guid)
             return strdup(DXVA_MODES[i].name);
     }
 
-    char *psz_name = malloc(36);
-    if (likely(psz_name))
-        asprintf(&psz_name, "Unknown decoder " GUID_FMT, GUID_PRINT(*guid));
+    char *psz_name;
+    if (asprintf(&psz_name, "Unknown decoder " GUID_FMT, GUID_PRINT(*guid)) < 0)
+        return NULL;
     return psz_name;
 }
 

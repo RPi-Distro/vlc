@@ -2,7 +2,7 @@
  * intf.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: a9f27e563ab017d4fe7deaefc82923e349fc6024 $
+ * $Id: 7218a99380415afd56aec5f0f93202dded4e640c $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -201,6 +201,9 @@ static const luaL_Reg p_reg[] = { { NULL, NULL } };
 
 static int Start_LuaIntf( vlc_object_t *p_this, const char *name )
 {
+    if( lua_Disabled( p_this ) )
+        return VLC_EGENERIC;
+
     intf_thread_t *p_intf = (intf_thread_t*)p_this;
     lua_State *L;
 

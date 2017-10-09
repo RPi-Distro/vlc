@@ -740,6 +740,16 @@ LIBS_goom
 CFLAGS_goom
 CPPFLAGS_goom
 LTLIBgoom
+SRT_LIBS
+SRT_CFLAGS
+LIBS_access_output_srt
+LIBS_access_srt
+CFLAGS_access_output_srt
+CFLAGS_access_srt
+CPPFLAGS_access_output_srt
+CPPFLAGS_access_srt
+LTLIBaccess_output_srt
+LTLIBaccess_srt
 HAVE_LIRC_FALSE
 HAVE_LIRC_TRUE
 HAVE_NCURSES_FALSE
@@ -1781,6 +1791,7 @@ enable_breakpad
 enable_minimal_macosx
 enable_ncurses
 enable_lirc
+enable_srt
 enable_goom
 enable_projectm
 enable_vsxu
@@ -2039,6 +2050,8 @@ XEXT_CFLAGS
 XEXT_LIBS
 NCURSES_CFLAGS
 NCURSES_LIBS
+SRT_CFLAGS
+SRT_LIBS
 GOOM_CFLAGS
 GOOM_LIBS
 PROJECTM_CFLAGS
@@ -2927,6 +2940,7 @@ Interface plugins:
   --enable-minimal-macosx Minimal Mac OS X support (default disabled)
   --disable-ncurses       ncurses text-based interface (default auto)
   --enable-lirc           lirc support (default disabled)
+  --enable-srt            SRT input/output plugin [default=auto]
 Visualisations and Video filter plugins:
   --enable-goom           goom visualization plugin [default=auto]
   --enable-projectm       projectM visualization plugin (default enabled)
@@ -3315,6 +3329,8 @@ Some influential environment variables:
               C compiler flags for NCURSES, overriding pkg-config
   NCURSES_LIBS
               linker flags for NCURSES, overriding pkg-config
+  SRT_CFLAGS  C compiler flags for SRT, overriding pkg-config
+  SRT_LIBS    linker flags for SRT, overriding pkg-config
   GOOM_CFLAGS C compiler flags for GOOM, overriding pkg-config
   GOOM_LIBS   linker flags for GOOM, overriding pkg-config
   PROJECTM_CFLAGS
@@ -28175,7 +28191,7 @@ rm -f core conftest.err conftest.$ac_objext \
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_ld_z_defs" >&5
 $as_echo "$ac_cv_ld_z_defs" >&6; }
-if test "${ac_cv_ld_z_defs}" = "no" -o "x$with_sanitizer" != xno; then :
+if test "${ac_cv_ld_z_defs}" = "no" -o "${with_sanitizer}" != "no"; then :
 
   CPPFLAGS="${CPPFLAGS_save}"
   CFLAGS="${CFLAGS_save}"
@@ -36505,10 +36521,108 @@ if test "x$ac_cv_header_gme_gme_h" = xyes; then :
 
 
 
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gme_identify_header in -lgme" >&5
+$as_echo_n "checking for gme_identify_header in -lgme... " >&6; }
+if ${ac_cv_lib_gme_gme_identify_header+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lgme  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char gme_identify_header ();
+int
+main ()
+{
+return gme_identify_header ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_gme_gme_identify_header=yes
+else
+  ac_cv_lib_gme_gme_identify_header=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_gme_gme_identify_header" >&5
+$as_echo "$ac_cv_lib_gme_gme_identify_header" >&6; }
+if test "x$ac_cv_lib_gme_gme_identify_header" = xyes; then :
+
+
 
     LTLIBgme=libgme_plugin.la
 
 
+
+
+else
+
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gme_identify_extension in -lgme" >&5
+$as_echo_n "checking for gme_identify_extension in -lgme... " >&6; }
+if ${ac_cv_lib_gme_gme_identify_extension+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lgme -lstdc++ $LIBM $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char gme_identify_extension ();
+int
+main ()
+{
+return gme_identify_extension ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_gme_gme_identify_extension=yes
+else
+  ac_cv_lib_gme_gme_identify_extension=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_gme_gme_identify_extension" >&5
+$as_echo "$ac_cv_lib_gme_gme_identify_extension" >&6; }
+if test "x$ac_cv_lib_gme_gme_identify_extension" = xyes; then :
+
+
+
+    eval "LIBS_gme="'"'"-lstdc++ $LIBM "'$'"{LIBS_gme}"'"'
+
+
+
+
+
+    LTLIBgme=libgme_plugin.la
+
+
+
+
+fi
+
+
+fi
 
 
 else
@@ -54168,6 +54282,285 @@ else
   HAVE_LIRC_TRUE='#'
   HAVE_LIRC_FALSE=
 fi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Check whether --enable-srt was given.
+if test "${enable_srt+set}" = set; then :
+  enableval=$enable_srt;
+else
+  enable_srt=auto
+fi
+
+
+case $enable_srt in #(
+  yes) :
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for SRT" >&5
+$as_echo_n "checking for SRT... " >&6; }
+
+if test -n "$SRT_CFLAGS"; then
+    pkg_cv_SRT_CFLAGS="$SRT_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"srt >= 1.2.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "srt >= 1.2.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_SRT_CFLAGS=`$PKG_CONFIG --cflags "srt >= 1.2.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$SRT_LIBS"; then
+    pkg_cv_SRT_LIBS="$SRT_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"srt >= 1.2.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "srt >= 1.2.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_SRT_LIBS=`$PKG_CONFIG --libs "srt >= 1.2.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        SRT_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "srt >= 1.2.0" 2>&1`
+        else
+	        SRT_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "srt >= 1.2.0" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$SRT_PKG_ERRORS" >&5
+
+	if test x"$enable_srt" = "xyes"; then :
+  as_fn_error $? "Library srt >= 1.2.0 needed for srt was not found" "$LINENO" 5
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Library srt >= 1.2.0 needed for srt was not found" >&5
+$as_echo "$as_me: WARNING: Library srt >= 1.2.0 needed for srt was not found" >&2;}
+
+fi
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	if test x"$enable_srt" = "xyes"; then :
+  as_fn_error $? "Library srt >= 1.2.0 needed for srt was not found" "$LINENO" 5
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Library srt >= 1.2.0 needed for srt was not found" >&5
+$as_echo "$as_me: WARNING: Library srt >= 1.2.0 needed for srt was not found" >&2;}
+
+fi
+else
+	SRT_CFLAGS=$pkg_cv_SRT_CFLAGS
+	SRT_LIBS=$pkg_cv_SRT_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	LTLIBaccess_srt=libaccess_srt_plugin.la
+
+
+    LTLIBaccess_output_srt=libaccess_output_srt_plugin.la
+
+
+
+
+
+    eval "CPPFLAGS_access_srt="'"$'"{CPPFLAGS_access_srt} -DENABLE_SRT"'"'
+
+
+    eval "CPPFLAGS_access_output_srt="'"$'"{CPPFLAGS_access_output_srt} -DENABLE_SRT"'"'
+
+
+
+
+
+    eval "CFLAGS_access_srt="'"$'"{CFLAGS_access_srt} $SRT_CFLAGS "'"'
+
+
+    eval "CFLAGS_access_output_srt="'"$'"{CFLAGS_access_output_srt} $SRT_CFLAGS "'"'
+
+
+
+
+
+    eval "LIBS_access_srt="'"'"$SRT_LIBS  "'$'"{LIBS_access_srt}"'"'
+
+
+    eval "LIBS_access_output_srt="'"'"$SRT_LIBS  "'$'"{LIBS_access_output_srt}"'"'
+
+
+
+fi ;; #(
+  auto) :
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for SRT" >&5
+$as_echo_n "checking for SRT... " >&6; }
+
+if test -n "$SRT_CFLAGS"; then
+    pkg_cv_SRT_CFLAGS="$SRT_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"srt >= 1.2.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "srt >= 1.2.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_SRT_CFLAGS=`$PKG_CONFIG --cflags "srt >= 1.2.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$SRT_LIBS"; then
+    pkg_cv_SRT_LIBS="$SRT_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"srt >= 1.2.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "srt >= 1.2.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_SRT_LIBS=`$PKG_CONFIG --libs "srt >= 1.2.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        SRT_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "srt >= 1.2.0" 2>&1`
+        else
+	        SRT_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "srt >= 1.2.0" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$SRT_PKG_ERRORS" >&5
+
+	enable_srt=no
+ if test x"$enable_srt" = "xyes"; then :
+  as_fn_error $? "Library srt >= 1.2.0 needed for srt was not found" "$LINENO" 5
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Library srt >= 1.2.0 needed for srt was not found" >&5
+$as_echo "$as_me: WARNING: Library srt >= 1.2.0 needed for srt was not found" >&2;}
+
+fi
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	enable_srt=no
+ if test x"$enable_srt" = "xyes"; then :
+  as_fn_error $? "Library srt >= 1.2.0 needed for srt was not found" "$LINENO" 5
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Library srt >= 1.2.0 needed for srt was not found" >&5
+$as_echo "$as_me: WARNING: Library srt >= 1.2.0 needed for srt was not found" >&2;}
+
+fi
+else
+	SRT_CFLAGS=$pkg_cv_SRT_CFLAGS
+	SRT_LIBS=$pkg_cv_SRT_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	enable_srt=yes
+
+
+    LTLIBaccess_srt=libaccess_srt_plugin.la
+
+
+    LTLIBaccess_output_srt=libaccess_output_srt_plugin.la
+
+
+
+
+
+    eval "CPPFLAGS_access_srt="'"$'"{CPPFLAGS_access_srt} -DENABLE_SRT"'"'
+
+
+    eval "CPPFLAGS_access_output_srt="'"$'"{CPPFLAGS_access_output_srt} -DENABLE_SRT"'"'
+
+
+
+
+
+    eval "CFLAGS_access_srt="'"$'"{CFLAGS_access_srt} $SRT_CFLAGS "'"'
+
+
+    eval "CFLAGS_access_output_srt="'"$'"{CFLAGS_access_output_srt} $SRT_CFLAGS "'"'
+
+
+
+
+
+    eval "LIBS_access_srt="'"'"$SRT_LIBS  "'$'"{LIBS_access_srt}"'"'
+
+
+    eval "LIBS_access_output_srt="'"'"$SRT_LIBS  "'$'"{LIBS_access_output_srt}"'"'
+
+
+
+fi ;; #(
+  *) :
+     ;;
+esac
+
+
+
+
+
+
+
+
+
+
 
 
 

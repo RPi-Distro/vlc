@@ -2,7 +2,7 @@
  * input_internal.h: Internal input structures
  *****************************************************************************
  * Copyright (C) 1998-2006 VLC authors and VideoLAN
- * $Id: 974271f8a06c701a13740ae366793935025cefda $
+ * $Id: af9b35967d147c03017ac0eace19695c56aa8e5f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -227,8 +227,6 @@ enum input_control_e
     INPUT_CONTROL_SET_SPU_DELAY,
 
     INPUT_CONTROL_ADD_SLAVE,
-
-    INPUT_CONTROL_ADD_SUBTITLE,
 
     INPUT_CONTROL_SET_RECORD_STATE,
 

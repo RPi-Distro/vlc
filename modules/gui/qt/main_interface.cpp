@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2011 VideoLAN and AUTHORS
- * $Id: 3a52373ad020f62ec0ffd6cbb5be5a1bf7c86cac $
+ * $Id: b586900f02d8d4bde94de740f7cd715b2193f5ae $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -1453,7 +1453,7 @@ void MainInterface::dropEventPlay( QDropEvent *event, bool b_play, bool b_playli
     if( mimeData->urls().count() == 1 && THEMIM->getIM()->hasInput() )
     {
         if( !input_AddSlave( THEMIM->getInput(), SLAVE_TYPE_SPU,
-                 qtu( mimeData->urls()[0].toString() ), true, true ) )
+                 qtu( mimeData->urls()[0].toString() ), true, true, true ) )
         {
             event->accept();
             return;

@@ -2,7 +2,7 @@
  * vlc_input.h: Core input structures
  *****************************************************************************
  * Copyright (C) 1999-2015 VLC authors and VideoLAN
- * $Id: d225f1e3f227b34603acf263fab1561d9c21b609 $
+ * $Id: 711571b2b42a1f6e04f572ad1acb37c9c18050bc $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -460,8 +460,9 @@ enum input_query_e
     INPUT_GET_ATTACHMENT,  /* arg1=input_attachment_t**, arg2=char*  res=can fail */
 
     /* On the fly input slave */
-    INPUT_ADD_SLAVE,       /* arg1= enum slave_type, arg2= const char *, arg3= bool, arg4= bool */
-    INPUT_ADD_SUBTITLE,    /* arg1= const char *, arg2=bool b_check_extension */
+    INPUT_ADD_SLAVE,       /* arg1= enum slave_type, arg2= const char *,
+                            * arg3= bool forced, arg4= bool notify,
+                            * arg5= bool check_extension */
 
     /* On the fly record while playing */
     INPUT_SET_RECORD_STATE, /* arg1=bool    res=can fail */
@@ -576,9 +577,11 @@ static inline vout_thread_t *input_GetVout( input_thread_t *p_input )
 }
 
 static inline int input_AddSlave( input_thread_t *p_input, enum slave_type type,
-                                  const char *psz_uri, bool b_forced, bool b_notify )
+                                  const char *psz_uri, bool b_forced,
+                                  bool b_notify, bool b_check_ext )
 {
-    return input_Control( p_input, INPUT_ADD_SLAVE, type, psz_uri, b_forced, b_notify );
+    return input_Control( p_input, INPUT_ADD_SLAVE, type, psz_uri, b_forced,
+                          b_notify, b_check_ext );
 }
 
 /**

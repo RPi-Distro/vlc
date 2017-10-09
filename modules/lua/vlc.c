@@ -2,7 +2,7 @@
  * vlc.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 512d9e505cda97ebae4d83ba301acdfdd9f243f8 $
+ * $Id: 73c92d26b67b64f22920da167dd0447e7ccd52fb $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -526,6 +526,9 @@ out:
 
 static int vlc_sd_probe_Open( vlc_object_t *obj )
 {
+    if( lua_Disabled( obj ) )
+        return VLC_EGENERIC;
+
     vlc_dictionary_t name_d;
 
     char **ppsz_dir_list;

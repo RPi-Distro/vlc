@@ -14,9 +14,11 @@ $Id$
  * access_output_http: HTTP Network access module
  * access_output_livehttp: Live HTTP stream output
  * access_output_shout: Shoutcast access output
+ * access_output_srt: SRT (Secure Reliable Transport) access_output module
  * access_output_udp: UDP Network access_output module
  * access_qtsound: Quicktime Audio Capture
  * access_realrtsp: Real RTSP access
+ * access_srt: SRT(Secure Reliable Transport) access module
  * access_wasapi: WASAPI audio input
  * accesstweaks: access control tweaking module (dev tool)
  * adaptive: Unified adaptive streaming module (DASH/HLS)
@@ -385,7 +387,6 @@ $Id$
  * stream_out_es: stream out module outputing ES
  * stream_out_gather: stream out module gathering inputs for seemless transitions
  * stream_out_mosaic_bridge: stream output module to make a mosaic. To be used with VLM
- * stream_out_raop: Remote Audio Output Protocol (AirTunes) stream out
  * stream_out_record: record stream output module
  * stream_out_rtp: rtp stream output module
  * stream_out_setid: Set the ID/Lang of an ES when streaming

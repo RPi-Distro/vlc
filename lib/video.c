@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005-2010 VLC authors and VideoLAN
  *
- * $Id: c41c6e35ffb4aecad67188df60e1caee70ff0350 $
+ * $Id: acbba3a30fe84e2847cfd8cd63d595e6a54acac3 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Filippo Carone <littlejohn@videolan.org>
@@ -407,7 +407,7 @@ int libvlc_video_set_subtitle_file( libvlc_media_player_t *p_mi,
         if( psz_mrl )
         {
             if( !input_AddSlave( p_input_thread, SLAVE_TYPE_SPU, psz_mrl,
-                                 true, false ) )
+                                 true, false, false ) )
                 b_ret = true;
             free( psz_mrl );
         }

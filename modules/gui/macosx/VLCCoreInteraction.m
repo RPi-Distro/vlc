@@ -2,7 +2,7 @@
  * CoreInteraction.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2015 Felix Paul Kühne
- * $Id: 970895df4ce7ed497cc911c45eddfc2559881a4f $
+ * $Id: 2aff35a737162e10f126b0655ee471b3d0b6eee6 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -613,7 +613,7 @@ static int BossCallback(vlc_object_t *p_this, const char *psz_var,
             continue;
         msg_Dbg(getIntf(), "loading subs from %s", mrl);
 
-        int i_result = input_AddSlave(p_input, SLAVE_TYPE_SPU, mrl, true, true);
+        int i_result = input_AddSlave(p_input, SLAVE_TYPE_SPU, mrl, true, true, true);
         if (i_result != VLC_SUCCESS)
             msg_Warn(getIntf(), "unable to load subtitles from '%s'", mrl);
         free(mrl);

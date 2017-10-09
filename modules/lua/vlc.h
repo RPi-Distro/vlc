@@ -2,7 +2,7 @@
  * vlc.h: VLC specific lua library functions.
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 141f331329868a0a443e66e42d9b91b7da2f1f5d $
+ * $Id: 71f381d334a07f5f9461a301b84c292a90ef844d $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -104,6 +104,12 @@ static inline void lua_Dbg( vlc_object_t * p_this, const char * ppz_fmt, ... )
     msg_GenericVa( p_this, VLC_MSG_DBG, ppz_fmt, ap );
     va_end( ap );
 }
+
+static inline bool lua_Disabled( vlc_object_t *p_this )
+{
+    return !var_InheritBool( p_this, "lua" );
+}
+#define lua_Disabled( x ) lua_Disabled( VLC_OBJECT( x ) )
 
 /*****************************************************************************
  * Functions that should be in lua ... but aren't for some obscure reason

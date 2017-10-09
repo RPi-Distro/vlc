@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 53196ed0b91cd289ef5bb53426ff3e0f4a791c2c $
+ * $Id: b58c23237f42d59f1153960a890f417a82e42cad $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -91,7 +91,7 @@ vlc_module_end ()
  * Local prototypes
  *****************************************************************************/
 static int Control         ( demux_t *, int, va_list );
-static int Seek            ( demux_t *, mtime_t, int );
+static int Seek            ( demux_t *, mtime_t, int, bool );
 static int Demux_Seekable  ( demux_t * );
 static int Demux_UnSeekable( demux_t * );
 
@@ -155,6 +155,7 @@ typedef struct
 
     es_format_t     fmt;
     es_out_id_t     *p_es;
+    int             i_next_block_flags;
 
     int             i_dv_audio_rate;
     es_out_id_t     *p_es_dv_audio;
@@ -1213,16 +1214,7 @@ static int Demux_Seekable( demux_t *p_demux )
         }
         else
         {
-            if( !p_sys->b_fastseekable
-             && (i_pos > vlc_stream_Tell( p_demux->s )) )
-            {
-                vlc_stream_Read( p_demux->s, NULL,
-                                 i_pos - vlc_stream_Tell( p_demux->s ) );
-            }
-            else
-            {
-                vlc_stream_Seek( p_demux->s, i_pos );
-            }
+            vlc_stream_Seek( p_demux->s, i_pos );
         }
 
         /* Set the track to use */
@@ -1331,6 +1323,12 @@ static int Demux_Seekable( demux_t *p_demux )
 
         if( tk->i_dv_audio_rate )
             AVI_DvHandleAudio( p_demux, tk, p_frame );
+
+        if( tk->i_next_block_flags )
+        {
+            p_frame->i_flags = tk->i_next_block_flags;
+            tk->i_next_block_flags = 0;
+        }
 
         if( tk->p_es )
             es_out_Send( p_demux->out, tk->p_es, p_frame );
@@ -1502,7 +1500,7 @@ static int Demux_UnSeekable( demux_t *p_demux )
 /*****************************************************************************
  * Seek: goto to i_date or i_percent
  *****************************************************************************/
-static int Seek( demux_t *p_demux, mtime_t i_date, int i_percent )
+static int Seek( demux_t *p_demux, mtime_t i_date, int i_percent, bool b_accurate )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
     msg_Dbg( p_demux, "seek requested: %"PRId64" seconds %d%%",
@@ -1601,18 +1599,40 @@ static int Seek( demux_t *p_demux, mtime_t i_date, int i_percent )
         }
 
         /* */
-        for( unsigned i_stream = 0; i_stream < p_sys->i_track; i_stream++ )
+        mtime_t i_wanted = i_date;
+        mtime_t i_start = i_date;
+        /* Do a 2 pass seek, first with video (can seek ahead due to keyframes),
+           so we can seek audio to the same starting time */
+        for(int i=0; i<2; i++)
         {
-            avi_track_t *p_stream = p_sys->track[i_stream];
+            for( unsigned i_stream = 0; i_stream < p_sys->i_track; i_stream++ )
+            {
+                avi_track_t *p_stream = p_sys->track[i_stream];
 
-            if( !p_stream->b_activated )
-                continue;
+                if( !p_stream->b_activated )
+                    continue;
 
-            p_stream->b_eof = AVI_TrackSeek( p_demux, i_stream, i_date ) != 0;
+                if( (i==0 && p_stream->fmt.i_cat != VIDEO_ES) ||
+                    (i!=0 && p_stream->fmt.i_cat == VIDEO_ES) )
+                    continue;
+
+                p_stream->b_eof = AVI_TrackSeek( p_demux, i_stream, i_wanted ) != 0;
+                if( !p_stream->b_eof )
+                {
+                    p_stream->i_next_block_flags |= BLOCK_FLAG_DISCONTINUITY;
+
+                    if( p_stream->fmt.i_cat == AUDIO_ES || p_stream->fmt.i_cat == VIDEO_ES )
+                        i_start = __MIN(i_start, AVI_GetPTS( p_stream ));
+
+                    if( i == 0 && p_stream->fmt.i_cat == VIDEO_ES )
+                        i_wanted = i_start;
+                }
+            }
         }
-        p_sys->i_time = i_date;
+        p_sys->i_time = i_start;
         es_out_SetPCR( p_demux->out, VLC_TS_0 + p_sys->i_time );
-        es_out_Control( p_demux->out, ES_OUT_SET_NEXT_DISPLAY_TIME, VLC_TS_0 + p_sys->i_time );
+        if( b_accurate )
+            es_out_Control( p_demux->out, ES_OUT_SET_NEXT_DISPLAY_TIME, VLC_TS_0 + i_date );
         msg_Dbg( p_demux, "seek: %"PRId64" seconds", p_sys->i_time /CLOCK_FREQ );
         return VLC_SUCCESS;
 
@@ -1654,6 +1674,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
     demux_sys_t *p_sys = p_demux->p_sys;
     double   f, *pf;
     int64_t i64, *pi64;
+    bool b;
     vlc_meta_t *p_meta;
 
     switch( i_query )
@@ -1668,6 +1689,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             return VLC_SUCCESS;
         case DEMUX_SET_POSITION:
             f = va_arg( args, double );
+            b = va_arg( args, int );
             if ( !p_sys->b_seekable )
             {
                 return VLC_EGENERIC;
@@ -1675,7 +1697,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             else
             {
                 i64 = (mtime_t)(f * CLOCK_FREQ * p_sys->i_length);
-                return Seek( p_demux, i64, (int)(f * 100) );
+                return Seek( p_demux, i64, (int)(f * 100), b );
             }
 
         case DEMUX_GET_TIME:
@@ -1688,6 +1710,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             int i_percent = 0;
 
             i64 = va_arg( args, int64_t );
+            b = va_arg( args, int );
             if( !p_sys->b_seekable )
             {
                 return VLC_EGENERIC;
@@ -1701,7 +1724,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 i_percent = (int)( 100.0 * ControlGetPosition( p_demux ) *
                                    (double)i64 / (double)p_sys->i_time );
             }
-            return Seek( p_demux, i64, i_percent );
+            return Seek( p_demux, i64, i_percent, b );
         }
         case DEMUX_GET_LENGTH:
             pi64 = va_arg( args, int64_t * );
