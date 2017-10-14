@@ -17,7 +17,6 @@ pluginpackages += svg
 pluginpackages += video-output
 pluginpackages += video-splitter
 pluginpackages += visualization
-pluginpackages += zvbi
 
 ifneq (,$(filter debug,$(DEB_BUILD_OPTIONS)))
 confflags += --enable-debug

@@ -168,7 +168,6 @@ Description: multimedia player and streamer
   * vlc-plugin-svg
   * vlc-plugin-video-splitter
   * vlc-plugin-visualization
-  * vlc-plugin-zvbi
 
 Package: libvlc-dev
 Section: libdevel
@@ -454,21 +453,6 @@ Description: SVG plugin for VLC
  renderer, and must be activated through the '--text-renderer svg' option. When
  sent non-SVG data, it will convert it to SVG using a template that can be
  specified by the svg-template-file option.
-
-Package: vlc-plugin-zvbi
-Architecture: any
-Multi-Arch: same
-Pre-Depends: ${misc:Pre-Depends}
-Depends: ${misc:Depends},
-         ${shlibs:Depends},
-         ${vlc:PluginABI}
-Enhances: vlc
-Description: VBI teletext plugin for VLC
- VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
- DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
- podcasts, and multimedia streams from various network sources.
- .
- This plugin adds support for VBI teletext to the VLC media player.
 
 Package: vlc-plugin-samba
 Architecture: kfreebsd-any linux-any
