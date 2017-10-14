@@ -1231,8 +1231,8 @@ CFLAGS_sid
 LTLIBsid
 SID_LIBS
 SID_CFLAGS
-LTLIBgme
 LIBS_gme
+LTLIBgme
 HAVE_DVBPSI_FALSE
 HAVE_DVBPSI_TRUE
 DVBPSI_LIBS
@@ -36514,13 +36514,6 @@ if test "${enable_gme}" != "no"; then :
   ac_fn_c_check_header_mongrel "$LINENO" "gme/gme.h" "ac_cv_header_gme_gme_h" "$ac_includes_default"
 if test "x$ac_cv_header_gme_gme_h" = xyes; then :
 
-
-
-    eval "LIBS_gme="'"'"-lgme "'$'"{LIBS_gme}"'"'
-
-
-
-
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gme_identify_header in -lgme" >&5
 $as_echo_n "checking for gme_identify_header in -lgme... " >&6; }
 if ${ac_cv_lib_gme_gme_identify_header+:} false; then :
@@ -36623,6 +36616,12 @@ fi
 
 
 fi
+
+
+
+    eval "LIBS_gme="'"'"-lgme "'$'"{LIBS_gme}"'"'
+
+
 
 
 else
@@ -39803,12 +39802,13 @@ else
 fi
 
 
-for ac_header in dxgidebug.h
+for ac_header in dxgidebug.h dxgi1_6.h
 do :
-  ac_fn_c_check_header_mongrel "$LINENO" "dxgidebug.h" "ac_cv_header_dxgidebug_h" "$ac_includes_default"
-if test "x$ac_cv_header_dxgidebug_h" = xyes; then :
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
+if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
   cat >>confdefs.h <<_ACEOF
-#define HAVE_DXGIDEBUG_H 1
+#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
 _ACEOF
 
 fi
@@ -50701,7 +50701,7 @@ if test "${enable_mmal}" != "no"; then
   LIBS_save="${LIBS}"
 
   LDFLAGS="${LDFLAGS} -L/opt/vc/lib -lvchostif"
-  CPPFLAGS="${CPPFLAGS} -I/opt/vc/include -I/opt/vc/include/interface/vcos/pthreads -I/opt/vc/include/interface/vmcs_host/linux"
+  CPPFLAGS="${CPPFLAGS} -isystem /opt/vc/include -isystem /opt/vc/include/interface/vcos/pthreads -isystem /opt/vc/include/interface/vmcs_host/linux"
   for ac_header in interface/mmal/mmal.h
 do :
   ac_fn_c_check_header_mongrel "$LINENO" "interface/mmal/mmal.h" "ac_cv_header_interface_mmal_mmal_h" "$ac_includes_default"
@@ -50762,13 +50762,13 @@ if test "x$ac_cv_lib_bcm_host_vc_tv_unregister_callback_full" = xyes; then :
 
 
 
-    eval "CFLAGS_mmal="'"$'"{CFLAGS_mmal}  -I/opt/vc/include -I/opt/vc/include/interface/vcos/pthreads -I/opt/vc/include/interface/vmcs_host/linux "'"'
+    eval "CFLAGS_mmal="'"$'"{CFLAGS_mmal}  -isystem /opt/vc/include -isystem /opt/vc/include/interface/vcos/pthreads -isystem /opt/vc/include/interface/vmcs_host/linux "'"'
 
 
 
 
 
-    eval "LIBS_mmal="'"'" -lbcm_host -lmmal -lvchostif  "'$'"{LIBS_mmal}"'"'
+    eval "LIBS_mmal="'"'" -lbcm_host -lmmal -lmmal_core -lmmal_components -lmmal_util -lvchostif  "'$'"{LIBS_mmal}"'"'
 
 
 
@@ -52715,12 +52715,12 @@ if test -n "$QT_CFLAGS"; then
     pkg_cv_QT_CFLAGS="$QT_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"Qt5Core >= 5.2.0 Qt5Widgets Qt5Gui\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "Qt5Core >= 5.2.0 Qt5Widgets Qt5Gui") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"Qt5Core >= 5.6.0 Qt5Widgets Qt5Gui Qt5Svg\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "Qt5Core >= 5.6.0 Qt5Widgets Qt5Gui Qt5Svg") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_QT_CFLAGS=`$PKG_CONFIG --cflags "Qt5Core >= 5.2.0 Qt5Widgets Qt5Gui" 2>/dev/null`
+  pkg_cv_QT_CFLAGS=`$PKG_CONFIG --cflags "Qt5Core >= 5.6.0 Qt5Widgets Qt5Gui Qt5Svg" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -52732,12 +52732,12 @@ if test -n "$QT_LIBS"; then
     pkg_cv_QT_LIBS="$QT_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"Qt5Core >= 5.2.0 Qt5Widgets Qt5Gui\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "Qt5Core >= 5.2.0 Qt5Widgets Qt5Gui") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"Qt5Core >= 5.6.0 Qt5Widgets Qt5Gui Qt5Svg\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "Qt5Core >= 5.6.0 Qt5Widgets Qt5Gui Qt5Svg") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_QT_LIBS=`$PKG_CONFIG --libs "Qt5Core >= 5.2.0 Qt5Widgets Qt5Gui" 2>/dev/null`
+  pkg_cv_QT_LIBS=`$PKG_CONFIG --libs "Qt5Core >= 5.6.0 Qt5Widgets Qt5Gui Qt5Svg" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -52758,9 +52758,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        QT_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "Qt5Core >= 5.2.0 Qt5Widgets Qt5Gui" 2>&1`
+	        QT_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "Qt5Core >= 5.6.0 Qt5Widgets Qt5Gui Qt5Svg" 2>&1`
         else
-	        QT_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "Qt5Core >= 5.2.0 Qt5Widgets Qt5Gui" 2>&1`
+	        QT_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "Qt5Core >= 5.6.0 Qt5Widgets Qt5Gui Qt5Svg" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$QT_PKG_ERRORS" >&5

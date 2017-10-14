@@ -2,7 +2,7 @@
  * video.c: video decoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: e24319169e118cede814a9bc3e8aeea9cbbcea75 $
+ * $Id: e1457154b95e1d3528180345e646c0a3fe8bff08 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -497,13 +497,13 @@ int InitVideoDec( vlc_object_t *obj )
     p_sys->b_show_corrupted = var_CreateGetBool( p_dec, "avcodec-corrupted" );
 
     i_val = var_CreateGetInteger( p_dec, "avcodec-skip-frame" );
-    if( i_val >= 4 ) p_context->skip_frame = AVDISCARD_ALL;
-    else if( i_val == 3 ) p_context->skip_frame = AVDISCARD_NONKEY;
-    else if( i_val == 2 ) p_context->skip_frame = AVDISCARD_BIDIR;
-    else if( i_val == 1 ) p_context->skip_frame = AVDISCARD_NONREF;
-    else if( i_val == -1 ) p_context->skip_frame = AVDISCARD_NONE;
-    else p_context->skip_frame = AVDISCARD_DEFAULT;
-    p_sys->i_skip_frame = p_context->skip_frame;
+    if( i_val >= 4 ) p_sys->i_skip_frame = AVDISCARD_ALL;
+    else if( i_val == 3 ) p_sys->i_skip_frame = AVDISCARD_NONKEY;
+    else if( i_val == 2 ) p_sys->i_skip_frame = AVDISCARD_BIDIR;
+    else if( i_val == 1 ) p_sys->i_skip_frame = AVDISCARD_NONREF;
+    else if( i_val == -1 ) p_sys->i_skip_frame = AVDISCARD_NONE;
+    else p_sys->i_skip_frame = AVDISCARD_DEFAULT;
+    p_context->skip_frame = p_sys->i_skip_frame;
 
     i_val = var_CreateGetInteger( p_dec, "avcodec-skip-idct" );
     if( i_val >= 4 ) p_context->skip_idct = AVDISCARD_ALL;
@@ -886,7 +886,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block, bool *error
 
 
     block_t *p_block;
-    mtime_t current_time = VLC_TS_INVALID;
+    mtime_t current_time;
 
     if( !p_context->extradata_size && p_dec->fmt_in.i_extra )
     {

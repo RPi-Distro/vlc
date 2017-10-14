@@ -2,7 +2,7 @@
  * vlc_input_item.h: Core input item
  *****************************************************************************
  * Copyright (C) 1999-2009 VLC authors and VideoLAN
- * $Id: d0f9587b7a4fa6ab11de681751a4735526cf9f4c $
+ * $Id: f64cfc9b807a4b7260316d3151ca8649da07a815 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -425,6 +425,7 @@ struct vlc_readdir_helper
     size_t i_dirs;
     int i_sub_autodetect_fuzzy;
     bool b_show_hiddenfiles;
+    bool b_flatten;
     char *psz_ignored_exts;
 };
 

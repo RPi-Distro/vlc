@@ -2,7 +2,7 @@
  * libvlc.h:  libvlc external API
  *****************************************************************************
  * Copyright (C) 1998-2009 VLC authors and VideoLAN
- * $Id: 6b2467810311f40a736328ea6b277e4df7eb4253 $
+ * $Id: b12d900469fa6438c41421f2ac7697b93ffc8a35 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -542,7 +542,7 @@ libvlc_module_description_t *libvlc_audio_filter_list_get( libvlc_instance_t *p_
 LIBVLC_API
 libvlc_module_description_t *libvlc_video_filter_list_get( libvlc_instance_t *p_instance );
 
-/** @} */
+/** @} */
 
 /** \defgroup libvlc_clock LibVLC time
  * These functions provide access to the LibVLC time/clock.
@@ -571,7 +571,7 @@ static inline int64_t libvlc_delay(int64_t pts)
     return pts - libvlc_clock();
 }
 
-/** @} */
+/** @} */
 
 # ifdef __cplusplus
 }

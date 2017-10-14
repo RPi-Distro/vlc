@@ -2,7 +2,7 @@
  * matroska_segment.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: 1317514a8fc8f77da231a00501c99a96559da8d7 $
+ * $Id: e2e1579354a90d0dad1a03c2574a1029f291fe90 $
  *
  * Authors: Filip Roséen <filip@videolabs.io>
  *
@@ -49,7 +49,7 @@ class SegmentSeeker
 
             bool operator<( Range const& rhs ) const
             {
-                return start < rhs.start;    
+                return start < rhs.start;
             }
         };
 
@@ -61,7 +61,7 @@ class SegmentSeeker
                 DISABLED = -1,
             };
 
-            Seekpoint( fptr_t fpos, mtime_t pts, TrustLevel trust_level = TrustLevel::TRUSTED )
+            Seekpoint( fptr_t fpos, mtime_t pts, TrustLevel trust_level = TRUSTED )
                 : fpos( fpos ), pts( pts ), trust_level( trust_level )
             { }
 

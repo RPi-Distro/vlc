@@ -2,7 +2,7 @@
  * theme_loader.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ee69776ac9a24116f35f849a9b3b8b9131688f50 $
+ * $Id: d018b4e92eb389897b02f72888dd79e67726a3a9 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -229,6 +229,8 @@ bool ThemeLoader::unarchive( const std::string& fileName, const std::string &tem
         if( !item || !node )
             return false;
 
+        input_item_AddOption( item.get(), "ignore-filetypes=\"\"", VLC_INPUT_OPTION_TRUSTED );
+        input_item_AddOption( item.get(), "extractor-flatten", VLC_INPUT_OPTION_TRUSTED );
         node->p_item = item.release();
 
         if( vlc_stream_ReadDir( input.get(), node.get() ) )
@@ -244,6 +246,7 @@ bool ThemeLoader::unarchive( const std::string& fileName, const std::string &tem
             if( !child_stream )
             {
                 msg_Err( getIntf(), "unable to open %s for reading", child->psz_name );
+                return false;
             }
 
             auto out_path = tempPath + "/" + child->psz_name;

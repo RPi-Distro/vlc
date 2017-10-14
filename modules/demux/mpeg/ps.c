@@ -2,7 +2,7 @@
  * ps.c: Program Stream demux module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: 57cc6a5d7db37f110cc028577485ea32a6e4eacb $
+ * $Id: 185770d56a77dca7e848097e9c495d890afbdf63 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -496,7 +496,7 @@ static int Demux( demux_t *p_demux )
             block_Release( p_pkt );
             break;
         }
-        //ft
+        /* fallthrough */
     case PS_STREAM_ID_PRIVATE_STREAM1:
     case PS_STREAM_ID_EXTENDED:
         {

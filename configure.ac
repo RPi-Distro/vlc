@@ -2046,8 +2046,6 @@ AC_ARG_ENABLE(gme,
     [use Game Music Emu (default auto)])])
 AS_IF([test "${enable_gme}" != "no"], [
   AC_CHECK_HEADER([gme/gme.h], [
-    VLC_ADD_LIBS([gme], [-lgme])
-
     AC_CHECK_LIB([gme], [gme_identify_header], [
       VLC_ADD_PLUGIN([gme])
     ], [
@@ -2056,6 +2054,7 @@ AS_IF([test "${enable_gme}" != "no"], [
          VLC_ADD_PLUGIN([gme])
       ],, [-lstdc++ $LIBM])
     ])
+    VLC_ADD_LIBS([gme], [-lgme])
   ], [
     AS_IF([test "x${enable_gme}" != "x"], [
       AC_MSG_ERROR([GME cannot be found. Please install the development files.])
@@ -2487,7 +2486,7 @@ AM_CONDITIONAL([HAVE_AVCODEC_D3D11VA], [test "${have_avcodec_d3d11va}" = "yes"])
 dnl
 dnl DXGI debug
 dnl
-AC_CHECK_HEADERS(dxgidebug.h)
+AC_CHECK_HEADERS(dxgidebug.h dxgi1_6.h)
 
 dnl
 dnl  avformat demuxer/muxer plugin
@@ -3373,14 +3372,14 @@ AC_ARG_ENABLE(mmal,
 if test "${enable_mmal}" != "no"; then
   VLC_SAVE_FLAGS
   LDFLAGS="${LDFLAGS} -L/opt/vc/lib -lvchostif"
-  CPPFLAGS="${CPPFLAGS} -I/opt/vc/include -I/opt/vc/include/interface/vcos/pthreads -I/opt/vc/include/interface/vmcs_host/linux"
+  CPPFLAGS="${CPPFLAGS} -isystem /opt/vc/include -isystem /opt/vc/include/interface/vcos/pthreads -isystem /opt/vc/include/interface/vmcs_host/linux"
   AC_CHECK_HEADERS(interface/mmal/mmal.h,
     [ AC_CHECK_LIB(bcm_host, vc_tv_unregister_callback_full, [
         have_mmal="yes"
         VLC_ADD_PLUGIN([mmal])
         VLC_ADD_LDFLAGS([mmal],[ -L/opt/vc/lib ])
-        VLC_ADD_CFLAGS([mmal],[ -I/opt/vc/include -I/opt/vc/include/interface/vcos/pthreads -I/opt/vc/include/interface/vmcs_host/linux ])
-        VLC_ADD_LIBS([mmal],[ -lbcm_host -lmmal -lvchostif ]) ], [
+        VLC_ADD_CFLAGS([mmal],[ -isystem /opt/vc/include -isystem /opt/vc/include/interface/vcos/pthreads -isystem /opt/vc/include/interface/vmcs_host/linux ])
+        VLC_ADD_LIBS([mmal],[ -lbcm_host -lmmal -lmmal_core -lmmal_components -lmmal_util -lvchostif ]) ], [
           AS_IF([test "${enable_mmal}" = "yes"],
             [ AC_MSG_ERROR([Cannot find bcm library...]) ],
             [ AC_MSG_WARN([Cannot find bcm library...]) ])
@@ -3656,7 +3655,7 @@ AC_ARG_ENABLE(qt, [
 ])
 have_qt5_x11="no"
 AS_IF([test "${enable_qt}" != "no"], [
-  PKG_CHECK_MODULES([QT], [Qt5Core >= 5.2.0 Qt5Widgets Qt5Gui], [
+  PKG_CHECK_MODULES([QT], [Qt5Core >= 5.6.0 Qt5Widgets Qt5Gui Qt5Svg], [
       PKG_CHECK_MODULES([QT5_X11], [Qt5X11Extras], [
           have_qt5_x11="yes"
       ],[

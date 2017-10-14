@@ -2,7 +2,7 @@
  * vlcproc.cpp
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: b827637e60ba872962d799d39824069d5af8324a $
+ * $Id: e10240bb7b7787622b638adc047cc96083a23fcf $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -178,7 +178,7 @@ VlcProc::VlcProc( intf_thread_t *pIntf ): SkinObject( pIntf ),
     var_Create( pIntf, "interaction", VLC_VAR_ADDRESS );
     var_AddCallback( pIntf, "interaction", onInteraction, this );
 
-    // initialize variables refering to liblvc and playlist objects
+    // initialize variables refering to libvlc and playlist objects
     init_variables();
 }
 

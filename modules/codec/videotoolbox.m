@@ -85,7 +85,7 @@ set_capability("video decoder",800)
 set_callbacks(OpenDecoder, CloseDecoder)
 
 add_bool("videotoolbox-temporal-deinterlacing", true, VT_TEMPO_DEINTERLACE, VT_TEMPO_DEINTERLACE_LONG, false)
-add_bool("videotoolbox-hw-decoder-only", false, VT_REQUIRE_HW_DEC, VT_REQUIRE_HW_DEC, false)
+add_bool("videotoolbox-hw-decoder-only", true, VT_REQUIRE_HW_DEC, VT_REQUIRE_HW_DEC, false)
 add_string("videotoolbox-cvpx-chroma", "", VT_FORCE_CVPX_CHROMA, VT_FORCE_CVPX_CHROMA_LONG, true);
 vlc_module_end()
 
@@ -1609,7 +1609,12 @@ static int UpdateVideoFormat(decoder_t *p_dec, CVPixelBufferRef imageBuffer)
             p_dec->p_sys->vtsession_status = VTSESSION_STATUS_ABORT;
             return -1;
     }
-    return decoder_UpdateVideoFormat(p_dec);
+    if (decoder_UpdateVideoFormat(p_dec) != 0)
+    {
+        p_dec->p_sys->vtsession_status = VTSESSION_STATUS_ABORT;
+        return -1;
+    }
+    return 0;
 }
 
 static void DecoderCallback(void *decompressionOutputRefCon,
