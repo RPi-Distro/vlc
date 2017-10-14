@@ -14,13 +14,16 @@ vlc (3.0.0~20171014-1) UNRELEASED; urgency=medium
   * debian/patches: Drop all patches.
   * debian/libvlc-bin.postinst.in: Skip plugin cache generation if no plugins
     are installed. (Closes: #878026)
+  * debian/:
+    - Drop vlc-plugin-zvbi package and merge into vlc-plugin-base. ffmpeg
+      already depends on libzvbi anyway.
 
   * TODO:
     - libvlccore needs a SONAME bump.
     - Update d/copyright.
     - Check vlc-plugin-* packages and new plugins.
     - Check currently disabled plugins.
-    - Update Breaks+Replaces for moved plugins.
+    - Update Breaks+Replaces for moved plugins (zvbi, etc).
 
  -- Sebastian Ramacher <sramacher@debian.org>  Mon, 09 Oct 2017 21:01:57 +0200
 
