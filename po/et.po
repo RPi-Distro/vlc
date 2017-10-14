@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-10-09 02:29+0000\n"
+"POT-Creation-Date: 2017-10-14 02:29+0000\n"
 "PO-Revision-Date: 2014-05-09 11:31+0000\n"
 "Last-Translator: robertzon\n"
 "Language-Team: Estonian (http://www.transifex.com/projects/p/vlc-trans/"
@@ -46,7 +46,7 @@ msgstr "Kõikide valikute nägemiseks klõpsa \"Täpsemalt\"."
 
 #: include/vlc_config_cat.h:38
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
-#: modules/gui/qt/components/simple_preferences.cpp:210
+#: modules/gui/qt/components/simple_preferences.cpp:211
 #: modules/gui/qt/menus.cpp:1081
 msgid "Interface"
 msgstr "Kasutajaliides"
@@ -87,8 +87,8 @@ msgstr "Kiirklahvide seadeid"
 #: modules/gui/macosx/VLCPlaylistInfo.m:101
 #: modules/gui/macosx/VLCSimplePrefsController.m:222
 #: modules/gui/qt/components/info_panels.cpp:576
-#: modules/gui/qt/components/simple_preferences.cpp:212
-#: modules/gui/qt/qt.cpp:216 modules/services_discovery/mediadirs.c:77
+#: modules/gui/qt/components/simple_preferences.cpp:213
+#: modules/gui/qt/qt.cpp:218 modules/services_discovery/mediadirs.c:77
 #: modules/stream_out/es.c:94 modules/stream_out/transcode/transcode.c:182
 #: share/lua/http/dialogs/create_stream.html:150
 msgid "Audio"
@@ -150,8 +150,8 @@ msgstr "Mitmesugused audio seaded ja moodulid."
 #: modules/gui/macosx/VLCSimplePrefsController.m:224
 #: modules/gui/macosx/VLCSimplePrefsController.m:367
 #: modules/gui/qt/components/info_panels.cpp:577
-#: modules/gui/qt/components/simple_preferences.cpp:214
-#: modules/gui/qt/qt.cpp:216 modules/services_discovery/mediadirs.c:70
+#: modules/gui/qt/components/simple_preferences.cpp:215
+#: modules/gui/qt/qt.cpp:218 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:102 modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
 msgid "Video"
@@ -895,51 +895,51 @@ msgstr "Tundmatu video"
 msgid "Bookmark %i"
 msgstr "Lisa %i järjehoidjasse"
 
-#: src/input/decoder.c:1872
+#: src/input/decoder.c:1874
 #, fuzzy
 msgid "No description for this codec"
 msgstr "Sihtvideokoodek"
 
-#: src/input/decoder.c:1874
+#: src/input/decoder.c:1876
 #, fuzzy
 msgid "Codec not supported"
 msgstr "Kliendi port"
 
-#: src/input/decoder.c:1875
+#: src/input/decoder.c:1877
 #, fuzzy, c-format
 msgid "VLC could not decode the format \"%4.4s\" (%s)"
 msgstr "VLC ei suutnud avada faili \"%s\". (%m)"
 
-#: src/input/decoder.c:1879
+#: src/input/decoder.c:1881
 #, fuzzy
 msgid "Unidentified codec"
 msgstr "Videokoodek"
 
-#: src/input/decoder.c:1880
+#: src/input/decoder.c:1882
 #, fuzzy
 msgid "VLC could not identify the audio or video codec"
 msgstr "VLC ei suuda avada dekoodri moodulit."
 
-#: src/input/decoder.c:1891
+#: src/input/decoder.c:1893
 msgid "packetizer"
 msgstr "tükeldaja"
 
-#: src/input/decoder.c:1891
+#: src/input/decoder.c:1893
 msgid "decoder"
 msgstr "dekooder"
 
-#: src/input/decoder.c:1899 src/input/decoder.c:2157
+#: src/input/decoder.c:1901 src/input/decoder.c:2159
 #: modules/codec/avcodec/encoder.c:369 modules/codec/avcodec/encoder.c:892
 #: modules/stream_out/es.c:349 modules/stream_out/es.c:362
 msgid "Streaming / Transcoding failed"
 msgstr "Voogedastus / transkodeerimine nurjus"
 
-#: src/input/decoder.c:1900
+#: src/input/decoder.c:1902
 #, c-format
 msgid "VLC could not open the %s module."
 msgstr "VLC ei suuda avada moodulit %s"
 
-#: src/input/decoder.c:2158
+#: src/input/decoder.c:2160
 msgid "VLC could not open the decoder module."
 msgstr "VLC ei suuda avada dekoodri moodulit."
 
@@ -1506,7 +1506,7 @@ msgid "C"
 msgstr "et"
 
 #: src/libvlc.h:164 src/libvlc-module.c:1422 src/libvlc-module.c:1423
-#: src/libvlc-module.c:2630 src/video_output/vout_intf.c:176
+#: src/libvlc-module.c:2633 src/video_output/vout_intf.c:176
 #: modules/gui/macosx/VLCMainMenu.m:460
 msgid "Zoom"
 msgstr "Suurendamine"
@@ -1931,7 +1931,7 @@ msgstr ""
 
 #: src/libvlc-module.c:261 modules/stream_out/mosaic_bridge.c:105
 #: modules/stream_out/transcode/transcode.c:67
-#: modules/visualization/projectm.cpp:58
+#: modules/visualization/projectm.cpp:65
 #: modules/visualization/visual/visual.c:53 modules/visualization/vsxu.cpp:52
 msgid "Video width"
 msgstr "Video laius"
@@ -1946,7 +1946,7 @@ msgstr ""
 
 #: src/libvlc-module.c:266 modules/stream_out/mosaic_bridge.c:108
 #: modules/stream_out/transcode/transcode.c:70
-#: modules/visualization/projectm.cpp:61
+#: modules/visualization/projectm.cpp:68
 #: modules/visualization/visual/visual.c:57 modules/visualization/vsxu.cpp:55
 msgid "Video height"
 msgstr "Video kõrgus"
@@ -4828,25 +4828,25 @@ msgstr "Jõudluse valikud"
 msgid "Clock source"
 msgstr ""
 
-#: src/libvlc-module.c:2150
+#: src/libvlc-module.c:2153
 msgid "Hot keys"
 msgstr "Kiirklahvid"
 
-#: src/libvlc-module.c:2640
+#: src/libvlc-module.c:2643
 msgid "Jump sizes"
 msgstr "Hüppe suurused"
 
-#: src/libvlc-module.c:2725
+#: src/libvlc-module.c:2728
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr ""
 "VLC abiteabe väljastamine (võib kombineerida koos --advanced ja --help-"
 "verbose võtmetega)"
 
-#: src/libvlc-module.c:2728
+#: src/libvlc-module.c:2731
 msgid "Exhaustive help for VLC and its modules"
 msgstr "Põhjalik abiteave VLC ja selle moodulite kohta"
 
-#: src/libvlc-module.c:2730
+#: src/libvlc-module.c:2733
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
 "--help-verbose)"
@@ -4854,19 +4854,19 @@ msgstr ""
 "VLC ja kõikide selle moodulite abiteabe väljastamine (võib kombineerida koos "
 "--advanced ja --help-verbose parameetritega)"
 
-#: src/libvlc-module.c:2733
+#: src/libvlc-module.c:2736
 msgid "ask for extra verbosity when displaying help"
 msgstr "täiendava jutukuse küsimine abiteabe kuvamisel"
 
-#: src/libvlc-module.c:2735
+#: src/libvlc-module.c:2738
 msgid "print a list of available modules"
 msgstr "kuva nimekiri saadavadest moodulitest"
 
-#: src/libvlc-module.c:2737
+#: src/libvlc-module.c:2740
 msgid "print a list of available modules with extra detail"
 msgstr "kuva nimekiri saadavatest moodulitest koos lisa detailidega"
 
-#: src/libvlc-module.c:2739
+#: src/libvlc-module.c:2742
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
 "verbose). Prefix the module name with = for strict matches."
@@ -4875,28 +4875,28 @@ msgstr ""
 "--help-verbose parameetritega). Otseste vastete jaoks lisa moodulinimele "
 "eesliide =."
 
-#: src/libvlc-module.c:2743
+#: src/libvlc-module.c:2746
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr ""
 "ühtegi seadistuste valikut ei laaditud ega salvestatud seadistutste faili"
 
-#: src/libvlc-module.c:2745
+#: src/libvlc-module.c:2748
 msgid "reset the current config to the default values"
 msgstr "algväärtusta aktiivne konfiguratsioon"
 
-#: src/libvlc-module.c:2747
+#: src/libvlc-module.c:2750
 msgid "use alternate config file"
 msgstr "seadistusfaili määramine"
 
-#: src/libvlc-module.c:2749
+#: src/libvlc-module.c:2752
 msgid "resets the current plugins cache"
 msgstr "algväärtusta aktiivne pluginate puhver"
 
-#: src/libvlc-module.c:2751
+#: src/libvlc-module.c:2754
 msgid "print version information"
 msgstr "programmi versiooni andmete väljastamine"
 
-#: src/libvlc-module.c:2791
+#: src/libvlc-module.c:2794
 #, fuzzy
 msgid "core program"
 msgstr "põhirakendus"
@@ -13718,7 +13718,7 @@ msgstr "Kiire"
 #: modules/codec/x264.c:438 modules/gui/macosx/VLCMainMenu.m:281
 #: modules/gui/macosx/VLCMainMenu.m:383
 #: modules/gui/macosx/VLCSimplePrefsController.m:689
-#: modules/gui/qt/components/simple_preferences.cpp:634
+#: modules/gui/qt/components/simple_preferences.cpp:635
 #: modules/misc/gnutls.c:771 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
 msgid "Normal"
@@ -13934,7 +13934,7 @@ msgstr "Globaalsete kiirklahvide liides"
 #: modules/control/hotkeys.c:100
 #: modules/gui/macosx/VLCSimplePrefsController.m:230
 #: modules/gui/qt/components/preferences_widgets.cpp:1145
-#: modules/gui/qt/components/simple_preferences.cpp:220
+#: modules/gui/qt/components/simple_preferences.cpp:221
 msgid "Hotkeys"
 msgstr "Kiirklahvid"
 
@@ -16127,7 +16127,7 @@ msgstr "Vali väljundi asukoht"
 #: modules/gui/macosx/VLCSimplePrefsController.m:283
 #: modules/gui/macosx/VLCSimplePrefsController.m:360
 #: modules/gui/qt/components/preferences_widgets.cpp:264
-#: modules/gui/qt/components/simple_preferences.cpp:414
+#: modules/gui/qt/components/simple_preferences.cpp:415
 #: modules/gui/qt/components/sout/sout_widgets.cpp:132
 msgid "Browse..."
 msgstr "Sirvi..."
@@ -16326,7 +16326,7 @@ msgstr ""
 #: modules/gui/macosx/VLCSimplePrefsController.m:683
 #: modules/gui/macosx/VLCSimplePrefsController.m:711
 #: modules/gui/macosx/VLCSimplePrefsController.m:1244
-#: modules/gui/qt/components/simple_preferences.cpp:631
+#: modules/gui/qt/components/simple_preferences.cpp:632
 msgid "Custom"
 msgstr "Oma"
 
@@ -16512,11 +16512,11 @@ msgid ""
 "later."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:98 modules/gui/qt/qt.cpp:97
+#: modules/gui/macosx/macosx.m:98 modules/gui/qt/qt.cpp:99
 msgid "Resize interface to the native video size"
 msgstr "Muuda liidese suurus samaks video omaga"
 
-#: modules/gui/macosx/macosx.m:99 modules/gui/qt/qt.cpp:98
+#: modules/gui/macosx/macosx.m:99 modules/gui/qt/qt.cpp:100
 msgid ""
 "You have two choices:\n"
 " - The interface will resize to the native video size\n"
@@ -16529,11 +16529,11 @@ msgstr ""
 "Vaikimisi on kasutusel esimene variant."
 
 #: modules/gui/macosx/macosx.m:104
-#: modules/gui/macosx/VLCSimplePrefsController.m:349 modules/gui/qt/qt.cpp:181
+#: modules/gui/macosx/VLCSimplePrefsController.m:349 modules/gui/qt/qt.cpp:183
 msgid "Pause the video playback when minimized"
 msgstr "Minimeerimisel video esitamine pausitakse"
 
-#: modules/gui/macosx/macosx.m:105 modules/gui/qt/qt.cpp:183
+#: modules/gui/macosx/macosx.m:105 modules/gui/qt/qt.cpp:185
 msgid ""
 "With this option enabled, the playback will be automatically paused when "
 "minimizing the window."
@@ -16541,11 +16541,11 @@ msgstr ""
 "Selle valiku märkimisel peatatakse video esitamine, kui video esitamise aken "
 "minimeeritakse."
 
-#: modules/gui/macosx/macosx.m:108 modules/gui/qt/qt.cpp:185
+#: modules/gui/macosx/macosx.m:108 modules/gui/qt/qt.cpp:187
 msgid "Allow automatic icon changes"
 msgstr "Luba automaatne ikoonide muutmine"
 
-#: modules/gui/macosx/macosx.m:109 modules/gui/qt/qt.cpp:187
+#: modules/gui/macosx/macosx.m:109 modules/gui/qt/qt.cpp:189
 msgid ""
 "This option allows the interface to change its icon on various occasions."
 msgstr "See valik lubab liidesel muuta oma ikoone erinevatel juhtudel."
@@ -16635,21 +16635,21 @@ msgid ""
 "open one of those, playback will continue."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:145 modules/gui/qt/qt.cpp:209
+#: modules/gui/macosx/macosx.m:145 modules/gui/qt/qt.cpp:211
 msgid "Ask"
 msgstr "Küsi"
 
-#: modules/gui/macosx/macosx.m:145 modules/gui/qt/qt.cpp:203
-#: modules/gui/qt/qt.cpp:209 modules/keystore/keychain.m:49
+#: modules/gui/macosx/macosx.m:145 modules/gui/qt/qt.cpp:205
+#: modules/gui/qt/qt.cpp:211 modules/keystore/keychain.m:49
 msgid "Always"
 msgstr "Alati"
 
-#: modules/gui/macosx/macosx.m:145 modules/gui/qt/qt.cpp:203
-#: modules/gui/qt/qt.cpp:209 modules/gui/qt/qt.cpp:216
+#: modules/gui/macosx/macosx.m:145 modules/gui/qt/qt.cpp:205
+#: modules/gui/qt/qt.cpp:211 modules/gui/qt/qt.cpp:218
 msgid "Never"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:148 modules/gui/qt/qt.cpp:189
+#: modules/gui/macosx/macosx.m:148 modules/gui/qt/qt.cpp:191
 msgid "Maximum Volume displayed"
 msgstr ""
 
@@ -17604,7 +17604,7 @@ msgstr "Vali fail"
 msgid "Select"
 msgstr "Vali"
 
-#: modules/gui/macosx/VLCResumeDialogController.m:48 modules/gui/qt/qt.cpp:197
+#: modules/gui/macosx/VLCResumeDialogController.m:48 modules/gui/qt/qt.cpp:199
 #, fuzzy
 msgid "Continue playback?"
 msgstr "Taasesituse lõpetamine"
@@ -17658,27 +17658,27 @@ msgid "Disable renderer discovery"
 msgstr "Ekraanisäästja on keelatud"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
-#: modules/gui/qt/components/simple_preferences.cpp:210
-#: modules/gui/qt/components/simple_preferences.cpp:658
+#: modules/gui/qt/components/simple_preferences.cpp:211
+#: modules/gui/qt/components/simple_preferences.cpp:659
 #: modules/gui/qt/dialogs/plugins.cpp:374
 msgid "Interface Settings"
 msgstr "Liidese sätted"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:222
-#: modules/gui/qt/components/simple_preferences.cpp:212
-#: modules/gui/qt/components/simple_preferences.cpp:389
+#: modules/gui/qt/components/simple_preferences.cpp:213
+#: modules/gui/qt/components/simple_preferences.cpp:390
 msgid "Audio Settings"
 msgstr "Audiosätted"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:224
-#: modules/gui/qt/components/simple_preferences.cpp:214
-#: modules/gui/qt/components/simple_preferences.cpp:342
+#: modules/gui/qt/components/simple_preferences.cpp:215
+#: modules/gui/qt/components/simple_preferences.cpp:343
 msgid "Video Settings"
 msgstr "Videosätted"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:226
-#: modules/gui/qt/components/simple_preferences.cpp:216
-#: modules/gui/qt/components/simple_preferences.cpp:799
+#: modules/gui/qt/components/simple_preferences.cpp:217
+#: modules/gui/qt/components/simple_preferences.cpp:800
 msgid "Subtitle & On Screen Display Settings"
 msgstr "Subtiitrite & OSD seaded"
 
@@ -19409,21 +19409,21 @@ msgstr ""
 msgid "Key: "
 msgstr "Võti: "
 
-#: modules/gui/qt/components/simple_preferences.cpp:218
-#: modules/gui/qt/components/simple_preferences.cpp:560
+#: modules/gui/qt/components/simple_preferences.cpp:219
+#: modules/gui/qt/components/simple_preferences.cpp:561
 msgid "Input & Codecs Settings"
 msgstr "Sisendite ja koodekite sätted"
 
-#: modules/gui/qt/components/simple_preferences.cpp:220
-#: modules/gui/qt/components/simple_preferences.cpp:843
+#: modules/gui/qt/components/simple_preferences.cpp:221
+#: modules/gui/qt/components/simple_preferences.cpp:844
 msgid "Configure Hotkeys"
 msgstr "Kiirklahvide määramine"
 
-#: modules/gui/qt/components/simple_preferences.cpp:397
+#: modules/gui/qt/components/simple_preferences.cpp:398
 msgid "Device:"
 msgstr "Seade:"
 
-#: modules/gui/qt/components/simple_preferences.cpp:565
+#: modules/gui/qt/components/simple_preferences.cpp:566
 msgid ""
 "If this property is blank, different values\n"
 "for DVD, VCD, and CDDA are set.\n"
@@ -19435,58 +19435,58 @@ msgstr ""
 "Võid määrata unikaalse väärtuse või seadistada\n"
 "neid individuaalselt peamiste eelistuste alt."
 
-#: modules/gui/qt/components/simple_preferences.cpp:632
+#: modules/gui/qt/components/simple_preferences.cpp:633
 msgid "Lowest latency"
 msgstr "Madalam latentsus"
 
-#: modules/gui/qt/components/simple_preferences.cpp:633
+#: modules/gui/qt/components/simple_preferences.cpp:634
 msgid "Low latency"
 msgstr "Madal latentsus"
 
-#: modules/gui/qt/components/simple_preferences.cpp:635
+#: modules/gui/qt/components/simple_preferences.cpp:636
 msgid "High latency"
 msgstr "Kõrge latentsus"
 
-#: modules/gui/qt/components/simple_preferences.cpp:636
+#: modules/gui/qt/components/simple_preferences.cpp:637
 msgid "Higher latency"
 msgstr "Kõrgem latentsus"
 
-#: modules/gui/qt/components/simple_preferences.cpp:684
+#: modules/gui/qt/components/simple_preferences.cpp:685
 msgid "This is VLC's skinnable interface. You can download other skins at"
 msgstr "See on VLC rüütatud kasutajaliides. Teisi rüüsid saab allalaadida"
 
-#: modules/gui/qt/components/simple_preferences.cpp:686
+#: modules/gui/qt/components/simple_preferences.cpp:687
 msgid "VLC skins website"
 msgstr "VLC rüüde veebileht"
 
-#: modules/gui/qt/components/simple_preferences.cpp:710
+#: modules/gui/qt/components/simple_preferences.cpp:711
 msgid "System's default"
 msgstr "Süsteemi vaikeväärtus"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1228
+#: modules/gui/qt/components/simple_preferences.cpp:1229
 msgid "File associations"
 msgstr "Failiseosed"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1237
+#: modules/gui/qt/components/simple_preferences.cpp:1238
 #: modules/gui/qt/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "Audiofailid"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1238
+#: modules/gui/qt/components/simple_preferences.cpp:1239
 #: modules/gui/qt/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "Videofailid"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1239
+#: modules/gui/qt/components/simple_preferences.cpp:1240
 #: modules/gui/qt/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "Esitusloendi failid"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1304
+#: modules/gui/qt/components/simple_preferences.cpp:1305
 msgid "&Apply"
 msgstr "&Rakenda"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1305
+#: modules/gui/qt/components/simple_preferences.cpp:1306
 #: modules/gui/qt/dialogs/convert.cpp:133
 #: modules/gui/qt/dialogs/gototime.cpp:49 modules/gui/qt/dialogs/open.cpp:108
 #: modules/gui/qt/dialogs/openurl.cpp:60
@@ -20710,11 +20710,11 @@ msgstr "Vokaal"
 msgid "Scan"
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:83
+#: modules/gui/qt/qt.cpp:85
 msgid "Show advanced preferences over simple ones"
 msgstr "Peamiste eelistuste asemel kõigi eelistuste kuvamine"
 
-#: modules/gui/qt/qt.cpp:84
+#: modules/gui/qt/qt.cpp:86
 msgid ""
 "Show advanced preferences and not simple preferences when opening the "
 "preferences dialog."
@@ -20722,11 +20722,11 @@ msgstr ""
 "Eelistuste dialoogi avanemisel kõigi eelistuste kuvamine (mitte ainult "
 "peamiste)."
 
-#: modules/gui/qt/qt.cpp:88 modules/gui/skins2/src/skin_main.cpp:489
+#: modules/gui/qt/qt.cpp:90 modules/gui/skins2/src/skin_main.cpp:489
 msgid "Systray icon"
 msgstr "Teateala ikoon"
 
-#: modules/gui/qt/qt.cpp:89
+#: modules/gui/qt/qt.cpp:91
 msgid ""
 "Show an icon in the systray allowing you to control VLC media player for "
 "basic actions."
@@ -20734,27 +20734,27 @@ msgstr ""
 "Teatealas ikooni kuvamine, mille kaudu on võimalik VLC põhifunktsioone "
 "juhtida."
 
-#: modules/gui/qt/qt.cpp:93
+#: modules/gui/qt/qt.cpp:95
 msgid "Start VLC with only a systray icon"
 msgstr "VLC käivitub ainult teateala ikoonina"
 
-#: modules/gui/qt/qt.cpp:94
+#: modules/gui/qt/qt.cpp:96
 msgid "VLC will start with just an icon in your taskbar"
 msgstr "VLC käivitub vaid ikoonina tegumireal"
 
-#: modules/gui/qt/qt.cpp:103
+#: modules/gui/qt/qt.cpp:105
 msgid "Show playing item name in window title"
 msgstr "Esitatava kirje nime kuvatakse akna pealkirjas"
 
-#: modules/gui/qt/qt.cpp:104
+#: modules/gui/qt/qt.cpp:106
 msgid "Show the name of the song or video in the controller window title."
 msgstr "Loo või video nime kuvatakse akna pealkirjas."
 
-#: modules/gui/qt/qt.cpp:107
+#: modules/gui/qt/qt.cpp:109
 msgid "Show notification popup on track change"
 msgstr "Kuva märguande hüpikaken raja vahetamisel"
 
-#: modules/gui/qt/qt.cpp:109
+#: modules/gui/qt/qt.cpp:111
 msgid ""
 "Show a notification popup with the artist and track name when the current "
 "playlist item changes, when VLC is minimized or hidden."
@@ -20762,11 +20762,11 @@ msgstr ""
 "Kuva märguandena hüpikaken, kus on kirjas raja number ja esitaja, kui "
 "aktiivne kirje muutub esitusloendis ja VLC on minimeeritud või peidetud."
 
-#: modules/gui/qt/qt.cpp:112
+#: modules/gui/qt/qt.cpp:114
 msgid "Windows opacity between 0.1 and 1"
 msgstr "Akna läbipaistmatus vahemikus 0.1 kuni 1"
 
-#: modules/gui/qt/qt.cpp:113
+#: modules/gui/qt/qt.cpp:115
 msgid ""
 "Sets the windows opacity between 0.1 and 1 for main interface, playlist and "
 "extended panel. This option only works with Windows and X11 with composite "
@@ -20776,11 +20776,11 @@ msgstr ""
 "vahemikus 0.1 kuni 1. See töötab ainult Windowsis ja X11s komposiit "
 "laiendusega."
 
-#: modules/gui/qt/qt.cpp:118
+#: modules/gui/qt/qt.cpp:120
 msgid "Fullscreen controller opacity between 0.1 and 1"
 msgstr "Täisekraani juhtnuppude läbipaistmatus vahemikus 0.1 ja 1"
 
-#: modules/gui/qt/qt.cpp:119
+#: modules/gui/qt/qt.cpp:121
 msgid ""
 "Sets the fullscreen controller opacity between 0.1 and 1 for main interface, "
 "playlist and extended panel. This option only works with Windows and X11 "
@@ -20790,15 +20790,15 @@ msgstr ""
 "vahemikus 0.1 ja 1. See töötab ainult Windowsis ja X11-s komposiit "
 "laiendusega."
 
-#: modules/gui/qt/qt.cpp:125
+#: modules/gui/qt/qt.cpp:127
 msgid "Show unimportant error and warnings dialogs"
 msgstr "Kuva ebaolulisi veateadete ja hoiatuste dialooge "
 
-#: modules/gui/qt/qt.cpp:127
+#: modules/gui/qt/qt.cpp:129
 msgid "Activate the updates availability notification"
 msgstr "Aktiveeri uuenduste saadavuse teatamine"
 
-#: modules/gui/qt/qt.cpp:128
+#: modules/gui/qt/qt.cpp:130
 msgid ""
 "Activate the automatic notification of new versions of the software. It runs "
 "once every two weeks."
@@ -20806,32 +20806,32 @@ msgstr ""
 "Aktiveeri tarkvarast uue versiooni teavitaja. Uut versiooni otsitakse iga "
 "kahe nädala tagant."
 
-#: modules/gui/qt/qt.cpp:131
+#: modules/gui/qt/qt.cpp:133
 msgid "Number of days between two update checks"
 msgstr "Päevi kahe uuenduse kontrolli vahel"
 
-#: modules/gui/qt/qt.cpp:133
+#: modules/gui/qt/qt.cpp:135
 msgid "Ask for network policy at start"
 msgstr "Küsi võrgureeglit käivitamisel"
 
-#: modules/gui/qt/qt.cpp:135
+#: modules/gui/qt/qt.cpp:137
 msgid "Save the recently played items in the menu"
 msgstr "Viimati esitatud kirjete salvestamine menüüsse"
 
-#: modules/gui/qt/qt.cpp:137
+#: modules/gui/qt/qt.cpp:139
 msgid "List of words separated by | to filter"
 msgstr "Nimekiri filtreeritavatest sõnadest, eraldaja |"
 
-#: modules/gui/qt/qt.cpp:138
+#: modules/gui/qt/qt.cpp:140
 msgid "Regular expression used to filter the recent items played in the player"
 msgstr ""
 "Mängijas viimati esitatud kirjete filtreerimisel kasutatav regulaaravaldis"
 
-#: modules/gui/qt/qt.cpp:141
+#: modules/gui/qt/qt.cpp:143
 msgid "Define the colors of the volume slider "
 msgstr "Määra heliliuguri värvid"
 
-#: modules/gui/qt/qt.cpp:142
+#: modules/gui/qt/qt.cpp:144
 msgid ""
 "Define the colors of the volume slider\n"
 "By specifying the 12 numbers separated by a ';'\n"
@@ -20843,11 +20843,11 @@ msgstr ""
 "Vaikimisi on '255;255;255;20;226;20;255;176;15;235;30;20'\n"
 "Alternatiiv võib olla '30;30;50;40;40;100;50;50;160;150;150;255'"
 
-#: modules/gui/qt/qt.cpp:147
+#: modules/gui/qt/qt.cpp:149
 msgid "Selection of the starting mode and look "
 msgstr "Režiimi ja välimuse valikud käivitamisel"
 
-#: modules/gui/qt/qt.cpp:148
+#: modules/gui/qt/qt.cpp:150
 msgid ""
 "Start VLC with:\n"
 " - normal mode\n"
@@ -20859,57 +20859,57 @@ msgstr ""
 " - alati kuvatakse sõnu, kaanepilte...\n"
 " - minimaalsel režiimil piiratud nuppudega"
 
-#: modules/gui/qt/qt.cpp:154
+#: modules/gui/qt/qt.cpp:156
 msgid "Show a controller in fullscreen mode"
 msgstr "Täisekraanrežiimis juhtnuppude kuvamine"
 
-#: modules/gui/qt/qt.cpp:155
+#: modules/gui/qt/qt.cpp:157
 msgid "Embed the file browser in open dialog"
 msgstr "Põimi failide lehitseja avamise dialoogi"
 
-#: modules/gui/qt/qt.cpp:157
+#: modules/gui/qt/qt.cpp:159
 msgid "Define which screen fullscreen goes"
 msgstr "Määra, millisele kuvale täisekraanvaade läheb"
 
-#: modules/gui/qt/qt.cpp:158
+#: modules/gui/qt/qt.cpp:160
 msgid "Screennumber of fullscreen, instead of same screen where interface is"
 msgstr "Täisekraanvaate kuva number, selle kuva asemel, kus kasutajaliides on"
 
-#: modules/gui/qt/qt.cpp:161
+#: modules/gui/qt/qt.cpp:163
 msgid "Load extensions on startup"
 msgstr "Laiendused laaditakse käivitumisel"
 
-#: modules/gui/qt/qt.cpp:162
+#: modules/gui/qt/qt.cpp:164
 msgid "Automatically load the extensions module on startup"
 msgstr "Käivitumisel laaditakse laienduste moodul automaatselt"
 
-#: modules/gui/qt/qt.cpp:165
+#: modules/gui/qt/qt.cpp:167
 msgid "Start in minimal view (without menus)"
 msgstr "Rakenduse käivitamine minivaates (ilma menüüdeta)"
 
-#: modules/gui/qt/qt.cpp:167
+#: modules/gui/qt/qt.cpp:169
 msgid "Display background cone or art"
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:168
+#: modules/gui/qt/qt.cpp:170
 msgid ""
 "Display background cone or current album art when not playing. Can be "
 "disabled to prevent burning screen."
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:171
+#: modules/gui/qt/qt.cpp:173
 msgid "Expanding background cone or art."
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:172
+#: modules/gui/qt/qt.cpp:174
 msgid "Background art fits window's size"
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:174
+#: modules/gui/qt/qt.cpp:176
 msgid "Ignore keyboard volume buttons."
 msgstr "Eira klaviatuuri helitugevusnuppe."
 
-#: modules/gui/qt/qt.cpp:176
+#: modules/gui/qt/qt.cpp:178
 msgid ""
 "With this option checked, the volume up, volume down and mute buttons on "
 "your keyboard will always change your system volume. With this option "
@@ -20921,32 +20921,32 @@ msgstr ""
 "valitud, siis helitugevuse nupud muudavad VLC helitugevust, kui VLC on "
 "valitud ja süsteemi helitugevust, kui VLC ei ole valitud."
 
-#: modules/gui/qt/qt.cpp:191
+#: modules/gui/qt/qt.cpp:193
 #, fuzzy
 msgid "When to raise the interface"
 msgstr "Peamise kasutajaliidese sätted"
 
-#: modules/gui/qt/qt.cpp:192
+#: modules/gui/qt/qt.cpp:194
 #, fuzzy
 msgid ""
 "This option allows the interface to be raised automatically when a video/"
 "audio playback starts, or never"
 msgstr "See valik lubab liidesel muuta oma ikoone erinevatel juhtudel."
 
-#: modules/gui/qt/qt.cpp:195
+#: modules/gui/qt/qt.cpp:197
 #, fuzzy
 msgid "Fullscreen controller mouse sensitivity"
 msgstr "Täisekraani juhtnupud"
 
-#: modules/gui/qt/qt.cpp:203
+#: modules/gui/qt/qt.cpp:205
 msgid "When minimized"
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:216
+#: modules/gui/qt/qt.cpp:218
 msgid "Both"
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:221
+#: modules/gui/qt/qt.cpp:223
 msgid "Qt interface"
 msgstr "Qt kasutajaliides"
 
@@ -26440,12 +26440,12 @@ msgid "The desktop mode allows you to display the video on the desktop."
 msgstr "Töölaua režiim lubab sul kuvada videot töölaual."
 
 #: modules/video_output/win32/direct3d9.c:69
-#: modules/video_output/win32/direct3d11.c:65
+#: modules/video_output/win32/direct3d11.c:69
 msgid "Use hardware blending support"
 msgstr "Kasuta riistvaralist sulandamise tuge"
 
 #: modules/video_output/win32/direct3d9.c:71
-#: modules/video_output/win32/direct3d11.c:67
+#: modules/video_output/win32/direct3d11.c:71
 msgid "Try to use hardware acceleration for subtitle/OSD blending."
 msgstr "Ürita kasutada riistvaralist kiirendust subtiitrite/OSD sulandamiseks."
 
@@ -26481,12 +26481,12 @@ msgstr "Windows Vista ja hilisemate versioonide soovituslik videoväljund"
 msgid "Direct3D9 video output"
 msgstr "Direct3D videoväljund"
 
-#: modules/video_output/win32/direct3d11.c:64
+#: modules/video_output/win32/direct3d11.c:68
 #, fuzzy
 msgid "Recommended video output for Windows 8 and later versions"
 msgstr "Windows Vista ja hilisemate versioonide soovituslik videoväljund"
 
-#: modules/video_output/win32/direct3d11.c:71
+#: modules/video_output/win32/direct3d11.c:75
 #, fuzzy
 msgid "Direct3D11 video output"
 msgstr "Direct3D videoväljund"
@@ -27083,75 +27083,75 @@ msgstr "Goom"
 msgid "Goom effect"
 msgstr "Goomi efekt"
 
-#: modules/visualization/projectm.cpp:45
+#: modules/visualization/projectm.cpp:52
 msgid "projectM configuration file"
 msgstr "projectM seadistuste fail"
 
-#: modules/visualization/projectm.cpp:46
+#: modules/visualization/projectm.cpp:53
 msgid "File that will be used to configure the projectM module."
 msgstr "Fail, mida kasutatakse projectM mooduli seadistamiseks."
 
-#: modules/visualization/projectm.cpp:49
+#: modules/visualization/projectm.cpp:56
 msgid "projectM preset path"
 msgstr "projectM malli asukoht"
 
-#: modules/visualization/projectm.cpp:50
+#: modules/visualization/projectm.cpp:57
 msgid "Path to the projectM preset directory"
 msgstr "projectM-i mallikataloogi asukoht"
 
-#: modules/visualization/projectm.cpp:52
+#: modules/visualization/projectm.cpp:59
 msgid "Title font"
 msgstr "Pealkirjafont"
 
-#: modules/visualization/projectm.cpp:53
+#: modules/visualization/projectm.cpp:60
 msgid "Font used for the titles"
 msgstr "Pealkirjades kasutatav font"
 
-#: modules/visualization/projectm.cpp:55
+#: modules/visualization/projectm.cpp:62
 msgid "Font menu"
 msgstr "Fondi menüü"
 
-#: modules/visualization/projectm.cpp:56
+#: modules/visualization/projectm.cpp:63
 msgid "Font used for the menus"
 msgstr "Fondid, mida kasutatakse menüüdes"
 
-#: modules/visualization/projectm.cpp:59 modules/visualization/vsxu.cpp:53
+#: modules/visualization/projectm.cpp:66 modules/visualization/vsxu.cpp:53
 msgid "The width of the video window, in pixels."
 msgstr "Video akna laius pikslites."
 
-#: modules/visualization/projectm.cpp:62 modules/visualization/vsxu.cpp:56
+#: modules/visualization/projectm.cpp:69 modules/visualization/vsxu.cpp:56
 msgid "The height of the video window, in pixels."
 msgstr "Video akna kõrgus pikslites."
 
-#: modules/visualization/projectm.cpp:64
+#: modules/visualization/projectm.cpp:71
 msgid "Mesh width"
 msgstr "Võrgu laius"
 
-#: modules/visualization/projectm.cpp:65
+#: modules/visualization/projectm.cpp:72
 msgid "The width of the mesh, in pixels."
 msgstr "Võrgu laius pikslites."
 
-#: modules/visualization/projectm.cpp:67
+#: modules/visualization/projectm.cpp:74
 msgid "Mesh height"
 msgstr "Võrgu kõrgus"
 
-#: modules/visualization/projectm.cpp:68
+#: modules/visualization/projectm.cpp:75
 msgid "The height of the mesh, in pixels."
 msgstr "Võrgu kõrgus pikslites."
 
-#: modules/visualization/projectm.cpp:70
+#: modules/visualization/projectm.cpp:77
 msgid "Texture size"
 msgstr "Tekstuuri suurus"
 
-#: modules/visualization/projectm.cpp:71
+#: modules/visualization/projectm.cpp:78
 msgid "The size of the texture, in pixels."
 msgstr "Tekstuuri suurus pikslites."
 
-#: modules/visualization/projectm.cpp:94
+#: modules/visualization/projectm.cpp:101
 msgid "projectM"
 msgstr "projectM"
 
-#: modules/visualization/projectm.cpp:95
+#: modules/visualization/projectm.cpp:102
 msgid "libprojectM effect"
 msgstr "libprojectM efekt"
 

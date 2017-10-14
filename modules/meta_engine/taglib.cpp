@@ -2,7 +2,7 @@
  * taglib.cpp: Taglib tag parser/writer
  *****************************************************************************
  * Copyright (C) 2003-2016 VLC authors and VideoLAN
- * $Id: 2cb4f826abaf4fcab2f1b8e3bbe42c75f36553a1 $
+ * $Id: 123d09c94fdce884486d2a5aaeb31ea62da2b1d3 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rafaël Carré <funman@videolanorg>
@@ -130,7 +130,7 @@ File *VLCTagLib::ExtResolver<T>::createFile(FileName fileName, bool, AudioProper
         std::string fext = filename.substr(namesize - ext.length(), ext.length());
         std::transform(fext.begin(), fext.end(), fext.begin(), ::toupper);
         if(fext == ext)
-            return new T(fileName, false, AudioProperties::ReadStyle::Fast);
+            return new T(fileName, false, AudioProperties::Fast);
     }
 
     return 0;

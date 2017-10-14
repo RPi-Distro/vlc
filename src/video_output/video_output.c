@@ -6,7 +6,7 @@
  * thread, and destroy a previously oppened video output thread.
  *****************************************************************************
  * Copyright (C) 2000-2007 VLC authors and VideoLAN
- * $Id: 10e1d87c268220b29fbc00ed00a76b50a86702c6 $
+ * $Id: 12539768dbeaa8392e9284856545aa66c25fd625 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1090,7 +1090,7 @@ static int ThreadDisplayRenderPicture(vout_thread_t *vout, bool is_forced)
 
     /* Wait the real date (for rendering jitter) */
 #if 0
-    mtime_t delay = direct->date - mdate();
+    mtime_t delay = todisplay->date - mdate();
     if (delay < 1000)
         msg_Warn(vout, "picture is late (%lld ms)", delay / 1000);
 #endif

@@ -2,7 +2,7 @@
  * variables.c: routines for object variables handling
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: 87a9c274780c1b6f21dc14a45058bd112d02ad5e $
+ * $Id: 810c8ffc819365cce4c6889885055315d9fcb337 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -1194,7 +1194,7 @@ int var_Inherit( vlc_object_t *p_this, const char *psz_name, int i_type,
             p_val->i_int = config_GetInt( p_this, psz_name );
             break;
         case VLC_VAR_BOOL:
-            p_val->b_bool = config_GetInt( p_this, psz_name );
+            p_val->b_bool = config_GetInt( p_this, psz_name ) > 0;
             break;
         default:
             vlc_assert_unreachable();

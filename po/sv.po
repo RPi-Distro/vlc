@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-10-09 02:29+0000\n"
+"POT-Creation-Date: 2017-10-14 02:29+0000\n"
 "PO-Revision-Date: 2014-05-17 20:57+0000\n"
 "Last-Translator: leveebreaks <when.the.levee.breaks.89@gmail.com>\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/vlc-trans/"
@@ -50,7 +50,7 @@ msgstr "Välj \"Avancerade alternativ\" för att se alla alternativ."
 
 #: include/vlc_config_cat.h:38
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
-#: modules/gui/qt/components/simple_preferences.cpp:210
+#: modules/gui/qt/components/simple_preferences.cpp:211
 #: modules/gui/qt/menus.cpp:1081
 msgid "Interface"
 msgstr "Gränssnitt"
@@ -91,8 +91,8 @@ msgstr "Inställningar för snabbtangenter"
 #: modules/gui/macosx/VLCPlaylistInfo.m:101
 #: modules/gui/macosx/VLCSimplePrefsController.m:222
 #: modules/gui/qt/components/info_panels.cpp:576
-#: modules/gui/qt/components/simple_preferences.cpp:212
-#: modules/gui/qt/qt.cpp:216 modules/services_discovery/mediadirs.c:77
+#: modules/gui/qt/components/simple_preferences.cpp:213
+#: modules/gui/qt/qt.cpp:218 modules/services_discovery/mediadirs.c:77
 #: modules/stream_out/es.c:94 modules/stream_out/transcode/transcode.c:182
 #: share/lua/http/dialogs/create_stream.html:150
 msgid "Audio"
@@ -154,8 +154,8 @@ msgstr "Diverse ljudinställningar och moduler."
 #: modules/gui/macosx/VLCSimplePrefsController.m:224
 #: modules/gui/macosx/VLCSimplePrefsController.m:367
 #: modules/gui/qt/components/info_panels.cpp:577
-#: modules/gui/qt/components/simple_preferences.cpp:214
-#: modules/gui/qt/qt.cpp:216 modules/services_discovery/mediadirs.c:70
+#: modules/gui/qt/components/simple_preferences.cpp:215
+#: modules/gui/qt/qt.cpp:218 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:102 modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
 msgid "Video"
@@ -904,50 +904,50 @@ msgstr "Okänd video"
 msgid "Bookmark %i"
 msgstr "Bokmärke %i"
 
-#: src/input/decoder.c:1872
+#: src/input/decoder.c:1874
 msgid "No description for this codec"
 msgstr ""
 
-#: src/input/decoder.c:1874
+#: src/input/decoder.c:1876
 #, fuzzy
 msgid "Codec not supported"
 msgstr "Klientport"
 
-#: src/input/decoder.c:1875
+#: src/input/decoder.c:1877
 #, fuzzy, c-format
 msgid "VLC could not decode the format \"%4.4s\" (%s)"
 msgstr "VLC kunde inte öppna filen \"%s\" (%m)."
 
-#: src/input/decoder.c:1879
+#: src/input/decoder.c:1881
 #, fuzzy
 msgid "Unidentified codec"
 msgstr "Videokodek"
 
-#: src/input/decoder.c:1880
+#: src/input/decoder.c:1882
 #, fuzzy
 msgid "VLC could not identify the audio or video codec"
 msgstr "VLC kunde inte öppna avkodningsmodulen."
 
-#: src/input/decoder.c:1891
+#: src/input/decoder.c:1893
 msgid "packetizer"
 msgstr "paketerare"
 
-#: src/input/decoder.c:1891
+#: src/input/decoder.c:1893
 msgid "decoder"
 msgstr "avkodare"
 
-#: src/input/decoder.c:1899 src/input/decoder.c:2157
+#: src/input/decoder.c:1901 src/input/decoder.c:2159
 #: modules/codec/avcodec/encoder.c:369 modules/codec/avcodec/encoder.c:892
 #: modules/stream_out/es.c:349 modules/stream_out/es.c:362
 msgid "Streaming / Transcoding failed"
 msgstr "Strömning / Omkodning misslyckades"
 
-#: src/input/decoder.c:1900
+#: src/input/decoder.c:1902
 #, c-format
 msgid "VLC could not open the %s module."
 msgstr "VLC kunde inte öppna modulen %s."
 
-#: src/input/decoder.c:2158
+#: src/input/decoder.c:2160
 msgid "VLC could not open the decoder module."
 msgstr "VLC kunde inte öppna avkodningsmodulen."
 
@@ -1517,7 +1517,7 @@ msgid "C"
 msgstr "sv"
 
 #: src/libvlc.h:164 src/libvlc-module.c:1422 src/libvlc-module.c:1423
-#: src/libvlc-module.c:2630 src/video_output/vout_intf.c:176
+#: src/libvlc-module.c:2633 src/video_output/vout_intf.c:176
 #: modules/gui/macosx/VLCMainMenu.m:460
 msgid "Zoom"
 msgstr "Zoom"
@@ -1947,7 +1947,7 @@ msgstr ""
 
 #: src/libvlc-module.c:261 modules/stream_out/mosaic_bridge.c:105
 #: modules/stream_out/transcode/transcode.c:67
-#: modules/visualization/projectm.cpp:58
+#: modules/visualization/projectm.cpp:65
 #: modules/visualization/visual/visual.c:53 modules/visualization/vsxu.cpp:52
 msgid "Video width"
 msgstr "Videobredd"
@@ -1962,7 +1962,7 @@ msgstr ""
 
 #: src/libvlc-module.c:266 modules/stream_out/mosaic_bridge.c:108
 #: modules/stream_out/transcode/transcode.c:70
-#: modules/visualization/projectm.cpp:61
+#: modules/visualization/projectm.cpp:68
 #: modules/visualization/visual/visual.c:57 modules/visualization/vsxu.cpp:55
 msgid "Video height"
 msgstr "Videohöjd"
@@ -4857,24 +4857,24 @@ msgstr "Prestandainställningar"
 msgid "Clock source"
 msgstr "Klockningskälla"
 
-#: src/libvlc-module.c:2150
+#: src/libvlc-module.c:2153
 msgid "Hot keys"
 msgstr "Snabbtangenter"
 
-#: src/libvlc-module.c:2640
+#: src/libvlc-module.c:2643
 msgid "Jump sizes"
 msgstr "Hoppstorlekar"
 
-#: src/libvlc-module.c:2725
+#: src/libvlc-module.c:2728
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr ""
 "skriv ut hjälp för VLC (kan kombineras med --advanced och --help-verbose)"
 
-#: src/libvlc-module.c:2728
+#: src/libvlc-module.c:2731
 msgid "Exhaustive help for VLC and its modules"
 msgstr "Utökad hjälp för VLC och dess moduler"
 
-#: src/libvlc-module.c:2730
+#: src/libvlc-module.c:2733
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
 "--help-verbose)"
@@ -4882,47 +4882,47 @@ msgstr ""
 "skriv ut hjälp för VLC och alla dess moduler (kan kombineras med --advanced "
 "och --help-verbose)"
 
-#: src/libvlc-module.c:2733
+#: src/libvlc-module.c:2736
 msgid "ask for extra verbosity when displaying help"
 msgstr "fråga efter extra information när hjälp visas"
 
-#: src/libvlc-module.c:2735
+#: src/libvlc-module.c:2738
 msgid "print a list of available modules"
 msgstr "skriv ut en lista av tillgängliga moduler"
 
-#: src/libvlc-module.c:2737
+#: src/libvlc-module.c:2740
 msgid "print a list of available modules with extra detail"
 msgstr "skriv ut en lista över tillgängliga moduler med extra detaljer"
 
-#: src/libvlc-module.c:2739
+#: src/libvlc-module.c:2742
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
 "verbose). Prefix the module name with = for strict matches."
 msgstr ""
 
-#: src/libvlc-module.c:2743
+#: src/libvlc-module.c:2746
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr ""
 "inga konfigurationsalternativ kommer att läsas in eller sparas till "
 "konfigurationsfilen"
 
-#: src/libvlc-module.c:2745
+#: src/libvlc-module.c:2748
 msgid "reset the current config to the default values"
 msgstr "nollställ aktuell konfiguration till standardvärden"
 
-#: src/libvlc-module.c:2747
+#: src/libvlc-module.c:2750
 msgid "use alternate config file"
 msgstr "använd alternativ konfigurationsfil"
 
-#: src/libvlc-module.c:2749
+#: src/libvlc-module.c:2752
 msgid "resets the current plugins cache"
 msgstr "nollställer aktuell mellanlagring av insticksmoduler"
 
-#: src/libvlc-module.c:2751
+#: src/libvlc-module.c:2754
 msgid "print version information"
 msgstr "skriv ut versionsinformation"
 
-#: src/libvlc-module.c:2791
+#: src/libvlc-module.c:2794
 #, fuzzy
 msgid "core program"
 msgstr "huvudprogram"
@@ -13581,7 +13581,7 @@ msgstr "Spola framåt"
 #: modules/codec/x264.c:438 modules/gui/macosx/VLCMainMenu.m:281
 #: modules/gui/macosx/VLCMainMenu.m:383
 #: modules/gui/macosx/VLCSimplePrefsController.m:689
-#: modules/gui/qt/components/simple_preferences.cpp:634
+#: modules/gui/qt/components/simple_preferences.cpp:635
 #: modules/misc/gnutls.c:771 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
 msgid "Normal"
@@ -13794,7 +13794,7 @@ msgstr "Gränssnitt för globala snabbtangenter"
 #: modules/control/hotkeys.c:100
 #: modules/gui/macosx/VLCSimplePrefsController.m:230
 #: modules/gui/qt/components/preferences_widgets.cpp:1145
-#: modules/gui/qt/components/simple_preferences.cpp:220
+#: modules/gui/qt/components/simple_preferences.cpp:221
 msgid "Hotkeys"
 msgstr "Snabbtangenter"
 
@@ -15990,7 +15990,7 @@ msgstr "Välj en utmatningsplats"
 #: modules/gui/macosx/VLCSimplePrefsController.m:283
 #: modules/gui/macosx/VLCSimplePrefsController.m:360
 #: modules/gui/qt/components/preferences_widgets.cpp:264
-#: modules/gui/qt/components/simple_preferences.cpp:414
+#: modules/gui/qt/components/simple_preferences.cpp:415
 #: modules/gui/qt/components/sout/sout_widgets.cpp:132
 msgid "Browse..."
 msgstr "Bläddra..."
@@ -16189,7 +16189,7 @@ msgstr "En SDP-export begärs, men ingen webbadress är angiven."
 #: modules/gui/macosx/VLCSimplePrefsController.m:683
 #: modules/gui/macosx/VLCSimplePrefsController.m:711
 #: modules/gui/macosx/VLCSimplePrefsController.m:1244
-#: modules/gui/qt/components/simple_preferences.cpp:631
+#: modules/gui/qt/components/simple_preferences.cpp:632
 msgid "Custom"
 msgstr "Anpassad"
 
@@ -16390,11 +16390,11 @@ msgstr ""
 "Som standard använder VLC helskärmsläget från tidigare utgåvor av Mac OS X. "
 "Den kan också använda det inbyggda helskärmsläget i Mac OS X 10.7 och senare."
 
-#: modules/gui/macosx/macosx.m:98 modules/gui/qt/qt.cpp:97
+#: modules/gui/macosx/macosx.m:98 modules/gui/qt/qt.cpp:99
 msgid "Resize interface to the native video size"
 msgstr "Ändra gränssnittets storlek till videons ursprungliga storlek"
 
-#: modules/gui/macosx/macosx.m:99 modules/gui/qt/qt.cpp:98
+#: modules/gui/macosx/macosx.m:99 modules/gui/qt/qt.cpp:100
 msgid ""
 "You have two choices:\n"
 " - The interface will resize to the native video size\n"
@@ -16408,11 +16408,11 @@ msgstr ""
 "ursprungliga storlek."
 
 #: modules/gui/macosx/macosx.m:104
-#: modules/gui/macosx/VLCSimplePrefsController.m:349 modules/gui/qt/qt.cpp:181
+#: modules/gui/macosx/VLCSimplePrefsController.m:349 modules/gui/qt/qt.cpp:183
 msgid "Pause the video playback when minimized"
 msgstr "Pausa videouppspelning vid minimering"
 
-#: modules/gui/macosx/macosx.m:105 modules/gui/qt/qt.cpp:183
+#: modules/gui/macosx/macosx.m:105 modules/gui/qt/qt.cpp:185
 msgid ""
 "With this option enabled, the playback will be automatically paused when "
 "minimizing the window."
@@ -16420,11 +16420,11 @@ msgstr ""
 "Med detta alternativ aktiverat kommer uppspelningen automatiskt pausas när "
 "fönstret minimeras."
 
-#: modules/gui/macosx/macosx.m:108 modules/gui/qt/qt.cpp:185
+#: modules/gui/macosx/macosx.m:108 modules/gui/qt/qt.cpp:187
 msgid "Allow automatic icon changes"
 msgstr "Tillåt automatiska ikonändringar"
 
-#: modules/gui/macosx/macosx.m:109 modules/gui/qt/qt.cpp:187
+#: modules/gui/macosx/macosx.m:109 modules/gui/qt/qt.cpp:189
 msgid ""
 "This option allows the interface to change its icon on various occasions."
 msgstr ""
@@ -16516,21 +16516,21 @@ msgid ""
 "open one of those, playback will continue."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:145 modules/gui/qt/qt.cpp:209
+#: modules/gui/macosx/macosx.m:145 modules/gui/qt/qt.cpp:211
 msgid "Ask"
 msgstr "Fråga"
 
-#: modules/gui/macosx/macosx.m:145 modules/gui/qt/qt.cpp:203
-#: modules/gui/qt/qt.cpp:209 modules/keystore/keychain.m:49
+#: modules/gui/macosx/macosx.m:145 modules/gui/qt/qt.cpp:205
+#: modules/gui/qt/qt.cpp:211 modules/keystore/keychain.m:49
 msgid "Always"
 msgstr "Alltid"
 
-#: modules/gui/macosx/macosx.m:145 modules/gui/qt/qt.cpp:203
-#: modules/gui/qt/qt.cpp:209 modules/gui/qt/qt.cpp:216
+#: modules/gui/macosx/macosx.m:145 modules/gui/qt/qt.cpp:205
+#: modules/gui/qt/qt.cpp:211 modules/gui/qt/qt.cpp:218
 msgid "Never"
 msgstr "Aldrig"
 
-#: modules/gui/macosx/macosx.m:148 modules/gui/qt/qt.cpp:189
+#: modules/gui/macosx/macosx.m:148 modules/gui/qt/qt.cpp:191
 msgid "Maximum Volume displayed"
 msgstr "Maximal volym som visas"
 
@@ -17508,7 +17508,7 @@ msgstr "Välj en fil"
 msgid "Select"
 msgstr "Välj"
 
-#: modules/gui/macosx/VLCResumeDialogController.m:48 modules/gui/qt/qt.cpp:197
+#: modules/gui/macosx/VLCResumeDialogController.m:48 modules/gui/qt/qt.cpp:199
 #, fuzzy
 msgid "Continue playback?"
 msgstr "Kontrollera iTunes under uppspelning"
@@ -17562,27 +17562,27 @@ msgid "Disable renderer discovery"
 msgstr "Inaktivera skärmsläckare"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
-#: modules/gui/qt/components/simple_preferences.cpp:210
-#: modules/gui/qt/components/simple_preferences.cpp:658
+#: modules/gui/qt/components/simple_preferences.cpp:211
+#: modules/gui/qt/components/simple_preferences.cpp:659
 #: modules/gui/qt/dialogs/plugins.cpp:374
 msgid "Interface Settings"
 msgstr "Gränssnittsinställningar"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:222
-#: modules/gui/qt/components/simple_preferences.cpp:212
-#: modules/gui/qt/components/simple_preferences.cpp:389
+#: modules/gui/qt/components/simple_preferences.cpp:213
+#: modules/gui/qt/components/simple_preferences.cpp:390
 msgid "Audio Settings"
 msgstr "Ljudinställningar"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:224
-#: modules/gui/qt/components/simple_preferences.cpp:214
-#: modules/gui/qt/components/simple_preferences.cpp:342
+#: modules/gui/qt/components/simple_preferences.cpp:215
+#: modules/gui/qt/components/simple_preferences.cpp:343
 msgid "Video Settings"
 msgstr "Videoinställningar"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:226
-#: modules/gui/qt/components/simple_preferences.cpp:216
-#: modules/gui/qt/components/simple_preferences.cpp:799
+#: modules/gui/qt/components/simple_preferences.cpp:217
+#: modules/gui/qt/components/simple_preferences.cpp:800
 msgid "Subtitle & On Screen Display Settings"
 msgstr "Inställningar för undertexter och skärmtext"
 
@@ -19318,21 +19318,21 @@ msgstr "Tangent eller kombination: "
 msgid "Key: "
 msgstr "Tangent: "
 
-#: modules/gui/qt/components/simple_preferences.cpp:218
-#: modules/gui/qt/components/simple_preferences.cpp:560
+#: modules/gui/qt/components/simple_preferences.cpp:219
+#: modules/gui/qt/components/simple_preferences.cpp:561
 msgid "Input & Codecs Settings"
 msgstr "Inställningar för inmatning och kodekar"
 
-#: modules/gui/qt/components/simple_preferences.cpp:220
-#: modules/gui/qt/components/simple_preferences.cpp:843
+#: modules/gui/qt/components/simple_preferences.cpp:221
+#: modules/gui/qt/components/simple_preferences.cpp:844
 msgid "Configure Hotkeys"
 msgstr "Konfigurera snabbtangenter"
 
-#: modules/gui/qt/components/simple_preferences.cpp:397
+#: modules/gui/qt/components/simple_preferences.cpp:398
 msgid "Device:"
 msgstr "Enhet:"
 
-#: modules/gui/qt/components/simple_preferences.cpp:565
+#: modules/gui/qt/components/simple_preferences.cpp:566
 msgid ""
 "If this property is blank, different values\n"
 "for DVD, VCD, and CDDA are set.\n"
@@ -19340,58 +19340,58 @@ msgid ""
 "individually in the advanced preferences."
 msgstr ""
 
-#: modules/gui/qt/components/simple_preferences.cpp:632
+#: modules/gui/qt/components/simple_preferences.cpp:633
 msgid "Lowest latency"
 msgstr "Lägsta latens"
 
-#: modules/gui/qt/components/simple_preferences.cpp:633
+#: modules/gui/qt/components/simple_preferences.cpp:634
 msgid "Low latency"
 msgstr "Låg latens"
 
-#: modules/gui/qt/components/simple_preferences.cpp:635
+#: modules/gui/qt/components/simple_preferences.cpp:636
 msgid "High latency"
 msgstr "Hög latens"
 
-#: modules/gui/qt/components/simple_preferences.cpp:636
+#: modules/gui/qt/components/simple_preferences.cpp:637
 msgid "Higher latency"
 msgstr "Högre latens"
 
-#: modules/gui/qt/components/simple_preferences.cpp:684
+#: modules/gui/qt/components/simple_preferences.cpp:685
 msgid "This is VLC's skinnable interface. You can download other skins at"
 msgstr "Det här är VLC:s skalbara gränssnitt. Du kan hämta andra skal på"
 
-#: modules/gui/qt/components/simple_preferences.cpp:686
+#: modules/gui/qt/components/simple_preferences.cpp:687
 msgid "VLC skins website"
 msgstr "Webbsida för VLC-skal"
 
-#: modules/gui/qt/components/simple_preferences.cpp:710
+#: modules/gui/qt/components/simple_preferences.cpp:711
 msgid "System's default"
 msgstr "Systemets standard"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1228
+#: modules/gui/qt/components/simple_preferences.cpp:1229
 msgid "File associations"
 msgstr "Filassocieringar"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1237
+#: modules/gui/qt/components/simple_preferences.cpp:1238
 #: modules/gui/qt/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "Ljudfiler"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1238
+#: modules/gui/qt/components/simple_preferences.cpp:1239
 #: modules/gui/qt/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "Videofiler"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1239
+#: modules/gui/qt/components/simple_preferences.cpp:1240
 #: modules/gui/qt/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "Spellistfiler"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1304
+#: modules/gui/qt/components/simple_preferences.cpp:1305
 msgid "&Apply"
 msgstr "&Tillämpa"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1305
+#: modules/gui/qt/components/simple_preferences.cpp:1306
 #: modules/gui/qt/dialogs/convert.cpp:133
 #: modules/gui/qt/dialogs/gototime.cpp:49 modules/gui/qt/dialogs/open.cpp:108
 #: modules/gui/qt/dialogs/openurl.cpp:60
@@ -20635,11 +20635,11 @@ msgstr "Vocal"
 msgid "Scan"
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:83
+#: modules/gui/qt/qt.cpp:85
 msgid "Show advanced preferences over simple ones"
 msgstr "Visa avancerade inställningar istället för enkla"
 
-#: modules/gui/qt/qt.cpp:84
+#: modules/gui/qt/qt.cpp:86
 msgid ""
 "Show advanced preferences and not simple preferences when opening the "
 "preferences dialog."
@@ -20647,11 +20647,11 @@ msgstr ""
 "Visa avancerade inställningar och inte enkla inställningar när "
 "inställningsdialogen öppnas."
 
-#: modules/gui/qt/qt.cpp:88 modules/gui/skins2/src/skin_main.cpp:489
+#: modules/gui/qt/qt.cpp:90 modules/gui/skins2/src/skin_main.cpp:489
 msgid "Systray icon"
 msgstr "Systemfältikon"
 
-#: modules/gui/qt/qt.cpp:89
+#: modules/gui/qt/qt.cpp:91
 msgid ""
 "Show an icon in the systray allowing you to control VLC media player for "
 "basic actions."
@@ -20659,27 +20659,27 @@ msgstr ""
 "Visa en ikon i aktivitetsfältet som låter dig styra över grundläggande "
 "åtgärder i VLC media player."
 
-#: modules/gui/qt/qt.cpp:93
+#: modules/gui/qt/qt.cpp:95
 msgid "Start VLC with only a systray icon"
 msgstr "Starta VLC med endast en ikon på meddelandefältet"
 
-#: modules/gui/qt/qt.cpp:94
+#: modules/gui/qt/qt.cpp:96
 msgid "VLC will start with just an icon in your taskbar"
 msgstr "VLC kommer att starta med bara en ikon i ditt verktygsfält"
 
-#: modules/gui/qt/qt.cpp:103
+#: modules/gui/qt/qt.cpp:105
 msgid "Show playing item name in window title"
 msgstr "Visa spelande objektets namn i fönstrets titellist"
 
-#: modules/gui/qt/qt.cpp:104
+#: modules/gui/qt/qt.cpp:106
 msgid "Show the name of the song or video in the controller window title."
 msgstr "Visa namnet på sången eller videon i kontrollfönstret titel."
 
-#: modules/gui/qt/qt.cpp:107
+#: modules/gui/qt/qt.cpp:109
 msgid "Show notification popup on track change"
 msgstr "Visa en notifieringsruta vid spårbyte"
 
-#: modules/gui/qt/qt.cpp:109
+#: modules/gui/qt/qt.cpp:111
 msgid ""
 "Show a notification popup with the artist and track name when the current "
 "playlist item changes, when VLC is minimized or hidden."
@@ -20687,11 +20687,11 @@ msgstr ""
 "Visa en notifieringsruta med artisten och spårnamnet när det aktuella "
 "spellistobjektet ändras, när VLC är minimerad eller dold."
 
-#: modules/gui/qt/qt.cpp:112
+#: modules/gui/qt/qt.cpp:114
 msgid "Windows opacity between 0.1 and 1"
 msgstr "Fönsteropacitet mellan 0.1 och 1"
 
-#: modules/gui/qt/qt.cpp:113
+#: modules/gui/qt/qt.cpp:115
 msgid ""
 "Sets the windows opacity between 0.1 and 1 for main interface, playlist and "
 "extended panel. This option only works with Windows and X11 with composite "
@@ -20701,11 +20701,11 @@ msgstr ""
 "och utvidgade paneler. Detta alternativ fungerar endast med Windows och X11 "
 "med komposittillägg."
 
-#: modules/gui/qt/qt.cpp:118
+#: modules/gui/qt/qt.cpp:120
 msgid "Fullscreen controller opacity between 0.1 and 1"
 msgstr "Opacitet för helskärmskontroller mellan 0.1 och 1"
 
-#: modules/gui/qt/qt.cpp:119
+#: modules/gui/qt/qt.cpp:121
 msgid ""
 "Sets the fullscreen controller opacity between 0.1 and 1 for main interface, "
 "playlist and extended panel. This option only works with Windows and X11 "
@@ -20715,15 +20715,15 @@ msgstr ""
 "huvudgränssnittet, spellistan och utvidgade paneler. Detta alternativ "
 "fungerar endast med Windows och X11 med komposittillägg."
 
-#: modules/gui/qt/qt.cpp:125
+#: modules/gui/qt/qt.cpp:127
 msgid "Show unimportant error and warnings dialogs"
 msgstr "Visa oviktiga dialogrutor för fel och varningar"
 
-#: modules/gui/qt/qt.cpp:127
+#: modules/gui/qt/qt.cpp:129
 msgid "Activate the updates availability notification"
 msgstr "Aktivera notifiering om tillgängliga uppdateringar"
 
-#: modules/gui/qt/qt.cpp:128
+#: modules/gui/qt/qt.cpp:130
 msgid ""
 "Activate the automatic notification of new versions of the software. It runs "
 "once every two weeks."
@@ -20731,33 +20731,33 @@ msgstr ""
 "Aktivera automatiska notifieringar om nya versioner av programvaran. Den "
 "körs varannan vecka."
 
-#: modules/gui/qt/qt.cpp:131
+#: modules/gui/qt/qt.cpp:133
 msgid "Number of days between two update checks"
 msgstr "Antal dagar mellan uppdateringskontroller"
 
-#: modules/gui/qt/qt.cpp:133
+#: modules/gui/qt/qt.cpp:135
 msgid "Ask for network policy at start"
 msgstr "Fråga efter nätverkspolicy vid uppstart"
 
-#: modules/gui/qt/qt.cpp:135
+#: modules/gui/qt/qt.cpp:137
 msgid "Save the recently played items in the menu"
 msgstr "Spara tidigare uppspelade objekt i menyn"
 
-#: modules/gui/qt/qt.cpp:137
+#: modules/gui/qt/qt.cpp:139
 msgid "List of words separated by | to filter"
 msgstr "Lista över ord separerade med | för att filtrera"
 
-#: modules/gui/qt/qt.cpp:138
+#: modules/gui/qt/qt.cpp:140
 msgid "Regular expression used to filter the recent items played in the player"
 msgstr ""
 "Reguljärt uttryck som används för att filtrera de tidigare uppspelade "
 "objekten i spelaren"
 
-#: modules/gui/qt/qt.cpp:141
+#: modules/gui/qt/qt.cpp:143
 msgid "Define the colors of the volume slider "
 msgstr "Definiera färgerna för volymdraglisten"
 
-#: modules/gui/qt/qt.cpp:142
+#: modules/gui/qt/qt.cpp:144
 msgid ""
 "Define the colors of the volume slider\n"
 "By specifying the 12 numbers separated by a ';'\n"
@@ -20769,11 +20769,11 @@ msgstr ""
 "Standard är '255;255;255;20;226;20;255;176;15;235;30;20'\n"
 "Alternativt kan det vara '30;30;50;40;40;100;50;50;160;150;150;255' "
 
-#: modules/gui/qt/qt.cpp:147
+#: modules/gui/qt/qt.cpp:149
 msgid "Selection of the starting mode and look "
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:148
+#: modules/gui/qt/qt.cpp:150
 msgid ""
 "Start VLC with:\n"
 " - normal mode\n"
@@ -20786,40 +20786,40 @@ msgstr ""
 "albumomslag...\n"
 " - minimalt läge med begränsade kontroller"
 
-#: modules/gui/qt/qt.cpp:154
+#: modules/gui/qt/qt.cpp:156
 msgid "Show a controller in fullscreen mode"
 msgstr "Visa en kontroller i helskärmsläge"
 
-#: modules/gui/qt/qt.cpp:155
+#: modules/gui/qt/qt.cpp:157
 msgid "Embed the file browser in open dialog"
 msgstr "Bädda in filbläddraren i öppningsdialog"
 
-#: modules/gui/qt/qt.cpp:157
+#: modules/gui/qt/qt.cpp:159
 msgid "Define which screen fullscreen goes"
 msgstr "Ange vilken skärm som används för helskärmsläge"
 
-#: modules/gui/qt/qt.cpp:158
+#: modules/gui/qt/qt.cpp:160
 msgid "Screennumber of fullscreen, instead of same screen where interface is"
 msgstr ""
 "Skärmnummer för helskärmsläge, istället för samma skärm där gränssnittet är"
 
-#: modules/gui/qt/qt.cpp:161
+#: modules/gui/qt/qt.cpp:163
 msgid "Load extensions on startup"
 msgstr "Läs in tillägg vid uppstart"
 
-#: modules/gui/qt/qt.cpp:162
+#: modules/gui/qt/qt.cpp:164
 msgid "Automatically load the extensions module on startup"
 msgstr "Läs automatiskt in tilläggsmodulen vid uppstart"
 
-#: modules/gui/qt/qt.cpp:165
+#: modules/gui/qt/qt.cpp:167
 msgid "Start in minimal view (without menus)"
 msgstr "Starta i minimal vy (utan menyer)."
 
-#: modules/gui/qt/qt.cpp:167
+#: modules/gui/qt/qt.cpp:169
 msgid "Display background cone or art"
 msgstr "Visa kon eller bild som bakgrund"
 
-#: modules/gui/qt/qt.cpp:168
+#: modules/gui/qt/qt.cpp:170
 msgid ""
 "Display background cone or current album art when not playing. Can be "
 "disabled to prevent burning screen."
@@ -20827,19 +20827,19 @@ msgstr ""
 "Visa bakgrundkonen eller aktuellt albumomslag när ingenting spelas upp. Kan "
 "inaktiveras för att förhindra inbränning på skärmen."
 
-#: modules/gui/qt/qt.cpp:171
+#: modules/gui/qt/qt.cpp:173
 msgid "Expanding background cone or art."
 msgstr "Expanderande bakgrundskon eller bild."
 
-#: modules/gui/qt/qt.cpp:172
+#: modules/gui/qt/qt.cpp:174
 msgid "Background art fits window's size"
 msgstr "Anpassa bakgrundsbilden efter fönsterstorleken"
 
-#: modules/gui/qt/qt.cpp:174
+#: modules/gui/qt/qt.cpp:176
 msgid "Ignore keyboard volume buttons."
 msgstr "Ignorera tangentbordets volymknappar."
 
-#: modules/gui/qt/qt.cpp:176
+#: modules/gui/qt/qt.cpp:178
 msgid ""
 "With this option checked, the volume up, volume down and mute buttons on "
 "your keyboard will always change your system volume. With this option "
@@ -20851,12 +20851,12 @@ msgstr ""
 "alternativ inaktiverat kommer volymknapparna ändra VLC:s volym när VLC är "
 "markerat och ändra systemvolymen när VLC inte är markerat."
 
-#: modules/gui/qt/qt.cpp:191
+#: modules/gui/qt/qt.cpp:193
 #, fuzzy
 msgid "When to raise the interface"
 msgstr "Inställningar för huvudgränssnittet"
 
-#: modules/gui/qt/qt.cpp:192
+#: modules/gui/qt/qt.cpp:194
 #, fuzzy
 msgid ""
 "This option allows the interface to be raised automatically when a video/"
@@ -20864,20 +20864,20 @@ msgid ""
 msgstr ""
 "Detta alternativ låter gränssnittet ändra sin ikon vid olika tillfällen."
 
-#: modules/gui/qt/qt.cpp:195
+#: modules/gui/qt/qt.cpp:197
 #, fuzzy
 msgid "Fullscreen controller mouse sensitivity"
 msgstr "Helskärmskontroll"
 
-#: modules/gui/qt/qt.cpp:203
+#: modules/gui/qt/qt.cpp:205
 msgid "When minimized"
 msgstr "Vid minimering"
 
-#: modules/gui/qt/qt.cpp:216
+#: modules/gui/qt/qt.cpp:218
 msgid "Both"
 msgstr "Båda"
 
-#: modules/gui/qt/qt.cpp:221
+#: modules/gui/qt/qt.cpp:223
 msgid "Qt interface"
 msgstr "Qt-gränssnitt"
 
@@ -26356,12 +26356,12 @@ msgid "The desktop mode allows you to display the video on the desktop."
 msgstr "Skrivbordsläget låter dig visa videon på skrivbordet."
 
 #: modules/video_output/win32/direct3d9.c:69
-#: modules/video_output/win32/direct3d11.c:65
+#: modules/video_output/win32/direct3d11.c:69
 msgid "Use hardware blending support"
 msgstr ""
 
 #: modules/video_output/win32/direct3d9.c:71
-#: modules/video_output/win32/direct3d11.c:67
+#: modules/video_output/win32/direct3d11.c:71
 msgid "Try to use hardware acceleration for subtitle/OSD blending."
 msgstr ""
 "Försök att använda hårdvaruacceleration för undertext-/skärmtextblandning."
@@ -26399,12 +26399,12 @@ msgstr "Rekommenderad videoutmatning för Windows Vista och senare versioner"
 msgid "Direct3D9 video output"
 msgstr "Direct3D-videoutmatning"
 
-#: modules/video_output/win32/direct3d11.c:64
+#: modules/video_output/win32/direct3d11.c:68
 #, fuzzy
 msgid "Recommended video output for Windows 8 and later versions"
 msgstr "Rekommenderad videoutmatning för Windows Vista och senare versioner"
 
-#: modules/video_output/win32/direct3d11.c:71
+#: modules/video_output/win32/direct3d11.c:75
 #, fuzzy
 msgid "Direct3D11 video output"
 msgstr "Direct3D-videoutmatning"
@@ -26991,75 +26991,75 @@ msgstr "Goom"
 msgid "Goom effect"
 msgstr "Goom-effekt"
 
-#: modules/visualization/projectm.cpp:45
+#: modules/visualization/projectm.cpp:52
 msgid "projectM configuration file"
 msgstr "Konfigurationsfil för projectM"
 
-#: modules/visualization/projectm.cpp:46
+#: modules/visualization/projectm.cpp:53
 msgid "File that will be used to configure the projectM module."
 msgstr "Fil som ska användas för att konfigurera projectM-modulen."
 
-#: modules/visualization/projectm.cpp:49
+#: modules/visualization/projectm.cpp:56
 msgid "projectM preset path"
 msgstr "Förvalssökväg för projectM"
 
-#: modules/visualization/projectm.cpp:50
+#: modules/visualization/projectm.cpp:57
 msgid "Path to the projectM preset directory"
 msgstr "Sökväg till projectM-förvalets filkatalog"
 
-#: modules/visualization/projectm.cpp:52
+#: modules/visualization/projectm.cpp:59
 msgid "Title font"
 msgstr "Titeltypsnitt"
 
-#: modules/visualization/projectm.cpp:53
+#: modules/visualization/projectm.cpp:60
 msgid "Font used for the titles"
 msgstr "Typsnitt att använda för titlarna"
 
-#: modules/visualization/projectm.cpp:55
+#: modules/visualization/projectm.cpp:62
 msgid "Font menu"
 msgstr "Typsnittsmeny"
 
-#: modules/visualization/projectm.cpp:56
+#: modules/visualization/projectm.cpp:63
 msgid "Font used for the menus"
 msgstr "Typsnitt som ska användas för menyer"
 
-#: modules/visualization/projectm.cpp:59 modules/visualization/vsxu.cpp:53
+#: modules/visualization/projectm.cpp:66 modules/visualization/vsxu.cpp:53
 msgid "The width of the video window, in pixels."
 msgstr "Bredd för videofönstret i bildpunkter."
 
-#: modules/visualization/projectm.cpp:62 modules/visualization/vsxu.cpp:56
+#: modules/visualization/projectm.cpp:69 modules/visualization/vsxu.cpp:56
 msgid "The height of the video window, in pixels."
 msgstr "Höjd för videofönstret i bildpunkter."
 
-#: modules/visualization/projectm.cpp:64
+#: modules/visualization/projectm.cpp:71
 msgid "Mesh width"
 msgstr ""
 
-#: modules/visualization/projectm.cpp:65
+#: modules/visualization/projectm.cpp:72
 msgid "The width of the mesh, in pixels."
 msgstr ""
 
-#: modules/visualization/projectm.cpp:67
+#: modules/visualization/projectm.cpp:74
 msgid "Mesh height"
 msgstr ""
 
-#: modules/visualization/projectm.cpp:68
+#: modules/visualization/projectm.cpp:75
 msgid "The height of the mesh, in pixels."
 msgstr ""
 
-#: modules/visualization/projectm.cpp:70
+#: modules/visualization/projectm.cpp:77
 msgid "Texture size"
 msgstr "Texturstorlek"
 
-#: modules/visualization/projectm.cpp:71
+#: modules/visualization/projectm.cpp:78
 msgid "The size of the texture, in pixels."
 msgstr "Storleken på texturen, i bildpunkter."
 
-#: modules/visualization/projectm.cpp:94
+#: modules/visualization/projectm.cpp:101
 msgid "projectM"
 msgstr "projectM"
 
-#: modules/visualization/projectm.cpp:95
+#: modules/visualization/projectm.cpp:102
 msgid "libprojectM effect"
 msgstr "libprojectM-effekt"
 

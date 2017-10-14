@@ -2,7 +2,7 @@
  * display.c: "vout display" management
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 3a6bba01dce75ad8a8d5068054cde7467d5ddff3 $
+ * $Id: 1160354522b63b53134148f588a5dbf7bbb66411 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -28,7 +28,6 @@
 # include "config.h"
 #endif
 #include <assert.h>
-#include <stdnoreturn.h>
 
 #include <vlc_common.h>
 #include <vlc_video_splitter.h>

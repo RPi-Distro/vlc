@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 9ae0b6ad6e7e54b9ba21983dd8422e7fd2d69eeb $
+ * $Id: ca458dd17ae24a8cc900591b90cb424569f14b46 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -198,7 +198,8 @@ SPrefsCatList::SPrefsCatList( intf_thread_t *_p_intf, QWidget *_parent ) :
     button->setText( label );                                               \
     button->setToolTip( ltooltip );                                         \
     button->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );              \
-    button->setIconSize( QSize( icon_height + 40 , icon_height ) );         \
+    button->setIconSize( QSize( icon_height, icon_height ) );               \
+    button->setMinimumSize( QSize( icon_height + 40, icon_height + 40 ) );  \
     button->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum); \
     button->setAutoRaise( true );                                           \
     button->setCheckable( true );                                           \

@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the core (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 VLC authors and VideoLAN
- * $Id: 6fe8e92ff6ebbed5becb6e78be81e63715b7dda7 $
+ * $Id: 15939f4a19220318c0cf768209b1114690b7d039 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -2099,6 +2099,9 @@ vlc_module_begin ()
                 IGNORE_TEXT, IGNORE_LONGTEXT, false )
     add_bool( "show-hiddenfiles", false,
               SHOW_HIDDENFILES_TEXT, SHOW_HIDDENFILES_LONGTEXT, false )
+    add_bool( "extractor-flatten", false,
+              "Flatten files listed by extractors (archive)", NULL, true )
+        change_volatile()
 
     set_subcategory( SUBCAT_PLAYLIST_SD )
     add_string( "services-discovery", "", SD_TEXT, SD_LONGTEXT, true )

@@ -2,7 +2,7 @@
  * vlc_vout_display.h: vout_display_t definitions
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: e612bac48cafa8a44e219b73125a0a8529939f2d $
+ * $Id: 80761c8762d6b2acd48091507637fdcefb3317bd $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -128,7 +128,9 @@ typedef struct {
 typedef struct {
     bool is_slow;                           /* The picture memory has slow read/write */
     bool has_double_click;                  /* Is double-click generated */
-    bool needs_hide_mouse;                  /* Needs VOUT_DISPLAY_HIDE_MOUSE */
+    bool needs_hide_mouse;                  /* Needs VOUT_DISPLAY_HIDE_MOUSE,
+                                             * needs to call vout_display_SendEventMouseMoved()
+                                             * or vout_display_SendEventMouseState() */
     bool has_pictures_invalid;              /* Will VOUT_DISPLAY_EVENT_PICTURES_INVALID be used */
     const vlc_fourcc_t *subpicture_chromas; /* List of supported chromas for subpicture rendering. */
 } vout_display_info_t;

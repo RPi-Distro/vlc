@@ -2,7 +2,7 @@
  * decoder.c: Functions for the management of decoders
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 54eec0f342da09ae6549c054df54af7dd5d22229 $
+ * $Id: 78c96986e4eb7db679cc6271fb261e4d7be7d4da $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1571,6 +1571,7 @@ static void *DecoderThread( void *p_data )
         if( p_owner->paused && p_owner->frames_countdown == 0 )
         {   /* Wait for resumption from pause */
             p_owner->b_idle = true;
+            vlc_cond_signal( &p_owner->wait_acknowledge );
             vlc_fifo_Wait( p_owner->p_fifo );
             p_owner->b_idle = false;
             continue;
@@ -1585,6 +1586,7 @@ static void *DecoderThread( void *p_data )
             if( likely(!p_owner->b_draining) )
             {   /* Wait for a block to decode (or a request to drain) */
                 p_owner->b_idle = true;
+                vlc_cond_signal( &p_owner->wait_acknowledge );
                 vlc_fifo_Wait( p_owner->p_fifo );
                 p_owner->b_idle = false;
                 continue;

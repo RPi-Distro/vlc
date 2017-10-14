@@ -2,7 +2,7 @@
  * qt.cpp : Qt interface
  ****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: f521d04171e8fdee95fa03dd936bd0ce56efb9e9 $
+ * $Id: 914671aa1e4e45a9b28064d35f8075056d621e6b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -56,6 +56,8 @@
  #if HAS_QT5
   #ifdef QT_STATICPLUGIN
    Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin)
+   Q_IMPORT_PLUGIN(QSvgIconPlugin)
+   Q_IMPORT_PLUGIN(QSvgPlugin)
    #if !HAS_QT56
     Q_IMPORT_PLUGIN(AccessibleFactory)
    #endif

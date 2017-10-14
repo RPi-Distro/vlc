@@ -1,3 +1,493 @@
+commit 5a4e2570c284159f0f943761e162c5b6f140c343
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Fri Oct 13 19:28:38 2017 +0300
+
+    projectm: include locale headers.
+
+commit 10216c788dc302d9d6709efbb216fd92657a55e6
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Aug 8 15:22:31 2017 +0200
+
+    display: add more documentation for display_info.handle_mouse_hide
+    
+    In all cases this flag means that the vout has a custom Window and handles the
+    mouse event itself, including showing/hiding the mouse.
+    
+    For the auto-hiding to work such vout need to call either
+    vout_display_SendEventMouseMoved or vout_display_SendEventMouseState to notify
+    the core of mouse events. And they all do that.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit fc05351f4f53fc24a0e92b61134018e0b492ae2a
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Fri Sep 8 21:49:33 2017 +0200
+
+    logger/file: Improve the verbosity option description
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit e597583b00f6327cb31bb14d0705526376363ebb
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Fri Sep 8 21:49:34 2017 +0200
+
+    logger/file: Use defines for logfile text and longtext
+    
+    Make it consistent with the rest of the options text and longtexts
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 32930aa2e0c72371d4865a1ef18a0bab460be40a
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Wed Sep 13 11:45:26 2017 +0200
+
+    qt/pref: fix toolbar icon or text beeing cropped on Hi-DPI displays
+    
+    Qt doesn't seems to handle properly when QIcon within QToolButton doesn't
+     respect the original image ratio.
+    
+     This might results in icons beeing cropped on Linux or text beeing cropped
+     on windows.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 88643985d4d54c176ce22a6e7718051b1bf211d7
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Sep 14 15:01:08 2017 +0200
+
+    video_output: fix disabled log compilation
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit bea939de13f986a74eeb6425b1c57f6c207c6863
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Sep 14 15:01:32 2017 +0200
+
+    avcodec: remove useless initialization
+    
+    The value is never used before it's set to mdate()
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 57954251e6a8bf91192eeaf380e00775cab96c28
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Sep 14 15:02:09 2017 +0200
+
+    avcodec: "avcodec-skip-frame" is read once into i_skip_frame
+    
+    p_context->skip_frame is the value that may change during decoding
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 4c1092bd2652a05ea4f0b7aa20c6478e84fc5567
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Oct 13 00:50:14 2017 +0200
+
+    Skins2: fix typo
+
+commit 25751de829d4169e109ad60247e8aa02c7931b73
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Thu Oct 12 23:57:57 2017 +0200
+
+    Qt: add support for QtSVG
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 189ca8feb6c784101a879895e8ad7cd793a0f16c
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Fri Sep 29 10:25:03 2017 +0200
+
+    Contribs: add support for QtSVG for Qt
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit da7bd76e91dce3a8cbfb847fe651879b4e5ab78b
+Author: Steve Lhomme <robux4@videolabs.io>
+Date:   Tue Oct 10 14:40:15 2017 +0200
+
+    direct3d11: bring back the Flush
+    
+    It does help to get the processing going during Prepare() and before Display()
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 3cd51996e440b66572480d6ebc94126a702b7012
+Author: Steve Lhomme <robux4@videolabs.io>
+Date:   Tue Oct 10 14:40:16 2017 +0200
+
+    direct3d11: Add one more buffer to the SwapChain
+    
+    It helps the GPU when one buffer is being processed for display and another
+    being displayed.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 2cc670ba6ece2e4faf391ee0bb5b00f3dca6a900
+Author: Steve Lhomme <robux4@videolabs.io>
+Date:   Thu Oct 12 11:29:58 2017 +0200
+
+    direct3d11: disable display luminance detection
+    
+    It doesn't work well with our current way of tone mapping and adjusting the
+    luminance between the source and output.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 6eabd69cde982a3aef89e63894ba2b6f68f8220a
+Author: Steve Lhomme <robux4@videolabs.io>
+Date:   Thu Oct 12 12:00:59 2017 +0200
+
+    directx_va: add an extra buffer when decoding MPEG-2
+    
+    DXVA2 with deinterlacing seems to be using one of these buffers when it shouldn't
+    
+    Fixes #18731
+
+commit 3d3dadcf4c34f1bf44000f2c640285d3666cb0ea
+Author: Steve Lhomme <robux4@videolabs.io>
+Date:   Thu Oct 12 12:56:20 2017 +0200
+
+    dxgi_fmt: add some common formats that may be supported
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 1857a476b3f2f8ecb8fcd9668ae8b82c6facbb5b
+Author: Julian Scheel <julian@jusst.de>
+Date:   Thu Oct 12 14:47:06 2017 +0200
+
+    mmal: Link to core, components, util explicitly
+    
+    In older versions of the rpi-userland libmmal was linked against
+    libmmal_core/_components/_util, so they were linked implicitly. Newer
+    versions don't do that, so we have to link them explicitly.
+    
+    Signed-off-by: Julian Scheel <julian@jusst.de>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 3571a4d399aa6cd5eb11a76cf74eb23566a35050
+Author: Julian Scheel <julian@jusst.de>
+Date:   Thu Oct 12 14:47:05 2017 +0200
+
+    mmal: Include headers with -isystem
+    
+    The vcos/mmal headers are vendor provided system headers.
+    
+    Signed-off-by: Julian Scheel <julian@jusst.de>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 532ca7722383ff2cde69d7b7cc4c4e8f21aa404b
+Author: Steve Lhomme <robux4@videolabs.io>
+Date:   Thu Oct 12 15:53:34 2017 +0200
+
+    d3d11va: use the external pool texture size even for the internal pool
+    
+    When it's available, so that pre-computed dimensions still match as if the
+    pictures were coming from the external pool.
+    
+    Fixes #18578
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit aea0b966eac77f91f0fab8aceef880175255e1aa
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Oct 12 17:14:35 2017 +0200
+
+    libvlc: hide "extractor-flatten" option
+
+commit eaf8fd5e3910ca2fc3ec7176f3e6619fff2d3f96
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Oct 12 17:16:16 2017 +0200
+
+    VT: only use hw decoding unless explicitely requested
+    
+    Close #18911
+
+commit 4ab384a7d77f568006dc782fe80eccec60f49942
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Oct 12 16:48:00 2017 +0200
+
+    hls: uint8_t is available in the global namespace
+
+commit 280986ab30c9957e5b5d4388c7743952ae696609
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Oct 12 16:44:55 2017 +0200
+
+    taglib: Don't use qualified name lookup on unscoped enumeration
+
+commit ab85d7f11ed8a7dff0a692e5d4ae369c28247304
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Oct 12 16:44:05 2017 +0200
+
+    core: video_output: Remove unused include
+
+commit 067c25378f37dd5e3ab6cfc4b41b121518038f58
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Oct 12 16:31:35 2017 +0200
+
+    satip: There is already an access_sys_t typedef
+
+commit 92ab073fc37225a1d31e9a4375d4c20415d9dc74
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Oct 12 16:10:32 2017 +0200
+
+    adaptive: Don't use qualified name lookup on unscoped enumerations
+
+commit e06135858d794dc77cbd31551f3ae08345f59fba
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Oct 12 16:08:56 2017 +0200
+
+    mkv: Don't use qualified name lookup on unscoped enum type
+
+commit af851dd9c45609829cc0d9dc6266e67b747489fc
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Oct 12 16:06:31 2017 +0200
+
+    mkv: Remove trailing whitespaces
+
+commit 153132b4cfc743a23172db7c67cee2057bfd61a9
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Oct 12 16:02:38 2017 +0200
+
+    adaptive: playlist: Remove explicit invocation of default contructor
+
+commit 04bf5ab8ebe84c1f76bc0baa42246960a2f272ee
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Oct 12 16:00:57 2017 +0200
+
+    vlc_fixups: Provide __STDC_*_MACROS when building C++ for NACL
+
+commit 9d12a118a7e713f132b30f3ef6ed5f2f36166386
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Oct 12 15:57:09 2017 +0200
+
+    libvlc: Remove trailing whitespaces
+
+commit 8e453e61d60ef990beb32f77f7f8d21b7afd19b3
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Oct 12 13:28:31 2017 +0200
+
+    skins2: fix unarchive
+    
+    Tell the stream extractor to read all files and flatten the result.
+
+commit 8b65fa1cc864862e5a8b10ca3db53a38ba2c9a71
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Oct 12 13:27:27 2017 +0200
+
+    skins2: return in case of error
+
+commit 780bf2cf517f493b9ad20ff9da156ab7ca9b0f89
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Oct 12 13:26:45 2017 +0200
+
+    libvlc: add "extractor-flatten" option
+    
+    Used to force extractors to flatten their file listing (done automatically by
+    vlc_readdir_helper helper).
+
+commit 6c87f601071d8ca1e9a321fd0a13824359e990a4
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Oct 12 10:41:44 2017 +0200
+
+    input: readdir_helper: don't apply options on the current object
+
+commit 1532b7f5796e69ffbc3c118f60237329caf9f04e
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Oct 12 13:24:44 2017 +0200
+
+    variables: var_InheritBool: return false if a variable doesn't exist
+    
+    config_GetInt() returns -1 if the variable doesn't exist.
+    
+    As var_GetBool() returns false if the variable doesn't exist, it's safe to
+    assume that var_InheritBool() should do the same.
+
+commit 0b91e9951dfab80c24a0a74ce846fcda14a74d95
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Oct 12 10:42:44 2017 +0200
+
+    videotoolbox: abort if no vout handle CVPX chroma
+    
+    Fixes #18537
+
+commit f9a64520582ac36bc7bf32d2c5b38a20af0aed6d
+Author: Zhao Zhili <quinkblack@foxmail.com>
+Date:   Thu Oct 12 11:50:05 2017 +0800
+
+    demux: adaptive: fix inverted logic
+    
+    Signed-off-by: Francois Cartegnie <fcvlcdev@free.fr>
+
+commit 8145fb941d9639119c3db059cf7a9cc6c6b1517f
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Oct 11 19:29:26 2017 +0200
+
+    demux: adaptive: handle obsolete http header line folding
+
+commit d139d48a55fdf1d1a59d354d354f552a589efa25
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Oct 10 18:28:58 2017 +0200
+
+    ci_filters: simplify weak symbols handling
+
+commit 51b96bb9c48f947b3c12af514cd79d5864881138
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Oct 10 12:58:52 2017 +0200
+
+    tls: fix ignored interrupts
+    
+    If session->readv() or session->writev() are interrupted, the next call to
+    vlc_poll_i11e() will hang since the interrupt context is already finished (by
+    readv/writev).
+
+commit a4b42264e674242b3eea384fd68a204f2c163e0a
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Oct 10 20:14:12 2017 +0300
+
+    Revert "Force the X11 video outputs when libvlc_*_set_xwindow() is used"
+    
+    This reverts commit 4787f2365afd93cbd2fa8fc5790920b5ad10fc40.
+
+commit 0014603e717efc39242acc5c3dafc9390304415b
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Oct 10 15:01:26 2017 +0200
+
+    libvlc: don't force the xid "vout display"
+    
+    libvlc_media_player_set_xwindow() should only force the embed-xid "vout window"
+    plugin but not the xid "vout display" plugin.
+    
+    This allows to use the GL "vout display" via EGL/GLX (with full hardware
+    acceleration) with an embedded X window.
+    
+    Fixes #18907
+
+commit 8cacc98a089ea63f7b134ffba5ff3371fbb84849
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Oct 9 15:35:39 2017 +0200
+
+    decoder: fix occasional deadlock on seek
+    
+    This commit fixes the following deadlock:
+    
+    The input thread (from input_DecoderWait()) reads p_owner->b_idle, and wait on
+    the wait_acknowledge condition variable because p_owner->b_idle is false (and
+    because p_owner->b_has_data is false too). The decoder thread sets
+    p_owner->b_idle to true because the fifo is empty and wait on the fifo
+    condition variable. Both threads are waiting each others, hence the deadlock.
+    
+    To fix this issue, signal the input thread from the decoder thread after
+    setting p_owner->b_idle to true.
+    
+    Since predictable scheduling behavior is not required, p_owner->lock doesn't
+    have to be held while signaling p_owner->wait_acknowledge.
+    
+    Fixes #16100
+
+commit da488a7751243fea0bd6de8846e9c13152330d40
+Author: KO Myung-Hun <komh78@gmail.com>
+Date:   Mon Oct 9 22:18:16 2017 +0900
+
+    help: fix SIGSEGV
+    
+    --help and -H causes SIGSEGV.
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit c2a659729ec56891317265ebb2d895addd6215ff
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Sep 14 15:04:18 2017 +0200
+
+    direct3d11: log the current display format
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 81b00519b5e72e317024cdc23a77bb2d5a10302d
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Sep 14 15:04:17 2017 +0200
+
+    contrib: d3d11: add dxgi 1.6 to read IDXGIOutput6
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 38702572d04b515940bfbaabe9c7336b9b20a509
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Sep 14 15:04:16 2017 +0200
+
+    contrib: dxgi: add missing IDXGIOutput interfaces
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit f8e19ff71286ab7950f51e3c423599dc12e1c91d
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Sep 14 15:03:48 2017 +0200
+
+    contrib: dxgi: add IDXGIFactory4
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 92acffa9a24f3baf0b70fc2905d54e870f7df92a
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Mon Oct 9 16:48:00 2017 +0200
+
+    extras/tools: Bump cmake version
+    
+    Cmake <= 3.7 are generating an invalid value for
+    CMAKE_CXX_IMPLICIT_LINK_LIBRARIES, causing the compile flags to contain
+    -lto_library -lc++ in some cases. This would lead to -lc++ not being
+    considered as the c++ library, causing build failures when building a
+    C module that is using a C++ library.
+    This is fixed starting from cmake 3.8
+    This fixes macOS builds
+
+commit 29ac34f78a514592126fd71ceb5b23d68986d883
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Mon Oct 9 13:41:52 2017 +0200
+
+    Fix gme build on windows
+
+commit 752c4964ab353b8cdfb332e3540e937547c321e9
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Oct 6 17:16:53 2017 +0200
+
+    background_worker: wait a little before destroying the current thread
+    
+    This allows to use the same thread when input are parsed sequentially (and this
+    avoids creating 3 threads (parser/fetcher/downloader) for each inputs). The
+    performance gain is not visible on Linux but can be significant on platforms
+    with poor thread support.
+
+commit 953219982aa3ca7e8ec9ec8d7c0c776f50e6e6d6
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Oct 6 18:10:39 2017 +0200
+
+    background_thread: add a new cond
+    
+    For clients -> worker signals.
+
+commit adc4c5d318f3465b69e72f9673202f5f8040a99f
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Oct 6 17:59:15 2017 +0200
+
+    background_worker: add missing destroy
+
+commit d7d93ce8adfd5d503f4485a092ba08e60312a4e2
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Oct 6 17:57:00 2017 +0200
+
+    background_worker: simplify, merge locks
+    
+    These 2 locks were only held for very fast operations. No need to complicate
+    with 2 locks.
+
+commit b9cc9c4206aa7772b7701b6774f6f191c4f7b6cb
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Oct 9 09:46:43 2017 +0200
+
+    use fallthrough instead of ft comment
+    
+    expected by gcc when not using dedicated attribute
+
 commit 7c04db8c27362e31d348bd2efb099ea274c5dae3
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Sun Oct 8 22:30:19 2017 +0300

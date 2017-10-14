@@ -176,6 +176,9 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
+/* Define to 1 if you have the <dxgi1_6.h> header file. */
+#undef HAVE_DXGI1_6_H
+
 /* Define to 1 if you have the <dxgidebug.h> header file. */
 #undef HAVE_DXGIDEBUG_H
 

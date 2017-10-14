@@ -2,7 +2,7 @@
  * item.c: input_item management
  *****************************************************************************
  * Copyright (C) 1998-2004 VLC authors and VideoLAN
- * $Id: 187f633e3cf33187d571d36483ca9ad608f27e2a $
+ * $Id: 0327e21f0397be3cf80f48bb2d9a013690d39d04 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -1670,8 +1670,15 @@ void vlc_readdir_helper_init(struct vlc_readdir_helper *p_rdh,
                              vlc_object_t *p_obj, input_item_node_t *p_node)
 {
     /* Read options from the parent item. This allows vlc_stream_ReadDir()
-     * users to specify options whitout touching any vlc_object_t. */
-    input_item_ApplyOptions(p_obj, p_node->p_item);
+     * users to specify options whitout touhing any vlc_object_t. Apply options
+     * on a temporary object in order to not apply options (that can be
+     * insecure) to the current object. */
+    vlc_object_t *p_var_obj = vlc_object_create(p_obj, sizeof(vlc_object_t));
+    if (p_var_obj != NULL)
+    {
+        input_item_ApplyOptions(p_var_obj, p_node->p_item);
+        p_obj = p_var_obj;
+    }
 
     p_rdh->p_node = p_node;
     p_rdh->b_show_hiddenfiles = var_InheritBool(p_obj, "show-hiddenfiles");
@@ -1679,8 +1686,12 @@ void vlc_readdir_helper_init(struct vlc_readdir_helper *p_rdh,
     bool b_autodetect = var_InheritBool(p_obj, "sub-autodetect-file");
     p_rdh->i_sub_autodetect_fuzzy = !b_autodetect ? 0 :
         var_InheritInteger(p_obj, "sub-autodetect-fuzzy");
+    p_rdh->b_flatten = var_InheritBool(p_obj, "extractor-flatten");
     TAB_INIT(p_rdh->i_slaves, p_rdh->pp_slaves);
     TAB_INIT(p_rdh->i_dirs, p_rdh->pp_dirs);
+
+    if (p_var_obj != NULL)
+        vlc_object_release(p_var_obj);
 }
 
 void vlc_readdir_helper_finish(struct vlc_readdir_helper *p_rdh, bool b_success)
@@ -1718,13 +1729,22 @@ int vlc_readdir_helper_additem(struct vlc_readdir_helper *p_rdh,
     struct rdh_slave *p_rdh_slave = NULL;
     assert(psz_flatpath || psz_filename);
 
-    if (psz_filename == NULL)
+    if (!p_rdh->b_flatten)
     {
-        psz_filename = strrchr(psz_flatpath, '/');
-        if (psz_filename != NULL)
-            ++psz_filename;
-        else
+        if (psz_filename == NULL)
+        {
+            psz_filename = strrchr(psz_flatpath, '/');
+            if (psz_filename != NULL)
+                ++psz_filename;
+            else
+                psz_filename = psz_flatpath;
+        }
+    }
+    else
+    {
+        if (psz_filename == NULL)
             psz_filename = psz_flatpath;
+        psz_flatpath = NULL;
     }
 
     if (p_rdh->i_sub_autodetect_fuzzy != 0
