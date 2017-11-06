@@ -2,7 +2,7 @@
  * controller.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: e6769bc75597722dd36f872f941ac9c43fbd17f6 $
+ * $Id: 98c2754e2f3971ff3e647824643c35a7f830a460 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -49,6 +49,8 @@
 #include <QRegion>
 #include <QSignalMapper>
 #include <QTimer>
+#include <QApplication>
+#include <QScreen>
 
 //#define DEBUG_LAYOUT 1
 
@@ -207,7 +209,7 @@ void AbstractController::createAndAddWidget( QBoxLayout *controlLayout_,
     a_button->setIcon( QIcon( iconL[button] ) );
 #define BUTTON_SET_BAR2( button, image, tooltip ) \
     button->setToolTip( tooltip );          \
-    button->setIcon( QIcon( ":/"#image ) );
+    button->setIcon( QIcon( ":/"#image ".svg" ) );
 
 #define ENABLE_ON_VIDEO( a ) \
     CONNECT( THEMIM->getIM(), voutChanged( bool ), a, setEnabled( bool ) ); \
@@ -641,7 +643,14 @@ QFrame *AbstractController::telexFrame()
     QSignalMapper *contextButtonMapper = new QSignalMapper( this );
     QToolButton *contextButton = NULL;
     int i_iconminsize = __MAX( 16, telexOn->minimumHeight() );
+
+#if HAS_QT56
+    qreal f_ratio = QApplication::primaryScreen()->devicePixelRatio();
+    QPixmap iconPixmap( i_iconminsize * f_ratio, i_iconminsize * f_ratio );
+#else
     QPixmap iconPixmap( i_iconminsize, i_iconminsize );
+#endif
+
     iconPixmap.fill( Qt::transparent );
     QPainter iconPixmapPainter( &iconPixmap );
     QLinearGradient iconPixmapPainterGradient( iconPixmap.rect().center() / 2,

@@ -2,7 +2,7 @@
  * media_list.c: libvlc new API media list functions
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: 5567567b07f7c66d04f99f1e51617fc84fd845c7 $
+ * $Id: 7c93e41d5f67094e240c28d49633d455764f9970 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -335,7 +335,7 @@ void libvlc_media_list_internal_add_media( libvlc_media_list_t * p_mlist,
 
     notify_item_addition( p_mlist, p_md, vlc_array_count( &p_mlist->items ),
                           EventWillHappen );
-    vlc_array_append( &p_mlist->items, p_md );
+    vlc_array_append_or_abort( &p_mlist->items, p_md );
     notify_item_addition( p_mlist, p_md, vlc_array_count( &p_mlist->items )-1,
                           EventDidHappen );
 }
@@ -363,7 +363,7 @@ void libvlc_media_list_internal_insert_media( libvlc_media_list_t * p_mlist,
     libvlc_media_retain( p_md );
 
     notify_item_addition( p_mlist, p_md, index, EventWillHappen );
-    vlc_array_insert( &p_mlist->items, p_md, index );
+    vlc_array_insert_or_abort( &p_mlist->items, p_md, index );
     notify_item_addition( p_mlist, p_md, index, EventDidHappen );
 }
 

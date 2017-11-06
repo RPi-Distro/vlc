@@ -659,6 +659,10 @@ KDE_SOLID_FALSE
 KDE_SOLID_TRUE
 soliddatadir
 DEFS_BIGENDIAN
+HAVE_LIBPLACEBO_FALSE
+HAVE_LIBPLACEBO_TRUE
+LIBPLACEBO_LIBS
+LIBPLACEBO_CFLAGS
 NOTIFY_LIBS
 NOTIFY_CFLAGS
 LIBS_notify
@@ -784,11 +788,11 @@ HAVE_QT5_X11_TRUE
 ENABLE_QT_FALSE
 ENABLE_QT_TRUE
 QT_VERSION
-QT5_X11_LIBS
-QT5_X11_CFLAGS
 UIC
 RCC
 MOC
+QT5_X11_LIBS
+QT5_X11_CFLAGS
 QT_LIBS
 QT_CFLAGS
 BUILD_CHROMECAST_FALSE
@@ -1810,6 +1814,7 @@ enable_devtools
 enable_update_check
 enable_osx_notifications
 enable_notify
+enable_libplacebo
 with_kde_solid
 enable_vlc
 '
@@ -2079,7 +2084,9 @@ TAGLIB_LIBS
 SECRET_CFLAGS
 SECRET_LIBS
 NOTIFY_CFLAGS
-NOTIFY_LIBS'
+NOTIFY_LIBS
+LIBPLACEBO_CFLAGS
+LIBPLACEBO_LIBS'
 
 
 # Initialize some variables set by options.
@@ -2963,6 +2970,7 @@ Misc options:
   --enable-update-check   update checking system (default disabled)
   --enable-osx-notifications          osx notification plugin (default disabled)
   --enable-notify         libnotify notification [default=auto]
+  --disable-libplacebo    disable libplacebo support (default auto)
   --with-kde-solid=PATH   KDE Solid actions directory (auto)
 Components:
   --enable-vlc            build the VLC media player (default enabled)
@@ -3371,6 +3379,10 @@ Some influential environment variables:
   NOTIFY_CFLAGS
               C compiler flags for NOTIFY, overriding pkg-config
   NOTIFY_LIBS linker flags for NOTIFY, overriding pkg-config
+  LIBPLACEBO_CFLAGS
+              C compiler flags for LIBPLACEBO, overriding pkg-config
+  LIBPLACEBO_LIBS
+              linker flags for LIBPLACEBO, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -7955,133 +7967,6 @@ ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-depcc="$OBJC" am_compiler_list='gcc3 gcc'
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking dependency style of $depcc" >&5
-$as_echo_n "checking dependency style of $depcc... " >&6; }
-if ${am_cv_OBJC_dependencies_compiler_type+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  if test -z "$AMDEP_TRUE" && test -f "$am_depcomp"; then
-  # We make a subdir and do the tests there.  Otherwise we can end up
-  # making bogus files that we don't know about and never remove.  For
-  # instance it was reported that on HP-UX the gcc test will end up
-  # making a dummy file named 'D' -- because '-MD' means "put the output
-  # in D".
-  rm -rf conftest.dir
-  mkdir conftest.dir
-  # Copy depcomp to subdir because otherwise we won't find it if we're
-  # using a relative directory.
-  cp "$am_depcomp" conftest.dir
-  cd conftest.dir
-  # We will build objects and dependencies in a subdirectory because
-  # it helps to detect inapplicable dependency modes.  For instance
-  # both Tru64's cc and ICC support -MD to output dependencies as a
-  # side effect of compilation, but ICC will put the dependencies in
-  # the current directory while Tru64 will put them in the object
-  # directory.
-  mkdir sub
-
-  am_cv_OBJC_dependencies_compiler_type=none
-  if test "$am_compiler_list" = ""; then
-     am_compiler_list=`sed -n 's/^#*\([a-zA-Z0-9]*\))$/\1/p' < ./depcomp`
-  fi
-  am__universal=false
-
-
-  for depmode in $am_compiler_list; do
-    # Setup a source with many dependencies, because some compilers
-    # like to wrap large dependency lists on column 80 (with \), and
-    # we should not choose a depcomp mode which is confused by this.
-    #
-    # We need to recreate these files for each test, as the compiler may
-    # overwrite some of them when testing with obscure command lines.
-    # This happens at least with the AIX C compiler.
-    : > sub/conftest.c
-    for i in 1 2 3 4 5 6; do
-      echo '#include "conftst'$i'.h"' >> sub/conftest.c
-      # Using ": > sub/conftst$i.h" creates only sub/conftst1.h with
-      # Solaris 10 /bin/sh.
-      echo '/* dummy */' > sub/conftst$i.h
-    done
-    echo "${am__include} ${am__quote}sub/conftest.Po${am__quote}" > confmf
-
-    # We check with '-c' and '-o' for the sake of the "dashmstdout"
-    # mode.  It turns out that the SunPro C++ compiler does not properly
-    # handle '-M -o', and we need to detect this.  Also, some Intel
-    # versions had trouble with output in subdirs.
-    am__obj=sub/conftest.${OBJEXT-o}
-    am__minus_obj="-o $am__obj"
-    case $depmode in
-    gcc)
-      # This depmode causes a compiler race in universal mode.
-      test "$am__universal" = false || continue
-      ;;
-    nosideeffect)
-      # After this tag, mechanisms are not by side-effect, so they'll
-      # only be used when explicitly requested.
-      if test "x$enable_dependency_tracking" = xyes; then
-	continue
-      else
-	break
-      fi
-      ;;
-    msvc7 | msvc7msys | msvisualcpp | msvcmsys)
-      # This compiler won't grok '-c -o', but also, the minuso test has
-      # not run yet.  These depmodes are late enough in the game, and
-      # so weak that their functioning should not be impacted.
-      am__obj=conftest.${OBJEXT-o}
-      am__minus_obj=
-      ;;
-    none) break ;;
-    esac
-    if depmode=$depmode \
-       source=sub/conftest.c object=$am__obj \
-       depfile=sub/conftest.Po tmpdepfile=sub/conftest.TPo \
-       $SHELL ./depcomp $depcc -c $am__minus_obj sub/conftest.c \
-         >/dev/null 2>conftest.err &&
-       grep sub/conftst1.h sub/conftest.Po > /dev/null 2>&1 &&
-       grep sub/conftst6.h sub/conftest.Po > /dev/null 2>&1 &&
-       grep $am__obj sub/conftest.Po > /dev/null 2>&1 &&
-       ${MAKE-make} -s -f confmf > /dev/null 2>&1; then
-      # icc doesn't choke on unknown options, it will just issue warnings
-      # or remarks (even with -Werror).  So we grep stderr for any message
-      # that says an option was ignored or not supported.
-      # When given -MP, icc 7.0 and 7.1 complain thusly:
-      #   icc: Command line warning: ignoring option '-M'; no argument required
-      # The diagnosis changed in icc 8.0:
-      #   icc: Command line remark: option '-MP' not supported
-      if (grep 'ignoring option' conftest.err ||
-          grep 'not supported' conftest.err) >/dev/null 2>&1; then :; else
-        am_cv_OBJC_dependencies_compiler_type=$depmode
-        break
-      fi
-    fi
-  done
-
-  cd ..
-  rm -rf conftest.dir
-else
-  am_cv_OBJC_dependencies_compiler_type=none
-fi
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $am_cv_OBJC_dependencies_compiler_type" >&5
-$as_echo "$am_cv_OBJC_dependencies_compiler_type" >&6; }
-OBJCDEPMODE=depmode=$am_cv_OBJC_dependencies_compiler_type
-
- if
-  test "x$enable_dependency_tracking" != xno \
-  && test "$am_cv_OBJC_dependencies_compiler_type" = gcc3; then
-  am__fastdepOBJC_TRUE=
-  am__fastdepOBJC_FALSE='#'
-else
-  am__fastdepOBJC_TRUE='#'
-  am__fastdepOBJC_FALSE=
-fi
-
-
 
 depcc="$OBJC" am_compiler_list='gcc3 gcc'
 
@@ -52715,12 +52600,12 @@ if test -n "$QT_CFLAGS"; then
     pkg_cv_QT_CFLAGS="$QT_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"Qt5Core >= 5.6.0 Qt5Widgets Qt5Gui Qt5Svg\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "Qt5Core >= 5.6.0 Qt5Widgets Qt5Gui Qt5Svg") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"Qt5Core >= 5.5.0 Qt5Widgets Qt5Gui Qt5Svg\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "Qt5Core >= 5.5.0 Qt5Widgets Qt5Gui Qt5Svg") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_QT_CFLAGS=`$PKG_CONFIG --cflags "Qt5Core >= 5.6.0 Qt5Widgets Qt5Gui Qt5Svg" 2>/dev/null`
+  pkg_cv_QT_CFLAGS=`$PKG_CONFIG --cflags "Qt5Core >= 5.5.0 Qt5Widgets Qt5Gui Qt5Svg" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -52732,12 +52617,12 @@ if test -n "$QT_LIBS"; then
     pkg_cv_QT_LIBS="$QT_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"Qt5Core >= 5.6.0 Qt5Widgets Qt5Gui Qt5Svg\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "Qt5Core >= 5.6.0 Qt5Widgets Qt5Gui Qt5Svg") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"Qt5Core >= 5.5.0 Qt5Widgets Qt5Gui Qt5Svg\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "Qt5Core >= 5.5.0 Qt5Widgets Qt5Gui Qt5Svg") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_QT_LIBS=`$PKG_CONFIG --libs "Qt5Core >= 5.6.0 Qt5Widgets Qt5Gui Qt5Svg" 2>/dev/null`
+  pkg_cv_QT_LIBS=`$PKG_CONFIG --libs "Qt5Core >= 5.5.0 Qt5Widgets Qt5Gui Qt5Svg" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -52758,477 +52643,41 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        QT_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "Qt5Core >= 5.6.0 Qt5Widgets Qt5Gui Qt5Svg" 2>&1`
+	        QT_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "Qt5Core >= 5.5.0 Qt5Widgets Qt5Gui Qt5Svg" 2>&1`
         else
-	        QT_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "Qt5Core >= 5.6.0 Qt5Widgets Qt5Gui Qt5Svg" 2>&1`
+	        QT_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "Qt5Core >= 5.5.0 Qt5Widgets Qt5Gui Qt5Svg" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$QT_PKG_ERRORS" >&5
 
 
+      if test -n "${enable_qt}"; then :
 
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for QT" >&5
-$as_echo_n "checking for QT... " >&6; }
-
-if test -n "$QT_CFLAGS"; then
-    pkg_cv_QT_CFLAGS="$QT_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"QtCore QtGui >= 4.8.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "QtCore QtGui >= 4.8.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_QT_CFLAGS=`$PKG_CONFIG --cflags "QtCore QtGui >= 4.8.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-if test -n "$QT_LIBS"; then
-    pkg_cv_QT_LIBS="$QT_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"QtCore QtGui >= 4.8.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "QtCore QtGui >= 4.8.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_QT_LIBS=`$PKG_CONFIG --libs "QtCore QtGui >= 4.8.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        QT_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "QtCore QtGui >= 4.8.0" 2>&1`
-        else
-	        QT_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "QtCore QtGui >= 4.8.0" 2>&1`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$QT_PKG_ERRORS" >&5
-
-
-        if test -n "${enable_qt}"; then :
-
-          as_fn_error $? "${QT_PKG_ERRORS}." "$LINENO" 5
+        as_fn_error $? "${QT_PKG_ERRORS}." "$LINENO" 5
 
 else
 
-          { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: ${QT_PKG_ERRORS}." >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: ${QT_PKG_ERRORS}." >&5
 $as_echo "$as_me: WARNING: ${QT_PKG_ERRORS}." >&2;}
 
 fi
-        enable_qt="no"
+      enable_qt="no"
 
 elif test $pkg_failed = untried; then
      	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
-        if test -n "${enable_qt}"; then :
+      if test -n "${enable_qt}"; then :
 
-          as_fn_error $? "${QT_PKG_ERRORS}." "$LINENO" 5
+        as_fn_error $? "${QT_PKG_ERRORS}." "$LINENO" 5
 
 else
 
-          { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: ${QT_PKG_ERRORS}." >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: ${QT_PKG_ERRORS}." >&5
 $as_echo "$as_me: WARNING: ${QT_PKG_ERRORS}." >&2;}
 
 fi
-        enable_qt="no"
-
-else
-	QT_CFLAGS=$pkg_cv_QT_CFLAGS
-	QT_LIBS=$pkg_cv_QT_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-fi
-      QT_PATH="$(eval $PKG_CONFIG --variable=exec_prefix QtCore)"
-      for ac_prog in moc-qt4 moc
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_MOC+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $MOC in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_MOC="$MOC" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in "${QT_PATH}/bin"
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_MOC="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  ;;
-esac
-fi
-MOC=$ac_cv_path_MOC
-if test -n "$MOC"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MOC" >&5
-$as_echo "$MOC" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-  test -n "$MOC" && break
-done
-test -n "$MOC" || MOC="moc"
-
-      # Extract the first word of "rcc", so it can be a program name with args.
-set dummy rcc; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_RCC+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $RCC in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_RCC="$RCC" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in "${QT_PATH}/bin"
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_RCC="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_path_RCC" && ac_cv_path_RCC="rcc"
-  ;;
-esac
-fi
-RCC=$ac_cv_path_RCC
-if test -n "$RCC"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $RCC" >&5
-$as_echo "$RCC" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-      for ac_prog in uic-qt4 uic
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_UIC+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $UIC in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_UIC="$UIC" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in "${QT_PATH}/bin"
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_UIC="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  ;;
-esac
-fi
-UIC=$ac_cv_path_UIC
-if test -n "$UIC"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $UIC" >&5
-$as_echo "$UIC" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-  test -n "$UIC" && break
-done
-test -n "$UIC" || UIC="uic"
-
-
-elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for QT" >&5
-$as_echo_n "checking for QT... " >&6; }
-
-if test -n "$QT_CFLAGS"; then
-    pkg_cv_QT_CFLAGS="$QT_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"QtCore QtGui >= 4.8.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "QtCore QtGui >= 4.8.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_QT_CFLAGS=`$PKG_CONFIG --cflags "QtCore QtGui >= 4.8.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-if test -n "$QT_LIBS"; then
-    pkg_cv_QT_LIBS="$QT_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"QtCore QtGui >= 4.8.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "QtCore QtGui >= 4.8.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_QT_LIBS=`$PKG_CONFIG --libs "QtCore QtGui >= 4.8.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        QT_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "QtCore QtGui >= 4.8.0" 2>&1`
-        else
-	        QT_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "QtCore QtGui >= 4.8.0" 2>&1`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$QT_PKG_ERRORS" >&5
-
-
-        if test -n "${enable_qt}"; then :
-
-          as_fn_error $? "${QT_PKG_ERRORS}." "$LINENO" 5
-
-else
-
-          { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: ${QT_PKG_ERRORS}." >&5
-$as_echo "$as_me: WARNING: ${QT_PKG_ERRORS}." >&2;}
-
-fi
-        enable_qt="no"
-
-elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-        if test -n "${enable_qt}"; then :
-
-          as_fn_error $? "${QT_PKG_ERRORS}." "$LINENO" 5
-
-else
-
-          { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: ${QT_PKG_ERRORS}." >&5
-$as_echo "$as_me: WARNING: ${QT_PKG_ERRORS}." >&2;}
-
-fi
-        enable_qt="no"
-
-else
-	QT_CFLAGS=$pkg_cv_QT_CFLAGS
-	QT_LIBS=$pkg_cv_QT_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-fi
-      QT_PATH="$(eval $PKG_CONFIG --variable=exec_prefix QtCore)"
-      for ac_prog in moc-qt4 moc
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_MOC+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $MOC in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_MOC="$MOC" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in "${QT_PATH}/bin"
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_MOC="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  ;;
-esac
-fi
-MOC=$ac_cv_path_MOC
-if test -n "$MOC"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MOC" >&5
-$as_echo "$MOC" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-  test -n "$MOC" && break
-done
-test -n "$MOC" || MOC="moc"
-
-      # Extract the first word of "rcc", so it can be a program name with args.
-set dummy rcc; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_RCC+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $RCC in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_RCC="$RCC" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in "${QT_PATH}/bin"
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_RCC="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_path_RCC" && ac_cv_path_RCC="rcc"
-  ;;
-esac
-fi
-RCC=$ac_cv_path_RCC
-if test -n "$RCC"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $RCC" >&5
-$as_echo "$RCC" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-      for ac_prog in uic-qt4 uic
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_UIC+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $UIC in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_UIC="$UIC" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in "${QT_PATH}/bin"
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_UIC="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  ;;
-esac
-fi
-UIC=$ac_cv_path_UIC
-if test -n "$UIC"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $UIC" >&5
-$as_echo "$UIC" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-  test -n "$UIC" && break
-done
-test -n "$UIC" || UIC="uic"
-
+      enable_qt="no"
 
 else
 	QT_CFLAGS=$pkg_cv_QT_CFLAGS
@@ -53460,6 +52909,7 @@ test -n "$UIC" || UIC="uic"
 fi
 
 fi
+
 if test "${enable_qt}" != "no"; then :
 
   ALIASES="${ALIASES} qvlc"
@@ -57374,6 +56824,115 @@ esac
 
 
 
+# Check whether --enable-libplacebo was given.
+if test "${enable_libplacebo+set}" = set; then :
+  enableval=$enable_libplacebo;
+fi
+
+
+if test "$enable_libplacebo" != "no"; then :
+
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBPLACEBO" >&5
+$as_echo_n "checking for LIBPLACEBO... " >&6; }
+
+if test -n "$LIBPLACEBO_CFLAGS"; then
+    pkg_cv_LIBPLACEBO_CFLAGS="$LIBPLACEBO_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libplacebo >= 0.1\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libplacebo >= 0.1") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LIBPLACEBO_CFLAGS=`$PKG_CONFIG --cflags "libplacebo >= 0.1" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$LIBPLACEBO_LIBS"; then
+    pkg_cv_LIBPLACEBO_LIBS="$LIBPLACEBO_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libplacebo >= 0.1\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libplacebo >= 0.1") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LIBPLACEBO_LIBS=`$PKG_CONFIG --libs "libplacebo >= 0.1" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        LIBPLACEBO_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libplacebo >= 0.1" 2>&1`
+        else
+	        LIBPLACEBO_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libplacebo >= 0.1" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$LIBPLACEBO_PKG_ERRORS" >&5
+
+
+    if test -n "${enable_libplacebo}"; then :
+
+      as_fn_error $? "${LIBPLACEBO_PKG_ERRORS}." "$LINENO" 5
+
+fi
+    enable_libplacebo="no"
+
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+    if test -n "${enable_libplacebo}"; then :
+
+      as_fn_error $? "${LIBPLACEBO_PKG_ERRORS}." "$LINENO" 5
+
+fi
+    enable_libplacebo="no"
+
+else
+	LIBPLACEBO_CFLAGS=$pkg_cv_LIBPLACEBO_CFLAGS
+	LIBPLACEBO_LIBS=$pkg_cv_LIBPLACEBO_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+
+$as_echo "#define HAVE_LIBPLACEBO 1" >>confdefs.h
+
+
+fi
+
+fi
+ if test "$enable_libplacebo" != "no"; then
+  HAVE_LIBPLACEBO_TRUE=
+  HAVE_LIBPLACEBO_FALSE='#'
+else
+  HAVE_LIBPLACEBO_TRUE='#'
+  HAVE_LIBPLACEBO_FALSE=
+fi
+
+
+
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether byte ordering is bigendian" >&5
 $as_echo_n "checking whether byte ordering is bigendian... " >&6; }
 if ${ac_cv_c_bigendian+:} false; then :
@@ -57928,10 +57487,6 @@ if test -z "${am__fastdepOBJC_TRUE}" && test -z "${am__fastdepOBJC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepOBJC\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
-if test -z "${am__fastdepOBJC_TRUE}" && test -z "${am__fastdepOBJC_FALSE}"; then
-  as_fn_error $? "conditional \"am__fastdepOBJC\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
 if test -z "${am__fastdepCCAS_TRUE}" && test -z "${am__fastdepCCAS_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCCAS\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
@@ -58286,6 +57841,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${UPDATE_CHECK_TRUE}" && test -z "${UPDATE_CHECK_FALSE}"; then
   as_fn_error $? "conditional \"UPDATE_CHECK\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_LIBPLACEBO_TRUE}" && test -z "${HAVE_LIBPLACEBO_FALSE}"; then
+  as_fn_error $? "conditional \"HAVE_LIBPLACEBO\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

@@ -2,7 +2,7 @@
  * main_interface_win32.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: 676ddd9eb149a6558e0e1749e3cc69e805110cf2 $
+ * $Id: 1e456c4c35128319f119e366c34692f0fba7a4af $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Hugo Beauzée-Luyssen <hugo@beauzee.fr>
@@ -36,11 +36,12 @@ public:
     virtual ~MainInterfaceWin32();
 
 private:
-#if HAS_QT5
     virtual bool nativeEvent(const QByteArray &eventType, void *message, long *result) Q_DECL_OVERRIDE;
-#endif
     virtual bool winEvent( MSG *, long * );
     virtual void toggleUpdateSystrayMenuWhenVisible() Q_DECL_OVERRIDE;
+
+protected:
+    virtual void resizeEvent( QResizeEvent *event ) Q_DECL_OVERRIDE;
 
 private:
     HWND WinId( QWidget *);

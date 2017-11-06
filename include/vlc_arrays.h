@@ -2,7 +2,7 @@
  * vlc_arrays.h : Arrays and data structures handling
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 8c4419cb6114a32601446beb5bda3d71c83dc431 $
+ * $Id: 54665346e03290d10743802b79156b8728b07282 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -291,12 +291,12 @@ static inline ssize_t vlc_array_index_of_item( const vlc_array_t *ar,
 }
 
 /* Write */
-static inline void vlc_array_insert( vlc_array_t *ar, void *elem, int idx )
+static inline int vlc_array_insert( vlc_array_t *ar, void *elem, int idx )
 {
     void **pp = (void **)realloc( ar->pp_elems,
                                   sizeof( void * ) * (ar->i_count + 1) );
     if( unlikely(pp == NULL) )
-        abort();
+        return -1;
 
     size_t tail = ar->i_count - idx;
     if( tail > 0 )
@@ -305,17 +305,31 @@ static inline void vlc_array_insert( vlc_array_t *ar, void *elem, int idx )
     pp[idx] = elem;
     ar->i_count++;
     ar->pp_elems = pp;
+    return 0;
 }
 
-static inline void vlc_array_append( vlc_array_t *ar, void *elem )
+static inline void vlc_array_insert_or_abort( vlc_array_t *ar, void *elem, int idx )
+{
+    if( vlc_array_insert( ar, elem, idx ) )
+        abort();
+}
+
+static inline int vlc_array_append( vlc_array_t *ar, void *elem )
 {
     void **pp = (void **)realloc( ar->pp_elems,
                                   sizeof( void * ) * (ar->i_count + 1) );
     if( unlikely(pp == NULL) )
-        abort();
+        return -1;
 
     pp[ar->i_count++] = elem;
     ar->pp_elems = pp;
+    return 0;
+}
+
+static inline void vlc_array_append_or_abort( vlc_array_t *ar, void *elem )
+{
+    if( vlc_array_append( ar, elem ) != 0 )
+        abort();
 }
 
 static inline void vlc_array_remove( vlc_array_t *ar, size_t idx )

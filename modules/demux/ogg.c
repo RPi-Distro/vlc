@@ -2,7 +2,7 @@
  * ogg.c : ogg stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: bb809a68328de10bdff08ad31feaa9e3785c39ad $
+ * $Id: a75408afd7733358f285b099457d196f61207954 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Andre Pang <Andre.Pang@csiro.au> (Annodex support)
@@ -321,7 +321,8 @@ static int Demux( demux_t * p_demux )
             if( i_lastpcr > VLC_TS_INVALID )
             {
                 p_sys->i_nzpcr_offset = i_lastpcr - VLC_TS_0;
-                es_out_SetPCR( p_demux->out, i_lastpcr );
+                if( likely( !p_sys->b_slave ) )
+                    es_out_SetPCR( p_demux->out, i_lastpcr );
             }
             p_sys->i_pcr = VLC_TS_INVALID;
         }
@@ -691,7 +692,8 @@ static int Demux( demux_t * p_demux )
         if( ! b_skipping && p_sys->b_preparsing_done )
         {
             p_sys->i_pcr = i_pcr_candidate;
-            es_out_SetPCR( p_demux->out, p_sys->i_pcr );
+            if( likely( !p_sys->b_slave ) )
+                es_out_SetPCR( p_demux->out, p_sys->i_pcr );
         }
     }
 
@@ -782,8 +784,12 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             *pb_bool = true;
             return VLC_SUCCESS;
 
+        case DEMUX_SET_NEXT_DEMUX_TIME:
+            p_sys->b_slave = true;
+            return VLC_EGENERIC;
+
         case DEMUX_GET_TIME:
-            if( p_sys->i_pcr > VLC_TS_INVALID )
+            if( p_sys->i_pcr > VLC_TS_INVALID || p_sys->b_slave )
             {
                 pi64 = va_arg( args, int64_t * );
                 *pi64 = p_sys->i_pcr;
@@ -1161,7 +1167,8 @@ static void Ogg_SendOrQueueBlocks( demux_t *p_demux, logical_stream_t *p_stream,
                 if ( p_ogg->i_pcr < VLC_TS_0 && i_firstpts > VLC_TS_INVALID )
                 {
                     p_ogg->i_pcr = i_firstpts;
-                    es_out_SetPCR( p_demux->out, p_ogg->i_pcr );
+                    if( likely( !p_ogg->b_slave ) )
+                        es_out_SetPCR( p_demux->out, p_ogg->i_pcr );
                 }
             }
             p_stream->p_preparse_block = NULL;
@@ -1171,7 +1178,10 @@ static void Ogg_SendOrQueueBlocks( demux_t *p_demux, logical_stream_t *p_stream,
         {
             DemuxDebug( msg_Dbg( p_demux, "block sent directly > pts %"PRId64" spcr %"PRId64" pcr %"PRId64,
                      p_block->i_pts, p_stream->i_pcr, p_ogg->i_pcr ) );
-            es_out_Send( p_demux->out, p_stream->p_es, p_block );
+            if ( p_stream->p_es )
+                es_out_Send( p_demux->out, p_stream->p_es, p_block );
+            else
+                block_Release( p_block );
         }
     }
 }

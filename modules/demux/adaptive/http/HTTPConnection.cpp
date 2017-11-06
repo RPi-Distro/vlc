@@ -23,6 +23,7 @@
 
 #include "HTTPConnection.hpp"
 #include "ConnectionParams.hpp"
+#include "AuthStorage.hpp"
 #include "Sockets.hpp"
 #include "../adaptive/tools/Helper.h"
 
@@ -59,13 +60,15 @@ size_t AbstractConnection::getContentLength() const
     return contentLength;
 }
 
-HTTPConnection::HTTPConnection(vlc_object_t *p_object_, Socket *socket_, bool persistent)
+HTTPConnection::HTTPConnection(vlc_object_t *p_object_, AuthStorage *auth,
+                               Socket *socket_, bool persistent)
     : AbstractConnection( p_object_ )
 {
     socket = socket_;
     psz_useragent = var_InheritString(p_object_, "http-user-agent");
     queryOk = false;
     retries = 0;
+    authStorage = auth;
     connectionClose = !persistent;
     chunked = false;
     chunked_eof = false;
@@ -239,17 +242,16 @@ int HTTPConnection::parseReply()
     for( ;; )
     {
         std::string l = readLine();
-        if(l.empty() || l.compare("\r\n") == 0)
+        if(l.empty())
             break;
         lines.append(l);
 
         size_t split = lines.find_first_of(':');
         if(split != std::string::npos)
         {
-            size_t value = split + 1;
-            while(lines.at(value) == ' ')
-                value++;
-
+            size_t value = lines.find_first_not_of(' ', split + 1);
+            if(value == std::string::npos)
+                value = lines.length();
             onHeader(lines.substr(0, split), lines.substr(value));
             lines = std::string();
         }
@@ -363,11 +365,16 @@ void HTTPConnection::onHeader(const std::string &key,
     {
         locationparams = ConnectionParams( value );
     }
+    else if(key == "Set-Cookie" && authStorage)
+    {
+        authStorage->addCookie( value, params );
+    }
 }
 
 std::string HTTPConnection::buildRequestHeader(const std::string &path) const
 {
     std::stringstream req;
+    req.imbue(std::locale("C"));
     req << "GET " << path << " HTTP/1.1\r\n";
     if((params.getScheme() == "http" && params.getPort() != 80) ||
             (params.getScheme() == "https" && params.getPort() != 443))
@@ -377,6 +384,14 @@ std::string HTTPConnection::buildRequestHeader(const std::string &path) const
     else
     {
         req << "Host: " << params.getHostname() << "\r\n";
+    }
+    if(authStorage)
+    {
+        std::string cookie = authStorage->getCookie(params,
+                                                    params.getScheme() == "https" ||
+                                                    params.getPort() == 443);
+        if(!cookie.empty())
+            req << "Cookie: " << cookie << "\r\n";
     }
     req << "Cache-Control: no-cache" << "\r\n" <<
            "User-Agent: " << std::string(psz_useragent) << "\r\n";
@@ -500,8 +515,9 @@ void StreamUrlConnection::setUsed( bool b )
        reset();
 }
 
-ConnectionFactory::ConnectionFactory()
+ConnectionFactory::ConnectionFactory( AuthStorage *auth )
 {
+    authStorage = auth;
 }
 
 ConnectionFactory::~ConnectionFactory()
@@ -522,7 +538,7 @@ AbstractConnection * ConnectionFactory::createConnection(vlc_object_t *p_object,
 
     /* disable pipelined tls until we have ticket/resume session support */
     HTTPConnection *conn = new (std::nothrow)
-            HTTPConnection(p_object, socket, sockettype != TLSSocket::TLS);
+            HTTPConnection(p_object, authStorage, socket, sockettype != TLSSocket::TLS);
     if(!conn)
     {
         delete socket;
@@ -530,6 +546,12 @@ AbstractConnection * ConnectionFactory::createConnection(vlc_object_t *p_object,
     }
 
     return conn;
+}
+
+StreamUrlConnectionFactory::StreamUrlConnectionFactory()
+    : ConnectionFactory( NULL )
+{
+
 }
 
 AbstractConnection * StreamUrlConnectionFactory::createConnection(vlc_object_t *p_object,

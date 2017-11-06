@@ -566,7 +566,27 @@ opengl_deinit_program(vout_display_opengl_t *vgl, struct prgm *prgm)
     vlc_object_release(tc);
     if (prgm->id != 0)
         vgl->vt.DeleteProgram(prgm->id);
+
+#ifdef HAVE_LIBPLACEBO
+    FREENULL(tc->uloc.pl_vars);
+    pl_context_destroy(&tc->pl_ctx);
+#endif
 }
+
+#ifdef HAVE_LIBPLACEBO
+static void
+log_cb(void *priv, enum pl_log_level level, const char *msg)
+{
+    opengl_tex_converter_t *tc = priv;
+    switch (level) {
+    case PL_LOG_FATAL: // fall through
+    case PL_LOG_ERR:  msg_Err(tc->gl, "%s", msg); break;
+    case PL_LOG_WARN: msg_Warn(tc->gl,"%s", msg); break;
+    case PL_LOG_INFO: msg_Info(tc->gl,"%s", msg); break;
+    default: break;
+    }
+}
+#endif
 
 static int
 opengl_init_program(vout_display_opengl_t *vgl, struct prgm *prgm,
@@ -592,6 +612,20 @@ opengl_init_program(vout_display_opengl_t *vgl, struct prgm *prgm,
 #endif
     tc->fmt = *fmt;
 
+#ifdef HAVE_LIBPLACEBO
+    // create the main libplacebo context
+    if (!subpics)
+    {
+        tc->pl_ctx = pl_context_create(PL_API_VER, &(struct pl_context_params) {
+            .log_cb    = log_cb,
+            .log_priv  = tc,
+            .log_level = PL_LOG_INFO,
+        });
+        if (tc->pl_ctx)
+            tc->pl_sh = pl_shader_alloc(tc->pl_ctx, NULL, 0);
+    }
+#endif
+
     int ret;
     if (subpics)
     {
@@ -599,6 +633,9 @@ opengl_init_program(vout_display_opengl_t *vgl, struct prgm *prgm,
         /* Normal orientation and no projection for subtitles */
         tc->fmt.orientation = ORIENT_NORMAL;
         tc->fmt.projection_mode = PROJECTION_MODE_RECTANGULAR;
+        tc->fmt.primaries = COLOR_PRIMARIES_UNDEF;
+        tc->fmt.transfer = TRANSFER_FUNC_UNDEF;
+        tc->fmt.space = COLOR_SPACE_UNDEF;
 
         ret = opengl_tex_converter_generic_init(tc, false);
     }
@@ -758,9 +795,13 @@ vout_display_opengl_t *vout_display_opengl_New(video_format_t *fmt,
     GET_PROC_ADDR(VertexAttribPointer);
     GET_PROC_ADDR(EnableVertexAttribArray);
     GET_PROC_ADDR(UniformMatrix4fv);
+    GET_PROC_ADDR(UniformMatrix3fv);
+    GET_PROC_ADDR(UniformMatrix2fv);
     GET_PROC_ADDR(Uniform4fv);
     GET_PROC_ADDR(Uniform4f);
+    GET_PROC_ADDR(Uniform3f);
     GET_PROC_ADDR(Uniform2f);
+    GET_PROC_ADDR(Uniform1f);
     GET_PROC_ADDR(Uniform1i);
 
     GET_PROC_ADDR(CreateProgram);

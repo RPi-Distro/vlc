@@ -2,7 +2,7 @@
  * audio.c: audio decoder using libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2003 VLC authors and VideoLAN
- * $Id: 207a936fd06f5e60db323b769f1c43dd991218d5 $
+ * $Id: 6b43627c1eb8ce709a8ca9b3592a3ee4cc3d3f15 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -218,8 +218,6 @@ int InitAudioDec( vlc_object_t *obj )
     AVCodecContext *avctx = ffmpeg_AllocContext( p_dec, &codec );
     if( avctx == NULL )
         return VLC_EGENERIC;
-
-    avctx->refcounted_frames = true;
 
     /* Allocate the memory needed to store the decoder's structure */
     decoder_sys_t *p_sys = malloc(sizeof(*p_sys));

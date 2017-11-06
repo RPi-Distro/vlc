@@ -2,7 +2,7 @@
  * VLCConvertAndSaveWindowController.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012 Felix Paul Kühne
- * $Id: 55000072b787a6ef86da64c430bd2809d49e124d $
+ * $Id: d03c1e679f57d2b87188ba22cbbee5942062566c $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -339,7 +339,7 @@
     [_popupPanel setCancelButtonString:_NS("Cancel")];
     [_popupPanel setPopupButtonContent:self.profileNames];
 
-    __weak typeof(self) _self = self;
+    __unsafe_unretained typeof(self) _self = self;
     [_popupPanel runModalForWindow:self.window completionHandler:^(NSInteger returnCode, NSInteger selectedIndex) {
 
         if (returnCode != NSOKButton)
@@ -475,7 +475,7 @@
     [_textfieldPanel setCancelButtonString: _NS("Cancel")];
     [_textfieldPanel setOkButtonString: _NS("Save")];
 
-    __weak typeof(self) _self = self;
+    __unsafe_unretained typeof(self) _self = self;
     [_textfieldPanel runModalForWindow:_customizePanel completionHandler:^(NSInteger returnCode, NSString *resultingText) {
         if (returnCode != NSOKButton || [resultingText length] == 0)
             return;

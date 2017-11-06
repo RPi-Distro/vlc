@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: b58c23237f42d59f1153960a890f417a82e42cad $
+ * $Id: da0903f1c18a871849e50c36f685f5522c394be9 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -253,6 +253,35 @@ static int        AVI_TrackStopFinishedStreams( demux_t *);
     (from mplayer 2002/08/02)
  - to complete....
  */
+
+/*****************************************************************************
+ * Close: frees unused data
+ *****************************************************************************/
+static void Close ( vlc_object_t * p_this )
+{
+    demux_t *    p_demux = (demux_t *)p_this;
+    demux_sys_t *p_sys = p_demux->p_sys  ;
+
+    for( unsigned int i = 0; i < p_sys->i_track; i++ )
+    {
+        if( p_sys->track[i] )
+        {
+            es_format_Clean( &p_sys->track[i]->fmt );
+            avi_index_Clean( &p_sys->track[i]->idx );
+            free( p_sys->track[i] );
+        }
+    }
+    free( p_sys->track );
+
+    AVI_ChunkFreeRoot( p_demux->s, &p_sys->ck_root );
+    vlc_meta_Delete( p_sys->meta );
+
+    for( unsigned i = 0; i < p_sys->i_attachment; i++)
+        vlc_input_attachment_Delete(p_sys->attachment[i]);
+    free(p_sys->attachment);
+
+    free( p_sys );
+}
 
 /*****************************************************************************
  * Open: check file and initializes AVI structures
@@ -855,45 +884,8 @@ aviindex:
     return VLC_SUCCESS;
 
 error:
-    for( unsigned i = 0; i < p_sys->i_attachment; i++)
-        vlc_input_attachment_Delete(p_sys->attachment[i]);
-    free(p_sys->attachment);
-
-    if( p_sys->meta )
-        vlc_meta_Delete( p_sys->meta );
-
-    AVI_ChunkFreeRoot( p_demux->s, &p_sys->ck_root );
-    free( p_sys );
+    Close( p_this );
     return b_aborted ? VLC_ETIMEOUT : VLC_EGENERIC;
-}
-
-/*****************************************************************************
- * Close: frees unused data
- *****************************************************************************/
-static void Close ( vlc_object_t * p_this )
-{
-    demux_t *    p_demux = (demux_t *)p_this;
-    demux_sys_t *p_sys = p_demux->p_sys  ;
-
-    for( unsigned int i = 0; i < p_sys->i_track; i++ )
-    {
-        if( p_sys->track[i] )
-        {
-            es_format_Clean( &p_sys->track[i]->fmt );
-            avi_index_Clean( &p_sys->track[i]->idx );
-            free( p_sys->track[i] );
-        }
-    }
-    free( p_sys->track );
-
-    AVI_ChunkFreeRoot( p_demux->s, &p_sys->ck_root );
-    vlc_meta_Delete( p_sys->meta );
-
-    for( unsigned i = 0; i < p_sys->i_attachment; i++)
-        vlc_input_attachment_Delete(p_sys->attachment[i]);
-    free(p_sys->attachment);
-
-    free( p_sys );
 }
 
 /*****************************************************************************

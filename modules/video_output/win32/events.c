@@ -2,7 +2,7 @@
  * events.c: Windows video output events handler
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 7608007692e8f05e353a198bc5827e2cf8f76133 $
+ * $Id: 88e67acba38eedacfd1c00237845b5c28110302f $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Martell Malone <martellmalone@gmail.com>
@@ -805,7 +805,8 @@ static int Win32VoutCreateWindow( event_thread_t *p_event )
         return VLC_EGENERIC;
     }
 
-    InitGestures( p_event->hwnd, &p_event->p_gesture );
+    bool b_isProjected  = (vd->fmt.projection_mode != PROJECTION_MODE_RECTANGULAR);
+    InitGestures( p_event->hwnd, &p_event->p_gesture, b_isProjected );
 
     p_event->p_sensors = HookWindowsSensors(vd, p_event->hwnd);
 

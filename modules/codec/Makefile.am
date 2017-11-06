@@ -180,7 +180,8 @@ endif
 EXTRA_LTLIBRARIES += liblibass_plugin.la
 codec_LTLIBRARIES += $(LTLIBlibass)
 
-libcc_plugin_la_SOURCES = codec/cc.c codec/cc.h codec/substext.h
+libcc_plugin_la_SOURCES = codec/cc.c codec/cc.h codec/substext.h \
+                          codec/cea708.h codec/cea708.c
 codec_LTLIBRARIES += libcc_plugin.la
 
 libcvdsub_plugin_la_SOURCES = codec/cvdsub.c
@@ -220,6 +221,13 @@ libttml_plugin_la_SOURCES = codec/ttml/substtml.c \
                             demux/ttml.c \
                             codec/ttml/ttml.h codec/ttml/ttml.c
 codec_LTLIBRARIES += libttml_plugin.la
+
+libwebvtt_plugin_la_SOURCES = codec/webvtt/subsvtt.c \
+                              codec/webvtt/webvtt.c \
+                              codec/webvtt/webvtt.h \
+                              demux/webvtt.c \
+                              demux/mp4/minibox.h
+codec_LTLIBRARIES += libwebvtt_plugin.la
 
 libsvcdsub_plugin_la_SOURCES = codec/svcdsub.c
 codec_LTLIBRARIES += libsvcdsub_plugin.la
@@ -325,13 +333,13 @@ libvideotoolbox_plugin_la_SOURCES = video_chroma/copy.c video_chroma/copy.h \
 	packetizer/h264_nal.c packetizer/h264_nal.h \
 	packetizer/hevc_nal.c packetizer/hevc_nal.h
 if HAVE_OSX
-libvideotoolbox_plugin_la_OBJCFLAGS = $(AM_CFLAGS) -mmacosx-version-min=10.8
+libvideotoolbox_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) -mmacosx-version-min=10.8
 endif
 if HAVE_IOS
-libvideotoolbox_plugin_la_OBJCFLAGS = $(AM_CFLAGS) -miphoneos-version-min=8.0
+libvideotoolbox_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) -miphoneos-version-min=8.0
 endif
 if HAVE_TVOS
-libvideotoolbox_plugin_la_OBJCFLAGS = $(AM_CFLAGS) -mtvos-version-min=10.2
+libvideotoolbox_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) -mtvos-version-min=10.2
 endif
 libvideotoolbox_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(codecdir)' -Wl,-framework,Foundation -Wl,-framework,VideoToolbox -Wl,-framework,CoreMedia -Wl,-framework,CoreVideo
 EXTRA_LTLIBRARIES += libvideotoolbox_plugin.la

@@ -2,7 +2,7 @@
  * qt.hpp : Qt interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 569945ebb0b8436d0e7de7d8dacd2856059c8366 $
+ * $Id: 727ca8cf6aeafeaa7282059dfa36a7236225d367 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -42,18 +42,12 @@
 #define QT_NO_CAST_TO_ASCII
 #include <QString>
 
-#if ( QT_VERSION < 0x040800 )
-# error Update your Qt version to at least 4.8.0
+#if ( QT_VERSION < 0x050500 )
+# error Update your Qt version to at least 5.5.0
 #endif
 
-#define HAS_QT5  ( QT_VERSION >= 0x050000 )
-#define HAS_QT54 ( QT_VERSION >= 0x050400 )
 #define HAS_QT56 ( QT_VERSION >= 0x050600 )
-
-/* Q_DECL_OVERRIDE is a Qt5 feature, add empty define to not break with Qt4 */
-#if !HAS_QT5 && !defined(Q_DECL_OVERRIDE)
-# define Q_DECL_OVERRIDE
-#endif
+#define HAS_QT510 ( QT_VERSION >= 0x051000 )
 
 enum {
     DialogEventTypeOffset = 0,
@@ -137,7 +131,7 @@ struct vlc_playlist_locker {
 
 #define BUTTON_SET_IMG( button, text, image, tooltip )    \
     BUTTON_SET( button, text, tooltip );                  \
-    button->setIcon( QIcon( ":/"#image ) );
+    button->setIcon( QIcon( ":/"#image ".svg") );
 
 #define BUTTON_SET_ACT_I( button, text, image, tooltip, thisslot ) \
     BUTTON_SET_IMG( button, text, image, tooltip );                \

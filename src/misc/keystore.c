@@ -101,7 +101,7 @@ vlc_keystore_store(vlc_keystore *p_keystore,
 }
 
 unsigned int
-vlc_keystore_find(vlc_keystore *p_keystore, 
+vlc_keystore_find(vlc_keystore *p_keystore,
                   const char * const ppsz_values[KEY_MAX],
                   vlc_keystore_entry **pp_entries)
 {
@@ -194,12 +194,8 @@ is_credential_valid(vlc_credential *p_credential)
     if (p_credential->psz_username && *p_credential->psz_username != '\0'
      && p_credential->psz_password)
         return true;
-    else
-    {
-        p_credential->psz_password = NULL;
-        return false;
-    }
-
+    p_credential->psz_password = NULL;
+    return false;
 }
 
 static bool

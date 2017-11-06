@@ -2,7 +2,7 @@
  * VLCAudioEffectsWindowController.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2004-2017 VLC authors and VideoLAN
- * $Id: e337395e2ca75d2edfdeea80f08f126ad0937cee $
+ * $Id: 89f774445337a3ddffbcbf9ac4f10ea12e5e9f37 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jérôme Decoodt <djc@videolan.org>
@@ -479,7 +479,7 @@
     [_textfieldPanel setCancelButtonString:_NS("Cancel")];
     [_textfieldPanel setOkButtonString:_NS("Save")];
 
-    __weak typeof(self) _self = self;
+    __unsafe_unretained typeof(self) _self = self;
     [_textfieldPanel runModalForWindow:self.window completionHandler:^(NSInteger returnCode, NSString *resultingText) {
 
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -533,7 +533,7 @@
     [_popupPanel setCancelButtonString:_NS("Cancel")];
     [_popupPanel setPopupButtonContent:[[NSUserDefaults standardUserDefaults] objectForKey:@"AudioEffectProfileNames"]];
 
-    __weak typeof(self) _self = self;
+    __unsafe_unretained typeof(self) _self = self;
     [_popupPanel runModalForWindow:self.window completionHandler:^(NSInteger returnCode, NSInteger selectedIndex) {
 
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -788,7 +788,7 @@ static bool GetEqualizerStatus(intf_thread_t *p_custom_intf,
     [_textfieldPanel setCancelButtonString:_NS("Cancel")];
     [_textfieldPanel setOkButtonString:_NS("Save")];
 
-    __weak typeof(self) _self = self;
+    __unsafe_unretained typeof(self) _self = self;
     [_textfieldPanel runModalForWindow:self.window completionHandler:^(NSInteger returnCode, NSString *resultingText) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
@@ -834,7 +834,7 @@ static bool GetEqualizerStatus(intf_thread_t *p_custom_intf,
     [_popupPanel setCancelButtonString:_NS("Cancel")];
     [_popupPanel setPopupButtonContent:[[NSUserDefaults standardUserDefaults] objectForKey:@"EQTitles"]];
 
-    __weak typeof(self) _self = self;
+    __unsafe_unretained typeof(self) _self = self;
     [_popupPanel runModalForWindow:self.window completionHandler:^(NSInteger returnCode, NSInteger selectedIndex) {
 
         if (returnCode != NSOKButton)

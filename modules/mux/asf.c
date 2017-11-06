@@ -2,7 +2,7 @@
  * asf.c: asf muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2003-2004, 2006 VLC authors and VideoLAN
- * $Id: 4514cdf27453104ae5601286899ec46d578f12df $
+ * $Id: d7bed245e61ff24c757116ea5aee26ff28124017 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -620,9 +620,15 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
             return VLC_EGENERIC;
     }
 
+    if( vlc_array_append( &p_sys->tracks, tk ) )
+    {
+        free( tk->p_extra );
+        free( tk );
+        return VLC_EGENERIC;
+    }
+
     es_format_Copy( &tk->fmt, p_input->p_fmt );
 
-    vlc_array_append( &p_sys->tracks, tk );
     tk->i_id = vlc_array_index_of_item( &p_sys->tracks, tk ) + 1;
 
     if( p_sys->b_asf_http )

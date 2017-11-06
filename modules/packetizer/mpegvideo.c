@@ -2,7 +2,7 @@
  * mpegvideo.c: parse and packetize an MPEG1/2 video stream
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
- * $Id: 71126d897900702a61abd277615151b22ea1bd65 $
+ * $Id: 703b1d78e1cd036c3e2d28213036bfa93fe82398 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -177,7 +177,7 @@ struct decoder_sys_t
 
 static block_t *Packetize( decoder_t *, block_t ** );
 static void PacketizeFlush( decoder_t * );
-static block_t *GetCc( decoder_t *p_dec, bool pb_present[4], int * );
+static block_t *GetCc( decoder_t *p_dec, decoder_cc_desc_t * );
 
 static void PacketizeReset( void *p_private, bool b_broken );
 static block_t *PacketizeParse( void *p_private, bool *pb_ts_used, block_t * );
@@ -312,15 +312,10 @@ static void PacketizeFlush( decoder_t *p_dec )
 /*****************************************************************************
  * GetCc:
  *****************************************************************************/
-static block_t *GetCc( decoder_t *p_dec, bool pb_present[4], int *pi_reorder_depth )
+static block_t *GetCc( decoder_t *p_dec, decoder_cc_desc_t *p_desc )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     block_t *p_cc;
-    int i;
-    *pi_reorder_depth = p_sys->cc.b_reorder ? 0 : -1;
-
-    for( i = 0; i < 4; i++ )
-        pb_present[i] = p_sys->cc.pb_present[i];
 
     if( !p_sys->cc.b_reorder && p_sys->cc.i_data <= 0 )
         return NULL;
@@ -332,6 +327,10 @@ static block_t *GetCc( decoder_t *p_dec, bool pb_present[4], int *pi_reorder_dep
         p_cc->i_dts = 
         p_cc->i_pts = p_sys->cc.b_reorder ? p_sys->i_cc_pts : p_sys->i_cc_dts;
         p_cc->i_flags = p_sys->i_cc_flags & BLOCK_FLAG_TYPE_MASK;
+
+        p_desc->i_608_channels = p_sys->cc.i_608channels;
+        p_desc->i_708_channels = p_sys->cc.i_708channels;
+        p_desc->i_reorder_depth = p_sys->cc.b_reorder ? 0 : -1;
     }
     cc_Flush( &p_sys->cc );
     return p_cc;

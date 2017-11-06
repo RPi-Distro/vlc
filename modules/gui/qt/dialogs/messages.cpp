@@ -2,7 +2,7 @@
  * messages.cpp : Information about an item
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: d79826d7cd2ebce4ad6d0b7e1830decb60c7ba48 $
+ * $Id: f550bfa23f2036482b8b60dc1542f4c22c17aaac $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -98,7 +98,7 @@ MessagesDialog::MessagesDialog( intf_thread_t *_p_intf)
     ui.filterEdit->setText( getSettings()->value( "messages-filter" ).toString() );
     getSettings()->endGroup();
 
-    updateButton = new QPushButton( QIcon(":/update"), "" );
+    updateButton = new QPushButton( QIcon(":/update.svg"), "" );
     updateButton->setFlat( true );
     ui.mainTab->setCornerWidget( updateButton );
 
@@ -330,7 +330,7 @@ void MessagesDialog::updateOrClear()
 
 void MessagesDialog::tabChanged( int i )
 {
-    updateButton->setIcon( i != 0 ? QIcon(":/update") : QIcon(":/toolbar/clear") );
+    updateButton->setIcon( i != 0 ? QIcon(":/update.svg") : QIcon(":/toolbar/clear.svg") );
     updateButton->setToolTip( i != 0 ? qtr("Update the tree")
                                      : qtr("Clear the messages") );
 }
@@ -340,11 +340,7 @@ void MessagesDialog::MsgCallback( void *self, int type, const vlc_log_t *item,
 {
     MessagesDialog *dialog = (MessagesDialog *)self;
     char *str;
-#if HAS_QT5
     int verbosity = dialog->verbosity.load();
-#else
-    int verbosity = dialog->verbosity;
-#endif
 
     if( verbosity < 0 || verbosity < (type - VLC_MSG_ERR)
      || unlikely(vasprintf( &str, format, ap ) == -1) )

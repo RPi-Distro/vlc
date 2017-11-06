@@ -338,6 +338,9 @@
 /* Define to 1 if you have the `mingw32' library (-lmingw32). */
 #undef HAVE_LIBMINGW32
 
+/* Define to 1 if libplacebo is enabled. */
+#undef HAVE_LIBPLACEBO
+
 /* Define to 1 if you have the <libswscale/swscale.h> header file. */
 #undef HAVE_LIBSWSCALE_SWSCALE_H
 

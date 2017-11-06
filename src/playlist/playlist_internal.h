@@ -2,7 +2,7 @@
  * playlist_internal.h : Playlist internals
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 3515a898bdd4a895949c1d59e608d4d341381065 $
+ * $Id: ae48c75e87eb3d9e1e83dba183f2a6196dc730a2 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -76,6 +76,7 @@ typedef struct playlist_private_t
         bool          b_request;/**< Set to true by the requester
                                            The playlist sets it back to false
                                            when processing the request */
+        bool input_dead; /**< Set when input has finished. */
     } request;
 
     vlc_thread_t thread; /**< engine thread */

@@ -2,7 +2,7 @@
  * CompatibilityFixes.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2017 VLC authors and VideoLAN
- * $Id: 1f62d71187e23cd87a7c1ff5cba850993804d509 $
+ * $Id: 069aefd8d702a0a2df74852f54ee0c03dfd6a2cd $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Marvin Scholz <epirat07 -at- gmail -dot- com>
@@ -32,6 +32,8 @@
 #define OSX_YOSEMITE_AND_HIGHER (NSAppKitVersionNumber >= 1334)
 #define OSX_EL_CAPITAN_AND_HIGHER (NSAppKitVersionNumber >= 1404)
 #define OSX_SIERRA_AND_HIGHER (NSAppKitVersionNumber >= 1485)
+#define OSX_HIGH_SIERRA_AND_HIGHER (NSAppKitVersionNumber >= 1560)
+
 
 // Sierra only APIs
 #ifndef MAC_OS_X_VERSION_10_12

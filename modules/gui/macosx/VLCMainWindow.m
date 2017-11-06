@@ -2,7 +2,7 @@
  * VLCMainWindow.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: c0d7b59ddb87ab085eab2852b2150a24577fdeb4 $
+ * $Id: 1b10437f7b5638befe89aaa384e18c3dc20d3ede $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -184,14 +184,14 @@ static const float f_min_window_height = 307.;
     // Search Field
     [_searchField setToolTip:_NS("Search in Playlist")];
     [_searchField.cell setPlaceholderString:_NS("Search")];
-    [_searchField.cell accessibilitySetOverrideValue:_NS("Enter a term to search the playlist. Results will be selected in the table.")
+    [_searchField.cell accessibilitySetOverrideValue:_NS("Search the playlist. Results will be selected in the table.")
                                         forAttribute:NSAccessibilityDescriptionAttribute];
 
     // Dropzone
     [_dropzoneLabel setStringValue:_NS("Drop media here")];
     [_dropzoneImageView setImage:imageFromRes(@"dropzone")];
     [_dropzoneButton setTitle:_NS("Open media...")];
-    [_dropzoneButton.cell accessibilitySetOverrideValue:_NS("Click to open an advanced dialog to select the media to play. You can also drop files here to play.")
+    [_dropzoneButton.cell accessibilitySetOverrideValue:_NS("Open a dialog to select the media to play")
                                            forAttribute:NSAccessibilityDescriptionAttribute];
 
     // Podcast view

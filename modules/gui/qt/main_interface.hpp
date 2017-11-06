@@ -2,7 +2,7 @@
  * main_interface.hpp : Main Interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: c0e2a207b1ba6cc8ccec99722888a16e827ae764 $
+ * $Id: fe8a4b61f09c7e4e5a84ff6a70281f5f13c3a5c8 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -109,6 +109,7 @@ protected:
     void wheelEvent( QWheelEvent * ) Q_DECL_OVERRIDE;
     bool eventFilter(QObject *, QEvent *) Q_DECL_OVERRIDE;
     virtual void toggleUpdateSystrayMenuWhenVisible();
+    void resizeWindow(int width, int height);
 
 protected:
     /* Main Widgets Creation */
@@ -178,6 +179,7 @@ protected:
     bool                 b_interfaceFullScreen;
     bool                 b_pauseOnMinimize;
     bool                 b_maximizedView;
+    bool                 b_isWindowTiled;
 
     /* States */
     bool                 playlistVisible;       ///< Is the playlist visible ?
@@ -232,14 +234,14 @@ protected slots:
 
     void resizeStack( int w, int h )
     {
-        if( !isFullScreen() && !isMaximized() )
+        if( !isFullScreen() && !isMaximized() && !b_isWindowTiled )
         {
             if( b_minimalView )
-                resize( w, h ); /* Oh yes, it shouldn't
+                resizeWindow( w, h ); /* Oh yes, it shouldn't
                                    be possible that size() - stackCentralW->size() < 0
                                    since stackCentralW is contained in the QMW... */
             else
-                resize( size() - stackCentralW->size() + QSize( w, h ) );
+                resizeWindow( width() - stackCentralW->width() + w, height() - stackCentralW->height() + h );
         }
         debug();
     }
@@ -251,6 +253,7 @@ protected slots:
     void setVideoOnTop( bool );
     void setBoss();
     void setRaise();
+    void voutReleaseMouseEvents();
 
     void showResumePanel( int64_t);
     void hideResumePanel();

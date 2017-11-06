@@ -2,7 +2,7 @@
  * ps.h: Program Stream demuxer helper
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: 8af30dfb0e1e509814bb3fa7a7ae16da6cda1fd1 $
+ * $Id: 6d3d5c46620abe36003b1dc7fada8cfb5a705800 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -233,15 +233,7 @@ static inline int ps_track_fill( ps_track_t *tk, ps_psm_t *p_psm,
 
         if( (i_id&0xf0) == 0xe0 ) /* 0xe0 -> 0xef */
         {
-            if( i_type == 0x1b )
-            {
-                es_format_Change( &tk->fmt, VIDEO_ES, VLC_CODEC_H264 );
-            }
-            else if( i_type == 0x10 )
-            {
-                es_format_Change( &tk->fmt, VIDEO_ES, VLC_CODEC_MP4V );
-            }
-            else if( i_type == 0x01 )
+            if( i_type == 0x01 )
             {
                 es_format_Change( &tk->fmt, VIDEO_ES, VLC_CODEC_MPGV );
                 tk->fmt.i_original_fourcc = VLC_CODEC_MP1V;
@@ -249,6 +241,18 @@ static inline int ps_track_fill( ps_track_t *tk, ps_psm_t *p_psm,
             else if( i_type == 0x02 )
             {
                 es_format_Change( &tk->fmt, VIDEO_ES, VLC_CODEC_MPGV );
+            }
+            else if( i_type == 0x10 )
+            {
+                es_format_Change( &tk->fmt, VIDEO_ES, VLC_CODEC_MP4V );
+            }
+            else if( i_type == 0x1b )
+            {
+                es_format_Change( &tk->fmt, VIDEO_ES, VLC_CODEC_H264 );
+            }
+            else if( i_type == 0x24 )
+            {
+                es_format_Change( &tk->fmt, VIDEO_ES, VLC_CODEC_HEVC );
             }
             else if( i_id == 0xe2 || /* Primary H.264 in evob */
                      i_id == 0xe3 )  /* Seconday H.264 in evob */

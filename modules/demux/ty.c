@@ -6,7 +6,7 @@
  * based on code by Christopher Wingert for tivo-mplayer
  * tivo(at)wingert.org, February 2003
  *
- * $Id: 67f7aca70b85953d47be5484ba0dfe8796a86841 $
+ * $Id: d96ea139bf8ac0ae940c7c63ea49ca09b81fd084 $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -759,8 +759,12 @@ static int DemuxRecVideo( demux_t *p_demux, ty_rec_hdr_t *rec_hdr, block_t *p_bl
     }
 
     /* Register the CC decoders when needed */
-    for( i = 0; i < 4; i++ )
+    uint64_t i_chans = p_sys->cc.i_608channels;
+    for( i = 0; i_chans > 0; i++, i_chans >>= 1 )
     {
+        if( (i_chans & 1) == 0 || p_sys->p_cc[i] )
+            continue;
+
         static const char *ppsz_description[4] = {
             N_("Closed captions 1"),
             N_("Closed captions 2"),
@@ -770,8 +774,6 @@ static int DemuxRecVideo( demux_t *p_demux, ty_rec_hdr_t *rec_hdr, block_t *p_bl
 
         es_format_t fmt;
 
-        if( !p_sys->cc.pb_present[i] || p_sys->p_cc[i] )
-            continue;
 
         es_format_Init( &fmt, SPU_ES, VLC_CODEC_CEA608 );
         fmt.subs.cc.i_channel = i;

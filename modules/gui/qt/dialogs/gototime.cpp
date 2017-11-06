@@ -2,7 +2,7 @@
  * gototime.cpp : GotoTime and About dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 8f57b42aabcb15cb7a000d130692568e32c4a69c $
+ * $Id: 727a8a3c3138974680b1cf1790d76cc78f6bd408 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -62,7 +62,7 @@ GotoTimeDialog::GotoTimeDialog( intf_thread_t *_p_intf)
     timeEdit->setAlignment( Qt::AlignRight );
     timeEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
 
-    QPushButton *resetButton = new QPushButton( QIcon(":/update"), "" );
+    QPushButton *resetButton = new QPushButton( QIcon(":/update.svg"), "" );
     resetButton->setToolTip( qtr("Reset") );
 
     mainLayout->addWidget( timeIntro, 0, 0, 1, 1 );

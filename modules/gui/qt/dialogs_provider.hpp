@@ -2,7 +2,7 @@
  * dialogs_provider.hpp : Dialogs provider
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 399ac5322f09af73c50e1ba4b338c1ef0389d3da $
+ * $Id: 4d65c7a599327df052823254c67678086928ef01 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -184,6 +184,7 @@ private slots:
     void menuUpdateAction( QObject * );
 signals:
     void  toolBarConfUpdated();
+    void releaseMouseEvents();
 };
 
 class DialogEvent : public QEvent

@@ -2,7 +2,7 @@
  * matroska_segment_parse.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: edc7c9880aafda0965336e6031c68a9b95690606 $
+ * $Id: 2e5ae019d1335616aef140384225cdde41b873fa $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -2035,6 +2035,10 @@ bool matroska_segment_c::TrackInit( mkv_track_t * p_tk )
         }
         S_CASE("D_WEBVTT/SUBTITLES") {
             vars.p_fmt->i_codec = VLC_CODEC_SUBT;
+            vars.p_fmt->subs.psz_encoding = strdup( "UTF-8");
+        }
+        S_CASE("S_TEXT/WEBVTT") {
+            vars.p_fmt->i_codec = VLC_CODEC_WEBVTT;
             vars.p_fmt->subs.psz_encoding = strdup( "UTF-8");
         }
         S_CASE("B_VOBBTN") {

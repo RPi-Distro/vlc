@@ -2,7 +2,7 @@
  * info_panels.cpp : Panels for the information dialogs
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 0789a5bd99e29a9dd56a6fcb6eecdda02497472c $
+ * $Id: 265fbbdd6f413c9a6b0125fea0a19139e238c94f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -479,11 +479,7 @@ InfoPanel::InfoPanel( QWidget *parent ) : QWidget( parent )
      InfoTree = new QTreeWidget(this);
      InfoTree->setColumnCount( 1 );
      InfoTree->header()->hide();
-#if HAS_QT5
      InfoTree->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
-#else
-     InfoTree->header()->setResizeMode(QHeaderView::ResizeToContents);
-#endif
      layout->addWidget(InfoTree, 1, 0 );
 }
 

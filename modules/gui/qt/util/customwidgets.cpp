@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id: 61fd89838f186d827c8f8dd0b7e9ec3c9fb3bb49 $
+ * $Id: 3879cc350b8b08bf0597a756e6398aad83670986 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin
@@ -39,6 +39,8 @@
 #include <QApplication>
 #include <vlc_actions.h>
 
+#define SPINNER_SIZE 32
+
 QFramelessButton::QFramelessButton( QWidget *parent )
                     : QPushButton( parent )
 {
@@ -48,9 +50,8 @@ QFramelessButton::QFramelessButton( QWidget *parent )
 void QFramelessButton::paintEvent( QPaintEvent * )
 {
     QPainter painter( this );
-    QPixmap pix = icon().pixmap( size() );
-    QPoint pos( (width() - pix.width()) / 2, (height() - pix.height()) / 2 );
-    painter.drawPixmap( QRect( pos.x(), pos.y(), pix.width(), pix.height() ), pix );
+    icon().paint(&painter, QRect( 0, 0, width(), height()));
+
 }
 
 QElidingLabel::QElidingLabel( const QString &s, Qt::TextElideMode mode, QWidget * parent )
@@ -322,11 +323,11 @@ QString VLCKeyToString( unsigned val, bool locale )
 SpinningIcon::SpinningIcon( QWidget *parent ) : QLabel( parent )
 {
     QList<QString> frames;
-    frames << ":/util/wait1";
-    frames << ":/util/wait2";
-    frames << ":/util/wait3";
-    frames << ":/util/wait4";
-    animator = new PixmapAnimator( this, frames );
+    frames << ":/util/wait1.svg";
+    frames << ":/util/wait2.svg";
+    frames << ":/util/wait3.svg";
+    frames << ":/util/wait4.svg";
+    animator = new PixmapAnimator( this, frames, SPINNER_SIZE, SPINNER_SIZE );
     CONNECT( animator, pixmapReady( const QPixmap & ), this, setPixmap( const QPixmap & ) );
     CONNECT( animator, pixmapReady( const QPixmap & ), this, repaint() );
     setScaledContents( true );
@@ -405,11 +406,11 @@ YesNoCheckBox::YesNoCheckBox( QWidget *parent ) : QCheckBox( parent )
     setStyleSheet("\
                   QCheckBox::indicator:unchecked:hover,\
                   QCheckBox::indicator:unchecked {\
-                      image: url(:/pixmaps/clear);\
+                      image: url(:/toolbar/clear.svg);\
                   }\
                   QCheckBox::indicator:checked:hover,\
                   QCheckBox::indicator:checked {\
-                      image: url(:/valid);\
+                      image: url(:/valid.svg);\
                   }\
         ");
 }

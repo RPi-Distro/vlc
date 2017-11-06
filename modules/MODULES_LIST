@@ -73,7 +73,7 @@ $Id$
  * caf: CAF demuxer
  * canvas: Automatically resize and padd a video
  * caopengllayer: CoreAnimation OpenGL video output
- * cc: CC 608/708 subtitles decoder
+ * cc: EIA-608/CEA-708 closed captions decoder
  * cdda: input module to read audio CDs
  * cdg: CD-G decoder
  * chain: Video filtering using a chain of video filter modules
@@ -428,10 +428,9 @@ $Id$
  * uleaddvaudio: codec for DV Audio from Ulead
  * upnp: libupnp UPNP service discovery
  * v4l2: Video 4 Linux 2 input module
- * vaapi_dr: VAAPI hardware-accelerated decoding with vout backend (direct rendering)
+ * vaapi: VAAPI hardware-accelerated decoding with vout backend
  * vaapi_drm: VAAPI hardware-accelerated decoding with drm backend
  * vaapi_filters: VAAPI hardware-accelerated deinterlacing/chroma/adjust/sharpen/chroma filters
- * vaapi_x11: VAAPI hardware-accelerated decoding with x11 backend
  * vc1: VC-1 Video demuxer
  * vcd: input module for accessing Video CDs
  * vdpau_adjust: VDPAU color adjust video filter
@@ -461,6 +460,7 @@ $Id$
  * wav: Wav demuxer
  * wave: Wave video effect
  * waveout: simple audio output module for Windows
+ * webvtt: WEBVTT subtitles decoder and demuxer
  * wgl: WGL extension for OpenGL
  * win_hotkeys: module to catch hotkeys when application doesn't have the focus
  * win_msg: Windows Messages module
