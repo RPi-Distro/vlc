@@ -2,7 +2,7 @@
  * common.c : Common helper function for the VLC deinterlacer
  *****************************************************************************
  * Copyright (C) 2000-2017 VLC authors and VideoLAN
- * $Id: ea9c6af464b25101d049f716376975f8cd35f8b2 $
+ * $Id: 1791190ff8bd28fb8439848c5ef2118c0aa86590 $
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *         Christophe Massiot <massiot@via.ecp.fr>
@@ -351,6 +351,10 @@ drop:
         if( p_dst[i] )
             picture_Release( p_dst[i] );
     }
+#ifndef NDEBUG
     picture_Release( p_pic );
     return NULL;
+#else
+    return p_pic;
+#endif
 }

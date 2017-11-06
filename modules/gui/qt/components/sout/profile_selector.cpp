@@ -2,7 +2,7 @@
  * profile_selector.cpp : A small profile selector and editor
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 49213b11eadb8920db071934aa8c9eadb5a2877b $
+ * $Id: 7e11f3aa1bc8cdf08aa972690d2677b621be27e1 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -37,6 +37,7 @@
 #include <QSpinBox>
 #include <QUrl>
 #include <QListWidgetItem>
+#include <QFontMetrics>
 
 #include <assert.h>
 #include <vlc_modules.h>
@@ -56,17 +57,17 @@ VLCProfileSelector::VLCProfileSelector( QWidget *_parent ): QWidget( _parent )
     layout->addWidget( profileBox );
 
     QToolButton *editButton = new QToolButton( this );
-    editButton->setIcon( QIcon( ":/menu/preferences" ) );
+    editButton->setIcon( QIcon( ":/menu/preferences.svg" ) );
     editButton->setToolTip( qtr( "Edit selected profile" ) );
     layout->addWidget( editButton );
 
     QToolButton *deleteButton = new QToolButton( this );
-    deleteButton->setIcon( QIcon( ":/toolbar/clear" ) );
+    deleteButton->setIcon( QIcon( ":/toolbar/clear.svg" ) );
     deleteButton->setToolTip( qtr( "Delete selected profile" ) );
     layout->addWidget( deleteButton );
 
     QToolButton *newButton = new QToolButton( this );
-    newButton->setIcon( QIcon( ":/new" ) );
+    newButton->setIcon( QIcon( ":/new.svg" ) );
     newButton->setToolTip( qtr( "Create a new profile" ) );
     layout->addWidget(newButton);
 
@@ -618,16 +619,20 @@ void VLCProfileEditor::muxSelected()
     SETYESNOSTATE( capsubs, "capsubs" );
     SETYESNOSTATE( capstream, "capstream" );
     SETYESNOSTATE( capchaps, "capchaps" );
+
+    int textsize = QFontMetrics(ui.muxerwarning->font()).ascent();
     if( current->property("module").toString() == "avformat" )
         ui.muxerwarning->setText(
-                    QString( "<img src=\":/menu/info\"/> %1" )
+                    QString( "<img src=\":/menu/info.svg\" width=%2 height=%2/> %1" )
                     .arg( qtr( "This muxer is not provided directly by VLC: It could be missing." ) )
+                    .arg(textsize)
                     );
     else if ( !caps["muxers"].contains( current->property("module").toString() ) &&
               !caps["muxers"].contains( "mux_" + current->property("module").toString() ) )
         ui.muxerwarning->setText(
-                    QString( "<img src=\":/pixmaps/clear\"/> %1" )
+                    QString( "<img src=\":/toobar/clear.svg\" width=%2 height=%2/> %1" )
                     .arg( qtr( "This muxer is missing. Using this profile will fail" ) )
+                    .arg(textsize)
                     );
     else
         ui.muxerwarning->setText("");

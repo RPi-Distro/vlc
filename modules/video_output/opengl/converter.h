@@ -21,6 +21,10 @@
 #ifndef VLC_OPENGL_CONVERTER_H
 #define VLC_OPENGL_CONVERTER_H
 
+#ifdef HAVE_LIBPLACEBO
+#include <libplacebo/shaders.h>
+#endif
+
 #include "vout_helper.h"
 #include <vlc_plugin.h>
 
@@ -64,9 +68,13 @@ typedef void (APIENTRY *PFNGLBUFFERSTORAGEPROC) (GLenum target, GLsizeiptr size,
 #   define PFNGLVERTEXATTRIBPOINTERPROC      typeof(glVertexAttribPointer)*
 #   define PFNGLENABLEVERTEXATTRIBARRAYPROC  typeof(glEnableVertexAttribArray)*
 #   define PFNGLUNIFORMMATRIX4FVPROC         typeof(glUniformMatrix4fv)*
+#   define PFNGLUNIFORMMATRIX3FVPROC         typeof(glUniformMatrix3fv)*
+#   define PFNGLUNIFORMMATRIX2FVPROC         typeof(glUniformMatrix2fv)*
 #   define PFNGLUNIFORM4FVPROC               typeof(glUniform4fv)*
 #   define PFNGLUNIFORM4FPROC                typeof(glUniform4f)*
+#   define PFNGLUNIFORM3FPROC                typeof(glUniform3f)*
 #   define PFNGLUNIFORM2FPROC                typeof(glUniform2f)*
+#   define PFNGLUNIFORM1FPROC                typeof(glUniform1f)*
 #   define PFNGLUNIFORM1IPROC                typeof(glUniform1i)*
 #   define PFNGLCREATESHADERPROC             typeof(glCreateShader)*
 #   define PFNGLSHADERSOURCEPROC             typeof(glShaderSource)*
@@ -144,9 +152,13 @@ typedef struct {
     PFNGLVERTEXATTRIBPOINTERPROC     VertexAttribPointer;
     PFNGLENABLEVERTEXATTRIBARRAYPROC EnableVertexAttribArray;
     PFNGLUNIFORMMATRIX4FVPROC        UniformMatrix4fv;
+    PFNGLUNIFORMMATRIX3FVPROC        UniformMatrix3fv;
+    PFNGLUNIFORMMATRIX2FVPROC        UniformMatrix2fv;
     PFNGLUNIFORM4FVPROC              Uniform4fv;
     PFNGLUNIFORM4FPROC               Uniform4f;
+    PFNGLUNIFORM3FPROC               Uniform3f;
     PFNGLUNIFORM2FPROC               Uniform2f;
+    PFNGLUNIFORM1FPROC               Uniform1f;
     PFNGLUNIFORM1IPROC               Uniform1i;
 
     /* Program commands */
@@ -189,6 +201,11 @@ struct opengl_tex_converter_t
 
     /* Pointer to object gl, set by the caller */
     vlc_gl_t *gl;
+
+#ifdef HAVE_LIBPLACEBO
+    /* libplacebo context, created by the caller (optional) */
+    struct pl_context *pl_ctx;
+#endif
 
     /* Function pointers to OpenGL functions, set by the caller */
     const opengl_vtable_t *vt;
@@ -244,9 +261,15 @@ struct opengl_tex_converter_t
         GLint TexSize[PICTURE_PLANE_MAX]; /* for GL_TEXTURE_RECTANGLE */
         GLint Coefficients;
         GLint FillColor;
+        GLint *pl_vars; /* for pl_sh_res */
     } uloc;
     bool yuv_color;
     GLfloat yuv_coefficients[16];
+
+#ifdef HAVE_LIBPLACEBO
+    struct pl_shader *pl_sh;
+    const struct pl_shader_res *pl_sh_res;
+#endif
 
     /* Private context */
     void *priv;

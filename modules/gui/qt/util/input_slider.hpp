@@ -2,7 +2,7 @@
  * input_slider.hpp : VolumeSlider and SeekSlider
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: a9559c9dad0fa4495b30b36a579592752adda3e4 $
+ * $Id: 2c593603b483a5e22276d81d3f98e0bedccc88ca $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -145,9 +145,6 @@ public:
     void setMuted( bool ); /* Set Mute status */
 
 protected:
-    const static int paddingL = 3;
-    const static int paddingR = 2;
-
     void paintEvent( QPaintEvent *) Q_DECL_OVERRIDE;
     void wheelEvent( QWheelEvent *event ) Q_DECL_OVERRIDE;
     void mousePressEvent( QMouseEvent * ) Q_DECL_OVERRIDE;

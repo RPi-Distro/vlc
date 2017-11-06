@@ -2,7 +2,7 @@
  * VLCStatusBarIcon.m: Status bar icon controller/delegate
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: 6f3a702f29b4c573b974cb1115c5f0028fcd1360 $
+ * $Id: 936b1301b36fe5a25ffec7c978e3e4dcc57ac292 $
  *
  * Authors: Goran Dokic <vlc at 8hz dot com>
  *
@@ -90,16 +90,20 @@
 - (void)awakeFromNib
 {
     [super awakeFromNib];
+
+    [_controlsView setAutoresizingMask:NSViewWidthSizable];
+    [_playbackInfoView setAutoresizingMask:NSViewWidthSizable];
+
     [self configurationChanged:nil];
 
     // Set Accessibility Attributes for Image Buttons
-    [backwardsButton.cell accessibilitySetOverrideValue:_NS("Go to previous track")
+    [backwardsButton.cell accessibilitySetOverrideValue:_NS("Go to previous item")
                                            forAttribute:NSAccessibilityDescriptionAttribute];
 
-    [playPauseButton.cell accessibilitySetOverrideValue:_NS("Play or pause current media")
+    [playPauseButton.cell accessibilitySetOverrideValue:_NS("Toggle Play/Pause")
                                            forAttribute:NSAccessibilityDescriptionAttribute];
 
-    [forwardButton.cell accessibilitySetOverrideValue:_NS("Go to next track")
+    [forwardButton.cell accessibilitySetOverrideValue:_NS("Go to next item")
                                          forAttribute:NSAccessibilityDescriptionAttribute];
 
     [randButton.cell accessibilitySetOverrideValue:_NS("Toggle random order playback")

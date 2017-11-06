@@ -2,7 +2,7 @@
  *MainMenu.m: MacOS X interface module
  *****************************************************************************
  *Copyright (C) 2011-2015 Felix Paul Kühne
- *$Id: 0cd78e7c255fea5df3092c3a58931948152485b5 $
+ *$Id: 15a114ca2d3a7f013fe186491778ac2f2bd63738 $
  *
  *Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -377,6 +377,7 @@
     [_play setTitle: _NS("Play")];
     [_stop setTitle: _NS("Stop")];
     [_record setTitle: _NS("Record")];
+    [_rate_view setAutoresizingMask:NSViewWidthSizable];
     [_rate setView: _rate_view];
     [_rateLabel setStringValue: _NS("Playback Speed")];
     [_rate_slowerLabel setStringValue: _NS("Slower")];
@@ -443,6 +444,10 @@
     [_subtitle_size setTitle: _NS("Text Size")];
     [_subtitle_textcolor setTitle: _NS("Text Color")];
     [_subtitle_outlinethickness setTitle: _NS("Outline Thickness")];
+
+    // Autoresizing with constraints does not work on 10.7,
+    // translate autoresizing mask to constriaints for now
+    [_subtitle_bgopacity_view setAutoresizingMask:NSViewWidthSizable];
     [_subtitle_bgopacity setView: _subtitle_bgopacity_view];
     [_subtitle_bgopacityLabel setStringValue: _NS("Background Opacity")];
     [_subtitle_bgopacityLabel_gray setStringValue: _NS("Background Opacity")];

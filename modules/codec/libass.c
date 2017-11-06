@@ -2,7 +2,7 @@
  * SSA/ASS subtitle decoder using libass.
  *****************************************************************************
  * Copyright (C) 2008-2009 VLC authors and VideoLAN
- * $Id: cbc0fd2279c74de90c4ae0b24293e975401a97f0 $
+ * $Id: 8004feb138ecad850106f015cb12fe38c0611e94 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *
@@ -212,8 +212,24 @@ static int Create( vlc_object_t *p_this )
     ass_set_line_spacing( p_renderer, 0.0 );
 
 #if defined( __ANDROID__ )
-    const char *psz_font = "/system/fonts/DroidSans-Bold.ttf";
-    const char *psz_family = "Droid Sans Bold";
+    const char *psz_font, *psz_family;
+    const char *psz_font_droid = "/system/fonts/DroidSans-Bold.ttf";
+    const char *psz_family_droid = "Droid Sans Bold";
+    const char *psz_font_noto = "/system/fonts/NotoSansCJK-Regular.ttc";
+    const char *psz_family_noto = "Noto Sans";
+
+    // Workaround for Android 5.0+, since libass doesn't parse the XML yet
+    if( access( psz_font_noto, R_OK ) != -1 )
+    {
+        psz_font = psz_font_noto;
+        psz_family = psz_family_noto;
+    }
+    else
+    {
+        psz_font = psz_font_droid;
+        psz_family = psz_family_droid;
+    }
+
 #elif defined( __APPLE__ )
     const char *psz_font = NULL; /* We don't ship a default font with VLC */
     const char *psz_family = "Helvetica Neue"; /* Use HN if we can't find anything more suitable - Arial is not on all Apple platforms */
@@ -236,7 +252,7 @@ static int Create( vlc_object_t *p_this )
         vlc_dialog_release( p_dec, p_dialog_id );
 #endif
 #else
-    ass_set_fonts( p_renderer, psz_font, psz_family, 1, NULL, 1 );
+    ass_set_fonts( p_renderer, psz_font, psz_family, 0, NULL, 0 );
 #endif
 
     /* Anything else than NONE will break smooth img updating.

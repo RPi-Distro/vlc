@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: 15f59c477b557394793fb2ad8f873acf75cf4494 $
+ * $Id: cbdc8ce92c75dd19271b6fb062f99e2ddc03551d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -279,15 +279,9 @@ void FileOpenPanel::updateMRL()
         }
     else
     {
-#if HAS_QT5
         QList<QUrl> urls = dialogBox->selectedUrls();
         foreach( const QUrl &url, urls )
             fileList.append( url.toEncoded() );
-#else
-        fileList = dialogBox->selectedFiles();
-        for( int i = 0; i < fileList.count(); i++ )
-            fileList[i] = toURI( fileList[i] );
-#endif
     }
 
     /* Options */

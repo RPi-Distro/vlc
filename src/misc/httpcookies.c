@@ -2,7 +2,7 @@
  * httpcookies.c: HTTP cookie utilities
  *****************************************************************************
  * Copyright (C) 2014 VLC authors and VideoLAN
- * $Id: 2e4d3a86633f61bc7fb5b584c3d8928d0439b650 $
+ * $Id: 77ab852b157d6fabf30bcb0678c424b14ec9f645 $
  *
  * Authors: Antti Ajanki <antti.ajanki@iki.fi>
  *
@@ -340,11 +340,14 @@ bool vlc_http_cookies_store(vlc_http_cookie_jar_t *p_jar, const char *cookies,
             break;
         }
     }
-    vlc_array_append( &p_jar->cookies, cookie );
+
+    bool b_ret = (vlc_array_append( &p_jar->cookies, cookie ) == 0);
+    if( !b_ret )
+        cookie_destroy( cookie );
 
     vlc_mutex_unlock( &p_jar->lock );
 
-    return true;
+    return b_ret;
 }
 
 char *vlc_http_cookies_fetch(vlc_http_cookie_jar_t *p_jar, bool secure,

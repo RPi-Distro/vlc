@@ -2,7 +2,7 @@
  * thread.c : Playlist management functions
  *****************************************************************************
  * Copyright © 1999-2008 VLC authors and VideoLAN
- * $Id: 076260fb2987dea15757474d1a09682643d98e1a $
+ * $Id: 9f51054089ac2ed4a103479a219d1fcecf2caf58 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -97,16 +97,15 @@ static int InputEvent( vlc_object_t *p_this, char const *psz_cmd,
     VLC_UNUSED(p_this); VLC_UNUSED(psz_cmd); VLC_UNUSED(oldval);
     playlist_t *p_playlist = p_data;
 
-    if( newval.i_int != INPUT_EVENT_STATE &&
-        newval.i_int != INPUT_EVENT_DEAD )
-        return VLC_SUCCESS;
+    if( newval.i_int == INPUT_EVENT_DEAD )
+    {
+        playlist_private_t *sys = pl_priv(p_playlist);
 
-    PL_LOCK;
-
-    /* XXX: signaling while not changing any parameter... suspicious... */
-    vlc_cond_signal( &pl_priv(p_playlist)->signal );
-
-    PL_UNLOCK;
+        PL_LOCK;
+        sys->request.input_dead = true;
+        vlc_cond_signal( &sys->signal );
+        PL_UNLOCK;
+    }
     return VLC_SUCCESS;
 }
 
@@ -427,35 +426,33 @@ static void LoopInput( playlist_t *p_playlist )
 
     assert( p_input != NULL );
 
-    if( p_sys->request.b_request || p_sys->killed )
+    /* Wait for input to end or be stopped */
+    while( !p_sys->request.input_dead )
     {
-        PL_DEBUG( "incoming request - stopping current input" );
-        input_Stop( p_input );
-    }
-
-    switch( var_GetInteger( p_input, "state" ) )
-    {
-    case END_S:
-    case ERROR_S:
-    /* This input is dead. Remove it ! */
-        p_sys->p_input = NULL;
-        PL_DEBUG( "dead input" );
-        PL_UNLOCK;
-
-        var_SetAddress( p_playlist, "input-current", NULL );
-
-        /* WARNING: Input resource manipulation and callback deletion are
-         * incompatible with the playlist lock. */
-        if( !var_InheritBool( p_input, "sout-keep" ) )
-            input_resource_TerminateSout( p_sys->p_input_resource );
-        var_DelCallback( p_input, "intf-event", InputEvent, p_playlist );
-
-        input_Close( p_input );
-        PL_LOCK;
-        break;
-    default:
+        if( p_sys->request.b_request || p_sys->killed )
+        {
+            PL_DEBUG( "incoming request - stopping current input" );
+            input_Stop( p_input );
+        }
         vlc_cond_wait( &p_sys->signal, &p_sys->lock );
     }
+
+    /* This input is dead. Remove it ! */
+    PL_DEBUG( "dead input" );
+    p_sys->p_input = NULL;
+    p_sys->request.input_dead = false;
+    PL_UNLOCK;
+
+    var_SetAddress( p_playlist, "input-current", NULL );
+
+    /* WARNING: Input resource manipulation and callback deletion are
+     * incompatible with the playlist lock. */
+    if( !var_InheritBool( p_input, "sout-keep" ) )
+        input_resource_TerminateSout( p_sys->p_input_resource );
+    var_DelCallback( p_input, "intf-event", InputEvent, p_playlist );
+
+    input_Close( p_input );
+    PL_LOCK;
 }
 
 static bool Next( playlist_t *p_playlist )
@@ -476,6 +473,7 @@ static void *Thread ( void *data )
 {
     playlist_t *p_playlist = data;
     playlist_private_t *p_sys = pl_priv(p_playlist);
+    bool played = false;
 
     PL_LOCK;
     while( !p_sys->killed )
@@ -489,17 +487,16 @@ static void *Thread ( void *data )
             continue;
         }
 
+        /* Playlist in running state */
         while( !p_sys->killed && Next( p_playlist ) )
-        {   /* Playlist in running state */
-            assert(p_sys->p_input != NULL);
-
-            do
-                LoopInput( p_playlist );
-            while( p_sys->p_input != NULL );
+        {
+            LoopInput( p_playlist );
+            played = true;
         }
 
+        /* Playlist stopping */
         msg_Dbg( p_playlist, "nothing to play" );
-        if( var_InheritBool( p_playlist, "play-and-exit" ) )
+        if( played && var_InheritBool( p_playlist, "play-and-exit" ) )
         {
             msg_Info( p_playlist, "end of playlist, exiting" );
             libvlc_Quit( p_playlist->obj.libvlc );

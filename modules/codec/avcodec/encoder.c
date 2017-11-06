@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 9dff206b26b8e983dd675cf7c3a346e22be35876 $
+ * $Id: 5f2f671c91d9224bd8bb4c6aa50480cd8531322b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -142,7 +142,6 @@ struct encoder_sys_t
     bool       b_hurry_up;
     bool       b_interlace, b_interlace_me;
     float      f_i_quant_factor;
-    int        i_noise_reduction;
     bool       b_mpeg4_matrix;
     bool       b_trellis;
     int        i_quality; /* for VBR */
@@ -413,16 +412,9 @@ int OpenEncoder( vlc_object_t *p_this )
     p_sys->b_pre_me = var_GetBool( p_enc, ENC_CFG_PREFIX "pre-me" );
     p_sys->b_hurry_up = var_GetBool( p_enc, ENC_CFG_PREFIX "hurry-up" );
 
-    if( p_sys->b_hurry_up )
-    {
-        /* hurry up mode needs noise reduction, even small */
-        p_sys->i_noise_reduction = 1;
-    }
-
     p_sys->i_rc_buffer_size = var_GetInteger( p_enc, ENC_CFG_PREFIX "rc-buffer-size" );
     p_sys->f_rc_buffer_aggressivity = var_GetFloat( p_enc, ENC_CFG_PREFIX "rc-buffer-aggressivity" );
     p_sys->f_i_quant_factor = var_GetFloat( p_enc, ENC_CFG_PREFIX "i-quant-factor" );
-    p_sys->i_noise_reduction = var_GetInteger( p_enc, ENC_CFG_PREFIX "noise-reduction" );
     p_sys->b_mpeg4_matrix = var_GetBool( p_enc, ENC_CFG_PREFIX "mpeg4-matrix" );
 
     f_val = var_GetFloat( p_enc, ENC_CFG_PREFIX "qscale" );
@@ -565,7 +557,8 @@ int OpenEncoder( vlc_object_t *p_this )
         if ( p_sys->f_i_quant_factor != 0.f )
             p_context->i_quant_factor = p_sys->f_i_quant_factor;
 
-        add_av_option_int( p_enc, &options, "noise_reduction", p_sys->i_noise_reduction );
+        int nr = var_GetInteger( p_enc, ENC_CFG_PREFIX "noise-reduction" );
+        add_av_option_int( p_enc, &options, "noise_reduction", nr );
 
         if ( p_sys->b_mpeg4_matrix )
         {
@@ -1100,16 +1093,11 @@ static void check_hurry_up( encoder_sys_t *p_sys, AVFrame *frame, encoder_t *p_e
         if ( current_date + HURRY_UP_GUARD2 > frame->pts )
         {
             p_sys->p_context->trellis = 0;
-            p_sys->p_context->noise_reduction = p_sys->i_noise_reduction
-                + (HURRY_UP_GUARD2 + current_date - frame->pts) / 500;
             msg_Dbg( p_enc, "hurry up mode 2" );
         }
         else
         {
             p_sys->p_context->trellis = p_sys->b_trellis;
-
-            p_sys->p_context->noise_reduction =
-               p_sys->i_noise_reduction;
         }
     }
 
@@ -1241,11 +1229,12 @@ static block_t *EncodeVideo( encoder_t *p_enc, picture_t *p_pict )
     return p_block;
 }
 
-static block_t *handle_delay_buffer( encoder_t *p_enc, encoder_sys_t *p_sys, int buffer_delay, block_t *p_aout_buf, int leftover_samples )
+static block_t *handle_delay_buffer( encoder_t *p_enc, encoder_sys_t *p_sys, unsigned int buffer_delay,
+                                     block_t *p_aout_buf, size_t leftover_samples )
 {
     block_t *p_block = NULL;
     //How much we need to copy from new packet
-    const int leftover = leftover_samples * p_sys->p_context->channels * p_sys->i_sample_bytes;
+    const size_t leftover = leftover_samples * p_sys->p_context->channels * p_sys->i_sample_bytes;
 
     av_frame_unref( p_sys->frame );
     p_sys->frame->format     = p_sys->p_context->sample_fmt;

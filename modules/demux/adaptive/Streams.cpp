@@ -184,10 +184,23 @@ int AbstractStream::esCount() const
 
 bool AbstractStream::seekAble() const
 {
-    return (demuxer &&
-            !fakeesout->restarting() &&
-            !discontinuity &&
-            !commandsqueue->isDraining() );
+    bool restarting = fakeesout->restarting();
+    bool draining = commandsqueue->isDraining();
+    bool eof = commandsqueue->isEOF();
+
+    msg_Dbg(p_realdemux, "demuxer %p, fakeesout restarting %d, "
+            "discontinuity %d, commandsqueue draining %d, commandsqueue eof %d",
+            static_cast<void *>(demuxer), restarting, discontinuity, draining, eof);
+
+    if(!demuxer || restarting || discontinuity || (!eof && draining))
+    {
+        msg_Warn(p_realdemux, "not seekable");
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
 
 bool AbstractStream::isSelected() const
@@ -253,10 +266,6 @@ void AbstractStream::setDisabled(bool b)
 {
     if(disabled != b)
         segmentTracker->notifyBufferingState(!b);
-     /* Ensures unselected ES no longer
-      * have decoder/are seen as selected */
-    if(b)
-        fakeesout->recycleAll();
     disabled = b;
 }
 
@@ -338,7 +347,7 @@ AbstractStream::buffering_status AbstractStream::doBufferize(mtime_t nz_deadline
                 return AbstractStream::buffering_ongoing;
             }
             dead = true; /* Prevent further retries */
-            commandsqueue->setEOF();
+            commandsqueue->setEOF(true);
             vlc_mutex_unlock(&lock);
             return AbstractStream::buffering_end;
         }
@@ -380,7 +389,7 @@ AbstractStream::buffering_status AbstractStream::doBufferize(mtime_t nz_deadline
                 vlc_mutex_unlock(&lock);
                 return AbstractStream::buffering_ongoing;
             }
-            commandsqueue->setEOF();
+            commandsqueue->setEOF(true);
             vlc_mutex_unlock(&lock);
             return AbstractStream::buffering_end;
         }
@@ -487,6 +496,8 @@ bool AbstractStream::setPosition(mtime_t time, bool tryonly)
     bool ret = segmentTracker->setPositionByTime(time, demuxer->needsRestartOnSeek(), tryonly);
     if(!tryonly && ret)
     {
+        // clear eof flag before restartDemux() to prevent readNextBlock() fail
+        eof = false;
         if(demuxer->needsRestartOnSeek())
         {
             if(currentChunk)
@@ -498,7 +509,16 @@ bool AbstractStream::setPosition(mtime_t time, bool tryonly)
             setTimeOffset(segmentTracker->getPlaybackTime());
 
             if( !restartDemux() )
+            {
+                msg_Info(p_realdemux, "Restart demux failed");
+                eof = true;
                 dead = true;
+                ret = false;
+            }
+            else
+            {
+                commandsqueue->setEOF(false);
+            }
         }
         else commandsqueue->Abort( true );
 

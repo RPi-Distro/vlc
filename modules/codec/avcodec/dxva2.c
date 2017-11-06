@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 1d79c6e3d80e1fa9ac90e72e7dc39c1b09dd7f35 $
+ * $Id: 7bfe6a9273822d181f55b63663518c1ca4b0a58e $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -223,6 +223,7 @@ static int Get(vlc_va_t *va, picture_t *pic, uint8_t **data)
     /* Check the device */
     HRESULT hr = IDirect3DDeviceManager9_TestDevice(sys->devmng, sys->device);
     if (hr == DXVA2_E_NEW_VIDEO_DEVICE) {
+        msg_Warn(va, "New video device detected.");
         if (DxResetVideoDecoder(va))
             return VLC_EGENERIC;
     } else if (FAILED(hr)) {
@@ -462,7 +463,7 @@ static int D3dCreateDeviceManager(vlc_va_t *va)
         return VLC_EGENERIC;
     }
     sys->devmng = devmng;
-    msg_Info(va, "obtained IDirect3DDeviceManager9");
+    msg_Dbg(va, "obtained IDirect3DDeviceManager9");
 
     HRESULT hr = IDirect3DDeviceManager9_ResetDevice(devmng, dx_sys->d3ddev, token);
     if (FAILED(hr)) {

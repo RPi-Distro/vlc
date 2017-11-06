@@ -2,7 +2,7 @@
  * preferences_widgets.cpp : Widgets for preferences displays
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 1fc21a56d9130727aa984c9965b420c1d86fa072 $
+ * $Id: 1321f8618a666c40f08b4c0dd7727292738ded79 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -175,19 +175,19 @@ void InterfacePreviewWidget::setNormalPreview( bool b_minimal )
 
 void InterfacePreviewWidget::setPreview( enum_style e_style )
 {
-    QString pixmapLocationString(":/prefsmenu/");
+    QString pixmapLocationString;
 
     switch( e_style )
     {
     default:
     case COMPLETE:
-        pixmapLocationString += "sample_complete";
+        pixmapLocationString = ":/prefsmenu/sample_complete.png";
         break;
     case MINIMAL:
-        pixmapLocationString += "sample_minimal";
+        pixmapLocationString = ":/prefsmenu/sample_minimal.png";
         break;
     case SKINS:
-        pixmapLocationString += "sample_skins";
+        pixmapLocationString = ":/prefsmenu/sample_skins.png";
         break;
     }
 

@@ -2,7 +2,7 @@
  * VLCFSPanelController.m: macOS fullscreen controls window controller
  *****************************************************************************
  * Copyright (C) 2006-2016 VLC authors and VideoLAN
- * $Id: 5ea384221817071a1777172ecc5ef9dda07659c1 $
+ * $Id: d5594304285cfaa7d9025d621965edd19727e4a2 $
  *
  * Authors: Jérôme Decoodt <djc at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -107,28 +107,28 @@ static NSString *kAssociatedFullscreenRect = @"VLCFullscreenAssociatedWindowRect
     /* Setup translations for buttons */
     setupButton(_playPauseButton,
                 _NS("Play/Pause"),
-                _NS("Click to play or pause the current media."));
+                _NS("Play/Pause the current media"));
     setupButton(_nextButton,
                 _NS("Next"),
-                _NS("Click to go to the next playlist item."));
+                _NS("Go to next item"));
     setupButton(_previousButton,
                 _NS("Previous"),
-                _NS("Click to go to the previous playlist item."));
+                _NS("Go to the previous item"));
     setupButton(_forwardButton,
                 _NS("Forward"),
-                _NS("Click and hold to skip forward through the current media."));
+                _NS("Seek forward"));
     setupButton(_backwardButton,
                 _NS("Backward"),
-                _NS("Click and hold to skip backward through the current media."));
+                _NS("Seek backward"));
     setupButton(_fullscreenButton,
                 _NS("Toggle Fullscreen mode"),
-                _NS("Click to exit fullscreen playback."));
+                _NS("Leave fullscreen mode"));
     setupButton(_volumeSlider,
                 _NS("Volume"),
-                _NS("Drag to adjust the volume."));
+                _NS("Adjust the volume"));
     setupButton(_timeSlider,
                 _NS("Position"),
-                _NS("Drag to adjust the current playback position."));
+                _NS("Adjust the current playback position"));
 
     /* Setup other controls */
     [_volumeSlider setMaxValue:[[VLCCoreInteraction sharedInstance] maxVolume]];

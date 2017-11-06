@@ -2,7 +2,7 @@
  * video.c: transcoding stream output module (video)
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 3e8637ae0aaea82cf0265bb1cd5060033cff7aaf $
+ * $Id: 8de3f80bfc92738aa7d34d75acda2c1d53a43170 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -710,7 +710,7 @@ static void OutputFrame( sout_stream_t *p_stream, picture_t *p_pic, sout_stream_
         /* Overlay subpicture */
         if( p_subpic )
         {
-            if( picture_IsReferenced( p_pic ) && filter_chain_IsEmpty( id->p_f_chain ) )
+            if( filter_chain_IsEmpty( id->p_f_chain ) )
             {
                 /* We can't modify the picture, we need to duplicate it,
                  * in this point the picture is already p_encoder->fmt.in format*/

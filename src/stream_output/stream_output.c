@@ -2,7 +2,7 @@
  * stream_output.c : stream output module
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: a30e66852c80997a1d48e784296558f83d70adf3 $
+ * $Id: 046ea2071fb45b3a61d62ed36042d80bf53d7402 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -852,8 +852,8 @@ sout_stream_t *sout_StreamChainNew(sout_instance_t *p_sout, const char *psz_chai
         free( psz_parser );
         psz_parser = psz_rest_chain;
 
-        vlc_array_append(&cfg, p_cfg);
-        vlc_array_append(&name, psz_name);
+        vlc_array_append_or_abort(&cfg, p_cfg);
+        vlc_array_append_or_abort(&name, psz_name);
     }
 
     size_t i = vlc_array_count(&name);
@@ -870,7 +870,7 @@ sout_stream_t *sout_StreamChainNew(sout_instance_t *p_sout, const char *psz_chai
         if(i == vlc_array_count(&name) - 1 && pp_last)
             *pp_last = p_next;   /* last module created in the chain */
 
-        vlc_array_append(&module, p_next);
+        vlc_array_append_or_abort(&module, p_next);
     }
 
     vlc_array_clear(&name);

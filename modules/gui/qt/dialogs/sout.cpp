@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2007-2009 the VideoLAN team
  *
- * $Id: 339a682e77e18d442e0d9ae8f46dc25fb1dd5ab1 $
+ * $Id: 8958f3270ab5c1d24499d018784ad5dd60c1dbd6 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -64,7 +64,7 @@ SoutDialog::SoutDialog( QWidget *parent, intf_thread_t *_p_intf, const QString& 
     QTabBar* tb = ui.destTab->findChild<QTabBar*>();
     if( tb != NULL ) tb->tabButton(0, QTabBar::RightSide)->hide();
     CONNECT( ui.destTab, tabCloseRequested( int ), this, closeTab( int ) );
-    ui.destTab->setTabIcon( 0, QIcon( ":/buttons/playlist/playlist_add" ) );
+    ui.destTab->setTabIcon( 0, QIcon( ":/buttons/playlist/playlist_add.svg" ) );
 
     ui.destBox->addItem( qtr( "File" ) );
     ui.destBox->addItem( "HTTP" );

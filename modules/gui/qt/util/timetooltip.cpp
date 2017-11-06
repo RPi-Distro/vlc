@@ -1,6 +1,6 @@
 /*****************************************************************************
  * Copyright © 2011-2012 VideoLAN
- * $Id: 0657210f1ac3065b961b814a0c649a22a1b433d1 $
+ * $Id: 23d47b2528273508bd70fb91bc85af6dd4d8e3d9 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -68,7 +68,7 @@ void TimeTooltip::adjustPosition()
 
     // The desired label position is just above the target
     QPoint position( mTarget.x() - size.width() / 2,
-#if defined( Q_OS_WIN ) && HAS_QT5
+#if defined( Q_OS_WIN )
         mTarget.y() - 2 * size.height() - TIP_HEIGHT / 2 );
 #else
         mTarget.y() - size.height() + TIP_HEIGHT / 2 );

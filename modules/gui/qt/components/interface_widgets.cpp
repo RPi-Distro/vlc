@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: ea0b209db35d3c54a34e4e0df5f563b8404d2412 $
+ * $Id: 7c34d13614bce9e2073a235f0805978a2b62da58 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -62,7 +62,7 @@
 # include <QWindow>
 #endif
 
-#if defined(_WIN32) && HAS_QT5
+#if defined(_WIN32)
 #include <QWindow>
 #include <qpa/qplatformnativeinterface.h>
 #endif
@@ -125,6 +125,7 @@ bool VideoWidget::request( struct vout_window_t *p_wnd )
      * in Qt4-X11 changes the WinId of the widget, so we need to create another
      * dummy widget that stays within the reparentable widget. */
     stable = new QWidget();
+    stable->setContextMenuPolicy( Qt::PreventContextMenu );
     QPalette plt = palette();
     plt.setColor( QPalette::Window, Qt::black );
     stable->setPalette( plt );
@@ -198,7 +199,7 @@ QSize VideoWidget::physicalSize() const
         return QSize( x_attributes.width, x_attributes.height );
     }
 #endif
-#if defined(_WIN32) && HAS_QT5
+#if defined(_WIN32)
     HWND hwnd;
     RECT rect;
 
@@ -215,11 +216,9 @@ QSize VideoWidget::physicalSize() const
 #   if HAS_QT56
     /* Android-like scaling */
     current_size *= devicePixelRatioF();
-#   elif HAS_QT54
+#   else
     /* OSX-like scaling */
     current_size *= devicePixelRatio();
-#   else
-#       warning "No HiDPI support"
 #   endif
 
     return current_size;

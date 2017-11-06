@@ -2,7 +2,7 @@
  * VLCLogWindowController.m: Log message window controller
  *****************************************************************************
  * Copyright (C) 2004-2013 VLC authors and VideoLAN
- * $Id: 1f26e1e3bd7a7c80347decd8c4b6a9b77f9d2916 $
+ * $Id: 65005a3e43a1b1e669df88aea83bad4b7a832adb $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *          Pierre d'Herbemont <pdherbemont # videolan org>
@@ -102,16 +102,16 @@ static void MsgCallback(void *data, int type, const vlc_log_t *item, const char 
 
     setupButton(_saveButton,
                 _NS("Save log"),
-                _NS("Click to save the debug log to a file."));
+                _NS("Save the debug log to a file"));
     setupButton(_refreshButton,
                 _NS("Refresh log"),
-                _NS("Click to frefresh the log output."));
+                _NS("Refresh the log output"));
     setupButton(_clearButton,
                 _NS("Clear log"),
-                _NS("Click to clear the log output."));
+                _NS("Clear the log output"));
     setupButton(_toggleDetailsButton,
                 _NS("Toggle details"),
-                _NS("Click to show/hide details about a log message."));
+                _NS("Show/hide details about a log message"));
 
 #undef setupButton
 }

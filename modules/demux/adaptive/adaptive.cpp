@@ -32,6 +32,7 @@
 #include <vlc_plugin.h>
 #include <vlc_demux.h>
 
+#include "http/AuthStorage.hpp"
 #include "playlist/BasePeriod.h"
 #include "xml/DOMParser.h"
 
@@ -47,6 +48,7 @@
 #include "../smooth/SmoothStream.hpp"
 #include "../smooth/playlist/Parser.hpp"
 
+using namespace adaptive::http;
 using namespace adaptive::logic;
 using namespace adaptive::playlist;
 using namespace adaptive::xml;
@@ -126,9 +128,9 @@ vlc_module_end ()
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static PlaylistManager * HandleDash(demux_t *, DOMParser &,
+static PlaylistManager * HandleDash(demux_t *, AuthStorage *auth, DOMParser &,
                                     const std::string &, AbstractAdaptationLogic::LogicType);
-static PlaylistManager * HandleSmooth(demux_t *, DOMParser &,
+static PlaylistManager * HandleSmooth(demux_t *, AuthStorage *auth, DOMParser &,
                                       const std::string &, AbstractAdaptationLogic::LogicType);
 
 /*****************************************************************************
@@ -151,6 +153,7 @@ static int Open(vlc_object_t *p_obj)
     }
 
     PlaylistManager *p_manager = NULL;
+    AuthStorage *authStorage = new AuthStorage(p_obj);
 
     char *psz_logic = var_InheritString(p_obj, "adaptive-logic");
     AbstractAdaptationLogic::LogicType logic = AbstractAdaptationLogic::Default;
@@ -174,15 +177,16 @@ static int Open(vlc_object_t *p_obj)
 
     if(!dashmime && !smoothmime && HLSManager::isHTTPLiveStreaming(p_demux->s))
     {
-        M3U8Parser parser;
+        M3U8Parser parser(authStorage);
         M3U8 *p_playlist = parser.parse(VLC_OBJECT(p_demux),p_demux->s, playlisturl);
         if(!p_playlist)
         {
             msg_Err( p_demux, "Could not parse playlist" );
+            delete authStorage;
             return VLC_EGENERIC;
         }
 
-        p_manager = new (std::nothrow) HLSManager(p_demux, p_playlist,
+        p_manager = new (std::nothrow) HLSManager(p_demux, authStorage, p_playlist,
                                                   new (std::nothrow) HLSStreamFactory, logic);
     }
     else
@@ -191,11 +195,11 @@ static int Open(vlc_object_t *p_obj)
         DOMParser xmlParser; /* Share that xml reader */
         if(dashmime)
         {
-            p_manager = HandleDash(p_demux, xmlParser, playlisturl, logic);
+            p_manager = HandleDash(p_demux, authStorage, xmlParser, playlisturl, logic);
         }
         else if(smoothmime)
         {
-            p_manager = HandleSmooth(p_demux, xmlParser, playlisturl, logic);
+            p_manager = HandleSmooth(p_demux, authStorage, xmlParser, playlisturl, logic);
         }
         else
         {
@@ -211,11 +215,11 @@ static int Open(vlc_object_t *p_obj)
                     {
                         if(DASHManager::isDASH(xmlParser.getRootNode()))
                         {
-                            p_manager = HandleDash(p_demux, xmlParser, playlisturl, logic);
+                            p_manager = HandleDash(p_demux, authStorage, xmlParser, playlisturl, logic);
                         }
                         else if(SmoothManager::isSmoothStreaming(xmlParser.getRootNode()))
                         {
-                            p_manager = HandleSmooth(p_demux, xmlParser, playlisturl, logic);
+                            p_manager = HandleSmooth(p_demux, authStorage, xmlParser, playlisturl, logic);
                         }
                     }
                     vlc_stream_Delete(peekstream);
@@ -224,7 +228,12 @@ static int Open(vlc_object_t *p_obj)
         }
     }
 
-    if(!p_manager || !p_manager->start())
+    if(!p_manager)
+    {
+        delete authStorage;
+        return VLC_EGENERIC;
+    }
+    else if(!p_manager->start())
     {
         delete p_manager;
         return VLC_EGENERIC;
@@ -254,7 +263,8 @@ static void Close(vlc_object_t *p_obj)
 /*****************************************************************************
  *
  *****************************************************************************/
-static PlaylistManager * HandleDash(demux_t *p_demux, DOMParser &xmlParser,
+static PlaylistManager * HandleDash(demux_t *p_demux,
+                                    AuthStorage *auth, DOMParser &xmlParser,
                                     const std::string & playlisturl,
                                     AbstractAdaptationLogic::LogicType logic)
 {
@@ -272,12 +282,13 @@ static PlaylistManager * HandleDash(demux_t *p_demux, DOMParser &xmlParser,
         return NULL;
     }
 
-    return new (std::nothrow) DASHManager( p_demux, p_playlist,
+    return new (std::nothrow) DASHManager( p_demux, auth, p_playlist,
                                  new (std::nothrow) DASHStreamFactory,
                                  logic );
 }
 
-static PlaylistManager * HandleSmooth(demux_t *p_demux, DOMParser &xmlParser,
+static PlaylistManager * HandleSmooth(demux_t *p_demux,
+                                      AuthStorage *auth, DOMParser &xmlParser,
                                     const std::string & playlisturl,
                                     AbstractAdaptationLogic::LogicType logic)
 {
@@ -295,7 +306,7 @@ static PlaylistManager * HandleSmooth(demux_t *p_demux, DOMParser &xmlParser,
         return NULL;
     }
 
-    return new (std::nothrow) SmoothManager( p_demux, p_playlist,
+    return new (std::nothrow) SmoothManager( p_demux, auth, p_playlist,
                                  new (std::nothrow) SmoothStreamFactory,
                                  logic );
 }

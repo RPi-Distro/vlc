@@ -31,7 +31,9 @@ namespace hls
     class HLSManager : public PlaylistManager
     {
         public:
-            HLSManager( demux_t *, playlist::M3U8 *,
+            HLSManager( demux_t *,
+                        AuthStorage *,
+                        playlist::M3U8 *,
                         AbstractStreamFactory *,
                         logic::AbstractAdaptationLogic::LogicType type );
             virtual ~HLSManager();

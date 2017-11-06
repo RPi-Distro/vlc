@@ -2,7 +2,7 @@
  * toolbar.hpp : ToolbarEdit dialogs
  ****************************************************************************
  * Copyright (C) 2008-2011 the VideoLAN team
- * $Id: c2073d8b913c06605e56591a4491d49f33731470 $
+ * $Id: 520d760557696e4c4e24b06c8eac46f01e7e526d $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -53,7 +53,7 @@ class PreviewWidget : public QWidget
     Q_OBJECT
 
 public:
-    PreviewWidget( QWidget *, QWidget *, QWidget * );
+    PreviewWidget( QWidget *, QWidget *, QWidget *, bool );
 
 public slots:
     void setBarsTopPosition( int b );

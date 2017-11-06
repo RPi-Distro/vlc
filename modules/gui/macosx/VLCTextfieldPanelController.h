@@ -2,7 +2,7 @@
  * VLCTextfieldPanelController.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012 Felix Paul Kühne
- * $Id: f21d5e33829549b2d2226376e9b2797eee746e97 $
+ * $Id: 9175439442c5ddcbe140d49b9922f46e4e65bbea $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -31,10 +31,10 @@
 @property (weak) IBOutlet NSButton *cancelButton;
 @property (weak) IBOutlet NSButton *okButton;
 
-@property (readwrite, assign) NSString *titleString;
-@property (readwrite, assign) NSString *subTitleString;
-@property (readwrite, assign) NSString *okButtonString;
-@property (readwrite, assign) NSString *cancelButtonString;
+@property (readwrite) NSString *titleString;
+@property (readwrite) NSString *subTitleString;
+@property (readwrite) NSString *okButtonString;
+@property (readwrite) NSString *cancelButtonString;
 
 /**
  * Completion handler for textfield panel

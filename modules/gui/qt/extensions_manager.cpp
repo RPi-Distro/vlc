@@ -2,7 +2,7 @@
  * extensions_manager.cpp: Extensions manager for Qt
  ****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 72a687a8c2a66e5e716712c694ae21f6b7a96d9c $
+ * $Id: aecff87787f44d74c5b9e47a38c2913bde935a25 $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -193,7 +193,7 @@ void ExtensionsManager::menu( QMenu *current )
             }
 
             submenu->addSeparator();
-            action = submenu->addAction( QIcon( ":/pixmaps/clear" ),
+            action = submenu->addAction( QIcon( ":/toolbar/clear.svg" ),
                                          qtr( "Deactivate" ) );
             menuMapper->setMapping( action, MENU_MAP( 0, i_ext ) );
             CONNECT( action, triggered(), menuMapper, map() );

@@ -2,7 +2,7 @@
  * dialogs_provider.cpp : Dialog Provider
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 495cd5497250b3c575612f7bee1def3d3876af27 $
+ * $Id: 92f1e17a3e3efcaeb186d66fa03e293f1201f192 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -121,17 +121,10 @@ QStringList DialogsProvider::getOpenURL( QWidget *parent,
                                          QString *selectedFilter )
 {
     QStringList res;
-
-#if HAS_QT5
     QList<QUrl> urls = QFileDialog::getOpenFileUrls( parent, caption, QUrl::fromUserInput( dir ), filter, selectedFilter );
 
     foreach( const QUrl& url, urls )
         res.append( url.toEncoded() );
-#else
-    QStringList files = QFileDialog::getOpenFileNames( parent, caption, dir, filter, selectedFilter );
-    foreach ( const QString& file, files )
-        res.append( toURI( toNativeSeparators( file ) ) );
-#endif
 
     return res;
 }
@@ -195,7 +188,12 @@ void DialogsProvider::customEvent( QEvent *event )
            delete popupMenu; popupMenu = NULL;
            bool show = (de->i_arg != 0);
            if( show )
+           {
+               //popping a QMenu prevents mouse release events to be received,
+               //this ensures the coherency of the vout mouse state.
+               emit releaseMouseEvents();
                popupMenu = VLCMenuBar::PopupMenu( p_intf, show );
+           }
            break;
         }
         case INTF_DIALOG_AUDIOPOPUPMENU:

@@ -2,7 +2,7 @@
  * vlc_fourcc.h: Definition of various FOURCC and helpers
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 26dd46a63f5e0f9e216d31e05828cb00c3a40446 $
+ * $Id: 5ec345f43a237b6ddcceeca1bed08d32ad65d326 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ com>
  *
@@ -539,9 +539,11 @@
 #define VLC_CODEC_EBU_STL   VLC_FOURCC('S','T','L',' ')
 #define VLC_CODEC_SCTE_18   VLC_FOURCC('S','C','1','8')
 #define VLC_CODEC_SCTE_27   VLC_FOURCC('S','C','2','7')
-/* EIA/CEA-608 */
+/* EIA/CEA-608/708 */
 #define VLC_CODEC_CEA608    VLC_FOURCC('c','6','0','8')
+#define VLC_CODEC_CEA708    VLC_FOURCC('c','7','0','8')
 #define VLC_CODEC_TTML      VLC_FOURCC('T','T','M','L')
+#define VLC_CODEC_WEBVTT    VLC_FOURCC('w','v','t','t')
 
 /* XYZ colorspace 12 bits packed in 16 bits, organisation |XXX0|YYY0|ZZZ0| */
 #define VLC_CODEC_XYZ12     VLC_FOURCC('X','Y','1','2')

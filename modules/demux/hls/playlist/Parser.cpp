@@ -45,8 +45,9 @@ using namespace adaptive;
 using namespace adaptive::playlist;
 using namespace hls::playlist;
 
-M3U8Parser::M3U8Parser()
+M3U8Parser::M3U8Parser( AuthStorage *auth_ )
 {
+    auth = auth_;
 }
 
 M3U8Parser::~M3U8Parser   ()
@@ -91,6 +92,10 @@ void M3U8Parser::setFormatFromExtension(Representation *rep, const std::string &
         else if(extension == "mp4" || extension == "m4s" || extension == "mov" || extension == "m4v")
         {
             rep->streamFormat = StreamFormat(StreamFormat::MP4);
+        }
+        else if(extension == "vtt" || extension == "wvtt" || extension == "webvtt")
+        {
+            rep->streamFormat = StreamFormat(StreamFormat::WEBVTT);
         }
         else
         {
@@ -160,7 +165,7 @@ void M3U8Parser::createAndFillRepresentation(vlc_object_t *p_obj, BaseAdaptation
 
 bool M3U8Parser::appendSegmentsFromPlaylistURI(vlc_object_t *p_obj, Representation *rep)
 {
-    block_t *p_block = Retrieve::HTTP(p_obj, rep->getPlaylistUrl().toString());
+    block_t *p_block = Retrieve::HTTP(p_obj, auth, rep->getPlaylistUrl().toString());
     if(p_block)
     {
         stream_t *substream = vlc_stream_MemoryNew(p_obj, p_block->p_buffer, p_block->i_buffer, true);
@@ -377,14 +382,15 @@ void M3U8Parser::parseSegments(vlc_object_t *, Representation *rep, const std::l
 M3U8 * M3U8Parser::parse(vlc_object_t *p_object, stream_t *p_stream, const std::string &playlisturl)
 {
     char *psz_line = vlc_stream_ReadLine(p_stream);
-    if(!psz_line || strcmp(psz_line, "#EXTM3U"))
+    if(!psz_line || strncmp(psz_line, "#EXTM3U", 7) ||
+       (psz_line[7] && !std::isspace(psz_line[7])))
     {
         free(psz_line);
         return NULL;
     }
     free(psz_line);
 
-    M3U8 *playlist = new (std::nothrow) M3U8(p_object);
+    M3U8 *playlist = new (std::nothrow) M3U8(p_object, auth);
     if(!playlist)
         return NULL;
 
@@ -476,7 +482,8 @@ M3U8 * M3U8Parser::parse(vlc_object_t *p_object, stream_t *p_stream, const std::
 
                 /* Subtitles unsupported for now */
                 if(pair.second->getAttributeByName("TYPE")->value != "AUDIO" &&
-                   pair.second->getAttributeByName("TYPE")->value != "VIDEO")
+                   pair.second->getAttributeByName("TYPE")->value != "VIDEO" &&
+                   pair.second->getAttributeByName("TYPE")->value != "SUBTITLES" )
                 {
                     rep->streamFormat = StreamFormat(StreamFormat::UNSUPPORTED);
                 }

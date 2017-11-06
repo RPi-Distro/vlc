@@ -4,7 +4,7 @@
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
  * Copyright (C) 2015 Steve Lhomme
- * $Id: e35c6856e2e2235b99fea8ad22b9c90a8b627101 $
+ * $Id: 4962aa7b5ea3bfb4e9660b96535a592a91995d04 $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -158,6 +158,7 @@ DEFINE_GUID(DXVA_ModeH263_F,                        0x1b81be08, 0xa0c7, 0x11d3, 
 DEFINE_GUID(DXVA_ModeVP8_VLD,                       0x90b899ea, 0x3a62, 0x4705, 0x88, 0xb3, 0x8d, 0xf0, 0x4b, 0x27, 0x44, 0xe7);
 DEFINE_GUID(DXVA_ModeVP9_VLD_Profile0,              0x463707f8, 0xa1d0, 0x4585, 0x87, 0x6d, 0x83, 0xaa, 0x6d, 0x60, 0xb8, 0x9e);
 DEFINE_GUID(DXVA_ModeVP9_VLD_10bit_Profile2,        0xa4c749ef, 0x6ecf, 0x48aa, 0x84, 0x48, 0x50, 0xa7, 0xa1, 0x16, 0x5f, 0xf7);
+DEFINE_GUID(DXVA_ModeVP9_VLD_Intel,                 0x76988a52, 0xdf13, 0x419a, 0x8e, 0x64, 0xff, 0xcf, 0x4a, 0x33, 0x6c, 0xf5);
 
 typedef struct {
     const char   *name;
@@ -261,6 +262,7 @@ static const directx_va_mode_t DXVA_MODES[] = {
     { "VP9 profile 0",                                                                &DXVA_ModeVP9_VLD_Profile0,             0, NULL },
 #endif
     { "VP9 profile 2",                                                                &DXVA_ModeVP9_VLD_10bit_Profile2,       0, NULL },
+    { "VP9 profile Intel",                                                            &DXVA_ModeVP9_VLD_Intel,                0, NULL },
 
     { NULL, NULL, 0, NULL }
 };
@@ -299,7 +301,8 @@ int directx_va_Setup(vlc_va_t *va, directx_sys_t *dx_sys, const AVCodecContext *
         /* decoding MPEG-2 requires additional alignment on some Intel GPUs,
            but it causes issues for H.264 on certain AMD GPUs..... */
         surface_alignment = 32;
-        surface_count += 2 + 1; /* 1 for extra buffer for deinterlacing */
+        surface_count += 2 + 2; /* 2 for deinterlacing which can hold up to 2
+                                 * pictures from the decoder for smoothing */
         break;
     case AV_CODEC_ID_HEVC:
         /* the HEVC DXVA2 spec asks for 128 pixel aligned surfaces to ensure

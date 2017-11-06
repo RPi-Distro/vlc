@@ -2,7 +2,7 @@
  * extended_panels.cpp : Extended controls panels
  ****************************************************************************
  * Copyright (C) 2006-2013 the VideoLAN team
- * $Id: 82dfe9c3a98b2c8ef6b723c3d9432ca14d5805d7 $
+ * $Id: 6136718f785f14f34bc26df35a62daca5368a4e5 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea .t videolan d@t org>
@@ -42,6 +42,8 @@
 #include <QGraphicsScene>
 #include <QPainter>
 #include <QRegExp>
+#include <QApplication>
+#include <QScreen>
 
 #include "components/extended_panels.hpp"
 #include "dialogs/preferences.hpp"
@@ -1155,7 +1157,12 @@ void Equalizer::build()
     for( i = 0 ; i < NB_PRESETS ; i ++ )
     {
         QGraphicsScene scene;
+#if HAS_QT56
+        qreal f_ratio = QApplication::primaryScreen()->devicePixelRatio();
+        QPixmap icon( 40 * f_ratio, 40 * f_ratio );
+#else
         QPixmap icon( 40, 40 );
+#endif
         icon.fill( Qt::transparent );
         QPainter painter( &icon );
         for ( int j = 0; j < eqz_preset_10b[i].i_band; j++ )

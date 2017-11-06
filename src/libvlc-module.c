@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the core (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 VLC authors and VideoLAN
- * $Id: 15939f4a19220318c0cf768209b1114690b7d039 $
+ * $Id: e3e43296bdf5f687d0a35493ec95e08b413f3d42 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -610,6 +610,11 @@ static const char *const ppsz_clock_descriptions[] =
 #define INPUT_SUBTRACK_ID_TEXT N_("Subtitle track ID")
 #define INPUT_SUBTRACK_ID_LONGTEXT N_( \
     "Stream ID of the subtitle track to use.")
+
+#define INPUT_CAPTIONS_TEXT N_(N_("Closed Captions decoder"))
+#define INPUT_CAPTIONS_LONGTEXT N_("Preferred closed captions decoder")
+static const int pi_captions[] = { 608, 708 };
+static const char *const ppsz_captions[] = { N_("EIA/CEA 608"), N_("CEA 708") };
 
 #define INPUT_PREFERREDRESOLUTION_TEXT N_("Preferred video resolution")
 #define INPUT_PREFERREDRESOLUTION_LONGTEXT N_( \
@@ -1730,6 +1735,10 @@ vlc_module_begin ()
         change_safe ()
     add_integer( "sub-track-id", -1,
                  INPUT_SUBTRACK_ID_TEXT, INPUT_SUBTRACK_ID_LONGTEXT, true )
+        change_safe ()
+    add_integer( "captions", 608,
+                 INPUT_CAPTIONS_TEXT, INPUT_CAPTIONS_LONGTEXT, true )
+        change_integer_list( pi_captions, ppsz_captions )
         change_safe ()
     add_integer( "preferred-resolution", -1, INPUT_PREFERREDRESOLUTION_TEXT,
                  INPUT_PREFERREDRESOLUTION_LONGTEXT, false )

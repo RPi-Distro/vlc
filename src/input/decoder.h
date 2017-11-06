@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1998-2008 VLC authors and VideoLAN
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 226ecde86236ff5acd113faef6242c28bee664e1 $
+ * $Id: ccfe8ecd05d88d892ccc8b11f8c566874a3a48a7 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -66,19 +66,18 @@ bool input_DecoderIsEmpty( decoder_t * );
 /**
  * This function activates the request closed caption channel.
  */
-int input_DecoderSetCcState( decoder_t *, bool b_decode, int i_channel );
+int input_DecoderSetCcState( decoder_t *, vlc_fourcc_t, int i_channel, bool b_decode );
 
 /**
  * This function returns an error if the requested channel does not exist and
  * set pb_decode to the channel status(active or not) otherwise.
  */
-int input_DecoderGetCcState( decoder_t *, bool *pb_decode, int i_channel );
+int input_DecoderGetCcState( decoder_t *, vlc_fourcc_t, int i_channel, bool *pb_decode );
 
 /**
- * This function set each pb_present entry to true if the corresponding channel
- * exists or false otherwise.
+ * This function get cc channels descriptions
  */
-void input_DecoderIsCcPresent( decoder_t *, bool pb_present[4] );
+void input_DecoderGetCcDesc( decoder_t *, decoder_cc_desc_t * );
 
 /**
  * This function force the display of the next picture and fills the stream

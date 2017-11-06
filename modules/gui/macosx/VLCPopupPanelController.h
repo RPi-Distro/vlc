@@ -2,7 +2,7 @@
  * VLCPopupPanelController.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012 Felix Paul Kühne
- * $Id: cc631f39f1eebce1c9395477b922d63e25792c90 $
+ * $Id: a4c4c48169a98f29c5da0da63094d1ab6b9ffa27 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -31,11 +31,11 @@
 @property (weak) IBOutlet NSButton *cancelButton;
 @property (weak) IBOutlet NSButton *okButton;
 
-@property (readwrite, assign) NSString *titleString;
-@property (readwrite, assign) NSString *subTitleString;
-@property (readwrite, assign) NSString *okButtonString;
-@property (readwrite, assign) NSString *cancelButtonString;
-@property (readwrite, assign) NSArray *popupButtonContent;
+@property (readwrite) NSString *titleString;
+@property (readwrite) NSString *subTitleString;
+@property (readwrite) NSString *okButtonString;
+@property (readwrite) NSString *cancelButtonString;
+@property (readwrite) NSArray *popupButtonContent;
 
 /**
  * Completion handler for popup panel

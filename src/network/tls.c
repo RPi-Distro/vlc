@@ -2,7 +2,7 @@
  * tls.c
  *****************************************************************************
  * Copyright © 2004-2016 Rémi Denis-Courmont
- * $Id: 1fae1d0e0f62e506266cb72a7798a1782ad54feb $
+ * $Id: 56e04d6ce75436775c9a91a3d3004a53a312037d $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -187,9 +187,10 @@ vlc_tls_t *vlc_tls_ClientSessionCreate(vlc_tls_creds_t *crd, vlc_tls_t *sock,
     vlc_cleanup_push (cleanup_tls, session);
     while ((val = crd->handshake(crd, session, host, service, alp)) != 0)
     {
-        if (val < 0)
+        if (val < 0 || vlc_killed() )
         {
-            msg_Err(crd, "TLS session handshake error");
+            if (val < 0)
+                msg_Err(crd, "TLS session handshake error");
 error:
             vlc_tls_SessionDelete (session);
             session = NULL;
@@ -204,7 +205,7 @@ error:
         ufd[0] .events = (val == 1) ? POLLIN : POLLOUT;
 
         vlc_restorecancel(canc);
-        val = poll (ufd, 1, (deadline - now) / 1000);
+        val = vlc_poll_i11e(ufd, 1, (deadline - now) / 1000);
         canc = vlc_savecancel();
         if (val == 0)
         {

@@ -2,7 +2,7 @@
  * vlc_picture.h: picture definitions
  *****************************************************************************
  * Copyright (C) 1999 - 2009 VLC authors and VideoLAN
- * $Id: e25374634f1a00f8473750528e84c8fbfe2c1187 $
+ * $Id: 74f156fbbd6e6a4479754c0e79fbd5374a4a1e2e $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -159,14 +159,6 @@ VLC_API picture_t *picture_Hold( picture_t *p_picture );
 VLC_API void picture_Release( picture_t *p_picture );
 
 /**
- * This function will return true if you are not the only owner of the
- * picture.
- *
- * It is only valid if it is created using picture_New.
- */
-VLC_API bool picture_IsReferenced( picture_t *p_picture );
-
-/**
  * This function will copy all picture dynamic properties.
  */
 VLC_API void picture_CopyProperties( picture_t *p_dst, const picture_t *p_src );
@@ -195,6 +187,17 @@ VLC_API void plane_CopyPixels( plane_t *p_dst, const plane_t *p_src );
  * \param p_src pointer to the source picture.
  */
 VLC_API void picture_Copy( picture_t *p_dst, const picture_t *p_src );
+
+/**
+ * Perform a shallow picture copy
+ *
+ * This function makes a shallow copy of an existing picture. The same planes
+ * and resources will be used, and the cloned picture reference count will be
+ * incremented.
+ *
+ * \return A clone picture on success, NULL on error.
+ */
+VLC_API picture_t *picture_Clone(picture_t *pic);
 
 /**
  * This function will export a picture to an encoded bitstream.

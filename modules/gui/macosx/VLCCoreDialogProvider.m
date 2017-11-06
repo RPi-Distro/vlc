@@ -2,7 +2,7 @@
  * VLCCoreDialogProvider.m: Mac OS X Core Dialogs
  *****************************************************************************
  * Copyright (C) 2005-2016 VLC authors and VideoLAN
- * $Id: d2095d2048a9399716340021d83c5c983ed2751f $
+ * $Id: 41f310384f86d96064334471b051ae7b5113ba06 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -261,17 +261,17 @@ static void updateProgressCallback(void *p_data,
 
     NSInteger returnValue = [alert runModal];
     switch (returnValue) {
+        case NSAlertDefaultReturn:
+            vlc_dialog_id_post_action([[dialogData objectAtIndex:0] pointerValue], 1);
+            break;
+
         case NSAlertAlternateReturn:
             vlc_dialog_id_post_action([[dialogData objectAtIndex:0] pointerValue], 2);
             break;
 
         case NSAlertOtherReturn:
-            vlc_dialog_id_post_action([[dialogData objectAtIndex:0] pointerValue], 3);
-            break;
-
         default:
-            vlc_dialog_id_post_action([[dialogData objectAtIndex:0] pointerValue], 1);
-            break;
+            vlc_dialog_id_dismiss([[dialogData objectAtIndex:0] pointerValue]);
     }
 
 }

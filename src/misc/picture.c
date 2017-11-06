@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2000-2010 VLC authors and VideoLAN
  * Copyright (C) 2009-2010 Laurent Aimar
- * $Id: 59d0aaa3594b05fa8897c3d71d78c321eb8c1836 $
+ * $Id: c14e600d3fcf3d78886546d8565a3c4f99edae60 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -308,13 +308,6 @@ void picture_Release( picture_t *p_picture )
     priv->gc.destroy( p_picture );
 }
 
-bool picture_IsReferenced( picture_t *p_picture )
-{
-    picture_priv_t *priv = (picture_priv_t *)p_picture;
-
-    return atomic_load( &priv->gc.refs ) > 1;
-}
-
 /*****************************************************************************
  *
  *****************************************************************************/
@@ -381,6 +374,38 @@ void picture_Copy( picture_t *p_dst, const picture_t *p_src )
     picture_CopyProperties( p_dst, p_src );
 }
 
+static void picture_DestroyClone(picture_t *clone)
+{
+    picture_t *picture = ((picture_priv_t *)clone)->gc.opaque;
+
+    free(clone);
+    picture_Release(picture);
+}
+
+picture_t *picture_Clone(picture_t *picture)
+{
+    /* TODO: merge common code with picture_pool_ClonePicture(). */
+    picture_resource_t res = {
+        .p_sys = picture->p_sys,
+        .pf_destroy = picture_DestroyClone,
+    };
+
+    for (int i = 0; i < picture->i_planes; i++) {
+        res.p[i].p_pixels = picture->p[i].p_pixels;
+        res.p[i].i_lines = picture->p[i].i_lines;
+        res.p[i].i_pitch = picture->p[i].i_pitch;
+    }
+
+    picture_t *clone = picture_NewFromResource(&picture->format, &res);
+    if (likely(clone != NULL)) {
+        ((picture_priv_t *)clone)->gc.opaque = picture;
+        picture_Hold(picture);
+
+        if (picture->context != NULL)
+            clone->context = picture->context->copy(picture->context);
+    }
+    return clone;
+}
 
 /*****************************************************************************
  *

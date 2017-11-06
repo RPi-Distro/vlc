@@ -2,7 +2,7 @@
  * actions_manager.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright © 2009-2014 VideoLAN and VLC authors
- * $Id: 313b51ca4be80560946d992110e578c8eb8797e7 $
+ * $Id: d6cbf11792fff44b748edafbb800ba697a0f601e $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -239,7 +239,7 @@ void ActionsManager::renderer_event_item_added( vlc_renderer_discovery_t*,
             return; /* we already have this item */
     }
 
-    QAction *action = new QAction( vlc_renderer_item_flags(p_item) & VLC_RENDERER_CAN_VIDEO ? QIcon( ":/sidebar/movie" ) : QIcon( ":/sidebar/music" ),
+    QAction *action = new QAction( vlc_renderer_item_flags(p_item) & VLC_RENDERER_CAN_VIDEO ? QIcon( ":/sidebar/movie.svg" ) : QIcon( ":/sidebar/music.svg" ),
                                    vlc_renderer_item_name(p_item), VLCMenuBar::rendererMenu );
     action->setCheckable(true);
 

@@ -2,7 +2,7 @@
  * video.c: video decoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: e1457154b95e1d3528180345e646c0a3fe8bff08 $
+ * $Id: 4dee8dd7fdcfee384c4d68fd77726a31b2828e51 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -532,7 +532,6 @@ int InitVideoDec( vlc_object_t *obj )
     /* Always use our get_buffer wrapper so we can calculate the
      * PTS correctly */
     p_context->get_buffer2 = lavc_GetFrame;
-    p_context->refcounted_frames = true;
     p_context->opaque = p_dec;
 
     int i_thread_count = var_InheritInteger( p_dec, "avcodec-threads" );
@@ -543,9 +542,9 @@ int InitVideoDec( vlc_object_t *obj )
             i_thread_count++;
 
         //FIXME: take in count the decoding time
-        i_thread_count = __MIN( i_thread_count, p_codec->id == AV_CODEC_ID_HEVC ? 6 : 4 );
+        i_thread_count = __MIN( i_thread_count, p_codec->id == AV_CODEC_ID_HEVC ? 12 : 6 );
     }
-    i_thread_count = __MIN( i_thread_count, 16 );
+    i_thread_count = __MIN( i_thread_count, p_codec->id == AV_CODEC_ID_HEVC ? 32 : 16 );
     msg_Dbg( p_dec, "allowing %d thread(s) for decoding", i_thread_count );
     p_context->thread_count = i_thread_count;
     p_context->thread_safe_callbacks = true;
@@ -767,7 +766,7 @@ static void update_late_frame_count( decoder_t *p_dec, block_t *p_block, mtime_t
 }
 
 
-static void DecodeSidedata( decoder_t *p_dec, const AVFrame *frame, picture_t *p_pic )
+static int DecodeSidedata( decoder_t *p_dec, const AVFrame *frame, picture_t *p_pic )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     bool format_changed = false;
@@ -847,8 +846,8 @@ static void DecodeSidedata( decoder_t *p_dec, const AVFrame *frame, picture_t *p
     }
 #endif
 
-    if (format_changed)
-        decoder_UpdateVideoFormat( p_dec );
+    if (format_changed && decoder_UpdateVideoFormat( p_dec ))
+        return -1;
 
     const AVFrameSideData *p_avcc = av_frame_get_side_data( frame, AV_FRAME_DATA_A53_CC );
     if( p_avcc )
@@ -864,11 +863,16 @@ static void DecodeSidedata( decoder_t *p_dec, const AVFrame *frame, picture_t *p
                     p_cc->i_dts = p_cc->i_pts = p_pic->date;
                 else
                     p_cc->i_pts = p_cc->i_dts;
-                decoder_QueueCc( p_dec, p_cc, p_sys->cc.pb_present, 4 );
+                decoder_cc_desc_t desc;
+                desc.i_608_channels = p_sys->cc.i_608channels;
+                desc.i_708_channels = p_sys->cc.i_708channels;
+                desc.i_reorder_depth = 4;
+                decoder_QueueCc( p_dec, p_cc, &desc );
             }
             cc_Flush( &p_sys->cc );
         }
     }
+    return 0;
 }
 
 /*****************************************************************************
@@ -1163,7 +1167,17 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block, bool *error
         }
         else
         {
-            picture_Hold( p_pic );
+            /* Some codecs can return the same frame multiple times. By the
+             * time that the same frame is returned a second time, it will be
+             * too late to clone the underlying picture. So clone proactively.
+             * A single picture CANNOT be queued multiple times.
+             */
+            p_pic = picture_Clone( p_pic );
+            if( unlikely(p_pic == NULL) )
+            {
+                av_frame_free(&frame);
+                break;
+            }
         }
 
         if( !p_dec->fmt_in.video.i_sar_num || !p_dec->fmt_in.video.i_sar_den )
@@ -1188,7 +1202,8 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block, bool *error
         p_pic->b_progressive = !frame->interlaced_frame;
         p_pic->b_top_field_first = frame->top_field_first;
 
-        DecodeSidedata( p_dec, frame, p_pic );
+        if (DecodeSidedata(p_dec, frame, p_pic))
+            i_pts = VLC_TS_INVALID;
 
         av_frame_free(&frame);
 
@@ -1479,13 +1494,12 @@ static enum PixelFormat ffmpeg_GetFormat( AVCodecContext *p_context,
     decoder_t *p_dec = p_context->opaque;
     decoder_sys_t *p_sys = p_dec->p_sys;
     video_format_t fmt;
-    size_t i;
 
     /* Enumerate available formats */
     enum PixelFormat swfmt = avcodec_default_get_format(p_context, pi_fmt);
     bool can_hwaccel = false;
 
-    for( i = 0; pi_fmt[i] != AV_PIX_FMT_NONE; i++ )
+    for (size_t i = 0; pi_fmt[i] != AV_PIX_FMT_NONE; i++)
     {
         const AVPixFmtDescriptor *dsc = av_pix_fmt_desc_get(pi_fmt[i]);
         if (dsc == NULL)
@@ -1498,8 +1512,10 @@ static enum PixelFormat ffmpeg_GetFormat( AVCodecContext *p_context,
             can_hwaccel = true;
     }
 #if defined(_WIN32) && LIBAVUTIL_VERSION_CHECK(54, 13, 1, 24, 100)
-    enum PixelFormat p_fmts[i+1];
-    if (i > 1 && pi_fmt[0] == AV_PIX_FMT_DXVA2_VLD && pi_fmt[1] == AV_PIX_FMT_D3D11VA_VLD)
+    size_t count;
+    for (count = 0; pi_fmt[count] != AV_PIX_FMT_NONE; count++);
+    enum PixelFormat p_fmts[count + 1];
+    if (pi_fmt[0] == AV_PIX_FMT_DXVA2_VLD && pi_fmt[1] == AV_PIX_FMT_D3D11VA_VLD)
     {
         /* favor D3D11VA over DXVA2 as the order will decide which vout will be
          * used */

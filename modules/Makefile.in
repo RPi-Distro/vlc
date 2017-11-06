@@ -816,6 +816,7 @@ am_libadaptive_plugin_la_OBJECTS = demux/adaptive/playlist/libadaptive_plugin_la
 	demux/adaptive/logic/libadaptive_plugin_la-RateBasedAdaptationLogic.lo \
 	demux/adaptive/logic/libadaptive_plugin_la-Representationselectors.lo \
 	demux/adaptive/mp4/libadaptive_plugin_la-AtomsReader.lo \
+	demux/adaptive/http/libadaptive_plugin_la-AuthStorage.lo \
 	demux/adaptive/http/libadaptive_plugin_la-BytesRange.lo \
 	demux/adaptive/http/libadaptive_plugin_la-Chunk.lo \
 	demux/adaptive/http/libadaptive_plugin_la-ConnectionParams.lo \
@@ -1197,16 +1198,19 @@ libcaf_plugin_la_OBJECTS = $(am_libcaf_plugin_la_OBJECTS)
 libcanvas_plugin_la_LIBADD =
 am_libcanvas_plugin_la_OBJECTS = video_filter/canvas.lo
 libcanvas_plugin_la_OBJECTS = $(am_libcanvas_plugin_la_OBJECTS)
-libcaopengllayer_plugin_la_LIBADD =
+am__DEPENDENCIES_6 = $(am__DEPENDENCIES_1)
+@HAVE_OSX_TRUE@libcaopengllayer_plugin_la_DEPENDENCIES =  \
+@HAVE_OSX_TRUE@	$(am__DEPENDENCIES_6)
 am__libcaopengllayer_plugin_la_SOURCES_DIST =  \
 	video_output/caopengllayer.m video_output/opengl/vout_helper.c \
 	video_output/opengl/vout_helper.h \
 	video_output/opengl/converter.h video_output/opengl/internal.h \
 	video_output/opengl/fragment_shaders.c \
 	video_output/opengl/converter_sw.c
-am__objects_8 = video_output/opengl/vout_helper.lo \
-	video_output/opengl/fragment_shaders.lo \
-	video_output/opengl/converter_sw.lo
+am__objects_8 =  \
+	video_output/opengl/libcaopengllayer_plugin_la-vout_helper.lo \
+	video_output/opengl/libcaopengllayer_plugin_la-fragment_shaders.lo \
+	video_output/opengl/libcaopengllayer_plugin_la-converter_sw.lo
 @HAVE_OSX_TRUE@am_libcaopengllayer_plugin_la_OBJECTS =  \
 @HAVE_OSX_TRUE@	video_output/caopengllayer.lo $(am__objects_8)
 libcaopengllayer_plugin_la_OBJECTS =  \
@@ -1217,7 +1221,7 @@ libcaopengllayer_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) \
 	$(libcaopengllayer_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
 @HAVE_OSX_TRUE@am_libcaopengllayer_plugin_la_rpath = -rpath $(voutdir)
 libcc_plugin_la_LIBADD =
-am_libcc_plugin_la_OBJECTS = codec/cc.lo
+am_libcc_plugin_la_OBJECTS = codec/cc.lo codec/cea708.lo
 libcc_plugin_la_OBJECTS = $(am_libcc_plugin_la_OBJECTS)
 libcdda_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -1374,10 +1378,10 @@ libdca_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(libdca_plugin_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
-@HAVE_ASDCP_TRUE@@HAVE_GCRYPT_TRUE@am__DEPENDENCIES_6 =  \
+@HAVE_ASDCP_TRUE@@HAVE_GCRYPT_TRUE@am__DEPENDENCIES_7 =  \
 @HAVE_ASDCP_TRUE@@HAVE_GCRYPT_TRUE@	$(am__DEPENDENCIES_1)
 @HAVE_ASDCP_TRUE@libdcp_plugin_la_DEPENDENCIES =  \
-@HAVE_ASDCP_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_6)
+@HAVE_ASDCP_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_7)
 am_libdcp_plugin_la_OBJECTS = access/dcp/libdcp_plugin_la-dcp.lo \
 	access/dcp/libdcp_plugin_la-dcpparser.lo \
 	access/dcp/libdcp_plugin_la-dcpdecrypt.lo
@@ -1591,9 +1595,9 @@ libdirectsound_plugin_la_OBJECTS =  \
 	$(am_libdirectsound_plugin_la_OBJECTS)
 @HAVE_WIN32_DESKTOP_TRUE@am_libdirectsound_plugin_la_rpath = -rpath \
 @HAVE_WIN32_DESKTOP_TRUE@	$(aoutdir)
-@HAVE_WIN32_TRUE@am__DEPENDENCIES_7 = $(am__DEPENDENCIES_1)
+@HAVE_WIN32_TRUE@am__DEPENDENCIES_8 = $(am__DEPENDENCIES_1)
 libdmo_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_7)
+	$(am__DEPENDENCIES_8)
 am_libdmo_plugin_la_OBJECTS = codec/dmo/dmo.lo codec/dmo/buffer.lo
 libdmo_plugin_la_OBJECTS = $(am_libdmo_plugin_la_OBJECTS)
 @HAVE_WIN32_TRUE@am_libdmo_plugin_la_rpath = -rpath $(codecdir)
@@ -1873,12 +1877,12 @@ libfolder_plugin_la_OBJECTS = $(am_libfolder_plugin_la_OBJECTS)
 libfps_plugin_la_LIBADD =
 am_libfps_plugin_la_OBJECTS = video_filter/fps.lo
 libfps_plugin_la_OBJECTS = $(am_libfps_plugin_la_OBJECTS)
-@HAVE_FRIBIDI_TRUE@am__DEPENDENCIES_8 = $(am__DEPENDENCIES_1)
-@HAVE_HARFBUZZ_TRUE@am__DEPENDENCIES_9 = $(am__DEPENDENCIES_1)
+@HAVE_FRIBIDI_TRUE@am__DEPENDENCIES_9 = $(am__DEPENDENCIES_1)
+@HAVE_HARFBUZZ_TRUE@am__DEPENDENCIES_10 = $(am__DEPENDENCIES_1)
 libfreetype_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_8) \
-	$(am__DEPENDENCIES_9) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_9) \
+	$(am__DEPENDENCIES_10) $(am__DEPENDENCIES_1)
 am__libfreetype_plugin_la_SOURCES_DIST =  \
 	text_renderer/freetype/platform_fonts.c \
 	text_renderer/freetype/platform_fonts.h \
@@ -1923,7 +1927,7 @@ libgestures_plugin_la_LIBADD =
 am_libgestures_plugin_la_OBJECTS = control/gestures.lo
 libgestures_plugin_la_OBJECTS = $(am_libgestures_plugin_la_OBJECTS)
 libgl_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_6)
 am__objects_21 = video_output/opengl/libgl_plugin_la-vout_helper.lo \
 	video_output/opengl/libgl_plugin_la-fragment_shaders.lo \
 	video_output/opengl/libgl_plugin_la-converter_sw.lo
@@ -2013,7 +2017,7 @@ libglconv_vdpau_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @HAVE_GL_TRUE@@HAVE_VDPAU_TRUE@am_libglconv_vdpau_plugin_la_rpath =  \
 @HAVE_GL_TRUE@@HAVE_VDPAU_TRUE@	-rpath $(voutdir)
 libgles2_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_6)
 am__objects_25 =  \
 	video_output/opengl/libgles2_plugin_la-vout_helper.lo \
 	video_output/opengl/libgles2_plugin_la-fragment_shaders.lo \
@@ -2032,7 +2036,8 @@ am_libglspectrum_plugin_la_OBJECTS = visualization/glspectrum.lo \
 libglspectrum_plugin_la_OBJECTS =  \
 	$(am_libglspectrum_plugin_la_OBJECTS)
 @HAVE_GL_TRUE@am_libglspectrum_plugin_la_rpath = -rpath $(visudir)
-libglwin32_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+libglwin32_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_6)
 am__objects_26 =  \
 	video_output/opengl/libglwin32_plugin_la-vout_helper.lo \
 	video_output/opengl/libglwin32_plugin_la-fragment_shaders.lo \
@@ -2068,7 +2073,7 @@ libgme_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(libgme_plugin_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 libgnutls_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_7)
+	$(am__DEPENDENCIES_8)
 am_libgnutls_plugin_la_OBJECTS = misc/libgnutls_plugin_la-gnutls.lo
 libgnutls_plugin_la_OBJECTS = $(am_libgnutls_plugin_la_OBJECTS)
 libgnutls_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -2243,8 +2248,7 @@ libinteger_mixer_plugin_la_OBJECTS =  \
 libinvert_plugin_la_LIBADD =
 am_libinvert_plugin_la_OBJECTS = video_filter/invert.lo
 libinvert_plugin_la_OBJECTS = $(am_libinvert_plugin_la_OBJECTS)
-am__DEPENDENCIES_10 = $(am__DEPENDENCIES_1)
-libiomx_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_10)
+libiomx_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_6)
 am__libiomx_plugin_la_SOURCES_DIST = codec/omxil/utils.c \
 	codec/omxil/omxil_utils.h packetizer/h264_nal.c \
 	packetizer/h264_nal.h packetizer/hevc_nal.c \
@@ -3122,7 +3126,7 @@ libqsv_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @HAVE_WAYLAND_TRUE@am__DEPENDENCIES_13 = $(am__DEPENDENCIES_1)
 libqt_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_12) \
-	$(am__DEPENDENCIES_13) $(am__DEPENDENCIES_7)
+	$(am__DEPENDENCIES_13) $(am__DEPENDENCIES_8)
 am__libqt_plugin_la_SOURCES_DIST = gui/qt/qt.cpp gui/qt/qt.hpp \
 	gui/qt/menus.cpp gui/qt/menus.hpp gui/qt/main_interface.cpp \
 	gui/qt/main_interface.hpp gui/qt/dialogs_provider.cpp \
@@ -3229,6 +3233,7 @@ am__libqt_plugin_la_SOURCES_DIST = gui/qt/qt.cpp gui/qt/qt.hpp \
 	gui/qt/util/buttons/RoundButton.cpp \
 	gui/qt/util/buttons/RoundButton.hpp gui/qt/util/qvlcframe.hpp \
 	gui/qt/util/qvlcapp.hpp gui/qt/util/singleton.hpp \
+	gui/qt/util/imagehelper.cpp gui/qt/util/imagehelper.hpp \
 	gui/qt/styles/seekstyle.cpp gui/qt/styles/seekstyle.hpp \
 	gui/qt/main_interface_win32.cpp \
 	gui/qt/main_interface_win32.hpp
@@ -3305,6 +3310,7 @@ am_libqt_plugin_la_OBJECTS = gui/qt/libqt_plugin_la-qt.lo \
 	gui/qt/util/buttons/libqt_plugin_la-BrowseButton.lo \
 	gui/qt/util/buttons/libqt_plugin_la-DeckButtonsLayout.lo \
 	gui/qt/util/buttons/libqt_plugin_la-RoundButton.lo \
+	gui/qt/util/libqt_plugin_la-imagehelper.lo \
 	gui/qt/styles/libqt_plugin_la-seekstyle.lo $(am__objects_31)
 @HAVE_WIN32_TRUE@am__objects_32 = gui/qt/libqt_plugin_la-main_interface_win32.moc.lo
 nodist_libqt_plugin_la_OBJECTS =  \
@@ -4664,24 +4670,33 @@ libvorbis_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libvorbis_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libvorbis_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-libvout_ios_plugin_la_LIBADD =
+libvout_ios_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_6)
+am__objects_39 =  \
+	video_output/opengl/libvout_ios_plugin_la-vout_helper.lo \
+	video_output/opengl/libvout_ios_plugin_la-fragment_shaders.lo \
+	video_output/opengl/libvout_ios_plugin_la-converter_sw.lo
 am_libvout_ios_plugin_la_OBJECTS = video_output/ios.lo \
-	$(am__objects_8)
+	$(am__objects_39)
 libvout_ios_plugin_la_OBJECTS = $(am_libvout_ios_plugin_la_OBJECTS)
 libvout_ios_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(OBJCLD) $(AM_OBJCFLAGS) \
 	$(OBJCFLAGS) $(libvout_ios_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
 @HAVE_IOS_TRUE@am_libvout_ios_plugin_la_rpath = -rpath $(voutdir)
 @HAVE_TVOS_TRUE@am_libvout_ios_plugin_la_rpath = -rpath $(voutdir)
-libvout_macosx_plugin_la_LIBADD =
+@HAVE_OSX_TRUE@libvout_macosx_plugin_la_DEPENDENCIES =  \
+@HAVE_OSX_TRUE@	$(am__DEPENDENCIES_6)
 am__libvout_macosx_plugin_la_SOURCES_DIST = video_output/macosx.m \
 	video_output/opengl/vout_helper.c \
 	video_output/opengl/vout_helper.h \
 	video_output/opengl/converter.h video_output/opengl/internal.h \
 	video_output/opengl/fragment_shaders.c \
 	video_output/opengl/converter_sw.c
+am__objects_40 =  \
+	video_output/opengl/libvout_macosx_plugin_la-vout_helper.lo \
+	video_output/opengl/libvout_macosx_plugin_la-fragment_shaders.lo \
+	video_output/opengl/libvout_macosx_plugin_la-converter_sw.lo
 @HAVE_OSX_TRUE@am_libvout_macosx_plugin_la_OBJECTS =  \
-@HAVE_OSX_TRUE@	video_output/macosx.lo $(am__objects_8)
+@HAVE_OSX_TRUE@	video_output/macosx.lo $(am__objects_40)
 libvout_macosx_plugin_la_OBJECTS =  \
 	$(am_libvout_macosx_plugin_la_OBJECTS)
 libvout_macosx_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) \
@@ -4723,17 +4738,21 @@ am_libwaveout_plugin_la_OBJECTS = audio_output/waveout.lo
 libwaveout_plugin_la_OBJECTS = $(am_libwaveout_plugin_la_OBJECTS)
 @HAVE_WIN32_DESKTOP_TRUE@am_libwaveout_plugin_la_rpath = -rpath \
 @HAVE_WIN32_DESKTOP_TRUE@	$(aoutdir)
-libwgl_plugin_la_DEPENDENCIES =
-am__objects_39 = video_output/opengl/libwgl_plugin_la-vout_helper.lo \
+libwebvtt_plugin_la_LIBADD =
+am_libwebvtt_plugin_la_OBJECTS = codec/webvtt/subsvtt.lo \
+	codec/webvtt/webvtt.lo demux/webvtt.lo
+libwebvtt_plugin_la_OBJECTS = $(am_libwebvtt_plugin_la_OBJECTS)
+libwgl_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_6)
+am__objects_41 = video_output/opengl/libwgl_plugin_la-vout_helper.lo \
 	video_output/opengl/libwgl_plugin_la-fragment_shaders.lo \
 	video_output/opengl/libwgl_plugin_la-converter_sw.lo
 am_libwgl_plugin_la_OBJECTS =  \
-	video_output/win32/libwgl_plugin_la-wgl.lo $(am__objects_39)
+	video_output/win32/libwgl_plugin_la-wgl.lo $(am__objects_41)
 libwgl_plugin_la_OBJECTS = $(am_libwgl_plugin_la_OBJECTS)
 libwgl_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(libwgl_plugin_la_LDFLAGS) $(LDFLAGS) \
-	-o $@
+	$(libwgl_plugin_la_CFLAGS) $(CFLAGS) \
+	$(libwgl_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
 @HAVE_WIN32_DESKTOP_TRUE@am_libwgl_plugin_la_rpath =
 libwin_hotkeys_plugin_la_LIBADD =
 am_libwin_hotkeys_plugin_la_OBJECTS = control/globalhotkeys/win32.lo
@@ -5008,8 +5027,8 @@ hpack_test_LDADD = $(LDADD)
 hpack_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(hpack_test_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_40 = access/http/hpackenc_test-hpack.$(OBJEXT)
-am_hpackenc_test_OBJECTS = $(am__objects_40) \
+am__objects_42 = access/http/hpackenc_test-hpack.$(OBJEXT)
+am_hpackenc_test_OBJECTS = $(am__objects_42) \
 	access/http/hpackenc_test-hpackenc.$(OBJEXT)
 hpackenc_test_OBJECTS = $(am_hpackenc_test_OBJECTS)
 hpackenc_test_LDADD = $(LDADD)
@@ -5462,7 +5481,8 @@ SOURCES = $(liba52_plugin_la_SOURCES) $(libaa_plugin_la_SOURCES) \
 	$(libvpx_plugin_la_SOURCES) $(libvsxu_plugin_la_SOURCES) \
 	$(libwall_plugin_la_SOURCES) $(libwasapi_plugin_la_SOURCES) \
 	$(libwav_plugin_la_SOURCES) $(libwave_plugin_la_SOURCES) \
-	$(libwaveout_plugin_la_SOURCES) $(libwgl_plugin_la_SOURCES) \
+	$(libwaveout_plugin_la_SOURCES) $(libwebvtt_plugin_la_SOURCES) \
+	$(libwgl_plugin_la_SOURCES) \
 	$(libwin_hotkeys_plugin_la_SOURCES) \
 	$(libwin_msg_plugin_la_SOURCES) \
 	$(libwindrive_plugin_la_SOURCES) \
@@ -5856,7 +5876,8 @@ DIST_SOURCES = $(liba52_plugin_la_SOURCES) $(libaa_plugin_la_SOURCES) \
 	$(libvpx_plugin_la_SOURCES) $(libvsxu_plugin_la_SOURCES) \
 	$(libwall_plugin_la_SOURCES) $(libwasapi_plugin_la_SOURCES) \
 	$(libwav_plugin_la_SOURCES) $(libwave_plugin_la_SOURCES) \
-	$(libwaveout_plugin_la_SOURCES) $(libwgl_plugin_la_SOURCES) \
+	$(libwaveout_plugin_la_SOURCES) $(libwebvtt_plugin_la_SOURCES) \
+	$(libwgl_plugin_la_SOURCES) \
 	$(libwin_hotkeys_plugin_la_SOURCES) \
 	$(libwin_msg_plugin_la_SOURCES) \
 	$(libwindrive_plugin_la_SOURCES) \
@@ -6468,6 +6489,8 @@ LIBMODPLUG_LIBS = @LIBMODPLUG_LIBS@
 LIBMPEG2_CFLAGS = @LIBMPEG2_CFLAGS@
 LIBMPEG2_LIBS = @LIBMPEG2_LIBS@
 LIBOBJS = @LIBOBJS@
+LIBPLACEBO_CFLAGS = @LIBPLACEBO_CFLAGS@
+LIBPLACEBO_LIBS = @LIBPLACEBO_LIBS@
 LIBPTHREAD = @LIBPTHREAD@
 LIBRT = @LIBRT@
 LIBS = @LIBS@
@@ -7613,17 +7636,17 @@ codec_LTLIBRARIES = libddummy_plugin.la $(am__append_67) \
 	libdvbsub_plugin.la $(LTLIBaribsub) libscte18_plugin.la \
 	libscte27_plugin.la libspudec_plugin.la libstl_plugin.la \
 	libsubsdec_plugin.la libsubsusf_plugin.la libttml_plugin.la \
-	libsvcdsub_plugin.la $(am__append_73) $(LTLIBtelx) \
-	libtextst_plugin.la $(LTLIBzvbi) libsubstx3g_plugin.la \
-	$(LTLIBflac) $(LTLIBkate) $(LTLIBopus) $(LTLIBspeex) \
-	$(LTLIBtheora) $(LTLIBdaala) $(LTLIBtremor) $(LTLIBvorbis) \
-	$(LTLIBoggspots) $(LTLIBvideotoolbox) $(am__append_81) \
-	$(am__append_82) $(am__append_83) $(am__append_84) \
-	$(am__append_86) $(LTLIBomxil) $(LTLIBomxil_vout) \
-	$(am__append_88) $(LTLIBx265) $(LTLIBx262) $(LTLIBx264) \
-	$(LTLIBx26410b) $(LTLIBfdkaac) $(LTLIBshine) $(LTLIBvpx) \
-	$(LTLIBaom) $(LTLIBtwolame) $(LTLIBcrystalhd) $(LTLIBqsv) \
-	$(am__append_90) $(am__append_91)
+	libwebvtt_plugin.la libsvcdsub_plugin.la $(am__append_73) \
+	$(LTLIBtelx) libtextst_plugin.la $(LTLIBzvbi) \
+	libsubstx3g_plugin.la $(LTLIBflac) $(LTLIBkate) $(LTLIBopus) \
+	$(LTLIBspeex) $(LTLIBtheora) $(LTLIBdaala) $(LTLIBtremor) \
+	$(LTLIBvorbis) $(LTLIBoggspots) $(LTLIBvideotoolbox) \
+	$(am__append_81) $(am__append_82) $(am__append_83) \
+	$(am__append_84) $(am__append_86) $(LTLIBomxil) \
+	$(LTLIBomxil_vout) $(am__append_88) $(LTLIBx265) $(LTLIBx262) \
+	$(LTLIBx264) $(LTLIBx26410b) $(LTLIBfdkaac) $(LTLIBshine) \
+	$(LTLIBvpx) $(LTLIBaom) $(LTLIBtwolame) $(LTLIBcrystalhd) \
+	$(LTLIBqsv) $(am__append_90) $(am__append_91)
 libddummy_plugin_la_SOURCES = codec/ddummy.c
 libedummy_plugin_la_SOURCES = codec/edummy.c
 
@@ -7717,7 +7740,9 @@ liblibass_plugin_la_CFLAGS = $(AM_CFLAGS) $(LIBASS_CFLAGS)
 liblibass_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(codecdir)'
 liblibass_plugin_la_LIBADD = $(LIBASS_LIBS) $(LIBS_libass) \
 	$(LIBS_freetype) $(FREETYPE_LIBS) $(am__append_72)
-libcc_plugin_la_SOURCES = codec/cc.c codec/cc.h codec/substext.h
+libcc_plugin_la_SOURCES = codec/cc.c codec/cc.h codec/substext.h \
+                          codec/cea708.h codec/cea708.c
+
 libcvdsub_plugin_la_SOURCES = codec/cvdsub.c
 libdvbsub_plugin_la_SOURCES = codec/dvbsub.c
 libaribsub_plugin_la_SOURCES = codec/arib/aribsub.c codec/arib/substext.h
@@ -7736,6 +7761,12 @@ libsubsusf_plugin_la_SOURCES = codec/subsusf.c
 libttml_plugin_la_SOURCES = codec/ttml/substtml.c \
                             demux/ttml.c \
                             codec/ttml/ttml.h codec/ttml/ttml.c
+
+libwebvtt_plugin_la_SOURCES = codec/webvtt/subsvtt.c \
+                              codec/webvtt/webvtt.c \
+                              codec/webvtt/webvtt.h \
+                              demux/webvtt.c \
+                              demux/mp4/minibox.h
 
 libsvcdsub_plugin_la_SOURCES = codec/svcdsub.c
 libt140_plugin_la_SOURCES = codec/t140.c
@@ -7796,9 +7827,9 @@ libvideotoolbox_plugin_la_SOURCES = video_chroma/copy.c video_chroma/copy.h \
 	packetizer/h264_nal.c packetizer/h264_nal.h \
 	packetizer/hevc_nal.c packetizer/hevc_nal.h
 
-@HAVE_IOS_TRUE@libvideotoolbox_plugin_la_OBJCFLAGS = $(AM_CFLAGS) -miphoneos-version-min=8.0
-@HAVE_OSX_TRUE@libvideotoolbox_plugin_la_OBJCFLAGS = $(AM_CFLAGS) -mmacosx-version-min=10.8
-@HAVE_TVOS_TRUE@libvideotoolbox_plugin_la_OBJCFLAGS = $(AM_CFLAGS) -mtvos-version-min=10.2
+@HAVE_IOS_TRUE@libvideotoolbox_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) -miphoneos-version-min=8.0
+@HAVE_OSX_TRUE@libvideotoolbox_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) -mmacosx-version-min=10.8
+@HAVE_TVOS_TRUE@libvideotoolbox_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) -mtvos-version-min=10.2
 libvideotoolbox_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(codecdir)' -Wl,-framework,Foundation -Wl,-framework,VideoToolbox -Wl,-framework,CoreMedia -Wl,-framework,CoreVideo
 
 ### FFmpeg/libav ###
@@ -8217,6 +8248,8 @@ libadaptive_plugin_la_SOURCES =  \
 	demux/adaptive/logic/Representationselectors.cpp \
 	demux/adaptive/mp4/AtomsReader.cpp \
 	demux/adaptive/mp4/AtomsReader.hpp \
+	demux/adaptive/http/AuthStorage.cpp \
+	demux/adaptive/http/AuthStorage.hpp \
 	demux/adaptive/http/BytesRange.cpp \
 	demux/adaptive/http/BytesRange.hpp \
 	demux/adaptive/http/Chunk.cpp demux/adaptive/http/Chunk.h \
@@ -9113,6 +9146,7 @@ libqt_plugin_la_SOURCES = gui/qt/qt.cpp gui/qt/qt.hpp gui/qt/menus.cpp \
 	gui/qt/util/buttons/RoundButton.cpp \
 	gui/qt/util/buttons/RoundButton.hpp gui/qt/util/qvlcframe.hpp \
 	gui/qt/util/qvlcapp.hpp gui/qt/util/singleton.hpp \
+	gui/qt/util/imagehelper.cpp gui/qt/util/imagehelper.hpp \
 	gui/qt/styles/seekstyle.cpp gui/qt/styles/seekstyle.hpp \
 	$(am__append_124)
 
@@ -9224,136 +9258,136 @@ libqt_plugin_la_UI = \
 
 # Resources
 libqt_plugin_la_RES = \
-	gui/qt/pixmaps/clear.png \
-	gui/qt/pixmaps/eject.png \
-	gui/qt/pixmaps/faster.png \
-	gui/qt/pixmaps/faster2.png \
-	gui/qt/pixmaps/go-next.png \
-	gui/qt/pixmaps/addons/addon.png \
-	gui/qt/pixmaps/addons/addon_broken.png \
-	gui/qt/pixmaps/addons/addon_blue.png \
-	gui/qt/pixmaps/addons/addon_cyan.png \
-	gui/qt/pixmaps/addons/addon_green.png \
-	gui/qt/pixmaps/addons/addon_magenta.png \
-	gui/qt/pixmaps/addons/addon_red.png \
-	gui/qt/pixmaps/addons/addon_yellow.png \
-	gui/qt/pixmaps/addons/score.png \
-	gui/qt/pixmaps/menus/exit_16px.png \
-	gui/qt/pixmaps/menus/help_16px.png \
-	gui/qt/pixmaps/menus/info_16px.png \
-	gui/qt/pixmaps/menus/messages_16px.png \
-	gui/qt/pixmaps/menus/playlist_16px.png \
-	gui/qt/pixmaps/menus/preferences_16px.png \
-	gui/qt/pixmaps/menus/settings_16px.png \
-	gui/qt/pixmaps/menus/stream_16px.png \
-	gui/qt/pixmaps/next.png \
+	gui/qt/pixmaps/clear.svg \
+	gui/qt/pixmaps/eject.svg \
+	gui/qt/pixmaps/faster.svg \
+	gui/qt/pixmaps/faster2.svg \
+	gui/qt/pixmaps/go-next.svg \
+	gui/qt/pixmaps/addons/addon.svg \
+	gui/qt/pixmaps/addons/addon_broken.svg \
+	gui/qt/pixmaps/addons/addon_blue.svg \
+	gui/qt/pixmaps/addons/addon_cyan.svg \
+	gui/qt/pixmaps/addons/addon_green.svg \
+	gui/qt/pixmaps/addons/addon_magenta.svg \
+	gui/qt/pixmaps/addons/addon_red.svg \
+	gui/qt/pixmaps/addons/addon_yellow.svg \
+	gui/qt/pixmaps/addons/score.svg \
+	gui/qt/pixmaps/menus/exit_16px.svg \
+	gui/qt/pixmaps/menus/help_16px.svg \
+	gui/qt/pixmaps/menus/info_16px.svg \
+	gui/qt/pixmaps/menus/messages_16px.svg \
+	gui/qt/pixmaps/menus/playlist_16px.svg \
+	gui/qt/pixmaps/menus/preferences_16px.svg \
+	gui/qt/pixmaps/menus/settings_16px.svg \
+	gui/qt/pixmaps/menus/stream_16px.svg \
+	gui/qt/pixmaps/next.svg \
 	gui/qt/pixmaps/noart-64.png \
 	gui/qt/pixmaps/noart.png \
-	gui/qt/pixmaps/pause.png \
-	gui/qt/pixmaps/play.png \
-	gui/qt/pixmaps/playlist/add.png \
-	gui/qt/pixmaps/playlist/playlist.png \
-	gui/qt/pixmaps/playlist/remove.png \
-	gui/qt/pixmaps/playlist/repeat_all.png \
-	gui/qt/pixmaps/playlist/repeat_off.png \
-	gui/qt/pixmaps/playlist/repeat_one.png \
-	gui/qt/pixmaps/playlist/shuffle_on.png \
-	gui/qt/pixmaps/playlist/dropzone.png \
-	gui/qt/pixmaps/playlist/sidebar-icons/capture.png \
-	gui/qt/pixmaps/playlist/sidebar-icons/pictures.png \
-	gui/qt/pixmaps/playlist/sidebar-icons/disc.png \
-	gui/qt/pixmaps/playlist/sidebar-icons/playlist.png \
-	gui/qt/pixmaps/playlist/sidebar-icons/lan.png \
-	gui/qt/pixmaps/playlist/sidebar-icons/podcast.png \
-	gui/qt/pixmaps/playlist/sidebar-icons/library.png \
-	gui/qt/pixmaps/playlist/sidebar-icons/screen.png \
-	gui/qt/pixmaps/playlist/sidebar-icons/movie.png \
-	gui/qt/pixmaps/playlist/sidebar-icons/mtp.png \
-	gui/qt/pixmaps/playlist/sidebar-icons/music.png \
-	gui/qt/pixmaps/playlist/sidebar-icons/network.png \
-	gui/qt/pixmaps/playlist/sidebar-icons/sd/appletrailers.png \
-	gui/qt/pixmaps/playlist/sidebar-icons/sd/icecast.png \
-	gui/qt/pixmaps/playlist/sidebar-icons/sd/katsomo.png \
-	gui/qt/pixmaps/playlist/sidebar-icons/sd/fmc.png \
-	gui/qt/pixmaps/playlist/sidebar-icons/sd/frenchtv.png \
-	gui/qt/pixmaps/playlist/sidebar-icons/sd/jamendo.png \
-	gui/qt/pixmaps/playlist/sidebar-icons/sd/assembleenationale.png \
-	gui/qt/pixmaps/prefs/advprefs_audio.png \
-	gui/qt/pixmaps/prefs/advprefs_codec.png \
-	gui/qt/pixmaps/prefs/advprefs_extended.png \
-	gui/qt/pixmaps/prefs/advprefs_intf.png \
-	gui/qt/pixmaps/prefs/advprefs_playlist.png \
-	gui/qt/pixmaps/prefs/advprefs_sout.png \
-	gui/qt/pixmaps/prefs/advprefs_video.png \
+	gui/qt/pixmaps/pause.svg \
+	gui/qt/pixmaps/play.svg \
+	gui/qt/pixmaps/playlist/add.svg \
+	gui/qt/pixmaps/playlist/playlist.svg \
+	gui/qt/pixmaps/playlist/remove.svg \
+	gui/qt/pixmaps/playlist/repeat_all.svg \
+	gui/qt/pixmaps/playlist/repeat_off.svg \
+	gui/qt/pixmaps/playlist/repeat_one.svg \
+	gui/qt/pixmaps/playlist/shuffle_on.svg \
+	gui/qt/pixmaps/playlist/dropzone.svg \
+	gui/qt/pixmaps/playlist/sidebar-icons/capture.svg \
+	gui/qt/pixmaps/playlist/sidebar-icons/pictures.svg \
+	gui/qt/pixmaps/playlist/sidebar-icons/disc.svg \
+	gui/qt/pixmaps/playlist/sidebar-icons/playlist.svg \
+	gui/qt/pixmaps/playlist/sidebar-icons/lan.svg \
+	gui/qt/pixmaps/playlist/sidebar-icons/podcast.svg \
+	gui/qt/pixmaps/playlist/sidebar-icons/library.svg \
+	gui/qt/pixmaps/playlist/sidebar-icons/screen.svg \
+	gui/qt/pixmaps/playlist/sidebar-icons/movie.svg \
+	gui/qt/pixmaps/playlist/sidebar-icons/mtp.svg \
+	gui/qt/pixmaps/playlist/sidebar-icons/music.svg \
+	gui/qt/pixmaps/playlist/sidebar-icons/network.svg \
+	gui/qt/pixmaps/playlist/sidebar-icons/sd/appletrailers.svg \
+	gui/qt/pixmaps/playlist/sidebar-icons/sd/icecast.svg \
+	gui/qt/pixmaps/playlist/sidebar-icons/sd/katsomo.svg \
+	gui/qt/pixmaps/playlist/sidebar-icons/sd/fmc.svg \
+	gui/qt/pixmaps/playlist/sidebar-icons/sd/frenchtv.svg \
+	gui/qt/pixmaps/playlist/sidebar-icons/sd/jamendo.svg \
+	gui/qt/pixmaps/playlist/sidebar-icons/sd/assembleenationale.svg \
+	gui/qt/pixmaps/prefs/advprefs_audio.svg \
+	gui/qt/pixmaps/prefs/advprefs_codec.svg \
+	gui/qt/pixmaps/prefs/advprefs_extended.svg \
+	gui/qt/pixmaps/prefs/advprefs_intf.svg \
+	gui/qt/pixmaps/prefs/advprefs_playlist.svg \
+	gui/qt/pixmaps/prefs/advprefs_sout.svg \
+	gui/qt/pixmaps/prefs/advprefs_video.svg \
 	gui/qt/pixmaps/prefs/spref_cone_Audio_64.png \
 	gui/qt/pixmaps/prefs/spref_cone_Hotkeys_64.png \
 	gui/qt/pixmaps/prefs/spref_cone_Input_64.png \
 	gui/qt/pixmaps/prefs/spref_cone_Interface_64.png \
 	gui/qt/pixmaps/prefs/spref_cone_Subtitles_64.png \
 	gui/qt/pixmaps/prefs/spref_cone_Video_64.png \
-	gui/qt/pixmaps/previous.png \
-	gui/qt/pixmaps/profile_new.png \
+	gui/qt/pixmaps/previous.svg \
+	gui/qt/pixmaps/profile_new.svg \
 	gui/qt/pixmaps/sample_complete.png \
 	gui/qt/pixmaps/sample_minimal.png \
 	gui/qt/pixmaps/sample_skins.png \
-	gui/qt/pixmaps/slower.png \
-	gui/qt/pixmaps/slower2.png \
-	gui/qt/pixmaps/space.png \
-	gui/qt/pixmaps/stop.png \
-	gui/qt/pixmaps/toolbar/arrows.png \
-	gui/qt/pixmaps/toolbar/aspect-ratio.png \
-	gui/qt/pixmaps/toolbar/atob.png \
-	gui/qt/pixmaps/toolbar/atob_noa.png \
-	gui/qt/pixmaps/toolbar/atob_nob.png \
-	gui/qt/pixmaps/toolbar/renderer.png \
-	gui/qt/pixmaps/toolbar/defullscreen.png \
-	gui/qt/pixmaps/toolbar/dvd_menu.png \
-	gui/qt/pixmaps/toolbar/dvd_next.png \
-	gui/qt/pixmaps/toolbar/dvd_prev.png \
-	gui/qt/pixmaps/toolbar/extended_16px.png \
-	gui/qt/pixmaps/toolbar/frame-by-frame.png \
-	gui/qt/pixmaps/toolbar/fullscreen.png \
-	gui/qt/pixmaps/toolbar/play_reverse.png \
-	gui/qt/pixmaps/toolbar/record_16px.png \
-	gui/qt/pixmaps/toolbar/snapshot.png \
-	gui/qt/pixmaps/toolbar/skip_for.png \
-	gui/qt/pixmaps/toolbar/skip_back.png \
-	gui/qt/pixmaps/toolbar/tv.png \
-	gui/qt/pixmaps/toolbar/tvtelx.png \
-	gui/qt/pixmaps/toolbar/visu.png \
-	gui/qt/pixmaps/toolbar/volume-high.png \
-	gui/qt/pixmaps/toolbar/volume-low.png \
-	gui/qt/pixmaps/toolbar/volume-medium.png \
-	gui/qt/pixmaps/toolbar/volume-muted.png \
-	gui/qt/pixmaps/toolbar/volume-slider-inside.png \
-	gui/qt/pixmaps/toolbar/volume-slider-outside.png \
-	gui/qt/pixmaps/types/capture-card_16px.png \
-	gui/qt/pixmaps/types/disc_16px.png \
-	gui/qt/pixmaps/types/file-asym_16px.png \
-	gui/qt/pixmaps/types/file-wide_16px.png \
-	gui/qt/pixmaps/types/folder-blue_16px.png \
-	gui/qt/pixmaps/types/folder-grey_16px.png \
-	gui/qt/pixmaps/types/harddisk_16px.png \
-	gui/qt/pixmaps/types/network_16px.png \
-	gui/qt/pixmaps/types/tape_16px.png \
-	gui/qt/pixmaps/types/type_directory.png \
-	gui/qt/pixmaps/types/type_file.png \
-	gui/qt/pixmaps/types/type_stream.png \
-	gui/qt/pixmaps/types/type_node.png \
-	gui/qt/pixmaps/types/type_playlist.png \
+	gui/qt/pixmaps/slower.svg \
+	gui/qt/pixmaps/slower2.svg \
+	gui/qt/pixmaps/space.svg \
+	gui/qt/pixmaps/stop.svg \
+	gui/qt/pixmaps/toolbar/arrows.svg \
+	gui/qt/pixmaps/toolbar/aspect-ratio.svg \
+	gui/qt/pixmaps/toolbar/atob.svg \
+	gui/qt/pixmaps/toolbar/atob_noa.svg \
+	gui/qt/pixmaps/toolbar/atob_nob.svg \
+	gui/qt/pixmaps/toolbar/renderer.svg \
+	gui/qt/pixmaps/toolbar/defullscreen.svg \
+	gui/qt/pixmaps/toolbar/dvd_menu.svg \
+	gui/qt/pixmaps/toolbar/dvd_next.svg \
+	gui/qt/pixmaps/toolbar/dvd_prev.svg \
+	gui/qt/pixmaps/toolbar/extended_16px.svg \
+	gui/qt/pixmaps/toolbar/frame-by-frame.svg \
+	gui/qt/pixmaps/toolbar/fullscreen.svg \
+	gui/qt/pixmaps/toolbar/play_reverse.svg \
+	gui/qt/pixmaps/toolbar/record_16px.svg \
+	gui/qt/pixmaps/toolbar/snapshot.svg \
+	gui/qt/pixmaps/toolbar/skip_for.svg \
+	gui/qt/pixmaps/toolbar/skip_back.svg \
+	gui/qt/pixmaps/toolbar/tv.svg \
+	gui/qt/pixmaps/toolbar/tvtelx.svg \
+	gui/qt/pixmaps/toolbar/visu.svg \
+	gui/qt/pixmaps/toolbar/volume-high.svg \
+	gui/qt/pixmaps/toolbar/volume-low.svg \
+	gui/qt/pixmaps/toolbar/volume-medium.svg \
+	gui/qt/pixmaps/toolbar/volume-muted.svg \
+	gui/qt/pixmaps/toolbar/volume-slider-inside.svg \
+	gui/qt/pixmaps/toolbar/volume-slider-outside.svg \
+	gui/qt/pixmaps/types/capture-card_16px.svg \
+	gui/qt/pixmaps/types/disc_16px.svg \
+	gui/qt/pixmaps/types/file-asym_16px.svg \
+	gui/qt/pixmaps/types/file-wide_16px.svg \
+	gui/qt/pixmaps/types/folder-blue_16px.svg \
+	gui/qt/pixmaps/types/folder-grey_16px.svg \
+	gui/qt/pixmaps/types/harddisk_16px.svg \
+	gui/qt/pixmaps/types/network_16px.svg \
+	gui/qt/pixmaps/types/tape_16px.svg \
+	gui/qt/pixmaps/types/type_directory.svg \
+	gui/qt/pixmaps/types/type_file.svg \
+	gui/qt/pixmaps/types/type_stream.svg \
+	gui/qt/pixmaps/types/type_node.svg \
+	gui/qt/pixmaps/types/type_playlist.svg \
 	gui/qt/pixmaps/types/type_unknown.xpm \
-	gui/qt/pixmaps/util/wait1.png \
-	gui/qt/pixmaps/util/wait2.png \
-	gui/qt/pixmaps/util/wait3.png \
-	gui/qt/pixmaps/util/wait4.png \
-	gui/qt/pixmaps/win7/win7thumbnail_pause.png \
-	gui/qt/pixmaps/win7/win7thumbnail_prev.png \
-	gui/qt/pixmaps/win7/win7thumbnail_next.png \
-	gui/qt/pixmaps/win7/win7thumbnail_play.png \
-	gui/qt/pixmaps/update.png \
-	gui/qt/pixmaps/valid.png \
-	gui/qt/pixmaps/search_clear.png \
-	gui/qt/pixmaps/lock.png
+	gui/qt/pixmaps/util/wait1.svg \
+	gui/qt/pixmaps/util/wait2.svg \
+	gui/qt/pixmaps/util/wait3.svg \
+	gui/qt/pixmaps/util/wait4.svg \
+	gui/qt/pixmaps/win7/win7thumbnail_pause.svg \
+	gui/qt/pixmaps/win7/win7thumbnail_prev.svg \
+	gui/qt/pixmaps/win7/win7thumbnail_next.svg \
+	gui/qt/pixmaps/win7/win7thumbnail_play.svg \
+	gui/qt/pixmaps/update.svg \
+	gui/qt/pixmaps/valid.svg \
+	gui/qt/pixmaps/search_clear.svg \
+	gui/qt/pixmaps/lock.svg
 
 libskins2_plugin_la_SOURCES = gui/skins2/commands/async_queue.cpp \
 	gui/skins2/commands/async_queue.hpp \
@@ -9572,7 +9606,7 @@ libkwallet_plugin_la_CFLAGS = $(AM_CFLAGS) $(DBUS_CFLAGS)
 libkwallet_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(keystoredir)'
 libkwallet_plugin_la_LIBADD = $(DBUS_LIBS) $(LIBM)
 libkeychain_plugin_la_SOURCES = keystore/keychain.m
-libkeychain_plugin_la_OBJCFLAGS = $(AM_CFLAGS) -fobjc-arc
+libkeychain_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) -fobjc-arc
 libkeychain_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(keystoredir)' -Wl,-framework,Foundation -Wl,-framework,Security -Wl,-framework,Cocoa
 loggerdir = $(pluginsdir)/logger
 libconsole_logger_plugin_la_SOURCES = logger/console.c
@@ -9759,7 +9793,7 @@ libmicrodns_plugin_la_LIBADD = $(SOCKET_LIBS) $(MICRODNS_LIBS) \
 	$(am__append_158)
 libmicrodns_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(sddir)'
 libbonjour_plugin_la_SOURCES = services_discovery/bonjour.m
-libbonjour_plugin_la_OBJCFLAGS = $(AM_CFLAGS) -fobjc-arc
+libbonjour_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) -fobjc-arc
 libbonjour_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(sddir)' -Wl,-framework,Foundation
 spudir = $(pluginsdir)/spu
 
@@ -10047,7 +10081,7 @@ libci_filters_plugin_la_SOURCES = video_filter/ci_filters.m codec/vt_utils.c cod
 @HAVE_OSX_TRUE@libci_filters_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(video_filterdir)' \
 @HAVE_OSX_TRUE@	-Wl,-framework,Foundation -Wl,-framework,CoreGraphics -Wl,-framework,CoreImage -Wl,-framework,CoreVideo
 
-@HAVE_IOS_TRUE@libci_filters_plugin_la_OBJCFLAGS = $(AM_CFLAGS) -miphoneos-version-min=9.0
+@HAVE_IOS_TRUE@libci_filters_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) -miphoneos-version-min=9.0
 libdeinterlace_plugin_la_SOURCES =  \
 	video_filter/deinterlace/deinterlace.c \
 	video_filter/deinterlace/deinterlace.h \
@@ -10114,6 +10148,8 @@ OPENGL_COMMONSOURCES = video_output/opengl/vout_helper.c \
 	video_output/opengl/internal.h video_output/opengl/fragment_shaders.c \
 	video_output/opengl/converter_sw.c
 
+OPENGL_COMMONCLFAGS = $(LIBPLACEBO_CFLAGS)
+OPENGL_COMMONLIBS = $(LIBPLACEBO_LIBS)
 @HAVE_DECKLINK_TRUE@libdecklinkoutput_plugin_la_SOURCES = video_output/decklink.cpp
 @HAVE_DECKLINK_TRUE@libdecklinkoutput_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CPPFLAGS_decklinkoutput)
 @HAVE_DECKLINK_TRUE@libdecklinkoutput_plugin_la_LIBADD = $(LIBS_decklink) $(LIBDL) -lpthread
@@ -10123,27 +10159,33 @@ libglconv_cvpx_plugin_la_SOURCES =  \
 libglconv_cvpx_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)' \
 	$(am__append_200)
 @HAVE_OSX_TRUE@libvout_macosx_plugin_la_SOURCES = video_output/macosx.m $(OPENGL_COMMONSOURCES)
+@HAVE_OSX_TRUE@libvout_macosx_plugin_la_CFLAGS = $(AM_CFLAGS) $(OPENGL_COMMONCLFAGS)
+@HAVE_OSX_TRUE@libvout_macosx_plugin_la_LIBADD = $(OPENGL_COMMONLIBS)
 @HAVE_OSX_TRUE@libvout_macosx_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)' \
 @HAVE_OSX_TRUE@	-Wl,-framework,OpenGL,-framework,Cocoa
 
 @HAVE_OSX_TRUE@libcaopengllayer_plugin_la_SOURCES = video_output/caopengllayer.m $(OPENGL_COMMONSOURCES)
+@HAVE_OSX_TRUE@libcaopengllayer_plugin_la_CFLAGS = $(AM_CFLAGS) $(OPENGL_COMMONCLFAGS)
+@HAVE_OSX_TRUE@libcaopengllayer_plugin_la_LIBADD = $(OPENGL_COMMONLIBS)
 @HAVE_OSX_TRUE@libcaopengllayer_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)' \
 @HAVE_OSX_TRUE@	-Wl,-framework,OpenGL,-framework,Cocoa,-framework,QuartzCore
 
 @HAVE_IOS_TRUE@libglconv_cvpx_plugin_la_CFLAGS = $(AM_CFLAGS) -DUSE_OPENGL_ES2
 libvout_ios_plugin_la_SOURCES = video_output/ios.m $(OPENGL_COMMONSOURCES)
+libvout_ios_plugin_la_CFLAGS = $(AM_CFLAGS) $(OPENGL_COMMONCLFAGS)
+libvout_ios_plugin_la_LIBADD = $(OPENGL_COMMONLIBS)
 libvout_ios_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)' \
 	-Wl,-framework,OpenGLES,-framework,QuartzCore,-framework,UIKit
 
 
 ### OpenGL ###
 libgles2_plugin_la_SOURCES = $(OPENGL_COMMONSOURCES) video_output/opengl/display.c
-libgles2_plugin_la_CFLAGS = $(AM_CFLAGS) $(GLES2_CFLAGS) -DUSE_OPENGL_ES2
-libgles2_plugin_la_LIBADD = $(GLES2_LIBS) $(LIBM)
+libgles2_plugin_la_CFLAGS = $(AM_CFLAGS) $(GLES2_CFLAGS) -DUSE_OPENGL_ES2 $(OPENGL_COMMONCLFAGS)
+libgles2_plugin_la_LIBADD = $(GLES2_LIBS) $(LIBM) $(OPENGL_COMMONLIBS)
 libgles2_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
 libgl_plugin_la_SOURCES = $(OPENGL_COMMONSOURCES) video_output/opengl/display.c
-libgl_plugin_la_CFLAGS = $(AM_CFLAGS) $(GL_CFLAGS)
-libgl_plugin_la_LIBADD = $(GL_LIBS) $(LIBM)
+libgl_plugin_la_CFLAGS = $(AM_CFLAGS) $(GL_CFLAGS) $(OPENGL_COMMONCLFAGS)
+libgl_plugin_la_LIBADD = $(GL_LIBS) $(LIBM) $(OPENGL_COMMONLIBS)
 libglconv_vaapi_wl_plugin_la_SOURCES = video_output/opengl/converter_vaapi.c \
 	video_output/opengl/converter.h \
 	hw/vaapi/vlc_vaapi.c hw/vaapi/vlc_vaapi.h
@@ -10321,8 +10363,10 @@ libglwin32_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) \
 libwgl_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) \
         -DMODULE_NAME_IS_wgl
 
-libglwin32_plugin_la_LIBADD = -lopengl32 -lgdi32 $(LIBCOM) -luuid
-libwgl_plugin_la_LIBADD = -lopengl32 -lgdi32
+libglwin32_plugin_la_LIBADD = -lopengl32 -lgdi32 $(LIBCOM) -luuid $(OPENGL_COMMONLIBS)
+libwgl_plugin_la_LIBADD = -lopengl32 -lgdi32 $(OPENGL_COMMONLIBS)
+libglwin32_plugin_la_CFLAGS = $(AM_CFLAGS) $(OPENGL_COMMONCLFAGS)
+libwgl_plugin_la_CFLAGS = $(AM_CFLAGS) $(OPENGL_COMMONCLFAGS)
 libglwin32_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
 libwgl_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
 libwingdi_plugin_la_SOURCES = video_output/win32/wingdi.c \
@@ -12001,6 +12045,9 @@ demux/adaptive/http/$(am__dirstamp):
 demux/adaptive/http/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) demux/adaptive/http/$(DEPDIR)
 	@: > demux/adaptive/http/$(DEPDIR)/$(am__dirstamp)
+demux/adaptive/http/libadaptive_plugin_la-AuthStorage.lo:  \
+	demux/adaptive/http/$(am__dirstamp) \
+	demux/adaptive/http/$(DEPDIR)/$(am__dirstamp)
 demux/adaptive/http/libadaptive_plugin_la-BytesRange.lo:  \
 	demux/adaptive/http/$(am__dirstamp) \
 	demux/adaptive/http/$(DEPDIR)/$(am__dirstamp)
@@ -12707,19 +12754,20 @@ video_output/opengl/$(am__dirstamp):
 video_output/opengl/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) video_output/opengl/$(DEPDIR)
 	@: > video_output/opengl/$(DEPDIR)/$(am__dirstamp)
-video_output/opengl/vout_helper.lo:  \
+video_output/opengl/libcaopengllayer_plugin_la-vout_helper.lo:  \
 	video_output/opengl/$(am__dirstamp) \
 	video_output/opengl/$(DEPDIR)/$(am__dirstamp)
-video_output/opengl/fragment_shaders.lo:  \
+video_output/opengl/libcaopengllayer_plugin_la-fragment_shaders.lo:  \
 	video_output/opengl/$(am__dirstamp) \
 	video_output/opengl/$(DEPDIR)/$(am__dirstamp)
-video_output/opengl/converter_sw.lo:  \
+video_output/opengl/libcaopengllayer_plugin_la-converter_sw.lo:  \
 	video_output/opengl/$(am__dirstamp) \
 	video_output/opengl/$(DEPDIR)/$(am__dirstamp)
 
 libcaopengllayer_plugin.la: $(libcaopengllayer_plugin_la_OBJECTS) $(libcaopengllayer_plugin_la_DEPENDENCIES) $(EXTRA_libcaopengllayer_plugin_la_DEPENDENCIES) 
 	$(AM_V_OBJCLD)$(libcaopengllayer_plugin_la_LINK) $(am_libcaopengllayer_plugin_la_rpath) $(libcaopengllayer_plugin_la_OBJECTS) $(libcaopengllayer_plugin_la_LIBADD) $(LIBS)
 codec/cc.lo: codec/$(am__dirstamp) codec/$(DEPDIR)/$(am__dirstamp)
+codec/cea708.lo: codec/$(am__dirstamp) codec/$(DEPDIR)/$(am__dirstamp)
 
 libcc_plugin.la: $(libcc_plugin_la_OBJECTS) $(libcc_plugin_la_DEPENDENCIES) $(EXTRA_libcc_plugin_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK) -rpath $(codecdir) $(libcc_plugin_la_OBJECTS) $(libcc_plugin_la_LIBADD) $(LIBS)
@@ -15278,6 +15326,9 @@ gui/qt/util/buttons/libqt_plugin_la-DeckButtonsLayout.lo:  \
 gui/qt/util/buttons/libqt_plugin_la-RoundButton.lo:  \
 	gui/qt/util/buttons/$(am__dirstamp) \
 	gui/qt/util/buttons/$(DEPDIR)/$(am__dirstamp)
+gui/qt/util/libqt_plugin_la-imagehelper.lo:  \
+	gui/qt/util/$(am__dirstamp) \
+	gui/qt/util/$(DEPDIR)/$(am__dirstamp)
 gui/qt/styles/$(am__dirstamp):
 	@$(MKDIR_P) gui/qt/styles
 	@: > gui/qt/styles/$(am__dirstamp)
@@ -16800,11 +16851,29 @@ libvorbis_plugin.la: $(libvorbis_plugin_la_OBJECTS) $(libvorbis_plugin_la_DEPEND
 	$(AM_V_CCLD)$(libvorbis_plugin_la_LINK)  $(libvorbis_plugin_la_OBJECTS) $(libvorbis_plugin_la_LIBADD) $(LIBS)
 video_output/ios.lo: video_output/$(am__dirstamp) \
 	video_output/$(DEPDIR)/$(am__dirstamp)
+video_output/opengl/libvout_ios_plugin_la-vout_helper.lo:  \
+	video_output/opengl/$(am__dirstamp) \
+	video_output/opengl/$(DEPDIR)/$(am__dirstamp)
+video_output/opengl/libvout_ios_plugin_la-fragment_shaders.lo:  \
+	video_output/opengl/$(am__dirstamp) \
+	video_output/opengl/$(DEPDIR)/$(am__dirstamp)
+video_output/opengl/libvout_ios_plugin_la-converter_sw.lo:  \
+	video_output/opengl/$(am__dirstamp) \
+	video_output/opengl/$(DEPDIR)/$(am__dirstamp)
 
 libvout_ios_plugin.la: $(libvout_ios_plugin_la_OBJECTS) $(libvout_ios_plugin_la_DEPENDENCIES) $(EXTRA_libvout_ios_plugin_la_DEPENDENCIES) 
 	$(AM_V_OBJCLD)$(libvout_ios_plugin_la_LINK) $(am_libvout_ios_plugin_la_rpath) $(libvout_ios_plugin_la_OBJECTS) $(libvout_ios_plugin_la_LIBADD) $(LIBS)
 video_output/macosx.lo: video_output/$(am__dirstamp) \
 	video_output/$(DEPDIR)/$(am__dirstamp)
+video_output/opengl/libvout_macosx_plugin_la-vout_helper.lo:  \
+	video_output/opengl/$(am__dirstamp) \
+	video_output/opengl/$(DEPDIR)/$(am__dirstamp)
+video_output/opengl/libvout_macosx_plugin_la-fragment_shaders.lo:  \
+	video_output/opengl/$(am__dirstamp) \
+	video_output/opengl/$(DEPDIR)/$(am__dirstamp)
+video_output/opengl/libvout_macosx_plugin_la-converter_sw.lo:  \
+	video_output/opengl/$(am__dirstamp) \
+	video_output/opengl/$(DEPDIR)/$(am__dirstamp)
 
 libvout_macosx_plugin.la: $(libvout_macosx_plugin_la_OBJECTS) $(libvout_macosx_plugin_la_DEPENDENCIES) $(EXTRA_libvout_macosx_plugin_la_DEPENDENCIES) 
 	$(AM_V_OBJCLD)$(libvout_macosx_plugin_la_LINK) $(am_libvout_macosx_plugin_la_rpath) $(libvout_macosx_plugin_la_OBJECTS) $(libvout_macosx_plugin_la_LIBADD) $(LIBS)
@@ -16843,6 +16912,20 @@ audio_output/waveout.lo: audio_output/$(am__dirstamp) \
 
 libwaveout_plugin.la: $(libwaveout_plugin_la_OBJECTS) $(libwaveout_plugin_la_DEPENDENCIES) $(EXTRA_libwaveout_plugin_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK) $(am_libwaveout_plugin_la_rpath) $(libwaveout_plugin_la_OBJECTS) $(libwaveout_plugin_la_LIBADD) $(LIBS)
+codec/webvtt/$(am__dirstamp):
+	@$(MKDIR_P) codec/webvtt
+	@: > codec/webvtt/$(am__dirstamp)
+codec/webvtt/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) codec/webvtt/$(DEPDIR)
+	@: > codec/webvtt/$(DEPDIR)/$(am__dirstamp)
+codec/webvtt/subsvtt.lo: codec/webvtt/$(am__dirstamp) \
+	codec/webvtt/$(DEPDIR)/$(am__dirstamp)
+codec/webvtt/webvtt.lo: codec/webvtt/$(am__dirstamp) \
+	codec/webvtt/$(DEPDIR)/$(am__dirstamp)
+demux/webvtt.lo: demux/$(am__dirstamp) demux/$(DEPDIR)/$(am__dirstamp)
+
+libwebvtt_plugin.la: $(libwebvtt_plugin_la_OBJECTS) $(libwebvtt_plugin_la_DEPENDENCIES) $(EXTRA_libwebvtt_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(LINK) -rpath $(codecdir) $(libwebvtt_plugin_la_OBJECTS) $(libwebvtt_plugin_la_LIBADD) $(LIBS)
 video_output/win32/libwgl_plugin_la-wgl.lo:  \
 	video_output/win32/$(am__dirstamp) \
 	video_output/win32/$(DEPDIR)/$(am__dirstamp)
@@ -17264,6 +17347,8 @@ mostlyclean-compile:
 	-rm -f codec/spudec/*.lo
 	-rm -f codec/ttml/*.$(OBJEXT)
 	-rm -f codec/ttml/*.lo
+	-rm -f codec/webvtt/*.$(OBJEXT)
+	-rm -f codec/webvtt/*.lo
 	-rm -f codec/wmafixed/*.$(OBJEXT)
 	-rm -f codec/wmafixed/*.lo
 	-rm -f control/*.$(OBJEXT)
@@ -17667,6 +17752,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/bpg.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/cc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/cdg.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/cea708.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/crystalhd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/cvdsub.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/ddummy.Plo@am__quote@
@@ -17778,6 +17864,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@codec/spudec/$(DEPDIR)/libspudec_plugin_la-spudec.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@codec/ttml/$(DEPDIR)/substtml.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@codec/ttml/$(DEPDIR)/ttml.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@codec/webvtt/$(DEPDIR)/subsvtt.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@codec/webvtt/$(DEPDIR)/webvtt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@codec/wmafixed/$(DEPDIR)/libwma_fixed_plugin_la-bitstream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@codec/wmafixed/$(DEPDIR)/libwma_fixed_plugin_la-fft.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@codec/wmafixed/$(DEPDIR)/libwma_fixed_plugin_la-mdct.Plo@am__quote@
@@ -17837,6 +17925,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@demux/$(DEPDIR)/vobsub.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@demux/$(DEPDIR)/voc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@demux/$(DEPDIR)/wav.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@demux/$(DEPDIR)/webvtt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@demux/$(DEPDIR)/xa.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@demux/$(DEPDIR)/xiph_metadata.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/$(DEPDIR)/libadaptive_plugin_la-ID.Plo@am__quote@
@@ -17845,6 +17934,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/$(DEPDIR)/libadaptive_plugin_la-StreamFormat.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/$(DEPDIR)/libadaptive_plugin_la-Streams.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/$(DEPDIR)/libadaptive_plugin_la-adaptive.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/http/$(DEPDIR)/libadaptive_plugin_la-AuthStorage.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/http/$(DEPDIR)/libadaptive_plugin_la-BytesRange.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/http/$(DEPDIR)/libadaptive_plugin_la-Chunk.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/http/$(DEPDIR)/libadaptive_plugin_la-ConnectionParams.Plo@am__quote@
@@ -18196,6 +18286,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@gui/qt/util/$(DEPDIR)/libqt_plugin_la-animators.moc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gui/qt/util/$(DEPDIR)/libqt_plugin_la-customwidgets.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gui/qt/util/$(DEPDIR)/libqt_plugin_la-customwidgets.moc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@gui/qt/util/$(DEPDIR)/libqt_plugin_la-imagehelper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gui/qt/util/$(DEPDIR)/libqt_plugin_la-input_slider.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gui/qt/util/$(DEPDIR)/libqt_plugin_la-input_slider.moc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gui/qt/util/$(DEPDIR)/libqt_plugin_la-pictureflow.Plo@am__quote@
@@ -18664,8 +18755,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/android/$(DEPDIR)/libiomx_plugin_la-utils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/android/$(DEPDIR)/libmediacodec_plugin_la-utils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/android/$(DEPDIR)/libomxil_plugin_la-utils.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/converter_sw.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/fragment_shaders.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/libcaopengllayer_plugin_la-converter_sw.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/libcaopengllayer_plugin_la-fragment_shaders.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/libcaopengllayer_plugin_la-vout_helper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/libegl_android_plugin_la-egl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/libegl_win32_plugin_la-egl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/libegl_wl_plugin_la-egl.Plo@am__quote@
@@ -18687,10 +18779,15 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/libglwin32_plugin_la-converter_sw.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/libglwin32_plugin_la-fragment_shaders.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/libglwin32_plugin_la-vout_helper.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/libvout_ios_plugin_la-converter_sw.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/libvout_ios_plugin_la-fragment_shaders.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/libvout_ios_plugin_la-vout_helper.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/libvout_macosx_plugin_la-converter_sw.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/libvout_macosx_plugin_la-fragment_shaders.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/libvout_macosx_plugin_la-vout_helper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/libwgl_plugin_la-converter_sw.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/libwgl_plugin_la-fragment_shaders.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/libwgl_plugin_la-vout_helper.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@video_output/opengl/$(DEPDIR)/vout_helper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/wayland/$(DEPDIR)/libwl_shell_plugin_la-shell.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/wayland/$(DEPDIR)/libwl_shm_plugin_la-shm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/wayland/$(DEPDIR)/libwl_shm_plugin_la-viewporter-protocol.Plo@am__quote@
@@ -19171,6 +19268,27 @@ video_output/libcaca_plugin_la-caca.lo: video_output/caca.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/caca.c' object='video_output/libcaca_plugin_la-caca.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcaca_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/libcaca_plugin_la-caca.lo `test -f 'video_output/caca.c' || echo '$(srcdir)/'`video_output/caca.c
+
+video_output/opengl/libcaopengllayer_plugin_la-vout_helper.lo: video_output/opengl/vout_helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcaopengllayer_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/opengl/libcaopengllayer_plugin_la-vout_helper.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libcaopengllayer_plugin_la-vout_helper.Tpo -c -o video_output/opengl/libcaopengllayer_plugin_la-vout_helper.lo `test -f 'video_output/opengl/vout_helper.c' || echo '$(srcdir)/'`video_output/opengl/vout_helper.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/opengl/$(DEPDIR)/libcaopengllayer_plugin_la-vout_helper.Tpo video_output/opengl/$(DEPDIR)/libcaopengllayer_plugin_la-vout_helper.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/opengl/vout_helper.c' object='video_output/opengl/libcaopengllayer_plugin_la-vout_helper.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcaopengllayer_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libcaopengllayer_plugin_la-vout_helper.lo `test -f 'video_output/opengl/vout_helper.c' || echo '$(srcdir)/'`video_output/opengl/vout_helper.c
+
+video_output/opengl/libcaopengllayer_plugin_la-fragment_shaders.lo: video_output/opengl/fragment_shaders.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcaopengllayer_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/opengl/libcaopengllayer_plugin_la-fragment_shaders.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libcaopengllayer_plugin_la-fragment_shaders.Tpo -c -o video_output/opengl/libcaopengllayer_plugin_la-fragment_shaders.lo `test -f 'video_output/opengl/fragment_shaders.c' || echo '$(srcdir)/'`video_output/opengl/fragment_shaders.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/opengl/$(DEPDIR)/libcaopengllayer_plugin_la-fragment_shaders.Tpo video_output/opengl/$(DEPDIR)/libcaopengllayer_plugin_la-fragment_shaders.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/opengl/fragment_shaders.c' object='video_output/opengl/libcaopengllayer_plugin_la-fragment_shaders.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcaopengllayer_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libcaopengllayer_plugin_la-fragment_shaders.lo `test -f 'video_output/opengl/fragment_shaders.c' || echo '$(srcdir)/'`video_output/opengl/fragment_shaders.c
+
+video_output/opengl/libcaopengllayer_plugin_la-converter_sw.lo: video_output/opengl/converter_sw.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcaopengllayer_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/opengl/libcaopengllayer_plugin_la-converter_sw.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libcaopengllayer_plugin_la-converter_sw.Tpo -c -o video_output/opengl/libcaopengllayer_plugin_la-converter_sw.lo `test -f 'video_output/opengl/converter_sw.c' || echo '$(srcdir)/'`video_output/opengl/converter_sw.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/opengl/$(DEPDIR)/libcaopengllayer_plugin_la-converter_sw.Tpo video_output/opengl/$(DEPDIR)/libcaopengllayer_plugin_la-converter_sw.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/opengl/converter_sw.c' object='video_output/opengl/libcaopengllayer_plugin_la-converter_sw.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcaopengllayer_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libcaopengllayer_plugin_la-converter_sw.lo `test -f 'video_output/opengl/converter_sw.c' || echo '$(srcdir)/'`video_output/opengl/converter_sw.c
 
 access/libcdda_plugin_la-cdda.lo: access/cdda.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcdda_plugin_la_CFLAGS) $(CFLAGS) -MT access/libcdda_plugin_la-cdda.lo -MD -MP -MF access/$(DEPDIR)/libcdda_plugin_la-cdda.Tpo -c -o access/libcdda_plugin_la-cdda.lo `test -f 'access/cdda.c' || echo '$(srcdir)/'`access/cdda.c
@@ -19852,60 +19970,60 @@ video_output/opengl/libgles2_plugin_la-display.lo: video_output/opengl/display.c
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgles2_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libgles2_plugin_la-display.lo `test -f 'video_output/opengl/display.c' || echo '$(srcdir)/'`video_output/opengl/display.c
 
 video_output/opengl/libglwin32_plugin_la-vout_helper.lo: video_output/opengl/vout_helper.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video_output/opengl/libglwin32_plugin_la-vout_helper.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libglwin32_plugin_la-vout_helper.Tpo -c -o video_output/opengl/libglwin32_plugin_la-vout_helper.lo `test -f 'video_output/opengl/vout_helper.c' || echo '$(srcdir)/'`video_output/opengl/vout_helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libglwin32_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/opengl/libglwin32_plugin_la-vout_helper.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libglwin32_plugin_la-vout_helper.Tpo -c -o video_output/opengl/libglwin32_plugin_la-vout_helper.lo `test -f 'video_output/opengl/vout_helper.c' || echo '$(srcdir)/'`video_output/opengl/vout_helper.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/opengl/$(DEPDIR)/libglwin32_plugin_la-vout_helper.Tpo video_output/opengl/$(DEPDIR)/libglwin32_plugin_la-vout_helper.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/opengl/vout_helper.c' object='video_output/opengl/libglwin32_plugin_la-vout_helper.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libglwin32_plugin_la-vout_helper.lo `test -f 'video_output/opengl/vout_helper.c' || echo '$(srcdir)/'`video_output/opengl/vout_helper.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libglwin32_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libglwin32_plugin_la-vout_helper.lo `test -f 'video_output/opengl/vout_helper.c' || echo '$(srcdir)/'`video_output/opengl/vout_helper.c
 
 video_output/opengl/libglwin32_plugin_la-fragment_shaders.lo: video_output/opengl/fragment_shaders.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video_output/opengl/libglwin32_plugin_la-fragment_shaders.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libglwin32_plugin_la-fragment_shaders.Tpo -c -o video_output/opengl/libglwin32_plugin_la-fragment_shaders.lo `test -f 'video_output/opengl/fragment_shaders.c' || echo '$(srcdir)/'`video_output/opengl/fragment_shaders.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libglwin32_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/opengl/libglwin32_plugin_la-fragment_shaders.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libglwin32_plugin_la-fragment_shaders.Tpo -c -o video_output/opengl/libglwin32_plugin_la-fragment_shaders.lo `test -f 'video_output/opengl/fragment_shaders.c' || echo '$(srcdir)/'`video_output/opengl/fragment_shaders.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/opengl/$(DEPDIR)/libglwin32_plugin_la-fragment_shaders.Tpo video_output/opengl/$(DEPDIR)/libglwin32_plugin_la-fragment_shaders.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/opengl/fragment_shaders.c' object='video_output/opengl/libglwin32_plugin_la-fragment_shaders.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libglwin32_plugin_la-fragment_shaders.lo `test -f 'video_output/opengl/fragment_shaders.c' || echo '$(srcdir)/'`video_output/opengl/fragment_shaders.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libglwin32_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libglwin32_plugin_la-fragment_shaders.lo `test -f 'video_output/opengl/fragment_shaders.c' || echo '$(srcdir)/'`video_output/opengl/fragment_shaders.c
 
 video_output/opengl/libglwin32_plugin_la-converter_sw.lo: video_output/opengl/converter_sw.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video_output/opengl/libglwin32_plugin_la-converter_sw.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libglwin32_plugin_la-converter_sw.Tpo -c -o video_output/opengl/libglwin32_plugin_la-converter_sw.lo `test -f 'video_output/opengl/converter_sw.c' || echo '$(srcdir)/'`video_output/opengl/converter_sw.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libglwin32_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/opengl/libglwin32_plugin_la-converter_sw.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libglwin32_plugin_la-converter_sw.Tpo -c -o video_output/opengl/libglwin32_plugin_la-converter_sw.lo `test -f 'video_output/opengl/converter_sw.c' || echo '$(srcdir)/'`video_output/opengl/converter_sw.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/opengl/$(DEPDIR)/libglwin32_plugin_la-converter_sw.Tpo video_output/opengl/$(DEPDIR)/libglwin32_plugin_la-converter_sw.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/opengl/converter_sw.c' object='video_output/opengl/libglwin32_plugin_la-converter_sw.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libglwin32_plugin_la-converter_sw.lo `test -f 'video_output/opengl/converter_sw.c' || echo '$(srcdir)/'`video_output/opengl/converter_sw.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libglwin32_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libglwin32_plugin_la-converter_sw.lo `test -f 'video_output/opengl/converter_sw.c' || echo '$(srcdir)/'`video_output/opengl/converter_sw.c
 
 video_output/win32/libglwin32_plugin_la-glwin32.lo: video_output/win32/glwin32.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video_output/win32/libglwin32_plugin_la-glwin32.lo -MD -MP -MF video_output/win32/$(DEPDIR)/libglwin32_plugin_la-glwin32.Tpo -c -o video_output/win32/libglwin32_plugin_la-glwin32.lo `test -f 'video_output/win32/glwin32.c' || echo '$(srcdir)/'`video_output/win32/glwin32.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libglwin32_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/win32/libglwin32_plugin_la-glwin32.lo -MD -MP -MF video_output/win32/$(DEPDIR)/libglwin32_plugin_la-glwin32.Tpo -c -o video_output/win32/libglwin32_plugin_la-glwin32.lo `test -f 'video_output/win32/glwin32.c' || echo '$(srcdir)/'`video_output/win32/glwin32.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/win32/$(DEPDIR)/libglwin32_plugin_la-glwin32.Tpo video_output/win32/$(DEPDIR)/libglwin32_plugin_la-glwin32.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/win32/glwin32.c' object='video_output/win32/libglwin32_plugin_la-glwin32.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video_output/win32/libglwin32_plugin_la-glwin32.lo `test -f 'video_output/win32/glwin32.c' || echo '$(srcdir)/'`video_output/win32/glwin32.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libglwin32_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/win32/libglwin32_plugin_la-glwin32.lo `test -f 'video_output/win32/glwin32.c' || echo '$(srcdir)/'`video_output/win32/glwin32.c
 
 video_output/win32/libglwin32_plugin_la-common.lo: video_output/win32/common.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video_output/win32/libglwin32_plugin_la-common.lo -MD -MP -MF video_output/win32/$(DEPDIR)/libglwin32_plugin_la-common.Tpo -c -o video_output/win32/libglwin32_plugin_la-common.lo `test -f 'video_output/win32/common.c' || echo '$(srcdir)/'`video_output/win32/common.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libglwin32_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/win32/libglwin32_plugin_la-common.lo -MD -MP -MF video_output/win32/$(DEPDIR)/libglwin32_plugin_la-common.Tpo -c -o video_output/win32/libglwin32_plugin_la-common.lo `test -f 'video_output/win32/common.c' || echo '$(srcdir)/'`video_output/win32/common.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/win32/$(DEPDIR)/libglwin32_plugin_la-common.Tpo video_output/win32/$(DEPDIR)/libglwin32_plugin_la-common.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/win32/common.c' object='video_output/win32/libglwin32_plugin_la-common.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video_output/win32/libglwin32_plugin_la-common.lo `test -f 'video_output/win32/common.c' || echo '$(srcdir)/'`video_output/win32/common.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libglwin32_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/win32/libglwin32_plugin_la-common.lo `test -f 'video_output/win32/common.c' || echo '$(srcdir)/'`video_output/win32/common.c
 
 video_chroma/libglwin32_plugin_la-copy.lo: video_chroma/copy.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video_chroma/libglwin32_plugin_la-copy.lo -MD -MP -MF video_chroma/$(DEPDIR)/libglwin32_plugin_la-copy.Tpo -c -o video_chroma/libglwin32_plugin_la-copy.lo `test -f 'video_chroma/copy.c' || echo '$(srcdir)/'`video_chroma/copy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libglwin32_plugin_la_CFLAGS) $(CFLAGS) -MT video_chroma/libglwin32_plugin_la-copy.lo -MD -MP -MF video_chroma/$(DEPDIR)/libglwin32_plugin_la-copy.Tpo -c -o video_chroma/libglwin32_plugin_la-copy.lo `test -f 'video_chroma/copy.c' || echo '$(srcdir)/'`video_chroma/copy.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_chroma/$(DEPDIR)/libglwin32_plugin_la-copy.Tpo video_chroma/$(DEPDIR)/libglwin32_plugin_la-copy.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_chroma/copy.c' object='video_chroma/libglwin32_plugin_la-copy.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video_chroma/libglwin32_plugin_la-copy.lo `test -f 'video_chroma/copy.c' || echo '$(srcdir)/'`video_chroma/copy.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libglwin32_plugin_la_CFLAGS) $(CFLAGS) -c -o video_chroma/libglwin32_plugin_la-copy.lo `test -f 'video_chroma/copy.c' || echo '$(srcdir)/'`video_chroma/copy.c
 
 video_output/win32/libglwin32_plugin_la-events.lo: video_output/win32/events.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video_output/win32/libglwin32_plugin_la-events.lo -MD -MP -MF video_output/win32/$(DEPDIR)/libglwin32_plugin_la-events.Tpo -c -o video_output/win32/libglwin32_plugin_la-events.lo `test -f 'video_output/win32/events.c' || echo '$(srcdir)/'`video_output/win32/events.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libglwin32_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/win32/libglwin32_plugin_la-events.lo -MD -MP -MF video_output/win32/$(DEPDIR)/libglwin32_plugin_la-events.Tpo -c -o video_output/win32/libglwin32_plugin_la-events.lo `test -f 'video_output/win32/events.c' || echo '$(srcdir)/'`video_output/win32/events.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/win32/$(DEPDIR)/libglwin32_plugin_la-events.Tpo video_output/win32/$(DEPDIR)/libglwin32_plugin_la-events.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/win32/events.c' object='video_output/win32/libglwin32_plugin_la-events.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video_output/win32/libglwin32_plugin_la-events.lo `test -f 'video_output/win32/events.c' || echo '$(srcdir)/'`video_output/win32/events.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libglwin32_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/win32/libglwin32_plugin_la-events.lo `test -f 'video_output/win32/events.c' || echo '$(srcdir)/'`video_output/win32/events.c
 
 video_output/win32/libglwin32_plugin_la-win32touch.lo: video_output/win32/win32touch.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video_output/win32/libglwin32_plugin_la-win32touch.lo -MD -MP -MF video_output/win32/$(DEPDIR)/libglwin32_plugin_la-win32touch.Tpo -c -o video_output/win32/libglwin32_plugin_la-win32touch.lo `test -f 'video_output/win32/win32touch.c' || echo '$(srcdir)/'`video_output/win32/win32touch.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libglwin32_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/win32/libglwin32_plugin_la-win32touch.lo -MD -MP -MF video_output/win32/$(DEPDIR)/libglwin32_plugin_la-win32touch.Tpo -c -o video_output/win32/libglwin32_plugin_la-win32touch.lo `test -f 'video_output/win32/win32touch.c' || echo '$(srcdir)/'`video_output/win32/win32touch.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/win32/$(DEPDIR)/libglwin32_plugin_la-win32touch.Tpo video_output/win32/$(DEPDIR)/libglwin32_plugin_la-win32touch.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/win32/win32touch.c' object='video_output/win32/libglwin32_plugin_la-win32touch.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video_output/win32/libglwin32_plugin_la-win32touch.lo `test -f 'video_output/win32/win32touch.c' || echo '$(srcdir)/'`video_output/win32/win32touch.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libglwin32_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libglwin32_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/win32/libglwin32_plugin_la-win32touch.lo `test -f 'video_output/win32/win32touch.c' || echo '$(srcdir)/'`video_output/win32/win32touch.c
 
 video_output/libglx_plugin_la-glx.lo: video_output/glx.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libglx_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/libglx_plugin_la-glx.lo -MD -MP -MF video_output/$(DEPDIR)/libglx_plugin_la-glx.Tpo -c -o video_output/libglx_plugin_la-glx.lo `test -f 'video_output/glx.c' || echo '$(srcdir)/'`video_output/glx.c
@@ -21559,6 +21677,48 @@ codec/libvorbis_plugin_la-vorbis.lo: codec/vorbis.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvorbis_plugin_la_CFLAGS) $(CFLAGS) -c -o codec/libvorbis_plugin_la-vorbis.lo `test -f 'codec/vorbis.c' || echo '$(srcdir)/'`codec/vorbis.c
 
+video_output/opengl/libvout_ios_plugin_la-vout_helper.lo: video_output/opengl/vout_helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvout_ios_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/opengl/libvout_ios_plugin_la-vout_helper.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libvout_ios_plugin_la-vout_helper.Tpo -c -o video_output/opengl/libvout_ios_plugin_la-vout_helper.lo `test -f 'video_output/opengl/vout_helper.c' || echo '$(srcdir)/'`video_output/opengl/vout_helper.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/opengl/$(DEPDIR)/libvout_ios_plugin_la-vout_helper.Tpo video_output/opengl/$(DEPDIR)/libvout_ios_plugin_la-vout_helper.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/opengl/vout_helper.c' object='video_output/opengl/libvout_ios_plugin_la-vout_helper.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvout_ios_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libvout_ios_plugin_la-vout_helper.lo `test -f 'video_output/opengl/vout_helper.c' || echo '$(srcdir)/'`video_output/opengl/vout_helper.c
+
+video_output/opengl/libvout_ios_plugin_la-fragment_shaders.lo: video_output/opengl/fragment_shaders.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvout_ios_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/opengl/libvout_ios_plugin_la-fragment_shaders.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libvout_ios_plugin_la-fragment_shaders.Tpo -c -o video_output/opengl/libvout_ios_plugin_la-fragment_shaders.lo `test -f 'video_output/opengl/fragment_shaders.c' || echo '$(srcdir)/'`video_output/opengl/fragment_shaders.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/opengl/$(DEPDIR)/libvout_ios_plugin_la-fragment_shaders.Tpo video_output/opengl/$(DEPDIR)/libvout_ios_plugin_la-fragment_shaders.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/opengl/fragment_shaders.c' object='video_output/opengl/libvout_ios_plugin_la-fragment_shaders.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvout_ios_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libvout_ios_plugin_la-fragment_shaders.lo `test -f 'video_output/opengl/fragment_shaders.c' || echo '$(srcdir)/'`video_output/opengl/fragment_shaders.c
+
+video_output/opengl/libvout_ios_plugin_la-converter_sw.lo: video_output/opengl/converter_sw.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvout_ios_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/opengl/libvout_ios_plugin_la-converter_sw.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libvout_ios_plugin_la-converter_sw.Tpo -c -o video_output/opengl/libvout_ios_plugin_la-converter_sw.lo `test -f 'video_output/opengl/converter_sw.c' || echo '$(srcdir)/'`video_output/opengl/converter_sw.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/opengl/$(DEPDIR)/libvout_ios_plugin_la-converter_sw.Tpo video_output/opengl/$(DEPDIR)/libvout_ios_plugin_la-converter_sw.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/opengl/converter_sw.c' object='video_output/opengl/libvout_ios_plugin_la-converter_sw.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvout_ios_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libvout_ios_plugin_la-converter_sw.lo `test -f 'video_output/opengl/converter_sw.c' || echo '$(srcdir)/'`video_output/opengl/converter_sw.c
+
+video_output/opengl/libvout_macosx_plugin_la-vout_helper.lo: video_output/opengl/vout_helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvout_macosx_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/opengl/libvout_macosx_plugin_la-vout_helper.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libvout_macosx_plugin_la-vout_helper.Tpo -c -o video_output/opengl/libvout_macosx_plugin_la-vout_helper.lo `test -f 'video_output/opengl/vout_helper.c' || echo '$(srcdir)/'`video_output/opengl/vout_helper.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/opengl/$(DEPDIR)/libvout_macosx_plugin_la-vout_helper.Tpo video_output/opengl/$(DEPDIR)/libvout_macosx_plugin_la-vout_helper.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/opengl/vout_helper.c' object='video_output/opengl/libvout_macosx_plugin_la-vout_helper.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvout_macosx_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libvout_macosx_plugin_la-vout_helper.lo `test -f 'video_output/opengl/vout_helper.c' || echo '$(srcdir)/'`video_output/opengl/vout_helper.c
+
+video_output/opengl/libvout_macosx_plugin_la-fragment_shaders.lo: video_output/opengl/fragment_shaders.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvout_macosx_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/opengl/libvout_macosx_plugin_la-fragment_shaders.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libvout_macosx_plugin_la-fragment_shaders.Tpo -c -o video_output/opengl/libvout_macosx_plugin_la-fragment_shaders.lo `test -f 'video_output/opengl/fragment_shaders.c' || echo '$(srcdir)/'`video_output/opengl/fragment_shaders.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/opengl/$(DEPDIR)/libvout_macosx_plugin_la-fragment_shaders.Tpo video_output/opengl/$(DEPDIR)/libvout_macosx_plugin_la-fragment_shaders.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/opengl/fragment_shaders.c' object='video_output/opengl/libvout_macosx_plugin_la-fragment_shaders.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvout_macosx_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libvout_macosx_plugin_la-fragment_shaders.lo `test -f 'video_output/opengl/fragment_shaders.c' || echo '$(srcdir)/'`video_output/opengl/fragment_shaders.c
+
+video_output/opengl/libvout_macosx_plugin_la-converter_sw.lo: video_output/opengl/converter_sw.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvout_macosx_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/opengl/libvout_macosx_plugin_la-converter_sw.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libvout_macosx_plugin_la-converter_sw.Tpo -c -o video_output/opengl/libvout_macosx_plugin_la-converter_sw.lo `test -f 'video_output/opengl/converter_sw.c' || echo '$(srcdir)/'`video_output/opengl/converter_sw.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/opengl/$(DEPDIR)/libvout_macosx_plugin_la-converter_sw.Tpo video_output/opengl/$(DEPDIR)/libvout_macosx_plugin_la-converter_sw.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/opengl/converter_sw.c' object='video_output/opengl/libvout_macosx_plugin_la-converter_sw.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvout_macosx_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libvout_macosx_plugin_la-converter_sw.lo `test -f 'video_output/opengl/converter_sw.c' || echo '$(srcdir)/'`video_output/opengl/converter_sw.c
+
 codec/libvpx_plugin_la-vpx.lo: codec/vpx.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libvpx_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libvpx_plugin_la_CFLAGS) $(CFLAGS) -MT codec/libvpx_plugin_la-vpx.lo -MD -MP -MF codec/$(DEPDIR)/libvpx_plugin_la-vpx.Tpo -c -o codec/libvpx_plugin_la-vpx.lo `test -f 'codec/vpx.c' || echo '$(srcdir)/'`codec/vpx.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) codec/$(DEPDIR)/libvpx_plugin_la-vpx.Tpo codec/$(DEPDIR)/libvpx_plugin_la-vpx.Plo
@@ -21567,32 +21727,32 @@ codec/libvpx_plugin_la-vpx.lo: codec/vpx.c
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libvpx_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libvpx_plugin_la_CFLAGS) $(CFLAGS) -c -o codec/libvpx_plugin_la-vpx.lo `test -f 'codec/vpx.c' || echo '$(srcdir)/'`codec/vpx.c
 
 video_output/win32/libwgl_plugin_la-wgl.lo: video_output/win32/wgl.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libwgl_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video_output/win32/libwgl_plugin_la-wgl.lo -MD -MP -MF video_output/win32/$(DEPDIR)/libwgl_plugin_la-wgl.Tpo -c -o video_output/win32/libwgl_plugin_la-wgl.lo `test -f 'video_output/win32/wgl.c' || echo '$(srcdir)/'`video_output/win32/wgl.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libwgl_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libwgl_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/win32/libwgl_plugin_la-wgl.lo -MD -MP -MF video_output/win32/$(DEPDIR)/libwgl_plugin_la-wgl.Tpo -c -o video_output/win32/libwgl_plugin_la-wgl.lo `test -f 'video_output/win32/wgl.c' || echo '$(srcdir)/'`video_output/win32/wgl.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/win32/$(DEPDIR)/libwgl_plugin_la-wgl.Tpo video_output/win32/$(DEPDIR)/libwgl_plugin_la-wgl.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/win32/wgl.c' object='video_output/win32/libwgl_plugin_la-wgl.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libwgl_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video_output/win32/libwgl_plugin_la-wgl.lo `test -f 'video_output/win32/wgl.c' || echo '$(srcdir)/'`video_output/win32/wgl.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libwgl_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libwgl_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/win32/libwgl_plugin_la-wgl.lo `test -f 'video_output/win32/wgl.c' || echo '$(srcdir)/'`video_output/win32/wgl.c
 
 video_output/opengl/libwgl_plugin_la-vout_helper.lo: video_output/opengl/vout_helper.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libwgl_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video_output/opengl/libwgl_plugin_la-vout_helper.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libwgl_plugin_la-vout_helper.Tpo -c -o video_output/opengl/libwgl_plugin_la-vout_helper.lo `test -f 'video_output/opengl/vout_helper.c' || echo '$(srcdir)/'`video_output/opengl/vout_helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libwgl_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libwgl_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/opengl/libwgl_plugin_la-vout_helper.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libwgl_plugin_la-vout_helper.Tpo -c -o video_output/opengl/libwgl_plugin_la-vout_helper.lo `test -f 'video_output/opengl/vout_helper.c' || echo '$(srcdir)/'`video_output/opengl/vout_helper.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/opengl/$(DEPDIR)/libwgl_plugin_la-vout_helper.Tpo video_output/opengl/$(DEPDIR)/libwgl_plugin_la-vout_helper.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/opengl/vout_helper.c' object='video_output/opengl/libwgl_plugin_la-vout_helper.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libwgl_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libwgl_plugin_la-vout_helper.lo `test -f 'video_output/opengl/vout_helper.c' || echo '$(srcdir)/'`video_output/opengl/vout_helper.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libwgl_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libwgl_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libwgl_plugin_la-vout_helper.lo `test -f 'video_output/opengl/vout_helper.c' || echo '$(srcdir)/'`video_output/opengl/vout_helper.c
 
 video_output/opengl/libwgl_plugin_la-fragment_shaders.lo: video_output/opengl/fragment_shaders.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libwgl_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video_output/opengl/libwgl_plugin_la-fragment_shaders.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libwgl_plugin_la-fragment_shaders.Tpo -c -o video_output/opengl/libwgl_plugin_la-fragment_shaders.lo `test -f 'video_output/opengl/fragment_shaders.c' || echo '$(srcdir)/'`video_output/opengl/fragment_shaders.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libwgl_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libwgl_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/opengl/libwgl_plugin_la-fragment_shaders.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libwgl_plugin_la-fragment_shaders.Tpo -c -o video_output/opengl/libwgl_plugin_la-fragment_shaders.lo `test -f 'video_output/opengl/fragment_shaders.c' || echo '$(srcdir)/'`video_output/opengl/fragment_shaders.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/opengl/$(DEPDIR)/libwgl_plugin_la-fragment_shaders.Tpo video_output/opengl/$(DEPDIR)/libwgl_plugin_la-fragment_shaders.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/opengl/fragment_shaders.c' object='video_output/opengl/libwgl_plugin_la-fragment_shaders.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libwgl_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libwgl_plugin_la-fragment_shaders.lo `test -f 'video_output/opengl/fragment_shaders.c' || echo '$(srcdir)/'`video_output/opengl/fragment_shaders.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libwgl_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libwgl_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libwgl_plugin_la-fragment_shaders.lo `test -f 'video_output/opengl/fragment_shaders.c' || echo '$(srcdir)/'`video_output/opengl/fragment_shaders.c
 
 video_output/opengl/libwgl_plugin_la-converter_sw.lo: video_output/opengl/converter_sw.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libwgl_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video_output/opengl/libwgl_plugin_la-converter_sw.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libwgl_plugin_la-converter_sw.Tpo -c -o video_output/opengl/libwgl_plugin_la-converter_sw.lo `test -f 'video_output/opengl/converter_sw.c' || echo '$(srcdir)/'`video_output/opengl/converter_sw.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libwgl_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libwgl_plugin_la_CFLAGS) $(CFLAGS) -MT video_output/opengl/libwgl_plugin_la-converter_sw.lo -MD -MP -MF video_output/opengl/$(DEPDIR)/libwgl_plugin_la-converter_sw.Tpo -c -o video_output/opengl/libwgl_plugin_la-converter_sw.lo `test -f 'video_output/opengl/converter_sw.c' || echo '$(srcdir)/'`video_output/opengl/converter_sw.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/opengl/$(DEPDIR)/libwgl_plugin_la-converter_sw.Tpo video_output/opengl/$(DEPDIR)/libwgl_plugin_la-converter_sw.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/opengl/converter_sw.c' object='video_output/opengl/libwgl_plugin_la-converter_sw.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libwgl_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libwgl_plugin_la-converter_sw.lo `test -f 'video_output/opengl/converter_sw.c' || echo '$(srcdir)/'`video_output/opengl/converter_sw.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libwgl_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libwgl_plugin_la_CFLAGS) $(CFLAGS) -c -o video_output/opengl/libwgl_plugin_la-converter_sw.lo `test -f 'video_output/opengl/converter_sw.c' || echo '$(srcdir)/'`video_output/opengl/converter_sw.c
 
 video_output/win32/libwingdi_plugin_la-wingdi.lo: video_output/win32/wingdi.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libwingdi_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video_output/win32/libwingdi_plugin_la-wingdi.lo -MD -MP -MF video_output/win32/$(DEPDIR)/libwingdi_plugin_la-wingdi.Tpo -c -o video_output/win32/libwingdi_plugin_la-wingdi.lo `test -f 'video_output/win32/wingdi.c' || echo '$(srcdir)/'`video_output/win32/wingdi.c
@@ -22072,6 +22232,13 @@ demux/adaptive/mp4/libadaptive_plugin_la-AtomsReader.lo: demux/adaptive/mp4/Atom
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='demux/adaptive/mp4/AtomsReader.cpp' object='demux/adaptive/mp4/libadaptive_plugin_la-AtomsReader.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libadaptive_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o demux/adaptive/mp4/libadaptive_plugin_la-AtomsReader.lo `test -f 'demux/adaptive/mp4/AtomsReader.cpp' || echo '$(srcdir)/'`demux/adaptive/mp4/AtomsReader.cpp
+
+demux/adaptive/http/libadaptive_plugin_la-AuthStorage.lo: demux/adaptive/http/AuthStorage.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libadaptive_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT demux/adaptive/http/libadaptive_plugin_la-AuthStorage.lo -MD -MP -MF demux/adaptive/http/$(DEPDIR)/libadaptive_plugin_la-AuthStorage.Tpo -c -o demux/adaptive/http/libadaptive_plugin_la-AuthStorage.lo `test -f 'demux/adaptive/http/AuthStorage.cpp' || echo '$(srcdir)/'`demux/adaptive/http/AuthStorage.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) demux/adaptive/http/$(DEPDIR)/libadaptive_plugin_la-AuthStorage.Tpo demux/adaptive/http/$(DEPDIR)/libadaptive_plugin_la-AuthStorage.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='demux/adaptive/http/AuthStorage.cpp' object='demux/adaptive/http/libadaptive_plugin_la-AuthStorage.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libadaptive_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o demux/adaptive/http/libadaptive_plugin_la-AuthStorage.lo `test -f 'demux/adaptive/http/AuthStorage.cpp' || echo '$(srcdir)/'`demux/adaptive/http/AuthStorage.cpp
 
 demux/adaptive/http/libadaptive_plugin_la-BytesRange.lo: demux/adaptive/http/BytesRange.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libadaptive_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT demux/adaptive/http/libadaptive_plugin_la-BytesRange.lo -MD -MP -MF demux/adaptive/http/$(DEPDIR)/libadaptive_plugin_la-BytesRange.Tpo -c -o demux/adaptive/http/libadaptive_plugin_la-BytesRange.lo `test -f 'demux/adaptive/http/BytesRange.cpp' || echo '$(srcdir)/'`demux/adaptive/http/BytesRange.cpp
@@ -23129,6 +23296,13 @@ gui/qt/util/buttons/libqt_plugin_la-RoundButton.lo: gui/qt/util/buttons/RoundBut
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gui/qt/util/buttons/RoundButton.cpp' object='gui/qt/util/buttons/libqt_plugin_la-RoundButton.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libqt_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libqt_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o gui/qt/util/buttons/libqt_plugin_la-RoundButton.lo `test -f 'gui/qt/util/buttons/RoundButton.cpp' || echo '$(srcdir)/'`gui/qt/util/buttons/RoundButton.cpp
+
+gui/qt/util/libqt_plugin_la-imagehelper.lo: gui/qt/util/imagehelper.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libqt_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libqt_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT gui/qt/util/libqt_plugin_la-imagehelper.lo -MD -MP -MF gui/qt/util/$(DEPDIR)/libqt_plugin_la-imagehelper.Tpo -c -o gui/qt/util/libqt_plugin_la-imagehelper.lo `test -f 'gui/qt/util/imagehelper.cpp' || echo '$(srcdir)/'`gui/qt/util/imagehelper.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) gui/qt/util/$(DEPDIR)/libqt_plugin_la-imagehelper.Tpo gui/qt/util/$(DEPDIR)/libqt_plugin_la-imagehelper.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gui/qt/util/imagehelper.cpp' object='gui/qt/util/libqt_plugin_la-imagehelper.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libqt_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libqt_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o gui/qt/util/libqt_plugin_la-imagehelper.lo `test -f 'gui/qt/util/imagehelper.cpp' || echo '$(srcdir)/'`gui/qt/util/imagehelper.cpp
 
 gui/qt/styles/libqt_plugin_la-seekstyle.lo: gui/qt/styles/seekstyle.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libqt_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libqt_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT gui/qt/styles/libqt_plugin_la-seekstyle.lo -MD -MP -MF gui/qt/styles/$(DEPDIR)/libqt_plugin_la-seekstyle.Tpo -c -o gui/qt/styles/libqt_plugin_la-seekstyle.lo `test -f 'gui/qt/styles/seekstyle.cpp' || echo '$(srcdir)/'`gui/qt/styles/seekstyle.cpp
@@ -25223,6 +25397,7 @@ clean-libtool:
 	-rm -rf codec/omxil/.libs codec/omxil/_libs
 	-rm -rf codec/spudec/.libs codec/spudec/_libs
 	-rm -rf codec/ttml/.libs codec/ttml/_libs
+	-rm -rf codec/webvtt/.libs codec/webvtt/_libs
 	-rm -rf codec/wmafixed/.libs codec/wmafixed/_libs
 	-rm -rf control/.libs control/_libs
 	-rm -rf control/dbus/.libs control/dbus/_libs
@@ -25838,6 +26013,8 @@ distclean-generic:
 	-rm -f codec/spudec/$(am__dirstamp)
 	-rm -f codec/ttml/$(DEPDIR)/$(am__dirstamp)
 	-rm -f codec/ttml/$(am__dirstamp)
+	-rm -f codec/webvtt/$(DEPDIR)/$(am__dirstamp)
+	-rm -f codec/webvtt/$(am__dirstamp)
 	-rm -f codec/wmafixed/$(DEPDIR)/$(am__dirstamp)
 	-rm -f codec/wmafixed/$(am__dirstamp)
 	-rm -f control/$(DEPDIR)/$(am__dirstamp)
@@ -26055,7 +26232,7 @@ clean-am: clean-accessLTLIBRARIES clean-access_outLTLIBRARIES \
 	clean-voutLTLIBRARIES mostlyclean-am
 
 distclean: distclean-recursive
-	-rm -rf ./$(DEPDIR) access/$(DEPDIR) access/dcp/$(DEPDIR) access/dshow/$(DEPDIR) access/dsm/$(DEPDIR) access/dtv/$(DEPDIR) access/dvb/$(DEPDIR) access/http/$(DEPDIR) access/linsys/$(DEPDIR) access/mms/$(DEPDIR) access/rtp/$(DEPDIR) access/rtsp/$(DEPDIR) access/screen/$(DEPDIR) access/v4l2/$(DEPDIR) access/vcd/$(DEPDIR) access_output/$(DEPDIR) arm_neon/$(DEPDIR) audio_filter/$(DEPDIR) audio_filter/channel_mixer/$(DEPDIR) audio_filter/converter/$(DEPDIR) audio_filter/resampler/$(DEPDIR) audio_filter/spatializer/$(DEPDIR) audio_mixer/$(DEPDIR) audio_output/$(DEPDIR) codec/$(DEPDIR) codec/arib/$(DEPDIR) codec/avcodec/$(DEPDIR) codec/dmo/$(DEPDIR) codec/gstreamer/$(DEPDIR) codec/omxil/$(DEPDIR) codec/spudec/$(DEPDIR) codec/ttml/$(DEPDIR) codec/wmafixed/$(DEPDIR) control/$(DEPDIR) control/dbus/$(DEPDIR) control/globalhotkeys/$(DEPDIR) demux/$(DEPDIR) demux/adaptive/$(DEPDIR) demux/adaptive/http/$(DEPDIR) demux/adaptive/logic/$(DEPDIR) demux/adaptive/mp4/$(DEPDIR) demux/adaptive/playlist/$(DEPDIR) demux/adaptive/plumbing/$(DEPDIR) demux/adaptive/tools/$(DEPDIR) demux/adaptive/xml/$(DEPDIR) demux/asf/$(DEPDIR) demux/avformat/$(DEPDIR) demux/avi/$(DEPDIR) demux/dash/$(DEPDIR) demux/dash/mp4/$(DEPDIR) demux/dash/mpd/$(DEPDIR) demux/filter/$(DEPDIR) demux/hls/$(DEPDIR) demux/hls/playlist/$(DEPDIR) demux/mkv/$(DEPDIR) demux/mp4/$(DEPDIR) demux/mpeg/$(DEPDIR) demux/playlist/$(DEPDIR) demux/smooth/$(DEPDIR) demux/smooth/mp4/$(DEPDIR) demux/smooth/playlist/$(DEPDIR) gui/$(DEPDIR) gui/macosx/$(DEPDIR) gui/minimal_macosx/$(DEPDIR) gui/qt/$(DEPDIR) gui/qt/adapters/$(DEPDIR) gui/qt/components/$(DEPDIR) gui/qt/components/epg/$(DEPDIR) gui/qt/components/playlist/$(DEPDIR) gui/qt/components/sout/$(DEPDIR) gui/qt/dialogs/$(DEPDIR) gui/qt/managers/$(DEPDIR) gui/qt/styles/$(DEPDIR) gui/qt/util/$(DEPDIR) gui/qt/util/buttons/$(DEPDIR) gui/skins2/commands/$(DEPDIR) gui/skins2/controls/$(DEPDIR) gui/skins2/events/$(DEPDIR) gui/skins2/os2/$(DEPDIR) gui/skins2/parser/$(DEPDIR) gui/skins2/src/$(DEPDIR) gui/skins2/utils/$(DEPDIR) gui/skins2/vars/$(DEPDIR) gui/skins2/win32/$(DEPDIR) gui/skins2/x11/$(DEPDIR) hw/vaapi/$(DEPDIR) hw/vdpau/$(DEPDIR) keystore/$(DEPDIR) logger/$(DEPDIR) lua/$(DEPDIR) lua/libs/$(DEPDIR) meta_engine/$(DEPDIR) misc/$(DEPDIR) misc/addons/$(DEPDIR) misc/inhibit/$(DEPDIR) misc/playlist/$(DEPDIR) misc/webservices/$(DEPDIR) misc/xml/$(DEPDIR) mux/$(DEPDIR) mux/mp4/$(DEPDIR) mux/mpeg/$(DEPDIR) notify/$(DEPDIR) packetizer/$(DEPDIR) services_discovery/$(DEPDIR) spu/$(DEPDIR) spu/dynamicoverlay/$(DEPDIR) stream_extractor/$(DEPDIR) stream_filter/$(DEPDIR) stream_filter/hds/$(DEPDIR) stream_out/$(DEPDIR) stream_out/chromecast/$(DEPDIR) stream_out/transcode/$(DEPDIR) text_renderer/$(DEPDIR) text_renderer/freetype/$(DEPDIR) text_renderer/freetype/fonts/$(DEPDIR) video_chroma/$(DEPDIR) video_filter/$(DEPDIR) video_filter/deinterlace/$(DEPDIR) video_output/$(DEPDIR) video_output/android/$(DEPDIR) video_output/opengl/$(DEPDIR) video_output/wayland/$(DEPDIR) video_output/win32/$(DEPDIR) video_output/xcb/$(DEPDIR) video_splitter/$(DEPDIR) visualization/$(DEPDIR) visualization/visual/$(DEPDIR)
+	-rm -rf ./$(DEPDIR) access/$(DEPDIR) access/dcp/$(DEPDIR) access/dshow/$(DEPDIR) access/dsm/$(DEPDIR) access/dtv/$(DEPDIR) access/dvb/$(DEPDIR) access/http/$(DEPDIR) access/linsys/$(DEPDIR) access/mms/$(DEPDIR) access/rtp/$(DEPDIR) access/rtsp/$(DEPDIR) access/screen/$(DEPDIR) access/v4l2/$(DEPDIR) access/vcd/$(DEPDIR) access_output/$(DEPDIR) arm_neon/$(DEPDIR) audio_filter/$(DEPDIR) audio_filter/channel_mixer/$(DEPDIR) audio_filter/converter/$(DEPDIR) audio_filter/resampler/$(DEPDIR) audio_filter/spatializer/$(DEPDIR) audio_mixer/$(DEPDIR) audio_output/$(DEPDIR) codec/$(DEPDIR) codec/arib/$(DEPDIR) codec/avcodec/$(DEPDIR) codec/dmo/$(DEPDIR) codec/gstreamer/$(DEPDIR) codec/omxil/$(DEPDIR) codec/spudec/$(DEPDIR) codec/ttml/$(DEPDIR) codec/webvtt/$(DEPDIR) codec/wmafixed/$(DEPDIR) control/$(DEPDIR) control/dbus/$(DEPDIR) control/globalhotkeys/$(DEPDIR) demux/$(DEPDIR) demux/adaptive/$(DEPDIR) demux/adaptive/http/$(DEPDIR) demux/adaptive/logic/$(DEPDIR) demux/adaptive/mp4/$(DEPDIR) demux/adaptive/playlist/$(DEPDIR) demux/adaptive/plumbing/$(DEPDIR) demux/adaptive/tools/$(DEPDIR) demux/adaptive/xml/$(DEPDIR) demux/asf/$(DEPDIR) demux/avformat/$(DEPDIR) demux/avi/$(DEPDIR) demux/dash/$(DEPDIR) demux/dash/mp4/$(DEPDIR) demux/dash/mpd/$(DEPDIR) demux/filter/$(DEPDIR) demux/hls/$(DEPDIR) demux/hls/playlist/$(DEPDIR) demux/mkv/$(DEPDIR) demux/mp4/$(DEPDIR) demux/mpeg/$(DEPDIR) demux/playlist/$(DEPDIR) demux/smooth/$(DEPDIR) demux/smooth/mp4/$(DEPDIR) demux/smooth/playlist/$(DEPDIR) gui/$(DEPDIR) gui/macosx/$(DEPDIR) gui/minimal_macosx/$(DEPDIR) gui/qt/$(DEPDIR) gui/qt/adapters/$(DEPDIR) gui/qt/components/$(DEPDIR) gui/qt/components/epg/$(DEPDIR) gui/qt/components/playlist/$(DEPDIR) gui/qt/components/sout/$(DEPDIR) gui/qt/dialogs/$(DEPDIR) gui/qt/managers/$(DEPDIR) gui/qt/styles/$(DEPDIR) gui/qt/util/$(DEPDIR) gui/qt/util/buttons/$(DEPDIR) gui/skins2/commands/$(DEPDIR) gui/skins2/controls/$(DEPDIR) gui/skins2/events/$(DEPDIR) gui/skins2/os2/$(DEPDIR) gui/skins2/parser/$(DEPDIR) gui/skins2/src/$(DEPDIR) gui/skins2/utils/$(DEPDIR) gui/skins2/vars/$(DEPDIR) gui/skins2/win32/$(DEPDIR) gui/skins2/x11/$(DEPDIR) hw/vaapi/$(DEPDIR) hw/vdpau/$(DEPDIR) keystore/$(DEPDIR) logger/$(DEPDIR) lua/$(DEPDIR) lua/libs/$(DEPDIR) meta_engine/$(DEPDIR) misc/$(DEPDIR) misc/addons/$(DEPDIR) misc/inhibit/$(DEPDIR) misc/playlist/$(DEPDIR) misc/webservices/$(DEPDIR) misc/xml/$(DEPDIR) mux/$(DEPDIR) mux/mp4/$(DEPDIR) mux/mpeg/$(DEPDIR) notify/$(DEPDIR) packetizer/$(DEPDIR) services_discovery/$(DEPDIR) spu/$(DEPDIR) spu/dynamicoverlay/$(DEPDIR) stream_extractor/$(DEPDIR) stream_filter/$(DEPDIR) stream_filter/hds/$(DEPDIR) stream_out/$(DEPDIR) stream_out/chromecast/$(DEPDIR) stream_out/transcode/$(DEPDIR) text_renderer/$(DEPDIR) text_renderer/freetype/$(DEPDIR) text_renderer/freetype/fonts/$(DEPDIR) video_chroma/$(DEPDIR) video_filter/$(DEPDIR) video_filter/deinterlace/$(DEPDIR) video_output/$(DEPDIR) video_output/android/$(DEPDIR) video_output/opengl/$(DEPDIR) video_output/wayland/$(DEPDIR) video_output/win32/$(DEPDIR) video_output/xcb/$(DEPDIR) video_splitter/$(DEPDIR) visualization/$(DEPDIR) visualization/visual/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -26117,7 +26294,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-recursive
-	-rm -rf ./$(DEPDIR) access/$(DEPDIR) access/dcp/$(DEPDIR) access/dshow/$(DEPDIR) access/dsm/$(DEPDIR) access/dtv/$(DEPDIR) access/dvb/$(DEPDIR) access/http/$(DEPDIR) access/linsys/$(DEPDIR) access/mms/$(DEPDIR) access/rtp/$(DEPDIR) access/rtsp/$(DEPDIR) access/screen/$(DEPDIR) access/v4l2/$(DEPDIR) access/vcd/$(DEPDIR) access_output/$(DEPDIR) arm_neon/$(DEPDIR) audio_filter/$(DEPDIR) audio_filter/channel_mixer/$(DEPDIR) audio_filter/converter/$(DEPDIR) audio_filter/resampler/$(DEPDIR) audio_filter/spatializer/$(DEPDIR) audio_mixer/$(DEPDIR) audio_output/$(DEPDIR) codec/$(DEPDIR) codec/arib/$(DEPDIR) codec/avcodec/$(DEPDIR) codec/dmo/$(DEPDIR) codec/gstreamer/$(DEPDIR) codec/omxil/$(DEPDIR) codec/spudec/$(DEPDIR) codec/ttml/$(DEPDIR) codec/wmafixed/$(DEPDIR) control/$(DEPDIR) control/dbus/$(DEPDIR) control/globalhotkeys/$(DEPDIR) demux/$(DEPDIR) demux/adaptive/$(DEPDIR) demux/adaptive/http/$(DEPDIR) demux/adaptive/logic/$(DEPDIR) demux/adaptive/mp4/$(DEPDIR) demux/adaptive/playlist/$(DEPDIR) demux/adaptive/plumbing/$(DEPDIR) demux/adaptive/tools/$(DEPDIR) demux/adaptive/xml/$(DEPDIR) demux/asf/$(DEPDIR) demux/avformat/$(DEPDIR) demux/avi/$(DEPDIR) demux/dash/$(DEPDIR) demux/dash/mp4/$(DEPDIR) demux/dash/mpd/$(DEPDIR) demux/filter/$(DEPDIR) demux/hls/$(DEPDIR) demux/hls/playlist/$(DEPDIR) demux/mkv/$(DEPDIR) demux/mp4/$(DEPDIR) demux/mpeg/$(DEPDIR) demux/playlist/$(DEPDIR) demux/smooth/$(DEPDIR) demux/smooth/mp4/$(DEPDIR) demux/smooth/playlist/$(DEPDIR) gui/$(DEPDIR) gui/macosx/$(DEPDIR) gui/minimal_macosx/$(DEPDIR) gui/qt/$(DEPDIR) gui/qt/adapters/$(DEPDIR) gui/qt/components/$(DEPDIR) gui/qt/components/epg/$(DEPDIR) gui/qt/components/playlist/$(DEPDIR) gui/qt/components/sout/$(DEPDIR) gui/qt/dialogs/$(DEPDIR) gui/qt/managers/$(DEPDIR) gui/qt/styles/$(DEPDIR) gui/qt/util/$(DEPDIR) gui/qt/util/buttons/$(DEPDIR) gui/skins2/commands/$(DEPDIR) gui/skins2/controls/$(DEPDIR) gui/skins2/events/$(DEPDIR) gui/skins2/os2/$(DEPDIR) gui/skins2/parser/$(DEPDIR) gui/skins2/src/$(DEPDIR) gui/skins2/utils/$(DEPDIR) gui/skins2/vars/$(DEPDIR) gui/skins2/win32/$(DEPDIR) gui/skins2/x11/$(DEPDIR) hw/vaapi/$(DEPDIR) hw/vdpau/$(DEPDIR) keystore/$(DEPDIR) logger/$(DEPDIR) lua/$(DEPDIR) lua/libs/$(DEPDIR) meta_engine/$(DEPDIR) misc/$(DEPDIR) misc/addons/$(DEPDIR) misc/inhibit/$(DEPDIR) misc/playlist/$(DEPDIR) misc/webservices/$(DEPDIR) misc/xml/$(DEPDIR) mux/$(DEPDIR) mux/mp4/$(DEPDIR) mux/mpeg/$(DEPDIR) notify/$(DEPDIR) packetizer/$(DEPDIR) services_discovery/$(DEPDIR) spu/$(DEPDIR) spu/dynamicoverlay/$(DEPDIR) stream_extractor/$(DEPDIR) stream_filter/$(DEPDIR) stream_filter/hds/$(DEPDIR) stream_out/$(DEPDIR) stream_out/chromecast/$(DEPDIR) stream_out/transcode/$(DEPDIR) text_renderer/$(DEPDIR) text_renderer/freetype/$(DEPDIR) text_renderer/freetype/fonts/$(DEPDIR) video_chroma/$(DEPDIR) video_filter/$(DEPDIR) video_filter/deinterlace/$(DEPDIR) video_output/$(DEPDIR) video_output/android/$(DEPDIR) video_output/opengl/$(DEPDIR) video_output/wayland/$(DEPDIR) video_output/win32/$(DEPDIR) video_output/xcb/$(DEPDIR) video_splitter/$(DEPDIR) visualization/$(DEPDIR) visualization/visual/$(DEPDIR)
+	-rm -rf ./$(DEPDIR) access/$(DEPDIR) access/dcp/$(DEPDIR) access/dshow/$(DEPDIR) access/dsm/$(DEPDIR) access/dtv/$(DEPDIR) access/dvb/$(DEPDIR) access/http/$(DEPDIR) access/linsys/$(DEPDIR) access/mms/$(DEPDIR) access/rtp/$(DEPDIR) access/rtsp/$(DEPDIR) access/screen/$(DEPDIR) access/v4l2/$(DEPDIR) access/vcd/$(DEPDIR) access_output/$(DEPDIR) arm_neon/$(DEPDIR) audio_filter/$(DEPDIR) audio_filter/channel_mixer/$(DEPDIR) audio_filter/converter/$(DEPDIR) audio_filter/resampler/$(DEPDIR) audio_filter/spatializer/$(DEPDIR) audio_mixer/$(DEPDIR) audio_output/$(DEPDIR) codec/$(DEPDIR) codec/arib/$(DEPDIR) codec/avcodec/$(DEPDIR) codec/dmo/$(DEPDIR) codec/gstreamer/$(DEPDIR) codec/omxil/$(DEPDIR) codec/spudec/$(DEPDIR) codec/ttml/$(DEPDIR) codec/webvtt/$(DEPDIR) codec/wmafixed/$(DEPDIR) control/$(DEPDIR) control/dbus/$(DEPDIR) control/globalhotkeys/$(DEPDIR) demux/$(DEPDIR) demux/adaptive/$(DEPDIR) demux/adaptive/http/$(DEPDIR) demux/adaptive/logic/$(DEPDIR) demux/adaptive/mp4/$(DEPDIR) demux/adaptive/playlist/$(DEPDIR) demux/adaptive/plumbing/$(DEPDIR) demux/adaptive/tools/$(DEPDIR) demux/adaptive/xml/$(DEPDIR) demux/asf/$(DEPDIR) demux/avformat/$(DEPDIR) demux/avi/$(DEPDIR) demux/dash/$(DEPDIR) demux/dash/mp4/$(DEPDIR) demux/dash/mpd/$(DEPDIR) demux/filter/$(DEPDIR) demux/hls/$(DEPDIR) demux/hls/playlist/$(DEPDIR) demux/mkv/$(DEPDIR) demux/mp4/$(DEPDIR) demux/mpeg/$(DEPDIR) demux/playlist/$(DEPDIR) demux/smooth/$(DEPDIR) demux/smooth/mp4/$(DEPDIR) demux/smooth/playlist/$(DEPDIR) gui/$(DEPDIR) gui/macosx/$(DEPDIR) gui/minimal_macosx/$(DEPDIR) gui/qt/$(DEPDIR) gui/qt/adapters/$(DEPDIR) gui/qt/components/$(DEPDIR) gui/qt/components/epg/$(DEPDIR) gui/qt/components/playlist/$(DEPDIR) gui/qt/components/sout/$(DEPDIR) gui/qt/dialogs/$(DEPDIR) gui/qt/managers/$(DEPDIR) gui/qt/styles/$(DEPDIR) gui/qt/util/$(DEPDIR) gui/qt/util/buttons/$(DEPDIR) gui/skins2/commands/$(DEPDIR) gui/skins2/controls/$(DEPDIR) gui/skins2/events/$(DEPDIR) gui/skins2/os2/$(DEPDIR) gui/skins2/parser/$(DEPDIR) gui/skins2/src/$(DEPDIR) gui/skins2/utils/$(DEPDIR) gui/skins2/vars/$(DEPDIR) gui/skins2/win32/$(DEPDIR) gui/skins2/x11/$(DEPDIR) hw/vaapi/$(DEPDIR) hw/vdpau/$(DEPDIR) keystore/$(DEPDIR) logger/$(DEPDIR) lua/$(DEPDIR) lua/libs/$(DEPDIR) meta_engine/$(DEPDIR) misc/$(DEPDIR) misc/addons/$(DEPDIR) misc/inhibit/$(DEPDIR) misc/playlist/$(DEPDIR) misc/webservices/$(DEPDIR) misc/xml/$(DEPDIR) mux/$(DEPDIR) mux/mp4/$(DEPDIR) mux/mpeg/$(DEPDIR) notify/$(DEPDIR) packetizer/$(DEPDIR) services_discovery/$(DEPDIR) spu/$(DEPDIR) spu/dynamicoverlay/$(DEPDIR) stream_extractor/$(DEPDIR) stream_filter/$(DEPDIR) stream_filter/hds/$(DEPDIR) stream_out/$(DEPDIR) stream_out/chromecast/$(DEPDIR) stream_out/transcode/$(DEPDIR) text_renderer/$(DEPDIR) text_renderer/freetype/$(DEPDIR) text_renderer/freetype/fonts/$(DEPDIR) video_chroma/$(DEPDIR) video_filter/$(DEPDIR) video_filter/deinterlace/$(DEPDIR) video_output/$(DEPDIR) video_output/android/$(DEPDIR) video_output/opengl/$(DEPDIR) video_output/wayland/$(DEPDIR) video_output/win32/$(DEPDIR) video_output/xcb/$(DEPDIR) video_splitter/$(DEPDIR) visualization/$(DEPDIR) visualization/visual/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

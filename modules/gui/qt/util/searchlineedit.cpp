@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id: 0fd232cad68d731c5016ffa8f3c88ec474f8ac23 $
+ * $Id: bf0b8d85f72c2502c492d9fdf6e7e2b13741a016 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin
@@ -44,7 +44,7 @@
 SearchLineEdit::SearchLineEdit( QWidget *parent ) : QLineEdit( parent )
 {
     clearButton = new QFramelessButton( this );
-    clearButton->setIcon( QIcon( ":/search_clear" ) );
+    clearButton->setIcon( QIcon( ":/search_clear.svg" ) );
     clearButton->setIconSize( QSize( 16, 16 ) );
     clearButton->setCursor( Qt::ArrowCursor );
     clearButton->setToolTip( qfu(vlc_pgettext("Tooltip|Clear", "Clear")) );
