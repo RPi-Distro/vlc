@@ -259,12 +259,12 @@ libvlccore.so.8 libvlccore8 #MINVER#
  net_Write@Base 2.0.0
  net_vaPrintf@Base 2.0.0
  picture_BlendSubpicture@Base 2.0.0
+ picture_Clone@Base 3.0.0~
  picture_Copy@Base 2.1.0
  picture_CopyPixels@Base 2.0.0
  picture_CopyProperties@Base 2.1.0
  picture_Export@Base 2.0.0
  picture_Hold@Base 2.1.0
- picture_IsReferenced@Base 2.1.0
  picture_New@Base 2.0.0
  picture_NewFromFormat@Base 2.0.0
  picture_NewFromResource@Base 2.0.0
