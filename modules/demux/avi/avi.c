@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: da0903f1c18a871849e50c36f685f5522c394be9 $
+ * $Id: 190a6be2091bc182962e3dd9a689a3abc993e6b9 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -274,7 +274,8 @@ static void Close ( vlc_object_t * p_this )
     free( p_sys->track );
 
     AVI_ChunkFreeRoot( p_demux->s, &p_sys->ck_root );
-    vlc_meta_Delete( p_sys->meta );
+    if( p_sys->meta )
+        vlc_meta_Delete( p_sys->meta );
 
     for( unsigned i = 0; i < p_sys->i_attachment; i++)
         vlc_input_attachment_Delete(p_sys->attachment[i]);

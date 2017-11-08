@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-06 02:29+0000\n"
+"POT-Creation-Date: 2017-11-07 02:30+0000\n"
 "PO-Revision-Date: 2014-01-08 21:06+0000\n"
 "Last-Translator: Michael Bauer\n"
 "Language-Team: Gaelic, Scottish (http://www.transifex.com/projects/p/vlc-"
@@ -45,7 +45,7 @@ msgstr "Tagh \"Roghainnean adhartach\" gus a h-uile roghainn fhaicinn."
 #: include/vlc_config_cat.h:38
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
 #: modules/gui/qt/components/simple_preferences.cpp:215
-#: modules/gui/qt/menus.cpp:1081
+#: modules/gui/qt/menus.cpp:1085
 msgid "Interface"
 msgstr "Eadar-aghaidh"
 
@@ -380,7 +380,7 @@ msgstr "Mar a chuir VLC an sàs Video On Demand"
 #: modules/gui/qt/components/controller.hpp:109
 #: modules/gui/qt/components/playlist/playlist.cpp:166
 #: modules/gui/qt/components/playlist/selector.cpp:233
-#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1108
+#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1112
 msgid "Playlist"
 msgstr "An liosta-chluich"
 
@@ -3807,11 +3807,11 @@ msgid "Select the hotkey to set the playback rate back to normal."
 msgstr ""
 "Tagh an hotkey airson astar na cluich a thilleadh dhan roghainn àbhaisteach."
 
-#: src/libvlc-module.c:1237 modules/gui/qt/menus.cpp:871
+#: src/libvlc-module.c:1237 modules/gui/qt/menus.cpp:875
 msgid "Faster (fine)"
 msgstr "Nas luaithe (mean air mhean)"
 
-#: src/libvlc-module.c:1239 modules/gui/qt/menus.cpp:879
+#: src/libvlc-module.c:1239 modules/gui/qt/menus.cpp:883
 msgid "Slower (fine)"
 msgstr "Nas slaodaiche (mean air mhean)"
 
@@ -3974,8 +3974,8 @@ msgstr "Leum fada, ann an diogan."
 
 #: src/libvlc-module.c:1288 modules/control/hotkeys.c:361
 #: modules/gui/qt/components/controller.hpp:111
-#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:942
-#: modules/gui/qt/menus.cpp:1128 modules/gui/skins2/commands/cmd_quit.cpp:45
+#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:946
+#: modules/gui/qt/menus.cpp:1132 modules/gui/skins2/commands/cmd_quit.cpp:45
 msgid "Quit"
 msgstr "Fàg an-seo"
 
@@ -4483,7 +4483,7 @@ msgstr "Togaidh seo snapshot dhen video is sàbhailidh e air an diosga e."
 
 #: src/libvlc-module.c:1418 modules/gui/macosx/VLCMainMenu.m:379
 #: modules/gui/qt/components/controller.hpp:110
-#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:845
+#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:849
 #: modules/stream_out/record.c:60
 msgid "Record"
 msgstr "Clàraich"
@@ -4940,7 +4940,7 @@ msgstr "Duilleag suas"
 #: modules/gui/macosx/VLCMainMenu.m:1331 modules/gui/macosx/VLCMainMenu.m:1332
 #: modules/gui/macosx/VLCMainMenu.m:1333
 #: modules/gui/qt/components/playlist/standardpanel.cpp:196
-#: modules/gui/qt/menus.cpp:819
+#: modules/gui/qt/menus.cpp:823
 msgid "Pause"
 msgstr "Cuir 'na stad"
 
@@ -5031,7 +5031,7 @@ msgstr "Dh'fhàillig sàbhaladh an fhaidhle"
 msgid "Failed to open \"%s\" for writing"
 msgstr "Cha b' urrainn dhuinn \"%s\" fhosgladh airson sgrìobhadh ann"
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2674
+#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2675
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -14243,7 +14243,7 @@ msgstr ""
 msgid "AVI demuxer"
 msgstr "AVI demuxer"
 
-#: modules/demux/avi/avi.c:801 modules/demux/mp4/mp4.c:1673
+#: modules/demux/avi/avi.c:802 modules/demux/mp4/mp4.c:1673
 #, fuzzy
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
@@ -14260,28 +14260,28 @@ msgstr ""
 "Dh'fhaoidte gun doir seo ùine fhada mas e faidhle mòr a tha ann.\n"
 "Dè bu mhath leat dèanamh?"
 
-#: modules/demux/avi/avi.c:809
+#: modules/demux/avi/avi.c:810
 msgid "Do not play"
 msgstr "Na cluich e"
 
-#: modules/demux/avi/avi.c:810
+#: modules/demux/avi/avi.c:811
 msgid "Build index then play"
 msgstr "Tog inneacs is cluich e an uairsin"
 
-#: modules/demux/avi/avi.c:811
+#: modules/demux/avi/avi.c:812
 msgid "Play as is"
 msgstr "Cluich e mar a tha e"
 
-#: modules/demux/avi/avi.c:812 modules/demux/mp4/mp4.c:1684
+#: modules/demux/avi/avi.c:813 modules/demux/mp4/mp4.c:1684
 #, fuzzy
 msgid "Broken or missing Index"
 msgstr "Inneacs AVI briste no a dhìth"
 
-#: modules/demux/avi/avi.c:2675
+#: modules/demux/avi/avi.c:2676
 msgid "Broken or missing AVI Index"
 msgstr "Inneacs AVI briste no a dhìth"
 
-#: modules/demux/avi/avi.c:2676
+#: modules/demux/avi/avi.c:2677
 msgid "Fixing AVI Index..."
 msgstr "A' càradh an inneics AVI..."
 
@@ -16397,7 +16397,7 @@ msgid "Bring All to Front"
 msgstr "Gluais na h-uile gun bheulaibh"
 
 #: modules/gui/macosx/VLCMainMenu.m:478 modules/gui/qt/dialogs/help.cpp:54
-#: modules/gui/qt/menus.cpp:938 modules/gui/qt/menus.cpp:1125
+#: modules/gui/qt/menus.cpp:942 modules/gui/qt/menus.cpp:1129
 msgid "Help"
 msgstr "Cobhair"
 
@@ -19264,8 +19264,8 @@ msgstr "Ath-nuadhaich a' chraobh"
 msgid "Clear the messages"
 msgstr ""
 
-#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:922
-#: modules/gui/qt/menus.cpp:1119
+#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:926
+#: modules/gui/qt/menus.cpp:1123
 msgid "Open Media"
 msgstr "Fosgail meadhan"
 
@@ -19295,7 +19295,7 @@ msgid "&Enqueue"
 msgstr "&Cuir sa chiutha"
 
 #: modules/gui/qt/dialogs/open.cpp:117 modules/gui/qt/dialogs/open.cpp:214
-#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:811
+#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:815
 msgid "&Play"
 msgstr "Cl&uich"
 
@@ -19786,28 +19786,28 @@ msgstr "&Meadhan"
 msgid "P&layback"
 msgstr "&Cluich"
 
-#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1037
+#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1041
 msgid "&Audio"
 msgstr "&Fuaim"
 
-#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1044
+#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1048
 msgid "&Video"
 msgstr "&Video"
 
-#: modules/gui/qt/menus.cpp:338 modules/gui/qt/menus.cpp:1051
+#: modules/gui/qt/menus.cpp:338 modules/gui/qt/menus.cpp:1055
 msgid "Subti&tle"
 msgstr "&Fo-thiotal"
 
-#: modules/gui/qt/menus.cpp:340 modules/gui/qt/menus.cpp:1067
+#: modules/gui/qt/menus.cpp:340 modules/gui/qt/menus.cpp:1071
 #, fuzzy
 msgid "Tool&s"
 msgstr "I&nnealan"
 
-#: modules/gui/qt/menus.cpp:343 modules/gui/qt/menus.cpp:1074
+#: modules/gui/qt/menus.cpp:343 modules/gui/qt/menus.cpp:1078
 msgid "V&iew"
 msgstr "&Sealladh"
 
-#: modules/gui/qt/menus.cpp:345 modules/gui/qt/menus.cpp:775
+#: modules/gui/qt/menus.cpp:345 modules/gui/qt/menus.cpp:779
 msgid "&Help"
 msgstr "C&obhair"
 
@@ -19819,7 +19819,7 @@ msgstr "Fosg&ail faidhle..."
 msgid "&Open Multiple Files..."
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:364 modules/gui/qt/menus.cpp:927
+#: modules/gui/qt/menus.cpp:364 modules/gui/qt/menus.cpp:931
 msgid "Open &Disc..."
 msgstr "Fosgail &diosga..."
 
@@ -19827,7 +19827,7 @@ msgstr "Fosgail &diosga..."
 msgid "Open &Network Stream..."
 msgstr "Fosgail sr&uth lìonraidh..."
 
-#: modules/gui/qt/menus.cpp:368 modules/gui/qt/menus.cpp:931
+#: modules/gui/qt/menus.cpp:368 modules/gui/qt/menus.cpp:935
 msgid "Open &Capture Device..."
 msgstr "Fosgail i&nneal glacaidh..."
 
@@ -19855,7 +19855,7 @@ msgstr "Fàg an-seo nuair a ruigear deireadh na liosta-chluich"
 msgid "Close to systray"
 msgstr "Dùin gu treighe an t-siostaim"
 
-#: modules/gui/qt/menus.cpp:404 modules/gui/qt/menus.cpp:1181
+#: modules/gui/qt/menus.cpp:404 modules/gui/qt/menus.cpp:1185
 msgid "&Quit"
 msgstr "Fàg an-s&eo"
 
@@ -19936,172 +19936,172 @@ msgstr "Ìslich àirde na fuaime"
 msgid "&Mute"
 msgstr "&Mùch"
 
-#: modules/gui/qt/menus.cpp:611
-msgid "Audio &Track"
-msgstr "&Traca fuaime"
-
-#: modules/gui/qt/menus.cpp:612
+#: modules/gui/qt/menus.cpp:610
 msgid "Audio &Device"
 msgstr "&Inneal fuaime"
 
 #: modules/gui/qt/menus.cpp:614
+msgid "Audio &Track"
+msgstr "&Traca fuaime"
+
+#: modules/gui/qt/menus.cpp:616
 msgid "&Stereo Mode"
 msgstr "Modh &stereo"
 
-#: modules/gui/qt/menus.cpp:617
+#: modules/gui/qt/menus.cpp:619
 msgid "&Visualizations"
 msgstr "&Fir chlis"
 
-#: modules/gui/qt/menus.cpp:643
+#: modules/gui/qt/menus.cpp:645
 msgid "Add &Subtitle File..."
 msgstr "Cuir faidhle le fo-thiotalan ri&s..."
 
-#: modules/gui/qt/menus.cpp:645
+#: modules/gui/qt/menus.cpp:647
 msgid "Sub &Track"
 msgstr "&Traca nam fo-thiotalan"
 
-#: modules/gui/qt/menus.cpp:667
+#: modules/gui/qt/menus.cpp:672
 msgid "Video &Track"
 msgstr "Traca &video"
 
-#: modules/gui/qt/menus.cpp:675
+#: modules/gui/qt/menus.cpp:679
 msgid "&Fullscreen"
 msgstr "&Làn-sgrìn"
 
-#: modules/gui/qt/menus.cpp:676
+#: modules/gui/qt/menus.cpp:680
 msgid "Always Fit &Window"
 msgstr "Co-fhreagair ris an &uinneag an-còmhnaidh"
 
-#: modules/gui/qt/menus.cpp:677
+#: modules/gui/qt/menus.cpp:681
 msgid "Always &on Top"
 msgstr "Air &uachdar an-còmhnaidh"
 
-#: modules/gui/qt/menus.cpp:678
+#: modules/gui/qt/menus.cpp:682
 msgid "Set as Wall&paper"
 msgstr "Cleachd &mar phàipear-balla"
 
-#: modules/gui/qt/menus.cpp:682
+#: modules/gui/qt/menus.cpp:686
 msgid "&Zoom"
 msgstr "&Sùm"
 
-#: modules/gui/qt/menus.cpp:683
+#: modules/gui/qt/menus.cpp:687
 msgid "&Aspect Ratio"
 msgstr "Co-mheas an &deilbh"
 
-#: modules/gui/qt/menus.cpp:684
+#: modules/gui/qt/menus.cpp:688
 msgid "&Crop"
 msgstr "&Bearr"
 
-#: modules/gui/qt/menus.cpp:688
+#: modules/gui/qt/menus.cpp:692
 msgid "&Deinterlace"
 msgstr "&Deinterlace"
 
-#: modules/gui/qt/menus.cpp:689
+#: modules/gui/qt/menus.cpp:693
 msgid "&Deinterlace mode"
 msgstr "Modh &deinterlace"
 
-#: modules/gui/qt/menus.cpp:693
+#: modules/gui/qt/menus.cpp:697
 msgid "Take &Snapshot"
 msgstr "Tog &snapshot"
 
-#: modules/gui/qt/menus.cpp:712
+#: modules/gui/qt/menus.cpp:716
 msgid "T&itle"
 msgstr "T&iotal"
 
-#: modules/gui/qt/menus.cpp:713
+#: modules/gui/qt/menus.cpp:717
 msgid "&Chapter"
 msgstr "&Caibideal"
 
-#: modules/gui/qt/menus.cpp:715
+#: modules/gui/qt/menus.cpp:719
 msgid "&Program"
 msgstr "&Prògram"
 
-#: modules/gui/qt/menus.cpp:719
+#: modules/gui/qt/menus.cpp:723
 msgid "&Manage"
 msgstr "Stiùiric&h"
 
-#: modules/gui/qt/menus.cpp:778
+#: modules/gui/qt/menus.cpp:782
 msgid "Check for &Updates..."
 msgstr "Thoir sùil &airson ùrachadh..."
 
-#: modules/gui/qt/menus.cpp:825
+#: modules/gui/qt/menus.cpp:829
 msgid "&Stop"
 msgstr "&Sguir dheth"
 
-#: modules/gui/qt/menus.cpp:833
+#: modules/gui/qt/menus.cpp:837
 msgid "Pre&vious"
 msgstr "Ai&r ais"
 
-#: modules/gui/qt/menus.cpp:839
+#: modules/gui/qt/menus.cpp:843
 msgid "Ne&xt"
 msgstr "Air adhar&t"
 
-#: modules/gui/qt/menus.cpp:857
+#: modules/gui/qt/menus.cpp:861
 msgid "Sp&eed"
 msgstr "As&tar"
 
-#: modules/gui/qt/menus.cpp:863
+#: modules/gui/qt/menus.cpp:867
 msgid "&Faster"
 msgstr "&Nas luaithe"
 
-#: modules/gui/qt/menus.cpp:875
+#: modules/gui/qt/menus.cpp:879
 msgid "N&ormal Speed"
 msgstr "&Astar àbhaisteach"
 
-#: modules/gui/qt/menus.cpp:885
+#: modules/gui/qt/menus.cpp:889
 msgid "Slo&wer"
 msgstr "Nas sla&odaiche"
 
-#: modules/gui/qt/menus.cpp:900
+#: modules/gui/qt/menus.cpp:904
 msgid "&Jump Forward"
 msgstr "Gearr le&um air adhart"
 
-#: modules/gui/qt/menus.cpp:907
+#: modules/gui/qt/menus.cpp:911
 msgid "Jump Bac&kward"
 msgstr "Gearr leu&m air ais"
 
-#: modules/gui/qt/menus.cpp:914
+#: modules/gui/qt/menus.cpp:918
 msgid "Ctrl+T"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:929
+#: modules/gui/qt/menus.cpp:933
 msgid "Open &Network..."
 msgstr "&Fosgail lìonra..."
 
-#: modules/gui/qt/menus.cpp:1023
+#: modules/gui/qt/menus.cpp:1027
 msgid "Leave Fullscreen"
 msgstr "Fàg an làn-sgrìn"
 
-#: modules/gui/qt/menus.cpp:1057
+#: modules/gui/qt/menus.cpp:1061
 msgid "&Playback"
 msgstr "&Cluich"
 
-#: modules/gui/qt/menus.cpp:1162
+#: modules/gui/qt/menus.cpp:1166
 msgid "&Hide VLC media player in taskbar"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:1168
+#: modules/gui/qt/menus.cpp:1172
 msgid "Sho&w VLC media player"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:1179
+#: modules/gui/qt/menus.cpp:1183
 msgid "&Open Media"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:1619
+#: modules/gui/qt/menus.cpp:1623
 msgid "&Clear"
 msgstr "&Falamhaich"
 
-#: modules/gui/qt/menus.cpp:1627
+#: modules/gui/qt/menus.cpp:1631
 msgid "&Renderer"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:1631
+#: modules/gui/qt/menus.cpp:1635
 #, fuzzy
 msgid "<Local>"
 msgstr "Vocal"
 
-#: modules/gui/qt/menus.cpp:1644
+#: modules/gui/qt/menus.cpp:1648
 msgid "Scan"
 msgstr ""
 

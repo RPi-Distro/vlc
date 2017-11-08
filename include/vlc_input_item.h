@@ -2,7 +2,7 @@
  * vlc_input_item.h: Core input item
  *****************************************************************************
  * Copyright (C) 1999-2009 VLC authors and VideoLAN
- * $Id: f64cfc9b807a4b7260316d3151ca8649da07a815 $
+ * $Id: 0b17d781715cf798941f8c999b577797adc0bea7 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -154,7 +154,7 @@ enum slave_priority
 #define SLAVE_AUDIO_EXTENSIONS \
     "ac3", "m4a", "aac", \
     "eac3",  "dtshd", "flac", \
-    "pcm", "dts"
+    "pcm", "dts", "mp3"
 
 struct input_item_slave
 {

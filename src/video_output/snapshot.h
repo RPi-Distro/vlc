@@ -2,7 +2,7 @@
  * snapshot.h : vout internal snapshot
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: b27a7212e925018112a60f671ff7c70bd769e1d3 $
+ * $Id: 3085d5038b04e5a4a601b25676157976dbd2898b $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -53,11 +53,11 @@ bool vout_snapshot_IsRequested(vout_snapshot_t *);
 /**
  * It set the picture used to create the snapshots.
  *
- * The given picture is only copied and not released.
+ * The given picture is cloned.
  * If p_fmt is non NULL it will override the format of the p_picture (mainly
  * used because of aspect/crop problems).
  */
-void vout_snapshot_Set(vout_snapshot_t *, const video_format_t *, const picture_t *);
+void vout_snapshot_Set(vout_snapshot_t *, const video_format_t *, picture_t *);
 
 /**
  * This function will return the directory used for snapshots

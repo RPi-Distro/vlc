@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-06 02:29+0000\n"
+"POT-Creation-Date: 2017-11-07 02:30+0000\n"
 "PO-Revision-Date: 2014-03-09 18:41+0000\n"
 "Last-Translator: nesterow <nestserau@me.com>\n"
 "Language-Team: Belarusian (http://www.transifex.com/projects/p/vlc-trans/"
@@ -51,7 +51,7 @@ msgstr "Націсніце  \"Пашыраныя\", каб убачыць усе
 #: include/vlc_config_cat.h:38
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
 #: modules/gui/qt/components/simple_preferences.cpp:215
-#: modules/gui/qt/menus.cpp:1081
+#: modules/gui/qt/menus.cpp:1085
 msgid "Interface"
 msgstr "Інтэрфейс"
 
@@ -368,7 +368,7 @@ msgstr "Рэалізацыя сістэмы \"відэа на запыт\" пл�
 #: modules/gui/qt/components/controller.hpp:109
 #: modules/gui/qt/components/playlist/playlist.cpp:166
 #: modules/gui/qt/components/playlist/selector.cpp:233
-#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1108
+#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1112
 msgid "Playlist"
 msgstr "Плэйліст"
 
@@ -4067,11 +4067,11 @@ msgstr "Нармальная хуткасць"
 msgid "Select the hotkey to set the playback rate back to normal."
 msgstr "Задайце скарот для аднаўлення нармальнай хуткасці прайгравання."
 
-#: src/libvlc-module.c:1237 modules/gui/qt/menus.cpp:871
+#: src/libvlc-module.c:1237 modules/gui/qt/menus.cpp:875
 msgid "Faster (fine)"
 msgstr "Крыху хутчэй"
 
-#: src/libvlc-module.c:1239 modules/gui/qt/menus.cpp:879
+#: src/libvlc-module.c:1239 modules/gui/qt/menus.cpp:883
 msgid "Slower (fine)"
 msgstr "Крыху павольней"
 
@@ -4232,8 +4232,8 @@ msgstr "Даўжыня доўгага пераскоку, у секундах."
 
 #: src/libvlc-module.c:1288 modules/control/hotkeys.c:361
 #: modules/gui/qt/components/controller.hpp:111
-#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:942
-#: modules/gui/qt/menus.cpp:1128 modules/gui/skins2/commands/cmd_quit.cpp:45
+#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:946
+#: modules/gui/qt/menus.cpp:1132 modules/gui/skins2/commands/cmd_quit.cpp:45
 msgid "Quit"
 msgstr "Выйсці"
 
@@ -4741,7 +4741,7 @@ msgstr "Зрабіць стоп-кадр відэа і захаваць яго �
 
 #: src/libvlc-module.c:1418 modules/gui/macosx/VLCMainMenu.m:379
 #: modules/gui/qt/components/controller.hpp:110
-#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:845
+#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:849
 #: modules/stream_out/record.c:60
 msgid "Record"
 msgstr "Запіс"
@@ -5206,7 +5206,7 @@ msgstr "Page Up"
 #: modules/gui/macosx/VLCMainMenu.m:1331 modules/gui/macosx/VLCMainMenu.m:1332
 #: modules/gui/macosx/VLCMainMenu.m:1333
 #: modules/gui/qt/components/playlist/standardpanel.cpp:196
-#: modules/gui/qt/menus.cpp:819
+#: modules/gui/qt/menus.cpp:823
 msgid "Pause"
 msgstr "Паўза"
 
@@ -5297,7 +5297,7 @@ msgstr "Не выйшла захаваць файл"
 msgid "Failed to open \"%s\" for writing"
 msgstr "Не выйшла адкрыць \"%s\" на запіс"
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2674
+#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2675
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -15171,7 +15171,7 @@ msgstr "Выпраўляць пры неабходнасці"
 msgid "AVI demuxer"
 msgstr "Дэмультыплексар AVI"
 
-#: modules/demux/avi/avi.c:801 modules/demux/mp4/mp4.c:1673
+#: modules/demux/avi/avi.c:802 modules/demux/mp4/mp4.c:1673
 #, fuzzy
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
@@ -15188,28 +15188,28 @@ msgstr ""
 "Гэта можа заняць шмат часу на вялікім файле.\n"
 "Што жадаеце зрабіць?"
 
-#: modules/demux/avi/avi.c:809
+#: modules/demux/avi/avi.c:810
 msgid "Do not play"
 msgstr "Не граць"
 
-#: modules/demux/avi/avi.c:810
+#: modules/demux/avi/avi.c:811
 msgid "Build index then play"
 msgstr "Збудаваць індэкс, пасля граць"
 
-#: modules/demux/avi/avi.c:811
+#: modules/demux/avi/avi.c:812
 msgid "Play as is"
 msgstr "Граць як ёсць"
 
-#: modules/demux/avi/avi.c:812 modules/demux/mp4/mp4.c:1684
+#: modules/demux/avi/avi.c:813 modules/demux/mp4/mp4.c:1684
 #, fuzzy
 msgid "Broken or missing Index"
 msgstr "Збойны індэкс AVI"
 
-#: modules/demux/avi/avi.c:2675
+#: modules/demux/avi/avi.c:2676
 msgid "Broken or missing AVI Index"
 msgstr "Збойны індэкс AVI"
 
-#: modules/demux/avi/avi.c:2676
+#: modules/demux/avi/avi.c:2677
 msgid "Fixing AVI Index..."
 msgstr "Выпраўленне індэкса AVI ..."
 
@@ -17429,7 +17429,7 @@ msgid "Bring All to Front"
 msgstr "Вынесці ўсё наперад"
 
 #: modules/gui/macosx/VLCMainMenu.m:478 modules/gui/qt/dialogs/help.cpp:54
-#: modules/gui/qt/menus.cpp:938 modules/gui/qt/menus.cpp:1125
+#: modules/gui/qt/menus.cpp:942 modules/gui/qt/menus.cpp:1129
 msgid "Help"
 msgstr "Дапамога"
 
@@ -20331,8 +20331,8 @@ msgstr "Абнавіць дрэва"
 msgid "Clear the messages"
 msgstr "Ачысціць паведамленні"
 
-#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:922
-#: modules/gui/qt/menus.cpp:1119
+#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:926
+#: modules/gui/qt/menus.cpp:1123
 msgid "Open Media"
 msgstr "Крыніца"
 
@@ -20362,7 +20362,7 @@ msgid "&Enqueue"
 msgstr "Дадаць да &чаргі"
 
 #: modules/gui/qt/dialogs/open.cpp:117 modules/gui/qt/dialogs/open.cpp:214
-#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:811
+#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:815
 msgid "&Play"
 msgstr "Прай&граць"
 
@@ -20857,28 +20857,28 @@ msgstr "Медыя"
 msgid "P&layback"
 msgstr "&Гранне"
 
-#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1037
+#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1041
 msgid "&Audio"
 msgstr "Аўдыё"
 
-#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1044
+#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1048
 msgid "&Video"
 msgstr "&Відэа"
 
-#: modules/gui/qt/menus.cpp:338 modules/gui/qt/menus.cpp:1051
+#: modules/gui/qt/menus.cpp:338 modules/gui/qt/menus.cpp:1055
 msgid "Subti&tle"
 msgstr "Субты&тры"
 
-#: modules/gui/qt/menus.cpp:340 modules/gui/qt/menus.cpp:1067
+#: modules/gui/qt/menus.cpp:340 modules/gui/qt/menus.cpp:1071
 #, fuzzy
 msgid "Tool&s"
 msgstr "&Начынне"
 
-#: modules/gui/qt/menus.cpp:343 modules/gui/qt/menus.cpp:1074
+#: modules/gui/qt/menus.cpp:343 modules/gui/qt/menus.cpp:1078
 msgid "V&iew"
 msgstr "Выгляд"
 
-#: modules/gui/qt/menus.cpp:345 modules/gui/qt/menus.cpp:775
+#: modules/gui/qt/menus.cpp:345 modules/gui/qt/menus.cpp:779
 msgid "&Help"
 msgstr "&Даведка"
 
@@ -20890,7 +20890,7 @@ msgstr "Адкрыць &файл..."
 msgid "&Open Multiple Files..."
 msgstr "&Адкрыць некалькі файлаў..."
 
-#: modules/gui/qt/menus.cpp:364 modules/gui/qt/menus.cpp:927
+#: modules/gui/qt/menus.cpp:364 modules/gui/qt/menus.cpp:931
 msgid "Open &Disc..."
 msgstr "Адкрыць дыск..."
 
@@ -20898,7 +20898,7 @@ msgstr "Адкрыць дыск..."
 msgid "Open &Network Stream..."
 msgstr "Адкрыць URL..."
 
-#: modules/gui/qt/menus.cpp:368 modules/gui/qt/menus.cpp:931
+#: modules/gui/qt/menus.cpp:368 modules/gui/qt/menus.cpp:935
 msgid "Open &Capture Device..."
 msgstr "Адкрыць прыладу захопу..."
 
@@ -20926,7 +20926,7 @@ msgstr "Выйсці па заканчэнні плэйлісту"
 msgid "Close to systray"
 msgstr "Змясціць у сістэмным трэі"
 
-#: modules/gui/qt/menus.cpp:404 modules/gui/qt/menus.cpp:1181
+#: modules/gui/qt/menus.cpp:404 modules/gui/qt/menus.cpp:1185
 msgid "&Quit"
 msgstr "&Выйсці"
 
@@ -21007,173 +21007,173 @@ msgstr "Зменшыць гучнасць"
 msgid "&Mute"
 msgstr "&Бязгучна"
 
-#: modules/gui/qt/menus.cpp:611
-msgid "Audio &Track"
-msgstr "Аўдыё&дарожка"
-
-#: modules/gui/qt/menus.cpp:612
+#: modules/gui/qt/menus.cpp:610
 msgid "Audio &Device"
 msgstr "Аўдыё&прылада"
 
 #: modules/gui/qt/menus.cpp:614
+msgid "Audio &Track"
+msgstr "Аўдыё&дарожка"
+
+#: modules/gui/qt/menus.cpp:616
 msgid "&Stereo Mode"
 msgstr "&Стэрэарэжым"
 
-#: modules/gui/qt/menus.cpp:617
+#: modules/gui/qt/menus.cpp:619
 msgid "&Visualizations"
 msgstr "&Візуалізацыя"
 
-#: modules/gui/qt/menus.cpp:643
+#: modules/gui/qt/menus.cpp:645
 msgid "Add &Subtitle File..."
 msgstr "Дадаць файл &субтытраў..."
 
-#: modules/gui/qt/menus.cpp:645
+#: modules/gui/qt/menus.cpp:647
 msgid "Sub &Track"
 msgstr "&Дарожка субтытраў"
 
-#: modules/gui/qt/menus.cpp:667
+#: modules/gui/qt/menus.cpp:672
 msgid "Video &Track"
 msgstr "Відэа&дарожка"
 
-#: modules/gui/qt/menus.cpp:675
+#: modules/gui/qt/menus.cpp:679
 msgid "&Fullscreen"
 msgstr "&Поўнаэкранны рэжым"
 
-#: modules/gui/qt/menus.cpp:676
+#: modules/gui/qt/menus.cpp:680
 msgid "Always Fit &Window"
 msgstr "Заўсёды пад памер &акна"
 
-#: modules/gui/qt/menus.cpp:677
+#: modules/gui/qt/menus.cpp:681
 msgid "Always &on Top"
 msgstr "Па-над &усімі вокнамі"
 
-#: modules/gui/qt/menus.cpp:678
+#: modules/gui/qt/menus.cpp:682
 msgid "Set as Wall&paper"
 msgstr "&Зрабіць абрусам стала"
 
-#: modules/gui/qt/menus.cpp:682
+#: modules/gui/qt/menus.cpp:686
 msgid "&Zoom"
 msgstr "&Маштаб"
 
-#: modules/gui/qt/menus.cpp:683
+#: modules/gui/qt/menus.cpp:687
 msgid "&Aspect Ratio"
 msgstr "&Стасунак бакоў"
 
-#: modules/gui/qt/menus.cpp:684
+#: modules/gui/qt/menus.cpp:688
 msgid "&Crop"
 msgstr "&Кадраванне"
 
-#: modules/gui/qt/menus.cpp:688
+#: modules/gui/qt/menus.cpp:692
 msgid "&Deinterlace"
 msgstr "&Ліквідаваць празрадковасць"
 
-#: modules/gui/qt/menus.cpp:689
+#: modules/gui/qt/menus.cpp:693
 msgid "&Deinterlace mode"
 msgstr "Рэжым &ліквідавання празрадковасці"
 
-#: modules/gui/qt/menus.cpp:693
+#: modules/gui/qt/menus.cpp:697
 msgid "Take &Snapshot"
 msgstr "Зрабіць &здымак"
 
-#: modules/gui/qt/menus.cpp:712
+#: modules/gui/qt/menus.cpp:716
 msgid "T&itle"
 msgstr "З&агаловак"
 
-#: modules/gui/qt/menus.cpp:713
+#: modules/gui/qt/menus.cpp:717
 msgid "&Chapter"
 msgstr "&Раздзел"
 
-#: modules/gui/qt/menus.cpp:715
+#: modules/gui/qt/menus.cpp:719
 msgid "&Program"
 msgstr "&Праграма"
 
-#: modules/gui/qt/menus.cpp:719
+#: modules/gui/qt/menus.cpp:723
 msgid "&Manage"
 msgstr "&Кіраванне"
 
-#: modules/gui/qt/menus.cpp:778
+#: modules/gui/qt/menus.cpp:782
 msgid "Check for &Updates..."
 msgstr "Праверыць &абнаўленні..."
 
-#: modules/gui/qt/menus.cpp:825
+#: modules/gui/qt/menus.cpp:829
 msgid "&Stop"
 msgstr "&Спыніць"
 
-#: modules/gui/qt/menus.cpp:833
+#: modules/gui/qt/menus.cpp:837
 msgid "Pre&vious"
 msgstr "Пап&ярэдні"
 
-#: modules/gui/qt/menus.cpp:839
+#: modules/gui/qt/menus.cpp:843
 msgid "Ne&xt"
 msgstr "Наступ&ны"
 
-#: modules/gui/qt/menus.cpp:857
+#: modules/gui/qt/menus.cpp:861
 msgid "Sp&eed"
 msgstr "Ху&ткасць"
 
-#: modules/gui/qt/menus.cpp:863
+#: modules/gui/qt/menus.cpp:867
 msgid "&Faster"
 msgstr "&Хутчэй"
 
-#: modules/gui/qt/menus.cpp:875
+#: modules/gui/qt/menus.cpp:879
 msgid "N&ormal Speed"
 msgstr "Н&армальная хуткасць"
 
-#: modules/gui/qt/menus.cpp:885
+#: modules/gui/qt/menus.cpp:889
 msgid "Slo&wer"
 msgstr "Пав&ольней"
 
-#: modules/gui/qt/menus.cpp:900
+#: modules/gui/qt/menus.cpp:904
 msgid "&Jump Forward"
 msgstr "&Пераскок наперад"
 
-#: modules/gui/qt/menus.cpp:907
+#: modules/gui/qt/menus.cpp:911
 msgid "Jump Bac&kward"
 msgstr "Пераскок &назад"
 
-#: modules/gui/qt/menus.cpp:914
+#: modules/gui/qt/menus.cpp:918
 msgid "Ctrl+T"
 msgstr "Ctrl+T"
 
-#: modules/gui/qt/menus.cpp:929
+#: modules/gui/qt/menus.cpp:933
 msgid "Open &Network..."
 msgstr "Адкрыць &сеткавы рэсурс..."
 
-#: modules/gui/qt/menus.cpp:1023
+#: modules/gui/qt/menus.cpp:1027
 msgid "Leave Fullscreen"
 msgstr "Выйсці з поўнаэкраннага рэжыму"
 
-#: modules/gui/qt/menus.cpp:1057
+#: modules/gui/qt/menus.cpp:1061
 msgid "&Playback"
 msgstr "&Гранне"
 
-#: modules/gui/qt/menus.cpp:1162
+#: modules/gui/qt/menus.cpp:1166
 msgid "&Hide VLC media player in taskbar"
 msgstr "&Хаваць медыяплэер VLC у панэлі заданняў"
 
-#: modules/gui/qt/menus.cpp:1168
+#: modules/gui/qt/menus.cpp:1172
 msgid "Sho&w VLC media player"
 msgstr "Пака&заць медыяплэер VLC"
 
-#: modules/gui/qt/menus.cpp:1179
+#: modules/gui/qt/menus.cpp:1183
 msgid "&Open Media"
 msgstr "&Адкрыць медыяаб'ект"
 
-#: modules/gui/qt/menus.cpp:1619
+#: modules/gui/qt/menus.cpp:1623
 msgid "&Clear"
 msgstr "&Ачысціць"
 
-#: modules/gui/qt/menus.cpp:1627
+#: modules/gui/qt/menus.cpp:1631
 #, fuzzy
 msgid "&Renderer"
 msgstr "Візуалізатар тэксту"
 
-#: modules/gui/qt/menus.cpp:1631
+#: modules/gui/qt/menus.cpp:1635
 #, fuzzy
 msgid "<Local>"
 msgstr "Вакал"
 
-#: modules/gui/qt/menus.cpp:1644
+#: modules/gui/qt/menus.cpp:1648
 msgid "Scan"
 msgstr ""
 
