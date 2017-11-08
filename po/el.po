@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-06 02:29+0000\n"
+"POT-Creation-Date: 2017-11-07 02:30+0000\n"
 "PO-Revision-Date: 2014-05-09 12:46+0000\n"
 "Last-Translator: kolokotronis <modernphilosopher82-2011@yahoo.com>\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/vlc-trans/language/"
@@ -49,7 +49,7 @@ msgstr ""
 #: include/vlc_config_cat.h:38
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
 #: modules/gui/qt/components/simple_preferences.cpp:215
-#: modules/gui/qt/menus.cpp:1081
+#: modules/gui/qt/menus.cpp:1085
 msgid "Interface"
 msgstr "Διεπαφή"
 
@@ -388,7 +388,7 @@ msgstr "Η εφαρμογή του VLC για το βίντεο κατ' απαί
 #: modules/gui/qt/components/controller.hpp:109
 #: modules/gui/qt/components/playlist/playlist.cpp:166
 #: modules/gui/qt/components/playlist/selector.cpp:233
-#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1108
+#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1112
 msgid "Playlist"
 msgstr "Λίστα αναπαραγωγής"
 
@@ -4237,11 +4237,11 @@ msgstr ""
 "Επιλογή του πλήκτρου συντόμευσης για τη ρύθμιση της ταχύτητας αναπαραγωγής "
 "σε κανονική."
 
-#: src/libvlc-module.c:1237 modules/gui/qt/menus.cpp:871
+#: src/libvlc-module.c:1237 modules/gui/qt/menus.cpp:875
 msgid "Faster (fine)"
 msgstr "Πιο γρήγορα (ακριβής ρύθμιση)"
 
-#: src/libvlc-module.c:1239 modules/gui/qt/menus.cpp:879
+#: src/libvlc-module.c:1239 modules/gui/qt/menus.cpp:883
 msgid "Slower (fine)"
 msgstr "Πιο αργά (ακριβής ρύθμιση)"
 
@@ -4417,8 +4417,8 @@ msgstr "Μεγάλο μήκος μεταπήδησης, σε δευτερόλε�
 
 #: src/libvlc-module.c:1288 modules/control/hotkeys.c:361
 #: modules/gui/qt/components/controller.hpp:111
-#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:942
-#: modules/gui/qt/menus.cpp:1128 modules/gui/skins2/commands/cmd_quit.cpp:45
+#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:946
+#: modules/gui/qt/menus.cpp:1132 modules/gui/skins2/commands/cmd_quit.cpp:45
 msgid "Quit"
 msgstr "Έξοδος"
 
@@ -4936,7 +4936,7 @@ msgstr "Λαμβάνει στιγμιότυπο βίντεο και το εγγ�
 
 #: src/libvlc-module.c:1418 modules/gui/macosx/VLCMainMenu.m:379
 #: modules/gui/qt/components/controller.hpp:110
-#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:845
+#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:849
 #: modules/stream_out/record.c:60
 msgid "Record"
 msgstr "Εγγραφή"
@@ -5403,7 +5403,7 @@ msgstr "Σελίδα Πάνω"
 #: modules/gui/macosx/VLCMainMenu.m:1331 modules/gui/macosx/VLCMainMenu.m:1332
 #: modules/gui/macosx/VLCMainMenu.m:1333
 #: modules/gui/qt/components/playlist/standardpanel.cpp:196
-#: modules/gui/qt/menus.cpp:819
+#: modules/gui/qt/menus.cpp:823
 msgid "Pause"
 msgstr "Παύση"
 
@@ -5494,7 +5494,7 @@ msgstr "Η αποθήκευση του αρχείου απέτυχε"
 msgid "Failed to open \"%s\" for writing"
 msgstr "Αποτυχία ανοίγματος \"%s\" για εγγραφή"
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2674
+#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2675
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -15566,7 +15566,7 @@ msgstr "Επιδιόρθωση όταν χρειαστεί"
 msgid "AVI demuxer"
 msgstr "Αποπολυπλέκτης AVI"
 
-#: modules/demux/avi/avi.c:801 modules/demux/mp4/mp4.c:1673
+#: modules/demux/avi/avi.c:802 modules/demux/mp4/mp4.c:1673
 #, fuzzy
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
@@ -15583,28 +15583,28 @@ msgstr ""
 "Αυτό το βήμα θα πάρει αρκετό χρόνο σε ένα μεγάλο αρχείο.\n"
 "Τι θέλετε να κάνετε;"
 
-#: modules/demux/avi/avi.c:809
+#: modules/demux/avi/avi.c:810
 msgid "Do not play"
 msgstr "Να μη γίνει αναπαραγωγή"
 
-#: modules/demux/avi/avi.c:810
+#: modules/demux/avi/avi.c:811
 msgid "Build index then play"
 msgstr "Δημιουργία ευρετηρίου και μετά αναπαραγωγή"
 
-#: modules/demux/avi/avi.c:811
+#: modules/demux/avi/avi.c:812
 msgid "Play as is"
 msgstr "Αναπαραγωγή όπως είναι"
 
-#: modules/demux/avi/avi.c:812 modules/demux/mp4/mp4.c:1684
+#: modules/demux/avi/avi.c:813 modules/demux/mp4/mp4.c:1684
 #, fuzzy
 msgid "Broken or missing Index"
 msgstr "Το ευρετήριο AVI λείπει ή είναι κατακερματισμένο"
 
-#: modules/demux/avi/avi.c:2675
+#: modules/demux/avi/avi.c:2676
 msgid "Broken or missing AVI Index"
 msgstr "Το ευρετήριο AVI λείπει ή είναι κατακερματισμένο"
 
-#: modules/demux/avi/avi.c:2676
+#: modules/demux/avi/avi.c:2677
 msgid "Fixing AVI Index..."
 msgstr "Επιδιόρθωση ευρετηρίου AVI..."
 
@@ -17866,7 +17866,7 @@ msgid "Bring All to Front"
 msgstr "Μεταφορά όλων εμπρός"
 
 #: modules/gui/macosx/VLCMainMenu.m:478 modules/gui/qt/dialogs/help.cpp:54
-#: modules/gui/qt/menus.cpp:938 modules/gui/qt/menus.cpp:1125
+#: modules/gui/qt/menus.cpp:942 modules/gui/qt/menus.cpp:1129
 msgid "Help"
 msgstr "Βοήθεια"
 
@@ -20816,8 +20816,8 @@ msgstr "Ενημέρωση του δέντρου"
 msgid "Clear the messages"
 msgstr "Εκκαθάριση μηνυμάτων"
 
-#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:922
-#: modules/gui/qt/menus.cpp:1119
+#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:926
+#: modules/gui/qt/menus.cpp:1123
 msgid "Open Media"
 msgstr "Άνοιγμα πολυμέσου"
 
@@ -20847,7 +20847,7 @@ msgid "&Enqueue"
 msgstr "&Προσθήκη στην ουρά"
 
 #: modules/gui/qt/dialogs/open.cpp:117 modules/gui/qt/dialogs/open.cpp:214
-#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:811
+#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:815
 msgid "&Play"
 msgstr "&Αναπαραγωγή"
 
@@ -21350,28 +21350,28 @@ msgstr "&Πολυμέσα"
 msgid "P&layback"
 msgstr "Α&ναπαραγωγή"
 
-#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1037
+#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1041
 msgid "&Audio"
 msgstr "&Ήχος"
 
-#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1044
+#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1048
 msgid "&Video"
 msgstr "&Βίντεο"
 
-#: modules/gui/qt/menus.cpp:338 modules/gui/qt/menus.cpp:1051
+#: modules/gui/qt/menus.cpp:338 modules/gui/qt/menus.cpp:1055
 msgid "Subti&tle"
 msgstr "Υπότι&τλος"
 
-#: modules/gui/qt/menus.cpp:340 modules/gui/qt/menus.cpp:1067
+#: modules/gui/qt/menus.cpp:340 modules/gui/qt/menus.cpp:1071
 #, fuzzy
 msgid "Tool&s"
 msgstr "Ε&ργαλεία"
 
-#: modules/gui/qt/menus.cpp:343 modules/gui/qt/menus.cpp:1074
+#: modules/gui/qt/menus.cpp:343 modules/gui/qt/menus.cpp:1078
 msgid "V&iew"
 msgstr "Π&ροβολή"
 
-#: modules/gui/qt/menus.cpp:345 modules/gui/qt/menus.cpp:775
+#: modules/gui/qt/menus.cpp:345 modules/gui/qt/menus.cpp:779
 msgid "&Help"
 msgstr "&Βοήθεια"
 
@@ -21383,7 +21383,7 @@ msgstr "Άνοιγμα &αρχείου..."
 msgid "&Open Multiple Files..."
 msgstr "&Άνοιγμα πολλαπλών αρχείων"
 
-#: modules/gui/qt/menus.cpp:364 modules/gui/qt/menus.cpp:927
+#: modules/gui/qt/menus.cpp:364 modules/gui/qt/menus.cpp:931
 msgid "Open &Disc..."
 msgstr "Άνοιγμα &δίσκου..."
 
@@ -21391,7 +21391,7 @@ msgstr "Άνοιγμα &δίσκου..."
 msgid "Open &Network Stream..."
 msgstr "Άνοιγμα ροής δεδομένων &δικτύου..."
 
-#: modules/gui/qt/menus.cpp:368 modules/gui/qt/menus.cpp:931
+#: modules/gui/qt/menus.cpp:368 modules/gui/qt/menus.cpp:935
 msgid "Open &Capture Device..."
 msgstr "Άνοιγμα &συσκευής σύλληψης..."
 
@@ -21419,7 +21419,7 @@ msgstr "Έξοδος στο τέλος της λίστας αναπαραγωγ�
 msgid "Close to systray"
 msgstr "Κλείσιμο στην περιοχή ειδοποιήσεων"
 
-#: modules/gui/qt/menus.cpp:404 modules/gui/qt/menus.cpp:1181
+#: modules/gui/qt/menus.cpp:404 modules/gui/qt/menus.cpp:1185
 msgid "&Quit"
 msgstr "&Έξοδος"
 
@@ -21500,173 +21500,173 @@ msgstr "Μείωση έντασης ήχου"
 msgid "&Mute"
 msgstr "&Σίγαση"
 
-#: modules/gui/qt/menus.cpp:611
-msgid "Audio &Track"
-msgstr "Κομμάτι &ήχου"
-
-#: modules/gui/qt/menus.cpp:612
+#: modules/gui/qt/menus.cpp:610
 msgid "Audio &Device"
 msgstr "&Συσκευή ήχου"
 
 #: modules/gui/qt/menus.cpp:614
+msgid "Audio &Track"
+msgstr "Κομμάτι &ήχου"
+
+#: modules/gui/qt/menus.cpp:616
 msgid "&Stereo Mode"
 msgstr "&Στερεοφωνική λειτουργία"
 
-#: modules/gui/qt/menus.cpp:617
+#: modules/gui/qt/menus.cpp:619
 msgid "&Visualizations"
 msgstr "&Απεικονίσεις"
 
-#: modules/gui/qt/menus.cpp:643
+#: modules/gui/qt/menus.cpp:645
 msgid "Add &Subtitle File..."
 msgstr "Προσθήκη αρχείου &υποτίτλων..."
 
-#: modules/gui/qt/menus.cpp:645
+#: modules/gui/qt/menus.cpp:647
 msgid "Sub &Track"
 msgstr "&Κομμάτι υποτίτλων"
 
-#: modules/gui/qt/menus.cpp:667
+#: modules/gui/qt/menus.cpp:672
 msgid "Video &Track"
 msgstr "Κομμάτι &βίντεο"
 
-#: modules/gui/qt/menus.cpp:675
+#: modules/gui/qt/menus.cpp:679
 msgid "&Fullscreen"
 msgstr "&Πλήρης οθόνη"
 
-#: modules/gui/qt/menus.cpp:676
+#: modules/gui/qt/menus.cpp:680
 msgid "Always Fit &Window"
 msgstr "Πάντα προσαρμογή στο &παράθυρο"
 
-#: modules/gui/qt/menus.cpp:677
+#: modules/gui/qt/menus.cpp:681
 msgid "Always &on Top"
 msgstr "Πάντα &στην κορυφή"
 
-#: modules/gui/qt/menus.cpp:678
+#: modules/gui/qt/menus.cpp:682
 msgid "Set as Wall&paper"
 msgstr "Ορισμός ως ταπε&τσαρία"
 
-#: modules/gui/qt/menus.cpp:682
+#: modules/gui/qt/menus.cpp:686
 msgid "&Zoom"
 msgstr "&Μεγέθυνση"
 
-#: modules/gui/qt/menus.cpp:683
+#: modules/gui/qt/menus.cpp:687
 msgid "&Aspect Ratio"
 msgstr "&Συντελεστής αναλογίας"
 
-#: modules/gui/qt/menus.cpp:684
+#: modules/gui/qt/menus.cpp:688
 msgid "&Crop"
 msgstr "&Αποκοπή"
 
-#: modules/gui/qt/menus.cpp:688
+#: modules/gui/qt/menus.cpp:692
 msgid "&Deinterlace"
 msgstr "&Αποδιαπλοκή"
 
-#: modules/gui/qt/menus.cpp:689
+#: modules/gui/qt/menus.cpp:693
 msgid "&Deinterlace mode"
 msgstr "Λειτουργία &αποδιαπλοκής"
 
-#: modules/gui/qt/menus.cpp:693
+#: modules/gui/qt/menus.cpp:697
 msgid "Take &Snapshot"
 msgstr "Λήψη &στιγμιότυπου βίντεο"
 
-#: modules/gui/qt/menus.cpp:712
+#: modules/gui/qt/menus.cpp:716
 msgid "T&itle"
 msgstr "Τ&ίτλος"
 
-#: modules/gui/qt/menus.cpp:713
+#: modules/gui/qt/menus.cpp:717
 msgid "&Chapter"
 msgstr "&Κεφάλαιο"
 
-#: modules/gui/qt/menus.cpp:715
+#: modules/gui/qt/menus.cpp:719
 msgid "&Program"
 msgstr "&Πρόγραμμα"
 
-#: modules/gui/qt/menus.cpp:719
+#: modules/gui/qt/menus.cpp:723
 msgid "&Manage"
 msgstr "&Διαχείριση"
 
-#: modules/gui/qt/menus.cpp:778
+#: modules/gui/qt/menus.cpp:782
 msgid "Check for &Updates..."
 msgstr "Έλεγχος για &ενημερώσεις..."
 
-#: modules/gui/qt/menus.cpp:825
+#: modules/gui/qt/menus.cpp:829
 msgid "&Stop"
 msgstr "&Διακοπή"
 
-#: modules/gui/qt/menus.cpp:833
+#: modules/gui/qt/menus.cpp:837
 msgid "Pre&vious"
 msgstr "&Προηγούμενο"
 
-#: modules/gui/qt/menus.cpp:839
+#: modules/gui/qt/menus.cpp:843
 msgid "Ne&xt"
 msgstr "&Επόμενο"
 
-#: modules/gui/qt/menus.cpp:857
+#: modules/gui/qt/menus.cpp:861
 msgid "Sp&eed"
 msgstr "Τα&χύτητα"
 
-#: modules/gui/qt/menus.cpp:863
+#: modules/gui/qt/menus.cpp:867
 msgid "&Faster"
 msgstr "&Πιο γρήγορα"
 
-#: modules/gui/qt/menus.cpp:875
+#: modules/gui/qt/menus.cpp:879
 msgid "N&ormal Speed"
 msgstr "Κ&ανονική ταχύτητα"
 
-#: modules/gui/qt/menus.cpp:885
+#: modules/gui/qt/menus.cpp:889
 msgid "Slo&wer"
 msgstr "&Πιο αργά"
 
-#: modules/gui/qt/menus.cpp:900
+#: modules/gui/qt/menus.cpp:904
 msgid "&Jump Forward"
 msgstr "&Μεταπήδηση εμπρός"
 
-#: modules/gui/qt/menus.cpp:907
+#: modules/gui/qt/menus.cpp:911
 msgid "Jump Bac&kward"
 msgstr "Μεταπήδηση &πίσω"
 
-#: modules/gui/qt/menus.cpp:914
+#: modules/gui/qt/menus.cpp:918
 msgid "Ctrl+T"
 msgstr "Ctrl+T"
 
-#: modules/gui/qt/menus.cpp:929
+#: modules/gui/qt/menus.cpp:933
 msgid "Open &Network..."
 msgstr "Άνοιγμα &δικτύου..."
 
-#: modules/gui/qt/menus.cpp:1023
+#: modules/gui/qt/menus.cpp:1027
 msgid "Leave Fullscreen"
 msgstr "Εγκατάλειψη πλήρους οθόνης"
 
-#: modules/gui/qt/menus.cpp:1057
+#: modules/gui/qt/menus.cpp:1061
 msgid "&Playback"
 msgstr "&Αναπαραγωγή"
 
-#: modules/gui/qt/menus.cpp:1162
+#: modules/gui/qt/menus.cpp:1166
 msgid "&Hide VLC media player in taskbar"
 msgstr "&Απόκρυψη του αναπαραγωγού πολυμέσων VLC στη γραμμή εργασιών"
 
-#: modules/gui/qt/menus.cpp:1168
+#: modules/gui/qt/menus.cpp:1172
 msgid "Sho&w VLC media player"
 msgstr "Προβο&λή αναπαραγωγού πολυμέσων VLC"
 
-#: modules/gui/qt/menus.cpp:1179
+#: modules/gui/qt/menus.cpp:1183
 msgid "&Open Media"
 msgstr "&Άνοιγμα πολυμέσων"
 
-#: modules/gui/qt/menus.cpp:1619
+#: modules/gui/qt/menus.cpp:1623
 msgid "&Clear"
 msgstr "&Εκκαθάριση"
 
-#: modules/gui/qt/menus.cpp:1627
+#: modules/gui/qt/menus.cpp:1631
 #, fuzzy
 msgid "&Renderer"
 msgstr "Αποτυπωτής κειμένου"
 
-#: modules/gui/qt/menus.cpp:1631
+#: modules/gui/qt/menus.cpp:1635
 #, fuzzy
 msgid "<Local>"
 msgstr "Φωνητική"
 
-#: modules/gui/qt/menus.cpp:1644
+#: modules/gui/qt/menus.cpp:1648
 msgid "Scan"
 msgstr ""
 

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-06 02:29+0000\n"
+"POT-Creation-Date: 2017-11-07 02:30+0000\n"
 "PO-Revision-Date: 2014-05-01 15:57+0000\n"
 "Last-Translator: rohitharikiran <rohithharikiran@gmail.com>\n"
 "Language-Team: Telugu (http://www.transifex.com/projects/p/vlc-trans/"
@@ -44,7 +44,7 @@ msgstr "అన్ని ఐచ్ఛికాలను చూచుటకు \"�
 #: include/vlc_config_cat.h:38
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
 #: modules/gui/qt/components/simple_preferences.cpp:215
-#: modules/gui/qt/menus.cpp:1081
+#: modules/gui/qt/menus.cpp:1085
 msgid "Interface"
 msgstr "అంతరవర్తి"
 
@@ -335,7 +335,7 @@ msgstr ""
 #: modules/gui/qt/components/controller.hpp:109
 #: modules/gui/qt/components/playlist/playlist.cpp:166
 #: modules/gui/qt/components/playlist/selector.cpp:233
-#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1108
+#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1112
 msgid "Playlist"
 msgstr "ప్రదర్శనజాబితా"
 
@@ -3671,11 +3671,11 @@ msgstr "సాధారణ రేటు"
 msgid "Select the hotkey to set the playback rate back to normal."
 msgstr ""
 
-#: src/libvlc-module.c:1237 modules/gui/qt/menus.cpp:871
+#: src/libvlc-module.c:1237 modules/gui/qt/menus.cpp:875
 msgid "Faster (fine)"
 msgstr "మరింతవేగం (బాగా)"
 
-#: src/libvlc-module.c:1239 modules/gui/qt/menus.cpp:879
+#: src/libvlc-module.c:1239 modules/gui/qt/menus.cpp:883
 msgid "Slower (fine)"
 msgstr "నెమ్మది (బాగా)"
 
@@ -3836,8 +3836,8 @@ msgstr ""
 
 #: src/libvlc-module.c:1288 modules/control/hotkeys.c:361
 #: modules/gui/qt/components/controller.hpp:111
-#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:942
-#: modules/gui/qt/menus.cpp:1128 modules/gui/skins2/commands/cmd_quit.cpp:45
+#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:946
+#: modules/gui/qt/menus.cpp:1132 modules/gui/skins2/commands/cmd_quit.cpp:45
 msgid "Quit"
 msgstr "నిష్క్రమించు"
 
@@ -4328,7 +4328,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1418 modules/gui/macosx/VLCMainMenu.m:379
 #: modules/gui/qt/components/controller.hpp:110
-#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:845
+#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:849
 #: modules/stream_out/record.c:60
 msgid "Record"
 msgstr "రికార్డుచేయి"
@@ -4785,7 +4785,7 @@ msgstr ""
 #: modules/gui/macosx/VLCMainMenu.m:1331 modules/gui/macosx/VLCMainMenu.m:1332
 #: modules/gui/macosx/VLCMainMenu.m:1333
 #: modules/gui/qt/components/playlist/standardpanel.cpp:196
-#: modules/gui/qt/menus.cpp:819
+#: modules/gui/qt/menus.cpp:823
 msgid "Pause"
 msgstr "నిలిపివేయి"
 
@@ -4876,7 +4876,7 @@ msgstr "దస్త్రాన్ని భద్రపరుచుటలో �
 msgid "Failed to open \"%s\" for writing"
 msgstr ""
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2674
+#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2675
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -14041,7 +14041,7 @@ msgstr ""
 msgid "AVI demuxer"
 msgstr ""
 
-#: modules/demux/avi/avi.c:801 modules/demux/mp4/mp4.c:1673
+#: modules/demux/avi/avi.c:802 modules/demux/mp4/mp4.c:1673
 #, fuzzy
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
@@ -14057,28 +14057,28 @@ msgstr ""
 "పెద్ద ఫైలు అయితే ఈ ప్రక్రియకు ఎక్కువ సమయం పట్టవచ్చు.\n"
 "మీరు ఏమి చేయదలచుకున్నారు ?"
 
-#: modules/demux/avi/avi.c:809
+#: modules/demux/avi/avi.c:810
 msgid "Do not play"
 msgstr "ఆడవద్దు"
 
-#: modules/demux/avi/avi.c:810
+#: modules/demux/avi/avi.c:811
 msgid "Build index then play"
 msgstr "సూచికను నిర్మించి తరువాత ఆడించు"
 
-#: modules/demux/avi/avi.c:811
+#: modules/demux/avi/avi.c:812
 msgid "Play as is"
 msgstr ""
 
-#: modules/demux/avi/avi.c:812 modules/demux/mp4/mp4.c:1684
+#: modules/demux/avi/avi.c:813 modules/demux/mp4/mp4.c:1684
 #, fuzzy
 msgid "Broken or missing Index"
 msgstr "విరిగిన లేక తప్పిపోయిన AVI సూచిక"
 
-#: modules/demux/avi/avi.c:2675
+#: modules/demux/avi/avi.c:2676
 msgid "Broken or missing AVI Index"
 msgstr "విరిగిన లేక తప్పిపోయిన AVI సూచిక"
 
-#: modules/demux/avi/avi.c:2676
+#: modules/demux/avi/avi.c:2677
 msgid "Fixing AVI Index..."
 msgstr "AVI సూచికను పరిష్కరిస్తుంది..."
 
@@ -16186,7 +16186,7 @@ msgid "Bring All to Front"
 msgstr "అన్నీ ముందుకు తీసుకురా"
 
 #: modules/gui/macosx/VLCMainMenu.m:478 modules/gui/qt/dialogs/help.cpp:54
-#: modules/gui/qt/menus.cpp:938 modules/gui/qt/menus.cpp:1125
+#: modules/gui/qt/menus.cpp:942 modules/gui/qt/menus.cpp:1129
 msgid "Help"
 msgstr "సహాయం"
 
@@ -18990,8 +18990,8 @@ msgstr "వృక్షాన్ని నవీకరించండి"
 msgid "Clear the messages"
 msgstr ""
 
-#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:922
-#: modules/gui/qt/menus.cpp:1119
+#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:926
+#: modules/gui/qt/menus.cpp:1123
 msgid "Open Media"
 msgstr "మాధ్యమం తెరువు"
 
@@ -19021,7 +19021,7 @@ msgid "&Enqueue"
 msgstr "వరుసలోచేర్చు (&E)"
 
 #: modules/gui/qt/dialogs/open.cpp:117 modules/gui/qt/dialogs/open.cpp:214
-#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:811
+#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:815
 msgid "&Play"
 msgstr "ఆడించు (&P)"
 
@@ -19507,28 +19507,28 @@ msgstr "మాధ్యమం (&M)"
 msgid "P&layback"
 msgstr "ప్లేబ్యాక్ (&l)"
 
-#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1037
+#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1041
 msgid "&Audio"
 msgstr "శ్రవ్యకం (&A)"
 
-#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1044
+#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1048
 msgid "&Video"
 msgstr "దృశ్యకం (&V)"
 
-#: modules/gui/qt/menus.cpp:338 modules/gui/qt/menus.cpp:1051
+#: modules/gui/qt/menus.cpp:338 modules/gui/qt/menus.cpp:1055
 msgid "Subti&tle"
 msgstr "ఉపశీర్షిక (&t)"
 
-#: modules/gui/qt/menus.cpp:340 modules/gui/qt/menus.cpp:1067
+#: modules/gui/qt/menus.cpp:340 modules/gui/qt/menus.cpp:1071
 #, fuzzy
 msgid "Tool&s"
 msgstr "పనిముట్లు (&o)"
 
-#: modules/gui/qt/menus.cpp:343 modules/gui/qt/menus.cpp:1074
+#: modules/gui/qt/menus.cpp:343 modules/gui/qt/menus.cpp:1078
 msgid "V&iew"
 msgstr "వీక్షణం (&i)"
 
-#: modules/gui/qt/menus.cpp:345 modules/gui/qt/menus.cpp:775
+#: modules/gui/qt/menus.cpp:345 modules/gui/qt/menus.cpp:779
 msgid "&Help"
 msgstr "సహాయం (&H)"
 
@@ -19540,7 +19540,7 @@ msgstr "ఒక దస్త్రాన్ని తెరువు...(&F)"
 msgid "&Open Multiple Files..."
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:364 modules/gui/qt/menus.cpp:927
+#: modules/gui/qt/menus.cpp:364 modules/gui/qt/menus.cpp:931
 msgid "Open &Disc..."
 msgstr "డిస్కు తెరువు...(&D)"
 
@@ -19548,7 +19548,7 @@ msgstr "డిస్కు తెరువు...(&D)"
 msgid "Open &Network Stream..."
 msgstr "నెట్‌వర్క్ ప్రవాహాన్ని తెరువు...(&N)"
 
-#: modules/gui/qt/menus.cpp:368 modules/gui/qt/menus.cpp:931
+#: modules/gui/qt/menus.cpp:368 modules/gui/qt/menus.cpp:935
 msgid "Open &Capture Device..."
 msgstr "బంధక పరికరాన్ని తెరువు...(&C)"
 
@@ -19576,7 +19576,7 @@ msgstr "ప్రదర్శనజాబితా ముగిసిన తర�
 msgid "Close to systray"
 msgstr "వ్యవస్థపళ్లెమునకు మూసివేయి"
 
-#: modules/gui/qt/menus.cpp:404 modules/gui/qt/menus.cpp:1181
+#: modules/gui/qt/menus.cpp:404 modules/gui/qt/menus.cpp:1185
 msgid "&Quit"
 msgstr "నిష్క్రమించు (&Q)"
 
@@ -19657,172 +19657,172 @@ msgstr "శబ్దం తగ్గించు"
 msgid "&Mute"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:611
-msgid "Audio &Track"
-msgstr "ఆడియో ట్రాక్ (&T)"
-
-#: modules/gui/qt/menus.cpp:612
+#: modules/gui/qt/menus.cpp:610
 msgid "Audio &Device"
 msgstr "ఆడియో పరికరం (&D)"
 
 #: modules/gui/qt/menus.cpp:614
+msgid "Audio &Track"
+msgstr "ఆడియో ట్రాక్ (&T)"
+
+#: modules/gui/qt/menus.cpp:616
 msgid "&Stereo Mode"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:617
+#: modules/gui/qt/menus.cpp:619
 msgid "&Visualizations"
 msgstr "దృశ్యమాణాలు (&V)"
 
-#: modules/gui/qt/menus.cpp:643
+#: modules/gui/qt/menus.cpp:645
 msgid "Add &Subtitle File..."
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:645
+#: modules/gui/qt/menus.cpp:647
 msgid "Sub &Track"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:667
+#: modules/gui/qt/menus.cpp:672
 msgid "Video &Track"
 msgstr "వీడియో ట్రాక్ (&T)"
 
-#: modules/gui/qt/menus.cpp:675
+#: modules/gui/qt/menus.cpp:679
 msgid "&Fullscreen"
 msgstr "పూర్తితెర (&F)"
 
-#: modules/gui/qt/menus.cpp:676
+#: modules/gui/qt/menus.cpp:680
 msgid "Always Fit &Window"
 msgstr "ఎల్లప్పుడూ కిటికీకి అమర్చు (&W)"
 
-#: modules/gui/qt/menus.cpp:677
+#: modules/gui/qt/menus.cpp:681
 msgid "Always &on Top"
 msgstr "ఎల్లప్పుడు పైనే ఉంచు (&o)"
 
-#: modules/gui/qt/menus.cpp:678
+#: modules/gui/qt/menus.cpp:682
 msgid "Set as Wall&paper"
 msgstr "నేపథ్యచిత్రం వలె అమర్చు (&p)"
 
-#: modules/gui/qt/menus.cpp:682
+#: modules/gui/qt/menus.cpp:686
 msgid "&Zoom"
 msgstr "జూమ్ (&Z)"
 
-#: modules/gui/qt/menus.cpp:683
+#: modules/gui/qt/menus.cpp:687
 msgid "&Aspect Ratio"
 msgstr "రూప నిష్పత్తి (&A)"
 
-#: modules/gui/qt/menus.cpp:684
+#: modules/gui/qt/menus.cpp:688
 msgid "&Crop"
 msgstr "కత్తిరించు (&C)"
 
-#: modules/gui/qt/menus.cpp:688
+#: modules/gui/qt/menus.cpp:692
 msgid "&Deinterlace"
 msgstr "విజాలీకరణ (&D)"
 
-#: modules/gui/qt/menus.cpp:689
+#: modules/gui/qt/menus.cpp:693
 msgid "&Deinterlace mode"
 msgstr "విజాలీకరణ రీతి (&D)"
 
-#: modules/gui/qt/menus.cpp:693
+#: modules/gui/qt/menus.cpp:697
 msgid "Take &Snapshot"
 msgstr "తక్షణ చిత్రాన్ని తీయి (&S)"
 
-#: modules/gui/qt/menus.cpp:712
+#: modules/gui/qt/menus.cpp:716
 msgid "T&itle"
 msgstr "శీర్షిక (&i)"
 
-#: modules/gui/qt/menus.cpp:713
+#: modules/gui/qt/menus.cpp:717
 msgid "&Chapter"
 msgstr "అధ్యాయం (&C)"
 
-#: modules/gui/qt/menus.cpp:715
+#: modules/gui/qt/menus.cpp:719
 msgid "&Program"
 msgstr "కార్యక్రమం (&P)"
 
-#: modules/gui/qt/menus.cpp:719
+#: modules/gui/qt/menus.cpp:723
 msgid "&Manage"
 msgstr "నిర్వహించు (&M)"
 
-#: modules/gui/qt/menus.cpp:778
+#: modules/gui/qt/menus.cpp:782
 msgid "Check for &Updates..."
 msgstr "నవీకరణల కొరకు పరిశీలించు...(&U)"
 
-#: modules/gui/qt/menus.cpp:825
+#: modules/gui/qt/menus.cpp:829
 msgid "&Stop"
 msgstr "ఆపివేయి (&S)"
 
-#: modules/gui/qt/menus.cpp:833
+#: modules/gui/qt/menus.cpp:837
 msgid "Pre&vious"
 msgstr "మునుపటి (&v)"
 
-#: modules/gui/qt/menus.cpp:839
+#: modules/gui/qt/menus.cpp:843
 msgid "Ne&xt"
 msgstr "తరువాత (&x)"
 
-#: modules/gui/qt/menus.cpp:857
+#: modules/gui/qt/menus.cpp:861
 msgid "Sp&eed"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:863
+#: modules/gui/qt/menus.cpp:867
 msgid "&Faster"
 msgstr "మరింతవేగం (&F)"
 
-#: modules/gui/qt/menus.cpp:875
+#: modules/gui/qt/menus.cpp:879
 msgid "N&ormal Speed"
 msgstr "సాధారణ వేగం (&o)"
 
-#: modules/gui/qt/menus.cpp:885
+#: modules/gui/qt/menus.cpp:889
 msgid "Slo&wer"
 msgstr "నెమ్మది (&w)"
 
-#: modules/gui/qt/menus.cpp:900
+#: modules/gui/qt/menus.cpp:904
 msgid "&Jump Forward"
 msgstr "ముందుకు గెంతు (&J)"
 
-#: modules/gui/qt/menus.cpp:907
+#: modules/gui/qt/menus.cpp:911
 msgid "Jump Bac&kward"
 msgstr "వెనుకకు గెంతు (&k)"
 
-#: modules/gui/qt/menus.cpp:914
+#: modules/gui/qt/menus.cpp:918
 msgid "Ctrl+T"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:929
+#: modules/gui/qt/menus.cpp:933
 msgid "Open &Network..."
 msgstr "నెట్‌వర్క్ తెరువు...(&N)"
 
-#: modules/gui/qt/menus.cpp:1023
+#: modules/gui/qt/menus.cpp:1027
 msgid "Leave Fullscreen"
 msgstr "పూర్తితెరను వదిలివెళ్ళు"
 
-#: modules/gui/qt/menus.cpp:1057
+#: modules/gui/qt/menus.cpp:1061
 msgid "&Playback"
 msgstr "ప్లేబ్యాక్ (&P)"
 
-#: modules/gui/qt/menus.cpp:1162
+#: modules/gui/qt/menus.cpp:1166
 msgid "&Hide VLC media player in taskbar"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:1168
+#: modules/gui/qt/menus.cpp:1172
 msgid "Sho&w VLC media player"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:1179
+#: modules/gui/qt/menus.cpp:1183
 msgid "&Open Media"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:1619
+#: modules/gui/qt/menus.cpp:1623
 msgid "&Clear"
 msgstr "శుభ్రపరుచు (&C)"
 
-#: modules/gui/qt/menus.cpp:1627
+#: modules/gui/qt/menus.cpp:1631
 msgid "&Renderer"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:1631
+#: modules/gui/qt/menus.cpp:1635
 #, fuzzy
 msgid "<Local>"
 msgstr "వోకల్"
 
-#: modules/gui/qt/menus.cpp:1644
+#: modules/gui/qt/menus.cpp:1648
 msgid "Scan"
 msgstr ""
 

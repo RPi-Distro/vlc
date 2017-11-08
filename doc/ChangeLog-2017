@@ -1,3 +1,129 @@
+commit f30c715db6d6e1f1caa394ec74fba47f16b78cec
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Nov 6 18:00:46 2017 +0100
+
+    codec: webvtt: align cue text
+
+commit 8d4aaa8e2756c5ff8e3c9c30655b3b5ad6fcef8c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Nov 6 21:54:52 2017 +0200
+
+    network: fix negative time-outs
+
+commit 10bad27b685203f9e7a4a6054a975125cb08a72f
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Thu Oct 5 11:33:27 2017 +0200
+
+    configure: Require URL when using Breakpad, disable by default
+    
+    Change the `--enable-breakpad` flag to `--with-breakpad=URL`, that
+    means in order to enable the Breakpad crash reporter, the CrashDragon
+    server url needs to be given to that argument.
+    
+    URL should be the base URL of the crash server, without a trailing `/`.
+
+commit 7a46fc430b090fc6b2b32216d0d5527fcf7be68b
+Author: Romain Vimont <rom@rom1v.com>
+Date:   Mon Nov 6 11:06:20 2017 +0100
+
+    snapshot: fix snapshots cropping
+    
+    The snapshot picture was created using picture_Copy(), which does not
+    handle offsets. As a consequence, snapshots of cropped videos were
+    broken.
+    
+    Use picture_Clone() (shallow copy) instead, then copy the crop settings
+    from the format.
+    
+    Fixes #18970
+    
+    Signed-off-by: Romain Vimont <rom@rom1v.com>
+    Acked-by: Thomas Guillem <thomas@gllm.fr>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 042733829c14f8b2b1e734cc90856de92826a87b
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Mon Nov 6 12:14:00 2017 +0100
+
+    qt: fix crashes trying to open "Audio" menu
+    
+    Fixes #19022
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit aa4c7ce7952252d0196cb539b582313ca3f93d99
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Nov 6 15:39:07 2017 +0100
+
+    input: item: fix false positives when matching slaves
+    
+     - don't match 2 possible slaves between each others
+     - The slave name len should not be twice longer than the item name len.
+       (avoid matching "2016 - blabla.aac" with "20.mkv" for example)
+    
+    The matching algorithm is still quite dumb and far from perfect. We should
+    detect item as slaves only if they have a language indication in their path
+    name.
+    
+    Fixes #18913
+
+commit 877b09d30915b7c3d31d79974beeaa8203e91e63
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Nov 6 12:02:03 2017 +0100
+
+    input: item: add mp3 as possible slave
+    
+    Refs #18913
+
+commit 674c416d2d6ea7ca94bcdad25dbeec5d246ee3ae
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Nov 6 15:36:56 2017 +0100
+
+    test: slaves: fix false positive when calling test_expected_slaves with 0
+
+commit bb44d80adecb5bd04e010788d702be75616ea6f9
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Nov 6 12:02:34 2017 +0100
+
+    test: slaves: remove unused code
+
+commit 779354ca8b587fbc6aef7905d8ca077dcba1b80a
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Nov 6 12:14:35 2017 +0100
+
+    test: media: don't detect slaves when testing parsing
+    
+    There is a slave test for that.
+
+commit 38d0199517fe94da44e95a84f142effb1d50dd13
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Nov 6 14:13:04 2017 +0100
+
+    opengl: disable glError() asserts
+    
+    Proper glError() handling needs to be implemented before enabling these
+    asserts.
+
+commit a719d58995be53bf1f6bbcb64c2ac6aaa046b32c
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Nov 6 13:07:09 2017 +0100
+
+    demux: avi: fix possible SIGSEGV when Open fails
+    
+    This fixes a regression introduced by e1be5bcac0cf1f7e461d632a1ae1d7b8b3c9e0fd
+
+commit 0ecb00d9718ac047e22ca0a2a68481e98acff29c
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Nov 6 09:01:18 2017 +0100
+
+    contrib: libplacebo: update to v0.1.2
+
+commit 7af5e81b15014516b3fc23a85f80ac742270c071
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Nov 6 08:48:13 2017 +0100
+
+    opengl: fix variable shadowing warning
+
 commit 93b6b5a086836274a1d35199ef31a238fc55a11d
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Sun Nov 5 17:39:45 2017 +0200

@@ -2,7 +2,7 @@
  * snapshot.c : vout internal snapshot
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: ceade008ccd06ce1c2824bac1f318e13856f3f7c $
+ * $Id: f9bc106d73645774a1d5e2b0e5a59a344277b922 $
  *
  * Authors: Gildas Bazin <gbazin _AT_ videolan _DOT_ org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -112,18 +112,18 @@ bool vout_snapshot_IsRequested(vout_snapshot_t *snap)
 }
 void vout_snapshot_Set(vout_snapshot_t *snap,
                        const video_format_t *fmt,
-                       const picture_t *picture)
+                       picture_t *picture)
 {
     if (!fmt)
         fmt = &picture->format;
 
     vlc_mutex_lock(&snap->lock);
     while (snap->request_count > 0) {
-        picture_t *dup = picture_NewFromFormat(fmt);
+        picture_t *dup = picture_Clone(picture);
         if (!dup)
             break;
 
-        picture_Copy(dup, picture);
+        video_format_CopyCrop( &dup->format, fmt );
 
         dup->p_next = snap->picture;
         snap->picture = dup;

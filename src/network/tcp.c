@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005 VLC authors and VideoLAN
  * Copyright (C) 2005-2006 Rémi Denis-Courmont
- * $Id: bc2a1165328a5c6e37d2c645a3c088acd00fcc06 $
+ * $Id: 01e80844d532e703b932b4d5afbf5a2f28fddc3a $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -178,6 +178,8 @@ int net_Connect( vlc_object_t *p_this, const char *psz_host, int i_port,
                 if (deadline != VLC_TS_INVALID)
                 {
                     ms = (deadline - mdate()) / (CLOCK_FREQ / 1000);
+                    if (ms < 0)
+                        ms = 0;
                     if (ms > INT_MAX)
                         ms = INT_MAX;
                 }

@@ -1,7 +1,7 @@
 /*
  * media_player.c - libvlc smoke test
  *
- * $Id: c51cf886ec8c24ec83b19dc90deca03fb7492a78 $
+ * $Id: eef9ece0516b6525107f9ba9dcf6314cf350e961 $
  */
 
 /**********************************************************************
@@ -233,6 +233,7 @@ static void test_media_subitems_media(libvlc_media_t *media, bool play,
                                       bool b_items_expected)
 {
     libvlc_media_add_option(media, ":ignore-filetypes= ");
+    libvlc_media_add_option(media, ":no-sub-autodetect-file");
 
     bool subitems_found[TEST_SUBITEMS_COUNT] = { 0 };
     vlc_sem_t sem;
