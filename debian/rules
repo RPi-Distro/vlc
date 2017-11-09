@@ -34,6 +34,7 @@ confflags += \
 confflags += \
 	--enable-a52 \
 	--enable-aa \
+	--enable-aribsub \
 	--enable-bluray \
 	--enable-avahi \
 	--enable-caca \
