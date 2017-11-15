@@ -433,7 +433,6 @@ libvlccore.so.8 libvlccore8 #MINVER#
  vlc_b64_decode_binary_to_buffer@Base 2.0.0
  vlc_b64_encode@Base 2.0.0
  vlc_b64_encode_binary@Base 2.0.0
- vlc_calloc@Base 3.0.0~
  vlc_cancel@Base 2.0.0
  vlc_clone@Base 2.0.0
  vlc_close@Base 3.0.0~
@@ -507,7 +506,6 @@ libvlccore.so.8 libvlccore8 #MINVER#
  vlc_fourcc_GetRGBFallback@Base 2.0.0
  vlc_fourcc_GetYUVFallback@Base 2.0.0
  vlc_fourcc_IsYUV@Base 2.0.0
- vlc_free@Base 3.0.0~
  vlc_getProxyUrl@Base 2.1.0
  vlc_getaddrinfo@Base 2.0.0
  vlc_getaddrinfo_i11e@Base 3.0.0~
@@ -559,7 +557,6 @@ libvlccore.so.8 libvlccore8 #MINVER#
  vlc_loaddir@Base 2.0.0
  vlc_lrand48@Base 2.0.0
  vlc_lstat@Base 2.0.0
- vlc_malloc@Base 3.0.0~
  vlc_memfd@Base 3.0.0~
  vlc_memstream_close@Base 3.0.0~
  vlc_memstream_flush@Base 3.0.0~
@@ -595,6 +592,9 @@ libvlccore.so.8 libvlccore8 #MINVER#
  vlc_mutex_unlock@Base 2.0.0
  vlc_mwait_i11e@Base 3.0.0~
  vlc_ngettext@Base 2.1.0
+ vlc_obj_alloc@Base 3.0.0~
+ vlc_obj_calloc@Base 3.0.0~
+ vlc_obj_free@Base 3.0.0~
  vlc_object_create@Base 2.0.0
  vlc_object_find_name@Base 2.0.0
  vlc_object_get_name@Base 2.0.0
