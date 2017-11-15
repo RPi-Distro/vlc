@@ -2,7 +2,7 @@
  * mp4.c: mp4/mov muxer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2003, 2006 VLC authors and VideoLAN
- * $Id: 5d13964b876e83bb866beb04f5bb29fad98d1426 $
+ * $Id: 1017cfb7744692ec27f9036d2bbf3ec132055f13 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin at videolan dot org>
@@ -1146,7 +1146,7 @@ static bo_t *BuildMoov(sout_mux_t *p_mux)
     mp4mux_trackinfo_t **pp_infos = NULL;
     if(p_sys->i_nb_streams) /* Trackless moov ? */
     {
-        pp_infos = malloc(sizeof(mp4mux_trackinfo_t *) * p_sys->i_nb_streams);
+        pp_infos = vlc_alloc(p_sys->i_nb_streams, sizeof(mp4mux_trackinfo_t *));
         if(!pp_infos)
             return NULL;
         for(unsigned int i=0; i<p_sys->i_nb_streams; i++)

@@ -2,7 +2,7 @@
  * extended_panels.cpp : Extended controls panels
  ****************************************************************************
  * Copyright (C) 2006-2013 the VideoLAN team
- * $Id: 6136718f785f14f34bc26df35a62daca5368a4e5 $
+ * $Id: 88f46d50a5660b4b62470f991ae37df164c19726 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea .t videolan d@t org>
@@ -901,12 +901,10 @@ void FilterSliderData::writeToConfig()
 }
 
 AudioFilterControlWidget::AudioFilterControlWidget
-( intf_thread_t *_p_intf, QWidget *parent, const char *_shortcut,
-  const char *_name = NULL ) :
-    QWidget( parent ), p_intf( _p_intf ), shortcut( _shortcut ),
-    name( _name ? _name : _shortcut ), i_smallfont(0)
-{
-}
+( intf_thread_t *_p_intf, QWidget *parent, const char *_name ) :
+    QWidget( parent ), slidersBox( NULL ), p_intf( _p_intf ), name( _name ),
+    i_smallfont(0)
+{}
 
 void AudioFilterControlWidget::connectConfigChanged( FilterSliderData *slider )
 {
@@ -949,7 +947,7 @@ void AudioFilterControlWidget::build()
 
     char *psz_af = var_InheritString( THEPL, "audio-filter" );
 
-    if( psz_af && filterIsPresent( qfu(psz_af), shortcut ) )
+    if( psz_af && filterIsPresent( qfu(psz_af), name ) )
         slidersBox->setChecked( true );
     else
         slidersBox->setChecked( false );
@@ -967,10 +965,10 @@ void AudioFilterControlWidget::enable( bool b_enable )
         return;
     }
 
-    QString result = ChangeFiltersString( p_intf, "audio-filter", qtu(shortcut),
+    QString result = ChangeFiltersString( p_intf, "audio-filter", qtu(name),
                                           b_enable );
     emit configChanged( qfu("audio-filter"), result );
-    playlist_EnableAudioFilter( THEPL, qtu(shortcut), b_enable );
+    playlist_EnableAudioFilter( THEPL, qtu(name), b_enable );
 }
 
 /**********************************************************************
@@ -1322,7 +1320,7 @@ StereoWidener::StereoWidener( intf_thread_t *p_intf, QWidget *parent )
  **********************************************************************/
 
 PitchShifter::PitchShifter( intf_thread_t *p_intf, QWidget *parent )
-    : AudioFilterControlWidget( p_intf, parent, "pitch", "scaletempo" )
+    : AudioFilterControlWidget( p_intf, parent, "scaletempo_pitch" )
 {
     i_smallfont = -1;
     controls.append( { "pitch-shift", N_("Adjust pitch"), "semitones",

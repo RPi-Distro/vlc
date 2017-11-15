@@ -2,7 +2,7 @@
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2002 - 2015 VLC authors and VideoLAN
- * $Id: 39fa523efc52a06fad76bae61c8f9abecea6d05c $
+ * $Id: 73d4939f07eb5022f1eb2f313f98a88a8527de34 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -310,7 +310,7 @@ static TCHAR *GetFullEnglishName( const ENUMLOGFONTEX *lpelfe )
         goto done;
 
     int i_length_in_wchars = i_name_length / 2;
-    wchar_t *psz_name = malloc( ( i_length_in_wchars + 1 ) * sizeof( *psz_name ) );
+    wchar_t *psz_name = vlc_alloc( i_length_in_wchars + 1, sizeof( *psz_name ) );
 
     if( !psz_name )
         goto done;

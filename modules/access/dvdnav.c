@@ -2,7 +2,7 @@
  * dvdnav.c: DVD module using the dvdnav library.
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: f58e5e5f3eaf42ae85ca03ce3c558b866bce1744 $
+ * $Id: 6a4cc4f215bea6b06af2e5d68a1f34af5daa0e9f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -616,7 +616,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             *va_arg( args, int* ) = 1; /* Chapter offset */
 
             /* Duplicate title infos */
-            *ppp_title = malloc( p_sys->i_title * sizeof( input_title_t * ) );
+            *ppp_title = vlc_alloc( p_sys->i_title, sizeof( input_title_t * ) );
             for( i = 0; i < p_sys->i_title; i++ )
             {
                 (*ppp_title)[i] = vlc_input_title_Duplicate( p_sys->title[i] );

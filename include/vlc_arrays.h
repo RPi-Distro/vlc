@@ -2,7 +2,7 @@
  * vlc_arrays.h : Arrays and data structures handling
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 54665346e03290d10743802b79156b8728b07282 $
+ * $Id: 39b69952ffce040330da239f52778c3e82024bc4 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -261,12 +261,12 @@ static inline size_t vlc_array_count( vlc_array_t * p_array )
     return p_array->i_count;
 }
 
-#if defined (__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
+#ifndef __cplusplus
 # define vlc_array_item_at_index(ar, idx) \
     _Generic((ar), \
         const vlc_array_t *: ((ar)->pp_elems[idx]), \
         vlc_array_t *: ((ar)->pp_elems[idx]))
-#elif defined (__cplusplus)
+#else
 static inline void *vlc_array_item_at_index( vlc_array_t *ar, size_t idx )
 {
     return ar->pp_elems[idx];

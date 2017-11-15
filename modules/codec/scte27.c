@@ -2,7 +2,7 @@
  * scte27.c : SCTE-27 subtitles decoder
  *****************************************************************************
  * Copyright (C) Laurent Aimar
- * $Id: dfc4d94ec36205a6781e5a38d88003427359761b $
+ * $Id: 797af40715742b3dc2c4cf402949928897ffff70 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -142,7 +142,7 @@ static subpicture_region_t *DecodeSimpleBitmap(decoder_t *dec,
     int bitmap_h = bottom_h - top_h;
     int bitmap_v = bottom_v - top_v;
     int bitmap_size = bitmap_h * bitmap_v;
-    bool *bitmap = malloc(bitmap_size * sizeof(*bitmap));
+    bool *bitmap = vlc_alloc(bitmap_size, sizeof(*bitmap));
     if (!bitmap)
         return NULL;
     for (int position = 0; position < bitmap_size;) {

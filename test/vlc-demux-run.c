@@ -33,20 +33,19 @@
 
 int main(int argc, char *argv[])
 {
-    const char *demux = NULL, *filename;
+    const char *filename;
+    struct vlc_run_args args;
+    vlc_run_args_init(&args);
 
     switch (argc)
     {
-        case 3:
-            demux = argv[argc - 2];
-            /* fall through */
         case 2:
             filename = argv[argc - 1];
             break;
         default:
-            fprintf(stderr, "Usage: %s [demux] <filename>\n", argv[0]);
+            fprintf(stderr, "Usage: [VLC_TARGET=demux] %s <filename>\n", argv[0]);
             return 1;
     }
 
-    return -vlc_demux_process_path(demux, filename);
+    return -vlc_demux_process_path(&args, filename);
 }

@@ -2,7 +2,7 @@
  * item.c: input_item management
  *****************************************************************************
  * Copyright (C) 1998-2004 VLC authors and VideoLAN
- * $Id: 11cfccf8f74ee90489e1ceab0b47f44a0f61d1f8 $
+ * $Id: 95198d4e6091839871deeb4948d435850a573107 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -169,9 +169,9 @@ void input_item_CopyOptions( input_item_t *p_child,
 
     if( p_parent->i_options > 0 )
     {
-        optv = malloc( p_parent->i_options * sizeof (*optv) );
+        optv = vlc_alloc( p_parent->i_options, sizeof (*optv) );
         if( likely(optv) )
-            flagv = malloc( p_parent->i_options * sizeof (*flagv) );
+            flagv = vlc_alloc( p_parent->i_options, sizeof (*flagv) );
 
         if( likely(flagv) )
         {

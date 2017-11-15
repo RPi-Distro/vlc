@@ -2,7 +2,7 @@
  * vlc_input.h: Core input structures
  *****************************************************************************
  * Copyright (C) 1999-2015 VLC authors and VideoLAN
- * $Id: 711571b2b42a1f6e04f572ad1acb37c9c18050bc $
+ * $Id: d20585ba33030980fa496cd042227b543f10827a $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -139,7 +139,7 @@ static inline input_title_t *vlc_input_title_Duplicate( const input_title_t *t )
     dup->i_length    = t->i_length;
     if( t->i_seekpoint > 0 )
     {
-        dup->seekpoint = (seekpoint_t**)malloc( t->i_seekpoint * sizeof(seekpoint_t*) );
+        dup->seekpoint = (seekpoint_t**)vlc_alloc( t->i_seekpoint, sizeof(seekpoint_t*) );
         if( likely(dup->seekpoint) )
         {
             for( int i = 0; i < t->i_seekpoint; i++ )

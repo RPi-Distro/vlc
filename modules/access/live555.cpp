@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 VLC authors and VideoLAN
- * $Id: 0fd82e91c8c6ab4c1c1774878c45bbf6f33b325f $
+ * $Id: 6cd6edf285daa4599beddf30b719f45460d861d1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -273,6 +273,9 @@ static unsigned char* parseVorbisConfigStr( char const* configStr,
                                             unsigned int& configSize );
 
 static char *passwordLessURL( vlc_url_t *url );
+
+#define PCR_OBS (CLOCK_FREQ / 4)
+#define PCR_OFF PCR_OBS
 
 /*****************************************************************************
  * DemuxOpen:
@@ -1379,12 +1382,13 @@ static int Demux( demux_t *p_demux )
                 tk->i_next_block_flags |= BLOCK_FLAG_DISCONTINUITY;
             }
             if( p_sys->i_pcr != VLC_TS_INVALID )
-                es_out_SetPCR( p_demux->out, VLC_TS_0 + p_sys->i_pcr );
+                es_out_SetPCR( p_demux->out, VLC_TS_0 +
+                               __MAX(0, p_sys->i_pcr - PCR_OFF) );
         }
         else if( p_sys->i_pcr == VLC_TS_INVALID ||
-                 i_minpcr > p_sys->i_pcr + CLOCK_FREQ / 4 )
+                 i_minpcr > p_sys->i_pcr + PCR_OBS )
         {
-            p_sys->i_pcr = i_minpcr;
+            p_sys->i_pcr = __MAX(0, i_minpcr - PCR_OFF);
             if( p_sys->i_pcr != VLC_TS_INVALID )
                 es_out_SetPCR( p_demux->out, VLC_TS_0 + p_sys->i_pcr );
         }

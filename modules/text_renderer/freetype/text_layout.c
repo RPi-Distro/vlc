@@ -2,7 +2,7 @@
  * text_layout.c : Text shaping and layout
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: 9ba393b7f9097a54810f2e7d6f824e117f30e707 $
+ * $Id: d6844b23d0acb19122df948497f90bb812d5c562 $
  *
  * Authors: Salah-Eddin Shaban <salshaaban@gmail.com>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -199,10 +199,7 @@ line_desc_t *NewLine( int i_count )
     p_line->i_first_visible_char_index = -1;
     p_line->i_last_visible_char_index = -2;
 
-    p_line->bbox.xMin = INT_MAX;
-    p_line->bbox.yMin = INT_MAX;
-    p_line->bbox.xMax = INT_MIN;
-    p_line->bbox.yMax = INT_MIN;
+    BBoxInit( &p_line->bbox );
 
     p_line->p_character = calloc( i_count, sizeof(*p_line->p_character) );
     if( !p_line->p_character )
@@ -232,14 +229,6 @@ static void FixGlyph( FT_Glyph glyph, FT_BBox *p_bbox,
     }
 }
 
-static void BBoxEnlarge( FT_BBox *p_max, const FT_BBox *p )
-{
-    p_max->xMin = __MIN(p_max->xMin, p->xMin);
-    p_max->yMin = __MIN(p_max->yMin, p->yMin);
-    p_max->xMax = __MAX(p_max->xMax, p->xMax);
-    p_max->yMax = __MAX(p_max->yMax, p->yMax);
-}
-
 static paragraph_t *NewParagraph( filter_t *p_filter,
                                   int i_size,
                                   const uni_char_t *p_code_points,
@@ -253,11 +242,11 @@ static paragraph_t *NewParagraph( filter_t *p_filter,
 
     p_paragraph->i_size = i_size;
     p_paragraph->p_code_points =
-            malloc( i_size * sizeof( *p_paragraph->p_code_points ) );
+            vlc_alloc( i_size, sizeof( *p_paragraph->p_code_points ) );
     p_paragraph->pi_glyph_indices =
-            malloc( i_size * sizeof( *p_paragraph->pi_glyph_indices ) );
+            vlc_alloc( i_size, sizeof( *p_paragraph->pi_glyph_indices ) );
     p_paragraph->pp_styles =
-            malloc( i_size * sizeof( *p_paragraph->pp_styles ) );
+            vlc_alloc( i_size, sizeof( *p_paragraph->pp_styles ) );
     p_paragraph->pp_faces =
             calloc( i_size, sizeof( *p_paragraph->pp_faces ) );
     p_paragraph->pi_run_ids =
@@ -293,16 +282,16 @@ static paragraph_t *NewParagraph( filter_t *p_filter,
     }
 
 #ifdef HAVE_HARFBUZZ
-    p_paragraph->p_scripts = malloc( i_size * sizeof( *p_paragraph->p_scripts ) );
+    p_paragraph->p_scripts = vlc_alloc( i_size, sizeof( *p_paragraph->p_scripts ) );
     if( !p_paragraph->p_scripts )
         goto error;
 #endif
 
 #ifdef HAVE_FRIBIDI
-    p_paragraph->p_levels = malloc( i_size * sizeof( *p_paragraph->p_levels ) );
-    p_paragraph->p_types = malloc( i_size * sizeof( *p_paragraph->p_types ) );
+    p_paragraph->p_levels = vlc_alloc( i_size, sizeof( *p_paragraph->p_levels ) );
+    p_paragraph->p_types = vlc_alloc( i_size, sizeof( *p_paragraph->p_types ) );
     p_paragraph->pi_reordered_indices =
-            malloc( i_size * sizeof( *p_paragraph->pi_reordered_indices ) );
+            vlc_alloc( i_size, sizeof( *p_paragraph->pi_reordered_indices ) );
 
     if( !p_paragraph->p_levels || !p_paragraph->p_types
      || !p_paragraph->pi_reordered_indices )
@@ -843,7 +832,7 @@ static int ShapeParagraphFriBidi( filter_t *p_filter, paragraph_t *p_paragraph )
     }
 
     FriBidiJoiningType *p_joining_types =
-            malloc( p_paragraph->i_size * sizeof( *p_joining_types ) );
+            vlc_alloc( p_paragraph->i_size, sizeof( *p_joining_types ) );
     if( !p_joining_types )
         return VLC_ENOMEM;
 
@@ -1123,6 +1112,7 @@ static int LayoutLine( filter_t *p_filter,
 
         if( !p_bitmaps->p_glyph )
         {
+            BBoxInit( &p_ch->bbox );
             --i_line_index;
             continue;
         }
@@ -1251,11 +1241,14 @@ static int LayoutLine( filter_t *p_filter,
         p_ch->i_line_thickness = i_line_thickness;
         p_ch->i_line_offset = i_line_offset;
 
-        BBoxEnlarge( &p_line->bbox, &p_bitmaps->glyph_bbox );
+        /* Compute bounding box for all glyphs */
+        p_ch->bbox = p_bitmaps->glyph_bbox;
         if( p_bitmaps->p_outline )
-            BBoxEnlarge( &p_line->bbox, &p_bitmaps->outline_bbox );
+            BBoxEnlarge( &p_ch->bbox, &p_bitmaps->outline_bbox );
         if( p_bitmaps->p_shadow )
-            BBoxEnlarge( &p_line->bbox, &p_bitmaps->shadow_bbox );
+            BBoxEnlarge( &p_ch->bbox, &p_bitmaps->shadow_bbox );
+
+        BBoxEnlarge( &p_line->bbox, &p_ch->bbox );
 
         pen.x += p_bitmaps->i_x_advance;
         pen.y += p_bitmaps->i_y_advance;
@@ -1585,12 +1578,8 @@ int LayoutText( filter_t *p_filter,
     }
 
     int i_base_line = 0;
-    FT_BBox bbox = {
-        .xMin = INT_MAX,
-        .yMin = INT_MAX,
-        .xMax = INT_MIN,
-        .yMax = INT_MIN
-    };
+    FT_BBox bbox;
+    BBoxInit( &bbox );
 
     for( line_desc_t *p_line = p_first_line; p_line; p_line = p_line->p_next )
     {

@@ -2,7 +2,7 @@
  * packetizer_helper.h: Packetizer helpers
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 14642a4c2916e45f1610c311e2744007f1cb59cf $
+ * $Id: f7711895707b7eca77a8bbaee2f10fd4908224a6 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -155,6 +155,7 @@ static inline block_t *packetizer_Packetize( packetizer_t *p_pack, block_t **pp_
                 return NULL; /* Need more data */
 
             p_pack->i_offset = 1; /* To find next startcode */
+            /* fallthrough */
 
         case STATE_NEXT_SYNC:
             /* Find the next startcode */

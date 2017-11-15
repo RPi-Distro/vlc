@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2005, 2008, 2010 VLC authors and VideoLAN
- * $Id: e11f6f922d136d3c511c159b1217b289ee34c751 $
+ * $Id: 4068c3b0d81922d66c2aaebc8491316eca26898d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -127,6 +127,8 @@ static int Open( vlc_object_t * p_this )
     if( p_stream == NULL )
     {
         msg_Err( p_demux, "cannot find KaxSegment or missing mandatory KaxInfo" );
+        delete p_io_stream;
+        delete p_io_callback;
         goto error;
     }
     p_sys->streams.push_back( p_stream );
@@ -313,8 +315,8 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 return VLC_EGENERIC;
 
             *pi_int = p_sys->stored_attachments.size();
-            *ppp_attach = static_cast<input_attachment_t**>( malloc( sizeof(input_attachment_t*) *
-                                                        p_sys->stored_attachments.size() ) );
+            *ppp_attach = static_cast<input_attachment_t**>( vlc_alloc( p_sys->stored_attachments.size(),
+                                                        sizeof(input_attachment_t*) ) );
             if( !(*ppp_attach) )
                 return VLC_ENOMEM;
             for( size_t i = 0; i < p_sys->stored_attachments.size(); i++ )
@@ -371,7 +373,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 int *pi_int = va_arg( args, int* );
 
                 *pi_int = p_sys->titles.size();
-                *ppp_title = static_cast<input_title_t**>( malloc( sizeof( input_title_t* ) * p_sys->titles.size() ) );
+                *ppp_title = static_cast<input_title_t**>( vlc_alloc( p_sys->titles.size(), sizeof( input_title_t* ) ) );
 
                 for( size_t i = 0; i < p_sys->titles.size(); i++ )
                     (*ppp_title)[i] = vlc_input_title_Duplicate( p_sys->titles[i] );

@@ -3,7 +3,7 @@
  * EbmlParser for the matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: c937a9900d42c3bd97270e8280d780ad8561a556 $
+ * $Id: eb76e780eb8f0b4bf9a4db13aeccb6f2a4c978a3 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -155,10 +155,28 @@ EbmlElement *EbmlParser::Get( int n_call )
     }
 
     p_prev = m_el[mi_level];
-    if( m_el[mi_level] )
-    {
-        m_el[mi_level]->SkipData( *m_es, EBML_CONTEXT(m_el[mi_level]) );
+    if( p_prev )
+        p_prev->SkipData( *m_es, EBML_CONTEXT(p_prev) );
 
+    uint64_t i_max_read;
+    if (mi_level == 0)
+        i_max_read = UINT64_MAX;
+    else if (!m_el[mi_level-1]->IsFiniteSize())
+        i_max_read = UINT64_MAX;
+    else if (!p_prev)
+        i_max_read = m_el[mi_level-1]->GetSize();
+    else {
+        size_t size_lvl = mi_level;
+        while ( size_lvl && m_el[size_lvl-1]->IsFiniteSize() &&
+                m_el[size_lvl-1]->GetEndPosition() == m_el[size_lvl]->GetEndPosition() )
+            size_lvl--;
+        if (size_lvl == 0 || !m_el[size_lvl-1]->IsFiniteSize() )
+            i_max_read = UINT64_MAX;
+        else {
+            uint64 top = m_el[size_lvl-1]->GetEndPosition();
+            uint64 bom = m_el[mi_level]->GetEndPosition();
+            i_max_read = top - bom;
+        }
     }
 
     // If the parent is a segment, use the segment context when creating children
@@ -170,7 +188,7 @@ EbmlElement *EbmlParser::Get( int n_call )
 
     /* Ignore unknown level 0 or 1 elements */
     m_el[mi_level] = m_es->FindNextElement( e_context,
-                                            i_ulev, UINT64_MAX,
+                                            i_ulev, i_max_read,
                                             (  mb_dummy | (mi_level > 1) ), 1 );
     if( i_ulev > 0 )
     {
@@ -181,6 +199,7 @@ EbmlElement *EbmlParser::Get( int n_call )
                 if( MKV_IS_ID( p_prev, KaxBlockVirtual ) )
                     static_cast<KaxBlockVirtualWorkaround*>(p_prev)->Fix(); // !! WARNING : TODO !! this is undefined-behavior
                 delete p_prev;
+                p_prev = NULL;
             }
             mb_keep = false;
         }
@@ -204,6 +223,9 @@ EbmlElement *EbmlParser::Get( int n_call )
     else if( m_el[mi_level] == NULL )
     {
         msg_Dbg( p_demux,"MKV/Ebml Parser: m_el[mi_level] == NULL" );
+        /* go back to the end of the parent */
+        if( p_prev )
+            p_prev->SkipData( *m_es, EBML_CONTEXT(p_prev) );
     }
     else if( m_el[mi_level]->IsDummy() && !mb_dummy )
     {
@@ -216,9 +238,9 @@ EbmlElement *EbmlParser::Get( int n_call )
             return NULL;
         }
 
-        if( p_prev && p_prev->IsFiniteSize() &&
-            p_prev->GetEndPosition() != m_el[mi_level]->GetElementPosition() &&
-            mi_level > 1 )
+        if( mi_level > 1 &&
+            p_prev && p_prev->IsFiniteSize() &&
+            p_prev->GetEndPosition() != m_el[mi_level]->GetElementPosition() )
         {
             msg_Err( p_demux, "Dummy Element at unexpected position... corrupted file?" );
             b_bad_position = true;
@@ -252,12 +274,10 @@ EbmlElement *EbmlParser::Get( int n_call )
                 return NULL;
             }
 
-            delete m_el[mi_level];
-            delete p_prev;
-
-            m_el[mi_level] = NULL;
-            m_el[mi_level - 1]->SkipData( *m_es, EBML_CONTEXT(m_el[mi_level - 1]) );
-            return Get();
+            EbmlElement *unwanted_dummy = m_el[mi_level];
+            EbmlElement *upper_dummy = Get();
+            delete unwanted_dummy;
+            return upper_dummy;
         }
     }
 

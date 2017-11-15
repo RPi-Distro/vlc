@@ -2,7 +2,7 @@
  * modules.c : Builtin and plugin modules management functions
  *****************************************************************************
  * Copyright (C) 2001-2011 VLC authors and VideoLAN
- * $Id: ab6d29584e30e25efa7983e403c8f668af9e81a2 $
+ * $Id: 3ad50fb39153f3257304f1bad35c172e4b6526a5 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Ethan C. Baldridge <BaldridgeE@cadmus.com>
@@ -438,7 +438,7 @@ module_config_t *module_config_get( const module_t *module, unsigned *restrict p
 
     unsigned i,j;
     size_t size = plugin->conf.size;
-    module_config_t *config = malloc( size * sizeof( *config ) );
+    module_config_t *config = vlc_alloc( size, sizeof( *config ) );
 
     assert( psize != NULL );
     *psize = 0;

@@ -2,7 +2,7 @@
  * freetype.h : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: 7a4e496be79454bf7b2543133d80037eb310361f $
+ * $Id: b0ef9cf178a2ab378f041848d36bec8301bf164e $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -152,5 +152,22 @@ struct filter_sys_t
  */
 FT_Face SelectAndLoadFace( filter_t *p_filter, const text_style_t *p_style,
                            uni_char_t codepoint );
+
+static inline void BBoxInit( FT_BBox *p_box )
+{
+    p_box->xMin = INT_MAX;
+    p_box->yMin = INT_MAX;
+    p_box->xMax = INT_MIN;
+    p_box->yMax = INT_MIN;
+}
+
+static inline void BBoxEnlarge( FT_BBox *p_max, const FT_BBox *p )
+{
+    p_max->xMin = __MIN(p_max->xMin, p->xMin);
+    p_max->yMin = __MIN(p_max->yMin, p->yMin);
+    p_max->xMax = __MAX(p_max->xMax, p->xMax);
+    p_max->yMax = __MAX(p_max->yMax, p->yMax);
+}
+
 
 #endif

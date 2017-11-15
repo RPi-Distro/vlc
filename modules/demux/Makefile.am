@@ -1,15 +1,19 @@
 demuxdir = $(pluginsdir)/demux
 demux_LTLIBRARIES =
 
-libflacsys_plugin_la_SOURCES = demux/flac.c demux/xiph_metadata.h demux/xiph_metadata.c
+vlc_xiph_metadata_la_SOURCES = demux/xiph_metadata.h demux/xiph_metadata.c
+noinst_LTLIBRARIES += vlc_xiph_metadata.la
+
+libflacsys_plugin_la_SOURCES = demux/flac.c
 libflacsys_plugin_la_CPPFLAGS = $(AM_CPPFLAGS)
+libflacsys_plugin_la_LIBADD = vlc_xiph_metadata.la
 demux_LTLIBRARIES += libflacsys_plugin.la
 
 libogg_plugin_la_SOURCES = demux/ogg.c demux/ogg.h demux/oggseek.c demux/oggseek.h \
-	demux/xiph_metadata.h demux/xiph.h demux/xiph_metadata.c demux/opus.h
+	demux/xiph.h demux/opus.h
 libogg_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(LIBVORBIS_CFLAGS) $(OGG_CFLAGS)
 libogg_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(demuxdir)'
-libogg_plugin_la_LIBADD = $(LIBVORBIS_LIBS) $(OGG_LIBS)
+libogg_plugin_la_LIBADD = $(LIBVORBIS_LIBS) $(OGG_LIBS) vlc_xiph_metadata.la
 EXTRA_LTLIBRARIES += libogg_plugin.la
 demux_LTLIBRARIES += $(LTLIBogg)
 
@@ -136,17 +140,13 @@ libcaf_plugin_la_LIBADD = $(LIBM)
 demux_LTLIBRARIES += libcaf_plugin.la
 
 libavformat_plugin_la_SOURCES = demux/avformat/demux.c \
-	codec/avcodec/fourcc.c \
-	codec/avcodec/chroma.c \
-	codec/avcodec/avcommon.h \
-	codec/avcodec/avcommon_compat.h \
 	demux/vobsub.h \
 	demux/avformat/avformat.c demux/avformat/avformat.h
 if ENABLE_SOUT
 libavformat_plugin_la_SOURCES += demux/avformat/mux.c
 endif
 libavformat_plugin_la_CFLAGS = $(AM_CFLAGS) $(AVFORMAT_CFLAGS) $(AVUTIL_CFLAGS)
-libavformat_plugin_la_LIBADD = $(AVFORMAT_LIBS) $(AVUTIL_LIBS) $(LIBM)
+libavformat_plugin_la_LIBADD = $(AVFORMAT_LIBS) $(AVUTIL_LIBS) $(LIBM) vlc_avcodec_common.la
 libavformat_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(SYMBOLIC_LDFLAGS)
 if HAVE_ZLIB
 libavformat_plugin_la_LIBADD += -lz
@@ -157,6 +157,7 @@ endif
 if HAVE_AVFORMAT
 if !MERGE_FFMPEG
 demux_LTLIBRARIES += libavformat_plugin.la
+noinst_LTLIBRARIES += vlc_avcodec_common.la
 endif
 endif
 

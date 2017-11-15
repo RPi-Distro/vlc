@@ -56,7 +56,7 @@ vlc_vaapi_FilterHoldInstance(filter_t *filter, VADisplay *dpy)
     if (!pic)
         return NULL;
 
-    if (pic->format.i_chroma != VLC_CODEC_VAAPI_420)
+    if (!vlc_vaapi_IsChromaOpaque(pic->format.i_chroma))
     {
         picture_Release(pic);
         return NULL;
@@ -360,7 +360,7 @@ Open(filter_t * filter,
 {
     filter_sys_t *      filter_sys;
 
-    if (filter->fmt_out.video.i_chroma != VLC_CODEC_VAAPI_420 ||
+    if (!vlc_vaapi_IsChromaOpaque(filter->fmt_out.video.i_chroma) ||
         !video_format_IsSimilar(&filter->fmt_out.video, &filter->fmt_in.video))
         return VLC_EGENERIC;
 
@@ -383,14 +383,14 @@ Open(filter_t * filter,
         vlc_vaapi_PoolNew(VLC_OBJECT(filter), filter_sys->va.inst,
                           filter_sys->va.dpy, DEST_PICS_POOL_SZ,
                           &filter_sys->va.surface_ids, &filter->fmt_out.video,
-                          VA_RT_FORMAT_YUV420, VA_FOURCC_NV12);
+                          true);
     if (!filter_sys->dest_pics)
         goto error;
 
     filter_sys->va.conf =
         vlc_vaapi_CreateConfigChecked(VLC_OBJECT(filter), filter_sys->va.dpy,
                                       VAProfileNone, VAEntrypointVideoProc,
-                                      VA_FOURCC_NV12);
+                                      filter->fmt_out.video.i_chroma);
     if (filter_sys->va.conf == VA_INVALID_ID)
         goto error;
 
@@ -1110,7 +1110,7 @@ OpenDeinterlace_InitHistory(void * p_data, VAProcPipelineCaps const * pipeline_c
     if (history_sz - 1)
     {
         p_deint_data->forward_refs.surfaces =
-            malloc((history_sz - 1) * sizeof(VASurfaceID));
+            vlc_alloc(history_sz - 1, sizeof(VASurfaceID));
         if (!p_deint_data->forward_refs.surfaces)
             return VLC_ENOMEM;
     }

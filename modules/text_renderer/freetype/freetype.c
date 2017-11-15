@@ -2,7 +2,7 @@
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2002 - 2015 VLC authors and VideoLAN
- * $Id: 9890e7f1753a52da739163f360ee8a4c45f95e44 $
+ * $Id: 2385b4a9a49d9193493dda4ac20d1b3c8e7ddbbb $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -283,6 +283,10 @@ static FT_Vector GetAlignedOffset( const line_desc_t *p_line,
         else /* center */
             offsets.x = ( i_text_width - p_line->i_width ) / 2;
     }
+    else
+    {
+        offsets.x = p_textbbox->xMin - p_line->bbox.xMin;
+    }
     return offsets;
 }
 
@@ -302,7 +306,7 @@ static int LoadFontsFromAttachments( filter_t *p_filter )
         return VLC_EGENERIC;
 
     p_sys->i_font_attachments = 0;
-    p_sys->pp_font_attachments = malloc( i_attachments_cnt * sizeof(*p_sys->pp_font_attachments));
+    p_sys->pp_font_attachments = vlc_alloc( i_attachments_cnt, sizeof(*p_sys->pp_font_attachments));
     if( !p_sys->pp_font_attachments )
     {
         for( int i = 0; i < i_attachments_cnt; ++i )
@@ -514,7 +518,7 @@ static int RenderYUVP( filter_t *p_filter, subpicture_region_t *p_region,
     /* Outlining (find something better than nearest neighbour filtering ?) */
     if( 1 )
     {
-        uint8_t *p_dst = p_region->p_picture->Y_PIXELS;
+        p_dst = p_region->p_picture->Y_PIXELS;
         uint8_t *p_top = p_dst; /* Use 1st line as a cache */
         uint8_t left, current;
 
@@ -749,7 +753,7 @@ static inline void RenderBackground( subpicture_region_t *p_region,
         }
 
         /* Compute the background for the line (identify leading/trailing space) */
-        int line_start = offset.x + p_line->p_character[p_line->i_first_visible_char_index].p_glyph->left - p_regionbbox->xMin;
+        int line_start = offset.x + p_line->p_character[p_line->i_first_visible_char_index].bbox.xMin - p_regionbbox->xMin;
 
         /* Fudge factor to make sure caption background edges are left aligned
            despite variable font width */
@@ -771,9 +775,7 @@ static inline void RenderBackground( subpicture_region_t *p_region,
             }
 
             /* Find right boundary for bounding box for background */
-            int line_end = offset.x +
-                           p_line->p_character[i_seg_end].p_glyph->left - p_regionbbox->xMin +
-                           p_line->p_character[i_seg_end].p_glyph->bitmap.width;
+            int line_end = offset.x + p_line->p_character[i_seg_end].bbox.xMax - p_regionbbox->xMin;
 
             const line_character_t *p_char = &p_line->p_character[i_char_index];
             if( p_char->p_style->i_style_flags & STYLE_BACKGROUND )
@@ -856,7 +858,7 @@ static inline int RenderAXYZ( filter_t *p_filter,
         /* Render all lines */
         for( line_desc_t *p_line = p_line_head; p_line != NULL; p_line = p_line->p_next )
         {
-            FT_Vector offset = GetAlignedOffset( p_line, p_textbbox, p_region->i_align );
+            FT_Vector offset = GetAlignedOffset( p_line, p_textbbox, p_region->i_text_align );
 
             /* Render all glyphs and underline/strikethrough */
             for( int i = p_line->i_first_visible_char_index; i <= p_line->i_last_visible_char_index; i++ )

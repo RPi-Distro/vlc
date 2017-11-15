@@ -2,7 +2,7 @@
  * subtitle.c: Demux for subtitle text files.
  *****************************************************************************
  * Copyright (C) 1999-2007 VLC authors and VideoLAN
- * $Id: 7ef29744f1f06a0c83ab0592d61b01f007171633 $
+ * $Id: b6599c8269632a5346786aef09b81791d5cb9579 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -426,29 +426,11 @@ static int Open ( vlc_object_t *p_this )
     {
         if( i_peek > 16 )
         {
-            vlc_iconv_t handle = vlc_iconv_open( "UTF-8", psz_bom );
-            if( handle )
-            {
-                char *p_outbuf = malloc( i_peek );
-                if( p_outbuf )
-                {
-                    const char *p_inbuf = (const char *) p_peek;
-                    char *psz_converted = p_outbuf;
-                    const size_t i_outbuf_size = i_peek;
-                    size_t i_inbuf_remain = i_peek;
-                    size_t i_outbuf_remain = i_peek;
-                    if ( VLC_ICONV_ERR != vlc_iconv( handle,
-                                                     &p_inbuf, &i_inbuf_remain,
-                                                     &p_outbuf, &i_outbuf_remain ) )
-                    {
-                        p_probestream = vlc_stream_MemoryNew( p_demux, (uint8_t *) psz_converted,
-                                                            i_outbuf_size - i_outbuf_remain,
-                                                            false ); /* free p_outbuf on release */
-                    }
-                    else free( p_outbuf );
-                }
-                vlc_iconv_close( handle );
-            }
+            char *p_outbuf = FromCharset( psz_bom, p_peek, i_peek );
+            if( p_outbuf != NULL )
+                p_probestream = vlc_stream_MemoryNew( p_demux, (uint8_t *)p_outbuf,
+                                                      strlen( p_outbuf ),
+                                                      false ); /* free p_outbuf on release */
         }
     }
     else
@@ -1884,7 +1866,7 @@ static int ParseJSS( vlc_object_t *p_obj, subs_properties_t *p_props,
             case 'S':
                  shift = isalpha( (unsigned char)psz_text[2] ) ? 6 : 2 ;
                  if ( shift > line_length )
-                     continue;
+                     break;
 
                  if( sscanf( &psz_text[shift], "%d", &h ) )
                  {
@@ -1923,7 +1905,7 @@ static int ParseJSS( vlc_object_t *p_obj, subs_properties_t *p_props,
             case 'T':
                 shift = isalpha( (unsigned char)psz_text[2] ) ? 8 : 2 ;
                 if ( shift > line_length )
-                    continue;
+                    break;
 
                 sscanf( &psz_text[shift], "%d", &p_props->jss.i_time_resolution );
                 break;

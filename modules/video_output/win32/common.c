@@ -2,7 +2,7 @@
  * common.c: Windows video output common code
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: f19559379dbfea9a6e8dd5ac69212c8f26f10b14 $
+ * $Id: d768043ed04f70b42a233ea63c045ea04e126f25 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Martell Malone <martellmalone@gmail.com>
@@ -91,6 +91,7 @@ int CommonInit(vout_display_t *vd)
         return VLC_EGENERIC;
 #endif
 
+#if !VLC_WINSTORE_APP
     event_cfg_t cfg;
     memset(&cfg, 0, sizeof(cfg));
 #ifdef MODULE_NAME_IS_direct3d9
@@ -104,7 +105,6 @@ int CommonInit(vout_display_t *vd)
     cfg.width  = vd->cfg->display.width;
     cfg.height = vd->cfg->display.height;
 
-#if !VLC_WINSTORE_APP
     event_hwnd_t hwnd;
     if (EventThreadStart(sys->event, &hwnd, &cfg))
         return VLC_EGENERIC;

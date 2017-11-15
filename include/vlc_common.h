@@ -470,23 +470,12 @@ struct vlc_common_members
  * It checks if the compound type actually starts with an embedded
  * \ref vlc_object_t structure.
  */
-#if !defined(__cplusplus) && (__STDC_VERSION__ >= 201112L)
+#if !defined(__cplusplus)
 # define VLC_OBJECT(x) \
     _Generic((x)->obj, \
         struct vlc_common_members: (vlc_object_t *)(&(x)->obj), \
         const struct vlc_common_members: (const vlc_object_t *)(&(x)->obj) \
     )
-#elif defined (__GNUC__)
-# ifndef __cplusplus
-#  define VLC_OBJECT( x ) \
-    __builtin_choose_expr( \
-        __builtin_types_compatible_p(__typeof__((x)->obj), struct vlc_common_members), \
-        (vlc_object_t *)(x), (void)0)
-# else
-#  define VLC_OBJECT( x ) \
-    ((vlc_object_t *)(&((x)->obj)) \
-      + 0 * __builtin_offsetof(__typeof__(*(x)), obj.object_type))
-# endif
 #else
 # define VLC_OBJECT( x ) ((vlc_object_t *)&(x)->obj)
 #endif
@@ -661,6 +650,120 @@ static inline uint64_t (bswap64)(uint64_t x)
 #endif
 }
 
+/* Integer overflow */
+static inline bool uadd_overflow(unsigned a, unsigned b, unsigned *res)
+{
+#if defined(__GNUC__) || defined(__clang__)
+     return __builtin_uadd_overflow(a, b, res);
+#else
+     *res = a + b;
+     return (a + b) < a;
+#endif
+}
+
+static inline bool uaddl_overflow(unsigned long a, unsigned long b,
+                                  unsigned long *res)
+{
+#if defined(__GNUC__) || defined(__clang__)
+     return __builtin_uaddl_overflow(a, b, res);
+#else
+     *res = a + b;
+     return (a + b) < a;
+#endif
+}
+
+static inline bool uaddll_overflow(unsigned long long a, unsigned long long b,
+                                   unsigned long long *res)
+{
+#if defined(__GNUC__) || defined(__clang__)
+     return __builtin_uaddll_overflow(a, b, res);
+#else
+     *res = a + b;
+     return (a + b) < a;
+#endif
+}
+
+#ifndef __cplusplus
+# define add_overflow(a,b,r) \
+    _Generic(*(r), \
+        unsigned: uadd_overflow(a, b, (unsigned *)(r)), \
+        unsigned long: uaddl_overflow(a, b, (unsigned long *)(r)), \
+        unsigned long long: uaddll_overflow(a, b, (unsigned long long *)(r)))
+#else
+static inline bool add_overflow(unsigned a, unsigned b, unsigned *res)
+{
+    return uadd_overflow(a, b, res);
+}
+
+static inline bool add_overflow(unsigned long a, unsigned long b,
+                                unsigned long *res)
+{
+    return uaddl_overflow(a, b, res);
+}
+
+static inline bool add_overflow(unsigned long long a, unsigned long long b,
+                                unsigned long long *res)
+{
+    return uaddll_overflow(a, b, res);
+}
+#endif
+
+static inline bool umul_overflow(unsigned a, unsigned b, unsigned *res)
+{
+#if defined(__GNUC__) || defined(__clang__)
+     return __builtin_umul_overflow(a, b, res);
+#else
+     *res = a * b;
+     return b > 0 && a > (UINT_MAX / b);
+#endif
+}
+
+static inline bool umull_overflow(unsigned long a, unsigned long b,
+                                  unsigned long *res)
+{
+#if defined(__GNUC__) || defined(__clang__)
+     return __builtin_umull_overflow(a, b, res);
+#else
+     *res = a * b;
+     return b > 0 && a > (ULONG_MAX / b);
+#endif
+}
+
+static inline bool umulll_overflow(unsigned long long a, unsigned long long b,
+                                   unsigned long long *res)
+{
+#if defined(__GNUC__) || defined(__clang__)
+     return __builtin_umulll_overflow(a, b, res);
+#else
+     *res = a * b;
+     return b > 0 && a > (ULLONG_MAX / b);
+#endif
+}
+
+#ifndef __cplusplus
+#define mul_overflow(a,b,r) \
+    _Generic(*(r), \
+        unsigned: umul_overflow(a, b, (unsigned *)(r)), \
+        unsigned long: umull_overflow(a, b, (unsigned long *)(r)), \
+        unsigned long long: umulll_overflow(a, b, (unsigned long long *)(r)))
+#else
+static inline bool mul_overflow(unsigned a, unsigned b, unsigned *res)
+{
+    return umul_overflow(a, b, res);
+}
+
+static inline bool mul_overflow(unsigned long a, unsigned long b,
+                                unsigned long *res)
+{
+    return umull_overflow(a, b, res);
+}
+
+static inline bool mul_overflow(unsigned long long a, unsigned long long b,
+                                unsigned long long *res)
+{
+    return umulll_overflow(a, b, res);
+}
+#endif
 
 /* Free and set set the variable to NULL */
 #define FREENULL(a) do { free( a ); a = NULL; } while(0)
@@ -844,6 +947,12 @@ VLC_API bool vlc_ureduce( unsigned *, unsigned *, uint64_t, uint64_t, uint64_t )
 #define container_of(ptr, type, member) \
     ((type *)(((char *)(ptr)) - offsetof(type, member)))
 
+VLC_USED VLC_MALLOC
+static inline void *vlc_alloc(size_t count, size_t size)
+{
+    return mul_overflow(count, size, &size) ? NULL : malloc(size);
+}
+
 /*****************************************************************************
  * I18n stuff
  *****************************************************************************/
@@ -863,26 +972,26 @@ static inline const char *vlc_pgettext_aux( const char *ctx, const char *id )
 /*****************************************************************************
  * Loosy memory allocation functions. Do not use in new code.
  *****************************************************************************/
-static inline void *xmalloc (size_t len)
+static inline void *xmalloc(size_t len)
 {
-    void *ptr = malloc (len);
-    if (unlikely (ptr == NULL))
-        abort ();
+    void *ptr = malloc(len);
+    if (unlikely(ptr == NULL && len > 0))
+        abort();
     return ptr;
 }
 
-static inline void *xrealloc (void *ptr, size_t len)
+static inline void *xrealloc(void *ptr, size_t len)
 {
-    void *nptr = realloc (ptr, len);
-    if (unlikely (nptr == NULL))
-        abort ();
+    void *nptr = realloc(ptr, len);
+    if (unlikely(nptr == NULL && len > 0))
+        abort();
     return nptr;
 }
 
-static inline void *xcalloc (size_t n, size_t size)
+static inline void *xcalloc(size_t n, size_t size)
 {
-    void *ptr = calloc (n, size);
-    if (unlikely (ptr == NULL))
+    void *ptr = calloc(n, size);
+    if (unlikely(ptr == NULL && (n > 0 || size > 0)))
         abort ();
     return ptr;
 }

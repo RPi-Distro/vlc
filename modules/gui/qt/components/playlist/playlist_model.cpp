@@ -2,7 +2,7 @@
  * playlist_model.cpp : Manage playlist model
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 2b6d0e1ccc383ce6b42e44a079181a2d680bbcd9 $
+ * $Id: 99e4c8f942db79ad8f043d33a26b4927cc96397f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakkka <ileoo (at) videolan dot org>
@@ -41,6 +41,7 @@
 #include <assert.h>
 #include <QFont>
 #include <QAction>
+#include <QStack>
 
 /*************************************************************************
  * Playlist model implementation
@@ -518,20 +519,31 @@ PLItem *PLModel::findByPLId( PLItem *root, int i_id ) const
     if( root->id() == i_id )
         return root;
 
-    QList<AbstractPLItem *>::iterator it = root->children.begin();
-    while ( it != root->children.end() )
+    /* traverse the tree (in depth first) iteratively to avoid stack overflow */
+
+    struct RemainingChildren {
+        QList<AbstractPLItem *>::const_iterator next;
+        QList<AbstractPLItem *>::const_iterator end;
+    };
+
+    QStack<RemainingChildren> stack;
+    if( root->childCount() )
+        stack.push( {root->children.cbegin(), root->children.cend()} );
+
+    while ( !stack.isEmpty() )
     {
-        PLItem *item = static_cast<PLItem *>(*it);
+        RemainingChildren &remainingChildren = stack.top();
+
+        PLItem *item = static_cast<PLItem *>( *remainingChildren.next );
         if( item->id() == i_id )
             return item;
 
+        if( ++remainingChildren.next == remainingChildren.end )
+            /* there are no more children at this depth level */
+            stack.pop();
+
         if( item->childCount() )
-        {
-            PLItem *childFound = findByPLId( item, i_id );
-            if( childFound )
-                return childFound;
-        }
-        ++it;
+            stack.push( {item->children.cbegin(), item->children.cend()} );
     }
     return NULL;
 }

@@ -2,7 +2,7 @@
  * cdrom.c: cdrom tools
  *****************************************************************************
  * Copyright (C) 1998-2001 VLC authors and VideoLAN
- * $Id: afc48d924d3339cdfe45b6698253dd53a6e44dbf $
+ * $Id: 732d7f3614a378bdeae62a2d091b3c12e21fa8ca $
  *
  * Authors: Johan Bilien <jobi@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -545,7 +545,7 @@ int ioctl_ReadSectors( vlc_object_t *p_this, const vcddev_t *p_vcddev,
     uint8_t *p_block;
 
     if( i_type == VCD_TYPE )
-        p_block = malloc( VCD_SECTOR_SIZE * i_nb );
+        p_block = vlc_alloc( i_nb, VCD_SECTOR_SIZE );
     else
         p_block = p_buffer;
 

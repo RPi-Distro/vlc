@@ -2,7 +2,7 @@
  * resource.c
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 2a57ac075f86721b85ad2780499c5a6e10e2b65b $
+ * $Id: ac808f6e8ad609f4c69aa635d26797dec37cebcc $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
@@ -315,7 +315,7 @@ static void HoldVouts( input_resource_t *p_resource, vout_thread_t ***ppp_vout,
     if( p_resource->i_vout <= 0 )
         goto exit;
 
-    pp_vout = malloc( p_resource->i_vout * sizeof(*pp_vout) );
+    pp_vout = vlc_alloc( p_resource->i_vout, sizeof(*pp_vout) );
     if( !pp_vout )
         goto exit;
 

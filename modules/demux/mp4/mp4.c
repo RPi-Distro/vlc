@@ -397,7 +397,7 @@ static int CreateTracks( demux_t *p_demux, unsigned i_tracks )
     if( SIZE_MAX / i_tracks < sizeof(mp4_track_t) )
         return VLC_EGENERIC;
 
-    p_sys->track = malloc( i_tracks * sizeof(mp4_track_t)  );
+    p_sys->track = vlc_alloc( i_tracks, sizeof(mp4_track_t)  );
     if( p_sys->track == NULL )
         return VLC_ENOMEM;
     p_sys->i_tracks = i_tracks;
@@ -625,7 +625,6 @@ static int Open( vlc_object_t * p_this )
     const uint8_t   *p_peek;
 
     MP4_Box_t       *p_ftyp;
-    MP4_Box_t       *p_rmra;
     const MP4_Box_t *p_mvhd = NULL;
     const MP4_Box_t *p_mvex = NULL;
 
@@ -760,7 +759,8 @@ static int Open( vlc_object_t * p_this )
         goto error;
     }
 
-    if( ( p_rmra = MP4_BoxGet( p_sys->p_root,  "/moov/rmra" ) ) )
+    MP4_Box_t *p_rmra = MP4_BoxGet( p_sys->p_root, "/moov/rmra" );
+    if( p_rmra != NULL && p_demux->p_input != NULL )
     {
         int        i_count = MP4_BoxCount( p_rmra, "rmda" );
         int        i;
@@ -1941,7 +1941,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 return VLC_EGENERIC;
 
             *ppp_attach = (input_attachment_t**)
-                    malloc( sizeof(input_attachment_t*) * i_count );
+                    vlc_alloc( i_count, sizeof(input_attachment_t*) );
             if( !(*ppp_attach) ) return VLC_ENOMEM;
 
             /* First add cover attachments */

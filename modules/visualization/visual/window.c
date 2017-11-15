@@ -2,7 +2,7 @@
  * window.c : Implementation of FFT window routines
  *****************************************************************************
  * Copyright (C) 2014 Ronald Wright
- * $Id: 49861238ca8dc7b0ab47dd410649caf7a06e4fe5 $
+ * $Id: 1b3df6d36e9184310fa7e6fe9d8b2b104cbfb9d0 $
  *
  * Author: Ronald Wright <logiconcepts819@gmail.com>
  *
@@ -126,7 +126,7 @@ bool window_init( int i_buffer_size, window_param * p_param,
         goto exit;
     }
 
-    pf_table = malloc( i_buffer_size * sizeof( *pf_table ) );
+    pf_table = vlc_alloc( i_buffer_size, sizeof( *pf_table ) );
     if( !pf_table )
     {
         /* Memory allocation failed */

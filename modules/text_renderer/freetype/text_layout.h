@@ -2,7 +2,7 @@
  * text_layout.h : Text shaping and layout
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: b67674bf949cb30c7724e23d21a300b6b2eaf47c $
+ * $Id: 16ca48ef1e02fbabbcc829545166d3632cafd4e1 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -38,6 +38,7 @@ typedef struct
     FT_BitmapGlyph p_glyph;
     FT_BitmapGlyph p_outline;
     FT_BitmapGlyph p_shadow;
+    FT_BBox        bbox;
     const text_style_t *p_style;
     int            i_line_offset;       /* underline/strikethrough offset */
     int            i_line_thickness;    /* underline/strikethrough thickness */

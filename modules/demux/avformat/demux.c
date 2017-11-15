@@ -2,7 +2,7 @@
  * demux.c: demuxer using libavformat
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: d53d15565dac4ce876813bee8704157a6a85c678 $
+ * $Id: 5aca8a9b8b315676473b35784bcf6a02cfb8dde1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -148,7 +148,7 @@ static void get_rotation(es_format_t *fmt, AVStream *s)
     }
 }
 
-int OpenDemux( vlc_object_t *p_this )
+int avformat_OpenDemux( vlc_object_t *p_this )
 {
     demux_t       *p_demux = (demux_t*)p_this;
     demux_sys_t   *p_sys;
@@ -288,7 +288,7 @@ int OpenDemux( vlc_object_t *p_this )
     if( !p_io_buffer )
     {
         free( psz_url );
-        CloseDemux( p_this );
+        avformat_CloseDemux( p_this );
         return VLC_ENOMEM;
     }
 
@@ -297,7 +297,7 @@ int OpenDemux( vlc_object_t *p_this )
     {
         av_free( p_io_buffer );
         free( psz_url );
-        CloseDemux( p_this );
+        avformat_CloseDemux( p_this );
         return VLC_ENOMEM;
     }
 
@@ -307,7 +307,7 @@ int OpenDemux( vlc_object_t *p_this )
     {
         av_free( p_io_buffer );
         free( psz_url );
-        CloseDemux( p_this );
+        avformat_CloseDemux( p_this );
         return VLC_ENOMEM;
     }
 
@@ -322,7 +322,7 @@ int OpenDemux( vlc_object_t *p_this )
         av_free( pb );
         p_sys->ic = NULL;
         free( psz_url );
-        CloseDemux( p_this );
+        avformat_CloseDemux( p_this );
         return VLC_EGENERIC;
     }
     free( psz_url );
@@ -357,13 +357,13 @@ int OpenDemux( vlc_object_t *p_this )
     if( !nb_streams )
     {
         msg_Err( p_demux, "No streams found");
-        CloseDemux( p_this );
+        avformat_CloseDemux( p_this );
         return VLC_EGENERIC;
     }
     p_sys->tracks = calloc( nb_streams, sizeof(*p_sys->tracks) );
     if( !p_sys->tracks )
     {
-        CloseDemux( p_this );
+        avformat_CloseDemux( p_this );
         return VLC_ENOMEM;
     }
 
@@ -697,7 +697,7 @@ int OpenDemux( vlc_object_t *p_this )
 /*****************************************************************************
  * Close
  *****************************************************************************/
-void CloseDemux( vlc_object_t *p_this )
+void avformat_CloseDemux( vlc_object_t *p_this )
 {
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys = p_demux->p_sys;
@@ -1103,7 +1103,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             if( p_sys->i_attachments <= 0 )
                 return VLC_EGENERIC;
 
-            *ppp_attach = malloc( sizeof(input_attachment_t*) * p_sys->i_attachments );
+            *ppp_attach = vlc_alloc( p_sys->i_attachments, sizeof(input_attachment_t*) );
             if( *ppp_attach == NULL )
                 return VLC_EGENERIC;
 

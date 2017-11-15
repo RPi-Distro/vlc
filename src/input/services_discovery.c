@@ -2,7 +2,7 @@
  * services_discovery.c : Manage playlist services_discovery modules
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: c2028f885a66cd29e3a938901587635db5ee00c6 $
+ * $Id: 12a029ef6e6e2c18dd81fea94a69a0f1d38a1144 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -69,9 +69,9 @@ char **vlc_sd_GetNames (vlc_object_t *obj, char ***pppsz_longnames, int **pp_cat
         return NULL;
     }
 
-    char **names = malloc (sizeof(char *) * (count + 1));
-    char **longnames = malloc (sizeof(char *) * (count + 1));
-    int *categories = malloc(sizeof(int) * (count + 1));
+    char **names = vlc_alloc (count + 1, sizeof(char *));
+    char **longnames = vlc_alloc (count + 1, sizeof(char *));
+    int *categories = vlc_alloc (count + 1, sizeof(int));
 
     if (unlikely (names == NULL || longnames == NULL || categories == NULL))
     {

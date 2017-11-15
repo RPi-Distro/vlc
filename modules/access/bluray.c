@@ -653,7 +653,7 @@ static int blurayOpen(vlc_object_t *object)
     }
 
     /* */
-    p_demux->p_sys = p_sys = vlc_calloc(object, 1, sizeof(*p_sys));
+    p_demux->p_sys = p_sys = vlc_obj_calloc(object, 1, sizeof(*p_sys));
     if (unlikely(!p_sys))
         return VLC_ENOMEM;
 
@@ -1853,7 +1853,7 @@ static int blurayControl(demux_t *p_demux, int query, va_list args)
 
         /* Duplicate local title infos */
         *pi_int = 0;
-        *ppp_title = malloc(p_sys->i_title * sizeof(input_title_t *));
+        *ppp_title = vlc_alloc(p_sys->i_title, sizeof(input_title_t *));
         if(!*ppp_title)
             return VLC_EGENERIC;
         for (unsigned int i = 0; i < p_sys->i_title; i++)
@@ -1950,7 +1950,7 @@ static int blurayControl(demux_t *p_demux, int query, va_list args)
             return VLC_EGENERIC;
 
         *pi_int = 0;
-        *ppp_attach = malloc(sizeof(input_attachment_t *) * p_sys->i_attachments);
+        *ppp_attach = vlc_alloc(p_sys->i_attachments, sizeof(input_attachment_t *));
         if(!*ppp_attach)
             return VLC_EGENERIC;
         for (int i = 0; i < p_sys->i_attachments; i++)

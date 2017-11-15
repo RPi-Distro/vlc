@@ -2,7 +2,7 @@
  * dvdread.c : DvdRead input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
- * $Id: 9982ab76baaa443def52f8bea6bd3693b2bebc73 $
+ * $Id: c395bd229c8c48fee796827f2da02df25e3f59f9 $
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -401,7 +401,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
             /* Duplicate title infos */
             *pi_int = p_sys->i_titles;
-            *ppp_title = malloc( p_sys->i_titles * sizeof(input_title_t *) );
+            *ppp_title = vlc_alloc( p_sys->i_titles, sizeof(input_title_t *) );
             for( i = 0; i < p_sys->i_titles; i++ )
             {
                 (*ppp_title)[i] = vlc_input_title_Duplicate(p_sys->titles[i]);

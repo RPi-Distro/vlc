@@ -69,14 +69,37 @@ struct priv
     } last;
 };
 
+static EGLImageKHR
+vaegl_image_create(const opengl_tex_converter_t *tc, EGLint w, EGLint h,
+                   EGLint fourcc, EGLint fd, EGLint offset, EGLint pitch)
+{
+    EGLint attribs[] = {
+        EGL_WIDTH, w,
+        EGL_HEIGHT, h,
+        EGL_LINUX_DRM_FOURCC_EXT, fourcc,
+        EGL_DMA_BUF_PLANE0_FD_EXT, fd,
+        EGL_DMA_BUF_PLANE0_OFFSET_EXT, offset,
+        EGL_DMA_BUF_PLANE0_PITCH_EXT, pitch,
+        EGL_NONE
+    };
+
+    return tc->gl->egl.createImageKHR(tc->gl, EGL_LINUX_DMA_BUF_EXT, NULL,
+                                      attribs);
+}
+
+static void
+vaegl_image_destroy(const opengl_tex_converter_t *tc, EGLImageKHR image)
+{
+    tc->gl->egl.destroyImageKHR(tc->gl, image);
+}
+
 static void
 vaegl_release_last_pic(const opengl_tex_converter_t *tc, struct priv *priv)
 {
     vlc_object_t *o = VLC_OBJECT(tc->gl);
-    vlc_gl_t *gl = tc->gl;
 
     for (unsigned i = 0; i < priv->last.va_image.num_planes; ++i)
-        gl->egl.destroyImageKHR(gl, priv->last.egl_images[i]);
+        vaegl_image_destroy(tc, priv->last.egl_images[i]);
 
     vlc_vaapi_ReleaseBufferHandle(o, priv->vadpy, priv->last.va_image.buf);
 
@@ -95,6 +118,10 @@ vaegl_init_fourcc(const opengl_tex_converter_t *tc, struct priv *priv,
         case VA_FOURCC_NV12:
             priv->drm_fourccs[0] = VLC_FOURCC('R', '8', ' ', ' ');
             priv->drm_fourccs[1] = VLC_FOURCC('G', 'R', '8', '8');
+            break;
+        case VA_FOURCC_P010:
+            priv->drm_fourccs[0] = VLC_FOURCC('R', '1', '6', ' ');
+            priv->drm_fourccs[1] = VLC_FOURCC('G', 'R', '3', '2');
             break;
 #if 0
         /* TODO: the following fourcc are not handled for now */
@@ -137,7 +164,6 @@ tc_vaegl_update(const opengl_tex_converter_t *tc, GLuint *textures,
     (void) plane_offset;
     struct priv *priv = tc->priv;
     vlc_object_t *o = VLC_OBJECT(tc->gl);
-    vlc_gl_t *gl = tc->gl;
     VAImage va_image;
     VABufferInfo va_buffer_info;
     EGLImageKHR egl_images[3] = { };
@@ -157,12 +183,7 @@ tc_vaegl_update(const opengl_tex_converter_t *tc, GLuint *textures,
             goto error;
         release_image = true;
 
-        if (va_image.format.fourcc != priv->fourcc)
-        {
-            msg_Err(tc->gl, "fourcc changed");
-            /* TODO: fetch new fourcc and reconfigure shader */
-            goto error;
-        }
+        assert(va_image.format.fourcc == priv->fourcc);
 
         va_buffer_info = (VABufferInfo) {
             .mem_type = VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME
@@ -175,18 +196,10 @@ tc_vaegl_update(const opengl_tex_converter_t *tc, GLuint *textures,
 
     for (unsigned i = 0; i < va_image.num_planes; ++i)
     {
-        EGLint attribs[] = {
-            EGL_WIDTH, tex_width[i],
-            EGL_HEIGHT, tex_height[i],
-            EGL_LINUX_DRM_FOURCC_EXT, priv->drm_fourccs[i],
-            EGL_DMA_BUF_PLANE0_FD_EXT, va_buffer_info.handle,
-            EGL_DMA_BUF_PLANE0_OFFSET_EXT, va_image.offsets[i],
-            EGL_DMA_BUF_PLANE0_PITCH_EXT, va_image.pitches[i],
-            EGL_NONE
-        };
-
-        egl_images[i] = gl->egl.createImageKHR(gl, EGL_LINUX_DMA_BUF_EXT, NULL,
-                                               attribs);
+        egl_images[i] =
+            vaegl_image_create(tc, tex_width[i], tex_height[i],
+                               priv->drm_fourccs[i], va_buffer_info.handle,
+                               va_image.offsets[i], va_image.pitches[i]);
         if (egl_images[i] == NULL)
             goto error;
 
@@ -215,7 +228,7 @@ error:
             vlc_vaapi_ReleaseBufferHandle(o, priv->vadpy, va_image.buf);
 
         for (unsigned i = 0; i < 3 && egl_images[i] != NULL; ++i)
-            gl->egl.destroyImageKHR(gl, egl_images[i]);
+            vaegl_image_destroy(tc, egl_images[i]);
 
         vlc_vaapi_DestroyImage(o, priv->vadpy, va_image.image_id);
     }
@@ -231,20 +244,55 @@ tc_vaegl_get_pool(const opengl_tex_converter_t *tc, unsigned requested_count)
     picture_pool_t *pool =
         vlc_vaapi_PoolNew(VLC_OBJECT(tc->gl), priv->vainst, priv->vadpy,
                           requested_count, &priv->va_surface_ids, &tc->fmt,
-                          VA_RT_FORMAT_YUV420, VA_FOURCC_NV12);
+                          true);
     if (!pool)
         return NULL;
 
-    /* Check if a surface from the pool can be derived */
-    VAImage va_image;
+    /* Check if a surface from the pool can be derived and displayed via dmabuf
+     * */
+    bool success = false;
+    VAImage va_image = { .image_id = VA_INVALID_ID };
     if (vlc_vaapi_DeriveImage(o, priv->vadpy, priv->va_surface_ids[0],
                               &va_image))
+        goto error;
+
+    assert(va_image.format.fourcc == priv->fourcc);
+
+    VABufferInfo va_buffer_info = (VABufferInfo) {
+        .mem_type = VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME
+    };
+    if (vlc_vaapi_AcquireBufferHandle(o ,priv->vadpy, va_image.buf,
+                                      &va_buffer_info))
+        goto error;
+
+    for (unsigned i = 0; i < va_image.num_planes; ++i)
     {
-        picture_pool_Release(pool);
-        return NULL;
+        EGLint w = (va_image.width * tc->texs[i].w.num) / tc->texs[i].w.den;
+        EGLint h = (va_image.height * tc->texs[i].h.num) / tc->texs[i].h.den;
+        EGLImageKHR egl_image =
+            vaegl_image_create(tc, w, h, priv->drm_fourccs[i], va_buffer_info.handle,
+                               va_image.offsets[i], va_image.pitches[i]);
+        if (egl_image == NULL)
+        {
+            msg_Warn(o, "Can't create Image KHR: kernel too old ?");
+            goto error;
+        }
+        vaegl_image_destroy(tc, egl_image);
     }
 
-    vlc_vaapi_DestroyImage(o, priv->vadpy, va_image.image_id);
+    success = true;
+error:
+    if (va_image.image_id != VA_INVALID_ID)
+    {
+        if (va_image.buf != VA_INVALID_ID)
+            vlc_vaapi_ReleaseBufferHandle(o, priv->vadpy, va_image.buf);
+        vlc_vaapi_DestroyImage(o, priv->vadpy, va_image.image_id);
+    }
+    if (!success)
+    {
+        picture_pool_Release(pool);
+        pool = NULL;
+    }
     return pool;
 }
 
@@ -311,7 +359,23 @@ tc_vaegl_init(opengl_tex_converter_t *tc, VADisplay *vadpy,
     priv->vadpy = vadpy;
     priv->fourcc = 0;
 
-    if (vaegl_init_fourcc(tc, priv, VA_FOURCC_NV12))
+    int va_fourcc;
+    int vlc_sw_chroma;
+    switch (tc->fmt.i_chroma)
+    {
+        case VLC_CODEC_VAAPI_420:
+            va_fourcc = VA_FOURCC_NV12;
+            vlc_sw_chroma = VLC_CODEC_NV12;
+            break;
+        case VLC_CODEC_VAAPI_420_10BPP:
+            va_fourcc = VA_FOURCC_P010;
+            vlc_sw_chroma = VLC_CODEC_P010;
+            break;
+        default:
+            vlc_assert_unreachable();
+    }
+
+    if (vaegl_init_fourcc(tc, priv, va_fourcc))
         goto error;
 
     priv->glEGLImageTargetTexture2DOES =
@@ -335,10 +399,14 @@ tc_vaegl_init(opengl_tex_converter_t *tc, VADisplay *vadpy,
     if (tc_va_check_interop_blacklist(tc, priv->vadpy))
         goto error;
 
-    tc->fshader = opengl_fragment_shader_init(tc, GL_TEXTURE_2D, VLC_CODEC_NV12,
+    tc->fshader = opengl_fragment_shader_init(tc, GL_TEXTURE_2D, vlc_sw_chroma,
                                               tc->fmt.space);
     if (tc->fshader == 0)
         goto error;
+
+    /* Fix the UV plane texture scale factor for GR32 */
+    if (vlc_sw_chroma == VLC_CODEC_P010)
+        tc->texs[1].h = (vlc_rational_t) { 1, 2 };
 
     return VLC_SUCCESS;
 
@@ -376,7 +444,8 @@ Open(vlc_object_t *obj)
 {
     opengl_tex_converter_t *tc = (void *) obj;
 
-    if (tc->fmt.i_chroma != VLC_CODEC_VAAPI_420 || tc->gl->ext != VLC_GL_EXT_EGL
+    if (!vlc_vaapi_IsChromaOpaque(tc->fmt.i_chroma)
+     || tc->gl->ext != VLC_GL_EXT_EGL
      || tc->gl->egl.createImageKHR == NULL
      || tc->gl->egl.destroyImageKHR == NULL)
         return VLC_EGENERIC;

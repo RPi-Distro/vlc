@@ -2,7 +2,7 @@
  * idummy.c: dummy input plugin, to manage "vlc://" special options
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: 32a92992236b84b61838799f5a4f27e9ba4a473f $
+ * $Id: 2e197d72776105c8f26dd22f44bc991d9f904abe $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -184,7 +184,7 @@ nop:
         if( length == 0 )
             goto nop; /* avoid division by zero */
 
-        demux_sys_t *p_sys = vlc_malloc( p_this, sizeof( *p_sys ) );
+        demux_sys_t *p_sys = vlc_obj_alloc( p_this, 1, sizeof( *p_sys ) );
         if( p_sys == NULL )
             return VLC_ENOMEM;
 

@@ -2,7 +2,7 @@
  * copy.c
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
- * $Id: b3aeb8cbcb9ba57673a8ec90a14b3c5fcd8148db $
+ * $Id: 7c02cfc94f744aa2b3bb5f092de7f5ec13baab09 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -137,7 +137,6 @@ static void Close( vlc_object_t *p_this )
         block_ChainRelease( p_dec->p_sys->p_block );
     }
 
-    es_format_Clean( &p_dec->fmt_out );
     free( p_dec->p_sys );
 }
 

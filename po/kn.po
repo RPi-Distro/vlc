@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-07 02:30+0000\n"
+"POT-Creation-Date: 2017-11-15 02:18+0000\n"
 "PO-Revision-Date: 2013-12-15 12:48+0000\n"
 "Last-Translator: Lavakara <hjlava@gmail.com>\n"
 "Language-Team: Kannada (http://www.transifex.com/projects/p/vlc-trans/"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: include/vlc_common.h:927
+#: include/vlc_common.h:1036
 msgid ""
 "This program comes with NO WARRANTY, to the extent permitted by law.\n"
 "You may redistribute it under the terms of the GNU General Public License;\n"
@@ -68,7 +68,7 @@ msgstr "ಪ್ರಮುಖ ಸಂಪರ್ಕಸಾಧನಗಳು"
 msgid "Settings for the main interface"
 msgstr "ಪ್ರಮುಖ ಸಂಪರ್ಕಸಾಧನದ ಸಿದ್ದತೆಗಳು"
 
-#: include/vlc_config_cat.h:46 src/libvlc-module.c:79
+#: include/vlc_config_cat.h:46 src/libvlc-module.c:81
 msgid "Control interfaces"
 msgstr "ನಿಯಂತ್ರಣ ಸಂಪರ್ಕಸಾಧನಗಳು"
 
@@ -82,7 +82,7 @@ msgid "Hotkeys settings"
 msgstr "ಶೀಘ್ರಕೀಲಿ ಸಂಯೋಜನೆಗಳು"
 
 #: include/vlc_config_cat.h:53 src/input/es_out.c:3062 src/input/es_out.c:3103
-#: src/libvlc-module.c:1487 modules/access/imem.c:64
+#: src/libvlc-module.c:1489 modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:171
 #: modules/gui/macosx/VLCMainMenu.m:404 modules/gui/macosx/VLCOutput.m:92
 #: modules/gui/macosx/VLCPlaylistInfo.m:101
@@ -111,7 +111,7 @@ msgstr "ಶೋಧಕಗಳು"
 msgid "Audio filters are used to process the audio stream."
 msgstr "ಧ್ವನಿ ಪ್ರವಾಹವನ್ನು ಸಂಸ್ಕರಿಸಲು ಧ್ವನಿ ಶೋಧಕಗಳನ್ನು ಉಪಯೋಗಿಸಲಾಗುತ್ತದೆ."
 
-#: include/vlc_config_cat.h:61 src/libvlc-module.c:164
+#: include/vlc_config_cat.h:61 src/libvlc-module.c:166
 msgid "Audio resampler"
 msgstr "ಧ್ವನಿಯ ಮರುಮಾದರಿ"
 
@@ -121,7 +121,7 @@ msgid "Visualizations"
 msgstr "ದೃಶ್ಯೀಕರಣಗಳು"
 
 #: include/vlc_config_cat.h:64 src/audio_output/output.c:319
-#: src/libvlc-module.c:204
+#: src/libvlc-module.c:206
 msgid "Audio visualizations"
 msgstr "ಧ್ವನಿ ದೃಶ್ಯೀಕರಣಗಳು"
 
@@ -133,7 +133,7 @@ msgstr "Output ಘಟಕಗಳು"
 msgid "General settings for audio output modules."
 msgstr "ಧ್ವನಿ output ಘಟಕಗಳ ಸಾಮಾನ್ಯ ಸಿದ್ಧತೆಗಳು "
 
-#: include/vlc_config_cat.h:69 src/libvlc-module.c:2009
+#: include/vlc_config_cat.h:69 src/libvlc-module.c:2012
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:183
 #: modules/stream_out/transcode/transcode.c:211
 msgid "Miscellaneous"
@@ -144,7 +144,7 @@ msgid "Miscellaneous audio settings and modules."
 msgstr "ನಾನಾ ಬಗೆಯ ಧ್ವನಿ ಸಿದ್ದತೆಗಳು ಹಾಗೂ ಘಟಕಗಳು"
 
 #: include/vlc_config_cat.h:73 src/input/es_out.c:3065 src/input/es_out.c:3147
-#: src/libvlc-module.c:140 src/libvlc-module.c:1546 modules/access/imem.c:64
+#: src/libvlc-module.c:142 src/libvlc-module.c:1548 modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:160
 #: modules/gui/macosx/VLCMainMenu.m:417 modules/gui/macosx/VLCOutput.m:82
 #: modules/gui/macosx/VLCPlaylistInfo.m:91
@@ -266,7 +266,7 @@ msgstr "ಉಪಶೀರ್ಷಿಕೆ, ಟೆಲಿಪ್ರಸರಣ ಮತ
 msgid "General input settings. Use with care..."
 msgstr "ಸಾಮಾನ್ಯ Input ಸಿದ್ಧತೆಗಳು. ಎಚ್ಚರಿಕೆಯಿಂದ ಬಳಸಿ ..."
 
-#: include/vlc_config_cat.h:127 src/libvlc-module.c:1944
+#: include/vlc_config_cat.h:127 src/libvlc-module.c:1947
 #: modules/access/avio.h:50
 msgid "Stream output"
 msgstr "Output ಅನ್ನು ಪ್ರವಾಹಿಸಿ"
@@ -362,7 +362,7 @@ msgstr "ಬೇಡಿಕೆಯ ಮೇಲಿನ ದೃಶ್ಯ"
 msgid "VLC's implementation of Video On Demand"
 msgstr "VLC ಯ ಬೇಡಿಕೆಯಮೇಲಿನ ದೃಶ್ಯದ ಅನುಷ್ಠಾನ"
 
-#: include/vlc_config_cat.h:173 src/libvlc-module.c:2053
+#: include/vlc_config_cat.h:173 src/libvlc-module.c:2056
 #: src/playlist/engine.c:233 modules/demux/playlist/playlist.c:64
 #: modules/demux/playlist/playlist.c:65 modules/gui/macosx/VLCMainWindow.m:296
 #: modules/gui/macosx/VLCMainWindow.m:863
@@ -397,7 +397,7 @@ msgstr ""
 "ಸೇವೆಗಳು ಆವಿಷ್ಕಾರ ಘಟಕಗಳು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಪ್ಲೇಪಟ್ಟಿಗೆ ಐಟಂಗಳನ್ನು ಸೇರಿಸುವ "
 "ಸೌಲಭ್ಯಗಳಾಗಿವೆ."
 
-#: include/vlc_config_cat.h:184 src/libvlc-module.c:1844
+#: include/vlc_config_cat.h:184 src/libvlc-module.c:1847
 #: modules/gui/qt/dialogs/extended.cpp:93
 msgid "Advanced"
 msgstr "ಮುಂದುವರೆದ"
@@ -530,7 +530,7 @@ msgstr "ಎಲ್ಲವನ್ನು ಪುನರಾವರ್ತಿಸು"
 msgid "Repeat One"
 msgstr "ಒಂದನ್ನು ಪುನರಾವರ್ತಿಸು"
 
-#: include/vlc_intf_strings.h:81 src/libvlc-module.c:1424
+#: include/vlc_intf_strings.h:81 src/libvlc-module.c:1426
 #: modules/gui/macosx/VLCMainMenu.m:389
 #: modules/gui/qt/components/controller.hpp:111
 #: modules/gui/qt/components/controller.hpp:124
@@ -640,7 +640,7 @@ msgid "The maximum number of filters (%u) was reached."
 msgstr "ಶೋಧಕಗಳ ಗರಿಷ್ಠ ಸಂಖ್ಯೆ (%u) ತಲುಪಿತು."
 
 #: src/audio_output/output.c:261 src/config/core.c:380 src/input/es_out.c:943
-#: src/libvlc-module.c:542 modules/gui/macosx/VLCMainMenu.m:234
+#: src/libvlc-module.c:544 modules/gui/macosx/VLCMainMenu.m:234
 #: modules/gui/macosx/VLCMainWindow.m:1003 modules/video_filter/postproc.c:235
 msgid "Disable"
 msgstr "ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ"
@@ -662,7 +662,7 @@ msgstr "ವರ್ಣಪಟಲ"
 msgid "VU meter"
 msgstr "Vu ಮಾಪಕ"
 
-#: src/audio_output/output.c:312 src/libvlc-module.c:199
+#: src/audio_output/output.c:312 src/libvlc-module.c:201
 msgid "Audio filters"
 msgstr "ಧ್ವನಿ ಶೋಧಕಗಳು"
 
@@ -680,11 +680,11 @@ msgstr "ಸ್ಟೀರಿಯೋ ಧ್ವನಿ ಕ್ರಮ"
 msgid "Original"
 msgstr "ಮೂಲ ಗುರುತು"
 
-#: src/audio_output/output.c:425 src/libvlc-module.c:195
+#: src/audio_output/output.c:425 src/libvlc-module.c:197
 msgid "Dolby Surround"
 msgstr "Dolby ಆವರಣ ಧ್ವನಿ"
 
-#: src/audio_output/output.c:430 src/libvlc-module.c:194
+#: src/audio_output/output.c:430 src/libvlc-module.c:196
 #: modules/access/alsa.c:38 modules/access/oss.c:64
 #: modules/access/v4l2/v4l2.c:268 modules/audio_output/alsa.c:76
 #: modules/codec/twolame.c:70
@@ -692,7 +692,7 @@ msgid "Stereo"
 msgstr "ಸ್ಟೀರಿಯೋ"
 
 #: src/audio_output/output.c:439 src/input/es_out.c:3244
-#: src/libvlc-module.c:195 src/libvlc-module.c:293 src/libvlc-module.c:366
+#: src/libvlc-module.c:197 src/libvlc-module.c:295 src/libvlc-module.c:368
 #: src/misc/actions.c:81 modules/audio_filter/channel_mixer/mono.c:89
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
 #: modules/codec/subsdec.c:167 modules/codec/zvbi.c:83
@@ -705,8 +705,8 @@ msgstr "ಸ್ಟೀರಿಯೋ"
 msgid "Left"
 msgstr "ಎಡ"
 
-#: src/audio_output/output.c:442 src/libvlc-module.c:195
-#: src/libvlc-module.c:293 src/libvlc-module.c:366 src/misc/actions.c:109
+#: src/audio_output/output.c:442 src/libvlc-module.c:197
+#: src/libvlc-module.c:295 src/libvlc-module.c:368 src/misc/actions.c:109
 #: modules/audio_filter/channel_mixer/mono.c:89
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
 #: modules/codec/subsdec.c:167 modules/codec/zvbi.c:83
@@ -719,11 +719,11 @@ msgstr "ಎಡ"
 msgid "Right"
 msgstr "ಬಲ"
 
-#: src/audio_output/output.c:446 src/libvlc-module.c:194
+#: src/audio_output/output.c:446 src/libvlc-module.c:196
 msgid "Reverse stereo"
 msgstr "ವಿರುದ್ಧವಾದ ಸ್ಟೀರಿಯೋ"
 
-#: src/audio_output/output.c:454 src/libvlc-module.c:196
+#: src/audio_output/output.c:454 src/libvlc-module.c:198
 #: modules/audio_filter/equalizer_presets.h:55
 msgid "Headphones"
 msgstr "ಹೆಡ್ಫೋನ್ ಗಳು"
@@ -951,7 +951,7 @@ msgstr "VLC ಗೆ %s ಘಟಕವನ್ನು ತೆರೆಯಲಾಗಲಿಲ
 msgid "VLC could not open the decoder module."
 msgstr "VLC ಗೆ ವಿಸಂಕೇತಕ ಘಟಕವನ್ನು ತೆರೆಯಲಾಗಲಿಲ್ಲ."
 
-#: src/input/es_out.c:963 src/input/es_out.c:968 src/libvlc-module.c:237
+#: src/input/es_out.c:963 src/input/es_out.c:968 src/libvlc-module.c:239
 #: modules/gui/qt/components/open_panels.cpp:543
 msgid "Track"
 msgstr "ಟ್ರ್ಯಾಕ್"
@@ -962,7 +962,7 @@ msgid "%s [%s %d]"
 msgstr "%s [%s %d]"
 
 #: src/input/es_out.c:1186 src/input/es_out.c:1191 src/input/es_out.c:1206
-#: src/input/var.c:167 src/libvlc-module.c:566
+#: src/input/var.c:167 src/libvlc-module.c:568
 #: modules/gui/macosx/VLCMainMenu.m:397 modules/gui/macosx/VLCMainMenu.m:398
 msgid "Program"
 msgstr "ಪ್ರೋಗ್ರಾಂ"
@@ -1160,7 +1160,7 @@ msgstr "625 ಸಾಲುಗಳು / 50 ಹರ್ಟ್ಝ್"
 msgid "Color primaries"
 msgstr "ವರ್ಣ ಸಂದೇಶಗಳು"
 
-#: src/input/es_out.c:3212 src/libvlc-module.c:360
+#: src/input/es_out.c:3212 src/libvlc-module.c:362
 #: modules/video_filter/deinterlace/deinterlace.h:58
 msgid "Linear"
 msgstr "ರೇಖಾತ್ಮಕ"
@@ -1189,7 +1189,7 @@ msgstr ""
 msgid "Full"
 msgstr "ಪೂರ್ಣ ಬಾಸ್"
 
-#: src/input/es_out.c:3245 src/libvlc-module.c:293 src/libvlc-module.c:366
+#: src/input/es_out.c:3245 src/libvlc-module.c:295 src/libvlc-module.c:368
 #: modules/audio_filter/channel_mixer/mono.c:91
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
 #: modules/codec/subsdec.c:167 modules/codec/zvbi.c:83
@@ -1330,7 +1330,7 @@ msgstr "ಶೈಲಿ"
 msgid "Copyright"
 msgstr "ಹಕ್ಕುಗಳು"
 
-#: src/input/meta.c:59 src/libvlc-module.c:237
+#: src/input/meta.c:59 src/libvlc-module.c:239
 #: modules/gui/macosx/VLCPlaylist.m:111
 msgid "Album"
 msgstr "ಆಲ್ಬಮ್"
@@ -1417,7 +1417,7 @@ msgstr "ಸಂಖ್ಯೆನ ಟ್ರ್ಯಾಕ್"
 msgid "Bookmark"
 msgstr "ಅಚ್ಚುಮೆಚ್ಚು"
 
-#: src/input/var.c:172 src/libvlc-module.c:572
+#: src/input/var.c:172 src/libvlc-module.c:574
 msgid "Programs"
 msgstr "ಪ್ರೋಗ್ರಾಂಗಳು"
 
@@ -1520,29 +1520,29 @@ msgstr ""
 msgid "C"
 msgstr "kn"
 
-#: src/libvlc.h:164 src/libvlc-module.c:1427 src/libvlc-module.c:1428
-#: src/libvlc-module.c:2642 src/video_output/vout_intf.c:176
+#: src/libvlc.h:164 src/libvlc-module.c:1429 src/libvlc-module.c:1430
+#: src/libvlc-module.c:2645 src/video_output/vout_intf.c:176
 #: modules/gui/macosx/VLCMainMenu.m:465
 msgid "Zoom"
 msgstr "ದೊಡ್ಡದಾಗಿಸು"
 
-#: src/libvlc.h:165 src/libvlc-module.c:1341 src/video_output/vout_intf.c:87
+#: src/libvlc.h:165 src/libvlc-module.c:1343 src/video_output/vout_intf.c:87
 msgid "1:4 Quarter"
 msgstr "1:4 ಚತುರ್ಥಾಂಶ"
 
-#: src/libvlc.h:166 src/libvlc-module.c:1342 src/video_output/vout_intf.c:88
+#: src/libvlc.h:166 src/libvlc-module.c:1344 src/video_output/vout_intf.c:88
 msgid "1:2 Half"
 msgstr "1:2 ಅರ್ಧ"
 
-#: src/libvlc.h:167 src/libvlc-module.c:1343 src/video_output/vout_intf.c:89
+#: src/libvlc.h:167 src/libvlc-module.c:1345 src/video_output/vout_intf.c:89
 msgid "1:1 Original"
 msgstr "1:1 ಮೂಲ"
 
-#: src/libvlc.h:168 src/libvlc-module.c:1344 src/video_output/vout_intf.c:90
+#: src/libvlc.h:168 src/libvlc-module.c:1346 src/video_output/vout_intf.c:90
 msgid "2:1 Double"
 msgstr "2:1 ಎರಡರಷ್ಟು"
 
-#: src/libvlc-module.c:62
+#: src/libvlc-module.c:64
 msgid ""
 "These options allow you to configure the interfaces used by VLC. You can "
 "select the main interface, additional interface modules, and define various "
@@ -1552,11 +1552,11 @@ msgstr ""
 "ನೀವು ಮುಖ್ಯ ಮೇಲ್ಮೈ, ,ಹೆಚ್ಚುವರಿ ಮೇಲ್ಮೈಘಟಕಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ ಸಂಬಂಧಿತ ಆಯ್ಕೆಗಳನ್ನು "
 "ರೂಪಿಸಬಹುದು."
 
-#: src/libvlc-module.c:66
+#: src/libvlc-module.c:68
 msgid "Interface module"
 msgstr "ಮೇಲ್ಮೈ ಘಟಕ"
 
-#: src/libvlc-module.c:68
+#: src/libvlc-module.c:70
 msgid ""
 "This is the main interface used by VLC. The default behavior is to "
 "automatically select the best module available."
@@ -1564,11 +1564,11 @@ msgstr ""
 "ಇದು VLC ಯಲ್ಲಿ ಬಳಸಲ್ಪಡುವ ಮುಖ್ಯ ಮೇಲ್ಮೈ.ಪೂರ್ವನಿಯೋಜಿತ ವರ್ತನೆಯು ಸ್ವಯಂಚಾಲಿತವಾಗಿ "
 "ಲಭ್ಯವಿರುವ ಉತ್ತಮ ಘಟಕವನ್ನು ಆಯ್ಕೆ ಮಾಡುವುದು."
 
-#: src/libvlc-module.c:72 modules/control/ntservice.c:59
+#: src/libvlc-module.c:74 modules/control/ntservice.c:59
 msgid "Extra interface modules"
 msgstr "ಹೆಚ್ಚುವರಿ ಮೇಲ್ಮೈ ಘಟಕಗಳು"
 
-#: src/libvlc-module.c:74
+#: src/libvlc-module.c:76
 msgid ""
 "You can select \"additional interfaces\" for VLC. They will be launched in "
 "the background in addition to the default interface. Use a colon separated "
@@ -1580,15 +1580,15 @@ msgstr ""
 "ಚಿಹ್ನೆಯಿಂದ ಪ್ರತ್ಯೇಕಿಸಿದ ಪಟ್ಟಿಯನ್ನು ಬಳಸಿ.ಸಾಮಾನ್ಯ ಮೌಲ್ಯಗಳು \"rc\" (ರಿಮೋಟ್ ನಿಯಂತ್ರಣ), "
 "\"http \",  \"ಭಾವಸೂಚಕಗಳು \" ...)"
 
-#: src/libvlc-module.c:81
+#: src/libvlc-module.c:83
 msgid "You can select control interfaces for VLC."
 msgstr "ನೀವು VLC ನಿಯಂತ್ರಣ ಮೇಲ್ಮೈಯನ್ನು ಆಯ್ಕೆ ಮಾಡಬಹುದು."
 
-#: src/libvlc-module.c:83
+#: src/libvlc-module.c:85
 msgid "Verbosity (0,1,2)"
 msgstr "ಶಬ್ದ ಬಾಹುಳ್ಯ (0,1,2)"
 
-#: src/libvlc-module.c:85
+#: src/libvlc-module.c:87
 msgid ""
 "This is the verbosity level (0=only errors and standard messages, "
 "1=warnings, 2=debug)."
@@ -1596,19 +1596,19 @@ msgstr ""
 "ಇದು ಶಬ್ದ ಬಾಹುಳ್ಯದ ಮಟ್ಟಗಳು (0 = ದೋಷಗಳು ಮಾತ್ರ ಮತ್ತು ಪ್ರಮಾಣಿತ ಸಂದೇಶಗಳು,1= "
 "ಎಚ್ಚರಿಕೆಗಳು, 2 = ದೋಷಗಳನ್ನು ಹುಡುಕಿ)."
 
-#: src/libvlc-module.c:88
+#: src/libvlc-module.c:90
 msgid "Default stream"
 msgstr "ಪೂರ್ವನಿಯೋಜಿತ ಪ್ರವಾಹಕ"
 
-#: src/libvlc-module.c:90
+#: src/libvlc-module.c:92
 msgid "This stream will always be opened at VLC startup."
 msgstr "ಈ ಸ್ಟ್ರೀಮ್ ಅನ್ನು ಯಾವಾಗಲೂ VLC ಆರಂಭಗೊಂಡಾಗ ತೆರೆಯಾಲಾಗುತ್ತದೆ."
 
-#: src/libvlc-module.c:92
+#: src/libvlc-module.c:94
 msgid "Color messages"
 msgstr "ವರ್ಣ ಸಂದೇಶಗಳು"
 
-#: src/libvlc-module.c:94
+#: src/libvlc-module.c:96
 msgid ""
 "This enables colorization of the messages sent to the console Your terminal "
 "needs Linux color support for this to work."
@@ -1616,11 +1616,11 @@ msgstr ""
 "ಇದು ಕನ್ಸೋಲ್ ಗೆ ಕಳುಹಿಸಲಾದ ಸಂದೇಶಗಳನ್ನು ವರ್ಣಿಕರಣಗೊಳಿಸುತ್ತದೆ.ನಿಮ್ಮ ಟರ್ಮಿನಲ್ ಈ ಕೆಲಸ "
 "ಮಾಡಲು ಲಿನಕ್ಸ್ ಬಣ್ಣದ ಬೆಂಬಲದ ಅಗತ್ಯವಿದೆ."
 
-#: src/libvlc-module.c:97
+#: src/libvlc-module.c:99
 msgid "Show advanced options"
 msgstr "ಮುಂದುವರೆದ ಆಯ್ಕೆಗಳನ್ನು ತೋರಿಸು"
 
-#: src/libvlc-module.c:99
+#: src/libvlc-module.c:101
 msgid ""
 "When this is enabled, the preferences and/or interfaces will show all "
 "available options, including those that most users should never touch."
@@ -1628,11 +1628,11 @@ msgstr ""
 "ಇದನ್ನು ಶಕ್ತಗೊಳಿಸಿದಾಗ, ಆದ್ಯತೆಗಳು ಮತ್ತು / ಅಥವಾ ಮೇಲ್ಮೈ ಎಲ್ಲಾ ಲಭ್ಯವಿರುವ ಆಯ್ಕೆಗಳ "
 "ತೋರಿಸುತ್ತದೆ ಹೆಚ್ಚಿನ ಬಳಕೆದಾರರಿಗೆ ಎಂದಿಗೂ ಮುಟ್ಟಲಾಗದಿರುವಂತ ಆಯ್ಕೆಗಳನ್ನೂ ತೋರಿಸುತ್ತದೆ."
 
-#: src/libvlc-module.c:103
+#: src/libvlc-module.c:105
 msgid "Interface interaction"
 msgstr "ಸಂಪರ್ಕಸಾಧನಗಳ ಪರಸ್ಪರ ಕ್ರಿಯೆ"
 
-#: src/libvlc-module.c:105
+#: src/libvlc-module.c:107
 msgid ""
 "When this is enabled, the interface will show a dialog box each time some "
 "user input is required."
@@ -1640,7 +1640,7 @@ msgstr ""
 "ಇದನ್ನು ಶಕ್ತಗೊಳಿಸಿದಾಗ,ಮೇಲ್ಮೈ Input  ಅಗತ್ಯವಿದ್ದ ಪ್ರತಿ ಸಮಯ ಒಂದು ಸಂವಾದ ಪೆಟ್ಟಿಗೆಯನ್ನು "
 "ಕೆಲವು ಬಳಕೆದಾರರಿಗೆ ತೋರಿಸುತ್ತದೆ."
 
-#: src/libvlc-module.c:115
+#: src/libvlc-module.c:117
 msgid ""
 "These options allow you to modify the behavior of the audio subsystem, and "
 "to add audio filters which can be used for post processing or visual effects "
@@ -1652,11 +1652,11 @@ msgstr ""
 "ಅವಕಾಶ ನೀಡುತ್ತದೆ.ಈ ಶೋಧಕಗಳು ಇಲ್ಲಿ ಸಕ್ರಿಯಗೊಳಿಸಿ, ಮತ್ತು \" ಧ್ವನಿ ಶೋಧಕಗಳು \"ಘಟಕಗ "
 "ವಿಭಾಗದಲ್ಲಿ ಅವುಗಳನ್ನು ಸಂರಚಿಸಿ."
 
-#: src/libvlc-module.c:121
+#: src/libvlc-module.c:123
 msgid "Audio output module"
 msgstr "ಧ್ವನಿ Ouput ಘಟಕ"
 
-#: src/libvlc-module.c:123
+#: src/libvlc-module.c:125
 msgid ""
 "This is the audio output method used by VLC. The default behavior is to "
 "automatically select the best method available."
@@ -1664,21 +1664,21 @@ msgstr ""
 "ಇದು VLC ಉಪಯೋಗಿಸುವ ಧ್ವನಿ ಉತ್ಪಾದನೆಯ ವಿಧಾನವಾಗಿದೆ.ಪೂರ್ವನಿಯೋಜಿತ ವರ್ತನೆಯು "
 "ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಲಭ್ಯವಿರುವ ಉತ್ತಮ ವಿಧಾನವನ್ನು ಆಯ್ಕೆ ಮಾಡುವುದು."
 
-#: src/libvlc-module.c:127
+#: src/libvlc-module.c:129
 #, fuzzy
 msgid "Media role"
 msgstr "ಮಾಧ್ಯಮದ ಕೋನ"
 
-#: src/libvlc-module.c:128
+#: src/libvlc-module.c:130
 msgid "Media (player) role for operating system policy."
 msgstr ""
 
-#: src/libvlc-module.c:130 modules/gui/macosx/VLCSimplePrefsController.m:261
+#: src/libvlc-module.c:132 modules/gui/macosx/VLCSimplePrefsController.m:261
 #: modules/stream_out/display.c:40
 msgid "Enable audio"
 msgstr "ಧ್ವನಿಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:132
+#: src/libvlc-module.c:134
 msgid ""
 "You can completely disable the audio output. The audio decoding stage will "
 "not take place, thus saving some processing power."
@@ -1686,75 +1686,75 @@ msgstr ""
 "ನೀವು ಸಂಪೂರ್ಣವಾಗಿ ಧ್ವನಿ ಉತ್ಪಾದನೆಯನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಬಹುದು.ಧ್ವನಿ ವಿಸಂಕೇತಿಕರಣ ಹಂತ  "
 "ನಡೆಯುವುದಿಲ್ಲ ಹೀಗಾಗಿ ಕೆಲವು ಸಂಸ್ಕರಣಾ ಶಕ್ತಿ ಉಳಿತಾಯವಾಗುತ್ತದೆ."
 
-#: src/libvlc-module.c:140
+#: src/libvlc-module.c:142
 #, fuzzy
 msgid "Music"
 msgstr "ಸಂಗೀತದ"
 
-#: src/libvlc-module.c:140
+#: src/libvlc-module.c:142
 #, fuzzy
 msgid "Communication"
 msgstr "ಸ್ಥಳ"
 
-#: src/libvlc-module.c:140 modules/meta_engine/ID3Genres.h:69
+#: src/libvlc-module.c:142 modules/meta_engine/ID3Genres.h:69
 msgid "Game"
 msgstr "ಆಟ"
 
-#: src/libvlc-module.c:141
+#: src/libvlc-module.c:143
 #, fuzzy
 msgid "Notification"
 msgstr "ವರ್ಧಿಸುವಿಕೆ"
 
-#: src/libvlc-module.c:141
+#: src/libvlc-module.c:143
 #, fuzzy
 msgid "Animation"
 msgstr "ಮಾಹಿತಿ"
 
-#: src/libvlc-module.c:141
+#: src/libvlc-module.c:143
 #, fuzzy
 msgid "Production"
 msgstr "ಉತ್ಪನ್ನ"
 
-#: src/libvlc-module.c:142
+#: src/libvlc-module.c:144
 msgid "Accessibility"
 msgstr ""
 
-#: src/libvlc-module.c:142
+#: src/libvlc-module.c:144
 msgid "Test"
 msgstr ""
 
-#: src/libvlc-module.c:145
+#: src/libvlc-module.c:147
 msgid "Audio gain"
 msgstr "ಧ್ವನಿಯ ಗಳಿಕೆ"
 
-#: src/libvlc-module.c:147
+#: src/libvlc-module.c:149
 msgid "This linear gain will be applied to outputted audio."
 msgstr "ಈ ರೇಖೀಯ ಗಳಿಕೆಯನ್ನು ಉತ್ಪಾದಸಿದ ಧ್ವನಿಗೆ ಅನ್ವಯಿಸಲಾಗುತ್ತದೆ."
 
-#: src/libvlc-module.c:149
+#: src/libvlc-module.c:151
 msgid "Audio output volume step"
 msgstr "ಧ್ವನಿ ಉತ್ಪಾದನೆಯ ಗಾತ್ರದ ಹೆಜ್ಜೆ"
 
-#: src/libvlc-module.c:151
+#: src/libvlc-module.c:153
 msgid "The step size of the volume is adjustable using this option."
 msgstr ""
 "ವಾಲ್ಯೂಮ್ ಹೆಚ್ಚಿಸುವ ಅಥವಾ ಕಡಿಮೆ ಮಾಡುವ ಹಂತಗಳ ಹೊಂದಾಣಿಕೆಯನ್ನು ಈ ಆಯ್ಕೆಯನ್ನು ಬಳಸಿ "
 "ಸರಿಹೊಂದಿಸಬಹುದು."
 
-#: src/libvlc-module.c:154
+#: src/libvlc-module.c:156
 msgid "Remember the audio volume"
 msgstr "ಧ್ವನಿಯ ವಾಲ್ಯೂಮ್ಅನ್ನು ನೆನಪಿಡಿ"
 
-#: src/libvlc-module.c:156
+#: src/libvlc-module.c:158
 msgid ""
 "The volume can be recorded and automatically restored next time VLC is used."
 msgstr "ಧ್ವನಿ ಸಕ್ರಿಯಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:159
+#: src/libvlc-module.c:161
 msgid "Audio desynchronization compensation"
 msgstr "ಧ್ವನಿ ಹೊಂದಾಣಿಕೆಯಾಗದಿರುವಿಕೆಯ ಸರಿದೂಗಿಸುವಿಕೆ "
 
-#: src/libvlc-module.c:161
+#: src/libvlc-module.c:163
 msgid ""
 "This delays the audio output. The delay must be given in milliseconds. This "
 "can be handy if you notice a lag between the video and the audio."
@@ -1762,11 +1762,11 @@ msgstr ""
 "ಇದು ಧ್ವನಿ ಉತ್ಪಾದನೆಯನ್ನು ವಿಳಂಬಗೊಳಿಸುತ್ತದೆ.ವಿಳಂಬವನ್ನು ಮಿಲಿಸೆಕೆಂಡುಗಳಲ್ಲಿ ನೀಡಬೇಕು."
 "ನೀವು ವೀಡಿಯೊ ಮತ್ತು ಧ್ವನಿ ನಡುವೆ ಮಂದಗತಿ ಗಮನಕ್ಕೆ ಬಂದರೆ ಇದು ಉಪಯುಕ್ತ ಆಗುತ್ತದೆ."
 
-#: src/libvlc-module.c:166
+#: src/libvlc-module.c:168
 msgid "This selects which plugin to use for audio resampling."
 msgstr "ಇದು ಧ್ವನಿ ಮರುನಮೊನೆ ಗೆ ಬೇಕಾಗಿರುವ ಇದು ಪ್ಲಗಿನ್ ಆಯ್ಕೆ ಮಾಡುತ್ತದೆ."
 
-#: src/libvlc-module.c:169
+#: src/libvlc-module.c:171
 #, fuzzy
 msgid ""
 "Sets the audio output channels mode that will be used by default if your "
@@ -1776,21 +1776,21 @@ msgstr ""
 "ಹೊಂದಿಸುತ್ತದೆ.(ಅಂದರೆ:ನಿಮ್ಮ ಯಂತ್ರಾಂಶ ಹಾಗೂ ಸ್ಟ್ರೀಮ್ ಆಗುತಿರುವ ಧ್ವನಿ ಇದನ್ನು "
 "ಬೆಂಬಲಿಸಿದರೆ)."
 
-#: src/libvlc-module.c:172
+#: src/libvlc-module.c:174
 msgid "Force S/PDIF support"
 msgstr ""
 
-#: src/libvlc-module.c:174
+#: src/libvlc-module.c:176
 msgid ""
 "This option should be used when the audio output can't negotiate S/PDIF "
 "support."
 msgstr ""
 
-#: src/libvlc-module.c:176 modules/gui/macosx/VLCSimplePrefsController.m:259
+#: src/libvlc-module.c:178 modules/gui/macosx/VLCSimplePrefsController.m:259
 msgid "Force detection of Dolby Surround"
 msgstr "Dolby Surround ಅನ್ನು ಬಲವಂತವಾಗಿ ಪತ್ತೆಮಾಡಿ"
 
-#: src/libvlc-module.c:178
+#: src/libvlc-module.c:180
 msgid ""
 "Use this when you know your stream is (or is not) encoded with Dolby "
 "Surround but fails to be detected as such. Even if the stream is not "
@@ -1802,7 +1802,7 @@ msgstr ""
 "actually encoded with Dolby Surround, turning on this option might enhance "
 "your experience, especially when combined with the Headphone Channel Mixer."
 
-#: src/libvlc-module.c:185 src/libvlc-module.c:359 src/win32/thread.c:941
+#: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:941
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:443
 #: modules/demux/mpeg/ts.c:120 modules/gui/macosx/VLCSimplePrefsController.m:54
 #: modules/gui/qt/components/simple_preferences.cpp:64
@@ -1812,51 +1812,51 @@ msgstr ""
 msgid "Auto"
 msgstr "ಸ್ವಯಂ"
 
-#: src/libvlc-module.c:185 modules/access/dtv/access.c:92
+#: src/libvlc-module.c:187 modules/access/dtv/access.c:92
 #: modules/access/v4l2/v4l2.c:201 modules/control/hotkeys.c:405
 msgid "On"
 msgstr "On"
 
-#: src/libvlc-module.c:185 modules/access/dtv/access.c:92
+#: src/libvlc-module.c:187 modules/access/dtv/access.c:92
 #: modules/access/v4l2/v4l2.c:137 modules/access/v4l2/v4l2.c:201
 #: modules/control/hotkeys.c:383 modules/control/hotkeys.c:405
 #: modules/video_filter/deinterlace/algo_phosphor.h:55
 msgid "Off"
 msgstr "ಆಫ್ ಮಾಡಿ"
 
-#: src/libvlc-module.c:187
+#: src/libvlc-module.c:189
 msgid "Stereo audio output mode"
 msgstr "ಸ್ಟೀರಿಯೋ ಧ್ವನಿ ಉತ್ಪಾದನೆಯ ಕ್ರಮ"
 
-#: src/libvlc-module.c:193 src/misc/actions.c:112
+#: src/libvlc-module.c:195 src/misc/actions.c:112
 #: modules/gui/qt/components/preferences_widgets.cpp:1429
 #: modules/gui/qt/util/customwidgets.cpp:314
 msgid "Unset"
 msgstr "ಹೊಂದಿಸಿಲ್ಲದ"
 
-#: src/libvlc-module.c:201
+#: src/libvlc-module.c:203
 msgid "This adds audio post processing filters, to modify the sound rendering."
 msgstr ""
 "ಇದು ಧ್ವನಿ ಸಲ್ಲಿಸುವಿಕೆಯನ್ನು ಮಾರ್ಪಡಿಸಲು ಧ್ವನಿ ನಂತರದ ಸಂಸ್ಕರಣಾ ಶೋಧಕಗಳನ್ನು ಸೇರಿಸುತ್ತದೆ."
 
-#: src/libvlc-module.c:206
+#: src/libvlc-module.c:208
 msgid "This adds visualization modules (spectrum analyzer, etc.)."
 msgstr ""
 "ಇದು ದೃಶ್ಯೀಕರಣ ಘಟಕಗಳನ್ನು ಸೇರಿಸುತ್ತದೆ (ವರ್ಣಪಟಲದ ವಿಶ್ಲೇಷಕ ವಿಶ್ಲೇಷಕ, ಇತ್ಯಾದಿ)."
 
-#: src/libvlc-module.c:210
+#: src/libvlc-module.c:212
 msgid "Replay gain mode"
 msgstr "ಪ್ರಸಾರಣದ ಗಳಿಕೆಯ ಕ್ರಮ"
 
-#: src/libvlc-module.c:212
+#: src/libvlc-module.c:214
 msgid "Select the replay gain mode"
 msgstr "ಪ್ರಸಾರಣದ ಗಳಿಕೆಯ ಕ್ರಮವನ್ನು ಆಯ್ಕೆಮಾಡಿ"
 
-#: src/libvlc-module.c:214
+#: src/libvlc-module.c:216
 msgid "Replay preamp"
 msgstr "ಪ್ರಸಾರಣದ ಪೂರ್ವವರ್ಧನೆ "
 
-#: src/libvlc-module.c:216
+#: src/libvlc-module.c:218
 msgid ""
 "This allows you to change the default target level (89 dB) for stream with "
 "replay gain information"
@@ -1864,27 +1864,27 @@ msgstr ""
 "ಇದು ನಿಮಗೆ ಸ್ಟ್ರೀಮ್ ನ ರಿಪ್ಲೇ ಗಳಿಕೆಯ ಮಾಹಿತಿಯ ಪೂರ್ವನಿಯೋಜಿತ ಗುರಿಯ ಮಟ್ಟ 89 dB ಯನ್ನು "
 "ಬದಲಾಯಿಸಲು ಅನುಮತಿಸುತ್ತದೆ"
 
-#: src/libvlc-module.c:219
+#: src/libvlc-module.c:221
 msgid "Default replay gain"
 msgstr "ಪೂರ್ವನಿಯೋಜಿತ ಪ್ರಸಾರಣದ ಗಳಿಕೆ"
 
-#: src/libvlc-module.c:221
+#: src/libvlc-module.c:223
 msgid "This is the gain used for stream without replay gain information"
 msgstr "ಇದು ಗಳಿಕೆಯು ಮಾಹಿತಿ ಇಲ್ಲದೆ ಪ್ರಸಾರಣದ ಗಳಿಕೆಯ ಸ್ಟ್ರೀಮ್ ಗೆ  ಬಳಸಲಾಗುತ್ತದೆ "
 
-#: src/libvlc-module.c:223
+#: src/libvlc-module.c:225
 msgid "Peak protection"
 msgstr "ಅತ್ಯುಚ್ಚ ರಕ್ಷಣೆ"
 
-#: src/libvlc-module.c:225
+#: src/libvlc-module.c:227
 msgid "Protect against sound clipping"
 msgstr "ಧ್ವನಿ ಕತ್ತರಿಸುವಿಕೆಯ ವಿರುದ್ಧ ರಕ್ಷಣೆ"
 
-#: src/libvlc-module.c:228
+#: src/libvlc-module.c:230
 msgid "Enable time stretching audio"
 msgstr "ಸಮಯ ಹಿಗ್ಗಿಸುವ ಧ್ವನಿಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:230
+#: src/libvlc-module.c:232
 msgid ""
 "This allows playing audio at lower or higher speed without affecting the "
 "audio pitch"
@@ -1892,7 +1892,7 @@ msgstr ""
 "ಇದು ಕಡಿಮೆ ಅಥವಾ ಹೆಚ್ಚಿನ ವೇಗದಲ್ಲಿ ಧ್ವನಿಯ ಪಿಚ್ ಗೆ ಧಕ್ಕೆಯಾಗದಂತೆ ಧ್ವನಿಯನ್ನು ಪ್ಲೇ "
 "ಅನುಮತಿಸುತ್ತದೆ"
 
-#: src/libvlc-module.c:237 src/libvlc-module.c:1126
+#: src/libvlc-module.c:239 src/libvlc-module.c:1128
 #: modules/access/dshow/dshow.cpp:2077 modules/access/dtv/access.c:107
 #: modules/access/dtv/access.c:141 modules/access/v4l2/v4l2.c:163
 #: modules/codec/avcodec/avcodec.c:50 modules/codec/avcodec/avcodec.c:54
@@ -1906,7 +1906,7 @@ msgstr ""
 msgid "None"
 msgstr "ಯಾವುದೂ ಇಲ್ಲ"
 
-#: src/libvlc-module.c:245
+#: src/libvlc-module.c:247
 msgid ""
 "These options allow you to modify the behavior of the video output "
 "subsystem. You can for example enable video filters (deinterlacing, image "
@@ -1920,11 +1920,11 @@ msgstr ""
 "\"ವೀಡಿಯೊ ಶೋಧಕಗಳು\" ಘಟಕಗಳ ವಿಭಾಗದಲ್ಲಿ ಹುಡುಕಿ.ನೀವು ಹಲವಾರು ವಿವಿಧ ವೀಡಿಯೊ "
 "ಆಯ್ಕೆಗಳನ್ನು ಹೊಂದಿಸಬಹುದು."
 
-#: src/libvlc-module.c:251
+#: src/libvlc-module.c:253
 msgid "Video output module"
 msgstr "ವಿಡಿಯೋ ಉತ್ಪಾದನೆಯ ಘಟಕ"
 
-#: src/libvlc-module.c:253
+#: src/libvlc-module.c:255
 msgid ""
 "This is the the video output method used by VLC. The default behavior is to "
 "automatically select the best method available."
@@ -1932,12 +1932,12 @@ msgstr ""
 "ಇದು VLC ಬಳಸುವ ವಿಡಿಯೋ ಉತ್ಪಾದನೆಯ ವಿಧಾನವಾಗಿದೆ.ಪೂರ್ವನಿಯೋಜಿತ ವರ್ತನೆಯು "
 "ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಲಭ್ಯವಿರುವ ಉತ್ತಮ ವಿಧಾನವನ್ನು ಆಯ್ಕೆ ಮಾಡುವುದು."
 
-#: src/libvlc-module.c:256 modules/gui/macosx/VLCSimplePrefsController.m:346
+#: src/libvlc-module.c:258 modules/gui/macosx/VLCSimplePrefsController.m:346
 #: modules/stream_out/display.c:42
 msgid "Enable video"
 msgstr "ವೀಡಿಯೊವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:258
+#: src/libvlc-module.c:260
 msgid ""
 "You can completely disable the video output. The video decoding stage will "
 "not take place, thus saving some processing power."
@@ -1945,14 +1945,14 @@ msgstr ""
 "ನೀವು ಸಂಪೂರ್ಣವಾಗಿ ವಿಡಿಯೋ ಉತ್ಪಾದನೆಯನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಬಹುದು.ವಿದ್ಯುತ್ ಉಳಿತಾಯ "
 "ವೀಡಿಯೊ ವಿಸಂಕೇತಿಕರಣ ಪ್ರಕ್ರಿಯೆ ನಡೆಯುವುದಿಲ್ಲ."
 
-#: src/libvlc-module.c:261 modules/stream_out/mosaic_bridge.c:105
+#: src/libvlc-module.c:263 modules/stream_out/mosaic_bridge.c:105
 #: modules/stream_out/transcode/transcode.c:67
 #: modules/visualization/projectm.cpp:65
 #: modules/visualization/visual/visual.c:53 modules/visualization/vsxu.cpp:52
 msgid "Video width"
 msgstr "ವೀಡಿಯೊದ ಅಗಲ"
 
-#: src/libvlc-module.c:263
+#: src/libvlc-module.c:265
 msgid ""
 "You can enforce the video width. By default (-1) VLC will adapt to the video "
 "characteristics."
@@ -1960,14 +1960,14 @@ msgstr ""
 "ನೀವು ವೀಡಿಯೊ ಅಗಲವನ್ನು ಕಡ್ಡಾಯಮಾಡಬಹುದು.ಪೂರ್ವನಿಯೋಜಿತವಾಗಿ (-1) VLC ಯು ವಿಡಿಯೋ "
 "ಗುಣಲಕ್ಷಣಗಳಿಗೆ ಹೊಂದಿಕೊಳ್ಳುತ್ತವೆ "
 
-#: src/libvlc-module.c:266 modules/stream_out/mosaic_bridge.c:108
+#: src/libvlc-module.c:268 modules/stream_out/mosaic_bridge.c:108
 #: modules/stream_out/transcode/transcode.c:70
 #: modules/visualization/projectm.cpp:68
 #: modules/visualization/visual/visual.c:57 modules/visualization/vsxu.cpp:55
 msgid "Video height"
 msgstr "ವೀಡಿಯೊದ ಎತ್ತರ"
 
-#: src/libvlc-module.c:268
+#: src/libvlc-module.c:270
 msgid ""
 "You can enforce the video height. By default (-1) VLC will adapt to the "
 "video characteristics."
@@ -1975,33 +1975,33 @@ msgstr ""
 "ನೀವು ವೀಡಿಯೊ ಎತ್ತರವನ್ನು ಕಡ್ಡಾಯಮಾಡಬಹುದು.ಪೂರ್ವನಿಯೋಜಿತವಾಗಿ (-1) VLC ಯು ವಿಡಿಯೋ "
 "ಗುಣಲಕ್ಷಣಗಳಿಗೆ ಹೊಂದಿಕೊಳ್ಳುತ್ತವೆ "
 
-#: src/libvlc-module.c:271
+#: src/libvlc-module.c:273
 msgid "Video X coordinate"
 msgstr "ವಿಡಿಯೋದ X ಸಹಯೋಜಕ"
 
-#: src/libvlc-module.c:273
+#: src/libvlc-module.c:275
 msgid ""
 "You can enforce the position of the top left corner of the video window (X "
 "coordinate)."
 msgstr ""
 "ನೀವು ವಿಡಿಯೋ ಕಿಟಕಿಯ ಮೇಲಿನ ಎಡ ಮೂಲೆಯಲ್ಲಿ (X ಸಹಯೋಜಕ) ಸ್ಥಾನವನ್ನು ಕಡ್ಡಾಯಮಾಡಬಹುದು."
 
-#: src/libvlc-module.c:276
+#: src/libvlc-module.c:278
 msgid "Video Y coordinate"
 msgstr "ವಿಡಿಯೋದ Y ಸಹಯೋಜಕ"
 
-#: src/libvlc-module.c:278
+#: src/libvlc-module.c:280
 msgid ""
 "You can enforce the position of the top left corner of the video window (Y "
 "coordinate)."
 msgstr ""
 "ನೀವು ವಿಡಿಯೋ ಕಿಟಕಿಯ ಮೇಲಿನ ಎಡ ಮೂಲೆಯಲ್ಲಿ (Y ಸಹಯೋಜಕ) ಸ್ಥಾನವನ್ನು ಕಡ್ಡಾಯಮಾಡಬಹುದು."
 
-#: src/libvlc-module.c:281
+#: src/libvlc-module.c:283
 msgid "Video title"
 msgstr "ವೀಡಿಯೊ ಶೀರ್ಷಿಕೆ"
 
-#: src/libvlc-module.c:283
+#: src/libvlc-module.c:285
 msgid ""
 "Custom title for the video window (in case the video is not embedded in the "
 "interface)."
@@ -2009,11 +2009,11 @@ msgstr ""
 "ವಿಡಿಯೋ ಕಿಟಕಿಯ ಇಚ್ಛೆಯ ಶೀರ್ಷಿಕೆ (ವಿಡಿಯೋ ಅಂತರ್ಮುಖಿ ಹುದುಗಿಸಿರಲಿಲ್ಲವೆಂದಾದ "
 "ಸಂದರ್ಭದಲ್ಲಿ)."
 
-#: src/libvlc-module.c:286
+#: src/libvlc-module.c:288
 msgid "Video alignment"
 msgstr "ವೀಡಿಯೊ ಹೊಂದಾಣಿಕೆ"
 
-#: src/libvlc-module.c:288
+#: src/libvlc-module.c:290
 msgid ""
 "Enforce the alignment of the video in its window. By default (0) it will be "
 "centered (0=center, 1=left, 2=right, 4=top, 8=bottom, you can also use "
@@ -2023,7 +2023,7 @@ msgstr ""
 "ಕೇಂದ್ರಿತವಾಗಿದೆ ನಡೆಯಲಿದೆ (0 = ಮಧ್ಯ, 1 = ಎಡಕ್ಕೆ, 2 = ಬಲಕ್ಕೆ, 4 = ಮೇಲೆ, 8 = "
 "ಕೆಳಗೆ, ನೀವು  6 = 4 +2  ರೀತಿಯ ಈ ಮೌಲ್ಯಗಳ ಸಂಯೋಜನೆಯನ್ನು ಬಳಸಬಹುದು ಅರ್ಥ ಮೇಲಿನ ಬಲ) ."
 
-#: src/libvlc-module.c:293 src/libvlc-module.c:366 modules/codec/dvbsub.c:102
+#: src/libvlc-module.c:295 src/libvlc-module.c:368 modules/codec/dvbsub.c:102
 #: modules/codec/zvbi.c:83
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:203
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:281
@@ -2033,7 +2033,7 @@ msgstr ""
 msgid "Top"
 msgstr "ಮೇಲೆ "
 
-#: src/libvlc-module.c:293 src/libvlc-module.c:366 modules/codec/dvbsub.c:102
+#: src/libvlc-module.c:295 src/libvlc-module.c:368 modules/codec/dvbsub.c:102
 #: modules/codec/zvbi.c:83
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:206
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:283
@@ -2043,7 +2043,7 @@ msgstr "ಮೇಲೆ "
 msgid "Bottom"
 msgstr "ಕೆಳಗೆ"
 
-#: src/libvlc-module.c:294 src/libvlc-module.c:367 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:296 src/libvlc-module.c:369 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:84
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:285
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:307
@@ -2052,7 +2052,7 @@ msgstr "ಕೆಳಗೆ"
 msgid "Top-Left"
 msgstr "ಮೇಲಿನ ಎಡಬದಿ"
 
-#: src/libvlc-module.c:294 src/libvlc-module.c:367 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:296 src/libvlc-module.c:369 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:84
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:287
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:309
@@ -2061,7 +2061,7 @@ msgstr "ಮೇಲಿನ ಎಡಬದಿ"
 msgid "Top-Right"
 msgstr "ಮೇಲಿನ ಬಲತುದಿ"
 
-#: src/libvlc-module.c:294 src/libvlc-module.c:367 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:296 src/libvlc-module.c:369 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:84
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:289
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:311
@@ -2070,7 +2070,7 @@ msgstr "ಮೇಲಿನ ಬಲತುದಿ"
 msgid "Bottom-Left"
 msgstr "ಕೆಳಭಾಗದ ಎಡ"
 
-#: src/libvlc-module.c:294 src/libvlc-module.c:367 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:296 src/libvlc-module.c:369 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:84
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:291
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:313
@@ -2079,19 +2079,19 @@ msgstr "ಕೆಳಭಾಗದ ಎಡ"
 msgid "Bottom-Right"
 msgstr "ಕೆಳಭಾಗದ ಬಲ"
 
-#: src/libvlc-module.c:296
+#: src/libvlc-module.c:298
 msgid "Zoom video"
 msgstr "ವೀಡಿಯೊವನ್ನು ಸಮೀಪೀಕರಿಸಿ "
 
-#: src/libvlc-module.c:298
+#: src/libvlc-module.c:300
 msgid "You can zoom the video by the specified factor."
 msgstr "ನೀವು ನಿರ್ದಿಷ್ಟ ಅಂಶಕ್ಕೆ ವೀಡಿಯೊವನ್ನು ಸಮೀಪೀಕರಿಸಬಹುದು."
 
-#: src/libvlc-module.c:300
+#: src/libvlc-module.c:302
 msgid "Grayscale video output"
 msgstr "ಬೂದುವರ್ಣ ವಿಡಿಯೋ ಉತ್ಪಾದನೆ"
 
-#: src/libvlc-module.c:302
+#: src/libvlc-module.c:304
 msgid ""
 "Output video in grayscale. As the color information aren't decoded, this can "
 "save some processing power."
@@ -2099,139 +2099,139 @@ msgstr ""
 "ವೀಡಿಯೊವನ್ನು ಬೂದುವರ್ಣದಲ್ಲಿ ಉತ್ಪಾದಿಸಿ.ಬಣ್ಣ ಮಾಹಿತಿ ವಿಸಂಕೇತಿ ಸಿಲ್ಲದಿರುವುದರಿಂದ ಕೆಲವು "
 "ಪ್ರಕ್ರಿಯೆಗೆ ಶಕ್ತಿ ಉಳಿಸಬಹುದು."
 
-#: src/libvlc-module.c:305
+#: src/libvlc-module.c:307
 msgid "Embedded video"
 msgstr "ಆವರಿಸಿದ ವೀಡಿಯೊ"
 
-#: src/libvlc-module.c:307
+#: src/libvlc-module.c:309
 msgid "Embed the video output in the main interface."
 msgstr "ಉತ್ಪಾದಿಸಿದ ವಿಡಿಯೋವನ್ನು ಮುಖ್ಯ ಅಂತರ್ಮುಖಿಯಲ್ಲಿ ಹುದುಗಿಸಿ."
 
-#: src/libvlc-module.c:309
+#: src/libvlc-module.c:311
 msgid "Fullscreen video output"
 msgstr "ಪೂರ್ಣಪರದೆ ಯ ವಿಡಿಯೋ ಉತ್ಪಾದನೆ"
 
-#: src/libvlc-module.c:311
+#: src/libvlc-module.c:313
 msgid "Start video in fullscreen mode"
 msgstr "ವೀಡಿಯೊವನ್ನು ಪೂರ್ಣಪರದೆಯಲ್ಲಿ ಪ್ರಾರಂಭಿಸಿ "
 
-#: src/libvlc-module.c:313 src/video_output/vout_intf.c:253
+#: src/libvlc-module.c:315 src/video_output/vout_intf.c:253
 msgid "Always on top"
 msgstr "ಯಾವಾಗಲೂ ಮೇಲ್ಭಾಗದಲ್ಲಿ"
 
-#: src/libvlc-module.c:315
+#: src/libvlc-module.c:317
 msgid "Always place the video window on top of other windows."
 msgstr "ಯಾವಾಗಲೂ ಇತರ ಕಿಟಕಿಯ ಮೇಲ್ಭಾಗದಲ್ಲಿ ವೀಡಿಯೊ ಕಿಟಕಿಯನ್ನು ಇರಿಸಿ."
 
-#: src/libvlc-module.c:317
+#: src/libvlc-module.c:319
 msgid "Enable wallpaper mode "
 msgstr "ವಾಲ್ಪೇಪರ್ ಕ್ರಮವನ್ನು ಶಕ್ತಗೊಳಿಸಲು"
 
-#: src/libvlc-module.c:319
+#: src/libvlc-module.c:321
 msgid ""
 "The wallpaper mode allows you to display the video as the desktop background."
 msgstr ""
 "ವಾಲ್ಪೇಪರ್ ಕ್ರಮವು ನಿಮ್ಮ ಡೆಸ್ಕ್ ಟಾಪ್ ನ ಹಿಂಬದಿಯಲ್ಲಿ ವೀಡಿಯೊ ತೋರಿಸಲು ಅನುಮತಿಸುತ್ತದೆ."
 
-#: src/libvlc-module.c:322
+#: src/libvlc-module.c:324
 msgid "Show media title on video"
 msgstr "ವೀಡಿಯೊದಲ್ಲಿ ಮಾಧ್ಯಮ ಶೀರ್ಷಿಕೆಯನ್ನು ತೋರಿಸಿ "
 
-#: src/libvlc-module.c:324
+#: src/libvlc-module.c:326
 msgid "Display the title of the video on top of the movie."
 msgstr "ಚಿತ್ರದ ಮೇಲ್ಭಾಗದಲ್ಲಿ ವೀಡಿಯೊದ ಶೀರ್ಷಿಕೆಯನ್ನು ತೋರಿಸಿ."
 
-#: src/libvlc-module.c:326
+#: src/libvlc-module.c:328
 msgid "Show video title for x milliseconds"
 msgstr "x ಮಿಲಿಸೆಕೆಂಡುಗಳವರೆಗೆ ವೀಡಿಯೊ ಶೀರ್ಷಿಕೆಯನ್ನು ತೋರಿಸಿ"
 
-#: src/libvlc-module.c:328
+#: src/libvlc-module.c:330
 msgid "Show the video title for n milliseconds, default is 5000 ms (5 sec.)"
 msgstr ""
 "n ಮಿಲಿಸೆಕೆಂಡುಗಳವರೆಗೆ ವೀಡಿಯೊ ಶೀರ್ಷಿಕೆಯನ್ನು ತೋರಿಸಿ, ಪೂರ್ವನಿಯೋಜಿತವಾಗಿ 5000 "
 "ms (5 ಸೆಕೆಂಡು.)"
 
-#: src/libvlc-module.c:330
+#: src/libvlc-module.c:332
 msgid "Position of video title"
 msgstr "ವೀಡಿಯೊ ಶೀರ್ಷಿಕೆಯ ಸ್ಥಾನ"
 
-#: src/libvlc-module.c:332
+#: src/libvlc-module.c:334
 msgid "Place on video where to display the title (default bottom center)."
 msgstr ""
 "ಯಾವ ಸ್ಥಳದಲ್ಲಿ ಶೀರ್ಷಿಕೆಯನ್ನು ಪ್ರದರ್ಶಿಸಬೇಕೊ ಅ ಸ್ಥಳವನ್ನು ಆಯ್ಕೆಮಾಡಿ(ಪೂರ್ವನಿಯೋಜಿತವಾಗಿ "
 "ಕೆಳಗೆ ಕೇಂದ್ರದಲ್ಲಿ)."
 
-#: src/libvlc-module.c:334
+#: src/libvlc-module.c:336
 msgid "Hide cursor and fullscreen controller after x milliseconds"
 msgstr "x ಮಿಲಿಸೆಕೆಂಡುಗಳು ನಂತರ ಕರ್ಸರ್ ಮತ್ತು ಪೂರ್ಣಪರದೆಯ ನಿಯಂತ್ರಕವನ್ನು ಮರೆಮಾಡಿ"
 
-#: src/libvlc-module.c:337
+#: src/libvlc-module.c:339
 msgid "Hide mouse cursor and fullscreen controller after n milliseconds."
 msgstr "n ಮಿಲಿಸೆಕೆಂಡುಗಳು ನಂತರ ಮೌಸ್ ಕರ್ಸರ್ ಮತ್ತು ಪೂರ್ಣಪರದೆಯ ನಿಯಂತ್ರಕವನ್ನು ಮರೆಮಾಡಿ"
 
-#: src/libvlc-module.c:340 src/libvlc-module.c:342
+#: src/libvlc-module.c:342 src/libvlc-module.c:344
 #: src/video_output/interlacing.c:112 modules/gui/macosx/VLCMainMenu.m:433
 #: modules/gui/macosx/VLCMainMenu.m:434
 #: modules/gui/macosx/VLCSimplePrefsController.m:365
 #: modules/gui/qt/dialogs/convert.cpp:119 modules/hw/vdpau/chroma.c:884
-#: modules/video_filter/deinterlace/deinterlace.c:98
+#: modules/video_filter/deinterlace/deinterlace.c:300
 #: share/lua/http/dialogs/create_stream.html:346
 msgid "Deinterlace"
 msgstr "ಬಿಡಿಸಿ"
 
-#: src/libvlc-module.c:350 src/video_output/interlacing.c:128
+#: src/libvlc-module.c:352 src/video_output/interlacing.c:128
 #: modules/gui/macosx/VLCMainMenu.m:435 modules/gui/macosx/VLCMainMenu.m:436
 #: modules/gui/macosx/VLCSimplePrefsController.m:366
-#: modules/video_filter/deinterlace/deinterlace.c:54
+#: modules/video_filter/deinterlace/deinterlace.c:256
 msgid "Deinterlace mode"
 msgstr "ಬಿಡಿಸುವ ಕ್ರಮ"
 
-#: src/libvlc-module.c:352
+#: src/libvlc-module.c:354
 msgid "Deinterlace method to use for video processing."
 msgstr "ವೀಡಿಯೊ ಪ್ರಕ್ರಿಯೆಗೆ ಬಿಡಿಸುವ ಕ್ರಮ."
 
-#: src/libvlc-module.c:359 modules/video_filter/deinterlace/deinterlace.h:58
+#: src/libvlc-module.c:361 modules/video_filter/deinterlace/deinterlace.h:58
 msgid "Discard"
 msgstr "ತಿರಸ್ಕರಿಸಿ"
 
-#: src/libvlc-module.c:359 modules/video_filter/deinterlace/algo_phosphor.h:47
+#: src/libvlc-module.c:361 modules/video_filter/deinterlace/algo_phosphor.h:47
 #: modules/video_filter/deinterlace/deinterlace.h:58
 msgid "Blend"
 msgstr "ಬೆರಕೆ ಮಾಡಿ"
 
-#: src/libvlc-module.c:359 modules/video_filter/deinterlace/deinterlace.h:58
+#: src/libvlc-module.c:361 modules/video_filter/deinterlace/deinterlace.h:58
 msgid "Mean"
 msgstr "ಸರಾಸರಿ"
 
-#: src/libvlc-module.c:359 modules/hw/vdpau/chroma.c:871
+#: src/libvlc-module.c:361 modules/hw/vdpau/chroma.c:871
 #: modules/video_filter/deinterlace/deinterlace.h:58
 msgid "Bob"
 msgstr "Bob"
 
-#: src/libvlc-module.c:360 modules/video_filter/deinterlace/deinterlace.h:59
+#: src/libvlc-module.c:362 modules/video_filter/deinterlace/deinterlace.h:59
 msgid "Phosphor"
 msgstr "Phosphor"
 
-#: src/libvlc-module.c:361 modules/video_filter/deinterlace/deinterlace.h:59
+#: src/libvlc-module.c:363 modules/video_filter/deinterlace/deinterlace.h:59
 msgid "Film NTSC (IVTC)"
 msgstr "NTSC (IVTC) ವನ್ನು ಚಿತ್ರೀಕರಿಸಿ"
 
-#: src/libvlc-module.c:369
+#: src/libvlc-module.c:371
 msgid "Disable screensaver"
 msgstr "ಸ್ಕ್ರೀನ್ ಸೇವರ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:370
+#: src/libvlc-module.c:372
 msgid "Disable the screensaver during video playback."
 msgstr ""
 "ವೀಡಿಯೋ/ಧ್ವನಿಯು ಸಕ್ರಿಯವಾಗಿರುವ ಸಮಯದಲ್ಲಿ ಸ್ಕ್ರೀನ್ ಸೇವರ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ."
 
-#: src/libvlc-module.c:372
+#: src/libvlc-module.c:374
 msgid "Inhibit the power management daemon during playback"
 msgstr ""
 "ವೀಡಿಯೊ/ಧ್ವನಿಯು  ಸಕ್ರಿಯವಾಗಿರುವ ಸಮಯದಲ್ಲಿ ವಿದ್ಯುತ್ ನಿರ್ವಹಣಾ ಹಿನ್ನೆಲೆ ಪ್ರಕ್ರಿಯೆಯನ್ನು "
 "ತಡೆಯಿರಿ."
 
-#: src/libvlc-module.c:373
+#: src/libvlc-module.c:375
 msgid ""
 "Inhibits the power management daemon during any playback, to avoid the "
 "computer being suspended because of inactivity."
@@ -2239,11 +2239,11 @@ msgstr ""
 "ವೀಡಿಯೊ/ಧ್ವನಿಯು  ಸಕ್ರಿಯವಾಗಿರುವ  ಸಮಯದಲ್ಲಿ ಯಾವುದೇ ಹಿನ್ನೆಲೆ ವಿದ್ಯುತ್ ನಿರ್ವಹಣಾ "
 "ಪ್ರಕ್ರಿಯೆಯ ತಡೆಯುತ್ತದೆ,ಏಕೆಂದರೆ ನಿಷ್ಕ್ರಿಯತೆಯಿಂದ ಕಂಪ್ಯೂಟರ್ ಸ್ಥಗಿತಗೊಳ್ಳುವುದನ್ನು  ತಪ್ಪಿಸಲು."
 
-#: src/libvlc-module.c:376 modules/gui/macosx/VLCSimplePrefsController.m:351
+#: src/libvlc-module.c:378 modules/gui/macosx/VLCSimplePrefsController.m:351
 msgid "Window decorations"
 msgstr "ಕಿಟಕಿಯ ಅಲಂಕಾರಗಳು"
 
-#: src/libvlc-module.c:378
+#: src/libvlc-module.c:380
 msgid ""
 "VLC can avoid creating window caption, frames, etc... around the video, "
 "giving a \"minimal\" window."
@@ -2251,19 +2251,19 @@ msgstr ""
 "VLC ಯು ವೀಡಿಯೊ ಸುತ್ತಲೂ ಕಿಟಕಿ ಶೀರ್ಷಿಕೆ, ಚೌಕಟ್ಟುಗಳು ಇತ್ಯಾದಿಗಳನ್ನು ಸೃಷ್ಟಿಸುವುದನ್ನು "
 "ತಪ್ಪಿಸಲು \"minimal\"   ಕಿಟಕಿಯನ್ನು ಉಪಯೊಗಿಸಬಹುದು."
 
-#: src/libvlc-module.c:381
+#: src/libvlc-module.c:383
 msgid "Video splitter module"
 msgstr "ವೀಡಿಯೊ ವಿಭಾಗಿಸುವ ಘಟಕ"
 
-#: src/libvlc-module.c:383
+#: src/libvlc-module.c:385
 msgid "This adds video splitters like clone or wall"
 msgstr "ಇದು  ವೀಡಿಯೊ ವಿಭಜಕಗಳಿಗೆ ತದ್ರೂಪಿ ಅಥವಾ ಗೋಡೆಯ ಹಾಗೆ ಸೇರಿಸುತ್ತದೆ"
 
-#: src/libvlc-module.c:385
+#: src/libvlc-module.c:387
 msgid "Video filter module"
 msgstr "ವೀಡಿಯೊ ಶೋಧಕ ಘಟಕ"
 
-#: src/libvlc-module.c:387
+#: src/libvlc-module.c:389
 msgid ""
 "This adds post-processing filters to enhance the picture quality, for "
 "instance deinterlacing, or distort the video."
@@ -2271,47 +2271,47 @@ msgstr ""
 "ಇದು ಚಿತ್ರದ ಗುಣಮಟ್ಟ ಹೆಚ್ಚಿಸಲು ನಂತರದ ಪ್ರಕ್ರಿಯೆಗೆ ಶೋಧಕಗಳನ್ನು ಸೇರಿಸುತ್ತದೆ,ಉದಾಹರಣೆಗೆ "
 "deinterlacing ಗೆ, ಅಥವಾ ವೀಡಿಯೊ ವಿರೂಪಗೊಳಿಸುವುದಕ್ಕೆ."
 
-#: src/libvlc-module.c:391
+#: src/libvlc-module.c:393
 msgid "Video snapshot directory (or filename)"
 msgstr "ವಿಡಿಯೋ ಚಿತ್ರ ಕೋಶದ (ಅಥವಾ ಕಡತದ ಹೆಸರು)"
 
-#: src/libvlc-module.c:393
+#: src/libvlc-module.c:395
 msgid "Directory where the video snapshots will be stored."
 msgstr "ಈ ಕೋಶದದಲ್ಲಿ ವೀಡಿಯೊ ಚಿತ್ರ ಸಂಗ್ರಹಿಸಲಾಗುವುದು."
 
-#: src/libvlc-module.c:395 src/libvlc-module.c:397
+#: src/libvlc-module.c:397 src/libvlc-module.c:399
 msgid "Video snapshot file prefix"
 msgstr "ವೀಡಿಯೊ ಚಿತ್ರಣದ ಫೈಲ್ ನ ಪೂರ್ವಪ್ರತ್ಯಯ"
 
-#: src/libvlc-module.c:399
+#: src/libvlc-module.c:401
 msgid "Video snapshot format"
 msgstr "ವಿಡಿಯೋ ಚಿತ್ರದ ಸ್ವರೂಪ"
 
-#: src/libvlc-module.c:401
+#: src/libvlc-module.c:403
 msgid "Image format which will be used to store the video snapshots"
 msgstr "ವೀಡಿಯೊ ಚಿತ್ರದ ಸಂಗ್ರಹಕ್ಕೆ ಬಳಸಲಾಗುವುದು ಚಿತ್ರದ ಸ್ವರೂಪ"
 
-#: src/libvlc-module.c:403
+#: src/libvlc-module.c:405
 msgid "Display video snapshot preview"
 msgstr "ವೀಡಿಯೊ ಚಿತ್ರಣವನ್ನು ಪೂರ್ವವೀಕ್ಷಣೆಗೆ ತೋರಿಸಿ"
 
-#: src/libvlc-module.c:405
+#: src/libvlc-module.c:407
 msgid "Display the snapshot preview in the screen's top-left corner."
 msgstr "ಪರದೆಯ ಮೇಲಿನ ಎಡ ಮೂಲೆಯಲ್ಲಿ ಚಿತ್ರದ ಪೂರ್ವವೀಕ್ಷಣೆಯನ್ನು ತೋರಿಸು."
 
-#: src/libvlc-module.c:407
+#: src/libvlc-module.c:409
 msgid "Use sequential numbers instead of timestamps"
 msgstr "ಸಮಯಮೊಹರಿನ ಬದಲಿಗೆ ಅನುಕ್ರಮಣೀಯ ಸಂಖ್ಯೆಗಳನ್ನು ಬಳಸಿ"
 
-#: src/libvlc-module.c:409
+#: src/libvlc-module.c:411
 msgid "Use sequential numbers instead of timestamps for snapshot numbering"
 msgstr "ಚಿತ್ರಣಗಳಿಗೆ ಸಮಯಮೊಹರಿನ ಬದಲಿಗೆ ಅನುಕ್ರಮಣೀಯ ಸಂಖ್ಯೆಗಳನ್ನು ಬಳಸಿ"
 
-#: src/libvlc-module.c:411
+#: src/libvlc-module.c:413
 msgid "Video snapshot width"
 msgstr "ವೀಡಿಯೊ ಚಿತ್ರದ ಅಗಲ"
 
-#: src/libvlc-module.c:413
+#: src/libvlc-module.c:415
 msgid ""
 "You can enforce the width of the video snapshot. By default it will keep the "
 "original width (-1). Using 0 will scale the width to keep the aspect ratio."
@@ -2319,11 +2319,11 @@ msgstr ""
 "ನೀವು ವೀಡಿಯೊ ಚಿತ್ರಣದ ಅಗಲವನ್ನು ಕಡ್ಡಾಯ ಮಾಡಬಹುದು.ಪೂರ್ವನಿಯೋಜಿತವಾಗಿ ಇದು ಮೂಲತಃ ಅಗಲ "
 "(-1) ಇರಿಸಿಕೊಂಡಿರುತ್ತದೆ."
 
-#: src/libvlc-module.c:417
+#: src/libvlc-module.c:419
 msgid "Video snapshot height"
 msgstr "ವೀಡಿಯೊ ಚಿತ್ರದ ಎತ್ತರ"
 
-#: src/libvlc-module.c:419
+#: src/libvlc-module.c:421
 msgid ""
 "You can enforce the height of the video snapshot. By default it will keep "
 "the original height (-1). Using 0 will scale the height to keep the aspect "
@@ -2333,11 +2333,11 @@ msgstr ""
 "(-1)  ಇರಿಸಿಕೊಳ್ಳುತ್ತದೆ.0 ಬಳಸುವುದರಿಂದ ಆಕಾರ ಅನುಪಾತ ಇರಿಸಿಕೊಳ್ಳಲು ಎತ್ತರ "
 "ಅಳತೆಬದಲಾವಣೆ ಆಗುತ್ತದೆ."
 
-#: src/libvlc-module.c:423
+#: src/libvlc-module.c:425
 msgid "Video cropping"
 msgstr "ಕತ್ತರಿಸಿ ಹಾಕುವಿಕೆ"
 
-#: src/libvlc-module.c:425
+#: src/libvlc-module.c:427
 msgid ""
 "This forces the cropping of the source video. Accepted formats are x:y (4:3, "
 "16:9, etc.) expressing the global image aspect."
@@ -2345,11 +2345,11 @@ msgstr ""
 "ಇದು ಮೂಲ ವೀಡಿಯೊವನ್ನು ಕತ್ತರಿಸಿ ಹಾಕಲು ಒತ್ತಾಯಿಸುತ್ತದೆ.ಸಮ್ಮತಿಸಲಾಗಿರುವ ಸ್ವರೂಪಗಳು x:y "
 "(4:3, 16:9, ಇತ್ಯಾದಿ.)ಜಾಗತಿಕ ಚಿತ್ರದ ಅಂಶವನ್ನು ವ್ಯಕ್ತಪಡಿಸುವ."
 
-#: src/libvlc-module.c:429
+#: src/libvlc-module.c:431
 msgid "Source aspect ratio"
 msgstr "ಮೂಲ ಆಕಾರ ಅನುಪಾತ"
 
-#: src/libvlc-module.c:431
+#: src/libvlc-module.c:433
 msgid ""
 "This forces the source aspect ratio. For instance, some DVDs claim to be "
 "16:9 while they are actually 4:3. This can also be used as a hint for VLC "
@@ -2363,19 +2363,19 @@ msgstr ""
 "y (4:3, 16:9, etc.) expressing the global image aspect, or a float value "
 "(1.25, 1.3333, etc.) expressing pixel squareness."
 
-#: src/libvlc-module.c:438
+#: src/libvlc-module.c:440
 msgid "Video Auto Scaling"
 msgstr "ವೀಡಿಯೊವನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಅಳೆಯುವುದು"
 
-#: src/libvlc-module.c:440
+#: src/libvlc-module.c:442
 msgid "Let the video scale to fit a given window or fullscreen."
 msgstr "ವೀಡಿಯೊವನ್ನು ಒಂದು ನಿರ್ದಿಷ್ಟ ವಿಂಡೋ ಅಥವಾ ಪೂರ್ಣಪರದೆಗೆ ಹೊಂದಿಕೊಳ್ಳಲು ಬಿಡಿ."
 
-#: src/libvlc-module.c:442
+#: src/libvlc-module.c:444
 msgid "Video scaling factor"
 msgstr "ವೀಡಿಯೊದ ಅಳತೆಬದಲಾವಣೆಯ ಅಂಶ"
 
-#: src/libvlc-module.c:444
+#: src/libvlc-module.c:446
 msgid ""
 "Scaling factor used when Auto Scaling is disabled.\n"
 "Default value is 1.0 (original video size)."
@@ -2383,11 +2383,11 @@ msgstr ""
 "ಸ್ವಯಂ ಅಳತೆಬದಲಾವಣೆಯನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲದಾಗ ಅಳತೆಬದಲಾವಣೆಯ ಅಂಶವನ್ನು ಬಳಸಲಾಗುತ್ತದೆ.\n"
 "ಪೂರ್ವನಿಯೋಜಿತಮೌಲ್ಯ 1.0 (ಮೂಲ ವೀಡಿಯೊ ಗಾತ್ರ) ಆಗಿದೆ."
 
-#: src/libvlc-module.c:447
+#: src/libvlc-module.c:449
 msgid "Custom crop ratios list"
 msgstr "ಸಂಪ್ರದಾಯಿಕ ಕತ್ತರಿಸಿ ಹಾಕುವ ಅನುಪಾತ ಪಟ್ಟಿ"
 
-#: src/libvlc-module.c:449
+#: src/libvlc-module.c:451
 msgid ""
 "Comma separated list of crop ratios which will be added in the interface's "
 "crop ratios list."
@@ -2395,11 +2395,11 @@ msgstr ""
 "ಮೇಲ್ಮೈನ  ಕತ್ತರಿಸುವ ಅನುಪಾತದಲ್ಲಿ ಅಲ್ಪವಿರಾಮದಿಂದ  ಬೇರ್ಪಟ್ಟ ಕತ್ತರಿಸುವ ಪಟ್ಟಿಯನ್ನು "
 "ಸೇರಿಸಲಾಗುತ್ತದೆ."
 
-#: src/libvlc-module.c:452
+#: src/libvlc-module.c:454
 msgid "Custom aspect ratios list"
 msgstr "ಇಚ್ಛೆಯ ಆಕಾರ ಅನುಪಾತ ಪಟ್ಟಿ"
 
-#: src/libvlc-module.c:454
+#: src/libvlc-module.c:456
 msgid ""
 "Comma separated list of aspect ratios which will be added in the interface's "
 "aspect ratio list."
@@ -2407,11 +2407,11 @@ msgstr ""
 "ಮೇಲ್ಮೈನ  ಕಆಕಾರ ಅನುಪಾತದಲ್ಲಿ ಅಲ್ಪವಿರಾಮದಿಂದ  ಬೇರ್ಪಟ್ಟ ಆಕಾರ ಅನುಪಾತವನ್ನು "
 "ಸೇರಿಸಲಾಗುತ್ತದೆ."
 
-#: src/libvlc-module.c:457
+#: src/libvlc-module.c:459
 msgid "Fix HDTV height"
 msgstr "HDTV ಎತ್ತರವನ್ನು ಸರಿಪಡಿಸಿ"
 
-#: src/libvlc-module.c:459
+#: src/libvlc-module.c:461
 msgid ""
 "This allows proper handling of HDTV-1080 video format even if broken encoder "
 "incorrectly sets height to 1088 lines. You should only disable this option "
@@ -2422,11 +2422,11 @@ msgstr ""
 "ಅವಕಾಶ ನೀಡುತ್ತದೆ.ನಿಮ್ಮ ವೀಡಿಯೊ ಎಲ್ಲಾ 1088 ರೇಖೆಗಳ ಅಗತ್ಯವಿರುವ ಪ್ರಮಾಣಿತವಲ್ಲದ "
 "ವಿನ್ಯಾಸವನ್ನು ಹೊಂದಿದೆ ವೇಳೆ ಮಾತ್ರ ಈ ಆಯ್ಕೆಯನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಬಹುದು."
 
-#: src/libvlc-module.c:464
+#: src/libvlc-module.c:466
 msgid "Monitor pixel aspect ratio"
 msgstr "ಪಿಕ್ಸೆಲ್ ನ ಆಕಾರ ಅನುಪಾತದ ಮೇಲೆ ನಿಗಾವಹಿಸಿ"
 
-#: src/libvlc-module.c:466
+#: src/libvlc-module.c:468
 msgid ""
 "This forces the monitor aspect ratio. Most monitors have square pixels "
 "(1:1). If you have a 16:9 screen, you might need to change this to 4:3 in "
@@ -2436,11 +2436,11 @@ msgstr ""
 "ಹೊಂದಿವೆ.ನೀವು 16:9 ಪರದೆಯ ಹೊಂದಿದ್ದರೆ, ನಿಮಗೆ ಅನುಪಾತವನ್ನು ಇರಿಸಿಕೊಳ್ಳುವ ಸಲುವಾಗಿ "
 "4:3 ಗೆ ಬದಲಾಯಿಸಬೇಕು."
 
-#: src/libvlc-module.c:470 modules/gui/macosx/VLCSimplePrefsController.m:294
+#: src/libvlc-module.c:472 modules/gui/macosx/VLCSimplePrefsController.m:294
 msgid "Skip frames"
 msgstr "ಚೌಕಟ್ಟುಗಳನ್ನು ಬಿಟ್ಟುಬಿಡು"
 
-#: src/libvlc-module.c:472
+#: src/libvlc-module.c:474
 msgid ""
 "Enables framedropping on MPEG2 stream. Framedropping occurs when your "
 "computer is not powerful enough"
@@ -2448,11 +2448,11 @@ msgstr ""
 "MPEG2 ಸ್ಟ್ರೀಮ್ನಲ್ಲಿ ಚೌಕಟ್ಟನ್ನು ಬಿಡುವುದನ್ನು ಸಕ್ರಿಯಗೊಳಿಸುತ್ತದೆ.ನಿಮ್ಮ ಕಂಪ್ಯೂಟರ್ ಸಾಕಷ್ಟು "
 "ಶಕ್ತಿಯುತವಾಗಿಲ್ಲದಾಗ ಚೌಕಟ್ಟು ಬಿಡುವುದು ಸಂಭವಿಸುತ್ತದೆ"
 
-#: src/libvlc-module.c:475
+#: src/libvlc-module.c:477
 msgid "Drop late frames"
 msgstr "ಕೊನೆಯ ಚೌಕಟ್ಟುಗಳನ್ನು ಬಿಟ್ಟುಬಿಡಿ"
 
-#: src/libvlc-module.c:477
+#: src/libvlc-module.c:479
 msgid ""
 "This drops frames that are late (arrive to the video output after their "
 "intended display date)."
@@ -2460,11 +2460,11 @@ msgstr ""
 "ಇದು ಕೊನೆಯಲ್ಲಿ ಬಂದ ಚೌಕಟ್ಟುಗಳನ್ನು ಬಿಟ್ಟು ಬಿಡುತ್ತದೆ (ಅವುಗಳ ಉದ್ದೇಶಿತ ಪ್ರದರ್ಶನ ದಿನಾಂಕದ "
 "ನಂತರ ವಿಡಿಯೋ ouptut ಗೆ ಬಂದ ಚೌಕಟ್ಟುಗಳು)."
 
-#: src/libvlc-module.c:480
+#: src/libvlc-module.c:482
 msgid "Quiet synchro"
 msgstr "ಶಾಂತಿಯುತ ಸಿಂಕ್ರೋ"
 
-#: src/libvlc-module.c:482
+#: src/libvlc-module.c:484
 msgid ""
 "This avoids flooding the message log with debug output from the video output "
 "synchronization mechanism."
@@ -2472,23 +2472,23 @@ msgstr ""
 "ಈ ವಿಡಿಯೋ ಉತ್ಪಾದನೆಯ ಹೊಂದಾಣಿಕೆಯ ತಾಂತ್ರಿಕತೆಯಿಂದ ಡಿಬಗ್ ಔಟ್ಪುಟ್ ಸಂದೇಶದ ದಾಖಲೆ "
 "ಪ್ರವಾಹವನ್ನು ತಪ್ಪುತ್ತದೆ."
 
-#: src/libvlc-module.c:485
+#: src/libvlc-module.c:487
 msgid "Key press events"
 msgstr "ಕೀಲಿ ಒತ್ತಿದ ನಂತರದ ಘಟನೆಗಳು"
 
-#: src/libvlc-module.c:487
+#: src/libvlc-module.c:489
 msgid "This enables VLC hotkeys from the (non-embedded) video window."
 msgstr "ಇದು ವೀಡಿಯೊ ಕಿಟಕಿಯಿಂದ VLC ಶೀಘ್ರಕೀಲಿಗಳನ್ನು(ಅಂತರ್ಗತವಲ್ಲದ) ಶಕ್ತಗೊಳಿಸುತ್ತದೆ."
 
-#: src/libvlc-module.c:489 modules/spu/remoteosd.c:91
+#: src/libvlc-module.c:491 modules/spu/remoteosd.c:91
 msgid "Mouse events"
 msgstr "ಮೌಸ್ ನ ಘಟನೆಗಳು"
 
-#: src/libvlc-module.c:491
+#: src/libvlc-module.c:493
 msgid "This enables handling of mouse clicks on the video."
 msgstr "ಇದು ವೀಡಿಯೊದ ಮೇಲಿನ ಮೌಸ್ ಕ್ಲಿಕ್ಗಳ ನಿರ್ವಹಿಸುತ್ತದೆ."
 
-#: src/libvlc-module.c:499
+#: src/libvlc-module.c:501
 msgid ""
 "These options allow you to modify the behavior of the input subsystem, such "
 "as the DVD or VCD device, the network interface settings or the subtitle "
@@ -2498,54 +2498,54 @@ msgstr ""
 "ಇನ್ಪುಟ್ ಉಪವ್ಯವಸ್ಥೆಯು ಸ್ವಭಾವವನ್ನು ಬದಲಾಯಿಸಲು ಅವಕಾಶ,ಉದಾಹರಣೆಗೆ, DVD ಅಥವಾ VCD ಸಾಧನ,"
 "ಜಾಲಬಂಧ ಸಂಪರ್ಕಸಾಧನಗಳ ಸಿದ್ಧತೆಗಳು ಅಥವಾ ಉಪಶೀರ್ಷಿಕೆ ಚಾನಲ್."
 
-#: src/libvlc-module.c:503
+#: src/libvlc-module.c:505
 msgid "File caching (ms)"
 msgstr "ಕಡತವನ್ನು ಹಿಡಿದಿಟ್ಟುಕೊಳ್ಳುವ  (ಮಿಲಿಸೆಕೆಂಡ್)"
 
-#: src/libvlc-module.c:505
+#: src/libvlc-module.c:507
 msgid "Caching value for local files, in milliseconds."
 msgstr "ಸ್ಥಳೀಯ ಕಡತಗಳ ಹಿಡಿದಿಟ್ಟುಕೊಳ್ಳುವ ಮೌಲ್ಯ,ಮಿಲಿಸೆಕೆಂಡುಗಳಲ್ಲಿ."
 
-#: src/libvlc-module.c:507
+#: src/libvlc-module.c:509
 msgid "Live capture caching (ms)"
 msgstr "ನೆರವಾಗಿ ಸೆರೆ ಹಿದಿಟ್ಟುಕೊಳ್ಳುವ(ಮಿಲಿಸೆಕೆಂಡ್)"
 
-#: src/libvlc-module.c:509
+#: src/libvlc-module.c:511
 msgid "Caching value for cameras and microphones, in milliseconds."
 msgstr "ಕ್ಯಾಮೆರಾ ಮತ್ತು ಮೈಕ್ರೋಫೋನ್ಗಳ ಹಿಡಿದಿಟ್ಟುಕೊಳ್ಳುವ ಮೌಲ್ಯ,,ಮಿಲಿಸೆಕೆಂಡುಗಳಲ್ಲಿ."
 
-#: src/libvlc-module.c:511
+#: src/libvlc-module.c:513
 msgid "Disc caching (ms)"
 msgstr "ಡಿಸ್ಕ್ ಹಿಡಿದಿಟ್ಟುಕೊಳ್ಳುವ  (ಮಿಲಿಸೆಕೆಂಡ್)"
 
-#: src/libvlc-module.c:513
+#: src/libvlc-module.c:515
 msgid "Caching value for optical media, in milliseconds."
 msgstr "ಆಪ್ಟಿಕಲ್ ಮಾಧ್ಯಮದ ಹಿಡಿದಿಟ್ಟುಕೊಳ್ಳುವ ಮೌಲ್ಯ,ಮಿಲಿಸೆಕೆಂಡುಗಳಲ್ಲಿ,"
 
-#: src/libvlc-module.c:515
+#: src/libvlc-module.c:517
 msgid "Network caching (ms)"
 msgstr "ಜಾಲಬಂಧದ ಹಿಡಿದಿಟ್ಟುಕೊಳ್ಳುವ  (ಮಿಲಿಸೆಕೆಂಡ್)"
 
-#: src/libvlc-module.c:517
+#: src/libvlc-module.c:519
 msgid "Caching value for network resources, in milliseconds."
 msgstr "ಜಾಲಬಂಧ ಸಂಪನ್ಮೂಲಗಳ ಹಿಡಿದಿಟ್ಟುಕೊಳ್ಳುವ ಮೌಲ್ಯ,ಮಿಲಿಸೆಕೆಂಡುಗಳಲ್ಲಿ,"
 
-#: src/libvlc-module.c:519
+#: src/libvlc-module.c:521
 msgid "Clock reference average counter"
 msgstr "ಗಡಿಯಾರದ ಉಲ್ಲೇಖದ ಸರಾಸರಿ ಎಣಿಕೆ"
 
-#: src/libvlc-module.c:521
+#: src/libvlc-module.c:523
 msgid ""
 "When using the PVR input (or a very irregular source), you should set this "
 "to 10000."
 msgstr ""
 "ಪಿವಿಆರ್ input (ಅಥವಾ ಬಹಳ ಅನಿಯಮಿತ ಮೂಲ) ಬಳಸುವಾಗ,ನೀವು ಇದನ್ನು 10000ಗೆ ಹೊಂದಿಸಬೇಕು."
 
-#: src/libvlc-module.c:524
+#: src/libvlc-module.c:526
 msgid "Clock synchronisation"
 msgstr "ಗಡಿಯಾರದ ಹೊಂದಾಣಿಕೆ"
 
-#: src/libvlc-module.c:526
+#: src/libvlc-module.c:528
 msgid ""
 "It is possible to disable the input clock synchronisation for real-time "
 "sources. Use this if you experience jerky playback of network streams."
@@ -2553,11 +2553,11 @@ msgstr ""
 "ನೈಜ ಸಮಯದ ಮೂಲಗಳಿಗೆ input ಗಡಿಯಾರದ ಹೊಂದಾಣಿಕೆಯನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲು ಸಾಧ್ಯವಿದೆ."
 "ಜಾಲಬಂಧದ ಸ್ಟ್ರೀಮ್ಗಳ ಸಕ್ರಿಯವಾಗಿರುವ ಸಮಯದಲ್ಲಿ ನುಲಿಯುವಿಕೆ ಅನುಭವಿಸಿದರೆ ಇದನ್ನು ಬಳಸಿ."
 
-#: src/libvlc-module.c:530
+#: src/libvlc-module.c:532
 msgid "Clock jitter"
 msgstr "ಗಡಿಯಾರದ ಕಂಪನ"
 
-#: src/libvlc-module.c:532
+#: src/libvlc-module.c:534
 msgid ""
 "This defines the maximum input delay jitter that the synchronization "
 "algorithms should try to compensate (in milliseconds)."
@@ -2565,11 +2565,11 @@ msgstr ""
 "ಇದು ಹೊಂದಾಣಿಕೆಯ ಕ್ರಮಾವಳಿಗಳು ಸರಿದೂಗಿಸಲು ಪ್ರಯತ್ನಿಸಬೇಕಾದ ಗರಿಷ್ಠ input ವಿಳಂಬ "
 "ಕಂಪನಗಳನ್ನು ವರ್ಣಿಸುತ್ತದೆ(ಮಿಲಿಸೆಕೆಂಡುಗಳಲ್ಲಿ)."
 
-#: src/libvlc-module.c:535
+#: src/libvlc-module.c:537
 msgid "Network synchronisation"
 msgstr "ಜಾಲಬಂಧದ ಹೊಂದಾಣಿಕೆ"
 
-#: src/libvlc-module.c:536
+#: src/libvlc-module.c:538
 msgid ""
 "This allows you to remotely synchronise clocks for server and client. The "
 "detailed settings are available in Advanced / Network Sync."
@@ -2577,7 +2577,7 @@ msgstr ""
 "ಇದು ನಿಮಗೆ ರಿಮೋಟ್ ಸರ್ವರ್ ಮತ್ತು ಗ್ರಾಹಕರ ಗಡಿಯಾರಗಳ ಹೊಂದಾಣಿಕೆಗೆ ಅನುವು ಮಾಡಿಕೊಡುತ್ತದೆ."
 "ವಿವರವಾದ ಸಿದ್ಧತೆಗಳು ಸುಧಾರಿತ / ಜಾಲಬಂಧ ಹೊಂದಾಣಿಕೆ ಇಲ್ಲಿ ಲಭ್ಯವಿದೆ."
 
-#: src/libvlc-module.c:542 src/video_output/vout_intf.c:98
+#: src/libvlc-module.c:544 src/video_output/vout_intf.c:98
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
 #: modules/access/dshow/dshow.cpp:2075 modules/audio_output/alsa.c:767
@@ -2594,18 +2594,18 @@ msgstr ""
 msgid "Default"
 msgstr "ಪೂರ್ವನಿಯೋಜಿತ"
 
-#: src/libvlc-module.c:542
+#: src/libvlc-module.c:544
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:223
 #: modules/gui/macosx/VLCMainWindow.m:1001
-#: modules/gui/qt/components/extended_panels.cpp:923
+#: modules/gui/qt/components/extended_panels.cpp:921
 msgid "Enable"
 msgstr "ಸಕ್ರಿಯಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:544
+#: src/libvlc-module.c:546
 msgid "MTU of the network interface"
 msgstr "ಜಾಲಬಂಧದ ಮೇಲ್ಮೈನ MTU"
 
-#: src/libvlc-module.c:546
+#: src/libvlc-module.c:548
 msgid ""
 "This is the maximum application-layer packet size that can be transmitted "
 "over the network (in bytes)."
@@ -2613,11 +2613,11 @@ msgstr ""
 "ಇದು ಜಾಲಬಂಧದ (ಬೈಟ್ಗಳಲ್ಲಿ) ಮೇಲೆ ಕಳಿಸಿಕೊಡಬಹುದಾದ ಗರಿಷ್ಠ ಅಪ್ಲಿಕೇಶನ್ ಪದರದ ಪ್ಯಾಕೆಟ್ "
 "ಗಾತ್ರ."
 
-#: src/libvlc-module.c:551 modules/stream_out/rtp.c:124
+#: src/libvlc-module.c:553 modules/stream_out/rtp.c:124
 msgid "Hop limit (TTL)"
 msgstr "ಕುಪ್ಪಳಿಕೆಯ ಮಿತಿ(TTL)"
 
-#: src/libvlc-module.c:553 modules/stream_out/rtp.c:126
+#: src/libvlc-module.c:555 modules/stream_out/rtp.c:126
 msgid ""
 "This is the hop limit (also known as \"Time-To-Live\" or TTL) of the "
 "multicast packets sent by the stream output (-1 = use operating system built-"
@@ -2627,20 +2627,20 @@ msgstr ""
 "\" ಅಥವಾ TTL ಎಂದು ಕರೆಯಲಾಗುತ್ತದೆ) (-1 = ಕಾರ್ಯವ್ಯವಸ್ಥೆಯ ಪೂರ್ವನಿಯೋಜಿತ ಅಂತರ್ನಿರ್ಮಿತ "
 "ಬಳಕೆಮಾಡಿ)."
 
-#: src/libvlc-module.c:557
+#: src/libvlc-module.c:559
 msgid "Multicast output interface"
 msgstr "ಬಹು ಪಾತ್ರವರ್ಗದ ಮೇಲ್ಮೈ ಔಟ್ಪುಟ್ "
 
-#: src/libvlc-module.c:559
+#: src/libvlc-module.c:561
 msgid "Default multicast interface. This overrides the routing table."
 msgstr ""
 "ಪೂರ್ವನಿಯೋಜಿತ ಬಹುಪಾತ್ರವರ್ಗದ ಮೇಲ್ಮೈ.ಇದು ನಿರ್ದೇಶನನಾ ಕೋಷ್ಟಕವನ್ನು ಬದಿಗೊತ್ತುತ್ತದೆ."
 
-#: src/libvlc-module.c:561
+#: src/libvlc-module.c:563
 msgid "DiffServ Code Point"
 msgstr "DiffServ ಸಂಕೇತ ಬಿಂದು"
 
-#: src/libvlc-module.c:562
+#: src/libvlc-module.c:564
 msgid ""
 "Differentiated Services Code Point for outgoing UDP streams (or IPv4 Type Of "
 "Service, or IPv6 Traffic Class). This is used for network Quality of Service."
@@ -2648,7 +2648,7 @@ msgstr ""
 "Differentiated Services Code Point for outgoing UDP streams (or IPv4 Type Of "
 "Service, or IPv6 Traffic Class). This is used for network Quality of Service."
 
-#: src/libvlc-module.c:568
+#: src/libvlc-module.c:570
 msgid ""
 "Choose the program to select by giving its Service ID. Only use this option "
 "if you want to read a multi-program stream (like DVB streams for example)."
@@ -2656,7 +2656,7 @@ msgstr ""
 "Choose the program to select by giving its Service ID. Only use this option "
 "if you want to read a multi-program stream (like DVB streams for example)."
 
-#: src/libvlc-module.c:574
+#: src/libvlc-module.c:576
 msgid ""
 "Choose the programs to select by giving a comma-separated list of Service "
 "IDs (SIDs). Only use this option if you want to read a multi-program stream "
@@ -2666,27 +2666,27 @@ msgstr ""
 "IDs (SIDs). Only use this option if you want to read a multi-program stream "
 "(like DVB streams for example)."
 
-#: src/libvlc-module.c:580
+#: src/libvlc-module.c:582
 msgid "Audio track"
 msgstr "ಹಾಡುಗಳು"
 
-#: src/libvlc-module.c:582
+#: src/libvlc-module.c:584
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "ಬಳಸಲು ಹಾಡುಗಳ ಸ್ಟ್ರೀಮ್ ಸಂಖ್ಯೆ (0 ರಿಂದ n ವರೆಗೆ)."
 
-#: src/libvlc-module.c:585
+#: src/libvlc-module.c:587
 msgid "Subtitle track"
 msgstr "ಉಪಶೀರ್ಷಿಕೆಗಳು"
 
-#: src/libvlc-module.c:587
+#: src/libvlc-module.c:589
 msgid "Stream number of the subtitle track to use (from 0 to n)."
 msgstr "ಬಳಸಲು ಉಪಶೀರ್ಷಿಕೆಗಳ ಸ್ಟ್ರೀಮ್ ಸಂಖ್ಯೆ (0 ರಿಂದ n ವರೆಗೆ)."
 
-#: src/libvlc-module.c:590 modules/stream_out/transcode/transcode.c:97
+#: src/libvlc-module.c:592 modules/stream_out/transcode/transcode.c:97
 msgid "Audio language"
 msgstr "ಧ್ವನಿಯ ಭಾಷೆ"
 
-#: src/libvlc-module.c:592
+#: src/libvlc-module.c:594
 msgid ""
 "Language of the audio track you want to use (comma separated, two or three "
 "letter country code, you may use 'none' to avoid a fallback to another "
@@ -2696,11 +2696,11 @@ msgstr ""
 "letter country code, you may use 'none' to avoid a fallback to another "
 "language)."
 
-#: src/libvlc-module.c:595
+#: src/libvlc-module.c:597
 msgid "Subtitle language"
 msgstr "ಉಪಶೀರ್ಷಿಕೆಯ ಭಾಷೆ"
 
-#: src/libvlc-module.c:597
+#: src/libvlc-module.c:599
 msgid ""
 "Language of the subtitle track you want to use (comma separated, two or "
 "three letters country code, you may use 'any' as a fallback)."
@@ -2708,12 +2708,12 @@ msgstr ""
 "ನೀವು ಬಳಸಲು ಬಯಸುವ ಉಪಶೀರ್ಷಿಕೆಯ ಭಾಷೆ(ಅಲ್ಪವಿರಾಮದಿಂದ ಬೇರ್ಪಟ್ಟ ,ಎರಡು ಅಥವಾ ಮೂರು "
 "ಅಕ್ಷರಗಳ ದೇಶದ ಕೋಡ್,ಮಾಹಿತಿಗೆ ನೀವು 'any' ಬಳಸಬಹುದು)."
 
-#: src/libvlc-module.c:600
+#: src/libvlc-module.c:602
 #, fuzzy
 msgid "Menu language"
 msgstr "ಧ್ವನಿಯ ಭಾಷೆ"
 
-#: src/libvlc-module.c:602
+#: src/libvlc-module.c:604
 #, fuzzy
 msgid ""
 "Language of the menus you want to use with DVD/BluRay (comma separated, two "
@@ -2722,44 +2722,44 @@ msgstr ""
 "ನೀವು ಬಳಸಲು ಬಯಸುವ ಉಪಶೀರ್ಷಿಕೆಯ ಭಾಷೆ(ಅಲ್ಪವಿರಾಮದಿಂದ ಬೇರ್ಪಟ್ಟ ,ಎರಡು ಅಥವಾ ಮೂರು "
 "ಅಕ್ಷರಗಳ ದೇಶದ ಕೋಡ್,ಮಾಹಿತಿಗೆ ನೀವು 'any' ಬಳಸಬಹುದು)."
 
-#: src/libvlc-module.c:606
+#: src/libvlc-module.c:608
 msgid "Audio track ID"
 msgstr "ಹಾಡಿನ ಗುರುತು"
 
-#: src/libvlc-module.c:608
+#: src/libvlc-module.c:610
 msgid "Stream ID of the audio track to use."
 msgstr "ಬಳಸಬೇಕಾಗಿರುವ ಹಾಡಿನ ಸ್ಟ್ರೀಮ್ ಗುರುತು"
 
-#: src/libvlc-module.c:610
+#: src/libvlc-module.c:612
 msgid "Subtitle track ID"
 msgstr "ಉಪಶೀರ್ಷಿಕೆಯ ಗುರುತು"
 
-#: src/libvlc-module.c:612
+#: src/libvlc-module.c:614
 msgid "Stream ID of the subtitle track to use."
 msgstr "ಬಳಸಬೇಕಾಗಿರುವ ಉಪಶೀರ್ಷಿಕೆಯ ಸ್ಟ್ರೀಮ್ ಗುರುತು"
 
-#: src/libvlc-module.c:614 modules/codec/cc.c:57
+#: src/libvlc-module.c:616 modules/codec/cc.c:57
 msgid "Closed Captions decoder"
 msgstr "ವಿವರಣಾತ್ಮಕ ಉಪಶೀರ್ಷಿಕೆಗಳ ವಿಸಂಕೇತಕ"
 
-#: src/libvlc-module.c:615
+#: src/libvlc-module.c:617
 #, fuzzy
 msgid "Preferred closed captions decoder"
 msgstr "ವಿವರಣಾತ್ಮಕ ಉಪಶೀರ್ಷಿಕೆಗಳ ವಿಸಂಕೇತಕ"
 
-#: src/libvlc-module.c:617
+#: src/libvlc-module.c:619
 msgid "EIA/CEA 608"
 msgstr ""
 
-#: src/libvlc-module.c:617
+#: src/libvlc-module.c:619
 msgid "CEA 708"
 msgstr ""
 
-#: src/libvlc-module.c:619
+#: src/libvlc-module.c:621
 msgid "Preferred video resolution"
 msgstr "ಆದ್ಯತೆಯ ದೃಶ್ಯ ಸಾಂದ್ರತೆ"
 
-#: src/libvlc-module.c:621
+#: src/libvlc-module.c:623
 msgid ""
 "When several video formats are available, select one whose resolution is "
 "closest to (but not higher than) this setting, in number of lines. Use this "
@@ -2771,83 +2771,83 @@ msgstr ""
 "option if you don't have enough CPU power or network bandwidth to play "
 "higher resolutions."
 
-#: src/libvlc-module.c:627
+#: src/libvlc-module.c:629
 msgid "Best available"
 msgstr "ಉತ್ತಮವಾಗಿ ಲಭ್ಯವಿರುವ"
 
-#: src/libvlc-module.c:627
+#: src/libvlc-module.c:629
 msgid "Full HD (1080p)"
 msgstr "ಪೂರ್ಣ HD (1080p)"
 
-#: src/libvlc-module.c:627
+#: src/libvlc-module.c:629
 msgid "HD (720p)"
 msgstr "HD (720p)"
 
-#: src/libvlc-module.c:628
+#: src/libvlc-module.c:630
 msgid "Standard Definition (576 or 480 lines)"
 msgstr "ಗುಣಮಟ್ಟದ ಅರ್ಥ ನಿರೂಪಣೆ (576 or 480 ರೇಖೆಗಳು)"
 
-#: src/libvlc-module.c:629
+#: src/libvlc-module.c:631
 msgid "Low Definition (360 lines)"
 msgstr "ಕಡಿಮೆ ಅರ್ಥ ನಿರೂಪಣೆ(360 ರೇಖೆಗಳು)"
 
-#: src/libvlc-module.c:630
+#: src/libvlc-module.c:632
 msgid "Very Low Definition (240 lines)"
 msgstr "ಅತ್ಯಂತ ಕಡಿಮೆ ಅರ್ಥ ನಿರೂಪಣೆ(240 ರೇಖೆಗಳು)"
 
-#: src/libvlc-module.c:633
+#: src/libvlc-module.c:635
 msgid "Input repetitions"
 msgstr "Input ಪುನರಾವರ್ತನೆಗಳು"
 
-#: src/libvlc-module.c:635
+#: src/libvlc-module.c:637
 msgid "Number of time the same input will be repeated"
 msgstr "ಸಮಯ ಅದೇ ಸಂಖ್ಯೆ input ಪುನರಾವರ್ತಿಸುವಂತೆ ಮಾಡುತ್ತದೆ"
 
-#: src/libvlc-module.c:637 modules/gui/macosx/VLCOpenWindowController.m:159
+#: src/libvlc-module.c:639 modules/gui/macosx/VLCOpenWindowController.m:159
 msgid "Start time"
 msgstr "ಆರಂಭದ ಸಮಯ"
 
-#: src/libvlc-module.c:639
+#: src/libvlc-module.c:641
 msgid "The stream will start at this position (in seconds)."
 msgstr "ಈ ಸ್ಥಾನದಲ್ಲಿ ಸ್ಟ್ರೀಮ್ ಪ್ರಾರಂಭವಾಗುತ್ತದೆ (ಸೆಕೆಂಡುಗಳಲ್ಲಿ)."
 
-#: src/libvlc-module.c:641 modules/gui/macosx/VLCOpenWindowController.m:161
+#: src/libvlc-module.c:643 modules/gui/macosx/VLCOpenWindowController.m:161
 msgid "Stop time"
 msgstr "ಕೊನೆಯಾಗುವ ಸಮಯ"
 
-#: src/libvlc-module.c:643
+#: src/libvlc-module.c:645
 msgid "The stream will stop at this position (in seconds)."
 msgstr "ಈ ಸ್ಥಾನದಲ್ಲಿ ಸ್ಟ್ರೀಮ್ ನಿಲ್ಲುತ್ತದೆ(ಸೆಕೆಂಡುಗಳಲ್ಲಿ)."
 
-#: src/libvlc-module.c:645
+#: src/libvlc-module.c:647
 msgid "Run time"
 msgstr "ಸಮಯವನ್ನು ಚಲಾಯಿಸಿ"
 
-#: src/libvlc-module.c:647
+#: src/libvlc-module.c:649
 msgid "The stream will run this duration (in seconds)."
 msgstr "ಈ ಅವಧಿಯಲ್ಲಿ ಸ್ಟ್ರೀಮ್ ನಡೆಸಲಾಗುತ್ತದೆ(ಸೆಕೆಂಡುಗಳಲ್ಲಿ)."
 
-#: src/libvlc-module.c:649
+#: src/libvlc-module.c:651
 msgid "Fast seek"
 msgstr "ವೇಗವಾಗಿ ಪಡೆ"
 
-#: src/libvlc-module.c:651
+#: src/libvlc-module.c:653
 msgid "Favor speed over precision while seeking"
 msgstr "ಬಯಸುವ ಸಂದರ್ಭದಲ್ಲಿ ನಿಖರತೆಗಿಂತ ವೇಗದ ಮೇಲೆ ಒಲವು ತೊರಿ"
 
-#: src/libvlc-module.c:653
+#: src/libvlc-module.c:655
 msgid "Playback speed"
 msgstr "ಪ್ಲೇಬ್ಯಾಕ್ ವೇಗ"
 
-#: src/libvlc-module.c:655
+#: src/libvlc-module.c:657
 msgid "This defines the playback speed (nominal speed is 1.0)."
 msgstr "ಇದು ಪ್ಲೇಬ್ಯಾಕ್ ವೇಗವನ್ನು ವ್ಯಾಖ್ಯಾನಿಸುತ್ತದೆ(ಅತ್ಯಲ್ಪ ವೇಗ 1.0 ಆಗಿದೆ)."
 
-#: src/libvlc-module.c:657
+#: src/libvlc-module.c:659
 msgid "Input list"
 msgstr "Input ಪಟ್ಟಿ"
 
-#: src/libvlc-module.c:659
+#: src/libvlc-module.c:661
 msgid ""
 "You can give a comma-separated list of inputs that will be concatenated "
 "together after the normal one."
@@ -2855,11 +2855,11 @@ msgstr ""
 "You can give a comma-separated list of inputs that will be concatenated "
 "together after the normal one."
 
-#: src/libvlc-module.c:662
+#: src/libvlc-module.c:664
 msgid "Input slave (experimental)"
 msgstr "Input ಗುಲಾಮ(ಪ್ರಾಯೋಗಿಕ)"
 
-#: src/libvlc-module.c:664
+#: src/libvlc-module.c:666
 msgid ""
 "This allows you to play from several inputs at the same time. This feature "
 "is experimental, not all formats are supported. Use a '#' separated list of "
@@ -2869,11 +2869,11 @@ msgstr ""
 "ವೈಶಿಷ್ಟ್ಯವು ಪ್ರಾಯೋಗಿಕವಾಗಿದೆ,ಎಲ್ಲಾ ಸ್ವರೂಪಗಳನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ.ಒಂದು '#' "
 "ಪ್ರತ್ಯೇಕಗೊಂಡ input ಪಟ್ಟಿಯನ್ನು ಬಳಸಿ."
 
-#: src/libvlc-module.c:668
+#: src/libvlc-module.c:670
 msgid "Bookmarks list for a stream"
 msgstr "ಒಂದು ಸ್ಟ್ರೀಮ್ ಗೆ ಅಚ್ಚುಮೆಚ್ಚುಗಳ ಪಟ್ಟಿ"
 
-#: src/libvlc-module.c:670
+#: src/libvlc-module.c:672
 msgid ""
 "You can manually give a list of bookmarks for a stream in the form "
 "\"{name=bookmark-name,time=optional-time-offset,bytes=optional-byte-offset},"
@@ -2883,21 +2883,21 @@ msgstr ""
 "\"{name=bookmark-name,time=optional-time-offset,bytes=optional-byte-offset},"
 "{...}\""
 
-#: src/libvlc-module.c:674
+#: src/libvlc-module.c:676
 #, fuzzy
 msgid "Record directory"
 msgstr "ಮೂಲದ ಕೋಶ"
 
-#: src/libvlc-module.c:676
+#: src/libvlc-module.c:678
 #, fuzzy
 msgid "Directory where the records will be stored"
 msgstr "ದಾಖಲೆಗಳನ್ನು ಸಂಗ್ರಹಿಸಲಾದ ಕೋಶದ ಅಥವಾ ಕಡತದ ಹೆಸರು"
 
-#: src/libvlc-module.c:678
+#: src/libvlc-module.c:680
 msgid "Prefer native stream recording"
 msgstr "ಸ್ಥಳೀಯ ಸ್ಟ್ರೀಮ್ ರೆಕಾರ್ಡಿಂಗ್ ಆದ್ಯತೆ ನೀಡಿ"
 
-#: src/libvlc-module.c:680
+#: src/libvlc-module.c:682
 msgid ""
 "When possible, the input stream will be recorded instead of using the stream "
 "output module"
@@ -2905,19 +2905,19 @@ msgstr ""
 "When possible, the input stream will be recorded instead of using the stream "
 "output module"
 
-#: src/libvlc-module.c:683
+#: src/libvlc-module.c:685
 msgid "Timeshift directory"
 msgstr "ಸಮಯವರ್ಗಾವಣೆಯ ಕೋಶ"
 
-#: src/libvlc-module.c:685
+#: src/libvlc-module.c:687
 msgid "Directory used to store the timeshift temporary files."
 msgstr "ಸಮಯವರ್ಗಾವಣೆಯನ್ನು ತಾತ್ಕಾಲಿಕ ಕಡತಗಳನ್ನು ಸಂಗ್ರಹಿಸಲು ಬಳಸಲಾಗುವ ಕೋಶ."
 
-#: src/libvlc-module.c:687
+#: src/libvlc-module.c:689
 msgid "Timeshift granularity"
 msgstr "ಸಮಯವರ್ಗಾವಣೆಯ ರಚನೆ"
 
-#: src/libvlc-module.c:689
+#: src/libvlc-module.c:691
 msgid ""
 "This is the maximum size in bytes of the temporary files that will be used "
 "to store the timeshifted streams."
@@ -2925,11 +2925,11 @@ msgstr ""
 "This is the maximum size in bytes of the temporary files that will be used "
 "to store the timeshifted streams."
 
-#: src/libvlc-module.c:692
+#: src/libvlc-module.c:694
 msgid "Change title according to current media"
 msgstr "ಪ್ರಸ್ತುತ ಮಾಧ್ಯಮದ ಪ್ರಕಾರ ಶೀರ್ಷಿಕೆಯನ್ನು ಬದಲಾಯಿಸಿ"
 
-#: src/libvlc-module.c:693
+#: src/libvlc-module.c:695
 msgid ""
 "This option allows you to set the title according to what's being played<br>"
 "$a: Artist<br>$b: Album<br>$c: Copyright<br>$t: Title<br>$g: Genre<br>$n: "
@@ -2942,16 +2942,16 @@ msgstr ""
 "br&gt;$A: Date&lt;br&gt;$D: Duration&lt;br&gt;$Z: \"Now playing\" (Fall back "
 "on Title - Artist)"
 
-#: src/libvlc-module.c:698
+#: src/libvlc-module.c:700
 #, fuzzy
 msgid "Disable lua"
 msgstr "ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:699
+#: src/libvlc-module.c:701
 msgid "Disable all lua plugins"
 msgstr ""
 
-#: src/libvlc-module.c:703
+#: src/libvlc-module.c:705
 msgid ""
 "These options allow you to modify the behavior of the subpictures subsystem. "
 "You can for example enable subpictures sources (logo, etc.). Enable these "
@@ -2963,11 +2963,11 @@ msgstr ""
 "filters here and configure them in the \"subsources filters\" modules "
 "section. You can also set many miscellaneous subpictures options."
 
-#: src/libvlc-module.c:709
+#: src/libvlc-module.c:711
 msgid "Force subtitle position"
 msgstr "ಉಪಶೀರ್ಷಿಕೆಯ ಸ್ಥಾನವನ್ನು ಬಲವಂತಪಡಿಸು"
 
-#: src/libvlc-module.c:711
+#: src/libvlc-module.c:713
 msgid ""
 "You can use this option to place the subtitles under the movie, instead of "
 "over the movie. Try several positions."
@@ -2975,30 +2975,30 @@ msgstr ""
 "ನೀವು ಆಯ್ಕೆಯನ್ನು ಬಳಸಿ ಉಪಶೀರ್ಷಿಕೆಗಳನ್ನುಚಿತ್ರದ ಮೇಲಿನ ಬದಲಿಗೆ ಚಿತ್ರದ ಅಡಿಯಲ್ಲಿ "
 "ಇರಿಸಬಹುದು,ಹಲವಾರು ಸ್ಥಾನಗಳನ್ನು ಪ್ರಯತ್ನಿಸಿ."
 
-#: src/libvlc-module.c:714
+#: src/libvlc-module.c:716
 #, fuzzy
 msgid "Subtitles text scaling factor"
 msgstr "ಉಪಶೀರ್ಷಿಕೆ ಪಠ್ಯದ ಸಂಕೇತಿಕರಣ"
 
-#: src/libvlc-module.c:715
+#: src/libvlc-module.c:717
 #, fuzzy
 msgid "Set value to alter subtitles size where possible"
 msgstr "ಉಪಶೀರ್ಷಿಕೆಯ ಕಡತವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ"
 
-#: src/libvlc-module.c:717
+#: src/libvlc-module.c:719
 msgid "Enable sub-pictures"
 msgstr "ಉಪ ಚಿತ್ರಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:719
+#: src/libvlc-module.c:721
 msgid "You can completely disable the sub-picture processing."
 msgstr "ನೀವು ಸಂಪೂರ್ಣವಾಗಿ ಉಪ ಚಿತ್ರದ ಪ್ರಕ್ರಿಯೆಯನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಬಹುದು."
 
-#: src/libvlc-module.c:721 src/libvlc-module.c:1669 src/text/iso-639_def.h:145
+#: src/libvlc-module.c:723 src/libvlc-module.c:1671 src/text/iso-639_def.h:145
 #: modules/gui/macosx/VLCSimplePrefsController.m:338
 msgid "On Screen Display"
 msgstr "ತೆರೆಯ ಪ್ರದರ್ಶನ ಮೇಲೆ"
 
-#: src/libvlc-module.c:723
+#: src/libvlc-module.c:725
 msgid ""
 "VLC can display messages on the video. This is called OSD (On Screen "
 "Display)."
@@ -3006,11 +3006,11 @@ msgstr ""
 "VLC ಯು ವೀಡಿಯೊದ ಮೇಲೆ ಸಂದೇಶಗಳನ್ನು ತೋರಿಸಬಲ್ಲದು.ಇದನ್ನು OSD ಕರೆಯಲಾಗುತ್ತದೆ(ತೆರೆಯ "
 "ಮೇಲೆ ಪ್ರದರ್ಶನ)"
 
-#: src/libvlc-module.c:726
+#: src/libvlc-module.c:728
 msgid "Text rendering module"
 msgstr "ಪಠ್ಯ ಮೂಡಿಸುವ ಘಟಕ"
 
-#: src/libvlc-module.c:728
+#: src/libvlc-module.c:730
 msgid ""
 "VLC normally uses Freetype for rendering, but this allows you to use svg for "
 "instance."
@@ -3018,11 +3018,11 @@ msgstr ""
 "ಸಾಮಾನ್ಯವಾಗಿ VLC ಯು ಮೂಡಿಸುವುದಕ್ಕಾಗಿ Freetype ಅನ್ನು ಬಳಸುತ್ತದೆ,ಆದರೆ ಇದು ನಿಮಗೆ SVG "
 "ಅನ್ನು ಬಳಸಲು ಅನುಮತಿಸುತ್ತದೆ."
 
-#: src/libvlc-module.c:730
+#: src/libvlc-module.c:732
 msgid "Subpictures source module"
 msgstr "ಉಪ ಚಿತ್ರಗಳ ಮೂಲ ಘಟಕ"
 
-#: src/libvlc-module.c:732
+#: src/libvlc-module.c:734
 msgid ""
 "This adds so-called \"subpicture sources\". These filters overlay some "
 "images or text over the video (like a logo, arbitrary text, ...)."
@@ -3030,11 +3030,11 @@ msgstr ""
 "This adds so-called \"subpicture sources\". These filters overlay some "
 "images or text over the video (like a logo, arbitrary text, ...)."
 
-#: src/libvlc-module.c:735
+#: src/libvlc-module.c:737
 msgid "Subpictures filter module"
 msgstr "ಉಪ ಚಿತ್ರಗಳ ಶೋಧಕಗಳ ಘಟಕ"
 
-#: src/libvlc-module.c:737
+#: src/libvlc-module.c:739
 msgid ""
 "This adds so-called \"subpicture filters\". These filter subpictures created "
 "by subtitle decoders or other subpictures sources."
@@ -3042,11 +3042,11 @@ msgstr ""
 "This adds so-called \"subpicture filters\". These filter subpictures created "
 "by subtitle decoders or other subpictures sources."
 
-#: src/libvlc-module.c:740
+#: src/libvlc-module.c:742
 msgid "Autodetect subtitle files"
 msgstr "ಉಪಶೀರ್ಷಿಕೆ ಕಡತಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಪತ್ತೆಮಾಡು "
 
-#: src/libvlc-module.c:742
+#: src/libvlc-module.c:744
 msgid ""
 "Automatically detect a subtitle file, if no subtitle filename is specified "
 "(based on the filename of the movie)."
@@ -3054,11 +3054,11 @@ msgstr ""
 "Automatically detect a subtitle file, if no subtitle filename is specified "
 "(based on the filename of the movie)."
 
-#: src/libvlc-module.c:745
+#: src/libvlc-module.c:747
 msgid "Subtitle autodetection fuzziness"
 msgstr "ಉಪಶೀರ್ಷಿಕೆ ಸ್ವಯಂಚಾಲಿತ ಪತ್ತೆ ಅಸ್ಪಷ್ಟವಾಗಿದ್ದು"
 
-#: src/libvlc-module.c:747
+#: src/libvlc-module.c:749
 msgid ""
 "This determines how fuzzy subtitle and movie filename matching will be. "
 "Options are:\n"
@@ -3076,11 +3076,11 @@ msgstr ""
 "3 = ಚಿತ್ರದ ಹೆಸರ ಜೊತೆಗೆ  ಉಪಶೀರ್ಷಿಕೆಯ ಕಡತದ ಹೆಚ್ಚುವರಿ ಅಕ್ಷರಗಳನ್ನು ಹೊಂದಿಕೆ \n"
 "   4 =ನಿಖರವಾಗಿ ಚಿತ್ರದ ಹೆಸರು ಸರಿಹೊಂದುವ ಉಪಶೀರ್ಷಿಕೆಯ ಕಡತ"
 
-#: src/libvlc-module.c:755
+#: src/libvlc-module.c:757
 msgid "Subtitle autodetection paths"
 msgstr "ಉಪಶೀರ್ಷಿಕೆ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಪತ್ತೆಹಚ್ಚಲು ಪಥಗಳು"
 
-#: src/libvlc-module.c:757
+#: src/libvlc-module.c:759
 msgid ""
 "Look for a subtitle file in those paths too, if your subtitle file was not "
 "found in the current directory."
@@ -3088,11 +3088,11 @@ msgstr ""
 "Look for a subtitle file in those paths too, if your subtitle file was not "
 "found in the current directory."
 
-#: src/libvlc-module.c:760
+#: src/libvlc-module.c:762
 msgid "Use subtitle file"
 msgstr "ಉಪಶೀರ್ಷಿಕೆಯ ಕಡತವನ್ನು ಬಳಸು"
 
-#: src/libvlc-module.c:762
+#: src/libvlc-module.c:764
 msgid ""
 "Load this subtitle file. To be used when autodetect cannot detect your "
 "subtitle file."
@@ -3100,19 +3100,19 @@ msgstr ""
 "ಈ ಉಪಶೀರ್ಷಿಕೆ ಕಡತವನ್ನು ಲೋಡ್ ಮಾಡಿ. ಸ್ವಯಂಪತ್ತೆಹಚ್ಚುವಿಕೆ ನಿಮ್ಮ ಉಪಶೀರ್ಷಿಕೆ ಕಡತವನ್ನು "
 "ಪತ್ತೆ ಮಾಡಲು ವಿಫಲವಾದಾಗ."
 
-#: src/libvlc-module.c:766
+#: src/libvlc-module.c:768
 msgid "DVD device"
 msgstr "DVD ಸಾಧನ"
 
-#: src/libvlc-module.c:767
+#: src/libvlc-module.c:769
 msgid "VCD device"
 msgstr "VCD ಸಾಧನ"
 
-#: src/libvlc-module.c:768 modules/access/cdda.c:701
+#: src/libvlc-module.c:770 modules/access/cdda.c:701
 msgid "Audio CD device"
 msgstr "ಧ್ವನಿ CD ಸಾಧನ"
 
-#: src/libvlc-module.c:772
+#: src/libvlc-module.c:774
 msgid ""
 "This is the default DVD drive (or file) to use. Don't forget the colon after "
 "the drive letter (e.g. D:)"
@@ -3120,7 +3120,7 @@ msgstr ""
 "ಈ ಬಳಸಲು ಪೂರ್ವನಿಯೋಜಿತ DVD ಡ್ರೈವ್ (ಅಥವಾ ಕಡತ) ಆಗಿದೆ. ಡ್ರೈವ್ ಅಕ್ಷರ ನಂತರ ಅಪೂರ್ಣವಿರಾಮ "
 "ಚಿಹ್ನೆಯನ್ನು ಮರೆಯಬೇಡಿ(ಉದಾಹರಣೆ:D:)"
 
-#: src/libvlc-module.c:775
+#: src/libvlc-module.c:777
 msgid ""
 "This is the default VCD drive (or file) to use. Don't forget the colon after "
 "the drive letter (e.g. D:)"
@@ -3128,7 +3128,7 @@ msgstr ""
 "ಈ ಬಳಸಲು ಪೂರ್ವನಿಯೋಜಿತ DVD ಡ್ರೈವ್ (ಅಥವಾ ಕಡತ) ಆಗಿದೆ. ಡ್ರೈವ್ ಅಕ್ಷರ ನಂತರ ಅಪೂರ್ಣವಿರಾಮ "
 "ಚಿಹ್ನೆಯನ್ನು ಮರೆಯಬೇಡಿ(ಉದಾಹರಣೆ:D:)"
 
-#: src/libvlc-module.c:778 modules/access/cdda.c:704
+#: src/libvlc-module.c:780 modules/access/cdda.c:704
 msgid ""
 "This is the default Audio CD drive (or file) to use. Don't forget the colon "
 "after the drive letter (e.g. D:)"
@@ -3136,32 +3136,32 @@ msgstr ""
 "ಈ ಬಳಸಲು ಪೂರ್ವನಿಯೋಜಿತ CD ಡ್ರೈವ್ (ಅಥವಾ ಕಡತ) ಆಗಿದೆ. ಡ್ರೈವ್ ಅಕ್ಷರ ನಂತರ ಅಪೂರ್ಣವಿರಾಮ "
 "ಚಿಹ್ನೆಯನ್ನು ಮರೆಯಬೇಡಿ(ಉದಾಹರಣೆ:D:)"
 
-#: src/libvlc-module.c:785
+#: src/libvlc-module.c:787
 msgid "This is the default DVD device to use."
 msgstr "ಇದು ಉಪಯೋಗಿಸಲು ಪೂರ್ವನಿಯೋಜಿತ DVD ಸಾಧನವಾಗಿದೆ."
 
-#: src/libvlc-module.c:787
+#: src/libvlc-module.c:789
 msgid "This is the default VCD device to use."
 msgstr "ಇದು ಉಪಯೋಗಿಸಲು ಪೂರ್ವನಿಯೋಜಿತ VCD ಸಾಧನವಾಗಿದೆ."
 
-#: src/libvlc-module.c:789 modules/access/cdda.c:709
+#: src/libvlc-module.c:791 modules/access/cdda.c:709
 msgid "This is the default Audio CD device to use."
 msgstr "ಇದು ಉಪಯೋಗಿಸಲು ಪೂರ್ವನಿಯೋಜಿತ ಧ್ವನಿ CD ಸಾಧನವಾಗಿದೆ."
 
-#: src/libvlc-module.c:803
+#: src/libvlc-module.c:805
 msgid "TCP connection timeout"
 msgstr "TCP ಸಂಪರ್ಕದ ಅವಧಿಮೀರಿದೆ"
 
-#: src/libvlc-module.c:805
+#: src/libvlc-module.c:807
 #, fuzzy
 msgid "Default TCP connection timeout (in milliseconds)."
 msgstr "ಪೂರ್ವನಿಯೋಜಿತ TCP ಸಂಪರ್ಕದ ಅವಧಿಮೀರಿದೆ(ಮಿಲಿಸೆಕೆಂಡುಗಳಲ್ಲಿ)."
 
-#: src/libvlc-module.c:807
+#: src/libvlc-module.c:809
 msgid "HTTP server address"
 msgstr "server ಸರ್ವರ್ ವಿಳಾಸ"
 
-#: src/libvlc-module.c:809
+#: src/libvlc-module.c:811
 msgid ""
 "By default, the server will listen on any local IP address. Specify an IP "
 "address (e.g. ::1 or 127.0.0.1) or a host name (e.g. localhost) to restrict "
@@ -3171,11 +3171,11 @@ msgstr ""
 "address (e.g. ::1 or 127.0.0.1) or a host name (e.g. localhost) to restrict "
 "them to a specific network interface."
 
-#: src/libvlc-module.c:813
+#: src/libvlc-module.c:815
 msgid "RTSP server address"
 msgstr "RTSP ಸರ್ವರ್ ವಿಳಾಸ"
 
-#: src/libvlc-module.c:815
+#: src/libvlc-module.c:817
 msgid ""
 "This defines the address the RTSP server will listen on, along with the base "
 "path of the RTSP VOD media. Syntax is address/path. By default, the server "
@@ -3189,11 +3189,11 @@ msgstr ""
 "127.0.0.1) or a host name (e.g. localhost) to restrict them to a specific "
 "network interface."
 
-#: src/libvlc-module.c:821
+#: src/libvlc-module.c:823
 msgid "HTTP server port"
 msgstr "HTTP ಸರ್ವರ್ ಸಂಪರ್ಕಸ್ಥಾನ"
 
-#: src/libvlc-module.c:823
+#: src/libvlc-module.c:825
 msgid ""
 "The HTTP server will listen on this TCP port. The standard HTTP port number "
 "is 80. However allocation of port numbers below 1025 is usually restricted "
@@ -3203,11 +3203,11 @@ msgstr ""
 "ಆಗಿದೆ.ಸಾಮಾನ್ಯವಾಗಿ 1025 ಕಿಂತ ಕೆಳಗಿನ ಸಂಪರ್ಕಸ್ಥಾನ ಸಂಖ್ಯೆಗಳನ್ನುಕಾರ್ಯಚರಣಾ ವ್ಯವಸ್ಥೆ "
 "ನಿರ್ಬಂಧಿಸಸುತ್ತದೆ."
 
-#: src/libvlc-module.c:828
+#: src/libvlc-module.c:830
 msgid "HTTPS server port"
 msgstr "HTTPS ಸರ್ವರ್ ಸಂಪರ್ಕಸ್ಥಾನ"
 
-#: src/libvlc-module.c:830
+#: src/libvlc-module.c:832
 msgid ""
 "The HTTPS server will listen on this TCP port. The standard HTTPS port "
 "number is 443. However allocation of port numbers below 1025 is usually "
@@ -3217,11 +3217,11 @@ msgstr ""
 "ಆಗಿದೆ.ಸಾಮಾನ್ಯವಾಗಿ 1025 ಕಿಂತ ಕೆಳಗಿನ ಸಂಪರ್ಕಸ್ಥಾನ ಸಂಖ್ಯೆಗಳನ್ನುಕಾರ್ಯಚರಣಾ ವ್ಯವಸ್ಥೆ "
 "ನಿರ್ಬಂಧಿಸಸುತ್ತದೆ."
 
-#: src/libvlc-module.c:835
+#: src/libvlc-module.c:837
 msgid "RTSP server port"
 msgstr "RTSP ಸರ್ವರ್ ಸಂಪರ್ಕಸ್ಥಾನ"
 
-#: src/libvlc-module.c:837
+#: src/libvlc-module.c:839
 msgid ""
 "The RTSP server will listen on this TCP port. The standard RTSP port number "
 "is 554. However allocation of port numbers below 1025 is usually restricted "
@@ -3231,30 +3231,30 @@ msgstr ""
 "ಆಗಿದೆ.ಸಾಮಾನ್ಯವಾಗಿ 1025 ಕಿಂತ ಕೆಳಗಿನ ಸಂಪರ್ಕಸ್ಥಾನ ಸಂಖ್ಯೆಗಳನ್ನುಕಾರ್ಯಚರಣಾ ವ್ಯವಸ್ಥೆ "
 "ನಿರ್ಬಂಧಿಸಸುತ್ತದೆ."
 
-#: src/libvlc-module.c:842
+#: src/libvlc-module.c:844
 msgid "HTTP/TLS server certificate"
 msgstr "HTTP/TLS ಸರ್ವರ್ ಪ್ರಮಾಣಪತ್ರ"
 
-#: src/libvlc-module.c:844
+#: src/libvlc-module.c:846
 #, fuzzy
 msgid ""
 "This X.509 certicate file (PEM format) is used for server-side TLS. On OS X, "
 "the string is used as a label to search the certificate in the keychain."
 msgstr "ಈ X.509 ಪ್ರಮಾಣಪತ್ರ ಕಡತವನ್ನು (PEM ರೂಪದಲ್ಲಿ) ಸರ್ವರ್ ಪರ TLS ಗೆ ಬಳಸಲಾಗುತ್ತದೆ."
 
-#: src/libvlc-module.c:847
+#: src/libvlc-module.c:849
 msgid "HTTP/TLS server private key"
 msgstr "HTTP/TLS ಸರ್ವರ್ ಖಾಸಗಿ ಕೀಲಿ"
 
-#: src/libvlc-module.c:849
+#: src/libvlc-module.c:851
 msgid "This private key file (PEM format) is used for server-side TLS."
 msgstr "ಈ ಖಾಸಗಿ ಕೀಲಿ ಕಡತವನ್ನು (PEM ರೂಪದಲ್ಲಿ) ಸರ್ವರ್ ಪರ TLS ಗೆ ಬಳಸಲಾಗುತ್ತದೆ."
 
-#: src/libvlc-module.c:851
+#: src/libvlc-module.c:853
 msgid "SOCKS server"
 msgstr "SOCKS ಸರ್ವರ್"
 
-#: src/libvlc-module.c:853
+#: src/libvlc-module.c:855
 msgid ""
 "SOCKS proxy server to use. This must be of the form address:port. It will be "
 "used for all TCP connections"
@@ -3262,97 +3262,97 @@ msgstr ""
 "ಬಳಸುವ ಬದಲಿ SOCKS ಸರ್ವರ್.ಈ ರಚನೆಯ ವಿಳಾಸ ಇರಬೇಕು:ಸಂಪರ್ಕಸ್ಥಾನ.ಇದನ್ನು ಎಲ್ಲಾ TCP "
 "ಸಂಪರ್ಕಗಳಿಗೆ ಬಳಸಲಾಗುತ್ತದೆ"
 
-#: src/libvlc-module.c:856
+#: src/libvlc-module.c:858
 msgid "SOCKS user name"
 msgstr "SOCKS ಬಳಕೆದಾರರ ಹೆಸರು"
 
-#: src/libvlc-module.c:858
+#: src/libvlc-module.c:860
 msgid "User name to be used for connection to the SOCKS proxy."
 msgstr "ಬಳಕೆದಾರ ಹೆಸರು SOCKS ಪ್ರಾಕ್ಸಿಯ ಸಂಪರ್ಕಕ್ಕಾಗಿ ಬಳಸಲಾಗುತ್ತದೆ."
 
-#: src/libvlc-module.c:860
+#: src/libvlc-module.c:862
 msgid "SOCKS password"
 msgstr "SOCKS ಗುಪ್ತಪದ"
 
-#: src/libvlc-module.c:862
+#: src/libvlc-module.c:864
 msgid "Password to be used for connection to the SOCKS proxy."
 msgstr "SOCKS ಪ್ರಾಕ್ಸಿಯ ಸಂಪರ್ಕಕ್ಕಾಗಿ ಬಳಸಬೇಕಾದ ಗುಪ್ತಪದ."
 
-#: src/libvlc-module.c:864
+#: src/libvlc-module.c:866
 msgid "Title metadata"
 msgstr "ಶೀರ್ಷಿಕೆಯನ್ನು ಪರ್ಯಾಯದಶಮಾಂಶ"
 
-#: src/libvlc-module.c:866
+#: src/libvlc-module.c:868
 msgid "Allows you to specify a \"title\" metadata for an input."
 msgstr ""
 "ನಿಮಗೆ ಒಂದು input ಗಾಗಿ \"ಶೀರ್ಷಿಕೆ\"  ಪರ್ಯಾಯದಶಮಾಂಶವನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಲು "
 "ಅನುಮತಿಸುತ್ತದೆ"
 
-#: src/libvlc-module.c:868
+#: src/libvlc-module.c:870
 msgid "Author metadata"
 msgstr "ಲೇಖಕರ ಪರ್ಯಾಯದಶಮಾಂಶ"
 
-#: src/libvlc-module.c:870
+#: src/libvlc-module.c:872
 msgid "Allows you to specify an \"author\" metadata for an input."
 msgstr ""
 "ನಿಮಗೆ ಒಂದು input ಗಾಗಿ \"ಲೇಖಕ\"  ಪರ್ಯಾಯದಶಮಾಂಶವನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಲು ಅನುಮತಿಸುತ್ತದೆ"
 
-#: src/libvlc-module.c:872
+#: src/libvlc-module.c:874
 msgid "Artist metadata"
 msgstr "ಕಲಾವಿದನ ಪರ್ಯಾಯದಶಮಾಂಶ"
 
-#: src/libvlc-module.c:874
+#: src/libvlc-module.c:876
 msgid "Allows you to specify an \"artist\" metadata for an input."
 msgstr ""
 "ನಿಮಗೆ ಒಂದು input ಗಾಗಿ \"ಕಲಾವಿದ\"  ಪರ್ಯಾಯದಶಮಾಂಶವನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಲು ಅನುಮತಿಸುತ್ತದೆ"
 
-#: src/libvlc-module.c:876
+#: src/libvlc-module.c:878
 msgid "Genre metadata"
 msgstr "ಪ್ರಕಾರದ ಪರ್ಯಾಯದಶಮಾಂಶ"
 
-#: src/libvlc-module.c:878
+#: src/libvlc-module.c:880
 msgid "Allows you to specify a \"genre\" metadata for an input."
 msgstr ""
 "ನಿಮಗೆ ಒಂದು input ಗಾಗಿ \"ಪ್ರಕಾರ\"  ಪರ್ಯಾಯದಶಮಾಂಶವನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಲು ಅನುಮತಿಸುತ್ತದೆ"
 
-#: src/libvlc-module.c:880
+#: src/libvlc-module.c:882
 msgid "Copyright metadata"
 msgstr "ಹಕ್ಕುಸ್ವಾಮ್ಯದ ಪರ್ಯಾಯದಶಮಾಂಶ"
 
-#: src/libvlc-module.c:882
+#: src/libvlc-module.c:884
 msgid "Allows you to specify a \"copyright\" metadata for an input."
 msgstr ""
 "ನಿಮಗೆ ಒಂದು input ಗಾಗಿ \"ಹಕ್ಕುಸ್ವಾಮ್ಯ\"  ಪರ್ಯಾಯದಶಮಾಂಶವನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಲು "
 "ಅನುಮತಿಸುತ್ತದೆ"
 
-#: src/libvlc-module.c:884
+#: src/libvlc-module.c:886
 msgid "Description metadata"
 msgstr "ವಿವರಣೆಯ ಪರ್ಯಾಯದಶಮಾಂಶ"
 
-#: src/libvlc-module.c:886
+#: src/libvlc-module.c:888
 msgid "Allows you to specify a \"description\" metadata for an input."
 msgstr ""
 "ನಿಮಗೆ ಒಂದು input ಗಾಗಿ \"ವಿವರಣೆ\"  ಪರ್ಯಾಯದಶಮಾಂಶವನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಲು ಅನುಮತಿಸುತ್ತದೆ"
 
-#: src/libvlc-module.c:888
+#: src/libvlc-module.c:890
 msgid "Date metadata"
 msgstr "ದಿನಾಂಕದ  ಪರ್ಯಾಯದಶಮಾಂಶ"
 
-#: src/libvlc-module.c:890
+#: src/libvlc-module.c:892
 msgid "Allows you to specify a \"date\" metadata for an input."
 msgstr ""
 "ನಿಮಗೆ ಒಂದು input ಗಾಗಿ \"ದಿನಾಂಕ\"  ಪರ್ಯಾಯದಶಮಾಂಶವನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಲು ಅನುಮತಿಸುತ್ತದೆ"
 
-#: src/libvlc-module.c:892
+#: src/libvlc-module.c:894
 msgid "URL metadata"
 msgstr "URL ಪರ್ಯಾಯದಶಮಾಂಶ"
 
-#: src/libvlc-module.c:894
+#: src/libvlc-module.c:896
 msgid "Allows you to specify a \"url\" metadata for an input."
 msgstr ""
 "ನಿಮಗೆ ಒಂದು input ಗಾಗಿ \"url\"  ಪರ್ಯಾಯದಶಮಾಂಶವನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಲು ಅನುಮತಿಸುತ್ತದೆ"
 
-#: src/libvlc-module.c:898
+#: src/libvlc-module.c:900
 msgid ""
 "This option can be used to alter the way VLC selects its codecs "
 "(decompression methods). Only advanced users should alter this option as it "
@@ -3362,11 +3362,11 @@ msgstr ""
 "(decompression methods). Only advanced users should alter this option as it "
 "can break playback of all your streams."
 
-#: src/libvlc-module.c:902
+#: src/libvlc-module.c:904
 msgid "Preferred decoders list"
 msgstr "ಇಷ್ಟದ ವಿಸಂಕೇತಕಗಳ ಪಟ್ಟಿ"
 
-#: src/libvlc-module.c:904
+#: src/libvlc-module.c:906
 msgid ""
 "List of codecs that VLC will use in priority. For instance, 'dummy,a52' will "
 "try the dummy and a52 codecs before trying the other ones. Only advanced "
@@ -3376,16 +3376,16 @@ msgstr ""
 "try the dummy and a52 codecs before trying the other ones. Only advanced "
 "users should alter this option as it can break playback of all your streams."
 
-#: src/libvlc-module.c:909
+#: src/libvlc-module.c:911
 msgid "Preferred encoders list"
 msgstr "ಇಷ್ಟದ ಸಂಕೇತಕಗಳ ಪಟ್ಟಿ"
 
-#: src/libvlc-module.c:911
+#: src/libvlc-module.c:913
 msgid ""
 "This allows you to select a list of encoders that VLC will use in priority."
 msgstr "ನೀವು VLC ಆದ್ಯತೆಯಲ್ಲಿ ಬಳಸುವ ಸಂಕೇತಕಗಳ ಪಟ್ಟಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಲುಅನುಮತಿಸುತ್ತದೆ."
 
-#: src/libvlc-module.c:920
+#: src/libvlc-module.c:922
 msgid ""
 "These options allow you to set default global options for the stream output "
 "subsystem."
@@ -3393,11 +3393,11 @@ msgstr ""
 "ಈ ಆಯ್ಕೆಗಳು ಸ್ಟ್ರೀಮ್ ಉತ್ಪಾದನೆಯ ಉಪವ್ಯವಸ್ಥೆಯು ಪೂರ್ವನಿಯೋಜಿತ ಜಾಗತಿಕ ಆಯ್ಕೆಗಳನ್ನು "
 "ಹೊಂದಿಸಲು ಅನುಮತಿಸುತ್ತದೆ."
 
-#: src/libvlc-module.c:923
+#: src/libvlc-module.c:925
 msgid "Default stream output chain"
 msgstr "ಪೂರ್ವನಿಯೋಜಿತ ಸ್ಟ್ರೀಮ್ ಉತ್ಪಾದನೆಯ ಸರಪಳಿ"
 
-#: src/libvlc-module.c:925
+#: src/libvlc-module.c:927
 msgid ""
 "You can enter here a default stream output chain. Refer to the documentation "
 "to learn how to build such chains. Warning: this chain will be enabled for "
@@ -3407,27 +3407,27 @@ msgstr ""
 "to learn how to build such chains. Warning: this chain will be enabled for "
 "all streams."
 
-#: src/libvlc-module.c:929
+#: src/libvlc-module.c:931
 msgid "Enable streaming of all ES"
 msgstr "ಎಲ್ಲಾ ES ಗಳ ಸ್ಟ್ರೀಮಿಂಗ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:931
+#: src/libvlc-module.c:933
 msgid "Stream all elementary streams (video, audio and subtitles)"
 msgstr "ಎಲ್ಲಾ ಪ್ರಾಥಮಿಕ ಸ್ಟ್ರೀಮ್ಸ್ (ವಿಡಿಯೋ, ಧ್ವನಿ ಮತ್ತು ಉಪಶೀರ್ಷಿಕೆಗಳು) ಸ್ಟ್ರೀಮ್ ಮಾಡಿ"
 
-#: src/libvlc-module.c:933
+#: src/libvlc-module.c:935
 msgid "Display while streaming"
 msgstr "ಸ್ಟ್ರೀಮಿಂಗ್ ಸಂದರ್ಭದಲ್ಲಿ ಪ್ರದರ್ಶಿಸಿ"
 
-#: src/libvlc-module.c:935
+#: src/libvlc-module.c:937
 msgid "Play locally the stream while streaming it."
 msgstr "ಸ್ಟ್ರೀಮಿಂಗ್ ಸಂದರ್ಭದಲ್ಲಿ ಸ್ಥಳೀಯವಾಗಿ ಸ್ಟ್ರೀಮ್ ಅನ್ನು ಪ್ಲೇ ಮಾಡಿ."
 
-#: src/libvlc-module.c:937
+#: src/libvlc-module.c:939
 msgid "Enable video stream output"
 msgstr "ವಿಡಿಯೋ ಸ್ಟ್ರೀಮ್ output ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:939
+#: src/libvlc-module.c:941
 msgid ""
 "Choose whether the video stream should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3435,11 +3435,11 @@ msgstr ""
 "ಸ್ಟ್ರೀಮ್ ಉತ್ಪಾದನೆಯ ಸೌಲಭ್ಯವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿದಾಗ ವಿಡಿಯೋ ಸ್ಟ್ರೀಮ್  ಮರುನಿರ್ದೇಶಿಸಬೇಕೇ "
 "ಎಂಬುದನ್ನು ಆಯ್ಕೆಮಾಡಿ."
 
-#: src/libvlc-module.c:942
+#: src/libvlc-module.c:944
 msgid "Enable audio stream output"
 msgstr "ಧ್ವನಿಯ  ಸ್ಟ್ರೀಮ್ output ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:944
+#: src/libvlc-module.c:946
 msgid ""
 "Choose whether the audio stream should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3447,11 +3447,11 @@ msgstr ""
 "ಸ್ಟ್ರೀಮ್ ಉತ್ಪಾದನೆಯ ಸೌಲಭ್ಯವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿದಾಗ ಧ್ವನಿ ಸ್ಟ್ರೀಮ್  ಮರುನಿರ್ದೇಶಿಸಬೇಕೇ "
 "ಎಂಬುದನ್ನು ಆಯ್ಕೆಮಾಡಿ."
 
-#: src/libvlc-module.c:947
+#: src/libvlc-module.c:949
 msgid "Enable SPU stream output"
 msgstr "SPU ಸ್ಟ್ರೀಮ್ output ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:949
+#: src/libvlc-module.c:951
 msgid ""
 "Choose whether the SPU streams should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3459,11 +3459,11 @@ msgstr ""
 "ಈ ಕೊನೆಯ ಒಂದನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿದಾಗ SPU ಸ್ಟ್ರೀಮ್ ಉತ್ಪಾದನೆಯನ್ನು ಸೌಲಭ್ಯ ಮರುನಿರ್ದೇಶಿಸಬೇಕೇ "
 "ಎಂಬುದನ್ನು ಆರಿಸಿ."
 
-#: src/libvlc-module.c:952
+#: src/libvlc-module.c:954
 msgid "Keep stream output open"
 msgstr "ಸ್ಟ್ರೀಮ್ output ಅನ್ನು ಮುಕ್ತವಾಗಿ ಇರಿಸಿಕೊಳ್ಳಿ"
 
-#: src/libvlc-module.c:954
+#: src/libvlc-module.c:956
 msgid ""
 "This allows you to keep an unique stream output instance across multiple "
 "playlist item (automatically insert the gather stream output if not "
@@ -3473,11 +3473,11 @@ msgstr ""
 "playlist item (automatically insert the gather stream output if not "
 "specified)"
 
-#: src/libvlc-module.c:958
+#: src/libvlc-module.c:960
 msgid "Stream output muxer caching (ms)"
 msgstr "ಸ್ಟ್ರೀಮ್ ಉತ್ಪಾದನೆಯ muxer ಹಿಡಿದಿಟ್ಟುಕೊಳ್ಳುವ ಸಮಯ(ಮಿಲಿಸೆಕೆಂಡ್)"
 
-#: src/libvlc-module.c:960
+#: src/libvlc-module.c:962
 msgid ""
 "This allow you to configure the initial caching amount for stream output "
 "muxer. This value should be set in milliseconds."
@@ -3485,34 +3485,34 @@ msgstr ""
 "This allow you to configure the initial caching amount for stream output "
 "muxer. This value should be set in milliseconds."
 
-#: src/libvlc-module.c:963
+#: src/libvlc-module.c:965
 msgid "Preferred packetizer list"
 msgstr "ಇಷ್ಟದ ವಿಭಜಕಗಳ ಪಟ್ಟಿ"
 
-#: src/libvlc-module.c:965
+#: src/libvlc-module.c:967
 msgid ""
 "This allows you to select the order in which VLC will choose its packetizers."
 msgstr ""
 "ಇದು ನಿಮಗೆ VLC ಯು ಅದರ ವಿಭಜಕಗಳನ್ನು ಯಾವ ಕ್ರಮದಲ್ಲಿ ಆಯ್ಕೆಮಾಡಬೇಕೆಂಬಹುದನ್ನು ಆಯ್ಕೆಮಾಡಲು "
 "ಅವಕಾಶ ಮಾಡಿಕೊಡುತ್ತದೆ. "
 
-#: src/libvlc-module.c:968
+#: src/libvlc-module.c:970
 msgid "Mux module"
 msgstr "Mux ಘಟಕ"
 
-#: src/libvlc-module.c:970
+#: src/libvlc-module.c:972
 msgid "This is a legacy entry to let you configure mux modules"
 msgstr "ಇದು ನಿಮಗೆ mux ಘಟಕಗಳನ್ನು ಸಂರಚಿಸಲು ಪೂರ್ವಾರ್ಜಿತ ಅವಕಾಶ"
 
-#: src/libvlc-module.c:972
+#: src/libvlc-module.c:974
 msgid "Access output module"
 msgstr "ಉತ್ಪಾದನೆಯ ಘಟಕವನ್ನು ಪ್ರವೇಶಿಸಿ"
 
-#: src/libvlc-module.c:974
+#: src/libvlc-module.c:976
 msgid "This is a legacy entry to let you configure access output modules"
 msgstr "ಇದು ನಿಮಗೆ ಉತ್ಪಾದನೆಯ ಘಟಕದ ಪ್ರವೇಶವನ್ನು ಸಂರಚಿಸಲು ಪೂರ್ವಾರ್ಜಿತ ಅವಕಾಶ"
 
-#: src/libvlc-module.c:977
+#: src/libvlc-module.c:979
 msgid ""
 "If this option is enabled, the flow on the SAP multicast address will be "
 "controlled. This is needed if you want to make announcements on the MBone."
@@ -3520,11 +3520,11 @@ msgstr ""
 "If this option is enabled, the flow on the SAP multicast address will be "
 "controlled. This is needed if you want to make announcements on the MBone."
 
-#: src/libvlc-module.c:981
+#: src/libvlc-module.c:983
 msgid "SAP announcement interval"
 msgstr "SAP ಪ್ರಕಟಣೆಯ ಮಧ್ಯಂತರ"
 
-#: src/libvlc-module.c:983
+#: src/libvlc-module.c:985
 msgid ""
 "When the SAP flow control is disabled, this lets you set the fixed interval "
 "between SAP announcements."
@@ -3532,7 +3532,7 @@ msgstr ""
 "When the SAP flow control is disabled, this lets you set the fixed interval "
 "between SAP announcements."
 
-#: src/libvlc-module.c:992
+#: src/libvlc-module.c:994
 msgid ""
 "These options allow you to select default modules. Leave these alone unless "
 "you really know what you are doing."
@@ -3540,11 +3540,11 @@ msgstr ""
 "ಈ ಆಯ್ಕೆಗಳು ಪೂರ್ವನಿಯೋಜಿತ ಘಟಕಗಳ ಆಯ್ಕೆಯನ್ನು ಅನುಮತಿಸುತ್ತದೆ. ನೀವು ನಿಜವಾಗಿಯೂ ಇದು "
 "ಏನೆಂದು ತಿಳಿಯದ ಹೊರತು ಇದನ್ನು ಹಾಗೆ ಬಿಡಿ."
 
-#: src/libvlc-module.c:995
+#: src/libvlc-module.c:997
 msgid "Access module"
 msgstr "ಪ್ರವೇಶ ಘಟಕ"
 
-#: src/libvlc-module.c:997
+#: src/libvlc-module.c:999
 msgid ""
 "This allows you to force an access module. You can use it if the correct "
 "access is not automatically detected. You should not set this as a global "
@@ -3554,30 +3554,30 @@ msgstr ""
 "access is not automatically detected. You should not set this as a global "
 "option unless you really know what you are doing."
 
-#: src/libvlc-module.c:1001
+#: src/libvlc-module.c:1003
 msgid "Stream filter module"
 msgstr "ಸ್ಟ್ರೀಮ್ ಶೋಧಕದ ಘಟಕ"
 
-#: src/libvlc-module.c:1003
+#: src/libvlc-module.c:1005
 msgid "Stream filters are used to modify the stream that is being read. "
 msgstr "ಸ್ಟ್ರೀಮ್ ಶೋಧಕಗಳು ಓದುತಿರುವ ಸ್ಟ್ರೀಮ್ಗಳನ್ನು ಮಾರ್ಪಡಿಸಲು ಬಳಸಲಾಗುತ್ತದೆ."
 
-#: src/libvlc-module.c:1005
+#: src/libvlc-module.c:1007
 #, fuzzy
 msgid "Demux filter module"
 msgstr "ಸ್ಟ್ರೀಮ್ ಶೋಧಕದ ಘಟಕ"
 
-#: src/libvlc-module.c:1007
+#: src/libvlc-module.c:1009
 #, fuzzy
 msgid ""
 "Demux filters are used to modify/control the stream that is being read. "
 msgstr "ಸ್ಟ್ರೀಮ್ ಶೋಧಕಗಳು ಓದುತಿರುವ ಸ್ಟ್ರೀಮ್ಗಳನ್ನು ಮಾರ್ಪಡಿಸಲು ಬಳಸಲಾಗುತ್ತದೆ."
 
-#: src/libvlc-module.c:1009
+#: src/libvlc-module.c:1011
 msgid "Demux module"
 msgstr "Demux ಘಟಕ"
 
-#: src/libvlc-module.c:1011
+#: src/libvlc-module.c:1013
 msgid ""
 "Demultiplexers are used to separate the \"elementary\" streams (like audio "
 "and video streams). You can use it if the correct demuxer is not "
@@ -3589,11 +3589,11 @@ msgstr ""
 "automatically detected. You should not set this as a global option unless "
 "you really know what you are doing."
 
-#: src/libvlc-module.c:1016
+#: src/libvlc-module.c:1018
 msgid "VoD server module"
 msgstr "VOD ಸರ್ವರ್ ಘಟಕ"
 
-#: src/libvlc-module.c:1018
+#: src/libvlc-module.c:1020
 #, fuzzy
 msgid ""
 "You can select which VoD server module you want to use. Set this to "
@@ -3602,11 +3602,11 @@ msgstr ""
 "You can select which VoD server module you want to use. Set this to "
 "`vod_rtsp' to switch back to the old, legacy module."
 
-#: src/libvlc-module.c:1021
+#: src/libvlc-module.c:1023
 msgid "Allow real-time priority"
 msgstr "ನೈಜ ಸಮಯದ ಆದ್ಯತೆಯನ್ನು ಅನುಮತಿಸಿ"
 
-#: src/libvlc-module.c:1023
+#: src/libvlc-module.c:1025
 msgid ""
 "Running VLC in real-time priority will allow for much more precise "
 "scheduling and yield better, especially when streaming content. It can "
@@ -3618,11 +3618,11 @@ msgstr ""
 "however lock up your whole machine, or make it very very slow. You should "
 "only activate this if you know what you're doing."
 
-#: src/libvlc-module.c:1029
+#: src/libvlc-module.c:1031
 msgid "Adjust VLC priority"
 msgstr "VLC ಯ ಆದ್ಯತೆಯನ್ನು ಸರಿಹೊಂದಿಸಿ"
 
-#: src/libvlc-module.c:1031
+#: src/libvlc-module.c:1033
 msgid ""
 "This option adds an offset (positive or negative) to VLC default priorities. "
 "You can use it to tune VLC priority against other programs, or against other "
@@ -3632,79 +3632,79 @@ msgstr ""
 "You can use it to tune VLC priority against other programs, or against other "
 "VLC instances."
 
-#: src/libvlc-module.c:1036
+#: src/libvlc-module.c:1038
 msgid ""
 "This option is useful if you want to lower the latency when reading a stream"
 msgstr "ನೀವು ಸ್ಟ್ರೀಮ್ನ್ನು ಓದುವಾಗ ಕಡಿಮೆ ಸುಪ್ತತೆ ಬಯಸಿದಲ್ಲಿ ಈ ಆಯ್ಕೆ ಉಪಯುಕ್ತ"
 
-#: src/libvlc-module.c:1039
+#: src/libvlc-module.c:1041
 msgid "VLM configuration file"
 msgstr "VLM ಯ ಸಂರಚನಾ ಕಡತ"
 
-#: src/libvlc-module.c:1041
+#: src/libvlc-module.c:1043
 msgid "Read a VLM configuration file as soon as VLM is started."
 msgstr "VLM ಚಾಲನೆಯಾದ ತಕ್ಶಣ VLM ನ ಒಂದು ಸಂರಚನಾ ಕಡತವನ್ನು ಓದಿ."
 
-#: src/libvlc-module.c:1043
+#: src/libvlc-module.c:1045
 msgid "Use a plugins cache"
 msgstr "ಒಂದು ಪ್ಲಗಿನ್ಗಳ ಸಂಗ್ರಹವನ್ನು ಬಳಸಿ"
 
-#: src/libvlc-module.c:1045
+#: src/libvlc-module.c:1047
 msgid "Use a plugins cache which will greatly improve the startup time of VLC."
 msgstr ""
 "ಪ್ಲುಗ್ ಇನ್ ತಾತ್ಕಾಲಿಕ ಸಂಗ್ರಹಾಕಗಳನ್ನು ಉಪಯೋಗಿಸಿಸುವುದರಿಂದ VLC ಯ ಪ್ರಾರಂಭಗೊಳ್ಳುವ ಸಮಯ "
 "ಸುಧಾರಿಸುತ್ತದೆ."
 
-#: src/libvlc-module.c:1047
+#: src/libvlc-module.c:1049
 msgid "Scan for new plugins"
 msgstr ""
 
-#: src/libvlc-module.c:1049
+#: src/libvlc-module.c:1051
 msgid ""
 "Scan plugin directories for new plugins at startup. This increases the "
 "startup time of VLC."
 msgstr ""
 
-#: src/libvlc-module.c:1052
+#: src/libvlc-module.c:1054
 #, fuzzy
 msgid "Preferred keystore list"
 msgstr "ಇಷ್ಟದ ವಿಭಜಕಗಳ ಪಟ್ಟಿ"
 
-#: src/libvlc-module.c:1054
+#: src/libvlc-module.c:1056
 msgid ""
 "List of keystores that VLC will use in priority. Only advanced users should "
 "alter this option."
 msgstr ""
 
-#: src/libvlc-module.c:1057
+#: src/libvlc-module.c:1059
 msgid "Locally collect statistics"
 msgstr "ಸ್ಥಳೀಯವಾಗಿ ಅಂಕಿಅಂಶಗಳನ್ನು ಸಂಗ್ರಹಿಸಿ"
 
-#: src/libvlc-module.c:1059
+#: src/libvlc-module.c:1061
 msgid "Collect miscellaneous local statistics about the playing media."
 msgstr "ಪ್ಲೇ ಆಗುತ್ತಿರುವ ಮಾಧ್ಯಮದ ಬಗ್ಗೆ ವಿವಿಧ ಸ್ಥಳೀಯ ಅಂಕಿಅಂಶಗಳನ್ನು ಸಂಗ್ರಹಿಸಿ."
 
-#: src/libvlc-module.c:1061
+#: src/libvlc-module.c:1063
 msgid "Run as daemon process"
 msgstr "ಹಿನ್ನೆಲೆ ಪ್ರಕ್ರಿಯೆಯ ಹಾಗೆ ಚಾಲನೆ ಮಾಡಿ"
 
-#: src/libvlc-module.c:1063
+#: src/libvlc-module.c:1065
 msgid "Runs VLC as a background daemon process."
 msgstr "VLC ಯನ್ನು ಹಿನ್ನೆಲೆ ಪ್ರಕ್ರಿಯೆ ಹಾಗೆ ನಡೆಸಿ."
 
-#: src/libvlc-module.c:1065
+#: src/libvlc-module.c:1067
 msgid "Write process id to file"
 msgstr "ಪ್ರಕ್ರಿಯೆಯ ಗುರುತನ್ನು ಕಡತಕ್ಕೆ ಬರೆಯಿರಿ"
 
-#: src/libvlc-module.c:1067
+#: src/libvlc-module.c:1069
 msgid "Writes process id into specified file."
 msgstr "ಪ್ರಕ್ರಿಯೆಯ ಗುರುತನ್ನು ನಿರ್ದಿಷ್ಟ ಕಡತಕ್ಕೆ ಬರೆಯಿರಿ"
 
-#: src/libvlc-module.c:1069
+#: src/libvlc-module.c:1071
 msgid "Allow only one running instance"
 msgstr "ಕೇವಲ ಒಂದು ಓಟದ ನಿದರ್ಶನವನ್ನು ಅನುಮತಿಸಿ"
 
-#: src/libvlc-module.c:1071
+#: src/libvlc-module.c:1073
 msgid ""
 "Allowing only one running instance of VLC can sometimes be useful, for "
 "example if you associated VLC with some media types and you don't want a new "
@@ -3718,24 +3718,24 @@ msgstr ""
 "This option will allow you to play the file with the already running "
 "instance or enqueue it."
 
-#: src/libvlc-module.c:1077
+#: src/libvlc-module.c:1079
 msgid "VLC is started from file association"
 msgstr "VLCಯು ಕಡತ ಸಂಬಂಧದಿಂದ ಆರಂಭಗೊಂಡಿದೆ"
 
-#: src/libvlc-module.c:1079
+#: src/libvlc-module.c:1081
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr ""
 "ಇದು ಕಾರ್ಯಾಚರಣಾ ವ್ಯವಸ್ಥೆಯಲ್ಲಿನ ಕಡತ ಸಂಘದ ಕಾರಣದಿಂದಾಗಿ ಆರಂಭಿಸಲಾಯಿತು ಎಂದು VLCಗೆ ಹೇಳಿ"
 
-#: src/libvlc-module.c:1082
+#: src/libvlc-module.c:1084
 msgid "Use only one instance when started from file manager"
 msgstr "ಕಡತ ವ್ಯವಸ್ಥಾಪಕ ರಿಂದ ಆರಂಭಿಸಿದಾಗ ಕೇವಲ ಒಂದು ಉದಾಹರಣೆಗೆ ಬಳಸಿ"
 
-#: src/libvlc-module.c:1084
+#: src/libvlc-module.c:1086
 msgid "Increase the priority of the process"
 msgstr "ಪ್ರಕ್ರಿಯೆಯ ಆದ್ಯತೆಯನ್ನು ಹೆಚ್ಚಿಸಿ"
 
-#: src/libvlc-module.c:1086
+#: src/libvlc-module.c:1088
 msgid ""
 "Increasing the priority of the process will very likely improve your playing "
 "experience as it allows VLC not to be disturbed by other applications that "
@@ -3751,11 +3751,11 @@ msgstr ""
 "render the whole system unresponsive which might require a reboot of your "
 "machine."
 
-#: src/libvlc-module.c:1094
+#: src/libvlc-module.c:1096
 msgid "Enqueue items into playlist in one instance mode"
 msgstr "ಒಂದು ನಿದರ್ಶನ ಕ್ರಮದಲ್ಲಿ ಸರತಿಯಲ್ಲದ ಐಟಂಗಳನ್ನು ಪಟ್ಟಿಗೆ ಸೆರಿಸಿ"
 
-#: src/libvlc-module.c:1096
+#: src/libvlc-module.c:1098
 msgid ""
 "When using the one instance only option, enqueue items to playlist and keep "
 "playing current item."
@@ -3763,18 +3763,18 @@ msgstr ""
 "When using the one instance only option, enqueue items to playlist and keep "
 "playing current item."
 
-#: src/libvlc-module.c:1099
+#: src/libvlc-module.c:1101
 #, fuzzy
 msgid "Expose media player via D-Bus"
 msgstr "VLC ಮಾಧ್ಯಮ ಪ್ಲೇಯರ್‍ನ ನವೀಕರಣಗಳು"
 
-#: src/libvlc-module.c:1100
+#: src/libvlc-module.c:1102
 msgid ""
 "Allow other applications to control the VLC media player using the D-Bus "
 "MPRIS protocol."
 msgstr ""
 
-#: src/libvlc-module.c:1109
+#: src/libvlc-module.c:1111
 msgid ""
 "These options define the behavior of the playlist. Some of them can be "
 "overridden in the playlist dialog box."
@@ -3782,12 +3782,12 @@ msgstr ""
 "ಪ್ಲೇಪಟ್ಟಿಯ ವರ್ತನೆಯನ್ನು ವ್ಯಾಖ್ಯಾನಿಸಿ.ಅವುಗಳಲ್ಲಿ ಕೆಲವು ಪ್ಲೇಪಟ್ಟಿ ಸಂವಾದ ಪೆಟ್ಟಿಗೆಯಿಂದ "
 "ಅತಿಕ್ರಮಿಸಬಹುದಾಗಿದೆ."
 
-#: src/libvlc-module.c:1112
+#: src/libvlc-module.c:1114
 #, fuzzy
 msgid "Automatically preparse items"
 msgstr "ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಕಡತಗಳನ್ನು preparse  ಮಾಡಿ"
 
-#: src/libvlc-module.c:1114
+#: src/libvlc-module.c:1116
 #, fuzzy
 msgid ""
 "Automatically preparse items added to the playlist (to retrieve some "
@@ -3796,33 +3796,33 @@ msgstr ""
 "ಪ್ಲೇಪಟ್ಟಿಗೆ ಸೇರಿಸಲಾಗಿದೆ ಕಡತಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಪೂರ್ವವಿಶ್ಲೇಷಣೆ ಮಾಡಿ(ಕೆಲವು "
 "ಪರ್ಯಾಯಾಯಹಿತಿಯನ್ನು ಹಿಂಪಡೆಯಿರಿ)."
 
-#: src/libvlc-module.c:1117
+#: src/libvlc-module.c:1119
 #, fuzzy
 msgid "Preparsing timeout"
 msgstr "RTSP ಅಧಿವೇಶನ ಕಾಲಾವಕಾಶ (ಸೆಕೆಂಡ್)"
 
-#: src/libvlc-module.c:1119
+#: src/libvlc-module.c:1121
 msgid "Maximum time (in milliseconds) allowed to preparse an item"
 msgstr ""
 
-#: src/libvlc-module.c:1121 modules/gui/macosx/VLCSimplePrefsController.m:321
+#: src/libvlc-module.c:1123 modules/gui/macosx/VLCSimplePrefsController.m:321
 #: modules/gui/qt/dialogs/firstrun.cpp:95
 msgid "Allow metadata network access"
 msgstr ""
 
-#: src/libvlc-module.c:1126
+#: src/libvlc-module.c:1128
 msgid "Collapse"
 msgstr "ಸಂಕುಚಿಸಿ"
 
-#: src/libvlc-module.c:1126
+#: src/libvlc-module.c:1128
 msgid "Expand"
 msgstr "ವಿಸ್ತರಿಸಿ"
 
-#: src/libvlc-module.c:1128
+#: src/libvlc-module.c:1130
 msgid "Subdirectory behavior"
 msgstr "ಉಪಕೋಶದ ವರ್ತನೆ "
 
-#: src/libvlc-module.c:1130
+#: src/libvlc-module.c:1132
 msgid ""
 "Select whether subdirectories must be expanded.\n"
 "none: subdirectories do not appear in the playlist.\n"
@@ -3834,11 +3834,11 @@ msgstr ""
 "collapse: subdirectories appear but are expanded on first play.\n"
 "expand: all subdirectories are expanded.\n"
 
-#: src/libvlc-module.c:1135
+#: src/libvlc-module.c:1137
 msgid "Ignored extensions"
 msgstr "ವಿಸ್ತರಣೆಗಳನ್ನು ನಿರ್ಲಕ್ಷಿಸಿ"
 
-#: src/libvlc-module.c:1137
+#: src/libvlc-module.c:1139
 msgid ""
 "Files with these extensions will not be added to playlist when opening a "
 "directory.\n"
@@ -3850,20 +3850,20 @@ msgstr ""
 "This is useful if you add directories that contain playlist files for "
 "instance. Use a comma-separated list of extensions."
 
-#: src/libvlc-module.c:1142
+#: src/libvlc-module.c:1144
 #, fuzzy
 msgid "Show hidden files"
 msgstr "ಸಂಕೇತಕದ ವಿವರಗಳು"
 
-#: src/libvlc-module.c:1144
+#: src/libvlc-module.c:1146
 msgid "Ignore files starting with '.'"
 msgstr ""
 
-#: src/libvlc-module.c:1146
+#: src/libvlc-module.c:1148
 msgid "Services discovery modules"
 msgstr "ಸೇವಾಪತ್ತೆ ಘಟಕಗಳು"
 
-#: src/libvlc-module.c:1148
+#: src/libvlc-module.c:1150
 msgid ""
 "Specifies the services discovery modules to preload, separated by colons. "
 "Typical value is \"sap\"."
@@ -3871,78 +3871,78 @@ msgstr ""
 "Specifies the services discovery modules to preload, separated by colons. "
 "Typical value is \"sap\"."
 
-#: src/libvlc-module.c:1151
+#: src/libvlc-module.c:1153
 msgid "Play files randomly forever"
 msgstr "ಶಾಶ್ವತವಾಗಿ ಕಡತಗಳನ್ನು ಮನಬಂದಂತೆ ಪ್ಲೇ ಮಾಡಿ"
 
-#: src/libvlc-module.c:1153
+#: src/libvlc-module.c:1155
 msgid "VLC will randomly play files in the playlist until interrupted."
 msgstr "VLC ಯು ಅಡಚಣೆಯಾಗುವರೆಗೆ ಮನಬಂದಂತೆ ಪಟ್ಟಿಯಲ್ಲಿರುವ ಕಡತಗಳನ್ನು ಪ್ಲೇ ಮಾಡುತ್ತದೆ."
 
-#: src/libvlc-module.c:1155
+#: src/libvlc-module.c:1157
 msgid "Repeat all"
 msgstr "ಎಲ್ಲವನ್ನು ಪುನರಾವರ್ತಿಸು"
 
-#: src/libvlc-module.c:1157
+#: src/libvlc-module.c:1159
 msgid "VLC will keep playing the playlist indefinitely."
 msgstr "VLC ಯು ಅನಿರ್ದಿಷ್ಟವಾಗಿ ಪಟ್ಟಿಯನ್ನು ಪ್ಲೇ ಮಾಡುತಿರುತ್ತದೆ."
 
-#: src/libvlc-module.c:1159
+#: src/libvlc-module.c:1161
 msgid "Repeat current item"
 msgstr "ಪ್ರಸ್ತುತ ಐಟಂ ಅನ್ನು ಪುನರಾವರ್ತಿಸಿ"
 
-#: src/libvlc-module.c:1161
+#: src/libvlc-module.c:1163
 msgid "VLC will keep playing the current playlist item."
 msgstr "VLC ಯು ಪ್ರಸ್ತುತ ಪಟ್ಟಿ ಐಟಂ ಅನ್ನು ಪ್ಲೇ ಮಾಡುತಿರುತ್ತದೆ."
 
-#: src/libvlc-module.c:1163
+#: src/libvlc-module.c:1165
 msgid "Play and stop"
 msgstr "ಪ್ಲೆ ಮಾಡಿ ನಿಲ್ಲಿಸು"
 
-#: src/libvlc-module.c:1165
+#: src/libvlc-module.c:1167
 msgid "Stop the playlist after each played playlist item."
 msgstr "ಪ್ಲೇಪಟ್ಟಿಯ ಪ್ರತಿ ಐಟಂ ಪ್ಲೇ ಆದ ನಂತರ ಪ್ಲೇಪಟ್ಟಿಯನ್ನು ನಿಲ್ಲಿಸಿ."
 
-#: src/libvlc-module.c:1167
+#: src/libvlc-module.c:1169
 msgid "Play and exit"
 msgstr "ಪ್ಲೆ ಮಾಡಿ ನಿರ್ಗಮಿಸಿ"
 
-#: src/libvlc-module.c:1169
+#: src/libvlc-module.c:1171
 msgid "Exit if there are no more items in the playlist."
 msgstr "ಪಟ್ಟಿಯಲ್ಲಿ ಯಾವುದೇ ಐಟಂಗಳು ಇಲ್ಲದ ವೇಳೆ ನಿರ್ಗಮಿಸಿ."
 
-#: src/libvlc-module.c:1171
+#: src/libvlc-module.c:1173
 msgid "Play and pause"
 msgstr "ಪ್ಲೆ ಮಾಡಿ ವಿರಾಮಿಸಿ"
 
-#: src/libvlc-module.c:1173
+#: src/libvlc-module.c:1175
 msgid "Pause each item in the playlist on the last frame."
 msgstr "ಕೊನೆಯ ಚೌಕಟ್ಟಿನ ಪಟ್ಟಿಯಲ್ಲಿರುವ ಪ್ರತಿ ಐಟಂಅನ್ನು ವಿರಾಮಗೊಳಿಸಿ."
 
-#: src/libvlc-module.c:1175
+#: src/libvlc-module.c:1177
 #, fuzzy
 msgid "Start paused"
 msgstr "ಆರಂಭದ ಸಮಯ"
 
-#: src/libvlc-module.c:1177
+#: src/libvlc-module.c:1179
 #, fuzzy
 msgid "Pause each item in the playlist on the first frame."
 msgstr "ಕೊನೆಯ ಚೌಕಟ್ಟಿನ ಪಟ್ಟಿಯಲ್ಲಿರುವ ಪ್ರತಿ ಐಟಂಅನ್ನು ವಿರಾಮಗೊಳಿಸಿ."
 
-#: src/libvlc-module.c:1179
+#: src/libvlc-module.c:1181
 msgid "Auto start"
 msgstr "ಸ್ವಯಂಚಾಲಿತ ಆರಂಭ"
 
-#: src/libvlc-module.c:1180
+#: src/libvlc-module.c:1182
 msgid "Automatically start playing the playlist content once it's loaded."
 msgstr ""
 "ಪಟ್ಟಿಗೆ ವಿಷಯಗಳು ಲೋಡ್ ಆದ ಕೂಡಲೆ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಪಟ್ಟಿಯನ್ನು ಪ್ಲೇ ಮಾಡಲು ಪ್ರರಂಭಿಸಿ."
 
-#: src/libvlc-module.c:1183
+#: src/libvlc-module.c:1185
 msgid "Pause on audio communication"
 msgstr "ಧ್ವನಿ ಸಂವಹನದ ಸಮಯದಲ್ಲಿ ತಾತ್ಕಾಲಿಕವಾಗಿ ಸ್ಥಗಿತಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:1185
+#: src/libvlc-module.c:1187
 msgid ""
 "If pending audio communication is detected, playback will be paused "
 "automatically."
@@ -3950,11 +3950,11 @@ msgstr ""
 "If pending audio communication is detected, playback will be paused "
 "automatically."
 
-#: src/libvlc-module.c:1188
+#: src/libvlc-module.c:1190
 msgid "Use media library"
 msgstr "ಮಾದ್ಯಮ ಭಂಡಾರವನ್ನು ಬಳಸು"
 
-#: src/libvlc-module.c:1190
+#: src/libvlc-module.c:1192
 msgid ""
 "The media library is automatically saved and reloaded each time you start "
 "VLC."
@@ -3962,11 +3962,11 @@ msgstr ""
 "The media library is automatically saved and reloaded each time you start "
 "VLC."
 
-#: src/libvlc-module.c:1193
+#: src/libvlc-module.c:1195
 msgid "Display playlist tree"
 msgstr "ಹಾಡಿನ ಪಟ್ಟಿಯ ವೃಕ್ಷವನ್ನು ಪ್ರದರ್ಶಿಸಿ "
 
-#: src/libvlc-module.c:1195
+#: src/libvlc-module.c:1197
 msgid ""
 "The playlist can use a tree to categorize some items, like the contents of a "
 "directory."
@@ -3974,35 +3974,35 @@ msgstr ""
 "The playlist can use a tree to categorize some items, like the contents of a "
 "directory."
 
-#: src/libvlc-module.c:1204
+#: src/libvlc-module.c:1206
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr "ಈ ಸಂಯೊಜನೆಗಳು \"ಶೀಘ್ರಕೀಲಿ\"ಜಾಗತಿಕ VLC ಕೀಲಿ ನಿಬಂಧನೆಗಳಾಗಿವೆ."
 
-#: src/libvlc-module.c:1209 modules/gui/macosx/VLCMain+OldPrefs.m:103
+#: src/libvlc-module.c:1211 modules/gui/macosx/VLCMain+OldPrefs.m:103
 msgid "Ignore"
 msgstr "ನಿರ್ಲಕ್ಷಿಸಿ"
 
-#: src/libvlc-module.c:1209
+#: src/libvlc-module.c:1211
 #, fuzzy
 msgid "Volume control"
 msgstr "ವಾಲ್ಯೂಮ್ ನಿಯಂತ್ರಣ"
 
-#: src/libvlc-module.c:1210
+#: src/libvlc-module.c:1212
 #, fuzzy
 msgid "Position control"
 msgstr "ಸ್ಥಾನ ನಿಯಂತ್ರಣ"
 
-#: src/libvlc-module.c:1210
+#: src/libvlc-module.c:1212
 #, fuzzy
 msgid "Position control reversed"
 msgstr "ಸ್ಥಾನ ನಿಯಂತ್ರಣ"
 
-#: src/libvlc-module.c:1213
+#: src/libvlc-module.c:1215
 #, fuzzy
 msgid "Mouse wheel vertical axis control"
 msgstr "ಮೌಸ್ ಚಕ್ರದ ಮೇಲೆ ಕೆಳಗೆ ಅಕ್ಷದ ನಿಯಂತ್ರಣ"
 
-#: src/libvlc-module.c:1215
+#: src/libvlc-module.c:1217
 #, fuzzy
 msgid ""
 "The mouse wheel vertical (up/down) axis can control volume, position or be "
@@ -4011,12 +4011,12 @@ msgstr ""
 "The MouseWheel up-down (vertical) axis can control volume, position or "
 "mousewheel event can be ignored"
 
-#: src/libvlc-module.c:1217
+#: src/libvlc-module.c:1219
 #, fuzzy
 msgid "Mouse wheel horizontal axis control"
 msgstr "ಮೌಸ್ ಚಕ್ರದ ಮೇಲೆ ಕೆಳಗೆ ಅಕ್ಷದ ನಿಯಂತ್ರಣ"
 
-#: src/libvlc-module.c:1219
+#: src/libvlc-module.c:1221
 #, fuzzy
 msgid ""
 "The mouse wheel horizontal (left/right) axis can control volume, position or "
@@ -4025,86 +4025,86 @@ msgstr ""
 "The MouseWheel up-down (vertical) axis can control volume, position or "
 "mousewheel event can be ignored"
 
-#: src/libvlc-module.c:1221 src/video_output/vout_intf.c:268
+#: src/libvlc-module.c:1223 src/video_output/vout_intf.c:268
 #: modules/gui/macosx/VLCControlsBarCommon.m:81
 #: modules/gui/macosx/VLCMainMenu.m:422 modules/gui/macosx/VLCMainMenu.m:501
 #: modules/gui/qt/components/controller.hpp:108
 msgid "Fullscreen"
 msgstr "ಪೂರ್ಣತೆರೆ"
 
-#: src/libvlc-module.c:1222
+#: src/libvlc-module.c:1224
 msgid "Select the hotkey to use to swap fullscreen state."
 msgstr "ಪೂರ್ಣಪರದೆಯ ಸ್ಥಿತಿಗೆ ಬದಲಿಸಲು ಶೀಘ್ರಕೀಲಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ."
 
-#: src/libvlc-module.c:1223
+#: src/libvlc-module.c:1225
 msgid "Exit fullscreen"
 msgstr "ಪೂರ್ಣಪರದೆಯಿಂದ ನಿರ್ಗಮಿಸಿ"
 
-#: src/libvlc-module.c:1224
+#: src/libvlc-module.c:1226
 msgid "Select the hotkey to use to exit fullscreen state."
 msgstr "ಪೂರ್ಣಪರದೆಯ ಸ್ಥಿತಿಯಿಂದ ನಿರ್ಗಮಿಸಲು ಶೀಘ್ರಕೀಲಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ."
 
-#: src/libvlc-module.c:1225 modules/gui/macosx/VLCFSPanelController.m:109
+#: src/libvlc-module.c:1227 modules/gui/macosx/VLCFSPanelController.m:109
 msgid "Play/Pause"
 msgstr "ಆಡಿಸು/ವಿರಾಮಿಸು"
 
-#: src/libvlc-module.c:1226
+#: src/libvlc-module.c:1228
 msgid "Select the hotkey to use to swap paused state."
 msgstr "ವಿರಾಮದ ಸ್ಥಿತಿಗೆ ಬದಲಿಸಲು ಶೀಘ್ರಕೀಲಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ."
 
-#: src/libvlc-module.c:1227
+#: src/libvlc-module.c:1229
 msgid "Pause only"
 msgstr "ಕೇವಲ ವಿರಾಮಿಸಿ"
 
-#: src/libvlc-module.c:1228
+#: src/libvlc-module.c:1230
 msgid "Select the hotkey to use to pause."
 msgstr "ವಿರಾಮದ ಸ್ಥಿತಿಗೆ ಬರಲು ಶೀಘ್ರಕೀಲಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ."
 
-#: src/libvlc-module.c:1229
+#: src/libvlc-module.c:1231
 msgid "Play only"
 msgstr "ಕೇವಲ ಆಡಿಸು"
 
-#: src/libvlc-module.c:1230
+#: src/libvlc-module.c:1232
 msgid "Select the hotkey to use to play."
 msgstr "ಪ್ಲೇ ಮಾಡಲು ಶೀಘ್ರಕೀಲಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ."
 
-#: src/libvlc-module.c:1231 modules/gui/macosx/VLCMainMenu.m:385
+#: src/libvlc-module.c:1233 modules/gui/macosx/VLCMainMenu.m:385
 #: modules/gui/qt/components/controller.hpp:108
 #: modules/gui/qt/components/controller.hpp:118
 msgid "Faster"
 msgstr "ವೇಗವಾಗಿ"
 
-#: src/libvlc-module.c:1232 src/libvlc-module.c:1238
+#: src/libvlc-module.c:1234 src/libvlc-module.c:1240
 msgid "Select the hotkey to use for fast forward playback."
 msgstr "ವೇಗವಾಗಿ ಮುಂದೆ ಪ್ಲೇಬ್ಯಾಕ್ ಬಳಸಲು ಶೀಘ್ರಕೀಲಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ."
 
-#: src/libvlc-module.c:1233 modules/gui/macosx/VLCMainMenu.m:383
+#: src/libvlc-module.c:1235 modules/gui/macosx/VLCMainMenu.m:383
 #: modules/gui/qt/components/controller.hpp:108
 #: modules/gui/qt/components/controller.hpp:118
 msgid "Slower"
 msgstr "ನಿದಾನವಾಗಿ"
 
-#: src/libvlc-module.c:1234 src/libvlc-module.c:1240
+#: src/libvlc-module.c:1236 src/libvlc-module.c:1242
 msgid "Select the hotkey to use for slow motion playback."
 msgstr "ನಿದಾನವಾಗಿ ಮುಂದೆ ಪ್ಲೇಬ್ಯಾಕ್ ಬಳಸಲು ಶೀಘ್ರಕೀಲಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ."
 
-#: src/libvlc-module.c:1235
+#: src/libvlc-module.c:1237
 msgid "Normal rate"
 msgstr "ಸಾಧಾರಣ ದರ"
 
-#: src/libvlc-module.c:1236
+#: src/libvlc-module.c:1238
 msgid "Select the hotkey to set the playback rate back to normal."
 msgstr "ಪ್ಲೇಬ್ಯಾಕ್ ದರವನ್ನು ಆಯ್ಕೆಯನ್ನು ಸಮಾನ್ಯಕ್ಕೆ ಸ್ಥಾಪಿಸಲು ಶೀಘ್ರಕೀಲಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ."
 
-#: src/libvlc-module.c:1237 modules/gui/qt/menus.cpp:875
+#: src/libvlc-module.c:1239 modules/gui/qt/menus.cpp:875
 msgid "Faster (fine)"
 msgstr "ವೇಗವಾಗಿ (ಉತ್ತಮ)"
 
-#: src/libvlc-module.c:1239 modules/gui/qt/menus.cpp:883
+#: src/libvlc-module.c:1241 modules/gui/qt/menus.cpp:883
 msgid "Slower (fine)"
 msgstr "ನಿಧಾನವಾಗಿ (ಉತ್ತಮ)"
 
-#: src/libvlc-module.c:1241 modules/control/hotkeys.c:410
+#: src/libvlc-module.c:1243 modules/control/hotkeys.c:410
 #: modules/gui/macosx/VLCControlsBarCommon.m:163
 #: modules/gui/macosx/VLCFSPanelController.m:112
 #: modules/gui/macosx/VLCMainMenu.m:388 modules/gui/macosx/VLCMainMenu.m:489
@@ -4114,11 +4114,11 @@ msgstr "ನಿಧಾನವಾಗಿ (ಉತ್ತಮ)"
 msgid "Next"
 msgstr "ಮುಂದಿನ"
 
-#: src/libvlc-module.c:1242
+#: src/libvlc-module.c:1244
 msgid "Select the hotkey to use to skip to the next item in the playlist."
 msgstr "ಹಾಡಿನ ಪಟ್ಟಿಯ ಮುಂದಿನ ಐಟಂಗೆ ಬದಲಿಸಲು  ಶೀಘ್ರಕೀಲಿ ಆಯ್ಕೆಮಾಡಿ."
 
-#: src/libvlc-module.c:1243 modules/control/hotkeys.c:414
+#: src/libvlc-module.c:1245 modules/control/hotkeys.c:414
 #: modules/gui/macosx/VLCControlsBarCommon.m:160
 #: modules/gui/macosx/VLCFSPanelController.m:115
 #: modules/gui/macosx/VLCMainMenu.m:387 modules/gui/macosx/VLCMainMenu.m:490
@@ -4127,11 +4127,11 @@ msgstr "ಹಾಡಿನ ಪಟ್ಟಿಯ ಮುಂದಿನ ಐಟಂಗೆ �
 msgid "Previous"
 msgstr "ಹಿಂದಿನ"
 
-#: src/libvlc-module.c:1244
+#: src/libvlc-module.c:1246
 msgid "Select the hotkey to use to skip to the previous item in the playlist."
 msgstr "ಹಾಡಿನ ಪಟ್ಟಿಯ ಹಿಂದಿನ ಐಟಂಗೆ ಬದಲಿಸಲು  ಶೀಘ್ರಕೀಲಿ ಆಯ್ಕೆಮಾಡಿ."
 
-#: src/libvlc-module.c:1245 modules/gui/macosx/VLCMainMenu.m:378
+#: src/libvlc-module.c:1247 modules/gui/macosx/VLCMainMenu.m:378
 #: modules/gui/macosx/VLCMainMenu.m:488 modules/gui/macosx/VLCMainMenu.m:495
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:61
 #: modules/gui/qt/components/controller.hpp:107
@@ -4139,11 +4139,11 @@ msgstr "ಹಾಡಿನ ಪಟ್ಟಿಯ ಹಿಂದಿನ ಐಟಂಗೆ �
 msgid "Stop"
 msgstr "ನಿಲ್ಲಿಸಿ"
 
-#: src/libvlc-module.c:1246
+#: src/libvlc-module.c:1248
 msgid "Select the hotkey to stop playback."
 msgstr "ಹಿನ್ನೆಲೆಯನ್ನು ನಿಲ್ಲಿಸಲು ಶೀಘ್ರಕೀಲಿ ಆಯ್ಕೆಮಾಡಿ."
 
-#: src/libvlc-module.c:1247 modules/gui/macosx/VLCControlsBarCommon.m:75
+#: src/libvlc-module.c:1249 modules/gui/macosx/VLCControlsBarCommon.m:75
 #: modules/gui/macosx/VLCFSPanelController.m:130
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:273
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:295
@@ -4151,725 +4151,725 @@ msgstr "ಹಿನ್ನೆಲೆಯನ್ನು ನಿಲ್ಲಿಸಲು ಶ�
 msgid "Position"
 msgstr "ಸ್ಥಾನ"
 
-#: src/libvlc-module.c:1248
+#: src/libvlc-module.c:1250
 msgid "Select the hotkey to display the position."
 msgstr "ಸ್ಥಾನವನ್ನು ಪ್ರದರ್ಶಿಸಲು ಶೀಘ್ರಕೀಲಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ."
 
-#: src/libvlc-module.c:1250
+#: src/libvlc-module.c:1252
 msgid "Very short backwards jump"
 msgstr "ಬಹಳ ಸಣ್ಣ ಹಿಂದಿನ ಜಿಗಿತ "
 
-#: src/libvlc-module.c:1252
+#: src/libvlc-module.c:1254
 msgid "Select the hotkey to make a very short backwards jump."
 msgstr "ಬಹಳ ಸಣ್ಣ ಹಿಂದಿನ ಜಿಗಿತ ಮಾಡಲು ಶೀಘ್ರಕೀಲಿ ಆಯ್ಕೆಮಾಡಿ"
 
-#: src/libvlc-module.c:1253
+#: src/libvlc-module.c:1255
 msgid "Short backwards jump"
 msgstr "ಸಣ್ಣ ಹಿಂದಿನ ಜಿಗಿತ"
 
-#: src/libvlc-module.c:1255
+#: src/libvlc-module.c:1257
 msgid "Select the hotkey to make a short backwards jump."
 msgstr "ಸಣ್ಣ ಹಿಂದಿನ ಜಿಗಿತ ಮಾಡಲು ಶೀಘ್ರಕೀಲಿ ಆಯ್ಕೆಮಾಡಿ"
 
-#: src/libvlc-module.c:1256
+#: src/libvlc-module.c:1258
 msgid "Medium backwards jump"
 msgstr "ಸಾಧಾರಣ ಹಿಂದಿನ ಜಿಗಿತ"
 
-#: src/libvlc-module.c:1258
+#: src/libvlc-module.c:1260
 msgid "Select the hotkey to make a medium backwards jump."
 msgstr "ಸಾಧಾರಣ ಹಿಂದಿನ ಜಿಗಿತ ಮಾಡಲು ಶೀಘ್ರಕೀಲಿ ಆಯ್ಕೆಮಾಡಿ"
 
-#: src/libvlc-module.c:1259
+#: src/libvlc-module.c:1261
 msgid "Long backwards jump"
 msgstr "ದೀರ್ಘ ಹಿಂದಿನ ಜಿಗಿತ"
 
-#: src/libvlc-module.c:1261
+#: src/libvlc-module.c:1263
 msgid "Select the hotkey to make a long backwards jump."
 msgstr "ದೀರ್ಘ ಹಿಂದಿನ ಜಿಗಿತ ಮಾಡಲು ಶೀಘ್ರಕೀಲಿ ಆಯ್ಕೆಮಾಡಿ"
 
-#: src/libvlc-module.c:1263
+#: src/libvlc-module.c:1265
 msgid "Very short forward jump"
 msgstr "ಬಹಳ ಸಣ್ಣ ಮುಂದಿನ ಜಿಗಿತ"
 
-#: src/libvlc-module.c:1265
+#: src/libvlc-module.c:1267
 msgid "Select the hotkey to make a very short forward jump."
 msgstr "ಬಹಳ ಸಣ್ಣ ಮುಂದಿನ ಜಿಗಿತ ಮಾಡಲು ಶೀಘ್ರಕೀಲಿ ಆಯ್ಕೆಮಾಡಿ"
 
-#: src/libvlc-module.c:1266
+#: src/libvlc-module.c:1268
 msgid "Short forward jump"
 msgstr "ಸಣ್ಣ ಮುಂದಿನ ಜಿಗಿತ"
 
-#: src/libvlc-module.c:1268
+#: src/libvlc-module.c:1270
 msgid "Select the hotkey to make a short forward jump."
 msgstr "ಸಣ್ಣ ಮುಂದಿನ ಜಿಗಿತ ಮಾಡಲು ಶೀಘ್ರಕೀಲಿ ಆಯ್ಕೆಮಾಡಿ"
 
-#: src/libvlc-module.c:1269
+#: src/libvlc-module.c:1271
 msgid "Medium forward jump"
 msgstr "ಸಾಧಾರಣ ಮುಂದಿನ ಜಿಗಿತ"
 
-#: src/libvlc-module.c:1271
+#: src/libvlc-module.c:1273
 msgid "Select the hotkey to make a medium forward jump."
 msgstr "ಸಾಧಾರಣ ಮುಂದಿನ ಜಿಗಿತ ಮಾಡಲು ಶೀಘ್ರಕೀಲಿ ಆಯ್ಕೆಮಾಡಿ"
 
-#: src/libvlc-module.c:1272
+#: src/libvlc-module.c:1274
 msgid "Long forward jump"
 msgstr "ದೀರ್ಘ ಮುಂದಿನ ಜಿಗಿತ"
 
-#: src/libvlc-module.c:1274
+#: src/libvlc-module.c:1276
 msgid "Select the hotkey to make a long forward jump."
 msgstr "ದೀರ್ಘ ಮುಂದಿನ ಜಿಗಿತ ಮಾಡಲು ಶೀಘ್ರಕೀಲಿ ಆಯ್ಕೆಮಾಡಿ"
 
-#: src/libvlc-module.c:1275 modules/control/hotkeys.c:599
+#: src/libvlc-module.c:1277 modules/control/hotkeys.c:599
 msgid "Next frame"
 msgstr "ಮುಂದಿನ ಚೌಕಟ್ಟು"
 
-#: src/libvlc-module.c:1277
+#: src/libvlc-module.c:1279
 msgid "Select the hotkey to got to the next video frame."
 msgstr "ಮುಂದಿನ ಚೌಕಟ್ಟಿಗೆ ಹೊಗಲು ಶೀಘ್ರಕೀಲಿ ಆಯ್ಕೆಮಾಡಿ"
 
-#: src/libvlc-module.c:1279
+#: src/libvlc-module.c:1281
 msgid "Very short jump length"
 msgstr "ಅತಿ ಕಡಿಮೆ ಜಿಗಿತದ ಅಳತೆ"
 
-#: src/libvlc-module.c:1280
+#: src/libvlc-module.c:1282
 msgid "Very short jump length, in seconds."
 msgstr "ಅತಿ ಕಡಿಮೆ ಜಿಗಿತದ ಅಳತೆ,ಸೆಕೆಂಡುಗಳಲ್ಲಿ"
 
-#: src/libvlc-module.c:1281
+#: src/libvlc-module.c:1283
 msgid "Short jump length"
 msgstr "ಕಡಿಮೆ ಜಿಗಿತದ ಅಳತೆ"
 
-#: src/libvlc-module.c:1282
+#: src/libvlc-module.c:1284
 msgid "Short jump length, in seconds."
 msgstr "ಕಡಿಮೆ ಜಿಗಿತದ ಅಳತೆ,ಸೆಕೆಂಡುಗಳಲ್ಲಿ"
 
-#: src/libvlc-module.c:1283
+#: src/libvlc-module.c:1285
 msgid "Medium jump length"
 msgstr "ಸಾಧಾರಣ ಜಿಗಿತದ ಅಳತೆ"
 
-#: src/libvlc-module.c:1284
+#: src/libvlc-module.c:1286
 msgid "Medium jump length, in seconds."
 msgstr "ಸಾಧಾರಣ ಜಿಗಿತದ ಅಳತೆ,ಸೆಕೆಂಡುಗಳಲ್ಲಿ"
 
-#: src/libvlc-module.c:1285
+#: src/libvlc-module.c:1287
 msgid "Long jump length"
 msgstr "ದೀರ್ಘ ಜಿಗಿತದ ಅಳತೆ"
 
-#: src/libvlc-module.c:1286
+#: src/libvlc-module.c:1288
 msgid "Long jump length, in seconds."
 msgstr "ದೀರ್ಘ ಜಿಗಿತದ ಅಳತೆ,ಸೆಕೆಂದುಗಳಲ್ಲಿ"
 
-#: src/libvlc-module.c:1288 modules/control/hotkeys.c:361
+#: src/libvlc-module.c:1290 modules/control/hotkeys.c:361
 #: modules/gui/qt/components/controller.hpp:111
 #: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:946
 #: modules/gui/qt/menus.cpp:1132 modules/gui/skins2/commands/cmd_quit.cpp:45
 msgid "Quit"
 msgstr "ನಿರ್ಗಮಿಸು"
 
-#: src/libvlc-module.c:1289
+#: src/libvlc-module.c:1291
 msgid "Select the hotkey to quit the application."
 msgstr "ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ತೊರೆಯಲು ಶೀಘ್ರಕೀಲಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ."
 
-#: src/libvlc-module.c:1290
+#: src/libvlc-module.c:1292
 msgid "Navigate up"
 msgstr "ಮೇಲೆ ಕ್ರಮಿಸಿ"
 
-#: src/libvlc-module.c:1291
+#: src/libvlc-module.c:1293
 #, fuzzy
 msgid ""
 "Select the key to move the selector up in DVD menus / Move viewpoint to up "
 "(pitch)."
 msgstr "ಡಿವಿಡಿ ಮೆನುಗಳಲ್ಲಿ ಆಯ್ಕೆಯ ಚಿಹ್ನೆಯನ್ನು ಮೇಲೆ ಸರಿಸಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ."
 
-#: src/libvlc-module.c:1292
+#: src/libvlc-module.c:1294
 msgid "Navigate down"
 msgstr "ಕೆಳಗೆ ಕ್ರಮಿಸಿ"
 
-#: src/libvlc-module.c:1293
+#: src/libvlc-module.c:1295
 #, fuzzy
 msgid ""
 "Select the key to move the selector down in DVD menus / Move viewpoint to "
 "down (pitch)."
 msgstr "ಡಿವಿಡಿ ಮೆನುಗಳಲ್ಲಿ ಆಯ್ಕೆಯ ಚಿಹ್ನೆಯನ್ನು ಕೆಳಗೆ ಸರಿಸಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ."
 
-#: src/libvlc-module.c:1294
+#: src/libvlc-module.c:1296
 msgid "Navigate left"
 msgstr "ಎಡಕ್ಕೆ ಕ್ರಮಿಸಿ"
 
-#: src/libvlc-module.c:1295
+#: src/libvlc-module.c:1297
 #, fuzzy
 msgid ""
 "Select the key to move the selector left in DVD menus / Move viewpoint to "
 "left (yaw)."
 msgstr "ಡಿವಿಡಿ ಮೆನುಗಳಲ್ಲಿ ಆಯ್ಕೆಯ ಚಿಹ್ನೆಯನ್ನು ಎಡಕ್ಕೆ ಸರಿಸಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ."
 
-#: src/libvlc-module.c:1296
+#: src/libvlc-module.c:1298
 msgid "Navigate right"
 msgstr "ಬಲಕ್ಕೆ ಕ್ರಮಿಸಿ"
 
-#: src/libvlc-module.c:1297
+#: src/libvlc-module.c:1299
 #, fuzzy
 msgid ""
 "Select the key to move the selector right in DVD menus / Move viewpoint to "
 "right (yaw)."
 msgstr "ಡಿವಿಡಿ ಮೆನುಗಳಲ್ಲಿ ಆಯ್ಕೆಯ ಚಿಹ್ನೆಯನ್ನು ಬಲಕ್ಕೆ ಸರಿಸಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ."
 
-#: src/libvlc-module.c:1298
+#: src/libvlc-module.c:1300
 msgid "Activate"
 msgstr "ಸಕ್ರಿಯಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:1299
+#: src/libvlc-module.c:1301
 msgid "Select the key to activate selected item in DVD menus."
 msgstr "ಡಿವಿಡಿ ಮೆನುಗಳಲ್ಲಿ ಆಯ್ಕೆಯ ಚಿಹ್ನೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿಸಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ."
 
-#: src/libvlc-module.c:1300 modules/gui/qt/dialogs/toolbar.cpp:500
+#: src/libvlc-module.c:1302 modules/gui/qt/dialogs/toolbar.cpp:500
 msgid "Go to the DVD menu"
 msgstr "ಡಿವಿಡಿ ಮೆನುವಿಗೆ ಹೋಗಿ"
 
-#: src/libvlc-module.c:1301
+#: src/libvlc-module.c:1303
 msgid "Select the key to take you to the DVD menu"
 msgstr "ಡಿವಿಡಿ ಮೆನುವಿನಲ್ಲಿ ನಿಮ್ಮನ್ನು ತೆಗೆದುಕೊಂಡು ಹೂಗಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
 
-#: src/libvlc-module.c:1302
+#: src/libvlc-module.c:1304
 msgid "Select previous DVD title"
 msgstr "ಹಿಂದಿನ ಡಿವಿಡಿ ಶೀರ್ಷಿಕೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
 
-#: src/libvlc-module.c:1303
+#: src/libvlc-module.c:1305
 msgid "Select the key to choose the previous title from the DVD"
 msgstr "ಡಿವಿಡಿಯಿಂದ ಹಿಂದಿನ ಶೀರ್ಷಿಕೆಯನ್ನು ಆಯ್ಕೆ ಮಾಡಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ"
 
-#: src/libvlc-module.c:1304
+#: src/libvlc-module.c:1306
 msgid "Select next DVD title"
 msgstr "ಮುಂದಿನ ಡಿವಿಡಿ ಶೀರ್ಷಿಕೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
 
-#: src/libvlc-module.c:1305
+#: src/libvlc-module.c:1307
 msgid "Select the key to choose the next title from the DVD"
 msgstr "ಡಿವಿಡಿಯಿಂದ ಮುಂದಿನ ಶೀರ್ಷಿಕೆಯನ್ನು ಆಯ್ಕೆ ಮಾಡಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ"
 
-#: src/libvlc-module.c:1306
+#: src/libvlc-module.c:1308
 msgid "Select prev DVD chapter"
 msgstr "ಡಿವಿಡಿಯ ಹಿಂದಿನ ಅಧ್ಯಾಯವನ್ನು ಆಯ್ಕೆಮಾಡಿ"
 
-#: src/libvlc-module.c:1307
+#: src/libvlc-module.c:1309
 msgid "Select the key to choose the previous chapter from the DVD"
 msgstr "ಡಿವಿಡಿಯ ಹಿಂದಿನ ಅಧ್ಯಾಯವನ್ನು ಆಯ್ಕೆಮಾಡಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ"
 
-#: src/libvlc-module.c:1308
+#: src/libvlc-module.c:1310
 msgid "Select next DVD chapter"
 msgstr "ಡಿವಿಡಿಯ ಮುಂದಿನ ಅಧ್ಯಾಯವನ್ನು ಆಯ್ಕೆಮಾಡಿ"
 
-#: src/libvlc-module.c:1309
+#: src/libvlc-module.c:1311
 msgid "Select the key to choose the next chapter from the DVD"
 msgstr "ಡಿವಿಡಿಯ ಮುಂದಿನ ಅಧ್ಯಾಯವನ್ನು ಆಯ್ಕೆಮಾಡಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ"
 
-#: src/libvlc-module.c:1310
+#: src/libvlc-module.c:1312
 msgid "Volume up"
 msgstr "ವಾಲ್ಯೂಮ್ ಹೆಚ್ಚುಮಾಡು"
 
-#: src/libvlc-module.c:1311
+#: src/libvlc-module.c:1313
 msgid "Select the key to increase audio volume."
 msgstr "ಧ್ವನಿಯ ವಾಲ್ಯೂಮ್ ಹೆಚ್ಚಿಸಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ."
 
-#: src/libvlc-module.c:1312
+#: src/libvlc-module.c:1314
 msgid "Volume down"
 msgstr "ವಾಲ್ಯೂಮ್ ಕಡಿಮೆಮಾಡು"
 
-#: src/libvlc-module.c:1313
+#: src/libvlc-module.c:1315
 msgid "Select the key to decrease audio volume."
 msgstr "ಧ್ವನಿಯ ವಾಲ್ಯೂಮ್ ಕಡಿಮೆ ಮಾಡಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ."
 
-#: src/libvlc-module.c:1314 modules/access/v4l2/v4l2.c:181
+#: src/libvlc-module.c:1316 modules/access/v4l2/v4l2.c:181
 #: modules/gui/macosx/VLCMainMenu.m:407 modules/gui/macosx/VLCMainMenu.m:491
 #: modules/gui/macosx/VLCMainMenu.m:500
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:78
 msgid "Mute"
 msgstr "ನಿಶ್ಯಬ್ಧಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:1315
+#: src/libvlc-module.c:1317
 msgid "Select the key to mute audio."
 msgstr "ನಿಶ್ಯಬ್ದಗೊಳಿಸಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ."
 
-#: src/libvlc-module.c:1316
+#: src/libvlc-module.c:1318
 msgid "Subtitle delay up"
 msgstr "ಉಪಶೀರ್ಷಿಕೆಯ ವಿಳಂಬವನ್ನು ಹೆಚ್ಚುಮಾಡಿ"
 
-#: src/libvlc-module.c:1317
+#: src/libvlc-module.c:1319
 msgid "Select the key to increase the subtitle delay."
 msgstr "ಉಪಶೀರ್ಷಿಕೆಯ ವಿಳಂಬವನ್ನು ಹೆಚ್ಚುಮಾಡಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ."
 
-#: src/libvlc-module.c:1318
+#: src/libvlc-module.c:1320
 msgid "Subtitle delay down"
 msgstr "ಶೀರ್ಷಿಕೆಯ ವಿಳಂಬವನ್ನು ಕಡಿಮೆಮಾಡಿ"
 
-#: src/libvlc-module.c:1319
+#: src/libvlc-module.c:1321
 msgid "Select the key to decrease the subtitle delay."
 msgstr "ಶೀರ್ಷಿಕೆಯ ವಿಳಂಬವನ್ನು ಕಡಿಮೆಮಾಡಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ."
 
-#: src/libvlc-module.c:1320
+#: src/libvlc-module.c:1322
 #, fuzzy
 msgid "Reset subtitles text scale"
 msgstr "ಟೆಲಿಪ್ರಸರಣ ಉಪಶೀರ್ಷಿಕೆಗಳ ವಿಸಂಕೇತಕ"
 
-#: src/libvlc-module.c:1321
+#: src/libvlc-module.c:1323
 #, fuzzy
 msgid "Scale up subtitles text"
 msgstr "ಉಪಶೀರ್ಷಿಕೆಯ ಕಡತವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ"
 
-#: src/libvlc-module.c:1322
+#: src/libvlc-module.c:1324
 #, fuzzy
 msgid "Scale down subtitles text"
 msgstr "ಉಪಶೀರ್ಷಿಕೆಯ ಕಡತವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ"
 
-#: src/libvlc-module.c:1323
+#: src/libvlc-module.c:1325
 #, fuzzy
 msgid "Select the key to change subtitles text scaling"
 msgstr "ಉಪಶೀರ್ಷಿಕೆಗಳನ್ನು ಎತ್ತರಕ್ಕೆ ಸ್ಥಳಾಂತರಿಸಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ."
 
-#: src/libvlc-module.c:1324
+#: src/libvlc-module.c:1326
 msgid "Subtitle sync / bookmark audio timestamp"
 msgstr "ಉಪಶೀರ್ಷಿಕೆ ಹೊಂದಾಣಿಕೆ/ಅಚ್ಹು ಮೆಚ್ಚು ಧ್ವನಿಯ ಸಮಯಮುದ್ರೆ"
 
-#: src/libvlc-module.c:1325
+#: src/libvlc-module.c:1327
 msgid "Select the key to bookmark audio timestamp when syncing subtitles."
 msgstr ""
 "ಉಪಶೀರ್ಷಿಕೆಗಳು ಹೊಂದಾಣಿಕೆ ಮಾಡುವಾಗ ಅಚ್ಹುಮೆಚ್ಚುಗಳ ಧ್ವನಿ ಸಮಯಮುದ್ರೆಗೆ ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ "
 "ಮಾಡಿ."
 
-#: src/libvlc-module.c:1326
+#: src/libvlc-module.c:1328
 msgid "Subtitle sync / bookmark subtitle timestamp"
 msgstr "ಉಪಶೀರ್ಷಿಕೆ ಹೊಂದಾಣಿಕೆ/ಅಚ್ಹು ಮೆಚ್ಚು ಧ್ವನಿಯ ಸಮಯಮುದ್ರೆ"
 
-#: src/libvlc-module.c:1327
+#: src/libvlc-module.c:1329
 msgid "Select the key to bookmark subtitle timestamp when syncing subtitles."
 msgstr ""
 "ಉಪಶೀರ್ಷಿಕೆಗಳು ಹೊಂದಾಣಿಕೆ ಮಾಡುವಾಗ ಅಚ್ಹುಮೆಚ್ಚುಗಳ ಧ್ವನಿ ಸಮಯಮುದ್ರೆಗೆ ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ "
 "ಮಾಡಿ."
 
-#: src/libvlc-module.c:1328
+#: src/libvlc-module.c:1330
 msgid "Subtitle sync / synchronize audio & subtitle timestamps"
 msgstr "Subtitle sync / synchronize audio &amp; subtitle timestamps"
 
-#: src/libvlc-module.c:1329
+#: src/libvlc-module.c:1331
 msgid "Select the key to synchronize bookmarked audio & subtitle timestamps."
 msgstr ""
 "Select the key to synchronize bookmarked audio &amp; subtitle timestamps."
 
-#: src/libvlc-module.c:1330
+#: src/libvlc-module.c:1332
 msgid "Subtitle sync / reset audio & subtitle synchronization"
 msgstr "ಉಪಶೀರ್ಷಿಕೆ ಹೊಂದಾಣಿಕೆ/ಧ್ವನಿ ಮರುಹೊಂದಿಸಿ &amp; ಉಪಶೀರ್ಷಿಕೆ ಹೊಂದಾಣಿಕೆ"
 
-#: src/libvlc-module.c:1331
+#: src/libvlc-module.c:1333
 msgid "Select the key to reset synchronization of audio & subtitle timestamps."
 msgstr ""
 "Select the key to reset synchronization of audio &amp; subtitle timestamps."
 
-#: src/libvlc-module.c:1332
+#: src/libvlc-module.c:1334
 msgid "Subtitle position up"
 msgstr "ಉಪಶೀರ್ಷಿಕೆಯ ಸ್ಥಾನವನ್ನು ಮೇಲೆಮಾಡಿ"
 
-#: src/libvlc-module.c:1333
+#: src/libvlc-module.c:1335
 msgid "Select the key to move subtitles higher."
 msgstr "ಉಪಶೀರ್ಷಿಕೆಗಳನ್ನು ಎತ್ತರಕ್ಕೆ ಸ್ಥಳಾಂತರಿಸಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ."
 
-#: src/libvlc-module.c:1334
+#: src/libvlc-module.c:1336
 msgid "Subtitle position down"
 msgstr "ಉಪಶೀರ್ಷಿಕೆಯ ಸ್ಥಾನವನ್ನು ಕೆಳಗೆತನ್ನಿ"
 
-#: src/libvlc-module.c:1335
+#: src/libvlc-module.c:1337
 msgid "Select the key to move subtitles lower."
 msgstr "ಉಪಶೀರ್ಷಿಕೆಗಳನ್ನು ಕೆಳಕ್ಕೆ ಸ್ಥಳಾಂತರಿಸಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ."
 
-#: src/libvlc-module.c:1336
+#: src/libvlc-module.c:1338
 msgid "Audio delay up"
 msgstr "ಧ್ವನಿಯ ವಿಳಂಬವನ್ನು ಹೆಚ್ಚುಮಾಡಿ"
 
-#: src/libvlc-module.c:1337
+#: src/libvlc-module.c:1339
 msgid "Select the key to increase the audio delay."
 msgstr "ಧ್ವನಿಯ ವಿಳಂಬವನ್ನು ಹೆಚ್ಚುಮಾಡಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ."
 
-#: src/libvlc-module.c:1338
+#: src/libvlc-module.c:1340
 msgid "Audio delay down"
 msgstr "ಧ್ವನಿಯ ವಿಳಂಬವನ್ನು ಕಡಿಮೆಮಾಡಿ"
 
-#: src/libvlc-module.c:1339
+#: src/libvlc-module.c:1341
 msgid "Select the key to decrease the audio delay."
 msgstr "ಧ್ವನಿಯ ವಿಳಂಬವನ್ನು ಕಡಿಮೆಮಾಡಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ."
 
-#: src/libvlc-module.c:1346
+#: src/libvlc-module.c:1348
 msgid "Play playlist bookmark 1"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚು 1 ಅನ್ನು ಪ್ಲೇಮಾಡಿ"
 
-#: src/libvlc-module.c:1347
+#: src/libvlc-module.c:1349
 msgid "Play playlist bookmark 2"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚು 2 ಅನ್ನು ಪ್ಲೇಮಾಡಿ"
 
-#: src/libvlc-module.c:1348
+#: src/libvlc-module.c:1350
 msgid "Play playlist bookmark 3"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚು 3 ಅನ್ನು ಪ್ಲೇಮಾಡಿ"
 
-#: src/libvlc-module.c:1349
+#: src/libvlc-module.c:1351
 msgid "Play playlist bookmark 4"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚು 4 ಅನ್ನು ಪ್ಲೇಮಾಡಿ"
 
-#: src/libvlc-module.c:1350
+#: src/libvlc-module.c:1352
 msgid "Play playlist bookmark 5"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚು 5 ಅನ್ನು ಪ್ಲೇಮಾಡಿ"
 
-#: src/libvlc-module.c:1351
+#: src/libvlc-module.c:1353
 msgid "Play playlist bookmark 6"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚು 6 ಅನ್ನು ಪ್ಲೇಮಾಡಿ"
 
-#: src/libvlc-module.c:1352
+#: src/libvlc-module.c:1354
 msgid "Play playlist bookmark 7"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚು 7 ಅನ್ನು ಪ್ಲೇಮಾಡಿ"
 
-#: src/libvlc-module.c:1353
+#: src/libvlc-module.c:1355
 msgid "Play playlist bookmark 8"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚು 8 ಅನ್ನು ಪ್ಲೇಮಾಡಿ"
 
-#: src/libvlc-module.c:1354
+#: src/libvlc-module.c:1356
 msgid "Play playlist bookmark 9"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚು 9 ಅನ್ನು ಪ್ಲೇಮಾಡಿ"
 
-#: src/libvlc-module.c:1355
+#: src/libvlc-module.c:1357
 msgid "Play playlist bookmark 10"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚು 10 ಅನ್ನು ಪ್ಲೇಮಾಡಿ"
 
-#: src/libvlc-module.c:1356
+#: src/libvlc-module.c:1358
 msgid "Select the key to play this bookmark."
 msgstr "ಈ ಅಚ್ಚುಮೆಚ್ಚನ್ನು ಪ್ಲೇ ಮಾಡಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ."
 
-#: src/libvlc-module.c:1357
+#: src/libvlc-module.c:1359
 msgid "Set playlist bookmark 1"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಗೆ ಅಚ್ಚುಮೆಚ್ಚು 1 ಅನ್ನು ಹೊಂದಿಸಿ"
 
-#: src/libvlc-module.c:1358
+#: src/libvlc-module.c:1360
 msgid "Set playlist bookmark 2"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಗೆ ಅಚ್ಚುಮೆಚ್ಚು 2 ಅನ್ನು ಹೊಂದಿಸಿ"
 
-#: src/libvlc-module.c:1359
+#: src/libvlc-module.c:1361
 msgid "Set playlist bookmark 3"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಗೆ ಅಚ್ಚುಮೆಚ್ಚು 3 ಅನ್ನು ಹೊಂದಿಸಿ"
 
-#: src/libvlc-module.c:1360
+#: src/libvlc-module.c:1362
 msgid "Set playlist bookmark 4"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಗೆ ಅಚ್ಚುಮೆಚ್ಚು 4 ಅನ್ನು ಹೊಂದಿಸಿ"
 
-#: src/libvlc-module.c:1361
+#: src/libvlc-module.c:1363
 msgid "Set playlist bookmark 5"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಗೆ ಅಚ್ಚುಮೆಚ್ಚು 5 ಅನ್ನು ಹೊಂದಿಸಿ"
 
-#: src/libvlc-module.c:1362
+#: src/libvlc-module.c:1364
 msgid "Set playlist bookmark 6"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಗೆ ಅಚ್ಚುಮೆಚ್ಚು 6 ಅನ್ನು ಹೊಂದಿಸಿ"
 
-#: src/libvlc-module.c:1363
+#: src/libvlc-module.c:1365
 msgid "Set playlist bookmark 7"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಗೆ ಅಚ್ಚುಮೆಚ್ಚು 7 ಅನ್ನು ಹೊಂದಿಸಿ"
 
-#: src/libvlc-module.c:1364
+#: src/libvlc-module.c:1366
 msgid "Set playlist bookmark 8"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಗೆ ಅಚ್ಚುಮೆಚ್ಚು 8 ಅನ್ನು ಹೊಂದಿಸಿ"
 
-#: src/libvlc-module.c:1365
+#: src/libvlc-module.c:1367
 msgid "Set playlist bookmark 9"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಗೆ ಅಚ್ಚುಮೆಚ್ಚು 9 ಅನ್ನು ಹೊಂದಿಸಿ"
 
-#: src/libvlc-module.c:1366
+#: src/libvlc-module.c:1368
 msgid "Set playlist bookmark 10"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಗೆ ಅಚ್ಚುಮೆಚ್ಚು 10 ಅನ್ನು ಹೊಂದಿಸಿ"
 
-#: src/libvlc-module.c:1367
+#: src/libvlc-module.c:1369
 msgid "Select the key to set this playlist bookmark."
 msgstr "ಪಟ್ಟಿಯನ್ನು ಅಚ್ಚುಮೆಚ್ಚು ಮಾಡಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ."
 
-#: src/libvlc-module.c:1368
+#: src/libvlc-module.c:1370
 #: modules/gui/qt/components/playlist/standardpanel.cpp:246
 msgid "Clear the playlist"
 msgstr "ಪಟ್ಟಿಯನ್ನು ತೆರವುಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:1369
+#: src/libvlc-module.c:1371
 msgid "Select the key to clear the current playlist."
 msgstr "ಪ್ರಸ್ತುತ ಪಟ್ಟಿಯನ್ನು ತೆರವುಗೊಳಿಸಲು ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ."
 
-#: src/libvlc-module.c:1371
+#: src/libvlc-module.c:1373
 msgid "Playlist bookmark 1"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚು 1"
 
-#: src/libvlc-module.c:1372
+#: src/libvlc-module.c:1374
 msgid "Playlist bookmark 2"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚು 2"
 
-#: src/libvlc-module.c:1373
+#: src/libvlc-module.c:1375
 msgid "Playlist bookmark 3"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚು 3"
 
-#: src/libvlc-module.c:1374
+#: src/libvlc-module.c:1376
 msgid "Playlist bookmark 4"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚು 4"
 
-#: src/libvlc-module.c:1375
+#: src/libvlc-module.c:1377
 msgid "Playlist bookmark 5"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚು 5"
 
-#: src/libvlc-module.c:1376
+#: src/libvlc-module.c:1378
 msgid "Playlist bookmark 6"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚು 6"
 
-#: src/libvlc-module.c:1377
+#: src/libvlc-module.c:1379
 msgid "Playlist bookmark 7"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚು 7"
 
-#: src/libvlc-module.c:1378
+#: src/libvlc-module.c:1380
 msgid "Playlist bookmark 8"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚು 8"
 
-#: src/libvlc-module.c:1379
+#: src/libvlc-module.c:1381
 msgid "Playlist bookmark 9"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚು 9"
 
-#: src/libvlc-module.c:1380
+#: src/libvlc-module.c:1382
 msgid "Playlist bookmark 10"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚು 10"
 
-#: src/libvlc-module.c:1382
+#: src/libvlc-module.c:1384
 msgid "This allows you to define playlist bookmarks."
 msgstr "ಇದು ನಿಮಗೆ ಪಟ್ಟಿಯ ಅಚ್ಚುಮೆಚ್ಚನ್ನು ವ್ಯಾಖ್ಯಾನಿಸಲು ಅನುಮತಿಸುತ್ತದೆ."
 
-#: src/libvlc-module.c:1384
+#: src/libvlc-module.c:1386
 msgid "Cycle audio track"
 msgstr "ಹಾಡನ್ನು ಆವರ್ತಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:1385
+#: src/libvlc-module.c:1387
 msgid "Cycle through the available audio tracks(languages)."
 msgstr "ಲಭ್ಯವಿರುವ ಹಾಡಗಳ(ಭಾಷೆ) ಮೂಲಕ ಆವರ್ತಗೊಳಿಸಿ."
 
-#: src/libvlc-module.c:1386
+#: src/libvlc-module.c:1388
 #, fuzzy
 msgid "Cycle subtitle track in reverse order"
 msgstr " ಉಪಶೀರ್ಷಿಕೆಯನ್ನು ಆವರ್ತಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:1387
+#: src/libvlc-module.c:1389
 #, fuzzy
 msgid "Cycle through the available subtitle tracks in reverse order."
 msgstr "ಲಭ್ಯವಿರುವ  ಉಪಶೀರ್ಷಿಕೆಗಳ ಮೂಲಕ ಆವರ್ತಗೊಳಿಸಿ."
 
-#: src/libvlc-module.c:1388
+#: src/libvlc-module.c:1390
 msgid "Cycle subtitle track"
 msgstr " ಉಪಶೀರ್ಷಿಕೆಯನ್ನು ಆವರ್ತಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:1389
+#: src/libvlc-module.c:1391
 msgid "Cycle through the available subtitle tracks."
 msgstr "ಲಭ್ಯವಿರುವ  ಉಪಶೀರ್ಷಿಕೆಗಳ ಮೂಲಕ ಆವರ್ತಗೊಳಿಸಿ."
 
-#: src/libvlc-module.c:1390
+#: src/libvlc-module.c:1392
 #, fuzzy
 msgid "Toggle subtitles"
 msgstr "ಟೆಲಿಪ್ರಸರಣ ಉಪಶೀರ್ಷಿಕೆಗಳು"
 
-#: src/libvlc-module.c:1391
+#: src/libvlc-module.c:1393
 #, fuzzy
 msgid "Toggle subtitle track visibility."
 msgstr " ಉಪಶೀರ್ಷಿಕೆಯನ್ನು ಆವರ್ತಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:1392
+#: src/libvlc-module.c:1394
 msgid "Cycle next program Service ID"
 msgstr "ಮುಂದಿನ ಕಾರ್ಯಕ್ರಮದ ಸೇವೆಯ ಗುರುತಿನ ಮೇಲೆ ಆವರ್ತಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:1393
+#: src/libvlc-module.c:1395
 msgid "Cycle through the available next program Service IDs (SIDs)."
 msgstr "Cycle through the available next program Service IDs (SIDs)."
 
-#: src/libvlc-module.c:1394
+#: src/libvlc-module.c:1396
 msgid "Cycle previous program Service ID"
 msgstr "ಹಿಂದಿನ ಕಾರ್ಯಕ್ರಮದ ಸೇವೆಯ ಗುರುತಿನ ಮೇಲೆ ಆವರ್ತಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:1395
+#: src/libvlc-module.c:1397
 msgid "Cycle through the available previous program Service IDs (SIDs)."
 msgstr "Cycle through the available previous program Service IDs (SIDs)."
 
-#: src/libvlc-module.c:1396
+#: src/libvlc-module.c:1398
 msgid "Cycle source aspect ratio"
 msgstr "ಆಕಾರ ಅನುಪಾತದ ಮೇಲೆ ಆವರ್ತಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:1397
+#: src/libvlc-module.c:1399
 msgid "Cycle through a predefined list of source aspect ratios."
 msgstr "Cycle through a predefined list of source aspect ratios."
 
-#: src/libvlc-module.c:1398
+#: src/libvlc-module.c:1400
 msgid "Cycle video crop"
 msgstr "ವೀಡಿಯೊ ಕತ್ತರಿಸುವಿಕೆಯನ್ನು ಆವರ್ತಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:1399
+#: src/libvlc-module.c:1401
 msgid "Cycle through a predefined list of crop formats."
 msgstr "Cycle through a predefined list of crop formats."
 
-#: src/libvlc-module.c:1400
+#: src/libvlc-module.c:1402
 msgid "Toggle autoscaling"
 msgstr "ಸ್ವಯಂಚಾಲಿತ ಅಳತೆಬದಲಾವಣೆಯನ್ನು ಅದಲು ಬದಲು ಮಾಡಿ"
 
-#: src/libvlc-module.c:1401
+#: src/libvlc-module.c:1403
 msgid "Activate or deactivate autoscaling."
 msgstr "ಸ್ವಯಂಚಾಲಿತ ಅಳತೆಬದಲಾವಣೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ ಅಥವಾ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ."
 
-#: src/libvlc-module.c:1402
+#: src/libvlc-module.c:1404
 msgid "Increase scale factor"
 msgstr "ಅಳತೆಬದಲಾವಣೆಯ ಅಂಶವನ್ನು ಹೆಚ್ಚಿಸಿ"
 
-#: src/libvlc-module.c:1404
+#: src/libvlc-module.c:1406
 msgid "Decrease scale factor"
 msgstr "ಅಳತೆಬದಲಾವಣೆಯ ಅಂಶವನ್ನು ಕಡಿಮೆಮಾಡಿ"
 
-#: src/libvlc-module.c:1406
+#: src/libvlc-module.c:1408
 msgid "Toggle deinterlacing"
 msgstr "deinterlacing ಅನ್ನು ಅದಲು ಬದಲು ಮಾಡಿ"
 
-#: src/libvlc-module.c:1407
+#: src/libvlc-module.c:1409
 msgid "Activate or deactivate deinterlacing."
 msgstr "deinterlacing ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ ಅಥವಾ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ."
 
-#: src/libvlc-module.c:1408
+#: src/libvlc-module.c:1410
 msgid "Cycle deinterlace modes"
 msgstr "deinterlace  ಕ್ರಮವನ್ನು ಆವರ್ತಗೊಳಿಸು"
 
-#: src/libvlc-module.c:1409
+#: src/libvlc-module.c:1411
 msgid "Cycle through available deinterlace modes."
 msgstr "Cycle through available deinterlace modes."
 
-#: src/libvlc-module.c:1410
+#: src/libvlc-module.c:1412
 msgid "Show controller in fullscreen"
 msgstr "ನಿಯಂತ್ರಕಗಳನ್ನು ಪೂರ್ಣಪರದೆಯಲ್ಲಿ ತೋರಿಸಿ"
 
-#: src/libvlc-module.c:1411
+#: src/libvlc-module.c:1413
 msgid "Boss key"
 msgstr "ಬಾಸ್ ಕೀಲಿ"
 
-#: src/libvlc-module.c:1412
+#: src/libvlc-module.c:1414
 msgid "Hide the interface and pause playback."
 msgstr "ಅಂತರ್ವರ್ತನವನ್ನು ಮರೆಮಾಡಿ ಮತ್ತು ಪ್ಲೇಬ್ಯಾಕ್ಅನ್ನು ವಿರಾಮಗೊಳಿಸಿ."
 
-#: src/libvlc-module.c:1413
+#: src/libvlc-module.c:1415
 msgid "Context menu"
 msgstr "ಕಾಂಟೆಕ್ಸ್ಟ್ ಮೆನು"
 
-#: src/libvlc-module.c:1414
+#: src/libvlc-module.c:1416
 msgid "Show the contextual popup menu."
 msgstr "ಸಂದರ್ಭೋಚಿತ ಪಾಪ್ಅಪ್ ಮೆನುವನ್ನು ತೋರಿಸಿ."
 
-#: src/libvlc-module.c:1415
+#: src/libvlc-module.c:1417
 msgid "Take video snapshot"
 msgstr "ವೀಡಿಯೊ ಚಿತ್ರಣವನ್ನು ತೆಗೆಯಿರಿ"
 
-#: src/libvlc-module.c:1416
+#: src/libvlc-module.c:1418
 msgid "Takes a video snapshot and writes it to disk."
 msgstr "ವೀಡಿಯೊ ಚಿತ್ರಣವನ್ನು ತೆಗೆದು ಅದನ್ನು ಡಿಸ್ಕ್ಗೆ ಬರೆದಿಡಿ"
 
-#: src/libvlc-module.c:1418 modules/gui/macosx/VLCMainMenu.m:379
+#: src/libvlc-module.c:1420 modules/gui/macosx/VLCMainMenu.m:379
 #: modules/gui/qt/components/controller.hpp:110
 #: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:849
 #: modules/stream_out/record.c:60
 msgid "Record"
 msgstr "ರೆಕಾರ್ಡ್"
 
-#: src/libvlc-module.c:1419
+#: src/libvlc-module.c:1421
 msgid "Record access filter start/stop."
 msgstr "ರೆಕಾರ್ಡ್ ಪ್ರವೇಶ ಶೋಧಕ ನಿಲ್ಲಿಸಿ/ಆರಂಭಿಸಿ"
 
-#: src/libvlc-module.c:1421
+#: src/libvlc-module.c:1423
 msgid "Normal/Loop/Repeat"
 msgstr "ಸಾಮಾನ್ಯ/ಲೂಪ್/ಪುನರಾವರ್ತಿಸಿ"
 
-#: src/libvlc-module.c:1422
+#: src/libvlc-module.c:1424
 msgid "Toggle Normal/Loop/Repeat playlist modes"
 msgstr "ಸಾಧಾರಣ ಅದಲುಬದಲು/ ಲೂಪ್ / ಪುನರಾವರ್ತಿಸಿ ಪ್ಲೇಪಟ್ಟಿಯ ವಿಧಾನಗಳು"
 
-#: src/libvlc-module.c:1425
+#: src/libvlc-module.c:1427
 msgid "Toggle random playlist playback"
 msgstr "ಯಾದೃಚ್ಛಿಕ ಪ್ಲೇಪಟ್ಟಿಯ ಪ್ಲೇಬ್ಯಾಕ್ಅನ್ನು ಅದಲುಬದಲು ಮಾಡಿ"
 
-#: src/libvlc-module.c:1430 src/libvlc-module.c:1431
+#: src/libvlc-module.c:1432 src/libvlc-module.c:1433
 msgid "Un-Zoom"
 msgstr "ಸಮೀಪೀಕರಣವನ್ನು ತೆಗೆಯಿರಿ"
 
-#: src/libvlc-module.c:1433 src/libvlc-module.c:1434
+#: src/libvlc-module.c:1435 src/libvlc-module.c:1436
 msgid "Crop one pixel from the top of the video"
 msgstr "ವೀಡಿಯೊದ ಮೇಲಿನಿಂದ ಒಂದು ಪಿಕ್ಸೆಲ್ ಅನ್ನು ತೆಗೆಯಿರಿ  "
 
-#: src/libvlc-module.c:1435 src/libvlc-module.c:1436
+#: src/libvlc-module.c:1437 src/libvlc-module.c:1438
 msgid "Uncrop one pixel from the top of the video"
 msgstr "ವೀಡಿಯೊದ ಮೇಲ್ಭಾಗಕ್ಕೆ ಒಂದು ಪಿಕ್ಸೆಲ್ ಅನ್ನು ಸೇರಿಸಿ"
 
-#: src/libvlc-module.c:1438 src/libvlc-module.c:1439
+#: src/libvlc-module.c:1440 src/libvlc-module.c:1441
 msgid "Crop one pixel from the left of the video"
 msgstr "ವೀಡಿಯೊದ ಎಡದಿಂದ ಒಂದು ಪಿಕ್ಸೆಲ್ ಅನ್ನು ತೆಗೆಯಿರಿ  "
 
-#: src/libvlc-module.c:1440 src/libvlc-module.c:1441
+#: src/libvlc-module.c:1442 src/libvlc-module.c:1443
 msgid "Uncrop one pixel from the left of the video"
 msgstr "ವೀಡಿಯೊದ ಎಡ ಭಾಗಕ್ಕೆ ಒಂದು ಪಿಕ್ಸೆಲ್ ಅನ್ನು ಸೇರಿಸಿ  "
 
-#: src/libvlc-module.c:1443 src/libvlc-module.c:1444
+#: src/libvlc-module.c:1445 src/libvlc-module.c:1446
 msgid "Crop one pixel from the bottom of the video"
 msgstr "ವೀಡಿಯೊದ ಕೆಳ ಭಾಗದಿಂದ ಒಂದು ಪಿಕ್ಸೆಲ್ ಅನ್ನು ತೆಗೆಯಿರಿ  "
 
-#: src/libvlc-module.c:1445 src/libvlc-module.c:1446
+#: src/libvlc-module.c:1447 src/libvlc-module.c:1448
 msgid "Uncrop one pixel from the bottom of the video"
 msgstr "ವೀಡಿಯೊದ ಕೆಳ ಭಾಗಕ್ಕೆ ಒಂದು ಪಿಕ್ಸೆಲ್ ಅನ್ನು ಸೆರಿಸಿ  "
 
-#: src/libvlc-module.c:1448 src/libvlc-module.c:1449
+#: src/libvlc-module.c:1450 src/libvlc-module.c:1451
 msgid "Crop one pixel from the right of the video"
 msgstr "ವೀಡಿಯೊದ ಬಲ ಭಾಗದಿಂದ ಒಂದು ಪಿಕ್ಸೆಲ್ ಅನ್ನು ತೆಗೆಯಿರಿ  "
 
-#: src/libvlc-module.c:1450 src/libvlc-module.c:1451
+#: src/libvlc-module.c:1452 src/libvlc-module.c:1453
 msgid "Uncrop one pixel from the right of the video"
 msgstr "ವೀಡಿಯೊದ ಬಲ ಭಾಗಕ್ಕೆ ಒಂದು ಪಿಕ್ಸೆಲ್ ಅನ್ನು ಸೆರಿಸಿ  "
 
-#: src/libvlc-module.c:1454
+#: src/libvlc-module.c:1456
 msgid "Shrink the viewpoint field of view (360°)"
 msgstr ""
 
-#: src/libvlc-module.c:1455
+#: src/libvlc-module.c:1457
 msgid "Expand the viewpoint field of view (360°)"
 msgstr ""
 
-#: src/libvlc-module.c:1456
+#: src/libvlc-module.c:1458
 msgid "Roll the viewpoint clockwise (360°)"
 msgstr ""
 
-#: src/libvlc-module.c:1457
+#: src/libvlc-module.c:1459
 msgid "Roll the viewpoint anti-clockwise (360°)"
 msgstr ""
 
-#: src/libvlc-module.c:1459
+#: src/libvlc-module.c:1461
 msgid "Toggle wallpaper mode in video output"
 msgstr "ವಿಡಿಯೋ output ನಲ್ಲಿ ವಾಲ್ಪೇಪರ್ ಕ್ರಮವನ್ನು ಟಾಗಲ್  "
 
-#: src/libvlc-module.c:1461
+#: src/libvlc-module.c:1463
 msgid "Toggle wallpaper mode in video output."
 msgstr "ವಿಡಿಯೋ ಔಟ್ಪುಟ್ ನಲ್ಲಿ  ವಾಲ್ಪೇಪರ್ ಕ್ರಮವನ್ನು ಅದಲು ಬದಲು ಮಾಡಿ"
 
-#: src/libvlc-module.c:1463
+#: src/libvlc-module.c:1465
 msgid "Cycle through audio devices"
 msgstr "ಧ್ವನಿ ಸಾಧನಗಳ ಮೂಲಕ ಆವರ್ತಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:1464
+#: src/libvlc-module.c:1466
 msgid "Cycle through available audio devices"
 msgstr "ಲಭ್ಯ ಇರುವ ಧ್ವನಿ ಸಾಧನಗಳ ಮೂಲಕ ಆವರ್ತಗೊಳಿಸಿ"
 
-#: src/libvlc-module.c:1593 src/video_output/vout_intf.c:274
+#: src/libvlc-module.c:1595 src/video_output/vout_intf.c:274
 #: modules/gui/macosx/VLCMainMenu.m:424 modules/gui/macosx/VLCMainMenu.m:502
 #: modules/gui/qt/components/controller.hpp:109
 msgid "Snapshot"
 msgstr "ಚಿತ್ರಣ"
 
-#: src/libvlc-module.c:1610
+#: src/libvlc-module.c:1612
 msgid "Window properties"
 msgstr "ಕಿಟಕಿಯ ಗುಣಲಕ್ಷಣಗಳು"
 
-#: src/libvlc-module.c:1670
+#: src/libvlc-module.c:1672
 msgid "Subpictures"
 msgstr "ಉಪಚಿತ್ರಗಳು"
 
-#: src/libvlc-module.c:1678 modules/codec/subsdec.c:181
+#: src/libvlc-module.c:1680 modules/codec/subsdec.c:181
 #: modules/demux/subtitle.c:71 modules/demux/xiph_metadata.h:49
 #: modules/demux/xiph_metadata.h:62
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:158
@@ -4879,81 +4879,81 @@ msgstr "ಉಪಚಿತ್ರಗಳು"
 msgid "Subtitles"
 msgstr "ಉಪಶೀರ್ಷಿಕೆಗಳು"
 
-#: src/libvlc-module.c:1698 modules/stream_out/transcode/transcode.c:116
+#: src/libvlc-module.c:1700 modules/stream_out/transcode/transcode.c:116
 msgid "Overlays"
 msgstr "ಮೇಲ್ಪದರಗಳು"
 
-#: src/libvlc-module.c:1708
+#: src/libvlc-module.c:1710
 msgid "Track settings"
 msgstr "ಟ್ರ್ಯಾಕ್ ಸಿದ್ಧತೆಗಳು"
 
-#: src/libvlc-module.c:1748 modules/gui/macosx/VLCSimplePrefsController.m:309
+#: src/libvlc-module.c:1750 modules/gui/macosx/VLCSimplePrefsController.m:309
 msgid "Playback control"
 msgstr "ಹಿನ್ನಲೆ ನಿಯಂತ್ರಣ"
 
-#: src/libvlc-module.c:1777
+#: src/libvlc-module.c:1779
 msgid "Default devices"
 msgstr "ಪೂರ್ವನಿಯೋಜಿತ ಸಾಧನಗಳು"
 
-#: src/libvlc-module.c:1784
+#: src/libvlc-module.c:1786
 msgid "Network settings"
 msgstr "ಜಾಲಬಂಧದ ಸಿದ್ದತೆಗಳು"
 
-#: src/libvlc-module.c:1809
+#: src/libvlc-module.c:1812
 msgid "Socks proxy"
 msgstr "ಸಾಕ್ಸ್ ಪ್ರಾಕ್ಸಿ"
 
-#: src/libvlc-module.c:1818 modules/demux/xiph_metadata.h:55
+#: src/libvlc-module.c:1821 modules/demux/xiph_metadata.h:55
 msgid "Metadata"
 msgstr "ಪರ್ಯಾಯದಶಮಾಂಶ"
 
-#: src/libvlc-module.c:1919
+#: src/libvlc-module.c:1922
 msgid "Decoders"
 msgstr "ವಿಸಂಕೇತಕಗಳು"
 
-#: src/libvlc-module.c:1926 modules/access/avio.h:40
+#: src/libvlc-module.c:1929 modules/access/avio.h:40
 #: modules/access/v4l2/v4l2.c:59 modules/gui/macosx/VLCPlaylistInfo.m:85
 msgid "Input"
 msgstr "Input"
 
-#: src/libvlc-module.c:1962
+#: src/libvlc-module.c:1965
 msgid "VLM"
 msgstr "VLM"
 
-#: src/libvlc-module.c:2008
+#: src/libvlc-module.c:2011
 msgid "Special modules"
 msgstr "ವಿಶೇಷ ಘಟಕಗಳು"
 
-#: src/libvlc-module.c:2013 modules/gui/qt/dialogs/plugins.cpp:89
+#: src/libvlc-module.c:2016 modules/gui/qt/dialogs/plugins.cpp:89
 msgid "Plugins"
 msgstr "ಪ್ಲಗಿನ್ಗಳು"
 
-#: src/libvlc-module.c:2025
+#: src/libvlc-module.c:2028
 msgid "Performance options"
 msgstr "ಕಾರ್ಯಕ್ಷಮತೆಯ ಆಯ್ಕೆಗಳು"
 
-#: src/libvlc-module.c:2044
+#: src/libvlc-module.c:2047
 msgid "Clock source"
 msgstr "ಗಡಿಯಾರದ ಮೂಲ"
 
-#: src/libvlc-module.c:2162
+#: src/libvlc-module.c:2165
 msgid "Hot keys"
 msgstr "ಶೀಘ್ರಕೀಲಿಗಳು"
 
-#: src/libvlc-module.c:2652
+#: src/libvlc-module.c:2655
 msgid "Jump sizes"
 msgstr "ಜಿಗಿತದ ಗಾತ್ರಗಳು"
 
-#: src/libvlc-module.c:2737
+#: src/libvlc-module.c:2740
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr ""
 "VLC ಯ ಮುದ್ರಣ ಸಹಾಯಗಳು  (--advanced and --help-verbose ಜೊತೆ ಸಂಯೋಗ ಮಾಡಬಹುದು)"
 
-#: src/libvlc-module.c:2740
+#: src/libvlc-module.c:2743
 msgid "Exhaustive help for VLC and its modules"
 msgstr "VLC ಮತ್ತು ಅದರ ಘಟಕಗಳ ಸಮಗ್ರ ಸಹಾಯ"
 
-#: src/libvlc-module.c:2742
+#: src/libvlc-module.c:2745
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
 "--help-verbose)"
@@ -4961,19 +4961,19 @@ msgstr ""
 "print help for VLC and all its modules (can be combined with --advanced and "
 "--help-verbose)"
 
-#: src/libvlc-module.c:2745
+#: src/libvlc-module.c:2748
 msgid "ask for extra verbosity when displaying help"
 msgstr "ಸಹಾಯ ಪ್ರದರ್ಶಿಸುವಾಗ ಹೆಚ್ಚುವರಿ ಶಬ್ದ ಬಾಹುಳ್ಯ ಕೇಳಿ"
 
-#: src/libvlc-module.c:2747
+#: src/libvlc-module.c:2750
 msgid "print a list of available modules"
 msgstr "ಲಭ್ಯವಿರುವ ಘಟಕಗಳ ಪಟ್ಟಿಯನ್ನು ಮುದ್ರಿಸಿ"
 
-#: src/libvlc-module.c:2749
+#: src/libvlc-module.c:2752
 msgid "print a list of available modules with extra detail"
 msgstr "ಲಭ್ಯವಿರುವ ಘಟಕಗಳ ಪಟ್ಟಿಯನ್ನು ಹೆಚ್ಚುವರಿ ವಿವರಗಳೊಂದಿಗೆ ಮುದ್ರಿಸಿ"
 
-#: src/libvlc-module.c:2751
+#: src/libvlc-module.c:2754
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
 "verbose). Prefix the module name with = for strict matches."
@@ -4981,27 +4981,27 @@ msgstr ""
 "print help on a specific module (can be combined with --advanced and --help-"
 "verbose). Prefix the module name with = for strict matches."
 
-#: src/libvlc-module.c:2755
+#: src/libvlc-module.c:2758
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr "ಯಾವುದೇ ಸಂರಚನಾ ಆಯ್ಕೆಯನ್ನು ಲೋಡ್ ಮಾಡಲಾಗಿಲ್ಲ ಅಥವಾ ಸಂರಚನಾ ಕಡತವನ್ನು ಉಳಿಸಲಾಗಿಲ್ಲ"
 
-#: src/libvlc-module.c:2757
+#: src/libvlc-module.c:2760
 msgid "reset the current config to the default values"
 msgstr "ಈಗಿನ ಸಂರಚನೆಯನ್ನು ಪೂರ್ವನಿಯೋಜಿತ ಮೌಲ್ಯಗಳಿಗೆ  ಮರುಹೊಂದಿಸಿ"
 
-#: src/libvlc-module.c:2759
+#: src/libvlc-module.c:2762
 msgid "use alternate config file"
 msgstr "ಪರ್ಯಾಯ ಸಂರಚನಾ ಕಡತವನ್ನು ಬಳಸಿ"
 
-#: src/libvlc-module.c:2761
+#: src/libvlc-module.c:2764
 msgid "resets the current plugins cache"
 msgstr "ಪ್ರಸ್ತುತ ಪ್ಲಗಿನ್ಗಳನ್ನು ಸಂಗ್ರಹ ಮರುಹೊಂದಿಸುತ್ತದೆ"
 
-#: src/libvlc-module.c:2763
+#: src/libvlc-module.c:2766
 msgid "print version information"
 msgstr "ಮುದ್ರಣದ ಆವೃತ್ತಿಯ ಮಾಹಿತಿ "
 
-#: src/libvlc-module.c:2803
+#: src/libvlc-module.c:2806
 #, fuzzy
 msgid "core program"
 msgstr "ಮುಖ್ಯ ಪ್ರೋಗ್ರಾಂ"
@@ -7642,7 +7642,7 @@ msgstr "ಪ್ರಾಥಮಿಕ ಧ್ವನಿ ಹರಿವು ವಾಹಿನ
 #: modules/demux/rawvid.c:47
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:247
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:167
-#: modules/gui/qt/components/extended_panels.cpp:1292 modules/spu/mosaic.c:94
+#: modules/gui/qt/components/extended_panels.cpp:1290 modules/spu/mosaic.c:94
 #: modules/video_output/vmem.c:42 share/lua/http/dialogs/mosaic_window.html:108
 msgid "Width"
 msgstr "ಅಗಲ"
@@ -7709,7 +7709,7 @@ msgstr "release ಕರೆ ಹಿಂತಿರುಗಿಸುವ ಕ್ರಿಯ�
 
 #: modules/access/imem.c:113
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:244
-#: modules/gui/qt/components/extended_panels.cpp:1291
+#: modules/gui/qt/components/extended_panels.cpp:1289
 msgid "Size"
 msgstr "ಗಾತ್ರ"
 
@@ -7922,19 +7922,19 @@ msgstr "HTTP ಸುರಂಗ ಸಂಪರ್ಕಸ್ಥಾನ"
 msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr "HTTP ಮೇಲೆ RTSP / RTP ಸುರಂಗ ಮಾರ್ಗಕ್ಕೆ ಬಳಸುವ ಸಂಪರ್ಕಸ್ಥಾನ."
 
-#: modules/access/live555.cpp:636
+#: modules/access/live555.cpp:639
 msgid "RTSP authentication"
 msgstr "RTSP ದೃಢೀಕರಣ"
 
-#: modules/access/live555.cpp:637
+#: modules/access/live555.cpp:640
 msgid "Please enter a valid login name and a password."
 msgstr "ದಯವಿಟ್ಟು ಮಾನ್ಯವಾದ ಪ್ರವೇಶ ಹೆಸರು ಮತ್ತು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ."
 
-#: modules/access/live555.cpp:662
+#: modules/access/live555.cpp:665
 msgid "RTSP connection failed"
 msgstr "RTSP ಸಂಪರ್ಕ ವಿಫಲವಾಗಿದೆ"
 
-#: modules/access/live555.cpp:663
+#: modules/access/live555.cpp:666
 msgid "Access to the stream is denied by the server configuration."
 msgstr "ಸ್ಟ್ರೀಮ್ ಪ್ರವೇಶವನ್ನು ಸರ್ವರ್ ಸಂರಚನೆ  ನಿರಾಕರಿಸಿದೆ."
 
@@ -8783,11 +8783,11 @@ msgstr "ಚೌಕಟ್ಟಿನ ತಾತ್ಕಾಲಿಕ ಸಂಗ್ರಹ�
 msgid "Shared memory framebuffer"
 msgstr "ಹಂಚಿಕೆಯಾದ ಸ್ಮರಣೆ ಚೌಕಟ್ಟಿನ ತಾತ್ಕಾಲಿಕ ಸಂಗ್ರಾಹಕ"
 
-#: modules/access/smb.c:62
+#: modules/access/smb.c:65
 msgid "Samba (Windows network shares) input"
 msgstr "ಸಾಂಬಾ (ವಿಂಡೋಸ್ ನೆಟ್ವರ್ಕ್ ಹಂಚಿಕೆಗಳು) ಇನ್ಪುಟ್"
 
-#: modules/access/smb.c:65
+#: modules/access/smb.c:68
 msgid "SMB input"
 msgstr "SMB input"
 
@@ -9092,7 +9092,7 @@ msgid "50 Hz"
 msgstr "50 ಹರ್ಟ್ಝ್"
 
 #: modules/access/v4l2/v4l2.c:137
-#: modules/gui/qt/components/extended_panels.cpp:1081
+#: modules/gui/qt/components/extended_panels.cpp:1079
 msgid "60 Hz"
 msgstr "60 ಹರ್ಟ್ಝ್"
 
@@ -9739,7 +9739,7 @@ msgstr "ಧ್ವನಿಗೆ ವಿಳಂಬ ಪರಿಣಾಮವನ್ನು 
 
 #: modules/audio_filter/chorus_flanger.c:80
 #: modules/audio_filter/stereo_widen.c:57
-#: modules/gui/qt/components/extended_panels.cpp:1311
+#: modules/gui/qt/components/extended_panels.cpp:1309
 msgid "Delay time"
 msgstr "ವಿಳಂಬ ಸಮಯ"
 
@@ -9769,7 +9769,7 @@ msgstr "Rate of change of sweep depth in milliseconds shift per second of play"
 
 #: modules/audio_filter/chorus_flanger.c:89
 #: modules/audio_filter/stereo_widen.c:60
-#: modules/gui/qt/components/extended_panels.cpp:1312
+#: modules/gui/qt/components/extended_panels.cpp:1310
 msgid "Feedback gain"
 msgstr "ಪ್ರತ್ಯಾದಾನ ಗಳಿಕೆ"
 
@@ -9795,7 +9795,7 @@ msgstr "ಇನ್ಪುಟ್ ಸಂಕೇತದ ಮಟ್ಟ"
 
 #: modules/audio_filter/compressor.c:155
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:233
-#: modules/gui/qt/components/extended_panels.cpp:1269
+#: modules/gui/qt/components/extended_panels.cpp:1267
 msgid "RMS/peak"
 msgstr "ಆರ್ಎಮ್ಎಸ್ / ಗರಿಷ್ಠ"
 
@@ -9833,7 +9833,7 @@ msgstr "ಗರಿಷ್ಟ ಮಟ್ಟವನ್ನು ಹೊಂದಿಸಿ(
 
 #: modules/audio_filter/compressor.c:167
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:237
-#: modules/gui/qt/components/extended_panels.cpp:1273
+#: modules/gui/qt/components/extended_panels.cpp:1271
 msgid "Ratio"
 msgstr "ಅನುಪಾತ"
 
@@ -10190,54 +10190,54 @@ msgid "Nearest-neighbor audio resampler"
 msgstr "ಹತ್ತಿರದ-ನೆರೆಯ ಧ್ವನಿ ಮರುಮಾದರಿ"
 
 #: modules/audio_filter/scaletempo.c:52
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:271
-msgid "Audio tempo scaler synched with rate"
-msgstr "Audio tempo scaler synched with rate"
-
-#: modules/audio_filter/scaletempo.c:53
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:270
-msgid "Scaletempo"
-msgstr "ತಾಳಗಳ ಪ್ರಮಾಣ "
-
-#: modules/audio_filter/scaletempo.c:59
-msgid "Stride Length"
-msgstr "ಜಂಗೆಯ ಉದ್ದ"
-
-#: modules/audio_filter/scaletempo.c:59
-msgid "Length in milliseconds to output each stride"
-msgstr "Length in milliseconds to output each stride"
-
-#: modules/audio_filter/scaletempo.c:61
-msgid "Overlap Length"
-msgstr "ಅತಿಕ್ರಮದ ಉದ್ದ"
-
-#: modules/audio_filter/scaletempo.c:61
-msgid "Percentage of stride to overlap"
-msgstr "ಅತಿಕ್ರಮಣಕ್ಕೆ ಸ್ಟ್ರೈಡ್‍ನ ಶೇಕಡಾವಾರು ಪ್ರಮಾಣ"
-
-#: modules/audio_filter/scaletempo.c:63
-msgid "Search Length"
-msgstr "ಉದ್ದ ಹುಡುಕಿ"
-
-#: modules/audio_filter/scaletempo.c:63
-msgid "Length in milliseconds to search for best overlap position"
-msgstr "Length in milliseconds to search for best overlap position"
-
-#: modules/audio_filter/scaletempo.c:67
 msgid "Pitch Shifter"
 msgstr ""
 
-#: modules/audio_filter/scaletempo.c:68
+#: modules/audio_filter/scaletempo.c:53
 #, fuzzy
 msgid "Audio pitch changer"
 msgstr "ಧ್ವನಿ ಉತ್ಪಾದನೆ ವಾಹಿನಿಗಳು"
 
-#: modules/audio_filter/scaletempo.c:72
+#: modules/audio_filter/scaletempo.c:55
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:271
+msgid "Audio tempo scaler synched with rate"
+msgstr "Audio tempo scaler synched with rate"
+
+#: modules/audio_filter/scaletempo.c:56
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:270
+msgid "Scaletempo"
+msgstr "ತಾಳಗಳ ಪ್ರಮಾಣ "
+
+#: modules/audio_filter/scaletempo.c:67
+msgid "Stride Length"
+msgstr "ಜಂಗೆಯ ಉದ್ದ"
+
+#: modules/audio_filter/scaletempo.c:67
+msgid "Length in milliseconds to output each stride"
+msgstr "Length in milliseconds to output each stride"
+
+#: modules/audio_filter/scaletempo.c:69
+msgid "Overlap Length"
+msgstr "ಅತಿಕ್ರಮದ ಉದ್ದ"
+
+#: modules/audio_filter/scaletempo.c:69
+msgid "Percentage of stride to overlap"
+msgstr "ಅತಿಕ್ರಮಣಕ್ಕೆ ಸ್ಟ್ರೈಡ್‍ನ ಶೇಕಡಾವಾರು ಪ್ರಮಾಣ"
+
+#: modules/audio_filter/scaletempo.c:71
+msgid "Search Length"
+msgstr "ಉದ್ದ ಹುಡುಕಿ"
+
+#: modules/audio_filter/scaletempo.c:71
+msgid "Length in milliseconds to search for best overlap position"
+msgstr "Length in milliseconds to search for best overlap position"
+
+#: modules/audio_filter/scaletempo.c:74
 #, fuzzy
 msgid "Pitch Shift"
 msgstr "ಮಟ್ಟ"
 
-#: modules/audio_filter/scaletempo.c:72
+#: modules/audio_filter/scaletempo.c:74
 msgid "Pitch shift in semitones"
 msgstr ""
 
@@ -10261,19 +10261,19 @@ msgstr "ವಾಸ್ತವ ಕೋಣೆಯ ಅಗಲ"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:61
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:249
-#: modules/gui/qt/components/extended_panels.cpp:1293
+#: modules/gui/qt/components/extended_panels.cpp:1291
 msgid "Wet"
 msgstr "ತೇವ"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:64
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:250
-#: modules/gui/qt/components/extended_panels.cpp:1294
+#: modules/gui/qt/components/extended_panels.cpp:1292
 msgid "Dry"
 msgstr "ಶುಷ್ಕ"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:67
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:251
-#: modules/gui/qt/components/extended_panels.cpp:1295
+#: modules/gui/qt/components/extended_panels.cpp:1293
 msgid "Damp"
 msgstr "ಆರ್ದ್ರತೆ"
 
@@ -10313,7 +10313,7 @@ msgstr ""
 "widening effect."
 
 #: modules/audio_filter/stereo_widen.c:64
-#: modules/gui/qt/components/extended_panels.cpp:1313
+#: modules/gui/qt/components/extended_panels.cpp:1311
 msgid "Crossfeed"
 msgstr "ಅಡ್ಡಹಾಯು"
 
@@ -10328,7 +10328,7 @@ msgstr ""
 "channels."
 
 #: modules/audio_filter/stereo_widen.c:68
-#: modules/gui/qt/components/extended_panels.cpp:1314
+#: modules/gui/qt/components/extended_panels.cpp:1312
 msgid "Dry mix"
 msgstr "ಒಣ ಮಿಶ್ರಣ"
 
@@ -11233,12 +11233,12 @@ msgstr "ಉಪಚಿತ್ರಗಳು"
 msgid "VLC could not open the %4.4s %s encoder."
 msgstr "VLC ಗೆ ಸಂಕೇತಕವನ್ನು ತೆರೆಯಲಾಗುತಿಲ್ಲ."
 
-#: modules/codec/avcodec/vaapi.c:374
+#: modules/codec/avcodec/vaapi.c:385
 #, fuzzy
 msgid "VA-API video decoder via DRM"
 msgstr "PNG ವೀಡಿಯೊ ವಿಸಂಕೇತಕ"
 
-#: modules/codec/avcodec/vaapi.c:379
+#: modules/codec/avcodec/vaapi.c:390
 #, fuzzy
 msgid "VA-API video decoder"
 msgstr "PNG ವೀಡಿಯೊ ವಿಸಂಕೇತಕ"
@@ -16225,7 +16225,7 @@ msgid "2 Pass"
 msgstr "2 ಪಾಸ್"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:227
-#: modules/gui/qt/components/extended_panels.cpp:1106
+#: modules/gui/qt/components/extended_panels.cpp:1104
 msgid "Preamp"
 msgstr "ಪೂರ್ವವರ್ಧನೆ"
 
@@ -16242,17 +16242,17 @@ msgid "Reset"
 msgstr "ಮರುಹೊಂದಿಸಿ"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:234
-#: modules/gui/qt/components/extended_panels.cpp:1270
+#: modules/gui/qt/components/extended_panels.cpp:1268
 msgid "Attack"
 msgstr "ಆಕ್ರಮಣ"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:235
-#: modules/gui/qt/components/extended_panels.cpp:1271
+#: modules/gui/qt/components/extended_panels.cpp:1269
 msgid "Release"
 msgstr "ಬಿಡುಗಡೆ"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:236
-#: modules/gui/qt/components/extended_panels.cpp:1272
+#: modules/gui/qt/components/extended_panels.cpp:1270
 msgid "Threshold"
 msgstr "ಮಿತಿ"
 
@@ -18428,12 +18428,12 @@ msgid "Not Set"
 msgstr "ಹೊಂದಿಸಲಾಗಿಲ್ಲ"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:50
-#: modules/gui/qt/components/extended_panels.cpp:1386
+#: modules/gui/qt/components/extended_panels.cpp:1384
 msgid "Audio/Video"
 msgstr "ಧ್ವನಿ/ವೀಡಿಯೊ"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:51
-#: modules/gui/qt/components/extended_panels.cpp:1390
+#: modules/gui/qt/components/extended_panels.cpp:1388
 msgid "Audio track synchronization:"
 msgstr "ಧ್ವನಿ ಟ್ರ್ಯಾಕ್ ಹೊಂದಾಣಿಕೆ:"
 
@@ -18447,12 +18447,12 @@ msgid "A positive value means that the audio is ahead of the video"
 msgstr "ಧನಾತ್ಮಕ ಮೌಲ್ಯವೆಂದರೆ ಧ್ವನಿಯು ವಿಡಿಯೋಕಿಂತ ಮುಂದೆ ಎಂದರ್ಥ"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:54
-#: modules/gui/qt/components/extended_panels.cpp:1398
+#: modules/gui/qt/components/extended_panels.cpp:1396
 msgid "Subtitles/Video"
 msgstr "ಉಪಶೀರ್ಷಿಕೆಗಳು / ವಿಡಿಯೋ"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:55
-#: modules/gui/qt/components/extended_panels.cpp:1402
+#: modules/gui/qt/components/extended_panels.cpp:1400
 msgid "Subtitle track synchronization:"
 msgstr "ಉಪಶೀರ್ಷಿಕೆ ಟ್ರ್ಯಾಕ್ ಹೊಂದಾಣಿಕೆ:"
 
@@ -18461,7 +18461,7 @@ msgid "A positive value means that the subtitles are ahead of the video"
 msgstr "ಧನಾತ್ಮಕ ಮೌಲ್ಯವೆಂದರೆ ಉಪಶೀರ್ಷಿಕೆಯು ವಿಡಿಯೋಕಿಂತ ಮುಂದೆ ಎಂದರ್ಥ"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:58
-#: modules/gui/qt/components/extended_panels.cpp:1409
+#: modules/gui/qt/components/extended_panels.cpp:1407
 msgid "Subtitle speed:"
 msgstr "ಉಪಶೀರ್ಷಿಕೆಯ ವೇಗ:"
 
@@ -18470,12 +18470,12 @@ msgid "fps"
 msgstr "fps"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:60
-#: modules/gui/qt/components/extended_panels.cpp:1423
+#: modules/gui/qt/components/extended_panels.cpp:1421
 msgid "Subtitle duration factor:"
 msgstr "ಉಪಶೀರ್ಷಿಕೆಯ ಕಾಲಾವಧಿಯ ಅಂಶ:"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:68
-#: modules/gui/qt/components/extended_panels.cpp:1534
+#: modules/gui/qt/components/extended_panels.cpp:1532
 msgid ""
 "Extend subtitle duration by this value.\n"
 "Set 0 to disable."
@@ -18484,7 +18484,7 @@ msgstr ""
 "Set 0 to disable."
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:72
-#: modules/gui/qt/components/extended_panels.cpp:1539
+#: modules/gui/qt/components/extended_panels.cpp:1537
 msgid ""
 "Multiply subtitle duration by this value.\n"
 "Set 0 to disable."
@@ -18493,7 +18493,7 @@ msgstr ""
 "Set 0 to disable."
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:76
-#: modules/gui/qt/components/extended_panels.cpp:1544
+#: modules/gui/qt/components/extended_panels.cpp:1542
 msgid ""
 "Recalculate subtitle duration according\n"
 "to their content and this value.\n"
@@ -19238,6 +19238,8 @@ msgstr ""
 "\n"
 "ನಿಯಂತ್ರಣಗಳು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ."
 
+#: modules/gui/qt/components/extended_panels.cpp:1079
+#: modules/gui/qt/components/extended_panels.cpp:1080
 #: modules/gui/qt/components/extended_panels.cpp:1081
 #: modules/gui/qt/components/extended_panels.cpp:1082
 #: modules/gui/qt/components/extended_panels.cpp:1083
@@ -19246,8 +19248,8 @@ msgstr ""
 #: modules/gui/qt/components/extended_panels.cpp:1086
 #: modules/gui/qt/components/extended_panels.cpp:1087
 #: modules/gui/qt/components/extended_panels.cpp:1088
-#: modules/gui/qt/components/extended_panels.cpp:1089
-#: modules/gui/qt/components/extended_panels.cpp:1090
+#: modules/gui/qt/components/extended_panels.cpp:1092
+#: modules/gui/qt/components/extended_panels.cpp:1093
 #: modules/gui/qt/components/extended_panels.cpp:1094
 #: modules/gui/qt/components/extended_panels.cpp:1095
 #: modules/gui/qt/components/extended_panels.cpp:1096
@@ -19256,91 +19258,89 @@ msgstr ""
 #: modules/gui/qt/components/extended_panels.cpp:1099
 #: modules/gui/qt/components/extended_panels.cpp:1100
 #: modules/gui/qt/components/extended_panels.cpp:1101
-#: modules/gui/qt/components/extended_panels.cpp:1102
-#: modules/gui/qt/components/extended_panels.cpp:1103
-#: modules/gui/qt/components/extended_panels.cpp:1106
+#: modules/gui/qt/components/extended_panels.cpp:1104
+#: modules/gui/qt/components/extended_panels.cpp:1270
 #: modules/gui/qt/components/extended_panels.cpp:1272
-#: modules/gui/qt/components/extended_panels.cpp:1274
-#: modules/gui/qt/components/extended_panels.cpp:1275
+#: modules/gui/qt/components/extended_panels.cpp:1273
 msgid "dB"
 msgstr "dB"
 
-#: modules/gui/qt/components/extended_panels.cpp:1082
+#: modules/gui/qt/components/extended_panels.cpp:1080
 msgid "170 Hz"
 msgstr "170 ಹರ್ಟ್ಝ್"
 
-#: modules/gui/qt/components/extended_panels.cpp:1083
+#: modules/gui/qt/components/extended_panels.cpp:1081
 msgid "310 Hz"
 msgstr "310 ಹರ್ಟ್ಝ್"
 
-#: modules/gui/qt/components/extended_panels.cpp:1084
+#: modules/gui/qt/components/extended_panels.cpp:1082
 msgid "600 Hz"
 msgstr "600 ಹರ್ಟ್ಝ್"
 
-#: modules/gui/qt/components/extended_panels.cpp:1085
-#: modules/gui/qt/components/extended_panels.cpp:1099
+#: modules/gui/qt/components/extended_panels.cpp:1083
+#: modules/gui/qt/components/extended_panels.cpp:1097
 msgid "1 KHz"
 msgstr "1 Kಹರ್ಟ್ಝ್"
 
-#: modules/gui/qt/components/extended_panels.cpp:1086
+#: modules/gui/qt/components/extended_panels.cpp:1084
 msgid "3 KHz"
 msgstr "3 Kಹರ್ಟ್ಝ್"
 
-#: modules/gui/qt/components/extended_panels.cpp:1087
+#: modules/gui/qt/components/extended_panels.cpp:1085
 msgid "6 KHz"
 msgstr "6 Kಹರ್ಟ್ಝ್"
 
-#: modules/gui/qt/components/extended_panels.cpp:1088
+#: modules/gui/qt/components/extended_panels.cpp:1086
 msgid "12 KHz"
 msgstr "12 Kಹರ್ಟ್ಝ್"
 
-#: modules/gui/qt/components/extended_panels.cpp:1089
+#: modules/gui/qt/components/extended_panels.cpp:1087
 msgid "14 KHz"
 msgstr "14 Kಹರ್ಟ್ಝ್"
 
-#: modules/gui/qt/components/extended_panels.cpp:1090
-#: modules/gui/qt/components/extended_panels.cpp:1103
+#: modules/gui/qt/components/extended_panels.cpp:1088
+#: modules/gui/qt/components/extended_panels.cpp:1101
 msgid "16 KHz"
 msgstr "16 Kಹರ್ಟ್ಝ್"
 
-#: modules/gui/qt/components/extended_panels.cpp:1094
+#: modules/gui/qt/components/extended_panels.cpp:1092
 msgid "31 Hz"
 msgstr "31 ಹರ್ಟ್ಝ್"
 
-#: modules/gui/qt/components/extended_panels.cpp:1095
+#: modules/gui/qt/components/extended_panels.cpp:1093
 msgid "63 Hz"
 msgstr "63 ಹರ್ಟ್ಝ್"
 
-#: modules/gui/qt/components/extended_panels.cpp:1096
+#: modules/gui/qt/components/extended_panels.cpp:1094
 msgid "125 Hz"
 msgstr "125 ಹರ್ಟ್ಝ್"
 
-#: modules/gui/qt/components/extended_panels.cpp:1097
+#: modules/gui/qt/components/extended_panels.cpp:1095
 msgid "250 Hz"
 msgstr "250 ಹರ್ಟ್ಝ್"
 
-#: modules/gui/qt/components/extended_panels.cpp:1098
+#: modules/gui/qt/components/extended_panels.cpp:1096
 msgid "500 Hz"
 msgstr "500 ಹರ್ಟ್ಝ್"
 
-#: modules/gui/qt/components/extended_panels.cpp:1100
+#: modules/gui/qt/components/extended_panels.cpp:1098
 msgid "2 KHz"
 msgstr "2 Kಹರ್ಟ್ಝ್"
 
-#: modules/gui/qt/components/extended_panels.cpp:1101
+#: modules/gui/qt/components/extended_panels.cpp:1099
 msgid "4 KHz"
 msgstr "4 Kಹರ್ಟ್ಝ್"
 
-#: modules/gui/qt/components/extended_panels.cpp:1102
+#: modules/gui/qt/components/extended_panels.cpp:1100
 msgid "8 KHz"
 msgstr "8 Kಹರ್ಟ್ಝ್"
 
-#: modules/gui/qt/components/extended_panels.cpp:1270
-#: modules/gui/qt/components/extended_panels.cpp:1271
+#: modules/gui/qt/components/extended_panels.cpp:1268
+#: modules/gui/qt/components/extended_panels.cpp:1269
 msgid "ms"
 msgstr "ಮಿಲಿಸೆಕೆಂಡ್"
 
-#: modules/gui/qt/components/extended_panels.cpp:1274
+#: modules/gui/qt/components/extended_panels.cpp:1272
 msgid ""
 "Knee\n"
 "radius"
@@ -19348,7 +19348,7 @@ msgstr ""
 "Knee\n"
 "radius"
 
-#: modules/gui/qt/components/extended_panels.cpp:1275
+#: modules/gui/qt/components/extended_panels.cpp:1273
 msgid ""
 "Makeup\n"
 "gain"
@@ -19356,20 +19356,20 @@ msgstr ""
 "ಮೇಕಪ್\n"
 "ಗಳಿಕೆ"
 
-#: modules/gui/qt/components/extended_panels.cpp:1328
+#: modules/gui/qt/components/extended_panels.cpp:1326
 #, fuzzy
 msgid "Adjust pitch"
 msgstr "VLC ಯ ಆದ್ಯತೆಯನ್ನು ಸರಿಹೊಂದಿಸಿ"
 
-#: modules/gui/qt/components/extended_panels.cpp:1362
+#: modules/gui/qt/components/extended_panels.cpp:1360
 msgid "(Hastened)"
 msgstr "(ತೀವ್ರಗೊಂಡಿತು)"
 
-#: modules/gui/qt/components/extended_panels.cpp:1364
+#: modules/gui/qt/components/extended_panels.cpp:1362
 msgid "(Delayed)"
 msgstr "(ವಿಳಂಬವಾಗಿದೆ)"
 
-#: modules/gui/qt/components/extended_panels.cpp:1451
+#: modules/gui/qt/components/extended_panels.cpp:1449
 msgid "Force update of this dialog's values"
 msgstr "ಈ ಸಂವಾದ ಮೌಲ್ಯಗಳ ಬಲವಂತದ ನವೀಕರಣ"
 
@@ -23148,7 +23148,7 @@ msgstr "ತಿಳಿಸ್ಸಿ"
 msgid "LibNotify Notification Plugin"
 msgstr "LibNotify ಪ್ರಕಟಣೆಯ ಪ್ಲಗಿನ್"
 
-#: modules/packetizer/a52.c:49
+#: modules/packetizer/a52.c:51
 msgid "A/52 audio packetizer"
 msgstr "A/52 ಧ್ವನಿ ವಿಭಜಕ"
 
@@ -23463,7 +23463,7 @@ msgid "Applications"
 msgstr "ಅಪ್ಲಿಕೇಶನ್‍ಗಳು"
 
 #: modules/services_discovery/xcb_apps.c:361
-#: modules/video_output/win32/direct3d9.c:295
+#: modules/video_output/win32/direct3d9.c:320
 msgid "Desktop"
 msgstr "ಡೆಸ್ಕ್ಟಾಪ್"
 
@@ -26006,19 +26006,19 @@ msgstr "ಮಧ್ಯಮದ"
 msgid "High"
 msgstr "ಹೆಚ್ಚಿನ"
 
-#: modules/video_filter/deinterlace/deinterlace.c:56
+#: modules/video_filter/deinterlace/deinterlace.c:258
 msgid "Streaming deinterlace mode"
 msgstr "ಸ್ಟ್ರೀಮಿಂಗ್ deinterlace ವಿಧಾನ"
 
-#: modules/video_filter/deinterlace/deinterlace.c:57
+#: modules/video_filter/deinterlace/deinterlace.c:259
 msgid "Deinterlace method to use for streaming."
 msgstr "ಸ್ಟ್ರೀಮಿಂಗ್‍ಗೆ ಬಳಸಲು Deinterlace ವಿಧಾನ."
 
-#: modules/video_filter/deinterlace/deinterlace.c:66
+#: modules/video_filter/deinterlace/deinterlace.c:268
 msgid "Phosphor chroma mode for 4:2:0 input"
 msgstr "4:2:0 ಇನ್ಪುಟ್‍ಗೆ ಫಾಸ್ಫರ್ ವರ್ಣಶುದ್ಧತೆಯ ವಿಧಾನ"
 
-#: modules/video_filter/deinterlace/deinterlace.c:67
+#: modules/video_filter/deinterlace/deinterlace.c:269
 msgid ""
 "Choose handling for colours in those output frames that fall across input "
 "frame boundaries. \n"
@@ -26050,11 +26050,11 @@ msgstr ""
 "Upconvert: output in 4:2:2 format (independent chroma for each field). Best "
 "simulation, but requires more CPU and memory bandwidth."
 
-#: modules/video_filter/deinterlace/deinterlace.c:89
+#: modules/video_filter/deinterlace/deinterlace.c:291
 msgid "Phosphor old field dimmer strength"
 msgstr "ಫಾಸ್ಫರ್ ಹಳೆಯ ಕ್ಷೇತ್ರದ ಮಬ್ಬು ಬಲ"
 
-#: modules/video_filter/deinterlace/deinterlace.c:90
+#: modules/video_filter/deinterlace/deinterlace.c:292
 msgid ""
 "This controls the strength of the darkening filter that simulates CRT TV "
 "phosphor light decay for the old field in the Phosphor framerate doubler. "
@@ -26064,7 +26064,7 @@ msgstr ""
 "phosphor light decay for the old field in the Phosphor framerate doubler. "
 "Default: Low."
 
-#: modules/video_filter/deinterlace/deinterlace.c:97
+#: modules/video_filter/deinterlace/deinterlace.c:299
 msgid "Deinterlacing video filter"
 msgstr "Deinterlacing ವೀಡಿಯೊ ಶೋಧಕ"
 
@@ -27100,7 +27100,6 @@ msgid "OpenGL"
 msgstr "OpenGL"
 
 #: modules/video_output/opengl/display.c:62
-#: modules/video_output/win32/glwin32.c:53
 msgid "OpenGL video output"
 msgstr "OpenGL ವಿಡಿಯೋ output"
 
@@ -27112,46 +27111,46 @@ msgstr "EGL"
 msgid "EGL extension for OpenGL"
 msgstr "OpenGL ಗೆ ​​EGL ವಿಸ್ತರಣೆ"
 
-#: modules/video_output/win32/direct3d9.c:67
+#: modules/video_output/win32/direct3d9.c:70
 msgid "The desktop mode allows you to display the video on the desktop."
 msgstr "ಡೆಸ್ಕ್ಟಾಪ್ ಕ್ರಮದಲ್ಲಿ ನೀವು ಡೆಸ್ಕ್ಟಾಪ್ ಮೇಲೆ ವೀಡಿಯೊ ತೋರಿಸಲು ಅನುಮತಿಸುತ್ತದೆ."
 
-#: modules/video_output/win32/direct3d9.c:69
+#: modules/video_output/win32/direct3d9.c:72
 #: modules/video_output/win32/direct3d11.c:73
 msgid "Use hardware blending support"
 msgstr "ಯಂತ್ರಾಂಶ ಮಿಶ್ರಣದ ಬೆಂಬಲವನ್ನು ಬಳಸಿ"
 
-#: modules/video_output/win32/direct3d9.c:71
+#: modules/video_output/win32/direct3d9.c:74
 #: modules/video_output/win32/direct3d11.c:75
 msgid "Try to use hardware acceleration for subtitle/OSD blending."
 msgstr "ಉಪಶೀರ್ಷಿಕೆ / OSD ಮಿಶ್ರಣಕ್ಕೆ ಯಂತ್ರಾಂಶ ವೇಗವರ್ಧನೆಯನ್ನು ಬಳಸಲು ಪ್ರಯತ್ನಿಸಿ."
 
-#: modules/video_output/win32/direct3d9.c:73
+#: modules/video_output/win32/direct3d9.c:76
 msgid "Pixel Shader"
 msgstr ""
 
-#: modules/video_output/win32/direct3d9.c:75
+#: modules/video_output/win32/direct3d9.c:78
 msgid "Choose a pixel shader to apply."
 msgstr ""
 
-#: modules/video_output/win32/direct3d9.c:76
+#: modules/video_output/win32/direct3d9.c:79
 msgid "Path to HLSL file"
 msgstr ""
 
-#: modules/video_output/win32/direct3d9.c:77
+#: modules/video_output/win32/direct3d9.c:80
 msgid "Path to an HLSL file containing a single pixel shader."
 msgstr ""
 
-#: modules/video_output/win32/direct3d9.c:79
+#: modules/video_output/win32/direct3d9.c:82
 #, fuzzy
 msgid "HLSL File"
 msgstr "ಕಡತವನ್ನು ಉಳಿಸಿ"
 
-#: modules/video_output/win32/direct3d9.c:81
+#: modules/video_output/win32/direct3d9.c:84
 msgid "Recommended video output for Windows Vista and later versions"
 msgstr "ವಿಂಡೋಸ್ ವಿಸ್ಟಾ ಮತ್ತು ನಂತರದ ಆವೃತ್ತಿಗಳು ಸೂಚಿಸಲಾದ ವಿಡಿಯೋ ಔಟ್ಪುಟ್"
 
-#: modules/video_output/win32/direct3d9.c:88
+#: modules/video_output/win32/direct3d9.c:91
 #, fuzzy
 msgid "Direct3D9 video output"
 msgstr "Direct3D ವಿಡಿಯೋ output"
@@ -27248,9 +27247,10 @@ msgstr "DirectX (DirectDraw) ವಿಡಿಯೋ output"
 msgid "Wallpaper"
 msgstr "ವಾಲ್ ಪೇಪರ್"
 
-#: modules/video_output/win32/glwin32.c:47
-msgid "GPU affinity"
-msgstr ""
+#: modules/video_output/win32/glwin32.c:51
+#, fuzzy
+msgid "OpenGL video output for Windows"
+msgstr "OpenGL ವಿಡಿಯೋ output"
 
 #: modules/video_output/win32/wingdi.c:52
 msgid "Windows GDI video output"

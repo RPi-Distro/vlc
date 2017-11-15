@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 2003 ANEVIA
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 97a563e63860b556f8c636ada1af3b9ca9db340b $
+ * $Id: 2040b90c77ceb62164ec2fbdde2b0449e753b68b $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien LUCAS <damien.lucas@anevia.com>
@@ -836,7 +836,7 @@ static void decode_page_composition( decoder_t *p_dec, bs_t *s )
     if( p_sys->p_page->i_region_defs == 0 ) return;
 
     p_sys->p_page->p_region_defs =
-        malloc( p_sys->p_page->i_region_defs * sizeof(dvbsub_regiondef_t) );
+        vlc_alloc( p_sys->p_page->i_region_defs, sizeof(dvbsub_regiondef_t) );
     if( p_sys->p_page->p_region_defs )
     {
         for( i = 0; i < p_sys->p_page->i_region_defs; i++ )

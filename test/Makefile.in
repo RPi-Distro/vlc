@@ -17,6 +17,7 @@
 ###############################################################################
 # Automake targets and declarations
 ###############################################################################
+
 VPATH = @srcdir@
 am__is_gnu_make = { \
   if test -z '$(MAKELEVEL)'; then \
@@ -91,6 +92,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+noinst_PROGRAMS = $(am__EXEEXT_3)
 check_PROGRAMS = test_libvlc_core$(EXEEXT) \
 	test_libvlc_equalizer$(EXEEXT) test_libvlc_media$(EXEEXT) \
 	test_libvlc_media_list$(EXEEXT) \
@@ -110,9 +112,11 @@ check_PROGRAMS = test_libvlc_core$(EXEEXT) \
 EXTRA_PROGRAMS = test_libvlc_meta$(EXEEXT) \
 	test_libvlc_media_list_player$(EXEEXT) \
 	test_src_input_stream_net$(EXEEXT) vlc-demux-run$(EXEEXT) \
-	vlc-demux-libfuzzer$(EXEEXT)
+	vlc-demux-dec-run$(EXEEXT)
 @HAVE_DYNAMIC_PLUGINS_FALSE@am__append_3 = -DHAVE_STATIC_MODULES
 @HAVE_DYNAMIC_PLUGINS_FALSE@am__append_4 = \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libxml_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libconsole_logger_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libaiff_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libasf_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libau_plugin.la \
@@ -138,8 +142,10 @@ EXTRA_PROGRAMS = test_libvlc_meta$(EXEEXT) \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libty_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libvoc_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libwav_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libwebvtt_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libxa_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libpacketizer_a52_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libpacketizer_copy_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libpacketizer_dts_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libpacketizer_dirac_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libpacketizer_flac_plugin.la \
@@ -151,12 +157,36 @@ EXTRA_PROGRAMS = test_libvlc_meta$(EXEEXT) \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libpacketizer_mpegaudio_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libpacketizer_mpegvideo_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libpacketizer_vc1_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/librawaud_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/librawvid_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libfilesystem_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libxml_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	-lstdc++
 
 @HAVE_DVBPSI_TRUE@@HAVE_DYNAMIC_PLUGINS_FALSE@am__append_5 = -DHAVE_DVBPSI
 @HAVE_DVBPSI_TRUE@@HAVE_DYNAMIC_PLUGINS_FALSE@am__append_6 = ../modules/libts_plugin.la
+@HAVE_DYNAMIC_PLUGINS_FALSE@am__append_7 = \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libadpcm_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libaes3_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libaraw_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libg711_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/liblpcm_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libuleaddvaudio_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/librawvideo_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libcc_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libcvdsub_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libdvbsub_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libscte18_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libscte27_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libspudec_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libstl_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libsubsdec_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libsubsusf_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libsvcdsub_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libtextst_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libsubstx3g_plugin.la
+
+@HAVE_LIBFUZZER_TRUE@am__append_8 = vlc-demux-libfuzzer vlc-demux-dec-libfuzzer vlc-demux-run vlc-demux-dec-run
 subdir = test
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_append_compile_flags.m4 \
@@ -182,6 +212,8 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 @HAVE_DYNAMIC_PLUGINS_FALSE@am__DEPENDENCIES_1 =  \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libxml_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libconsole_logger_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libaiff_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libasf_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libau_plugin.la \
@@ -207,8 +239,10 @@ CONFIG_CLEAN_VPATH_FILES =
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libty_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libvoc_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libwav_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libwebvtt_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libxa_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libpacketizer_a52_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libpacketizer_copy_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libpacketizer_dts_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libpacketizer_dirac_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libpacketizer_flac_plugin.la \
@@ -220,102 +254,124 @@ CONFIG_CLEAN_VPATH_FILES =
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libpacketizer_mpegaudio_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libpacketizer_mpegvideo_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libpacketizer_vc1_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/librawaud_plugin.la \
+@HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/librawvid_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libfilesystem_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libxml_plugin.la
-libvlc_demux_run_la_DEPENDENCIES = ../lib/libvlc.la \
-	../src/libvlccore.la ../compat/libcompat.la \
-	$(am__DEPENDENCIES_1) $(am__append_6)
+am__DEPENDENCIES_2 = ../lib/libvlc.la ../src/libvlccore.la \
+	../compat/libcompat.la $(am__DEPENDENCIES_1) $(am__append_6)
+libvlc_demux_dec_run_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__append_7)
 am__dirstamp = $(am__leading_dot)dirstamp
-am_libvlc_demux_run_la_OBJECTS =  \
-	src/input/libvlc_demux_run_la-demux-run.lo
-libvlc_demux_run_la_OBJECTS = $(am_libvlc_demux_run_la_OBJECTS)
+am__objects_1 = src/input/libvlc_demux_dec_run_la-demux-run.lo \
+	src/input/libvlc_demux_dec_run_la-common.lo
+am_libvlc_demux_dec_run_la_OBJECTS = $(am__objects_1) \
+	src/input/libvlc_demux_dec_run_la-decoder.lo
+libvlc_demux_dec_run_la_OBJECTS =  \
+	$(am_libvlc_demux_dec_run_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+libvlc_demux_dec_run_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(libvlc_demux_dec_run_la_LDFLAGS) \
+	$(LDFLAGS) -o $@
+libvlc_demux_run_la_DEPENDENCIES = ../lib/libvlc.la \
+	../src/libvlccore.la ../compat/libcompat.la \
+	$(am__DEPENDENCIES_1) $(am__append_6)
+am_libvlc_demux_run_la_OBJECTS =  \
+	src/input/libvlc_demux_run_la-demux-run.lo \
+	src/input/libvlc_demux_run_la-common.lo
+libvlc_demux_run_la_OBJECTS = $(am_libvlc_demux_run_la_OBJECTS)
 libvlc_demux_run_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(libvlc_demux_run_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 @ENABLE_SOUT_TRUE@am__EXEEXT_1 = test_modules_tls$(EXEEXT)
 @UPDATE_CHECK_TRUE@am__EXEEXT_2 = test_src_crypto_update$(EXEEXT)
+@HAVE_LIBFUZZER_TRUE@am__EXEEXT_3 = vlc-demux-libfuzzer$(EXEEXT) \
+@HAVE_LIBFUZZER_TRUE@	vlc-demux-dec-libfuzzer$(EXEEXT) \
+@HAVE_LIBFUZZER_TRUE@	vlc-demux-run$(EXEEXT) \
+@HAVE_LIBFUZZER_TRUE@	vlc-demux-dec-run$(EXEEXT)
+PROGRAMS = $(noinst_PROGRAMS)
 am_test_libvlc_core_OBJECTS = libvlc/core.$(OBJEXT)
 test_libvlc_core_OBJECTS = $(am_test_libvlc_core_OBJECTS)
-am__DEPENDENCIES_2 =
-test_libvlc_core_DEPENDENCIES = $(am__DEPENDENCIES_2)
+am__DEPENDENCIES_3 =
+test_libvlc_core_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_test_libvlc_equalizer_OBJECTS = libvlc/equalizer.$(OBJEXT)
 test_libvlc_equalizer_OBJECTS = $(am_test_libvlc_equalizer_OBJECTS)
-test_libvlc_equalizer_DEPENDENCIES = $(am__DEPENDENCIES_2)
+test_libvlc_equalizer_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_test_libvlc_media_OBJECTS = libvlc/media.$(OBJEXT)
 test_libvlc_media_OBJECTS = $(am_test_libvlc_media_OBJECTS)
-test_libvlc_media_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
+test_libvlc_media_DEPENDENCIES = $(am__DEPENDENCIES_3) \
+	$(am__DEPENDENCIES_3)
 am_test_libvlc_media_discoverer_OBJECTS =  \
 	libvlc/media_discoverer.$(OBJEXT)
 test_libvlc_media_discoverer_OBJECTS =  \
 	$(am_test_libvlc_media_discoverer_OBJECTS)
-test_libvlc_media_discoverer_DEPENDENCIES = $(am__DEPENDENCIES_2)
+test_libvlc_media_discoverer_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_test_libvlc_media_list_OBJECTS = libvlc/media_list.$(OBJEXT)
 test_libvlc_media_list_OBJECTS = $(am_test_libvlc_media_list_OBJECTS)
-test_libvlc_media_list_DEPENDENCIES = $(am__DEPENDENCIES_2)
+test_libvlc_media_list_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_test_libvlc_media_list_player_OBJECTS =  \
 	libvlc/media_list_player.$(OBJEXT)
 test_libvlc_media_list_player_OBJECTS =  \
 	$(am_test_libvlc_media_list_player_OBJECTS)
-test_libvlc_media_list_player_DEPENDENCIES = $(am__DEPENDENCIES_2)
+test_libvlc_media_list_player_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_test_libvlc_media_player_OBJECTS = libvlc/media_player.$(OBJEXT)
 test_libvlc_media_player_OBJECTS =  \
 	$(am_test_libvlc_media_player_OBJECTS)
-test_libvlc_media_player_DEPENDENCIES = $(am__DEPENDENCIES_2)
+test_libvlc_media_player_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_test_libvlc_meta_OBJECTS = libvlc/meta.$(OBJEXT)
 test_libvlc_meta_OBJECTS = $(am_test_libvlc_meta_OBJECTS)
-test_libvlc_meta_DEPENDENCIES = $(am__DEPENDENCIES_2)
+test_libvlc_meta_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_test_libvlc_renderer_discoverer_OBJECTS =  \
 	libvlc/renderer_discoverer.$(OBJEXT)
 test_libvlc_renderer_discoverer_OBJECTS =  \
 	$(am_test_libvlc_renderer_discoverer_OBJECTS)
-test_libvlc_renderer_discoverer_DEPENDENCIES = $(am__DEPENDENCIES_2)
+test_libvlc_renderer_discoverer_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_test_libvlc_slaves_OBJECTS = libvlc/slaves.$(OBJEXT)
 test_libvlc_slaves_OBJECTS = $(am_test_libvlc_slaves_OBJECTS)
-test_libvlc_slaves_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
+test_libvlc_slaves_DEPENDENCIES = $(am__DEPENDENCIES_3) \
+	$(am__DEPENDENCIES_3)
 am_test_modules_keystore_OBJECTS = modules/keystore/test.$(OBJEXT)
 test_modules_keystore_OBJECTS = $(am_test_modules_keystore_OBJECTS)
-test_modules_keystore_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
+test_modules_keystore_DEPENDENCIES = $(am__DEPENDENCIES_3) \
+	$(am__DEPENDENCIES_3)
 am_test_modules_packetizer_hxxx_OBJECTS =  \
 	modules/packetizer/hxxx.$(OBJEXT)
 test_modules_packetizer_hxxx_OBJECTS =  \
 	$(am_test_modules_packetizer_hxxx_OBJECTS)
-test_modules_packetizer_hxxx_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
+test_modules_packetizer_hxxx_DEPENDENCIES = $(am__DEPENDENCIES_3) \
+	$(am__DEPENDENCIES_3)
 am_test_modules_tls_OBJECTS = modules/misc/tls.$(OBJEXT)
 test_modules_tls_OBJECTS = $(am_test_modules_tls_OBJECTS)
-test_modules_tls_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
+test_modules_tls_DEPENDENCIES = $(am__DEPENDENCIES_3) \
+	$(am__DEPENDENCIES_3)
 am_test_src_config_chain_OBJECTS = src/config/chain.$(OBJEXT)
 test_src_config_chain_OBJECTS = $(am_test_src_config_chain_OBJECTS)
-test_src_config_chain_DEPENDENCIES = $(am__DEPENDENCIES_2)
+test_src_config_chain_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_test_src_crypto_update_OBJECTS = src/crypto/update.$(OBJEXT)
 test_src_crypto_update_OBJECTS = $(am_test_src_crypto_update_OBJECTS)
-test_src_crypto_update_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
+test_src_crypto_update_DEPENDENCIES = $(am__DEPENDENCIES_3) \
+	$(am__DEPENDENCIES_3)
 am_test_src_input_stream_OBJECTS = src/input/stream.$(OBJEXT)
 test_src_input_stream_OBJECTS = $(am_test_src_input_stream_OBJECTS)
-test_src_input_stream_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
+test_src_input_stream_DEPENDENCIES = $(am__DEPENDENCIES_3) \
+	$(am__DEPENDENCIES_3)
 am_test_src_input_stream_fifo_OBJECTS =  \
 	src/input/stream_fifo.$(OBJEXT)
 test_src_input_stream_fifo_OBJECTS =  \
 	$(am_test_src_input_stream_fifo_OBJECTS)
-test_src_input_stream_fifo_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
+test_src_input_stream_fifo_DEPENDENCIES = $(am__DEPENDENCIES_3) \
+	$(am__DEPENDENCIES_3)
 am_test_src_input_stream_net_OBJECTS =  \
 	src/input/test_src_input_stream_net-stream.$(OBJEXT)
 test_src_input_stream_net_OBJECTS =  \
 	$(am_test_src_input_stream_net_OBJECTS)
-test_src_input_stream_net_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
+test_src_input_stream_net_DEPENDENCIES = $(am__DEPENDENCIES_3) \
+	$(am__DEPENDENCIES_3)
 test_src_input_stream_net_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_src_input_stream_net_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
@@ -323,27 +379,37 @@ test_src_input_stream_net_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 am_test_src_interface_dialog_OBJECTS = src/interface/dialog.$(OBJEXT)
 test_src_interface_dialog_OBJECTS =  \
 	$(am_test_src_interface_dialog_OBJECTS)
-test_src_interface_dialog_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
+test_src_interface_dialog_DEPENDENCIES = $(am__DEPENDENCIES_3) \
+	$(am__DEPENDENCIES_3)
 am_test_src_misc_bits_OBJECTS = src/misc/bits.$(OBJEXT)
 test_src_misc_bits_OBJECTS = $(am_test_src_misc_bits_OBJECTS)
-test_src_misc_bits_DEPENDENCIES = $(am__DEPENDENCIES_2)
+test_src_misc_bits_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_test_src_misc_epg_OBJECTS = src/misc/epg.$(OBJEXT)
 test_src_misc_epg_OBJECTS = $(am_test_src_misc_epg_OBJECTS)
-test_src_misc_epg_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
+test_src_misc_epg_DEPENDENCIES = $(am__DEPENDENCIES_3) \
+	$(am__DEPENDENCIES_3)
 am_test_src_misc_keystore_OBJECTS = src/misc/keystore.$(OBJEXT)
 test_src_misc_keystore_OBJECTS = $(am_test_src_misc_keystore_OBJECTS)
-test_src_misc_keystore_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
+test_src_misc_keystore_DEPENDENCIES = $(am__DEPENDENCIES_3) \
+	$(am__DEPENDENCIES_3)
 am_test_src_misc_variables_OBJECTS = src/misc/variables.$(OBJEXT)
 test_src_misc_variables_OBJECTS =  \
 	$(am_test_src_misc_variables_OBJECTS)
-test_src_misc_variables_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
+test_src_misc_variables_DEPENDENCIES = $(am__DEPENDENCIES_3) \
+	$(am__DEPENDENCIES_3)
+am_vlc_demux_dec_libfuzzer_OBJECTS = vlc-demux-libfuzzer.$(OBJEXT)
+vlc_demux_dec_libfuzzer_OBJECTS =  \
+	$(am_vlc_demux_dec_libfuzzer_OBJECTS)
+vlc_demux_dec_libfuzzer_DEPENDENCIES = libvlc_demux_dec_run.la
+am_vlc_demux_dec_run_OBJECTS = vlc-demux-run.$(OBJEXT)
+vlc_demux_dec_run_OBJECTS = $(am_vlc_demux_dec_run_OBJECTS)
+vlc_demux_dec_run_DEPENDENCIES = libvlc_demux_dec_run.la
+vlc_demux_dec_run_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(vlc_demux_dec_run_LDFLAGS) $(LDFLAGS) \
+	-o $@
 vlc_demux_libfuzzer_SOURCES = vlc-demux-libfuzzer.c
-vlc_demux_libfuzzer_OBJECTS =  \
-	vlc_demux_libfuzzer-vlc-demux-libfuzzer.$(OBJEXT)
+vlc_demux_libfuzzer_OBJECTS = vlc-demux-libfuzzer.$(OBJEXT)
 vlc_demux_libfuzzer_DEPENDENCIES = libvlc_demux_run.la
 vlc_demux_run_SOURCES = vlc-demux-run.c
 vlc_demux_run_OBJECTS = vlc-demux-run.$(OBJEXT)
@@ -381,7 +447,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libvlc_demux_run_la_SOURCES) $(test_libvlc_core_SOURCES) \
+SOURCES = $(libvlc_demux_dec_run_la_SOURCES) \
+	$(libvlc_demux_run_la_SOURCES) $(test_libvlc_core_SOURCES) \
 	$(test_libvlc_equalizer_SOURCES) $(test_libvlc_media_SOURCES) \
 	$(test_libvlc_media_discoverer_SOURCES) \
 	$(test_libvlc_media_list_SOURCES) \
@@ -399,11 +466,13 @@ SOURCES = $(libvlc_demux_run_la_SOURCES) $(test_libvlc_core_SOURCES) \
 	$(test_src_interface_dialog_SOURCES) \
 	$(test_src_misc_bits_SOURCES) $(test_src_misc_epg_SOURCES) \
 	$(test_src_misc_keystore_SOURCES) \
-	$(test_src_misc_variables_SOURCES) vlc-demux-libfuzzer.c \
+	$(test_src_misc_variables_SOURCES) \
+	$(vlc_demux_dec_libfuzzer_SOURCES) \
+	$(vlc_demux_dec_run_SOURCES) vlc-demux-libfuzzer.c \
 	vlc-demux-run.c
-DIST_SOURCES = $(libvlc_demux_run_la_SOURCES) \
-	$(test_libvlc_core_SOURCES) $(test_libvlc_equalizer_SOURCES) \
-	$(test_libvlc_media_SOURCES) \
+DIST_SOURCES = $(libvlc_demux_dec_run_la_SOURCES) \
+	$(libvlc_demux_run_la_SOURCES) $(test_libvlc_core_SOURCES) \
+	$(test_libvlc_equalizer_SOURCES) $(test_libvlc_media_SOURCES) \
 	$(test_libvlc_media_discoverer_SOURCES) \
 	$(test_libvlc_media_list_SOURCES) \
 	$(test_libvlc_media_list_player_SOURCES) \
@@ -420,7 +489,9 @@ DIST_SOURCES = $(libvlc_demux_run_la_SOURCES) \
 	$(test_src_interface_dialog_SOURCES) \
 	$(test_src_misc_bits_SOURCES) $(test_src_misc_epg_SOURCES) \
 	$(test_src_misc_keystore_SOURCES) \
-	$(test_src_misc_variables_SOURCES) vlc-demux-libfuzzer.c \
+	$(test_src_misc_variables_SOURCES) \
+	$(vlc_demux_dec_libfuzzer_SOURCES) \
+	$(vlc_demux_dec_run_SOURCES) vlc-demux-libfuzzer.c \
 	vlc-demux-run.c
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
@@ -948,6 +1019,9 @@ LDFLAGS_mmal = @LDFLAGS_mmal@
 LDFLAGS_x262 = @LDFLAGS_x262@
 LDFLAGS_x264 = @LDFLAGS_x264@
 LDFLAGS_x26410b = @LDFLAGS_x26410b@
+LEX = @LEX@
+LEXLIB = @LEXLIB@
+LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBASS_CFLAGS = @LIBASS_CFLAGS@
 LIBASS_LIBS = @LIBASS_LIBS@
 LIBCDDB_CFLAGS = @LIBCDDB_CFLAGS@
@@ -1391,6 +1465,8 @@ X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
+YACC = @YACC@
+YFLAGS = @YFLAGS@
 ZVBI_CFLAGS = @ZVBI_CFLAGS@
 ZVBI_LIBS = @ZVBI_LIBS@
 abs_builddir = @abs_builddir@
@@ -1528,22 +1604,35 @@ test_modules_keystore_SOURCES = modules/keystore/test.c
 test_modules_keystore_LDADD = $(LIBVLCCORE) $(LIBVLC)
 test_modules_tls_SOURCES = modules/misc/tls.c
 test_modules_tls_LDADD = $(LIBVLCCORE) $(LIBVLC)
-libvlc_demux_run_la_SOURCES = src/input/demux-run.c src/input/demux-run.h
+libvlc_demux_run_la_SOURCES = src/input/demux-run.c src/input/demux-run.h \
+	src/input/common.c src/input/common.h
+
 libvlc_demux_run_la_CPPFLAGS = $(AM_CPPFLAGS) -DTOP_BUILDDIR=\"$$(cd \
 	"$(top_builddir)"; pwd)\" -DTOP_SRCDIR=\"$$(cd \
 	"$(top_srcdir)"; pwd)\" $(am__append_3) $(am__append_5)
 libvlc_demux_run_la_LDFLAGS = -no-install -static
 libvlc_demux_run_la_LIBADD = ../lib/libvlc.la ../src/libvlccore.la \
 	../compat/libcompat.la $(am__append_4) $(am__append_6)
-EXTRA_LTLIBRARIES = libvlc_demux_run.la
+EXTRA_LTLIBRARIES = libvlc_demux_run.la libvlc_demux_dec_run.la
+libvlc_demux_dec_run_la_SOURCES = $(libvlc_demux_run_la_SOURCES) \
+	src/input/decoder.c src/input/decoder.h
+
+libvlc_demux_dec_run_la_CPPFLAGS = $(libvlc_demux_run_la_CPPFLAGS) -DHAVE_DECODERS
+libvlc_demux_dec_run_la_LDFLAGS = $(libvlc_demux_run_la_LDFLAGS)
+libvlc_demux_dec_run_la_LIBADD = $(libvlc_demux_run_la_LIBADD) \
+	$(am__append_7)
 
 #
 # Fuzzers
 #
 vlc_demux_run_LDFLAGS = -no-install -static
 vlc_demux_run_LDADD = libvlc_demux_run.la
-vlc_demux_libfuzzer_CPPFLAGS = $(vlc_static_CPPFLAGS)
-vlc_demux_libfuzzer_LDADD = -lFuzzer libvlc_demux_run.la
+vlc_demux_dec_run_SOURCES = vlc-demux-run.c
+vlc_demux_dec_run_LDFLAGS = -no-install -static
+vlc_demux_dec_run_LDADD = libvlc_demux_dec_run.la
+vlc_demux_libfuzzer_LDADD = libvlc_demux_run.la
+vlc_demux_dec_libfuzzer_SOURCES = vlc-demux-libfuzzer.c
+vlc_demux_dec_libfuzzer_LDADD = libvlc_demux_dec_run.la
 all: all-am
 
 .SUFFIXES:
@@ -1583,7 +1672,18 @@ src/input/$(am__dirstamp):
 src/input/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) src/input/$(DEPDIR)
 	@: > src/input/$(DEPDIR)/$(am__dirstamp)
+src/input/libvlc_demux_dec_run_la-demux-run.lo:  \
+	src/input/$(am__dirstamp) src/input/$(DEPDIR)/$(am__dirstamp)
+src/input/libvlc_demux_dec_run_la-common.lo:  \
+	src/input/$(am__dirstamp) src/input/$(DEPDIR)/$(am__dirstamp)
+src/input/libvlc_demux_dec_run_la-decoder.lo:  \
+	src/input/$(am__dirstamp) src/input/$(DEPDIR)/$(am__dirstamp)
+
+libvlc_demux_dec_run.la: $(libvlc_demux_dec_run_la_OBJECTS) $(libvlc_demux_dec_run_la_DEPENDENCIES) $(EXTRA_libvlc_demux_dec_run_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libvlc_demux_dec_run_la_LINK)  $(libvlc_demux_dec_run_la_OBJECTS) $(libvlc_demux_dec_run_la_LIBADD) $(LIBS)
 src/input/libvlc_demux_run_la-demux-run.lo: src/input/$(am__dirstamp) \
+	src/input/$(DEPDIR)/$(am__dirstamp)
+src/input/libvlc_demux_run_la-common.lo: src/input/$(am__dirstamp) \
 	src/input/$(DEPDIR)/$(am__dirstamp)
 
 libvlc_demux_run.la: $(libvlc_demux_run_la_OBJECTS) $(libvlc_demux_run_la_DEPENDENCIES) $(EXTRA_libvlc_demux_run_la_DEPENDENCIES) 
@@ -1591,6 +1691,15 @@ libvlc_demux_run.la: $(libvlc_demux_run_la_OBJECTS) $(libvlc_demux_run_la_DEPEND
 
 clean-checkPROGRAMS:
 	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
+	echo " rm -f" $$list; \
+	rm -f $$list || exit $$?; \
+	test -n "$(EXEEXT)" || exit 0; \
+	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
+	echo " rm -f" $$list; \
+	rm -f $$list
+
+clean-noinstPROGRAMS:
+	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
 	echo " rm -f" $$list; \
 	rm -f $$list || exit $$?; \
 	test -n "$(EXEEXT)" || exit 0; \
@@ -1784,6 +1893,14 @@ test_src_misc_variables$(EXEEXT): $(test_src_misc_variables_OBJECTS) $(test_src_
 	@rm -f test_src_misc_variables$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(test_src_misc_variables_OBJECTS) $(test_src_misc_variables_LDADD) $(LIBS)
 
+vlc-demux-dec-libfuzzer$(EXEEXT): $(vlc_demux_dec_libfuzzer_OBJECTS) $(vlc_demux_dec_libfuzzer_DEPENDENCIES) $(EXTRA_vlc_demux_dec_libfuzzer_DEPENDENCIES) 
+	@rm -f vlc-demux-dec-libfuzzer$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(vlc_demux_dec_libfuzzer_OBJECTS) $(vlc_demux_dec_libfuzzer_LDADD) $(LIBS)
+
+vlc-demux-dec-run$(EXEEXT): $(vlc_demux_dec_run_OBJECTS) $(vlc_demux_dec_run_DEPENDENCIES) $(EXTRA_vlc_demux_dec_run_DEPENDENCIES) 
+	@rm -f vlc-demux-dec-run$(EXEEXT)
+	$(AM_V_CCLD)$(vlc_demux_dec_run_LINK) $(vlc_demux_dec_run_OBJECTS) $(vlc_demux_dec_run_LDADD) $(LIBS)
+
 vlc-demux-libfuzzer$(EXEEXT): $(vlc_demux_libfuzzer_OBJECTS) $(vlc_demux_libfuzzer_DEPENDENCIES) $(EXTRA_vlc_demux_libfuzzer_DEPENDENCIES) 
 	@rm -f vlc-demux-libfuzzer$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(vlc_demux_libfuzzer_OBJECTS) $(vlc_demux_libfuzzer_LDADD) $(LIBS)
@@ -1808,8 +1925,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vlc-demux-libfuzzer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vlc-demux-run.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vlc_demux_libfuzzer-vlc-demux-libfuzzer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libvlc/$(DEPDIR)/core.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libvlc/$(DEPDIR)/equalizer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libvlc/$(DEPDIR)/media.Po@am__quote@
@@ -1825,6 +1942,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@modules/packetizer/$(DEPDIR)/hxxx.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/config/$(DEPDIR)/chain.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/crypto/$(DEPDIR)/update.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/input/$(DEPDIR)/libvlc_demux_dec_run_la-common.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/input/$(DEPDIR)/libvlc_demux_dec_run_la-decoder.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/input/$(DEPDIR)/libvlc_demux_dec_run_la-demux-run.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/input/$(DEPDIR)/libvlc_demux_run_la-common.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/input/$(DEPDIR)/libvlc_demux_run_la-demux-run.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/input/$(DEPDIR)/stream.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/input/$(DEPDIR)/stream_fifo.Po@am__quote@
@@ -1859,12 +1980,40 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
 
+src/input/libvlc_demux_dec_run_la-demux-run.lo: src/input/demux-run.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libvlc_demux_dec_run_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT src/input/libvlc_demux_dec_run_la-demux-run.lo -MD -MP -MF src/input/$(DEPDIR)/libvlc_demux_dec_run_la-demux-run.Tpo -c -o src/input/libvlc_demux_dec_run_la-demux-run.lo `test -f 'src/input/demux-run.c' || echo '$(srcdir)/'`src/input/demux-run.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/input/$(DEPDIR)/libvlc_demux_dec_run_la-demux-run.Tpo src/input/$(DEPDIR)/libvlc_demux_dec_run_la-demux-run.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/input/demux-run.c' object='src/input/libvlc_demux_dec_run_la-demux-run.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libvlc_demux_dec_run_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o src/input/libvlc_demux_dec_run_la-demux-run.lo `test -f 'src/input/demux-run.c' || echo '$(srcdir)/'`src/input/demux-run.c
+
+src/input/libvlc_demux_dec_run_la-common.lo: src/input/common.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libvlc_demux_dec_run_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT src/input/libvlc_demux_dec_run_la-common.lo -MD -MP -MF src/input/$(DEPDIR)/libvlc_demux_dec_run_la-common.Tpo -c -o src/input/libvlc_demux_dec_run_la-common.lo `test -f 'src/input/common.c' || echo '$(srcdir)/'`src/input/common.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/input/$(DEPDIR)/libvlc_demux_dec_run_la-common.Tpo src/input/$(DEPDIR)/libvlc_demux_dec_run_la-common.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/input/common.c' object='src/input/libvlc_demux_dec_run_la-common.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libvlc_demux_dec_run_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o src/input/libvlc_demux_dec_run_la-common.lo `test -f 'src/input/common.c' || echo '$(srcdir)/'`src/input/common.c
+
+src/input/libvlc_demux_dec_run_la-decoder.lo: src/input/decoder.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libvlc_demux_dec_run_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT src/input/libvlc_demux_dec_run_la-decoder.lo -MD -MP -MF src/input/$(DEPDIR)/libvlc_demux_dec_run_la-decoder.Tpo -c -o src/input/libvlc_demux_dec_run_la-decoder.lo `test -f 'src/input/decoder.c' || echo '$(srcdir)/'`src/input/decoder.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/input/$(DEPDIR)/libvlc_demux_dec_run_la-decoder.Tpo src/input/$(DEPDIR)/libvlc_demux_dec_run_la-decoder.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/input/decoder.c' object='src/input/libvlc_demux_dec_run_la-decoder.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libvlc_demux_dec_run_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o src/input/libvlc_demux_dec_run_la-decoder.lo `test -f 'src/input/decoder.c' || echo '$(srcdir)/'`src/input/decoder.c
+
 src/input/libvlc_demux_run_la-demux-run.lo: src/input/demux-run.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libvlc_demux_run_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT src/input/libvlc_demux_run_la-demux-run.lo -MD -MP -MF src/input/$(DEPDIR)/libvlc_demux_run_la-demux-run.Tpo -c -o src/input/libvlc_demux_run_la-demux-run.lo `test -f 'src/input/demux-run.c' || echo '$(srcdir)/'`src/input/demux-run.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/input/$(DEPDIR)/libvlc_demux_run_la-demux-run.Tpo src/input/$(DEPDIR)/libvlc_demux_run_la-demux-run.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/input/demux-run.c' object='src/input/libvlc_demux_run_la-demux-run.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libvlc_demux_run_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o src/input/libvlc_demux_run_la-demux-run.lo `test -f 'src/input/demux-run.c' || echo '$(srcdir)/'`src/input/demux-run.c
+
+src/input/libvlc_demux_run_la-common.lo: src/input/common.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libvlc_demux_run_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT src/input/libvlc_demux_run_la-common.lo -MD -MP -MF src/input/$(DEPDIR)/libvlc_demux_run_la-common.Tpo -c -o src/input/libvlc_demux_run_la-common.lo `test -f 'src/input/common.c' || echo '$(srcdir)/'`src/input/common.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/input/$(DEPDIR)/libvlc_demux_run_la-common.Tpo src/input/$(DEPDIR)/libvlc_demux_run_la-common.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/input/common.c' object='src/input/libvlc_demux_run_la-common.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libvlc_demux_run_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o src/input/libvlc_demux_run_la-common.lo `test -f 'src/input/common.c' || echo '$(srcdir)/'`src/input/common.c
 
 src/input/test_src_input_stream_net-stream.o: src/input/stream.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_src_input_stream_net_CFLAGS) $(CFLAGS) -MT src/input/test_src_input_stream_net-stream.o -MD -MP -MF src/input/$(DEPDIR)/test_src_input_stream_net-stream.Tpo -c -o src/input/test_src_input_stream_net-stream.o `test -f 'src/input/stream.c' || echo '$(srcdir)/'`src/input/stream.c
@@ -1879,20 +2028,6 @@ src/input/test_src_input_stream_net-stream.obj: src/input/stream.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/input/stream.c' object='src/input/test_src_input_stream_net-stream.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_src_input_stream_net_CFLAGS) $(CFLAGS) -c -o src/input/test_src_input_stream_net-stream.obj `if test -f 'src/input/stream.c'; then $(CYGPATH_W) 'src/input/stream.c'; else $(CYGPATH_W) '$(srcdir)/src/input/stream.c'; fi`
-
-vlc_demux_libfuzzer-vlc-demux-libfuzzer.o: vlc-demux-libfuzzer.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(vlc_demux_libfuzzer_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT vlc_demux_libfuzzer-vlc-demux-libfuzzer.o -MD -MP -MF $(DEPDIR)/vlc_demux_libfuzzer-vlc-demux-libfuzzer.Tpo -c -o vlc_demux_libfuzzer-vlc-demux-libfuzzer.o `test -f 'vlc-demux-libfuzzer.c' || echo '$(srcdir)/'`vlc-demux-libfuzzer.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/vlc_demux_libfuzzer-vlc-demux-libfuzzer.Tpo $(DEPDIR)/vlc_demux_libfuzzer-vlc-demux-libfuzzer.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='vlc-demux-libfuzzer.c' object='vlc_demux_libfuzzer-vlc-demux-libfuzzer.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(vlc_demux_libfuzzer_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o vlc_demux_libfuzzer-vlc-demux-libfuzzer.o `test -f 'vlc-demux-libfuzzer.c' || echo '$(srcdir)/'`vlc-demux-libfuzzer.c
-
-vlc_demux_libfuzzer-vlc-demux-libfuzzer.obj: vlc-demux-libfuzzer.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(vlc_demux_libfuzzer_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT vlc_demux_libfuzzer-vlc-demux-libfuzzer.obj -MD -MP -MF $(DEPDIR)/vlc_demux_libfuzzer-vlc-demux-libfuzzer.Tpo -c -o vlc_demux_libfuzzer-vlc-demux-libfuzzer.obj `if test -f 'vlc-demux-libfuzzer.c'; then $(CYGPATH_W) 'vlc-demux-libfuzzer.c'; else $(CYGPATH_W) '$(srcdir)/vlc-demux-libfuzzer.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/vlc_demux_libfuzzer-vlc-demux-libfuzzer.Tpo $(DEPDIR)/vlc_demux_libfuzzer-vlc-demux-libfuzzer.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='vlc-demux-libfuzzer.c' object='vlc_demux_libfuzzer-vlc-demux-libfuzzer.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(vlc_demux_libfuzzer_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o vlc_demux_libfuzzer-vlc-demux-libfuzzer.obj `if test -f 'vlc-demux-libfuzzer.c'; then $(CYGPATH_W) 'vlc-demux-libfuzzer.c'; else $(CYGPATH_W) '$(srcdir)/vlc-demux-libfuzzer.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -2291,7 +2426,7 @@ check-am: all-am
 	  $(check_HEADERS)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-am
-all-am: Makefile
+all-am: Makefile $(PROGRAMS)
 installdirs:
 install: install-am
 install-exec: install-exec-am
@@ -2348,7 +2483,7 @@ maintainer-clean-generic:
 clean: clean-am
 
 clean-am: clean-checkPROGRAMS clean-generic clean-libtool \
-	mostlyclean-am
+	clean-noinstPROGRAMS mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR) libvlc/$(DEPDIR) modules/keystore/$(DEPDIR) modules/misc/$(DEPDIR) modules/packetizer/$(DEPDIR) src/config/$(DEPDIR) src/crypto/$(DEPDIR) src/input/$(DEPDIR) src/interface/$(DEPDIR) src/misc/$(DEPDIR)
@@ -2419,18 +2554,19 @@ uninstall-am:
 .MAKE: check-am install-am install-strip
 
 .PHONY: CTAGS GTAGS TAGS all all-am check check-TESTS check-am clean \
-	clean-checkPROGRAMS clean-generic clean-libtool cscopelist-am \
-	ctags ctags-am distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	recheck tags tags-am uninstall uninstall-am
+	clean-checkPROGRAMS clean-generic clean-libtool \
+	clean-noinstPROGRAMS cscopelist-am ctags ctags-am distclean \
+	distclean-compile distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am html html-am info info-am \
+	install install-am install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	pdf pdf-am ps ps-am recheck tags tags-am uninstall \
+	uninstall-am
 
 .PRECIOUS: Makefile
 

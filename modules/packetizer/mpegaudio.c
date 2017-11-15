@@ -2,7 +2,7 @@
  * mpegaudio.c: parse MPEG audio sync info and packetize the stream
  *****************************************************************************
  * Copyright (C) 2001-2016 VLC authors and VideoLAN
- * $Id: d2f0186234bdbf3b5e03e84935d67fcc617c40e3 $
+ * $Id: 00c50a5c3d505deeb81d22622b4c9c6a513d8993 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -343,6 +343,7 @@ static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                 /* Need more data */
                 return NULL;
             }
+            /* fallthrough */
 
         case STATE_SYNC:
             /* New frame, set the Presentation Time Stamp */
@@ -361,6 +362,7 @@ static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                 }
             }
             p_sys->i_state = STATE_HEADER;
+            /* fallthrough */
 
         case STATE_HEADER:
             /* Get MPGA frame header (MPGA_HEADER_SIZE bytes) */
@@ -407,6 +409,7 @@ static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             }
 
             p_sys->i_state = STATE_NEXT_SYNC;
+            /* fallthrough */
 
         case STATE_NEXT_SYNC:
             /* Check if next expected frame contains the sync word */
@@ -545,6 +548,7 @@ static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                 return NULL;
             }
             p_sys->i_state = STATE_SEND_DATA;
+            /* fallthrough */
 
         case STATE_SEND_DATA:
             if( !(p_buf = GetOutBuffer( p_dec, &p_out_buffer )) )
