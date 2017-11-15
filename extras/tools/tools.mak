@@ -12,7 +12,7 @@ AUTOCONF=$(PREFIX)/bin/autoconf
 export AUTOCONF
 
 ifeq ($(shell curl --version >/dev/null 2>&1 || echo FAIL),)
-download = curl -f -L -- "$(1)" > "$@"
+download = curl -f -L -- "$(1)" > "$@.tmp" && touch $@.tmp && mv $@.tmp $@
 else ifeq ($(shell wget --version >/dev/null 2>&1 || echo FAIL),)
 download = rm -f $@.tmp && \
 	wget --passive -c -p -O $@.tmp "$(1)" && \
@@ -28,7 +28,8 @@ download = $(error Neither curl nor wget found!)
 endif
 
 download_pkg = $(call download,$(VIDEOLAN)/$(2)/$(lastword $(subst /, ,$(@)))) || \
-	( $(call download,$(1)) && echo "Please upload package $(lastword $(subst /, ,$(@))) to our FTP" )
+	( $(call download,$(1)) && echo "Please upload package $(lastword $(subst /, ,$(@))) to our FTP" )  \
+	&& grep $(@) SHA512SUMS| shasum -a 512 -c
 
 UNPACK = $(RM) -R $@ \
     $(foreach f,$(filter %.tar.gz %.tgz,$^), && tar xvzf $(f)) \
@@ -36,7 +37,7 @@ UNPACK = $(RM) -R $@ \
     $(foreach f,$(filter %.tar.xz,$^), && tar xvJf $(f)) \
     $(foreach f,$(filter %.zip,$^), && unzip $(f))
 
-UNPACK_DIR = $(basename $(basename $(notdir $<)))
+UNPACK_DIR = $(patsubst %.tar,%,$(basename $(notdir $<)))
 APPLY = (cd $(UNPACK_DIR) && patch -p1) <
 MOVE = mv $(UNPACK_DIR) $@ && touch $@
 
@@ -217,7 +218,7 @@ gas: gas-preprocessor-$(GAS_VERSION).tar.gz
 
 CLEAN_FILE += .gas
 CLEAN_PKG += gas
-DISTCLEAN_PKG += yuvi-gas-preprocessor-$(GAS_VERSION).tar.gz
+DISTCLEAN_PKG += gas-preprocessor-$(GAS_VERSION).tar.gz
 
 # Ragel State Machine Compiler
 ragel-$(RAGEL_VERSION).tar.gz:
@@ -292,8 +293,51 @@ DISTCLEAN_PKG += protobuf-$(PROTOBUF_VERSION).tar.gz
 CLEAN_FILE += .protoc
 
 #
+# GNU bison
+#
+
+bison-$(BISON_VERSION).tar.xz:
+	$(call download_pkg,$(BISON_URL),bison)
+
+bison: bison-$(BISON_VERSION).tar.xz
+	$(UNPACK)
+	$(APPLY) bison-macOS-c41f233c.patch
+	$(APPLY) bison-macOS-7df04f9.patch
+	$(MOVE)
+
+.bison: bison
+	(cd $<; ./configure --prefix=$(PREFIX) && $(MAKE) && $(MAKE) install)
+	touch $@
+
+CLEAN_PKG += bison
+DISTCLEAN_PKG += bison-$(BISON_VERSION).tar.xz
+CLEAN_FILE += .bison
+
+#
+# GNU flex
+#
+
+flex-$(FLEX_VERSION).tar.gz:
+	$(call download_pkg,$(FLEX_URL),flex)
+
+flex: flex-$(FLEX_VERSION).tar.gz
+	$(UNPACK)
+	$(MOVE)
+
+.flex: flex
+	(cd $<; ./configure --prefix=$(PREFIX) && $(MAKE) && $(MAKE) install)
+	touch $@
+
+CLEAN_PKG += flex
+DISTCLEAN_PKG += flex-$(FLEX_VERSION).tar.gz
+CLEAN_FILE += .flex
+
+
 #
 #
+#
+
+fetch-all: $(DISTCLEAN_PKG)
 
 clean:
 	rm -fr $(CLEAN_FILE) $(CLEAN_PKG) build/

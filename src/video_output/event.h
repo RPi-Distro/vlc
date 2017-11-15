@@ -2,7 +2,7 @@
  * event.h: vout event
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 78804c190ca6586afec0fe454937911ba4c89245 $
+ * $Id: ac40ef3405f3d16db46a6907d1bf3ccbaca4ac4a $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -80,7 +80,9 @@ static inline void vout_SendEventMousePressed(vout_thread_t *vout, int button)
         var_ToggleBool(vout->obj.libvlc, "intf-toggle-fscontrol");
         return;
     case MOUSE_BUTTON_RIGHT:
+#if !defined(_WIN32)
         var_SetBool(vout->obj.libvlc, "intf-popupmenu", true);
+#endif
         return;
     case MOUSE_BUTTON_WHEEL_UP:    key = KEY_MOUSEWHEELUP;    break;
     case MOUSE_BUTTON_WHEEL_DOWN:  key = KEY_MOUSEWHEELDOWN;  break;
@@ -92,6 +94,14 @@ static inline void vout_SendEventMousePressed(vout_thread_t *vout, int button)
 static inline void vout_SendEventMouseReleased(vout_thread_t *vout, int button)
 {
     var_NAndInteger(vout, "mouse-button-down", 1 << button);
+#if defined(_WIN32)
+    switch (button)
+    {
+    case MOUSE_BUTTON_RIGHT:
+        var_SetBool(vout->obj.libvlc, "intf-popupmenu", true);
+        return;
+    }
+#endif
 }
 static inline void vout_SendEventMouseDoubleClick(vout_thread_t *vout)
 {

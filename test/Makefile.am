@@ -12,6 +12,7 @@ extra_check_verbose__0 = $(extra_check_verbose_0)
 ###############################################################################
 # Unit/regression test
 ###############################################################################
+noinst_PROGRAMS =
 check_PROGRAMS = \
 	test_libvlc_core \
 	test_libvlc_equalizer \
@@ -138,7 +139,8 @@ FORCE:
 
 .PHONY: FORCE
 
-libvlc_demux_run_la_SOURCES = src/input/demux-run.c src/input/demux-run.h
+libvlc_demux_run_la_SOURCES = src/input/demux-run.c src/input/demux-run.h \
+	src/input/common.c src/input/common.h
 libvlc_demux_run_la_CPPFLAGS = $(AM_CPPFLAGS) \
 	-DTOP_BUILDDIR=\"$$(cd "$(top_builddir)"; pwd)\" \
 	-DTOP_SRCDIR=\"$$(cd "$(top_srcdir)"; pwd)\"
@@ -148,6 +150,8 @@ libvlc_demux_run_la_LIBADD = \
 if !HAVE_DYNAMIC_PLUGINS
 libvlc_demux_run_la_CPPFLAGS += -DHAVE_STATIC_MODULES
 libvlc_demux_run_la_LIBADD += \
+	../modules/libxml_plugin.la \
+	../modules/libconsole_logger_plugin.la \
 	../modules/libaiff_plugin.la \
 	../modules/libasf_plugin.la \
 	../modules/libau_plugin.la \
@@ -173,8 +177,10 @@ libvlc_demux_run_la_LIBADD += \
 	../modules/libty_plugin.la \
 	../modules/libvoc_plugin.la \
 	../modules/libwav_plugin.la \
+	../modules/libwebvtt_plugin.la \
 	../modules/libxa_plugin.la \
 	../modules/libpacketizer_a52_plugin.la \
+	../modules/libpacketizer_copy_plugin.la \
 	../modules/libpacketizer_dts_plugin.la \
 	../modules/libpacketizer_dirac_plugin.la \
 	../modules/libpacketizer_flac_plugin.la \
@@ -186,6 +192,8 @@ libvlc_demux_run_la_LIBADD += \
 	../modules/libpacketizer_mpegaudio_plugin.la \
 	../modules/libpacketizer_mpegvideo_plugin.la \
 	../modules/libpacketizer_vc1_plugin.la \
+	../modules/librawaud_plugin.la \
+	../modules/librawvid_plugin.la \
 	../modules/libfilesystem_plugin.la \
 	../modules/libxml_plugin.la \
 	-lstdc++
@@ -196,13 +204,48 @@ endif
 endif
 EXTRA_LTLIBRARIES = libvlc_demux_run.la
 
+libvlc_demux_dec_run_la_SOURCES = $(libvlc_demux_run_la_SOURCES) \
+	src/input/decoder.c src/input/decoder.h
+libvlc_demux_dec_run_la_CPPFLAGS = $(libvlc_demux_run_la_CPPFLAGS) -DHAVE_DECODERS
+libvlc_demux_dec_run_la_LDFLAGS = $(libvlc_demux_run_la_LDFLAGS)
+libvlc_demux_dec_run_la_LIBADD = $(libvlc_demux_run_la_LIBADD)
+if !HAVE_DYNAMIC_PLUGINS
+libvlc_demux_dec_run_la_LIBADD += \
+	../modules/libadpcm_plugin.la \
+	../modules/libaes3_plugin.la \
+	../modules/libaraw_plugin.la \
+	../modules/libg711_plugin.la \
+	../modules/liblpcm_plugin.la \
+	../modules/libuleaddvaudio_plugin.la \
+	../modules/librawvideo_plugin.la \
+	../modules/libcc_plugin.la \
+	../modules/libcvdsub_plugin.la \
+	../modules/libdvbsub_plugin.la \
+	../modules/libscte18_plugin.la \
+	../modules/libscte27_plugin.la \
+	../modules/libspudec_plugin.la \
+	../modules/libstl_plugin.la \
+	../modules/libsubsdec_plugin.la \
+	../modules/libsubsusf_plugin.la \
+	../modules/libsvcdsub_plugin.la \
+	../modules/libtextst_plugin.la \
+	../modules/libsubstx3g_plugin.la
+endif
+EXTRA_LTLIBRARIES += libvlc_demux_dec_run.la
+
 #
 # Fuzzers
 #
 vlc_demux_run_LDFLAGS = -no-install -static
 vlc_demux_run_LDADD = libvlc_demux_run.la
-EXTRA_PROGRAMS += vlc-demux-run
+vlc_demux_dec_run_SOURCES = vlc-demux-run.c
+vlc_demux_dec_run_LDFLAGS = -no-install -static
+vlc_demux_dec_run_LDADD = libvlc_demux_dec_run.la
+EXTRA_PROGRAMS += vlc-demux-run vlc-demux-dec-run
 
-vlc_demux_libfuzzer_CPPFLAGS = $(vlc_static_CPPFLAGS)
-vlc_demux_libfuzzer_LDADD = -lFuzzer libvlc_demux_run.la
-EXTRA_PROGRAMS += vlc-demux-libfuzzer
+vlc_demux_libfuzzer_LDADD = libvlc_demux_run.la
+vlc_demux_dec_libfuzzer_SOURCES = vlc-demux-libfuzzer.c
+vlc_demux_dec_libfuzzer_LDADD = libvlc_demux_dec_run.la
+if HAVE_LIBFUZZER
+noinst_PROGRAMS += vlc-demux-libfuzzer vlc-demux-dec-libfuzzer vlc-demux-run vlc-demux-dec-run
+endif

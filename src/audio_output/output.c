@@ -2,7 +2,7 @@
  * output.c : internal management of output streams for the audio output
  *****************************************************************************
  * Copyright (C) 2002-2004 VLC authors and VideoLAN
- * $Id: 3c72a50184b3270c75ba2f0bde36eb8c1dc4ed84 $
+ * $Id: 4fb7ab8d7fc20ec75d1a405bedd56afbf5fb2251 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -847,8 +847,8 @@ int aout_DevicesList (audio_output_t *aout, char ***ids, char ***names)
     unsigned i = 0;
 
     vlc_mutex_lock (&owner->dev.lock);
-    tabid = malloc (sizeof (*tabid) * owner->dev.count);
-    tabname = malloc (sizeof (*tabname) * owner->dev.count);
+    tabid = vlc_alloc (owner->dev.count, sizeof (*tabid));
+    tabname = vlc_alloc (owner->dev.count, sizeof (*tabname));
 
     if (unlikely(tabid == NULL || tabname == NULL))
         goto error;

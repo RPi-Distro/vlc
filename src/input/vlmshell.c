@@ -2,7 +2,7 @@
  * vlmshell.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2005 VLC authors and VideoLAN
- * $Id: 6c12b3ec2f7d6f503f28e39857b1ee72ea7ee330 $
+ * $Id: 4f812b2d47ed700ffffc60acb3e6bc74a3eb586f $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -854,7 +854,7 @@ int ExecuteCommand( vlm_t *p_vlm, const char *psz_command,
     size_t i_command_len = strlen( psz_command );
     char *buf = malloc( i_command_len + 1 ), *psz_buf = buf;
     size_t i_ppsz_command_len = (3 + (i_command_len + 1) / 2);
-    char **ppsz_command = malloc( i_ppsz_command_len * sizeof(char *) );
+    char **ppsz_command = vlc_alloc( i_ppsz_command_len, sizeof(char *) );
     vlm_message_t *p_message = NULL;
     int i_ret = 0;
 

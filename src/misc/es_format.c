@@ -2,7 +2,7 @@
  * es_format.c : es_format_t helpers.
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
- * $Id: 86f29c437537c60d93f72cfa87cf71ff8539cc93 $
+ * $Id: 9ed981581477c70cae31cc1c2831078c8f212ad6 $
  *
  * Author: Laurent Aimar <fenrir@videolan.org>
  *
@@ -492,6 +492,8 @@ int es_format_Copy(es_format_t *restrict dst, const es_format_t *src)
             ret = VLC_ENOMEM;
         }
     }
+    else
+        dst->p_extra = NULL;
 
     if (src->i_cat == VIDEO_ES)
         ret = video_format_Copy( &dst->video, &src->video );

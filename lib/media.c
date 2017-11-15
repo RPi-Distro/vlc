@@ -2,7 +2,7 @@
  * media.c: Libvlc API media descripor management
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: 8da5a130e2df3e7a225bc4b4760a6a4c73637ac2 $
+ * $Id: af246c6c7e111b28aea419fec6bb61b27700a17d $
  *
  * Authors: Pierre d'Herbemont <pdherbemont@videolan.org>
  *
@@ -904,7 +904,7 @@ libvlc_media_get_tracks_info( libvlc_media_t *p_md, libvlc_media_track_info_t **
     vlc_mutex_lock( &p_input_item->lock );
 
     const int i_es = p_input_item->i_es;
-    *pp_es = (i_es > 0) ? malloc( i_es * sizeof(libvlc_media_track_info_t) ) : NULL;
+    *pp_es = (i_es > 0) ? vlc_alloc( i_es, sizeof(libvlc_media_track_info_t) ) : NULL;
 
     if( !*pp_es ) /* no ES, or OOM */
     {

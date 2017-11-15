@@ -1,3 +1,1859 @@
+commit 726156dce53831aacdaaab8e6eeb128b022a8b27
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Wed Nov 15 00:32:35 2017 +0100
+
+    NSIS/nsProcess: Enable unicode
+    
+    With NSIS 3 and unicode enabled, nsProcess needs to be compiled with
+    UNICODE and _UNICODE defined, so that the correct types are used, else
+    it will not work as expected.
+
+commit 7e73bd4af9e7ad4cad1fac7cb49971fe782687dd
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Wed Nov 15 01:10:56 2017 +0100
+
+    NSIS/nsProcess: Update nsis_tchar.h
+
+commit 4c60e7765d277448d5d6fabedb8928774dd464e2
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Tue Nov 14 00:43:33 2017 +0100
+
+    NSIS: Use proper Language files
+
+commit b9e26ec1b5810bba830970f145f3aaaf1e1f25e4
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 14 19:24:03 2017 +0100
+
+    demux: ts: fix leaked generated pat/pmt
+
+commit fc61f78fae90196a01737b69bdb3e04d2e787d07
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Sun Nov 12 17:16:59 2017 +0100
+
+    codec: ttml: ensure textAlign flags are not overwritten/ting
+
+commit d168c21ddf9fe06d489f3234978bd07d273a4bb9
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Sun Nov 12 16:57:09 2017 +0100
+
+    codec: ttml: fix reading displayAlign
+
+commit 0a9a53906f44df9aa25afcbc45a02be4c1ab4ca0
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Sat Nov 11 15:18:56 2017 +0100
+
+    codec: ttml: fix reading origin/extent values
+
+commit d8534b1d4b3701d9a94eca7417f251533d2fbea1
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Sat Nov 11 14:26:06 2017 +0100
+
+    codec: ttml: read/store horizontal resolution
+
+commit c726087e6a47c11811d5e1fc3dc0971e182275ed
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Nov 13 17:54:01 2017 +0100
+
+    text_renderer: freetype: fix background on visible chars limit
+
+commit 43398aa5db0cdd40c88b7082e2a98d086b6367fa
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Nov 13 17:03:26 2017 +0100
+
+    freetype: text_layout: keep track of visible chars bbox
+    
+    otherwise we're stuck with glyphs coordinates which
+    are insufficient for drawing a proper background
+
+commit d25307e48240a97b4cca1fe89894997304429739
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 14 13:40:32 2017 +0100
+
+    text_renderer: freetype: fix left alignment offset
+
+commit 8b3ebbbb2a1ebe5afd42e8542ecdbab14374033d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Nov 14 18:59:02 2017 +0200
+
+    m4: fix false negative working iconv test
+    
+    Part of the test is leaking memory, which can trip the leak sanitizer.
+    
+    (This should be fixed in gettext. In the mean time, it will need to be
+     applied manually at every gettext update.)
+
+commit a1c3e136c4527c7435f28b9cf579723eaef6bc91
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Nov 14 18:22:01 2017 +0200
+
+    Drop broken C99 support
+
+commit b97304c176693014c70d947d7ce236ffdef13bbe
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Nov 14 17:55:21 2017 +0200
+
+    file logger: do not disable buffering
+
+commit 3fa85e6a2b45e1f05252f8ce109ff92b07f041f2
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 14 14:45:00 2017 +0100
+
+    access: live555: define and set pcr offset
+    
+    tries to have a pcr delay between 250ms and 500ms
+
+commit fd09bcfd9b8b32fbe0fb98d2899068229fda17e2
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 14 14:32:58 2017 +0100
+
+    mmdevice: fix assert/UB when changing volume without any devices
+    
+    If there is no audio devices, Open() will succeed but MMSession() will fail.
+    Then, MMThread() will wait for any events in order to call MMSession() again.
+    In that case, don't try to call MMsession() without a valid device when volume
+    or mute is changed from the user.
+
+commit 849fe102670350ffe2474af56734f6622a7bb854
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 14 13:30:05 2017 +0100
+
+    direct3d9: glconv: use visible size
+    
+    This fixes the usual green line issue...
+
+commit 6068eb03647d9052b0393951413f0b91fed92a0a
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 14 13:28:09 2017 +0100
+
+    direct3d9: glconv: use a render target
+    
+    This fixes StrecthRect errors with 4K samples.
+
+commit 421b81db864a3026cdbd7b62fefcde11339f7fd2
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Nov 13 15:16:16 2017 +0100
+
+    contribs: use libplacebo on Windows
+
+commit 64e17c521d638297b7b2513730ac89909d602afe
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 11 19:07:07 2017 +0100
+
+    demux: move the xiph metadata handling common code in a static library
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 32d236c6264263361febc9f80d6d0bf48309befd
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 11 19:06:22 2017 +0100
+
+    deinterlace: move the common code between modules in a static library
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 65e339de6765e36e1bd10c3f3a489a742fd28165
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 11 19:07:43 2017 +0100
+
+    avcodec: move the common code between ffmpeg modules in a static library
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit ff6938db7bbd561b4d0309a884e0c9c44380a7a5
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 14 11:22:29 2017 +0100
+
+    date_Increment: add assert
+
+commit ba6b88f01dea8ed4566f376d89dde0934c455d93
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 14 11:17:07 2017 +0100
+
+    a52: fix FPE when fmt_out.i_rate is already initialized
+    
+    If fmt_out.i_rate is already set to a good value from Open(), date_Init() is
+    not called and date_Increment() triggers a FPE.
+    
+    This is a regression from 31a4ceafbc7777ce1894e9061798877040cb1118
+
+commit 39e7d2b0a3277d4f070fec55a7696251fff4c41d
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Nov 13 18:08:46 2017 +0100
+
+    demux:mkv: delete the Dummy we don't want after we have skipped it in the reader
+    
+    Should fix #18001 again
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit afdbb2799def3351e28ecb82a9bce630d9d050dd
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Nov 13 18:08:45 2017 +0100
+
+    demux:mkv: don't read further than our parent or its parent
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 9b3e23e928130cc71d38b436520645a5d94ee899
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Nov 13 18:08:44 2017 +0100
+
+    demux:mkv: when finished reading position the reader at the end of the data we read
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d53561358736091f1eca7ea4b9fd0f52a6ddd255
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Nov 13 18:08:43 2017 +0100
+
+    demux:mkv: do not try to use p_prev if it's already free'd
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit dc6e8ce36c843ca7e475cb81040d85db3572d027
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Nov 13 18:08:42 2017 +0100
+
+    Revert "mkv/demux: Ebml_Parser: fix #18001 (memory-leak)"
+    
+    This reverts commit 37fdb03acd3ec85f73edf6741c97b1a05dc4e197.
+    
+    This is not the right level to decide if you can free the previous element, you
+    need at least to respect the "Keep" status.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit b26e21f666ce4d403902e55519effcbb9a87f391
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Nov 13 18:08:41 2017 +0100
+
+    demux:mkv: put the lighter tests first
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 8467e19d1ec3fd6af523c12f787f43d0f32a37d4
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Nov 13 18:08:40 2017 +0100
+
+    demux:mkv: simplify the code
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 73dfee41cd9e27cee890db1fb9ccfb9cafaad3aa
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Mon Nov 13 17:25:46 2017 +0100
+
+    qt: fix autoresize on windows
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a6a805f194b18f871555b9f4573a6ccf10c5491d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 5 13:44:43 2017 +0200
+
+    block: limit alloc size to 128MB
+    
+    Fuzzers don´t like large allocations. And in fact, real systems don´t
+    really like them either.
+    
+    Modified-by: Thomas Guillem <thomas@gllm.fr>:
+    Changed the value from (size >> 24) to (size >> 27) (from 16 MB to 128MB).
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 92aaef9ae7de7af9e0e2c37ddb092b791086bfed
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Tue Nov 14 02:15:06 2017 +0100
+
+    win32: Fix makensis calls
+
+commit 5b22c02fa36e2e95e76b9799849c3808bb24c88e
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Nov 13 18:57:13 2017 +0100
+
+    win32 build.sh: avoid bash-specific syntax
+
+commit 1bdc3729d0ab1850f09ca6f9721619b281ea02df
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Nov 13 19:42:51 2017 +0200
+
+    mp4: do not assume demux has an input
+
+commit b696875781ad2462fbde36dd00ae57f7718e06a8
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Nov 13 19:42:42 2017 +0200
+
+    directory: do not assume demux has an input
+
+commit 279db9d8f2962193626a66d4e99b71f6c1c37798
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Nov 13 16:55:49 2017 +0100
+
+    Win32 build: fix script options
+
+commit be38fffaa18148ebe5bc4dc70086e8e5c7bc3bd3
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Nov 13 16:46:05 2017 +0100
+
+    vout/opengl: fix use-after-free
+
+commit 90e8bf9f790335a5b9b972f3dccde7d6d434f618
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Nov 13 16:45:37 2017 +0100
+
+    vout/opengl: fix NULL dereference if pl_context_create fails
+
+commit 544b09e6499aac42edc64754ca5029dd77cbdd05
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Nov 13 16:24:56 2017 +0100
+
+    win32 build: provide an option for installer creation
+    
+    * nothing will be for dev and continuous
+    * -i n to prepare a nightly build, aka debug+release package
+    * -i r to prepare a release build, which will be officially signed
+
+commit b6bbde66665dc451c45d15380e33a29b24585884
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Nov 9 16:09:46 2017 +0100
+
+    direct3d9: add OpenGL interop using WGL_NV_DX_interop ext
+    
+    See https://www.khronos.org/registry/OpenGL/extensions/NV/WGL_NV_DX_interop.txt
+
+commit 1d68b84bc8a4f061a786645e1346605a26e820de
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 8 16:38:10 2017 +0100
+
+    wgl: add getExtensionsString callback
+
+commit 37251c6902b4cd3c9a140cfbcad798e592697833
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 8 19:16:08 2017 +0100
+
+    direct3d9: refactor device creation
+
+commit 172414bafcaa3a8847b1eb475c4a3f4a85fc154a
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 8 19:09:52 2017 +0100
+
+    direct3d9: add hwnd in d3dctx
+
+commit a84e5591eab7f24c0e2928a97e2f7069121dbc79
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 8 17:48:07 2017 +0100
+
+    direct3d9: refactor Direct3D9CreatePicturePool
+
+commit 1246ef73d0ce0132a4e0850df9bd48b08a397e0c
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 8 17:38:17 2017 +0100
+
+    direct3d9: refactor context create/destroy
+
+commit 49db448c7ead4bdcb75feacebaad36896928875b
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 8 17:26:10 2017 +0100
+
+    direct3d9: refactor, use a struct to hold d3d ctx
+
+commit 4b365462d11abd069bbed9c981833a93ba1e2ba8
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Nov 9 16:09:24 2017 +0100
+
+    fourcc: add d3d* fallbacks
+
+commit 4608791530b055b6920ab0c963af31fc0e3e0dd7
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Nov 12 21:26:26 2017 +0100
+
+    configure: use stack-protector-strong in optimized mode
+    
+    If it is available with your compiler (gcc 4.9)
+
+commit e8907f2e32a8c1211a45f5bdb4d83e5deacf96e9
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Sun Nov 12 18:43:03 2017 +0100
+
+    packetizer: flac: Remove invalid es_format_Clean
+    
+    This is the core's responsibility
+
+commit be6c18f7c609710e18e7edc993d7426da36a5b04
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Sun Nov 12 18:42:18 2017 +0100
+
+    packetizer: avparser: Remove invalid es_format_Clean
+    
+    This is the core's responsibility
+
+commit 5134180d0863a79663b3e2a202eed9dc86bde5b5
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Sun Nov 12 18:40:26 2017 +0100
+
+    packetizer: copy: Remove invalid es_format_Clean
+    
+    This is the core's responsibility
+
+commit 9dbe39da2715a511851da79993daf934fe8b8632
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Sun Nov 12 18:32:52 2017 +0100
+
+    test: Add vlc-demux(-dec)-run to default targets
+    
+    (when building with libfuzzer)
+
+commit 15e5a7a66ae45131e13b33afb917072310ed7110
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Sun Nov 12 17:33:54 2017 +0100
+
+    mkv: Fix leak on error
+
+commit 71eb04d922b5143588dc4e7dd12f037aff4abe2b
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sun Nov 12 18:42:29 2017 +0100
+
+    es_format: fix rare double free
+    
+    It could happen when i_extra was 0 but p_extra was not NULL (since malloc(0)
+    can return a valid pointer).
+
+commit 24c731a896429a2b63576e86462200ad115bc99e
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sun Nov 12 18:41:08 2017 +0100
+
+    test: input: fix test_decoder_destroy
+    
+    Behave like the one in the core:
+     - clean decoder->p_description
+     - clean fmt_out only in case of success
+
+commit a0749ab9207eb14eb2377e28429e7c362f1f0fc4
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 12 19:12:41 2017 +0200
+
+    objres: use add_overflow()
+
+commit b372a4430de8e8ce583662c5ccd52470dfd16f20
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 12 19:07:15 2017 +0200
+
+    Use overflow built-ins also on clang
+    
+    They were already available as of version 3.4.0.
+
+commit a4f2b08c97360ad023b50fc69e35dd2df021112f
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Nov 12 16:52:51 2017 +0100
+
+    extra-tools: check for flex presence
+
+commit 9e1c8ae259fb3fef36303e80022f1cba19130c31
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Nov 12 16:48:27 2017 +0100
+
+    extras-tools: add flex
+
+commit d8bc96e75625cf40a92efb25bad98d6b5df65689
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Sun Nov 12 18:26:43 2017 +0300
+
+    snap: disable chromecast plugin.
+
+commit 7c1455d6e133f4ca84620261a760df4e79a32301
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 12 17:32:43 2017 +0200
+
+    hevc: fix potential use-after-free
+    
+    GatherAndValidate() can free the fragment. Extract the timestamps earlier.
+
+commit 9d73515921d47bea41dad24280992f5180059fbd
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 12 16:39:09 2017 +0200
+
+    mp4: fix heap read overflow and integer overflow
+
+commit 8c269bb079d01607e912624dd43d4cb5a2dec1c4
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sun Nov 12 15:30:33 2017 +0100
+
+    hw: vaapi: add asserts
+
+commit ec31390c5d1f55f882b28030a6f16a5d29f7f4ff
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 12 15:59:03 2017 +0200
+
+    test: simplify fuzzer build rules
+
+commit cb8fe8a9f4324ec4e0039ae94e1f65ac3cbf8f74
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Nov 12 14:55:35 2017 +0100
+
+    VAAPI filters: fix chmod
+
+commit eacf9abdd3ebf886b3aaa2dec298f2002737298f
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sun Nov 12 14:39:19 2017 +0100
+
+    test: build vlc-demux-* when libfuzzer is used
+
+commit 12324e11f7c335e4f635346c792a02f33a39ff69
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sun Nov 12 14:19:47 2017 +0100
+
+    test: input: add missing modules
+
+commit b83e9fe08d12ae798390bfa64c08096801fcd8c1
+Author: Shaleen Jain <shaleen.jain95@gmail.com>
+Date:   Fri Oct 13 15:28:23 2017 +0200
+
+    test: input: test decoder from demux
+    
+    This a merge of the work done by Shaleen during GSOC 2017. See
+    https://code.videolan.org/GSoC2017/shalzz/vlc.git
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 2aead1e8ceb11e751c8e6b170876c79cdc8f5daf
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sun Nov 12 11:44:11 2017 +0100
+
+    mkv: use vlc_alloc helper
+
+commit 37f3f80bee3d33810b19b53b38e2ec108dd76931
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sun Nov 12 11:44:00 2017 +0100
+
+    mp4: use vlc_alloc helper
+
+commit 3c2b99c8f75d82ff72091c8402e0265032f5074e
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sun Nov 12 11:43:42 2017 +0100
+
+    vcd: replace xmalloc with vlc_alloc
+    
+    And handle the error case.
+
+commit 051b844532f9849f22792b4e8f9fd2154c765c1c
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sun Nov 12 11:43:28 2017 +0100
+
+    ogg: replace xmalloc with vlc_alloc
+    
+    And handle the error case.
+
+commit 6a593dd451d90e106beca2078dfc93ce09d2e98c
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sun Nov 12 11:42:13 2017 +0100
+
+    core: use vlc_alloc helpers
+
+commit 051431cd65212319fd2f1272abcaeff6f04881c2
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sun Nov 12 11:42:34 2017 +0100
+
+    objes: use multiplication overflow helper
+
+commit aebbbf02881ca5b536539c96085ae62bd38c0e53
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 12 11:27:09 2017 +0200
+
+    vlc_alloc: use multiplication overflow helper
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 621449d63a4c4b1f860b1fe88687799901afd5b7
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 12 11:27:08 2017 +0200
+
+    Add helpers for unsigned integer overflow
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 7ce0983bdefce8fc334ba8dbb99c526540c289b1
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 12 13:41:42 2017 +0200
+
+    subtitle: remove hand-coded conversion
+    
+    This fixes an invalid free on error.
+
+commit 297e6f4fd4c08ef15f0419a970f8e6214137c8e3
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 12 13:41:16 2017 +0200
+
+    stream: fix off-by-one
+    
+    One byte is (potentially) needed to append the final nul.
+
+commit 9f00a00af198adc1d8f52bf58d4bee1c3a4edb14
+Author: Felix Paul Kühne <felix@serioese.gmbh>
+Date:   Sun Nov 12 13:37:51 2017 +0100
+
+    videotoolbox: reverse logic to detect SoCs capable of decoding advanced H264 levels
+    
+    This enables decoding of advanced H264 levels on SoCs newer than Twister such as Hurricane or Monsoon
+
+commit 797e716605ea3e41c731d0ff968ed219a0284410
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 12 13:24:45 2017 +0200
+
+    a52: check if PTS is valid
+
+commit 31a4ceafbc7777ce1894e9061798877040cb1118
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 12 13:22:33 2017 +0200
+
+    a52: eliminate date-set flag
+    
+    Use VLC_TS_INVALID value instead.
+
+commit a3a97e672c34f6fa04df56546271dd8427b99d81
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Sat Nov 11 02:47:00 2017 +0100
+
+    NSIS: Enable UTF-8 support
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit dc4b5933441ad80195e0ccf61c697cd4e8d2fa32
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Sat Nov 11 02:46:43 2017 +0100
+
+    NSIS: Remove broken version check
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 4e216e1a683ca528517aa91094d73cc9c2db46ac
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Sat Nov 11 02:18:38 2017 +0100
+
+    extras/tools: Fix UNPACK_DIR for single extensions
+    
+    This is copy-pasted from the contrib main.mak
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 6148eb0c5811c81c217ac09be628b44cb0209f54
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Sun Jul 23 00:11:20 2017 +0200
+
+    NSIS: Remove UAC plugin
+    
+    The UAC plugin which was added in 3cf00fd is not required anymore.
+    AppRunAs where it was used is now implemented (as AppExecAs) in a
+    different way and the installer required admin privileges anyway, since
+    952646b.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 44fd7507fe438da0e07b06c732a5cecdae43c948
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Fri Nov 10 00:49:26 2017 +0100
+
+    NSIS: Convert language files to UTF-8
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c396eaf98c065df03bf578e6f0516497c90ef92c
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Nov 12 12:35:19 2017 +0100
+
+    win32: check NSIS version to be at least 3.0
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 540544be0d40d536ef307fff3e7cb7763ad7aa98
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Sun Nov 12 14:27:20 2017 +0300
+
+    win32 build helper: build luac when using prebuilt contribs.
+
+commit 70c9111fc15dcfa6593cb208f1900db3164881c5
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Sun Nov 12 10:37:03 2017 +0100
+
+    dirac: Use GetDWBE
+
+commit f565eeeb9f05e25739e491c030fa80d7fdbc3991
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Nov 12 11:43:01 2017 +0100
+
+    videotoolbox: try and fix linking after 241ab741
+
+commit 5648ecad1a15a75e2d71d0fa22dd9b1797b89431
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Nov 12 10:49:27 2017 +0100
+
+    Win32: add a new build-script helper
+
+commit 1fc1cd332e29e23c5ace0d09e117692f23ef2fe0
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 19:06:34 2017 +0100
+
+    test: input: fix demux-run usage
+
+commit a0f51665ee38ec8f4df842777385756622ac848a
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:53:18 2017 +0100
+
+    visual: use vlc_alloc helper
+
+commit b66af2e8e32c9ff7b32827357bc5fbd7bd245541
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:52:34 2017 +0100
+
+    win32: use vlc_alloc helper
+
+commit 7195291d955204e8374e7fed536037d07c26957f
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:52:16 2017 +0100
+
+    gl: use vlc_alloc helper
+
+commit 44395f9d8fa83baa10b19338913f866d0b5c8181
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:51:53 2017 +0100
+
+    gradient: use vlc_alloc helper
+
+commit 5956d7c477938cb91ee62ab07072ddb5a25de8fc
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:50:27 2017 +0100
+
+    ball: use vlc_alloc helper
+
+commit f7e6bd53c4658e04dc52db71d106fada64ba35fe
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:50:10 2017 +0100
+
+    freetype: use vlc_alloc helper
+
+commit c48c48ea7be134958450832eb537ca1879725e6d
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:49:28 2017 +0100
+
+    rss: use vlc_alloc helper
+
+commit 2c1539bdaa57b2eef5de4a1d638ab4ae2697a147
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:49:17 2017 +0100
+
+    hxxx_nal: use vlc_alloc helper
+
+commit 16422e3171a4232df9c3db4675a194cca1c22230
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:49:10 2017 +0100
+
+    mp4mux: use vlc_alloc helper
+
+commit 17d8bf44c6701f03ec63bfc0ce9ebdb3838f1807
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:48:37 2017 +0100
+
+    httpd: use vlc_alloc helper
+
+commit 28a0ab725cd66261528ee64f45a0094b2495559e
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:48:20 2017 +0100
+
+    vaapi: use vlc_alloc helper
+
+commit 14ba75bdc89b0f1525c473a88e64b78527dc2b6e
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:47:39 2017 +0100
+
+    skins2: use vlc_alloc helper
+
+commit f2cfa1119a62c8b286e34eac92433d31ffd18274
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:47:22 2017 +0100
+
+    qt: use vlc_alloc helper
+
+commit a2fdee77ded84444322ebbc884e0a72383149c9f
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:47:07 2017 +0100
+
+    macosx: use vlc_alloc helper
+
+commit 565cef4bbb199a07d4b12596b4a7f0dd191cb472
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:46:54 2017 +0100
+
+    sid: use vlc_alloc helper
+
+commit f4f36d94f9eb3ae5d1be5d0f554d9c0766a26b19
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:45:32 2017 +0100
+
+    ts: use vlc_alloc helper
+
+commit 27918a4dbf40c3bae8da54f6d65ea70d943e5bf7
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:45:23 2017 +0100
+
+    mp4: use vlc_alloc helper
+
+commit f4b223818cb1620ad514096143c26e2f38b979af
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:45:03 2017 +0100
+
+    mkv: use vlc_alloc helper
+
+commit 5898b149d1dfaeaa17625ca7b43adb15c7cfcd58
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:44:53 2017 +0100
+
+    gme: use vlc_alloc helper
+
+commit 3329b7ce85b2ec3c7dbb1f9044ec2460eac64024
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:44:43 2017 +0100
+
+    flac:: use vlc_alloc helper
+
+commit 847a2c49094628a260b9422d525ea12b762a4ebd
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:44:32 2017 +0100
+
+    avformat: use vlc_alloc helper
+
+commit 3b20ca3b5a7711a075c37a3ffdcc5b751d155175
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:44:21 2017 +0100
+
+    asf: use vlc_alloc helper
+
+commit a76091852dca514103f55b2d498fe85223b28948
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:43:50 2017 +0100
+
+    win_msg: use vlc_alloc helper
+
+commit 8aa2d180855643087105a57f83d767898a40f60b
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:43:37 2017 +0100
+
+    wma: use vlc_alloc helper
+
+commit 1846fcbd6c5ba85a02ab6b6fdae3de201e816d25
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:43:30 2017 +0100
+
+    subsdec: use vlc_alloc helper
+
+commit 7c32eb0e0ae9dcce801c674e18470b7c65641fbe
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:43:15 2017 +0100
+
+    spudec: use vlc_alloc helper
+
+commit daec00acd6024ec2e24957dec57c0939b59f95f3
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:42:26 2017 +0100
+
+    scte27: use vlc_alloc helper
+
+commit b94dc63d91033fa1a86009394acef3519ba74e07
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:42:16 2017 +0100
+
+    png: use vlc_alloc helper
+
+commit a2c868b30aa30d37c23ef5faacb9d97479173af1
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:42:07 2017 +0100
+
+    opus: use vlc_alloc helper
+
+commit 911c6ea14dd4e51b5fd7ae1c827d63a6100f6bcb
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:41:51 2017 +0100
+
+    jpeg: use vlc_alloc helper
+
+commit 6cace8fbedf8a342dc08448fc1123a422c41ffeb
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:41:27 2017 +0100
+
+    dvdsub: use vlc_alloc helper
+
+commit 16d5697502a2b333462de24b9fceb32f9896eb50
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:41:19 2017 +0100
+
+    opensles: use vlc_alloc helper
+
+commit bf1fcc36ccf29a7772ff16dbe5e268f087db54e8
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:41:04 2017 +0100
+
+    scaletempo: use vlc_alloc helper
+
+commit 43b49e5d352afcdd75aea464167ae8c5c044aba8
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:40:55 2017 +0100
+
+    normvol: use vlc_alloc helper
+
+commit fe555b400431171173c3e0ea38b1d4d93514ac2c
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:40:48 2017 +0100
+
+    equalizer: use vlc_alloc helper
+
+commit 9ddb89c4b5379fab0467c243c0b089549b99b13b
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:40:37 2017 +0100
+
+    spatialaudio: use vlc_alloc helper
+
+commit 3dfca696ee8b0d77d92491940235491d2e7cc61b
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:40:22 2017 +0100
+
+    cdrom: use vlc_alloc helper
+
+commit 56ac9dee8a72afd9f759aa2760586c9539a3640e
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:40:14 2017 +0100
+
+    v4l2: use vlc_alloc helper
+
+commit 46488eafb5494d73833b213de29e651ad477666f
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:40:02 2017 +0100
+
+    screen/mac: use vlc_alloc helper
+
+commit dbf7961151f7c9283c914fcdaaca0781d5334b11
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:38:14 2017 +0100
+
+    linsys: use vlc_alloc helper
+
+commit 60a4aacdff79b30c6cca826458667565f8face7d
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:36:46 2017 +0100
+
+    http: use vlc_alloc helper
+
+commit 23590f33f003c34fa2f8c90180fae7b544bcec2b
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:36:36 2017 +0100
+
+    dvdread: use vlc_alloc helper
+
+commit b7778e0c34c1231292b2915f2bc9718c3a4ebe7e
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:36:28 2017 +0100
+
+    dvdnav: use vlc_alloc helper
+
+commit 73efed70588192d0bb8935a5253f70d7f9072634
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:36:22 2017 +0100
+
+    dvb: use vlc_alloc helper
+
+commit 90db97a0e51b6fccc6a6b9a8d683e9be291d3850
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 18:36:12 2017 +0100
+
+    bluray: use vlc_alloc helper
+
+commit f88c34f5cb4449f5bd7bfdf77a92ba5a4d675df0
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Sat Nov 11 16:58:18 2017 +0000
+
+    Contribs: make sure to create the include/libplacebo path before copying it
+    
+    `cp -r` with a non-existent path will copy the directory itself as the new
+    path, so make sure to just create the tree beforehand.
+    
+    Signed-off-by: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit ea0a32e1c1cbf3a2ad786d46b46a3d9a449ec274
+Author: Romain Vimont <rom@rom1v.com>
+Date:   Fri Nov 10 21:26:57 2017 +0100
+
+    gui/qt: bookmarks: fix psz_name lifetime
+    
+    The macro qtu() is defined as follows:
+    
+        #define qtu( i ) ((i).toUtf8().constData())
+    
+    "i" is a QString, .toUtf8() returns a QByteArray, .constData() returns a
+    pointer to the data inside the QByteArray.
+    
+    It is important to notice that the QByteArray is temporary. Therefore,
+    it is "destroyed as the last step in evaluating the full-expression that
+    (lexically) contains the point where [it was] created".
+    
+    Concretely, this means that this call is correct:
+    
+        do_something( qtu( string ) );
+    
+    But this one is undefined behavior:
+    
+        const char *s = qtu( string );
+        do_something( s );
+    
+    Thus, here, bookmark.psz_name was initialized with a pointer to garbage
+    data.
+    
+    To fix the problem, store the QByteArray in a local variable so that it
+    lives long enough.
+    
+    (Fixes invalid reads reported by valgrind)
+    
+    Signed-off-by: Romain Vimont <rom@rom1v.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d32636009950b0dca21efcbf5dcb304b279734d4
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Nov 11 19:02:03 2017 +0200
+
+    asf: missing initializer
+
+commit 5b8a7386b5811b79cc9b9d7a10e48e3708f2a540
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 17:18:28 2017 +0100
+
+    posix: use vlc_alloc helper
+
+commit b275203fa8b2c7d459d75d8ff1d82f809ace061e
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 17:18:16 2017 +0100
+
+    os2: use vlc_alloc helper
+
+commit 4139b2721550f69acc80b5fb2e254705bb21908f
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 17:18:08 2017 +0100
+
+    core: use vlc_alloc helper
+
+commit f5e485d1e3fe7c021c4fd740fa047fc9a28ca17e
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Nov 11 17:16:39 2017 +0200
+
+    core: add vlc_alloc: helper for table allocation
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit cf4676c1e8cdf69db4598f7d10ffdf6a695c3ba0
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 16:52:40 2017 +0100
+
+    core: rename vlc_*alloc to vlc_obj_*alloc
+    
+    In order to avoid confusion with future vlc_alloc.
+
+commit 7167b2340358d7c6bc78fa4061a9f7079b4ab335
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Sat Nov 11 17:02:03 2017 +0100
+
+    Revert "configure: fix link error with --with-sanitizer=address"
+    
+    This reverts commit 2498a3832022cdc832646e6f4cff4314fa9cf893.
+
+commit 992659dd85576bc959bf8e2522f079bd5a8eece4
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Sat Nov 11 17:01:54 2017 +0100
+
+    Revert "configure: Fix link when using --with-sanitizer=undefined"
+    
+    This reverts commit 4567a49be8a07b0bfb39689a53d7dff834a7a5e7.
+
+commit 92f2653dc1b1d6b7a6cbfe36140f14826947780d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Nov 11 17:42:49 2017 +0200
+
+    asf: fix shadowing
+
+commit c638b88d2beb873d23f0eb1b86afe401c92fb161
+Author: Steve Lhomme <robux4@videolabs.io>
+Date:   Sat Nov 11 15:34:19 2017 +0100
+
+    win32:common: don't setup event_cfg_t if it's not going to be used
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 9e1c05745b026d2da8fc0d314ba229a37c1191b9
+Author: Steve Lhomme <robux4@videolabs.io>
+Date:   Sat Nov 11 15:33:58 2017 +0100
+
+    video_output: remove unused module specific defines
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 241ab74104e8e6c751a15f44f1bee48df5353a85
+Author: Steve Lhomme <robux4@videolabs.io>
+Date:   Sat Nov 11 15:33:26 2017 +0100
+
+    modules: move copy.c in a locally built static library
+    
+    So it's not built multiple times and also make it easier to do a clean static
+    build.
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 195c909f0800eb61137c82c2af75fcf09c280928
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 15:35:22 2017 +0100
+
+    test: input: add missing modules
+
+commit 74e7bd240d5b239d0eeb3b67a7511b8b83cb6694
+Author: Shaleen Jain <shaleen.jain95@gmail.com>
+Date:   Fri Oct 13 12:38:13 2017 +0200
+
+    test: input: test demux controls
+    
+    This a partial merge of the work done by Shaleen during GSOC 2017. See
+    https://code.videolan.org/GSoC2017/shalzz/vlc.git
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit b90ec7d343504985649bfc144c9cb5830850ab34
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Oct 13 14:01:30 2017 +0200
+
+    test: input: change args handling
+    
+    vlc arguments are passed by environment variable in order to don't mess
+    libfuzzer arguments handling:
+    
+    - "VLC_TARGET" to pass the target name (or demux name).
+    - "V" to specify the verbose level.
+
+commit e25fefce3350e579a84a57dd0d1cb945be10bc8e
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 15:03:18 2017 +0100
+
+    test: input: add console
+
+commit b6689cb891aab22d49818a41c930f764a37f8980
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Oct 13 13:16:54 2017 +0200
+
+    test: input: move libvlc initialisation in a common helper
+
+commit 2c2eb4d06ced5e4c5e629fedf40ddfeac0d5d073
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Oct 14 16:46:52 2017 -0700
+
+    configure: add --with-libfuzzer
+    
+    DIR is the dir path of the libFuzzer.a static library.
+    
+    When used, it forces a static build without vlc binary and enable sanitize
+    coverage.
+    
+    How to fetch and build libFuzzer.a from llvm.org:
+    $ git clone https://git.llvm.org/git/compiler-rt
+    $ cd compiler-rt/lib/fuzzer
+    
+    for gcc:
+    $ CXX=g++ ./build.sh
+    
+    for clang:
+    $ ./build.sh
+    
+    This a partial merge of the work done by Shaleen during GSOC 2017. See
+    https://code.videolan.org/GSoC2017/shalzz/vlc.git
+
+commit 8dddfdca590e86e6736dbaa3f09aaf26b290f84e
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Nov 11 16:35:19 2017 +0200
+
+    asf: enforce somewhat sane peek sizes
+    
+    On 32-bits platforms, a single table cannot be larger than INT32_MAX
+    bytes.
+
+commit 775a3048419dca3ec90ae12bdad4d40b660ac236
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Nov 11 16:19:35 2017 +0200
+
+    asf: fix integer underflow
+    
+    We substract 56 from the size later in the function.
+
+commit 367795fba5a3fb9fb0e0d9f5fb6c2f89f563d427
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Nov 11 16:35:05 2017 +0200
+
+    asf: remove not so good example code
+
+commit ed872beb60d1f54d13341b0bd349b81cc50a40ca
+Author: Alexandre Fernandez <nerf@boboop.fr>
+Date:   Fri Nov 10 13:29:18 2017 +0100
+
+    Contribs: update GME to 0.6.1
+    
+    This minor version patches some security vulnerabilities
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 3ff283bc176b2dd2e83bb7cd7358eb2a0104124c
+Author: Romain Vimont <rom@rom1v.com>
+Date:   Fri Nov 10 22:56:42 2017 +0100
+
+    mtp: fix initialization to avoid segfault on close
+    
+    When an Android device is plugged with MTP disabled, the tracks may not
+    be retrieved.
+    
+    In that branch of code, pp_items was never initialized, so the behavior
+    was undefined in CloseDevice() (on device unplug), often causing a
+    segfault.
+    
+    Initialize it to NULL to fix the problem.
+    
+    Signed-off-by: Romain Vimont <rom@rom1v.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 65135741a2b70e82685a1746f7d973b341fe6ce0
+Author: Zhao Zhili <quinkblack@foxmail.com>
+Date:   Sat Nov 11 16:07:08 2017 +0800
+
+    demux: hls: fix unused variable warning
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit eaacf90859879481fcc78868034b2ed14a241175
+Author: Zhao Zhili <quinkblack@foxmail.com>
+Date:   Sat Nov 11 14:31:46 2017 +0800
+
+    demux: adaptive: remove unused include
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 485be30a1ec37ca3f7011868f1c2d10b586eeeb8
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Nov 11 15:44:41 2017 +0200
+
+    asf: fix error handling in codec_list
+    
+    Use a linked list rather than a large table, and actually handle errors
+    as errors.
+
+commit 4567a49be8a07b0bfb39689a53d7dff834a7a5e7
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Sat Nov 11 11:44:02 2017 +0100
+
+    configure: Fix link when using --with-sanitizer=undefined
+
+commit 2498a3832022cdc832646e6f4cff4314fa9cf893
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 11:29:08 2017 +0100
+
+    configure: fix link error with --with-sanitizer=address
+    
+    Fixed by
+    http://git.savannah.gnu.org/cgit/libtool.git/commit/?id=a5c6466528c060cc4660ad0319c00740db0e42ba
+    but there is no libtool release yet.
+
+commit b6b297b962776297ad621386a03c30ba031762a2
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Nov 11 11:16:51 2017 +0100
+
+    h264_slice: fix variable shadowing in h264_decode_slice
+
+commit 480171b63fe4177ad28fef92a5db80d9ffd7f872
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 11:00:12 2017 +0100
+
+    deinterlace: move function declarations
+    
+    Also move the documentation and set the functions static.
+
+commit 5317a381a3f66db061a5ff5e4f18002d56214fe1
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 10:49:04 2017 +0100
+
+    avformat: rename OpenDemux/CloseDemux functions
+    
+    This fixes duplicate symbols with a static build.
+
+commit 55b3cfc79f6c2c1e0e6acc02f81494799d61ab66
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Nov 11 10:45:36 2017 +0100
+
+    ttml: rename OpenDemux/CloseDemux functions
+    
+    This fixes duplicate symbols with a static build
+
+commit e26f8431068fe8bee2f24264e546f67cc954b8cc
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Sat Nov 11 02:43:30 2017 +0100
+
+    extras/tools: Add missing extensions to gitignore
+
+commit f26ac5b8bb15d17988acb4c694ca1e286de3ddbd
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Nov 10 12:49:45 2017 +0100
+
+    wgl: refactor PFD initialization
+
+commit ed9fe3b7c59460f87a84186a0aa777faeefd1138
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Nov 9 16:30:58 2017 +0100
+
+    glwin32: use vlc_gl_t from vlc_gl_Create()
+    
+    This remove code duplication between glwin32 and wgl.
+    
+    This plugin will now use the wgl gl plugin but it can also works with with any
+    other gl plugins (EGL for windows ?).
+
+commit b0f058304b23809d698940b0ade40262a0d085b6
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Nov 10 11:25:54 2017 +0100
+
+    glwin32: set priority higher than the gl plugin
+    
+    This plugin is better integrated than the gl plugin since it use win32
+    events/common.
+
+commit e96860acd9993f7409d335018987af73ecc3d947
+Author: Simon Latapie <garf@videolan.org>
+Date:   Tue Nov 7 19:39:04 2017 +0100
+
+    subtitle: fix a potential memory leak
+    
+    Fixes the Coverity defect 403210.
+    
+    Breaking the switch case will end up freeing psz_orig and continue the loop.
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 4dedfb2a32082c99d550c7f155239e35ca888566
+Author: Stefan Pöschel <github@basicmaster.de>
+Date:   Wed Nov 8 22:28:56 2017 +0100
+
+    STL: retrieve fps from GSI's DFC
+    
+    Replaces the hard-coded 30fps.
+    
+    Close #19054
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit f0f500291db1bb5ba0bac9761c73c683498a04f4
+Author: Stefan Pöschel <github@basicmaster.de>
+Date:   Wed Nov 8 21:55:35 2017 +0100
+
+    STL: merge GSI parsing
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit b594317b99b39268870e9e7fa6d15376d027a0b6
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Nov 9 23:00:55 2017 +0100
+
+    contrib: archive: Invoke autoreconf
+    
+    This fixes build with automake 1.15.1
+
+commit 8d7dfdc835fe867d9c1cb38aa639cb171152b1ac
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Nov 9 22:26:05 2017 +0100
+
+    contrib: fontconfig: Fix build with gperf 3.1+
+
+commit abc82cb56494018cacd20dca8052408ce975df1e
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Nov 9 21:19:18 2017 +0100
+
+    contrib: Fix .qtsvg target
+
+commit cc9f2bc05832f7d5a3673540073021e1310f74f3
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Nov 9 18:39:46 2017 +0200
+
+    share: fix installation of HTTP interface files
+
+commit 4dd676f94a9adc6ed518ca64c6202a472c51a5c9
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Nov 9 15:07:46 2017 +0100
+
+    demux: adaptive: add always restart demuxers for webvtt
+    
+    because we really can't feed getLine's 2K peeks.
+
+commit 7b02ea0a7f8d3e876b8a538fbf76449f1bc2fee5
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Nov 9 10:31:02 2017 +0100
+
+    packetizer: mpeg4audio: clear warnings
+
+commit 35ee573bea153cc36bb9537e3c4c006d5a989821
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Nov 9 10:29:51 2017 +0100
+
+    packetizer: dts: clear warnings
+
+commit f6991e506f8ba446abd74d85f7be74a4eaae2494
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Nov 9 10:28:44 2017 +0100
+
+    packetizer: a52: clear warnings
+
+commit ce7bdaa0bddb24ac6a36120994ce308e4cabb09f
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Nov 9 10:27:47 2017 +0100
+
+    packetizer: mlp: clear warnings
+
+commit 6b99ed650532d1ee440f03aff61c071bec28d1b5
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 8 18:10:47 2017 +0100
+
+    packetizer: h264: clear captions of missing frames
+
+commit 289607e7ef14c37f07cecd3f2cbfc4763f44e7e7
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 8 18:08:45 2017 +0100
+
+    packetizer: h264: reset timestamps on each AU and always set when missing
+    
+    avoids breaking on rtsp streams where the AU header carries the
+    timestamps and slice have none.
+
+commit b891642798373650c159484aca8bd566e1bd1794
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 7 23:55:01 2017 +0100
+
+    packetizer: h264: clear all nals on error
+
+commit 415966183a94d610d4a93a9afc732349d32c786d
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 7 23:46:34 2017 +0100
+
+    packetizer: h264: regroup and explicitely name nal in switch
+
+commit dfc3dc7fa8a18b4f5e0cb560d890ed9311afcd23
+Author: Tristan Matthews <tmatth@videolan.org>
+Date:   Thu Nov 9 01:51:53 2017 -0500
+
+    qt: initialize slidersBox
+    
+    CID #1049045
+
+commit 2ca29e260219a91e77577e1d4c3040e595b68393
+Author: Zhao Zhili <quinkblack@foxmail.com>
+Date:   Fri Nov 3 09:27:38 2017 +0800
+
+    demux: adaptive: fix incorrect segment duration
+    
+    It's supposed to return the duration of the current segment, not the
+    previous segment.
+    
+    Signed-off-by: Francois Cartegnie <fcvlcdev@free.fr>
+
+commit 6f728b8b70247d3bac9b4f882e4d69ce814984b3
+Author: Filip Roséen <filip@atch.se>
+Date:   Tue Nov 7 18:39:41 2017 +0100
+
+    codec/webvtt: make some css properties case-insensitive
+    
+    Property names, and some possible values, are case-insensitive in CSS,
+    meaning that the previous implementation woulc/could reject a legal
+    document due to casing.
+    
+    See 4.1.3 in W3/CSS22 or the equivalent section in CSS3 (8.1).
+    
+     - https://www.w3.org/TR/CSS22/syndata.html#characters
+     - https://www.w3.org/TR/css-syntax-3/#style-rule
+    
+    Signed-off-by: Francois Cartegnie <fcvlcdev@free.fr>
+
+commit 601289ef4626d3bb25e555a31174b8192e74df76
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 8 20:34:10 2017 +0100
+
+    packetizer: flac: clear some warnings
+
+commit 6b386c16fd6cab124ba2f07ea1fc438df331bc52
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Nov 8 19:02:50 2017 +0200
+
+    x*alloc: handle zero-size allocations (fixes #19052)
+
+commit e96bd27d25ac9cd9a0d85ad6ce825ab90c506248
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Nov 8 18:20:21 2017 +0200
+
+    old http: fix error handling (fixes #19051)
+
+commit 158d9be2d6cfd971ed7a6bd0ee6155912656c3bf
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 8 15:35:24 2017 +0100
+
+    demux: adaptive: handle proxy connections
+
+commit 33fffffcd347d483dcbb3ee6c4583922b54b153f
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 8 14:09:28 2017 +0100
+
+    text_renderer: freetype: clear variable shadowing warning
+
+commit 598064b98c36da2ffc02f8a6fde5dbd2f0e65ce4
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 8 11:37:37 2017 +0100
+
+    text_renderer: freetype: align background to text
+
+commit d58ffc5afd5715e41994fa3771175a550ffa070a
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 8 10:24:35 2017 +0100
+
+    input: add webvtt in spu exts
+
+commit a76ddcecb57aee0fc26430524aeeb3c0523df626
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 8 10:20:19 2017 +0100
+
+    input: missing comma in spu exts
+
+commit 0dda1270dc1318c1d292317dd6c9d020930079f5
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 7 23:37:17 2017 +0100
+
+    packetizer_helper: clear warning
+
+commit 66bb91c0e7fb770a93ec7ca2381206aa51f0505c
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 7 23:36:43 2017 +0100
+
+    packetizer: mpegaudio: clear some warnings
+
+commit 31ecffa32f48fab42fcd7fe36ddace1dbf6fd33a
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 8 09:50:52 2017 +0100
+
+    Revert "qt: enable audio filters with their name/shortcut"
+    
+    This reverts commit 2adbdef3dff50986bd1dca2986212b9d2eb45e00.
+    
+    We should not load a specific audio filter submodule. If this is needed, this
+    means that a submodule can be loaded randomly in place of the main module.
+
+commit 6e7244c7760bc6526aead61f1dde8740647dec94
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 8 09:50:38 2017 +0100
+
+    qt: update pitch module name
+
+commit 37f60bddae72dba0ea3ba45f11c7fd14928cf9db
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 8 09:37:38 2017 +0100
+
+    scaletempo: move pitch submodule into a module
+    
+    This commit fixes the pitch submodule being loaded in place of the scaletempo
+    main module.
+    
+    Fixes #18896
+
+commit e407c1e889f90d5201af23ee951f0cd5a42ac408
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Tue Nov 7 21:29:01 2017 +0100
+
+    macosx: Minify PNG images
+
+commit 8740e367f924c7480cbf8b7a955f1889f8f1f4e5
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Nov 7 21:51:38 2017 +0200
+
+    src: specify range for ipv4-timeout
+
+commit bc64efc92460e45b83a35bcfb9335797d313d858
+Author: Tristan Matthews <tmatth@videolan.org>
+Date:   Mon Nov 6 17:29:58 2017 -0500
+
+    png:decoder: use png_set_scale_16
+    
+    It's supposedly more accurate than png_set_strip_16 and available since libpng 1.5.4
+
+commit b839a2d3b3aafa38cf65630dd5d875cb6049196b
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Nov 7 16:02:02 2017 +0100
+
+    direct3d9: do not call SendEventPicturesInvalid if it's not supported
+    
+    For now using hardware acceleration won't allow using the wallpaper mode. Since
+    it reopens the device completely, the decoder loses the ties with with the
+    previous one and should be restarted from scratch.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit abd8a983bb36759054cc322441f5da70247ec4ad
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Nov 7 16:02:01 2017 +0100
+
+    direct3d9: do not keep the pool pointer when the device is being reopened
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 910722dd312819c2fcd4d0f72b177ac3b78a1cad
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Nov 7 16:02:00 2017 +0100
+
+    win32/events: fix crash when the window is being reopened
+    
+    We may receive a stray message with no window attached, we just discard it.
+    
+    Fixes #18753
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 53d410c3bc10429ede78e826d3c46564446e7f3a
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Tue Nov 7 15:41:02 2017 +0100
+
+    vout: on windows context menu should apear on mouse release
+    
+    Yes, Windows does it the wrong way... What can we do?
+    
+    Close #19025
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 190b51b334fdb95c93998893d9dbca5c2c930d1e
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Nov 7 19:04:39 2017 +0100
+
+    contribs: enable placebo everywhere but windows
+    
+    Since OpenGL is now the default everywhere except windows
+
+commit e85682585ab27a3c0593c403b892190c52009960
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Nov 7 18:45:12 2017 +0200
+
+    configure: reenable -z,defs
+    
+    Because people can clearly not be trusted to build without it.
+
+commit 858e517febcdfbce9aba777261cb97827e45473e
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Nov 7 18:54:37 2017 +0200
+
+    tcp: simplify poll timeout
+    
+    This is the same logic as the TLS code now.
+
+commit 806823ea757109a8f136ab667532a938b63dfc54
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Nov 7 18:50:46 2017 +0200
+
+    Fix .gitignore
+    
+    Apparently, running git-status is very hard.
+
+commit c24c577c77ed5fd17d9f9bd633ae0655ff5e0ec7
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Nov 7 17:17:28 2017 +0100
+
+    extras/tools: reject old versions of bison
+
+commit e72be94184d926c30b5c4d19fdf73349ef539b8b
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Nov 7 17:13:53 2017 +0100
+
+    extra/tools: fix compatibility with old OSes
+
+commit 43afed90d9578769126cc27af91c4e245cd21576
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Nov 7 16:57:01 2017 +0100
+
+    extra/tools: fix bison for macOS 10.13
+
+commit 42505be0836860b2ccacd491ddd7e829e3630048
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Nov 7 16:09:51 2017 +0100
+
+    extras/tools: provide bison for outdated systems
+
+commit 425b92921bc1511b7a6d86cecf57a6e85dca741c
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Nov 7 16:00:17 2017 +0100
+
+    extra/tools: implement a very simple sum-checking for packages
+    
+    We should, in the future, import contribs system, because it is more
+    complete and better designed...
+
+commit bbaf9ff3fb7e516f2d6a921c3c7bee0a6ad3e28a
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Nov 7 14:59:09 2017 +0100
+
+    extra/tools: add a fetch-all target
+
+commit fcea86581b718f7f1aa8ecce1a819235ff16c95a
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Nov 7 14:58:23 2017 +0100
+
+    extras/tools: fix gas package name
+
+commit 757eb4766c628ea81913db68c95cba51002f850b
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 7 15:22:07 2017 +0100
+
+    videotoolbox: fix deadlock when input is paused
+    
+    cf. comment.
+    
+    Fixes #19013
+
+commit 88130eafe0b43efd458bbe3bcc0615dd76994fdd
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 7 13:08:50 2017 +0100
+
+    codec: webvtt: use alternative params syntax
+
+commit c00fedc8a19f33f4079633aade2164e1c331fc38
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Nov 7 14:12:33 2017 +0100
+
+    configure.ac: Fix CSS/bison check
+
+commit 991ed989345c28d5fced32a9a5e60f0e793fcab1
+Author: Romain Vimont <rom@rom1v.com>
+Date:   Tue Nov 7 09:53:46 2017 +0100
+
+    qt: playlist: fix stack overflow
+    
+    The playlist tree may be arbitrary deep, so traversing it recursively
+    may lead to stack overflow.
+    
+    Traverse it iteratively instead.
+    
+    Fixes #18376
+    
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit b838ea1c0948dc07ca3ff51972dc3c4f7f42fbbd
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Nov 7 11:00:48 2017 +0100
+
+    smb: Fix samba browsing on windows
+
+commit 506b43d0a3de0e2bfd75ae769d4f5483931ee740
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Oct 17 14:05:50 2017 +0200
+
+    codec: webvtt: add CSS support
+
+commit 649b3d02f50855953cd19b5bdbfee177ffba38d3
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Oct 9 11:27:15 2017 +0200
+
+    codec: webvtt: add CSS lexer/grammar/parser
+
+commit 35acae8efeeb32a7e77ea66b20f399efcf5ee578
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sun Sep 3 10:35:17 2017 +0200
+
+    avcodec: vaapi: handle VLC_CODEC_VAAPI_420_10BPP
+
+commit faff013f0e6cc82988afa8bb7d4507807d62563d
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sun Sep 3 10:31:24 2017 +0200
+
+    avcodec: vaapi: add missing error check
+
+commit 45e1492841390906ecadc66c19f9e7fb4e749253
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 7 08:44:32 2017 +0100
+
+    fourcc: add VLC_CODEC_P010 fallbacks
+
+commit 2d60ef9fe5bd698ce66fc574f2f4e44894d216f0
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 7 09:26:22 2017 +0100
+
+    fourcc: add VLC_CODEC_VAAPI_420_10BPP fallbacks
+
+commit e1877d002cf3fd2fb11bac0e59cc8c8c083299d5
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sun Sep 3 11:09:46 2017 +0200
+
+    opengl: vaapi: add 10 bits support
+
+commit fe784b954f6ba169a995bb3fa3deec3a3cc09e82
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 7 08:48:37 2017 +0100
+
+    opengl: vaapi: early check EGLImageKHR creation
+    
+    This fixes green screen with some systems that have a working vaDeriveImage
+    implementation but no EGL/DMABUF (or not recent enough).
+
+commit 5870e657519d713c4774cfc6117704e8d1dbe5f1
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 7 08:57:20 2017 +0100
+
+    opengl: vaapi: refactor EGLImageKHR create/destroy
+
+commit 5712c322a38ef81202c3b61dd0339baa64a25bb5
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 7 08:45:40 2017 +0100
+
+    opengl: vaapi: replace check with assert
+    
+    This case can't happen since this module is responsible of creating
+    va surfaces.
+
+commit ecb59ffe336cf5a8403c8dbbe7d2ce3db8b91660
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sun Sep 3 14:39:13 2017 +0200
+
+    opengl: add fragment shaders for 10bits bi-planars chromas
+
+commit 6ece62907e3bb632339356472cba088bd9e6db9e
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 7 09:54:23 2017 +0100
+
+    hw: vaapi: implement P010 HW <-> SW conversions
+
+commit 933955f73ef05904fea472a570c88087c47bb235
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 7 09:44:23 2017 +0100
+
+    hw: vaapi: remove not implemented I420_10* cases
+
+commit ed8b58eb656f4f68ee2527ffd491094cae5d20d9
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 7 09:17:19 2017 +0100
+
+    hw: vaapi: add 10 bits support
+
+commit 7a46400e2eec9797eb11f2aa4dc1aaa37357201a
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sun Sep 3 10:56:06 2017 +0200
+
+    hw: vaapi: add vlc_vaapi_IsChromaOpaque
+
+commit fc1226e3a8b64b6f9a62afddb142c217ee9db882
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sun Sep 3 10:34:43 2017 +0200
+
+    hw: vaapi: choose va formats/chromas from vlc chromas
+
+commit f67d9330285b21a0a35c03de391df71596e7091b
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sun Sep 3 10:35:35 2017 +0200
+
+    fourcc: add VLC_CODEC_VAAPI_420_10BPP
+
 commit f30c715db6d6e1f1caa394ec74fba47f16b78cec
 Author: Francois Cartegnie <fcvlcdev@free.fr>
 Date:   Mon Nov 6 18:00:46 2017 +0100

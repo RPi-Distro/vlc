@@ -2,7 +2,7 @@
  * cdda.c : CD digital audio input module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2003-2006, 2008-2009 VLC authors and VideoLAN
- * $Id: 061ad4bf483f9f7f0e738ef485b4f400eb5916ca $
+ * $Id: 08ed2e8c3bf8e29ebcce03f64c37f5b446561c11 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -225,7 +225,7 @@ static int DemuxOpen(vlc_object_t *obj)
     if (track == 0 /* Whole disc -> use access plugin */)
         goto error;
 
-    demux_sys_t *sys = vlc_malloc(obj, sizeof (*sys));
+    demux_sys_t *sys = vlc_obj_alloc(obj, 1, sizeof (*sys));
     if (unlikely(sys == NULL))
         goto error;
 
@@ -619,7 +619,7 @@ static int AccessOpen(vlc_object_t *obj)
         return VLC_EGENERIC;
     }
 
-    access_sys_t *sys = vlc_malloc(obj, sizeof (*sys));
+    access_sys_t *sys = vlc_obj_alloc(obj, 1, sizeof (*sys));
     if (unlikely(sys == NULL))
     {
         ioctl_Close(obj, dev);

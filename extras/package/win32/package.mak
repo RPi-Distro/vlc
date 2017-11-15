@@ -121,48 +121,38 @@ package-win32-crx: package-win32-webplugin-common
 		--extension-output "$(win32_destdir)/$(WINVERSION).crx" --ignore-file install.rdf
 
 
-# nsis is a 32-bits installer, we need to build a 32bits DLL
-$(win32_destdir)/NSIS/UAC.dll: extras/package/win32/NSIS/UAC/runas.cpp extras/package/win32/NSIS/UAC/uac.cpp
-	mkdir -p "$(win32_destdir)/NSIS/"
-if HAVE_WIN64
-	i686-w64-mingw32-g++ $^ -shared -o $@ -lole32 -static-libstdc++ -static-libgcc
-	i686-w64-mingw32-strip $@
-else
-	$(CXX) $^ -D_WIN32_IE=0x0601 -D__forceinline=inline -shared -o $@ -lole32 -static-libstdc++ -static-libgcc
-	$(STRIP) $@
-endif
 $(win32_destdir)/NSIS/nsProcess.dll: extras/package/win32/NSIS/nsProcess/nsProcess.c extras/package/win32/NSIS/nsProcess/pluginapi.c
 	mkdir -p "$(win32_destdir)/NSIS/"
 if HAVE_WIN64
-	i686-w64-mingw32-gcc $^ -shared -o $@ -lole32 -static-libgcc
+	i686-w64-mingw32-gcc $^ -shared -o $@ -lole32 -static-libgcc -D_UNICODE=1 -DUNICODE=1
 	i686-w64-mingw32-strip $@
 else
-	$(CC) $^ -D_WIN32_IE=0x0601 -shared -o $@ -lole32 -static-libgcc
+	$(CC) $^ -D_WIN32_IE=0x0601 -shared -o $@ -lole32 -static-libgcc -D_UNICODE=1 -DUNICODE=1
 	$(STRIP) $@
 endif
 
 
-package-win32-exe: package-win-strip $(win32_destdir)/NSIS/UAC.dll $(win32_destdir)/NSIS/nsProcess.dll extras/package/win32/NSIS/vlc.win32.nsi
+package-win32-exe: package-win-strip $(win32_destdir)/NSIS/nsProcess.dll extras/package/win32/NSIS/vlc.win32.nsi
 # Script installer
 	cp    $(top_builddir)/extras/package/win32/NSIS/vlc.win32.nsi "$(win32_destdir)/"
 	cp    $(top_builddir)/extras/package/win32/NSIS/spad.nsi      "$(win32_destdir)/"
 	cp -r $(srcdir)/extras/package/win32/NSIS/languages    "$(win32_destdir)/"
 	cp -r $(srcdir)/extras/package/win32/NSIS/helpers      "$(win32_destdir)/"
 	mkdir -p "$(win32_destdir)/NSIS/"
-	cp "$(top_srcdir)/extras/package/win32/NSIS/UAC.nsh" "$(win32_destdir)/NSIS/"
 	cp "$(top_srcdir)/extras/package/win32/NSIS/nsProcess.nsh" "$(win32_destdir)/NSIS/"
 
 # Create package
 	if makensis -VERSION >/dev/null 2>&1; then \
 	    MAKENSIS="makensis"; \
-	elif [ -x "/cygdrive/c/Program Files/NSIS/makensis" ]; then \
-	    MAKENSIS="/cygdrive/c/Program\ Files/NSIS/makensis"; \
 	elif [ -x "$(PROGRAMFILES)/NSIS/makensis" ]; then \
 	    MAKENSIS="$(PROGRAMFILES)/NSIS/makensis"; \
-	elif wine --version >/dev/null 2>&1; then \
-	    MAKENSIS="wine C:/Program\ Files/NSIS/makensis.exe"; \
 	else \
 	    echo 'Error: cannot locate makensis tool'; exit 1; \
+	fi; \
+	MAKENSIS_VERSION=`makensis -VERSION`; echo $${MAKENSIS_VERSION:1:1}; \
+	if [ $${MAKENSIS_VERSION:1:1} -lt 3 ]; then \
+	    echo 'Please update your nsis packager';\
+	    exit 1; \
 	fi; \
 	eval "$$MAKENSIS $(win32_destdir)/spad.nsi"; \
 	eval "$$MAKENSIS $(win32_destdir)/vlc.win32.nsi"
@@ -210,52 +200,34 @@ EXTRA_DIST += \
 	extras/package/win32/configure.sh \
 	extras/package/win32/NSIS/vlc.win32.nsi.in \
 	extras/package/win32/NSIS/spad.nsi.in \
-	extras/package/win32/NSIS/UAC/examples \
-	extras/package/win32/NSIS/UAC/examples/UAC_AllowLUA.nsi \
-	extras/package/win32/NSIS/UAC/examples/UAC_AdminOnly.nsi \
-	extras/package/win32/NSIS/UAC/examples/UAC_Uninstaller.nsi \
-	extras/package/win32/NSIS/UAC/examples/UAC.nsh \
-	extras/package/win32/NSIS/UAC/examples/UAC_GetUserShellFolderPath.nsi \
-	extras/package/win32/NSIS/UAC/examples/UAC_RealWorldFullyLoadedDualModeExample.nsi \
-	extras/package/win32/NSIS/UAC/History.txt \
-	extras/package/win32/NSIS/UAC/License.txt \
-	extras/package/win32/NSIS/UAC/nsisutil.h \
-	extras/package/win32/NSIS/UAC/resource.h \
-	extras/package/win32/NSIS/UAC/resource.rc \
-	extras/package/win32/NSIS/UAC/runas.cpp \
-	extras/package/win32/NSIS/UAC/uac.cpp \
-	extras/package/win32/NSIS/UAC/uac.h \
-	extras/package/win32/NSIS/UAC/Readme.html \
-	extras/package/win32/NSIS/UAC.nsh \
-	extras/package/win32/NSIS/languages/declaration.nsh \
-	extras/package/win32/NSIS/languages/bengali.nsh \
-	extras/package/win32/NSIS/languages/basque.nsh \
-	extras/package/win32/NSIS/languages/brazilian_portuguese.nsh \
-	extras/package/win32/NSIS/languages/bulgarian.nsh \
-	extras/package/win32/NSIS/languages/catalan.nsh \
-	extras/package/win32/NSIS/languages/danish.nsh \
-	extras/package/win32/NSIS/languages/dutch.nsh \
-	extras/package/win32/NSIS/languages/english.nsh \
-	extras/package/win32/NSIS/languages/estonian.nsh \
-	extras/package/win32/NSIS/languages/finnish.nsh \
-	extras/package/win32/NSIS/languages/french.nsh \
-	extras/package/win32/NSIS/languages/galician.nsh \
-	extras/package/win32/NSIS/languages/german.nsh \
-	extras/package/win32/NSIS/languages/hebrew.nsh \
-	extras/package/win32/NSIS/languages/hungarian.nsh \
-	extras/package/win32/NSIS/languages/italian.nsh \
-	extras/package/win32/NSIS/languages/japanese.nsh \
-	extras/package/win32/NSIS/languages/lithuanian.nsh \
-	extras/package/win32/NSIS/languages/occitan.nsh \
-	extras/package/win32/NSIS/languages/polish.nsh \
-	extras/package/win32/NSIS/languages/punjabi.nsh \
-	extras/package/win32/NSIS/languages/russian.nsh \
-	extras/package/win32/NSIS/languages/romanian.nsh \
-	extras/package/win32/NSIS/languages/schinese.nsh \
-	extras/package/win32/NSIS/languages/slovak.nsh \
-	extras/package/win32/NSIS/languages/slovenian.nsh \
-	extras/package/win32/NSIS/languages/sorani.nsh \
-	extras/package/win32/NSIS/languages/spanish.nsh \
-	extras/package/win32/NSIS/languages/swedish.nsh
+	extras/package/win32/NSIS/languages/BengaliExtra.nsh \
+	extras/package/win32/NSIS/languages/BasqueExtra.nsh \
+	extras/package/win32/NSIS/languages/PortugueseBRExtra.nsh \
+	extras/package/win32/NSIS/languages/BulgarianExtra.nsh \
+	extras/package/win32/NSIS/languages/CatalanExtra.nsh \
+	extras/package/win32/NSIS/languages/DanishExtra.nsh \
+	extras/package/win32/NSIS/languages/DutchExtra.nsh \
+	extras/package/win32/NSIS/languages/EnglishExtra.nsh \
+	extras/package/win32/NSIS/languages/EstonianExtra.nsh \
+	extras/package/win32/NSIS/languages/FinnishExtra.nsh \
+	extras/package/win32/NSIS/languages/FrenchExtra.nsh \
+	extras/package/win32/NSIS/languages/GalicianExtra.nsh \
+	extras/package/win32/NSIS/languages/GermanExtra.nsh \
+	extras/package/win32/NSIS/languages/HebrewExtra.nsh \
+	extras/package/win32/NSIS/languages/HungarianExtra.nsh \
+	extras/package/win32/NSIS/languages/ItalianExtra.nsh \
+	extras/package/win32/NSIS/languages/JapaneseExtra.nsh \
+	extras/package/win32/NSIS/languages/LithuanianExtra.nsh \
+	extras/package/win32/NSIS/languages/OccitanExtra.nsh \
+	extras/package/win32/NSIS/languages/PolishExtra.nsh \
+	extras/package/win32/NSIS/languages/PunjabiExtra.nsh \
+	extras/package/win32/NSIS/languages/RussianExtra.nsh \
+	extras/package/win32/NSIS/languages/RomanianExtra.nsh \
+	extras/package/win32/NSIS/languages/SimpChineseExtra.nsh \
+	extras/package/win32/NSIS/languages/SlovakExtra.nsh \
+	extras/package/win32/NSIS/languages/SlovenianExtra.nsh \
+	extras/package/win32/NSIS/languages/SoraniExtra.nsh \
+	extras/package/win32/NSIS/languages/SpanishExtra.nsh \
+	extras/package/win32/NSIS/languages/SwedishExtra.nsh
 
 

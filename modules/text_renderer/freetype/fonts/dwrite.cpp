@@ -2,7 +2,7 @@
  * dwrite.cpp : DirectWrite font functions
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: addc91a3262b2c2c5db1749eb7bc2ab4e3bd8878 $
+ * $Id: 018a0b38dd086d338fd67fc9c4f52ad1f19503ce $
  *
  * Authors: Salah-Eddin Shaban <salah@videolan.org>
  *
@@ -505,7 +505,7 @@ static char *DWrite_Fallback( filter_t *p_filter, const char *psz_family,
         goto done;
     }
 
-    pwsz_buffer = ( wchar_t * ) malloc( ( i_string_length + 1 ) * sizeof( *pwsz_buffer ) );
+    pwsz_buffer = ( wchar_t * ) vlc_alloc( ( i_string_length + 1 ), sizeof( *pwsz_buffer ) );
     if( unlikely( !pwsz_buffer ) )
         goto done;
 

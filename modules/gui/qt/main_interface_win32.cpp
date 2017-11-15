@@ -2,7 +2,7 @@
  * main_interface_win32.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: ffa46760e89df0c3b0d151e32eca626c74d72ddf $
+ * $Id: 8e5f1b8c59dbe816e6697366ec2db1f871d1b1c3 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Hugo Beauzée-Luyssen <hugo@beauzee.fr>
@@ -383,8 +383,8 @@ void MainInterfaceWin32::resizeEvent(QResizeEvent *event)
         return;
 
     OffsetRect( &windowRect,
-                monitorInfo.rcWork.left - monitorInfo.rcMonitor.left,
-                monitorInfo.rcWork.top - monitorInfo.rcMonitor.top );
+                monitorInfo.rcMonitor.left - monitorInfo.rcWork.left ,
+                monitorInfo.rcMonitor.top - monitorInfo.rcWork.top );
 
     b_isWindowTiled = ( EqualRect( &windowPlacement.rcNormalPosition, &windowRect ) == 0 );
 }

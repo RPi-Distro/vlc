@@ -2,7 +2,7 @@
  * win32_factory.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 325277f0e5dba6413f8c7ee8ee66ed758abd4c2a $
+ * $Id: a357276f29a5ce4a16a14c7447f7d1bf0a3e0ec8 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -482,7 +482,7 @@ void Win32Factory::rmDir( const std::string &rPath )
     LPWSTR dir_temp = ToWide( rPath.c_str() );
     size_t len = wcslen( dir_temp );
 
-    LPWSTR dir = (wchar_t *)malloc( (len + 2) * sizeof (wchar_t) );
+    LPWSTR dir = (wchar_t *)vlc_alloc( len + 2, sizeof (wchar_t) );
     wcsncpy( dir, dir_temp, len + 2);
 
     SHFILEOPSTRUCTW file_op = {

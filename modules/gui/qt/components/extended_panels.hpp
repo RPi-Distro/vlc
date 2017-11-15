@@ -2,7 +2,7 @@
  * extended_panels.hpp : Exentended Panels
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: f303f1e978b32b9a8b6f689ac458c0055cdbd510 $
+ * $Id: 6c7567966934720307afb0d0f18419495e70d38e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea at videolan dot org>
@@ -132,8 +132,7 @@ class AudioFilterControlWidget : public QWidget
     Q_OBJECT
 
 public:
-    AudioFilterControlWidget( intf_thread_t *, QWidget *, const char *shortcut,
-                              const char *name /* = NULL */ );
+    AudioFilterControlWidget( intf_thread_t *, QWidget *, const char *name );
 
 protected:
     virtual void build();
@@ -142,7 +141,6 @@ protected:
     QVector<FilterSliderData *> sliderDatas;
     QGroupBox *slidersBox;
     intf_thread_t *p_intf;
-    QString shortcut; // filter's module shorcut name
     QString name; // filter's module name
     int i_smallfont;
 

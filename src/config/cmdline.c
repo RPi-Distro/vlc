@@ -2,7 +2,7 @@
  * cmdline.c: command line parsing
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: 882f22479b3d5c2c6d77c9cfd4274621c294ec87 $
+ * $Id: 535306cc1c6a683f2d6f4fb062ceff9734cabab7 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -78,7 +78,7 @@ int config_LoadCmdLine( vlc_object_t *p_this, int i_argc,
          * dealing with boolean to allow for --foo and --no-foo */
         i_opts += p->conf.count + 2 * p->conf.booleans;
 
-    p_longopts = malloc( sizeof(*p_longopts) * (i_opts + 1) );
+    p_longopts = vlc_alloc( i_opts + 1, sizeof(*p_longopts)  );
     if( p_longopts == NULL )
         return -1;
 
@@ -94,7 +94,7 @@ int config_LoadCmdLine( vlc_object_t *p_this, int i_argc,
      * us, ignoring the arity of the options */
     if( b_ignore_errors )
     {
-        argv_copy = (const char**)malloc( i_argc * sizeof(char *) );
+        argv_copy = vlc_alloc( i_argc, sizeof(char *) );
         if( argv_copy == NULL )
         {
             free( psz_shortopts );

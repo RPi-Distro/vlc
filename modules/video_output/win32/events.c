@@ -2,7 +2,7 @@
  * events.c: Windows video output events handler
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 88e67acba38eedacfd1c00237845b5c28110302f $
+ * $Id: 3ed20a69abd73342cdabd32d316e611f2ac9c1d7 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Martell Malone <martellmalone@gmail.com>
@@ -122,9 +122,12 @@ static void MousePressed( event_thread_t *p_event, HWND hwnd, unsigned button );
 
 static void CALLBACK HideMouse(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
-    VLC_UNUSED(hwnd); VLC_UNUSED(uMsg); VLC_UNUSED(dwTime);
-    event_thread_t *p_event = (event_thread_t *)idEvent;
-    UpdateCursor( p_event, false );
+    VLC_UNUSED(uMsg); VLC_UNUSED(dwTime);
+    if (hwnd)
+    {
+        event_thread_t *p_event = (event_thread_t *)idEvent;
+        UpdateCursor( p_event, false );
+    }
 }
 
 static void UpdateCursorMoved( event_thread_t *p_event )
@@ -355,7 +358,7 @@ static void *EventThread( void *p_this )
             if( p_event->psz_title )
             {
                 const size_t i_length = strlen(p_event->psz_title);
-                pwz_title = malloc( 2 * (i_length + 1) );
+                pwz_title = vlc_alloc( i_length + 1, 2 );
                 if( pwz_title )
                 {
                     mbstowcs( pwz_title, p_event->psz_title, 2 * i_length );

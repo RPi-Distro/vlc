@@ -2,7 +2,7 @@
  * hevc.c: h.265/hevc video packetizer
  *****************************************************************************
  * Copyright (C) 2014 VLC authors and VideoLAN
- * $Id: b58aa615a9707fdae007ee838fe6cbb0f3bdd785 $
+ * $Id: 300318ac33fe43dea00a6814d4a47f23b5c42be7 $
  *
  * Authors: Denis Charmet <typx@videolan.org>
  *
@@ -781,8 +781,10 @@ static block_t *ParseNALBlock(decoder_t *p_dec, bool *pb_ts_used, block_t *p_fra
     }
 
     /* Get NALU type */
+    const mtime_t dts = p_frag->i_dts, pts = p_frag->i_pts;
     block_t * p_output = NULL;
     uint8_t i_nal_type = hevc_getNALType(&p_frag->p_buffer[4]);
+
     if (i_nal_type < HEVC_NAL_VPS)
     {
         /* NAL is a VCL NAL */
@@ -799,9 +801,9 @@ static block_t *ParseNALBlock(decoder_t *p_dec, bool *pb_ts_used, block_t *p_fra
     if(p_output)
     {
         SetOutputBlockProperties( p_dec, p_output );
-        if(p_frag->i_dts > VLC_TS_INVALID)
-            date_Set(&p_sys->dts, p_frag->i_dts);
-        p_sys->pts = p_frag->i_pts;
+        if (dts > VLC_TS_INVALID)
+            date_Set(&p_sys->dts, dts);
+        p_sys->pts = pts;
         *pb_ts_used = true;
     }
 

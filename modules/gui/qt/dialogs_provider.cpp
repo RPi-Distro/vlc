@@ -2,7 +2,7 @@
  * dialogs_provider.cpp : Dialog Provider
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 92f1e17a3e3efcaeb186d66fa03e293f1201f192 $
+ * $Id: 4f15bee9c0b16f1fa926a7c23301ec1372593b3e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -388,7 +388,7 @@ void DialogsProvider::openFileGenericDialog( intf_dialog_args_t *p_arg )
         if( !file.isEmpty() )
         {
             p_arg->i_results = 1;
-            p_arg->psz_results = (char **)malloc( p_arg->i_results * sizeof( char * ) );
+            p_arg->psz_results = (char **)vlc_alloc( p_arg->i_results, sizeof( char * ) );
             p_arg->psz_results[0] = strdup( qtu( toNativeSepNoSlash( file ) ) );
         }
         else
@@ -399,7 +399,7 @@ void DialogsProvider::openFileGenericDialog( intf_dialog_args_t *p_arg )
         QStringList urls = getOpenURL( NULL, qfu( p_arg->psz_title ),
                                        p_intf->p_sys->filepath, extensions );
         p_arg->i_results = urls.count();
-        p_arg->psz_results = (char **)malloc( p_arg->i_results * sizeof( char * ) );
+        p_arg->psz_results = (char **)vlc_alloc( p_arg->i_results, sizeof( char * ) );
         i = 0;
         foreach( const QString &uri, urls )
             p_arg->psz_results[i++] = strdup( qtu( uri ) );

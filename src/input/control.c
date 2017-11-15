@@ -2,7 +2,7 @@
  * control.c
  *****************************************************************************
  * Copyright (C) 1999-2015 VLC authors and VideoLAN
- * $Id: 8d9ffc0b8a961495c3094dcdec34f29beca41087 $
+ * $Id: 5793e8cfbda7fc7db313a0bfadafa38a3d327315 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -269,7 +269,7 @@ int input_vaControl( input_thread_t *p_input, int i_query, va_list args )
                 int i;
 
                 *pi_bkmk = priv->i_bookmark;
-                *ppp_bkmk = malloc( sizeof(seekpoint_t *) * priv->i_bookmark );
+                *ppp_bkmk = vlc_alloc( priv->i_bookmark, sizeof(seekpoint_t *) );
                 for( i = 0; i < priv->i_bookmark; i++ )
                 {
                     (*ppp_bkmk)[i] =
@@ -344,7 +344,7 @@ int input_vaControl( input_thread_t *p_input, int i_query, va_list args )
         {
             vlc_mutex_lock( &priv->p_item->lock );
             unsigned count = priv->i_title;
-            input_title_t **array = malloc( count * sizeof (*array) );
+            input_title_t **array = vlc_alloc( count, sizeof (*array) );
 
             if( count > 0 && unlikely(array == NULL) )
             {
@@ -464,7 +464,7 @@ int input_vaControl( input_thread_t *p_input, int i_query, va_list args )
                 return VLC_EGENERIC;
             }
             *pi_attachment = priv->i_attachment;
-            *ppp_attachment = malloc( sizeof(input_attachment_t*) * priv->i_attachment );
+            *ppp_attachment = vlc_alloc( priv->i_attachment, sizeof(input_attachment_t*));
             for( int i = 0; i < priv->i_attachment; i++ )
                 (*ppp_attachment)[i] = vlc_input_attachment_Duplicate( priv->attachment[i] );
 

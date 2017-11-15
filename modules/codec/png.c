@@ -2,7 +2,7 @@
  * png.c: png decoder module making use of libpng.
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 645577f7ca90697a793de6a7ba2ad2b503f7d150 $
+ * $Id: 9bcbdf47964f475f13be0ea455aa06531050ff1c $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -264,7 +264,14 @@ static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
         png_set_alpha_mode( p_png, PNG_ALPHA_OPTIMIZED, PNG_DEFAULT_sRGB );
 
     /* Strip to 8 bits per channel */
-    if( i_bit_depth == 16 ) png_set_strip_16( p_png );
+    if( i_bit_depth == 16 )
+    {
+#if PNG_LIBPNG_VER >= 10504
+        png_set_scale_16( p_png );
+#else
+        png_set_strip_16( p_png );
+#endif
+    }
 
     if( png_get_valid( p_png, p_info, PNG_INFO_tRNS ) )
     {
@@ -282,7 +289,7 @@ static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
     if( !p_pic ) goto error;
 
     /* Decode picture */
-    p_row_pointers = malloc( sizeof(png_bytep) * i_height );
+    p_row_pointers = vlc_alloc( i_height, sizeof(png_bytep) );
     if( !p_row_pointers )
         goto error;
     for( i = 0; i < (int)i_height; i++ )

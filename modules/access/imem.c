@@ -2,7 +2,7 @@
  * imem.c : Memory input for VLC
  *****************************************************************************
  * Copyright (C) 2009-2010 Laurent Aimar
- * $Id: 3496f8a1a980c17d71186415c24ceb6332477844 $
+ * $Id: ba7c1ea1e06f515b0e474b18c6330a44f0c6ded4 $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT org>
  *
@@ -240,7 +240,7 @@ static int OpenCommon(vlc_object_t *object, imem_sys_t **sys_ptr, const char *ps
     char *tmp;
 
     /* */
-    imem_sys_t *sys = vlc_calloc(object, 1, sizeof(*sys));
+    imem_sys_t *sys = vlc_obj_calloc(object, 1, sizeof(*sys));
     if (!sys)
         return VLC_ENOMEM;
 

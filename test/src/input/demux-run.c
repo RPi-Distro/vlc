@@ -38,6 +38,8 @@
 #include <vlc_access.h>
 #include <vlc_block.h>
 #include <vlc_demux.h>
+#include <vlc_input.h>
+#include <vlc_meta.h>
 #include <vlc_es_out.h>
 #include <vlc_url.h>
 #include "../lib/libvlc_internal.h"
@@ -45,12 +47,7 @@
 #include <vlc/vlc.h>
 
 #include "demux-run.h"
-
-#if 0
-#define debug(...) printf(__VA_ARGS__)
-#else
-#define debug(...) (void)0
-#endif
+#include "decoder.h"
 
 struct test_es_out_t
 {
@@ -61,6 +58,9 @@ struct test_es_out_t
 struct es_out_id_t
 {
     struct es_out_id_t *next;
+#ifdef HAVE_DECODERS
+    decoder_t *decoder;
+#endif
 };
 
 static es_out_id_t *EsOutAdd(es_out_t *out, const es_format_t *fmt)
@@ -76,6 +76,9 @@ static es_out_id_t *EsOutAdd(es_out_t *out, const es_format_t *fmt)
 
     id->next = ctx->ids;
     ctx->ids = id;
+#ifdef HAVE_DECODERS
+    id->decoder = test_decoder_create((void *)out->p_sys, fmt);
+#endif
 
     debug("[%p] Added   ES\n", (void *)id);
     return id;
@@ -96,8 +99,26 @@ static int EsOutSend(es_out_t *out, es_out_id_t *id, block_t *block)
 {
     //debug("[%p] Sent    ES: %zu\n", (void *)idd, block->i_buffer);
     EsOutCheckId(out, id);
-    block_Release(block);
+#ifdef HAVE_DECODERS
+    if (id->decoder)
+        test_decoder_process(id->decoder, block);
+    else
+#endif
+        block_Release(block);
     return VLC_SUCCESS;
+}
+
+static void IdDelete(es_out_id_t *id)
+{
+#ifdef HAVE_DECODERS
+    if (id->decoder)
+    {
+        /* Drain */
+        test_decoder_process(id->decoder, NULL);
+        test_decoder_destroy(id->decoder);
+    }
+#endif
+    free(id);
 }
 
 static void EsOutDelete(es_out_t *out, es_out_id_t *id)
@@ -114,7 +135,7 @@ static void EsOutDelete(es_out_t *out, es_out_id_t *id)
 
     debug("[%p] Deleted ES\n", (void *)id);
     *pp = id->next;
-    free(id);
+    IdDelete(id);
 }
 
 static int EsOutControl(es_out_t *out, int query, va_list args)
@@ -168,7 +189,7 @@ static void EsOutDestroy(es_out_t *out)
     while ((id = ctx->ids) != NULL)
     {
         ctx->ids = id->next;
-        free(id);
+        IdDelete(id);
     }
     free(ctx);
 }
@@ -195,8 +216,49 @@ static es_out_t *test_es_out_create(vlc_object_t *parent)
     return out;
 }
 
-static int demux_process_stream(const char *name, stream_t *s)
+static unsigned demux_test_and_clear_flags(demux_t *demux, unsigned flags)
 {
+    unsigned update;
+    if (demux_Control(demux, DEMUX_TEST_AND_CLEAR_FLAGS, &update) == VLC_SUCCESS)
+        return update;
+    unsigned ret = demux->info.i_update & flags;
+    demux->info.i_update &= ~flags;
+    return ret;
+}
+
+static void demux_get_title_list(demux_t *demux)
+{
+    int title;
+    int title_offset;
+    int seekpoint_offset;
+    input_title_t **title_list;
+
+    if (demux_Control(demux, DEMUX_GET_TITLE_INFO, &title_list, &title,
+                      &title_offset, &seekpoint_offset) == VLC_SUCCESS)
+    {
+        for (int i = 0; i < title; i++)
+            vlc_input_title_Delete(title_list[i]);
+    }
+}
+
+static void demux_get_meta(demux_t *demux)
+{
+    vlc_meta_t *p_meta = vlc_meta_New();
+    if (unlikely(p_meta == NULL) )
+        return;
+
+    input_attachment_t **attachment;
+    int i_attachment;
+
+    demux_Control(demux, DEMUX_GET_META, p_meta);
+    demux_Control(demux, DEMUX_GET_ATTACHMENTS, &attachment, &i_attachment);
+
+    vlc_meta_Delete(p_meta);
+}
+
+static int demux_process_stream(const struct vlc_run_args *args, stream_t *s)
+{
+    const char *name = args->name;
     if (name == NULL)
         name = "any";
 
@@ -220,7 +282,28 @@ static int demux_process_stream(const char *name, stream_t *s)
     int val;
 
     while ((val = demux_Demux(demux)) == VLC_DEMUXER_SUCCESS)
-         i++;
+    {
+        if (args->test_demux_controls)
+        {
+            if (demux_test_and_clear_flags(demux, INPUT_UPDATE_TITLE_LIST))
+                demux_get_title_list(demux);
+
+            if (demux_test_and_clear_flags(demux, INPUT_UPDATE_META))
+                demux_get_meta(demux);
+
+            int seekpoint = 0;
+            double position = 0.0;
+            mtime_t time = 0;
+            mtime_t length = 0;
+
+            /* Call controls for increased code coverage */
+            demux_Control(demux, DEMUX_GET_SEEKPOINT, &seekpoint);
+            demux_Control(demux, DEMUX_GET_POSITION, &position);
+            demux_Control(demux, DEMUX_GET_TIME, &time);
+            demux_Control(demux, DEMUX_GET_LENGTH, &length);
+        }
+        i++;
+    }
 
     demux_Delete(demux);
     es_out_Delete(out);
@@ -230,29 +313,9 @@ static int demux_process_stream(const char *name, stream_t *s)
     return val == VLC_DEMUXER_EOF ? 0 : -1;
 }
 
-static libvlc_instance_t *libvlc_create(void)
+int vlc_demux_process_url(const struct vlc_run_args *args, const char *url)
 {
-    const char *argv[] = {
-        NULL
-    };
-    unsigned argc = (sizeof (argv) / sizeof (*argv)) - 1;
-
-#ifdef TOP_BUILDDIR
-# ifndef HAVE_STATIC_MODULES
-    setenv("VLC_PLUGIN_PATH", TOP_BUILDDIR"/modules", 1);
-# endif
-    setenv("VLC_DATA_PATH", TOP_SRCDIR"/share", 1);
-#endif
-
-    libvlc_instance_t *vlc = libvlc_new(argc, argv);
-    if (vlc == NULL)
-        fprintf(stderr, "Error: cannot initialize LibVLC.\n");
-    return vlc;
-}
-
-int vlc_demux_process_url(const char *demux, const char *url)
-{
-    libvlc_instance_t *vlc = libvlc_create();
+    libvlc_instance_t *vlc = libvlc_create(args);
     if (vlc == NULL)
         return -1;
 
@@ -260,12 +323,12 @@ int vlc_demux_process_url(const char *demux, const char *url)
     if (s == NULL)
         fprintf(stderr, "Error: cannot create input stream: %s\n", url);
 
-    int ret = demux_process_stream(demux, s);
+    int ret = demux_process_stream(args, s);
     libvlc_release(vlc);
     return ret;
 }
 
-int vlc_demux_process_path(const char *demux, const char *path)
+int vlc_demux_process_path(const struct vlc_run_args *args, const char *path)
 {
     char *url = vlc_path2uri(path, NULL);
     if (url == NULL)
@@ -274,15 +337,15 @@ int vlc_demux_process_path(const char *demux, const char *path)
         return -1;
     }
 
-    int ret = vlc_demux_process_url(demux, url);
+    int ret = vlc_demux_process_url(args, url);
     free(url);
     return ret;
 }
 
-int vlc_demux_process_memory(const char *demux,
+int vlc_demux_process_memory(const struct vlc_run_args *args,
                              const unsigned char *buf, size_t length)
 {
-    libvlc_instance_t *vlc = libvlc_create();
+    libvlc_instance_t *vlc = libvlc_create(args);
     if (vlc == NULL)
         return -1;
 
@@ -291,7 +354,7 @@ int vlc_demux_process_memory(const char *demux,
     if (s == NULL)
         fprintf(stderr, "Error: cannot create input stream\n");
 
-    int ret = demux_process_stream(demux, s);
+    int ret = demux_process_stream(args, s);
     libvlc_release(vlc);
     return ret;
 }
@@ -302,7 +365,34 @@ int vlc_demux_process_memory(const char *demux,
 typedef int (*vlc_plugin_cb)(int (*)(void *, void *, int, ...), void *);
 extern vlc_plugin_cb vlc_static_modules[];
 
+#ifdef HAVE_DECODERS
+#define DECODER_PLUGINS(f) \
+    f(adpcm) \
+    f(aes3) \
+    f(araw) \
+    f(g711) \
+    f(lpcm) \
+    f(uleaddvaudio) \
+    f(rawvideo) \
+    f(cc) \
+    f(cvdsub) \
+    f(dvbsub) \
+    f(scte18) \
+    f(scte27) \
+    f(spudec) \
+    f(stl) \
+    f(subsdec) \
+    f(subsusf) \
+    f(svcdsub) \
+    f(textst) \
+    f(substx3g)
+#else
+#define DECODER_PLUGINS(f)
+#endif
+
 #define PLUGINS(f) \
+    f(xml) \
+    f(console) \
     f(filesystem) \
     f(xml) \
     f(aiff) \
@@ -330,8 +420,10 @@ extern vlc_plugin_cb vlc_static_modules[];
     f(ty) \
     f(voc) \
     f(wav) \
+    f(webvtt) \
     f(xa) \
     f(a52) \
+    f(copy) \
     f(dirac) \
     f(dts) \
     f(flac) \
@@ -342,7 +434,11 @@ extern vlc_plugin_cb vlc_static_modules[];
     f(mpeg4video) \
     f(mpegaudio) \
     f(mpegvideo) \
-    f(vc1)
+    f(vc1) \
+    f(rawvid) \
+    f(rawaud) \
+    DECODER_PLUGINS(f)
+
 #ifdef HAVE_DVBPSI
 # define PLUGIN_TS(f) f(ts)
 #else

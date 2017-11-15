@@ -2,7 +2,7 @@
  * gradient.c : Gradient and edge detection video effects plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2008 VLC authors and VideoLAN
- * $Id: 7479377d8d0f95bc75f2e171afe603b233cd274d $
+ * $Id: 7f9f000337bdcac385f56b51b0e7411308acad9a $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>
@@ -351,7 +351,7 @@ static void FilterGradient( filter_t *p_filter, picture_t *p_inpic,
     uint32_t *p_smooth;
     if( !p_filter->p_sys->p_buf32 )
         p_filter->p_sys->p_buf32 =
-        (uint32_t *)malloc( i_num_lines * i_src_visible * sizeof(uint32_t));
+            vlc_alloc( i_num_lines * i_src_visible, sizeof(uint32_t));
     p_smooth = p_filter->p_sys->p_buf32;
 
     if( !p_smooth ) return;
@@ -473,17 +473,17 @@ static void FilterEdge( filter_t *p_filter, picture_t *p_inpic,
 
     if( !p_filter->p_sys->p_buf32 )
         p_filter->p_sys->p_buf32 =
-        (uint32_t *)malloc( i_num_lines * i_src_visible * sizeof(uint32_t));
+            vlc_alloc( i_num_lines * i_src_visible, sizeof(uint32_t));
     p_smooth = p_filter->p_sys->p_buf32;
 
     if( !p_filter->p_sys->p_buf32_bis )
         p_filter->p_sys->p_buf32_bis =
-        (uint32_t *)malloc( i_num_lines * i_src_visible * sizeof(uint32_t));
+            vlc_alloc( i_num_lines * i_src_visible, sizeof(uint32_t));
     p_grad = p_filter->p_sys->p_buf32_bis;
 
     if( !p_filter->p_sys->p_buf8 )
         p_filter->p_sys->p_buf8 =
-        (uint8_t *)malloc( i_num_lines * i_src_visible * sizeof(uint8_t));
+            vlc_alloc( i_num_lines * i_src_visible, sizeof(uint8_t));
     p_theta = p_filter->p_sys->p_buf8;
 
     if( !p_smooth || !p_grad || !p_theta ) return;
@@ -632,10 +632,10 @@ static void FilterHough( filter_t *p_filter, picture_t *p_inpic,
     double d_cos;
     uint32_t *p_smooth;
 
-    int *p_hough = malloc( i_diag * i_nb_steps * sizeof(int) );
+    int *p_hough = vlc_alloc( i_diag * i_nb_steps, sizeof(int) );
     if( ! p_hough ) return;
 
-    p_smooth = (uint32_t *)malloc( i_num_lines*i_src_visible*sizeof(uint32_t));
+    p_smooth = vlc_alloc( i_num_lines * i_src_visible, sizeof(uint32_t));
     if( !p_smooth )
     {
         free( p_hough );
@@ -645,7 +645,7 @@ static void FilterHough( filter_t *p_filter, picture_t *p_inpic,
     if( ! p_pre_hough )
     {
         msg_Dbg(p_filter, "Starting precalculation");
-        p_pre_hough = malloc( i_num_lines*i_src_visible*i_nb_steps*sizeof(int));
+        p_pre_hough = vlc_alloc( i_num_lines*i_src_visible*i_nb_steps,sizeof(int));
         if( ! p_pre_hough )
         {
             free( p_smooth );

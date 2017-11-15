@@ -2,7 +2,7 @@
  * parse.c: SPU parser
  *****************************************************************************
  * Copyright (C) 2000-2001, 2005, 2006 VLC authors and VideoLAN
- * $Id: c4e8bc079458bdac0b2ebff0cd16139039d73110 $
+ * $Id: 275864f187aa62119914038186d4d7ea7b23bf03 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -125,7 +125,7 @@ subpicture_t * ParsePacket( decoder_t *p_dec )
      *  one byte gaves two nibbles and may be used twice (once per field)
      * generating 4 codes.
      */
-    spu_data.p_data = malloc( sizeof(*spu_data.p_data) * 2 * 2 * p_sys->i_rle_size );
+    spu_data.p_data = vlc_alloc( p_sys->i_rle_size, sizeof(*spu_data.p_data) * 2 * 2 );
 
     /* We try to display it */
     if( ParseRLE( p_dec, &spu_data, &spu_properties ) )

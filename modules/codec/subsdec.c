@@ -2,7 +2,7 @@
  * subsdec.c : text subtitle decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 VLC authors and VideoLAN
- * $Id: 592a10a74a410a3a711878d4a35279c0929b1d98 $
+ * $Id: c8b82c034e6a66a4ab6477e46137965eb1a5e94d $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -586,7 +586,7 @@ static char* GetTag( const char** ppsz_subtitle, bool b_closing )
     size_t tag_size = 1;
     while ( isalnum( psz_subtitle[tag_size] ) || psz_subtitle[tag_size] == '_' )
         tag_size++;
-    char* psz_tagname = malloc( ( tag_size + 1 ) * sizeof( *psz_tagname ) );
+    char* psz_tagname = vlc_alloc( tag_size + 1, sizeof( *psz_tagname ) );
     if ( unlikely( !psz_tagname ) )
         return NULL;
     strncpy( psz_tagname, psz_subtitle, tag_size );

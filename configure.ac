@@ -43,7 +43,7 @@ AC_SUBST(vlclibdir)
 dnl
 dnl Check for tools
 dnl
-AC_PROG_CC_C99
+AC_PROG_CC
 AC_USE_SYSTEM_EXTENSIONS
 VLC_PROG_CC_C11
 AC_DEFINE([_FORTIFY_SOURCE], 2, [Define to 2 to get glibc warnings.])
@@ -786,6 +786,18 @@ AS_IF([test "${SYS}" = "mingw32"], [
   have_dynamic_objects="yes" #assume we can use shared objects
 ])
 
+AC_ARG_WITH([libfuzzer],
+    [AS_HELP_STRING([--with-libfuzzer=DIR],
+        [use libFuzzer library from DIR and triggers sanitize coverage (default disabled)])],
+     [],
+     [with_libfuzzer=no])
+AS_VAR_IF(with_libfuzzer, no, [], [
+    enable_shared=no
+    enable_static=yes
+    enable_vlc=no
+])
+AM_CONDITIONAL(HAVE_LIBFUZZER, [test "${with_libfuzzer}" != "no"])
+
 AS_IF([test "${enable_shared}" = "no"], [
   have_dynamic_objects=no
 ])
@@ -1109,6 +1121,11 @@ AH_BOTTOM([
     ])
     AS_IF([test "${ac_cv_c_omit_frame_pointer}" = "no"], [VLC_RESTORE_FLAGS])
   ])
+
+  AX_APPEND_COMPILE_FLAGS([-fstack-protector-strong])
+  AX_APPEND_COMPILE_FLAGS([-fstack-protector-strong], [CXXFLAGS])
+  dnl Win32 requires linking to ssp for stack-protection
+  AS_IF([test "${SYS}" = "mingw32"], [ LDFLAGS="${LDFLAGS} -lssp -ladvapi32" ])
 ])
 
 VLC_SAVE_FLAGS
@@ -1133,7 +1150,7 @@ AC_CACHE_CHECK([if linker supports -z,defs], [ac_cv_ld_z_defs], [
     ac_cv_ld_z_defs="no"
   ])
 ])
-AS_IF([test "${ac_cv_ld_z_defs}" = "no" -o "${with_sanitizer}" != "no"], [VLC_RESTORE_FLAGS])
+AS_IF([test "${ac_cv_ld_z_defs}" = "no"], [VLC_RESTORE_FLAGS])
 
 dnl Check for __attribute__((packed))
 AC_CACHE_CHECK([for __attribute__((packed))],
@@ -2956,6 +2973,27 @@ AS_IF([test "${enable_tiger}" != "no"], [
   ])
 ])
 
+dnl
+dnl  check if we can build the css selector engine 
+dnl
+AC_ARG_ENABLE(css,
+[  --enable-css            CSS selector engine (default auto)])
+AS_IF([test "${enable_css}" != "no"], [
+  AC_PROG_LEX
+  with_css="no"
+  AS_IF([test "x$LEX" != "x:"], [
+    AC_PROG_YACC
+    dnl can only accept bison or we need byacc feature test for %destructor
+    AS_IF([test "x$YACC" = "xbison -y"], [
+        AC_DEFINE(HAVE_CSS, 1, [Define if CSS engine is built])
+        with_css="yes"
+      ],[
+        AC_MSG_WARN("Bison not found. CSS support disabled.")
+      ])
+  ])
+])
+AM_CONDITIONAL([ENABLE_CSS], [test "${with_css}" = "yes"])
+
 
 dnl
 dnl  Video plugins
@@ -4167,6 +4205,26 @@ dnl
 AC_ARG_ENABLE(vlc,
   [  --enable-vlc            build the VLC media player (default enabled)])
 AM_CONDITIONAL(BUILD_VLC, [test "${enable_vlc}" != "no"])
+
+dnl
+dnl Fuzzer (at the end in order to don't mess dependencies FLAGS)
+dnl
+AS_VAR_IF(with_libfuzzer, no, [], [
+    LIBS="-lstdc++ ${LIBM} ${LIBPTHREAD} -L${with_libfuzzer} -lFuzzer"
+    AX_CHECK_COMPILE_FLAG(-fsanitize-coverage=trace-pc-guard, [
+        AX_APPEND_FLAG([-fsanitize-coverage=trace-pc-guard])
+        AX_APPEND_FLAG([-fsanitize-coverage=trace-pc-guard], [CXXFLAGS])
+        AX_APPEND_COMPILE_FLAGS([-fsanitize-coverage=trace-cmp])
+        AX_APPEND_COMPILE_FLAGS([-fsanitize-coverage=trace-cmp], [CXXFLAGS])
+    ], [
+        AX_CHECK_COMPILE_FLAG(-fsanitize-coverage=trace-pc, [
+            AX_APPEND_FLAG([-fsanitize-coverage=trace-pc])
+            AX_APPEND_FLAG([-fsanitize-coverage=trace-pc], [CXXFLAGS])
+        ], [
+            AC_MSG_ERROR([Sanitizer coverage not supported by your compiler])
+        ])
+    ])
+])
 
 dnl
 dnl  Stuff used by the program

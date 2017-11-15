@@ -2,7 +2,7 @@
  * normvol.c: volume normalizer
  *****************************************************************************
  * Copyright (C) 2001, 2006 VLC authors and VideoLAN
- * $Id: 6bee12f8423f7bd471aa0c366ae439270e5862c8 $
+ * $Id: 428529f146f5d1aa88cc40fc167d8a77eec49ef9 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -146,7 +146,7 @@ static block_t *DoWork( filter_t *p_filter, block_t *p_in_buf )
     if( !pf_sum )
         goto out;
 
-    pf_gain = malloc( sizeof(float) * i_channels );
+    pf_gain = vlc_alloc( i_channels, sizeof(float) );
     if( !pf_gain )
     {
         free( pf_sum );

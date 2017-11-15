@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2016 VLC authors and VideoLAN
- * $Id: e8f7d3d266a983ea21ba80cce2ee5620430b0945 $
+ * $Id: 0fa65d72637e1b2a7733ff7fbe495f234a065d98 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -1139,7 +1139,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         if( *pi_int <= 0 )
             return VLC_EGENERIC;
 
-        *ppp_attach = malloc( sizeof(input_attachment_t*) * *pi_int );
+        *ppp_attach = vlc_alloc( *pi_int, sizeof(input_attachment_t*) );
         if( !*ppp_attach )
             return VLC_EGENERIC;
 

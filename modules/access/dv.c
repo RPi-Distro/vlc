@@ -2,7 +2,7 @@
  * dv.c: Digital video/Firewire input (file: access plug-in)
  *****************************************************************************
  * Copyright (C) 2005 M2X
- * $Id: 3285c2a09fb2ff2e4401a194238da16e9145f55b $
+ * $Id: 0037ba2989d4cb56f1933d41e3f65654ee5494d2 $
  *
  * Authors: Jean-Paul Saman <jpsaman at m2x dot nl>
  *
@@ -128,7 +128,7 @@ static int Open( vlc_object_t *p_this )
     /* Set up p_access */
     ACCESS_SET_CALLBACKS( NULL, Block, Control, NULL );
 
-    p_access->p_sys = p_sys = vlc_malloc( p_this, sizeof( access_sys_t ) );
+    p_access->p_sys = p_sys = vlc_obj_alloc( p_this, 1, sizeof( access_sys_t ) );
     if( !p_sys )
         return VLC_EGENERIC;
 

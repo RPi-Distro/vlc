@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
  * Copyright 2008-2015 Rémi Denis-Courmont
- * $Id: affc7b2c0da9699ebc759d73e021ca610e8db544 $
+ * $Id: 07f3f886f761da28b17eb9089d89fdda61e3477d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -318,7 +318,7 @@ char *vlc_stream_ReadLine( stream_t *s )
 
             /* iconv */
             /* UTF-8 needs at most 150% of the buffer as many as UTF-16 */
-            i_new_line = i_line * 3 / 2;
+            i_new_line = i_line * 3 / 2 + 1;
             psz_new_line = malloc( i_new_line );
             if( psz_new_line == NULL )
                 goto error;

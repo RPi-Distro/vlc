@@ -2,7 +2,7 @@
  * a52.c: parse A/52 audio sync info and packetize the stream
  *****************************************************************************
  * Copyright (C) 2001-2016 VLC authors and VideoLAN
- * $Id: 197ee6c698f753bc17f2fd205d8a6b34da7dc218 $
+ * $Id: 59d6aa97019828063f45418d7a1d03bff90903ab $
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -29,6 +29,8 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+
+#include <assert.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
@@ -64,7 +66,6 @@ struct decoder_sys_t
      * Common properties
      */
     date_t  end_date;
-    bool    b_date_set;
 
     mtime_t i_pts;
     bool    b_discontuinity;
@@ -77,7 +78,7 @@ static void PacketizeFlush( decoder_t *p_dec )
     decoder_sys_t *p_sys = p_dec->p_sys;
 
     p_sys->b_discontuinity = true;
-    date_Set( &p_sys->end_date, 0 );
+    date_Set( &p_sys->end_date, VLC_TS_INVALID );
     p_sys->i_state = STATE_NOSYNC;
     block_BytestreamEmpty( &p_sys->bytestream );
 }
@@ -86,17 +87,21 @@ static block_t *GetOutBuffer( decoder_t *p_dec )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    if( !p_sys->b_date_set
+    if( date_Get( &p_sys->end_date ) == VLC_TS_INVALID
      || p_dec->fmt_out.audio.i_rate != p_sys->frame.i_rate )
     {
+        if( p_sys->i_pts == VLC_TS_INVALID )
+            return NULL;
+
         msg_Dbg( p_dec, "A/52 channels:%d samplerate:%d bitrate:%d",
                  p_sys->frame.i_channels, p_sys->frame.i_rate, p_sys->frame.i_bitrate );
 
+        assert( p_sys->frame.i_rate > 0 );
         date_Init( &p_sys->end_date, p_sys->frame.i_rate, 1 );
         date_Set( &p_sys->end_date, p_sys->i_pts );
-        p_sys->b_date_set = true;
     }
 
+    assert( p_sys->i_pts > VLC_TS_INVALID );
     p_dec->fmt_out.audio.i_rate     = p_sys->frame.i_rate;
     p_dec->fmt_out.audio.i_channels = p_sys->frame.i_channels;
     if( p_dec->fmt_out.audio.i_bytes_per_frame < p_sys->frame.i_size )
@@ -177,6 +182,7 @@ static block_t *PacketizeBlock( decoder_t *p_dec, block_t **pp_block )
                 /* Need more data */
                 return NULL;
             }
+            /* fallthrough */
 
         case STATE_SYNC:
             /* New frame, set the Presentation Time Stamp */
@@ -187,6 +193,7 @@ static block_t *PacketizeBlock( decoder_t *p_dec, block_t **pp_block )
                 date_Set( &p_sys->end_date, p_sys->i_pts );
             }
             p_sys->i_state = STATE_HEADER;
+            /* fallthrough */
 
         case STATE_HEADER:
             /* Get A/52 frame header (VLC_A52_HEADER_SIZE bytes) */
@@ -217,6 +224,7 @@ static block_t *PacketizeBlock( decoder_t *p_dec, block_t **pp_block )
                 p_sys->frame = a52;
 
             p_sys->i_state = STATE_NEXT_SYNC;
+            /* fallthrough */
 
         case STATE_NEXT_SYNC:
             /* Check if next expected frame contains the sync word */
@@ -260,6 +268,7 @@ static block_t *PacketizeBlock( decoder_t *p_dec, block_t **pp_block )
                 return NULL;
             }
             p_sys->i_state = STATE_SEND_DATA;
+            /* fallthrough */
 
         case STATE_SEND_DATA:
             if( !(p_out_buffer = GetOutBuffer( p_dec )) )
@@ -324,9 +333,8 @@ static int Open( vlc_object_t *p_this )
 
     /* Misc init */
     p_sys->i_state = STATE_NOSYNC;
-    date_Set( &p_sys->end_date, 0 );
+    date_Set( &p_sys->end_date, VLC_TS_INVALID );
     p_sys->i_pts = VLC_TS_INVALID;
-    p_sys->b_date_set = false;
     p_sys->b_discontuinity = false;
     memset(&p_sys->frame, 0, sizeof(vlc_a52_header_t));
 
@@ -335,6 +343,7 @@ static int Open( vlc_object_t *p_this )
     /* Set output properties (Passthrough ONLY) */
     p_dec->fmt_out.i_codec = p_dec->fmt_in.i_codec;
     p_dec->fmt_out.audio = p_dec->fmt_in.audio;
+    p_dec->fmt_out.audio.i_rate = 0;
 
     /* Set callback */
     p_dec->pf_packetize = PacketizeBlock;

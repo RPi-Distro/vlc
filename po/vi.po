@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-07 02:30+0000\n"
+"POT-Creation-Date: 2017-11-15 02:18+0000\n"
 "PO-Revision-Date: 2013-12-08 08:16+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Vietnamese (http://www.transifex.com/projects/p/vlc-trans/"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: include/vlc_common.h:927
+#: include/vlc_common.h:1036
 msgid ""
 "This program comes with NO WARRANTY, to the extent permitted by law.\n"
 "You may redistribute it under the terms of the GNU General Public License;\n"
@@ -65,7 +65,7 @@ msgstr "Giao diện chính"
 msgid "Settings for the main interface"
 msgstr "Các thiết lập cho giao diện chính"
 
-#: include/vlc_config_cat.h:46 src/libvlc-module.c:79
+#: include/vlc_config_cat.h:46 src/libvlc-module.c:81
 msgid "Control interfaces"
 msgstr "Giao diện điều khiển"
 
@@ -79,7 +79,7 @@ msgid "Hotkeys settings"
 msgstr "Thiết lập phím tắt"
 
 #: include/vlc_config_cat.h:53 src/input/es_out.c:3062 src/input/es_out.c:3103
-#: src/libvlc-module.c:1487 modules/access/imem.c:64
+#: src/libvlc-module.c:1489 modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:171
 #: modules/gui/macosx/VLCMainMenu.m:404 modules/gui/macosx/VLCOutput.m:92
 #: modules/gui/macosx/VLCPlaylistInfo.m:101
@@ -108,7 +108,7 @@ msgstr "Bộ lọc"
 msgid "Audio filters are used to process the audio stream."
 msgstr "Bộ lọc Audio dùng để xử lý việc phân luồng Audio."
 
-#: include/vlc_config_cat.h:61 src/libvlc-module.c:164
+#: include/vlc_config_cat.h:61 src/libvlc-module.c:166
 msgid "Audio resampler"
 msgstr "Audio resampler"
 
@@ -118,7 +118,7 @@ msgid "Visualizations"
 msgstr "Hiệu ứng"
 
 #: include/vlc_config_cat.h:64 src/audio_output/output.c:319
-#: src/libvlc-module.c:204
+#: src/libvlc-module.c:206
 msgid "Audio visualizations"
 msgstr "Hiệu ứng Audio"
 
@@ -130,7 +130,7 @@ msgstr "Phương thức xuất dữ liệu"
 msgid "General settings for audio output modules."
 msgstr "Thiết lập chung cho phướng thức xuất dữ liệu của Audio."
 
-#: include/vlc_config_cat.h:69 src/libvlc-module.c:2009
+#: include/vlc_config_cat.h:69 src/libvlc-module.c:2012
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:183
 #: modules/stream_out/transcode/transcode.c:211
 msgid "Miscellaneous"
@@ -141,7 +141,7 @@ msgid "Miscellaneous audio settings and modules."
 msgstr "Tổng hợp thiết lập audio và module."
 
 #: include/vlc_config_cat.h:73 src/input/es_out.c:3065 src/input/es_out.c:3147
-#: src/libvlc-module.c:140 src/libvlc-module.c:1546 modules/access/imem.c:64
+#: src/libvlc-module.c:142 src/libvlc-module.c:1548 modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:160
 #: modules/gui/macosx/VLCMainMenu.m:417 modules/gui/macosx/VLCOutput.m:82
 #: modules/gui/macosx/VLCPlaylistInfo.m:91
@@ -263,7 +263,7 @@ msgstr "Thiết lập dành cho phụ đề, teletext và giải mã cùng mã h
 msgid "General input settings. Use with care..."
 msgstr "Thiết lập việc xuất dữ liệu. Thao tác cẩn trọng..."
 
-#: include/vlc_config_cat.h:127 src/libvlc-module.c:1944
+#: include/vlc_config_cat.h:127 src/libvlc-module.c:1947
 #: modules/access/avio.h:50
 msgid "Stream output"
 msgstr "Luồng dữ liệu đầu vào"
@@ -364,7 +364,7 @@ msgstr "VOD"
 msgid "VLC's implementation of Video On Demand"
 msgstr "Bản hoàn thiện cho Video Theo Yêu Cầu"
 
-#: include/vlc_config_cat.h:173 src/libvlc-module.c:2053
+#: include/vlc_config_cat.h:173 src/libvlc-module.c:2056
 #: src/playlist/engine.c:233 modules/demux/playlist/playlist.c:64
 #: modules/demux/playlist/playlist.c:65 modules/gui/macosx/VLCMainWindow.m:296
 #: modules/gui/macosx/VLCMainWindow.m:863
@@ -400,7 +400,7 @@ msgstr ""
 "Module \"Khám Phá Các Dịch Vụ Khác\" là thao tác thuận lợi cho việc thêm các "
 "đối tượng vào Danh Sách."
 
-#: include/vlc_config_cat.h:184 src/libvlc-module.c:1844
+#: include/vlc_config_cat.h:184 src/libvlc-module.c:1847
 #: modules/gui/qt/dialogs/extended.cpp:93
 msgid "Advanced"
 msgstr "Nâng cao"
@@ -533,7 +533,7 @@ msgstr "Lặp lại tất cả"
 msgid "Repeat One"
 msgstr "Lặp lại một lần"
 
-#: include/vlc_intf_strings.h:81 src/libvlc-module.c:1424
+#: include/vlc_intf_strings.h:81 src/libvlc-module.c:1426
 #: modules/gui/macosx/VLCMainMenu.m:389
 #: modules/gui/qt/components/controller.hpp:111
 #: modules/gui/qt/components/controller.hpp:124
@@ -697,7 +697,7 @@ msgid "The maximum number of filters (%u) was reached."
 msgstr "Số lượng tối đa dành cho bộ lọc (%u) đã đạt giới hạn cho phép."
 
 #: src/audio_output/output.c:261 src/config/core.c:380 src/input/es_out.c:943
-#: src/libvlc-module.c:542 modules/gui/macosx/VLCMainMenu.m:234
+#: src/libvlc-module.c:544 modules/gui/macosx/VLCMainMenu.m:234
 #: modules/gui/macosx/VLCMainWindow.m:1003 modules/video_filter/postproc.c:235
 msgid "Disable"
 msgstr "Vô hiệu"
@@ -719,7 +719,7 @@ msgstr "Quang phổ"
 msgid "VU meter"
 msgstr "Máy đo điện"
 
-#: src/audio_output/output.c:312 src/libvlc-module.c:199
+#: src/audio_output/output.c:312 src/libvlc-module.c:201
 msgid "Audio filters"
 msgstr "Bộ lọc Audio"
 
@@ -737,11 +737,11 @@ msgstr "Chế độ stereo audio"
 msgid "Original"
 msgstr "Số ID gốc"
 
-#: src/audio_output/output.c:425 src/libvlc-module.c:195
+#: src/audio_output/output.c:425 src/libvlc-module.c:197
 msgid "Dolby Surround"
 msgstr "Âm thanh Nổi"
 
-#: src/audio_output/output.c:430 src/libvlc-module.c:194
+#: src/audio_output/output.c:430 src/libvlc-module.c:196
 #: modules/access/alsa.c:38 modules/access/oss.c:64
 #: modules/access/v4l2/v4l2.c:268 modules/audio_output/alsa.c:76
 #: modules/codec/twolame.c:70
@@ -749,7 +749,7 @@ msgid "Stereo"
 msgstr "Stereo"
 
 #: src/audio_output/output.c:439 src/input/es_out.c:3244
-#: src/libvlc-module.c:195 src/libvlc-module.c:293 src/libvlc-module.c:366
+#: src/libvlc-module.c:197 src/libvlc-module.c:295 src/libvlc-module.c:368
 #: src/misc/actions.c:81 modules/audio_filter/channel_mixer/mono.c:89
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
 #: modules/codec/subsdec.c:167 modules/codec/zvbi.c:83
@@ -762,8 +762,8 @@ msgstr "Stereo"
 msgid "Left"
 msgstr "Bên Trái"
 
-#: src/audio_output/output.c:442 src/libvlc-module.c:195
-#: src/libvlc-module.c:293 src/libvlc-module.c:366 src/misc/actions.c:109
+#: src/audio_output/output.c:442 src/libvlc-module.c:197
+#: src/libvlc-module.c:295 src/libvlc-module.c:368 src/misc/actions.c:109
 #: modules/audio_filter/channel_mixer/mono.c:89
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
 #: modules/codec/subsdec.c:167 modules/codec/zvbi.c:83
@@ -776,11 +776,11 @@ msgstr "Bên Trái"
 msgid "Right"
 msgstr "Bên Phải"
 
-#: src/audio_output/output.c:446 src/libvlc-module.c:194
+#: src/audio_output/output.c:446 src/libvlc-module.c:196
 msgid "Reverse stereo"
 msgstr "Đảo ngược stereo"
 
-#: src/audio_output/output.c:454 src/libvlc-module.c:196
+#: src/audio_output/output.c:454 src/libvlc-module.c:198
 #: modules/audio_filter/equalizer_presets.h:55
 msgid "Headphones"
 msgstr "Tai nghe"
@@ -1006,7 +1006,7 @@ msgstr "VLC không thở mở module %s."
 msgid "VLC could not open the decoder module."
 msgstr "VLC không thể mở module giải mã dữ liệu này."
 
-#: src/input/es_out.c:963 src/input/es_out.c:968 src/libvlc-module.c:237
+#: src/input/es_out.c:963 src/input/es_out.c:968 src/libvlc-module.c:239
 #: modules/gui/qt/components/open_panels.cpp:543
 msgid "Track"
 msgstr "Track"
@@ -1017,7 +1017,7 @@ msgid "%s [%s %d]"
 msgstr "%s [%s %d]"
 
 #: src/input/es_out.c:1186 src/input/es_out.c:1191 src/input/es_out.c:1206
-#: src/input/var.c:167 src/libvlc-module.c:566
+#: src/input/var.c:167 src/libvlc-module.c:568
 #: modules/gui/macosx/VLCMainMenu.m:397 modules/gui/macosx/VLCMainMenu.m:398
 msgid "Program"
 msgstr "Chương trình"
@@ -1215,7 +1215,7 @@ msgstr "625 lines / 50 Hz"
 msgid "Color primaries"
 msgstr "Màu sắc phần thông báo"
 
-#: src/input/es_out.c:3212 src/libvlc-module.c:360
+#: src/input/es_out.c:3212 src/libvlc-module.c:362
 #: modules/video_filter/deinterlace/deinterlace.h:58
 msgid "Linear"
 msgstr "Đường kẻ"
@@ -1244,7 +1244,7 @@ msgstr ""
 msgid "Full"
 msgstr "Bass tối đa"
 
-#: src/input/es_out.c:3245 src/libvlc-module.c:293 src/libvlc-module.c:366
+#: src/input/es_out.c:3245 src/libvlc-module.c:295 src/libvlc-module.c:368
 #: modules/audio_filter/channel_mixer/mono.c:91
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
 #: modules/codec/subsdec.c:167 modules/codec/zvbi.c:83
@@ -1386,7 +1386,7 @@ msgstr "Thể loại"
 msgid "Copyright"
 msgstr "Bản quyền"
 
-#: src/input/meta.c:59 src/libvlc-module.c:237
+#: src/input/meta.c:59 src/libvlc-module.c:239
 #: modules/gui/macosx/VLCPlaylist.m:111
 msgid "Album"
 msgstr "Album"
@@ -1473,7 +1473,7 @@ msgstr "Số thứ tự track"
 msgid "Bookmark"
 msgstr "Đánh dấu"
 
-#: src/input/var.c:172 src/libvlc-module.c:572
+#: src/input/var.c:172 src/libvlc-module.c:574
 msgid "Programs"
 msgstr "Chương trình"
 
@@ -1577,29 +1577,29 @@ msgstr ""
 msgid "C"
 msgstr "vi"
 
-#: src/libvlc.h:164 src/libvlc-module.c:1427 src/libvlc-module.c:1428
-#: src/libvlc-module.c:2642 src/video_output/vout_intf.c:176
+#: src/libvlc.h:164 src/libvlc-module.c:1429 src/libvlc-module.c:1430
+#: src/libvlc-module.c:2645 src/video_output/vout_intf.c:176
 #: modules/gui/macosx/VLCMainMenu.m:465
 msgid "Zoom"
 msgstr "Phóng to"
 
-#: src/libvlc.h:165 src/libvlc-module.c:1341 src/video_output/vout_intf.c:87
+#: src/libvlc.h:165 src/libvlc-module.c:1343 src/video_output/vout_intf.c:87
 msgid "1:4 Quarter"
 msgstr "1:4 Một phần tư"
 
-#: src/libvlc.h:166 src/libvlc-module.c:1342 src/video_output/vout_intf.c:88
+#: src/libvlc.h:166 src/libvlc-module.c:1344 src/video_output/vout_intf.c:88
 msgid "1:2 Half"
 msgstr "1:2 Phân nửa"
 
-#: src/libvlc.h:167 src/libvlc-module.c:1343 src/video_output/vout_intf.c:89
+#: src/libvlc.h:167 src/libvlc-module.c:1345 src/video_output/vout_intf.c:89
 msgid "1:1 Original"
 msgstr "1:1 Ban Đầu"
 
-#: src/libvlc.h:168 src/libvlc-module.c:1344 src/video_output/vout_intf.c:90
+#: src/libvlc.h:168 src/libvlc-module.c:1346 src/video_output/vout_intf.c:90
 msgid "2:1 Double"
 msgstr "2:1 Gấp đôi"
 
-#: src/libvlc-module.c:62
+#: src/libvlc-module.c:64
 msgid ""
 "These options allow you to configure the interfaces used by VLC. You can "
 "select the main interface, additional interface modules, and define various "
@@ -1609,11 +1609,11 @@ msgstr ""
 "thể chọn giao diện dính, các module giao diện bổ sung, hoặc xác định các tùy "
 "chọn tương tự."
 
-#: src/libvlc-module.c:66
+#: src/libvlc-module.c:68
 msgid "Interface module"
 msgstr "Module giao diện"
 
-#: src/libvlc-module.c:68
+#: src/libvlc-module.c:70
 msgid ""
 "This is the main interface used by VLC. The default behavior is to "
 "automatically select the best module available."
@@ -1621,11 +1621,11 @@ msgstr ""
 "Đây là giao diện chính được sử dụng bởi VLC. Nếu người dùng không thay đổi "
 "thiết lập, thì VLC sẽ tự động lựa chọn kiểu hiển thị thích hợp nhất."
 
-#: src/libvlc-module.c:72 modules/control/ntservice.c:59
+#: src/libvlc-module.c:74 modules/control/ntservice.c:59
 msgid "Extra interface modules"
 msgstr "Module Giao Diện bổ sung"
 
-#: src/libvlc-module.c:74
+#: src/libvlc-module.c:76
 msgid ""
 "You can select \"additional interfaces\" for VLC. They will be launched in "
 "the background in addition to the default interface. Use a colon separated "
@@ -1638,15 +1638,15 @@ msgstr ""
 "giá trị được thiết lập là \"rc\" (điều khiển từ xa), \"http\", \"gesture"
 "\"...)"
 
-#: src/libvlc-module.c:81
+#: src/libvlc-module.c:83
 msgid "You can select control interfaces for VLC."
 msgstr "Bạn có thể tự lựa chọn giao diện điều khiển cho VLC."
 
-#: src/libvlc-module.c:83
+#: src/libvlc-module.c:85
 msgid "Verbosity (0,1,2)"
 msgstr "Verbosity (0,1,2)"
 
-#: src/libvlc-module.c:85
+#: src/libvlc-module.c:87
 msgid ""
 "This is the verbosity level (0=only errors and standard messages, "
 "1=warnings, 2=debug)."
@@ -1654,19 +1654,19 @@ msgstr ""
 "Đây là mức độ verbosity (0=chỉ dành cho các thông báo chuẩn và lỗi, 1=cảnh "
 "báo, 2=debug)."
 
-#: src/libvlc-module.c:88
+#: src/libvlc-module.c:90
 msgid "Default stream"
 msgstr "Luồng dữ liệu mặc định"
 
-#: src/libvlc-module.c:90
+#: src/libvlc-module.c:92
 msgid "This stream will always be opened at VLC startup."
 msgstr "Luồng dữ liệu này sẽ luôn được mở mỗi khi VLC khởi động."
 
-#: src/libvlc-module.c:92
+#: src/libvlc-module.c:94
 msgid "Color messages"
 msgstr "Màu sắc phần thông báo"
 
-#: src/libvlc-module.c:94
+#: src/libvlc-module.c:96
 msgid ""
 "This enables colorization of the messages sent to the console Your terminal "
 "needs Linux color support for this to work."
@@ -1675,11 +1675,11 @@ msgstr ""
 "dùng cơ chế dòng lệnh, nếu máy bạn thuộc nền tảng linux thì cơ chế dòng lệnh "
 "của máy đó cần phải được bật tính năng này để có thể hoạt động."
 
-#: src/libvlc-module.c:97
+#: src/libvlc-module.c:99
 msgid "Show advanced options"
 msgstr "Hiển thị tùy chọn nâng cao"
 
-#: src/libvlc-module.c:99
+#: src/libvlc-module.c:101
 msgid ""
 "When this is enabled, the preferences and/or interfaces will show all "
 "available options, including those that most users should never touch."
@@ -1687,11 +1687,11 @@ msgstr ""
 "Khi điều khiển này được kích hoạt, các tùy biến sẽ hiển thị các tùy chọn sẵn "
 "có, bao gồm những lựa chọn mà ít khi bạn chú ý đến."
 
-#: src/libvlc-module.c:103
+#: src/libvlc-module.c:105
 msgid "Interface interaction"
 msgstr "Thao tác với giao diện"
 
-#: src/libvlc-module.c:105
+#: src/libvlc-module.c:107
 msgid ""
 "When this is enabled, the interface will show a dialog box each time some "
 "user input is required."
@@ -1699,7 +1699,7 @@ msgstr ""
 "Khi phần này được kích hoạt, giao diện sẽ hiển thị một hộp thoại thông báo "
 "mỗi khi phần nhập dữ liệu từ phía ngừoi dùng được yêu cầu thực hiện."
 
-#: src/libvlc-module.c:115
+#: src/libvlc-module.c:117
 msgid ""
 "These options allow you to modify the behavior of the audio subsystem, and "
 "to add audio filters which can be used for post processing or visual effects "
@@ -1712,11 +1712,11 @@ msgstr ""
 "phổ...).  Bật các tính năng của bộ lọc tại đây, và sau đó chính sử chúng "
 "trong phần module \"bộ lọc audio\"."
 
-#: src/libvlc-module.c:121
+#: src/libvlc-module.c:123
 msgid "Audio output module"
 msgstr "Module xuất dữ liệu dạng audio"
 
-#: src/libvlc-module.c:123
+#: src/libvlc-module.c:125
 msgid ""
 "This is the audio output method used by VLC. The default behavior is to "
 "automatically select the best method available."
@@ -1725,21 +1725,21 @@ msgstr ""
 "bằng VLC. Thao tác mặc định được thực hiện tự động dựa theo phương thức nào "
 "là tối ưu nhất với đối tượng cần được tác động."
 
-#: src/libvlc-module.c:127
+#: src/libvlc-module.c:129
 #, fuzzy
 msgid "Media role"
 msgstr "Góc độ Media"
 
-#: src/libvlc-module.c:128
+#: src/libvlc-module.c:130
 msgid "Media (player) role for operating system policy."
 msgstr ""
 
-#: src/libvlc-module.c:130 modules/gui/macosx/VLCSimplePrefsController.m:261
+#: src/libvlc-module.c:132 modules/gui/macosx/VLCSimplePrefsController.m:261
 #: modules/stream_out/display.c:40
 msgid "Enable audio"
 msgstr "Cho phép bật Audio"
 
-#: src/libvlc-module.c:132
+#: src/libvlc-module.c:134
 msgid ""
 "You can completely disable the audio output. The audio decoding stage will "
 "not take place, thus saving some processing power."
@@ -1748,76 +1748,76 @@ msgstr ""
 "audio. Việc giải mã audio sẽ không thể được tiến hành, bởi thế cũng đồng "
 "thời tiết kiệm việc xử lý do ít cần tới nhiều năng lượng kèm theo."
 
-#: src/libvlc-module.c:140
+#: src/libvlc-module.c:142
 #, fuzzy
 msgid "Music"
 msgstr "Musical"
 
-#: src/libvlc-module.c:140
+#: src/libvlc-module.c:142
 #, fuzzy
 msgid "Communication"
 msgstr "Địa điểm"
 
-#: src/libvlc-module.c:140 modules/meta_engine/ID3Genres.h:69
+#: src/libvlc-module.c:142 modules/meta_engine/ID3Genres.h:69
 msgid "Game"
 msgstr "Game"
 
-#: src/libvlc-module.c:141
+#: src/libvlc-module.c:143
 #, fuzzy
 msgid "Notification"
 msgstr "Sự khuyếch đại"
 
-#: src/libvlc-module.c:141
+#: src/libvlc-module.c:143
 #, fuzzy
 msgid "Animation"
 msgstr "Đích đến"
 
-#: src/libvlc-module.c:141
+#: src/libvlc-module.c:143
 #, fuzzy
 msgid "Production"
 msgstr "Sản phẩm"
 
-#: src/libvlc-module.c:142
+#: src/libvlc-module.c:144
 #, fuzzy
 msgid "Accessibility"
 msgstr "Truy cập dữ liệu đầu ra"
 
-#: src/libvlc-module.c:142
+#: src/libvlc-module.c:144
 msgid "Test"
 msgstr ""
 
-#: src/libvlc-module.c:145
+#: src/libvlc-module.c:147
 msgid "Audio gain"
 msgstr "Audio gain"
 
-#: src/libvlc-module.c:147
+#: src/libvlc-module.c:149
 msgid "This linear gain will be applied to outputted audio."
 msgstr "This linear gain will be applied to outputted audio."
 
-#: src/libvlc-module.c:149
+#: src/libvlc-module.c:151
 msgid "Audio output volume step"
 msgstr "Các bước xuất dữ liệu của đối với audio"
 
-#: src/libvlc-module.c:151
+#: src/libvlc-module.c:153
 msgid "The step size of the volume is adjustable using this option."
 msgstr "Các mức chỉnh về âm lượng sẽ được chỉnh sửa trong tùy chọn này."
 
-#: src/libvlc-module.c:154
+#: src/libvlc-module.c:156
 msgid "Remember the audio volume"
 msgstr "Ghi nhớ âm lượng audio"
 
-#: src/libvlc-module.c:156
+#: src/libvlc-module.c:158
 msgid ""
 "The volume can be recorded and automatically restored next time VLC is used."
 msgstr ""
 "Âm lượng có thể được ghi âm lại và tự động phục hồi trong lần khởi động sắp "
 "tới của VLC."
 
-#: src/libvlc-module.c:159
+#: src/libvlc-module.c:161
 msgid "Audio desynchronization compensation"
 msgstr "Bù trừ việc không đồng đều khi đồng bộ hóa Audio"
 
-#: src/libvlc-module.c:161
+#: src/libvlc-module.c:163
 msgid ""
 "This delays the audio output. The delay must be given in milliseconds. This "
 "can be handy if you notice a lag between the video and the audio."
@@ -1827,12 +1827,12 @@ msgstr ""
 "không sẽ dễ dàng gặp khó chịu khi một số sự tương đồng giữa video và audio "
 "không được tương xứng cùng nhau."
 
-#: src/libvlc-module.c:166
+#: src/libvlc-module.c:168
 msgid "This selects which plugin to use for audio resampling."
 msgstr ""
 "Lựa chọn này giúp chọn ra plugin nào sẽ được sử dụng để resample lại audio."
 
-#: src/libvlc-module.c:169
+#: src/libvlc-module.c:171
 #, fuzzy
 msgid ""
 "Sets the audio output channels mode that will be used by default if your "
@@ -1842,21 +1842,21 @@ msgstr ""
 "sử dụng theo cơ chế mặc định (nếu phần cứng của bạn hỗ trợ cũng như khi "
 "luồng audio ở trạng thái hoạt động)."
 
-#: src/libvlc-module.c:172
+#: src/libvlc-module.c:174
 msgid "Force S/PDIF support"
 msgstr ""
 
-#: src/libvlc-module.c:174
+#: src/libvlc-module.c:176
 msgid ""
 "This option should be used when the audio output can't negotiate S/PDIF "
 "support."
 msgstr ""
 
-#: src/libvlc-module.c:176 modules/gui/macosx/VLCSimplePrefsController.m:259
+#: src/libvlc-module.c:178 modules/gui/macosx/VLCSimplePrefsController.m:259
 msgid "Force detection of Dolby Surround"
 msgstr "Bắt buộc xác định Dolby Surround - âm thanh nổi"
 
-#: src/libvlc-module.c:178
+#: src/libvlc-module.c:180
 msgid ""
 "Use this when you know your stream is (or is not) encoded with Dolby "
 "Surround but fails to be detected as such. Even if the stream is not "
@@ -1869,7 +1869,7 @@ msgstr ""
 "có thể cũng sẽ giúp cho bạn có thêm kinh nghiệm phần nào về điều này, đặc "
 "biệt là khi hệ thống của bạn được kết nối với Headphone Channel Mixer."
 
-#: src/libvlc-module.c:185 src/libvlc-module.c:359 src/win32/thread.c:941
+#: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:941
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:443
 #: modules/demux/mpeg/ts.c:120 modules/gui/macosx/VLCSimplePrefsController.m:54
 #: modules/gui/qt/components/simple_preferences.cpp:64
@@ -1879,51 +1879,51 @@ msgstr ""
 msgid "Auto"
 msgstr "Tự động"
 
-#: src/libvlc-module.c:185 modules/access/dtv/access.c:92
+#: src/libvlc-module.c:187 modules/access/dtv/access.c:92
 #: modules/access/v4l2/v4l2.c:201 modules/control/hotkeys.c:405
 msgid "On"
 msgstr "Bật"
 
-#: src/libvlc-module.c:185 modules/access/dtv/access.c:92
+#: src/libvlc-module.c:187 modules/access/dtv/access.c:92
 #: modules/access/v4l2/v4l2.c:137 modules/access/v4l2/v4l2.c:201
 #: modules/control/hotkeys.c:383 modules/control/hotkeys.c:405
 #: modules/video_filter/deinterlace/algo_phosphor.h:55
 msgid "Off"
 msgstr "Tắt"
 
-#: src/libvlc-module.c:187
+#: src/libvlc-module.c:189
 msgid "Stereo audio output mode"
 msgstr "Chế độ xuất dữ liệu dành cho Stereo audio"
 
-#: src/libvlc-module.c:193 src/misc/actions.c:112
+#: src/libvlc-module.c:195 src/misc/actions.c:112
 #: modules/gui/qt/components/preferences_widgets.cpp:1429
 #: modules/gui/qt/util/customwidgets.cpp:314
 msgid "Unset"
 msgstr "Không thiết lập"
 
-#: src/libvlc-module.c:201
+#: src/libvlc-module.c:203
 msgid "This adds audio post processing filters, to modify the sound rendering."
 msgstr ""
 "Phần này sẽ thêm bộ lọc vào tiến trình tiền xử lý audio, nhằm chỉnh sửa và "
 "render âm thanh."
 
-#: src/libvlc-module.c:206
+#: src/libvlc-module.c:208
 msgid "This adds visualization modules (spectrum analyzer, etc.)."
 msgstr "Phần điều chỉnh này sẽ thêm vào module hiệu ứng (quang phổ....)."
 
-#: src/libvlc-module.c:210
+#: src/libvlc-module.c:212
 msgid "Replay gain mode"
 msgstr "Chế độ phát lại"
 
-#: src/libvlc-module.c:212
+#: src/libvlc-module.c:214
 msgid "Select the replay gain mode"
 msgstr "Chọn chế độ phát lại"
 
-#: src/libvlc-module.c:214
+#: src/libvlc-module.c:216
 msgid "Replay preamp"
 msgstr "Replay preamp"
 
-#: src/libvlc-module.c:216
+#: src/libvlc-module.c:218
 msgid ""
 "This allows you to change the default target level (89 dB) for stream with "
 "replay gain information"
@@ -1931,27 +1931,27 @@ msgstr ""
 "Điều này cho phép bạn thay đổi âm vực (89dB) đối với luồng dữ liệu khi cần "
 "biết thông tin"
 
-#: src/libvlc-module.c:219
+#: src/libvlc-module.c:221
 msgid "Default replay gain"
 msgstr "Chế độ phát lại được chỉnh mặc định"
 
-#: src/libvlc-module.c:221
+#: src/libvlc-module.c:223
 msgid "This is the gain used for stream without replay gain information"
 msgstr "Điều này được dùng cho các luồng dữ liệu khi không cần biết thông tin"
 
-#: src/libvlc-module.c:223
+#: src/libvlc-module.c:225
 msgid "Peak protection"
 msgstr "Peak protection"
 
-#: src/libvlc-module.c:225
+#: src/libvlc-module.c:227
 msgid "Protect against sound clipping"
 msgstr "Bảo vệ khỏi tác động bị nhiễu khi lưu âm thanh"
 
-#: src/libvlc-module.c:228
+#: src/libvlc-module.c:230
 msgid "Enable time stretching audio"
 msgstr "Bật chế độ giãn thời gian với audio"
 
-#: src/libvlc-module.c:230
+#: src/libvlc-module.c:232
 msgid ""
 "This allows playing audio at lower or higher speed without affecting the "
 "audio pitch"
@@ -1959,7 +1959,7 @@ msgstr ""
 "Điều này cho phép việc phát audio ở mức thấp hơn hoặc cao hơn tốc độ bình "
 "thường mà không ảnh hưởng đến audio pitch"
 
-#: src/libvlc-module.c:237 src/libvlc-module.c:1126
+#: src/libvlc-module.c:239 src/libvlc-module.c:1128
 #: modules/access/dshow/dshow.cpp:2077 modules/access/dtv/access.c:107
 #: modules/access/dtv/access.c:141 modules/access/v4l2/v4l2.c:163
 #: modules/codec/avcodec/avcodec.c:50 modules/codec/avcodec/avcodec.c:54
@@ -1973,7 +1973,7 @@ msgstr ""
 msgid "None"
 msgstr "Không"
 
-#: src/libvlc-module.c:245
+#: src/libvlc-module.c:247
 msgid ""
 "These options allow you to modify the behavior of the video output "
 "subsystem. You can for example enable video filters (deinterlacing, image "
@@ -1988,11 +1988,11 @@ msgstr ""
 "lọc đó trong phần module \"bộ lọc video\". Bạn cũng có thể thao tác với "
 "nhiều tùy chỉnh khác liên quan đến video."
 
-#: src/libvlc-module.c:251
+#: src/libvlc-module.c:253
 msgid "Video output module"
 msgstr "Module xuất Video"
 
-#: src/libvlc-module.c:253
+#: src/libvlc-module.c:255
 msgid ""
 "This is the the video output method used by VLC. The default behavior is to "
 "automatically select the best method available."
@@ -2000,12 +2000,12 @@ msgstr ""
 "Phương thức xuất dữ liệu đầu ra này đối với video được sử dụng bởi VLC. "
 "Phương thức này được lựa chọn theo chế độ tự động nhằm đạt hiệu quả cao nhất."
 
-#: src/libvlc-module.c:256 modules/gui/macosx/VLCSimplePrefsController.m:346
+#: src/libvlc-module.c:258 modules/gui/macosx/VLCSimplePrefsController.m:346
 #: modules/stream_out/display.c:42
 msgid "Enable video"
 msgstr "Bật tính năng Video"
 
-#: src/libvlc-module.c:258
+#: src/libvlc-module.c:260
 msgid ""
 "You can completely disable the video output. The video decoding stage will "
 "not take place, thus saving some processing power."
@@ -2013,14 +2013,14 @@ msgstr ""
 "Bạn có thể vô hiệu hóa tính năng xuất dữ liệu dạng video. Quá trình giải mã "
 "video sẽ không diễn ra, vì thế có thể tiết kiệm hơn trong việc xử lý dữ liệu."
 
-#: src/libvlc-module.c:261 modules/stream_out/mosaic_bridge.c:105
+#: src/libvlc-module.c:263 modules/stream_out/mosaic_bridge.c:105
 #: modules/stream_out/transcode/transcode.c:67
 #: modules/visualization/projectm.cpp:65
 #: modules/visualization/visual/visual.c:53 modules/visualization/vsxu.cpp:52
 msgid "Video width"
 msgstr "Chiều rộng Video"
 
-#: src/libvlc-module.c:263
+#: src/libvlc-module.c:265
 msgid ""
 "You can enforce the video width. By default (-1) VLC will adapt to the video "
 "characteristics."
@@ -2029,14 +2029,14 @@ msgstr ""
 "hình video. Theo mặc định (-1) VLC sẽ áp dụng tỉ lệ này với những video có "
 "cùng bản chất tương tự."
 
-#: src/libvlc-module.c:266 modules/stream_out/mosaic_bridge.c:108
+#: src/libvlc-module.c:268 modules/stream_out/mosaic_bridge.c:108
 #: modules/stream_out/transcode/transcode.c:70
 #: modules/visualization/projectm.cpp:68
 #: modules/visualization/visual/visual.c:57 modules/visualization/vsxu.cpp:55
 msgid "Video height"
 msgstr "Chiều dọc Video"
 
-#: src/libvlc-module.c:268
+#: src/libvlc-module.c:270
 msgid ""
 "You can enforce the video height. By default (-1) VLC will adapt to the "
 "video characteristics."
@@ -2045,11 +2045,11 @@ msgstr ""
 "hình video. Theo mặc định (-1) VLC sẽ áp dụng tỉ lệ này với những video có "
 "cùng bản chất tương tự."
 
-#: src/libvlc-module.c:271
+#: src/libvlc-module.c:273
 msgid "Video X coordinate"
 msgstr "Tọa độ X của Video"
 
-#: src/libvlc-module.c:273
+#: src/libvlc-module.c:275
 msgid ""
 "You can enforce the position of the top left corner of the video window (X "
 "coordinate)."
@@ -2057,11 +2057,11 @@ msgstr ""
 "Bạn có thể tự mình lựa chọn vị trí ở góc trên cùng bên trái của cửa sổ video "
 "(tọa độ X)."
 
-#: src/libvlc-module.c:276
+#: src/libvlc-module.c:278
 msgid "Video Y coordinate"
 msgstr "Tọa độ Y của Video"
 
-#: src/libvlc-module.c:278
+#: src/libvlc-module.c:280
 msgid ""
 "You can enforce the position of the top left corner of the video window (Y "
 "coordinate)."
@@ -2069,11 +2069,11 @@ msgstr ""
 "Bạn có thể tự mình lựa chọn vị trí ở góc trên cùng bên trái của cửa sổ video "
 "(tọa độ Y)."
 
-#: src/libvlc-module.c:281
+#: src/libvlc-module.c:283
 msgid "Video title"
 msgstr "Tựa đề video"
 
-#: src/libvlc-module.c:283
+#: src/libvlc-module.c:285
 msgid ""
 "Custom title for the video window (in case the video is not embedded in the "
 "interface)."
@@ -2081,11 +2081,11 @@ msgstr ""
 "Lựa chọn tiêu đề cho cửa sổ của video (trong trường hợp video không được "
 "nhúng vào giao diện)."
 
-#: src/libvlc-module.c:286
+#: src/libvlc-module.c:288
 msgid "Video alignment"
 msgstr "Canh chỉnh Video"
 
-#: src/libvlc-module.c:288
+#: src/libvlc-module.c:290
 msgid ""
 "Enforce the alignment of the video in its window. By default (0) it will be "
 "centered (0=center, 1=left, 2=right, 4=top, 8=bottom, you can also use "
@@ -2096,7 +2096,7 @@ msgstr ""
 "cùng, 8=dưới cùng, bạn cũng có thể kết nối các con số này với nhau để đạt "
 "được giá trị mong muốn, ví dụ 6=4+2 sẽ cho ra tận cùng bên phải và cứ thế)."
 
-#: src/libvlc-module.c:293 src/libvlc-module.c:366 modules/codec/dvbsub.c:102
+#: src/libvlc-module.c:295 src/libvlc-module.c:368 modules/codec/dvbsub.c:102
 #: modules/codec/zvbi.c:83
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:203
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:281
@@ -2106,7 +2106,7 @@ msgstr ""
 msgid "Top"
 msgstr "Trên cùng"
 
-#: src/libvlc-module.c:293 src/libvlc-module.c:366 modules/codec/dvbsub.c:102
+#: src/libvlc-module.c:295 src/libvlc-module.c:368 modules/codec/dvbsub.c:102
 #: modules/codec/zvbi.c:83
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:206
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:283
@@ -2116,7 +2116,7 @@ msgstr "Trên cùng"
 msgid "Bottom"
 msgstr "Tận cùng"
 
-#: src/libvlc-module.c:294 src/libvlc-module.c:367 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:296 src/libvlc-module.c:369 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:84
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:285
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:307
@@ -2125,7 +2125,7 @@ msgstr "Tận cùng"
 msgid "Top-Left"
 msgstr "Trên cùng- bên trái"
 
-#: src/libvlc-module.c:294 src/libvlc-module.c:367 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:296 src/libvlc-module.c:369 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:84
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:287
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:309
@@ -2134,7 +2134,7 @@ msgstr "Trên cùng- bên trái"
 msgid "Top-Right"
 msgstr "Trên cùng- bên phải"
 
-#: src/libvlc-module.c:294 src/libvlc-module.c:367 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:296 src/libvlc-module.c:369 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:84
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:289
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:311
@@ -2143,7 +2143,7 @@ msgstr "Trên cùng- bên phải"
 msgid "Bottom-Left"
 msgstr "Tận cùng- bên trái"
 
-#: src/libvlc-module.c:294 src/libvlc-module.c:367 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:296 src/libvlc-module.c:369 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:84
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:291
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:313
@@ -2152,19 +2152,19 @@ msgstr "Tận cùng- bên trái"
 msgid "Bottom-Right"
 msgstr "Tận cùng-bên phải"
 
-#: src/libvlc-module.c:296
+#: src/libvlc-module.c:298
 msgid "Zoom video"
 msgstr "Phóng to Video"
 
-#: src/libvlc-module.c:298
+#: src/libvlc-module.c:300
 msgid "You can zoom the video by the specified factor."
 msgstr "Bạn có thể phóng to/thu nhỏ video dựa vào các hệ số tự chọn."
 
-#: src/libvlc-module.c:300
+#: src/libvlc-module.c:302
 msgid "Grayscale video output"
 msgstr "Xuất video dạng trắng đen"
 
-#: src/libvlc-module.c:302
+#: src/libvlc-module.c:304
 msgid ""
 "Output video in grayscale. As the color information aren't decoded, this can "
 "save some processing power."
@@ -2172,140 +2172,140 @@ msgstr ""
 "Xuất dữ liệu video dạng thang độ xám/grayscale. Vì thông tin về màu không "
 "được giải mã, điều này có thể tiết kiệm chi phí về thao tác xử lý"
 
-#: src/libvlc-module.c:305
+#: src/libvlc-module.c:307
 msgid "Embedded video"
 msgstr "Nhúng video"
 
-#: src/libvlc-module.c:307
+#: src/libvlc-module.c:309
 msgid "Embed the video output in the main interface."
 msgstr "Nhúng video và xuất ra ở giao diện chính."
 
-#: src/libvlc-module.c:309
+#: src/libvlc-module.c:311
 msgid "Fullscreen video output"
 msgstr "Xuất video toàn màn hình"
 
-#: src/libvlc-module.c:311
+#: src/libvlc-module.c:313
 msgid "Start video in fullscreen mode"
 msgstr "Xem video ở chế độ toàn màn hình"
 
-#: src/libvlc-module.c:313 src/video_output/vout_intf.c:253
+#: src/libvlc-module.c:315 src/video_output/vout_intf.c:253
 msgid "Always on top"
 msgstr "Luôn luôn đặt trên cùng"
 
-#: src/libvlc-module.c:315
+#: src/libvlc-module.c:317
 msgid "Always place the video window on top of other windows."
 msgstr "Luôn hiển thị cửa sổ video lên trên mọi cửa số khác."
 
-#: src/libvlc-module.c:317
+#: src/libvlc-module.c:319
 msgid "Enable wallpaper mode "
 msgstr "Bật chế độ Hình Nền"
 
-#: src/libvlc-module.c:319
+#: src/libvlc-module.c:321
 msgid ""
 "The wallpaper mode allows you to display the video as the desktop background."
 msgstr ""
 "Chế độ hình nền sẽ cho phép bạn sử dụng một video bất kỳ, rồi sau đó sử dụng "
 "video này làm hình nền cho máy tính của bạn."
 
-#: src/libvlc-module.c:322
+#: src/libvlc-module.c:324
 msgid "Show media title on video"
 msgstr "Hiển thị tiêu đề trên video"
 
-#: src/libvlc-module.c:324
+#: src/libvlc-module.c:326
 msgid "Display the title of the video on top of the movie."
 msgstr "Hiển thị tiêu đề của video ở trên cùng của video đang phát."
 
-#: src/libvlc-module.c:326
+#: src/libvlc-module.c:328
 msgid "Show video title for x milliseconds"
 msgstr "Hiển thị tiêu đề trong vòng x phần nghìn giây"
 
-#: src/libvlc-module.c:328
+#: src/libvlc-module.c:330
 msgid "Show the video title for n milliseconds, default is 5000 ms (5 sec.)"
 msgstr ""
 "Hiển thị tiêu đề của video trong n phần nghìn giây, mặc định là 5000 ps (5 "
 "giây)."
 
-#: src/libvlc-module.c:330
+#: src/libvlc-module.c:332
 msgid "Position of video title"
 msgstr "Vị trí tiêu đề Video"
 
-#: src/libvlc-module.c:332
+#: src/libvlc-module.c:334
 msgid "Place on video where to display the title (default bottom center)."
 msgstr ""
 "Hiển thị video ở vị trí hiển thị tiêu đề (mặc định ở tận cùng và ở giữa)."
 
-#: src/libvlc-module.c:334
+#: src/libvlc-module.c:336
 msgid "Hide cursor and fullscreen controller after x milliseconds"
 msgstr ""
 "Không hiển thị con trỏ chuột và trình điều khiển ở chế độ toàn màn hình sau "
 "x phần nghìn giây"
 
-#: src/libvlc-module.c:337
+#: src/libvlc-module.c:339
 msgid "Hide mouse cursor and fullscreen controller after n milliseconds."
 msgstr ""
 "Ẩn biểu tượng chuột và bộ điều khiển khi đang ở chế độ toàn màn hình sau "
 "phần nghìn giây."
 
-#: src/libvlc-module.c:340 src/libvlc-module.c:342
+#: src/libvlc-module.c:342 src/libvlc-module.c:344
 #: src/video_output/interlacing.c:112 modules/gui/macosx/VLCMainMenu.m:433
 #: modules/gui/macosx/VLCMainMenu.m:434
 #: modules/gui/macosx/VLCSimplePrefsController.m:365
 #: modules/gui/qt/dialogs/convert.cpp:119 modules/hw/vdpau/chroma.c:884
-#: modules/video_filter/deinterlace/deinterlace.c:98
+#: modules/video_filter/deinterlace/deinterlace.c:300
 #: share/lua/http/dialogs/create_stream.html:346
 msgid "Deinterlace"
 msgstr "Chống quét mành"
 
-#: src/libvlc-module.c:350 src/video_output/interlacing.c:128
+#: src/libvlc-module.c:352 src/video_output/interlacing.c:128
 #: modules/gui/macosx/VLCMainMenu.m:435 modules/gui/macosx/VLCMainMenu.m:436
 #: modules/gui/macosx/VLCSimplePrefsController.m:366
-#: modules/video_filter/deinterlace/deinterlace.c:54
+#: modules/video_filter/deinterlace/deinterlace.c:256
 msgid "Deinterlace mode"
 msgstr "Chế độ chống quét mành/deinterlace"
 
-#: src/libvlc-module.c:352
+#: src/libvlc-module.c:354
 msgid "Deinterlace method to use for video processing."
 msgstr "Chế độ chống quét mành/deinterlace được sử dụng cho việc xử lý video."
 
-#: src/libvlc-module.c:359 modules/video_filter/deinterlace/deinterlace.h:58
+#: src/libvlc-module.c:361 modules/video_filter/deinterlace/deinterlace.h:58
 msgid "Discard"
 msgstr "Bỏ qua"
 
-#: src/libvlc-module.c:359 modules/video_filter/deinterlace/algo_phosphor.h:47
+#: src/libvlc-module.c:361 modules/video_filter/deinterlace/algo_phosphor.h:47
 #: modules/video_filter/deinterlace/deinterlace.h:58
 msgid "Blend"
 msgstr "Pha trộn"
 
-#: src/libvlc-module.c:359 modules/video_filter/deinterlace/deinterlace.h:58
+#: src/libvlc-module.c:361 modules/video_filter/deinterlace/deinterlace.h:58
 msgid "Mean"
 msgstr "Có nghĩa"
 
-#: src/libvlc-module.c:359 modules/hw/vdpau/chroma.c:871
+#: src/libvlc-module.c:361 modules/hw/vdpau/chroma.c:871
 #: modules/video_filter/deinterlace/deinterlace.h:58
 msgid "Bob"
 msgstr "Bob"
 
-#: src/libvlc-module.c:360 modules/video_filter/deinterlace/deinterlace.h:59
+#: src/libvlc-module.c:362 modules/video_filter/deinterlace/deinterlace.h:59
 msgid "Phosphor"
 msgstr "Phosphor"
 
-#: src/libvlc-module.c:361 modules/video_filter/deinterlace/deinterlace.h:59
+#: src/libvlc-module.c:363 modules/video_filter/deinterlace/deinterlace.h:59
 msgid "Film NTSC (IVTC)"
 msgstr "Film NTSC (IVTC)"
 
-#: src/libvlc-module.c:369
+#: src/libvlc-module.c:371
 msgid "Disable screensaver"
 msgstr "Tắt chế độ màn hình chờ"
 
-#: src/libvlc-module.c:370
+#: src/libvlc-module.c:372
 msgid "Disable the screensaver during video playback."
 msgstr "Không hiển thị Chế Độ Màn Hình Chờ - Screensaver khi đang chiếu video."
 
-#: src/libvlc-module.c:372
+#: src/libvlc-module.c:374
 msgid "Inhibit the power management daemon during playback"
 msgstr "Cấm hiện thông báo quản lý điện năng khi đang chiếu video"
 
-#: src/libvlc-module.c:373
+#: src/libvlc-module.c:375
 msgid ""
 "Inhibits the power management daemon during any playback, to avoid the "
 "computer being suspended because of inactivity."
@@ -2313,11 +2313,11 @@ msgstr ""
 "Tắt phần thông báo quản lý điện năng khi đang hiển thị audio/video, điều này "
 "nhằm tránh cho việc trình chiếu bị tạm dừng đột ngột vì một lý do nào đó."
 
-#: src/libvlc-module.c:376 modules/gui/macosx/VLCSimplePrefsController.m:351
+#: src/libvlc-module.c:378 modules/gui/macosx/VLCSimplePrefsController.m:351
 msgid "Window decorations"
 msgstr "Họa tiết cửa sổ"
 
-#: src/libvlc-module.c:378
+#: src/libvlc-module.c:380
 msgid ""
 "VLC can avoid creating window caption, frames, etc... around the video, "
 "giving a \"minimal\" window."
@@ -2325,21 +2325,21 @@ msgstr ""
 "VLC có thể tránh việc tạo các tiêu đề của cửa sổ, khung, v.v... dọc theo "
 "video, bằng việc cung cấp một cửa sổ \"nhỏ\"."
 
-#: src/libvlc-module.c:381
+#: src/libvlc-module.c:383
 msgid "Video splitter module"
 msgstr "Module cắt ghép video"
 
-#: src/libvlc-module.c:383
+#: src/libvlc-module.c:385
 msgid "This adds video splitters like clone or wall"
 msgstr ""
 "Thao tác này sẽ thêm vào các phần cắt ghép video dưới dạng sao chép hoặc làm "
 "nền"
 
-#: src/libvlc-module.c:385
+#: src/libvlc-module.c:387
 msgid "Video filter module"
 msgstr "Module dành cho bộ lọc video"
 
-#: src/libvlc-module.c:387
+#: src/libvlc-module.c:389
 msgid ""
 "This adds post-processing filters to enhance the picture quality, for "
 "instance deinterlacing, or distort the video."
@@ -2348,52 +2348,52 @@ msgstr ""
 "tăng chất lượng hình ảnh, ví dụ như chế độ chống quét mành/deinterlacing, "
 "hoặc làm biến dạng video."
 
-#: src/libvlc-module.c:391
+#: src/libvlc-module.c:393
 msgid "Video snapshot directory (or filename)"
 msgstr "Thư mục chứa hình chụp từ video (hoặc tên tập tin)"
 
-#: src/libvlc-module.c:393
+#: src/libvlc-module.c:395
 msgid "Directory where the video snapshots will be stored."
 msgstr "Thư mục lưu trữ các hình chụp từ video."
 
-#: src/libvlc-module.c:395 src/libvlc-module.c:397
+#: src/libvlc-module.c:397 src/libvlc-module.c:399
 msgid "Video snapshot file prefix"
 msgstr "Phần ký tự đứng trước tên tập tin ảnh chụp từ video"
 
-#: src/libvlc-module.c:399
+#: src/libvlc-module.c:401
 msgid "Video snapshot format"
 msgstr "Định dạng ảnh chụp từ video"
 
-#: src/libvlc-module.c:401
+#: src/libvlc-module.c:403
 msgid "Image format which will be used to store the video snapshots"
 msgstr "Định dạng của hình ảnh sẽ được tạo khi chụp hình từ video"
 
-#: src/libvlc-module.c:403
+#: src/libvlc-module.c:405
 msgid "Display video snapshot preview"
 msgstr "Hiển thị hình ảnh sơ lược về video"
 
-#: src/libvlc-module.c:405
+#: src/libvlc-module.c:407
 msgid "Display the snapshot preview in the screen's top-left corner."
 msgstr ""
 "Hiển thị hình ảnh thu nhỏ sơ lược về nội dung ở góc trái trên cùng của màn "
 "hình."
 
-#: src/libvlc-module.c:407
+#: src/libvlc-module.c:409
 msgid "Use sequential numbers instead of timestamps"
 msgstr "Sử dụng việc đánh số theo thứ tự thay vì định dạng thời gian"
 
-#: src/libvlc-module.c:409
+#: src/libvlc-module.c:411
 msgid "Use sequential numbers instead of timestamps for snapshot numbering"
 msgstr ""
 "Sử dung số theo thứ tự từ 1 đến X thay vì định dạng thời gian lúc hình chụp "
 "video được tạo. Phần này sẽ được thêm vào đằng trước của tên tập tin ảnh "
 "chụp từ video"
 
-#: src/libvlc-module.c:411
+#: src/libvlc-module.c:413
 msgid "Video snapshot width"
 msgstr "Chiều rộng ảnh chụp video"
 
-#: src/libvlc-module.c:413
+#: src/libvlc-module.c:415
 msgid ""
 "You can enforce the width of the video snapshot. By default it will keep the "
 "original width (-1). Using 0 will scale the width to keep the aspect ratio."
@@ -2402,11 +2402,11 @@ msgstr ""
 "trị này sẽ là (-1). Sử dụng giá trị 0 sẽ tạo một tỉ lệ đồng dạng cho tập tin "
 "ảnh."
 
-#: src/libvlc-module.c:417
+#: src/libvlc-module.c:419
 msgid "Video snapshot height"
 msgstr "Chiều cao ảnh chụp video"
 
-#: src/libvlc-module.c:419
+#: src/libvlc-module.c:421
 msgid ""
 "You can enforce the height of the video snapshot. By default it will keep "
 "the original height (-1). Using 0 will scale the height to keep the aspect "
@@ -2416,11 +2416,11 @@ msgstr ""
 "trị này sẽ là (-1). Sử dụng giá trị 0 sẽ tạo một tỉ lệ đồng dạng cho tập tin "
 "ảnh."
 
-#: src/libvlc-module.c:423
+#: src/libvlc-module.c:425
 msgid "Video cropping"
 msgstr "Cắt nhỏ video"
 
-#: src/libvlc-module.c:425
+#: src/libvlc-module.c:427
 msgid ""
 "This forces the cropping of the source video. Accepted formats are x:y (4:3, "
 "16:9, etc.) expressing the global image aspect."
@@ -2432,11 +2432,11 @@ msgstr ""
 "HD nhưng vẫn muốn thể hiện khung hình sao cho vừa vặn với thiết bị hiển thị "
 "hiện có."
 
-#: src/libvlc-module.c:429
+#: src/libvlc-module.c:431
 msgid "Source aspect ratio"
 msgstr "Tỉ lệ khung hình gốc"
 
-#: src/libvlc-module.c:431
+#: src/libvlc-module.c:433
 msgid ""
 "This forces the source aspect ratio. For instance, some DVDs claim to be "
 "16:9 while they are actually 4:3. This can also be used as a hint for VLC "
@@ -2453,21 +2453,21 @@ msgstr ""
 "thập phân như (1.25, 1.3333, v.v...) biểu đạt cho các điểm ảnh/pixeltrong "
 "khung hình đó."
 
-#: src/libvlc-module.c:438
+#: src/libvlc-module.c:440
 msgid "Video Auto Scaling"
 msgstr "Tự động canh chỉnh tỉ lệ Video"
 
-#: src/libvlc-module.c:440
+#: src/libvlc-module.c:442
 msgid "Let the video scale to fit a given window or fullscreen."
 msgstr ""
 "Chỉnh tỉ lệ canh chỉnh video vừa vặn với cửa sổ hiện tại hoặc vừa vặn ở chế "
 "độ toàn màn hình."
 
-#: src/libvlc-module.c:442
+#: src/libvlc-module.c:444
 msgid "Video scaling factor"
 msgstr "Hệ số tỉ lệ của Video"
 
-#: src/libvlc-module.c:444
+#: src/libvlc-module.c:446
 msgid ""
 "Scaling factor used when Auto Scaling is disabled.\n"
 "Default value is 1.0 (original video size)."
@@ -2475,11 +2475,11 @@ msgstr ""
 "Hệ số tỉ lệ được sử dụng khi tính năng Tự Động Canh Chỉnh Tỉ Lệ bị tắt đi.\n"
 "Giá trị mặc định là 1.0 (kích cỡ ban đầu của video)."
 
-#: src/libvlc-module.c:447
+#: src/libvlc-module.c:449
 msgid "Custom crop ratios list"
 msgstr "Danh sách tỉ lệ crop/loại bỏ khung hình tự chọn"
 
-#: src/libvlc-module.c:449
+#: src/libvlc-module.c:451
 msgid ""
 "Comma separated list of crop ratios which will be added in the interface's "
 "crop ratios list."
@@ -2487,11 +2487,11 @@ msgstr ""
 "Dấu phẩy tác biệt danh sách các tỉ lệ crop/lược bỏ sẽ được thêm vào trong "
 "phần danh sách tỉ lệ của giao diện bị crop/lược bỏ."
 
-#: src/libvlc-module.c:452
+#: src/libvlc-module.c:454
 msgid "Custom aspect ratios list"
 msgstr "Danh sách tỉ lệ tự chọn"
 
-#: src/libvlc-module.c:454
+#: src/libvlc-module.c:456
 msgid ""
 "Comma separated list of aspect ratios which will be added in the interface's "
 "aspect ratio list."
@@ -2499,11 +2499,11 @@ msgstr ""
 "Dấu phẩy tách biệt danh sách các tỉ lệ, sẽ được thêm vào trong phần danh "
 "sách tỉ lệ của giao diện."
 
-#: src/libvlc-module.c:457
+#: src/libvlc-module.c:459
 msgid "Fix HDTV height"
 msgstr "Sửa lỗi chiều cao của HDTV "
 
-#: src/libvlc-module.c:459
+#: src/libvlc-module.c:461
 msgid ""
 "This allows proper handling of HDTV-1080 video format even if broken encoder "
 "incorrectly sets height to 1088 lines. You should only disable this option "
@@ -2513,11 +2513,11 @@ msgstr ""
 "trình giải mã dữ liệu bị lỗi khi đặt các khung hình lên chuẩn 1088. Bạn nên "
 "tắt tùy chọn này nếu video của bạn có kiểu định dạng 1088."
 
-#: src/libvlc-module.c:464
+#: src/libvlc-module.c:466
 msgid "Monitor pixel aspect ratio"
 msgstr "Tỉ lệ điểm ảnh của màn hình"
 
-#: src/libvlc-module.c:466
+#: src/libvlc-module.c:468
 msgid ""
 "This forces the monitor aspect ratio. Most monitors have square pixels "
 "(1:1). If you have a 16:9 screen, you might need to change this to 4:3 in "
@@ -2527,11 +2527,11 @@ msgstr ""
 "có các điểm ảnh vuông (1:1). Nhưng nếu bạn sở hữu thiết bị có màn hình 16:9, "
 "bạn cần thay đổi tỉ lệ này thành 4:3 nhằm có được phần hiển thị tốt nhất."
 
-#: src/libvlc-module.c:470 modules/gui/macosx/VLCSimplePrefsController.m:294
+#: src/libvlc-module.c:472 modules/gui/macosx/VLCSimplePrefsController.m:294
 msgid "Skip frames"
 msgstr "Bỏ qua khung hình"
 
-#: src/libvlc-module.c:472
+#: src/libvlc-module.c:474
 msgid ""
 "Enables framedropping on MPEG2 stream. Framedropping occurs when your "
 "computer is not powerful enough"
@@ -2540,11 +2540,11 @@ msgstr ""
 "khung hình này diễn ra khi máy tính của bạn không đủ khản năng đồ họa để xử "
 "lý"
 
-#: src/libvlc-module.c:475
+#: src/libvlc-module.c:477
 msgid "Drop late frames"
 msgstr "Bỏ khung hình cuối cùng"
 
-#: src/libvlc-module.c:477
+#: src/libvlc-module.c:479
 msgid ""
 "This drops frames that are late (arrive to the video output after their "
 "intended display date)."
@@ -2553,11 +2553,11 @@ msgstr ""
 "hơn bình thường ( các dữ liệu video xuất ra sau khi đã thông báo về thời "
 "gian tải về)."
 
-#: src/libvlc-module.c:480
+#: src/libvlc-module.c:482
 msgid "Quiet synchro"
 msgstr "Đồng bộ hóa chế độ nền"
 
-#: src/libvlc-module.c:482
+#: src/libvlc-module.c:484
 msgid ""
 "This avoids flooding the message log with debug output from the video output "
 "synchronization mechanism."
@@ -2565,23 +2565,23 @@ msgstr ""
 "Điều chỉnh này nhắm tránh tình trạng đổ dồn các thông tin cảnh báo về các "
 "lỗi phát sinh khi xuất dữ liệu trong quá trình đồng bộ hóa video đầu ra."
 
-#: src/libvlc-module.c:485
+#: src/libvlc-module.c:487
 msgid "Key press events"
 msgstr "Các lệnh được thi hành khi nhấn phím"
 
-#: src/libvlc-module.c:487
+#: src/libvlc-module.c:489
 msgid "This enables VLC hotkeys from the (non-embedded) video window."
 msgstr "Phần này sẽ kích hoạt chức năng ấn phím tắt từ cửa sổ màn hình video."
 
-#: src/libvlc-module.c:489 modules/spu/remoteosd.c:91
+#: src/libvlc-module.c:491 modules/spu/remoteosd.c:91
 msgid "Mouse events"
 msgstr "Sự kiện nhấn chuột"
 
-#: src/libvlc-module.c:491
+#: src/libvlc-module.c:493
 msgid "This enables handling of mouse clicks on the video."
 msgstr "Phần lựa chọn này quản lý thao tác click chuột trên màn hình video."
 
-#: src/libvlc-module.c:499
+#: src/libvlc-module.c:501
 msgid ""
 "These options allow you to modify the behavior of the input subsystem, such "
 "as the DVD or VCD device, the network interface settings or the subtitle "
@@ -2591,47 +2591,47 @@ msgstr ""
 "liệu đối với các thiết bị ngoại vi, chẳng hạn như ổ DVD hay VCD, các thiết "
 "lập giao diện mạng hoặc phần phụ đề."
 
-#: src/libvlc-module.c:503
+#: src/libvlc-module.c:505
 msgid "File caching (ms)"
 msgstr "Bộ nhớ đệm dành cho tập tin (ms)"
 
-#: src/libvlc-module.c:505
+#: src/libvlc-module.c:507
 msgid "Caching value for local files, in milliseconds."
 msgstr ""
 "Giá trị tạm lưu của bộ nhớ đệm đối với các tập tin offline, tính bằng phần "
 "nghìn giây."
 
-#: src/libvlc-module.c:507
+#: src/libvlc-module.c:509
 msgid "Live capture caching (ms)"
 msgstr "Trực tiếp lưu trong bộ nhớ đệm (phần nghìn giây)"
 
-#: src/libvlc-module.c:509
+#: src/libvlc-module.c:511
 msgid "Caching value for cameras and microphones, in milliseconds."
 msgstr ""
 "Giá trị tạm lưu dữ liệu với camera và microphone, tính bằng phần nghìn giây."
 
-#: src/libvlc-module.c:511
+#: src/libvlc-module.c:513
 msgid "Disc caching (ms)"
 msgstr "Bộ nhớ đệm đối với đĩa(phần nghìn giây)"
 
-#: src/libvlc-module.c:513
+#: src/libvlc-module.c:515
 msgid "Caching value for optical media, in milliseconds."
 msgstr ""
 "Giá trị của bộ nhớ đệm đối với dữ liệu dạng đĩa, tính bằng phần nghìn giây."
 
-#: src/libvlc-module.c:515
+#: src/libvlc-module.c:517
 msgid "Network caching (ms)"
 msgstr "Dữ liệu bộ nhợ đệm đối với phần mạng (phần nghìn giây)"
 
-#: src/libvlc-module.c:517
+#: src/libvlc-module.c:519
 msgid "Caching value for network resources, in milliseconds."
 msgstr "Giá trị tạm lưu với các tài nguyên mạng, tính bằng phần nghìn giây."
 
-#: src/libvlc-module.c:519
+#: src/libvlc-module.c:521
 msgid "Clock reference average counter"
 msgstr "Bộ đếm trung bình tham chiếu bằng thời gian"
 
-#: src/libvlc-module.c:521
+#: src/libvlc-module.c:523
 msgid ""
 "When using the PVR input (or a very irregular source), you should set this "
 "to 10000."
@@ -2639,11 +2639,11 @@ msgstr ""
 "Khi tiến hành nhập dữ liệu bằng PVR (hoặc các nguồn tương tự), bạn nên chỉnh "
 "phần này ở mức 10000."
 
-#: src/libvlc-module.c:524
+#: src/libvlc-module.c:526
 msgid "Clock synchronisation"
 msgstr "Đồng bộ hóa thời gian"
 
-#: src/libvlc-module.c:526
+#: src/libvlc-module.c:528
 msgid ""
 "It is possible to disable the input clock synchronisation for real-time "
 "sources. Use this if you experience jerky playback of network streams."
@@ -2652,11 +2652,11 @@ msgstr ""
 "gian thực, Sử dụng phần này nếu bạn đã từng có kinh nghiệm tiếp xúc với các "
 "luồng dữ liệu mạng theo cơ chế jerky playback."
 
-#: src/libvlc-module.c:530
+#: src/libvlc-module.c:532
 msgid "Clock jitter"
 msgstr "Clock jitter"
 
-#: src/libvlc-module.c:532
+#: src/libvlc-module.c:534
 msgid ""
 "This defines the maximum input delay jitter that the synchronization "
 "algorithms should try to compensate (in milliseconds)."
@@ -2665,11 +2665,11 @@ msgstr ""
 "đồng bộ hóa các thuật toán theo cơ chế bù trừ về thời gian (tính bằng đơn vị "
 "phần nghìn giây)."
 
-#: src/libvlc-module.c:535
+#: src/libvlc-module.c:537
 msgid "Network synchronisation"
 msgstr "Đồng bộ hóa mạng"
 
-#: src/libvlc-module.c:536
+#: src/libvlc-module.c:538
 msgid ""
 "This allows you to remotely synchronise clocks for server and client. The "
 "detailed settings are available in Advanced / Network Sync."
@@ -2678,7 +2678,7 @@ msgstr ""
 "và máy client. Các chi tiết về phần chỉnh sửa này bạn có thể đọc thêm ở phần "
 "Nâng cao/ Đồng bộ hóa mạng."
 
-#: src/libvlc-module.c:542 src/video_output/vout_intf.c:98
+#: src/libvlc-module.c:544 src/video_output/vout_intf.c:98
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
 #: modules/access/dshow/dshow.cpp:2075 modules/audio_output/alsa.c:767
@@ -2695,18 +2695,18 @@ msgstr ""
 msgid "Default"
 msgstr "Mặc định"
 
-#: src/libvlc-module.c:542
+#: src/libvlc-module.c:544
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:223
 #: modules/gui/macosx/VLCMainWindow.m:1001
-#: modules/gui/qt/components/extended_panels.cpp:923
+#: modules/gui/qt/components/extended_panels.cpp:921
 msgid "Enable"
 msgstr "Cho phép"
 
-#: src/libvlc-module.c:544
+#: src/libvlc-module.c:546
 msgid "MTU of the network interface"
 msgstr "Giao diện mạng của MTU"
 
-#: src/libvlc-module.c:546
+#: src/libvlc-module.c:548
 msgid ""
 "This is the maximum application-layer packet size that can be transmitted "
 "over the network (in bytes)."
@@ -2714,11 +2714,11 @@ msgstr ""
 "Phần tùy chỉnh này thiết lập gói dữ liệu trong lớp ứng dụng có thể được luân "
 "chuyển giữa các mạng (tính bằng đơn vị bytes)."
 
-#: src/libvlc-module.c:551 modules/stream_out/rtp.c:124
+#: src/libvlc-module.c:553 modules/stream_out/rtp.c:124
 msgid "Hop limit (TTL)"
 msgstr "Giới hạn HOP (TTL - thời gian sống)"
 
-#: src/libvlc-module.c:553 modules/stream_out/rtp.c:126
+#: src/libvlc-module.c:555 modules/stream_out/rtp.c:126
 msgid ""
 "This is the hop limit (also known as \"Time-To-Live\" or TTL) of the "
 "multicast packets sent by the stream output (-1 = use operating system built-"
@@ -2730,21 +2730,21 @@ msgstr ""
 "đầu ra (-1=sử dụng cơ chế sẵn có của hệ điều hành đang dùng theo kiểu mặc "
 "định)."
 
-#: src/libvlc-module.c:557
+#: src/libvlc-module.c:559
 msgid "Multicast output interface"
 msgstr "Giao diện xuất dữ liệu Multicast"
 
-#: src/libvlc-module.c:559
+#: src/libvlc-module.c:561
 msgid "Default multicast interface. This overrides the routing table."
 msgstr ""
 "Giao diện multicast mặc định. Tùy chỉnh này sẽ đè lên phần bảng định hướng/"
 "routing."
 
-#: src/libvlc-module.c:561
+#: src/libvlc-module.c:563
 msgid "DiffServ Code Point"
 msgstr "DiffServ Code Point"
 
-#: src/libvlc-module.c:562
+#: src/libvlc-module.c:564
 msgid ""
 "Differentiated Services Code Point for outgoing UDP streams (or IPv4 Type Of "
 "Service, or IPv6 Traffic Class). This is used for network Quality of Service."
@@ -2753,7 +2753,7 @@ msgstr ""
 "IPv4 cho loại dịch vụ, IPv6 cho việc truyền tải). Phần này được dùng cho "
 "Quản lý chất lượng dịch vụ mạng."
 
-#: src/libvlc-module.c:568
+#: src/libvlc-module.c:570
 msgid ""
 "Choose the program to select by giving its Service ID. Only use this option "
 "if you want to read a multi-program stream (like DVB streams for example)."
@@ -2762,7 +2762,7 @@ msgstr ""
 "Chỉ sử dụng tùy chọn này khi bạn muốn xem sơ lược một luồng dữ liệu tương "
 "thích với đa chương trình (chẳng hạn như DVB)."
 
-#: src/libvlc-module.c:574
+#: src/libvlc-module.c:576
 msgid ""
 "Choose the programs to select by giving a comma-separated list of Service "
 "IDs (SIDs). Only use this option if you want to read a multi-program stream "
@@ -2773,27 +2773,27 @@ msgstr ""
 "lược qua một luồng dữ liệu đang được tương tác với nhiều chương trình (chẳng "
 "hạn như DVB)."
 
-#: src/libvlc-module.c:580
+#: src/libvlc-module.c:582
 msgid "Audio track"
 msgstr "Track Audio"
 
-#: src/libvlc-module.c:582
+#: src/libvlc-module.c:584
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "Số lượng luồng được sử dụng của track audio (từ 0 đến n)."
 
-#: src/libvlc-module.c:585
+#: src/libvlc-module.c:587
 msgid "Subtitle track"
 msgstr "Track phụ đề"
 
-#: src/libvlc-module.c:587
+#: src/libvlc-module.c:589
 msgid "Stream number of the subtitle track to use (from 0 to n)."
 msgstr "Số lượng luồng phụ đề được sử dụng (từ 0 đến n)."
 
-#: src/libvlc-module.c:590 modules/stream_out/transcode/transcode.c:97
+#: src/libvlc-module.c:592 modules/stream_out/transcode/transcode.c:97
 msgid "Audio language"
 msgstr "Ngôn ngữ của Audio"
 
-#: src/libvlc-module.c:592
+#: src/libvlc-module.c:594
 msgid ""
 "Language of the audio track you want to use (comma separated, two or three "
 "letter country code, you may use 'none' to avoid a fallback to another "
@@ -2803,11 +2803,11 @@ msgstr ""
 "hoặc ba ký tự đối với mã quốc gia, bạn có thể chọn 'không' để tránh việc "
 "nhầm lẫn với các ngôn ngữ khác)."
 
-#: src/libvlc-module.c:595
+#: src/libvlc-module.c:597
 msgid "Subtitle language"
 msgstr "Ngôn ngữ của phụ đề"
 
-#: src/libvlc-module.c:597
+#: src/libvlc-module.c:599
 msgid ""
 "Language of the subtitle track you want to use (comma separated, two or "
 "three letters country code, you may use 'any' as a fallback)."
@@ -2816,12 +2816,12 @@ msgstr ""
 "hai hoặc ba ký tự đại diện cho mã quốc giá, bạn có thể chọn 'bất kỳ' để "
 "tránh xung đột)."
 
-#: src/libvlc-module.c:600
+#: src/libvlc-module.c:602
 #, fuzzy
 msgid "Menu language"
 msgstr "Ngôn ngữ của Audio"
 
-#: src/libvlc-module.c:602
+#: src/libvlc-module.c:604
 #, fuzzy
 msgid ""
 "Language of the menus you want to use with DVD/BluRay (comma separated, two "
@@ -2831,44 +2831,44 @@ msgstr ""
 "hai hoặc ba ký tự đại diện cho mã quốc giá, bạn có thể chọn 'bất kỳ' để "
 "tránh xung đột)."
 
-#: src/libvlc-module.c:606
+#: src/libvlc-module.c:608
 msgid "Audio track ID"
 msgstr "ID của track audio"
 
-#: src/libvlc-module.c:608
+#: src/libvlc-module.c:610
 msgid "Stream ID of the audio track to use."
 msgstr "Số hiệu luồng dữ liệu của track audio được sử dụng."
 
-#: src/libvlc-module.c:610
+#: src/libvlc-module.c:612
 msgid "Subtitle track ID"
 msgstr "Số thứ tự phụ đề track"
 
-#: src/libvlc-module.c:612
+#: src/libvlc-module.c:614
 msgid "Stream ID of the subtitle track to use."
 msgstr "Số thứ tự của track phụ đề được sử dụng."
 
-#: src/libvlc-module.c:614 modules/codec/cc.c:57
+#: src/libvlc-module.c:616 modules/codec/cc.c:57
 msgid "Closed Captions decoder"
 msgstr "Đóng tiêu đề giải mã"
 
-#: src/libvlc-module.c:615
+#: src/libvlc-module.c:617
 #, fuzzy
 msgid "Preferred closed captions decoder"
 msgstr "Đóng tiêu đề giải mã"
 
-#: src/libvlc-module.c:617
+#: src/libvlc-module.c:619
 msgid "EIA/CEA 608"
 msgstr ""
 
-#: src/libvlc-module.c:617
+#: src/libvlc-module.c:619
 msgid "CEA 708"
 msgstr ""
 
-#: src/libvlc-module.c:619
+#: src/libvlc-module.c:621
 msgid "Preferred video resolution"
 msgstr "Độ phân giải yêu thích cho video"
 
-#: src/libvlc-module.c:621
+#: src/libvlc-module.c:623
 msgid ""
 "When several video formats are available, select one whose resolution is "
 "closest to (but not higher than) this setting, in number of lines. Use this "
@@ -2879,85 +2879,85 @@ msgstr ""
 "chỉ sử dụng tùy chọn này nếu máy tính của bạn có cấu hình thấp (hay bị hạn "
 "chế băng thông liên mạng) nhằm có độ phân giải cao hơn khi xem."
 
-#: src/libvlc-module.c:627
+#: src/libvlc-module.c:629
 msgid "Best available"
 msgstr "Sẵn có tốt nhất"
 
-#: src/libvlc-module.c:627
+#: src/libvlc-module.c:629
 msgid "Full HD (1080p)"
 msgstr "Full HD (1080p)"
 
-#: src/libvlc-module.c:627
+#: src/libvlc-module.c:629
 msgid "HD (720p)"
 msgstr "HD (720p)"
 
-#: src/libvlc-module.c:628
+#: src/libvlc-module.c:630
 msgid "Standard Definition (576 or 480 lines)"
 msgstr "Định dạng chuẩn (576 hoặc 480 line)"
 
-#: src/libvlc-module.c:629
+#: src/libvlc-module.c:631
 msgid "Low Definition (360 lines)"
 msgstr "Định dạng thấp (360 line)"
 
-#: src/libvlc-module.c:630
+#: src/libvlc-module.c:632
 msgid "Very Low Definition (240 lines)"
 msgstr "Định dạng siêu thấp (240 line)"
 
-#: src/libvlc-module.c:633
+#: src/libvlc-module.c:635
 msgid "Input repetitions"
 msgstr "Lặp lại việc nhập dữ liệu"
 
-#: src/libvlc-module.c:635
+#: src/libvlc-module.c:637
 msgid "Number of time the same input will be repeated"
 msgstr "Số lần lặp lại của việc nhập từ một nguồn dữ liệu"
 
-#: src/libvlc-module.c:637 modules/gui/macosx/VLCOpenWindowController.m:159
+#: src/libvlc-module.c:639 modules/gui/macosx/VLCOpenWindowController.m:159
 msgid "Start time"
 msgstr "Thời gian bắt đầu"
 
-#: src/libvlc-module.c:639
+#: src/libvlc-module.c:641
 msgid "The stream will start at this position (in seconds)."
 msgstr "Luồng dữ liệu sẽ được phát từ vị trí này (tính bằng giây)."
 
-#: src/libvlc-module.c:641 modules/gui/macosx/VLCOpenWindowController.m:161
+#: src/libvlc-module.c:643 modules/gui/macosx/VLCOpenWindowController.m:161
 msgid "Stop time"
 msgstr "Thời gian kết thúc"
 
-#: src/libvlc-module.c:643
+#: src/libvlc-module.c:645
 msgid "The stream will stop at this position (in seconds)."
 msgstr "Luồng dữ liệu sẽ dừng phát tại vị trí này (tính bằng giây)."
 
-#: src/libvlc-module.c:645
+#: src/libvlc-module.c:647
 msgid "Run time"
 msgstr "Thời gian chạy"
 
-#: src/libvlc-module.c:647
+#: src/libvlc-module.c:649
 msgid "The stream will run this duration (in seconds)."
 msgstr ""
 "Luồng dữ liệu sẽ được phát trong khoảng thời gian này (tính bằng giây)."
 
-#: src/libvlc-module.c:649
+#: src/libvlc-module.c:651
 msgid "Fast seek"
 msgstr "Lướt nhanh"
 
-#: src/libvlc-module.c:651
+#: src/libvlc-module.c:653
 msgid "Favor speed over precision while seeking"
 msgstr "Tốc độ lướt mà bạn muốn"
 
-#: src/libvlc-module.c:653
+#: src/libvlc-module.c:655
 msgid "Playback speed"
 msgstr "Tốc độ phát lại"
 
-#: src/libvlc-module.c:655
+#: src/libvlc-module.c:657
 msgid "This defines the playback speed (nominal speed is 1.0)."
 msgstr ""
 "Phần tùy chỉnh này thiết lập cho tốc đọ phát lại (tốc độ nhỏ nhất là 1.0)."
 
-#: src/libvlc-module.c:657
+#: src/libvlc-module.c:659
 msgid "Input list"
 msgstr "Danh sách dữ liệu đầu vào"
 
-#: src/libvlc-module.c:659
+#: src/libvlc-module.c:661
 msgid ""
 "You can give a comma-separated list of inputs that will be concatenated "
 "together after the normal one."
@@ -2965,11 +2965,11 @@ msgstr ""
 "Bạn có thể đặt một dấu phẩy phân cách danh sách dữ liệu nhập vào, tất cả các "
 "đối tượng sẽ được móc kết vào nhau theo thứ tự liên tiếp từng đối tượng một."
 
-#: src/libvlc-module.c:662
+#: src/libvlc-module.c:664
 msgid "Input slave (experimental)"
 msgstr "Dữ liệu nhập vào theo chế độ phụ thuộc (tùy chỉnh nâng cao)"
 
-#: src/libvlc-module.c:664
+#: src/libvlc-module.c:666
 msgid ""
 "This allows you to play from several inputs at the same time. This feature "
 "is experimental, not all formats are supported. Use a '#' separated list of "
@@ -2980,11 +2980,11 @@ msgstr ""
 "nghiệm với phần tùy chọn này, tuy nhiên chỉ hỗ trợ cho môt số định dạng nhất "
 "định. Sử dụng dấu '#' để phân tách các danh sách của dữ liệu được nhập vào."
 
-#: src/libvlc-module.c:668
+#: src/libvlc-module.c:670
 msgid "Bookmarks list for a stream"
 msgstr "Đánh dấu danh sách này để tạo luồng dữ liệu"
 
-#: src/libvlc-module.c:670
+#: src/libvlc-module.c:672
 msgid ""
 "You can manually give a list of bookmarks for a stream in the form "
 "\"{name=bookmark-name,time=optional-time-offset,bytes=optional-byte-offset},"
@@ -2994,21 +2994,21 @@ msgstr ""
 "dữ liệu theo mẫu \"{tên=tên đánh dấu,thời gian=thời gian bạn chọn,bytes=số "
 "byte tùy chọn cho mỗi offset},{...}\""
 
-#: src/libvlc-module.c:674
+#: src/libvlc-module.c:676
 #, fuzzy
 msgid "Record directory"
 msgstr "Thư mục nguồn"
 
-#: src/libvlc-module.c:676
+#: src/libvlc-module.c:678
 #, fuzzy
 msgid "Directory where the records will be stored"
 msgstr "Thư mục hoặc tên tập tin để lưu phần ghi âm"
 
-#: src/libvlc-module.c:678
+#: src/libvlc-module.c:680
 msgid "Prefer native stream recording"
 msgstr "Chế độ ghi âm luồng dữ liệu yêu thích"
 
-#: src/libvlc-module.c:680
+#: src/libvlc-module.c:682
 msgid ""
 "When possible, the input stream will be recorded instead of using the stream "
 "output module"
@@ -3016,19 +3016,19 @@ msgstr ""
 "Khi được bật, luồng dữ liệu đầu vào sẽ được ghi âm thay vì sử dụng module "
 "truy xuất luồng dữ liệu đầu ra"
 
-#: src/libvlc-module.c:683
+#: src/libvlc-module.c:685
 msgid "Timeshift directory"
 msgstr "Thư mục Timeshift"
 
-#: src/libvlc-module.c:685
+#: src/libvlc-module.c:687
 msgid "Directory used to store the timeshift temporary files."
 msgstr "Thư mục được dùng để lưu các tập tin tạm thời theo chế độ timeshift."
 
-#: src/libvlc-module.c:687
+#: src/libvlc-module.c:689
 msgid "Timeshift granularity"
 msgstr "Timeshift granularity"
 
-#: src/libvlc-module.c:689
+#: src/libvlc-module.c:691
 msgid ""
 "This is the maximum size in bytes of the temporary files that will be used "
 "to store the timeshifted streams."
@@ -3036,11 +3036,11 @@ msgstr ""
 "Đây là kích thước tối đa tính bằng byte đối với các tập tin được lưu tạm, "
 "được sử dụng để lưu các luồng dữ liệu timeshift."
 
-#: src/libvlc-module.c:692
+#: src/libvlc-module.c:694
 msgid "Change title according to current media"
 msgstr "Thay đổi tiêu đề dựa theo tập tin hiện tại"
 
-#: src/libvlc-module.c:693
+#: src/libvlc-module.c:695
 msgid ""
 "This option allows you to set the title according to what's being played<br>"
 "$a: Artist<br>$b: Album<br>$c: Copyright<br>$t: Title<br>$g: Genre<br>$n: "
@@ -3052,16 +3052,16 @@ msgstr ""
 "$n: Số thứ tự track<br>$p: Đang phát<br>$A: Ngày tháng<br>$D: Độ dài<br>$Z: "
 "\"Đang phát\" (Fall back on Title - Artist)"
 
-#: src/libvlc-module.c:698
+#: src/libvlc-module.c:700
 #, fuzzy
 msgid "Disable lua"
 msgstr "Vô hiệu"
 
-#: src/libvlc-module.c:699
+#: src/libvlc-module.c:701
 msgid "Disable all lua plugins"
 msgstr ""
 
-#: src/libvlc-module.c:703
+#: src/libvlc-module.c:705
 msgid ""
 "These options allow you to modify the behavior of the subpictures subsystem. "
 "You can for example enable subpictures sources (logo, etc.). Enable these "
@@ -3074,11 +3074,11 @@ msgstr ""
 "đây và chỉnh sửa chúng trong \"bộ lọc nguồn dành cho phụ đề\" nằm trong phần "
 "module. Bạn có thể tăng hoặc giảm một hoặc nhiều các hình ảnh phụ đề."
 
-#: src/libvlc-module.c:709
+#: src/libvlc-module.c:711
 msgid "Force subtitle position"
 msgstr "Cố định vị trí phụ đề"
 
-#: src/libvlc-module.c:711
+#: src/libvlc-module.c:713
 msgid ""
 "You can use this option to place the subtitles under the movie, instead of "
 "over the movie. Try several positions."
@@ -3087,30 +3087,30 @@ msgstr ""
 "trong bất kỳ bộ phim nào thay vì phải dựa vào các thông số của tập tin phụ "
 "đề đi kèm. Hãy thử một vài vị trí mà bạn mong muốn."
 
-#: src/libvlc-module.c:714
+#: src/libvlc-module.c:716
 #, fuzzy
 msgid "Subtitles text scaling factor"
 msgstr "Mã hóa văn bản của phụ đề"
 
-#: src/libvlc-module.c:715
+#: src/libvlc-module.c:717
 msgid "Set value to alter subtitles size where possible"
 msgstr ""
 
-#: src/libvlc-module.c:717
+#: src/libvlc-module.c:719
 msgid "Enable sub-pictures"
 msgstr "Cho phép hiển thị hình ảnh trong phụ đề"
 
-#: src/libvlc-module.c:719
+#: src/libvlc-module.c:721
 msgid "You can completely disable the sub-picture processing."
 msgstr ""
 "Bạn có thể hoàn toàn vô hiệu hóa tiến trình xử lý hình ảnh đi kèm với phụ đề."
 
-#: src/libvlc-module.c:721 src/libvlc-module.c:1669 src/text/iso-639_def.h:145
+#: src/libvlc-module.c:723 src/libvlc-module.c:1671 src/text/iso-639_def.h:145
 #: modules/gui/macosx/VLCSimplePrefsController.m:338
 msgid "On Screen Display"
 msgstr "Hiển thị trên màn hình"
 
-#: src/libvlc-module.c:723
+#: src/libvlc-module.c:725
 msgid ""
 "VLC can display messages on the video. This is called OSD (On Screen "
 "Display)."
@@ -3118,11 +3118,11 @@ msgstr ""
 "VLC có khả năng hiển thị thông điệp trên video. Đây được gọi là HTTMH(Hiển "
 "thị trên màn hình)."
 
-#: src/libvlc-module.c:726
+#: src/libvlc-module.c:728
 msgid "Text rendering module"
 msgstr "Module render phần hiển thị chữ"
 
-#: src/libvlc-module.c:728
+#: src/libvlc-module.c:730
 msgid ""
 "VLC normally uses Freetype for rendering, but this allows you to use svg for "
 "instance."
@@ -3130,11 +3130,11 @@ msgstr ""
 "VLC thông thường dùng định dạng chữ loại Freetype trong quá trình render, "
 "tuy nhiên bạn cũng co thể sử dụng svg cho tùy chọn này."
 
-#: src/libvlc-module.c:730
+#: src/libvlc-module.c:732
 msgid "Subpictures source module"
 msgstr "Module nguồn của hình ảnh kèm theo phụ đề"
 
-#: src/libvlc-module.c:732
+#: src/libvlc-module.c:734
 msgid ""
 "This adds so-called \"subpicture sources\". These filters overlay some "
 "images or text over the video (like a logo, arbitrary text, ...)."
@@ -3143,11 +3143,11 @@ msgstr ""
 "sẽ tạo ra các hình ảnh hoặc văn bản hiển thị phía trên video (ví dụ như "
 "logo, các đoạn văn bản tạo hiệu ứng,...)."
 
-#: src/libvlc-module.c:735
+#: src/libvlc-module.c:737
 msgid "Subpictures filter module"
 msgstr "Module bộ lọc hình ảnh kèm theo phụ đề"
 
-#: src/libvlc-module.c:737
+#: src/libvlc-module.c:739
 msgid ""
 "This adds so-called \"subpicture filters\". These filter subpictures created "
 "by subtitle decoders or other subpictures sources."
@@ -3156,11 +3156,11 @@ msgstr ""
 "Các bộ lọc dành cho hình ảnh kèm theo phụ đề được tạo ra bởi tính năng giải "
 "mã phụ đề hoặc dựa vào nguồn của hình ảnh kèm theo phụ đề."
 
-#: src/libvlc-module.c:740
+#: src/libvlc-module.c:742
 msgid "Autodetect subtitle files"
 msgstr "Tự động tìm tập tin phụ đề"
 
-#: src/libvlc-module.c:742
+#: src/libvlc-module.c:744
 msgid ""
 "Automatically detect a subtitle file, if no subtitle filename is specified "
 "(based on the filename of the movie)."
@@ -3168,11 +3168,11 @@ msgstr ""
 "Tự động nhận dạng tập tin phụ đề, nếu tên của tập tin phụ đề không được xác "
 "định rõ (dựa trên tên tập tin của bộ phim đang phát)."
 
-#: src/libvlc-module.c:745
+#: src/libvlc-module.c:747
 msgid "Subtitle autodetection fuzziness"
 msgstr "Tự động nhận dạng các lỗi trong phụ đề"
 
-#: src/libvlc-module.c:747
+#: src/libvlc-module.c:749
 msgid ""
 "This determines how fuzzy subtitle and movie filename matching will be. "
 "Options are:\n"
@@ -3190,11 +3190,11 @@ msgstr ""
 "3 = phụ đề có từ/cụm từ trùng với tên phim\n"
 "4 = phụ đề có tên trùng khớp với tên phim"
 
-#: src/libvlc-module.c:755
+#: src/libvlc-module.c:757
 msgid "Subtitle autodetection paths"
 msgstr "Đường dẫn tự nhận dạng phụ đề"
 
-#: src/libvlc-module.c:757
+#: src/libvlc-module.c:759
 msgid ""
 "Look for a subtitle file in those paths too, if your subtitle file was not "
 "found in the current directory."
@@ -3202,11 +3202,11 @@ msgstr ""
 "Tìm kiếm các tập tin phụ đề trong đường dẫn, nếu như tập tin phụ đề của bạn "
 "không được tìm thấy trong thư mục hiện tại."
 
-#: src/libvlc-module.c:760
+#: src/libvlc-module.c:762
 msgid "Use subtitle file"
 msgstr "Sử dụng tập tin phụ đề"
 
-#: src/libvlc-module.c:762
+#: src/libvlc-module.c:764
 msgid ""
 "Load this subtitle file. To be used when autodetect cannot detect your "
 "subtitle file."
@@ -3214,19 +3214,19 @@ msgstr ""
 "Tải tập tin phụ đề này. Được sử dụng khi phần tính năng nhận dạng phụ đề "
 "không tìm thấy tập tin phụ đề chính xác."
 
-#: src/libvlc-module.c:766
+#: src/libvlc-module.c:768
 msgid "DVD device"
 msgstr "Thiết bị DVD"
 
-#: src/libvlc-module.c:767
+#: src/libvlc-module.c:769
 msgid "VCD device"
 msgstr "Thiết bị VCD"
 
-#: src/libvlc-module.c:768 modules/access/cdda.c:701
+#: src/libvlc-module.c:770 modules/access/cdda.c:701
 msgid "Audio CD device"
 msgstr "Thiết bị Audio CD "
 
-#: src/libvlc-module.c:772
+#: src/libvlc-module.c:774
 msgid ""
 "This is the default DVD drive (or file) to use. Don't forget the colon after "
 "the drive letter (e.g. D:)"
@@ -3234,7 +3234,7 @@ msgstr ""
 "Đây là ổ đĩa DVD (hoặc tập tin) được sử dụng. Đừng quên dấu hai chấm sau ký "
 "tự đại diện cho tên ổ đĩa (ví dụ D:)"
 
-#: src/libvlc-module.c:775
+#: src/libvlc-module.c:777
 msgid ""
 "This is the default VCD drive (or file) to use. Don't forget the colon after "
 "the drive letter (e.g. D:)"
@@ -3242,7 +3242,7 @@ msgstr ""
 "Đây là ổ đĩa VCD (hoặc tập tin) được sử dụng mặc định. Đừng quên dấu hai "
 "chấm đằng sau ký tự đại diện cho ổ đĩa (ví dụ D:)"
 
-#: src/libvlc-module.c:778 modules/access/cdda.c:704
+#: src/libvlc-module.c:780 modules/access/cdda.c:704
 msgid ""
 "This is the default Audio CD drive (or file) to use. Don't forget the colon "
 "after the drive letter (e.g. D:)"
@@ -3250,33 +3250,33 @@ msgstr ""
 "Đây là ổ đĩa Audio (hoặc tập tin) được sử dụng mặc định. Đừng quên dấu hai "
 "chấm đằng sau ký tự đại diện cho ổ đĩa (ví dụ D:)"
 
-#: src/libvlc-module.c:785
+#: src/libvlc-module.c:787
 msgid "This is the default DVD device to use."
 msgstr "Đây là thiết bị DVD mặc định được sử dụng."
 
-#: src/libvlc-module.c:787
+#: src/libvlc-module.c:789
 msgid "This is the default VCD device to use."
 msgstr "Đây là thiết bị VCD mặc định được sử dụng."
 
-#: src/libvlc-module.c:789 modules/access/cdda.c:709
+#: src/libvlc-module.c:791 modules/access/cdda.c:709
 msgid "This is the default Audio CD device to use."
 msgstr "Đây là thiết bị Audio CD mặc định được sử dụng."
 
-#: src/libvlc-module.c:803
+#: src/libvlc-module.c:805
 msgid "TCP connection timeout"
 msgstr "Kết nối TCP đã hết hạn thời gian cho phép"
 
-#: src/libvlc-module.c:805
+#: src/libvlc-module.c:807
 #, fuzzy
 msgid "Default TCP connection timeout (in milliseconds)."
 msgstr ""
 "Lượng thời gian cho phép với kết nối TCP (tính bằng đơn vị phần nghìn giây)."
 
-#: src/libvlc-module.c:807
+#: src/libvlc-module.c:809
 msgid "HTTP server address"
 msgstr "Địa chỉ máy chủ HTTP"
 
-#: src/libvlc-module.c:809
+#: src/libvlc-module.c:811
 msgid ""
 "By default, the server will listen on any local IP address. Specify an IP "
 "address (e.g. ::1 or 127.0.0.1) or a host name (e.g. localhost) to restrict "
@@ -3287,11 +3287,11 @@ msgstr ""
 "127.0.0.1) hoặc tên host (ví dụ localhost) để giới hạn những địa chỉ này và "
 "bắt những đối tượng trên tuân thủ theo giao diện mạng của VLC."
 
-#: src/libvlc-module.c:813
+#: src/libvlc-module.c:815
 msgid "RTSP server address"
 msgstr "Địa chỉ máy chủ RTSP"
 
-#: src/libvlc-module.c:815
+#: src/libvlc-module.c:817
 msgid ""
 "This defines the address the RTSP server will listen on, along with the base "
 "path of the RTSP VOD media. Syntax is address/path. By default, the server "
@@ -3307,11 +3307,11 @@ msgstr ""
 "để giới hạn những địa chỉ này và bắt những đối tượng trên tuân thủ theo giao "
 "diện mạng của VLC."
 
-#: src/libvlc-module.c:821
+#: src/libvlc-module.c:823
 msgid "HTTP server port"
 msgstr "Cổng kết nối máy chủ HTTP"
 
-#: src/libvlc-module.c:823
+#: src/libvlc-module.c:825
 msgid ""
 "The HTTP server will listen on this TCP port. The standard HTTP port number "
 "is 80. However allocation of port numbers below 1025 is usually restricted "
@@ -3322,11 +3322,11 @@ msgstr ""
 "kết nối là 1025, và phần giới hạn này luôn được quản lý chặt chẽ bởi hệ điều "
 "hành bạn đang sử dụng."
 
-#: src/libvlc-module.c:828
+#: src/libvlc-module.c:830
 msgid "HTTPS server port"
 msgstr "Cổng kết nối máy chủ HTTPS"
 
-#: src/libvlc-module.c:830
+#: src/libvlc-module.c:832
 msgid ""
 "The HTTPS server will listen on this TCP port. The standard HTTPS port "
 "number is 443. However allocation of port numbers below 1025 is usually "
@@ -3337,11 +3337,11 @@ msgstr ""
 "kết nối là 1025, và phần giới hạn này luôn được quản lý chặt chẽ bởi hệ điều "
 "hành bạn đang sử dụng."
 
-#: src/libvlc-module.c:835
+#: src/libvlc-module.c:837
 msgid "RTSP server port"
 msgstr "Cổng kết nối máy chủ RTSP"
 
-#: src/libvlc-module.c:837
+#: src/libvlc-module.c:839
 msgid ""
 "The RTSP server will listen on this TCP port. The standard RTSP port number "
 "is 554. However allocation of port numbers below 1025 is usually restricted "
@@ -3352,11 +3352,11 @@ msgstr ""
 "kết nối là 1025, và phần giới hạn này luôn được quản lý chặt chẽ bởi hệ điều "
 "hành bạn đang sử dụng."
 
-#: src/libvlc-module.c:842
+#: src/libvlc-module.c:844
 msgid "HTTP/TLS server certificate"
 msgstr "Chứng nhận máy chủ HTTP/TLS"
 
-#: src/libvlc-module.c:844
+#: src/libvlc-module.c:846
 #, fuzzy
 msgid ""
 "This X.509 certicate file (PEM format) is used for server-side TLS. On OS X, "
@@ -3365,20 +3365,20 @@ msgstr ""
 "Tập tin chứng nhận X.509 (theo định dạng PEM) được sử dụng cho phía máy chủ "
 "TLS."
 
-#: src/libvlc-module.c:847
+#: src/libvlc-module.c:849
 msgid "HTTP/TLS server private key"
 msgstr "Khóa cá nhân đối với máy chủ HTTP/TLS"
 
-#: src/libvlc-module.c:849
+#: src/libvlc-module.c:851
 msgid "This private key file (PEM format) is used for server-side TLS."
 msgstr ""
 "Tập tin khóa cá nhân này (định dạng PEM) được sử dụng cho phía máy chủ TLS."
 
-#: src/libvlc-module.c:851
+#: src/libvlc-module.c:853
 msgid "SOCKS server"
 msgstr "Sever SOCKS"
 
-#: src/libvlc-module.c:853
+#: src/libvlc-module.c:855
 msgid ""
 "SOCKS proxy server to use. This must be of the form address:port. It will be "
 "used for all TCP connections"
@@ -3386,103 +3386,103 @@ msgstr ""
 "SOCKS Proxy server đang được sử dụng. Tùy chỉnh này phải có dạng địa chỉ địa "
 "chỉ:cổng. Tùy chọn này sẽ được sử dụng cho tất cả kết nối có dạng TCP."
 
-#: src/libvlc-module.c:856
+#: src/libvlc-module.c:858
 msgid "SOCKS user name"
 msgstr "Tài khoản SOCKS"
 
-#: src/libvlc-module.c:858
+#: src/libvlc-module.c:860
 msgid "User name to be used for connection to the SOCKS proxy."
 msgstr "Sử dụng một tài khoản cho việc kết nối đến proxy của SOCKS."
 
-#: src/libvlc-module.c:860
+#: src/libvlc-module.c:862
 msgid "SOCKS password"
 msgstr "Mật khẩu tài khoản SOCKS"
 
-#: src/libvlc-module.c:862
+#: src/libvlc-module.c:864
 msgid "Password to be used for connection to the SOCKS proxy."
 msgstr "Mật khẩu để truy cập tài khoản SOCKS."
 
-#: src/libvlc-module.c:864
+#: src/libvlc-module.c:866
 msgid "Title metadata"
 msgstr "Thông tin bổ sung về tiêu đề"
 
-#: src/libvlc-module.c:866
+#: src/libvlc-module.c:868
 msgid "Allows you to specify a \"title\" metadata for an input."
 msgstr ""
 "Cho phép bạn hiệu chỉnh phần \"tiêu đề\" trong phần thông tin bổ sung của dữ "
 "liệu được xuất ra."
 
-#: src/libvlc-module.c:868
+#: src/libvlc-module.c:870
 msgid "Author metadata"
 msgstr "Thông tin bổ sung về tác giả"
 
-#: src/libvlc-module.c:870
+#: src/libvlc-module.c:872
 msgid "Allows you to specify an \"author\" metadata for an input."
 msgstr ""
 "Cho phép bạn hiệu chỉnh phần \"tác giả\" trong phần thông tin bổ sung của dữ "
 "liệu được xuất ra."
 
-#: src/libvlc-module.c:872
+#: src/libvlc-module.c:874
 msgid "Artist metadata"
 msgstr "Thông tin bổ sung về nghệ sĩ"
 
-#: src/libvlc-module.c:874
+#: src/libvlc-module.c:876
 msgid "Allows you to specify an \"artist\" metadata for an input."
 msgstr ""
 "Cho phép bạn hiệu chỉnh phần \"nghệ sĩ\" trong phần thông tin bổ sung của dữ "
 "liệu được xuất ra."
 
-#: src/libvlc-module.c:876
+#: src/libvlc-module.c:878
 msgid "Genre metadata"
 msgstr "Thông tin bổ sung về loại nhạc"
 
-#: src/libvlc-module.c:878
+#: src/libvlc-module.c:880
 msgid "Allows you to specify a \"genre\" metadata for an input."
 msgstr ""
 "Cho phép bạn hiệu chỉnh phần \"loại nhạc\" trong phần thông tin bổ sung của "
 "dữ liệu được xuất ra."
 
-#: src/libvlc-module.c:880
+#: src/libvlc-module.c:882
 msgid "Copyright metadata"
 msgstr "Thông tin bổ sung về bản quyền"
 
-#: src/libvlc-module.c:882
+#: src/libvlc-module.c:884
 msgid "Allows you to specify a \"copyright\" metadata for an input."
 msgstr ""
 "Cho phép bạn hiệu chỉnh phần \"bản quyền\" trong phần thông tin bổ sung của "
 "dữ liệu được xuất ra."
 
-#: src/libvlc-module.c:884
+#: src/libvlc-module.c:886
 msgid "Description metadata"
 msgstr "Thông tin bổ sung về mô tả"
 
-#: src/libvlc-module.c:886
+#: src/libvlc-module.c:888
 msgid "Allows you to specify a \"description\" metadata for an input."
 msgstr ""
 "Cho phép bạn hiệu chỉnh phần \"mô tả\" trong phần thông tin bổ sung của dữ "
 "liệu được xuất ra."
 
-#: src/libvlc-module.c:888
+#: src/libvlc-module.c:890
 msgid "Date metadata"
 msgstr "Thông tin bổ sung về ngày tháng"
 
-#: src/libvlc-module.c:890
+#: src/libvlc-module.c:892
 msgid "Allows you to specify a \"date\" metadata for an input."
 msgstr ""
 "Cho phép bạn hiệu chỉnh phần \"ngày tháng\" trong phần thông tin bổ sung của "
 "dữ liệu được xuất ra."
 
-#: src/libvlc-module.c:892
+#: src/libvlc-module.c:894
 msgid "URL metadata"
 msgstr "Thông tin bổ sung về URL"
 
-#: src/libvlc-module.c:894
+#: src/libvlc-module.c:896
 msgid "Allows you to specify a \"url\" metadata for an input."
 msgstr ""
 "Cho phép bạn hiệu chỉnh phần \"URL\" trong phần thông tin bổ sung của dữ "
 "liệu được xuất ra."
 
-#: src/libvlc-module.c:898
+#: src/libvlc-module.c:900
 msgid ""
 "This option can be used to alter the way VLC selects its codecs "
 "(decompression methods). Only advanced users should alter this option as it "
@@ -3494,11 +3494,11 @@ msgstr ""
 "phần này vì tùy chọn này có thể làm ngưng lại quá trình phát lại cho luồng "
 "dữ liệu bạn đang truy cập."
 
-#: src/libvlc-module.c:902
+#: src/libvlc-module.c:904
 msgid "Preferred decoders list"
 msgstr "Danh sách các phần giải mã yêu thích"
 
-#: src/libvlc-module.c:904
+#: src/libvlc-module.c:906
 msgid ""
 "List of codecs that VLC will use in priority. For instance, 'dummy,a52' will "
 "try the dummy and a52 codecs before trying the other ones. Only advanced "
@@ -3509,18 +3509,18 @@ msgstr ""
 "khác. Chỉ dành cho người dùng nâng cao khi bỏ tùy chọn này vì tùy chọn này "
 "có thể làm tạm ngưng quy trình phát lại luồng dữ liệu mà bạn đang tiếp cận."
 
-#: src/libvlc-module.c:909
+#: src/libvlc-module.c:911
 msgid "Preferred encoders list"
 msgstr "Danh sách các phần mã hóa yêu thích"
 
-#: src/libvlc-module.c:911
+#: src/libvlc-module.c:913
 msgid ""
 "This allows you to select a list of encoders that VLC will use in priority."
 msgstr ""
 "Tùy chọn này cho phép bạn chọn danh sách các phương thức mã hóa mà VLC sẽ sử "
 "dụng theo thứ tự ưu tiên cao nhất."
 
-#: src/libvlc-module.c:920
+#: src/libvlc-module.c:922
 msgid ""
 "These options allow you to set default global options for the stream output "
 "subsystem."
@@ -3528,11 +3528,11 @@ msgstr ""
 "Những tùy chọn này sẽ cho phép bạn thiết lập các tùy chọn tổng quát cho phần "
 "phân luồng dữ liệu đối với các dữ liệu được xuất ra từ các thiết bị ngoại vi."
 
-#: src/libvlc-module.c:923
+#: src/libvlc-module.c:925
 msgid "Default stream output chain"
 msgstr "Tập hợp các luồng dữ liệu xuất ra theo mặc định"
 
-#: src/libvlc-module.c:925
+#: src/libvlc-module.c:927
 msgid ""
 "You can enter here a default stream output chain. Refer to the documentation "
 "to learn how to build such chains. Warning: this chain will be enabled for "
@@ -3543,29 +3543,29 @@ msgstr ""
 "tương tự. Cảnh báo: các tập hợp luồng sẽ được kích hoạt cho mọi luồng dữ "
 "liệu khác."
 
-#: src/libvlc-module.c:929
+#: src/libvlc-module.c:931
 msgid "Enable streaming of all ES"
 msgstr "Bất chế độ phân luồng cho mọi ES"
 
-#: src/libvlc-module.c:931
+#: src/libvlc-module.c:933
 msgid "Stream all elementary streams (video, audio and subtitles)"
 msgstr ""
 "Phân luồng dữ liệu cho tất cả các luồng dữ liệu cơ bản (video, audio và phụ "
 "đề)"
 
-#: src/libvlc-module.c:933
+#: src/libvlc-module.c:935
 msgid "Display while streaming"
 msgstr "Hiển thị khi phân luồng dữ liệu"
 
-#: src/libvlc-module.c:935
+#: src/libvlc-module.c:937
 msgid "Play locally the stream while streaming it."
 msgstr "Vẫn phát luồng dữ liệu trong hệ thống khi đang phân luồng dữ liệu đó."
 
-#: src/libvlc-module.c:937
+#: src/libvlc-module.c:939
 msgid "Enable video stream output"
 msgstr "Bật tính năng xuất luồng dữ liệu video"
 
-#: src/libvlc-module.c:939
+#: src/libvlc-module.c:941
 msgid ""
 "Choose whether the video stream should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3573,11 +3573,11 @@ msgstr ""
 "Chọn phần này khi luồng dữ liệu video được chuyển trực tiếp tới luồng xuất "
 "dữ liệu khi luồng dữ liệu trước đó đã được kích hoạt."
 
-#: src/libvlc-module.c:942
+#: src/libvlc-module.c:944
 msgid "Enable audio stream output"
 msgstr "Bất tất cả các luồng dữ liệu xuất ra dạng audio"
 
-#: src/libvlc-module.c:944
+#: src/libvlc-module.c:946
 msgid ""
 "Choose whether the audio stream should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3585,11 +3585,11 @@ msgstr ""
 "Chọn phần này khi luồng dữ liệu audio được chuyển trực tiếp tới luồng xuất "
 "dữ liệu khi luồng dữ liệu trước đó đã được kích hoạt."
 
-#: src/libvlc-module.c:947
+#: src/libvlc-module.c:949
 msgid "Enable SPU stream output"
 msgstr "Bật tính năng xuất luồng dữ liệu dạng SPU"
 
-#: src/libvlc-module.c:949
+#: src/libvlc-module.c:951
 msgid ""
 "Choose whether the SPU streams should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3597,11 +3597,11 @@ msgstr ""
 "Chọn phần này khi luồng dữ liệu SPU được chuyển trực tiếp tới luồng xuất dữ "
 "liệu khi luồng dữ liệu trước đó đã được kích hoạt."
 
-#: src/libvlc-module.c:952
+#: src/libvlc-module.c:954
 msgid "Keep stream output open"
 msgstr "Mở các luồng xuất dữ liệu"
 
-#: src/libvlc-module.c:954
+#: src/libvlc-module.c:956
 msgid ""
 "This allows you to keep an unique stream output instance across multiple "
 "playlist item (automatically insert the gather stream output if not "
@@ -3611,11 +3611,11 @@ msgstr ""
 "đang phát nhiều đối tượng trong danh sách phát (tự động chèn vào luồng dữ "
 "liệu được thu thập nếu như luồng dữ liệu xuất ra không được xác định rõ)"
 
-#: src/libvlc-module.c:958
+#: src/libvlc-module.c:960
 msgid "Stream output muxer caching (ms)"
 msgstr "Tạm lưu việc xuất luồng dữ liệu được ghép (tính bằng phần nghìn giây)"
 
-#: src/libvlc-module.c:960
+#: src/libvlc-module.c:962
 msgid ""
 "This allow you to configure the initial caching amount for stream output "
 "muxer. This value should be set in milliseconds."
@@ -3624,36 +3624,36 @@ msgstr ""
 "bộ nhớ đệm được ghép tín hiệu ở dạng dữ liệu xuất ra. Giá trị này nên được "
 "tính bằng phần nghìn giây."
 
-#: src/libvlc-module.c:963
+#: src/libvlc-module.c:965
 msgid "Preferred packetizer list"
 msgstr "Danh sách gói tin yêu thích"
 
-#: src/libvlc-module.c:965
+#: src/libvlc-module.c:967
 msgid ""
 "This allows you to select the order in which VLC will choose its packetizers."
 msgstr ""
 "Tùy chọn này cho phép bạn chọn thứ tự mà VLC sẽ chọn cho phần đóng gói gói "
 "tin."
 
-#: src/libvlc-module.c:968
+#: src/libvlc-module.c:970
 msgid "Mux module"
 msgstr "Module Ghép tín hiệu"
 
-#: src/libvlc-module.c:970
+#: src/libvlc-module.c:972
 msgid "This is a legacy entry to let you configure mux modules"
 msgstr "Đây là phần chỉnh sửa cho phép bạn điều chỉnh các module ghép dữ liệu"
 
-#: src/libvlc-module.c:972
+#: src/libvlc-module.c:974
 msgid "Access output module"
 msgstr "Module truy xuất dữ liệu đầu ra"
 
-#: src/libvlc-module.c:974
+#: src/libvlc-module.c:976
 msgid "This is a legacy entry to let you configure access output modules"
 msgstr ""
 "Đây là thông số quan trọng cho phép bạn chỉnh sửa module đối với phương thức "
 "truy cập dữ liệu được xuất ra"
 
-#: src/libvlc-module.c:977
+#: src/libvlc-module.c:979
 msgid ""
 "If this option is enabled, the flow on the SAP multicast address will be "
 "controlled. This is needed if you want to make announcements on the MBone."
@@ -3661,11 +3661,11 @@ msgstr ""
 "Nếu tùy chọn này được bật, các địa chỉ multicast dạng SAP sẽ được điều khiển "
 "theo ý bạn. Điều này chỉ cần thiết nếu bạn cần tạo các thông báo trên MBone."
 
-#: src/libvlc-module.c:981
+#: src/libvlc-module.c:983
 msgid "SAP announcement interval"
 msgstr "Độ trễ cho thông báo SAP"
 
-#: src/libvlc-module.c:983
+#: src/libvlc-module.c:985
 msgid ""
 "When the SAP flow control is disabled, this lets you set the fixed interval "
 "between SAP announcements."
@@ -3673,7 +3673,7 @@ msgstr ""
 "Khi dòng điều khiển SAP được vô hiệu hóa, sẽ giúp bạn sửa lại các quãng thời "
 "gian để thực hiện các thông báo SAP."
 
-#: src/libvlc-module.c:992
+#: src/libvlc-module.c:994
 msgid ""
 "These options allow you to select default modules. Leave these alone unless "
 "you really know what you are doing."
@@ -3682,11 +3682,11 @@ msgstr ""
 "động đến phần này trừ khi bạn đã biết những tùy chọn này sẽ thực hiện những "
 "tác động nào."
 
-#: src/libvlc-module.c:995
+#: src/libvlc-module.c:997
 msgid "Access module"
 msgstr "Module truy cập"
 
-#: src/libvlc-module.c:997
+#: src/libvlc-module.c:999
 msgid ""
 "This allows you to force an access module. You can use it if the correct "
 "access is not automatically detected. You should not set this as a global "
@@ -3697,22 +3697,22 @@ msgstr ""
 "nên chỉnh sửa phần này trừ khi bạn đã có kinh nghiệm trong việc điều chỉnh "
 "những tùy chọn này."
 
-#: src/libvlc-module.c:1001
+#: src/libvlc-module.c:1003
 msgid "Stream filter module"
 msgstr "Phương thức lọc luồng dữ liệu"
 
-#: src/libvlc-module.c:1003
+#: src/libvlc-module.c:1005
 msgid "Stream filters are used to modify the stream that is being read. "
 msgstr ""
 "Bộ lọc luồng dữ liệu được sử dụng để chỉnh sửa các luồng dữ liệu đang được "
 "đọc."
 
-#: src/libvlc-module.c:1005
+#: src/libvlc-module.c:1007
 #, fuzzy
 msgid "Demux filter module"
 msgstr "Phương thức lọc luồng dữ liệu"
 
-#: src/libvlc-module.c:1007
+#: src/libvlc-module.c:1009
 #, fuzzy
 msgid ""
 "Demux filters are used to modify/control the stream that is being read. "
@@ -3720,11 +3720,11 @@ msgstr ""
 "Bộ lọc luồng dữ liệu được sử dụng để chỉnh sửa các luồng dữ liệu đang được "
 "đọc."
 
-#: src/libvlc-module.c:1009
+#: src/libvlc-module.c:1011
 msgid "Demux module"
 msgstr "Module Tách Tín Hiệu"
 
-#: src/libvlc-module.c:1011
+#: src/libvlc-module.c:1013
 msgid ""
 "Demultiplexers are used to separate the \"elementary\" streams (like audio "
 "and video streams). You can use it if the correct demuxer is not "
@@ -3736,11 +3736,11 @@ msgstr ""
 "không hoạt động theo ý bạn mong muốn. Bạn không nên tác động đến các tùy "
 "chọn này trừ khi bạn đã có kinh nghiệm với những tùy chọn này trước đó."
 
-#: src/libvlc-module.c:1016
+#: src/libvlc-module.c:1018
 msgid "VoD server module"
 msgstr "Module VoD server"
 
-#: src/libvlc-module.c:1018
+#: src/libvlc-module.c:1020
 #, fuzzy
 msgid ""
 "You can select which VoD server module you want to use. Set this to "
@@ -3749,11 +3749,11 @@ msgstr ""
 "Bạn có thể lựa chọn module VoD server nếu bạn muốn. Chỉnh tùy chọn này thành "
 "'vod_rtsp' để chuyển đổi các module trước đó."
 
-#: src/libvlc-module.c:1021
+#: src/libvlc-module.c:1023
 msgid "Allow real-time priority"
 msgstr "Cho phép ưu tiên chế độ thời gian thực"
 
-#: src/libvlc-module.c:1023
+#: src/libvlc-module.c:1025
 msgid ""
 "Running VLC in real-time priority will allow for much more precise "
 "scheduling and yield better, especially when streaming content. It can "
@@ -3766,11 +3766,11 @@ msgstr ""
 "chậm đi. Bạn không nên bật tính năng này trừ khi bạn đã từng có kinh nghiệm "
 "tác động lên tùy chọn này trước đó."
 
-#: src/libvlc-module.c:1029
+#: src/libvlc-module.c:1031
 msgid "Adjust VLC priority"
 msgstr "Chỉnh sửa độ ưu tiên của VLC"
 
-#: src/libvlc-module.c:1031
+#: src/libvlc-module.c:1033
 msgid ""
 "This option adds an offset (positive or negative) to VLC default priorities. "
 "You can use it to tune VLC priority against other programs, or against other "
@@ -3781,81 +3781,81 @@ msgstr ""
 "độ ưu tiên của VLC đối với các chương trình khác, hoặc thậm chí là xử lý "
 "quyền ưu tiên đối với các tiến trình trong chính VLC."
 
-#: src/libvlc-module.c:1036
+#: src/libvlc-module.c:1038
 msgid ""
 "This option is useful if you want to lower the latency when reading a stream"
 msgstr ""
 "Tùy chọn này chỉ thực sự hữu ích nếu bạn muốn hạ thấp độ trễ về thời gian "
 "khi đang đọc một luồng dữ liệu"
 
-#: src/libvlc-module.c:1039
+#: src/libvlc-module.c:1041
 msgid "VLM configuration file"
 msgstr "Tập tin thiết lập VLC"
 
-#: src/libvlc-module.c:1041
+#: src/libvlc-module.c:1043
 msgid "Read a VLM configuration file as soon as VLM is started."
 msgstr "Nhập tập tin thiết lập của VLC ngay khi vừa chạy chương trình."
 
-#: src/libvlc-module.c:1043
+#: src/libvlc-module.c:1045
 msgid "Use a plugins cache"
 msgstr "Sử dụng tiện ích bộ nhớ đệm"
 
-#: src/libvlc-module.c:1045
+#: src/libvlc-module.c:1047
 msgid "Use a plugins cache which will greatly improve the startup time of VLC."
 msgstr "Sử dụng tiện ích bộ nhớ đệm sẽ cải thiện thời gian khởi động của VLC."
 
-#: src/libvlc-module.c:1047
+#: src/libvlc-module.c:1049
 msgid "Scan for new plugins"
 msgstr ""
 
-#: src/libvlc-module.c:1049
+#: src/libvlc-module.c:1051
 msgid ""
 "Scan plugin directories for new plugins at startup. This increases the "
 "startup time of VLC."
 msgstr ""
 
-#: src/libvlc-module.c:1052
+#: src/libvlc-module.c:1054
 #, fuzzy
 msgid "Preferred keystore list"
 msgstr "Danh sách gói tin yêu thích"
 
-#: src/libvlc-module.c:1054
+#: src/libvlc-module.c:1056
 msgid ""
 "List of keystores that VLC will use in priority. Only advanced users should "
 "alter this option."
 msgstr ""
 
-#: src/libvlc-module.c:1057
+#: src/libvlc-module.c:1059
 msgid "Locally collect statistics"
 msgstr "Thu thập thống kê về hệ thống hiện tại"
 
-#: src/libvlc-module.c:1059
+#: src/libvlc-module.c:1061
 msgid "Collect miscellaneous local statistics about the playing media."
 msgstr ""
 "Thu thập các số liệu thống kê về các tập tin hay luồng dữ liệu mà bạn đã tác "
 "động."
 
-#: src/libvlc-module.c:1061
+#: src/libvlc-module.c:1063
 msgid "Run as daemon process"
 msgstr "Chạy dưới dạng tiến trình daemon"
 
-#: src/libvlc-module.c:1063
+#: src/libvlc-module.c:1065
 msgid "Runs VLC as a background daemon process."
 msgstr "Chạy VLC dưới dạng tiến trình nền daemon."
 
-#: src/libvlc-module.c:1065
+#: src/libvlc-module.c:1067
 msgid "Write process id to file"
 msgstr "Ghi thông số tiến trình vào tập tin"
 
-#: src/libvlc-module.c:1067
+#: src/libvlc-module.c:1069
 msgid "Writes process id into specified file."
 msgstr "Đưa số liệu Id của tiến trình xử lý vào tập tin."
 
-#: src/libvlc-module.c:1069
+#: src/libvlc-module.c:1071
 msgid "Allow only one running instance"
 msgstr "Cho phép chỉ chạy duy nhất một tiến trình"
 
-#: src/libvlc-module.c:1071
+#: src/libvlc-module.c:1073
 msgid ""
 "Allowing only one running instance of VLC can sometimes be useful, for "
 "example if you associated VLC with some media types and you don't want a new "
@@ -3874,26 +3874,26 @@ msgstr ""
 "tự động đưa vào danh sách hàng đợi của chương trình, tức đưa vào danh sách "
 "phát, sau khi đã phát xong đối tượng 1 sẽ tới đối tượng tiếp theo và cứ thế."
 
-#: src/libvlc-module.c:1077
+#: src/libvlc-module.c:1079
 msgid "VLC is started from file association"
 msgstr "VLC được mở với định đạng tập tin này"
 
-#: src/libvlc-module.c:1079
+#: src/libvlc-module.c:1081
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr ""
 "Thông báo cho VLC biết khi nào sẽ được mở khi gắn kết một tập tin nào đó với "
 "VLC trong hệ điều hành bạn đang dùng"
 
-#: src/libvlc-module.c:1082
+#: src/libvlc-module.c:1084
 msgid "Use only one instance when started from file manager"
 msgstr ""
 "Chỉ sử dụng duy nhất một tiến trình khi mở tập tin từ trình quản lý tập tin"
 
-#: src/libvlc-module.c:1084
+#: src/libvlc-module.c:1086
 msgid "Increase the priority of the process"
 msgstr "Tăng độ ưu tiên cho tiến trình"
 
-#: src/libvlc-module.c:1086
+#: src/libvlc-module.c:1088
 msgid ""
 "Increasing the priority of the process will very likely improve your playing "
 "experience as it allows VLC not to be disturbed by other applications that "
@@ -3909,12 +3909,12 @@ msgstr ""
 "của vi xử lý cũng như sử dụng thời gian này để render hình ảnh (đôi khi ở "
 "một số hệ thống có thể phát sinh lỗi)."
 
-#: src/libvlc-module.c:1094
+#: src/libvlc-module.c:1096
 msgid "Enqueue items into playlist in one instance mode"
 msgstr ""
 "Đưa các đối tượng vào hàng đợi trong danh sách ở chế độ chạy một tiến trình"
 
-#: src/libvlc-module.c:1096
+#: src/libvlc-module.c:1098
 msgid ""
 "When using the one instance only option, enqueue items to playlist and keep "
 "playing current item."
@@ -3923,18 +3923,18 @@ msgstr ""
 "được đưa vào danh sách sẽ đợi đến phiên mình khi đối tượng trước đã phát "
 "xong."
 
-#: src/libvlc-module.c:1099
+#: src/libvlc-module.c:1101
 #, fuzzy
 msgid "Expose media player via D-Bus"
 msgstr "Cập nhật phiên bản mới"
 
-#: src/libvlc-module.c:1100
+#: src/libvlc-module.c:1102
 msgid ""
 "Allow other applications to control the VLC media player using the D-Bus "
 "MPRIS protocol."
 msgstr ""
 
-#: src/libvlc-module.c:1109
+#: src/libvlc-module.c:1111
 msgid ""
 "These options define the behavior of the playlist. Some of them can be "
 "overridden in the playlist dialog box."
@@ -3942,12 +3942,12 @@ msgstr ""
 "Những tùy chọn này sẽ điều chỉnh cách thức hoạt động của danh sách. Một số "
 "tùy chọn có thể ghi chồng lên hộp thoại thông báo của danh sách."
 
-#: src/libvlc-module.c:1112
+#: src/libvlc-module.c:1114
 #, fuzzy
 msgid "Automatically preparse items"
 msgstr "Tự động phân tích tập tin"
 
-#: src/libvlc-module.c:1114
+#: src/libvlc-module.c:1116
 #, fuzzy
 msgid ""
 "Automatically preparse items added to the playlist (to retrieve some "
@@ -3956,33 +3956,33 @@ msgstr ""
 "Tự động phân tích tập tin được thêm vào danh sách phát (nhận các thông tin "
 "chi tiết về tập tin đó)."
 
-#: src/libvlc-module.c:1117
+#: src/libvlc-module.c:1119
 #, fuzzy
 msgid "Preparsing timeout"
 msgstr "Thời gian chạy"
 
-#: src/libvlc-module.c:1119
+#: src/libvlc-module.c:1121
 msgid "Maximum time (in milliseconds) allowed to preparse an item"
 msgstr ""
 
-#: src/libvlc-module.c:1121 modules/gui/macosx/VLCSimplePrefsController.m:321
+#: src/libvlc-module.c:1123 modules/gui/macosx/VLCSimplePrefsController.m:321
 #: modules/gui/qt/dialogs/firstrun.cpp:95
 msgid "Allow metadata network access"
 msgstr ""
 
-#: src/libvlc-module.c:1126
+#: src/libvlc-module.c:1128
 msgid "Collapse"
 msgstr "Xổ ra"
 
-#: src/libvlc-module.c:1126
+#: src/libvlc-module.c:1128
 msgid "Expand"
 msgstr "Mở rộng"
 
-#: src/libvlc-module.c:1128
+#: src/libvlc-module.c:1130
 msgid "Subdirectory behavior"
 msgstr "Thao tác với thư mục con"
 
-#: src/libvlc-module.c:1130
+#: src/libvlc-module.c:1132
 msgid ""
 "Select whether subdirectories must be expanded.\n"
 "none: subdirectories do not appear in the playlist.\n"
@@ -3995,11 +3995,11 @@ msgstr ""
 "tien.\n"
 "expand: mo rong tat ca cac thu muc.\n"
 
-#: src/libvlc-module.c:1135
+#: src/libvlc-module.c:1137
 msgid "Ignored extensions"
 msgstr "Các phần mở rộng bị bỏ qua"
 
-#: src/libvlc-module.c:1137
+#: src/libvlc-module.c:1139
 msgid ""
 "Files with these extensions will not be added to playlist when opening a "
 "directory.\n"
@@ -4011,20 +4011,20 @@ msgstr ""
 "Tùy chọn này nhằm tránh tình trạng bạn thêm vào một thư mục vốn đã chứa danh "
 "sách phát từ trước. Sử dụng dấu phẩy để tách biệt các định dạng tập tin."
 
-#: src/libvlc-module.c:1142
+#: src/libvlc-module.c:1144
 #, fuzzy
 msgid "Show hidden files"
 msgstr "Chi tiết về codec"
 
-#: src/libvlc-module.c:1144
+#: src/libvlc-module.c:1146
 msgid "Ignore files starting with '.'"
 msgstr ""
 
-#: src/libvlc-module.c:1146
+#: src/libvlc-module.c:1148
 msgid "Services discovery modules"
 msgstr "Phương thức tìm kiếm dịch vụ"
 
-#: src/libvlc-module.c:1148
+#: src/libvlc-module.c:1150
 msgid ""
 "Specifies the services discovery modules to preload, separated by colons. "
 "Typical value is \"sap\"."
@@ -4032,82 +4032,82 @@ msgstr ""
 "Xác định các module của dịch vụ khi được nạp vào, tách biệt bằng dấu hai "
 "chấm. Giá trị điển hình là \"sap\"."
 
-#: src/libvlc-module.c:1151
+#: src/libvlc-module.c:1153
 msgid "Play files randomly forever"
 msgstr "Luôn luôn phát các tập tin một cách ngẫu nhiên"
 
-#: src/libvlc-module.c:1153
+#: src/libvlc-module.c:1155
 msgid "VLC will randomly play files in the playlist until interrupted."
 msgstr ""
 "VLC sẽ phát các tập tin trong danh sách một cách ngẫu nhiên cho đến khi "
 "chính người dùng dừng lại."
 
-#: src/libvlc-module.c:1155
+#: src/libvlc-module.c:1157
 msgid "Repeat all"
 msgstr "Lặp lại tất cả"
 
-#: src/libvlc-module.c:1157
+#: src/libvlc-module.c:1159
 msgid "VLC will keep playing the playlist indefinitely."
 msgstr ""
 "VLC sẽ tiếp tục phát các đối tượng trong danh sách cho đến khi người dùng "
 "thoát VLC."
 
-#: src/libvlc-module.c:1159
+#: src/libvlc-module.c:1161
 msgid "Repeat current item"
 msgstr "Lặp lại tập tin hiện tại"
 
-#: src/libvlc-module.c:1161
+#: src/libvlc-module.c:1163
 msgid "VLC will keep playing the current playlist item."
 msgstr "VLC sẽ tiếp tục phát đối tượng hiện tại trong danh sách."
 
-#: src/libvlc-module.c:1163
+#: src/libvlc-module.c:1165
 msgid "Play and stop"
 msgstr "Phát và dừng lại"
 
-#: src/libvlc-module.c:1165
+#: src/libvlc-module.c:1167
 msgid "Stop the playlist after each played playlist item."
 msgstr ""
 "Dừng lại danh sách nhạc khi các đối tượng trong danh sách đã được phát."
 
-#: src/libvlc-module.c:1167
+#: src/libvlc-module.c:1169
 msgid "Play and exit"
 msgstr "Phát rồi thoát"
 
-#: src/libvlc-module.c:1169
+#: src/libvlc-module.c:1171
 msgid "Exit if there are no more items in the playlist."
 msgstr "Thoát nếu như không còn đối tượng nào nữa trong danh sách."
 
-#: src/libvlc-module.c:1171
+#: src/libvlc-module.c:1173
 msgid "Play and pause"
 msgstr "Phát và tạm dừng"
 
-#: src/libvlc-module.c:1173
+#: src/libvlc-module.c:1175
 msgid "Pause each item in the playlist on the last frame."
 msgstr "Tạm dừng mỗi đối tượng trong danh sách ở khung hình trước đó."
 
-#: src/libvlc-module.c:1175
+#: src/libvlc-module.c:1177
 #, fuzzy
 msgid "Start paused"
 msgstr "Thời gian bắt đầu"
 
-#: src/libvlc-module.c:1177
+#: src/libvlc-module.c:1179
 #, fuzzy
 msgid "Pause each item in the playlist on the first frame."
 msgstr "Tạm dừng mỗi đối tượng trong danh sách ở khung hình trước đó."
 
-#: src/libvlc-module.c:1179
+#: src/libvlc-module.c:1181
 msgid "Auto start"
 msgstr "Tự động bắt đầu"
 
-#: src/libvlc-module.c:1180
+#: src/libvlc-module.c:1182
 msgid "Automatically start playing the playlist content once it's loaded."
 msgstr "Tự động phát nội dung trong danh sách mỗi khi danh sách này được nạp."
 
-#: src/libvlc-module.c:1183
+#: src/libvlc-module.c:1185
 msgid "Pause on audio communication"
 msgstr "Tạm dừng việc giao tiếp bằng audio"
 
-#: src/libvlc-module.c:1185
+#: src/libvlc-module.c:1187
 msgid ""
 "If pending audio communication is detected, playback will be paused "
 "automatically."
@@ -4115,11 +4115,11 @@ msgstr ""
 "Nếu việc giao tiếp bằng audio được nhận diện bởi VLC, chế độ phát lại sẽ "
 "được tự động tạm dừng."
 
-#: src/libvlc-module.c:1188
+#: src/libvlc-module.c:1190
 msgid "Use media library"
 msgstr "Sử dụng thư viện"
 
-#: src/libvlc-module.c:1190
+#: src/libvlc-module.c:1192
 msgid ""
 "The media library is automatically saved and reloaded each time you start "
 "VLC."
@@ -4127,11 +4127,11 @@ msgstr ""
 "Thư viện media sẽ được tự động lưu và nạp lại thông tin mỗi khi bạn khởi "
 "động VLC."
 
-#: src/libvlc-module.c:1193
+#: src/libvlc-module.c:1195
 msgid "Display playlist tree"
 msgstr "Hiển thị danh sách dạng cây"
 
-#: src/libvlc-module.c:1195
+#: src/libvlc-module.c:1197
 msgid ""
 "The playlist can use a tree to categorize some items, like the contents of a "
 "directory."
@@ -4139,37 +4139,37 @@ msgstr ""
 "Danh sách có thể sử dụng cách phân tách các loại của đối tượng theo dạng cấu "
 "trúc cây, dạng cấu trúc giống như việc quản lý các thư mục."
 
-#: src/libvlc-module.c:1204
+#: src/libvlc-module.c:1206
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr ""
 "Các thiết lập này sẽ được sử dụng trong toàn bộ các tiến trình mà VLC thực "
 "hiện, hay còn gọi là \"phím tắt\"."
 
-#: src/libvlc-module.c:1209 modules/gui/macosx/VLCMain+OldPrefs.m:103
+#: src/libvlc-module.c:1211 modules/gui/macosx/VLCMain+OldPrefs.m:103
 msgid "Ignore"
 msgstr "Bỏ qua"
 
-#: src/libvlc-module.c:1209
+#: src/libvlc-module.c:1211
 #, fuzzy
 msgid "Volume control"
 msgstr "Điều khiển âm lượng"
 
-#: src/libvlc-module.c:1210
+#: src/libvlc-module.c:1212
 #, fuzzy
 msgid "Position control"
 msgstr "Điều khiển vị trí"
 
-#: src/libvlc-module.c:1210
+#: src/libvlc-module.c:1212
 #, fuzzy
 msgid "Position control reversed"
 msgstr "Điều khiển vị trí"
 
-#: src/libvlc-module.c:1213
+#: src/libvlc-module.c:1215
 #, fuzzy
 msgid "Mouse wheel vertical axis control"
 msgstr "Điều khiển đẩy chuột giữa đi lên"
 
-#: src/libvlc-module.c:1215
+#: src/libvlc-module.c:1217
 #, fuzzy
 msgid ""
 "The mouse wheel vertical (up/down) axis can control volume, position or be "
@@ -4178,12 +4178,12 @@ msgstr ""
 "Điều khiển đẩy chuột giữa đi lên (theo chiều dọc) sẽ tác động đến phần điều "
 "khiển âm thanh, các thao tác về vị trí hoặc sự kiện khác sẽ được bỏ qua"
 
-#: src/libvlc-module.c:1217
+#: src/libvlc-module.c:1219
 #, fuzzy
 msgid "Mouse wheel horizontal axis control"
 msgstr "Điều khiển đẩy chuột giữa đi lên"
 
-#: src/libvlc-module.c:1219
+#: src/libvlc-module.c:1221
 #, fuzzy
 msgid ""
 "The mouse wheel horizontal (left/right) axis can control volume, position or "
@@ -4192,86 +4192,86 @@ msgstr ""
 "Điều khiển đẩy chuột giữa đi lên (theo chiều dọc) sẽ tác động đến phần điều "
 "khiển âm thanh, các thao tác về vị trí hoặc sự kiện khác sẽ được bỏ qua"
 
-#: src/libvlc-module.c:1221 src/video_output/vout_intf.c:268
+#: src/libvlc-module.c:1223 src/video_output/vout_intf.c:268
 #: modules/gui/macosx/VLCControlsBarCommon.m:81
 #: modules/gui/macosx/VLCMainMenu.m:422 modules/gui/macosx/VLCMainMenu.m:501
 #: modules/gui/qt/components/controller.hpp:108
 msgid "Fullscreen"
 msgstr "Toàn màn hình"
 
-#: src/libvlc-module.c:1222
+#: src/libvlc-module.c:1224
 msgid "Select the hotkey to use to swap fullscreen state."
 msgstr "Chọn phím tắt để chuyển đổi sang chế độ toàn màn hình"
 
-#: src/libvlc-module.c:1223
+#: src/libvlc-module.c:1225
 msgid "Exit fullscreen"
 msgstr "Thoát chế độ toàn màn hình"
 
-#: src/libvlc-module.c:1224
+#: src/libvlc-module.c:1226
 msgid "Select the hotkey to use to exit fullscreen state."
 msgstr "Chọn phím tắt để sử dụng nhằm thoát khỏi chế độ toàn màn hình."
 
-#: src/libvlc-module.c:1225 modules/gui/macosx/VLCFSPanelController.m:109
+#: src/libvlc-module.c:1227 modules/gui/macosx/VLCFSPanelController.m:109
 msgid "Play/Pause"
 msgstr "Phát/Tạm dừng"
 
-#: src/libvlc-module.c:1226
+#: src/libvlc-module.c:1228
 msgid "Select the hotkey to use to swap paused state."
 msgstr "Chọn phím tắt để hoán chuyển trạng thái tạm dừng và phát."
 
-#: src/libvlc-module.c:1227
+#: src/libvlc-module.c:1229
 msgid "Pause only"
 msgstr "Chỉ tạm dừng"
 
-#: src/libvlc-module.c:1228
+#: src/libvlc-module.c:1230
 msgid "Select the hotkey to use to pause."
 msgstr "Chọn phím tắt để tạm dừng."
 
-#: src/libvlc-module.c:1229
+#: src/libvlc-module.c:1231
 msgid "Play only"
 msgstr "Chỉ phát"
 
-#: src/libvlc-module.c:1230
+#: src/libvlc-module.c:1232
 msgid "Select the hotkey to use to play."
 msgstr "Chọn phím tắt để phát."
 
-#: src/libvlc-module.c:1231 modules/gui/macosx/VLCMainMenu.m:385
+#: src/libvlc-module.c:1233 modules/gui/macosx/VLCMainMenu.m:385
 #: modules/gui/qt/components/controller.hpp:108
 #: modules/gui/qt/components/controller.hpp:118
 msgid "Faster"
 msgstr "Nhanh hơn"
 
-#: src/libvlc-module.c:1232 src/libvlc-module.c:1238
+#: src/libvlc-module.c:1234 src/libvlc-module.c:1240
 msgid "Select the hotkey to use for fast forward playback."
 msgstr "Chọn phím tắt để phát tập tin với tốc độ nhanh hơn."
 
-#: src/libvlc-module.c:1233 modules/gui/macosx/VLCMainMenu.m:383
+#: src/libvlc-module.c:1235 modules/gui/macosx/VLCMainMenu.m:383
 #: modules/gui/qt/components/controller.hpp:108
 #: modules/gui/qt/components/controller.hpp:118
 msgid "Slower"
 msgstr "Chậm hơn"
 
-#: src/libvlc-module.c:1234 src/libvlc-module.c:1240
+#: src/libvlc-module.c:1236 src/libvlc-module.c:1242
 msgid "Select the hotkey to use for slow motion playback."
 msgstr "Chọn phím tắt để phát tập tin với tốc độ chậm hơn."
 
-#: src/libvlc-module.c:1235
+#: src/libvlc-module.c:1237
 msgid "Normal rate"
 msgstr "Xếp hạng bình thường"
 
-#: src/libvlc-module.c:1236
+#: src/libvlc-module.c:1238
 msgid "Select the hotkey to set the playback rate back to normal."
 msgstr "Chọn phím tắt để chỉnh tập tin này về dạng bình thường."
 
-#: src/libvlc-module.c:1237 modules/gui/qt/menus.cpp:875
+#: src/libvlc-module.c:1239 modules/gui/qt/menus.cpp:875
 msgid "Faster (fine)"
 msgstr "Nhanh hơn (tốt)"
 
-#: src/libvlc-module.c:1239 modules/gui/qt/menus.cpp:883
+#: src/libvlc-module.c:1241 modules/gui/qt/menus.cpp:883
 msgid "Slower (fine)"
 msgstr "Chậm hơn (tốt)"
 
-#: src/libvlc-module.c:1241 modules/control/hotkeys.c:410
+#: src/libvlc-module.c:1243 modules/control/hotkeys.c:410
 #: modules/gui/macosx/VLCControlsBarCommon.m:163
 #: modules/gui/macosx/VLCFSPanelController.m:112
 #: modules/gui/macosx/VLCMainMenu.m:388 modules/gui/macosx/VLCMainMenu.m:489
@@ -4281,11 +4281,11 @@ msgstr "Chậm hơn (tốt)"
 msgid "Next"
 msgstr "Tiếp theo"
 
-#: src/libvlc-module.c:1242
+#: src/libvlc-module.c:1244
 msgid "Select the hotkey to use to skip to the next item in the playlist."
 msgstr "Sử dụng phím tắt để nhảy đến tập tin kế tiếp trong danh sách"
 
-#: src/libvlc-module.c:1243 modules/control/hotkeys.c:414
+#: src/libvlc-module.c:1245 modules/control/hotkeys.c:414
 #: modules/gui/macosx/VLCControlsBarCommon.m:160
 #: modules/gui/macosx/VLCFSPanelController.m:115
 #: modules/gui/macosx/VLCMainMenu.m:387 modules/gui/macosx/VLCMainMenu.m:490
@@ -4294,11 +4294,11 @@ msgstr "Sử dụng phím tắt để nhảy đến tập tin kế tiếp trong 
 msgid "Previous"
 msgstr "Trước đó"
 
-#: src/libvlc-module.c:1244
+#: src/libvlc-module.c:1246
 msgid "Select the hotkey to use to skip to the previous item in the playlist."
 msgstr "Sử dụng phím tắt để lùi về tập tin kế tiếp trong danh sách."
 
-#: src/libvlc-module.c:1245 modules/gui/macosx/VLCMainMenu.m:378
+#: src/libvlc-module.c:1247 modules/gui/macosx/VLCMainMenu.m:378
 #: modules/gui/macosx/VLCMainMenu.m:488 modules/gui/macosx/VLCMainMenu.m:495
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:61
 #: modules/gui/qt/components/controller.hpp:107
@@ -4306,11 +4306,11 @@ msgstr "Sử dụng phím tắt để lùi về tập tin kế tiếp trong danh
 msgid "Stop"
 msgstr "Dừng lại"
 
-#: src/libvlc-module.c:1246
+#: src/libvlc-module.c:1248
 msgid "Select the hotkey to stop playback."
 msgstr "Sử dụng phím tắt để dừng phát lại."
 
-#: src/libvlc-module.c:1247 modules/gui/macosx/VLCControlsBarCommon.m:75
+#: src/libvlc-module.c:1249 modules/gui/macosx/VLCControlsBarCommon.m:75
 #: modules/gui/macosx/VLCFSPanelController.m:130
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:273
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:295
@@ -4318,130 +4318,130 @@ msgstr "Sử dụng phím tắt để dừng phát lại."
 msgid "Position"
 msgstr "Vị trí"
 
-#: src/libvlc-module.c:1248
+#: src/libvlc-module.c:1250
 msgid "Select the hotkey to display the position."
 msgstr "Sử dụng phím tắt để hiển thị vị trí."
 
-#: src/libvlc-module.c:1250
+#: src/libvlc-module.c:1252
 msgid "Very short backwards jump"
 msgstr "Nhảy tới phía sau chậm dần"
 
-#: src/libvlc-module.c:1252
+#: src/libvlc-module.c:1254
 msgid "Select the hotkey to make a very short backwards jump."
 msgstr "Chọn phím tắt để nhảy tới phía sau ngắn dần."
 
-#: src/libvlc-module.c:1253
+#: src/libvlc-module.c:1255
 msgid "Short backwards jump"
 msgstr "Nhảy tới phía sau ngắn"
 
-#: src/libvlc-module.c:1255
+#: src/libvlc-module.c:1257
 msgid "Select the hotkey to make a short backwards jump."
 msgstr "Chọn phím tắt để nhảy tới phía sau ngắn."
 
-#: src/libvlc-module.c:1256
+#: src/libvlc-module.c:1258
 msgid "Medium backwards jump"
 msgstr "Nhảy tới phía sau trung bình"
 
-#: src/libvlc-module.c:1258
+#: src/libvlc-module.c:1260
 msgid "Select the hotkey to make a medium backwards jump."
 msgstr "Chọn phím tắt để nhảy tới phía sau trung bình."
 
-#: src/libvlc-module.c:1259
+#: src/libvlc-module.c:1261
 msgid "Long backwards jump"
 msgstr "Nhảy tới phía sau dài"
 
-#: src/libvlc-module.c:1261
+#: src/libvlc-module.c:1263
 msgid "Select the hotkey to make a long backwards jump."
 msgstr "Chọn phím tắt để nhảy tớii phía sau dài."
 
-#: src/libvlc-module.c:1263
+#: src/libvlc-module.c:1265
 msgid "Very short forward jump"
 msgstr "Nhảy tới phía trước ngắn nhất"
 
-#: src/libvlc-module.c:1265
+#: src/libvlc-module.c:1267
 msgid "Select the hotkey to make a very short forward jump."
 msgstr "Chọn phím tắt để nhảy tới phía trước ngắn nhất."
 
-#: src/libvlc-module.c:1266
+#: src/libvlc-module.c:1268
 msgid "Short forward jump"
 msgstr "Nhảy tới phía trước ngắn"
 
-#: src/libvlc-module.c:1268
+#: src/libvlc-module.c:1270
 msgid "Select the hotkey to make a short forward jump."
 msgstr "Chọn phím tắt để nhảy tới phía trước ngắn nhất."
 
-#: src/libvlc-module.c:1269
+#: src/libvlc-module.c:1271
 msgid "Medium forward jump"
 msgstr "Nhảy tới phía sau trung bình"
 
-#: src/libvlc-module.c:1271
+#: src/libvlc-module.c:1273
 msgid "Select the hotkey to make a medium forward jump."
 msgstr "Chọn phím tắt để nhảy tới phía trước trung bình."
 
-#: src/libvlc-module.c:1272
+#: src/libvlc-module.c:1274
 msgid "Long forward jump"
 msgstr "Nhảy tới phía trước dài"
 
-#: src/libvlc-module.c:1274
+#: src/libvlc-module.c:1276
 msgid "Select the hotkey to make a long forward jump."
 msgstr "Chọn phím tắt để nhảy tới phía trước dài."
 
-#: src/libvlc-module.c:1275 modules/control/hotkeys.c:599
+#: src/libvlc-module.c:1277 modules/control/hotkeys.c:599
 msgid "Next frame"
 msgstr "Khung tiếp theo"
 
-#: src/libvlc-module.c:1277
+#: src/libvlc-module.c:1279
 msgid "Select the hotkey to got to the next video frame."
 msgstr "Chọn phím tắt để nhảy tới khung video tiếp theo."
 
-#: src/libvlc-module.c:1279
+#: src/libvlc-module.c:1281
 msgid "Very short jump length"
 msgstr "Chọn thời gian để phát rất ngắn"
 
-#: src/libvlc-module.c:1280
+#: src/libvlc-module.c:1282
 msgid "Very short jump length, in seconds."
 msgstr "Chọn thời gian để phát rất ngắn, tính bằng giây."
 
-#: src/libvlc-module.c:1281
+#: src/libvlc-module.c:1283
 msgid "Short jump length"
 msgstr "Chọn thời gian để phát ngắn"
 
-#: src/libvlc-module.c:1282
+#: src/libvlc-module.c:1284
 msgid "Short jump length, in seconds."
 msgstr "Chọn thời gian để phát ngắn, tính bằng giây."
 
-#: src/libvlc-module.c:1283
+#: src/libvlc-module.c:1285
 msgid "Medium jump length"
 msgstr "Chọn thời gian để phát trung bình"
 
-#: src/libvlc-module.c:1284
+#: src/libvlc-module.c:1286
 msgid "Medium jump length, in seconds."
 msgstr "Chọn thời gian để phát trung bình, tính bằng giây."
 
-#: src/libvlc-module.c:1285
+#: src/libvlc-module.c:1287
 msgid "Long jump length"
 msgstr "Chọn thời gian để phát dài"
 
-#: src/libvlc-module.c:1286
+#: src/libvlc-module.c:1288
 msgid "Long jump length, in seconds."
 msgstr "Chọn thời gian để phát dài, tính bằng giây."
 
-#: src/libvlc-module.c:1288 modules/control/hotkeys.c:361
+#: src/libvlc-module.c:1290 modules/control/hotkeys.c:361
 #: modules/gui/qt/components/controller.hpp:111
 #: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:946
 #: modules/gui/qt/menus.cpp:1132 modules/gui/skins2/commands/cmd_quit.cpp:45
 msgid "Quit"
 msgstr "Thoát"
 
-#: src/libvlc-module.c:1289
+#: src/libvlc-module.c:1291
 msgid "Select the hotkey to quit the application."
 msgstr "Chọn phím tắt để thoát chương trình."
 
-#: src/libvlc-module.c:1290
+#: src/libvlc-module.c:1292
 msgid "Navigate up"
 msgstr "Phím mũi tên đi lên"
 
-#: src/libvlc-module.c:1291
+#: src/libvlc-module.c:1293
 #, fuzzy
 msgid ""
 "Select the key to move the selector up in DVD menus / Move viewpoint to up "
@@ -4449,11 +4449,11 @@ msgid ""
 msgstr ""
 "Sử dụng phím tắt để chọn phím tắt cho phần chọn đi lên trong menu của DVD."
 
-#: src/libvlc-module.c:1292
+#: src/libvlc-module.c:1294
 msgid "Navigate down"
 msgstr "Phím mũi tên đi xuống"
 
-#: src/libvlc-module.c:1293
+#: src/libvlc-module.c:1295
 #, fuzzy
 msgid ""
 "Select the key to move the selector down in DVD menus / Move viewpoint to "
@@ -4461,11 +4461,11 @@ msgid ""
 msgstr ""
 "Sử dụng phím tắt để chọn phím tắt cho phần chọn đi xuống trong menu của DVD."
 
-#: src/libvlc-module.c:1294
+#: src/libvlc-module.c:1296
 msgid "Navigate left"
 msgstr "Phím mũi tên bên trái"
 
-#: src/libvlc-module.c:1295
+#: src/libvlc-module.c:1297
 #, fuzzy
 msgid ""
 "Select the key to move the selector left in DVD menus / Move viewpoint to "
@@ -4473,11 +4473,11 @@ msgid ""
 msgstr ""
 "Sử dụng phím tắt để chọn phím tắt cho phần chọn qua trái trong menu của DVD."
 
-#: src/libvlc-module.c:1296
+#: src/libvlc-module.c:1298
 msgid "Navigate right"
 msgstr "Phím mũi tên bên phải"
 
-#: src/libvlc-module.c:1297
+#: src/libvlc-module.c:1299
 #, fuzzy
 msgid ""
 "Select the key to move the selector right in DVD menus / Move viewpoint to "
@@ -4485,562 +4485,562 @@ msgid ""
 msgstr ""
 "Sử dụng phím tắt để chọn phím tắt cho phần chọn qua phải trong menu của DVD."
 
-#: src/libvlc-module.c:1298
+#: src/libvlc-module.c:1300
 msgid "Activate"
 msgstr "Kích hoạt"
 
-#: src/libvlc-module.c:1299
+#: src/libvlc-module.c:1301
 msgid "Select the key to activate selected item in DVD menus."
 msgstr "Chọn phím tắt để kích hoạt các đối tượng được chọn trong menu của DVD."
 
-#: src/libvlc-module.c:1300 modules/gui/qt/dialogs/toolbar.cpp:500
+#: src/libvlc-module.c:1302 modules/gui/qt/dialogs/toolbar.cpp:500
 msgid "Go to the DVD menu"
 msgstr "Đi đến menu của DVD"
 
-#: src/libvlc-module.c:1301
+#: src/libvlc-module.c:1303
 msgid "Select the key to take you to the DVD menu"
 msgstr "Chọn phím tắt để đi đến menu của DVD"
 
-#: src/libvlc-module.c:1302
+#: src/libvlc-module.c:1304
 msgid "Select previous DVD title"
 msgstr "Chọn tiêu đề DVD trước đó"
 
-#: src/libvlc-module.c:1303
+#: src/libvlc-module.c:1305
 msgid "Select the key to choose the previous title from the DVD"
 msgstr "Chọn phím tắt để chọn tiêu đề DVD"
 
-#: src/libvlc-module.c:1304
+#: src/libvlc-module.c:1306
 msgid "Select next DVD title"
 msgstr "Chọn tiêu đề DVD tiếp theo"
 
-#: src/libvlc-module.c:1305
+#: src/libvlc-module.c:1307
 msgid "Select the key to choose the next title from the DVD"
 msgstr "Chọn phím tắt để chọn tiêu đề DVD tiếp theo"
 
-#: src/libvlc-module.c:1306
+#: src/libvlc-module.c:1308
 msgid "Select prev DVD chapter"
 msgstr "Chọn chương DVD trước đó"
 
-#: src/libvlc-module.c:1307
+#: src/libvlc-module.c:1309
 msgid "Select the key to choose the previous chapter from the DVD"
 msgstr "Chọn phím tắt để chọn chương DVD trước đó"
 
-#: src/libvlc-module.c:1308
+#: src/libvlc-module.c:1310
 msgid "Select next DVD chapter"
 msgstr "Chọn chương DVD tiếp theo"
 
-#: src/libvlc-module.c:1309
+#: src/libvlc-module.c:1311
 msgid "Select the key to choose the next chapter from the DVD"
 msgstr "Chọn phím tắt để chọn chương DVD tiếp theo"
 
-#: src/libvlc-module.c:1310
+#: src/libvlc-module.c:1312
 msgid "Volume up"
 msgstr "Tăng âm lượng"
 
-#: src/libvlc-module.c:1311
+#: src/libvlc-module.c:1313
 msgid "Select the key to increase audio volume."
 msgstr "Chọn phím tắt để tăng âm lượng."
 
-#: src/libvlc-module.c:1312
+#: src/libvlc-module.c:1314
 msgid "Volume down"
 msgstr "Giảm âm lượng"
 
-#: src/libvlc-module.c:1313
+#: src/libvlc-module.c:1315
 msgid "Select the key to decrease audio volume."
 msgstr "Chọn phím tắt để giảm âm lượng."
 
-#: src/libvlc-module.c:1314 modules/access/v4l2/v4l2.c:181
+#: src/libvlc-module.c:1316 modules/access/v4l2/v4l2.c:181
 #: modules/gui/macosx/VLCMainMenu.m:407 modules/gui/macosx/VLCMainMenu.m:491
 #: modules/gui/macosx/VLCMainMenu.m:500
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:78
 msgid "Mute"
 msgstr "Tắt âm thanh"
 
-#: src/libvlc-module.c:1315
+#: src/libvlc-module.c:1317
 msgid "Select the key to mute audio."
 msgstr "Chọn phím tắt để tắt âm thanh."
 
-#: src/libvlc-module.c:1316
+#: src/libvlc-module.c:1318
 msgid "Subtitle delay up"
 msgstr "Tăng độ trễ hiển thị phụ đề"
 
-#: src/libvlc-module.c:1317
+#: src/libvlc-module.c:1319
 msgid "Select the key to increase the subtitle delay."
 msgstr "Chọn phím để tăng độ trễ hiển thị của phụ đề."
 
-#: src/libvlc-module.c:1318
+#: src/libvlc-module.c:1320
 msgid "Subtitle delay down"
 msgstr "Hạ độ trễ của phụ đề"
 
-#: src/libvlc-module.c:1319
+#: src/libvlc-module.c:1321
 msgid "Select the key to decrease the subtitle delay."
 msgstr "Chọn phím để hạ độ trễ hiển thị phụ đề."
 
-#: src/libvlc-module.c:1320
+#: src/libvlc-module.c:1322
 #, fuzzy
 msgid "Reset subtitles text scale"
 msgstr "Trình giải mã phụ đề Teletext"
 
-#: src/libvlc-module.c:1321
+#: src/libvlc-module.c:1323
 #, fuzzy
 msgid "Scale up subtitles text"
 msgstr "Hiển thị tiêu đề"
 
-#: src/libvlc-module.c:1322
+#: src/libvlc-module.c:1324
 #, fuzzy
 msgid "Scale down subtitles text"
 msgstr "Hiển thị tiêu đề"
 
-#: src/libvlc-module.c:1323
+#: src/libvlc-module.c:1325
 #, fuzzy
 msgid "Select the key to change subtitles text scaling"
 msgstr "Chọn phím để đưa phụ đề lên cao hơn."
 
-#: src/libvlc-module.c:1324
+#: src/libvlc-module.c:1326
 msgid "Subtitle sync / bookmark audio timestamp"
 msgstr "Đánh dấu/đồng bộ hóa thời gian audio đối với phụ đề"
 
-#: src/libvlc-module.c:1325
+#: src/libvlc-module.c:1327
 msgid "Select the key to bookmark audio timestamp when syncing subtitles."
 msgstr ""
 "Chọn phím nóng để đánh dấu phần thời gian đối với audio khi đồng bộ hóa phụ "
 "đề."
 
-#: src/libvlc-module.c:1326
+#: src/libvlc-module.c:1328
 msgid "Subtitle sync / bookmark subtitle timestamp"
 msgstr "Đánh dấu/đồng bộ hóa thời gian của phụ đề"
 
-#: src/libvlc-module.c:1327
+#: src/libvlc-module.c:1329
 msgid "Select the key to bookmark subtitle timestamp when syncing subtitles."
 msgstr ""
 "Chọn phím nóng để đánh dấu thời gian cho phụ đề khi đang đồng bộ hóa phụ đề."
 
-#: src/libvlc-module.c:1328
+#: src/libvlc-module.c:1330
 msgid "Subtitle sync / synchronize audio & subtitle timestamps"
 msgstr "Đồng bộ hóa thời gian đối với phụ đề & audio"
 
-#: src/libvlc-module.c:1329
+#: src/libvlc-module.c:1331
 msgid "Select the key to synchronize bookmarked audio & subtitle timestamps."
 msgstr "Chọn phím để đồng bộ hóa phụ đề & audio."
 
-#: src/libvlc-module.c:1330
+#: src/libvlc-module.c:1332
 msgid "Subtitle sync / reset audio & subtitle synchronization"
 msgstr "Đồng bộ hóa/tải lại đối với audio & phụ đề"
 
-#: src/libvlc-module.c:1331
+#: src/libvlc-module.c:1333
 msgid "Select the key to reset synchronization of audio & subtitle timestamps."
 msgstr ""
 "Chọn phím để chỉnh lại sự đồng bộ hóa giữa thời gian của phụ đề & audio."
 
-#: src/libvlc-module.c:1332
+#: src/libvlc-module.c:1334
 msgid "Subtitle position up"
 msgstr "Tăng vị trí phụ đề"
 
-#: src/libvlc-module.c:1333
+#: src/libvlc-module.c:1335
 msgid "Select the key to move subtitles higher."
 msgstr "Chọn phím để đưa phụ đề lên cao hơn."
 
-#: src/libvlc-module.c:1334
+#: src/libvlc-module.c:1336
 msgid "Subtitle position down"
 msgstr "Hạ vị trí phụ đề"
 
-#: src/libvlc-module.c:1335
+#: src/libvlc-module.c:1337
 msgid "Select the key to move subtitles lower."
 msgstr "Chọn phím để hạ vị trí phụ đề xuống thấp hơn"
 
-#: src/libvlc-module.c:1336
+#: src/libvlc-module.c:1338
 msgid "Audio delay up"
 msgstr "Tăng độ trễ phát audio"
 
-#: src/libvlc-module.c:1337
+#: src/libvlc-module.c:1339
 msgid "Select the key to increase the audio delay."
 msgstr "Chọn phím để tăng độ trễ phát audio."
 
-#: src/libvlc-module.c:1338
+#: src/libvlc-module.c:1340
 msgid "Audio delay down"
 msgstr "Giảm độ trễ phát audio"
 
-#: src/libvlc-module.c:1339
+#: src/libvlc-module.c:1341
 msgid "Select the key to decrease the audio delay."
 msgstr "Chọn phím để giảm độ trễ phát audio."
 
-#: src/libvlc-module.c:1346
+#: src/libvlc-module.c:1348
 msgid "Play playlist bookmark 1"
 msgstr "Phát danh sách được đánh dấu 1"
 
-#: src/libvlc-module.c:1347
+#: src/libvlc-module.c:1349
 msgid "Play playlist bookmark 2"
 msgstr "Phát danh sách được đánh dấu 2"
 
-#: src/libvlc-module.c:1348
+#: src/libvlc-module.c:1350
 msgid "Play playlist bookmark 3"
 msgstr "Phát danh sách được đánh dấu 3"
 
-#: src/libvlc-module.c:1349
+#: src/libvlc-module.c:1351
 msgid "Play playlist bookmark 4"
 msgstr "Phát danh sách được đánh dấu 4"
 
-#: src/libvlc-module.c:1350
+#: src/libvlc-module.c:1352
 msgid "Play playlist bookmark 5"
 msgstr "Phát danh sách được đánh dấu 5"
 
-#: src/libvlc-module.c:1351
+#: src/libvlc-module.c:1353
 msgid "Play playlist bookmark 6"
 msgstr "Phát danh sách được đánh dấu 6"
 
-#: src/libvlc-module.c:1352
+#: src/libvlc-module.c:1354
 msgid "Play playlist bookmark 7"
 msgstr "Phát danh sách được đánh dấu 7"
 
-#: src/libvlc-module.c:1353
+#: src/libvlc-module.c:1355
 msgid "Play playlist bookmark 8"
 msgstr "Phát danh sách được đánh dấu 8"
 
-#: src/libvlc-module.c:1354
+#: src/libvlc-module.c:1356
 msgid "Play playlist bookmark 9"
 msgstr "Phát danh sách được đánh dấu 9"
 
-#: src/libvlc-module.c:1355
+#: src/libvlc-module.c:1357
 msgid "Play playlist bookmark 10"
 msgstr "Phát danh sách được đánh dấu 10"
 
-#: src/libvlc-module.c:1356
+#: src/libvlc-module.c:1358
 msgid "Select the key to play this bookmark."
 msgstr "Chọn phím tắt để phát phần đánh dấu này."
 
-#: src/libvlc-module.c:1357
+#: src/libvlc-module.c:1359
 msgid "Set playlist bookmark 1"
 msgstr "Thiết lập danh sách đánh dấu 1"
 
-#: src/libvlc-module.c:1358
+#: src/libvlc-module.c:1360
 msgid "Set playlist bookmark 2"
 msgstr "Thiết lập danh sách đánh dấu 2"
 
-#: src/libvlc-module.c:1359
+#: src/libvlc-module.c:1361
 msgid "Set playlist bookmark 3"
 msgstr "Thiết lập danh sách đánh dấu 3"
 
-#: src/libvlc-module.c:1360
+#: src/libvlc-module.c:1362
 msgid "Set playlist bookmark 4"
 msgstr "Thiết lập danh sách đánh dấu 4"
 
-#: src/libvlc-module.c:1361
+#: src/libvlc-module.c:1363
 msgid "Set playlist bookmark 5"
 msgstr "Thiết lập danh sách đánh dấu 5"
 
-#: src/libvlc-module.c:1362
+#: src/libvlc-module.c:1364
 msgid "Set playlist bookmark 6"
 msgstr "Thiết lập danh sách đánh dấu 6"
 
-#: src/libvlc-module.c:1363
+#: src/libvlc-module.c:1365
 msgid "Set playlist bookmark 7"
 msgstr "Thiết lập danh sách đánh dấu 7"
 
-#: src/libvlc-module.c:1364
+#: src/libvlc-module.c:1366
 msgid "Set playlist bookmark 8"
 msgstr "Thiết lập danh sách đánh dấu 8"
 
-#: src/libvlc-module.c:1365
+#: src/libvlc-module.c:1367
 msgid "Set playlist bookmark 9"
 msgstr "Thiết lập danh sách đánh dấu 9"
 
-#: src/libvlc-module.c:1366
+#: src/libvlc-module.c:1368
 msgid "Set playlist bookmark 10"
 msgstr "Thiết lập danh sách đánh dấu 10"
 
-#: src/libvlc-module.c:1367
+#: src/libvlc-module.c:1369
 msgid "Select the key to set this playlist bookmark."
 msgstr "Chọn phím tắt để thiết lập danh sách được đánh dấu."
 
-#: src/libvlc-module.c:1368
+#: src/libvlc-module.c:1370
 #: modules/gui/qt/components/playlist/standardpanel.cpp:246
 msgid "Clear the playlist"
 msgstr "Làm rỗng danh sách"
 
-#: src/libvlc-module.c:1369
+#: src/libvlc-module.c:1371
 msgid "Select the key to clear the current playlist."
 msgstr "Chọn phím để dọn dẹp/làm rỗng danh sách hiện tại."
 
-#: src/libvlc-module.c:1371
+#: src/libvlc-module.c:1373
 msgid "Playlist bookmark 1"
 msgstr "Danh sách được đánh dấu 1"
 
-#: src/libvlc-module.c:1372
+#: src/libvlc-module.c:1374
 msgid "Playlist bookmark 2"
 msgstr "Danh sách được đánh dấu 2"
 
-#: src/libvlc-module.c:1373
+#: src/libvlc-module.c:1375
 msgid "Playlist bookmark 3"
 msgstr "Danh sách được đánh dấu 3"
 
-#: src/libvlc-module.c:1374
+#: src/libvlc-module.c:1376
 msgid "Playlist bookmark 4"
 msgstr "Danh sách được đánh dấu 4"
 
-#: src/libvlc-module.c:1375
+#: src/libvlc-module.c:1377
 msgid "Playlist bookmark 5"
 msgstr "Danh sách được đánh dấu 5"
 
-#: src/libvlc-module.c:1376
+#: src/libvlc-module.c:1378
 msgid "Playlist bookmark 6"
 msgstr "Danh sách được đánh dấu 6"
 
-#: src/libvlc-module.c:1377
+#: src/libvlc-module.c:1379
 msgid "Playlist bookmark 7"
 msgstr "Danh sách được đánh dấu 7"
 
-#: src/libvlc-module.c:1378
+#: src/libvlc-module.c:1380
 msgid "Playlist bookmark 8"
 msgstr "Danh sách được đánh dấu 8"
 
-#: src/libvlc-module.c:1379
+#: src/libvlc-module.c:1381
 msgid "Playlist bookmark 9"
 msgstr "Danh sách được đánh dấu 9"
 
-#: src/libvlc-module.c:1380
+#: src/libvlc-module.c:1382
 msgid "Playlist bookmark 10"
 msgstr "Danh sách được đánh dấu 10"
 
-#: src/libvlc-module.c:1382
+#: src/libvlc-module.c:1384
 msgid "This allows you to define playlist bookmarks."
 msgstr "Phần này cho phép bạn xác định danh sách được đánh dấu."
 
-#: src/libvlc-module.c:1384
+#: src/libvlc-module.c:1386
 msgid "Cycle audio track"
 msgstr "Đảo audio track"
 
-#: src/libvlc-module.c:1385
+#: src/libvlc-module.c:1387
 msgid "Cycle through the available audio tracks(languages)."
 msgstr "Đảo qua các audio track hiện có (theo từng ngôn ngữ)."
 
-#: src/libvlc-module.c:1386
+#: src/libvlc-module.c:1388
 #, fuzzy
 msgid "Cycle subtitle track in reverse order"
 msgstr "Đảo qua track phụ đề"
 
-#: src/libvlc-module.c:1387
+#: src/libvlc-module.c:1389
 #, fuzzy
 msgid "Cycle through the available subtitle tracks in reverse order."
 msgstr "Đảo qua các track phụ đề hiện có."
 
-#: src/libvlc-module.c:1388
+#: src/libvlc-module.c:1390
 msgid "Cycle subtitle track"
 msgstr "Đảo qua track phụ đề"
 
-#: src/libvlc-module.c:1389
+#: src/libvlc-module.c:1391
 msgid "Cycle through the available subtitle tracks."
 msgstr "Đảo qua các track phụ đề hiện có."
 
-#: src/libvlc-module.c:1390
+#: src/libvlc-module.c:1392
 #, fuzzy
 msgid "Toggle subtitles"
 msgstr "Phụ đề Teletext"
 
-#: src/libvlc-module.c:1391
+#: src/libvlc-module.c:1393
 #, fuzzy
 msgid "Toggle subtitle track visibility."
 msgstr "Đảo qua track phụ đề"
 
-#: src/libvlc-module.c:1392
+#: src/libvlc-module.c:1394
 msgid "Cycle next program Service ID"
 msgstr "Đảo qua thông số dịch vụ của chương trình tiếp theo"
 
-#: src/libvlc-module.c:1393
+#: src/libvlc-module.c:1395
 msgid "Cycle through the available next program Service IDs (SIDs)."
 msgstr ""
 "Đảo qua các thông số dịch vụ của các chương trình hiện có tiếp theo (SIDs)."
 
-#: src/libvlc-module.c:1394
+#: src/libvlc-module.c:1396
 msgid "Cycle previous program Service ID"
 msgstr "Đảo qua thông số dịch vụ của chương trình trước đó"
 
-#: src/libvlc-module.c:1395
+#: src/libvlc-module.c:1397
 msgid "Cycle through the available previous program Service IDs (SIDs)."
 msgstr "Đảo qua các thông số dịch vụ của chương trình hiện có trước đó (SIDs)."
 
-#: src/libvlc-module.c:1396
+#: src/libvlc-module.c:1398
 msgid "Cycle source aspect ratio"
 msgstr "Đảo qua hệ số tỉ lệ nguồn"
 
-#: src/libvlc-module.c:1397
+#: src/libvlc-module.c:1399
 msgid "Cycle through a predefined list of source aspect ratios."
 msgstr ""
 "Đảo qua danh sách các hệ số tỉ lệ của khung hình được xác định trước đó."
 
-#: src/libvlc-module.c:1398
+#: src/libvlc-module.c:1400
 msgid "Cycle video crop"
 msgstr "Đảo qua việc cắt bỏ video"
 
-#: src/libvlc-module.c:1399
+#: src/libvlc-module.c:1401
 msgid "Cycle through a predefined list of crop formats."
 msgstr "Đảo qua danh sách các định dạng cắt bỏ được xác định trước đó."
 
-#: src/libvlc-module.c:1400
+#: src/libvlc-module.c:1402
 msgid "Toggle autoscaling"
 msgstr "Chuyển đổi chế độ tự canh chỉnh tỉ lệ"
 
-#: src/libvlc-module.c:1401
+#: src/libvlc-module.c:1403
 msgid "Activate or deactivate autoscaling."
 msgstr "Kích hoạt hoặc tắt chế độ tự canh chỉnh tự động."
 
-#: src/libvlc-module.c:1402
+#: src/libvlc-module.c:1404
 msgid "Increase scale factor"
 msgstr "Tăng hệ số tỉ lệ"
 
-#: src/libvlc-module.c:1404
+#: src/libvlc-module.c:1406
 msgid "Decrease scale factor"
 msgstr "Giảm hệ số tỉ lệ"
 
-#: src/libvlc-module.c:1406
+#: src/libvlc-module.c:1408
 msgid "Toggle deinterlacing"
 msgstr "Chuyển đổi chế độ chống quét mành"
 
-#: src/libvlc-module.c:1407
+#: src/libvlc-module.c:1409
 msgid "Activate or deactivate deinterlacing."
 msgstr "Kích hoạt hoặc tắt chế độ chống quét mành."
 
-#: src/libvlc-module.c:1408
+#: src/libvlc-module.c:1410
 msgid "Cycle deinterlace modes"
 msgstr "Đảo qua chế độ chống quét mành"
 
-#: src/libvlc-module.c:1409
+#: src/libvlc-module.c:1411
 msgid "Cycle through available deinterlace modes."
 msgstr "Đảo qua các chế độ chống quét mành hiện có."
 
-#: src/libvlc-module.c:1410
+#: src/libvlc-module.c:1412
 msgid "Show controller in fullscreen"
 msgstr "Hiển thị giao diện điều khiển trong chế độ toàn màn hình"
 
-#: src/libvlc-module.c:1411
+#: src/libvlc-module.c:1413
 msgid "Boss key"
 msgstr "Phím chủ đạo"
 
-#: src/libvlc-module.c:1412
+#: src/libvlc-module.c:1414
 msgid "Hide the interface and pause playback."
 msgstr "Ẩn giao diện và điều khiển phát lại."
 
-#: src/libvlc-module.c:1413
+#: src/libvlc-module.c:1415
 msgid "Context menu"
 msgstr "Menu khi bấm chuột phải"
 
-#: src/libvlc-module.c:1414
+#: src/libvlc-module.c:1416
 msgid "Show the contextual popup menu."
 msgstr "Hiển thị thông báo menu khi bấm chuột phải"
 
-#: src/libvlc-module.c:1415
+#: src/libvlc-module.c:1417
 msgid "Take video snapshot"
 msgstr "Chụp hình video"
 
-#: src/libvlc-module.c:1416
+#: src/libvlc-module.c:1418
 msgid "Takes a video snapshot and writes it to disk."
 msgstr "Chụp một hình trong phân cảnh đang chiếu của video và lưu vào đĩa."
 
-#: src/libvlc-module.c:1418 modules/gui/macosx/VLCMainMenu.m:379
+#: src/libvlc-module.c:1420 modules/gui/macosx/VLCMainMenu.m:379
 #: modules/gui/qt/components/controller.hpp:110
 #: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:849
 #: modules/stream_out/record.c:60
 msgid "Record"
 msgstr "Thu âm"
 
-#: src/libvlc-module.c:1419
+#: src/libvlc-module.c:1421
 msgid "Record access filter start/stop."
 msgstr "Bật/dừng bộ lọc truy cập phần ghi âm."
 
-#: src/libvlc-module.c:1421
+#: src/libvlc-module.c:1423
 msgid "Normal/Loop/Repeat"
 msgstr "Bình thường/Lặp/Lặp lại"
 
-#: src/libvlc-module.c:1422
+#: src/libvlc-module.c:1424
 msgid "Toggle Normal/Loop/Repeat playlist modes"
 msgstr "Chuyển đổi chế độ Bình thường/Lặp/Lặp lại"
 
-#: src/libvlc-module.c:1425
+#: src/libvlc-module.c:1427
 msgid "Toggle random playlist playback"
 msgstr "Chuyển đổi danh sách phát lại ngẫu nhiên"
 
-#: src/libvlc-module.c:1430 src/libvlc-module.c:1431
+#: src/libvlc-module.c:1432 src/libvlc-module.c:1433
 msgid "Un-Zoom"
 msgstr "Không-Phóng màn hình"
 
-#: src/libvlc-module.c:1433 src/libvlc-module.c:1434
+#: src/libvlc-module.c:1435 src/libvlc-module.c:1436
 msgid "Crop one pixel from the top of the video"
 msgstr "Bỏ một điểm ảnh ở phía trên cùng video"
 
-#: src/libvlc-module.c:1435 src/libvlc-module.c:1436
+#: src/libvlc-module.c:1437 src/libvlc-module.c:1438
 msgid "Uncrop one pixel from the top of the video"
 msgstr "Hủy bỏ thao tác bỏ điểm ảnh phía trên cùng video"
 
-#: src/libvlc-module.c:1438 src/libvlc-module.c:1439
+#: src/libvlc-module.c:1440 src/libvlc-module.c:1441
 msgid "Crop one pixel from the left of the video"
 msgstr "Bỏ một điểm ảnh phía bên trái video"
 
-#: src/libvlc-module.c:1440 src/libvlc-module.c:1441
+#: src/libvlc-module.c:1442 src/libvlc-module.c:1443
 msgid "Uncrop one pixel from the left of the video"
 msgstr "Hủy bỏ việc bỏ điểm ảnh phía bên trái video"
 
-#: src/libvlc-module.c:1443 src/libvlc-module.c:1444
+#: src/libvlc-module.c:1445 src/libvlc-module.c:1446
 msgid "Crop one pixel from the bottom of the video"
 msgstr "Bỏ một điểm ảnh phía tận cùng video"
 
-#: src/libvlc-module.c:1445 src/libvlc-module.c:1446
+#: src/libvlc-module.c:1447 src/libvlc-module.c:1448
 msgid "Uncrop one pixel from the bottom of the video"
 msgstr "Hủy bỏ việc bỏ điểm ảnh phía tận cùng video"
 
-#: src/libvlc-module.c:1448 src/libvlc-module.c:1449
+#: src/libvlc-module.c:1450 src/libvlc-module.c:1451
 msgid "Crop one pixel from the right of the video"
 msgstr "Bỏ một điểm ảnh phía bên phải video"
 
-#: src/libvlc-module.c:1450 src/libvlc-module.c:1451
+#: src/libvlc-module.c:1452 src/libvlc-module.c:1453
 msgid "Uncrop one pixel from the right of the video"
 msgstr "Hủy bỏ việc bỏ điểm ảnh phía bên phải video"
 
-#: src/libvlc-module.c:1454
+#: src/libvlc-module.c:1456
 msgid "Shrink the viewpoint field of view (360°)"
 msgstr ""
 
-#: src/libvlc-module.c:1455
+#: src/libvlc-module.c:1457
 msgid "Expand the viewpoint field of view (360°)"
 msgstr ""
 
-#: src/libvlc-module.c:1456
+#: src/libvlc-module.c:1458
 msgid "Roll the viewpoint clockwise (360°)"
 msgstr ""
 
-#: src/libvlc-module.c:1457
+#: src/libvlc-module.c:1459
 msgid "Roll the viewpoint anti-clockwise (360°)"
 msgstr ""
 
-#: src/libvlc-module.c:1459
+#: src/libvlc-module.c:1461
 msgid "Toggle wallpaper mode in video output"
 msgstr "Chuyển đổi chế độ hình nền đối với dữ liệu video đầu vào"
 
-#: src/libvlc-module.c:1461
+#: src/libvlc-module.c:1463
 msgid "Toggle wallpaper mode in video output."
 msgstr "Chuyển đổi chế độ hình nền đối với video đầu ra."
 
-#: src/libvlc-module.c:1463
+#: src/libvlc-module.c:1465
 msgid "Cycle through audio devices"
 msgstr "Lướt qua các thiết bị audio"
 
-#: src/libvlc-module.c:1464
+#: src/libvlc-module.c:1466
 msgid "Cycle through available audio devices"
 msgstr "Lướt qua các thiết bị audio đang kết nối"
 
-#: src/libvlc-module.c:1593 src/video_output/vout_intf.c:274
+#: src/libvlc-module.c:1595 src/video_output/vout_intf.c:274
 #: modules/gui/macosx/VLCMainMenu.m:424 modules/gui/macosx/VLCMainMenu.m:502
 #: modules/gui/qt/components/controller.hpp:109
 msgid "Snapshot"
 msgstr "Hình chụp"
 
-#: src/libvlc-module.c:1610
+#: src/libvlc-module.c:1612
 msgid "Window properties"
 msgstr "Thuộc tính cửa sổ"
 
-#: src/libvlc-module.c:1670
+#: src/libvlc-module.c:1672
 msgid "Subpictures"
 msgstr "Hình ảnh phụ đề"
 
-#: src/libvlc-module.c:1678 modules/codec/subsdec.c:181
+#: src/libvlc-module.c:1680 modules/codec/subsdec.c:181
 #: modules/demux/subtitle.c:71 modules/demux/xiph_metadata.h:49
 #: modules/demux/xiph_metadata.h:62
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:158
@@ -5050,82 +5050,82 @@ msgstr "Hình ảnh phụ đề"
 msgid "Subtitles"
 msgstr "Phụ đề"
 
-#: src/libvlc-module.c:1698 modules/stream_out/transcode/transcode.c:116
+#: src/libvlc-module.c:1700 modules/stream_out/transcode/transcode.c:116
 msgid "Overlays"
 msgstr "Hiển thị chồng lên màn hình"
 
-#: src/libvlc-module.c:1708
+#: src/libvlc-module.c:1710
 msgid "Track settings"
 msgstr "Thiết lập track"
 
-#: src/libvlc-module.c:1748 modules/gui/macosx/VLCSimplePrefsController.m:309
+#: src/libvlc-module.c:1750 modules/gui/macosx/VLCSimplePrefsController.m:309
 msgid "Playback control"
 msgstr "Điều khiển phát lại"
 
-#: src/libvlc-module.c:1777
+#: src/libvlc-module.c:1779
 msgid "Default devices"
 msgstr "Thiết bị mặc định"
 
-#: src/libvlc-module.c:1784
+#: src/libvlc-module.c:1786
 msgid "Network settings"
 msgstr "Thiết lập mạng lưới"
 
-#: src/libvlc-module.c:1809
+#: src/libvlc-module.c:1812
 msgid "Socks proxy"
 msgstr "Socks proxy"
 
-#: src/libvlc-module.c:1818 modules/demux/xiph_metadata.h:55
+#: src/libvlc-module.c:1821 modules/demux/xiph_metadata.h:55
 msgid "Metadata"
 msgstr "Thông tin bổ sung"
 
-#: src/libvlc-module.c:1919
+#: src/libvlc-module.c:1922
 msgid "Decoders"
 msgstr "Giải mã"
 
-#: src/libvlc-module.c:1926 modules/access/avio.h:40
+#: src/libvlc-module.c:1929 modules/access/avio.h:40
 #: modules/access/v4l2/v4l2.c:59 modules/gui/macosx/VLCPlaylistInfo.m:85
 msgid "Input"
 msgstr "Dữ liệu đầu vào"
 
-#: src/libvlc-module.c:1962
+#: src/libvlc-module.c:1965
 msgid "VLM"
 msgstr "VLM"
 
-#: src/libvlc-module.c:2008
+#: src/libvlc-module.c:2011
 msgid "Special modules"
 msgstr "Phương thức đặc biệt"
 
-#: src/libvlc-module.c:2013 modules/gui/qt/dialogs/plugins.cpp:89
+#: src/libvlc-module.c:2016 modules/gui/qt/dialogs/plugins.cpp:89
 msgid "Plugins"
 msgstr "Tiện ích"
 
-#: src/libvlc-module.c:2025
+#: src/libvlc-module.c:2028
 msgid "Performance options"
 msgstr "Tùy chọn hiển thị"
 
-#: src/libvlc-module.c:2044
+#: src/libvlc-module.c:2047
 msgid "Clock source"
 msgstr "Nguồn thời gian"
 
-#: src/libvlc-module.c:2162
+#: src/libvlc-module.c:2165
 msgid "Hot keys"
 msgstr "Phím tắt"
 
-#: src/libvlc-module.c:2652
+#: src/libvlc-module.c:2655
 msgid "Jump sizes"
 msgstr "Kích thước phần nhảy đến"
 
-#: src/libvlc-module.c:2737
+#: src/libvlc-module.c:2740
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr ""
 "lệnh hiển thị trợ giúp dành cho VLC (có thể được kết hợp với --nâng cao và "
 "-- trợ giúp-verbose)"
 
-#: src/libvlc-module.c:2740
+#: src/libvlc-module.c:2743
 msgid "Exhaustive help for VLC and its modules"
 msgstr "Trợ giúp hoàn chỉnh cho phần sử dụng VLC và module"
 
-#: src/libvlc-module.c:2742
+#: src/libvlc-module.c:2745
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
 "--help-verbose)"
@@ -5133,19 +5133,19 @@ msgstr ""
 "in ra cac thong tin tro giup danh cho VLC cung cac modul ho tro ( co the ket "
 "hop voi dong lenh --advanced va --help-verbose)"
 
-#: src/libvlc-module.c:2745
+#: src/libvlc-module.c:2748
 msgid "ask for extra verbosity when displaying help"
 msgstr "tang verbosity khi hien thi phan tro giup"
 
-#: src/libvlc-module.c:2747
+#: src/libvlc-module.c:2750
 msgid "print a list of available modules"
 msgstr "in ra danh sach cac module hien co"
 
-#: src/libvlc-module.c:2749
+#: src/libvlc-module.c:2752
 msgid "print a list of available modules with extra detail"
 msgstr "in ra danh sach cac module hien co voi thong tin chi tiet kem theo"
 
-#: src/libvlc-module.c:2751
+#: src/libvlc-module.c:2754
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
 "verbose). Prefix the module name with = for strict matches."
@@ -5154,28 +5154,28 @@ msgstr ""
 "va --help-verbose). Dien vao phia truoc ten module = de gioi han pham vi tim "
 "kiem."
 
-#: src/libvlc-module.c:2755
+#: src/libvlc-module.c:2758
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr ""
 "khong co tuy chon chinh sua nao se duoc nap hoac luu vao tap tin dieu chinh"
 
-#: src/libvlc-module.c:2757
+#: src/libvlc-module.c:2760
 msgid "reset the current config to the default values"
 msgstr "thiet dat lai tuy chinh hien tai ve gia tri mac dinh"
 
-#: src/libvlc-module.c:2759
+#: src/libvlc-module.c:2762
 msgid "use alternate config file"
 msgstr "sử dụng tập tin chỉnh sửa thay thế"
 
-#: src/libvlc-module.c:2761
+#: src/libvlc-module.c:2764
 msgid "resets the current plugins cache"
 msgstr "thiết đặt lại các bộ nhớ đệm cho plugin hiện tại"
 
-#: src/libvlc-module.c:2763
+#: src/libvlc-module.c:2766
 msgid "print version information"
 msgstr "in thông tin về phiên bản"
 
-#: src/libvlc-module.c:2803
+#: src/libvlc-module.c:2806
 #, fuzzy
 msgid "core program"
 msgstr "chương trình chính"
@@ -7827,7 +7827,7 @@ msgstr "Số lượng kênh dành cho luồng dữ liệu cơ bản dạng audio
 #: modules/demux/rawvid.c:47
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:247
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:167
-#: modules/gui/qt/components/extended_panels.cpp:1292 modules/spu/mosaic.c:94
+#: modules/gui/qt/components/extended_panels.cpp:1290 modules/spu/mosaic.c:94
 #: modules/video_output/vmem.c:42 share/lua/http/dialogs/mosaic_window.html:108
 msgid "Width"
 msgstr "Chiều rộng"
@@ -7895,7 +7895,7 @@ msgstr "Địa chỉ của hàm phát đi callback"
 
 #: modules/access/imem.c:113
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:244
-#: modules/gui/qt/components/extended_panels.cpp:1291
+#: modules/gui/qt/components/extended_panels.cpp:1289
 msgid "Size"
 msgstr "Kích thước"
 
@@ -8109,19 +8109,19 @@ msgstr "Cổng HTTP"
 msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr "Cổng để sử dụng cho việc sử dụng giao thức RTSP/RTP thông qua HTTP."
 
-#: modules/access/live555.cpp:636
+#: modules/access/live555.cpp:639
 msgid "RTSP authentication"
 msgstr "Xác nhận RTSP"
 
-#: modules/access/live555.cpp:637
+#: modules/access/live555.cpp:640
 msgid "Please enter a valid login name and a password."
 msgstr "Điền vào tên đăng nhập và mật khẩu hợp lệ."
 
-#: modules/access/live555.cpp:662
+#: modules/access/live555.cpp:665
 msgid "RTSP connection failed"
 msgstr "Kết nối RTSP thất bại"
 
-#: modules/access/live555.cpp:663
+#: modules/access/live555.cpp:666
 msgid "Access to the stream is denied by the server configuration."
 msgstr "Tác động đến luồng dữ liệu bị từ chối bởi thiết lập ở phía server."
 
@@ -8998,11 +8998,11 @@ msgstr "Đầu vào bộ đệm khung"
 msgid "Shared memory framebuffer"
 msgstr "Bộ nhớ của bộ đệm khung được chia sẻ"
 
-#: modules/access/smb.c:62
+#: modules/access/smb.c:65
 msgid "Samba (Windows network shares) input"
 msgstr "Đầu vào Samba (chia sẻ mạng trong Windows)"
 
-#: modules/access/smb.c:65
+#: modules/access/smb.c:68
 msgid "SMB input"
 msgstr "Đầu vào SMB"
 
@@ -9306,7 +9306,7 @@ msgid "50 Hz"
 msgstr "50 Hz"
 
 #: modules/access/v4l2/v4l2.c:137
-#: modules/gui/qt/components/extended_panels.cpp:1081
+#: modules/gui/qt/components/extended_panels.cpp:1079
 msgid "60 Hz"
 msgstr "60 Hz"
 
@@ -9962,7 +9962,7 @@ msgstr "Thêm vào hiệu ứng độ trễ với âm thanh"
 
 #: modules/audio_filter/chorus_flanger.c:80
 #: modules/audio_filter/stereo_widen.c:57
-#: modules/gui/qt/components/extended_panels.cpp:1311
+#: modules/gui/qt/components/extended_panels.cpp:1309
 msgid "Delay time"
 msgstr "Thời gian độ trễ"
 
@@ -9995,7 +9995,7 @@ msgstr ""
 
 #: modules/audio_filter/chorus_flanger.c:89
 #: modules/audio_filter/stereo_widen.c:60
-#: modules/gui/qt/components/extended_panels.cpp:1312
+#: modules/gui/qt/components/extended_panels.cpp:1310
 msgid "Feedback gain"
 msgstr "Tăng phản hồi"
 
@@ -10021,7 +10021,7 @@ msgstr "Cấp độ của tín hiệu đầu vào"
 
 #: modules/audio_filter/compressor.c:155
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:233
-#: modules/gui/qt/components/extended_panels.cpp:1269
+#: modules/gui/qt/components/extended_panels.cpp:1267
 msgid "RMS/peak"
 msgstr "RMS/peak"
 
@@ -10060,7 +10060,7 @@ msgstr "Chỉnh ngưỡng cấp độ ở dB (-30 ... 0)."
 
 #: modules/audio_filter/compressor.c:167
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:237
-#: modules/gui/qt/components/extended_panels.cpp:1273
+#: modules/gui/qt/components/extended_panels.cpp:1271
 msgid "Ratio"
 msgstr "Tỉ lệ"
 
@@ -10421,56 +10421,56 @@ msgid "Nearest-neighbor audio resampler"
 msgstr "Audio chuyển đổi đồng dạng nhất"
 
 #: modules/audio_filter/scaletempo.c:52
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:271
-msgid "Audio tempo scaler synched with rate"
-msgstr "Audio tempo scaler synched with rate"
-
-#: modules/audio_filter/scaletempo.c:53
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:270
-msgid "Scaletempo"
-msgstr "Tỉ lệ phách"
-
-#: modules/audio_filter/scaletempo.c:59
-msgid "Stride Length"
-msgstr "Độ dài bước"
-
-#: modules/audio_filter/scaletempo.c:59
-msgid "Length in milliseconds to output each stride"
-msgstr ""
-"Độ dài tính bằng phần nghìn giây đối với mỗi bước âm của dữ liệu được xuất ra"
-
-#: modules/audio_filter/scaletempo.c:61
-msgid "Overlap Length"
-msgstr "Độ dài mức che phủ"
-
-#: modules/audio_filter/scaletempo.c:61
-msgid "Percentage of stride to overlap"
-msgstr "Tỉ lệ phần trăm của bước âm được che phủ"
-
-#: modules/audio_filter/scaletempo.c:63
-msgid "Search Length"
-msgstr "Độ dài tìm kiếm"
-
-#: modules/audio_filter/scaletempo.c:63
-msgid "Length in milliseconds to search for best overlap position"
-msgstr ""
-"Độ dài tính bằng phần nghìn giây để tìm vị trí dành cho độ che phủ tốt nhất"
-
-#: modules/audio_filter/scaletempo.c:67
 msgid "Pitch Shifter"
 msgstr ""
 
-#: modules/audio_filter/scaletempo.c:68
+#: modules/audio_filter/scaletempo.c:53
 #, fuzzy
 msgid "Audio pitch changer"
 msgstr "Các kênh phát âm thanh"
 
-#: modules/audio_filter/scaletempo.c:72
+#: modules/audio_filter/scaletempo.c:55
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:271
+msgid "Audio tempo scaler synched with rate"
+msgstr "Audio tempo scaler synched with rate"
+
+#: modules/audio_filter/scaletempo.c:56
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:270
+msgid "Scaletempo"
+msgstr "Tỉ lệ phách"
+
+#: modules/audio_filter/scaletempo.c:67
+msgid "Stride Length"
+msgstr "Độ dài bước"
+
+#: modules/audio_filter/scaletempo.c:67
+msgid "Length in milliseconds to output each stride"
+msgstr ""
+"Độ dài tính bằng phần nghìn giây đối với mỗi bước âm của dữ liệu được xuất ra"
+
+#: modules/audio_filter/scaletempo.c:69
+msgid "Overlap Length"
+msgstr "Độ dài mức che phủ"
+
+#: modules/audio_filter/scaletempo.c:69
+msgid "Percentage of stride to overlap"
+msgstr "Tỉ lệ phần trăm của bước âm được che phủ"
+
+#: modules/audio_filter/scaletempo.c:71
+msgid "Search Length"
+msgstr "Độ dài tìm kiếm"
+
+#: modules/audio_filter/scaletempo.c:71
+msgid "Length in milliseconds to search for best overlap position"
+msgstr ""
+"Độ dài tính bằng phần nghìn giây để tìm vị trí dành cho độ che phủ tốt nhất"
+
+#: modules/audio_filter/scaletempo.c:74
 #, fuzzy
 msgid "Pitch Shift"
 msgstr "Mức độ"
 
-#: modules/audio_filter/scaletempo.c:72
+#: modules/audio_filter/scaletempo.c:74
 msgid "Pitch shift in semitones"
 msgstr ""
 
@@ -10494,19 +10494,19 @@ msgstr "Độ rộng của căn phòng ảo"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:61
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:249
-#: modules/gui/qt/components/extended_panels.cpp:1293
+#: modules/gui/qt/components/extended_panels.cpp:1291
 msgid "Wet"
 msgstr "Ẩm ướt"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:64
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:250
-#: modules/gui/qt/components/extended_panels.cpp:1294
+#: modules/gui/qt/components/extended_panels.cpp:1292
 msgid "Dry"
 msgstr "Khô"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:67
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:251
-#: modules/gui/qt/components/extended_panels.cpp:1295
+#: modules/gui/qt/components/extended_panels.cpp:1293
 msgid "Damp"
 msgstr "Ẩm thấp"
 
@@ -10550,7 +10550,7 @@ msgstr ""
 "phụ và sẽ giúp mở rộng hơn hiệu ứng."
 
 #: modules/audio_filter/stereo_widen.c:64
-#: modules/gui/qt/components/extended_panels.cpp:1313
+#: modules/gui/qt/components/extended_panels.cpp:1311
 msgid "Crossfeed"
 msgstr "Crossfeed"
 
@@ -10565,7 +10565,7 @@ msgstr ""
 "channels."
 
 #: modules/audio_filter/stereo_widen.c:68
-#: modules/gui/qt/components/extended_panels.cpp:1314
+#: modules/gui/qt/components/extended_panels.cpp:1312
 msgid "Dry mix"
 msgstr "Dry mix"
 
@@ -11494,12 +11494,12 @@ msgstr "Hình ảnh phụ đề"
 msgid "VLC could not open the %4.4s %s encoder."
 msgstr "VLC không thể mở phần mã hóa."
 
-#: modules/codec/avcodec/vaapi.c:374
+#: modules/codec/avcodec/vaapi.c:385
 #, fuzzy
 msgid "VA-API video decoder via DRM"
 msgstr "Giải mã video PNG"
 
-#: modules/codec/avcodec/vaapi.c:379
+#: modules/codec/avcodec/vaapi.c:390
 #, fuzzy
 msgid "VA-API video decoder"
 msgstr "Giải mã video PNG"
@@ -16499,7 +16499,7 @@ msgid "2 Pass"
 msgstr "2 Pass"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:227
-#: modules/gui/qt/components/extended_panels.cpp:1106
+#: modules/gui/qt/components/extended_panels.cpp:1104
 msgid "Preamp"
 msgstr "Tái khuếch đại"
 
@@ -16516,17 +16516,17 @@ msgid "Reset"
 msgstr "Cài đặt lại"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:234
-#: modules/gui/qt/components/extended_panels.cpp:1270
+#: modules/gui/qt/components/extended_panels.cpp:1268
 msgid "Attack"
 msgstr ""
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:235
-#: modules/gui/qt/components/extended_panels.cpp:1271
+#: modules/gui/qt/components/extended_panels.cpp:1269
 msgid "Release"
 msgstr "Phát hành"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:236
-#: modules/gui/qt/components/extended_panels.cpp:1272
+#: modules/gui/qt/components/extended_panels.cpp:1270
 msgid "Threshold"
 msgstr "Ngưỡng"
 
@@ -18722,12 +18722,12 @@ msgid "Not Set"
 msgstr "Chưa chỉnh"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:50
-#: modules/gui/qt/components/extended_panels.cpp:1386
+#: modules/gui/qt/components/extended_panels.cpp:1384
 msgid "Audio/Video"
 msgstr "Audio/Video"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:51
-#: modules/gui/qt/components/extended_panels.cpp:1390
+#: modules/gui/qt/components/extended_panels.cpp:1388
 msgid "Audio track synchronization:"
 msgstr "Đồng bộ hóa track audio:"
 
@@ -18741,12 +18741,12 @@ msgid "A positive value means that the audio is ahead of the video"
 msgstr "Một giá trị dương có nghĩa rằng audio được bật trước video"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:54
-#: modules/gui/qt/components/extended_panels.cpp:1398
+#: modules/gui/qt/components/extended_panels.cpp:1396
 msgid "Subtitles/Video"
 msgstr "Phụ đề/Video"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:55
-#: modules/gui/qt/components/extended_panels.cpp:1402
+#: modules/gui/qt/components/extended_panels.cpp:1400
 msgid "Subtitle track synchronization:"
 msgstr "Đồng bộ hóa track phụ đề:"
 
@@ -18755,7 +18755,7 @@ msgid "A positive value means that the subtitles are ahead of the video"
 msgstr "Một giá trị dương có nghĩa rằng audio được bật trước video"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:58
-#: modules/gui/qt/components/extended_panels.cpp:1409
+#: modules/gui/qt/components/extended_panels.cpp:1407
 msgid "Subtitle speed:"
 msgstr "Tốc độ phụ đề:"
 
@@ -18764,12 +18764,12 @@ msgid "fps"
 msgstr "khung hình mỗi giây"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:60
-#: modules/gui/qt/components/extended_panels.cpp:1423
+#: modules/gui/qt/components/extended_panels.cpp:1421
 msgid "Subtitle duration factor:"
 msgstr "Hệ số thời gian phụ đề:"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:68
-#: modules/gui/qt/components/extended_panels.cpp:1534
+#: modules/gui/qt/components/extended_panels.cpp:1532
 msgid ""
 "Extend subtitle duration by this value.\n"
 "Set 0 to disable."
@@ -18778,7 +18778,7 @@ msgstr ""
 "0 tương ứng với tắt tính năng này."
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:72
-#: modules/gui/qt/components/extended_panels.cpp:1539
+#: modules/gui/qt/components/extended_panels.cpp:1537
 msgid ""
 "Multiply subtitle duration by this value.\n"
 "Set 0 to disable."
@@ -18787,7 +18787,7 @@ msgstr ""
 "0 tương đương với tắt tính năng này."
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:76
-#: modules/gui/qt/components/extended_panels.cpp:1544
+#: modules/gui/qt/components/extended_panels.cpp:1542
 msgid ""
 "Recalculate subtitle duration according\n"
 "to their content and this value.\n"
@@ -19535,6 +19535,8 @@ msgid ""
 "Controls will automatically appear here."
 msgstr ""
 
+#: modules/gui/qt/components/extended_panels.cpp:1079
+#: modules/gui/qt/components/extended_panels.cpp:1080
 #: modules/gui/qt/components/extended_panels.cpp:1081
 #: modules/gui/qt/components/extended_panels.cpp:1082
 #: modules/gui/qt/components/extended_panels.cpp:1083
@@ -19543,8 +19545,8 @@ msgstr ""
 #: modules/gui/qt/components/extended_panels.cpp:1086
 #: modules/gui/qt/components/extended_panels.cpp:1087
 #: modules/gui/qt/components/extended_panels.cpp:1088
-#: modules/gui/qt/components/extended_panels.cpp:1089
-#: modules/gui/qt/components/extended_panels.cpp:1090
+#: modules/gui/qt/components/extended_panels.cpp:1092
+#: modules/gui/qt/components/extended_panels.cpp:1093
 #: modules/gui/qt/components/extended_panels.cpp:1094
 #: modules/gui/qt/components/extended_panels.cpp:1095
 #: modules/gui/qt/components/extended_panels.cpp:1096
@@ -19553,91 +19555,89 @@ msgstr ""
 #: modules/gui/qt/components/extended_panels.cpp:1099
 #: modules/gui/qt/components/extended_panels.cpp:1100
 #: modules/gui/qt/components/extended_panels.cpp:1101
-#: modules/gui/qt/components/extended_panels.cpp:1102
-#: modules/gui/qt/components/extended_panels.cpp:1103
-#: modules/gui/qt/components/extended_panels.cpp:1106
+#: modules/gui/qt/components/extended_panels.cpp:1104
+#: modules/gui/qt/components/extended_panels.cpp:1270
 #: modules/gui/qt/components/extended_panels.cpp:1272
-#: modules/gui/qt/components/extended_panels.cpp:1274
-#: modules/gui/qt/components/extended_panels.cpp:1275
+#: modules/gui/qt/components/extended_panels.cpp:1273
 msgid "dB"
 msgstr "dB"
 
-#: modules/gui/qt/components/extended_panels.cpp:1082
+#: modules/gui/qt/components/extended_panels.cpp:1080
 msgid "170 Hz"
 msgstr "170 Hz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1083
+#: modules/gui/qt/components/extended_panels.cpp:1081
 msgid "310 Hz"
 msgstr "310 Hz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1084
+#: modules/gui/qt/components/extended_panels.cpp:1082
 msgid "600 Hz"
 msgstr "600 Hz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1085
-#: modules/gui/qt/components/extended_panels.cpp:1099
+#: modules/gui/qt/components/extended_panels.cpp:1083
+#: modules/gui/qt/components/extended_panels.cpp:1097
 msgid "1 KHz"
 msgstr "1 KHz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1086
+#: modules/gui/qt/components/extended_panels.cpp:1084
 msgid "3 KHz"
 msgstr "3 KHz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1087
+#: modules/gui/qt/components/extended_panels.cpp:1085
 msgid "6 KHz"
 msgstr "6 KHz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1088
+#: modules/gui/qt/components/extended_panels.cpp:1086
 msgid "12 KHz"
 msgstr "12 KHz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1089
+#: modules/gui/qt/components/extended_panels.cpp:1087
 msgid "14 KHz"
 msgstr "14 KHz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1090
-#: modules/gui/qt/components/extended_panels.cpp:1103
+#: modules/gui/qt/components/extended_panels.cpp:1088
+#: modules/gui/qt/components/extended_panels.cpp:1101
 msgid "16 KHz"
 msgstr "16 KHz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1094
+#: modules/gui/qt/components/extended_panels.cpp:1092
 msgid "31 Hz"
 msgstr "31 Hz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1095
+#: modules/gui/qt/components/extended_panels.cpp:1093
 msgid "63 Hz"
 msgstr "63 Hz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1096
+#: modules/gui/qt/components/extended_panels.cpp:1094
 msgid "125 Hz"
 msgstr "125 Hz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1097
+#: modules/gui/qt/components/extended_panels.cpp:1095
 msgid "250 Hz"
 msgstr "250 Hz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1098
+#: modules/gui/qt/components/extended_panels.cpp:1096
 msgid "500 Hz"
 msgstr "500 Hz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1100
+#: modules/gui/qt/components/extended_panels.cpp:1098
 msgid "2 KHz"
 msgstr "2 KHz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1101
+#: modules/gui/qt/components/extended_panels.cpp:1099
 msgid "4 KHz"
 msgstr "4 KHz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1102
+#: modules/gui/qt/components/extended_panels.cpp:1100
 msgid "8 KHz"
 msgstr "8 KHz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1270
-#: modules/gui/qt/components/extended_panels.cpp:1271
+#: modules/gui/qt/components/extended_panels.cpp:1268
+#: modules/gui/qt/components/extended_panels.cpp:1269
 msgid "ms"
 msgstr "mili giây"
 
-#: modules/gui/qt/components/extended_panels.cpp:1274
+#: modules/gui/qt/components/extended_panels.cpp:1272
 msgid ""
 "Knee\n"
 "radius"
@@ -19645,7 +19645,7 @@ msgstr ""
 "Khớp xoay\n"
 "bán kính"
 
-#: modules/gui/qt/components/extended_panels.cpp:1275
+#: modules/gui/qt/components/extended_panels.cpp:1273
 msgid ""
 "Makeup\n"
 "gain"
@@ -19653,20 +19653,20 @@ msgstr ""
 "Makeup\n"
 "tăng"
 
-#: modules/gui/qt/components/extended_panels.cpp:1328
+#: modules/gui/qt/components/extended_panels.cpp:1326
 #, fuzzy
 msgid "Adjust pitch"
 msgstr "Chỉnh sửa độ ưu tiên của VLC"
 
-#: modules/gui/qt/components/extended_panels.cpp:1362
+#: modules/gui/qt/components/extended_panels.cpp:1360
 msgid "(Hastened)"
 msgstr "(đến gấp)"
 
-#: modules/gui/qt/components/extended_panels.cpp:1364
+#: modules/gui/qt/components/extended_panels.cpp:1362
 msgid "(Delayed)"
 msgstr "(Bị trễ)"
 
-#: modules/gui/qt/components/extended_panels.cpp:1451
+#: modules/gui/qt/components/extended_panels.cpp:1449
 msgid "Force update of this dialog's values"
 msgstr "Băt buộc thiết lập của giá trị trong phần cập nhật"
 
@@ -23433,7 +23433,7 @@ msgstr "Chú ý"
 msgid "LibNotify Notification Plugin"
 msgstr ""
 
-#: modules/packetizer/a52.c:49
+#: modules/packetizer/a52.c:51
 msgid "A/52 audio packetizer"
 msgstr "Bộ đóng gói âm thanh A/52"
 
@@ -23741,7 +23741,7 @@ msgid "Applications"
 msgstr "Ứng dụng"
 
 #: modules/services_discovery/xcb_apps.c:361
-#: modules/video_output/win32/direct3d9.c:295
+#: modules/video_output/win32/direct3d9.c:320
 msgid "Desktop"
 msgstr "Desktop"
 
@@ -26131,19 +26131,19 @@ msgstr ""
 msgid "High"
 msgstr ""
 
-#: modules/video_filter/deinterlace/deinterlace.c:56
+#: modules/video_filter/deinterlace/deinterlace.c:258
 msgid "Streaming deinterlace mode"
 msgstr ""
 
-#: modules/video_filter/deinterlace/deinterlace.c:57
+#: modules/video_filter/deinterlace/deinterlace.c:259
 msgid "Deinterlace method to use for streaming."
 msgstr ""
 
-#: modules/video_filter/deinterlace/deinterlace.c:66
+#: modules/video_filter/deinterlace/deinterlace.c:268
 msgid "Phosphor chroma mode for 4:2:0 input"
 msgstr ""
 
-#: modules/video_filter/deinterlace/deinterlace.c:67
+#: modules/video_filter/deinterlace/deinterlace.c:269
 msgid ""
 "Choose handling for colours in those output frames that fall across input "
 "frame boundaries. \n"
@@ -26161,18 +26161,18 @@ msgid ""
 "simulation, but requires more CPU and memory bandwidth."
 msgstr ""
 
-#: modules/video_filter/deinterlace/deinterlace.c:89
+#: modules/video_filter/deinterlace/deinterlace.c:291
 msgid "Phosphor old field dimmer strength"
 msgstr ""
 
-#: modules/video_filter/deinterlace/deinterlace.c:90
+#: modules/video_filter/deinterlace/deinterlace.c:292
 msgid ""
 "This controls the strength of the darkening filter that simulates CRT TV "
 "phosphor light decay for the old field in the Phosphor framerate doubler. "
 "Default: Low."
 msgstr ""
 
-#: modules/video_filter/deinterlace/deinterlace.c:97
+#: modules/video_filter/deinterlace/deinterlace.c:299
 msgid "Deinterlacing video filter"
 msgstr "Bộ lọc chống quét mành video"
 
@@ -27188,7 +27188,6 @@ msgid "OpenGL"
 msgstr ""
 
 #: modules/video_output/opengl/display.c:62
-#: modules/video_output/win32/glwin32.c:53
 msgid "OpenGL video output"
 msgstr "Xuất dữ liệu video của OpenGL"
 
@@ -27200,51 +27199,51 @@ msgstr ""
 msgid "EGL extension for OpenGL"
 msgstr ""
 
-#: modules/video_output/win32/direct3d9.c:67
+#: modules/video_output/win32/direct3d9.c:70
 msgid "The desktop mode allows you to display the video on the desktop."
 msgstr ""
 "Chế độ desktop sẽ cho phép bạn hiển thị video ngay chính ở phần nền của "
 "desktop."
 
-#: modules/video_output/win32/direct3d9.c:69
+#: modules/video_output/win32/direct3d9.c:72
 #: modules/video_output/win32/direct3d11.c:73
 msgid "Use hardware blending support"
 msgstr ""
 
-#: modules/video_output/win32/direct3d9.c:71
+#: modules/video_output/win32/direct3d9.c:74
 #: modules/video_output/win32/direct3d11.c:75
 msgid "Try to use hardware acceleration for subtitle/OSD blending."
 msgstr "Sử dụng tính năng tăng tốc phần cứng cho việc blending phụ đề/HTTMH."
 
-#: modules/video_output/win32/direct3d9.c:73
+#: modules/video_output/win32/direct3d9.c:76
 msgid "Pixel Shader"
 msgstr ""
 
-#: modules/video_output/win32/direct3d9.c:75
+#: modules/video_output/win32/direct3d9.c:78
 #, fuzzy
 msgid "Choose a pixel shader to apply."
 msgstr "Bạn có thể chọn kiểu cắt bỏ để áp dụng"
 
-#: modules/video_output/win32/direct3d9.c:76
+#: modules/video_output/win32/direct3d9.c:79
 #, fuzzy
 msgid "Path to HLSL file"
 msgstr "Đường dẫn đến hình ảnh của menu HTTMH"
 
-#: modules/video_output/win32/direct3d9.c:77
+#: modules/video_output/win32/direct3d9.c:80
 #, fuzzy
 msgid "Path to an HLSL file containing a single pixel shader."
 msgstr "Đường dẫn đến tập tin dạng nén"
 
-#: modules/video_output/win32/direct3d9.c:79
+#: modules/video_output/win32/direct3d9.c:82
 #, fuzzy
 msgid "HLSL File"
 msgstr "Lưu tập tin"
 
-#: modules/video_output/win32/direct3d9.c:81
+#: modules/video_output/win32/direct3d9.c:84
 msgid "Recommended video output for Windows Vista and later versions"
 msgstr ""
 
-#: modules/video_output/win32/direct3d9.c:88
+#: modules/video_output/win32/direct3d9.c:91
 #, fuzzy
 msgid "Direct3D9 video output"
 msgstr "Audio đầu ra dạng DirectX"
@@ -27336,9 +27335,10 @@ msgstr ""
 msgid "Wallpaper"
 msgstr "Hình nền"
 
-#: modules/video_output/win32/glwin32.c:47
-msgid "GPU affinity"
-msgstr ""
+#: modules/video_output/win32/glwin32.c:51
+#, fuzzy
+msgid "OpenGL video output for Windows"
+msgstr "Xuất dữ liệu video của OpenGL"
 
 #: modules/video_output/win32/wingdi.c:52
 msgid "Windows GDI video output"

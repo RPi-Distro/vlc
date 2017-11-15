@@ -2,7 +2,7 @@
  * VLCOpenWindowController.m: Open dialogues for VLC's MacOS X port
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: f831d7a97978cb54752fe578de80b5590720280d $
+ * $Id: 0a47b06296115b1e58f3ed3d4cd2c19697fcb79d $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -1114,7 +1114,7 @@ static NSString *kCaptureTabViewId  = @"capture";
         returnedError = CGGetOnlineDisplayList(0, NULL, &displayCount);
         if (!returnedError) {
             CGDirectDisplayID *ids;
-            ids = (CGDirectDisplayID *)malloc(displayCount * sizeof(CGDirectDisplayID));
+            ids = (CGDirectDisplayID *)vlc_alloc(displayCount, sizeof(CGDirectDisplayID));
             returnedError = CGGetOnlineDisplayList(displayCount, ids, &displayCount);
             if (!returnedError) {
                 NSUInteger displayInfoCount = [_displayInfos count];

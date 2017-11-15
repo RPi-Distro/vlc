@@ -2,7 +2,7 @@
  * avparser.c
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: 5271d6aa23052457ddecb108b96ef3f7b67896f4 $
+ * $Id: f7792bfaf818b235764e80bc8275c906dbf91b4f $
  *
  * Authors: Denis Charmet <typx@videolan.org>
  *
@@ -148,7 +148,6 @@ void ClosePacketizer( vlc_object_t *p_this )
         av_parser_close( p_dec->p_sys->p_parser_ctx );
         free( p_dec->p_sys );
     }
-    es_format_Clean( &p_dec->fmt_out );
 }
 
 /*****************************************************************************

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
  * Copyright © 2006 Rémi Denis-Courmont
- * $Id: 93864b8fd07e52ee6daa84439ff22446430dfe2e $
+ * $Id: 79387772a381f3c901ca32af58285ac9d74c2b53 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr> - original code
  *          Rémi Denis-Courmont <rem # videolan.org> - EPSV support
@@ -692,7 +692,7 @@ static int InOpen( vlc_object_t *p_this )
     bool          b_directory;
 
     /* Init p_access */
-    p_sys = p_access->p_sys = (access_sys_t*)vlc_calloc( p_this, 1, sizeof( access_sys_t ) );
+    p_sys = p_access->p_sys = (access_sys_t*)vlc_obj_calloc( p_this, 1, sizeof( access_sys_t ) );
     if( !p_sys )
         return VLC_ENOMEM;
     p_sys->data = NULL;
@@ -778,7 +778,7 @@ static int OutOpen( vlc_object_t *p_this )
     sout_access_out_t *p_access = (sout_access_out_t *)p_this;
     access_sys_t      *p_sys;
 
-    p_sys = vlc_calloc( p_this, 1, sizeof( *p_sys ) );
+    p_sys = vlc_obj_calloc( p_this, 1, sizeof( *p_sys ) );
     if( !p_sys )
         return VLC_ENOMEM;
 
