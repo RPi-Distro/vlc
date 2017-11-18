@@ -2,7 +2,7 @@ vlc (3.0.0~20171115-1) UNRELEASED; urgency=medium
 
   * New upstream snapshot.
     - Install vlc_interface.h. (Closes: #768808)
-    - Fix stuttering with ALSA output. (Closes: #734100)
+    - Fix stuttering with ALSA output. (Closes: #734100) (LP: #1639479)
     - Fix CRC errors in some FLAC files. (Closes: #772503)
     - Add support for Wayland. (Closes: #857769) (LP: #1720901)
     - Better support for HLS. (Closes: #792647)
