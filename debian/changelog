@@ -1,11 +1,13 @@
-vlc (2.2.7-1~deb9u1) UNRELEASED; urgency=medium
+vlc (2.2.7-1~deb9u1) stretch; urgency=high
 
   * New upstream release.
     - Fix crash in libavcodec module (heap write out-of band). (CVE-2017-10699)
     - Fix AVI read/write overflow.
   * Update ffmpeg to 2.8.13.
+  * debian/{control,*.maintscript}: Bump versions to ensure proper upgrades
+    from jessie.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sun, 19 Nov 2017 14:09:39 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 19 Nov 2017 16:17:52 +0100
 
 vlc (2.2.6-1~deb9u1) unstable; urgency=high
 
