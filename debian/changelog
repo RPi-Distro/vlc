@@ -1,4 +1,4 @@
-vlc (2.2.7-1~deb9u1) stretch; urgency=high
+vlc (2.2.7-1~deb9u1) stretch-security; urgency=high
 
   * New upstream release.
     - Fix crash in libavcodec module (heap write out-of band). (CVE-2017-10699)
