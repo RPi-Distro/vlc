@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-05-24 15:01+0200\n"
+"POT-Creation-Date: 2017-11-19 02:13+0000\n"
 "PO-Revision-Date: 2011-04-18 13:01+0200\n"
 "Last-Translator: Florence Tushabe <tushabe@cit.mak.ac.ug>\n"
 "Language-Team: Chiga (https://www.transifex.com/projects/p/vlc-trans/"
@@ -82,7 +82,6 @@ msgstr "Entekateeka ya'za panya"
 #: modules/services_discovery/mediadirs.c:76 modules/stream_out/es.c:93
 #: modules/stream_out/transcode/transcode.c:183
 #: share/lua/http/dialogs/create_stream.html:150
-#: modules/gui/qt4/ui/profiles.h:721 modules/gui/qt4/ui/profiles.h:752
 msgid "Audio"
 msgstr "Ekirikuhurirwa"
 
@@ -97,7 +96,6 @@ msgid "General audio settings"
 msgstr "Enteekateeka eza hamaraka"
 
 #: include/vlc_config_cat.h:58 include/vlc_config_cat.h:79
-#: modules/gui/qt4/ui/profiles.h:750 modules/gui/qt4/ui/profiles.h:760
 #, fuzzy
 msgid "Filters"
 msgstr "Gyegyena:"
@@ -147,8 +145,6 @@ msgstr ""
 #: modules/services_discovery/mediadirs.c:69 modules/stream_out/es.c:101
 #: modules/stream_out/transcode/transcode.c:154
 #: share/lua/http/dialogs/create_stream.html:147
-#: modules/gui/qt4/ui/profiles.h:722 modules/gui/qt4/ui/profiles.h:726
-#: modules/gui/qt4/ui/sprefs_video.h:334
 msgid "Video"
 msgstr "Filimu"
 
@@ -362,7 +358,6 @@ msgid ""
 msgstr ""
 
 #: include/vlc_config_cat.h:178 src/libvlc-module.c:1790
-#: modules/gui/qt4/ui/video_effects.h:1495
 #, fuzzy
 msgid "Advanced"
 msgstr "Ebyokutooranamu ebyahaiguru"
@@ -447,7 +442,7 @@ msgstr ""
 #: modules/gui/macosx/MainMenu.m:1308 modules/gui/macosx/MainMenu.m:1309
 #: modules/gui/macosx/MainMenu.m:1310 modules/gui/macosx/playlist.m:583
 #: modules/gui/qt4/components/controller.hpp:115
-#: modules/gui/qt4/dialogs/vlm.cpp:546 modules/gui/qt4/ui/open.h:243
+#: modules/gui/qt4/dialogs/vlm.cpp:546
 msgid "Play"
 msgstr "Zaana"
 
@@ -540,7 +535,6 @@ msgid "Search"
 msgstr "Ronda"
 
 #: include/vlc_intf_strings.h:99 modules/gui/macosx/VideoEffects.m:157
-#: modules/gui/qt4/ui/video_effects.h:1479
 msgid "Waves"
 msgstr "Amayengo"
 
@@ -641,9 +635,7 @@ msgstr ""
 #: modules/gui/macosx/VideoEffects.m:167 modules/gui/macosx/VideoEffects.m:189
 #: modules/video_filter/audiobargraph_v.c:64 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
-#: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1407
-#: modules/gui/qt4/ui/video_effects.h:1450
-#: modules/gui/qt4/ui/video_effects.h:1460
+#: modules/video_filter/rss.c:173
 msgid "Left"
 msgstr "Bumosho"
 
@@ -656,7 +648,7 @@ msgstr "Bumosho"
 #: modules/gui/macosx/VideoEffects.m:169 modules/gui/macosx/VideoEffects.m:191
 #: modules/video_filter/audiobargraph_v.c:64 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
-#: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1408
+#: modules/video_filter/rss.c:173
 msgid "Right"
 msgstr "Buryo"
 
@@ -841,8 +833,6 @@ msgstr "Rabamu"
 
 #: src/config/keys.c:66 modules/gui/macosx/playlist.m:584
 #: modules/gui/qt4/dialogs/bookmarks.cpp:50
-#: modules/gui/qt4/ui/podcast_configuration.h:104
-#: modules/gui/qt4/ui/streampanel.h:172
 msgid "Delete"
 msgstr "Sangura"
 
@@ -1227,14 +1217,12 @@ msgstr ""
 #: src/input/es_out.c:2911 src/input/es_out.c:2914 modules/access/imem.c:67
 #: modules/gui/macosx/ConvertAndSave.m:177
 #: modules/gui/macosx/ConvertAndSave.m:187 modules/gui/macosx/wizard.m:382
-#: modules/gui/qt4/ui/profiles.h:728 modules/gui/qt4/ui/profiles.h:754
-#: modules/gui/qt4/ui/profiles.h:763
 msgid "Codec"
 msgstr "Codec"
 
 #: src/input/es_out.c:2918 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/MainMenu.m:80 modules/gui/macosx/simple_prefs.m:380
-#: modules/stream_out/setid.c:49 modules/gui/qt4/ui/sprefs_interface.h:517
+#: modules/stream_out/setid.c:49
 msgid "Language"
 msgstr "Orurimi"
 
@@ -1245,7 +1233,7 @@ msgid "Description"
 msgstr "Enshoborora"
 
 #: src/input/es_out.c:2930 modules/gui/macosx/ConvertAndSave.m:189
-#: modules/gui/macosx/output.m:167 modules/gui/qt4/ui/profiles.h:756
+#: modules/gui/macosx/output.m:167
 msgid "Channels"
 msgstr "Emihanda"
 
@@ -1267,8 +1255,7 @@ msgstr ""
 #: src/input/es_out.c:2950 modules/access_output/shout.c:92
 #: modules/demux/playlist/shoutcast.c:335
 #: modules/gui/macosx/ConvertAndSave.m:178
-#: modules/gui/macosx/ConvertAndSave.m:188 modules/gui/qt4/ui/profiles.h:729
-#: modules/gui/qt4/ui/profiles.h:755
+#: modules/gui/macosx/ConvertAndSave.m:188
 msgid "Bitrate"
 msgstr "Omutindo gwa vidiyo"
 
@@ -1291,7 +1278,6 @@ msgid "%.2f dB"
 msgstr ""
 
 #: src/input/es_out.c:2974 modules/gui/macosx/ConvertAndSave.m:180
-#: modules/gui/qt4/ui/profiles.h:749
 msgid "Resolution"
 msgstr "Omutindo Gwekirazaana"
 
@@ -1340,7 +1326,6 @@ msgstr ""
 #: modules/gui/macosx/playlistinfo.m:73 modules/gui/macosx/wizard.m:345
 #: modules/gui/qt4/components/open_panels.cpp:490
 #: modules/gui/qt4/components/open_panels.cpp:504 modules/mux/asf.c:56
-#: modules/gui/qt4/ui/open_disk.h:309
 msgid "Title"
 msgstr "Omutwe"
 
@@ -1382,7 +1367,6 @@ msgid "Setting"
 msgstr "Entekateeka"
 
 #: src/input/meta.c:65 modules/gui/macosx/open.m:179
-#: modules/gui/qt4/ui/podcast_configuration.h:102
 msgid "URL"
 msgstr "Endagiriro"
 
@@ -1447,7 +1431,7 @@ msgstr "Puroguraamu"
 
 #: src/input/var.c:182 modules/gui/macosx/MainMenu.m:420
 #: modules/gui/macosx/MainMenu.m:421 modules/gui/macosx/open.m:170
-#: modules/gui/macosx/open.m:172 modules/gui/qt4/ui/open_disk.h:310
+#: modules/gui/macosx/open.m:172
 msgid "Chapter"
 msgstr "Ekicweka"
 
@@ -1681,7 +1665,7 @@ msgid ""
 msgstr ""
 
 #: src/libvlc-module.c:131 modules/gui/macosx/simple_prefs.m:335
-#: modules/stream_out/display.c:40 modules/gui/qt4/ui/sprefs_audio.h:426
+#: modules/stream_out/display.c:40
 msgid "Enable audio"
 msgstr "Basiza okuhurira"
 
@@ -1745,7 +1729,6 @@ msgid ""
 msgstr ""
 
 #: src/libvlc-module.c:164 modules/gui/macosx/simple_prefs.m:341
-#: modules/gui/qt4/ui/sprefs_audio.h:434
 msgid "Use S/PDIF when available"
 msgstr "Kozesa S/PDIF kyaba kiriho"
 
@@ -1773,7 +1756,6 @@ msgstr ""
 #: modules/gui/qt4/components/simple_preferences.cpp:136
 #: modules/gui/qt4/components/sout/profile_selector.cpp:563
 #: modules/video_output/kva.c:62 modules/video_output/xcb/xvideo.c:870
-#: modules/gui/qt4/ui/profiles.h:744 modules/gui/qt4/ui/profiles.h:747
 msgid "Auto"
 msgstr "Kyekore kyonka"
 
@@ -1883,7 +1865,7 @@ msgid ""
 msgstr ""
 
 #: src/libvlc-module.c:247 modules/gui/macosx/simple_prefs.m:422
-#: modules/stream_out/display.c:42 modules/gui/qt4/ui/sprefs_video.h:321
+#: modules/stream_out/display.c:42
 msgid "Enable video"
 msgstr "Basiza filimu"
 
@@ -1982,9 +1964,7 @@ msgstr "Ahagati"
 #: modules/gui/macosx/VideoEffects.m:171 modules/gui/macosx/VideoEffects.m:193
 #: modules/video_filter/audiobargraph_v.c:64 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
-#: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1405
-#: modules/gui/qt4/ui/video_effects.h:1448
-#: modules/gui/qt4/ui/video_effects.h:1459
+#: modules/video_filter/rss.c:173
 msgid "Top"
 msgstr "Ahamutwe"
 
@@ -1993,7 +1973,7 @@ msgstr "Ahamutwe"
 #: modules/gui/macosx/VideoEffects.m:173 modules/gui/macosx/VideoEffects.m:195
 #: modules/video_filter/audiobargraph_v.c:64 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
-#: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1409
+#: modules/video_filter/rss.c:173
 msgid "Bottom"
 msgstr "Ahansi"
 
@@ -2082,7 +2062,6 @@ msgid ""
 msgstr ""
 
 #: src/libvlc-module.c:309 src/video_output/vout_intf.c:276
-#: modules/gui/qt4/ui/sprefs_video.h:326
 msgid "Always on top"
 msgstr "Ahamutwe bulikiire"
 
@@ -2202,7 +2181,6 @@ msgid ""
 msgstr ""
 
 #: src/libvlc-module.c:372 modules/gui/macosx/simple_prefs.m:424
-#: modules/gui/qt4/ui/sprefs_video.h:327
 msgid "Window decorations"
 msgstr "Timba Edirisa"
 
@@ -2530,7 +2508,6 @@ msgstr "Ebiteirweho"
 #: src/libvlc-module.c:538 modules/gui/macosx/AudioEffects.m:112
 #: modules/gui/macosx/MainWindow.m:1086 modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/extended_panels.cpp:1053
-#: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:289
 msgid "Enable"
 msgstr "Basiza"
 
@@ -2587,7 +2564,7 @@ msgid ""
 "(like DVB streams for example)."
 msgstr ""
 
-#: src/libvlc-module.c:576 modules/gui/qt4/ui/open_disk.h:312
+#: src/libvlc-module.c:576
 msgid "Audio track"
 msgstr "Ebyeshongoro ebirimu"
 
@@ -2595,7 +2572,7 @@ msgstr "Ebyeshongoro ebirimu"
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr ""
 
-#: src/libvlc-module.c:581 modules/gui/qt4/ui/open_disk.h:313
+#: src/libvlc-module.c:581
 #, fuzzy
 msgid "Subtitle track"
 msgstr "Emitwe egirimu"
@@ -2783,7 +2760,6 @@ msgid ""
 msgstr ""
 
 #: src/libvlc-module.c:665 modules/gui/macosx/simple_prefs.m:357
-#: modules/gui/qt4/ui/sprefs_input.h:355
 msgid "Record directory or filename"
 msgstr "Handika endagiriro nainga eizina ryekihandiko"
 
@@ -2840,7 +2816,7 @@ msgid ""
 "section. You can also set many miscellaneous subpictures options."
 msgstr ""
 
-#: src/libvlc-module.c:697 modules/gui/qt4/ui/sprefs_subtitles.h:305
+#: src/libvlc-module.c:697
 msgid "Force subtitle position"
 msgstr "Gyemaho omwanya gwomutwe"
 
@@ -2862,7 +2838,6 @@ msgstr ""
 #: src/libvlc-module.c:706 src/libvlc-module.c:1621 src/text/iso-639_def.h:145
 #: modules/gui/macosx/simple_prefs.m:411
 #: modules/stream_out/transcode/transcode.c:212
-#: modules/gui/qt4/ui/sprefs_subtitles.h:290
 msgid "On Screen Display"
 msgstr "Yoreka aharutimbe"
 
@@ -3530,7 +3505,7 @@ msgstr ""
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr ""
 
-#: src/libvlc-module.c:1085 modules/gui/qt4/ui/sprefs_interface.h:538
+#: src/libvlc-module.c:1085
 msgid "Use only one instance when started from file manager"
 msgstr ""
 
@@ -3548,7 +3523,7 @@ msgid ""
 "machine."
 msgstr ""
 
-#: src/libvlc-module.c:1097 modules/gui/qt4/ui/sprefs_interface.h:541
+#: src/libvlc-module.c:1097
 msgid "Enqueue items into playlist in one instance mode"
 msgstr ""
 
@@ -3577,7 +3552,6 @@ msgstr ""
 
 #: src/libvlc-module.c:1116 modules/gui/macosx/simple_prefs.m:391
 #: modules/gui/qt4/dialogs/firstrun.cpp:98
-#: modules/gui/qt4/ui/sprefs_interface.h:551
 msgid "Allow metadata network access"
 msgstr ""
 
@@ -3672,7 +3646,7 @@ msgid ""
 "VLC."
 msgstr ""
 
-#: src/libvlc-module.c:1161 modules/gui/qt4/ui/sprefs_interface.h:539
+#: src/libvlc-module.c:1161
 #, fuzzy
 msgid "Display playlist tree"
 msgstr "Akokuzaana akari omu rukarara rwebyokuzaana"
@@ -3687,7 +3661,7 @@ msgstr ""
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr ""
 
-#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1860
+#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1864
 msgid "Ignore"
 msgstr "Otakifaho"
 
@@ -3716,7 +3690,6 @@ msgstr ""
 #: modules/gui/macosx/MainMenu.m:1616 modules/gui/macosx/MainMenu.m:1626
 #: modules/gui/macosx/simple_prefs.m:423
 #: modules/gui/qt4/components/controller.hpp:116
-#: modules/gui/qt4/ui/sprefs_video.h:323
 msgid "Fullscreen"
 msgstr "Orutimbe Ryona"
 
@@ -3809,7 +3782,6 @@ msgstr "Mpola mpola (kurungi)"
 #: modules/gui/macosx/wizard.m:1559
 #: modules/gui/qt4/components/controller.hpp:120
 #: modules/gui/qt4/dialogs/sout.cpp:93 modules/notify/notify.c:339
-#: modules/gui/qt4/ui/streampanel.h:181
 msgid "Next"
 msgstr "Kurataho"
 
@@ -3834,7 +3806,7 @@ msgstr ""
 #: modules/gui/macosx/MainMenu.m:398 modules/gui/macosx/MainMenu.m:504
 #: modules/gui/macosx/MainMenu.m:511 modules/gui/macosx/MainMenu.m:1566
 #: modules/gui/qt4/components/controller.hpp:115
-#: modules/gui/qt4/dialogs/vlm.cpp:552 modules/gui/qt4/ui/streampanel.h:180
+#: modules/gui/qt4/dialogs/vlm.cpp:552
 msgid "Stop"
 msgstr "Yemereza"
 
@@ -3846,8 +3818,7 @@ msgstr "Toorana ekihandiiko ekyokubiikwamu"
 #: src/libvlc-module.c:1215 modules/gui/macosx/ControlsBar.m:67
 #: modules/gui/macosx/fspanel.m:448 modules/gui/macosx/VideoEffects.m:163
 #: modules/gui/macosx/VideoEffects.m:185 modules/video_filter/marq.c:150
-#: modules/video_filter/rss.c:200 modules/gui/qt4/ui/sprefs_subtitles.h:293
-#: modules/gui/qt4/ui/video_effects.h:1456
+#: modules/video_filter/rss.c:200
 msgid "Position"
 msgstr "Omwanya"
 
@@ -4575,8 +4546,6 @@ msgstr ""
 #: modules/demux/xiph_metadata.h:62 modules/gui/macosx/ConvertAndSave.m:173
 #: modules/gui/macosx/ConvertAndSave.m:191 modules/gui/macosx/MainMenu.m:459
 #: share/lua/http/dialogs/create_stream.html:153
-#: modules/gui/qt4/ui/profiles.h:718 modules/gui/qt4/ui/profiles.h:762
-#: modules/gui/qt4/ui/profiles.h:765
 msgid "Subtitles"
 msgstr "Emitwe"
 
@@ -4756,7 +4725,7 @@ msgstr ""
 msgid "Downloading ..."
 msgstr "Yaakira Ekyojwekamu"
 
-#: src/misc/update.c:597 src/misc/update.c:724 modules/demux/avi/avi.c:2567
+#: src/misc/update.c:597 src/misc/update.c:724 modules/demux/avi/avi.c:2572
 #: modules/gui/macosx/AudioEffects.m:372 modules/gui/macosx/AudioEffects.m:387
 #: modules/gui/macosx/AudioEffects.m:613 modules/gui/macosx/AudioEffects.m:712
 #: modules/gui/macosx/bookmarks.m:109 modules/gui/macosx/BWQuincyUI.m:80
@@ -5539,7 +5508,7 @@ msgstr "Toorana endagiriro"
 
 #: src/video_output/vout_intf.c:220 modules/gui/macosx/MainMenu.m:448
 #: modules/gui/macosx/MainMenu.m:449 modules/gui/macosx/VideoEffects.m:80
-#: modules/video_filter/croppadd.c:86 modules/gui/qt4/ui/video_effects.h:1415
+#: modules/video_filter/croppadd.c:86
 msgid "Crop"
 msgstr "Sharaho ekicweka"
 
@@ -5668,7 +5637,6 @@ msgid ""
 msgstr ""
 
 #: modules/access/bluray.c:87 modules/services_discovery/udev.c:597
-#: modules/gui/qt4/ui/open_disk.h:299
 msgid "Blu-ray"
 msgstr ""
 
@@ -5741,7 +5709,6 @@ msgid "First Play"
 msgstr "Kizaanirwe"
 
 #: modules/access/cdda.c:62 modules/gui/macosx/open.m:160
-#: modules/gui/qt4/ui/open_disk.h:300
 msgid "Audio CD"
 msgstr "CD ye'byeshongoro"
 
@@ -6830,7 +6797,7 @@ msgstr "Ebiteibwemu S-Video"
 msgid "File"
 msgstr "Ekihandiko"
 
-#: modules/access/fs.c:72 modules/gui/qt4/ui/sprefs_video.h:339
+#: modules/access/fs.c:72
 msgid "Directory"
 msgstr "Endangiriro"
 
@@ -7062,7 +7029,6 @@ msgstr ""
 #: modules/gui/qt4/components/extended_panels.cpp:1432
 #: modules/video_filter/mosaic.c:94 modules/video_output/vmem.c:42
 #: share/lua/http/dialogs/mosaic_window.html:108
-#: modules/gui/qt4/ui/profiles.h:743
 msgid "Width"
 msgstr "Obugazi"
 
@@ -7074,7 +7040,6 @@ msgstr ""
 #: modules/demux/rawvid.c:52 modules/gui/macosx/ConvertAndSave.m:183
 #: modules/video_filter/mosaic.c:92 modules/video_output/vmem.c:45
 #: share/lua/http/dialogs/mosaic_window.html:126
-#: modules/gui/qt4/ui/profiles.h:746
 msgid "Height"
 msgstr "Obulingwa"
 
@@ -8411,7 +8376,6 @@ msgstr "Garusyaho ebyateibwemu"
 
 #: modules/access/v4l2/v4l2.c:84 modules/gui/macosx/VideoEffects.m:90
 #: modules/video_filter/atmo/atmo.cpp:256
-#: modules/gui/qt4/ui/video_effects.h:1393
 msgid "Brightness"
 msgstr "Okuhwezeka"
 
@@ -8430,7 +8394,6 @@ msgid "Automatically adjust the picture brightness."
 msgstr "Hatariho kushabwa kyebera ebisya"
 
 #: modules/access/v4l2/v4l2.c:89 modules/gui/macosx/VideoEffects.m:89
-#: modules/gui/qt4/ui/video_effects.h:1395
 msgid "Contrast"
 msgstr "Hakanisa"
 
@@ -8440,8 +8403,6 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:91 modules/gui/macosx/VideoEffects.m:92
 #: modules/gui/macosx/VideoEffects.m:132
-#: modules/gui/qt4/ui/video_effects.h:1396
-#: modules/gui/qt4/ui/video_effects.h:1428
 msgid "Saturation"
 msgstr "Entabura"
 
@@ -8450,7 +8411,6 @@ msgid "Picture saturation or chroma gain."
 msgstr ""
 
 #: modules/access/v4l2/v4l2.c:93 modules/gui/macosx/VideoEffects.m:88
-#: modules/gui/qt4/ui/video_effects.h:1392
 msgid "Hue"
 msgstr "Erangi"
 
@@ -8503,7 +8463,6 @@ msgid "Blue chroma balance."
 msgstr ""
 
 #: modules/access/v4l2/v4l2.c:111 modules/gui/macosx/VideoEffects.m:93
-#: modules/gui/qt4/ui/video_effects.h:1397
 msgid "Gamma"
 msgstr "Gama"
 
@@ -8638,7 +8597,7 @@ msgid "Black & white"
 msgstr "Ekirikwiragura"
 
 #: modules/access/v4l2/v4l2.c:164 modules/gui/macosx/VideoEffects.m:134
-#: modules/video_filter/sepia.c:65 modules/gui/qt4/ui/video_effects.h:1430
+#: modules/video_filter/sepia.c:65
 msgid "Sepia"
 msgstr ""
 
@@ -8894,7 +8853,7 @@ msgstr "Iraka"
 
 #: modules/access/vcdx/info.c:69 modules/gui/macosx/ControlsBar.m:497
 #: modules/gui/macosx/fspanel.m:467 modules/gui/qt4/dialogs/toolbar.cpp:448
-#: modules/stream_out/raop.c:150 modules/gui/qt4/ui/sprefs_audio.h:427
+#: modules/stream_out/raop.c:150
 msgid "Volume"
 msgstr "Iraka"
 
@@ -8908,7 +8867,7 @@ msgstr "Ebiteirweho"
 msgid "Entries"
 msgstr "Tasyamu"
 
-#: modules/access/vcdx/info.c:75 modules/gui/qt4/ui/sprefs_audio.h:442
+#: modules/access/vcdx/info.c:75
 msgid "Tracks"
 msgstr "Ebirimu"
 
@@ -11038,11 +10997,11 @@ msgstr ""
 msgid "FDK-AAC Audio encoder"
 msgstr "Akarikuhereza eiraka"
 
-#: modules/codec/flac.c:112
+#: modules/codec/flac.c:127
 msgid "Flac audio decoder"
 msgstr ""
 
-#: modules/codec/flac.c:119
+#: modules/codec/flac.c:134
 msgid "Flac audio encoder"
 msgstr ""
 
@@ -12150,8 +12109,6 @@ msgstr ""
 
 #: modules/codec/speex.c:59 modules/codec/speex.c:867
 #: modules/gui/macosx/open.m:186 modules/gui/macosx/VideoEffects.m:138
-#: modules/gui/qt4/ui/sprefs_video.h:336
-#: modules/gui/qt4/ui/video_effects.h:1422
 msgid "Mode"
 msgstr "Enkozesa"
 
@@ -13350,7 +13307,6 @@ msgid "Quiet mode"
 msgstr "Enteekateeka yokushohoza"
 
 #: modules/codec/x264.c:402 modules/gui/macosx/playlistinfo.m:79
-#: modules/gui/qt4/ui/streampanel.h:170
 msgid "Statistics"
 msgstr "Embaririra"
 
@@ -14449,7 +14405,7 @@ msgstr "Orukarara rwebyeshongoro"
 msgid "Do not play"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2566
+#: modules/demux/avi/avi.c:2571
 msgid "Fixing AVI Index..."
 msgstr ""
 
@@ -14602,7 +14558,6 @@ msgid "Use chapter codecs found in the segment."
 msgstr ""
 
 #: modules/demux/mkv/mkv.cpp:62 modules/gui/macosx/simple_prefs.m:370
-#: modules/gui/qt4/ui/sprefs_input.h:358
 msgid "Preload MKV files in the same directory"
 msgstr ""
 
@@ -14957,7 +14912,6 @@ msgstr "Amayengo"
 
 #: modules/demux/mp4/id3genres.h:99 modules/gui/macosx/VideoEffects.m:158
 #: modules/video_filter/psychedelic.c:55
-#: modules/gui/qt4/ui/video_effects.h:1478
 msgid "Psychedelic"
 msgstr ""
 
@@ -16161,13 +16115,12 @@ msgstr ""
 msgid "Skins"
 msgstr ""
 
-#: modules/gui/macosx/AudioEffects.m:113 modules/gui/qt4/ui/equalizer.h:134
+#: modules/gui/macosx/AudioEffects.m:113
 msgid "2 Pass"
 msgstr "Rabaho 2"
 
 #: modules/gui/macosx/AudioEffects.m:114
 #: modules/gui/qt4/components/extended_panels.cpp:1246
-#: modules/gui/qt4/ui/equalizer.h:136
 msgid "Preamp"
 msgstr ""
 
@@ -16255,7 +16208,6 @@ msgstr "Tamu eiziina lyeibiikiro ensya:"
 #: modules/gui/macosx/simple_prefs.m:376 modules/gui/macosx/simple_prefs.m:441
 #: modules/gui/macosx/VideoEffects.m:679
 #: modules/gui/qt4/components/sout/profile_selector.cpp:424
-#: modules/gui/qt4/ui/vlm.h:301
 msgid "Save"
 msgstr "Biika"
 
@@ -16272,7 +16224,7 @@ msgstr ""
 
 #: modules/gui/macosx/AudioEffects.m:386 modules/gui/macosx/AudioEffects.m:711
 #: modules/gui/macosx/bookmarks.m:101 modules/gui/macosx/ConvertAndSave.m:388
-#: modules/gui/macosx/VideoEffects.m:741 modules/gui/qt4/ui/open_file.h:154
+#: modules/gui/macosx/VideoEffects.m:741
 msgid "Remove"
 msgstr "Ihamu"
 
@@ -16307,14 +16259,12 @@ msgid "Bookmarks"
 msgstr "Oburambe"
 
 #: modules/gui/macosx/bookmarks.m:97
-#: modules/gui/qt4/ui/podcast_configuration.h:103 modules/gui/qt4/ui/sout.h:209
-#: modules/gui/qt4/ui/vlm.h:299
 msgid "Add"
 msgstr "Geita"
 
 #: modules/gui/macosx/bookmarks.m:98 modules/gui/macosx/MainMenu.m:381
 #: modules/gui/macosx/simple_prefs.m:351
-#: modules/gui/qt4/dialogs/bookmarks.cpp:53 modules/gui/qt4/ui/vlm.h:300
+#: modules/gui/qt4/dialogs/bookmarks.cpp:53
 msgid "Clear"
 msgstr "Ihaho"
 
@@ -16607,9 +16557,6 @@ msgstr ""
 #: modules/gui/qt4/components/preferences_widgets.cpp:264
 #: modules/gui/qt4/components/simple_preferences.cpp:496
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:111
-#: modules/gui/qt4/ui/open.h:263 modules/gui/qt4/ui/open_disk.h:307
-#: modules/gui/qt4/ui/open_file.h:147 modules/gui/qt4/ui/sprefs_audio.h:433
-#: modules/gui/qt4/ui/sprefs_input.h:356 modules/gui/qt4/ui/sprefs_video.h:340
 msgid "Browse..."
 msgstr "Rondoza..."
 
@@ -16645,47 +16592,44 @@ msgstr "Shaba"
 msgid "Save as new Profile..."
 msgstr "Tandika enyanjura ensya"
 
-#: modules/gui/macosx/ConvertAndSave.m:170 modules/gui/qt4/ui/profiles.h:725
+#: modules/gui/macosx/ConvertAndSave.m:170
 #, fuzzy
 msgid "Encapsulation"
 msgstr "Omuringo ogwokushereka"
 
 #: modules/gui/macosx/ConvertAndSave.m:171
 #: share/lua/http/dialogs/create_stream.html:160
-#: modules/gui/qt4/ui/profiles.h:751
 #, fuzzy
 msgid "Video codec"
 msgstr "Akooma ka filimu"
 
 #: modules/gui/macosx/ConvertAndSave.m:172
 #: share/lua/http/dialogs/create_stream.html:178
-#: modules/gui/qt4/ui/profiles.h:761
 #, fuzzy
 msgid "Audio codec"
 msgstr "Ebirikuruga omumaraka"
 
-#: modules/gui/macosx/ConvertAndSave.m:176 modules/gui/qt4/ui/profiles.h:727
+#: modules/gui/macosx/ConvertAndSave.m:176
 #, fuzzy
 msgid "Keep original video track"
 msgstr "Basiza okuhurira"
 
-#: modules/gui/macosx/ConvertAndSave.m:181 modules/gui/qt4/ui/profiles.h:740
+#: modules/gui/macosx/ConvertAndSave.m:181
 msgid ""
 "You just need to fill one of the three following parameters, VLC will "
 "autodetect the other using the original aspect ratio"
 msgstr ""
 
 #: modules/gui/macosx/ConvertAndSave.m:184 modules/gui/macosx/output.m:157
-#: modules/gui/qt4/ui/profiles.h:741
 msgid "Scale"
 msgstr "Akapimiso"
 
-#: modules/gui/macosx/ConvertAndSave.m:186 modules/gui/qt4/ui/profiles.h:753
+#: modules/gui/macosx/ConvertAndSave.m:186
 #, fuzzy
 msgid "Keep original audio track"
 msgstr "Basiza okuhurira"
 
-#: modules/gui/macosx/ConvertAndSave.m:192 modules/gui/qt4/ui/profiles.h:764
+#: modules/gui/macosx/ConvertAndSave.m:192
 #, fuzzy
 msgid "Overlay subtitles on the video"
 msgstr "Yongyezaho emitwe ahaiguru ya sinema"
@@ -16861,20 +16805,20 @@ msgstr "(Tihariho ekirikuzaana)"
 msgid "Click to exit fullscreen playback."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1562 modules/gui/macosx/intf.m:1579
+#: modules/gui/macosx/intf.m:1570 modules/gui/macosx/intf.m:1587
 #, fuzzy
 msgid "VLC media playback"
 msgstr "Ekizani kya VLC"
 
-#: modules/gui/macosx/intf.m:1858
+#: modules/gui/macosx/intf.m:1862
 msgid "Remove old preferences?"
 msgstr "yihamu ebikuru bitoreine "
 
-#: modules/gui/macosx/intf.m:1859
+#: modules/gui/macosx/intf.m:1863
 msgid "We just found an older version of VLC's preferences files."
 msgstr "Niho twareba enshuura enkuru yebihandiiko byebitoreinwe bya VLC."
 
-#: modules/gui/macosx/intf.m:1860
+#: modules/gui/macosx/intf.m:1864
 msgid "Move To Trash and Relaunch VLC"
 msgstr "Naga omukasasiro ogaruke otandike VLC"
 
@@ -17616,7 +17560,7 @@ msgid ""
 msgstr ""
 
 #: modules/gui/macosx/open.m:133 modules/gui/macosx/open.m:594
-#: modules/gui/macosx/simple_prefs.m:365 modules/gui/qt4/ui/sprefs_input.h:359
+#: modules/gui/macosx/simple_prefs.m:365
 msgid "Network"
 msgstr "Za Kanyabwengye"
 
@@ -17644,7 +17588,7 @@ msgstr "Zaana orutambi orundi"
 
 #: modules/gui/macosx/open.m:143 modules/gui/macosx/open.m:362
 #: modules/gui/macosx/simple_prefs.m:405 modules/gui/macosx/wizard.m:343
-#: modules/gui/macosx/wizard.m:411 modules/gui/qt4/ui/sprefs_interface.h:535
+#: modules/gui/macosx/wizard.m:411
 msgid "Choose..."
 msgstr "Torana..."
 
@@ -17826,7 +17770,6 @@ msgid "Subtitle encoding"
 msgstr "Emitwe ye'bisherekyirwe"
 
 #: modules/gui/macosx/open.m:373 modules/gui/macosx/simple_prefs.m:407
-#: modules/gui/qt4/ui/sprefs_subtitles.h:300
 msgid "Font size"
 msgstr "Sayizi y'empandiika"
 
@@ -17848,7 +17791,7 @@ msgid "Subtitle File"
 msgstr "Ekihandiiko kye'mitwe"
 
 #: modules/gui/macosx/open.m:667 modules/gui/macosx/open.m:742
-#: modules/gui/macosx/open.m:1553 modules/gui/qt4/ui/open_file.h:142
+#: modules/gui/macosx/open.m:1553
 msgid "Open File"
 msgstr "Iguraho Ekihandiiko"
 
@@ -18068,7 +18011,6 @@ msgid "Select"
 msgstr "Toorana"
 
 #: modules/gui/macosx/ResumeDialogController.m:44 modules/gui/qt4/qt4.cpp:188
-#: modules/gui/qt4/ui/sprefs_interface.h:533
 #, fuzzy
 msgid "Continue playback?"
 msgstr "Yemerezamu Ebyazanwa"
@@ -18145,7 +18087,7 @@ msgstr "Okuleeba"
 msgid "Keep audio level between sessions"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:344 modules/gui/qt4/ui/sprefs_audio.h:429
+#: modules/gui/macosx/simple_prefs.m:344
 msgid "Always reset audio start level to:"
 msgstr ""
 
@@ -18178,7 +18120,7 @@ msgstr "Shanashana ebihandiiko bya AVI"
 msgid "Default Caching Level"
 msgstr "Ibiikiro eritaibwemu"
 
-#: modules/gui/macosx/simple_prefs.m:362 modules/gui/qt4/ui/open.h:248
+#: modules/gui/macosx/simple_prefs.m:362
 msgid "Caching"
 msgstr "Nikibiika"
 
@@ -18237,7 +18179,6 @@ msgid "Show Fullscreen Controller"
 msgstr "Yoreka akarategyeka orutambi rwijwire"
 
 #: modules/gui/macosx/simple_prefs.m:387
-#: modules/gui/qt4/ui/sprefs_interface.h:542
 msgid "Privacy / Network Interaction"
 msgstr "Omubonano / entambura omumpurizigana"
 
@@ -18268,7 +18209,6 @@ msgid "Display Settings"
 msgstr "Yoreka Entekateeka"
 
 #: modules/gui/macosx/simple_prefs.m:406
-#: modules/gui/qt4/ui/sprefs_subtitles.h:301
 #, fuzzy
 msgid "Font color"
 msgstr "Rangi y'empandika"
@@ -18276,7 +18216,6 @@ msgstr "Rangi y'empandika"
 #: modules/gui/macosx/simple_prefs.m:408 modules/text_renderer/freetype.c:95
 #: modules/text_renderer/quartztext.c:92 modules/text_renderer/win32text.c:59
 #: modules/video_filter/marq.c:156 modules/video_filter/rss.c:206
-#: modules/gui/qt4/ui/sprefs_subtitles.h:299
 msgid "Font"
 msgstr "Empandiika"
 
@@ -18286,7 +18225,6 @@ msgid "Subtitle languages"
 msgstr "Endimi y'emitwe"
 
 #: modules/gui/macosx/simple_prefs.m:410
-#: modules/gui/qt4/ui/sprefs_subtitles.h:296
 #, fuzzy
 msgid "Preferred subtitle language"
 msgstr "Endimi y'emitwe esiimirwe"
@@ -18305,13 +18243,11 @@ msgid "Force bold"
 msgstr ""
 
 #: modules/gui/macosx/simple_prefs.m:415 modules/text_renderer/freetype.c:125
-#: modules/gui/qt4/ui/sprefs_subtitles.h:303
 #, fuzzy
 msgid "Outline color"
 msgstr "Hindura erangi"
 
 #: modules/gui/macosx/simple_prefs.m:416 modules/text_renderer/freetype.c:126
-#: modules/gui/qt4/ui/sprefs_subtitles.h:302
 msgid "Outline thickness"
 msgstr ""
 
@@ -18320,11 +18256,10 @@ msgid "Black screens in Fullscreen mode"
 msgstr "Entimbe ezikwiragura omunkora ezijwire"
 
 #: modules/gui/macosx/simple_prefs.m:421 modules/stream_out/display.c:53
-#: modules/gui/qt4/ui/sprefs_video.h:322
 msgid "Display"
 msgstr "Yoreka"
 
-#: modules/gui/macosx/simple_prefs.m:427 modules/gui/qt4/ui/sprefs_video.h:338
+#: modules/gui/macosx/simple_prefs.m:427
 msgid "Video snapshots"
 msgstr "Ebicweeka bya sinema"
 
@@ -18332,15 +18267,15 @@ msgstr "Ebicweeka bya sinema"
 msgid "Folder"
 msgstr "Eibiikiro"
 
-#: modules/gui/macosx/simple_prefs.m:430 modules/gui/qt4/ui/sprefs_video.h:344
+#: modules/gui/macosx/simple_prefs.m:430
 msgid "Format"
 msgstr "Enshwa"
 
-#: modules/gui/macosx/simple_prefs.m:431 modules/gui/qt4/ui/sprefs_video.h:341
+#: modules/gui/macosx/simple_prefs.m:431
 msgid "Prefix"
 msgstr "Ebirikubanza"
 
-#: modules/gui/macosx/simple_prefs.m:432 modules/gui/qt4/ui/sprefs_video.h:343
+#: modules/gui/macosx/simple_prefs.m:432
 msgid "Sequential numbering"
 msgstr "Okubara orikukuratanisa"
 
@@ -18512,16 +18447,14 @@ msgstr "Ebirikuruga omusinema"
 msgid "Basic"
 msgstr ""
 
-#: modules/gui/macosx/VideoEffects.m:81 modules/gui/qt4/ui/video_effects.h:1444
+#: modules/gui/macosx/VideoEffects.m:81
 msgid "Geometry"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:82 modules/gui/macosx/VideoEffects.m:131
 #: modules/gui/macosx/VideoEffects.m:146 modules/gui/macosx/VideoEffects.m:149
 #: modules/video_filter/colorthres.c:54 modules/video_filter/marq.c:114
-#: modules/video_filter/rss.c:154 modules/gui/qt4/ui/video_effects.h:1417
-#: modules/gui/qt4/ui/video_effects.h:1423
-#: modules/gui/qt4/ui/video_effects.h:1426
+#: modules/video_filter/rss.c:154
 msgid "Color"
 msgstr "Erangi"
 
@@ -18530,52 +18463,45 @@ msgstr "Erangi"
 msgid "Image Adjust"
 msgstr "Ekihandiko kyekishushani"
 
-#: modules/gui/macosx/VideoEffects.m:91 modules/gui/qt4/ui/video_effects.h:1394
+#: modules/gui/macosx/VideoEffects.m:91
 #, fuzzy
 msgid "Brightness Threshold"
 msgstr "Okuhwezeka"
 
 #: modules/gui/macosx/VideoEffects.m:95 modules/video_filter/sharpen.c:67
-#: modules/gui/qt4/ui/video_effects.h:1398
 msgid "Sharpen"
 msgstr ""
 
-#: modules/gui/macosx/VideoEffects.m:96 modules/gui/qt4/ui/video_effects.h:1399
-#: modules/gui/qt4/ui/video_effects.h:1483
+#: modules/gui/macosx/VideoEffects.m:96
 msgid "Sigma"
 msgstr "Sigima"
 
-#: modules/gui/macosx/VideoEffects.m:97 modules/gui/qt4/ui/video_effects.h:1400
+#: modules/gui/macosx/VideoEffects.m:97
 msgid "Banding removal"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:98 modules/video_filter/gradfun.c:49
-#: modules/gui/qt4/ui/video_effects.h:1401
 msgid "Radius"
 msgstr ""
 
-#: modules/gui/macosx/VideoEffects.m:99 modules/gui/qt4/ui/video_effects.h:1402
+#: modules/gui/macosx/VideoEffects.m:99
 msgid "Film Grain"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:100 modules/video_filter/grain.c:53
-#: modules/gui/qt4/ui/video_effects.h:1403
 #, fuzzy
 msgid "Variance"
 msgstr "Shazamu"
 
 #: modules/gui/macosx/VideoEffects.m:105
-#: modules/gui/qt4/ui/video_effects.h:1411
 msgid "Synchronize top and bottom"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:106
-#: modules/gui/qt4/ui/video_effects.h:1412
 msgid "Synchronize left and right"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:108
-#: modules/gui/qt4/ui/video_effects.h:1437
 #, fuzzy
 msgid "Transform"
 msgstr "Empinduka"
@@ -18605,59 +18531,47 @@ msgid "Magnification/Zoom"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:121
-#: modules/gui/qt4/ui/video_effects.h:1440
 msgid "Puzzle game"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:122 modules/gui/macosx/VideoEffects.m:127
 #: share/lua/http/dialogs/mosaic_window.html:96
-#: modules/gui/qt4/ui/video_effects.h:1435
-#: modules/gui/qt4/ui/video_effects.h:1441
 msgid "Rows"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:123 modules/gui/macosx/VideoEffects.m:128
 #: share/lua/http/dialogs/mosaic_window.html:114
-#: modules/gui/qt4/ui/video_effects.h:1436
-#: modules/gui/qt4/ui/video_effects.h:1442
 #, fuzzy
 msgid "Columns"
 msgstr "Iraka"
 
 #: modules/gui/macosx/VideoEffects.m:124 modules/video_splitter/clone.c:57
-#: modules/gui/qt4/ui/video_effects.h:1493
 msgid "Clone"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:125 modules/video_splitter/clone.c:39
-#: modules/gui/qt4/ui/video_effects.h:1494
 msgid "Number of clones"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:126
-#: modules/gui/qt4/ui/video_effects.h:1434
 msgid "Wall"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:130 modules/video_filter/colorthres.c:70
-#: modules/gui/qt4/ui/video_effects.h:1425
 msgid "Color threshold"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:133
-#: modules/gui/qt4/ui/video_effects.h:1429
 msgid "Similarity"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:135
-#: modules/gui/qt4/ui/video_effects.h:1431
 #, fuzzy
 msgid "Intensity"
 msgstr "Embugano"
 
 #: modules/gui/macosx/VideoEffects.m:137 modules/gui/macosx/VideoEffects.m:140
 #: modules/video_filter/gradient.c:76 modules/video_filter/gradient.c:82
-#: modules/gui/qt4/ui/video_effects.h:1421
 msgid "Gradient"
 msgstr "Okuhindahinduka"
 
@@ -18670,12 +18584,10 @@ msgid "Hough"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:147
-#: modules/gui/qt4/ui/video_effects.h:1424
 msgid "Cartoon"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:148
-#: modules/gui/qt4/ui/video_effects.h:1416
 #, fuzzy
 msgid "Color extraction"
 msgstr "Amakuru agandi..."
@@ -18685,7 +18597,6 @@ msgid "Invert colors"
 msgstr "Hindura erangi"
 
 #: modules/gui/macosx/VideoEffects.m:151 modules/video_filter/posterize.c:68
-#: modules/gui/qt4/ui/video_effects.h:1420
 msgid "Posterize"
 msgstr ""
 
@@ -18694,12 +18605,10 @@ msgid "Posterize level"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:153 modules/video_filter/motionblur.c:59
-#: modules/gui/qt4/ui/video_effects.h:1484
 msgid "Motion blur"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:154
-#: modules/gui/qt4/ui/video_effects.h:1485
 msgid "Factor"
 msgstr ""
 
@@ -18708,7 +18617,6 @@ msgid "Motion Detect"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:156
-#: modules/gui/qt4/ui/video_effects.h:1480
 #, fuzzy
 msgid "Water effect"
 msgstr "Nkoku akokujweka ahamatu biri"
@@ -18718,27 +18626,24 @@ msgid "Anaglyph"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:161
-#: modules/gui/qt4/ui/video_effects.h:1455
 msgid "Add text"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:162 modules/misc/logger.c:109
-#: modules/video_filter/marq.c:87 modules/gui/qt4/ui/video_effects.h:1457
+#: modules/video_filter/marq.c:87
 msgid "Text"
 msgstr "Ekihandiko"
 
 #: modules/gui/macosx/VideoEffects.m:183
-#: modules/gui/qt4/ui/video_effects.h:1445
 msgid "Add logo"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:184
-#: modules/gui/qt4/ui/video_effects.h:1446
 msgid "Logo"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:205 modules/stream_out/mosaic_bridge.c:128
-#: modules/video_filter/mosaic.c:87 modules/gui/qt4/ui/video_effects.h:1453
+#: modules/video_filter/mosaic.c:87
 msgid "Transparency"
 msgstr ""
 
@@ -20104,7 +20009,6 @@ msgid "File names:"
 msgstr "Amaziina gebihandiiko:"
 
 #: modules/gui/qt4/components/open_panels.cpp:162
-#: modules/gui/qt4/ui/sprefs_interface.h:545
 msgid "Filter:"
 msgstr "Gyegyena:"
 
@@ -20524,7 +20428,6 @@ msgid "File/Folder"
 msgstr "Ekihandiiko/Eibiikiro"
 
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:47
-#: modules/gui/qt4/ui/sout.h:202
 msgid "Source"
 msgstr "Oburugo"
 
@@ -20636,7 +20539,7 @@ msgstr "Obwingi"
 msgid "Convert"
 msgstr "Hindura"
 
-#: modules/gui/qt4/dialogs/convert.cpp:58 modules/gui/qt4/ui/sprefs_audio.h:432
+#: modules/gui/qt4/dialogs/convert.cpp:58
 msgid "Destination file:"
 msgstr "Ekihandiiko ahokumarira:"
 
@@ -20754,7 +20657,7 @@ msgstr "&Eego"
 msgid "&No"
 msgstr "&Gyenda"
 
-#: modules/gui/qt4/dialogs/help.cpp:222 modules/gui/qt4/ui/update.h:147
+#: modules/gui/qt4/dialogs/help.cpp:222
 msgid "VLC media player updates"
 msgstr "Ebyagarusya busya ahari VLC"
 
@@ -20803,8 +20706,6 @@ msgid "Location:"
 msgstr "Omwanya:"
 
 #: modules/gui/qt4/dialogs/messages.cpp:79
-#: modules/gui/qt4/ui/messages_panel.h:138
-#: modules/gui/qt4/ui/messages_panel.h:142
 msgid "Messages"
 msgstr "Obutumwa"
 
@@ -21008,7 +20909,6 @@ msgid "Website"
 msgstr "Ekibanja"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:1525
-#: modules/gui/qt4/ui/sprefs_input.h:354
 msgid "Files"
 msgstr ""
 
@@ -21122,7 +21022,7 @@ msgstr "Ebihandiiko ebivunurirwe"
 msgid "All Files"
 msgstr "Ebihandiiko Byona"
 
-#: modules/gui/qt4/dialogs/sout.cpp:45 modules/gui/qt4/ui/sout.h:201
+#: modules/gui/qt4/dialogs/sout.cpp:45
 msgid "Stream Output"
 msgstr "Shohoza Ebyarugamu"
 
@@ -21301,7 +21201,6 @@ msgid "Repeat delay:"
 msgstr "Garukamu okukyerereza:"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:107
-#: modules/gui/qt4/ui/sprefs_interface.h:543
 msgid " days"
 msgstr ""
 
@@ -23020,7 +22919,6 @@ msgid "Local drives"
 msgstr ""
 
 #: modules/services_discovery/podcast.c:54
-#: modules/gui/qt4/ui/podcast_configuration.h:101
 msgid "Podcast URLs list"
 msgstr ""
 
@@ -23134,7 +23032,7 @@ msgstr ""
 msgid "CD"
 msgstr "VCD"
 
-#: modules/services_discovery/udev.c:595 modules/gui/qt4/ui/open_disk.h:298
+#: modules/services_discovery/udev.c:595
 msgid "DVD"
 msgstr "DVD"
 
@@ -23146,7 +23044,7 @@ msgstr ""
 msgid "Unknown type"
 msgstr ""
 
-#: modules/services_discovery/upnp.cpp:71
+#: modules/services_discovery/upnp.cpp:109
 msgid "Universal Plug'n'Play"
 msgstr ""
 
@@ -24536,7 +24434,7 @@ msgstr ""
 msgid "Image properties filter"
 msgstr "Ekihandiko kyekishushani"
 
-#: modules/video_filter/adjust.c:83 modules/gui/qt4/ui/video_effects.h:1391
+#: modules/video_filter/adjust.c:83
 msgid "Image adjust"
 msgstr ""
 
@@ -24893,7 +24791,6 @@ msgid ""
 msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:253
-#: modules/gui/qt4/ui/video_effects.h:1467
 msgid "Edge weightning"
 msgstr ""
 
@@ -24908,7 +24805,6 @@ msgid "Overall brightness of your LED stripes"
 msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:258
-#: modules/gui/qt4/ui/video_effects.h:1470
 msgid "Darkness limit"
 msgstr ""
 
@@ -24933,7 +24829,6 @@ msgid "Sat windowing"
 msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:267
-#: modules/gui/qt4/ui/video_effects.h:1472
 msgid "Filter length (ms)"
 msgstr ""
 
@@ -24951,7 +24846,6 @@ msgid "How much a color has to be changed for an immediate color change."
 msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:273
-#: modules/gui/qt4/ui/video_effects.h:1474
 #, fuzzy
 msgid "Filter smoothness (%)"
 msgstr "Okuhindahinduka"
@@ -25111,8 +25005,6 @@ msgid "AtmoLight Filter"
 msgstr "Akaragyegyena Kamaraka"
 
 #: modules/video_filter/atmo/atmo.cpp:360
-#: modules/gui/qt4/ui/video_effects.h:1466
-#: modules/gui/qt4/ui/video_effects.h:1475
 msgid "AtmoLight"
 msgstr ""
 
@@ -25673,7 +25565,6 @@ msgstr ""
 
 #: modules/video_filter/dynamicoverlay/dynamicoverlay.c:68
 #: share/lua/http/dialogs/create_stream.html:245
-#: modules/gui/qt4/ui/video_effects.h:1465
 msgid "Overlay"
 msgstr ""
 
@@ -26666,7 +26557,7 @@ msgstr "Ebirikureebwa"
 msgid "Rotate video filter"
 msgstr "Ahari ebiragyegyena filimu"
 
-#: modules/video_filter/rotate.c:67 modules/gui/qt4/ui/video_effects.h:1438
+#: modules/video_filter/rotate.c:67
 msgid "Rotate"
 msgstr ""
 
@@ -27306,7 +27197,7 @@ msgstr ""
 "Mac OS X ekyendeizibweho enshohoza OpenGL (nikiiguraho eidirisa etariho "
 "nsharo)"
 
-#: modules/video_output/kva.c:50 modules/gui/qt4/ui/sprefs_video.h:332
+#: modules/video_output/kva.c:50
 msgid "Enable a workaround for T23"
 msgstr ""
 
@@ -27316,7 +27207,7 @@ msgid ""
 "size is equal to or smaller than the movie size."
 msgstr ""
 
-#: modules/video_output/kva.c:55 modules/gui/qt4/ui/sprefs_video.h:333
+#: modules/video_output/kva.c:55
 #, fuzzy
 msgid "Video mode"
 msgstr "Akooma ka filimu"
@@ -27426,7 +27317,7 @@ msgstr ""
 msgid "Direct3D video output"
 msgstr ""
 
-#: modules/video_output/msw/directx.c:65 modules/gui/qt4/ui/sprefs_video.h:325
+#: modules/video_output/msw/directx.c:65
 msgid "Use hardware YUV->RGB conversions"
 msgstr ""
 
@@ -28220,7 +28111,6 @@ msgid "Play List"
 msgstr "Orukarara rwebyeshongoro"
 
 #: share/lua/http/dialogs/create_stream.html:156
-#: modules/gui/qt4/ui/sprefs_audio.h:430 modules/gui/qt4/ui/sprefs_video.h:328
 #, fuzzy
 msgid "Output"
 msgstr "Iguraho URL"
@@ -28359,7 +28249,7 @@ msgstr "Entwara omu rutimbe"
 msgid "VLM Batch Commands"
 msgstr "Ebyokukora"
 
-#: share/lua/http/index.html:240 modules/gui/qt4/ui/vlm.h:298
+#: share/lua/http/index.html:240
 #, fuzzy
 msgid "Loop"
 msgstr "Ekifumuka A->B"
@@ -28433,1002 +28323,572 @@ msgstr ""
 msgid "Are you sure you wish to create the stream?"
 msgstr ""
 
-#: modules/gui/qt4/ui/about.h:287 modules/gui/qt4/ui/open.h:242
-#: modules/gui/qt4/ui/podcast_configuration.h:100
-msgid "Dialog"
-msgstr ""
-
-#: modules/gui/qt4/ui/about.h:288 modules/gui/qt4/ui/about.h:289
 #, fuzzy
-msgid "Update"
-msgstr "&Taho Ebisya"
+#~ msgid "Update"
+#~ msgstr "&Taho Ebisya"
 
-#: modules/gui/qt4/ui/equalizer.h:132 modules/gui/qt4/ui/open_disk.h:296
-#: modules/gui/qt4/ui/open_net.h:96 modules/gui/qt4/ui/sprefs_audio.h:425
-#: modules/gui/qt4/ui/sprefs_input.h:345
-#: modules/gui/qt4/ui/sprefs_interface.h:516
-#: modules/gui/qt4/ui/sprefs_subtitles.h:289
-#: modules/gui/qt4/ui/sprefs_video.h:320 modules/gui/qt4/ui/streampanel.h:167
 #, fuzzy
-msgid "Form"
-msgstr "Enshwa"
+#~ msgid "Form"
+#~ msgstr "Enshwa"
 
-#: modules/gui/qt4/ui/equalizer.h:135
 #, fuzzy
-msgid "Preset"
-msgstr "Byona obigaruze nkoku byateiremu"
-
-#: modules/gui/qt4/ui/equalizer.h:137
-msgid "0.00 dB"
-msgstr ""
+#~ msgid "Preset"
+#~ msgstr "Byona obigaruze nkoku byateiremu"
 
-#: modules/gui/qt4/ui/messages_panel.h:139
 #, fuzzy
-msgid "&Verbosity:"
-msgstr "Omuhendo gwe'bigambo"
+#~ msgid "&Verbosity:"
+#~ msgstr "Omuhendo gwe'bigambo"
 
-#: modules/gui/qt4/ui/messages_panel.h:140
 #, fuzzy
-msgid "&Filter:"
-msgstr "Gyegyena:"
+#~ msgid "&Filter:"
+#~ msgstr "Gyegyena:"
 
-#: modules/gui/qt4/ui/messages_panel.h:141
-msgid "&Save as..."
-msgstr "&Biika nka..."
+#~ msgid "&Save as..."
+#~ msgstr "&Biika nka..."
 
-#: modules/gui/qt4/ui/messages_panel.h:143
 #, fuzzy
-msgid "Modules Tree"
-msgstr "Omuti gwebirimu"
+#~ msgid "Modules Tree"
+#~ msgstr "Omuti gwebirimu"
 
-#: modules/gui/qt4/ui/open.h:245
 #, fuzzy
-msgid "Show extended options"
-msgstr "Yoreka entebekanisa eyongyeizeho"
+#~ msgid "Show extended options"
+#~ msgstr "Yoreka entebekanisa eyongyeizeho"
 
-#: modules/gui/qt4/ui/open.h:247
 #, fuzzy
-msgid "Show &more options"
-msgstr "Ebyokutooranamu ebyahaiguru"
-
-#: modules/gui/qt4/ui/open.h:250
-msgid "Change the caching for the media"
-msgstr ""
-
-#: modules/gui/qt4/ui/open.h:252
-msgid " ms"
-msgstr ""
+#~ msgid "Show &more options"
+#~ msgstr "Ebyokutooranamu ebyahaiguru"
 
-#: modules/gui/qt4/ui/open.h:253
 #, fuzzy
-msgid "MRL"
-msgstr "Endagiriro"
+#~ msgid "MRL"
+#~ msgstr "Endagiriro"
 
-#: modules/gui/qt4/ui/open.h:254
 #, fuzzy
-msgid "Start Time"
-msgstr "&Tandika"
+#~ msgid "Start Time"
+#~ msgstr "&Tandika"
 
-#: modules/gui/qt4/ui/open.h:255
 #, fuzzy
-msgid "Edit Options"
-msgstr "Ebyokutooranamu"
+#~ msgid "Edit Options"
+#~ msgstr "Ebyokutooranamu"
 
-#: modules/gui/qt4/ui/open.h:256
 #, fuzzy
-msgid "Extra media"
-msgstr "&Ebirakwata ahabirimu"
+#~ msgid "Extra media"
+#~ msgstr "&Ebirakwata ahabirimu"
 
-#: modules/gui/qt4/ui/open.h:258
-msgid "Complete MRL for VLC internal"
-msgstr ""
-
-#: modules/gui/qt4/ui/open.h:261
 #, fuzzy
-msgid "Select the file"
-msgstr "Toorana ekihandiiko"
-
-#: modules/gui/qt4/ui/open.h:265
-msgid "Change the start time for the media"
-msgstr ""
+#~ msgid "Select the file"
+#~ msgstr "Toorana ekihandiiko"
 
-#: modules/gui/qt4/ui/open.h:267
-msgid "HH'H':mm'm':ss's'.zzz"
-msgstr ""
-
-#: modules/gui/qt4/ui/open.h:268
 #, fuzzy
-msgid "Play another media synchronously (extra audio file, ...)"
-msgstr "Zaana orutambi orundi"
+#~ msgid "Play another media synchronously (extra audio file, ...)"
+#~ msgstr "Zaana orutambi orundi"
 
-#: modules/gui/qt4/ui/open_capture.h:97
 #, fuzzy
-msgid "Capture mode"
-msgstr "Teera ekishushani"
+#~ msgid "Capture mode"
+#~ msgstr "Teera ekishushani"
 
-#: modules/gui/qt4/ui/open_capture.h:99
 #, fuzzy
-msgid "Select the capture device type"
-msgstr "Toorana endagiriro eyokubiikamu"
+#~ msgid "Select the capture device type"
+#~ msgstr "Toorana endagiriro eyokubiikamu"
 
-#: modules/gui/qt4/ui/open_capture.h:101
 #, fuzzy
-msgid "Device Selection"
-msgstr "Ekitoreine kigwire"
-
-#: modules/gui/qt4/ui/open_capture.h:102
-msgid "Options"
-msgstr "Ebyokutooranamu"
+#~ msgid "Device Selection"
+#~ msgstr "Ekitoreine kigwire"
 
-#: modules/gui/qt4/ui/open_capture.h:104
-msgid "Access advanced options to tweak the device"
-msgstr ""
+#~ msgid "Options"
+#~ msgstr "Ebyokutooranamu"
 
-#: modules/gui/qt4/ui/open_capture.h:106
 #, fuzzy
-msgid "Advanced options..."
-msgstr "Ebyokutooranamu ebyahaiguru"
+#~ msgid "Advanced options..."
+#~ msgstr "Ebyokutooranamu ebyahaiguru"
 
-#: modules/gui/qt4/ui/open_disk.h:297
 #, fuzzy
-msgid "Disc Selection"
-msgstr "Endangiriro"
+#~ msgid "Disc Selection"
+#~ msgstr "Endangiriro"
 
-#: modules/gui/qt4/ui/open_disk.h:301
-msgid "SVCD/VCD"
-msgstr ""
-
-#: modules/gui/qt4/ui/open_disk.h:303
 #, fuzzy
-msgid "Disable Disc Menus"
-msgstr "Orukarara rwa DVD"
+#~ msgid "Disable Disc Menus"
+#~ msgstr "Orukarara rwa DVD"
 
-#: modules/gui/qt4/ui/open_disk.h:305
 #, fuzzy
-msgid "No disc menus"
-msgstr "Tihariho rukarara rwa DVD"
+#~ msgid "No disc menus"
+#~ msgstr "Tihariho rukarara rwa DVD"
 
-#: modules/gui/qt4/ui/open_disk.h:306
 #, fuzzy
-msgid "Disc device"
-msgstr "Akooma ka filimu"
+#~ msgid "Disc device"
+#~ msgstr "Akooma ka filimu"
 
-#: modules/gui/qt4/ui/open_disk.h:308
 #, fuzzy
-msgid "Starting Position"
-msgstr "Omwanya ahorarebera ebwokukozesa"
+#~ msgid "Starting Position"
+#~ msgstr "Omwanya ahorarebera ebwokukozesa"
 
-#: modules/gui/qt4/ui/open_disk.h:311
 #, fuzzy
-msgid "Audio and Subtitles"
-msgstr "Emitwe"
+#~ msgid "Audio and Subtitles"
+#~ msgstr "Emitwe"
 
-#: modules/gui/qt4/ui/open_file.h:143
 #, fuzzy
-msgid "Use a sub&title file"
-msgstr "Iguraho ekihandiiko kyemitwe"
+#~ msgid "Use a sub&title file"
+#~ msgstr "Iguraho ekihandiiko kyemitwe"
 
-#: modules/gui/qt4/ui/open_file.h:145
 #, fuzzy
-msgid "Select the subtitle file"
-msgstr "Iguraho ekihandiiko kyemitwe"
-
-#: modules/gui/qt4/ui/open_file.h:149
-msgid "Choose one or more media file to open"
-msgstr ""
+#~ msgid "Select the subtitle file"
+#~ msgstr "Iguraho ekihandiiko kyemitwe"
 
-#: modules/gui/qt4/ui/open_file.h:151
 #, fuzzy
-msgid "File Selection"
-msgstr "Ekitoreine kigwire"
-
-#: modules/gui/qt4/ui/open_file.h:152
-msgid "You can select local files with the following list and buttons."
-msgstr ""
-
-#: modules/gui/qt4/ui/open_file.h:153
-msgid "Add..."
-msgstr ""
+#~ msgid "File Selection"
+#~ msgstr "Ekitoreine kigwire"
 
-#: modules/gui/qt4/ui/open_net.h:97
-msgid "Network Protocol"
-msgstr "Entwara omu rutimbe"
+#~ msgid "Network Protocol"
+#~ msgstr "Entwara omu rutimbe"
 
-#: modules/gui/qt4/ui/open_net.h:98
-msgid "Please enter a network URL:"
-msgstr "Nyabura tasyamu adureesi y'orutimbe"
+#~ msgid "Please enter a network URL:"
+#~ msgstr "Nyabura tasyamu adureesi y'orutimbe"
 
-#: modules/gui/qt4/ui/profiles.h:701
 #, fuzzy
-msgid "Profile edition"
-msgstr "Eiziina Eryenyanjula"
-
-#: modules/gui/qt4/ui/profiles.h:702
-msgid "FLAC"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:703
-msgid "MP&4/MOV"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:704
-msgid "Ogg/Ogm"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:705
-msgid "M&KV"
-msgstr ""
+#~ msgid "Profile edition"
+#~ msgstr "Eiziina Eryenyanjula"
 
-#: modules/gui/qt4/ui/profiles.h:706
 #, fuzzy
-msgid "M&JPEG"
-msgstr "MJPEG"
+#~ msgid "M&JPEG"
+#~ msgstr "MJPEG"
 
-#: modules/gui/qt4/ui/profiles.h:707
 #, fuzzy
-msgid "MPEG-PS"
-msgstr "Enswa ya MPEG 1"
+#~ msgid "MPEG-PS"
+#~ msgstr "Enswa ya MPEG 1"
 
-#: modules/gui/qt4/ui/profiles.h:708
-msgid "F&LV"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:709
 #, fuzzy
-msgid "&MPEG-TS"
-msgstr "Enswa ya MPEG 1"
-
-#: modules/gui/qt4/ui/profiles.h:710
-msgid "RAW"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:711
-msgid "WAV"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:712
-msgid "Webm"
-msgstr ""
+#~ msgid "&MPEG-TS"
+#~ msgstr "Enswa ya MPEG 1"
 
-#: modules/gui/qt4/ui/profiles.h:713
 #, fuzzy
-msgid "MPEG &1"
-msgstr "Enswa ya MPEG 1"
+#~ msgid "MPEG &1"
+#~ msgstr "Enswa ya MPEG 1"
 
-#: modules/gui/qt4/ui/profiles.h:714
-msgid "AVI"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:715
-msgid "ASF/WMV"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:716
-msgid "MP&3"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:717
 #, fuzzy
-msgid "Features"
-msgstr "Teera ekishushani"
+#~ msgid "Features"
+#~ msgstr "Teera ekishushani"
 
-#: modules/gui/qt4/ui/profiles.h:719
 #, fuzzy
-msgid "Streamable"
-msgstr "Omutindo gwe biragarukaho"
+#~ msgid "Streamable"
+#~ msgstr "Omutindo gwe biragarukaho"
 
-#: modules/gui/qt4/ui/profiles.h:720
 #, fuzzy
-msgid "Chapters"
-msgstr "Ekicweka"
+#~ msgid "Chapters"
+#~ msgstr "Ekicweka"
 
-#: modules/gui/qt4/ui/profiles.h:723
 #, fuzzy
-msgid "Menus"
-msgstr "Orukarara ryokurondamu"
+#~ msgid "Menus"
+#~ msgstr "Orukarara ryokurondamu"
 
-#: modules/gui/qt4/ui/profiles.h:730
 #, fuzzy
-msgid "Fra&me Rate"
-msgstr "Furemu aha Furemu"
+#~ msgid "Fra&me Rate"
+#~ msgstr "Furemu aha Furemu"
 
-#: modules/gui/qt4/ui/profiles.h:731
 #, fuzzy
-msgid "Same as source"
-msgstr "Tasyamu emitwe ye'bwekihandiiko:"
-
-#: modules/gui/qt4/ui/profiles.h:733
-msgid " fps"
-msgstr ""
+#~ msgid "Same as source"
+#~ msgstr "Tasyamu emitwe ye'bwekihandiiko:"
 
-#: modules/gui/qt4/ui/profiles.h:734
 #, fuzzy
-msgid "Custom options"
-msgstr "Shoronzya za panya"
+#~ msgid "Custom options"
+#~ msgstr "Shoronzya za panya"
 
-#: modules/gui/qt4/ui/profiles.h:735
 #, fuzzy
-msgid "&Quality"
-msgstr "Kumarayo kyona"
+#~ msgid "&Quality"
+#~ msgstr "Kumarayo kyona"
 
-#: modules/gui/qt4/ui/profiles.h:736 modules/gui/qt4/ui/profiles.h:737
 #, fuzzy
-msgid "Not Used"
-msgstr "Tikyateirwamu"
+#~ msgid "Not Used"
+#~ msgstr "Tikyateirwamu"
 
-#: modules/gui/qt4/ui/profiles.h:738 modules/gui/qt4/ui/profiles.h:757
-msgid " kb/s"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:739 modules/gui/qt4/ui/profiles.h:759
 #, fuzzy
-msgid "Encoding parameters"
-msgstr "Orukarara orugarami"
+#~ msgid "Encoding parameters"
+#~ msgstr "Orukarara orugarami"
 
-#: modules/gui/qt4/ui/profiles.h:742
 #, fuzzy
-msgid "Frame size"
-msgstr "Furemu aha Furemu"
-
-#: modules/gui/qt4/ui/profiles.h:745 modules/gui/qt4/ui/profiles.h:748
-msgid "px"
-msgstr ""
+#~ msgid "Frame size"
+#~ msgstr "Furemu aha Furemu"
 
-#: modules/gui/qt4/ui/profiles.h:758
 #, fuzzy
-msgid "Sa&mple Rate"
-msgstr "Enyingana eyayoherezebwa"
+#~ msgid "Sa&mple Rate"
+#~ msgstr "Enyingana eyayoherezebwa"
 
-#: modules/gui/qt4/ui/profiles.h:766
 #, fuzzy
-msgid "Profile &Name"
-msgstr "Eiziina Eryenyanjula"
+#~ msgid "Profile &Name"
+#~ msgstr "Eiziina Eryenyanjula"
 
-#: modules/gui/qt4/ui/sout.h:203
 #, fuzzy
-msgid "Set up media sources to stream"
-msgstr "Toorana enshohora"
+#~ msgid "Set up media sources to stream"
+#~ msgstr "Toorana enshohora"
 
-#: modules/gui/qt4/ui/sout.h:205
 #, fuzzy
-msgid "Destination Setup"
-msgstr "Ahokumarira"
+#~ msgid "Destination Setup"
+#~ msgstr "Ahokumarira"
 
-#: modules/gui/qt4/ui/sout.h:206
 #, fuzzy
-msgid "Select destinations to stream to"
-msgstr "Toorana enshohora"
+#~ msgid "Select destinations to stream to"
+#~ msgstr "Toorana enshohora"
 
-#: modules/gui/qt4/ui/sout.h:207
-msgid ""
-"Add destinations following the streaming methods you need. Be sure to check "
-"with transcoding that the format is compatible with the method used."
-msgstr ""
-
-#: modules/gui/qt4/ui/sout.h:208
 #, fuzzy
-msgid "New destination"
-msgstr "Ahokumarira"
+#~ msgid "New destination"
+#~ msgstr "Ahokumarira"
 
-#: modules/gui/qt4/ui/sout.h:210
 #, fuzzy
-msgid "Display locally"
-msgstr "Yoreka ebiragarukaho orubiikirwa ahakanyabwengye yaawe "
+#~ msgid "Display locally"
+#~ msgstr "Yoreka ebiragarukaho orubiikirwa ahakanyabwengye yaawe "
 
-#: modules/gui/qt4/ui/sout.h:212
 #, fuzzy
-msgid "Transcoding Options"
-msgstr "Omuringo"
+#~ msgid "Transcoding Options"
+#~ msgstr "Omuringo"
 
-#: modules/gui/qt4/ui/sout.h:213
 #, fuzzy
-msgid "Select and choose transcoding options"
-msgstr "Ebyokutoorana ahari enshohora"
+#~ msgid "Select and choose transcoding options"
+#~ msgstr "Ebyokutoorana ahari enshohora"
 
-#: modules/gui/qt4/ui/sout.h:214
 #, fuzzy
-msgid "Activate Transcoding"
-msgstr "Emitwe ye'bisherekyirwe"
+#~ msgid "Activate Transcoding"
+#~ msgstr "Emitwe ye'bisherekyirwe"
 
-#: modules/gui/qt4/ui/sout.h:215
 #, fuzzy
-msgid "Option Setup"
-msgstr "Ebyokutooranamu"
+#~ msgid "Option Setup"
+#~ msgstr "Ebyokutooranamu"
 
-#: modules/gui/qt4/ui/sout.h:216
 #, fuzzy
-msgid "Set up any additional options for streaming"
-msgstr "Toorana enshohora"
-
-#: modules/gui/qt4/ui/sout.h:217
-msgid "Miscellaneous Options"
-msgstr ""
+#~ msgid "Set up any additional options for streaming"
+#~ msgstr "Toorana enshohora"
 
-#: modules/gui/qt4/ui/sout.h:218
 #, fuzzy
-msgid "Stream all elementary streams"
-msgstr "Tasyamu aduresi ya kanyabwengye eraza kushohozwamu."
+#~ msgid "Stream all elementary streams"
+#~ msgstr "Tasyamu aduresi ya kanyabwengye eraza kushohozwamu."
 
-#: modules/gui/qt4/ui/sout.h:219
 #, fuzzy
-msgid "Generated stream output string"
-msgstr "Enteekateeka eza vidiyo"
+#~ msgid "Generated stream output string"
+#~ msgstr "Enteekateeka eza vidiyo"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:428
-msgid " %"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_audio.h:431
 #, fuzzy
-msgid "Output module:"
-msgstr "Enteekateeka yokushohoza"
+#~ msgid "Output module:"
+#~ msgstr "Enteekateeka yokushohoza"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:435
-msgid "Effects"
-msgstr "Ebyarugamu"
+#~ msgid "Effects"
+#~ msgstr "Ebyarugamu"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:436
 #, fuzzy
-msgid "Visualization:"
-msgstr "Okuleeba"
+#~ msgid "Visualization:"
+#~ msgstr "Okuleeba"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:437
 #, fuzzy
-msgid "Enable Time-Stretching audio"
-msgstr "Basiza okuhurira"
+#~ msgid "Enable Time-Stretching audio"
+#~ msgstr "Basiza okuhurira"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:438
 #, fuzzy
-msgid "Dolby Surround:"
-msgstr "Haririza okujumbura okwa Dolby Surround"
+#~ msgid "Dolby Surround:"
+#~ msgstr "Haririza okujumbura okwa Dolby Surround"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:439
 #, fuzzy
-msgid "Replay gain mode:"
-msgstr "Toorana endagiriro eyokubiikamu"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:440
-msgid "Headphone surround effect"
-msgstr "Nkoku akokujweka ahamatu biri"
+#~ msgid "Replay gain mode:"
+#~ msgstr "Toorana endagiriro eyokubiikamu"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:441
-msgid "Normalize volume to:"
-msgstr ""
+#~ msgid "Headphone surround effect"
+#~ msgstr "Nkoku akokujweka ahamatu biri"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:443
 #, fuzzy
-msgid "Preferred audio language:"
-msgstr "Orurimi orwasiimwa omubyahamaraka"
+#~ msgid "Preferred audio language:"
+#~ msgstr "Orurimi orwasiimwa omubyahamaraka"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:444
 #, fuzzy
-msgid "Password:"
-msgstr "Akehihama"
+#~ msgid "Password:"
+#~ msgstr "Akehihama"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:445
 #, fuzzy
-msgid "Username:"
-msgstr "Eiziina lyorikukozesa"
+#~ msgid "Username:"
+#~ msgstr "Eiziina lyorikukozesa"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:446
-msgid "Submit played tracks stats to Last.fm"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:346
 #, fuzzy
-msgid "Codecs"
-msgstr "Codec"
-
-#: modules/gui/qt4/ui/sprefs_input.h:347
-msgid "x264 profile and level selection"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:348
-msgid "x264 preset and tuning selection"
-msgstr ""
+#~ msgid "Codecs"
+#~ msgstr "Codec"
 
-#: modules/gui/qt4/ui/sprefs_input.h:349
 #, fuzzy
-msgid "Hardware-accelerated decoding"
-msgstr "Akokurinda furemu"
+#~ msgid "Hardware-accelerated decoding"
+#~ msgstr "Akokurinda furemu"
 
-#: modules/gui/qt4/ui/sprefs_input.h:350
-msgid "Skip H.264 in-loop deblocking filter"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:351
 #, fuzzy
-msgid "Video quality post-processing level"
-msgstr "Kikoreho ahanyima"
-
-#: modules/gui/qt4/ui/sprefs_input.h:352
-msgid "Optical drive"
-msgstr ""
+#~ msgid "Video quality post-processing level"
+#~ msgstr "Kikoreho ahanyima"
 
-#: modules/gui/qt4/ui/sprefs_input.h:353
 #, fuzzy
-msgid "Default optical device"
-msgstr "Ahokujweka kanyabwengye"
+#~ msgid "Default optical device"
+#~ msgstr "Ahokujweka kanyabwengye"
 
-#: modules/gui/qt4/ui/sprefs_input.h:357
 #, fuzzy
-msgid "Damaged or incomplete AVI file"
-msgstr "Ekihandiko kyekishushani"
+#~ msgid "Damaged or incomplete AVI file"
+#~ msgstr "Ekihandiko kyekishushani"
 
-#: modules/gui/qt4/ui/sprefs_input.h:360
 #, fuzzy
-msgid "HTTP proxy URL"
-msgstr "Ahabya HTTP"
+#~ msgid "HTTP proxy URL"
+#~ msgstr "Ahabya HTTP"
 
-#: modules/gui/qt4/ui/sprefs_input.h:361
 #, fuzzy
-msgid "HTTP (default)"
-msgstr "Ebiteirweho"
+#~ msgid "HTTP (default)"
+#~ msgstr "Ebiteirweho"
 
-#: modules/gui/qt4/ui/sprefs_input.h:362
 #, fuzzy
-msgid "RTP over RTSP (TCP)"
-msgstr "Kozesa RTP mumwanya gwa RTSP (TCP)"
+#~ msgid "RTP over RTSP (TCP)"
+#~ msgstr "Kozesa RTP mumwanya gwa RTSP (TCP)"
 
-#: modules/gui/qt4/ui/sprefs_input.h:363
 #, fuzzy
-msgid "Live555 stream transport"
-msgstr "Shohoza Ebyarugamu"
+#~ msgid "Live555 stream transport"
+#~ msgstr "Shohoza Ebyarugamu"
 
-#: modules/gui/qt4/ui/sprefs_input.h:364
 #, fuzzy
-msgid "Default caching policy"
-msgstr "Ibiikiro eritaibwemu"
+#~ msgid "Default caching policy"
+#~ msgstr "Ibiikiro eritaibwemu"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:518
 #, fuzzy
-msgid "Menus language:"
-msgstr "Orurimi orwasiimwa omubyahamaraka"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:519
-msgid "Look and feel"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:520
-msgid "Use custom skin"
-msgstr ""
+#~ msgid "Menus language:"
+#~ msgstr "Orurimi orwasiimwa omubyahamaraka"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:522
-msgid "This is VLC's default interface, with a native look and feel."
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:524
 #, fuzzy
-msgid "Use native style"
-msgstr "Iguraho ekihandiiko kyemitwe"
+#~ msgid "Use native style"
+#~ msgstr "Iguraho ekihandiiko kyemitwe"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:525
 #, fuzzy
-msgid "Resize interface to video size"
-msgstr "Enkora ..."
+#~ msgid "Resize interface to video size"
+#~ msgstr "Enkora ..."
 
-#: modules/gui/qt4/ui/sprefs_interface.h:526
 #, fuzzy
-msgid "Show controls in full screen mode"
-msgstr "Torana sinema aha rutimbe rwijwire"
+#~ msgid "Show controls in full screen mode"
+#~ msgstr "Torana sinema aha rutimbe rwijwire"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:527
 #, fuzzy
-msgid "Pause playback when minimized"
-msgstr "Yemerezamu Ebyazanwa"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:528
-msgid "Show media change popup:"
-msgstr ""
+#~ msgid "Pause playback when minimized"
+#~ msgstr "Yemerezamu Ebyazanwa"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:529
 #, fuzzy
-msgid "Start in minimal view mode"
-msgstr "Torana sinema aha rutimbe rwijwire"
+#~ msgid "Start in minimal view mode"
+#~ msgstr "Torana sinema aha rutimbe rwijwire"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:530
 #, fuzzy
-msgid "Force window style:"
-msgstr "Omutwe omukuru ogurakurataho"
+#~ msgid "Force window style:"
+#~ msgstr "Omutwe omukuru ogurakurataho"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:531
 #, fuzzy
-msgid "Integrate video in interface"
-msgstr "Ahorikureebeera omuri Maemo hildon "
+#~ msgid "Integrate video in interface"
+#~ msgstr "Ahorikureebeera omuri Maemo hildon "
 
-#: modules/gui/qt4/ui/sprefs_interface.h:532
 #, fuzzy
-msgid "Show systray icon"
-msgstr "Gyemaho omwanya gwomutwe"
+#~ msgid "Show systray icon"
+#~ msgstr "Gyemaho omwanya gwomutwe"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:534
-msgid "Skin resource file:"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:536
 #, fuzzy
-msgid "Playlist and Instances"
-msgstr "Ebihandiiko byahankarar rwebyokuzaana"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:537
-msgid "Allow only one instance"
-msgstr ""
+#~ msgid "Playlist and Instances"
+#~ msgstr "Ebihandiiko byahankarar rwebyokuzaana"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:540
-msgid "Pause on the last frame of a video"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:544
-msgid "Every "
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:547
-msgid "Separate words by | (without space)"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:549
-msgid "Save recently played items"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:550
-msgid "Activate updates notifier"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:552
-msgid "Operating System Integration"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:553
 #, fuzzy
-msgid "File extensions association"
-msgstr "Ahukirikushangwa"
+#~ msgid "File extensions association"
+#~ msgstr "Ahukirikushangwa"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:554
 #, fuzzy
-msgid "Set up associations..."
-msgstr "Entegyeka..."
+#~ msgid "Set up associations..."
+#~ msgstr "Entegyeka..."
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:291
 #, fuzzy
-msgid "Enable On Screen Display (OSD)"
-msgstr "Yoreka aharutimbe"
+#~ msgid "Enable On Screen Display (OSD)"
+#~ msgstr "Yoreka aharutimbe"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:292
-msgid "Show media title on video start"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:294
 #, fuzzy
-msgid "Enable subtitles"
-msgstr "Otemu emitwe"
+#~ msgid "Enable subtitles"
+#~ msgstr "Otemu emitwe"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:295
 #, fuzzy
-msgid "Subtitle Language"
-msgstr "Endimi y'emitwe"
+#~ msgid "Subtitle Language"
+#~ msgstr "Endimi y'emitwe"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:297
 #, fuzzy
-msgid "Default encoding"
-msgstr "Okushereka okuteibwemu"
+#~ msgid "Default encoding"
+#~ msgstr "Okushereka okuteibwemu"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:298
 #, fuzzy
-msgid "Subtitle effects"
-msgstr "Ebihandiiko ebivunurirwe"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:304
-msgid "Add a shadow"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:306
-#: modules/gui/qt4/ui/video_effects.h:1406
-#: modules/gui/qt4/ui/video_effects.h:1410
-#: modules/gui/qt4/ui/video_effects.h:1413
-#: modules/gui/qt4/ui/video_effects.h:1414
-#: modules/gui/qt4/ui/video_effects.h:1449
-#: modules/gui/qt4/ui/video_effects.h:1451
-#: modules/gui/qt4/ui/video_effects.h:1461
-#: modules/gui/qt4/ui/video_effects.h:1462
-msgid " px"
-msgstr ""
+#~ msgid "Subtitle effects"
+#~ msgstr "Ebihandiiko ebivunurirwe"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:307
 #, fuzzy
-msgid "Add a background"
-msgstr "Gyeragyeranisa ebiri omu firimu"
+#~ msgid "Add a background"
+#~ msgstr "Gyeragyeranisa ebiri omu firimu"
 
-#: modules/gui/qt4/ui/sprefs_video.h:324
 #, fuzzy
-msgid "Accelerated video output (Overlay)"
-msgstr "Entekateeka zasinema tiizabiikwa"
+#~ msgid "Accelerated video output (Overlay)"
+#~ msgstr "Entekateeka zasinema tiizabiikwa"
 
-#: modules/gui/qt4/ui/sprefs_video.h:329
 #, fuzzy
-msgid "DirectX"
-msgstr "Endangiriro"
+#~ msgid "DirectX"
+#~ msgstr "Endangiriro"
 
-#: modules/gui/qt4/ui/sprefs_video.h:330
 #, fuzzy
-msgid "Display device"
-msgstr "Ebyorekirwe"
+#~ msgid "Display device"
+#~ msgstr "Ebyorekirwe"
 
-#: modules/gui/qt4/ui/sprefs_video.h:331
-msgid "KVA"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_video.h:335
 #, fuzzy
-msgid "Deinterlacing"
-msgstr "Enkora ..."
+#~ msgid "Deinterlacing"
+#~ msgstr "Enkora ..."
 
-#: modules/gui/qt4/ui/sprefs_video.h:337
 #, fuzzy
-msgid "Force Aspect Ratio"
-msgstr "Kyinga okuhangusya"
-
-#: modules/gui/qt4/ui/sprefs_video.h:342
-msgid "vlc-snap"
-msgstr ""
+#~ msgid "Force Aspect Ratio"
+#~ msgstr "Kyinga okuhangusya"
 
-#: modules/gui/qt4/ui/streampanel.h:169
-msgid "1"
-msgstr "1"
+#~ msgid "1"
+#~ msgstr "1"
 
-#: modules/gui/qt4/ui/streampanel.h:171
-msgid "Stuff"
-msgstr ""
-
-#: modules/gui/qt4/ui/streampanel.h:173
 #, fuzzy
-msgid "Edit settings"
-msgstr "Entekateeka yamaraka"
+#~ msgid "Edit settings"
+#~ msgstr "Entekateeka yamaraka"
 
-#: modules/gui/qt4/ui/streampanel.h:174
 #, fuzzy
-msgid "Control"
-msgstr "Hakanisa"
-
-#: modules/gui/qt4/ui/streampanel.h:175
-msgid "Run manually"
-msgstr ""
+#~ msgid "Control"
+#~ msgstr "Hakanisa"
 
-#: modules/gui/qt4/ui/streampanel.h:176
 #, fuzzy
-msgid "Setup schedule"
-msgstr "Gyereka Obwire"
+#~ msgid "Setup schedule"
+#~ msgstr "Gyereka Obwire"
 
-#: modules/gui/qt4/ui/streampanel.h:177
 #, fuzzy
-msgid "Run on schedule"
-msgstr "Gyereka Obwire"
+#~ msgid "Run on schedule"
+#~ msgstr "Gyereka Obwire"
 
-#: modules/gui/qt4/ui/streampanel.h:178
 #, fuzzy
-msgid "Status"
-msgstr "Embaririra"
+#~ msgid "Status"
+#~ msgstr "Embaririra"
 
-#: modules/gui/qt4/ui/streampanel.h:179
-msgid "P/P"
-msgstr ""
-
-#: modules/gui/qt4/ui/streampanel.h:182
 #, fuzzy
-msgid "Prev"
-msgstr "Ekyenyima"
+#~ msgid "Prev"
+#~ msgstr "Ekyenyima"
 
-#: modules/gui/qt4/ui/streampanel.h:183
 #, fuzzy
-msgid "Add Input"
-msgstr "Tasyamu"
+#~ msgid "Add Input"
+#~ msgstr "Tasyamu"
 
-#: modules/gui/qt4/ui/streampanel.h:184
 #, fuzzy
-msgid "Edit Input"
-msgstr "Tasyamu"
+#~ msgid "Edit Input"
+#~ msgstr "Tasyamu"
 
-#: modules/gui/qt4/ui/streampanel.h:185
 #, fuzzy
-msgid "Clear List"
-msgstr "Ihaho"
+#~ msgid "Clear List"
+#~ msgstr "Ihaho"
 
-#: modules/gui/qt4/ui/update.h:148
 #, fuzzy
-msgid "Check for VLC updates"
-msgstr "Kyebera ebisya"
-
-#: modules/gui/qt4/ui/update.h:149
-msgid "Launching an update request..."
-msgstr "Kutandikaho okushaba ebisya ebiriho..."
+#~ msgid "Check for VLC updates"
+#~ msgstr "Kyebera ebisya"
 
-#: modules/gui/qt4/ui/update.h:150
-msgid "Do you want to download it?"
-msgstr ""
+#~ msgid "Launching an update request..."
+#~ msgstr "Kutandikaho okushaba ebisya ebiriho..."
 
-#: modules/gui/qt4/ui/video_effects.h:1404
 #, fuzzy
-msgid "Essential"
-msgstr "Ekirayamba okuha iraka"
+#~ msgid "Essential"
+#~ msgstr "Ekirayamba okuha iraka"
 
-#: modules/gui/qt4/ui/video_effects.h:1418
-#: modules/gui/qt4/ui/video_effects.h:1427
-msgid ">HHHHHH;#"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1419
 #, fuzzy
-msgid "Negate colors"
-msgstr "Hindura erangi"
+#~ msgid "Negate colors"
+#~ msgstr "Hindura erangi"
 
-#: modules/gui/qt4/ui/video_effects.h:1432
 #, fuzzy
-msgid "Colors"
-msgstr "Erangi"
+#~ msgid "Colors"
+#~ msgstr "Erangi"
 
-#: modules/gui/qt4/ui/video_effects.h:1433
-msgid "Interactive Zoom"
-msgstr "kihangusye nkoku wayenda"
+#~ msgid "Interactive Zoom"
+#~ msgstr "kihangusye nkoku wayenda"
 
-#: modules/gui/qt4/ui/video_effects.h:1439
 #, fuzzy
-msgid "Angle"
-msgstr "Ebihandiiko byebyokuzaana"
+#~ msgid "Angle"
+#~ msgstr "Ebihandiiko byebyokuzaana"
 
-#: modules/gui/qt4/ui/video_effects.h:1443
 #, fuzzy
-msgid "Black Slot"
-msgstr "Ekirikwiragura"
-
-#: modules/gui/qt4/ui/video_effects.h:1447
-#: modules/gui/qt4/ui/video_effects.h:1464
-msgid "..."
-msgstr ""
+#~ msgid "Black Slot"
+#~ msgstr "Ekirikwiragura"
 
-#: modules/gui/qt4/ui/video_effects.h:1452
-msgid "full"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1454
-msgid "none"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1458
 #, fuzzy
-msgid "Logo erase"
-msgstr "Amaziina gebihandiiko:"
+#~ msgid "Logo erase"
+#~ msgstr "Amaziina gebihandiiko:"
 
-#: modules/gui/qt4/ui/video_effects.h:1463
-msgid "Mask"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1468
 #, fuzzy
-msgid "Output Color Filtermode"
-msgstr "Enteekateeka yokushohoza"
+#~ msgid "Output Color Filtermode"
+#~ msgstr "Enteekateeka yokushohoza"
 
-#: modules/gui/qt4/ui/video_effects.h:1469
 #, fuzzy
-msgid "Brightness (%)"
-msgstr "Okuhwezeka"
-
-#: modules/gui/qt4/ui/video_effects.h:1471
-msgid "Mark analyzed Pixels"
-msgstr ""
+#~ msgid "Brightness (%)"
+#~ msgstr "Okuhwezeka"
 
-#: modules/gui/qt4/ui/video_effects.h:1473
 #, fuzzy
-msgid "Filter threshold (%)"
-msgstr "Okuhindahinduka"
+#~ msgid "Filter threshold (%)"
+#~ msgstr "Okuhindahinduka"
 
-#: modules/gui/qt4/ui/video_effects.h:1476
-msgid "Anaglyph 3D"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1477
 #, fuzzy
-msgid "Mirror"
-msgstr "Enshobe"
+#~ msgid "Mirror"
+#~ msgstr "Enshobe"
 
-#: modules/gui/qt4/ui/video_effects.h:1481
 #, fuzzy
-msgid "Motion detect"
-msgstr "Ahari ebiragyegyena filimu"
+#~ msgid "Motion detect"
+#~ msgstr "Ahari ebiragyegyena filimu"
 
-#: modules/gui/qt4/ui/video_effects.h:1482
 #, fuzzy
-msgid "Spatial blur"
-msgstr "Ekirayamba okuha iraka"
-
-#: modules/gui/qt4/ui/video_effects.h:1486
-msgid "Anti-Flickering"
-msgstr ""
+#~ msgid "Spatial blur"
+#~ msgstr "Ekirayamba okuha iraka"
 
-#: modules/gui/qt4/ui/video_effects.h:1487
-msgid "Soften"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1488
-msgid "Denoiser"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1489
 #, fuzzy
-msgid "Spatial luma strength"
-msgstr "Ekirayamba okuha iraka"
+#~ msgid "Spatial luma strength"
+#~ msgstr "Ekirayamba okuha iraka"
 
-#: modules/gui/qt4/ui/video_effects.h:1490
 #, fuzzy
-msgid "Temporal luma strength"
-msgstr "Ekirayamba okuha iraka"
+#~ msgid "Temporal luma strength"
+#~ msgstr "Ekirayamba okuha iraka"
 
-#: modules/gui/qt4/ui/video_effects.h:1491
 #, fuzzy
-msgid "Spatial chroma strength"
-msgstr "Ekirayamba okuha iraka"
+#~ msgid "Spatial chroma strength"
+#~ msgstr "Ekirayamba okuha iraka"
 
-#: modules/gui/qt4/ui/video_effects.h:1492
 #, fuzzy
-msgid "Temporal chroma strength"
-msgstr "Ekirayamba okuha iraka"
+#~ msgid "Temporal chroma strength"
+#~ msgstr "Ekirayamba okuha iraka"
 
-#: modules/gui/qt4/ui/vlm.h:286
 #, fuzzy
-msgid "VLM configurator"
-msgstr "Iguraho entereeza ya VLM..."
+#~ msgid "VLM configurator"
+#~ msgstr "Iguraho entereeza ya VLM..."
 
-#: modules/gui/qt4/ui/vlm.h:287
 #, fuzzy
-msgid "Media Manager Edition"
-msgstr "Amakuru ahari ekirazaana"
+#~ msgid "Media Manager Edition"
+#~ msgstr "Amakuru ahari ekirazaana"
 
-#: modules/gui/qt4/ui/vlm.h:288
 #, fuzzy
-msgid "Name:"
-msgstr "Eiziina"
+#~ msgid "Name:"
+#~ msgstr "Eiziina"
 
-#: modules/gui/qt4/ui/vlm.h:290
 #, fuzzy
-msgid "Input:"
-msgstr "Tasyamu"
+#~ msgid "Input:"
+#~ msgstr "Tasyamu"
 
-#: modules/gui/qt4/ui/vlm.h:291
 #, fuzzy
-msgid "Select Input"
-msgstr "Ebyateerwa aharutimbe"
+#~ msgid "Select Input"
+#~ msgstr "Ebyateerwa aharutimbe"
 
-#: modules/gui/qt4/ui/vlm.h:292
 #, fuzzy
-msgid "Output:"
-msgstr "Iguraho URL"
+#~ msgid "Output:"
+#~ msgstr "Iguraho URL"
 
-#: modules/gui/qt4/ui/vlm.h:293
 #, fuzzy
-msgid "Select Output"
-msgstr "Shohoza Ebyarugamu"
+#~ msgid "Select Output"
+#~ msgstr "Shohoza Ebyarugamu"
 
-#: modules/gui/qt4/ui/vlm.h:294
 #, fuzzy
-msgid "Time Control"
-msgstr "Kyendeza iraka"
+#~ msgid "Time Control"
+#~ msgstr "Kyendeza iraka"
 
-#: modules/gui/qt4/ui/vlm.h:295
 #, fuzzy
-msgid "Mux Control"
-msgstr "Hakanisa"
+#~ msgid "Mux Control"
+#~ msgstr "Hakanisa"
 
-#: modules/gui/qt4/ui/vlm.h:296
 #, fuzzy
-msgid "Muxer:"
-msgstr "Enteekateeka yokushohoza"
-
-#: modules/gui/qt4/ui/vlm.h:297
-msgid "AAAA; "
-msgstr ""
+#~ msgid "Muxer:"
+#~ msgstr "Enteekateeka yokushohoza"
 
-#: modules/gui/qt4/ui/vlm.h:302
 #, fuzzy
-msgid "Media Manager List"
-msgstr "Ekipimo ky'ekirazaana"
+#~ msgid "Media Manager List"
+#~ msgstr "Ekipimo ky'ekirazaana"
 
 #, fuzzy
 #~ msgid "---  DVD Menu"

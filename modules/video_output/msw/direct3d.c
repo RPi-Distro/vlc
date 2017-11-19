@@ -2,7 +2,7 @@
  * direct3d.c: Windows Direct3D video output module
  *****************************************************************************
  * Copyright (C) 2006-2014 VLC authors and VideoLAN
- *$Id: 98e9eef368bd4472392f95e979079b40a4d73e45 $
+ *$Id: 219706e148be5694d983326449184687bbdd8cf1 $
  *
  * Authors: Damien Fouilleul <damienf@videolan.org>,
  *          Sasha Koruga <skoruga@gmail.com>,
@@ -622,9 +622,9 @@ static int Direct3DFillPresentationParameters(vout_display_t *vd)
     d3dpp->Windowed               = TRUE;
     d3dpp->hDeviceWindow          = vd->sys->hvideownd;
     d3dpp->BackBufferWidth        = __MAX((unsigned int)GetSystemMetrics(SM_CXVIRTUALSCREEN),
-                                          d3ddm.Width);
+                                          vd->source.i_width);
     d3dpp->BackBufferHeight       = __MAX((unsigned int)GetSystemMetrics(SM_CYVIRTUALSCREEN),
-                                          d3ddm.Height);
+                                          vd->source.i_height);
     d3dpp->SwapEffect             = D3DSWAPEFFECT_COPY;
     d3dpp->MultiSampleType        = D3DMULTISAMPLE_NONE;
     d3dpp->PresentationInterval   = D3DPRESENT_INTERVAL_DEFAULT;
@@ -1468,7 +1468,9 @@ static int Direct3DImportPicture(vout_display_t *vd,
     // When copying the entire buffer, the margin end up being blended in the actual picture
     // on nVidia (regardless of even/odd dimensions)
     if ( copy_rect.right & 1 ) copy_rect.right++;
+    if ( copy_rect.left & 1 ) copy_rect.left--;
     if ( copy_rect.bottom & 1 ) copy_rect.bottom++;
+    if ( copy_rect.top & 1 ) copy_rect.top--;
     hr = IDirect3DDevice9_StretchRect(sys->d3ddev, source, &copy_rect, destination,
                                       &copy_rect, D3DTEXF_NONE);
     IDirect3DSurface9_Release(destination);

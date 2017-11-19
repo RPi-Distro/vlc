@@ -2,7 +2,7 @@
  * flac.c: flac decoder/encoder module making use of libflac
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 87c1e6cb7b84d4ba2b5eef18f9dc861b40cf6393 $
+ * $Id: fb12e6cab890777592154b43d8a2bc286a8f3913 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -64,6 +64,8 @@ struct decoder_sys_t
      */
     FLAC__StreamDecoder *p_flac;
     FLAC__StreamMetadata_StreamInfo stream_info;
+
+    uint8_t rgi_channels_reorder[AOUT_CHAN_MAX];
     bool b_stream_info;
 };
 
@@ -85,6 +87,19 @@ static const int pi_channels_maps[9] =
     AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER | AOUT_CHAN_REARLEFT
      | AOUT_CHAN_REARRIGHT | AOUT_CHAN_MIDDLELEFT | AOUT_CHAN_MIDDLERIGHT
      | AOUT_CHAN_LFE
+};
+
+/* XXX it supposes our internal format is WG4 */
+static const uint8_t ppi_reorder[1+8][8] = {
+    { },
+    { 0, },
+    { 0, 1 },
+    { 0, 1, 2 },
+    { 0, 1, 2, 3 },
+    { 0, 1, 3, 4, 2 },
+    { 0, 1, 4, 5, 2, 3 },
+    { 0, 1, 5, 6, 4, 2, 3 },
+    { 0, 1, 6, 7, 4, 5, 2, 3 },
 };
 
 /*****************************************************************************
@@ -143,6 +158,29 @@ static void Interleave( int32_t *p_out, const int32_t * const *pp_in,
 }
 
 /*****************************************************************************
+ * DecoderSetOutputFormat: helper function to convert and check frame format
+ *****************************************************************************/
+static int DecoderSetOutputFormat( unsigned i_channels, unsigned i_rate,
+                                   unsigned i_streaminfo_rate,
+                                   unsigned i_bitspersample,
+                                   audio_format_t *fmt,
+                                   uint8_t *pi_channels_reorder )
+{
+    if( i_channels == 0 || i_channels > FLAC__MAX_CHANNELS ||
+        i_bitspersample == 0 || (i_rate == 0 && i_streaminfo_rate == 0) )
+        return VLC_EGENERIC;
+
+    fmt->i_channels = i_channels;
+    fmt->i_rate = (i_rate > 0 ) ? i_rate : i_streaminfo_rate;
+    fmt->i_physical_channels =
+    fmt->i_original_channels = pi_channels_maps[i_channels];
+    memcpy( pi_channels_reorder, ppi_reorder[i_channels], i_channels );
+    fmt->i_bitspersample = i_bitspersample;
+
+    return VLC_SUCCESS;
+}
+
+/*****************************************************************************
  * DecoderWriteCallback: called by libflac to output decoded samples
  *****************************************************************************/
 static FLAC__StreamDecoderWriteStatus
@@ -150,30 +188,31 @@ DecoderWriteCallback( const FLAC__StreamDecoder *decoder,
                       const FLAC__Frame *frame,
                       const FLAC__int32 *const buffer[], void *client_data )
 {
-    /* XXX it supposes our internal format is WG4 */
-    static const unsigned char ppi_reorder[1+8][8] = {
-        { },
-        { 0, },
-        { 0, 1 },
-        { 0, 1, 2 },
-        { 0, 1, 2, 3 },
-        { 0, 1, 3, 4, 2 },
-        { 0, 1, 4, 5, 2, 3 },
-        { 0, 1, 5, 6, 4, 2, 3 },
-        { 0, 1, 6, 7, 4, 5, 2, 3 },
-    };
-
     VLC_UNUSED(decoder);
     decoder_t *p_dec = (decoder_t *)client_data;
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    if( p_dec->fmt_out.audio.i_channels <= 0 ||
-        p_dec->fmt_out.audio.i_channels > 8 )
-        return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
-    if( date_Get( &p_sys->end_date ) <= VLC_TS_INVALID )
+    if( DecoderSetOutputFormat( frame->header.channels,
+                                frame->header.sample_rate,
+                                p_sys->b_stream_info ? p_sys->stream_info.sample_rate : 0,
+                                frame->header.bits_per_sample,
+                                &p_dec->fmt_out.audio,
+                                p_sys->rgi_channels_reorder ) )
         return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
 
-    const unsigned char *pi_reorder = ppi_reorder[p_dec->fmt_out.audio.i_channels];
+    if( p_sys->end_date.i_divider_num != p_dec->fmt_out.audio.i_rate )
+    {
+        if( p_sys->end_date.i_divider_num > 0 )
+            date_Change( &p_sys->end_date, p_dec->fmt_out.audio.i_rate, 1 );
+        else
+            date_Init( &p_sys->end_date, p_dec->fmt_out.audio.i_rate, 1 );
+    }
+
+    if( decoder_UpdateAudioFormat( p_dec ) )
+        return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
+
+    if( date_Get( &p_sys->end_date ) <= VLC_TS_INVALID )
+        return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
 
     p_sys->p_aout_buffer =
         decoder_NewAudioBuffer( p_dec, frame->header.blocksize );
@@ -181,7 +220,8 @@ DecoderWriteCallback( const FLAC__StreamDecoder *decoder,
     if( p_sys->p_aout_buffer == NULL )
         return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
 
-    Interleave( (int32_t *)p_sys->p_aout_buffer->p_buffer, buffer, pi_reorder,
+    Interleave( (int32_t *)p_sys->p_aout_buffer->p_buffer, buffer,
+                 p_sys->rgi_channels_reorder ,
                  frame->header.channels, frame->header.blocksize,
                  frame->header.bits_per_sample );
 
@@ -233,17 +273,11 @@ static void DecoderMetadataCallback( const FLAC__StreamDecoder *decoder,
     decoder_sys_t *p_sys = p_dec->p_sys;
 
     /* Setup the format */
-    p_dec->fmt_out.audio.i_rate     = metadata->data.stream_info.sample_rate;
-    p_dec->fmt_out.audio.i_channels = metadata->data.stream_info.channels;
-    if(metadata->data.stream_info.channels < 9)
-    {
-    	p_dec->fmt_out.audio.i_physical_channels =
-        p_dec->fmt_out.audio.i_original_channels =
-            pi_channels_maps[metadata->data.stream_info.channels];
-    }
-    if (!p_dec->fmt_out.audio.i_bitspersample)
-        p_dec->fmt_out.audio.i_bitspersample =
-            metadata->data.stream_info.bits_per_sample;
+    DecoderSetOutputFormat( metadata->data.stream_info.channels,
+                            metadata->data.stream_info.sample_rate,
+                            metadata->data.stream_info.sample_rate,
+                            metadata->data.stream_info.bits_per_sample,
+                            &p_dec->fmt_out.audio, p_sys->rgi_channels_reorder );
 
     msg_Dbg( p_dec, "channels:%d samplerate:%d bitspersamples:%d",
              p_dec->fmt_out.audio.i_channels, p_dec->fmt_out.audio.i_rate,
