@@ -1,8 +1,11 @@
-vlc (2.2.7-1) UNRELEASED; urgency=medium
+vlc (2.2.7-1) unstable; urgency=high
 
   * New upstream release.
+    - Fix AVI read/write overflow.
+  * debian/control: Bump Standards-Version.
+  * debian/patches: Remove patches included upstream.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sun, 19 Nov 2017 13:38:41 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 19 Nov 2017 14:05:04 +0100
 
 vlc (2.2.6-6) unstable; urgency=medium
 
