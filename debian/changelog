@@ -1,10 +1,10 @@
-vlc (2.2.7-1~deb8u1) UNRELEASED; urgency=medium
+vlc (2.2.7-1~deb8u1) jessie; urgency=high
 
   * New upstream release.
     - Fix crash in libavcodec module (heap write out-of band). (CVE-2017-10699)
     - Fix AVI read/write overflow.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sun, 19 Nov 2017 16:21:19 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 19 Nov 2017 16:28:34 +0100
 
 vlc (2.2.6-1~deb8u1) jessie-security; urgency=high
 
