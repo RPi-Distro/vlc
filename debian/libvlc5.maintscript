@@ -1,2 +1,2 @@
-symlink_to_dir /usr/share/doc/libvlc5 libvlccore8 2.2.6-1~z
-symlink_to_dir /usr/share/bug/libvlc5 libvlccore8 2.2.6-1~z
+symlink_to_dir /usr/share/doc/libvlc5 libvlccore8 2.2.7-1~z
+symlink_to_dir /usr/share/bug/libvlc5 libvlccore8 2.2.7-1~z
