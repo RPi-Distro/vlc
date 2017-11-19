@@ -2,7 +2,7 @@
  * ps.c: Program Stream demux module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: 185770d56a77dca7e848097e9c495d890afbdf63 $
+ * $Id: e6c5ab1da97ee9a1ca2d816123dd382ece4ad1ab $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -566,7 +566,7 @@ static int Demux( demux_t *p_demux )
             if( p_sys->i_pack_scr >= 0 && !p_sys->b_bad_scr )
             {
                 if( (tk->fmt.i_cat == AUDIO_ES || tk->fmt.i_cat == VIDEO_ES) &&
-                    tk->i_first_pts > VLC_TS_INVALID && tk->i_first_pts - p_sys->i_pack_scr > CLOCK_FREQ )
+                    tk->i_first_pts > VLC_TS_INVALID && tk->i_first_pts - p_sys->i_pack_scr > 2 * CLOCK_FREQ )
                 {
                     msg_Warn( p_demux, "Incorrect SCR timing offset by of %"PRId64 "ms, disabling",
                                        tk->i_first_pts - p_sys->i_pack_scr / 1000 );

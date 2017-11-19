@@ -355,15 +355,17 @@ endif
 if HAVE_TVOS
 libvideotoolbox_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) -mtvos-version-min=10.2
 endif
-libvideotoolbox_plugin_la_LIBADD = video_chroma_copy.la
+libvideotoolbox_plugin_la_LIBADD = libchroma_copy.la
 libvideotoolbox_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(codecdir)' -Wl,-framework,Foundation -Wl,-framework,VideoToolbox -Wl,-framework,CoreMedia -Wl,-framework,CoreVideo
 EXTRA_LTLIBRARIES += libvideotoolbox_plugin.la
 codec_LTLIBRARIES += $(LTLIBvideotoolbox)
 
 ### FFmpeg/libav ###
-vlc_avcodec_common_la_SOURCES = codec/avcodec/fourcc.c codec/avcodec/avcommon.h \
+libavcodec_common_la_SOURCES = codec/avcodec/fourcc.c codec/avcodec/avcommon.h \
 	codec/avcodec/chroma.c codec/avcodec/chroma.h \
 	codec/avcodec/avcommon_compat.h
+libavcodec_common_la_CFLAGS = $(AVCODEC_CFLAGS) $(AM_CFLAGS)
+libavcodec_common_la_LDFLAGS = -static
 
 libavcodec_plugin_la_SOURCES = \
 	codec/avcodec/video.c \
@@ -375,7 +377,7 @@ if ENABLE_SOUT
 libavcodec_plugin_la_SOURCES += codec/avcodec/encoder.c
 endif
 libavcodec_plugin_la_CFLAGS = $(AVCODEC_CFLAGS) $(AM_CFLAGS)
-libavcodec_plugin_la_LIBADD = $(AVCODEC_LIBS) $(LIBM) vlc_avcodec_common.la
+libavcodec_plugin_la_LIBADD = $(AVCODEC_LIBS) $(LIBM) libavcodec_common.la
 libavcodec_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(SYMBOLIC_LDFLAGS)
 
 if MERGE_FFMPEG
@@ -391,7 +393,7 @@ if HAVE_DARWIN
 libavcodec_plugin_la_LDFLAGS += -Wl,-framework,Foundation -Wl,-framework,Security,-framework,CoreFoundation
 endif
 if HAVE_AVCODEC
-noinst_LTLIBRARIES += vlc_avcodec_common.la
+noinst_LTLIBRARIES += libavcodec_common.la
 codec_LTLIBRARIES += libavcodec_plugin.la
 endif
 
@@ -426,13 +428,19 @@ if HAVE_AVCODEC_DXVA2
 codec_LTLIBRARIES += libdxva2_plugin.la
 endif
 
+libd3d11_common_la_SOURCES = video_chroma/d3d11_fmt.c video_chroma/d3d11_fmt.h \
+	video_chroma/dxgi_fmt.c video_chroma/dxgi_fmt.h
+libd3d11_common_la_LDFLAGS = -static
+if HAVE_WIN32
+noinst_LTLIBRARIES += libd3d11_common.la
+endif
+
 libd3d11va_plugin_la_SOURCES = \
 	codec/avcodec/d3d11va.c codec/avcodec/directx_va.c codec/avcodec/directx_va.h \
         codec/avcodec/va_surface.c codec/avcodec/va_surface.h codec/avcodec/va_surface_internal.h \
-	video_chroma/d3d11_fmt.h video_chroma/dxgi_fmt.c video_chroma/dxgi_fmt.h \
 	packetizer/h264_nal.c packetizer/h264_nal.h \
 	packetizer/hevc_nal.c packetizer/hevc_nal.h
-libd3d11va_plugin_la_LIBADD = $(LIBCOM) -luuid
+libd3d11va_plugin_la_LIBADD = libd3d11_common.la $(LIBCOM) -luuid
 if HAVE_WINSTORE
 libd3d11va_plugin_la_LIBADD += -ld3d11
 endif
@@ -465,12 +473,12 @@ libomxil_plugin_la_SOURCES += video_output/android/utils.c video_output/android/
 	video_output/android/display.h
 endif
 libomxil_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(srcdir)/codec/omxil $(CFLAGS_omxil)
-libomxil_plugin_la_LIBADD = video_chroma_copy.la $(LIBDL)
+libomxil_plugin_la_LIBADD = libchroma_copy.la $(LIBDL)
 libomxil_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(codecdir)'
 
 libomxil_vout_plugin_la_SOURCES = codec/omxil/vout.c codec/omxil/omxil_core.c codec/omxil/utils.c codec/omxil/qcom.c
 libomxil_vout_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(srcdir)/codec/omxil $(CFLAGS_omxil_vout)
-libomxil_vout_plugin_la_LIBADD = video_chroma_copy.la $(LIBDL)
+libomxil_vout_plugin_la_LIBADD = libchroma_copy.la $(LIBDL)
 libomxil_vout_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(codecdir)'
 
 libiomx_plugin_la_SOURCES = $(libomxil_plugin_la_SOURCES)
@@ -486,7 +494,7 @@ libmediacodec_plugin_la_SOURCES = codec/omxil/mediacodec.c codec/omxil/mediacode
 	packetizer/hxxx_nal.h packetizer/hxxx_nal.c \
 	packetizer/h264_nal.c packetizer/h264_nal.h \
 	packetizer/hevc_nal.c packetizer/hevc_nal.h
-libmediacodec_plugin_la_LIBADD = video_chroma_copy.la 
+libmediacodec_plugin_la_LIBADD = libchroma_copy.la 
 codec_LTLIBRARIES += $(LTLIBomxil) $(LTLIBomxil_vout)
 EXTRA_LTLIBRARIES += libomxil_plugin.la libomxil_vout_plugin.la
 if HAVE_ANDROID

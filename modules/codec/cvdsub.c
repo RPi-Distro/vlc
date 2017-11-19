@@ -2,7 +2,7 @@
  * cvdsub.c : CVD Subtitle decoder
  *****************************************************************************
  * Copyright (C) 2003, 2004 VLC authors and VideoLAN
- * $Id: 4a1aeacb4c3eceb1ecc2105def3762e334e6eb13 $
+ * $Id: 3905bec032760307b541620f0d3951f6a6ebc477 $
  *
  * Authors: Rocky Bernstein
  *          Gildas Bazin <gbazin@videolan.org>
@@ -178,6 +178,7 @@ static int Decode( decoder_t *p_dec, block_t *p_block )
 
     /* Parse and decode */
     subpicture_t *p_spu = DecodePacket( p_dec, p_data );
+    block_Release( p_data );
     if( p_spu != NULL )
         decoder_QueueSub( p_dec, p_spu );
     return VLCDEC_SUCCESS;
@@ -530,7 +531,6 @@ static subpicture_t *DecodePacket( decoder_t *p_dec, block_t *p_data )
     }
 
     p_region = subpicture_region_New( &fmt );
-    video_format_Clean( &fmt );
     if( !p_region )
     {
         msg_Err( p_dec, "cannot allocate SPU region" );

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2000-2010 VLC authors and VideoLAN
  * Copyright (C) 2009-2010 Laurent Aimar
- * $Id: c14e600d3fcf3d78886546d8565a3c4f99edae60 $
+ * $Id: f6671edd510d014df9bbe54bdd32a0fca1b73b6d $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -38,6 +38,8 @@
 #include <vlc_image.h>
 #include <vlc_block.h>
 
+#define PICTURE_SW_SIZE_MAX (1<<28) /* 256MB: 8K * 8K * 4*/
+
 /**
  * Allocate a new picture in the heap.
  *
@@ -60,6 +62,12 @@ static int AllocatePicture( picture_t *p_pic )
             return VLC_ENOMEM;
         }
         i_bytes += p->i_pitch * p->i_lines;
+    }
+
+    if( i_bytes >= PICTURE_SW_SIZE_MAX )
+    {
+        p_pic->i_planes = 0;
+        return VLC_ENOMEM;
     }
 
     uint8_t *p_data = aligned_alloc( 16, i_bytes );

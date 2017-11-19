@@ -1,3 +1,339 @@
+commit 96d506563f90b2c1401a80dd1dfc5b75c61c3633
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Nov 16 23:22:50 2017 +0100
+
+    demux: avi: set proper BGR masks (fix #19088)
+    
+    seems video output has changed to RGB24 being RGB
+    while vlc has started with BGR from avi
+
+commit 2f271f6ac443ae6379248a46699a8c8d67b14e7e
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Nov 16 23:10:01 2017 +0100
+
+    demux: ps: change bad scr offset to 2s
+    
+    that's max for audio
+
+commit fc9722824abda23ee90c538e11d104418391b2f9
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Nov 16 21:34:21 2017 +0100
+
+    opengl: "-vvvv" to dump shaders
+
+commit f56b5e2f80ca93398952e2f80a5ac224797c5d7a
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Nov 16 21:33:43 2017 +0100
+
+    opengl: make vertex shader human readable
+
+commit 1f6f53398888d2c24c8606f05592c2d85b03eb64
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Nov 16 21:09:38 2017 +0100
+
+    contribs: apply newlocale patch
+
+commit db8e285e8308f894ab79566d3a8152a55e780da8
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Thu Nov 16 19:36:38 2017 +0100
+
+    contrib: Ignore bz2 prebuilt contribs
+
+commit d444322f1fd8b1ed24cf8610b28cf5a31756885e
+Author: Zhao Zhili <quinkblack@foxmail.com>
+Date:   Sat Nov 11 19:55:19 2017 +0800
+
+    demux: adaptive: fix setPosition
+    
+    If there is no valid streams, setPosition should not return
+    true/success. This can happen when DEMUX_SET_TIME failed which lead to
+    all streams disabled, and then try DEMUX_SET_POSITION.
+    
+    Signed-off-by: Francois Cartegnie <fcvlcdev@free.fr>
+
+commit fedae7f2f3eacde8adcfd4dfe1c8fedcbf507a82
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Nov 16 13:31:17 2017 +0100
+
+    demux: adaptive: missing initializer
+
+commit eb609de195376b9d27adbb6c304360ec5a697bf6
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Nov 16 11:38:53 2017 +0100
+
+    d3d11_adjust: fix filtering on Intel
+    
+    It doesn't like outputing to a render target with 2 slices. Render targets are
+    allowed to have 2 slices but not more. So we should only use 1 from now on.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 248b2c96f103caa8b7b67c0864e961043adf3cfd
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Nov 16 11:38:52 2017 +0100
+
+    direct3d11: move is_d3d11_opaque() and AllocateTextures() in d3d11_fmt
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 335ed07ac46635d38e2c68e4562310fa6b2f495f
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Nov 16 11:38:51 2017 +0100
+
+    direct3d11: make AllocateTextures more generic
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit bd4a9b216d389ea2dd39624529143d0f8f671a8c
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Nov 16 11:38:50 2017 +0100
+
+    d3d11_fmt: group the ID3D11Device and ID3D11DeviceContext in a structure
+    
+    Since they usually go together
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a6dffc357892780cd9f9940ae8a92915fd6390b5
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Nov 16 11:38:49 2017 +0100
+
+    direct3d11: remove superseeded macro
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit bfe261050ddc5cba02d03284a0d7f032769902d8
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Nov 16 11:38:48 2017 +0100
+
+    direct3d11: move the common code in C file rather than inline and use a static lib
+    
+    Also move some code from dxgi_fmt to d3d11_fmt
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 12e8de85772f1c21c7c3e121e8255d6f18357486
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Nov 16 11:38:47 2017 +0100
+
+    modules: rename internal static libs to libsomething and force static linking
+    
+    Otherwise we use the global LDFLAGS that's set for modules and export the
+    module resources many times.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit f571d59273b881dfd8cd69b5ff6913b566e26fb8
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Nov 16 11:52:03 2017 +0100
+
+    demux: avi: fix write/read overflow
+
+commit c9d3821d7f100663669508fe89fb61d98e2cb8f4
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Nov 16 10:50:55 2017 +0100
+
+    demux: ttml: update time expression format strings
+
+commit 4fe755f6375aa2ad744a9b486dba6733c4a8c943
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Nov 16 10:41:32 2017 +0100
+
+    codec: ttml: avoid fpe on large fractions
+
+commit f7f184fa2526dc5506c7ea3bcb3787586c2bec9c
+Author: Tristan Matthews <tmatth@videolan.org>
+Date:   Wed Nov 15 16:21:05 2017 -0500
+
+    contrib: update libogg to 1.3.3
+
+commit f2c53d82f2b8d682fe317c260c2b242d0a2ff3b5
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Wed Nov 15 22:30:11 2017 +0300
+
+    contribs: mysofa: use a release tarball instead of git.
+
+commit 5421854ed62cc79a1dea53c32046c31dab7dd390
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 15 19:23:52 2017 +0100
+
+    codec: cea708: clear warnings
+
+commit b2e0b3646d87691f0b274e0eee5d7441f147bb30
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 15 12:02:14 2017 +0100
+
+    text_renderer: freetype: use bounding boxes for drawing background
+
+commit 0556c4ac55e8947837de598ea1bdaafed1d5511d
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 15 18:42:23 2017 +0100
+
+    video_output: add missing text align on epg text
+
+commit a16e35ce252650ddaf594fa11a69ce97a0a32508
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 15 18:52:25 2017 +0100
+
+    demux: libmp4: use proper format string for debug
+
+commit b12da2378065e9bd6c6957a34888ec356c3e5d36
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 15 18:51:48 2017 +0100
+
+    demux: libmp4: check entries size before alloc
+    
+    helps fuzzer
+
+commit 4d41590a5513605e1204f37bd6e9afd7cf772d6e
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 14 20:39:25 2017 +0100
+
+    packetizer: a52: replace i_pts with bytestream pts dedup
+    
+    clears assertion
+    
+    solves remainder error on interpolation
+    3125696723 32000
+    3125728723 32000
+    3125760723 32000
+    3125792712 32000 <
+    3125824712 32000 <
+    3125856712 32000 <
+    3125888712 32000 <
+    3125920712 32000 <
+    3125952723 32000
+    3125984723 32000
+
+commit c0a6a45cd281207278cffb5fbe0eb68561d18354
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 15 15:49:00 2017 +0100
+
+    demux: ts: survive program deletion on pat/pmt update
+    
+    refs ts/La_Chevre_PATPMTevery6s.ts
+
+commit 4c7cd5a4ca43223bac9d9f6eb9c3849eb2930e38
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 15 15:27:22 2017 +0100
+
+    demux: ts: allow to replace generated pat
+    
+    refs ts/La_Chevre_PATPMTevery6s.ts
+
+commit 1269af21bfaa106db6e2899203c671a45fde3598
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 15 14:02:25 2017 +0100
+
+    demux: ts: clear hotfixes shadowing warning
+
+commit c00cbf134e14179ebe157a52526656385ba0214a
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 15 14:00:36 2017 +0100
+
+    demux: ts: fix psi warnings
+
+commit 8f05b289e0f3efd3ac0aebf28c6f80a552d91dd8
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Wed Nov 15 16:09:28 2017 +0100
+
+    qt: fix automatic resize on X11 with HiDPI
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit e05a869878aa9f0b1bf8dd4c3ad8b5e495c3a5f0
+Author: Justin Kim <justin.kim@collabora.com>
+Date:   Wed Nov 15 16:47:58 2017 +0900
+
+    srt: Fix build failure
+    
+    The properties and variables were changed while reviewing,
+    but I've failed to verify them fully.
+    
+    Signed-off-by: Justin Kim <justin.kim@collabora.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d98da2c893ea58aac9193f70e59c3205a76a4802
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Wed Nov 15 11:57:37 2017 +0100
+
+    qt: improve rendering of central cone for HiDpi
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 995870c54c2d6daa729ed4c9008730d06af2070b
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Wed Nov 15 11:57:36 2017 +0100
+
+    qt: improve rendering of simple_pref icons for HiDpi
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 0710485dc37223bc6a9bc2bd937b9cd756dbf0e8
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 15 14:57:54 2017 +0100
+
+    cvdsub: fix memory leak
+
+commit 47ae93bdb7b2334afbef16bbf8836cdfadc09159
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 15 14:57:31 2017 +0100
+
+    picture: set a maximum alloc size for sw buffers
+
+commit 766224ce6579f09ed974cf779dc6ee3992e10290
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 15 14:33:46 2017 +0100
+
+    test: input: fix decoder reload
+    
+    Be sure to not use the previous decoder context.
+
+commit 505e3251957e034fc4dcbe0d737e5d18c647fe99
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 15 13:52:27 2017 +0100
+
+    cvdsub: fix invalid free
+    
+    Don't free fmt/palette that come from the stack.
+
+commit a7762313fd64f4ef4921f9e209771e96f02d22e3
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 15 09:36:39 2017 +0100
+
+    chroma: copy: rename YUV420 copy functions
+    
+    Use more generic functions name that can work with more than one chroma. For
+    example, CopyFromYv12ToYv12 is renamed to Copy420_P_to_P (planar to planar).
+    
+    Add picture_SwapUV(): just swap U, V planes of a tri-planar picture.
+    
+    Remove CopyFromNv12ToYv12 (replaced by Copy420_SP_to_P() and picture_SwapUV()).
+    
+    Add const qualifiers to all sources parameters in all functions.
+
+commit 94065d38b867cde3fc4c17eeccdd7e2dd2786e63
+Author: Adrien Maglo <magsoft@videolan.org>
+Date:   Wed Nov 15 12:56:29 2017 +0100
+
+    OpenGL: display only the left eye of stereo video
+    
+    This allows to display an usable view of 360 stereo video.
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 23bb3a52ce201dae5870dfa5b76d6e2cf2d9f989
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 15 11:13:25 2017 +0100
+
+    contribs: fix typo with libplacebo win32 patch
+
+commit 160360b8a5c4099a4b3e0d9b92b496aa40a6a9c6
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 15 09:03:21 2017 +0100
+
+    avcodec: fix build
+
 commit 726156dce53831aacdaaab8e6eeb128b022a8b27
 Author: Marvin Scholz <epirat07@gmail.com>
 Date:   Wed Nov 15 00:32:35 2017 +0100
