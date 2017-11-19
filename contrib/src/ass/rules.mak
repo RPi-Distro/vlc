@@ -11,7 +11,7 @@ ifdef HAVE_ANDROID
 WITH_FONTCONFIG = 0
 WITH_HARFBUZZ = 0
 else
-ifdef HAVE_IOS
+ifdef HAVE_DARWIN_OS
 WITH_FONTCONFIG = 0
 WITH_HARFBUZZ = 1
 else
@@ -33,6 +33,7 @@ $(TARBALLS)/libass-$(ASS_VERSION).tar.gz:
 libass: libass-$(ASS_VERSION).tar.gz .sum-ass
 	$(UNPACK)
 	$(APPLY) $(SRC)/ass/ass-macosx.patch
+	$(APPLY) $(SRC)/ass/ass-macosx-coretext.patch
 	$(APPLY) $(SRC)/ass/ass-solaris.patch
 	$(UPDATE_AUTOCONFIG)
 	$(MOVE)

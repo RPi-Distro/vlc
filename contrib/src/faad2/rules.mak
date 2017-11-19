@@ -20,6 +20,9 @@ faad2: faad2-$(FAAD2_VERSION).tar.gz .sum-faad2
 ifndef HAVE_FPU
 	$(APPLY) $(SRC)/faad2/faad2-fixed.patch
 endif
+	$(APPLY) $(SRC)/faad2/faad2-disable-drc.patch
+	$(APPLY) $(SRC)/faad2/faad2-fix-71wPCEmapping.patch
+	$(APPLY) $(SRC)/faad2/faad2-fix-cpe-reconstruction.patch
 	cd $(UNPACK_DIR) && $(CC) -iquote . -E - </dev/null || sed -i 's/-iquote /-I/' libfaad/Makefile.am
 	$(MOVE)
 
