@@ -72,7 +72,7 @@ diff -ru sparkle/SUBasicUpdateDriver.m sparkle-fixed/SUBasicUpdateDriver.m
  		[[updater delegate] updater:updater didFinishLoadingAppcast:ac];
  	
 -	NSDictionary *userInfo = (ac != nil) ? @{SUUpdaterAppcastNotificationKey : ac} : nil;
-+	NSDictionary *userInfo = (ac != nil) ? [NSDictionary dictionaryWithObject:SUUpdaterAppcastNotificationKey forKey:ac] : nil;
++	NSDictionary *userInfo = (ac != nil) ? [NSDictionary dictionaryWithObject:ac forKey:SUUpdaterAppcastNotificationKey] : nil;
  	[[NSNotificationCenter defaultCenter] postNotificationName:SUUpdaterDidFinishLoadingAppCastNotification object:updater userInfo:userInfo];
      
      SUAppcastItem *item = nil;
@@ -81,7 +81,7 @@ diff -ru sparkle/SUBasicUpdateDriver.m sparkle-fixed/SUBasicUpdateDriver.m
  	if ([[updater delegate] respondsToSelector:@selector(updater:didFindValidUpdate:)])
  		[[updater delegate] updater:updater didFindValidUpdate:updateItem];
 -	NSDictionary *userInfo = (updateItem != nil) ? @{SUUpdaterAppcastItemNotificationKey : updateItem} : nil;
-+	NSDictionary *userInfo = (updateItem != nil) ? [NSDictionary dictionaryWithObject:SUUpdaterAppcastItemNotificationKey forKey:updateItem] : nil;
++	NSDictionary *userInfo = (updateItem != nil) ? [NSDictionary dictionaryWithObject:updateItem forKey:SUUpdaterAppcastItemNotificationKey] : nil;
  	[[NSNotificationCenter defaultCenter] postNotificationName:SUUpdaterDidFinishLoadingAppCastNotification object:updater userInfo:userInfo];
  	[self downloadUpdate];
  }
@@ -93,7 +93,7 @@ diff -ru sparkle/SUProbingUpdateDriver.m sparkle-fixed/SUProbingUpdateDriver.m
  	if ([[updater delegate] respondsToSelector:@selector(updater:didFindValidUpdate:)])
  		[[updater delegate] updater:updater didFindValidUpdate:updateItem];
 -	NSDictionary *userInfo = (updateItem != nil) ? @{SUUpdaterAppcastItemNotificationKey : updateItem} : nil;
-+	NSDictionary *userInfo = (updateItem != nil) ? [NSDictionary dictionaryWithObject:SUUpdaterAppcastItemNotificationKey forKey:updateItem] : nil;
++	NSDictionary *userInfo = (updateItem != nil) ? [NSDictionary dictionaryWithObject:updateItem forKey:SUUpdaterAppcastItemNotificationKey] : nil;
  	[[NSNotificationCenter defaultCenter] postNotificationName:SUUpdaterDidFindValidUpdateNotification object:updater userInfo:userInfo];
  	[self abortUpdate];
  }

@@ -410,7 +410,7 @@ am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(top_srcdir)/extras/package/win32/msi/config.wxi.in ABOUT-NLS \
 	AUTHORS COPYING COPYING.LIB ChangeLog INSTALL NEWS README \
 	THANKS autotools/compile autotools/config.guess \
-	autotools/config.rpath autotools/config.sub autotools/depcomp \
+	autotools/config.rpath autotools/config.sub \
 	autotools/install-sh autotools/ltmain.sh autotools/missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
@@ -995,6 +995,7 @@ LTLIBx26410b = @LTLIBx26410b@
 LTLIBx265 = @LTLIBx265@
 LTLIBxml = @LTLIBxml@
 LTLIBzvbi = @LTLIBzvbi@
+LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 LUAC = @LUAC@
 LUA_CFLAGS = @LUA_CFLAGS@
 LUA_LIBS = @LUA_LIBS@

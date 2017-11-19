@@ -2,7 +2,7 @@
  * h264.c: h264/avc video packetizer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
- * $Id: 7e29b8683e0c3d1e07146b7b6952c0175d98b6d8 $
+ * $Id: ed507ccd1d532f24fb1dc29db79a98e56f2da1f8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -142,8 +142,10 @@ enum nal_unit_type_e
     NAL_SEI         = 6,    /* ref_idc == 0 */
     NAL_SPS         = 7,
     NAL_PPS         = 8,
-    NAL_AU_DELIMITER= 9
+    NAL_AU_DELIMITER= 9,
     /* ref_idc == 0 for 6,9,10,11,12 */
+    NAL_END_OF_SEQ  = 10,
+    NAL_END_OF_STREAM = 11,
 };
 
 #define BLOCK_FLAG_PRIVATE_AUD (1 << BLOCK_FLAG_PRIVATE_SHIFT)
@@ -661,6 +663,22 @@ static block_t *ParseNALBlock( decoder_t *p_dec, bool *pb_ts_used, block_t *p_fr
         /* Do not append the PPS because we will insert it on keyframes */
         p_frag = NULL;
     }
+    else if( i_nal_type == NAL_END_OF_SEQ || i_nal_type == NAL_END_OF_STREAM )
+    {
+        /* Force early output */
+        if( p_frag )
+        {
+            block_ChainAppend( &p_sys->p_frame, p_frag );
+            p_frag = NULL;
+        }
+
+        if( p_sys->b_slice )
+        {
+            p_pic = OutputPicture( p_dec );
+            if( p_pic ) /* set flag for menus / stills */
+                p_pic->i_flags |= BLOCK_FLAG_END_OF_SEQUENCE;
+        }
+    }
     else if( i_nal_type == NAL_AU_DELIMITER ||
              i_nal_type == NAL_SEI ||
              ( i_nal_type >= 13 && i_nal_type <= 18 ) )
@@ -1102,7 +1120,7 @@ static void ParseSlice( decoder_t *p_dec, bool *pb_new_picture, slice_t *p_slice
     if( slice.i_frame_num != p_sys->slice.i_frame_num ||
         slice.i_pic_parameter_set_id != p_sys->slice.i_pic_parameter_set_id ||
         slice.i_field_pic_flag != p_sys->slice.i_field_pic_flag ||
-        slice.i_nal_ref_idc != p_sys->slice.i_nal_ref_idc )
+        !slice.i_nal_ref_idc != !p_sys->slice.i_nal_ref_idc )
         b_pic = true;
     if( (slice.i_bottom_field_flag != -1) &&
         (p_sys->slice.i_bottom_field_flag != -1) &&

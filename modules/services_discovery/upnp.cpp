@@ -2,7 +2,7 @@
  * upnp.cpp :  UPnP discovery module (libupnp)
  *****************************************************************************
  * Copyright (C) 2004-2011 the VideoLAN team
- * $Id: b5f74097fb10fd3f1a4b689044e8c7e4c20d2fd0 $
+ * $Id: 9b6ed8727a2c6b318c97a60349776b90a2a97e74 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org> (original plugin)
  *          Christian Henz <henz # c-lab.de>
@@ -39,6 +39,44 @@
 
 #include <assert.h>
 #include <limits.h>
+
+#if UPNP_VERSION < 10800
+/*
+ * Compat functions and typedefs for libupnp prior to 1.8
+ */
+typedef void* UpnpEventPtr;
+typedef Upnp_Discovery UpnpDiscovery;
+typedef Upnp_Action_Complete UpnpActionComplete;
+typedef Upnp_Event UpnpEvent;
+typedef Upnp_Event_Subscribe UpnpEventSubscribe;
+
+static const char* UpnpDiscovery_get_Location_cstr( const UpnpDiscovery* p_discovery )
+{
+  return p_discovery->Location;
+}
+
+static const char* UpnpDiscovery_get_DeviceID_cstr( const UpnpDiscovery* p_discovery )
+{
+  return p_discovery->DeviceId;
+}
+
+static IXML_Document* UpnpActionComplete_get_ActionResult( const UpnpActionComplete* p_result )
+{
+  return p_result->ActionResult;
+}
+
+static const char* UpnpEvent_get_SID_cstr( const UpnpEvent* p_e )
+{
+  return p_e->Sid;
+}
+
+static const char* UpnpEventSubscribe_get_SID_cstr( const UpnpEventSubscribe* p_s )
+{
+  return p_s->Sid;
+}
+#else
+typedef const void* UpnpEventPtr;
+#endif
 
 /*
  * Constants
@@ -80,7 +118,7 @@ vlc_module_end();
 /*
  * Local prototypes
  */
-static int Callback( Upnp_EventType event_type, void* p_event, void* p_user_data );
+static int Callback( Upnp_EventType event_type, UpnpEventPtr p_event, void* p_user_data );
 
 const char* xml_getChildElementValue( IXML_Element* p_parent,
                                       const char*   psz_tag_name );
@@ -325,7 +363,7 @@ int xml_getNumber( IXML_Document* p_doc,
 /*
  * Handles all UPnP events
  */
-static int Callback( Upnp_EventType event_type, void* p_event, void* p_user_data )
+static int Callback( Upnp_EventType event_type, UpnpEventPtr p_event, void* p_user_data )
 {
     services_discovery_t* p_sd = ( services_discovery_t* ) p_user_data;
     services_discovery_sys_t* p_sys = p_sd->p_sys;
@@ -336,22 +374,23 @@ static int Callback( Upnp_EventType event_type, void* p_event, void* p_user_data
     case UPNP_DISCOVERY_ADVERTISEMENT_ALIVE:
     case UPNP_DISCOVERY_SEARCH_RESULT:
     {
-        struct Upnp_Discovery* p_discovery = ( struct Upnp_Discovery* )p_event;
+        const UpnpDiscovery* p_discovery = ( const UpnpDiscovery* )p_event;
 
         IXML_Document *p_description_doc = 0;
 
         int i_res;
-        i_res = UpnpDownloadXmlDoc( p_discovery->Location, &p_description_doc );
+        i_res = UpnpDownloadXmlDoc( UpnpDiscovery_get_Location_cstr( p_discovery ), &p_description_doc );
+
         if ( i_res != UPNP_E_SUCCESS )
         {
             msg_Warn( p_sd, "Could not download device description! "
                             "Fetching data from %s failed: %s",
-                            p_discovery->Location, UpnpGetErrorMessage( i_res ) );
+                            UpnpDiscovery_get_Location_cstr( p_discovery ), UpnpGetErrorMessage( i_res ) );
             return i_res;
         }
 
         MediaServer::parseDeviceDescription( p_description_doc,
-                p_discovery->Location, p_sd );
+                UpnpDiscovery_get_Location_cstr( p_discovery ), p_sd );
 
         ixmlDocument_free( p_description_doc );
     }
@@ -359,18 +398,18 @@ static int Callback( Upnp_EventType event_type, void* p_event, void* p_user_data
 
     case UPNP_DISCOVERY_ADVERTISEMENT_BYEBYE:
     {
-        struct Upnp_Discovery* p_discovery = ( struct Upnp_Discovery* )p_event;
+        const UpnpDiscovery* p_discovery = ( const UpnpDiscovery* )p_event;
 
-        p_sys->p_server_list->removeServer( p_discovery->DeviceId );
+        p_sys->p_server_list->removeServer( UpnpDiscovery_get_DeviceID_cstr( p_discovery ) );
 
     }
     break;
 
     case UPNP_EVENT_RECEIVED:
     {
-        Upnp_Event* p_e = ( Upnp_Event* )p_event;
+        const UpnpEvent* p_e = ( const UpnpEvent* )p_event;
 
-        MediaServer* p_server = p_sys->p_server_list->getServerBySID( p_e->Sid );
+        MediaServer* p_server = p_sys->p_server_list->getServerBySID( UpnpEvent_get_SID_cstr( p_e ) );
         if ( p_server ) p_server->fetchContents();
     }
     break;
@@ -380,9 +419,9 @@ static int Callback( Upnp_EventType event_type, void* p_event, void* p_user_data
     {
         /* Re-subscribe. */
 
-        Upnp_Event_Subscribe* p_s = ( Upnp_Event_Subscribe* )p_event;
+        const UpnpEventSubscribe* p_s = ( const UpnpEventSubscribe* )p_event;
 
-        MediaServer* p_server = p_sys->p_server_list->getServerBySID( p_s->Sid );
+        MediaServer* p_server = p_sys->p_server_list->getServerBySID( UpnpEventSubscribe_get_SID_cstr( p_s ) );
         if ( p_server ) p_server->subscribeToContentDirectory();
     }
     break;

@@ -2,7 +2,7 @@
  * asx.c : ASX playlist format import
  *****************************************************************************
  * Copyright (C) 2005-2006 VLC authors and VideoLAN
- * $Id: 50dedfa339c104af8763369e8955c12081f2e912 $
+ * $Id: 7261a79f7b8ac7f590ee4840bc4da23a1ca20a36 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -255,7 +255,7 @@ static int Demux( demux_t *p_demux )
             i_pos += i_read;
             p_sys->i_data_len <<= 1 ;
             p_sys->psz_data = xrealloc( p_sys->psz_data,
-                                   p_sys->i_data_len * sizeof( char * ) + 1 );
+                                   p_sys->i_data_len * sizeof( *p_sys->psz_data ) + 1 );
         }
         if( p_sys->i_data_len <= 0 ) return -1;
     }
@@ -469,7 +469,7 @@ static int Demux( demux_t *p_demux )
                         if( ( psz_parse = strcasestr( psz_parse, "\"" ) ) )
                         {
                             i_strlen = psz_parse-psz_backup;
-                            if( i_strlen < 1 ) continue;
+                            if( i_strlen < 1 || i_strlen > 32768 ) continue;
                             psz_string = xmalloc( i_strlen +1);
                             memcpy( psz_string, psz_backup, i_strlen );
                             psz_string[i_strlen] = '\0';
@@ -631,7 +631,7 @@ static int Demux( demux_t *p_demux )
                         {
                             char *psz_tmp;
                             i_strlen = psz_parse-psz_backup;
-                            if( i_strlen < 1 ) continue;
+                            if( i_strlen < 1 || i_strlen > 32768 ) continue;
 
                             if( psz_href )
                             {

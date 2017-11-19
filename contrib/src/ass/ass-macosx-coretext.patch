@@ -1,0 +1,38 @@
+diff -ru libass/configure.ac libass-fixed/configure.ac
+--- libass/configure.ac	2017-10-22 17:21:01.000000000 +0200
++++ libass-fixed/configure.ac	2017-10-22 17:20:53.000000000 +0200
+@@ -165,11 +165,11 @@
+ # Linking to CoreText directly only works from Mountain Lion and iOS6. In
+ # earlier OS releases CoreText was part of the ApplicationServices umbrella
+ # framework.
+-LIBS="$LIBS -framework CoreText -framework CoreFoundation -framework CoreGraphics"
++LIBS="$LIBS -framework ApplicationServices -framework CoreFoundation"
+ AC_MSG_CHECKING([for CORETEXT])
+ AC_LINK_IFELSE([
+   AC_LANG_PROGRAM(
+-    [[#include <CoreText/CoreText.h>]],
++    [[#include <ApplicationServices/ApplicationServices.h>]],
+     [[CTFontCreateWithFontDescriptor(NULL, 0.0, NULL);]],)
+   ], [
+     AC_DEFINE(CONFIG_CORETEXT, 1, [found CoreText in System library])
+@@ -183,8 +183,6 @@
+ fi
+ AM_CONDITIONAL([CORETEXT], [test x$coretext = xtrue])
+ 
+-
+-
+ if test x$enable_directwrite != xno; then
+ # Linking to DirectWrite directly only works from Windows
+ AC_MSG_CHECKING([for DIRECTWRITE])
+diff -ru libass/libass/ass_coretext.c libass-fixed/libass/ass_coretext.c
+--- libass/libass/ass_coretext.c	2016-02-11 22:36:38.000000000 +0100
++++ libass-fixed/libass/ass_coretext.c	2017-10-22 17:20:53.000000000 +0200
+@@ -20,7 +20,7 @@
+ #include "ass_compat.h"
+ 
+ #include <CoreFoundation/CoreFoundation.h>
+-#include <CoreText/CoreText.h>
++#include <ApplicationServices/ApplicationServices.h>
+ 
+ #include "ass_coretext.h"
+ 

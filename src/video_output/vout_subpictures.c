@@ -2,7 +2,7 @@
  * vout_subpictures.c : subpicture management functions
  *****************************************************************************
  * Copyright (C) 2000-2007 VLC authors and VideoLAN
- * $Id: a051c16b418faa385316a21b026f3398d03397d4 $
+ * $Id: 646dc84b06a40a50621eb26c32e4b545f989c7e4 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -1051,10 +1051,14 @@ static subpicture_t *SpuRenderSubpictures(spu_t *spu,
             /* Compute region scale AR */
             video_format_t region_fmt = region->fmt;
             if (region_fmt.i_sar_num <= 0 || region_fmt.i_sar_den <= 0) {
-                region_fmt.i_sar_num = (int64_t)fmt_dst->i_visible_width  * fmt_dst->i_sar_num * subpic->i_original_picture_height;
-                region_fmt.i_sar_den = (int64_t)fmt_dst->i_visible_height * fmt_dst->i_sar_den * subpic->i_original_picture_width;
+
+                const uint64_t i_sar_num = (uint64_t)fmt_dst->i_visible_width  *
+                                           fmt_dst->i_sar_num * subpic->i_original_picture_height;
+                const uint64_t i_sar_den = (uint64_t)fmt_dst->i_visible_height *
+                                           fmt_dst->i_sar_den * subpic->i_original_picture_width;
+
                 vlc_ureduce(&region_fmt.i_sar_num, &region_fmt.i_sar_den,
-                            region_fmt.i_sar_num, region_fmt.i_sar_den, 65536);
+                            i_sar_num, i_sar_den, 65536);
             }
 
             /* Compute scaling from original size to destination size

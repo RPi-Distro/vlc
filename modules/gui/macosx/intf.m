@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: b4e057107ae3eb4607168d6a034ce7a51fab4516 $
+ * $Id: 204f61df207ae85b1dbb2891df462b4254892702 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan.org>
@@ -404,7 +404,9 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
         case INPUT_EVENT_BOOKMARK:
             break;
         case INPUT_EVENT_RECORD:
-            [[VLCMain sharedInstance] updateRecordState: var_GetBool(p_this, "record")];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[VLCMain sharedInstance] updateRecordState: var_GetBool(p_this, "record")];
+            });
             break;
         case INPUT_EVENT_PROGRAM:
             [[VLCMain sharedInstance] performSelectorOnMainThread:@selector(updateMainMenu) withObject: nil waitUntilDone:NO];
@@ -512,8 +514,10 @@ static int BossCallback(vlc_object_t *p_this, const char *psz_var,
 {
     NSAutoreleasePool * o_pool = [[NSAutoreleasePool alloc] init];
 
-    [[VLCCoreInteraction sharedInstance] performSelectorOnMainThread:@selector(pause) withObject:nil waitUntilDone:NO];
-    [[VLCApplication sharedApplication] hide:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[VLCCoreInteraction sharedInstance] pause];
+        [[VLCApplication sharedApplication] hide:nil];
+    });
 
     [o_pool release];
     return VLC_SUCCESS;
@@ -683,6 +687,10 @@ static VLCMain *_o_sharedMainInstance = nil;
 
     o_open = [[VLCOpen alloc] init];
     o_coredialogs = [[VLCCoreDialogProvider alloc] init];
+    if (!nib_coredialogs_loaded) {
+        nib_coredialogs_loaded = [NSBundle loadNibNamed:@"CoreDialogs" owner: NSApp];
+    }
+
     o_mainmenu = [[VLCMainMenu alloc] init];
     o_coreinteraction = [[VLCCoreInteraction alloc] init];
     o_eyetv = [[VLCEyeTVController alloc] init];
@@ -1765,10 +1773,6 @@ static bool f_appExit = false;
 
 - (id)coreDialogProvider
 {
-    if (!nib_coredialogs_loaded) {
-        nib_coredialogs_loaded = [NSBundle loadNibNamed:@"CoreDialogs" owner: NSApp];
-    }
-
     return o_coredialogs;
 }
 

@@ -2,7 +2,7 @@
  * remoteosd.c: remote osd over vnc filter module
  *****************************************************************************
  * Copyright (C) 2007-2008 Matthias Bauer
- * $Id: 4b73e21ff1dd61b4369ba668207d9420ef515a13 $
+ * $Id: 49c0fb625fdf82775b52763612c60269f432a7d7 $
  *
  * Authors: Matthias Bauer <matthias dot bauer #_at_# gmx dot ch>
  *
@@ -188,7 +188,7 @@ static inline bool raw_line(  filter_sys_t* p_sys,
                               uint16_t i_x, uint16_t i_y,
                               uint16_t i_w );
 
-static void vnc_encrypt_bytes( unsigned char *bytes, char *passwd );
+static int vnc_encrypt_bytes( unsigned char *bytes, char *passwd );
 
 
 /*****************************************************************************
@@ -469,7 +469,11 @@ static bool handshaking ( filter_t *p_filter )
             return false;
         }
 
-        vnc_encrypt_bytes( challenge, p_sys->psz_passwd );
+        if ( vnc_encrypt_bytes( challenge, p_sys->psz_passwd ) != VLC_SUCCESS)
+        {
+            msg_Err( p_filter, "Could not encrypt password challenge" );
+            return false;
+        }
 
         if( !write_exact(p_filter, p_sys->i_socket,
                          (char*)challenge, CHALLENGESIZE ) )
@@ -1445,7 +1449,7 @@ static int KeyEvent( vlc_object_t *p_this, char const *psz_var,
     return VLC_SUCCESS;
 }
 
-static void vnc_encrypt_bytes( unsigned char *bytes, char *passwd )
+static int vnc_encrypt_bytes( unsigned char *bytes, char *passwd )
 {
     unsigned char key[8];
     unsigned int i;
@@ -1454,7 +1458,10 @@ static void vnc_encrypt_bytes( unsigned char *bytes, char *passwd )
         key[i] = i < strlen( passwd ) ? passwd[i] : '\0';
 
     gcry_cipher_hd_t ctx;
-    gcry_cipher_open( &ctx, GCRY_CIPHER_DES, GCRY_CIPHER_MODE_ECB,0);
+    int gcrypt_err = gcry_cipher_open( &ctx, GCRY_CIPHER_DES, GCRY_CIPHER_MODE_ECB,0);
+    if (gcrypt_err != 0){
+        return VLC_EGENERIC;
+    }
 
     /* reverse bits of the key */
     for( i = 0 ; i < 8 ; i ++ )
@@ -1471,5 +1478,6 @@ static void vnc_encrypt_bytes( unsigned char *bytes, char *passwd )
     gcry_cipher_setkey( ctx, key, 8 );
     gcry_cipher_encrypt( ctx, bytes, CHALLENGESIZE, bytes, CHALLENGESIZE );
     gcry_cipher_close( ctx );
+    return VLC_SUCCESS;
 }
 
