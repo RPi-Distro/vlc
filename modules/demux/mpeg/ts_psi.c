@@ -98,11 +98,22 @@ static void PATCallBack( void *data, dvbpsi_pat_t *p_dvbpsipat )
         return;
     }
 
-    if( ( p_pat->i_version != -1 &&
-            ( !p_dvbpsipat->b_current_next ||
-              p_dvbpsipat->i_version == p_pat->i_version ) ) ||
-        ( p_pat->i_ts_id != -1 && p_dvbpsipat->i_ts_id != p_pat->i_ts_id ) ||
-        p_sys->b_user_pmt || PATCheck( p_demux, p_dvbpsipat ) )
+    /* check versioning changes */
+    if( !p_pat->b_generated )
+    {
+        /* override hotfixes */
+        if( ( p_pat->i_version != -1 && p_dvbpsipat->i_version == p_pat->i_version ) ||
+            ( p_pat->i_ts_id != -1 && p_dvbpsipat->i_ts_id != p_pat->i_ts_id ) )
+        {
+            dvbpsi_pat_delete( p_dvbpsipat );
+            return;
+        }
+    }
+    else msg_Warn( p_demux, "Replacing generated PAT with one received from stream" );
+
+    /* check content */
+    if( !p_dvbpsipat->b_current_next || p_sys->b_user_pmt ||
+        PATCheck( p_demux, p_dvbpsipat ) )
     {
         dvbpsi_pat_delete( p_dvbpsipat );
         return;
@@ -117,6 +128,24 @@ static void PATCallBack( void *data, dvbpsi_pat_t *p_dvbpsipat )
     old_pmt_rm.i_size = p_pat->programs.i_size;
     old_pmt_rm.p_elems = p_pat->programs.p_elems;
     ARRAY_INIT(p_pat->programs);
+
+    bool b_force_reselect = false;
+    if( p_sys->programs.i_size && p_sys->seltype == PROGRAM_AUTO_DEFAULT )
+    {
+        /* If the program was set by default selection, we'll need to repick */
+        b_force_reselect = true;
+        for( p_program = p_dvbpsipat->p_first_program; p_program != NULL;
+             p_program = p_program->p_next )
+        {
+            if( p_sys->programs.p_elems[0] == p_program->i_number )
+            {
+                b_force_reselect = false;
+                break;
+            }
+        }
+        if( b_force_reselect )
+            ARRAY_RESET( p_sys->programs );
+    }
 
     /* now create programs */
     for( p_program = p_dvbpsipat->p_first_program; p_program != NULL;
@@ -171,6 +200,7 @@ static void PATCallBack( void *data, dvbpsi_pat_t *p_dvbpsipat )
     }
     p_pat->i_version = p_dvbpsipat->i_version;
     p_pat->i_ts_id = p_dvbpsipat->i_ts_id;
+    p_pat->b_generated = false;
 
     for(int i=0; i<old_pmt_rm.i_size; i++)
     {
@@ -178,6 +208,11 @@ static void PATCallBack( void *data, dvbpsi_pat_t *p_dvbpsipat )
         PIDRelease( p_demux, old_pmt_rm.p_elems[i] );
     }
     ARRAY_RESET(old_pmt_rm);
+
+    if( b_force_reselect && p_sys->programs.i_size )
+    {
+        es_out_Control( p_demux->out, ES_OUT_SET_GROUP, p_sys->programs.p_elems[0] );
+    }
 
     dvbpsi_pat_delete( p_dvbpsipat );
 }
@@ -287,6 +322,7 @@ static void ParsePMTPrivateRegistrations( demux_t *p_demux, const dvbpsi_descrip
                 else
                     msg_Dbg( p_demux, PMT_DESC_PREFIX "Unknown Private (0x%x)", p_dr->i_tag );
             }
+            break;
 
             case TS_STANDARD_DVB:
             case TS_STANDARD_AUTO:
@@ -298,8 +334,8 @@ static void ParsePMTPrivateRegistrations( demux_t *p_demux, const dvbpsi_descrip
                     msg_Dbg( p_demux, PMT_DESC_PREFIX "EACEM Simulcast HD" );
                     break;
                 }
-                /* fallthrough */
             }
+            /* fallthrough */
             default:
                 msg_Dbg( p_demux, PMT_DESC_PREFIX "Unknown Private (0x%x)", p_dr->i_tag );
                 break;
@@ -581,11 +617,12 @@ static void PMTSetupEsTeletext( demux_t *p_demux, ts_stream_t *p_pes,
 
     ts_teletext_page_t p_page[2 * 64 + 20];
     unsigned i_page = 0;
+    dvbpsi_descriptor_t *p_dr;
 
     /* Gather pages information */
     for( unsigned i_tag_idx = 0; i_tag_idx < 2; i_tag_idx++ )
     {
-        dvbpsi_descriptor_t *p_dr = PMTEsFindDescriptor( p_dvbpsies, i_tag_idx == 0 ? 0x46 : 0x56 );
+        p_dr = PMTEsFindDescriptor( p_dvbpsies, i_tag_idx == 0 ? 0x46 : 0x56 );
         if( !p_dr )
             continue;
 
@@ -612,7 +649,7 @@ static void PMTSetupEsTeletext( demux_t *p_demux, ts_stream_t *p_pes,
         }
     }
 
-    dvbpsi_descriptor_t *p_dr = PMTEsFindDescriptor( p_dvbpsies, 0x59 );
+    p_dr = PMTEsFindDescriptor( p_dvbpsies, 0x59 );
     if( p_dr )
     {
         dvbpsi_subtitling_dr_t *p_sub = dvbpsi_DecodeSubtitlingDr( p_dr );
@@ -653,7 +690,6 @@ static void PMTSetupEsTeletext( demux_t *p_demux, ts_stream_t *p_pes,
         p_fmt->subs.teletext.i_page = 0;
         p_fmt->psz_description = strdup( vlc_gettext(ppsz_teletext_type[1]) );
 
-        dvbpsi_descriptor_t *p_dr;
         p_dr = PMTEsFindDescriptor( p_dvbpsies, 0x46 );
         if( !p_dr )
             p_dr = PMTEsFindDescriptor( p_dvbpsies, 0x56 );
@@ -1944,7 +1980,7 @@ static void PMTCallBack( void *data, dvbpsi_pmt_t *p_dvbpsipmt )
                   p_pmt->i_number, i_cand );
     }
 
-    UpdatePESFilters( p_demux, p_sys->b_es_all );
+    UpdatePESFilters( p_demux, p_demux->p_sys->seltype == PROGRAM_ALL );
 
     /* Probe Boundaries */
     if( p_sys->b_canfastseek && p_pmt->i_last_dts == -1 )

@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-15 02:18+0000\n"
+"POT-Creation-Date: 2017-11-17 02:18+0000\n"
 "PO-Revision-Date: 2014-05-09 12:46+0000\n"
 "Last-Translator: kolokotronis <modernphilosopher82-2011@yahoo.com>\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/vlc-trans/language/"
@@ -48,7 +48,7 @@ msgstr ""
 
 #: include/vlc_config_cat.h:38
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
-#: modules/gui/qt/components/simple_preferences.cpp:215
+#: modules/gui/qt/components/simple_preferences.cpp:222
 #: modules/gui/qt/menus.cpp:1085
 msgid "Interface"
 msgstr "Διεπαφή"
@@ -89,7 +89,7 @@ msgstr "Ρυθμίσεις πλήκτρων συντόμευσης"
 #: modules/gui/macosx/VLCPlaylistInfo.m:101
 #: modules/gui/macosx/VLCSimplePrefsController.m:222
 #: modules/gui/qt/components/info_panels.cpp:572
-#: modules/gui/qt/components/simple_preferences.cpp:217
+#: modules/gui/qt/components/simple_preferences.cpp:224
 #: modules/gui/qt/qt.cpp:214 modules/services_discovery/mediadirs.c:77
 #: modules/stream_out/es.c:94 modules/stream_out/transcode/transcode.c:182
 #: share/lua/http/dialogs/create_stream.html:150
@@ -153,7 +153,7 @@ msgstr "Διάφορες ρυθμίσεις και ενότητες ήχου."
 #: modules/gui/macosx/VLCSimplePrefsController.m:224
 #: modules/gui/macosx/VLCSimplePrefsController.m:367
 #: modules/gui/qt/components/info_panels.cpp:573
-#: modules/gui/qt/components/simple_preferences.cpp:219
+#: modules/gui/qt/components/simple_preferences.cpp:226
 #: modules/gui/qt/qt.cpp:214 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:102 modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
@@ -1845,7 +1845,7 @@ msgstr ""
 #: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:941
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:443
 #: modules/demux/mpeg/ts.c:120 modules/gui/macosx/VLCSimplePrefsController.m:54
-#: modules/gui/qt/components/simple_preferences.cpp:64
+#: modules/gui/qt/components/simple_preferences.cpp:65
 #: modules/gui/qt/components/sout/profile_selector.cpp:582
 #: modules/text_renderer/freetype/freetype.c:151 modules/video_output/kva.c:62
 #: modules/video_output/xcb/xvideo.c:821
@@ -5494,7 +5494,7 @@ msgstr "Η αποθήκευση του αρχείου απέτυχε"
 msgid "Failed to open \"%s\" for writing"
 msgstr "Αποτυχία ανοίγματος \"%s\" για εγγραφή"
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2675
+#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2681
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -10979,8 +10979,8 @@ msgstr "Η συντεταγμένη Υ του αποτυπωμένου υπότ�
 msgid "ARIB subtitles decoder"
 msgstr "Aποκωδικοποιητής υπότιτλων DVB"
 
-#: modules/codec/arib/aribsub.c:54 modules/demux/mpeg/ts_psi.c:1048
-#: modules/demux/mpeg/ts_psi.c:1055
+#: modules/codec/arib/aribsub.c:54 modules/demux/mpeg/ts_psi.c:1084
+#: modules/demux/mpeg/ts_psi.c:1091
 #, fuzzy
 msgid "ARIB subtitles"
 msgstr "Υπότιτλοι DVB"
@@ -11696,8 +11696,8 @@ msgstr "Η συντεταγμένη Υ του κωδικοποιημένου υ�
 msgid "DVB subtitles decoder"
 msgstr "Aποκωδικοποιητής υπότιτλων DVB"
 
-#: modules/codec/dvbsub.c:122 modules/demux/mpeg/ts_psi.c:735
-#: modules/demux/mpeg/ts_psi.c:784
+#: modules/codec/dvbsub.c:122 modules/demux/mpeg/ts_psi.c:771
+#: modules/demux/mpeg/ts_psi.c:820
 msgid "DVB subtitles"
 msgstr "Υπότιτλοι DVB"
 
@@ -13262,11 +13262,11 @@ msgid "Set the encoding used in text subtitles"
 msgstr ""
 "Ρυθμίστε την κωδικοποίηση που θα χρησιμοποιηθεί στους υπότιτλους κειμένου"
 
-#: modules/codec/subsdec.c:171 modules/codec/ttml/ttml.c:35
+#: modules/codec/subsdec.c:171 modules/codec/ttml/ttml.c:36
 msgid "Subtitle justification"
 msgstr "Στοίχιση υπότιτλων"
 
-#: modules/codec/subsdec.c:172 modules/codec/ttml/ttml.c:36
+#: modules/codec/subsdec.c:172 modules/codec/ttml/ttml.c:37
 msgid "Set the justification of subtitles"
 msgstr "Ρυθμίστε τη στοίχιση των υπότιτλων"
 
@@ -13410,21 +13410,21 @@ msgstr "Πακετοποιητής βίντεο Theora"
 msgid "Theora video encoder"
 msgstr "Κωδικοποιητής βίντεο Theora"
 
-#: modules/codec/ttml/ttml.c:44
+#: modules/codec/ttml/ttml.c:45
 #, fuzzy
 msgid "TTML decoder"
 msgstr "αποκωδικοποιητής"
 
-#: modules/codec/ttml/ttml.c:45
+#: modules/codec/ttml/ttml.c:46
 #, fuzzy
 msgid "TTML subtitles decoder"
 msgstr "Αποκωδικοποιητής υπότιτλων EBU STL"
 
-#: modules/codec/ttml/ttml.c:52
+#: modules/codec/ttml/ttml.c:53
 msgid "TTML"
 msgstr ""
 
-#: modules/codec/ttml/ttml.c:53
+#: modules/codec/ttml/ttml.c:54
 #, fuzzy
 msgid "TTML demuxer"
 msgstr "Αποπολυπλέκτης TTA"
@@ -14472,7 +14472,7 @@ msgstr "Γρήγορο"
 #: modules/codec/x264.c:438 modules/gui/macosx/VLCMainMenu.m:281
 #: modules/gui/macosx/VLCMainMenu.m:384
 #: modules/gui/macosx/VLCSimplePrefsController.m:689
-#: modules/gui/qt/components/simple_preferences.cpp:639
+#: modules/gui/qt/components/simple_preferences.cpp:646
 #: modules/misc/gnutls.c:771 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
 msgid "Normal"
@@ -14618,10 +14618,10 @@ msgstr "Διεπαφή ελέγχου D-Bus"
 #: modules/gui/qt/main_interface.cpp:1210
 #: modules/gui/qt/main_interface.cpp:1249
 #: modules/gui/qt/main_interface.cpp:1251
-#: modules/gui/qt/main_interface.cpp:1355
-#: modules/gui/qt/main_interface.cpp:1372
-#: modules/gui/qt/main_interface.cpp:1380
-#: modules/gui/qt/main_interface.cpp:1403 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/main_interface.cpp:1360
+#: modules/gui/qt/main_interface.cpp:1377
+#: modules/gui/qt/main_interface.cpp:1385
+#: modules/gui/qt/main_interface.cpp:1408 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -14691,7 +14691,7 @@ msgstr "Διεπαφή γενικών πλήκτρων συντόμευσης"
 #: modules/control/hotkeys.c:100
 #: modules/gui/macosx/VLCSimplePrefsController.m:230
 #: modules/gui/qt/components/preferences_widgets.cpp:1145
-#: modules/gui/qt/components/simple_preferences.cpp:225
+#: modules/gui/qt/components/simple_preferences.cpp:232
 msgid "Hotkeys"
 msgstr "Πλήκτρα συντόμευσης"
 
@@ -15600,11 +15600,11 @@ msgstr "Αναπαραγωγή όπως είναι"
 msgid "Broken or missing Index"
 msgstr "Το ευρετήριο AVI λείπει ή είναι κατακερματισμένο"
 
-#: modules/demux/avi/avi.c:2676
+#: modules/demux/avi/avi.c:2682
 msgid "Broken or missing AVI Index"
 msgstr "Το ευρετήριο AVI λείπει ή είναι κατακερματισμένο"
 
-#: modules/demux/avi/avi.c:2677
+#: modules/demux/avi/avi.c:2683
 msgid "Fixing AVI Index..."
 msgstr "Επιδιόρθωση ευρετηρίου AVI..."
 
@@ -16074,59 +16074,59 @@ msgstr ""
 msgid "MPEG Transport Stream demuxer"
 msgstr "Αποπολυπλέκτης ροής δεδομένων μεταφοράς MPEG"
 
-#: modules/demux/mpeg/ts_psi.c:385
+#: modules/demux/mpeg/ts_psi.c:421
 #, fuzzy
 msgid "Main audio"
 msgstr "Σίγαση του ήχου."
 
-#: modules/demux/mpeg/ts_psi.c:386
+#: modules/demux/mpeg/ts_psi.c:422
 msgid "Audio description for the visually impaired"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:387
+#: modules/demux/mpeg/ts_psi.c:423
 #, fuzzy
 msgid "Clean audio for the hearing impaired"
 msgstr "Υπότιτλοι teletext: άτομα με προβλήματα ακοής"
 
-#: modules/demux/mpeg/ts_psi.c:388
+#: modules/demux/mpeg/ts_psi.c:424
 #, fuzzy
 msgid "Spoken subtitles for the visually impaired"
 msgstr "Υπότιτλοι DVB: άτομα με προβλήματα ακοής"
 
-#: modules/demux/mpeg/ts_psi.c:570 modules/gui/macosx/VLCMainMenu.m:455
+#: modules/demux/mpeg/ts_psi.c:606 modules/gui/macosx/VLCMainMenu.m:455
 #: modules/gui/qt/dialogs/toolbar.cpp:532
 msgid "Teletext"
 msgstr "Teletext"
 
-#: modules/demux/mpeg/ts_psi.c:571
+#: modules/demux/mpeg/ts_psi.c:607
 msgid "Teletext subtitles"
 msgstr "Υπότιτλοι teletext"
 
-#: modules/demux/mpeg/ts_psi.c:572
+#: modules/demux/mpeg/ts_psi.c:608
 msgid "Teletext: additional information"
 msgstr "Teletext: πρόσθετες πληροφορίες"
 
-#: modules/demux/mpeg/ts_psi.c:573
+#: modules/demux/mpeg/ts_psi.c:609
 msgid "Teletext: program schedule"
 msgstr "Teletext: χρονοδιάγραμμα προγράμματος"
 
-#: modules/demux/mpeg/ts_psi.c:574
+#: modules/demux/mpeg/ts_psi.c:610
 msgid "Teletext subtitles: hearing impaired"
 msgstr "Υπότιτλοι teletext: άτομα με προβλήματα ακοής"
 
-#: modules/demux/mpeg/ts_psi.c:791
+#: modules/demux/mpeg/ts_psi.c:827
 msgid "DVB subtitles: hearing impaired"
 msgstr "Υπότιτλοι DVB: άτομα με προβλήματα ακοής"
 
-#: modules/demux/mpeg/ts_psi.c:1292
+#: modules/demux/mpeg/ts_psi.c:1328
 msgid "clean effects"
 msgstr "εκκαθάριση εφέ"
 
-#: modules/demux/mpeg/ts_psi.c:1293
+#: modules/demux/mpeg/ts_psi.c:1329
 msgid "hearing impaired"
 msgstr "άτομα με προβλήματα ακοής"
 
-#: modules/demux/mpeg/ts_psi.c:1294
+#: modules/demux/mpeg/ts_psi.c:1330
 msgid "visual impaired commentary"
 msgstr "σχολιασμός για τα άτομα με προβλήματα όρασης"
 
@@ -16973,7 +16973,7 @@ msgstr "Επιλέξτε τοποθεσία εξόδου"
 #: modules/gui/macosx/VLCSimplePrefsController.m:283
 #: modules/gui/macosx/VLCSimplePrefsController.m:360
 #: modules/gui/qt/components/preferences_widgets.cpp:264
-#: modules/gui/qt/components/simple_preferences.cpp:419
+#: modules/gui/qt/components/simple_preferences.cpp:426
 #: modules/gui/qt/components/sout/sout_widgets.cpp:132
 msgid "Browse..."
 msgstr "Περιήγηση..."
@@ -17178,7 +17178,7 @@ msgstr "Απαιτείται μία εξαγωγή SDP αλλά δεν έχει 
 #: modules/gui/macosx/VLCSimplePrefsController.m:683
 #: modules/gui/macosx/VLCSimplePrefsController.m:711
 #: modules/gui/macosx/VLCSimplePrefsController.m:1244
-#: modules/gui/qt/components/simple_preferences.cpp:636
+#: modules/gui/qt/components/simple_preferences.cpp:643
 msgid "Custom"
 msgstr "Προσαρμοσμένη"
 
@@ -18532,27 +18532,27 @@ msgid "Disable renderer discovery"
 msgstr "Απενεργοποίηση προφύλαξης οθόνης"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
-#: modules/gui/qt/components/simple_preferences.cpp:215
-#: modules/gui/qt/components/simple_preferences.cpp:663
+#: modules/gui/qt/components/simple_preferences.cpp:222
+#: modules/gui/qt/components/simple_preferences.cpp:670
 #: modules/gui/qt/dialogs/plugins.cpp:375
 msgid "Interface Settings"
 msgstr "Ρυθμίσεις διεπαφής"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:222
-#: modules/gui/qt/components/simple_preferences.cpp:217
-#: modules/gui/qt/components/simple_preferences.cpp:394
+#: modules/gui/qt/components/simple_preferences.cpp:224
+#: modules/gui/qt/components/simple_preferences.cpp:401
 msgid "Audio Settings"
 msgstr "Ρυθμίσεις ήχου"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:224
-#: modules/gui/qt/components/simple_preferences.cpp:219
-#: modules/gui/qt/components/simple_preferences.cpp:347
+#: modules/gui/qt/components/simple_preferences.cpp:226
+#: modules/gui/qt/components/simple_preferences.cpp:354
 msgid "Video Settings"
 msgstr "Ρυθμίσεις βίντεο"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:226
-#: modules/gui/qt/components/simple_preferences.cpp:221
-#: modules/gui/qt/components/simple_preferences.cpp:804
+#: modules/gui/qt/components/simple_preferences.cpp:228
+#: modules/gui/qt/components/simple_preferences.cpp:811
 msgid "Subtitle & On Screen Display Settings"
 msgstr "Ρυθμίσεις υποτίτλων & εμφάνισης στην οθόνη"
 
@@ -20331,21 +20331,21 @@ msgstr "Κλειδί ή συνδυασμός:"
 msgid "Key: "
 msgstr "Πλήκτρο:"
 
-#: modules/gui/qt/components/simple_preferences.cpp:223
-#: modules/gui/qt/components/simple_preferences.cpp:565
+#: modules/gui/qt/components/simple_preferences.cpp:230
+#: modules/gui/qt/components/simple_preferences.cpp:572
 msgid "Input & Codecs Settings"
 msgstr "Ρυθμίσεις εισόδου & codecs"
 
-#: modules/gui/qt/components/simple_preferences.cpp:225
-#: modules/gui/qt/components/simple_preferences.cpp:848
+#: modules/gui/qt/components/simple_preferences.cpp:232
+#: modules/gui/qt/components/simple_preferences.cpp:855
 msgid "Configure Hotkeys"
 msgstr "Ρύθμιση πλήκτρων συντόμευσης"
 
-#: modules/gui/qt/components/simple_preferences.cpp:402
+#: modules/gui/qt/components/simple_preferences.cpp:409
 msgid "Device:"
 msgstr "Συσκευή:"
 
-#: modules/gui/qt/components/simple_preferences.cpp:570
+#: modules/gui/qt/components/simple_preferences.cpp:577
 msgid ""
 "If this property is blank, different values\n"
 "for DVD, VCD, and CDDA are set.\n"
@@ -20357,60 +20357,60 @@ msgstr ""
 "Μπορείτε να ορίσετε μία μοναδική ή να τις ρυθμίσετε\n"
 "ξεχωριστά στις επιλογές για προχωρημένους."
 
-#: modules/gui/qt/components/simple_preferences.cpp:637
+#: modules/gui/qt/components/simple_preferences.cpp:644
 msgid "Lowest latency"
 msgstr "Κατώτατη λανθάνουσα κατάσταση"
 
-#: modules/gui/qt/components/simple_preferences.cpp:638
+#: modules/gui/qt/components/simple_preferences.cpp:645
 msgid "Low latency"
 msgstr "Χαμηλή λανθάνουσα κατάσταση"
 
-#: modules/gui/qt/components/simple_preferences.cpp:640
+#: modules/gui/qt/components/simple_preferences.cpp:647
 msgid "High latency"
 msgstr "Υψηλή λανθάνουσα κατάσταση"
 
-#: modules/gui/qt/components/simple_preferences.cpp:641
+#: modules/gui/qt/components/simple_preferences.cpp:648
 msgid "Higher latency"
 msgstr "Υψηλότερη λανθάνουσα κατάσταση"
 
-#: modules/gui/qt/components/simple_preferences.cpp:689
+#: modules/gui/qt/components/simple_preferences.cpp:696
 msgid "This is VLC's skinnable interface. You can download other skins at"
 msgstr ""
 "Αυτή είναι η διεπαφή του VLC με δυνατότητα αλλαγής πρόσοψης. Μπορείτε να "
 "κατεβάσετε άλλες προσόψεις από την"
 
-#: modules/gui/qt/components/simple_preferences.cpp:691
+#: modules/gui/qt/components/simple_preferences.cpp:698
 msgid "VLC skins website"
 msgstr "Ιστοσελίδα προσόψεων του VLC"
 
-#: modules/gui/qt/components/simple_preferences.cpp:715
+#: modules/gui/qt/components/simple_preferences.cpp:722
 msgid "System's default"
 msgstr "Προεπιλογή συστήματος"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1233
+#: modules/gui/qt/components/simple_preferences.cpp:1240
 msgid "File associations"
 msgstr "Συσχετίσεις αρχείων"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1242
+#: modules/gui/qt/components/simple_preferences.cpp:1249
 #: modules/gui/qt/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "Αρχεία ήχου"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1243
+#: modules/gui/qt/components/simple_preferences.cpp:1250
 #: modules/gui/qt/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "Αρχεία βίντεο"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1244
+#: modules/gui/qt/components/simple_preferences.cpp:1251
 #: modules/gui/qt/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "Αρχεία λίστας αναπαραγωγής"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1309
+#: modules/gui/qt/components/simple_preferences.cpp:1316
 msgid "&Apply"
 msgstr "&Εφαρμογή"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1310
+#: modules/gui/qt/components/simple_preferences.cpp:1317
 #: modules/gui/qt/dialogs/convert.cpp:133
 #: modules/gui/qt/dialogs/gototime.cpp:49 modules/gui/qt/dialogs/open.cpp:108
 #: modules/gui/qt/dialogs/openurl.cpp:60
@@ -21334,11 +21334,11 @@ msgstr ""
 msgid "&Continue"
 msgstr "Συνέχεια"
 
-#: modules/gui/qt/main_interface.cpp:1356
+#: modules/gui/qt/main_interface.cpp:1361
 msgid "Control menu for the player"
 msgstr "Μενού ελέγχου για τον αναπαραγωγό"
 
-#: modules/gui/qt/main_interface.cpp:1400
+#: modules/gui/qt/main_interface.cpp:1405
 msgid "Paused"
 msgstr "Σε παύση"
 
@@ -26025,7 +26025,7 @@ msgstr "Εικονικός αποτυπωτής γραμματοσειράς"
 msgid "Video filtering using a chain of video filter modules"
 msgstr "Φιλτράρισμα βίντεο χρησιμοποιώντας μία αλυσίδα ενοτήτων φίλτρων βίντεο"
 
-#: modules/video_chroma/d3d11_surface.c:844
+#: modules/video_chroma/d3d11_surface.c:847
 #, fuzzy
 msgid "Conversions from D3D11 to YUV"
 msgstr "Μετατροπές από"
@@ -27793,12 +27793,12 @@ msgstr ""
 "επιφάνεια εργασίας."
 
 #: modules/video_output/win32/direct3d9.c:72
-#: modules/video_output/win32/direct3d11.c:73
+#: modules/video_output/win32/direct3d11.c:72
 msgid "Use hardware blending support"
 msgstr "Χρήση υποστήριξης ανάμιξης υλικού"
 
 #: modules/video_output/win32/direct3d9.c:74
-#: modules/video_output/win32/direct3d11.c:75
+#: modules/video_output/win32/direct3d11.c:74
 msgid "Try to use hardware acceleration for subtitle/OSD blending."
 msgstr ""
 "Δοκιμάστε να χρησιμοποιήσετε επιτάχυνση υλικού για ανάμιξη υπτίτλων/OSD."
@@ -27837,13 +27837,13 @@ msgstr ""
 msgid "Direct3D9 video output"
 msgstr "Έξοδος βίντεο Direct3D"
 
-#: modules/video_output/win32/direct3d11.c:72
+#: modules/video_output/win32/direct3d11.c:71
 #, fuzzy
 msgid "Recommended video output for Windows 8 and later versions"
 msgstr ""
 "Συνιστώμενη έξοδος βίντεο για Windows Vista και μεταγενέστερες εκδόσεις"
 
-#: modules/video_output/win32/direct3d11.c:79
+#: modules/video_output/win32/direct3d11.c:78
 #, fuzzy
 msgid "Direct3D11 video output"
 msgstr "Έξοδος βίντεο Direct3D"

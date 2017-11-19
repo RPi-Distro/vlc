@@ -366,29 +366,30 @@ static GLuint BuildVertexShader(const opengl_tex_converter_t *tc,
     /* Basic vertex shader */
     static const char *template =
         "#version %u\n"
-        "varying vec2 TexCoord0;attribute vec4 MultiTexCoord0;"
+        "varying vec2 TexCoord0;\n"
+        "attribute vec4 MultiTexCoord0;\n"
         "%s%s"
-        "attribute vec3 VertexPosition;"
-        "uniform mat4 OrientationMatrix;"
-        "uniform mat4 ProjectionMatrix;"
-        "uniform mat4 XRotMatrix;"
-        "uniform mat4 YRotMatrix;"
-        "uniform mat4 ZRotMatrix;"
-        "uniform mat4 ZoomMatrix;"
-        "void main() {"
-        " TexCoord0 = vec4(OrientationMatrix * MultiTexCoord0).st;"
+        "attribute vec3 VertexPosition;\n"
+        "uniform mat4 OrientationMatrix;\n"
+        "uniform mat4 ProjectionMatrix;\n"
+        "uniform mat4 XRotMatrix;\n"
+        "uniform mat4 YRotMatrix;\n"
+        "uniform mat4 ZRotMatrix;\n"
+        "uniform mat4 ZoomMatrix;\n"
+        "void main() {\n"
+        " TexCoord0 = vec4(OrientationMatrix * MultiTexCoord0).st;\n"
         "%s%s"
-        " gl_Position = ProjectionMatrix * ZoomMatrix * ZRotMatrix * XRotMatrix * YRotMatrix * vec4(VertexPosition, 1.0);"
+        " gl_Position = ProjectionMatrix * ZoomMatrix * ZRotMatrix * XRotMatrix * YRotMatrix * vec4(VertexPosition, 1.0);\n"
         "}";
 
     const char *coord1_header = plane_count > 1 ?
-        "varying vec2 TexCoord1;attribute vec4 MultiTexCoord1;" : "";
+        "varying vec2 TexCoord1;\nattribute vec4 MultiTexCoord1;\n" : "";
     const char *coord1_code = plane_count > 1 ?
-        " TexCoord1 = vec4(OrientationMatrix * MultiTexCoord1).st;" : "";
+        " TexCoord1 = vec4(OrientationMatrix * MultiTexCoord1).st;\n" : "";
     const char *coord2_header = plane_count > 2 ?
-        "varying vec2 TexCoord2;attribute vec4 MultiTexCoord2;" : "";
+        "varying vec2 TexCoord2;\nattribute vec4 MultiTexCoord2;\n" : "";
     const char *coord2_code = plane_count > 2 ?
-        " TexCoord2 = vec4(OrientationMatrix * MultiTexCoord2).st;" : "";
+        " TexCoord2 = vec4(OrientationMatrix * MultiTexCoord2).st;\n" : "";
 
     char *code;
     if (asprintf(&code, template, tc->glsl_version, coord1_header, coord2_header,
@@ -397,6 +398,9 @@ static GLuint BuildVertexShader(const opengl_tex_converter_t *tc,
 
     GLuint shader = tc->vt->CreateShader(GL_VERTEX_SHADER);
     tc->vt->ShaderSource(shader, 1, (const char **) &code, NULL);
+    if (tc->b_dump_shaders)
+        fprintf(stderr, "\n=== Vertex shader for fourcc: %4.4s ===\n%s\n",
+                (const char *)&tc->fmt.i_chroma, code);
     tc->vt->CompileShader(shader);
     free(code);
     return shader;
@@ -589,7 +593,8 @@ log_cb(void *priv, enum pl_log_level level, const char *msg)
 
 static int
 opengl_init_program(vout_display_opengl_t *vgl, struct prgm *prgm,
-                    const char *glexts, const video_format_t *fmt, bool subpics)
+                    const char *glexts, const video_format_t *fmt, bool subpics,
+                    bool b_dump_shaders)
 {
     opengl_tex_converter_t *tc =
         vlc_object_create(vgl->gl, sizeof(opengl_tex_converter_t));
@@ -598,6 +603,7 @@ opengl_init_program(vout_display_opengl_t *vgl, struct prgm *prgm,
 
     tc->gl = vgl->gl;
     tc->vt = &vgl->vt;
+    tc->b_dump_shaders = b_dump_shaders;
     tc->pf_fragment_shader_init = opengl_fragment_shader_init_impl;
     tc->glexts = glexts;
 #if defined(USE_OPENGL_ES2)
@@ -843,12 +849,15 @@ vout_display_opengl_t *vout_display_opengl_New(video_format_t *fmt,
                          HasExtension(extensions, "GL_APPLE_texture_2D_limited_npot");
 #endif
 
+    bool b_dump_shaders = var_InheritInteger(gl, "verbose") >= 4;
+
     vgl->prgm = &vgl->prgms[0];
     vgl->sub_prgm = &vgl->prgms[1];
 
     GL_ASSERT_NOERROR();
     int ret;
-    ret = opengl_init_program(vgl, vgl->prgm, extensions, fmt, false);
+    ret = opengl_init_program(vgl, vgl->prgm, extensions, fmt, false,
+                              b_dump_shaders);
     if (ret != VLC_SUCCESS)
     {
         msg_Warn(gl, "could not init tex converter for %4.4s",
@@ -858,7 +867,8 @@ vout_display_opengl_t *vout_display_opengl_New(video_format_t *fmt,
     }
 
     GL_ASSERT_NOERROR();
-    ret = opengl_init_program(vgl, vgl->sub_prgm, extensions, fmt, true);
+    ret = opengl_init_program(vgl, vgl->sub_prgm, extensions, fmt, true,
+                              b_dump_shaders);
     if (ret != VLC_SUCCESS)
     {
         msg_Warn(gl, "could not init subpictures tex converter for %4.4s",
@@ -1561,6 +1571,55 @@ static void DrawWithShaders(vout_display_opengl_t *vgl, struct prgm *prgm)
     glDrawElements(GL_TRIANGLES, vgl->nb_indices, GL_UNSIGNED_SHORT, 0);
 }
 
+
+static void GetTextureCropParamsForStereo(unsigned i_nbTextures,
+                                          const float *stereoCoefs,
+                                          const float *stereoOffsets,
+                                          float *left, float *top,
+                                          float *right, float *bottom)
+{
+    for (unsigned i = 0; i < i_nbTextures; ++i)
+    {
+        float f_2eyesWidth = right[i] - left[i];
+        left[i] = left[i] + f_2eyesWidth * stereoOffsets[0];
+        right[i] = left[i] + f_2eyesWidth * stereoCoefs[0];
+
+        float f_2eyesHeight = bottom[i] - top[i];
+        top[i] = top[i] + f_2eyesHeight * stereoOffsets[1];
+        bottom[i] = top[i] + f_2eyesHeight * stereoCoefs[1];
+    }
+}
+
+static void TextureCropForStereo(vout_display_opengl_t *vgl,
+                                 float *left, float *top,
+                                 float *right, float *bottom)
+{
+    float stereoCoefs[2];
+    float stereoOffsets[2];
+
+    switch (vgl->fmt.multiview_mode)
+    {
+    case MULTIVIEW_STEREO_TB:
+        // Display only the left eye.
+        stereoCoefs[0] = 1; stereoCoefs[1] = 0.5;
+        stereoOffsets[0] = 0; stereoOffsets[1] = 0;
+        GetTextureCropParamsForStereo(vgl->prgm->tc->tex_count,
+                                      stereoCoefs, stereoOffsets,
+                                      left, top, right, bottom);
+        break;
+    case MULTIVIEW_STEREO_SBS:
+        // Display only the left eye.
+        stereoCoefs[0] = 0.5; stereoCoefs[1] = 1;
+        stereoOffsets[0] = 0; stereoOffsets[1] = 0;
+        GetTextureCropParamsForStereo(vgl->prgm->tc->tex_count,
+                                      stereoCoefs, stereoOffsets,
+                                      left, top, right, bottom);
+        break;
+    default:
+        break;
+    }
+}
+
 int vout_display_opengl_Display(vout_display_opengl_t *vgl,
                                 const video_format_t *source)
 {
@@ -1607,6 +1666,7 @@ int vout_display_opengl_Display(vout_display_opengl_t *vgl,
             bottom[j] = (source->i_y_offset + source->i_visible_height) * scale_h;
         }
 
+        TextureCropForStereo(vgl, left, top, right, bottom);
         int ret = SetupCoords(vgl, left, top, right, bottom);
         if (ret != VLC_SUCCESS)
             return ret;

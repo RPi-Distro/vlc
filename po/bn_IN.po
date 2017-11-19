@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-15 02:18+0000\n"
+"POT-Creation-Date: 2017-11-17 02:18+0000\n"
 "PO-Revision-Date: 2013-12-08 08:16+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Bengali (India) (http://www.transifex.com/projects/p/vlc-"
@@ -43,7 +43,7 @@ msgstr "নির্বাচন করুন \" উন্নত অপশনস
 
 #: include/vlc_config_cat.h:38
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
-#: modules/gui/qt/components/simple_preferences.cpp:215
+#: modules/gui/qt/components/simple_preferences.cpp:222
 #: modules/gui/qt/menus.cpp:1085
 msgid "Interface"
 msgstr "Interface"
@@ -84,7 +84,7 @@ msgstr "Hotkeys মানসমূহ"
 #: modules/gui/macosx/VLCPlaylistInfo.m:101
 #: modules/gui/macosx/VLCSimplePrefsController.m:222
 #: modules/gui/qt/components/info_panels.cpp:572
-#: modules/gui/qt/components/simple_preferences.cpp:217
+#: modules/gui/qt/components/simple_preferences.cpp:224
 #: modules/gui/qt/qt.cpp:214 modules/services_discovery/mediadirs.c:77
 #: modules/stream_out/es.c:94 modules/stream_out/transcode/transcode.c:182
 #: share/lua/http/dialogs/create_stream.html:150
@@ -147,7 +147,7 @@ msgstr "বিবিধ অডিও মানসমূহ এবং মডি�
 #: modules/gui/macosx/VLCSimplePrefsController.m:224
 #: modules/gui/macosx/VLCSimplePrefsController.m:367
 #: modules/gui/qt/components/info_panels.cpp:573
-#: modules/gui/qt/components/simple_preferences.cpp:219
+#: modules/gui/qt/components/simple_preferences.cpp:226
 #: modules/gui/qt/qt.cpp:214 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:102 modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
@@ -1775,7 +1775,7 @@ msgstr ""
 #: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:941
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:443
 #: modules/demux/mpeg/ts.c:120 modules/gui/macosx/VLCSimplePrefsController.m:54
-#: modules/gui/qt/components/simple_preferences.cpp:64
+#: modules/gui/qt/components/simple_preferences.cpp:65
 #: modules/gui/qt/components/sout/profile_selector.cpp:582
 #: modules/text_renderer/freetype/freetype.c:151 modules/video_output/kva.c:62
 #: modules/video_output/xcb/xvideo.c:821
@@ -5238,7 +5238,7 @@ msgstr "ফাইল সংরক্ষণ করতে ব্যর্থ"
 msgid "Failed to open \"%s\" for writing"
 msgstr "লেখার জন্য \"%s\" খুলতে ব্যর্থ"
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2675
+#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2681
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -10568,8 +10568,8 @@ msgstr "রেন্ডারকৃত সাবটাইটেলের X স�
 msgid "ARIB subtitles decoder"
 msgstr "DVB সাবটাইটেল ডিকোডার"
 
-#: modules/codec/arib/aribsub.c:54 modules/demux/mpeg/ts_psi.c:1048
-#: modules/demux/mpeg/ts_psi.c:1055
+#: modules/codec/arib/aribsub.c:54 modules/demux/mpeg/ts_psi.c:1084
+#: modules/demux/mpeg/ts_psi.c:1091
 #, fuzzy
 msgid "ARIB subtitles"
 msgstr "DVB সাবটাইটেল"
@@ -11240,8 +11240,8 @@ msgstr "এনকোড করা সাবটাইটেলের Y স্থ�
 msgid "DVB subtitles decoder"
 msgstr "DVB সাবটাইটেল ডিকোডার"
 
-#: modules/codec/dvbsub.c:122 modules/demux/mpeg/ts_psi.c:735
-#: modules/demux/mpeg/ts_psi.c:784
+#: modules/codec/dvbsub.c:122 modules/demux/mpeg/ts_psi.c:771
+#: modules/demux/mpeg/ts_psi.c:820
 msgid "DVB subtitles"
 msgstr "DVB সাবটাইটেল"
 
@@ -12690,11 +12690,11 @@ msgstr ""
 msgid "Set the encoding used in text subtitles"
 msgstr "টেক্সট সাবটাইটেলে ব্যবহৃত এনকোডিং নির্ধারণ করা হবে"
 
-#: modules/codec/subsdec.c:171 modules/codec/ttml/ttml.c:35
+#: modules/codec/subsdec.c:171 modules/codec/ttml/ttml.c:36
 msgid "Subtitle justification"
 msgstr ""
 
-#: modules/codec/subsdec.c:172 modules/codec/ttml/ttml.c:36
+#: modules/codec/subsdec.c:172 modules/codec/ttml/ttml.c:37
 msgid "Set the justification of subtitles"
 msgstr "সাবটাইটেলের উভয়প্রান্তিককরণ নির্ধারণ করা হবে"
 
@@ -12834,21 +12834,21 @@ msgstr "Theora ভিডিও প্যাকেটাইজার"
 msgid "Theora video encoder"
 msgstr "Theora ভিডিও এনকোডার"
 
-#: modules/codec/ttml/ttml.c:44
+#: modules/codec/ttml/ttml.c:45
 #, fuzzy
 msgid "TTML decoder"
 msgstr "সঙ্কেতমোচক"
 
-#: modules/codec/ttml/ttml.c:45
+#: modules/codec/ttml/ttml.c:46
 #, fuzzy
 msgid "TTML subtitles decoder"
 msgstr "EBU STL সাবটাইটেল সঙ্কেতমোচক"
 
-#: modules/codec/ttml/ttml.c:52
+#: modules/codec/ttml/ttml.c:53
 msgid "TTML"
 msgstr ""
 
-#: modules/codec/ttml/ttml.c:53
+#: modules/codec/ttml/ttml.c:54
 #, fuzzy
 msgid "TTML demuxer"
 msgstr "TTA ডিমাক্সার"
@@ -13837,7 +13837,7 @@ msgstr ""
 #: modules/codec/x264.c:438 modules/gui/macosx/VLCMainMenu.m:281
 #: modules/gui/macosx/VLCMainMenu.m:384
 #: modules/gui/macosx/VLCSimplePrefsController.m:689
-#: modules/gui/qt/components/simple_preferences.cpp:639
+#: modules/gui/qt/components/simple_preferences.cpp:646
 #: modules/misc/gnutls.c:771 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
 msgid "Normal"
@@ -13981,10 +13981,10 @@ msgstr "D-Bus কন্ট্রোল ইন্টারফেস"
 #: modules/gui/qt/main_interface.cpp:1210
 #: modules/gui/qt/main_interface.cpp:1249
 #: modules/gui/qt/main_interface.cpp:1251
-#: modules/gui/qt/main_interface.cpp:1355
-#: modules/gui/qt/main_interface.cpp:1372
-#: modules/gui/qt/main_interface.cpp:1380
-#: modules/gui/qt/main_interface.cpp:1403 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/main_interface.cpp:1360
+#: modules/gui/qt/main_interface.cpp:1377
+#: modules/gui/qt/main_interface.cpp:1385
+#: modules/gui/qt/main_interface.cpp:1408 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -14052,7 +14052,7 @@ msgstr "গ্লোবাল হট কী ইন্টারফেস"
 #: modules/control/hotkeys.c:100
 #: modules/gui/macosx/VLCSimplePrefsController.m:230
 #: modules/gui/qt/components/preferences_widgets.cpp:1145
-#: modules/gui/qt/components/simple_preferences.cpp:225
+#: modules/gui/qt/components/simple_preferences.cpp:232
 msgid "Hotkeys"
 msgstr "হট কী (hotkey)"
 
@@ -14933,11 +14933,11 @@ msgstr "একটি হিসাবে খেলুন"
 msgid "Broken or missing Index"
 msgstr "ভগ্ন বা AVI সূচক অনুপস্থিত"
 
-#: modules/demux/avi/avi.c:2676
+#: modules/demux/avi/avi.c:2682
 msgid "Broken or missing AVI Index"
 msgstr "ভগ্ন বা AVI সূচক অনুপস্থিত"
 
-#: modules/demux/avi/avi.c:2677
+#: modules/demux/avi/avi.c:2683
 msgid "Fixing AVI Index..."
 msgstr "AVI ইনডেক্স মেরামত করা হচ্ছে..."
 
@@ -15389,60 +15389,60 @@ msgstr ""
 msgid "MPEG Transport Stream demuxer"
 msgstr "MPEG ট্রান্সপোর্ট স্ট্রীম ডিমাক্সার"
 
-#: modules/demux/mpeg/ts_psi.c:385
+#: modules/demux/mpeg/ts_psi.c:421
 #, fuzzy
 msgid "Main audio"
 msgstr "অডিও  নীরব."
 
-#: modules/demux/mpeg/ts_psi.c:386
+#: modules/demux/mpeg/ts_psi.c:422
 #, fuzzy
 msgid "Audio description for the visually impaired"
 msgstr "গন্তব্য ভিডিও কোডেক"
 
-#: modules/demux/mpeg/ts_psi.c:387
+#: modules/demux/mpeg/ts_psi.c:423
 #, fuzzy
 msgid "Clean audio for the hearing impaired"
 msgstr "টেলিটেক্সট সাবটাইটেল: বধির"
 
-#: modules/demux/mpeg/ts_psi.c:388
+#: modules/demux/mpeg/ts_psi.c:424
 #, fuzzy
 msgid "Spoken subtitles for the visually impaired"
 msgstr "DVB সাবটাইটেল: বধির"
 
-#: modules/demux/mpeg/ts_psi.c:570 modules/gui/macosx/VLCMainMenu.m:455
+#: modules/demux/mpeg/ts_psi.c:606 modules/gui/macosx/VLCMainMenu.m:455
 #: modules/gui/qt/dialogs/toolbar.cpp:532
 msgid "Teletext"
 msgstr "টেলিটেক্সট"
 
-#: modules/demux/mpeg/ts_psi.c:571
+#: modules/demux/mpeg/ts_psi.c:607
 msgid "Teletext subtitles"
 msgstr "টেলিটেক্সট সাবটাইটেল"
 
-#: modules/demux/mpeg/ts_psi.c:572
+#: modules/demux/mpeg/ts_psi.c:608
 msgid "Teletext: additional information"
 msgstr "টেলিটেক্সট: অতিরিক্ত তথ্য"
 
-#: modules/demux/mpeg/ts_psi.c:573
+#: modules/demux/mpeg/ts_psi.c:609
 msgid "Teletext: program schedule"
 msgstr "টেলিটেক্সট: প্রোগ্রাম সময়সূচি"
 
-#: modules/demux/mpeg/ts_psi.c:574
+#: modules/demux/mpeg/ts_psi.c:610
 msgid "Teletext subtitles: hearing impaired"
 msgstr "টেলিটেক্সট সাবটাইটেল: বধির"
 
-#: modules/demux/mpeg/ts_psi.c:791
+#: modules/demux/mpeg/ts_psi.c:827
 msgid "DVB subtitles: hearing impaired"
 msgstr "DVB সাবটাইটেল: বধির"
 
-#: modules/demux/mpeg/ts_psi.c:1292
+#: modules/demux/mpeg/ts_psi.c:1328
 msgid "clean effects"
 msgstr "পরিস্কার আবহ"
 
-#: modules/demux/mpeg/ts_psi.c:1293
+#: modules/demux/mpeg/ts_psi.c:1329
 msgid "hearing impaired"
 msgstr "বধির"
 
-#: modules/demux/mpeg/ts_psi.c:1294
+#: modules/demux/mpeg/ts_psi.c:1330
 msgid "visual impaired commentary"
 msgstr "অন্ধ ব্যক্তিদের জন্য ধারাবিবরনী"
 
@@ -16263,7 +16263,7 @@ msgstr ""
 #: modules/gui/macosx/VLCSimplePrefsController.m:283
 #: modules/gui/macosx/VLCSimplePrefsController.m:360
 #: modules/gui/qt/components/preferences_widgets.cpp:264
-#: modules/gui/qt/components/simple_preferences.cpp:419
+#: modules/gui/qt/components/simple_preferences.cpp:426
 #: modules/gui/qt/components/sout/sout_widgets.cpp:132
 msgid "Browse..."
 msgstr "ব্রাউজ..."
@@ -16462,7 +16462,7 @@ msgstr ""
 #: modules/gui/macosx/VLCSimplePrefsController.m:683
 #: modules/gui/macosx/VLCSimplePrefsController.m:711
 #: modules/gui/macosx/VLCSimplePrefsController.m:1244
-#: modules/gui/qt/components/simple_preferences.cpp:636
+#: modules/gui/qt/components/simple_preferences.cpp:643
 msgid "Custom"
 msgstr "স্বনির্ধারিত"
 
@@ -17766,27 +17766,27 @@ msgid "Disable renderer discovery"
 msgstr "স্ক্রিন নিষ্ক্রিয় করুন"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
-#: modules/gui/qt/components/simple_preferences.cpp:215
-#: modules/gui/qt/components/simple_preferences.cpp:663
+#: modules/gui/qt/components/simple_preferences.cpp:222
+#: modules/gui/qt/components/simple_preferences.cpp:670
 #: modules/gui/qt/dialogs/plugins.cpp:375
 msgid "Interface Settings"
 msgstr "ইন্টারফেস সেটিং"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:222
-#: modules/gui/qt/components/simple_preferences.cpp:217
-#: modules/gui/qt/components/simple_preferences.cpp:394
+#: modules/gui/qt/components/simple_preferences.cpp:224
+#: modules/gui/qt/components/simple_preferences.cpp:401
 msgid "Audio Settings"
 msgstr "অডিও সেটিং"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:224
-#: modules/gui/qt/components/simple_preferences.cpp:219
-#: modules/gui/qt/components/simple_preferences.cpp:347
+#: modules/gui/qt/components/simple_preferences.cpp:226
+#: modules/gui/qt/components/simple_preferences.cpp:354
 msgid "Video Settings"
 msgstr "ভিডিও সেটিং"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:226
-#: modules/gui/qt/components/simple_preferences.cpp:221
-#: modules/gui/qt/components/simple_preferences.cpp:804
+#: modules/gui/qt/components/simple_preferences.cpp:228
+#: modules/gui/qt/components/simple_preferences.cpp:811
 msgid "Subtitle & On Screen Display Settings"
 msgstr ""
 
@@ -19512,21 +19512,21 @@ msgstr ""
 msgid "Key: "
 msgstr "কী:"
 
-#: modules/gui/qt/components/simple_preferences.cpp:223
-#: modules/gui/qt/components/simple_preferences.cpp:565
+#: modules/gui/qt/components/simple_preferences.cpp:230
+#: modules/gui/qt/components/simple_preferences.cpp:572
 msgid "Input & Codecs Settings"
 msgstr "ইনপুট & কোডেকসমূহের সেটিং"
 
-#: modules/gui/qt/components/simple_preferences.cpp:225
-#: modules/gui/qt/components/simple_preferences.cpp:848
+#: modules/gui/qt/components/simple_preferences.cpp:232
+#: modules/gui/qt/components/simple_preferences.cpp:855
 msgid "Configure Hotkeys"
 msgstr "হট-কী কনফিগার করা হবে"
 
-#: modules/gui/qt/components/simple_preferences.cpp:402
+#: modules/gui/qt/components/simple_preferences.cpp:409
 msgid "Device:"
 msgstr "ডিভাইস:"
 
-#: modules/gui/qt/components/simple_preferences.cpp:570
+#: modules/gui/qt/components/simple_preferences.cpp:577
 msgid ""
 "If this property is blank, different values\n"
 "for DVD, VCD, and CDDA are set.\n"
@@ -19538,60 +19538,60 @@ msgstr ""
 "আপনি একটি স্বতন্ত্র মান নির্ধারণ করতে পারেন বা এদেরকে\n"
 "পৃথকভাবে উন্নততর পছন্দসমূহে কনফিগার করতে পারেন।"
 
-#: modules/gui/qt/components/simple_preferences.cpp:637
+#: modules/gui/qt/components/simple_preferences.cpp:644
 msgid "Lowest latency"
 msgstr "সর্বনিম্ন বিলম্ব"
 
-#: modules/gui/qt/components/simple_preferences.cpp:638
+#: modules/gui/qt/components/simple_preferences.cpp:645
 msgid "Low latency"
 msgstr "নিম্ন বিলম্ব"
 
-#: modules/gui/qt/components/simple_preferences.cpp:640
+#: modules/gui/qt/components/simple_preferences.cpp:647
 msgid "High latency"
 msgstr "উচ্চ বিলম্ব"
 
-#: modules/gui/qt/components/simple_preferences.cpp:641
+#: modules/gui/qt/components/simple_preferences.cpp:648
 msgid "Higher latency"
 msgstr "উচ্চতর বিলম্ব"
 
-#: modules/gui/qt/components/simple_preferences.cpp:689
+#: modules/gui/qt/components/simple_preferences.cpp:696
 msgid "This is VLC's skinnable interface. You can download other skins at"
 msgstr ""
 "এটি VLC এর স্কিন ব্যবহারযোগ্য ইন্টারফেস।  আপনি অন্যান্য স্কিন এখান থেকে ডাউনলোড "
 "করতে পারেন "
 
-#: modules/gui/qt/components/simple_preferences.cpp:691
+#: modules/gui/qt/components/simple_preferences.cpp:698
 msgid "VLC skins website"
 msgstr "VLC স্কীন ওয়েবসাইট"
 
-#: modules/gui/qt/components/simple_preferences.cpp:715
+#: modules/gui/qt/components/simple_preferences.cpp:722
 msgid "System's default"
 msgstr "সিস্টেমের ডিফল্ট"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1233
+#: modules/gui/qt/components/simple_preferences.cpp:1240
 msgid "File associations"
 msgstr "ফাইলের অ্যাসোসিয়েশনগুলো"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1242
+#: modules/gui/qt/components/simple_preferences.cpp:1249
 #: modules/gui/qt/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "অডিও ফাইল"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1243
+#: modules/gui/qt/components/simple_preferences.cpp:1250
 #: modules/gui/qt/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "ভিডিও ফাইল"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1244
+#: modules/gui/qt/components/simple_preferences.cpp:1251
 #: modules/gui/qt/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "প্লে-লিস্টের ফাইল"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1309
+#: modules/gui/qt/components/simple_preferences.cpp:1316
 msgid "&Apply"
 msgstr "প্রয়োগ করা হবে (&A)"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1310
+#: modules/gui/qt/components/simple_preferences.cpp:1317
 #: modules/gui/qt/dialogs/convert.cpp:133
 #: modules/gui/qt/dialogs/gototime.cpp:49 modules/gui/qt/dialogs/open.cpp:108
 #: modules/gui/qt/dialogs/openurl.cpp:60
@@ -20485,11 +20485,11 @@ msgstr ""
 msgid "&Continue"
 msgstr "চালিয়ে যান"
 
-#: modules/gui/qt/main_interface.cpp:1356
+#: modules/gui/qt/main_interface.cpp:1361
 msgid "Control menu for the player"
 msgstr "প্লেয়ারের জন্য কন্ট্রোল মেনু"
 
-#: modules/gui/qt/main_interface.cpp:1400
+#: modules/gui/qt/main_interface.cpp:1405
 msgid "Paused"
 msgstr "বিরত"
 
@@ -24998,7 +24998,7 @@ msgstr "ডামি ফন্ট পরিবেশক"
 msgid "Video filtering using a chain of video filter modules"
 msgstr "ভিডিও পরিশোধক মডিউলের একটি চেইন ব্যবহার করে ভিডিও পরিশোধন করা"
 
-#: modules/video_chroma/d3d11_surface.c:844
+#: modules/video_chroma/d3d11_surface.c:847
 #, fuzzy
 msgid "Conversions from D3D11 to YUV"
 msgstr "এখান থেকে রূপান্তর"
@@ -26694,12 +26694,12 @@ msgid "The desktop mode allows you to display the video on the desktop."
 msgstr "ডেস্কটপে ভিডিও দেখাতে ডেস্কটপ মোড সমর্থন করে।"
 
 #: modules/video_output/win32/direct3d9.c:72
-#: modules/video_output/win32/direct3d11.c:73
+#: modules/video_output/win32/direct3d11.c:72
 msgid "Use hardware blending support"
 msgstr "হার্ডওয়্যার সমর্থন ব্যবস্থা ব্যবহার করতে মিশ্রণ"
 
 #: modules/video_output/win32/direct3d9.c:74
-#: modules/video_output/win32/direct3d11.c:75
+#: modules/video_output/win32/direct3d11.c:74
 msgid "Try to use hardware acceleration for subtitle/OSD blending."
 msgstr ""
 
@@ -26735,12 +26735,12 @@ msgstr "Windows Vista এবং পরবর্তী সংস্করণে�
 msgid "Direct3D9 video output"
 msgstr "Direct3D ত্রিমাত্রিক ভিডিও আউটপুট"
 
-#: modules/video_output/win32/direct3d11.c:72
+#: modules/video_output/win32/direct3d11.c:71
 #, fuzzy
 msgid "Recommended video output for Windows 8 and later versions"
 msgstr "Windows Vista এবং পরবর্তী সংস্করণের জন্য সুপারিশকৃত ভিডিও আউটপুট"
 
-#: modules/video_output/win32/direct3d11.c:79
+#: modules/video_output/win32/direct3d11.c:78
 #, fuzzy
 msgid "Direct3D11 video output"
 msgstr "Direct3D ত্রিমাত্রিক ভিডিও আউটপুট"

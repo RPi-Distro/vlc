@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-15 02:18+0000\n"
+"POT-Creation-Date: 2017-11-17 02:18+0000\n"
 "PO-Revision-Date: 2014-05-16 10:21+0000\n"
 "Last-Translator: x4r <xatierlike@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/vlc-"
@@ -48,7 +48,7 @@ msgstr "選擇「進階選項」以檢視所有選項。"
 
 #: include/vlc_config_cat.h:38
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
-#: modules/gui/qt/components/simple_preferences.cpp:215
+#: modules/gui/qt/components/simple_preferences.cpp:222
 #: modules/gui/qt/menus.cpp:1085
 msgid "Interface"
 msgstr "介面"
@@ -89,7 +89,7 @@ msgstr "熱鍵設定"
 #: modules/gui/macosx/VLCPlaylistInfo.m:101
 #: modules/gui/macosx/VLCSimplePrefsController.m:222
 #: modules/gui/qt/components/info_panels.cpp:572
-#: modules/gui/qt/components/simple_preferences.cpp:217
+#: modules/gui/qt/components/simple_preferences.cpp:224
 #: modules/gui/qt/qt.cpp:214 modules/services_discovery/mediadirs.c:77
 #: modules/stream_out/es.c:94 modules/stream_out/transcode/transcode.c:182
 #: share/lua/http/dialogs/create_stream.html:150
@@ -152,7 +152,7 @@ msgstr "音訊設定雜項與模組。"
 #: modules/gui/macosx/VLCSimplePrefsController.m:224
 #: modules/gui/macosx/VLCSimplePrefsController.m:367
 #: modules/gui/qt/components/info_panels.cpp:573
-#: modules/gui/qt/components/simple_preferences.cpp:219
+#: modules/gui/qt/components/simple_preferences.cpp:226
 #: modules/gui/qt/qt.cpp:214 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:102 modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
@@ -1748,7 +1748,7 @@ msgstr ""
 #: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:941
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:443
 #: modules/demux/mpeg/ts.c:120 modules/gui/macosx/VLCSimplePrefsController.m:54
-#: modules/gui/qt/components/simple_preferences.cpp:64
+#: modules/gui/qt/components/simple_preferences.cpp:65
 #: modules/gui/qt/components/sout/profile_selector.cpp:582
 #: modules/text_renderer/freetype/freetype.c:151 modules/video_output/kva.c:62
 #: modules/video_output/xcb/xvideo.c:821
@@ -5015,7 +5015,7 @@ msgstr "儲存檔案失敗"
 msgid "Failed to open \"%s\" for writing"
 msgstr "開啟並寫入「%s」失敗"
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2675
+#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2681
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -10147,8 +10147,8 @@ msgstr "顯示字幕的 X 座標"
 msgid "ARIB subtitles decoder"
 msgstr "DVB 字幕解碼器"
 
-#: modules/codec/arib/aribsub.c:54 modules/demux/mpeg/ts_psi.c:1048
-#: modules/demux/mpeg/ts_psi.c:1055
+#: modules/codec/arib/aribsub.c:54 modules/demux/mpeg/ts_psi.c:1084
+#: modules/demux/mpeg/ts_psi.c:1091
 #, fuzzy
 msgid "ARIB subtitles"
 msgstr "DVB 字幕"
@@ -10785,8 +10785,8 @@ msgstr "編碼字幕的 Y 座標"
 msgid "DVB subtitles decoder"
 msgstr "DVB 字幕解碼器"
 
-#: modules/codec/dvbsub.c:122 modules/demux/mpeg/ts_psi.c:735
-#: modules/demux/mpeg/ts_psi.c:784
+#: modules/codec/dvbsub.c:122 modules/demux/mpeg/ts_psi.c:771
+#: modules/demux/mpeg/ts_psi.c:820
 msgid "DVB subtitles"
 msgstr "DVB 字幕"
 
@@ -12203,11 +12203,11 @@ msgstr "字幕文字編碼"
 msgid "Set the encoding used in text subtitles"
 msgstr "設定字幕所使用的編碼"
 
-#: modules/codec/subsdec.c:171 modules/codec/ttml/ttml.c:35
+#: modules/codec/subsdec.c:171 modules/codec/ttml/ttml.c:36
 msgid "Subtitle justification"
 msgstr "字幕左右對齊"
 
-#: modules/codec/subsdec.c:172 modules/codec/ttml/ttml.c:36
+#: modules/codec/subsdec.c:172 modules/codec/ttml/ttml.c:37
 msgid "Set the justification of subtitles"
 msgstr "設定字幕左右對齊"
 
@@ -12337,21 +12337,21 @@ msgstr "Theora 視訊封包器"
 msgid "Theora video encoder"
 msgstr "Theora 視訊編碼器"
 
-#: modules/codec/ttml/ttml.c:44
+#: modules/codec/ttml/ttml.c:45
 #, fuzzy
 msgid "TTML decoder"
 msgstr "解碼器"
 
-#: modules/codec/ttml/ttml.c:45
+#: modules/codec/ttml/ttml.c:46
 #, fuzzy
 msgid "TTML subtitles decoder"
 msgstr "EBU STL 字幕解碼器"
 
-#: modules/codec/ttml/ttml.c:52
+#: modules/codec/ttml/ttml.c:53
 msgid "TTML"
 msgstr ""
 
-#: modules/codec/ttml/ttml.c:53
+#: modules/codec/ttml/ttml.c:54
 #, fuzzy
 msgid "TTML demuxer"
 msgstr "TTA 解多工器"
@@ -13226,7 +13226,7 @@ msgstr "快速"
 #: modules/codec/x264.c:438 modules/gui/macosx/VLCMainMenu.m:281
 #: modules/gui/macosx/VLCMainMenu.m:384
 #: modules/gui/macosx/VLCSimplePrefsController.m:689
-#: modules/gui/qt/components/simple_preferences.cpp:639
+#: modules/gui/qt/components/simple_preferences.cpp:646
 #: modules/misc/gnutls.c:771 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
 msgid "Normal"
@@ -13367,10 +13367,10 @@ msgstr "D-Bus 控制介面"
 #: modules/gui/qt/main_interface.cpp:1210
 #: modules/gui/qt/main_interface.cpp:1249
 #: modules/gui/qt/main_interface.cpp:1251
-#: modules/gui/qt/main_interface.cpp:1355
-#: modules/gui/qt/main_interface.cpp:1372
-#: modules/gui/qt/main_interface.cpp:1380
-#: modules/gui/qt/main_interface.cpp:1403 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/main_interface.cpp:1360
+#: modules/gui/qt/main_interface.cpp:1377
+#: modules/gui/qt/main_interface.cpp:1385
+#: modules/gui/qt/main_interface.cpp:1408 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -13437,7 +13437,7 @@ msgstr "全域熱鍵介面"
 #: modules/control/hotkeys.c:100
 #: modules/gui/macosx/VLCSimplePrefsController.m:230
 #: modules/gui/qt/components/preferences_widgets.cpp:1145
-#: modules/gui/qt/components/simple_preferences.cpp:225
+#: modules/gui/qt/components/simple_preferences.cpp:232
 msgid "Hotkeys"
 msgstr "熱鍵"
 
@@ -14300,11 +14300,11 @@ msgstr "如其播放"
 msgid "Broken or missing Index"
 msgstr "AVI 索引損壞或者遺失"
 
-#: modules/demux/avi/avi.c:2676
+#: modules/demux/avi/avi.c:2682
 msgid "Broken or missing AVI Index"
 msgstr "AVI 索引損壞或者遺失"
 
-#: modules/demux/avi/avi.c:2677
+#: modules/demux/avi/avi.c:2683
 msgid "Fixing AVI Index..."
 msgstr "AVI 索引修復中..."
 
@@ -14726,58 +14726,58 @@ msgstr ""
 msgid "MPEG Transport Stream demuxer"
 msgstr "MPEG Transport Stream 解多工器"
 
-#: modules/demux/mpeg/ts_psi.c:385
+#: modules/demux/mpeg/ts_psi.c:421
 #, fuzzy
 msgid "Main audio"
 msgstr "靜音。"
 
-#: modules/demux/mpeg/ts_psi.c:386
+#: modules/demux/mpeg/ts_psi.c:422
 #, fuzzy
 msgid "Audio description for the visually impaired"
 msgstr "目的地字幕編解碼器"
 
-#: modules/demux/mpeg/ts_psi.c:387
+#: modules/demux/mpeg/ts_psi.c:423
 msgid "Clean audio for the hearing impaired"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:388
+#: modules/demux/mpeg/ts_psi.c:424
 msgid "Spoken subtitles for the visually impaired"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:570 modules/gui/macosx/VLCMainMenu.m:455
+#: modules/demux/mpeg/ts_psi.c:606 modules/gui/macosx/VLCMainMenu.m:455
 #: modules/gui/qt/dialogs/toolbar.cpp:532
 msgid "Teletext"
 msgstr "文字廣播"
 
-#: modules/demux/mpeg/ts_psi.c:571
+#: modules/demux/mpeg/ts_psi.c:607
 msgid "Teletext subtitles"
 msgstr "文字廣播字幕"
 
-#: modules/demux/mpeg/ts_psi.c:572
+#: modules/demux/mpeg/ts_psi.c:608
 msgid "Teletext: additional information"
 msgstr "文字廣播：附加資訊"
 
-#: modules/demux/mpeg/ts_psi.c:573
+#: modules/demux/mpeg/ts_psi.c:609
 msgid "Teletext: program schedule"
 msgstr "文字廣播：節目排程"
 
-#: modules/demux/mpeg/ts_psi.c:574
+#: modules/demux/mpeg/ts_psi.c:610
 msgid "Teletext subtitles: hearing impaired"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:791
+#: modules/demux/mpeg/ts_psi.c:827
 msgid "DVB subtitles: hearing impaired"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:1292
+#: modules/demux/mpeg/ts_psi.c:1328
 msgid "clean effects"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:1293
+#: modules/demux/mpeg/ts_psi.c:1329
 msgid "hearing impaired"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:1294
+#: modules/demux/mpeg/ts_psi.c:1330
 msgid "visual impaired commentary"
 msgstr ""
 
@@ -15589,7 +15589,7 @@ msgstr ""
 #: modules/gui/macosx/VLCSimplePrefsController.m:283
 #: modules/gui/macosx/VLCSimplePrefsController.m:360
 #: modules/gui/qt/components/preferences_widgets.cpp:264
-#: modules/gui/qt/components/simple_preferences.cpp:419
+#: modules/gui/qt/components/simple_preferences.cpp:426
 #: modules/gui/qt/components/sout/sout_widgets.cpp:132
 msgid "Browse..."
 msgstr "瀏覽..."
@@ -15787,7 +15787,7 @@ msgstr ""
 #: modules/gui/macosx/VLCSimplePrefsController.m:683
 #: modules/gui/macosx/VLCSimplePrefsController.m:711
 #: modules/gui/macosx/VLCSimplePrefsController.m:1244
-#: modules/gui/qt/components/simple_preferences.cpp:636
+#: modules/gui/qt/components/simple_preferences.cpp:643
 msgid "Custom"
 msgstr "自訂"
 
@@ -17074,27 +17074,27 @@ msgid "Disable renderer discovery"
 msgstr "停用螢幕保護程式"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
-#: modules/gui/qt/components/simple_preferences.cpp:215
-#: modules/gui/qt/components/simple_preferences.cpp:663
+#: modules/gui/qt/components/simple_preferences.cpp:222
+#: modules/gui/qt/components/simple_preferences.cpp:670
 #: modules/gui/qt/dialogs/plugins.cpp:375
 msgid "Interface Settings"
 msgstr "介面設定"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:222
-#: modules/gui/qt/components/simple_preferences.cpp:217
-#: modules/gui/qt/components/simple_preferences.cpp:394
+#: modules/gui/qt/components/simple_preferences.cpp:224
+#: modules/gui/qt/components/simple_preferences.cpp:401
 msgid "Audio Settings"
 msgstr "音訊設定"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:224
-#: modules/gui/qt/components/simple_preferences.cpp:219
-#: modules/gui/qt/components/simple_preferences.cpp:347
+#: modules/gui/qt/components/simple_preferences.cpp:226
+#: modules/gui/qt/components/simple_preferences.cpp:354
 msgid "Video Settings"
 msgstr "視訊設定"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:226
-#: modules/gui/qt/components/simple_preferences.cpp:221
-#: modules/gui/qt/components/simple_preferences.cpp:804
+#: modules/gui/qt/components/simple_preferences.cpp:228
+#: modules/gui/qt/components/simple_preferences.cpp:811
 msgid "Subtitle & On Screen Display Settings"
 msgstr "字幕與畫面上顯示設定"
 
@@ -18823,21 +18823,21 @@ msgstr ""
 msgid "Key: "
 msgstr ""
 
-#: modules/gui/qt/components/simple_preferences.cpp:223
-#: modules/gui/qt/components/simple_preferences.cpp:565
+#: modules/gui/qt/components/simple_preferences.cpp:230
+#: modules/gui/qt/components/simple_preferences.cpp:572
 msgid "Input & Codecs Settings"
 msgstr "輸入與編解碼器設定"
 
-#: modules/gui/qt/components/simple_preferences.cpp:225
-#: modules/gui/qt/components/simple_preferences.cpp:848
+#: modules/gui/qt/components/simple_preferences.cpp:232
+#: modules/gui/qt/components/simple_preferences.cpp:855
 msgid "Configure Hotkeys"
 msgstr "設定熱鍵"
 
-#: modules/gui/qt/components/simple_preferences.cpp:402
+#: modules/gui/qt/components/simple_preferences.cpp:409
 msgid "Device:"
 msgstr "裝置："
 
-#: modules/gui/qt/components/simple_preferences.cpp:570
+#: modules/gui/qt/components/simple_preferences.cpp:577
 msgid ""
 "If this property is blank, different values\n"
 "for DVD, VCD, and CDDA are set.\n"
@@ -18845,58 +18845,58 @@ msgid ""
 "individually in the advanced preferences."
 msgstr ""
 
-#: modules/gui/qt/components/simple_preferences.cpp:637
+#: modules/gui/qt/components/simple_preferences.cpp:644
 msgid "Lowest latency"
 msgstr "最低延遲"
 
-#: modules/gui/qt/components/simple_preferences.cpp:638
+#: modules/gui/qt/components/simple_preferences.cpp:645
 msgid "Low latency"
 msgstr "低延遲"
 
-#: modules/gui/qt/components/simple_preferences.cpp:640
+#: modules/gui/qt/components/simple_preferences.cpp:647
 msgid "High latency"
 msgstr "高延遲"
 
-#: modules/gui/qt/components/simple_preferences.cpp:641
+#: modules/gui/qt/components/simple_preferences.cpp:648
 msgid "Higher latency"
 msgstr "較高延遲"
 
-#: modules/gui/qt/components/simple_preferences.cpp:689
+#: modules/gui/qt/components/simple_preferences.cpp:696
 msgid "This is VLC's skinnable interface. You can download other skins at"
 msgstr "這是 VLC 的可換面板介面。要下載其他面板，請前往"
 
-#: modules/gui/qt/components/simple_preferences.cpp:691
+#: modules/gui/qt/components/simple_preferences.cpp:698
 msgid "VLC skins website"
 msgstr "VLC 面板網站"
 
-#: modules/gui/qt/components/simple_preferences.cpp:715
+#: modules/gui/qt/components/simple_preferences.cpp:722
 msgid "System's default"
 msgstr "系統預設"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1233
+#: modules/gui/qt/components/simple_preferences.cpp:1240
 msgid "File associations"
 msgstr "檔案關聯"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1242
+#: modules/gui/qt/components/simple_preferences.cpp:1249
 #: modules/gui/qt/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "音訊檔案"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1243
+#: modules/gui/qt/components/simple_preferences.cpp:1250
 #: modules/gui/qt/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "視訊檔案"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1244
+#: modules/gui/qt/components/simple_preferences.cpp:1251
 #: modules/gui/qt/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "播放清單檔案"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1309
+#: modules/gui/qt/components/simple_preferences.cpp:1316
 msgid "&Apply"
 msgstr "套用(&A)"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1310
+#: modules/gui/qt/components/simple_preferences.cpp:1317
 #: modules/gui/qt/dialogs/convert.cpp:133
 #: modules/gui/qt/dialogs/gototime.cpp:49 modules/gui/qt/dialogs/open.cpp:108
 #: modules/gui/qt/dialogs/openurl.cpp:60
@@ -19778,11 +19778,11 @@ msgstr ""
 msgid "&Continue"
 msgstr "繼續"
 
-#: modules/gui/qt/main_interface.cpp:1356
+#: modules/gui/qt/main_interface.cpp:1361
 msgid "Control menu for the player"
 msgstr "播放器的控制選單"
 
-#: modules/gui/qt/main_interface.cpp:1400
+#: modules/gui/qt/main_interface.cpp:1405
 msgid "Paused"
 msgstr ""
 
@@ -24065,7 +24065,7 @@ msgstr "虛擬字型描繪引擎"
 msgid "Video filtering using a chain of video filter modules"
 msgstr ""
 
-#: modules/video_chroma/d3d11_surface.c:844
+#: modules/video_chroma/d3d11_surface.c:847
 #, fuzzy
 msgid "Conversions from D3D11 to YUV"
 msgstr "MMX 轉換自"
@@ -25699,12 +25699,12 @@ msgid "The desktop mode allows you to display the video on the desktop."
 msgstr "桌面模式可以讓您在桌面上顯示視訊。"
 
 #: modules/video_output/win32/direct3d9.c:72
-#: modules/video_output/win32/direct3d11.c:73
+#: modules/video_output/win32/direct3d11.c:72
 msgid "Use hardware blending support"
 msgstr "使用硬體混合支援"
 
 #: modules/video_output/win32/direct3d9.c:74
-#: modules/video_output/win32/direct3d11.c:75
+#: modules/video_output/win32/direct3d11.c:74
 msgid "Try to use hardware acceleration for subtitle/OSD blending."
 msgstr "試著使用硬體加速來處理字幕/OSD 交混。"
 
@@ -25740,12 +25740,12 @@ msgstr "Windows Vista 以及之後的版本建議使用的視訊輸出"
 msgid "Direct3D9 video output"
 msgstr "Direct3D 視訊輸出"
 
-#: modules/video_output/win32/direct3d11.c:72
+#: modules/video_output/win32/direct3d11.c:71
 #, fuzzy
 msgid "Recommended video output for Windows 8 and later versions"
 msgstr "Windows Vista 以及之後的版本建議使用的視訊輸出"
 
-#: modules/video_output/win32/direct3d11.c:79
+#: modules/video_output/win32/direct3d11.c:78
 #, fuzzy
 msgid "Direct3D11 video output"
 msgstr "Direct3D 視訊輸出"

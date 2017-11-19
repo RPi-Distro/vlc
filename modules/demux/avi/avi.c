@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 190a6be2091bc182962e3dd9a689a3abc993e6b9 $
+ * $Id: a769a07a7547f6cb0b2f26399275ce53d9e90340 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -589,12 +589,12 @@ static int Open( vlc_object_t * p_this )
                     switch( tk->fmt.i_codec )
                     {
                     case VLC_CODEC_RGB24:
-                    case VLC_CODEC_RGB32:
-                        tk->fmt.video.i_rmask = 0x00ff0000;
+                    case VLC_CODEC_RGB32: /* BGR (see biBitCount) */
+                        tk->fmt.video.i_bmask = 0x00ff0000;
                         tk->fmt.video.i_gmask = 0x0000ff00;
-                        tk->fmt.video.i_bmask = 0x000000ff;
+                        tk->fmt.video.i_rmask = 0x000000ff;
                         break;
-                    case VLC_CODEC_RGB15:
+                    case VLC_CODEC_RGB15: /* RGB (B least 5 bits) */
                         tk->fmt.video.i_rmask = 0x7c00;
                         tk->fmt.video.i_gmask = 0x03e0;
                         tk->fmt.video.i_bmask = 0x001f;
@@ -902,6 +902,12 @@ block_t * ReadFrame( demux_t *p_demux, const avi_track_t *tk,
     if( i_size % 2 )    /* read was padded on word boundary */
     {
         p_frame->i_buffer--;
+    }
+
+    if( i_header >= p_frame->i_buffer )
+    {
+        p_frame->i_buffer = 0;
+        return p_frame;
     }
 
     /* skip header */

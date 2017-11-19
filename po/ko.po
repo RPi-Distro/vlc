@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-15 02:18+0000\n"
+"POT-Creation-Date: 2017-11-17 02:18+0000\n"
 "PO-Revision-Date: 2013-12-08 08:25+0000\n"
 "Last-Translator: sheppaul <sheppaul@naver.com>\n"
 "Language-Team: Korean (http://www.transifex.com/projects/p/vlc-trans/"
@@ -46,7 +46,7 @@ msgstr "모든 옵션을 보려면 \"고급 옵션\"을 선택하세요."
 
 #: include/vlc_config_cat.h:38
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
-#: modules/gui/qt/components/simple_preferences.cpp:215
+#: modules/gui/qt/components/simple_preferences.cpp:222
 #: modules/gui/qt/menus.cpp:1085
 msgid "Interface"
 msgstr "인터페이스"
@@ -87,7 +87,7 @@ msgstr "단축키 설정"
 #: modules/gui/macosx/VLCPlaylistInfo.m:101
 #: modules/gui/macosx/VLCSimplePrefsController.m:222
 #: modules/gui/qt/components/info_panels.cpp:572
-#: modules/gui/qt/components/simple_preferences.cpp:217
+#: modules/gui/qt/components/simple_preferences.cpp:224
 #: modules/gui/qt/qt.cpp:214 modules/services_discovery/mediadirs.c:77
 #: modules/stream_out/es.c:94 modules/stream_out/transcode/transcode.c:182
 #: share/lua/http/dialogs/create_stream.html:150
@@ -150,7 +150,7 @@ msgstr "기타 오디오 설정 및 모듈"
 #: modules/gui/macosx/VLCSimplePrefsController.m:224
 #: modules/gui/macosx/VLCSimplePrefsController.m:367
 #: modules/gui/qt/components/info_panels.cpp:573
-#: modules/gui/qt/components/simple_preferences.cpp:219
+#: modules/gui/qt/components/simple_preferences.cpp:226
 #: modules/gui/qt/qt.cpp:214 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:102 modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
@@ -1786,7 +1786,7 @@ msgstr ""
 #: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:941
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:443
 #: modules/demux/mpeg/ts.c:120 modules/gui/macosx/VLCSimplePrefsController.m:54
-#: modules/gui/qt/components/simple_preferences.cpp:64
+#: modules/gui/qt/components/simple_preferences.cpp:65
 #: modules/gui/qt/components/sout/profile_selector.cpp:582
 #: modules/text_renderer/freetype/freetype.c:151 modules/video_output/kva.c:62
 #: modules/video_output/xcb/xvideo.c:821
@@ -5229,7 +5229,7 @@ msgstr "파일 저장 실패함"
 msgid "Failed to open \"%s\" for writing"
 msgstr "쓰기위해 \"%s\" 열기 실패"
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2675
+#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2681
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -10569,8 +10569,8 @@ msgstr "렌더링된 자막 X 좌표"
 msgid "ARIB subtitles decoder"
 msgstr "DVB 자막 디코더"
 
-#: modules/codec/arib/aribsub.c:54 modules/demux/mpeg/ts_psi.c:1048
-#: modules/demux/mpeg/ts_psi.c:1055
+#: modules/codec/arib/aribsub.c:54 modules/demux/mpeg/ts_psi.c:1084
+#: modules/demux/mpeg/ts_psi.c:1091
 #, fuzzy
 msgid "ARIB subtitles"
 msgstr "DVB 자막"
@@ -11248,8 +11248,8 @@ msgstr "인코딩된 자막 Y 좌표"
 msgid "DVB subtitles decoder"
 msgstr "DVB 자막 디코더"
 
-#: modules/codec/dvbsub.c:122 modules/demux/mpeg/ts_psi.c:735
-#: modules/demux/mpeg/ts_psi.c:784
+#: modules/codec/dvbsub.c:122 modules/demux/mpeg/ts_psi.c:771
+#: modules/demux/mpeg/ts_psi.c:820
 msgid "DVB subtitles"
 msgstr "DVB 자막"
 
@@ -12748,11 +12748,11 @@ msgstr "자막 텍스트 인코딩"
 msgid "Set the encoding used in text subtitles"
 msgstr "텍스트 자막에 사용되는 인코딩을 정합니다"
 
-#: modules/codec/subsdec.c:171 modules/codec/ttml/ttml.c:35
+#: modules/codec/subsdec.c:171 modules/codec/ttml/ttml.c:36
 msgid "Subtitle justification"
 msgstr "자막 양끝맞추기"
 
-#: modules/codec/subsdec.c:172 modules/codec/ttml/ttml.c:36
+#: modules/codec/subsdec.c:172 modules/codec/ttml/ttml.c:37
 msgid "Set the justification of subtitles"
 msgstr "자막의 양끝을 맞추는 방법을 정합니다"
 
@@ -12888,21 +12888,21 @@ msgstr "Theora 비디오 패킷타이저"
 msgid "Theora video encoder"
 msgstr "Theora 비디오 인코더"
 
-#: modules/codec/ttml/ttml.c:44
+#: modules/codec/ttml/ttml.c:45
 #, fuzzy
 msgid "TTML decoder"
 msgstr "디코더"
 
-#: modules/codec/ttml/ttml.c:45
+#: modules/codec/ttml/ttml.c:46
 #, fuzzy
 msgid "TTML subtitles decoder"
 msgstr "EBU STL 자막 디코더"
 
-#: modules/codec/ttml/ttml.c:52
+#: modules/codec/ttml/ttml.c:53
 msgid "TTML"
 msgstr ""
 
-#: modules/codec/ttml/ttml.c:53
+#: modules/codec/ttml/ttml.c:54
 #, fuzzy
 msgid "TTML demuxer"
 msgstr "TTA 디먹서"
@@ -13886,7 +13886,7 @@ msgstr "빠르게"
 #: modules/codec/x264.c:438 modules/gui/macosx/VLCMainMenu.m:281
 #: modules/gui/macosx/VLCMainMenu.m:384
 #: modules/gui/macosx/VLCSimplePrefsController.m:689
-#: modules/gui/qt/components/simple_preferences.cpp:639
+#: modules/gui/qt/components/simple_preferences.cpp:646
 #: modules/misc/gnutls.c:771 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
 msgid "Normal"
@@ -14031,10 +14031,10 @@ msgstr "D-Bus 제어 인터페이스"
 #: modules/gui/qt/main_interface.cpp:1210
 #: modules/gui/qt/main_interface.cpp:1249
 #: modules/gui/qt/main_interface.cpp:1251
-#: modules/gui/qt/main_interface.cpp:1355
-#: modules/gui/qt/main_interface.cpp:1372
-#: modules/gui/qt/main_interface.cpp:1380
-#: modules/gui/qt/main_interface.cpp:1403 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/main_interface.cpp:1360
+#: modules/gui/qt/main_interface.cpp:1377
+#: modules/gui/qt/main_interface.cpp:1385
+#: modules/gui/qt/main_interface.cpp:1408 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -14102,7 +14102,7 @@ msgstr "전역 단축키 인터페이스"
 #: modules/control/hotkeys.c:100
 #: modules/gui/macosx/VLCSimplePrefsController.m:230
 #: modules/gui/qt/components/preferences_widgets.cpp:1145
-#: modules/gui/qt/components/simple_preferences.cpp:225
+#: modules/gui/qt/components/simple_preferences.cpp:232
 msgid "Hotkeys"
 msgstr "단축키"
 
@@ -14979,11 +14979,11 @@ msgstr "그대로 재생"
 msgid "Broken or missing Index"
 msgstr "깨지거나 없는 AVI 인덱스"
 
-#: modules/demux/avi/avi.c:2676
+#: modules/demux/avi/avi.c:2682
 msgid "Broken or missing AVI Index"
 msgstr "깨지거나 없는 AVI 인덱스"
 
-#: modules/demux/avi/avi.c:2677
+#: modules/demux/avi/avi.c:2683
 msgid "Fixing AVI Index..."
 msgstr "AVI 인덱스 수정..."
 
@@ -15431,60 +15431,60 @@ msgstr ""
 msgid "MPEG Transport Stream demuxer"
 msgstr "MPEG 전송 스트림 디먹서"
 
-#: modules/demux/mpeg/ts_psi.c:385
+#: modules/demux/mpeg/ts_psi.c:421
 #, fuzzy
 msgid "Main audio"
 msgstr "오디오 소리를 끕니다."
 
-#: modules/demux/mpeg/ts_psi.c:386
+#: modules/demux/mpeg/ts_psi.c:422
 #, fuzzy
 msgid "Audio description for the visually impaired"
 msgstr "대상 자막 코덱"
 
-#: modules/demux/mpeg/ts_psi.c:387
+#: modules/demux/mpeg/ts_psi.c:423
 #, fuzzy
 msgid "Clean audio for the hearing impaired"
 msgstr "문자다중방송 자막: 청각 장애"
 
-#: modules/demux/mpeg/ts_psi.c:388
+#: modules/demux/mpeg/ts_psi.c:424
 #, fuzzy
 msgid "Spoken subtitles for the visually impaired"
 msgstr "DVB 자막: 청각 장애"
 
-#: modules/demux/mpeg/ts_psi.c:570 modules/gui/macosx/VLCMainMenu.m:455
+#: modules/demux/mpeg/ts_psi.c:606 modules/gui/macosx/VLCMainMenu.m:455
 #: modules/gui/qt/dialogs/toolbar.cpp:532
 msgid "Teletext"
 msgstr "문자다중방송"
 
-#: modules/demux/mpeg/ts_psi.c:571
+#: modules/demux/mpeg/ts_psi.c:607
 msgid "Teletext subtitles"
 msgstr "문자다중방송 자막"
 
-#: modules/demux/mpeg/ts_psi.c:572
+#: modules/demux/mpeg/ts_psi.c:608
 msgid "Teletext: additional information"
 msgstr "문자다중방송: 추가 정보"
 
-#: modules/demux/mpeg/ts_psi.c:573
+#: modules/demux/mpeg/ts_psi.c:609
 msgid "Teletext: program schedule"
 msgstr "문자다중방송: 프로그램 일정"
 
-#: modules/demux/mpeg/ts_psi.c:574
+#: modules/demux/mpeg/ts_psi.c:610
 msgid "Teletext subtitles: hearing impaired"
 msgstr "문자다중방송 자막: 청각 장애"
 
-#: modules/demux/mpeg/ts_psi.c:791
+#: modules/demux/mpeg/ts_psi.c:827
 msgid "DVB subtitles: hearing impaired"
 msgstr "DVB 자막: 청각 장애"
 
-#: modules/demux/mpeg/ts_psi.c:1292
+#: modules/demux/mpeg/ts_psi.c:1328
 msgid "clean effects"
 msgstr "효과 지우기"
 
-#: modules/demux/mpeg/ts_psi.c:1293
+#: modules/demux/mpeg/ts_psi.c:1329
 msgid "hearing impaired"
 msgstr "청각 장애"
 
-#: modules/demux/mpeg/ts_psi.c:1294
+#: modules/demux/mpeg/ts_psi.c:1330
 msgid "visual impaired commentary"
 msgstr "시각 장애 해설"
 
@@ -16314,7 +16314,7 @@ msgstr "출력 위치 선택하기"
 #: modules/gui/macosx/VLCSimplePrefsController.m:283
 #: modules/gui/macosx/VLCSimplePrefsController.m:360
 #: modules/gui/qt/components/preferences_widgets.cpp:264
-#: modules/gui/qt/components/simple_preferences.cpp:419
+#: modules/gui/qt/components/simple_preferences.cpp:426
 #: modules/gui/qt/components/sout/sout_widgets.cpp:132
 msgid "Browse..."
 msgstr "찾아보기..."
@@ -16517,7 +16517,7 @@ msgstr "SDP 내보내기가 필요합니다만 어떤 주소도 제공되지 않
 #: modules/gui/macosx/VLCSimplePrefsController.m:683
 #: modules/gui/macosx/VLCSimplePrefsController.m:711
 #: modules/gui/macosx/VLCSimplePrefsController.m:1244
-#: modules/gui/qt/components/simple_preferences.cpp:636
+#: modules/gui/qt/components/simple_preferences.cpp:643
 msgid "Custom"
 msgstr "사용자 지정"
 
@@ -17844,27 +17844,27 @@ msgid "Disable renderer discovery"
 msgstr "화면 보호기 끄기"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
-#: modules/gui/qt/components/simple_preferences.cpp:215
-#: modules/gui/qt/components/simple_preferences.cpp:663
+#: modules/gui/qt/components/simple_preferences.cpp:222
+#: modules/gui/qt/components/simple_preferences.cpp:670
 #: modules/gui/qt/dialogs/plugins.cpp:375
 msgid "Interface Settings"
 msgstr "인터페이스 설정"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:222
-#: modules/gui/qt/components/simple_preferences.cpp:217
-#: modules/gui/qt/components/simple_preferences.cpp:394
+#: modules/gui/qt/components/simple_preferences.cpp:224
+#: modules/gui/qt/components/simple_preferences.cpp:401
 msgid "Audio Settings"
 msgstr "오디오 설정"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:224
-#: modules/gui/qt/components/simple_preferences.cpp:219
-#: modules/gui/qt/components/simple_preferences.cpp:347
+#: modules/gui/qt/components/simple_preferences.cpp:226
+#: modules/gui/qt/components/simple_preferences.cpp:354
 msgid "Video Settings"
 msgstr "비디오 설정"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:226
-#: modules/gui/qt/components/simple_preferences.cpp:221
-#: modules/gui/qt/components/simple_preferences.cpp:804
+#: modules/gui/qt/components/simple_preferences.cpp:228
+#: modules/gui/qt/components/simple_preferences.cpp:811
 msgid "Subtitle & On Screen Display Settings"
 msgstr "자막 & OSD 설정"
 
@@ -19612,21 +19612,21 @@ msgstr "키 또는 조합:"
 msgid "Key: "
 msgstr "키:"
 
-#: modules/gui/qt/components/simple_preferences.cpp:223
-#: modules/gui/qt/components/simple_preferences.cpp:565
+#: modules/gui/qt/components/simple_preferences.cpp:230
+#: modules/gui/qt/components/simple_preferences.cpp:572
 msgid "Input & Codecs Settings"
 msgstr "입력 & 코덱 설정"
 
-#: modules/gui/qt/components/simple_preferences.cpp:225
-#: modules/gui/qt/components/simple_preferences.cpp:848
+#: modules/gui/qt/components/simple_preferences.cpp:232
+#: modules/gui/qt/components/simple_preferences.cpp:855
 msgid "Configure Hotkeys"
 msgstr "단축키 설정"
 
-#: modules/gui/qt/components/simple_preferences.cpp:402
+#: modules/gui/qt/components/simple_preferences.cpp:409
 msgid "Device:"
 msgstr "장치:"
 
-#: modules/gui/qt/components/simple_preferences.cpp:570
+#: modules/gui/qt/components/simple_preferences.cpp:577
 msgid ""
 "If this property is blank, different values\n"
 "for DVD, VCD, and CDDA are set.\n"
@@ -19638,60 +19638,60 @@ msgstr ""
 "유일한 값을 정의하거나 고급 환경설정에서 개별적인\n"
 "값을 설정할 수 있습니다."
 
-#: modules/gui/qt/components/simple_preferences.cpp:637
+#: modules/gui/qt/components/simple_preferences.cpp:644
 msgid "Lowest latency"
 msgstr "가장 낮은 대기시간"
 
-#: modules/gui/qt/components/simple_preferences.cpp:638
+#: modules/gui/qt/components/simple_preferences.cpp:645
 msgid "Low latency"
 msgstr "낮은 대기시간"
 
-#: modules/gui/qt/components/simple_preferences.cpp:640
+#: modules/gui/qt/components/simple_preferences.cpp:647
 msgid "High latency"
 msgstr "높은 대기시간"
 
-#: modules/gui/qt/components/simple_preferences.cpp:641
+#: modules/gui/qt/components/simple_preferences.cpp:648
 msgid "Higher latency"
 msgstr "더 높은 대기시간"
 
-#: modules/gui/qt/components/simple_preferences.cpp:689
+#: modules/gui/qt/components/simple_preferences.cpp:696
 msgid "This is VLC's skinnable interface. You can download other skins at"
 msgstr ""
 "VLC의 사용자 스킨 인터페이스입니다. 다른 스킨은 다음에서 다운로드할 수 있습니"
 "다:"
 
-#: modules/gui/qt/components/simple_preferences.cpp:691
+#: modules/gui/qt/components/simple_preferences.cpp:698
 msgid "VLC skins website"
 msgstr "VLC 스킨 웹사이트"
 
-#: modules/gui/qt/components/simple_preferences.cpp:715
+#: modules/gui/qt/components/simple_preferences.cpp:722
 msgid "System's default"
 msgstr "시스템 기본"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1233
+#: modules/gui/qt/components/simple_preferences.cpp:1240
 msgid "File associations"
 msgstr "파일 연결"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1242
+#: modules/gui/qt/components/simple_preferences.cpp:1249
 #: modules/gui/qt/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "오디오 파일"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1243
+#: modules/gui/qt/components/simple_preferences.cpp:1250
 #: modules/gui/qt/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "비디오 파일"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1244
+#: modules/gui/qt/components/simple_preferences.cpp:1251
 #: modules/gui/qt/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "재생목록 파일"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1309
+#: modules/gui/qt/components/simple_preferences.cpp:1316
 msgid "&Apply"
 msgstr "적용(&A)"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1310
+#: modules/gui/qt/components/simple_preferences.cpp:1317
 #: modules/gui/qt/dialogs/convert.cpp:133
 #: modules/gui/qt/dialogs/gototime.cpp:49 modules/gui/qt/dialogs/open.cpp:108
 #: modules/gui/qt/dialogs/openurl.cpp:60
@@ -20593,11 +20593,11 @@ msgstr ""
 msgid "&Continue"
 msgstr "계속"
 
-#: modules/gui/qt/main_interface.cpp:1356
+#: modules/gui/qt/main_interface.cpp:1361
 msgid "Control menu for the player"
 msgstr "재생기 제어 메뉴"
 
-#: modules/gui/qt/main_interface.cpp:1400
+#: modules/gui/qt/main_interface.cpp:1405
 msgid "Paused"
 msgstr "일시중지"
 
@@ -25112,7 +25112,7 @@ msgstr "더미 글꼴 렌더러"
 msgid "Video filtering using a chain of video filter modules"
 msgstr "일련의 비디오 필터 모듈을 이용하는 비디오 필터링"
 
-#: modules/video_chroma/d3d11_surface.c:844
+#: modules/video_chroma/d3d11_surface.c:847
 #, fuzzy
 msgid "Conversions from D3D11 to YUV"
 msgstr "변환원"
@@ -26818,12 +26818,12 @@ msgid "The desktop mode allows you to display the video on the desktop."
 msgstr "데스크탑 모드에서는 동영상를 데스크탑 상에 출력할 수 있습니다."
 
 #: modules/video_output/win32/direct3d9.c:72
-#: modules/video_output/win32/direct3d11.c:73
+#: modules/video_output/win32/direct3d11.c:72
 msgid "Use hardware blending support"
 msgstr "하드웨어 블렌딩 지원 사용하기"
 
 #: modules/video_output/win32/direct3d9.c:74
-#: modules/video_output/win32/direct3d11.c:75
+#: modules/video_output/win32/direct3d11.c:74
 msgid "Try to use hardware acceleration for subtitle/OSD blending."
 msgstr "자막/OSD 혼합에 하드웨어 가속을 사용해 봅니다."
 
@@ -26859,12 +26859,12 @@ msgstr "윈도우 비스타나 이후 버전의 추천 비디오 출력"
 msgid "Direct3D9 video output"
 msgstr "Direct3D 비디오 출력"
 
-#: modules/video_output/win32/direct3d11.c:72
+#: modules/video_output/win32/direct3d11.c:71
 #, fuzzy
 msgid "Recommended video output for Windows 8 and later versions"
 msgstr "윈도우 비스타나 이후 버전의 추천 비디오 출력"
 
-#: modules/video_output/win32/direct3d11.c:79
+#: modules/video_output/win32/direct3d11.c:78
 #, fuzzy
 msgid "Direct3D11 video output"
 msgstr "Direct3D 비디오 출력"
