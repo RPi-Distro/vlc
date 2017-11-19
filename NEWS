@@ -1,3 +1,30 @@
+Changes between 2.2.6 and 2.2.7:
+--------------------------------
+
+Decoders:
+ * Fix flac heap write overflow on format change
+ * Fix crash in libavcodec module (heap write out-of band) (CVE-2017-10699)
+ * Fix AVI read/write overflow
+ * Fix infinite loop in sami subtitle
+ * Fix AAC 7.1 channels detection
+ * Fix potential crash in ASX parser
+
+Mac OS X:
+ * Fix compatibility with macOS High Sierra
+ * Fix regression in ASS subtitle decoding
+ * Fix crash during automatic update. Some users might need to manually
+   update to the newest version.
+
+Video Output:
+ * Fix Direct3D9 output with odd offsets
+
+Misc:
+ * Fix crash in MTP
+ * Support libupnp 1.8
+
+Translations updates
+
+
 Changes between 2.2.5.1 and 2.2.6:
 ----------------------------------
 
@@ -6,7 +33,7 @@ Video output:
  * Fix direct3d SPU texture offsets handling
 
 Demuxer:
- * Fix heap buffer overflows
+ * Fix heap buffer overflows (CVE-2017-8310, 8311, 8312, 8313)
 
 Changes between 2.2.5 and 2.2.5.1:
 ----------------------------------

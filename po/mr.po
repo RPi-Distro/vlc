@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-05-24 15:01+0200\n"
+"POT-Creation-Date: 2017-11-19 02:13+0000\n"
 "PO-Revision-Date: 2016-05-27 05:32+0000\n"
 "Last-Translator: Rajnikant Kumbhar <rajnikant.kumbhar@gmail.com>\n"
 "Language-Team: Marathi (http://www.transifex.com/yaron/vlc-trans/language/"
@@ -90,7 +90,6 @@ msgstr "हॉटकी सेट्टींग"
 #: modules/services_discovery/mediadirs.c:76 modules/stream_out/es.c:93
 #: modules/stream_out/transcode/transcode.c:183
 #: share/lua/http/dialogs/create_stream.html:150
-#: modules/gui/qt4/ui/profiles.h:721 modules/gui/qt4/ui/profiles.h:752
 msgid "Audio"
 msgstr "ध्वनी"
 
@@ -103,7 +102,6 @@ msgid "General audio settings"
 msgstr "सर्वसाधारण ध्वनी रचना"
 
 #: include/vlc_config_cat.h:58 include/vlc_config_cat.h:79
-#: modules/gui/qt4/ui/profiles.h:750 modules/gui/qt4/ui/profiles.h:760
 msgid "Filters"
 msgstr "फिल्टर"
 
@@ -150,8 +148,6 @@ msgstr "किरकोळ ध्वनी रचना व भाग."
 #: modules/services_discovery/mediadirs.c:69 modules/stream_out/es.c:101
 #: modules/stream_out/transcode/transcode.c:154
 #: share/lua/http/dialogs/create_stream.html:147
-#: modules/gui/qt4/ui/profiles.h:722 modules/gui/qt4/ui/profiles.h:726
-#: modules/gui/qt4/ui/sprefs_video.h:334
 msgid "Video"
 msgstr "ध्वनीचित्रफित"
 
@@ -380,7 +376,6 @@ msgstr ""
 "सेवा शोध भाग या तुमच्या प्लेलिस्टमध्ये स्वयंचलितपणे घटक समाविष्ट करण्यासाठी सुविधा आहेत."
 
 #: include/vlc_config_cat.h:178 src/libvlc-module.c:1790
-#: modules/gui/qt4/ui/video_effects.h:1495
 msgid "Advanced"
 msgstr "प्रगत"
 
@@ -464,7 +459,7 @@ msgstr "VLC विषयी"
 #: modules/gui/macosx/MainMenu.m:1308 modules/gui/macosx/MainMenu.m:1309
 #: modules/gui/macosx/MainMenu.m:1310 modules/gui/macosx/playlist.m:583
 #: modules/gui/qt4/components/controller.hpp:115
-#: modules/gui/qt4/dialogs/vlm.cpp:546 modules/gui/qt4/ui/open.h:243
+#: modules/gui/qt4/dialogs/vlm.cpp:546
 msgid "Play"
 msgstr "चालवा"
 
@@ -555,7 +550,6 @@ msgid "Search"
 msgstr "शोधा"
 
 #: include/vlc_intf_strings.h:99 modules/gui/macosx/VideoEffects.m:157
-#: modules/gui/qt4/ui/video_effects.h:1479
 msgid "Waves"
 msgstr "तरंग"
 
@@ -677,9 +671,7 @@ msgstr "स्टीरिओ"
 #: modules/gui/macosx/VideoEffects.m:167 modules/gui/macosx/VideoEffects.m:189
 #: modules/video_filter/audiobargraph_v.c:64 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
-#: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1407
-#: modules/gui/qt4/ui/video_effects.h:1450
-#: modules/gui/qt4/ui/video_effects.h:1460
+#: modules/video_filter/rss.c:173
 msgid "Left"
 msgstr "डावे"
 
@@ -692,7 +684,7 @@ msgstr "डावे"
 #: modules/gui/macosx/VideoEffects.m:169 modules/gui/macosx/VideoEffects.m:191
 #: modules/video_filter/audiobargraph_v.c:64 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
-#: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1408
+#: modules/video_filter/rss.c:173
 msgid "Right"
 msgstr "उजवे"
 
@@ -905,8 +897,6 @@ msgstr "ब्राउजर थांबवा"
 
 #: src/config/keys.c:66 modules/gui/macosx/playlist.m:584
 #: modules/gui/qt4/dialogs/bookmarks.cpp:50
-#: modules/gui/qt4/ui/podcast_configuration.h:104
-#: modules/gui/qt4/ui/streampanel.h:172
 msgid "Delete"
 msgstr "नष्ट करा"
 
@@ -1259,14 +1249,12 @@ msgstr "मूळ ओळखक्रमांक"
 #: src/input/es_out.c:2911 src/input/es_out.c:2914 modules/access/imem.c:67
 #: modules/gui/macosx/ConvertAndSave.m:177
 #: modules/gui/macosx/ConvertAndSave.m:187 modules/gui/macosx/wizard.m:382
-#: modules/gui/qt4/ui/profiles.h:728 modules/gui/qt4/ui/profiles.h:754
-#: modules/gui/qt4/ui/profiles.h:763
 msgid "Codec"
 msgstr "कोडेक"
 
 #: src/input/es_out.c:2918 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/MainMenu.m:80 modules/gui/macosx/simple_prefs.m:380
-#: modules/stream_out/setid.c:49 modules/gui/qt4/ui/sprefs_interface.h:517
+#: modules/stream_out/setid.c:49
 msgid "Language"
 msgstr "भाषा"
 
@@ -1277,7 +1265,7 @@ msgid "Description"
 msgstr "वर्णन"
 
 #: src/input/es_out.c:2930 modules/gui/macosx/ConvertAndSave.m:189
-#: modules/gui/macosx/output.m:167 modules/gui/qt4/ui/profiles.h:756
+#: modules/gui/macosx/output.m:167
 msgid "Channels"
 msgstr "माध्यमे"
 
@@ -1298,8 +1286,7 @@ msgstr "प्रति नमुना बिट्स"
 #: src/input/es_out.c:2950 modules/access_output/shout.c:92
 #: modules/demux/playlist/shoutcast.c:335
 #: modules/gui/macosx/ConvertAndSave.m:178
-#: modules/gui/macosx/ConvertAndSave.m:188 modules/gui/qt4/ui/profiles.h:729
-#: modules/gui/qt4/ui/profiles.h:755
+#: modules/gui/macosx/ConvertAndSave.m:188
 msgid "Bitrate"
 msgstr "बिटदर"
 
@@ -1322,7 +1309,6 @@ msgid "%.2f dB"
 msgstr "%.2f डीबी"
 
 #: src/input/es_out.c:2974 modules/gui/macosx/ConvertAndSave.m:180
-#: modules/gui/qt4/ui/profiles.h:749
 msgid "Resolution"
 msgstr "रिझोल्यूशन"
 
@@ -1368,7 +1354,6 @@ msgstr "'%s' चे प्रारुप सापडले नाही. त�
 #: modules/gui/macosx/playlistinfo.m:73 modules/gui/macosx/wizard.m:345
 #: modules/gui/qt4/components/open_panels.cpp:490
 #: modules/gui/qt4/components/open_panels.cpp:504 modules/mux/asf.c:56
-#: modules/gui/qt4/ui/open_disk.h:309
 msgid "Title"
 msgstr "शीर्षक"
 
@@ -1408,7 +1393,6 @@ msgid "Setting"
 msgstr "रचना"
 
 #: src/input/meta.c:65 modules/gui/macosx/open.m:179
-#: modules/gui/qt4/ui/podcast_configuration.h:102
 msgid "URL"
 msgstr "यूआरएल"
 
@@ -1467,7 +1451,7 @@ msgstr "कार्यक्रम"
 
 #: src/input/var.c:182 modules/gui/macosx/MainMenu.m:420
 #: modules/gui/macosx/MainMenu.m:421 modules/gui/macosx/open.m:170
-#: modules/gui/macosx/open.m:172 modules/gui/qt4/ui/open_disk.h:310
+#: modules/gui/macosx/open.m:172
 msgid "Chapter"
 msgstr "प्रकरण"
 
@@ -1707,7 +1691,7 @@ msgstr ""
 "स्वयंचलितपणे सर्वोत्तम उपलब्ध पद्धत निवडते."
 
 #: src/libvlc-module.c:131 modules/gui/macosx/simple_prefs.m:335
-#: modules/stream_out/display.c:40 modules/gui/qt4/ui/sprefs_audio.h:426
+#: modules/stream_out/display.c:40
 msgid "Enable audio"
 msgstr "ध्वनी समर्थ करा"
 
@@ -1775,7 +1759,6 @@ msgstr ""
 "आला असेल)."
 
 #: src/libvlc-module.c:164 modules/gui/macosx/simple_prefs.m:341
-#: modules/gui/qt4/ui/sprefs_audio.h:434
 msgid "Use S/PDIF when available"
 msgstr "उपलब्ध झाल्यानंतर एस/पीडीआयएफ वापरा"
 
@@ -1809,7 +1792,6 @@ msgstr ""
 #: modules/gui/qt4/components/simple_preferences.cpp:136
 #: modules/gui/qt4/components/sout/profile_selector.cpp:563
 #: modules/video_output/kva.c:62 modules/video_output/xcb/xvideo.c:870
-#: modules/gui/qt4/ui/profiles.h:744 modules/gui/qt4/ui/profiles.h:747
 msgid "Auto"
 msgstr "स्वयं"
 
@@ -1925,7 +1907,7 @@ msgstr ""
 "सर्वोत्तम उपलब्ध पद्धत निवडते."
 
 #: src/libvlc-module.c:247 modules/gui/macosx/simple_prefs.m:422
-#: modules/stream_out/display.c:42 modules/gui/qt4/ui/sprefs_video.h:321
+#: modules/stream_out/display.c:42
 msgid "Enable video"
 msgstr "ध्वनीचित्र समर्थ करा"
 
@@ -2030,9 +2012,7 @@ msgstr "केंद्र"
 #: modules/gui/macosx/VideoEffects.m:171 modules/gui/macosx/VideoEffects.m:193
 #: modules/video_filter/audiobargraph_v.c:64 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
-#: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1405
-#: modules/gui/qt4/ui/video_effects.h:1448
-#: modules/gui/qt4/ui/video_effects.h:1459
+#: modules/video_filter/rss.c:173
 msgid "Top"
 msgstr "वर"
 
@@ -2041,7 +2021,7 @@ msgstr "वर"
 #: modules/gui/macosx/VideoEffects.m:173 modules/gui/macosx/VideoEffects.m:195
 #: modules/video_filter/audiobargraph_v.c:64 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
-#: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1409
+#: modules/video_filter/rss.c:173
 msgid "Bottom"
 msgstr "खाली"
 
@@ -2130,7 +2110,6 @@ msgstr ""
 "अनुलेखन करण्याची क्षमता). व्हीएलसी ते पूर्वनिर्धारितपणे वापरण्याचा प्रयत्न करेल."
 
 #: src/libvlc-module.c:309 src/video_output/vout_intf.c:276
-#: modules/gui/qt4/ui/sprefs_video.h:326
 msgid "Always on top"
 msgstr "नेहमी वरती"
 
@@ -2251,7 +2230,6 @@ msgstr ""
 "टाळण्यासाठी."
 
 #: src/libvlc-module.c:372 modules/gui/macosx/simple_prefs.m:424
-#: modules/gui/qt4/ui/sprefs_video.h:327
 msgid "Window decorations"
 msgstr "विंडो सजावटी"
 
@@ -2604,7 +2582,6 @@ msgstr "पूर्वनिर्धारित"
 #: src/libvlc-module.c:538 modules/gui/macosx/AudioEffects.m:112
 #: modules/gui/macosx/MainWindow.m:1086 modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/extended_panels.cpp:1053
-#: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:289
 msgid "Enable"
 msgstr "समर्थ करा"
 
@@ -2671,7 +2648,7 @@ msgstr ""
 "तुम्हाला बहु-कार्यक्रम प्रवाह वाचायचे असले तरच केवळ हा पर्याय वापरा (उदाहरणार्थ डीव्हीबी "
 "प्रवाहाप्रमाणे)."
 
-#: src/libvlc-module.c:576 modules/gui/qt4/ui/open_disk.h:312
+#: src/libvlc-module.c:576
 msgid "Audio track"
 msgstr "ध्वनीफित"
 
@@ -2679,7 +2656,7 @@ msgstr "ध्वनीफित"
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "ध्वनीफित वापरण्यासाठी प्रवाह क्रमांक (० पासून ते एन पर्यंत)."
 
-#: src/libvlc-module.c:581 modules/gui/qt4/ui/open_disk.h:313
+#: src/libvlc-module.c:581
 msgid "Subtitle track"
 msgstr "अनुवाद पट्टी"
 
@@ -2870,7 +2847,6 @@ msgstr ""
 "वेळ=पर्यायी-वेळ-सुरुवात,परिमाण=पर्यायी-परिमाण-सुरुवात},{...}\""
 
 #: src/libvlc-module.c:665 modules/gui/macosx/simple_prefs.m:357
-#: modules/gui/qt4/ui/sprefs_input.h:355
 msgid "Record directory or filename"
 msgstr "मार्गदर्शिका किंवा धारिकेचे नाव नोंदवा"
 
@@ -2938,7 +2914,7 @@ msgstr ""
 "व \"उपस्रोत चाळण्या\" भाग विभागामध्ये त्यांची मांडणी करा. तुम्ही अनेक किरकोळ उपचित्रे "
 "निश्चित करु शकता."
 
-#: src/libvlc-module.c:697 modules/gui/qt4/ui/sprefs_subtitles.h:305
+#: src/libvlc-module.c:697
 msgid "Force subtitle position"
 msgstr "उपशीर्षक स्थितीची सक्ती करा"
 
@@ -2961,7 +2937,6 @@ msgstr "तुम्ही उप-चित्रे प्रक्रिया
 #: src/libvlc-module.c:706 src/libvlc-module.c:1621 src/text/iso-639_def.h:145
 #: modules/gui/macosx/simple_prefs.m:411
 #: modules/stream_out/transcode/transcode.c:212
-#: modules/gui/qt4/ui/sprefs_subtitles.h:290
 msgid "On Screen Display"
 msgstr "पटलावरील प्रदर्शन"
 
@@ -3698,7 +3673,7 @@ msgstr "व्हीएलसीची सुरुवात धारिका 
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr "ओएसमध्ये धारिका जोडल्यामुळे कोणते व्हीएलसी सुरु होईल ते सांगा"
 
-#: src/libvlc-module.c:1085 modules/gui/qt4/ui/sprefs_interface.h:538
+#: src/libvlc-module.c:1085
 msgid "Use only one instance when started from file manager"
 msgstr "धारिका व्यवस्थापकातून सुरुवात केल्यानंतर केवळ एक घटक वापरा"
 
@@ -3721,7 +3696,7 @@ msgstr ""
 "प्रोसेसरचा सर्व वेळ खर्च करु शकते व संपूर्ण यंत्रणा प्रतिसाद देणे बंद करु शकते ज्यामुळे तुमचे यंत्र "
 "पुन्हा सुरु करावे लागू शकते."
 
-#: src/libvlc-module.c:1097 modules/gui/qt4/ui/sprefs_interface.h:541
+#: src/libvlc-module.c:1097
 msgid "Enqueue items into playlist in one instance mode"
 msgstr "एका उदाहरण पद्धतीमध्ये चालविण्याच्या यादीमध्ये घटकांची क्रमाने मांडणी करा"
 
@@ -3755,7 +3730,6 @@ msgstr ""
 
 #: src/libvlc-module.c:1116 modules/gui/macosx/simple_prefs.m:391
 #: modules/gui/qt4/dialogs/firstrun.cpp:98
-#: modules/gui/qt4/ui/sprefs_interface.h:551
 msgid "Allow metadata network access"
 msgstr "मेटाडाटा नेटवर्क उपलब्धतेला परवानगी द्या"
 
@@ -3850,7 +3824,7 @@ msgstr ""
 "तुम्ही प्रत्येक वेळी व्हीएलसी सुरु केल्यानंतर माध्यम वाचनालय स्वयंचलितपणे साठवले जाईल व पुन्हा "
 "उघडले जाईल."
 
-#: src/libvlc-module.c:1161 modules/gui/qt4/ui/sprefs_interface.h:539
+#: src/libvlc-module.c:1161
 msgid "Display playlist tree"
 msgstr "चालविण्याची यादी वृद्ध दाखवा"
 
@@ -3866,7 +3840,7 @@ msgstr ""
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr "या मांडण्या जागतिक व्हीएलसी की बंधने आहेत, ज्यांना \"हॉटकी\" म्हणून ओळखले जाते."
 
-#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1860
+#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1864
 msgid "Ignore"
 msgstr "दुर्लक्ष करा"
 
@@ -3895,7 +3869,6 @@ msgstr ""
 #: modules/gui/macosx/MainMenu.m:1616 modules/gui/macosx/MainMenu.m:1626
 #: modules/gui/macosx/simple_prefs.m:423
 #: modules/gui/qt4/components/controller.hpp:116
-#: modules/gui/qt4/ui/sprefs_video.h:323
 msgid "Fullscreen"
 msgstr "संपूर्ण पटल"
 
@@ -3981,7 +3954,6 @@ msgstr "कमी वेगाने (उत्तम)"
 #: modules/gui/macosx/wizard.m:1559
 #: modules/gui/qt4/components/controller.hpp:120
 #: modules/gui/qt4/dialogs/sout.cpp:93 modules/notify/notify.c:339
-#: modules/gui/qt4/ui/streampanel.h:181
 msgid "Next"
 msgstr "पुढील"
 
@@ -4006,7 +3978,7 @@ msgstr "चालविण्याच्या यादीतील आधी�
 #: modules/gui/macosx/MainMenu.m:398 modules/gui/macosx/MainMenu.m:504
 #: modules/gui/macosx/MainMenu.m:511 modules/gui/macosx/MainMenu.m:1566
 #: modules/gui/qt4/components/controller.hpp:115
-#: modules/gui/qt4/dialogs/vlm.cpp:552 modules/gui/qt4/ui/streampanel.h:180
+#: modules/gui/qt4/dialogs/vlm.cpp:552
 msgid "Stop"
 msgstr "थांबा"
 
@@ -4017,8 +3989,7 @@ msgstr "पार्श्वगायन थांबविण्यासा�
 #: src/libvlc-module.c:1215 modules/gui/macosx/ControlsBar.m:67
 #: modules/gui/macosx/fspanel.m:448 modules/gui/macosx/VideoEffects.m:163
 #: modules/gui/macosx/VideoEffects.m:185 modules/video_filter/marq.c:150
-#: modules/video_filter/rss.c:200 modules/gui/qt4/ui/sprefs_subtitles.h:293
-#: modules/gui/qt4/ui/video_effects.h:1456
+#: modules/video_filter/rss.c:200
 msgid "Position"
 msgstr "स्थान"
 
@@ -4684,8 +4655,6 @@ msgstr "उपचित्रे"
 #: modules/demux/xiph_metadata.h:62 modules/gui/macosx/ConvertAndSave.m:173
 #: modules/gui/macosx/ConvertAndSave.m:191 modules/gui/macosx/MainMenu.m:459
 #: share/lua/http/dialogs/create_stream.html:153
-#: modules/gui/qt4/ui/profiles.h:718 modules/gui/qt4/ui/profiles.h:762
-#: modules/gui/qt4/ui/profiles.h:765
 msgid "Subtitles"
 msgstr "अनुवादपट्ट्या"
 
@@ -4858,7 +4827,7 @@ msgstr ""
 msgid "Downloading ..."
 msgstr "डाउनलोड करत आहे ..."
 
-#: src/misc/update.c:597 src/misc/update.c:724 modules/demux/avi/avi.c:2567
+#: src/misc/update.c:597 src/misc/update.c:724 modules/demux/avi/avi.c:2572
 #: modules/gui/macosx/AudioEffects.m:372 modules/gui/macosx/AudioEffects.m:387
 #: modules/gui/macosx/AudioEffects.m:613 modules/gui/macosx/AudioEffects.m:712
 #: modules/gui/macosx/bookmarks.m:109 modules/gui/macosx/BWQuincyUI.m:80
@@ -5634,7 +5603,7 @@ msgstr "मापक घटक"
 
 #: src/video_output/vout_intf.c:220 modules/gui/macosx/MainMenu.m:448
 #: modules/gui/macosx/MainMenu.m:449 modules/gui/macosx/VideoEffects.m:80
-#: modules/video_filter/croppadd.c:86 modules/gui/qt4/ui/video_effects.h:1415
+#: modules/video_filter/croppadd.c:86
 msgid "Crop"
 msgstr "कापा"
 
@@ -5761,7 +5730,6 @@ msgid ""
 msgstr "ब्लू-रे चालक प्रदेश संकेत. काही डिस्क केवळ अचूक प्रदेश संकेतासोबतच चालविता येतात."
 
 #: modules/access/bluray.c:87 modules/services_discovery/udev.c:597
-#: modules/gui/qt4/ui/open_disk.h:299
 msgid "Blu-ray"
 msgstr "ब्लू-रे"
 
@@ -5835,7 +5803,6 @@ msgid "First Play"
 msgstr "सर्वप्रथम चालवा"
 
 #: modules/access/cdda.c:62 modules/gui/macosx/open.m:160
-#: modules/gui/qt4/ui/open_disk.h:300
 msgid "Audio CD"
 msgstr "ध्वनी सीडी"
 
@@ -6936,7 +6903,7 @@ msgstr "धारिका संगणकाला दिलेली माह
 msgid "File"
 msgstr "धारिका"
 
-#: modules/access/fs.c:72 modules/gui/qt4/ui/sprefs_video.h:339
+#: modules/access/fs.c:72
 msgid "Directory"
 msgstr "मार्गदर्शिका"
 
@@ -7163,7 +7130,6 @@ msgstr "ध्वनी प्राथमिक प्रवाहाची च
 #: modules/gui/qt4/components/extended_panels.cpp:1432
 #: modules/video_filter/mosaic.c:94 modules/video_output/vmem.c:42
 #: share/lua/http/dialogs/mosaic_window.html:108
-#: modules/gui/qt4/ui/profiles.h:743
 msgid "Width"
 msgstr "रुंदी"
 
@@ -7175,7 +7141,6 @@ msgstr "ध्वनीचित्रफित किंवा अनुवा�
 #: modules/demux/rawvid.c:52 modules/gui/macosx/ConvertAndSave.m:183
 #: modules/video_filter/mosaic.c:92 modules/video_output/vmem.c:45
 #: share/lua/http/dialogs/mosaic_window.html:126
-#: modules/gui/qt4/ui/profiles.h:746
 msgid "Height"
 msgstr "उंची"
 
@@ -8473,7 +8438,6 @@ msgstr "नियंत्रणांची पूर्वनिर्धा�
 
 #: modules/access/v4l2/v4l2.c:84 modules/gui/macosx/VideoEffects.m:90
 #: modules/video_filter/atmo/atmo.cpp:256
-#: modules/gui/qt4/ui/video_effects.h:1393
 msgid "Brightness"
 msgstr "चकाकी"
 
@@ -8490,7 +8454,6 @@ msgid "Automatically adjust the picture brightness."
 msgstr "चित्राची चकाकी स्वयंचलितपणे व्यवस्थित करा."
 
 #: modules/access/v4l2/v4l2.c:89 modules/gui/macosx/VideoEffects.m:89
-#: modules/gui/qt4/ui/video_effects.h:1395
 msgid "Contrast"
 msgstr "विरुद्ध रंगसंगती"
 
@@ -8500,8 +8463,6 @@ msgstr "चित्र विरुद्धरंगसंगती किं�
 
 #: modules/access/v4l2/v4l2.c:91 modules/gui/macosx/VideoEffects.m:92
 #: modules/gui/macosx/VideoEffects.m:132
-#: modules/gui/qt4/ui/video_effects.h:1396
-#: modules/gui/qt4/ui/video_effects.h:1428
 msgid "Saturation"
 msgstr "संपृक्तता"
 
@@ -8510,7 +8471,6 @@ msgid "Picture saturation or chroma gain."
 msgstr "चित्र संपृक्तता किंवा क्रोमा प्राप्ती."
 
 #: modules/access/v4l2/v4l2.c:93 modules/gui/macosx/VideoEffects.m:88
-#: modules/gui/qt4/ui/video_effects.h:1392
 msgid "Hue"
 msgstr "रंग छटा"
 
@@ -8563,7 +8523,6 @@ msgid "Blue chroma balance."
 msgstr "नील क्रोमा संतुलन."
 
 #: modules/access/v4l2/v4l2.c:111 modules/gui/macosx/VideoEffects.m:93
-#: modules/gui/qt4/ui/video_effects.h:1397
 msgid "Gamma"
 msgstr "गॅमा"
 
@@ -8688,7 +8647,7 @@ msgid "Black & white"
 msgstr "कृष्ण व धवल"
 
 #: modules/access/v4l2/v4l2.c:164 modules/gui/macosx/VideoEffects.m:134
-#: modules/video_filter/sepia.c:65 modules/gui/qt4/ui/video_effects.h:1430
+#: modules/video_filter/sepia.c:65
 msgid "Sepia"
 msgstr "माखली"
 
@@ -8923,7 +8882,7 @@ msgstr "तीव्रता रचना"
 
 #: modules/access/vcdx/info.c:69 modules/gui/macosx/ControlsBar.m:497
 #: modules/gui/macosx/fspanel.m:467 modules/gui/qt4/dialogs/toolbar.cpp:448
-#: modules/stream_out/raop.c:150 modules/gui/qt4/ui/sprefs_audio.h:427
+#: modules/stream_out/raop.c:150
 msgid "Volume"
 msgstr "तीव्रता"
 
@@ -8935,7 +8894,7 @@ msgstr "यंत्रणा ओळख क्रमांक"
 msgid "Entries"
 msgstr "नोंदी"
 
-#: modules/access/vcdx/info.c:75 modules/gui/qt4/ui/sprefs_audio.h:442
+#: modules/access/vcdx/info.c:75
 msgid "Tracks"
 msgstr "मार्ग"
 
@@ -11081,11 +11040,11 @@ msgstr "एडीकेएएसी"
 msgid "FDK-AAC Audio encoder"
 msgstr "एफडीके-एएसी ध्वनी संकेतक"
 
-#: modules/codec/flac.c:112
+#: modules/codec/flac.c:127
 msgid "Flac audio decoder"
 msgstr "फ्लॅक ध्वनी संकेतक"
 
-#: modules/codec/flac.c:119
+#: modules/codec/flac.c:134
 msgid "Flac audio encoder"
 msgstr "फ्लॅक ध्वनी संकेतक"
 
@@ -12221,8 +12180,6 @@ msgstr "एमपी३ निश्चित बिंदू ध्वनी �
 
 #: modules/codec/speex.c:59 modules/codec/speex.c:867
 #: modules/gui/macosx/open.m:186 modules/gui/macosx/VideoEffects.m:138
-#: modules/gui/qt4/ui/sprefs_video.h:336
-#: modules/gui/qt4/ui/video_effects.h:1422
 msgid "Mode"
 msgstr "पद्धत"
 
@@ -13514,7 +13471,6 @@ msgid "Quiet mode"
 msgstr "शांत पद्धत"
 
 #: modules/codec/x264.c:402 modules/gui/macosx/playlistinfo.m:79
-#: modules/gui/qt4/ui/streampanel.h:170
 msgid "Statistics"
 msgstr "सांख्यिकी"
 
@@ -14599,7 +14555,7 @@ msgstr "आहे तसे चालवा"
 msgid "Do not play"
 msgstr "चालवू नका"
 
-#: modules/demux/avi/avi.c:2566
+#: modules/demux/avi/avi.c:2571
 msgid "Fixing AVI Index..."
 msgstr "एव्हीआय अनुसूची निश्चित करत आहे..."
 
@@ -14746,7 +14702,6 @@ msgid "Use chapter codecs found in the segment."
 msgstr "विभागामध्ये आढळलेले प्रकरण कोडेक्स वापरा."
 
 #: modules/demux/mkv/mkv.cpp:62 modules/gui/macosx/simple_prefs.m:370
-#: modules/gui/qt4/ui/sprefs_input.h:358
 msgid "Preload MKV files in the same directory"
 msgstr "एकाच मार्गदर्शिकेमध्ये एमकेव्ही धारिका आधीच उघडा"
 
@@ -15088,7 +15043,6 @@ msgstr "न्यू वेव्ह"
 
 #: modules/demux/mp4/id3genres.h:99 modules/gui/macosx/VideoEffects.m:158
 #: modules/video_filter/psychedelic.c:55
-#: modules/gui/qt4/ui/video_effects.h:1478
 msgid "Psychedelic"
 msgstr "सायकेडेलिक"
 
@@ -16255,13 +16209,12 @@ msgstr "स्थापना रद्द करा"
 msgid "Skins"
 msgstr "त्वचा"
 
-#: modules/gui/macosx/AudioEffects.m:113 modules/gui/qt4/ui/equalizer.h:134
+#: modules/gui/macosx/AudioEffects.m:113
 msgid "2 Pass"
 msgstr "२ मंजूर"
 
 #: modules/gui/macosx/AudioEffects.m:114
 #: modules/gui/qt4/components/extended_panels.cpp:1246
-#: modules/gui/qt4/ui/equalizer.h:136
 msgid "Preamp"
 msgstr "पूर्वप्रवर्धक"
 
@@ -16342,7 +16295,6 @@ msgstr "नव्या प्रारुपासाठी नाव घाल
 #: modules/gui/macosx/simple_prefs.m:376 modules/gui/macosx/simple_prefs.m:441
 #: modules/gui/macosx/VideoEffects.m:679
 #: modules/gui/qt4/components/sout/profile_selector.cpp:424
-#: modules/gui/qt4/ui/vlm.h:301
 msgid "Save"
 msgstr "साठवा"
 
@@ -16358,7 +16310,7 @@ msgstr "तुम्हाला जी पूर्वरचना काढू
 
 #: modules/gui/macosx/AudioEffects.m:386 modules/gui/macosx/AudioEffects.m:711
 #: modules/gui/macosx/bookmarks.m:101 modules/gui/macosx/ConvertAndSave.m:388
-#: modules/gui/macosx/VideoEffects.m:741 modules/gui/qt4/ui/open_file.h:154
+#: modules/gui/macosx/VideoEffects.m:741
 msgid "Remove"
 msgstr "काढून टाका"
 
@@ -16391,14 +16343,12 @@ msgid "Bookmarks"
 msgstr "वाचनखुणा"
 
 #: modules/gui/macosx/bookmarks.m:97
-#: modules/gui/qt4/ui/podcast_configuration.h:103 modules/gui/qt4/ui/sout.h:209
-#: modules/gui/qt4/ui/vlm.h:299
 msgid "Add"
 msgstr "समाविष्ट करा"
 
 #: modules/gui/macosx/bookmarks.m:98 modules/gui/macosx/MainMenu.m:381
 #: modules/gui/macosx/simple_prefs.m:351
-#: modules/gui/qt4/dialogs/bookmarks.cpp:53 modules/gui/qt4/ui/vlm.h:300
+#: modules/gui/qt4/dialogs/bookmarks.cpp:53
 msgid "Clear"
 msgstr "स्पष्ट"
 
@@ -16694,9 +16644,6 @@ msgstr "उत्पादन ठिकाण निवडा"
 #: modules/gui/qt4/components/preferences_widgets.cpp:264
 #: modules/gui/qt4/components/simple_preferences.cpp:496
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:111
-#: modules/gui/qt4/ui/open.h:263 modules/gui/qt4/ui/open_disk.h:307
-#: modules/gui/qt4/ui/open_file.h:147 modules/gui/qt4/ui/sprefs_audio.h:433
-#: modules/gui/qt4/ui/sprefs_input.h:356 modules/gui/qt4/ui/sprefs_video.h:340
 msgid "Browse..."
 msgstr "ब्राउज करा..."
 
@@ -16728,27 +16675,25 @@ msgstr "लागू करा"
 msgid "Save as new Profile..."
 msgstr "नवीन प्रारुप म्हणून साठवा..."
 
-#: modules/gui/macosx/ConvertAndSave.m:170 modules/gui/qt4/ui/profiles.h:725
+#: modules/gui/macosx/ConvertAndSave.m:170
 msgid "Encapsulation"
 msgstr "संपुटन"
 
 #: modules/gui/macosx/ConvertAndSave.m:171
 #: share/lua/http/dialogs/create_stream.html:160
-#: modules/gui/qt4/ui/profiles.h:751
 msgid "Video codec"
 msgstr "ध्वनीचित्रफित कोडेक"
 
 #: modules/gui/macosx/ConvertAndSave.m:172
 #: share/lua/http/dialogs/create_stream.html:178
-#: modules/gui/qt4/ui/profiles.h:761
 msgid "Audio codec"
 msgstr "ध्वनी कोडेक"
 
-#: modules/gui/macosx/ConvertAndSave.m:176 modules/gui/qt4/ui/profiles.h:727
+#: modules/gui/macosx/ConvertAndSave.m:176
 msgid "Keep original video track"
 msgstr "मूळ ध्वनीचित्रफित मार्ग ठेवा"
 
-#: modules/gui/macosx/ConvertAndSave.m:181 modules/gui/qt4/ui/profiles.h:740
+#: modules/gui/macosx/ConvertAndSave.m:181
 msgid ""
 "You just need to fill one of the three following parameters, VLC will "
 "autodetect the other using the original aspect ratio"
@@ -16757,15 +16702,14 @@ msgstr ""
 "या इतरांची स्वयंशोध घेईल"
 
 #: modules/gui/macosx/ConvertAndSave.m:184 modules/gui/macosx/output.m:157
-#: modules/gui/qt4/ui/profiles.h:741
 msgid "Scale"
 msgstr "प्रमाण"
 
-#: modules/gui/macosx/ConvertAndSave.m:186 modules/gui/qt4/ui/profiles.h:753
+#: modules/gui/macosx/ConvertAndSave.m:186
 msgid "Keep original audio track"
 msgstr "मूळ ध्वनी मार्ग ठेवा"
 
-#: modules/gui/macosx/ConvertAndSave.m:192 modules/gui/qt4/ui/profiles.h:764
+#: modules/gui/macosx/ConvertAndSave.m:192
 msgid "Overlay subtitles on the video"
 msgstr "ध्वनीचित्रफितीवर अनुवादपट्ट्या लावा"
 
@@ -16932,19 +16876,19 @@ msgstr "(कोणताही घटक चालविला जात ना�
 msgid "Click to exit fullscreen playback."
 msgstr "संपूर्णपटल पार्श्वगायनातून बाहेर पडण्यासाठी क्लिक करा."
 
-#: modules/gui/macosx/intf.m:1562 modules/gui/macosx/intf.m:1579
+#: modules/gui/macosx/intf.m:1570 modules/gui/macosx/intf.m:1587
 msgid "VLC media playback"
 msgstr "व्हीएलसी माध्यम पार्श्वगायन"
 
-#: modules/gui/macosx/intf.m:1858
+#: modules/gui/macosx/intf.m:1862
 msgid "Remove old preferences?"
 msgstr "जुनी प्राधान्ये काढून टाकायची का?"
 
-#: modules/gui/macosx/intf.m:1859
+#: modules/gui/macosx/intf.m:1863
 msgid "We just found an older version of VLC's preferences files."
 msgstr "आम्हाला नुकतीच व्हीएलसी प्राधान्य धारिकांची जुनी आवृत्ती सापडली. "
 
-#: modules/gui/macosx/intf.m:1860
+#: modules/gui/macosx/intf.m:1864
 msgid "Move To Trash and Relaunch VLC"
 msgstr "व्हीएलसी काढून टाका व पुन्हा सुरु कराकडे जा"
 
@@ -17680,7 +17624,7 @@ msgstr ""
 "साधनांसाठी 'ग्रहण', सध्याचे पटल किंवा टीव्ही प्रवाह जर आयटीव्ही उपयोजन स्थापित असेल."
 
 #: modules/gui/macosx/open.m:133 modules/gui/macosx/open.m:594
-#: modules/gui/macosx/simple_prefs.m:365 modules/gui/qt4/ui/sprefs_input.h:359
+#: modules/gui/macosx/simple_prefs.m:365
 msgid "Network"
 msgstr "नेटवर्क"
 
@@ -17707,7 +17651,7 @@ msgstr "दुसरे माध्यम समकालिक स्वरु
 
 #: modules/gui/macosx/open.m:143 modules/gui/macosx/open.m:362
 #: modules/gui/macosx/simple_prefs.m:405 modules/gui/macosx/wizard.m:343
-#: modules/gui/macosx/wizard.m:411 modules/gui/qt4/ui/sprefs_interface.h:535
+#: modules/gui/macosx/wizard.m:411
 msgid "Choose..."
 msgstr "निवडा..."
 
@@ -17887,7 +17831,6 @@ msgid "Subtitle encoding"
 msgstr "अनुवादपट्टी संकेतन"
 
 #: modules/gui/macosx/open.m:373 modules/gui/macosx/simple_prefs.m:407
-#: modules/gui/qt4/ui/sprefs_subtitles.h:300
 msgid "Font size"
 msgstr "टंक आकार"
 
@@ -17908,7 +17851,7 @@ msgid "Subtitle File"
 msgstr "अनुवादपट्टी धारिका"
 
 #: modules/gui/macosx/open.m:667 modules/gui/macosx/open.m:742
-#: modules/gui/macosx/open.m:1553 modules/gui/qt4/ui/open_file.h:142
+#: modules/gui/macosx/open.m:1553
 msgid "Open File"
 msgstr "धारिका उघडा"
 
@@ -18125,7 +18068,6 @@ msgid "Select"
 msgstr "निवडा"
 
 #: modules/gui/macosx/ResumeDialogController.m:44 modules/gui/qt4/qt4.cpp:188
-#: modules/gui/qt4/ui/sprefs_interface.h:533
 msgid "Continue playback?"
 msgstr "पार्श्वगायन सुरु ठेवायचे का?"
 
@@ -18197,7 +18139,7 @@ msgstr "दृश्ये "
 msgid "Keep audio level between sessions"
 msgstr "सत्रांदरम्यान ध्वनी पातळी राखा"
 
-#: modules/gui/macosx/simple_prefs.m:344 modules/gui/qt4/ui/sprefs_audio.h:429
+#: modules/gui/macosx/simple_prefs.m:344
 msgid "Always reset audio start level to:"
 msgstr "ध्वनी सुरुवात पातळीची नेहमी फेररचना करा च्यावर:"
 
@@ -18230,7 +18172,7 @@ msgstr "एव्हाआय धारिका दुरुस्त करा
 msgid "Default Caching Level"
 msgstr "पूर्वनिर्धारित साठवणूक पातळी"
 
-#: modules/gui/macosx/simple_prefs.m:362 modules/gui/qt4/ui/open.h:248
+#: modules/gui/macosx/simple_prefs.m:362
 msgid "Caching"
 msgstr "साठवणूक"
 
@@ -18287,7 +18229,6 @@ msgid "Show Fullscreen Controller"
 msgstr "संपूर्ण पटल नियंत्रक दाखवा"
 
 #: modules/gui/macosx/simple_prefs.m:387
-#: modules/gui/qt4/ui/sprefs_interface.h:542
 msgid "Privacy / Network Interaction"
 msgstr "गोपनीयता/नेटवर्क संवाद"
 
@@ -18317,14 +18258,12 @@ msgid "Display Settings"
 msgstr "मांडण्या प्रदर्शित करा"
 
 #: modules/gui/macosx/simple_prefs.m:406
-#: modules/gui/qt4/ui/sprefs_subtitles.h:301
 msgid "Font color"
 msgstr "टंक रंग"
 
 #: modules/gui/macosx/simple_prefs.m:408 modules/text_renderer/freetype.c:95
 #: modules/text_renderer/quartztext.c:92 modules/text_renderer/win32text.c:59
 #: modules/video_filter/marq.c:156 modules/video_filter/rss.c:206
-#: modules/gui/qt4/ui/sprefs_subtitles.h:299
 msgid "Font"
 msgstr "टंक"
 
@@ -18333,7 +18272,6 @@ msgid "Subtitle languages"
 msgstr "अनुवादपट्टी भाषा"
 
 #: modules/gui/macosx/simple_prefs.m:410
-#: modules/gui/qt4/ui/sprefs_subtitles.h:296
 msgid "Preferred subtitle language"
 msgstr "अनुवादपट्टीची प्राधान्य भाषा"
 
@@ -18351,12 +18289,10 @@ msgid "Force bold"
 msgstr "ठळक करा"
 
 #: modules/gui/macosx/simple_prefs.m:415 modules/text_renderer/freetype.c:125
-#: modules/gui/qt4/ui/sprefs_subtitles.h:303
 msgid "Outline color"
 msgstr "बाह्यरेषा रंग"
 
 #: modules/gui/macosx/simple_prefs.m:416 modules/text_renderer/freetype.c:126
-#: modules/gui/qt4/ui/sprefs_subtitles.h:302
 msgid "Outline thickness"
 msgstr "बाह्यरेषा जाडी"
 
@@ -18365,11 +18301,10 @@ msgid "Black screens in Fullscreen mode"
 msgstr "काळे पटल पूर्ण पटल पद्धतीमध्ये"
 
 #: modules/gui/macosx/simple_prefs.m:421 modules/stream_out/display.c:53
-#: modules/gui/qt4/ui/sprefs_video.h:322
 msgid "Display"
 msgstr "प्रदर्शित करा"
 
-#: modules/gui/macosx/simple_prefs.m:427 modules/gui/qt4/ui/sprefs_video.h:338
+#: modules/gui/macosx/simple_prefs.m:427
 msgid "Video snapshots"
 msgstr "ध्वनीचित्रफित क्षणचित्रे"
 
@@ -18377,15 +18312,15 @@ msgstr "ध्वनीचित्रफित क्षणचित्रे"
 msgid "Folder"
 msgstr "धारक"
 
-#: modules/gui/macosx/simple_prefs.m:430 modules/gui/qt4/ui/sprefs_video.h:344
+#: modules/gui/macosx/simple_prefs.m:430
 msgid "Format"
 msgstr "प्रारुप"
 
-#: modules/gui/macosx/simple_prefs.m:431 modules/gui/qt4/ui/sprefs_video.h:341
+#: modules/gui/macosx/simple_prefs.m:431
 msgid "Prefix"
 msgstr "पूर्वप्रत्यय"
 
-#: modules/gui/macosx/simple_prefs.m:432 modules/gui/qt4/ui/sprefs_video.h:343
+#: modules/gui/macosx/simple_prefs.m:432
 msgid "Sequential numbering"
 msgstr "क्रमवार संख्या"
 
@@ -18567,16 +18502,14 @@ msgstr "ध्वनीचित्र परिणाम"
 msgid "Basic"
 msgstr "मूलभूत"
 
-#: modules/gui/macosx/VideoEffects.m:81 modules/gui/qt4/ui/video_effects.h:1444
+#: modules/gui/macosx/VideoEffects.m:81
 msgid "Geometry"
 msgstr "भूमिती"
 
 #: modules/gui/macosx/VideoEffects.m:82 modules/gui/macosx/VideoEffects.m:131
 #: modules/gui/macosx/VideoEffects.m:146 modules/gui/macosx/VideoEffects.m:149
 #: modules/video_filter/colorthres.c:54 modules/video_filter/marq.c:114
-#: modules/video_filter/rss.c:154 modules/gui/qt4/ui/video_effects.h:1417
-#: modules/gui/qt4/ui/video_effects.h:1423
-#: modules/gui/qt4/ui/video_effects.h:1426
+#: modules/video_filter/rss.c:154
 msgid "Color"
 msgstr "रंग"
 
@@ -18584,50 +18517,43 @@ msgstr "रंग"
 msgid "Image Adjust"
 msgstr "चित्र व्यवस्थित करा"
 
-#: modules/gui/macosx/VideoEffects.m:91 modules/gui/qt4/ui/video_effects.h:1394
+#: modules/gui/macosx/VideoEffects.m:91
 msgid "Brightness Threshold"
 msgstr "चकाकी सीमारेषा"
 
 #: modules/gui/macosx/VideoEffects.m:95 modules/video_filter/sharpen.c:67
-#: modules/gui/qt4/ui/video_effects.h:1398
 msgid "Sharpen"
 msgstr "तीक्ष्ण करा"
 
-#: modules/gui/macosx/VideoEffects.m:96 modules/gui/qt4/ui/video_effects.h:1399
-#: modules/gui/qt4/ui/video_effects.h:1483
+#: modules/gui/macosx/VideoEffects.m:96
 msgid "Sigma"
 msgstr "सिग्मा"
 
-#: modules/gui/macosx/VideoEffects.m:97 modules/gui/qt4/ui/video_effects.h:1400
+#: modules/gui/macosx/VideoEffects.m:97
 msgid "Banding removal"
 msgstr "पट्टन काढून टाकणे"
 
 #: modules/gui/macosx/VideoEffects.m:98 modules/video_filter/gradfun.c:49
-#: modules/gui/qt4/ui/video_effects.h:1401
 msgid "Radius"
 msgstr "त्रिज्या"
 
-#: modules/gui/macosx/VideoEffects.m:99 modules/gui/qt4/ui/video_effects.h:1402
+#: modules/gui/macosx/VideoEffects.m:99
 msgid "Film Grain"
 msgstr "चित्रपट कणमान"
 
 #: modules/gui/macosx/VideoEffects.m:100 modules/video_filter/grain.c:53
-#: modules/gui/qt4/ui/video_effects.h:1403
 msgid "Variance"
 msgstr "तफावत"
 
 #: modules/gui/macosx/VideoEffects.m:105
-#: modules/gui/qt4/ui/video_effects.h:1411
 msgid "Synchronize top and bottom"
 msgstr "सर्वात वरचे व तळाचे समकालन करा"
 
 #: modules/gui/macosx/VideoEffects.m:106
-#: modules/gui/qt4/ui/video_effects.h:1412
 msgid "Synchronize left and right"
 msgstr "डावे व उजवे समकालन करा"
 
 #: modules/gui/macosx/VideoEffects.m:108
-#: modules/gui/qt4/ui/video_effects.h:1437
 msgid "Transform"
 msgstr "परिवर्तन"
 
@@ -18656,57 +18582,45 @@ msgid "Magnification/Zoom"
 msgstr "वाढ/मोठे करणे"
 
 #: modules/gui/macosx/VideoEffects.m:121
-#: modules/gui/qt4/ui/video_effects.h:1440
 msgid "Puzzle game"
 msgstr "कोड्याचा खेळ"
 
 #: modules/gui/macosx/VideoEffects.m:122 modules/gui/macosx/VideoEffects.m:127
 #: share/lua/http/dialogs/mosaic_window.html:96
-#: modules/gui/qt4/ui/video_effects.h:1435
-#: modules/gui/qt4/ui/video_effects.h:1441
 msgid "Rows"
 msgstr "ओळी"
 
 #: modules/gui/macosx/VideoEffects.m:123 modules/gui/macosx/VideoEffects.m:128
 #: share/lua/http/dialogs/mosaic_window.html:114
-#: modules/gui/qt4/ui/video_effects.h:1436
-#: modules/gui/qt4/ui/video_effects.h:1442
 msgid "Columns"
 msgstr "स्तंभ"
 
 #: modules/gui/macosx/VideoEffects.m:124 modules/video_splitter/clone.c:57
-#: modules/gui/qt4/ui/video_effects.h:1493
 msgid "Clone"
 msgstr "प्रतिरुप"
 
 #: modules/gui/macosx/VideoEffects.m:125 modules/video_splitter/clone.c:39
-#: modules/gui/qt4/ui/video_effects.h:1494
 msgid "Number of clones"
 msgstr "प्रतिरुपांची संख्या"
 
 #: modules/gui/macosx/VideoEffects.m:126
-#: modules/gui/qt4/ui/video_effects.h:1434
 msgid "Wall"
 msgstr "भिंत"
 
 #: modules/gui/macosx/VideoEffects.m:130 modules/video_filter/colorthres.c:70
-#: modules/gui/qt4/ui/video_effects.h:1425
 msgid "Color threshold"
 msgstr "रंग सीमारेषा"
 
 #: modules/gui/macosx/VideoEffects.m:133
-#: modules/gui/qt4/ui/video_effects.h:1429
 msgid "Similarity"
 msgstr "समानता"
 
 #: modules/gui/macosx/VideoEffects.m:135
-#: modules/gui/qt4/ui/video_effects.h:1431
 msgid "Intensity"
 msgstr "तीव्रता"
 
 #: modules/gui/macosx/VideoEffects.m:137 modules/gui/macosx/VideoEffects.m:140
 #: modules/video_filter/gradient.c:76 modules/video_filter/gradient.c:82
-#: modules/gui/qt4/ui/video_effects.h:1421
 msgid "Gradient"
 msgstr "क्रमिकता"
 
@@ -18719,12 +18633,10 @@ msgid "Hough"
 msgstr "हॉग"
 
 #: modules/gui/macosx/VideoEffects.m:147
-#: modules/gui/qt4/ui/video_effects.h:1424
 msgid "Cartoon"
 msgstr "अर्कचित्र"
 
 #: modules/gui/macosx/VideoEffects.m:148
-#: modules/gui/qt4/ui/video_effects.h:1416
 msgid "Color extraction"
 msgstr "रंग काढून घेणे"
 
@@ -18733,7 +18645,6 @@ msgid "Invert colors"
 msgstr "रंग उलट करा"
 
 #: modules/gui/macosx/VideoEffects.m:151 modules/video_filter/posterize.c:68
-#: modules/gui/qt4/ui/video_effects.h:1420
 msgid "Posterize"
 msgstr "भित्तीपत्राच्या स्वरुपात चित्र छापणे"
 
@@ -18742,12 +18653,10 @@ msgid "Posterize level"
 msgstr "भित्तीपत्राच्या स्वरुपात चित्र छापण्याची पातळी"
 
 #: modules/gui/macosx/VideoEffects.m:153 modules/video_filter/motionblur.c:59
-#: modules/gui/qt4/ui/video_effects.h:1484
 msgid "Motion blur"
 msgstr "गती अंधूक"
 
 #: modules/gui/macosx/VideoEffects.m:154
-#: modules/gui/qt4/ui/video_effects.h:1485
 msgid "Factor"
 msgstr "घटक"
 
@@ -18756,7 +18665,6 @@ msgid "Motion Detect"
 msgstr "गती शोधा"
 
 #: modules/gui/macosx/VideoEffects.m:156
-#: modules/gui/qt4/ui/video_effects.h:1480
 msgid "Water effect"
 msgstr "पाण्याचा परिणाम"
 
@@ -18765,27 +18673,24 @@ msgid "Anaglyph"
 msgstr "द्विवर्णी त्रिमितीचित्र"
 
 #: modules/gui/macosx/VideoEffects.m:161
-#: modules/gui/qt4/ui/video_effects.h:1455
 msgid "Add text"
 msgstr "मजकूर समाविष्ट करा"
 
 #: modules/gui/macosx/VideoEffects.m:162 modules/misc/logger.c:109
-#: modules/video_filter/marq.c:87 modules/gui/qt4/ui/video_effects.h:1457
+#: modules/video_filter/marq.c:87
 msgid "Text"
 msgstr "मजकूर"
 
 #: modules/gui/macosx/VideoEffects.m:183
-#: modules/gui/qt4/ui/video_effects.h:1445
 msgid "Add logo"
 msgstr "प्रतीकचिन्ह समाविष्ट करा"
 
 #: modules/gui/macosx/VideoEffects.m:184
-#: modules/gui/qt4/ui/video_effects.h:1446
 msgid "Logo"
 msgstr "प्रतीकचिन्ह"
 
 #: modules/gui/macosx/VideoEffects.m:205 modules/stream_out/mosaic_bridge.c:128
-#: modules/video_filter/mosaic.c:87 modules/gui/qt4/ui/video_effects.h:1453
+#: modules/video_filter/mosaic.c:87
 msgid "Transparency"
 msgstr "पारदर्शकता"
 
@@ -20210,7 +20115,6 @@ msgid "File names:"
 msgstr "धारिका नावे:"
 
 #: modules/gui/qt4/components/open_panels.cpp:162
-#: modules/gui/qt4/ui/sprefs_interface.h:545
 msgid "Filter:"
 msgstr "चाळणी:"
 
@@ -20616,7 +20520,6 @@ msgid "File/Folder"
 msgstr "धारिका/मार्गदर्शिका"
 
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:47
-#: modules/gui/qt4/ui/sout.h:202
 msgid "Source"
 msgstr "स्रोत"
 
@@ -20741,7 +20644,7 @@ msgstr "बाईट्स"
 msgid "Convert"
 msgstr "रुपांतरित करा"
 
-#: modules/gui/qt4/dialogs/convert.cpp:58 modules/gui/qt4/ui/sprefs_audio.h:432
+#: modules/gui/qt4/dialogs/convert.cpp:58
 msgid "Destination file:"
 msgstr "इच्छित धारिका:"
 
@@ -20862,7 +20765,7 @@ msgstr "व होय"
 msgid "&No"
 msgstr "व नाही"
 
-#: modules/gui/qt4/dialogs/help.cpp:222 modules/gui/qt4/ui/update.h:147
+#: modules/gui/qt4/dialogs/help.cpp:222
 msgid "VLC media player updates"
 msgstr "व्हीएलसी मीडिया प्लेअर सुधारणा"
 
@@ -20907,8 +20810,6 @@ msgid "Location:"
 msgstr "ठिकाण:"
 
 #: modules/gui/qt4/dialogs/messages.cpp:79
-#: modules/gui/qt4/ui/messages_panel.h:138
-#: modules/gui/qt4/ui/messages_panel.h:142
 msgid "Messages"
 msgstr "संदेश"
 
@@ -21112,7 +21013,6 @@ msgid "Website"
 msgstr "संकेतस्थळ"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:1525
-#: modules/gui/qt4/ui/sprefs_input.h:354
 msgid "Files"
 msgstr "धारिका"
 
@@ -21222,7 +21122,7 @@ msgstr "अनुवादपट्ट्या धारिका"
 msgid "All Files"
 msgstr "सर्व धआरिका"
 
-#: modules/gui/qt4/dialogs/sout.cpp:45 modules/gui/qt4/ui/sout.h:201
+#: modules/gui/qt4/dialogs/sout.cpp:45
 msgid "Stream Output"
 msgstr "प्रवाह उत्पादन"
 
@@ -21401,7 +21301,6 @@ msgid "Repeat delay:"
 msgstr "पुन्हा विलंब करा:"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:107
-#: modules/gui/qt4/ui/sprefs_interface.h:543
 msgid " days"
 msgstr "दिवस"
 
@@ -23151,7 +23050,6 @@ msgid "Local drives"
 msgstr "स्थानिक ड्राईव्ह"
 
 #: modules/services_discovery/podcast.c:54
-#: modules/gui/qt4/ui/podcast_configuration.h:101
 msgid "Podcast URLs list"
 msgstr "पॉडकास्ट यूआरएल यादी"
 
@@ -23259,7 +23157,7 @@ msgstr "ध्वनी ग्रहण (एएलएसए)"
 msgid "CD"
 msgstr "सीडी"
 
-#: modules/services_discovery/udev.c:595 modules/gui/qt4/ui/open_disk.h:298
+#: modules/services_discovery/udev.c:595
 msgid "DVD"
 msgstr "डीव्हीडी"
 
@@ -23271,7 +23169,7 @@ msgstr "एचडी डीव्हीडी"
 msgid "Unknown type"
 msgstr "अज्ञात प्रकार"
 
-#: modules/services_discovery/upnp.cpp:71
+#: modules/services_discovery/upnp.cpp:109
 msgid "Universal Plug'n'Play"
 msgstr "सार्वत्रित प्लग 'व' चालविणे"
 
@@ -24668,7 +24566,7 @@ msgstr "प्रतिमा गॅमा निश्चित करा, ०.
 msgid "Image properties filter"
 msgstr "प्रतिमा वैशिष्ट्ये चाळणी"
 
-#: modules/video_filter/adjust.c:83 modules/gui/qt4/ui/video_effects.h:1391
+#: modules/video_filter/adjust.c:83
 msgid "Image adjust"
 msgstr "प्रतिमा व्यवस्थित करा"
 
@@ -25036,7 +24934,6 @@ msgstr ""
 "टीटीवाय५०१ एफ.ई."
 
 #: modules/video_filter/atmo/atmo.cpp:253
-#: modules/gui/qt4/ui/video_effects.h:1467
 msgid "Edge weightning"
 msgstr "कडा पांढ-या करणे"
 
@@ -25051,7 +24948,6 @@ msgid "Overall brightness of your LED stripes"
 msgstr "तुमच्या एलईडी पट्ट्यांची एकूण तेजस्वीता"
 
 #: modules/video_filter/atmo/atmo.cpp:258
-#: modules/gui/qt4/ui/video_effects.h:1470
 msgid "Darkness limit"
 msgstr "काळोख मर्यादा"
 
@@ -25077,7 +24973,6 @@ msgid "Sat windowing"
 msgstr "सॅटचे विविध भाग प्रदर्शित करणे"
 
 #: modules/video_filter/atmo/atmo.cpp:267
-#: modules/gui/qt4/ui/video_effects.h:1472
 msgid "Filter length (ms)"
 msgstr "चाळणी लांबी (एमएस)"
 
@@ -25095,7 +24990,6 @@ msgid "How much a color has to be changed for an immediate color change."
 msgstr "तात्काळ रंग बदलासाठी किती रंग बदलला पाहिजे."
 
 #: modules/video_filter/atmo/atmo.cpp:273
-#: modules/gui/qt4/ui/video_effects.h:1474
 msgid "Filter smoothness (%)"
 msgstr "चाळणी सहजता (%)"
 
@@ -25260,8 +25154,6 @@ msgid "AtmoLight Filter"
 msgstr "ऍटमोलाईट चाळणी"
 
 #: modules/video_filter/atmo/atmo.cpp:360
-#: modules/gui/qt4/ui/video_effects.h:1466
-#: modules/gui/qt4/ui/video_effects.h:1475
 msgid "AtmoLight"
 msgstr "ऍटमोलाईट"
 
@@ -25827,7 +25719,6 @@ msgstr "बदलते ध्वनीचित्रफित अधिचि�
 
 #: modules/video_filter/dynamicoverlay/dynamicoverlay.c:68
 #: share/lua/http/dialogs/create_stream.html:245
-#: modules/gui/qt4/ui/video_effects.h:1465
 msgid "Overlay"
 msgstr "अधिचित्र"
 
@@ -26815,7 +26706,7 @@ msgstr "गती संवेदक वापरा"
 msgid "Rotate video filter"
 msgstr "ध्वनीचित्रफित चाळणी फिरवा"
 
-#: modules/video_filter/rotate.c:67 modules/gui/qt4/ui/video_effects.h:1438
+#: modules/video_filter/rotate.c:67
 msgid "Rotate"
 msgstr "फिरवा"
 
@@ -27453,7 +27344,7 @@ msgstr "खुल्याजीएलसाठी जीएलएक्स व�
 msgid "iOS OpenGL video output"
 msgstr "आयओएस खुलाजीएल ध्वनीचित्रफित उत्पादन"
 
-#: modules/video_output/kva.c:50 modules/gui/qt4/ui/sprefs_video.h:332
+#: modules/video_output/kva.c:50
 msgid "Enable a workaround for T23"
 msgstr "टी२३साठी तोडगा समर्थ करणे"
 
@@ -27465,7 +27356,7 @@ msgstr ""
 "विंडो आकार चित्रपटाच्या आकाराएवढा किंवा लहान असेल तेव्हा तिरप्या रेषा दाखविण्यात आल्यास "
 "हा पर्याय समर्थ करा. "
 
-#: modules/video_output/kva.c:55 modules/gui/qt4/ui/sprefs_video.h:333
+#: modules/video_output/kva.c:55
 msgid "Video mode"
 msgstr "ध्वनीचित्रफित पद्धत"
 
@@ -27569,7 +27460,7 @@ msgstr "विंडोज व्हिस्टा व नंतरच्या
 msgid "Direct3D video output"
 msgstr "थेट३डी ध्वनीचित्रफित उत्पादन"
 
-#: modules/video_output/msw/directx.c:65 modules/gui/qt4/ui/sprefs_video.h:325
+#: modules/video_output/msw/directx.c:65
 msgid "Use hardware YUV->RGB conversions"
 msgstr "हार्डवेअर वाययूव्ही-> आरजीबी रुपांतरे वापरा"
 
@@ -28368,7 +28259,6 @@ msgid "Play List"
 msgstr "चालविण्याची यादी"
 
 #: share/lua/http/dialogs/create_stream.html:156
-#: modules/gui/qt4/ui/sprefs_audio.h:430 modules/gui/qt4/ui/sprefs_video.h:328
 msgid "Output"
 msgstr "उत्पादन"
 
@@ -28483,7 +28373,7 @@ msgstr "संकालन मागोवा"
 msgid "VLM Batch Commands"
 msgstr "व्हीएलएम गट आज्ञा"
 
-#: share/lua/http/index.html:240 modules/gui/qt4/ui/vlm.h:298
+#: share/lua/http/index.html:240
 msgid "Loop"
 msgstr "लूप"
 
@@ -28560,878 +28450,639 @@ msgstr ""
 msgid "Are you sure you wish to create the stream?"
 msgstr "तुम्हाला प्रवाह तयार करायचा आहे याची खात्री आहे का?"
 
-#: modules/gui/qt4/ui/about.h:287 modules/gui/qt4/ui/open.h:242
-#: modules/gui/qt4/ui/podcast_configuration.h:100
-msgid "Dialog"
-msgstr "संवाद"
+#~ msgid "Dialog"
+#~ msgstr "संवाद"
 
-#: modules/gui/qt4/ui/about.h:288 modules/gui/qt4/ui/about.h:289
-msgid "Update"
-msgstr "सुधारणा करा"
+#~ msgid "Update"
+#~ msgstr "सुधारणा करा"
 
-#: modules/gui/qt4/ui/equalizer.h:132 modules/gui/qt4/ui/open_disk.h:296
-#: modules/gui/qt4/ui/open_net.h:96 modules/gui/qt4/ui/sprefs_audio.h:425
-#: modules/gui/qt4/ui/sprefs_input.h:345
-#: modules/gui/qt4/ui/sprefs_interface.h:516
-#: modules/gui/qt4/ui/sprefs_subtitles.h:289
-#: modules/gui/qt4/ui/sprefs_video.h:320 modules/gui/qt4/ui/streampanel.h:167
-msgid "Form"
-msgstr "अर्ज"
+#~ msgid "Form"
+#~ msgstr "अर्ज"
 
-#: modules/gui/qt4/ui/equalizer.h:135
-msgid "Preset"
-msgstr "पूर्वरचना"
+#~ msgid "Preset"
+#~ msgstr "पूर्वरचना"
 
-#: modules/gui/qt4/ui/equalizer.h:137
-msgid "0.00 dB"
-msgstr "०.०० डीबी"
+#~ msgid "0.00 dB"
+#~ msgstr "०.०० डीबी"
 
-#: modules/gui/qt4/ui/messages_panel.h:139
-msgid "&Verbosity:"
-msgstr "व शब्दावडंबर:"
+#~ msgid "&Verbosity:"
+#~ msgstr "व शब्दावडंबर:"
 
-#: modules/gui/qt4/ui/messages_panel.h:140
-msgid "&Filter:"
-msgstr "व चाळणी:"
+#~ msgid "&Filter:"
+#~ msgstr "व चाळणी:"
 
-#: modules/gui/qt4/ui/messages_panel.h:141
-msgid "&Save as..."
-msgstr "व म्हणून साठवा..."
+#~ msgid "&Save as..."
+#~ msgstr "व म्हणून साठवा..."
 
-#: modules/gui/qt4/ui/messages_panel.h:143
-msgid "Modules Tree"
-msgstr "भाग वृक्ष"
+#~ msgid "Modules Tree"
+#~ msgstr "भाग वृक्ष"
 
-#: modules/gui/qt4/ui/open.h:245
-msgid "Show extended options"
-msgstr "विस्तारित पर्याय दाखवा"
+#~ msgid "Show extended options"
+#~ msgstr "विस्तारित पर्याय दाखवा"
 
-#: modules/gui/qt4/ui/open.h:247
-msgid "Show &more options"
-msgstr "दाखवा व अधिक पर्याय"
+#~ msgid "Show &more options"
+#~ msgstr "दाखवा व अधिक पर्याय"
 
-#: modules/gui/qt4/ui/open.h:250
-msgid "Change the caching for the media"
-msgstr "माध्यमासाठी संग्रहण बदला"
+#~ msgid "Change the caching for the media"
+#~ msgstr "माध्यमासाठी संग्रहण बदला"
 
-#: modules/gui/qt4/ui/open.h:252
-msgid " ms"
-msgstr "एमएस"
+#~ msgid " ms"
+#~ msgstr "एमएस"
 
-#: modules/gui/qt4/ui/open.h:253
-msgid "MRL"
-msgstr "एमआरएल"
+#~ msgid "MRL"
+#~ msgstr "एमआरएल"
 
-#: modules/gui/qt4/ui/open.h:254
-msgid "Start Time"
-msgstr "सुरुवात वेळ"
+#~ msgid "Start Time"
+#~ msgstr "सुरुवात वेळ"
 
-#: modules/gui/qt4/ui/open.h:255
-msgid "Edit Options"
-msgstr "पर्याय संपादित करा"
+#~ msgid "Edit Options"
+#~ msgstr "पर्याय संपादित करा"
 
-#: modules/gui/qt4/ui/open.h:256
-msgid "Extra media"
-msgstr "अतिरिक्त माध्यम"
+#~ msgid "Extra media"
+#~ msgstr "अतिरिक्त माध्यम"
 
-#: modules/gui/qt4/ui/open.h:258
-msgid "Complete MRL for VLC internal"
-msgstr "व्हीएलसी अंतर्गतसाठी एमआरएल पूर्ण करा"
+#~ msgid "Complete MRL for VLC internal"
+#~ msgstr "व्हीएलसी अंतर्गतसाठी एमआरएल पूर्ण करा"
 
-#: modules/gui/qt4/ui/open.h:261
-msgid "Select the file"
-msgstr "धारिका निवडा"
+#~ msgid "Select the file"
+#~ msgstr "धारिका निवडा"
 
-#: modules/gui/qt4/ui/open.h:265
-msgid "Change the start time for the media"
-msgstr "माध्यमासाठी सुरुवात वेळ बदला"
+#~ msgid "Change the start time for the media"
+#~ msgstr "माध्यमासाठी सुरुवात वेळ बदला"
 
-#: modules/gui/qt4/ui/open.h:267
-msgid "HH'H':mm'm':ss's'.zzz"
-msgstr "एचएच'एच':एमएम'एम':एसएस'एस'.झेडझेडझेड"
+#~ msgid "HH'H':mm'm':ss's'.zzz"
+#~ msgstr "एचएच'एच':एमएम'एम':एसएस'एस'.झेडझेडझेड"
 
-#: modules/gui/qt4/ui/open.h:268
-msgid "Play another media synchronously (extra audio file, ...)"
-msgstr "समकालीनपद्धतीने आणखी एक माध्यमधारिका चालवा (अतिरिक्त ध्वनी धारिका,...)"
+#~ msgid "Play another media synchronously (extra audio file, ...)"
+#~ msgstr "समकालीनपद्धतीने आणखी एक माध्यमधारिका चालवा (अतिरिक्त ध्वनी धारिका,...)"
 
-#: modules/gui/qt4/ui/open_capture.h:97
-msgid "Capture mode"
-msgstr "ग्रहण पद्धत"
+#~ msgid "Capture mode"
+#~ msgstr "ग्रहण पद्धत"
 
-#: modules/gui/qt4/ui/open_capture.h:99
-msgid "Select the capture device type"
-msgstr "ग्रहण साधन प्रकार निवडा"
+#~ msgid "Select the capture device type"
+#~ msgstr "ग्रहण साधन प्रकार निवडा"
 
-#: modules/gui/qt4/ui/open_capture.h:101
-msgid "Device Selection"
-msgstr "साधन निवड"
+#~ msgid "Device Selection"
+#~ msgstr "साधन निवड"
 
-#: modules/gui/qt4/ui/open_capture.h:102
-msgid "Options"
-msgstr "पर्याय"
+#~ msgid "Options"
+#~ msgstr "पर्याय"
 
-#: modules/gui/qt4/ui/open_capture.h:104
-msgid "Access advanced options to tweak the device"
-msgstr "साधनात सुधारणा करण्यासाठी प्रगत पर्याय वापरा"
+#~ msgid "Access advanced options to tweak the device"
+#~ msgstr "साधनात सुधारणा करण्यासाठी प्रगत पर्याय वापरा"
 
-#: modules/gui/qt4/ui/open_capture.h:106
-msgid "Advanced options..."
-msgstr "प्रगत पर्याय..."
+#~ msgid "Advanced options..."
+#~ msgstr "प्रगत पर्याय..."
 
-#: modules/gui/qt4/ui/open_disk.h:297
-msgid "Disc Selection"
-msgstr "डिस्क निवड"
+#~ msgid "Disc Selection"
+#~ msgstr "डिस्क निवड"
 
-#: modules/gui/qt4/ui/open_disk.h:301
-msgid "SVCD/VCD"
-msgstr "एसव्हीसीडी/व्हीसीडी"
+#~ msgid "SVCD/VCD"
+#~ msgstr "एसव्हीसीडी/व्हीसीडी"
 
-#: modules/gui/qt4/ui/open_disk.h:303
-msgid "Disable Disc Menus"
-msgstr "डिस्क विषयसूची असमर्थ करा"
+#~ msgid "Disable Disc Menus"
+#~ msgstr "डिस्क विषयसूची असमर्थ करा"
 
-#: modules/gui/qt4/ui/open_disk.h:305
-msgid "No disc menus"
-msgstr "कोणत्याही डिस्क विषयसूची नाहीत"
+#~ msgid "No disc menus"
+#~ msgstr "कोणत्याही डिस्क विषयसूची नाहीत"
 
-#: modules/gui/qt4/ui/open_disk.h:306
-msgid "Disc device"
-msgstr "डिस्क साधन"
+#~ msgid "Disc device"
+#~ msgstr "डिस्क साधन"
 
-#: modules/gui/qt4/ui/open_disk.h:308
-msgid "Starting Position"
-msgstr "सुरुवात स्थान"
+#~ msgid "Starting Position"
+#~ msgstr "सुरुवात स्थान"
 
-#: modules/gui/qt4/ui/open_disk.h:311
-msgid "Audio and Subtitles"
-msgstr "ध्वनी व अनुवादपट्ट्या"
+#~ msgid "Audio and Subtitles"
+#~ msgstr "ध्वनी व अनुवादपट्ट्या"
 
-#: modules/gui/qt4/ui/open_file.h:143
-msgid "Use a sub&title file"
-msgstr "अनुवादपट्टी धारिका वापरा"
+#~ msgid "Use a sub&title file"
+#~ msgstr "अनुवादपट्टी धारिका वापरा"
 
-#: modules/gui/qt4/ui/open_file.h:145
-msgid "Select the subtitle file"
-msgstr "अनुवादपट्टी धारिका निवडा"
+#~ msgid "Select the subtitle file"
+#~ msgstr "अनुवादपट्टी धारिका निवडा"
 
-#: modules/gui/qt4/ui/open_file.h:149
-msgid "Choose one or more media file to open"
-msgstr "उघडण्यासाठी एक किंवा अधिक माध्यम धारिका निवडा"
+#~ msgid "Choose one or more media file to open"
+#~ msgstr "उघडण्यासाठी एक किंवा अधिक माध्यम धारिका निवडा"
 
-#: modules/gui/qt4/ui/open_file.h:151
-msgid "File Selection"
-msgstr "धारिका निवड"
+#~ msgid "File Selection"
+#~ msgstr "धारिका निवड"
 
-#: modules/gui/qt4/ui/open_file.h:152
-msgid "You can select local files with the following list and buttons."
-msgstr "तुम्ही पुढील याद्या व बटणांसहित स्थानिक धारिका निवडू शकता."
+#~ msgid "You can select local files with the following list and buttons."
+#~ msgstr "तुम्ही पुढील याद्या व बटणांसहित स्थानिक धारिका निवडू शकता."
 
-#: modules/gui/qt4/ui/open_file.h:153
-msgid "Add..."
-msgstr "समाविष्ट करा..."
+#~ msgid "Add..."
+#~ msgstr "समाविष्ट करा..."
 
-#: modules/gui/qt4/ui/open_net.h:97
-msgid "Network Protocol"
-msgstr "नेटवर्क प्रोटोकॉल"
+#~ msgid "Network Protocol"
+#~ msgstr "नेटवर्क प्रोटोकॉल"
 
-#: modules/gui/qt4/ui/open_net.h:98
-msgid "Please enter a network URL:"
-msgstr "कृपया नेटवर्क यूआरएल घाला:"
+#~ msgid "Please enter a network URL:"
+#~ msgstr "कृपया नेटवर्क यूआरएल घाला:"
 
-#: modules/gui/qt4/ui/profiles.h:701
-msgid "Profile edition"
-msgstr "स्वरुप आवृत्ती"
+#~ msgid "Profile edition"
+#~ msgstr "स्वरुप आवृत्ती"
 
-#: modules/gui/qt4/ui/profiles.h:702
-msgid "FLAC"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:703
 #, fuzzy
-msgid "MP&4/MOV"
-msgstr "एमपी४/एमओव्ही"
+#~ msgid "MP&4/MOV"
+#~ msgstr "एमपी४/एमओव्ही"
 
-#: modules/gui/qt4/ui/profiles.h:704
-msgid "Ogg/Ogm"
-msgstr "ओजीजी/ओजीएम"
+#~ msgid "Ogg/Ogm"
+#~ msgstr "ओजीजी/ओजीएम"
 
-#: modules/gui/qt4/ui/profiles.h:705
-msgid "M&KV"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:706
 #, fuzzy
-msgid "M&JPEG"
-msgstr "एमजेपीईजी"
+#~ msgid "M&JPEG"
+#~ msgstr "एमजेपीईजी"
 
-#: modules/gui/qt4/ui/profiles.h:707
-msgid "MPEG-PS"
-msgstr "एमपीईजी-पीएस"
+#~ msgid "MPEG-PS"
+#~ msgstr "एमपीईजी-पीएस"
 
-#: modules/gui/qt4/ui/profiles.h:708
-msgid "F&LV"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:709
 #, fuzzy
-msgid "&MPEG-TS"
-msgstr "एमपीईजी-टीएस"
+#~ msgid "&MPEG-TS"
+#~ msgstr "एमपीईजी-टीएस"
 
-#: modules/gui/qt4/ui/profiles.h:710
-msgid "RAW"
-msgstr "आरएडब्ल्यू"
+#~ msgid "RAW"
+#~ msgstr "आरएडब्ल्यू"
 
-#: modules/gui/qt4/ui/profiles.h:711
-msgid "WAV"
-msgstr "डब्ल्यूएव्ही"
+#~ msgid "WAV"
+#~ msgstr "डब्ल्यूएव्ही"
 
-#: modules/gui/qt4/ui/profiles.h:712
-msgid "Webm"
-msgstr "वेबएम"
+#~ msgid "Webm"
+#~ msgstr "वेबएम"
 
-#: modules/gui/qt4/ui/profiles.h:713
 #, fuzzy
-msgid "MPEG &1"
-msgstr "एमपीईजी१"
+#~ msgid "MPEG &1"
+#~ msgstr "एमपीईजी१"
 
-#: modules/gui/qt4/ui/profiles.h:714
-msgid "AVI"
-msgstr "एव्हीआय"
+#~ msgid "AVI"
+#~ msgstr "एव्हीआय"
 
-#: modules/gui/qt4/ui/profiles.h:715
-msgid "ASF/WMV"
-msgstr "एएसएफ/डब्ल्यूएमव्ही"
+#~ msgid "ASF/WMV"
+#~ msgstr "एएसएफ/डब्ल्यूएमव्ही"
 
-#: modules/gui/qt4/ui/profiles.h:716
-msgid "MP&3"
-msgstr ""
+#~ msgid "Features"
+#~ msgstr "वैशिष्ट्ये"
 
-#: modules/gui/qt4/ui/profiles.h:717
-msgid "Features"
-msgstr "वैशिष्ट्ये"
+#~ msgid "Streamable"
+#~ msgstr "परिगमनयोग्य"
 
-#: modules/gui/qt4/ui/profiles.h:719
-msgid "Streamable"
-msgstr "परिगमनयोग्य"
+#~ msgid "Chapters"
+#~ msgstr "प्रकरणे"
 
-#: modules/gui/qt4/ui/profiles.h:720
-msgid "Chapters"
-msgstr "प्रकरणे"
+#~ msgid "Menus"
+#~ msgstr "विषयसूची"
 
-#: modules/gui/qt4/ui/profiles.h:723
-msgid "Menus"
-msgstr "विषयसूची"
-
-#: modules/gui/qt4/ui/profiles.h:730
 #, fuzzy
-msgid "Fra&me Rate"
-msgstr "चौकट दर"
+#~ msgid "Fra&me Rate"
+#~ msgstr "चौकट दर"
 
-#: modules/gui/qt4/ui/profiles.h:731
-msgid "Same as source"
-msgstr "स्रोताप्रमाणेच"
+#~ msgid "Same as source"
+#~ msgstr "स्रोताप्रमाणेच"
 
-#: modules/gui/qt4/ui/profiles.h:733
-msgid " fps"
-msgstr "एफपीएस"
+#~ msgid " fps"
+#~ msgstr "एफपीएस"
 
-#: modules/gui/qt4/ui/profiles.h:734
-msgid "Custom options"
-msgstr "स्वपसंत करण्याचे पर्याय"
+#~ msgid "Custom options"
+#~ msgstr "स्वपसंत करण्याचे पर्याय"
 
-#: modules/gui/qt4/ui/profiles.h:735
 #, fuzzy
-msgid "&Quality"
-msgstr "दर्जा"
+#~ msgid "&Quality"
+#~ msgstr "दर्जा"
 
-#: modules/gui/qt4/ui/profiles.h:736 modules/gui/qt4/ui/profiles.h:737
-msgid "Not Used"
-msgstr "वापरलेले नाही"
+#~ msgid "Not Used"
+#~ msgstr "वापरलेले नाही"
 
-#: modules/gui/qt4/ui/profiles.h:738 modules/gui/qt4/ui/profiles.h:757
-msgid " kb/s"
-msgstr "केबी/एस"
+#~ msgid " kb/s"
+#~ msgstr "केबी/एस"
 
-#: modules/gui/qt4/ui/profiles.h:739 modules/gui/qt4/ui/profiles.h:759
-msgid "Encoding parameters"
-msgstr "निर्देशांक संकेतन"
+#~ msgid "Encoding parameters"
+#~ msgstr "निर्देशांक संकेतन"
 
-#: modules/gui/qt4/ui/profiles.h:742
-msgid "Frame size"
-msgstr "चौकट आकार"
+#~ msgid "Frame size"
+#~ msgstr "चौकट आकार"
 
-#: modules/gui/qt4/ui/profiles.h:745 modules/gui/qt4/ui/profiles.h:748
-msgid "px"
-msgstr "पीएक्स"
+#~ msgid "px"
+#~ msgstr "पीएक्स"
 
-#: modules/gui/qt4/ui/profiles.h:758
 #, fuzzy
-msgid "Sa&mple Rate"
-msgstr "नमुना दर"
+#~ msgid "Sa&mple Rate"
+#~ msgstr "नमुना दर"
 
-#: modules/gui/qt4/ui/profiles.h:766
 #, fuzzy
-msgid "Profile &Name"
-msgstr "प्रारुप नाव"
-
-#: modules/gui/qt4/ui/sout.h:203
-msgid "Set up media sources to stream"
-msgstr "प्रवाहासाठी माध्य स्रोताची रचना करा"
-
-#: modules/gui/qt4/ui/sout.h:205
-msgid "Destination Setup"
-msgstr "इच्छित ठिकाण रचना"
-
-#: modules/gui/qt4/ui/sout.h:206
-msgid "Select destinations to stream to"
-msgstr "च्यावर परिगमन करण्यासाठी इच्छित ठिकाण निवडा"
-
-#: modules/gui/qt4/ui/sout.h:207
-msgid ""
-"Add destinations following the streaming methods you need. Be sure to check "
-"with transcoding that the format is compatible with the method used."
-msgstr ""
-"तुम्हाला हव्या असलेल्या परिगमनाच्या पद्धतीनंतर इच्छित ठिकाण समाविष्ट करा. माध्यम धारिकेचे "
-"एका प्रारुपातून दुस-या प्रारुपात रुपांतर करताना वापरलेल्या पद्धतीशी प्रारुप अनुकूल असेल याची "
-"खात्री करा."
-
-#: modules/gui/qt4/ui/sout.h:208
-msgid "New destination"
-msgstr "नवीन इच्छित ठिकाण"
-
-#: modules/gui/qt4/ui/sout.h:210
-msgid "Display locally"
-msgstr "स्थानिक पातळीवर प्रदर्शित करा"
-
-#: modules/gui/qt4/ui/sout.h:212
-msgid "Transcoding Options"
-msgstr "माध्यम धारिकेचे एका प्रारुपातून दुस-या प्रारुपात रुपांतर करण्याचे पर्याय"
-
-#: modules/gui/qt4/ui/sout.h:213
-msgid "Select and choose transcoding options"
-msgstr "माध्यम धारिकेचे एका प्रारुपातून दुस-या प्रारुपात रुपांतर करण्याचे पर्याय निवडा"
-
-#: modules/gui/qt4/ui/sout.h:214
-msgid "Activate Transcoding"
-msgstr "माध्यम धारिकेचे एका प्रारुपातून दुस-या प्रारुपात रुपांतर सक्रिय करा"
-
-#: modules/gui/qt4/ui/sout.h:215
-msgid "Option Setup"
-msgstr "पर्याय रचना"
-
-#: modules/gui/qt4/ui/sout.h:216
-msgid "Set up any additional options for streaming"
-msgstr "परिगमनासाठी कोणत्याही अतिरिक्त पर्यायांची रचना करा"
-
-#: modules/gui/qt4/ui/sout.h:217
-msgid "Miscellaneous Options"
-msgstr "किरकोळ पर्याय"
-
-#: modules/gui/qt4/ui/sout.h:218
-msgid "Stream all elementary streams"
-msgstr "सर्व प्राथमिक प्रवाहांचा प्रवाह तयार करा"
-
-#: modules/gui/qt4/ui/sout.h:219
-msgid "Generated stream output string"
-msgstr "निर्मित प्रवाह उत्पादन श्रृंखला"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:428
-msgid " %"
-msgstr " %"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:431
-msgid "Output module:"
-msgstr "उत्पादन भाग:"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:435
-msgid "Effects"
-msgstr "परिणाम"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:436
-msgid "Visualization:"
-msgstr "कल्पनाचित्रण:"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:437
-msgid "Enable Time-Stretching audio"
-msgstr "ध्वनी वेळ-ताणणे समर्थ करा"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:438
-msgid "Dolby Surround:"
-msgstr "डॉल्बी वातावरण:"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:439
-msgid "Replay gain mode:"
-msgstr "पुन्हा चालवा प्राप्ती पद्धत:"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:440
-msgid "Headphone surround effect"
-msgstr "हेडफोन वातावरण परिणाम"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:441
-msgid "Normalize volume to:"
-msgstr "ध्वनी सामान्य करा च्यावर:"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:443
-msgid "Preferred audio language:"
-msgstr "प्राधान्य ध्वनी भाषा:"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:444
-msgid "Password:"
-msgstr "पासवर्ड:"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:445
-msgid "Username:"
-msgstr "वापरकर्ता नाव:"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:446
-msgid "Submit played tracks stats to Last.fm"
-msgstr "चालविलेल्या ध्वनिचित्रफितींची सांख्यिकी लास्ट.एफएमवर सादर करा"
-
-#: modules/gui/qt4/ui/sprefs_input.h:346
-msgid "Codecs"
-msgstr "कोडेक्स"
-
-#: modules/gui/qt4/ui/sprefs_input.h:347
-msgid "x264 profile and level selection"
-msgstr "x२६४ स्वरुप व पातळी निवड"
-
-#: modules/gui/qt4/ui/sprefs_input.h:348
-msgid "x264 preset and tuning selection"
-msgstr "x२६४ पूर्वनिर्धारित व समस्वरण निवड"
-
-#: modules/gui/qt4/ui/sprefs_input.h:349
-msgid "Hardware-accelerated decoding"
-msgstr "हार्डवेअर- गतिमान विसंकेतन"
-
-#: modules/gui/qt4/ui/sprefs_input.h:350
-msgid "Skip H.264 in-loop deblocking filter"
-msgstr "एच.२६४ लूपमधील अडथळा हटविणारी चाळणी टाळा "
-
-#: modules/gui/qt4/ui/sprefs_input.h:351
-msgid "Video quality post-processing level"
-msgstr "ध्वनीचित्रफित दर्जा प्रक्रिया-पश्चात पातळी"
-
-#: modules/gui/qt4/ui/sprefs_input.h:352
-msgid "Optical drive"
-msgstr "ऑप्टिकल ड्राईव्ह"
-
-#: modules/gui/qt4/ui/sprefs_input.h:353
-msgid "Default optical device"
-msgstr "पूर्वनिर्धारित ऑप्टिकल साधन"
-
-#: modules/gui/qt4/ui/sprefs_input.h:357
-msgid "Damaged or incomplete AVI file"
-msgstr "खराब झालेल्या किंवा अपूर्ण एव्हीआय धारिका"
-
-#: modules/gui/qt4/ui/sprefs_input.h:360
-msgid "HTTP proxy URL"
-msgstr "एचटीटीपी प्रतिनिधी यूआरएल"
-
-#: modules/gui/qt4/ui/sprefs_input.h:361
-msgid "HTTP (default)"
-msgstr "एचटीटीपी (पूर्वनिर्धारित)"
-
-#: modules/gui/qt4/ui/sprefs_input.h:362
-msgid "RTP over RTSP (TCP)"
-msgstr "आरटीएसपीवर आरटीपी (टीसीपी)"
-
-#: modules/gui/qt4/ui/sprefs_input.h:363
-msgid "Live555 stream transport"
-msgstr "थेट ५५५ प्रवाह वाहतूक"
-
-#: modules/gui/qt4/ui/sprefs_input.h:364
-msgid "Default caching policy"
-msgstr "पूर्वनिर्धारित साठा धोरण"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:518
-msgid "Menus language:"
-msgstr "विषयसूची भाषा:"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:519
-msgid "Look and feel"
-msgstr "स्वरुप व अनुभव"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:520
-msgid "Use custom skin"
-msgstr "स्वपसंत त्वचा वापरा"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:522
-msgid "This is VLC's default interface, with a native look and feel."
-msgstr "हा व्हीएलसीचा पूर्वनिर्धारित आंतरपृष्ठ आहे, ज्याचे स्वरुप व अनुभव स्थानिक आहे.  "
-
-#: modules/gui/qt4/ui/sprefs_interface.h:524
-msgid "Use native style"
-msgstr "स्थानिक शैली वापरा"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:525
-msgid "Resize interface to video size"
-msgstr "आंतरपृष्ठाचा आकार बदलून ध्वनीचित्रफितीच्या आकाराऐवढा करा"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:526
-msgid "Show controls in full screen mode"
-msgstr "संपूर्ण पटल पद्धतीमध्ये नियंत्रणे दाखवा"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:527
-msgid "Pause playback when minimized"
-msgstr "किमान असेल तेव्हा पार्श्वगायन थांबवा"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:528
-msgid "Show media change popup:"
-msgstr "माध्यम बदल पॉपअप दाखवा:"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:529
-msgid "Start in minimal view mode"
-msgstr "किमान दृश्य पद्धतीमध्ये सुरु करा"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:530
-msgid "Force window style:"
-msgstr "विंडो शैली सक्तिची करा:"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:531
-msgid "Integrate video in interface"
-msgstr "ध्वनिचित्रफित आंतरपृष्ठामध्ये एकत्रित करा"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:532
-msgid "Show systray icon"
-msgstr "सिस्ट्रे चित्र दाखवा"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:534
-msgid "Skin resource file:"
-msgstr "त्वचा संसाधन धारिका:"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:536
-msgid "Playlist and Instances"
-msgstr "चालविण्याची यादी व घटक"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:537
-msgid "Allow only one instance"
-msgstr "केवळ एका घटकाला परवानगी द्या"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:540
-msgid "Pause on the last frame of a video"
-msgstr "ध्वनीचित्रफितीच्या शेवटच्या चौकटीवर थांबा"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:544
-msgid "Every "
-msgstr "प्रत्येक"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:547
-msgid "Separate words by | (without space)"
-msgstr "स्वंतंत्र शब्द द्वारे | (जागेशिवाय)"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:549
-msgid "Save recently played items"
-msgstr "अलिकडेच चालविलेले घटक साठवून ठेवा"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:550
-msgid "Activate updates notifier"
-msgstr "सक्रिय सुधारणा अधिसूचक"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:552
-msgid "Operating System Integration"
-msgstr "संचालन यंत्रणा एकत्रीकरण"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:553
-msgid "File extensions association"
-msgstr "धारिका विस्तार संघटना"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:554
-msgid "Set up associations..."
-msgstr "संघटनांची सुरुवात करा..."
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:291
-msgid "Enable On Screen Display (OSD)"
-msgstr "पटलावरील दृश्य प्रदर्शित करा (ओएसडी)"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:292
-msgid "Show media title on video start"
-msgstr "ध्वनीचित्रफितीच्या सुरुवातीला माध्यम शीर्षक दाखवा"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:294
-msgid "Enable subtitles"
-msgstr "अनुवादपट्टी समर्थ करा"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:295
-msgid "Subtitle Language"
-msgstr "अनुवादपट्टी भाषा"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:297
-msgid "Default encoding"
-msgstr "पूर्वनिर्धारित संकेतन"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:298
-msgid "Subtitle effects"
-msgstr "अनुवादपट्टी परिणाम"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:304
-msgid "Add a shadow"
-msgstr "छाया समाविष्ट करा"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:306
-#: modules/gui/qt4/ui/video_effects.h:1406
-#: modules/gui/qt4/ui/video_effects.h:1410
-#: modules/gui/qt4/ui/video_effects.h:1413
-#: modules/gui/qt4/ui/video_effects.h:1414
-#: modules/gui/qt4/ui/video_effects.h:1449
-#: modules/gui/qt4/ui/video_effects.h:1451
-#: modules/gui/qt4/ui/video_effects.h:1461
-#: modules/gui/qt4/ui/video_effects.h:1462
-msgid " px"
-msgstr "पीएक्स"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:307
-msgid "Add a background"
-msgstr "पार्श्वभूमी समाविष्ट करा"
-
-#: modules/gui/qt4/ui/sprefs_video.h:324
-msgid "Accelerated video output (Overlay)"
-msgstr "गतिमान ध्वनीचित्र उत्पादन (आवरण)"
-
-#: modules/gui/qt4/ui/sprefs_video.h:329
-msgid "DirectX"
-msgstr "थेटएक्स"
-
-#: modules/gui/qt4/ui/sprefs_video.h:330
-msgid "Display device"
-msgstr "प्रदर्शन साधन"
-
-#: modules/gui/qt4/ui/sprefs_video.h:331
-msgid "KVA"
-msgstr "केव्हीए"
-
-#: modules/gui/qt4/ui/sprefs_video.h:335
-msgid "Deinterlacing"
-msgstr "विलग करणे"
-
-#: modules/gui/qt4/ui/sprefs_video.h:337
-msgid "Force Aspect Ratio"
-msgstr "सक्तिचा बाजू अनुपात"
-
-#: modules/gui/qt4/ui/sprefs_video.h:342
-msgid "vlc-snap"
-msgstr "व्हीएलसी-झडप"
-
-#: modules/gui/qt4/ui/streampanel.h:169
-msgid "1"
-msgstr "१"
-
-#: modules/gui/qt4/ui/streampanel.h:171
-msgid "Stuff"
-msgstr "भरणे"
-
-#: modules/gui/qt4/ui/streampanel.h:173
-msgid "Edit settings"
-msgstr "मांडण्या संपादित करा"
-
-#: modules/gui/qt4/ui/streampanel.h:174
-msgid "Control"
-msgstr "नियंत्रण"
-
-#: modules/gui/qt4/ui/streampanel.h:175
-msgid "Run manually"
-msgstr "हाताने चालवा"
-
-#: modules/gui/qt4/ui/streampanel.h:176
-msgid "Setup schedule"
-msgstr "मांडणी वेळापत्रक"
-
-#: modules/gui/qt4/ui/streampanel.h:177
-msgid "Run on schedule"
-msgstr "वेळापत्रकानुसार चालवा"
-
-#: modules/gui/qt4/ui/streampanel.h:178
-msgid "Status"
-msgstr "स्थिती"
-
-#: modules/gui/qt4/ui/streampanel.h:179
-msgid "P/P"
-msgstr "पी/पी"
-
-#: modules/gui/qt4/ui/streampanel.h:182
-msgid "Prev"
-msgstr "आधीचे"
-
-#: modules/gui/qt4/ui/streampanel.h:183
-msgid "Add Input"
-msgstr "संगणकाला द्यायची माहिती समाविष्ट करा"
-
-#: modules/gui/qt4/ui/streampanel.h:184
-msgid "Edit Input"
-msgstr "संगणकाला द्यायची माहिती संपादित करा"
-
-#: modules/gui/qt4/ui/streampanel.h:185
-msgid "Clear List"
-msgstr "यादी पुसून टाका"
-
-#: modules/gui/qt4/ui/update.h:148
-msgid "Check for VLC updates"
-msgstr "व्हीएलसी सुधारणा शोधा"
-
-#: modules/gui/qt4/ui/update.h:149
-msgid "Launching an update request..."
-msgstr "सुधारणा विनंती करत आहे..."
-
-#: modules/gui/qt4/ui/update.h:150
-msgid "Do you want to download it?"
-msgstr "तुम्हाला ते डाउनलोड करायचे आहे का?"
-
-#: modules/gui/qt4/ui/video_effects.h:1404
-msgid "Essential"
-msgstr "आवश्यक"
-
-#: modules/gui/qt4/ui/video_effects.h:1418
-#: modules/gui/qt4/ui/video_effects.h:1427
-msgid ">HHHHHH;#"
-msgstr ">एचएचएचएचएचएचएच;#"
-
-#: modules/gui/qt4/ui/video_effects.h:1419
-msgid "Negate colors"
-msgstr "रंग नाहिसे करा"
-
-#: modules/gui/qt4/ui/video_effects.h:1432
-msgid "Colors"
-msgstr "रंग"
-
-#: modules/gui/qt4/ui/video_effects.h:1433
-msgid "Interactive Zoom"
-msgstr "संवादात्मक दृश्य मोठे करणे"
-
-#: modules/gui/qt4/ui/video_effects.h:1439
-msgid "Angle"
-msgstr "कोन"
-
-#: modules/gui/qt4/ui/video_effects.h:1443
-msgid "Black Slot"
-msgstr "काळी फट"
-
-#: modules/gui/qt4/ui/video_effects.h:1447
-#: modules/gui/qt4/ui/video_effects.h:1464
-msgid "..."
-msgstr "..."
-
-#: modules/gui/qt4/ui/video_effects.h:1452
-msgid "full"
-msgstr "संपूर्ण"
-
-#: modules/gui/qt4/ui/video_effects.h:1454
-msgid "none"
-msgstr "शून्य"
-
-#: modules/gui/qt4/ui/video_effects.h:1458
-msgid "Logo erase"
-msgstr "प्रतीक चिन्ह पुसून टाका"
-
-#: modules/gui/qt4/ui/video_effects.h:1463
-msgid "Mask"
-msgstr "मुखवटा"
-
-#: modules/gui/qt4/ui/video_effects.h:1468
-msgid "Output Color Filtermode"
-msgstr "उत्पादन रंग चाळणीपद्धत"
-
-#: modules/gui/qt4/ui/video_effects.h:1469
-msgid "Brightness (%)"
-msgstr "चकाकी  (%)"
-
-#: modules/gui/qt4/ui/video_effects.h:1471
-msgid "Mark analyzed Pixels"
-msgstr "विश्लेषित पिक्सेलवर खूण करा"
-
-#: modules/gui/qt4/ui/video_effects.h:1473
-msgid "Filter threshold (%)"
-msgstr "चाळणी अधःसीमा (%)"
-
-#: modules/gui/qt4/ui/video_effects.h:1476
-msgid "Anaglyph 3D"
-msgstr "दिवर्णी त्रिमितीचित्र"
-
-#: modules/gui/qt4/ui/video_effects.h:1477
-msgid "Mirror"
-msgstr "आरसा"
-
-#: modules/gui/qt4/ui/video_effects.h:1481
-msgid "Motion detect"
-msgstr "गती शोध"
-
-#: modules/gui/qt4/ui/video_effects.h:1482
-msgid "Spatial blur"
-msgstr "अभिक्षेत्रीय अस्पष्टता"
-
-#: modules/gui/qt4/ui/video_effects.h:1486
-msgid "Anti-Flickering"
-msgstr "कंपन प्रतिबंधक"
-
-#: modules/gui/qt4/ui/video_effects.h:1487
-msgid "Soften"
-msgstr "मऊ"
-
-#: modules/gui/qt4/ui/video_effects.h:1488
-msgid "Denoiser"
-msgstr "कल्लोळ प्रतिबंधक"
-
-#: modules/gui/qt4/ui/video_effects.h:1489
-msgid "Spatial luma strength"
-msgstr "अभिक्षेत्रीय ल्यूमा क्षमता"
-
-#: modules/gui/qt4/ui/video_effects.h:1490
-msgid "Temporal luma strength"
-msgstr "कालवाचक ल्यूमा क्षमता"
-
-#: modules/gui/qt4/ui/video_effects.h:1491
-msgid "Spatial chroma strength"
-msgstr "अभिक्षेत्रीय क्रोमा क्षमता"
-
-#: modules/gui/qt4/ui/video_effects.h:1492
-msgid "Temporal chroma strength"
-msgstr "कालवाचक क्रोमा क्षमता"
-
-#: modules/gui/qt4/ui/vlm.h:286
-msgid "VLM configurator"
-msgstr "व्हीएलएम रचनाकर्ता"
-
-#: modules/gui/qt4/ui/vlm.h:287
-msgid "Media Manager Edition"
-msgstr "माध्यम व्यवस्थापक आवृत्ती"
-
-#: modules/gui/qt4/ui/vlm.h:288
-msgid "Name:"
-msgstr "नाव:"
-
-#: modules/gui/qt4/ui/vlm.h:290
-msgid "Input:"
-msgstr "संगणकाला द्यायची माहिती:"
-
-#: modules/gui/qt4/ui/vlm.h:291
-msgid "Select Input"
-msgstr "संगणकाला द्यायची माहिती निवडा"
-
-#: modules/gui/qt4/ui/vlm.h:292
-msgid "Output:"
-msgstr "उत्पादन:"
-
-#: modules/gui/qt4/ui/vlm.h:293
-msgid "Select Output"
-msgstr "उत्पादन निवडा"
-
-#: modules/gui/qt4/ui/vlm.h:294
-msgid "Time Control"
-msgstr "वेळ नियंत्रण"
-
-#: modules/gui/qt4/ui/vlm.h:295
-msgid "Mux Control"
-msgstr "मिश्रण नियंत्रण"
-
-#: modules/gui/qt4/ui/vlm.h:296
-msgid "Muxer:"
-msgstr "मिश्रक:"
-
-#: modules/gui/qt4/ui/vlm.h:297
-msgid "AAAA; "
-msgstr "एएएए; "
-
-#: modules/gui/qt4/ui/vlm.h:302
-msgid "Media Manager List"
-msgstr "माध्यम व्यवस्थापक यादी"
+#~ msgid "Profile &Name"
+#~ msgstr "प्रारुप नाव"
+
+#~ msgid "Set up media sources to stream"
+#~ msgstr "प्रवाहासाठी माध्य स्रोताची रचना करा"
+
+#~ msgid "Destination Setup"
+#~ msgstr "इच्छित ठिकाण रचना"
+
+#~ msgid "Select destinations to stream to"
+#~ msgstr "च्यावर परिगमन करण्यासाठी इच्छित ठिकाण निवडा"
+
+#~ msgid ""
+#~ "Add destinations following the streaming methods you need. Be sure to "
+#~ "check with transcoding that the format is compatible with the method used."
+#~ msgstr ""
+#~ "तुम्हाला हव्या असलेल्या परिगमनाच्या पद्धतीनंतर इच्छित ठिकाण समाविष्ट करा. माध्यम "
+#~ "धारिकेचे एका प्रारुपातून दुस-या प्रारुपात रुपांतर करताना वापरलेल्या पद्धतीशी प्रारुप "
+#~ "अनुकूल असेल याची खात्री करा."
+
+#~ msgid "New destination"
+#~ msgstr "नवीन इच्छित ठिकाण"
+
+#~ msgid "Display locally"
+#~ msgstr "स्थानिक पातळीवर प्रदर्शित करा"
+
+#~ msgid "Transcoding Options"
+#~ msgstr "माध्यम धारिकेचे एका प्रारुपातून दुस-या प्रारुपात रुपांतर करण्याचे पर्याय"
+
+#~ msgid "Select and choose transcoding options"
+#~ msgstr "माध्यम धारिकेचे एका प्रारुपातून दुस-या प्रारुपात रुपांतर करण्याचे पर्याय निवडा"
+
+#~ msgid "Activate Transcoding"
+#~ msgstr "माध्यम धारिकेचे एका प्रारुपातून दुस-या प्रारुपात रुपांतर सक्रिय करा"
+
+#~ msgid "Option Setup"
+#~ msgstr "पर्याय रचना"
+
+#~ msgid "Set up any additional options for streaming"
+#~ msgstr "परिगमनासाठी कोणत्याही अतिरिक्त पर्यायांची रचना करा"
+
+#~ msgid "Miscellaneous Options"
+#~ msgstr "किरकोळ पर्याय"
+
+#~ msgid "Stream all elementary streams"
+#~ msgstr "सर्व प्राथमिक प्रवाहांचा प्रवाह तयार करा"
+
+#~ msgid "Generated stream output string"
+#~ msgstr "निर्मित प्रवाह उत्पादन श्रृंखला"
+
+#~ msgid " %"
+#~ msgstr " %"
+
+#~ msgid "Output module:"
+#~ msgstr "उत्पादन भाग:"
+
+#~ msgid "Effects"
+#~ msgstr "परिणाम"
+
+#~ msgid "Visualization:"
+#~ msgstr "कल्पनाचित्रण:"
+
+#~ msgid "Enable Time-Stretching audio"
+#~ msgstr "ध्वनी वेळ-ताणणे समर्थ करा"
+
+#~ msgid "Dolby Surround:"
+#~ msgstr "डॉल्बी वातावरण:"
+
+#~ msgid "Replay gain mode:"
+#~ msgstr "पुन्हा चालवा प्राप्ती पद्धत:"
+
+#~ msgid "Headphone surround effect"
+#~ msgstr "हेडफोन वातावरण परिणाम"
+
+#~ msgid "Normalize volume to:"
+#~ msgstr "ध्वनी सामान्य करा च्यावर:"
+
+#~ msgid "Preferred audio language:"
+#~ msgstr "प्राधान्य ध्वनी भाषा:"
+
+#~ msgid "Password:"
+#~ msgstr "पासवर्ड:"
+
+#~ msgid "Username:"
+#~ msgstr "वापरकर्ता नाव:"
+
+#~ msgid "Submit played tracks stats to Last.fm"
+#~ msgstr "चालविलेल्या ध्वनिचित्रफितींची सांख्यिकी लास्ट.एफएमवर सादर करा"
+
+#~ msgid "Codecs"
+#~ msgstr "कोडेक्स"
+
+#~ msgid "x264 profile and level selection"
+#~ msgstr "x२६४ स्वरुप व पातळी निवड"
+
+#~ msgid "x264 preset and tuning selection"
+#~ msgstr "x२६४ पूर्वनिर्धारित व समस्वरण निवड"
+
+#~ msgid "Hardware-accelerated decoding"
+#~ msgstr "हार्डवेअर- गतिमान विसंकेतन"
+
+#~ msgid "Skip H.264 in-loop deblocking filter"
+#~ msgstr "एच.२६४ लूपमधील अडथळा हटविणारी चाळणी टाळा "
+
+#~ msgid "Video quality post-processing level"
+#~ msgstr "ध्वनीचित्रफित दर्जा प्रक्रिया-पश्चात पातळी"
+
+#~ msgid "Optical drive"
+#~ msgstr "ऑप्टिकल ड्राईव्ह"
+
+#~ msgid "Default optical device"
+#~ msgstr "पूर्वनिर्धारित ऑप्टिकल साधन"
+
+#~ msgid "Damaged or incomplete AVI file"
+#~ msgstr "खराब झालेल्या किंवा अपूर्ण एव्हीआय धारिका"
+
+#~ msgid "HTTP proxy URL"
+#~ msgstr "एचटीटीपी प्रतिनिधी यूआरएल"
+
+#~ msgid "HTTP (default)"
+#~ msgstr "एचटीटीपी (पूर्वनिर्धारित)"
+
+#~ msgid "RTP over RTSP (TCP)"
+#~ msgstr "आरटीएसपीवर आरटीपी (टीसीपी)"
+
+#~ msgid "Live555 stream transport"
+#~ msgstr "थेट ५५५ प्रवाह वाहतूक"
+
+#~ msgid "Default caching policy"
+#~ msgstr "पूर्वनिर्धारित साठा धोरण"
+
+#~ msgid "Menus language:"
+#~ msgstr "विषयसूची भाषा:"
+
+#~ msgid "Look and feel"
+#~ msgstr "स्वरुप व अनुभव"
+
+#~ msgid "Use custom skin"
+#~ msgstr "स्वपसंत त्वचा वापरा"
+
+#~ msgid "This is VLC's default interface, with a native look and feel."
+#~ msgstr "हा व्हीएलसीचा पूर्वनिर्धारित आंतरपृष्ठ आहे, ज्याचे स्वरुप व अनुभव स्थानिक आहे.  "
+
+#~ msgid "Use native style"
+#~ msgstr "स्थानिक शैली वापरा"
+
+#~ msgid "Resize interface to video size"
+#~ msgstr "आंतरपृष्ठाचा आकार बदलून ध्वनीचित्रफितीच्या आकाराऐवढा करा"
+
+#~ msgid "Show controls in full screen mode"
+#~ msgstr "संपूर्ण पटल पद्धतीमध्ये नियंत्रणे दाखवा"
+
+#~ msgid "Pause playback when minimized"
+#~ msgstr "किमान असेल तेव्हा पार्श्वगायन थांबवा"
+
+#~ msgid "Show media change popup:"
+#~ msgstr "माध्यम बदल पॉपअप दाखवा:"
+
+#~ msgid "Start in minimal view mode"
+#~ msgstr "किमान दृश्य पद्धतीमध्ये सुरु करा"
+
+#~ msgid "Force window style:"
+#~ msgstr "विंडो शैली सक्तिची करा:"
+
+#~ msgid "Integrate video in interface"
+#~ msgstr "ध्वनिचित्रफित आंतरपृष्ठामध्ये एकत्रित करा"
+
+#~ msgid "Show systray icon"
+#~ msgstr "सिस्ट्रे चित्र दाखवा"
+
+#~ msgid "Skin resource file:"
+#~ msgstr "त्वचा संसाधन धारिका:"
+
+#~ msgid "Playlist and Instances"
+#~ msgstr "चालविण्याची यादी व घटक"
+
+#~ msgid "Allow only one instance"
+#~ msgstr "केवळ एका घटकाला परवानगी द्या"
+
+#~ msgid "Pause on the last frame of a video"
+#~ msgstr "ध्वनीचित्रफितीच्या शेवटच्या चौकटीवर थांबा"
+
+#~ msgid "Every "
+#~ msgstr "प्रत्येक"
+
+#~ msgid "Separate words by | (without space)"
+#~ msgstr "स्वंतंत्र शब्द द्वारे | (जागेशिवाय)"
+
+#~ msgid "Save recently played items"
+#~ msgstr "अलिकडेच चालविलेले घटक साठवून ठेवा"
+
+#~ msgid "Activate updates notifier"
+#~ msgstr "सक्रिय सुधारणा अधिसूचक"
+
+#~ msgid "Operating System Integration"
+#~ msgstr "संचालन यंत्रणा एकत्रीकरण"
+
+#~ msgid "File extensions association"
+#~ msgstr "धारिका विस्तार संघटना"
+
+#~ msgid "Set up associations..."
+#~ msgstr "संघटनांची सुरुवात करा..."
+
+#~ msgid "Enable On Screen Display (OSD)"
+#~ msgstr "पटलावरील दृश्य प्रदर्शित करा (ओएसडी)"
+
+#~ msgid "Show media title on video start"
+#~ msgstr "ध्वनीचित्रफितीच्या सुरुवातीला माध्यम शीर्षक दाखवा"
+
+#~ msgid "Enable subtitles"
+#~ msgstr "अनुवादपट्टी समर्थ करा"
+
+#~ msgid "Subtitle Language"
+#~ msgstr "अनुवादपट्टी भाषा"
+
+#~ msgid "Default encoding"
+#~ msgstr "पूर्वनिर्धारित संकेतन"
+
+#~ msgid "Subtitle effects"
+#~ msgstr "अनुवादपट्टी परिणाम"
+
+#~ msgid "Add a shadow"
+#~ msgstr "छाया समाविष्ट करा"
+
+#~ msgid " px"
+#~ msgstr "पीएक्स"
+
+#~ msgid "Add a background"
+#~ msgstr "पार्श्वभूमी समाविष्ट करा"
+
+#~ msgid "Accelerated video output (Overlay)"
+#~ msgstr "गतिमान ध्वनीचित्र उत्पादन (आवरण)"
+
+#~ msgid "DirectX"
+#~ msgstr "थेटएक्स"
+
+#~ msgid "Display device"
+#~ msgstr "प्रदर्शन साधन"
+
+#~ msgid "KVA"
+#~ msgstr "केव्हीए"
+
+#~ msgid "Deinterlacing"
+#~ msgstr "विलग करणे"
+
+#~ msgid "Force Aspect Ratio"
+#~ msgstr "सक्तिचा बाजू अनुपात"
+
+#~ msgid "vlc-snap"
+#~ msgstr "व्हीएलसी-झडप"
+
+#~ msgid "1"
+#~ msgstr "१"
+
+#~ msgid "Stuff"
+#~ msgstr "भरणे"
+
+#~ msgid "Edit settings"
+#~ msgstr "मांडण्या संपादित करा"
+
+#~ msgid "Control"
+#~ msgstr "नियंत्रण"
+
+#~ msgid "Run manually"
+#~ msgstr "हाताने चालवा"
+
+#~ msgid "Setup schedule"
+#~ msgstr "मांडणी वेळापत्रक"
+
+#~ msgid "Run on schedule"
+#~ msgstr "वेळापत्रकानुसार चालवा"
+
+#~ msgid "Status"
+#~ msgstr "स्थिती"
+
+#~ msgid "P/P"
+#~ msgstr "पी/पी"
+
+#~ msgid "Prev"
+#~ msgstr "आधीचे"
+
+#~ msgid "Add Input"
+#~ msgstr "संगणकाला द्यायची माहिती समाविष्ट करा"
+
+#~ msgid "Edit Input"
+#~ msgstr "संगणकाला द्यायची माहिती संपादित करा"
+
+#~ msgid "Clear List"
+#~ msgstr "यादी पुसून टाका"
+
+#~ msgid "Check for VLC updates"
+#~ msgstr "व्हीएलसी सुधारणा शोधा"
+
+#~ msgid "Launching an update request..."
+#~ msgstr "सुधारणा विनंती करत आहे..."
+
+#~ msgid "Do you want to download it?"
+#~ msgstr "तुम्हाला ते डाउनलोड करायचे आहे का?"
+
+#~ msgid "Essential"
+#~ msgstr "आवश्यक"
+
+#~ msgid ">HHHHHH;#"
+#~ msgstr ">एचएचएचएचएचएचएच;#"
+
+#~ msgid "Negate colors"
+#~ msgstr "रंग नाहिसे करा"
+
+#~ msgid "Colors"
+#~ msgstr "रंग"
+
+#~ msgid "Interactive Zoom"
+#~ msgstr "संवादात्मक दृश्य मोठे करणे"
+
+#~ msgid "Angle"
+#~ msgstr "कोन"
+
+#~ msgid "Black Slot"
+#~ msgstr "काळी फट"
+
+#~ msgid "..."
+#~ msgstr "..."
+
+#~ msgid "full"
+#~ msgstr "संपूर्ण"
+
+#~ msgid "none"
+#~ msgstr "शून्य"
+
+#~ msgid "Logo erase"
+#~ msgstr "प्रतीक चिन्ह पुसून टाका"
+
+#~ msgid "Mask"
+#~ msgstr "मुखवटा"
+
+#~ msgid "Output Color Filtermode"
+#~ msgstr "उत्पादन रंग चाळणीपद्धत"
+
+#~ msgid "Brightness (%)"
+#~ msgstr "चकाकी  (%)"
+
+#~ msgid "Mark analyzed Pixels"
+#~ msgstr "विश्लेषित पिक्सेलवर खूण करा"
+
+#~ msgid "Filter threshold (%)"
+#~ msgstr "चाळणी अधःसीमा (%)"
+
+#~ msgid "Anaglyph 3D"
+#~ msgstr "दिवर्णी त्रिमितीचित्र"
+
+#~ msgid "Mirror"
+#~ msgstr "आरसा"
+
+#~ msgid "Motion detect"
+#~ msgstr "गती शोध"
+
+#~ msgid "Spatial blur"
+#~ msgstr "अभिक्षेत्रीय अस्पष्टता"
+
+#~ msgid "Anti-Flickering"
+#~ msgstr "कंपन प्रतिबंधक"
+
+#~ msgid "Soften"
+#~ msgstr "मऊ"
+
+#~ msgid "Denoiser"
+#~ msgstr "कल्लोळ प्रतिबंधक"
+
+#~ msgid "Spatial luma strength"
+#~ msgstr "अभिक्षेत्रीय ल्यूमा क्षमता"
+
+#~ msgid "Temporal luma strength"
+#~ msgstr "कालवाचक ल्यूमा क्षमता"
+
+#~ msgid "Spatial chroma strength"
+#~ msgstr "अभिक्षेत्रीय क्रोमा क्षमता"
+
+#~ msgid "Temporal chroma strength"
+#~ msgstr "कालवाचक क्रोमा क्षमता"
+
+#~ msgid "VLM configurator"
+#~ msgstr "व्हीएलएम रचनाकर्ता"
+
+#~ msgid "Media Manager Edition"
+#~ msgstr "माध्यम व्यवस्थापक आवृत्ती"
+
+#~ msgid "Name:"
+#~ msgstr "नाव:"
+
+#~ msgid "Input:"
+#~ msgstr "संगणकाला द्यायची माहिती:"
+
+#~ msgid "Select Input"
+#~ msgstr "संगणकाला द्यायची माहिती निवडा"
+
+#~ msgid "Output:"
+#~ msgstr "उत्पादन:"
+
+#~ msgid "Select Output"
+#~ msgstr "उत्पादन निवडा"
+
+#~ msgid "Time Control"
+#~ msgstr "वेळ नियंत्रण"
+
+#~ msgid "Mux Control"
+#~ msgstr "मिश्रण नियंत्रण"
+
+#~ msgid "Muxer:"
+#~ msgstr "मिश्रक:"
+
+#~ msgid "AAAA; "
+#~ msgstr "एएएए; "
+
+#~ msgid "Media Manager List"
+#~ msgstr "माध्यम व्यवस्थापक यादी"
 
 #~ msgid "MKV"
 #~ msgstr "एमकेएम"

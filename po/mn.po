@@ -1,17 +1,17 @@
 # Mongolian translation
-# Copyright (C) 2014 VideoLAN
+# Copyright (C) 2017 VideoLAN
 # This file is distributed under the same license as the VLC package.
 #
 # Translators:
-# Bayarsaikhan Enkhtaivan <ebayaraa@gmail.com>, 2008-2009
+# Bayarsaikhan Enkhtaivan <ebayaraa@gmail.com>, 2008-2009,2017
 msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-05-24 15:01+0200\n"
-"PO-Revision-Date: 2013-12-08 08:16+0000\n"
+"POT-Creation-Date: 2017-11-19 02:13+0000\n"
+"PO-Revision-Date: 2017-09-23 19:54+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: Mongolian (Mongolia) (http://www.transifex.com/projects/p/vlc-"
+"Language-Team: Mongolian (Mongolia) (http://www.transifex.com/yaron/vlc-"
 "trans/language/mn_MN/)\n"
 "Language: mn\n"
 "MIME-Version: 1.0\n"
@@ -84,9 +84,8 @@ msgstr "Халуунтовч тохируулга"
 #: modules/services_discovery/mediadirs.c:76 modules/stream_out/es.c:93
 #: modules/stream_out/transcode/transcode.c:183
 #: share/lua/http/dialogs/create_stream.html:150
-#: modules/gui/qt4/ui/profiles.h:721 modules/gui/qt4/ui/profiles.h:752
 msgid "Audio"
-msgstr "Аудио"
+msgstr "Дуу"
 
 #: include/vlc_config_cat.h:54
 msgid "Audio settings"
@@ -97,7 +96,6 @@ msgid "General audio settings"
 msgstr "Ерөнхий дууны тохиргоо"
 
 #: include/vlc_config_cat.h:58 include/vlc_config_cat.h:79
-#: modules/gui/qt4/ui/profiles.h:750 modules/gui/qt4/ui/profiles.h:760
 msgid "Filters"
 msgstr "Шүүлтрүүд"
 
@@ -144,8 +142,6 @@ msgstr "Дууны бусад тохируулга, модулиуд."
 #: modules/services_discovery/mediadirs.c:69 modules/stream_out/es.c:101
 #: modules/stream_out/transcode/transcode.c:154
 #: share/lua/http/dialogs/create_stream.html:147
-#: modules/gui/qt4/ui/profiles.h:722 modules/gui/qt4/ui/profiles.h:726
-#: modules/gui/qt4/ui/sprefs_video.h:334
 msgid "Video"
 msgstr "Видео"
 
@@ -158,9 +154,8 @@ msgid "General video settings"
 msgstr "Ерөнхий видео тохируулга"
 
 #: include/vlc_config_cat.h:77
-#, fuzzy
 msgid "General settings for video output modules."
-msgstr "Дуу гаргах модулиудын ерөнхий тохиргоо."
+msgstr "Дүрс гаргах модулиудын ерөнхий тохиргоо."
 
 #: include/vlc_config_cat.h:80
 msgid "Video filters are used to process the video stream."
@@ -168,7 +163,7 @@ msgstr "Видео шүүлтүүр нь видео урсгалын үед хэ
 
 #: include/vlc_config_cat.h:82
 msgid "Subtitles / OSD"
-msgstr ""
+msgstr "Дэдбичвэр / OSD"
 
 #: include/vlc_config_cat.h:83
 msgid ""
@@ -221,11 +216,11 @@ msgstr "Видео кодчилол"
 
 #: include/vlc_config_cat.h:110
 msgid "Settings for the video, images or video+audio decoders and encoders."
-msgstr ""
+msgstr "Дүрс, зураг эсвэл дүрс+дууны кодчилол болон код тайлах тохирхигоонууд."
 
 #: include/vlc_config_cat.h:112
 msgid "Audio codecs"
-msgstr "Аудио кодчилол"
+msgstr "Дууны кодчилол"
 
 #: include/vlc_config_cat.h:113
 msgid "Settings for the audio-only decoders and encoders."
@@ -233,7 +228,7 @@ msgstr "Зөвхөн аудионы кодчилол болон код тайл�
 
 #: include/vlc_config_cat.h:115
 msgid "Subtitle codecs"
-msgstr ""
+msgstr "Дэдбичвэрийн кодчилол"
 
 #: include/vlc_config_cat.h:116
 msgid "Settings for subtitle, teletext and CC decoders and encoders."
@@ -295,7 +290,7 @@ msgstr ""
 
 #: include/vlc_config_cat.h:148
 msgid "Packetizers"
-msgstr ""
+msgstr "Багцлагчууд"
 
 #: include/vlc_config_cat.h:150
 msgid ""
@@ -356,7 +351,6 @@ msgid ""
 msgstr ""
 
 #: include/vlc_config_cat.h:178 src/libvlc-module.c:1790
-#: modules/gui/qt4/ui/video_effects.h:1495
 msgid "Advanced"
 msgstr "Өргөтгөсөн"
 
@@ -401,7 +395,7 @@ msgstr "Хавтас сонгох"
 
 #: include/vlc_intf_strings.h:51
 msgid "Select Folder"
-msgstr ""
+msgstr "Хавтас сонгох"
 
 #: include/vlc_intf_strings.h:55
 msgid "Media &Information"
@@ -421,7 +415,7 @@ msgstr "Тодорхойлсон цаг руу очих..."
 
 #: include/vlc_intf_strings.h:59
 msgid "Custom &Bookmarks"
-msgstr ""
+msgstr "Тусгай &Хавчуургууд"
 
 #: include/vlc_intf_strings.h:60
 msgid "&VLM Configuration"
@@ -437,13 +431,13 @@ msgstr "Тухай"
 #: modules/gui/macosx/MainMenu.m:1308 modules/gui/macosx/MainMenu.m:1309
 #: modules/gui/macosx/MainMenu.m:1310 modules/gui/macosx/playlist.m:583
 #: modules/gui/qt4/components/controller.hpp:115
-#: modules/gui/qt4/dialogs/vlm.cpp:546 modules/gui/qt4/ui/open.h:243
+#: modules/gui/qt4/dialogs/vlm.cpp:546
 msgid "Play"
 msgstr "Тоглох"
 
 #: include/vlc_intf_strings.h:66
 msgid "Remove Selected"
-msgstr ""
+msgstr "Сонгосныг хасах"
 
 #: include/vlc_intf_strings.h:67
 msgid "Information..."
@@ -451,29 +445,27 @@ msgstr "Мэдээлэл"
 
 #: include/vlc_intf_strings.h:68
 msgid "Create Directory..."
-msgstr ""
+msgstr "Хавтас үүсгэх..."
 
 #: include/vlc_intf_strings.h:69
 msgid "Create Folder..."
-msgstr ""
+msgstr "Хавтас үүсгэх..."
 
 #: include/vlc_intf_strings.h:70
-#, fuzzy
 msgid "Rename Directory..."
-msgstr "Ха&втас нээх..."
+msgstr "Хавтсын нэр өөрчлөх..."
 
 #: include/vlc_intf_strings.h:71
-#, fuzzy
 msgid "Rename Folder..."
-msgstr "Ха&втас нээх..."
+msgstr "Хавстын нэр өөрчлөх..."
 
 #: include/vlc_intf_strings.h:72
 msgid "Show Containing Directory..."
-msgstr ""
+msgstr "Агуулж буй хавтсыг харах..."
 
 #: include/vlc_intf_strings.h:73
 msgid "Show Containing Folder..."
-msgstr ""
+msgstr "Агуулж буй хавтсыг харах..."
 
 #: include/vlc_intf_strings.h:74
 msgid "Stream..."
@@ -510,15 +502,15 @@ msgstr "Тоглохжагсаалтад нэмэх"
 
 #: include/vlc_intf_strings.h:85
 msgid "Add File..."
-msgstr ""
+msgstr "Файл нэмэх..."
 
 #: include/vlc_intf_strings.h:86
 msgid "Add Directory..."
-msgstr ""
+msgstr "Хавтас нэмэх"
 
 #: include/vlc_intf_strings.h:87
 msgid "Add Folder..."
-msgstr ""
+msgstr "Хавтас нэмэх..."
 
 #: include/vlc_intf_strings.h:89
 msgid "Save Playlist to &File..."
@@ -530,7 +522,6 @@ msgid "Search"
 msgstr "Хайх"
 
 #: include/vlc_intf_strings.h:99 modules/gui/macosx/VideoEffects.m:157
-#: modules/gui/qt4/ui/video_effects.h:1479
 msgid "Waves"
 msgstr "Долгион"
 
@@ -562,10 +553,36 @@ msgid ""
 "code. You can also give funds and material to help us. And of course, you "
 "can <b>promote</b> VLC media player.</p></body></html>"
 msgstr ""
+"<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; "
+"charset=utf-8\" /></head><body><h2>VLC дамжуулга тоглуулагчийн Тусламжийн "
+"хэсэгт тавтай морил</h2><h3>Баримтжуулалт</h3><p>VLC -ийн бичиг баримтыг "
+"VideoLAN-ын <a href=\"http://wiki.videolan.org\">нэвтэрхий толь</a> "
+"вэбсайтаас олж болно.</p><p>Хэрэв та VLC дамжуулга тоглуулагчид шинэ хүн "
+"бол, <br><a href=\"http://wiki.videolan.org/Documentation:VLC_for_dummies"
+"\"><em>VLC дамжуулга тоглуулагчийн танилцуулга</em></a>-ыг уншина уу.</"
+"p><p>You will find some information on how to use the player in the <br>\"<a "
+"href=\"http://wiki.videolan.org/Documentation:Play_HowTo\"><em>How to play "
+"files with VLC media player</em></a>\" document.</p><p>For all the saving, "
+"converting, transcoding, encoding, muxing and streaming tasks, you should "
+"find useful information in the <a href=\"http://wiki.videolan.org/"
+"Documentation:Streaming_HowTo\">Streaming Documentation</a>.</p><p>If you "
+"are unsure about terminology, please consult the <a href=\"http://wiki."
+"videolan.org/Knowledge_Base\">knowledge base</a>.</p><p>To understand the "
+"main keyboard shortcuts, read the <a href=\"http://wiki.videolan.org/Hotkeys"
+"\">shortcuts</a> page.</p><h3>Help</h3><p>Before asking any question, please "
+"refer yourself to the <a href=\"http://www.videolan.org/support/faq.html"
+"\">FAQ</a>.</p><p>You might then get (and give) help on the <a href=\"http://"
+"forum.videolan.org\">Forums</a>, the <a href=\"http://www.videolan.org/vlc/"
+"lists.html\">mailing-lists</a> or our IRC channel (<em>#videolan</em> on irc."
+"freenode.net).</p><h3>Contribute to the project</h3><p>You can help the "
+"VideoLAN project giving some of your time to help the community, to design "
+"skins, to translate the documentation, to test and to code. You can also "
+"give funds and material to help us. And of course, you can <b>promote</b> "
+"VLC media player.</p></body></html>"
 
 #: src/audio_output/filters.c:247
 msgid "Audio filtering failed"
-msgstr "Аудио шүүлтүүр бүтэлгүйтэв"
+msgstr "Дууны шүүлтүүр бүтэлгүйтэв"
 
 #: src/audio_output/filters.c:248
 #, c-format
@@ -605,7 +622,7 @@ msgstr ""
 #: src/audio_output/output.c:387 modules/gui/macosx/MainMenu.m:429
 #: modules/gui/macosx/MainMenu.m:430
 msgid "Stereo audio mode"
-msgstr ""
+msgstr "Стерео дууны горим"
 
 #: src/audio_output/output.c:422 src/libvlc-module.c:187
 msgid "Dolby Surround"
@@ -627,9 +644,7 @@ msgstr "Стерео"
 #: modules/gui/macosx/VideoEffects.m:167 modules/gui/macosx/VideoEffects.m:189
 #: modules/video_filter/audiobargraph_v.c:64 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
-#: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1407
-#: modules/gui/qt4/ui/video_effects.h:1450
-#: modules/gui/qt4/ui/video_effects.h:1460
+#: modules/video_filter/rss.c:173
 msgid "Left"
 msgstr "Зүүн"
 
@@ -642,7 +657,7 @@ msgstr "Зүүн"
 #: modules/gui/macosx/VideoEffects.m:169 modules/gui/macosx/VideoEffects.m:191
 #: modules/video_filter/audiobargraph_v.c:64 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
-#: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1408
+#: modules/video_filter/rss.c:173
 msgid "Right"
 msgstr "Баруун"
 
@@ -749,7 +764,7 @@ msgstr ""
 #: src/config/help.c:666
 #, c-format
 msgid "VLC version %s (%s)\n"
-msgstr ""
+msgstr "VLC хувилбар %s (%s)\n"
 
 #: src/config/help.c:667
 #, c-format
@@ -816,14 +831,12 @@ msgstr ""
 
 #: src/config/keys.c:66 modules/gui/macosx/playlist.m:584
 #: modules/gui/qt4/dialogs/bookmarks.cpp:50
-#: modules/gui/qt4/ui/podcast_configuration.h:104
-#: modules/gui/qt4/ui/streampanel.h:172
 msgid "Delete"
 msgstr "Устгах"
 
 #: src/config/keys.c:67
 msgid "Down"
-msgstr ""
+msgstr "Доош"
 
 #: src/config/keys.c:68 modules/control/rc.c:72
 msgid "End"
@@ -915,7 +928,7 @@ msgstr ""
 
 #: src/config/keys.c:91
 msgid "Media Next Track"
-msgstr ""
+msgstr "Дамжуулгын дараагийн мөр"
 
 #: src/config/keys.c:92
 msgid "Media Play Pause"
@@ -1063,14 +1076,13 @@ msgid "Command+"
 msgstr ""
 
 #: src/darwin/error.c:37
-#, fuzzy
 msgid "Unknown error"
-msgstr "Үл мэдэгдэх комманд байна!"
+msgstr ""
 
 #: src/input/control.c:226
 #, c-format
 msgid "Bookmark %i"
-msgstr ""
+msgstr "Хавчуурга %i"
 
 #: src/input/decoder.c:252
 msgid "packetizer"
@@ -1101,9 +1113,8 @@ msgid "No description for this codec"
 msgstr ""
 
 #: src/input/decoder.c:693
-#, fuzzy
 msgid "Codec not supported"
-msgstr "Видео гаргах модуль"
+msgstr ""
 
 #: src/input/decoder.c:694
 #, c-format
@@ -1111,9 +1122,8 @@ msgid "VLC could not decode the format \"%4.4s\" (%s)"
 msgstr ""
 
 #: src/input/decoder.c:698
-#, fuzzy
 msgid "Unidentified codec"
-msgstr "Видео кодчилол"
+msgstr ""
 
 #: src/input/decoder.c:699
 msgid "VLC could not identify the audio or video codec"
@@ -1123,7 +1133,7 @@ msgstr ""
 #: modules/access/vcdx/access.c:455 modules/access/vcdx/info.c:226
 #: modules/gui/qt4/components/open_panels.cpp:530
 msgid "Track"
-msgstr "Зам"
+msgstr "Мөр"
 
 #: src/input/es_out.c:1135
 #, c-format
@@ -1172,14 +1182,12 @@ msgstr "Жинхэнэ дугаар"
 #: src/input/es_out.c:2911 src/input/es_out.c:2914 modules/access/imem.c:67
 #: modules/gui/macosx/ConvertAndSave.m:177
 #: modules/gui/macosx/ConvertAndSave.m:187 modules/gui/macosx/wizard.m:382
-#: modules/gui/qt4/ui/profiles.h:728 modules/gui/qt4/ui/profiles.h:754
-#: modules/gui/qt4/ui/profiles.h:763
 msgid "Codec"
 msgstr ""
 
 #: src/input/es_out.c:2918 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/MainMenu.m:80 modules/gui/macosx/simple_prefs.m:380
-#: modules/stream_out/setid.c:49 modules/gui/qt4/ui/sprefs_interface.h:517
+#: modules/stream_out/setid.c:49
 msgid "Language"
 msgstr "Хэл"
 
@@ -1190,7 +1198,7 @@ msgid "Description"
 msgstr "Тайлбар"
 
 #: src/input/es_out.c:2930 modules/gui/macosx/ConvertAndSave.m:189
-#: modules/gui/macosx/output.m:167 modules/gui/qt4/ui/profiles.h:756
+#: modules/gui/macosx/output.m:167
 msgid "Channels"
 msgstr "Сувгууд"
 
@@ -1211,8 +1219,7 @@ msgstr ""
 #: src/input/es_out.c:2950 modules/access_output/shout.c:92
 #: modules/demux/playlist/shoutcast.c:335
 #: modules/gui/macosx/ConvertAndSave.m:178
-#: modules/gui/macosx/ConvertAndSave.m:188 modules/gui/qt4/ui/profiles.h:729
-#: modules/gui/qt4/ui/profiles.h:755
+#: modules/gui/macosx/ConvertAndSave.m:188
 msgid "Bitrate"
 msgstr ""
 
@@ -1235,7 +1242,6 @@ msgid "%.2f dB"
 msgstr ""
 
 #: src/input/es_out.c:2974 modules/gui/macosx/ConvertAndSave.m:180
-#: modules/gui/qt4/ui/profiles.h:749
 msgid "Resolution"
 msgstr "Харьцаа"
 
@@ -1281,7 +1287,6 @@ msgstr ""
 #: modules/gui/macosx/playlistinfo.m:73 modules/gui/macosx/wizard.m:345
 #: modules/gui/qt4/components/open_panels.cpp:490
 #: modules/gui/qt4/components/open_panels.cpp:504 modules/mux/asf.c:56
-#: modules/gui/qt4/ui/open_disk.h:309
 msgid "Title"
 msgstr "Нэр"
 
@@ -1321,7 +1326,6 @@ msgid "Setting"
 msgstr "Тохиргоо"
 
 #: src/input/meta.c:65 modules/gui/macosx/open.m:179
-#: modules/gui/qt4/ui/podcast_configuration.h:102
 msgid "URL"
 msgstr "Url"
 
@@ -1347,35 +1351,32 @@ msgid "Track ID"
 msgstr "Мөрийн дугаар"
 
 #: src/input/meta.c:73
-#, fuzzy
 msgid "Number of Tracks"
 msgstr "Мөрийн тоо"
 
 #: src/input/meta.c:74
 msgid "Director"
-msgstr ""
+msgstr "Найруулагч"
 
 #: src/input/meta.c:75
 msgid "Season"
-msgstr ""
+msgstr "Цуврал"
 
 #: src/input/meta.c:76
 msgid "Episode"
-msgstr ""
+msgstr "Үзэгдэл"
 
 #: src/input/meta.c:77
-#, fuzzy
 msgid "Show Name"
-msgstr "Нэр"
+msgstr "Үзүүлбэрийн нэр"
 
 #: src/input/meta.c:78
-#, fuzzy
 msgid "Actors"
-msgstr "Нөлөөлөл"
+msgstr "Жүжигчид"
 
 #: src/input/var.c:158
 msgid "Bookmark"
-msgstr "Тэмдэглэл"
+msgstr "Хавчуурга"
 
 #: src/input/var.c:172 src/libvlc-module.c:568
 msgid "Programs"
@@ -1383,7 +1384,7 @@ msgstr "Програмууд"
 
 #: src/input/var.c:182 modules/gui/macosx/MainMenu.m:420
 #: modules/gui/macosx/MainMenu.m:421 modules/gui/macosx/open.m:170
-#: modules/gui/macosx/open.m:172 modules/gui/qt4/ui/open_disk.h:310
+#: modules/gui/macosx/open.m:172
 msgid "Chapter"
 msgstr "Сэдэв"
 
@@ -1399,11 +1400,11 @@ msgstr "Видео мөр"
 #: src/input/var.c:205 modules/gui/macosx/MainMenu.m:427
 #: modules/gui/macosx/MainMenu.m:428
 msgid "Audio Track"
-msgstr "Аудио мөр"
+msgstr "Дууны мөр"
 
 #: src/input/var.c:210
 msgid "Subtitle Track"
-msgstr ""
+msgstr "Дэдбичвэрийн мөр"
 
 #: src/input/var.c:277
 msgid "Next title"
@@ -1416,7 +1417,7 @@ msgstr "Өмнөх нэр"
 #: src/input/var.c:318
 #, c-format
 msgid "Title %i%s"
-msgstr ""
+msgstr "Гарчиг %i%s"
 
 #: src/input/var.c:344 src/input/var.c:403
 #, c-format
@@ -1451,7 +1452,7 @@ msgstr ""
 
 #: src/interface/interface.c:98
 msgid "Web"
-msgstr ""
+msgstr "Вэб"
 
 #: src/interface/interface.c:101
 msgid "Debug logging"
@@ -1466,6 +1467,8 @@ msgid ""
 "Running vlc with the default interface. Use 'cvlc' to use vlc without "
 "interface."
 msgstr ""
+"VCL анхны харагдах байдлаар ажиллаж байна. Харагдах байдалгүйгээр ашиглахад "
+"'cvlc'-г хэрэглэнэ. "
 
 #. xgettext: Translate "C" to the language code: "fr", "en_GB", "nl", "ru"...
 #: src/libvlc.c:183
@@ -1476,7 +1479,7 @@ msgstr "mn"
 #: src/libvlc-module.c:2542 src/video_output/vout_intf.c:186
 #: modules/gui/macosx/MainMenu.m:480
 msgid "Zoom"
-msgstr ""
+msgstr "Хэмжээ"
 
 #: src/libvlc.h:135 src/libvlc-module.c:1305 src/video_output/vout_intf.c:87
 msgid "1:4 Quarter"
@@ -1602,7 +1605,7 @@ msgid ""
 msgstr ""
 
 #: src/libvlc-module.c:131 modules/gui/macosx/simple_prefs.m:335
-#: modules/stream_out/display.c:40 modules/gui/qt4/ui/sprefs_audio.h:426
+#: modules/stream_out/display.c:40
 msgid "Enable audio"
 msgstr "Дуу нээлттэй"
 
@@ -1663,7 +1666,6 @@ msgid ""
 msgstr ""
 
 #: src/libvlc-module.c:164 modules/gui/macosx/simple_prefs.m:341
-#: modules/gui/qt4/ui/sprefs_audio.h:434
 msgid "Use S/PDIF when available"
 msgstr "Хэрэв боломжтой бол S/PDIF-ийг хэрэглэх"
 
@@ -1691,7 +1693,6 @@ msgstr ""
 #: modules/gui/qt4/components/simple_preferences.cpp:136
 #: modules/gui/qt4/components/sout/profile_selector.cpp:563
 #: modules/video_output/kva.c:62 modules/video_output/xcb/xvideo.c:870
-#: modules/gui/qt4/ui/profiles.h:744 modules/gui/qt4/ui/profiles.h:747
 msgid "Auto"
 msgstr "Авто"
 
@@ -1709,7 +1710,7 @@ msgstr "Унтраах"
 
 #: src/libvlc-module.c:180
 msgid "Stereo audio output mode"
-msgstr ""
+msgstr "Стерео дууны гаргах горим"
 
 #: src/libvlc-module.c:192
 msgid "This adds audio post processing filters, to modify the sound rendering."
@@ -1796,7 +1797,7 @@ msgid ""
 msgstr ""
 
 #: src/libvlc-module.c:247 modules/gui/macosx/simple_prefs.m:422
-#: modules/stream_out/display.c:42 modules/gui/qt4/ui/sprefs_video.h:321
+#: modules/stream_out/display.c:42
 msgid "Enable video"
 msgstr "Видео идэвхтэй"
 
@@ -1889,9 +1890,7 @@ msgstr "Төв"
 #: modules/gui/macosx/VideoEffects.m:171 modules/gui/macosx/VideoEffects.m:193
 #: modules/video_filter/audiobargraph_v.c:64 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
-#: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1405
-#: modules/gui/qt4/ui/video_effects.h:1448
-#: modules/gui/qt4/ui/video_effects.h:1459
+#: modules/video_filter/rss.c:173
 msgid "Top"
 msgstr "Дээд"
 
@@ -1900,7 +1899,7 @@ msgstr "Дээд"
 #: modules/gui/macosx/VideoEffects.m:173 modules/gui/macosx/VideoEffects.m:195
 #: modules/video_filter/audiobargraph_v.c:64 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:128 modules/video_filter/mosaic.c:170
-#: modules/video_filter/rss.c:173 modules/gui/qt4/ui/video_effects.h:1409
+#: modules/video_filter/rss.c:173
 msgid "Bottom"
 msgstr "Доод"
 
@@ -1976,7 +1975,7 @@ msgstr "Видеог бүтэн дэлгэцэнд эхлүүлэх"
 
 #: src/libvlc-module.c:304
 msgid "Overlay video output"
-msgstr ""
+msgstr "Дүрс гаралтыг давхарлах"
 
 #: src/libvlc-module.c:306
 msgid ""
@@ -1985,7 +1984,6 @@ msgid ""
 msgstr ""
 
 #: src/libvlc-module.c:309 src/video_output/vout_intf.c:276
-#: modules/gui/qt4/ui/sprefs_video.h:326
 msgid "Always on top"
 msgstr "Байнга наад талд"
 
@@ -2103,7 +2101,6 @@ msgid ""
 msgstr ""
 
 #: src/libvlc-module.c:372 modules/gui/macosx/simple_prefs.m:424
-#: modules/gui/qt4/ui/sprefs_video.h:327
 msgid "Window decorations"
 msgstr "Цонхны чимэглэлүүд"
 
@@ -2217,7 +2214,7 @@ msgstr "Видео авто хэмжээс"
 
 #: src/libvlc-module.c:436
 msgid "Let the video scale to fit a given window or fullscreen."
-msgstr ""
+msgstr "Дүрсийн хэмжээг цонх эсвэл бүтэн дэлгэцэнд тааруулах"
 
 #: src/libvlc-module.c:438
 msgid "Video scaling factor"
@@ -2413,7 +2410,6 @@ msgstr "Анхдагч"
 #: src/libvlc-module.c:538 modules/gui/macosx/AudioEffects.m:112
 #: modules/gui/macosx/MainWindow.m:1086 modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/extended_panels.cpp:1053
-#: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:289
 msgid "Enable"
 msgstr "Нээлттэй"
 
@@ -2469,7 +2465,7 @@ msgid ""
 "(like DVB streams for example)."
 msgstr ""
 
-#: src/libvlc-module.c:576 modules/gui/qt4/ui/open_disk.h:312
+#: src/libvlc-module.c:576
 msgid "Audio track"
 msgstr "Дууны мөр"
 
@@ -2477,9 +2473,9 @@ msgstr "Дууны мөр"
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr ""
 
-#: src/libvlc-module.c:581 modules/gui/qt4/ui/open_disk.h:313
+#: src/libvlc-module.c:581
 msgid "Subtitle track"
-msgstr ""
+msgstr "Дэд бичвэрийн мөр"
 
 #: src/libvlc-module.c:583
 msgid "Stream number of the subtitle track to use (from 0 to n)."
@@ -2507,9 +2503,8 @@ msgid ""
 msgstr ""
 
 #: src/libvlc-module.c:596
-#, fuzzy
 msgid "Menu language"
-msgstr "Дууны хэл"
+msgstr "Цэсний хэл"
 
 #: src/libvlc-module.c:598
 msgid ""
@@ -2527,7 +2522,7 @@ msgstr ""
 
 #: src/libvlc-module.c:606
 msgid "Subtitle track ID"
-msgstr ""
+msgstr "Бичвэрийн мөрийн №"
 
 #: src/libvlc-module.c:608
 msgid "Stream ID of the subtitle track to use."
@@ -2640,7 +2635,7 @@ msgstr ""
 
 #: src/libvlc-module.c:659
 msgid "Bookmarks list for a stream"
-msgstr ""
+msgstr "Урсгалын хавчуургын жагсаалт"
 
 #: src/libvlc-module.c:661
 msgid ""
@@ -2648,9 +2643,10 @@ msgid ""
 "\"{name=bookmark-name,time=optional-time-offset,bytes=optional-byte-offset},"
 "{...}\""
 msgstr ""
+"\"{name=bookmark-name,time=optional-time-offset,bytes=optional-byte-offset},"
+"{...}\" маягт дахь урсгалын хавчуургын жагсаалтыг гараар өгч болно"
 
 #: src/libvlc-module.c:665 modules/gui/macosx/simple_prefs.m:357
-#: modules/gui/qt4/ui/sprefs_input.h:355
 msgid "Record directory or filename"
 msgstr "Хавтас, файлын нэр бичих"
 
@@ -2706,7 +2702,7 @@ msgid ""
 "section. You can also set many miscellaneous subpictures options."
 msgstr ""
 
-#: src/libvlc-module.c:697 modules/gui/qt4/ui/sprefs_subtitles.h:305
+#: src/libvlc-module.c:697
 msgid "Force subtitle position"
 msgstr "Дэдбичвэрийн байрлалыг албадах"
 
@@ -2727,7 +2723,6 @@ msgstr ""
 #: src/libvlc-module.c:706 src/libvlc-module.c:1621 src/text/iso-639_def.h:145
 #: modules/gui/macosx/simple_prefs.m:411
 #: modules/stream_out/transcode/transcode.c:212
-#: modules/gui/qt4/ui/sprefs_subtitles.h:290
 msgid "On Screen Display"
 msgstr ""
 
@@ -3361,7 +3356,7 @@ msgstr ""
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr ""
 
-#: src/libvlc-module.c:1085 modules/gui/qt4/ui/sprefs_interface.h:538
+#: src/libvlc-module.c:1085
 msgid "Use only one instance when started from file manager"
 msgstr ""
 
@@ -3379,7 +3374,7 @@ msgid ""
 "machine."
 msgstr ""
 
-#: src/libvlc-module.c:1097 modules/gui/qt4/ui/sprefs_interface.h:541
+#: src/libvlc-module.c:1097
 msgid "Enqueue items into playlist in one instance mode"
 msgstr ""
 
@@ -3407,7 +3402,6 @@ msgstr ""
 
 #: src/libvlc-module.c:1116 modules/gui/macosx/simple_prefs.m:391
 #: modules/gui/qt4/dialogs/firstrun.cpp:98
-#: modules/gui/qt4/ui/sprefs_interface.h:551
 msgid "Allow metadata network access"
 msgstr ""
 
@@ -3497,7 +3491,7 @@ msgid ""
 "VLC."
 msgstr ""
 
-#: src/libvlc-module.c:1161 modules/gui/qt4/ui/sprefs_interface.h:539
+#: src/libvlc-module.c:1161
 msgid "Display playlist tree"
 msgstr "Тоглох жагсаалтын мод харуулах"
 
@@ -3511,7 +3505,7 @@ msgstr ""
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr ""
 
-#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1860
+#: src/libvlc-module.c:1183 modules/gui/macosx/intf.m:1864
 msgid "Ignore"
 msgstr "Алгасах"
 
@@ -3538,7 +3532,6 @@ msgstr ""
 #: modules/gui/macosx/MainMenu.m:1616 modules/gui/macosx/MainMenu.m:1626
 #: modules/gui/macosx/simple_prefs.m:423
 #: modules/gui/qt4/components/controller.hpp:116
-#: modules/gui/qt4/ui/sprefs_video.h:323
 msgid "Fullscreen"
 msgstr "Бүтэндэлгэц"
 
@@ -3548,7 +3541,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1191
 msgid "Exit fullscreen"
-msgstr ""
+msgstr "Бүтэндэлгэцээс гарах"
 
 #: src/libvlc-module.c:1192
 msgid "Select the hotkey to use to exit fullscreen state."
@@ -3624,7 +3617,6 @@ msgstr "Удаан (таатай)"
 #: modules/gui/macosx/wizard.m:1559
 #: modules/gui/qt4/components/controller.hpp:120
 #: modules/gui/qt4/dialogs/sout.cpp:93 modules/notify/notify.c:339
-#: modules/gui/qt4/ui/streampanel.h:181
 msgid "Next"
 msgstr "Дараах"
 
@@ -3649,7 +3641,7 @@ msgstr ""
 #: modules/gui/macosx/MainMenu.m:398 modules/gui/macosx/MainMenu.m:504
 #: modules/gui/macosx/MainMenu.m:511 modules/gui/macosx/MainMenu.m:1566
 #: modules/gui/qt4/components/controller.hpp:115
-#: modules/gui/qt4/dialogs/vlm.cpp:552 modules/gui/qt4/ui/streampanel.h:180
+#: modules/gui/qt4/dialogs/vlm.cpp:552
 msgid "Stop"
 msgstr "Зогс"
 
@@ -3660,8 +3652,7 @@ msgstr ""
 #: src/libvlc-module.c:1215 modules/gui/macosx/ControlsBar.m:67
 #: modules/gui/macosx/fspanel.m:448 modules/gui/macosx/VideoEffects.m:163
 #: modules/gui/macosx/VideoEffects.m:185 modules/video_filter/marq.c:150
-#: modules/video_filter/rss.c:200 modules/gui/qt4/ui/sprefs_subtitles.h:293
-#: modules/gui/qt4/ui/video_effects.h:1456
+#: modules/video_filter/rss.c:200
 msgid "Position"
 msgstr "Байрлал"
 
@@ -3782,7 +3773,7 @@ msgstr "Гарах"
 
 #: src/libvlc-module.c:1257
 msgid "Select the hotkey to quit the application."
-msgstr ""
+msgstr "Програмаас гарах халуун товчийг сонгох"
 
 #: src/libvlc-module.c:1258
 msgid "Navigate up"
@@ -3870,7 +3861,7 @@ msgstr "Чангалах"
 
 #: src/libvlc-module.c:1279
 msgid "Select the key to increase audio volume."
-msgstr ""
+msgstr "Дууны хэмжээг чангалах товч сонго."
 
 #: src/libvlc-module.c:1280
 msgid "Volume down"
@@ -3878,7 +3869,7 @@ msgstr "Суллах"
 
 #: src/libvlc-module.c:1281
 msgid "Select the key to decrease audio volume."
-msgstr ""
+msgstr "Дууны хэмжээг суллах товч сонго."
 
 #: src/libvlc-module.c:1282 modules/access/v4l2/v4l2.c:181
 #: modules/gui/macosx/ControlsBar.m:500 modules/gui/macosx/MainMenu.m:426
@@ -3973,47 +3964,47 @@ msgstr ""
 
 #: src/libvlc-module.c:1310
 msgid "Play playlist bookmark 1"
-msgstr ""
+msgstr "Тоглох жагсаалт хавчуурга 1-ийг тоглуулах"
 
 #: src/libvlc-module.c:1311
 msgid "Play playlist bookmark 2"
-msgstr ""
+msgstr "Тоглох жагсаалт хавчуурга 2-ыг тоглуулах"
 
 #: src/libvlc-module.c:1312
 msgid "Play playlist bookmark 3"
-msgstr ""
+msgstr "Тоглох жагсаалт хавчуурга 3-ыг тоглуулах"
 
 #: src/libvlc-module.c:1313
 msgid "Play playlist bookmark 4"
-msgstr ""
+msgstr "Тоглох жагсаалт хавчуурга 4-ийг тоглуулах"
 
 #: src/libvlc-module.c:1314
 msgid "Play playlist bookmark 5"
-msgstr ""
+msgstr "Тоглох жагсаалт хавчуурга 5-ыг тоглуулах"
 
 #: src/libvlc-module.c:1315
 msgid "Play playlist bookmark 6"
-msgstr ""
+msgstr "Тоглох жагсаалт хавчуурга 6-г тоглуулах"
 
 #: src/libvlc-module.c:1316
 msgid "Play playlist bookmark 7"
-msgstr ""
+msgstr "Тоглох жагсаалт хавчуурга 7-г тоглуулах"
 
 #: src/libvlc-module.c:1317
 msgid "Play playlist bookmark 8"
-msgstr ""
+msgstr "Тоглох жагсаалт хавчуурга 8-ыг тоглуулах"
 
 #: src/libvlc-module.c:1318
 msgid "Play playlist bookmark 9"
-msgstr ""
+msgstr "Тоглох жагсаалт хавчуурга 9-ийг тоглуулах"
 
 #: src/libvlc-module.c:1319
 msgid "Play playlist bookmark 10"
-msgstr ""
+msgstr "Тоглох жагсаалт хавчуурга 10-ыг тоглуулах"
 
 #: src/libvlc-module.c:1320
 msgid "Select the key to play this bookmark."
-msgstr ""
+msgstr "Энэ хавчуургыг тоглуулах түлхүүрийг сонгох"
 
 #: src/libvlc-module.c:1321
 msgid "Set playlist bookmark 1"
@@ -4070,43 +4061,43 @@ msgstr ""
 
 #: src/libvlc-module.c:1335
 msgid "Playlist bookmark 1"
-msgstr ""
+msgstr "Тоглох жагсаалт хавчуурга 1"
 
 #: src/libvlc-module.c:1336
 msgid "Playlist bookmark 2"
-msgstr ""
+msgstr "Тоглох жагсаалт хавчуурга 2"
 
 #: src/libvlc-module.c:1337
 msgid "Playlist bookmark 3"
-msgstr ""
+msgstr "Тоглох жагсаалт хавчуурга 3"
 
 #: src/libvlc-module.c:1338
 msgid "Playlist bookmark 4"
-msgstr ""
+msgstr "Тоглох жагсаалт хавчуурга 4"
 
 #: src/libvlc-module.c:1339
 msgid "Playlist bookmark 5"
-msgstr ""
+msgstr "Тоглох жагсаалт хавчуурга 5"
 
 #: src/libvlc-module.c:1340
 msgid "Playlist bookmark 6"
-msgstr ""
+msgstr "Тоглох жагсаалт хавчуурга 6"
 
 #: src/libvlc-module.c:1341
 msgid "Playlist bookmark 7"
-msgstr ""
+msgstr "Тоглох жагсаалт хавчуурга 7"
 
 #: src/libvlc-module.c:1342
 msgid "Playlist bookmark 8"
-msgstr ""
+msgstr "Тоглох жагсаалт хавчуурга 8"
 
 #: src/libvlc-module.c:1343
 msgid "Playlist bookmark 9"
-msgstr ""
+msgstr "Тоглох жагсаалт хавчуурга 9"
 
 #: src/libvlc-module.c:1344
 msgid "Playlist bookmark 10"
-msgstr ""
+msgstr "Тоглох жагсаалт хавчуурга 10"
 
 #: src/libvlc-module.c:1346
 msgid "This allows you to define playlist bookmarks."
@@ -4131,7 +4122,7 @@ msgstr ""
 #: src/libvlc-module.c:1352
 #, fuzzy
 msgid "Toggle subtitles"
-msgstr "DVB Дэд бичвэр"
+msgstr "Дэдбичвэр агуулах"
 
 #: src/libvlc-module.c:1353
 msgid "Toggle subtitle track visibility."
@@ -4207,7 +4198,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1373
 msgid "Boss key"
-msgstr ""
+msgstr "Дарга товч"
 
 #: src/libvlc-module.c:1374
 msgid "Hide the interface and pause playback."
@@ -4223,11 +4214,11 @@ msgstr ""
 
 #: src/libvlc-module.c:1377
 msgid "Take video snapshot"
-msgstr ""
+msgstr "Видео зураг авах"
 
 #: src/libvlc-module.c:1378
 msgid "Takes a video snapshot and writes it to disk."
-msgstr ""
+msgstr "Видеоны зураг аваад, диск рүү бичих"
 
 #: src/libvlc-module.c:1380 modules/gui/macosx/MainMenu.m:399
 #: modules/gui/macosx/MainMenu.m:1570
@@ -4325,8 +4316,6 @@ msgstr "Дэдзургууд"
 #: modules/demux/xiph_metadata.h:62 modules/gui/macosx/ConvertAndSave.m:173
 #: modules/gui/macosx/ConvertAndSave.m:191 modules/gui/macosx/MainMenu.m:459
 #: share/lua/http/dialogs/create_stream.html:153
-#: modules/gui/qt4/ui/profiles.h:718 modules/gui/qt4/ui/profiles.h:762
-#: modules/gui/qt4/ui/profiles.h:765
 msgid "Subtitles"
 msgstr "Дэдбичвэрүүд"
 
@@ -4448,25 +4437,24 @@ msgid "print version information"
 msgstr ""
 
 #: src/libvlc-module.c:2695
-#, fuzzy
 msgid "core program"
-msgstr "үндсэн програм"
+msgstr ""
 
 #: src/misc/update.c:480
 #, c-format
 msgid "%.1f GiB"
-msgstr ""
+msgstr "%.1f ГиБ"
 
 #: src/misc/update.c:482
 #, c-format
 msgid "%.1f MiB"
-msgstr ""
+msgstr "%.1f МиБ"
 
 #: src/misc/update.c:484 modules/gui/macosx/playlistinfo.m:160
 #: modules/gui/macosx/playlistinfo.m:162 modules/gui/macosx/playlistinfo.m:172
 #, c-format
 msgid "%.1f KiB"
-msgstr ""
+msgstr "%.1f КиБ"
 
 #: src/misc/update.c:486
 #, c-format
@@ -4495,7 +4483,7 @@ msgstr ""
 msgid "Downloading ..."
 msgstr "Татаж байна ..."
 
-#: src/misc/update.c:597 src/misc/update.c:724 modules/demux/avi/avi.c:2567
+#: src/misc/update.c:597 src/misc/update.c:724 modules/demux/avi/avi.c:2572
 #: modules/gui/macosx/AudioEffects.m:372 modules/gui/macosx/AudioEffects.m:387
 #: modules/gui/macosx/AudioEffects.m:613 modules/gui/macosx/AudioEffects.m:712
 #: modules/gui/macosx/bookmarks.m:109 modules/gui/macosx/BWQuincyUI.m:80
@@ -4537,7 +4525,7 @@ msgstr ""
 
 #: src/misc/update.c:661 src/misc/update.c:673
 msgid "Invalid signature"
-msgstr "Буруу гарын үсэг"
+msgstr "Хөгжийн буруу түлхүүр"
 
 #: src/misc/update.c:662 src/misc/update.c:674
 #, c-format
@@ -4575,6 +4563,7 @@ msgid ""
 "The new version was successfully downloaded. Do you want to close VLC and "
 "install it now?"
 msgstr ""
+"Шинэ хувилбар амжилттай татагдлаа.  VLC-ээ хаагаад, үүнийг одоо суулгах уу?"
 
 #: src/misc/update.c:724 modules/gui/macosx/AddonManager.m:196
 msgid "Install"
@@ -4957,7 +4946,7 @@ msgstr ""
 
 #: src/text/iso-639_def.h:131
 msgid "Mongolian"
-msgstr ""
+msgstr "Монгол"
 
 #: src/text/iso-639_def.h:132
 msgid "Nauru"
@@ -5261,7 +5250,7 @@ msgstr ""
 
 #: src/video_output/vout_intf.c:220 modules/gui/macosx/MainMenu.m:448
 #: modules/gui/macosx/MainMenu.m:449 modules/gui/macosx/VideoEffects.m:80
-#: modules/video_filter/croppadd.c:86 modules/gui/qt4/ui/video_effects.h:1415
+#: modules/video_filter/croppadd.c:86
 msgid "Crop"
 msgstr "Танах"
 
@@ -5281,55 +5270,55 @@ msgstr ""
 
 #: modules/access/alsa.c:49
 msgid "192000 Hz"
-msgstr ""
+msgstr "192000 Гц"
 
 #: modules/access/alsa.c:49
 msgid "176400 Hz"
-msgstr ""
+msgstr "176400 Гц"
 
 #: modules/access/alsa.c:50
 msgid "96000 Hz"
-msgstr ""
+msgstr "96000 Гц"
 
 #: modules/access/alsa.c:50
 msgid "88200 Hz"
-msgstr ""
+msgstr "88200 Гц"
 
 #: modules/access/alsa.c:50
 msgid "48000 Hz"
-msgstr ""
+msgstr "48000 Гц"
 
 #: modules/access/alsa.c:50
 msgid "44100 Hz"
-msgstr ""
+msgstr "44100 Гц"
 
 #: modules/access/alsa.c:51
 msgid "32000 Hz"
-msgstr ""
+msgstr "32000 Гц"
 
 #: modules/access/alsa.c:51
 msgid "22050 Hz"
-msgstr ""
+msgstr "22050 Гц"
 
 #: modules/access/alsa.c:51
 msgid "24000 Hz"
-msgstr ""
+msgstr "24000 Гц"
 
 #: modules/access/alsa.c:51
 msgid "16000 Hz"
-msgstr ""
+msgstr "16000 Гц"
 
 #: modules/access/alsa.c:52
 msgid "11025 Hz"
-msgstr ""
+msgstr "11025 Гц"
 
 #: modules/access/alsa.c:52
 msgid "8000 Hz"
-msgstr ""
+msgstr "8000 Гц"
 
 #: modules/access/alsa.c:52
 msgid "4000 Hz"
-msgstr ""
+msgstr "4000 Гц"
 
 #: modules/access/alsa.c:56
 msgid "ALSA"
@@ -5356,9 +5345,8 @@ msgid "libavformat AVIO access"
 msgstr ""
 
 #: modules/access/avio.h:44
-#, fuzzy
 msgid "libavformat AVIO access output"
-msgstr "Хандах гаралт"
+msgstr ""
 
 #: modules/access/bd/bd.c:54
 msgid "BD"
@@ -5377,9 +5365,8 @@ msgid "Use Blu-ray menus. If disabled, the movie will start directly"
 msgstr ""
 
 #: modules/access/bluray.c:70
-#, fuzzy
 msgid "Region code"
-msgstr "Аудио кодчилол"
+msgstr "Бүсийн код"
 
 #: modules/access/bluray.c:71
 msgid ""
@@ -5388,7 +5375,6 @@ msgid ""
 msgstr ""
 
 #: modules/access/bluray.c:87 modules/services_discovery/udev.c:597
-#: modules/gui/qt4/ui/open_disk.h:299
 msgid "Blu-ray"
 msgstr ""
 
@@ -5449,16 +5435,14 @@ msgid "Blu-ray error"
 msgstr ""
 
 #: modules/access/bluray.c:1196
-#, fuzzy
 msgid "Top Menu"
-msgstr "Цэс"
+msgstr ""
 
 #: modules/access/bluray.c:1198
 msgid "First Play"
 msgstr ""
 
 #: modules/access/cdda.c:62 modules/gui/macosx/open.m:160
-#: modules/gui/qt4/ui/open_disk.h:300
 msgid "Audio CD"
 msgstr ""
 
@@ -5489,7 +5473,7 @@ msgstr ""
 #: modules/access/cdda.c:477
 #, c-format
 msgid "Audio CD - Track %02i"
-msgstr "Аудио СиДи - Мөр %02i"
+msgstr "Дууны СиДи - Мөр %02i"
 
 #: modules/access/dc1394.c:51
 msgid "DC1394"
@@ -5500,14 +5484,12 @@ msgid "IIDC Digital Camera (FireWire) input"
 msgstr ""
 
 #: modules/access/dcp/dcp.cpp:75
-#, fuzzy
 msgid "DCP"
-msgstr "TCP"
+msgstr ""
 
 #: modules/access/dcp/dcp.cpp:78
-#, fuzzy
 msgid "Digital Cinema Package module"
-msgstr "Нэмэлт харагдах байдлын модуль"
+msgstr ""
 
 #: modules/access/decklink.cpp:46
 msgid "Input card to use"
@@ -5562,7 +5544,7 @@ msgstr ""
 
 #: modules/access/decklink.cpp:73 modules/video_output/decklink.cpp:105
 msgid "Video connection"
-msgstr ""
+msgstr "Видео холболт"
 
 #: modules/access/decklink.cpp:75
 msgid ""
@@ -6476,7 +6458,7 @@ msgstr ""
 msgid "File"
 msgstr "Файл"
 
-#: modules/access/fs.c:72 modules/gui/qt4/ui/sprefs_video.h:339
+#: modules/access/fs.c:72
 msgid "Directory"
 msgstr ""
 
@@ -6693,7 +6675,6 @@ msgstr ""
 #: modules/gui/qt4/components/extended_panels.cpp:1432
 #: modules/video_filter/mosaic.c:94 modules/video_output/vmem.c:42
 #: share/lua/http/dialogs/mosaic_window.html:108
-#: modules/gui/qt4/ui/profiles.h:743
 msgid "Width"
 msgstr "Өргөн"
 
@@ -6705,7 +6686,6 @@ msgstr ""
 #: modules/demux/rawvid.c:52 modules/gui/macosx/ConvertAndSave.m:183
 #: modules/video_filter/mosaic.c:92 modules/video_output/vmem.c:45
 #: share/lua/http/dialogs/mosaic_window.html:126
-#: modules/gui/qt4/ui/profiles.h:746
 msgid "Height"
 msgstr "Өндөр"
 
@@ -7134,9 +7114,8 @@ msgid "MIME returned by the server (autodetected if not specified)."
 msgstr ""
 
 #: modules/access_output/http.c:61
-#, fuzzy
 msgid "Metacube"
-msgstr "Метал"
+msgstr ""
 
 #: modules/access_output/http.c:62
 msgid ""
@@ -7240,9 +7219,8 @@ msgid "Generate IV instead using segment-number as IV"
 msgstr ""
 
 #: modules/access_output/livehttp.c:105
-#, fuzzy
 msgid "Number of first segment"
-msgstr "Мөрийн тоо"
+msgstr ""
 
 #: modules/access_output/livehttp.c:106
 msgid "The number of the first segment generated"
@@ -7883,7 +7861,7 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:62
 msgid "Audio input"
-msgstr "Аудио оролт"
+msgstr "Дууны оролт"
 
 #: modules/access/v4l2/v4l2.c:64
 msgid "Audio input of the card to use (see debug)."
@@ -7934,7 +7912,6 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:84 modules/gui/macosx/VideoEffects.m:90
 #: modules/video_filter/atmo/atmo.cpp:256
-#: modules/gui/qt4/ui/video_effects.h:1393
 msgid "Brightness"
 msgstr "Тодрол"
 
@@ -7951,7 +7928,6 @@ msgid "Automatically adjust the picture brightness."
 msgstr ""
 
 #: modules/access/v4l2/v4l2.c:89 modules/gui/macosx/VideoEffects.m:89
-#: modules/gui/qt4/ui/video_effects.h:1395
 msgid "Contrast"
 msgstr "Ялгарал"
 
@@ -7961,8 +7937,6 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:91 modules/gui/macosx/VideoEffects.m:92
 #: modules/gui/macosx/VideoEffects.m:132
-#: modules/gui/qt4/ui/video_effects.h:1396
-#: modules/gui/qt4/ui/video_effects.h:1428
 msgid "Saturation"
 msgstr "Төвлөрөлт"
 
@@ -7971,7 +7945,6 @@ msgid "Picture saturation or chroma gain."
 msgstr ""
 
 #: modules/access/v4l2/v4l2.c:93 modules/gui/macosx/VideoEffects.m:88
-#: modules/gui/qt4/ui/video_effects.h:1392
 msgid "Hue"
 msgstr "Өнгө"
 
@@ -8022,7 +7995,6 @@ msgid "Blue chroma balance."
 msgstr ""
 
 #: modules/access/v4l2/v4l2.c:111 modules/gui/macosx/VideoEffects.m:93
-#: modules/gui/qt4/ui/video_effects.h:1397
 msgid "Gamma"
 msgstr "Гамма"
 
@@ -8146,7 +8118,7 @@ msgid "Black & white"
 msgstr ""
 
 #: modules/access/v4l2/v4l2.c:164 modules/gui/macosx/VideoEffects.m:134
-#: modules/video_filter/sepia.c:65 modules/gui/qt4/ui/video_effects.h:1430
+#: modules/video_filter/sepia.c:65
 msgid "Sepia"
 msgstr ""
 
@@ -8213,7 +8185,7 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:183
 msgid "Mute the audio."
-msgstr ""
+msgstr "Дууг хорих"
 
 #: modules/access/v4l2/v4l2.c:184
 msgid "Loudness mode"
@@ -8377,7 +8349,7 @@ msgstr ""
 
 #: modules/access/vcdx/info.c:69 modules/gui/macosx/ControlsBar.m:497
 #: modules/gui/macosx/fspanel.m:467 modules/gui/qt4/dialogs/toolbar.cpp:448
-#: modules/stream_out/raop.c:150 modules/gui/qt4/ui/sprefs_audio.h:427
+#: modules/stream_out/raop.c:150
 msgid "Volume"
 msgstr "Дууны хэмжээ"
 
@@ -8389,7 +8361,7 @@ msgstr ""
 msgid "Entries"
 msgstr ""
 
-#: modules/access/vcdx/info.c:75 modules/gui/qt4/ui/sprefs_audio.h:442
+#: modules/access/vcdx/info.c:75
 msgid "Tracks"
 msgstr "Мөрүүд"
 
@@ -10155,22 +10127,19 @@ msgstr ""
 
 #: modules/codec/avcodec/encoder.c:880
 msgid "unknown"
-msgstr ""
+msgstr "үл мэдэгдэх"
 
 #: modules/codec/avcodec/encoder.c:880
-#, fuzzy
 msgid "video"
-msgstr "Видео"
+msgstr ""
 
 #: modules/codec/avcodec/encoder.c:881
-#, fuzzy
 msgid "audio"
-msgstr "Аудио"
+msgstr ""
 
 #: modules/codec/avcodec/encoder.c:881
-#, fuzzy
 msgid "subpicture"
-msgstr "Дэдзургууд"
+msgstr ""
 
 #: modules/codec/avcodec/encoder.c:894
 #, c-format
@@ -10178,9 +10147,8 @@ msgid "VLC could not open the %4.4s %s encoder."
 msgstr ""
 
 #: modules/codec/avcodec/hwdummy.c:42
-#, fuzzy
 msgid "Dummy video decoder"
-msgstr "YUV Видео гаргах"
+msgstr ""
 
 #: modules/codec/avcodec/vaapi.c:62
 msgid "VA-API video decoder via X11"
@@ -10399,11 +10367,11 @@ msgstr ""
 msgid "FDK-AAC Audio encoder"
 msgstr ""
 
-#: modules/codec/flac.c:112
+#: modules/codec/flac.c:127
 msgid "Flac audio decoder"
 msgstr ""
 
-#: modules/codec/flac.c:119
+#: modules/codec/flac.c:134
 msgid "Flac audio encoder"
 msgstr ""
 
@@ -10842,18 +10810,16 @@ msgid "Opus"
 msgstr ""
 
 #: modules/codec/opus.c:73
-#, fuzzy
 msgid "Opus audio encoder"
-msgstr "Аудио кодчилол"
+msgstr ""
 
 #: modules/codec/png.c:91
 msgid "PNG video decoder"
 msgstr ""
 
 #: modules/codec/png.c:100
-#, fuzzy
 msgid "PNG video encoder"
-msgstr "Видео кодчилол"
+msgstr ""
 
 #: modules/codec/qsv.c:56
 msgid "Enable software mode"
@@ -11452,8 +11418,6 @@ msgstr ""
 
 #: modules/codec/speex.c:59 modules/codec/speex.c:867
 #: modules/gui/macosx/open.m:186 modules/gui/macosx/VideoEffects.m:138
-#: modules/gui/qt4/ui/sprefs_video.h:336
-#: modules/gui/qt4/ui/video_effects.h:1422
 msgid "Mode"
 msgstr "Горим"
 
@@ -11801,14 +11765,12 @@ msgid "USF subtitles decoder"
 msgstr ""
 
 #: modules/codec/substx3g.c:40
-#, fuzzy
 msgid "tx3g subtitles decoder"
-msgstr "Дэдбичвэрүүд"
+msgstr ""
 
 #: modules/codec/substx3g.c:41
-#, fuzzy
 msgid "tx3g subtitles"
-msgstr "DVB Дэд бичвэр"
+msgstr ""
 
 #: modules/codec/svcdsub.c:47
 msgid "Philips OGT (SVCD subtitle) decoder"
@@ -11890,7 +11852,7 @@ msgstr ""
 
 #: modules/codec/twolame.c:59
 msgid "Stereo mode"
-msgstr ""
+msgstr "Стерео горим"
 
 #: modules/codec/twolame.c:60
 msgid "Handling mode for stereo streams"
@@ -11959,9 +11921,8 @@ msgid "Vorbis audio encoder"
 msgstr ""
 
 #: modules/codec/vpx.c:49
-#, fuzzy
 msgid "WebM video decoder"
-msgstr "Долгион видео шүүлтүүр"
+msgstr ""
 
 #: modules/codec/wmafixed/wma.c:82
 msgid "WMA v1/v2 fixed point audio decoder"
@@ -12625,7 +12586,6 @@ msgid "Quiet mode"
 msgstr ""
 
 #: modules/codec/x264.c:402 modules/gui/macosx/playlistinfo.m:79
-#: modules/gui/qt4/ui/streampanel.h:170
 msgid "Statistics"
 msgstr "Статистик"
 
@@ -12871,7 +12831,7 @@ msgstr ""
 
 #: modules/control/gestures.c:83
 msgid "Middle"
-msgstr ""
+msgstr "Дунд"
 
 #: modules/control/gestures.c:86
 msgid "Gestures"
@@ -13037,7 +12997,7 @@ msgstr ""
 #: modules/control/hotkeys.c:1228
 #, c-format
 msgid "Speed: %.2fx"
-msgstr ""
+msgstr "Хурд: %.2fx"
 
 #: modules/control/lirc.c:46
 msgid "Change the lirc configuration file"
@@ -13578,9 +13538,8 @@ msgid "Avformat"
 msgstr ""
 
 #: modules/demux/avformat/avformat.c:45
-#, fuzzy
 msgid "Demuxer"
-msgstr "Задлагчууд"
+msgstr ""
 
 #: modules/demux/avformat/avformat.c:56
 msgid "Avformat muxer"
@@ -13666,14 +13625,13 @@ msgstr ""
 msgid "Do not play"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2566
+#: modules/demux/avi/avi.c:2571
 msgid "Fixing AVI Index..."
 msgstr ""
 
 #: modules/demux/caf.c:53
-#, fuzzy
 msgid "CAF demuxer"
-msgstr "Задлагчууд"
+msgstr ""
 
 #: modules/demux/cdg.c:43
 msgid "CDG demuxer"
@@ -13807,7 +13765,6 @@ msgid "Use chapter codecs found in the segment."
 msgstr ""
 
 #: modules/demux/mkv/mkv.cpp:62 modules/gui/macosx/simple_prefs.m:370
-#: modules/gui/qt4/ui/sprefs_input.h:358
 msgid "Preload MKV files in the same directory"
 msgstr ""
 
@@ -14141,11 +14098,10 @@ msgstr ""
 
 #: modules/demux/mp4/id3genres.h:98
 msgid "New Wave"
-msgstr ""
+msgstr "Шинэ долгион"
 
 #: modules/demux/mp4/id3genres.h:99 modules/gui/macosx/VideoEffects.m:158
 #: modules/video_filter/psychedelic.c:55
-#: modules/gui/qt4/ui/video_effects.h:1478
 msgid "Psychedelic"
 msgstr ""
 
@@ -15016,9 +14972,8 @@ msgid ""
 msgstr ""
 
 #: modules/demux/ts.c:126
-#, fuzzy
 msgid "Trust in-stream PCR"
-msgstr "Sout урсгал"
+msgstr ""
 
 #: modules/demux/ts.c:127
 msgid "Use the stream PCR as a reference."
@@ -15210,15 +15165,13 @@ msgstr ""
 
 #: modules/gui/macosx/AddonManager.m:98 modules/gui/macosx/AddonManager.m:351
 #: modules/gui/qt4/dialogs/plugins.cpp:378
-#, fuzzy
 msgid "Playlist parsers"
-msgstr "Тоглохжагсаалтын файлууд"
+msgstr ""
 
 #: modules/gui/macosx/AddonManager.m:100 modules/gui/macosx/AddonManager.m:353
 #: modules/gui/qt4/dialogs/plugins.cpp:382
-#, fuzzy
 msgid "Service Discovery"
-msgstr "Үйлчилгээний нээлт"
+msgstr ""
 
 #: modules/gui/macosx/AddonManager.m:102
 #: modules/gui/qt4/dialogs/plugins.cpp:386
@@ -15238,9 +15191,8 @@ msgid "Extensions"
 msgstr ""
 
 #: modules/gui/macosx/AddonManager.m:109
-#, fuzzy
 msgid "Show Installed Only"
-msgstr "Харагдах байдал"
+msgstr ""
 
 #: modules/gui/macosx/AddonManager.m:111
 #: modules/gui/qt4/dialogs/plugins.cpp:420
@@ -15249,16 +15201,14 @@ msgstr ""
 
 #: modules/gui/macosx/AddonManager.m:121 modules/gui/macosx/MainMenu.m:354
 #: modules/gui/qt4/dialogs/plugins.cpp:80
-#, fuzzy
 msgid "Addons Manager"
-msgstr "Суулт"
+msgstr "Нэмэлтүүдийг зохицуулагч"
 
 #: modules/gui/macosx/AddonManager.m:124
 #: modules/gui/qt4/dialogs/plugins.cpp:1159
 #: modules/gui/qt4/dialogs/plugins.cpp:1172
-#, fuzzy
 msgid "Installed"
-msgstr "Тохиолдол"
+msgstr ""
 
 #: modules/gui/macosx/AddonManager.m:125 modules/gui/macosx/bookmarks.m:110
 #: modules/gui/macosx/playlist.m:168 modules/gui/qt4/dialogs/plugins.cpp:123
@@ -15283,13 +15233,12 @@ msgstr ""
 msgid "Skins"
 msgstr "Арьсууд"
 
-#: modules/gui/macosx/AudioEffects.m:113 modules/gui/qt4/ui/equalizer.h:134
+#: modules/gui/macosx/AudioEffects.m:113
 msgid "2 Pass"
 msgstr ""
 
 #: modules/gui/macosx/AudioEffects.m:114
 #: modules/gui/qt4/components/extended_panels.cpp:1246
-#: modules/gui/qt4/ui/equalizer.h:136
 msgid "Preamp"
 msgstr ""
 
@@ -15370,7 +15319,6 @@ msgstr ""
 #: modules/gui/macosx/simple_prefs.m:376 modules/gui/macosx/simple_prefs.m:441
 #: modules/gui/macosx/VideoEffects.m:679
 #: modules/gui/qt4/components/sout/profile_selector.cpp:424
-#: modules/gui/qt4/ui/vlm.h:301
 msgid "Save"
 msgstr "Хадгалах"
 
@@ -15386,7 +15334,7 @@ msgstr ""
 
 #: modules/gui/macosx/AudioEffects.m:386 modules/gui/macosx/AudioEffects.m:711
 #: modules/gui/macosx/bookmarks.m:101 modules/gui/macosx/ConvertAndSave.m:388
-#: modules/gui/macosx/VideoEffects.m:741 modules/gui/qt4/ui/open_file.h:154
+#: modules/gui/macosx/VideoEffects.m:741
 msgid "Remove"
 msgstr "Хасах"
 
@@ -15400,7 +15348,7 @@ msgstr ""
 
 #: modules/gui/macosx/AudioEffects.m:611
 msgid "Save current selection as new preset"
-msgstr ""
+msgstr "Тухайн сонголтыг шинэ зэхмэлээр хадгалах"
 
 #: modules/gui/macosx/AudioEffects.m:612
 msgid "Enter a name for the new preset:"
@@ -15419,14 +15367,12 @@ msgid "Bookmarks"
 msgstr "Хавчуургууд"
 
 #: modules/gui/macosx/bookmarks.m:97
-#: modules/gui/qt4/ui/podcast_configuration.h:103 modules/gui/qt4/ui/sout.h:209
-#: modules/gui/qt4/ui/vlm.h:299
 msgid "Add"
 msgstr "Нэмэх"
 
 #: modules/gui/macosx/bookmarks.m:98 modules/gui/macosx/MainMenu.m:381
 #: modules/gui/macosx/simple_prefs.m:351
-#: modules/gui/qt4/dialogs/bookmarks.cpp:53 modules/gui/qt4/ui/vlm.h:300
+#: modules/gui/qt4/dialogs/bookmarks.cpp:53
 msgid "Clear"
 msgstr "Цэвэрлэх"
 
@@ -15504,14 +15450,12 @@ msgid "The stream must be playing or paused for bookmarks to work."
 msgstr ""
 
 #: modules/gui/macosx/BWQuincyUI.m:78
-#, fuzzy
 msgid "Show Details"
-msgstr "Тохиргоо харуулах"
+msgstr ""
 
 #: modules/gui/macosx/BWQuincyUI.m:79
-#, fuzzy
 msgid "Hide Details"
-msgstr "Бусдыг нуух"
+msgstr ""
 
 #: modules/gui/macosx/BWQuincyUI.m:81
 msgid "Send"
@@ -15546,9 +15490,8 @@ msgstr ""
 
 #: modules/gui/macosx/controls.m:53 modules/gui/macosx/controls.m:57
 #: modules/gui/macosx/MainMenu.m:1601
-#, fuzzy
 msgid "Jump to Time"
-msgstr "Очих цаг"
+msgstr ""
 
 #: modules/gui/macosx/controls.m:56
 msgid "sec."
@@ -15577,6 +15520,8 @@ msgid ""
 "Click to go to the next playlist item. Hold to skip forward through the "
 "current media."
 msgstr ""
+"Дарвал тоглох жагсаалтын дараагийнх рүү очно. Удаан дарснаар тухайн "
+"дамжуулга дотор урагшлуулна."
 
 #: modules/gui/macosx/ControlsBar.m:68 modules/gui/macosx/fspanel.m:449
 msgid ""
@@ -15641,7 +15586,7 @@ msgstr ""
 
 #: modules/gui/macosx/ControlsBar.m:501
 msgid "Click to mute or unmute the audio."
-msgstr ""
+msgstr "Дууг чимээтэй, чимээгүй болгох бол дар"
 
 #: modules/gui/macosx/ControlsBar.m:503
 msgid "Full Volume"
@@ -15705,9 +15650,6 @@ msgstr ""
 #: modules/gui/qt4/components/preferences_widgets.cpp:264
 #: modules/gui/qt4/components/simple_preferences.cpp:496
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:111
-#: modules/gui/qt4/ui/open.h:263 modules/gui/qt4/ui/open_disk.h:307
-#: modules/gui/qt4/ui/open_file.h:147 modules/gui/qt4/ui/sprefs_audio.h:433
-#: modules/gui/qt4/ui/sprefs_input.h:356 modules/gui/qt4/ui/sprefs_video.h:340
 msgid "Browse..."
 msgstr "Хөтлөх..."
 
@@ -15740,42 +15682,39 @@ msgstr ""
 msgid "Save as new Profile..."
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:170 modules/gui/qt4/ui/profiles.h:725
+#: modules/gui/macosx/ConvertAndSave.m:170
 msgid "Encapsulation"
 msgstr ""
 
 #: modules/gui/macosx/ConvertAndSave.m:171
 #: share/lua/http/dialogs/create_stream.html:160
-#: modules/gui/qt4/ui/profiles.h:751
 msgid "Video codec"
 msgstr ""
 
 #: modules/gui/macosx/ConvertAndSave.m:172
 #: share/lua/http/dialogs/create_stream.html:178
-#: modules/gui/qt4/ui/profiles.h:761
 msgid "Audio codec"
-msgstr "Аудио кодчилол"
+msgstr "Дууны кодчилол"
 
-#: modules/gui/macosx/ConvertAndSave.m:176 modules/gui/qt4/ui/profiles.h:727
+#: modules/gui/macosx/ConvertAndSave.m:176
 msgid "Keep original video track"
 msgstr "Жинхэнэ дүрсийн замыг хадгал"
 
-#: modules/gui/macosx/ConvertAndSave.m:181 modules/gui/qt4/ui/profiles.h:740
+#: modules/gui/macosx/ConvertAndSave.m:181
 msgid ""
 "You just need to fill one of the three following parameters, VLC will "
 "autodetect the other using the original aspect ratio"
 msgstr ""
 
 #: modules/gui/macosx/ConvertAndSave.m:184 modules/gui/macosx/output.m:157
-#: modules/gui/qt4/ui/profiles.h:741
 msgid "Scale"
 msgstr ""
 
-#: modules/gui/macosx/ConvertAndSave.m:186 modules/gui/qt4/ui/profiles.h:753
+#: modules/gui/macosx/ConvertAndSave.m:186
 msgid "Keep original audio track"
 msgstr "Жинхэнэ дууны замыг хадгал"
 
-#: modules/gui/macosx/ConvertAndSave.m:192 modules/gui/qt4/ui/profiles.h:764
+#: modules/gui/macosx/ConvertAndSave.m:192
 msgid "Overlay subtitles on the video"
 msgstr ""
 
@@ -15939,19 +15878,19 @@ msgstr ""
 msgid "Click to exit fullscreen playback."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1562 modules/gui/macosx/intf.m:1579
+#: modules/gui/macosx/intf.m:1570 modules/gui/macosx/intf.m:1587
 msgid "VLC media playback"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1858
+#: modules/gui/macosx/intf.m:1862
 msgid "Remove old preferences?"
 msgstr "Хуучин тохиргоонуудыг устгах уу?"
 
-#: modules/gui/macosx/intf.m:1859
+#: modules/gui/macosx/intf.m:1863
 msgid "We just found an older version of VLC's preferences files."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1860
+#: modules/gui/macosx/intf.m:1864
 msgid "Move To Trash and Relaunch VLC"
 msgstr ""
 
@@ -16060,7 +15999,7 @@ msgstr ""
 
 #: modules/gui/macosx/macosx.m:91 modules/gui/macosx/simple_prefs.m:385
 msgid "Use the native fullscreen mode"
-msgstr ""
+msgstr "Төрөлх бүтэн дэлгэцийн горим хэрэглэх"
 
 #: modules/gui/macosx/macosx.m:92
 msgid ""
@@ -16139,9 +16078,8 @@ msgid "Shows a sidebar in the main window listing media sources."
 msgstr ""
 
 #: modules/gui/macosx/macosx.m:121 modules/gui/macosx/simple_prefs.m:399
-#, fuzzy
 msgid "Control external music players"
-msgstr "Тоглуулагчийн удирдах цэс"
+msgstr ""
 
 #: modules/gui/macosx/macosx.m:122
 msgid "VLC will pause and resume supported music players on playback."
@@ -16227,9 +16165,8 @@ msgid "URI"
 msgstr ""
 
 #: modules/gui/macosx/MainMenu.m:82
-#, fuzzy
 msgid "File Size"
-msgstr "Давхраар"
+msgstr ""
 
 #: modules/gui/macosx/MainMenu.m:285
 #, c-format
@@ -16302,7 +16239,7 @@ msgstr "Урсгах/Гаргах хөтөч..."
 
 #: modules/gui/macosx/MainMenu.m:372
 msgid "Convert / Stream..."
-msgstr ""
+msgstr "Хөрвүүлэх / хадгалах"
 
 #: modules/gui/macosx/MainMenu.m:373
 msgid "Save Playlist..."
@@ -16342,7 +16279,7 @@ msgstr "Тоглолт"
 
 #: modules/gui/macosx/MainMenu.m:401
 msgid "Playback Speed"
-msgstr ""
+msgstr "Тоглуулах хурд"
 
 #: modules/gui/macosx/MainMenu.m:405
 #: modules/gui/macosx/TrackSynchronization.m:59
@@ -16446,9 +16383,8 @@ msgid "Window"
 msgstr "Цонх"
 
 #: modules/gui/macosx/MainMenu.m:479
-#, fuzzy
 msgid "Minimize"
-msgstr "Цонх жижигрүүлэх"
+msgstr ""
 
 #: modules/gui/macosx/MainMenu.m:481
 msgid "Player..."
@@ -16468,7 +16404,7 @@ msgstr ""
 
 #: modules/gui/macosx/MainMenu.m:485
 msgid "Bookmarks..."
-msgstr "Тэмдэглэлүүд..."
+msgstr "Хавчуургууд..."
 
 #: modules/gui/macosx/MainMenu.m:486
 msgid "Playlist..."
@@ -16567,9 +16503,8 @@ msgid "Enable Metadata Retrieval"
 msgstr ""
 
 #: modules/gui/macosx/MainWindow.m:243
-#, fuzzy
 msgid "No, Thanks"
-msgstr "Баярлах нь"
+msgstr "Үгүй, Баярлалаа"
 
 #: modules/gui/macosx/MainWindow.m:243
 msgid ""
@@ -16654,7 +16589,7 @@ msgid ""
 msgstr ""
 
 #: modules/gui/macosx/open.m:133 modules/gui/macosx/open.m:594
-#: modules/gui/macosx/simple_prefs.m:365 modules/gui/qt4/ui/sprefs_input.h:359
+#: modules/gui/macosx/simple_prefs.m:365
 msgid "Network"
 msgstr "Сүлжээ"
 
@@ -16681,7 +16616,7 @@ msgstr ""
 
 #: modules/gui/macosx/open.m:143 modules/gui/macosx/open.m:362
 #: modules/gui/macosx/simple_prefs.m:405 modules/gui/macosx/wizard.m:343
-#: modules/gui/macosx/wizard.m:411 modules/gui/qt4/ui/sprefs_interface.h:535
+#: modules/gui/macosx/wizard.m:411
 msgid "Choose..."
 msgstr "Сонгох..."
 
@@ -16848,7 +16783,6 @@ msgid "Subtitle encoding"
 msgstr ""
 
 #: modules/gui/macosx/open.m:373 modules/gui/macosx/simple_prefs.m:407
-#: modules/gui/qt4/ui/sprefs_subtitles.h:300
 msgid "Font size"
 msgstr "Үсгийн хэмжээ"
 
@@ -16869,14 +16803,14 @@ msgid "Subtitle File"
 msgstr ""
 
 #: modules/gui/macosx/open.m:667 modules/gui/macosx/open.m:742
-#: modules/gui/macosx/open.m:1553 modules/gui/qt4/ui/open_file.h:142
+#: modules/gui/macosx/open.m:1553
 msgid "Open File"
 msgstr "Файл нээх"
 
 #: modules/gui/macosx/open.m:984
 #, c-format
 msgid "%i tracks"
-msgstr ""
+msgstr "%i мөрүүд"
 
 #: modules/gui/macosx/open.m:1491
 msgid "Composite input"
@@ -17086,10 +17020,8 @@ msgid "Select"
 msgstr "Сонгох"
 
 #: modules/gui/macosx/ResumeDialogController.m:44 modules/gui/qt4/qt4.cpp:188
-#: modules/gui/qt4/ui/sprefs_interface.h:533
-#, fuzzy
 msgid "Continue playback?"
-msgstr "Тоглолтыг зогсоох"
+msgstr ""
 
 #: modules/gui/macosx/ResumeDialogController.m:45
 #: modules/gui/macosx/simple_prefs.m:877
@@ -17098,15 +17030,13 @@ msgid "Continue"
 msgstr "Үргэлжлүүлэх"
 
 #: modules/gui/macosx/ResumeDialogController.m:47
-#, fuzzy
 msgid "Always continue"
-msgstr "Байнга наад талд"
+msgstr "Ихэвчлэн үргэлжлүүлэх"
 
 #: modules/gui/macosx/ResumeDialogController.m:63
 #: modules/gui/macosx/ResumeDialogController.m:94
-#, fuzzy
 msgid "Restart playback"
-msgstr "Тоглолтыг зогсоох"
+msgstr ""
 
 #: modules/gui/macosx/ResumeDialogController.m:70
 msgid "Playback of \"%@\" will continue at %@"
@@ -17161,7 +17091,7 @@ msgstr "Хийсвэрлэлт"
 msgid "Keep audio level between sessions"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:344 modules/gui/qt4/ui/sprefs_audio.h:429
+#: modules/gui/macosx/simple_prefs.m:344
 msgid "Always reset audio start level to:"
 msgstr ""
 
@@ -17194,7 +17124,7 @@ msgstr "AVI файл засах"
 msgid "Default Caching Level"
 msgstr "Анхдагч нөөцлөлийн түвшин"
 
-#: modules/gui/macosx/simple_prefs.m:362 modules/gui/qt4/ui/open.h:248
+#: modules/gui/macosx/simple_prefs.m:362
 msgid "Caching"
 msgstr "Нөөцлөлт"
 
@@ -17249,7 +17179,6 @@ msgid "Show Fullscreen Controller"
 msgstr ""
 
 #: modules/gui/macosx/simple_prefs.m:387
-#: modules/gui/qt4/ui/sprefs_interface.h:542
 msgid "Privacy / Network Interaction"
 msgstr "Нууцлал / Сүлжээний харилцаа"
 
@@ -17267,9 +17196,8 @@ msgid "Lua HTTP"
 msgstr ""
 
 #: modules/gui/macosx/simple_prefs.m:400
-#, fuzzy
 msgid "Continue playback"
-msgstr "Тоглолтыг зогсоох"
+msgstr ""
 
 #: modules/gui/macosx/simple_prefs.m:403
 msgid "Default Encoding"
@@ -17280,14 +17208,12 @@ msgid "Display Settings"
 msgstr "Харуулах тохируулгууд"
 
 #: modules/gui/macosx/simple_prefs.m:406
-#: modules/gui/qt4/ui/sprefs_subtitles.h:301
 msgid "Font color"
 msgstr "Үсгийн өнгө"
 
 #: modules/gui/macosx/simple_prefs.m:408 modules/text_renderer/freetype.c:95
 #: modules/text_renderer/quartztext.c:92 modules/text_renderer/win32text.c:59
 #: modules/video_filter/marq.c:156 modules/video_filter/rss.c:206
-#: modules/gui/qt4/ui/sprefs_subtitles.h:299
 msgid "Font"
 msgstr "Үсэг"
 
@@ -17296,7 +17222,6 @@ msgid "Subtitle languages"
 msgstr ""
 
 #: modules/gui/macosx/simple_prefs.m:410
-#: modules/gui/qt4/ui/sprefs_subtitles.h:296
 msgid "Preferred subtitle language"
 msgstr ""
 
@@ -17314,12 +17239,10 @@ msgid "Force bold"
 msgstr ""
 
 #: modules/gui/macosx/simple_prefs.m:415 modules/text_renderer/freetype.c:125
-#: modules/gui/qt4/ui/sprefs_subtitles.h:303
 msgid "Outline color"
 msgstr ""
 
 #: modules/gui/macosx/simple_prefs.m:416 modules/text_renderer/freetype.c:126
-#: modules/gui/qt4/ui/sprefs_subtitles.h:302
 msgid "Outline thickness"
 msgstr ""
 
@@ -17328,11 +17251,10 @@ msgid "Black screens in Fullscreen mode"
 msgstr ""
 
 #: modules/gui/macosx/simple_prefs.m:421 modules/stream_out/display.c:53
-#: modules/gui/qt4/ui/sprefs_video.h:322
 msgid "Display"
 msgstr "Дэлгэц"
 
-#: modules/gui/macosx/simple_prefs.m:427 modules/gui/qt4/ui/sprefs_video.h:338
+#: modules/gui/macosx/simple_prefs.m:427
 msgid "Video snapshots"
 msgstr "Видео агшин авах"
 
@@ -17340,15 +17262,15 @@ msgstr "Видео агшин авах"
 msgid "Folder"
 msgstr "Хавтас"
 
-#: modules/gui/macosx/simple_prefs.m:430 modules/gui/qt4/ui/sprefs_video.h:344
+#: modules/gui/macosx/simple_prefs.m:430
 msgid "Format"
 msgstr "Тогтнол"
 
-#: modules/gui/macosx/simple_prefs.m:431 modules/gui/qt4/ui/sprefs_video.h:341
+#: modules/gui/macosx/simple_prefs.m:431
 msgid "Prefix"
 msgstr "Угтвар"
 
-#: modules/gui/macosx/simple_prefs.m:432 modules/gui/qt4/ui/sprefs_video.h:343
+#: modules/gui/macosx/simple_prefs.m:432
 msgid "Sequential numbering"
 msgstr "Дараалсан дугаарлалт"
 
@@ -17475,7 +17397,7 @@ msgstr ""
 #: modules/gui/macosx/TrackSynchronization.m:69
 #: modules/gui/qt4/components/extended_panels.cpp:1517
 msgid "Subtitle speed:"
-msgstr ""
+msgstr "Дэд бичвэр хурд:"
 
 #: modules/gui/macosx/TrackSynchronization.m:70
 msgid "fps"
@@ -17516,16 +17438,14 @@ msgstr "Видео эффектүүд"
 msgid "Basic"
 msgstr "Үндсэн"
 
-#: modules/gui/macosx/VideoEffects.m:81 modules/gui/qt4/ui/video_effects.h:1444
+#: modules/gui/macosx/VideoEffects.m:81
 msgid "Geometry"
 msgstr "Геометр"
 
 #: modules/gui/macosx/VideoEffects.m:82 modules/gui/macosx/VideoEffects.m:131
 #: modules/gui/macosx/VideoEffects.m:146 modules/gui/macosx/VideoEffects.m:149
 #: modules/video_filter/colorthres.c:54 modules/video_filter/marq.c:114
-#: modules/video_filter/rss.c:154 modules/gui/qt4/ui/video_effects.h:1417
-#: modules/gui/qt4/ui/video_effects.h:1423
-#: modules/gui/qt4/ui/video_effects.h:1426
+#: modules/video_filter/rss.c:154
 msgid "Color"
 msgstr "Өнгө"
 
@@ -17533,50 +17453,43 @@ msgstr "Өнгө"
 msgid "Image Adjust"
 msgstr ""
 
-#: modules/gui/macosx/VideoEffects.m:91 modules/gui/qt4/ui/video_effects.h:1394
+#: modules/gui/macosx/VideoEffects.m:91
 msgid "Brightness Threshold"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:95 modules/video_filter/sharpen.c:67
-#: modules/gui/qt4/ui/video_effects.h:1398
 msgid "Sharpen"
 msgstr "Ирмэг"
 
-#: modules/gui/macosx/VideoEffects.m:96 modules/gui/qt4/ui/video_effects.h:1399
-#: modules/gui/qt4/ui/video_effects.h:1483
+#: modules/gui/macosx/VideoEffects.m:96
 msgid "Sigma"
 msgstr "Сигма"
 
-#: modules/gui/macosx/VideoEffects.m:97 modules/gui/qt4/ui/video_effects.h:1400
+#: modules/gui/macosx/VideoEffects.m:97
 msgid "Banding removal"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:98 modules/video_filter/gradfun.c:49
-#: modules/gui/qt4/ui/video_effects.h:1401
 msgid "Radius"
 msgstr ""
 
-#: modules/gui/macosx/VideoEffects.m:99 modules/gui/qt4/ui/video_effects.h:1402
+#: modules/gui/macosx/VideoEffects.m:99
 msgid "Film Grain"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:100 modules/video_filter/grain.c:53
-#: modules/gui/qt4/ui/video_effects.h:1403
 msgid "Variance"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:105
-#: modules/gui/qt4/ui/video_effects.h:1411
 msgid "Synchronize top and bottom"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:106
-#: modules/gui/qt4/ui/video_effects.h:1412
 msgid "Synchronize left and right"
 msgstr "Зүүн ба баруунд давхцуулах"
 
 #: modules/gui/macosx/VideoEffects.m:108
-#: modules/gui/qt4/ui/video_effects.h:1437
 msgid "Transform"
 msgstr "Хувиргах"
 
@@ -17605,57 +17518,45 @@ msgid "Magnification/Zoom"
 msgstr "Томруулалт/Алслалт"
 
 #: modules/gui/macosx/VideoEffects.m:121
-#: modules/gui/qt4/ui/video_effects.h:1440
 msgid "Puzzle game"
 msgstr "Оньсон тоглоом"
 
 #: modules/gui/macosx/VideoEffects.m:122 modules/gui/macosx/VideoEffects.m:127
 #: share/lua/http/dialogs/mosaic_window.html:96
-#: modules/gui/qt4/ui/video_effects.h:1435
-#: modules/gui/qt4/ui/video_effects.h:1441
 msgid "Rows"
 msgstr "Мөрүүд"
 
 #: modules/gui/macosx/VideoEffects.m:123 modules/gui/macosx/VideoEffects.m:128
 #: share/lua/http/dialogs/mosaic_window.html:114
-#: modules/gui/qt4/ui/video_effects.h:1436
-#: modules/gui/qt4/ui/video_effects.h:1442
 msgid "Columns"
 msgstr "Баганууд"
 
 #: modules/gui/macosx/VideoEffects.m:124 modules/video_splitter/clone.c:57
-#: modules/gui/qt4/ui/video_effects.h:1493
 msgid "Clone"
 msgstr "Хуулбар"
 
 #: modules/gui/macosx/VideoEffects.m:125 modules/video_splitter/clone.c:39
-#: modules/gui/qt4/ui/video_effects.h:1494
 msgid "Number of clones"
 msgstr "Хуулбарын тоо"
 
 #: modules/gui/macosx/VideoEffects.m:126
-#: modules/gui/qt4/ui/video_effects.h:1434
 msgid "Wall"
 msgstr "Хана"
 
 #: modules/gui/macosx/VideoEffects.m:130 modules/video_filter/colorthres.c:70
-#: modules/gui/qt4/ui/video_effects.h:1425
 msgid "Color threshold"
 msgstr "Өнгөний босго"
 
 #: modules/gui/macosx/VideoEffects.m:133
-#: modules/gui/qt4/ui/video_effects.h:1429
 msgid "Similarity"
 msgstr "Адилтгал"
 
 #: modules/gui/macosx/VideoEffects.m:135
-#: modules/gui/qt4/ui/video_effects.h:1431
 msgid "Intensity"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:137 modules/gui/macosx/VideoEffects.m:140
 #: modules/video_filter/gradient.c:76 modules/video_filter/gradient.c:82
-#: modules/gui/qt4/ui/video_effects.h:1421
 msgid "Gradient"
 msgstr "Уусгалт"
 
@@ -17668,12 +17569,10 @@ msgid "Hough"
 msgstr "Шөрмөс"
 
 #: modules/gui/macosx/VideoEffects.m:147
-#: modules/gui/qt4/ui/video_effects.h:1424
 msgid "Cartoon"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:148
-#: modules/gui/qt4/ui/video_effects.h:1416
 msgid "Color extraction"
 msgstr "Өнгө задлалт"
 
@@ -17682,7 +17581,6 @@ msgid "Invert colors"
 msgstr "Өнгийг солих"
 
 #: modules/gui/macosx/VideoEffects.m:151 modules/video_filter/posterize.c:68
-#: modules/gui/qt4/ui/video_effects.h:1420
 msgid "Posterize"
 msgstr ""
 
@@ -17691,12 +17589,10 @@ msgid "Posterize level"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:153 modules/video_filter/motionblur.c:59
-#: modules/gui/qt4/ui/video_effects.h:1484
 msgid "Motion blur"
 msgstr "Хөдөлгөөний балартуулалт"
 
 #: modules/gui/macosx/VideoEffects.m:154
-#: modules/gui/qt4/ui/video_effects.h:1485
 msgid "Factor"
 msgstr "Нөлөөлөл"
 
@@ -17705,7 +17601,6 @@ msgid "Motion Detect"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:156
-#: modules/gui/qt4/ui/video_effects.h:1480
 msgid "Water effect"
 msgstr "Усан эффект"
 
@@ -17714,27 +17609,24 @@ msgid "Anaglyph"
 msgstr ""
 
 #: modules/gui/macosx/VideoEffects.m:161
-#: modules/gui/qt4/ui/video_effects.h:1455
 msgid "Add text"
 msgstr "Бичвэр нэмэх"
 
 #: modules/gui/macosx/VideoEffects.m:162 modules/misc/logger.c:109
-#: modules/video_filter/marq.c:87 modules/gui/qt4/ui/video_effects.h:1457
+#: modules/video_filter/marq.c:87
 msgid "Text"
 msgstr "Бичвэр"
 
 #: modules/gui/macosx/VideoEffects.m:183
-#: modules/gui/qt4/ui/video_effects.h:1445
 msgid "Add logo"
 msgstr "Тэмдэг нэмэх"
 
 #: modules/gui/macosx/VideoEffects.m:184
-#: modules/gui/qt4/ui/video_effects.h:1446
 msgid "Logo"
 msgstr "Тэмдэг"
 
 #: modules/gui/macosx/VideoEffects.m:205 modules/stream_out/mosaic_bridge.c:128
-#: modules/video_filter/mosaic.c:87 modules/gui/qt4/ui/video_effects.h:1453
+#: modules/video_filter/mosaic.c:87
 msgid "Transparency"
 msgstr "Тунгалаг"
 
@@ -17776,7 +17668,7 @@ msgstr ""
 
 #: modules/gui/macosx/wizard.m:144
 msgid "H264 is a new video codec (useable with MPEG TS and MP4)"
-msgstr ""
+msgstr "H264 бол шинэ видео кодчилол (MPEG TS болон MP4-тэй хэрэглэгддэг)"
 
 #: modules/gui/macosx/wizard.m:148
 msgid "WMV (Windows Media Video) 1 (useable with MPEG TS, MPEG1, ASF and OGG)"
@@ -18346,19 +18238,16 @@ msgid " f                      Toggle Fullscreen"
 msgstr ""
 
 #: modules/gui/ncurses.c:895
-#, fuzzy
 msgid " c                      Cycle through audio tracks"
-msgstr "     h,H         Харуулах/нуух тусламжийн хайрцаг"
+msgstr ""
 
 #: modules/gui/ncurses.c:896
-#, fuzzy
 msgid " v                      Cycle through subtitles tracks"
-msgstr "     h,H         Харуулах/нуух тусламжийн хайрцаг"
+msgstr ""
 
 #: modules/gui/ncurses.c:897
-#, fuzzy
 msgid " b                      Cycle through video tracks"
-msgstr "     h,H         Харуулах/нуух тусламжийн хайрцаг"
+msgstr ""
 
 #: modules/gui/ncurses.c:898
 msgid " n, p                   Next/Previous playlist item"
@@ -18573,7 +18462,7 @@ msgstr ""
 
 #: modules/gui/qt4/components/controller.hpp:116
 msgid "Previous / Backward"
-msgstr ""
+msgstr "Өмнөх / Ухраах"
 
 #: modules/gui/qt4/components/controller.hpp:116
 msgid "Next / Forward"
@@ -18631,11 +18520,11 @@ msgstr "Дамжуулга &нээх"
 
 #: modules/gui/qt4/components/controller.hpp:125
 msgid "Previous media in the playlist, skip backward when held"
-msgstr ""
+msgstr "Тоглох жагсаалт дахь өмнөх дамжуулга, дараастай үед ухраах"
 
 #: modules/gui/qt4/components/controller.hpp:126
 msgid "Next media in the playlist, skip forward when held"
-msgstr ""
+msgstr "Тоглох жагсаалт дахь дараагийн дамжуулга, дараастай үед урагшлуулна"
 
 #: modules/gui/qt4/components/controller.hpp:127
 msgid "Toggle the video in fullscreen"
@@ -18651,7 +18540,7 @@ msgstr "Өргөтгөсөн тохиргоох харуул"
 
 #: modules/gui/qt4/components/controller.hpp:128
 msgid "Toggle playlist"
-msgstr ""
+msgstr "Тоглох жагсаалт ээлжлэх"
 
 #: modules/gui/qt4/components/controller.hpp:129
 msgid "Take a snapshot"
@@ -18684,7 +18573,7 @@ msgstr "Тоглох жагсаалт дахь дараагийн дамжуул
 #: modules/gui/qt4/components/controller.hpp:134
 #: modules/gui/qt4/components/open_panels.cpp:253
 msgid "Open subtitle file"
-msgstr ""
+msgstr "Дэд бичвэрийн файл нээх"
 
 #: modules/gui/qt4/components/controller.hpp:135
 msgid "Dock/undock fullscreen controller to/from bottom of screen"
@@ -18693,12 +18582,12 @@ msgstr ""
 #: modules/gui/qt4/components/controller_widget.cpp:132
 msgctxt "Tooltip|Unmute"
 msgid "Unmute"
-msgstr ""
+msgstr "Чимээтэй"
 
 #: modules/gui/qt4/components/controller_widget.cpp:141
 msgctxt "Tooltip|Mute"
 msgid "Mute"
-msgstr ""
+msgstr "Чимээгүй"
 
 #: modules/gui/qt4/components/controller_widget.cpp:227
 msgid "Pause the playback"
@@ -18868,7 +18757,7 @@ msgstr ""
 
 #: modules/gui/qt4/components/info_panels.cpp:150
 msgid "&Fingerprint"
-msgstr ""
+msgstr "Хурууны хээ"
 
 #: modules/gui/qt4/components/info_panels.cpp:151
 msgid "Find meta data using audio fingerprinting"
@@ -18890,7 +18779,7 @@ msgstr ""
 
 #: modules/gui/qt4/components/info_panels.cpp:567
 msgid "Input/Read"
-msgstr ""
+msgstr "Оруулах/Унших"
 
 #: modules/gui/qt4/components/info_panels.cpp:568
 msgid "Output/Written/Sent"
@@ -18924,7 +18813,7 @@ msgstr ""
 #: modules/gui/qt4/components/info_panels.cpp:585
 #: modules/gui/qt4/components/info_panels.cpp:598
 msgid "blocks"
-msgstr ""
+msgstr "блокууд"
 
 #: modules/gui/qt4/components/info_panels.cpp:586
 msgid "Displayed"
@@ -18938,16 +18827,16 @@ msgstr ""
 #: modules/gui/qt4/components/info_panels.cpp:588
 #: modules/gui/qt4/components/info_panels.cpp:601
 msgid "Lost"
-msgstr ""
+msgstr "Орхигдсон"
 
 #: modules/gui/qt4/components/info_panels.cpp:591
 #: modules/gui/qt4/components/info_panels.cpp:592
 msgid "Sent"
-msgstr ""
+msgstr "Илгээгдсэн"
 
 #: modules/gui/qt4/components/info_panels.cpp:591
 msgid "packets"
-msgstr ""
+msgstr "багцууд"
 
 #: modules/gui/qt4/components/info_panels.cpp:594
 msgid "Upstream rate"
@@ -18955,7 +18844,7 @@ msgstr ""
 
 #: modules/gui/qt4/components/info_panels.cpp:599
 msgid "Played"
-msgstr ""
+msgstr "Тоглогдсон"
 
 #: modules/gui/qt4/components/info_panels.cpp:600
 #: modules/gui/qt4/components/info_panels.cpp:601
@@ -18964,7 +18853,7 @@ msgstr ""
 
 #: modules/gui/qt4/components/info_panels.cpp:623
 msgid "Last 60 seconds"
-msgstr ""
+msgstr "Сүүлийн 60 секунд"
 
 #: modules/gui/qt4/components/info_panels.cpp:624
 msgid "Overall"
@@ -18979,6 +18868,8 @@ msgid ""
 "Current playback speed: %1\n"
 "Click to adjust"
 msgstr ""
+"Тухайн тоглуулах хурд: %1\n"
+"Дарж тааруулах"
 
 #: modules/gui/qt4/components/interface_widgets.cpp:563
 msgid "Revert to normal play speed"
@@ -19040,7 +18931,6 @@ msgid "File names:"
 msgstr "Файлын нэрс:"
 
 #: modules/gui/qt4/components/open_panels.cpp:162
-#: modules/gui/qt4/ui/sprefs_interface.h:545
 msgid "Filter:"
 msgstr "Шүүлтүүр:"
 
@@ -19058,7 +18948,7 @@ msgstr "Сонгогдсон сувгууд:"
 
 #: modules/gui/qt4/components/open_panels.cpp:874
 msgid ".*"
-msgstr ""
+msgstr ".*"
 
 #: modules/gui/qt4/components/open_panels.cpp:881
 msgid "Use VLC pace"
@@ -19066,7 +18956,7 @@ msgstr ""
 
 #: modules/gui/qt4/components/open_panels.cpp:901
 msgid "TV - digital"
-msgstr ""
+msgstr "ТВ - тоон"
 
 #: modules/gui/qt4/components/open_panels.cpp:904
 msgid "Tuner card"
@@ -19090,7 +18980,7 @@ msgstr "Зурвасын өргөн"
 
 #: modules/gui/qt4/components/open_panels.cpp:1022
 msgid "TV - analog"
-msgstr ""
+msgstr "ТВ - аналог"
 
 #: modules/gui/qt4/components/open_panels.cpp:1025
 msgid "Device name"
@@ -19123,19 +19013,19 @@ msgstr ""
 
 #: modules/gui/qt4/components/playlist/selector.cpp:244
 msgid "My Computer"
-msgstr ""
+msgstr "Миний компьютер"
 
 #: modules/gui/qt4/components/playlist/selector.cpp:245
 msgid "Devices"
-msgstr ""
+msgstr "Төхөөрөмжүүд"
 
 #: modules/gui/qt4/components/playlist/selector.cpp:246
 msgid "Local Network"
-msgstr ""
+msgstr "Дотоод сүлжээ"
 
 #: modules/gui/qt4/components/playlist/selector.cpp:247
 msgid "Internet"
-msgstr ""
+msgstr "Интернэт"
 
 #: modules/gui/qt4/components/playlist/selector.cpp:440
 msgid "Remove this podcast subscription"
@@ -19166,47 +19056,44 @@ msgid "Enter name for new folder:"
 msgstr ""
 
 #: modules/gui/qt4/components/playlist/standardpanel.cpp:54
-#, fuzzy
 msgid "Rename Directory"
-msgstr "Хавтас нээх"
+msgstr "Хавтсын нэр өөрчлөх"
 
 #: modules/gui/qt4/components/playlist/standardpanel.cpp:54
-#, fuzzy
 msgid "Rename Folder"
-msgstr "Ха&втас нээх..."
+msgstr "Хавстын нэр өөрчлөх"
 
 #: modules/gui/qt4/components/playlist/standardpanel.cpp:56
 msgid "Enter a new name for the directory:"
-msgstr ""
+msgstr "Хавтсын шинэ нэрийг оруул:"
 
 #: modules/gui/qt4/components/playlist/standardpanel.cpp:57
-#, fuzzy
 msgid "Enter a new name for the folder:"
-msgstr "Та төрийн нэрийг сонгох шаардлагатай."
+msgstr "Хавтсын шинэ нэрийг оруул:"
 
 #: modules/gui/qt4/components/playlist/standardpanel.cpp:242
 msgid "Sort by"
-msgstr ""
+msgstr "Эрэмбэлэх нь"
 
 #: modules/gui/qt4/components/playlist/standardpanel.cpp:249
 msgid "Ascending"
-msgstr ""
+msgstr "Өсөхөөр"
 
 #: modules/gui/qt4/components/playlist/standardpanel.cpp:253
 msgid "Descending"
-msgstr ""
+msgstr "Буурахаар"
 
 #: modules/gui/qt4/components/playlist/standardpanel.cpp:261
 msgid "Display size"
-msgstr ""
+msgstr "Дэлгэцийн хэмжээ"
 
 #: modules/gui/qt4/components/playlist/standardpanel.cpp:262
 msgid "Increase"
-msgstr ""
+msgstr "Өсгөх"
 
 #: modules/gui/qt4/components/playlist/standardpanel.cpp:263
 msgid "Decrease"
-msgstr ""
+msgstr "Суллах"
 
 #: modules/gui/qt4/components/playlist/standardpanel.cpp:387
 msgid "Playlist View Mode"
@@ -19220,7 +19107,7 @@ msgstr ""
 
 #: modules/gui/qt4/components/playlist/standardpanel.hpp:146
 msgid "Icons"
-msgstr ""
+msgstr "Шошгууд"
 
 #: modules/gui/qt4/components/playlist/standardpanel.hpp:147
 msgid "Detailed List"
@@ -19228,7 +19115,7 @@ msgstr ""
 
 #: modules/gui/qt4/components/playlist/standardpanel.hpp:148
 msgid "List"
-msgstr ""
+msgstr "Жагсаалт"
 
 #: modules/gui/qt4/components/playlist/standardpanel.hpp:149
 msgid "PictureFlow"
@@ -19254,7 +19141,7 @@ msgstr ""
 
 #: modules/gui/qt4/components/preferences_widgets.cpp:1145
 msgid "Actions"
-msgstr ""
+msgstr "Үйлдлүүд"
 
 #: modules/gui/qt4/components/preferences_widgets.cpp:1152
 msgid "Hotkey"
@@ -19366,7 +19253,7 @@ msgstr ""
 #: modules/gui/qt4/components/simple_preferences.cpp:1313
 #: modules/gui/qt4/dialogs_provider.hpp:42
 msgid "Audio Files"
-msgstr "Аудионы файлууд"
+msgstr "Дууны файлууд"
 
 #: modules/gui/qt4/components/simple_preferences.cpp:1314
 #: modules/gui/qt4/dialogs_provider.hpp:41
@@ -19435,10 +19322,9 @@ msgstr "Файл/Хавтас"
 
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:40
 msgid "File/Folder"
-msgstr ""
+msgstr "Файл/Хавтас"
 
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:47
-#: modules/gui/qt4/ui/sout.h:202
 msgid "Source"
 msgstr "Эх"
 
@@ -19467,6 +19353,7 @@ msgstr "Файл хадгалах..."
 msgid ""
 "Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv *.webm)"
 msgstr ""
+"Чингэлгүүд (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv *.webm)"
 
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:158
 msgid "This module outputs the transcoded stream to a network via HTTP."
@@ -19512,11 +19399,11 @@ msgstr "Нэвтрэгч:нууц үг"
 
 #: modules/gui/qt4/dialogs/bookmarks.cpp:41
 msgid "Edit Bookmarks"
-msgstr "Тэмдэглэл засах"
+msgstr "Хавчуурга засах"
 
 #: modules/gui/qt4/dialogs/bookmarks.cpp:48
 msgid "Create a new bookmark"
-msgstr "Шинэ тэмдэглэл үүсгэх"
+msgstr "Шинэ хавчуурга үүсгэх"
 
 #: modules/gui/qt4/dialogs/bookmarks.cpp:51
 msgid "Delete the selected item"
@@ -19524,7 +19411,7 @@ msgstr "Сонгогдсон зүйлсийг устгах"
 
 #: modules/gui/qt4/dialogs/bookmarks.cpp:54
 msgid "Delete all the bookmarks"
-msgstr "Бүх тэмдэглэлийг устгах"
+msgstr "Бүх хавчуургыг устгах"
 
 #: modules/gui/qt4/dialogs/bookmarks.cpp:62
 #: modules/gui/qt4/dialogs/errors.cpp:49
@@ -19549,7 +19436,7 @@ msgstr "Байтууд"
 msgid "Convert"
 msgstr "Хөрвүүлэх"
 
-#: modules/gui/qt4/dialogs/convert.cpp:58 modules/gui/qt4/ui/sprefs_audio.h:432
+#: modules/gui/qt4/dialogs/convert.cpp:58
 msgid "Destination file:"
 msgstr "Зорилтот файл:"
 
@@ -19574,9 +19461,8 @@ msgid "&Start"
 msgstr "&Эхлэх"
 
 #: modules/gui/qt4/dialogs/convert.cpp:135
-#, fuzzy
 msgid "Containers"
-msgstr "Үргэлжлүүлэх"
+msgstr "Чингэлгүүд"
 
 #: modules/gui/qt4/dialogs/errors.cpp:40
 msgid "Errors"
@@ -19584,11 +19470,11 @@ msgstr "Алдаанууд"
 
 #: modules/gui/qt4/dialogs/errors.cpp:47
 msgid "Cl&ear"
-msgstr ""
+msgstr "Цэвэрлэх"
 
 #: modules/gui/qt4/dialogs/errors.cpp:54
 msgid "Hide future errors"
-msgstr ""
+msgstr "Хойшдын алдааг нуух"
 
 #: modules/gui/qt4/dialogs/extended.cpp:49
 msgid "Adjustments and Effects"
@@ -19652,7 +19538,7 @@ msgstr "Тухай"
 
 #: modules/gui/qt4/dialogs/help.cpp:214
 msgid "&Recheck version"
-msgstr ""
+msgstr "Хувилбарыг дахин шалгах"
 
 #: modules/gui/qt4/dialogs/help.cpp:217
 msgid "&Yes"
@@ -19660,15 +19546,15 @@ msgstr "&Тийм"
 
 #: modules/gui/qt4/dialogs/help.cpp:219
 msgid "&No"
-msgstr ""
+msgstr "Ү&гүй"
 
-#: modules/gui/qt4/dialogs/help.cpp:222 modules/gui/qt4/ui/update.h:147
+#: modules/gui/qt4/dialogs/help.cpp:222
 msgid "VLC media player updates"
 msgstr "VLC дамжуулга тоглуулагчийн шинэчлэлүүд"
 
 #: modules/gui/qt4/dialogs/help.cpp:294
 msgid "A new version of VLC (%1.%2.%3%4) is available."
-msgstr ""
+msgstr "VLC-ийн (%1.%2.%3%4) шинэ хувилбар гарсэн байна."
 
 #: modules/gui/qt4/dialogs/help.cpp:319
 msgid "You have the latest version of VLC media player."
@@ -19707,8 +19593,6 @@ msgid "Location:"
 msgstr "Байрлал:"
 
 #: modules/gui/qt4/dialogs/messages.cpp:79
-#: modules/gui/qt4/ui/messages_panel.h:138
-#: modules/gui/qt4/ui/messages_panel.h:142
 msgid "Messages"
 msgstr "Зурвасууд"
 
@@ -19808,9 +19692,8 @@ msgid "Plugins and extensions"
 msgstr "Нэмэлт ба өргөтгөл"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:82
-#, fuzzy
 msgid "Active Extensions"
-msgstr "Идэвхтэй цонхууд"
+msgstr ""
 
 #: modules/gui/qt4/dialogs/plugins.cpp:123
 msgid "Capability"
@@ -19862,17 +19745,15 @@ msgstr ""
 
 #: modules/gui/qt4/dialogs/plugins.cpp:414
 msgid "Only installed"
-msgstr ""
+msgstr "Зөвхөн суугдсан"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:519
-#, fuzzy
 msgid "Retrieving addons..."
-msgstr "Сувгийн мэдээлэл татагдаж байна..."
+msgstr "Нэмэлтүүдийг татаж байна..."
 
 #: modules/gui/qt4/dialogs/plugins.cpp:530
-#, fuzzy
 msgid "No addons found"
-msgstr "Оролт олдсонгүй"
+msgstr "Нэмэлт олдсонгүй"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:809
 msgid "This addon has been installed manually. VLC can't manage it by itself."
@@ -19880,33 +19761,31 @@ msgstr ""
 
 #: modules/gui/qt4/dialogs/plugins.cpp:1190
 msgid "Version %1"
-msgstr ""
+msgstr "Хувилбар %1"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:1216
 msgid "%1 downloads"
-msgstr ""
+msgstr "%1 татцууд"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:1285
 msgid "&Uninstall"
-msgstr ""
+msgstr "Устгах"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:1288
-#, fuzzy
 msgid "&Install"
-msgstr "Зөвхөн хөгжим"
+msgstr "Суулгах"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:1383
 #: modules/gui/qt4/dialogs/plugins.cpp:1486
 msgid "Version"
-msgstr ""
+msgstr "Хувилбар"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:1403
 #: modules/gui/qt4/dialogs/plugins.cpp:1513
 msgid "Website"
-msgstr ""
+msgstr "Вэб сайт"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:1525
-#: modules/gui/qt4/ui/sprefs_input.h:354
 msgid "Files"
 msgstr "Файлууд"
 
@@ -19984,15 +19863,15 @@ msgstr "Тоглох жагсаалт нээх..."
 
 #: modules/gui/qt4/dialogs_provider.cpp:560
 msgid "XSPF playlist"
-msgstr ""
+msgstr "XSPF тоглохжагсаалт"
 
 #: modules/gui/qt4/dialogs_provider.cpp:561
 msgid "M3U playlist"
-msgstr ""
+msgstr "M3U тоглохжагсаалт"
 
 #: modules/gui/qt4/dialogs_provider.cpp:562
 msgid "M3U8 playlist"
-msgstr ""
+msgstr "M3U8 тоглохжагсаалт"
 
 #: modules/gui/qt4/dialogs_provider.cpp:580
 msgid "Save playlist as..."
@@ -20008,13 +19887,13 @@ msgstr "Дамжуулгын файлууд"
 
 #: modules/gui/qt4/dialogs_provider.hpp:44
 msgid "Subtitle Files"
-msgstr ""
+msgstr "Дэд бичвэрийн файлууд"
 
 #: modules/gui/qt4/dialogs_provider.hpp:45
 msgid "All Files"
 msgstr "Бүх файлууд"
 
-#: modules/gui/qt4/dialogs/sout.cpp:45 modules/gui/qt4/ui/sout.h:201
+#: modules/gui/qt4/dialogs/sout.cpp:45
 msgid "Stream Output"
 msgstr "Гаргах урсгал"
 
@@ -20046,9 +19925,8 @@ msgid "Flat Button"
 msgstr "Хавтгай товч"
 
 #: modules/gui/qt4/dialogs/toolbar.cpp:76
-#, fuzzy
 msgid "Next widget style"
-msgstr "Дараагийн хэрэгслийн загвар:"
+msgstr ""
 
 #: modules/gui/qt4/dialogs/toolbar.cpp:77
 msgid "Big Button"
@@ -20072,20 +19950,19 @@ msgstr "Хэрэгслийн мөрийн байрлал:"
 
 #: modules/gui/qt4/dialogs/toolbar.cpp:105
 msgid "Line 1:"
-msgstr ""
+msgstr "Мөр 1:"
 
 #: modules/gui/qt4/dialogs/toolbar.cpp:110
 msgid "Line 2:"
-msgstr ""
+msgstr "Мөр 2:"
 
 #: modules/gui/qt4/dialogs/toolbar.cpp:119
 msgid "Time Toolbar"
 msgstr "Хэрэгслийн мөрийн цаг"
 
 #: modules/gui/qt4/dialogs/toolbar.cpp:128
-#, fuzzy
 msgid "Advanced Widget"
-msgstr "Өргөтгөсөн хэрэгслийн мөр:"
+msgstr ""
 
 #: modules/gui/qt4/dialogs/toolbar.cpp:137
 msgid "Fullscreen Controller"
@@ -20104,9 +19981,8 @@ msgid "Select profile:"
 msgstr "Төрх сонгох:"
 
 #: modules/gui/qt4/dialogs/toolbar.cpp:185
-#, fuzzy
 msgid "Preview"
-msgstr "Өмнөх"
+msgstr ""
 
 #: modules/gui/qt4/dialogs/toolbar.cpp:194
 msgid "Cl&ose"
@@ -20158,7 +20034,7 @@ msgstr ""
 
 #: modules/gui/qt4/dialogs/toolbar.cpp:540
 msgid "Speed selector"
-msgstr ""
+msgstr "Хурд сонгогч"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:69
 msgid "Broadcast"
@@ -20189,7 +20065,6 @@ msgid "Repeat delay:"
 msgstr ""
 
 #: modules/gui/qt4/dialogs/vlm.cpp:107
-#: modules/gui/qt4/ui/sprefs_interface.h:543
 msgid " days"
 msgstr " өдрүүд"
 
@@ -20252,7 +20127,7 @@ msgstr "&Тоглуулалт"
 
 #: modules/gui/qt4/menus.cpp:342 modules/gui/qt4/menus.cpp:1039
 msgid "&Audio"
-msgstr "&Аудио"
+msgstr "&Дуу"
 
 #: modules/gui/qt4/menus.cpp:343 modules/gui/qt4/menus.cpp:1046
 msgid "&Video"
@@ -20264,7 +20139,7 @@ msgstr ""
 
 #: modules/gui/qt4/menus.cpp:346 modules/gui/qt4/menus.cpp:1069
 msgid "T&ools"
-msgstr ""
+msgstr "Хэрэгс&лүүд"
 
 #: modules/gui/qt4/menus.cpp:349 modules/gui/qt4/menus.cpp:1104
 msgid "V&iew"
@@ -20276,11 +20151,11 @@ msgstr "Т&усламж"
 
 #: modules/gui/qt4/menus.cpp:364
 msgid "Open &File..."
-msgstr ""
+msgstr "&Файл нээх..."
 
 #: modules/gui/qt4/menus.cpp:366
 msgid "&Open Multiple Files..."
-msgstr ""
+msgstr "&Олон файл нээх..."
 
 #: modules/gui/qt4/menus.cpp:370 modules/gui/qt4/menus.cpp:933
 msgid "Open &Disc..."
@@ -20300,7 +20175,7 @@ msgstr "&Завсрын санах ойгоос байрлал нээх"
 
 #: modules/gui/qt4/menus.cpp:382
 msgid "Open &Recent Media"
-msgstr ""
+msgstr "&Сүүлийн дамжуулга нээх"
 
 #: modules/gui/qt4/menus.cpp:392
 msgid "Conve&rt / Save..."
@@ -20308,11 +20183,11 @@ msgstr "Хувиргаад, х&адгалах..."
 
 #: modules/gui/qt4/menus.cpp:394
 msgid "&Stream..."
-msgstr ""
+msgstr "&Урсгал..."
 
 #: modules/gui/qt4/menus.cpp:399
 msgid "Quit at the end of playlist"
-msgstr ""
+msgstr "Тоглох жагсаалтын төгсгөлд гарах"
 
 #: modules/gui/qt4/menus.cpp:406
 msgid "Close to systray"
@@ -20364,7 +20239,7 @@ msgstr ""
 
 #: modules/gui/qt4/menus.cpp:507
 msgid "Mi&nimal Interface"
-msgstr ""
+msgstr "Хам&гийн бага харагдах байдал"
 
 #: modules/gui/qt4/menus.cpp:508
 msgid "Ctrl+H"
@@ -20388,15 +20263,15 @@ msgstr "Хийсвэрлэлт сонгогч"
 
 #: modules/gui/qt4/menus.cpp:594
 msgid "&Increase Volume"
-msgstr ""
+msgstr "Дуу &чангалах"
 
 #: modules/gui/qt4/menus.cpp:597
 msgid "&Decrease Volume"
-msgstr ""
+msgstr "Дуу &суллах"
 
 #: modules/gui/qt4/menus.cpp:600
 msgid "&Mute"
-msgstr ""
+msgstr "Чи&мээгүй"
 
 #: modules/gui/qt4/menus.cpp:617
 msgid "Audio &Track"
@@ -20408,7 +20283,7 @@ msgstr "Дууны &төхөөрөмж"
 
 #: modules/gui/qt4/menus.cpp:620
 msgid "&Stereo Mode"
-msgstr ""
+msgstr "Стерео &горим"
 
 #: modules/gui/qt4/menus.cpp:623
 msgid "&Visualizations"
@@ -20416,11 +20291,11 @@ msgstr "&Хийсвэрлэлтүүд"
 
 #: modules/gui/qt4/menus.cpp:649
 msgid "Add &Subtitle File..."
-msgstr ""
+msgstr "Дэд бичвэрийн файл нэмэх..."
 
 #: modules/gui/qt4/menus.cpp:651
 msgid "Sub &Track"
-msgstr ""
+msgstr "Бичвэрийн &мөр"
 
 #: modules/gui/qt4/menus.cpp:673
 msgid "Video &Track"
@@ -20432,15 +20307,15 @@ msgstr "&Бүтэн дэлгэц"
 
 #: modules/gui/qt4/menus.cpp:678
 msgid "Always Fit &Window"
-msgstr ""
+msgstr "Ихэвчлэн &цонхонд тааруулах"
 
 #: modules/gui/qt4/menus.cpp:679
 msgid "Always &on Top"
-msgstr ""
+msgstr "Байнга наад талд"
 
 #: modules/gui/qt4/menus.cpp:680
 msgid "Set as Wall&paper"
-msgstr ""
+msgstr "Ханын зургаар сонгох"
 
 #: modules/gui/qt4/menus.cpp:684
 msgid "&Zoom"
@@ -20464,7 +20339,7 @@ msgstr ""
 
 #: modules/gui/qt4/menus.cpp:697
 msgid "Take &Snapshot"
-msgstr ""
+msgstr "&Зураг авах"
 
 #: modules/gui/qt4/menus.cpp:716
 msgid "T&itle"
@@ -20480,7 +20355,7 @@ msgstr "Програ&м"
 
 #: modules/gui/qt4/menus.cpp:723
 msgid "&Manage"
-msgstr ""
+msgstr "&Зохицуулах"
 
 #: modules/gui/qt4/menus.cpp:782
 msgid "Check for &Updates..."
@@ -20555,14 +20430,12 @@ msgid "&Clear"
 msgstr "&Цэвэрлэх"
 
 #: modules/gui/qt4/menus.cpp:1642
-#, fuzzy
 msgid "&Save To Playlist"
-msgstr "Тоглох жагсаалт хадгалах"
+msgstr "&Тоглох жагсаалт руу хадгалах"
 
 #: modules/gui/qt4/menus.cpp:1652
-#, fuzzy
 msgid "&Post processing"
-msgstr "Боловсруулалтын дараа"
+msgstr ""
 
 #: modules/gui/qt4/qt4.cpp:78
 msgid "Show advanced preferences over simple ones"
@@ -20645,6 +20518,8 @@ msgid ""
 "Activate the automatic notification of new versions of the software. It runs "
 "once every two weeks."
 msgstr ""
+"Програмын шинэ хувилбарын автомат мэдэгдлийг идэвхжүүл.  Энэ нь хоёр долоо "
+"хоног бүр ажиллана."
 
 #: modules/gui/qt4/qt4.cpp:126
 msgid "Number of days between two update checks"
@@ -20734,7 +20609,7 @@ msgstr ""
 
 #: modules/gui/qt4/qt4.cpp:167
 msgid "Background art fits window's size"
-msgstr ""
+msgstr "Дэвсгэр зургийг цонхны хэмжээнд тааруулах"
 
 #: modules/gui/qt4/qt4.cpp:169
 msgid "Ignore keyboard volume buttons."
@@ -20749,9 +20624,8 @@ msgid ""
 msgstr ""
 
 #: modules/gui/qt4/qt4.cpp:186
-#, fuzzy
 msgid "Fullscreen controller mouse sensitivity"
-msgstr "Бүтэндэлгэцийн удирдлага"
+msgstr ""
 
 #: modules/gui/qt4/qt4.cpp:194
 msgid "When minimized"
@@ -20762,9 +20636,8 @@ msgid "Qt interface"
 msgstr "Qt харагдах байдал"
 
 #: modules/gui/qt4/recents.cpp:159
-#, fuzzy
 msgid "Recently Played"
-msgstr "Саяхан тоглуулсан зүйлсийг хадгалах"
+msgstr ""
 
 #: modules/gui/qt4/util/customwidgets.cpp:80
 msgid "errors"
@@ -20867,14 +20740,12 @@ msgid "Open skin ..."
 msgstr "Арьс нээх..."
 
 #: modules/hw/vdpau/adjust.c:182
-#, fuzzy
 msgid "VDPAU adjust video filter"
-msgstr "Видео шүүлтүүр арилгах"
+msgstr ""
 
 #: modules/hw/vdpau/avcodec.c:46
-#, fuzzy
 msgid "VDPAU video decoder"
-msgstr "Видео төхөөрөмж"
+msgstr ""
 
 #: modules/hw/vdpau/chroma.c:865
 msgid "Temporal-spatial"
@@ -20893,9 +20764,8 @@ msgid "Deinterlacing algorithm"
 msgstr ""
 
 #: modules/hw/vdpau/chroma.c:881
-#, fuzzy
 msgid "Inverse telecine"
-msgstr "Буруу сонголт"
+msgstr ""
 
 #: modules/hw/vdpau/chroma.c:883
 msgid "Deinterlace chroma skip"
@@ -20914,24 +20784,20 @@ msgid "Scaling quality"
 msgstr ""
 
 #: modules/hw/vdpau/chroma.c:888
-#, fuzzy
 msgid "High quality scaling level"
-msgstr "Өндөр чанарын дуу руу шилжүүлэх"
+msgstr ""
 
 #: modules/hw/vdpau/deinterlace.c:132
-#, fuzzy
 msgid "VDPAU deinterlacing filter"
-msgstr "Ерөнхий дууны тохиргоо"
+msgstr ""
 
 #: modules/hw/vdpau/display.c:46
-#, fuzzy
 msgid "VDPAU output"
-msgstr "YUV Гаргалт"
+msgstr ""
 
 #: modules/hw/vdpau/sharpen.c:141
-#, fuzzy
 msgid "VDPAU sharpen video filter"
-msgstr "Долгион видео шүүлтүүр"
+msgstr ""
 
 #: modules/lua/libs/httpd.c:75
 msgid ""
@@ -21112,7 +20978,7 @@ msgstr ""
 
 #: modules/misc/audioscrobbler.c:723
 msgid "Last.fm username not set"
-msgstr ""
+msgstr "Last.fm нэвтрэх нэр сонгоогүй"
 
 #: modules/misc/audioscrobbler.c:724
 msgid ""
@@ -21420,14 +21286,12 @@ msgid "Unknown Video"
 msgstr ""
 
 #: modules/mux/avi.c:54
-#, fuzzy
 msgid "Subject"
-msgstr "Объектүүд"
+msgstr ""
 
 #: modules/mux/avi.c:55
-#, fuzzy
 msgid "Encoder"
-msgstr "Хувиргагч"
+msgstr ""
 
 #: modules/mux/avi.c:56
 msgid "Keywords"
@@ -21677,9 +21541,8 @@ msgid "Multipart JPEG muxer"
 msgstr ""
 
 #: modules/mux/ogg.c:47
-#, fuzzy
 msgid "Index interval"
-msgstr "Qt харагдах байдал"
+msgstr ""
 
 #: modules/mux/ogg.c:48
 msgid ""
@@ -21687,9 +21550,8 @@ msgid ""
 msgstr ""
 
 #: modules/mux/ogg.c:50
-#, fuzzy
 msgid "Index size ratio"
-msgstr "Үзэгдэх харьцааг хадгалах"
+msgstr ""
 
 #: modules/mux/ogg.c:52
 msgid "Set index size ratio. Alters default (60min content) or estimated size."
@@ -21732,8 +21594,9 @@ msgid "LibNotify Notification Plugin"
 msgstr ""
 
 #: modules/packetizer/avparser.h:49
+#, fuzzy
 msgid "avparser packetizer"
-msgstr ""
+msgstr "Багцлагчууд"
 
 #: modules/packetizer/copy.c:48
 msgid "Copy packetizer"
@@ -21835,7 +21698,6 @@ msgid "Local drives"
 msgstr ""
 
 #: modules/services_discovery/podcast.c:54
-#: modules/gui/qt4/ui/podcast_configuration.h:101
 msgid "Podcast URLs list"
 msgstr ""
 
@@ -21939,7 +21801,7 @@ msgstr ""
 msgid "CD"
 msgstr ""
 
-#: modules/services_discovery/udev.c:595 modules/gui/qt4/ui/open_disk.h:298
+#: modules/services_discovery/udev.c:595
 msgid "DVD"
 msgstr "DVD"
 
@@ -21949,9 +21811,9 @@ msgstr ""
 
 #: modules/services_discovery/udev.c:606
 msgid "Unknown type"
-msgstr ""
+msgstr "Үл мэдэгдэх төрөл"
 
-#: modules/services_discovery/upnp.cpp:71
+#: modules/services_discovery/upnp.cpp:109
 msgid "Universal Plug'n'Play"
 msgstr ""
 
@@ -22153,7 +22015,7 @@ msgstr "Гаргах урсгалын тайлбар"
 
 #: modules/stream_out/display.c:41
 msgid "Enable/disable audio rendering."
-msgstr "Аудиог танилтыг нээх/хаах"
+msgstr "Дууг танилтыг нээх/хаах"
 
 #: modules/stream_out/display.c:43
 msgid "Enable/disable video rendering."
@@ -23254,7 +23116,7 @@ msgstr ""
 msgid "Image properties filter"
 msgstr ""
 
-#: modules/video_filter/adjust.c:83 modules/gui/qt4/ui/video_effects.h:1391
+#: modules/video_filter/adjust.c:83
 msgid "Image adjust"
 msgstr "Зураг журамлах"
 
@@ -23594,7 +23456,6 @@ msgid ""
 msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:253
-#: modules/gui/qt4/ui/video_effects.h:1467
 msgid "Edge weightning"
 msgstr ""
 
@@ -23609,7 +23470,6 @@ msgid "Overall brightness of your LED stripes"
 msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:258
-#: modules/gui/qt4/ui/video_effects.h:1470
 msgid "Darkness limit"
 msgstr ""
 
@@ -23633,7 +23493,6 @@ msgid "Sat windowing"
 msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:267
-#: modules/gui/qt4/ui/video_effects.h:1472
 msgid "Filter length (ms)"
 msgstr ""
 
@@ -23651,7 +23510,6 @@ msgid "How much a color has to be changed for an immediate color change."
 msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:273
-#: modules/gui/qt4/ui/video_effects.h:1474
 msgid "Filter smoothness (%)"
 msgstr ""
 
@@ -23802,8 +23660,6 @@ msgid "AtmoLight Filter"
 msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:360
-#: modules/gui/qt4/ui/video_effects.h:1466
-#: modules/gui/qt4/ui/video_effects.h:1475
 msgid "AtmoLight"
 msgstr "AtmoLight"
 
@@ -24225,14 +24081,12 @@ msgid "Number of pixels to padd to the right of the image after cropping."
 msgstr ""
 
 #: modules/video_filter/croppadd.c:78
-#, fuzzy
 msgid "Croppadd"
-msgstr "Танах"
+msgstr ""
 
 #: modules/video_filter/croppadd.c:79
-#, fuzzy
 msgid "Video cropping filter"
-msgstr "Видео танах"
+msgstr ""
 
 #: modules/video_filter/croppadd.c:96
 msgid "Padd"
@@ -24329,7 +24183,6 @@ msgstr ""
 
 #: modules/video_filter/dynamicoverlay/dynamicoverlay.c:68
 #: share/lua/http/dialogs/create_stream.html:245
-#: modules/gui/qt4/ui/video_effects.h:1465
 msgid "Overlay"
 msgstr ""
 
@@ -24370,9 +24223,8 @@ msgid "Extract RGB component video filter"
 msgstr ""
 
 #: modules/video_filter/freeze.c:77
-#, fuzzy
 msgid "Freezing interactive video filter"
-msgstr "Эргүүлэх видео шүүлтүүр"
+msgstr ""
 
 #: modules/video_filter/freeze.c:78
 msgid "Freeze"
@@ -24870,7 +24722,7 @@ msgstr ""
 
 #: modules/video_filter/mosaic.c:166
 msgid "auto"
-msgstr ""
+msgstr "авто"
 
 #: modules/video_filter/mosaic.c:166
 msgid "fixed"
@@ -24878,7 +24730,7 @@ msgstr "тогтсон"
 
 #: modules/video_filter/mosaic.c:166
 msgid "offsets"
-msgstr ""
+msgstr "тэнхлэгүүд"
 
 #: modules/video_filter/mosaic.c:176
 msgid "Mosaic video sub source"
@@ -24905,13 +24757,12 @@ msgid "Motion detect video filter"
 msgstr ""
 
 #: modules/video_filter/oldmovie.c:185
-#, fuzzy
 msgid "Old movie effect video filter"
-msgstr "Хуулба видео шүүлтүүр"
+msgstr ""
 
 #: modules/video_filter/oldmovie.c:186
 msgid "Old movie"
-msgstr ""
+msgstr "Хуучин кино"
 
 #: modules/video_filter/opencv_example.cpp:71
 msgid "OpenCV face detection example filter"
@@ -25070,7 +24921,7 @@ msgstr ""
 
 #: modules/video_filter/puzzle.c:57
 msgid "Border"
-msgstr ""
+msgstr "Хүрээ"
 
 #: modules/video_filter/puzzle.c:58
 msgid "Unshuffled Border width."
@@ -25142,19 +24993,19 @@ msgstr ""
 
 #: modules/video_filter/puzzle.c:75
 msgid "0"
-msgstr ""
+msgstr "0"
 
 #: modules/video_filter/puzzle.c:75
 msgid "0/180"
-msgstr ""
+msgstr "0/180"
 
 #: modules/video_filter/puzzle.c:75
 msgid "0/90/180/270"
-msgstr ""
+msgstr "0/90/180/270"
 
 #: modules/video_filter/puzzle.c:75
 msgid "0/90/180/270/mirror"
-msgstr ""
+msgstr "0/90/180/270/толь"
 
 #: modules/video_filter/puzzle.c:83
 msgid "Puzzle interactive game video filter"
@@ -25262,7 +25113,7 @@ msgstr ""
 msgid "Rotate video filter"
 msgstr "Эргүүлэх видео шүүлтүүр"
 
-#: modules/video_filter/rotate.c:67 modules/gui/qt4/ui/video_effects.h:1438
+#: modules/video_filter/rotate.c:67
 msgid "Rotate"
 msgstr "Эргүүлэх"
 
@@ -25582,9 +25433,8 @@ msgid "Rotate or flip the video"
 msgstr ""
 
 #: modules/video_filter/vhs.c:108
-#, fuzzy
 msgid "VHS movie effect video filter"
-msgstr "Видео дүрслэх шүүлтүүр"
+msgstr ""
 
 #: modules/video_filter/vhs.c:109
 msgid "VHS movie"
@@ -25611,14 +25461,12 @@ msgid "ASCII-art video output"
 msgstr "ASCII урлал видео шүүлтүүр"
 
 #: modules/video_output/android/nativewindow.c:55
-#, fuzzy
 msgid "ANativeWindow"
-msgstr "Идэвхтэй цонхууд"
+msgstr ""
 
 #: modules/video_output/android/nativewindow.c:56
-#, fuzzy
 msgid "Android native window"
-msgstr "Идэвхтэй цонхууд"
+msgstr ""
 
 #: modules/video_output/android/opaque.c:47
 msgid "Android MediaCodec direct rendering video output"
@@ -25809,15 +25657,15 @@ msgstr "ГНУ/Линукс хүрээгээр видео гаргах"
 
 #: modules/video_output/gl.c:40
 msgid "OpenGL extension"
-msgstr ""
+msgstr "OpenGL өргөтгөл"
 
 #: modules/video_output/gl.c:41
 msgid "OpenGL ES 2 extension"
-msgstr ""
+msgstr "OpenGL ES 2 өргөтгөл"
 
 #: modules/video_output/gl.c:42
 msgid "OpenGL ES extension"
-msgstr ""
+msgstr "OpenGL ES өргөтгөл"
 
 #: modules/video_output/gl.c:44
 msgid "Extension through which to use the Open Graphics Library (OpenGL)."
@@ -25825,7 +25673,7 @@ msgstr ""
 
 #: modules/video_output/gl.c:50
 msgid "OpenGL ES2"
-msgstr ""
+msgstr "OpenGL ES2"
 
 #: modules/video_output/gl.c:51
 msgid "OpenGL for Embedded Systems 2 video output"
@@ -25859,7 +25707,7 @@ msgstr ""
 msgid "iOS OpenGL video output"
 msgstr ""
 
-#: modules/video_output/kva.c:50 modules/gui/qt4/ui/sprefs_video.h:332
+#: modules/video_output/kva.c:50
 msgid "Enable a workaround for T23"
 msgstr ""
 
@@ -25869,7 +25717,7 @@ msgid ""
 "size is equal to or smaller than the movie size."
 msgstr ""
 
-#: modules/video_output/kva.c:55 modules/gui/qt4/ui/sprefs_video.h:333
+#: modules/video_output/kva.c:55
 msgid "Video mode"
 msgstr ""
 
@@ -25898,9 +25746,8 @@ msgid "K Video Acceleration video output"
 msgstr ""
 
 #: modules/video_output/macosx.m:86
-#, fuzzy
 msgid "Mac OS X OpenGL video output"
-msgstr "OpenGL видео гаргалт"
+msgstr ""
 
 #: modules/video_output/mmal.c:52
 msgid "VideoCore layer where the video is displayed."
@@ -25949,24 +25796,20 @@ msgid "Pixel Shader"
 msgstr ""
 
 #: modules/video_output/msw/direct3d.c:68
-#, fuzzy
 msgid "Choose a pixel shader to apply."
-msgstr "Тоглох жагсаалт дахь дараагийн дамжуулга"
+msgstr ""
 
 #: modules/video_output/msw/direct3d.c:69
-#, fuzzy
 msgid "Path to HLSL file"
-msgstr "OSD цэсийн зургуудын зам"
+msgstr ""
 
 #: modules/video_output/msw/direct3d.c:70
-#, fuzzy
 msgid "Path to an HLSL file containing a single pixel shader."
-msgstr "Хэрэглэх арьсны зам"
+msgstr ""
 
 #: modules/video_output/msw/direct3d.c:72
-#, fuzzy
 msgid "HLSL File"
-msgstr "Файл хадгалах"
+msgstr ""
 
 #: modules/video_output/msw/direct3d.c:74
 msgid "Recommended video output for Windows Vista and later versions"
@@ -25976,7 +25819,7 @@ msgstr ""
 msgid "Direct3D video output"
 msgstr ""
 
-#: modules/video_output/msw/directx.c:65 modules/gui/qt4/ui/sprefs_video.h:325
+#: modules/video_output/msw/directx.c:65
 msgid "Use hardware YUV->RGB conversions"
 msgstr "Техникийн YUV->RGB хувиргалт хэрэглэх"
 
@@ -26130,11 +25973,11 @@ msgstr ""
 
 #: modules/video_output/xcb/window.c:62
 msgid "X window"
-msgstr ""
+msgstr "X цонх"
 
 #: modules/video_output/xcb/window.c:63
 msgid "X11 video window (XCB)"
-msgstr ""
+msgstr "X11 видео цонх (XCB)"
 
 #. xgettext: This is a plain ASCII spelling of "VLC media player"
 #. for the ICCCM window name. This must be pure ASCII.
@@ -26144,7 +25987,7 @@ msgstr ""
 #: modules/video_output/xcb/window.c:282
 msgctxt "ASCII"
 msgid "VLC media player"
-msgstr ""
+msgstr "VLC дамжуулга тоглуулагч"
 
 #. xgettext: This is a plain ASCII spelling of "VLC"
 #. for the ICCCM window name. This must be pure ASCII.
@@ -26159,11 +26002,11 @@ msgstr "VLC"
 
 #: modules/video_output/xcb/x11.c:48
 msgid "X11"
-msgstr ""
+msgstr "X11"
 
 #: modules/video_output/xcb/x11.c:49
 msgid "X11 video output (XCB)"
-msgstr ""
+msgstr "X11 видео гаргалт (XCB)"
 
 #: modules/video_output/xcb/xvideo.c:44
 msgid "XVideo adaptor number"
@@ -26533,15 +26376,15 @@ msgstr ""
 
 #: modules/visualization/projectm.cpp:62
 msgid "Title font"
-msgstr ""
+msgstr "Гарчгийн үсгийн хэв"
 
 #: modules/visualization/projectm.cpp:63
 msgid "Font used for the titles"
-msgstr ""
+msgstr "Гарчганд хэрэглэгдсэн үсгийн хэв"
 
 #: modules/visualization/projectm.cpp:65
 msgid "Font menu"
-msgstr ""
+msgstr "Үсгийн хэвийн цэс"
 
 #: modules/visualization/projectm.cpp:66
 msgid "Font used for the menus"
@@ -26606,9 +26449,8 @@ msgid "The height of the effects video window, in pixels."
 msgstr ""
 
 #: modules/visualization/visual/visual.c:61
-#, fuzzy
 msgid "FFT window"
-msgstr "Цонх"
+msgstr ""
 
 #: modules/visualization/visual/visual.c:63
 msgid "The type of FFT window to use for spectrum-based visualizations."
@@ -26734,7 +26576,6 @@ msgid "Play List"
 msgstr ""
 
 #: share/lua/http/dialogs/create_stream.html:156
-#: modules/gui/qt4/ui/sprefs_audio.h:430 modules/gui/qt4/ui/sprefs_video.h:328
 msgid "Output"
 msgstr "Гаргалт"
 
@@ -26839,17 +26680,17 @@ msgstr ""
 
 #: share/lua/http/index.html:217
 msgid "Manage Streams"
-msgstr ""
+msgstr "Урсгалууд зохицуулах"
 
 #: share/lua/http/index.html:218
 msgid "Track Synchronisation"
-msgstr ""
+msgstr "Мөр зэрэгцүүлэлт"
 
 #: share/lua/http/index.html:220
 msgid "VLM Batch Commands"
 msgstr ""
 
-#: share/lua/http/index.html:240 modules/gui/qt4/ui/vlm.h:298
+#: share/lua/http/index.html:240
 msgid "Loop"
 msgstr "Эргэх"
 
@@ -26918,1050 +26759,268 @@ msgstr ""
 msgid "Are you sure you wish to create the stream?"
 msgstr ""
 
-#: modules/gui/qt4/ui/about.h:287 modules/gui/qt4/ui/open.h:242
-#: modules/gui/qt4/ui/podcast_configuration.h:100
-msgid "Dialog"
-msgstr "Харилцах цонх"
+#~ msgid "Dialog"
+#~ msgstr "Харилцах цонх"
 
-#: modules/gui/qt4/ui/about.h:288 modules/gui/qt4/ui/about.h:289
-#, fuzzy
-msgid "Update"
-msgstr "&Шинэчлэл"
+#~ msgid "Form"
+#~ msgstr "Маягт"
 
-#: modules/gui/qt4/ui/equalizer.h:132 modules/gui/qt4/ui/open_disk.h:296
-#: modules/gui/qt4/ui/open_net.h:96 modules/gui/qt4/ui/sprefs_audio.h:425
-#: modules/gui/qt4/ui/sprefs_input.h:345
-#: modules/gui/qt4/ui/sprefs_interface.h:516
-#: modules/gui/qt4/ui/sprefs_subtitles.h:289
-#: modules/gui/qt4/ui/sprefs_video.h:320 modules/gui/qt4/ui/streampanel.h:167
-msgid "Form"
-msgstr "Маягт"
+#~ msgid "Preset"
+#~ msgstr "Зэхмэл"
 
-#: modules/gui/qt4/ui/equalizer.h:135
-msgid "Preset"
-msgstr "Зэхмэл"
+#~ msgid "&Save as..."
+#~ msgstr "&Өөрөөр хадгалах..."
 
-#: modules/gui/qt4/ui/equalizer.h:137
-msgid "0.00 dB"
-msgstr ""
+#~ msgid "Show extended options"
+#~ msgstr "Өргөтгөсөн сонголт харуулах"
 
-#: modules/gui/qt4/ui/messages_panel.h:139
-#, fuzzy
-msgid "&Verbosity:"
-msgstr "Чалчаа (0,1,2)"
+#~ msgid "Show &more options"
+#~ msgstr "&Бусад сонголтууд харуулах"
 
-#: modules/gui/qt4/ui/messages_panel.h:140
-#, fuzzy
-msgid "&Filter:"
-msgstr "Шүүлтүүр:"
+#~ msgid " ms"
+#~ msgstr "мс"
 
-#: modules/gui/qt4/ui/messages_panel.h:141
-msgid "&Save as..."
-msgstr "&Өөрөөр хадгалах..."
+#~ msgid "MRL"
+#~ msgstr "MRL"
 
-#: modules/gui/qt4/ui/messages_panel.h:143
-msgid "Modules Tree"
-msgstr ""
+#~ msgid "Start Time"
+#~ msgstr "Эхлэх хугацаа"
 
-#: modules/gui/qt4/ui/open.h:245
-msgid "Show extended options"
-msgstr "Өргөтгөсөн сонголт харуулах"
+#~ msgid "Edit Options"
+#~ msgstr "Сонголтууд засах"
 
-#: modules/gui/qt4/ui/open.h:247
-msgid "Show &more options"
-msgstr "&Бусад сонголтууд харуулах"
+#~ msgid "Extra media"
+#~ msgstr "&Нэмэлт дамжуулга"
 
-#: modules/gui/qt4/ui/open.h:250
-msgid "Change the caching for the media"
-msgstr ""
+#~ msgid "Select the file"
+#~ msgstr "Файл сонгох"
 
-#: modules/gui/qt4/ui/open.h:252
-msgid " ms"
-msgstr "мс"
+#~ msgid "Play another media synchronously (extra audio file, ...)"
+#~ msgstr "Бусад дамжуулгыг зэрэг тоглуулах (нэмэлт дууны файл, ...)"
 
-#: modules/gui/qt4/ui/open.h:253
-msgid "MRL"
-msgstr "MRL"
+#~ msgid "Capture mode"
+#~ msgstr "Хураах горим"
 
-#: modules/gui/qt4/ui/open.h:254
-msgid "Start Time"
-msgstr "Эхлэх хугацаа"
+#~ msgid "Select the capture device type"
+#~ msgstr "Хураах төхөөрөмжийн төрлийг сонгох"
 
-#: modules/gui/qt4/ui/open.h:255
-msgid "Edit Options"
-msgstr "Сонголтууд засах"
-
-#: modules/gui/qt4/ui/open.h:256
-msgid "Extra media"
-msgstr "&Нэмэлт дамжуулга"
-
-#: modules/gui/qt4/ui/open.h:258
-msgid "Complete MRL for VLC internal"
-msgstr ""
-
-#: modules/gui/qt4/ui/open.h:261
-msgid "Select the file"
-msgstr "Файл сонгох"
-
-#: modules/gui/qt4/ui/open.h:265
-msgid "Change the start time for the media"
-msgstr ""
-
-#: modules/gui/qt4/ui/open.h:267
-msgid "HH'H':mm'm':ss's'.zzz"
-msgstr ""
-
-#: modules/gui/qt4/ui/open.h:268
-msgid "Play another media synchronously (extra audio file, ...)"
-msgstr "Бусад дамжуулгыг зэрэг тоглуулах (нэмэлт дууны файл, ...)"
-
-#: modules/gui/qt4/ui/open_capture.h:97
-msgid "Capture mode"
-msgstr "Хураах горим"
-
-#: modules/gui/qt4/ui/open_capture.h:99
-msgid "Select the capture device type"
-msgstr "Хураах төхөөрөмжийн төрлийг сонгох"
-
-#: modules/gui/qt4/ui/open_capture.h:101
-msgid "Device Selection"
-msgstr "Төхөөрөмж сонголт"
-
-#: modules/gui/qt4/ui/open_capture.h:102
-msgid "Options"
-msgstr "Сонголтууд"
-
-#: modules/gui/qt4/ui/open_capture.h:104
-msgid "Access advanced options to tweak the device"
-msgstr ""
-
-#: modules/gui/qt4/ui/open_capture.h:106
-msgid "Advanced options..."
-msgstr "Өргөтгөсөн сонголтууд..."
-
-#: modules/gui/qt4/ui/open_disk.h:297
-msgid "Disc Selection"
-msgstr "Диск сонголт"
-
-#: modules/gui/qt4/ui/open_disk.h:301
-msgid "SVCD/VCD"
-msgstr ""
-
-#: modules/gui/qt4/ui/open_disk.h:303
-#, fuzzy
-msgid "Disable Disc Menus"
-msgstr "Дэлгэцгамнагчийг хорих"
-
-#: modules/gui/qt4/ui/open_disk.h:305
-msgid "No disc menus"
-msgstr ""
-
-#: modules/gui/qt4/ui/open_disk.h:306
-msgid "Disc device"
-msgstr "Дискийн төхөрөөмж"
-
-#: modules/gui/qt4/ui/open_disk.h:308
-msgid "Starting Position"
-msgstr "Эхлэх байрлал"
-
-#: modules/gui/qt4/ui/open_disk.h:311
-msgid "Audio and Subtitles"
-msgstr "Дуу болон дэд бичвэрүүд"
-
-#: modules/gui/qt4/ui/open_file.h:143
-#, fuzzy
-msgid "Use a sub&title file"
-msgstr "Хэрэглэх дэд бичвэрийн файл"
-
-#: modules/gui/qt4/ui/open_file.h:145
-#, fuzzy
-msgid "Select the subtitle file"
-msgstr "Файл сонгох"
-
-#: modules/gui/qt4/ui/open_file.h:149
-msgid "Choose one or more media file to open"
-msgstr "Нээхийн тулд нэг ба олон дамжуулгын файл сонгоно уу"
-
-#: modules/gui/qt4/ui/open_file.h:151
-msgid "File Selection"
-msgstr "Файл сонголт"
-
-#: modules/gui/qt4/ui/open_file.h:152
-msgid "You can select local files with the following list and buttons."
-msgstr "Та дараах жагсаалт, товчуудыг ашиглан дотоод файл сонгоно."
-
-#: modules/gui/qt4/ui/open_file.h:153
-msgid "Add..."
-msgstr "Нэмэх..."
-
-#: modules/gui/qt4/ui/open_net.h:97
-msgid "Network Protocol"
-msgstr "Сүлжээний нэвтрүүлэгч"
-
-#: modules/gui/qt4/ui/open_net.h:98
-#, fuzzy
-msgid "Please enter a network URL:"
-msgstr "Шинэ төрхийн нэр оруулна уу."
-
-#: modules/gui/qt4/ui/profiles.h:701
-#, fuzzy
-msgid "Profile edition"
-msgstr " Төрхийн нэрийг орхисон байна"
-
-#: modules/gui/qt4/ui/profiles.h:702
-msgid "FLAC"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:703
-#, fuzzy
-msgid "MP&4/MOV"
-msgstr "MP4/MOV"
-
-#: modules/gui/qt4/ui/profiles.h:704
-msgid "Ogg/Ogm"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:705
-msgid "M&KV"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:706
-#, fuzzy
-msgid "M&JPEG"
-msgstr "MJPEG:"
-
-#: modules/gui/qt4/ui/profiles.h:707
-msgid "MPEG-PS"
-msgstr "MPEG-PS"
-
-#: modules/gui/qt4/ui/profiles.h:708
-msgid "F&LV"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:709
-#, fuzzy
-msgid "&MPEG-TS"
-msgstr "MPEG-TS"
-
-#: modules/gui/qt4/ui/profiles.h:710
-msgid "RAW"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:711
-#, fuzzy
-msgid "WAV"
-msgstr "AVI"
-
-#: modules/gui/qt4/ui/profiles.h:712
-msgid "Webm"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:713
-#, fuzzy
-msgid "MPEG &1"
-msgstr "MPEG 1"
-
-#: modules/gui/qt4/ui/profiles.h:714
-msgid "AVI"
-msgstr "AVI"
-
-#: modules/gui/qt4/ui/profiles.h:715
-msgid "ASF/WMV"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:716
-msgid "MP&3"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:717
-#, fuzzy
-msgid "Features"
-msgstr "Хураах"
-
-#: modules/gui/qt4/ui/profiles.h:719
-#, fuzzy
-msgid "Streamable"
-msgstr "Урсгалын нэр"
-
-#: modules/gui/qt4/ui/profiles.h:720
-#, fuzzy
-msgid "Chapters"
-msgstr "Сэдэв"
-
-#: modules/gui/qt4/ui/profiles.h:723
-#, fuzzy
-msgid "Menus"
-msgstr "Цэс"
-
-#: modules/gui/qt4/ui/profiles.h:730
-#, fuzzy
-msgid "Fra&me Rate"
-msgstr "Хүрээ, хүрээгээр"
-
-#: modules/gui/qt4/ui/profiles.h:731
-#, fuzzy
-msgid "Same as source"
-msgstr "Эх"
-
-#: modules/gui/qt4/ui/profiles.h:733
-msgid " fps"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:734
-#, fuzzy
-msgid "Custom options"
-msgstr "Тусгай таналтын харьцааны жагсаалт"
-
-#: modules/gui/qt4/ui/profiles.h:735
-#, fuzzy
-msgid "&Quality"
-msgstr "Чанар:"
-
-#: modules/gui/qt4/ui/profiles.h:736 modules/gui/qt4/ui/profiles.h:737
-msgid "Not Used"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:738 modules/gui/qt4/ui/profiles.h:757
-msgid " kb/s"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:739 modules/gui/qt4/ui/profiles.h:759
-#, fuzzy
-msgid "Encoding parameters"
-msgstr "Өргөн зай авалт"
-
-#: modules/gui/qt4/ui/profiles.h:742
-#, fuzzy
-msgid "Frame size"
-msgstr "Өрөөний хэмжээ"
-
-#: modules/gui/qt4/ui/profiles.h:745 modules/gui/qt4/ui/profiles.h:748
-msgid "px"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:758
-#, fuzzy
-msgid "Sa&mple Rate"
-msgstr "Дууны шүүлтрүүд"
-
-#: modules/gui/qt4/ui/profiles.h:766
-#, fuzzy
-msgid "Profile &Name"
-msgstr "Төрхийн нэр"
-
-#: modules/gui/qt4/ui/sout.h:203
-#, fuzzy
-msgid "Set up media sources to stream"
-msgstr "Урсгал сонгох"
-
-#: modules/gui/qt4/ui/sout.h:205
-#, fuzzy
-msgid "Destination Setup"
-msgstr "Зорилт"
-
-#: modules/gui/qt4/ui/sout.h:206
-#, fuzzy
-msgid "Select destinations to stream to"
-msgstr "Урсгал сонгох"
-
-#: modules/gui/qt4/ui/sout.h:207
-msgid ""
-"Add destinations following the streaming methods you need. Be sure to check "
-"with transcoding that the format is compatible with the method used."
-msgstr ""
-
-#: modules/gui/qt4/ui/sout.h:208
-msgid "New destination"
-msgstr "Шинэ зорилт"
-
-#: modules/gui/qt4/ui/sout.h:210
-#, fuzzy
-msgid "Display locally"
-msgstr "Дэлгэц"
-
-#: modules/gui/qt4/ui/sout.h:212
-#, fuzzy
-msgid "Transcoding Options"
-msgstr "Өргөтгөсөн сонголтууд"
-
-#: modules/gui/qt4/ui/sout.h:213
-#, fuzzy
-msgid "Select and choose transcoding options"
-msgstr "\"Өргөтгөсөн Сонголтууд\"-г сонговол бүх сонголтыг харна."
-
-#: modules/gui/qt4/ui/sout.h:214
-#, fuzzy
-msgid "Activate Transcoding"
-msgstr "Дэд бичвэрүүд (зургууд)"
-
-#: modules/gui/qt4/ui/sout.h:215
-#, fuzzy
-msgid "Option Setup"
-msgstr "Сонголтууд"
-
-#: modules/gui/qt4/ui/sout.h:216
-#, fuzzy
-msgid "Set up any additional options for streaming"
-msgstr "Урсгал сонгох"
-
-#: modules/gui/qt4/ui/sout.h:217
-msgid "Miscellaneous Options"
-msgstr "Бусад сонголтууд"
-
-#: modules/gui/qt4/ui/sout.h:218
-msgid "Stream all elementary streams"
-msgstr ""
-
-#: modules/gui/qt4/ui/sout.h:219
-#, fuzzy
-msgid "Generated stream output string"
-msgstr "Ерөнхий гаргах урсгалын тохиргоонууд"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:428
-msgid " %"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_audio.h:431
-#, fuzzy
-msgid "Output module:"
-msgstr "Гаргах модуль"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:435
-msgid "Effects"
-msgstr "Эффектүүд"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:436
-#, fuzzy
-msgid "Visualization:"
-msgstr "Хийсвэрлэлт"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:437
-#, fuzzy
-msgid "Enable Time-Stretching audio"
-msgstr "Дуу нээлттэй"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:438
-#, fuzzy
-msgid "Dolby Surround:"
-msgstr "Долбы хүрээлсэн"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:439
-#, fuzzy
-msgid "Replay gain mode:"
-msgstr "Давталтын горим"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:440
-msgid "Headphone surround effect"
-msgstr "Чихэвчийн хүрээлсэн эффект"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:441
-msgid "Normalize volume to:"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_audio.h:443
-#, fuzzy
-msgid "Preferred audio language:"
-msgstr "Дэвшүүлсэн дууны хэл"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:444
-msgid "Password:"
-msgstr "Нууц үг:"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:445
-#, fuzzy
-msgid "Username:"
-msgstr "Хэрэглэгчийн нэр"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:446
-msgid "Submit played tracks stats to Last.fm"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:346
-#, fuzzy
-msgid "Codecs"
-msgstr "Оролт / Кодчилол"
-
-#: modules/gui/qt4/ui/sprefs_input.h:347
-msgid "x264 profile and level selection"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:348
-msgid "x264 preset and tuning selection"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:349
-msgid "Hardware-accelerated decoding"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:350
-msgid "Skip H.264 in-loop deblocking filter"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:351
-#, fuzzy
-msgid "Video quality post-processing level"
-msgstr "Өндөр чанарын дуу руу шилжүүлэх"
-
-#: modules/gui/qt4/ui/sprefs_input.h:352
-msgid "Optical drive"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:353
-#, fuzzy
-msgid "Default optical device"
-msgstr "Анхдагч төхөөрөмжүүд"
-
-#: modules/gui/qt4/ui/sprefs_input.h:357
-msgid "Damaged or incomplete AVI file"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:360
-msgid "HTTP proxy URL"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:361
-#, fuzzy
-msgid "HTTP (default)"
-msgstr "Анхдагч"
-
-#: modules/gui/qt4/ui/sprefs_input.h:362
-#, fuzzy
-msgid "RTP over RTSP (TCP)"
-msgstr "RTSP (TCP)-д RTP хэрэглэх"
-
-#: modules/gui/qt4/ui/sprefs_input.h:363
-msgid "Live555 stream transport"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:364
-#, fuzzy
-msgid "Default caching policy"
-msgstr "Анхдагч нөөцлөлийн түвшин"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:518
-#, fuzzy
-msgid "Menus language:"
-msgstr "Дууны хэл"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:519
-msgid "Look and feel"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:520
-#, fuzzy
-msgid "Use custom skin"
-msgstr "Арьс сонгох"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:522
-msgid "This is VLC's default interface, with a native look and feel."
-msgstr "Энэ бол VLC-ийн анхдагч харагдах байдал, төрөлх харагдацтайгаар"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:524
-#, fuzzy
-msgid "Use native style"
-msgstr "Дараагийн хэрэгслийн загвар:"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:525
-msgid "Resize interface to video size"
-msgstr "Харагдах байдлыг дүрсийн хэмжээгээр өөрчлөх"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:526
-#, fuzzy
-msgid "Show controls in full screen mode"
-msgstr "Бүтэн дэлгэцний горимд удирдлага харуулах"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:527
-#, fuzzy
-msgid "Pause playback when minimized"
-msgstr "Тогуулалтыг завсарлах"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:528
-msgid "Show media change popup:"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:529
-#, fuzzy
-msgid "Start in minimal view mode"
-msgstr "Видеог бүтэн дэлгэцэнд эхлүүлэх"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:530
-#, fuzzy
-msgid "Force window style:"
-msgstr "Дараагийн хэрэгслийн загвар:"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:531
-msgid "Integrate video in interface"
-msgstr "Видеог харагдах байдалд нэгтгэ"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:532
-#, fuzzy
-msgid "Show systray icon"
-msgstr "Системийн тавиурын шошго"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:534
-msgid "Skin resource file:"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:536
-#, fuzzy
-msgid "Playlist and Instances"
-msgstr "Тоглохжагсаалтын файлууд"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:537
-msgid "Allow only one instance"
-msgstr "Зөвхөн нэг тохиолдлыг зөвшөөрнө"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:540
-msgid "Pause on the last frame of a video"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:544
-msgid "Every "
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:547
-msgid "Separate words by | (without space)"
-msgstr "Үгүүдийг |-ээр тусгаарлах (зай ашиглахгүй)"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:549
-msgid "Save recently played items"
-msgstr "Саяхан тоглуулсан зүйлсийг хадгалах"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:550
-msgid "Activate updates notifier"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:552
-msgid "Operating System Integration"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:553
-msgid "File extensions association"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:554
-#, fuzzy
-msgid "Set up associations..."
-msgstr "Тохируулгууд..."
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:291
-#, fuzzy
-msgid "Enable On Screen Display (OSD)"
-msgstr "Дэдбичвэр ба On Screen Display тохиргоо"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:292
-#, fuzzy
-msgid "Show media title on video start"
-msgstr "Видео тоглуулахад гарчгийг харуулах"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:294
-#, fuzzy
-msgid "Enable subtitles"
-msgstr "Дэд-зургууд нээлттэй"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:295
-#, fuzzy
-msgid "Subtitle Language"
-msgstr "Дэд бичвэрийн хэл"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:297
-#, fuzzy
-msgid "Default encoding"
-msgstr "Анхдагч урсгал"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:298
-#, fuzzy
-msgid "Subtitle effects"
-msgstr "Дэдбичвэрүүд"
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:304
-msgid "Add a shadow"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:306
-#: modules/gui/qt4/ui/video_effects.h:1406
-#: modules/gui/qt4/ui/video_effects.h:1410
-#: modules/gui/qt4/ui/video_effects.h:1413
-#: modules/gui/qt4/ui/video_effects.h:1414
-#: modules/gui/qt4/ui/video_effects.h:1449
-#: modules/gui/qt4/ui/video_effects.h:1451
-#: modules/gui/qt4/ui/video_effects.h:1461
-#: modules/gui/qt4/ui/video_effects.h:1462
-msgid " px"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_subtitles.h:307
-#, fuzzy
-msgid "Add a background"
-msgstr "Анхдагч дэвсгэр өнгө"
-
-#: modules/gui/qt4/ui/sprefs_video.h:324
-msgid "Accelerated video output (Overlay)"
-msgstr "Хурдасгасан дүрс гаргалт (Дээр нь)"
-
-#: modules/gui/qt4/ui/sprefs_video.h:329
-msgid "DirectX"
-msgstr "DirectX"
-
-#: modules/gui/qt4/ui/sprefs_video.h:330
-msgid "Display device"
-msgstr "Дэлгэцийн төхөөрөмж"
-
-#: modules/gui/qt4/ui/sprefs_video.h:331
-#, fuzzy
-msgid "KVA"
-msgstr "MKV"
-
-#: modules/gui/qt4/ui/sprefs_video.h:335
-#, fuzzy
-msgid "Deinterlacing"
-msgstr "Ерөнхий дууны тохиргоо"
-
-#: modules/gui/qt4/ui/sprefs_video.h:337
-msgid "Force Aspect Ratio"
-msgstr "Үзэгдэх харьцааг хүчлэх"
-
-#: modules/gui/qt4/ui/sprefs_video.h:342
-msgid "vlc-snap"
-msgstr ""
-
-#: modules/gui/qt4/ui/streampanel.h:169
-#, fuzzy
-msgid "1"
-msgstr "16"
-
-#: modules/gui/qt4/ui/streampanel.h:171
-msgid "Stuff"
-msgstr ""
-
-#: modules/gui/qt4/ui/streampanel.h:173
-msgid "Edit settings"
-msgstr "Тохиргоо засах"
-
-#: modules/gui/qt4/ui/streampanel.h:174
-msgid "Control"
-msgstr "Удирдлага"
-
-#: modules/gui/qt4/ui/streampanel.h:175
-msgid "Run manually"
-msgstr "Гараар ажиллуулах"
-
-#: modules/gui/qt4/ui/streampanel.h:176
-#, fuzzy
-msgid "Setup schedule"
-msgstr "Хуваарь"
-
-#: modules/gui/qt4/ui/streampanel.h:177
-msgid "Run on schedule"
-msgstr "Хуваариар ажиллуулах"
-
-#: modules/gui/qt4/ui/streampanel.h:178
-msgid "Status"
-msgstr "Төлөв"
-
-#: modules/gui/qt4/ui/streampanel.h:179
-msgid "P/P"
-msgstr ""
-
-#: modules/gui/qt4/ui/streampanel.h:182
-msgid "Prev"
-msgstr "Өмнөх"
-
-#: modules/gui/qt4/ui/streampanel.h:183
-msgid "Add Input"
-msgstr "Оролт нэмэх"
-
-#: modules/gui/qt4/ui/streampanel.h:184
-msgid "Edit Input"
-msgstr "Оролт засах"
-
-#: modules/gui/qt4/ui/streampanel.h:185
-msgid "Clear List"
-msgstr "Жагсаалт цэвэрлэх"
-
-#: modules/gui/qt4/ui/update.h:148
-#, fuzzy
-msgid "Check for VLC updates"
-msgstr "Шинэчлэлийг автоматаар шалгах"
-
-#: modules/gui/qt4/ui/update.h:149
-msgid "Launching an update request..."
-msgstr ""
-
-#: modules/gui/qt4/ui/update.h:150
-msgid "Do you want to download it?"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1404
-msgid "Essential"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1418
-#: modules/gui/qt4/ui/video_effects.h:1427
-msgid ">HHHHHH;#"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1419
-#, fuzzy
-msgid "Negate colors"
-msgstr "Өнгийг солих"
-
-#: modules/gui/qt4/ui/video_effects.h:1432
-#, fuzzy
-msgid "Colors"
-msgstr "Өнгө"
-
-#: modules/gui/qt4/ui/video_effects.h:1433
-#, fuzzy
-msgid "Interactive Zoom"
-msgstr "Харагдах байдал"
-
-#: modules/gui/qt4/ui/video_effects.h:1439
-msgid "Angle"
-msgstr "Өнцөг"
-
-#: modules/gui/qt4/ui/video_effects.h:1443
-#, fuzzy
-msgid "Black Slot"
-msgstr "Хар"
-
-#: modules/gui/qt4/ui/video_effects.h:1447
-#: modules/gui/qt4/ui/video_effects.h:1464
-#, fuzzy
-msgid "..."
-msgstr "Нэмэх..."
-
-#: modules/gui/qt4/ui/video_effects.h:1452
-msgid "full"
-msgstr "бүтэн"
-
-#: modules/gui/qt4/ui/video_effects.h:1454
-msgid "none"
-msgstr "үгүй"
-
-#: modules/gui/qt4/ui/video_effects.h:1458
-msgid "Logo erase"
-msgstr "Тэмдэг арилгах"
-
-#: modules/gui/qt4/ui/video_effects.h:1463
-msgid "Mask"
-msgstr "Баг"
-
-#: modules/gui/qt4/ui/video_effects.h:1468
-#, fuzzy
-msgid "Output Color Filtermode"
-msgstr "Гаргах файл"
-
-#: modules/gui/qt4/ui/video_effects.h:1469
-#, fuzzy
-msgid "Brightness (%)"
-msgstr "Тодрол"
-
-#: modules/gui/qt4/ui/video_effects.h:1471
-msgid "Mark analyzed Pixels"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1473
-#, fuzzy
-msgid "Filter threshold (%)"
-msgstr "Өнгөний босго"
-
-#: modules/gui/qt4/ui/video_effects.h:1476
-msgid "Anaglyph 3D"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1477
-#, fuzzy
-msgid "Mirror"
-msgstr "Алдаанууд"
-
-#: modules/gui/qt4/ui/video_effects.h:1481
-msgid "Motion detect"
-msgstr "Хөдөлгөөн илрүүлэлт"
-
-#: modules/gui/qt4/ui/video_effects.h:1482
-#, fuzzy
-msgid "Spatial blur"
-msgstr "Хөдөлгөөний балартуулалт"
-
-#: modules/gui/qt4/ui/video_effects.h:1486
-msgid "Anti-Flickering"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1487
-msgid "Soften"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1488
-#, fuzzy
-msgid "Denoiser"
-msgstr "Шуугиан"
-
-#: modules/gui/qt4/ui/video_effects.h:1489
-#, fuzzy
-msgid "Spatial luma strength"
-msgstr "Хөдөлгөөний балартуулалт"
-
-#: modules/gui/qt4/ui/video_effects.h:1490
-#, fuzzy
-msgid "Temporal luma strength"
-msgstr "Хөдөлгөөний балартуулалт"
-
-#: modules/gui/qt4/ui/video_effects.h:1491
-#, fuzzy
-msgid "Spatial chroma strength"
-msgstr "Хөдөлгөөний балартуулалт"
-
-#: modules/gui/qt4/ui/video_effects.h:1492
-#, fuzzy
-msgid "Temporal chroma strength"
-msgstr "Хөдөлгөөний балартуулалт"
-
-#: modules/gui/qt4/ui/vlm.h:286
-msgid "VLM configurator"
-msgstr "&VLM тохируулагч..."
-
-#: modules/gui/qt4/ui/vlm.h:287
-msgid "Media Manager Edition"
-msgstr "Дамжуулга зохицуулагчийн хэвлэл"
-
-#: modules/gui/qt4/ui/vlm.h:288
-msgid "Name:"
-msgstr "Нэр:"
-
-#: modules/gui/qt4/ui/vlm.h:290
-msgid "Input:"
-msgstr "Оролт:"
-
-#: modules/gui/qt4/ui/vlm.h:291
-msgid "Select Input"
-msgstr "Оролт сонгох"
-
-#: modules/gui/qt4/ui/vlm.h:292
-msgid "Output:"
-msgstr "Гаргалт:"
-
-#: modules/gui/qt4/ui/vlm.h:293
-msgid "Select Output"
-msgstr "Гаргалт сонгох"
-
-#: modules/gui/qt4/ui/vlm.h:294
-msgid "Time Control"
-msgstr "Цаг удирдлага"
-
-#: modules/gui/qt4/ui/vlm.h:295
-msgid "Mux Control"
-msgstr "Холигч удирдлага"
-
-#: modules/gui/qt4/ui/vlm.h:296
-msgid "Muxer:"
-msgstr "Холигч:"
-
-#: modules/gui/qt4/ui/vlm.h:297
-msgid "AAAA; "
-msgstr ""
-
-#: modules/gui/qt4/ui/vlm.h:302
-msgid "Media Manager List"
-msgstr "Дамжуулга зохицуулагчийн жагсаалт"
-
-#~ msgid "MKV"
-#~ msgstr "MKV"
-
-#, fuzzy
-#~ msgid "Subtitle track added"
-#~ msgstr "Дэд бичвэрийн мөр: %s"
-
-#, fuzzy
-#~ msgid "AVFoundation video capture module."
-#~ msgstr "Дуу гаргах модуль"
-
-#, fuzzy
-#~ msgid "No video devices found"
-#~ msgstr "Видео төхөөрөмжийн нэр"
-
-#, fuzzy
-#~ msgid "Satellite scanning config"
+#~ msgid "Device Selection"
 #~ msgstr "Төхөөрөмж сонголт"
 
-#, fuzzy
-#~ msgid "DVB"
-#~ msgstr "DV"
+#~ msgid "Options"
+#~ msgstr "Сонголтууд"
+
+#~ msgid "Advanced options..."
+#~ msgstr "Өргөтгөсөн сонголтууд..."
+
+#~ msgid "Disc Selection"
+#~ msgstr "Диск сонголт"
+
+#~ msgid "No disc menus"
+#~ msgstr "Дискийн цэс байхгүй"
+
+#~ msgid "Disc device"
+#~ msgstr "Дискийн төхөрөөмж"
+
+#~ msgid "Starting Position"
+#~ msgstr "Эхлэх байрлал"
+
+#~ msgid "Audio and Subtitles"
+#~ msgstr "Дуу болон дэд бичвэрүүд"
+
+#~ msgid "Choose one or more media file to open"
+#~ msgstr "Нээхийн тулд нэг ба олон дамжуулгын файл сонгоно уу"
+
+#~ msgid "File Selection"
+#~ msgstr "Файл сонголт"
+
+#~ msgid "You can select local files with the following list and buttons."
+#~ msgstr "Та дараах жагсаалт, товчуудыг ашиглан дотоод файл сонгоно."
+
+#~ msgid "Add..."
+#~ msgstr "Нэмэх..."
+
+#~ msgid "Network Protocol"
+#~ msgstr "Сүлжээний нэвтрүүлэгч"
 
 #, fuzzy
-#~ msgid "QTSound"
-#~ msgstr "Дуу:"
+#~ msgid "MP&4/MOV"
+#~ msgstr "MP4/MOV"
 
 #, fuzzy
-#~ msgid "No Audio Input device found"
-#~ msgstr "Оролт олдсонгүй"
+#~ msgid "M&JPEG"
+#~ msgstr "MJPEG:"
+
+#~ msgid "MPEG-PS"
+#~ msgstr "MPEG-PS"
 
 #, fuzzy
-#~ msgid "No audio input device found"
-#~ msgstr "Оролт олдсонгүй"
-
-#~ msgid "Uncompressed RAR"
-#~ msgstr "Задалсан RAR"
+#~ msgid "&MPEG-TS"
+#~ msgstr "MPEG-PS"
 
 #, fuzzy
-#~ msgid "Windows Store audio output"
-#~ msgstr "Файл дуу гаргалт"
+#~ msgid "MPEG &1"
+#~ msgstr "MPEG 1"
+
+#~ msgid "AVI"
+#~ msgstr "AVI"
 
 #, fuzzy
-#~ msgid "SVG video decoder"
-#~ msgstr "Видео төхөөрөмж"
+#~ msgid "Fra&me Rate"
+#~ msgstr "Хүрээ, хүрээгээр"
 
 #, fuzzy
-#~ msgid "Windows messages interface"
-#~ msgstr "Qt харагдах байдал"
+#~ msgid "&Quality"
+#~ msgstr "Чанар:"
 
-#~ msgid "Save this Log..."
-#~ msgstr "Тэмдэглэлийг хадгалах..."
-
-#, fuzzy
-#~ msgid "No EPG Data Available"
-#~ msgstr "Хэрэв боломжтой бол S/PDIF-ийг хэрэглэх"
+#~ msgid "Not Used"
+#~ msgstr "Ашиглагдаагүй"
 
 #, fuzzy
-#~ msgid "Empty"
-#~ msgstr "- Хоосон -"
+#~ msgid "Sa&mple Rate"
+#~ msgstr "Дууны шүүлтрүүд"
 
 #, fuzzy
-#~ msgid "Audio Fingerprinting"
-#~ msgstr "Дууны тохиргоо"
+#~ msgid "Profile &Name"
+#~ msgstr "Төрхийн нэр"
 
-#, fuzzy
-#~ msgid "No fingerprint has been found"
-#~ msgstr "Оролт олдсонгүй"
+#~ msgid "New destination"
+#~ msgstr "Шинэ зорилт"
 
-#, fuzzy
-#~ msgctxt "Tooltip|Clear"
-#~ msgid "Clear"
-#~ msgstr "Цэвэрлэх"
+#~ msgid "Miscellaneous Options"
+#~ msgstr "Бусад сонголтууд"
 
-#, fuzzy
-#~ msgid "Videolan.org's addons finder"
-#~ msgstr "Видео хувиргах шүүлтүүр"
+#~ msgid "Effects"
+#~ msgstr "Эффектүүд"
 
-#, fuzzy
-#~ msgid "Chromaprint stream output"
-#~ msgstr "Гаргах урсгалын тайлбар"
+#~ msgid "Headphone surround effect"
+#~ msgstr "Чихэвчийн хүрээлсэн эффект"
 
-#, fuzzy
-#~ msgid "3D OpenGL spectrum visualization"
-#~ msgstr "Тухайн хийсвэрлэлт"
+#~ msgid "Password:"
+#~ msgstr "Нууц үг:"
 
-#, fuzzy
-#~ msgid "Flat Top"
-#~ msgstr "Хавтгай товч"
+#~ msgid "Menus language:"
+#~ msgstr "Цэснүүдийн хэл:"
 
-#, fuzzy
-#~ msgid "VLC media player - Flash Viewer"
-#~ msgstr "VLC дамжуулга тоглуулагчийн Тусламж"
+#~ msgid "Use custom skin"
+#~ msgstr "Тусгай арьс хэрэглэх"
 
-#, fuzzy
-#~ msgid "Streaming Output"
-#~ msgstr "Гаргах урсгал"
+#~ msgid "This is VLC's default interface, with a native look and feel."
+#~ msgstr "Энэ бол VLC-ийн анхдагч харагдах байдал, төрөлх харагдацтайгаар"
+
+#~ msgid "Use native style"
+#~ msgstr "Төрөлх загварыг хэрэглэх"
+
+#~ msgid "Resize interface to video size"
+#~ msgstr "Харагдах байдлыг дүрсийн хэмжээгээр өөрчлөх"
+
+#~ msgid "Show controls in full screen mode"
+#~ msgstr "Бүтэн дэлгэцний горимд удирдлага харуулах"
+
+#~ msgid "Integrate video in interface"
+#~ msgstr "Видеог харагдах байдалд нэгтгэ"
+
+#~ msgid "Allow only one instance"
+#~ msgstr "Зөвхөн нэг тохиолдлыг зөвшөөрнө"
+
+#~ msgid "Separate words by | (without space)"
+#~ msgstr "Үгүүдийг |-ээр тусгаарлах (зай ашиглахгүй)"
+
+#~ msgid "Save recently played items"
+#~ msgstr "Саяхан тоглуулсан зүйлсийг хадгалах"
+
+#~ msgid "Accelerated video output (Overlay)"
+#~ msgstr "Хурдасгасан дүрс гаргалт (Дээр нь)"
+
+#~ msgid "DirectX"
+#~ msgstr "DirectX"
+
+#~ msgid "Display device"
+#~ msgstr "Дэлгэцийн төхөөрөмж"
+
+#~ msgid "Force Aspect Ratio"
+#~ msgstr "Үзэгдэх харьцааг хүчлэх"
+
+#~ msgid "Edit settings"
+#~ msgstr "Тохиргоо засах"
+
+#~ msgid "Control"
+#~ msgstr "Удирдлага"
+
+#~ msgid "Run manually"
+#~ msgstr "Гараар ажиллуулах"
+
+#~ msgid "Run on schedule"
+#~ msgstr "Хуваариар ажиллуулах"
+
+#~ msgid "Status"
+#~ msgstr "Төлөв"
+
+#~ msgid "Prev"
+#~ msgstr "Өмнөх"
+
+#~ msgid "Add Input"
+#~ msgstr "Оролт нэмэх"
+
+#~ msgid "Edit Input"
+#~ msgstr "Оролт засах"
+
+#~ msgid "Clear List"
+#~ msgstr "Жагсаалт цэвэрлэх"
+
+#~ msgid "Do you want to download it?"
+#~ msgstr "Та үүнийг татмаар байна уу?"
+
+#~ msgid "Angle"
+#~ msgstr "Өнцөг"
+
+#~ msgid "full"
+#~ msgstr "бүтэн"
+
+#~ msgid "none"
+#~ msgstr "үгүй"
+
+#~ msgid "Logo erase"
+#~ msgstr "Тэмдэг арилгах"
+
+#~ msgid "Mask"
+#~ msgstr "Баг"
+
+#~ msgid "Motion detect"
+#~ msgstr "Хөдөлгөөн илрүүлэлт"
+
+#~ msgid "VLM configurator"
+#~ msgstr "&VLM тохируулагч..."
+
+#~ msgid "Media Manager Edition"
+#~ msgstr "Дамжуулга зохицуулагчийн хэвлэл"
+
+#~ msgid "Name:"
+#~ msgstr "Нэр:"
+
+#~ msgid "Input:"
+#~ msgstr "Оролт:"
+
+#~ msgid "Select Input"
+#~ msgstr "Оролт сонгох"
+
+#~ msgid "Output:"
+#~ msgstr "Гаргалт:"
+
+#~ msgid "Select Output"
+#~ msgstr "Гаргалт сонгох"
+
+#~ msgid "Time Control"
+#~ msgstr "Цаг удирдлага"
+
+#~ msgid "Mux Control"
+#~ msgstr "Холигч удирдлага"
+
+#~ msgid "Muxer:"
+#~ msgstr "Холигч:"
+
+#~ msgid "Media Manager List"
+#~ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #~ msgid ""
 #~ "You can choose to disable some CPU accelerations here. Use with extreme "
@@ -27969,9 +27028,6 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 #~ msgstr ""
 #~ "Та энд CPU-ийн зарим хурдасгуурыг хааж болно.  Эдгээр тохиргоог магадгүй "
 #~ "өөрчлөхгүй байсан нь дээр."
-
-#~ msgid "Sort"
-#~ msgstr "Эрэмбэ"
 
 #~ msgid ""
 #~ "Some options are available but hidden. Check \"Advanced options\" to see "
@@ -28069,10 +27125,6 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 #~ msgid "Icon View"
 #~ msgstr "Харах"
 
-#, fuzzy
-#~ msgid "List View"
-#~ msgstr "Харах"
-
 #~ msgid "Select an action to change the associated hotkey"
 #~ msgstr "Хамаарах товчийг нь солих үйлдлээ сонго"
 
@@ -28082,9 +27134,6 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 #, fuzzy
 #~ msgid "Ignored extensions in the media library"
 #~ msgstr "Алгассан өргөтгөл"
-
-#~ msgid "Title format string"
-#~ msgstr "Гарчгийн тогтнолын тэмдэгт"
 
 #~ msgid "Configuration file for the OSD Menu."
 #~ msgstr "OSD цэсийн тохиргооны файл."
@@ -28198,10 +27247,6 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 #~ msgid " Playlist (Manually added) "
 #~ msgstr "Тоглохжагсаалт (Гараар нэмсэн)"
 
-#, fuzzy
-#~ msgid "XSPF playlist (*.xspf)"
-#~ msgstr "XSPF тоглох жагсаалт (*.xspf);"
-
 #~ msgid "HTML playlist (*.html)"
 #~ msgstr "HTML тоглох жагсаалт (*.html)"
 
@@ -28216,25 +27261,14 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 #~ msgid "Use system codecs if available (better quality, but dangerous)"
 #~ msgstr "Хэрэв идэвхтэй бол системийн кодчилол хэрэглэх (шилдэг чанар)"
 
-#~ msgid ""
-#~ "Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)"
-#~ msgstr ""
-#~ "Агуулагчууд (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)"
-
 #~ msgid "Select the protocol for the URL."
 #~ msgstr "URL-ийн нэвтрүүлэгч сонгоно уу"
-
-#~ msgid "%.1f kB"
-#~ msgstr "%.1f кБ"
 
 #~ msgid "Media Catalog Number (MCN)"
 #~ msgstr "Дамжуулгын бүлгийн дугаар (MCN)"
 
 #~ msgid "Speed"
 #~ msgstr "Хурд"
-
-#~ msgid "Sort by Path"
-#~ msgstr "Замаар эрэмбэлэх"
 
 #~ msgid "50%"
 #~ msgstr "50%"
@@ -28244,12 +27278,6 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #~ msgid "200%"
 #~ msgstr "200%"
-
-#~ msgid "Stay On Top"
-#~ msgstr "Үргэлж наана"
-
-#~ msgid "Take Screen Shot"
-#~ msgstr "Дэлгэцийн зураг авах"
 
 #~ msgid ""
 #~ "VLC media player %s requires Mac OS X 10.5 or higher.\n"
@@ -28489,33 +27517,87 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 #~ msgid "As soon as track is added"
 #~ msgstr "Замыг нэмэгдэнгүүт"
 
-#~ msgid "Jump to time"
-#~ msgstr "Очих хугацаа"
-
-#~ msgid "Open CrashLog..."
-#~ msgstr "Эвдэрсэн тэмдэглэл нээх..."
-
-#~ msgid "Don't Send"
-#~ msgstr "Илгээхгүй"
-
 #~ msgid "Album art download policy"
 #~ msgstr "Цомгийн урлал татах бодлого"
 
+#, fuzzy
+#~ msgid "Don't repair"
+#~ msgstr "Илгээхгүй"
+
+#, fuzzy
+#~ msgid "MOV"
+#~ msgstr "MKV"
+
+#, fuzzy
+#~ msgid "Sort"
+#~ msgstr "Эрэмбэлэх нь"
+
+#, fuzzy
+#~ msgid "List View"
+#~ msgstr "Жагсаалт"
+
+#, fuzzy
+#~ msgid "Title format string"
+#~ msgstr "Гарчгийн үсгийн хэв"
+
+#, fuzzy
+#~ msgid "XSPF playlist (*.xspf)"
+#~ msgstr "XSPF тоглохжагсаалт"
+
+#, fuzzy
+#~ msgid ""
+#~ "Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)"
+#~ msgstr ""
+#~ "Чингэлгүүд (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv *."
+#~ "webm)"
+
+#, fuzzy
+#~ msgid "%.1f kB"
+#~ msgstr "%.1f ГиБ"
+
+#, fuzzy
+#~ msgid "Sort by Path"
+#~ msgstr "Эрэмбэлэх нь"
+
+#, fuzzy
+#~ msgid "Stay On Top"
+#~ msgstr "Байнга наад талд"
+
+#, fuzzy
+#~ msgid "Take Screen Shot"
+#~ msgstr "&Зураг авах"
+
+#, fuzzy
+#~ msgid "Jump to time"
+#~ msgstr "Очих цаг"
+
+#, fuzzy
+#~ msgid "Open CrashLog..."
+#~ msgstr "Диск нээх..."
+
+#, fuzzy
+#~ msgid "Don't Send"
+#~ msgstr "Харуулахгүй"
+
+#, fuzzy
 #~ msgid "Graphic Equalizer"
-#~ msgstr "График тэгшитгэл"
+#~ msgstr "Тэгшитгэл"
 
 #, fuzzy
 #~ msgid "Automatically retrieve media infos"
 #~ msgstr "Файлуудыг автоматаар хэлзүйн задаргаа хийх"
 
+#, fuzzy
 #~ msgid "Under the Video"
-#~ msgstr "Дүрсний доор"
+#~ msgstr "Дүрсний дээр"
 
+#, fuzzy
 #~ msgid "&Help..."
-#~ msgstr "&Тусламж"
+#~ msgstr "Т&усламж"
 
+#, fuzzy
 #~ msgid "Synchronise on audio track"
-#~ msgstr "Дууны зам дээр давхцуулах"
+#~ msgstr "Жинхэнэ дууны замыг хадгал"
 
 #, fuzzy
 #~ msgid "Add a subtitle file"
@@ -28523,7 +27605,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Subtitles/OSD"
-#~ msgstr "Дэдбичвэрүүд"
+#~ msgstr "Дэдбичвэр / OSD"
 
 #, fuzzy
 #~ msgid "Settings for subtitles, teletext and CC decoders and encoders."
@@ -28536,7 +27618,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 #, fuzzy
 #~ msgid ""
 #~ "These are general settings for video/audio/subtitles encoding modules."
-#~ msgstr "Дуу гаргах модулиудын ерөнхий тохиргоо."
+#~ msgstr "Дүрс гаргах модулиудын ерөнхий тохиргоо."
 
 #, fuzzy
 #~ msgid "Quick &Open File..."
@@ -28600,7 +27682,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Subtitles track ID"
-#~ msgstr "Бичвэрийн мөр"
+#~ msgstr "Бичвэрийн мөрийн №"
 
 #, fuzzy
 #~ msgid "Memory copy module"
@@ -28624,11 +27706,11 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "GSM Audio"
-#~ msgstr "Аудио"
+#~ msgstr "Дуу"
 
 #, fuzzy
 #~ msgid "ALSA audio capture input"
-#~ msgstr "Аудио оролт"
+#~ msgstr "Дууны оролт"
 
 #, fuzzy
 #~ msgid "Audio sampling rate in Hz"
@@ -28676,7 +27758,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Subtitles text encoding"
-#~ msgstr "Дэд бичвэр илрүүлэх замууд"
+#~ msgstr "Дэдбичвэрийн кодчилол"
 
 #, fuzzy
 #~ msgid "normal"
@@ -28773,7 +27855,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Subtitles & OSD"
-#~ msgstr "Дэдбичвэрүүд"
+#~ msgstr "Дэдбичвэр / OSD"
 
 #, fuzzy
 #~ msgid "Input & Codecs"
@@ -28813,7 +27895,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Subtitles speed:"
-#~ msgstr "Дэдбичвэрүүд"
+#~ msgstr "Дэд бичвэр хурд:"
 
 #, fuzzy
 #~ msgid "Subtitles duration factor:"
@@ -28837,19 +27919,19 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Previous media in the playlist, skip backward when keep-pressed"
-#~ msgstr "Тоглох жагсаалт дахь өмнөх дамжуулга"
+#~ msgstr "Тоглох жагсаалт дахь өмнөх дамжуулга, дараастай үед ухраах"
 
 #, fuzzy
 #~ msgid "Next media in the playlist, skip forward when keep-pressed"
-#~ msgstr "Тоглох жагсаалт дахь дараагийн дамжуулга"
+#~ msgstr "Тоглох жагсаалт дахь дараагийн дамжуулга, дараастай үед урагшлуулна"
 
 #, fuzzy
 #~ msgid "Show playlist"
-#~ msgstr "Тоглох жагсаалт хадгалах"
+#~ msgstr "XSPF тоглохжагсаалт"
 
 #, fuzzy
 #~ msgid "Open subtitles file"
-#~ msgstr "Хэрэглэх дэд бичвэрийн файл"
+#~ msgstr "Дэд бичвэрийн файл нээх"
 
 #, fuzzy
 #~ msgid "Radio device name"
@@ -28861,11 +27943,11 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Clear playlist"
-#~ msgstr "Жагсаалт цэвэрлэх"
+#~ msgstr "Тоглох жагсаалт ээлжлэх"
 
 #, fuzzy
 #~ msgid "Subtitles && OSD"
-#~ msgstr "Дэдбичвэрүүд"
+#~ msgstr "Дэдбичвэр / OSD"
 
 #, fuzzy
 #~ msgid "Input && Codecs"
@@ -28889,11 +27971,11 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Subtitles Files"
-#~ msgstr "Дэд бичвэрүүд (зургууд)"
+#~ msgstr "Дэд бичвэрийн файлууд"
 
 #, fuzzy
 #~ msgid "&Tools"
-#~ msgstr "Хэрэгсэл"
+#~ msgstr "Хэрэгс&лүүд"
 
 #, fuzzy
 #~ msgid "&Open (advanced)..."
@@ -28913,7 +27995,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Tools"
-#~ msgstr "Хэрэгсэл"
+#~ msgstr "Хэрэгс&лүүд"
 
 #, fuzzy
 #~ msgid "Hide VLC media player in taskbar"
@@ -28957,7 +28039,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Mute audio"
-#~ msgstr "Дуу нээлттэй"
+#~ msgstr "Дууг хорих"
 
 #, fuzzy
 #~ msgid "Audio Language"
@@ -28997,15 +28079,15 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Audio Codec"
-#~ msgstr "Аудио кодчилол"
+#~ msgstr "Дууны кодчилол"
 
 #, fuzzy
 #~ msgid "Subtitle Codec"
-#~ msgstr "Дэд бичвэр"
+#~ msgstr "Дэдбичвэрийн кодчилол"
 
 #, fuzzy
 #~ msgid "Output Method"
-#~ msgstr "Гаргах модуль"
+#~ msgstr "Гаргах модулиуд"
 
 #, fuzzy
 #~ msgid "Video Bit Rate"
@@ -29093,7 +28175,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Previous/Backward"
-#~ msgstr "Өмнөх сэдэв"
+#~ msgstr "Өмнөх / Ухраах"
 
 #, fuzzy
 #~ msgid "Next/Forward"
@@ -29109,7 +28191,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Speed of the subtitles:"
-#~ msgstr "Дэдбичвэр агуулах"
+#~ msgstr "Гарчганд хэрэглэгдсэн үсгийн хэв"
 
 #, fuzzy
 #~ msgid "Front speakers"
@@ -29153,7 +28235,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "No"
-#~ msgstr "Үгүй"
+#~ msgstr "Ү&гүй"
 
 #, fuzzy
 #~ msgid "Full Screen"
@@ -29169,11 +28251,11 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Graphical Equalizer"
-#~ msgstr "График тэгшитгэл"
+#~ msgstr "Тэгшитгэл"
 
 #, fuzzy
 #~ msgid "Create Stream"
-#~ msgstr "Анхдагч урсгал"
+#~ msgstr "Урсгалууд зохицуулах"
 
 #, fuzzy
 #~ msgid "Media File"
@@ -29201,7 +28283,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Remove Stream"
-#~ msgstr "Хасах"
+#~ msgstr "Сонгосныг хасах"
 
 #, fuzzy
 #~ msgid "Create New Stream"
@@ -29209,7 +28291,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Delete All Streams"
-#~ msgstr "Бүх тэмдэглэлийг устгах"
+#~ msgstr "Бүх хавчуургыг устгах"
 
 #, fuzzy
 #~ msgid "Configure Stream Defaults"
@@ -29265,7 +28347,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Directory input"
-#~ msgstr "Хавтасны угтвар"
+#~ msgstr "Найруулагч"
 
 #, fuzzy
 #~ msgid "Audio Channel"
@@ -29291,10 +28373,6 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 #, fuzzy
 #~ msgid "Lock function"
 #~ msgstr "Байрлал"
-
-#, fuzzy
-#~ msgid "Don't repair"
-#~ msgstr "Илгээхгүй"
 
 #, fuzzy
 #~ msgid "Fast Forward"
@@ -29382,15 +28460,15 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "M3U8 playlist (*.m3u8)"
-#~ msgstr "M3U тоглох жагсаалт оруулах"
+#~ msgstr "M3U8 тоглохжагсаалт"
 
 #, fuzzy
 #~ msgid "M3U playlist (*.m3u)"
-#~ msgstr "M3U тоглох жагсаалт оруулах"
+#~ msgstr "M3U тоглохжагсаалт"
 
 #, fuzzy
 #~ msgid "&Streaming..."
-#~ msgstr "Урсгаж байна"
+#~ msgstr "&Урсгал..."
 
 #, fuzzy
 #~ msgid "Direct3D Desktop mode"
@@ -29402,7 +28480,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Manage &bookmarks"
-#~ msgstr "Шинэ тэмдэглэл үүсгэх"
+#~ msgstr "Шинэ хавчуурга үүсгэх"
 
 #, fuzzy
 #~ msgid "Configure podcasts..."
@@ -29486,7 +28564,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Set"
-#~ msgstr "Сонгох"
+#~ msgstr "Илгээгдсэн"
 
 #, fuzzy
 #~ msgid "SDL video driver name"
@@ -29522,7 +28600,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Track %i"
-#~ msgstr "Зам"
+#~ msgstr "Мөр"
 
 #, fuzzy
 #~ msgid "Prev Title"
@@ -29550,7 +28628,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Select None"
-#~ msgstr "Файл сонгох"
+#~ msgstr "Хавтас сонгох"
 
 #, fuzzy
 #~ msgid "Sort Reverse"
@@ -29606,7 +28684,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Audio:"
-#~ msgstr "Аудио"
+#~ msgstr "Дуу"
 
 #, fuzzy
 #~ msgid "Channel:"
@@ -29630,11 +28708,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "MPEG1"
-#~ msgstr "MPEG 1"
-
-#, fuzzy
-#~ msgid "MOV"
-#~ msgstr "MKV"
+#~ msgstr "MPEG-PS"
 
 #, fuzzy
 #~ msgid " Clear "
@@ -29666,7 +28740,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "Select play mode"
-#~ msgstr "Файл сонгох"
+#~ msgstr "Хавтас сонгох"
 
 #, fuzzy
 #~ msgid "Alignment:"
@@ -29750,7 +28824,7 @@ msgstr "Дамжуулга зохицуулагчийн жагсаалт"
 
 #, fuzzy
 #~ msgid "&Bookmarks..."
-#~ msgstr "Тэмдэглэлүүд..."
+#~ msgstr "Хавчуургууд..."
 
 #, fuzzy
 #~ msgid "&About..."

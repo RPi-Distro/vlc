@@ -1,7 +1,7 @@
 /*****************************************************************************
  * AppleRemote.m
  * AppleRemote
- * $Id: 6bb9a07b71872359217562552a9a50733fa95c50 $
+ * $Id: 971cc132598571cd11910886c405a553615afb2d $
  *
  * Created by Martin Kahr on 11.03.06 under a MIT-style license.
  * Copyright (c) 2006 martinkahr.com. All rights reserved.
@@ -105,6 +105,11 @@ static AppleRemote *_o_sharedInstance = nil;
         else
         /* Lion cookies */
             [mutableCookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteControl_Switched]     forKey:@"42_33_23_21_20_2_33_23_21_20_2_"];
+
+        if (OSX_HIGH_SIERRA_AND_HIGHER) {
+            [mutableCookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonVolume_Plus]    forKey:@"33_21_20_15_12_2_"];
+            [mutableCookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonVolume_Minus]   forKey:@"33_21_20_16_12_2_"];
+        }
 
         _cookieToButtonMapping = [[NSDictionary alloc] initWithDictionary: mutableCookieToButtonMapping];
         [mutableCookieToButtonMapping release];

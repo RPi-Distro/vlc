@@ -2,7 +2,7 @@
  * video.c: video decoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 971238612c9cb5f57edd0fa9d35af48070a250ec $
+ * $Id: ce5254423ea0100359a62458e87ac99e46a59827 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -137,9 +137,11 @@ static inline picture_t *ffmpeg_NewPictBuf( decoder_t *p_dec,
     }
 
 
-    if( width == 0 || height == 0 || width > 8192 || height > 8192 )
+    if( width == 0 || height == 0 || width > 8192 || height > 8192 ||
+        width < p_context->width || height < p_context->height )
     {
-        msg_Err( p_dec, "Invalid frame size %dx%d.", width, height );
+        msg_Err( p_dec, "Invalid frame size %dx%d. vsz %dx%d",
+                 width, height, p_context->width, p_context->height );
         return NULL; /* invalid display size */
     }
     p_dec->fmt_out.video.i_width = width;
@@ -610,7 +612,7 @@ picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
         post_mt( p_sys );
 
         av_init_packet( &pkt );
-        if( p_block )
+        if( p_block && p_block->i_buffer > 0 )
         {
             pkt.data = p_block->p_buffer;
             pkt.size = p_block->i_buffer;

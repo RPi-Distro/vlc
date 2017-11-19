@@ -2,7 +2,7 @@
  * decoder.c: Functions for the management of decoders
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 2c0823feb51643f9fa8170e8d026118eef3e8f23 $
+ * $Id: a2161652726236ee74f14467c14a0cabaed3adea $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -2060,7 +2060,9 @@ static picture_t *vout_new_buffer( decoder_t *p_dec )
         vout_thread_t *p_vout;
 
         if( !p_dec->fmt_out.video.i_width ||
-            !p_dec->fmt_out.video.i_height )
+            !p_dec->fmt_out.video.i_height ||
+            p_dec->fmt_out.video.i_width < p_dec->fmt_out.video.i_visible_width ||
+            p_dec->fmt_out.video.i_height < p_dec->fmt_out.video.i_visible_height )
         {
             /* Can't create a new vout without display size */
             return NULL;
