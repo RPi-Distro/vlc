@@ -12,10 +12,10 @@
 # zhangmin <zm1990s@gmail.com>, 2014
 msgid ""
 msgstr ""
-"Project-Id-Version: VLC - Trans\n"
+"Project-Id-Version: vlc 2.2.7\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-19 02:13+0000\n"
-"PO-Revision-Date: 2017-11-09 11:12+0000\n"
+"POT-Creation-Date: 2017-11-21 20:45+0100\n"
+"PO-Revision-Date: 2017-11-16 03:18+0100\n"
 "Last-Translator: Dian Li <xslidian@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/yaron/vlc-trans/"
 "language/zh_CN/)\n"
@@ -586,7 +586,7 @@ msgstr ""
 "以后您可以在 <a href=\"http://forum.videolan.org\">论坛</a>、<a href="
 "\"http://www.videolan.org/vlc/lists.html\">邮件列表</a>或我们的 IRC 频道 "
 "(irc.freenode.net 上的 <a href=\"http://www.videolan.org/webirc/"
-"\"><em>#videolan</em></a>) 中获取 (或指定) 帮助。</p><h3>为此项目做贡献</"
+"\"><em>#videolan</em></a>) 中获取 (或给予) 帮助。</p><h3>为此项目做贡献</"
 "h3><p>您可以奉献出您的一些时间，通过帮助社区、设计外观、翻译文档、测试、编写"
 "代码等方式帮助 VideoLAN 项目。您也可以为我们提供资金或材料。当然，您也可以 "
 "<b>推广</b> VLC media player。</p></body></html>"
@@ -1068,7 +1068,7 @@ msgstr "空格"
 
 #: src/config/keys.c:115
 msgid "Tab"
-msgstr "Tab"
+msgstr "制表符"
 
 #: src/config/keys.c:116 src/libvlc-module.c:185
 #: modules/gui/qt4/components/preferences_widgets.cpp:1430
@@ -2300,7 +2300,7 @@ msgid ""
 "Scaling factor used when Auto Scaling is disabled.\n"
 "Default value is 1.0 (original video size)."
 msgstr ""
-"禁用自动缩放时使用的缩放系数。\n"
+"禁用自动缩放时使用的缩放因子。\n"
 "默认值为 1.0 (原始视频大小)。"
 
 #: src/libvlc-module.c:443
@@ -3764,11 +3764,11 @@ msgstr "选择用于减慢播放的热键。"
 
 #: src/libvlc-module.c:1203
 msgid "Normal rate"
-msgstr "正常码率"
+msgstr "正常速率"
 
 #: src/libvlc-module.c:1204
 msgid "Select the hotkey to set the playback rate back to normal."
-msgstr "选择将播放码率设为正常值的热键。"
+msgstr "选择将播放速率设为正常值的热键。"
 
 #: src/libvlc-module.c:1205 modules/gui/qt4/menus.cpp:877
 msgid "Faster (fine)"
@@ -4290,14 +4290,12 @@ msgid "Cycle through the available subtitle tracks."
 msgstr "在可用的字幕轨道之间切换。"
 
 #: src/libvlc-module.c:1352
-#, fuzzy
 msgid "Toggle subtitles"
-msgstr "Teletext 字幕"
+msgstr "切换字幕"
 
 #: src/libvlc-module.c:1353
-#, fuzzy
 msgid "Toggle subtitle track visibility."
-msgstr "切换字幕轨道"
+msgstr "切换字幕轨的显示。"
 
 #: src/libvlc-module.c:1354
 msgid "Cycle next program Service ID"
@@ -4341,11 +4339,11 @@ msgstr "激活或关闭自动缩放。"
 
 #: src/libvlc-module.c:1364
 msgid "Increase scale factor"
-msgstr "增大缩放系数"
+msgstr "增大缩放因数"
 
 #: src/libvlc-module.c:1366
 msgid "Decrease scale factor"
-msgstr "减小缩放系数"
+msgstr "减小缩放因数"
 
 #: src/libvlc-module.c:1368
 msgid "Toggle deinterlacing"
@@ -5421,7 +5419,7 @@ msgstr "自动缩放视频"
 
 #: src/video_output/vout_intf.c:178
 msgid "Scale factor"
-msgstr "缩放系数"
+msgstr "缩放因数"
 
 #: src/video_output/vout_intf.c:220 modules/gui/macosx/MainMenu.m:448
 #: modules/gui/macosx/MainMenu.m:449 modules/gui/macosx/VideoEffects.m:80
@@ -5789,7 +5787,7 @@ msgstr "10 bits"
 
 #: modules/access/decklink.cpp:319 modules/demux/ty.c:776
 msgid "Closed captions 1"
-msgstr "闭路字幕 1"
+msgstr "封闭字幕 1"
 
 #: modules/access/dshow/dshow.cpp:92
 msgid "Cable"
@@ -5996,7 +5994,7 @@ msgstr ""
 #: modules/access/dshow/dshow.cpp:199
 msgid ""
 "Select audio input format with the given number of audio channels (if non 0)"
-msgstr "按指定声道数选择音频输入格式 (如果非  0)"
+msgstr "按给定声道数选择音频输入格式 (如果非  0)"
 
 #: modules/access/dshow/dshow.cpp:201
 #: modules/stream_out/transcode/transcode.c:94
@@ -6006,7 +6004,7 @@ msgstr "音频采样率"
 
 #: modules/access/dshow/dshow.cpp:203
 msgid "Select audio input format with the given sample rate (if non 0)"
-msgstr "使用指定的采样率选择音频输入格式 (如果非 0)"
+msgstr "使用给定的采样率选择音频输入格式 (如果非 0)"
 
 #: modules/access/dshow/dshow.cpp:205
 msgid "Audio bits per sample"
@@ -6014,7 +6012,7 @@ msgstr "音频位／采样"
 
 #: modules/access/dshow/dshow.cpp:207
 msgid "Select audio input format with the given bits/sample (if non 0)"
-msgstr "使用指定的位/采样选择音频输入格式 (如果非 0)"
+msgstr "使用给定的位/采样选择音频输入格式 (如果非 0)"
 
 #: modules/access/dshow/dshow.cpp:219
 msgid "DirectShow"
@@ -6105,7 +6103,7 @@ msgstr "频率 (Hz)"
 msgid ""
 "TV channels are grouped by transponder (a.k.a. multiplex) on a given "
 "frequency. This is required to tune the receiver."
-msgstr "脉冲转发器按指定频率为 TV 频道分组 (即混流)。调谐接收器时需要此项。"
+msgstr "脉冲转发器按给定频率为 TV 频道分组 (即混流)。调谐接收器时需要此项。"
 
 #: modules/access/dtv/access.c:61
 #: modules/gui/qt4/components/open_panels.cpp:954
@@ -6155,31 +6153,31 @@ msgstr "如果解调器无法侦测倒置频谱，则需手动配置。"
 
 #: modules/access/dtv/access.c:94
 msgid "FEC code rate"
-msgstr "FEC 编码码率"
+msgstr "FEC 编码速率"
 
 #: modules/access/dtv/access.c:95
 msgid "High-priority code rate"
-msgstr "高优先级编码码率"
+msgstr "高优先级编码速率"
 
 #: modules/access/dtv/access.c:96
 msgid "Low-priority code rate"
-msgstr "低优先级编码码率"
+msgstr "低优先级编码速率"
 
 #: modules/access/dtv/access.c:97
 msgid "Layer A code rate"
-msgstr "A 层编码码率"
+msgstr "A 层编码速率"
 
 #: modules/access/dtv/access.c:98
 msgid "Layer B code rate"
-msgstr "B 层编码码率"
+msgstr "B 层编码速率"
 
 #: modules/access/dtv/access.c:99
 msgid "Layer C code rate"
-msgstr "C 层编码码率"
+msgstr "C 层编码速率"
 
 #: modules/access/dtv/access.c:101
 msgid "The code rate for Forward Error Correction can be specified."
-msgstr "可以指定前向纠错的编码码率。"
+msgstr "可以指定前向纠错的编码速率。"
 
 #: modules/access/dtv/access.c:111
 msgid "Transmission mode"
@@ -6250,9 +6248,8 @@ msgid "Layer C time interleaving"
 msgstr "C 层时间交错"
 
 #: modules/access/dtv/access.c:154
-#, fuzzy
 msgid "Stream identifier"
-msgstr "网络标识符"
+msgstr "流 id"
 
 #: modules/access/dtv/access.c:156
 msgid "Pilot"
@@ -6530,9 +6527,8 @@ msgid "DVDnav Input"
 msgstr "DVD 导航输入"
 
 #: modules/access/dvdnav.c:104
-#, fuzzy
 msgid "DVDnav demuxer"
-msgstr "Nuv 分流器"
+msgstr "DVD 导航菜单分流器"
 
 #: modules/access/dvdnav.c:299 modules/access/dvdread.c:200
 #: modules/access/dvdread.c:462 modules/access/dvdread.c:530
@@ -6719,11 +6715,11 @@ msgstr "网络交互失败"
 
 #: modules/access/ftp.c:320
 msgid "VLC could not connect with the given server."
-msgstr "VLC 无法连接指定的服务器。"
+msgstr "VLC 无法连接给定的服务器。"
 
 #: modules/access/ftp.c:336
 msgid "VLC's connection to the given server was rejected."
-msgstr "VLC 到指定服务器的连接被拒绝。"
+msgstr "VLC 到给定服务器的连接被拒绝。"
 
 #: modules/access/ftp.c:460
 msgid "Your account was rejected."
@@ -7417,7 +7413,7 @@ msgstr "在不再需要时删除剪辑"
 
 #: modules/access_output/livehttp.c:90
 msgid "Use muxers rate control mechanism"
-msgstr "使用混流器的码率控制机制"
+msgstr "使用混流器的速率控制机制"
 
 #: modules/access_output/livehttp.c:92
 msgid "AES key URI to place in playlist"
@@ -7647,7 +7643,7 @@ msgstr "加密连接"
 
 #: modules/access/rdp.c:70
 msgid "Acquisition rate (in fps)"
-msgstr "采集码率 (单位为 fps)"
+msgstr "采集速率 (单位为 fps)"
 
 #: modules/access/rdp.c:81
 msgid "RDP"
@@ -8378,7 +8374,7 @@ msgstr "黑白"
 #: modules/access/v4l2/v4l2.c:164 modules/gui/macosx/VideoEffects.m:134
 #: modules/video_filter/sepia.c:65
 msgid "Sepia"
-msgstr "深褐"
+msgstr "棕褐"
 
 #: modules/access/v4l2/v4l2.c:164
 msgid "Negative"
@@ -8427,7 +8423,7 @@ msgstr "音频输入的均衡。"
 
 #: modules/access/v4l2/v4l2.c:175
 msgid "Bass level"
-msgstr "低音级别"
+msgstr "低音层级"
 
 #: modules/access/v4l2/v4l2.c:177
 msgid "Bass adjustment of the audio input."
@@ -8435,7 +8431,7 @@ msgstr "音频输入的低音调整。"
 
 #: modules/access/v4l2/v4l2.c:178
 msgid "Treble level"
-msgstr "高音级别"
+msgstr "高音层级"
 
 #: modules/access/v4l2/v4l2.c:180
 msgid "Treble adjustment of the audio input."
@@ -8759,7 +8755,7 @@ msgstr "VDR 切割标记"
 
 #: modules/access/vdr.c:878
 msgid "Start"
-msgstr "起始时间"
+msgstr "开头"
 
 #: modules/access/vnc.c:48
 msgid "X.509 Certificate Authority"
@@ -8892,14 +8888,14 @@ msgstr ""
 
 #: modules/audio_filter/audiobargraph_a.c:52
 msgid "Minimum Audio level to raise the alarm"
-msgstr "发出警告的最低音频级别"
+msgstr "发出警告的最低音频层级"
 
 #: modules/audio_filter/audiobargraph_a.c:53
 msgid ""
 "Threshold to be attained to raise an alarm. If the audio level is under the "
 "threshold during this time, an alarm is sent (default 0.1)."
 msgstr ""
-"发出警告所需达到的阈值。如果音频级别在此期间内低于此阈值则发出警告 (默认 "
+"发出警告所需达到的阈值。如果音频层级在此期间内低于此阈值则发出警告 (默认 "
 "0.1)。"
 
 #: modules/audio_filter/audiobargraph_a.c:56
@@ -8942,7 +8938,7 @@ msgstr ""
 
 #: modules/audio_filter/channel_mixer/headphone.c:59
 msgid "Characteristic dimension"
-msgstr "性能基准"
+msgstr "模拟距离"
 
 #: modules/audio_filter/channel_mixer/headphone.c:61
 msgid "Distance between front left speaker and listener in meters."
@@ -8989,8 +8985,8 @@ msgid ""
 "headphone channel mixer. It gives the effect of standing in a room full of "
 "speakers."
 msgstr ""
-"此选项将选择一个适用于于耳机声道混合气的立体声流混缩为单声道的算法。它可以提"
-"供在房间中全部扬声器的效果。"
+"选择耳机声道混音器使用的立体声转单声道缩混算法。其效果是感觉位于到处都是扬声"
+"器的房间内。"
 
 #: modules/audio_filter/channel_mixer/mono.c:82
 msgid "Select channel to keep"
@@ -9044,7 +9040,7 @@ msgstr "用于简易声道混音的音频滤镜"
 
 #: modules/audio_filter/channel_mixer/trivial.c:41
 msgid "Audio filter for trivial channel mixing"
-msgstr "用于弱音声道混合的音频滤镜"
+msgstr "副声道混音使用的音频滤镜"
 
 #: modules/audio_filter/chorus_flanger.c:74
 msgid "Sound Delay"
@@ -9071,21 +9067,21 @@ msgstr "平均延时的毫秒数。注意平均"
 
 #: modules/audio_filter/chorus_flanger.c:82
 msgid "Sweep Depth"
-msgstr "扫描深度"
+msgstr "延伸深度"
 
 #: modules/audio_filter/chorus_flanger.c:83
 msgid ""
 "Time in milliseconds of the maximum sweep depth. Thus, the sweep range will "
 "be delay-time +/- sweep-depth."
-msgstr "最大扫描深度，单位为毫秒。因此，扫描间隔为延时 +/- 扫描深度。"
+msgstr "最大延伸深度，单位为毫秒。延伸范围即延时 +/- 延伸深度。"
 
 #: modules/audio_filter/chorus_flanger.c:85
 msgid "Sweep Rate"
-msgstr "扫描率"
+msgstr "延伸率"
 
 #: modules/audio_filter/chorus_flanger.c:86
 msgid "Rate of change of sweep depth in milliseconds shift per second of play"
-msgstr "扫描深度的变化率，以毫秒为单位，播放时每秒的位移"
+msgstr "延伸深度每秒之内的变化率，以毫秒为单位"
 
 #: modules/audio_filter/chorus_flanger.c:89
 #: modules/audio_filter/stereo_widen.c:60
@@ -9123,11 +9119,11 @@ msgstr "设置 RMS/峰值 (0 ... 1)。"
 
 #: modules/audio_filter/compressor.c:158
 msgid "Attack time"
-msgstr "激发时间"
+msgstr "介入时间"
 
 #: modules/audio_filter/compressor.c:160
 msgid "Set the attack time in milliseconds (1.5 ... 400)."
-msgstr "设置时间间隔，单位为毫秒 (1.5 ... 400)。"
+msgstr "设置介入时间，单位为毫秒 (1.5 ... 400)。"
 
 #: modules/audio_filter/compressor.c:162
 msgid "Release time"
@@ -9156,7 +9152,7 @@ msgstr "设置比率 (n:1) (1 ... 20)。"
 
 #: modules/audio_filter/compressor.c:172 modules/gui/macosx/AudioEffects.m:124
 msgid "Knee radius"
-msgstr "Knee 半径"
+msgstr "knee 半径"
 
 #: modules/audio_filter/compressor.c:173
 msgid "Set the knee radius in dB (1 ... 10)."
@@ -9192,8 +9188,8 @@ msgid ""
 "playback will be more adapted to a movie theater or a listening room."
 msgstr ""
 "动态范围压缩将使响亮的声音变得柔和，或使柔和的声音变得更响亮，让您可以在不打"
-"扰任何人的前提下，在嘈杂环境中轻松聆听音频。如果您禁用动态范围压缩，播放将会"
-"更适合于在电影院或聆听室中放映。"
+"扰任何人的前提下，在嘈杂环境中轻松聆听音频。如果您禁用动态范围压缩，播放效果"
+"将更适合电影院或聆听室。"
 
 #: modules/audio_filter/converter/a52tofloat32.c:94
 msgid "Enable internal upmixing"
@@ -9395,7 +9391,7 @@ msgstr ""
 
 #: modules/audio_filter/normvol.c:71
 msgid "Maximal volume level"
-msgstr "最大音量级别"
+msgstr "最大音量层级"
 
 #: modules/audio_filter/normvol.c:72
 msgid ""
@@ -9468,7 +9464,7 @@ msgstr "频率 3 Q"
 
 #: modules/audio_filter/resampler/bandlimited.c:89
 msgid "Audio filter for band-limited interpolation resampling"
-msgstr "用于波段限制查补重采样的音频滤镜"
+msgstr "用于通带插值的音频重采样滤镜"
 
 #: modules/audio_filter/resampler/speex.c:34
 msgid "Resampling quality"
@@ -9527,27 +9523,27 @@ msgstr "最近邻音频重采样器"
 
 #: modules/audio_filter/scaletempo.c:47
 msgid "Audio tempo scaler synched with rate"
-msgstr "音频节拍定标器，与频率同步"
+msgstr "音频速度缩放器，使音频与播放速度同步"
 
 #: modules/audio_filter/scaletempo.c:48
 msgid "Scaletempo"
-msgstr "节拍比例"
+msgstr "Scaletempo（速度缩放）"
 
 #: modules/audio_filter/scaletempo.c:54
 msgid "Stride Length"
-msgstr "步长度"
+msgstr "步幅长度"
 
 #: modules/audio_filter/scaletempo.c:54
 msgid "Length in milliseconds to output each stride"
-msgstr "以毫秒为单的输出布长度"
+msgstr "输出每一步的长度，以毫秒为单位"
 
 #: modules/audio_filter/scaletempo.c:56
 msgid "Overlap Length"
-msgstr "覆盖长度"
+msgstr "重叠长度"
 
 #: modules/audio_filter/scaletempo.c:56
 msgid "Percentage of stride to overlap"
-msgstr "覆盖步长度百分比"
+msgstr "步长重叠的百分比"
 
 #: modules/audio_filter/scaletempo.c:58
 msgid "Search Length"
@@ -9555,23 +9551,23 @@ msgstr "搜索长度"
 
 #: modules/audio_filter/scaletempo.c:58
 msgid "Length in milliseconds to search for best overlap position"
-msgstr "以毫秒为单位的最佳搜索覆盖未知"
+msgstr "搜索最佳重叠位置的长度，以毫秒为单位"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:54
 msgid "Room size"
-msgstr "室内大小"
+msgstr "房间大小"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:55
 msgid "Defines the virtual surface of the room emulated by the filter."
-msgstr "定义滤镜模拟房间的虚拟表面。"
+msgstr "定义滤镜模拟房间的虚拟框架。"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:58
 msgid "Room width"
-msgstr "室内宽度"
+msgstr "房间宽度"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:59
 msgid "Width of the virtual room"
-msgstr "虚拟室内的宽度"
+msgstr "虚拟房间的宽度"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:61
 #: modules/gui/macosx/AudioEffects.m:132
@@ -9589,17 +9585,17 @@ msgstr "干"
 #: modules/gui/macosx/AudioEffects.m:134
 #: modules/gui/qt4/components/extended_panels.cpp:1435
 msgid "Damp"
-msgstr "湿气"
+msgstr "潮"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:71
 msgid "Audio Spatializer"
-msgstr "音频空间化器"
+msgstr "音频声场定位器"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:72
 #: modules/gui/macosx/AudioEffects.m:145
 #: modules/gui/qt4/dialogs/extended.cpp:70
 msgid "Spatializer"
-msgstr "声场定位"
+msgstr "声场定位器"
 
 #: modules/audio_filter/stereo_widen.c:53
 msgid ""
@@ -10317,7 +10313,7 @@ msgid ""
 "to ease the encoder's task."
 msgstr ""
 "如果您的 CPU 编码性能跟不上，编码器可以实时做质量权衡。它将依次关闭网格量化、"
-"运动向量的码率控制 (hq)、提高降噪阈值来减轻编码器的压力。"
+"运动向量的速率控制 (hq)、提高降噪阈值来减轻编码器的压力。"
 
 #: modules/codec/avcodec/avcodec.h:207
 msgid "Minimum video quantizer scale"
@@ -10341,7 +10337,7 @@ msgstr "网格量化"
 
 #: modules/codec/avcodec/avcodec.h:216
 msgid "Enable trellis quantization (rate distortion for block coefficients)."
-msgstr "启用网格量化 (用于块系数的码率控制)。"
+msgstr "启用网格量化 (用于块系数的速率控制)。"
 
 #: modules/codec/avcodec/avcodec.h:219
 msgid "Fixed quantizer scale"
@@ -10516,7 +10512,7 @@ msgstr "CC 608/708"
 
 #: modules/codec/cc.c:56
 msgid "Closed Captions decoder"
-msgstr "闭路字幕解码器"
+msgstr "封闭字幕解码器"
 
 #: modules/codec/cdg.c:87
 msgid "CDG video decoder"
@@ -10738,7 +10734,7 @@ msgstr "合成增益"
 msgid ""
 "This gain is applied to synthesis output. High values may cause saturation "
 "when many notes are played at a time."
-msgstr "此增益将应用于合成输出。过高的值可能会造成同时播放的音符饱和。"
+msgstr "此增益将应用于合成输出。过高的值可能会造成同时播放很多音符时过于饱和。"
 
 #: modules/codec/fluidsynth.c:53
 msgid "Polyphony"
@@ -10748,7 +10744,8 @@ msgstr "复音"
 msgid ""
 "The polyphony defines how many voices can be played at a time. Larger values "
 "require more processing power."
-msgstr "复音数定义了可同时播放的语音数量。数值越大，所需的处理器运算也越高。"
+msgstr ""
+"复音数定义了可同时播放的语音数量。数值越大，所需的处理器运算能力也越高。"
 
 #: modules/codec/fluidsynth.c:58 modules/demux/mod.c:82
 msgid "Reverb"
@@ -11353,7 +11350,7 @@ msgstr ""
 
 #: modules/codec/qsv.c:127
 msgid "Accuracy of RateControl"
-msgstr "码率控制精度"
+msgstr "速率控制精度"
 
 #: modules/codec/qsv.c:128
 msgid ""
@@ -11368,14 +11365,14 @@ msgstr ""
 
 #: modules/codec/qsv.c:134
 msgid "Convergence time of 'avbr' RateControl"
-msgstr "'avbr' 码率控制模式下的收敛时间"
+msgstr "'avbr' 速率控制模式下的收敛时间"
 
 #: modules/codec/qsv.c:135
 msgid ""
 "Number of 100 frames before the 'avbr' rate control method reaches the "
 "requested bitrate with the requested accuracy. See the accuracy parameter. "
 msgstr ""
-"'avbr' 码率控制方法达到指定精度下指定比特率之前允许的 100 帧的倍数。参见精度"
+"'avbr' 速率控制方法达到指定精度下指定比特率之前允许的 100 帧的倍数。参见精度"
 "参数。"
 
 #: modules/codec/qsv.c:139
@@ -11447,7 +11444,7 @@ msgstr "4:4:4"
 
 #: modules/codec/schroedinger.c:63
 msgid "Rate control method"
-msgstr "码率控制方法"
+msgstr "速率控制方法"
 
 #: modules/codec/schroedinger.c:64
 msgid "Method used to encode the video sequence"
@@ -11762,7 +11759,7 @@ msgstr "缩减采样的级别"
 
 #: modules/codec/schroedinger.c:311
 msgid "Number of levels of downsampling in hierarchical motion estimation mode"
-msgstr "分层运动估计模式缩减采样级别数"
+msgstr "分层运动估计模式缩减采样层级数"
 
 #: modules/codec/schroedinger.c:315
 msgid "Enable Global Motion Estimation"
@@ -12584,11 +12581,11 @@ msgstr "使用周期性的帧内刷新而不是 IDR 帧"
 
 #: modules/codec/x264.c:184
 msgid "Use mb-tree ratecontrol"
-msgstr "使用 mb-tree 码率控制"
+msgstr "使用 mb-tree 速率控制"
 
 #: modules/codec/x264.c:185
 msgid "You can disable use of Macroblock-tree on ratecontrol"
-msgstr "您可以关闭码率控制对 Macroblock-tree 宏块树的使用"
+msgstr "您可以关闭速率控制对 Macroblock-tree 宏块树的使用"
 
 #: modules/codec/x264.c:187
 msgid "Force number of slices per frame"
@@ -12727,19 +12724,19 @@ msgstr ""
 
 #: modules/codec/x264.c:243
 msgid "QP factor between I and P"
-msgstr "I 和 P 之间的 QP 系数"
+msgstr "I 和 P 之间的 QP 因数"
 
 #: modules/codec/x264.c:244
 msgid "QP factor between I and P. Range 1.0 to 2.0."
-msgstr "在 I 和 P 之间的 QP 系数。范围从 1.0 到 2.0。"
+msgstr "在 I 和 P 之间的 QP 因数。范围从 1.0 到 2.0。"
 
 #: modules/codec/x264.c:247
 msgid "QP factor between P and B"
-msgstr "P 和 B 之间的 QP 系数"
+msgstr "P 和 B 之间的 QP 因数"
 
 #: modules/codec/x264.c:248
 msgid "QP factor between P and B. Range 1.0 to 2.0."
-msgstr "在 P 和 B 之间的 QP 系数。范围从 1.0 到 2.0。"
+msgstr "在 P 和 B 之间的 QP 因数。范围从 1.0 到 2.0。"
 
 #: modules/codec/x264.c:250
 msgid "QP difference between chroma and luma"
@@ -14890,11 +14887,11 @@ msgstr "重金属"
 
 #: modules/demux/mp4/id3genres.h:170
 msgid "Black Metal"
-msgstr "黑色金属"
+msgstr "黑金属"
 
 #: modules/demux/mp4/id3genres.h:171
 msgid "Crossover"
-msgstr "混合"
+msgstr "跨界"
 
 #: modules/demux/mp4/id3genres.h:172
 msgid "Contemporary Christian"
@@ -14910,15 +14907,15 @@ msgstr "梅伦格"
 
 #: modules/demux/mp4/id3genres.h:175
 msgid "Salsa"
-msgstr "莎莎"
+msgstr "萨尔萨"
 
 #: modules/demux/mp4/id3genres.h:176
 msgid "Thrash Metal"
-msgstr "鞭挞金属"
+msgstr "敲击金属"
 
 #: modules/demux/mp4/id3genres.h:177
 msgid "Anime"
-msgstr "日漫"
+msgstr "日本动画"
 
 #: modules/demux/mp4/id3genres.h:178
 msgid "JPop"
@@ -15560,15 +15557,15 @@ msgstr "TY 流音频/视频分流"
 
 #: modules/demux/ty.c:777
 msgid "Closed captions 2"
-msgstr "闭路字幕 2"
+msgstr "封闭字幕 2"
 
 #: modules/demux/ty.c:778
 msgid "Closed captions 3"
-msgstr "闭路字幕 3"
+msgstr "封闭字幕 3"
 
 #: modules/demux/ty.c:779
 msgid "Closed captions 4"
-msgstr "闭路字幕 4"
+msgstr "封闭字幕 4"
 
 #: modules/demux/vc1.c:44
 msgid "Desired frame rate for the VC-1 stream."
@@ -15596,7 +15593,7 @@ msgstr "XA 分流器"
 
 #: modules/demux/xiph_metadata.h:48
 msgid "Closed captions"
-msgstr "闭路字幕"
+msgstr "封闭字幕"
 
 #: modules/demux/xiph_metadata.h:50
 msgid "Textual audio descriptions"
@@ -15708,15 +15705,13 @@ msgstr "服务发现"
 
 #: modules/gui/macosx/AddonManager.m:102
 #: modules/gui/qt4/dialogs/plugins.cpp:386
-#, fuzzy
 msgid "Interfaces"
 msgstr "界面"
 
 #: modules/gui/macosx/AddonManager.m:104
 #: modules/gui/qt4/dialogs/plugins.cpp:389
-#, fuzzy
 msgid "Art and meta fetchers"
-msgstr "Lua 元装取器"
+msgstr "封面与元数据装取器"
 
 #: modules/gui/macosx/AddonManager.m:106 modules/gui/macosx/AddonManager.m:355
 #: modules/gui/macosx/MainMenu.m:352 modules/gui/macosx/MainMenu.m:353
@@ -16194,9 +16189,8 @@ msgid "Setup Streaming..."
 msgstr "配置串流传输..."
 
 #: modules/gui/macosx/ConvertAndSave.m:163
-#, fuzzy
 msgid "Select Streaming Method"
-msgstr "流模式"
+msgstr "选择流模式"
 
 #: modules/gui/macosx/ConvertAndSave.m:164
 msgid "Save as File"
@@ -16346,7 +16340,7 @@ msgstr "%@ 串流到 %@:%@"
 
 #: modules/gui/macosx/ConvertAndSave.m:485
 msgid "No Address given"
-msgstr "未指定地址"
+msgstr "未给定地址"
 
 #: modules/gui/macosx/ConvertAndSave.m:487
 msgid "In order to stream, a valid destination address is required."
@@ -16354,7 +16348,7 @@ msgstr "若要串流，必须提供有效的目标地址。"
 
 #: modules/gui/macosx/ConvertAndSave.m:492
 msgid "No Channel Name given"
-msgstr "未指定频道名称"
+msgstr "未给定频道名称"
 
 #: modules/gui/macosx/ConvertAndSave.m:494
 msgid ""
@@ -16363,7 +16357,7 @@ msgstr "已启用 SAP 串流广播。但未提供频道名称。"
 
 #: modules/gui/macosx/ConvertAndSave.m:499
 msgid "No SDP URL given"
-msgstr "未指定 SDP URL"
+msgstr "未给定 SDP URL"
 
 #: modules/gui/macosx/ConvertAndSave.m:501
 msgid "A SDP export is requested, but no URL is provided."
@@ -17548,7 +17542,7 @@ msgstr "已发送字节"
 
 #: modules/gui/macosx/playlistinfo.m:109
 msgid "Send rate"
-msgstr "发送码率"
+msgstr "发送速率"
 
 #: modules/gui/macosx/playlistinfo.m:113
 msgid "Played buffers"
@@ -17661,11 +17655,11 @@ msgstr "可视化"
 
 #: modules/gui/macosx/simple_prefs.m:343
 msgid "Keep audio level between sessions"
-msgstr "会话期间保留音频级别"
+msgstr "会话期间保留音频层级"
 
 #: modules/gui/macosx/simple_prefs.m:344
 msgid "Always reset audio start level to:"
-msgstr "总将音频启动级别重置为:"
+msgstr "总将音频启动层级重置为:"
 
 #: modules/gui/macosx/simple_prefs.m:347 modules/gui/qt4/dialogs/vlm.cpp:502
 msgid "Change"
@@ -17855,24 +17849,20 @@ msgid "No check was performed yet."
 msgstr "尚未执行检查。"
 
 #: modules/gui/macosx/simple_prefs.m:739
-#, fuzzy
 msgid "Lowest Latency"
 msgstr "最低延迟"
 
 #: modules/gui/macosx/simple_prefs.m:742
-#, fuzzy
 msgid "Low Latency"
 msgstr "低延迟"
 
 #: modules/gui/macosx/simple_prefs.m:748
-#, fuzzy
 msgid "Higher Latency"
 msgstr "较高延迟"
 
 #: modules/gui/macosx/simple_prefs.m:751
-#, fuzzy
 msgid "Highest Latency"
-msgstr "较高延迟"
+msgstr "最高延迟"
 
 #: modules/gui/macosx/simple_prefs.m:876
 #: modules/gui/qt4/dialogs/preferences.cpp:327
@@ -17988,7 +17978,7 @@ msgstr "fps"
 #: modules/gui/macosx/TrackSynchronization.m:71
 #: modules/gui/qt4/components/extended_panels.cpp:1531
 msgid "Subtitle duration factor:"
-msgstr "字幕时长系数:"
+msgstr "字幕时长因数:"
 
 #: modules/gui/macosx/TrackSynchronization.m:79
 #: modules/gui/qt4/components/extended_panels.cpp:1642
@@ -18174,7 +18164,7 @@ msgstr "色调分离"
 
 #: modules/gui/macosx/VideoEffects.m:152 modules/video_filter/posterize.c:60
 msgid "Posterize level"
-msgstr "色调分离级别"
+msgstr "色调分离层级"
 
 #: modules/gui/macosx/VideoEffects.m:153 modules/video_filter/motionblur.c:59
 msgid "Motion blur"
@@ -19619,7 +19609,7 @@ msgstr "脉冲转发器/混流频率"
 
 #: modules/gui/qt4/components/open_panels.cpp:945
 msgid "Transponder symbol rate"
-msgstr "脉冲转发器符号码率"
+msgstr "脉冲转发器符号速率"
 
 #: modules/gui/qt4/components/open_panels.cpp:978
 msgid "Bandwidth"
@@ -19959,7 +19949,7 @@ msgstr "该混流器并非由 VLC 直接提供: 可能存在丢失的情况。"
 
 #: modules/gui/qt4/components/sout/profile_selector.cpp:612
 msgid "This muxer is missing. Using this profile will fail"
-msgstr "该复用器缺失。使用该配置文件将导致处理失败"
+msgstr "该混流器缺失。使用该配置文件将失败"
 
 #: modules/gui/qt4/components/sout/profile_selector.cpp:756
 msgid " Profile Name Missing"
@@ -20400,7 +20390,7 @@ msgstr "服务发现可将新资源添加到您的播放列表，如网络电台
 
 #: modules/gui/qt4/dialogs/plugins.cpp:390
 msgid "Retrieves extra info and art for playlist items"
-msgstr "检索播放列表中各项的额外信息及封面"
+msgstr "为播放列表项目获取额外信息及封面图片"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:393
 msgid ""
@@ -20773,9 +20763,8 @@ msgid "Do you want to restart the playback where left off?"
 msgstr "您是否希望从上次播放到的位置继续播放?"
 
 #: modules/gui/qt4/main_interface.cpp:390
-#, fuzzy
 msgid "&Continue"
-msgstr "继续"
+msgstr "继续(&C)"
 
 #: modules/gui/qt4/main_interface.cpp:1312
 msgid "Control menu for the player"
@@ -22175,7 +22164,7 @@ msgid ""
 "bitrate between the two boundaries. This avoids having huge bitrate peaks, "
 "especially for reference frames."
 msgstr ""
-"按指定的长度剪切流，并在两个边界之间保持恒定码率。这可以避免巨大的码率峰值，"
+"按给定的长度剪切流，并在两个边界之间保持恒定码率。这可以避免巨大的码率峰值，"
 "特别是对于参考帧来说。"
 
 #: modules/mux/mpeg/ts.c:129
@@ -22190,7 +22179,7 @@ msgid ""
 "enhances the efficiency of the shaping algorithm, since I frames are usually "
 "the biggest frames in the stream."
 msgstr ""
-"若启用并指定整形，TS 混流器将会在 I 画面的末尾放置分界线。因此，用户指定的修"
+"若启用并指定整形，TS 混流器将会在 I 画面的末尾放置分界线。因此，用户给定的修"
 "整长度可能会在没有参考帧可用的情况下变糟糕。由于 I 帧通常为串流中最大的帧，这"
 "有助于提高整形算法的效率。"
 
@@ -22326,9 +22315,8 @@ msgid "LibNotify Notification Plugin"
 msgstr "LibNotify 提示插件"
 
 #: modules/packetizer/avparser.h:49
-#, fuzzy
 msgid "avparser packetizer"
-msgstr "复制封包器"
+msgstr "avparser 封包器"
 
 #: modules/packetizer/copy.c:48
 msgid "Copy packetizer"
@@ -23071,7 +23059,7 @@ msgstr "会话描述"
 msgid ""
 "This allows you to give a short description with details about the stream, "
 "that will be announced in the SDP (Session Descriptor)."
-msgstr "这将允许您指定一个将被在 SDP (会话描述符) 中宣告的短描述的详细流信息。"
+msgstr "这将允许您给予一个将被在 SDP (会话描述符) 中宣告的短描述的详细流信息。"
 
 #: modules/stream_out/rtp.c:102 modules/stream_out/standard.c:66
 msgid "Session URL"
@@ -23094,7 +23082,7 @@ msgstr "会话电子邮件"
 msgid ""
 "This allows you to give a contact mail address for the stream, that will be "
 "announced in the SDP (Session Descriptor)."
-msgstr "这将允许您为要在 SDP (会话描述符) 中宣告的流指定一个联系的邮件。"
+msgstr "这将允许您为要在 SDP (会话描述符) 中宣告的流给予一个联系的邮件。"
 
 #: modules/stream_out/rtp.c:111 modules/stream_out/standard.c:75
 msgid "Session phone number"
@@ -23104,7 +23092,7 @@ msgstr "会话电话号码"
 msgid ""
 "This allows you to give a contact telephone number for the stream, that will "
 "be announced in the SDP (Session Descriptor)."
-msgstr "这将允许您为要在 SDP (会话描述符) 中宣告的流指定一个联系的电话号码。"
+msgstr "这将允许您为要在 SDP (会话描述符) 中宣告的流给予一个联系的电话号码。"
 
 #: modules/stream_out/rtp.c:118
 msgid "This allows you to specify the base port for the RTP streaming."
@@ -25531,7 +25519,7 @@ msgid ""
 "comma-separated list of picture ID(s).These IDs are assigned in the \"mosaic-"
 "bridge\" module."
 msgstr ""
-"您可以强制指定 mosaic 元素的数序。您必须指定一个逗号分隔的图像 ID 列表。这些 "
+"您可以强制指定 mosaic 元素的数序。您必须给予一个逗号分隔的图像 ID 列表。这些 "
 "ID 被分配给 \"mosaic - 桥\" 模式。"
 
 #: modules/video_filter/mosaic.c:148
@@ -25578,7 +25566,7 @@ msgstr "马赛克"
 
 #: modules/video_filter/motionblur.c:53
 msgid "Blur factor (1-127)"
-msgstr "模糊系数 (1-127)"
+msgstr "模糊因数 (1-127)"
 
 #: modules/video_filter/motionblur.c:54
 msgid "The degree of blurring from 1 to 127."
@@ -25662,7 +25650,7 @@ msgstr "OpenCV"
 
 #: modules/video_filter/opencv_wrapper.c:81
 msgid "Scale factor (0.1-2.0)"
-msgstr "比例系数 (0.1-2.0)"
+msgstr "比例因数 (0.1-2.0)"
 
 #: modules/video_filter/opencv_wrapper.c:82
 msgid ""
@@ -25920,7 +25908,7 @@ msgid ""
 "transparency. The default is being not transparent (value 255) the minimum "
 "is fully transparent (value 0)."
 msgstr ""
-"OSD VNC 的透明度可以通过指定 0 到 255 之间的值被更改。一个较低的值将有较高的"
+"OSD VNC 的透明度可以通过给予 0 到 255 之间的值被更改。一个较低的值将有较高的"
 "透明度一个较高的值透明度较小。默认为不透明 (值 255) 最小为完全透明 (值 0)。"
 
 #: modules/video_filter/remoteosd.c:115
@@ -26181,7 +26169,7 @@ msgstr ""
 
 #: modules/video_filter/subsdelay.c:53
 msgid "Calculation factor"
-msgstr "计算系数"
+msgstr "计算因数"
 
 #: modules/video_filter/subsdelay.c:54
 msgid ""
@@ -26500,7 +26488,7 @@ msgstr "帧缓冲使用硬件加速"
 
 #: modules/video_output/fb.c:71
 msgid "Disable for double buffering in software."
-msgstr "禁用本项，将在软件中实施双重缓冲。"
+msgstr "禁用可实现软件双重缓冲。"
 
 #: modules/video_output/fb.c:73
 msgid "Image format (default RGB)"
@@ -27529,7 +27517,7 @@ msgstr "马赛克效果"
 
 #: share/lua/http/dialogs/offset_window.html:68
 msgid "Playback Rate"
-msgstr "回放码率"
+msgstr "回放速率"
 
 #: share/lua/http/dialogs/offset_window.html:72
 msgid "Audio Delay"
@@ -27773,23 +27761,29 @@ msgstr "是否确定要创建流?"
 #~ msgid "Profile edition"
 #~ msgstr "配置文件版本"
 
-#, fuzzy
+#~ msgid "FLAC"
+#~ msgstr "FLAC"
+
 #~ msgid "MP&4/MOV"
-#~ msgstr "MP4/MOV"
+#~ msgstr "MP&4/MOV"
 
 #~ msgid "Ogg/Ogm"
 #~ msgstr "Ogg/Ogm"
 
-#, fuzzy
+#~ msgid "M&KV"
+#~ msgstr "M&KV"
+
 #~ msgid "M&JPEG"
-#~ msgstr "MJPEG"
+#~ msgstr "M&JPEG"
 
 #~ msgid "MPEG-PS"
 #~ msgstr "MPEG-PS"
 
-#, fuzzy
+#~ msgid "F&LV"
+#~ msgstr "F&LV"
+
 #~ msgid "&MPEG-TS"
-#~ msgstr "MPEG-TS"
+#~ msgstr "&MPEG-TS"
 
 #~ msgid "RAW"
 #~ msgstr "RAW"
@@ -27800,15 +27794,17 @@ msgstr "是否确定要创建流?"
 #~ msgid "Webm"
 #~ msgstr "WebM"
 
-#, fuzzy
 #~ msgid "MPEG &1"
-#~ msgstr "MPEG 1"
+#~ msgstr "MPEG &1"
 
 #~ msgid "AVI"
 #~ msgstr "AVI"
 
 #~ msgid "ASF/WMV"
 #~ msgstr "ASF/WMV"
+
+#~ msgid "MP&3"
+#~ msgstr "MP&3"
 
 #~ msgid "Features"
 #~ msgstr "功能"
@@ -27822,9 +27818,8 @@ msgstr "是否确定要创建流?"
 #~ msgid "Menus"
 #~ msgstr "菜单"
 
-#, fuzzy
 #~ msgid "Fra&me Rate"
-#~ msgstr "帧率"
+#~ msgstr "帧率(&M)"
 
 #~ msgid "Same as source"
 #~ msgstr "与来源相同"
@@ -27835,9 +27830,8 @@ msgstr "是否确定要创建流?"
 #~ msgid "Custom options"
 #~ msgstr "自定义选项"
 
-#, fuzzy
 #~ msgid "&Quality"
-#~ msgstr "质量"
+#~ msgstr "质量(&Q)"
 
 #~ msgid "Not Used"
 #~ msgstr "未使用"
@@ -27854,13 +27848,11 @@ msgstr "是否确定要创建流?"
 #~ msgid "px"
 #~ msgstr "px"
 
-#, fuzzy
 #~ msgid "Sa&mple Rate"
-#~ msgstr "采样率"
+#~ msgstr "采样率(&M)"
 
-#, fuzzy
 #~ msgid "Profile &Name"
-#~ msgstr "配置文件名称"
+#~ msgstr "配置文件名称(&N)"
 
 #~ msgid "Set up media sources to stream"
 #~ msgstr "设置要串流的媒体源"

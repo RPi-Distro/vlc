@@ -11,9 +11,9 @@
 # Valek Filippov <frob@df.ru>, 2001
 msgid ""
 msgstr ""
-"Project-Id-Version: VLC - Trans\n"
+"Project-Id-Version: vlc 2.2.7\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-19 02:13+0000\n"
+"POT-Creation-Date: 2017-11-21 20:45+0100\n"
 "PO-Revision-Date: 2017-09-23 19:54+0000\n"
 "Last-Translator: Alexander Lakhin <exclusion@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/yaron/vlc-trans/language/"
@@ -4519,14 +4519,12 @@ msgid "Cycle through the available subtitle tracks."
 msgstr "Переключает доступные дорожки субтитров по кругу."
 
 #: src/libvlc-module.c:1352
-#, fuzzy
 msgid "Toggle subtitles"
-msgstr "Субтитры телетекста"
+msgstr "Вкл/выкл. субтитры"
 
 #: src/libvlc-module.c:1353
-#, fuzzy
 msgid "Toggle subtitle track visibility."
-msgstr "Переключение дорожек субтитров"
+msgstr "Управление отображением дорожки субтитров."
 
 #: src/libvlc-module.c:1354
 msgid "Cycle next program Service ID"
@@ -6533,9 +6531,8 @@ msgid "Layer C time interleaving"
 msgstr "Перемежение в слое C"
 
 #: modules/access/dtv/access.c:154
-#, fuzzy
 msgid "Stream identifier"
-msgstr "Идентификатор сети"
+msgstr "Идентификатор потока"
 
 #: modules/access/dtv/access.c:156
 msgid "Pilot"
@@ -6828,9 +6825,8 @@ msgid "DVDnav Input"
 msgstr "Ввод DVDnav"
 
 #: modules/access/dvdnav.c:104
-#, fuzzy
 msgid "DVDnav demuxer"
-msgstr "Демультиплексор Nuv"
+msgstr "Демультиплексор DVD-навигации"
 
 #: modules/access/dvdnav.c:299 modules/access/dvdread.c:200
 #: modules/access/dvdread.c:462 modules/access/dvdread.c:530
@@ -16366,15 +16362,13 @@ msgstr "Обнаружение служб"
 
 #: modules/gui/macosx/AddonManager.m:102
 #: modules/gui/qt4/dialogs/plugins.cpp:386
-#, fuzzy
 msgid "Interfaces"
-msgstr "Интерфейс"
+msgstr "Интерфейсы"
 
 #: modules/gui/macosx/AddonManager.m:104
 #: modules/gui/qt4/dialogs/plugins.cpp:389
-#, fuzzy
 msgid "Art and meta fetchers"
-msgstr "Загрузчик метаданных"
+msgstr "Загрузчики обложек и метаданных"
 
 #: modules/gui/macosx/AddonManager.m:106 modules/gui/macosx/AddonManager.m:355
 #: modules/gui/macosx/MainMenu.m:352 modules/gui/macosx/MainMenu.m:353
@@ -16869,9 +16863,8 @@ msgid "Setup Streaming..."
 msgstr "Настройка передачи..."
 
 #: modules/gui/macosx/ConvertAndSave.m:163
-#, fuzzy
 msgid "Select Streaming Method"
-msgstr "Метод вещания"
+msgstr "Выберите метод вещания"
 
 #: modules/gui/macosx/ConvertAndSave.m:164
 msgid "Save as File"
@@ -18570,24 +18563,20 @@ msgid "No check was performed yet."
 msgstr "Проверка ещё не выполнялась."
 
 #: modules/gui/macosx/simple_prefs.m:739
-#, fuzzy
 msgid "Lowest Latency"
 msgstr "наименьшая задержка"
 
 #: modules/gui/macosx/simple_prefs.m:742
-#, fuzzy
 msgid "Low Latency"
-msgstr "малая задержка"
+msgstr "уменьшенная задержка"
 
 #: modules/gui/macosx/simple_prefs.m:748
-#, fuzzy
 msgid "Higher Latency"
 msgstr "увеличенная задержка"
 
 #: modules/gui/macosx/simple_prefs.m:751
-#, fuzzy
 msgid "Highest Latency"
-msgstr "увеличенная задержка"
+msgstr "наибольшая задержка"
 
 #: modules/gui/macosx/simple_prefs.m:876
 #: modules/gui/qt4/dialogs/preferences.cpp:327
@@ -21185,7 +21174,7 @@ msgstr ""
 
 #: modules/gui/qt4/dialogs/plugins.cpp:390
 msgid "Retrieves extra info and art for playlist items"
-msgstr "Загружают доп. материалы и обложку для воспроизводимого содержимого."
+msgstr "Загружают доп. материалы и обложки для воспроизводимого содержимого."
 
 #: modules/gui/qt4/dialogs/plugins.cpp:393
 msgid ""
@@ -21563,9 +21552,8 @@ msgid "Do you want to restart the playback where left off?"
 msgstr "Вы хотите начать воспроизведение с последней позиции?"
 
 #: modules/gui/qt4/main_interface.cpp:390
-#, fuzzy
 msgid "&Continue"
-msgstr "Продолжить"
+msgstr "&Продолжить"
 
 #: modules/gui/qt4/main_interface.cpp:1312
 msgid "Control menu for the player"
@@ -23170,9 +23158,8 @@ msgid "LibNotify Notification Plugin"
 msgstr "Модуль уведомления LibNotify"
 
 #: modules/packetizer/avparser.h:49
-#, fuzzy
 msgid "avparser packetizer"
-msgstr "Упаковщик копированием"
+msgstr "Упаковщик avparser"
 
 #: modules/packetizer/copy.c:48
 msgid "Copy packetizer"
@@ -28853,23 +28840,29 @@ msgstr "Вы действительно хотите создать поток?"
 #~ msgid "Profile edition"
 #~ msgstr "Редактирование профиля"
 
-#, fuzzy
+#~ msgid "FLAC"
+#~ msgstr "FLAC"
+
 #~ msgid "MP&4/MOV"
-#~ msgstr "MP4/MOV"
+#~ msgstr "MP&4/MOV"
 
 #~ msgid "Ogg/Ogm"
 #~ msgstr "Ogg/Ogm"
 
-#, fuzzy
+#~ msgid "M&KV"
+#~ msgstr "M&KV"
+
 #~ msgid "M&JPEG"
-#~ msgstr "MJPEG"
+#~ msgstr "M&JPEG"
 
 #~ msgid "MPEG-PS"
 #~ msgstr "MPEG-PS"
 
-#, fuzzy
+#~ msgid "F&LV"
+#~ msgstr "F&LV"
+
 #~ msgid "&MPEG-TS"
-#~ msgstr "MPEG-TS"
+#~ msgstr "&MPEG-TS"
 
 #~ msgid "RAW"
 #~ msgstr "RAW"
@@ -28880,15 +28873,17 @@ msgstr "Вы действительно хотите создать поток?"
 #~ msgid "Webm"
 #~ msgstr "Webm"
 
-#, fuzzy
 #~ msgid "MPEG &1"
-#~ msgstr "MPEG 1"
+#~ msgstr "MPEG &1"
 
 #~ msgid "AVI"
 #~ msgstr "AVI"
 
 #~ msgid "ASF/WMV"
 #~ msgstr "ASF/WMV"
+
+#~ msgid "MP&3"
+#~ msgstr "MP&3"
 
 #~ msgid "Features"
 #~ msgstr "Характеристики"
@@ -28902,9 +28897,8 @@ msgstr "Вы действительно хотите создать поток?"
 #~ msgid "Menus"
 #~ msgstr "Меню"
 
-#, fuzzy
 #~ msgid "Fra&me Rate"
-#~ msgstr "Частота кадров"
+#~ msgstr "Час&тота кадров"
 
 #~ msgid "Same as source"
 #~ msgstr "Как в источнике"
@@ -28915,9 +28909,8 @@ msgstr "Вы действительно хотите создать поток?"
 #~ msgid "Custom options"
 #~ msgstr "Настраиваемые параметры"
 
-#, fuzzy
 #~ msgid "&Quality"
-#~ msgstr "Качество"
+#~ msgstr "&Качество"
 
 #~ msgid "Not Used"
 #~ msgstr "Не определено"
@@ -28934,13 +28927,11 @@ msgstr "Вы действительно хотите создать поток?"
 #~ msgid "px"
 #~ msgstr "пкс"
 
-#, fuzzy
 #~ msgid "Sa&mple Rate"
-#~ msgstr "Частота дискретизации"
+#~ msgstr "Ч&астота дискретизации"
 
-#, fuzzy
 #~ msgid "Profile &Name"
-#~ msgstr "Название профиля"
+#~ msgstr "&Название профиля"
 
 #~ msgid "Set up media sources to stream"
 #~ msgstr "Выберите медиаисточники для вещания"
