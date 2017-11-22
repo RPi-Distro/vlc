@@ -7,10 +7,10 @@
 # Tadashi Jokagi <elf@elf.no-ip.org>, 2004-2009
 msgid ""
 msgstr ""
-"Project-Id-Version: VLC - Trans\n"
+"Project-Id-Version: vlc 2.2.7\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-19 02:13+0000\n"
-"PO-Revision-Date: 2017-09-23 19:54+0000\n"
+"POT-Creation-Date: 2017-11-21 20:45+0100\n"
+"PO-Revision-Date: 2017-11-16 03:02+0100\n"
 "Last-Translator: Fumio Nakayama <fumio.n6a@gmail.com>\n"
 "Language-Team: Japanese (http://www.transifex.com/yaron/vlc-trans/language/"
 "ja/)\n"
@@ -4474,14 +4474,12 @@ msgid "Cycle through the available subtitle tracks."
 msgstr "使用可能な字幕トラックを切り替えます。"
 
 #: src/libvlc-module.c:1352
-#, fuzzy
 msgid "Toggle subtitles"
-msgstr "テレテキスト字幕"
+msgstr "字幕切り替え"
 
 #: src/libvlc-module.c:1353
-#, fuzzy
 msgid "Toggle subtitle track visibility."
-msgstr "字幕トラックの切り替え"
+msgstr "字幕トラックの表示切り替え。"
 
 #: src/libvlc-module.c:1354
 msgid "Cycle next program Service ID"
@@ -6494,9 +6492,8 @@ msgid "Layer C time interleaving"
 msgstr "レイヤー C タイムインターリーブ"
 
 #: modules/access/dtv/access.c:154
-#, fuzzy
 msgid "Stream identifier"
-msgstr "ネットワーク識別子"
+msgstr "ストリーム識別子"
 
 #: modules/access/dtv/access.c:156
 msgid "Pilot"
@@ -6785,9 +6782,8 @@ msgid "DVDnav Input"
 msgstr "DVDnav入力"
 
 #: modules/access/dvdnav.c:104
-#, fuzzy
 msgid "DVDnav demuxer"
-msgstr "Nuvデマルチプレクサー"
+msgstr "DVDnavデマルチプレクサー"
 
 #: modules/access/dvdnav.c:299 modules/access/dvdread.c:200
 #: modules/access/dvdread.c:462 modules/access/dvdread.c:530
@@ -16266,15 +16262,13 @@ msgstr "サービスの検出"
 
 #: modules/gui/macosx/AddonManager.m:102
 #: modules/gui/qt4/dialogs/plugins.cpp:386
-#, fuzzy
 msgid "Interfaces"
 msgstr "インターフェース"
 
 #: modules/gui/macosx/AddonManager.m:104
 #: modules/gui/qt4/dialogs/plugins.cpp:389
-#, fuzzy
 msgid "Art and meta fetchers"
-msgstr "Luaメタフェッチャー"
+msgstr "アートワークとメタ情報取得"
 
 #: modules/gui/macosx/AddonManager.m:106 modules/gui/macosx/AddonManager.m:355
 #: modules/gui/macosx/MainMenu.m:352 modules/gui/macosx/MainMenu.m:353
@@ -16769,9 +16763,8 @@ msgid "Setup Streaming..."
 msgstr "ストリーミングを設定..."
 
 #: modules/gui/macosx/ConvertAndSave.m:163
-#, fuzzy
 msgid "Select Streaming Method"
-msgstr "ストリーミング方法"
+msgstr "ストリーミング方法を選択してください"
 
 #: modules/gui/macosx/ConvertAndSave.m:164
 msgid "Save as File"
@@ -18465,24 +18458,20 @@ msgid "No check was performed yet."
 msgstr "まだ何もチェックされていません。"
 
 #: modules/gui/macosx/simple_prefs.m:739
-#, fuzzy
 msgid "Lowest Latency"
-msgstr "より遅延が少ない"
+msgstr "最小の遅延"
 
 #: modules/gui/macosx/simple_prefs.m:742
-#, fuzzy
 msgid "Low Latency"
 msgstr "遅延が少ない"
 
 #: modules/gui/macosx/simple_prefs.m:748
-#, fuzzy
 msgid "Higher Latency"
-msgstr "より遅延が大きい"
+msgstr "多めの遅延"
 
 #: modules/gui/macosx/simple_prefs.m:751
-#, fuzzy
 msgid "Highest Latency"
-msgstr "より遅延が大きい"
+msgstr "最大の遅延"
 
 #: modules/gui/macosx/simple_prefs.m:876
 #: modules/gui/qt4/dialogs/preferences.cpp:327
@@ -20637,7 +20626,8 @@ msgstr "このマルチプレクサはVLCから提供されていません: 見�
 
 #: modules/gui/qt4/components/sout/profile_selector.cpp:612
 msgid "This muxer is missing. Using this profile will fail"
-msgstr "このマルチプレクサーがないため、このプロファイルは失敗しました。"
+msgstr ""
+"このマルチプレクサが見つかりません。このプロファイルの使用は失敗します。"
 
 #: modules/gui/qt4/components/sout/profile_selector.cpp:756
 msgid " Profile Name Missing"
@@ -21101,7 +21091,7 @@ msgstr ""
 
 #: modules/gui/qt4/dialogs/plugins.cpp:390
 msgid "Retrieves extra info and art for playlist items"
-msgstr "プレイリストの項目のアルバムアートと拡張情報を取得します"
+msgstr "プレイリストの項目に関する追加情報をアートワークを取得"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:393
 msgid ""
@@ -21481,9 +21471,8 @@ msgid "Do you want to restart the playback where left off?"
 msgstr "再生を停止した位置からの再生再開を行いますか?"
 
 #: modules/gui/qt4/main_interface.cpp:390
-#, fuzzy
 msgid "&Continue"
-msgstr "続ける"
+msgstr "継続 (&C)"
 
 #: modules/gui/qt4/main_interface.cpp:1312
 msgid "Control menu for the player"
@@ -23092,9 +23081,8 @@ msgid "LibNotify Notification Plugin"
 msgstr "LibNotify通知プラグイン"
 
 #: modules/packetizer/avparser.h:49
-#, fuzzy
 msgid "avparser packetizer"
-msgstr "コピーのパケッタイザー"
+msgstr "AVパーサーパケッタイザー"
 
 #: modules/packetizer/copy.c:48
 msgid "Copy packetizer"
@@ -27446,7 +27434,7 @@ msgstr "フレームバッファーでハードウェアアクセラレーショ
 
 #: modules/video_output/fb.c:71
 msgid "Disable for double buffering in software."
-msgstr "ソフトウェアでのダブルバッファリングを無効化する。"
+msgstr "ソフトウェアでのダブルバッファリングを無効化"
 
 #: modules/video_output/fb.c:73
 msgid "Image format (default RGB)"
@@ -28757,23 +28745,29 @@ msgstr "本当にストリームを生成してもいいですか?"
 #~ msgid "Profile edition"
 #~ msgstr "プロファイルのエディション"
 
-#, fuzzy
+#~ msgid "FLAC"
+#~ msgstr "FLAC"
+
 #~ msgid "MP&4/MOV"
-#~ msgstr "MP4/MOV"
+#~ msgstr "MP&4/MOV"
 
 #~ msgid "Ogg/Ogm"
 #~ msgstr "Ogg/Ogm"
 
-#, fuzzy
+#~ msgid "M&KV"
+#~ msgstr "M&KV"
+
 #~ msgid "M&JPEG"
-#~ msgstr "MJPEG"
+#~ msgstr "M&JPEG"
 
 #~ msgid "MPEG-PS"
 #~ msgstr "MPEG-PS"
 
-#, fuzzy
+#~ msgid "F&LV"
+#~ msgstr "F&LV"
+
 #~ msgid "&MPEG-TS"
-#~ msgstr "MPEG-TS"
+#~ msgstr "&MPEG-TS"
 
 #~ msgid "RAW"
 #~ msgstr "RAW"
@@ -28784,15 +28778,17 @@ msgstr "本当にストリームを生成してもいいですか?"
 #~ msgid "Webm"
 #~ msgstr "Webm"
 
-#, fuzzy
 #~ msgid "MPEG &1"
-#~ msgstr "MPEG 1"
+#~ msgstr "MPEG &1"
 
 #~ msgid "AVI"
 #~ msgstr "AVI"
 
 #~ msgid "ASF/WMV"
 #~ msgstr "ASF/WMV"
+
+#~ msgid "MP&3"
+#~ msgstr "MP&3"
 
 #~ msgid "Features"
 #~ msgstr "機能・特徴"
@@ -28806,9 +28802,8 @@ msgstr "本当にストリームを生成してもいいですか?"
 #~ msgid "Menus"
 #~ msgstr "メニュー"
 
-#, fuzzy
 #~ msgid "Fra&me Rate"
-#~ msgstr "フレームレート"
+#~ msgstr "フレームレート (&m)"
 
 #~ msgid "Same as source"
 #~ msgstr "ソースと同様に"
@@ -28819,9 +28814,8 @@ msgstr "本当にストリームを生成してもいいですか?"
 #~ msgid "Custom options"
 #~ msgstr "カスタムオプション"
 
-#, fuzzy
 #~ msgid "&Quality"
-#~ msgstr "品質"
+#~ msgstr "品質 (&Q)"
 
 #~ msgid "Not Used"
 #~ msgstr "未使用"
@@ -28838,13 +28832,11 @@ msgstr "本当にストリームを生成してもいいですか?"
 #~ msgid "px"
 #~ msgstr " ピクセル"
 
-#, fuzzy
 #~ msgid "Sa&mple Rate"
-#~ msgstr "サンプリングレート"
+#~ msgstr "サンプリングレート (&m)"
 
-#, fuzzy
 #~ msgid "Profile &Name"
-#~ msgstr "プロファイル名"
+#~ msgstr "プロファイル名 (&N)"
 
 #~ msgid "Set up media sources to stream"
 #~ msgstr "ストリーミングするメディアソースを設定"

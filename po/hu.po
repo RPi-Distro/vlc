@@ -5,14 +5,14 @@
 # Translators:
 # Balázs Meskó <meskobalazs@gmail.com>, 2017
 # Dávid Eredics, 2015
-# Gabor Kelemen <kelemeng at gnome dot hu>, 2005-2015
+# Gabor Kelemen <kelemeng@ubuntu.com>, 2005-2015
 # iskr <iscreamd@gmail.com>, 2013
 msgid ""
 msgstr ""
-"Project-Id-Version: VLC - Trans\n"
+"Project-Id-Version: vlc 2.2.7\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-19 02:13+0000\n"
-"PO-Revision-Date: 2017-09-20 03:43+0000\n"
+"POT-Creation-Date: 2017-11-21 20:45+0100\n"
+"PO-Revision-Date: 2017-11-16 02:54+0100\n"
 "Last-Translator: Balázs Meskó <meskobalazs@gmail.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/yaron/vlc-trans/language/"
 "hu/)\n"
@@ -4576,14 +4576,12 @@ msgid "Cycle through the available subtitle tracks."
 msgstr "Körbelépkedés az elérhető feliratsávokon."
 
 #: src/libvlc-module.c:1352
-#, fuzzy
 msgid "Toggle subtitles"
-msgstr "Teletext feliratok"
+msgstr "Feliratok be/ki"
 
 #: src/libvlc-module.c:1353
-#, fuzzy
 msgid "Toggle subtitle track visibility."
-msgstr "Felirat választás"
+msgstr "Feliratsáv láthatósága be/ki."
 
 #: src/libvlc-module.c:1354
 msgid "Cycle next program Service ID"
@@ -4620,7 +4618,7 @@ msgstr "Körbelépkedés levágási formátumok előre meghatározott listáján
 
 #: src/libvlc-module.c:1362
 msgid "Toggle autoscaling"
-msgstr "Automatikus méretezés"
+msgstr "Automatikus méretezés be/ki"
 
 #: src/libvlc-module.c:1363
 msgid "Activate or deactivate autoscaling."
@@ -4700,7 +4698,7 @@ msgstr "Váltás a Normál/Végtelen/Ismétlés lejátszólista-módok között"
 
 #: src/libvlc-module.c:1387
 msgid "Toggle random playlist playback"
-msgstr "Véletlenszerű lejátszás átváltása"
+msgstr "Véletlenszerű lejátszás be/ki"
 
 #: src/libvlc-module.c:1392 src/libvlc-module.c:1393
 msgid "Un-Zoom"
@@ -4740,7 +4738,7 @@ msgstr "Egy képpont visszaadása a videó jobb oldalához"
 
 #: src/libvlc-module.c:1415
 msgid "Toggle wallpaper mode in video output"
-msgstr "A videokimenet háttérkép módjának átváltása"
+msgstr "Háttérkép mód videokimenetben be/ki"
 
 #: src/libvlc-module.c:1417
 msgid "Toggle wallpaper mode in video output."
@@ -6601,9 +6599,8 @@ msgid "Layer C time interleaving"
 msgstr "A C réteg időkihagyása"
 
 #: modules/access/dtv/access.c:154
-#, fuzzy
 msgid "Stream identifier"
-msgstr "Hálózati azonosító"
+msgstr "Adatfolyam-azonosító"
 
 #: modules/access/dtv/access.c:156
 msgid "Pilot"
@@ -6893,9 +6890,8 @@ msgid "DVDnav Input"
 msgstr "DVDnav bemenet"
 
 #: modules/access/dvdnav.c:104
-#, fuzzy
 msgid "DVDnav demuxer"
-msgstr "Nuv szétválasztó"
+msgstr "DVDnav szétválasztó"
 
 #: modules/access/dvdnav.c:299 modules/access/dvdread.c:200
 #: modules/access/dvdread.c:462 modules/access/dvdread.c:530
@@ -12004,7 +12000,7 @@ msgstr ""
 
 #: modules/codec/quicktime.c:66
 msgid "QuickTime library decoder"
-msgstr "QuickTime könyvtárdekódoló"
+msgstr "QuickTime programkönyvtár dekódoló"
 
 #: modules/codec/rawvideo.c:66
 msgid "Pseudo raw video decoder"
@@ -14442,15 +14438,15 @@ msgstr "| goto . . . . . . . . . . . adott indexű elemre ugrás"
 
 #: modules/control/rc.c:792
 msgid "| repeat [on|off] . . . .  toggle playlist item repeat"
-msgstr "| repeat [on|off]  . lejátszólista-elem ismétlése ki/be"
+msgstr "| repeat [on|off]  . lejátszólista-elem ismétlése be/ki"
 
 #: modules/control/rc.c:793
 msgid "| loop [on|off] . . . . . . . . . toggle playlist loop"
-msgstr "| loop [on|off]  . . lejátszólista végtelenítése ki/be"
+msgstr "| loop [on|off]  . . lejátszólista végtelenítése be/ki"
 
 #: modules/control/rc.c:794
 msgid "| random [on|off] . . . . . . .  toggle random jumping"
-msgstr "| random [on|off]  . . . véletlenszerű ugrás átváltása"
+msgstr "| random [on|off]  . . . véletlenszerű ugrás be/ki"
 
 #: modules/control/rc.c:795
 msgid "| clear . . . . . . . . . . . . . . clear the playlist"
@@ -14490,7 +14486,7 @@ msgstr "| seek X . . tekerés másodpercekben, például „seek 12”"
 
 #: modules/control/rc.c:805
 msgid "| pause  . . . . . . . . . . . . . . . .  toggle pause"
-msgstr "| pause . . . . . . . . . . . . . . . szünet átváltása"
+msgstr "| pause . . . . . . . . . . . . . . . szünet be/ki"
 
 #: modules/control/rc.c:806
 msgid "| fastforward  . . . . . . . .  .  set to maximum rate"
@@ -14518,7 +14514,7 @@ msgstr "| frame. . . . . . . . . .  lejátszás képkockáról képkockára"
 
 #: modules/control/rc.c:812
 msgid "| f [on|off] . . . . . . . . . . . . toggle fullscreen"
-msgstr "| f [on|off] . . . . . . . . . . teljes képernyő ki/be"
+msgstr "| f [on|off] . . . . . . . . . . teljes képernyő be/ki"
 
 #: modules/control/rc.c:813
 msgid "| info . . . . .  information about the current stream"
@@ -16466,15 +16462,13 @@ msgstr "Szolgáltatásfelismerés"
 
 #: modules/gui/macosx/AddonManager.m:102
 #: modules/gui/qt4/dialogs/plugins.cpp:386
-#, fuzzy
 msgid "Interfaces"
-msgstr "Kezelőfelület"
+msgstr "Felületek"
 
 #: modules/gui/macosx/AddonManager.m:104
 #: modules/gui/qt4/dialogs/plugins.cpp:389
-#, fuzzy
 msgid "Art and meta fetchers"
-msgstr "Lua metaadat-letöltő"
+msgstr "Illusztráció és metaadat-letöltő"
 
 #: modules/gui/macosx/AddonManager.m:106 modules/gui/macosx/AddonManager.m:355
 #: modules/gui/macosx/MainMenu.m:352 modules/gui/macosx/MainMenu.m:353
@@ -16835,7 +16829,7 @@ msgstr ""
 
 #: modules/gui/macosx/ControlsBar.m:71 modules/gui/macosx/fspanel.m:425
 msgid "Toggle Fullscreen mode"
-msgstr "Teljes képernyős üzemmód"
+msgstr "Teljes képernyős üzemmód be/ki"
 
 #: modules/gui/macosx/ControlsBar.m:72
 msgid "Click to enable fullscreen video playback."
@@ -16973,9 +16967,8 @@ msgid "Setup Streaming..."
 msgstr "Közvetítés beállítása…"
 
 #: modules/gui/macosx/ConvertAndSave.m:163
-#, fuzzy
 msgid "Select Streaming Method"
-msgstr "Közvetítési módszer"
+msgstr "Válasszon közvetítési módszert"
 
 #: modules/gui/macosx/ConvertAndSave.m:164
 msgid "Save as File"
@@ -17521,7 +17514,7 @@ msgstr "Fájlméret"
 #: modules/gui/macosx/MainMenu.m:285
 #, c-format
 msgid "Level %i"
-msgstr "%i szint"
+msgstr "%i. szint"
 
 #: modules/gui/macosx/MainMenu.m:350
 msgid "Check for Update..."
@@ -18669,24 +18662,20 @@ msgid "No check was performed yet."
 msgstr "Még nem történt ellenőrzés."
 
 #: modules/gui/macosx/simple_prefs.m:739
-#, fuzzy
 msgid "Lowest Latency"
 msgstr "Legkisebb késleltetés"
 
 #: modules/gui/macosx/simple_prefs.m:742
-#, fuzzy
 msgid "Low Latency"
 msgstr "Kis késleltetés"
 
 #: modules/gui/macosx/simple_prefs.m:748
-#, fuzzy
 msgid "Higher Latency"
 msgstr "Nagyobb késleltetés"
 
 #: modules/gui/macosx/simple_prefs.m:751
-#, fuzzy
 msgid "Highest Latency"
-msgstr "Nagyobb késleltetés"
+msgstr "Legnagyobb késleltetés"
 
 #: modules/gui/macosx/simple_prefs.m:876
 #: modules/gui/qt4/dialogs/preferences.cpp:327
@@ -19758,7 +19747,7 @@ msgstr " <szóköz>               Szünet/lejátszás"
 
 #: modules/gui/ncurses.c:894
 msgid " f                      Toggle Fullscreen"
-msgstr " f                      Teljes képernyő átváltása"
+msgstr " f                      Teljes képernyő be/ki"
 
 #: modules/gui/ncurses.c:895
 msgid " c                      Cycle through audio tracks"
@@ -19819,15 +19808,15 @@ msgstr "[Lejátszólista]"
 
 #: modules/gui/ncurses.c:916
 msgid " r                      Toggle Random playing"
-msgstr " r                      Véletlenszerű lejátszás átváltása"
+msgstr " r                      Véletlenszerű lejátszás be/ki"
 
 #: modules/gui/ncurses.c:917
 msgid " l                      Toggle Loop Playlist"
-msgstr " l                      Lejátszólista végtelenítésének átváltása"
+msgstr " l                      Lejátszólista végtelenítése be/ki"
 
 #: modules/gui/ncurses.c:918
 msgid " R                      Toggle Repeat item"
-msgstr " R                      Elem ismétlésének átváltása"
+msgstr " R                      Elem ismétlése be/ki"
 
 #: modules/gui/ncurses.c:919
 msgid " o                      Order Playlist by title"
@@ -19973,7 +19962,7 @@ msgstr "Teletext aktiválása"
 
 #: modules/gui/qt4/components/controller.cpp:600
 msgid "Toggle Transparency "
-msgstr "Átlátszóság átváltása "
+msgstr "Átlátszóság be/ki"
 
 #: modules/gui/qt4/components/controller.hpp:43
 msgid ""
@@ -20051,11 +20040,11 @@ msgstr "Következő média a lejátszólistán, előrelépés lenyomva tartásko
 
 #: modules/gui/qt4/components/controller.hpp:127
 msgid "Toggle the video in fullscreen"
-msgstr "Teljes képernyős módba váltás"
+msgstr "Teljes képernyős mód be/ki"
 
 #: modules/gui/qt4/components/controller.hpp:127
 msgid "Toggle the video out fullscreen"
-msgstr "Teljes képernyős mód kikapcsolása"
+msgstr "Teljes képernyős mód be/ki"
 
 #: modules/gui/qt4/components/controller.hpp:128
 msgid "Show extended settings"
@@ -20063,7 +20052,7 @@ msgstr "Bővített beállítások megjelenítése"
 
 #: modules/gui/qt4/components/controller.hpp:128
 msgid "Toggle playlist"
-msgstr "Lejátszólista átváltása"
+msgstr "Lejátszólista be/ki"
 
 #: modules/gui/qt4/components/controller.hpp:129
 msgid "Take a snapshot"
@@ -20855,7 +20844,7 @@ msgstr "Ezt az egyesítőt nem közvetlenül a VLC biztosítja: Hiányozhat."
 
 #: modules/gui/qt4/components/sout/profile_selector.cpp:612
 msgid "This muxer is missing. Using this profile will fail"
-msgstr "Ez az egyesítő hiányzik. A profil használata sikertelen lesz"
+msgstr "Az egyesítő hiányzik. A profil nem lesz használható"
 
 #: modules/gui/qt4/components/sout/profile_selector.cpp:756
 msgid " Profile Name Missing"
@@ -21306,8 +21295,7 @@ msgstr ""
 
 #: modules/gui/qt4/dialogs/plugins.cpp:390
 msgid "Retrieves extra info and art for playlist items"
-msgstr ""
-"Extra információkat és borítógrafikát tölt le a lejátszólista elemeihez"
+msgstr "Extra adatok és illusztrációk lekérése a lejátszólista elemekhez"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:393
 msgid ""
@@ -21687,9 +21675,8 @@ msgid "Do you want to restart the playback where left off?"
 msgstr "Szeretné ott újraindítani a lejátszást, ahol félbehagyta?"
 
 #: modules/gui/qt4/main_interface.cpp:390
-#, fuzzy
 msgid "&Continue"
-msgstr "Folytatás"
+msgstr "&Folytatás"
 
 #: modules/gui/qt4/main_interface.cpp:1312
 msgid "Control menu for the player"
@@ -23307,9 +23294,8 @@ msgid "LibNotify Notification Plugin"
 msgstr "LibNotify értesítési bővítmény"
 
 #: modules/packetizer/avparser.h:49
-#, fuzzy
 msgid "avparser packetizer"
-msgstr "Másolatdaraboló"
+msgstr "avparser daraboló"
 
 #: modules/packetizer/copy.c:48
 msgid "Copy packetizer"
@@ -27709,7 +27695,7 @@ msgstr "A framebuffer hardvergyorsítást használ"
 
 #: modules/video_output/fb.c:71
 msgid "Disable for double buffering in software."
-msgstr "Tiltsa le a szoftveres dupla puffereléshez."
+msgstr "A kettős pufferelés szoftveres letiltása."
 
 #: modules/video_output/fb.c:73
 msgid "Image format (default RGB)"
@@ -29047,23 +29033,29 @@ msgstr "Valóban létre kívánja hozni a közvetítést?"
 #~ msgid "Profile edition"
 #~ msgstr "Profil szerkesztése"
 
-#, fuzzy
+#~ msgid "FLAC"
+#~ msgstr "FLAC"
+
 #~ msgid "MP&4/MOV"
-#~ msgstr "MP4/MOV"
+#~ msgstr "MP&4/MOV"
 
 #~ msgid "Ogg/Ogm"
 #~ msgstr "Ogg/Ogm"
 
-#, fuzzy
+#~ msgid "M&KV"
+#~ msgstr "M&KV"
+
 #~ msgid "M&JPEG"
-#~ msgstr "MJPEG"
+#~ msgstr "M&JPEG"
 
 #~ msgid "MPEG-PS"
 #~ msgstr "MPEG-PS"
 
-#, fuzzy
+#~ msgid "F&LV"
+#~ msgstr "F&LV"
+
 #~ msgid "&MPEG-TS"
-#~ msgstr "MPEG-TS"
+#~ msgstr "&MPEG-TS"
 
 #~ msgid "RAW"
 #~ msgstr "RAW"
@@ -29074,15 +29066,17 @@ msgstr "Valóban létre kívánja hozni a közvetítést?"
 #~ msgid "Webm"
 #~ msgstr "Webm"
 
-#, fuzzy
 #~ msgid "MPEG &1"
-#~ msgstr "MPEG 1"
+#~ msgstr "MPEG &1"
 
 #~ msgid "AVI"
 #~ msgstr "AVI"
 
 #~ msgid "ASF/WMV"
 #~ msgstr "ASF/WMV"
+
+#~ msgid "MP&3"
+#~ msgstr "MP&3"
 
 #~ msgid "Features"
 #~ msgstr "Tulajdonságok"
@@ -29096,9 +29090,8 @@ msgstr "Valóban létre kívánja hozni a közvetítést?"
 #~ msgid "Menus"
 #~ msgstr "Menük"
 
-#, fuzzy
 #~ msgid "Fra&me Rate"
-#~ msgstr "Képkockasebesség"
+#~ msgstr "&Képkockasebesség"
 
 #~ msgid "Same as source"
 #~ msgstr "Ugyanaz, mint a forrás"
@@ -29109,9 +29102,8 @@ msgstr "Valóban létre kívánja hozni a közvetítést?"
 #~ msgid "Custom options"
 #~ msgstr "Egyéni beállítások"
 
-#, fuzzy
 #~ msgid "&Quality"
-#~ msgstr "Minőség"
+#~ msgstr "M&inőség"
 
 #~ msgid "Not Used"
 #~ msgstr "Nincs használatban"
@@ -29128,13 +29120,11 @@ msgstr "Valóban létre kívánja hozni a közvetítést?"
 #~ msgid "px"
 #~ msgstr "pont"
 
-#, fuzzy
 #~ msgid "Sa&mple Rate"
-#~ msgstr "Mintavételezési gyakoriság"
+#~ msgstr "Minta&vételi frekvencia"
 
-#, fuzzy
 #~ msgid "Profile &Name"
-#~ msgstr "Profil neve"
+#~ msgstr "Profil &neve"
 
 #~ msgid "Set up media sources to stream"
 #~ msgstr "Közvetítendő médiaforrások beállítása"
