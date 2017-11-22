@@ -1,3 +1,9 @@
+vlc (2.2.8-1) UNRELEASED; urgency=medium
+
+  * New upstream release.
+
+ -- Mateusz Łukasik <mati75@linuxmint.pl>  Wed, 22 Nov 2017 17:46:04 +0100
+
 vlc (2.2.7-1) unstable; urgency=high
 
   * New upstream release.
