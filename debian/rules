@@ -272,14 +272,7 @@ endif
 override_dh_auto_test:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 ifeq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
-	# Check which plugins were built and whether they load properly.
-	@if test $$( id -u ) -eq 0 ; then \
-	   echo "Not runing the test as you are compiling as root"; \
-	   echo "Use 'dpkg-buildpackage -rfakeroot' rather than 'fakeroot dpkg-buildpackage'"; \
-	else \
-	   command="./vlc -vvv --ignore-config --no-plugins-cache --list --no-color"; \
-	   echo "$${command}"; $${command} ; \
-	fi
+	./vlc -vvv --ignore-config --no-plugins-cache --list --no-color
 endif
 endif
 
