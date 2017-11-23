@@ -11,6 +11,7 @@ vlc (3.0.0~20171123-1) UNRELEASED; urgency=medium
     - Complete porting to Qt 5. (LP: #1576175)
     - Fix issues with green borders. (Closes: #765969) (LP: #1405166)
   * Remove embedded ffmpeg copy. (LP: #1546078)
+  * SONAME bump: libvlccore8 -> libvlccore9.
   * debian/patches: Drop all patches.
   * debian/libvlc-bin.postinst.in: Skip plugin cache generation if no plugins
     are installed. (Closes: #878026)
@@ -19,7 +20,6 @@ vlc (3.0.0~20171123-1) UNRELEASED; urgency=medium
       already depends on libzvbi anyway.
 
   * TODO:
-    - libvlccore needs a SONAME bump.
     - Update d/copyright.
     - Check vlc-plugin-* packages and new plugins.
     - Check currently disabled plugins.
