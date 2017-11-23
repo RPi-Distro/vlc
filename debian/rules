@@ -80,6 +80,7 @@ confflags += \
 	--enable-shout \
 	--enable-skins2 \
 	--enable-sndio \
+	--enable-soxr \
 	--enable-speex \
 	--enable-svg \
 	--enable-svgdec \
